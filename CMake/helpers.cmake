@@ -255,9 +255,23 @@ endfunction ()
 function (FetchOpenAL)
 	message (STATUS "Fetching OpenAL...")
 
+	FetchContent_Declare (
+		OpenAL-Lib
+		URL https://github.com/kcat/openal-soft/releases/download/1.25.1/openal-soft-1.25.1-bin.zip
+		URL_HASH SHA256=0915af01928b17e46f7c59ffc44a7413486bbef8424a3465109f489a80cb68a2
+		SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/OpenAL-Soft
+		DOWNLOAD_NO_PROGRESS FALSE
+		#CMAKE_ARGS
+		#-DBUILD_SHARED_LIBS=OFF
+		#-DZLIB_BUILD_EXAMPLES=OFF
+       # CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR> -DLIBTYPE=SHARED
+
+	)
+	FetchContent_MakeAvailable (OpenAL-Lib)
+
 	set (OPENAL_INCLUDE_DIRS
-			${CMAKE_CURRENT_BINARY_DIR}/thirdparty/OpenAL/AL
-			${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/OpenAL/OpenAL
+			${CMAKE_CURRENT_BINARY_DIR}/thirdparty/OpenAL-Soft/include/AL
+			${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/OpenAL-Soft/include/AL
 			PARENT_SCOPE
 	)
 endfunction()

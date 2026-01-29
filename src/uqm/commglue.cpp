@@ -62,21 +62,19 @@ ScanInterpolation (CHAR_T *start)
 BOOLEAN
 RoboInterpolation (CHAR_T *start, CHAR_T *end)
 {
-	char *roboPhrases[] = {
+	static constexpr const char* RoboPhrases[] = {
 			"getPoint",
 			"getStarName",
 			"getConstellation",
 			"getColor",
-			"swapIfSeeded",
-			NULL};
-	COUNT i = 0;
-	CHAR_T *result;
-	while (roboPhrases[i])
+			"swapIfSeeded"};
+	
+	for (const char* phrase : RoboPhrases)
 	{
-		result = strstr (start, roboPhrases[i]);
-		if (result && result < end)
+		if (CHAR_T* result {strstr(start, phrase)}; result && result < end)
+		{
 			return true;
-		i++;
+		}
 	}
 	return false;
 }
