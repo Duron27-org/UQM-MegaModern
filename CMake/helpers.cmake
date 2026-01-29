@@ -141,7 +141,6 @@ function (FetchPNG)
 			)
 	endif()
 
-
 	# Set variables
 	set (PNG_FOUND TRUE PARENT_SCOPE)
 	set (PNG_LIBRARIES png_static PARENT_SCOPE)
@@ -198,6 +197,8 @@ function (FetchVorbis)
 			SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/libvorbis
 			DOWNLOAD_NO_PROGRESS TRUE
 			DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+			CMAKE_ARGS
+			-DBUILD_TESTING=OFF
 			
 	)
 	FetchContent_MakeAvailable (libvorbis)
@@ -241,7 +242,7 @@ function (FetchZLIB)
 			CMAKE_ARGS
 			-DBUILD_SHARED_LIBS=OFF
 			-DZLIB_BUILD_EXAMPLES=OFF
-	)
+			)
 	FetchContent_MakeAvailable (zlib)
 
 	set (CMAKE_MESSAGE_LOG_LEVEL "STATUS") # Re-enable status messages
@@ -257,7 +258,10 @@ function (FetchZLIB)
 
 	set (ZLIB_FOUND TRUE PARENT_SCOPE)
 	set (ZLIB_LIBRARY ${ZLIB_TARGET} PARENT_SCOPE)
-	set (ZLIB_INCLUDE_DIR ${zlib_SOURCE_DIR} PARENT_SCOPE)
+	set (ZLIB_INCLUDE_DIR 
+		${zlib_SOURCE_DIR}
+		${zlib_BINARY_DIR}
+		 PARENT_SCOPE)
 	set (ZLIB_INCLUDE_DIRS_UQM
 		"${zlib_SOURCE_DIR}"
 		"${zlib_BINARY_DIR}"

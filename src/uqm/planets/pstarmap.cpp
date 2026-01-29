@@ -1206,7 +1206,7 @@ DrawStarMap (uqm::COUNT race_update, RECT *pClipRect)
 					Color c;
 					TEXT t;
 					STRING locString;
-					uqm::CHAR_T *yehat_rebels = "+Yehat+";
+					uqm::CHAR_T yehat_rebels[] {"+Yehat+"};
 
 					c = RaceColor (index);
 					if (index == race_index)

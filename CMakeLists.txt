@@ -1591,7 +1591,7 @@ else ()
 	message (STATUS "Fetched Vorbis: ${VORBIS_VERSION}")
 endif ()
 
-find_package(OpenAL)
+find_package(OpenAL QUIET)
 if (OpenAL_FOUND)
     message (STATUS "Found OpenAL: ${OpenAL_VERSION}")
 else()
