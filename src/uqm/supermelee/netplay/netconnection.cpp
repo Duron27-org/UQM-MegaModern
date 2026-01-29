@@ -49,7 +49,7 @@ uio_Stream *netplayDebugFile;
 #endif
 
 // Used as initial value for Agreement structures, by structure assignment.
-const Agreement Agreement_nothingAgreed;
+const Agreement Agreement_nothingAgreed {};
 
 
 // The NetConnection keeps a pointer to the passed NetplayPeerOptions;

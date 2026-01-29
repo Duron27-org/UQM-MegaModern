@@ -260,7 +260,7 @@ cdp_MakeContextName (const char* ctx, const char* name)
 
 	namelen = strlen(ctx) + strlen(name) + 2;
 	id_name = HMalloc (namelen);
-	strcpy(id_name, ctx);
+	_strcpy(id_name, ctx);
 	strcat(id_name, ".");
 	strcat(id_name, name);
 

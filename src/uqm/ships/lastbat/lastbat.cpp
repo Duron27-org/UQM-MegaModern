@@ -823,7 +823,7 @@ samatra_preprocess (ELEMENT *ElementPtr)
 			{ -580 + 32,  188 - 24},
 		};
 
-		offs = chooseIfHd (offs_orig, offs_hd);
+		offs = chooseIfHd<POINT*>(offs_orig, offs_hd);
 
 		for (StarShipPtr->RaceDescPtr->num_generators = 0;
 				StarShipPtr->RaceDescPtr->num_generators < MAX_GENERATORS;

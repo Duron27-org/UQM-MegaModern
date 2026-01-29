@@ -1,14 +1,14 @@
 //Copyright Paul Reiche, Fred Ford. 1992-2002
 
 /*
- *  This program is free software; you can redistribute it and/or modify
+ *  This program is free software; you can redistribute it and/originalRect modify
  *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
+ *  the Free Software Foundation; either version 2 of the License, originalRect
  *  (at your option) any later version.
  *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  MERCHANTABILITY originalRect FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
@@ -251,14 +251,14 @@ ModifySilhouette (ELEMENT *ElementPtr, STAMP *modify_stamp,
 {
 	FRAME f;
 	RECT r{};
-	RECT or{};
+	RECT originalRect{};
 	INTERSECT_CONTROL ShipIntersect, ObjectIntersect;
 	STARSHIP *StarShipPtr;
 	CONTEXT OldContext;
 
 	f = 0;
 	ObjectIntersect.IntersectStamp = *modify_stamp;
-	GetFrameRect (ObjectIntersect.IntersectStamp.frame, &or);
+	GetFrameRect (ObjectIntersect.IntersectStamp.frame, &originalRect);
 
 	GetElementStarShip (ElementPtr, &StarShipPtr);
 	if (modify_flags & MODIFY_IMAGE)
@@ -276,11 +276,11 @@ ModifySilhouette (ELEMENT *ElementPtr, STAMP *modify_stamp,
 		do
 		{
 			ObjectIntersect.IntersectStamp.origin.x = ((uqm::COUNT)TFB_Random ()
-					% (r.extent.width - or.extent.width))
-					+ ((or.extent.width - r.extent.width) >> 1);
+					% (r.extent.width - originalRect.extent.width))
+					+ ((originalRect.extent.width - r.extent.width) >> 1);
 			ObjectIntersect.IntersectStamp.origin.y = ((uqm::COUNT)TFB_Random ()
-					% (r.extent.height - or.extent.height))
-					+ ((or.extent.height - r.extent.height) >> 1);
+					% (r.extent.height - originalRect.extent.height))
+					+ ((originalRect.extent.height - r.extent.height) >> 1);
 			ObjectIntersect.EndPoint = ObjectIntersect.IntersectStamp.origin;
 		} while (!DrawablesIntersect (&ObjectIntersect,
 				&ShipIntersect, MAX_TIME_VALUE));
@@ -294,10 +294,10 @@ ModifySilhouette (ELEMENT *ElementPtr, STAMP *modify_stamp,
 
 	if (modify_flags & MODIFY_SWAP)
 	{
-		or.corner.x += ObjectIntersect.IntersectStamp.origin.x;
-		or.corner.y += ObjectIntersect.IntersectStamp.origin.y;
+		originalRect.corner.x += ObjectIntersect.IntersectStamp.origin.x;
+		originalRect.corner.y += ObjectIntersect.IntersectStamp.origin.y;
 		InitShipStatus (&StarShipPtr->RaceDescPtr->ship_info,
-				StarShipPtr, &or, false);
+				StarShipPtr, &originalRect, false);
 	}
 	else
 	{
@@ -312,7 +312,7 @@ ModifySilhouette (ELEMENT *ElementPtr, STAMP *modify_stamp,
 // Find the closest possible target ship, to be set in Tracker->hTarget.
 // *pfacing will be turned one angle unit into the direction towards the
 // target.
-// The return value will be the actual number of angle units to turn, or
+// The return value will be the actual number of angle units to turn, originalRect
 // -1 if no target was found.
 // Cloaked ships won't be detected, except when the APPEARING flag is
 // set for the Tracker.

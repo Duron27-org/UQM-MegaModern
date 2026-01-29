@@ -61,20 +61,16 @@ constexpr inline auto lowByte(T x) -> uqm::BYTE
 	return static_cast<uqm::BYTE>(x & T{0xFF});
 }
 //#define highByte(x)    ((uqm::BYTE) ((uqm::UWORD) (x) >> 8))
-template <typename T, std::enable_if_t<sizeof(T)<=2,bool> = true>
+template <typename T>
 constexpr inline auto highByte(T x) -> uqm::BYTE
 {
 	if constexpr (sizeof(T)==1)
 	{
 		return x;
 	}
-	else if constexpr (sizeof(T) == 2)
-	{
-		return static_cast<uqm::BYTE>(x >> 8);
-	}
 	else
 	{
-		static_assert(false, "types with size > 2 bytes not supported by highByte.");
+		return static_cast<uqm::BYTE>(x >> 8);
 	}
 }
 #define MAKE_DWORD(lo, hi)  (((uqm::DWORD) (hi) << 16) | (uqm::UWORD) (lo))

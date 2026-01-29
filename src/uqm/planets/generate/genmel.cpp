@@ -217,7 +217,7 @@ GenerateMelnorme_pickupEnergy (SOLARSYS_STATE *solarSys,
 	return false;
 }
 
-char *
+const char *
 SelectMelnormeRefVar (void)
 {
 	switch (CurStarDescPtr->Index)
@@ -239,7 +239,7 @@ SelectMelnormeRefVar (void)
 static uqm::DWORD
 GetMelnormeRef (void)
 {
-	char *RefVar = SelectMelnormeRefVar ();
+	const char *RefVar = SelectMelnormeRefVar ();
 
 	if (isdigit (RefVar[0]))
 	{
@@ -253,7 +253,7 @@ GetMelnormeRef (void)
 static void
 SetMelnormeRef (uqm::DWORD Ref)
 {
-	char *RefVar = SelectMelnormeRefVar ();
+	const char *RefVar = SelectMelnormeRefVar ();
 
 	if (isdigit (RefVar[0]))
 	{

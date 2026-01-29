@@ -211,7 +211,7 @@ DrawSaveInfo (SIS_STATE SisState)
 	}
 
 	DrawSISMessage (TempVer);
-	char* emptyTitle {""};
+	uqm::CHAR_T emptyTitle[] {""};
 	DrawSISTitle (emptyTitle);
 
 	if (SisState.Seed)

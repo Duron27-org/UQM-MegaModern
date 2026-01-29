@@ -114,9 +114,10 @@ typedef struct {
 } ResetFlags;
 
 // Which parameters have we both sides of a connection reached agreement on?
-typedef struct {
+struct Agreement
+{
 	bool randomSeed : 1;
-} Agreement;
+};
 
 typedef struct {
 	bool connected;
