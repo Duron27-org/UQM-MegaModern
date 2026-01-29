@@ -323,7 +323,7 @@ MindControl (RESPONSE_REF R)
 		R = wish_to_go_now;
 	}
 
-	AlienTalkSegue ((COUNT)~0);
+	AlienTalkSegue ((uqm::COUNT)~0);
 	MindControlStrobe ();
 
 	Response (R, RespFunc);
@@ -379,7 +379,7 @@ PetInfo (RESPONSE_REF R)
 static void
 PetDevice (RESPONSE_REF R)
 {
-	BYTE NumVisits;
+	uqm::BYTE NumVisits;
 
 	if (PLAYER_SAID (R, whats_up_onboard))
 	{
@@ -477,7 +477,7 @@ PetDevice (RESPONSE_REF R)
 static void
 CompelPlayer (RESPONSE_REF R)
 {
-	BYTE i, LastStack;
+	uqm::BYTE i, LastStack;
 	RESPONSE_REF pStr[3];
 
 	LastStack = 0;
@@ -562,7 +562,7 @@ KillPet (RESPONSE_REF R)
 	if (PLAYER_SAID (R, must_kill))
 	{
 		NPCPhrase (DONT_KILL);
-		AlienTalkSegue ((COUNT)~0);
+		AlienTalkSegue ((uqm::COUNT)~0);
 
 		MindControlStrobe ();
 	}
@@ -649,9 +649,9 @@ PetDeal (RESPONSE_REF R)
 static void
 Intro (void)
 {
-	BYTE NumVisits;
+	uqm::BYTE NumVisits;
 
-	if (LOBYTE (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
+	if (lowByte (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
 	{
 		NPCPhrase (OUT_TAKES);
 
@@ -659,7 +659,7 @@ Intro (void)
 		return;
 	}
 
-	if (LOBYTE (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE)
+	if (lowByte (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE)
 	{
 		SET_GAME_STATE (SHIP_TO_COMPEL, 0);
 		setSegue (Segue_hostile);
@@ -808,7 +808,7 @@ Intro (void)
 	}
 }
 
-static COUNT
+static uqm::COUNT
 uninit_talkpet (void)
 {
 	luaUqm_comm_uninit ();
@@ -838,7 +838,7 @@ init_talkpet_comm (void)
 	talkpet_desc.AlienTextBaseline.y = 0;
 	talkpet_desc.AlienTextWidth = SIS_TEXT_WIDTH - RES_SCALE (16);
 
-	if (LOBYTE (GLOBAL (CurrentActivity)) != IN_LAST_BATTLE)
+	if (lowByte (GLOBAL (CurrentActivity)) != IN_LAST_BATTLE)
 	{
 		setSegue (Segue_peace);
 	}

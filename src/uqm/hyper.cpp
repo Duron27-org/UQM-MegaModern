@@ -52,8 +52,8 @@
 
 static FRAME hyperstars[3];
 static COLORMAP hypercmaps[2];
-static BYTE fuel_ticks;
-static COUNT hyper_dx, hyper_dy, hyper_extra;
+static uqm::BYTE fuel_ticks;
+static uqm::COUNT hyper_dx, hyper_dy, hyper_extra;
 
 // HyperspaceMenu() items
 enum HyperMenuItems
@@ -67,13 +67,13 @@ enum HyperMenuItems
 	NAVIGATION,
 };
 
-static inline SIZE
+static inline uqm::SIZE
 RaceHyperSpeed (RACE_ID Index)
 {
 	static int seedStamp = -1;
-	const SIZE defaultMap[] = { RACE_HYPER_SPEED };
-	const COUNT numRaces = sizeof (defaultMap) / sizeof (COUNT);
-	static SIZE speedMap[sizeof (defaultMap) / sizeof (COUNT)] = {0};
+	const int defaultMap[] { RACE_HYPER_SPEED };
+	const uqm::COUNT numRaces = sizeof (defaultMap) / sizeof (int);
+	static uqm::SIZE speedMap[numRaces] = {0}; // set urquan drone to 0.
 	int x;
 	if (!optShipSeed && (seedStamp != -1 || speedMap[0] == 0))
 	{
@@ -219,20 +219,20 @@ decorate_vortex (ELEMENT *ElementPtr)
 }*/
 
 void
-MoveSIS (SDWORD *pdx, SDWORD *pdy)
+MoveSIS (uqm::SDWORD *pdx, uqm::SDWORD *pdy)
 {
-	SDWORD new_dx, new_dy;
+	uqm::SDWORD new_dx, new_dy;
 
 	new_dx = *pdx;
 	GLOBAL_SIS (log_x) -= new_dx;
 	if (GLOBAL_SIS (log_x) < 0)
 	{
-		new_dx += (SIZE)GLOBAL_SIS (log_x);
+		new_dx += (uqm::SIZE)GLOBAL_SIS (log_x);
 		GLOBAL_SIS (log_x) = 0;
 	}
 	else if (GLOBAL_SIS (log_x) > MAX_X_LOGICAL)
 	{
-		new_dx += (SIZE)(GLOBAL_SIS (log_x) - MAX_X_LOGICAL);
+		new_dx += (uqm::SIZE)(GLOBAL_SIS (log_x) - MAX_X_LOGICAL);
 		GLOBAL_SIS (log_x) = MAX_X_LOGICAL;
 	}
 
@@ -240,12 +240,12 @@ MoveSIS (SDWORD *pdx, SDWORD *pdy)
 	GLOBAL_SIS (log_y) -= new_dy;
 	if (GLOBAL_SIS (log_y) < 0)
 	{
-		new_dy += (SIZE)GLOBAL_SIS (log_y);
+		new_dy += (uqm::SIZE)GLOBAL_SIS (log_y);
 		GLOBAL_SIS (log_y) = 0;
 	}
 	else if (GLOBAL_SIS (log_y) > MAX_Y_LOGICAL)
 	{
-		new_dy += (SIZE)(GLOBAL_SIS (log_y) - MAX_Y_LOGICAL);
+		new_dy += (uqm::SIZE)(GLOBAL_SIS (log_y) - MAX_Y_LOGICAL);
 		GLOBAL_SIS (log_y) = MAX_Y_LOGICAL;
 	}
 
@@ -281,9 +281,9 @@ MoveSIS (SDWORD *pdx, SDWORD *pdy)
 	if (GLOBAL_SIS (FuelOnBoard)
 			&& GET_GAME_STATE (ARILOU_SPACE_SIDE) <= 1)
 	{
-		COUNT cur_fuel_ticks;
-		COUNT hyper_dist;
-		DWORD adj_dx, adj_dy;
+		uqm::COUNT cur_fuel_ticks;
+		uqm::COUNT hyper_dist;
+		uqm::DWORD adj_dx, adj_dy;
 
 		if (new_dx < 0)
 			new_dx = -new_dx;
@@ -300,7 +300,7 @@ MoveSIS (SDWORD *pdx, SDWORD *pdy)
 					+ hyper_extra;
 		cur_fuel_ticks = hyper_dist >> 4;
 
-		if (cur_fuel_ticks > (COUNT)fuel_ticks)
+		if (cur_fuel_ticks > (uqm::COUNT)fuel_ticks)
 		{
 			if (!optInfiniteFuel)
 				DeltaSISGauges (0, fuel_ticks - cur_fuel_ticks, 0);
@@ -313,7 +313,7 @@ MoveSIS (SDWORD *pdx, SDWORD *pdy)
 				cur_fuel_ticks = 0;
 			}
 
-			fuel_ticks = (BYTE)cur_fuel_ticks;
+			fuel_ticks = (uqm::BYTE)cur_fuel_ticks;
 		}
 	}
 }
@@ -321,10 +321,10 @@ MoveSIS (SDWORD *pdx, SDWORD *pdy)
 void
 check_hyperspace_encounter (void)
 {
-	BYTE Type;
+	uqm::BYTE Type;
 	POINT universe;
 	HFLEETINFO hStarShip, hNextShip;
-	COUNT EncounterPercent[] =
+	uqm::COUNT EncounterPercent[] =
 	{
 		RACE_HYPERSPACE_PERCENT
 	};
@@ -335,7 +335,7 @@ check_hyperspace_encounter (void)
 			hStarShip && (GLOBAL (CurrentActivity) & IN_BATTLE);
 			hStarShip = hNextShip, ++Type)
 	{
-		COUNT encounter_radius;
+		uqm::COUNT encounter_radius;
 		FLEET_INFO *FleetPtr;
 
 		FleetPtr = LockFleetInfo (&GLOBAL (avail_race_q), hStarShip);
@@ -344,9 +344,9 @@ check_hyperspace_encounter (void)
 		encounter_radius = FleetPtr->actual_strength;
 		if (encounter_radius)
 		{
-			BYTE encounter_flags;
-			SIZE dx, dy;
-			COUNT percent;
+			uqm::BYTE encounter_flags;
+			uqm::SIZE dx, dy;
+			uqm::COUNT percent;
 			HENCOUNTER hEncounter;
 			ENCOUNTER *EncounterPtr;
 
@@ -432,11 +432,11 @@ check_hyperspace_encounter (void)
 			dy = universe.y - FleetPtr->loc.y;
 			if (dy < 0)
 				dy = -dy;
-			if ((COUNT)dx < encounter_radius
-					&& (COUNT)dy < encounter_radius
-					&& (DWORD)dx * dx + (DWORD)dy * dy <
-					(DWORD)encounter_radius * encounter_radius
-					&& ((COUNT)TFB_Random () % 100) < percent)
+			if ((uqm::COUNT)dx < encounter_radius
+					&& (uqm::COUNT)dy < encounter_radius
+					&& (uqm::DWORD)dx * dx + (uqm::DWORD)dy * dy <
+					(uqm::DWORD)encounter_radius * encounter_radius
+					&& ((uqm::COUNT)TFB_Random () % 100) < percent)
 			{
 				// Ship spawned for encounter.
 				hEncounter = AllocEncounter ();
@@ -525,7 +525,7 @@ LoadHyperspace (void)
 		RepairSISBorder ();
 	else
 	{
-		if (LOBYTE (LastActivity) == 0)
+		if (lowByte (LastActivity) == 0)
 		{
 			DrawSISFrame ();
 		}
@@ -593,7 +593,7 @@ FreeHyperspace (void)
 static void
 ElementToUniverse (ELEMENT *ElementPtr, POINT *pPt)
 {
-	SDWORD log_x, log_y;
+	uqm::SDWORD log_x, log_y;
 
 	log_x = GLOBAL_SIS (log_x)
 			+ (ElementPtr->next.location.x - (LOG_SPACE_WIDTH >> 1));
@@ -659,7 +659,7 @@ InterplanetaryTransition (ELEMENT *ElementPtr)
 	else
 	{
 		POINT pt;
-		UWORD KnownQSPortals = GET_GAME_STATE (KNOW_QS_PORTAL);
+		uqm::UWORD KnownQSPortals = GET_GAME_STATE (KNOW_QS_PORTAL);
 
 		GLOBAL (autopilot.x) = ~0;
 		GLOBAL (autopilot.y) = ~0;
@@ -692,7 +692,7 @@ InterplanetaryTransition (ELEMENT *ElementPtr)
 		{
 			// Transition from QuasiSpace to HyperSpace through
 			// one of the permanent portals.
-			COUNT index;
+			uqm::COUNT index;
 			// JSD - portal_map can be used to find the exit point
 			//const POINT portal_pt[] =
 			//		QUASISPACE_PORTALS_HYPERSPACE_ENDPOINTS;
@@ -769,7 +769,7 @@ ArilouSpaceTransition (void)
 static void
 unhyper_transition (ELEMENT *ElementPtr)
 {
-	COUNT frame_index;
+	uqm::COUNT frame_index;
 
 	// JMS: If leaving interplanetary on autopilot, always arrive HS with
 	// the ship's nose pointed into correct direction.
@@ -779,8 +779,8 @@ unhyper_transition (ELEMENT *ElementPtr)
 	{
 		STARSHIP *StarShipPtr;
 		POINT universe;
-		SIZE facing;
-		SDWORD udx = 0, udy = 0;
+		uqm::SIZE facing;
+		uqm::SDWORD udx = 0, udy = 0;
 			
 		GetElementStarShip (ElementPtr, &StarShipPtr);
 		universe.x = LOGX_TO_UNIVERSE (GLOBAL_SIS (log_x));
@@ -834,8 +834,8 @@ static void
 init_transition (ELEMENT *ElementPtr0, ELEMENT *ElementPtr1,
 		TRANSITION_TYPE which_transition)
 {
-	SIZE dx, dy;
-	SIZE num_turns;
+	uqm::SIZE dx, dy;
+	uqm::SIZE num_turns;
 	STARSHIP *StarShipPtr;
 
 	dx = WORLD_TO_VELOCITY (ElementPtr0->next.location.x
@@ -846,7 +846,7 @@ init_transition (ELEMENT *ElementPtr0, ELEMENT *ElementPtr1,
 	ElementPtr1->state_flags |= NONSOLID;
 	ElementPtr1->preprocess_func = unhyper_transition;
 	ElementPtr1->postprocess_func = NULL;
-	ElementPtr1->turn_wait = (BYTE) which_transition;
+	ElementPtr1->turn_wait = (uqm::BYTE) which_transition;
 
 	GetElementStarShip (ElementPtr1, &StarShipPtr);
 	num_turns = GetFrameCount (ElementPtr1->next.image.frame)
@@ -922,7 +922,7 @@ hyper_transition (ELEMENT *ElementPtr)
 	}
 	else
 	{
-		COUNT frame_index;
+		uqm::COUNT frame_index;
 
 		// JMS: If leaving interplanetary on autopilot, always arrive HS
 		// with the ship's nose pointed into correct direction.
@@ -930,8 +930,8 @@ hyper_transition (ELEMENT *ElementPtr)
 		{
 			STARSHIP *StarShipPtr;
 			POINT universe;
-			SIZE facing;
-			SDWORD udx = 0, udy = 0;
+			uqm::SIZE facing;
+			uqm::SDWORD udx = 0, udy = 0;
 			
 			GetElementStarShip (ElementPtr, &StarShipPtr);
 			universe.x = LOGX_TO_UNIVERSE (GLOBAL_SIS (log_x));
@@ -991,7 +991,7 @@ hyper_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 	if ((ElementPtr1->state_flags & PLAYER_SHIP)
 			&& GET_GAME_STATE (PORTAL_COUNTER) == 0)
 	{
-		SIZE dx, dy;
+		uqm::SIZE dx, dy;
 		POINT pt;
 		STAR_DESC *SDPtr;
 		STARSHIP *StarShipPtr;
@@ -1056,7 +1056,7 @@ static void
 arilou_space_collision (ELEMENT *ElementPtr0,
 		POINT *pPt0, ELEMENT *ElementPtr1, POINT *pPt1)
 {
-	COUNT which_side;
+	uqm::COUNT which_side;
 
 	if (!(ElementPtr1->state_flags & PLAYER_SHIP))
 		return;
@@ -1127,8 +1127,8 @@ AddAmbientElement (void)
 	hHyperSpaceElement = AllocElement ();
 	if (hHyperSpaceElement)
 	{
-		SIZE dx, dy;
-		DWORD rand_val;
+		uqm::SIZE dx, dy;
+		uqm::DWORD rand_val;
 		ELEMENT *HyperSpaceElementPtr;
 
 		LockElement (hHyperSpaceElement, &HyperSpaceElementPtr);
@@ -1148,14 +1148,14 @@ AddAmbientElement (void)
 		
 		if (!IS_HD)
 		{	
-			dx = (SIZE)(LOBYTE (dy) % SPACE_WIDTH) - (SPACE_WIDTH >> 1);
-			dy = (SIZE)(HIBYTE (dy) % SPACE_HEIGHT) - (SPACE_HEIGHT >> 1);
+			dx = (uqm::SIZE)(lowByte (dy) % SPACE_WIDTH) - (SPACE_WIDTH >> 1);
+			dy = (uqm::SIZE)(highByte (dy) % SPACE_HEIGHT) - (SPACE_HEIGHT >> 1);
 		}
 		else
 		{
-			dx = (SIZE)((HIWORD (rand_val)) % SPACE_WIDTH)
+			dx = (uqm::SIZE)((HIWORD (rand_val)) % SPACE_WIDTH)
 					- (SPACE_WIDTH >> 1);
-			dy = (SIZE)(dy % SPACE_HEIGHT) - (SPACE_HEIGHT >> 1);
+			dy = (uqm::SIZE)(dy % SPACE_HEIGHT) - (SPACE_HEIGHT >> 1);
 		}
 		
 		HyperSpaceElementPtr->current.location.x =
@@ -1193,7 +1193,7 @@ AddAmbientElement (void)
 static void
 encounter_animation (ELEMENT *ElementPtr)
 {	
-	COUNT f_index = GetFrameIndex (ElementPtr->current.image.frame);
+	uqm::COUNT f_index = GetFrameIndex (ElementPtr->current.image.frame);
 
 	if ((f_index >= BASE_VORTEX_FRAME_INDEX + 31))
 		ElementPtr->next.image.frame =
@@ -1335,12 +1335,12 @@ AddEncounterElement (ENCOUNTER *EncounterPtr, POINT *puniverse)
 	}
 	else
 	{
-		BYTE Type;
-		SIZE dx, dy;
-		COUNT i;
-		COUNT NumShips;
-		DWORD radius_squared;
-		BYTE EncounterMakeup[] =
+		uqm::BYTE Type;
+		uqm::SIZE dx, dy;
+		uqm::COUNT i;
+		uqm::COUNT NumShips;
+		uqm::DWORD radius_squared;
+		uqm::BYTE EncounterMakeup[] =
 		{
 			RACE_ENCOUNTER_MAKEUP
 		};
@@ -1348,13 +1348,13 @@ AddEncounterElement (ENCOUNTER *EncounterPtr, POINT *puniverse)
 		NewEncounter = true;
 
 		radius_squared =
-				(DWORD)EncounterPtr->radius * EncounterPtr->radius;
+				(uqm::DWORD)EncounterPtr->radius * EncounterPtr->radius;
 
 		Type = EncounterPtr->race_id;
 		NumShips = LONIBBLE (EncounterMakeup[Type]);
 		for (i = HINIBBLE (EncounterMakeup[Type]) - NumShips; i; --i)
 		{
-			if ((COUNT)TFB_Random () % 100 < 50)
+			if ((uqm::COUNT)TFB_Random () % 100 < 50)
 				++NumShips;
 		}
 
@@ -1378,7 +1378,7 @@ AddEncounterElement (ENCOUNTER *EncounterPtr, POINT *puniverse)
 
 		do
 		{
-			DWORD rand_val;
+			uqm::DWORD rand_val;
 
 			rand_val = TFB_Random ();
 
@@ -1397,7 +1397,7 @@ AddEncounterElement (ENCOUNTER *EncounterPtr, POINT *puniverse)
 
 			dx = enc_pt.x - EncounterPtr->origin.x;
 			dy = enc_pt.y - EncounterPtr->origin.y;
-		} while ((DWORD)((long)dx * dx + (long)dy * dy) > radius_squared);
+		} while ((uqm::DWORD)((long)dx * dx + (long)dy * dy) > radius_squared);
 
 		EncounterPtr->loc_pt = enc_pt;
 		EncounterPtr->log_x = UNIVERSE_TO_LOGX (enc_pt.x);
@@ -1407,7 +1407,7 @@ AddEncounterElement (ENCOUNTER *EncounterPtr, POINT *puniverse)
 	hElement = AllocHyperElement (&enc_pt);
 	if (hElement)
 	{
-		SIZE i;
+		uqm::SIZE i;
 		ELEMENT *ElementPtr;
 
 		LockElement (hElement, &ElementPtr);
@@ -1555,8 +1555,8 @@ ProcessEncounter (ENCOUNTER *EncounterPtr, POINT *puniverse,
 	}
 	else
 	{
-		SIZE delta_x, delta_y;
-		COUNT encounter_radius;
+		uqm::SIZE delta_x, delta_y;
+		uqm::COUNT encounter_radius;
 
 		ElementPtr->life_span = 1;
 		GetNextVelocityComponents (&ElementPtr->velocity,
@@ -1566,7 +1566,7 @@ ProcessEncounter (ENCOUNTER *EncounterPtr, POINT *puniverse,
 		else if (!ElementPtr->hTarget)
 		{	// This is an encounter that did not collide with flagship
 			// The colliding encounter does not move
-			COUNT cur_facing, delta_facing;
+			uqm::COUNT cur_facing, delta_facing;
 
 			cur_facing = ANGLE_TO_FACING (
 					GetVelocityTravelAngle (&ElementPtr->velocity));
@@ -1575,7 +1575,7 @@ ProcessEncounter (ENCOUNTER *EncounterPtr, POINT *puniverse,
 					puniverse->y - EncounterPtr->loc_pt.y)));
 			if (delta_facing || (delta_x == 0 && delta_y == 0))
 			{
-				SIZE speed;
+				uqm::SIZE speed;
 
 #define ENCOUNTER_TRACK_WAIT 3
 				speed = RaceHyperSpeed ((RACE_ID)EncounterPtr->race_id);
@@ -1615,10 +1615,10 @@ ProcessEncounter (ENCOUNTER *EncounterPtr, POINT *puniverse,
 		delta_y = EncounterPtr->loc_pt.y - EncounterPtr->origin.y;
 		if (delta_y < 0)
 			delta_y = -delta_y;
-		if ((COUNT)delta_x >= encounter_radius
-				|| (COUNT)delta_y >= encounter_radius
-				|| (DWORD)delta_x * delta_x + (DWORD)delta_y * delta_y >=
-				(DWORD)encounter_radius * encounter_radius)
+		if ((uqm::COUNT)delta_x >= encounter_radius
+				|| (uqm::COUNT)delta_y >= encounter_radius
+				|| (uqm::DWORD)delta_x * delta_x + (uqm::DWORD)delta_y * delta_y >=
+				(uqm::DWORD)encounter_radius * encounter_radius)
 		{
 			// Encounter globe traveled outside the SoI and now disappears
 			ElementPtr->state_flags |= NONSOLID;
@@ -1654,10 +1654,10 @@ ProcessEncounter (ENCOUNTER *EncounterPtr, POINT *puniverse,
 			&& ey - puniverse->y <= UNIT_SCREEN_HEIGHT)
 	{
 		ElementPtr->next.location.x =
-				(SIZE)(EncounterPtr->log_x - GLOBAL_SIS (log_x))
+				(uqm::SIZE)(EncounterPtr->log_x - GLOBAL_SIS (log_x))
 				+ (LOG_SPACE_WIDTH >> 1);
 		ElementPtr->next.location.y =
-				(SIZE)(EncounterPtr->log_y - GLOBAL_SIS (log_y))
+				(uqm::SIZE)(EncounterPtr->log_y - GLOBAL_SIS (log_y))
 				+ (LOG_SPACE_HEIGHT >> 1);
 		if ((ElementPtr->state_flags & NONSOLID)
 				&& EncounterPtr->transition_state == 0)
@@ -1728,7 +1728,7 @@ ProcessEncounters (POINT *puniverse, COORD ox, COORD oy)
 #define NUM_FRAMES 32
 
 static Color
-GetMaskColor (BYTE startype)
+GetMaskColor (uqm::BYTE startype)
 {
 	switch (startype)
 	{
@@ -1752,18 +1752,18 @@ SeedUniverse (void)
 {
 	COORD ox, oy;
 	COORD sx, sy, ex, ey;
-	SWORD portalCounter, arilouSpaceCounter, arilouSpaceSide;
+	uqm::SWORD portalCounter, arilouSpaceCounter, arilouSpaceSide;
 	POINT universe;
 	FRAME blip_frame, star_frame;
 	STAMP s;
 	STAR_DESC *SDPtr;
 	HELEMENT hHyperSpaceElement;
 	ELEMENT *HyperSpaceElementPtr;
-	SDWORD lx, ly;
+	uqm::SDWORD lx, ly;
 	RECT frameRect;
 	DEXTENT img_log;
 
-	static COUNT frameCounter = 0; // BW
+	static uqm::COUNT frameCounter = 0; // BW
 
 	universe.x = LOGX_TO_UNIVERSE (GLOBAL_SIS (log_x));
 	universe.y = LOGY_TO_UNIVERSE (GLOBAL_SIS (log_y));
@@ -1794,7 +1794,7 @@ SeedUniverse (void)
 			SDPtr = 0;
 			while ((SDPtr = FindStar (SDPtr, &universe, XOFFS, YOFFS)))
 			{
-				BYTE star_type;
+				uqm::BYTE star_type;
 
 				ex = SDPtr->star_pt.x;
 				ey = SDPtr->star_pt.y;
@@ -1817,7 +1817,7 @@ SeedUniverse (void)
 	portalCounter = GET_GAME_STATE (PORTAL_COUNTER);
 	if (portalCounter || arilouSpaceCounter)
 	{
-		COUNT i;
+		uqm::COUNT i;
 		STAR_DESC SD[2];
 				// This array is filled with the STAR_DESC's of
 				// QuasiSpace portals that need to be taken into account.
@@ -1955,8 +1955,8 @@ SeedUniverse (void)
 		SDPtr = 0;
 		while ((SDPtr = FindStar (SDPtr, &universe, XOFFS, YOFFS)))
 		{
-			BYTE star_type = SDPtr->Type;
-			BYTE star_color = STAR_COLOR (star_type);
+			uqm::BYTE star_type = SDPtr->Type;
+			uqm::BYTE star_color = STAR_COLOR (star_type);
 
 			lx = UNIVERSE_TO_LOGX (SDPtr->star_pt.x) - GLOBAL_SIS (log_x);
 			ly = UNIVERSE_TO_LOGY (SDPtr->star_pt.y) - GLOBAL_SIS (log_y);
@@ -2009,7 +2009,7 @@ SeedUniverse (void)
 			if (ANIMATED_HYPERSPACE && !(arilouSpaceSide > 1)
 					&& star_color != WHITE_BODY)
 			{
-				COUNT *PrimIndex;
+				uqm::COUNT *PrimIndex;
 
 				HyperSpaceElementPtr->current.image.frame = 
 						SetAbsFrameIndex (hyperstars[1],
@@ -2093,7 +2093,7 @@ DoHyperspaceMenu (MENU_STATE *pMS)
 	bool handled;
 
 	if ((GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
-			|| GLOBAL_SIS (CrewEnlisted) == (COUNT)~0)
+			|| GLOBAL_SIS (CrewEnlisted) == (uqm::COUNT)~0)
 		return false;
 
 	handled = DoMenuChooser (pMS, PM_STARMAP);

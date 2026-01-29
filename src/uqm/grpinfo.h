@@ -33,7 +33,7 @@ extern "C" {
 
 typedef HLINK HIPGROUP;
 
-typedef BYTE IP_FLAGS;
+typedef uqm::BYTE IP_FLAGS;
 
 #define CAN_TURN (1 << 0)
 #define ROTATES (1 << 1)
@@ -46,21 +46,21 @@ typedef struct
 	HIPGROUP pred;
 	HIPGROUP succ;
 
-	UWORD group_counter;
-	BYTE race_id;
-	BYTE sys_loc;
-	BYTE task;  // AKA mission
-	BYTE in_system;
+	uqm::UWORD group_counter;
+	uqm::BYTE race_id;
+	uqm::BYTE sys_loc;
+	uqm::BYTE task;  // AKA mission
+	uqm::BYTE in_system;
 			// a simple != 0 flag
 			// In older savegames this will be >1, because
 			//   CloneShipFragment was used to spawn groups,
 			//   and it set this to crew_level values
 	
-	BYTE dest_loc;
-	BYTE orbit_pos;
+	uqm::BYTE dest_loc;
+	uqm::BYTE orbit_pos;
 			/* Also: saved prev dest_loc before intercept call,
 			 *   restored to dest_loc on all-clear */
-	BYTE group_id;
+	uqm::BYTE group_id;
 	POINT loc;
 
 	FRAME melee_icon;
@@ -93,7 +93,7 @@ LockIpGroup (const QUEUE *pq, HIPGROUP h)
 #define UnlockIpGroup(pq, h)  UnlockLink (pq, h)
 #define FreeIpGroup(pq, h)    FreeLink (pq, h)
 
-extern HIPGROUP BuildGroup (QUEUE *pDstQueue, BYTE race_id);
+extern HIPGROUP BuildGroup (QUEUE *pDstQueue, uqm::BYTE race_id);
 
 #if 0 //defined(__cplusplus)
 }

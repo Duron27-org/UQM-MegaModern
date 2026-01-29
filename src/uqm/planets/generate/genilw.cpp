@@ -30,10 +30,10 @@
 static bool GenerateIlwrath_generatePlanets (SOLARSYS_STATE *solarSys);
 static bool GenerateIlwrath_generateOrbital (SOLARSYS_STATE *solarSys,
 		PLANET_DESC *world);
-static COUNT GenerateIlwrath_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
+static uqm::COUNT GenerateIlwrath_generateEnergy (const SOLARSYS_STATE *,
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
 static bool GenerateIlwrath_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, COUNT whichNode);
+		PLANET_DESC *world, uqm::COUNT whichNode);
 
 
 const GenerateFunctions generateIlwrathFunctions = {
@@ -63,7 +63,7 @@ GenerateIlwrath_generatePlanets (SOLARSYS_STATE *solarSys)
 
 	if (PrimeSeed)
 	{
-		COUNT angle;
+		uqm::COUNT angle;
 
 		pSunDesc->PlanetByte = 0;
 		pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
@@ -137,9 +137,9 @@ GenerateIlwrath_generateOrbital (SOLARSYS_STATE *solarSys,
 	return true;
 }
 
-static COUNT
+static uqm::COUNT
 GenerateIlwrath_generateEnergy (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *info)
 {
 	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{
@@ -151,7 +151,7 @@ GenerateIlwrath_generateEnergy (const SOLARSYS_STATE *solarSys,
 
 static bool
 GenerateIlwrath_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		COUNT whichNode)
+		uqm::COUNT whichNode)
 {
 	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{

@@ -69,7 +69,7 @@ extern uint32 SDL_ThreadID(void);
 static void
 checkArilouGate (void)
 {
-	BYTE counter;
+	uqm::BYTE counter;
 
 	counter = GET_GAME_STATE (ARILOU_SPACE_COUNTER);
 	if (GET_GAME_STATE (ARILOU_SPACE) == OPENING)
@@ -100,7 +100,7 @@ on_battle_frame (void)
 }
 
 static void
-BackgroundInitKernel (DWORD TimeOut)
+BackgroundInitKernel (uqm::DWORD TimeOut)
 {
 	LoadMasterShipList (TaskSwitch);
 	TaskSwitch ();
@@ -354,7 +354,7 @@ while (--ac > 0)
 				{	/* BGD mode */
 					InstallBombAtEarth ();
 				}
-				else if (GET_GAME_STATE (GLOBAL_FLAGS_AND_DATA) == (BYTE)~0
+				else if (GET_GAME_STATE (GLOBAL_FLAGS_AND_DATA) == (uqm::BYTE)~0
 						|| GET_GAME_STATE (CHMMR_BOMB_STATE) == 2)
 				{
 					GLOBAL (CurrentActivity) |= START_ENCOUNTER;
@@ -369,7 +369,7 @@ while (--ac > 0)
 				if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
 				{
 					GLOBAL (CurrentActivity) &= ~START_ENCOUNTER;
-					if (LOBYTE (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY)
+					if (lowByte (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY)
 						GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
 				}
 			}
@@ -396,9 +396,9 @@ while (--ac > 0)
 			LastActivity = GLOBAL (CurrentActivity);
 
 			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
-					&& (LOBYTE (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE
+					&& (lowByte (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE
 							// if died for some reason
-					|| GLOBAL_SIS (CrewEnlisted) == (COUNT)~0))
+					|| GLOBAL_SIS (CrewEnlisted) == (uqm::COUNT)~0))
 			{
 				if (GET_GAME_STATE(KOHR_AH_KILLED_ALL)) {
 					InitCommunication(BLACKURQ_CONVERSATION);

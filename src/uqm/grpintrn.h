@@ -21,15 +21,15 @@
 //    the system, or until the player enters another star system.
 typedef struct
 {
-	BYTE NumGroups;
-	BYTE day_index, month_index;
-	COUNT star_index, year_index;
+	uqm::BYTE NumGroups;
+	uqm::BYTE day_index, month_index;
+	uqm::COUNT star_index, year_index;
 			// day_index, month_index, year_index specify when
 			//   random groups expire (if you were to leave the system
 			//   by going to HSpace and stay there till such time)
 			// star_index is the index of a star this group header
 			//   applies to; ~0 means uninited
-	DWORD GroupOffset[NUM_SAVED_BATTLE_GROUPS + 1];
+	uqm::DWORD GroupOffset[NUM_SAVED_BATTLE_GROUPS + 1];
 			// Absolute offsets of group definitions in a state file
 			// Group 0 is a list of groups present in solarsys
 			//    (RANDGRPINFO_FILE only)

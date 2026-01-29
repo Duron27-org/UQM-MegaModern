@@ -146,7 +146,7 @@ howitzer_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 		weapon_collision (ElementPtr0, pPt0, ElementPtr1, pPt1);
 }
 
-static COUNT
+static uqm::COUNT
 initialize_turret_missile (ELEMENT *ShipPtr, HELEMENT MissileArray[])
 {
 	ELEMENT *TurretPtr;
@@ -198,10 +198,10 @@ initialize_turret_missile (ELEMENT *ShipPtr, HELEMENT MissileArray[])
 	return (1);
 }
 
-static BYTE
+static uqm::BYTE
 count_marines (STARSHIP *StarShipPtr, bool FindSpot)
 {
-	BYTE num_marines, id_use[MAX_MARINES];
+	uqm::BYTE num_marines, id_use[MAX_MARINES];
 	HELEMENT hElement, hNextElement;
 
 	num_marines = MAX_MARINES;
@@ -246,7 +246,7 @@ count_marines (STARSHIP *StarShipPtr, bool FindSpot)
 
 static void
 orz_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
-		COUNT ConcernCounter)
+		uqm::COUNT ConcernCounter)
 {
 	ELEMENT *TurretPtr;
 	STARSHIP *StarShipPtr;
@@ -288,8 +288,8 @@ orz_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 				&& !(StarShipPtr->ship_input_state & (LEFT | RIGHT | WEAPON))
 				&& TurretPtr->turn_wait == 0)
 		{
-			SIZE delta_facing;
-			COUNT facing;//, orig_facing;
+			uqm::SIZE delta_facing;
+			uqm::COUNT facing;//, orig_facing;
 
 			facing = NORMALIZE_FACING (StarShipPtr->ShipFacing
 					+ TurretPtr->thrust_wait);
@@ -297,7 +297,7 @@ orz_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 			{
 				StarShipPtr->ship_input_state |= SPECIAL;
 				if (delta_facing == ANGLE_TO_FACING (HALF_CIRCLE))
-					delta_facing += (((BYTE)TFB_Random () & 1) << 1) - 1;
+					delta_facing += (((uqm::BYTE)TFB_Random () & 1) << 1) - 1;
 
 				if (delta_facing < ANGLE_TO_FACING (HALF_CIRCLE))
 					StarShipPtr->ship_input_state |= RIGHT;
@@ -310,7 +310,7 @@ orz_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 		if (StarShipPtr->special_counter == 0
 				&& !(StarShipPtr->ship_input_state & WEAPON)
 				&& StarShipPtr->RaceDescPtr->ship_info.crew_level >
-				(BYTE)(StarShipPtr->RaceDescPtr->ship_info.max_crew >> 2)
+				(uqm::BYTE)(StarShipPtr->RaceDescPtr->ship_info.max_crew >> 2)
 				&& !(EnemyStarShipPtr->RaceDescPtr->ship_info.ship_flags
 				& POINT_DEFENSE)
 				&& (MANEUVERABILITY (
@@ -424,11 +424,11 @@ LeftShip:
 			}
 			else if (ElementPtr->thrust_wait == 0)
 			{
-				BYTE randval;
+				uqm::BYTE randval;
 
 				ElementPtr->thrust_wait = MARINE_WAIT;
 
-				randval = (BYTE)TFB_Random ();
+				randval = (uqm::BYTE)TFB_Random ();
 				if (randval < (0x0100 / 16))
 				{
 					ElementPtr->life_span = 0;
@@ -479,7 +479,7 @@ LeftShip:
 						StarShipPtr->RaceDescPtr->ship_data.special[0], 21);
 		ElementPtr->thrust_wait = 0;
 		ElementPtr->turn_wait =
-				MAKE_BYTE (0, NORMALIZE_FACING ((BYTE)TFB_Random ()));
+				MAKE_BYTE (0, NORMALIZE_FACING ((uqm::BYTE)TFB_Random ()));
 		ElementPtr->preprocess_func = marine_preprocess;
 	}
 }
@@ -487,14 +487,14 @@ LeftShip:
 // XXX: merge this with spawn_ion_trail from tactrans.c?
 static void
 spawn_marine_ion_trail (ELEMENT *ElementPtr, STARSHIP *StarShipPtr,
-		COUNT facing)
+		uqm::COUNT facing)
 {
 	HELEMENT hIonElement;
 
 	hIonElement = AllocElement ();
 	if (hIonElement)
 	{
-		COUNT angle;
+		uqm::COUNT angle;
 		ELEMENT *IonElementPtr;
 
 		angle = FACING_TO_ANGLE (facing) + HALF_CIRCLE;
@@ -559,8 +559,8 @@ marine_preprocess (ELEMENT *ElementPtr)
 		--ElementPtr->turn_wait;
 	else
 	{
-		COUNT facing, pfacing = 0;
-		SDWORD delta_x, delta_y, delta_facing;
+		uqm::COUNT facing, pfacing = 0;
+		uqm::SDWORD delta_x, delta_y, delta_facing;
 		HELEMENT hObject, hNextObject, hTarget;
 		ELEMENT *ObjectPtr;
 
@@ -638,7 +638,7 @@ marine_preprocess (ELEMENT *ElementPtr)
 				else
 				{
 					if (delta_facing == ANGLE_TO_FACING (OCTANT))
-						facing += (((SIZE)TFB_Random () & 1) << 1) - 1;
+						facing += (((uqm::SIZE)TFB_Random () & 1) << 1) - 1;
 					else if (delta_facing < ANGLE_TO_FACING (OCTANT))
 						++facing;
 					else
@@ -647,7 +647,7 @@ marine_preprocess (ELEMENT *ElementPtr)
 			}
 			else
 			{
-				DWORD num_frames;
+				uqm::DWORD num_frames;
 				VELOCITY_DESC ShipVelocity;
 
 				if (elementsOfSamePlayer (ObjectPtr, ElementPtr)
@@ -671,10 +671,10 @@ marine_preprocess (ELEMENT *ElementPtr)
 				GetNextVelocityComponentsSdword (&ShipVelocity,
 						&delta_x, &delta_y, num_frames);
 
-				delta_x = ((SDWORD)ObjectPtr->current.location.x + delta_x)
-						- (SDWORD)ElementPtr->current.location.x;
-				delta_y = ((SDWORD)ObjectPtr->current.location.y + delta_y)
-						- (SDWORD)ElementPtr->current.location.y;
+				delta_x = ((uqm::SDWORD)ObjectPtr->current.location.x + delta_x)
+						- (uqm::SDWORD)ElementPtr->current.location.x;
+				delta_y = ((uqm::SDWORD)ObjectPtr->current.location.y + delta_y)
+						- (uqm::SDWORD)ElementPtr->current.location.y;
 
 				delta_facing = NORMALIZE_FACING (
 						ANGLE_TO_FACING (ARCTAN (delta_x, delta_y)) - facing);
@@ -682,7 +682,7 @@ marine_preprocess (ELEMENT *ElementPtr)
 				if (delta_facing > 0)
 				{
 					if (delta_facing == ANGLE_TO_FACING (HALF_CIRCLE))
-						facing += (((BYTE)TFB_Random () & 1) << 1) - 1;
+						facing += (((uqm::BYTE)TFB_Random () & 1) << 1) - 1;
 					else if (delta_facing < ANGLE_TO_FACING (HALF_CIRCLE))
 						++facing;
 					else
@@ -698,9 +698,9 @@ marine_preprocess (ELEMENT *ElementPtr)
 				 && !(ElementPtr->thrust_wait & (SHIP_IN_GRAVITY_WELL >> 6))))
 		{
 			STATUS_FLAGS thrust_status;
-			COUNT OldFacing;
+			uqm::COUNT OldFacing;
 			STATUS_FLAGS OldStatus;
-			COUNT OldIncrement, OldThrust;
+			uqm::COUNT OldIncrement, OldThrust;
 			STARSHIP *StarShipPtr;
 
 			GetElementStarShip (ElementPtr, &StarShipPtr);
@@ -740,7 +740,7 @@ marine_preprocess (ELEMENT *ElementPtr)
 
 			// XXX: thrust_wait is abused to store marine speed and
 			//   gravity well flags
-			ElementPtr->thrust_wait = (BYTE)(thrust_status >> 6);
+			ElementPtr->thrust_wait = (uqm::BYTE)(thrust_status >> 6);
 		}
 	}
 }
@@ -786,7 +786,7 @@ marine_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 			else if ((ElementPtr0->state_flags & IGNORE_SIMILAR)
 					&& ElementPtr1->crew_level
 #ifdef NEVER
-					&& (BYTE)TFB_Random () <= (0x0100 / 3)
+					&& (uqm::BYTE)TFB_Random () <= (0x0100 / 3)
 #endif /* NEVER */
 					)
 			{
@@ -860,7 +860,7 @@ turret_postprocess (ELEMENT *ElementPtr)
 		GetElementStarShip (ElementPtr, &StarShipPtr);
 		if (StarShipPtr->hShip)
 		{
-			COUNT facing;
+			uqm::COUNT facing;
 			HELEMENT hTurret, hSpaceMarine;
 			ELEMENT *ShipPtr;
 

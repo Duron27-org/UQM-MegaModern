@@ -26,7 +26,7 @@ typedef struct MeleeSetup MeleeSetup;
 
 #include "libs/compiler.h"
 
-typedef COUNT FleetShipIndex;
+typedef uqm::COUNT FleetShipIndex;
 
 #include "libs/uio.h"
 #include "melee.h"
@@ -53,7 +53,7 @@ struct MeleeTeam
 struct MeleeSetup
 {
 	MeleeTeam teams[NUM_SIDES];
-	COUNT fleetValue[NUM_SIDES];
+	uqm::COUNT fleetValue[NUM_SIDES];
 #ifdef NETPLAY
 	MeleeTeam sentTeams[NUM_SIDES];
 			// The last sent (parts of) teams.
@@ -79,7 +79,7 @@ void MeleeSetup_resetSentTeams (MeleeSetup *setup);
 #endif  /* NETPLAY */
 int MeleeTeam_serialize (const MeleeTeam *team, uio_Stream *stream);
 int MeleeTeam_deserialize (MeleeTeam *team, uio_Stream *stream);
-COUNT MeleeTeam_getValue (const MeleeTeam *team);
+uqm::COUNT MeleeTeam_getValue (const MeleeTeam *team);
 MeleeShip MeleeTeam_getShip (const MeleeTeam *team, FleetShipIndex slotNr);
 void MeleeTeam_setShip (MeleeTeam *team, FleetShipIndex slotNr,
 		MeleeShip ship);
@@ -119,7 +119,7 @@ bool MeleeSetup_setTeamName (MeleeSetup *setup, size_t teamNr,
 		const char *name);
 const char *MeleeSetup_getTeamName (const MeleeSetup *setup,
 		size_t teamNr);
-COUNT MeleeSetup_getFleetValue (const MeleeSetup *setup, size_t teamNr);
+uqm::COUNT MeleeSetup_getFleetValue (const MeleeSetup *setup, size_t teamNr);
 int MeleeSetup_deserializeTeam (MeleeSetup *setup, size_t teamNr,
 		uio_Stream *stream);
 int MeleeSetup_serializeTeam (const MeleeSetup *setup, size_t teamNr,

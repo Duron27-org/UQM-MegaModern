@@ -92,7 +92,7 @@ GenerateDefault_uninitNpcs (SOLARSYS_STATE *solarSys)
 bool
 GenerateDefault_generatePlanets (SOLARSYS_STATE *solarSys)
 {
-	FillOrbits (solarSys, (BYTE)~0, solarSys->PlanetDesc, false);
+	FillOrbits (solarSys, (uqm::BYTE)~0, solarSys->PlanetDesc, false);
 	GeneratePlanets (solarSys);
 	return true;
 }
@@ -108,7 +108,7 @@ bool
 GenerateDefault_generateName (const SOLARSYS_STATE *solarSys,
 		const PLANET_DESC *world)
 {
-	COUNT i = planetIndex (solarSys, world);
+	uqm::COUNT i = planetIndex (solarSys, world);
 	utf8StringCopy (GLOBAL_SIS (PlanetName), sizeof (GLOBAL_SIS (PlanetName)),
 			GAME_STRING (PLANET_NUMBER_BASE + (9 + 7) + i));
 	SET_GAME_STATE (BATTLE_PLANET, world->data_index);
@@ -119,7 +119,7 @@ GenerateDefault_generateName (const SOLARSYS_STATE *solarSys,
 bool
 GenerateDefault_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 {
-	DWORD rand_val;
+	uqm::DWORD rand_val;
 	SYSTEM_INFO *sysInfo;
 
 #ifdef DEBUG_SOLARSYS
@@ -154,9 +154,9 @@ GenerateDefault_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 	return true;
 }
 
-COUNT
+uqm::COUNT
 GenerateDefault_generateMinerals (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *info)
 {
 	return GenerateMineralDeposits (&solarSys->SysInfo, whichNode, info);
 	(void) world;
@@ -164,7 +164,7 @@ GenerateDefault_generateMinerals (const SOLARSYS_STATE *solarSys,
 
 bool
 GenerateDefault_pickupMinerals (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		COUNT whichNode)
+		uqm::COUNT whichNode)
 {
 	// Minerals do not need any extra handling as of now
 	(void) solarSys;
@@ -173,9 +173,9 @@ GenerateDefault_pickupMinerals (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 	return true;
 }
 
-COUNT
+uqm::COUNT
 GenerateDefault_generateEnergy (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *info)
 {
 	(void) whichNode;
 	(void) solarSys;
@@ -186,7 +186,7 @@ GenerateDefault_generateEnergy (const SOLARSYS_STATE *solarSys,
 
 bool
 GenerateDefault_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		COUNT whichNode)
+		uqm::COUNT whichNode)
 {
 	// This should never be called since every energy node needs
 	// special handling and the function should be overridden
@@ -197,9 +197,9 @@ GenerateDefault_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 	return false;
 }
 
-COUNT
+uqm::COUNT
 GenerateDefault_generateLife (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *info)
 {
 	return GenerateLifeForms (&solarSys->SysInfo, whichNode, info);
 	(void) world;
@@ -207,7 +207,7 @@ GenerateDefault_generateLife (const SOLARSYS_STATE *solarSys,
 
 bool
 GenerateDefault_pickupLife (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		COUNT whichNode)
+		uqm::COUNT whichNode)
 {
 	// Bio does not need any extra handling as of now
 	(void) solarSys;
@@ -216,18 +216,18 @@ GenerateDefault_pickupLife (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 	return true;
 }
 
-COUNT
+uqm::COUNT
 GenerateDefault_generateArtifact (const SOLARSYS_STATE *solarSys,
-		COUNT whichNode, NODE_INFO *info)
+		uqm::COUNT whichNode, NODE_INFO *info)
 {
 	// Generate an energy node at a random location
 	return GenerateRandomNodes (&solarSys->SysInfo, ENERGY_SCAN, 1, 0,
 			whichNode, info);
 }
 
-COUNT
+uqm::COUNT
 GenerateDefault_generateRuins (const SOLARSYS_STATE *solarSys,
-		COUNT whichNode, NODE_INFO *info)
+		uqm::COUNT whichNode, NODE_INFO *info)
 {
 	// Generate a standard spread of city ruins of a destroyed civilization
 	return GenerateRandomNodes (&solarSys->SysInfo, ENERGY_SCAN,
@@ -290,19 +290,19 @@ GenerateDefault_landerReportCycle (SOLARSYS_STATE *solarSys)
 void
 GeneratePlanets (SOLARSYS_STATE *solarSys)
 {
-	COUNT i;
+	uqm::COUNT i;
 	PLANET_DESC *planet;
 
 	for (i = solarSys->SunDesc[0].NumPlanets,
 			planet = &solarSys->PlanetDesc[0]; i; --i, ++planet)
 	{
-		DWORD rand_val;
-		BYTE byte_val;
-		BYTE num_moons;
-		BYTE type;
+		uqm::DWORD rand_val;
+		uqm::BYTE byte_val;
+		uqm::BYTE num_moons;
+		uqm::BYTE type;
 
 		rand_val = RandomContext_Random (SysGenRNG);
-		byte_val = LOBYTE (rand_val);
+		byte_val = lowByte (rand_val);
 
 		num_moons = 0;
 		type = PlanData[planet->data_index & ~PLANET_SHIELDED].Type;
@@ -337,10 +337,10 @@ GeneratePlanets (SOLARSYS_STATE *solarSys)
 	}
 }
 
-BYTE
-GenerateWorlds (BYTE whichType)
+uqm::BYTE
+GenerateWorlds (uqm::BYTE whichType)
 {
-	BYTE planet = FIRST_SMALL_ROCKY_WORLD;
+	uqm::BYTE planet = FIRST_SMALL_ROCKY_WORLD;
 
 	if (whichType & SMALL_ROCKY)
 	{
@@ -391,9 +391,9 @@ GenerateGasGiantRanged (SOLARSYS_STATE *solarSys)
 {
 	PLANET_DESC *pSunDesc = &solarSys->SunDesc[0];
 	PLANET_DESC *pPlanet;
-	BYTE i;
+	uqm::BYTE i;
 #define DWARF_GASG_DIST SCALE_RADIUS (12)
-	DWORD rand = RandomContext_GetSeed (SysGenRNG);
+	uqm::DWORD rand = RandomContext_GetSeed (SysGenRNG);
 
 	for (i = 0; i < pSunDesc->NumPlanets; i++)
 	{
@@ -412,7 +412,7 @@ GenerateGasGiantRanged (SOLARSYS_STATE *solarSys)
 
 	if (solarSys->PlanetDesc[i].radius < DWARF_GASG_DIST)
 	{
-		COUNT angle;
+		uqm::COUNT angle;
 
 		pPlanet->radius =
 				RangeMinMax (DWARF_GASG_DIST, MAX_PLANET_RADIUS, rand);
@@ -423,7 +423,7 @@ GenerateGasGiantRanged (SOLARSYS_STATE *solarSys)
 	}
 }
 
-BYTE
+uqm::BYTE
 GenerateCrystalWorld (void)
 {
 	int crystalArray[] = {
@@ -433,7 +433,7 @@ GenerateCrystalWorld (void)
 	return crystalArray[RandomContext_Random (SysGenRNG) % 3];
 }
 
-BYTE
+uqm::BYTE
 GenerateDesolateWorld (void)
 {
 	int desolateArray[] = {
@@ -443,7 +443,7 @@ GenerateDesolateWorld (void)
 	return desolateArray[RandomContext_Random (SysGenRNG) % 3];
 }
 
-BYTE
+uqm::BYTE
 GenerateHabitableWorld (void)
 {
 	int habitableArray[] = {
@@ -454,7 +454,7 @@ GenerateHabitableWorld (void)
 	return habitableArray[RandomContext_Random (SysGenRNG) % 4];
 }
 
-BYTE
+uqm::BYTE
 GenerateGasGiantWorld (void)
 {
 	return FIRST_GAS_GIANT +
@@ -465,10 +465,10 @@ GenerateGasGiantWorld (void)
 // input: 1 <= min <= max
 // output: min <= RNG <= max
 // min 0 will be treated 1; min >= max will return max
-BYTE
-GenerateMinPlanets (BYTE min)
+uqm::BYTE
+GenerateMinPlanets (uqm::BYTE min)
 {
-	const BYTE max = MAX_GEN_PLANETS + 1;
+	const uqm::BYTE max = MAX_GEN_PLANETS + 1;
 
 	if (min == 0)
 		min = 1;
@@ -480,16 +480,16 @@ GenerateMinPlanets (BYTE min)
 
 // input: 0 <= minimum < MAX_GEN_PLANETS
 // output: minimum + 1 <= RNG <= MAX_GEN_PLANETS
-BYTE
-GenerateNumberOfPlanets (BYTE minimum)
+uqm::BYTE
+GenerateNumberOfPlanets (uqm::BYTE minimum)
 {
-	BYTE roll = MAX_GEN_PLANETS - minimum;
-	BYTE adjust = minimum + 1;
+	uqm::BYTE roll = MAX_GEN_PLANETS - minimum;
+	uqm::BYTE adjust = minimum + 1;
 	return (RandomContext_Random (SysGenRNG) % roll) + adjust;
 }
 
 // "RandomContext_Random PlanetByte Generator"
-BYTE
+uqm::BYTE
 PlanetByteGen (PLANET_DESC *pPDesc)
 {
 	return RandomContext_Random (SysGenRNG) % pPDesc->NumPlanets;

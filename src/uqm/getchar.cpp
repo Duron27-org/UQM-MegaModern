@@ -47,9 +47,9 @@ struct joy_char
 };
 
 static int
-ReadOneChar (joy_char_t *ch, const CHAR_T *str)
+ReadOneChar (joy_char_t *ch, const uqm::CHAR_T *str)
 {
-	CHAR_T *next = skipUTF8Chars (str, 1);
+	uqm::CHAR_T *next = skipUTF8Chars (str, 1);
 	int len = next - str;
 	ch->len = len;
 	memcpy (ch->enc, str, len);
@@ -61,11 +61,11 @@ ReadOneChar (joy_char_t *ch, const CHAR_T *str)
 static joy_char_t *
 LoadJoystickAlpha (STRING String, int *count)
 {
-	CHAR_T *str;
+	uqm::CHAR_T *str;
 	int c;
 	int i;
 	joy_char_t *chars;
-	CHAR_T *cur;
+	uqm::CHAR_T *cur;
 
 	*count = 0;
 	str = GetStringAddress (String);
@@ -157,7 +157,7 @@ static void
 FlashCursor (void)
 {
 	static TimeCount NextTime = 0;
-	static DWORD cycle_index = 0;
+	static uqm::DWORD cycle_index = 0;
 
 	static const Color cycle_tab[] = CURSOR_COLOR_CYCLE_TABLE;
 	const size_t cycleCount = ARRAY_SIZE (cycle_tab);
@@ -196,8 +196,8 @@ bool
 DoTextEntry (TEXTENTRY_STATE *pTES)
 {
 	UniChar ch;
-	CHAR_T *pStr;
-	CHAR_T *CacheInsPt;
+	uqm::CHAR_T *pStr;
+	uqm::CHAR_T *CacheInsPt;
 	int CacheCursorPos;
 	int len;
 	bool changed = false;
@@ -244,7 +244,7 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 					pTES->JoyRegLength);
 		}
 
-		pTES->CacheStr = (CHAR_T*)HMalloc (pTES->MaxSize * sizeof (*pTES->CacheStr));
+		pTES->CacheStr = (uqm::CHAR_T*)HMalloc (pTES->MaxSize * sizeof (*pTES->CacheStr));
 
 		EnterCharacterMode ();
 		DoInput (pTES, true);
@@ -280,7 +280,7 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 	}
 	while (ch)
 	{
-		CHAR_T chbuf[8];
+		uqm::CHAR_T chbuf[8];
 		int chsize;
 
 		pTES->JoystickMode = false;
@@ -322,7 +322,7 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 	{
 		if (pStr > pTES->BaseStr)
 		{
-			CHAR_T *prev = skipUTF8Chars (pTES->BaseStr,
+			uqm::CHAR_T *prev = skipUTF8Chars (pTES->BaseStr,
 					pTES->CursorPos - 1);
 			
 			memmove (prev, pStr, len + 1);
@@ -335,7 +335,7 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 	{
 		if (pStr > pTES->BaseStr)
 		{
-			CHAR_T *prev = skipUTF8Chars (pTES->BaseStr,
+			uqm::CHAR_T *prev = skipUTF8Chars (pTES->BaseStr,
 					pTES->CursorPos - 1);
 
 			pStr = prev;

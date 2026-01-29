@@ -151,7 +151,7 @@ flame_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 
 static void
 ilwrath_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
-		COUNT ConcernCounter)
+		uqm::COUNT ConcernCounter)
 {
 	EVALUATE_DESC *lpEvalDesc;
 	STARSHIP *StarShipPtr;
@@ -179,7 +179,7 @@ ilwrath_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 		StarShipPtr->ship_input_state |= WEAPON;
 	}
 	else if (StarShipPtr->special_counter == 0
-			&& (LOBYTE (GLOBAL (CurrentActivity)) != IN_ENCOUNTER
+			&& (lowByte (GLOBAL (CurrentActivity)) != IN_ENCOUNTER
 			|| !GET_GAME_STATE (PROBE_ILWRATH_ENCOUNTER)))
 	{
 		StarShipPtr->ship_input_state &= ~SPECIAL;
@@ -189,7 +189,7 @@ ilwrath_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 	}
 }
 
-static COUNT
+static uqm::COUNT
 initialize_flame (ELEMENT *ShipPtr, HELEMENT FlameArray[])
 {
 	STARSHIP *StarShipPtr;
@@ -214,7 +214,7 @@ initialize_flame (ELEMENT *ShipPtr, HELEMENT FlameArray[])
 
 	if (FlameArray[0])
 	{
-		SDWORD dx, dy;
+		uqm::SDWORD dx, dy;
 		ELEMENT *FlamePtr;
 
 		LockElement (FlameArray[0], &FlamePtr);
@@ -282,13 +282,13 @@ ilwrath_preprocess (ELEMENT *ElementPtr)
 						BUILD_COLOR (MAKE_RGB15 (0x00, 0x00, 0x14), 0x01));
 				if (weapon_discharge)
 				{
-					COUNT facing;
+					uqm::COUNT facing;
 
 					facing = StarShipPtr->ShipFacing;
 					if (TrackShip (ElementPtr, &facing) >= 0)
 					{
 						ELEMENT *eptr;
-						SIZE dx0, dy0, dx1, dy1;
+						uqm::SIZE dx0, dy0, dx1, dy1;
 						VELOCITY_DESC v;
 
 						LockElement (ElementPtr->hTarget, &eptr);
@@ -310,7 +310,7 @@ ilwrath_preprocess (ELEMENT *ElementPtr)
 						if (ElementPtr->thrust_wait == 0
 								&& (StarShipPtr->cur_status_flags & THRUST))
 						{
-							COUNT last_facing;
+							uqm::COUNT last_facing;
 
 							do
 							{

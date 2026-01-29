@@ -53,7 +53,7 @@
 // Point-Defense Laser
 #define SPECIAL_ENERGY_COST 4
 #define SPECIAL_WAIT 9
-#define LASER_RANGE (UWORD)RES_SCALE (100)
+#define LASER_RANGE (uqm::UWORD)RES_SCALE (100)
 
 RACE_DESC human_desc =
 {
@@ -131,7 +131,7 @@ RACE_DESC human_desc =
 static void
 nuke_preprocess (ELEMENT *ElementPtr)
 {
-	COUNT facing;
+	uqm::COUNT facing;
 
 	facing = GetFrameIndex (ElementPtr->next.image.frame);
 	if (ElementPtr->turn_wait > 0)
@@ -150,7 +150,7 @@ nuke_preprocess (ELEMENT *ElementPtr)
 	}
 
 	{
-		SDWORD speed;
+		uqm::SDWORD speed;
 
 		if ((speed = MISSILE_SPEED +
 				((MISSILE_LIFE - ElementPtr->life_span) *
@@ -206,7 +206,7 @@ spawn_point_defense (ELEMENT *ElementPtr)
 			if (ObjectPtr != ShipPtr && CollidingElement (ObjectPtr) &&
 					!OBJECT_CLOAKED (ObjectPtr))
 			{
-				SIZE delta_x, delta_y;
+				uqm::SIZE delta_x, delta_y;
 
 				delta_x = ObjectPtr->next.location.x -
 						ShipPtr->next.location.x;
@@ -218,10 +218,10 @@ spawn_point_defense (ELEMENT *ElementPtr)
 					delta_y = -delta_y;
 				delta_x = WORLD_TO_DISPLAY (delta_x);
 				delta_y = WORLD_TO_DISPLAY (delta_y);
-				if ((UWORD)delta_x <= LASER_RANGE &&
-						(UWORD)delta_y <= LASER_RANGE &&
-						(UWORD)delta_x * (UWORD)delta_x +
-						(UWORD)delta_y * (UWORD)delta_y <=
+				if ((uqm::UWORD)delta_x <= LASER_RANGE &&
+						(uqm::UWORD)delta_y <= LASER_RANGE &&
+						(uqm::UWORD)delta_x * (uqm::UWORD)delta_x +
+						(uqm::UWORD)delta_y * (uqm::UWORD)delta_y <=
 						LASER_RANGE * LASER_RANGE)
 				{
 					HELEMENT hPointDefense;
@@ -271,7 +271,7 @@ spawn_point_defense (ELEMENT *ElementPtr)
 	}
 }
 
-static COUNT
+static uqm::COUNT
 initialize_nuke (ELEMENT *ShipPtr, HELEMENT NukeArray[])
 {
 	STARSHIP *StarShipPtr;
@@ -307,7 +307,7 @@ initialize_nuke (ELEMENT *ShipPtr, HELEMENT NukeArray[])
 
 static void
 human_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
-		COUNT ConcernCounter)
+		uqm::COUNT ConcernCounter)
 {
 	STARSHIP *StarShipPtr;
 

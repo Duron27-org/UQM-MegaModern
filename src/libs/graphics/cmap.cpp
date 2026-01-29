@@ -31,9 +31,9 @@ typedef struct xform_control
 {
 	int CMapIndex; // -1 means unused
 	COLORMAPPTR CMapPtr;
-	SIZE Ticks;
-	DWORD StartTime;
-	DWORD EndTime;
+	uqm::SIZE Ticks;
+	uqm::DWORD StartTime;
+	uqm::DWORD EndTime;
 	Color OldCMap[NUMBER_OF_PLUTVALS];
 } XFORM_CONTROL;
 
@@ -267,7 +267,7 @@ SetColorMap (COLORMAPPTR map)
 {
 	int start, end;
 	int total_size;
-	UBYTE *colors = (UBYTE*)map;
+	uqm::UBYTE *colors = (uqm::UBYTE*)map;
 	TFB_ColorMap **mpp;
 	
 	if (!map)
@@ -388,8 +388,8 @@ FlushFadeXForms (void)
 	UnlockMutex (fadeLock);
 }
 
-DWORD
-FadeScreen (ScreenFadeType fadeType, SIZE TimeInterval)
+uqm::DWORD
+FadeScreen (ScreenFadeType fadeType, uqm::SIZE TimeInterval)
 {
 	TimeCount TimeOut;
 	int FadeEnd;
@@ -458,8 +458,8 @@ finish_colormap_xform (int which)
 	}
 }
 
-static inline BYTE
-blendChan (BYTE c1, BYTE c2, int weight, int scale)
+static inline uqm::BYTE
+blendChan (uqm::BYTE c1, uqm::BYTE c2, int weight, int scale)
 {
 	return c1 + ((int)c2 - c1) * weight / scale;
 }
@@ -472,7 +472,7 @@ XFormColorMap_step (void)
 {
 	bool Changed = false;
 	int x;
-	DWORD Now = GetTimeCounter ();
+	uqm::DWORD Now = GetTimeCounter ();
 
 	LockMutex (XFormControl.Lock);
 
@@ -501,7 +501,7 @@ XFormColorMap_step (void)
 		{
 #define XFORM_SCALE 0x10000
 			TFB_ColorMap *newmap = NULL;
-			UBYTE *newClr;
+			uqm::UBYTE *newClr;
 			Color *oldClr;
 			int frac;
 			int i;
@@ -509,7 +509,7 @@ XFormColorMap_step (void)
 			newmap = clone_colormap (curmap, index);
 
 			oldClr = control->OldCMap;
-			newClr = (UBYTE*)control->CMapPtr + 2;
+			newClr = (uqm::UBYTE*)control->CMapPtr + 2;
 
 			frac = (int)(control->Ticks - TicksLeft) * XFORM_SCALE
 					/ control->Ticks;
@@ -565,19 +565,19 @@ FlushPLUTXForms (void)
 	UnlockMutex (XFormControl.Lock);
 }
 
-static DWORD
-XFormPLUT (COLORMAPPTR ColorMapPtr, SIZE TimeInterval)
+static uqm::DWORD
+XFormPLUT (COLORMAPPTR ColorMapPtr, uqm::SIZE TimeInterval)
 {
 	TFB_ColorMap *map;
 	XFORM_CONTROL *control;
 	int index;
 	int x;
 	int first_avail = -1;
-	DWORD EndTime;
-	DWORD Now;
+	uqm::DWORD EndTime;
+	uqm::DWORD Now;
 
 	Now = GetTimeCounter ();
-	index = *(UBYTE*)ColorMapPtr;
+	index = *(uqm::UBYTE*)ColorMapPtr;
 
 	LockMutex (XFormControl.Lock);
 	// Find an available slot, or reuse if required
@@ -634,8 +634,8 @@ XFormPLUT (COLORMAPPTR ColorMapPtr, SIZE TimeInterval)
 	return (EndTime);
 }
 
-DWORD
-XFormColorMap (COLORMAPPTR ColorMapPtr, SIZE TimeInterval)
+uqm::DWORD
+XFormColorMap (COLORMAPPTR ColorMapPtr, uqm::SIZE TimeInterval)
 {
 	if (!ColorMapPtr)
 		return (0);
@@ -663,11 +663,11 @@ GetColorMapAddress (COLORMAP colormap)
 }
 
 static void
-DoTransformColorMap (Color* colors, COLORMAPPTR ColorMapPtr, COUNT from,
-		COUNT to)
+DoTransformColorMap (Color* colors, COLORMAPPTR ColorMapPtr, uqm::COUNT from,
+		uqm::COUNT to)
 {	// New fancy func to change colors of current colormap
 	TFB_ColorMap* map;
-	int p_index = *(UBYTE*)ColorMapPtr;
+	int p_index = *(uqm::UBYTE*)ColorMapPtr;
 	LockMutex (maplock);
 
 	map = colormaps[p_index];
@@ -680,7 +680,7 @@ DoTransformColorMap (Color* colors, COLORMAPPTR ColorMapPtr, COUNT from,
 
 	{
 		TFB_ColorMap* newmap = NULL;
-		UBYTE* newPtr = (UBYTE*)ColorMapPtr + 2;
+		uqm::UBYTE* newPtr = (uqm::UBYTE*)ColorMapPtr + 2;
 		Color* c;
 		int i;
 
@@ -702,8 +702,8 @@ DoTransformColorMap (Color* colors, COLORMAPPTR ColorMapPtr, COUNT from,
 }
 
 void
-SetColorMapColors (Color *colors, COLORMAPPTR ColorMapPtr, COUNT from,
-		COUNT to)
+SetColorMapColors (Color *colors, COLORMAPPTR ColorMapPtr, uqm::COUNT from,
+		uqm::COUNT to)
 {
 	if (!ColorMapPtr)
 		return;
@@ -712,16 +712,16 @@ SetColorMapColors (Color *colors, COLORMAPPTR ColorMapPtr, COUNT from,
 }
 
 Color
-GetColorMapColor (COUNT ColorMapIndex, COUNT ColorIndex)
+GetColorMapColor (uqm::COUNT ColorMapIndex, uqm::COUNT ColorIndex)
 {
 	return GetNativePaletteColor (colormaps[ColorMapIndex]->palette,
 			ColorIndex);
 }
 
-UBYTE
+uqm::UBYTE
 GetColorMapTableIndex (COLORMAP map)
 {
-	UBYTE *index = (UBYTE*)GetColorMapAddress (map);
+	uqm::UBYTE *index = (uqm::UBYTE*)GetColorMapAddress (map);
 
 	return *index;
 }

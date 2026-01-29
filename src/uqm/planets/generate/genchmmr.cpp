@@ -35,10 +35,10 @@ static bool GenerateChmmr_generateMoons (SOLARSYS_STATE *solarSys,
 		PLANET_DESC *planet);
 static bool GenerateChmmr_generateOrbital (SOLARSYS_STATE *solarSys,
 		PLANET_DESC *world);
-static COUNT GenerateChmmr_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
+static uqm::COUNT GenerateChmmr_generateEnergy (const SOLARSYS_STATE *,
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
 static bool GenerateChmmr_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, COUNT whichNode);
+		PLANET_DESC *world, uqm::COUNT whichNode);
 
 
 const GenerateFunctions generateChmmrFunctions = {
@@ -82,8 +82,8 @@ GenerateChmmr_generatePlanets (SOLARSYS_STATE *solarSys)
 		{
 			if (!StarSeed)
 			{
-				DWORD RandVal = RandomContext_Random (SysGenRNG);
-				BYTE PByte = pSunDesc->PlanetByte + 1;
+				uqm::DWORD RandVal = RandomContext_Random (SysGenRNG);
+				uqm::BYTE PByte = pSunDesc->PlanetByte + 1;
 				pSunDesc->NumPlanets =
 						(RandVal % (MAX_GEN_PLANETS - PByte) + PByte);
 
@@ -135,9 +135,9 @@ GenerateChmmr_generateMoons (SOLARSYS_STATE *solarSys, PLANET_DESC *planet)
 	if (CurStarDescPtr->Index == CHMMR_DEFINED
 			&& matchWorld (solarSys, planet, MATCH_PBYTE, MATCH_PLANET))
 	{
-		COUNT angle;
-		DWORD rand_val;
-		BYTE MoonByte = solarSys->SunDesc[0].MoonByte;
+		uqm::COUNT angle;
+		uqm::DWORD rand_val;
+		uqm::BYTE MoonByte = solarSys->SunDesc[0].MoonByte;
 		PLANET_DESC *pMoonDesc = &solarSys->MoonDesc[MoonByte];
 
 		if (!RaceDead (CHMMR_SHIP))
@@ -198,7 +198,7 @@ GenerateChmmr_generateOrbital (SOLARSYS_STATE *solarSys,
 				|| HardModeBS ))
 		{
 			bool Survivors;
-			UWORD state;
+			uqm::UWORD state;
 
 			PutGroupInfo (GROUPS_RANDOM, GROUP_SAVE_IP);
 			ReinitQueue (&GLOBAL (ip_group_q));
@@ -206,7 +206,7 @@ GenerateChmmr_generateOrbital (SOLARSYS_STATE *solarSys,
 
 			if (GET_GAME_STATE (ILWRATH_DECEIVED) && DIF_HARD)
 			{
-				COUNT lim, i;
+				uqm::COUNT lim, i;
 
 				if (StartSphereTracking (ILWRATH_SHIP))
 					lim = 14;
@@ -303,9 +303,9 @@ GenerateChmmr_generateOrbital (SOLARSYS_STATE *solarSys,
 	return true;
 }
 
-static COUNT
+static uqm::COUNT
 GenerateChmmr_generateEnergy (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *info)
 {
 
 	if (CurStarDescPtr->Index == CHMMR_DEFINED
@@ -328,7 +328,7 @@ GenerateChmmr_generateEnergy (const SOLARSYS_STATE *solarSys,
 
 static bool
 GenerateChmmr_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		COUNT whichNode)
+		uqm::COUNT whichNode)
 {
 
 	if (CurStarDescPtr->Index == CHMMR_DEFINED

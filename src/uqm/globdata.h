@@ -50,7 +50,7 @@ typedef struct
 	int MaxRemainder;
 	// string table index for this name
 	// i.e. "hundred" in English
-	COUNT StrIndex;
+	uqm::COUNT StrIndex;
 } SPEECH_DIGITNAME;
 
 typedef struct
@@ -66,13 +66,13 @@ typedef struct
 	//       is a a 'skip digit' indicator when == 0 
 	// StrDigits can be NULL, in which case
 	// the value is interpreted recursively
-	COUNT *StrDigits;
+	uqm::COUNT *StrDigits;
 	// digit Names, can be NULL, in which case
 	// CommonNameIndex is used
 	SPEECH_DIGITNAME *Names;
 	// common digit name string table index
 	// i.e. "hundred" in English
-	COUNT CommonNameIndex;
+	uqm::COUNT CommonNameIndex;
 } SPEECH_DIGIT;
 
 // this accomodates up to "billions" in english
@@ -81,7 +81,7 @@ typedef struct
 typedef struct
 {
 	// slots used in Digits array
-	COUNT NumDigits;
+	uqm::COUNT NumDigits;
 	// slots for each digit in numbers
 	// teens is exception
 	// 0-9, 10-19, ..20-90, ..100-900, etc.
@@ -89,7 +89,7 @@ typedef struct
 } NUMBER_SPEECH_DESC;
 typedef const NUMBER_SPEECH_DESC *NUMBER_SPEECH;
 
-typedef DWORD LDAS_FLAGS;
+typedef uqm::DWORD LDAS_FLAGS;
 #define LDASF_NONE           ((LDAS_FLAGS)      0 )
 #define LDASF_USE_ALTERNATE  ((LDAS_FLAGS)(1 << 0))
 
@@ -140,14 +140,14 @@ typedef struct
 			/* Called when entering communications */
 	void (*post_encounter_func) (void);
 			/* Called when leaving communications or combat normally */
-	COUNT (*uninit_encounter_func) (void);
+	uqm::COUNT (*uninit_encounter_func) (void);
 			/* Called when encounter is done for cleanup */
 
 	RESOURCE AlienFrameRes;
 	RESOURCE AlienFontRes;
 	Color AlienTextFColor, AlienTextBColor;
 	POINT AlienTextBaseline;
-	COUNT AlienTextWidth;
+	uqm::COUNT AlienTextWidth;
 	TEXT_ALIGN AlienTextAlign;
 	TEXT_VALIGN AlienTextValign;
 	RESOURCE AlienColorMapRes;
@@ -156,7 +156,7 @@ typedef struct
 
 	RESOURCE ConversationPhrasesRes;
 
-	COUNT NumAnimations;
+	uqm::COUNT NumAnimations;
 	ANIMATION_DESC AlienAmbientArray[MAX_ANIMATIONS];
 
 	// Transition animation to/from talking state;
@@ -216,15 +216,15 @@ enum
 typedef struct GameStateBitMap GameStateBitMap;
 struct GameStateBitMap {
 	const char *name;
-	BYTE numBits;
+	uqm::BYTE numBits;
 };
 
 size_t totalBitsForGameState (const GameStateBitMap *bm, int rev);
 int getGameStateRevByBytes (const GameStateBitMap *bm, int bytes);
 bool serialiseGameState (const GameStateBitMap *bm,
-		BYTE **buf, size_t *numBytes);
+		uqm::BYTE **buf, size_t *numBytes);
 bool deserialiseGameState (const GameStateBitMap *bm,
-		const BYTE *buf, size_t numBytes, int rev);
+		const uqm::BYTE *buf, size_t numBytes, int rev);
 
 #define START_GAME_STATE enum {
 #define ADD_GAME_STATE(SName,NumBits) SName, END_##SName = SName + NumBits - 1,
@@ -1014,16 +1014,16 @@ enum
 	CHECK_RESTART = MAKE_WORD (0, (1 << 5)),
 	CHECK_ABORT = MAKE_WORD (0, (1 << 6)),
 };
-typedef UWORD ACTIVITY;
+typedef uqm::UWORD ACTIVITY;
 
 typedef struct
 {
-	BYTE glob_flags;
+	uqm::BYTE glob_flags;
 			// See above for the meaning of the bits.
 
-	BYTE CrewCost, FuelCost;
-	BYTE ModuleCost[NUM_MODULES];
-	BYTE ElementWorth[NUM_ELEMENT_CATEGORIES];
+	uqm::BYTE CrewCost, FuelCost;
+	uqm::BYTE ModuleCost[NUM_MODULES];
+	uqm::BYTE ElementWorth[NUM_ELEMENT_CATEGORIES];
 
 	PRIMITIVE *DisplayArray;
 	ACTIVITY CurrentActivity;
@@ -1033,12 +1033,12 @@ typedef struct
 	POINT autopilot;
 	POINT ip_location;
 	STAMP ShipStamp;
-	UWORD ShipFacing;
-	BYTE ip_planet;
-	BYTE in_orbit;
+	uqm::UWORD ShipFacing;
+	uqm::BYTE ip_planet;
+	uqm::BYTE in_orbit;
 	VELOCITY_DESC velocity;
 
-	DWORD BattleGroupRef;
+	uqm::DWORD BattleGroupRef;
 	QUEUE avail_race_q;
 			/* List of all the races in the game with information
 			 * about their ships, and what player knows about their
@@ -1234,7 +1234,7 @@ ZeroAdvancedAutoPilot (void)
 #define MAX_SOLD DIF_CASE(250, 500, 25)
 
 static inline bool
-IsHomeworldKnown (DWORD homeworld)
+IsHomeworldKnown (uqm::DWORD homeworld)
 {
 	if (homeworld > 18)
 		return false;
@@ -1243,9 +1243,9 @@ IsHomeworldKnown (DWORD homeworld)
 }
 
 static inline void
-SetHomeworldKnown (DWORD homeworld)
+SetHomeworldKnown (uqm::DWORD homeworld)
 {
-	DWORD current;
+	uqm::DWORD current;
 
 	if (IsHomeworldKnown (homeworld))
 		return;

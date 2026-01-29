@@ -28,7 +28,7 @@ extern "C" {
 
 typedef struct velocity_desc
 {
-	COUNT TravelAngle;
+	uqm::COUNT TravelAngle;
 	EXTENT vector;
 	EXTENT fract;
 	EXTENT error;
@@ -38,21 +38,21 @@ typedef struct velocity_desc
 #define ZeroVelocityComponents(pv) memset(pv,0,sizeof (*(pv)))
 #define GetVelocityTravelAngle(pv) (pv)->TravelAngle
 
-extern void GetCurrentVelocityComponents (VELOCITY_DESC *velocityptr, SIZE *pdx, SIZE *pdy);
+extern void GetCurrentVelocityComponents (VELOCITY_DESC *velocityptr, uqm::SIZE *pdx, uqm::SIZE *pdy);
 
 // JMS_GFX: New function to prevent overflows in hi-res.
-extern void GetCurrentVelocityComponentsSdword (VELOCITY_DESC *velocityptr, SDWORD *pdx, SDWORD *pdy);
+extern void GetCurrentVelocityComponentsSdword (VELOCITY_DESC *velocityptr, uqm::SDWORD *pdx, uqm::SDWORD *pdy);
 
-extern void GetNextVelocityComponents (VELOCITY_DESC *velocityptr, SIZE *pdx, SIZE *pdy, COUNT num_frames);
+extern void GetNextVelocityComponents (VELOCITY_DESC *velocityptr, uqm::SIZE *pdx, uqm::SIZE *pdy, uqm::COUNT num_frames);
 
 // JMS_GFX: New function to prevent overflows in hi-res.
-extern void GetNextVelocityComponentsSdword (VELOCITY_DESC *velocityptr, SDWORD *pdx, SDWORD *pdy, DWORD num_frames);
+extern void GetNextVelocityComponentsSdword (VELOCITY_DESC *velocityptr, uqm::SDWORD *pdx, uqm::SDWORD *pdy, uqm::DWORD num_frames);
 
-extern void SetVelocityVector (VELOCITY_DESC *velocityptr, SDWORD magnitude, COUNT facing); // JMS_GFX: Changed SIZE to SDWORD to prevent overflows
+extern void SetVelocityVector (VELOCITY_DESC *velocityptr, uqm::SDWORD magnitude, uqm::COUNT facing); // JMS_GFX: Changed uqm::SIZE to uqm::SDWORD to prevent overflows
 
-extern void SetVelocityComponents (VELOCITY_DESC *velocityptr, SDWORD dx, SDWORD dy); // JMS_GFX: Changed SIZE to SDWORD to prevent overflows
+extern void SetVelocityComponents (VELOCITY_DESC *velocityptr, uqm::SDWORD dx, uqm::SDWORD dy); // JMS_GFX: Changed uqm::SIZE to uqm::SDWORD to prevent overflows
 
-extern void DeltaVelocityComponents (VELOCITY_DESC *velocityptr, SDWORD dx, SDWORD dy); // JMS_GFX: Changed SIZE to SDWORD to prevent overflows
+extern void DeltaVelocityComponents (VELOCITY_DESC *velocityptr, uqm::SDWORD dx, uqm::SDWORD dy); // JMS_GFX: Changed uqm::SIZE to uqm::SDWORD to prevent overflows
 
 static inline bool
 IsVelocityZero (VELOCITY_DESC *vptr)
@@ -62,14 +62,16 @@ IsVelocityZero (VELOCITY_DESC *vptr)
 			vptr->fract.width == 0 && vptr->fract.height == 0;
 }
 
-static inline DWORD
-VelocitySquared (SIZE dx, SIZE dy)
+static inline uqm::DWORD
+VelocitySquared (uqm::SIZE dx, uqm::SIZE dy)
 {
-	return (DWORD)((long)dx * dx + (long)dy * dy);
+	return (uqm::DWORD)((long)dx * dx + (long)dy * dy);
 }
 
 #define VELOCITY_SHIFT 5
 #define VELOCITY_SCALE (1<<VELOCITY_SHIFT)
+
+
 
 #define VELOCITY_TO_WORLD(v) ((v)>>VELOCITY_SHIFT)
 #define WORLD_TO_VELOCITY(l) ((l)<<VELOCITY_SHIFT)

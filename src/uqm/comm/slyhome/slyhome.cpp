@@ -213,7 +213,7 @@ static void HomeWorld (RESPONSE_REF R);
 static void
 HumanInfo (RESPONSE_REF R)
 {
-	BYTE InfoLeft;
+	uqm::BYTE InfoLeft;
 
 	if (PLAYER_SAID (R, happy_to_tell_more))
 	{
@@ -293,7 +293,7 @@ HumanInfo (RESPONSE_REF R)
 static void
 SlylandroInfo (RESPONSE_REF R)
 {
-	BYTE InfoLeft;
+	uqm::BYTE InfoLeft;
 
 	if (PLAYER_SAID (R, like_more_about_you))
 	{
@@ -427,7 +427,7 @@ static void ProbeInfo (RESPONSE_REF R);
 static void
 ProbeFunction (RESPONSE_REF R)
 {
-	BYTE LastStack;
+	uqm::BYTE LastStack;
 	RESPONSE_REF pStr[2];
 
 	LastStack = 0;
@@ -553,7 +553,7 @@ ProbeFunction (RESPONSE_REF R)
 static void
 ProbeInfo (RESPONSE_REF R)
 {
-	BYTE i, LastStack, InfoLeft;
+	uqm::BYTE i, LastStack, InfoLeft;
 	RESPONSE_REF pStr[3];
 
 	LastStack = 0;
@@ -673,7 +673,7 @@ ProbeInfo (RESPONSE_REF R)
 static void
 HomeWorld (RESPONSE_REF R)
 {
-	BYTE i, LastStack;
+	uqm::BYTE i, LastStack;
 	RESPONSE_REF pStr[3];
 
 	LastStack = 0;
@@ -858,7 +858,7 @@ HomeWorld (RESPONSE_REF R)
 static void
 Intro (void)
 {
-	BYTE NumVisits;
+	uqm::BYTE NumVisits;
 
 
 	if (IS_HD)
@@ -900,7 +900,7 @@ Intro (void)
 	HomeWorld ((RESPONSE_REF)0);
 }
 
-static COUNT
+static uqm::COUNT
 uninit_slylandro (void)
 {
 	luaUqm_comm_uninit ();

@@ -63,7 +63,7 @@ SetContext (CONTEXT Context)
 			ActivateContext ();
 
 			_GraphicsStatusFlags &= ~(GRAPHICS_ACTIVE | DRAWABLE_ACTIVE);
-			_GraphicsStatusFlags |= HIBYTE (_get_context_flags ());
+			_GraphicsStatusFlags |= highByte (_get_context_flags ());
 
 			SetPrimColor (&_locPrim, _get_context_fg_color ());
 
@@ -315,7 +315,7 @@ SetContextFontEffect (FRAME EffectFrame)
 void
 FixContextFontEffect (void)
 {
-	SIZE w, h;
+	uqm::SIZE w, h;
 	TFB_Image* img;
 
 	if (!ContextActive () || (_get_context_font_backing () != 0

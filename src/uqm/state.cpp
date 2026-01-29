@@ -30,12 +30,12 @@
 struct GAME_STATE_FILE
 {
 	const char *symname;
-	DWORD size_hint;
+	uqm::DWORD size_hint;
 	int   open_count;
-	BYTE *data;
-	DWORD used;
-	DWORD size;
-	DWORD ptr;
+	uqm::BYTE *data;
+	uqm::DWORD used;
+	uqm::DWORD size;
+	uqm::DWORD ptr;
 };
 #define STATE_FILE_ITRAILER  0, 0, 0, 0, 0
 
@@ -66,7 +66,7 @@ OpenStateFile (int stateFile, const char *mode)
 	
 	if (!fp->data)
 	{
-		fp->data = (BYTE*)HMalloc (fp->size_hint);
+		fp->data = (uqm::BYTE*)HMalloc (fp->size_hint);
 		if (!fp->data)
 			return NULL;
 		fp->size = fp->size_hint;
@@ -128,16 +128,16 @@ DeleteStateFile (int stateFile)
 	fp->data = 0;
 }
 
-DWORD
+uqm::DWORD
 LengthStateFile (GAME_STATE_FILE *fp)
 {
 	return fp->used;
 }
 
 int
-ReadStateFile (void *lpBuf, COUNT size, COUNT count, GAME_STATE_FILE *fp)
+ReadStateFile (void *lpBuf, uqm::COUNT size, uqm::COUNT count, GAME_STATE_FILE *fp)
 {
-	DWORD bytes = size * count;
+	uqm::DWORD bytes = size * count;
 
 	if (fp->ptr >= fp->size)
 	{	// EOF
@@ -158,18 +158,18 @@ ReadStateFile (void *lpBuf, COUNT size, COUNT count, GAME_STATE_FILE *fp)
 }
 
 int
-WriteStateFile (const void *lpBuf, COUNT size, COUNT count, GAME_STATE_FILE *fp)
+WriteStateFile (const void *lpBuf, uqm::COUNT size, uqm::COUNT count, GAME_STATE_FILE *fp)
 {
-	DWORD bytes = size * count;
+	uqm::DWORD bytes = size * count;
 	
 	if (fp->ptr + bytes > fp->size)
 	{	// dont have that much space available
-		DWORD newsize = fp->ptr + bytes;
+		uqm::DWORD newsize = fp->ptr + bytes;
 		// grab more space in advance
 		if (newsize < fp->size * 3 / 2)
 			newsize = fp->size * 3 / 2;
 
-		fp->data = (BYTE*)HRealloc (fp->data, newsize);
+		fp->data = (uqm::BYTE*)HRealloc (fp->data, newsize);
 		if (!fp->data)
 			return 0;
 		
@@ -235,16 +235,16 @@ UninitPlanetInfo (void)
 	DeleteStateFile (STARINFO_FILE);
 }
 
-#define OFFSET_SIZE       (sizeof (DWORD))
-//#define SCAN_RECORD_SIZE  (sizeof (DWORD) * NUM_SCAN_TYPES)
+#define OFFSET_SIZE       (sizeof (uqm::DWORD))
+//#define SCAN_RECORD_SIZE  (sizeof (uqm::DWORD) * NUM_SCAN_TYPES)
 // JMS: Increased the size of scan record to house partially scavenged minerals.
-#define SCAN_RECORD_SIZE  ((sizeof (DWORD) * NUM_SCAN_TYPES) + (sizeof(BYTE) * NUM_SCAN_TYPES * 32))
+#define SCAN_RECORD_SIZE  ((sizeof (uqm::DWORD) * NUM_SCAN_TYPES) + (sizeof(uqm::BYTE) * NUM_SCAN_TYPES * 32))
 
 void
 GetPlanetInfo (void)
 {
 	GAME_STATE_FILE *fp;
-	COUNT k,l;
+	uqm::COUNT k,l;
 
 	pSolarSysState->SysInfo.PlanetInfo.ScanRetrieveMask[BIOLOGICAL_SCAN] = 0;
 	pSolarSysState->SysInfo.PlanetInfo.ScanRetrieveMask[MINERAL_SCAN] = 0;
@@ -258,16 +258,16 @@ GetPlanetInfo (void)
 	fp = OpenStateFile (STARINFO_FILE, "rb");
 	if (fp)
 	{
-		COUNT star_index, planet_index, moon_index;
-		DWORD offset;
+		uqm::COUNT star_index, planet_index, moon_index;
+		uqm::DWORD offset;
 
-		star_index = (COUNT)(CurStarDescPtr - star_array);
-		planet_index = (COUNT)(pSolarSysState->pBaseDesc->pPrevDesc
+		star_index = (uqm::COUNT)(CurStarDescPtr - star_array);
+		planet_index = (uqm::COUNT)(pSolarSysState->pBaseDesc->pPrevDesc
 				- pSolarSysState->PlanetDesc);
 		if (pSolarSysState->pOrbitalDesc->pPrevDesc == pSolarSysState->SunDesc)
 			moon_index = 0;
 		else
-			moon_index = (COUNT)(pSolarSysState->pOrbitalDesc
+			moon_index = (uqm::COUNT)(pSolarSysState->pOrbitalDesc
 					- pSolarSysState->MoonDesc + 1);
 
 		SeekStateFile (fp, star_index * OFFSET_SIZE, SEEK_SET);
@@ -275,7 +275,7 @@ GetPlanetInfo (void)
 
 		if (offset)
 		{
-			COUNT i;
+			uqm::COUNT i;
 
 			// Skip scan records for all preceeding planets to the one we need
 			for (i = 0; i < planet_index; ++i)
@@ -290,7 +290,7 @@ GetPlanetInfo (void)
 					NUM_SCAN_TYPES);
 
 			{
-				BYTE *ar = &(pSolarSysState->SysInfo.PlanetInfo.PartiallyScavengedList[0][0]);
+				uqm::BYTE *ar = &(pSolarSysState->SysInfo.PlanetInfo.PartiallyScavengedList[0][0]);
 				
 				// JMS: Read which mineral deposits are partially retrieved (and how much).
 				for (l = MINERAL_SCAN; l < NUM_SCAN_TYPES; l++)
@@ -311,17 +311,17 @@ PutPlanetInfo (void)
 	fp = OpenStateFile (STARINFO_FILE, "r+b");
 	if (fp)
 	{
-		COUNT i, k, l;
-		COUNT star_index, planet_index, moon_index;
-		DWORD offset;
+		uqm::COUNT i, k, l;
+		uqm::COUNT star_index, planet_index, moon_index;
+		uqm::DWORD offset;
 
-		star_index = (COUNT)(CurStarDescPtr - star_array);
-		planet_index = (COUNT)(pSolarSysState->pBaseDesc->pPrevDesc
+		star_index = (uqm::COUNT)(CurStarDescPtr - star_array);
+		planet_index = (uqm::COUNT)(pSolarSysState->pBaseDesc->pPrevDesc
 				- pSolarSysState->PlanetDesc);
 		if (pSolarSysState->pOrbitalDesc->pPrevDesc == pSolarSysState->SunDesc)
 			moon_index = 0;
 		else
-			moon_index = (COUNT)(pSolarSysState->pOrbitalDesc
+			moon_index = (uqm::COUNT)(pSolarSysState->pOrbitalDesc
 					- pSolarSysState->MoonDesc + 1);
 
 		SeekStateFile (fp, star_index * OFFSET_SIZE, SEEK_SET);
@@ -329,13 +329,13 @@ PutPlanetInfo (void)
 
 		if (offset == 0)
 		{	// Scan record not present yet -- init it
-			DWORD ScanRetrieveMask[NUM_SCAN_TYPES] =
+			uqm::DWORD ScanRetrieveMask[NUM_SCAN_TYPES] =
 			{
 				0, 0, 0,
 			};
 
 			// JMS: Init also the partially scavenged mineral deposit values.
-			BYTE PartiallyScavengedList[NUM_SCAN_TYPES][32];
+			uqm::BYTE PartiallyScavengedList[NUM_SCAN_TYPES][32];
 			for (l = MINERAL_SCAN; l < NUM_SCAN_TYPES; l++)
 				for (k = 0; k < 32; k++)
 					PartiallyScavengedList[l][k] = 0;
@@ -350,8 +350,8 @@ PutPlanetInfo (void)
 			SeekStateFile (fp, offset, SEEK_SET);
 			for (i = 0; i < pSolarSysState->SunDesc[0].NumPlanets; ++i)
 			{
-				COUNT j;
-				BYTE *ar = &(PartiallyScavengedList[0][0]);
+				uqm::COUNT j;
+				uqm::BYTE *ar = &(PartiallyScavengedList[0][0]);
 
 				swrite_a32 (fp, ScanRetrieveMask, NUM_SCAN_TYPES);
 
@@ -362,7 +362,7 @@ PutPlanetInfo (void)
 
 				// init moons
 				for (j = 0; j < pSolarSysState->PlanetDesc[i].NumPlanets; ++j) {
-					BYTE *ar = &(PartiallyScavengedList[0][0]);
+					uqm::BYTE *ar = &(PartiallyScavengedList[0][0]);
 					
  					swrite_a32 (fp, ScanRetrieveMask, NUM_SCAN_TYPES);
 					
@@ -389,7 +389,7 @@ PutPlanetInfo (void)
 				NUM_SCAN_TYPES);
 
 		{
-			BYTE *ar = &(pSolarSysState->SysInfo.PlanetInfo.PartiallyScavengedList[0][0]);
+			uqm::BYTE *ar = &(pSolarSysState->SysInfo.PlanetInfo.PartiallyScavengedList[0][0]);
 			
 			// JMS: Store which mineral deposits are partially retrieved (and how much).
 			for (l = MINERAL_SCAN; l < NUM_SCAN_TYPES; l++)

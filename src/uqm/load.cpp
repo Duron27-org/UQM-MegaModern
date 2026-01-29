@@ -38,28 +38,28 @@
 //#define DEBUG_LOAD
 
 ACTIVITY NextActivity;
-BYTE IndependantResFactor;
+uqm::BYTE IndependantResFactor;
 
 static inline size_t
-read_8 (void *fp, BYTE *v)
+read_8 (void *fp, uqm::BYTE *v)
 {
-	BYTE t;
+	uqm::BYTE t;
 	if (!v) /* read value ignored */
 		v = &t;
 	return ReadResFile (v, 1, 1, (uio_Stream*)fp);
 }
 
 static inline size_t
-read_16 (void *fp, UWORD *v)
+read_16 (void *fp, uqm::UWORD *v)
 {
-	UWORD t = 0;
+	uqm::UWORD t = 0;
 	int shift, i;
 	for (i = 0, shift = 0; i < 2; ++i, shift += 8)
 	{
-		BYTE b;
+		uqm::BYTE b;
 		if (read_8 (fp, &b) != 1)
 			return 0;
-		t |= ((UWORD)b) << shift;
+		t |= ((uqm::UWORD)b) << shift;
 	}
 
 	if (v)
@@ -69,22 +69,22 @@ read_16 (void *fp, UWORD *v)
 }
 
 static inline size_t
-read_16s (void *fp, SWORD *v)
+read_16s (void *fp, uqm::SWORD *v)
 {
-	return read_16 (fp, (UWORD *) v);
+	return read_16 (fp, (uqm::UWORD *) v);
 }
 
 static inline size_t
-read_32 (void *fp, DWORD *v)
+read_32 (void *fp, uqm::DWORD *v)
 {
-	DWORD t = 0;
+	uqm::DWORD t = 0;
 	int shift, i;
 	for (i = 0, shift = 0; i < 4; ++i, shift += 8)
 	{
-		BYTE b;
+		uqm::BYTE b;
 		if (read_8 (fp, &b) != 1)
 			return 0;
-		t |= ((DWORD)b) << shift;
+		t |= ((uqm::DWORD)b) << shift;
 	}
 
 	if (v)
@@ -94,26 +94,26 @@ read_32 (void *fp, DWORD *v)
 }
 
 static inline size_t
-read_32s (void *fp, SDWORD *v)
+read_32s (void *fp, uqm::SDWORD *v)
 {
-	return read_32 (fp, (DWORD *) v);
+	return read_32 (fp, (uqm::DWORD *) v);
 }
 
 static inline size_t
-read_a8 (void *fp, BYTE *ar, COUNT count)
+read_a8 (void *fp, uqm::BYTE *ar, uqm::COUNT count)
 {
 	assert (ar != NULL);
 	return ReadResFile (ar, 1, count, (uio_Stream*)fp) == count;
 }
 
 static inline size_t
-read_a8s (void *fp, char *ar, COUNT count)
+read_a8s (void *fp, char *ar, uqm::COUNT count)
 {
-	return read_a8 (fp, (BYTE *) ar, count);
+	return read_a8 (fp, (uqm::BYTE *) ar, count);
 }
 
 static inline size_t
-skip_8 (void *fp, COUNT count)
+skip_8 (void *fp, uqm::COUNT count)
 {
 	int i;
 	for (i = 0; i < count; ++i)
@@ -125,14 +125,14 @@ skip_8 (void *fp, COUNT count)
 }
 
 static inline size_t
-read_str (void *fp, char *str, COUNT count)
+read_str (void *fp, char *str, uqm::COUNT count)
 {
 	// no type conversion needed for strings
-	return read_a8 (fp, (BYTE *)str, count);
+	return read_a8 (fp, (uqm::BYTE *)str, count);
 }
 
 static inline size_t
-read_a16 (void *fp, UWORD *ar, COUNT count)
+read_a16 (void *fp, uqm::UWORD *ar, uqm::COUNT count)
 {
 	assert (ar != NULL);
 
@@ -145,15 +145,15 @@ read_a16 (void *fp, UWORD *ar, COUNT count)
 }
 
 static void
-LoadShipQueue (void *fh, QUEUE *pQueue, DWORD size)
+LoadShipQueue (void *fh, QUEUE *pQueue, uqm::DWORD size)
 {
-	COUNT num_links = size / 11;
+	uqm::COUNT num_links = size / 11;
 
 	while (num_links--)
 	{
 		HSHIPFRAG hStarShip;
 		SHIP_FRAGMENT *FragPtr;
-		COUNT Index;
+		uqm::COUNT Index;
 
 		read_16 (fh, &Index);
 
@@ -174,15 +174,15 @@ LoadShipQueue (void *fh, QUEUE *pQueue, DWORD size)
 }
 
 static void
-LoadRaceQueue (void *fh, QUEUE *pQueue, DWORD size)
+LoadRaceQueue (void *fh, QUEUE *pQueue, uqm::DWORD size)
 {
-	COUNT num_links = size / 30;
+	uqm::COUNT num_links = size / 30;
 
 	while (num_links--)
 	{
 		HFLEETINFO hStarShip;
 		FLEET_INFO *FleetPtr;
-		COUNT Index;
+		uqm::COUNT Index;
 
 		read_16 (fh, &Index);
 
@@ -218,9 +218,9 @@ LoadRaceQueue (void *fh, QUEUE *pQueue, DWORD size)
 }
 
 static void
-LoadGroupQueue (void *fh, QUEUE *pQueue, DWORD size)
+LoadGroupQueue (void *fh, QUEUE *pQueue, uqm::DWORD size)
 {
-	COUNT num_links = size / 13;
+	uqm::COUNT num_links = size / 13;
 
 	while (num_links--)
 	{
@@ -248,7 +248,7 @@ LoadGroupQueue (void *fh, QUEUE *pQueue, DWORD size)
 static void
 LoadEncounter (ENCOUNTER *EncounterPtr, void *fh, bool try_core)
 {
-	COUNT i;
+	uqm::COUNT i;
 
 	EncounterPtr->pred = 0;
 	EncounterPtr->succ = 0;
@@ -315,7 +315,7 @@ LoadClockState (CLOCK_STATE *ClockPtr, void *fh)
 static bool
 LoadGameState (GAME_STATE *GSPtr, void *fh, bool try_core)
 {
-	DWORD magic;
+	uqm::DWORD magic;
 	legacySave = try_core;
 	read_32 (fh, &magic);
 	if (magic != GLOBAL_STATE_TAG)
@@ -364,7 +364,7 @@ LoadGameState (GAME_STATE *GSPtr, void *fh, bool try_core)
 	read_16s (fh, &GSPtr->velocity.incr.width);
 	read_16s (fh, &GSPtr->velocity.incr.height);
 	
-	if (LOBYTE (GSPtr->CurrentActivity) != IN_INTERPLANETARY)
+	if (lowByte (GSPtr->CurrentActivity) != IN_INTERPLANETARY)
 	{	// Let's make savegames work even between different resolution modes.
 		GSPtr->velocity.vector.width  <<= RESOLUTION_FACTOR;
 		GSPtr->velocity.vector.height <<= RESOLUTION_FACTOR;
@@ -382,7 +382,7 @@ LoadGameState (GAME_STATE *GSPtr, void *fh, bool try_core)
 		return false;
 	}
 	{
-		BYTE *buf;
+		uqm::BYTE *buf;
 		bool result;
 		int rev;
 		size_t gameStateByteCount;
@@ -401,7 +401,7 @@ LoadGameState (GAME_STATE *GSPtr, void *fh, bool try_core)
 		log_add (log_Debug, "Detected save game state rev %d: %s",
 				rev, gameStateBitMapRevTag[rev]);
 
-		buf = (BYTE*)HMalloc (gameStateByteCount);
+		buf = (uqm::BYTE*)HMalloc (gameStateByteCount);
 		if (buf == NULL)
 		{
 			log_add (log_Error, "Warning: Cannot allocate enough bytes for "
@@ -409,7 +409,7 @@ LoadGameState (GAME_STATE *GSPtr, void *fh, bool try_core)
 			return false;
 		}
 
-		read_a8 (fh, buf, (COUNT)gameStateByteCount);
+		read_a8 (fh, buf, (uqm::COUNT)gameStateByteCount);
 		result = deserialiseGameState (gameStateBitMap, buf, gameStateByteCount, rev);
 		HFree (buf);
 		if (result == false)
@@ -432,7 +432,7 @@ LoadGameState (GAME_STATE *GSPtr, void *fh, bool try_core)
 
 		if (magic > gameStateByteCount)
 		{
-			skip_8 (fh, (COUNT)(magic - gameStateByteCount));
+			skip_8 (fh, (uqm::COUNT)(magic - gameStateByteCount));
 		}
 	}
 	return true;
@@ -442,7 +442,7 @@ static bool
 LoadSisState (SIS_STATE *SSPtr, void *fp, bool try_core,
 		int legacyMM)
 {
-	COUNT SisNameSize = (legacyMM == 1 || try_core) ?
+	uqm::COUNT SisNameSize = (legacyMM == 1 || try_core) ?
 			LEGACY_SIS_NAME_SIZE : SIS_NAME_SIZE;
 
 	if (
@@ -488,9 +488,9 @@ LoadSisState (SIS_STATE *SSPtr, void *fp, bool try_core,
 static bool
 LoadSummary (SUMMARY_DESC *SummPtr, void *fp, bool try_core)
 {
-	DWORD magic;
-	DWORD magicTag = try_core ? SAVEFILE_TAG : MMV4_TAG;
-	DWORD nameSize = 0;
+	uqm::DWORD magic;
+	uqm::DWORD magicTag = try_core ? SAVEFILE_TAG : MMV4_TAG;
+	uqm::DWORD nameSize = 0;
 	int legacyMM = false;
 	if (!read_32 (fp, &magic))
 		return false;
@@ -550,7 +550,7 @@ LoadSummary (SUMMARY_DESC *SummPtr, void *fp, bool try_core)
 	}
 	else
 	{
-		DWORD remaining = nameSize - SAVE_NAME_SIZE + 1;
+		uqm::DWORD remaining = nameSize - SAVE_NAME_SIZE + 1;
 		if (read_a8s (fp, SummPtr->SaveName, SAVE_NAME_SIZE-1) != 1)
 			return false;
 		SummPtr->SaveName[SAVE_NAME_SIZE-1] = 0;
@@ -572,14 +572,14 @@ LoadStarDesc (STAR_DESC *SDPtr, void *fh)
 }
 
 static void
-LoadScanInfo (uio_Stream *fh, DWORD flen)
+LoadScanInfo (uio_Stream *fh, uqm::DWORD flen)
 {
 	GAME_STATE_FILE *fp = OpenStateFile (STARINFO_FILE, "wb");
 	if (fp)
 	{
 		while (flen)
 		{
-			DWORD val;
+			uqm::DWORD val;
 			read_32 (fh, &val);
 			swrite_32 (fp, val);
 			flen -= 4;
@@ -589,13 +589,13 @@ LoadScanInfo (uio_Stream *fh, DWORD flen)
 }
 
 static void
-LoadGroupList (uio_Stream *fh, DWORD chunksize)
+LoadGroupList (uio_Stream *fh, uqm::DWORD chunksize)
 {
 	GAME_STATE_FILE *fp = OpenStateFile (RANDGRPINFO_FILE, "rb");
 	if (fp)
 	{
 		GROUP_HEADER h;
-		BYTE LastEnc, NumGroups;
+		uqm::BYTE LastEnc, NumGroups;
 		int i;
 		ReadGroupHeader (fp, &h);
 		/* There's only supposed to be one of these, so group 0 should be
@@ -611,7 +611,7 @@ LoadGroupList (uio_Stream *fh, DWORD chunksize)
 		swrite_8 (fp, NumGroups);
 		for (i = 0; i < NumGroups; ++i)
 		{
-			BYTE race_outer;
+			uqm::BYTE race_outer;
 			IP_GROUP ip;
 			read_8   (fh, &race_outer);
 			read_16  (fh, &ip.group_counter);
@@ -633,7 +633,7 @@ LoadGroupList (uio_Stream *fh, DWORD chunksize)
 }
 
 static void
-SetBattleGroupOffset (int encounterIndex, DWORD offset)
+SetBattleGroupOffset (int encounterIndex, uqm::DWORD offset)
 {
 	// The reason for this switch, even though the group offsets are
 	// successive, is because SET_GAME_STATE is a #define, which stringizes
@@ -662,12 +662,12 @@ SetBattleGroupOffset (int encounterIndex, DWORD offset)
 }
 
 static void
-LoadBattleGroup (uio_Stream *fh, DWORD chunksize)
+LoadBattleGroup (uio_Stream *fh, uqm::DWORD chunksize)
 {
 	GAME_STATE_FILE *fp;
 	GROUP_HEADER h;
-	DWORD encounter, offset;
-	BYTE current;
+	uqm::DWORD encounter, offset;
+	uqm::BYTE current;
 	int i;
 
 	read_32 (fh, &encounter);
@@ -707,7 +707,7 @@ LoadBattleGroup (uio_Stream *fh, DWORD chunksize)
 	for (i = 1; i <= h.NumGroups; ++i)
 	{
 		int j;
-		BYTE icon, NumShips;
+		uqm::BYTE icon, NumShips;
 		read_8 (fh, &icon);
 		read_8 (fh, &NumShips);
 		chunksize -= 2;
@@ -717,7 +717,7 @@ LoadBattleGroup (uio_Stream *fh, DWORD chunksize)
 		swrite_8 (fp, NumShips);
 		for (j = 0; j < NumShips; ++j)
 		{
-			BYTE race_outer;
+			uqm::BYTE race_outer;
 			SHIP_FRAGMENT sf;
 			read_8  (fh, &race_outer);
 			read_8  (fh, &sf.captains_name_index);
@@ -755,7 +755,7 @@ LoadBattleGroup (uio_Stream *fh, DWORD chunksize)
 }
 
 bool
-LoadCoreGame (COUNT which_game, SUMMARY_DESC* SummPtr)
+LoadCoreGame (uqm::COUNT which_game, SUMMARY_DESC* SummPtr)
 {
 	uio_Stream* in_fp;
 	char file[PATH_MAX];
@@ -793,14 +793,14 @@ LoadCoreGame (COUNT which_game, SUMMARY_DESC* SummPtr)
 }
 
 bool
-LoadGame (COUNT which_game, SUMMARY_DESC *SummPtr, uio_Stream *in_fp, bool try_core)
+LoadGame (uqm::COUNT which_game, SUMMARY_DESC *SummPtr, uio_Stream *in_fp, bool try_core)
 {
 	char file[PATH_MAX];
 	SUMMARY_DESC loc_sd;
-	COUNT num_links;
+	uqm::COUNT num_links;
 	STAR_DESC SD;
 	ACTIVITY Activity;
-	DWORD chunk, chunkSize;
+	uqm::DWORD chunk, chunkSize;
 	bool first_group_spec = true;
 
 	if (!try_core)
@@ -989,7 +989,7 @@ LoadGame (COUNT which_game, SUMMARY_DESC *SummPtr, uio_Stream *in_fp, bool try_c
 	ReinitQueue (&race_q[1]);
 	CurStarDescPtr = FindStar (NULL, &SD.star_pt, 0, 0);
 	if (!(NextActivity & START_ENCOUNTER)
-			&& LOBYTE (NextActivity) == IN_INTERPLANETARY)
+			&& lowByte (NextActivity) == IN_INTERPLANETARY)
 		NextActivity |= START_INTERPLANETARY;
 
 	// Reset Debug Key

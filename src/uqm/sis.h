@@ -156,30 +156,30 @@ enum
 
 typedef struct
 {
-	SDWORD log_x, log_y;
+	uqm::SDWORD log_x, log_y;
 
-	DWORD ResUnits;
+	uqm::DWORD ResUnits;
 
-	DWORD FuelOnBoard;
-	COUNT CrewEnlisted;
+	uqm::DWORD FuelOnBoard;
+	uqm::COUNT CrewEnlisted;
 			// Number of crew on board, not counting the captain.
-			// Set to (COUNT) ~0 to indicate game over.
-	COUNT TotalElementMass, TotalBioMass;
+			// Set to (uqm::COUNT) ~0 to indicate game over.
+	uqm::COUNT TotalElementMass, TotalBioMass;
 
-	BYTE ModuleSlots[NUM_MODULE_SLOTS];
-	BYTE DriveSlots[NUM_DRIVE_SLOTS];
-	BYTE JetSlots[NUM_JET_SLOTS];
+	uqm::BYTE ModuleSlots[NUM_MODULE_SLOTS];
+	uqm::BYTE DriveSlots[NUM_DRIVE_SLOTS];
+	uqm::BYTE JetSlots[NUM_JET_SLOTS];
 
-	BYTE NumLanders;
+	uqm::BYTE NumLanders;
 
-	COUNT ElementAmounts[NUM_ELEMENT_CATEGORIES];
+	uqm::COUNT ElementAmounts[NUM_ELEMENT_CATEGORIES];
 
-	CHAR_T ShipName[SIS_NAME_SIZE];
-	CHAR_T CommanderName[SIS_NAME_SIZE];
-	CHAR_T PlanetName[SIS_NAME_SIZE];
-	BYTE Difficulty, Extended, Nomad, ShipSeed;
-	SDWORD Seed;
-	BYTE SaveVersion;
+	uqm::CHAR_T ShipName[SIS_NAME_SIZE];
+	uqm::CHAR_T CommanderName[SIS_NAME_SIZE];
+	uqm::CHAR_T PlanetName[SIS_NAME_SIZE];
+	uqm::BYTE Difficulty, Extended, Nomad, ShipSeed;
+	uqm::SDWORD Seed;
+	uqm::BYTE SaveVersion;
 } SIS_STATE;
 
 #define OVERRIDE_LANDER_FLAGS (1 << 7)
@@ -188,9 +188,9 @@ typedef struct
 extern void RepairSISBorder (void);
 extern void InitSISContexts (void);
 extern void DrawSISFrame (void);
-extern void ClearSISRect (BYTE ClearFlags);
+extern void ClearSISRect (uqm::BYTE ClearFlags);
 extern void SetFlashRect (const RECT *pRect, bool purple);
-extern void SetAdditionalRect (const RECT *pRect, COUNT number);
+extern void SetAdditionalRect (const RECT *pRect, uqm::COUNT number);
 extern void DumpAdditionalRect (void);
 extern void PreUpdateFlashRect (void);
 extern void PostUpdateFlashRect (void);
@@ -202,7 +202,7 @@ extern void ContinueFlash (void);
 #define SFR_MENU_NON ((RECT*)~2L)
 extern void DrawHyperCoords (POINT puniverse);
 extern void DrawSaveInfo (SIS_STATE SisState);
-extern void DrawSISTitle (CHAR_T *pStr);
+extern void DrawSISTitle (uqm::CHAR_T *pStr);
 
 // Flags for DrawSISMessageEx (may be OR'ed):
 #define DSME_NONE     0
@@ -215,16 +215,16 @@ extern void DrawSISTitle (CHAR_T *pStr);
 		// when editing in the message field.
 #define DSME_MYCOLOR  (1 << 3)
 		// Use the current foreground color, instead of the default.
-extern bool DrawSISMessageEx (const CHAR_T *pStr, SIZE CurPos,
-		SIZE ExPos, COUNT flags);
+extern bool DrawSISMessageEx (const uqm::CHAR_T *pStr, uqm::SIZE CurPos,
+		uqm::SIZE ExPos, uqm::COUNT flags);
 
-extern void DrawSISMessage (const CHAR_T *pStr);
+extern void DrawSISMessage (const uqm::CHAR_T *pStr);
 extern void DateToString (char *buf, size_t bufLen,
-		BYTE month_index, BYTE day_index, COUNT year_index);
+		uqm::BYTE month_index, uqm::BYTE day_index, uqm::COUNT year_index);
 
 // Returned RECT is relative to the StatusContext
 extern void GetStatusMessageRect (RECT *r);
-extern void DrawStatusMessage (const CHAR_T *pStr);
+extern void DrawStatusMessage (const uqm::CHAR_T *pStr);
 typedef enum
 {
 	SMM_UNDEFINED = 0,
@@ -245,23 +245,23 @@ extern void GetGaugeRect (RECT *pRect, bool IsCrewRect);
 extern void DrawFlagshipStats (void);
 void DrawAutoPilotMessage (bool Reset);
 
-extern void DeltaSISGauges (SIZE crew_delta, SDWORD fuel_delta, int
+extern void DeltaSISGauges (uqm::SIZE crew_delta, uqm::SDWORD fuel_delta, int
 		resunit_delta);
 
-extern COUNT GetCrewCount (void);
-extern COUNT GetModuleCrewCapacity (BYTE moduleType);
+extern uqm::COUNT GetCrewCount (void);
+extern uqm::COUNT GetModuleCrewCapacity (uqm::BYTE moduleType);
 
-extern COUNT GetCrewPodCapacity (void);
-extern COUNT GetCPodCapacity (POINT *ppt);
+extern uqm::COUNT GetCrewPodCapacity (void);
+extern uqm::COUNT GetCPodCapacity (POINT *ppt);
 
-extern COUNT GetModuleStorageCapacity (BYTE moduleType);
-extern COUNT GetStorageBayCapacity (void);
-extern COUNT GetSBayCapacity (POINT *ppt);
+extern uqm::COUNT GetModuleStorageCapacity (uqm::BYTE moduleType);
+extern uqm::COUNT GetStorageBayCapacity (void);
+extern uqm::COUNT GetSBayCapacity (POINT *ppt);
 
-extern DWORD GetModuleFuelCapacity (BYTE moduleType);
-extern DWORD GetFuelTankCapacity (void);
+extern uqm::DWORD GetModuleFuelCapacity (uqm::BYTE moduleType);
+extern uqm::DWORD GetFuelTankCapacity (void);
 
-extern COUNT CountSISPieces (BYTE piece_type);
+extern uqm::COUNT CountSISPieces (uqm::BYTE piece_type);
 
 extern void DrawFlagshipName (bool InStatusArea, bool NewGame);
 extern void DrawCaptainsName (bool NewGame);

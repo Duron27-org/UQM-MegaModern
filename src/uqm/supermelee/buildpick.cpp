@@ -35,7 +35,7 @@ BuildBuildPickFrame (void)
 {
 	STAMP s;
 	RECT  r;
-	COUNT i;
+	uqm::COUNT i;
 	CONTEXT OldContext = SetContext (OffScreenContext);
 	
 	// create team building ship selection box
@@ -76,7 +76,7 @@ GetShipFlashColor (void)
 	}
 	else
 	{
-		static BYTE cycle_index = 0;
+		static uqm::BYTE cycle_index = 0;
 
 		static const Color cycle_tab[] = SHIP_SELECT_COLOR_CYCLE_TABLE;
 		const size_t cycleCount = ARRAY_SIZE (cycle_tab);
@@ -183,14 +183,14 @@ GetToolTipFrameRect (RECT *r)
 void
 DrawTooltip (SHIP_INFO *SIPtr)
 {
-	CHAR_T *ptr;
-	CHAR_T buf[PATH_MAX];
+	uqm::CHAR_T *ptr;
+	uqm::CHAR_T buf[PATH_MAX];
 	TEXT Text;
 	CONTEXT oldContext;
 	FONT oldFont;
 	Color oldColor;
 	RECT r;
-	CHAR_T delim[] = "\n";
+	uqm::CHAR_T delim[] = "\n";
 
 	GetToolTipFrameRect (&r);
 	
@@ -199,7 +199,7 @@ DrawTooltip (SHIP_INFO *SIPtr)
 			GET_STRING (SIPtr->race_strings, RACE_SHIP_OFFSET));
 
 	Text.pStr = buf;
-	Text.CharCount = (COUNT)utf8StringCount (buf);
+	Text.CharCount = (uqm::COUNT)utf8StringCount (buf);
 	Text.align = ALIGN_CENTER;
 	Text.baseline.y = r.corner.y + RES_SCALE (8) + RES_SCALE (1);
 	Text.baseline.x = r.corner.x + (r.extent.width >> 1) + RES_SCALE (1);
@@ -228,7 +228,7 @@ DrawTooltip (SHIP_INFO *SIPtr)
 	while (ptr != NULL)
 	{
 		Text.pStr = ptr;
-		Text.CharCount = (COUNT)utf8StringCount (ptr);
+		Text.CharCount = (uqm::COUNT)utf8StringCount (ptr);
 		Text.baseline.y += RES_SCALE (9);
 		font_DrawText (&Text);
 		ptr = strtok (NULL, delim);
@@ -281,7 +281,7 @@ GetBuildPickFrameRect (RECT *r)
 static bool
 DoPickShip (MELEE_STATE *pMS)
 {
-	DWORD TimeIn = GetTimeCounter ();
+	uqm::DWORD TimeIn = GetTimeCounter ();
 
 	/* Cancel any presses of the Pause key. */
 	GamePaused = false;

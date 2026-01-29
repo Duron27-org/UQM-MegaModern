@@ -273,7 +273,7 @@ FriendlyExit (RESPONSE_REF R)
 			DisengageFilters ();
 		}
 		FadeScreen (FadeAllToColor, ONE_SECOND / 2);
-		AlienTalkSegue ((COUNT)~0);
+		AlienTalkSegue ((uqm::COUNT)~0);
 
 		SET_GAME_STATE (PLAYER_HAD_SEX, 1);
 		SET_GAME_STATE (PLAYER_HAVING_SEX, 0);
@@ -372,7 +372,7 @@ Foreplay (RESPONSE_REF R)
 				RunOneTimeSequence(16, 0);
 		}*/ // For future ideas maybe
 	
-		AlienTalkSegue ((COUNT)~0);
+		AlienTalkSegue ((uqm::COUNT)~0);
 		SET_GAME_STATE (PLAYER_HAVING_SEX, 1);
 	}
 	else if (PLAYER_SAID (R, why_lights_off))
@@ -420,7 +420,7 @@ AfterAmbush (RESPONSE_REF R)
 	}
 	else if (PLAYER_SAID (R, whats_up_after_ambush))
 	{
-		BYTE NumVisits;
+		uqm::BYTE NumVisits;
 
 		NumVisits = GET_GAME_STATE (SYREEN_INFO);
 		switch (NumVisits++)
@@ -545,7 +545,7 @@ SyreenShuttle (RESPONSE_REF R)
 static void
 NormalSyreen (RESPONSE_REF R)
 {
-	BYTE i, LastStack;
+	uqm::BYTE i, LastStack;
 	RESPONSE_REF pStr[4];
 
 	LastStack = 0;
@@ -798,7 +798,7 @@ PlanAmbush (RESPONSE_REF R)
 			StartSphereTracking (SYREEN_SHIP);
 			POINT loc = SeedFleetLocation (SyreenPtr, plot_map,
 					MYCON_TRAP_DEFINED);
-			SetRaceDest (SYREEN_SHIP, loc.x, loc.y, 15, (BYTE)~0);
+			SetRaceDest (SYREEN_SHIP, loc.x, loc.y, 15, (uqm::BYTE)~0);
 		}
 
 		UnlockFleetInfo (&GLOBAL (avail_race_q), hSyreen);
@@ -828,11 +828,11 @@ SyreenVault (RESPONSE_REF R)
 static void
 Intro (void)
 {
-	BYTE NumVisits;
+	uqm::BYTE NumVisits;
 
 	SetHomeworldKnown (SYREEN_HOME);
 
-	if (LOBYTE (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
+	if (lowByte (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
 	{
 		NPCPhrase (OUT_TAKES);
 
@@ -946,7 +946,7 @@ Intro (void)
 	SET_GAME_STATE (SYREEN_HOME_VISITS, NumVisits);
 }
 
-static COUNT
+static uqm::COUNT
 uninit_syreen (void)
 {
 	FlushCustomBaseLine ();

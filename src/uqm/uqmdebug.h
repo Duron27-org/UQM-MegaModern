@@ -34,7 +34,7 @@ extern bool DebugKeyPressed;
 void doInstantMove (void);
 
 // Find a player ship. Setting playerNr to non-0 is only meaningful in battle.
-STARSHIP* findPlayerShip (SIZE playerNr);
+STARSHIP* findPlayerShip (uqm::SIZE playerNr);
 
 // Resets the energy of the first player (the bottom one) to its maximum.
 void resetEnergyBattle(void);
@@ -70,9 +70,9 @@ void dumpEvents (FILE *out);
 // Describe one event.
 void dumpEvent (FILE *out, const EVENT *eventPtr);
 // Get the name of one event.
-const char *eventName (BYTE func_index);
+const char *eventName (uqm::BYTE func_index);
 // Get the name of one race.
-const char *raceName (BYTE func_index);
+const char *raceName (uqm::BYTE func_index);
 
 // Give the flagship a decent equipment for debugging.
 void equipShip (void);
@@ -130,11 +130,11 @@ void dumpUniverseToFile (void);
 void dumpSystem (FILE *out, const STAR_DESC *star,
 		const SOLARSYS_STATE *system);
 // Get a star color as a string.
-const char *bodyColorString (BYTE col);
+const char *bodyColorString (uqm::BYTE col);
 // Get a star type as a string.
-const char *starTypeString (BYTE type);
+const char *starTypeString (uqm::BYTE type);
 // Get a string describing special presence in the star system.
-const char *starPresenceString (BYTE index);
+const char *starPresenceString (uqm::BYTE index);
 // Get a list describing all planets in a star.
 void dumpPlanets (FILE *out, const STAR_DESC *star);
 // Describe one planet.
@@ -142,17 +142,17 @@ void dumpPlanet(FILE *out, const PLANET_DESC *planet);
 // Describe one moon.
 void dumpMoon (FILE *out, const PLANET_DESC *moon);
 // Calculate the total value of all minerals on a world.
-COUNT calculateMineralValue (const SOLARSYS_STATE *system,
+uqm::COUNT calculateMineralValue (const SOLARSYS_STATE *system,
 		const PLANET_DESC *world);
 // Determine how much of each mineral type is present on a world
 void generateMineralIndex(const SOLARSYS_STATE *system,
-		const PLANET_DESC *world, COUNT minerals[]);
+		const PLANET_DESC *world, uqm::COUNT minerals[]);
 // Calculate the total value of all bio on a world.
-COUNT calculateBioValue (const SOLARSYS_STATE *system,
+uqm::COUNT calculateBioValue (const SOLARSYS_STATE *system,
 		const PLANET_DESC *world);
 // Determine how much of each mineral type is present on a world
 void generateBioIndex(const SOLARSYS_STATE *system,
-		const PLANET_DESC *world, COUNT bio[]);
+		const PLANET_DESC *world, uqm::COUNT bio[]);
 
 // Tally the resources for each star system.
 // Must be called on the Starcon2Main thread.
@@ -172,18 +172,18 @@ void dumpPlanetTypes(FILE *out);
 // Get a string describing a planet type.
 const char *planetTypeString (int typeIndex);
 // Get a string describing the size of a type of planet.
-const char *worldSizeString (BYTE size);
+const char *worldSizeString (uqm::BYTE size);
 // Get a string describing a planet type map generation algoritm.
-const char *worldGenAlgoString (BYTE algo);
+const char *worldGenAlgoString (uqm::BYTE algo);
 // Get a string describing the severity of a tectonics on a type of planet.
-const char *tectonicsString (BYTE tectonics);
+const char *tectonicsString (uqm::BYTE tectonics);
 // Get a string describing the atmospheric pressure on a type of planet.
-const char *atmosphereString (BYTE atmosphere);
+const char *atmosphereString (uqm::BYTE atmosphere);
 // Get a string describing the density of a type of planet.
-const char *densityString (BYTE density);
+const char *densityString (uqm::BYTE density);
 
 // Get a string describing the quality of a deposit.
-const char *depositQualityString (BYTE quality);
+const char *depositQualityString (uqm::BYTE quality);
 
 // Resets the crew of the first player (the bottom one) to its maximum.
 void resetCrewBattle(void);

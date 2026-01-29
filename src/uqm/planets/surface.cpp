@@ -24,18 +24,18 @@
 
 //#define DEBUG_SURFACE
 
-const BYTE *Elements;
+const uqm::BYTE *Elements;
 const PlanetFrame *PlanData;
 
 #define MEDIUM_DEPOSIT_THRESHOLD 150
 #define LARGE_DEPOSIT_THRESHOLD 225
 
-static COUNT
-CalcMineralDeposits (const SYSTEM_INFO *SysInfoPtr, COUNT which_deposit,
+static uqm::COUNT
+CalcMineralDeposits (const SYSTEM_INFO *SysInfoPtr, uqm::COUNT which_deposit,
 		NODE_INFO *info)
 {
-	BYTE j;
-	COUNT num_deposits;
+	uqm::BYTE j;
+	uqm::COUNT num_deposits;
 	const ELEMENT_ENTRY *eptr;
 
 	eptr = &SysInfoPtr->PlanetInfo.PlanDataPtr->UsefulElements[0];
@@ -43,18 +43,18 @@ CalcMineralDeposits (const SYSTEM_INFO *SysInfoPtr, COUNT which_deposit,
 	j = NUM_USEFUL_ELEMENTS;
 	do
 	{
-		BYTE num_possible;
+		uqm::BYTE num_possible;
 
-		num_possible = LOBYTE (RandomContext_Random (SysGenRNG))
+		num_possible = lowByte (RandomContext_Random (SysGenRNG))
 				% (DEPOSIT_QUANTITY (eptr->Density) + 1);
 		while (num_possible--)
 		{
-			COUNT deposit_quality_fine;
-			COUNT deposit_quality_gross;
+			uqm::COUNT deposit_quality_fine;
+			uqm::COUNT deposit_quality_gross;
 
 			// JMS: For making the mineral blip smaller in case it is
 			// partially scavenged.
-			SDWORD temp_deposit_quality;
+			uqm::SDWORD temp_deposit_quality;
 
 			deposit_quality_fine = (LOWORD (RandomContext_Random (SysGenRNG)) % 100)
 					+ (
@@ -99,7 +99,7 @@ CalcMineralDeposits (const SYSTEM_INFO *SysInfoPtr, COUNT which_deposit,
 					Elements[eptr->ElementType].name);
 #endif /* DEBUG_SURFACE */
 			if (num_deposits >= which_deposit
-					|| ++num_deposits == sizeof (DWORD) * 8)
+					|| ++num_deposits == sizeof (uqm::DWORD) * 8)
 			{	// reached the maximum or the requested node
 				return num_deposits;
 			}
@@ -114,8 +114,8 @@ CalcMineralDeposits (const SYSTEM_INFO *SysInfoPtr, COUNT which_deposit,
 //   for whichLife==~0 : the number of nodes generated
 //   for whichLife<32  : the index of the last node (no known usage exists)
 // Sets the SysGenRNG to the required state first.
-COUNT
-GenerateMineralDeposits (const SYSTEM_INFO *SysInfoPtr, COUNT whichDeposit,
+uqm::COUNT
+GenerateMineralDeposits (const SYSTEM_INFO *SysInfoPtr, uqm::COUNT whichDeposit,
 		NODE_INFO *info)
 {
 	NODE_INFO temp_info;
@@ -126,35 +126,35 @@ GenerateMineralDeposits (const SYSTEM_INFO *SysInfoPtr, COUNT whichDeposit,
 	return CalcMineralDeposits (SysInfoPtr, whichDeposit, info);
 }
 
-static COUNT
-CalcLifeForms (const SYSTEM_INFO *SysInfoPtr, COUNT which_life,
+static uqm::COUNT
+CalcLifeForms (const SYSTEM_INFO *SysInfoPtr, uqm::COUNT which_life,
 		NODE_INFO *info)
 {
-	COUNT num_life_forms;
+	uqm::COUNT num_life_forms;
 
 	num_life_forms = 0;
 	if (PLANSIZE (SysInfoPtr->PlanetInfo.PlanDataPtr->Type) != GAS_GIANT)
 	{
 #define MIN_LIFE_CHANCE 10
-		SIZE life_var;
+		uqm::SIZE life_var;
 
 		life_var = RandomContext_Random (SysGenRNG) & 1023;
 		if (life_var < SysInfoPtr->PlanetInfo.LifeChance
 				|| (SysInfoPtr->PlanetInfo.LifeChance < MIN_LIFE_CHANCE
 				&& life_var < MIN_LIFE_CHANCE))
 		{
-			BYTE num_types;
+			uqm::BYTE num_types;
 
-			num_types = 1 + LOBYTE (RandomContext_Random (SysGenRNG))
+			num_types = 1 + lowByte (RandomContext_Random (SysGenRNG))
 					% MAX_LIFE_VARIATION;
 			do
 			{
-				BYTE index, num_creatures;
-				UWORD rand_val;
+				uqm::BYTE index, num_creatures;
+				uqm::UWORD rand_val;
 
 				rand_val = RandomContext_Random (SysGenRNG);
-				index = LOBYTE (rand_val) % NUM_CREATURE_TYPES;
-				num_creatures = 1 + HIBYTE (rand_val) % 10;
+				index = lowByte (rand_val) % NUM_CREATURE_TYPES;
+				num_creatures = 1 + highByte (rand_val) % 10;
 				do
 				{
 					GenerateRandomLocation (&info->loc_pt);
@@ -162,7 +162,7 @@ CalcLifeForms (const SYSTEM_INFO *SysInfoPtr, COUNT which_life,
 					info->density = 0;
 
 					if (num_life_forms >= which_life
-							|| ++num_life_forms == sizeof (DWORD) * 8)
+							|| ++num_life_forms == sizeof (uqm::DWORD) * 8)
 					{	// reached the maximum or the requested node
 						return num_life_forms;
 					}
@@ -185,8 +185,8 @@ CalcLifeForms (const SYSTEM_INFO *SysInfoPtr, COUNT which_life,
 //   for whichLife==~0 : the number of lifeforms generated
 //   for whichLife<32  : the index of the last lifeform (no known usage exists)
 // Sets the SysGenRNG to the required state first.
-COUNT
-GenerateLifeForms (const SYSTEM_INFO *SysInfoPtr, COUNT whichLife,
+uqm::COUNT
+GenerateLifeForms (const SYSTEM_INFO *SysInfoPtr, uqm::COUNT whichLife,
 		NODE_INFO *info)
 {
 	NODE_INFO temp_info;
@@ -202,11 +202,11 @@ GenerateLifeForms (const SYSTEM_INFO *SysInfoPtr, COUNT whichLife,
 //   for whichLife<32  : the index of the last lifeform (no known usage exists)
 // Sets the SysGenRNG to the required state first.
 // lifeTypes[] is terminated with -1
-COUNT
-GeneratePresetLife (const SYSTEM_INFO *SysInfoPtr, const SBYTE *lifeTypes,
-		COUNT whichLife, NODE_INFO *info)
+uqm::COUNT
+GeneratePresetLife (const SYSTEM_INFO *SysInfoPtr, const uqm::SBYTE *lifeTypes,
+		uqm::COUNT whichLife, NODE_INFO *info)
 {
-	COUNT i;
+	uqm::COUNT i;
 	NODE_INFO temp_info;
 
 	if (!info) // user not interested in info but we need space for it
@@ -275,13 +275,13 @@ scaleMapHeight (COORD value)
 void
 GenerateRandomLocation (POINT *loc)
 {
-	UWORD rand_val;
+	uqm::UWORD rand_val;
 
 	rand_val = RandomContext_Random (SysGenRNG);
 
-	loc->x = scaleMapWidth (8 + LOBYTE (rand_val)
+	loc->x = scaleMapWidth (8 + lowByte (rand_val)
 			% (widthPick () - (8 << 1)));
-	loc->y = scaleMapHeight (8 + HIBYTE (rand_val)
+	loc->y = scaleMapHeight (8 + highByte (rand_val)
 			% (heightPick () - (8 << 1)));
 }
 
@@ -289,11 +289,11 @@ GenerateRandomLocation (POINT *loc)
 //   for whichNode==~0 : the number of nodes generated
 //   for whichNode<32  : the index of the last node (no known usage exists)
 // Sets the SysGenRNG to the required state first.
-COUNT
-GenerateRandomNodes (const SYSTEM_INFO *SysInfoPtr, COUNT scan, COUNT numNodes,
-		COUNT type, COUNT whichNode, NODE_INFO *info)
+uqm::COUNT
+GenerateRandomNodes (const SYSTEM_INFO *SysInfoPtr, uqm::COUNT scan, uqm::COUNT numNodes,
+		uqm::COUNT type, uqm::COUNT whichNode, NODE_INFO *info)
 {
-	COUNT i;
+	uqm::COUNT i;
 	NODE_INFO temp_info;
 
 	if (!info) // user not interested in info but we need space for it
@@ -317,12 +317,12 @@ GenerateRandomNodes (const SYSTEM_INFO *SysInfoPtr, COUNT scan, COUNT numNodes,
 	return i;
 }
 
-COUNT
-CustomMineralDeposits (const SYSTEM_INFO *SysInfoPtr, COUNT which_deposit,
-		NODE_INFO *info, COUNT numNodes, COUNT type, BYTE quality)
+uqm::COUNT
+CustomMineralDeposits (const SYSTEM_INFO *SysInfoPtr, uqm::COUNT which_deposit,
+		NODE_INFO *info, uqm::COUNT numNodes, uqm::COUNT type, uqm::BYTE quality)
 {
-	BYTE j;
-	COUNT num_deposits;
+	uqm::BYTE j;
+	uqm::COUNT num_deposits;
 	bool OpenSeason = true;
 	NODE_INFO temp_info;
 	const ELEMENT_ENTRY *eptr;
@@ -338,9 +338,9 @@ CustomMineralDeposits (const SYSTEM_INFO *SysInfoPtr, COUNT which_deposit,
 	j = NUM_USEFUL_ELEMENTS;
 	do
 	{
-		BYTE num_possible, depositQuality = 0;
+		uqm::BYTE num_possible, depositQuality = 0;
 
-		num_possible = LOBYTE (RandomContext_Random (SysGenRNG))
+		num_possible = lowByte (RandomContext_Random (SysGenRNG))
 				% (DEPOSIT_QUANTITY (eptr->Density) + 1);
 
 		if (num_possible == 0 && OpenSeason)
@@ -358,11 +358,11 @@ CustomMineralDeposits (const SYSTEM_INFO *SysInfoPtr, COUNT which_deposit,
 
 		while (num_possible--)
 		{
-			COUNT deposit_quality_fine;
-			COUNT deposit_quality_gross;
+			uqm::COUNT deposit_quality_fine;
+			uqm::COUNT deposit_quality_gross;
 
 			// JMS: For making the mineral blip smaller in case it is partially scavenged.
-			SDWORD temp_deposit_quality;
+			uqm::SDWORD temp_deposit_quality;
 
 			deposit_quality_fine = (LOWORD (RandomContext_Random (SysGenRNG)) % 100)
 					+ (
@@ -402,7 +402,7 @@ CustomMineralDeposits (const SYSTEM_INFO *SysInfoPtr, COUNT which_deposit,
 				Elements[eptr->ElementType].name);
 #endif /* DEBUG_SURFACE */
 			if (num_deposits >= which_deposit
-				|| ++num_deposits == sizeof (DWORD) * 8)
+				|| ++num_deposits == sizeof (uqm::DWORD) * 8)
 			{	// reached the maximum or the requested node
 				return num_deposits;
 			}
@@ -413,12 +413,12 @@ CustomMineralDeposits (const SYSTEM_INFO *SysInfoPtr, COUNT which_deposit,
 	return num_deposits;
 }
 
-COUNT
-CustomMineralDeposit (NODE_INFO *info, COUNT type, BYTE quality,
+uqm::COUNT
+CustomMineralDeposit (NODE_INFO *info, uqm::COUNT type, uqm::BYTE quality,
 		POINT location)
 {
-	COUNT deposit_quality_fine;
-	COUNT deposit_quality_gross;
+	uqm::COUNT deposit_quality_fine;
+	uqm::COUNT deposit_quality_gross;
 
 	if (!info)
 		return 0;

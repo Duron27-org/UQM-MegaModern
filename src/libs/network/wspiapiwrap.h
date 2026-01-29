@@ -38,7 +38,7 @@ int WINAPI WspiapiGetNameInfo (const struct sockaddr *sa, socklen_t salen,
 FARPROC WINAPI WspiapiLoad(WORD wFunction);
 BOOL WINAPI WspiapiParseV4Address(const char* pszAddress, PDWORD pswAddress);
 struct addrinfo* WINAPI WspiapiNewAddrInfo(int iSocketType, int iProtocol,
-	WORD wPort, DWORD dwAddress);
+	WORD wPort, uqm::DWORD dwAddress);
 char* WINAPI WspiapiStrdup(const char* pszString);
 int WINAPI WspiapiLookupNode(const char* pszNodeName, int iSocketType,
 	int iProtocol, WORD wPort, BOOL bAI_CANONNAME,

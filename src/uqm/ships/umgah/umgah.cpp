@@ -125,7 +125,7 @@ static RACE_DESC umgah_desc =
 // Private per-instance ship data
 typedef struct
 {
-	UWORD prevFacing;
+	uqm::UWORD prevFacing;
 } UMGAH_DATA;
 
 // Local typedef
@@ -192,7 +192,7 @@ cone_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 
 static void
 umgah_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
-		COUNT ConcernCounter)
+		uqm::COUNT ConcernCounter)
 {
 	EVALUATE_DESC *lpEvalDesc;
 	STARSHIP *StarShipPtr;
@@ -226,14 +226,14 @@ umgah_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 	}
 	else
 	{
-		BYTE this_turn;
-		SDWORD delta_x, delta_y;
+		uqm::BYTE this_turn;
+		uqm::SDWORD delta_x, delta_y;
 		bool EnemyBehind, EnoughJuice;
 
 		if (lpEvalDesc->which_turn >= 0xFF + 1)
 			this_turn = 0xFF;
 		else
-			this_turn = (BYTE)lpEvalDesc->which_turn;
+			this_turn = (uqm::BYTE)lpEvalDesc->which_turn;
 
 		EnoughJuice = (bool)((WORLD_TO_TURN (RES_DESCALE (
 				JUMP_DIST * StarShipPtr->RaceDescPtr->ship_info.energy_level
@@ -305,7 +305,7 @@ umgah_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 		StarShipPtr->RaceDescPtr->characteristics.special_wait = 0xFF;
 }
 
-static COUNT
+static uqm::COUNT
 initialize_cone (ELEMENT *ShipPtr, HELEMENT ConeArray[])
 {
 	STARSHIP *StarShipPtr;
@@ -395,7 +395,7 @@ umgah_preprocess (ELEMENT *ElementPtr)
 				&& (StarShipPtr->cur_status_flags & SPECIAL)
 				&& DeltaEnergy (ElementPtr, -SPECIAL_ENERGY_COST))
 		{
-			COUNT facing;
+			uqm::COUNT facing;
 
 			ProcessSound (SetAbsSoundIndex (
 							/* ZIP_BACKWARDS */

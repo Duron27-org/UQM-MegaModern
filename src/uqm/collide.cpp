@@ -29,10 +29,10 @@
 void
 collide (ELEMENT *ElementPtr0, ELEMENT *ElementPtr1)
 {
-	SIZE speed;
-	SIZE dx0, dy0, dx1, dy1, dx_rel, dy_rel;
-	SIZE TravelAngle0, TravelAngle1, ImpactAngle0, ImpactAngle1;
-	SIZE RelTravelAngle, Directness;
+	uqm::SIZE speed;
+	uqm::SIZE dx0, dy0, dx1, dy1, dx_rel, dy_rel;
+	uqm::SIZE TravelAngle0, TravelAngle1, ImpactAngle0, ImpactAngle1;
+	uqm::SIZE RelTravelAngle, Directness;
 
 	dx_rel = ElementPtr0->next.location.x
 			- ElementPtr1->next.location.x;
@@ -92,7 +92,7 @@ collide (ELEMENT *ElementPtr0, ELEMENT *ElementPtr1)
 	}
 
 	{
-		SIZE mass0, mass1;
+		uqm::SIZE mass0, mass1;
 		long scalar;
 
 		mass0 = ElementPtr0->mass_points /* << 2 */;
@@ -117,7 +117,7 @@ collide (ELEMENT *ElementPtr0, ELEMENT *ElementPtr1)
 				}
 			}
 
-			speed = (SIZE)(scalar / ((long)mass0 * (mass0 + mass1)));
+			speed = (uqm::SIZE)(scalar / ((long)mass0 * (mass0 + mass1)));
 			DeltaVelocityComponents (&ElementPtr0->velocity,
 					COSINE (ImpactAngle0, speed),
 					SINE (ImpactAngle0, speed));
@@ -154,7 +154,7 @@ collide (ELEMENT *ElementPtr0, ELEMENT *ElementPtr1)
 				}
 			}
 
-			speed = (SIZE)(scalar / ((long)mass1 * (mass0 + mass1)));
+			speed = (uqm::SIZE)(scalar / ((long)mass1 * (mass0 + mass1)));
 			DeltaVelocityComponents (&ElementPtr1->velocity,
 					COSINE (ImpactAngle1, speed),
 					SINE (ImpactAngle1, speed));

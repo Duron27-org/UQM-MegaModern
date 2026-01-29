@@ -133,7 +133,7 @@ static RACE_DESC shofixti_desc =
 	0, /* CodeRef */
 };
 
-static COUNT
+static uqm::COUNT
 initialize_standard_missile (ELEMENT *ShipPtr, HELEMENT MissileArray[])
 {
 
@@ -271,8 +271,8 @@ self_destruct_kill_objects (ELEMENT *ElementPtr)
 	for (hElement = GetHeadElement (); hElement != 0; hElement = hNextElement)
 	{
 		ELEMENT *ObjPtr;
-		SDWORD delta_x, delta_y;
-		DWORD dist;
+		uqm::SDWORD delta_x, delta_y;
+		uqm::DWORD dist;
 
 		LockElement (hElement, &ObjPtr);
 		hNextElement = GetSuccElement (ObjPtr);
@@ -408,7 +408,7 @@ self_destruct (ELEMENT *ElementPtr)
 
 static void
 shofixti_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
-		COUNT ConcernCounter)
+		uqm::COUNT ConcernCounter)
 {
 	STARSHIP *StarShipPtr;
 
@@ -499,13 +499,13 @@ init_shofixti (void)
 	shofixti_desc.cyborg_control.intelligence_func = shofixti_intelligence;
 
 	new_shofixti_desc = shofixti_desc;
-	if (LOBYTE (GLOBAL (CurrentActivity)) == IN_ENCOUNTER
+	if (lowByte (GLOBAL (CurrentActivity)) == IN_ENCOUNTER
 			&& CurStarDescPtr && CurStarDescPtr->Index == SHOFIXTI_DEFINED
 			&& !GET_GAME_STATE (SHOFIXTI_RECRUITED))
 	{
 		// Tanaka/Katana flies in a damaged ship.
 		// This is determined by being at the homeworld & not allied
-		COUNT i;
+		uqm::COUNT i;
 
 		new_shofixti_desc.ship_data.ship_rsc[0] = OLDSHOF_BIG_MASK_PMAP_ANIM;
 		new_shofixti_desc.ship_data.ship_rsc[1] = OLDSHOF_MED_MASK_PMAP_ANIM;
@@ -542,7 +542,7 @@ init_shofixti (void)
 				}
 				else
 				{
-					COUNT num_thrusts;
+					uqm::COUNT num_thrusts;
 
 					num_thrusts = new_shofixti_desc.characteristics.max_thrust /
 						new_shofixti_desc.characteristics.thrust_increment;

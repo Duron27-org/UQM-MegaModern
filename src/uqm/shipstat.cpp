@@ -26,7 +26,7 @@
 #include "util.h"
 
 void
-DrawCrewFuelString (COORD y, SIZE state)
+DrawCrewFuelString (COORD y, uqm::SIZE state)
 {
 	STAMP Stamp;
 
@@ -70,7 +70,7 @@ DrawCrewFuelString (COORD y, SIZE state)
 }
 
 static void
-DrawShipNameString (CHAR_T *pStr, COUNT CharCount, COORD y)
+DrawShipNameString (uqm::CHAR_T *pStr, uqm::COUNT CharCount, COORD y)
 {
 	TEXT Text;
 	FONT OldFont;
@@ -199,7 +199,7 @@ InitShipStatus (SHIP_INFO *SIPtr, STARSHIP *StarShipPtr, RECT *pClipRect, bool i
 	DrawStamp (&Stamp);
 	
 	{
-		SIZE crew_height, energy_height;
+		uqm::SIZE crew_height, energy_height;
 		
 #define MIN(a, b) (((a) <= (b)) ? (a) : (b))
 		if (!IS_HD)
@@ -300,11 +300,11 @@ InitShipStatus (SHIP_INFO *SIPtr, STARSHIP *StarShipPtr, RECT *pClipRect, bool i
 
 		locString = SetAbsStringTableIndex (SIPtr->race_strings, 1);
 		DrawShipNameString (
-				(CHAR_T *)GetStringAddress (locString),
+				(uqm::CHAR_T *)GetStringAddress (locString),
 				GetStringLength (locString), y);
 
 		{
-			CHAR_T buf[30];
+			uqm::CHAR_T buf[30];
 			TEXT Text;
 			FONT OldFont;
 
@@ -314,7 +314,7 @@ InitShipStatus (SHIP_INFO *SIPtr, STARSHIP *StarShipPtr, RECT *pClipRect, bool i
 			{	// In Melee menu
 				sprintf (buf, "%d", SIPtr->ship_cost);
 				Text.pStr = buf;
-				Text.CharCount = (COUNT)~0;
+				Text.CharCount = (uqm::COUNT)~0;
 			}
 			else
 			{
@@ -322,13 +322,13 @@ InitShipStatus (SHIP_INFO *SIPtr, STARSHIP *StarShipPtr, RECT *pClipRect, bool i
 						StarShipPtr->captains_name_index);
 
 				utf8StringCopy (buf, sizeof (buf),
-						(CHAR_T *)GetStringAddress (locString));
+						(uqm::CHAR_T *)GetStringAddress (locString));
 
 				if (is3DO (optWhichMenu))
 					replaceChar (buf, UNICHAR_SPACE, UNICHAR_TAB);
 
 				Text.pStr = buf;
-				Text.CharCount = (COUNT)utf8StringCount (buf);
+				Text.CharCount = (uqm::COUNT)utf8StringCount (buf);
 			}
 			Text.align = ALIGN_CENTER;
 
@@ -345,11 +345,11 @@ InitShipStatus (SHIP_INFO *SIPtr, STARSHIP *StarShipPtr, RECT *pClipRect, bool i
 	else if (StarShipPtr->playerNr == RPG_PLAYER_NUM)
 	{	// This is SIS
 		DrawCrewFuelString (y, 0);
-		DrawShipNameString (GLOBAL_SIS (ShipName), (COUNT)~0, y);
+		DrawShipNameString (GLOBAL_SIS (ShipName), (uqm::COUNT)~0, y);
 	}
 
 	{
-		SIZE crew_delta, energy_delta;
+		uqm::SIZE crew_delta, energy_delta;
 
 		crew_delta = SIPtr->crew_level;
 		energy_delta = SIPtr->energy_level;
@@ -374,7 +374,7 @@ InitShipStatus (SHIP_INFO *SIPtr, STARSHIP *StarShipPtr, RECT *pClipRect, bool i
 //      crew_delta <= ShipInfoPtr->max_crew - ShipInfoPtr->crew_level
 void
 DeltaStatistics (SHIP_INFO *ShipInfoPtr, COORD y_offs,
-		SIZE crew_delta, SIZE energy_delta)
+		uqm::SIZE crew_delta, uqm::SIZE energy_delta)
 {
 	COORD x, y;
 	RECT r;
@@ -391,8 +391,8 @@ DeltaStatistics (SHIP_INFO *ShipInfoPtr, COORD y_offs,
 
 	if (crew_delta != 0)
 	{
-		COUNT oldNumBlocks, newNumBlocks, blockI;
-		COUNT newCrewLevel;
+		uqm::COUNT oldNumBlocks, newNumBlocks, blockI;
+		uqm::COUNT newCrewLevel;
 
 #define MIN(a, b) (((a) <= (b)) ? (a) : (b))
 		oldNumBlocks = MIN(ShipInfoPtr->crew_level, MAX_CREW_SIZE);

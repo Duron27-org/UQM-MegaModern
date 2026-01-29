@@ -150,7 +150,7 @@ Credits_RenderTextFrame (CONTEXT TempContext, int *istr, int dir,
 	int i, rows, cnt;
 	char buf[2048];
 	FONT_SIZE_DEF *fdef;
-	SIZE leading;
+	uqm::SIZE leading;
 	TEXT t;
 	RECT r;
 	typedef struct
@@ -689,7 +689,7 @@ typedef struct
 	bool AllowCancel;
 	bool AllowSpeedChange;
 	bool CloseWhenDone;
-	DWORD CloseTimeOut;
+	uqm::DWORD CloseTimeOut;
 
 } CREDITS_INPUT_STATE;
 

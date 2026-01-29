@@ -152,7 +152,7 @@ static LOCDATA spathi_desc =
 static void
 ExitConversation (RESPONSE_REF Response)
 {
-	BYTE SpaCrew = IF_EASY(1, MAX_CREW_SIZE);
+	uqm::BYTE SpaCrew = IF_EASY(1, MAX_CREW_SIZE);
 	setSegue (Segue_peace);
 
 	if (PLAYER_SAID (Response, bye_ally_space))
@@ -200,7 +200,7 @@ ExitConversation (RESPONSE_REF Response)
 		{
 			NPCPhrase (WILL_JOIN);
 
-			AlienTalkSegue ((COUNT)~0);
+			AlienTalkSegue ((uqm::COUNT)~0);
 			AddEscortShips (SPATHI_SHIP, 1);
 			/* Make the Eluder escort captained by Fwiffo alone */
 			SetEscortCrewComplement (SPATHI_SHIP, SpaCrew,
@@ -218,13 +218,13 @@ ExitConversation (RESPONSE_REF Response)
 		{
 			NPCPhrase (WILL_JOIN);
 
-			AlienTalkSegue((COUNT)~0);
+			AlienTalkSegue((uqm::COUNT)~0);
 			AddEscortShips(SPATHI_SHIP, 1);
 		}
 	}
 }
 
-static BYTE join_us_refusals;
+static uqm::BYTE join_us_refusals;
 
 static void
 SpathiOnPluto (RESPONSE_REF R)
@@ -448,7 +448,7 @@ SpathiAllies (RESPONSE_REF R)
 {
 	if (R == 0)
 	{
-		BYTE NumVisits;
+		uqm::BYTE NumVisits;
 
 		NumVisits = GET_GAME_STATE (SPATHI_VISITS);
 		switch (NumVisits++)
@@ -506,7 +506,7 @@ SpathiFriendly (RESPONSE_REF R)
 {
 	if (R == 0)
 	{
-		BYTE NumVisits;
+		uqm::BYTE NumVisits;
 
 		NumVisits = GET_GAME_STATE (SPATHI_VISITS);
 		switch (NumVisits++)
@@ -546,7 +546,7 @@ static void SpathiNeutral (RESPONSE_REF R);
 static void
 SpathiBefriend (RESPONSE_REF R)
 {
-	BYTE InfoLeft, LastStack;
+	uqm::BYTE InfoLeft, LastStack;
 	RESPONSE_REF pStr[2];
 
 	InfoLeft = false;
@@ -668,7 +668,7 @@ SpathiNeutral (RESPONSE_REF R)
 {
 	if (R == 0)
 	{
-		BYTE NumVisits;
+		uqm::BYTE NumVisits;
 
 		NumVisits = GET_GAME_STATE (SPATHI_VISITS);
 		switch (NumVisits++)
@@ -723,7 +723,7 @@ SpathiNeutral (RESPONSE_REF R)
 static void
 Intro (void)
 {
-	BYTE Manner;
+	uqm::BYTE Manner;
 
 	Manner = GET_GAME_STATE (SPATHI_MANNER);
 	if (GET_GAME_STATE (FOUND_PLUTO_SPATHI) == 1)
@@ -754,7 +754,7 @@ Intro (void)
 	}
 	else if (Manner == 1)
 	{
-		BYTE NumVisits;
+		uqm::BYTE NumVisits;
 
 		NumVisits = GET_GAME_STATE (SPATHI_VISITS);
 		switch (NumVisits++)
@@ -788,7 +788,7 @@ Intro (void)
 	}
 }
 
-static COUNT
+static uqm::COUNT
 uninit_spathi (void)
 {
 	luaUqm_comm_uninit ();
@@ -798,7 +798,7 @@ uninit_spathi (void)
 static void
 post_spathi_enc (void)
 {
-	BYTE Manner;
+	uqm::BYTE Manner;
 
 	if (GET_GAME_STATE (FOUND_PLUTO_SPATHI) == 1)
 	{
@@ -841,7 +841,7 @@ init_spathi_comm (void)
 
 	if (GET_GAME_STATE (FOUND_PLUTO_SPATHI) == 1
 			|| GET_GAME_STATE (SPATHI_MANNER) == 3
-			|| LOBYTE (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
+			|| lowByte (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
 	{
 		setSegue (Segue_peace);
 	}

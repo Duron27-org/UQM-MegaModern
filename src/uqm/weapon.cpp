@@ -92,13 +92,13 @@ initialize_missile (MISSILE_BLOCK *pMissileBlock)
 	hMissileElement = AllocElement ();
 	if (hMissileElement)
 	{
-		SIZE delta_x, delta_y;
-		COUNT angle;
+		uqm::SIZE delta_x, delta_y;
+		uqm::COUNT angle;
 		ELEMENT *MissileElementPtr;
 
 		LockElement (hMissileElement, &MissileElementPtr);
-		MissileElementPtr->hit_points = (BYTE)pMissileBlock->hit_points;
-		MissileElementPtr->mass_points = (BYTE)pMissileBlock->damage;
+		MissileElementPtr->hit_points = (uqm::BYTE)pMissileBlock->hit_points;
+		MissileElementPtr->mass_points = (uqm::BYTE)pMissileBlock->damage;
 		MissileElementPtr->playerNr = pMissileBlock->sender;
 		MissileElementPtr->state_flags = APPEARING | FINITE_LIFE
 				| pMissileBlock->flags;
@@ -110,7 +110,7 @@ initialize_missile (MISSILE_BLOCK *pMissileBlock)
 				pMissileBlock->index);
 		MissileElementPtr->preprocess_func = pMissileBlock->preprocess_func;
 		MissileElementPtr->collision_func = weapon_collision_cb;
-		MissileElementPtr->blast_offset = (BYTE)pMissileBlock->blast_offs;
+		MissileElementPtr->blast_offset = (uqm::BYTE)pMissileBlock->blast_offs;
 
 		angle = FACING_TO_ANGLE (pMissileBlock->face);
 		MissileElementPtr->current.location.x = pMissileBlock->cx
@@ -135,13 +135,13 @@ HELEMENT
 weapon_collision (ELEMENT *WeaponElementPtr, POINT *pWPt,
 		ELEMENT *HitElementPtr, POINT *pHPt)
 {
-	SIZE damage;
+	uqm::SIZE damage;
 	HELEMENT hBlastElement;
 
 	if (WeaponElementPtr->state_flags & COLLISION) /* if already did effect */
 		return ((HELEMENT)0);
 
-	damage = (SIZE)WeaponElementPtr->mass_points;
+	damage = (uqm::SIZE)WeaponElementPtr->mass_points;
 	if (damage
 			&& ((HitElementPtr->state_flags & FINITE_LIFE)
 			|| HitElementPtr->life_span == NORMAL_LIFE))
@@ -183,9 +183,9 @@ weapon_collision (ELEMENT *WeaponElementPtr, POINT *pWPt,
 		hBlastElement = AllocElement ();
 		if (hBlastElement)
 		{
-			COUNT blast_index;
-			SIZE blast_offs;
-			COUNT angle, num_blast_frames;
+			uqm::COUNT blast_index;
+			uqm::SIZE blast_offs;
+			uqm::COUNT angle, num_blast_frames;
 			ELEMENT *BlastElementPtr;
 			extern FRAME blast[];
 
@@ -247,10 +247,11 @@ weapon_collision (ELEMENT *WeaponElementPtr, POINT *pWPt,
 
 FRAME
 ModifySilhouette (ELEMENT *ElementPtr, STAMP *modify_stamp,
-		BYTE modify_flags)
+		uqm::BYTE modify_flags)
 {
 	FRAME f;
-	RECT r, or;
+	RECT r{};
+	RECT or{};
 	INTERSECT_CONTROL ShipIntersect, ObjectIntersect;
 	STARSHIP *StarShipPtr;
 	CONTEXT OldContext;
@@ -274,10 +275,10 @@ ModifySilhouette (ELEMENT *ElementPtr, STAMP *modify_stamp,
 		ShipIntersect.EndPoint = ShipIntersect.IntersectStamp.origin;
 		do
 		{
-			ObjectIntersect.IntersectStamp.origin.x = ((COUNT)TFB_Random ()
+			ObjectIntersect.IntersectStamp.origin.x = ((uqm::COUNT)TFB_Random ()
 					% (r.extent.width - or.extent.width))
 					+ ((or.extent.width - r.extent.width) >> 1);
-			ObjectIntersect.IntersectStamp.origin.y = ((COUNT)TFB_Random ()
+			ObjectIntersect.IntersectStamp.origin.y = ((uqm::COUNT)TFB_Random ()
 					% (r.extent.height - or.extent.height))
 					+ ((or.extent.height - r.extent.height) >> 1);
 			ObjectIntersect.EndPoint = ObjectIntersect.IntersectStamp.origin;
@@ -315,10 +316,10 @@ ModifySilhouette (ELEMENT *ElementPtr, STAMP *modify_stamp,
 // -1 if no target was found.
 // Cloaked ships won't be detected, except when the APPEARING flag is
 // set for the Tracker.
-SIZE
-TrackShip (ELEMENT *Tracker, COUNT *pfacing)
+uqm::SIZE
+TrackShip (ELEMENT *Tracker, uqm::COUNT *pfacing)
 {
-	SIZE best_delta_facing, best_delta;
+	uqm::SIZE best_delta_facing, best_delta;
 	HELEMENT hShip, hNextShip;
 	ELEMENT *Trackee;
 
@@ -352,7 +353,7 @@ CheckTracking:
 			if (Trackee->life_span
 					&& StarShipPtr->RaceDescPtr->ship_info.crew_level)
 			{
-				SIZE delta_x, delta_y, delta_facing;
+				uqm::SIZE delta_x, delta_y, delta_facing;
 
 				if (Tracker->state_flags & PRE_PROCESS)
 				{
@@ -397,11 +398,11 @@ CheckTracking:
 
 	if (best_delta_facing > 0)
 	{
-		COUNT facing;
+		uqm::COUNT facing;
 
 		facing = *pfacing;
 		if (best_delta_facing == ANGLE_TO_FACING (HALF_CIRCLE))
-			facing += (((BYTE)TFB_Random () & 1) << 1) - 1;
+			facing += (((uqm::BYTE)TFB_Random () & 1) << 1) - 1;
 		else if (best_delta_facing < ANGLE_TO_FACING (HALF_CIRCLE))
 			++facing;
 		else

@@ -153,7 +153,7 @@ CombatIsInevitable (RESPONSE_REF R)
 			|| PLAYER_SAID (R, whats_up_3)
 			|| PLAYER_SAID (R, whats_up_4))
 	{
-		BYTE NumVisits;
+		uqm::BYTE NumVisits;
 
 		NumVisits = GET_GAME_STATE (URQUAN_INFO);
 		switch (NumVisits++)
@@ -428,7 +428,7 @@ LoserUrquan (RESPONSE_REF R)
 static void
 Intro (void)
 {
-	DWORD GrpOffs;
+	uqm::DWORD GrpOffs;
 
 	if (EXTENDED)
 	{
@@ -436,7 +436,7 @@ Intro (void)
 		CommData.AlienAmbientArray[8].AnimFlags &= ~CIRCULAR_ANIM;
 	}
 
-	if (LOBYTE (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
+	if (lowByte (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
 	{
 		NPCPhrase (OUT_TAKES);
 
@@ -445,7 +445,7 @@ Intro (void)
 	}
 
 	GrpOffs = GET_GAME_STATE (URQUAN_PROBE_GRPOFFS);
-	if (LOBYTE (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY
+	if (lowByte (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY
 			&& GLOBAL (BattleGroupRef)
 			&& GLOBAL (BattleGroupRef) == GrpOffs)
 	{
@@ -459,7 +459,7 @@ Intro (void)
 	}
 	else
 	{
-		BYTE NumVisits;
+		uqm::BYTE NumVisits;
 
 		if (!GET_GAME_STATE (URQUAN_SENSES_EVIL)
 				&& GET_GAME_STATE (TALKING_PET_ON_SHIP))
@@ -469,7 +469,7 @@ Intro (void)
 		}
 
 		GrpOffs = GET_GAME_STATE (COLONY_GRPOFFS);
-		if (LOBYTE (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY
+		if (lowByte (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY
 				&& GLOBAL (BattleGroupRef)
 				&& GLOBAL (BattleGroupRef) == GrpOffs)
 		{
@@ -480,7 +480,7 @@ Intro (void)
 		}
 
 		GrpOffs = GET_GAME_STATE (SAMATRA_GRPOFFS);
-		if (LOBYTE (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY
+		if (lowByte (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY
 				&& GLOBAL (BattleGroupRef)
 				&& GLOBAL (BattleGroupRef) == GrpOffs)
 		{
@@ -536,7 +536,7 @@ Intro (void)
 	}
 }
 
-static COUNT
+static uqm::COUNT
 uninit_urquan (void)
 {
 	luaUqm_comm_uninit ();
@@ -554,7 +554,7 @@ init_urquan_comm (void)
 {
 	LOCDATA *retval;
 
-	DWORD GrpOffs;
+	uqm::DWORD GrpOffs;
 
 	urquan_desc.init_encounter_func = Intro;
 	urquan_desc.post_encounter_func = post_urquan_enc;
@@ -569,7 +569,7 @@ init_urquan_comm (void)
 	GrpOffs = GET_GAME_STATE (URQUAN_PROBE_GRPOFFS);
 	
 	// use alternate "Probe" track if available
-	if ((LOBYTE (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY
+	if ((lowByte (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY
 			&& GLOBAL (BattleGroupRef)
 			&& GLOBAL (BattleGroupRef) == GrpOffs))
 		altResFlags |= USE_ALT_SONG;
@@ -578,8 +578,8 @@ init_urquan_comm (void)
 		altResFlags |= USE_ALT_COLORMAP;
 
 	if (GET_GAME_STATE (PLAYER_HYPNOTIZED)
-			|| LOBYTE (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE
-			|| (LOBYTE (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY
+			|| lowByte (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE
+			|| (lowByte (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY
 			&& GLOBAL (BattleGroupRef)
 			&& GLOBAL (BattleGroupRef) == GrpOffs))
 	{

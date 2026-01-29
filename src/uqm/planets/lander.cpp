@@ -69,7 +69,7 @@ struct LanderInputState {
 };
 
 FRAME LanderFrame[8];
-BYTE LanderUpgradesFlag;
+uqm::BYTE LanderUpgradesFlag;
 static SOUND LanderSounds;
 MUSIC_REF LanderMusic;
 static CONTEXT PCLanderContext;
@@ -177,7 +177,7 @@ extern PRIM_LINKS DisplayLinks;
 
 #define LANDER_SPEED_DENOM (isPC (optSuperPC) ? 14 : 10)
 
-static BYTE lander_flags;
+static uqm::BYTE lander_flags;
 static POINT curLanderLoc;
 static int crew_left;
 static int shieldHit;
@@ -256,7 +256,7 @@ DestroyPCLanderContext (void)
 
 
 static Color
-DamageColorCycle (Color c, COUNT i)
+DamageColorCycle (Color c, uqm::COUNT i)
 {
 	static const Color damage_tab[DAMAGE_CYCLE + 1] =
 			LANDER_DAMAGE_COLOR_TABLE;
@@ -281,12 +281,12 @@ DamageColorCycle (Color c, COUNT i)
 	return c;
 }
 
-static HELEMENT AddGroundDisaster (COUNT which_disaster);
+static HELEMENT AddGroundDisaster (uqm::COUNT which_disaster);
 
 void
 object_animation (ELEMENT *ElementPtr)
 {
-	COUNT frame_index, angle;
+	uqm::COUNT frame_index, angle;
 	PRIMITIVE *pPrim;
 
 	pPrim = &DisplayArray[ElementPtr->PrimIndex];
@@ -340,8 +340,8 @@ object_animation (ELEMENT *ElementPtr)
 			}
 			else if (ElementPtr->mass_points == EARTHQUAKE_DISASTER)
 			{
-				//SIZE s; unused
-				SIZE frame_amount = 13; 
+				//uqm::SIZE s; unused
+				uqm::SIZE frame_amount = 13; 
 
 
 				// XXX: Was 0x8000 the background flag on 3DO?
@@ -402,15 +402,15 @@ object_animation (ELEMENT *ElementPtr)
 		}
 		else if (!(frame_index & 3) && ElementPtr->hit_points)
 		{
-			BYTE index;
-			COUNT speed;
+			uqm::BYTE index;
+			uqm::COUNT speed;
 
 			index = ElementPtr->mass_points & ~CREATURE_AWARE;
 			speed = CreatureData[index].Attributes & SPEED_MASK;
 			if (speed)
 			{
-				SIZE dx, dy;
-				COUNT old_angle;
+				uqm::SIZE dx, dy;
+				uqm::COUNT old_angle;
 
 				dx = curLanderLoc.x - ElementPtr->next.location.x;
 				if (dx < 0 && dx < -(SCALED_MAP_WIDTH << (MAG_SHIFT - 1)))
@@ -432,9 +432,9 @@ object_animation (ELEMENT *ElementPtr)
 				}
 				else if (!(ElementPtr->mass_points & CREATURE_AWARE))
 				{
-					BYTE DetectPercent;
+					uqm::BYTE DetectPercent;
 
-					DetectPercent = (((BYTE)(CreatureData[index].Attributes
+					DetectPercent = (((uqm::BYTE)(CreatureData[index].Attributes
 							& AWARENESS_MASK) >> AWARENESS_SHIFT) + 1)
 							* (30 / 6);
 							// XXX: Shouldn't this be dependent on
@@ -469,12 +469,12 @@ object_animation (ELEMENT *ElementPtr)
 						|| (CreatureData[index].Attributes
 						& BEHAVIOR_MASK) == BEHAVIOR_UNPREDICTABLE)
 				{
-					COUNT rand_val;
+					uqm::COUNT rand_val;
 
 					rand_val = TFB_Random ();
-					angle = NORMALIZE_ANGLE (LOBYTE (rand_val));
+					angle = NORMALIZE_ANGLE (lowByte (rand_val));
 					ElementPtr->thrust_wait =
-							(HIBYTE (rand_val) >> 2) + 10;
+							(highByte (rand_val) >> 2) + 10;
 				}
 				else if ((CreatureData[index].Attributes
 						& BEHAVIOR_MASK) == BEHAVIOR_FLEE)
@@ -526,7 +526,7 @@ object_animation (ELEMENT *ElementPtr)
 #define NUM_CREW_ROWS (is3DO (optSuperPC) ? 2 : 4)
 
 static void
-DeltaLanderCrew (SIZE crew_delta, COUNT which_disaster)
+DeltaLanderCrew (uqm::SIZE crew_delta, uqm::COUNT which_disaster)
 {
 	STAMP s;
 	CONTEXT OldContext;
@@ -589,9 +589,9 @@ DeltaLanderCrew (SIZE crew_delta, COUNT which_disaster)
 }
 
 static void
-FillLanderHold (PLANETSIDE_DESC *pPSD, COUNT scan, COUNT NumRetrieved)
+FillLanderHold (PLANETSIDE_DESC *pPSD, uqm::COUNT scan, uqm::COUNT NumRetrieved)
 {
-	COUNT start_count, tmpholdint;
+	uqm::COUNT start_count, tmpholdint;
 	STAMP s;
 	CONTEXT OldContext;
 
@@ -653,13 +653,13 @@ FillLanderHold (PLANETSIDE_DESC *pPSD, COUNT scan, COUNT NumRetrieved)
 
 // returns true iff the node was picked up.
 static bool
-pickupNode (PLANETSIDE_DESC *pPSD, COUNT NumRetrieved,
+pickupNode (PLANETSIDE_DESC *pPSD, uqm::COUNT NumRetrieved,
 		ELEMENT *ElementPtr, const INTERSECT_CONTROL *LanderControl,
-		const INTERSECT_CONTROL *ElementControl, COUNT Scan)
+		const INTERSECT_CONTROL *ElementControl, uqm::COUNT Scan)
 {
-	BYTE EType;
-	CHAR_T ch, *pStr;
-	COUNT *Amount, Max, Offset;
+	uqm::BYTE EType;
+	uqm::CHAR_T ch, *pStr;
+	uqm::COUNT *Amount, Max, Offset;
 	bool PartialPickup;
 
 	Amount = &pPSD->BiologicalLevel;
@@ -688,11 +688,11 @@ pickupNode (PLANETSIDE_DESC *pPSD, COUNT NumRetrieved,
 
 	if (*Amount + NumRetrieved > Max)
 	{
-		SIZE which_node;
-		COUNT oldsize = ElementPtr->mass_points;
+		uqm::SIZE which_node;
+		uqm::COUNT oldsize = ElementPtr->mass_points;
 
 		// Deposit could only be picked up partially.
-		NumRetrieved = (COUNT)(Max - *Amount);
+		NumRetrieved = (uqm::COUNT)(Max - *Amount);
 
 		if (Scan != BIOLOGICAL_SCAN && optPartialPickup)
 		{	// JMS: Subtract the scavenged kilotons from the mineral
@@ -701,7 +701,7 @@ pickupNode (PLANETSIDE_DESC *pPSD, COUNT NumRetrieved,
 		
 			// JMS: This makes the mineral deposit subtraction keep  
 			// in effect even after leaving & re-entering the planet.
-			which_node = HIBYTE (ElementPtr->scan_node) - 1;
+			which_node = highByte (ElementPtr->scan_node) - 1;
 			pSolarSysState->SysInfo.PlanetInfo.
 					PartiallyScavengedList[MINERAL_SCAN][which_node] =
 						NumRetrieved;
@@ -712,7 +712,7 @@ pickupNode (PLANETSIDE_DESC *pPSD, COUNT NumRetrieved,
 					|| (oldsize > 15 && ElementPtr->mass_points <= 15))
 			{
 				PRIMITIVE *pPrim = &DisplayArray[ElementPtr->PrimIndex];
-				BYTE gfx_index_change = 0;
+				uqm::BYTE gfx_index_change = 0;
 			
 				if (oldsize > 22 && ElementPtr->mass_points <= 15)
 					gfx_index_change = 2;
@@ -752,7 +752,7 @@ pickupNode (PLANETSIDE_DESC *pPSD, COUNT NumRetrieved,
 
 	if (Scan != BIOLOGICAL_SCAN)
 	{
-		BYTE NumNodesGrabbed = pPSD->NodeData.NumNodesGrabbed;
+		uqm::BYTE NumNodesGrabbed = pPSD->NodeData.NumNodesGrabbed;
 
 		pPSD->ElementAmounts[ElementCategory (EType)] += NumRetrieved;
 
@@ -769,24 +769,24 @@ pickupNode (PLANETSIDE_DESC *pPSD, COUNT NumRetrieved,
 			+ (ElementControl->EndPoint.x - LanderControl->EndPoint.x);
 	pPSD->MineralText[0].baseline.y = (MapSurface.height >> 1)
 			+ (ElementControl->EndPoint.y - LanderControl->EndPoint.y);
-	pPSD->MineralText[0].CharCount = (COUNT)~0;
+	pPSD->MineralText[0].CharCount = (uqm::COUNT)~0;
 	pPSD->MineralText[1].pStr = pStr;
 
 	while ((ch = *pStr++) && ch != ' ')
 		;
 	if (ch == '\0')
 	{
-		pPSD->MineralText[1].CharCount = (COUNT)~0;
+		pPSD->MineralText[1].CharCount = (uqm::COUNT)~0;
 		pPSD->MineralText[2].CharCount = 0;
 	}
 	else  /* ch == ' ' */
 	{
 		// Name contains a space. Print over
 		// two lines.
-		pPSD->MineralText[1].CharCount = (COUNT)utf8StringCountN (
+		pPSD->MineralText[1].CharCount = (uqm::COUNT)utf8StringCountN (
 				pPSD->MineralText[1].pStr, pStr - 1);
 		pPSD->MineralText[2].pStr = pStr;
-		pPSD->MineralText[2].CharCount = (COUNT)~0;
+		pPSD->MineralText[2].CharCount = (uqm::COUNT)~0;
 	}
 
 	// JMS
@@ -797,7 +797,7 @@ static void
 ExplodeCritter (ELEMENT *ElementPtr)
 {
 	HELEMENT hExplosionElement;
-	SIZE temp_which_node;
+	uqm::SIZE temp_which_node;
 				
 	hExplosionElement = AllocElement ();
 	if (hExplosionElement)
@@ -840,13 +840,13 @@ ExplodeCritter (ELEMENT *ElementPtr)
 		// JMS: This marks the exploded critter "collected". (even though
 		// there was no biodata to collect). This ensures the critter isn't
 		// resurrected when visiting the planet next time.
-		temp_which_node = HIBYTE (ElementPtr->scan_node) - 1;
+		temp_which_node = highByte (ElementPtr->scan_node) - 1;
 		pSolarSysState->SysInfo.
 				PlanetInfo.ScanRetrieveMask[BIOLOGICAL_SCAN] |=
 					(1L << temp_which_node);
 				// Mark this bio blip's state as "collected".
 				// 
-		//pSolarSysState->CurNode = (COUNT)~0;
+		//pSolarSysState->CurNode = (uqm::COUNT)~0;
 				// GenerateLifeForms will update the states of ALL
 				// bio-blips when run.
 		//callGenerateForScanType (pSolarSysState,
@@ -861,7 +861,7 @@ ExplodeCritter (ELEMENT *ElementPtr)
 }
 
 static void
-shotCreature (ELEMENT *ElementPtr, BYTE value,
+shotCreature (ELEMENT *ElementPtr, uqm::BYTE value,
 		INTERSECT_CONTROL *LanderControl, PRIMITIVE *pPrim)
 {
 	if (ElementPtr->hit_points == 0)
@@ -893,7 +893,7 @@ shotCreature (ELEMENT *ElementPtr, BYTE value,
 	else if (CreatureData[ElementPtr->mass_points & ~CREATURE_AWARE]
 			.Attributes & SPEED_MASK)
 	{
-		COUNT angle;
+		uqm::COUNT angle;
 
 		angle = FACING_TO_ANGLE (GetFrameIndex (
 				LanderControl->IntersectStamp.frame) -
@@ -920,7 +920,7 @@ DrawRadarArea (void)
 }
 
 static void
-CheckObjectCollision (COUNT index)
+CheckObjectCollision (uqm::COUNT index)
 {
 	INTERSECT_CONTROL LanderControl;
 	DRAWABLE LanderHandle;
@@ -990,10 +990,10 @@ CheckObjectCollision (COUNT index)
 			}
 
 			{
-				COUNT scan, NumRetrieved;
-				SIZE which_node;
+				uqm::COUNT scan, NumRetrieved;
+				uqm::SIZE which_node;
 
-				scan = LOBYTE (ElementPtr->scan_node);
+				scan = lowByte (ElementPtr->scan_node);
 				if (pLanderPrim == 0)
 				{
 					/* Collision of lander with another object */
@@ -1024,7 +1024,7 @@ CheckObjectCollision (COUNT index)
 					else if (scan == BIOLOGICAL_SCAN
 							&& ElementPtr->hit_points)
 					{
-						BYTE danger_vals[] =
+						uqm::BYTE danger_vals[] =
 						{
 							0, 6, 13, 26
 						};
@@ -1056,7 +1056,7 @@ CheckObjectCollision (COUNT index)
 				}
 				else
 				{
-					BYTE value;
+					uqm::BYTE value;
 
 					if (scan == ENERGY_SCAN)
 					{
@@ -1097,7 +1097,7 @@ CheckObjectCollision (COUNT index)
 					}
 				}
 
-				which_node = HIBYTE (ElementPtr->scan_node) - 1;
+				which_node = highByte (ElementPtr->scan_node) - 1;
 				if (callPickupForScanType (pSolarSysState,
 						pSolarSysState->pOrbitalDesc, which_node, scan))
 				{	// Node retrieved, remove from the surface
@@ -1122,7 +1122,7 @@ lightning_process (ELEMENT *ElementPtr)
 		--ElementPtr->turn_wait;
 	else
 	{
-		COUNT num_frames;
+		uqm::COUNT num_frames;
 
 		num_frames = GetFrameCount (pPrim->Object.Stamp.frame) - 7;
 		if (GetFrameIndex (pPrim->Object.Stamp.frame) >= num_frames)
@@ -1134,7 +1134,7 @@ lightning_process (ELEMENT *ElementPtr)
 		}
 		else
 		{
-			SIZE s;
+			uqm::SIZE s;
 #define NUM_CYCLES 8
 			static const Color color_tab[NUM_CYCLES] =
 					LIGHTNING_COLOR_TABLE;
@@ -1174,7 +1174,7 @@ AddLightning (void)
 	hLightningElement = AllocElement ();
 	if (hLightningElement)
 	{
-		DWORD rand_val;
+		uqm::DWORD rand_val;
 		ELEMENT *LightningElementPtr;
 
 		LockElement (hLightningElement, &LightningElementPtr);
@@ -1192,12 +1192,12 @@ AddLightning (void)
 		LightningElementPtr->next.location.x = (curLanderLoc.x
 				+ ((SCALED_MAP_WIDTH << MAG_SHIFT)
 				- ((SURFACE_WIDTH >> 1) - 6))
-				+ (chooseIfHd (LOBYTE (rand_val), rand_val)
+				+ (chooseIfHd (lowByte (rand_val), rand_val)
 				% (SURFACE_WIDTH - RES_SCALE (12))))
 				% (SCALED_MAP_WIDTH << MAG_SHIFT);
 		LightningElementPtr->next.location.y = (curLanderLoc.y
 				+ ((MAP_HEIGHT << MAG_SHIFT) - ((SURFACE_HEIGHT >> 1) - 6))
-				+ (chooseIfHd (HIBYTE (rand_val), rand_val)
+				+ (chooseIfHd (highByte (rand_val), rand_val)
 				% (SURFACE_HEIGHT - RES_SCALE (12))))
 				% (MAP_HEIGHT << MAG_SHIFT);
 
@@ -1227,14 +1227,14 @@ AddLightning (void)
 }
 
 static HELEMENT
-AddGroundDisaster (COUNT which_disaster)
+AddGroundDisaster (uqm::COUNT which_disaster)
 {
 	HELEMENT hGroundDisasterElement;
 
 	hGroundDisasterElement = AllocElement ();
 	if (hGroundDisasterElement)
 	{
-		DWORD rand_val;
+		uqm::DWORD rand_val;
 		ELEMENT *GroundDisasterElementPtr;
 		PRIMITIVE *pPrim;
 
@@ -1295,7 +1295,7 @@ AddGroundDisaster (COUNT which_disaster)
 static void
 BuildObjectList (void)
 {
-	DWORD rand_val;
+	uqm::DWORD rand_val;
 	POINT org;
 	HELEMENT hElement, hNextElement;
 	PLANETSIDE_DESC *pPSD = planetSideDesc;
@@ -1305,24 +1305,24 @@ BuildObjectList (void)
 	lander_flags &= ~KILL_CREW;
 
 	rand_val = TFB_Random ();
-	if (LOBYTE (HIWORD (rand_val)) < pPSD->FireChance)
+	if (lowByte (HIWORD (rand_val)) < pPSD->FireChance)
 	{
 		AddGroundDisaster (LAVASPOT_DISASTER);
 		PlaySound (SetAbsSoundIndex (LanderSounds, LAVASPOT_DISASTER),
 				NotPositional (), NULL, GAME_SOUND_PRIORITY);
 	}
 
-	if (HIBYTE (LOWORD (rand_val)) < pPSD->TectonicsChance)
+	if (highByte (LOWORD (rand_val)) < pPSD->TectonicsChance)
 		AddGroundDisaster (EARTHQUAKE_DISASTER);
 
-	if (LOBYTE (LOWORD (rand_val)) < pPSD->WeatherChance)
+	if (lowByte (LOWORD (rand_val)) < pPSD->WeatherChance)
 		AddLightning ();
 
 	org = curLanderLoc;
 	for (hElement = GetHeadElement ();
 			hElement; hElement = hNextElement)
 	{
-		SIZE dx, dy;
+		uqm::SIZE dx, dy;
 		ELEMENT *ElementPtr;
 
 		LockElement (hElement, &ElementPtr);
@@ -1412,7 +1412,7 @@ BuildObjectList (void)
 }
 
 static void
-ScrollPlanetSide (SIZE dx, SIZE dy, int landingOffset)
+ScrollPlanetSide (uqm::SIZE dx, uqm::SIZE dy, int landingOffset)
 {
 	POINT new_pt;
 	STAMP lander_s, shadow_s, shield_s;
@@ -1578,7 +1578,7 @@ ScrollPlanetSide (SIZE dx, SIZE dy, int landingOffset)
 }
 
 static void
-animationInterframe (TimeCount *TimeIn, COUNT periods)
+animationInterframe (TimeCount *TimeIn, uqm::COUNT periods)
 {
 #define ANIM_FRAME_RATE  (ONE_SECOND / 30)
 
@@ -1599,7 +1599,7 @@ AnimateLaunch (FRAME farray, bool isLanding)
 {
 	RECT r;
 	STAMP s;
-	COUNT num_frames;
+	uqm::COUNT num_frames;
 	static TimeCount NextTime, psNextTime;
 	TimeCount Now;
 
@@ -1652,7 +1652,7 @@ AnimateLaunch (FRAME farray, bool isLanding)
 static void
 AnimateLanderWarmup (void)
 {
-	SIZE num_crew;
+	uqm::SIZE num_crew;
 	STAMP s;
 	//CONTEXT OldContext; unused
 	TimeCount TimeIn = GetTimeCounter ();
@@ -1804,13 +1804,13 @@ InitPlanetSide (POINT pt)
 }
 
 static void
-LanderFire (SIZE facing)
+LanderFire (uqm::SIZE facing)
 {
 #define SHUTTLE_FIRE_WAIT (isPC (optSuperPC) ? 10 : 14)
 	HELEMENT hWeaponElement;
-	SIZE wdx, wdy;
+	uqm::SIZE wdx, wdy;
 	ELEMENT *WeaponElementPtr;
-	COUNT angle;
+	uqm::COUNT angle;
 
 	hWeaponElement = AllocElement ();
 	if (hWeaponElement == NULL)
@@ -1892,7 +1892,7 @@ put_node (ELEMENT *ElementPtr)
 
 	// JMS: Partially scavenged energy blips won't return
 	// anymore to original size after leaving planet.
-	NodeElementPtr->mass_points = HIBYTE (info.density)
+	NodeElementPtr->mass_points = highByte (info.density)
 			- pSolarSysState->SysInfo.PlanetInfo.
 			PartiallyScavengedList[MINERAL_SCAN][ElementPtr->cycle];
 
@@ -1901,7 +1901,7 @@ put_node (ELEMENT *ElementPtr)
 			+ ElementCategory (info.type) * 5);
 	NodeElementPtr->next.image.frame = SetRelFrameIndex (
 			NodeElementPtr->current.image.frame,
-			LOBYTE (info.density) + 1);
+			lowByte (info.density) + 1);
 
 	DisplayArray[NodeElementPtr->PrimIndex].Object.Stamp.frame =
 			IncFrameIndex (NodeElementPtr->next.image.frame);
@@ -1937,8 +1937,8 @@ spawn_node (ELEMENT *ElementPtr)
 	{
 		HELEMENT hNodeElement;
 		ELEMENT *NodeElementPtr;
-		SIZE arc;
-		COUNT half_dist = ElementPtr->life_span >> 1;
+		uqm::SIZE arc;
+		uqm::COUNT half_dist = ElementPtr->life_span >> 1;
 
 		hNodeElement = AllocElement ();
 		if (!hNodeElement)
@@ -1972,10 +1972,10 @@ spawn_node (ELEMENT *ElementPtr)
 }
 
 static void
-LobMineralNode (COUNT which_node, BYTE type, const COUNT amount)
+LobMineralNode (uqm::COUNT which_node, uqm::BYTE type, const uqm::COUNT amount)
 {
-	COUNT dist, angle;
-	COUNT deposit_quality_fine, deposit_quality_gross;
+	uqm::COUNT dist, angle;
+	uqm::COUNT deposit_quality_fine, deposit_quality_gross;
 	HELEMENT hNodeElement;
 	ELEMENT *NodeElementPtr;
 
@@ -1983,8 +1983,8 @@ LobMineralNode (COUNT which_node, BYTE type, const COUNT amount)
 	if (hNodeElement == NULL)
 		return;
 
-	angle = (COUNT)TFB_Random ();
-	dist = ((COUNT)TFB_Random () % 8) + 4;
+	angle = (uqm::COUNT)TFB_Random ();
+	dist = ((uqm::COUNT)TFB_Random () % 8) + 4;
 
 	deposit_quality_fine = amount * 10;
 	if (deposit_quality_fine < 150)
@@ -2014,7 +2014,7 @@ LobMineralNode (COUNT which_node, BYTE type, const COUNT amount)
 
 	NodeElementPtr->next.image.frame = SetRelFrameIndex (
 			NodeElementPtr->current.image.frame,
-			LOBYTE (MAKE_WORD (deposit_quality_gross, amount)) + 1);
+			lowByte (MAKE_WORD (deposit_quality_gross, amount)) + 1);
 	DisplayArray[NodeElementPtr->PrimIndex].Object.Stamp.frame =
 			IncFrameIndex (NodeElementPtr->next.image.frame);
 
@@ -2028,8 +2028,8 @@ LobMineralNode (COUNT which_node, BYTE type, const COUNT amount)
 static void
 ScatterDeposits (void)
 {
-	COUNT i, numDeposits;
-	BYTE NumNodesGrabbed;
+	uqm::COUNT i, numDeposits;
+	uqm::BYTE NumNodesGrabbed;
 	PLANETSIDE_DESC *pPSD = planetSideDesc;
 
 	if (!optScatterElements)
@@ -2045,7 +2045,7 @@ ScatterDeposits (void)
 
 	for (i = numDeposits; i < (numDeposits + NumNodesGrabbed); i++)
 	{
-		BYTE affix = i - numDeposits;
+		uqm::BYTE affix = i - numDeposits;
 		double penalty = (double)RangeMinMax (25, 75, TFB_Random ()) / 100;
 
 		if (pPSD->NodeData.NodeAmounts[affix] * penalty < 1)
@@ -2098,8 +2098,8 @@ LanderExplosion (void)
 static bool
 DoPlanetSide (LanderInputState *pMS)
 {
-	SIZE dx = 0;
-	SIZE dy = 0;
+	uqm::SIZE dx = 0;
+	uqm::SIZE dy = 0;
 
 #define SHUTTLE_TURN_WAIT (isPC (optSuperPC) ? 1 : 3)
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
@@ -2107,8 +2107,8 @@ DoPlanetSide (LanderInputState *pMS)
 
 	if (!pMS->Initialized)
 	{
-		COUNT landerSpeedNumer;
-		COUNT angle;
+		uqm::COUNT landerSpeedNumer;
+		uqm::COUNT angle;
 
 		pMS->Initialized = true;
 		
@@ -2173,15 +2173,15 @@ landerSpeedNumer = WORLD_TO_VELOCITY (RES_SCALE (48));
 	{
 		if (crew_left)
 		{
-			SIZE index = GetFrameIndex (LanderFrame[0]);
+			uqm::SIZE index = GetFrameIndex (LanderFrame[0]);
 
 			if (turn_wait)
 				--turn_wait;
 			else if (CurrentInputState.key[PlayerControls[0]][KEY_LEFT] ||
 				CurrentInputState.key[PlayerControls[0]][KEY_RIGHT])
 			{
-				COUNT landerSpeedNumer;
-				COUNT angle;
+				uqm::COUNT landerSpeedNumer;
+				uqm::COUNT angle;
 
 				if (CurrentInputState.key[PlayerControls[0]][KEY_LEFT])
 					--index;
@@ -2254,7 +2254,7 @@ landerSpeedNumer = WORLD_TO_VELOCITY (RES_SCALE (48));
 void
 MaskLanderGraphics (void)
 {
-	BYTE currFlagState;
+	uqm::BYTE currFlagState;
 
 	if (!optShowUpgrades)
 		return;
@@ -2265,7 +2265,7 @@ MaskLanderGraphics (void)
 
 	if (currFlagState != LanderUpgradesFlag)
 	{
-		COUNT i,j;
+		uqm::COUNT i,j;
 		FRAME mods = CaptureDrawable (LoadGraphic (LANDER_MODS_PMAP_ANIM));
 		FRAME lander;
 		FRAME mask;
@@ -2299,8 +2299,8 @@ MaskLanderGraphics (void)
 void
 FreeLanderData (void)
 {
-	COUNT i;
-	COUNT landerFrameCount;
+	uqm::COUNT i;
+	uqm::COUNT landerFrameCount;
 
 	if (LanderFrame[0] == NULL)
 		return;
@@ -2352,17 +2352,17 @@ LoadLanderData (void)
 	LanderSounds = CaptureSound (LoadSound (LANDER_SOUNDS));
 
 	{
-		COUNT i;
+		uqm::COUNT i;
 
 		for (i = 0; i < num_orbit_themes (); ++i)
 			OrbitMusic[i] = load_orbit_theme (i);
 	}
 }
 
-BYTE
-SetPlanetMusic (BYTE planet_type)
+uqm::BYTE
+SetPlanetMusic (uqm::BYTE planet_type)
 {
-	BYTE OrbitNum = planet_type % num_orbit_themes ();
+	uqm::BYTE OrbitNum = planet_type % num_orbit_themes ();
 	LanderMusic = OrbitMusic[OrbitNum];
 
 	return !(opt3doMusic || optRemixMusic || optVolasMusic) ? 0 : OrbitNum;
@@ -2507,10 +2507,10 @@ SetLanderTakeoff (void)
 
 // Returns whether the lander is still alive at the end of the sequence
 bool
-KillLanderCrewSeq (COUNT numKilled, DWORD period)
+KillLanderCrewSeq (uqm::COUNT numKilled, uqm::DWORD period)
 {
 	TimeCount TimeOut;
-	COUNT i;
+	uqm::COUNT i;
 
 	TimeOut = GetTimeCounter ();
 	for (i = 0; i < numKilled && crew_left; ++i)
@@ -2545,12 +2545,12 @@ GetThermalHazardRating (int temp)
 
 // Given a hazard type and rating, return the chance (out of 256) of the hazard
 // being generated.
-static BYTE
+static uqm::BYTE
 GetHazardChance (int hazardType, unsigned HazardRating)
 {
-	BYTE TectonicsChanceTab[] = {0, 0, 1*3, 2*3, 4*3,  8*3, 16*3, 32*3};
-	BYTE WeatherChanceTab  [] = {0, 0, 1*3, 2*3, 3*3,  6*3, 12*3, 24*3};
-	BYTE FireChanceTab     [] = {0, 0, 1*3, 2*3, 4*3, 12*3, 24*3, 48*3};
+	uqm::BYTE TectonicsChanceTab[] = {0, 0, 1*3, 2*3, 4*3,  8*3, 16*3, 32*3};
+	uqm::BYTE WeatherChanceTab  [] = {0, 0, 1*3, 2*3, 3*3,  6*3, 12*3, 24*3};
+	uqm::BYTE FireChanceTab     [] = {0, 0, 1*3, 2*3, 4*3, 12*3, 24*3, 48*3};
 
 	if (EXTENDED)
 	{
@@ -2574,7 +2574,7 @@ GetHazardChance (int hazardType, unsigned HazardRating)
 void
 PlanetSide (POINT planetLoc)
 {
-	SIZE index;
+	uqm::SIZE index;
 	LanderInputState landerInputState;
 	PLANETSIDE_DESC PSD;
 
@@ -2670,7 +2670,7 @@ PlanetSide (POINT planetLoc)
 				DeltaSISGauges (crew_left, 0, 0);
 			else
 			{// Get the crew from landers back but not draw anything
-				COUNT CrewCapacity = GetCrewPodCapacity ();
+				uqm::COUNT CrewCapacity = GetCrewPodCapacity ();
 				GLOBAL_SIS(CrewEnlisted) += crew_left;
 				if (GLOBAL_SIS(CrewEnlisted) > CrewCapacity)
 					GLOBAL_SIS(CrewEnlisted) = CrewCapacity;
@@ -2753,7 +2753,7 @@ DrawMinDatText (void)
 	text.baseline.x = rect.corner.x + RES_SCALE (1);
 	text.baseline.y = rect.corner.y + rect.extent.height;
 	text.pStr = GAME_STRING (STATUS_STRING_BASE + 20); // MIN
-	text.CharCount = (COUNT)~0;
+	text.CharCount = (uqm::COUNT)~0;
 
 	font_DrawText (&text);
 
@@ -2761,7 +2761,7 @@ DrawMinDatText (void)
 	text.align = ALIGN_RIGHT;
 	text.baseline.x = rect.corner.x + rect.extent.width - RES_SCALE (1);
 	text.pStr = GAME_STRING (STATUS_STRING_BASE + 21); // DAT
-	text.CharCount = (COUNT)~0;
+	text.CharCount = (uqm::COUNT)~0;
 
 	font_DrawText (&text);
 
@@ -2770,7 +2770,7 @@ DrawMinDatText (void)
 }
 
 void
-InitLander (BYTE LanderFlags)
+InitLander (uqm::BYTE LanderFlags)
 {
 	RECT r;
 
@@ -2786,8 +2786,8 @@ InitLander (BYTE LanderFlags)
 	
 	if (GLOBAL_SIS (NumLanders) || LanderFlags)
 	{
-		BYTE ShieldFlags, capacity_shift;
-		COUNT free_space;
+		uqm::BYTE ShieldFlags, capacity_shift;
+		uqm::COUNT free_space;
 		STAMP s;
 
 		s.origin.x = 0; /* set up powered-down lander */
@@ -2890,8 +2890,8 @@ InitPCLander (bool Loading)
 		&& pSolarSysState->pOrbitalDesc->data_index <= LAST_GAS_GIANT))
 	{	// Do not draw lander graphics if it's impossible to land (shielded
 		// and gas giant) This mimics PC behaviour.
-		BYTE ShieldFlags, capacity_shift;
-		COUNT free_space;
+		uqm::BYTE ShieldFlags, capacity_shift;
+		uqm::COUNT free_space;
 		STAMP s;
 
 		s.frame = SetAbsFrameIndex (LanderFrame[7], 32);
@@ -2905,7 +2905,7 @@ InitPCLander (bool Loading)
 				- GLOBAL_SIS (TotalElementMass);
 		if ((int)free_space < (int)(MAX_SCROUNGED << capacity_shift))
 		{
-			COUNT i, inc;
+			uqm::COUNT i, inc;
 
 			inc = MAX_HOLD_BARS - ((free_space >> capacity_shift)
 					* MAX_HOLD_BARS / MAX_SCROUNGED) + 1;

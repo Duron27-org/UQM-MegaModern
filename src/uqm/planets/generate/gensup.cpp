@@ -34,10 +34,10 @@ static bool GenerateSupox_generateName (const SOLARSYS_STATE *,
 	const PLANET_DESC *world);
 static bool GenerateSupox_generateOrbital (SOLARSYS_STATE *solarSys,
 		PLANET_DESC *world);
-static COUNT GenerateSupox_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
+static uqm::COUNT GenerateSupox_generateEnergy (const SOLARSYS_STATE *,
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
 static bool GenerateSupox_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, COUNT whichNode);
+		PLANET_DESC *world, uqm::COUNT whichNode);
 
 
 const GenerateFunctions generateSupoxFunctions = {
@@ -67,7 +67,7 @@ GenerateSupox_generatePlanets (SOLARSYS_STATE *solarSys)
 
 	if (PrimeSeed)
 	{
-		COUNT angle;
+		uqm::COUNT angle;
 
 		pSunDesc->PlanetByte = 0;
 		pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
@@ -100,7 +100,7 @@ GenerateSupox_generateName (const SOLARSYS_STATE *solarSys,
 	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET)
 			&& GET_GAME_STATE (SUPOX_STACK1) > 2)
 	{
-		BYTE PlanetByte = solarSys->SunDesc[0].PlanetByte;
+		uqm::BYTE PlanetByte = solarSys->SunDesc[0].PlanetByte;
 		PLANET_DESC pPlanetDesc = solarSys->PlanetDesc[PlanetByte];
 
 		utf8StringCopy (GLOBAL_SIS (PlanetName),
@@ -165,7 +165,7 @@ GenerateSupox_generateOrbital (SOLARSYS_STATE *solarSys,
 
 static bool
 GenerateSupox_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		COUNT whichNode)
+		uqm::COUNT whichNode)
 {
 	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{
@@ -186,9 +186,9 @@ GenerateSupox_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 	return false;
 }
 
-static COUNT
+static uqm::COUNT
 GenerateSupox_generateEnergy (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *info)
 {
 	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{

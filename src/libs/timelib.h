@@ -35,8 +35,8 @@ extern "C" {
 #	define ONE_SECOND 840
 #endif
 
-typedef DWORD TimeCount;
-typedef DWORD TimePeriod;
+typedef uqm::DWORD TimeCount;
+typedef uqm::DWORD TimePeriod;
 
 extern void InitTimeSystem (void);
 extern void UnInitTimeSystem (void);

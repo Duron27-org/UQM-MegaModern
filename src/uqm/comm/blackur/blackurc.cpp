@@ -144,7 +144,7 @@ static LOCDATA blackurq_desc =
 static void
 CombatIsInevitable (RESPONSE_REF R)
 {
-	BYTE NumVisits;
+	uqm::BYTE NumVisits;
 
 	setSegue (Segue_hostile);
 
@@ -453,9 +453,9 @@ DieHuman (RESPONSE_REF R)
 static void
 Intro (void)
 {
-	DWORD GrpOffs;
+	uqm::DWORD GrpOffs;
 
-	if (LOBYTE (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
+	if (lowByte (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
 	{
 		NPCPhrase (OUT_TAKES);
 
@@ -479,7 +479,7 @@ Intro (void)
 	}
 
 	GrpOffs = GET_GAME_STATE (SAMATRA_GRPOFFS);
-	if (LOBYTE (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY
+	if (lowByte (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY
 			&& GLOBAL (BattleGroupRef)
 			&& GLOBAL (BattleGroupRef) == GrpOffs)
 	{
@@ -490,7 +490,7 @@ Intro (void)
 	}
 	else
 	{
-		BYTE NumVisits;
+		uqm::BYTE NumVisits;
 
 		NumVisits = GET_GAME_STATE (KOHR_AH_VISITS);
 		if (GET_GAME_STATE (KOHR_AH_FRENZY))
@@ -539,7 +539,7 @@ Intro (void)
 	}
 }
 
-static COUNT
+static uqm::COUNT
 uninit_blackurq (void)
 {
 	luaUqm_comm_uninit ();
@@ -568,7 +568,7 @@ init_blackurq_comm (void)
 	blackurq_desc.AlienTextWidth = SIS_TEXT_WIDTH - RES_SCALE (16);
 
 	if (!GET_GAME_STATE (KOHR_AH_KILLED_ALL)
-			&& LOBYTE (GLOBAL (CurrentActivity)) != WON_LAST_BATTLE)
+			&& lowByte (GLOBAL (CurrentActivity)) != WON_LAST_BATTLE)
 	{
 		setSegue (Segue_hostile);
 	}

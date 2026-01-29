@@ -375,7 +375,7 @@ cleanup_dead_ship (ELEMENT *DeadShipPtr)
 }
 
 static void
-setMinShipLifeSpan (ELEMENT *ship, COUNT life_span)
+setMinShipLifeSpan (ELEMENT *ship, uqm::COUNT life_span)
 {
 	if (ship->death_func == new_ship)
 	{	// The ship has finished exploding or warping out, and now
@@ -388,7 +388,7 @@ setMinShipLifeSpan (ELEMENT *ship, COUNT life_span)
 }
 
 static void
-setMinStarShipLifeSpan (STARSHIP *starShip, COUNT life_span)
+setMinStarShipLifeSpan (STARSHIP *starShip, uqm::COUNT life_span)
 {
 	ELEMENT *ship;
 
@@ -543,7 +543,7 @@ new_ship (ELEMENT *DeadShipPtr)
 static void
 explosion_preprocess (ELEMENT *ShipPtr)
 {
-	BYTE i;
+	uqm::BYTE i;
 
 	i = (NUM_EXPLOSION_FRAMES * 3) - ShipPtr->life_span;
 	switch (i)
@@ -584,8 +584,8 @@ explosion_preprocess (ELEMENT *ShipPtr)
 		hElement = AllocElement ();
 		if (hElement)
 		{
-			COUNT angle, dist;
-			DWORD rand_val;
+			uqm::COUNT angle, dist;
+			uqm::DWORD rand_val;
 			ELEMENT *ElementPtr;
 			extern FRAME explosion[];
 
@@ -598,9 +598,9 @@ explosion_preprocess (ELEMENT *ShipPtr)
 			ElementPtr->current.image.farray = explosion;
 			ElementPtr->current.image.frame = explosion[0];
 			rand_val = TFB_Random ();
-			angle = LOBYTE (HIWORD (rand_val));
-			dist = DISPLAY_TO_WORLD (RES_SCALE (LOBYTE (LOWORD (rand_val)) % 8));
-			if (HIBYTE (LOWORD (rand_val)) < 256 * 1 / 3)
+			angle = lowByte (HIWORD (rand_val));
+			dist = DISPLAY_TO_WORLD (RES_SCALE (lowByte (LOWORD (rand_val)) % 8));
+			if (highByte (LOWORD (rand_val)) < 256 * 1 / 3)
 				dist += DISPLAY_TO_WORLD (RES_SCALE (8));
 			ElementPtr->current.location.x =
 					ShipPtr->current.location.x + COSINE (angle, dist);
@@ -608,9 +608,9 @@ explosion_preprocess (ELEMENT *ShipPtr)
 					ShipPtr->current.location.y + SINE (angle, dist);
 			ElementPtr->preprocess_func = animation_preprocess;
 			rand_val = TFB_Random ();
-			angle = LOBYTE (LOWORD (rand_val));
+			angle = lowByte (LOWORD (rand_val));
 			dist = WORLD_TO_VELOCITY (
-					DISPLAY_TO_WORLD (RES_SCALE (HIBYTE (LOWORD (rand_val)) % 5)));
+					DISPLAY_TO_WORLD (RES_SCALE (highByte (LOWORD (rand_val)) % 5)));
 			SetVelocityComponents (&ElementPtr->velocity,
 					COSINE (angle, dist), SINE (angle, dist));
 			UnlockElement (hElement);
@@ -698,7 +698,7 @@ RecordShipDeath (ELEMENT *deadShip)
 		battle_counter[deadStarShip->playerNr]--;
 	}
 
-	if (LOBYTE (GLOBAL (CurrentActivity)) == SUPER_MELEE)
+	if (lowByte (GLOBAL (CurrentActivity)) == SUPER_MELEE)
 		MeleeShipDeath (deadStarShip);
 }
 
@@ -713,7 +713,7 @@ StartShipExplosion (ELEMENT *ShipPtr, bool playSound)
 		ZeroVelocityComponents (&ShipPtr->velocity);
 
 	DeltaEnergy (ShipPtr,
-			-(SIZE)StarShipPtr->RaceDescPtr->ship_info.energy_level);
+			-(uqm::SIZE)StarShipPtr->RaceDescPtr->ship_info.energy_level);
 
 	ShipPtr->life_span = NUM_EXPLOSION_FRAMES * 3;
 	ShipPtr->state_flags &= ~DISAPPEARING;
@@ -794,7 +794,7 @@ cycle_ion_trail (ELEMENT *ElementPtr)
 }
 
 void
-spawn_ion_trail (ELEMENT *ElementPtr, SIZE x_offset, SIZE y_offset)
+spawn_ion_trail (ELEMENT *ElementPtr, uqm::SIZE x_offset, uqm::SIZE y_offset)
 {
 	HELEMENT hIonElement;
 
@@ -804,7 +804,7 @@ spawn_ion_trail (ELEMENT *ElementPtr, SIZE x_offset, SIZE y_offset)
 	if (hIonElement)
 	{
 #define ION_LIFE 1
-		COUNT angle;
+		uqm::COUNT angle;
 		RECT r;
 		ELEMENT *IonElementPtr;
 		STARSHIP *StarShipPtr;
@@ -919,7 +919,7 @@ ship_transition (ELEMENT *ElementPtr)
 		{
 #define TRANSITION_SPEED DISPLAY_TO_WORLD (RES_SCALE (40)) 
 #define TRANSITION_LIFE 1
-			COUNT angle;
+			uqm::COUNT angle;
 
 			PutElement (hShipImage);
 
@@ -953,9 +953,9 @@ ship_transition (ELEMENT *ElementPtr)
 				// JMS_GFX: Circumventing overflows by using temp variables
 				// instead of subtracting straight from the POINT sized
 				// ShipImagePtr->current.location.
-				SDWORD temp_x = (SDWORD)ShipImagePtr->current.location.x -
+				uqm::SDWORD temp_x = (uqm::SDWORD)ShipImagePtr->current.location.x -
 					COSINE (angle, TRANSITION_SPEED) * (ElementPtr->life_span - 1);
-				SDWORD temp_y = (SDWORD)ShipImagePtr->current.location.y -
+				uqm::SDWORD temp_y = (uqm::SDWORD)ShipImagePtr->current.location.y -
 					SINE (angle, TRANSITION_SPEED) * (ElementPtr->life_span - 1);
 
 				ShipImagePtr->current.location.x = WRAP_X (temp_x);

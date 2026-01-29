@@ -43,12 +43,12 @@
 
 /* ----------------------------STATIC DATA-------------------------------- */
 
-static DWORD seed = 12345L; /* random number seed */
+static uqm::DWORD seed = 12345L; /* random number seed */
 
 /* ----------------------------CODE--------------------------------------- */
 
 /*****************************************************************************
-* FUNC: DWORD TFB_Random()
+* FUNC: uqm::DWORD TFB_Random()
 *
 * DESC: random number generator
 *
@@ -58,7 +58,7 @@ static DWORD seed = 12345L; /* random number seed */
 *
 *****************************************************************************/
 
-DWORD
+uqm::DWORD
 TFB_Random (void)
 {
 	seed = A * (seed % Q) - R * (seed / Q);
@@ -71,7 +71,7 @@ TFB_Random (void)
 }
 
 /*****************************************************************************
-* FUNC: DWORD TFB_SeedRandom(DWORD l)
+* FUNC: uqm::DWORD TFB_SeedRandom(uqm::DWORD l)
 *
 * DESC: set the seed for the random number generator to parameter "l", and
 * return the value of the previously active seed, to allow for multiple
@@ -83,10 +83,10 @@ TFB_Random (void)
 *
 *****************************************************************************/
 
-DWORD
-TFB_SeedRandom (DWORD new_seed)
+uqm::DWORD
+TFB_SeedRandom (uqm::DWORD new_seed)
 {
-	DWORD old_seed;
+	uqm::DWORD old_seed;
 
 	/* coerce the seed to be in the range 1..M */
 	if (new_seed == 0L) /* 0 becomes 1 */

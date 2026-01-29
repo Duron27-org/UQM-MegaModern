@@ -153,12 +153,12 @@ ResumeTrack (void)
 	UnlockMutex (soundSource[SPEECH_SOURCE].stream_mutex);
 }
 
-COUNT
+uqm::COUNT
 PlayingTrack (void)
 {
 	// This ignores the paused state and simply returns what track
 	// *should* be playing
-	COUNT result = 0;  // default is none
+	uqm::COUNT result = 0;  // default is none
 
 	if (!sound_sample)
 		return 0; // not playing anything
@@ -295,14 +295,14 @@ OnBufferTag (TFB_SoundSample* sample, TFB_SoundTag* tag)
 // Rerturns number of timestamps parsed.
 // Stops if it encounters a ; as this is used for alternate time stamps.
 static int
-GetTimeStamps (CHAR_T *TimeStamps, sint32 *time_stamps)
+GetTimeStamps (uqm::CHAR_T *TimeStamps, sint32 *time_stamps)
 {
 	int pos;
 	int num = 0;
 	
 	while (*TimeStamps && (pos = strcspn (TimeStamps, ";,\r\n")))
 	{
-		CHAR_T valStr[32];
+		uqm::CHAR_T valStr[32];
 		uint32 val;
 		
 		memcpy (valStr, TimeStamps, pos);
@@ -325,10 +325,10 @@ GetTimeStamps (CHAR_T *TimeStamps, sint32 *time_stamps)
 #define TEXT_SPEED 80
 // Returns number of parsed pages
 static int
-SplitSubPages (CHAR_T *text, CHAR_T *pages[], sint32 timestamp[], int size)
+SplitSubPages (uqm::CHAR_T *text, uqm::CHAR_T *pages[], sint32 timestamp[], int size)
 {
 	int lead_ellips = 0;
-	COUNT page;
+	uqm::COUNT page;
 	
 	for (page = 0; page < size && *text != '\0'; ++page)
 	{
@@ -341,7 +341,7 @@ SplitSubPages (CHAR_T *text, CHAR_T *pages[], sint32 timestamp[], int size)
 		//   are used exclusively
 		aft_ellips = 3 * (text[pos] != '\0' && pos > 0 &&
 				!ispunct (text[pos - 1]) && !isspace (text[pos - 1]));
-		pages[page] = (CHAR_T*)HMalloc (sizeof (CHAR_T) *
+		pages[page] = (uqm::CHAR_T*)HMalloc (sizeof (uqm::CHAR_T) *
 				(lead_ellips + pos + aft_ellips + 1));
 		if (lead_ellips)
 			strcpy (pages[page], "...");
@@ -351,7 +351,7 @@ SplitSubPages (CHAR_T *text, CHAR_T *pages[], sint32 timestamp[], int size)
 			strcpy (pages[page] + lead_ellips + pos, "...");
 
 		if (optSmoothScroll == OPT_PC && !usingSpeech
-				&& (LOBYTE (GLOBAL (CurrentActivity)) != WON_LAST_BATTLE))
+				&& (lowByte (GLOBAL (CurrentActivity)) != WON_LAST_BATTLE))
 		{
 			timestamp[page] =
 					RecalculateDelay (lead_ellips + pos + aft_ellips, true);
@@ -377,7 +377,7 @@ SplitSubPages (CHAR_T *text, CHAR_T *pages[], sint32 timestamp[], int size)
 // May only be called after at least one SpliceTrack(). This is a limitation
 // for the sake of timestamps, but it does not have to be so.
 void
-SpliceMultiTrack (CHAR_T *TrackNames[], CHAR_T *TrackText)
+SpliceMultiTrack (uqm::CHAR_T *TrackNames[], uqm::CHAR_T *TrackText)
 {
 #define MAX_MULTI_TRACKS  20
 #define MAX_MULTI_BUFFERS 100
@@ -433,7 +433,7 @@ SpliceMultiTrack (CHAR_T *TrackNames[], CHAR_T *TrackText)
 
 	slen1 = strlen (last_sub->text);
 	slen2 = strlen (TrackText);
-	last_sub->text = (CHAR_T*)HRealloc (last_sub->text, slen1 + slen2 + 1);
+	last_sub->text = (uqm::CHAR_T*)HRealloc (last_sub->text, slen1 + slen2 + 1);
 	strcpy (last_sub->text + slen1, TrackText);
 
 	no_page_break = 1;
@@ -441,12 +441,12 @@ SpliceMultiTrack (CHAR_T *TrackNames[], CHAR_T *TrackText)
 
 // XXX: This code and the entire trackplayer are begging to be overhauled
 void
-SpliceTrack (CHAR_T *TrackName, CHAR_T *TrackText, CHAR_T *TimeStamp, CallbackFunction cb)
+SpliceTrack (uqm::CHAR_T *TrackName, uqm::CHAR_T *TrackText, uqm::CHAR_T *TimeStamp, CallbackFunction cb)
 {
-	static CHAR_T last_track_name[128] = "";
+	static uqm::CHAR_T last_track_name[128] = "";
 	static unsigned long dec_offset = 0;
 #define MAX_PAGES 50
-	CHAR_T *pages[MAX_PAGES];
+	uqm::CHAR_T *pages[MAX_PAGES];
 	sint32 time_stamps[MAX_PAGES];
 	int num_pages;
 	int page;
@@ -485,7 +485,7 @@ SpliceTrack (CHAR_T *TrackName, CHAR_T *TrackText, CHAR_T *TimeStamp, CallbackFu
 		// Add the first piece to the last subtitle page
 		slen1 = strlen (last_sub->text);
 		slen2 = strlen (pages[0]);
-		last_sub->text = (CHAR_T*)HRealloc (last_sub->text, slen1 + slen2 + 1);
+		last_sub->text = (uqm::CHAR_T*)HRealloc (last_sub->text, slen1 + slen2 + 1);
 		strcpy (last_sub->text + slen1, pages[0]);
 		HFree (pages[0]);
 		
@@ -543,7 +543,7 @@ SpliceTrack (CHAR_T *TrackName, CHAR_T *TrackText, CHAR_T *TimeStamp, CallbackFu
 
 			slen1 = strlen (last_sub->text);
 			slen2 = strlen (pages[0]);
-			last_sub->text = (CHAR_T*)HRealloc (last_sub->text, slen1 + slen2 + 1);
+			last_sub->text = (uqm::CHAR_T*)HRealloc (last_sub->text, slen1 + slen2 + 1);
 			strcpy (last_sub->text + slen1, pages[0]);
 			HFree (pages[0]);
 		}
@@ -863,7 +863,7 @@ GetNextTrackSubtitle (SUBTITLE_REF LastRef)
 }
 
 // External access to the chunk subtitles
-const CHAR_T *
+const uqm::CHAR_T *
 GetTrackSubtitleText (SUBTITLE_REF SubRef)
 {
 	if (!SubRef)
@@ -874,10 +874,10 @@ GetTrackSubtitleText (SUBTITLE_REF SubRef)
 
 // External access to currently active subtitle text
 // Returns NULL is none is active
-const CHAR_T *
+const uqm::CHAR_T *
 GetTrackSubtitle (void)
 {
-	const CHAR_T *cur_sub = NULL;
+	const uqm::CHAR_T *cur_sub = NULL;
 
 	if (!sound_sample)
 		return NULL; // not playing anything
@@ -890,10 +890,10 @@ GetTrackSubtitle (void)
 	return cur_sub;
 }
 
-COUNT
-GetSubtitleNumber (const CHAR_T *sub)
+uqm::COUNT
+GetSubtitleNumber (const uqm::CHAR_T *sub)
 {
-	COUNT i = 0;
+	uqm::COUNT i = 0;
 	TFB_SoundChunk *now;
 
 	if (sub == NULL)// If no sub - get current one
@@ -913,10 +913,10 @@ GetSubtitleNumber (const CHAR_T *sub)
 	return i;
 }
 
-COUNT
-GetSubtitleNumberByTrack (COUNT track)
+uqm::COUNT
+GetSubtitleNumberByTrack (uqm::COUNT track)
 {
-	COUNT i = 0;
+	uqm::COUNT i = 0;
 	TFB_SoundChunk *now;
 
 	if (chunks_head == NULL)// Fool-proof
@@ -938,12 +938,12 @@ GetSubtitleNumberByTrack (COUNT track)
 	return i;
 }
 
-DWORD
-RecalculateDelay (DWORD numChars, bool talk)
+uqm::DWORD
+RecalculateDelay (uqm::DWORD numChars, bool talk)
 {
-	DWORD silence_length;
-	DWORD talk_length = ONE_SECOND * numChars / MODERATE_SPEED;
-	BYTE read_speed = speed_array[GLOBAL (glob_flags) & READ_SPEED_MASK];
+	uqm::DWORD silence_length;
+	uqm::DWORD talk_length = ONE_SECOND * numChars / MODERATE_SPEED;
+	uqm::BYTE read_speed = speed_array[GLOBAL (glob_flags) & READ_SPEED_MASK];
 
 	if (read_speed)
 	{

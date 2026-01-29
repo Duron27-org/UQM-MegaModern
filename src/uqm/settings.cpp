@@ -25,7 +25,7 @@
 
 static MUSIC_REF LastMusicRef;
 static bool LastContinuous;
-static BYTE LastPriority;
+static uqm::BYTE LastPriority;
 
 void
 ToggleMusic (void)
@@ -41,7 +41,7 @@ ToggleMusic (void)
 }
 
 void
-PlayMusic (MUSIC_REF MusicRef, bool Continuous, BYTE Priority)
+PlayMusic (MUSIC_REF MusicRef, bool Continuous, uqm::BYTE Priority)
 {
 	LastMusicRef = MusicRef;
 	LastContinuous = Continuous;
@@ -60,7 +60,7 @@ PlayMusic (MUSIC_REF MusicRef, bool Continuous, BYTE Priority)
 }
 
 void
-SeekMusic (DWORD pos)
+SeekMusic (uqm::DWORD pos)
 {
 	PLRSeek (LastMusicRef, pos);
 }
@@ -85,7 +85,7 @@ PauseMusic (void)
 }
 
 void
-PlayMusicResume (MUSIC_REF MusicRef, BYTE Volume)
+PlayMusicResume (MUSIC_REF MusicRef, uqm::BYTE Volume)
 {
 	SetMusicVolume (MUTE_VOLUME);
 	PlayMusic (MusicRef, true, 1);
@@ -106,8 +106,8 @@ ToggleSoundEffect (void)
 }
 
 void
-PlaySoundEffect (SOUND S, COUNT Channel, SoundPosition Pos,
-		void *PositionalObject, BYTE Priority)
+PlaySoundEffect (SOUND S, uqm::COUNT Channel, SoundPosition Pos,
+		void *PositionalObject, uqm::BYTE Priority)
 {
 	if (!(GLOBAL (glob_flags) & SOUND_DISABLED))
 	{
@@ -118,7 +118,7 @@ PlaySoundEffect (SOUND S, COUNT Channel, SoundPosition Pos,
 }
 
 void
-PlaySpeechEffect (SOUND S, SoundPosition Pos, void *PositionalObject, BYTE Priority)
+PlaySpeechEffect (SOUND S, SoundPosition Pos, void *PositionalObject, uqm::BYTE Priority)
 {
 	if (!(GLOBAL(glob_flags) & SOUND_DISABLED))
 	{

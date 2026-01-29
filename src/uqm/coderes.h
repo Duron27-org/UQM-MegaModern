@@ -33,7 +33,7 @@ extern bool DestroyCodeRes (void *hCode);
 
 typedef struct
 {
-	UWORD size;
+	uqm::UWORD size;
 } CODE_REF;
 
 #if 0 //defined(__cplusplus)

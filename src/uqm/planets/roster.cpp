@@ -49,7 +49,7 @@ typedef struct
 	// and sorted in the Y coord. These are used for navigation around the
 	// escort positions.
 	POINT shipPos[MAX_BUILT_SHIPS];
-	COUNT count;
+	uqm::COUNT count;
 			// Number of ships
 	
 	POINT curShipPt;
@@ -185,10 +185,10 @@ flashSupportShipCrew (void)
 }
 
 static bool
-DeltaSupportCrew (ROSTER_STATE *rosterState, SIZE crew_delta)
+DeltaSupportCrew (ROSTER_STATE *rosterState, uqm::SIZE crew_delta)
 {
 	bool ret = false;
-	CHAR_T buf[40];
+	uqm::CHAR_T buf[40];
 	HFLEETINFO hTemplate;
 	HSHIPFRAG hShipFrag;
 	SHIP_FRAGMENT *StarShipPtr;
@@ -244,7 +244,7 @@ drawModifiedSupportShip (ROSTER_STATE *rosterState)
 }
 
 static void
-selectSupportShip (ROSTER_STATE *rosterState, COUNT shipIndex)
+selectSupportShip (ROSTER_STATE *rosterState, uqm::COUNT shipIndex)
 {
 	rosterState->curShipPt = rosterState->shipPos[shipIndex];
 	getSupportShipIcon (rosterState);
@@ -292,7 +292,7 @@ DoModifyRoster (MENU_STATE *pMS)
 	}
 	else if (rosterState->modifyingCrew)
 	{
-		COUNT loop, DoLoop = 0;
+		uqm::COUNT loop, DoLoop = 0;
 		bool failed = false;
 
 		if (up || pgup)
@@ -323,9 +323,9 @@ DoModifyRoster (MENU_STATE *pMS)
 	}
 	else
 	{
-		COUNT NewState;
+		uqm::COUNT NewState;
 		POINT *pship_pos = rosterState->shipPos;
-		COUNT top_right = (rosterState->count + 1) >> 1;
+		uqm::COUNT top_right = (rosterState->count + 1) >> 1;
 
 		NewState = pMS->CurState;
 		

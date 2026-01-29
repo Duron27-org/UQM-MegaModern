@@ -138,7 +138,7 @@ static RACE_DESC thraddash_desc =
 
 static void
 thraddash_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
-		COUNT ConcernCounter)
+		uqm::COUNT ConcernCounter)
 {
 
 	STARSHIP *StarShipPtr;
@@ -147,7 +147,7 @@ thraddash_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 	lpEvalDesc = &ObjectsOfConcern[ENEMY_SHIP_INDEX];
 	if (lpEvalDesc->ObjectPtr)
 	{
-		SDWORD dx, dy;
+		uqm::SDWORD dx, dy;
 
 		GetCurrentVelocityComponentsSdword (
 				&lpEvalDesc->ObjectPtr->velocity, &dx, &dy
@@ -193,8 +193,8 @@ thraddash_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 			}
 			else if (lpEvalDesc->MoveState == ENTICE)
 			{
-				COUNT direction_angle;
-				SDWORD delta_x, delta_y;
+				uqm::COUNT direction_angle;
+				uqm::SDWORD delta_x, delta_y;
 
 				delta_x = lpEvalDesc->ObjectPtr->next.location.x
 						- ShipPtr->next.location.x;
@@ -265,7 +265,7 @@ flame_napalm_preprocess (ELEMENT *ElementPtr)
 	}
 }
 
-static COUNT
+static uqm::COUNT
 initialize_horn (ELEMENT *ShipPtr, HELEMENT HornArray[])
 {
 	STARSHIP *StarShipPtr;
@@ -304,7 +304,7 @@ thraddash_preprocess (ELEMENT *ElementPtr)
 	}
 	else if (DeltaEnergy (ElementPtr, -SPECIAL_ENERGY_COST))
 	{
-		COUNT max_thrust, thrust_increment;
+		uqm::COUNT max_thrust, thrust_increment;
 		STATUS_FLAGS thrust_status;
 		HELEMENT hTrailElement;
 

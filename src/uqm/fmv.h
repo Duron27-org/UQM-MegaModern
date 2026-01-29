@@ -33,11 +33,11 @@ typedef enum
 	SURRENDERED
 } ENDGAME_SCENARIOS;
 
-extern void SplashScreen (void (* DoProcessing)(DWORD TimeOut));
+extern void SplashScreen (void (* DoProcessing)(uqm::DWORD TimeOut));
 extern void Introduction (void);
 extern void Victory (void);
-extern void GameOver (BYTE DeathType);
-extern void DoShipSpin (COUNT index, MUSIC_REF hMusic);
+extern void GameOver (uqm::BYTE DeathType);
+extern void DoShipSpin (uqm::COUNT index, MUSIC_REF hMusic);
 extern void Logo (void);
 extern void Drumall (void);
 extern void Reload (void);

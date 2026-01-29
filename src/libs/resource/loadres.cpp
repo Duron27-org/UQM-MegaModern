@@ -22,10 +22,10 @@
 
 
 void *
-GetResourceData (uio_Stream *fp, DWORD length)
+GetResourceData (uio_Stream *fp, uqm::DWORD length)
 {
 	void *result;
-	DWORD compLen;
+	uqm::DWORD compLen;
 
 	// Resource data used to be prefixed by its length in package files.
 	// A valid length prefix indicated compressed data, and
@@ -33,12 +33,12 @@ GetResourceData (uio_Stream *fp, DWORD length)
 	// Currently, .ct and .xlt files still carry a ~0 length prefix.
 	if (ReadResFile (&compLen, sizeof (compLen), 1, fp) != 1)
 		return NULL;
-	if (compLen != ~(DWORD)0)
+	if (compLen != ~(uqm::DWORD)0)
 	{
 		log_add (log_Warning, "LZ-compressed binary data not supported");
 		return NULL;
 	}
-	length -= sizeof (DWORD);
+	length -= sizeof (uqm::DWORD);
 
 	result = AllocResourceData (length);
 	if (!result)

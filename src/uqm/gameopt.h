@@ -31,7 +31,7 @@ extern void SetNamingCallback (NamingCallback *);
 extern void SettingsMenu (bool NameFlagship);
 extern bool NewGameInit;
 
-extern BYTE OutfitOrShipyard;
+extern uqm::BYTE OutfitOrShipyard;
 extern bool SaveOrLoad;
 extern bool TextEntry3DO;
 

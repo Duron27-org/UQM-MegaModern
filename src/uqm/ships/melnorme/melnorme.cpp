@@ -48,7 +48,7 @@
 #define PUMPUP_DAMAGE 2
 #define MIN_PUMPITUDE_ANIMS 3
 #define NUM_PUMP_ANIMS 5
-#define REVERSE_DIR (BYTE)(1 << 7)
+#define REVERSE_DIR (uqm::BYTE)(1 << 7)
 
 // Confusion Pulse
 #define SPECIAL_ENERGY_COST 20
@@ -140,7 +140,7 @@ pump_up_preprocess (ELEMENT *ElementPtr)
 {
 	if (--ElementPtr->thrust_wait & 1)
 	{
-		COUNT frame_index;
+		uqm::COUNT frame_index;
 
 		frame_index = GetFrameIndex (ElementPtr->current.image.frame);
 		if (((ElementPtr->turn_wait & REVERSE_DIR)
@@ -164,7 +164,7 @@ pump_up_preprocess (ELEMENT *ElementPtr)
 	}
 }
 
-static COUNT initialize_pump_up (ELEMENT *ShipPtr, HELEMENT PumpUpArray[]);
+static uqm::COUNT initialize_pump_up (ELEMENT *ShipPtr, HELEMENT PumpUpArray[]);
 
 static void
 pump_up_postprocess (ELEMENT *ElementPtr)
@@ -217,7 +217,7 @@ pump_up_postprocess (ELEMENT *ElementPtr)
 
 		if (EPtr->thrust_wait & 1)
 		{
-			COUNT frame_index;
+			uqm::COUNT frame_index;
 
 			frame_index = GetFrameIndex (EPtr->current.image.frame);
 			if (((EPtr->turn_wait & REVERSE_DIR)
@@ -245,7 +245,7 @@ pump_up_postprocess (ELEMENT *ElementPtr)
 		}
 		else
 		{
-			COUNT angle;
+			uqm::COUNT angle;
 
 			EPtr->life_span = PUMPUP_LIFE;
 			EPtr->preprocess_func = pump_up_preprocess;
@@ -289,7 +289,7 @@ pump_up_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 		ELEMENT *ElementPtr1, POINT *pPt1)
 {
 	RECT r;
-	BYTE old_thrust_wait;
+	uqm::BYTE old_thrust_wait;
 	HELEMENT hBlastElement;
 
 	GetFrameRect (ElementPtr0->next.image.frame, &r);
@@ -322,7 +322,7 @@ pump_up_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 	}
 }
 
-static COUNT
+static uqm::COUNT
 initialize_pump_up (ELEMENT *ShipPtr, HELEMENT PumpUpArray[])
 {
 	STARSHIP *StarShipPtr;
@@ -591,7 +591,7 @@ confusion_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 				ConfusionPtr->life_span = 400;
 			}
 			ConfusionPtr->turn_wait =
-					(BYTE)(1 << ((BYTE)TFB_Random () & 1)); /* LEFT or RIGHT */
+					(uqm::BYTE)(1 << ((uqm::BYTE)TFB_Random () & 1)); /* LEFT or RIGHT */
 
 			UnlockElement (hConfusionElement);
 		}
@@ -604,7 +604,7 @@ confusion_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 	(void) pPt1;  /* Satisfying compiler (unused parameter) */
 }
 
-static COUNT
+static uqm::COUNT
 initialize_confusion (ELEMENT *ShipPtr, HELEMENT ConfusionArray[])
 {
 	STARSHIP *StarShipPtr;
@@ -639,7 +639,7 @@ initialize_confusion (ELEMENT *ShipPtr, HELEMENT ConfusionArray[])
 	return (1);
 }
 
-static COUNT
+static uqm::COUNT
 initialize_test_pump_up (ELEMENT *ShipPtr, HELEMENT PumpUpArray[])
 {
 	STARSHIP *StarShipPtr;
@@ -668,9 +668,9 @@ initialize_test_pump_up (ELEMENT *ShipPtr, HELEMENT PumpUpArray[])
 
 static void
 melnorme_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
-		COUNT ConcernCounter)
+		uqm::COUNT ConcernCounter)
 {
-	BYTE old_count;
+	uqm::BYTE old_count;
 	STARSHIP *StarShipPtr;
 	EVALUATE_DESC *lpEvalDesc;
 
@@ -713,7 +713,7 @@ melnorme_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 	if (StarShipPtr->special_counter == 0
 			&& StarShipPtr->RaceDescPtr->ship_info.energy_level >= SPECIAL_ENERGY_COST)
 	{
-		BYTE old_input_state;
+		uqm::BYTE old_input_state;
 
 		old_input_state = StarShipPtr->ship_input_state;
 

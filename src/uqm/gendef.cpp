@@ -24,7 +24,7 @@
 
 
 const GenerateFunctions *
-getGenerateFunctions (BYTE Index)
+getGenerateFunctions (uqm::BYTE Index)
 {
 	switch (Index)
 	{

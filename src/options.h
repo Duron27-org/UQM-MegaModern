@@ -60,7 +60,7 @@ extern OPT_ENABLABLE optUnlockShips;
 extern OPT_ENABLABLE optHeadStart;
 extern OPT_ENABLABLE optUnlockUpgrades;
 extern OPT_ENABLABLE optInfiniteRU;
-extern DWORD oldRU;
+extern uqm::DWORD oldRU;
 extern OPT_ENABLABLE optSkipIntro;
 extern OPT_ENABLABLE optMainMenuMusic;
 extern OPT_ENABLABLE optNebulae;
@@ -68,7 +68,7 @@ extern OPT_ENABLABLE optOrbitingPlanets;
 extern OPT_ENABLABLE optTexturedPlanets;
 extern int optDateFormat;
 extern OPT_ENABLABLE optInfiniteFuel;
-extern DWORD loadFuel;
+extern uqm::DWORD loadFuel;
 extern OPT_ENABLABLE optPartialPickup;
 extern OPT_ENABLABLE optSubmenu;
 extern OPT_ENABLABLE optInfiniteCredits;
@@ -119,7 +119,7 @@ extern bool optMaskOfDeceit;
 extern OPT_ENABLABLE optAdvancedAutoPilot;
 extern OPT_ENABLABLE optMeleeToolTips;
 extern int optMusicResume;
-extern DWORD optWindowType;
+extern uqm::DWORD optWindowType;
 extern bool optNoClassic;
 extern OPT_ENABLABLE optScatterElements;
 extern OPT_ENABLABLE optShowUpgrades;
@@ -156,8 +156,8 @@ extern const char **optAddons;
 // addon availability
 typedef struct
 {
-	DWORD name_hash[PATH_MAX];
-	DWORD amount;
+	uqm::DWORD name_hash[PATH_MAX];
+	uqm::DWORD amount;
 } ADDON_COUNT;
 
 extern ADDON_COUNT addonList;

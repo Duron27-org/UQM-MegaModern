@@ -591,8 +591,8 @@ UniChar_toLower(UniChar ch)
 // Custom functions
 
 
-CHAR_T *
-AlignText (const CHAR_T *str, sint16 *loc_x)
+uqm::CHAR_T *
+AlignText (const uqm::CHAR_T *str, sint16 *loc_x)
 {
 	int modSize = 0;
 	int first_pos = utf8StringPos ((unsigned char *)str, UNICHAR_PIPE);
@@ -601,24 +601,24 @@ AlignText (const CHAR_T *str, sint16 *loc_x)
 	if (utf8CharCount ((unsigned char *)str, UNICHAR_PIPE) != 2
 			|| str == NULL || first_pos != 0 || last_pos == -1
 			|| last_pos == 0)
-		return (CHAR_T *)str;
+		return (uqm::CHAR_T *)str;
 
 	if (sscanf (str, "|%d|", &modSize) != 1)
 	{
 		log_add (log_Debug,
 			"\nVariable between delimiters is missing, corrupt, or "
 			"not an integer: %s\n", str);
-		return (CHAR_T *)str;
+		return (uqm::CHAR_T *)str;
 	}
 
 	if (modSize != 0)
 		*loc_x += RES_SCALE (modSize);
 
-	return (CHAR_T *)skipUTF8Chars ((unsigned char *)str, last_pos + 1);
+	return (uqm::CHAR_T *)skipUTF8Chars ((unsigned char *)str, last_pos + 1);
 }
 
-CHAR_T *
-AddPadd (const CHAR_T *str, sint16 *padding)
+uqm::CHAR_T *
+AddPadd (const uqm::CHAR_T *str, sint16 *padding)
 {
 	int modSize = 0;
 	int first_pos = utf8StringPos ((unsigned char *)str, UNICHAR_COLON);
@@ -627,19 +627,19 @@ AddPadd (const CHAR_T *str, sint16 *padding)
 	if (utf8CharCount ((unsigned char *)str, UNICHAR_COLON) != 2
 			|| str == NULL || first_pos != 0 || last_pos == -1
 			|| last_pos == 0)
-		return (CHAR_T *)str;
+		return (uqm::CHAR_T *)str;
 
 	if (sscanf (str, ":%d:", &modSize) != 1)
 	{
 		log_add (log_Debug,
 			"\nVariable between delimiters is missing, corrupt, or "
 			"not an integer: %s\n", str);
-		return (CHAR_T *)str;
+		return (uqm::CHAR_T *)str;
 	}
 
 	if (modSize != 0)
 		*padding += RES_SCALE (modSize);
 
-	return (CHAR_T *)skipUTF8Chars ((unsigned char *)str, last_pos + 1);
+	return (uqm::CHAR_T *)skipUTF8Chars ((unsigned char *)str, last_pos + 1);
 }
 

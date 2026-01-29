@@ -36,7 +36,7 @@
 #define MAX_LOAD_ENTRIES 40
 
 void
-DoShipSpin (COUNT index, MUSIC_REF hMusic)
+DoShipSpin (uqm::COUNT index, MUSIC_REF hMusic)
 {
 	char vnbuf[24]; // From 32 to 24
 	RECT old_r;
@@ -95,10 +95,10 @@ DoShipSpin (COUNT index, MUSIC_REF hMusic)
 }
 
 void
-SplashScreen (void (* DoProcessing)(DWORD TimeOut))
+SplashScreen (void (* DoProcessing)(uqm::DWORD TimeOut))
 {
 	STAMP s;
-	DWORD TimeOut = 0;
+	uqm::DWORD TimeOut = 0;
 	TimeCount OverallWait = GetTimeCounter () + (ONE_SECOND * 3);
 
 	if (!optSkipIntro)
@@ -161,7 +161,7 @@ Victory (void)
 }
 
 void
-GameOver (BYTE DeathType) 
+GameOver (uqm::BYTE DeathType) 
 {
 	if (DeathType != SUICIDE)
 		SleepThreadUntil (FadeScreen (FadeAllToBlack, ONE_SECOND / 2));
@@ -215,7 +215,7 @@ AdvanceLoadProgress (void)
 	if (optRequiresReload)
 	{
 		RECT r;
-		static COUNT i = 0;
+		static uqm::COUNT i = 0;
 
 		r.corner.x = RES_SCALE (16);
 		r.corner.y = CanvasHeight - DOS_BOOL_SCL (50, 30);

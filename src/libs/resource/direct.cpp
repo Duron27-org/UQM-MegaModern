@@ -27,8 +27,8 @@ LoadDirEntryTable (uio_DirHandle *dirHandle, const char *path,
 		const char *pattern, match_MatchType matchType)
 {
 	uio_DirList *dirList;
-	COUNT num_entries;
-	COUNT i;
+	uqm::COUNT num_entries;
+	uqm::COUNT i;
 	uio_DirHandle *dir;
 	STRING_TABLE StringTable;
 	STRING_TABLE_DESC *lpST;

@@ -72,9 +72,9 @@ SPECIES_ID *scout = &(ship[NUM_CAPITALS + NUM_ESCORTS]);
 #define NUM_SHIPS (NUM_CAPITALS + NUM_ESCORTS + NUM_SCOUTS)
 
 // Returns the array index in ship array for a specific SpeciesID.
-static inline COUNT ShipIndex (SPECIES_ID SpeciesID)
+static inline uqm::COUNT ShipIndex (SPECIES_ID SpeciesID)
 {
-	for (COUNT x = 0; x < NUM_SHIPS; x++)
+	for (uqm::COUNT x = 0; x < NUM_SHIPS; x++)
 		if (SpeciesID == ship[x])
 			return x;
 	return (NUM_SHIPS);
@@ -85,11 +85,11 @@ static inline COUNT ShipIndex (SPECIES_ID SpeciesID)
 static inline void SeedShipMap (SPECIES_ID *map, int seed)
 {
 	RandomContext *ShipGenRNG = RandomContext_New ();
-	UWORD rand_val;
+	uqm::UWORD rand_val;
 	SPECIES_ID *cMap = map;
 	SPECIES_ID *eMap = &(map[NUM_CAPITALS]);
 	SPECIES_ID *sMap = &(map[NUM_CAPITALS + NUM_ESCORTS]);
-	COUNT x = 0;
+	uqm::COUNT x = 0;
 	int saveSeedType = optSeedType;
 	// Planet generation uses a different seeding math
 	if (optSeedType == OPTVAL_PLANET)
@@ -136,7 +136,7 @@ SeedShip (SPECIES_ID SpeciesID, bool loadWindow)
 	static SPECIES_ID shipMap[NUM_SHIPS];
 	static SPECIES_ID shipWindowMap[NUM_SHIPS];
 	SPECIES_ID target;
-	COUNT index = NUM_SHIPS;
+	uqm::COUNT index = NUM_SHIPS;
 
 #ifdef DEBUG_SHIPSEED
 	if (loadWindow)
@@ -169,9 +169,9 @@ SeedShip (SPECIES_ID SpeciesID, bool loadWindow)
 }
 
 static void
-SwapStrings (STRING a, STRING b, COUNT ia, COUNT ib)
+SwapStrings (STRING a, STRING b, uqm::COUNT ia, uqm::COUNT ib)
 {
-	CHAR_T *swap = GetStringAddress (SetAbsStringTableIndex (b, ib));
+	uqm::CHAR_T *swap = GetStringAddress (SetAbsStringTableIndex (b, ib));
 	(SetAbsStringTableIndex (b, ib))->data =
 			(SetAbsStringTableIndex (a, ia))->data;
 	(SetAbsStringTableIndex (a, ia))->data = swap;

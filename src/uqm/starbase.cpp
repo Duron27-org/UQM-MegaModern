@@ -44,8 +44,8 @@ static void
 DrawBaseStateStrings (STARBASE_STATE OldState, STARBASE_STATE NewState)
 {
 	TEXT t;
-	COUNT text_base_y = RES_SCALE (106 + 28);
-	COUNT text_spacing_y = RES_SCALE (23 - 4);
+	uqm::COUNT text_base_y = RES_SCALE (106 + 28);
+	uqm::COUNT text_spacing_y = RES_SCALE (23 - 4);
 
 	SetContext (ScreenContext);
 	SetContextFont (StarConFont);
@@ -62,7 +62,7 @@ DrawBaseStateStrings (STARBASE_STATE OldState, STARBASE_STATE NewState)
 			if (OldState != NewState)
 			{
 				t.pStr = GAME_STRING (STARBASE_STRING_BASE + 1 + OldState);
-				t.CharCount = (COUNT)~0;
+				t.CharCount = (uqm::COUNT)~0;
 				font_DrawText (&t);
 			}
 			t.baseline.y += text_spacing_y;
@@ -71,26 +71,26 @@ DrawBaseStateStrings (STARBASE_STATE OldState, STARBASE_STATE NewState)
 
 	t.baseline.y = text_base_y + SAFE_Y + (text_spacing_y * OldState);
 	t.pStr = GAME_STRING (STARBASE_STRING_BASE + 1 + OldState);
-	t.CharCount = (COUNT)~0;
+	t.CharCount = (uqm::COUNT)~0;
 	font_DrawText (&t);
 
 	SetContextForeGroundColor (
 			BUILD_COLOR (MAKE_RGB15 (0x1F, 0x1F, 0x0A), 0x0E));
 	t.baseline.y = text_base_y + SAFE_Y + (text_spacing_y * NewState);
 	t.pStr = GAME_STRING (STARBASE_STRING_BASE + 1 + NewState);
-	t.CharCount = (COUNT)~0;
+	t.CharCount = (uqm::COUNT)~0;
 	font_DrawText (&t);
 }
 
 void
-DrawShipPiece (FRAME ModuleFrame, COUNT which_piece, COUNT which_slot,
+DrawShipPiece (FRAME ModuleFrame, uqm::COUNT which_piece, uqm::COUNT which_slot,
 		bool DrawBluePrint)
 {
 	Color OldColor = UNDEFINED_COLOR;
 			// Initialisation is just to keep the compiler silent.
 	RECT r;
 	STAMP Side, Top;
-	SBYTE RepairSlot;
+	uqm::SBYTE RepairSlot;
 
 	RepairSlot = 0;
 	switch (which_piece)
@@ -384,11 +384,11 @@ ExitStarBase:
 			InitCommunication (COMMANDER_CONVERSATION);
 			// XXX: InitCommunication() clears these flags, and we need them
 			//   This marks that we are in Starbase.
-			SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, (BYTE)~0);
+			SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, (uqm::BYTE)~0);
 		}
 		else
 		{
-			BYTE OldState;
+			uqm::BYTE OldState;
 
 			if (IS_HD && !hdFuelFrame)
 				hdFuelFrame =
@@ -494,7 +494,7 @@ VisitStarBase (void)
 		// Force a reload of the SolarSys
 		CurStarDescPtr = NULL;
 		// This marks that we are in Starbase.
-		SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, (BYTE)~0);
+		SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, (uqm::BYTE)~0);
 	}
 
 	if (!GET_GAME_STATE (STARBASE_AVAILABLE))
@@ -519,11 +519,11 @@ VisitStarBase (void)
 		FragPtr = LockShipFrag (&GLOBAL (npc_built_ship_q), hStarShip);
 		/* Hack (sort of): Suppress the tally and salvage info
 		 * after the battle */
-		FragPtr->race_id = (BYTE)~0;
+		FragPtr->race_id = (uqm::BYTE)~0;
 		UnlockShipFrag (&GLOBAL (npc_built_ship_q), hStarShip);
 
 		InitCommunication (ILWRATH_CONVERSATION);
-		if (GLOBAL_SIS (CrewEnlisted) == (COUNT)~0
+		if (GLOBAL_SIS (CrewEnlisted) == (uqm::COUNT)~0
 				|| (GLOBAL (CurrentActivity) & CHECK_ABORT))
 			return; // Killed by Ilwrath
 		
@@ -534,7 +534,7 @@ VisitStarBase (void)
 			return;
 		// XXX: InitCommunication() clears these flags, and we need them
 		//   This marks that we are in Starbase.
-		SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, (BYTE)~0);
+		SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, (uqm::BYTE)~0);
 	}
 
 	prevMsgMode = SetStatusMessageMode (SMM_RES_UNITS);
@@ -545,7 +545,7 @@ VisitStarBase (void)
 		// Starbase becomes available for the first time, or after Chmmr
 		// install the bomb.
 		DoTimePassage ();
-		if (GLOBAL_SIS (CrewEnlisted) == (COUNT)~0)
+		if (GLOBAL_SIS (CrewEnlisted) == (uqm::COUNT)~0)
 			return; // You are now dead! Thank you! (killed by Kohr-Ah)
 
 		SetCommIntroMode (CIM_FADE_IN_SCREEN, ONE_SECOND * 2);
@@ -554,7 +554,7 @@ VisitStarBase (void)
 			return;
 		// XXX: InitCommunication() clears these flags, and we need them
 		//   This marks that we are in Starbase.
-		SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, (BYTE)~0);
+		SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, (uqm::BYTE)~0);
 	}
 
 	memset (&MenuState, 0, sizeof (MenuState));
@@ -604,16 +604,16 @@ InstallBombAtEarth (void)
 }
 
 // XXX: Doesn't really belong in this file.
-COUNT
-WrapText (const CHAR_T *pStr, COUNT len, TEXT *tarray, SIZE field_width)
+uqm::COUNT
+WrapText (const uqm::CHAR_T *pStr, uqm::COUNT len, TEXT *tarray, uqm::SIZE field_width)
 {
-	COUNT num_lines;
+	uqm::COUNT num_lines;
 
 	num_lines = 0;
 	do
 	{
 		RECT r;
-		COUNT OldCount;
+		uqm::COUNT OldCount;
 		
 		tarray->align = ALIGN_LEFT; /* set alignment to something */
 		tarray->pStr = pStr;
@@ -623,7 +623,7 @@ WrapText (const CHAR_T *pStr, COUNT len, TEXT *tarray, SIZE field_width)
 		do
 		{
 			OldCount = tarray->CharCount;
-			while (*++pStr != ' ' && (COUNT)(pStr - tarray->pStr) < len)
+			while (*++pStr != ' ' && (uqm::COUNT)(pStr - tarray->pStr) < len)
 				;
 			tarray->CharCount = pStr - tarray->pStr;
 			TextRect (tarray, &r, NULL);

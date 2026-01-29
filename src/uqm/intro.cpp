@@ -60,7 +60,7 @@ typedef struct
 	FRAME RotatedFrame;
 	int LastDrawKind;
 	int LastAngle;
-	COUNT OperIndex;
+	uqm::COUNT OperIndex;
 	Color TextFadeColor;
 	Color TextColor;
 	Color TextBackColor;
@@ -70,7 +70,7 @@ typedef struct
 	RECT tfade_r;
 #define MAX_TEXT_LINES 15
 	TEXT TextLines[MAX_TEXT_LINES];
-	COUNT LinesCount;
+	uqm::COUNT LinesCount;
 	char Buffer[512];
 	int MovieFrame;
 	int MovieEndFrame;
@@ -78,9 +78,9 @@ typedef struct
 
 	// For DOS Spins
 	RECT StatBox;
-	COUNT NumSpinStat;
+	uqm::COUNT NumSpinStat;
 	RECT GetRect;
-	COUNT CurrentFrameIndex;
+	uqm::COUNT CurrentFrameIndex;
 	bool HaveFrame;
 	bool Skip;
 
@@ -120,7 +120,7 @@ ParseColorString (const char *Src, Color* pColor)
 }
 
 static bool
-DoFadeScreen (PRESENTATION_INPUT_STATE* pPIS, const char *Src, BYTE FadeType)
+DoFadeScreen (PRESENTATION_INPUT_STATE* pPIS, const char *Src, uqm::BYTE FadeType)
 {
 	int msecs;
 	if (1 == sscanf (Src, "%d", &msecs))
@@ -146,10 +146,10 @@ DrawTextEffect (TEXT *pText, Color Fore, Color Back, int Effect)
 	}
 }
 
-static COUNT
-ParseTextLines (TEXT *Lines, COUNT MaxLines, char* Buffer)
+static uqm::COUNT
+ParseTextLines (TEXT *Lines, uqm::COUNT MaxLines, char* Buffer)
 {
-	COUNT i;
+	uqm::COUNT i;
 	const char* pEnd = Buffer + strlen (Buffer);
 
 	for (i = 0; i < MaxLines && Buffer < pEnd; ++i, ++Lines)
@@ -203,7 +203,7 @@ Present_GenerateSIS (PRESENTATION_INPUT_STATE* pPIS)
 	RECT r;
 	HOT_SPOT hs;
 	int slot;
-	COUNT piece;
+	uqm::COUNT piece;
 	Color SisBack;
 
 	OldContext = SetContext (OffScreenContext);
@@ -300,12 +300,12 @@ Present_GenerateSIS (PRESENTATION_INPUT_STATE* pPIS)
 }
 
 static void
-DoSpinText (CHAR_T *buf, COORD x, COORD y, FRAME repair, bool *skip)
+DoSpinText (const uqm::CHAR_T *buf, COORD x, COORD y, FRAME repair, bool *skip)
 {
 	TEXT Text;
 
 	Text.pStr = buf;
-	Text.CharCount = (COUNT)utf8StringCount (buf);
+	Text.CharCount = (uqm::COUNT)utf8StringCount (buf);
 	Text.align = ALIGN_LEFT;
 	Text.baseline.y = y;
 	Text.baseline.x = x;
@@ -340,11 +340,11 @@ DoSpinStatBox (RECT *r, Color front, Color back, bool *skip)
 }
 
 static void
-DoSpinStat (CHAR_T *buf, COORD x, COORD y, COUNT filled, COUNT empty, Color front, Color back,
+DoSpinStat (uqm::CHAR_T *buf, COORD x, COORD y, uqm::COUNT filled, uqm::COUNT empty, Color front, Color back,
 		bool *skip)
 {
 	TEXT Text;
-	COUNT i;
+	uqm::COUNT i;
 	RECT sq;
 	POINT c;
 	RECT chd;
@@ -356,7 +356,7 @@ DoSpinStat (CHAR_T *buf, COORD x, COORD y, COUNT filled, COUNT empty, Color fron
 	chd.extent.width = chd.extent.height = 4;
 
 	Text.pStr = buf;
-	Text.CharCount = (COUNT)utf8StringCount (buf);
+	Text.CharCount = (uqm::COUNT)utf8StringCount (buf);
 	Text.align = ALIGN_LEFT;
 	Text.baseline.y = y;
 	Text.baseline.x = x;
@@ -451,8 +451,8 @@ typedef struct
 	char ditty[256];	// The ditty string (file name)
 	char race[256];		// The race's name string e.g. EARTHLING
 	char ship[256];		// The ship's name string e.g. CRUISER
-	COUNT spinline;		// The line on which race/ship strings occur
-	COUNT width;		// The SD pixel width of the race name
+	uqm::COUNT spinline;		// The line on which race/ship strings occur
+	uqm::COUNT width;		// The SD pixel width of the race name
 } SHIPMAP;
 
 static const SHIPMAP ship_map[] = {
@@ -485,8 +485,8 @@ static const SHIPMAP ship_map[] = {
 
 #define NUM_SHIPS (sizeof (ship_map) / sizeof (SHIPMAP))
 
-static COUNT shipID = NUM_SHIPS;
-static COUNT raceID = NUM_SHIPS;
+static uqm::COUNT shipID = NUM_SHIPS;
+static uqm::COUNT raceID = NUM_SHIPS;
 static bool linespun = false;
 
 static void
@@ -647,7 +647,7 @@ SeedTextSpin (char *buf, size_t size, char *str, int *x, int *y)
 		case SUPOX_ID: // Lefties but line break when long
 			if (ship_map[raceID].width > 80)
 			{
-				char *pad = (IS_HD ? "\n   " : "\n       ");
+				const char *pad = (IS_HD ? "\n   " : "\n       ");
 				utf8StringCopy (buf, size, pad);
 				buf += strlen (pad) * sizeof (char);
 			}
@@ -727,7 +727,7 @@ DoPresentation (void *pIS)
 		pStr += strlen (Opcode);
 		if (*pStr != '\0')
 			++pStr;
-		strupr (Opcode);
+		_strupr (Opcode);
 
 		if (strcmp (Opcode, "DIMS") == 0)
 		{	/* set dimensions */
@@ -984,7 +984,7 @@ DoPresentation (void *pIS)
 
 				t.align = ALIGN_CENTER;
 				t.pStr = pPIS->Buffer;
-				t.CharCount = (COUNT)~0;
+				t.CharCount = (uqm::COUNT)~0;
 				t.baseline.x = RES_SCALE (x);
 				t.baseline.y = RES_SCALE (y);
 				DrawTextEffect (&t, pPIS->TextColor, pPIS->TextBackColor,
@@ -1052,7 +1052,7 @@ DoPresentation (void *pIS)
 		else if (strcmp (Opcode, "SPINSTAT") == 0)
 		{	/* spin stat draw */
 			int x, y, f, e;
-			SIZE leading;
+			uqm::SIZE leading;
 
 			assert (sizeof (pPIS->Buffer) >= 256);
 
@@ -1085,7 +1085,7 @@ DoPresentation (void *pIS)
 
 					t.align = ALIGN_LEFT;
 					t.pStr = buf;
-					t.CharCount = (COUNT)~0;
+					t.CharCount = (uqm::COUNT)~0;
 					t.baseline = MAKE_POINT (x, y);
 					DrawTextEffect (&t,
 							BUILD_COLOR_RGBA (0xFF, 0x55, 0x55, 0xFF),
@@ -1109,8 +1109,8 @@ DoPresentation (void *pIS)
 		}
 		else if (strcmp (Opcode, "TFI") == 0)
 		{	/* text fade-in */
-			SIZE leading;
-			COUNT i;
+			uqm::SIZE leading;
+			uqm::COUNT i;
 			COORD y;
 			
 			utf8StringCopy (pPIS->Buffer, sizeof (pPIS->Buffer), pStr);
@@ -1159,7 +1159,7 @@ DoPresentation (void *pIS)
 		}
 		else if (strcmp (Opcode, "TFO") == 0)
 		{	/* text fade-out */
-			COUNT i;
+			uqm::COUNT i;
 			
 			Present_UnbatchGraphics (pPIS, true);
 
@@ -1198,7 +1198,7 @@ DoPresentation (void *pIS)
 			STAMP s;
 
 			if (1 == sscanf (pStr, "%15s", ImgName)
-					&& strcmp (strupr (ImgName), "SIS") == 0)
+					&& strcmp (_strupr (ImgName), "SIS") == 0)
 			{
 				draw_what = PRES_DRAW_SIS;
 				scale_mode = TFB_SCALE_NEAREST;
@@ -1235,8 +1235,8 @@ DoPresentation (void *pIS)
 			s.frame = NULL;
 			if (draw_what == PRES_DRAW_INDEX)
 			{	/* draw stamp by index */
-				s.frame = SetAbsFrameIndex (pPIS->Frame, (COUNT)index);
-				pPIS->CurrentFrameIndex = (COUNT)index;
+				s.frame = SetAbsFrameIndex (pPIS->Frame, (uqm::COUNT)index);
+				pPIS->CurrentFrameIndex = (uqm::COUNT)index;
 				pPIS->HaveFrame = true;
 			}
 			else if (draw_what == PRES_DRAW_SIS)
@@ -1443,7 +1443,7 @@ DoPresentation (void *pIS)
 			{
 				STAMP s;
 				int loops = 0;
-				COUNT index = 0;
+				uqm::COUNT index = 0;
 				TimeCount Now, timeout, NextTime;
 				int animation_rate = ONE_SECOND / fps;
 
@@ -1567,7 +1567,7 @@ DoVideoInput (void *pIS)
 	else if (PulsedInputState.menu[KEY_MENU_LEFT]
 			|| PulsedInputState.menu[KEY_MENU_RIGHT])
 	{
-		SDWORD newpos = VidGetPosition ();
+		uqm::SDWORD newpos = VidGetPosition ();
 		if (PulsedInputState.menu[KEY_MENU_LEFT])
 			newpos -= 2000;
 		else if (PulsedInputState.menu[KEY_MENU_RIGHT])

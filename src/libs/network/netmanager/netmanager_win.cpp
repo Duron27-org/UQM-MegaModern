@@ -28,6 +28,7 @@
 
 #include "ndesc.h"
 #include "types.h"
+#include "libs/compiler.h"
 #include "libs/misc.h"
 #include "libs/log.h"
 
@@ -412,11 +413,11 @@ closed:  /* No special actions required for now. */
 // This function should however not be called from multiple threads at once.
 int
 NetManager_process(uint32 *timeoutMs) {
-	DWORD timeoutTemp;
-	DWORD waitResult;
-	DWORD startEvent;
+	uqm::DWORD timeoutTemp;
+	uqm::DWORD waitResult;
+	uqm::DWORD startEvent;
 
-	timeoutTemp = (DWORD) *timeoutMs;
+	timeoutTemp = (uqm::DWORD) *timeoutMs;
 
 	// WSAWaitForMultipleEvents only reports events for one socket at a
 	// time. In order to have each socket checked once, we call it
@@ -444,7 +445,7 @@ NetManager_process(uint32 *timeoutMs) {
 		}
 		
 		{
-			DWORD eventIndex = waitResult - WSA_WAIT_EVENT_0;
+			uqm::DWORD eventIndex = waitResult - WSA_WAIT_EVENT_0;
 			if (NetManager_processEvent((size_t) eventIndex) == -1) {
 				// errno is set
 				*timeoutMs = timeoutTemp;

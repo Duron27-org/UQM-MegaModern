@@ -35,10 +35,10 @@ static bool GenerateZoqFotPik_generateMoons (SOLARSYS_STATE *solarSys,
 		PLANET_DESC *planet);
 static bool GenerateZoqFotPik_generateOrbital (SOLARSYS_STATE *solarSys,
 		PLANET_DESC *world);
-static COUNT GenerateZoqFotPik_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
+static uqm::COUNT GenerateZoqFotPik_generateEnergy (const SOLARSYS_STATE *,
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
 static bool GenerateZoqFotPik_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, COUNT whichNode);
+		PLANET_DESC *world, uqm::COUNT whichNode);
 
 
 const GenerateFunctions generateZoqFotPikFunctions = {
@@ -82,7 +82,7 @@ GenerateZoqFotPik_generatePlanets (SOLARSYS_STATE *solarSys)
 	{
 		if (PrimeSeed)
 		{
-			COUNT angle;
+			uqm::COUNT angle;
 
 			pSunDesc->PlanetByte = 0;
 			pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
@@ -139,7 +139,7 @@ GenerateZoqFotPik_generateMoons (SOLARSYS_STATE *solarSys,
 			&& matchWorld (solarSys, planet, MATCH_PBYTE, MATCH_PLANET)
 			&& EXTENDED)
 	{
-		BYTE MoonByte = solarSys->SunDesc[0].MoonByte;
+		uqm::BYTE MoonByte = solarSys->SunDesc[0].MoonByte;
 		PLANET_DESC *pMoonDesc = &solarSys->MoonDesc[MoonByte];
 
 		pMoonDesc->data_index = GenerateHabitableWorld ();
@@ -237,7 +237,7 @@ GenerateZoqFotPik_generateOrbital (SOLARSYS_STATE *solarSys,
 			&& matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET)
 			&& !DIF_HARD)
 	{
-		DWORD rand = RandomContext_GetSeed (SysGenRNG);
+		uqm::DWORD rand = RandomContext_GetSeed (SysGenRNG);
 		PLANET_INFO *PlanetInfo = &solarSys->SysInfo.PlanetInfo;
 
 		PlanetInfo->Weather = 1;
@@ -249,7 +249,7 @@ GenerateZoqFotPik_generateOrbital (SOLARSYS_STATE *solarSys,
 			&& matchWorld (solarSys, world, MATCH_PBYTE, MATCH_MBYTE)
 			&& EXTENDED && !DIF_HARD)
 	{
-		DWORD rand = RandomContext_GetSeed (SysGenRNG);
+		uqm::DWORD rand = RandomContext_GetSeed (SysGenRNG);
 		PLANET_INFO *PlanetInfo = &solarSys->SysInfo.PlanetInfo;
 
 		PlanetInfo->Weather = 1;
@@ -260,9 +260,9 @@ GenerateZoqFotPik_generateOrbital (SOLARSYS_STATE *solarSys,
 	return true;
 }
 
-static COUNT
+static uqm::COUNT
 GenerateZoqFotPik_generateEnergy (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *info)
 {
 #define NUM_RUINS 4
 
@@ -297,7 +297,7 @@ GenerateZoqFotPik_generateEnergy (const SOLARSYS_STATE *solarSys,
 
 static bool
 GenerateZoqFotPik_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, COUNT whichNode)
+		PLANET_DESC *world, uqm::COUNT whichNode)
 {
 	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET)
 			&& CurStarDescPtr->Index != ZOQ_COLONY2_DEFINED)

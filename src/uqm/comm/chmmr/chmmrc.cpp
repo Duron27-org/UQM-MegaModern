@@ -366,7 +366,7 @@ ChmmrFree (RESPONSE_REF R)
 			|| PLAYER_SAID (R, i_am_silly))
 	{
 		NPCPhrase (WHY_HAVE_YOU_FREED_US);
-		AlienTalkSegue ((COUNT)~0);
+		AlienTalkSegue ((uqm::COUNT)~0);
 		SET_GAME_STATE (CHMMR_EMERGING, 0);
 
 		Response (serious_1, ChmmrFree);
@@ -409,7 +409,7 @@ static void ChmmrShielded (RESPONSE_REF R);
 static void
 ChmmrAdvice (RESPONSE_REF R)
 {
-	BYTE AdviceLeft;
+	uqm::BYTE AdviceLeft;
 
 	if (PLAYER_SAID (R, need_advice))
 		NPCPhrase (WHAT_ADVICE);
@@ -561,7 +561,7 @@ AfterBomb (RESPONSE_REF R)
 static void
 Intro (void)
 {
-	BYTE NumVisits;
+	uqm::BYTE NumVisits;
 
 	if (GET_GAME_STATE (CHMMR_BOMB_STATE) >= 2)
 	{
@@ -672,7 +672,7 @@ Intro (void)
 	}
 }
 
-static COUNT
+static uqm::COUNT
 uninit_chmmr (void)
 {
 	luaUqm_comm_uninit ();

@@ -137,7 +137,7 @@ ExitConversation (RESPONSE_REF R)
 		{
 			NPCPhrase (HAVE_4_SHIPS);
 
-			AlienTalkSegue ((COUNT)~0);
+			AlienTalkSegue ((uqm::COUNT)~0);
 			AddEscortShips (SUPOX_SHIP, DIF_CASE(4, 4, 2));
 			PrepareShip (SUPOX_SHIP);
 		}
@@ -149,7 +149,7 @@ static void AlliedHome (RESPONSE_REF R);
 static void
 AlliedHome (RESPONSE_REF R)
 {
-	BYTE NumVisits, News;
+	uqm::BYTE NumVisits, News;
 
 	News = GET_GAME_STATE (SUPOX_WAR_NEWS);
 	NumVisits = GET_GAME_STATE (UTWIG_SUPOX_MISSION);
@@ -242,7 +242,7 @@ AlliedHome (RESPONSE_REF R)
 static void
 BeforeKohrAh (RESPONSE_REF R)
 {
-	BYTE NumVisits;
+	uqm::BYTE NumVisits;
 
 	if (PLAYER_SAID (R, whats_up_before_space))
 	{
@@ -278,7 +278,7 @@ BeforeKohrAh (RESPONSE_REF R)
 static void
 AfterKohrAh (RESPONSE_REF R)
 {
-	BYTE NumVisits;
+	uqm::BYTE NumVisits;
 
 	if (PLAYER_SAID (R, whats_up_after_space))
 	{
@@ -314,7 +314,7 @@ AfterKohrAh (RESPONSE_REF R)
 static void
 NeutralSupox (RESPONSE_REF R)
 {
-	BYTE i, LastStack, NumVisits;
+	uqm::BYTE i, LastStack, NumVisits;
 	RESPONSE_REF pStr[3];
 
 	LastStack = 0;
@@ -522,9 +522,9 @@ NeutralSupox (RESPONSE_REF R)
 static void
 Intro (void)
 {
-	BYTE NumVisits;
+	uqm::BYTE NumVisits;
 
-	if (LOBYTE (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
+	if (lowByte (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
 	{
 		NPCPhrase (OUT_TAKES);
 
@@ -667,7 +667,7 @@ Intro (void)
 	}
 }
 
-static COUNT
+static uqm::COUNT
 uninit_supox (void)
 {
 	luaUqm_comm_uninit ();
@@ -698,7 +698,7 @@ init_supox_comm (void)
 	supox_desc.AlienTextWidth = SIS_TEXT_WIDTH - RES_SCALE (16);
 
 	if (!GET_GAME_STATE (SUPOX_HOSTILE)
-			|| LOBYTE (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
+			|| lowByte (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
 	{
 		setSegue (Segue_peace);
 	}

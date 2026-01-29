@@ -60,7 +60,7 @@
 
 
 #ifdef NETPLAY
-static void reportShipSelected (GETMELEE_STATE *gms, COUNT index);
+static void reportShipSelected (GETMELEE_STATE *gms, uqm::COUNT index);
 #endif
 
 
@@ -68,18 +68,18 @@ FRAME PickMeleeFrame;
 
 
 static FleetShipIndex
-PickMelee_GetShipIndex (BYTE row, BYTE col)
+PickMelee_GetShipIndex (uqm::BYTE row, uqm::BYTE col)
 {
 	return row * NUM_PICKMELEE_COLUMNS + col;
 }
 
-static BYTE
+static uqm::BYTE
 PickMelee_GetShipRow (FleetShipIndex index)
 {
 	return index / NUM_PICKMELEE_COLUMNS;
 }
 
-static BYTE
+static uqm::BYTE
 PickMelee_GetShipColumn (int index)
 {
 	return index % NUM_PICKMELEE_COLUMNS;
@@ -87,7 +87,7 @@ PickMelee_GetShipColumn (int index)
 
 // Returns the <index>th ship in the queue, or 0 if it is not available.
 static HSTARSHIP
-MeleeShipByQueueIndex (const QUEUE *queue, COUNT index)
+MeleeShipByQueueIndex (const QUEUE *queue, uqm::COUNT index)
 {
 	HSTARSHIP hShip;
 	HSTARSHIP hNextShip;
@@ -112,7 +112,7 @@ MeleeShipByQueueIndex (const QUEUE *queue, COUNT index)
 
 // Returns the <index>th available ship in the queue.
 static HSTARSHIP
-MeleeShipByUsedIndex (const QUEUE *queue, COUNT index)
+MeleeShipByUsedIndex (const QUEUE *queue, uqm::COUNT index)
 {
 	HSTARSHIP hShip;
 	HSTARSHIP hNextShip;
@@ -133,10 +133,10 @@ MeleeShipByUsedIndex (const QUEUE *queue, COUNT index)
 }
 
 #if 0
-static COUNT
+static uqm::COUNT
 queueIndexFromShip (HSTARSHIP hShip)
 {
-	COUNT result;
+	uqm::COUNT result;
 	STARSHIP *StarShipPtr = LockStarShip (queue, hShip);
 	result = StarShipPtr->index;
 	UnlockStarShip (queue, hShip);
@@ -145,7 +145,7 @@ queueIndexFromShip (HSTARSHIP hShip)
 
 // Pre: called does not hold the graphics lock
 static void
-PickMelee_ChangedSelection (GETMELEE_STATE *gms, COUNT playerI)
+PickMelee_ChangedSelection (GETMELEE_STATE *gms, uqm::COUNT playerI)
 {
 	RECT r;
 
@@ -161,14 +161,14 @@ PickMelee_ChangedSelection (GETMELEE_STATE *gms, COUNT playerI)
 
 // Only returns false when there is no ship for the choice.
 bool
-setShipSelected(GETMELEE_STATE *gms, COUNT playerI, COUNT choice,
+setShipSelected(GETMELEE_STATE *gms, uqm::COUNT playerI, uqm::COUNT choice,
 		bool reportNetwork)
 {
 	HSTARSHIP ship;
 
 	assert (!gms->player[playerI].done);
 
-	if (choice == (COUNT) ~0)
+	if (choice == (uqm::COUNT) ~0)
 	{
 		// Random ship selection.
 		ship = MeleeShipByUsedIndex (&race_q[playerI],
@@ -198,7 +198,7 @@ setShipSelected(GETMELEE_STATE *gms, COUNT playerI, COUNT choice,
 
 // Returns false if aborted.
 static bool
-SelectShip_processInput (GETMELEE_STATE *gms, COUNT playerI,
+SelectShip_processInput (GETMELEE_STATE *gms, uqm::COUNT playerI,
 		BATTLE_INPUT_STATE inputState)
 {
 	if (inputState & BATTLE_WEAPON)
@@ -207,7 +207,7 @@ SelectShip_processInput (GETMELEE_STATE *gms, COUNT playerI,
 				gms->player[playerI].row == 0)
 		{
 			// Random ship
-			(void) setShipSelected (gms, playerI, (COUNT) ~0, true);
+			(void) setShipSelected (gms, playerI, (uqm::COUNT) ~0, true);
 		}
 		else if (gms->player[playerI].col == NUM_PICKMELEE_COLUMNS &&
 				gms->player[playerI].row == 1)
@@ -219,7 +219,7 @@ SelectShip_processInput (GETMELEE_STATE *gms, COUNT playerI,
 		else
 		{
 			// Selection is on a ship slot.
-			COUNT slotNr = PickMelee_GetShipIndex (gms->player[playerI].row,
+			uqm::COUNT slotNr = PickMelee_GetShipIndex (gms->player[playerI].row,
 					gms->player[playerI].col);
 			(void) setShipSelected (gms, playerI, slotNr, true);
 					// If the choice is not valid, setShipSelected()
@@ -229,7 +229,7 @@ SelectShip_processInput (GETMELEE_STATE *gms, COUNT playerI,
 	else
 	{
 		// Process motion commands.
-		COUNT new_row, new_col;
+		uqm::COUNT new_row, new_col;
 		
 		new_row = gms->player[playerI].row;
 		new_col = gms->player[playerI].col;
@@ -315,7 +315,7 @@ static bool
 DoGetMelee (GETMELEE_STATE *gms)
 {
 	bool done;
-	COUNT playerI;
+	uqm::COUNT playerI;
 
 	SetMenuSounds (MENU_SOUND_NONE, MENU_SOUND_NONE);
 
@@ -388,9 +388,9 @@ aborted:
 	return false;
 }
 
-static COUNT
+static uqm::COUNT
 GetRaceQueueValue (const QUEUE *queue) {
-	COUNT result;
+	uqm::COUNT result;
 	HSTARSHIP hBattleShip, hNextShip;
 
 	result = 0;
@@ -416,12 +416,12 @@ GetRaceQueueValue (const QUEUE *queue) {
 // 'shipI' is the index in the ship list.
 // Pre: caller holds the graphics lock.
 static void
-CrossOutShip (FRAME frame, COUNT shipNr)
+CrossOutShip (FRAME frame, uqm::COUNT shipNr)
 {
 	CONTEXT OldContext;
 	STAMP s;
-	BYTE row = PickMelee_GetShipRow (shipNr);
-	BYTE col = PickMelee_GetShipColumn (shipNr);
+	uqm::BYTE row = PickMelee_GetShipRow (shipNr);
+	uqm::BYTE col = PickMelee_GetShipColumn (shipNr);
 
 	OldContext = SetContext (OffScreenContext);
 	
@@ -439,13 +439,13 @@ CrossOutShip (FRAME frame, COUNT shipNr)
 // Draw the value of the fleet in the top right of the PickMeleeFrame.
 // Pre: caller holds the graphics lock.
 static void
-UpdatePickMeleeFleetValue (FRAME frame, COUNT which_player)
+UpdatePickMeleeFleetValue (FRAME frame, uqm::COUNT which_player)
 {
 	CONTEXT OldContext;
-	COUNT value;
+	uqm::COUNT value;
 	RECT r;
 	TEXT t;
-	CHAR_T buf[40];
+	uqm::CHAR_T buf[40];
 	
 	value = GetRaceQueueValue (&race_q[which_player]);
 
@@ -468,7 +468,7 @@ UpdatePickMeleeFleetValue (FRAME frame, COUNT which_player)
 	t.baseline.y = RES_SCALE (7);
 	t.align = ALIGN_RIGHT;
 	t.pStr = buf;
-	t.CharCount = (COUNT)~0;
+	t.CharCount = (uqm::COUNT)~0;
 	if (isPC (optWhichFonts))
 		SetContextFont (TinyFont);
 	else
@@ -514,19 +514,19 @@ BuildPickMeleeFrame (void)
 void
 FillPickMeleeFrame (MeleeSetup *setup)
 {
-	COUNT i;
+	uqm::COUNT i;
 	CONTEXT OldContext;
 
 	OldContext = SetContext (OffScreenContext);
 
 	for (i = 0; i < NUM_SIDES; ++i)
 	{
-		COUNT side;
-		COUNT sideI;
+		uqm::COUNT side;
+		uqm::COUNT sideI;
 		RECT r;
 		TEXT t;
 		STAMP s;
-		CHAR_T buf[30];
+		uqm::CHAR_T buf[30];
 		FleetShipIndex index;
 
 		sideI = GetPlayerOrder (i);
@@ -555,7 +555,7 @@ FillPickMeleeFrame (MeleeSetup *setup)
 		// Team name at the bottom of the frame:
 		t.align = ALIGN_CENTER;
 		t.pStr = MeleeSetup_getTeamName (setup, sideI);
-		t.CharCount = (COUNT) ~0;
+		t.CharCount = (uqm::COUNT) ~0;
 		if (isPC (optWhichFonts))
 			SetContextFont (TinyFont);
 		else
@@ -569,7 +569,7 @@ FillPickMeleeFrame (MeleeSetup *setup)
 		t.baseline.y = RES_SCALE (7);
 		t.align = ALIGN_LEFT;
 		t.pStr = buf;
-		t.CharCount = (COUNT)~0;
+		t.CharCount = (uqm::COUNT)~0;
 		SetContextForeGroundColor (PICKSHIP_TEAM_START_VALUE_COLOR);
 		font_DrawText (&t);
 
@@ -584,13 +584,13 @@ FillPickMeleeFrame (MeleeSetup *setup)
 				continue;
 
 			{
-				BYTE row, col;
-				BYTE ship_cost;
+				uqm::BYTE row, col;
+				uqm::BYTE ship_cost;
 				HMASTERSHIP hMasterShip;
 				HSTARSHIP hBuiltShip;
 				MASTER_SHIP_INFO *MasterPtr;
 				STARSHIP *BuiltShipPtr;
-				BYTE captains_name_index;
+				uqm::BYTE captains_name_index;
 
 				hMasterShip = GetStarShipFromIndex (&master_q, StarShip);
 				MasterPtr = LockMasterShip (&master_q, hMasterShip);
@@ -638,7 +638,7 @@ DestroyPickMeleeFrame (void)
 
 // Pre: caller holds the graphics lock.
 static void
-DrawPickMeleeFrame (COUNT which_player)
+DrawPickMeleeFrame (uqm::COUNT which_player)
 {
 	CONTEXT oldContext;
 	STAMP s;
@@ -657,8 +657,8 @@ DrawPickMeleeFrame (COUNT which_player)
 void
 MeleeGameOver (void)
 {
-	COUNT playerI;
-	DWORD TimeOut;
+	uqm::COUNT playerI;
+	uqm::DWORD TimeOut;
 	bool PressState, ButtonState;
 
 	// Show the battle result.
@@ -708,13 +708,13 @@ MeleeShipDeath (STARSHIP *ship)
 
 // Post: the NetState for all players is NetState_interBattle
 static bool
-GetMeleeStarShips (COUNT playerMask, HSTARSHIP *ships)
+GetMeleeStarShips (uqm::COUNT playerMask, HSTARSHIP *ships)
 {
-	COUNT playerI;
+	uqm::COUNT playerI;
 	bool ok;
 	GETMELEE_STATE gmstate;
 	TimeCount now;
-	COUNT i;
+	uqm::COUNT i;
 
 #ifdef NETPLAY
 	for (playerI = 0; playerI < NUM_PLAYERS; playerI++)
@@ -752,7 +752,7 @@ GetMeleeStarShips (COUNT playerMask, HSTARSHIP *ships)
 		// wants a random ship, to keep it simple to keep network parties
 		// synchronised.
 		gmstate.player[playerI].randomIndex =
-				(COUNT)TFB_Random () % gmstate.player[playerI].ships_left;
+				(uqm::COUNT)TFB_Random () % gmstate.player[playerI].ships_left;
 		gmstate.player[playerI].done = false;
 
 		if (!gmstate.player[playerI].selecting)
@@ -870,8 +870,8 @@ GetMeleeStarShips (COUNT playerMask, HSTARSHIP *ships)
 bool
 GetInitialMeleeStarShips (HSTARSHIP *result)
 {
-	COUNT playerI;
-	COUNT playerMask;
+	uqm::COUNT playerI;
+	uqm::COUNT playerMask;
 
 	for (playerI = 0; playerI < NUM_PLAYERS; playerI++)
 	{
@@ -895,9 +895,9 @@ GetInitialMeleeStarShips (HSTARSHIP *result)
 
 // Get the next ship to use in SuperMelee.
 bool
-GetNextMeleeStarShip (COUNT which_player, HSTARSHIP *result)
+GetNextMeleeStarShip (uqm::COUNT which_player, HSTARSHIP *result)
 {
-	COUNT playerMask;
+	uqm::COUNT playerMask;
 	HSTARSHIP ships[NUM_PLAYERS];
 	bool ok;
 
@@ -914,7 +914,7 @@ GetNextMeleeStarShip (COUNT which_player, HSTARSHIP *result)
 #ifdef NETPLAY
 // Called when a ship selection has arrived from a remote player.
 bool
-updateMeleeSelection (GETMELEE_STATE *gms, COUNT playerI, COUNT ship)
+updateMeleeSelection (GETMELEE_STATE *gms, uqm::COUNT playerI, uqm::COUNT ship)
 {
 	if (gms == NULL || !gms->player[playerI].selecting ||
 			gms->player[playerI].done)
@@ -938,7 +938,7 @@ updateMeleeSelection (GETMELEE_STATE *gms, COUNT playerI, COUNT ship)
 }
 
 static void
-reportShipSelected (GETMELEE_STATE *gms, COUNT index)
+reportShipSelected (GETMELEE_STATE *gms, uqm::COUNT index)
 {
 	size_t playerI;
 	for (playerI = 0; playerI < NUM_PLAYERS; playerI++)

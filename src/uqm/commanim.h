@@ -92,29 +92,29 @@ extern "C" {
 
 typedef struct
 {
-	COUNT StartIndex;
+	uqm::COUNT StartIndex;
 			// Index of the first image (for image animation) or
 			// index of the first color map (for palette animation)
-	BYTE NumFrames;
+	uqm::BYTE NumFrames;
 			// Number of frames in the animation.
 
-	COUNT AnimFlags;
+	uqm::COUNT AnimFlags;
 			// One of RANDOM_ANIM, CIRCULAR_ANIM, or YOYO_ANIM
 			// plus flags (WAIT_TALKING, ANIM_DISABLED)
-			// JMS: Changed from BYTE to COUNT to house more possible flags
+			// JMS: Changed from uqm::BYTE to uqm::COUNT to house more possible flags
 
-	COUNT BaseFrameRate;
+	uqm::COUNT BaseFrameRate;
 			// Minimum interframe delay
-	COUNT RandomFrameRate;
+	uqm::COUNT RandomFrameRate;
 			// Maximum additional interframe delay
 			// Actual delay: BaseFrameRate + Random(0..RandomFrameRate)
-	COUNT BaseRestartRate;
+	uqm::COUNT BaseRestartRate;
 			// Minimum delay before restarting animation
-	COUNT RandomRestartRate;
+	uqm::COUNT RandomRestartRate;
 			// Maximum additional delay before restarting animation
 			// Actual delay: BaseRestartRate + Random(0..RandomRestartRate)
 
-	DWORD BlockMask;
+	uqm::DWORD BlockMask;
 			// Bit mask of the indices of all animations that can not
 			// be active at the same time as this animation, usually,
 			// due to the image overlap conflicts.
@@ -144,11 +144,11 @@ typedef enum
 struct SEQUENCE
 {
 	ANIMATION_DESC *ADPtr;
-	DWORD Alarm;
+	uqm::DWORD Alarm;
 	ANIM_DIR Direction;
-	COUNT CurIndex;
-	COUNT NextIndex;
-	COUNT FramesLeft;
+	uqm::COUNT CurIndex;
+	uqm::COUNT NextIndex;
+	uqm::COUNT FramesLeft;
 	ANIM_TYPE AnimType;
 	bool Change;
 };
@@ -177,30 +177,30 @@ typedef struct SEQUENCE SEQUENCE;
 
 typedef struct
 {
-	BYTE ColorIndex;
+	uqm::BYTE ColorIndex;
 	// Index of filter color in color
 	// table with index 10 aka alienrace.ct
 	// Can be used as frame offset for FRAMED_FILTER
 
-	BYTE OpacityIndex;
+	uqm::BYTE OpacityIndex;
 	// Index of opacity color in color
 	// table with index 10 aka alienrace.ct
 	// RED channel would be used as alpha channel
 
-	SIZE FrameIndex;
+	uqm::SIZE FrameIndex;
 	// If we want to use frame from CommData.AlienFrame
 	// If -1 then we will draw a rectangle that covers all context
 
-	BYTE Kind;
+	uqm::BYTE Kind;
 	// A drawkind from DrawKind enum
 
-	BYTE Flags;
+	uqm::BYTE Flags;
 	// Any possible flags
 } FILTER;
 
 typedef struct
 {
-	BYTE NumFilters;
+	uqm::BYTE NumFilters;
 
 	FILTER FilterArray[MAX_FILTERS];
 
@@ -209,12 +209,12 @@ typedef struct
 extern FILTER_DESC FilterData;
 
 // Returns true if there was an animation change
-extern bool DrawAlienFrame (SEQUENCE *pSeq, COUNT Num, bool fullRedraw);
+extern bool DrawAlienFrame (SEQUENCE *pSeq, uqm::COUNT Num, bool fullRedraw);
 extern void InitCommAnimations (void);
 extern bool ProcessCommAnimations (bool fullRedraw, bool paused);
 extern void ShutYourMouth (void);
 extern void SwitchSequences (bool enableAll);
-extern void RunOneTimeSequence (COUNT animIndex, COUNT flags);
+extern void RunOneTimeSequence (uqm::COUNT animIndex, uqm::COUNT flags);
 extern void EngageFilters (FILTER_DESC* f_desc);
 extern void DisengageFilters (void);
 

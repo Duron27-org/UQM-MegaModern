@@ -73,8 +73,8 @@ static Color win_dark_clr =
 
 static FONT cur_font;
 
-static COUNT offset_t = 0; // Top widget offset
-static COUNT offset_b;// = ONSCREEN; // Bottom widget offset
+static uqm::COUNT offset_t = 0; // Top widget offset
+static uqm::COUNT offset_b;// = ONSCREEN; // Bottom widget offset
 static FRAME arrow_frame = NULL; // Frames for additional graphics
 
 void
@@ -158,7 +158,7 @@ DrawLabelAsWindow (WIDGET_LABEL *label, RECT *windowRect)
 	{
 		t.pStr = label->lines[i];
 		t.align = ALIGN_CENTER;
-		t.CharCount = (COUNT)~0;
+		t.CharCount = (uqm::COUNT)~0;
 		font_DrawText (&t);
 		t.baseline.y += RES_SCALE (8);
 	}
@@ -208,7 +208,7 @@ Widget_DrawToolTips (int numlines, const char **tips)
 	Color oldtext = SetContextForeGroundColor (WIDGET_TOOLTIP_COLOR);
 	TEXT t;
 	int i;
-	const CHAR_T *amperBang = "&!";
+	const uqm::CHAR_T *amperBang = "&!";
 	const size_t abSize = strlen (amperBang);
 	bool warning = false;
 
@@ -477,7 +477,7 @@ Widget_DrawChoice (WIDGET *_self, int x, int y)
 
 				{	// Navigation Dots
 					RECT d;
-					COUNT c;
+					uqm::COUNT c;
 
 					d.extent.width = RES_SCALE (4);
 					d.extent.height = RES_SCALE (1);
@@ -553,8 +553,8 @@ Widget_DrawLabel (WIDGET *_self, int x, int y)
 	TEXT t;
 	int i;
 	RECT r;
-	const CHAR_T *amperScore = "&_";
-	const CHAR_T *amperBang = "&!";
+	const uqm::CHAR_T *amperScore = "&_";
+	const uqm::CHAR_T *amperBang = "&!";
 	const size_t asSize = strlen (amperScore);
 	bool underline = false;
 	bool warning = false;
@@ -724,7 +724,7 @@ Widget_DrawTextEntry (WIDGET *_self, int x, int y)
 	self->value[WIDGET_TEXTENTRY_WIDTH-RES_SCALE (1)] = 0;
 
 	t.baseline.y = y;
-	t.CharCount = (COUNT)utf8StringCount (self->value);
+	t.CharCount = (uqm::COUNT)utf8StringCount (self->value);
 	t.pStr = self->value;
 
 	if (!(self->state & WTE_EDITING))
@@ -744,12 +744,12 @@ Widget_DrawTextEntry (WIDGET *_self, int x, int y)
 	}
 	else
 	{	// editing state
-		COUNT i;
+		uqm::COUNT i;
 		RECT text_r;
-		BYTE char_deltas[WIDGET_TEXTENTRY_WIDTH];
-		BYTE *pchar_deltas;
+		uqm::BYTE char_deltas[WIDGET_TEXTENTRY_WIDTH];
+		uqm::BYTE *pchar_deltas;
 		RECT r;
-		SIZE leading;
+		uqm::SIZE leading;
 
 		t.baseline.x = RSTEP;
 		t.align = ALIGN_LEFT;
@@ -783,7 +783,7 @@ Widget_DrawTextEntry (WIDGET *_self, int x, int y)
 		// calculate the cursor position and draw it
 		pchar_deltas = char_deltas;
 		for (i = self->cursor_pos; i > 0; --i)
-			r.corner.x += (SIZE)*pchar_deltas++;
+			r.corner.x += (uqm::SIZE)*pchar_deltas++;
 		if (self->cursor_pos < t.CharCount) /* cursor mid-line */
 			r.corner.x -= RES_SCALE (1);
 
@@ -800,12 +800,12 @@ Widget_DrawTextEntry (WIDGET *_self, int x, int y)
 			}
 			else if (self->cursor_pos + 1 == t.CharCount)
 			{	// extra pixel for last char margin
-				r.extent.width = (SIZE)*pchar_deltas - IF_HD (3);
+				r.extent.width = (uqm::SIZE)*pchar_deltas - IF_HD (3);
 				r.corner.x += RES_SCALE (1);
 			}
 			else
 			{	// normal mid-line char
-				r.extent.width = (SIZE)*pchar_deltas;
+				r.extent.width = (uqm::SIZE)*pchar_deltas;
 				r.corner.x += RES_SCALE (1);
 			}
 		}

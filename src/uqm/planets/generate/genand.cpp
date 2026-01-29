@@ -33,10 +33,10 @@
 static bool GenerateAndrosynth_generatePlanets (SOLARSYS_STATE *solarSys);
 static bool GenerateAndrosynth_generateOrbital (SOLARSYS_STATE *solarSys,
 		PLANET_DESC *world);
-static COUNT GenerateAndrosynth_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
+static uqm::COUNT GenerateAndrosynth_generateEnergy (const SOLARSYS_STATE *,
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
 static bool GenerateAndrosynth_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, COUNT whichNode);
+		PLANET_DESC *world, uqm::COUNT whichNode);
 
 
 const GenerateFunctions generateAndrosynthFunctions = {
@@ -68,7 +68,7 @@ GenerateAndrosynth_generatePlanets (SOLARSYS_STATE *solarSys)
 	{
 		if (PrimeSeed)
 		{
-			COUNT angle;
+			uqm::COUNT angle;
 
 			pSunDesc->PlanetByte = 1;
 			pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
@@ -112,8 +112,8 @@ GenerateAndrosynth_generateOrbital (SOLARSYS_STATE *solarSys,
 	if (CurStarDescPtr->Index == ANDROSYNTH_DEFINED
 			&& matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{
-		COUNT i;
-		COUNT visits = 0;
+		uqm::COUNT i;
+		uqm::COUNT visits = 0;
 
 		LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 		solarSys->PlanetSideFrame[1] =
@@ -182,7 +182,7 @@ GenerateAndrosynth_generateOrbital (SOLARSYS_STATE *solarSys,
 
 static bool
 GenerateAndrosynth_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, COUNT whichNode)
+		PLANET_DESC *world, uqm::COUNT whichNode)
 {
 	if (CurStarDescPtr->Index == ANDROSYNTH_DEFINED &&
 		matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
@@ -220,9 +220,9 @@ GenerateAndrosynth_pickupEnergy (SOLARSYS_STATE *solarSys,
 	return false;
 }
 
-static COUNT
+static uqm::COUNT
 GenerateAndrosynth_generateEnergy (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *info)
 {
 	if (CurStarDescPtr->Index == ANDROSYNTH_DEFINED &&
 		matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))

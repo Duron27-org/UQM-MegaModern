@@ -27,7 +27,7 @@
 static struct taskstruct task_array[TASK_MAX];
 
 Task
-AssignTask (ThreadFunction task_func, SDWORD stackSize, const char *name)
+AssignTask (ThreadFunction task_func, uqm::SDWORD stackSize, const char *name)
 {
 	int i;
 	for (i = 0; i < TASK_MAX; ++i)
@@ -74,10 +74,10 @@ ConcludeTask (Task task)
 	}
 }
 
-DWORD
-Task_SetState (Task task, DWORD state_mask)
+uqm::DWORD
+Task_SetState (Task task, uqm::DWORD state_mask)
 {
-	DWORD old_state;
+	uqm::DWORD old_state;
 	LockMutex (task->state_mutex);
 	old_state = task->state;
 	task->state |= state_mask;
@@ -86,10 +86,10 @@ Task_SetState (Task task, DWORD state_mask)
 	return old_state;
 }
 
-DWORD
-Task_ClearState (Task task, DWORD state_mask)
+uqm::DWORD
+Task_ClearState (Task task, uqm::DWORD state_mask)
 {
-	DWORD old_state;
+	uqm::DWORD old_state;
 	LockMutex (task->state_mutex);
 	old_state = task->state;
 	task->state &= ~state_mask;
@@ -98,10 +98,10 @@ Task_ClearState (Task task, DWORD state_mask)
 	return old_state;
 }
 
-DWORD
-Task_ToggleState (Task task, DWORD state_mask)
+uqm::DWORD
+Task_ToggleState (Task task, uqm::DWORD state_mask)
 {
-	DWORD old_state;
+	uqm::DWORD old_state;
 	LockMutex (task->state_mutex);
 	old_state = task->state;
 	task->state ^= state_mask;
@@ -110,8 +110,8 @@ Task_ToggleState (Task task, DWORD state_mask)
 	return old_state;
 }
 
-DWORD
-Task_ReadState (Task task, DWORD state_mask)
+uqm::DWORD
+Task_ReadState (Task task, uqm::DWORD state_mask)
 {
 	return task->state & state_mask;
 }

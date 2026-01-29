@@ -263,7 +263,7 @@ ExitConversation (RESPONSE_REF R)
 static void
 ArilouHome (RESPONSE_REF R)
 {
-	BYTE i, LastStack;
+	uqm::BYTE i, LastStack;
 	RESPONSE_REF pStr[4];
 
 	LastStack = 0;
@@ -548,7 +548,7 @@ AngrySpaceArilou (RESPONSE_REF R)
 static void
 FriendlySpaceArilou (RESPONSE_REF R)
 {
-	BYTE NumVisits;
+	uqm::BYTE NumVisits;
 
 	if (PLAYER_SAID (R, confused_by_hello))
 		NPCPhrase (CONFUSED_RESPONSE);
@@ -661,9 +661,9 @@ FriendlySpaceArilou (RESPONSE_REF R)
 static void
 Intro (void)
 {
-	BYTE NumVisits, Manner;
+	uqm::BYTE NumVisits, Manner;
 
-	if (LOBYTE (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
+	if (lowByte (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
 	{
 		NPCPhrase (OUT_TAKES);
 
@@ -813,7 +813,7 @@ Intro (void)
 	}
 }
 
-static COUNT
+static uqm::COUNT
 uninit_arilou (void)
 {
 	luaUqm_comm_uninit ();
@@ -823,7 +823,7 @@ uninit_arilou (void)
 static void
 post_arilou_enc (void)
 {
-	BYTE Manner;
+	uqm::BYTE Manner;
 
 	if (getSegue () == Segue_hostile
 			&& (Manner = GET_GAME_STATE (ARILOU_MANNER)) != 2)
@@ -867,7 +867,7 @@ init_arilou_comm (void)
 
 	if (GET_GAME_STATE (ARILOU_SPACE_SIDE) > 1
 			|| GET_GAME_STATE (ARILOU_MANNER) == 3
-			|| LOBYTE (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
+			|| lowByte (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
 	{
 		setSegue (Segue_peace);
 	}

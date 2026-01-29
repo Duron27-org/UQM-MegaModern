@@ -215,7 +215,7 @@ ExitConversation (RESPONSE_REF R)
 	}
 	else if (PLAYER_SAID (R, bye_space))
 	{
-		if ((BYTE)TFB_Random () & 1)
+		if ((uqm::BYTE)TFB_Random () & 1)
 			NPCPhrase (GOODBYE_AND_DIE_SPACE);
 		else
 		{
@@ -253,7 +253,7 @@ ExitConversation (RESPONSE_REF R)
 
 		if (GET_GAME_STATE (YEHAT_ABSORBED_PKUNK) && DIF_HARD)
 		{	// absorbed before revolution
-			UWORD state;
+			uqm::UWORD state;
 
 			state = GET_GAME_STATE (HM_ENCOUNTERS);
 
@@ -271,7 +271,7 @@ Royalists (RESPONSE_REF R)
 {
 	if (PLAYER_SAID (R, how_is_rebellion))
 	{
-		BYTE NumVisits;
+		uqm::BYTE NumVisits;
 
 		NumVisits = GET_GAME_STATE (YEHAT_ROYALIST_INFO);
 		switch (NumVisits++)
@@ -342,7 +342,7 @@ YehatHome (RESPONSE_REF R)
 
 	if (PLAYER_SAID (R, whats_up_homeworld))
 	{
-		BYTE NumVisits;
+		uqm::BYTE NumVisits;
 
 		NumVisits = GET_GAME_STATE (YEHAT_ROYALIST_INFO);
 		switch (NumVisits++)
@@ -399,7 +399,7 @@ YehatHome (RESPONSE_REF R)
 static void
 YehatSpace (RESPONSE_REF R)
 {
-	BYTE i, LastStack;
+	uqm::BYTE i, LastStack;
 	RESPONSE_REF pStr[3];
 
 	LastStack = 0;
@@ -409,7 +409,7 @@ YehatSpace (RESPONSE_REF R)
 			|| PLAYER_SAID (R, whats_up_space_3)
 			|| PLAYER_SAID (R, whats_up_space_4))
 	{
-		BYTE NumVisits;
+		uqm::BYTE NumVisits;
 
 		NumVisits = GET_GAME_STATE (YEHAT_REBEL_INFO);
 		switch (NumVisits++)
@@ -541,9 +541,9 @@ YehatSpace (RESPONSE_REF R)
 static void
 Intro (void)
 {
-	BYTE NumVisits;
+	uqm::BYTE NumVisits;
 
-	if (LOBYTE (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
+	if (lowByte (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
 	{
 		NPCPhrase (OUT_TAKES);
 
@@ -628,7 +628,7 @@ Intro (void)
 	}
 }
 
-static COUNT
+static uqm::COUNT
 uninit_yehat (void)
 {
 	luaUqm_comm_uninit();
@@ -658,7 +658,7 @@ init_yehat_comm (void)
 	yehat_desc.AlienTextBaseline.y = RES_SCALE (107 * 2 / 3);
 	yehat_desc.AlienTextWidth = (SIS_TEXT_WIDTH - RES_SCALE (16)) * 2 / 3;
 
-	if (LOBYTE (GLOBAL (CurrentActivity)) != WON_LAST_BATTLE)
+	if (lowByte (GLOBAL (CurrentActivity)) != WON_LAST_BATTLE)
 	{
 		setSegue (Segue_hostile);
 	}

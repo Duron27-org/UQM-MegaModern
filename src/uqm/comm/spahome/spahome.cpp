@@ -324,7 +324,7 @@ static void SpathiAllies (RESPONSE_REF R);
 static void
 SpathiInfo (RESPONSE_REF R)
 {
-	BYTE InfoLeft;
+	uqm::BYTE InfoLeft;
 	
 	InfoLeft = false;
 	if (PLAYER_SAID (R, like_some_info))
@@ -396,7 +396,7 @@ SpathiInfo (RESPONSE_REF R)
 static void
 SpathiAllies (RESPONSE_REF R)
 {
-	BYTE NumVisits;
+	uqm::BYTE NumVisits;
 
 	if (R == 0)
 	{
@@ -682,7 +682,7 @@ SpathiParty (RESPONSE_REF R)
 {
 	if (R == 0)
 	{
-		BYTE NumVisits;
+		uqm::BYTE NumVisits;
 
 		NumVisits = GET_GAME_STATE (SPATHI_HOME_VISITS);
 		switch (NumVisits++)
@@ -868,7 +868,7 @@ SpathiPassword (RESPONSE_REF R)
 {
 	if (R == 0)
 	{
-		BYTE NumVisits;
+		uqm::BYTE NumVisits;
 
 		NumVisits = GET_GAME_STATE (SPATHI_HOME_VISITS);
 		switch (NumVisits++)
@@ -914,7 +914,7 @@ SpathiPassword (RESPONSE_REF R)
 static void
 Intro (void)
 {
-	BYTE Manner;
+	uqm::BYTE Manner;
 
 	if (IS_HD)
 	{
@@ -988,7 +988,7 @@ Intro (void)
 	}
 }
 
-static COUNT
+static uqm::COUNT
 uninit_spahome (void)
 {
 	luaUqm_comm_uninit ();
@@ -998,7 +998,7 @@ uninit_spahome (void)
 static void
 post_spahome_enc (void)
 {
-	BYTE Manner;
+	uqm::BYTE Manner;
 
 	if (getSegue () == Segue_hostile
 			&& (Manner = GET_GAME_STATE (SPATHI_MANNER)) != 2)

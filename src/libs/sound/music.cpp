@@ -32,7 +32,7 @@ static MUSIC_REF curSpeechRef;
 static MUSIC_POSITION resumeMusicArray[PATH_MAX];
 
 void
-PLRPlaySong (MUSIC_REF MusicRef, bool Continuous, BYTE Priority)
+PLRPlaySong (MUSIC_REF MusicRef, bool Continuous, uqm::BYTE Priority)
 {
 	TFB_SoundSample **pmus = MusicRef;
 
@@ -80,7 +80,7 @@ PLRPlaying (MUSIC_REF MusicRef)
 }
 
 void
-PLRSeek (MUSIC_REF MusicRef, DWORD pos)
+PLRSeek (MUSIC_REF MusicRef, uqm::DWORD pos)
 {
 	if (MusicRef == curMusicRef || MusicRef == (MUSIC_REF)~0)
 	{
@@ -101,12 +101,12 @@ PLRPause (MUSIC_REF MusicRef)
 	}
 }
 
-static DWORD
+static uqm::DWORD
 get_current_music_pos (MUSIC_REF MusicRef)
 {
-	DWORD pos = 0;
+	uqm::DWORD pos = 0;
 	float length = 0.0f;
-	//CHAR_T *filename;
+	//uqm::CHAR_T *filename;
 
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
 		return 0;
@@ -133,13 +133,13 @@ get_current_music_pos (MUSIC_REF MusicRef)
 	else
 		return 0;
 
-	if (pos > (DWORD)length)
+	if (pos > (uqm::DWORD)length)
 		pos = 0;
 
 	return pos;
 }
 
-DWORD
+uqm::DWORD
 PLRGetPos (void)
 {
 	return curMusicRef != 0 ? get_current_music_pos (curMusicRef) : 0;
@@ -148,7 +148,7 @@ PLRGetPos (void)
 static char *
 get_current_music_filename (MUSIC_REF MusicRef)
 {
-	CHAR_T *filename;
+	uqm::CHAR_T *filename;
 
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
 		return 0;
@@ -165,7 +165,7 @@ get_current_music_filename (MUSIC_REF MusicRef)
 		return 0;
 }
 
-CHAR_T *
+uqm::CHAR_T *
 PLRGetFilename (void)
 {
 	return curMusicRef != 0 ? get_current_music_filename (curMusicRef) : 0;
@@ -244,7 +244,7 @@ DestroyMusic (MUSIC_REF MusicRef)
 }
 
 void
-SetMusicVolume (COUNT Volume)
+SetMusicVolume (uqm::COUNT Volume)
 {
 	float f = (Volume / (float)MAX_VOLUME) * musicVolumeScale;
 	musicVolume = Volume;
@@ -260,7 +260,7 @@ CheckMusicResName (char* fileName)
 }
 
 void *
-_GetMusicData (uio_Stream *fp, DWORD length)
+_GetMusicData (uio_Stream *fp, uqm::DWORD length)
 {
 	MUSIC_REF h;
 	TFB_SoundSample *sample;
@@ -372,10 +372,10 @@ SetMusicPosition (void)
 	}
 }
 
-DWORD
+uqm::DWORD
 GetMusicPosition ()
 {
-	DWORD filename_hash;
+	uqm::DWORD filename_hash;
 	int i;
 
 	if (!optMusicResume || GLOBAL (CurrentActivity) & CHECK_ABORT)
@@ -403,7 +403,7 @@ bool
 OkayToResume (void)
 {
 	TimeCount TimeIn, difference;
-	DWORD filename_hash;
+	uqm::DWORD filename_hash;
 	int i;
 
 	if (!optMusicResume || GLOBAL (CurrentActivity) & CHECK_ABORT)

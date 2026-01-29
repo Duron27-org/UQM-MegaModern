@@ -32,12 +32,12 @@ extern bool RosterMenu (void);
 extern bool DevicesMenu (void);
 extern bool StarMap (void);
 
-extern void DrawCargoStrings (BYTE OldElement, BYTE NewElement);
+extern void DrawCargoStrings (uqm::BYTE OldElement, uqm::BYTE NewElement);
 extern void ShowRemainingCapacity (void);
-extern void DrawRainbowPlanet (COUNT planet);
+extern void DrawRainbowPlanet (uqm::COUNT planet);
 extern bool InvokeSpawner (void);
 
-extern SIZE InventoryDevices (BYTE *pDeviceMap, COUNT Size);
+extern uqm::SIZE InventoryDevices (uqm::BYTE *pDeviceMap, uqm::COUNT Size);
 
 extern FONT ModuleFont;
 

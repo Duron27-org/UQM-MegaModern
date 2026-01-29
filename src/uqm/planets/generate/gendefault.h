@@ -42,36 +42,36 @@ bool GenerateDefault_generateName (const SOLARSYS_STATE *,
 		const PLANET_DESC *world);
 bool GenerateDefault_generateOrbital (SOLARSYS_STATE *solarSys,
 		PLANET_DESC *world);
-COUNT GenerateDefault_generateMinerals (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
-COUNT GenerateDefault_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
-COUNT GenerateDefault_generateLife (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
+uqm::COUNT GenerateDefault_generateMinerals (const SOLARSYS_STATE *,
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
+uqm::COUNT GenerateDefault_generateEnergy (const SOLARSYS_STATE *,
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
+uqm::COUNT GenerateDefault_generateLife (const SOLARSYS_STATE *,
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
 bool GenerateDefault_pickupMinerals (SOLARSYS_STATE *, PLANET_DESC *world,
-		COUNT whichNode);
+		uqm::COUNT whichNode);
 bool GenerateDefault_pickupEnergy (SOLARSYS_STATE *, PLANET_DESC *world,
-		COUNT whichNode);
+		uqm::COUNT whichNode);
 bool GenerateDefault_pickupLife (SOLARSYS_STATE *, PLANET_DESC *world,
-		COUNT whichNode);
+		uqm::COUNT whichNode);
 
-COUNT GenerateDefault_generateArtifact (const SOLARSYS_STATE *,
-		COUNT whichNode, NODE_INFO *info);
-COUNT GenerateDefault_generateRuins (const SOLARSYS_STATE *,
-		COUNT whichNode, NODE_INFO *info);
+uqm::COUNT GenerateDefault_generateArtifact (const SOLARSYS_STATE *,
+		uqm::COUNT whichNode, NODE_INFO *info);
+uqm::COUNT GenerateDefault_generateRuins (const SOLARSYS_STATE *,
+		uqm::COUNT whichNode, NODE_INFO *info);
 bool GenerateDefault_landerReport (SOLARSYS_STATE *);
 bool GenerateDefault_landerReportCycle (SOLARSYS_STATE *);
 extern void GeneratePlanets (SOLARSYS_STATE *system);
 extern bool CheckForHabitable (SOLARSYS_STATE *solarSys);
-extern BYTE GenerateWorlds (BYTE whichType);
+extern uqm::BYTE GenerateWorlds (uqm::BYTE whichType);
 extern void GenerateGasGiantRanged (SOLARSYS_STATE *solarSys);
-extern BYTE GenerateCrystalWorld (void);
-extern BYTE GenerateDesolateWorld (void);
-extern BYTE GenerateHabitableWorld (void);
-extern BYTE GenerateGasGiantWorld (void);
-extern BYTE GenerateMinPlanets (BYTE min);
-extern BYTE GenerateNumberOfPlanets (BYTE minimum);
-extern BYTE PlanetByteGen (PLANET_DESC *pPDesc);
+extern uqm::BYTE GenerateCrystalWorld (void);
+extern uqm::BYTE GenerateDesolateWorld (void);
+extern uqm::BYTE GenerateHabitableWorld (void);
+extern uqm::BYTE GenerateGasGiantWorld (void);
+extern uqm::BYTE GenerateMinPlanets (uqm::BYTE min);
+extern uqm::BYTE GenerateNumberOfPlanets (uqm::BYTE minimum);
+extern uqm::BYTE PlanetByteGen (PLANET_DESC *pPDesc);
 
 extern const GenerateFunctions generateDefaultFunctions;
 

@@ -39,7 +39,7 @@ typedef struct connect_dialog_state
 {
 	bool (*InputFunc) (struct connect_dialog_state *pInputState);
 
-	DWORD NextTime;
+	uqm::DWORD NextTime;
 	bool Initialized;
 	int which_side;
 	
@@ -209,7 +209,7 @@ MCD_DrawTextEntry (WIDGET *_self, int x, int y)
 	self->value[WIDGET_TEXTENTRY_WIDTH-1] = 0;
 
 	t.baseline.y = y;
-	t.CharCount = (COUNT)utf8StringCount (self->value);
+	t.CharCount = (uqm::COUNT)utf8StringCount (self->value);
 	t.pStr = self->value;
 
 	if (!(self->state & WTE_EDITING))
@@ -229,12 +229,12 @@ MCD_DrawTextEntry (WIDGET *_self, int x, int y)
 	}
 	else
 	{	// editing state
-		COUNT i;
+		uqm::COUNT i;
 		RECT text_r;
-		BYTE char_deltas[WIDGET_TEXTENTRY_WIDTH];
-		BYTE *pchar_deltas;
+		uqm::BYTE char_deltas[WIDGET_TEXTENTRY_WIDTH];
+		uqm::BYTE *pchar_deltas;
 		RECT r;
-		SIZE leading;
+		uqm::SIZE leading;
 
 		t.baseline.x = x + (RES_SCALE (90));
 		t.align = ALIGN_LEFT;
@@ -268,7 +268,7 @@ MCD_DrawTextEntry (WIDGET *_self, int x, int y)
 		// calculate the cursor position and draw it
 		pchar_deltas = char_deltas;
 		for (i = self->cursor_pos; i > 0; --i)
-			r.corner.x += (SIZE)*pchar_deltas++;
+			r.corner.x += (uqm::SIZE)*pchar_deltas++;
 		if (self->cursor_pos < t.CharCount) /* cursor mid-line */
 			r.corner.x -= RES_SCALE (1);
 
@@ -285,12 +285,12 @@ MCD_DrawTextEntry (WIDGET *_self, int x, int y)
 			}
 			else if (self->cursor_pos + 1 == t.CharCount)
 			{	// extra pixel for last char margin
-				r.extent.width = (SIZE)*pchar_deltas - IF_HD (3);
+				r.extent.width = (uqm::SIZE)*pchar_deltas - IF_HD (3);
 				r.corner.x += RES_SCALE (1);
 			}
 			else
 			{	// normal mid-line char
-				r.extent.width = (SIZE)*pchar_deltas;
+				r.extent.width = (uqm::SIZE)*pchar_deltas;
 				r.corner.x += RES_SCALE (1);
 			}
 		}
@@ -355,7 +355,7 @@ static int
 OnTextEntryEvent (WIDGET_TEXTENTRY *widget)
 {	// Going to edit the text
 	TEXTENTRY_STATE tes;
-	CHAR_T revert_buf[256];
+	uqm::CHAR_T revert_buf[256];
 
 	// position cursor at the end of text
 	widget->cursor_pos = utf8StringCount (widget->value);

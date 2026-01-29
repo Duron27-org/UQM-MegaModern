@@ -27,7 +27,7 @@
 typedef struct {
 	ThreadFunction func;
 	void *data;
-	SDWORD stackSize;
+	uqm::SDWORD stackSize;
 	Semaphore sem;
 	Thread value;
 #ifdef NAMED_SYNCHRO
@@ -156,7 +156,7 @@ ProcessThreadLifecycles (void)
 
 #ifdef NAMED_SYNCHRO
 Thread
-CreateThread_Core (ThreadFunction func, void *data, SDWORD stackSize, const char *name)
+CreateThread_Core (ThreadFunction func, void *data, uqm::SDWORD stackSize, const char *name)
 {
 	SpawnRequest s = (SpawnRequest) HMalloc(sizeof (SpawnRequest_struct));
 	s->func = func;
@@ -168,7 +168,7 @@ CreateThread_Core (ThreadFunction func, void *data, SDWORD stackSize, const char
 }
 
 void
-StartThread_Core (ThreadFunction func, void *data, SDWORD stackSize, const char *name)
+StartThread_Core (ThreadFunction func, void *data, uqm::SDWORD stackSize, const char *name)
 {
 	SpawnRequest s = (SpawnRequest)HMalloc(sizeof (SpawnRequest_struct));
 	s->func = func;
@@ -180,25 +180,25 @@ StartThread_Core (ThreadFunction func, void *data, SDWORD stackSize, const char 
 }
 
 Mutex
-CreateMutex_Core (const char *name, DWORD syncClass)
+CreateMutex_Core (const char *name, uqm::DWORD syncClass)
 {
 	return NativeCreateMutex (name, syncClass);
 }
 
 Semaphore
-CreateSemaphore_Core (DWORD initial, const char *name, DWORD syncClass)
+CreateSemaphore_Core (uqm::DWORD initial, const char *name, uqm::DWORD syncClass)
 {
 	return NativeCreateSemaphore (initial, name, syncClass);
 }
 
 RecursiveMutex
-CreateRecursiveMutex_Core (const char *name, DWORD syncClass)
+CreateRecursiveMutex_Core (const char *name, uqm::DWORD syncClass)
 {
 	return NativeCreateRecursiveMutex (name, syncClass);
 }
 
 CondVar
-CreateCondVar_Core (const char *name, DWORD syncClass)
+CreateCondVar_Core (const char *name, uqm::DWORD syncClass)
 {
 	return NativeCreateCondVar (name, syncClass);
 }
@@ -206,7 +206,7 @@ CreateCondVar_Core (const char *name, DWORD syncClass)
 #else
 /* These are the versions of Create* without the names. */
 Thread
-CreateThread_Core (ThreadFunction func, void *data, SDWORD stackSize)
+CreateThread_Core (ThreadFunction func, void *data, uqm::SDWORD stackSize)
 {
 	SpawnRequest s = HMalloc(sizeof (SpawnRequest_struct));
 	s->func = func;
@@ -217,7 +217,7 @@ CreateThread_Core (ThreadFunction func, void *data, SDWORD stackSize)
 }
 
 void
-StartThread_Core (ThreadFunction func, void *data, SDWORD stackSize)
+StartThread_Core (ThreadFunction func, void *data, uqm::SDWORD stackSize)
 {
 	SpawnRequest s = HMalloc(sizeof (SpawnRequest_struct));
 	s->func = func;
@@ -234,7 +234,7 @@ CreateMutex_Core (void)
 }
 
 Semaphore
-CreateSemaphore_Core (DWORD initial)
+CreateSemaphore_Core (uqm::DWORD initial)
 {
 	return NativeCreateSemaphore (initial);
 }

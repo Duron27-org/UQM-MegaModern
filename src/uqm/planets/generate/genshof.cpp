@@ -143,7 +143,7 @@ static bool
 GenerateShofixti_generatePlanets (SOLARSYS_STATE *solarSys)
 {
 	PLANET_DESC *pSunDesc = &solarSys->SunDesc[0];
-	COUNT i;
+	uqm::COUNT i;
 
 	pSunDesc->PlanetByte = 0;
 	pSunDesc->MoonByte = 0;
@@ -167,8 +167,8 @@ GenerateShofixti_generatePlanets (SOLARSYS_STATE *solarSys)
 	}
 	else
 	{
-		DWORD rand_val = RandomContext_Random (SysGenRNG);
-		BYTE planet = 0;
+		uqm::DWORD rand_val = RandomContext_Random (SysGenRNG);
+		uqm::BYTE planet = 0;
 
 		pSunDesc->NumPlanets = GenerateMinPlanets (2);
 		if (pSunDesc->NumPlanets > 9)
@@ -189,7 +189,7 @@ GenerateShofixti_generatePlanets (SOLARSYS_STATE *solarSys)
 			solarSys->PlanetDesc[i].data_index = METAL_WORLD;
 		for (i = 0; i < pSunDesc->NumPlanets / 2; ++i)
 		{
-			BYTE offset = LOBYTE (rand_val) % (pSunDesc->NumPlanets - i);
+			uqm::BYTE offset = lowByte (rand_val) % (pSunDesc->NumPlanets - i);
 
 			while (solarSys->PlanetDesc[planet].data_index ==
 					SELENIC_WORLD || offset > 0)
@@ -218,7 +218,7 @@ GenerateShofixti_generateMoons (SOLARSYS_STATE *solarSys,
 
 	if (NOMAD && matchWorld (solarSys, planet, MATCH_PBYTE, MATCH_PLANET))
 	{
-		BYTE MoonByte = solarSys->SunDesc[0].MoonByte;
+		uqm::BYTE MoonByte = solarSys->SunDesc[0].MoonByte;
 		PLANET_DESC *pMoonDesc = &solarSys->MoonDesc[MoonByte];
 
 		pMoonDesc->data_index = HIERARCHY_STARBASE;
@@ -235,7 +235,7 @@ GenerateShofixti_generateName (const SOLARSYS_STATE *solarSys,
 
 	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{
-		BYTE PlanetByte = solarSys->SunDesc[0].PlanetByte;
+		uqm::BYTE PlanetByte = solarSys->SunDesc[0].PlanetByte;
 		PLANET_DESC pPlanetDesc = solarSys->PlanetDesc[PlanetByte];
 
 		utf8StringCopy (GLOBAL_SIS (PlanetName),
@@ -259,7 +259,7 @@ GenerateShofixti_generateOrbital (SOLARSYS_STATE *solarSys,
 			bool MaxShips = (CountEscortShips (SHOFIXTI_SHIP) <
 					IF_HARD (2, 1) ? true : false);
 			bool RoomInFleet = EscortFeasibilityStudy (SHOFIXTI_SHIP);
-			BYTE Index = !MaxShips ? 0 : (!RoomInFleet ? 1 : 2);
+			uqm::BYTE Index = !MaxShips ? 0 : (!RoomInFleet ? 1 : 2);
 
 			LoadStdLanderFont(&solarSys->SysInfo.PlanetInfo);
 

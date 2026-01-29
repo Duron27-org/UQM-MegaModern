@@ -44,7 +44,7 @@
 
 static StatMsgMode curMsgMode = SMM_DEFAULT;
 
-static const CHAR_T *describeWeapon (BYTE moduleType);
+static const uqm::CHAR_T *describeWeapon (uqm::BYTE moduleType);
 
 FRAME hdFuelFrame;
 
@@ -86,7 +86,7 @@ RepairSISBorder (void)
 }
 
 void
-ClearSISRect (BYTE ClearFlags)
+ClearSISRect (uqm::BYTE ClearFlags)
 {
 	//RECT r; Unused
 	Color OldColor;
@@ -107,7 +107,7 @@ ClearSISRect (BYTE ClearFlags)
 
 	if (ClearFlags & CLEAR_SIS_RADAR)
 	{
-		DrawMenuStateStrings ((BYTE)~0, 1);
+		DrawMenuStateStrings ((uqm::BYTE)~0, 1);
 #ifdef NEVER
 		r.corner.x = RADAR_X - RES_SCALE (1);
 		r.corner.y = RADAR_Y - RES_SCALE (1);
@@ -129,7 +129,7 @@ ClearSISRect (BYTE ClearFlags)
 // right hand side, containing the coordinates in HyperSpace, or the planet
 // name in IP.
 void
-DrawSISTitle (CHAR_T *pStr)
+DrawSISTitle (uqm::CHAR_T *pStr)
 {
 	TEXT t;
 	CONTEXT OldContext;
@@ -139,7 +139,7 @@ DrawSISTitle (CHAR_T *pStr)
 	t.baseline.y = SIS_TITLE_HEIGHT - RES_SCALE (2);
 	t.align = ALIGN_CENTER;
 	t.pStr = pStr;
-	t.CharCount = (COUNT)~0;
+	t.CharCount = (uqm::COUNT)~0;
 
 	OldContext = SetContext (OffScreenContext);
 	r.corner.x = SIS_ORG_X + SIS_SCREEN_WIDTH - SIS_TITLE_BOX_WIDTH
@@ -153,12 +153,12 @@ DrawSISTitle (CHAR_T *pStr)
 		SetContextFont (TinyFont);
 	else
 	{
-		CHAR_T *buf = pStr;
+		uqm::CHAR_T *buf = pStr;
 
 		SetContextFont (TinyFontBold);
 		replaceChar (buf, UNICHAR_SPACE, UNICHAR_TAB);
 		t.pStr = buf;
-		t.CharCount = (COUNT)~0;
+		t.CharCount = (uqm::COUNT)~0;
 	}
 
 	BatchGraphics ();
@@ -183,8 +183,8 @@ DrawSISTitle (CHAR_T *pStr)
 void
 DrawHyperCoords (POINT universe)
 {
-	CHAR_T buf[100];
-	char *SpaceOrNull = (isPC (optWhichFonts) ? STR_SPACE : "");
+	uqm::CHAR_T buf[100];
+	const char *SpaceOrNull = (isPC (optWhichFonts) ? STR_SPACE : "");
 
 	snprintf (buf, sizeof buf, "%03u.%01u%s:%s%03u.%01u",
 			universe.x / 10, universe.x % 10,
@@ -197,11 +197,11 @@ DrawHyperCoords (POINT universe)
 void
 DrawSaveInfo (SIS_STATE SisState)
 {
-	CHAR_T buf[100];
-	CHAR_T TempDiff[11];
-	CHAR_T TempExt[12] = "";
-	CHAR_T TempNom[10] = "";
-	CHAR_T TempVer[SIS_NAME_SIZE] = "";
+	uqm::CHAR_T buf[100];
+	uqm::CHAR_T TempDiff[11];
+	uqm::CHAR_T TempExt[12] = "";
+	uqm::CHAR_T TempNom[10] = "";
+	uqm::CHAR_T TempVer[SIS_NAME_SIZE] = "";
 
 	if (SisState.SaveVersion > 0)
 	{
@@ -211,7 +211,8 @@ DrawSaveInfo (SIS_STATE SisState)
 	}
 
 	DrawSISMessage (TempVer);
-	DrawSISTitle ("");
+	char* emptyTitle {""};
+	DrawSISTitle (emptyTitle);
 
 	if (SisState.Seed)
 	{
@@ -244,7 +245,7 @@ DrawSaveInfo (SIS_STATE SisState)
 }
 
 void
-DrawSISMessage (const CHAR_T *pStr)
+DrawSISMessage (const uqm::CHAR_T *pStr)
 {
 	DrawSISMessageEx (pStr, -1, -1, DSME_NONE);
 }
@@ -252,10 +253,10 @@ DrawSISMessage (const CHAR_T *pStr)
 // See sis.h for the allowed flags. This is the field at the top of the
 // screen, on the left hand side.
 bool
-DrawSISMessageEx (const CHAR_T *pStr, SIZE CurPos, SIZE ExPos,
-		COUNT flags)
+DrawSISMessageEx (const uqm::CHAR_T *pStr, uqm::SIZE CurPos, uqm::SIZE ExPos,
+		uqm::COUNT flags)
 {
-	CHAR_T buf[256];
+	uqm::CHAR_T buf[256];
 	CONTEXT OldContext;
 	TEXT t;
 	RECT r;
@@ -274,7 +275,7 @@ DrawSISMessageEx (const CHAR_T *pStr, SIZE CurPos, SIZE ExPos,
 
 	if (pStr == 0)
 	{
-		switch (LOBYTE (GLOBAL (CurrentActivity)))
+		switch (lowByte (GLOBAL (CurrentActivity)))
 		{
 			default:
 			case IN_ENCOUNTER:
@@ -322,7 +323,7 @@ DrawSISMessageEx (const CHAR_T *pStr, SIZE CurPos, SIZE ExPos,
 	t.baseline.y = SIS_MESSAGE_HEIGHT - RES_SCALE (2);
 	t.baseline.x = RES_SCALE (RES_DESCALE (SIS_MESSAGE_WIDTH) >> 1);
 	t.pStr = pStr;
-	t.CharCount = (COUNT)~0;
+	t.CharCount = (uqm::COUNT)~0;
 	if (isPC (optWhichFonts) || SaveOrLoad)
 		SetContextFont (TinyFont);
 	else
@@ -331,13 +332,13 @@ DrawSISMessageEx (const CHAR_T *pStr, SIZE CurPos, SIZE ExPos,
 
 		if (CurPos < 0 && ExPos < 0)
 		{
-			CHAR_T buf[100];
+			uqm::CHAR_T buf[100];
 
 			utf8StringCopy (buf, sizeof (buf), pStr);
 			replaceChar (buf, UNICHAR_SPACE, UNICHAR_TAB);
 
 			t.pStr = buf;
-			t.CharCount = (COUNT)~0;
+			t.CharCount = (uqm::COUNT)~0;
 		}
 	}
 
@@ -358,8 +359,8 @@ DrawSISMessageEx (const CHAR_T *pStr, SIZE CurPos, SIZE ExPos,
 		RECT text_r;
 		// XXX: 128 is currently safe, but it would be better to specify
 		//   the size to TextRect()
-		BYTE char_deltas[128];
-		BYTE *pchar_deltas;
+		uqm::BYTE char_deltas[128];
+		uqm::BYTE *pchar_deltas;
 
 		t.baseline.x = RES_SCALE (3);
 		t.align = ALIGN_LEFT;
@@ -387,7 +388,7 @@ DrawSISMessageEx (const CHAR_T *pStr, SIZE CurPos, SIZE ExPos,
 
 			pchar_deltas = char_deltas;
 			for (i = CurPos; i > 0; --i)
-				cur_r.corner.x += (SIZE)*pchar_deltas++;
+				cur_r.corner.x += (uqm::SIZE)*pchar_deltas++;
 			if (CurPos < t.CharCount) /* end of line */
 				cur_r.corner.x -= RES_SCALE (1);
 			
@@ -406,18 +407,18 @@ DrawSISMessageEx (const CHAR_T *pStr, SIZE CurPos, SIZE ExPos,
 				}
 				else if (CurPos + 1 == t.CharCount)
 				{	// extra pixel for last char margin
-					cur_r.extent.width = (SIZE)*pchar_deltas - IF_HD (3);
+					cur_r.extent.width = (uqm::SIZE)*pchar_deltas - IF_HD (3);
 					cur_r.corner.x += RES_SCALE (1);
 				}
 				else if (CurPos < ExPos)
 				{
-					cur_r.extent.width = (SIZE)*pchar_deltas
+					cur_r.extent.width = (uqm::SIZE)*pchar_deltas
 							- RES_SCALE (1);
 					cur_r.corner.x += RES_SCALE (1);
 				}
 				else
 				{	// normal mid-line char
-					cur_r.extent.width = (SIZE)*pchar_deltas;
+					cur_r.extent.width = (uqm::SIZE)*pchar_deltas;
 					cur_r.corner.x += RES_SCALE (1);
 				}
 
@@ -457,9 +458,9 @@ DrawSISMessageEx (const CHAR_T *pStr, SIZE CurPos, SIZE ExPos,
 			// print extra chars
 			SetContextForeGroundColor (SIS_MESSAGE_EXTRA_TEXT_COLOR);
 			for (i = ExPos, pchar_deltas = char_deltas; i > 0; --i)
-				t.baseline.x += (SIZE)*pchar_deltas++;
+				t.baseline.x += (uqm::SIZE)*pchar_deltas++;
 			t.pStr = skipUTF8Chars (t.pStr, ExPos);
-			t.CharCount = (COUNT)~0;
+			t.CharCount = (uqm::COUNT)~0;
 			font_DrawText (&t);
 		}
 		else
@@ -484,7 +485,7 @@ DrawSISMessageEx (const CHAR_T *pStr, SIZE CurPos, SIZE ExPos,
 
 void
 DateToString (char *buf, size_t bufLen,
-		BYTE month_index, BYTE day_index, COUNT year_index)
+		uqm::BYTE month_index, uqm::BYTE day_index, uqm::COUNT year_index)
 {
 	switch (optDateFormat)
 	{
@@ -521,12 +522,12 @@ GetStatusMessageRect (RECT *r)
 }
 
 void
-DrawStatusMessage (const CHAR_T *pStr)
+DrawStatusMessage (const uqm::CHAR_T *pStr)
 {
 	RECT r;
 	RECT ctxRect;
 	TEXT t;
-	CHAR_T buf[128];
+	uqm::CHAR_T buf[128];
 	CONTEXT OldContext;
 
 	OldContext = SetContext (StatusContext);
@@ -596,7 +597,7 @@ DrawStatusMessage (const CHAR_T *pStr)
 	t.baseline.y = STATUS_MESSAGE_HEIGHT - RES_SCALE (1);
 	t.align = ALIGN_CENTER;
 	t.pStr = pStr;
-	t.CharCount = (COUNT)~0;
+	t.CharCount = (uqm::COUNT)~0;
 
 	{
 		Color statusColor = STATUS_MESSAGE_TEXT_COLOR;
@@ -613,7 +614,7 @@ DrawStatusMessage (const CHAR_T *pStr)
 		SetContextFont (TinyFont);
 	else
 	{
-		CHAR_T buf[100];
+		uqm::CHAR_T buf[100];
 
 		SetContextFont (TinyFontBold);
 
@@ -621,7 +622,7 @@ DrawStatusMessage (const CHAR_T *pStr)
 		replaceChar (buf, UNICHAR_SPACE, UNICHAR_TAB);
 
 		t.pStr = buf;
-		t.CharCount = (COUNT)~0;
+		t.CharCount = (uqm::COUNT)~0;
 	}
 
 	SetContextForeGroundColor (STATUS_MESSAGE_TEXT_COLOR);
@@ -671,7 +672,7 @@ DrawCaptainsName (bool NewGame)
 	t.baseline.y = r.corner.y + RES_SCALE (6);
 	t.align = ALIGN_CENTER;
 	t.pStr = GLOBAL_SIS (CommanderName);
-	t.CharCount = (COUNT)~0;
+	t.CharCount = (uqm::COUNT)~0;
 	SetContextForeGroundColor (CAPTAIN_NAME_TEXT_COLOR);
 	font_DrawText (&t);
 
@@ -689,7 +690,7 @@ DrawFlagshipName (bool InStatusArea, bool NewGame)
 	Color OldColor;
 	CONTEXT OldContext;
 	FRAME OldFontEffect;
-	CHAR_T buf[250];
+	uqm::CHAR_T buf[250];
 
 	OldFontEffect = SetContextFontEffect (NULL);
 	OldColor = SetContextForeGroundColor (FLAGSHIP_NAME_BACKGROUND_COLOR);
@@ -722,7 +723,7 @@ DrawFlagshipName (bool InStatusArea, bool NewGame)
 		snprintf (buf, sizeof buf, "%s %s",
 				GAME_STRING (NAMING_STRING_BASE + 1), GLOBAL_SIS (ShipName));
 		// XXX: this will not work with UTF-8 strings
-		strupr (buf);
+		_strupr (buf);
 
 		{	// Handling the a-umlaut and o-umlaut characters
 			unsigned char *ptr;
@@ -758,7 +759,7 @@ DrawFlagshipName (bool InStatusArea, bool NewGame)
 	t.baseline.y =
 			r.corner.y + (SHIP_NAME_HEIGHT - RES_SCALE (InStatusArea));
 	t.align = ALIGN_CENTER;
-	t.CharCount = (COUNT)~0;
+	t.CharCount = (uqm::COUNT)~0;
 	if (isPC (optWhichFonts))
 		SetContextFontEffect (SetAbsFrameIndex (FontGradFrame,
 				InStatusArea ? 0 : 3));
@@ -782,14 +783,14 @@ DrawFlagshipStats (void)
 	Color OldColor;
 	FRAME OldFontEffect;
 	CONTEXT OldContext;
-	CHAR_T buf[128];
-	SIZE leading;
-	BYTE i;
-	BYTE energy_regeneration, energy_wait, turn_wait;
-	BYTE num_dynamos, num_shivas;
-	COUNT max_thrust;
-	DWORD fuel;
-	SIZE base_y;
+	uqm::CHAR_T buf[128];
+	uqm::SIZE leading;
+	uqm::BYTE i;
+	uqm::BYTE energy_regeneration, energy_wait, turn_wait;
+	uqm::BYTE num_dynamos, num_shivas;
+	uqm::COUNT max_thrust;
+	uqm::DWORD fuel;
+	uqm::SIZE base_y;
 
 	if (is3DO (optWhichFonts) || IS_PAD)
 		return;
@@ -861,7 +862,7 @@ DrawFlagshipStats (void)
 	t.baseline.x = RES_SCALE (ORIG_SIS_SCREEN_WIDTH / 6 + 1);
 	t.baseline.y = base_y;
 	t.align = ALIGN_RIGHT;
-	t.CharCount = (COUNT)~0;
+	t.CharCount = (uqm::COUNT)~0;
 
 	SetContextFontEffect (SetAbsFrameIndex (FontGradFrame, 4));
 
@@ -950,8 +951,8 @@ DrawFlagshipStats (void)
 	SetContext (OldContext);
 }
 
-static const CHAR_T *
-describeWeapon (BYTE moduleType)
+static const uqm::CHAR_T *
+describeWeapon (uqm::BYTE moduleType)
 {
 	switch (moduleType)
 	{
@@ -976,8 +977,8 @@ describeWeapon (BYTE moduleType)
 void
 DrawLanders (void)
 {
-	BYTE i;
-	SIZE width;
+	uqm::BYTE i;
+	uqm::SIZE width;
 	RECT r;
 	STAMP s;
 	CONTEXT OldContext;
@@ -1016,7 +1017,7 @@ DrawLanders (void)
 void
 DrawStorageBays (bool Refresh)
 {
-	BYTE i;
+	uqm::BYTE i;
 	RECT r;
 	CONTEXT OldContext;
 
@@ -1035,10 +1036,10 @@ DrawStorageBays (bool Refresh)
 		r.extent.width = RES_SCALE (2);
 	}
 
-	i = (BYTE)CountSISPieces (STORAGE_BAY);
+	i = (uqm::BYTE)CountSISPieces (STORAGE_BAY);
 	if (i)
 	{
-		COUNT j;
+		uqm::COUNT j;
 
 		r.corner.x = (STATUS_WIDTH >> 1)
 				- RES_SCALE (
@@ -1104,7 +1105,7 @@ GetGaugeRect (RECT *pRect, bool IsCrewRect)
 //	t.baseline.x = (STATUS_WIDTH >> 1);
 //	t.baseline.y = r.corner.y - RES_SCALE (1);
 //	t.align = ALIGN_CENTER;
-//	t.CharCount = (COUNT)~0;
+//	t.CharCount = (uqm::COUNT)~0;
 //	SetContextFont (TinyFont);
 //	SetContextForeGroundColor (BLACK_COLOR);
 //
@@ -1157,7 +1158,7 @@ Draw_SIS (void)
 	t.baseline.x = (STATUS_WIDTH >> 1);
 	t.baseline.y = r.corner.y - RES_SCALE (1);
 	t.align = ALIGN_CENTER;
-	t.CharCount = (COUNT)~0;
+	t.CharCount = (uqm::COUNT)~0;
 	SetContextFont (flat ? TinyFontBold : TinyFont);
 	SetContextForeGroundColor (BLACK_COLOR);
 
@@ -1205,13 +1206,13 @@ static void
 DrawThrusters (void)
 {
 	STAMP s;
-	COUNT i;
+	uqm::COUNT i;
 
 	s.origin.x = RES_SCALE (1);
 	s.origin.y = 0;
 	for (i = 0; i < NUM_DRIVE_SLOTS; ++i)
 	{
-		BYTE which_piece = GLOBAL_SIS (DriveSlots[i]);
+		uqm::BYTE which_piece = GLOBAL_SIS (DriveSlots[i]);
 		if (which_piece < EMPTY_SLOT)
 		{
 			s.frame = SetAbsFrameIndex (FlagStatFrame, which_piece + 1 + 0);
@@ -1228,13 +1229,13 @@ static void
 DrawTurningJets (void)
 {
 	STAMP s;
-	COUNT i;
+	uqm::COUNT i;
 
 	s.origin.x = RES_SCALE (1);
 	s.origin.y = 0;
 	for (i = 0; i < NUM_JET_SLOTS; ++i)
 	{
-		BYTE which_piece = GLOBAL_SIS (JetSlots[i]);
+		uqm::BYTE which_piece = GLOBAL_SIS (JetSlots[i]);
 		if (which_piece < EMPTY_SLOT)
 		{
 			s.frame = SetAbsFrameIndex (FlagStatFrame, which_piece + 1 + 1);
@@ -1251,14 +1252,14 @@ static void
 DrawModules (void)
 {
 	STAMP s;
-	COUNT i;
+	uqm::COUNT i;
 
 	// This properly centers the modules.
 	s.origin.x = RES_SCALE (1);
 	s.origin.y = RES_SCALE (1);
 	for (i = 0; i < NUM_MODULE_SLOTS; ++i)
 	{
-		BYTE which_piece = GLOBAL_SIS (ModuleSlots[i]);
+		uqm::BYTE which_piece = GLOBAL_SIS (ModuleSlots[i]);
 		if (which_piece < EMPTY_SLOT)
 		{
 			s.frame = SetAbsFrameIndex (FlagStatFrame, which_piece + 1 + 2);
@@ -1300,17 +1301,17 @@ DrawSupportShips (void)
 }
 
 static void
-DeltaSISGauges_crewDelta (SIZE crew_delta)
+DeltaSISGauges_crewDelta (uqm::SIZE crew_delta)
 {
 	if (crew_delta == 0)
 		return;
 
 	if (crew_delta != UNDEFINED_DELTA)
 	{
-		COUNT CrewCapacity;
+		uqm::COUNT CrewCapacity;
 
 		if (crew_delta < 0
-				&& GLOBAL_SIS (CrewEnlisted) <= (COUNT)-crew_delta)
+				&& GLOBAL_SIS (CrewEnlisted) <= (uqm::COUNT)-crew_delta)
 			GLOBAL_SIS (CrewEnlisted) = 0;
 		else
 		{
@@ -1323,7 +1324,7 @@ DeltaSISGauges_crewDelta (SIZE crew_delta)
 
 	{
 		TEXT t;
-		CHAR_T buf[60];
+		uqm::CHAR_T buf[60];
 		RECT r;
 
 		snprintf (buf, sizeof buf, "%u", GLOBAL_SIS (CrewEnlisted));
@@ -1334,7 +1335,7 @@ DeltaSISGauges_crewDelta (SIZE crew_delta)
 		t.baseline.y = r.corner.y + r.extent.height;
 		t.align = ALIGN_CENTER;
 		t.pStr = buf;
-		t.CharCount = (COUNT)~0;
+		t.CharCount = (uqm::COUNT)~0;
 
 		SetContextForeGroundColor (BLACK_COLOR);
 		DrawFilledRectangle (&r);
@@ -1345,24 +1346,24 @@ DeltaSISGauges_crewDelta (SIZE crew_delta)
 }
 
 static void
-DeltaSISGauges_fuelDelta (SDWORD fuel_delta)
+DeltaSISGauges_fuelDelta (uqm::SDWORD fuel_delta)
 {
-	DWORD OldCoarseFuel;
-	DWORD NewCoarseFuel;
+	uqm::DWORD OldCoarseFuel;
+	uqm::DWORD NewCoarseFuel;
 
 	if (fuel_delta == 0)
 		return;
 
 	if (fuel_delta == UNDEFINED_DELTA)
-		OldCoarseFuel = (DWORD)~0;
+		OldCoarseFuel = (uqm::DWORD)~0;
 	else {
 
 		OldCoarseFuel = (GLOBAL_SIS(FuelOnBoard) / (!optWholeFuel ? FUEL_TANK_SCALE : 1));
 		if (fuel_delta < 0
-				&& GLOBAL_SIS (FuelOnBoard) <= (DWORD)-fuel_delta) {
+				&& GLOBAL_SIS (FuelOnBoard) <= (uqm::DWORD)-fuel_delta) {
 			GLOBAL_SIS (FuelOnBoard) = 0;
 		} else {
-			DWORD FuelCapacity = GetFuelTankCapacity ();
+			uqm::DWORD FuelCapacity = GetFuelTankCapacity ();
 			GLOBAL_SIS (FuelOnBoard) += fuel_delta;
 			if (GLOBAL_SIS (FuelOnBoard) > FuelCapacity)
 				GLOBAL_SIS (FuelOnBoard) = FuelCapacity;
@@ -1375,7 +1376,7 @@ DeltaSISGauges_fuelDelta (SDWORD fuel_delta)
 		TEXT t;
 		// buf from [60] to [7]: The max fuel anyone can ever get is 1610 (1610.00 in whole value)
 		// I.E. only 4 (7) characters, we don't need that much extra padding.
-		CHAR_T buf[7];
+		uqm::CHAR_T buf[7];
 		RECT r;
 		// Cast as a double and divided by FUEL_TANK_SCALE to get a decimal
 		double dblFuelOnBoard = (double)NewCoarseFuel / FUEL_TANK_SCALE;
@@ -1403,7 +1404,7 @@ DeltaSISGauges_fuelDelta (SDWORD fuel_delta)
 		t.baseline.y = r.corner.y + r.extent.height;
 		t.align = ALIGN_CENTER;
 		t.pStr = buf;
-		t.CharCount = (COUNT)~0;
+		t.CharCount = (uqm::COUNT)~0;
 
 		SetContextForeGroundColor (BLACK_COLOR);
 		if (optWholeFuel)
@@ -1419,7 +1420,7 @@ DeltaSISGauges_fuelDelta (SDWORD fuel_delta)
 }
 	
 static void
-DeltaSISGauges_resunitDelta (SIZE resunit_delta)
+DeltaSISGauges_resunitDelta (uqm::SIZE resunit_delta)
 {
 	if (resunit_delta == 0)
 	{
@@ -1430,7 +1431,7 @@ DeltaSISGauges_resunitDelta (SIZE resunit_delta)
 	if (resunit_delta != UNDEFINED_DELTA)
 	{
 		if (resunit_delta < 0
-				&& GLOBAL_SIS (ResUnits) <= (DWORD)-resunit_delta)
+				&& GLOBAL_SIS (ResUnits) <= (uqm::DWORD)-resunit_delta)
 			GLOBAL_SIS (ResUnits) = 0;
 		else
 			GLOBAL_SIS (ResUnits) += resunit_delta;
@@ -1451,7 +1452,7 @@ DeltaSISGauges_resunitDelta (SIZE resunit_delta)
 }
 
 static bool
-isUndefinedDelta (SIZE size, SDWORD sdword, int integer)
+isUndefinedDelta (uqm::SIZE size, uqm::SDWORD sdword, int integer)
 {
 
 	return ((size && sdword && integer) &&
@@ -1460,7 +1461,7 @@ isUndefinedDelta (SIZE size, SDWORD sdword, int integer)
 }
 
 void
-DeltaSISGauges (SIZE crew_delta, SDWORD fuel_delta, int resunit_delta)
+DeltaSISGauges (uqm::SIZE crew_delta, uqm::SDWORD fuel_delta, int resunit_delta)
 {
 	CONTEXT OldContext;
 
@@ -1524,15 +1525,15 @@ DeltaSISGauges (SIZE crew_delta, SDWORD fuel_delta, int resunit_delta)
 ////////////////////////////////////////////////////////////////////////////
 
 // Get the total amount of crew aboard the SIS.
-COUNT
+uqm::COUNT
 GetCrewCount (void)
 {
 	return GLOBAL_SIS (CrewEnlisted);
 }
 
 // Get the number of crew which fit in a module of a specified type.
-COUNT
-GetModuleCrewCapacity (BYTE moduleType)
+uqm::COUNT
+GetModuleCrewCapacity (uqm::BYTE moduleType)
 {
 	if (moduleType == CREW_POD)
 		return CREW_POD_CAPACITY;
@@ -1541,15 +1542,15 @@ GetModuleCrewCapacity (BYTE moduleType)
 }
 
 // Gets the amount of crew which currently fit in the ship's crew pods.
-COUNT
+uqm::COUNT
 GetCrewPodCapacity (void)
 {
-	COUNT capacity = 0;
-	COUNT slotI;
+	uqm::COUNT capacity = 0;
+	uqm::COUNT slotI;
 
 	for (slotI = 0; slotI < NUM_MODULE_SLOTS; slotI++)
 	{
-		BYTE moduleType = GLOBAL_SIS (ModuleSlots[slotI]);
+		uqm::BYTE moduleType = GLOBAL_SIS (ModuleSlots[slotI]);
 		capacity += GetModuleCrewCapacity (moduleType);
 	}
 
@@ -1561,15 +1562,15 @@ GetCrewPodCapacity (void)
 // If the crew member does not fit, false is returned, and *slotNr and
 // *seatNr are unchanged.
 static bool
-GetCrewPodForCrewMember (COUNT crewNr, COUNT *slotNr, COUNT *seatNr)
+GetCrewPodForCrewMember (uqm::COUNT crewNr, uqm::COUNT *slotNr, uqm::COUNT *seatNr)
 {
-	COUNT slotI;
-	COUNT capacity = 0;
+	uqm::COUNT slotI;
+	uqm::COUNT capacity = 0;
 
 	slotI = NUM_MODULE_SLOTS;
 	while (slotI--) {
-		BYTE moduleType = GLOBAL_SIS (ModuleSlots[slotI]);
-		COUNT moduleCapacity = GetModuleCrewCapacity (moduleType);
+		uqm::BYTE moduleType = GLOBAL_SIS (ModuleSlots[slotI]);
+		uqm::COUNT moduleCapacity = GetModuleCrewCapacity (moduleType);
 
 		if (crewNr < capacity + moduleCapacity)
 		{
@@ -1587,15 +1588,15 @@ GetCrewPodForCrewMember (COUNT crewNr, COUNT *slotNr, COUNT *seatNr)
 // set the foreground color to the color for that crew member,
 // and return GetCrewPodCapacity ().
 // TODO: Split of the parts of this function into separate functions.
-COUNT
+uqm::COUNT
 GetCPodCapacity (POINT *ppt)
 {
-	COUNT crewCount;
-	COUNT slotNr;
-	COUNT seatNr;
+	uqm::COUNT crewCount;
+	uqm::COUNT slotNr;
+	uqm::COUNT seatNr;
 
-	COUNT rowNr;
-	COUNT colNr;
+	uqm::COUNT rowNr;
+	uqm::COUNT colNr;
 				
 	static const Color crewRows[] = PC_CREW_COLOR_TABLE;
 
@@ -1627,15 +1628,15 @@ GetCPodCapacity (POINT *ppt)
 ////////////////////////////////////////////////////////////////////////////
 
 // Get the total amount of minerals aboard the SIS.
-static COUNT
+static uqm::COUNT
 GetElementMass (void)
 {
 	return GLOBAL_SIS (TotalElementMass);
 }
 
 // Get the number of crew which fit in a module of a specified type.
-COUNT
-GetModuleStorageCapacity (BYTE moduleType)
+uqm::COUNT
+GetModuleStorageCapacity (uqm::BYTE moduleType)
 {
 	if (moduleType == STORAGE_BAY)
 		return STORAGE_BAY_CAPACITY;
@@ -1644,15 +1645,15 @@ GetModuleStorageCapacity (BYTE moduleType)
 }
 
 // Gets the amount of minerals which currently fit in the ship's storage.
-COUNT
+uqm::COUNT
 GetStorageBayCapacity (void)
 {
-	COUNT capacity = 0;
-	COUNT slotI;
+	uqm::COUNT capacity = 0;
+	uqm::COUNT slotI;
 
 	for (slotI = 0; slotI < NUM_MODULE_SLOTS; slotI++)
 	{
-		BYTE moduleType = GLOBAL_SIS (ModuleSlots[slotI]);
+		uqm::BYTE moduleType = GLOBAL_SIS (ModuleSlots[slotI]);
 		capacity += GetModuleStorageCapacity (moduleType);
 	}
 
@@ -1664,15 +1665,15 @@ GetStorageBayCapacity (void)
 // If the mineral unit does not fit, false is returned, and *slotNr and
 // *cellNr are unchanged.
 static bool
-GetStorageCellForMineralUnit (COUNT unitNr, COUNT *slotNr, COUNT *cellNr)
+GetStorageCellForMineralUnit (uqm::COUNT unitNr, uqm::COUNT *slotNr, uqm::COUNT *cellNr)
 {
-	COUNT slotI;
-	COUNT capacity = 0;
+	uqm::COUNT slotI;
+	uqm::COUNT capacity = 0;
 
 	slotI = NUM_MODULE_SLOTS;
 	while (slotI--) {
-		BYTE moduleType = GLOBAL_SIS (ModuleSlots[slotI]);
-		COUNT moduleCapacity = GetModuleStorageCapacity (moduleType);
+		uqm::BYTE moduleType = GLOBAL_SIS (ModuleSlots[slotI]);
+		uqm::COUNT moduleCapacity = GetModuleStorageCapacity (moduleType);
 
 		if (unitNr <= capacity + moduleCapacity)
 		{
@@ -1690,15 +1691,15 @@ GetStorageCellForMineralUnit (COUNT unitNr, COUNT *slotNr, COUNT *cellNr)
 // set the foreground color to the color for that mineral unit,
 // and return GetStorageBayCapacity ().
 // TODO: Split of the parts of this function into separate functions.
-COUNT
+uqm::COUNT
 GetSBayCapacity (POINT *ppt)
 {
-	COUNT massCount;
-	COUNT slotNr;
-	COUNT cellNr;
+	uqm::COUNT massCount;
+	uqm::COUNT slotNr;
+	uqm::COUNT cellNr;
 
-	COUNT rowNr;
-	// COUNT colNr; Unused
+	uqm::COUNT rowNr;
+	// uqm::COUNT colNr; Unused
 
 	static const Color colorBars[] = STORAGE_BAY_COLOR_TABLE;
 
@@ -1732,15 +1733,15 @@ GetSBayCapacity (POINT *ppt)
 ////////////////////////////////////////////////////////////////////////////
 
 // Get the total amount of fuel aboard the SIS.
-static DWORD
+static uqm::DWORD
 GetFuelTotal (void)
 {
 	return GLOBAL_SIS (FuelOnBoard);
 }
 
 // Get the amount of fuel which fits in a module of a specified type.
-DWORD
-GetModuleFuelCapacity (BYTE moduleType)
+uqm::DWORD
+GetModuleFuelCapacity (uqm::BYTE moduleType)
 {
 	if (moduleType == FUEL_TANK)
 		return FUEL_TANK_CAPACITY;
@@ -1752,15 +1753,15 @@ GetModuleFuelCapacity (BYTE moduleType)
 }
 
 // Gets the amount of fuel which currently fits in the ship's fuel tanks.
-DWORD
+uqm::DWORD
 GetFuelTankCapacity (void)
 {
-	DWORD capacity = FUEL_RESERVE;
-	COUNT slotI;
+	uqm::DWORD capacity = FUEL_RESERVE;
+	uqm::COUNT slotI;
 
 	for (slotI = 0; slotI < NUM_MODULE_SLOTS; slotI++)
 	{
-		BYTE moduleType = GLOBAL_SIS (ModuleSlots[slotI]);
+		uqm::BYTE moduleType = GLOBAL_SIS (ModuleSlots[slotI]);
 		capacity += GetModuleFuelCapacity (moduleType);
 	}
 
@@ -1773,16 +1774,16 @@ GetFuelTankCapacity (void)
 // *compartmentNr are unchanged.
 // Pre: unitNr >= FUEL_RESERER
 static bool
-GetFuelTankForFuelUnit (DWORD unitNr, COUNT *slotNr, DWORD *compartmentNr)
+GetFuelTankForFuelUnit (uqm::DWORD unitNr, uqm::COUNT *slotNr, uqm::DWORD *compartmentNr)
 {
-	COUNT slotI;
-	DWORD capacity = FUEL_RESERVE;
+	uqm::COUNT slotI;
+	uqm::DWORD capacity = FUEL_RESERVE;
 
 	assert (unitNr >= FUEL_RESERVE);
 
 	slotI = NUM_MODULE_SLOTS;
 	while (slotI--) {
-		BYTE moduleType = GLOBAL_SIS (ModuleSlots[slotI]);
+		uqm::BYTE moduleType = GLOBAL_SIS (ModuleSlots[slotI]);
 	
 		capacity += GetModuleFuelCapacity (moduleType);
 		if (unitNr < capacity)
@@ -1798,16 +1799,16 @@ GetFuelTankForFuelUnit (DWORD unitNr, COUNT *slotNr, DWORD *compartmentNr)
 
 // Get the point where to draw the next fuel unit, set the foreground color
 // to the color for that unit, and return GetFuelTankCapacity ().
-static DWORD
+static uqm::DWORD
 GetFTankScreenPos (POINT *ppt)
 {
-	DWORD fuelAmount;
-	COUNT slotNr;
-	DWORD compartmentNr;
-	BYTE moduleType;
-	DWORD volume;
+	uqm::DWORD fuelAmount;
+	uqm::COUNT slotNr;
+	uqm::DWORD compartmentNr;
+	uqm::BYTE moduleType;
+	uqm::DWORD volume;
 
-	DWORD rowNr;
+	uqm::DWORD rowNr;
 	
 	static const Color fuelColors[] = FUEL_COLOR_TABLE;
 		
@@ -1838,7 +1839,7 @@ GetFTankScreenPos (POINT *ppt)
 	else
 		ppt->y = RES_SCALE (30 - rowNr);
 
-	assert (rowNr + 1 < (COUNT)ARRAY_SIZE (fuelColors));
+	assert (rowNr + 1 < (uqm::COUNT)ARRAY_SIZE (fuelColors));
 	SetContextForeGroundColor (fuelColors[rowNr]);
 	SetContextBackGroundColor (fuelColors[rowNr + 1]);
 
@@ -1848,10 +1849,10 @@ GetFTankScreenPos (POINT *ppt)
 
 ///////////////////////////////////////////////////////////////////////////
 
-COUNT
-CountSISPieces (BYTE piece_type)
+uqm::COUNT
+CountSISPieces (uqm::BYTE piece_type)
 {
-	COUNT i, num_pieces;
+	uqm::COUNT i, num_pieces;
 
 	num_pieces = 0;
 	if (piece_type == FUSION_THRUSTER)
@@ -1887,8 +1888,8 @@ CountSISPieces (BYTE piece_type)
 static void
 AutoPilotTextLogic (void)
 {
-	CHAR_T buf[PATH_MAX];
-	CHAR_T star_cluster[MAX_CLUSTER];
+	uqm::CHAR_T buf[PATH_MAX];
+	uqm::CHAR_T star_cluster[MAX_CLUSTER];
 	POINT Falayalaralfali;
 	POINT destination;
 	POINT current_position;
@@ -1999,7 +2000,7 @@ DrawAutoPilotMessage (bool Reset)
 {
 	static bool LastPilot = false;
 	static TimeCount NextTime = 0;
-	static DWORD cycle_index = 0;
+	static uqm::DWORD cycle_index = 0;
 	bool OnAutoPilot;
 	
 	static const Color cycle_tab[] = AUTOPILOT_COLOR_CYCLE_TABLE;
@@ -2029,7 +2030,7 @@ DrawAutoPilotMessage (bool Reset)
 		else if (GetTimeCounter () >= NextTime)
 		{
 			if (!(GLOBAL (CurrentActivity) & CHECK_ABORT)
-					&& GLOBAL_SIS (CrewEnlisted) != (COUNT)~0)
+					&& GLOBAL_SIS (CrewEnlisted) != (uqm::COUNT)~0)
 			{
 				CONTEXT OldContext;
 
@@ -2054,9 +2055,9 @@ void
 DrawFuelInFTanks (bool isOutfit)
 {
 	RECT r;
-	const DWORD FuelVolume = GLOBAL_SIS (FuelOnBoard);
-	DWORD capacity = GetFuelTankCapacity ();
-	DWORD volume;
+	const uqm::DWORD FuelVolume = GLOBAL_SIS (FuelOnBoard);
+	uqm::DWORD capacity = GetFuelTankCapacity ();
+	uqm::DWORD volume;
 	Color c;
 
 	if (isOutfit)
@@ -2143,14 +2144,14 @@ static FlashContext *flashContext[MAX_NUM_RECTS] =
 static RECT flash_rect[MAX_NUM_RECTS];
 static Alarm *flashAlarm = NULL;
 static bool flashPaused = false;
-static BYTE count_r = NUM_RECTS;
+static uqm::BYTE count_r = NUM_RECTS;
 
 static void scheduleFlashAlarm (void);
 
 static void
 updateFlashRect (void *arg)
 {
-	COUNT i;
+	uqm::COUNT i;
 
 	if (flashContext[0] == NULL)
 		return;
@@ -2167,14 +2168,14 @@ static void
 scheduleFlashAlarm (void)
 {
 	TimeCount nextTime = Flash_nextTime (flashContext[0]);
-	DWORD nextTimeMs = (nextTime / ONE_SECOND) * 1000 +
+	uqm::DWORD nextTimeMs = (nextTime / ONE_SECOND) * 1000 +
 			((nextTime % ONE_SECOND) * 1000 / ONE_SECOND);
 			// Overflow-safe conversion.
 	flashAlarm = Alarm_addAbsoluteMs (nextTimeMs, updateFlashRect, NULL);
 }
 
 void
-SetAdditionalRect (const RECT *pRect, COUNT number)
+SetAdditionalRect (const RECT *pRect, uqm::COUNT number)
 {	// Add new flashing rect (Max 5)
 	// Must be called one by one and in incremental order
 	if (pRect != NULL && count_r != MAX_NUM_RECTS)
@@ -2194,7 +2195,7 @@ SetAdditionalRect (const RECT *pRect, COUNT number)
 void
 DumpAdditionalRect (void)
 {	// Dump all additional rects
-	COUNT i;
+	uqm::COUNT i;
 
 	for (i = count_r; i > 0; i--)
 	{
@@ -2212,7 +2213,7 @@ SetFlashRect (const RECT *pRect, bool pcRect)
 {
 	RECT clip_r = {{0, 0}, {0, 0}};
 	RECT temp_r;
-	COUNT i;
+	uqm::COUNT i;
 	
 	if (pRect != SFR_MENU_3DO && pRect != SFR_MENU_ANY
 			&& pRect != SFR_MENU_NON)
@@ -2293,7 +2294,7 @@ SetFlashRect (const RECT *pRect, bool pcRect)
 	}
 }
 
-COUNT updateFlashRectRecursion = 0;
+uqm::COUNT updateFlashRectRecursion = 0;
 // XXX This is necessary at least because DMS_AddEscortShip() calls
 // DrawRaceStrings() in an UpdateFlashRect block, which calls
 // ClearSISRect(), which calls DrawMenuStateStrings(), which starts its own
@@ -2302,7 +2303,7 @@ COUNT updateFlashRectRecursion = 0;
 void
 PreUpdateFlashRect (void)
 {
-	COUNT i;
+	uqm::COUNT i;
 
 	if (flashAlarm)
 	{
@@ -2319,7 +2320,7 @@ PreUpdateFlashRect (void)
 void
 PostUpdateFlashRect (void)
 {
-	COUNT i;
+	uqm::COUNT i;
 
 	if (flashAlarm)
 	{
@@ -2337,7 +2338,7 @@ PostUpdateFlashRect (void)
 bool
 PauseFlash (void)
 {
-	BYTE i;
+	uqm::BYTE i;
 
 	if (flashContext[0] != NULL)
 	{
@@ -2361,7 +2362,7 @@ PauseFlash (void)
 void
 ContinueFlash (void)
 {
-	BYTE i;
+	uqm::BYTE i;
 
 	if (flashPaused)
 	{

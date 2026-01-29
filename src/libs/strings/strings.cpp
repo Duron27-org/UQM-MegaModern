@@ -121,7 +121,7 @@ GetStringTable (STRING String)
 	return NULL;
 }
 
-COUNT
+uqm::COUNT
 GetStringTableCount (STRING String)
 {
 	if (String && String->parent)
@@ -131,7 +131,7 @@ GetStringTableCount (STRING String)
 	return 0;
 }
 
-COUNT
+uqm::COUNT
 GetStringTableIndex (STRING String)
 {
 	if (String)
@@ -142,7 +142,7 @@ GetStringTableIndex (STRING String)
 }
 
 STRING
-SetAbsStringTableIndex (STRING String, COUNT StringTableIndex)
+SetAbsStringTableIndex (STRING String, uqm::COUNT StringTableIndex)
 {
 	STRING_TABLE StringTablePtr;
 
@@ -165,7 +165,7 @@ SetAbsStringTableIndex (STRING String, COUNT StringTableIndex)
 }
 
 STRING
-SetRelStringTableIndex (STRING String, SIZE StringTableOffs)
+SetRelStringTableIndex (STRING String, uqm::SIZE StringTableOffs)
 {
 	STRING_TABLE StringTablePtr;
 
@@ -180,7 +180,7 @@ SetRelStringTableIndex (STRING String, SIZE StringTableOffs)
 	}
 	else
 	{
-		COUNT StringTableIndex;
+		uqm::COUNT StringTableIndex;
 
 		while (StringTableOffs < 0)
 			StringTableOffs += StringTablePtr->size;
@@ -193,18 +193,18 @@ SetRelStringTableIndex (STRING String, SIZE StringTableOffs)
 	return (String);
 }
 
-COUNT
+uqm::COUNT
 GetStringLength (STRING String)
 {
 	if (String == NULL)
 	{
 		return 0;
 	}
-	return (COUNT)utf8StringCountN (
+	return (uqm::COUNT)utf8StringCountN (
 			String->data, String->data + String->length);
 }
 
-COUNT
+uqm::COUNT
 GetStringLengthBin (STRING String)
 {
 	if (String == NULL)
@@ -218,7 +218,7 @@ STRINGPTR
 GetStringName (STRING String)
 {
 	STRING_TABLE StringTablePtr;
-	COUNT StringIndex;
+	uqm::COUNT StringIndex;
 
 	if (String == NULL)
 	{
@@ -252,7 +252,7 @@ STRINGPTR
 GetStringSoundClip (STRING String)
 {
 	STRING_TABLE StringTablePtr;
-	COUNT StringIndex;
+	uqm::COUNT StringIndex;
 
 	if (String == NULL)
 	{
@@ -290,7 +290,7 @@ STRINGPTR
 GetStringTimeStamp (STRING String)
 {
 	STRING_TABLE StringTablePtr;
-	COUNT StringIndex;
+	uqm::COUNT StringIndex;
 
 	if (String == NULL)
 	{

@@ -22,7 +22,7 @@
 static void
 reconst (void)
 {
-	COUNT i, j;
+	uqm::COUNT i, j;
 
 	/* halven cumulative freq for leaf nodes */
 	j = 0;
@@ -38,8 +38,8 @@ reconst (void)
 	/* make a tree : first, connect children nodes */
 	for (i = 0, j = N_CHAR; j < T; i += 2, j++)
 	{
-		SWORD k;
-		UWORD f, l;
+		uqm::SWORD k;
+		uqm::UWORD f, l;
 
 		k = i + 1;
 		f = _lpCurCodeDesc->freq[j] = _lpCurCodeDesc->freq[i] + _lpCurCodeDesc->freq[k];
@@ -69,7 +69,7 @@ reconst (void)
 /* update freq tree */
 
 void
-_update (COUNT c)
+_update (uqm::COUNT c)
 {
 	PLZHCODE_DESC lpCD;
 
@@ -79,14 +79,14 @@ _update (COUNT c)
 	c = lpCD->prnt[c];
 	do
 	{
-		COUNT i, l;
+		uqm::COUNT i, l;
 
 		i = ++lpCD->freq[c];
 
 		/* swap nodes to keep the tree freq-ordered */
 		if (i > lpCD->freq[l = c + 1])
 		{
-			COUNT j;
+			uqm::COUNT j;
 
 			while (i > lpCD->freq[++l])
 				;

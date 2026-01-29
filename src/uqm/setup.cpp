@@ -47,7 +47,7 @@
 
 
 ACTIVITY LastActivity;
-BYTE PlayerControl[NUM_PLAYERS];
+uqm::BYTE PlayerControl[NUM_PLAYERS];
 
 // XXX: These declarations should really go to the file they belong to.
 RESOURCE_INDEX hResIndex;
@@ -55,7 +55,7 @@ CONTEXT ScreenContext;
 CONTEXT SpaceContext;
 CONTEXT StatusContext;
 CONTEXT OffScreenContext;
-SIZE screen_width, screen_height;
+uqm::SIZE screen_width, screen_height;
 FRAME Screen;
 FONT StarConFont;
 FONT MicroFont;
@@ -85,7 +85,7 @@ QUEUE disp_q;
 bool solTexturesPresent;
 bool SyreenVoiceFix;
 bool EndlessSCLoaded;
-BYTE Rando;
+uqm::BYTE Rando;
 bool HDPackPresent;
 bool VolasPackPresent;
 bool DeathBySurrender = false;
@@ -281,7 +281,7 @@ InitContexts (void)
 static bool
 InitKernel (void)
 {
-	COUNT counter;
+	uqm::COUNT counter;
 
 	for (counter = 0; counter < NUM_PLAYERS; ++counter)
 		InitQueue (&race_q[counter], MAX_SHIPS_PER_SIDE, sizeof (STARSHIP));
@@ -395,7 +395,7 @@ InitGameKernel (void)
 }
 
 bool
-SetPlayerInput (COUNT playerI)
+SetPlayerInput (uqm::COUNT playerI)
 {
 	assert (PlayerInput[playerI] == NULL);
 
@@ -434,7 +434,7 @@ SetPlayerInput (COUNT playerI)
 bool
 SetPlayerInputAll (void)
 {
-	COUNT playerI;
+	uqm::COUNT playerI;
 	for (playerI = 0; playerI < NUM_PLAYERS; playerI++)
 		if (!SetPlayerInput (playerI))
 			return false;
@@ -442,7 +442,7 @@ SetPlayerInputAll (void)
 }
 
 void
-ClearPlayerInput (COUNT playerI)
+ClearPlayerInput (uqm::COUNT playerI)
 {
 	if (PlayerInput[playerI] == NULL) {
 		log_add (log_Debug, "ClearPlayerInput(): PlayerInput[%d] was NULL.",
@@ -457,7 +457,7 @@ ClearPlayerInput (COUNT playerI)
 void
 ClearPlayerInputAll (void)
 {
-	COUNT playerI;
+	uqm::COUNT playerI;
 	for (playerI = 0; playerI < NUM_PLAYERS; playerI++)
 		ClearPlayerInput (playerI);
 }

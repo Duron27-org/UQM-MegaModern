@@ -136,7 +136,7 @@ res_GetResource (RESOURCE res)
 			// May still be NULL, if the load failed.
 }
 
-DWORD
+uqm::DWORD
 res_GetIntResource (RESOURCE res)
 {
 	RESOURCE_INDEX resourceIndex;

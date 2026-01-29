@@ -171,7 +171,7 @@ DestroyThread_PT (Thread t)
 }	
 
 Thread
-CreateThread_PT (ThreadFunction func, void *data, SDWORD stackSize
+CreateThread_PT (ThreadFunction func, void *data, uqm::SDWORD stackSize
 #ifdef NAMED_SYNCHRO
 		  , const char *name
 #endif
@@ -288,14 +288,14 @@ typedef struct _mutex {
 #endif
 #ifdef NAMED_SYNCHRO
 	const char *name;
-	DWORD syncClass;
+	uqm::DWORD syncClass;
 #endif
 } Mut;
 	
 
 Mutex
 #ifdef NAMED_SYNCHRO
-CreateMutex_PT (const char *name, DWORD syncClass)
+CreateMutex_PT (const char *name, uqm::DWORD syncClass)
 #else
 CreateMutex_PT (void)
 #endif
@@ -394,14 +394,14 @@ typedef struct _sem {
 	sem_t sem;
 #ifdef NAMED_SYNCHRO
 	const char *name;
-	DWORD syncClass;
+	uqm::DWORD syncClass;
 #endif
 } Sem;
 
 Semaphore
-CreateSemaphore_PT (DWORD initial
+CreateSemaphore_PT (uqm::DWORD initial
 #ifdef NAMED_SYNCHRO
-		  , const char *name, DWORD syncClass
+		  , const char *name, uqm::DWORD syncClass
 #endif
 	)
 {
@@ -492,13 +492,13 @@ typedef struct _recm {
 	unsigned int locks;
 #ifdef NAMED_SYNCHRO
 	const char *name;
-	DWORD syncClass;
+	uqm::DWORD syncClass;
 #endif
 } RecM;
 
 RecursiveMutex
 #ifdef NAMED_SYNCHRO
-CreateRecursiveMutex_PT (const char *name, DWORD syncClass)
+CreateRecursiveMutex_PT (const char *name, uqm::DWORD syncClass)
 #else
 CreateRecursiveMutex_PT (void)
 #endif
@@ -589,13 +589,13 @@ typedef struct _cond {
 	pthread_mutex_t mutex;
 #ifdef NAMED_SYNCHRO
 	const char *name;
-	DWORD syncClass;
+	uqm::DWORD syncClass;
 #endif
 } cvar;
 
 CondVar
 #ifdef NAMED_SYNCHRO
-CreateCondVar_PT (const char *name, DWORD syncClass)
+CreateCondVar_PT (const char *name, uqm::DWORD syncClass)
 #else
 CreateCondVar_PT (void)
 #endif

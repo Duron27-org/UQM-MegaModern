@@ -160,14 +160,14 @@ static HELEMENT spawn_comet (ELEMENT *ElementPtr);
 static void
 comet_preprocess (ELEMENT *ElementPtr)
 {
-	COUNT frame_index;
+	uqm::COUNT frame_index;
 
 	frame_index = GetFrameIndex (ElementPtr->current.image.frame) + 1;
 	if (frame_index < 29)
 	{
 		if (frame_index == 25)
 		{
-			SIZE cur_delta_x, cur_delta_y;
+			uqm::SIZE cur_delta_x, cur_delta_y;
 			STARSHIP *StarShipPtr;
 
 			GetElementStarShip (ElementPtr, &StarShipPtr);
@@ -197,8 +197,8 @@ comet_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 {
 	if (ElementPtr1->playerNr == RPG_PLAYER_NUM)
 	{
-		BYTE old_hits;
-		COUNT old_life;
+		uqm::BYTE old_hits;
+		uqm::COUNT old_life;
 		HELEMENT hBlastElement;
 
 		if (ElementPtr1->state_flags & PLAYER_SHIP)
@@ -266,14 +266,14 @@ spawn_comet (ELEMENT *ElementPtr)
 		CometPtr->collision_func = comet_collision;
 		SetElementStarShip (CometPtr, StarShipPtr);
 		{
-			COUNT facing;
+			uqm::COUNT facing;
 
 			CometPtr->turn_wait = ElementPtr->turn_wait;
 			CometPtr->hTarget = ElementPtr->hTarget;
 			if (ElementPtr->state_flags & PLAYER_SHIP)
 			{
 				CometPtr->turn_wait = 0;
-				facing = (COUNT)TFB_Random ();
+				facing = (uqm::COUNT)TFB_Random ();
 				SetVelocityVector (&CometPtr->velocity,
 						COMET_SPEED, facing);
 			}
@@ -446,7 +446,7 @@ generator_preprocess (ELEMENT *ElementPtr)
 	if (ElementPtr->turn_wait > 0)
 		--ElementPtr->turn_wait;
 	else if ((ElementPtr->turn_wait =
-			(BYTE)((GENERATOR_HITS
+			(uqm::BYTE)((GENERATOR_HITS
 			- ElementPtr->hit_points) / 5)) < 3)
 	{
 		ElementPtr->next.image.frame =
@@ -493,7 +493,7 @@ sentinel_preprocess (ELEMENT *ElementPtr)
 		--ElementPtr->turn_wait;
 	else
 	{
-		COUNT facing;
+		uqm::COUNT facing;
 		HELEMENT hTarget;
 
 		if (!(ElementPtr->state_flags & NONSOLID))
@@ -503,14 +503,14 @@ sentinel_preprocess (ELEMENT *ElementPtr)
 		else
 		{
 			ElementPtr->state_flags &= ~NONSOLID;
-			facing = (COUNT)TFB_Random ();
+			facing = (uqm::COUNT)TFB_Random ();
 			SetVelocityVector (&ElementPtr->velocity,
 					SENTINEL_SPEED, facing);
 		}
 		facing = NORMALIZE_FACING (facing);
 		if (ElementPtr->hTarget == 0)
 		{
-			COUNT f;
+			uqm::COUNT f;
 
 			f = facing;
 			TrackShip (ElementPtr, &f);
@@ -522,22 +522,22 @@ sentinel_preprocess (ELEMENT *ElementPtr)
 			hTarget = ElementPtr->hTarget;
 		else
 		{
-			SDWORD delta_x0, delta_y0, delta_x1, delta_y1;
+			uqm::SDWORD delta_x0, delta_y0, delta_x1, delta_y1;
 			ELEMENT *ShipPtr;
 			ELEMENT *EnemyShipPtr;
 
 			LockElement (ElementPtr->hTarget, &EnemyShipPtr);
 
 			LockElement (StarShipPtr->hShip, &ShipPtr);
-			delta_x0 = (SDWORD)ShipPtr->current.location.x
-					- (SDWORD)ElementPtr->current.location.x;
-			delta_y0 = (SDWORD)ShipPtr->current.location.y
-					- (SDWORD)ElementPtr->current.location.y;
+			delta_x0 = (uqm::SDWORD)ShipPtr->current.location.x
+					- (uqm::SDWORD)ElementPtr->current.location.x;
+			delta_y0 = (uqm::SDWORD)ShipPtr->current.location.y
+					- (uqm::SDWORD)ElementPtr->current.location.y;
 
-			delta_x1 = (SDWORD)ShipPtr->current.location.x
-					- (SDWORD)EnemyShipPtr->current.location.x;
-			delta_y1 = (SDWORD)ShipPtr->current.location.y
-					- (SDWORD)EnemyShipPtr->current.location.y;
+			delta_x1 = (uqm::SDWORD)ShipPtr->current.location.x
+					- (uqm::SDWORD)EnemyShipPtr->current.location.x;
+			delta_y1 = (uqm::SDWORD)ShipPtr->current.location.y
+					- (uqm::SDWORD)EnemyShipPtr->current.location.y;
 			UnlockElement (StarShipPtr->hShip);
 
 			if ((long)delta_x0 * delta_x0
@@ -553,18 +553,18 @@ sentinel_preprocess (ELEMENT *ElementPtr)
 
 		if (hTarget)
 		{
-			COUNT num_frames;
-			SDWORD delta_x, delta_y;
+			uqm::COUNT num_frames;
+			uqm::SDWORD delta_x, delta_y;
 			ELEMENT *TargetPtr;
 			VELOCITY_DESC TargetVelocity;
 
 			LockElement (hTarget, &TargetPtr);
 
-			delta_x = (SDWORD)TargetPtr->current.location.x
-					- (SDWORD)ElementPtr->current.location.x;
+			delta_x = (uqm::SDWORD)TargetPtr->current.location.x
+					- (uqm::SDWORD)ElementPtr->current.location.x;
 			delta_x = WRAP_DELTA_X (delta_x);
-			delta_y = (SDWORD)TargetPtr->current.location.y
-					- (SDWORD)ElementPtr->current.location.y;
+			delta_y = (uqm::SDWORD)TargetPtr->current.location.y
+					- (uqm::SDWORD)ElementPtr->current.location.y;
 			delta_y = WRAP_DELTA_Y (delta_y);
 
 			if ((num_frames = RES_DESCALE (WORLD_TO_TURN (
@@ -577,11 +577,11 @@ sentinel_preprocess (ELEMENT *ElementPtr)
 			GetNextVelocityComponentsSdword (&TargetVelocity,
 					&delta_x, &delta_y, num_frames);
 
-			delta_x = ((SDWORD)TargetPtr->current.location.x + (SDWORD)delta_x)
-					- (SDWORD)ElementPtr->current.location.x;
+			delta_x = ((uqm::SDWORD)TargetPtr->current.location.x + (uqm::SDWORD)delta_x)
+					- (uqm::SDWORD)ElementPtr->current.location.x;
 			delta_x = WRAP_DELTA_X (delta_x);
-			delta_y = ((SDWORD)TargetPtr->current.location.y + (SDWORD)delta_y)
-					- (SDWORD)ElementPtr->current.location.y;
+			delta_y = ((uqm::SDWORD)TargetPtr->current.location.y + (uqm::SDWORD)delta_y)
+					- (uqm::SDWORD)ElementPtr->current.location.y;
 			delta_y = WRAP_DELTA_Y (delta_y);
 
 			UnlockElement (hTarget);
@@ -610,7 +610,7 @@ static void
 sentinel_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 		ELEMENT *ElementPtr1, POINT *pPt1)
 {
-	COUNT angle;
+	uqm::COUNT angle;
 	STARSHIP *StarShipPtr;
 
 	if (ElementPtr1->playerNr == NPC_PLAYER_NUM)
@@ -631,8 +631,8 @@ sentinel_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 	}
 	else
 	{
-		BYTE old_hits;
-		COUNT old_life;
+		uqm::BYTE old_hits;
+		uqm::COUNT old_life;
 		HELEMENT hBlastElement;
 
 		old_hits = ElementPtr0->hit_points;
@@ -645,7 +645,7 @@ sentinel_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 				&& ElementPtr1->crew_level
 				&& !GRAVITY_MASS (ElementPtr1->mass_points + 1))
 		{
-			SDWORD cur_delta_x, cur_delta_y;
+			uqm::SDWORD cur_delta_x, cur_delta_y;
 
 			ElementPtr0->life_span = old_life;
 			ElementPtr0->hit_points = old_hits;
@@ -716,7 +716,7 @@ sentinel_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 
 static void
 samatra_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
-		COUNT ConcernCounter)
+		uqm::COUNT ConcernCounter)
 {
 	ship_intelligence (ShipPtr, ObjectsOfConcern, ConcernCounter);
 }
@@ -859,7 +859,7 @@ samatra_preprocess (ELEMENT *ElementPtr)
 				GeneratorPtr->current.image.frame =
 						SetAbsFrameIndex (
 								StarShipPtr->RaceDescPtr->ship_data.special[0],
-								(BYTE)TFB_Random () % 10
+								(uqm::BYTE)TFB_Random () % 10
 								);
 
 				GeneratorPtr->preprocess_func = generator_preprocess;

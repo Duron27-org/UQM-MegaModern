@@ -31,16 +31,16 @@
 #include <assert.h>
 #include "libs/math/random.h"
 
-COUNT RoboTrack[NUM_ROBO_TRACKS];
+uqm::COUNT RoboTrack[NUM_ROBO_TRACKS];
 
-static int NPCNumberPhrase (int number, const char *fmt, CHAR_T **ptrack);
+static int NPCNumberPhrase (int number, const char *fmt, uqm::CHAR_T **ptrack);
 
 // Scans forward until outside of the interpolation then returns the start
 // of the new section of text.
-CHAR_T *
-ScanInterpolation (CHAR_T *start)
+uqm::CHAR_T *
+ScanInterpolation (uqm::CHAR_T *start)
 {
-	COUNT depth = 1;
+	uqm::COUNT depth = 1;
 	if (!start || start[0] != '<')
 		return start;
 	start++;
@@ -60,7 +60,7 @@ ScanInterpolation (CHAR_T *start)
 
 // Will the chunk between [end - start] require robot voicing?
 bool
-RoboInterpolation (CHAR_T *start, CHAR_T *end)
+RoboInterpolation (uqm::CHAR_T *start, uqm::CHAR_T *end)
 {
 	static constexpr const char* RoboPhrases[] = {
 			"getPoint",
@@ -71,7 +71,7 @@ RoboInterpolation (CHAR_T *start, CHAR_T *end)
 	
 	for (const char* phrase : RoboPhrases)
 	{
-		if (CHAR_T* result {strstr(start, phrase)}; result && result < end)
+		if (uqm::CHAR_T* result {strstr(start, phrase)}; result && result < end)
 		{
 			return true;
 		}
@@ -81,13 +81,13 @@ RoboInterpolation (CHAR_T *start, CHAR_T *end)
 
 // This will write to buffer the interpolated chunk, while returning a new
 // "start" value from the original string where interpolation ended.
-CHAR_T *
-InterpolateChunk (CHAR_T buffer[], CHAR_T *start)
+uqm::CHAR_T *
+InterpolateChunk (uqm::CHAR_T buffer[], uqm::CHAR_T *start)
 {
-	CHAR_T *end = start;
-	CHAR_T str_buf[MAX_INTERPOLATE] = "";
-	CHAR_T *pStr;
-	COUNT buffsize = 0;
+	uqm::CHAR_T *end = start;
+	uqm::CHAR_T str_buf[MAX_INTERPOLATE] = "";
+	uqm::CHAR_T *pStr;
+	uqm::COUNT buffsize = 0;
 	bool done = false;
 
 	while ((end = strstr (start, "<%")) && !done)
@@ -126,7 +126,7 @@ InterpolateChunk (CHAR_T buffer[], CHAR_T *start)
 			fprintf (stderr, "Interpolation failure (null return).\n");
 			return NULL;
 		}
-		buffsize += (COUNT)strlen (pStr);
+		buffsize += (uqm::COUNT)strlen (pStr);
 		if (buffsize > MAX_INTERPOLATE)
 		{
 			fprintf (stderr, "String too long to interpolate.\n");
@@ -143,7 +143,7 @@ InterpolateChunk (CHAR_T buffer[], CHAR_T *start)
 		return start;
 	// Otherwise we're done with interpolation, write the remainder
 	// to buffer and return
-	buffsize += (COUNT)strlen (start);
+	buffsize += (uqm::COUNT)strlen (start);
 	if (buffsize > MAX_INTERPOLATE)
 	{
 		fprintf (stderr, "String too long to interpolate.\n");
@@ -156,9 +156,9 @@ InterpolateChunk (CHAR_T buffer[], CHAR_T *start)
 // Creates the file name of subclip # clip_number, and prints it to buffer.
 // Assumes track names end in ".ogg".
 void
-GetSubClip (CHAR_T buffer[], CHAR_T *pClip, COUNT clip_number)
+GetSubClip (uqm::CHAR_T buffer[], uqm::CHAR_T *pClip, uqm::COUNT clip_number)
 {
-	CHAR_T *pStr = strstr (pClip, ".ogg");
+	uqm::CHAR_T *pStr = strstr (pClip, ".ogg");
 	if (!pStr)
 	{
 		// Fall through passing back the whole thing
@@ -177,17 +177,17 @@ GetSubClip (CHAR_T buffer[], CHAR_T *pClip, COUNT clip_number)
 void
 NPCPhrase_cb (int index, CallbackFunction cb)
 {
-	CHAR_T *pStr;
-	CHAR_T *pClip;
-	CHAR_T *pTimeStamp;
+	uqm::CHAR_T *pStr;
+	uqm::CHAR_T *pClip;
+	uqm::CHAR_T *pTimeStamp;
 	bool isPStrAlloced = false;
-	COUNT clip_number = 0;
-	COUNT i;
+	uqm::COUNT clip_number = 0;
+	uqm::COUNT i;
 
 	if (index == 0)
 		return;
 
-	pStr = (CHAR_T *)GetStringAddress (
+	pStr = (uqm::CHAR_T *)GetStringAddress (
 			SetAbsStringTableIndex (CommData.ConversationPhrases, index - 1));
 	pClip = GetStringSoundClip (
 			SetAbsStringTableIndex (CommData.ConversationPhrases, index - 1));
@@ -219,7 +219,7 @@ NPCPhrase_cb (int index, CallbackFunction cb)
 	// instead of the correct ones for debugging or track syncing purposes.
 	STRING Pkunk = CaptureStringTable (
 			LoadStringTableInstance ("comm.pkunk.dialogue"));
-	pStr = (CHAR_T *)GetStringAddress (
+	pStr = (uqm::CHAR_T *)GetStringAddress (
 			SetAbsStringTableIndex (Pkunk, 43));
 	pClip = GetStringSoundClip (
 			SetAbsStringTableIndex (Pkunk, 43));
@@ -289,19 +289,19 @@ NPCPhrase_cb (int index, CallbackFunction cb)
 		{
 			// This requires one or more robo-tracks or swap-if subclips
 			// which we will MultiSplice into the main track.
-			//CHAR_T *tracks[NUM_ROBO_TRACKS + 1] =
+			//uqm::CHAR_T *tracks[NUM_ROBO_TRACKS + 1] =
 					//{ [0 ... NUM_ROBO_TRACKS] = NULL };
-			CHAR_T *tracks[NUM_ROBO_TRACKS + 1] = {NULL};
+			uqm::CHAR_T *tracks[NUM_ROBO_TRACKS + 1] = {NULL};
 			for (i = 0; i < NUM_ROBO_TRACKS && RoboTrack[i]; i++)
 			{
-				if (RoboTrack[i] == (COUNT) ~0)
+				if (RoboTrack[i] == (uqm::COUNT) ~0)
 				{
 					// ~0 is a subclip whose name is based off the primary clip
 					// We need to allocate a temp buffer and clean it up later
 #ifdef DEBUG_STARSEED
 					fprintf (stderr, "Allocating for track %d.\n", i);
 #endif
-					tracks[i] = (CHAR_T*)HCalloc (sizeof (char) * MAX_CLIPNAME);
+					tracks[i] = (uqm::CHAR_T*)HCalloc (sizeof (char) * MAX_CLIPNAME);
 					GetSubClip (tracks[i], pClip, clip_number);
 #ifdef DEBUG_STARSEED
 					fprintf (stderr, "RoboTrack[%d] = <<%s>>.\n", i, tracks[i]);
@@ -327,7 +327,7 @@ NPCPhrase_cb (int index, CallbackFunction cb)
 			SpliceMultiTrack (tracks, str_buf);
 			for (i = 0; i < NUM_ROBO_TRACKS && RoboTrack[i]; i++)
 			{
-				if (RoboTrack[i] == (COUNT) ~0)
+				if (RoboTrack[i] == (uqm::COUNT) ~0)
 				{
 #ifdef DEBUG_STARSEED
 					fprintf (stderr, "Freeing track %d.\n", i);
@@ -346,14 +346,14 @@ NPCPhrase_cb (int index, CallbackFunction cb)
 void
 NPCPhrase_splice (int index)
 {
-	CHAR_T *pStr;
+	uqm::CHAR_T *pStr;
 	void *pClip;
 
 	assert (index >= 0);
 	if (index == 0)
 		return;
 
-	pStr = (CHAR_T *)GetStringAddress (
+	pStr = (uqm::CHAR_T *)GetStringAddress (
 			SetAbsStringTableIndex (CommData.ConversationPhrases, index - 1));
 	pClip = GetStringSoundClip (
 			SetAbsStringTableIndex (CommData.ConversationPhrases, index - 1));
@@ -364,9 +364,9 @@ NPCPhrase_splice (int index)
 	}
 	else
 	{	// Splicing in some voice
-		CHAR_T *tracks[] = {NULL, NULL};
+		uqm::CHAR_T *tracks[] = {NULL, NULL};
 
-		tracks[0] = (CHAR_T*)pClip;
+		tracks[0] = (uqm::CHAR_T*)pClip;
 		SpliceMultiTrack (tracks, pStr);
 	}
 }
@@ -374,7 +374,7 @@ NPCPhrase_splice (int index)
 void
 NPCNumber (int number, const char *fmt)
 {
-	CHAR_T buf[32];
+	uqm::CHAR_T buf[32];
 
 	if (!fmt)
 		fmt = "%d";
@@ -391,15 +391,15 @@ NPCNumber (int number, const char *fmt)
 }
 
 static int
-NPCNumberPhrase (int number, const char *fmt, CHAR_T **ptrack)
+NPCNumberPhrase (int number, const char *fmt, uqm::CHAR_T **ptrack)
 {
 #define MAX_NUMBER_TRACKS 20
 	NUMBER_SPEECH speech = CommData.AlienNumberSpeech;
-	COUNT i;
+	uqm::COUNT i;
 	int queued = 0;
 	int toplevel = 0;
-	CHAR_T *TrackNames[MAX_NUMBER_TRACKS];
-	CHAR_T numbuf[60];
+	uqm::CHAR_T *TrackNames[MAX_NUMBER_TRACKS];
+	uqm::CHAR_T numbuf[60];
 	const SPEECH_DIGIT* dig = NULL;
 
 	if (!speech)
@@ -429,7 +429,7 @@ NPCNumberPhrase (int number, const char *fmt, CHAR_T **ptrack)
 
 		if (dig->StrDigits)
 		{
-			COUNT index;
+			uqm::COUNT index;
 
 			assert (quot < 10);
 			index = dig->StrDigits[quot];
@@ -492,32 +492,32 @@ NPCNumberPhrase (int number, const char *fmt, CHAR_T **ptrack)
 }
 
 void
-construct_response (CHAR_T *buf, int R /* promoted from RESPONSE_REF */, ...)
+construct_response (uqm::CHAR_T *buf, int R /* promoted from RESPONSE_REF */, ...)
 {
-	CHAR_T *buf_start = buf;
-	CHAR_T *name;
+	uqm::CHAR_T *buf_start = buf;
+	uqm::CHAR_T *name;
 	va_list vlist;
 	
 	va_start (vlist, R);
 	
 	do
 	{
-		COUNT len;
+		uqm::COUNT len;
 		STRING S;
 		
 		S = SetAbsStringTableIndex (CommData.ConversationPhrases, R - 1);
 		
-		strcpy (buf, (CHAR_T *)GetStringAddress (S));
+		strcpy (buf, (uqm::CHAR_T *)GetStringAddress (S));
 		
-		len = (COUNT)strlen (buf);
+		len = (uqm::COUNT)strlen (buf);
 		
 		buf += len;
 		
-		name = va_arg (vlist, CHAR_T *);
+		name = va_arg (vlist, uqm::CHAR_T *);
 		
 		if (name)
 		{
-			len = (COUNT)strlen (name);
+			len = (uqm::COUNT)strlen (name);
 			strcpy (buf, name);
 			buf += len;
 			
@@ -563,7 +563,7 @@ setSegue (Segue segue)
 			break;
 		case Segue_defeat:
 			SET_GAME_STATE (BATTLE_SEGUE, 0);
-			GLOBAL_SIS(CrewEnlisted) = (COUNT)~0;
+			GLOBAL_SIS(CrewEnlisted) = (uqm::COUNT)~0;
 			GLOBAL(CurrentActivity) |= CHECK_RESTART;
 			break;
 	}
@@ -573,7 +573,7 @@ Segue
 getSegue (void)
 {
 	if (GET_GAME_STATE(BATTLE_SEGUE) == 0) {
-		if (GLOBAL_SIS(CrewEnlisted) == (COUNT)~0 &&
+		if (GLOBAL_SIS(CrewEnlisted) == (uqm::COUNT)~0 &&
 				(GLOBAL(CurrentActivity) & CHECK_RESTART)) {
 			return Segue_defeat;
 		} else {

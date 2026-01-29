@@ -14,7 +14,7 @@
 extern "C" {
 #endif
 
-//const GenerateFunctions *getGenerateFunctions (BYTE Index);
+//const GenerateFunctions *getGenerateFunctions (uqm::BYTE Index);
 
 enum
 {

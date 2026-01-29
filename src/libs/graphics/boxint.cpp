@@ -28,7 +28,7 @@ BoxIntersect (RECT *pr1, RECT *pr2, RECT *pinter)
 {
 	INTERSECT_CODE intersect_code;
 	COORD x1;
-	SIZE w1, w2, delta;
+	uqm::SIZE w1, w2, delta;
 
 	intersect_code = INTERSECT_NOCLIP;
 
@@ -60,7 +60,7 @@ BoxIntersect (RECT *pr1, RECT *pr2, RECT *pinter)
 	{
 #define h2 w2
 		COORD y1;
-		SIZE h1;
+		uqm::SIZE h1;
 
 		y1 = pr1->corner.y - pr2->corner.y;
 
@@ -140,7 +140,7 @@ BoxUnion (RECT *pr1, RECT *pr2, RECT *punion)
 		(pr1->corner.y + pr1->extent.height)  : (pr2->corner.y + pr2->extent.height)
 		) - punion->corner.y;
 #else
-	SIZE delta;
+	uqm::SIZE delta;
 	COORD x1, y1, w1, h1;
 
 	x1 = pr1->corner.x;

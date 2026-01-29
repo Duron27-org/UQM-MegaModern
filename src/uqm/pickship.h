@@ -25,12 +25,12 @@ extern "C" {
 #endif
 
 extern HSTARSHIP GetEncounterStarShip (STARSHIP *LastStarShipPtr,
-		COUNT which_player);
+		uqm::COUNT which_player);
 extern void DrawArmadaPickShip (bool draw_salvage_frame, RECT *pPickRect);
 
 extern void InitPickFrame (void);
 extern void DestroyPickFrame (void);
-extern void RepairPickFrame (RECT *pRect, COUNT frame);
+extern void RepairPickFrame (RECT *pRect, uqm::COUNT frame);
 
 #if 0 //defined(__cplusplus)
 }

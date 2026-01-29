@@ -84,7 +84,7 @@ VidProcessFrame (void)
 }
 
 // return current video position in milliseconds
-DWORD
+uqm::DWORD
 VidGetPosition (void)
 {
 	if (!VidPlaying ())
@@ -93,7 +93,7 @@ VidGetPosition (void)
 }
 
 bool
-VidSeek (DWORD pos)
+VidSeek (uqm::DWORD pos)
 		// pos in milliseconds
 {
 	if (!VidPlaying ())
@@ -103,7 +103,7 @@ VidSeek (DWORD pos)
 
 VIDEO_TYPE
 VidPlayEx (VIDEO_REF vid, MUSIC_REF AudRef, MUSIC_REF SpeechRef,
-		DWORD LoopFrame)
+		uqm::DWORD LoopFrame)
 {
 	VIDEO_TYPE ret;
 

@@ -58,9 +58,9 @@ static void Flash_blendFraction (FlashContext *context, int numer, int denom,
 static void Flash_makeFrame (FlashContext *context,
 		FRAME dest, int numer, int denom);
 static inline void Flash_prepareCacheFrame (FlashContext *context,
-		COUNT index);
+		uqm::COUNT index);
 static void Flash_drawFrame (FlashContext *context, FRAME frame, bool pcRect);
-static void Flash_drawCacheFrame (FlashContext *context, COUNT index);
+static void Flash_drawCacheFrame (FlashContext *context, uqm::COUNT index);
 static inline void Flash_drawUncachedFrame (FlashContext *context,
 		int numer, int denom);
 static inline void Flash_drawCachedFrame (FlashContext *context,
@@ -100,7 +100,7 @@ Flash_create (CONTEXT gfxContext)
 	context->cache          = 0;
 	context->cacheSize      = Flash_DEFAULT_CACHE_SIZE;
 	
-	context->lastFrameIndex = (COUNT) -1;
+	context->lastFrameIndex = (uqm::COUNT) -1;
 
 	// TODO: Delete the context somewhere
 	if (!workGfxContext)
@@ -416,7 +416,7 @@ Flash_nextTime (FlashContext *context)
 static void
 Flash_clearCache (FlashContext *context)
 {
-	COUNT i;
+	uqm::COUNT i;
 
 #ifdef BEGIN_AND_END_FRAME_EXCEPTIONS
 	if (context->type == FlashType_transition ||
@@ -456,7 +456,7 @@ Flash_setRect (FlashContext *context, const RECT *rect)
 	}
 
 	context->rect = *rect;
-	context->lastFrameIndex = (COUNT) -1;
+	context->lastFrameIndex = (uqm::COUNT) -1;
 
 	if (context->started)
 	{
@@ -529,7 +529,7 @@ Flash_postUpdate (FlashContext *context)
 static void
 Flash_initCache (FlashContext *context)
 {
-	COUNT i;
+	uqm::COUNT i;
 
 	context->cache = (FRAME*)HMalloc (context->cacheSize * sizeof (FRAME));
 	for (i = 0; i < context->cacheSize; i++)
@@ -537,7 +537,7 @@ Flash_initCache (FlashContext *context)
 }
 
 void
-Flash_setCacheSize (FlashContext *context, COUNT size)
+Flash_setCacheSize (FlashContext *context, uqm::COUNT size)
 {
 	assert (size == 0 || size >= 2);
 
@@ -554,7 +554,7 @@ Flash_setCacheSize (FlashContext *context, COUNT size)
 		Flash_initCache (context);
 }
 
-COUNT
+uqm::COUNT
 Flash_getCacheSize (const FlashContext *context)
 {
 	return context->cacheSize;
@@ -680,7 +680,7 @@ Flash_makeFrame (FlashContext *context, FRAME dest, int numer, int denom)
 
 // Prepare an entry in the cache.
 static inline void
-Flash_prepareCacheFrame (FlashContext *context, COUNT index)
+Flash_prepareCacheFrame (FlashContext *context, uqm::COUNT index)
 {
 	if (context->cache[index] != (FRAME) 0)
 		return;
@@ -709,7 +709,7 @@ Color
 GetFlashPCColor (void)
 {
 	static TimeCount NextTime = 0;
-	static DWORD cycle_index = 0;
+	static uqm::DWORD cycle_index = 0;
 
 	static const Color cycle_tab[] = PC_RECT_COLOR_CYCLE_TABLE;
 	const size_t cycleCount = ARRAY_SIZE (cycle_tab);
@@ -752,7 +752,7 @@ Flash_drawFrame (FlashContext *context, FRAME frame, bool pcRect)
 }
 
 static void
-Flash_drawCacheFrame (FlashContext *context, COUNT index)
+Flash_drawCacheFrame (FlashContext *context, uqm::COUNT index)
 {
 	FRAME frame;
 
@@ -820,7 +820,7 @@ Flash_drawUncachedFrame (FlashContext *context, int numer, int denom)
 static inline void
 Flash_drawCachedFrame (FlashContext *context, int numer, int denom)
 {
-	COUNT cachePos;
+	uqm::COUNT cachePos;
 
 	cachePos = ((context->cacheSize - 1) * numer + (denom / 2)) / denom;
 	Flash_prepareCacheFrame (context, cachePos);

@@ -25,6 +25,8 @@
 extern "C" {
 #endif
 
+namespace uqm
+{
 typedef uint8             BYTE;
 typedef uint8             UBYTE;
 typedef sint8             SBYTE;
@@ -36,26 +38,52 @@ typedef uint64            QWORD;
 typedef sint64           SQWORD;
 
 typedef UWORD             COUNT;
-typedef SWORD              SIZE;
+typedef SWORD             SIZE;
 
 typedef char            CHAR_T;
+}
 
 typedef void     (*PVOIDFUNC) (void);
 typedef bool  (*PBOOLFUNC) (void);
-typedef BYTE     (*PBYTEFUNC) (void);
-typedef UWORD    (*PUWORDFUNC) (void);
-typedef SWORD    (*PSWORDFUNC) (void);
-typedef DWORD    (*PDWORDFUNC) (void);
+typedef uqm::BYTE     (*PBYTEFUNC) (void);
+typedef uqm::UWORD    (*PUWORDFUNC) (void);
+typedef uqm::SWORD    (*PSWORDFUNC) (void);
+typedef uqm::DWORD    (*PDWORDFUNC) (void);
 
-#define MAKE_BYTE(lo, hi)   ((BYTE) (((BYTE) (hi) << (BYTE) 4) | (BYTE) (lo)))
-#define LONIBBLE(x)  ((BYTE) ((BYTE) (x) & (BYTE) 0x0F))
-#define HINIBBLE(x)  ((BYTE) ((BYTE) (x) >> (BYTE) 4))
-#define MAKE_WORD(lo, hi)   ((UWORD) ((BYTE) (hi) << 8) | (BYTE) (lo))
-#define LOBYTE(x)    ((BYTE) ((UWORD) (x)))
-#define HIBYTE(x)    ((BYTE) ((UWORD) (x) >> 8))
-#define MAKE_DWORD(lo, hi)  (((DWORD) (hi) << 16) | (UWORD) (lo))
-#define LOWORD(x)    ((UWORD) ((DWORD) (x)))
-#define HIWORD(x)    ((UWORD) ((DWORD) (x) >> 16))
+#define MAKE_BYTE(lo, hi)   ((uqm::BYTE) (((uqm::BYTE) (hi) << (uqm::BYTE) 4) | (uqm::BYTE) (lo)))
+#define LONIBBLE(x)  ((uqm::BYTE) ((uqm::BYTE) (x) & (uqm::BYTE) 0x0F))
+#define HINIBBLE(x)  ((uqm::BYTE) ((uqm::BYTE) (x) >> (uqm::BYTE) 4))
+#define MAKE_WORD(lo, hi)   ((uqm::UWORD) ((uqm::BYTE) (hi) << 8) | (uqm::BYTE) (lo))
+//#define lowByte(x)    ((uqm::BYTE) ((uqm::UWORD) (x)))
+template <typename T, std::enable_if_t<std::is_integral_v<T>,bool> = true>
+constexpr inline auto lowByte(T x) -> uqm::BYTE
+{
+	return static_cast<uqm::BYTE>(x & T{0xFF});
+}
+//#define highByte(x)    ((uqm::BYTE) ((uqm::UWORD) (x) >> 8))
+template <typename T, std::enable_if_t<sizeof(T)<=2,bool> = true>
+constexpr inline auto highByte(T x) -> uqm::BYTE
+{
+	if constexpr (sizeof(T)==1)
+	{
+		return x;
+	}
+	else if constexpr (sizeof(T) == 2)
+	{
+		return static_cast<uqm::BYTE>(x >> 8);
+	}
+	else
+	{
+		static_assert(false, "types with size > 2 bytes not supported by highByte.");
+	}
+}
+#define MAKE_DWORD(lo, hi)  (((uqm::DWORD) (hi) << 16) | (uqm::UWORD) (lo))
+#if !defined(LOWORD)
+	#define LOWORD(x)    ((uqm::UWORD) ((uqm::DWORD) (x)))
+#endif
+#if !defined(HIWORD)
+	#define HIWORD(x)    ((uqm::UWORD) ((uqm::DWORD) (x) >> 16))
+#endif
 
 
 // To be moved to port.h:

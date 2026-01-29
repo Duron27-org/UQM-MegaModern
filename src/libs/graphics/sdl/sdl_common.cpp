@@ -724,7 +724,7 @@ TFB_ClearFPSCanvas (void)
 }
 
 void
-TFB_GetScreenSize (SIZE *width, SIZE *height)
+TFB_GetScreenSize (uqm::SIZE *width, uqm::SIZE *height)
 {
 	SDL_Rect bounds;
 

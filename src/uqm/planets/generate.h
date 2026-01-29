@@ -60,20 +60,20 @@ typedef bool (*GenerateNameFunction)(const SOLARSYS_STATE *,
 		const PLANET_DESC *world);
 // The following functions return the number of objects being generated
 // (or the index of the current object in some cases)
-typedef COUNT (*GenerateMineralsFunction)(const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
-typedef COUNT (*GenerateEnergyFunction)(const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
-typedef COUNT (*GenerateLifeFunction)(const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
+typedef uqm::COUNT (*GenerateMineralsFunction)(const SOLARSYS_STATE *,
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
+typedef uqm::COUNT (*GenerateEnergyFunction)(const SOLARSYS_STATE *,
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
+typedef uqm::COUNT (*GenerateLifeFunction)(const SOLARSYS_STATE *,
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
 // The following functions return true if the node should be removed
 // from the surface, i.e. picked up.
 typedef bool (*PickupMineralsFunction)(SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, COUNT whichNode);
+		PLANET_DESC *world, uqm::COUNT whichNode);
 typedef bool (*PickupEnergyFunction)(SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, COUNT whichNode);
+		PLANET_DESC *world, uqm::COUNT whichNode);
 typedef bool (*PickupLifeFunction)(SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, COUNT whichNode);
+		PLANET_DESC *world, uqm::COUNT whichNode);
 
 
 struct GenerateFunctions {
@@ -104,7 +104,7 @@ struct GenerateFunctions {
 
 // JSD - GenerateFunctions moved from gendef.h due to dependency issues caused by needing
 // to #include planets/generate.h only for this one declaration.  Anyway, it belongs here.
-const GenerateFunctions *getGenerateFunctions (BYTE Index);
+const GenerateFunctions *getGenerateFunctions (uqm::BYTE Index);
 #if 0 //defined(__cplusplus)
 }
 #endif

@@ -54,7 +54,7 @@ extern SOUND MenuSounds;
 extern SOUND GameSounds;
 
 /* Constants for DoInput */
-typedef UWORD MENU_SOUND_FLAGS;
+typedef uqm::UWORD MENU_SOUND_FLAGS;
 #define MENU_SOUND_UP       ((MENU_SOUND_FLAGS)(1 << 0))
 #define MENU_SOUND_DOWN     ((MENU_SOUND_FLAGS)(1 << 1))
 #define MENU_SOUND_LEFT     ((MENU_SOUND_FLAGS)(1 << 2))
@@ -76,7 +76,7 @@ extern void GetMenuSounds (MENU_SOUND_FLAGS *sound_0,
 		MENU_SOUND_FLAGS *sound_1);
 
 extern void PlaySound (SOUND S, SoundPosition Pos,
-		ELEMENT *PositionalObject, BYTE Priority);
+		ELEMENT *PositionalObject, uqm::BYTE Priority);
 extern void PlayMenuSound (MENU_SOUND_EFFECT S);
 extern void ProcessSound (SOUND Sound, ELEMENT *PositionalObject);
 extern SoundPosition CalcSoundPosition (ELEMENT *ElementPtr);

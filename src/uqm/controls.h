@@ -106,7 +106,7 @@ struct CONTROLLER_INPUT_STATE {
 	}
 };
 
-typedef UBYTE BATTLE_INPUT_STATE;
+typedef uqm::UBYTE BATTLE_INPUT_STATE;
 #define BATTLE_LEFT       ((BATTLE_INPUT_STATE)(1 << 0))
 #define BATTLE_RIGHT      ((BATTLE_INPUT_STATE)(1 << 1))
 #define BATTLE_THRUST     ((BATTLE_INPUT_STATE)(1 << 2))
@@ -116,8 +116,8 @@ typedef UBYTE BATTLE_INPUT_STATE;
 #define BATTLE_DOWN       ((BATTLE_INPUT_STATE)(1 << 6))
 #define BATTLE_THRUST_ALT ((BATTLE_INPUT_STATE)(1 << 7))
 
-BATTLE_INPUT_STATE CurrentInputToBattleInput (COUNT player);
-BATTLE_INPUT_STATE PulsedInputToBattleInput (COUNT player);
+BATTLE_INPUT_STATE CurrentInputToBattleInput (uqm::COUNT player);
+BATTLE_INPUT_STATE PulsedInputToBattleInput (uqm::COUNT player);
 
 extern CONTROLLER_INPUT_STATE CurrentInputState;
 extern CONTROLLER_INPUT_STATE PulsedInputState;
@@ -127,7 +127,7 @@ extern bool WarpFromMenu;
 
 void UpdateInputState (void);
 extern void FlushInput (void);
-void SetMenuRepeatDelay (DWORD min, DWORD max, DWORD step, bool gestalt);
+void SetMenuRepeatDelay (uqm::DWORD min, uqm::DWORD max, uqm::DWORD step, bool gestalt);
 void SetDefaultMenuRepeatDelay (void);
 void ResetKeyRepeat (void);
 bool PauseGame (void);
@@ -168,9 +168,9 @@ typedef struct textentry_state
 
 	// these are semi-private read-only
 	bool Initialized;
-	DWORD NextTime;    // use this for input frame timing
+	uqm::DWORD NextTime;    // use this for input frame timing
 	bool Success;   // edit confirmed or canceled
-	CHAR_T *CacheStr; // cached copy to revert immediate changes
+	uqm::CHAR_T *CacheStr; // cached copy to revert immediate changes
 	STRING JoyAlphaString; // joystick alphabet definition
 	bool JoystickMode;  // true when doing joystick input
 	bool UpperRegister; // true when entering Caps
@@ -179,9 +179,9 @@ typedef struct textentry_state
 	joy_char_t *JoyUpper;  // joystick upper register
 	joy_char_t *JoyLower;  // joystick lower register
 	int JoyRegLength;
-	CHAR_T *InsPt;        // set to current pos of insertion point
+	uqm::CHAR_T *InsPt;        // set to current pos of insertion point
 	// these are public and must be set before calling DoTextEntry
-	CHAR_T *BaseStr;  // set to string to edit
+	uqm::CHAR_T *BaseStr;  // set to string to edit
 	int CursorPos;     // set to current cursor pos in chars
 	int MaxSize;       // set to max size of edited string
 

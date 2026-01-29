@@ -41,14 +41,14 @@ static bool GenerateSpathi_generateName (const SOLARSYS_STATE *,
 	const PLANET_DESC *world);
 static bool GenerateSpathi_generateOrbital (SOLARSYS_STATE *solarSys,
 		PLANET_DESC *world);
-static COUNT GenerateSpathi_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
-static COUNT GenerateSpathi_generateLife (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
+static uqm::COUNT GenerateSpathi_generateEnergy (const SOLARSYS_STATE *,
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
+static uqm::COUNT GenerateSpathi_generateLife (const SOLARSYS_STATE *,
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
 static bool GenerateSpathi_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, COUNT whichNode);
+		PLANET_DESC *world, uqm::COUNT whichNode);
 static bool GenerateSpathi_pickupLife (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, COUNT whichNode);
+		PLANET_DESC *world, uqm::COUNT whichNode);
 
 
 const GenerateFunctions generateSpathiFunctions = {
@@ -87,7 +87,7 @@ GenerateSpathi_generatePlanets (SOLARSYS_STATE *solarSys)
 
 		if (PrimeSeed)
 		{
-			COUNT angle;
+			uqm::COUNT angle;
 
 			pPlanet->radius = EARTH_RADIUS * 1150L / 100;
 			angle = ARCTAN (pPlanet->location.x, pPlanet->location.y);
@@ -147,12 +147,12 @@ GenerateSpathi_generateMoons (SOLARSYS_STATE *solarSys,
 	if (CurStarDescPtr->Index == SPATHI_DEFINED
 			&& matchWorld (solarSys, planet, MATCH_PBYTE, MATCH_PLANET))
 	{
-		BYTE MoonByte = solarSys->SunDesc[0].MoonByte;
+		uqm::BYTE MoonByte = solarSys->SunDesc[0].MoonByte;
 		PLANET_DESC *pMoonDesc = &solarSys->MoonDesc[MoonByte];
 
 		if (PrimeSeed)
 		{
-			COUNT angle;
+			uqm::COUNT angle;
 
 			pMoonDesc->data_index = PELLUCID_WORLD;
 			pMoonDesc->radius = MIN_MOON_RADIUS + MOON_DELTA;
@@ -179,7 +179,7 @@ GenerateSpathi_generateName (const SOLARSYS_STATE *solarSys,
 			&& matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET)
 			&& IsHomeworldKnown (SPATHI_HOME))
 	{
-		BYTE PlanetByte = solarSys->SunDesc[0].PlanetByte;
+		uqm::BYTE PlanetByte = solarSys->SunDesc[0].PlanetByte;
 		PLANET_DESC pPlanetDesc = solarSys->PlanetDesc[PlanetByte];
 
 		utf8StringCopy (GLOBAL_SIS (PlanetName),
@@ -196,7 +196,7 @@ static bool
 GenerateSpathi_generateOrbital (SOLARSYS_STATE *solarSys,
 		PLANET_DESC *world)
 {
-	DWORD rand_val;
+	uqm::DWORD rand_val;
 
 	if (CurStarDescPtr->Index == SPATHI_DEFINED)
 	{
@@ -354,9 +354,9 @@ GenerateSpathi_generateOrbital (SOLARSYS_STATE *solarSys,
 	return true;
 }
 
-static COUNT
+static uqm::COUNT
 GenerateSpathi_generateEnergy (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *info)
 {
 	if (CurStarDescPtr->Index == SPATHI_DEFINED)
 	{
@@ -403,7 +403,7 @@ GenerateSpathi_generateEnergy (const SOLARSYS_STATE *solarSys,
 
 static bool
 GenerateSpathi_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		COUNT whichNode)
+		uqm::COUNT whichNode)
 {
 	if (CurStarDescPtr->Index == SPATHI_DEFINED)
 	{
@@ -444,9 +444,9 @@ GenerateSpathi_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 	return false;
 }
 
-static COUNT
+static uqm::COUNT
 GenerateSpathi_generateLife (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *info)
 {
 	if (CurStarDescPtr->Index == SPATHI_DEFINED
 			&& matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET))
@@ -461,7 +461,7 @@ GenerateSpathi_generateLife (const SOLARSYS_STATE *solarSys,
 
 static bool
 GenerateSpathi_pickupLife (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		COUNT whichNode)
+		uqm::COUNT whichNode)
 {
 	if (CurStarDescPtr->Index == SPATHI_DEFINED
 		&& matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET))

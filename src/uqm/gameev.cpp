@@ -148,7 +148,7 @@ AddInitialGameEvents (void)
 }
 
 void
-EventHandler (BYTE selector)
+EventHandler (uqm::BYTE selector)
 {
 	const char *eventIdStr;
 
@@ -163,8 +163,8 @@ EventHandler (BYTE selector)
 }
 
 void
-SetRaceDest (BYTE which_race, COORD x, COORD y, BYTE days_left,
-		BYTE func_index)
+SetRaceDest (uqm::BYTE which_race, COORD x, COORD y, uqm::BYTE days_left,
+		uqm::BYTE func_index)
 {
 	HFLEETINFO hFleet;
 	FLEET_INFO *FleetPtr;
@@ -193,7 +193,7 @@ arilou_entrance_event (int arg)
 static int
 arilou_exit_event (int arg)
 {
-	COUNT month_index, year_index;
+	uqm::COUNT month_index, year_index;
 
 	year_index = GLOBAL (GameClock.year_index);
 	if ((month_index = GLOBAL (GameClock.month_index) % 12) == 0)
@@ -224,9 +224,9 @@ check_race_growth (void)
 		if (FleetPtr->actual_strength
 				&& FleetPtr->actual_strength != INFINITE_RADIUS)
 		{
-			SIZE delta_strength;
+			uqm::SIZE delta_strength;
 
-			delta_strength = (SBYTE)FleetPtr->growth;
+			delta_strength = (uqm::SBYTE)FleetPtr->growth;
 			if (FleetPtr->growth_err_term <= FleetPtr->growth_fract)
 			{
 				if (delta_strength <= 0)
@@ -245,7 +245,7 @@ check_race_growth (void)
 			else if (delta_strength > MAX_FLEET_STRENGTH)
 				delta_strength = MAX_FLEET_STRENGTH;
 				
-			FleetPtr->actual_strength = (COUNT)delta_strength;
+			FleetPtr->actual_strength = (uqm::COUNT)delta_strength;
 			if (FleetPtr->actual_strength && FleetPtr->days_left)
 			{
 				FleetPtr->loc.x += (FleetPtr->dest_loc.x - FleetPtr->loc.x)
@@ -254,7 +254,7 @@ check_race_growth (void)
 						/ FleetPtr->days_left;
 
 				if (--FleetPtr->days_left == 0
-						&& FleetPtr->func_index != (BYTE) ~0)
+						&& FleetPtr->func_index != (uqm::BYTE) ~0)
 					EventHandler (FleetPtr->func_index);
 			}
 		}
@@ -305,7 +305,7 @@ advance_pkunk_mission (int arg)
 
 	if (PkunkPtr->actual_strength)
 	{
-		BYTE MissionState;
+		uqm::BYTE MissionState;
 
 		MissionState = GET_GAME_STATE (PKUNK_MISSION);
 		if (PkunkPtr->days_left == 0 && MissionState)
@@ -342,7 +342,7 @@ advance_pkunk_mission (int arg)
 			SET_GAME_STATE (PKUNK_ON_THE_MOVE, 1);
 			SET_GAME_STATE (PKUNK_SWITCH, 0);
 			SetRaceDest (PKUNK_SHIP, loc.x, loc.y,
-					(BYTE)((365 >> 1) - PkunkPtr->days_left),
+					(uqm::BYTE)((365 >> 1) - PkunkPtr->days_left),
 					ADVANCE_PKUNK_MISSION);
 		}
 		SET_GAME_STATE (PKUNK_MISSION, MissionState + 1);
@@ -358,7 +358,7 @@ advance_pkunk_mission (int arg)
 static int
 advance_thradd_mission (int arg)
 {
-	BYTE MissionState;
+	uqm::BYTE MissionState;
 	HFLEETINFO hThradd;
 	FLEET_INFO *ThraddPtr;
 
@@ -381,11 +381,11 @@ advance_thradd_mission (int arg)
 
 		if (MissionState == 1)
 		{	/* arrived at Kohr-Ah, engaging */
-			SIZE strength_loss;
+			uqm::SIZE strength_loss;
 
-			strength_loss = (SIZE)(ThraddPtr->actual_strength >> 1);
-			ThraddPtr->growth = (BYTE)(-strength_loss / 14);
-			ThraddPtr->growth_fract = (BYTE)(((strength_loss % 14) << 8) / 14);
+			strength_loss = (uqm::SIZE)(ThraddPtr->actual_strength >> 1);
+			ThraddPtr->growth = (uqm::BYTE)(-strength_loss / 14);
+			ThraddPtr->growth_fract = (uqm::BYTE)(((strength_loss % 14) << 8) / 14);
 			ThraddPtr->growth_err_term = 255 >> 1;
 		}
 		else
@@ -415,7 +415,7 @@ advance_thradd_mission (int arg)
 static int
 zoqfot_distress_event (int arg)
 {
-	if (LOBYTE (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY
+	if (lowByte (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY
 			&& CurStarDescPtr
 			&& CurStarDescPtr->Index == ZOQFOT_DEFINED)
 	{
@@ -434,7 +434,7 @@ zoqfot_distress_event (int arg)
 static int
 zoqfot_death_event (int arg)
 {
-	if (LOBYTE (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY
+	if (lowByte (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY
 			&& CurStarDescPtr
 			&& CurStarDescPtr->Index == ZOQFOT_DEFINED)
 	{
@@ -495,7 +495,7 @@ shofixti_return_event (int arg)
 static int
 advance_utwig_supox_mission (int arg)
 {
-	BYTE MissionState;
+	uqm::BYTE MissionState;
 	HFLEETINFO hUtwig, hSupox, hKohrAh;
 	FLEET_INFO *UtwigPtr;
 	FLEET_INFO *SupoxPtr;
@@ -513,32 +513,32 @@ advance_utwig_supox_mission (int arg)
 	{
 		if (MissionState == 1)
 		{
-			SIZE strength_loss;
+			uqm::SIZE strength_loss;
 
 			AddEvent (RELATIVE_EVENT, 0, (160 >> 1), 0,
 					ADVANCE_UTWIG_SUPOX_MISSION);
 
-			strength_loss = (SIZE)(UtwigPtr->actual_strength >> 1);
-			UtwigPtr->growth = (BYTE)(-strength_loss / 160);
+			strength_loss = (uqm::SIZE)(UtwigPtr->actual_strength >> 1);
+			UtwigPtr->growth = (uqm::BYTE)(-strength_loss / 160);
 			UtwigPtr->growth_fract =
-					(BYTE)(((strength_loss % 160) << 8) / 160);
+					(uqm::BYTE)(((strength_loss % 160) << 8) / 160);
 			UtwigPtr->growth_err_term = 255 >> 1;
 
-			strength_loss = (SIZE)(SupoxPtr->actual_strength >> 1);
+			strength_loss = (uqm::SIZE)(SupoxPtr->actual_strength >> 1);
 			if (strength_loss)
 			{
-				SupoxPtr->growth = (BYTE)(-strength_loss / 160);
+				SupoxPtr->growth = (uqm::BYTE)(-strength_loss / 160);
 				SupoxPtr->growth_fract =
-						(BYTE)(((strength_loss % 160) << 8) / 160);
+						(uqm::BYTE)(((strength_loss % 160) << 8) / 160);
 				SupoxPtr->growth_err_term = 255 >> 1;
 			}
 
 			if (EXTENDED)
 			{
-				strength_loss = (SIZE)(KohrAhPtr->actual_strength >> 5);
-				KohrAhPtr->growth = (BYTE)(-strength_loss / 160);
+				strength_loss = (uqm::SIZE)(KohrAhPtr->actual_strength >> 5);
+				KohrAhPtr->growth = (uqm::BYTE)(-strength_loss / 160);
 				KohrAhPtr->growth_fract =
-					(BYTE)(((strength_loss % 160) << 8) / 160);
+					(uqm::BYTE)(((strength_loss % 160) << 8) / 160);
 				KohrAhPtr->growth_err_term = 255 >> 1;
 			}
 
@@ -586,7 +586,7 @@ advance_utwig_supox_mission (int arg)
 			SET_GAME_STATE (SUPOX_VISITS, 0);
 			SET_GAME_STATE (SUPOX_INFO, 0);
 			SetRaceDest (UTWIG_SHIP, utwig.x, utwig.y, 21, ADVANCE_UTWIG_SUPOX_MISSION);
-			SetRaceDest (SUPOX_SHIP, supox.x, supox.y, 21, (BYTE)~0);
+			SetRaceDest (SUPOX_SHIP, supox.x, supox.y, 21, (uqm::BYTE)~0);
 		}
 	}
 	SET_GAME_STATE (UTWIG_SUPOX_MISSION, MissionState + 1);
@@ -602,15 +602,15 @@ advance_utwig_supox_mission (int arg)
 static int
 kohr_ah_genocide_event (int arg)
 {
-	BYTE Index;
+	uqm::BYTE Index;
 	long best_dist;
-	SIZE best_dx, best_dy;
+	uqm::SIZE best_dx, best_dy;
 	HFLEETINFO hStarShip, hNextShip;
 	HFLEETINFO hBlackUrquan;
 	FLEET_INFO *BlackUrquanPtr;
 
 	if (!GET_GAME_STATE (KOHR_AH_FRENZY)
-			&& LOBYTE (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY
+			&& lowByte (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY
 					&& CurStarDescPtr
 			&& CurStarDescPtr->Index == SAMATRA_DEFINED) {
 		AddEvent (RELATIVE_EVENT, 0, 7, 0, KOHR_AH_GENOCIDE_EVENT);
@@ -636,7 +636,7 @@ kohr_ah_genocide_event (int arg)
 				&& Index != URQUAN_SHIP
 				&& FleetPtr->actual_strength != INFINITE_RADIUS)
 		{
-			SIZE dx, dy;
+			uqm::SIZE dx, dy;
 
 			dx = FleetPtr->loc.x - BlackUrquanPtr->loc.x;
 			dy = FleetPtr->loc.y - BlackUrquanPtr->loc.y;
@@ -670,14 +670,14 @@ kohr_ah_genocide_event (int arg)
 	{
 		// All spheres of influence are gone - game over.
 		GLOBAL (CurrentActivity) &= ~IN_BATTLE;
-		GLOBAL_SIS (CrewEnlisted) = (COUNT)~0;
+		GLOBAL_SIS (CrewEnlisted) = (uqm::COUNT)~0;
 
 		SET_GAME_STATE (KOHR_AH_KILLED_ALL, 1);
 	}
 	else
 	{
 		// Moving towards new race to cleanse.
-		COUNT speed;
+		uqm::COUNT speed;
 
 		if (best_dist < 0)
 			best_dist = (long)best_dx * best_dx + (long)best_dy * best_dy;
@@ -700,7 +700,7 @@ kohr_ah_genocide_event (int arg)
 		SetRaceDest (BLACK_URQUAN_SHIP,
 				BlackUrquanPtr->loc.x + best_dx,
 				BlackUrquanPtr->loc.y + best_dy,
-				(BYTE)speed, KOHR_AH_GENOCIDE_EVENT);
+				(uqm::BYTE)speed, KOHR_AH_GENOCIDE_EVENT);
 	}
 
 	UnlockFleetInfo (&GLOBAL (avail_race_q), hBlackUrquan);
@@ -712,7 +712,7 @@ kohr_ah_genocide_event (int arg)
 static int
 spathi_shield_event (int arg)
 {
-	if (LOBYTE (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY
+	if (lowByte (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY
 			&& CurStarDescPtr
 			&& CurStarDescPtr->Index == SPATHI_DEFINED)
 	{
@@ -746,7 +746,7 @@ spathi_shield_event (int arg)
 static int
 advance_ilwrath_mission (int arg)
 {
-	BYTE ThraddState;
+	uqm::BYTE ThraddState;
 	HFLEETINFO hIlwrath, hThradd;
 	FLEET_INFO* IlwrathPtr;
 	FLEET_INFO* ThraddPtr;
@@ -778,28 +778,28 @@ advance_ilwrath_mission (int arg)
 		else
 		{
 #define MADD_LENGTH 128
-			SIZE strength_loss;
+			uqm::SIZE strength_loss;
 
 			if (IlwrathPtr->days_left == 0)
 			{	/* arrived for battle */
 				SET_GAME_STATE (ILWRATH_FIGHT_THRADDASH, 1);
 				SET_GAME_STATE (HELIX_UNPROTECTED, 1);
-				strength_loss = (SIZE)IlwrathPtr->actual_strength;
-				IlwrathPtr->growth = (BYTE)(-strength_loss / MADD_LENGTH);
+				strength_loss = (uqm::SIZE)IlwrathPtr->actual_strength;
+				IlwrathPtr->growth = (uqm::BYTE)(-strength_loss / MADD_LENGTH);
 				IlwrathPtr->growth_fract =
-						(BYTE)(((strength_loss % MADD_LENGTH) << 8) / MADD_LENGTH);
+						(uqm::BYTE)(((strength_loss % MADD_LENGTH) << 8) / MADD_LENGTH);
 				SetRaceDest (ILWRATH_SHIP, (conflict.x + thradd_home.x) / 2,
 						(conflict.y + thradd_home.y) / 2,
 						MADD_LENGTH - 1, ADVANCE_ILWRATH_MISSION);
 
 				if (EXTENDED && ThraddPtr->allied_state == GOOD_GUY)
-					strength_loss = (SIZE)(ThraddPtr->actual_strength * 0.25); // Smarterer math
+					strength_loss = (uqm::SIZE)(ThraddPtr->actual_strength * 0.25); // Smarterer math
 				else
-					strength_loss = (SIZE)ThraddPtr->actual_strength;
+					strength_loss = (uqm::SIZE)ThraddPtr->actual_strength;
 
-				ThraddPtr->growth = (BYTE)(-strength_loss / MADD_LENGTH);
+				ThraddPtr->growth = (uqm::BYTE)(-strength_loss / MADD_LENGTH);
 				ThraddPtr->growth_fract =
-					(BYTE)(((strength_loss % MADD_LENGTH) << 8) / MADD_LENGTH);
+					(uqm::BYTE)(((strength_loss % MADD_LENGTH) << 8) / MADD_LENGTH);
 
 				if ((EXTENDED && ThraddPtr->allied_state != GOOD_GUY) || !EXTENDED)
 				{
@@ -815,7 +815,7 @@ advance_ilwrath_mission (int arg)
 				SetRaceDest (THRADDASH_SHIP,
 						(conflict.x + thradd_home.x) / 2,
 						(conflict.y + thradd_home.y) / 2,
-						IlwrathPtr->days_left + 1, (BYTE)~0);
+						IlwrathPtr->days_left + 1, (uqm::BYTE)~0);
 			}
 			else if (ThraddState < 3)
 			{	/* recall on the double */
@@ -831,7 +831,7 @@ advance_ilwrath_mission (int arg)
 		ThraddPtr->growth = 0;
 		ThraddPtr->growth_fract = 0;
 		SET_GAME_STATE(ILWRATH_FIGHT_THRADDASH, 0);
-		SetRaceDest(THRADDASH_SHIP, thradd_home.x, thradd_home.y, 3, (BYTE)~0);
+		SetRaceDest(THRADDASH_SHIP, thradd_home.x, thradd_home.y, 3, (uqm::BYTE)~0);
 		if (!GET_GAME_STATE(AQUA_HELIX))
 			SET_GAME_STATE(HELIX_UNPROTECTED, 0);
 	}
@@ -861,7 +861,7 @@ advance_mycon_mission (int arg)
 		{
 			// Head back.
 			SET_GAME_STATE (MYCON_KNOW_AMBUSH, 1);
-			SetRaceDest (MYCON_SHIP, home.x, home.y, 30, (BYTE)~0);
+			SetRaceDest (MYCON_SHIP, home.x, home.y, 30, (uqm::BYTE)~0);
 
 			if (EXTENDED)
 			{
@@ -874,7 +874,7 @@ advance_mycon_mission (int arg)
 				if (SyreenPtr)
 				{
 					POINT syra = SeedFleetLocation (SyreenPtr, plot_map, 0);
-					SetRaceDest (SYREEN_SHIP, syra.x, syra.y, 30, (BYTE)~0);
+					SetRaceDest (SYREEN_SHIP, syra.x, syra.y, 30, (uqm::BYTE)~0);
 					SyreenPtr->growth = 0;
 					SyreenPtr->growth_fract = 0;
 				}
@@ -889,12 +889,12 @@ advance_mycon_mission (int arg)
 		else
 		{
 			// Endure losses at Organon.
-			SIZE strength_loss;
+			uqm::SIZE strength_loss;
 
 			AddEvent (RELATIVE_EVENT, 0, 14, 0, ADVANCE_MYCON_MISSION);
-			strength_loss = (SIZE)(MyconPtr->actual_strength >> 1);
-			MyconPtr->growth = (BYTE)(-strength_loss / 14);
-			MyconPtr->growth_fract = (BYTE)(((strength_loss % 14) << 8) / 14);
+			strength_loss = (uqm::SIZE)(MyconPtr->actual_strength >> 1);
+			MyconPtr->growth = (uqm::BYTE)(-strength_loss / 14);
+			MyconPtr->growth_fract = (uqm::BYTE)(((strength_loss % 14) << 8) / 14);
 			MyconPtr->growth_err_term = 255 >> 1;
 			if (EXTENDED)
 			{
@@ -908,9 +908,9 @@ advance_mycon_mission (int arg)
 				{
 					// The rest?... well we took care of most of them...
 					// in our own special way.
-					SyreenPtr->growth = (BYTE)(strength_loss / 28);
+					SyreenPtr->growth = (uqm::BYTE)(strength_loss / 28);
 					SyreenPtr->growth_fract =
-							(BYTE)(((strength_loss % 28) << 8) / 28);
+							(uqm::BYTE)(((strength_loss % 28) << 8) / 28);
 				}
 			}
 		}
@@ -958,7 +958,7 @@ slylandro_ramp_up (int arg)
 {
 	if (!GET_GAME_STATE (DESTRUCT_CODE_ON_SHIP))
 	{
-		BYTE ramp_factor;
+		uqm::BYTE ramp_factor;
 
 		ramp_factor = GET_GAME_STATE (SLYLANDRO_MULTIPLIER);
 		if (++ramp_factor <= 4)
@@ -975,7 +975,7 @@ slylandro_ramp_up (int arg)
 static int
 slylandro_ramp_down (int arg)
 {
-	BYTE ramp_factor;
+	uqm::BYTE ramp_factor;
 
 	ramp_factor = GET_GAME_STATE (SLYLANDRO_MULTIPLIER);
 	if (--ramp_factor)

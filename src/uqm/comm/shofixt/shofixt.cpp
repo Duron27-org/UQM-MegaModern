@@ -260,7 +260,7 @@ ExitConversation (RESPONSE_REF R)
 	}
 	else if (PLAYER_SAID (R, dont_want_to_fight))
 	{
-		BYTE NumVisits;
+		uqm::BYTE NumVisits;
 
 		NumVisits = GET_GAME_STATE (SHOFIXTI_STACK4);
 		switch (NumVisits++)
@@ -401,7 +401,7 @@ Hostile (RESPONSE_REF R)
 					shofixti_name,
 					"",
 					look1,
-					(CHAR_T*)NULL);
+					(uqm::CHAR_T*)NULL);
 			DoResponsePhrase (look0, ExitConversation, shared_phrase_buf);
 			break;
 		}
@@ -415,13 +415,13 @@ Hostile (RESPONSE_REF R)
 static void
 Friendly (RESPONSE_REF R)
 {
-	BYTE i, LastStack;
+	uqm::BYTE i, LastStack;
 	struct
 	{
 		RESPONSE_REF pStr;
-		CHAR_T *c_buf;
+		uqm::CHAR_T *c_buf;
 	} Resp[3];
-	static CHAR_T buf0[80], buf1[80];
+	static uqm::CHAR_T buf0[80], buf1[80];
 	
 	LastStack = 0;
 	memset (Resp, 0, sizeof (Resp));
@@ -478,7 +478,7 @@ Friendly (RESPONSE_REF R)
 				shofixti_name,
 				"",
 				report1,
-				(CHAR_T*)NULL);
+				(uqm::CHAR_T*)NULL);
 		Resp[0].pStr = report0;
 		Resp[0].c_buf = buf0;
 	}
@@ -493,7 +493,7 @@ Friendly (RESPONSE_REF R)
 					shofixti_name,
 					"",
 					why_here1,
-					(CHAR_T*)NULL);
+					(uqm::CHAR_T*)NULL);
 			Resp[1].pStr = why_here0;
 			Resp[1].c_buf = buf1;
 			break;
@@ -534,14 +534,14 @@ Friendly (RESPONSE_REF R)
 			shofixti_name,
 			"",
 			bye1,
-			(CHAR_T*)NULL);
+			(uqm::CHAR_T*)NULL);
 	DoResponsePhrase (bye0, ExitConversation, shared_phrase_buf);
 }
 
 static void
 Intro (void)
 {
-	if (LOBYTE (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
+	if (lowByte (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
 	{
 		NPCPhrase (OUT_TAKES);
 
@@ -559,7 +559,7 @@ Intro (void)
 	}
 	else
 	{
-		BYTE NumVisits;
+		uqm::BYTE NumVisits;
 
 		NumVisits = GET_GAME_STATE (SHOFIXTI_VISITS);
 		if (GET_GAME_STATE (SHOFIXTI_KIA))
@@ -618,7 +618,7 @@ Intro (void)
 	}
 }
 
-static COUNT
+static uqm::COUNT
 uninit_shofixti (void)
 {
 	luaUqm_comm_uninit ();

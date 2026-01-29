@@ -216,7 +216,7 @@ bool
 IsTracker (uint32 source)
 {
 	TFB_SoundSample * sample = soundSource[source].sample;
-	const CHAR_T *filetype;
+	const uqm::CHAR_T *filetype;
 
 	if (!sample)
 		return false;
@@ -237,7 +237,7 @@ GetStreamLength (uint32 source)
 	return sample->decoder->length * 1000;
 }
 
-DWORD
+uqm::DWORD
 GetStreamTime (uint32 source)
 {
 	TFB_SoundSample* sample = soundSource[source].sample;
@@ -245,7 +245,7 @@ GetStreamTime (uint32 source)
 	if (!sample)
 		return 0;
 
-	return (DWORD)SoundDecoder_GetTime (sample->decoder) * 1000;
+	return (uqm::DWORD)SoundDecoder_GetTime (sample->decoder) * 1000;
 }
 
 bool

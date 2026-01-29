@@ -330,11 +330,11 @@ RenderFPS (int *fps)
 	if (GoodToGoFPS () && (prevFPS != *fps))
 	{
 		RECT tr;
-		SIZE w, h;
+		uqm::SIZE w, h;
 		int i;
 		int max;
 		int step = 6;
-		CHAR_T buf[4];
+		uqm::CHAR_T buf[4];
 		TFB_Char *ch;
 		TFB_Image *img;
 
@@ -346,7 +346,7 @@ RenderFPS (int *fps)
 		int y = 7 << resolutionFactor;
 
 		sprintf (buf, "%d", *fps);
-		max = (COUNT)utf8StringCount(buf);
+		max = (uqm::COUNT)utf8StringCount(buf);
 
 		GetFontDims (&w, &h);
 		img = TFB_DrawImage_CreateForScreen (w, h, true);

@@ -143,19 +143,19 @@ spit_preprocess (ELEMENT *ElementPtr)
 		--ElementPtr->turn_wait;
 	else
 	{
-		COUNT index, angle, speed;
+		uqm::COUNT index, angle, speed;
 
 		angle = GetVelocityTravelAngle (&ElementPtr->velocity);
 		if ((index = GetFrameIndex (ElementPtr->next.image.frame)) == 1)
-			angle = angle + (((COUNT)TFB_Random () % 3) - 1);
+			angle = angle + (((uqm::COUNT)TFB_Random () % 3) - 1);
 		else
 			index >>= 1;
 
 		speed = WORLD_TO_VELOCITY (DISPLAY_TO_WORLD (
 				RES_SCALE (GetFrameCount (ElementPtr->next.image.frame)) - index) << 1);
 		SetVelocityComponents (&ElementPtr->velocity,
-				(SIZE)COSINE (angle, speed),
-				(SIZE)SINE (angle, speed));
+				(uqm::SIZE)COSINE (angle, speed),
+				(uqm::SIZE)SINE (angle, speed));
 
 		/* turn_wait is abused here to control the animation speed. */
 		ElementPtr->turn_wait = SPIT_WAIT;
@@ -163,7 +163,7 @@ spit_preprocess (ELEMENT *ElementPtr)
 	}
 }
 
-static COUNT
+static uqm::COUNT
 initialize_spit (ELEMENT *ShipPtr, HELEMENT SpitArray[])
 {
 	STARSHIP *StarShipPtr;
@@ -258,9 +258,9 @@ spawn_tongue (ELEMENT *ElementPtr)
 			TonguePtr->turn_wait = StarShipPtr->special_counter;
 		else
 		{
-			COUNT angle;
+			uqm::COUNT angle;
 			RECT r;
-			SDWORD x_offs, y_offs;
+			uqm::SDWORD x_offs, y_offs;
 
 			TonguePtr->turn_wait = ElementPtr->turn_wait - 1;
 
@@ -287,7 +287,7 @@ spawn_tongue (ELEMENT *ElementPtr)
 
 static void
 zoqfotpik_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
-		COUNT ConcernCounter)
+		uqm::COUNT ConcernCounter)
 {
 	bool GiveTongueJob;
 	STARSHIP *StarShipPtr;
@@ -309,7 +309,7 @@ zoqfotpik_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 #endif /* NEVER */
 				)
 		{
-			SDWORD delta_x, delta_y;
+			uqm::SDWORD delta_x, delta_y;
 
 			GiveTongueJob = true;
 

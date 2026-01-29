@@ -121,7 +121,7 @@ static RACE_DESC slylandro_desc =
 	0, /* CodeRef */
 };
 
-static COUNT initialize_lightning (ELEMENT *ElementPtr,
+static uqm::COUNT initialize_lightning (ELEMENT *ElementPtr,
 		HELEMENT LaserArray[]);
 
 static void
@@ -154,7 +154,7 @@ lightning_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 	weapon_collision (ElementPtr0, pPt0, ElementPtr1, pPt1);
 }
 
-static COUNT
+static uqm::COUNT
 initialize_lightning (ELEMENT *ElementPtr, HELEMENT LaserArray[])
 {
 	LASER_BLOCK LaserBlock;
@@ -172,9 +172,9 @@ initialize_lightning (ELEMENT *ElementPtr, HELEMENT LaserArray[])
 
 	if (LaserArray[0])
 	{
-		SIZE delta;
-		COUNT angle, facing;
-		DWORD rand_val;
+		uqm::SIZE delta;
+		uqm::COUNT angle, facing;
+		uqm::DWORD rand_val;
 		ELEMENT *LaserPtr;
 		STARSHIP *StarShipPtr;
 
@@ -211,7 +211,7 @@ initialize_lightning (ELEMENT *ElementPtr, HELEMENT LaserArray[])
 			if (LaserPtr->turn_wait > WEAPON_WAIT >> 1)
 				LaserPtr->turn_wait = WEAPON_WAIT - LaserPtr->turn_wait;
 
-			switch (HIBYTE (LOWORD (rand_val)) & 3)
+			switch (highByte (LOWORD (rand_val)) & 3)
 			{
 				case 0:
 					SetPrimColor (
@@ -263,14 +263,14 @@ initialize_lightning (ELEMENT *ElementPtr, HELEMENT LaserArray[])
 
 static void
 slylandro_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
-		COUNT ConcernCounter)
+		uqm::COUNT ConcernCounter)
 {
 	EVALUATE_DESC *lpEvalDesc;
 	STARSHIP *StarShipPtr;
 
 	// no dodging in role playing game, unless you haven't
 	// visited the starbase yet or difficulty is set to Hard
-	if ((LOBYTE (GLOBAL (CurrentActivity)) == IN_ENCOUNTER) &&
+	if ((lowByte (GLOBAL (CurrentActivity)) == IN_ENCOUNTER) &&
 			GET_GAME_STATE (STARBASE_AVAILABLE) && !DIF_HARD)
 		ObjectsOfConcern[ENEMY_WEAPON_INDEX].ObjectPtr = 0;
 
@@ -324,7 +324,7 @@ harvest_space_junk (ELEMENT *ElementPtr)
 				&& !GRAVITY_MASS (ObjPtr->mass_points)
 				&& CollisionPossible (ObjPtr, ElementPtr))
 		{
-			SDWORD dx, dy;
+			uqm::SDWORD dx, dy;
 
 			if ((dx = ObjPtr->next.location.x
 					- ElementPtr->next.location.x) < 0)

@@ -147,7 +147,7 @@ CombatIsInevitable (RESPONSE_REF R)
 			|| PLAYER_SAID (R, whats_up_space_4)
 			|| PLAYER_SAID (R, whats_up_space_5))
 	{
-		BYTE NumVisits;
+		uqm::BYTE NumVisits;
 
 		NumVisits = GET_GAME_STATE (ILWRATH_INFO);
 		switch (NumVisits++)
@@ -192,7 +192,7 @@ static void IlwrathHome (RESPONSE_REF R);
 static void
 IlwrathGods (RESPONSE_REF R)
 {
-	BYTE GodsLeft;
+	uqm::BYTE GodsLeft;
 
 	GodsLeft = false;
 	if (PLAYER_SAID (R, want_info_on_gods))
@@ -251,7 +251,7 @@ IlwrathGods (RESPONSE_REF R)
 static void
 IlwrathInfo (RESPONSE_REF R)
 {
-	BYTE InfoLeft;
+	uqm::BYTE InfoLeft;
 
 	InfoLeft = false;
 	if (PLAYER_SAID (R, want_info_on_ilwrath))
@@ -328,7 +328,7 @@ IlwrathHome (RESPONSE_REF R)
 {
 	if (R == 0)
 	{
-		BYTE NumVisits;
+		uqm::BYTE NumVisits;
 
 		NumVisits = GET_GAME_STATE (ILWRATH_HOME_VISITS);
 		switch (NumVisits++)
@@ -366,7 +366,7 @@ static void GodsSpeak (RESPONSE_REF R);
 static void
 GodsOrder (RESPONSE_REF R)
 {
-	BYTE OrdersLeft;
+	uqm::BYTE OrdersLeft;
 
 	OrdersLeft = false;
 	if (PLAYER_SAID (R, other_divine_orders))
@@ -425,7 +425,7 @@ GodsOrder (RESPONSE_REF R)
 static void
 GodsSpeak (RESPONSE_REF R)
 {
-	BYTE NumVisits;
+	uqm::BYTE NumVisits;
 
 	if (R == 0)
 	{
@@ -503,7 +503,7 @@ GodsSpeak (RESPONSE_REF R)
 static void
 IlwrathSpace (RESPONSE_REF R)
 {
-	BYTE NumVisits;
+	uqm::BYTE NumVisits;
 
 	if (R == 0)
 	{
@@ -558,7 +558,7 @@ IlwrathSpace (RESPONSE_REF R)
 static void
 Intro (void)
 {
-	BYTE NumVisits;
+	uqm::BYTE NumVisits;
 
 	if (GET_GAME_STATE (PROBE_ILWRATH_ENCOUNTER))
 	{
@@ -661,7 +661,7 @@ Intro (void)
 	}
 }
 
-static COUNT
+static uqm::COUNT
 uninit_ilwrath (void)
 {
 	luaUqm_comm_uninit ();
@@ -692,7 +692,7 @@ init_ilwrath_comm (void)
 	if (GET_GAME_STATE (PROBE_ILWRATH_ENCOUNTER)
 			|| (GET_GAME_STATE (GLOBAL_FLAGS_AND_DATA)
 			& ((1 << 4) | (1 << 5)))
-			|| LOBYTE (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
+			|| lowByte (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
 	{
 		setSegue (Segue_peace);
 	}

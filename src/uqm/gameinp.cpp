@@ -50,8 +50,8 @@ typedef struct
 
 typedef struct
 {
-	DWORD key [NUM_TEMPLATES][NUM_KEYS];
-	DWORD menu [NUM_MENU_KEYS];
+	uqm::DWORD key [NUM_TEMPLATES][NUM_KEYS];
+	uqm::DWORD menu [NUM_MENU_KEYS];
 } MENU_ANNOTATIONS;
 
 
@@ -59,9 +59,9 @@ CONTROL_TEMPLATE PlayerControls[NUM_PLAYERS];
 CONTROLLER_INPUT_STATE CurrentInputState, PulsedInputState;
 static CONTROLLER_INPUT_STATE CachedInputState, OldInputState;
 static MENU_ANNOTATIONS RepeatDelays, Times;
-static DWORD GestaltRepeatDelay, GestaltTime;
+static uqm::DWORD GestaltRepeatDelay, GestaltTime;
 static bool OldGestalt, CachedGestalt;
-static DWORD _max_accel, _min_accel, _step_accel;
+static uqm::DWORD _max_accel, _min_accel, _step_accel;
 static bool _gestalt_keys;
 
 static MENU_SOUND_FLAGS sound_0, sound_1;
@@ -97,7 +97,7 @@ _clear_menu_state (void)
 void
 ResetKeyRepeat (void)
 {
-	DWORD initTime = GetTimeCounter ();
+	uqm::DWORD initTime = GetTimeCounter ();
 	int i, j;
 	for (i = 0; i < NUM_TEMPLATES; i++)
 	{
@@ -117,8 +117,8 @@ ResetKeyRepeat (void)
 }
 
 static void
-_check_for_pulse (int *current, int *cached, int *old, DWORD *accel,
-		DWORD *newtime, DWORD *oldtime)
+_check_for_pulse (int *current, int *cached, int *old, uqm::DWORD *accel,
+		uqm::DWORD *newtime, uqm::DWORD *oldtime)
 {
 	if (*cached && *old)
 	{
@@ -149,7 +149,7 @@ _check_for_pulse (int *current, int *cached, int *old, DWORD *accel,
  * *yet*, but it will be once the user gets to define control
  * templates on his own --McM */
 static void
-_check_gestalt (DWORD NewTime)
+_check_gestalt (uqm::DWORD NewTime)
 {
 	bool CurrentGestalt;
 	int i, j;
@@ -228,7 +228,7 @@ _check_gestalt (DWORD NewTime)
 void
 UpdateInputState (void)
 {
-	DWORD NewTime;
+	uqm::DWORD NewTime;
 	/* First, if the game is, in fact, paused, we stall until
 	 * unpaused.  Every thread with control over game logic calls
 	 * UpdateInputState routinely, so we handle pause and exit
@@ -307,7 +307,7 @@ SetInputCallback (InputFrameCallback *callback)
 }
 
 void
-SetMenuRepeatDelay (DWORD min, DWORD max, DWORD step, bool gestalt)
+SetMenuRepeatDelay (uqm::DWORD min, uqm::DWORD max, uqm::DWORD step, bool gestalt)
 {
 	_min_accel = min;
 	_max_accel = max;
@@ -452,14 +452,14 @@ ControlInputToBattleInput (const int *keyState)
 }
 
 BATTLE_INPUT_STATE
-CurrentInputToBattleInput (COUNT player)
+CurrentInputToBattleInput (uqm::COUNT player)
 {
 	return ControlInputToBattleInput(
 			CurrentInputState.key[PlayerControls[player]]);
 }
 
 BATTLE_INPUT_STATE
-PulsedInputToBattleInput (COUNT player)
+PulsedInputToBattleInput (uqm::COUNT player)
 {
 	return ControlInputToBattleInput(
 			PulsedInputState.key[PlayerControls[player]]);
@@ -516,7 +516,7 @@ ActKeysPress (void)
 bool
 ConfirmExit (void)
 {
-	DWORD old_max_accel, old_min_accel, old_step_accel;
+	uqm::DWORD old_max_accel, old_min_accel, old_step_accel;
 	bool old_gestalt_keys, result;
 
 	old_max_accel = _max_accel;

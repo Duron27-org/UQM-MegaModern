@@ -127,7 +127,7 @@ static RACE_DESC syreen_desc =
 	0, /* CodeRef */
 };
 
-static COUNT
+static uqm::COUNT
 initialize_dagger (ELEMENT *ShipPtr, HELEMENT DaggerArray[])
 {
 	STARSHIP *StarShipPtr;
@@ -193,8 +193,8 @@ spawn_crew (ELEMENT *ElementPtr)
 					&& !elementsOfSamePlayer (ObjPtr, ElementPtr)
 					&& ObjPtr->crew_level > 1)
 			{
-				SDWORD dx, dy;
-				DWORD d_squared;
+				uqm::SDWORD dx, dy;
+				uqm::DWORD d_squared;
 
 				dx = ObjPtr->next.location.x - ElementPtr->next.location.x;
 				if (dx < 0)
@@ -206,11 +206,11 @@ spawn_crew (ELEMENT *ElementPtr)
 				dx = WORLD_TO_DISPLAY (dx);
 				dy = WORLD_TO_DISPLAY (dy);
 				if (dx <= ABANDONER_RANGE && dy <= ABANDONER_RANGE
-						&& (d_squared = (DWORD)((UWORD)dx * (UWORD)dx)
-						+ (DWORD)((UWORD)dy * (UWORD)dy)) <=
-						(DWORD)((UWORD)ABANDONER_RANGE * (UWORD)ABANDONER_RANGE))
+						&& (d_squared = (uqm::DWORD)((uqm::UWORD)dx * (uqm::UWORD)dx)
+						+ (uqm::DWORD)((uqm::UWORD)dy * (uqm::UWORD)dy)) <=
+						(uqm::DWORD)((uqm::UWORD)ABANDONER_RANGE * (uqm::UWORD)ABANDONER_RANGE))
 				{
-					COUNT crew_loss;
+					uqm::COUNT crew_loss;
 
 					if (!(antiCheat (ElementPtr, true, OPTVAL_INF_HEALTH)
 							|| antiCheat (
@@ -235,7 +235,7 @@ spawn_crew (ELEMENT *ElementPtr)
 
 static void
 syreen_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
-		COUNT ConcernCounter)
+		uqm::COUNT ConcernCounter)
 {
 	EVALUATE_DESC *lpEvalDesc;
 

@@ -31,10 +31,10 @@
 static bool GenerateVault_generatePlanets (SOLARSYS_STATE *solarSys);
 static bool GenerateVault_generateOrbital (SOLARSYS_STATE *solarSys,
 		PLANET_DESC *world);
-static COUNT GenerateVault_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
+static uqm::COUNT GenerateVault_generateEnergy (const SOLARSYS_STATE *,
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
 static bool GenerateVault_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, COUNT whichNode);
+		PLANET_DESC *world, uqm::COUNT whichNode);
 
 
 const GenerateFunctions generateVaultFunctions = {
@@ -111,9 +111,9 @@ GenerateVault_generateOrbital (SOLARSYS_STATE *solarSys,
 						& 1 << URQUAN_ENCOUNTER)
 					&& !(GET_GAME_STATE(KOHR_AH_FRENZY)))
 			{
-				COUNT i;
+				uqm::COUNT i;
 				bool Survivors;
-				UWORD state;
+				uqm::UWORD state;
 
 				PutGroupInfo (GROUPS_RANDOM, GROUP_SAVE_IP);
 				ReinitQueue (&GLOBAL (ip_group_q));
@@ -156,9 +156,9 @@ GenerateVault_generateOrbital (SOLARSYS_STATE *solarSys,
 	return true;
 }
 
-static COUNT
+static uqm::COUNT
 GenerateVault_generateEnergy (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *info)
 {
 	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_MBYTE))
 	{
@@ -171,7 +171,7 @@ GenerateVault_generateEnergy (const SOLARSYS_STATE *solarSys,
 
 static bool
 GenerateVault_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		COUNT whichNode)
+		uqm::COUNT whichNode)
 {
 	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_MBYTE))
 	{

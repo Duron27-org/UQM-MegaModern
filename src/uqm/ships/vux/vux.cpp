@@ -139,8 +139,8 @@ static RACE_DESC vux_desc =
 static void
 limpet_preprocess (ELEMENT *ElementPtr)
 {
-	COUNT facing, orig_facing;
-	SIZE delta_facing;
+	uqm::COUNT facing, orig_facing;
+	uqm::SIZE delta_facing;
 
 	facing = orig_facing = NORMALIZE_FACING (ANGLE_TO_FACING (
 			GetVelocityTravelAngle (&ElementPtr->velocity)
@@ -182,7 +182,7 @@ limpet_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 			}
 			else
 			{
-				COUNT num_thrusts;
+				uqm::COUNT num_thrusts;
 
 				num_thrusts = RDPtr->characteristics.max_thrust /
 						RDPtr->characteristics.thrust_increment;
@@ -197,7 +197,7 @@ limpet_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 							/* LIMPET_AFFIXES */
 					StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 2), ElementPtr1);
 			s.frame = SetAbsFrameIndex (
-						StarShipPtr->RaceDescPtr->ship_data.weapon[0], (COUNT)TFB_Random ()
+						StarShipPtr->RaceDescPtr->ship_data.weapon[0], (uqm::COUNT)TFB_Random ()
 						);
 			ModifySilhouette (ElementPtr1, &s, MODIFY_IMAGE);
 		}
@@ -255,7 +255,7 @@ spawn_limpets (ELEMENT *ElementPtr)
 	}
 }
 
-static COUNT
+static uqm::COUNT
 initialize_horrific_laser (ELEMENT *ShipPtr, HELEMENT LaserArray[])
 {
 	STARSHIP *StarShipPtr;
@@ -278,7 +278,7 @@ initialize_horrific_laser (ELEMENT *ShipPtr, HELEMENT LaserArray[])
 
 static void
 vux_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
-		COUNT ConcernCounter)
+		uqm::COUNT ConcernCounter)
 {
 	EVALUATE_DESC *lpEvalDesc;
 	STARSHIP *StarShipPtr;
@@ -306,7 +306,7 @@ vux_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 			&& lpEvalDesc->which_turn <= 12
 			&& (StarShipPtr->ship_input_state & (LEFT | RIGHT))
 			&& StarShipPtr->RaceDescPtr->ship_info.energy_level >=
-			(BYTE)(StarShipPtr->RaceDescPtr->ship_info.max_energy >> 1))
+			(uqm::BYTE)(StarShipPtr->RaceDescPtr->ship_info.max_energy >> 1))
 		StarShipPtr->ship_input_state |= SPECIAL;
 	else
 		StarShipPtr->ship_input_state &= ~SPECIAL;
@@ -337,22 +337,22 @@ vux_preprocess (ELEMENT *ElementPtr)
 {
 	if (ElementPtr->state_flags & APPEARING)
 	{
-		COUNT facing;
+		uqm::COUNT facing;
 		STARSHIP *StarShipPtr;
 
 		GetElementStarShip (ElementPtr, &StarShipPtr);
 		facing = StarShipPtr->ShipFacing;
-		if ((LOBYTE (GLOBAL (CurrentActivity)) != IN_ENCOUNTER
+		if ((lowByte (GLOBAL (CurrentActivity)) != IN_ENCOUNTER
 				|| DIF_HARD)
 				&& TrackShip (ElementPtr, &facing) >= 0)
 		{
 			ELEMENT *OtherShipPtr;
-			SIZE SA_MATRA_EXTRA_DIST = 0;
+			uqm::SIZE SA_MATRA_EXTRA_DIST = 0;
 			LockElement (ElementPtr->hTarget, &OtherShipPtr);
 
 			// JMS: Not REALLY necessary as VUX can ordinarily never be played against Sa-Matra. 
             // But handy in debugging as a single VUX limpet incapacitates Sa-Matra completely.
-            if (LOBYTE (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE)
+            if (lowByte (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE)
 				SA_MATRA_EXTRA_DIST += RES_SCALE (1000);
 
 			do 
@@ -360,15 +360,15 @@ vux_preprocess (ELEMENT *ElementPtr)
 				// JMS_GFX: Circumventing overflows by using temp variables
                 // instead of subtracting straight from the POINT sized
                 // ShipImagePtr->current.location.
-				SDWORD dx, dy;
-				SDWORD temp_x =
-						((SDWORD)OtherShipPtr->current.location.x -
+				uqm::SDWORD dx, dy;
+				uqm::SDWORD temp_x =
+						((uqm::SDWORD)OtherShipPtr->current.location.x -
 						(MAXX_ENTRY_DIST >> 1)) +
-						((COUNT)TFB_Random () % MAXX_ENTRY_DIST);
-				SDWORD temp_y =
-						((SDWORD)OtherShipPtr->current.location.y -
+						((uqm::COUNT)TFB_Random () % MAXX_ENTRY_DIST);
+				uqm::SDWORD temp_y =
+						((uqm::SDWORD)OtherShipPtr->current.location.y -
 						(MAXY_ENTRY_DIST >> 1)) +
-						((COUNT)TFB_Random () % MAXY_ENTRY_DIST);
+						((uqm::COUNT)TFB_Random () % MAXY_ENTRY_DIST);
                 
                 temp_x += temp_x > 0 ? SA_MATRA_EXTRA_DIST : -SA_MATRA_EXTRA_DIST;
                 temp_y += temp_y > 0 ? SA_MATRA_EXTRA_DIST : -SA_MATRA_EXTRA_DIST;

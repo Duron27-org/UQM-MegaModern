@@ -71,7 +71,7 @@ OPT_ENABLABLE optUnlockShips;
 OPT_ENABLABLE optHeadStart;
 OPT_ENABLABLE optUnlockUpgrades;
 OPT_ENABLABLE optInfiniteRU;
-DWORD oldRU;
+uqm::DWORD oldRU;
 OPT_ENABLABLE optSkipIntro;
 OPT_ENABLABLE optMainMenuMusic;
 OPT_ENABLABLE optNebulae;
@@ -79,7 +79,7 @@ OPT_ENABLABLE optOrbitingPlanets;
 OPT_ENABLABLE optTexturedPlanets;
 int optDateFormat;
 OPT_ENABLABLE optInfiniteFuel;
-DWORD loadFuel;
+uqm::DWORD loadFuel;
 OPT_ENABLABLE optPartialPickup;
 OPT_ENABLABLE optSubmenu;
 OPT_ENABLABLE optInfiniteCredits;
@@ -130,7 +130,7 @@ bool optMaskOfDeceit;
 OPT_ENABLABLE optAdvancedAutoPilot;
 OPT_ENABLABLE optMeleeToolTips;
 int optMusicResume;
-DWORD optWindowType;
+uqm::DWORD optWindowType;
 bool optNoClassic;
 OPT_ENABLABLE optScatterElements;
 OPT_ENABLABLE optShowUpgrades;
@@ -617,8 +617,8 @@ mountAddonDir (uio_Repository *repository, uio_MountHandle *contentMountHandle,
 bool
 isAddonAvailable (const char *addon_name)
 {
-	COUNT i;
-	DWORD name_hash = crc32b (addon_name);
+	uqm::COUNT i;
+	uqm::DWORD name_hash = crc32b (addon_name);
 
 	if (!name_hash)
 		return false;
@@ -667,12 +667,12 @@ mountBaseZip (uio_DirHandle *dirHandle, const char *mountPoint,
 	static uio_AutoMount *autoMount[] = { NULL };
 	uio_DirList *dirList;
 	const char *pattern = "\\.([zZ][iI][pP]|[uU][qQ][mM])$";
-	const DWORD name_hash = crc32b (BASE_CONTENT_NAME);
+	const uqm::DWORD name_hash = crc32b (BASE_CONTENT_NAME);
 
 	dirList = uio_getDirList (dirHandle, "", pattern, match_MATCH_REGEX);
 	if (dirList != NULL)
 	{
-		DWORD names_hash = 0;
+		uqm::DWORD names_hash = 0;
 		int i;
 		
 		for (i = 0; i < dirList->numNames; i++)

@@ -47,13 +47,13 @@ extern VIDEO_REF LoadVideoFile (const char *pStr);
 extern bool DestroyVideo (VIDEO_REF VidRef);
 extern VIDEO_TYPE VidPlay (VIDEO_REF VidRef);
 extern VIDEO_TYPE VidPlayEx (VIDEO_REF VidRef, MUSIC_REF AudRef,
-		MUSIC_REF SpeechRef, DWORD LoopFrame);
+		MUSIC_REF SpeechRef, uqm::DWORD LoopFrame);
 #define VID_NO_LOOP (0U-1)
 extern void VidStop (void);
 extern VIDEO_REF VidPlaying (void);
 extern bool VidProcessFrame (void);
-extern DWORD VidGetPosition (void);  // position in milliseconds
-extern bool VidSeek (DWORD pos); // position in milliseconds
+extern uqm::DWORD VidGetPosition (void);  // position in milliseconds
+extern bool VidSeek (uqm::DWORD pos); // position in milliseconds
 
 extern LEGACY_VIDEO LoadLegacyVideoInstance (RESOURCE res);
 extern bool DestroyLegacyVideo (LEGACY_VIDEO vid);

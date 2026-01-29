@@ -37,13 +37,13 @@ static bool GenerateMelnorme_generateMoons (SOLARSYS_STATE *solarSys,
 	PLANET_DESC *planet);
 static bool GenerateMelnorme_generateOrbital(SOLARSYS_STATE *solarSys,
 	PLANET_DESC *world);
-static COUNT GenerateMelnorme_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
+static uqm::COUNT GenerateMelnorme_generateEnergy (const SOLARSYS_STATE *,
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
 static bool GenerateMelnorme_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, COUNT whichNode);
+		PLANET_DESC *world, uqm::COUNT whichNode);
 
-static DWORD GetMelnormeRef (void);
-static void SetMelnormeRef (DWORD Ref);
+static uqm::DWORD GetMelnormeRef (void);
+static void SetMelnormeRef (uqm::DWORD Ref);
 
 
 const GenerateFunctions generateMelnormeFunctions = {
@@ -137,7 +137,7 @@ GenerateMelnorme_generateMoons (SOLARSYS_STATE *solarSys,
 	if (EXTENDED && CurStarDescPtr->Index == MELNORME1_DEFINED
 		&& matchWorld (solarSys, planet, MATCH_PBYTE, MATCH_PLANET))
 	{
-		BYTE MoonByte = solarSys->SunDesc[0].MoonByte;
+		uqm::BYTE MoonByte = solarSys->SunDesc[0].MoonByte;
 
 		solarSys->MoonDesc[MoonByte].data_index = PRECURSOR_STARBASE;
 	}
@@ -184,9 +184,9 @@ GenerateMelnorme_generateOrbital (SOLARSYS_STATE *solarSys,
 	return true;
 }
 
-static COUNT
+static uqm::COUNT
 GenerateMelnorme_generateEnergy (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *info)
 {
 	if (EXTENDED && CurStarDescPtr->Index == MELNORME7_DEFINED
 			&& matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
@@ -200,7 +200,7 @@ GenerateMelnorme_generateEnergy (const SOLARSYS_STATE *solarSys,
 
 static bool
 GenerateMelnorme_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, COUNT whichNode)
+		PLANET_DESC *world, uqm::COUNT whichNode)
 {
 	if (EXTENDED && CurStarDescPtr->Index == MELNORME7_DEFINED &&
 			matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
@@ -236,7 +236,7 @@ SelectMelnormeRefVar (void)
 	}
 }
 
-static DWORD
+static uqm::DWORD
 GetMelnormeRef (void)
 {
 	char *RefVar = SelectMelnormeRefVar ();
@@ -251,7 +251,7 @@ GetMelnormeRef (void)
 }
 
 static void
-SetMelnormeRef (DWORD Ref)
+SetMelnormeRef (uqm::DWORD Ref)
 {
 	char *RefVar = SelectMelnormeRefVar ();
 

@@ -138,7 +138,7 @@ ExitConversation (RESPONSE_REF R)
 		else
 		{
 			NPCPhrase (INIT_SHIP_GIFT);
-			AlienTalkSegue ((COUNT)~0);
+			AlienTalkSegue ((uqm::COUNT)~0);
 		    if (AddEscortShips (PKUNK_SHIP, DIF_CASE (4, 4, 2)))
 				PrepareShip (PKUNK_SHIP);
 		}
@@ -176,7 +176,7 @@ ExitConversation (RESPONSE_REF R)
 		NPCPhrase (GOODBYE_MIGRATION);
 	else
 	{
-		BYTE ReasonMask;
+		uqm::BYTE ReasonMask;
 
 		ReasonMask = GET_GAME_STATE (PKUNK_REASONS);
 		if (PLAYER_SAID (R, good_reason_1))
@@ -280,7 +280,7 @@ DiscussConquer (RESPONSE_REF R)
 	if (PHRASE_ENABLED (conquer_because_1))
 	{
 #if 0
-		CHAR_T buf[ALLIANCE_NAME_BUFSIZE];
+		uqm::CHAR_T buf[ALLIANCE_NAME_BUFSIZE];
 
 		GetAllianceName (buf, name_1);
 		construct_response (
@@ -327,7 +327,7 @@ OfferAlliance (RESPONSE_REF R)
 static void
 AboutPkunk (RESPONSE_REF R)
 {
-	BYTE InfoLeft;
+	uqm::BYTE InfoLeft;
 
 	InfoLeft = false;
 	if (PLAYER_SAID (R, what_about_you))
@@ -399,7 +399,7 @@ AboutPkunk (RESPONSE_REF R)
 static void
 AboutIlwrath (RESPONSE_REF R)
 {
-	BYTE InfoLeft;
+	uqm::BYTE InfoLeft;
 
 	InfoLeft = false;
 	if (PLAYER_SAID (R, what_about_ilwrath))
@@ -460,7 +460,7 @@ AboutIlwrath (RESPONSE_REF R)
 static void
 PkunkHome (RESPONSE_REF R)
 {
-	BYTE NumVisits;
+	uqm::BYTE NumVisits;
 
 	if (PLAYER_SAID (R, no_conquest))
 		NPCPhrase (GOOD_IDEA);
@@ -622,7 +622,7 @@ PkunkHome (RESPONSE_REF R)
 static void
 PkunkFriendlySpace (RESPONSE_REF R)
 {
-	BYTE NumVisits;
+	uqm::BYTE NumVisits;
 
 	if (PLAYER_SAID (R, whats_up_space))
 	{
@@ -738,7 +738,7 @@ PkunkFriendlySpace (RESPONSE_REF R)
 static void
 PkunkNeutralSpace (RESPONSE_REF R)
 {
-	BYTE NumVisits;
+	uqm::BYTE NumVisits;
 
 	if (PLAYER_SAID (R, form_alliance))
 	{
@@ -802,7 +802,7 @@ PkunkNeutralSpace (RESPONSE_REF R)
 static void
 PkunkMigrate (RESPONSE_REF R)
 {
-	BYTE ReasonMask;
+	uqm::BYTE ReasonMask;
 	(void) R;  // ignored
 
 	ReasonMask = GET_GAME_STATE (PKUNK_REASONS);
@@ -820,9 +820,9 @@ PkunkMigrate (RESPONSE_REF R)
 static void
 Intro (void)
 {
-	BYTE NumVisits, Manner;
+	uqm::BYTE NumVisits, Manner;
 
-	if (LOBYTE (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
+	if (lowByte (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
 	{
 		NPCPhrase (OUT_TAKES);
 
@@ -1069,7 +1069,7 @@ Intro (void)
 }
 
 // Called after combat or communications
-static COUNT
+static uqm::COUNT
 uninit_pkunk (void)
 {
 	luaUqm_comm_uninit ();
@@ -1079,7 +1079,7 @@ uninit_pkunk (void)
 static void
 post_pkunk_enc (void)
 {
-	BYTE Manner;
+	uqm::BYTE Manner;
 
 	if (getSegue () == Segue_hostile
 			&& (Manner = GET_GAME_STATE (PKUNK_MANNER)) != 2)
@@ -1111,7 +1111,7 @@ init_pkunk_comm (void)
 	pkunk_desc.AlienTextWidth = SIS_TEXT_WIDTH - RES_SCALE (16);
 
 	if (GET_GAME_STATE (PKUNK_MANNER) == 3
-			|| LOBYTE (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
+			|| lowByte (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
 	{
 		// Enter communications immediately.
 		setSegue (Segue_peace);

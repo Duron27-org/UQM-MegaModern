@@ -110,7 +110,7 @@ UninitMenuMusic (void)
 void
 DrawToolTips (MENU_STATE *pMS, int answer)
 {
-	COUNT i;
+	uqm::COUNT i;
 	TEXT t;
 	stringbank *bank = StringBank_Create ();
 	const char *lines[30];
@@ -143,7 +143,7 @@ DrawToolTips (MENU_STATE *pMS, int answer)
 	{
 		t.pStr = lines[i];
 		t.align = ALIGN_CENTER;
-		t.CharCount = (COUNT)~0;
+		t.CharCount = (uqm::COUNT)~0;
 		font_DrawText (&t);
 		t.baseline.y += RES_SCALE (8);
 	}
@@ -152,12 +152,12 @@ DrawToolTips (MENU_STATE *pMS, int answer)
 }
 
 static void
-DrawDiffChooser (MENU_STATE *pMS, BYTE answer, bool confirm)
+DrawDiffChooser (MENU_STATE *pMS, uqm::BYTE answer, bool confirm)
 {
 	STAMP s;
 	FONT oldFont;
 	TEXT t;
-	COUNT i;
+	uqm::COUNT i;
 
 	s.origin = MAKE_POINT (CHOOSER_X, CHOOSER_Y);
 	s.frame = SetRelFrameIndex (pMS->CurFrame, 2);
@@ -175,7 +175,7 @@ DrawDiffChooser (MENU_STATE *pMS, BYTE answer, bool confirm)
 	{
 		t.pStr = GAME_STRING (MAINMENU_STRING_BASE + 56
 				+ (!i ? 1 : (i > 1 ? 2 : 0)));
-		t.CharCount = (COUNT)utf8StringCount (t.pStr);
+		t.CharCount = (uqm::COUNT)utf8StringCount (t.pStr);
 
 		SetContextForeGroundColor (
 				i == answer ?
@@ -200,7 +200,7 @@ DoDiffChooser (MENU_STATE *pMS)
 	CONTEXT oldContext;
 	bool response = false;
 	bool done = false;
-	BYTE a = 1;
+	uqm::BYTE a = 1;
 
 	InactTimeOut = (optMainMenuMusic ? 60 : 20) * ONE_SECOND;
 	LastInputTime = GetTimeCounter ();
@@ -241,7 +241,7 @@ DoDiffChooser (MENU_STATE *pMS)
 				PulsedInputState.menu[KEY_MENU_LEFT] ||
 				PulsedInputState.menu[KEY_MENU_RIGHT])
 		{
-			BYTE NewState;
+			uqm::BYTE NewState;
 
 			NewState = a;
 			if (PulsedInputState.menu[KEY_MENU_UP]
@@ -307,9 +307,9 @@ static void
 InitPulseText (void)
 {
 	FRAME frame, OldFrame;
-	SIZE leading;
+	uqm::SIZE leading;
 	TEXT t;
-	COUNT i;
+	uqm::COUNT i;
 
 	if (TextCache[0] != NULL)
 		return;
@@ -322,7 +322,7 @@ InitPulseText (void)
 	t.baseline.x = MAIN_TEXT_X;
 	t.baseline.y = MAIN_TEXT_Y;
 	t.align = ALIGN_CENTER;
-	t.CharCount = (COUNT)~0;
+	t.CharCount = (uqm::COUNT)~0;
 
 	for (i = START_NEW_GAME; i < NUM_MENU_ELEMENTS; i++)
 	{
@@ -352,9 +352,9 @@ DrawRestartMenuGraphic (MENU_STATE *pMS)
 	RECT r;
 	STAMP s;
 	TEXT t;
-	CHAR_T buf[64];
-	COUNT i;
-	SIZE leading;
+	uqm::CHAR_T buf[64];
+	uqm::COUNT i;
+	uqm::SIZE leading;
 
 	s.frame = pMS->CurFrame;
 	GetFrameRect (s.frame, &r);
@@ -378,7 +378,7 @@ DrawRestartMenuGraphic (MENU_STATE *pMS)
 	t.baseline.x = MAIN_TEXT_X;
 	t.baseline.y = MAIN_TEXT_Y;
 	t.align = ALIGN_CENTER;
-	t.CharCount = (COUNT)~0;
+	t.CharCount = (uqm::COUNT)~0;
 
 	SetContextForeGroundColor (MAIN_MENU_TEXT_COLOR);
 
@@ -394,7 +394,7 @@ DrawRestartMenuGraphic (MENU_STATE *pMS)
 	SetContextForeGroundColor (WHITE_COLOR);
 	snprintf (buf, sizeof (buf), "v%d.%d.%d %s",
 			UQM_MAJOR_VERSION, UQM_MINOR_VERSION, UQM_PATCH_VERSION,
-			chooseIfHd (UQM_EXTRA_VERSION, "HD " UQM_EXTRA_VERSION));
+			chooseIfHd<const char*>(UQM_EXTRA_VERSION, "HD " UQM_EXTRA_VERSION));
 	t.pStr = buf;
 	t.baseline.x = SCREEN_WIDTH - RES_SCALE (2);
 	t.baseline.y = SCREEN_HEIGHT - RES_SCALE (2);
@@ -417,7 +417,7 @@ DrawRestartMenuGraphic (MENU_STATE *pMS)
 }
 
 static void
-DrawRestartMenu (MENU_STATE *pMS, BYTE NewState, FRAME f)
+DrawRestartMenu (MENU_STATE *pMS, uqm::BYTE NewState, FRAME f)
 {
 	POINT origin;
 	origin.x = 0;
@@ -594,7 +594,7 @@ DoRestart (MENU_STATE *pMS)
 	else if (PulsedInputState.menu[KEY_MENU_UP] ||
 			PulsedInputState.menu[KEY_MENU_DOWN])
 	{
-		BYTE NewState;
+		uqm::BYTE NewState;
 
 		NewState = pMS->CurState;
 		if (PulsedInputState.menu[KEY_MENU_UP])
@@ -661,7 +661,7 @@ static bool
 RestartMenu (MENU_STATE *pMS)
 {
 	TimeCount TimeOut;
-	COUNT i;
+	uqm::COUNT i;
 
 	ReinitQueue (&race_q[0]);
 	ReinitQueue (&race_q[1]);
@@ -669,7 +669,7 @@ RestartMenu (MENU_STATE *pMS)
 	SetContext (ScreenContext);
 
 	GLOBAL (CurrentActivity) |= CHECK_ABORT;
-	if (GLOBAL_SIS (CrewEnlisted) == (COUNT)~0
+	if (GLOBAL_SIS (CrewEnlisted) == (uqm::COUNT)~0
 			&& GET_GAME_STATE (UTWIG_BOMB_ON_SHIP)
 			&& !GET_GAME_STATE (UTWIG_BOMB)
 			&& DeathBySuicide)
@@ -698,7 +698,7 @@ RestartMenu (MENU_STATE *pMS)
 	{
 		TimeOut = ONE_SECOND / 2;
 
-		if (GLOBAL_SIS (CrewEnlisted) == (COUNT)~0)
+		if (GLOBAL_SIS (CrewEnlisted) == (uqm::COUNT)~0)
 		{
 			GLOBAL (CurrentActivity) = IN_ENCOUNTER;
 
@@ -716,7 +716,7 @@ RestartMenu (MENU_STATE *pMS)
 			}
 		}
 
-		if (LOBYTE (LastActivity) == WON_LAST_BATTLE)
+		if (lowByte (LastActivity) == WON_LAST_BATTLE)
 		{
 			GLOBAL (CurrentActivity) = WON_LAST_BATTLE;
 			Victory ();
@@ -777,7 +777,7 @@ RestartMenu (MENU_STATE *pMS)
 
 	SeedRandomNumbers ();
 
-	return (LOBYTE (GLOBAL (CurrentActivity)) != SUPER_MELEE);
+	return (lowByte (GLOBAL (CurrentActivity)) != SUPER_MELEE);
 }
 
 static bool
@@ -793,7 +793,7 @@ TryStartGame (void)
 
 	while (!RestartMenu (&MenuState))
 	{	// spin until a game is started or loaded
-		if (LOBYTE (GLOBAL (CurrentActivity)) == SUPER_MELEE &&
+		if (lowByte (GLOBAL (CurrentActivity)) == SUPER_MELEE &&
 				!(GLOBAL (CurrentActivity) & CHECK_ABORT))
 		{
 			FreeGameData ();
@@ -865,7 +865,7 @@ StartGame (void)
 		// While the starseed init code should always force a
 		// reset of the starmap_array, we will do it here because
 		// paranoia is its own reward.
-		COUNT i;
+		uqm::COUNT i;
 #ifdef DEBUG_STARSEED
 		fprintf(stderr, "Initializing star_array, just in case...\n");
 #endif

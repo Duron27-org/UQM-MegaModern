@@ -60,8 +60,8 @@ typedef struct tfb_char
 	EXTENT disp;
 		// Display extent
 	HOT_SPOT HotSpot;
-	BYTE* data;
-	DWORD pitch;
+	uqm::BYTE* data;
+	uqm::DWORD pitch;
 		// Pitch is for storing all chars of a page
 		// in one rectangular pixel matrix
 } TFB_Char;
@@ -71,15 +71,15 @@ typedef struct tfb_pixelformat
 {
 	int BitsPerPixel;
 	int BytesPerPixel;
-	DWORD Rmask, Gmask, Bmask, Amask;
-	DWORD Rshift, Gshift, Bshift, Ashift;
-	DWORD Rloss, Gloss, Bloss, Aloss;
+	uqm::DWORD Rmask, Gmask, Bmask, Amask;
+	uqm::DWORD Rshift, Gshift, Bshift, Ashift;
+	uqm::DWORD Rloss, Gloss, Bloss, Aloss;
 } TFB_PixelFormat;
 
 // Drawing commands
 
 void TFB_DrawScreen_Line (int x1, int y1, int x2, int y2, Color color,
-		DrawMode, SCREEN dest, BYTE thickness);
+		DrawMode, SCREEN dest, uqm::BYTE thickness);
 void TFB_DrawScreen_Rect (RECT *rect, Color, DrawMode, SCREEN dest);
 void TFB_DrawScreen_Image (TFB_Image *img, int x, int y, int scale,
 		int scaleMode, TFB_ColorMap *, DrawMode, SCREEN dest);
@@ -111,7 +111,7 @@ void TFB_DrawImage_CopyRect (TFB_Image *source, const RECT *srcRect,
 		TFB_Image *target, POINT dstPt);
 
 void TFB_DrawImage_Line (int x1, int y1, int x2, int y2, Color color,
-		DrawMode, TFB_Image *target, BYTE thickness);
+		DrawMode, TFB_Image *target, uqm::BYTE thickness);
 void TFB_DrawImage_Rect (RECT *rect, Color, DrawMode, TFB_Image *target);
 void TFB_DrawImage_Image (TFB_Image *img, int x, int y, int scale,
 		int scaleMode, TFB_ColorMap *, DrawMode, TFB_Image *target);
@@ -150,7 +150,7 @@ void TFB_DrawCanvas_SetClipRect (TFB_Canvas canvas, const RECT *clipRect);
 void TFB_DrawCanvas_Delete (TFB_Canvas canvas);
 
 void TFB_DrawCanvas_Line (int x1, int y1, int x2, int y2, Color color,
-		DrawMode, TFB_Canvas target, BYTE thickness);
+		DrawMode, TFB_Canvas target, uqm::BYTE thickness);
 void TFB_DrawCanvas_Rect (RECT *rect, Color, DrawMode, TFB_Canvas target);
 void TFB_DrawCanvas_Image (TFB_Image *img, int x, int y, int scale,
 		int scaleMode, TFB_ColorMap *, DrawMode, TFB_Canvas target);
@@ -162,7 +162,7 @@ void TFB_DrawCanvas_CopyRect (TFB_Canvas source, const RECT *srcRect,
 		TFB_Canvas target, POINT dstPt);
 void TFB_DrawCanvas_MaskImage (TFB_Image *img, DrawMode mode, TFB_Canvas target, Color *fill);
 
-bool TFB_DrawCanvas_GetFontCharData (TFB_Canvas canvas, BYTE *outData,
+bool TFB_DrawCanvas_GetFontCharData (TFB_Canvas canvas, uqm::BYTE *outData,
 		unsigned dataPitch);
 Color *TFB_DrawCanvas_ExtractPalette (TFB_Canvas canvas);
 void TFB_DrawCanvas_SetPalette (TFB_Canvas target, Color palette[256]);
@@ -188,9 +188,9 @@ bool TFB_DrawCanvas_GetPixelColors (TFB_Canvas, Color *pixels,
 		int width, int height);
 bool TFB_DrawCanvas_SetPixelColors (TFB_Canvas, const Color *pixels,
 		int width, int height);
-bool TFB_DrawCanvas_GetPixelIndexes (TFB_Canvas, BYTE *data,
+bool TFB_DrawCanvas_GetPixelIndexes (TFB_Canvas, uqm::BYTE *data,
 		int width, int height);
-bool TFB_DrawCanvas_SetPixelIndexes (TFB_Canvas, const BYTE *data,
+bool TFB_DrawCanvas_SetPixelIndexes (TFB_Canvas, const uqm::BYTE *data,
 		int width, int height);
 
 const char *TFB_DrawCanvas_GetError (void);

@@ -198,7 +198,7 @@ enum
 	MEDIUM,
 	HEAVY
 };
-#define NOTHING (BYTE)(~0)
+#define NOTHING (uqm::BYTE)(~0)
 
 #define MINERAL_DEPOSIT(qn,ql) MAKE_BYTE (qn, ql)
 #define DEPOSIT_QUANTITY(md) LONIBBLE (md)
@@ -206,7 +206,7 @@ enum
 
 #define MAX_ELEMENT_UNITS 0xF
 
-extern const BYTE *Elements;
+extern const uqm::BYTE *Elements;
 
 #if 0 //defined(__cplusplus)
 }

@@ -209,7 +209,7 @@ static void Rebels (RESPONSE_REF R);
 static void
 RebelInfo (RESPONSE_REF R)
 {
-	BYTE InfoLeft;
+	uqm::BYTE InfoLeft;
 
 	InfoLeft = false;
 	if (PLAYER_SAID (R, give_info_rebels))
@@ -282,7 +282,7 @@ RebelInfo (RESPONSE_REF R)
 static void
 Rebels (RESPONSE_REF R)
 {
-	COUNT NumVisits;
+	uqm::COUNT NumVisits;
 
 	if (PLAYER_SAID (R, how_goes_revolution))
 	{
@@ -324,7 +324,7 @@ Rebels (RESPONSE_REF R)
 				NPCPhrase (HAVE_ALL_SHIPS);
 			}
 
-			AlienTalkSegue ((COUNT)~0);
+			AlienTalkSegue ((uqm::COUNT)~0);
 			AddEscortShips (YEHAT_SHIP, NumVisits);
 			PrepareShip (YEHAT_SHIP);
 		}
@@ -361,15 +361,15 @@ Rebels (RESPONSE_REF R)
 static void
 Intro (void)
 {
-	BYTE NumVisits;
+	uqm::BYTE NumVisits;
 
 	setSegue (Segue_peace);
-	if (LOBYTE (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE)
+	if (lowByte (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE)
 	{
 		NPCPhrase (YEHAT_CAVALRY);
-		AlienTalkSegue ((COUNT)~0);
+		AlienTalkSegue ((uqm::COUNT)~0);
 
-		NumVisits = (BYTE) EscortFeasibilityStudy (YEHAT_REBEL_SHIP);
+		NumVisits = (uqm::BYTE) EscortFeasibilityStudy (YEHAT_REBEL_SHIP);
 		if (NumVisits > 8)
 			NumVisits = DIF_CASE(8, 8, 4);
 		AddEscortShips (YEHAT_REBEL_SHIP, NumVisits - (NumVisits >> 1));
@@ -400,7 +400,7 @@ Intro (void)
 	}
 }
 
-static COUNT
+static uqm::COUNT
 uninit_yehat (void)
 {
 	luaUqm_comm_uninit();

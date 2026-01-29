@@ -20,6 +20,7 @@
 
 #include "network.h"
 
+#include "libs/compiler.h"
 #include "libs/misc.h"
 #include "libs/log.h"
 
@@ -42,17 +43,17 @@ Network_init(void) {
 
 #ifdef DEBUG
 	log_add(log_Debug, "Winsock version %d.%d found: \"%s\".",
-			LOBYTE(data.wHighVersion), HIBYTE(data.wHighVersion),
+			lowByte(data.wHighVersion), highByte(data.wHighVersion),
 			data.szDescription);
 	log_add(log_Debug, "Requesting to use Winsock version %d.%d, got "
 			"version %d.%d.",
-			LOBYTE(requestVersion), HIBYTE(requestVersion),
-			LOBYTE(data.wVersion), HIBYTE(data.wVersion));
+			lowByte(requestVersion), highByte(requestVersion),
+			lowByte(data.wVersion), highByte(data.wVersion));
 #endif
 	if (data.wVersion != requestVersion) {
 		log_add(log_Fatal, "Winsock version %d.%d presented, requested "
-				"%d.%d.", LOBYTE(data.wVersion), HIBYTE(data.wVersion),
-				LOBYTE(requestVersion), HIBYTE(requestVersion));
+				"%d.%d.", lowByte(data.wVersion), highByte(data.wVersion),
+				lowByte(requestVersion), highByte(requestVersion));
 		(void) WSACleanup();
 				// Ignoring errors; we're going to abort anyhow.
 		explode();

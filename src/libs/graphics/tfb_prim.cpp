@@ -50,7 +50,7 @@ TFB_Prim_Rect (RECT *r, Color color, DrawMode mode, POINT ctxOrigin, bool scaled
 {
 	RECT arm;
 	int gscale;
-	BYTE scale = !scaled ? 1 : 4;
+	uqm::BYTE scale = !scaled ? 1 : 4;
 
 	// XXX: Rect prim scaling is currently unused
 	//   We scale the rect size just to be consistent with stamp prim,
@@ -106,7 +106,7 @@ TFB_Prim_FillRect (RECT *r, Color color, DrawMode mode, POINT ctxOrigin)
 
 void
 TFB_Prim_Line (LINE *line, Color color, DrawMode mode, POINT ctxOrigin,
-		BYTE thickness)
+		uqm::BYTE thickness)
 {
 	int x1, y1, x2, y2;
 

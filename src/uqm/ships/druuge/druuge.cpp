@@ -135,8 +135,8 @@ cannon_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 			&& ElementPtr1->crew_level
 			&& !GRAVITY_MASS (ElementPtr1->mass_points + 1))
 	{
-		COUNT angle;
-		SIZE cur_delta_x, cur_delta_y;
+		uqm::COUNT angle;
+		uqm::SIZE cur_delta_x, cur_delta_y;
 		STARSHIP *StarShipPtr;
 
 		GetElementStarShip (ElementPtr1, &StarShipPtr);
@@ -163,7 +163,7 @@ cannon_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 	}
 }
 
-static COUNT
+static uqm::COUNT
 initialize_cannon (ELEMENT *ShipPtr, HELEMENT CannonArray[])
 {
 	STARSHIP *StarShipPtr;
@@ -200,9 +200,9 @@ initialize_cannon (ELEMENT *ShipPtr, HELEMENT CannonArray[])
 
 static void
 druuge_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
-		COUNT ConcernCounter)
+		uqm::COUNT ConcernCounter)
 {
-	UWORD ship_flags = 0;
+	uqm::UWORD ship_flags = 0;
 	STARSHIP *StarShipPtr;
 	STARSHIP *EnemyStarShipPtr = NULL;
 	EVALUATE_DESC *lpEvalDesc;
@@ -262,8 +262,8 @@ druuge_postprocess (ELEMENT *ElementPtr)
 			&& StarShipPtr->weapon_counter ==
 			StarShipPtr->RaceDescPtr->characteristics.weapon_wait)
 	{
-		COUNT angle;
-		SDWORD cur_delta_x, cur_delta_y;
+		uqm::COUNT angle;
+		uqm::SDWORD cur_delta_x, cur_delta_y;
 
 		StarShipPtr->cur_status_flags &= ~SHIP_AT_MAX_SPEED;
 

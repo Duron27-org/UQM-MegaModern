@@ -50,7 +50,7 @@
 		// for EraseRadar()
 
 
-BYTE battle_counter[NUM_SIDES];
+uqm::BYTE battle_counter[NUM_SIDES];
 		// The number of ships still available for battle to each side.
 		// A ship that has warped out is no longer available.
 bool instantVictory;
@@ -67,8 +67,8 @@ BattleFrameCounter battleFrameCount;
 bool
 RunAwayAllowed (void)
 {
-	return ((LOBYTE (GLOBAL (CurrentActivity)) == IN_ENCOUNTER
-			|| LOBYTE (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE)
+	return ((lowByte (GLOBAL (CurrentActivity)) == IN_ENCOUNTER
+			|| lowByte (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE)
 			&& (NOMAD_DIF (OPTVAL_NOM_EASY)
 				|| GET_GAME_STATE (STARBASE_AVAILABLE))
 			&& (DIF_EASY || !GET_GAME_STATE (BOMB_CARRIER)));
@@ -236,11 +236,11 @@ ProcessInput (void)
 }
 
 #if DEMO_MODE || CREATE_JOURNAL
-DWORD BattleSeed;
+uqm::DWORD BattleSeed;
 #endif /* DEMO_MODE */
 
 static MUSIC_REF BattleRef;
-BYTE inHSpace = 0;
+uqm::BYTE inHSpace = 0;
 
 void
 BattleSong (bool DoPlay)
@@ -259,7 +259,7 @@ BattleSong (bool DoPlay)
 		}
 		else
 		{
-			if (LOBYTE (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE)
+			if (lowByte (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE)
 			{
 				BattleRef = LoadMusic (BATTLE_MUSIC_SAMATRA);
 
@@ -289,9 +289,9 @@ FreeBattleSong (void)
 static bool
 DoBattle (BATTLE_STATE *bs)
 {
-	extern UWORD nth_frame;
+	extern uqm::UWORD nth_frame;
 	RECT r;
-	BYTE battle_speed;
+	uqm::BYTE battle_speed;
 
 	SetMenuSounds (MENU_SOUND_NONE, MENU_SOUND_NONE);
 
@@ -361,8 +361,8 @@ DoBattle (BATTLE_STATE *bs)
 		return false;
 	}
 
-	battle_speed = HIBYTE (nth_frame);
-	if (battle_speed == (BYTE)~0)
+	battle_speed = highByte (nth_frame);
+	if (battle_speed == (uqm::BYTE)~0)
 	{	// maximum speed, nothing rendered at all
 		Async_process ();
 		TaskSwitch ();
@@ -384,8 +384,8 @@ DoBattle (BATTLE_STATE *bs)
 }
 
 #ifdef NETPLAY
-COUNT
-GetPlayerOrder (COUNT i)
+uqm::COUNT
+GetPlayerOrder (uqm::COUNT i)
 {
 	// Iff 'myTurn' is set on a connection, the local party will be
 	// processed first.
@@ -403,7 +403,7 @@ GetPlayerOrder (COUNT i)
 
 // Let each player pick his ship.
 static bool
-selectAllShips (SIZE num_ships)
+selectAllShips (uqm::SIZE num_ships)
 {
 	if (num_ships == 1) {
 		// HyperSpace in full game.
@@ -426,10 +426,10 @@ selectAllShips (SIZE num_ships)
 bool
 Battle (BattleFrameCallback *callback)
 {
-	SIZE num_ships;
+	uqm::SIZE num_ships;
 
 #if !(DEMO_MODE || CREATE_JOURNAL)
-	if (LOBYTE (GLOBAL (CurrentActivity)) != SUPER_MELEE) {
+	if (lowByte (GLOBAL (CurrentActivity)) != SUPER_MELEE) {
 		// In Supermelee, the RNG is already initialised.
 		TFB_SeedRandom (GetTimeCounter ());
 	}
@@ -502,7 +502,7 @@ Battle (BattleFrameCallback *callback)
 		DoInput (&bs, false);
 
 AbortBattle:
-		if (LOBYTE (GLOBAL (CurrentActivity)) == SUPER_MELEE)
+		if (lowByte (GLOBAL (CurrentActivity)) == SUPER_MELEE)
 		{
 			if (GLOBAL (CurrentActivity) & CHECK_ABORT)
 			{

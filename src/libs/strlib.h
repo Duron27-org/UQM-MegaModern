@@ -48,14 +48,14 @@ extern bool DestroyStringTable (STRING_TABLE StringTable);
 extern STRING CaptureStringTable (STRING_TABLE StringTable);
 extern STRING_TABLE ReleaseStringTable (STRING String);
 extern STRING_TABLE GetStringTable (STRING String);
-extern COUNT GetStringTableCount (STRING String);
-extern COUNT GetStringTableIndex (STRING String);
-extern STRING SetAbsStringTableIndex (STRING String, COUNT
+extern uqm::COUNT GetStringTableCount (STRING String);
+extern uqm::COUNT GetStringTableIndex (STRING String);
+extern STRING SetAbsStringTableIndex (STRING String, uqm::COUNT
 		StringTableIndex);
-extern STRING SetRelStringTableIndex (STRING String, SIZE
+extern STRING SetRelStringTableIndex (STRING String, uqm::SIZE
 		StringTableOffs);
-extern COUNT GetStringLength (STRING String);
-extern COUNT GetStringLengthBin (STRING String);
+extern uqm::COUNT GetStringLength (STRING String);
+extern uqm::COUNT GetStringLengthBin (STRING String);
 extern STRINGPTR GetStringAddress (STRING String);
 extern STRINGPTR GetStringName (STRING String);
 extern STRINGPTR GetStringSoundClip (STRING String);

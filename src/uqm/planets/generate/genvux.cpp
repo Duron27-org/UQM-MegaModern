@@ -36,14 +36,14 @@
 static bool GenerateVux_generatePlanets (SOLARSYS_STATE *solarSys);
 static bool GenerateVux_generateOrbital (SOLARSYS_STATE *solarSys,
 		PLANET_DESC *world);
-static COUNT GenerateVux_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
-static COUNT GenerateVux_generateLife (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
+static uqm::COUNT GenerateVux_generateEnergy (const SOLARSYS_STATE *,
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
+static uqm::COUNT GenerateVux_generateLife (const SOLARSYS_STATE *,
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
 static bool GenerateVux_pickupEnergy (SOLARSYS_STATE *, PLANET_DESC *world,
-		COUNT whichNode);
+		uqm::COUNT whichNode);
 static bool GenerateVux_pickupLife (SOLARSYS_STATE *, PLANET_DESC *world,
-		COUNT whichNode);
+		uqm::COUNT whichNode);
 
 
 const GenerateFunctions generateVuxFunctions = {
@@ -76,7 +76,7 @@ GenerateVux_generatePlanets (SOLARSYS_STATE *solarSys)
 
 	if (PrimeSeed)
 	{
-		COUNT angle;
+		uqm::COUNT angle;
 
 		if (CurStarDescPtr->Index == MAIDENS_DEFINED)
 		{
@@ -229,9 +229,9 @@ GenerateVux_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 	return true;
 }
 
-static COUNT
+static uqm::COUNT
 GenerateVux_generateEnergy (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *info)
 {
 	if (CurStarDescPtr->Index == MAIDENS_DEFINED
 		&& matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
@@ -263,7 +263,7 @@ GenerateVux_generateEnergy (const SOLARSYS_STATE *solarSys,
 
 static bool
 GenerateVux_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		COUNT whichNode)
+		uqm::COUNT whichNode)
 {
 	if (CurStarDescPtr->Index == MAIDENS_DEFINED
 		&& matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
@@ -293,21 +293,21 @@ GenerateVux_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 
 #define LIFE_BOOL (EXTENDED && GET_GAME_STATE (VUX_BEAST))
 
-static COUNT
+static uqm::COUNT
 GenerateVux_generateLife (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *info)
 {
 	if (CurStarDescPtr->Index == MAIDENS_DEFINED
 		&& matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{
-		static const SBYTE life[] =
+		static const uqm::SBYTE life[] =
 		{
 			 9,  9,  9,  9, /* Carousel Beast */
 			14, 14, 14, 14, /* Amorphous Trandicula */
 			18, 18, 18, 18, /* Penguin Cyclops */
 			-1 /* term */
 		};
-		static const SBYTE lifeEx[] =
+		static const uqm::SBYTE lifeEx[] =
 		{
 			9,  9,  9,  9,  9, /* Carousel Beast */
 			18, 18, 18, 18, 18, /* Penguin Cyclops */
@@ -323,7 +323,7 @@ GenerateVux_generateLife (const SOLARSYS_STATE *solarSys,
 	if (CurStarDescPtr->Index == VUX_BEAST_DEFINED
 		&& matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{
-		static const SBYTE life[] =
+		static const uqm::SBYTE life[] =
 		{
 			ZEX_BEAUTY, /* VUX Beast */
 					// Must be the first node, see pickupLife() below
@@ -340,7 +340,7 @@ GenerateVux_generateLife (const SOLARSYS_STATE *solarSys,
 
 static bool
 GenerateVux_pickupLife (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		COUNT whichNode)
+		uqm::COUNT whichNode)
 {
 	if (CurStarDescPtr->Index == VUX_BEAST_DEFINED
 		&& matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))

@@ -32,7 +32,7 @@
 #include <unistd.h>
 #endif
 
-static BYTE LastEncGroup;
+static uqm::BYTE LastEncGroup;
 		// Last encountered group, saved into state files
 
 void
@@ -62,7 +62,7 @@ WriteGroupHeader (GAME_STATE_FILE *fp, const GROUP_HEADER *pGH)
 void
 ReadShipFragment (GAME_STATE_FILE *fp, SHIP_FRAGMENT *FragPtr)
 {
-	BYTE tmpb;
+	uqm::BYTE tmpb;
 
 	sread_16 (fp, NULL); /* unused: was which_side */
 	sread_8  (fp, &FragPtr->captains_name_index);
@@ -70,7 +70,7 @@ ReadShipFragment (GAME_STATE_FILE *fp, SHIP_FRAGMENT *FragPtr)
 	sread_16 (fp, NULL); /* unused: was ship_flags */
 	sread_8  (fp, &FragPtr->race_id);
 	sread_8  (fp, &FragPtr->index);
-	// XXX: reading crew as BYTE to maintain savegame compatibility
+	// XXX: reading crew as uqm::BYTE to maintain savegame compatibility
 	sread_8  (fp, &tmpb);
 	FragPtr->crew_level = tmpb;
 	sread_8  (fp, &tmpb);
@@ -90,7 +90,7 @@ WriteShipFragment (GAME_STATE_FILE *fp, const SHIP_FRAGMENT *FragPtr)
 	swrite_16 (fp, 0); /* unused: was ship_flags */
 	swrite_8  (fp, FragPtr->race_id);
 	swrite_8  (fp, FragPtr->index);
-	// XXX: writing crew as BYTE to maintain savegame compatibility
+	// XXX: writing crew as uqm::BYTE to maintain savegame compatibility
 	swrite_8  (fp, FragPtr->crew_level);
 	swrite_8  (fp, FragPtr->max_crew);
 	swrite_8  (fp, FragPtr->energy_level);
@@ -102,7 +102,7 @@ WriteShipFragment (GAME_STATE_FILE *fp, const SHIP_FRAGMENT *FragPtr)
 void
 ReadIpGroup (GAME_STATE_FILE *fp, IP_GROUP *GroupPtr)
 {
-	BYTE tmpb;
+	uqm::BYTE tmpb;
 
 	sread_16 (fp, NULL); /* unused; was which_side */
 	sread_8  (fp, NULL); /* unused; was captains_name_index */
@@ -156,7 +156,7 @@ InitGroupInfo (bool FirstTime)
 		GROUP_HEADER GH;
 
 		memset (&GH, 0, sizeof (GH));
-		GH.star_index = (COUNT)~0;
+		GH.star_index = (uqm::COUNT)~0;
 		WriteGroupHeader (fp, &GH);
 		CloseStateFile (fp);
 	}
@@ -179,7 +179,7 @@ UninitGroupInfo (void)
 }
 
 HIPGROUP
-BuildGroup (QUEUE *pDstQueue, BYTE race_id)
+BuildGroup (QUEUE *pDstQueue, uqm::BYTE race_id)
 {
 	HFLEETINFO hFleet;
 	FLEET_INFO *TemplatePtr;
@@ -211,14 +211,14 @@ BuildGroup (QUEUE *pDstQueue, BYTE race_id)
 void
 BuildGroups (void)
 {
-	BYTE Index;
-	BYTE BestIndex = 0;
-	COUNT BestPercent = 0;
+	uqm::BYTE Index;
+	uqm::BYTE BestIndex = 0;
+	uqm::COUNT BestPercent = 0;
 	POINT universe;
 	HFLEETINFO hFleet, hNextFleet;
 
-	BYTE HomeWorld[] = { HOMEWORLD_LOC };
-	BYTE EncounterPercent[] = { RACE_INTERPLANETARY_PERCENT };
+	uqm::BYTE HomeWorld[] = { HOMEWORLD_LOC };
+	uqm::BYTE EncounterPercent[] = { RACE_INTERPLANETARY_PERCENT };
 
 	EncounterPercent[SLYLANDRO_SHIP] *= GET_GAME_STATE (SLYLANDRO_MULTIPLIER);
 
@@ -244,7 +244,7 @@ BuildGroups (void)
 	for (hFleet = GetHeadLink (&GLOBAL (avail_race_q)), Index = 0;
 			hFleet; hFleet = hNextFleet, ++Index)
 	{
-		COUNT i, encounter_radius;
+		uqm::COUNT i, encounter_radius;
 		FLEET_INFO *FleetPtr;
 
 		FleetPtr = LockFleetInfo (&GLOBAL (avail_race_q), hFleet);
@@ -253,9 +253,9 @@ BuildGroups (void)
 		if ((encounter_radius = FleetPtr->actual_strength)
 				&& (i = EncounterPercent[Index]))
 		{
-			SIZE dx, dy;
-			DWORD d_squared;
-			BYTE race_enc;
+			uqm::SIZE dx, dy;
+			uqm::DWORD d_squared;
+			uqm::BYTE race_enc;
 
 			race_enc = HomeWorld[Index];
 			if (race_enc && CurStarDescPtr->Index == race_enc)
@@ -282,19 +282,19 @@ BuildGroups (void)
 			dy = universe.y - FleetPtr->loc.y;
 			if (dy < 0)
 				dy = -dy;
-			if ((COUNT)dx < encounter_radius
-					&& (COUNT)dy < encounter_radius
-					&& (d_squared = (DWORD)dx * dx + (DWORD)dy * dy) <
-					(DWORD)encounter_radius * encounter_radius)
+			if ((uqm::COUNT)dx < encounter_radius
+					&& (uqm::COUNT)dy < encounter_radius
+					&& (d_squared = (uqm::DWORD)dx * dx + (uqm::DWORD)dy * dy) <
+					(uqm::DWORD)encounter_radius * encounter_radius)
 			{
-				DWORD rand_val;
+				uqm::DWORD rand_val;
 
 				// EncounterPercent is only used in practice for the Slylandro
 				// Probes, for the rest of races the chance of encounter is
 				// calced directly below from the distance to the Homeworld
 				if (FleetPtr->actual_strength != INFINITE_RADIUS)
 				{
-					i = 70 - (COUNT)((DWORD)square_root (d_squared)
+					i = 70 - (uqm::COUNT)((uqm::DWORD)square_root (d_squared)
 							* 60L / encounter_radius);
 				}
 
@@ -322,14 +322,14 @@ FoundHome:
 
 	if (BestPercent)
 	{
-		BYTE which_group, num_groups;
-		BYTE EncounterMakeup[] =
+		uqm::BYTE which_group, num_groups;
+		uqm::BYTE EncounterMakeup[] =
 		{
 			RACE_ENCOUNTER_MAKEUP
 		};
 
 		which_group = 0;
-		num_groups = ((COUNT)TFB_Random () % (BestPercent >> 1)) + 1;
+		num_groups = ((uqm::COUNT)TFB_Random () % (BestPercent >> 1)) + 1;
 		if (num_groups > MAX_BATTLE_GROUPS)
 			num_groups = MAX_BATTLE_GROUPS;
 		else if (num_groups < 5
@@ -342,7 +342,7 @@ FoundHome:
 					--Index)
 			{
 				if (Index <= LONIBBLE (EncounterMakeup[BestIndex])
-						|| (COUNT)TFB_Random () % 100 < 50)
+						|| (uqm::COUNT)TFB_Random () % 100 < 50)
 					CloneShipFragment ((RACE_ID)BestIndex,
 							&GLOBAL (npc_built_ship_q), 0);
 			}
@@ -360,14 +360,14 @@ findRaceSOI (void)
 {
 	POINT universe = CurStarDescPtr->star_pt;
 	HFLEETINFO hFleet, hNextFleet;
-	BYTE Index;
-	BYTE i = 0, j;
-	BYTE RaceHasMusic[] = { RACE_MUSIC_BOOL };
-	BYTE HomeWorld[] = { HOMEWORLD_LOC };
-	BYTE WhichHomeWorld = NO_ID;
+	uqm::BYTE Index;
+	uqm::BYTE i = 0, j;
+	uqm::BYTE RaceHasMusic[] = { RACE_MUSIC_BOOL };
+	uqm::BYTE HomeWorld[] = { HOMEWORLD_LOC };
+	uqm::BYTE WhichHomeWorld = NO_ID;
 #define MAX_OVERLAP 10
-	BYTE SpeciesArr[MAX_OVERLAP] = { NO_ID };
-	COUNT RadiusArr[MAX_OVERLAP] = { 0 };
+	uqm::BYTE SpeciesArr[MAX_OVERLAP] = { NO_ID };
+	uqm::COUNT RadiusArr[MAX_OVERLAP] = { 0 };
 
 	if (!SpaceMusicOK)
 	{
@@ -407,9 +407,9 @@ findRaceSOI (void)
 
 		if (FleetPtr->actual_strength && RaceHasMusic[Index])
 		{
-			SIZE dx, dy;
-			COUNT encounter_radius;
-			DWORD d_squared;
+			uqm::SIZE dx, dy;
+			uqm::COUNT encounter_radius;
+			uqm::DWORD d_squared;
 
 			if (FleetPtr->actual_strength == INFINITE_RADIUS)
 				encounter_radius = (MAX_X_UNIVERSE + 1) << 1;
@@ -427,10 +427,10 @@ findRaceSOI (void)
 			if (dy < 0)
 				dy = -dy;
 
-			if ((COUNT)dx < encounter_radius
-				&& (COUNT)dy < encounter_radius
-				&& (d_squared = (DWORD)dx * dx + (DWORD)dy * dy)
-				< (DWORD)encounter_radius * encounter_radius)
+			if ((uqm::COUNT)dx < encounter_radius
+				&& (uqm::COUNT)dy < encounter_radius
+				&& (d_squared = (uqm::DWORD)dx * dx + (uqm::DWORD)dy * dy)
+				< (uqm::DWORD)encounter_radius * encounter_radius)
 			{	// Finds the race SOI
 				if (optSpaceMusic == 2 || (optSpaceMusic == 1
 						&& CheckSphereTracking (RaceID)))
@@ -460,7 +460,7 @@ findRaceSOI (void)
 }
 
 static void
-FlushGroupInfo (GROUP_HEADER* pGH, DWORD offset, BYTE which_group,
+FlushGroupInfo (GROUP_HEADER* pGH, uqm::DWORD offset, uqm::BYTE which_group,
 		GAME_STATE_FILE *fp)
 {
 	if (which_group == GROUP_LIST)
@@ -480,8 +480,8 @@ FlushGroupInfo (GROUP_HEADER* pGH, DWORD offset, BYTE which_group,
 		for (hGroup = GetHeadLink (&GLOBAL (ip_group_q));
 				hGroup; hGroup = hNextGroup)
 		{
-			BYTE in_system;
-			BYTE group_id;
+			uqm::BYTE in_system;
+			uqm::BYTE group_id;
 			IP_GROUP *GroupPtr;
 
 			GroupPtr = LockIpGroup (&GLOBAL (ip_group_q), hGroup);
@@ -526,7 +526,7 @@ FlushGroupInfo (GROUP_HEADER* pGH, DWORD offset, BYTE which_group,
 	{
 		/* Write out ip_group_q as group 0 */
 		HIPGROUP hGroup, hNextGroup;
-		BYTE NumGroups = CountLinks (&GLOBAL (ip_group_q));
+		uqm::BYTE NumGroups = CountLinks (&GLOBAL (ip_group_q));
 
 		SeekStateFile (fp, pGH->GroupOffset[0], SEEK_SET);
 		swrite_8 (fp, LastEncGroup);
@@ -561,8 +561,8 @@ FlushGroupInfo (GROUP_HEADER* pGH, DWORD offset, BYTE which_group,
 	{
 		/* Write out npc_built_ship_q as 'which_group' group */
 		HSHIPFRAG hStarShip, hNextShip;
-		BYTE NumShips = CountLinks (&GLOBAL (npc_built_ship_q));
-		BYTE RaceType = 0;
+		uqm::BYTE NumShips = CountLinks (&GLOBAL (npc_built_ship_q));
+		uqm::BYTE RaceType = 0;
 
 		hStarShip = GetHeadLink (&GLOBAL (npc_built_ship_q));
 		if (NumShips > 0)
@@ -595,7 +595,7 @@ FlushGroupInfo (GROUP_HEADER* pGH, DWORD offset, BYTE which_group,
 }
 
 bool
-GetGroupInfo (DWORD offset, BYTE which_group)
+GetGroupInfo (uqm::DWORD offset, uqm::BYTE which_group)
 {
 	GAME_STATE_FILE *fp;
 	GROUP_HEADER GH;
@@ -617,12 +617,12 @@ GetGroupInfo (DWORD offset, BYTE which_group)
 
 	if (which_group == GROUP_INIT_IP)
 	{
-		COUNT month_index, day_index, year_index;
+		uqm::COUNT month_index, day_index, year_index;
 
 		ReinitQueue (&GLOBAL (ip_group_q));
 #ifdef DEBUG_GROUPS
 		log_add (log_Debug, "%u == %u", GH.star_index,
-				(COUNT)(CurStarDescPtr - star_array));
+				(uqm::COUNT)(CurStarDescPtr - star_array));
 #endif /* DEBUG_GROUPS */
 
 		/* Check if the requested groups are valid for this star system
@@ -631,7 +631,7 @@ GetGroupInfo (DWORD offset, BYTE which_group)
 		month_index = GH.month_index;
 		year_index = GH.year_index;
 		if (offset == GROUPS_RANDOM
-				&& (GH.star_index != (COUNT)(CurStarDescPtr - star_array)
+				&& (GH.star_index != (uqm::COUNT)(CurStarDescPtr - star_array)
 				|| !ValidateEvent (ABSOLUTE_EVENT, &month_index, &day_index,
 					&year_index)))
 		{
@@ -646,7 +646,7 @@ GetGroupInfo (DWORD offset, BYTE which_group)
 			/* Erase random groups (out of date) */
 			fp = OpenStateFile (RANDGRPINFO_FILE, "wb");
 			memset (&GH, 0, sizeof (GH));
-			GH.star_index = (COUNT)~0;
+			GH.star_index = (uqm::COUNT)~0;
 			WriteGroupHeader (fp, &GH);
 			CloseStateFile (fp);
 			
@@ -656,10 +656,10 @@ GetGroupInfo (DWORD offset, BYTE which_group)
 		/* Read IP groups into ip_group_q and send them on their missions */
 		for (which_group = 1; which_group <= GH.NumGroups; ++which_group)
 		{
-			BYTE task, group_loc;
-			DWORD rand_val;
-			BYTE RaceType;
-			BYTE NumShips;
+			uqm::BYTE task, group_loc;
+			uqm::DWORD rand_val;
+			uqm::BYTE RaceType;
+			uqm::BYTE NumShips;
 			HIPGROUP hGroup;
 			IP_GROUP *GroupPtr;
 
@@ -678,17 +678,17 @@ GetGroupInfo (DWORD offset, BYTE which_group)
 			GroupPtr->in_system = 1;
 
 			rand_val = TFB_Random ();
-			task = (BYTE)(LOBYTE (LOWORD (rand_val)) % ON_STATION);
+			task = (uqm::BYTE)(lowByte (LOWORD (rand_val)) % ON_STATION);
 			if (task == FLEE)
 				task = ON_STATION;
 			GroupPtr->orbit_pos = NORMALIZE_FACING (
-					LOBYTE (HIWORD (rand_val)));
+					lowByte (HIWORD (rand_val)));
 
 			group_loc = pSolarSysState->SunDesc[0].NumPlanets;
 			if (group_loc == 1 && task == EXPLORE)
 				task = IN_ORBIT;
 			else
-				group_loc = (BYTE)((HIBYTE (LOWORD (rand_val)) % group_loc) + 1);
+				group_loc = (uqm::BYTE)((highByte (LOWORD (rand_val)) % group_loc) + 1);
 			GroupPtr->dest_loc = group_loc;
 			rand_val = TFB_Random ();
 			GroupPtr->loc.x = (LOWORD (rand_val) % 10000) - 5000;
@@ -696,12 +696,12 @@ GetGroupInfo (DWORD offset, BYTE which_group)
 			GroupPtr->group_counter = 0;
 			if (task == EXPLORE)
 			{
-				GroupPtr->group_counter = ((COUNT)TFB_Random () %
+				GroupPtr->group_counter = ((uqm::COUNT)TFB_Random () %
 						MAX_REVOLUTIONS) << FACING_SHIFT;
 			}
 			else if (task == ON_STATION)
 			{
-				COUNT angle;
+				uqm::COUNT angle;
 				POINT org;
 
 				org = planetOuterLocation (group_loc - 1);
@@ -753,8 +753,8 @@ GetGroupInfo (DWORD offset, BYTE which_group)
 
 	if (which_group == GROUP_LIST)
 	{
-		BYTE NumGroups;
-		COUNT ShipsLeftInLEG;
+		uqm::BYTE NumGroups;
+		uqm::COUNT ShipsLeftInLEG;
 
 		// XXX: Hack: First, save the state of last encountered group, if any.
 		//   The assumption here is that we read the group list immediately
@@ -786,8 +786,8 @@ GetGroupInfo (DWORD offset, BYTE which_group)
 
 		while (NumGroups--)
 		{
-			BYTE group_id;
-			BYTE RaceType;
+			uqm::BYTE group_id;
+			uqm::BYTE RaceType;
 			HSHIPFRAG hGroup;
 			IP_GROUP *GroupPtr;
 
@@ -827,7 +827,7 @@ GetGroupInfo (DWORD offset, BYTE which_group)
 	else
 	{
 		/* Read 'which_group' group into npc_built_ship_q */
-		BYTE NumShips;
+		uqm::BYTE NumShips;
 
 		// XXX: Hack: The assumption here is that we only read the makeup
 		//   of a particular group when initializing an encounter, which
@@ -858,7 +858,7 @@ GetGroupInfo (DWORD offset, BYTE which_group)
 
 		while (NumShips--)
 		{
-			BYTE RaceType;
+			uqm::BYTE RaceType;
 			HSHIPFRAG hStarShip;
 			SHIP_FRAGMENT *FragPtr;
 
@@ -877,8 +877,8 @@ GetGroupInfo (DWORD offset, BYTE which_group)
 	}
 }
 
-DWORD
-PutGroupInfo (DWORD offset, BYTE which_group)
+uqm::DWORD
+PutGroupInfo (uqm::DWORD offset, uqm::BYTE which_group)
 {
 	GAME_STATE_FILE *fp;
 	GROUP_HEADER GH;
@@ -896,7 +896,7 @@ PutGroupInfo (DWORD offset, BYTE which_group)
 		offset = LengthStateFile (fp);
 		SeekStateFile (fp, offset, SEEK_SET);
 		memset (&GH, 0, sizeof (GH));
-		GH.star_index = (COUNT)~0;
+		GH.star_index = (uqm::COUNT)~0;
 		WriteGroupHeader (fp, &GH);
 	}
 
@@ -924,15 +924,15 @@ PutGroupInfo (DWORD offset, BYTE which_group)
 	if (GetHeadLink (&GLOBAL (npc_built_ship_q)) || GH.GroupOffset[0] == 0)
 #endif /* NEVER */
 	{
-		COUNT month_index, day_index, year_index;
+		uqm::COUNT month_index, day_index, year_index;
 
 		/* The groups in this system are good for the next 7 days */
 		month_index = 0;
 		day_index = 7;
 		year_index = 0;
 		ValidateEvent (RELATIVE_EVENT, &month_index, &day_index, &year_index);
-		GH.day_index = (BYTE)day_index;
-		GH.month_index = (BYTE)month_index;
+		GH.day_index = (uqm::BYTE)day_index;
+		GH.month_index = (uqm::BYTE)month_index;
 		GH.year_index = year_index;
 	}
 	GH.star_index = CurStarDescPtr - star_array;

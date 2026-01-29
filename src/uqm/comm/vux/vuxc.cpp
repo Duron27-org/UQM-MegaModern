@@ -274,7 +274,7 @@ ZexBeingEatenAlive (void)
 static void
 CombatIsInevitable (RESPONSE_REF R)
 {
-	BYTE NumVisits;
+	uqm::BYTE NumVisits;
 
 	setSegue (Segue_hostile);
 
@@ -287,7 +287,7 @@ CombatIsInevitable (RESPONSE_REF R)
 
 		ZexBeingEatenAlive ();
 
-		AlienTalkSegue ((COUNT)~0);
+		AlienTalkSegue ((uqm::COUNT)~0);
 
 		SET_GAME_STATE (VUX_BEAST_ON_SHIP, 0);
 		SET_GAME_STATE (ZEX_IS_DEAD, 1);
@@ -406,7 +406,7 @@ CombatIsInevitable (RESPONSE_REF R)
 static void
 Menagerie (RESPONSE_REF R)
 {
-	BYTE i, LastStack;
+	uqm::BYTE i, LastStack;
 	RESPONSE_REF pStr[3];
 
 	if (PLAYER_SAID (R, i_have_beast)
@@ -463,7 +463,7 @@ Menagerie (RESPONSE_REF R)
 		pStr[0] = pStr[1] = pStr[2] = 0;
 		if (R == 0)
 		{
-			BYTE NumVisits;
+			uqm::BYTE NumVisits;
 
 			NumVisits = GET_GAME_STATE (ZEX_VISITS);
 			if (GET_GAME_STATE (ZEX_STACK_3) >= 2)
@@ -647,7 +647,7 @@ NormalVux (RESPONSE_REF R)
 	}
 	else if (PLAYER_SAID (R, whats_up_hostile))
 	{
-		BYTE NumVisits;
+		uqm::BYTE NumVisits;
 
 		NumVisits = GET_GAME_STATE (VUX_INFO);
 		switch (NumVisits++)
@@ -766,7 +766,7 @@ Intro (void)
 	if (altResFlags & USE_ALT_FRAME)
 		CommData.AlienAmbientArray[17].AnimFlags &= ~ANIM_DISABLED;
 
-	if (LOBYTE (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
+	if (lowByte (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
 	{
 		NPCPhrase (OUT_TAKES);
 
@@ -780,7 +780,7 @@ Intro (void)
 	}
 	else
 	{
-		BYTE NumVisits;
+		uqm::BYTE NumVisits;
 
 		if (GET_GAME_STATE (GLOBAL_FLAGS_AND_DATA) & (1 << 7))
 		{
@@ -831,7 +831,7 @@ Intro (void)
 	}
 }
 
-static COUNT
+static uqm::COUNT
 uninit_vux (void)
 {
 	luaUqm_comm_uninit ();
@@ -871,7 +871,7 @@ init_vux_comm (void)
 	}
 
 	if ((GET_GAME_STATE (GLOBAL_FLAGS_AND_DATA) & (1 << 6))
-			|| LOBYTE (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
+			|| lowByte (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
 	{
 		setSegue (Segue_peace);
 	}

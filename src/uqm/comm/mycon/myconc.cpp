@@ -119,12 +119,12 @@ static LOCDATA mycon_desc =
 	NULL,
 };
 
-static BYTE MadeChoice;
+static uqm::BYTE MadeChoice;
 
 static void
 DoRamble (RESPONSE_REF R)
 {
-	BYTE Counter;
+	uqm::BYTE Counter;
 
 	Counter = GET_GAME_STATE (MYCON_RAMBLE);
 	switch (Counter++)
@@ -385,7 +385,7 @@ NormalMycon (RESPONSE_REF R)
 		DISABLE_PHRASE (R);
 	}
 
-	if ((BYTE)TFB_Random () < 256 * 30 / 100)
+	if ((uqm::BYTE)TFB_Random () < 256 * 30 / 100)
 		RespFunc = (RESPONSE_FUNC)CombatIsInevitable;
 	else
 		RespFunc = (RESPONSE_FUNC)NormalMycon;
@@ -499,7 +499,7 @@ NormalMycon (RESPONSE_REF R)
 static void
 Intro (void)
 {
-	BYTE NumVisits;
+	uqm::BYTE NumVisits;
 
 	if (GET_GAME_STATE (SUN_DEVICE))
 	{
@@ -615,7 +615,7 @@ Intro (void)
 	}
 }
 
-static COUNT
+static uqm::COUNT
 uninit_mycon (void)
 {
 	luaUqm_comm_uninit ();
@@ -645,7 +645,7 @@ init_mycon_comm (void)
 
 	MadeChoice = 0;
 
-	if (LOBYTE (GLOBAL (CurrentActivity)) != WON_LAST_BATTLE)
+	if (lowByte (GLOBAL (CurrentActivity)) != WON_LAST_BATTLE)
 	{
 		setSegue (Segue_hostile);
 	}

@@ -30,7 +30,7 @@ typedef struct delta_types
 {
 	int _int;
 	bool _bool;
-	CHAR_T *_str;
+	uqm::CHAR_T *_str;
 	char _char;
 } DELTA_TYPES;
 
@@ -44,8 +44,8 @@ void luaUqm_setProp(lua_State *luaState, int nameIndex, int valueIndex);
 int luaUqm_checkPropValueType (lua_State *luaState, const char *funName,
 		int nameIndex);
 
-void setGameStateUint (const char *name, DWORD val);
-DWORD getGameStateUint (const char *name);
+void setGameStateUint (const char *name, uqm::DWORD val);
+uqm::DWORD getGameStateUint (const char *name);
 
 void luaUqm_getEventTable (lua_State *luaState);
 

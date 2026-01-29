@@ -38,16 +38,16 @@
 
 //#define DEBUG_PROCESS
 
-COUNT DisplayFreeList;
+uqm::COUNT DisplayFreeList;
 PRIMITIVE DisplayArray[MAX_DISPLAY_PRIMS];
 extern DPOINT SpaceOrg;
 
-COUNT zoom_out = 1 << ZOOM_SHIFT;
-static SIZE opt_max_zoom_out;
+uqm::COUNT zoom_out = 1 << ZOOM_SHIFT;
+static uqm::SIZE opt_max_zoom_out;
 
 #if 0
 static inline void
-CALC_ZOOM_STUFF (COUNT* idx, COUNT* sc)
+CALC_ZOOM_STUFF (uqm::COUNT* idx, uqm::COUNT* sc)
 {
 	int i, z;
 
@@ -59,7 +59,7 @@ CALC_ZOOM_STUFF (COUNT* idx, COUNT* sc)
 }
 #else
 static inline void
-CALC_ZOOM_STUFF (COUNT* idx, COUNT* sc)
+CALC_ZOOM_STUFF (uqm::COUNT* idx, uqm::COUNT* sc)
 {
 	int i;
 
@@ -164,7 +164,7 @@ PreProcess (ELEMENT *ElementPtr)
 
 		if (!(state_flags & IGNORE_VELOCITY))
 		{
-			SIZE delta_x, delta_y;
+			uqm::SIZE delta_x, delta_y;
 
 			GetNextVelocityComponents (&ElementPtr->velocity,
 					&delta_x, &delta_y, 1);
@@ -205,10 +205,10 @@ PostProcess (ELEMENT *ElementPtr)
 			| POST_PROCESS;
 }
 
-static COUNT
-CalcReduction (SDWORD dx, SDWORD dy)
+static uqm::COUNT
+CalcReduction (uqm::SDWORD dx, uqm::SDWORD dy)
 {
-	COUNT next_reduction;
+	uqm::COUNT next_reduction;
 
 #ifdef KDEBUG
 	log_add (log_Debug, "CalcReduction:");
@@ -216,9 +216,9 @@ CalcReduction (SDWORD dx, SDWORD dy)
 
 	if (optMeleeScale == TFB_SCALE_STEP)
 	{
-		SDWORD sdx, sdy;
+		uqm::SDWORD sdx, sdy;
 
-		if (LOBYTE (GLOBAL (CurrentActivity)) > IN_ENCOUNTER)
+		if (lowByte (GLOBAL (CurrentActivity)) > IN_ENCOUNTER)
 			return (0);
 
 		sdx = dx;
@@ -245,12 +245,12 @@ CalcReduction (SDWORD dx, SDWORD dy)
 		}
 
 		if (next_reduction == 0
-				&& LOBYTE (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE)
+				&& lowByte (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE)
 			next_reduction += REDUCTION_SHIFT;
 	}
 	else
 	{
-		if (LOBYTE (GLOBAL (CurrentActivity)) > IN_ENCOUNTER)
+		if (lowByte (GLOBAL (CurrentActivity)) > IN_ENCOUNTER)
 			return (1 << ZOOM_SHIFT);
 			
 		dx = (dx * MAX_ZOOM_OUT) / (LOG_SPACE_WIDTH >> 2);
@@ -271,7 +271,7 @@ CalcReduction (SDWORD dx, SDWORD dy)
 			next_reduction = dx;
 
 		if (next_reduction < (2 << ZOOM_SHIFT)
-				&& LOBYTE (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE)
+				&& lowByte (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE)
 			next_reduction = (2 << ZOOM_SHIFT);
 	}
 
@@ -283,23 +283,23 @@ CalcReduction (SDWORD dx, SDWORD dy)
 }
 
 static VIEW_STATE
-CalcView (DPOINT *pNewScrollPt, SIZE next_reduction,
-		SDWORD *pdx, SDWORD *pdy, COUNT ships_alive)
+CalcView (DPOINT *pNewScrollPt, uqm::SIZE next_reduction,
+		uqm::SDWORD *pdx, uqm::SDWORD *pdy, uqm::COUNT ships_alive)
 {
-	SDWORD dx, dy;
+	uqm::SDWORD dx, dy;
 	VIEW_STATE view_state;
 
 #ifdef KDEBUG
 	log_add (log_Debug, "CalcView:");
 #endif
-	dx = ((SDWORD)(LOG_SPACE_WIDTH >> 1) - pNewScrollPt->x);
-	dy = ((SDWORD)(LOG_SPACE_HEIGHT >> 1) - pNewScrollPt->y);
+	dx = ((uqm::SDWORD)(LOG_SPACE_WIDTH >> 1) - pNewScrollPt->x);
+	dy = ((uqm::SDWORD)(LOG_SPACE_HEIGHT >> 1) - pNewScrollPt->y);
 	dx = WRAP_DELTA_X (dx);
 	dy = WRAP_DELTA_Y (dy);
 	if (ships_alive == 1 && (optMeleeScale != TFB_SCALE_STEP || isNetwork ()))
 	{
-#define ORG_JUMP_X ((SDWORD)DISPLAY_ALIGN(LOG_SPACE_WIDTH / 75))
-#define ORG_JUMP_Y ((SDWORD)DISPLAY_ALIGN(LOG_SPACE_HEIGHT / 75))
+#define ORG_JUMP_X ((uqm::SDWORD)DISPLAY_ALIGN(LOG_SPACE_WIDTH / 75))
+#define ORG_JUMP_Y ((uqm::SDWORD)DISPLAY_ALIGN(LOG_SPACE_HEIGHT / 75))
 		if (dx > ORG_JUMP_X)
 			dx = ORG_JUMP_X;
 		else if (dx < -ORG_JUMP_X)
@@ -320,10 +320,10 @@ CalcView (DPOINT *pNewScrollPt, SIZE next_reduction,
 	{
 		if (optMeleeScale == TFB_SCALE_STEP)
 		{
-			SpaceOrg.x = (SDWORD)(LOG_SPACE_WIDTH >> 1)
+			SpaceOrg.x = (uqm::SDWORD)(LOG_SPACE_WIDTH >> 1)
 					- (LOG_SPACE_WIDTH >> ((MAX_REDUCTION + 1)
 					- next_reduction));
-			SpaceOrg.y = (SDWORD)(LOG_SPACE_HEIGHT >> 1)
+			SpaceOrg.y = (uqm::SDWORD)(LOG_SPACE_HEIGHT >> 1)
 					- (LOG_SPACE_HEIGHT >> ((MAX_REDUCTION + 1)
 					- next_reduction));
 		}
@@ -348,7 +348,7 @@ CalcView (DPOINT *pNewScrollPt, SIZE next_reduction,
 		view_state = VIEW_CHANGE;
 	}
 
-	if (LOBYTE (GLOBAL (CurrentActivity)) <= IN_HYPERSPACE)
+	if (lowByte (GLOBAL (CurrentActivity)) <= IN_HYPERSPACE)
 		MoveGalaxy (view_state, dx, dy);
 
 	*pdx = dx;
@@ -630,13 +630,13 @@ ProcessCollisions (HELEMENT hSuccElement, ELEMENT *ElementPtr,
 }
 
 static VIEW_STATE
-PreProcessQueue (SDWORD *pscroll_x, SDWORD *pscroll_y)
+PreProcessQueue (uqm::SDWORD *pscroll_x, uqm::SDWORD *pscroll_y)
 {
-	SIZE min_reduction, max_reduction;
-	COUNT sides_active;
+	uqm::SIZE min_reduction, max_reduction;
+	uqm::COUNT sides_active;
 	DPOINT Origin;
 	HELEMENT hElement;
-	COUNT ships_alive;
+	uqm::COUNT ships_alive;
 
 #ifdef KDEBUG
 	log_add (log_Debug, "PreProcess:");
@@ -649,8 +649,8 @@ PreProcessQueue (SDWORD *pscroll_x, SDWORD *pscroll_y)
 	else
 		min_reduction = max_reduction = MAX_ZOOM_OUT + (1 << ZOOM_SHIFT);
 
-	Origin.x = (SDWORD)(LOG_SPACE_WIDTH >> 1);
-	Origin.y = (SDWORD)(LOG_SPACE_HEIGHT >> 1);
+	Origin.x = (uqm::SDWORD)(LOG_SPACE_WIDTH >> 1);
+	Origin.y = (uqm::SDWORD)(LOG_SPACE_HEIGHT >> 1);
 
 	hElement = GetHeadElement ();
 	ships_alive = 0;
@@ -672,7 +672,7 @@ PreProcessQueue (SDWORD *pscroll_x, SDWORD *pscroll_y)
 
 		if (ElementPtr->state_flags & PLAYER_SHIP)
 		{
-			SDWORD dx, dy;
+			uqm::SDWORD dx, dy;
 
 			ships_alive++;
 			if (max_reduction > opt_max_zoom_out
@@ -712,7 +712,7 @@ PreProcessQueue (SDWORD *pscroll_x, SDWORD *pscroll_y)
 			}
 			else
 			{
-				SIZE reduction;
+				uqm::SIZE reduction;
 
 				if (dx < 0)
 					dx = -dx;
@@ -749,9 +749,9 @@ PreProcessQueue (SDWORD *pscroll_x, SDWORD *pscroll_y)
 }
 
 void
-InsertPrim (PRIM_LINKS *pLinks, COUNT primIndex, COUNT iPI)
+InsertPrim (PRIM_LINKS *pLinks, uqm::COUNT primIndex, uqm::COUNT iPI)
 {
-	COUNT Link;
+	uqm::COUNT Link;
 	PRIM_LINKS PL;
 
 	if (iPI == END_OF_LIST)
@@ -786,7 +786,7 @@ InsertPrim (PRIM_LINKS *pLinks, COUNT primIndex, COUNT iPI)
 PRIM_LINKS DisplayLinks;
 
 static inline COORD
-CalcDisplayCoord (SDWORD c, SDWORD orgc, SIZE reduction)
+CalcDisplayCoord (uqm::SDWORD c, uqm::SDWORD orgc, uqm::SIZE reduction)
 {
 	if (optMeleeScale == TFB_SCALE_STEP)
 	{	/* old fixed-step zoom style */
@@ -799,10 +799,10 @@ CalcDisplayCoord (SDWORD c, SDWORD orgc, SIZE reduction)
 }
 
 static void
-PostProcessQueue (VIEW_STATE view_state, SDWORD scroll_x, SDWORD scroll_y)
+PostProcessQueue (VIEW_STATE view_state, uqm::SDWORD scroll_x, uqm::SDWORD scroll_y)
 {
 	DPOINT delta;
-	SIZE reduction;
+	uqm::SIZE reduction;
 	HELEMENT hElement;
 
 #ifdef KDEBUG
@@ -891,13 +891,13 @@ PostProcessQueue (VIEW_STATE view_state, SDWORD scroll_x, SDWORD scroll_y)
 
 				if (ObjType == LINE_PRIM)
 				{
-					SDWORD dx, dy;
+					uqm::SDWORD dx, dy;
 					
-					dx = (SDWORD)ElementPtr->next.location.x - (SDWORD)ElementPtr->current.location.x;
-					dy = (SDWORD)ElementPtr->next.location.y - (SDWORD)ElementPtr->current.location.y;
+					dx = (uqm::SDWORD)ElementPtr->next.location.x - (uqm::SDWORD)ElementPtr->current.location.x;
+					dy = (uqm::SDWORD)ElementPtr->next.location.y - (uqm::SDWORD)ElementPtr->current.location.y;
 					
-					next.x = WRAP_X ((SDWORD)ElementPtr->current.location.x + (SDWORD)delta.x);
-					next.y = WRAP_Y ((SDWORD)ElementPtr->current.location.y + (SDWORD)delta.y);
+					next.x = WRAP_X ((uqm::SDWORD)ElementPtr->current.location.x + (uqm::SDWORD)delta.x);
+					next.y = WRAP_Y ((uqm::SDWORD)ElementPtr->current.location.y + (uqm::SDWORD)delta.y);
 					DisplayArray[ElementPtr->PrimIndex].Object.Line.first.x = CalcDisplayCoord (next.x, SpaceOrg.x, reduction);
 					DisplayArray[ElementPtr->PrimIndex].Object.Line.first.y = CalcDisplayCoord (next.y, SpaceOrg.y, reduction);
 
@@ -908,8 +908,8 @@ PostProcessQueue (VIEW_STATE view_state, SDWORD scroll_x, SDWORD scroll_y)
 				}
 				else
 				{
-					next.x = WRAP_X ((SDWORD)ElementPtr->next.location.x + (SDWORD)delta.x);
-					next.y = WRAP_Y ((SDWORD)ElementPtr->next.location.y + (SDWORD)delta.y);
+					next.x = WRAP_X ((uqm::SDWORD)ElementPtr->next.location.x + (uqm::SDWORD)delta.x);
+					next.y = WRAP_Y ((uqm::SDWORD)ElementPtr->next.location.y + (uqm::SDWORD)delta.y);
 					
 					DisplayArray[ElementPtr->PrimIndex].Object.Point.x = CalcDisplayCoord (next.x, SpaceOrg.x, reduction);
 					DisplayArray[ElementPtr->PrimIndex].Object.Point.y = CalcDisplayCoord (next.y, SpaceOrg.y, reduction);
@@ -919,7 +919,7 @@ PostProcessQueue (VIEW_STATE view_state, SDWORD scroll_x, SDWORD scroll_y)
 						if (view_state == VIEW_CHANGE
 								|| (state_flags & (APPEARING | CHANGING)))
 						{
-							COUNT index, scale = GSCALE_IDENTITY;
+							uqm::COUNT index, scale = GSCALE_IDENTITY;
 						
 							if (optMeleeScale == TFB_SCALE_STEP)
 								index = zoom_out;
@@ -980,7 +980,7 @@ PostProcessQueue (VIEW_STATE view_state, SDWORD scroll_x, SDWORD scroll_y)
 void
 InitDisplayList (void)
 {
-	COUNT i;
+	uqm::COUNT i;
 
 	if (optMeleeScale == TFB_SCALE_STEP)
 	{
@@ -1002,12 +1002,12 @@ InitDisplayList (void)
 	DisplayLinks = MakeLinks (END_OF_LIST, END_OF_LIST);
 }
 
-UWORD nth_frame = 0;
+uqm::UWORD nth_frame = 0;
 
 void
 RedrawQueue (bool clear)
 {
-	SDWORD scroll_x, scroll_y;
+	uqm::SDWORD scroll_x, scroll_y;
 	VIEW_STATE view_state;
 
 	SetContext (StatusContext);
@@ -1019,13 +1019,13 @@ RedrawQueue (bool clear)
 		UpdateSoundPositions ();
 
 	SetContext (SpaceContext);
-	if (LOBYTE (GLOBAL (CurrentActivity)) == SUPER_MELEE
+	if (lowByte (GLOBAL (CurrentActivity)) == SUPER_MELEE
 		|| !(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
 	{
-		BYTE skip_frames;
+		uqm::BYTE skip_frames;
 
-		skip_frames = HIBYTE (nth_frame);
-		if (skip_frames != (BYTE)~0
+		skip_frames = highByte (nth_frame);
+		if (skip_frames != (uqm::BYTE)~0
 			&& (skip_frames == 0 || (--nth_frame & 0x00FF) == 0))
 		{
 			nth_frame += skip_frames;
@@ -1034,7 +1034,7 @@ RedrawQueue (bool clear)
 
 			if (optMeleeScale != TFB_SCALE_STEP)
 			{
-				COUNT index, scale;
+				uqm::COUNT index, scale;
 
 				CALC_ZOOM_STUFF (&index, &scale);
 				SetGraphicScale (scale);

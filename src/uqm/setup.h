@@ -51,7 +51,7 @@ extern CONTEXT ScreenContext;
 extern CONTEXT SpaceContext;
 extern CONTEXT StatusContext;
 
-extern SIZE screen_width, screen_height;
+extern uqm::SIZE screen_width, screen_height;
 
 extern FONT StarConFont;
 extern FONT MicroFont;
@@ -75,7 +75,7 @@ extern bool solTexturesPresent;
 extern bool SyreenVoiceFix;
 extern bool EndlessSCLoaded;
 extern bool VolasPackPresent;
-extern BYTE Rando;
+extern uqm::BYTE Rando;
 extern bool DeathBySurrender;
 extern bool DeathByMelee;
 extern bool DeathBySuicide;
@@ -85,7 +85,7 @@ extern bool classicPackPresent;
 
 extern ACTIVITY LastActivity;
 
-extern BYTE PlayerControl[];
+extern uqm::BYTE PlayerControl[];
 
 extern bool usingSpeech;
 		// Actual speech presence indicator which decouples reality from
@@ -102,9 +102,9 @@ extern void FreeKernel (void);
 int initIO (void);
 void uninitIO (void);
 
-bool SetPlayerInput (COUNT playerI);
+bool SetPlayerInput (uqm::COUNT playerI);
 bool SetPlayerInputAll (void);
-void ClearPlayerInput (COUNT playerI);
+void ClearPlayerInput (uqm::COUNT playerI);
 void ClearPlayerInputAll (void);
 
 

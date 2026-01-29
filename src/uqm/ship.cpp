@@ -57,10 +57,10 @@ STATUS_FLAGS
 inertial_thrust (ELEMENT *ElementPtr)
 {
 #define MAX_ALLOWED_SPEED     WORLD_TO_VELOCITY (DISPLAY_TO_WORLD (RES_SCALE (18))) 
-#define MAX_ALLOWED_SPEED_SQR ((DWORD)MAX_ALLOWED_SPEED * MAX_ALLOWED_SPEED)
+#define MAX_ALLOWED_SPEED_SQR ((uqm::DWORD)MAX_ALLOWED_SPEED * MAX_ALLOWED_SPEED)
 
-	COUNT CurrentAngle, TravelAngle;
-	COUNT max_thrust, thrust_increment;
+	uqm::COUNT CurrentAngle, TravelAngle;
+	uqm::COUNT max_thrust, thrust_increment;
 	VELOCITY_DESC *VelocityPtr;
 	STARSHIP *StarShipPtr;
 
@@ -87,10 +87,10 @@ inertial_thrust (ELEMENT *ElementPtr)
 	}
 	else
 	{
-		SIZE delta_x, delta_y;
-		SIZE cur_delta_x, cur_delta_y;
-		DWORD desired_speed, max_speed;
-		DWORD current_speed;
+		uqm::SIZE delta_x, delta_y;
+		uqm::SIZE cur_delta_x, cur_delta_y;
+		uqm::DWORD desired_speed, max_speed;
+		uqm::DWORD current_speed;
 
 		thrust_increment = WORLD_TO_VELOCITY (thrust_increment);
 		GetCurrentVelocityComponents (VelocityPtr, &cur_delta_x, &cur_delta_y);
@@ -153,7 +153,7 @@ DrawHDMeleeBorder (STARSHIP *StarShipPtr)
 	COORD y = 0;
 	RECT r;
 
-	if (LOBYTE (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE
+	if (lowByte (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE
 			&& StarShipPtr->playerNr != RPG_PLAYER_NUM)
 		return;
 
@@ -190,7 +190,7 @@ ship_preprocess (ELEMENT *ElementPtr)
 		ElementPtr->crew_level = RDPtr->ship_info.crew_level;
 
 		if (ElementPtr->playerNr == NPC_PLAYER_NUM
-				&& LOBYTE (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE)
+				&& lowByte (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE)
 		{	// Sa-Matra
 			STAMP s;
 			CONTEXT OldContext;
@@ -203,7 +203,7 @@ ship_preprocess (ELEMENT *ElementPtr)
 			RDPtr->ship_data.captain_control.background = 0;
 			SetContext (OldContext);
 		}
-		else if (LOBYTE (GLOBAL (CurrentActivity)) <= IN_ENCOUNTER)
+		else if (lowByte (GLOBAL (CurrentActivity)) <= IN_ENCOUNTER)
 		{
 			CONTEXT OldContext;
 
@@ -249,10 +249,10 @@ ship_preprocess (ELEMENT *ElementPtr)
 
 	if (StarShipPtr->energy_counter)
 		--StarShipPtr->energy_counter;
-	else if (RDPtr->ship_info.energy_level < (BYTE)RDPtr->ship_info.max_energy
-			|| (SBYTE)RDPtr->characteristics.energy_regeneration < 0)
+	else if (RDPtr->ship_info.energy_level < (uqm::BYTE)RDPtr->ship_info.max_energy
+			|| (uqm::SBYTE)RDPtr->characteristics.energy_regeneration < 0)
 		DeltaEnergy (ElementPtr,
-				(SBYTE)RDPtr->characteristics.energy_regeneration);
+				(uqm::SBYTE)RDPtr->characteristics.energy_regeneration);
 
 	if (RDPtr->preprocess_func)
 	{
@@ -294,13 +294,13 @@ ship_preprocess (ELEMENT *ElementPtr)
 		ElementPtr->thrust_wait = RDPtr->characteristics.thrust_wait;
 
 		if (!OBJECT_CLOAKED (ElementPtr)
-				&& LOBYTE (GLOBAL (CurrentActivity)) <= IN_ENCOUNTER)
+				&& lowByte (GLOBAL (CurrentActivity)) <= IN_ENCOUNTER)
 		{
 			spawn_ion_trail (ElementPtr, 0, 0);
 		}
 	}
 
-	if (LOBYTE (GLOBAL (CurrentActivity)) <= IN_ENCOUNTER)
+	if (lowByte (GLOBAL (CurrentActivity)) <= IN_ENCOUNTER)
 		PreProcessStatus (ElementPtr);
 }
 
@@ -322,7 +322,7 @@ ship_postprocess (ELEMENT *ElementPtr)
 			& WEAPON) && DeltaEnergy (ElementPtr,
 			-RDPtr->characteristics.weapon_energy_cost))
 	{
-		COUNT num_weapons;
+		uqm::COUNT num_weapons;
 		HELEMENT Weapon[6];
 
 		num_weapons = (*RDPtr->init_weapon_func) (ElementPtr, Weapon);
@@ -370,7 +370,7 @@ ship_postprocess (ELEMENT *ElementPtr)
 	if (RDPtr->postprocess_func)
 		(*RDPtr->postprocess_func) (ElementPtr);
 
-	if (LOBYTE (GLOBAL (CurrentActivity)) <= IN_ENCOUNTER)
+	if (lowByte (GLOBAL (CurrentActivity)) <= IN_ENCOUNTER)
 		PostProcessStatus (ElementPtr);
 }
 
@@ -384,7 +384,7 @@ collision (ELEMENT *ElementPtr0, POINT *pPt0,
 		if (GRAVITY_MASS (ElementPtr1->mass_points))
 		{
 			// Collision with a planet.
-			SIZE damage;
+			uqm::SIZE damage;
 
 			damage = ElementPtr0->hit_points >> 2;
 			if (damage == 0)
@@ -417,8 +417,8 @@ spawn_ship (STARSHIP *StarShipPtr)
 	StarShipPtr->cur_status_flags = 0;
 	StarShipPtr->old_status_flags = 0;
 
-	if (LOBYTE (GLOBAL (CurrentActivity)) == IN_ENCOUNTER
-			|| LOBYTE (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE)
+	if (lowByte (GLOBAL (CurrentActivity)) == IN_ENCOUNTER
+			|| lowByte (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE)
 	{
 		if (StarShipPtr->crew_level == 0)
 		{
@@ -465,7 +465,7 @@ spawn_ship (STARSHIP *StarShipPtr)
 		ShipElementPtr->current.image.farray = RDPtr->ship_data.ship;
 
 		if (ShipElementPtr->playerNr == NPC_PLAYER_NUM
-				&& LOBYTE (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE)
+				&& lowByte (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE)
 		{
 			// This is the Sa-Matra
 			StarShipPtr->ShipFacing = 0;
@@ -481,7 +481,7 @@ spawn_ship (STARSHIP *StarShipPtr)
 			StarShipPtr->ShipFacing = NORMALIZE_FACING (TFB_Random ());
 			if (inHQSpace ())
 			{	// Only one ship is ever spawned in HyperSpace -- flagship
-				COUNT facing = GLOBAL (ShipFacing);
+				uqm::COUNT facing = GLOBAL (ShipFacing);
 				// XXX: Solar system reentry test depends on ShipFacing != 0
 				if (facing > 0)
 					--facing;
@@ -495,8 +495,8 @@ spawn_ship (STARSHIP *StarShipPtr)
 
 				if (IS_HD)
 				{
-					COUNT i;
-					COUNT numFrames = GetFrameCount (RDPtr->ship_data.ship[0]);
+					uqm::COUNT i;
+					uqm::COUNT numFrames = GetFrameCount (RDPtr->ship_data.ship[0]);
 					DrawMode mode = MAKE_DRAW_MODE (DRAW_LINEARBURN, 0xFF);
 					Color c;
 
@@ -539,7 +539,7 @@ spawn_ship (STARSHIP *StarShipPtr)
 
 // Select a new ship and spawn it.
 bool
-GetNextStarShip (STARSHIP *LastStarShipPtr, COUNT which_side)
+GetNextStarShip (STARSHIP *LastStarShipPtr, uqm::COUNT which_side)
 {
 	HSTARSHIP hBattleShip;
 
@@ -577,10 +577,10 @@ GetNextStarShip (STARSHIP *LastStarShipPtr, COUNT which_side)
 bool
 GetInitialStarShips (void)
 {
-	if (LOBYTE (GLOBAL (CurrentActivity)) == SUPER_MELEE)
+	if (lowByte (GLOBAL (CurrentActivity)) == SUPER_MELEE)
 	{
 		HSTARSHIP ships[NUM_PLAYERS];
-		COUNT i;
+		uqm::COUNT i;
 		
 		if (!GetInitialMeleeStarShips (ships))
 			return false;
@@ -588,7 +588,7 @@ GetInitialStarShips (void)
 		for (i = 0; i < NUM_PLAYERS; i++)
 		{
 			STARSHIP *StarShipPtr;
-			COUNT playerI = GetPlayerOrder (i);
+			uqm::COUNT playerI = GetPlayerOrder (i);
 
 			StarShipPtr = LockStarShip (&race_q[playerI], ships[playerI]);
 			if (!spawn_ship (StarShipPtr))

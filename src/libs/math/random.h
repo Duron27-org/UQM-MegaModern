@@ -34,15 +34,15 @@
 
 /* ----------------------------GLOBALS/EXTERNS---------------------------- */
 
-DWORD TFB_SeedRandom (DWORD seed);
-DWORD TFB_Random (void);
+uqm::DWORD TFB_SeedRandom (uqm::DWORD seed);
+uqm::DWORD TFB_Random (void);
 
 
 typedef struct RandomContext RandomContext;
 
 #ifdef RANDOM2_INTERNAL
 struct RandomContext {
-	DWORD seed;
+	uqm::DWORD seed;
 };
 #endif
 
@@ -61,7 +61,7 @@ struct RandomContext {
 #define PrimeSeed (optSeedType == OPTVAL_PRIME)
 #define StarSeed (optSeedType > OPTVAL_PLANET)
 
-static inline const CHAR_T *
+static inline const uqm::CHAR_T *
 SeedStr (void)
 {
 	switch (optSeedType)
@@ -80,14 +80,14 @@ SeedStr (void)
 }
 
 RandomContext *RandomContext_New (void);
-RandomContext *RandomContext_Set(DWORD Context);
+RandomContext *RandomContext_Set(uqm::DWORD Context);
 void RandomContext_Delete (RandomContext *context);
 RandomContext *RandomContext_Copy (const RandomContext *source);
-DWORD RandomContext_Random (RandomContext *context);
-DWORD RandomContext_SeedRandom (RandomContext *context, DWORD new_seed);
-DWORD RandomContext_GetSeed (RandomContext *context);
-DWORD RandomContext_FastRandom (DWORD seed);
-int RangeMinMax (int min, int max, DWORD rand);
+uqm::DWORD RandomContext_Random (RandomContext *context);
+uqm::DWORD RandomContext_SeedRandom (RandomContext *context, uqm::DWORD new_seed);
+uqm::DWORD RandomContext_GetSeed (RandomContext *context);
+uqm::DWORD RandomContext_FastRandom (uqm::DWORD seed);
+int RangeMinMax (int min, int max, uqm::DWORD rand);
 extern void printBits (size_t const size, void const *const ptr);
 
 

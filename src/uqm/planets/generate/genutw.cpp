@@ -38,10 +38,10 @@ static bool GenerateUtwig_generateName (const SOLARSYS_STATE *,
 	const PLANET_DESC *world);
 static bool GenerateUtwig_generateOrbital (SOLARSYS_STATE *solarSys,
 		PLANET_DESC *world);
-static COUNT GenerateUtwig_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
+static uqm::COUNT GenerateUtwig_generateEnergy (const SOLARSYS_STATE *,
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
 static bool GenerateUtwig_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, COUNT whichNode);
+		PLANET_DESC *world, uqm::COUNT whichNode);
 
 
 const GenerateFunctions generateUtwigFunctions = {
@@ -93,7 +93,7 @@ GenerateUtwig_generatePlanets (SOLARSYS_STATE *solarSys)
 
 		if (PrimeSeed)
 		{
-			COUNT angle;
+			uqm::COUNT angle;
 
 			pSunDesc->PlanetByte = 0;
 			pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
@@ -124,13 +124,13 @@ GenerateUtwig_generatePlanets (SOLARSYS_STATE *solarSys)
 		{
 			if (!StarSeed)
 			{
-				DWORD RandVal = RandomContext_Random (SysGenRNG);
-				BYTE PByte = pSunDesc->PlanetByte + 1;
+				uqm::DWORD RandVal = RandomContext_Random (SysGenRNG);
+				uqm::BYTE PByte = pSunDesc->PlanetByte + 1;
 				pSunDesc->NumPlanets =
 						(RandVal % (MAX_GEN_PLANETS - PByte) + PByte);
 			}
 			else
-				pSunDesc->NumPlanets = (BYTE)~0;
+				pSunDesc->NumPlanets = (uqm::BYTE)~0;
 
 			FillOrbits (solarSys, pSunDesc->NumPlanets,
 					solarSys->PlanetDesc, false);
@@ -165,7 +165,7 @@ GenerateUtwig_generateName (const SOLARSYS_STATE *solarSys,
 			&& matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET)
 			&& IsHomeworldKnown (UTWIG_HOME))
 	{
-		BYTE PlanetByte = solarSys->SunDesc[0].PlanetByte;
+		uqm::BYTE PlanetByte = solarSys->SunDesc[0].PlanetByte;
 		PLANET_DESC pPlanetDesc = solarSys->PlanetDesc[PlanetByte];
 
 		utf8StringCopy (GLOBAL_SIS (PlanetName),
@@ -224,8 +224,8 @@ GenerateUtwig_generateOrbital (SOLARSYS_STATE *solarSys,
 				&& !GET_GAME_STATE (BOMB_UNPROTECTED)
 				&& StartSphereTracking (DRUUGE_SHIP))
 		{
-			COUNT i;
-			COUNT sum = DIF_CASE (5, 4, 14);
+			uqm::COUNT i;
+			uqm::COUNT sum = DIF_CASE (5, 4, 14);
 
 			PutGroupInfo (GROUPS_RANDOM, GROUP_SAVE_IP);
 			ReinitQueue (&GLOBAL (ip_group_q));
@@ -292,9 +292,9 @@ GenerateUtwig_generateOrbital (SOLARSYS_STATE *solarSys,
 	return true;
 }
 
-static COUNT
+static uqm::COUNT
 GenerateUtwig_generateEnergy (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *info)
 {
 	if (CurStarDescPtr->Index == UTWIG_DEFINED
 			&& matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
@@ -321,7 +321,7 @@ GenerateUtwig_generateEnergy (const SOLARSYS_STATE *solarSys,
 
 static bool
 GenerateUtwig_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		COUNT whichNode)
+		uqm::COUNT whichNode)
 {
 	if (CurStarDescPtr->Index == UTWIG_DEFINED
 			&& matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))

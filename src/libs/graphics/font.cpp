@@ -46,10 +46,10 @@ GoodToGoFPS (void)
 }
 
 void
-GetFontDims (SIZE *w, SIZE *h)
+GetFontDims (uqm::SIZE *w, uqm::SIZE *h)
 {
-	*w = (SIZE)StarConFont->disp.width;
-	*h = (SIZE)StarConFont->disp.height;
+	*w = (uqm::SIZE)StarConFont->disp.width;
+	*h = (uqm::SIZE)StarConFont->disp.height;
 }
 
 FONT
@@ -145,7 +145,7 @@ font_DrawTracedText (TEXT *pText, Color text, Color trace)
 {
 	// Preserve current foreground color for full correctness
 	const Color oldfg = SetContextForeGroundColor (trace);
-	const BYTE stroke = RES_SCALE (1);
+	const uqm::BYTE stroke = RES_SCALE (1);
 	const POINT t_baseline = pText->baseline;
 	POINT offset;
 
@@ -170,8 +170,8 @@ font_DrawTracedText (TEXT *pText, Color text, Color trace)
 }
 
 // Alt stuff to handle 2 fonts at once (for Orz)
-BYTE
-font_DrawTextAlt (TEXT *lpText, BYTE swap, FONT AltFontPtr, UniChar key)
+uqm::BYTE
+font_DrawTextAlt (TEXT *lpText, uqm::BYTE swap, FONT AltFontPtr, UniChar key)
 {
 	RECT ClipRect;
 	POINT origin;
@@ -195,10 +195,10 @@ font_DrawTracedTextAlt (TEXT* pText, Color text, Color trace, FONT AltFontPtr,
 {
 	// Preserve current foreground color for full correctness
 	const Color oldfg = SetContextForeGroundColor (trace);
-	const BYTE stroke = RES_SCALE (1);
+	const uqm::BYTE stroke = RES_SCALE (1);
 	const POINT t_baseline = pText->baseline;
 	POINT offset;
-	static BYTE swap = 0;
+	static uqm::BYTE swap = 0;
 
 	for (offset.x = -stroke; offset.x <= stroke; ++offset.x)
 	{
@@ -221,7 +221,7 @@ font_DrawTracedTextAlt (TEXT* pText, Color text, Color trace, FONT AltFontPtr,
 }
 
 void
-font_DrawShadowedText (TEXT *pText, BYTE direction,
+font_DrawShadowedText (TEXT *pText, uqm::BYTE direction,
 	Color text_color, Color shadow_color)
 {
 	POINT shadow_angle = { 0, 0 };
@@ -273,11 +273,11 @@ font_DrawShadowedText (TEXT *pText, BYTE direction,
 }
 
 bool
-GetContextFontLeading (SIZE *pheight)
+GetContextFontLeading (uqm::SIZE *pheight)
 {
 	if (_CurFontPtr != 0)
 	{
-		*pheight = (SIZE)_CurFontPtr->Leading;
+		*pheight = (uqm::SIZE)_CurFontPtr->Leading;
 		return (true);
 	}
 
@@ -286,11 +286,11 @@ GetContextFontLeading (SIZE *pheight)
 }
 
 bool
-GetContextFontDispHeight (SIZE *pheight)
+GetContextFontDispHeight (uqm::SIZE *pheight)
 {
 	if (_CurFontPtr != 0)
 	{
-		*pheight = (SIZE)_CurFontPtr->disp.height;
+		*pheight = (uqm::SIZE)_CurFontPtr->disp.height;
 		return (true);
 	}
 
@@ -299,11 +299,11 @@ GetContextFontDispHeight (SIZE *pheight)
 }
 
 bool
-GetContextFontDispWidth (SIZE *pwidth)
+GetContextFontDispWidth (uqm::SIZE *pwidth)
 {
 	if (_CurFontPtr != 0)
 	{
-		*pwidth = (SIZE)_CurFontPtr->disp.width;
+		*pwidth = (uqm::SIZE)_CurFontPtr->disp.width;
 		return (true);
 	}
 
@@ -312,19 +312,19 @@ GetContextFontDispWidth (SIZE *pwidth)
 }
 
 bool
-TextRect (TEXT *lpText, RECT *pRect, BYTE *pdelta)
+TextRect (TEXT *lpText, RECT *pRect, uqm::BYTE *pdelta)
 {
-	BYTE char_delta_array[MAX_DELTAS];
+	uqm::BYTE char_delta_array[MAX_DELTAS];
 	FONT FontPtr;
 
 	FontPtr = _CurFontPtr;
 	if (FontPtr != 0 && lpText->CharCount != 0)
 	{
 		COORD top_y, bot_y;
-		SIZE width;
+		uqm::SIZE width;
 		UniChar next_ch = 0;
 		const char *pStr;
-		COUNT num_chars;
+		uqm::COUNT num_chars;
 	
 		num_chars = lpText->CharCount;
 		/* At this point lpText->CharCount contains the *maximum* number of
@@ -354,7 +354,7 @@ TextRect (TEXT *lpText, RECT *pRect, BYTE *pdelta)
 		while (num_chars--)
 		{
 			UniChar ch;
-			SIZE last_width;
+			uqm::SIZE last_width;
 			TFB_Char *charFrame;
 
 			last_width = width;
@@ -385,7 +385,7 @@ TextRect (TEXT *lpText, RECT *pRect, BYTE *pdelta)
 				width += charFrame->disp.width + FontPtr->CharSpace;
 
 				if (num_chars && next_ch < MAX_UNICODE
-						&& FontPtr->KernTab[ch] != (BYTE)~0
+						&& FontPtr->KernTab[ch] != (uqm::BYTE)~0
 						&& !(FontPtr->KernTab[ch]
 						& (FontPtr->KernTab[next_ch] >> 2)))
 				{
@@ -396,7 +396,7 @@ TextRect (TEXT *lpText, RECT *pRect, BYTE *pdelta)
 				}
 			}
 
-			*pdelta++ = (BYTE)(width - last_width);
+			*pdelta++ = (uqm::BYTE)(width - last_width);
 		}
 
 		if (width > 0 && (bot_y -= top_y) > 0)
@@ -436,7 +436,7 @@ void
 _text_blt (RECT *pClipRect, TEXT *TextPtr, POINT ctxOrigin)
 {
 	FONT FontPtr;
-	COUNT num_chars;
+	uqm::COUNT num_chars;
 	UniChar next_ch;
 	const char *pStr;
 	POINT origin;
@@ -492,7 +492,7 @@ _text_blt (RECT *pClipRect, TEXT *TextPtr, POINT ctxOrigin)
 			origin.x += fontChar->disp.width + FontPtr->CharSpace;
 
 			if (num_chars && next_ch < MAX_UNICODE
-					&& FontPtr->KernTab[ch] != (BYTE)~0
+					&& FontPtr->KernTab[ch] != (uqm::BYTE)~0
 					&& !(FontPtr->KernTab[ch]
 					& (FontPtr->KernTab[next_ch] >> 2)))
 			{
@@ -509,11 +509,11 @@ void
 _text_blt_fade (RECT *pClipRect, TEXT *TextPtr, POINT ctxOrigin, FRAME repair, bool *skip)
 {
 	FONT FontPtr;
-	COUNT num_chars;
+	uqm::COUNT num_chars;
 	UniChar next_ch;
 	const char *pStr;
 	POINT origin;
-	SIZE leading;
+	uqm::SIZE leading;
 	TFB_Image *b_first, *b_second, *b_clear;
 	DrawMode mode = _get_context_draw_mode ();
 
@@ -521,7 +521,7 @@ _text_blt_fade (RECT *pClipRect, TEXT *TextPtr, POINT ctxOrigin, FRAME repair, b
 	if (FontPtr != NULL)
 	{
 		RECT r;
-		SIZE w, h;
+		uqm::SIZE w, h;
 
 		if (!GetContextFontDispHeight (&h) || !GetContextFontDispWidth (&w))
 			return;
@@ -617,7 +617,7 @@ _text_blt_fade (RECT *pClipRect, TEXT *TextPtr, POINT ctxOrigin, FRAME repair, b
 				origin.x += fontChar->disp.width + FontPtr->CharSpace;
 
 				if (num_chars && next_ch < MAX_UNICODE
-						&& FontPtr->KernTab[ch] != (BYTE)~0
+						&& FontPtr->KernTab[ch] != (uqm::BYTE)~0
 						&& !(FontPtr->KernTab[ch]
 						& (FontPtr->KernTab[next_ch] >> 2)))
 				{
@@ -642,20 +642,20 @@ _text_blt_fade (RECT *pClipRect, TEXT *TextPtr, POINT ctxOrigin, FRAME repair, b
 }
 
 bool
-TextRectAlt (TEXT *lpText, RECT *pRect, BYTE *pdelta, BYTE swap,
+TextRectAlt (TEXT *lpText, RECT *pRect, uqm::BYTE *pdelta, uqm::BYTE swap,
 		UniChar key, FONT AltFontPtr)
 {
-	BYTE char_delta_array[MAX_DELTAS];
+	uqm::BYTE char_delta_array[MAX_DELTAS];
 	FONT FontPtr;
 
 	FontPtr = _CurFontPtr;
 	if (FontPtr != 0 && lpText->CharCount != 0)
 	{
 		COORD top_y, bot_y;
-		SIZE width;
+		uqm::SIZE width;
 		UniChar next_ch = 0;
 		const char *pStr;
-		COUNT num_chars;
+		uqm::COUNT num_chars;
 	
 		num_chars = lpText->CharCount;
 		/* At this point lpText->CharCount contains the *maximum* number of
@@ -685,7 +685,7 @@ TextRectAlt (TEXT *lpText, RECT *pRect, BYTE *pdelta, BYTE swap,
 		while (num_chars--)
 		{
 			UniChar ch;
-			SIZE last_width;
+			uqm::SIZE last_width;
 			TFB_Char *charFrame;
 
 			last_width = width;
@@ -727,7 +727,7 @@ TextRectAlt (TEXT *lpText, RECT *pRect, BYTE *pdelta, BYTE swap,
 				width += charFrame->disp.width + FontPtr->CharSpace;
 
 				if (num_chars && next_ch < MAX_UNICODE
-						&& FontPtr->KernTab[ch] != (BYTE)~0
+						&& FontPtr->KernTab[ch] != (uqm::BYTE)~0
 						&& !(FontPtr->KernTab[ch]
 						& (FontPtr->KernTab[next_ch] >> 2)))
 				{
@@ -738,7 +738,7 @@ TextRectAlt (TEXT *lpText, RECT *pRect, BYTE *pdelta, BYTE swap,
 				}
 			}
 
-			*pdelta++ = (BYTE)(width - last_width);
+			*pdelta++ = (uqm::BYTE)(width - last_width);
 		}
 
 		if (width > 0 && (bot_y -= top_y) > 0)
@@ -774,8 +774,8 @@ TextRectAlt (TEXT *lpText, RECT *pRect, BYTE *pdelta, BYTE swap,
 	return (false);
 }
 
-BYTE
-_text_blt_alt (RECT *pClipRect, TEXT *TextPtr, POINT ctxOrigin, BYTE swap,
+uqm::BYTE
+_text_blt_alt (RECT *pClipRect, TEXT *TextPtr, POINT ctxOrigin, uqm::BYTE swap,
 		FONT AltFontPtr, UniChar key)
 {// Kruzen: To create text using 2 fonts (Orz case)
  // Safest way to do so without going too deep into
@@ -783,13 +783,13 @@ _text_blt_alt (RECT *pClipRect, TEXT *TextPtr, POINT ctxOrigin, BYTE swap,
  // Warning: GetTextRect doesn't quite work since it looks
  // for chars only in 1 font
 	FONT FontPtr;
-	COUNT num_chars;
+	uqm::COUNT num_chars;
 	UniChar next_ch;
 	const char* pStr;
 	POINT origin;
 	TFB_Image *backing, *stock, *ext;
 	DrawMode mode = _get_context_draw_mode();
-	BYTE leading_step;
+	uqm::BYTE leading_step;
 
 	FontPtr = _CurFontPtr;
 	if (FontPtr == NULL)
@@ -801,11 +801,11 @@ _text_blt_alt (RECT *pClipRect, TEXT *TextPtr, POINT ctxOrigin, BYTE swap,
 	if (AltFontPtr != NULL)
 	{// Local backing needed for alt font
 	 // Create one
-		SIZE w, h;
+		uqm::SIZE w, h;
 		RECT r;
 		Color color = _get_context_fg_color();
-		w = (SIZE)AltFontPtr->disp.width;
-		h = (SIZE)AltFontPtr->disp.height;
+		w = (uqm::SIZE)AltFontPtr->disp.width;
+		h = (uqm::SIZE)AltFontPtr->disp.height;
 		if (w == 0 || h == 0)
 			return 0;
 
@@ -878,7 +878,7 @@ _text_blt_alt (RECT *pClipRect, TEXT *TextPtr, POINT ctxOrigin, BYTE swap,
 			origin.x += fontChar->disp.width + FontPtr->CharSpace;
 
 			if (num_chars && next_ch < MAX_UNICODE
-					&& FontPtr->KernTab[ch] != (BYTE)~0
+					&& FontPtr->KernTab[ch] != (uqm::BYTE)~0
 					&& !(FontPtr->KernTab[ch]
 					& (FontPtr->KernTab[next_ch] >> 2)))
 			{

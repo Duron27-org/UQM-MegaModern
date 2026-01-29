@@ -53,7 +53,7 @@ extern FRAME PickMeleeFrame;
 #define NUM_PICK_COLS 5
 #define NUM_PICK_ROWS 5
 
-typedef BYTE MELEE_OPTIONS;
+typedef uqm::BYTE MELEE_OPTIONS;
 
 #if 0 //defined(__cplusplus)
 }
@@ -74,16 +74,16 @@ struct melee_state
 	bool Initialized;
 	bool meleeStarted;
 	MELEE_OPTIONS MeleeOption;
-	COUNT side;
-	COUNT row;
-	COUNT col;
+	uqm::COUNT side;
+	uqm::COUNT row;
+	uqm::COUNT col;
 	MeleeSetup *meleeSetup;
 	struct melee_load_state load;
 	MeleeShip currentShip;
 			// The ship currently displayed. Not really needed.
 			// Also the current ship position when selecting a ship.
-	COUNT CurIndex;
-#define MELEE_STATE_INDEX_DONE ((COUNT) -1)
+	uqm::COUNT CurIndex;
+#define MELEE_STATE_INDEX_DONE ((uqm::COUNT) -1)
 			// Current position in the team string when editing it.
 			// Set to MELEE_STATE_INDEX_DONE when done.
 	bool buildPickConfirmed;
@@ -104,18 +104,18 @@ extern void Melee (void);
 
 // Some prototypes for use by loadmele.c:
 bool DoMelee (MELEE_STATE *pMS);
-void DrawMeleeIcon (COUNT which_icon, bool HiLite);
-void GetShipBox (RECT *pRect, COUNT side, COUNT row, COUNT col);
+void DrawMeleeIcon (uqm::COUNT which_icon, bool HiLite);
+void GetShipBox (RECT *pRect, uqm::COUNT side, uqm::COUNT row, uqm::COUNT col);
 void RepairMeleeFrame (const RECT *pRect);
 void DrawMeleeShipStrings (MELEE_STATE *pMS, MeleeShip NewStarShip);
 extern FRAME MeleeFrame;
 void Melee_flashSelection (MELEE_STATE *pMS);
-extern void QuickRepair (COUNT whichFrame, RECT *pRect);
+extern void QuickRepair (uqm::COUNT whichFrame, RECT *pRect);
 
-COUNT GetShipValue (MeleeShip StarShip);
+uqm::COUNT GetShipValue (MeleeShip StarShip);
 
-void updateRandomSeed (MELEE_STATE *pMS, COUNT side, DWORD seed);
-void confirmationCancelled (MELEE_STATE *pMS, COUNT side);
+void updateRandomSeed (MELEE_STATE *pMS, uqm::COUNT side, uqm::DWORD seed);
+void confirmationCancelled (MELEE_STATE *pMS, uqm::COUNT side);
 void connectedFeedback (NetConnection *conn);
 void abortFeedback (NetConnection *conn, NetplayAbortReason reason);
 void resetFeedback (NetConnection *conn, NetplayResetReason reason,
@@ -123,9 +123,9 @@ void resetFeedback (NetConnection *conn, NetplayResetReason reason,
 void errorFeedback (NetConnection *conn);
 void closeFeedback (NetConnection *conn);
 
-bool Melee_LocalChange_ship (MELEE_STATE *pMS, COUNT side,
+bool Melee_LocalChange_ship (MELEE_STATE *pMS, uqm::COUNT side,
 		FleetShipIndex index, MeleeShip ship);
-bool Melee_LocalChange_teamName (MELEE_STATE *pMS, COUNT side,
+bool Melee_LocalChange_teamName (MELEE_STATE *pMS, uqm::COUNT side,
 		const char *name);
 bool Melee_LocalChange_fleet (MELEE_STATE *pMS, size_t teamNr,
 		const MeleeShip *fleet);
@@ -135,9 +135,9 @@ bool Melee_LocalChange_team (MELEE_STATE *pMS, size_t teamNr,
 void Melee_bootstrapSyncTeam (MELEE_STATE *pMS, size_t teamNr);
 
 void Melee_RemoteChange_ship (MELEE_STATE *pMS, NetConnection *conn,
-		COUNT side, FleetShipIndex index, MeleeShip ship);
+		uqm::COUNT side, FleetShipIndex index, MeleeShip ship);
 void Melee_RemoteChange_teamName (MELEE_STATE *pMS, NetConnection *conn,
-		COUNT side, const char *name);
+		uqm::COUNT side, const char *name);
 
 void DrawShipPickerText (STAMP stamp);
 

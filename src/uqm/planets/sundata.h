@@ -36,29 +36,29 @@ extern "C" {
 
 typedef struct
 {
-	BYTE StarSize;
-	BYTE StarIntensity;
-	UWORD StarEnergy;
+	uqm::BYTE StarSize;
+	uqm::BYTE StarIntensity;
+	uqm::UWORD StarEnergy;
 
 	PLANET_INFO PlanetInfo;
 } SYSTEM_INFO;
 
-#define GENERATE_ALL  ((COUNT)~0)
+#define GENERATE_ALL  ((uqm::COUNT)~0)
 		
-extern COUNT GenerateMineralDeposits (const SYSTEM_INFO *, COUNT whichDeposit,
+extern uqm::COUNT GenerateMineralDeposits (const SYSTEM_INFO *, uqm::COUNT whichDeposit,
 		NODE_INFO *info);
-extern COUNT GenerateLifeForms (const SYSTEM_INFO *, COUNT whichLife,
+extern uqm::COUNT GenerateLifeForms (const SYSTEM_INFO *, uqm::COUNT whichLife,
 		NODE_INFO *info);
 extern void GenerateRandomLocation (POINT *loc);
-extern COUNT GenerateRandomNodes (const SYSTEM_INFO *, COUNT scan, COUNT numNodes,
-		COUNT type, COUNT whichNode, NODE_INFO *info);
-extern COUNT CustomMineralDeposits (const SYSTEM_INFO *SysInfoPtr, COUNT which_deposit,
-		NODE_INFO *info, COUNT numNodes, COUNT type, BYTE quality);
-extern COUNT CustomMineralDeposit (NODE_INFO *info, COUNT type, BYTE quality,
+extern uqm::COUNT GenerateRandomNodes (const SYSTEM_INFO *, uqm::COUNT scan, uqm::COUNT numNodes,
+		uqm::COUNT type, uqm::COUNT whichNode, NODE_INFO *info);
+extern uqm::COUNT CustomMineralDeposits (const SYSTEM_INFO *SysInfoPtr, uqm::COUNT which_deposit,
+		NODE_INFO *info, uqm::COUNT numNodes, uqm::COUNT type, uqm::BYTE quality);
+extern uqm::COUNT CustomMineralDeposit (NODE_INFO *info, uqm::COUNT type, uqm::BYTE quality,
 		POINT location);
 // Generate lifeforms from a preset lifeTypes[] array
-extern COUNT GeneratePresetLife (const SYSTEM_INFO *,
-		const SBYTE *lifeTypes, COUNT whichLife, NODE_INFO *info);
+extern uqm::COUNT GeneratePresetLife (const SYSTEM_INFO *,
+		const uqm::SBYTE *lifeTypes, uqm::COUNT whichLife, NODE_INFO *info);
 
 #define DWARF_ELEMENT_DENSITY  1
 #define GIANT_ELEMENT_DENSITY 3

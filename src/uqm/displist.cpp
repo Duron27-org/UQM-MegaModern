@@ -31,7 +31,7 @@
  */
 
 bool
-InitQueue (QUEUE *pq, COUNT num_elements, OBJ_SIZE size)
+InitQueue (QUEUE *pq, uqm::COUNT num_elements, OBJ_SIZE size)
 {
 	SetHeadLink (pq, NULL_HANDLE);
 	SetTailLink (pq, NULL_HANDLE);
@@ -42,7 +42,7 @@ InitQueue (QUEUE *pq, COUNT num_elements, OBJ_SIZE size)
 	SetFreeList (pq, NULL_HANDLE);
 #if 0	
 	log_add (log_Debug, "InitQueue(): num_elements = %d (%d)",
-			num_elements, (BYTE)num_elements);
+			num_elements, (uqm::BYTE)num_elements);
 #endif
 	if (AllocQueueTab (pq, num_elements) != NULL)
 	{
@@ -89,7 +89,7 @@ ReinitQueue (QUEUE *pq)
 	SetTailLink (pq, NULL_HANDLE);
 #ifdef QUEUE_TABLE
 	{
-		COUNT num_elements;
+		uqm::COUNT num_elements;
 
 		SetFreeList (pq, NULL_HANDLE);
 
@@ -235,10 +235,10 @@ RemoveQueue (QUEUE *pq, HLINK hLink)
 	UnlockLink (pq, hLink);
 }
 
-COUNT
+uqm::COUNT
 CountLinks (QUEUE *pq)
 {
-	COUNT LinkCount;
+	uqm::COUNT LinkCount;
 	HLINK hLink, hNextLink;
 
 	LinkCount = 0;

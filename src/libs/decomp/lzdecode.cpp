@@ -33,15 +33,15 @@
 
 PLZHCODE_DESC _lpCurCodeDesc;
 STREAM_TYPE _StreamType;
-BYTE* _Stream;
-UWORD _workbuf;
-BYTE _workbuflen;
+uqm::BYTE* _Stream;
+uqm::UWORD _workbuf;
+uqm::BYTE _workbuflen;
 
 /* get one bit */
-static SWORD
+static uqm::SWORD
 GetBit (void)
 {
-	SWORD i;
+	uqm::SWORD i;
 
 	while (_workbuflen <= 8)
 	{
@@ -57,10 +57,10 @@ GetBit (void)
 	return (i);
 }
 
-static UWORD
-GetBits (BYTE num_bits)
+static uqm::UWORD
+GetBits (uqm::BYTE num_bits)
 {
-	SWORD i;
+	uqm::SWORD i;
 
 	while (_workbuflen <= 8)
 	{
@@ -81,7 +81,7 @@ GetBits (BYTE num_bits)
 void
 StartHuff (void)
 {
-	COUNT i, j;
+	uqm::COUNT i, j;
 
 	for (i = 0; i < N_CHAR; i++)
 	{
@@ -104,10 +104,10 @@ StartHuff (void)
 DECODE_REF
 copen (void *InStream, STREAM_TYPE SType, STREAM_MODE SMode)
 {
-	DWORD StreamLength;
+	uqm::DWORD StreamLength;
 
 	_StreamType = SType;
-	_Stream = (BYTE*)InStream;
+	_Stream = (uqm::BYTE*)InStream;
 	if (SMode == STREAM_WRITE) /* writing */
 	{
 		OutChar (0); /* skip future StreamLength */
@@ -119,14 +119,14 @@ copen (void *InStream, STREAM_TYPE SType, STREAM_MODE SMode)
 	}
 	else /* reading */
 	{
-		BYTE lobyte, hibyte;
-		UWORD loword, hiword;
+		uqm::BYTE lobyte, hibyte;
+		uqm::UWORD loword, hiword;
 
-		lobyte = (BYTE)InChar ();
-		hibyte = (BYTE)InChar ();
+		lobyte = (uqm::BYTE)InChar ();
+		hibyte = (uqm::BYTE)InChar ();
 		loword = MAKE_WORD (lobyte, hibyte);
-		lobyte = (BYTE)InChar ();
-		hibyte = (BYTE)InChar ();
+		lobyte = (uqm::BYTE)InChar ();
+		hibyte = (uqm::BYTE)InChar ();
 		hiword = MAKE_WORD (lobyte, hibyte);
 
 		StreamLength = MAKE_DWORD (loword, hiword);
@@ -153,13 +153,13 @@ copen (void *InStream, STREAM_TYPE SType, STREAM_MODE SMode)
 	return ((DECODE_REF)_lpCurCodeDesc);
 }
 
-DWORD
+uqm::DWORD
 cclose (PLZHCODE_DESC lpCodeDesc)
 {
 	_lpCurCodeDesc = lpCodeDesc;
 	if (_lpCurCodeDesc)
 	{
-		DWORD StreamIndex;
+		uqm::DWORD StreamIndex;
 
 		if (_lpCurCodeDesc->CleanupFunc)
 			(*_lpCurCodeDesc->CleanupFunc) ();
@@ -175,7 +175,7 @@ cclose (PLZHCODE_DESC lpCodeDesc)
 }
 
 void
-cfilelength (PLZHCODE_DESC lpCodeDesc, DWORD *pfilelen)
+cfilelength (PLZHCODE_DESC lpCodeDesc, uqm::DWORD *pfilelen)
 {
 	if (lpCodeDesc == 0)
 		*pfilelen = 0;
@@ -184,7 +184,7 @@ cfilelength (PLZHCODE_DESC lpCodeDesc, DWORD *pfilelen)
 }
 
 		/* decoder table */
-static const BYTE d_code[256] =
+static const uqm::BYTE d_code[256] =
 {
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -219,7 +219,7 @@ static const BYTE d_code[256] =
 	0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
 	0x38, 0x39, 0x3A, 0x3B, 0x3C, 0x3D, 0x3E, 0x3F,
 };
-static const BYTE d_len[256] =
+static const uqm::BYTE d_len[256] =
 {
 	0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
 	0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
@@ -264,13 +264,13 @@ static const BYTE d_len[256] =
 		_workbuf |= *(p) << (8 - _workbuflen); \
 		_workbuflen += 8; \
 	} \
-	*(p) = HIBYTE (_workbuf); \
+	*(p) = highByte (_workbuf); \
 	_workbuf = (_workbuf << 8) & 0xFFFF; \
 	_workbuflen -= 8; \
 	\
 	/* input lower 6 bits directly */ \
 	j = d_len[*(p)]; \
-	*(p) = ((UWORD)d_code[*(p)] << 6) \
+	*(p) = ((uqm::UWORD)d_code[*(p)] << 6) \
 			| (((*(p) << j) | GetBits (j)) & 0x3f); \
 }
 
@@ -288,11 +288,11 @@ static const BYTE d_len[256] =
 	*(c) -= T; \
 }
 
-COUNT
-cread (void *buf, COUNT size, COUNT count, PLZHCODE_DESC lpCodeDesc)
+uqm::COUNT
+cread (void *buf, uqm::COUNT size, uqm::COUNT count, PLZHCODE_DESC lpCodeDesc)
 {
-	COUNT r, j, i;
-	BYTE *lpStr;
+	uqm::COUNT r, j, i;
+	uqm::BYTE *lpStr;
 
 	if ((_lpCurCodeDesc = lpCodeDesc) == 0)
 		return (0);
@@ -301,7 +301,7 @@ cread (void *buf, COUNT size, COUNT count, PLZHCODE_DESC lpCodeDesc)
 	if (lpCodeDesc->StreamIndex + size > lpCodeDesc->StreamLength)
 	{
 		size /= count;
-		count = (COUNT)((lpCodeDesc->StreamLength
+		count = (uqm::COUNT)((lpCodeDesc->StreamLength
 				- lpCodeDesc->StreamIndex) / size);
 
 		size *= count;
@@ -310,10 +310,10 @@ cread (void *buf, COUNT size, COUNT count, PLZHCODE_DESC lpCodeDesc)
 	if (size == 0)
 		return (0);
 
-	lpStr = (BYTE*)buf;
+	lpStr = (uqm::BYTE*)buf;
 	_StreamType = lpCodeDesc->StreamType;
 
-	_Stream = (BYTE*)lpCodeDesc->Stream;
+	_Stream = (uqm::BYTE*)lpCodeDesc->Stream;
 	_workbuf = lpCodeDesc->workbuf;
 	_workbuflen = lpCodeDesc->workbuflen;
 
@@ -330,7 +330,7 @@ cread (void *buf, COUNT size, COUNT count, PLZHCODE_DESC lpCodeDesc)
 
 	do
 	{
-		COUNT c;
+		uqm::COUNT c;
 
 		DecodeChar (&c);
 
@@ -338,13 +338,13 @@ cread (void *buf, COUNT size, COUNT count, PLZHCODE_DESC lpCodeDesc)
 		{
 			size--;
 
-			*lpStr++ = lpCodeDesc->text_buf[r++ & (N - 1)] = (BYTE)c;
+			*lpStr++ = lpCodeDesc->text_buf[r++ & (N - 1)] = (uqm::BYTE)c;
 		}
 		else
 		{
-			COUNT copy_size;
+			uqm::COUNT copy_size;
 
-			//i is a COUNT;
+			//i is a uqm::COUNT;
 				DecodePosition(&i);
 			i = r - i - 1;
 			j = c - 255 + THRESHOLD;
@@ -359,7 +359,7 @@ ReenterRun:
 			size -= j;
 			do
 			{
-				COUNT loc_size;
+				uqm::COUNT loc_size;
 
 				i &= (N - 1);
 				r &= (N - 1);
@@ -371,7 +371,7 @@ ReenterRun:
 				loc_size = copy_size;
 				if (i + loc_size > N)
 				{
-					COUNT k;
+					uqm::COUNT k;
 
 					k = N - i;
 					memcpy (lpStr, &lpCodeDesc->text_buf[i], k);
@@ -389,7 +389,7 @@ ReenterRun:
 				loc_size = copy_size;
 				if (r + loc_size > N)
 				{
-					COUNT k;
+					uqm::COUNT k;
 
 					k = N - r;
 					memcpy (&lpCodeDesc->text_buf[r], lpStr, k);

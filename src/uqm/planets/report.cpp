@@ -47,7 +47,7 @@ extern FRAME SpaceJunkFrame;
 static void
 ClearReportArea (COORD startx)
 {
-	COUNT x, y;
+	uqm::COUNT x, y;
 	RECT r;
 	STAMP s;
 
@@ -83,21 +83,21 @@ ClearReportArea (COORD startx)
 }
 
 static void
-MakeReport (SOUND ReadOutSounds, CHAR_T *pStr, COUNT StrLen)
+MakeReport (SOUND ReadOutSounds, uqm::CHAR_T *pStr, uqm::COUNT StrLen)
 {
 	int end_page_len;
-	CHAR_T end_page_buf[200];
+	uqm::CHAR_T end_page_buf[200];
 	UniChar last_c = 0;
-	COUNT row_cells;
+	uqm::COUNT row_cells;
 	bool Sleepy;
 	RECT r, contextRect;
 	TEXT t;
 	Color fgcolor;
 	COORD startx;
 
-	SIZE total_lines = -1;
-	SIZE curr_line = -1;
-	COUNT first_line_length = 0;
+	uqm::SIZE total_lines = -1;
+	uqm::SIZE curr_line = -1;
+	uqm::COUNT first_line_length = 0;
 
 	sprintf (end_page_buf, "%s\n",
 			GAME_STRING (SCAN_STRING_BASE + NUM_SCAN_TYPES));
@@ -136,8 +136,8 @@ MakeReport (SOUND ReadOutSounds, CHAR_T *pStr, COUNT StrLen)
 
 		if (is3DO (optSuperPC))
 		{
-			const CHAR_T* pCurrStr;
-			COUNT length;
+			const uqm::CHAR_T* pCurrStr;
+			uqm::COUNT length;
 
 			pCurrStr = t.pStr;
 			total_lines = 0;
@@ -156,10 +156,10 @@ MakeReport (SOUND ReadOutSounds, CHAR_T *pStr, COUNT StrLen)
 
 	while (StrLen)
 	{
-		COUNT col_cells;
-		const CHAR_T *pLastStr;
-		const CHAR_T *pNextStr;
-		COUNT lf_pos;
+		uqm::COUNT col_cells;
+		const uqm::CHAR_T *pLastStr;
+		const uqm::CHAR_T *pNextStr;
+		uqm::COUNT lf_pos;
 
 		pLastStr = t.pStr;
 
@@ -197,8 +197,8 @@ MakeReport (SOUND ReadOutSounds, CHAR_T *pStr, COUNT StrLen)
 
 		do
 		{
-			COUNT word_chars;
-			const CHAR_T *pStr;
+			uqm::COUNT word_chars;
+			const uqm::CHAR_T *pStr;
 			UniChar c;
  
 			pStr = t.pStr;
@@ -206,7 +206,7 @@ MakeReport (SOUND ReadOutSounds, CHAR_T *pStr, COUNT StrLen)
 			while (UniChar_isGraph (getCharFromString (&pNextStr)))
 				pStr = pNextStr;
 
-			word_chars = (COUNT)utf8StringCountN (t.pStr, pStr);
+			word_chars = (uqm::COUNT)utf8StringCountN (t.pStr, pStr);
 			if ((col_cells += word_chars) <= NUM_CELL_COLS)
 			{
 				TimeCount TimeOut;
@@ -225,7 +225,7 @@ MakeReport (SOUND ReadOutSounds, CHAR_T *pStr, COUNT StrLen)
 						font_DrawText (&t);
 					else
 					{
-						BYTE scale = 0;
+						uqm::BYTE scale = 0;
 						font_DrawText (&t);
 
 						if (CurrentInputState.menu[KEY_MENU_RIGHT])
@@ -343,14 +343,14 @@ DoDiscoveryReport (SOUND ReadOutSounds)
 
 		luaUqm_comm_init (NULL, NULL_RESOURCE);
 		bool allocated = false;
-		char *StrPtr = (CHAR_T *)GetStringAddress
+		char *StrPtr = (uqm::CHAR_T *)GetStringAddress
 				(pSolarSysState->SysInfo.PlanetInfo.DiscoveryString);
 		if (luaUqm_comm_stringNeedsInterpolate (StrPtr))
 		{
 			allocated = true;
 			StrPtr = luaUqm_comm_stringInterpolate (StrPtr);
 		}
-		MakeReport (ReadOutSounds, StrPtr, (COUNT)strlen (StrPtr));
+		MakeReport (ReadOutSounds, StrPtr, (uqm::COUNT)strlen (StrPtr));
 		
 		luaUqm_comm_uninit ();
 		if (allocated)

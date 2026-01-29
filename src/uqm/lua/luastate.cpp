@@ -153,7 +153,7 @@ luaUqm_getProp(lua_State *luaState, int nameIndex) {
 }
 
 void
-setGameStateUint(const char *name, DWORD val)
+setGameStateUint(const char *name, uqm::DWORD val)
 {
 	lua_pushstring(luaUqm_globalState, name);
 	lua_pushinteger(luaUqm_globalState, val);
@@ -165,10 +165,10 @@ setGameStateUint(const char *name, DWORD val)
 #endif
 }
 
-DWORD
+uqm::DWORD
 getGameStateUint(const char *name)
 {
-	DWORD result;
+	uqm::DWORD result;
 	int resultType;
 
 	lua_pushstring(luaUqm_globalState, name);
@@ -193,7 +193,7 @@ getGameStateUint(const char *name)
 			return 0;
 	}
 
-	result = (DWORD) lua_tointeger(luaUqm_globalState, -1);
+	result = (uqm::DWORD) lua_tointeger(luaUqm_globalState, -1);
 	lua_pop(luaUqm_globalState, 2);
 	return result;
 }

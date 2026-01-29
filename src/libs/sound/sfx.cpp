@@ -32,7 +32,7 @@ static void CheckFinishedChannels (void);
 static const SoundPosition notPositional = {false, 0, 0};
 
 void
-PlayChannel (COUNT channel, SOUND snd, SoundPosition pos,
+PlayChannel (uqm::COUNT channel, SOUND snd, SoundPosition pos,
 		void *positional_object, unsigned char priority)
 {
 	SOUNDPTR snd_ptr = GetSoundAddress (snd);
@@ -60,7 +60,7 @@ PlayChannel (COUNT channel, SOUND snd, SoundPosition pos,
 }
 
 void
-StopChannel (COUNT channel, BYTE Priority)
+StopChannel (uqm::COUNT channel, uqm::BYTE Priority)
 {
 	StopSource (channel);
 	(void)Priority; // ignored
@@ -87,7 +87,7 @@ CheckFinishedChannels (void)
 }
 
 bool
-ChannelPlaying (COUNT WhichChannel)
+ChannelPlaying (uqm::COUNT WhichChannel)
 {
 	audio_IntVal state;
 	
@@ -99,19 +99,19 @@ ChannelPlaying (COUNT WhichChannel)
 }
 
 void *
-GetPositionalObject (COUNT channel)
+GetPositionalObject (uqm::COUNT channel)
 {
 	return soundSource[channel].positional_object;
 }
 
 void
-SetPositionalObject (COUNT channel, void *positional_object)
+SetPositionalObject (uqm::COUNT channel, void *positional_object)
 {
 	soundSource[channel].positional_object = positional_object;
 }
 
 void
-UpdateSoundPosition (COUNT channel, SoundPosition pos)
+UpdateSoundPosition (uqm::COUNT channel, SoundPosition pos)
 {
 	const float ATTENUATION = 160.0f;
 	const float MIN_DISTANCE = 0.5f;
@@ -146,7 +146,7 @@ UpdateSoundPosition (COUNT channel, SoundPosition pos)
 }
 
 void
-SetChannelVolume (COUNT channel, COUNT volume, BYTE priority)
+SetChannelVolume (uqm::COUNT channel, uqm::COUNT volume, uqm::BYTE priority)
 		// I wonder what this whole priority business is...
 		// I can probably ignore it.
 {
@@ -156,7 +156,7 @@ SetChannelVolume (COUNT channel, COUNT volume, BYTE priority)
 }
 
 void *
-_GetSoundBankData (uio_Stream *fp, DWORD length)
+_GetSoundBankData (uio_Stream *fp, uqm::DWORD length)
 {
 	int snd_ct, n;
 	char CurrentLine[1024], filename[1024];

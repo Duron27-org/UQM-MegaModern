@@ -386,7 +386,7 @@ TFB_GL_ScanLines (void)
 }
 
 static void
-TFB_GL_DrawQuad (SDL_Rect *r, BYTE ResFactor)
+TFB_GL_DrawQuad (SDL_Rect *r, uqm::BYTE ResFactor)
 {
 	bool keep_aspect_ratio = optKeepAspectRatio;
 	int x1 = 0, y1 = 0, x2 = ScreenWidthActual, y2 = ScreenHeightActual;

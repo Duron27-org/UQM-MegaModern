@@ -50,13 +50,13 @@ FRAME planet[NUM_VIEWS];
 static char buffer[80];
 
 void
-load_gravity_well (BYTE selector)
+load_gravity_well (uqm::BYTE selector)
 {
-	COUNT i;
+	uqm::COUNT i;
 
 	if (selector == SA_MATRA)
 	{
-		if (EXTENDED && LOBYTE (GLOBAL (CurrentActivity)) != IN_LAST_BATTLE)
+		if (EXTENDED && lowByte (GLOBAL (CurrentActivity)) != IN_LAST_BATTLE)
 		{
 			planet[0] = CaptureDrawable (
 					LoadGraphic (SCENERY_MASK_PMAP_ANIM)
@@ -96,7 +96,7 @@ load_gravity_well (BYTE selector)
 void
 free_gravity_well (void)
 {
-	COUNT i;
+	uqm::COUNT i;
 
 	for (i = 0; i < NUM_VIEWS; ++i)
 	{
@@ -107,7 +107,7 @@ free_gravity_well (void)
 }
 
 FRAME
-load_life_form (BYTE selector)
+load_life_form (uqm::BYTE selector)
 {
 	snprintf (buffer, 79, "graphics.life.%d", selector);
 	buffer[79] = '\0'; /* Shouldn't be necessary, but better safe than sorry */
@@ -115,7 +115,7 @@ load_life_form (BYTE selector)
 }
 
 MUSIC_REF
-load_orbit_theme (BYTE selector)
+load_orbit_theme (uqm::BYTE selector)
 {
 	snprintf (buffer, 79, "music.orbit%d", selector + 1);
 	buffer[79] = '\0'; /* Shouldn't be necessary, but better safe than sorry */	
@@ -123,7 +123,7 @@ load_orbit_theme (BYTE selector)
 }
 
 MUSIC_REF
-loadMainMenuMusic (BYTE selector)
+loadMainMenuMusic (uqm::BYTE selector)
 {
 	snprintf (buffer, 79, "music.mainmenu%d", selector + 1);
 	buffer[79] = '\0'; /* Shouldn't be necessary, but better safe than sorry */	

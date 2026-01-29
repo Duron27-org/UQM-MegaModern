@@ -37,7 +37,7 @@
 #include "uqm/controls.h"
 #include "uqm/races.h"
 
-static COUNT melnorme_digit_names[] =
+static uqm::COUNT melnorme_digit_names[] =
 {
 	ENUMERATE_ZERO,
 	ENUMERATE_ONE,
@@ -51,7 +51,7 @@ static COUNT melnorme_digit_names[] =
 	ENUMERATE_NINE
 };
 
-static COUNT melnorme_teen_names[] =
+static uqm::COUNT melnorme_teen_names[] =
 {
 	ENUMERATE_TEN,
 	ENUMERATE_ELEVEN,
@@ -65,7 +65,7 @@ static COUNT melnorme_teen_names[] =
 	ENUMERATE_NINETEEN
 };
 
-static COUNT melnorme_tens_names[] =
+static uqm::COUNT melnorme_tens_names[] =
 {
 	0, /* invalid */
 	0, /* skip digit */
@@ -312,7 +312,7 @@ HasStateTech (int stateId)
 }
 
 static void
-GrantStateTech (int stateId, BYTE value)
+GrantStateTech (int stateId, uqm::BYTE value)
 {
 	switch (stateId)
 	{
@@ -361,7 +361,7 @@ GrantTech (TechId_t techId)
 			return;
 		case TECH_TYPE_LANDER_SHIELD:
 		{
-			COUNT state = GET_GAME_STATE (LANDER_SHIELDS) | (1 << techData->subtype);
+			uqm::COUNT state = GET_GAME_STATE (LANDER_SHIELDS) | (1 << techData->subtype);
 			SET_GAME_STATE (LANDER_SHIELDS, state);
 			return;
 		}
@@ -374,8 +374,8 @@ GrantTech (TechId_t techId)
 static int
 countTech (void)
 {
-	BYTE numTech = 0;
-	BYTE i = 0;
+	uqm::BYTE numTech = 0;
+	uqm::BYTE i = 0;
 
 	for (i = 0; i <= NUM_TECHNOLOGIES; ++i)
 		numTech += HasTech ((TechId_t)i);
@@ -498,8 +498,8 @@ const size_t NUM_TECH_ITEMS = ARRAY_SIZE (tech_sale_catalog);
 static TechSaleData *
 GetNextTechForSale (void)
 {
-	BYTE i = 0;
-	BYTE j = 0;
+	uqm::BYTE i = 0;
+	uqm::BYTE j = 0;
 
 	if (DIF_HARD && CurStarDescPtr)
 	{
@@ -572,12 +572,12 @@ static StatMsgMode prevMsgMode;
 
 static void DoFirstMeeting (RESPONSE_REF R);
 
-static COUNT
+static uqm::COUNT
 ShipWorth (void)
 {
-	BYTE i;
-	SBYTE crew_pods;
-	COUNT worth;
+	uqm::BYTE i;
+	uqm::SBYTE crew_pods;
+	uqm::COUNT worth;
 
 	worth = GLOBAL_SIS (NumLanders)
 			* GLOBAL (ModuleCost[PLANET_LANDER]);
@@ -592,13 +592,13 @@ ShipWorth (void)
 			worth += GLOBAL (ModuleCost[TURNING_JETS]);
 	}
 
-	crew_pods = -(SBYTE)(
+	crew_pods = -(uqm::SBYTE)(
 			(GLOBAL_SIS (CrewEnlisted) + CREW_POD_CAPACITY - 1)
 			/ CREW_POD_CAPACITY
 			);
 	for (i = 0; i < NUM_MODULE_SLOTS; ++i)
 	{
-		BYTE which_module;
+		uqm::BYTE which_module;
 
 		which_module = GLOBAL_SIS (ModuleSlots[i]);
 		if (which_module < BOMB_MODULE_0
@@ -611,7 +611,7 @@ ShipWorth (void)
 	return (worth);
 }
 
-static COUNT rescue_fuel;
+static uqm::COUNT rescue_fuel;
 static SIS_STATE SIS_copy;
 
 // Extract method to return the response string index
@@ -642,10 +642,10 @@ GetStripModuleRef (int moduleID)
 	return 0;
 }
 
-static DWORD
+static uqm::DWORD
 getStripRandomSeed (void)
 {
-	DWORD x, y;
+	uqm::DWORD x, y;
 	// We truncate the location because encounters move the ship slightly in
 	// HSpace, and throw some other relatively immutable values in the mix to
 	// vary the deal when stuck at the same general location again.
@@ -660,14 +660,14 @@ getStripRandomSeed (void)
 }
 
 static bool
-StripShip (COUNT fuel_required)
+StripShip (uqm::COUNT fuel_required)
 {
-	BYTE i, which_module;
-	SBYTE crew_pods;
+	uqm::BYTE i, which_module;
+	uqm::SBYTE crew_pods;
 
 	SET_GAME_STATE (MELNORME_RESCUE_REFUSED, 0);
 
-	crew_pods = -(SBYTE)(
+	crew_pods = -(uqm::SBYTE)(
 			(GLOBAL_SIS (CrewEnlisted) + CREW_POD_CAPACITY - 1)
 			/ CREW_POD_CAPACITY
 			);
@@ -676,7 +676,7 @@ StripShip (COUNT fuel_required)
 		GlobData.SIS_state = SIS_copy;
 		DeltaSISGauges (UNDEFINED_DELTA, rescue_fuel, UNDEFINED_DELTA);
 	}
-	else if (fuel_required == (COUNT)~0)
+	else if (fuel_required == (uqm::COUNT)~0)
 	{
 		GLOBAL_SIS (NumLanders) = 0;
 		for (i = 0; i < NUM_DRIVE_SLOTS; ++i)
@@ -702,12 +702,12 @@ StripShip (COUNT fuel_required)
 	}
 	else if (fuel_required)
 	{
-		SBYTE bays;
-		BYTE num_searches, beg_mod, end_mod;
-		COUNT worth, total;
-		BYTE module_count[BOMB_MODULE_0];
-		BYTE slot;
-		DWORD capacity;
+		uqm::SBYTE bays;
+		uqm::BYTE num_searches, beg_mod, end_mod;
+		uqm::COUNT worth, total;
+		uqm::BYTE module_count[BOMB_MODULE_0];
+		uqm::BYTE slot;
+		uqm::DWORD capacity;
 		RandomContext *rc;
 		
 		// Bug #567
@@ -729,7 +729,7 @@ StripShip (COUNT fuel_required)
 			if (SIS_copy.ModuleSlots[slot] == FUEL_TANK
 					|| SIS_copy.ModuleSlots[slot] == HIGHEFF_FUELSYS)
 			{
-				COUNT volume;
+				uqm::COUNT volume;
 
 				volume = SIS_copy.ModuleSlots[slot] == FUEL_TANK
 						? FUEL_TANK_CAPACITY : HEFUEL_TANK_CAPACITY;
@@ -739,7 +739,7 @@ StripShip (COUNT fuel_required)
 		if (fuel_required > capacity)
 			fuel_required = capacity;
 
-		bays = -(SBYTE)(
+		bays = -(uqm::SBYTE)(
 				(SIS_copy.TotalElementMass + STORAGE_BAY_CAPACITY - 1)
 				/ STORAGE_BAY_CAPACITY
 				);
@@ -755,13 +755,13 @@ StripShip (COUNT fuel_required)
 		worth = fuel_required / FUEL_TANK_SCALE;
 		total = 0;
 		num_searches = 0;
-		beg_mod = end_mod = (BYTE)~0;
+		beg_mod = end_mod = (uqm::BYTE)~0;
 		while (total < worth && ShipWorth () && ++num_searches)
 		{
-			DWORD rand_val;
+			uqm::DWORD rand_val;
 
 			rand_val = RandomContext_Random (rc);
-			switch (which_module = LOBYTE (LOWORD (rand_val)) % (CREW_POD + 1))
+			switch (which_module = lowByte (LOWORD (rand_val)) % (CREW_POD + 1))
 			{
 				case PLANET_LANDER:
 					if (SIS_copy.NumLanders == 0)
@@ -789,7 +789,7 @@ StripShip (COUNT fuel_required)
 					SIS_copy.JetSlots[i] = EMPTY_SLOT + 1;
 					break;
 				case CREW_POD:
-					i = HIBYTE (LOWORD (rand_val)) % NUM_MODULE_SLOTS;
+					i = highByte (LOWORD (rand_val)) % NUM_MODULE_SLOTS;
 					which_module = SIS_copy.ModuleSlots[i];
 					if (which_module >= BOMB_MODULE_0
 							|| which_module == FUEL_TANK
@@ -803,7 +803,7 @@ StripShip (COUNT fuel_required)
 					break;
 			}
 
-			if (beg_mod == (BYTE)~0)
+			if (beg_mod == (uqm::BYTE)~0)
 				beg_mod = end_mod = which_module;
 			else if (which_module > end_mod)
 				end_mod = which_module;
@@ -872,7 +872,7 @@ ExitConversation (RESPONSE_REF R)
 		{
 			SET_GAME_STATE (MELNORME_ANGER, 0);
 
-			StripShip ((COUNT)~0);
+			StripShip ((uqm::COUNT)~0);
 			NPCPhrase (FAIR_JUSTICE);
 		}
 	}
@@ -922,8 +922,8 @@ ExitConversation (RESPONSE_REF R)
 static void
 DoRescue (RESPONSE_REF R)
 {
-	SIZE dx, dy;
-	COUNT fuel_required;
+	uqm::SIZE dx, dy;
+	uqm::COUNT fuel_required;
 
 	(void) R;  // ignored
 	// JSD Replace old method for locating SOL with plot method
@@ -936,7 +936,7 @@ DoRescue (RESPONSE_REF R)
 	dy = LOGY_TO_UNIVERSE (GLOBAL_SIS (log_y))
 			- plot_map[SOL_DEFINED].star_pt.y;
 	fuel_required = square_root (
-			(DWORD)((long)dx * dx + (long)dy * dy)
+			(uqm::DWORD)((long)dx * dx + (long)dy * dy)
 			) + (2 * FUEL_TANK_SCALE);
 
 	if (StripShip (fuel_required))
@@ -947,7 +947,7 @@ DoRescue (RESPONSE_REF R)
 }
 
 // Extract method for getting the player's current credits.
-static COUNT 
+static uqm::COUNT 
 GetAvailableCredits (void)
 {
 	return MAKE_WORD (GET_GAME_STATE (MELNORME_CREDIT0),
@@ -956,18 +956,18 @@ GetAvailableCredits (void)
 
 // Extract method for setting the player's current credits.
 static void
-SetAvailableCredits (COUNT credits)
+SetAvailableCredits (uqm::COUNT credits)
 {
-	SET_GAME_STATE (MELNORME_CREDIT0, LOBYTE (credits));
-	SET_GAME_STATE (MELNORME_CREDIT1, HIBYTE (credits));
+	SET_GAME_STATE (MELNORME_CREDIT0, lowByte (credits));
+	SET_GAME_STATE (MELNORME_CREDIT1, highByte (credits));
 }
 
 // Now returns whether the purchase succeeded instead of the remaining
 // credit balance.  Use GetAvailableCredits() to get the latter.
 static bool
-DeltaCredit (SIZE delta_credit)
+DeltaCredit (uqm::SIZE delta_credit)
 {
-	COUNT Credit = GetAvailableCredits ();
+	uqm::COUNT Credit = GetAvailableCredits ();
 
 	// Can they afford it?
 	if ((int)delta_credit >= 0 || ((int)(-delta_credit) <= (int)(Credit)))
@@ -993,7 +993,7 @@ DeltaCredit (SIZE delta_credit)
 static void
 CurrentEvents (void)
 {
-	BYTE stack = GET_GAME_STATE (MELNORME_EVENTS_INFO_STACK);
+	uqm::BYTE stack = GET_GAME_STATE (MELNORME_EVENTS_INFO_STACK);
 	const int phraseId = GetLineSafe (ok_buy_event_lines, stack);
 	switch (phraseId)
 	{
@@ -1011,7 +1011,7 @@ CurrentEvents (void)
 static void
 AlienRaces (void)
 {
-	BYTE stack = GET_GAME_STATE (MELNORME_ALIEN_INFO_STACK);
+	uqm::BYTE stack = GET_GAME_STATE (MELNORME_ALIEN_INFO_STACK);
 	const int phraseId = GetLineSafe (ok_buy_alien_race_lines, stack);
 	// Two pieces of alien knowledge trigger state changes.
 	switch (phraseId)
@@ -1058,7 +1058,7 @@ AlienRaces (void)
 static void
 History (void)
 {
-	BYTE stack = GET_GAME_STATE (MELNORME_HISTORY_INFO_STACK);
+	uqm::BYTE stack = GET_GAME_STATE (MELNORME_HISTORY_INFO_STACK);
 	const int phraseId = GetLineSafe (ok_buy_history_lines, stack);
 	NPCPhrase (phraseId);
 	SET_GAME_STATE (MELNORME_HISTORY_INFO_STACK, stack + 1);
@@ -1074,17 +1074,17 @@ static bool AnyInfoLeftToSell (void)
 
 static void NatureOfConversation (RESPONSE_REF R);
 
-static BYTE AskedToBuy;
+static uqm::BYTE AskedToBuy;
 
 
 static void
 DoBuy (RESPONSE_REF R)
 {
-	COUNT credit;
-	SIZE needed_credit;
-	BYTE slot;
-	DWORD capacity; 
-	BYTE FuelCost = BIO_CREDIT_VALUE / 2;
+	uqm::COUNT credit;
+	uqm::SIZE needed_credit;
+	uqm::BYTE slot;
+	uqm::DWORD capacity; 
+	uqm::BYTE FuelCost = BIO_CREDIT_VALUE / 2;
 
 	credit = GetAvailableCredits ();
 
@@ -1095,7 +1095,7 @@ DoBuy (RESPONSE_REF R)
 		if (GLOBAL_SIS (ModuleSlots[slot]) == FUEL_TANK
 				|| GLOBAL_SIS (ModuleSlots[slot]) == HIGHEFF_FUELSYS)
 		{
-			COUNT volume;
+			uqm::COUNT volume;
 
 			volume = GLOBAL_SIS (ModuleSlots[slot]) == FUEL_TANK
 					? FUEL_TANK_CAPACITY : HEFUEL_TANK_CAPACITY;
@@ -1129,7 +1129,7 @@ DoBuy (RESPONSE_REF R)
 			needed_credit = 25;
 		else if (PLAYER_SAID (R, fill_me_up))
 		{
-			SIZE remainingCapacity = (capacity - GLOBAL_SIS(FuelOnBoard)
+			uqm::SIZE remainingCapacity = (capacity - GLOBAL_SIS(FuelOnBoard)
 					+ FUEL_TANK_SCALE - 1)
 				/ FUEL_TANK_SCALE;
 
@@ -1159,14 +1159,14 @@ DoBuy (RESPONSE_REF R)
 			if (((int)(needed_credit * FuelCost) <= (int)credit)
 					|| optInfiniteCredits)
 			{
-				DWORD f;
+				uqm::DWORD f;
 
 				if (EXTENDED && PLAYER_SAID (R, fill_me_up))
 					NPCPhrase (OK_FILL_YOU_UP);
 
 				NPCPhrase (GOT_FUEL);
 
-				f = (DWORD)needed_credit * FUEL_TANK_SCALE;
+				f = (uqm::DWORD)needed_credit * FUEL_TANK_SCALE;
 				while (f > 0x3FFFL)
 				{
 					DeltaSISGauges (0, 0x3FFF, 0);
@@ -1314,17 +1314,17 @@ BuyBuyBuy:
 static void
 DoSell (RESPONSE_REF R)
 {
-	BYTE num_new_rainbows;
-	UWORD rainbow_mask;
-	SIZE added_credit;
+	uqm::BYTE num_new_rainbows;
+	uqm::UWORD rainbow_mask;
+	uqm::SIZE added_credit;
 	int what_to_sell_queued = 0;
-	BYTE BioCreditValue = IF_HARD (BIO_CREDIT_VALUE, 1);
+	uqm::BYTE BioCreditValue = IF_HARD (BIO_CREDIT_VALUE, 1);
 
 	rainbow_mask = MAKE_WORD (
 			GET_GAME_STATE (RAINBOW_WORLD0),
 			GET_GAME_STATE (RAINBOW_WORLD1)
 			);
-	num_new_rainbows = -(SBYTE)(GET_GAME_STATE (MELNORME_RAINBOW_COUNT));
+	num_new_rainbows = -(uqm::SBYTE)(GET_GAME_STATE (MELNORME_RAINBOW_COUNT));
 	while (rainbow_mask)
 	{
 		if (rainbow_mask & 1)
@@ -1337,8 +1337,8 @@ DoSell (RESPONSE_REF R)
 	{
 		if (PLAYER_SAID (R, sell_life_data))
 		{
-			DWORD TimeIn;
-			SIZE beast_value = 0;
+			uqm::DWORD TimeIn;
+			uqm::SIZE beast_value = 0;
 			bool Sleepy = true;
 
 			if (EXTENDED && GET_GAME_STATE (VUX_BEAST_ON_SHIP) == 2
@@ -1363,7 +1363,7 @@ DoSell (RESPONSE_REF R)
 
 			FlushInput ();
 
-			DrawCargoStrings ((BYTE)~0, (BYTE)~0);
+			DrawCargoStrings ((uqm::BYTE)~0, (uqm::BYTE)~0);
 			TimeIn = GetTimeCounter () + ONE_SECOND / 2;
 			while (GetTimeCounter () < TimeIn && Sleepy)
 			{
@@ -1372,8 +1372,8 @@ DoSell (RESPONSE_REF R)
 					GLOBAL (CurrentActivity) & CHECK_ABORT);
 			}
 			DrawCargoStrings (
-					(BYTE)NUM_ELEMENT_CATEGORIES,
-					(BYTE)NUM_ELEMENT_CATEGORIES
+					(uqm::BYTE)NUM_ELEMENT_CATEGORIES,
+					(uqm::BYTE)NUM_ELEMENT_CATEGORIES
 					);
 
 			while (GLOBAL_SIS (TotalBioMass) && Sleepy)
@@ -1387,8 +1387,8 @@ DoSell (RESPONSE_REF R)
 				TaskSwitch ();
 				DeltaCredit (BioCreditValue);
 				DrawCargoStrings(
-					(BYTE)NUM_ELEMENT_CATEGORIES,
-					(BYTE)NUM_ELEMENT_CATEGORIES
+					(uqm::BYTE)NUM_ELEMENT_CATEGORIES,
+					(uqm::BYTE)NUM_ELEMENT_CATEGORIES
 				);
 			}
 
@@ -1413,9 +1413,9 @@ DoSell (RESPONSE_REF R)
 		}
 		else /* if (R == sell_rainbow_locations) */
 		{
-			DWORD TimeIn;
+			uqm::DWORD TimeIn;
 			bool Sleepy = true;
-			BYTE planets;
+			uqm::BYTE planets;
 			int diffCase = DIF_CASE (250, 500, 125);
 
 			added_credit = num_new_rainbows * (diffCase * BioCreditValue);
@@ -1522,9 +1522,9 @@ DoSell (RESPONSE_REF R)
 static void
 NatureOfConversation (RESPONSE_REF R)
 {
-	BYTE num_new_rainbows;
-	UWORD rainbow_mask;
-	COUNT Credit;
+	uqm::BYTE num_new_rainbows;
+	uqm::UWORD rainbow_mask;
+	uqm::COUNT Credit;
 
 	if (PLAYER_SAID (R, get_on_with_business))
 	{
@@ -1537,7 +1537,7 @@ NatureOfConversation (RESPONSE_REF R)
 	Credit = GetAvailableCredits ();
 	if (R == 0)
 	{
-		BYTE stack = GET_GAME_STATE (MELNORME_YACK_STACK2) - 5;
+		uqm::BYTE stack = GET_GAME_STATE (MELNORME_YACK_STACK2) - 5;
 		NPCPhrase (GetLineSafe (hello_and_down_to_business_lines, stack));
 		if (stack < (NUM_HELLO_LINES - 1))
 			++stack;
@@ -1548,7 +1548,7 @@ NatureOfConversation (RESPONSE_REF R)
 			GET_GAME_STATE (RAINBOW_WORLD0),
 			GET_GAME_STATE (RAINBOW_WORLD1)
 			);
-	num_new_rainbows = -(SBYTE)(GET_GAME_STATE (MELNORME_RAINBOW_COUNT));
+	num_new_rainbows = -(uqm::SBYTE)(GET_GAME_STATE (MELNORME_RAINBOW_COUNT));
 	while (rainbow_mask)
 	{
 		if (rainbow_mask & 1)
@@ -1580,7 +1580,7 @@ NatureOfConversation (RESPONSE_REF R)
 					SetAbsColorMapIndex(CommData.AlienColorMap, 1)
 					), ONE_SECOND / 2);
 
-			AlienTalkSegue ((COUNT)~0);
+			AlienTalkSegue ((uqm::COUNT)~0);
 		}
 		else if (PLAYER_SAID (R, why_turned_purple))
 		{
@@ -1618,7 +1618,7 @@ NatureOfConversation (RESPONSE_REF R)
 		}
 		else
 		{
-			BYTE num_rescues = GET_GAME_STATE (MELNORME_RESCUE_COUNT);
+			uqm::BYTE num_rescues = GET_GAME_STATE (MELNORME_RESCUE_COUNT);
 			NPCPhrase (GetLineSafe (rescue_lines, num_rescues));
 
 			if (num_rescues < NUM_RESCUE_LINES - 1)
@@ -1635,7 +1635,7 @@ NatureOfConversation (RESPONSE_REF R)
 	}
 }
 
-static BYTE local_stack0, local_stack1;
+static uqm::BYTE local_stack0, local_stack1;
 
 static void
 DoBluster (RESPONSE_REF R)
@@ -1643,7 +1643,7 @@ DoBluster (RESPONSE_REF R)
 	if (PLAYER_SAID (R, trade_is_for_the_weak))
 	{
 		NPCPhrase (WERE_NOT_AFRAID);
-		AlienTalkSegue ((COUNT)~0);
+		AlienTalkSegue ((uqm::COUNT)~0);
 
 		XFormColorMap(GetColorMapAddress(
 			SetAbsColorMapIndex(CommData.AlienColorMap, 2)
@@ -1761,7 +1761,7 @@ yack2_respond (void)
 static void
 DoFirstMeeting (RESPONSE_REF R)
 {
-	BYTE last_stack = 0;
+	uqm::BYTE last_stack = 0;
 	PVOIDFUNC temp_func, stack_func[] =
 	{
 		yack0_respond,
@@ -1771,7 +1771,7 @@ DoFirstMeeting (RESPONSE_REF R)
 
 	if (R == 0)
 	{
-		BYTE business_count;
+		uqm::BYTE business_count;
 
 		business_count = GET_GAME_STATE (MELNORME_BUSINESS_COUNT);
 		switch (business_count++)
@@ -1832,7 +1832,7 @@ DoFirstMeeting (RESPONSE_REF R)
 	else if (PLAYER_SAID (R, yes_really_testing))
 	{
 		NPCPhrase (TEST_RESULTS);
-		AlienTalkSegue ((COUNT)~0);
+		AlienTalkSegue ((uqm::COUNT)~0);
 		
 		XFormColorMap(GetColorMapAddress(
 			SetAbsColorMapIndex(CommData.AlienColorMap, 0)
@@ -1842,7 +1842,7 @@ DoFirstMeeting (RESPONSE_REF R)
 	{
 		SET_GAME_STATE (MELNORME_ANGER, 0);
 		NPCPhrase (APOLOGY_ACCEPTED);
-		AlienTalkSegue ((COUNT)~0);
+		AlienTalkSegue ((uqm::COUNT)~0);
 		
 		XFormColorMap(GetColorMapAddress(
 			SetAbsColorMapIndex(CommData.AlienColorMap, 0)
@@ -1863,7 +1863,7 @@ DoMelnormeMiffed (RESPONSE_REF R)
 {
 	if (R == 0)
 	{
-		BYTE miffed_count;
+		uqm::BYTE miffed_count;
 
 		miffed_count = GET_GAME_STATE (MELNORME_MIFFED_COUNT);
 		switch (miffed_count++)
@@ -1881,7 +1881,7 @@ DoMelnormeMiffed (RESPONSE_REF R)
 		}
 		SET_GAME_STATE (MELNORME_MIFFED_COUNT, miffed_count);
 
-		AlienTalkSegue ((COUNT)~0);
+		AlienTalkSegue ((uqm::COUNT)~0);
 		
 		XFormColorMap(GetColorMapAddress(
 			SetAbsColorMapIndex(CommData.AlienColorMap, 2)
@@ -1937,7 +1937,7 @@ DoMelnormePissed (RESPONSE_REF R)
 {
 	if (R == 0)
 	{
-		BYTE pissed_count;
+		uqm::BYTE pissed_count;
 
 		pissed_count = GET_GAME_STATE (MELNORME_PISSED_COUNT);
 		switch (pissed_count++)
@@ -1955,7 +1955,7 @@ DoMelnormePissed (RESPONSE_REF R)
 		}
 		SET_GAME_STATE (MELNORME_PISSED_COUNT, pissed_count);
 
-		AlienTalkSegue ((COUNT)~0);
+		AlienTalkSegue ((uqm::COUNT)~0);
 		
 		XFormColorMap(GetColorMapAddress(
 			SetAbsColorMapIndex(CommData.AlienColorMap, 2)
@@ -1993,7 +1993,7 @@ DoMelnormePissed (RESPONSE_REF R)
 static void
 DoMelnormeHate (RESPONSE_REF R)
 {
-	BYTE hate_count;
+	uqm::BYTE hate_count;
 
 	(void) R;  // ignored
 	hate_count = GET_GAME_STATE (MELNORME_HATE_COUNT);
@@ -2012,7 +2012,7 @@ DoMelnormeHate (RESPONSE_REF R)
 	}
 	SET_GAME_STATE (MELNORME_HATE_COUNT, hate_count);
 
-	AlienTalkSegue ((COUNT)~0);
+	AlienTalkSegue ((uqm::COUNT)~0);
 	
 	XFormColorMap(GetColorMapAddress(
 		SetAbsColorMapIndex(CommData.AlienColorMap, 2)
@@ -2062,7 +2062,7 @@ Intro (void)
 	}
 }
 
-static COUNT
+static uqm::COUNT
 uninit_melnorme (void)
 {
 	luaUqm_comm_uninit ();

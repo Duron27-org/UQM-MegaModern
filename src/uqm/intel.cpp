@@ -32,7 +32,7 @@ computer_intelligence (ComputerInputContext *context, STARSHIP *StarShipPtr)
 {
 	BATTLE_INPUT_STATE InputState;
 
-	if (LOBYTE (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE)
+	if (lowByte (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE)
 		return 0;
 
 	if (StarShipPtr)
@@ -54,7 +54,7 @@ computer_intelligence (ComputerInputContext *context, STARSHIP *StarShipPtr)
 		InputState = 0;
 	else
 	{
-		switch (LOBYTE (GLOBAL (CurrentActivity)))
+		switch (lowByte (GLOBAL (CurrentActivity)))
 		{
 			case SUPER_MELEE:
 			{

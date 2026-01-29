@@ -274,7 +274,7 @@ ExitConversation (RESPONSE_REF R)
 	}
 	else /* insults */
 	{
-		BYTE NumVisits;
+		uqm::BYTE NumVisits;
 
 		NumVisits = GET_GAME_STATE (ORZ_PERSONAL_INFO);
 		switch (NumVisits++)
@@ -305,7 +305,7 @@ static void
 TaaloWorld (RESPONSE_REF R)
 {
 	// We can only get here when ORZ_MANNER != HOSTILE (2)
-	BYTE Manner;
+	uqm::BYTE Manner;
 
 	Manner = GET_GAME_STATE (ORZ_MANNER);
 	if (PLAYER_SAID (R, demand_to_land))
@@ -383,7 +383,7 @@ TaaloWorld (RESPONSE_REF R)
 static void
 OrzAllied (RESPONSE_REF R)
 {
-	BYTE NumVisits;
+	uqm::BYTE NumVisits;
 
 	if (PLAYER_SAID (R, whats_up_ally))
 	{
@@ -498,7 +498,7 @@ OfferAlliance (RESPONSE_REF R)
 static void
 OrzNeutral (RESPONSE_REF R)
 {
-	BYTE i, LastStack;
+	uqm::BYTE i, LastStack;
 	RESPONSE_REF pStr[3];
 
 	LastStack = 0;
@@ -600,7 +600,7 @@ OrzAngry (RESPONSE_REF R)
 {
 	if (PLAYER_SAID (R, whats_up_angry))
 	{
-		BYTE NumVisits;
+		uqm::BYTE NumVisits;
 
 		NumVisits = GET_GAME_STATE (ORZ_GENERAL_INFO);
 		switch (NumVisits++)
@@ -656,9 +656,9 @@ OrzAngry (RESPONSE_REF R)
 static void
 Intro (void)
 {
-	BYTE NumVisits, Manner;
+	uqm::BYTE NumVisits, Manner;
 
-	if (LOBYTE (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
+	if (lowByte (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
 	{
 		NPCPhrase (OUT_TAKES);
 
@@ -870,7 +870,7 @@ Intro (void)
 	}
 }
 
-static COUNT
+static uqm::COUNT
 uninit_orz (void)
 {
 	luaUqm_comm_uninit();
@@ -880,7 +880,7 @@ uninit_orz (void)
 static void
 post_orz_enc (void)
 {
-	BYTE Manner;
+	uqm::BYTE Manner;
 
 	if (getSegue () == Segue_hostile
 			&& (Manner = GET_GAME_STATE (ORZ_MANNER)) != 2)
@@ -913,7 +913,7 @@ init_orz_comm (void)
 	orz_desc.AlienTextWidth = SIS_TEXT_WIDTH - RES_SCALE (16);
 
 	if (GET_GAME_STATE (ORZ_MANNER) == 3
-			|| LOBYTE (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
+			|| lowByte (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
 	{
 		setSegue (Segue_peace);
 	}

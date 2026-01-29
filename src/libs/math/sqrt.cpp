@@ -18,15 +18,15 @@
 
 #include "mthintrn.h"
 
-COUNT
-square_root (DWORD value)
+uqm::COUNT
+square_root (uqm::DWORD value)
 {
-	UWORD sig_word, mask;
-	COUNT result, shift;
+	uqm::UWORD sig_word, mask;
+	uqm::COUNT result, shift;
 
 	if ((sig_word = HIWORD (value)) > 0)
 	{
-		DWORD mask_squared, result_shift;
+		uqm::DWORD mask_squared, result_shift;
 
 		for (mask = 1 << 15, shift = 31;
 				!(mask & sig_word); mask >>= 1, --shift)
@@ -35,11 +35,11 @@ square_root (DWORD value)
 		mask = 1 << shift;
 
 		result = mask;
-		mask_squared = result_shift = (DWORD)mask << shift;
+		mask_squared = result_shift = (uqm::DWORD)mask << shift;
 		value -= mask_squared;
 		while (mask >>= 1)
 		{
-			DWORD remainder;
+			uqm::DWORD remainder;
 
 			mask_squared >>= 1;
 			mask_squared >>= 1;
@@ -59,7 +59,7 @@ square_root (DWORD value)
 	}
 	else if ((sig_word = LOWORD (value)) > 0)
 	{
-		UWORD mask_squared, result_shift;
+		uqm::UWORD mask_squared, result_shift;
 
 		for (mask = 1 << 15, shift = 15;
 				!(mask & sig_word); mask >>= 1, --shift)
@@ -72,7 +72,7 @@ square_root (DWORD value)
 		sig_word -= mask_squared;
 		while (mask >>= 1)
 		{
-			UWORD remainder;
+			uqm::UWORD remainder;
 
 			mask_squared >>= 1;
 			mask_squared >>= 1;

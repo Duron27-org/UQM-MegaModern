@@ -30,7 +30,7 @@
 #define FAST 24
 #define VERY_FAST 32
 
-static const BYTE speed_array[] =
+static const uqm::BYTE speed_array[] =
 {
 	VERY_SLOW,
 	SLOW,
@@ -44,16 +44,16 @@ extern void StopTrack (void);
 extern void JumpTrack (void);
 extern void PauseTrack (void);
 extern void ResumeTrack (void);
-extern COUNT PlayingTrack (void);
-extern COUNT GetSubtitleNumber (const CHAR_T *sub);
+extern uqm::COUNT PlayingTrack (void);
+extern uqm::COUNT GetSubtitleNumber (const uqm::CHAR_T *sub);
 
 extern void FastReverse_Smooth (void);
 extern void FastForward_Smooth (void);
 extern void FastReverse_Page (void);
 extern void FastForward_Page (void);
 
-extern void SpliceTrack (CHAR_T *filespec, CHAR_T *textspec, CHAR_T *TimeStamp, CallbackFunction cb);
-extern void SpliceMultiTrack (CHAR_T *TrackNames[], CHAR_T *TrackText);
+extern void SpliceTrack (uqm::CHAR_T *filespec, uqm::CHAR_T *textspec, uqm::CHAR_T *TimeStamp, CallbackFunction cb);
+extern void SpliceMultiTrack (uqm::CHAR_T *TrackNames[], uqm::CHAR_T *TrackText);
 
 extern int GetTrackPosition (int in_units);
 
@@ -61,10 +61,10 @@ typedef struct tfb_soundchunk *SUBTITLE_REF;
 
 extern SUBTITLE_REF GetFirstTrackSubtitle (void);
 extern SUBTITLE_REF GetNextTrackSubtitle (SUBTITLE_REF LastRef);
-extern const CHAR_T *GetTrackSubtitleText (SUBTITLE_REF SubRef);
+extern const uqm::CHAR_T *GetTrackSubtitleText (SUBTITLE_REF SubRef);
 
-extern const CHAR_T *GetTrackSubtitle (void);
-extern COUNT GetSubtitleNumberByTrack (COUNT track);
-extern DWORD RecalculateDelay (DWORD numChars, bool talk);
+extern const uqm::CHAR_T *GetTrackSubtitle (void);
+extern uqm::COUNT GetSubtitleNumberByTrack (uqm::COUNT track);
+extern uqm::DWORD RecalculateDelay (uqm::DWORD numChars, bool talk);
 
 #endif

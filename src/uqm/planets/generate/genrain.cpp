@@ -75,7 +75,7 @@ GenerateRainbowWorld_generatePlanets (SOLARSYS_STATE *solarSys)
 
 	if (PrimeSeed)
 	{
-		COUNT angle;
+		uqm::COUNT angle;
 
 		pPlanet->NumPlanets = 0;
 		pPlanet->radius = EARTH_RADIUS * 50L / 100;
@@ -100,15 +100,15 @@ GenerateRainbowWorld_generateOrbital (SOLARSYS_STATE *solarSys,
 			&& CurStarDescPtr->Index >= RAINBOW0_DEFINED
 			&& CurStarDescPtr->Index <= RAINBOW9_DEFINED)
 	{
-		UWORD rainbow_mask;
+		uqm::UWORD rainbow_mask;
 
 		rainbow_mask = MAKE_WORD (
 				GET_GAME_STATE (RAINBOW_WORLD0),
 				GET_GAME_STATE (RAINBOW_WORLD1));
 
 		rainbow_mask |= 1 << (CurStarDescPtr->Index - RAINBOW0_DEFINED);
-		SET_GAME_STATE (RAINBOW_WORLD0, LOBYTE (rainbow_mask));
-		SET_GAME_STATE (RAINBOW_WORLD1, HIBYTE (rainbow_mask));
+		SET_GAME_STATE (RAINBOW_WORLD0, lowByte (rainbow_mask));
+		SET_GAME_STATE (RAINBOW_WORLD1, highByte (rainbow_mask));
 	}
 
 	GenerateDefault_generateOrbital (solarSys, world);
@@ -119,7 +119,7 @@ static void
 GenerateSlylandro (SOLARSYS_STATE *solarSys)
 {
 	HIPGROUP hGroup, hNextGroup;
-	BYTE angle, num_groups, which_group;
+	uqm::BYTE angle, num_groups, which_group;
 
 	if (!GetGroupInfo (GLOBAL (BattleGroupRef), GROUP_INIT_IP))
 	{// This code will run if we have no battle group generated
@@ -127,7 +127,7 @@ GenerateSlylandro (SOLARSYS_STATE *solarSys)
 		GLOBAL (BattleGroupRef) = 0;
 		/* 1-3, 3-5, 5-7, 7-9 Probes total */
 		num_groups = (GET_GAME_STATE (SLYLANDRO_MULTIPLIER) * 2) - 1 +
-			(COUNT)TFB_Random () % 3;
+			(uqm::COUNT)TFB_Random () % 3;
 		which_group = 0;
 		do
 		{
@@ -141,7 +141,7 @@ GenerateSlylandro (SOLARSYS_STATE *solarSys)
 	}
 	// Fresh groups or not - force probes to rotate around rainbow
 	// world and not spread around the system
-	angle = (COUNT)TFB_Random () % 9; // Initial angle = 0 - OCTANT
+	angle = (uqm::COUNT)TFB_Random () % 9; // Initial angle = 0 - OCTANT
 	for (hGroup = GetHeadLink (&GLOBAL (ip_group_q));
 		hGroup; hGroup = hNextGroup)
 	{
@@ -160,7 +160,7 @@ GenerateSlylandro (SOLARSYS_STATE *solarSys)
 
 		// Next ship in queue will add random value to its angle 
 		// between OCTANT and HALF_CIRCLE
-		angle += ((COUNT)TFB_Random () % 25) + OCTANT;
+		angle += ((uqm::COUNT)TFB_Random () % 25) + OCTANT;
 
 		// Normalize angle
 		if (angle > FULL_CIRCLE)

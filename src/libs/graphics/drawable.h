@@ -27,13 +27,13 @@
 typedef struct bresenham_line
 {
 	POINT first, second;
-	SIZE abs_delta_x, abs_delta_y;
-	SIZE error_term;
+	uqm::SIZE abs_delta_x, abs_delta_y;
+	uqm::SIZE error_term;
 	bool end_points_exchanged;
 	INTERSECT_CODE intersect_code;
 } BRESENHAM_LINE;
 
-typedef UWORD DRAWABLE_TYPE;
+typedef uqm::UWORD DRAWABLE_TYPE;
 #define ROM_DRAWABLE 0
 #define RAM_DRAWABLE 1
 #define SCREEN_DRAWABLE 2
@@ -41,7 +41,7 @@ typedef UWORD DRAWABLE_TYPE;
 struct frame_desc
 {
 	DRAWABLE_TYPE Type;
-	UWORD Index;
+	uqm::UWORD Index;
 	HOT_SPOT HotSpot;
 	EXTENT Bounds;
 	TFB_Image *image;
@@ -51,7 +51,7 @@ struct frame_desc
 struct drawable_desc
 {
 	CREATE_FLAGS Flags;
-	UWORD MaxIndex;
+	uqm::UWORD MaxIndex;
 	FRAME_DESC *Frame;
 };
 
@@ -64,7 +64,7 @@ struct drawable_desc
 
 #define DRAWABLE_PRIORITY DEFAULT_MEM_PRIORITY
 
-extern DRAWABLE AllocDrawable (COUNT num_frames);
+extern DRAWABLE AllocDrawable (uqm::COUNT num_frames);
 #define FreeDrawable(D) _ReleaseCelData (D)
 
 typedef struct
@@ -76,7 +76,7 @@ typedef struct
 extern INTERSECT_CODE _clip_line (const DRECT *pClipRect,
 		BRESENHAM_LINE *pLine);
 
-extern void *_GetCelData (uio_Stream *fp, DWORD length);
+extern void *_GetCelData (uio_Stream *fp, uqm::DWORD length);
 extern bool _ReleaseCelData (void *handle);
 
 extern FRAME _CurFramePtr;
@@ -84,7 +84,7 @@ extern FRAME _CurFramePtr;
 // ClipRect is relative to ctxOrigin
 extern void _text_blt (RECT *pClipRect, TEXT *TextPtr, POINT ctxOrigin);
 extern void _text_blt_fade (RECT *pClipRect, TEXT *TextPtr, POINT ctxOrigin, FRAME repair, bool *skip);
-extern BYTE _text_blt_alt (RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin, BYTE swap, FONT AltFontPtr, UniChar key);
+extern uqm::BYTE _text_blt_alt (RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin, uqm::BYTE swap, FONT AltFontPtr, UniChar key);
 
 #endif /* LIBS_GRAPHICS_DRAWABLE_H_ */
 

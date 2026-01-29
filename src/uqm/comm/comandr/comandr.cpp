@@ -519,7 +519,7 @@ TellProbe (RESPONSE_REF R)
 static void
 RevealSelf (RESPONSE_REF R)
 {
-	BYTE i, stack;
+	uqm::BYTE i, stack;
 
 	stack = 0;
 	if (PLAYER_SAID (R, we_are_vindicator))
@@ -643,7 +643,7 @@ GiveRadios (RESPONSE_REF R)
 
 		if (altResFlags & USE_ALT_SONG)
 		{
-			DWORD MusicPos = PLRGetPos ();
+			uqm::DWORD MusicPos = PLRGetPos ();
 			StopMusic ();
 			CommData.AlienSong = LoadMusic (CommData.AlienSongRes);
 
@@ -655,7 +655,7 @@ GiveRadios (RESPONSE_REF R)
 			altResFlags &= ~USE_ALT_SONG;
 		}
 
-		AlienTalkSegue ((COUNT)~0);
+		AlienTalkSegue ((uqm::COUNT)~0);
 
 		RevealSelf (0);
 	}
@@ -724,7 +724,7 @@ Intro (void)
 	}
 }
 
-static COUNT
+static uqm::COUNT
 uninit_commander (void)
 {
 	luaUqm_comm_uninit();

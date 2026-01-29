@@ -50,7 +50,7 @@
 #include "starbase.h"
 
 
-static void DrawFadeText (const CHAR_T *str1, const CHAR_T *str2,
+static void DrawFadeText (const uqm::CHAR_T *str1, const uqm::CHAR_T *str2,
 		bool fade_in, RECT *pRect);
 
 
@@ -75,7 +75,7 @@ DoSelectAction (MENU_STATE *pMS)
 			case HAIL:
 			case ATTACK:
 				DrawMenuStateStrings (PM_CONVERSE, pMS->CurState);
-				if (LOBYTE (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE)
+				if (lowByte (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE)
 					pMS->CurState = HAIL;
 				return (false);
 			case ATTACK + 1:
@@ -94,7 +94,7 @@ DoSelectAction (MENU_STATE *pMS)
 }
 
 static QUEUE *
-GetShipFragQueueForPlayer (COUNT playerNr)
+GetShipFragQueueForPlayer (uqm::COUNT playerNr)
 {
 	if (playerNr == RPG_PLAYER_NUM)
 		return &GLOBAL (built_ship_q);
@@ -105,9 +105,9 @@ GetShipFragQueueForPlayer (COUNT playerNr)
 void
 SetBattlePlanet (void)
 {
-	BYTE selector;
+	uqm::BYTE selector;
 
-	selector = (BYTE)((COUNT)TFB_Random () % NUMBER_OF_PLANET_TYPES);
+	selector = (uqm::BYTE)((uqm::COUNT)TFB_Random () % NUMBER_OF_PLANET_TYPES);
 
 	if (EXTENDED && (selector == RAINBOW_WORLD
 		|| selector == SHATTERED_WORLD))
@@ -124,7 +124,7 @@ SetBattlePlanet (void)
 
 // Called by comm code to intialize battle fleets during encounter
 void
-BuildBattle (COUNT which_player)
+BuildBattle (uqm::COUNT which_player)
 {
 	QUEUE *pQueue;
 	HSHIPFRAG hStarShip, hNextShip;
@@ -142,7 +142,7 @@ BuildBattle (COUNT which_player)
 	if (which_player != RPG_PLAYER_NUM)
 	{	// This function is called first for the NPC character
 		// and this is when a centerpiece is loaded
-		switch (LOBYTE (GLOBAL (CurrentActivity)))
+		switch (lowByte (GLOBAL (CurrentActivity)))
 		{
 			case IN_LAST_BATTLE:
 				load_gravity_well (SA_MATRA);
@@ -168,7 +168,7 @@ BuildBattle (COUNT which_player)
 				 // colliding with IP group in inner system still
 				 // uses main planet for gravity well
 
-					BYTE selector = pSolarSysState->MoonDesc[moonIndex (
+					uqm::BYTE selector = pSolarSysState->MoonDesc[moonIndex (
 						pSolarSysState,	pSolarSysState->pOrbitalDesc)].data_index;
 
 					if (selector == SA_MATRA)
@@ -249,7 +249,7 @@ BuildBattle (COUNT which_player)
 }
 
 bool
-FleetIsInfinite (COUNT playerNr)
+FleetIsInfinite (uqm::COUNT playerNr)
 {
 	QUEUE *pQueue;
 	HSHIPFRAG hShipFrag;
@@ -318,10 +318,10 @@ UpdateShipFragCrew (STARSHIP *StarShipPtr)
  * waits for a decision of the player on how to handle the situation.
  * Returns either HAIL or ATTACK.
  */
-COUNT
+uqm::COUNT
 InitEncounter (void)
 {
-	COUNT i;
+	uqm::COUNT i;
 	FRAME SegueFrame;
 	STAMP s;
 	TEXT t;
@@ -359,30 +359,30 @@ InitEncounter (void)
 	{
 		t.pStr = GAME_STRING (ENCOUNTER_STRING_BASE + 0);
 				// "ENCOUNTER IN"
-		t.CharCount = (COUNT)~0;
+		t.CharCount = (uqm::COUNT)~0;
 		font_DrawText (&t);
 		t.baseline.y += RES_SCALE (12); 
 		t.pStr = GAME_STRING (ENCOUNTER_STRING_BASE + 1);
 				// "DEEP SPACE"
-		t.CharCount = (COUNT)~0;
+		t.CharCount = (uqm::COUNT)~0;
 		font_DrawText (&t);
 	}
 	else
 	{
-		CHAR_T buf[256];
+		uqm::CHAR_T buf[256];
 
 		t.pStr = GAME_STRING (ENCOUNTER_STRING_BASE + 2);
 				// "ENCOUNTER AT"
-		t.CharCount = (COUNT)~0;
+		t.CharCount = (uqm::COUNT)~0;
 		font_DrawText (&t);
 		t.baseline.y += RES_SCALE (12); 
 		GetClusterName (CurStarDescPtr, buf);
 		t.pStr = buf;
-		t.CharCount = (COUNT)~0;
+		t.CharCount = (uqm::COUNT)~0;
 		font_DrawText (&t);
 		t.baseline.y += RES_SCALE (12); 
 		t.pStr = GLOBAL_SIS (PlanetName);
-		t.CharCount = (COUNT)~0;
+		t.CharCount = (uqm::COUNT)~0;
 		font_DrawText (&t);
 	}
 	DrawSISMessage (NULL);
@@ -392,7 +392,7 @@ InitEncounter (void)
 	s.frame = planet[0];
 	DrawStamp (&s);
 
-	if (LOBYTE (GLOBAL (CurrentActivity)) != IN_LAST_BATTLE)
+	if (lowByte (GLOBAL (CurrentActivity)) != IN_LAST_BATTLE)
 	{
 #define NUM_DISPLAY_PTS (ARRAY_SIZE (display_pt))
 		HSHIPFRAG hStarShip, hNextShip;
@@ -425,7 +425,7 @@ InitEncounter (void)
 			s.origin = display_pt[i % NUM_DISPLAY_PTS];
 			if (i >= NUM_DISPLAY_PTS)
 			{
-				COUNT angle, radius;
+				uqm::COUNT angle, radius;
 
 				radius = square_root ((long)s.origin.x * s.origin.x
 						+ (long)s.origin.y * s.origin.y)
@@ -475,7 +475,7 @@ InitEncounter (void)
 }
 
 //static STAMP
-//SetTextFrameRect (const CHAR_T* str1, const CHAR_T* str2, RECT* pRect)
+//SetTextFrameRect (const uqm::CHAR_T* str1, const uqm::CHAR_T* str2, RECT* pRect)
 //{
 //	STAMP s;
 //	TEXT t1, t2;
@@ -485,7 +485,7 @@ InitEncounter (void)
 //	t1.baseline.y = pRect->corner.y + RES_SCALE(45);
 //	t1.align = ALIGN_CENTER;
 //	t1.pStr = str1;
-//	t1.CharCount = (COUNT)~0;
+//	t1.CharCount = (uqm::COUNT)~0;
 //	t2 = t1;
 //	t2.baseline.y += RES_SCALE(11);
 //	t2.pStr = str2;
@@ -509,11 +509,11 @@ InitEncounter (void)
 //}
 
 static void
-DrawFadeText (const CHAR_T *str1, const CHAR_T *str2, bool fade_in,
+DrawFadeText (const uqm::CHAR_T *str1, const uqm::CHAR_T *str2, bool fade_in,
 		RECT *pRect)
 {
-	SIZE i;
-	DWORD TimeIn;
+	uqm::SIZE i;
+	uqm::DWORD TimeIn;
 	TEXT t1, t2;
 	RECT r1, r2;
 	static const Color fade_cycle[] = SCAVENGE_TEXT_COLOR_TABLE;
@@ -523,7 +523,7 @@ DrawFadeText (const CHAR_T *str1, const CHAR_T *str2, bool fade_in,
 	t1.baseline.y = pRect->corner.y + RES_SCALE (45);
 	t1.align = ALIGN_CENTER;
 	t1.pStr = str1;
-	t1.CharCount = (COUNT)~0;
+	t1.CharCount = (uqm::COUNT)~0;
 	t2 = t1;
 	t2.baseline.y += RES_SCALE (11);
 	t2.pStr = str2;
@@ -534,7 +534,7 @@ DrawFadeText (const CHAR_T *str1, const CHAR_T *str2, bool fade_in,
 	FlushInput ();
 	TimeIn = GetTimeCounter ();
 
-	for (i = 0; i < (SIZE)NUM_FADES; ++i)
+	for (i = 0; i < (uqm::SIZE)NUM_FADES; ++i)
 	{
 		if (AnyButtonPress (true))
 			i = NUM_FADES - 1;
@@ -546,7 +546,7 @@ DrawFadeText (const CHAR_T *str1, const CHAR_T *str2, bool fade_in,
 		}
 
 		SetContextForeGroundColor (
-				fade_cycle[fade_in ? i : (SIZE)(NUM_FADES - i - 1)]);
+				fade_cycle[fade_in ? i : (uqm::SIZE)(NUM_FADES - i - 1)]);
 		font_DrawText (&t1);
 		font_DrawText (&t2);
 		SleepThreadUntil (TimeIn + (ONE_SECOND / 20));
@@ -577,19 +577,19 @@ ClearRectBack (RECT *pRect)
 		DrawFilledRectangle (pRect);
 }
 
-COUNT
+uqm::COUNT
 UninitEncounter (void)
 {
-	COUNT ships_killed;
+	uqm::COUNT ships_killed;
 
 	ships_killed = 0;
 
 	free_gravity_well ();
 
 	if ((GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
-			|| GLOBAL_SIS (CrewEnlisted) == (COUNT)~0
-			|| LOBYTE (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE
-			|| LOBYTE (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
+			|| GLOBAL_SIS (CrewEnlisted) == (uqm::COUNT)~0
+			|| lowByte (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE
+			|| lowByte (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
 		goto ExitUninitEncounter;
 
 	if (GET_GAME_STATE (BATTLE_SEGUE) == 0)
@@ -600,16 +600,16 @@ UninitEncounter (void)
 	else
 	{
 		bool Sleepy;
-		SIZE VictoryState, i;
-		COUNT RecycleAmount = 0;
+		uqm::SIZE VictoryState, i;
+		uqm::COUNT RecycleAmount = 0;
 		RECT r;
 		RECT scavenge_r = {{0, 0}, {0, 0}};
 		TEXT t;
 		STAMP ship_s;
-		const CHAR_T *str1 = NULL;
-		const CHAR_T *str2 = NULL;
+		const uqm::CHAR_T *str1 = NULL;
+		const uqm::CHAR_T *str2 = NULL;
 		StatMsgMode prevMsgMode = SMM_UNDEFINED;
-		CHAR_T buf[80];
+		uqm::CHAR_T buf[80];
 		HSHIPFRAG hStarShip;
 		SHIP_FRAGMENT *FragPtr;
 		static const Color fade_ship_cycle[] = SCAVENGE_SCREEN_COLOR_TABLE;
@@ -689,7 +689,7 @@ UninitEncounter (void)
 						if (VictoryState)
 						{
 #define MAX_DEAD_DISPLAYED 5
-							COUNT j;
+							uqm::COUNT j;
 
 							if (ships_killed == 1)
 							{
@@ -730,13 +730,13 @@ UninitEncounter (void)
 								t.baseline.y = scavenge_r.corner.y + RES_SCALE (68);
 								t.align = ALIGN_CENTER;
 								t.pStr = buf;
-								t.CharCount = (COUNT)~0;
+								t.CharCount = (uqm::COUNT)~0;
 								font_DrawText (&t);
 								t.baseline.y += RES_SCALE (6);
 								t.pStr = GAME_STRING (
 										ENCOUNTER_STRING_BASE + 3);
 										// "BATTLE GROUP"
-								t.CharCount = (COUNT)~0;
+								t.CharCount = (uqm::COUNT)~0;
 								font_DrawText (&t);
 
 								ship_s.frame = FragPtr->icons;
@@ -782,7 +782,7 @@ UninitEncounter (void)
 							t.baseline.y = r.corner.y + RES_SCALE (14);
 							t.align = ALIGN_RIGHT;
 							t.pStr = buf;
-							t.CharCount = (COUNT)~0;
+							t.CharCount = (uqm::COUNT)~0;
 							SetContextForeGroundColor (
 									BUILD_COLOR (
 										MAKE_RGB15 (0x00, 0x00, 0x18), 0x50
@@ -895,7 +895,7 @@ UninitEncounter (void)
 					t.baseline.y = r.corner.y + RES_SCALE (14);
 					t.align = ALIGN_CENTER;
 					t.pStr = buf;
-					t.CharCount = (COUNT)~0;
+					t.CharCount = (uqm::COUNT)~0;
 					SetContextForeGroundColor (
 							BUILD_COLOR (MAKE_RGB15 (0x00, 0x00, 0x18), 0x50));
 					font_DrawText (&t);
@@ -931,8 +931,8 @@ UninitEncounter (void)
 			HFLEETINFO hEncounter;
 			FLEET_INFO *EncounterPtr;
 			bool isBanned = false;
-			BYTE j;
-			const BYTE bannedShip[7] =
+			uqm::BYTE j;
+			const uqm::BYTE bannedShip[7] =
 				{
 					PKUNK_SHIP,
 					SHOFIXTI_SHIP,
@@ -961,7 +961,7 @@ UninitEncounter (void)
 
 				if (EncounterPtr->actual_strength > 0)
 				{
-					SIZE actualStrength = EncounterPtr->actual_strength;
+					uqm::SIZE actualStrength = EncounterPtr->actual_strength;
 
 					actualStrength -= ships_killed;
 
@@ -987,14 +987,14 @@ void
 EncounterBattle (void)
 {
 	ACTIVITY OldActivity;
-	extern UWORD nth_frame;
+	extern uqm::UWORD nth_frame;
 	InputContext *savedPlayerInput = NULL;
 
 
 	SET_GAME_STATE (BATTLE_SEGUE, 1);
 
 	OldActivity = GLOBAL (CurrentActivity);
-	if (LOBYTE (OldActivity) == IN_LAST_BATTLE)
+	if (lowByte (OldActivity) == IN_LAST_BATTLE)
 		GLOBAL (CurrentActivity) = MAKE_WORD (IN_LAST_BATTLE, 0);
 	else
 		GLOBAL (CurrentActivity) = MAKE_WORD (IN_ENCOUNTER, 0);
@@ -1006,16 +1006,16 @@ EncounterBattle (void)
 
 	if (GLOBAL (glob_flags) & CYBORG_ENABLED)
 	{
-		BYTE cur_speed;
+		uqm::BYTE cur_speed;
 
-		cur_speed = (BYTE)(GLOBAL (glob_flags) & COMBAT_SPEED_MASK)
+		cur_speed = (uqm::BYTE)(GLOBAL (glob_flags) & COMBAT_SPEED_MASK)
 				>> COMBAT_SPEED_SHIFT;
 		if (cur_speed == 1)
 			cur_speed = 0; /* normal speed */
 		else if (cur_speed == 2)
 			++cur_speed;   /* 4x speed, 3 of 4 frames skipped */
 		else /* if (cur_speed == 3) */
-			cur_speed = (BYTE)~0; /* maximum speed - no rendering */
+			cur_speed = (uqm::BYTE)~0; /* maximum speed - no rendering */
 		nth_frame = MAKE_WORD (1, cur_speed);
 		PlayerControl[0] = CYBORG_CONTROL | AWESOME_RATING;
 		savedPlayerInput = PlayerInput[0];
@@ -1039,7 +1039,7 @@ EncounterBattle (void)
 	GameSounds = 0;
 
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
-		GLOBAL_SIS (CrewEnlisted) = (COUNT)~0;
+		GLOBAL_SIS (CrewEnlisted) = (uqm::COUNT)~0;
 
 	if (GLOBAL (glob_flags) & CYBORG_ENABLED)
 	{

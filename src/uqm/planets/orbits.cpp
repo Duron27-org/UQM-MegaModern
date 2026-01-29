@@ -36,10 +36,10 @@ enum
 	PLANET_ALWAYS = 255
 };
 
-static BYTE
-BlueDistribution (BYTE which_world)
+static uqm::BYTE
+BlueDistribution (uqm::BYTE which_world)
 {
-	const BYTE PlanetDistribution[NUMBER_OF_PLANET_TYPES] =
+	const uqm::BYTE PlanetDistribution[NUMBER_OF_PLANET_TYPES] =
 	{
 		PLANET_ALWAYS, /* OOLITE_WORLD */
 		PLANET_ALWAYS, /* YTTRIC_WORLD */
@@ -108,10 +108,10 @@ BlueDistribution (BYTE which_world)
 	return (PlanetDistribution[which_world]);
 }
 
-static BYTE
-GreenDistribution (BYTE which_world)
+static uqm::BYTE
+GreenDistribution (uqm::BYTE which_world)
 {
-	const BYTE PlanetDistribution[NUMBER_OF_PLANET_TYPES] =
+	const uqm::BYTE PlanetDistribution[NUMBER_OF_PLANET_TYPES] =
 	{
 		PLANET_NEVER,  /* OOLITE_WORLD */
 		PLANET_NEVER,  /* YTTRIC_WORLD */
@@ -180,10 +180,10 @@ GreenDistribution (BYTE which_world)
 	return (PlanetDistribution[which_world]);
 }
 
-static BYTE
-OrangeDistribution (BYTE which_world)
+static uqm::BYTE
+OrangeDistribution (uqm::BYTE which_world)
 {
-	const BYTE PlanetDistribution[NUMBER_OF_PLANET_TYPES] =
+	const uqm::BYTE PlanetDistribution[NUMBER_OF_PLANET_TYPES] =
 	{
 		PLANET_NEVER,  /* OOLITE_WORLD */
 		PLANET_NEVER,  /* YTTRIC_WORLD */
@@ -252,10 +252,10 @@ OrangeDistribution (BYTE which_world)
 	return (PlanetDistribution[which_world]);
 }
 
-static BYTE
-RedDistribution (BYTE which_world)
+static uqm::BYTE
+RedDistribution (uqm::BYTE which_world)
 {
-	const BYTE PlanetDistribution[NUMBER_OF_PLANET_TYPES] =
+	const uqm::BYTE PlanetDistribution[NUMBER_OF_PLANET_TYPES] =
 	{
 		PLANET_NEVER,  /* OOLITE_WORLD */
 		PLANET_NEVER,  /* YTTRIC_WORLD */
@@ -324,10 +324,10 @@ RedDistribution (BYTE which_world)
 	return (PlanetDistribution[which_world]);
 }
 
-static BYTE
-WhiteDistribution (BYTE which_world)
+static uqm::BYTE
+WhiteDistribution (uqm::BYTE which_world)
 {
-	const BYTE PlanetDistribution[NUMBER_OF_PLANET_TYPES] =
+	const uqm::BYTE PlanetDistribution[NUMBER_OF_PLANET_TYPES] =
 	{
 		PLANET_ALWAYS, /* OOLITE_WORLD */
 		PLANET_ALWAYS, /* YTTRIC_WORLD */
@@ -396,10 +396,10 @@ WhiteDistribution (BYTE which_world)
 	return (PlanetDistribution[which_world]);
 }
 
-static BYTE
-YellowDistribution (BYTE which_world)
+static uqm::BYTE
+YellowDistribution (uqm::BYTE which_world)
 {
-	const BYTE PlanetDistribution[NUMBER_OF_PLANET_TYPES] =
+	const uqm::BYTE PlanetDistribution[NUMBER_OF_PLANET_TYPES] =
 	{
 		PLANET_NEVER,  /* OOLITE_WORLD */
 		PLANET_NEVER,  /* YTTRIC_WORLD */
@@ -478,7 +478,7 @@ YellowDistribution (BYTE which_world)
 #define SUPERGIANT_GASG_DIST SCALE_RADIUS (33)
 
 void ComputeSpeed (PLANET_DESC *planet, bool GeneratingMoons,
-		UWORD rand_val)
+		uqm::UWORD rand_val)
 {
 	//BW : empiric values, which would give roughly correct
 	// rotation periods for most moons in the solar system
@@ -500,19 +500,19 @@ void ComputeSpeed (PLANET_DESC *planet, bool GeneratingMoons,
 }
 
 void
-FillOrbits (SOLARSYS_STATE *system, BYTE NumPlanets,
+FillOrbits (SOLARSYS_STATE *system, uqm::BYTE NumPlanets,
 		PLANET_DESC *pBaseDesc, bool TypesDefined)
 { /* Generate Planets in orbit around star */
-	BYTE StarColor, PlanetCount, MaxPlanet;
+	uqm::BYTE StarColor, PlanetCount, MaxPlanet;
 	bool GeneratingMoons;
-	COUNT StarSize;
+	uqm::COUNT StarSize;
 	PLANET_DESC *pPD;
-	DWORD loopCounter = 0;
-	BYTE orbitDiff;
+	uqm::DWORD loopCounter = 0;
+	uqm::BYTE orbitDiff;
 
 	struct
 	{
-		COUNT MinRockyDist, MinGasGDist;
+		uqm::COUNT MinRockyDist, MinGasGDist;
 	} Suns[] =
 	{
 		{DWARF_ROCK_DIST, DWARF_GASG_DIST},
@@ -520,7 +520,7 @@ FillOrbits (SOLARSYS_STATE *system, BYTE NumPlanets,
 		{SUPERGIANT_ROCK_DIST, SUPERGIANT_GASG_DIST},
 	};
 #ifdef DEBUG_ORBITS
-CHAR_T buf[256];
+uqm::CHAR_T buf[256];
 char stype[] = {'D', 'G', 'S'};
 char scolor[] = {'B', 'G', 'O', 'R', 'W', 'Y'};
 #endif /* DEBUG_ORBITS */
@@ -535,7 +535,7 @@ char scolor[] = {'B', 'G', 'O', 'R', 'W', 'Y'};
 	StarSize = system->SunDesc[0].data_index;
 	StarColor = STAR_COLOR (CurStarDescPtr->Type);
 
-	if (NumPlanets == (BYTE)~0)
+	if (NumPlanets == (uqm::BYTE)~0)
 	{
 		// XXX: This is pretty funny. Instead of calling RNG once, like so:
 		//     1 + Random % MAX_GENERATED_PLANETS
@@ -568,9 +568,9 @@ char scolor[] = {'B', 'G', 'O', 'R', 'W', 'Y'};
 	PlanetCount = NumPlanets;
 	while (NumPlanets--)
 	{
-		BYTE chance;
-		DWORD rand_val, min_radius;
-		SIZE delta_r;
+		uqm::BYTE chance;
+		uqm::DWORD rand_val, min_radius;
+		uqm::SIZE delta_r;
 		PLANET_DESC *pLocPD;
 
 		do
@@ -580,7 +580,7 @@ char scolor[] = {'B', 'G', 'O', 'R', 'W', 'Y'};
 				rand_val = 0;
 			else
 				pPD->data_index =
-						(BYTE)(HIBYTE (LOWORD (rand_val)) % MaxPlanet);
+						(uqm::BYTE)(highByte (LOWORD (rand_val)) % MaxPlanet);
 
 
 			chance = PLANET_NEVER;
@@ -605,7 +605,7 @@ char scolor[] = {'B', 'G', 'O', 'R', 'W', 'Y'};
 					chance = YellowDistribution (pPD->data_index);
 					break;
 			}
-		} while (LOBYTE (LOWORD (rand_val)) >= chance);
+		} while (lowByte (LOWORD (rand_val)) >= chance);
 
 		if (pPD->data_index < FIRST_GAS_GIANT)
 			min_radius = Suns[StarSize].MinRockyDist;
@@ -676,13 +676,13 @@ RelocatePlanet:
 	}
 
 	{
-		BYTE i;
+		uqm::BYTE i;
 
 		for (i = 0; i < PlanetCount; ++i)
 		{
-			BYTE j;
+			uqm::BYTE j;
 
-			for (j = (BYTE)(PlanetCount - 1); j > i; --j)
+			for (j = (uqm::BYTE)(PlanetCount - 1); j > i; --j)
 			{
 				if (pBaseDesc[i].radius > pBaseDesc[j].radius)
 				{
@@ -697,10 +697,10 @@ RelocatePlanet:
 	}
 }
 
-BYTE
+uqm::BYTE
 PickClosestHabitable (SOLARSYS_STATE *solarSys)
 {
-	const SIZE hRangesD[NUM_STAR_COLORS][2] = {
+	const uqm::SIZE hRangesD[NUM_STAR_COLORS][2] = {
 			{  860, 1790 }, // blue
 			{  540, 1150 }, // green
 			{  140,  280 }, // orange
@@ -708,7 +708,7 @@ PickClosestHabitable (SOLARSYS_STATE *solarSys)
 			{ 1240, 2560 }, // white
 			{  320,  640 }  // yellow
 	};
-	const SIZE hRangesG[NUM_STAR_COLORS][2] = {
+	const uqm::SIZE hRangesG[NUM_STAR_COLORS][2] = {
 			{    0,    0 }, // blue
 			{    0,    0 }, // green
 			{ 3410, 7120 }, // orange
@@ -716,14 +716,14 @@ PickClosestHabitable (SOLARSYS_STATE *solarSys)
 			{    0,    0 }, // white
 			{ 7630, 7936 }  // yellow
 	};
-	BYTE starColor, starType, numPlanets, i;
-	SIZE hRangeMin = 0;
-	SIZE hRangeMax = 0;
-	SIZE hRangeMed = 0;
-	BYTE pByte = 0;
+	uqm::BYTE starColor, starType, numPlanets, i;
+	uqm::SIZE hRangeMin = 0;
+	uqm::SIZE hRangeMax = 0;
+	uqm::SIZE hRangeMed = 0;
+	uqm::BYTE pByte = 0;
 	PLANET_DESC *pPD;
 	PLANET_DESC *pPlanet;
-	DWORD rand = RandomContext_GetSeed (SysGenRNG);
+	uqm::DWORD rand = RandomContext_GetSeed (SysGenRNG);
 
 	numPlanets = solarSys->SunDesc[0].NumPlanets;
 	pPD = solarSys->PlanetDesc;
@@ -768,7 +768,7 @@ PickClosestHabitable (SOLARSYS_STATE *solarSys)
 
 	if (numPlanets > 1)
 	{
-		SIZE dist = pPD[0].radius;
+		uqm::SIZE dist = pPD[0].radius;
 		for (i = 1; i < numPlanets; i++)
 		{
 			if (abs (dist - hRangeMed) >=
@@ -786,7 +786,7 @@ PickClosestHabitable (SOLARSYS_STATE *solarSys)
 
 	if (pPlanet->radius < hRangeMin || pPlanet->radius > hRangeMax)
 	{
-		SIZE min, max;
+		uqm::SIZE min, max;
 
 		if (pPlanet->radius < hRangeMin)
 		{
@@ -813,7 +813,7 @@ PickClosestHabitable (SOLARSYS_STATE *solarSys)
 bool
 CheckForHabitable (SOLARSYS_STATE *solarSys)
 {
-	const SIZE HabitableRanges[NUM_STAR_COLORS][2] = {
+	const uqm::SIZE HabitableRanges[NUM_STAR_COLORS][2] = {
 		{  853, 1790 }, // blue
 		{  544, 1151 }, // green
 		{  139,  287 }, // orange
@@ -823,15 +823,15 @@ CheckForHabitable (SOLARSYS_STATE *solarSys)
 	};
 #define CLOSEST_RADIUS HabitableRanges[ORANGE_BODY][0]
 	PLANET_DESC *pPD;
-	BYTE starColor;
-	SIZE i;
-	BYTE planetByte = solarSys->SunDesc[0].PlanetByte;
-	BYTE numPlanets = solarSys->SunDesc[0].NumPlanets;
-	SIZE habitableRangeMin, habitableRangeMax, newRadius; // , radiusDiff;
-	SIZE oldRadius;
-	DWORD planetRadii[MAX_GEN_PLANETS];
-	DWORD rand_val;
-	// static SIZE diffCheck, min_radius;
+	uqm::BYTE starColor;
+	uqm::SIZE i;
+	uqm::BYTE planetByte = solarSys->SunDesc[0].PlanetByte;
+	uqm::BYTE numPlanets = solarSys->SunDesc[0].NumPlanets;
+	uqm::SIZE habitableRangeMin, habitableRangeMax, newRadius; // , radiusDiff;
+	uqm::SIZE oldRadius;
+	uqm::DWORD planetRadii[MAX_GEN_PLANETS];
+	uqm::DWORD rand_val;
+	// static uqm::SIZE diffCheck, min_radius;
 
 	starColor = STAR_COLOR (CurStarDescPtr->Type);
 	// Terrible, but efficient, hack to ensure some semblance of sanity.
@@ -886,9 +886,9 @@ CheckForHabitable (SOLARSYS_STATE *solarSys)
 
 	/*if (planetByte > 0 && newRadius < pPD[planetByte-1].radius)
 	{
-		DWORD radialSection = planetRadii[planetByte] - CLOSEST_RADIUS;
-		BYTE numRockySections = radialSection / DWARF_ROCK_DIST;
-		BYTE numGassySections = radialSection / DWARF_GASG_DIST;
+		uqm::DWORD radialSection = planetRadii[planetByte] - CLOSEST_RADIUS;
+		uqm::BYTE numRockySections = radialSection / DWARF_ROCK_DIST;
+		uqm::BYTE numGassySections = radialSection / DWARF_GASG_DIST;
 
 		printf ("radialSection %d, numRockySections %d, numGassySections %d\n", radialSection, numRockySections, numGassySections);
 
@@ -936,13 +936,13 @@ CheckForHabitable (SOLARSYS_STATE *solarSys)
 	}*/
 
 	//{	// Renumber all the planets
-	//	BYTE i;
+	//	uqm::BYTE i;
 
 	//	for (i = 0; i < numPlanets; ++i)
 	//	{
-	//		BYTE j;
+	//		uqm::BYTE j;
 
-	//		for (j = (BYTE)(numPlanets - 1); j > i; --j)
+	//		for (j = (uqm::BYTE)(numPlanets - 1); j > i; --j)
 	//		{
 	//			if (solarSys->PlanetDesc[i].radius > solarSys->PlanetDesc[j].radius)
 	//			{

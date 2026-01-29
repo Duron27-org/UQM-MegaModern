@@ -30,10 +30,10 @@ static bool GenerateBurvixese_generateMoons (SOLARSYS_STATE *solarSys,
 		PLANET_DESC *planet);
 static bool GenerateBurvixese_generateOrbital (SOLARSYS_STATE *solarSys,
 		PLANET_DESC *world);
-static COUNT GenerateBurvixese_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
+static uqm::COUNT GenerateBurvixese_generateEnergy (const SOLARSYS_STATE *,
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
 static bool GenerateBurvixese_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, COUNT whichNode);
+		PLANET_DESC *world, uqm::COUNT whichNode);
 
 
 const GenerateFunctions generateBurvixeseFunctions = {
@@ -66,7 +66,7 @@ GenerateBurvixese_generatePlanets (SOLARSYS_STATE *solarSys)
 
 	if (PrimeSeed)
 	{
-		COUNT angle;
+		uqm::COUNT angle;
 
 		pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
 
@@ -80,7 +80,7 @@ GenerateBurvixese_generatePlanets (SOLARSYS_STATE *solarSys)
 	}
 	else
 	{
-		DWORD rand_val = RandomContext_Random (SysGenRNG);
+		uqm::DWORD rand_val = RandomContext_Random (SysGenRNG);
 
 		//pSunDesc->PlanetByte = PickClosestHabitable (solarSys);
 		pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
@@ -108,10 +108,10 @@ GenerateBurvixese_generateMoons (SOLARSYS_STATE *solarSys,
 
 	if (matchWorld (solarSys, planet, MATCH_PBYTE, MATCH_PLANET))
 	{
-		BYTE MoonByte = solarSys->SunDesc[0].MoonByte;
+		uqm::BYTE MoonByte = solarSys->SunDesc[0].MoonByte;
 		PLANET_DESC *pMoonDesc = &solarSys->MoonDesc[MoonByte];
-		COUNT angle;
-		DWORD rand_val;
+		uqm::COUNT angle;
+		uqm::DWORD rand_val;
 
 		pMoonDesc->data_index = SELENIC_WORLD;
 		pMoonDesc->radius =
@@ -130,7 +130,7 @@ static bool
 GenerateBurvixese_generateOrbital (SOLARSYS_STATE *solarSys,
 		PLANET_DESC *world)
 {
-	DWORD rand_val;
+	uqm::DWORD rand_val;
 
 	DoPlanetaryAnalysis (&solarSys->SysInfo, world);
 	rand_val = RandomContext_GetSeed (SysGenRNG);
@@ -181,9 +181,9 @@ GenerateBurvixese_generateOrbital (SOLARSYS_STATE *solarSys,
 	return true;
 }
 
-static COUNT
+static uqm::COUNT
 GenerateBurvixese_generateEnergy (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *info)
 {
 	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{
@@ -208,7 +208,7 @@ GenerateBurvixese_generateEnergy (const SOLARSYS_STATE *solarSys,
 
 static bool
 GenerateBurvixese_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, COUNT whichNode)
+		PLANET_DESC *world, uqm::COUNT whichNode)
 {
 	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{

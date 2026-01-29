@@ -52,7 +52,7 @@ ShowRemainingCapacity (void)
 	RECT r;
 	TEXT t;
 	CONTEXT OldContext;
-	CHAR_T buf[40];
+	uqm::CHAR_T buf[40];
 
 	OldContext = SetContext (StatusContext);
 	if (isPC (optWhichFonts))
@@ -69,7 +69,7 @@ ShowRemainingCapacity (void)
 	t.baseline.y = r.corner.y + TEXT_BASELINE;
 	t.align = ALIGN_RIGHT;
 	t.pStr = buf;
-	t.CharCount = (COUNT)~0;
+	t.CharCount = (uqm::COUNT)~0;
 
 	r.extent.width = t.baseline.x - r.corner.x + RES_SCALE (1);
 	r.extent.height = ELEMENT_SPACING_Y - RES_SCALE (2);
@@ -87,11 +87,11 @@ ShowRemainingCapacity (void)
 }
 
 static void
-DrawElementAmount (COUNT element, bool selected)
+DrawElementAmount (uqm::COUNT element, bool selected)
 {
 	RECT r;
 	TEXT t;
-	CHAR_T buf[40];
+	uqm::CHAR_T buf[40];
 
 	r.corner.x = ELEMENT_SEL_ORG_X;
 	r.extent.width = ELEMENT_SEL_WIDTH;
@@ -122,7 +122,7 @@ DrawElementAmount (COUNT element, bool selected)
 				CARGO_SELECTED_WORTH_COLOR : CARGO_WORTH_COLOR);
 		t.baseline.x = ELEMENT_COL_1;
 		snprintf (buf, sizeof buf, "%u", GLOBAL (ElementWorth[element]));
-		t.CharCount = (COUNT)~0;
+		t.CharCount = (uqm::COUNT)~0;
 		font_DrawText (&t);
 		
 		snprintf (buf, sizeof buf, "%u", GLOBAL_SIS (ElementAmounts[element]));
@@ -132,7 +132,7 @@ DrawElementAmount (COUNT element, bool selected)
 	SetContextForeGroundColor (selected ?
 			CARGO_SELECTED_AMOUNT_COLOR : CARGO_AMOUNT_COLOR);
 	t.baseline.x = ELEMENT_COL_2;
-	t.CharCount = (COUNT)~0;
+	t.CharCount = (uqm::COUNT)~0;
 	font_DrawText (&t);
 }
 
@@ -143,7 +143,7 @@ DrawCargoDisplay (void)
 	TEXT t;
 	RECT r;
 	COORD cy;
-	COUNT i;
+	uqm::COUNT i;
 
 	r.corner.x = RES_SCALE (2);
 	r.extent.width = FIELD_WIDTH + RES_SCALE (1);
@@ -165,7 +165,7 @@ DrawCargoDisplay (void)
 	t.baseline.y = RES_SCALE (27);
 	t.align = ALIGN_CENTER;
 	t.pStr = GAME_STRING (CARGO_STRING_BASE);
-	t.CharCount = (COUNT)~0;
+	t.CharCount = (uqm::COUNT)~0;
 	SetContextForeGroundColor (CARGO_SELECTED_AMOUNT_COLOR);
 	font_DrawText (&t);
 
@@ -185,7 +185,7 @@ DrawCargoDisplay (void)
 	// print element column headings
 	t.align = ALIGN_RIGHT;
 	t.baseline.y = cy - RES_SCALE (1);
-	t.CharCount = (COUNT)~0;
+	t.CharCount = (uqm::COUNT)~0;
 
 	SetContextForeGroundColor (CARGO_WORTH_COLOR);
 	t.baseline.x = ELEMENT_COL_1;
@@ -238,14 +238,14 @@ DrawCargoDisplay (void)
 	t.baseline.y = FREE_ORG_Y + TEXT_BASELINE;
 	t.align = ALIGN_LEFT;
 	t.pStr = GAME_STRING (CARGO_STRING_BASE + 1);
-	t.CharCount = (COUNT)~0;
+	t.CharCount = (uqm::COUNT)~0;
 	font_DrawText (&t);
 
 	ShowRemainingCapacity ();
 }
 
 void
-DrawCargoStrings (BYTE OldElement, BYTE NewElement)
+DrawCargoStrings (uqm::BYTE OldElement, uqm::BYTE NewElement)
 {
 	CONTEXT OldContext;
 
@@ -270,7 +270,7 @@ DrawCargoStrings (BYTE OldElement, BYTE NewElement)
 		DrawElementAmount (OldElement, false);
 	}
 
-	if (NewElement != (BYTE)~0)
+	if (NewElement != (uqm::BYTE)~0)
 	{	// select the new element
 		DrawElementAmount (NewElement, true);
 	}
@@ -280,18 +280,18 @@ DrawCargoStrings (BYTE OldElement, BYTE NewElement)
 }
 
 static void
-DrawElementDescription (COUNT element)
+DrawElementDescription (uqm::COUNT element)
 {
 	DrawStatusMessage (GAME_STRING (element + (CARGO_STRING_BASE + 2)));
 }
 
 void
-DrawRainbowPlanet (COUNT planet)
+DrawRainbowPlanet (uqm::COUNT planet)
 {
 	STAMP s;
 	TEXT t;
 	RECT r;
-	CHAR_T buf[40];
+	uqm::CHAR_T buf[40];
 	CONTEXT OldContext;
 
 	OldContext = SetContext (StatusContext);
@@ -316,7 +316,7 @@ DrawRainbowPlanet (COUNT planet)
 	t.baseline.y = RES_SCALE (27);
 	t.align = ALIGN_CENTER;
 	t.pStr = GAME_STRING (CARGO_STRING_BASE + 10);// datalog
-	t.CharCount = (COUNT)~0;
+	t.CharCount = (uqm::COUNT)~0;
 	SetContextForeGroundColor (CARGO_SELECTED_AMOUNT_COLOR);
 	font_DrawText (&t);
 
@@ -337,7 +337,7 @@ DrawRainbowPlanet (COUNT planet)
 	DrawFilledRectangle (&r);
 	t.pStr = buf;
 	snprintf (buf, sizeof buf, "%u", planet);
-	t.CharCount = (COUNT)~0;
+	t.CharCount = (uqm::COUNT)~0;
 	t.baseline.x = (STATUS_WIDTH >> 1);
 	t.baseline.y = r.corner.y + TEXT_BASELINE;
 	SetContextForeGroundColor (planet != 0 ?
@@ -360,7 +360,7 @@ DrawRainbowPlanet (COUNT planet)
 	if (planet == 0)
 	{
 		t.pStr = GAME_STRING (CARGO_STRING_BASE + 11);// complete
-		t.CharCount = (COUNT)~0;
+		t.CharCount = (uqm::COUNT)~0;
 		t.baseline.y += RES_SCALE (25);
 		SetContextForeGroundColor (PCMENU_TEXT_COLOR);
 		font_DrawText (&t);
@@ -368,12 +368,12 @@ DrawRainbowPlanet (COUNT planet)
 	else
 	{
 		t.pStr = GAME_STRING (CARGO_STRING_BASE + 12);// Uploading
-		t.CharCount = (COUNT)~0;
+		t.CharCount = (uqm::COUNT)~0;
 		t.baseline.y += RES_SCALE (22);
 		SetContextForeGroundColor (PCMENU_TEXT_COLOR);
 		font_DrawText (&t);
 		t.pStr = GAME_STRING (CARGO_STRING_BASE + 13);// data
-		t.CharCount = (COUNT)~0;
+		t.CharCount = (uqm::COUNT)~0;
 		t.baseline.y += RES_SCALE (7);
 		font_DrawText (&t);
 	}
@@ -385,7 +385,7 @@ DrawRainbowPlanet (COUNT planet)
 static bool
 DoDiscardCargo (MENU_STATE *pMS)
 {
-	BYTE NewState;
+	uqm::BYTE NewState;
 	bool select, cancel, back, forward;
 	
 	select = PulsedInputState.menu[KEY_MENU_SELECT];
@@ -450,7 +450,7 @@ CargoMenu (void)
 	memset (&MenuState, 0, sizeof MenuState);
 
 	// draw the initial cargo display
-	DrawCargoStrings ((BYTE)~0, MenuState.CurState);
+	DrawCargoStrings ((uqm::BYTE)~0, MenuState.CurState);
 	DrawElementDescription (MenuState.CurState);
 	
 	if (optWhichMenu == OPT_PC)

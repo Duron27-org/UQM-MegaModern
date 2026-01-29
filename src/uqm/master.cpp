@@ -31,7 +31,7 @@ static int master_ship_seed = 0;
 void
 LoadMasterShipList (void (* YieldProcessing)(void))
 {
-	COUNT num_entries;
+	uqm::COUNT num_entries;
 	SPECIES_ID s_id = ARILOU_ID;
 	num_entries = LAST_MELEE_ID - ARILOU_ID + 1;
 	InitQueue (&master_q, num_entries, sizeof (MASTER_SHIP_INFO));
@@ -176,12 +176,12 @@ FindMasterShipIndex (SPECIES_ID ship_ref)
 	return hStarShip ? index : -1;
 }
 
-COUNT
+uqm::COUNT
 GetShipCostFromIndex (unsigned Index)
 {
 	HMASTERSHIP hMasterShip;
 	MASTER_SHIP_INFO *MasterPtr;
-	COUNT val;
+	uqm::COUNT val;
 
 	hMasterShip = GetStarShipFromIndex (&master_q, Index);
 	if (!hMasterShip)

@@ -30,10 +30,10 @@
 static bool GenerateWreck_generatePlanets (SOLARSYS_STATE *solarSys);
 static bool GenerateWreck_generateOrbital (SOLARSYS_STATE *solarSys,
 		PLANET_DESC *world);
-static COUNT GenerateWreck_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
+static uqm::COUNT GenerateWreck_generateEnergy (const SOLARSYS_STATE *,
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
 static bool GenerateWreck_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, COUNT whichNode);
+		PLANET_DESC *world, uqm::COUNT whichNode);
 
 
 const GenerateFunctions generateWreckFunctions = {
@@ -64,8 +64,8 @@ GenerateWreck_generatePlanets (SOLARSYS_STATE *solarSys)
 	{
 		if (!StarSeed)
 		{
-			DWORD RandVal = RandomContext_Random (SysGenRNG);
-			BYTE PByte = pSunDesc->PlanetByte + 1;
+			uqm::DWORD RandVal = RandomContext_Random (SysGenRNG);
+			uqm::BYTE PByte = pSunDesc->PlanetByte + 1;
 			pSunDesc->NumPlanets =
 					(RandVal % (MAX_GEN_PLANETS - PByte) + PByte);
 
@@ -98,7 +98,7 @@ GenerateWreck_generateOrbital (SOLARSYS_STATE *solarSys,
 		if (DIF_HARD && !(GET_GAME_STATE (HM_ENCOUNTERS)
 				& 1 << PROBE_ENCOUNTER))
 		{
-			COUNT sum, i;
+			uqm::COUNT sum, i;
 
 			PutGroupInfo (GROUPS_RANDOM, GROUP_SAVE_IP);
 			ReinitQueue (&GLOBAL (ip_group_q));
@@ -132,7 +132,7 @@ GenerateWreck_generateOrbital (SOLARSYS_STATE *solarSys,
 					return true;
 
 				{
-					UWORD state;
+					uqm::UWORD state;
 
 					state = GET_GAME_STATE (HM_ENCOUNTERS);
 
@@ -161,9 +161,9 @@ GenerateWreck_generateOrbital (SOLARSYS_STATE *solarSys,
 	return true;
 }
 
-static COUNT
+static uqm::COUNT
 GenerateWreck_generateEnergy (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *info)
 {
 	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{
@@ -176,7 +176,7 @@ GenerateWreck_generateEnergy (const SOLARSYS_STATE *solarSys,
 
 static bool
 GenerateWreck_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		COUNT whichNode)
+		uqm::COUNT whichNode)
 {
 	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{

@@ -63,7 +63,7 @@ UninitOscilloscope (void)
 	scope_init = 0;
 }
 
-BYTE
+uqm::BYTE
 ScaleHeightByVolume (uint8 scope_data, bool toScale)
 {
 	if (!toScale || musicVolume == NORMAL_VOLUME)
@@ -77,13 +77,13 @@ ScaleHeightByVolume (uint8 scope_data, bool toScale)
 		{
 			res = scope_data - (scopeSize.height / 2);
 			res *= scale;
-			return (BYTE)((scopeSize.height / 2) + res);
+			return (uqm::BYTE)((scopeSize.height / 2) + res);
 		}
 		else
 		{
 			res = (scopeSize.height / 2) - scope_data;
 			res *= scale;
-			return (BYTE)((scopeSize.height / 2) - res);
+			return (uqm::BYTE)((scopeSize.height / 2) - res);
 		}
 	}
 }
@@ -156,7 +156,7 @@ void
 DrawOscilloscope (void)
 {
 	STAMP s;
-	BYTE scope_data[128];
+	uqm::BYTE scope_data[128];
 
 	if (oscillDisabled)
 		return;

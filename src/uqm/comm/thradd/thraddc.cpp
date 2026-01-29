@@ -162,7 +162,7 @@ GetCultureName (void)
 }
 
 static void
-PolitePhrase (BYTE which_phrase)
+PolitePhrase (uqm::BYTE which_phrase)
 {
 	switch (which_phrase)
 	{
@@ -182,7 +182,7 @@ PolitePhrase (BYTE which_phrase)
 }
 
 static void
-RhymePhrase (BYTE which_phrase)
+RhymePhrase (uqm::BYTE which_phrase)
 {
 	switch (which_phrase)
 	{
@@ -202,7 +202,7 @@ RhymePhrase (BYTE which_phrase)
 }
 
 static void
-PigLatinPhrase (BYTE which_phrase)
+PigLatinPhrase (uqm::BYTE which_phrase)
 {
 	switch (which_phrase)
 	{
@@ -222,7 +222,7 @@ PigLatinPhrase (BYTE which_phrase)
 }
 
 static void
-LikeYouPhrase (BYTE which_phrase)
+LikeYouPhrase (uqm::BYTE which_phrase)
 {
 	switch (which_phrase)
 	{
@@ -274,7 +274,7 @@ ExitConversation (RESPONSE_REF R)
 		NPCPhrase (GOODBYE_HOSTILE_HELIX);
 	else if (PLAYER_SAID (R, bye_ally))
 	{
-		BYTE NumVisits;
+		uqm::BYTE NumVisits;
 
 		NumVisits = GET_GAME_STATE (THRADD_STACK_1);
 		switch (NumVisits++)
@@ -342,7 +342,7 @@ ExitConversation (RESPONSE_REF R)
 static void
 ThraddAllies (RESPONSE_REF R)
 {
-	BYTE NumVisits;
+	uqm::BYTE NumVisits;
 
 	if (PLAYER_SAID (R, why_you_here_ally))
 	{
@@ -573,7 +573,7 @@ ThraddHostile (RESPONSE_REF R)
 	}
 	else if (PLAYER_SAID (R, whats_up_hostile_2))
 	{
-		BYTE NumVisits;
+		uqm::BYTE NumVisits;
 
 		NumVisits = GET_GAME_STATE (THRADD_INFO);
 		switch (NumVisits++)
@@ -692,11 +692,11 @@ ThraddHostile (RESPONSE_REF R)
 static void
 Intro (void)
 {
-	BYTE NumVisits;
+	uqm::BYTE NumVisits;
 	HFLEETINFO hThradd = GetStarShipFromIndex (&GLOBAL (avail_race_q), THRADDASH_SHIP);
 	FLEET_INFO *ThraddPtr = LockFleetInfo (&GLOBAL (avail_race_q), hThradd);
 
-	if (LOBYTE (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
+	if (lowByte (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
 	{
 		NPCPhrase (OUT_TAKES);
 
@@ -857,7 +857,7 @@ Intro (void)
 		HelixWorld ((RESPONSE_REF)0);
 	}
 	else if (GET_GAME_STATE (THRADDASH_BODY_COUNT)
-			>= (BYTE)THRADDASH_BODY_THRESHOLD)
+			>= (uqm::BYTE)THRADDASH_BODY_THRESHOLD)
 	{
 		NPCPhrase (AMAZING_PERFORMANCE);
 
@@ -955,7 +955,7 @@ Intro (void)
 	}
 }
 
-static COUNT
+static uqm::COUNT
 uninit_thradd (void)
 {
 	luaUqm_comm_uninit ();
@@ -986,7 +986,7 @@ init_thradd_comm (void)
 	thradd_desc.AlienTextWidth = SIS_TEXT_WIDTH - RES_SCALE (16);
 
 	if (GET_GAME_STATE (THRADD_MANNER)
-			|| LOBYTE (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
+			|| lowByte (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
 	{
 		setSegue (Segue_peace);
 	}

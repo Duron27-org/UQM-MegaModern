@@ -34,9 +34,9 @@ typedef enum MeleeShip {
 	MELEE_YEHAT,
 	MELEE_ZOQFOTPIK,
 	
-	MELEE_UNSET = ((BYTE) ~0) - 1,
+	MELEE_UNSET = ((uqm::BYTE) ~0) - 1,
 			// Used with the Update protocol, to register in the sentTeam
-	MELEE_NONE = (BYTE) ~0
+	MELEE_NONE = (uqm::BYTE) ~0
 			// Empty fleet position.
 } MeleeShip;
 #define NUM_MELEE_SHIPS (MELEE_ZOQFOTPIK + 1)

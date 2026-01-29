@@ -44,7 +44,7 @@ extern bool LoadHyperspace (void);
 extern bool FreeHyperspace (void);
 extern void SeedUniverse (void);
 extern void EraseRadar (void);
-extern void MoveSIS (SDWORD *pdx, SDWORD *pdy);
+extern void MoveSIS (uqm::SDWORD *pdx, uqm::SDWORD *pdy);
 
 extern void FreeHyperData (void);
 extern void check_hyperspace_encounter (void);

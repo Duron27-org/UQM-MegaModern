@@ -24,6 +24,7 @@
 
 #include "config.h"
 
+#include <type_traits>
 #include <cinttypes>
 #include <stddef.h>
 

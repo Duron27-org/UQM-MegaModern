@@ -60,7 +60,7 @@ DestroyPickFrame (void)
 }
 
 void
-RepairPickFrame (RECT *pRect, COUNT frame)
+RepairPickFrame (RECT *pRect, uqm::COUNT frame)
 {
 	RECT OldRect;
 	STAMP s;
@@ -87,7 +87,8 @@ DoPickBattleShip (MENU_STATE *pMS)
 {
 	RECT r{};
 	TEXT t{};
-
+	int dx = 0, dy = 0;
+		
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
 	{
 		pMS->CurFrame = 0;
@@ -114,7 +115,6 @@ DoPickBattleShip (MENU_STATE *pMS)
 	else
 	{
 		COORD new_row, new_col;
-		int dx = 0, dy = 0;
 		if (PulsedInputState.menu[KEY_MENU_RIGHT]) dx = 1;
 		if (PulsedInputState.menu[KEY_MENU_LEFT]) dx = -1;
 		if (PulsedInputState.menu[KEY_MENU_UP]) dy = -1;
@@ -125,8 +125,8 @@ DoPickBattleShip (MENU_STATE *pMS)
 		if (new_row != pMS->first_item.y
 				|| new_col != pMS->first_item.x)
 		{
-			COUNT crew_level, max_crew;
-			COUNT ship_index;
+			uqm::COUNT crew_level, max_crew;
+			uqm::COUNT ship_index;
 			HSTARSHIP hBattleShip, hNextShip;
 			STARSHIP *StarShipPtr;
 
@@ -232,7 +232,7 @@ ChangeSelection:
 				if (StarShipPtr->captains_name_index == 0)
 				{
 					t.pStr = GLOBAL_SIS (CommanderName);
-					t.CharCount = (COUNT)~0;
+					t.CharCount = (uqm::COUNT)~0;
 					crew_level = GLOBAL_SIS (CrewEnlisted);
 					max_crew = GetCrewPodCapacity ();
 				}
@@ -243,7 +243,7 @@ ChangeSelection:
 					locString = SetAbsStringTableIndex (
 							StarShipPtr->race_strings,
 							StarShipPtr->captains_name_index);
-					t.pStr = (CHAR_T *)GetStringAddress (locString);
+					t.pStr = (uqm::CHAR_T *)GetStringAddress (locString);
 					t.CharCount = GetStringLength (locString);
 					crew_level = StarShipPtr->crew_level;
 					max_crew = StarShipPtr->max_crew;
@@ -279,7 +279,7 @@ ChangeSelection:
 
 				t.baseline.x = r.corner.x + (r.extent.width >> 1);
 				t.pStr = buf;
-				t.CharCount = (COUNT)~0;
+				t.CharCount = (uqm::COUNT)~0;
 				if (crew_level >= max_crew)
 					sprintf (buf, "%u", crew_level);
 				else
@@ -363,7 +363,7 @@ GetArmadaStarShip (void)
 
 // Get the next ship to use.
 HSTARSHIP
-GetEncounterStarShip (STARSHIP *LastStarShipPtr, COUNT which_player)
+GetEncounterStarShip (STARSHIP *LastStarShipPtr, uqm::COUNT which_player)
 {
 	if (inHQSpace ())
 	{
@@ -371,7 +371,7 @@ GetEncounterStarShip (STARSHIP *LastStarShipPtr, COUNT which_player)
 		// SIS for the Hyperspace flight
 		return GetHeadLink (&race_q[which_player]);
 	}
-	else if (LOBYTE (GLOBAL (CurrentActivity)) == SUPER_MELEE)
+	else if (lowByte (GLOBAL (CurrentActivity)) == SUPER_MELEE)
 	{
 		// Let the player chose their own ship. (May be a computer player).
 		HSTARSHIP hBattleShip;
@@ -405,7 +405,7 @@ GetEncounterStarShip (STARSHIP *LastStarShipPtr, COUNT which_player)
 #define RUN_AWAY_FUEL_COST (5 * FUEL_TANK_SCALE)
 				if (LastStarShipPtr->crew_level == 0)
 				{	// Died in the line of duty
-					GLOBAL_SIS (CrewEnlisted) = (COUNT)~0;
+					GLOBAL_SIS (CrewEnlisted) = (uqm::COUNT)~0;
 					DeathByMelee = true;
 				}
 				else
@@ -501,7 +501,7 @@ DrawArmadaPickShip (bool draw_salvage_frame, RECT *pPickRect)
 	t.baseline.y = pick_r.corner.y + pick_r.extent.height - RES_SCALE (5); 
 	t.align = ALIGN_CENTER;
 	t.pStr = GLOBAL_SIS (ShipName);
-	t.CharCount = (COUNT)~0;
+	t.CharCount = (uqm::COUNT)~0;
 
 	// Code to make use of the PC version's font gradient
 	// Along with the FRAME "OldFontEffect"
@@ -525,7 +525,7 @@ DrawArmadaPickShip (bool draw_salvage_frame, RECT *pPickRect)
 
 		if (StarShipPtr->captains_name_index)
 		{	// Escort ship, not SIS
-			COUNT ship_index;
+			uqm::COUNT ship_index;
 
 			ship_index = StarShipPtr->index;
 

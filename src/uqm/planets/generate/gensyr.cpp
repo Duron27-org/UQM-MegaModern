@@ -38,10 +38,10 @@ static bool GenerateSyreen_generateName (const SOLARSYS_STATE *,
 	const PLANET_DESC *world);
 static bool GenerateSyreen_generateOrbital (SOLARSYS_STATE *solarSys,
 		PLANET_DESC *world);
-static COUNT GenerateSyreen_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
+static uqm::COUNT GenerateSyreen_generateEnergy (const SOLARSYS_STATE *,
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
 static bool GenerateSyreen_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, COUNT whichNode);
+		PLANET_DESC *world, uqm::COUNT whichNode);
 
 
 const GenerateFunctions generateSyreenFunctions = {
@@ -104,7 +104,7 @@ GenerateSyreen_generateMoons (SOLARSYS_STATE *solarSys,
 
 	if (matchWorld (solarSys, planet, MATCH_PBYTE, MATCH_PLANET))
 	{
-		BYTE MoonByte = solarSys->SunDesc[0].MoonByte;
+		uqm::BYTE MoonByte = solarSys->SunDesc[0].MoonByte;
 		PLANET_DESC *pMoonDesc = &solarSys->MoonDesc[MoonByte];
 
 		if (!RaceDead (SYREEN_SHIP))
@@ -134,7 +134,7 @@ GenerateSyreen_generateName (const SOLARSYS_STATE *solarSys,
 			&& (GET_GAME_STATE (SYREEN_HOME_VISITS)
 			|| GET_GAME_STATE (SYREEN_KNOW_ABOUT_MYCON)))
 	{
-		BYTE PlanetByte = solarSys->SunDesc[0].PlanetByte;
+		uqm::BYTE PlanetByte = solarSys->SunDesc[0].PlanetByte;
 		PLANET_DESC pPlanetDesc = solarSys->PlanetDesc[PlanetByte];
 
 		utf8StringCopy (GLOBAL_SIS (PlanetName),
@@ -207,9 +207,9 @@ GenerateSyreen_generateOrbital (SOLARSYS_STATE *solarSys,
 	return true;
 }
 
-static COUNT
+static uqm::COUNT
 GenerateSyreen_generateEnergy (const SOLARSYS_STATE *solarSys,
-	const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+	const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *info)
 {
 	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{
@@ -221,7 +221,7 @@ GenerateSyreen_generateEnergy (const SOLARSYS_STATE *solarSys,
 
 static bool
 GenerateSyreen_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-	COUNT whichNode)
+	uqm::COUNT whichNode)
 {
 	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{	// Standard ruins report

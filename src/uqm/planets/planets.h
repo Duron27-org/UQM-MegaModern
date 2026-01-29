@@ -156,14 +156,14 @@ typedef struct portal_location PORTAL_LOCATION;
 typedef struct
 {
 	POINT p[4];
-	DWORD m[4];
+	uqm::DWORD m[4];
 } MAP3D_POINT;
 
 struct planet_orbit
 {
 	FRAME TopoZoomFrame;
 			// 4x scaled topo image for planet-side
-	SBYTE  *lpTopoData;
+	uqm::SBYTE  *lpTopoData;
 			// normal topo data; expressed in elevation levels
 			// data is signed for planets other than gas giants
 			// transformed to light variance map for 3d planet
@@ -187,15 +187,15 @@ struct planet_orbit
 	FRAME BackFrame;
 			// background frame to make shields transparent with nebulae on
 	// BW: extra stuff for animated IP
-	DWORD **light_diff;
+	uqm::DWORD **light_diff;
 	MAP3D_POINT **map_rotate;
 	// doubly dynamically allocated depending on map size
 
 	// stuff to draw DOS spheres
 	FRAME TopoMask;
-	BYTE *sphereBytes;
+	uqm::BYTE *sphereBytes;
 	COLORMAP sphereMap;
-	COUNT scanType;
+	uqm::COUNT scanType;
 
 	FRAME Shade;
 	Color *ShadeColors;
@@ -207,15 +207,15 @@ extern "C" {
 
 struct planet_desc
 {
-	DWORD rand_seed;    // seed for topography and node generation
+	uqm::DWORD rand_seed;    // seed for topography and node generation
 
-	BYTE data_index;    // what planet is this
-	BYTE NumPlanets;    // number of moons
-	SIZE radius;        // radius of planet orbit
+	uqm::BYTE data_index;    // what planet is this
+	uqm::BYTE NumPlanets;    // number of moons
+	uqm::SIZE radius;        // radius of planet orbit
 	POINT location;     // coords on screen
 
 	Color temp_color;   // color of planet orbit
-	COUNT NextIndex;    // index to a next planet
+	uqm::COUNT NextIndex;    // index to a next planet
 	STAMP image;        // image of a planet in IP view
 
 	PLANET_DESC *pPrevDesc;
@@ -223,27 +223,27 @@ struct planet_desc
 	
 	// BW : new stuff for animated solar systems
 	PLANET_ORBIT orbit; // Link to moon(s)
-	COUNT size;         // size of a planet
+	uqm::COUNT size;         // size of a planet
 	
-	COUNT angle;
+	uqm::COUNT angle;
 	int rotFrameIndex, rotPointIndex, rotwidth, rotheight;
 	double orb_speed;
 	double rot_speed;
 			// Handles rotation and orbiting
 
-	BYTE PlanetByte;
-	BYTE MoonByte;
+	uqm::BYTE PlanetByte;
+	uqm::BYTE MoonByte;
 			// Handles hard coded planets/moons for Custom Seed
-	BYTE frame_offset;
+	uqm::BYTE frame_offset;
 };
 
 struct star_desc
 {
 	POINT star_pt;
-	BYTE Type;
-	BYTE Index;
-	BYTE Prefix;
-	BYTE Postfix;
+	uqm::BYTE Type;
+	uqm::BYTE Index;
+	uqm::BYTE Prefix;
+	uqm::BYTE Postfix;
 };
 
 struct node_info
@@ -252,12 +252,12 @@ struct node_info
 	// or generateLife call is made.
 	POINT loc_pt;
 			// Position of the mineral/bio/energy node on the planet.
-	COUNT density;
+	uqm::COUNT density;
 			// For bio and energy: undefined
 			// For minerals the low byte is the gross size of the
 			// deposit (this determines the image), and the high
 			// byte is the fine size (the actual quantity).
-	COUNT type;
+	uqm::COUNT type;
 			// For minerals: the type of element
 			// For bio: the type of the creature.
 			//       0 through NUM_CREATURE_TYPES - 1 are normal creatures,
@@ -277,10 +277,10 @@ struct solarsys_state
 			// Set to true when player is flying around in interplanetary
 			// Reset to false when going into orbit or encounter
 
-	COUNT WaitIntersect;
+	uqm::COUNT WaitIntersect;
 			// Planet/moon number with which the flagship should not
 			// collide. For example, if the player just left the planet or
-			// inner system. If set to (COUNT)~0, all planet collisions are
+			// inner system. If set to (uqm::COUNT)~0, all planet collisions are
 			// disabled until the flagship stops intersecting with all
 			// planets.
 	PLANET_DESC SunDesc[MAX_SUNS];
@@ -301,7 +301,7 @@ struct solarsys_state
 			// currently orbiting.
 			// In inner system: points into PlanetDesc to the planet whose
 			// inner system the ship is inside
-	SIZE FirstPlanetIndex, LastPlanetIndex;
+	uqm::SIZE FirstPlanetIndex, LastPlanetIndex;
 			// The planets get sorted on their image.origin.y value.
 			// PlanetDesc[FirstPlanetIndex] is the planet with the lowest
 			// image.origin.y, and PlanetDesc[LastPlanetIndex] has the
@@ -309,10 +309,10 @@ struct solarsys_state
 			// PlanetDesc[PlanetDesc[i].NextIndex] is the next planet
 			// after PlanetDesc[i] in the ordering.
 
-	BYTE turn_counter;
-	BYTE turn_wait;
-	BYTE thrust_counter;
-	BYTE max_ship_speed;
+	uqm::BYTE turn_counter;
+	uqm::BYTE turn_wait;
+	uqm::BYTE thrust_counter;
+	uqm::BYTE max_ship_speed;
 
 	STRING XlatRef;
 	const void *XlatPtr;
@@ -355,7 +355,7 @@ struct plot_location
 {
 	POINT star_pt;
 	STAR_DESC *star;
-	DWORD dist_sq[NUM_PLOTS];
+	uqm::DWORD dist_sq[NUM_PLOTS];
 };
 
 // PORTAL_LOCATION aka portal_location.  The star_pt is the location in
@@ -387,25 +387,25 @@ bool worldIsPlanet (const SOLARSYS_STATE *solarSys,
 		const PLANET_DESC *world);
 bool worldIsMoon (const SOLARSYS_STATE *solarSys,
 		const PLANET_DESC *world);
-COUNT planetIndex (const SOLARSYS_STATE *solarSys,
+uqm::COUNT planetIndex (const SOLARSYS_STATE *solarSys,
 		const PLANET_DESC *world);
-COUNT moonIndex (const SOLARSYS_STATE *solarSys, const PLANET_DESC *moon);
-#define MATCH_PLANET ((BYTE) -1)
-#define MATCH_PBYTE ((BYTE) -2)
-#define MATCH_MBYTE ((BYTE) -3)
+uqm::COUNT moonIndex (const SOLARSYS_STATE *solarSys, const PLANET_DESC *moon);
+#define MATCH_PLANET ((uqm::BYTE) -1)
+#define MATCH_PBYTE ((uqm::BYTE) -2)
+#define MATCH_MBYTE ((uqm::BYTE) -3)
 bool matchWorld (const SOLARSYS_STATE *solarSys, const PLANET_DESC *world,
-		BYTE planetI, BYTE moonI);
+		uqm::BYTE planetI, uqm::BYTE moonI);
 
-DWORD GetRandomSeedForStar (const STAR_DESC *star);
+uqm::DWORD GetRandomSeedForStar (const STAR_DESC *star);
 
-POINT locationToDisplay (POINT pt, SIZE scaleRadius);
-POINT displayToLocation (POINT pt, SIZE scaleRadius);
-POINT planetOuterLocation (COUNT planetI);
+POINT locationToDisplay (POINT pt, uqm::SIZE scaleRadius);
+POINT displayToLocation (POINT pt, uqm::SIZE scaleRadius);
+POINT planetOuterLocation (uqm::COUNT planetI);
 
-extern void DestroyOrbitStruct (PLANET_ORBIT *Orbit, SIZE height);
+extern void DestroyOrbitStruct (PLANET_ORBIT *Orbit, uqm::SIZE height);
 extern void LoadPlanet (FRAME SurfDefFrame);
 extern void DrawPlanet (int dy, Color tintColor);
-extern void DrawPCScanTint (COUNT cur_scan);
+extern void DrawPCScanTint (uqm::COUNT cur_scan);
 extern void FreePlanet (void);
 extern void LoadStdLanderFont (PLANET_INFO *info);
 extern void FreeLanderFont (PLANET_INFO *info);
@@ -414,37 +414,37 @@ extern void ExploreSolarSys (void);
 extern void DrawStarBackGround (void);
 extern FRAME GetStarBackFround (void);
 extern void XFormIPLoc (POINT *pIn, POINT *pOut, bool ToDisplay);
-extern void DrawOval (DRECT *pRect, BYTE num_off_pixels, bool scaled);
+extern void DrawOval (DRECT *pRect, uqm::BYTE num_off_pixels, bool scaled);
 extern void DrawFilledOval (DRECT *pRect);
 extern void DrawEllipse (int cx, int cy, int rx, int ry, int shear,
 		int filled, int dotted);
 extern void DrawRotatedEllipse (int cx, int cy, int rx, int ry,
 		int angle_deg, int filled, int dotted);
 extern void ComputeSpeed(PLANET_DESC *planet, bool GeneratingMoons,
-		UWORD rand_val);
-#define NUMPLANETS_PDESC ((BYTE)-2)
-extern void FillOrbits (SOLARSYS_STATE *system, BYTE NumPlanets,
+		uqm::UWORD rand_val);
+#define NUMPLANETS_PDESC ((uqm::BYTE)-2)
+extern void FillOrbits (SOLARSYS_STATE *system, uqm::BYTE NumPlanets,
 		PLANET_DESC *pBaseDesc, bool TypesDefined);
-extern void InitLander (BYTE LanderFlags);
+extern void InitLander (uqm::BYTE LanderFlags);
 extern void InitPCLander (bool Loading);
 extern void DestroyPCLanderContext (void);
 
 extern void InitSphereRotation (int direction, bool shielded,
-		COUNT width, COUNT height);
+		uqm::COUNT width, uqm::COUNT height);
 extern void UninitSphereRotation (void);
 extern void PrepareNextRotationFrame (void);
 extern void PrepareNextRotationFrameForIP (PLANET_DESC *pPlanetDesc,
-		SIZE frameCounter);
+		uqm::SIZE frameCounter);
 extern void DrawPlanetSphere (int x, int y, bool back);
 extern void DrawDefaultPlanetSphere (void);
 extern void RerenderPlanetSphere (void);
 extern void RenderDOSPlanetSphere (PLANET_ORBIT* Orbit, FRAME MaskFrame,
 		int offset);
 extern void Render3DOPlanetSphere (PLANET_ORBIT* Orbit, FRAME MaskFrame,
-		int offset, COUNT rotwidth, COUNT height);
+		int offset, uqm::COUNT rotwidth, uqm::COUNT height);
 extern void RenderPlanetSphere (PLANET_ORBIT *Orbit, FRAME Frame,
-		int offset, bool shielded, bool doThrob, COUNT width,
-		COUNT height, COUNT radius);
+		int offset, bool shielded, bool doThrob, uqm::COUNT width,
+		uqm::COUNT height, uqm::COUNT radius);
 extern void SetShieldThrobEffect (FRAME FromFrame, int offset,
 		FRAME ToFrame);
 extern void Draw3DOShield (STAMP ShieldFrame);
@@ -455,22 +455,22 @@ extern void RotatePlanetSphere (bool keepRate, STAMP *onTop);
 extern void DrawScannedObjects (bool Reversed);
 extern void GetPlanetTopography (PLANET_DESC *pPlanetDesc, FRAME SurfDefFrame);
 extern void GeneratePlanetSurface (PLANET_DESC *pPlanetDesc,
-		FRAME SurfDefFrame, COUNT width, COUNT height);
-extern void DeltaTopography (COUNT num_iterations, SBYTE *DepthArray,
-		RECT *pRect, SIZE depth_delta);
+		FRAME SurfDefFrame, uqm::COUNT width, uqm::COUNT height);
+extern void DeltaTopography (uqm::COUNT num_iterations, uqm::SBYTE *DepthArray,
+		RECT *pRect, uqm::SIZE depth_delta);
 
-extern void TransformColor (Color *c, COUNT scan);
+extern void TransformColor (Color *c, uqm::COUNT scan);
 
 extern void DrawPlanetSurfaceBorder (void);
 
 extern FRAME GetStarBackGround (bool encounter);
-extern CHAR_T* GetNamedPlanetaryBody (void);
-extern void GetPlanetOrMoonName (CHAR_T *buf, COUNT bufsize);
+extern uqm::CHAR_T* GetNamedPlanetaryBody (void);
+extern void GetPlanetOrMoonName (uqm::CHAR_T *buf, uqm::COUNT bufsize);
 
 extern void PlanetOrbitMenu (void);
 extern void SaveSolarSysLocation (void);
 
-extern BYTE PickClosestHabitable (SOLARSYS_STATE *solarSys);
+extern uqm::BYTE PickClosestHabitable (SOLARSYS_STATE *solarSys);
 
 #if 0 //defined(__cplusplus)
 }

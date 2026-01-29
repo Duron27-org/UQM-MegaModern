@@ -246,7 +246,7 @@ CombatIsInevitable (RESPONSE_REF R)
 	{
 		NPCPhrase (FUNNY_IDEA);
 
-		AlienTalkSegue ((COUNT)~0);
+		AlienTalkSegue ((uqm::COUNT)~0);
 		AddEscortShips (UMGAH_SHIP, DIF_CASE(4, 4, 2));
 		SET_GAME_STATE (UMGAH_HOSTILE, 1);
 	}
@@ -293,7 +293,7 @@ Zombies (RESPONSE_REF R)
 	}
 	else
 	{
-		BYTE i, LastStack;
+		uqm::BYTE i, LastStack;
 		RESPONSE_REF pStr[4];
 
 		LastStack = 0;
@@ -504,10 +504,10 @@ UmgahReward (RESPONSE_REF R)
 static void
 Intro (void)
 {
-	BYTE NumVisits;
+	uqm::BYTE NumVisits;
 
 
-	if (LOBYTE (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE) {
+	if (lowByte (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE) {
 		NPCPhrase (OUT_TAKES);
 		SET_GAME_STATE (BATTLE_SEGUE, 0);
 		return;
@@ -679,7 +679,7 @@ Intro (void)
 	}
 }
 
-static COUNT
+static uqm::COUNT
 uninit_umgah (void)
 {
 	luaUqm_comm_uninit ();
@@ -713,7 +713,7 @@ init_umgah_comm (void)
 	umgah_desc.AlienTextWidth = SIS_TEXT_WIDTH - RES_SCALE (16);
 
 	if ((GET_GAME_STATE (TALKING_PET) && !GET_GAME_STATE (UMGAH_HOSTILE))
-			|| LOBYTE (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
+			|| lowByte (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
 	{
 		setSegue (Segue_peace);
 	}

@@ -37,9 +37,9 @@ extern "C" {
 
 typedef struct
 {
-	BYTE day_index, month_index;
-	COUNT year_index;
-	SIZE tick_count, day_in_ticks;
+	uqm::BYTE day_index, month_index;
+	uqm::COUNT year_index;
+	uqm::SIZE tick_count, day_in_ticks;
 
 	QUEUE event_q;
 			/* Queue element is EVENT */
@@ -52,9 +52,9 @@ typedef struct event
 	// LINK elements; must be first
 	HEVENT pred, succ;
 
-	BYTE day_index, month_index;
-	COUNT year_index;
-	BYTE func_index;
+	uqm::BYTE day_index, month_index;
+	uqm::COUNT year_index;
+	uqm::BYTE func_index;
 } EVENT;
 
 typedef enum
@@ -90,14 +90,14 @@ extern bool UninitGameClock (void);
 
 extern float daysElapsed (void);
 
-extern void SetGameClockRate (COUNT seconds_per_day);
-extern bool ValidateEvent (EVENT_TYPE type, COUNT *pmonth_index,
-		COUNT *pday_index, COUNT *pyear_index);
-extern HEVENT AddEvent (EVENT_TYPE type, COUNT month_index, COUNT
-		day_index, COUNT year_index, BYTE func_index);
-extern void EventHandler (BYTE selector);
+extern void SetGameClockRate (uqm::COUNT seconds_per_day);
+extern bool ValidateEvent (EVENT_TYPE type, uqm::COUNT *pmonth_index,
+		uqm::COUNT *pday_index, uqm::COUNT *pyear_index);
+extern HEVENT AddEvent (EVENT_TYPE type, uqm::COUNT month_index, uqm::COUNT
+		day_index, uqm::COUNT year_index, uqm::BYTE func_index);
+extern void EventHandler (uqm::BYTE selector);
 extern void GameClockTick (void);
-extern void MoveGameClockDays (COUNT days);
+extern void MoveGameClockDays (uqm::COUNT days);
 
 // The lock/unlock/running functions are for debugging use only
 // Locking will block the GameClockTick() function and thus

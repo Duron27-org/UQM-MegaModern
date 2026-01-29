@@ -20,12 +20,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
-#include "libs/memlib.h"
 #include "port.h"
 #include "types.h"
 #include "endian_uqm.h"
-#include "libs/uio.h"
 #include "decoder.h"
+#include "libs/compiler.h"
+#include "libs/memlib.h"
+#include "libs/uio.h"
 #include "libs/sound/audiocore.h"
 #include "libs/log.h"
 #include "modaud.h"
@@ -123,7 +124,7 @@ moda_mmout_Update (void)
 	if (!buffer || bufsize == 0)
 		return;
 
-	written = VC_WriteBytes ((SBYTE*)buffer, bufsize);
+	written = VC_WriteBytes ((uqm::SBYTE*)buffer, bufsize);
 }
 
 static BOOL

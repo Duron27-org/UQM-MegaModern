@@ -29,16 +29,16 @@
 
 //#define DEBUG_CYBORG
 
-COUNT
+uqm::COUNT
 PlotIntercept (ELEMENT *ElementPtr0, ELEMENT *ElementPtr1,
-			   COUNT max_turns, COUNT margin_of_error)
+			   uqm::COUNT max_turns, uqm::COUNT margin_of_error)
 {
-	SDWORD dy;
-	SDWORD time_y_0, time_y_1;
+	uqm::SDWORD dy;
+	uqm::SDWORD time_y_0, time_y_1;
 	DPOINT dst[2];
 	RECT r0 = {{0, 0}, {0, 0}};
 	RECT r1 = {{0, 0}, {0, 0}};
-	SDWORD dx_0, dy_0, dx_1, dy_1; // JMS:These were SIZE. No overflows now.
+	uqm::SDWORD dx_0, dy_0, dx_1, dy_1; // JMS:These were uqm::SIZE. No overflows now.
 	
 	if ((ElementPtr0->state_flags | ElementPtr1->state_flags) & FINITE_LIFE)
 	{
@@ -63,17 +63,17 @@ PlotIntercept (ELEMENT *ElementPtr0, ELEMENT *ElementPtr1,
 		}
 	}
 	
-	dst[0].x = (SDWORD)ElementPtr0->current.location.x;
-	dst[0].y = (SDWORD)ElementPtr0->current.location.y;
+	dst[0].x = (uqm::SDWORD)ElementPtr0->current.location.x;
+	dst[0].y = (uqm::SDWORD)ElementPtr0->current.location.y;
 	GetCurrentVelocityComponentsSdword (&ElementPtr0->velocity, &dx_0, &dy_0);
-	dx_0 = (SDWORD)VELOCITY_TO_WORLD ((long)dx_0 * (long)max_turns);
-	dy_0 = (SDWORD)VELOCITY_TO_WORLD ((long)dy_0 * (long)max_turns);
+	dx_0 = (uqm::SDWORD)VELOCITY_TO_WORLD ((long)dx_0 * (long)max_turns);
+	dy_0 = (uqm::SDWORD)VELOCITY_TO_WORLD ((long)dy_0 * (long)max_turns);
 	
-	dst[1].x = (SDWORD)ElementPtr1->current.location.x;
-	dst[1].y = (SDWORD)ElementPtr1->current.location.y;
+	dst[1].x = (uqm::SDWORD)ElementPtr1->current.location.x;
+	dst[1].y = (uqm::SDWORD)ElementPtr1->current.location.y;
 	GetCurrentVelocityComponentsSdword (&ElementPtr1->velocity, &dx_1, &dy_1);
-	dx_1 = (SDWORD)VELOCITY_TO_WORLD ((long)dx_1 * (long)max_turns);
-	dy_1 = (SDWORD)VELOCITY_TO_WORLD ((long)dy_1 * (long)max_turns);
+	dx_1 = (uqm::SDWORD)VELOCITY_TO_WORLD ((long)dx_1 * (long)max_turns);
+	dy_1 = (uqm::SDWORD)VELOCITY_TO_WORLD ((long)dy_1 * (long)max_turns);
 	
 	if (margin_of_error)
 	{
@@ -101,8 +101,8 @@ PlotIntercept (ELEMENT *ElementPtr0, ELEMENT *ElementPtr1,
 		|| (time_y_0 > 0 && dy >= time_y_0)
 		|| (time_y_1 < 0 && dy <= time_y_1))
 	{
-		SDWORD dx;
-		SDWORD time_x_0, time_x_1;
+		uqm::SDWORD dx;
+		uqm::SDWORD time_x_0, time_x_1;
 		
 		if (margin_of_error)
 		{
@@ -131,7 +131,7 @@ PlotIntercept (ELEMENT *ElementPtr0, ELEMENT *ElementPtr1,
 				time_y_0 = time_y_1 = 0;
 			else
 			{
-				SDWORD t;
+				uqm::SDWORD t;
 				long time_beg, time_end, fract;
 				
 				if (time_y_1 < 0)
@@ -198,31 +198,31 @@ PlotIntercept (ELEMENT *ElementPtr0, ELEMENT *ElementPtr1,
 				if ((time_beg *= max_turns) < fract)
 					time_y_0 = 0;
 				else
-					time_y_0 = (SDWORD)(time_beg / fract);
+					time_y_0 = (uqm::SDWORD)(time_beg / fract);
 				
 				if (time_end >= fract) /* just in case of overflow */
 					time_y_1 = max_turns - 1;
 				else
-					time_y_1 = (SDWORD)((time_end * max_turns) / fract);
+					time_y_1 = (uqm::SDWORD)((time_end * max_turns) / fract);
 			}
 			
 			if (time_y_0 <= time_y_1)
 			{
 				if (margin_of_error != 0)
-					return ((COUNT)time_y_0 + 1);
+					return ((uqm::COUNT)time_y_0 + 1);
 				else
 				{
 					DPOINT Pt0, Pt1;
 					VELOCITY_DESC Velocity0, Velocity1;
 					INTERSECT_CONTROL Control0, Control1;
 					
-					Pt0.x = (SDWORD)ElementPtr0->current.location.x;
-					Pt0.y = (SDWORD)ElementPtr0->current.location.y;
+					Pt0.x = (uqm::SDWORD)ElementPtr0->current.location.x;
+					Pt0.y = (uqm::SDWORD)ElementPtr0->current.location.y;
 					Velocity0 = ElementPtr0->velocity;
 					Control0 = ElementPtr0->IntersectControl;
 					
-					Pt1.x = (SDWORD)ElementPtr1->current.location.x;
-					Pt1.y = (SDWORD)ElementPtr1->current.location.y;
+					Pt1.x = (uqm::SDWORD)ElementPtr1->current.location.x;
+					Pt1.y = (uqm::SDWORD)ElementPtr1->current.location.y;
 					Velocity1 = ElementPtr1->velocity;
 					Control1 = ElementPtr1->IntersectControl;
 					
@@ -280,7 +280,7 @@ PlotIntercept (ELEMENT *ElementPtr0, ELEMENT *ElementPtr1,
 							}
 							
 							if (when)
-								return ((COUNT)time_y_0);
+								return ((uqm::COUNT)time_y_0);
 						}
 					} while (time_y_0 < time_y_1);
 				}
@@ -294,7 +294,7 @@ PlotIntercept (ELEMENT *ElementPtr0, ELEMENT *ElementPtr1,
 static void
 InitCyborg (STARSHIP *StarShipPtr)
 {
-	COUNT Index, Divisor;
+	uqm::COUNT Index, Divisor;
 	
 	Index = StarShipPtr->RaceDescPtr->characteristics.max_thrust
 	* StarShipPtr->RaceDescPtr->characteristics.thrust_increment;
@@ -344,10 +344,10 @@ ship_movement (ELEMENT *ShipPtr, EVALUATE_DESC *EvalDescPtr)
 
 // JMS:GFX Made SIZEs SDWORDs and changed the GetNextVelocityComponents to GetNextVelocityComponentsSdword
 bool
-ship_weapons (ELEMENT *ShipPtr, ELEMENT *OtherPtr, COUNT margin_of_error)
+ship_weapons (ELEMENT *ShipPtr, ELEMENT *OtherPtr, uqm::COUNT margin_of_error)
 {
-	SDWORD delta_x, delta_y;
-	COUNT n, num_weapons;
+	uqm::SDWORD delta_x, delta_y;
+	uqm::COUNT n, num_weapons;
 	ELEMENT Ship;
 	HELEMENT Weapon[6];
 	STARSHIP *StarShipPtr;
@@ -421,10 +421,10 @@ ship_weapons (ELEMENT *ShipPtr, ELEMENT *OtherPtr, COUNT margin_of_error)
 
 void
 ship_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
-				   COUNT ConcernCounter)
+				   uqm::COUNT ConcernCounter)
 {
 	bool ShipMoved, ShipFired;
-	COUNT margin_of_error;
+	uqm::COUNT margin_of_error;
 	STARSHIP *StarShipPtr;
 	// EVALUATE_DESC *ObjectsOfConcernEWeapon; unused
 	
@@ -490,9 +490,9 @@ ship_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 }
 
 bool
-TurnShip (ELEMENT *ShipPtr, COUNT angle)
+TurnShip (ELEMENT *ShipPtr, uqm::COUNT angle)
 {
-	COUNT f, ship_delta_facing;
+	uqm::COUNT f, ship_delta_facing;
 	STARSHIP *StarShipPtr;
 	
 	GetElementStarShip (ShipPtr, &StarShipPtr);
@@ -539,7 +539,7 @@ TurnShip (ELEMENT *ShipPtr, COUNT angle)
 }
 
 bool
-ThrustShip (ELEMENT *ShipPtr, COUNT angle)
+ThrustShip (ELEMENT *ShipPtr, uqm::COUNT angle)
 {
 	bool ShouldThrust;
 	STARSHIP *StarShipPtr;
@@ -555,7 +555,7 @@ ThrustShip (ELEMENT *ShipPtr, COUNT angle)
 		ShouldThrust = false;
 	else
 	{
-		SIZE ship_delta_facing;
+		uqm::SIZE ship_delta_facing;
 		
 		ship_delta_facing =
 		NORMALIZE_FACING (ANGLE_TO_FACING (angle)
@@ -582,14 +582,14 @@ ThrustShip (ELEMENT *ShipPtr, COUNT angle)
 void
 Pursue (ELEMENT *ShipPtr, EVALUATE_DESC *EvalDescPtr)
 {
-	BYTE maneuver_state;
-	COUNT desired_thrust_angle, desired_turn_angle;
-	SDWORD delta_x, delta_y;
-	SDWORD ship_delta_x, ship_delta_y;
-	SDWORD other_delta_x, other_delta_y;
+	uqm::BYTE maneuver_state;
+	uqm::COUNT desired_thrust_angle, desired_turn_angle;
+	uqm::SDWORD delta_x, delta_y;
+	uqm::SDWORD ship_delta_x, ship_delta_y;
+	uqm::SDWORD other_delta_x, other_delta_y;
 	ELEMENT *OtherObjPtr;
 	VELOCITY_DESC ShipVelocity, OtherVelocity;
-	COUNT distance_to_give_up_and_turn;
+	uqm::COUNT distance_to_give_up_and_turn;
 	
 	ShipVelocity = ShipPtr->velocity;
 	GetNextVelocityComponentsSdword (&ShipVelocity,
@@ -644,7 +644,7 @@ Pursue (ELEMENT *ShipPtr, EVALUATE_DESC *EvalDescPtr)
 					EnemyStarShipPtr->RaceDescPtr->characteristics.max_thrust
 					|| (EnemyStarShipPtr->cur_status_flags & SHIP_BEYOND_MAX_SPEED))))
 		{
-			UWORD ship_flags;
+			uqm::UWORD ship_flags;
 			
 			ship_flags = EnemyStarShipPtr->RaceDescPtr->ship_info.ship_flags;
 			/* you're maneuverable */
@@ -652,8 +652,8 @@ Pursue (ELEMENT *ShipPtr, EVALUATE_DESC *EvalDescPtr)
 				&StarShipPtr->RaceDescPtr->cyborg_control
 				) >= RESOLUTION_COMPENSATED(MEDIUM_SHIP)) 
 			{
-				UWORD fire_flags;
-				COUNT facing;
+				uqm::UWORD fire_flags;
+				uqm::COUNT facing;
 				
 				for (fire_flags = FIRES_FORE, facing = EvalDescPtr->facing;
 					 fire_flags <= FIRES_LEFT;
@@ -725,12 +725,12 @@ Pursue (ELEMENT *ShipPtr, EVALUATE_DESC *EvalDescPtr)
 void
 Entice (ELEMENT *ShipPtr, EVALUATE_DESC *EvalDescPtr)
 {
-	BYTE maneuver_state;
-	COUNT desired_thrust_angle, desired_turn_angle;
-	COUNT cone_of_fire, travel_angle;
-	SDWORD delta_x, delta_y;
-	SDWORD ship_delta_x, ship_delta_y;
-	SDWORD other_delta_x, other_delta_y;
+	uqm::BYTE maneuver_state;
+	uqm::COUNT desired_thrust_angle, desired_turn_angle;
+	uqm::COUNT cone_of_fire, travel_angle;
+	uqm::SDWORD delta_x, delta_y;
+	uqm::SDWORD ship_delta_x, ship_delta_y;
+	uqm::SDWORD other_delta_x, other_delta_y;
 	ELEMENT *OtherObjPtr;
 	VELOCITY_DESC ShipVelocity, OtherVelocity;
 	STARSHIP *StarShipPtr;
@@ -813,7 +813,7 @@ Entice (ELEMENT *ShipPtr, EVALUATE_DESC *EvalDescPtr)
 	}
 	else if (GRAVITY_MASS (OtherObjPtr->mass_points))
 	{
-		COUNT planet_facing;
+		uqm::COUNT planet_facing;
 		
 		planet_facing = NORMALIZE_FACING (ANGLE_TO_FACING (desired_thrust_angle));
 		cone_of_fire = NORMALIZE_FACING (
@@ -850,7 +850,7 @@ Entice (ELEMENT *ShipPtr, EVALUATE_DESC *EvalDescPtr)
 	}
 	else
 	{
-		COUNT WRange;
+		uqm::COUNT WRange;
 		
 		WRange = WEAPON_RANGE (
 							   &RDPtr->cyborg_control
@@ -860,8 +860,8 @@ Entice (ELEMENT *ShipPtr, EVALUATE_DESC *EvalDescPtr)
 										- EvalDescPtr->facing + OCTANT);
 		if (OtherObjPtr->state_flags & PLAYER_SHIP)
 		{
-			UWORD fire_flags, ship_flags;
-			COUNT facing;
+			uqm::UWORD fire_flags, ship_flags;
+			uqm::COUNT facing;
 			STARSHIP *EnemyStarShipPtr;
 			
 			GetElementStarShip (OtherObjPtr, &EnemyStarShipPtr);
@@ -1036,9 +1036,9 @@ tactical_intelligence (ComputerInputContext *context, STARSHIP *StarShipPtr)
 {
 	ELEMENT *ShipPtr;
 	ELEMENT Ship;
-	COUNT ShipFacing;
+	uqm::COUNT ShipFacing;
 	HELEMENT hElement, hNextElement;
-	COUNT ConcernCounter;
+	uqm::COUNT ConcernCounter;
 	EVALUATE_DESC ObjectsOfConcern[10];
 	bool ShipMoved, UltraManeuverable;
 	STARSHIP *EnemyStarShipPtr;
@@ -1077,7 +1077,7 @@ tactical_intelligence (ComputerInputContext *context, STARSHIP *StarShipPtr)
 	{
 		ObjectsOfConcern[ConcernCounter].ObjectPtr = 0;
 		ObjectsOfConcern[ConcernCounter].MoveState = NO_MOVEMENT;
-		ObjectsOfConcern[ConcernCounter].which_turn = (COUNT)~0;
+		ObjectsOfConcern[ConcernCounter].which_turn = (uqm::COUNT)~0;
 	}
 	--ConcernCounter;
 	
@@ -1109,7 +1109,7 @@ tactical_intelligence (ComputerInputContext *context, STARSHIP *StarShipPtr)
 		hNextElement = GetSuccElement (ed.ObjectPtr);
 		if (CollisionPossible (ed.ObjectPtr, &Ship))
 		{
-			SDWORD dx, dy;
+			uqm::SDWORD dx, dy;
 			
 			dx = ed.ObjectPtr->next.location.x
 				- Ship.next.location.x;
@@ -1119,7 +1119,7 @@ tactical_intelligence (ComputerInputContext *context, STARSHIP *StarShipPtr)
 			dy = WRAP_DELTA_Y (dy);
 			if (GRAVITY_MASS (ed.ObjectPtr->mass_points))
 			{
-				COUNT maneuver_turn, ship_bounds;
+				uqm::COUNT maneuver_turn, ship_bounds;
 				RECT ship_footprint;
 				
 				if (UltraManeuverable)
@@ -1132,7 +1132,7 @@ tactical_intelligence (ComputerInputContext *context, STARSHIP *StarShipPtr)
 				GetFrameRect (SetAbsFrameIndex (
 												Ship.IntersectControl.IntersectStamp.frame, 0
 												), &ship_footprint);
-				ship_bounds = (COUNT)(ship_footprint.extent.width
+				ship_bounds = (uqm::COUNT)(ship_footprint.extent.width
 									  + ship_footprint.extent.height);
 				
 				if (!ShipMoved && (ed.which_turn =

@@ -138,7 +138,7 @@ butt_missile_preprocess (ELEMENT *ElementPtr)
 		--ElementPtr->turn_wait;
 	else
 	{
-		COUNT facing;
+		uqm::COUNT facing;
 
 		facing = GetFrameIndex (ElementPtr->next.image.frame);
 		if (TrackShip (ElementPtr, &facing) > 0)
@@ -199,7 +199,7 @@ spawn_butt_missile (ELEMENT *ShipPtr)
 
 static void
 spathi_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
-		COUNT ConcernCounter)
+		uqm::COUNT ConcernCounter)
 {
 	STARSHIP *StarShipPtr;
 	EVALUATE_DESC *lpEvalDesc;
@@ -214,8 +214,8 @@ spathi_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 			&& lpEvalDesc->ObjectPtr
 			&& lpEvalDesc->which_turn <= 24)
 	{
-		COUNT travel_facing, direction_facing;
-		SDWORD delta_x, delta_y;
+		uqm::COUNT travel_facing, direction_facing;
+		uqm::SDWORD delta_x, delta_y;
 
 		travel_facing = NORMALIZE_FACING (
 				ANGLE_TO_FACING (GetVelocityTravelAngle (&ShipPtr->velocity)
@@ -250,7 +250,7 @@ spathi_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 	}
 }
 
-static COUNT
+static uqm::COUNT
 initialize_standard_missile (ELEMENT *ShipPtr, HELEMENT MissileArray[])
 {
 	STARSHIP *StarShipPtr;

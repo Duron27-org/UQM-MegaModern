@@ -83,7 +83,7 @@ bool
 free_image (FRAME *pixarray)
 {
 	bool retval;
-	COUNT i, j;
+	uqm::COUNT i, j;
 	void *already_freed[NUM_VIEWS];
 
 	retval = true;
@@ -113,13 +113,13 @@ free_image (FRAME *pixarray)
 	return (retval);
 }
 
-static BYTE space_ini_cnt;
+static uqm::BYTE space_ini_cnt;
 
 bool
 InitSpace (void)
 {
 	if ((space_ini_cnt++ == 0
-			&& LOBYTE (GLOBAL (CurrentActivity)) <= IN_ENCOUNTER)
+			&& lowByte (GLOBAL (CurrentActivity)) <= IN_ENCOUNTER)
 			|| optRequiresReload)
 	{
 		stars_in_space = CaptureDrawable (
@@ -200,10 +200,10 @@ BuildSIS (void)
 	return hStarShip;
 }
 
-SIZE
+uqm::SIZE
 InitShips (void)
 {
-	SIZE num_ships;
+	uqm::SIZE num_ships;
 
 	InitSpace ();
 
@@ -224,7 +224,7 @@ InitShips (void)
 	}
 	else
 	{
-		COUNT i;
+		uqm::COUNT i;
 		RECT r;
 
 		SetContext (SpaceContext);
@@ -251,7 +251,7 @@ InitShips (void)
 			SetContext (OldContext);
 		}
 
-		if (LOBYTE (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE)
+		if (lowByte (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE)
 			free_gravity_well ();
 		else
 		{
@@ -272,10 +272,10 @@ InitShips (void)
 }
 
 // Count the crew elements in the display list.
-static COUNT
+static uqm::COUNT
 CountCrewElements (void)
 {
-	COUNT result;
+	uqm::COUNT result;
 	HELEMENT hElement, hNextElement;
 
 	result = 0;
@@ -298,7 +298,7 @@ CountCrewElements (void)
 void
 UninitShips (void)
 {
-	COUNT crew_retrieved;
+	uqm::COUNT crew_retrieved;
 	int i;
 	HELEMENT hElement, hNextElement;
 	STARSHIP *SPtr[NUM_PLAYERS];
@@ -353,7 +353,7 @@ UninitShips (void)
 
 	GLOBAL (CurrentActivity) &= ~IN_BATTLE;
 
-	if (LOBYTE (GLOBAL (CurrentActivity)) == IN_ENCOUNTER
+	if (lowByte (GLOBAL (CurrentActivity)) == IN_ENCOUNTER
 			&& !(GLOBAL (CurrentActivity) & CHECK_ABORT))
 	{
 		// Encounter battle in full game.
@@ -367,7 +367,7 @@ UninitShips (void)
 		}
 	}
 
-	if (LOBYTE (GLOBAL (CurrentActivity)) != IN_ENCOUNTER)
+	if (lowByte (GLOBAL (CurrentActivity)) != IN_ENCOUNTER)
 	{
 		// Remove any ships left from the race queue.
 		for (i = 0; i < NUM_PLAYERS; i++)

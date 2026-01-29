@@ -25,7 +25,7 @@
 extern "C" {
 #endif
 
-extern bool GetNextStarShip (STARSHIP *LastStarShipPtr, COUNT which_side);
+extern bool GetNextStarShip (STARSHIP *LastStarShipPtr, uqm::COUNT which_side);
 extern bool GetInitialStarShips (void);
 
 extern void animation_preprocess (ELEMENT *ElementPtr);

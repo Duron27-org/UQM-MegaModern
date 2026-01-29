@@ -143,7 +143,7 @@ asteroid_preprocess (ELEMENT *ElementPtr)
 		--ElementPtr->turn_wait;
 	else
 	{
-		COUNT frame_index;
+		uqm::COUNT frame_index;
 
 		frame_index = GetFrameIndex (ElementPtr->current.image.frame);
 		if (ElementPtr->thrust_wait & (1 << 7))
@@ -180,7 +180,7 @@ spawn_asteroid (ELEMENT *ElementPtr)
 	else
 	{
 		ELEMENT *AsteroidElementPtr;
-		COUNT val;
+		uqm::COUNT val;
 
 		LockElement (hAsteroidElement, &AsteroidElementPtr);
 		AsteroidElementPtr->playerNr = NEUTRAL_PLAYER_NUM;
@@ -191,7 +191,7 @@ spawn_asteroid (ELEMENT *ElementPtr)
 					? DISAPPEARING : APPEARING;
 		AsteroidElementPtr->life_span = NORMAL_LIFE;
 		SetPrimType (&DisplayArray[AsteroidElementPtr->PrimIndex], STAMP_PRIM);
-		if ((val = (COUNT)TFB_Random ()) & (1 << 0))
+		if ((val = (uqm::COUNT)TFB_Random ()) & (1 << 0))
 		{
 			if (!(val & (1 << 1)))
 				AsteroidElementPtr->current.location.x = 0;
@@ -214,9 +214,9 @@ spawn_asteroid (ELEMENT *ElementPtr)
 			// Using these temporary variables because the execution order
 			// of function arguments may vary per system, which may break
 			// synchronisation on network games.
-			SIZE magnitude =
-					DISPLAY_TO_WORLD (((SIZE)TFB_Random () & 7) + 4);
-			COUNT facing = (COUNT)TFB_Random ();
+			uqm::SIZE magnitude =
+					DISPLAY_TO_WORLD (((uqm::SIZE)TFB_Random () & 7) + 4);
+			uqm::COUNT facing = (uqm::COUNT)TFB_Random ();
 			SetVelocityVector (&AsteroidElementPtr->velocity, magnitude,
 					facing);
 		}
@@ -226,9 +226,9 @@ spawn_asteroid (ELEMENT *ElementPtr)
 				NORMALIZE_FACING (TFB_Random ()));
 		AsteroidElementPtr->turn_wait =
 				AsteroidElementPtr->thrust_wait =
-				(BYTE)TFB_Random () & (BYTE)((1 << 2) - 1);
+				(uqm::BYTE)TFB_Random () & (uqm::BYTE)((1 << 2) - 1);
 		AsteroidElementPtr->thrust_wait |=
-				(BYTE)TFB_Random () & (BYTE)(1 << 7);
+				(uqm::BYTE)TFB_Random () & (uqm::BYTE)(1 << 7);
 		AsteroidElementPtr->preprocess_func = asteroid_preprocess;
 		AsteroidElementPtr->death_func = spawn_rubble;
 		AsteroidElementPtr->collision_func = collision;
@@ -239,7 +239,7 @@ spawn_asteroid (ELEMENT *ElementPtr)
 }
 
 void
-do_damage (ELEMENT *ElementPtr, SIZE damage)
+do_damage (ELEMENT *ElementPtr, uqm::SIZE damage)
 {
 	// God Mode, borrowed from the UQM-HD debug invincibility code
 	if (antiCheat (ElementPtr, false, OPTVAL_INF_HEALTH)
@@ -257,8 +257,8 @@ do_damage (ELEMENT *ElementPtr, SIZE damage)
 	}
 	else if (!GRAVITY_MASS (ElementPtr->mass_points))
 	{
-		if ((BYTE)damage < ElementPtr->hit_points)
-			ElementPtr->hit_points -= (BYTE)damage;
+		if ((uqm::BYTE)damage < ElementPtr->hit_points)
+			ElementPtr->hit_points -= (uqm::BYTE)damage;
 		else
 		{
 			ElementPtr->hit_points = 0;
@@ -295,7 +295,7 @@ crew_preprocess (ELEMENT *ElementPtr)
 			ElementPtr->hTarget = StarShipPtr->hShip;
 		else
 		{
-			COUNT facing;
+			uqm::COUNT facing;
 
 			facing = 0;
 			TrackShip (ElementPtr, &facing);
@@ -305,7 +305,7 @@ crew_preprocess (ELEMENT *ElementPtr)
 	if (hTarget)
 	{
 #define CREW_DELTA RES_SCALE (SCALED_ONE)
-		SIZE delta;
+		uqm::SIZE delta;
 		ELEMENT *ShipPtr;
 
 		LockElement (hTarget, &ShipPtr);
@@ -355,10 +355,10 @@ crew_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 
 void
 AbandonShip (ELEMENT *ShipPtr, ELEMENT *TargetPtr,
-		COUNT crew_loss)
+		uqm::COUNT crew_loss)
 {
-	SIZE dx, dy;
-	COUNT direction;
+	uqm::SIZE dx, dy;
+	uqm::COUNT direction;
 	RECT r;
 	STARSHIP *StarShipPtr;
 	HELEMENT hCrew;
@@ -415,14 +415,14 @@ AbandonShip (ELEMENT *ShipPtr, ELEMENT *TargetPtr,
 		CrewPtr->hTarget = StarShipPtr->hShip;
 
 		{
-			SIZE w, h;
+			uqm::SIZE w, h;
 			INTERSECT_CONTROL CrewIntersect;
 
 			ShipIntersect.IntersectStamp.origin =
 					ShipPtr->IntersectControl.EndPoint;
 
-			w = (SIZE)((COUNT)TFB_Random () % r.extent.width);
-			h = (SIZE)((COUNT)TFB_Random () % r.extent.height);
+			w = (uqm::SIZE)((uqm::COUNT)TFB_Random () % r.extent.width);
+			h = (uqm::SIZE)((uqm::COUNT)TFB_Random () % r.extent.height);
 			CrewIntersect.EndPoint = ShipIntersect.EndPoint;
 			CrewIntersect.IntersectStamp.frame = DecFrameIndex (stars_in_space);
 			if (dx == 0 && dy == 0)

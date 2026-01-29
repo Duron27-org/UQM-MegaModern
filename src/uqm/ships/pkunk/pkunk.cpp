@@ -188,10 +188,10 @@ animate (ELEMENT *ElementPtr)
 	}
 }
 
-static COUNT
+static uqm::COUNT
 initialize_bug_missile (ELEMENT *ShipPtr, HELEMENT MissileArray[])
 {
-	COUNT i;
+	uqm::COUNT i;
 	STARSHIP *StarShipPtr;
 	MISSILE_BLOCK MissileBlock;
 
@@ -221,7 +221,7 @@ initialize_bug_missile (ELEMENT *ShipPtr, HELEMENT MissileArray[])
 
 		if ((MissileArray[i] = initialize_missile (&MissileBlock)))
 		{
-			SDWORD dx, dy;
+			uqm::SDWORD dx, dy;
 			ELEMENT *MissilePtr;
 
 			LockElement (MissileArray[i], &MissilePtr);
@@ -240,7 +240,7 @@ initialize_bug_missile (ELEMENT *ShipPtr, HELEMENT MissileArray[])
 
 static void
 pkunk_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
-		COUNT ConcernCounter)
+		uqm::COUNT ConcernCounter)
 {
 	STARSHIP *StarShipPtr;
 	PKUNK_DATA *PkunkData;
@@ -257,7 +257,7 @@ pkunk_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 	if (StarShipPtr->RaceDescPtr->ship_info.energy_level <
 			StarShipPtr->RaceDescPtr->ship_info.max_energy
 			&& (StarShipPtr->special_counter == 0
-			|| (BYTE)TFB_Random () < 20))
+			|| (uqm::BYTE)TFB_Random () < 20))
 		StarShipPtr->ship_input_state |= SPECIAL;
 	else
 		StarShipPtr->ship_input_state &= ~SPECIAL;
@@ -428,7 +428,7 @@ phoenix_transition (ELEMENT *ElementPtr)
 	}
 	else if ((hShipImage = AllocElement ()))
 	{
-		COUNT angle;
+		uqm::COUNT angle;
 
 		PutElement (hShipImage);
 
@@ -456,22 +456,22 @@ phoenix_transition (ELEMENT *ElementPtr)
 		}
 		else
 		{
-			SDWORD temp_x, temp_y;
+			uqm::SDWORD temp_x, temp_y;
 			angle = FACING_TO_ANGLE (StarShipPtr->ShipFacing);
 
 			// JMS_GFX: Circumventing overflows by using temp variables
 			// instead of subtracting straight from the POINT sized
 			// ShipImagePtr->current.location.
-			temp_x = (SDWORD)ShipImagePtr->current.location.x -
+			temp_x = (uqm::SDWORD)ShipImagePtr->current.location.x -
 				COSINE (angle, TRANSITION_SPEED) * (ElementPtr->life_span - 1);
-			temp_y = (SDWORD)ShipImagePtr->current.location.y -
+			temp_y = (uqm::SDWORD)ShipImagePtr->current.location.y -
 				SINE (angle, TRANSITION_SPEED) * (ElementPtr->life_span - 1);
 
 			ShipImagePtr->current.location.x = WRAP_X (temp_x);
 			ShipImagePtr->current.location.y = WRAP_Y (temp_y);
 		}
 
-		ShipImagePtr->mass_points = (BYTE)angle;
+		ShipImagePtr->mass_points = (uqm::BYTE)angle;
 		ShipImagePtr->preprocess_func = phoenix_transition;
 		ShipImagePtr->death_func = spawn_phoenix_trail;
 		SetElementStarShip (ShipImagePtr, StarShipPtr);
@@ -538,7 +538,7 @@ pkunk_preprocess (ELEMENT *ElementPtr)
 		}
 		else
 		{	// Start the reincarnation sequence
-			COUNT angle, facing;
+			uqm::COUNT angle, facing;
 
 			if (Fwiffo)
 				ProcessSound (SetAbsSoundIndex (FwiffoSounds, 1), ElementPtr);
@@ -590,7 +590,7 @@ pkunk_preprocess (ELEMENT *ElementPtr)
 	}
 }
 		
-static COUNT LastSound = 0;
+static uqm::COUNT LastSound = 0;
 
 static void
 pkunk_postprocess (ELEMENT *ElementPtr)
@@ -604,12 +604,12 @@ pkunk_postprocess (ELEMENT *ElementPtr)
 			&& StarShipPtr->RaceDescPtr->ship_info.energy_level <
 			StarShipPtr->RaceDescPtr->ship_info.max_energy)
 	{
-		COUNT CurSound;
+		uqm::COUNT CurSound;
 
 		do
 		{
 			CurSound =
-					2 + ((COUNT)TFB_Random ()
+					2 + ((uqm::COUNT)TFB_Random ()
 					% (GetSoundCount (StarShipPtr->RaceDescPtr->ship_data.ship_sounds) - 2));
 		} while (CurSound == LastSound);
 		ProcessSound (SetAbsSoundIndex (

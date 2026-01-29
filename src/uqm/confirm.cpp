@@ -69,7 +69,7 @@ DrawConfirmationWindow (bool answer, bool confirm)
 	t.baseline.y = r.corner.y + RES_SCALE (10);
 	t.pStr = GAME_STRING (QUITMENU_STRING_BASE); // "Really Quit?"
 	t.align = ALIGN_CENTER;
-	t.CharCount = (COUNT)~0;
+	t.CharCount = (uqm::COUNT)~0;
 	font_DrawText (&t);
 	t.baseline.y += RES_SCALE (10);
 	t.baseline.x = r.corner.x + (r.extent.width >> 2);
@@ -111,7 +111,7 @@ DoConfirmExit (void)
 		bool response = false, done;
 		Color OldColor;
 		DrawMode mode, oldMode;
-		BYTE oldVolume;
+		uqm::BYTE oldVolume;
 		TimeCount deltaT;
 
 		deltaT = GetTimeCounter ();

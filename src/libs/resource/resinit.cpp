@@ -190,12 +190,12 @@ DescriptorToColor (const char *descriptor, RESOURCE_DATA *resdata)
 	{
 		// "#rrggbb"
 		int i;
-		DWORD value = 0;
+		uqm::DWORD value = 0;
 
 		descriptor++;
 		for (i = 0; i < 6; i++)
 		{
-			BYTE nibbleValue;
+			uqm::BYTE nibbleValue;
 			if (*descriptor >= '0' && *descriptor <= '9')
 				nibbleValue = *descriptor - '0';
 			else if (*descriptor >= 'a' && *descriptor <= 'f')
@@ -622,7 +622,7 @@ res_GetColor (const char *key)
 {
 	RESOURCE_INDEX idx = _get_current_index_header ();
 	ResourceDesc *desc = lookupResourceDesc (idx, key);
-	DWORD num;
+	uqm::DWORD num;
 	if (!desc || strcmp(desc->vtable->resType, "COLOR"))
 	{
 		// TODO: Better error handling

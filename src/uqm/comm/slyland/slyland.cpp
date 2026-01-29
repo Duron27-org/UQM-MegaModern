@@ -27,7 +27,7 @@
 #include "uqm/starmap.h"
 
 
-static COUNT probe_digit_names[] =
+static uqm::COUNT probe_digit_names[] =
 {
 	ENUMERATE_ZERO,
 	ENUMERATE_ONE,
@@ -41,7 +41,7 @@ static COUNT probe_digit_names[] =
 	ENUMERATE_NINE,
 };
 
-static COUNT probe_teen_names[] =
+static uqm::COUNT probe_teen_names[] =
 {
 	ENUMERATE_TEN,
 	ENUMERATE_ELEVEN,
@@ -55,7 +55,7 @@ static COUNT probe_teen_names[] =
 	ENUMERATE_NINETEEN,
 };
 
-static COUNT probe_tens_names[] =
+static uqm::COUNT probe_tens_names[] =
 {
 	0, /* invalid */
 	0, /* skip digit */
@@ -208,7 +208,7 @@ static LOCDATA slylandro_desc =
 };
 
 
-static DWORD random_ramble[] =
+static uqm::DWORD random_ramble[] =
 {
 	1,
 	15,
@@ -345,7 +345,7 @@ CombatIsInevitable (RESPONSE_REF R)
 	}
 	else
 	{
-		BYTE NumVisits;
+		uqm::BYTE NumVisits;
 
 		if (PLAYER_SAID (R, threat))
 		{
@@ -405,7 +405,7 @@ CombatIsInevitable (RESPONSE_REF R)
 					break;
 				case 3:
 				{
-					SIZE dx, dy;
+					uqm::SIZE dx, dy;
 
 					// Probe's coordinate system is +/-{Y,X} relative to home
 					// If homeworld X or Y are < 5000, we will flip the sign
@@ -484,7 +484,7 @@ Intro (void)
 {
 	if (DIF_HARD && GET_GAME_STATE (GLOBAL_FLAGS_AND_DATA) & (1 << 6))
 	{
-		COUNT i;
+		uqm::COUNT i;
 
 		NPCPhrase (COORD_POINT);
 		for (i = 0; i < 16; i++)
@@ -501,7 +501,7 @@ Intro (void)
 	}
 	else
 	{
-		BYTE  NumVisits;
+		uqm::BYTE  NumVisits;
 
 		NumVisits = GET_GAME_STATE (SLYLANDRO_PROBE_VISITS);
 		switch (NumVisits++)
@@ -538,7 +538,7 @@ Intro (void)
 	}
 }
 
-static COUNT
+static uqm::COUNT
 uninit_slyland (void)
 {
 	return (0);

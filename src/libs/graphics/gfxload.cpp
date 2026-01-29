@@ -111,7 +111,7 @@ process_image (FRAME FramePtr, TFB_Canvas img[], AniData *ani, int cel_ct)
 static void
 processFontChar (TFB_Char* CharPtr, TFB_Canvas canvas, FONT fontPtr)
 {
-	BYTE* newdata;
+	uqm::BYTE* newdata;
 	size_t dpitch;
 
 	TFB_DrawCanvas_GetExtent (canvas, &CharPtr->extent);
@@ -119,7 +119,7 @@ processFontChar (TFB_Char* CharPtr, TFB_Canvas canvas, FONT fontPtr)
 	// Currently, each font char has its own separate data
 	// but that can change to common mem area
 	dpitch = CharPtr->extent.width;
-	newdata = (BYTE*)HMalloc (dpitch * CharPtr->extent.height * sizeof (BYTE));
+	newdata = (uqm::BYTE*)HMalloc (dpitch * CharPtr->extent.height * sizeof (uqm::BYTE));
 	TFB_DrawCanvas_GetFontCharData (canvas, newdata, dpitch);
 
 	CharPtr->data = newdata;
@@ -149,10 +149,10 @@ processFontChar (TFB_Char* CharPtr, TFB_Canvas canvas, FONT fontPtr)
 }
 
 void *
-_GetCelData (uio_Stream *fp, DWORD length)
+_GetCelData (uio_Stream *fp, uqm::DWORD length)
 {
 	int cel_total, cel_index, n;
-	DWORD opos;
+	uqm::DWORD opos;
 	char CurrentLine[1024], filename[PATH_MAX];
 	TFB_Canvas *img;
 	AniData *ani;
@@ -357,9 +357,9 @@ compareBCDIndex (const void *arg1, const void *arg2)
 }
 
 void *
-_GetFontData (uio_Stream *fp, DWORD length)
+_GetFontData (uio_Stream *fp, uqm::DWORD length)
 {
-	COUNT numDirEntries;
+	uqm::COUNT numDirEntries;
 	DIRENTRY fontDir = NULL;
 	BuildCharDesc *bcds = NULL;
 	size_t numBCDs = 0;
@@ -467,9 +467,9 @@ _GetFontData (uio_Stream *fp, DWORD length)
 		char CurrentLine[PATH_MAX];
 		int cel_index = 0;
 		int cel_total = 0;
-		DWORD opos = 0;
+		uqm::DWORD opos = 0;
 
-		memset (&fontPtr->KernTab, (BYTE)~0, sizeof (fontPtr->KernTab));
+		memset (&fontPtr->KernTab, (uqm::BYTE)~0, sizeof (fontPtr->KernTab));
 
 		uio_fseek (cfgFile, opos, SEEK_SET);
 		while (uio_fgets (CurrentLine, sizeof (CurrentLine), cfgFile))
@@ -486,7 +486,7 @@ _GetFontData (uio_Stream *fp, DWORD length)
 		{
 			if (cel_index > 0)
 			{
-				SDWORD KernChar, kernLBits, kernRBits;
+				uqm::SDWORD KernChar, kernLBits, kernRBits;
 
 				if (sscanf (CurrentLine, "%x %u %u", &KernChar,
 						&kernLBits, &kernRBits) == 3)

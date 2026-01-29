@@ -94,7 +94,7 @@ doInstantMove (void)
 
 // playerNr should be 0 or 1
 STARSHIP*
-findPlayerShip (SIZE playerNr)
+findPlayerShip (uqm::SIZE playerNr)
 {
 	HELEMENT hElement, hNextElement;
 
@@ -125,7 +125,7 @@ void
 resetEnergyBattle (void)
 {
 	STARSHIP *StarShipPtr;
-	COUNT delta;
+	uqm::COUNT delta;
 	CONTEXT OldContext;
 	
 	if (!(GLOBAL (CurrentActivity) & IN_BATTLE) ||
@@ -156,7 +156,7 @@ static void
 scuttleOpponent (void)
 {
 	STARSHIP *StarShipPtr;
-	COUNT delta;
+	uqm::COUNT delta;
 	CONTEXT OldContext;
 	
 	if (!(GLOBAL (CurrentActivity) & IN_BATTLE) ||
@@ -190,7 +190,7 @@ HaltShips (void)
 {
 	STARSHIP *StarShipPtr;
 	ELEMENT *ElementPtr;
-	BYTE i;
+	uqm::BYTE i;
 
 	if (!(GLOBAL (CurrentActivity) & IN_BATTLE) ||
 		inHQSpace ())
@@ -370,7 +370,7 @@ forwardToNextEvent (bool skipHEE)
 {
 	HEVENT hEvent;
 	EVENT *EventPtr;
-	COUNT year, month, day;
+	uqm::COUNT year, month, day;
 			// time of next event
 	bool done;
 
@@ -408,7 +408,7 @@ forwardToNextEvent (bool skipHEE)
 }
 
 const char *
-eventName (BYTE func_index)
+eventName (uqm::BYTE func_index)
 {
 	switch (func_index) {
 	case ARILOU_ENTRANCE_EVENT:
@@ -454,7 +454,7 @@ eventName (BYTE func_index)
 }
 
 const char*
-raceName (BYTE func_index)
+raceName (uqm::BYTE func_index)
 {
 	switch (func_index) {
 		case ARILOU_ID:
@@ -548,7 +548,7 @@ equipShip (void)
 	int i;
 
 	// Don't do anything unless in the full game.
-	if (LOBYTE (GLOBAL (CurrentActivity)) == SUPER_MELEE)
+	if (lowByte (GLOBAL (CurrentActivity)) == SUPER_MELEE)
 		return;
 
 	// Thrusters:
@@ -646,7 +646,7 @@ equipShip (void)
 
 	// Make sure everything is redrawn:
 	if (inHQSpace () ||
-			LOBYTE (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY)
+			lowByte (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY)
 	{
 		DeltaSISGauges (UNDEFINED_DELTA, UNDEFINED_DELTA, UNDEFINED_DELTA);
 	}
@@ -745,7 +745,7 @@ findFlagshipElement (void)
 void
 showSpheres (bool Animated)
 {	
-	BYTE i;
+	uqm::BYTE i;
 
 	if (Animated)
 	{	// Alternative which allows you to view		
@@ -840,7 +840,7 @@ void
 forAllPlanets (STAR_DESC *star, SOLARSYS_STATE *system, void (*callback) (
 		STAR_DESC *, SOLARSYS_STATE *, PLANET_DESC *, void *), void *arg)
 {
-	COUNT i;
+	uqm::COUNT i;
 
 	assert(CurStarDescPtr == star);
 	assert(pSolarSysState == system);
@@ -854,7 +854,7 @@ forAllMoons (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
 		void (*callback) (STAR_DESC *, SOLARSYS_STATE *, PLANET_DESC *,
 		PLANET_DESC *, void *), void *arg)
 {
-	COUNT i;
+	uqm::COUNT i;
 
 	assert(pSolarSysState == system);
 
@@ -1076,8 +1076,8 @@ dumpSystemCallback (const STAR_DESC *star, const SOLARSYS_STATE *system,
 void
 dumpSystem (FILE *out, const STAR_DESC *star, const SOLARSYS_STATE *system)
 {
-	CHAR_T name[256];
-	CHAR_T buf[40];
+	uqm::CHAR_T name[256];
+	uqm::CHAR_T buf[40];
 
 	GetClusterName (star, name);
 	snprintf (buf, sizeof buf, "%s %s",
@@ -1094,7 +1094,7 @@ dumpSystem (FILE *out, const STAR_DESC *star, const SOLARSYS_STATE *system)
 }
 
 const char *
-bodyColorString (BYTE col)
+bodyColorString (uqm::BYTE col)
 {
 	switch (col) {
 		case BLUE_BODY:
@@ -1122,7 +1122,7 @@ bodyColorString (BYTE col)
 }
 
 const char *
-starTypeString (BYTE type)
+starTypeString (uqm::BYTE type)
 {
 	switch (type) {
 		case DWARF_STAR:
@@ -1138,7 +1138,7 @@ starTypeString (BYTE type)
 }
 
 const char *
-starPresenceString (BYTE index)
+starPresenceString (uqm::BYTE index)
 {
 	switch (index) {
 		case 0:
@@ -1315,7 +1315,7 @@ dumpMoon (FILE *out, const PLANET_DESC *moon)
 		typeStr = planetTypeString (moon->data_index & ~PLANET_SHIELDED);
 	}
 	fprintf (out, "  - Moon %-30c  %s\n",
-			'a' + (CHAR_T)(moon - &pSolarSysState->MoonDesc[0]), typeStr);
+			'a' + (uqm::CHAR_T)(moon - &pSolarSysState->MoonDesc[0]), typeStr);
 
 	dumpWorld (out, moon);
 }
@@ -1368,7 +1368,7 @@ void
 fprintfWorld (const PLANET_DESC *world)
 {
 	PLANET_INFO *info;
-	CHAR_T buf[200];
+	uqm::CHAR_T buf[200];
 	FILE *fp = fopen ("planetLog.txt", "a");
 	POINT universe = CurStarDescPtr->star_pt;
 
@@ -1424,12 +1424,12 @@ fprintfWorld (const PLANET_DESC *world)
 	fclose (fp);
 }
 
-COUNT
+uqm::COUNT
 calculateBioValue (const SOLARSYS_STATE *system, const PLANET_DESC *world)
 {
-	COUNT result;
-	COUNT numBio;
-	COUNT i;
+	uqm::COUNT result;
+	uqm::COUNT numBio;
+	uqm::COUNT i;
 
 	assert (system->pOrbitalDesc == world);
 	
@@ -1449,10 +1449,10 @@ calculateBioValue (const SOLARSYS_STATE *system, const PLANET_DESC *world)
 
 void
 generateBioIndex(const SOLARSYS_STATE *system, const PLANET_DESC *world,
-		COUNT bio[])
+		uqm::COUNT bio[])
 {
-	COUNT numBio;
-	COUNT i;
+	uqm::COUNT numBio;
+	uqm::COUNT i;
 
 	assert (system->pOrbitalDesc == world);
 	
@@ -1470,12 +1470,12 @@ generateBioIndex(const SOLARSYS_STATE *system, const PLANET_DESC *world,
 	}
 }
 
-COUNT
+uqm::COUNT
 calculateMineralValue (const SOLARSYS_STATE *system, const PLANET_DESC *world)
 {
-	COUNT result;
-	COUNT numDeposits;
-	COUNT i;
+	uqm::COUNT result;
+	uqm::COUNT numDeposits;
+	uqm::COUNT i;
 
 	assert (system->pOrbitalDesc == world);
 	
@@ -1487,7 +1487,7 @@ calculateMineralValue (const SOLARSYS_STATE *system, const PLANET_DESC *world)
 	{
 		NODE_INFO info;
 		callGenerateForScanType (system, world, i, MINERAL_SCAN, &info);
-		result += HIBYTE (info.density) *
+		result += highByte (info.density) *
 				GLOBAL (ElementWorth[ElementCategory (info.type)]);
 	}
 	return result;
@@ -1495,10 +1495,10 @@ calculateMineralValue (const SOLARSYS_STATE *system, const PLANET_DESC *world)
 
 void
 generateMineralIndex(const SOLARSYS_STATE *system, const PLANET_DESC *world,
-		COUNT minerals[])
+		uqm::COUNT minerals[])
 {
-	COUNT numDeposits;
-	COUNT i;
+	uqm::COUNT numDeposits;
+	uqm::COUNT i;
 
 	assert (system->pOrbitalDesc == world);
 	
@@ -1512,7 +1512,7 @@ generateMineralIndex(const SOLARSYS_STATE *system, const PLANET_DESC *world,
 	{
 		NODE_INFO info;
 		callGenerateForScanType (system, world, i, MINERAL_SCAN, &info);
-		minerals[ElementCategory (info.type)] += HIBYTE (info.density);
+		minerals[ElementCategory (info.type)] += highByte (info.density);
 	}
 }
 
@@ -1521,8 +1521,8 @@ generateMineralIndex(const SOLARSYS_STATE *system, const PLANET_DESC *world,
 struct TallyResourcesArg
 {
 	FILE *out;
-	COUNT mineralCount;
-	COUNT bioCount;
+	uqm::COUNT mineralCount;
+	uqm::COUNT bioCount;
 };
 
 // Must be called from the Starcon2Main thread.
@@ -1585,7 +1585,7 @@ static void
 tallySystemPostCallback (const STAR_DESC *star, const SOLARSYS_STATE *system,
 		void *arg)
 {
-	CHAR_T name[256];
+	uqm::CHAR_T name[256];
 	TallyResourcesArg *tallyResourcesArg = (TallyResourcesArg *) arg;
 	FILE *out = tallyResourcesArg->out;
 
@@ -1708,7 +1708,7 @@ dumpPlanetType (FILE *out, int index, const PlanetFrame *planetType)
 const char *
 planetTypeString (int typeIndex)
 {
-	static CHAR_T typeStr[40];
+	static uqm::CHAR_T typeStr[40];
 
 	if (typeIndex >= FIRST_GAS_GIANT)
 	{
@@ -1728,7 +1728,7 @@ planetTypeString (int typeIndex)
 
 // size is what you get from PLANSIZE (planetFrame.Type)
 const char *
-worldSizeString (BYTE size)
+worldSizeString (uqm::BYTE size)
 {
 	switch (size)
 	{
@@ -1746,7 +1746,7 @@ worldSizeString (BYTE size)
 
 // algo is what you get from PLANALGO (planetFrame.Type)
 const char *
-worldGenAlgoString (BYTE algo)
+worldGenAlgoString (uqm::BYTE algo)
 {
 	switch (algo)
 	{
@@ -1765,7 +1765,7 @@ worldGenAlgoString (BYTE algo)
 // tectonics is what you get from planetFrame.BaseTechtonics
 // not reentrant
 const char *
-tectonicsString (BYTE tectonics)
+tectonicsString (uqm::BYTE tectonics)
 {
 	static char buf[sizeof "-127"];
 	switch (tectonics)
@@ -1788,7 +1788,7 @@ tectonicsString (BYTE tectonics)
 
 // atmosphere is what you get from HINIBBLE (planetFrame.AtmoAndDensity)
 const char *
-atmosphereString (BYTE atmosphere)
+atmosphereString (uqm::BYTE atmosphere)
 {
 	switch (atmosphere)
 	{
@@ -1805,7 +1805,7 @@ atmosphereString (BYTE atmosphere)
 
 // density is what you get from LONIBBLE (planetFrame.AtmoAndDensity)
 const char *
-densityString (BYTE density)
+densityString (uqm::BYTE density)
 {
 	switch (density)
 	{
@@ -1829,7 +1829,7 @@ densityString (BYTE density)
 
 // quality is what you get from DEPOSIT_QUALITY (elementEntry.Density)
 const char *
-depositQualityString (BYTE quality)
+depositQualityString (uqm::BYTE quality)
 {
 	switch (quality)
 	{
@@ -1851,7 +1851,7 @@ void
 resetCrewBattle (void)
 {
 	STARSHIP *StarShipPtr;
-	COUNT delta;
+	uqm::COUNT delta;
 	CONTEXT OldContext;
 	
 	if (!(GLOBAL (CurrentActivity) & IN_BATTLE) ||
@@ -1933,7 +1933,7 @@ dumpStrings (FILE *out)
 	
 	if (GAMESTR_COUNT != numStrings) {
 		fprintf(stderr, "Warning: GAMESTR_COUNT is %i, but GameStrings "
-				"contains %d strings.\n", GAMESTR_COUNT, numStrings);
+				"contains % " PRIu64 " strings.\n", GAMESTR_COUNT, numStrings);
 	}
 
 	categoryI = 0;
@@ -1942,7 +1942,7 @@ dumpStrings (FILE *out)
 				stringI >= categories[categoryI + 1].base)
 			categoryI++;
 		fprintf(out, "[ %s + %d ]  %s\n", categories[categoryI].name,
-				stringI - categories[categoryI].base, GAME_STRING((COUNT)stringI));
+				stringI - categories[categoryI].base, GAME_STRING((uqm::COUNT)stringI));
 	}
 }
 
@@ -1950,7 +1950,7 @@ dumpStrings (FILE *out)
 
 
 static Color
-hsvaToRgba (double hue, double sat, double val, BYTE alpha)
+hsvaToRgba (double hue, double sat, double val, uqm::BYTE alpha)
 {
 	unsigned int hi = (int) (hue / 60.0);
 	double f = (hue / 60.0) - ((int) (hue / 60.0));
@@ -1959,10 +1959,10 @@ hsvaToRgba (double hue, double sat, double val, BYTE alpha)
 	double t = val * (1.0 - (1.0 - f * sat));
 
 	// Convert p, q, t, and v from [0..1] to [0..255]
-	BYTE pb = (BYTE) (p * 255.0 + 0.5);
-	BYTE qb = (BYTE) (q * 255.0 + 0.5);
-	BYTE tb = (BYTE) (t * 255.0 + 0.5);
-	BYTE vb = (BYTE) (val * 255.0 + 0.5);
+	uqm::BYTE pb = (uqm::BYTE) (p * 255.0 + 0.5);
+	uqm::BYTE qb = (uqm::BYTE) (q * 255.0 + 0.5);
+	uqm::BYTE tb = (uqm::BYTE) (t * 255.0 + 0.5);
+	uqm::BYTE vb = (uqm::BYTE) (val * 255.0 + 0.5);
 
 	assert (hue >= 0.0 && hue < 360.0);
 	assert (sat >= 0 && sat <= 1.0);
@@ -2081,7 +2081,7 @@ drawContext (CONTEXT context, double hue /* no pun intended */)
 	text.baseline.y = p1.y + 8;
 	text.pStr = GetContextName (context);
 	text.align = ALIGN_CENTER;
-	text.CharCount = (COUNT) ~0;
+	text.CharCount = (uqm::COUNT) ~0;
 	font_DrawText (&text);
 	(void) SetContextDrawMode (oldMode);
 

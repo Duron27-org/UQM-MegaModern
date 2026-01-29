@@ -67,29 +67,29 @@ extern BATTLE_INPUT_STATE computer_intelligence (
 extern BATTLE_INPUT_STATE tactical_intelligence (
 		ComputerInputContext *context, STARSHIP *StarShipPtr);
 extern void ship_intelligence (ELEMENT *ShipPtr,
-		EVALUATE_DESC *ObjectsOfConcern, COUNT ConcernCounter);
+		EVALUATE_DESC *ObjectsOfConcern, uqm::COUNT ConcernCounter);
 extern bool ship_weapons (ELEMENT *ShipPtr, ELEMENT *OtherPtr,
-		COUNT margin_of_error);
+		uqm::COUNT margin_of_error);
 
 extern void Pursue (ELEMENT *ShipPtr, EVALUATE_DESC *EvalDescPtr);
 extern void Entice (ELEMENT *ShipPtr, EVALUATE_DESC *EvalDescPtr);
 extern void Avoid (ELEMENT *ShipPtr, EVALUATE_DESC *EvalDescPtr);
-extern bool TurnShip (ELEMENT *ShipPtr, COUNT angle);
-extern bool ThrustShip (ELEMENT *ShipPtr, COUNT angle);
+extern bool TurnShip (ELEMENT *ShipPtr, uqm::COUNT angle);
+extern bool ThrustShip (ELEMENT *ShipPtr, uqm::COUNT angle);
 
 
-#define HUMAN_CONTROL (BYTE)(1 << 0)
-#define CYBORG_CONTROL (BYTE)(1 << 1)
+#define HUMAN_CONTROL (uqm::BYTE)(1 << 0)
+#define CYBORG_CONTROL (uqm::BYTE)(1 << 1)
 		// The computer fights the battles.
-#define PSYTRON_CONTROL (BYTE)(1 << 2)
+#define PSYTRON_CONTROL (uqm::BYTE)(1 << 2)
 		// The computer selects the ships to fight with.
-#define NETWORK_CONTROL (BYTE)(1 << 3)
+#define NETWORK_CONTROL (uqm::BYTE)(1 << 3)
 #define COMPUTER_CONTROL (CYBORG_CONTROL | PSYTRON_CONTROL)
 #define CONTROL_MASK (HUMAN_CONTROL | COMPUTER_CONTROL | NETWORK_CONTROL)
 
-#define STANDARD_RATING (BYTE)(1 << 4)
-#define GOOD_RATING (BYTE)(1 << 5)
-#define AWESOME_RATING (BYTE)(1 << 6)
+#define STANDARD_RATING (uqm::BYTE)(1 << 4)
+#define GOOD_RATING (uqm::BYTE)(1 << 5)
+#define AWESOME_RATING (uqm::BYTE)(1 << 6)
 
 static inline bool
 antiCheat (ELEMENT *ElementPtr, bool SwapBool, int GodModeType)

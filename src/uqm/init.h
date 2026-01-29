@@ -35,7 +35,7 @@ extern FRAME scenery;
 extern bool InitSpace (void);
 extern void UninitSpace (void);
 
-extern SIZE InitShips (void);
+extern uqm::SIZE InitShips (void);
 extern void UninitShips (void);
 extern void ReloadGameContent (void);
 

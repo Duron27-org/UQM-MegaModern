@@ -77,11 +77,11 @@ typedef enum
 
 typedef struct
 {
-	BYTE list[NUM_DEVICES];
+	uqm::BYTE list[NUM_DEVICES];
 			// List of all devices player has
-	COUNT count;
+	uqm::COUNT count;
 			// Number of devices in the list
-	COUNT topIndex;
+	uqm::COUNT topIndex;
 			// Index of the top device displayed
 } DEVICES_STATE;
 
@@ -102,7 +102,7 @@ EraseDevicesBackground (void)
 #endif
 
 static void
-DrawDevice (COUNT device, COUNT pos, bool selected)
+DrawDevice (uqm::COUNT device, uqm::COUNT pos, bool selected)
 {
 	RECT r;
 	TEXT t;
@@ -134,7 +134,7 @@ DrawDevice (COUNT device, COUNT pos, bool selected)
 	font_DrawText (&t);
 	t.baseline.y += TEXT_SPACING_Y;
 	t.pStr = skipUTF8Chars (t.pStr, t.CharCount + 1);
-	t.CharCount = (COUNT)~0;
+	t.CharCount = (uqm::COUNT)~0;
 	font_DrawText (&t);
 }
 
@@ -145,7 +145,7 @@ DrawDevicesDisplay (DEVICES_STATE *devState)
 	RECT r;
 	STAMP s;
 	COORD cy;
-	COUNT i;
+	uqm::COUNT i;
 
 	r.corner.x = RES_SCALE (2);
 	r.corner.y = RES_SCALE (20);
@@ -167,7 +167,7 @@ DrawDevicesDisplay (DEVICES_STATE *devState)
 	t.baseline.y = r.corner.y + RES_SCALE (7);
 	t.align = ALIGN_CENTER;
 	t.pStr = GAME_STRING (DEVICE_STRING_BASE);
-	t.CharCount = (COUNT)~0;
+	t.CharCount = (uqm::COUNT)~0;
 	SetContextForeGroundColor (DEVICES_SELECTED_NAME_COLOR);
 	font_DrawText (&t);
 
@@ -177,7 +177,7 @@ DrawDevicesDisplay (DEVICES_STATE *devState)
 	// draw device icons and print names
 	for (i = 0; i < MAX_VIS_DEVICES; ++i, cy += DEVICE_SPACING_Y)
 	{
-		COUNT devIndex = devState->topIndex + i;
+		uqm::COUNT devIndex = devState->topIndex + i;
 
 		if (devIndex >= devState->count)
 			break;
@@ -194,7 +194,7 @@ DrawDevicesDisplay (DEVICES_STATE *devState)
 }
 
 static void
-DrawDevices (DEVICES_STATE *devState, COUNT OldDevice, COUNT NewDevice)
+DrawDevices (DEVICES_STATE *devState, uqm::COUNT OldDevice, uqm::COUNT NewDevice)
 {
 	BatchGraphics ();
 
@@ -238,7 +238,7 @@ UseCaster (void)
 		return false;
 	}
 
-	if (LOBYTE (GLOBAL (CurrentActivity)) != IN_INTERPLANETARY
+	if (lowByte (GLOBAL (CurrentActivity)) != IN_INTERPLANETARY
 			|| !playerInSolarSystem ())
 		return false;
 
@@ -312,9 +312,9 @@ UseCaster (void)
 }
 
 static DeviceStatus
-InvokeDevice (BYTE which_device)
+InvokeDevice (uqm::BYTE which_device)
 {
-	BYTE val;
+	uqm::BYTE val;
 
 	switch (which_device)
 	{
@@ -334,7 +334,7 @@ InvokeDevice (BYTE which_device)
 		case GLOWING_ROD_DEVICE:
 			break;
 		case SUN_EFFICIENCY_DEVICE:
-			if (LOBYTE (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY
+			if (lowByte (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY
 					&& playerInPlanetOrbit ())
 			{
 				PlayMenuSound (MENU_SOUND_INVOKED);
@@ -367,7 +367,7 @@ InvokeDevice (BYTE which_device)
 		case UTWIG_BOMB_DEVICE:
 			SET_GAME_STATE (UTWIG_BOMB, 0);
 			GLOBAL (CurrentActivity) &= ~IN_BATTLE;
-			GLOBAL_SIS (CrewEnlisted) = (COUNT)~0;
+			GLOBAL_SIS (CrewEnlisted) = (uqm::COUNT)~0;
 			DeathBySuicide = true;
 			return DEVICE_SUCCESS;
 		case ULTRON_0_DEVICE:
@@ -456,7 +456,7 @@ InvokeDevice (BYTE which_device)
 		case PORTAL_SPAWNER_DEVICE:
 #define PORTAL_FUEL_COST (DIF_CASE(10, 5, 20) * FUEL_TANK_SCALE)
 			if ((inHyperSpace () || (EXTENDED && inHQSpace ()))
-					&& GLOBAL_SIS (FuelOnBoard) >= (DWORD)PORTAL_FUEL_COST)
+					&& GLOBAL_SIS (FuelOnBoard) >= (uqm::DWORD)PORTAL_FUEL_COST)
 			{
 				/* No DeltaSISGauges because the flagship picture
 				 * is currently obscured.
@@ -535,8 +535,8 @@ DoManipulateDevices (MENU_STATE *pMS)
 	}
 	else
 	{
-		SIZE NewTop;
-		SIZE NewState;
+		uqm::SIZE NewTop;
+		uqm::SIZE NewState;
 
 		NewTop = devState->topIndex;
 		NewState = pMS->CurState;
@@ -563,7 +563,7 @@ DoManipulateDevices (MENU_STATE *pMS)
 			if (NewTop != devState->topIndex)
 			{	// redraw the display
 				devState->topIndex = NewTop;
-				DrawDevices (devState, (COUNT)~0, NewState);
+				DrawDevices (devState, (uqm::COUNT)~0, NewState);
 			}
 			else
 			{	// move selection to new device
@@ -576,16 +576,16 @@ DoManipulateDevices (MENU_STATE *pMS)
 	return true;
 }
 
-SIZE
-InventoryDevices (BYTE *pDeviceMap, COUNT Size)
+uqm::SIZE
+InventoryDevices (uqm::BYTE *pDeviceMap, uqm::COUNT Size)
 {
-	BYTE i;
-	SIZE DevicesOnBoard;
+	uqm::BYTE i;
+	uqm::SIZE DevicesOnBoard;
 	
 	DevicesOnBoard = 0;
 	for (i = 0; i < NUM_DEVICES && Size > 0; ++i)
 	{
-		BYTE DeviceState;
+		uqm::BYTE DeviceState;
 
 		DeviceState = 0;
 		switch (i)
@@ -697,7 +697,7 @@ DevicesMenu (void)
 	if (!DevicesState.count)
 		return false;
 
-	DrawDevices (&DevicesState, (COUNT)~0, MenuState.CurState);
+	DrawDevices (&DevicesState, (uqm::COUNT)~0, MenuState.CurState);
 
 	SetMenuSounds (MENU_SOUND_ARROWS | MENU_SOUND_PAGE,
 			MENU_SOUND_SELECT);
@@ -710,14 +710,14 @@ DevicesMenu (void)
 
 	SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
 
-	if (GLOBAL_SIS (CrewEnlisted) != (COUNT)~0
+	if (GLOBAL_SIS (CrewEnlisted) != (uqm::COUNT)~0
 			&& !(GLOBAL (CurrentActivity) & CHECK_ABORT))
 	{
 		ClearSISRect (DRAW_SIS_DISPLAY);
 
 		if (!GET_GAME_STATE (PORTAL_COUNTER)
 				&& !(GLOBAL (CurrentActivity) & START_ENCOUNTER)
-				&& GLOBAL_SIS (CrewEnlisted) != (COUNT)~0)
+				&& GLOBAL_SIS (CrewEnlisted) != (uqm::COUNT)~0)
 			return true;
 	}
 	

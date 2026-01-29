@@ -34,10 +34,10 @@
 static bool GenerateTalkingPet_generatePlanets (SOLARSYS_STATE *solarSys);
 static bool GenerateTalkingPet_generateOrbital (SOLARSYS_STATE *solarSys,
 		PLANET_DESC *world);
-static COUNT GenerateTalkingPet_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
+static uqm::COUNT GenerateTalkingPet_generateEnergy (const SOLARSYS_STATE *,
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
 static bool GenerateTalkingPet_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, COUNT whichNode);
+		PLANET_DESC *world, uqm::COUNT whichNode);
 
 static void ZapToUrquanEncounter (void);
 
@@ -69,7 +69,7 @@ GenerateTalkingPet_generatePlanets (SOLARSYS_STATE *solarSys)
 
 	if (PrimeSeed)
 	{
-		COUNT angle;
+		uqm::COUNT angle;
 
 		pSunDesc->PlanetByte = 0;
 		pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
@@ -118,7 +118,7 @@ GenerateTalkingPet_generateOrbital (SOLARSYS_STATE *solarSys,
 			}
 			else
 			{
-				COUNT i;
+				uqm::COUNT i;
 
 				for (i = 0; i < 10; ++i)
 				{
@@ -176,9 +176,9 @@ GenerateTalkingPet_generateOrbital (SOLARSYS_STATE *solarSys,
 	return true;
 }
 
-static COUNT
+static uqm::COUNT
 GenerateTalkingPet_generateEnergy (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
+		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *info)
 {
 	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{
@@ -190,7 +190,7 @@ GenerateTalkingPet_generateEnergy (const SOLARSYS_STATE *solarSys,
 
 static bool
 GenerateTalkingPet_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, COUNT whichNode)
+		PLANET_DESC *world, uqm::COUNT whichNode)
 {
 	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{
@@ -211,7 +211,7 @@ ZapToUrquanEncounter (void)
 	if ((hEncounter = AllocEncounter ())
 			|| (hEncounter = GetHeadEncounter ()))
 	{
-		SIZE dx, dy;
+		uqm::SIZE dx, dy;
 		ENCOUNTER *EncounterPtr;
 		HFLEETINFO hStarShip;
 		FLEET_INFO *TemplatePtr;
@@ -266,7 +266,7 @@ ZapToUrquanEncounter (void)
 
 		dx = CurStarDescPtr->star_pt.x - EncounterPtr->loc_pt.x;
 		dy = CurStarDescPtr->star_pt.y - EncounterPtr->loc_pt.y;
-		dx = (SIZE)square_root ((long)dx * dx + (long)dy * dy)
+		dx = (uqm::SIZE)square_root ((long)dx * dx + (long)dy * dy)
 				+ (FUEL_TANK_SCALE >> 1);
 
 		if (!optInfiniteFuel)
@@ -274,8 +274,8 @@ ZapToUrquanEncounter (void)
 
 		if (GLOBAL_SIS (FuelOnBoard) < 5 * FUEL_TANK_SCALE)
 		{
-			dx = ((5 + ((COUNT)TFB_Random () % 5)) * FUEL_TANK_SCALE)
-					- (SIZE)GLOBAL_SIS (FuelOnBoard);
+			dx = ((5 + ((uqm::COUNT)TFB_Random () % 5)) * FUEL_TANK_SCALE)
+					- (uqm::SIZE)GLOBAL_SIS (FuelOnBoard);
 			DeltaSISGauges (0, dx, 0);
 		}
 		DrawSISMessage (NULL);

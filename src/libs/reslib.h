@@ -35,7 +35,7 @@ typedef RESOURCE_INDEX_DESC *RESOURCE_INDEX;
 typedef const char *RESOURCE;
 
 typedef union {
-	DWORD num;
+	uqm::DWORD num;
 	void *ptr;
 	const char *str;
 } RESOURCE_DATA;
@@ -48,7 +48,7 @@ typedef void (ResourceLoadFun) (const char *pathname, RESOURCE_DATA *resdata);
 typedef bool (ResourceFreeFun) (void *handle);
 typedef void (ResourceStringFun) (RESOURCE_DATA *handle, char *buf, unsigned int size);
 				  
-typedef void *(ResourceLoadFileFun) (uio_Stream *fp, DWORD len);
+typedef void *(ResourceLoadFileFun) (uio_Stream *fp, uqm::DWORD len);
 
 void *LoadResourceFromPath(const char *pathname, ResourceLoadFileFun fn);
 
@@ -70,15 +70,15 @@ bool InstallResTypeVectors (const char *res_type, ResourceLoadFun *loadFun, Reso
 void *res_GetResource (RESOURCE res);
 void *res_DetachResource (RESOURCE res);
 void res_FreeResource (RESOURCE res);
-COUNT CountResourceTypes (void);
-DWORD res_GetIntResource (RESOURCE res);
+uqm::COUNT CountResourceTypes (void);
+uqm::DWORD res_GetIntResource (RESOURCE res);
 bool res_GetBooleanResource (RESOURCE res);
 const char *res_GetResourceType (RESOURCE res);
 
 void LoadResourceIndex (uio_DirHandle *dir, const char *filename, const char *prefix);
 void SaveResourceIndex (uio_DirHandle *dir, const char *rmpfile, const char *root, bool strip_root);
 
-void *GetResourceData (uio_Stream *fp, DWORD length);
+void *GetResourceData (uio_Stream *fp, uqm::DWORD length);
 
 #define AllocResourceData HMalloc
 bool FreeResourceData (void *);

@@ -23,7 +23,7 @@ _clip_line (const DRECT *pClipRect, BRESENHAM_LINE *pLine)
 {
 	COORD p;
 	COORD x0, y0, xmin, ymin, xmax, ymax;
-	SIZE abs_delta_x, abs_delta_y;
+	uqm::SIZE abs_delta_x, abs_delta_y;
 	INTERSECT_CODE intersect_code;
 
 	xmin = pClipRect->corner.x;
@@ -122,7 +122,7 @@ _clip_line (const DRECT *pClipRect, BRESENHAM_LINE *pLine)
 
 		if (abs_delta_x > abs_delta_y)
 		{
-			SIZE half_dx;
+			uqm::SIZE half_dx;
 
 			half_dx = abs_delta_x >> 1;
 			if (x0 < xmin)
@@ -160,7 +160,7 @@ _clip_line (const DRECT *pClipRect, BRESENHAM_LINE *pLine)
 		}
 		else
 		{
-			SIZE half_dy;
+			uqm::SIZE half_dy;
 
 			half_dy = abs_delta_y >> 1;
 			if (y0 < ymin)
@@ -221,18 +221,18 @@ _clip_line (const DRECT *pClipRect, BRESENHAM_LINE *pLine)
 	if (!(intersect_code & INTERSECT_ALL_SIDES))
 	{
 		if (abs_delta_x > abs_delta_y)
-			pLine->error_term = -(SIZE)(abs_delta_x >> 1);
+			pLine->error_term = -(uqm::SIZE)(abs_delta_x >> 1);
 		else
-			pLine->error_term = -(SIZE)(abs_delta_y >> 1);
+			pLine->error_term = -(uqm::SIZE)(abs_delta_y >> 1);
 	}
 	else
 	{
 		intersect_code &= ~INTERSECT_NOCLIP;
 		if (abs_delta_x > abs_delta_y)
-			pLine->error_term = (SIZE)((x0 * (long)abs_delta_y) -
+			pLine->error_term = (uqm::SIZE)((x0 * (long)abs_delta_y) -
 					(y0 * (long)abs_delta_x)) - (abs_delta_x >> 1);
 		else
-			pLine->error_term = (SIZE)((y0 * (long)abs_delta_x) -
+			pLine->error_term = (uqm::SIZE)((y0 * (long)abs_delta_x) -
 					(x0 * (long)abs_delta_y)) - (abs_delta_y >> 1);
 	}
 

@@ -73,7 +73,7 @@ getNumNetConnections(void) {
 // the callback function for each connected player.
 bool
 forEachConnectedPlayer(ForEachConnectionCallback callback, void *arg) {
-	COUNT player;
+	uqm::COUNT player;
 	
 	for (player = 0; player < NUM_PLAYERS; player++)
 	{
@@ -92,7 +92,7 @@ forEachConnectedPlayer(ForEachConnectionCallback callback, void *arg) {
 
 void
 closeAllConnections(void) {
-	COUNT player;
+	uqm::COUNT player;
 
 	for (player = 0; player < NUM_PLAYERS; player++)
 	{
@@ -105,7 +105,7 @@ closeAllConnections(void) {
 
 void
 closeDisconnectedConnections(void) {
-	COUNT player;
+	uqm::COUNT player;
 
 	for (player = 0; player < NUM_PLAYERS; player++)
 	{
@@ -183,7 +183,7 @@ netInputBlocking(uint32 timeoutMs) {
 // Send along all pending network packets.
 void
 flushPacketQueues(void) {
-	COUNT player;
+	uqm::COUNT player;
 
 	for (player = 0; player < NUM_PLAYERS; player++)
 	{
@@ -205,7 +205,7 @@ flushPacketQueues(void) {
 
 void
 confirmConnections(void) {
-	COUNT player;
+	uqm::COUNT player;
 
 	for (player = 0; player < NUM_PLAYERS; player++)
 	{
@@ -222,7 +222,7 @@ confirmConnections(void) {
 
 void
 cancelConfirmations(void) {
-	COUNT player;
+	uqm::COUNT player;
 
 	for (player = 0; player < NUM_PLAYERS; player++)
 	{
@@ -239,7 +239,7 @@ cancelConfirmations(void) {
 
 void
 connectionsLocalReady(NetConnection_ReadyCallback callback, void *arg) {
-	COUNT player;
+	uqm::COUNT player;
 
 	for (player = 0; player < NUM_PLAYERS; player++)
 	{
@@ -256,7 +256,7 @@ connectionsLocalReady(NetConnection_ReadyCallback callback, void *arg) {
 
 bool
 allConnected(void) {
-	COUNT player;
+	uqm::COUNT player;
 
 	for (player = 0; player < NUM_PLAYERS; player++)
 	{
@@ -272,7 +272,7 @@ allConnected(void) {
 
 void
 initBattleStateDataConnections(void) {
-	COUNT player;
+	uqm::COUNT player;
 
 	for (player = 0; player < NUM_PLAYERS; player++)
 	{
@@ -289,7 +289,7 @@ initBattleStateDataConnections(void) {
 
 void
 setBattleStateConnections(struct battlestate_struct *bs) {
-	COUNT player;
+	uqm::COUNT player;
 
 	for (player = 0; player < NUM_PLAYERS; player++)
 	{
@@ -374,7 +374,7 @@ deleteConnectionCallback(NetConnection *conn) {
 }
 
 NetConnection *
-openPlayerNetworkConnection(COUNT player, void *extra) {
+openPlayerNetworkConnection(uqm::COUNT player, void *extra) {
 	NetConnection *conn;
 
 	assert(netConnections[player] == NULL);
@@ -389,7 +389,7 @@ openPlayerNetworkConnection(COUNT player, void *extra) {
 }
 
 void
-closePlayerNetworkConnection(COUNT player) {
+closePlayerNetworkConnection(uqm::COUNT player) {
 	assert(netConnections[player] != NULL);
 
 	NetConnection_close(netConnections[player]);
@@ -397,7 +397,7 @@ closePlayerNetworkConnection(COUNT player) {
 
 bool
 setupInputDelay(size_t localInputDelay) {
-	COUNT player;
+	uqm::COUNT player;
 	bool haveNetworkPlayer = false;
 			// We have at least one network controlled player.
 	size_t inputDelay = 0;
@@ -558,7 +558,7 @@ negotiateReady(NetConnection *conn, bool notifyRemote, NetState nextState) {
 //      time critical.
 bool
 negotiateReadyConnections(bool notifyRemote, NetState nextState) {
-	COUNT player;
+	uqm::COUNT player;
 	size_t numDisconnected = 0;
 
 	for (player = 0; player < NUM_PLAYERS; player++)
@@ -716,7 +716,7 @@ out:
 // Use '(NetState) -1' for nextState to keep the current state.
 bool
 waitResetConnections(NetState nextState) {
-	COUNT player;
+	uqm::COUNT player;
 	size_t numDisconnected = 0;
 
 	for (player = 0; player < NUM_PLAYERS; player++)

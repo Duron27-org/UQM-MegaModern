@@ -40,7 +40,7 @@ typedef HLINK HENCOUNTER;
 #define MAX_HYPER_SHIPS 7
 
 // ENCOUNTER.flags
-// XXX: Currently, the flags are combined with num_ships into a single BYTE
+// XXX: Currently, the flags are combined with num_ships into a single uqm::BYTE
 //   in the savegames: num_ships occupy the low nibble and flags the high one.
 //   Bits 4 and 5 are available for more flags in the savegames,
 //   and bits 0-3 available in the game but will not be saved.
@@ -52,10 +52,10 @@ typedef HLINK HENCOUNTER;
 struct brief_ship_info
 {
 	// The only field actually used right now is crew_level
-	BYTE race_id;
-	COUNT crew_level;
-	COUNT max_crew;
-	BYTE max_energy;
+	uqm::BYTE race_id;
+	uqm::COUNT crew_level;
+	uqm::COUNT max_crew;
+	uqm::BYTE max_energy;
 
 };
 
@@ -66,19 +66,19 @@ struct encounter
 
 	HELEMENT hElement;
 
-	SIZE transition_state;
+	uqm::SIZE transition_state;
 	POINT origin;
-	COUNT radius;
-	BYTE race_id;
-	BYTE num_ships;
-	BYTE flags;
+	uqm::COUNT radius;
+	uqm::BYTE race_id;
+	uqm::BYTE num_ships;
+	uqm::BYTE flags;
 			// See ENCOUNTER.flags above
 	POINT loc_pt;
 
 	BRIEF_SHIP_INFO ShipList[MAX_HYPER_SHIPS];
 			// Only the crew_level member is currently used
 
-	SDWORD log_x, log_y;
+	uqm::SDWORD log_x, log_y;
 };
 
 #define AllocEncounter() AllocLink (&GLOBAL (encounter_q))
@@ -100,10 +100,10 @@ enum
 };
 
 extern void EncounterBattle (void);
-extern void BuildBattle (COUNT which_player);
-extern COUNT InitEncounter (void);
-extern COUNT UninitEncounter (void);
-extern bool FleetIsInfinite (COUNT playerNr);
+extern void BuildBattle (uqm::COUNT which_player);
+extern uqm::COUNT InitEncounter (void);
+extern uqm::COUNT UninitEncounter (void);
+extern bool FleetIsInfinite (uqm::COUNT playerNr);
 extern void UpdateShipFragCrew (STARSHIP *);
 
 extern void SetBattlePlanet (void);
@@ -111,8 +111,8 @@ extern void SetBattlePlanet (void);
 // Last race the player battled with, or -1 if no battle took place.
 // Set to -1 by some funcs to inhibit IP groups from intercepting
 // the flagship.
-extern SIZE EncounterRace;
-extern BYTE EncounterGroup;
+extern uqm::SIZE EncounterRace;
+extern uqm::BYTE EncounterGroup;
 
 #if 0 //defined(__cplusplus)
 }

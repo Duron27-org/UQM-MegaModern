@@ -27,10 +27,10 @@
 
 typedef struct Color Color;
 struct Color {
-	BYTE r;
-	BYTE g;
-	BYTE b;
-	BYTE a;
+	uqm::BYTE r;
+	uqm::BYTE g;
+	uqm::BYTE b;
+	uqm::BYTE a;
 };
 
 #include "libs/reslib.h"
@@ -49,12 +49,12 @@ typedef FRAME_DESC *FRAME;
 typedef FONT_DESC *FONT;
 typedef DRAWABLE_DESC *DRAWABLE;
 
-typedef UWORD TIME_VALUE;
+typedef uqm::UWORD TIME_VALUE;
 
 #define TIME_SHIFT 8
 #define MAX_TIME_VALUE ((1 << TIME_SHIFT) + 1)
 
-typedef SWORD COORD;
+typedef uqm::SWORD COORD;
 
 static inline bool
 sameColor(Color c1, Color c2)
@@ -100,7 +100,7 @@ sameColor24(Color c1, Color c2)
 // Turn a 15 bits color into a 24-bits color.
 // r, g, and b are each 5-bits color components.
 static inline Color
-colorFromRgb15 (BYTE r, BYTE g, BYTE b)
+colorFromRgb15 (uqm::BYTE r, uqm::BYTE g, uqm::BYTE b)
 {
 	Color c;
 	c.r = CC5TO8 (r);
@@ -142,7 +142,7 @@ colorFromRgb15 (BYTE r, BYTE g, BYTE b)
 	}
 
 static inline Color
-buildColorRgba (BYTE r, BYTE g, BYTE b, BYTE a)
+buildColorRgba (uqm::BYTE r, uqm::BYTE g, uqm::BYTE b, uqm::BYTE a)
 {
 	Color c;
 	c.r = r;
@@ -162,7 +162,7 @@ buildColorRgba (BYTE r, BYTE g, BYTE b, BYTE a)
 		buildColorRgba ((r), (g), (b), 0xFF)
 
 static inline void
-IncreaseBrightness (BYTE *ch, BYTE value)
+IncreaseBrightness (uqm::BYTE *ch, uqm::BYTE value)
 {
 	int c;
 	if (*ch < 128)
@@ -174,9 +174,9 @@ IncreaseBrightness (BYTE *ch, BYTE value)
 		c = 0xFF;
 
 	if (value == 0xFF)
-		*ch = (BYTE)c;
+		*ch = (uqm::BYTE)c;
 	else
-		*ch = (BYTE)(((c - *ch) * value) >> 8) + *ch;
+		*ch = (uqm::BYTE)(((c - *ch) * value) >> 8) + *ch;
 }
 
 static inline bool
@@ -226,7 +226,7 @@ CreateAvgShade (Color first_color, Color second_color)
 }
 
 
-typedef BYTE CREATE_FLAGS;
+typedef uqm::BYTE CREATE_FLAGS;
 // WANT_MASK is deprecated (and non-functional). It used to generate a bitmap
 // of changed pixels for a target DRAWABLE, so that DRAW_SUBTRACTIVE could
 // paint background pixels over them, i.e. a revert draw. The backgrounds
@@ -246,7 +246,7 @@ struct EXTENT
 // JMS: Extent with larger values to avoid overflows in hires modes.
 typedef struct dextent
 {
-	SDWORD width, height;
+	uqm::SDWORD width, height;
 } DEXTENT;
 
 typedef struct point
@@ -270,7 +270,7 @@ inline POINT operator+(const POINT& lhs, const POINT& rhs)
 // JMS: coordinate point with larger values to avoid overflows in hires modes.
 typedef struct dpoint
 {
-	SDWORD x, y;
+	uqm::SDWORD x, y;
 } DPOINT;
 
 typedef struct stamp
@@ -306,7 +306,7 @@ MAKE_POINT (COORD x, COORD y)
 }
 
 static inline DPOINT
-MAKE_DPOINT (SDWORD x, SDWORD y)
+MAKE_DPOINT (uqm::SDWORD x, uqm::SDWORD y)
 {
 	DPOINT pt = { x, y };
 	return pt;
@@ -320,7 +320,7 @@ MAKE_EXTENT (COORD width, COORD height)
 }
 
 static inline DEXTENT
-MAKE_DEXTENT (SDWORD width, SDWORD height)
+MAKE_DEXTENT (uqm::SDWORD width, uqm::SDWORD height)
 {
 	DEXTENT ext = {width, height};
 	return ext;
@@ -397,7 +397,7 @@ calcDistance (COORD x1, COORD y1, COORD x2, COORD y2)
 }
 
 static inline void
-printPt (POINT pt, CHAR_T *Str)
+printPt (POINT pt, uqm::CHAR_T *Str)
 {
 	printf ("%s = %d x %d\n", Str, pt.x, pt.y);
 }
@@ -405,7 +405,7 @@ printPt (POINT pt, CHAR_T *Str)
 		printPt (pt, #pt)
 
 static inline void
-printDPt (DPOINT dPt, CHAR_T *Str)
+printDPt (DPOINT dPt, uqm::CHAR_T *Str)
 {
 	printf ("%s = %d x %d\n", Str, dPt.x, dPt.y);
 }
@@ -413,7 +413,7 @@ printDPt (DPOINT dPt, CHAR_T *Str)
 		printDPt (dpt, #dpt)
 
 static inline void
-printExt (EXTENT ext, CHAR_T *Str)
+printExt (EXTENT ext, uqm::CHAR_T *Str)
 {
 	printf ("%s = %d x %d\n", Str, ext.width, ext.height);
 }
@@ -421,7 +421,7 @@ printExt (EXTENT ext, CHAR_T *Str)
 		printExt (ext, #ext)
 
 static inline void
-printDExt (DEXTENT dExt, CHAR_T *Str)
+printDExt (DEXTENT dExt, uqm::CHAR_T *Str)
 {
 	printf ("%s = %d x %d\n", Str, dExt.width, dExt.height);
 }
@@ -429,7 +429,7 @@ printDExt (DEXTENT dExt, CHAR_T *Str)
 		printDExt (dext, #dext)
 
 static inline void
-printRect (RECT r, CHAR_T *Str)
+printRect (RECT r, uqm::CHAR_T *Str)
 {
 	printf ("%s.corner = %d x %d\n", Str, r.corner.x, r.corner.y);
 	printf ("%s.extent = %d x %d\n", Str, r.extent.width, r.extent.height);
@@ -438,7 +438,7 @@ printRect (RECT r, CHAR_T *Str)
 		printRect (rect, #rect)
 
 static inline void
-printDRect (DRECT r, CHAR_T *Str)
+printDRect (DRECT r, uqm::CHAR_T *Str)
 {
 	printf ("%s.corner = %d x %d\n", Str, r.corner.x, r.corner.y);
 	printf ("%s.extent = %d x %d\n", Str, r.extent.width, r.extent.height);
@@ -475,9 +475,9 @@ typedef enum
 typedef struct text
 {
 	POINT baseline;
-	const CHAR_T *pStr;
+	const uqm::CHAR_T *pStr;
 	TEXT_ALIGN align;
-	COUNT CharCount;
+	uqm::COUNT CharCount;
 } TEXT;
 
 #if 0 //defined(__cplusplus)
@@ -499,7 +499,7 @@ typedef void *COLORMAPPTR;
 #include "graphics/prim.h"
 
 
-typedef BYTE BATCH_FLAGS;
+typedef uqm::BYTE BATCH_FLAGS;
 // This flag is currently unused but it might make sense to restore it
 #define BATCH_BUILD_PAGE (BATCH_FLAGS)(1 << 0)
 
@@ -510,7 +510,7 @@ typedef struct
 	STAMP IntersectStamp;
 } INTERSECT_CONTROL;
 
-typedef BYTE INTERSECT_CODE;
+typedef uqm::BYTE INTERSECT_CODE;
 
 #define INTERSECT_LEFT (INTERSECT_CODE)(1 << 0)
 #define INTERSECT_TOP (INTERSECT_CODE)(1 << 1)
@@ -589,8 +589,8 @@ typedef enum
 
 typedef struct
 {
-	BYTE kind;
-	SWORD factor;
+	uqm::BYTE kind;
+	uqm::SWORD factor;
 } DrawMode;
 
 #define DRAW_REPLACE_MODE   MAKE_DRAW_MODE (DRAW_REPLACE, 0)
@@ -600,7 +600,7 @@ typedef struct
 #define DESAT_AMOUNT 0xBE
 
 static inline DrawMode
-MAKE_DRAW_MODE (DrawKind kind, SWORD factor)
+MAKE_DRAW_MODE (DrawKind kind, uqm::SWORD factor)
 {
 	DrawMode mode;
 	mode.kind = kind;
@@ -648,7 +648,7 @@ extern void DrawFilledStamp (STAMP *pStamp);
 extern void DrawPoint (POINT *pPoint);
 extern void DrawRectangle (RECT *pRect, bool scaled);
 extern void DrawFilledRectangle (RECT *pRect);
-extern void DrawLine (LINE *pLine, BYTE thickness);
+extern void DrawLine (LINE *pLine, uqm::BYTE thickness);
 extern void ApplyMask (FRAME layer, FRAME base, DrawMode mode, Color *fill);
 extern void InstaPoint (int x, int y);
 extern void InstaRect (int x, int y, int w, int h, bool scaled);
@@ -658,10 +658,10 @@ extern RECT font_GetTextRect (TEXT* pText);
 extern void font_DrawText (TEXT *pText);
 extern void font_DrawText_Fade (TEXT *lpText, FRAME repair, bool *skip);
 extern void font_DrawTracedText (TEXT *pText, Color text, Color trace);
-extern BYTE font_DrawTextAlt (TEXT *lpText, BYTE swap, FONT AltFontPtr, UniChar key);
+extern uqm::BYTE font_DrawTextAlt (TEXT *lpText, uqm::BYTE swap, FONT AltFontPtr, UniChar key);
 extern void font_DrawTracedTextAlt (TEXT* pText, Color text, Color trace, FONT AltFontPtr,
 		UniChar key);
-extern void font_DrawShadowedText (TEXT *pText, BYTE direction,
+extern void font_DrawShadowedText (TEXT *pText, uqm::BYTE direction,
 		Color text_color, Color shadow_color);
 extern void DrawBatch (PRIMITIVE *pBasePrim, PRIM_LINKS PrimLinks,
 		BATCH_FLAGS BatchFlags);
@@ -678,10 +678,10 @@ extern CONTEXT CreateContextAux (void);
 #define CreateContext(name) CreateContextAux()
 #endif  /* !defined(DEBUG) */
 extern bool DestroyContext (CONTEXT ContextRef);
-extern DRAWABLE CreateDisplay (CREATE_FLAGS CreateFlags, SIZE *pwidth,
-		SIZE *pheight);
-extern DRAWABLE CreateDrawable (CREATE_FLAGS CreateFlags, SIZE width,
-		SIZE height, COUNT num_frames);
+extern DRAWABLE CreateDisplay (CREATE_FLAGS CreateFlags, uqm::SIZE *pwidth,
+		uqm::SIZE *pheight);
+extern DRAWABLE CreateDrawable (CREATE_FLAGS CreateFlags, uqm::SIZE width,
+		uqm::SIZE height, uqm::COUNT num_frames);
 extern bool DestroyDrawable (DRAWABLE Drawable);
 extern bool GetFrameRect (FRAME Frame, RECT *pRect);
 #ifdef DEBUG
@@ -702,15 +702,15 @@ extern FRAME SetContextFontEffect (FRAME EffectFrame);
 extern FONT SetContextFont (FONT Font);
 extern bool DestroyFont (FONT FontRef);
 // The returned pRect is relative to the context drawing origin
-extern bool TextRect (TEXT *pText, RECT *pRect, BYTE *pdelta);
-extern bool TextRectAlt (TEXT *lpText, RECT *pRect, BYTE *pdelta, BYTE swap, UniChar key, FONT AltFontPtr);
-extern bool GetContextFontLeading (SIZE *pheight);
-extern bool GetContextFontDispHeight (SIZE *pheight);
-extern bool GetContextFontDispWidth (SIZE *pwidth);
-extern COUNT GetFrameCount (FRAME Frame);
-extern COUNT GetFrameIndex (FRAME Frame);
-extern FRAME SetAbsFrameIndex (FRAME Frame, COUNT FrameIndex);
-extern FRAME SetRelFrameIndex (FRAME Frame, SIZE FrameOffs);
+extern bool TextRect (TEXT *pText, RECT *pRect, uqm::BYTE *pdelta);
+extern bool TextRectAlt (TEXT *lpText, RECT *pRect, uqm::BYTE *pdelta, uqm::BYTE swap, UniChar key, FONT AltFontPtr);
+extern bool GetContextFontLeading (uqm::SIZE *pheight);
+extern bool GetContextFontDispHeight (uqm::SIZE *pheight);
+extern bool GetContextFontDispWidth (uqm::SIZE *pwidth);
+extern uqm::COUNT GetFrameCount (FRAME Frame);
+extern uqm::COUNT GetFrameIndex (FRAME Frame);
+extern FRAME SetAbsFrameIndex (FRAME Frame, uqm::COUNT FrameIndex);
+extern FRAME SetRelFrameIndex (FRAME Frame, uqm::SIZE FrameOffs);
 extern FRAME SetEquFrameIndex (FRAME DstFrame, FRAME SrcFrame);
 extern FRAME IncFrameIndex (FRAME Frame);
 extern FRAME DecFrameIndex (FRAME Frame);
@@ -725,9 +725,9 @@ extern bool ReadFramePixelColors (FRAME frame, Color *pixels,
 extern bool WriteFramePixelColors (FRAME frame, const Color *pixels,
 		int width, int height);
 // This pair only works for paletted frames
-extern bool ReadFramePixelIndexes (FRAME frame, BYTE *pixels,
+extern bool ReadFramePixelIndexes (FRAME frame, uqm::BYTE *pixels,
 		int width, int height, bool paletted);
-extern bool WriteFramePixelIndexes (FRAME frame, const BYTE *pixels,
+extern bool WriteFramePixelIndexes (FRAME frame, const uqm::BYTE *pixels,
 		int width, int height);
 extern void SetFrameTransparentColor (FRAME, Color);
 extern bool IsFrameIndexed (FRAME Frame);
@@ -742,10 +742,10 @@ extern DRAWABLE ReleaseDrawable (FRAME Frame);
 extern DRAWABLE GetFrameParentDrawable (FRAME Frame);
 
 extern bool SetColorMap (COLORMAPPTR ColorMapPtr);
-extern DWORD XFormColorMap (COLORMAPPTR ColorMapPtr, SIZE TimeInterval);
-extern DWORD FadeScreen (ScreenFadeType fadeType, SIZE TimeInterval);
+extern uqm::DWORD XFormColorMap (COLORMAPPTR ColorMapPtr, uqm::SIZE TimeInterval);
+extern uqm::DWORD FadeScreen (ScreenFadeType fadeType, uqm::SIZE TimeInterval);
 extern void FlushColorXForms (void);
-extern UBYTE GetColorMapTableIndex (COLORMAP map);
+extern uqm::UBYTE GetColorMapTableIndex (COLORMAP map);
 #define InitColorMapResources InitStringTableResources
 #define LoadColorMapFile LoadStringTableFile
 #define LoadColorMapInstance LoadStringTableInstance

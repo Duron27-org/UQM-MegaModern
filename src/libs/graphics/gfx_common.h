@@ -122,6 +122,6 @@ extern int GraphicsDriver;
 
 void TFB_ScreenShot (void);
 void TFB_ClearFPSCanvas (void);
-void TFB_GetScreenSize (SIZE *width, SIZE *height);
+void TFB_GetScreenSize (uqm::SIZE *width, uqm::SIZE *height);
 
 #endif

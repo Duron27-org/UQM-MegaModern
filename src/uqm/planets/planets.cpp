@@ -57,10 +57,10 @@ CONTEXT PlanetContext;
 
 bool useDosSpheres = false;
 bool use3DOSpheres = false;
-BYTE OrbitNum = 0;
+uqm::BYTE OrbitNum = 0;
 
 void
-DestroyOrbitStruct (PLANET_ORBIT* Orbit, SIZE height)
+DestroyOrbitStruct (PLANET_ORBIT* Orbit, uqm::SIZE height)
 {
 	DestroyDrawable (ReleaseDrawable (Orbit->TopoZoomFrame));
 	Orbit->TopoZoomFrame = 0;
@@ -90,7 +90,7 @@ DestroyOrbitStruct (PLANET_ORBIT* Orbit, SIZE height)
 
 	if (Orbit->ScanColors)
 	{
-		COUNT i;
+		uqm::COUNT i;
 		for (i = 0; i < NUM_SCAN_TYPES; i++)
 		{
 			HFree (Orbit->ScanColors[i]);
@@ -114,7 +114,7 @@ DestroyOrbitStruct (PLANET_ORBIT* Orbit, SIZE height)
 
 	if (Orbit->light_diff)
 	{
-		COUNT j;
+		uqm::COUNT j;
 		for (j = 0; j < height; j++)
 		{
 			HFree (Orbit->light_diff[j]);
@@ -126,7 +126,7 @@ DestroyOrbitStruct (PLANET_ORBIT* Orbit, SIZE height)
 
 	if (Orbit->map_rotate)
 	{
-		COUNT k;
+		uqm::COUNT k;
 		for (k = 0; k < height; k++)
 		{
 			HFree (Orbit->map_rotate[k]);
@@ -328,8 +328,8 @@ DrawEnterOrbitText (RECT rect)
 	TEXT text;
 	FONT OldFont;
 	FRAME OldFontEffect;
-	SIZE leading;
-	CHAR_T buf[256];
+	uqm::SIZE leading;
+	uqm::CHAR_T buf[256];
 	COORD og_baseline_x;
 
 	OldFont = SetContextFont (MicroFont);
@@ -350,18 +350,18 @@ DrawEnterOrbitText (RECT rect)
 
 	text.align = ALIGN_CENTER;
 	text.pStr = strtok (buf, "\n");
-	text.CharCount = (COUNT)~0;
+	text.CharCount = (uqm::COUNT)~0;
 
 	while (text.pStr != NULL)
 	{
-		text.pStr = AlignText ((const CHAR_T *)text.pStr,
+		text.pStr = AlignText ((const uqm::CHAR_T *)text.pStr,
 				&text.baseline.x);
-		text.CharCount = (COUNT)~0;
+		text.CharCount = (uqm::COUNT)~0;
 
 		font_DrawText (&text);
 
 		text.pStr = strtok (NULL, "\n");
-		text.CharCount = (COUNT)~0;
+		text.CharCount = (uqm::COUNT)~0;
 		text.baseline.y += leading;
 		text.baseline.x = og_baseline_x;
 	}
@@ -563,7 +563,7 @@ LoadPlanet (FRAME SurfDefFrame)
 void
 FreePlanet (void)
 {
-	COUNT i;
+	uqm::COUNT i;
 	PLANET_ORBIT *Orbit = &pSolarSysState->Orbit;
 
 	UninitSphereRotation ();
@@ -588,7 +588,7 @@ FreePlanet (void)
 
 	if (optScanStyle == OPT_PC)
 	{
-		COUNT k;
+		uqm::COUNT k;
 
 		for (k = 0; k < NUM_SCAN_TYPES; k++)
 		{
@@ -643,7 +643,7 @@ DoPlanetOrbit (MENU_STATE *pMS)
 	bool handled;
 
 	if ((GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
-			|| GLOBAL_SIS (CrewEnlisted) == (COUNT)~0)
+			|| GLOBAL_SIS (CrewEnlisted) == (uqm::COUNT)~0)
 		return false;
 
 	// XXX: pMS actually refers to pSolarSysState->MenuState

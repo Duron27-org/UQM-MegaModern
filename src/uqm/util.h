@@ -25,12 +25,12 @@
 extern "C" {
 #endif
 
-extern void DrawStarConBox (RECT *pRect, SIZE BorderWidth,
+extern void DrawStarConBox (RECT *pRect, uqm::SIZE BorderWidth,
 		Color TopLeftColor, Color BottomRightColor, bool FillInterior,
 		Color InteriorColor, bool CreateCorners, Color CornerColor);
-extern void DrawBorderPadding (DWORD videoWidth);
+extern void DrawBorderPadding (uqm::DWORD videoWidth);
 extern void DrawRadarBorder (void);
-extern DWORD SeedRandomNumbers (void);
+extern uqm::DWORD SeedRandomNumbers (void);
 
 extern void DrawRenderedBox (RECT *r, bool filled, Color fill_color,
 		int type, int custom);
@@ -38,9 +38,9 @@ extern void DrawRenderedBox (RECT *r, bool filled, Color fill_color,
 // saveRect can be NULL to save the entire context frame
 extern STAMP SaveContextFrame (const RECT *saveRect);
 
-extern DWORD get_fuel_to_sol (void);
-extern void DrawFlagStatDisplay (CHAR_T *str);
-extern CHAR_T *WholeFuelValue (void);
+extern uqm::DWORD get_fuel_to_sol (void);
+extern void DrawFlagStatDisplay (const uqm::CHAR_T *str);
+extern uqm::CHAR_T *WholeFuelValue (void);
 
 #if 0 //defined(__cplusplus)
 }

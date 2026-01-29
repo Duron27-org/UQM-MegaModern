@@ -46,14 +46,14 @@ enum
 	WHITE_SUN_INTENSITY
 };
 
-static UWORD
-CalcFromBase (UWORD base, UWORD variance)
+static uqm::UWORD
+CalcFromBase (uqm::UWORD base, uqm::UWORD variance)
 {
 	return base + LOWORD (RandomContext_Random (SysGenRNG)) % variance;
 }
 
-static inline UWORD
-CalcHalfBaseVariance (UWORD base)
+static inline uqm::UWORD
+CalcHalfBaseVariance (uqm::UWORD base)
 {
 	return CalcFromBase (base, (base >> 1) + 1);
 }
@@ -101,9 +101,9 @@ CalcSysInfo (SYSTEM_INFO *SysInfoPtr)
 	}
 }
 
-static UWORD
-GeneratePlanetComposition (PLANET_INFO *PlanetInfoPtr, SIZE SurfaceTemp,
-		SIZE radius)
+static uqm::UWORD
+GeneratePlanetComposition (PLANET_INFO *PlanetInfoPtr, uqm::SIZE SurfaceTemp,
+		uqm::SIZE radius)
 {
 	if (PLANSIZE (PlanetInfoPtr->PlanDataPtr->Type) == GAS_GIANT)
 	{
@@ -112,8 +112,8 @@ GeneratePlanetComposition (PLANET_INFO *PlanetInfoPtr, SIZE SurfaceTemp,
 	}
 	else
 	{
-		BYTE range;
-		UWORD atmo;
+		uqm::BYTE range;
+		uqm::UWORD atmo;
 
 		PlanetInfoPtr->Weather = 0;
 		atmo = 0;
@@ -172,21 +172,21 @@ GeneratePlanetComposition (PLANET_INFO *PlanetInfoPtr, SIZE SurfaceTemp,
 // calculating the actual temperature (when landing or scanning), but not
 // when determining the colors of the drawn orbits. (Thanks to James Scott
 // for this insight.)
-static SIZE
-CalcTemp (SYSTEM_INFO *SysInfoPtr, SIZE radius)
+static uqm::SIZE
+CalcTemp (SYSTEM_INFO *SysInfoPtr, uqm::SIZE radius)
 {
 #define GENERIC_ALBEDO 33 /* In %, 0=black, 100 is reflective */
 #define ADJUST_FOR_KELVIN 273
 #define PLANET_TEMP_CONSTANT 277L
-	DWORD alb;
-	SIZE centigrade, bonus;
+	uqm::DWORD alb;
+	uqm::SIZE centigrade, bonus;
 
 	alb = 100 - GENERIC_ALBEDO;
 	alb = square_root (square_root (alb * 100 * 10000))
 			* PLANET_TEMP_CONSTANT * SysInfoPtr->StarEnergy
 			/ ((YELLOW_SUN_INTENSITY + 1) * DWARF_ENERGY);
 
-	centigrade = (SIZE)(alb / square_root (radius * 10000L / EARTH_RADIUS))
+	centigrade = (uqm::SIZE)(alb / square_root (radius * 10000L / EARTH_RADIUS))
 			- ADJUST_FOR_KELVIN;
 
 	bonus = 0;
@@ -207,22 +207,22 @@ CalcTemp (SYSTEM_INFO *SysInfoPtr, SIZE radius)
 	return (centigrade + bonus);
 }
 
-static COUNT
+static uqm::COUNT
 CalcRotation (PLANET_INFO *PlanetInfoPtr)
 {
 	if (PLANSIZE (PlanetInfoPtr->PlanDataPtr->Type) == GAS_GIANT)
-		return ((COUNT)CalcFromBase (80, 80));
-	else if (LOBYTE (RandomContext_Random (SysGenRNG)) % 10 == 0)
-		return ((COUNT)CalcFromBase ((UWORD)50 * EARTH_HOURS, (UWORD)200 * EARTH_HOURS));
+		return ((uqm::COUNT)CalcFromBase (80, 80));
+	else if (lowByte (RandomContext_Random (SysGenRNG)) % 10 == 0)
+		return ((uqm::COUNT)CalcFromBase ((uqm::UWORD)50 * EARTH_HOURS, (uqm::UWORD)200 * EARTH_HOURS));
 	else
-		return ((COUNT)CalcFromBase (150, 150));
+		return ((uqm::COUNT)CalcFromBase (150, 150));
 }
 
-static SIZE
+static uqm::SIZE
 CalcTilt (void)
 { /* Calculate Axial Tilt */
-	SIZE tilt;
-	BYTE  i;
+	uqm::SIZE tilt;
+	uqm::BYTE  i;
 
 #define NUM_TOSSES 10
 #define TILT_RANGE 180
@@ -237,17 +237,17 @@ CalcTilt (void)
 	return (tilt);
 }
 
-UWORD
+uqm::UWORD
 CalcGravity (const PLANET_INFO *PlanetInfoPtr)
 {
-	return (DWORD)PlanetInfoPtr->PlanetDensity * PlanetInfoPtr->PlanetRadius
+	return (uqm::DWORD)PlanetInfoPtr->PlanetDensity * PlanetInfoPtr->PlanetRadius
 				/ 100;
 }
 
-static UWORD
-CalcTectonics (UWORD base, UWORD temp)
+static uqm::UWORD
+CalcTectonics (uqm::UWORD base, uqm::UWORD temp)
 {
-	UWORD tect = CalcFromBase (base, 3 << 5);
+	uqm::UWORD tect = CalcFromBase (base, 3 << 5);
 #ifdef OLD
 	if (temp >= HIGH_TEMP)
 		tect += HIGH_TEMP_BONUS;
@@ -265,7 +265,7 @@ CalcTectonics (UWORD base, UWORD temp)
 static int
 CalcLifeChance (const PLANET_INFO *PlanetInfoPtr)
 {
-	SIZE life_var = 0;
+	uqm::SIZE life_var = 0;
 
 	if (PLANSIZE (PlanetInfoPtr->PlanDataPtr->Type) == GAS_GIANT)
 		return -1;
@@ -367,7 +367,7 @@ DoPlanetaryAnalysis (SYSTEM_INFO *SysInfoPtr, PLANET_DESC *pPlanetDesc)
 
 #ifdef DEBUG_PLANET_CALC
 	{
-		BYTE ColorClass[6][8] = {
+		uqm::BYTE ColorClass[6][8] = {
 				"Red",
 				"Orange",
 				"Yellow",
@@ -375,7 +375,7 @@ DoPlanetaryAnalysis (SYSTEM_INFO *SysInfoPtr, PLANET_DESC *pPlanetDesc)
 				"Blue",
 				"White",
 				};
-		BYTE SizeName[3][12] = {
+		uqm::BYTE SizeName[3][12] = {
 				"Dwarf",
 				"Giant",
 				"Supergiant",
@@ -390,7 +390,7 @@ DoPlanetaryAnalysis (SYSTEM_INFO *SysInfoPtr, PLANET_DESC *pPlanetDesc)
 #endif /* DEBUG_PLANET_CALC */
 
 	{
-		SIZE radius;
+		uqm::SIZE radius;
 
 		SysInfoPtr->PlanetInfo.PlanDataPtr =
 				&PlanData[pPlanetDesc->data_index & ~PLANET_SHIELDED];
@@ -465,7 +465,7 @@ DoPlanetaryAnalysis (SYSTEM_INFO *SysInfoPtr, PLANET_DESC *pPlanetDesc)
 		SysInfoPtr->PlanetInfo.LifeChance = CalcLifeChance (&SysInfoPtr->PlanetInfo);
 
 #ifdef DEBUG_PLANET_CALC
-		radius = (SIZE)((DWORD)UNSCALE_RADIUS (radius) * 100 / UNSCALE_RADIUS (EARTH_RADIUS));
+		radius = (uqm::SIZE)((uqm::DWORD)UNSCALE_RADIUS (radius) * 100 / UNSCALE_RADIUS (EARTH_RADIUS));
 		log_add (log_Debug, "\tOrbital Distance   : %d.%02d AU", radius / 100, radius % 100);
 		//log_add (log_Debug, "\tPlanetary Mass : %d.%02d Earth masses",
 		// SysInfoPtr->PlanetInfo.PlanetMass / 100,

@@ -133,42 +133,42 @@ luaUqm_state_open(lua_State *luaState) {
 // for the race given as a string on stack position [1].
 // If it does not exist, -1 is returned and a warning is printed.
 // [1] -> string raceIdStr
-static COUNT
+static uqm::COUNT
 testRaceId(lua_State *luaState, int argn) {
 	const char *raceIdStr = luaL_checkstring(luaState, argn);
-	COUNT raceId = RaceIdStrToIndex(raceIdStr);
-	if (raceId == (COUNT) -1) {
+	uqm::COUNT raceId = RaceIdStrToIndex(raceIdStr);
+	if (raceId == (uqm::COUNT) -1) {
 		// TODO: print script file name.
 		log_add(log_Error, "[script] Warning: testRaceId(): No race exists "
 				"with id '%s'.", raceIdStr);
-		return (COUNT) -1;
+		return (uqm::COUNT) -1;
 	}
 
-	return (COUNT) raceId;
+	return (uqm::COUNT) raceId;
 }
 
 // Helper function. Returns an index for the ship in the avail_race_q
 // for the ship given as a string on stack position [1].
 // If it does not exist, -1 is returned and a warning is printed.
 // [1] -> string shipIdStr
-static COUNT
+static uqm::COUNT
 testShipId(lua_State *luaState, int argn) {
 	const char *shipIdStr = luaL_checkstring(luaState, argn);
-	COUNT shipId = ShipIdStrToIndex(shipIdStr);
-	if (shipId == (COUNT) -1) {
+	uqm::COUNT shipId = ShipIdStrToIndex(shipIdStr);
+	if (shipId == (uqm::COUNT) -1) {
 		// TODO: print script file name.
 		log_add(log_Error, "[script] Warning: testShipId(): No ship exists "
 				"with id '%s'.", shipIdStr);
-		return (COUNT) -1;
+		return (uqm::COUNT) -1;
 	}
 
-	return (COUNT) shipId;
+	return (uqm::COUNT) shipId;
 }
 
 #if 0
 // Pushes the string, or nil if the string is not known.
 static void
-pushRaceId(lua_State *luaState, COUNT raceId) {
+pushRaceId(lua_State *luaState, uqm::COUNT raceId) {
 	const char *raceIdStr = raceIdNumToStr(raceId);
 	if (raceIdStr != NULL) {
 		lua_pushstring(luaState, raceIdStr);
@@ -202,12 +202,12 @@ luaUqm_state_clock_getDate(lua_State *luaState) {
 // [2] -> int count
 static int
 luaUqm_state_escort_addShips(lua_State *luaState) {
-	COUNT shipId;
+	uqm::COUNT shipId;
 	int count;
 	int numAdded;
 
 	shipId = testShipId(luaState, 1);
-	if (shipId == (COUNT) -1) {
+	if (shipId == (uqm::COUNT) -1) {
 		lua_pushboolean(luaState, false);
 		return 1;
 	}
@@ -222,11 +222,11 @@ luaUqm_state_escort_addShips(lua_State *luaState) {
 // [1] -> string shipIdStr
 static int
 luaUqm_state_escort_canAddShips(lua_State *luaState) {
-	COUNT shipId;
+	uqm::COUNT shipId;
 	int result;
 
 	shipId = testShipId(luaState, 1);
-	if (shipId == (COUNT) -1) {
+	if (shipId == (uqm::COUNT) -1) {
 		lua_pushboolean(luaState, false);
 		return 1;
 	}
@@ -240,11 +240,11 @@ luaUqm_state_escort_canAddShips(lua_State *luaState) {
 // [2] -> int count
 static int
 luaUqm_state_escort_removeShips(lua_State *luaState) {
-	COUNT shipId;
+	uqm::COUNT shipId;
 	int numRemoved;
 
 	shipId = testShipId(luaState, 1);
-	if (shipId == (COUNT) -1) {
+	if (shipId == (uqm::COUNT) -1) {
 		lua_pushboolean(luaState, false);
 		return 1;
 	}
@@ -263,11 +263,11 @@ luaUqm_state_escort_removeShips(lua_State *luaState) {
 // [1] -> string shipIdStr
 static int
 luaUqm_state_escort_shipCount(lua_State *luaState) {
-	COUNT shipId;
+	uqm::COUNT shipId;
 	int result;
 
 	shipId = testShipId(luaState, 1);
-	if (shipId == (COUNT) -1) {
+	if (shipId == (uqm::COUNT) -1) {
 		lua_pushboolean(luaState, false);
 		return 1;
 	}
@@ -280,7 +280,7 @@ luaUqm_state_escort_shipCount(lua_State *luaState) {
 // No arguments
 static int
 luaUqm_state_escort_totalValue(lua_State *luaState) {
-	COUNT result = CalculateEscortsWorth();
+	uqm::COUNT result = CalculateEscortsWorth();
 	lua_pushinteger(luaState, result);
 	return 1;
 }
@@ -290,11 +290,11 @@ luaUqm_state_escort_totalValue(lua_State *luaState) {
 // [1] -> string raceIdStr
 static int
 luaUqm_state_race_isAlive(lua_State *luaState) {
-	COUNT raceId;
+	uqm::COUNT raceId;
 	bool result;
 
 	raceId = testRaceId(luaState, 1);
-	if (raceId == (COUNT) -1) {
+	if (raceId == (uqm::COUNT) -1) {
 		lua_pushboolean(luaState, false);
 		return 1;
 	}
@@ -307,11 +307,11 @@ luaUqm_state_race_isAlive(lua_State *luaState) {
 // [1] -> string raceIdStr
 static int
 luaUqm_state_race_isAllied(lua_State *luaState) {
-	COUNT raceId;
+	uqm::COUNT raceId;
 	bool result;
 
 	raceId = testRaceId(luaState, 1);
-	if (raceId == (COUNT) -1) {
+	if (raceId == (uqm::COUNT) -1) {
 		lua_pushboolean(luaState, false);
 		return 1;
 	}
@@ -325,11 +325,11 @@ luaUqm_state_race_isAllied(lua_State *luaState) {
 // Note that if a race has no SoI, this function will return false.
 static int
 luaUqm_state_race_isKnown(lua_State *luaState) {
-	COUNT raceId;
+	uqm::COUNT raceId;
 	bool result;
 
 	raceId = testRaceId(luaState, 1);
-	if (raceId == (COUNT) -1) {
+	if (raceId == (uqm::COUNT) -1) {
 		lua_pushboolean(luaState, false);
 		return 1;
 	}
@@ -343,12 +343,12 @@ luaUqm_state_race_isKnown(lua_State *luaState) {
 // [2] -> boolean flag
 static int
 luaUqm_state_race_setAlive(lua_State *luaState) {
-	COUNT raceId;
+	uqm::COUNT raceId;
 	int flag;
 	bool result;
 
 	raceId = testRaceId(luaState, 1);
-	if (raceId == (COUNT) -1) {
+	if (raceId == (uqm::COUNT) -1) {
 		lua_pushboolean(luaState, false);
 		return 1;
 	}
@@ -370,12 +370,12 @@ luaUqm_state_race_setAlive(lua_State *luaState) {
 // [2] -> boolean flag
 static int
 luaUqm_state_race_setAllied(lua_State *luaState) {
-	COUNT raceId;
+	uqm::COUNT raceId;
 	int flag;
 	bool result;
 
 	raceId = testRaceId(luaState, 1);
-	if (raceId == (COUNT) -1) {
+	if (raceId == (uqm::COUNT) -1) {
 		lua_pushboolean(luaState, false);
 		return 1;
 	}
@@ -391,12 +391,12 @@ luaUqm_state_race_setAllied(lua_State *luaState) {
 // [2] -> boolean flag
 static int
 luaUqm_state_race_setKnown(lua_State *luaState) {
-	COUNT raceId;
+	uqm::COUNT raceId;
 	int flag;
 	bool result;
 
 	raceId = testRaceId(luaState, 1);
-	if (raceId == (COUNT) -1) {
+	if (raceId == (uqm::COUNT) -1) {
 		lua_pushboolean(luaState, false);
 		return 1;
 	}
@@ -420,8 +420,8 @@ luaUqm_state_race_setKnown(lua_State *luaState) {
 static int
 luaUqm_state_sis_addCrew(lua_State *luaState) {
 	int delta;
-	COUNT oldCrew;
-	COUNT newCrew;
+	uqm::COUNT oldCrew;
+	uqm::COUNT newCrew;
 	
 	delta = luaL_checkint(luaState, 1);
 
@@ -437,8 +437,8 @@ luaUqm_state_sis_addCrew(lua_State *luaState) {
 static int
 luaUqm_state_sis_addFuel(lua_State *luaState) {
 	int delta;
-	COUNT oldFuel;
-	COUNT newFuel;
+	uqm::COUNT oldFuel;
+	uqm::COUNT newFuel;
 	
 	delta = luaL_checkint(luaState, 1);
 
@@ -481,8 +481,8 @@ luaUqm_state_sis_addLanders(lua_State *luaState) {
 static int
 luaUqm_state_sis_addResUnits(lua_State *luaState) {
 	int delta;
-	COUNT oldResUnits;
-	COUNT newResUnits;
+	uqm::COUNT oldResUnits;
+	uqm::COUNT newResUnits;
 	
 	delta = luaL_checkint(luaState, 1);
 

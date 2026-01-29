@@ -803,7 +803,7 @@ const char* gameStateBitMapRevTag[] = {
 
 // XXX: these should handle endian conversions later
 static inline void
-write_8 (void *fp, BYTE v)
+write_8 (void *fp, uqm::BYTE v)
 {
 	if (io_ok)
 		if (WriteResFile (&v, 1, 1, (uio_Stream*)fp) != 1)
@@ -811,23 +811,23 @@ write_8 (void *fp, BYTE v)
 }
 
 static inline void
-write_16 (void *fp, UWORD v)
+write_16 (void *fp, uqm::UWORD v)
 {
-	write_8 (fp, (BYTE)( v        & 0xff));
-	write_8 (fp, (BYTE)((v >>  8) & 0xff));
+	write_8 (fp, (uqm::BYTE)( v        & 0xff));
+	write_8 (fp, (uqm::BYTE)((v >>  8) & 0xff));
 }
 
 static inline void
-write_32 (void *fp, DWORD v)
+write_32 (void *fp, uqm::DWORD v)
 {
-	write_8 (fp, (BYTE)( v        & 0xff));
-	write_8 (fp, (BYTE)((v >>  8) & 0xff));
-	write_8 (fp, (BYTE)((v >> 16) & 0xff));
-	write_8 (fp, (BYTE)((v >> 24) & 0xff));
+	write_8 (fp, (uqm::BYTE)( v        & 0xff));
+	write_8 (fp, (uqm::BYTE)((v >>  8) & 0xff));
+	write_8 (fp, (uqm::BYTE)((v >> 16) & 0xff));
+	write_8 (fp, (uqm::BYTE)((v >> 24) & 0xff));
 }
 
 static inline void
-write_a8 (void *fp, const BYTE *ar, COUNT count)
+write_a8 (void *fp, const uqm::BYTE *ar, uqm::COUNT count)
 {
 	if (io_ok)
 		if (WriteResFile (ar, 1, count, (uio_Stream*)fp) != count)
@@ -835,14 +835,14 @@ write_a8 (void *fp, const BYTE *ar, COUNT count)
 }
 
 static inline void
-write_str (void *fp, const char *str, COUNT count)
+write_str (void *fp, const char *str, uqm::COUNT count)
 {
 	// no type conversion needed for strings
-	write_a8 (fp, (const BYTE *)str, count);
+	write_a8 (fp, (const uqm::BYTE *)str, count);
 }
 
 static inline void
-write_a16 (void *fp, const UWORD *ar, COUNT count)
+write_a16 (void *fp, const uqm::UWORD *ar, uqm::COUNT count)
 {
 	for ( ; count > 0; --count, ++ar)
 	{
@@ -853,9 +853,9 @@ write_a16 (void *fp, const UWORD *ar, COUNT count)
 }
 
 static void
-SaveShipQueue (uio_Stream *fh, QUEUE *pQueue, DWORD tag)
+SaveShipQueue (uio_Stream *fh, QUEUE *pQueue, uqm::DWORD tag)
 {
-	COUNT num_links;
+	uqm::COUNT num_links;
 	HSHIPFRAG hStarShip;
 
 	num_links = CountLinks (pQueue);
@@ -870,7 +870,7 @@ SaveShipQueue (uio_Stream *fh, QUEUE *pQueue, DWORD tag)
 	{
 		HSHIPFRAG hNextShip;
 		SHIP_FRAGMENT *FragPtr;
-		COUNT Index;
+		uqm::COUNT Index;
 
 		FragPtr = LockShipFrag (pQueue, hStarShip);
 		hNextShip = _GetSuccLink (FragPtr);
@@ -897,7 +897,7 @@ SaveShipQueue (uio_Stream *fh, QUEUE *pQueue, DWORD tag)
 static void
 SaveRaceQueue (uio_Stream *fh, QUEUE *pQueue)
 {
-	COUNT num_links;
+	uqm::COUNT num_links;
 	HFLEETINFO hFleet;
 
 	num_links = CountLinks (pQueue);
@@ -912,7 +912,7 @@ SaveRaceQueue (uio_Stream *fh, QUEUE *pQueue)
 	{
 		HFLEETINFO hNextFleet;
 		FLEET_INFO *FleetPtr;
-		COUNT Index;
+		uqm::COUNT Index;
 
 		FleetPtr = LockFleetInfo (pQueue, hFleet);
 		hNextFleet = _GetSuccLink (FleetPtr);
@@ -950,7 +950,7 @@ static void
 SaveGroupQueue (uio_Stream *fh, QUEUE *pQueue)
 {
 	HIPGROUP hGroup, hNextGroup;
-	COUNT num_links;
+	uqm::COUNT num_links;
 
 	num_links = CountLinks (pQueue);
 	if (num_links == 0)
@@ -983,7 +983,7 @@ SaveGroupQueue (uio_Stream *fh, QUEUE *pQueue)
 static void
 SaveEncounters (uio_Stream *fh)
 {
-	COUNT num_links;
+	uqm::COUNT num_links;
 	HENCOUNTER hEncounter;
 	num_links = CountLinks (&GLOBAL (encounter_q));
 	if (num_links == 0)
@@ -996,7 +996,7 @@ SaveEncounters (uio_Stream *fh)
 	{
 		HENCOUNTER hNextEncounter;
 		ENCOUNTER *EncounterPtr;
-		COUNT i;
+		uqm::COUNT i;
 
 		LockEncounter (hEncounter, &EncounterPtr);
 		hNextEncounter = GetSuccEncounter (EncounterPtr);
@@ -1035,7 +1035,7 @@ SaveEncounters (uio_Stream *fh)
 static void
 SaveEvents (uio_Stream *fh)
 {
-	COUNT num_links;
+	uqm::COUNT num_links;
 	HEVENT hEvent;
 	num_links = CountLinks (&GLOBAL (GameClock.event_q));
 	if (num_links == 0)
@@ -1079,9 +1079,9 @@ SaveClockState (const CLOCK_STATE *ClockPtr, uio_Stream *fh)
 static bool
 SaveGameState (const GAME_STATE *GSPtr, uio_Stream *fh)
 {
-	BYTE res_scale;
+	uqm::BYTE res_scale;
 
-	if (LOBYTE (GSPtr->CurrentActivity) != IN_INTERPLANETARY)
+	if (lowByte (GSPtr->CurrentActivity) != IN_INTERPLANETARY)
 		res_scale = RESOLUTION_FACTOR;
 	else
 		res_scale = 0;
@@ -1129,7 +1129,7 @@ SaveGameState (const GAME_STATE *GSPtr, uio_Stream *fh)
 		if (serialiseGameState (gameStateBitMap, &buf, &bufSize))
 		{
 			write_32  (fh, bufSize);
-			write_a8  (fh, buf, (COUNT)bufSize);
+			write_a8  (fh, buf, (uqm::COUNT)bufSize);
 			HFree(buf);
 		}
 		else
@@ -1186,7 +1186,7 @@ SaveSummary (const SUMMARY_DESC *SummPtr, void *fp)
 	write_a8 (fp, SummPtr->ShipList, MAX_BUILT_SHIPS);
 	write_a8 (fp, SummPtr->DeviceList, MAX_EXCLUSIVE_DEVICES);
 	write_8  (fp, SummPtr->res_factor);
-	write_a8 (fp, (BYTE *) SummPtr->SaveName, (COUNT)strlen (SummPtr->SaveName));
+	write_a8 (fp, (uqm::BYTE *) SummPtr->SaveName, (uqm::COUNT)strlen (SummPtr->SaveName));
 }
 
 /* Save the Star Description chunk. This is not to be confused with
@@ -1210,7 +1210,7 @@ PrepareSummary (SUMMARY_DESC *SummPtr, const char *name)
 {
 	SummPtr->SS = GlobData.SIS_state;
 
-	SummPtr->Activity = LOBYTE (GLOBAL (CurrentActivity));
+	SummPtr->Activity = lowByte (GLOBAL (CurrentActivity));
 	switch (SummPtr->Activity)
 	{
 		case IN_HYPERSPACE:
@@ -1221,7 +1221,7 @@ PrepareSummary (SUMMARY_DESC *SummPtr, const char *name)
 			// Get a better planet name for summary
 			GetPlanetOrMoonName (SummPtr->SS.PlanetName,
 					sizeof (SummPtr->SS.PlanetName));
-			if (GET_GAME_STATE (GLOBAL_FLAGS_AND_DATA) == (BYTE)~0)
+			if (GET_GAME_STATE (GLOBAL_FLAGS_AND_DATA) == (uqm::BYTE)~0)
 				SummPtr->Activity = IN_STARBASE;
 			else if (playerInPlanetOrbit ())
 				SummPtr->Activity = IN_PLANET_ORBIT;
@@ -1274,9 +1274,9 @@ SaveProblemMessage (STAMP *MsgStamp)
 {
 #define MAX_MSG_LINES 1
 	RECT r = {{0, 0}, {0, 0}};
-	COUNT i;
+	uqm::COUNT i;
 	TEXT t;
-	CHAR_T *ppStr[MAX_MSG_LINES];
+	uqm::CHAR_T *ppStr[MAX_MSG_LINES];
 
 	// TODO: This should probably just use DoPopupWindow()
 
@@ -1293,7 +1293,7 @@ SaveProblemMessage (STAMP *MsgStamp)
 		t.pStr = ppStr[i];
 		if (*t.pStr == '\0')
 			break;
-		t.CharCount = (COUNT)~0;
+		t.CharCount = (uqm::COUNT)~0;
 		TextRect (&t, &tr, NULL);
 		if (i == 0)
 			r = tr;
@@ -1323,7 +1323,7 @@ SaveProblemMessage (STAMP *MsgStamp)
 		t.pStr = ppStr[i];
 		if (*t.pStr == '\0')
 			break;
-		t.CharCount = (COUNT)~0;
+		t.CharCount = (uqm::COUNT)~0;
 		font_DrawText (&t);
 		t.baseline.y += 11;
 	}
@@ -1369,7 +1369,7 @@ SaveStarInfo (uio_Stream *fh)
 	fp = OpenStateFile (STARINFO_FILE, "rb");
 	if (fp)
 	{
-		DWORD flen = LengthStateFile (fp);
+		uqm::DWORD flen = LengthStateFile (fp);
 		if (flen % 4)
 		{
 			log_add (log_Warning, "Unexpected Star Info length! Expected "
@@ -1381,7 +1381,7 @@ SaveStarInfo (uio_Stream *fh)
 			write_32 (fh, flen);
 			while (flen)
 			{
-				DWORD val;
+				uqm::DWORD val;
 				sread_32 (fp, &val);
 				write_32 (fh, val);
 				flen -= 4;
@@ -1392,17 +1392,17 @@ SaveStarInfo (uio_Stream *fh)
 }
 
 static void
-SaveBattleGroup (GAME_STATE_FILE *fp, DWORD encounter_id, DWORD grpoffs,
+SaveBattleGroup (GAME_STATE_FILE *fp, uqm::DWORD encounter_id, uqm::DWORD grpoffs,
 		uio_Stream *fh)
 {
 	GROUP_HEADER h;
-	DWORD size = 12;
+	uqm::DWORD size = 12;
 	int i;
 	SeekStateFile (fp, grpoffs, SEEK_SET);
 	ReadGroupHeader (fp, &h);
 	for (i = 1; i <= h.NumGroups; ++i)
 	{
-		BYTE NumShips;
+		uqm::BYTE NumShips;
 		SeekStateFile (fp, h.GroupOffset[i], SEEK_SET);
 		sread_8 (fp, NULL);
 		sread_8 (fp, &NumShips);
@@ -1421,7 +1421,7 @@ SaveBattleGroup (GAME_STATE_FILE *fp, DWORD encounter_id, DWORD grpoffs,
 	for (i = 1; i <= h.NumGroups; ++i)
 	{
 		int j;
-		BYTE b;
+		uqm::BYTE b;
 		SeekStateFile (fp, h.GroupOffset[i], SEEK_SET);
 		sread_8 (fp, &b); // Group race icon
 		write_8 (fh, b);
@@ -1429,7 +1429,7 @@ SaveBattleGroup (GAME_STATE_FILE *fp, DWORD encounter_id, DWORD grpoffs,
 		write_8 (fh, b);
 		for (j = 0; j < b; ++j)
 		{
-			BYTE race_outer;
+			uqm::BYTE race_outer;
 			SHIP_FRAGMENT sf;
 			sread_8 (fp, &race_outer);
 			ReadShipFragment (fp, &sf);
@@ -1445,7 +1445,7 @@ SaveBattleGroup (GAME_STATE_FILE *fp, DWORD encounter_id, DWORD grpoffs,
 	}
 }
 
-static DWORD
+static uqm::DWORD
 GetBattleGroupOffset (int encounterIndex)
 {
 	// The reason for this switch, even though the group offsets are
@@ -1482,7 +1482,7 @@ SaveGroups (uio_Stream *fh)
 	if (fp && LengthStateFile (fp) > 0)
 	{
 		GROUP_HEADER h;
-		BYTE lastenc, count;
+		uqm::BYTE lastenc, count;
 		int i;
 		ReadGroupHeader (fp, &h);
 		/* Group List */
@@ -1494,7 +1494,7 @@ SaveGroups (uio_Stream *fh)
 		write_8 (fh, lastenc);
 		for (i = 0; i < count; ++i)
 		{
-			BYTE race_outer;
+			uqm::BYTE race_outer;
 			IP_GROUP ip;
 			sread_8 (fp, &race_outer);
 			ReadIpGroup (fp, &ip);
@@ -1520,7 +1520,7 @@ SaveGroups (uio_Stream *fh)
 		int encounter_index;
 		for (encounter_index = 1; encounter_index < 15; encounter_index++)
 		{
-			DWORD grpoffs = GetBattleGroupOffset (encounter_index);
+			uqm::DWORD grpoffs = GetBattleGroupOffset (encounter_index);
 			if (grpoffs)
 			{
 				SaveBattleGroup (fp, encounter_index, grpoffs, fh);
@@ -1533,7 +1533,7 @@ SaveGroups (uio_Stream *fh)
 // This function first writes to a memory file, and then writes the whole
 // lot to the actual save file at once.
 bool
-SaveGame (COUNT which_game, SUMMARY_DESC *SummPtr, const char *name)
+SaveGame (uqm::COUNT which_game, SUMMARY_DESC *SummPtr, const char *name)
 {
 	uio_Stream *out_fp;
 	POINT pt;
@@ -1547,7 +1547,7 @@ SaveGame (COUNT which_game, SUMMARY_DESC *SummPtr, const char *name)
 	// XXX: Backup: SaveFlagshipState() overwrites ip_location
 	pt = GLOBAL (ip_location);
 	SaveFlagshipState ();
-	if (LOBYTE (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY
+	if (lowByte (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY
 			&& !(GLOBAL (CurrentActivity)
 			& (START_ENCOUNTER | START_INTERPLANETARY)))
 		PutGroupInfo (GROUPS_RANDOM, GROUP_SAVE_IP);
@@ -1580,7 +1580,7 @@ SaveGame (COUNT which_game, SUMMARY_DESC *SummPtr, const char *name)
 			if (GLOBAL (CurrentActivity) & START_ENCOUNTER)
 				SaveShipQueue (out_fp, &GLOBAL (npc_built_ship_q),
 						NPC_SHIP_Q_TAG);
-			else if (LOBYTE (GLOBAL (CurrentActivity))
+			else if (lowByte (GLOBAL (CurrentActivity))
 					== IN_INTERPLANETARY)
 				// XXX: Technically, this queue does not need to be
 				//   saved/loaded at all. IP groups will be reloaded

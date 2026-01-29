@@ -170,9 +170,9 @@ struct FlashContext {
 	bool isPulsing;
 
 	FRAME *cache;
-	COUNT cacheSize;
+	uqm::COUNT cacheSize;
 
-	COUNT lastFrameIndex;
+	uqm::COUNT lastFrameIndex;
 			// Last frame drawn; used to determine whether a frame needs to
 			// be redawn. If a cache is used, this is the index in the cache.
 			// If no cache is used, this is either 0, 1, or 2, for
@@ -216,8 +216,8 @@ void Flash_setOverlay(FlashContext *context, const POINT *origin,
 		FRAME overlay, bool cleanup); 
 void Flash_preUpdate (FlashContext *context);
 void Flash_postUpdate (FlashContext *context);
-void Flash_setCacheSize (FlashContext *context, COUNT size);
-COUNT Flash_getCacheSize (const FlashContext *context);
+void Flash_setCacheSize (FlashContext *context, uqm::COUNT size);
+uqm::COUNT Flash_getCacheSize (const FlashContext *context);
 void Flash_UpdateOriginal (FlashContext *context);
 
 

@@ -65,8 +65,8 @@ void setBattleStateConnections(struct battlestate_struct *bs);
 BATTLE_INPUT_STATE networkBattleInput(NetworkInputContext *context,
 		STARSHIP *StarShipPtr);
 
-NetConnection *openPlayerNetworkConnection(COUNT player, void *extra);
-void closePlayerNetworkConnection(COUNT player);
+NetConnection *openPlayerNetworkConnection(uqm::COUNT player, void *extra);
+void closePlayerNetworkConnection(uqm::COUNT player);
 
 bool setupInputDelay(size_t localInputDelay);
 bool setStateConnections(NetState state);

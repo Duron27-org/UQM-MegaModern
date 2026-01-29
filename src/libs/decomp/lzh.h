@@ -41,24 +41,24 @@
 
 struct _LZHCODE_DESC
 {
-	COUNT buf_index, restart_index, bytes_left;
-	BYTE text_buf[N + F - 1];
+	uqm::COUNT buf_index, restart_index, bytes_left;
+	uqm::BYTE text_buf[N + F - 1];
 		/* reconstruct freq tree */
-	COUNT freq[T + 1]; /* cumulative freq table */
+	uqm::COUNT freq[T + 1]; /* cumulative freq table */
 		/*
 		 * pointing parent nodes.
 		 * area [T..(T + N_CHAR - 1)] are pointers for leaves
 		 */
-	COUNT prnt[T + N_CHAR];
+	uqm::COUNT prnt[T + N_CHAR];
 		/* pointing children nodes (son[], son[] + 1)*/
-	COUNT son[T];
-	UWORD workbuf;
-	BYTE workbuflen;
+	uqm::COUNT son[T];
+	uqm::UWORD workbuf;
+	uqm::BYTE workbuflen;
 
 	STREAM_TYPE StreamType;
 
 	void *Stream;
-	DWORD StreamIndex, StreamLength;
+	uqm::DWORD StreamIndex, StreamLength;
 
 	STREAM_MODE StreamMode;
 	PVOIDFUNC CleanupFunc;
@@ -72,20 +72,20 @@ typedef LZHCODE_DESC *PLZHCODE_DESC;
 								(int)*_Stream++)
 #define OutChar(c) (_StreamType == FILE_STREAM ? \
 								PutResFileChar ((c), (uio_Stream *)_Stream) : \
-								(*_Stream++ = (BYTE)(c)))
+								(*_Stream++ = (uqm::BYTE)(c)))
 
 
 #define AllocCodeDesc() HCalloc (sizeof (LZHCODE_DESC))
 #define FreeCodeDesc HFree
 
-extern void _update (COUNT c);
+extern void _update (uqm::COUNT c);
 extern void StartHuff (void);
 
 extern PLZHCODE_DESC  _lpCurCodeDesc;
 extern STREAM_TYPE    _StreamType;
-extern BYTE*          _Stream;
-extern UWORD          _workbuf;
-extern BYTE           _workbuflen;
+extern uqm::BYTE*          _Stream;
+extern uqm::UWORD          _workbuf;
+extern uqm::BYTE           _workbuflen;
 
 #endif /* LIBS_DECOMP_LZH_H_ */
 

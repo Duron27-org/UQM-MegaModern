@@ -20,7 +20,7 @@
 #include "libs/compiler.h"
 
 #if defined (NETPLAY)
-typedef DWORD BattleFrameCounter;
+typedef uqm::DWORD BattleFrameCounter;
 #endif
 
 #include "init.h"
@@ -37,17 +37,17 @@ typedef void (BattleFrameCallback) (void);
 typedef struct battlestate_struct {
 	bool (*InputFunc) (struct battlestate_struct *pInputState);
 	bool first_time;
-	DWORD NextTime;
+	uqm::DWORD NextTime;
 	BattleFrameCallback *frame_cb;
 } BATTLE_STATE;
 
-extern BYTE battle_counter[NUM_SIDES];
+extern uqm::BYTE battle_counter[NUM_SIDES];
 extern bool instantVictory;
 #if defined (NETPLAY)
 extern BattleFrameCounter battleFrameCount;
 #endif
 #ifdef NETPLAY
-COUNT GetPlayerOrder (COUNT i);
+uqm::COUNT GetPlayerOrder (uqm::COUNT i);
 #else
 #	define GetPlayerOrder(i) (i)
 #endif

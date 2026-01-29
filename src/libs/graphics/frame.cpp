@@ -106,7 +106,7 @@ DrawBatch (PRIMITIVE *lpBasePrim, PRIM_LINKS PrimLinks,
 
 	if (GraphicsSystemActive () && GetContextValidRect (&ValidRect, &origin))
 	{
-		COUNT CurIndex;
+		uqm::COUNT CurIndex;
 		PRIMITIVE *lpPrim;
 		DrawMode mode = _get_context_draw_mode ();
 
@@ -126,7 +126,7 @@ DrawBatch (PRIMITIVE *lpBasePrim, PRIM_LINKS PrimLinks,
 			PRIMITIVE *lpWorkPrim;
 			RECT ClipRect;
 			Color color;
-			BYTE flags;
+			uqm::BYTE flags;
 
 			lpPrim = &lpBasePrim[CurIndex];
 			PrimType = GetPrimType (lpPrim);
@@ -282,7 +282,7 @@ InstaFilledRect (int x, int y, int w, int h)
 }
 
 void
-DrawLine (LINE *lpLine, BYTE thickness)
+DrawLine (LINE *lpLine, uqm::BYTE thickness)
 {
 	POINT origin;
 

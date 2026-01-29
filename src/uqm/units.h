@@ -169,10 +169,10 @@ static inline constexpr auto chooseIfHd(const T& a, const T& b) -> const T&
 #define TRANSITION_WIDTH  (DISPLAY_TO_WORLD (SPACE_WIDTH) << MAX_VIS_REDUCTION)
 #define TRANSITION_HEIGHT (DISPLAY_TO_WORLD (SPACE_HEIGHT) << MAX_VIS_REDUCTION)
 
-// JMS_GFX: Changed from COORD to SDWORD and from COUNT to DWORD
-#define DISPLAY_ALIGN(x) ((SDWORD)(x)&~(SCALED_ONE-1))
-#define DISPLAY_ALIGN_X(x) ((SDWORD)((DWORD)(x)%LOG_SPACE_WIDTH)&~(SCALED_ONE-1))
-#define DISPLAY_ALIGN_Y(y) ((SDWORD)((DWORD)(y)%LOG_SPACE_HEIGHT)&~(SCALED_ONE-1))
+// JMS_GFX: Changed from COORD to uqm::SDWORD and from uqm::COUNT to uqm::DWORD
+#define DISPLAY_ALIGN(x) ((uqm::SDWORD)(x)&~(SCALED_ONE-1))
+#define DISPLAY_ALIGN_X(x) ((uqm::SDWORD)((uqm::DWORD)(x)%LOG_SPACE_WIDTH)&~(SCALED_ONE-1))
+#define DISPLAY_ALIGN_Y(y) ((uqm::SDWORD)((uqm::DWORD)(y)%LOG_SPACE_HEIGHT)&~(SCALED_ONE-1))
 
 #define MAX_X_UNIVERSE 9999
 #define MAX_Y_UNIVERSE 9999
@@ -219,29 +219,29 @@ static inline constexpr auto chooseIfHd(const T& a, const T& b) -> const T&
 
 #define UNIVERSE_UNITS_X (((MAX_X_UNIVERSE + 1) >> 4))
 #define UNIVERSE_UNITS_Y (((MAX_Y_UNIVERSE + 1) >> 4))
-#define LOG_UNITS_X      ((SDWORD)(UNIVERSE_UNITS_X * RES_SCALE (16)))
-#define LOG_UNITS_Y      ((SDWORD)(UNIVERSE_UNITS_Y * RES_SCALE (16)))
+#define LOG_UNITS_X      ((uqm::SDWORD)(UNIVERSE_UNITS_X * RES_SCALE (16)))
+#define LOG_UNITS_Y      ((uqm::SDWORD)(UNIVERSE_UNITS_Y * RES_SCALE (16)))
 
 #define ROUNDING_ERROR(div)  ((div) >> 1)
 
-static inline SDWORD
-logxToUniverse (SDWORD lx)
+static inline uqm::SDWORD
+logxToUniverse (uqm::SDWORD lx)
 {
-	return (SDWORD) ((lx * UNIVERSE_UNITS_X + ROUNDING_ERROR(LOG_UNITS_X))
+	return (uqm::SDWORD) ((lx * UNIVERSE_UNITS_X + ROUNDING_ERROR(LOG_UNITS_X))
 			/ LOG_UNITS_X);
 }
 #define LOGX_TO_UNIVERSE(lx) \
 		logxToUniverse (lx)
-static inline SDWORD
-logyToUniverse (SDWORD ly)
+static inline uqm::SDWORD
+logyToUniverse (uqm::SDWORD ly)
 {
-	return (SDWORD) (MAX_Y_UNIVERSE -
+	return (uqm::SDWORD) (MAX_Y_UNIVERSE -
 			((ly * UNIVERSE_UNITS_Y + ROUNDING_ERROR(LOG_UNITS_Y))
 			/ LOG_UNITS_Y));
 }
 #define LOGY_TO_UNIVERSE(ly) \
 		logyToUniverse (ly)
-static inline SDWORD
+static inline uqm::SDWORD
 universeToLogx (COORD ux)
 {
 	return (ux * LOG_UNITS_X + ROUNDING_ERROR(UNIVERSE_UNITS_X))
@@ -249,7 +249,7 @@ universeToLogx (COORD ux)
 }
 #define UNIVERSE_TO_LOGX(ux) \
 		universeToLogx (ux)
-static inline SDWORD
+static inline uqm::SDWORD
 universeToLogy (COORD uy)
 {
 	return ((MAX_Y_UNIVERSE - uy) * LOG_UNITS_Y
@@ -264,28 +264,28 @@ universeToLogy (COORD uy)
 #define SECTOR_WIDTH 195
 #define SECTOR_HEIGHT 25
 
-#define OLD_LOG_UNITS_X      ((SDWORD)(8192 >> 4) * SECTOR_WIDTH)
-#define OLD_LOG_UNITS_Y      ((SDWORD)(7680 >> 4) * SECTOR_HEIGHT)
+#define OLD_LOG_UNITS_X      ((uqm::SDWORD)(8192 >> 4) * SECTOR_WIDTH)
+#define OLD_LOG_UNITS_Y      ((uqm::SDWORD)(7680 >> 4) * SECTOR_HEIGHT)
 #define OLD_UNIVERSE_UNITS_X (((MAX_X_UNIVERSE + 1) >> 4) * 10)
 #define OLD_UNIVERSE_UNITS_Y (((MAX_Y_UNIVERSE + 1) >> 4))
 
-static inline SDWORD
-oldLogxToUniverse(SDWORD lx)
+static inline uqm::SDWORD
+oldLogxToUniverse(uqm::SDWORD lx)
 {
-	return (SDWORD)((lx * OLD_UNIVERSE_UNITS_X + ROUNDING_ERROR(OLD_LOG_UNITS_X))
+	return (uqm::SDWORD)((lx * OLD_UNIVERSE_UNITS_X + ROUNDING_ERROR(OLD_LOG_UNITS_X))
 		/ OLD_LOG_UNITS_X);
 }
 
-static inline SDWORD
-oldLogyToUniverse(SDWORD ly)
+static inline uqm::SDWORD
+oldLogyToUniverse(uqm::SDWORD ly)
 {
-	return (SDWORD)(MAX_Y_UNIVERSE -
+	return (uqm::SDWORD)(MAX_Y_UNIVERSE -
 		((ly * OLD_UNIVERSE_UNITS_Y + ROUNDING_ERROR(OLD_LOG_UNITS_Y))
 			/ OLD_LOG_UNITS_Y));
 }
 
-static inline SDWORD
-inBounds(SDWORD val, SDWORD min, SDWORD max)
+static inline uqm::SDWORD
+inBounds(uqm::SDWORD val, uqm::SDWORD min, uqm::SDWORD max)
 {
 	if (val < min)
 		return min;
@@ -307,8 +307,8 @@ inBounds(SDWORD val, SDWORD min, SDWORD max)
 										>>(CIRCLE_SHIFT-FACING_SHIFT))
 #define FACING_TO_ANGLE(f) ((f)<<(CIRCLE_SHIFT-FACING_SHIFT))
 
-#define NORMALIZE_ANGLE(a) ((DWORD)((a)&(FULL_CIRCLE-1)))
-#define NORMALIZE_FACING(f) ((DWORD)((f)&((1 << FACING_SHIFT)-1)))
+#define NORMALIZE_ANGLE(a) ((uqm::DWORD)((a)&(FULL_CIRCLE-1)))
+#define NORMALIZE_FACING(f) ((uqm::DWORD)((f)&((1 << FACING_SHIFT)-1)))
 
 #define DEGREES_TO_ANGLE(d) NORMALIZE_ANGLE((((d) % 360) * FULL_CIRCLE \
 				+ HALF_CIRCLE) / 360)
@@ -317,18 +317,18 @@ inBounds(SDWORD val, SDWORD min, SDWORD max)
 #define SIN_SHIFT 14
 #define SIN_SCALE (1 << SIN_SHIFT)
 #define INT_ADJUST(x) ((x)<<SIN_SHIFT)
-#define FLT_ADJUST(x) (SIZE)((x)*SIN_SCALE)
-#define UNADJUST(x) (SIZE)((x)>>SIN_SHIFT)
+#define FLT_ADJUST(x) (uqm::SIZE)((x)*SIN_SCALE)
+#define UNADJUST(x) (uqm::SIZE)((x)>>SIN_SHIFT)
 #define ROUND(x,y) ((x)+((x)>=0?((y)>>1):-((y)>>1)))
 
-extern SDWORD sinetab[];
+extern uqm::SDWORD sinetab[];
 #define SINVAL(a) sinetab[NORMALIZE_ANGLE(a)]
 #define COSVAL(a) SINVAL((a)+QUADRANT)
-#define SINE(a,m) ((SDWORD)((((long)SINVAL(a))*(long)(m))>>SIN_SHIFT))
+#define SINE(a,m) ((uqm::SDWORD)((((long)SINVAL(a))*(long)(m))>>SIN_SHIFT))
 #define COSINE(a,m) SINE((a)+QUADRANT,m)
-extern COUNT ARCTAN (SDWORD delta_x, SDWORD delta_y);
+extern uqm::COUNT ARCTAN (uqm::SDWORD delta_x, uqm::SDWORD delta_y);
 
-#define WRAP_VAL(v,w) ((DWORD)((v)<0?((v)+(w)):((v)>=(w)?((v)-(w)):(v))))
+#define WRAP_VAL(v,w) ((uqm::DWORD)((v)<0?((v)+(w)):((v)>=(w)?((v)-(w)):(v))))
 #define WRAP_X(x) WRAP_VAL(x,LOG_SPACE_WIDTH)
 #define WRAP_Y(y) WRAP_VAL(y,LOG_SPACE_HEIGHT)
 #define WRAP_DELTA_X(dx) ((dx)<0 ? \

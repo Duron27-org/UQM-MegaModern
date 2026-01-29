@@ -143,7 +143,7 @@ mountTempDir(const char *name) {
 void
 initTempDir (void) {
 	size_t len;
-	DWORD num;
+	uqm::DWORD num;
 	int i;
 	char *tempPtr;
 			// Pointer to the location in the tempDirName string where the
@@ -154,7 +154,7 @@ initTempDir (void) {
 			// reserve 8 chars for dirname, 1 for slash, and 12 for filename
 	len = strlen(tempDirName);
 
-	num = ((DWORD) time (NULL));
+	num = ((uqm::DWORD) time (NULL));
 //	num = GetTimeCounter () % 0xffffffff;
 	tempPtr = tempDirName + len;
 	for (i = 0; i < NUM_TEMP_RETRIES; i++)

@@ -36,7 +36,7 @@
 #include "starmap.h"
 
 void
-DrawStarConBox (RECT *pRect, SIZE BorderWidth, Color TopLeftColor,
+DrawStarConBox (RECT *pRect, uqm::SIZE BorderWidth, Color TopLeftColor,
 		Color BottomRightColor, bool FillInterior, Color InteriorColor,
 		bool CreateCorners, Color CornerColor)
 {
@@ -241,11 +241,11 @@ DrawRenderedBox (RECT *r, bool filled, Color fill_color, int type,
 }
 
 void
-DrawBorderPadding (DWORD videoWidth)
+DrawBorderPadding (uqm::DWORD videoWidth)
 {
 	RECT r;
 	CONTEXT OldContext;
-	UWORD safe_x =
+	uqm::UWORD safe_x =
 			(videoWidth && videoWidth < 280 ? SAFE_NEG (4) * 2 : SAFE_X);
 
 	if (!safe_x)
@@ -317,10 +317,10 @@ DrawRadarBorder (void)
 	SetContext (OldContext);
 }
 
-DWORD
+uqm::DWORD
 SeedRandomNumbers (void)
 {
-	DWORD cur_time;
+	uqm::DWORD cur_time;
 
 	cur_time = GetTimeCounter ();
 	TFB_SeedRandom (cur_time);
@@ -379,9 +379,9 @@ DrawPauseText (RECT *rect)
 	text.baseline.y += RES_SCALE (10);
 	text.align = ALIGN_CENTER;
 	text.pStr = AlignText (
-			(const CHAR_T *)GAME_STRING (QUITMENU_STRING_BASE + 4),
+			(const uqm::CHAR_T *)GAME_STRING (QUITMENU_STRING_BASE + 4),
 			&text.baseline.x);
-	text.CharCount = (COUNT)~0;
+	text.CharCount = (uqm::COUNT)~0;
 
 	font_DrawText (&text);
 
@@ -401,7 +401,7 @@ PauseGame (void)
 	RECT OldRect;
 	Color OldColor;
 	DrawMode mode, oldMode;
-	BYTE oldVolume;
+	uqm::BYTE oldVolume;
 	TimeCount deltaT;
 
 	if (ActivityFrame == 0
@@ -630,11 +630,11 @@ SleepGame (void)
 
 /* Returns the fuel requirement to get to Sol (in fuel units * 100)
  */
-DWORD
+uqm::DWORD
 get_fuel_to_sol (void)
 {
 	POINT pt;
-	DWORD f;
+	uqm::DWORD f;
 
 	pt.x = LOGX_TO_UNIVERSE (GLOBAL_SIS (log_x));
 	pt.y = LOGY_TO_UNIVERSE (GLOBAL_SIS (log_y));
@@ -645,7 +645,7 @@ get_fuel_to_sol (void)
 	pt.x -= plot_map[SOL_DEFINED].star_pt.x;
 	pt.y -= plot_map[SOL_DEFINED].star_pt.y;
 
-	f = (DWORD)((long)pt.x * pt.x + (long)pt.y * pt.y);
+	f = (uqm::DWORD)((long)pt.x * pt.x + (long)pt.y * pt.y);
 	if (f == 0 || GET_GAME_STATE (ARILOU_SPACE_SIDE) > 1)
 		return 0;
 	else
@@ -653,7 +653,7 @@ get_fuel_to_sol (void)
 }
 
 void
-DrawFlagStatDisplay (CHAR_T *str)
+DrawFlagStatDisplay (const uqm::CHAR_T *str)
 {
 	TEXT t;
 	RECT r;
@@ -678,16 +678,16 @@ DrawFlagStatDisplay (CHAR_T *str)
 	t.baseline.y = r.corner.y + RES_SCALE (7);
 	t.align = ALIGN_CENTER;
 	t.pStr = str;
-	t.CharCount = (COUNT)~0;
+	t.CharCount = (uqm::COUNT)~0;
 	SetContextForeGroundColor (MODULE_SELECTED_COLOR);
 	font_DrawText (&t);
 }
 
-CHAR_T *
+uqm::CHAR_T *
 WholeFuelValue (void)
 {
-	static CHAR_T buf[7];
-	DWORD CoarseFuel = GLOBAL_SIS (FuelOnBoard);
+	static uqm::CHAR_T buf[7];
+	uqm::DWORD CoarseFuel = GLOBAL_SIS (FuelOnBoard);
 
 	double dblFuelOnBoard = (double)CoarseFuel / FUEL_TANK_SCALE;
 

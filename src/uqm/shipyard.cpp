@@ -102,9 +102,9 @@ typedef enum {
 static bool DoShipSpins;
 
 static bool stowed_q;			// Build queue or storage queue
-static BYTE currentStowShip = 0;	// Saves location in storage queue
-static COUNT stowCount = 0;			// Number of ships stowed
-static COUNT availableCount = 0;	// Number of ships available to purchase
+static uqm::BYTE currentStowShip = 0;	// Saves location in storage queue
+static uqm::COUNT stowCount = 0;			// Number of ships stowed
+static uqm::COUNT availableCount = 0;	// Number of ships available to purchase
 
 // This is all for drawing the DOS version modules menu
 #define SHIPS_ORG_Y       RES_SCALE (36)
@@ -124,25 +124,25 @@ static COUNT availableCount = 0;	// Number of ships available to purchase
 
 typedef struct
 {
-	CHAR_T ShipName[30];
-	COUNT ShipCost;
-	BYTE CrewLevel, MaxCrew;
+	uqm::CHAR_T ShipName[30];
+	uqm::COUNT ShipCost;
+	uqm::BYTE CrewLevel, MaxCrew;
 } SHIP_STATS;
 
 typedef struct
 {
-	COUNT count;		// Number of buildable ships in the list
-	COUNT topIndex;		// Index of the top ship displayed
+	uqm::COUNT count;		// Number of buildable ships in the list
+	uqm::COUNT topIndex;		// Index of the top ship displayed
 	SHIP_STATS ShipStats[NUM_BUILDABLE_SHIPS + MAX_STOWED_SHIPS];
 } SHIPS_STATE;
 
 SHIPS_STATE ShipState;
 
 // Count the ships in the stowed queue
-static COUNT
+static uqm::COUNT
 GetStowedShipCount (void)
 {
-	COUNT Index;
+	uqm::COUNT Index;
 	HSHIPFRAG hStarShip, hNextShip;
 
 	Index = 0;
@@ -160,14 +160,14 @@ GetStowedShipCount (void)
 	return Index;
 }
 
-COUNT ShipPoints (HFLEETINFO hFleet);
+uqm::COUNT ShipPoints (HFLEETINFO hFleet);
 
 static void
-DrawShipsStatus (COUNT index, COUNT pos, bool selected)
+DrawShipsStatus (uqm::COUNT index, uqm::COUNT pos, bool selected)
 {
 	RECT r;
 	TEXT t;
-	CHAR_T buf[10];
+	uqm::CHAR_T buf[10];
 
 	if (stowed_q)
 		index += NUM_BUILDABLE_SHIPS;
@@ -190,14 +190,14 @@ DrawShipsStatus (COUNT index, COUNT pos, bool selected)
 			(stowed_q ? CAPTAIN_NAME_TEXT_COLOR : MODULE_NAME_COLOR));
 	t.baseline.y = r.corner.y + TEXT_BASELINE;
 	t.pStr = ShipState.ShipStats[index].ShipName;
-	t.CharCount = (stowed_q ? (COUNT)~0 : utf8StringPos (t.pStr, ' '));
+	t.CharCount = (stowed_q ? (uqm::COUNT)~0 : utf8StringPos (t.pStr, ' '));
 	font_DrawText (&t);
 	if (!stowed_q)
 	{
 		// print second half of ship name
 		t.baseline.y += TEXT_SPACING_Y;
 		t.pStr = skipUTF8Chars (t.pStr, t.CharCount + 1);
-		t.CharCount = (COUNT)~0;
+		t.CharCount = (uqm::COUNT)~0;
 		font_DrawText (&t);
 	}
 	// print ship cost or fleet points
@@ -209,7 +209,7 @@ DrawShipsStatus (COUNT index, COUNT pos, bool selected)
 		t.baseline.y -= RES_SCALE (3);
 	snprintf (buf, sizeof (buf), "%u", ShipState.ShipStats[index].ShipCost);
 	t.pStr = buf;
-	t.CharCount = (COUNT)~0;
+	t.CharCount = (uqm::COUNT)~0;
 	font_DrawText (&t);
 	if (stowed_q)
 	{
@@ -219,7 +219,7 @@ DrawShipsStatus (COUNT index, COUNT pos, bool selected)
 				ShipState.ShipStats[index].CrewLevel,
 				ShipState.ShipStats[index].MaxCrew);
 		t.pStr = buf;
-		t.CharCount = (COUNT)~0;
+		t.CharCount = (uqm::COUNT)~0;
 		font_DrawText (&t);
 	}
 }
@@ -229,7 +229,7 @@ DrawShipsDisplay (SHIPS_STATE *shipState)
 {
 	TEXT t;
 	RECT r;
-	COUNT i;
+	uqm::COUNT i;
 
 	r.corner.x = RES_SCALE (2);
 	r.corner.y = RES_SCALE (20);
@@ -251,7 +251,7 @@ DrawShipsDisplay (SHIPS_STATE *shipState)
 	t.baseline.y = r.corner.y + RES_SCALE (7);
 	t.align = ALIGN_CENTER;
 	t.pStr = GAME_STRING (STARBASE_STRING_BASE + 10);
-	t.CharCount = (COUNT)~0;
+	t.CharCount = (uqm::COUNT)~0;
 	SetContextForeGroundColor (MODULE_SELECTED_COLOR);
 	font_DrawText (&t);
 
@@ -264,10 +264,10 @@ DrawShipsDisplay (SHIPS_STATE *shipState)
 	font_DrawText (&t);
 
 	// print names and costs
-	COUNT count = (stowed_q ? stowCount : shipState->count);
+	uqm::COUNT count = (stowed_q ? stowCount : shipState->count);
 	for (i = 0; i < MAX_VIS_MODULES; ++i)
 	{
-		COUNT modIndex = shipState->topIndex + i;
+		uqm::COUNT modIndex = shipState->topIndex + i;
 
 		if (modIndex >= count)
 			break;
@@ -277,10 +277,10 @@ DrawShipsDisplay (SHIPS_STATE *shipState)
 }
 
 static void
-DrawShips (SHIPS_STATE *shipState, COUNT NewItem)
+DrawShips (SHIPS_STATE *shipState, uqm::COUNT NewItem)
 {
 	CONTEXT OldContext = SetContext (StatusContext);
-	COUNT pos = NewItem - shipState->topIndex;
+	uqm::COUNT pos = NewItem - shipState->topIndex;
 
 	BatchGraphics ();
 
@@ -293,10 +293,10 @@ DrawShips (SHIPS_STATE *shipState, COUNT NewItem)
 }
 
 static void
-ManipulateShips (SIZE NewState)
+ManipulateShips (uqm::SIZE NewState)
 {
 	SHIPS_STATE *shipState;
-	SIZE NewTop;
+	uqm::SIZE NewTop;
 
 	if (!DOS_MENU)
 		return;
@@ -323,9 +323,9 @@ GetShipStats (SHIP_STATS *ship_stats, SPECIES_ID species_id)
 	MASTER_SHIP_INFO *ShipPtr = LockMasterShip (&master_q, hMasterShip);
 
 	snprintf (ship_stats->ShipName, sizeof (ship_stats->ShipName), "%s %s",
-			(CHAR_T *)GetStringAddress (SetAbsStringTableIndex (
+			(uqm::CHAR_T *)GetStringAddress (SetAbsStringTableIndex (
 					ShipPtr->ShipInfo.race_strings, 2)),
-			(CHAR_T *)GetStringAddress (SetAbsStringTableIndex (
+			(uqm::CHAR_T *)GetStringAddress (SetAbsStringTableIndex (
 					ShipPtr->ShipInfo.race_strings, 4))
 		);
 
@@ -346,7 +346,7 @@ GetStowedShipStats (SHIP_STATS *ship_stats, HSHIPFRAG hStowShip)
 	UnlockMasterShip (&master_q, hMasterShip);
 
 	snprintf (ship_stats->ShipName, sizeof (ship_stats->ShipName), "%s",
-			(CHAR_T *)GetStringAddress (SetAbsStringTableIndex
+			(uqm::CHAR_T *)GetStringAddress (SetAbsStringTableIndex
 			(StowShipPtr->race_strings, StowShipPtr->captains_name_index)));
 
 	ship_stats->CrewLevel = StowShipPtr->crew_level;
@@ -358,8 +358,8 @@ GetStowedShipStats (SHIP_STATS *ship_stats, HSHIPFRAG hStowShip)
 static void
 InventoryShips (SHIPS_STATE *ship_state)
 {
-	COUNT i;
-	SIZE ShipsOnBoard = 0;
+	uqm::COUNT i;
+	uqm::SIZE ShipsOnBoard = 0;
 
 	for (i = 0; i < NUM_BUILDABLE_SHIPS; ++i)
 	{
@@ -400,7 +400,7 @@ InventoryShips (SHIPS_STATE *ship_state)
 static void
 FillHangarX (void)
 {
-	BYTE i;
+	uqm::BYTE i;
 
 	for (i = 0; i < HANGAR_SHIPS_ROW; i++)
 	{
@@ -426,8 +426,8 @@ showRemainingCrew (void)
 {
 	RECT r;
 	TEXT t;
-	CHAR_T buf[30];
-	SIZE remaining_crew;
+	uqm::CHAR_T buf[30];
+	uqm::SIZE remaining_crew;
 #define INITIAL_CREW 2000
 
 	if (!DIF_HARD)
@@ -435,7 +435,7 @@ showRemainingCrew (void)
 
 	BatchGraphics ();
 
-	remaining_crew = INITIAL_CREW - (SIZE)MAKE_WORD (
+	remaining_crew = INITIAL_CREW - (uqm::SIZE)MAKE_WORD (
 			GET_GAME_STATE (CREW_PURCHASED0),
 			GET_GAME_STATE (CREW_PURCHASED1));
 	
@@ -455,7 +455,7 @@ showRemainingCrew (void)
 	t.baseline.x = r.corner.x;
 	t.baseline.y = r.corner.y + r.extent.height - RES_SCALE (1);
 	t.align = ALIGN_LEFT;
-	t.CharCount = (COUNT)~0;
+	t.CharCount = (uqm::COUNT)~0;
 	t.pStr = buf;
 	utf8StringCopy (
 			buf, sizeof (buf), GAME_STRING (STARBASE_STRING_BASE + 6));
@@ -486,34 +486,34 @@ showRemainingCrew (void)
 	UnbatchGraphics ();
 }
 
-COUNT
+uqm::COUNT
 ShipPoints (HFLEETINFO hFleet)
 {
 	if (!hFleet)
 		return 0;
 	FLEET_INFO *FleetPtr = LockFleetInfo (&GLOBAL (avail_race_q), hFleet);
 
-	COUNT shipCost = GetShipCostFromIndex (FindMasterShipIndex
+	uqm::COUNT shipCost = GetShipCostFromIndex (FindMasterShipIndex
 			(FleetPtr->SpeciesID));
 
 	UnlockFleetInfo (&GLOBAL (avail_race_q), hFleet);
 	return shipCost;
 }
 
-COUNT
-ShipCost (BYTE race_id)
+uqm::COUNT
+ShipCost (uqm::BYTE race_id)
 {
 	return ShipPoints (GetStarShipFromIndex
 			(&GLOBAL (avail_race_q), race_id)) * 100;
 }
 
-static SIZE
+static uqm::SIZE
 CalculateAllyPoints ()
 {
-	BYTE i;
+	uqm::BYTE i;
 	HFLEETINFO hFleet;
 	FLEET_INFO *FleetPtr;
-	SIZE MaxPoints = DIF_CASE (60, 90, 30);
+	uqm::SIZE MaxPoints = DIF_CASE (60, 90, 30);
 
 	for (i = ARILOU_SHIP; i <= LAST_MELEE_ID; i++)
 	{
@@ -537,10 +537,10 @@ CalculateAllyPoints ()
 /*
  * Returns the total point value of all the ships escorting the SIS.
  */
-COUNT
+uqm::COUNT
 CalculateEscortsPoints (void)
 {
-	COUNT total = 0;
+	uqm::COUNT total = 0;
 	HSHIPFRAG hStarShip, hNextShip;
 
 	for (hStarShip = GetHeadLink (&GLOBAL (built_ship_q));
@@ -576,9 +576,9 @@ showRemainingPoints (int delta)
 {
 	RECT r;
 	TEXT t;
-	CHAR_T buf[30];
-	SBYTE percentage_left;
-	SIZE FP = REMAINING_FP + delta;
+	uqm::CHAR_T buf[30];
+	uqm::SBYTE percentage_left;
+	uqm::SIZE FP = REMAINING_FP + delta;
 
 	if ((!optFleetPointSys && !DIF_HARD)
 			|| GET_GAME_STATE (CHMMR_BOMB_STATE) == 3)
@@ -601,7 +601,7 @@ showRemainingPoints (int delta)
 	// Draw remaining points
 	SetContextFont (TinyFont);
 	t.align = ALIGN_RIGHT;
-	t.CharCount = (COUNT)~0;
+	t.CharCount = (uqm::COUNT)~0;
 	t.pStr = buf;
 	sprintf (buf, "%d", FP);
 
@@ -695,10 +695,10 @@ on_input_frame (void)
 }
 
 // Count the ships which can be built by the player.
-static COUNT
+static uqm::COUNT
 GetAvailableRaceCount (void)
 {
-	COUNT Index;
+	uqm::COUNT Index;
 	HFLEETINFO hStarShip, hNextShip;
 
 	Index = 0;
@@ -720,7 +720,7 @@ GetAvailableRaceCount (void)
 }
 
 static HFLEETINFO
-GetAvailableRaceFromIndex (BYTE Index)
+GetAvailableRaceFromIndex (uqm::BYTE Index)
 {
 	HFLEETINFO hStarShip, hNextShip;
 
@@ -748,11 +748,11 @@ GetAvailableRaceFromIndex (BYTE Index)
 static void
 DrawShipyardShipText (RECT *r, int Index)
 {
-	CHAR_T race_name[64];
-	CHAR_T ship_name[64];
+	uqm::CHAR_T race_name[64];
+	uqm::CHAR_T ship_name[64];
 	FONT OldFont;
 	Color OldColor;
-	SIZE leading;
+	uqm::SIZE leading;
 	RECT block;
 	TEXT text;
 	COORD strip_align;
@@ -767,11 +767,11 @@ DrawShipyardShipText (RECT *r, int Index)
 	HMASTERSHIP hMasterShip = FindMasterShip (FleetPtr->SpeciesID);
 	MASTER_SHIP_INFO *ShipPtr = LockMasterShip (&master_q, hMasterShip);
 	utf8StringCopy ((char *)&race_name, sizeof (race_name),
-			(CHAR_T *)GetStringAddress (SetAbsStringTableIndex (
+			(uqm::CHAR_T *)GetStringAddress (SetAbsStringTableIndex (
 			ShipPtr->ShipInfo.race_strings,
 			GetStringTableCount (ShipPtr->ShipInfo.race_strings) - 3)));
 	utf8StringCopy ((char *)&ship_name, sizeof (ship_name),
-			(CHAR_T *)GetStringAddress (SetAbsStringTableIndex (
+			(uqm::CHAR_T *)GetStringAddress (SetAbsStringTableIndex (
 			ShipPtr->ShipInfo.race_strings,
 			GetStringTableCount (ShipPtr->ShipInfo.race_strings) - 2)));
 	UnlockFleetInfo (&GLOBAL (avail_race_q), hStarShip);
@@ -800,14 +800,14 @@ DrawShipyardShipText (RECT *r, int Index)
 	strip_align = text.baseline.x;
 
 	// Actually we don't want to align, we just want to strip the alignment
-	text.pStr = AlignText ((const CHAR_T*)&race_name, &strip_align);
-	text.CharCount = (COUNT)~0;
+	text.pStr = AlignText ((const uqm::CHAR_T*)&race_name, &strip_align);
+	text.CharCount = (uqm::COUNT)~0;
 	font_DrawShadowedText (&text, WEST_SHADOW, SHP_TEXT_COLOR,
 			SHP_SHADOW_COLOR);
 
 	text.baseline.y += leading;
-	text.pStr = AlignText ((const CHAR_T*)&ship_name, &strip_align);
-	text.CharCount = (COUNT)~0;
+	text.pStr = AlignText ((const uqm::CHAR_T*)&ship_name, &strip_align);
+	text.CharCount = (uqm::COUNT)~0;
 	font_DrawShadowedText (&text, WEST_SHADOW, SHP_TEXT_COLOR,
 			SHP_SHADOW_COLOR);
 
@@ -816,7 +816,7 @@ DrawShipyardShipText (RECT *r, int Index)
 }
 
 static void
-DrawRaceStrings (BYTE NewRaceItem)
+DrawRaceStrings (uqm::BYTE NewRaceItem)
 {
 	RECT r, textRect;
 	STAMP s;
@@ -876,13 +876,13 @@ DrawRaceStrings (BYTE NewRaceItem)
 		}
 	}
 
-	if (NewRaceItem != (BYTE)~0)
+	if (NewRaceItem != (uqm::BYTE)~0)
 	{
 		TEXT t;
 		HFLEETINFO hStarShip;
 		FLEET_INFO *FleetPtr;
-		CHAR_T buf[30];
-		COUNT shipCost, shipPoints, shipCrew, maxCrew;
+		uqm::CHAR_T buf[30];
+		uqm::COUNT shipCost, shipPoints, shipCrew, maxCrew;
 		RECT r;
 		STRING captain;
 
@@ -924,7 +924,7 @@ DrawRaceStrings (BYTE NewRaceItem)
 				t.baseline.y = RADAR_Y - RES_SCALE (2)
 						- DOS_NUM_SCL (2) - SAFE_Y;
 				t.align = ALIGN_CENTER;
-				t.pStr = (CHAR_T *)GetStringAddress (captain);
+				t.pStr = (uqm::CHAR_T *)GetStringAddress (captain);
 				t.CharCount = GetStringLength (captain);
 				font_DrawShadowedText (&t, WEST_SHADOW, CAPTAIN_NAME_TEXT_COLOR,
 						SHP_SHADOW_COLOR);
@@ -954,7 +954,7 @@ DrawRaceStrings (BYTE NewRaceItem)
 		t.baseline.y = RADAR_Y + RADAR_HEIGHT - RES_SCALE (2)
 				- DOS_NUM_SCL (2) - SAFE_Y;
 		t.align = ALIGN_RIGHT;
-		t.CharCount = (COUNT)~0;
+		t.CharCount = (uqm::COUNT)~0;
 		t.pStr = buf;
 		if (!stowed_q)
 		{
@@ -1032,10 +1032,10 @@ ShowShipCrew (SHIP_FRAGMENT *StarShipPtr, const RECT *pRect)
 {
 	RECT r;
 	TEXT t;
-	CHAR_T buf[80];
+	uqm::CHAR_T buf[80];
 	HFLEETINFO hTemplate;
 	FLEET_INFO *TemplatePtr;
-	COUNT maxCrewLevel;
+	uqm::COUNT maxCrewLevel;
 	STRING captain;
 
 	if (isPC (optWhichFonts))
@@ -1069,7 +1069,7 @@ ShowShipCrew (SHIP_FRAGMENT *StarShipPtr, const RECT *pRect)
 	t.baseline.y = r.corner.y + r.extent.height - RES_SCALE (1);
 	t.align = ALIGN_CENTER;
 	t.pStr = buf;
-	t.CharCount = (COUNT)~0;
+	t.CharCount = (uqm::COUNT)~0;
 	if (r.corner.y)
 	{
 		// Black out the crew before printing it if this is a redraw
@@ -1089,7 +1089,7 @@ ShowShipCrew (SHIP_FRAGMENT *StarShipPtr, const RECT *pRect)
 
 	r = *pRect;
 	t.baseline.y = r.corner.y + RES_SCALE (7);
-	t.pStr = (CHAR_T *)GetStringAddress (captain);
+	t.pStr = (uqm::CHAR_T *)GetStringAddress (captain);
 	t.CharCount = GetStringLength (captain);
 	if (!r.corner.y)
 	{
@@ -1109,11 +1109,11 @@ ShowShipCrew (SHIP_FRAGMENT *StarShipPtr, const RECT *pRect)
 }
 
 static void
-ShowCombatShip (MENU_STATE *pMS, COUNT which_window,
+ShowCombatShip (MENU_STATE *pMS, uqm::COUNT which_window,
 		SHIP_FRAGMENT *YankedStarShipPtr)
 {
-	COUNT i;
-	COUNT num_ships;
+	uqm::COUNT i;
+	uqm::COUNT num_ships;
 	HSHIPFRAG hStarShip, hNextShip;
 	SHIP_FRAGMENT *StarShipPtr;
 	struct
@@ -1150,7 +1150,7 @@ ShowCombatShip (MENU_STATE *pMS, COUNT which_window,
 	}
 	else
 	{
-		if (which_window == (COUNT)~0)
+		if (which_window == (uqm::COUNT)~0)
 		{
 			hStarShip = GetHeadLink (&GLOBAL (built_ship_q));
 			num_ships = CountLinks (&GLOBAL (built_ship_q));
@@ -1224,7 +1224,7 @@ ShowCombatShip (MENU_STATE *pMS, COUNT which_window,
 	if (num_ships)
 	{
 		bool AllDoorsFinished;
-		DWORD TimeIn;
+		uqm::DWORD TimeIn;
 		RECT r;
 		CONTEXT OldContext;
 		RECT OldClipRect;
@@ -1303,13 +1303,13 @@ ShowCombatShip (MENU_STATE *pMS, COUNT which_window,
 }
 
 static void
-CrewTransaction (SIZE crew_delta)
+CrewTransaction (uqm::SIZE crew_delta)
 {
 	if (crew_delta)
 	{
-		SIZE crew_bought;
+		uqm::SIZE crew_bought;
 
-		crew_bought = (SIZE)MAKE_WORD (
+		crew_bought = (uqm::SIZE)MAKE_WORD (
 				GET_GAME_STATE (CREW_PURCHASED0),
 				GET_GAME_STATE (CREW_PURCHASED1)) + crew_delta;
 		if (crew_bought < 0)
@@ -1339,8 +1339,8 @@ CrewTransaction (SIZE crew_delta)
 		}
 		if (CheckAlliance (SHOFIXTI_SHIP) != GOOD_GUY)
 		{
-			SET_GAME_STATE (CREW_PURCHASED0, LOBYTE (crew_bought));
-			SET_GAME_STATE (CREW_PURCHASED1, HIBYTE (crew_bought));
+			SET_GAME_STATE (CREW_PURCHASED0, lowByte (crew_bought));
+			SET_GAME_STATE (CREW_PURCHASED1, highByte (crew_bought));
 
 			showRemainingCrew ();
 		}
@@ -1362,10 +1362,10 @@ DMS_FlashFlagShip (void)
 }
 
 static void
-DMS_GetEscortShipRect (RECT *rOut, BYTE slotNr)
+DMS_GetEscortShipRect (RECT *rOut, uqm::BYTE slotNr)
 {
-	BYTE row = slotNr / HANGAR_SHIPS_ROW;
-	BYTE col = slotNr % HANGAR_SHIPS_ROW;
+	uqm::BYTE row = slotNr / HANGAR_SHIPS_ROW;
+	uqm::BYTE col = slotNr % HANGAR_SHIPS_ROW;
 
 	rOut->corner.x = hangar_x_coords[col];
 	rOut->corner.y = HANGAR_Y + (HANGAR_DY * row);
@@ -1374,7 +1374,7 @@ DMS_GetEscortShipRect (RECT *rOut, BYTE slotNr)
 }
 
 static void
-DMS_FlashEscortShip (BYTE slotNr)
+DMS_FlashEscortShip (uqm::BYTE slotNr)
 {
 	RECT r;
 	DMS_GetEscortShipRect (&r, slotNr);
@@ -1392,11 +1392,11 @@ DMS_FlashFlagShipCrewCount (void)
 }
 
 static void
-DMS_FlashEscortShipCrewCount (BYTE slotNr)
+DMS_FlashEscortShipCrewCount (uqm::BYTE slotNr)
 {
 	RECT r;
-	BYTE row = slotNr / HANGAR_SHIPS_ROW;
-	BYTE col = slotNr % HANGAR_SHIPS_ROW;
+	uqm::BYTE row = slotNr / HANGAR_SHIPS_ROW;
+	uqm::BYTE col = slotNr % HANGAR_SHIPS_ROW;
 
 	r.corner.x = hangar_x_coords[col];
 	r.corner.y = (HANGAR_Y + (HANGAR_DY * row))
@@ -1489,7 +1489,7 @@ DMS_SpinShip (MENU_STATE *pMS, HSHIPFRAG hStarShip)
 	if (!hStarShip && !stowed_q)
 	{
 		// Selecting a ship to build.
-		hSpinShip = GetAvailableRaceFromIndex (LOBYTE (pMS->delta_item));
+		hSpinShip = GetAvailableRaceFromIndex (lowByte (pMS->delta_item));
 		if (!hSpinShip)
 			return false;
 	}
@@ -1497,7 +1497,7 @@ DMS_SpinShip (MENU_STATE *pMS, HSHIPFRAG hStarShip)
 	{
 		// Selecting a stowed ship
 		HSHIPFRAG hStowedShip = GetStarShipFromIndex (
-				&GLOBAL (stowed_ship_q), LOBYTE (pMS->delta_item));
+				&GLOBAL (stowed_ship_q), lowByte (pMS->delta_item));
 		SHIP_FRAGMENT *FragPtr = LockShipFrag (
 				&GLOBAL (stowed_ship_q), hStowedShip);
 		hSpinShip = GetStarShipFromIndex (
@@ -1531,13 +1531,13 @@ DMS_SpinShip (MENU_STATE *pMS, HSHIPFRAG hStarShip)
 // up button when modifying the crew of the flagship.
 // Buy crew for the flagship.
 // Returns the change in crew (1 on success, 0 on failure).
-static SIZE
+static uqm::SIZE
 DMS_HireFlagShipCrew (void)
 {
 	RECT r;
-	SIZE crew_bought;
+	uqm::SIZE crew_bought;
 
-	crew_bought = (SIZE)MAKE_WORD(
+	crew_bought = (uqm::SIZE)MAKE_WORD(
 			GET_GAME_STATE (CREW_PURCHASED0),
 			GET_GAME_STATE (CREW_PURCHASED1));
 	
@@ -1547,7 +1547,7 @@ DMS_HireFlagShipCrew (void)
 		return 0;
 	}
 		
-	if (GLOBAL_SIS (ResUnits) < (DWORD)GLOBAL (CrewCost))
+	if (GLOBAL_SIS (ResUnits) < (uqm::DWORD)GLOBAL (CrewCost))
 	{
 		// Not enough RUs.
 		return 0;
@@ -1579,10 +1579,10 @@ DMS_HireFlagShipCrew (void)
 // down button when modifying the crew of the flagship.
 // Dismiss crew from the flagship.
 // Returns the change in crew (-1 on success, 0 on failure).
-static SIZE
+static uqm::SIZE
 DMS_DismissFlagShipCrew (void)
 {
-	SIZE crew_bought;
+	uqm::SIZE crew_bought;
 	RECT r;
 
 	if (GetCrewCount () == 0)
@@ -1591,7 +1591,7 @@ DMS_DismissFlagShipCrew (void)
 		return 0;
 	}
 
-	crew_bought = (SIZE)MAKE_WORD (
+	crew_bought = (uqm::SIZE)MAKE_WORD (
 			GET_GAME_STATE (CREW_PURCHASED0),
 			GET_GAME_STATE (CREW_PURCHASED1));
 
@@ -1616,17 +1616,17 @@ DMS_DismissFlagShipCrew (void)
 // up button when modifying the crew of an escort ship.
 // Buy crew for an escort ship
 // Returns the change in crew (1 on success, 0 on failure).
-static SIZE
+static uqm::SIZE
 DMS_HireEscortShipCrew (SHIP_FRAGMENT *StarShipPtr)
 {
-	COUNT templateMaxCrew;
+	uqm::COUNT templateMaxCrew;
 	RECT r;
-	SIZE crew_bought;
-	COUNT crew_level = (StarShipPtr->crew_level > StarShipPtr->max_crew
+	uqm::SIZE crew_bought;
+	uqm::COUNT crew_level = (StarShipPtr->crew_level > StarShipPtr->max_crew
 			? StarShipPtr->crew_level - StarShipPtr->max_crew
 			: StarShipPtr->crew_level);
 
-	crew_bought = (SIZE)MAKE_WORD (
+	crew_bought = (uqm::SIZE)MAKE_WORD (
 			GET_GAME_STATE (CREW_PURCHASED0),
 			GET_GAME_STATE (CREW_PURCHASED1));
 
@@ -1642,7 +1642,7 @@ DMS_HireEscortShipCrew (SHIP_FRAGMENT *StarShipPtr)
 		UnlockFleetInfo (&GLOBAL (avail_race_q), hTemplate);
 	}
 	
-	if (GLOBAL_SIS (ResUnits) < (DWORD)GLOBAL (CrewCost))
+	if (GLOBAL_SIS (ResUnits) < (uqm::DWORD)GLOBAL (CrewCost))
 	{
 		// Not enough money to hire a crew member.
 		return 0;
@@ -1692,12 +1692,12 @@ DMS_HireEscortShipCrew (SHIP_FRAGMENT *StarShipPtr)
 // down button when modifying the crew of an escort ship.
 // Dismiss crew from an escort ship
 // Returns the change in crew (-1 on success, 0 on failure).
-static SIZE
+static uqm::SIZE
 DMS_DismissEscortShipCrew (SHIP_FRAGMENT *StarShipPtr)
 {
-	SIZE crew_delta = 0;
+	uqm::SIZE crew_delta = 0;
 	RECT r;
-	COUNT crew_level = (StarShipPtr->crew_level > StarShipPtr->max_crew
+	uqm::COUNT crew_level = (StarShipPtr->crew_level > StarShipPtr->max_crew
 			? StarShipPtr->crew_level - StarShipPtr->max_crew
 			: StarShipPtr->crew_level);
 
@@ -1707,7 +1707,7 @@ DMS_DismissEscortShipCrew (SHIP_FRAGMENT *StarShipPtr)
 		{
 			// The ship was not at 'scrap'.
 			// Give one crew member worth of RU.
-			SIZE crew_bought = (SIZE)MAKE_WORD (
+			uqm::SIZE crew_bought = (uqm::SIZE)MAKE_WORD (
 					GET_GAME_STATE (CREW_PURCHASED0),
 					GET_GAME_STATE (CREW_PURCHASED1));
 
@@ -1748,14 +1748,14 @@ DMS_DismissEscortShipCrew (SHIP_FRAGMENT *StarShipPtr)
 // 'dy' is -1 if the 'up' button was pressed, or '1' if the down button was
 // pressed.
 static void
-DMS_ModifyCrew (MENU_STATE *pMS, HSHIPFRAG hStarShip, SBYTE dy)
+DMS_ModifyCrew (MENU_STATE *pMS, HSHIPFRAG hStarShip, uqm::SBYTE dy)
 {
-	SIZE crew_delta = 0;
+	uqm::SIZE crew_delta = 0;
 	SHIP_FRAGMENT *StarShipPtr = NULL;
-	COUNT loop;
-	COUNT DoLoop = 1;
+	uqm::COUNT loop;
+	uqm::COUNT DoLoop = 1;
 	RECT r;
-	//SIZE remaining_crew = INITIAL_CREW - (SIZE)MAKE_WORD (
+	//uqm::SIZE remaining_crew = INITIAL_CREW - (uqm::SIZE)MAKE_WORD (
 	//		GET_GAME_STATE (CREW_PURCHASED0),
 	//		GET_GAME_STATE (CREW_PURCHASED1)); Unused
 
@@ -1800,7 +1800,7 @@ DMS_ModifyCrew (MENU_STATE *pMS, HSHIPFRAG hStarShip, SBYTE dy)
 	}
 	else
 	{
-		COUNT crew_level = (StarShipPtr->crew_level > StarShipPtr->max_crew
+		uqm::COUNT crew_level = (StarShipPtr->crew_level > StarShipPtr->max_crew
 				? StarShipPtr->crew_level - StarShipPtr->max_crew
 				: StarShipPtr->crew_level);
 		if (dy == -50)
@@ -1857,12 +1857,12 @@ static void
 DMS_TryAddEscortShip (MENU_STATE *pMS)
 {
 	HFLEETINFO hFleet = GetAvailableRaceFromIndex (
-			LOBYTE (pMS->delta_item));
+			lowByte (pMS->delta_item));
 
-	COUNT Index = GetIndexFromStarShip (&GLOBAL (avail_race_q), hFleet);
-	COUNT shipCost = ShipCost (Index);
+	uqm::COUNT Index = GetIndexFromStarShip (&GLOBAL (avail_race_q), hFleet);
+	uqm::COUNT shipCost = ShipCost (Index);
 
-	if (CanBuyPoints (hFleet) && GLOBAL_SIS (ResUnits) >= (DWORD)shipCost
+	if (CanBuyPoints (hFleet) && GLOBAL_SIS (ResUnits) >= (uqm::DWORD)shipCost
 			&& CloneShipFragment ((RACE_ID)Index, &GLOBAL (built_ship_q), 1))
 	{
 		ShowCombatShip (pMS, pMS->CurState, NULL);
@@ -1892,10 +1892,10 @@ DMS_TryUnstowEscortShip (MENU_STATE *pMS)
 {
 	HSHIPFRAG hStarShip;
 	HSHIPFRAG hStowShip = GetStarShipFromIndex (&GLOBAL (stowed_ship_q),
-			LOBYTE (pMS->delta_item));
+			lowByte (pMS->delta_item));
 	SHIP_FRAGMENT *StowShipPtr =
 			LockShipFrag (&GLOBAL (stowed_ship_q), hStowShip);
-	COUNT Index = StowShipPtr->race_id;
+	uqm::COUNT Index = StowShipPtr->race_id;
 	HFLEETINFO hFleet = GetStarShipFromIndex (&GLOBAL (avail_race_q), Index);
 
 	if (CanBuyPoints (hFleet) && (hStarShip =
@@ -1930,7 +1930,7 @@ DMS_TryUnstowEscortShip (MENU_STATE *pMS)
 
 		showRemainingPoints (0);
 		stowCount = GetStowedShipCount();
-		currentStowShip = LOBYTE (pMS->delta_item);
+		currentStowShip = lowByte (pMS->delta_item);
 		stowed_q &= (stowCount > 0);
 	}
 	else
@@ -1944,15 +1944,15 @@ DMS_TryUnstowEscortShip (MENU_STATE *pMS)
 // Helper function for DoModifyShips(), called when the player is in the
 // mode to add a new escort ship to the fleet (after pressing select on an
 // empty slot).
-// LOBYTE (pMS->delta_item) is used to store the currently highlighted
+// lowByte (pMS->delta_item) is used to store the currently highlighted
 // ship. Returns false if the flash rectangle needs to be updated.
 static void
 DMS_AddEscortShip (MENU_STATE *pMS, bool special, bool select,
-		bool cancel, SBYTE dx, SBYTE dy)
+		bool cancel, uqm::SBYTE dx, uqm::SBYTE dy)
 {
 	assert (pMS->delta_item & MODIFY_CREW_FLAG);
 
-	BYTE currentShip = LOBYTE (pMS->delta_item);
+	uqm::BYTE currentShip = lowByte (pMS->delta_item);
 
 	if (special)
 	{  // JSD: I don't think we can use delta_item, but SpinShip should be ok
@@ -2029,7 +2029,7 @@ DMS_AddEscortShip (MENU_STATE *pMS, bool special, bool select,
 				currentShip += dx;
 		}
 		
-		if (currentShip != LOBYTE (pMS->delta_item))
+		if (currentShip != lowByte (pMS->delta_item))
 		{
 			PreUpdateFlashRect ();
 			DrawRaceStrings (currentShip);
@@ -2075,7 +2075,7 @@ DMS_StowEscortShip (MENU_STATE *pMS, HSHIPFRAG hStarShip)
 	SetFlashRect (NULL, false);
 	ShowCombatShip (pMS, pMS->CurState, StarShipPtr);
 
-	COUNT Index = StarShipPtr->race_id;
+	uqm::COUNT Index = StarShipPtr->race_id;
 	if ((hStowShip = CloneShipFragment ((RACE_ID)Index, &GLOBAL (stowed_ship_q),
 			StarShipPtr->crew_level)))
 	{
@@ -2102,11 +2102,11 @@ DMS_StowEscortShip (MENU_STATE *pMS, HSHIPFRAG hStarShip)
 
 // Helper function for DoModifyShips(), called when the player presses
 // one of the motion keys when not in crew modification mode.
-static BYTE
-DMS_MoveCursor (BYTE curState, SBYTE dx, SBYTE dy)
+static uqm::BYTE
+DMS_MoveCursor (uqm::BYTE curState, uqm::SBYTE dx, uqm::SBYTE dy)
 {
-	BYTE row = LONIBBLE(curState) / HANGAR_SHIPS_ROW;
-	BYTE col = LONIBBLE(curState) % HANGAR_SHIPS_ROW;
+	uqm::BYTE row = LONIBBLE(curState) / HANGAR_SHIPS_ROW;
+	uqm::BYTE col = LONIBBLE(curState) % HANGAR_SHIPS_ROW;
 	bool isFlagShipSelected = (HINIBBLE(curState) != 0);
 
 	if (dy)
@@ -2145,7 +2145,7 @@ DMS_MoveCursor (BYTE curState, SBYTE dx, SBYTE dy)
 // called when we are in crew editing mode.
 static void
 DMS_EditCrewMode (MENU_STATE *pMS, HSHIPFRAG hStarShip,
-		bool select, bool cancel, SBYTE dy)
+		bool select, bool cancel, uqm::SBYTE dy)
 {
 	if (cancel)
 	{
@@ -2155,8 +2155,8 @@ DMS_EditCrewMode (MENU_STATE *pMS, HSHIPFRAG hStarShip,
 			// Exiting crew editing mode for an escort ship.
 			SHIP_FRAGMENT *StarShipPtr = LockShipFrag (
 					&GLOBAL (built_ship_q), hStarShip);
-			COUNT crew_level = StarShipPtr->crew_level;
-			COUNT max_crew = StarShipPtr->max_crew;
+			uqm::COUNT crew_level = StarShipPtr->crew_level;
+			uqm::COUNT max_crew = StarShipPtr->max_crew;
 			if (stowCount == MAX_STOWED_SHIPS &&
 					crew_level > max_crew)
 			{
@@ -2235,14 +2235,14 @@ DMS_EditCrewMode (MENU_STATE *pMS, HSHIPFRAG hStarShip,
 // slot.
 static void
 DMS_NavigateShipSlots (MENU_STATE *pMS, bool special, bool select,
-		bool cancel, SBYTE dx, SBYTE dy)
+		bool cancel, uqm::SBYTE dx, uqm::SBYTE dy)
 {
 	HSHIPFRAG hStarShip = GetEscortByStarShipIndex (pMS->CurState);
 
 	if (dx || dy)
 	{
 		// Moving through the ship slots.
-		BYTE NewState = DMS_MoveCursor (pMS->CurState, dx, dy);
+		uqm::BYTE NewState = DMS_MoveCursor (pMS->CurState, dx, dy);
 		if (NewState != pMS->CurState)
 		{
 			pMS->CurState = NewState;
@@ -2267,7 +2267,7 @@ DMS_NavigateShipSlots (MENU_STATE *pMS, bool special, bool select,
 				currentStowShip = stowCount - 1;
 			pMS->delta_item = MODIFY_CREW_FLAG |
 					(stowed_q ? currentStowShip : 0);
-			DrawRaceStrings (LOBYTE (pMS->delta_item));
+			DrawRaceStrings (lowByte (pMS->delta_item));
 			DMS_SetMode (pMS, DMS_Mode_addEscort);
 		}
 		else
@@ -2320,8 +2320,8 @@ DoModifyShips (MENU_STATE *pMS)
 		bool special = (PulsedInputState.menu[KEY_MENU_SPECIAL] != 0);
 		bool select = (PulsedInputState.menu[KEY_MENU_SELECT] != 0);
 		bool cancel = (PulsedInputState.menu[KEY_MENU_CANCEL] != 0);
-		SBYTE dx = 0;
-		SBYTE dy = 0;
+		uqm::SBYTE dx = 0;
+		uqm::SBYTE dy = 0;
 
 
 		if (!(pMS->delta_item & MODIFY_CREW_FLAG))
@@ -2383,7 +2383,7 @@ DoModifyShips (MENU_STATE *pMS)
 static void
 DrawBluePrint (MENU_STATE *pMS)
 {
-	COUNT num_frames;
+	uqm::COUNT num_frames;
 	STAMP s;
 	FRAME ModuleFrame;
 
@@ -2407,7 +2407,7 @@ DrawBluePrint (MENU_STATE *pMS)
 	}
 	for (num_frames = 0; num_frames < NUM_MODULE_SLOTS; ++num_frames)
 	{
-		BYTE which_piece;
+		uqm::BYTE which_piece;
 
 		which_piece = GLOBAL_SIS (ModuleSlots[num_frames]);
 
@@ -2420,7 +2420,7 @@ DrawBluePrint (MENU_STATE *pMS)
 				BUILD_COLOR (MAKE_RGB15 (0x0A, 0x0A, 0x1F), 0x09));
 	for (num_frames = 0; num_frames < NUM_MODULE_SLOTS; ++num_frames)
 	{
-		BYTE which_piece;
+		uqm::BYTE which_piece;
 
 		which_piece = GLOBAL_SIS (ModuleSlots[num_frames]);
 		if (pMS->CurState == SHIPYARD
@@ -2455,7 +2455,7 @@ DrawBluePrint (MENU_STATE *pMS)
 		r.extent.height = RES_SCALE (1);
 		while (num_frames)
 		{
-			COUNT m;
+			uqm::COUNT m;
 
 			m = num_frames < SBAY_MASS_PER_ROW ?
 					num_frames : SBAY_MASS_PER_ROW;
@@ -2571,7 +2571,7 @@ DoShipyard (MENU_STATE *pMS)
 
 			PlayMusicResume (pMS->hMusic, NORMAL_VOLUME);
 
-			ShowCombatShip (pMS, (COUNT)~0, NULL);
+			ShowCombatShip (pMS, (uqm::COUNT)~0, NULL);
 
 			SetInputCallback (on_input_frame);
 

@@ -69,7 +69,7 @@
 static CONTEXT AnimContext;
 
 LOCDATA CommData;
-CHAR_T shared_phrase_buf[2048];
+uqm::CHAR_T shared_phrase_buf[2048];
 FONT ComputerFont;
 
 static bool TalkingFinished;
@@ -79,8 +79,8 @@ static TimeCount fadeTime;
 // Dark mode
 bool IsDarkMode = false;
 bool cwLock = false; // To avoid drawing over comWindow if JumpTrack() is called
-BYTE altResFlags = 0;
-static COUNT fadeIndex;
+uqm::BYTE altResFlags = 0;
+static uqm::COUNT fadeIndex;
  
 typedef struct response_entry
 {
@@ -94,20 +94,20 @@ typedef struct encounter_state
 {
 	bool (*InputFunc) (struct encounter_state *pES);
 
-	COUNT Initialized;
+	uqm::COUNT Initialized;
 	TimeCount NextTime; // framerate control
-	BYTE num_responses;
-	BYTE cur_response;
-	BYTE top_response;
+	uqm::BYTE num_responses;
+	uqm::BYTE cur_response;
+	uqm::BYTE top_response;
 	RESPONSE_ENTRY response_list[MAX_RESPONSES];
 
-	CHAR_T phrase_buf[1024];
+	uqm::CHAR_T phrase_buf[1024];
 } ENCOUNTER_STATE;
 
 // Required to set custom baseline per one sentence
 typedef struct CustomBaseline
 {
-	COUNT index;
+	uqm::COUNT index;
 	POINT baseline;
 	TEXT_ALIGN align;
 	struct CustomBaseline *next;
@@ -120,14 +120,14 @@ static CUSTOM_BASELINE *cur_node; // not null if current sentence number has bee
 // Used to disable/enable talking animation
 // Better than current because it works with rewind
 static bool haveTalkingLock = false;
-static COUNT startSentence, endSentence;
+static uqm::COUNT startSentence, endSentence;
 
 static ENCOUNTER_STATE *pCurInputState;
 
 static bool clear_subtitles;
 static bool next_page = false;
 static TEXT SubtitleText;
-static const CHAR_T *last_subtitle;
+static const uqm::CHAR_T *last_subtitle;
 
 static CONTEXT TextCacheContext;
 static FRAME TextCacheFrame;
@@ -152,7 +152,7 @@ static bool PauseSubtitles(bool force);
 static int
 _count_lines (TEXT *pText)
 {
-	SIZE text_width;
+	uqm::SIZE text_width;
 	const char *pStr;
 	int numLines = 0;
 	bool eol;
@@ -165,7 +165,7 @@ _count_lines (TEXT *pText)
 	{
 		++numLines;
 		pText->pStr = pStr;
-		eol = getLineWithinWidth (pText, &pStr, text_width, (COUNT)~0);
+		eol = getLineWithinWidth (pText, &pStr, text_width, (uqm::COUNT)~0);
 	} while (!eol);
 	pText->pStr = pStr;
 
@@ -179,12 +179,12 @@ _count_lines (TEXT *pText)
 static COORD
 add_text (int status, TEXT *pTextIn)
 {
-	COUNT maxchars, numchars;
+	uqm::COUNT maxchars, numchars;
 	TEXT locText;
 	TEXT *pText;
-	SIZE leading;
+	uqm::SIZE leading;
 	const char *pStr;
-	SIZE text_width;
+	uqm::SIZE text_width;
 	int num_lines = 0;
 	static COORD last_baseline;
 	bool eol;
@@ -195,7 +195,7 @@ add_text (int status, TEXT *pTextIn)
 
 	GetFrameRect (SetAbsFrameIndex (ActivityFrame, 6), &arrow);
 
-	maxchars = (COUNT)~0;
+	maxchars = (uqm::COUNT)~0;
 	if (status == 1)
 	{
 		if (last_subtitle == pTextIn->pStr)
@@ -231,7 +231,7 @@ add_text (int status, TEXT *pTextIn)
 	}
 	else if (GetContextFontLeading (&leading), status <= -4)
 	{
-		text_width = (SIZE) (SIS_SCREEN_WIDTH - RES_SCALE (8)
+		text_width = (uqm::SIZE) (SIS_SCREEN_WIDTH - RES_SCALE (8)
 					- (TEXT_X_OFFS << 2)
 					- (arrow.extent.width + RES_SCALE (2)));
 
@@ -239,7 +239,7 @@ add_text (int status, TEXT *pTextIn)
 	}
 	else
 	{
-		text_width = (SIZE) (SIS_SCREEN_WIDTH - RES_SCALE (8)
+		text_width = (uqm::SIZE) (SIS_SCREEN_WIDTH - RES_SCALE (8)
 					- (TEXT_X_OFFS << 2)
 					- (arrow.extent.width + RES_SCALE (2)));
 
@@ -282,7 +282,7 @@ add_text (int status, TEXT *pTextIn)
 		maxchars = pTextIn->CharCount;
 		locText = *pTextIn;
 		locText.baseline.x -= RES_SCALE (8);
-		locText.CharCount = (COUNT)~0;
+		locText.CharCount = (uqm::COUNT)~0;
 		locText.pStr = STR_BULLET;
 		font_DrawText (&locText);
 
@@ -371,7 +371,7 @@ add_text (int status, TEXT *pTextIn)
 }
 
 void
-GetCustomBaseline (COUNT i)
+GetCustomBaseline (uqm::COUNT i)
 {
 	if (head_node == NULL)
 		return;
@@ -385,7 +385,7 @@ GetCustomBaseline (COUNT i)
 }
 
 void
-CheckTalkingAnim (COUNT i)
+CheckTalkingAnim (uqm::COUNT i)
 {
 	if (haveTalkingLock) // Do not check if there is no lock
 	{
@@ -404,7 +404,7 @@ CheckTalkingAnim (COUNT i)
 }
 
 void
-BlockTalkingAnim (COUNT trackStart, COUNT trackEnd)
+BlockTalkingAnim (uqm::COUNT trackStart, uqm::COUNT trackEnd)
 {
 	if (trackStart >= trackEnd) // Fool-proof
 		return;
@@ -422,8 +422,8 @@ ReleaseTalkingAnim (void)
 	if (haveTalkingLock)
 	{
 		haveTalkingLock = false;
-		startSentence = (COUNT)~0;
-		endSentence = (COUNT)~0;
+		startSentence = (uqm::COUNT)~0;
+		endSentence = (uqm::COUNT)~0;
 		EnableTalkingAnim (true);
 	}
 }
@@ -446,18 +446,18 @@ ReleaseTalkingAnim (void)
 // false otherwise
 bool
 getLineWithinWidth(TEXT *pText, const char **startNext,
-		SIZE maxWidth, COUNT maxChars)
+		uqm::SIZE maxWidth, uqm::COUNT maxChars)
 {
 	bool eol;
 			// The end of the line of text has been reached.
 	bool done;
 			// We cannot add any more words.
 	RECT rect;
-	COUNT oldCount;
+	uqm::COUNT oldCount;
 	const char *ptr;
 	const char *wordStart;
 	UniChar ch;
-	COUNT charCount;
+	uqm::COUNT charCount;
 
 	//GetContextClipRect (&rect);
 
@@ -550,7 +550,7 @@ DrawSISComWindow (void)
 {
 	CONTEXT OldContext;
 
-	if (LOBYTE (GLOBAL (CurrentActivity)) != WON_LAST_BATTLE)
+	if (lowByte (GLOBAL (CurrentActivity)) != WON_LAST_BATTLE)
 	{
 		RECT r;
 
@@ -589,8 +589,8 @@ static void
 RefreshResponsesSpecial (ENCOUNTER_STATE *pES)
 {	// PC style repsonses
 	COORD y;
-	BYTE response;
-	SIZE leading;
+	uqm::BYTE response;
+	uqm::SIZE leading;
 
 	SetContext (SpaceContext);
 	GetContextFontLeading (&leading);
@@ -619,8 +619,8 @@ static void
 RefreshResponses (ENCOUNTER_STATE *pES)
 {
 	COORD y;
-	BYTE response;
-	SIZE leading;
+	uqm::BYTE response;
+	uqm::SIZE leading;
 	STAMP s;
 
 
@@ -669,7 +669,7 @@ RefreshResponses (ENCOUNTER_STATE *pES)
 }
 
 static void
-FeedbackPlayerPhrase (CHAR_T *pStr)
+FeedbackPlayerPhrase (uqm::CHAR_T *pStr)
 {
 	SetContext (SpaceContext);
 	
@@ -682,7 +682,7 @@ FeedbackPlayerPhrase (CHAR_T *pStr)
 		ct.baseline.x = RES_SCALE (ORIG_SIS_SCREEN_WIDTH >> 1);
 		ct.baseline.y = SLIDER_Y + SLIDER_HEIGHT + RES_SCALE (13);
 		ct.align = ALIGN_CENTER;
-		ct.CharCount = (COUNT)~0;
+		ct.CharCount = (uqm::COUNT)~0;
 
 		if (!IsDarkMode)
 		{
@@ -825,7 +825,7 @@ FadePlayerUI (void)
 	{
 		static TimeCount NextTime;
 		CONTEXT OldContext;
-		BYTE i;
+		uqm::BYTE i;
 
 		// emulating as close as possible PC-DOS text glow
 		static const Color DarkModeFGTextColor[] = DARKMODE_FG_TABLE;
@@ -887,7 +887,7 @@ typedef struct talking_state
 	bool (*InputFunc) (struct talking_state *);
 
 	TimeCount NextTime;  // framerate control
-	COUNT waitTrack;
+	uqm::COUNT waitTrack;
 	bool rewind;
 	bool seeking;
 	bool ended;
@@ -899,7 +899,7 @@ DoTalkSegue (TALKING_STATE *pTS)
 {
 	bool left = false;
 	bool right = false;
-	COUNT curTrack;
+	uqm::COUNT curTrack;
 
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
 	{
@@ -907,7 +907,7 @@ DoTalkSegue (TALKING_STATE *pTS)
 		return false;
 	}
 	
-	if (optSpeech || optSmoothScroll == OPT_3DO || (LOBYTE(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE))
+	if (optSpeech || optSmoothScroll == OPT_3DO || (lowByte(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE))
 	{
 		if (PulsedInputState.menu[KEY_MENU_CANCEL])
 		{
@@ -992,8 +992,8 @@ DoTalkSegue (TALKING_STATE *pTS)
 		else if (PauseSubtitles (next_page))
 		{
 			/* I would like to NOT count ellipses but whatever */
-			DWORD delay = RecalculateDelay (strlen (SubtitleText.pStr), false);
-			BYTE read_speed = speed_array[GLOBAL (glob_flags) & READ_SPEED_MASK];
+			uqm::DWORD delay = RecalculateDelay (strlen (SubtitleText.pStr), false);
+			uqm::BYTE read_speed = speed_array[GLOBAL (glob_flags) & READ_SPEED_MASK];
 
 			if (delay > 0 || read_speed == VERY_SLOW)
 			{
@@ -1072,7 +1072,7 @@ runCommAnimFrame (void)
 }
 
 static bool
-TalkSegue (COUNT wait_track)
+TalkSegue (uqm::COUNT wait_track)
 {
 	TALKING_STATE talkingState;
 
@@ -1168,7 +1168,7 @@ CommIntroTransition (void)
 }
 
 void
-AlienTalkSegue (COUNT wait_track)
+AlienTalkSegue (uqm::COUNT wait_track)
 {
 	// this skips any talk segues that follow an aborted one
 	if ((GLOBAL (CurrentActivity) & CHECK_ABORT) || TalkingFinished)
@@ -1220,15 +1220,15 @@ typedef struct summary_state
 	bool Initialized;
 	bool PrintNext;
 	SUBTITLE_REF NextSub;
-	const CHAR_T *LeftOver;
+	const uqm::CHAR_T *LeftOver;
 
 } SUMMARY_STATE;
 
 static void 
-remove_char_from_string (CHAR_T* str, const CHAR_T c)
+remove_char_from_string (uqm::CHAR_T* str, const uqm::CHAR_T c)
 {	// MB: Hack for removing '$' characters from Orz dialogue when viewing
 	// summary conversation - Used by DoConvSummary below
-	CHAR_T *pr = str, *pw = str;
+	uqm::CHAR_T *pr = str, *pw = str;
 
 	while (*pr)
 	{
@@ -1311,16 +1311,16 @@ DoConvSummary (SUMMARY_STATE *pSS)
 					continue;
 			}
 
-			t.CharCount = (COUNT)~0;
+			t.CharCount = (uqm::COUNT)~0;
 			for ( ; row < MAX_SUMM_ROWS &&
 					!getLineWithinWidth (
-						&t, &next, r.extent.width, (COUNT)~0);
+						&t, &next, r.extent.width, (uqm::COUNT)~0);
 					++row)
 			{
 				if (CommData.AlienConv == ORZ_CONVERSATION)
 				{	// MB: nasty hack: remove '$'s from conversation for
 					// Orz
-					CHAR_T my_copy[128];
+					uqm::CHAR_T my_copy[128];
 					
 					strcpy (my_copy, t.pStr);
 					remove_char_from_string (my_copy, '$');
@@ -1333,7 +1333,7 @@ DoConvSummary (SUMMARY_STATE *pSS)
 					
 				t.baseline.y += DELTA_Y_SUMMARY;
 				t.pStr = next;
-				t.CharCount = (COUNT)~0;
+				t.CharCount = (uqm::COUNT)~0;
 			}
 
 			if (row >= MAX_SUMM_ROWS)
@@ -1346,7 +1346,7 @@ DoConvSummary (SUMMARY_STATE *pSS)
 			// this subtitle fit completely
 			if (CommData.AlienConv == ORZ_CONVERSATION)
 			{	// MB: nasty hack: remove '$'s from conversation for Orz
-				CHAR_T my_copy[128];
+				uqm::CHAR_T my_copy[128];
 				
 				strcpy (my_copy, t.pStr);
 				remove_char_from_string (my_copy, '$');
@@ -1361,7 +1361,7 @@ DoConvSummary (SUMMARY_STATE *pSS)
 		if (row >= MAX_SUMM_ROWS && (pSS->NextSub || pSS->LeftOver))
 		{	// draw *MORE*
 			TEXT mt;
-			CHAR_T buffer[128];
+			uqm::CHAR_T buffer[128];
 
 			mt.baseline.x = RES_SCALE (ORIG_SIS_SCREEN_WIDTH >> 1);
 			mt.baseline.y = t.baseline.y;
@@ -1475,9 +1475,9 @@ SelectReplay (ENCOUNTER_STATE *pES)
 static void
 PlayerResponseInput (ENCOUNTER_STATE *pES)
 {
-	BYTE response;
+	uqm::BYTE response;
 
-	if (pES->top_response == (BYTE)~0)
+	if (pES->top_response == (uqm::BYTE)~0)
 	{
 		pES->top_response = 0;
 		RefreshResponses (pES);
@@ -1488,7 +1488,7 @@ PlayerResponseInput (ENCOUNTER_STATE *pES)
 		SelectResponse (pES);
 	}
 	else if (PulsedInputState.menu[KEY_MENU_CANCEL] &&
-			LOBYTE (GLOBAL (CurrentActivity)) != WON_LAST_BATTLE &&
+			lowByte (GLOBAL (CurrentActivity)) != WON_LAST_BATTLE &&
 			!IsDarkMode)
 	{
 		SelectConversationSummary (pES);
@@ -1507,10 +1507,10 @@ PlayerResponseInput (ENCOUNTER_STATE *pES)
 			}
 		}
 		else if (PulsedInputState.menu[KEY_MENU_UP])
-			response = (BYTE)((response + (BYTE)(pES->num_responses - 1))
+			response = (uqm::BYTE)((response + (uqm::BYTE)(pES->num_responses - 1))
 					% pES->num_responses);
 		else if (PulsedInputState.menu[KEY_MENU_DOWN])
-			response = (BYTE)((BYTE)(response + 1) % pES->num_responses);
+			response = (uqm::BYTE)((uqm::BYTE)(response + 1) % pES->num_responses);
 
 		if (response != pES->cur_response)
 		{
@@ -1565,7 +1565,7 @@ DoLastReplay (LAST_REPLAY_STATE *pLRS)
 		return false; // timed out and done
 
 	if (PulsedInputState.menu[KEY_MENU_CANCEL] &&
-			LOBYTE (GLOBAL (CurrentActivity)) != WON_LAST_BATTLE)
+			lowByte (GLOBAL (CurrentActivity)) != WON_LAST_BATTLE)
 	{
 		FadeMusic (BACKGROUND_VOL, ONE_SECOND);
 		SelectConversationSummary (NULL);
@@ -1640,7 +1640,7 @@ DoCommunication (ENCOUNTER_STATE *pES)
 
 void
 DoResponsePhrase (RESPONSE_REF R, RESPONSE_FUNC response_func,
-		CHAR_T *ConstructStr)
+		uqm::CHAR_T *ConstructStr)
 {
 	ENCOUNTER_STATE *pES = pCurInputState;
 	RESPONSE_ENTRY *pEntry;
@@ -1651,22 +1651,22 @@ DoResponsePhrase (RESPONSE_REF R, RESPONSE_FUNC response_func,
 	if (pES->num_responses == 0)
 	{
 		pES->cur_response = 0;
-		pES->top_response = (BYTE)~0;
+		pES->top_response = (uqm::BYTE)~0;
 	}
 
 	pEntry = &pES->response_list[pES->num_responses];
 	pEntry->response_ref = R;
 	pEntry->response_text.pStr = ConstructStr;
 	if (pEntry->response_text.pStr)
-		pEntry->response_text.CharCount = (COUNT)~0;
+		pEntry->response_text.CharCount = (uqm::COUNT)~0;
 	else
 	{
 		STRING locString;
 		
 		locString = SetAbsStringTableIndex (CommData.ConversationPhrases,
-				(COUNT) (R - 1));
+				(uqm::COUNT) (R - 1));
 		pEntry->response_text.pStr =
-				(CHAR_T *) GetStringAddress (locString);
+				(uqm::CHAR_T *) GetStringAddress (locString);
 
 		if (luaUqm_comm_stringNeedsInterpolate (pEntry->response_text.pStr))
 		{
@@ -1675,7 +1675,7 @@ DoResponsePhrase (RESPONSE_REF R, RESPONSE_FUNC response_func,
 			pEntry->response_text.pStr = pEntry->allocedResponse;
 		}
 
-		pEntry->response_text.CharCount = (COUNT)~0;
+		pEntry->response_text.CharCount = (uqm::COUNT)~0;
 	}
 	pEntry->response_func = response_func;
 	++pES->num_responses;
@@ -1819,7 +1819,7 @@ HailAlien (void)
 		
 		SetTransitionSource (NULL);
 		BatchGraphics ();
-		if (LOBYTE (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
+		if (lowByte (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
 		{
 			// set the position of outtakes comm
 			CommWndRect.corner.x = ((SCREEN_WIDTH - CommWndRect.extent.width) / 2);
@@ -1840,7 +1840,7 @@ HailAlien (void)
 			DrawSISFrame ();
 			// TODO: find a better way to do this, perhaps set the titles
 			// forward from callers.
-			if (GET_GAME_STATE (GLOBAL_FLAGS_AND_DATA) == (BYTE)~0
+			if (GET_GAME_STATE (GLOBAL_FLAGS_AND_DATA) == (uqm::BYTE)~0
 					&& GET_GAME_STATE (STARBASE_AVAILABLE))
 			{	// Talking to allied Starbase
 				DrawSISMessage (GAME_STRING (STARBASE_STRING_BASE + 1));
@@ -1917,10 +1917,10 @@ SetCommIntroMode (CommIntroMode newMode, TimeCount howLong)
 	fadeTime = howLong;
 }
 
-COUNT
+uqm::COUNT
 InitCommunication (CONVERSATION which_comm)
 {
-	COUNT status;
+	uqm::COUNT status;
 	LOCDATA *LocDataPtr;
 
 #ifdef DEBUG
@@ -1934,7 +1934,7 @@ InitCommunication (CONVERSATION which_comm)
 		LastActivity &= ~CHECK_LOAD;
 		if (which_comm != COMMANDER_CONVERSATION)
 		{
-			if (LOBYTE (LastActivity) == 0)
+			if (lowByte (LastActivity) == 0)
 			{
 				DrawSISFrame ();
 			}
@@ -1950,7 +1950,7 @@ InitCommunication (CONVERSATION which_comm)
 				DrawHyperCoords (CurStarDescPtr->star_pt);
 			else
 			{	// to fix moon suffix on load
-				if (pSolarSysState && LOBYTE (GLOBAL (CurrentActivity)) != IN_LAST_BATTLE
+				if (pSolarSysState && lowByte (GLOBAL (CurrentActivity)) != IN_LAST_BATTLE
 					&& worldIsMoon (pSolarSysState, pSolarSysState->pOrbitalDesc))
 				{
 					if (!(GetNamedPlanetaryBody ()) && isPC (optWhichFonts)
@@ -1983,7 +1983,7 @@ InitCommunication (CONVERSATION which_comm)
 		}
 		else
 		{
-			COUNT commToShip[] = {
+			uqm::COUNT commToShip[] = {
 				RACE_SHIP_FOR_COMM
 			};
 			status = commToShip[which_comm];
@@ -1997,7 +1997,7 @@ InitCommunication (CONVERSATION which_comm)
 		if (which_comm == ORZ_CONVERSATION
 				|| (which_comm == TALKING_PET_CONVERSATION
 				&& (!GET_GAME_STATE (TALKING_PET_ON_SHIP)
-				|| LOBYTE (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE))
+				|| lowByte (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE))
 				|| (which_comm != CHMMR_CONVERSATION
 				&& which_comm != SYREEN_CONVERSATION
 				))//&& CheckAlliance (status) == BAD_GUY))
@@ -2047,7 +2047,7 @@ InitCommunication (CONVERSATION which_comm)
 		// The Sa-Matra battle is skipped when Cyborg is enabled.
 		// Most likely because the Cyborg is too dumb to know what
 		// to do in this battle.
-		if (LOBYTE (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE
+		if (lowByte (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE
 				&& (GLOBAL (glob_flags) & CYBORG_ENABLED))
 			ReinitQueue (&GLOBAL (npc_built_ship_q));
 
@@ -2080,7 +2080,7 @@ InitCommunication (CONVERSATION which_comm)
 void
 RaceCommunication (void)
 {
-	COUNT i, status;
+	uqm::COUNT i, status;
 	HSHIPFRAG hStarShip;
 	SHIP_FRAGMENT *FragPtr;
 	HENCOUNTER hEncounter = 0;
@@ -2089,14 +2089,14 @@ RaceCommunication (void)
 		RACE_COMMUNICATION
 	};
 
-	if (LOBYTE (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE)
+	if (lowByte (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE)
 	{
 		/* Going into talking pet conversation */
 		ReinitQueue (&GLOBAL (npc_built_ship_q));
 		CloneShipFragment (SAMATRA_SHIP, &GLOBAL (npc_built_ship_q), 0);
 		InitCommunication (TALKING_PET_CONVERSATION);
 		if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
-				&& GLOBAL_SIS (CrewEnlisted) != (COUNT)~0)
+				&& GLOBAL_SIS (CrewEnlisted) != (uqm::COUNT)~0)
 		{
 			GLOBAL (CurrentActivity) = WON_LAST_BATTLE;
 		}
@@ -2104,7 +2104,7 @@ RaceCommunication (void)
 	}
 	else if (NextActivity & CHECK_LOAD)
 	{
-		BYTE ec;
+		uqm::BYTE ec;
 
 		ec = GET_GAME_STATE (ESCAPE_COUNTER);
 
@@ -2118,10 +2118,10 @@ RaceCommunication (void)
 			InitCommunication (ILWRATH_CONVERSATION);
 		else
 			InitCommunication (CHMMR_CONVERSATION);
-		if (GLOBAL_SIS (CrewEnlisted) != (COUNT)~0)
+		if (GLOBAL_SIS (CrewEnlisted) != (uqm::COUNT)~0)
 		{
 			NextActivity = GLOBAL (CurrentActivity) & ~START_ENCOUNTER;
-			if (LOBYTE (NextActivity) == IN_INTERPLANETARY)
+			if (lowByte (NextActivity) == IN_INTERPLANETARY)
 				NextActivity |= START_INTERPLANETARY;
 			GLOBAL (CurrentActivity) |= CHECK_LOAD; /* fake a load game */
 		}
@@ -2176,7 +2176,7 @@ RaceCommunication (void)
 	if (i == CHMMR_SHIP)
 		ReinitQueue (&GLOBAL (npc_built_ship_q));
 
-	if (LOBYTE (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY)
+	if (lowByte (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY)
 	{
 		/* if used destruct code in interplanetary */
 		if (i == SLYLANDRO_SHIP && status == 0)
@@ -2185,7 +2185,7 @@ RaceCommunication (void)
 	else if (hEncounter)
 	{
 		/* Update HSpace encounter info, ships lefts, etc. */
-		BYTE i, NumShips;
+		uqm::BYTE i, NumShips;
 		ENCOUNTER *EncounterPtr;
 
 		LockEncounter (hEncounter, &EncounterPtr);
@@ -2251,8 +2251,8 @@ ClearSubtitles (void)
 static bool
 PauseSubtitles (bool force)
 {
-	const CHAR_T *pStr;
-	static COUNT num = 0;
+	const uqm::CHAR_T *pStr;
+	static uqm::COUNT num = 0;
 
 	pStr = GetTrackSubtitle ();
 	
@@ -2275,10 +2275,10 @@ PauseSubtitles (bool force)
 static void
 CheckSubtitles (bool really)
 {
-	const CHAR_T *pStr;
+	const uqm::CHAR_T *pStr;
 	POINT baseline;
 	TEXT_ALIGN align;
-	COUNT num;
+	uqm::COUNT num;
 
 	if (!really)
 	{	// New check - blocks subtitle change on switching tracks so any code 
@@ -2313,7 +2313,7 @@ CheckSubtitles (bool really)
 		SubtitleText.pStr = pStr;
 		// may have been cleared too
 		if (pStr)
-			SubtitleText.CharCount = (COUNT)~0;
+			SubtitleText.CharCount = (uqm::COUNT)~0;
 		else
 			SubtitleText.CharCount = 0;
 	}
@@ -2347,7 +2347,7 @@ RedrawSISComWindow (void)
 }
 
 void
-SetCustomBaseLine (COUNT sentence, POINT bl, TEXT_ALIGN align)
+SetCustomBaseLine (uqm::COUNT sentence, POINT bl, TEXT_ALIGN align)
 {	// Add custom baseline to the list
 	CUSTOM_BASELINE *cur, *sPtr;
 

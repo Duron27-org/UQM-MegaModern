@@ -48,8 +48,8 @@ struct string_table
 STRING_TABLE AllocStringTable (int num_entries, int flags);
 void FreeStringTable (STRING_TABLE strtab);
 
-void *_GetStringData (uio_Stream *fp, DWORD length);
-void *_GetBinaryTableData (uio_Stream *fp, DWORD length);
+void *_GetStringData (uio_Stream *fp, uqm::DWORD length);
+void *_GetBinaryTableData (uio_Stream *fp, uqm::DWORD length);
 void _GetConversationData (const char *path, RESOURCE_DATA *resdata);
 
 #endif /* LIBS_STRINGS_STRINTRN_H_ */

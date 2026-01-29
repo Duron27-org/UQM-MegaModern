@@ -64,11 +64,11 @@ GetContextFGFrame (void)
 }
 
 static DRAWABLE
-request_drawable (COUNT NumFrames, DRAWABLE_TYPE DrawableType,
-		CREATE_FLAGS flags, SIZE width, SIZE height)
+request_drawable (uqm::COUNT NumFrames, DRAWABLE_TYPE DrawableType,
+		CREATE_FLAGS flags, uqm::SIZE width, uqm::SIZE height)
 {
 	DRAWABLE Drawable;
-	COUNT i;
+	uqm::COUNT i;
 
 	Drawable = AllocDrawable (NumFrames);
 	if (!Drawable)
@@ -98,7 +98,7 @@ request_drawable (COUNT NumFrames, DRAWABLE_TYPE DrawableType,
 // Kruzen: New construct to create paletted drawable
 // Uses previously unused TFB_DrawCanvas_New_Paletted()
 static DRAWABLE
-request_indexed_drawable (Color *palette, SIZE width, SIZE height)
+request_indexed_drawable (Color *palette, uqm::SIZE width, uqm::SIZE height)
 {
 	DRAWABLE Drawable;
 
@@ -130,7 +130,7 @@ request_indexed_drawable (Color *palette, SIZE width, SIZE height)
 }
 
 DRAWABLE
-CreateDisplay (CREATE_FLAGS CreateFlags, SIZE *pwidth, SIZE *pheight)
+CreateDisplay (CREATE_FLAGS CreateFlags, uqm::SIZE *pwidth, uqm::SIZE *pheight)
 {
 	DRAWABLE Drawable;
 
@@ -161,7 +161,7 @@ CreateDisplay (CREATE_FLAGS CreateFlags, SIZE *pwidth, SIZE *pheight)
 }
 
 DRAWABLE
-AllocDrawable (COUNT n)
+AllocDrawable (uqm::COUNT n)
 {
 	DRAWABLE Drawable;
 	Drawable = (DRAWABLE) HCalloc(sizeof (DRAWABLE_DESC));
@@ -194,7 +194,7 @@ AllocDrawable (COUNT n)
 }
 
 DRAWABLE
-CreateDrawable (CREATE_FLAGS CreateFlags, SIZE width, SIZE height, COUNT
+CreateDrawable (CREATE_FLAGS CreateFlags, uqm::SIZE width, uqm::SIZE height, uqm::COUNT
 		num_frames)
 {
 	DRAWABLE Drawable;
@@ -221,7 +221,7 @@ CreateDrawable (CREATE_FLAGS CreateFlags, SIZE width, SIZE height, COUNT
 
 // Kruzen: New construct to create paletted drawable
 DRAWABLE
-CreateIndexedDrawable (Color *palette, SIZE width, SIZE height)
+CreateIndexedDrawable (Color *palette, uqm::SIZE width, uqm::SIZE height)
 {
 	DRAWABLE Drawable;
 
@@ -606,7 +606,7 @@ WriteFramePixelColors (FRAME frame, const Color *pixels, int width, int height)
 }
 
 bool
-ReadFramePixelIndexes (FRAME frame, BYTE *pixels, int width, int height, bool paletted)
+ReadFramePixelIndexes (FRAME frame, uqm::BYTE *pixels, int width, int height, bool paletted)
 {
 	TFB_Image *img;
 
@@ -628,7 +628,7 @@ ReadFramePixelIndexes (FRAME frame, BYTE *pixels, int width, int height, bool pa
 
 // Warning: this functions bypasses DCQ, which is why it is not a DrawXXX
 bool
-WriteFramePixelIndexes (FRAME frame, const BYTE *pixels, int width, int height)
+WriteFramePixelIndexes (FRAME frame, const uqm::BYTE *pixels, int width, int height)
 {
 	TFB_Image *img;
 
