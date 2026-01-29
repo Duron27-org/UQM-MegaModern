@@ -1543,6 +1543,12 @@ add_executable(${PROJECT_NAME} ${ALL_FILES})
 ################################################################################
 # Dependencies
 ################################################################################
+
+#one way of avoiding warning about DOWNLOAD_EXTRACT_TIMESTAMP in CMake 3.24:
+#if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
+#    cmake_policy(SET CMP0135 NEW)
+#endif()
+
 find_package (SDL2 QUIET)
 if (SDL2_FOUND)
 	message (STATUS "Found SDL2: ${SDL2_VERSION}")
@@ -1638,7 +1644,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/src/regex"
     "${SDL2_INCLUDE_DIRS}"
 	"${PNG_INCLUDE_DIRS}"
-	"${ZLIB_INCLUDE_DIRS}"
+	"${ZLIB_INCLUDE_DIRS_UQM}"
     "${OGG_INCLUDE_DIRS}"
 	"${VORBISFILE_INCLUDE_DIRS}"
     "${OPENAL_INCLUDE_DIRS}"

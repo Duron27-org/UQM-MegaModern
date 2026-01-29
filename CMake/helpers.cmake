@@ -86,6 +86,8 @@ function (FetchSDL)
 			URL_HASH SHA256=0ca83e9c9b31e18288c7ec811108e58bac1f1bb5ec6577ad386830eac51c787e
 			SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/SDL2
 			DOWNLOAD_NO_PROGRESS TRUE
+			DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+			
 	)
 	FetchContent_MakeAvailable (SDL2)
 
@@ -122,7 +124,9 @@ function (FetchPNG)
 			URL https://github.com/pnggroup/libpng/archive/refs/tags/v1.6.54.tar.gz
 			URL_HASH SHA256=ba7efce137409079989df4667706c339bebfbb10e9f413474718012a13c8cd4c
 			SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/libpng
-			DOWNLOAD_NO_PROGRESS FALSE
+			DOWNLOAD_NO_PROGRESS TRUE
+			DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+			
 	)
 	FetchContent_MakeAvailable (png)
 
@@ -161,7 +165,9 @@ function (FetchOgg)
 			URL https://github.com/xiph/ogg/releases/download/v1.3.6/libogg-1.3.6.tar.gz
 			URL_HASH SHA256=83e6704730683d004d20e21b8f7f55dcb3383cdf84c0daedf30bde175f774638
 			SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/libogg
-			DOWNLOAD_NO_PROGRESS FALSE
+			DOWNLOAD_NO_PROGRESS TRUE
+			DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+			
 	)
 	FetchContent_MakeAvailable (libogg)
 
@@ -190,7 +196,9 @@ function (FetchVorbis)
 			URL https://github.com/JHGuitarFreak/vorbis/archive/refs/tags/uqm-megamod.tar.gz
 			URL_HASH SHA256=1f51792ad82269317866c1f347ca4aa35bfbaade9ddab80dd3db9fd3d8fe094c
 			SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/libvorbis
-			DOWNLOAD_NO_PROGRESS FALSE
+			DOWNLOAD_NO_PROGRESS TRUE
+			DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+			
 	)
 	FetchContent_MakeAvailable (libvorbis)
 
@@ -228,7 +236,8 @@ function (FetchZLIB)
 			URL https://github.com/madler/zlib/releases/download/v1.3.1/zlib-1.3.1.tar.gz
 			URL_HASH SHA256=9a93b2b7dfdac77ceba5a558a580e74667dd6fede4585b91eefb60f03b72df23
 			SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/zlib
-			DOWNLOAD_NO_PROGRESS FALSE
+			DOWNLOAD_NO_PROGRESS TRUE
+			DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 			CMAKE_ARGS
 			-DBUILD_SHARED_LIBS=OFF
 			-DZLIB_BUILD_EXAMPLES=OFF
@@ -249,6 +258,10 @@ function (FetchZLIB)
 	set (ZLIB_FOUND TRUE PARENT_SCOPE)
 	set (ZLIB_LIBRARY ${ZLIB_TARGET} PARENT_SCOPE)
 	set (ZLIB_INCLUDE_DIR ${zlib_SOURCE_DIR} PARENT_SCOPE)
+	set (ZLIB_INCLUDE_DIRS_UQM
+		"${zlib_SOURCE_DIR}"
+		"${zlib_BINARY_DIR}"
+		PARENT_SCOPE)
 	set (ZLIB_VERSION "1.3.1" PARENT_SCOPE)
 endfunction ()
 
@@ -260,7 +273,9 @@ function (FetchOpenAL)
 		URL https://github.com/kcat/openal-soft/releases/download/1.25.1/openal-soft-1.25.1-bin.zip
 		URL_HASH SHA256=0915af01928b17e46f7c59ffc44a7413486bbef8424a3465109f489a80cb68a2
 		SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/OpenAL-Soft
-		DOWNLOAD_NO_PROGRESS FALSE
+		DOWNLOAD_NO_PROGRESS TRUE
+		DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+			
 		#CMAKE_ARGS
 		#-DBUILD_SHARED_LIBS=OFF
 		#-DZLIB_BUILD_EXAMPLES=OFF
