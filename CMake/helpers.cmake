@@ -128,6 +128,16 @@ function (FetchPNG)
 
 	set (CMAKE_MESSAGE_LOG_LEVEL "STATUS") # Re-enable status messages
 
+	# rename pnglibconf.h.prebuilt to pnglibconf.h as per instructions in png.h
+	if (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/libpng/pnglibconf.h")
+		message(WARNING "pnglibconf.h not found. Copying scripts/pnglibconf.h.prebuilt as suggested in pnglib.h")
+		file(COPY_FILE
+		    "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/libpng/scripts/pnglibconf.h.prebuilt"
+			"${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/libpng/pnglibconf.h"
+			)
+	endif()
+
+
 	# Set variables
 	set (PNG_FOUND TRUE PARENT_SCOPE)
 	set (PNG_LIBRARIES png_static PARENT_SCOPE)
@@ -138,6 +148,7 @@ function (FetchPNG)
 	)
 	set (PNG_CFLAGS_OTHER ""       PARENT_SCOPE)
 	set (PNG_VERSION      "1.6.54" PARENT_SCOPE)
+
 endfunction ()
 
 function (FetchOgg)
@@ -160,7 +171,7 @@ function (FetchOgg)
 	set (OGG_FOUND TRUE PARENT_SCOPE)
 	set (OGG_LIBRARIES ogg PARENT_SCOPE)
 	set (OGG_LIBRARY "${CMAKE_CURRENT_BINARY_DIR}/thirdparty/libogg/")
-	set (OGG_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/libogg/include/ogg/")
+	set (OGG_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/libogg/include/")
 	set (OGG_INCLUDE_DIRS
 			${OGG_LIBRARY}/include
 			${OGG_INCLUDE_DIR}
@@ -240,3 +251,13 @@ function (FetchZLIB)
 	set (ZLIB_INCLUDE_DIR ${zlib_SOURCE_DIR} PARENT_SCOPE)
 	set (ZLIB_VERSION "1.3.1" PARENT_SCOPE)
 endfunction ()
+
+function (FetchOpenAL)
+	message (STATUS "Fetching OpenAL...")
+
+	set (OPENAL_INCLUDE_DIRS
+			${CMAKE_CURRENT_BINARY_DIR}/thirdparty/OpenAL/AL
+			${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/OpenAL/OpenAL
+			PARENT_SCOPE
+	)
+endfunction()

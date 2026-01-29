@@ -183,14 +183,14 @@ GetToolTipFrameRect (RECT *r)
 void
 DrawTooltip (SHIP_INFO *SIPtr)
 {
-	UNICODE *ptr;
-	UNICODE buf[PATH_MAX];
+	CHAR_T *ptr;
+	CHAR_T buf[PATH_MAX];
 	TEXT Text;
 	CONTEXT oldContext;
 	FONT oldFont;
 	Color oldColor;
 	RECT r;
-	UNICODE delim[] = "\n";
+	CHAR_T delim[] = "\n";
 
 	GetToolTipFrameRect (&r);
 	

@@ -352,7 +352,7 @@ DrawRestartMenuGraphic (MENU_STATE *pMS)
 	RECT r;
 	STAMP s;
 	TEXT t;
-	UNICODE buf[64];
+	CHAR_T buf[64];
 	COUNT i;
 	SIZE leading;
 

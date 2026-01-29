@@ -658,7 +658,7 @@ pickupNode (PLANETSIDE_DESC *pPSD, COUNT NumRetrieved,
 		const INTERSECT_CONTROL *ElementControl, COUNT Scan)
 {
 	BYTE EType;
-	UNICODE ch, *pStr;
+	CHAR_T ch, *pStr;
 	COUNT *Amount, Max, Offset;
 	BOOLEAN PartialPickup;
 

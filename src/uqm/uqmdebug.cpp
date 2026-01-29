@@ -1076,8 +1076,8 @@ dumpSystemCallback (const STAR_DESC *star, const SOLARSYS_STATE *system,
 void
 dumpSystem (FILE *out, const STAR_DESC *star, const SOLARSYS_STATE *system)
 {
-	UNICODE name[256];
-	UNICODE buf[40];
+	CHAR_T name[256];
+	CHAR_T buf[40];
 
 	GetClusterName (star, name);
 	snprintf (buf, sizeof buf, "%s %s",
@@ -1315,7 +1315,7 @@ dumpMoon (FILE *out, const PLANET_DESC *moon)
 		typeStr = planetTypeString (moon->data_index & ~PLANET_SHIELDED);
 	}
 	fprintf (out, "  - Moon %-30c  %s\n",
-			'a' + (UNICODE)(moon - &pSolarSysState->MoonDesc[0]), typeStr);
+			'a' + (CHAR_T)(moon - &pSolarSysState->MoonDesc[0]), typeStr);
 
 	dumpWorld (out, moon);
 }
@@ -1368,7 +1368,7 @@ void
 fprintfWorld (const PLANET_DESC *world)
 {
 	PLANET_INFO *info;
-	UNICODE buf[200];
+	CHAR_T buf[200];
 	FILE *fp = fopen ("planetLog.txt", "a");
 	POINT universe = CurStarDescPtr->star_pt;
 
@@ -1585,7 +1585,7 @@ static void
 tallySystemPostCallback (const STAR_DESC *star, const SOLARSYS_STATE *system,
 		void *arg)
 {
-	UNICODE name[256];
+	CHAR_T name[256];
 	TallyResourcesArg *tallyResourcesArg = (TallyResourcesArg *) arg;
 	FILE *out = tallyResourcesArg->out;
 
@@ -1708,7 +1708,7 @@ dumpPlanetType (FILE *out, int index, const PlanetFrame *planetType)
 const char *
 planetTypeString (int typeIndex)
 {
-	static UNICODE typeStr[40];
+	static CHAR_T typeStr[40];
 
 	if (typeIndex >= FIRST_GAS_GIANT)
 	{

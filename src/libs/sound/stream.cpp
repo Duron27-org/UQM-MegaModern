@@ -216,7 +216,7 @@ BOOLEAN
 IsTracker (uint32 source)
 {
 	TFB_SoundSample * sample = soundSource[source].sample;
-	const UNICODE *filetype;
+	const CHAR_T *filetype;
 
 	if (!sample)
 		return FALSE;

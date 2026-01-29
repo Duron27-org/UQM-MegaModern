@@ -30,7 +30,7 @@ typedef struct delta_types
 {
 	int _int;
 	BOOLEAN _bool;
-	UNICODE *_str;
+	CHAR_T *_str;
 	char _char;
 } DELTA_TYPES;
 

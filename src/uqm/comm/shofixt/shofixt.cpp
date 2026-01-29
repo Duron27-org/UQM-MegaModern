@@ -401,7 +401,7 @@ Hostile (RESPONSE_REF R)
 					shofixti_name,
 					"",
 					look1,
-					(UNICODE*)NULL);
+					(CHAR_T*)NULL);
 			DoResponsePhrase (look0, ExitConversation, shared_phrase_buf);
 			break;
 		}
@@ -419,9 +419,9 @@ Friendly (RESPONSE_REF R)
 	struct
 	{
 		RESPONSE_REF pStr;
-		UNICODE *c_buf;
+		CHAR_T *c_buf;
 	} Resp[3];
-	static UNICODE buf0[80], buf1[80];
+	static CHAR_T buf0[80], buf1[80];
 	
 	LastStack = 0;
 	memset (Resp, 0, sizeof (Resp));
@@ -478,7 +478,7 @@ Friendly (RESPONSE_REF R)
 				shofixti_name,
 				"",
 				report1,
-				(UNICODE*)NULL);
+				(CHAR_T*)NULL);
 		Resp[0].pStr = report0;
 		Resp[0].c_buf = buf0;
 	}
@@ -493,7 +493,7 @@ Friendly (RESPONSE_REF R)
 					shofixti_name,
 					"",
 					why_here1,
-					(UNICODE*)NULL);
+					(CHAR_T*)NULL);
 			Resp[1].pStr = why_here0;
 			Resp[1].c_buf = buf1;
 			break;
@@ -534,7 +534,7 @@ Friendly (RESPONSE_REF R)
 			shofixti_name,
 			"",
 			bye1,
-			(UNICODE*)NULL);
+			(CHAR_T*)NULL);
 	DoResponsePhrase (bye0, ExitConversation, shared_phrase_buf);
 }
 

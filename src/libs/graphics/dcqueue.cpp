@@ -334,7 +334,7 @@ RenderFPS (int *fps)
 		int i;
 		int max;
 		int step = 6;
-		UNICODE buf[4];
+		CHAR_T buf[4];
 		TFB_Char *ch;
 		TFB_Image *img;
 

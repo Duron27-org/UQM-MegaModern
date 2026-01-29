@@ -295,14 +295,14 @@ OnBufferTag (TFB_SoundSample* sample, TFB_SoundTag* tag)
 // Rerturns number of timestamps parsed.
 // Stops if it encounters a ; as this is used for alternate time stamps.
 static int
-GetTimeStamps (UNICODE *TimeStamps, sint32 *time_stamps)
+GetTimeStamps (CHAR_T *TimeStamps, sint32 *time_stamps)
 {
 	int pos;
 	int num = 0;
 	
 	while (*TimeStamps && (pos = strcspn (TimeStamps, ";,\r\n")))
 	{
-		UNICODE valStr[32];
+		CHAR_T valStr[32];
 		uint32 val;
 		
 		memcpy (valStr, TimeStamps, pos);
@@ -325,7 +325,7 @@ GetTimeStamps (UNICODE *TimeStamps, sint32 *time_stamps)
 #define TEXT_SPEED 80
 // Returns number of parsed pages
 static int
-SplitSubPages (UNICODE *text, UNICODE *pages[], sint32 timestamp[], int size)
+SplitSubPages (CHAR_T *text, CHAR_T *pages[], sint32 timestamp[], int size)
 {
 	int lead_ellips = 0;
 	COUNT page;
@@ -341,7 +341,7 @@ SplitSubPages (UNICODE *text, UNICODE *pages[], sint32 timestamp[], int size)
 		//   are used exclusively
 		aft_ellips = 3 * (text[pos] != '\0' && pos > 0 &&
 				!ispunct (text[pos - 1]) && !isspace (text[pos - 1]));
-		pages[page] = (UNICODE*)HMalloc (sizeof (UNICODE) *
+		pages[page] = (CHAR_T*)HMalloc (sizeof (CHAR_T) *
 				(lead_ellips + pos + aft_ellips + 1));
 		if (lead_ellips)
 			strcpy (pages[page], "...");
@@ -377,7 +377,7 @@ SplitSubPages (UNICODE *text, UNICODE *pages[], sint32 timestamp[], int size)
 // May only be called after at least one SpliceTrack(). This is a limitation
 // for the sake of timestamps, but it does not have to be so.
 void
-SpliceMultiTrack (UNICODE *TrackNames[], UNICODE *TrackText)
+SpliceMultiTrack (CHAR_T *TrackNames[], CHAR_T *TrackText)
 {
 #define MAX_MULTI_TRACKS  20
 #define MAX_MULTI_BUFFERS 100
@@ -433,7 +433,7 @@ SpliceMultiTrack (UNICODE *TrackNames[], UNICODE *TrackText)
 
 	slen1 = strlen (last_sub->text);
 	slen2 = strlen (TrackText);
-	last_sub->text = (UNICODE*)HRealloc (last_sub->text, slen1 + slen2 + 1);
+	last_sub->text = (CHAR_T*)HRealloc (last_sub->text, slen1 + slen2 + 1);
 	strcpy (last_sub->text + slen1, TrackText);
 
 	no_page_break = 1;
@@ -441,12 +441,12 @@ SpliceMultiTrack (UNICODE *TrackNames[], UNICODE *TrackText)
 
 // XXX: This code and the entire trackplayer are begging to be overhauled
 void
-SpliceTrack (UNICODE *TrackName, UNICODE *TrackText, UNICODE *TimeStamp, CallbackFunction cb)
+SpliceTrack (CHAR_T *TrackName, CHAR_T *TrackText, CHAR_T *TimeStamp, CallbackFunction cb)
 {
-	static UNICODE last_track_name[128] = "";
+	static CHAR_T last_track_name[128] = "";
 	static unsigned long dec_offset = 0;
 #define MAX_PAGES 50
-	UNICODE *pages[MAX_PAGES];
+	CHAR_T *pages[MAX_PAGES];
 	sint32 time_stamps[MAX_PAGES];
 	int num_pages;
 	int page;
@@ -485,7 +485,7 @@ SpliceTrack (UNICODE *TrackName, UNICODE *TrackText, UNICODE *TimeStamp, Callbac
 		// Add the first piece to the last subtitle page
 		slen1 = strlen (last_sub->text);
 		slen2 = strlen (pages[0]);
-		last_sub->text = (UNICODE*)HRealloc (last_sub->text, slen1 + slen2 + 1);
+		last_sub->text = (CHAR_T*)HRealloc (last_sub->text, slen1 + slen2 + 1);
 		strcpy (last_sub->text + slen1, pages[0]);
 		HFree (pages[0]);
 		
@@ -543,7 +543,7 @@ SpliceTrack (UNICODE *TrackName, UNICODE *TrackText, UNICODE *TimeStamp, Callbac
 
 			slen1 = strlen (last_sub->text);
 			slen2 = strlen (pages[0]);
-			last_sub->text = (UNICODE*)HRealloc (last_sub->text, slen1 + slen2 + 1);
+			last_sub->text = (CHAR_T*)HRealloc (last_sub->text, slen1 + slen2 + 1);
 			strcpy (last_sub->text + slen1, pages[0]);
 			HFree (pages[0]);
 		}
@@ -863,7 +863,7 @@ GetNextTrackSubtitle (SUBTITLE_REF LastRef)
 }
 
 // External access to the chunk subtitles
-const UNICODE *
+const CHAR_T *
 GetTrackSubtitleText (SUBTITLE_REF SubRef)
 {
 	if (!SubRef)
@@ -874,10 +874,10 @@ GetTrackSubtitleText (SUBTITLE_REF SubRef)
 
 // External access to currently active subtitle text
 // Returns NULL is none is active
-const UNICODE *
+const CHAR_T *
 GetTrackSubtitle (void)
 {
-	const UNICODE *cur_sub = NULL;
+	const CHAR_T *cur_sub = NULL;
 
 	if (!sound_sample)
 		return NULL; // not playing anything
@@ -891,7 +891,7 @@ GetTrackSubtitle (void)
 }
 
 COUNT
-GetSubtitleNumber (const UNICODE *sub)
+GetSubtitleNumber (const CHAR_T *sub)
 {
 	COUNT i = 0;
 	TFB_SoundChunk *now;

@@ -45,15 +45,15 @@ extern void JumpTrack (void);
 extern void PauseTrack (void);
 extern void ResumeTrack (void);
 extern COUNT PlayingTrack (void);
-extern COUNT GetSubtitleNumber (const UNICODE *sub);
+extern COUNT GetSubtitleNumber (const CHAR_T *sub);
 
 extern void FastReverse_Smooth (void);
 extern void FastForward_Smooth (void);
 extern void FastReverse_Page (void);
 extern void FastForward_Page (void);
 
-extern void SpliceTrack (UNICODE *filespec, UNICODE *textspec, UNICODE *TimeStamp, CallbackFunction cb);
-extern void SpliceMultiTrack (UNICODE *TrackNames[], UNICODE *TrackText);
+extern void SpliceTrack (CHAR_T *filespec, CHAR_T *textspec, CHAR_T *TimeStamp, CallbackFunction cb);
+extern void SpliceMultiTrack (CHAR_T *TrackNames[], CHAR_T *TrackText);
 
 extern int GetTrackPosition (int in_units);
 
@@ -61,9 +61,9 @@ typedef struct tfb_soundchunk *SUBTITLE_REF;
 
 extern SUBTITLE_REF GetFirstTrackSubtitle (void);
 extern SUBTITLE_REF GetNextTrackSubtitle (SUBTITLE_REF LastRef);
-extern const UNICODE *GetTrackSubtitleText (SUBTITLE_REF SubRef);
+extern const CHAR_T *GetTrackSubtitleText (SUBTITLE_REF SubRef);
 
-extern const UNICODE *GetTrackSubtitle (void);
+extern const CHAR_T *GetTrackSubtitle (void);
 extern COUNT GetSubtitleNumberByTrack (COUNT track);
 extern DWORD RecalculateDelay (DWORD numChars, BOOLEAN talk);
 

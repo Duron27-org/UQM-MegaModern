@@ -355,7 +355,7 @@ static int
 OnTextEntryEvent (WIDGET_TEXTENTRY *widget)
 {	// Going to edit the text
 	TEXTENTRY_STATE tes;
-	UNICODE revert_buf[256];
+	CHAR_T revert_buf[256];
 
 	// position cursor at the end of text
 	widget->cursor_pos = utf8StringCount (widget->value);

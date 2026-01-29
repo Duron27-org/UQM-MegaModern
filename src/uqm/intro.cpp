@@ -300,7 +300,7 @@ Present_GenerateSIS (PRESENTATION_INPUT_STATE* pPIS)
 }
 
 static void
-DoSpinText (UNICODE *buf, COORD x, COORD y, FRAME repair, BOOLEAN *skip)
+DoSpinText (CHAR_T *buf, COORD x, COORD y, FRAME repair, BOOLEAN *skip)
 {
 	TEXT Text;
 
@@ -340,7 +340,7 @@ DoSpinStatBox (RECT *r, Color front, Color back, BOOLEAN *skip)
 }
 
 static void
-DoSpinStat (UNICODE *buf, COORD x, COORD y, COUNT filled, COUNT empty, Color front, Color back,
+DoSpinStat (CHAR_T *buf, COORD x, COORD y, COUNT filled, COUNT empty, Color front, Color back,
 		BOOLEAN *skip)
 {
 	TEXT Text;

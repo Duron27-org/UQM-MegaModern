@@ -329,7 +329,7 @@ DrawEnterOrbitText (RECT rect)
 	FONT OldFont;
 	FRAME OldFontEffect;
 	SIZE leading;
-	UNICODE buf[256];
+	CHAR_T buf[256];
 	COORD og_baseline_x;
 
 	OldFont = SetContextFont (MicroFont);
@@ -354,7 +354,7 @@ DrawEnterOrbitText (RECT rect)
 
 	while (text.pStr != NULL)
 	{
-		text.pStr = AlignText ((const UNICODE *)text.pStr,
+		text.pStr = AlignText ((const CHAR_T *)text.pStr,
 				&text.baseline.x);
 		text.CharCount = (COUNT)~0;
 

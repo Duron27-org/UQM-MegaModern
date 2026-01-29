@@ -69,7 +69,7 @@
 static CONTEXT AnimContext;
 
 LOCDATA CommData;
-UNICODE shared_phrase_buf[2048];
+CHAR_T shared_phrase_buf[2048];
 FONT ComputerFont;
 
 static BOOLEAN TalkingFinished;
@@ -101,7 +101,7 @@ typedef struct encounter_state
 	BYTE top_response;
 	RESPONSE_ENTRY response_list[MAX_RESPONSES];
 
-	UNICODE phrase_buf[1024];
+	CHAR_T phrase_buf[1024];
 } ENCOUNTER_STATE;
 
 // Required to set custom baseline per one sentence
@@ -127,7 +127,7 @@ static ENCOUNTER_STATE *pCurInputState;
 static BOOLEAN clear_subtitles;
 static BOOLEAN next_page = FALSE;
 static TEXT SubtitleText;
-static const UNICODE *last_subtitle;
+static const CHAR_T *last_subtitle;
 
 static CONTEXT TextCacheContext;
 static FRAME TextCacheFrame;
@@ -669,7 +669,7 @@ RefreshResponses (ENCOUNTER_STATE *pES)
 }
 
 static void
-FeedbackPlayerPhrase (UNICODE *pStr)
+FeedbackPlayerPhrase (CHAR_T *pStr)
 {
 	SetContext (SpaceContext);
 	
@@ -1220,15 +1220,15 @@ typedef struct summary_state
 	BOOLEAN Initialized;
 	BOOLEAN PrintNext;
 	SUBTITLE_REF NextSub;
-	const UNICODE *LeftOver;
+	const CHAR_T *LeftOver;
 
 } SUMMARY_STATE;
 
 static void 
-remove_char_from_string (UNICODE* str, const UNICODE c)
+remove_char_from_string (CHAR_T* str, const CHAR_T c)
 {	// MB: Hack for removing '$' characters from Orz dialogue when viewing
 	// summary conversation - Used by DoConvSummary below
-	UNICODE *pr = str, *pw = str;
+	CHAR_T *pr = str, *pw = str;
 
 	while (*pr)
 	{
@@ -1320,7 +1320,7 @@ DoConvSummary (SUMMARY_STATE *pSS)
 				if (CommData.AlienConv == ORZ_CONVERSATION)
 				{	// MB: nasty hack: remove '$'s from conversation for
 					// Orz
-					UNICODE my_copy[128];
+					CHAR_T my_copy[128];
 					
 					strcpy (my_copy, t.pStr);
 					remove_char_from_string (my_copy, '$');
@@ -1346,7 +1346,7 @@ DoConvSummary (SUMMARY_STATE *pSS)
 			// this subtitle fit completely
 			if (CommData.AlienConv == ORZ_CONVERSATION)
 			{	// MB: nasty hack: remove '$'s from conversation for Orz
-				UNICODE my_copy[128];
+				CHAR_T my_copy[128];
 				
 				strcpy (my_copy, t.pStr);
 				remove_char_from_string (my_copy, '$');
@@ -1361,7 +1361,7 @@ DoConvSummary (SUMMARY_STATE *pSS)
 		if (row >= MAX_SUMM_ROWS && (pSS->NextSub || pSS->LeftOver))
 		{	// draw *MORE*
 			TEXT mt;
-			UNICODE buffer[128];
+			CHAR_T buffer[128];
 
 			mt.baseline.x = RES_SCALE (ORIG_SIS_SCREEN_WIDTH >> 1);
 			mt.baseline.y = t.baseline.y;
@@ -1640,7 +1640,7 @@ DoCommunication (ENCOUNTER_STATE *pES)
 
 void
 DoResponsePhrase (RESPONSE_REF R, RESPONSE_FUNC response_func,
-		UNICODE *ConstructStr)
+		CHAR_T *ConstructStr)
 {
 	ENCOUNTER_STATE *pES = pCurInputState;
 	RESPONSE_ENTRY *pEntry;
@@ -1666,7 +1666,7 @@ DoResponsePhrase (RESPONSE_REF R, RESPONSE_FUNC response_func,
 		locString = SetAbsStringTableIndex (CommData.ConversationPhrases,
 				(COUNT) (R - 1));
 		pEntry->response_text.pStr =
-				(UNICODE *) GetStringAddress (locString);
+				(CHAR_T *) GetStringAddress (locString);
 
 		if (luaUqm_comm_stringNeedsInterpolate (pEntry->response_text.pStr))
 		{
@@ -2251,7 +2251,7 @@ ClearSubtitles (void)
 static BOOLEAN
 PauseSubtitles (BOOLEAN force)
 {
-	const UNICODE *pStr;
+	const CHAR_T *pStr;
 	static COUNT num = 0;
 
 	pStr = GetTrackSubtitle ();
@@ -2275,7 +2275,7 @@ PauseSubtitles (BOOLEAN force)
 static void
 CheckSubtitles (BOOLEAN really)
 {
-	const UNICODE *pStr;
+	const CHAR_T *pStr;
 	POINT baseline;
 	TEXT_ALIGN align;
 	COUNT num;

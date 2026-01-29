@@ -379,7 +379,7 @@ DrawPauseText (RECT *rect)
 	text.baseline.y += RES_SCALE (10);
 	text.align = ALIGN_CENTER;
 	text.pStr = AlignText (
-			(const UNICODE *)GAME_STRING (QUITMENU_STRING_BASE + 4),
+			(const CHAR_T *)GAME_STRING (QUITMENU_STRING_BASE + 4),
 			&text.baseline.x);
 	text.CharCount = (COUNT)~0;
 
@@ -653,7 +653,7 @@ get_fuel_to_sol (void)
 }
 
 void
-DrawFlagStatDisplay (UNICODE *str)
+DrawFlagStatDisplay (CHAR_T *str)
 {
 	TEXT t;
 	RECT r;
@@ -683,10 +683,10 @@ DrawFlagStatDisplay (UNICODE *str)
 	font_DrawText (&t);
 }
 
-UNICODE *
+CHAR_T *
 WholeFuelValue (void)
 {
-	static UNICODE buf[7];
+	static CHAR_T buf[7];
 	DWORD CoarseFuel = GLOBAL_SIS (FuelOnBoard);
 
 	double dblFuelOnBoard = (double)CoarseFuel / FUEL_TANK_SCALE;

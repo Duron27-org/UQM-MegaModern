@@ -38,7 +38,7 @@ typedef sint64           SQWORD;
 typedef UWORD             COUNT;
 typedef SWORD              SIZE;
 
-typedef char            UNICODE;
+typedef char            CHAR_T;
 
 // TODO-pragmanull: get rid of BOOLEAN and the TRUE/FALSE defines.
 using BOOLEAN = bool;

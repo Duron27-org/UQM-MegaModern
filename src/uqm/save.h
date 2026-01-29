@@ -64,9 +64,9 @@ typedef struct
 	BYTE NumShips, NumDevices;
 	BYTE ShipList[MAX_BUILT_SHIPS];
 	BYTE DeviceList[MAX_EXCLUSIVE_DEVICES];
-	UNICODE SaveName[SAVE_NAME_SIZE];
-	UNICODE SaveNameChecker[SAVE_CHECKER_SIZE];
-	UNICODE LegacySaveName[LEGACY_SAVE_NAME_SIZE];
+	CHAR_T SaveName[SAVE_NAME_SIZE];
+	CHAR_T SaveNameChecker[SAVE_CHECKER_SIZE];
+	CHAR_T LegacySaveName[LEGACY_SAVE_NAME_SIZE];
 	BYTE res_factor;
 } SUMMARY_DESC;
 

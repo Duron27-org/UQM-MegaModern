@@ -54,7 +54,7 @@ extern STAR_DESC* FindStar (STAR_DESC *pLastStar, POINT *puniverse,
 
 // Populates buf with the full name of the star at pSD
 // May not be used much any more ***
-extern void GetClusterName (const STAR_DESC *pSD, UNICODE buf[]);
+extern void GetClusterName (const STAR_DESC *pSD, CHAR_T buf[]);
 
 // Returns the closest star to point p on the given starmap
 STAR_DESC *FindNearestStar (STAR_DESC *starmap, POINT p);

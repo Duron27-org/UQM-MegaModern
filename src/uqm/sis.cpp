@@ -44,7 +44,7 @@
 
 static StatMsgMode curMsgMode = SMM_DEFAULT;
 
-static const UNICODE *describeWeapon (BYTE moduleType);
+static const CHAR_T *describeWeapon (BYTE moduleType);
 
 FRAME hdFuelFrame;
 
@@ -129,7 +129,7 @@ ClearSISRect (BYTE ClearFlags)
 // right hand side, containing the coordinates in HyperSpace, or the planet
 // name in IP.
 void
-DrawSISTitle (UNICODE *pStr)
+DrawSISTitle (CHAR_T *pStr)
 {
 	TEXT t;
 	CONTEXT OldContext;
@@ -153,7 +153,7 @@ DrawSISTitle (UNICODE *pStr)
 		SetContextFont (TinyFont);
 	else
 	{
-		UNICODE *buf = pStr;
+		CHAR_T *buf = pStr;
 
 		SetContextFont (TinyFontBold);
 		replaceChar (buf, UNICHAR_SPACE, UNICHAR_TAB);
@@ -183,7 +183,7 @@ DrawSISTitle (UNICODE *pStr)
 void
 DrawHyperCoords (POINT universe)
 {
-	UNICODE buf[100];
+	CHAR_T buf[100];
 	char *SpaceOrNull = (isPC (optWhichFonts) ? STR_SPACE : "");
 
 	snprintf (buf, sizeof buf, "%03u.%01u%s:%s%03u.%01u",
@@ -197,11 +197,11 @@ DrawHyperCoords (POINT universe)
 void
 DrawSaveInfo (SIS_STATE SisState)
 {
-	UNICODE buf[100];
-	UNICODE TempDiff[11];
-	UNICODE TempExt[12] = "";
-	UNICODE TempNom[10] = "";
-	UNICODE TempVer[SIS_NAME_SIZE] = "";
+	CHAR_T buf[100];
+	CHAR_T TempDiff[11];
+	CHAR_T TempExt[12] = "";
+	CHAR_T TempNom[10] = "";
+	CHAR_T TempVer[SIS_NAME_SIZE] = "";
 
 	if (SisState.SaveVersion > 0)
 	{
@@ -244,7 +244,7 @@ DrawSaveInfo (SIS_STATE SisState)
 }
 
 void
-DrawSISMessage (const UNICODE *pStr)
+DrawSISMessage (const CHAR_T *pStr)
 {
 	DrawSISMessageEx (pStr, -1, -1, DSME_NONE);
 }
@@ -252,10 +252,10 @@ DrawSISMessage (const UNICODE *pStr)
 // See sis.h for the allowed flags. This is the field at the top of the
 // screen, on the left hand side.
 BOOLEAN
-DrawSISMessageEx (const UNICODE *pStr, SIZE CurPos, SIZE ExPos,
+DrawSISMessageEx (const CHAR_T *pStr, SIZE CurPos, SIZE ExPos,
 		COUNT flags)
 {
-	UNICODE buf[256];
+	CHAR_T buf[256];
 	CONTEXT OldContext;
 	TEXT t;
 	RECT r;
@@ -331,7 +331,7 @@ DrawSISMessageEx (const UNICODE *pStr, SIZE CurPos, SIZE ExPos,
 
 		if (CurPos < 0 && ExPos < 0)
 		{
-			UNICODE buf[100];
+			CHAR_T buf[100];
 
 			utf8StringCopy (buf, sizeof (buf), pStr);
 			replaceChar (buf, UNICHAR_SPACE, UNICHAR_TAB);
@@ -521,12 +521,12 @@ GetStatusMessageRect (RECT *r)
 }
 
 void
-DrawStatusMessage (const UNICODE *pStr)
+DrawStatusMessage (const CHAR_T *pStr)
 {
 	RECT r;
 	RECT ctxRect;
 	TEXT t;
-	UNICODE buf[128];
+	CHAR_T buf[128];
 	CONTEXT OldContext;
 
 	OldContext = SetContext (StatusContext);
@@ -613,7 +613,7 @@ DrawStatusMessage (const UNICODE *pStr)
 		SetContextFont (TinyFont);
 	else
 	{
-		UNICODE buf[100];
+		CHAR_T buf[100];
 
 		SetContextFont (TinyFontBold);
 
@@ -689,7 +689,7 @@ DrawFlagshipName (BOOLEAN InStatusArea, bool NewGame)
 	Color OldColor;
 	CONTEXT OldContext;
 	FRAME OldFontEffect;
-	UNICODE buf[250];
+	CHAR_T buf[250];
 
 	OldFontEffect = SetContextFontEffect (NULL);
 	OldColor = SetContextForeGroundColor (FLAGSHIP_NAME_BACKGROUND_COLOR);
@@ -782,7 +782,7 @@ DrawFlagshipStats (void)
 	Color OldColor;
 	FRAME OldFontEffect;
 	CONTEXT OldContext;
-	UNICODE buf[128];
+	CHAR_T buf[128];
 	SIZE leading;
 	BYTE i;
 	BYTE energy_regeneration, energy_wait, turn_wait;
@@ -950,7 +950,7 @@ DrawFlagshipStats (void)
 	SetContext (OldContext);
 }
 
-static const UNICODE *
+static const CHAR_T *
 describeWeapon (BYTE moduleType)
 {
 	switch (moduleType)
@@ -1323,7 +1323,7 @@ DeltaSISGauges_crewDelta (SIZE crew_delta)
 
 	{
 		TEXT t;
-		UNICODE buf[60];
+		CHAR_T buf[60];
 		RECT r;
 
 		snprintf (buf, sizeof buf, "%u", GLOBAL_SIS (CrewEnlisted));
@@ -1375,7 +1375,7 @@ DeltaSISGauges_fuelDelta (SDWORD fuel_delta)
 		TEXT t;
 		// buf from [60] to [7]: The max fuel anyone can ever get is 1610 (1610.00 in whole value)
 		// I.E. only 4 (7) characters, we don't need that much extra padding.
-		UNICODE buf[7];
+		CHAR_T buf[7];
 		RECT r;
 		// Cast as a double and divided by FUEL_TANK_SCALE to get a decimal
 		double dblFuelOnBoard = (double)NewCoarseFuel / FUEL_TANK_SCALE;
@@ -1887,8 +1887,8 @@ CountSISPieces (BYTE piece_type)
 static void
 AutoPilotTextLogic (void)
 {
-	UNICODE buf[PATH_MAX];
-	UNICODE star_cluster[MAX_CLUSTER];
+	CHAR_T buf[PATH_MAX];
+	CHAR_T star_cluster[MAX_CLUSTER];
 	POINT Falayalaralfali;
 	POINT destination;
 	POINT current_position;

@@ -211,7 +211,7 @@ planetIndex (const SOLARSYS_STATE *solarSys, const PLANET_DESC *world)
 	return planet - solarSys->PlanetDesc;
 }
 
-UNICODE
+CHAR_T
 moonLetter (const SOLARSYS_STATE *solarSys, const PLANET_DESC *moon)
 {
 	assert (!worldIsPlanet (solarSys, moon));
@@ -419,7 +419,7 @@ GenerateMoons (SOLARSYS_STATE *system, PLANET_DESC *planet)
 FRAME
 LoadNebulaeFrame (POINT location)
 {
-	UNICODE path[PATH_MAX];
+	CHAR_T path[PATH_MAX];
 	STRING nebulaRes;
 	COUNT nebulaCount;
 	POINT neb_seed;
@@ -2849,7 +2849,7 @@ ExploreSolarSys (void)
 	pSolarSysState = 0;
 }
 
-UNICODE *
+CHAR_T *
 GetNamedPlanetaryBody (void)
 {
 	if (!CurStarDescPtr || !playerInSolarSystem ()
@@ -2965,10 +2965,10 @@ GetNamedPlanetaryBody (void)
 }
 
 void
-GetPlanetOrMoonName (UNICODE *buf, COUNT bufsize)
+GetPlanetOrMoonName (CHAR_T *buf, COUNT bufsize)
 {
-	UNICODE *named;
-	UNICODE *tempbuf;
+	CHAR_T *named;
+	CHAR_T *tempbuf;
 	int moon, i;
 	BOOLEAN name_has_suffix = FALSE;
 

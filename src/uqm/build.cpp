@@ -1401,7 +1401,7 @@ SeedFleetLocation (FLEET_INFO *FleetPtr, PLOT_LOCATION *plotmap, COUNT visit)
 	POINT warpoint;	// location being visited, or offset for samatra
 	POINT location = {0, 0}; // The results of the seeding
 	BOOLEAN myRNG = false; // If you create RNG, clean up RNG
-	UNICODE buf[256] = ""; // For debug string
+	CHAR_T buf[256] = ""; // For debug string
 
 	if (!FleetPtr || !plotmap)
 	{

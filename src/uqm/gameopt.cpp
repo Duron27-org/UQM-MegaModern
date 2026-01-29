@@ -124,7 +124,7 @@ enum
 static void
 FeedbackSetting (BYTE which_setting)
 {
-	UNICODE buf[128];
+	CHAR_T buf[128];
 	const char *tmpstr;
 
 	buf[0] = '\0';
@@ -196,7 +196,7 @@ FeedbackSetting (BYTE which_setting)
 #define DDSHS_BLOCKCUR 2
 
 static BOOLEAN
-DrawNameString (bool nameCaptain, UNICODE *Str, COUNT CursorPos,
+DrawNameString (bool nameCaptain, CHAR_T *Str, COUNT CursorPos,
 		COUNT state)
 {
 	RECT r;
@@ -349,9 +349,9 @@ OnNameChange (TEXTENTRY_STATE *pTES)
 static void
 NameCaptainOrShip (BOOLEAN nameCaptain, BOOLEAN gamestart)
 {
-	UNICODE buf[MAX_NAME_SIZE] = "";
+	CHAR_T buf[MAX_NAME_SIZE] = "";
 	TEXTENTRY_STATE tes;
-	UNICODE *Setting;
+	CHAR_T *Setting;
 	COUNT CursPos = 0;
 
 	SetContext (StatusContext);
@@ -416,13 +416,13 @@ NameCaptainOrShip (BOOLEAN nameCaptain, BOOLEAN gamestart)
 }
 
 static BOOLEAN
-DrawSaveNameString (UNICODE *Str, COUNT CursorPos, COUNT state, COUNT gameIndex)
+DrawSaveNameString (CHAR_T *Str, COUNT CursorPos, COUNT state, COUNT gameIndex)
 {
 	RECT r;
 	TEXT lf;
 	Color BackGround, ForeGround;
 	FONT Font;
-	UNICODE fullStr[256], dateStr[80];
+	CHAR_T fullStr[256], dateStr[80];
 
 	DateToString (dateStr, sizeof dateStr, GLOBAL(GameClock.month_index),
 			GLOBAL(GameClock.day_index), GLOBAL(GameClock.year_index));
@@ -545,7 +545,7 @@ OnSaveNameChange (TEXTENTRY_STATE *pTES)
 }
 
 static BOOLEAN
-NameSaveGame (COUNT gameIndex, UNICODE *buf)
+NameSaveGame (COUNT gameIndex, CHAR_T *buf)
 {
 	TEXTENTRY_STATE tes;
 	COUNT CursPos = (COUNT)strlen(buf);
@@ -788,7 +788,7 @@ static void
 DrawLabel (POINT pt, SIZE width, DWORD gamestr)
 {
 	TEXT t;
-	UNICODE buf[256];
+	CHAR_T buf[256];
 	SIZE leading;
 	FONT OldFont;
 	Color OldColor;
@@ -806,7 +806,7 @@ DrawLabel (POINT pt, SIZE width, DWORD gamestr)
 	t.baseline.y = RES_SCALE (pt.y + 5);
 	t.align = ALIGN_CENTER;
 	t.CharCount = (COUNT)~0;
-	t.pStr = AlignText ((const UNICODE*)buf, &t.baseline.x);
+	t.pStr = AlignText ((const CHAR_T*)buf, &t.baseline.x);
 
 	font_DrawText (&t);
 
@@ -917,7 +917,7 @@ DrawSaveLoadText (PICK_GAME_STATE *pickState)
 	FONT OldFont;
 	Color OldColor;
 	TEXT text;
-	UNICODE buf[256];
+	CHAR_T buf[256];
 	SIZE leading;
 
 #define SAVE_LOAD_Y RES_SCALE (151)
@@ -965,7 +965,7 @@ DrawSavegameCargo (SIS_STATE *sisState)
 	COUNT i;
 	STAMP s;
 	TEXT t;
-	UNICODE buf[40];
+	CHAR_T buf[40];
 #define NUM_COLORS 9
 	static const Color cargo_color[NUM_COLORS] = CARGO_COLOR_TABLE;
 #define ELEMENT_ORG_Y      RES_SCALE (17)
@@ -1032,7 +1032,7 @@ DrawEmptySlot (void)
 {
 	RECT r;
 	TEXT t;
-	UNICODE buf[256];
+	CHAR_T buf[256];
 	Color oldfg;
 	BYTE stroke;
 	POINT offset;
@@ -1115,7 +1115,7 @@ static void
 DrawBombPodText (STAMP *s)
 {
 	TEXT t;
-	UNICODE buf[256];
+	CHAR_T buf[256];
 	SIZE leading;
 	FONT OldFont;
 	Color OldColor;
@@ -1154,7 +1154,7 @@ DrawBombPodText (STAMP *s)
 
 	while (t.pStr != NULL)
 	{
-		t.pStr = AlignText ((const UNICODE *)t.pStr, &t.baseline.x);
+		t.pStr = AlignText ((const CHAR_T *)t.pStr, &t.baseline.x);
 		font_DrawText (&t);
 		t.pStr = strtok (NULL, " ");
 		t.CharCount = (COUNT)~0;
@@ -1178,7 +1178,7 @@ DrawBombPodText (STAMP *s)
 
 	while (t.pStr != NULL)
 	{
-		t.pStr = AlignText ((const UNICODE *)t.pStr, &t.baseline.x);
+		t.pStr = AlignText ((const CHAR_T *)t.pStr, &t.baseline.x);
 		font_DrawText (&t);
 		t.pStr = strtok (NULL, " ");
 		t.CharCount = (COUNT)~0;
@@ -1280,7 +1280,7 @@ DrawSavegameSummary (PICK_GAME_STATE *pickState, COUNT gameIndex)
 		QUEUE player_built_q;
 		CONTEXT OldContext;
 		SIS_STATE SaveSS;
-		UNICODE buf[256];
+		CHAR_T buf[256];
 		POINT starPt;
 
 		// Save the states because we will hack them
@@ -1488,7 +1488,7 @@ DrawSavegameSummary (PICK_GAME_STATE *pickState, COUNT gameIndex)
 }
 
 static void
-TruncateSaveName (UNICODE* buf, COORD maxWidth, BOOLEAN naming)
+TruncateSaveName (CHAR_T* buf, COORD maxWidth, BOOLEAN naming)
 {
 	TEXT t;
 	RECT r;
@@ -1519,7 +1519,7 @@ DrawGameSelection (PICK_GAME_STATE *pickState, COUNT selSlot)
 	RECT r;
 	TEXT t;
 	COUNT i, curSlot;
-	UNICODE buf[256], buf2[80], *SaveName;
+	CHAR_T buf[256], buf2[80], *SaveName;
 	Color UnSelected = SAVE_UNSELECTED_COLOR;
 	Color Selected = SAVE_SELECTED_COLOR;
 
@@ -1721,7 +1721,7 @@ static BOOLEAN
 SaveLoadGame (PICK_GAME_STATE *pickState, COUNT gameIndex, BOOLEAN *canceled_by_user)
 {
 	SUMMARY_DESC *desc = pickState->summary + gameIndex;
-	UNICODE nameBuf[256];
+	CHAR_T nameBuf[256];
 	STAMP saveStamp;
 	BOOLEAN success;
 	RECT r;

@@ -397,7 +397,7 @@ calcDistance (COORD x1, COORD y1, COORD x2, COORD y2)
 }
 
 static inline void
-printPt (POINT pt, UNICODE *Str)
+printPt (POINT pt, CHAR_T *Str)
 {
 	printf ("%s = %d x %d\n", Str, pt.x, pt.y);
 }
@@ -405,7 +405,7 @@ printPt (POINT pt, UNICODE *Str)
 		printPt (pt, #pt)
 
 static inline void
-printDPt (DPOINT dPt, UNICODE *Str)
+printDPt (DPOINT dPt, CHAR_T *Str)
 {
 	printf ("%s = %d x %d\n", Str, dPt.x, dPt.y);
 }
@@ -413,7 +413,7 @@ printDPt (DPOINT dPt, UNICODE *Str)
 		printDPt (dpt, #dpt)
 
 static inline void
-printExt (EXTENT ext, UNICODE *Str)
+printExt (EXTENT ext, CHAR_T *Str)
 {
 	printf ("%s = %d x %d\n", Str, ext.width, ext.height);
 }
@@ -421,7 +421,7 @@ printExt (EXTENT ext, UNICODE *Str)
 		printExt (ext, #ext)
 
 static inline void
-printDExt (DEXTENT dExt, UNICODE *Str)
+printDExt (DEXTENT dExt, CHAR_T *Str)
 {
 	printf ("%s = %d x %d\n", Str, dExt.width, dExt.height);
 }
@@ -429,7 +429,7 @@ printDExt (DEXTENT dExt, UNICODE *Str)
 		printDExt (dext, #dext)
 
 static inline void
-printRect (RECT r, UNICODE *Str)
+printRect (RECT r, CHAR_T *Str)
 {
 	printf ("%s.corner = %d x %d\n", Str, r.corner.x, r.corner.y);
 	printf ("%s.extent = %d x %d\n", Str, r.extent.width, r.extent.height);
@@ -438,7 +438,7 @@ printRect (RECT r, UNICODE *Str)
 		printRect (rect, #rect)
 
 static inline void
-printDRect (DRECT r, UNICODE *Str)
+printDRect (DRECT r, CHAR_T *Str)
 {
 	printf ("%s.corner = %d x %d\n", Str, r.corner.x, r.corner.y);
 	printf ("%s.extent = %d x %d\n", Str, r.extent.width, r.extent.height);
@@ -475,7 +475,7 @@ typedef enum
 typedef struct text
 {
 	POINT baseline;
-	const UNICODE *pStr;
+	const CHAR_T *pStr;
 	TEXT_ALIGN align;
 	COUNT CharCount;
 } TEXT;

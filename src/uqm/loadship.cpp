@@ -171,7 +171,7 @@ SeedShip (SPECIES_ID SpeciesID, BOOLEAN loadWindow)
 static void
 SwapStrings (STRING a, STRING b, COUNT ia, COUNT ib)
 {
-	UNICODE *swap = GetStringAddress (SetAbsStringTableIndex (b, ib));
+	CHAR_T *swap = GetStringAddress (SetAbsStringTableIndex (b, ib));
 	(SetAbsStringTableIndex (b, ib))->data =
 			(SetAbsStringTableIndex (a, ia))->data;
 	(SetAbsStringTableIndex (a, ia))->data = swap;

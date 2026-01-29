@@ -464,8 +464,8 @@ extern void TransformColor (Color *c, COUNT scan);
 extern void DrawPlanetSurfaceBorder (void);
 
 extern FRAME GetStarBackGround (BOOLEAN encounter);
-extern UNICODE* GetNamedPlanetaryBody (void);
-extern void GetPlanetOrMoonName (UNICODE *buf, COUNT bufsize);
+extern CHAR_T* GetNamedPlanetaryBody (void);
+extern void GetPlanetOrMoonName (CHAR_T *buf, COUNT bufsize);
 
 extern void PlanetOrbitMenu (void);
 extern void SaveSolarSysLocation (void);

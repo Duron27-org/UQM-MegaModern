@@ -70,7 +70,7 @@ DrawCrewFuelString (COORD y, SIZE state)
 }
 
 static void
-DrawShipNameString (UNICODE *pStr, COUNT CharCount, COORD y)
+DrawShipNameString (CHAR_T *pStr, COUNT CharCount, COORD y)
 {
 	TEXT Text;
 	FONT OldFont;
@@ -300,11 +300,11 @@ InitShipStatus (SHIP_INFO *SIPtr, STARSHIP *StarShipPtr, RECT *pClipRect, BOOLEA
 
 		locString = SetAbsStringTableIndex (SIPtr->race_strings, 1);
 		DrawShipNameString (
-				(UNICODE *)GetStringAddress (locString),
+				(CHAR_T *)GetStringAddress (locString),
 				GetStringLength (locString), y);
 
 		{
-			UNICODE buf[30];
+			CHAR_T buf[30];
 			TEXT Text;
 			FONT OldFont;
 
@@ -322,7 +322,7 @@ InitShipStatus (SHIP_INFO *SIPtr, STARSHIP *StarShipPtr, RECT *pClipRect, BOOLEA
 						StarShipPtr->captains_name_index);
 
 				utf8StringCopy (buf, sizeof (buf),
-						(UNICODE *)GetStringAddress (locString));
+						(CHAR_T *)GetStringAddress (locString));
 
 				if (is3DO (optWhichMenu))
 					replaceChar (buf, UNICHAR_SPACE, UNICHAR_TAB);

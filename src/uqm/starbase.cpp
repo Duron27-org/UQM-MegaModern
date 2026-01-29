@@ -605,7 +605,7 @@ InstallBombAtEarth (void)
 
 // XXX: Doesn't really belong in this file.
 COUNT
-WrapText (const UNICODE *pStr, COUNT len, TEXT *tarray, SIZE field_width)
+WrapText (const CHAR_T *pStr, COUNT len, TEXT *tarray, SIZE field_width)
 {
 	COUNT num_lines;
 

@@ -77,8 +77,8 @@ DrawPCMenuFrame (RECT *r)
 
 #define PC_MENU_HEIGHT (RES_SCALE (8))
 
-static UNICODE pm_crew_str[128];
-static UNICODE pm_fuel_str[128];
+static CHAR_T pm_crew_str[128];
+static CHAR_T pm_fuel_str[128];
 
 /* Actually display the menu text */
 static void
@@ -90,7 +90,7 @@ DrawPCMenu (BYTE beg_index, BYTE end_index, BYTE NewState, BYTE hilite, RECT *r)
 	int num_items;
 	FONT OldFont;
 	TEXT t;
-	UNICODE buf[256];
+	CHAR_T buf[256];
 	RECT rt;
 
 	pos = beg_index + NewState;
@@ -535,7 +535,7 @@ DoMenuChooser (MENU_STATE *pMS, BYTE BaseState)
 	return TRUE;
 }
 
-const UNICODE *
+const CHAR_T *
 IndexToText (int Index)
 {
 	int i = -1;
@@ -782,7 +782,7 @@ DrawMenuStateStrings (BYTE beg_index, SWORD NewState)
 		Draw3DOMenuText (&r, beg_index + NewState);
 
 		TEXT t;
-		UNICODE buf[20];
+		CHAR_T buf[20];
 
 		switch (beg_index + NewState)
 		{
@@ -828,7 +828,7 @@ DrawMineralHelpers (void)
 	COUNT i;
 	STAMP s;
 	TEXT t;
-	UNICODE buf[40];
+	CHAR_T buf[40];
 	RECT r;
 	SIZE leading;
 

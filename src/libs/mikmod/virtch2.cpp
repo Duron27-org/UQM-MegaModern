@@ -1148,7 +1148,7 @@ static void AddChannel(SLONG* ptr,NATIVE todo)
 #define VC1_SampleLength      VC2_SampleLength
 #define VC1_VoiceRealVolume   VC2_VoiceRealVolume
 
-#include "virtch_common.c"
+#include "virtch_common.cpp"
 #undef _IN_VIRTCH_
 
 void VC2_WriteSamples(SBYTE* buf,ULONG todo)

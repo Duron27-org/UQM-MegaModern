@@ -116,7 +116,7 @@ enum OPT_NOMAD {
 } ;
 inline static const char* toString(const OPT_NOMAD optVal)
 {
-	static constexpr char* Strings[3]{
+	static constexpr const char* Strings[3]{
 		"Off", "Easy", "Normal"
 	};
 	return Strings[static_cast<int>(optVal)];

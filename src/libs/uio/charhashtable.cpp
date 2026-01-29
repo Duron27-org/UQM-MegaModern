@@ -33,7 +33,7 @@ static inline char *CharHashTable_copy(CharHashTable_HashTable *hashTable,
 static inline void CharHashTable_freeKey(CharHashTable_HashTable *hashTable,
 		char *key);
 
-#include "hashtable.c"
+#include "hashtable.cpp"
 
 
 static inline uio_uint32

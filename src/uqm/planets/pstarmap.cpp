@@ -359,7 +359,7 @@ GetSphereRect (FLEET_INFO *FleetPtr, RECT *pRect, RECT *pRepairRect)
 		t.align = ALIGN_CENTER;
 		locString = SetAbsStringTableIndex (FleetPtr->race_strings, 1);
 		t.CharCount = GetStringLength (locString);
-		t.pStr = (UNICODE *)GetStringAddress (locString);
+		t.pStr = (CHAR_T *)GetStringAddress (locString);
 		TextRect (&t, pRepairRect, NULL);
 		
 		if (pRepairRect->corner.x <= 0)
@@ -1206,7 +1206,7 @@ DrawStarMap (COUNT race_update, RECT *pClipRect)
 					Color c;
 					TEXT t;
 					STRING locString;
-					UNICODE *yehat_rebels = "+Yehat+";
+					CHAR_T *yehat_rebels = "+Yehat+";
 
 					c = RaceColor (index);
 					if (index == race_index)
@@ -1243,14 +1243,14 @@ DrawStarMap (COUNT race_update, RECT *pClipRect)
 							case ANDROSYNTH_SHIP:
 								locString = SetAbsStringTableIndex(
 												FleetPtr->race_strings, 0);
-								t.pStr = (UNICODE *)GetStringAddress (locString);
+								t.pStr = (CHAR_T *)GetStringAddress (locString);
 								t.CharCount = GetStringLength (locString);
 								break;
 							default:
 								locString = SetAbsStringTableIndex (
 												FleetPtr->race_strings, 1);
 								t.CharCount = GetStringLength (locString);
-								t.pStr = (UNICODE *)GetStringAddress (locString);
+								t.pStr = (CHAR_T *)GetStringAddress (locString);
 								break;
 						}						
 					}
@@ -1264,7 +1264,7 @@ DrawStarMap (COUNT race_update, RECT *pClipRect)
 						locString = SetAbsStringTableIndex (
 										FleetPtr->race_strings, 1);
 						t.CharCount = GetStringLength (locString);
-						t.pStr = (UNICODE *)GetStringAddress (locString);
+						t.pStr = (CHAR_T *)GetStringAddress (locString);
 					}
 
 					TextRect (&t, &r, NULL);
@@ -1293,7 +1293,7 @@ DrawStarMap (COUNT race_update, RECT *pClipRect)
 
 				locString = SetAbsStringTableIndex (FleetPtr->race_strings, 1);
 				t.CharCount = GetStringLength (locString);
-				t.pStr = (UNICODE *)GetStringAddress (locString);
+				t.pStr = (CHAR_T *)GetStringAddress (locString);
 
 				GetSphereRect (FleetPtr, &r, &repair_r);
 
@@ -1411,7 +1411,7 @@ DrawStarMap (COUNT race_update, RECT *pClipRect)
 		for (i = 0; i < 32; i++) for (j = 0; j < 32; j++) for (k = 0; k < 32; k++)
 		{
 			TEXT t;
-			UNICODE pStr[7];
+			CHAR_T pStr[7];
 			pStr[0] = (i / 16 ? '1' : '0');
 			pStr[1] = (i % 16 > 9 ? i % 16 - 10 + 'A' : i % 16 + '0');
 			pStr[2] = (j / 16 ? '1' : '0');
@@ -1469,7 +1469,7 @@ DrawStarMap (COUNT race_update, RECT *pClipRect)
 			if (!(GET_GAME_STATE (KNOW_QS_PORTAL) & (1 << i)))
 				continue;
 			TEXT t;
-			UNICODE pStr[2];
+			CHAR_T pStr[2];
 			pStr[0] = 'A' + i;
 			pStr[1] = 0;
 			SetContextFont (TinyFontBold);
@@ -1760,9 +1760,9 @@ int starIndex (POINT starPt)
 }
 
 static void
-UpdateCursorInfo (UNICODE *prevbuf)
+UpdateCursorInfo (CHAR_T *prevbuf)
 {
-	UNICODE buf[CURSOR_INFO_BUFSIZE] = "";
+	CHAR_T buf[CURSOR_INFO_BUFSIZE] = "";
 	POINT pt;
 	STAR_DESC *SDPtr;
 	STAR_DESC *BestSDPtr;
@@ -1816,7 +1816,7 @@ UpdateCursorInfo (UNICODE *prevbuf)
 			// This means quasi star array must have rigidly ordered Postfix.
 			// portal_map[whichPortal].star_pt - coords of the exit
 			//                  nearest_star - STAR_DESC* of nearest constell.
-			UNICODE starnameBuf[CURSOR_INFO_BUFSIZE] = "";
+			CHAR_T starnameBuf[CURSOR_INFO_BUFSIZE] = "";
 			utf8StringCopy (starnameBuf, sizeof (starnameBuf), GAME_STRING
 					(portal_map[whichPortal].nearest_star->Postfix));
 			// Abbreviate names longer than 11 at the 10th (or less)
@@ -1893,7 +1893,7 @@ UpdateCursorInfo (UNICODE *prevbuf)
 					&& isStarMarked (starIndex (BestSDPtr->star_pt),
 						"VISITED"))
 			{
-				UNICODE visBuf[CURSOR_INFO_BUFSIZE] = "";
+				CHAR_T visBuf[CURSOR_INFO_BUFSIZE] = "";
 
 				utf8StringCopy (visBuf, sizeof (visBuf), buf);
 				// This is how you get rid of compiler warnings over string
@@ -1943,7 +1943,7 @@ FuelRequired (void)
 static void
 UpdateFuelRequirement (void)
 {
-	UNICODE buf[80];
+	CHAR_T buf[80];
 	COUNT fuel_required = FuelRequired();
 
 	sprintf (buf, "%s %u.%u",
@@ -1960,17 +1960,17 @@ typedef struct starsearch_state
 {
 	// TODO: pMS field is probably not needed anymore
 	MENU_STATE *pMS;
-	UNICODE Text[STAR_SEARCH_BUFSIZE];
-	UNICODE LastText[STAR_SEARCH_BUFSIZE];
+	CHAR_T Text[STAR_SEARCH_BUFSIZE];
+	CHAR_T LastText[STAR_SEARCH_BUFSIZE];
 	DWORD LastChangeTime;
 	int FirstIndex;
 	int CurIndex;
 	int LastIndex;
 	BOOLEAN SingleClust;
 	BOOLEAN SingleMatch;
-	UNICODE Buffer[STAR_SEARCH_BUFSIZE];
-	const UNICODE *Prefix;
-	const UNICODE *Cluster;
+	CHAR_T Buffer[STAR_SEARCH_BUFSIZE];
+	const CHAR_T *Prefix;
+	const CHAR_T *Cluster;
 	int PrefixLen;
 	int ClusterLen;
 	int ClusterPos;
@@ -2015,9 +2015,9 @@ SortStarsOnName (STAR_SEARCH_STATE *pSS)
 static void
 SplitStarName (STAR_SEARCH_STATE *pSS)
 {
-	UNICODE *buf = pSS->Buffer;
-	UNICODE *next;
-	UNICODE *sep = NULL;
+	CHAR_T *buf = pSS->Buffer;
+	CHAR_T *next;
+	CHAR_T *sep = NULL;
 
 	pSS->Prefix = 0;
 	pSS->PrefixLen = 0;
@@ -2027,7 +2027,7 @@ SplitStarName (STAR_SEARCH_STATE *pSS)
 
 	// skip leading space
 	for (next = buf; *next != '\0' &&
-			getCharFromString ((const UNICODE **)&next)
+			getCharFromString ((const CHAR_T **)&next)
 				== (isPC (optWhichFonts) ? UNICHAR_SPACE : UNICHAR_TAB);
 			buf = next)
 		;
@@ -2040,7 +2040,7 @@ SplitStarName (STAR_SEARCH_STATE *pSS)
 
 	// See if player gave a prefix
 	for (buf = next; *next != '\0' &&
-			getCharFromString ((const UNICODE **)&next)
+			getCharFromString ((const CHAR_T **)&next)
 				!= (isPC (optWhichFonts) ? UNICHAR_SPACE : UNICHAR_TAB);
 			buf = next)
 		;
@@ -2049,7 +2049,7 @@ SplitStarName (STAR_SEARCH_STATE *pSS)
 		sep = buf;
 		// skip separating space
 		for (buf = next; *next != '\0' &&
-				getCharFromString ((const UNICODE **)&next)
+				getCharFromString ((const CHAR_T **)&next)
 					== (isPC (optWhichFonts) ? UNICHAR_SPACE
 						: UNICHAR_TAB);
 				buf = next)
@@ -2096,10 +2096,10 @@ FindNextStarIndex (STAR_SEARCH_STATE *pSS, int from, BOOLEAN WithinClust)
 	for (i = from; i < NUM_SOLAR_SYSTEMS; ++i)
 	{
 		STAR_DESC *SDPtr = &star_array[pSS->SortedStars[i]];
-		UNICODE FullName[STAR_SEARCH_BUFSIZE];
-		UNICODE *ClusterName = GAME_STRING (SDPtr->Postfix);
-		const UNICODE *sptr;
-		const UNICODE *dptr;
+		CHAR_T FullName[STAR_SEARCH_BUFSIZE];
+		CHAR_T *ClusterName = GAME_STRING (SDPtr->Postfix);
+		const CHAR_T *sptr;
+		const CHAR_T *dptr;
 		int dlen;
 		int c;
 		
@@ -2177,7 +2177,7 @@ static void
 DrawMatchedStarName (TEXTENTRY_STATE *pTES)
 {
 	STAR_SEARCH_STATE *pSS = (STAR_SEARCH_STATE *) pTES->CbParam;
-	UNICODE buf[STAR_SEARCH_BUFSIZE] = "";
+	CHAR_T buf[STAR_SEARCH_BUFSIZE] = "";
 	SIZE ExPos = 0;
 	SIZE CurPos = -1;
 	STAR_DESC *SDPtr = &star_array[pSS->SortedStars[pSS->CurIndex]];
@@ -2191,7 +2191,7 @@ DrawMatchedStarName (TEXTENTRY_STATE *pTES)
 	}
 	else
 	{	// draw substring match
-		UNICODE *pstr = buf;
+		CHAR_T *pstr = buf;
 
 		strcpy (pstr, pSS->Text);
 		ExPos = pSS->ClusterPos;
@@ -2329,7 +2329,7 @@ OnStarNameFrame (TEXTENTRY_STATE *pTES)
 }
 
 BOOLEAN
-coords_only (UNICODE *s)
+coords_only (CHAR_T *s)
 {
 	BYTE i, count = 0;
 	BYTE countD = 0, countC = 0;
@@ -2496,7 +2496,7 @@ DoMoveCursor (MENU_STATE *pMS)
 #define MIN_ACCEL_DELAY (ONE_SECOND / 60)
 #define MAX_ACCEL_DELAY (ONE_SECOND / 8)
 #define STEP_ACCEL_DELAY (ONE_SECOND / 120)
-	static UNICODE last_buf[CURSOR_INFO_BUFSIZE];
+	static CHAR_T last_buf[CURSOR_INFO_BUFSIZE];
 	DWORD TimeIn = GetTimeCounter ();
 	static COUNT moveRepeats;
 	BOOLEAN isMove = FALSE;

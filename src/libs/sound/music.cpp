@@ -106,7 +106,7 @@ get_current_music_pos (MUSIC_REF MusicRef)
 {
 	DWORD pos = 0;
 	float length = 0.0f;
-	//UNICODE *filename;
+	//CHAR_T *filename;
 
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
 		return 0;
@@ -148,7 +148,7 @@ PLRGetPos (void)
 static char *
 get_current_music_filename (MUSIC_REF MusicRef)
 {
-	UNICODE *filename;
+	CHAR_T *filename;
 
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
 		return 0;
@@ -165,7 +165,7 @@ get_current_music_filename (MUSIC_REF MusicRef)
 		return 0;
 }
 
-UNICODE *
+CHAR_T *
 PLRGetFilename (void)
 {
 	return curMusicRef != 0 ? get_current_music_filename (curMusicRef) : 0;

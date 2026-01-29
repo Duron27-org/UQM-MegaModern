@@ -124,7 +124,7 @@ static COUNT availableCount = 0;	// Number of ships available to purchase
 
 typedef struct
 {
-	UNICODE ShipName[30];
+	CHAR_T ShipName[30];
 	COUNT ShipCost;
 	BYTE CrewLevel, MaxCrew;
 } SHIP_STATS;
@@ -167,7 +167,7 @@ DrawShipsStatus (COUNT index, COUNT pos, bool selected)
 {
 	RECT r;
 	TEXT t;
-	UNICODE buf[10];
+	CHAR_T buf[10];
 
 	if (stowed_q)
 		index += NUM_BUILDABLE_SHIPS;
@@ -323,9 +323,9 @@ GetShipStats (SHIP_STATS *ship_stats, SPECIES_ID species_id)
 	MASTER_SHIP_INFO *ShipPtr = LockMasterShip (&master_q, hMasterShip);
 
 	snprintf (ship_stats->ShipName, sizeof (ship_stats->ShipName), "%s %s",
-			(UNICODE *)GetStringAddress (SetAbsStringTableIndex (
+			(CHAR_T *)GetStringAddress (SetAbsStringTableIndex (
 					ShipPtr->ShipInfo.race_strings, 2)),
-			(UNICODE *)GetStringAddress (SetAbsStringTableIndex (
+			(CHAR_T *)GetStringAddress (SetAbsStringTableIndex (
 					ShipPtr->ShipInfo.race_strings, 4))
 		);
 
@@ -346,7 +346,7 @@ GetStowedShipStats (SHIP_STATS *ship_stats, HSHIPFRAG hStowShip)
 	UnlockMasterShip (&master_q, hMasterShip);
 
 	snprintf (ship_stats->ShipName, sizeof (ship_stats->ShipName), "%s",
-			(UNICODE *)GetStringAddress (SetAbsStringTableIndex
+			(CHAR_T *)GetStringAddress (SetAbsStringTableIndex
 			(StowShipPtr->race_strings, StowShipPtr->captains_name_index)));
 
 	ship_stats->CrewLevel = StowShipPtr->crew_level;
@@ -426,7 +426,7 @@ showRemainingCrew (void)
 {
 	RECT r;
 	TEXT t;
-	UNICODE buf[30];
+	CHAR_T buf[30];
 	SIZE remaining_crew;
 #define INITIAL_CREW 2000
 
@@ -576,7 +576,7 @@ showRemainingPoints (int delta)
 {
 	RECT r;
 	TEXT t;
-	UNICODE buf[30];
+	CHAR_T buf[30];
 	SBYTE percentage_left;
 	SIZE FP = REMAINING_FP + delta;
 
@@ -748,8 +748,8 @@ GetAvailableRaceFromIndex (BYTE Index)
 static void
 DrawShipyardShipText (RECT *r, int Index)
 {
-	UNICODE race_name[64];
-	UNICODE ship_name[64];
+	CHAR_T race_name[64];
+	CHAR_T ship_name[64];
 	FONT OldFont;
 	Color OldColor;
 	SIZE leading;
@@ -767,11 +767,11 @@ DrawShipyardShipText (RECT *r, int Index)
 	HMASTERSHIP hMasterShip = FindMasterShip (FleetPtr->SpeciesID);
 	MASTER_SHIP_INFO *ShipPtr = LockMasterShip (&master_q, hMasterShip);
 	utf8StringCopy ((char *)&race_name, sizeof (race_name),
-			(UNICODE *)GetStringAddress (SetAbsStringTableIndex (
+			(CHAR_T *)GetStringAddress (SetAbsStringTableIndex (
 			ShipPtr->ShipInfo.race_strings,
 			GetStringTableCount (ShipPtr->ShipInfo.race_strings) - 3)));
 	utf8StringCopy ((char *)&ship_name, sizeof (ship_name),
-			(UNICODE *)GetStringAddress (SetAbsStringTableIndex (
+			(CHAR_T *)GetStringAddress (SetAbsStringTableIndex (
 			ShipPtr->ShipInfo.race_strings,
 			GetStringTableCount (ShipPtr->ShipInfo.race_strings) - 2)));
 	UnlockFleetInfo (&GLOBAL (avail_race_q), hStarShip);
@@ -800,13 +800,13 @@ DrawShipyardShipText (RECT *r, int Index)
 	strip_align = text.baseline.x;
 
 	// Actually we don't want to align, we just want to strip the alignment
-	text.pStr = AlignText ((const UNICODE*)&race_name, &strip_align);
+	text.pStr = AlignText ((const CHAR_T*)&race_name, &strip_align);
 	text.CharCount = (COUNT)~0;
 	font_DrawShadowedText (&text, WEST_SHADOW, SHP_TEXT_COLOR,
 			SHP_SHADOW_COLOR);
 
 	text.baseline.y += leading;
-	text.pStr = AlignText ((const UNICODE*)&ship_name, &strip_align);
+	text.pStr = AlignText ((const CHAR_T*)&ship_name, &strip_align);
 	text.CharCount = (COUNT)~0;
 	font_DrawShadowedText (&text, WEST_SHADOW, SHP_TEXT_COLOR,
 			SHP_SHADOW_COLOR);
@@ -881,7 +881,7 @@ DrawRaceStrings (BYTE NewRaceItem)
 		TEXT t;
 		HFLEETINFO hStarShip;
 		FLEET_INFO *FleetPtr;
-		UNICODE buf[30];
+		CHAR_T buf[30];
 		COUNT shipCost, shipPoints, shipCrew, maxCrew;
 		RECT r;
 		STRING captain;
@@ -924,7 +924,7 @@ DrawRaceStrings (BYTE NewRaceItem)
 				t.baseline.y = RADAR_Y - RES_SCALE (2)
 						- DOS_NUM_SCL (2) - SAFE_Y;
 				t.align = ALIGN_CENTER;
-				t.pStr = (UNICODE *)GetStringAddress (captain);
+				t.pStr = (CHAR_T *)GetStringAddress (captain);
 				t.CharCount = GetStringLength (captain);
 				font_DrawShadowedText (&t, WEST_SHADOW, CAPTAIN_NAME_TEXT_COLOR,
 						SHP_SHADOW_COLOR);
@@ -1032,7 +1032,7 @@ ShowShipCrew (SHIP_FRAGMENT *StarShipPtr, const RECT *pRect)
 {
 	RECT r;
 	TEXT t;
-	UNICODE buf[80];
+	CHAR_T buf[80];
 	HFLEETINFO hTemplate;
 	FLEET_INFO *TemplatePtr;
 	COUNT maxCrewLevel;
@@ -1089,7 +1089,7 @@ ShowShipCrew (SHIP_FRAGMENT *StarShipPtr, const RECT *pRect)
 
 	r = *pRect;
 	t.baseline.y = r.corner.y + RES_SCALE (7);
-	t.pStr = (UNICODE *)GetStringAddress (captain);
+	t.pStr = (CHAR_T *)GetStringAddress (captain);
 	t.CharCount = GetStringLength (captain);
 	if (!r.corner.y)
 	{

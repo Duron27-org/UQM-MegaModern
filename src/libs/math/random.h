@@ -61,7 +61,7 @@ struct RandomContext {
 #define PrimeSeed (optSeedType == OPTVAL_PRIME)
 #define StarSeed (optSeedType > OPTVAL_PLANET)
 
-static inline const UNICODE *
+static inline const CHAR_T *
 SeedStr (void)
 {
 	switch (optSeedType)

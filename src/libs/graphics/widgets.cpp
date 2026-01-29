@@ -208,7 +208,7 @@ Widget_DrawToolTips (int numlines, const char **tips)
 	Color oldtext = SetContextForeGroundColor (WIDGET_TOOLTIP_COLOR);
 	TEXT t;
 	int i;
-	const UNICODE *amperBang = "&!";
+	const CHAR_T *amperBang = "&!";
 	const size_t abSize = strlen (amperBang);
 	BOOLEAN warning = FALSE;
 
@@ -553,8 +553,8 @@ Widget_DrawLabel (WIDGET *_self, int x, int y)
 	TEXT t;
 	int i;
 	RECT r;
-	const UNICODE *amperScore = "&_";
-	const UNICODE *amperBang = "&!";
+	const CHAR_T *amperScore = "&_";
+	const CHAR_T *amperBang = "&!";
 	const size_t asSize = strlen (amperScore);
 	BOOLEAN underline = FALSE;
 	BOOLEAN warning = FALSE;

@@ -1543,55 +1543,55 @@ add_executable(${PROJECT_NAME} ${ALL_FILES})
 ################################################################################
 # Dependencies
 ################################################################################
-# find_package (SDL2 QUIET)
-# if (SDL2_FOUND)
-# 	message (STATUS "Found SDL2: ${SDL2_VERSION}")
-# else ()
-# 	FetchSDL ()
-# 	message (STATUS "Fetched SDL2: ${SDL2_VERSION}")
-# endif ()
+find_package (SDL2 QUIET)
+if (SDL2_FOUND)
+	message (STATUS "Found SDL2: ${SDL2_VERSION}")
+else ()
+	FetchSDL ()
+	message (STATUS "Fetched SDL2: ${SDL2_VERSION}")
+endif ()
 
-# find_package (ZLIB QUIET)
-# if (ZLIB_FOUND)
-#     message (STATUS "Found ZLIB: ${ZLIB_VERSION}")
-# else ()
-#     FetchZLIB ()
-#     message (STATUS "Fetched ZLIB: ${ZLIB_VERSION}")
-# endif ()
+find_package (ZLIB QUIET)
+if (ZLIB_FOUND)
+    message (STATUS "Found ZLIB: ${ZLIB_VERSION}")
+else ()
+    FetchZLIB ()
+    message (STATUS "Fetched ZLIB: ${ZLIB_VERSION}")
+endif ()
 
-# find_package (PNG QUIET)
-# if (PNG_FOUND)
-# 	message (STATUS "Found libPNG: ${PNG_VERSION_STRING}")
-# else ()
-# 	FetchPNG ()
-# 	message (STATUS "Fetched libPNG: ${PNG_VERSION}")
-# endif ()
+find_package (PNG QUIET)
+if (PNG_FOUND)
+	message (STATUS "Found libPNG: ${PNG_VERSION_STRING}")
+else ()
+	FetchPNG ()
+	message (STATUS "Fetched libPNG: ${PNG_VERSION}")
+endif ()
 
-# find_package (Ogg QUIET)
-# if (Ogg_FOUND)
-# 	message (STATUS "Found ogg: ${Ogg_VERSION}")
-# else ()
-# 	FetchOgg ()
-# 	message (STATUS "Fetched ogg: ${OGG_VERSION}")
-# endif ()
 
-# find_package (Vorbis QUIET)
-# if (Vorbis_FOUND)
-# 	message (STATUS "Found Vorbis: ${Vorbis_VERSION}")
-# 	set (UQM_OGG_CODEC "standard")
-# else ()
-# 	FetchVorbis ()
-# 	message (STATUS "Fetched Vorbis: ${VORBIS_VERSION}")
-# endif ()
+find_package (Ogg QUIET)
+if (Ogg_FOUND)
+	message (STATUS "Found ogg: ${Ogg_VERSION}")
+else ()
+	FetchOgg ()
+	message (STATUS "Fetched ogg: ${OGG_VERSION}")
+endif ()
 
-# if (UQM_NETPLAY)
-# 	if (CMAKE_HOST_WIN32)
-# 		set (EXTRA_LIBS ${EXTRA_LIBS} ws2_32)
-# 	endif ()
-# 	set (NETPLAY "FULL")
-# else ()
-# 	set (NETPLAY "")
-# endif ()
+find_package (Vorbis QUIET)
+if (Vorbis_FOUND)
+	message (STATUS "Found Vorbis: ${Vorbis_VERSION}")
+	set (UQM_OGG_CODEC "standard")
+else ()
+	FetchVorbis ()
+	message (STATUS "Fetched Vorbis: ${VORBIS_VERSION}")
+endif ()
+
+find_package(OpenAL)
+if (OpenAL_FOUND)
+    message (STATUS "Found OpenAL: ${OpenAL_VERSION}")
+else()
+    FetchOpenAL()
+endif()
+
 
 use_props(${PROJECT_NAME} "${CMAKE_CONFIGURATION_TYPES}" "${DEFAULT_CXX_PROPS}")
 ################################################################################
@@ -1636,10 +1636,12 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 target_include_directories(${PROJECT_NAME} PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/src;"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/regex"
-    # "${SDL2_INCLUDE_DIRS}"
-	# "${PNG_INCLUDE_DIRS}"
-	# "${ZLIB_INCLUDE_DIRS}"
-	# "${VORBISFILE_INCLUDE_DIRS}"
+    "${SDL2_INCLUDE_DIRS}"
+	"${PNG_INCLUDE_DIRS}"
+	"${ZLIB_INCLUDE_DIRS}"
+    "${OGG_INCLUDE_DIRS}"
+	"${VORBISFILE_INCLUDE_DIRS}"
+    "${OPENAL_INCLUDE_DIRS}"
 )
 
 ################################################################################
@@ -1670,7 +1672,9 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
     "USE_INTERNAL_LUA;"
     "USE_PLATFORM_ACCEL;"
     "_CRT_SECURE_NO_WARNINGS;"
-    "_MBCS"
+    "_MBCS;"
+# required to suppress issue in SDL_endian.h regarding a redefinition of the _m_prefetch intrinsic under clang.
+    "__PRFCHWINTRIN_H" 
 )
 
 ################################################################################

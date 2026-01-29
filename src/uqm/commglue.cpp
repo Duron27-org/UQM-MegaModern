@@ -33,12 +33,12 @@
 
 COUNT RoboTrack[NUM_ROBO_TRACKS];
 
-static int NPCNumberPhrase (int number, const char *fmt, UNICODE **ptrack);
+static int NPCNumberPhrase (int number, const char *fmt, CHAR_T **ptrack);
 
 // Scans forward until outside of the interpolation then returns the start
 // of the new section of text.
-UNICODE *
-ScanInterpolation (UNICODE *start)
+CHAR_T *
+ScanInterpolation (CHAR_T *start)
 {
 	COUNT depth = 1;
 	if (!start || start[0] != '<')
@@ -60,7 +60,7 @@ ScanInterpolation (UNICODE *start)
 
 // Will the chunk between [end - start] require robot voicing?
 BOOLEAN
-RoboInterpolation (UNICODE *start, UNICODE *end)
+RoboInterpolation (CHAR_T *start, CHAR_T *end)
 {
 	char *roboPhrases[] = {
 			"getPoint",
@@ -70,7 +70,7 @@ RoboInterpolation (UNICODE *start, UNICODE *end)
 			"swapIfSeeded",
 			NULL};
 	COUNT i = 0;
-	UNICODE *result;
+	CHAR_T *result;
 	while (roboPhrases[i])
 	{
 		result = strstr (start, roboPhrases[i]);
@@ -83,12 +83,12 @@ RoboInterpolation (UNICODE *start, UNICODE *end)
 
 // This will write to buffer the interpolated chunk, while returning a new
 // "start" value from the original string where interpolation ended.
-UNICODE *
-InterpolateChunk (UNICODE buffer[], UNICODE *start)
+CHAR_T *
+InterpolateChunk (CHAR_T buffer[], CHAR_T *start)
 {
-	UNICODE *end = start;
-	UNICODE str_buf[MAX_INTERPOLATE] = "";
-	UNICODE *pStr;
+	CHAR_T *end = start;
+	CHAR_T str_buf[MAX_INTERPOLATE] = "";
+	CHAR_T *pStr;
 	COUNT buffsize = 0;
 	BOOLEAN done = false;
 
@@ -158,9 +158,9 @@ InterpolateChunk (UNICODE buffer[], UNICODE *start)
 // Creates the file name of subclip # clip_number, and prints it to buffer.
 // Assumes track names end in ".ogg".
 void
-GetSubClip (UNICODE buffer[], UNICODE *pClip, COUNT clip_number)
+GetSubClip (CHAR_T buffer[], CHAR_T *pClip, COUNT clip_number)
 {
-	UNICODE *pStr = strstr (pClip, ".ogg");
+	CHAR_T *pStr = strstr (pClip, ".ogg");
 	if (!pStr)
 	{
 		// Fall through passing back the whole thing
@@ -179,9 +179,9 @@ GetSubClip (UNICODE buffer[], UNICODE *pClip, COUNT clip_number)
 void
 NPCPhrase_cb (int index, CallbackFunction cb)
 {
-	UNICODE *pStr;
-	UNICODE *pClip;
-	UNICODE *pTimeStamp;
+	CHAR_T *pStr;
+	CHAR_T *pClip;
+	CHAR_T *pTimeStamp;
 	BOOLEAN isPStrAlloced = FALSE;
 	COUNT clip_number = 0;
 	COUNT i;
@@ -189,7 +189,7 @@ NPCPhrase_cb (int index, CallbackFunction cb)
 	if (index == 0)
 		return;
 
-	pStr = (UNICODE *)GetStringAddress (
+	pStr = (CHAR_T *)GetStringAddress (
 			SetAbsStringTableIndex (CommData.ConversationPhrases, index - 1));
 	pClip = GetStringSoundClip (
 			SetAbsStringTableIndex (CommData.ConversationPhrases, index - 1));
@@ -221,7 +221,7 @@ NPCPhrase_cb (int index, CallbackFunction cb)
 	// instead of the correct ones for debugging or track syncing purposes.
 	STRING Pkunk = CaptureStringTable (
 			LoadStringTableInstance ("comm.pkunk.dialogue"));
-	pStr = (UNICODE *)GetStringAddress (
+	pStr = (CHAR_T *)GetStringAddress (
 			SetAbsStringTableIndex (Pkunk, 43));
 	pClip = GetStringSoundClip (
 			SetAbsStringTableIndex (Pkunk, 43));
@@ -291,9 +291,9 @@ NPCPhrase_cb (int index, CallbackFunction cb)
 		{
 			// This requires one or more robo-tracks or swap-if subclips
 			// which we will MultiSplice into the main track.
-			//UNICODE *tracks[NUM_ROBO_TRACKS + 1] =
+			//CHAR_T *tracks[NUM_ROBO_TRACKS + 1] =
 					//{ [0 ... NUM_ROBO_TRACKS] = NULL };
-			UNICODE *tracks[NUM_ROBO_TRACKS + 1] = {NULL};
+			CHAR_T *tracks[NUM_ROBO_TRACKS + 1] = {NULL};
 			for (i = 0; i < NUM_ROBO_TRACKS && RoboTrack[i]; i++)
 			{
 				if (RoboTrack[i] == (COUNT) ~0)
@@ -303,7 +303,7 @@ NPCPhrase_cb (int index, CallbackFunction cb)
 #ifdef DEBUG_STARSEED
 					fprintf (stderr, "Allocating for track %d.\n", i);
 #endif
-					tracks[i] = (UNICODE*)HCalloc (sizeof (char) * MAX_CLIPNAME);
+					tracks[i] = (CHAR_T*)HCalloc (sizeof (char) * MAX_CLIPNAME);
 					GetSubClip (tracks[i], pClip, clip_number);
 #ifdef DEBUG_STARSEED
 					fprintf (stderr, "RoboTrack[%d] = <<%s>>.\n", i, tracks[i]);
@@ -348,14 +348,14 @@ NPCPhrase_cb (int index, CallbackFunction cb)
 void
 NPCPhrase_splice (int index)
 {
-	UNICODE *pStr;
+	CHAR_T *pStr;
 	void *pClip;
 
 	assert (index >= 0);
 	if (index == 0)
 		return;
 
-	pStr = (UNICODE *)GetStringAddress (
+	pStr = (CHAR_T *)GetStringAddress (
 			SetAbsStringTableIndex (CommData.ConversationPhrases, index - 1));
 	pClip = GetStringSoundClip (
 			SetAbsStringTableIndex (CommData.ConversationPhrases, index - 1));
@@ -366,9 +366,9 @@ NPCPhrase_splice (int index)
 	}
 	else
 	{	// Splicing in some voice
-		UNICODE *tracks[] = {NULL, NULL};
+		CHAR_T *tracks[] = {NULL, NULL};
 
-		tracks[0] = (UNICODE*)pClip;
+		tracks[0] = (CHAR_T*)pClip;
 		SpliceMultiTrack (tracks, pStr);
 	}
 }
@@ -376,7 +376,7 @@ NPCPhrase_splice (int index)
 void
 NPCNumber (int number, const char *fmt)
 {
-	UNICODE buf[32];
+	CHAR_T buf[32];
 
 	if (!fmt)
 		fmt = "%d";
@@ -393,15 +393,15 @@ NPCNumber (int number, const char *fmt)
 }
 
 static int
-NPCNumberPhrase (int number, const char *fmt, UNICODE **ptrack)
+NPCNumberPhrase (int number, const char *fmt, CHAR_T **ptrack)
 {
 #define MAX_NUMBER_TRACKS 20
 	NUMBER_SPEECH speech = CommData.AlienNumberSpeech;
 	COUNT i;
 	int queued = 0;
 	int toplevel = 0;
-	UNICODE *TrackNames[MAX_NUMBER_TRACKS];
-	UNICODE numbuf[60];
+	CHAR_T *TrackNames[MAX_NUMBER_TRACKS];
+	CHAR_T numbuf[60];
 	const SPEECH_DIGIT* dig = NULL;
 
 	if (!speech)
@@ -494,10 +494,10 @@ NPCNumberPhrase (int number, const char *fmt, UNICODE **ptrack)
 }
 
 void
-construct_response (UNICODE *buf, int R /* promoted from RESPONSE_REF */, ...)
+construct_response (CHAR_T *buf, int R /* promoted from RESPONSE_REF */, ...)
 {
-	UNICODE *buf_start = buf;
-	UNICODE *name;
+	CHAR_T *buf_start = buf;
+	CHAR_T *name;
 	va_list vlist;
 	
 	va_start (vlist, R);
@@ -509,13 +509,13 @@ construct_response (UNICODE *buf, int R /* promoted from RESPONSE_REF */, ...)
 		
 		S = SetAbsStringTableIndex (CommData.ConversationPhrases, R - 1);
 		
-		strcpy (buf, (UNICODE *)GetStringAddress (S));
+		strcpy (buf, (CHAR_T *)GetStringAddress (S));
 		
 		len = (COUNT)strlen (buf);
 		
 		buf += len;
 		
-		name = va_arg (vlist, UNICODE *);
+		name = va_arg (vlist, CHAR_T *);
 		
 		if (name)
 		{

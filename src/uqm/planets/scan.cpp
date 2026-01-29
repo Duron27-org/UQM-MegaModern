@@ -113,7 +113,7 @@ PrintScanTitleText (TEXT *t)
 }
 
 static void
-PrintScanTitlePC (TEXT *t, UNICODE *buf, COORD xpos)
+PrintScanTitlePC (TEXT *t, CHAR_T *buf, COORD xpos)
 {
 	RECT r;
 
@@ -142,7 +142,7 @@ PrintScanText (TEXT *t)
 }
 
 static void
-MakeScanValue (UNICODE *buf, long val, const UNICODE *extra)
+MakeScanValue (CHAR_T *buf, long val, const CHAR_T *extra)
 {
 	if (val >= 10 * 100)
 	{	// 1 decimal place
@@ -155,7 +155,7 @@ MakeScanValue (UNICODE *buf, long val, const UNICODE *extra)
 }
 
 static void
-MakeDayValue (UNICODE *buf, long val, const UNICODE *extra)
+MakeDayValue (CHAR_T *buf, long val, const CHAR_T *extra)
 {
 	if (pSolarSysState->SysInfo.PlanetInfo.RotationPeriod < 240 * 10)
 		sprintf (buf, "%ld.%02ld%s", val / 100, val % 100, extra);
@@ -175,10 +175,10 @@ GetRotationalPeriod (void)
 }
 
 void
-GetPlanetTitle (UNICODE *buf, COUNT bufsize)
+GetPlanetTitle (CHAR_T *buf, COUNT bufsize)
 {
 	int val;
-	UNICODE *named = GetNamedPlanetaryBody ();
+	CHAR_T *named = GetNamedPlanetaryBody ();
 
 	if (named)
 	{
@@ -254,7 +254,7 @@ PrintCoarseScanPC (void)
 {
 	SDWORD val;
 	TEXT t;
-	UNICODE buf[200];
+	CHAR_T buf[200];
 
 	GetPlanetTitle (buf, sizeof (buf));
 
@@ -422,7 +422,7 @@ PrintCoarseScan3DO (void)
 	SDWORD val;
 	TEXT t;
 	STAMP s;
-	UNICODE buf[200];
+	CHAR_T buf[200];
 	COUNT frameIndex = 20;
 
 	if (optWhichCoarseScan == 3)
@@ -877,7 +877,7 @@ drawLandingFuelUsage (COUNT fuel)
 	 * and fix it when we're done.
 	 */
 	StatMsgMode old_status_message_mode = SMM_UNDEFINED;
-	UNICODE buf[100];
+	CHAR_T buf[100];
 
 	if (((SDWORD) (GLOBAL_SIS (FuelOnBoard)) - fuel)
 			<= (SDWORD)(get_fuel_to_sol ()))

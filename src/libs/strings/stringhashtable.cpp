@@ -31,7 +31,7 @@ static inline uio_bool StringHashTable_equal(
 static inline char *StringHashTable_copy(
 		StringHashTable_HashTable *hashTable, const char *key);
 
-#include "libs/uio/hashtable.c"
+#include "libs/uio/hashtable.cpp"
 
 
 static inline uio_uint32

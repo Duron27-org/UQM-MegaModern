@@ -65,7 +65,7 @@ COUNT countNodesRetrieved (PLANET_INFO *planetInfo, BYTE scanType);
 void setNodeRetrieved (PLANET_INFO *planetInfo, BYTE scanType, BYTE nodeNr);
 void setNodeNotRetrieved (PLANET_INFO *planetInfo, BYTE scanType, BYTE nodeNr);
 
-void GetPlanetTitle (UNICODE* buf, COUNT bufsize);
+void GetPlanetTitle (CHAR_T* buf, COUNT bufsize);
 
 #if 0 //defined(__cplusplus)
 }

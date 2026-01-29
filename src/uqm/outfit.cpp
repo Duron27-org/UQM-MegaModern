@@ -105,7 +105,7 @@ DrawModuleStatus (COUNT index, COUNT pos, bool selected)
 {
 	RECT r;
 	TEXT t;
-	UNICODE buf[10];
+	CHAR_T buf[10];
 
 	t.align = ALIGN_LEFT;
 	t.baseline.x = MODULE_COL_0;
@@ -270,7 +270,7 @@ DrawModuleMenuText (RECT *r, int Index)
 	TEXT text;
 	SIZE leading;
 	RECT block;
-	UNICODE buf[256];
+	CHAR_T buf[256];
 	COORD og_baseline_x;
 
 	if (IS_DOS || !strlen (GAME_STRING (TDO_STARBASE_STRING_BASE + Index)))
@@ -304,7 +304,7 @@ DrawModuleMenuText (RECT *r, int Index)
 
 	while (text.pStr != NULL)
 	{
-		text.pStr = AlignText ((const UNICODE *)text.pStr,
+		text.pStr = AlignText ((const CHAR_T *)text.pStr,
 				&text.baseline.x);
 		text.CharCount = (COUNT)~0;
 
@@ -391,7 +391,7 @@ DrawModuleStrings (MENU_STATE *pMS, BYTE NewModule)
 	else if (pMS->CurFrame)
 	{
 		TEXT t;
-		UNICODE buf[40];
+		CHAR_T buf[40];
 
 		// Draw the module image.
 		s.frame = SetAbsFrameIndex (pMS->CurFrame, NewModule);
@@ -448,7 +448,7 @@ DrawEscapePodText (RECT rect )
 	Color OldColor;
 	SIZE leading;
 	RECT block;
-	UNICODE buf[256];
+	CHAR_T buf[256];
 	COORD og_baseline_x;
 
 	if (!strlen (GAME_STRING (END_STARBASE_STRING_BASE + 1)))
@@ -489,7 +489,7 @@ DrawEscapePodText (RECT rect )
 
 	while (text.pStr != NULL)
 	{
-		text.pStr = AlignText ((const UNICODE *)text.pStr,
+		text.pStr = AlignText ((const CHAR_T *)text.pStr,
 				&text.baseline.x);
 		text.CharCount = (COUNT)~0;
 
@@ -530,7 +530,7 @@ DrawNoLandersText (RECT rect)
 	text.baseline.y += RES_SCALE (17);
 	text.align = ALIGN_CENTER;
 	text.pStr = AlignText (
-			(const UNICODE *)GAME_STRING (END_STARBASE_STRING_BASE),
+			(const CHAR_T *)GAME_STRING (END_STARBASE_STRING_BASE),
 			&text.baseline.x);
 	text.CharCount = (COUNT)~0;
 

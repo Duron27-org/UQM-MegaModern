@@ -311,7 +311,7 @@ DrawControlText (STAMP stamp, COUNT which_icon, BOOLEAN HiLite)
 	TEXT t;
 	FONT OldFont;
 	SIZE leading;
-	UNICODE buf[256];
+	CHAR_T buf[256];
 
 	if (!ButtonText (which_icon))
 		return;
@@ -334,7 +334,7 @@ DrawControlText (STAMP stamp, COUNT which_icon, BOOLEAN HiLite)
 
 	while (t.pStr != NULL)
 	{
-		t.pStr = AlignText ((const UNICODE *)t.pStr, &t.baseline.x);
+		t.pStr = AlignText ((const CHAR_T *)t.pStr, &t.baseline.x);
 		t.CharCount = (COUNT)~0;
 
 		font_DrawTracedText (&t,
@@ -358,7 +358,7 @@ DrawBattleText (STAMP stamp, COUNT which_icon, BOOLEAN HiLite)
 	FONT OldFont;
 	FRAME OldFontEffect;
 	SIZE leading;
-	UNICODE buf[256];
+	CHAR_T buf[256];
 
 	if (!ButtonText (which_icon))
 		return;
@@ -378,7 +378,7 @@ DrawBattleText (STAMP stamp, COUNT which_icon, BOOLEAN HiLite)
 
 	t.align = ALIGN_CENTER;
 	t.CharCount = (COUNT)~0;
-	t.pStr = AlignText ((const UNICODE *)buf, &t.baseline.x);
+	t.pStr = AlignText ((const CHAR_T *)buf, &t.baseline.x);
 
 	font_DrawTracedText (&t, TRANSPARENT,
 			HiLite ? BATTLE_TRACE_HL_COLOR : BATTLE_TRACE_COLOR);
@@ -400,7 +400,7 @@ DrawButtonText (STAMP stamp, COUNT which_icon, BOOLEAN HiLite)
 	TEXT t;
 	FONT OldFont;
 	Color OldColor;
-	UNICODE buf[256];
+	CHAR_T buf[256];
 
 	if (!ButtonText (which_icon))
 		return;
@@ -419,7 +419,7 @@ DrawButtonText (STAMP stamp, COUNT which_icon, BOOLEAN HiLite)
 
 	t.align = ALIGN_CENTER;
 	t.CharCount = (COUNT)~0;
-	t.pStr = AlignText ((const UNICODE *)buf, &t.baseline.x);
+	t.pStr = AlignText ((const CHAR_T *)buf, &t.baseline.x);
 
 	font_DrawText (&t);
 
@@ -428,13 +428,13 @@ DrawButtonText (STAMP stamp, COUNT which_icon, BOOLEAN HiLite)
 }
 
 static void
-DrawVerticalText (UNICODE *str, POINT point)
+DrawVerticalText (CHAR_T *str, POINT point)
 {
 	TEXT t;
 	COUNT i;
 	SIZE leading;
 	size_t str_len;
-	UNICODE buf[256];
+	CHAR_T buf[256];
 	Color OldColor;
 
 	GetContextFontLeading (&leading);
@@ -442,8 +442,8 @@ DrawVerticalText (UNICODE *str, POINT point)
 	t.baseline = point;
 
 	utf8StringCopy (buf, sizeof (buf),
-			AlignText ((const UNICODE *)AddPadd (
-					(const UNICODE *)str, &leading), &t.baseline.x));
+			AlignText ((const CHAR_T *)AddPadd (
+					(const CHAR_T *)str, &leading), &t.baseline.x));
 
 	str_len = strlen (buf);
 
@@ -540,7 +540,7 @@ DrawTeamPickerText (STAMP stamp)
 	TEXT t;
 	FONT OldFont;
 	Color OldColor;
-	UNICODE buf[256];
+	CHAR_T buf[256];
 	STAMP s;
 	COUNT i;
 	SIZE leading;
@@ -903,7 +903,7 @@ DrawSuperMeleeTitle (void)
 	TEXT t;
 	FONT OldFont;
 	FRAME OldFontEffect;
-	UNICODE *buf = GAME_STRING (MELEE_STRING_BASE + 9);
+	CHAR_T *buf = GAME_STRING (MELEE_STRING_BASE + 9);
 
 	if (strlen (buf) == 0)
 		return;
@@ -915,7 +915,7 @@ DrawSuperMeleeTitle (void)
 	t.baseline.x = (SCREEN_WIDTH >> 1) - (SAFE_NEG (1));
 	t.baseline.y = RES_SCALE (4);
 	t.align = ALIGN_CENTER;
-	t.pStr = AlignText ((const UNICODE *)buf, &t.baseline.x);
+	t.pStr = AlignText ((const CHAR_T *)buf, &t.baseline.x);
 	t.CharCount = (COUNT)~0;
 
 	font_DrawText (&t);
@@ -1042,7 +1042,7 @@ DrawFleetValue (MELEE_STATE *pMS, COUNT side, COUNT HiLiteState)
 {
 	RECT r;
 	TEXT rtText;
-	UNICODE buf[30];
+	CHAR_T buf[30];
 	COUNT fleetValue;
 
 	GetFleetValueRect (side ,&r);

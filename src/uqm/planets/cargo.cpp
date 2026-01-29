@@ -52,7 +52,7 @@ ShowRemainingCapacity (void)
 	RECT r;
 	TEXT t;
 	CONTEXT OldContext;
-	UNICODE buf[40];
+	CHAR_T buf[40];
 
 	OldContext = SetContext (StatusContext);
 	if (isPC (optWhichFonts))
@@ -91,7 +91,7 @@ DrawElementAmount (COUNT element, bool selected)
 {
 	RECT r;
 	TEXT t;
-	UNICODE buf[40];
+	CHAR_T buf[40];
 
 	r.corner.x = ELEMENT_SEL_ORG_X;
 	r.extent.width = ELEMENT_SEL_WIDTH;
@@ -291,7 +291,7 @@ DrawRainbowPlanet (COUNT planet)
 	STAMP s;
 	TEXT t;
 	RECT r;
-	UNICODE buf[40];
+	CHAR_T buf[40];
 	CONTEXT OldContext;
 
 	OldContext = SetContext (StatusContext);
