@@ -482,7 +482,7 @@ shofixti_return_event (int arg)
 		ShofixtiPtr->growth_fract = 0;
 		AddEvent (RELATIVE_EVENT, 3, 0, 0, SHOFIXTI_RETURN_EVENT);
 	}
-	SetRaceAllied (SHOFIXTI_SHIP, TRUE);
+	SetRaceAllied (SHOFIXTI_SHIP, true);
 	GLOBAL (CrewCost) -= IF_HARD(2, 1);
 			/* crew is not an issue anymore */
 	SET_GAME_STATE (CREW_PURCHASED0, 0);
@@ -729,7 +729,7 @@ spathi_shield_event (int arg)
 
 		if (SpathiPtr->actual_strength)
 		{
-			SetRaceAllied (SPATHI_SHIP, FALSE);
+			SetRaceAllied (SPATHI_SHIP, false);
 			if (DIF_HARD)
 				RemoveEscortShips (SPATHI_SHIP);
 			SET_GAME_STATE (SPATHI_SHIELDED_SELVES, 1);
@@ -805,7 +805,7 @@ advance_ilwrath_mission (int arg)
 				{
 					SET_GAME_STATE (THRADD_VISITS, 0);
 					if (ThraddPtr->allied_state == GOOD_GUY)
-						SetRaceAllied (THRADDASH_SHIP, FALSE);
+						SetRaceAllied (THRADDASH_SHIP, false);
 				}
 			}
 

@@ -39,7 +39,7 @@ static BYTE GetBeginMenuState (BYTE BaseState);
 static BYTE FixMenuState (BYTE BadState);
 static BYTE NextMenuState (BYTE BaseState, BYTE CurState);
 static BYTE PreviousMenuState (BYTE BaseState, BYTE CurState);
-static BOOLEAN GetAlternateMenu (BYTE *BaseState, BYTE *CurState);
+static bool GetAlternateMenu (BYTE *BaseState, BYTE *CurState);
 static BYTE ConvertAlternateMenu (BYTE BaseState, BYTE NewState);
 void FunkyMenu (BYTE m, STAMP stmp);
 
@@ -51,15 +51,15 @@ DrawPCMenuFrame (RECT *r)
 
 	if (IS_HD || optCustomBorder)
 	{
-		DrawRenderedBox (r, TRUE, PCMENU_BACKGROUND_COLOR,
+		DrawRenderedBox (r, true, PCMENU_BACKGROUND_COLOR,
 				optCustomBorder ? SPECIAL_BEVEL : THIN_INNER_BEVEL,
 				optCustomBorder);
 	}
 	else
 	{
 		DrawStarConBox (r, RES_SCALE (1), PCMENU_TOP_LEFT_BORDER_COLOR,
-				PCMENU_BOTTOM_RIGHT_BORDER_COLOR, TRUE,
-				PCMENU_BACKGROUND_COLOR, FALSE, NULL_COLOR);
+				PCMENU_BOTTOM_RIGHT_BORDER_COLOR, true,
+				PCMENU_BACKGROUND_COLOR, false, NULL_COLOR);
 	}
 
 	// Draw the right and bottom of the outer border.
@@ -347,7 +347,7 @@ PreviousMenuState (BYTE BaseState, BYTE CurState)
 
 
 /* When using PC hierarchy, convert 3do->PC */
-static BOOLEAN
+static bool
 GetAlternateMenu (BYTE *BaseState, BYTE *CurState)
 {
 	BYTE AdjBase = *BaseState;
@@ -364,15 +364,15 @@ GetAlternateMenu (BYTE *BaseState, BYTE *CurState)
 			case ALT_MANIFEST:
 				*BaseState = PM_ALT_SCAN + adj;
 				*CurState = PM_ALT_MANIFEST - PM_ALT_SCAN - adj;
-				return TRUE;
+				return true;
 			case ALT_EXIT_MANIFEST:
 				*BaseState = PM_ALT_CARGO;
 				*CurState = PM_ALT_EXIT_MANIFEST - PM_ALT_CARGO;
-				return TRUE;
+				return true;
 		}
 		log_add (log_Error, "Unknown state combination: %d, %d",
 				*BaseState, *CurState);
-		return FALSE;
+		return false;
 	}
 	else
 	{
@@ -381,57 +381,57 @@ GetAlternateMenu (BYTE *BaseState, BYTE *CurState)
 			case PM_SCAN:
 				*BaseState = PM_ALT_SCAN;
 				*CurState = PM_ALT_SCAN - PM_ALT_SCAN;
-				return TRUE;
+				return true;
 			case PM_STARMAP:
 				*BaseState = PM_ALT_SCAN + adj;
 				*CurState = PM_ALT_STARMAP - PM_ALT_SCAN - adj;
-				return TRUE;
+				return true;
 			case PM_DEVICES:
 				*BaseState = PM_ALT_CARGO;
 				*CurState = PM_ALT_DEVICES - PM_ALT_CARGO;
-				return TRUE;
+				return true;
 			case PM_CARGO:
 				*BaseState = PM_ALT_CARGO;
 				*CurState = PM_ALT_CARGO - PM_ALT_CARGO;
-				return TRUE;
+				return true;
 			case PM_ROSTER:
 				*BaseState = PM_ALT_CARGO;
 				*CurState = PM_ALT_ROSTER - PM_ALT_CARGO;
-				return TRUE;
+				return true;
 			case PM_GAME_MENU:
 				*BaseState = PM_ALT_SCAN + adj;
 				*CurState = PM_ALT_GAME_MENU - PM_ALT_SCAN - adj;
-				return TRUE;
+				return true;
 			case PM_NAVIGATE:
 				*BaseState = PM_ALT_SCAN + adj;
 				*CurState = PM_ALT_NAVIGATE - PM_ALT_SCAN - adj;
-				return TRUE;
+				return true;
 			case PM_MIN_SCAN:
 				*BaseState = PM_ALT_MSCAN;
 				*CurState = PM_ALT_MSCAN - PM_ALT_MSCAN;
-				return TRUE;
+				return true;
 			case PM_ENE_SCAN:
 				*BaseState = PM_ALT_MSCAN;
 				*CurState = PM_ALT_ESCAN - PM_ALT_MSCAN;
-				return TRUE;
+				return true;
 			case PM_BIO_SCAN:
 				*BaseState = PM_ALT_MSCAN;
 				*CurState = PM_ALT_BSCAN - PM_ALT_MSCAN;
-				return TRUE;
+				return true;
 			case PM_EXIT_SCAN:
 				*BaseState = PM_ALT_MSCAN;
 				*CurState = PM_ALT_EXIT_SCAN - PM_ALT_MSCAN;
-				return TRUE;
+				return true;
 			case PM_AUTO_SCAN:
 				*BaseState = PM_ALT_MSCAN;
 				*CurState = PM_ALT_ASCAN - PM_ALT_MSCAN;
-				return TRUE;
+				return true;
 			case PM_LAUNCH_LANDER:
 				*BaseState = PM_ALT_MSCAN;
 				*CurState = PM_ALT_DISPATCH - PM_ALT_MSCAN;
-				return TRUE;
+				return true;
 		}
-		return FALSE;
+		return false;
 	}
 }
 
@@ -475,12 +475,12 @@ ConvertAlternateMenu (BYTE BaseState, BYTE NewState)
 	return (NewState);
 }
 
-BOOLEAN
+bool
 DoMenuChooser (MENU_STATE *pMS, BYTE BaseState)
 {
 	BYTE NewState = pMS->CurState;
 	BYTE OrigBase = BaseState;
-	BOOLEAN useAltMenu = FALSE;
+	bool useAltMenu = false;
 	if (optWhichMenu == OPT_PC)
 		useAltMenu = GetAlternateMenu (&BaseState, &NewState);
 	if (PulsedInputState.menu[KEY_MENU_LEFT] ||
@@ -496,7 +496,7 @@ DoMenuChooser (MENU_STATE *pMS, BYTE BaseState)
 		{
 			DrawMenuStateStrings (PM_ALT_CARGO, 0);
 			pMS->CurState = PM_CARGO - PM_SCAN;
-			return TRUE;
+			return true;
 		}
 		if (NewState == ALT_EXIT_MANIFEST)
 		{
@@ -507,9 +507,9 @@ DoMenuChooser (MENU_STATE *pMS, BYTE BaseState)
 				DrawMenuStateStrings (PM_ALT_STARMAP,
 						PM_ALT_MANIFEST - PM_ALT_STARMAP);
 			pMS->CurState = ALT_MANIFEST;
-			return TRUE;
+			return true;
 		}
-		return FALSE;
+		return false;
 	}
 	else if ((optWhichMenu == OPT_PC) &&
 			PulsedInputState.menu[KEY_MENU_CANCEL] && 
@@ -522,17 +522,17 @@ DoMenuChooser (MENU_STATE *pMS, BYTE BaseState)
 			DrawMenuStateStrings (PM_ALT_STARMAP,
 					PM_ALT_MANIFEST - PM_ALT_STARMAP);
 		pMS->CurState = ALT_MANIFEST;
-		return TRUE;
+		return true;
 	}
 	else
-		return FALSE;
+		return false;
 
 	DrawMenuStateStrings (BaseState, NewState);
 	if (useAltMenu)
 		NewState = ConvertAlternateMenu (BaseState, NewState);
 	pMS->CurState = NewState;
 
-	return TRUE;
+	return true;
 }
 
 const CHAR_T *
@@ -1018,7 +1018,7 @@ DrawBorder (BYTE Visible)
 void
 FunkyMenu (BYTE m, STAMP stmp)
 {
-	static BOOLEAN subMenuFlag;
+	static bool subMenuFlag;
 
 	if ((!stmp.frame && m >= PM_ALT_MSCAN
 			&& m <= PM_ALT_EXIT_SCAN)
@@ -1029,15 +1029,15 @@ FunkyMenu (BYTE m, STAMP stmp)
 
 		DrawMineralHelpers ();
 
-		subMenuFlag = TRUE;
+		subMenuFlag = true;
 
 		if (stmp.frame)
 			return;
 	}
-	else if (subMenuFlag == TRUE)
+	else if (subMenuFlag == true)
 	{
 		DeltaSISGauges (UNDEFINED_DELTA, UNDEFINED_DELTA, UNDEFINED_DELTA);
-		subMenuFlag = FALSE;
+		subMenuFlag = false;
 	}
 
 	if (stmp.frame)

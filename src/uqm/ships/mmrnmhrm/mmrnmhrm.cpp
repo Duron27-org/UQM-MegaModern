@@ -47,7 +47,7 @@
 #define WEAPON_ENERGY_COST 1
 #define WEAPON_WAIT 0
 #define CENTER_OFFS DISPLAY_TO_WORLD (RES_SCALE (4))
-#define WING_OFFS DISPLAY_TO_WORLD (RES_BOOL (10, 48))
+#define WING_OFFS DISPLAY_TO_WORLD (chooseIfHd (10, 48))
 #define LASER_RANGE DISPLAY_TO_WORLD (RES_SCALE (125) + MMRNMHRM_OFFSET)
 
 // Y-Wing Missiles
@@ -203,13 +203,13 @@ static void
 mmrnmhrm_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 		COUNT ConcernCounter)
 {
-	BOOLEAN CanTransform;
+	bool CanTransform;
 	EVALUATE_DESC *lpEvalDesc;
 	STARSHIP *StarShipPtr;
 	STARSHIP *EnemyStarShipPtr = NULL;
 
 	GetElementStarShip (ShipPtr, &StarShipPtr);
-	CanTransform = (BOOLEAN)(StarShipPtr->special_counter == 0
+	CanTransform = (bool)(StarShipPtr->special_counter == 0
 			&& StarShipPtr->RaceDescPtr->ship_info.energy_level >=
 			StarShipPtr->RaceDescPtr->characteristics.special_energy_cost);
 

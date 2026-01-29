@@ -30,7 +30,7 @@ extern "C" {
 typedef struct menu_state
 {
 	// Standard field required by DoInput()
-	BOOLEAN (*InputFunc) (struct menu_state *pMS);
+	bool (*InputFunc) (struct menu_state *pMS);
 
 	SIZE Initialized;
 
@@ -147,7 +147,7 @@ enum
 	GAMESTR_CHANGE_SIS,
 };
 
-extern BOOLEAN DoMenuChooser (MENU_STATE *pMS, BYTE BaseState);
+extern bool DoMenuChooser (MENU_STATE *pMS, BYTE BaseState);
 extern void DrawMenuStateStrings (BYTE beg_index, SWORD NewState);
 extern void DrawMineralHelpers (void);
 extern void DrawBorder (BYTE Visible);

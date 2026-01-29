@@ -202,8 +202,8 @@ pump_up_postprocess (ELEMENT *ElementPtr)
 						StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 0),
 						EPtr);
 			}
-			if (antiCheat (ElementPtr, FALSE, OPTVAL_INF_HEALTH)
-					|| antiCheat (ElementPtr, FALSE, OPTVAL_FULL_GOD))
+			if (antiCheat (ElementPtr, false, OPTVAL_INF_HEALTH)
+					|| antiCheat (ElementPtr, false, OPTVAL_FULL_GOD))
 			{
 				EPtr->thrust_wait = 5;
 			} else {
@@ -353,8 +353,8 @@ initialize_pump_up (ELEMENT *ShipPtr, HELEMENT PumpUpArray[])
 		PumpUpPtr->postprocess_func = pump_up_postprocess;
 		PumpUpPtr->collision_func = pump_up_collision;
 
-		if (antiCheat (ShipPtr, FALSE, OPTVAL_INF_HEALTH)
-				|| antiCheat (ShipPtr, FALSE, OPTVAL_FULL_GOD))
+		if (antiCheat (ShipPtr, false, OPTVAL_INF_HEALTH)
+				|| antiCheat (ShipPtr, false, OPTVAL_FULL_GOD))
 		{
 			PumpUpPtr->thrust_wait = 5;
 		} else
@@ -433,7 +433,7 @@ confuse_preprocess_april (ELEMENT *ElementPtr)
 			{
 				SetPrimType(&(GLOBAL(DisplayArray))[eptr->PrimIndex],
 					STAMP_PRIM);
-				BattleSong (TRUE);
+				BattleSong (true);
 			}
 
 			hEffect = AllocElement ();
@@ -585,8 +585,8 @@ confusion_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 				ConfusionPtr->hTarget = StarShipPtr->hShip;
 			}
 
-			if (!(antiCheat (ElementPtr1, FALSE, OPTVAL_INF_HEALTH)
-					|| antiCheat (ElementPtr1, FALSE, OPTVAL_FULL_GOD)))
+			if (!(antiCheat (ElementPtr1, false, OPTVAL_INF_HEALTH)
+					|| antiCheat (ElementPtr1, false, OPTVAL_FULL_GOD)))
 			{
 				ConfusionPtr->life_span = 400;
 			}

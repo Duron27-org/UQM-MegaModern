@@ -112,7 +112,7 @@ GenerateVault_generateOrbital (SOLARSYS_STATE *solarSys,
 					&& !(GET_GAME_STATE(KOHR_AH_FRENZY)))
 			{
 				COUNT i;
-				BOOLEAN Survivors;
+				bool Survivors;
 				UWORD state;
 
 				PutGroupInfo (GROUPS_RANDOM, GROUP_SAVE_IP);

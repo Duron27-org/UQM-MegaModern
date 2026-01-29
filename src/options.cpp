@@ -61,8 +61,8 @@ unsigned int audioDriver;
 unsigned int audioQuality;
 
 // Added options
-BOOLEAN optRequiresReload;
-BOOLEAN optRequiresRestart;
+bool optRequiresReload;
+bool optRequiresRestart;
 OPT_ENABLABLE optCheatMode;
 int optGodModes;
 int timeDilationScale;
@@ -83,8 +83,8 @@ DWORD loadFuel;
 OPT_ENABLABLE optPartialPickup;
 OPT_ENABLABLE optSubmenu;
 OPT_ENABLABLE optInfiniteCredits;
-BOOLEAN optSuperMelee;
-BOOLEAN optLoadGame;
+bool optSuperMelee;
+bool optLoadGame;
 OPT_ENABLABLE optCustomBorder;
 int optSeedType;
 int optCustomSeed;
@@ -126,12 +126,12 @@ OPT_ENABLABLE optUnscaledStarSystem;
 int optScanSphere;
 int optNebulaeVolume;
 OPT_ENABLABLE optSlaughterMode;
-BOOLEAN optMaskOfDeceit;
+bool optMaskOfDeceit;
 OPT_ENABLABLE optAdvancedAutoPilot;
 OPT_ENABLABLE optMeleeToolTips;
 int optMusicResume;
 DWORD optWindowType;
-BOOLEAN optNoClassic;
+bool optNoClassic;
 OPT_ENABLABLE optScatterElements;
 OPT_ENABLABLE optShowUpgrades;
 OPT_ENABLABLE optFleetPointSys;
@@ -614,22 +614,22 @@ mountAddonDir (uio_Repository *repository, uio_MountHandle *contentMountHandle,
 	uio_closeDir (addonsDir);
 }
 
-BOOLEAN
+bool
 isAddonAvailable (const char *addon_name)
 {
 	COUNT i;
 	DWORD name_hash = crc32b (addon_name);
 
 	if (!name_hash)
-		return FALSE;
+		return false;
 
 	for (i = 0; i < addonList.amount; i++)
 	{
 		if (addonList.name_hash[i] == name_hash)
-			return TRUE;
+			return true;
 	}
 
-	return FALSE;
+	return false;
 }
 
 static void
@@ -735,7 +735,7 @@ loadIndices (uio_DirHandle *dir)
 	return numLoaded;
 }
 
-BOOLEAN
+bool
 loadAddon (const char *addon)
 {
 	uio_DirHandle *addonsDir, *addonDir;
@@ -748,14 +748,14 @@ loadAddon (const char *addon)
 		log_add (log_Warning, "Warning: There's no 'addons' "
 				"directory in the 'content' directory;\n\t'--addon' "
 				"options are ignored.");
-		return FALSE;
+		return false;
 	}
 	addonDir = uio_openDirRelative (addonsDir, addon, 0);
 	if (addonDir == NULL)
 	{
 		log_add (log_Warning, "Warning: Addon '%s' not found", addon);
 		uio_closeDir (addonsDir);
-		return FALSE;
+		return false;
 	}
 
 	numLoaded = loadIndices (addonDir);
@@ -768,7 +768,7 @@ loadAddon (const char *addon)
 	uio_closeDir (addonDir);
 	uio_closeDir (addonsDir);
 	
-	return (BOOLEAN)(numLoaded > 0);
+	return (bool)(numLoaded > 0);
 }
 
 void

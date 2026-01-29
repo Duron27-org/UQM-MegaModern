@@ -34,19 +34,24 @@ extern int CanvasHeight;
 #define SCREEN_WIDTH CanvasWidth
 #define SCREEN_HEIGHT CanvasHeight
 #define RESOLUTION_FACTOR resolutionFactor
-#define IS_HD (RESOLUTION_FACTOR != HD ? FALSE : TRUE)
+#define IS_HD (RESOLUTION_FACTOR != HD ? false : true)
 #define RES_SCALE(a) ((a) << RESOLUTION_FACTOR)
 #define RES_DESCALE(a) ((a) >> RESOLUTION_FACTOR)
-#define RES_BOOL(a,b) (!IS_HD ? (a) : (b))
+template <typename T>
+static inline constexpr auto chooseIfHd(const T& a, const T& b) -> const T&
+{
+//#define chooseIfHd(a,b) (!IS_HD ? (a) : (b))
+	return !IS_HD ? a : b;
+}
 #define NRES_BOOL(a) (!IS_HD ? (a) : 0)
-#define RES_DBL(a) (RES_BOOL ((a), (a) * RESOLUTION_FACTOR))
-#define RES_TRP(a) (RES_BOOL ((a), (a) * 3))
-#define IF_HD(a) (RES_BOOL (0, (a)))
+#define RES_DBL(a) (chooseIfHd ((a), (a) * RESOLUTION_FACTOR))
+#define RES_TRP(a) (chooseIfHd ((a), (a) * 3))
+#define IF_HD(a) (chooseIfHd (0, (a)))
 
 #define RES_RBSHIFT(a,b) (RES_SCALE (RES_DESCALE ((a)) >> (b)))
 #define RES_RECENTER(a) (RES_RBSHIFT ((a), 1))
 
-#define IS_DOS ((optWindowType == 0) ? TRUE : FALSE)
+#define IS_DOS ((optWindowType == 0) ? true : false)
 #define DOS_BOOL(a,b) (IS_DOS ? (b) : (a))
 		// Returns the 2nd input in DOS mode, the 1st input otherwise
 #define DOS_BOOL_SCL(a,b) (RES_SCALE (IS_DOS ? (b) : (a)))
@@ -60,7 +65,7 @@ extern int CanvasHeight;
 #define NDOS_NUM_SCL(a) (RES_SCALE (NDOS_NUM ((a))))
 		// Same as NDOS_NUM but scales it to HD
 
-#define IS_PAD ((optWindowType == 1) ? TRUE : FALSE)
+#define IS_PAD ((optWindowType == 1) ? true : false)
 #define SAFE_BOOL(a,b) (IS_PAD ? (b) : (a))
 		// Returns the 2nd input in 3DO mode, the 1st input otherwise
 #define SAFE_BOOL_SCL(a,b) (RES_SCALE (SAFE_BOOL ((a),(b))))

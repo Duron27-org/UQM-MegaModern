@@ -58,7 +58,7 @@
 #include "uqm/starcon.h"
 #include "libs/math/random.h"
 
-BOOLEAN restartGame;
+bool restartGame;
 
 #if defined (GFXMODULE_SDL)
 #	include SDL_INCLUDE(SDL.h)
@@ -597,8 +597,8 @@ main (int argc, char *argv[])
 	optCustomSeed = options.customSeed.value;
 	optShipSeed = (OPT_ENABLABLE)options.shipSeed.value;
 	optSphereColors = options.sphereColors.value;
-	optRequiresReload = FALSE;
-	optRequiresRestart = FALSE;
+	optRequiresReload = false;
+	optRequiresRestart = false;
 	optSpaceMusic = options.spaceMusic.value;
 	optVolasMusic = (OPT_ENABLABLE)options.volasMusic.value;
 	optWholeFuel = (OPT_ENABLABLE)options.wholeFuel.value;
@@ -2260,10 +2260,10 @@ parseOptions (int argc, char *argv[], struct options_struct *options)
 				setBoolOption (&options->dosMenus, true);
 				break;
 			case MELEE_OPT:
-				optSuperMelee = TRUE;
+				optSuperMelee = true;
 				break;
 			case LOADGAME_OPT:
-				optLoadGame = TRUE;
+				optLoadGame = true;
 				break;
 			case NEBUVOL_OPT:
 			{
@@ -2286,7 +2286,7 @@ parseOptions (int argc, char *argv[], struct options_struct *options)
 				break;
 			}
 			case CLAPAK_OPT:
-				optNoClassic = TRUE;
+				optNoClassic = true;
 				break;
 #ifdef NETPLAY
 			case NETHOST1_OPT:

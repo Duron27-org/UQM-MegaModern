@@ -103,7 +103,7 @@ CalcSoundPosition (ELEMENT *ElementPtr)
 	if (ElementPtr == NULL)
 	{
 		pos.x = pos.y = 0;
-		pos.positional = FALSE;
+		pos.positional = false;
 	}
 	else
 	{
@@ -125,7 +125,7 @@ CalcSoundPosition (ELEMENT *ElementPtr)
 		pos.y -= (SPACE_HEIGHT >> 1);
 		pos.x = RES_DESCALE (pos.x);
 		pos.y = RES_DESCALE (pos.y);
-		pos.positional = TRUE;
+		pos.positional = true;
 	}
 
 	return pos;

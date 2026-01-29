@@ -329,7 +329,7 @@ AboutPkunk (RESPONSE_REF R)
 {
 	BYTE InfoLeft;
 
-	InfoLeft = FALSE;
+	InfoLeft = false;
 	if (PLAYER_SAID (R, what_about_you))
 		NPCPhrase (ABOUT_US);
 	else if (PLAYER_SAID (R, what_about_history))
@@ -366,27 +366,27 @@ AboutPkunk (RESPONSE_REF R)
 	if (PHRASE_ENABLED (what_about_history))
 	{
 		Response (what_about_history, AboutPkunk);
-		InfoLeft = TRUE;
+		InfoLeft = true;
 	}
 	else if (PHRASE_ENABLED (what_about_yehat))
 	{
 		Response (what_about_yehat, AboutPkunk);
-		InfoLeft = TRUE;
+		InfoLeft = true;
 	}
 	if (PHRASE_ENABLED (what_about_culture))
 	{
 		Response (what_about_culture, AboutPkunk);
-		InfoLeft = TRUE;
+		InfoLeft = true;
 	}
 	else if (PHRASE_ENABLED (elaborate_culture))
 	{
 		Response (elaborate_culture, AboutPkunk);
-		InfoLeft = TRUE;
+		InfoLeft = true;
 	}
 	if (PHRASE_ENABLED (what_about_future))
 	{
 		Response (what_about_future, AboutPkunk);
-		InfoLeft = TRUE;
+		InfoLeft = true;
 	}
 	Response (enough_about_you, PkunkHome);
 
@@ -401,7 +401,7 @@ AboutIlwrath (RESPONSE_REF R)
 {
 	BYTE InfoLeft;
 
-	InfoLeft = FALSE;
+	InfoLeft = false;
 	if (PLAYER_SAID (R, what_about_ilwrath))
 		NPCPhrase (ABOUT_ILWRATH);
 	else if (PLAYER_SAID (R, why_ilwrath_fight))
@@ -432,22 +432,22 @@ AboutIlwrath (RESPONSE_REF R)
 	if (PHRASE_ENABLED (why_ilwrath_fight))
 	{
 		Response (why_ilwrath_fight, AboutIlwrath);
-		InfoLeft = TRUE;
+		InfoLeft = true;
 	}
 	if (PHRASE_ENABLED (when_fight_start))
 	{
 		Response (when_fight_start, AboutIlwrath);
-		InfoLeft = TRUE;
+		InfoLeft = true;
 	}
 	if (PHRASE_ENABLED (how_goes_fight))
 	{
 		Response (how_goes_fight, AboutIlwrath);
-		InfoLeft = TRUE;
+		InfoLeft = true;
 	}
 	if (PHRASE_ENABLED (how_stop_fight))
 	{
 		Response (how_stop_fight, AboutIlwrath);
-		InfoLeft = TRUE;
+		InfoLeft = true;
 	}
 	Response (enough_ilwrath, PkunkHome);
 

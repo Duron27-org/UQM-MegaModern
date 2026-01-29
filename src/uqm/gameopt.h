@@ -24,16 +24,16 @@ extern "C" {
 #endif
 
 extern void ConfirmSaveLoad (STAMP *MsgStamp);
-extern BOOLEAN GameOptions (void);
+extern bool GameOptions (void);
 
 typedef void (NamingCallback) (void);
 extern void SetNamingCallback (NamingCallback *);
-extern void SettingsMenu (BOOLEAN NameFlagship);
-extern BOOLEAN NewGameInit;
+extern void SettingsMenu (bool NameFlagship);
+extern bool NewGameInit;
 
 extern BYTE OutfitOrShipyard;
-extern BOOLEAN SaveOrLoad;
-extern BOOLEAN TextEntry3DO;
+extern bool SaveOrLoad;
+extern bool TextEntry3DO;
 
 #if 0 //defined(__cplusplus)
 }

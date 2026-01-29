@@ -477,7 +477,7 @@ YellowDistribution (BYTE which_world)
 #define SUPERGIANT_ROCK_DIST SCALE_RADIUS (16)
 #define SUPERGIANT_GASG_DIST SCALE_RADIUS (33)
 
-void ComputeSpeed (PLANET_DESC *planet, BOOLEAN GeneratingMoons,
+void ComputeSpeed (PLANET_DESC *planet, bool GeneratingMoons,
 		UWORD rand_val)
 {
 	//BW : empiric values, which would give roughly correct
@@ -501,10 +501,10 @@ void ComputeSpeed (PLANET_DESC *planet, BOOLEAN GeneratingMoons,
 
 void
 FillOrbits (SOLARSYS_STATE *system, BYTE NumPlanets,
-		PLANET_DESC *pBaseDesc, BOOLEAN TypesDefined)
+		PLANET_DESC *pBaseDesc, bool TypesDefined)
 { /* Generate Planets in orbit around star */
 	BYTE StarColor, PlanetCount, MaxPlanet;
-	BOOLEAN GeneratingMoons;
+	bool GeneratingMoons;
 	COUNT StarSize;
 	PLANET_DESC *pPD;
 	DWORD loopCounter = 0;
@@ -554,8 +554,8 @@ char scolor[] = {'B', 'G', 'O', 'R', 'W', 'Y'};
 			scolor[STAR_COLOR (CurStarDescPtr->Type)],
 			stype[STAR_TYPE (CurStarDescPtr->Type)]);
 #endif /* DEBUG_ORBITS */
-	GeneratingMoons = (BOOLEAN) (pBaseDesc == system->MoonDesc);
-	BOOLEAN GasGiant = pPD && pPD->pPrevDesc &&
+	GeneratingMoons = (bool) (pBaseDesc == system->MoonDesc);
+	bool GasGiant = pPD && pPD->pPrevDesc &&
 			(pPD->pPrevDesc->data_index & ~PLANET_SHIELDED) >= FIRST_GAS_GIANT;
 	if (GeneratingMoons)
 		MaxPlanet = (PrimeSeed || (StarSeed && !GasGiant)
@@ -755,7 +755,7 @@ PickClosestHabitable (SOLARSYS_STATE *solarSys)
 			pPlanet->angle = NORMALIZE_ANGLE (LOWORD (rand));
 			pPlanet->location.x = COSINE (pPlanet->angle, pPlanet->radius);
 			pPlanet->location.y = SINE (pPlanet->angle, pPlanet->radius);
-			ComputeSpeed (pPlanet, FALSE, HIWORD (rand));
+			ComputeSpeed (pPlanet, false, HIWORD (rand));
 
 			return numPlanets--;
 		}
@@ -804,13 +804,13 @@ PickClosestHabitable (SOLARSYS_STATE *solarSys)
 		pPlanet->angle = NORMALIZE_ANGLE (LOWORD (rand));
 		pPlanet->location.x = COSINE (pPlanet->angle, pPlanet->radius);
 		pPlanet->location.y = SINE (pPlanet->angle, pPlanet->radius);
-		ComputeSpeed (pPlanet, FALSE, HIWORD (rand));
+		ComputeSpeed (pPlanet, false, HIWORD (rand));
 	}
 
 	return pByte;
 }
 
-BOOLEAN
+bool
 CheckForHabitable (SOLARSYS_STATE *solarSys)
 {
 	const SIZE HabitableRanges[NUM_STAR_COLORS][2] = {
@@ -854,7 +854,7 @@ CheckForHabitable (SOLARSYS_STATE *solarSys)
 	if ((oldRadius >= habitableRangeMin && oldRadius <= habitableRangeMax)
 			|| starColor == RED_BODY || planetByte > 0)
 	{
-		return FALSE;
+		return false;
 	}
 
 	for (i = 0; i < numPlanets; ++i)
@@ -878,11 +878,11 @@ CheckForHabitable (SOLARSYS_STATE *solarSys)
 			COSINE (pPD[planetByte].angle, pPD[planetByte].radius);
 		pPD[planetByte].location.y =
 			SINE (pPD[planetByte].angle, pPD[planetByte].radius);
-		ComputeSpeed (&pPD[planetByte], FALSE, HIWORD (rand_val));
+		ComputeSpeed (&pPD[planetByte], false, HIWORD (rand_val));
 
-		return TRUE;
+		return true;
 	}
-	else return FALSE;
+	else return false;
 
 	/*if (planetByte > 0 && newRadius < pPD[planetByte-1].radius)
 	{
@@ -930,7 +930,7 @@ CheckForHabitable (SOLARSYS_STATE *solarSys)
 					COSINE (pPD[i].angle, pPD[i].radius);
 				pPD[i].location.y =
 					SINE (pPD[i].angle, pPD[i].radius);
-				ComputeSpeed (&pPD[i], FALSE, HIWORD (rand_val));
+				ComputeSpeed (&pPD[i], false, HIWORD (rand_val));
 			}
 		}
 	}*/

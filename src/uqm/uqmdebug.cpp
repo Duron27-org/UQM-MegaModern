@@ -44,7 +44,7 @@
 #include <errno.h>
 
 void (* volatile debugHook) (void) = NULL;
-BOOLEAN DebugKeyPressed;
+bool DebugKeyPressed;
 
 // Move the Flagship to the destination of the autopilot.
 // Should only be called from HyperSpace/QuasiSpace.
@@ -238,8 +238,8 @@ static void tallyResourcesWorld (TallyResourcesArg *arg,
 static void dumpPlanetTypeCallback (int index, const PlanetFrame *planet,
 		void *arg);
 
-BOOLEAN disableInteractivity = FALSE;
-BOOLEAN EnableDebugEvents = FALSE;
+bool disableInteractivity = false;
+bool EnableDebugEvents = false;
 
 // Must be called on the Starcon2Main thread.
 // This function is called synchronously wrt the game logic thread.
@@ -250,12 +250,12 @@ debugKeyPressedSynchronous (void)
 	{
 		printf("Debug Key Activated\n\n");
 		equipShip ();
-		showSpheres (FALSE);
+		showSpheres (false);
 		SET_GAME_STATE (KNOW_QS_PORTAL, ~0);
 		SET_GAME_STATE (KNOW_HOMEWORLD, ~0);
 	}
 
-	forwardToNextEvent (TRUE);
+	forwardToNextEvent (true);
 
 	if (EnableDebugEvents)
 	{
@@ -291,7 +291,7 @@ debugKeyPressedSynchronous (void)
 		debugContexts ();
 	}
 
-	DebugKeyPressed = TRUE;
+	DebugKeyPressed = true;
 }
 
 void
@@ -366,13 +366,13 @@ debugKey4Pressed (void)
 // TODO: LockGameClock may be removed since it is only
 //   supposed to be called synchronously wrt the game logic thread.
 void
-forwardToNextEvent (BOOLEAN skipHEE)
+forwardToNextEvent (bool skipHEE)
 {
 	HEVENT hEvent;
 	EVENT *EventPtr;
 	COUNT year, month, day;
 			// time of next event
-	BOOLEAN done;
+	bool done;
 
 	if (!GameClockRunning ())
 		return;
@@ -386,7 +386,7 @@ forwardToNextEvent (BOOLEAN skipHEE)
 			return;
 		LockEvent (hEvent, &EventPtr);
 		if (EventPtr->func_index != HYPERSPACE_ENCOUNTER_EVENT)
-			done = TRUE;
+			done = true;
 		year = EventPtr->year_index;
 		month = EventPtr->month_index;
 		day = EventPtr->day_index;
@@ -743,7 +743,7 @@ findFlagshipElement (void)
 ////////////////////////////////////////////////////////////////////////////
 
 void
-showSpheres (BOOLEAN Animated)
+showSpheres (bool Animated)
 {	
 	BYTE i;
 
@@ -881,11 +881,11 @@ UniverseRecurse (UniverseRecurseArg *universeRecurseArg)
 	LockGameClock ();
 	//TFB_DEBUG_HALT = 1;
 	savedActivity = GLOBAL (CurrentActivity);
-	disableInteractivity = TRUE;
+	disableInteractivity = true;
 
 	forAllStars (starRecurse, (void *) universeRecurseArg);
 	
-	disableInteractivity = FALSE;
+	disableInteractivity = false;
 	GLOBAL (CurrentActivity) = savedActivity;
 	UnlockGameClock ();
 }
@@ -2110,21 +2110,21 @@ describeContext (FILE *out, const CONTEXT context) {
 typedef struct wait_state
 {
 	// standard state required by DoInput
-	BOOLEAN (*InputFunc) (struct wait_state *self);
+	bool (*InputFunc) (struct wait_state *self);
 } WAIT_STATE;
 
 		
 // Maybe move to elsewhere, where it can be reused?
-static BOOLEAN
+static bool
 waitForKey (struct wait_state *self) {
 	if (PulsedInputState.menu[KEY_MENU_SELECT] ||
 			PulsedInputState.menu[KEY_MENU_CANCEL])
-		return FALSE;
+		return false;
 
 	SleepThread (ONE_SECOND / 20);
 	
 	(void) self;
-	return TRUE;
+	return true;
 }
 
 // Maybe move to elsewhere, where it can be reused?
@@ -2228,7 +2228,7 @@ debugContexts (void)
 	{
 		WAIT_STATE state;
 		state.InputFunc = waitForKey;
-		DoInput(&state, TRUE);
+		DoInput(&state, true);
 	}
 
 	SetContext (orgContext);

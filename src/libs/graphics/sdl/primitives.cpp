@@ -473,7 +473,7 @@ renderpixel_hypertoquasi (SDL_Surface* surface, int x, int y, Uint32 pixel,
 }
 
 RenderPixelFn
-renderpixel_for (SDL_Surface *surface, RenderKind kind, BOOLEAN forMask)
+renderpixel_for (SDL_Surface *surface, RenderKind kind, bool forMask)
 {
 	const SDL_PixelFormat *fmt = surface->format;
 	// forMask ignores some older conditions

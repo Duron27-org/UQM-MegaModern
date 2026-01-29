@@ -169,10 +169,10 @@ struct element
 
 #define NEUTRAL_PLAYER_NUM  -1
 
-static inline BOOLEAN
+static inline bool
 elementsOfSamePlayer (ELEMENT *ElementPtr0, ELEMENT *ElementPtr1)
 {
-	return (BOOLEAN)(ElementPtr0->playerNr == ElementPtr1->playerNr);
+	return (bool)(ElementPtr0->playerNr == ElementPtr1->playerNr);
 }
 
 extern QUEUE disp_q;
@@ -225,7 +225,7 @@ extern void crew_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 		ELEMENT *ElementPtr1, POINT *pPt1);
 extern void AbandonShip (ELEMENT *ShipPtr, ELEMENT *TargetPtr,
 		COUNT crew_loss);
-extern BOOLEAN TimeSpaceMatterConflict (ELEMENT *ElementPtr);
+extern bool TimeSpaceMatterConflict (ELEMENT *ElementPtr);
 extern COUNT PlotIntercept (ELEMENT *ElementPtr0,
 		ELEMENT *ElementPtr1, COUNT max_turns, COUNT margin_of_error);
 
@@ -233,7 +233,7 @@ extern void InitGalaxy (void);
 extern void SetStarPoint (POINT pt, COUNT i);
 extern void MoveGalaxy (VIEW_STATE view_state, SDWORD dx, SDWORD dy);
 
-extern BOOLEAN CalculateGravity (ELEMENT *ElementPtr);
+extern bool CalculateGravity (ELEMENT *ElementPtr);
 
 
 #if 0 //defined(__cplusplus)

@@ -244,7 +244,7 @@ ilwrath_preprocess (ELEMENT *ElementPtr)
 	if (GetPrimType (lpPrim) == STAMPFILL_PRIM)
 	{
 		Color color;
-		BOOLEAN weapon_discharge;
+		bool weapon_discharge;
 
 		color = GetPrimColor (lpPrim);
 		weapon_discharge = ((status_flags & WEAPON)

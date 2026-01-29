@@ -33,7 +33,7 @@ typedef void *SOUNDPTR;
 
 typedef struct soundposition
 {
-	BOOLEAN positional;
+	bool positional;
 	int x, y;
 } SoundPosition;
 
@@ -51,15 +51,15 @@ extern SOUNDPTR GetSoundAddress (SOUND sound);
 typedef struct tfb_soundsample TFB_SoundSample;
 typedef TFB_SoundSample **MUSIC_REF;
 
-extern BOOLEAN InitSound (int argc, char *argv[]);
+extern bool InitSound (int argc, char *argv[]);
 extern void UninitSound (void);
 extern SOUND_REF LoadSoundFile (const char *pStr);
 extern MUSIC_REF LoadMusicFile (const char *pStr);
-extern BOOLEAN InstallAudioResTypes (void);
+extern bool InstallAudioResTypes (void);
 extern SOUND_REF LoadSoundInstance (RESOURCE res);
 extern MUSIC_REF LoadMusicInstance (RESOURCE res);
-extern BOOLEAN DestroySound (SOUND_REF SoundRef);
-extern BOOLEAN DestroyMusic (MUSIC_REF MusicRef);
+extern bool DestroySound (SOUND_REF SoundRef);
+extern bool DestroyMusic (MUSIC_REF MusicRef);
 
 #define MAX_CHANNELS 8
 #define MAX_VOLUME 255
@@ -72,10 +72,10 @@ extern BOOLEAN DestroyMusic (MUSIC_REF MusicRef);
 #define LAST_SFX_CHANNEL   (MIN_FX_CHANNEL + NUM_FX_CHANNELS - 1)
 #define NUM_SFX_CHANNELS   (MIN_FX_CHANNEL + NUM_FX_CHANNELS)
 
-extern void PLRPlaySong (MUSIC_REF MusicRef, BOOLEAN Continuous, BYTE
+extern void PLRPlaySong (MUSIC_REF MusicRef, bool Continuous, BYTE
 		Priority);
 extern void PLRStop (MUSIC_REF MusicRef);
-extern BOOLEAN PLRPlaying (MUSIC_REF MusicRef);
+extern bool PLRPlaying (MUSIC_REF MusicRef);
 extern void PLRSeek (MUSIC_REF MusicRef, DWORD pos);
 extern void PLRPause (MUSIC_REF MusicRef);
 extern void PLRResume (MUSIC_REF MusicRef);
@@ -83,7 +83,7 @@ extern void snd_PlaySpeech (MUSIC_REF SpeechRef);
 extern void snd_StopSpeech (void);
 extern void PlayChannel (COUNT channel, SOUND snd, SoundPosition pos,
 		void *positional_object, unsigned char priority);
-extern BOOLEAN ChannelPlaying (COUNT Channel);
+extern bool ChannelPlaying (COUNT Channel);
 extern void * GetPositionalObject (COUNT channel);
 extern void SetPositionalObject (COUNT channel, void *positional_object);
 extern void UpdateSoundPosition (COUNT channel, SoundPosition pos);
@@ -93,7 +93,7 @@ extern void SetChannelVolume (COUNT Channel, COUNT Volume, BYTE
 		Priority);
 
 extern void StopSound (void);
-extern BOOLEAN SoundPlaying (void);
+extern bool SoundPlaying (void);
 
 extern DWORD PLRGetPos (void);
 
@@ -112,7 +112,7 @@ typedef struct music_position
 } MUSIC_POSITION;
 
 extern void SetMusicPosition (void);
-extern BOOLEAN OkayToResume (void);
+extern bool OkayToResume (void);
 extern DWORD GetMusicPosition (void);
 extern void ResetMusicResume (void);
 

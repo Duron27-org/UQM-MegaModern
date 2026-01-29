@@ -69,10 +69,10 @@ extern "C" {
 
 struct melee_state
 {
-	BOOLEAN (*InputFunc) (struct melee_state *pInputState);
+	bool (*InputFunc) (struct melee_state *pInputState);
 
-	BOOLEAN Initialized;
-	BOOLEAN meleeStarted;
+	bool Initialized;
+	bool meleeStarted;
 	MELEE_OPTIONS MeleeOption;
 	COUNT side;
 	COUNT row;
@@ -86,7 +86,7 @@ struct melee_state
 #define MELEE_STATE_INDEX_DONE ((COUNT) -1)
 			// Current position in the team string when editing it.
 			// Set to MELEE_STATE_INDEX_DONE when done.
-	BOOLEAN buildPickConfirmed;
+	bool buildPickConfirmed;
 			// Used by DoPickShip () to communicate to the calling
 			// function BuildPickShip() whether a ship has been selected
 			// to add to the fleet, or whether the operation has been
@@ -103,8 +103,8 @@ struct melee_state
 extern void Melee (void);
 
 // Some prototypes for use by loadmele.c:
-BOOLEAN DoMelee (MELEE_STATE *pMS);
-void DrawMeleeIcon (COUNT which_icon, BOOLEAN HiLite);
+bool DoMelee (MELEE_STATE *pMS);
+void DrawMeleeIcon (COUNT which_icon, bool HiLite);
 void GetShipBox (RECT *pRect, COUNT side, COUNT row, COUNT col);
 void RepairMeleeFrame (const RECT *pRect);
 void DrawMeleeShipStrings (MELEE_STATE *pMS, MeleeShip NewStarShip);

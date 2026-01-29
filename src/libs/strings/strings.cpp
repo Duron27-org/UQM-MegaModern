@@ -83,11 +83,11 @@ FreeStringTable (STRING_TABLE strtab)
 	HFree (strtab);
 }
 
-BOOLEAN
+bool
 DestroyStringTable (STRING_TABLE StringTable)
 {
 	FreeStringTable (StringTable);
-	return TRUE;
+	return true;
 }
 
 STRING
@@ -345,14 +345,14 @@ GetStringByName (STRING_TABLE StringTable, const char *index)
 	return (STRING) StringHashTable_find (StringTable->nameIndex, index);
 }
 
-BOOLEAN
+bool
 CheckResString (RESOURCE res)
 {
-	BOOLEAN check = FALSE;
+	bool check = false;
 	STRING string = CaptureStringTable (LoadStringTableInstance (res));
 
 	if (string != NULL)
-		check = TRUE;
+		check = true;
 
 	DestroyStringTable (ReleaseStringTable (string));
 	string = 0;

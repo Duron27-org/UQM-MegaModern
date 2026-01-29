@@ -45,11 +45,11 @@ static const luaL_Reg eventLibs[] = {
 };
 
 // Not reentrant.
-BOOLEAN
+bool
 luaUqm_event_init(const luaUqm_custom_Function *customFuncs,
 		RESOURCE scriptRes) {
 	char *scriptFileName;
-	BOOLEAN loadOk;
+	bool loadOk;
 
 	assert(luaUqm_eventState == NULL);
 
@@ -68,17 +68,17 @@ luaUqm_event_init(const luaUqm_custom_Function *customFuncs,
 	// Get the name of the script.
 	scriptFileName = LoadScriptInstance(scriptRes);
 	if (scriptFileName == NULL)
-		return FALSE;
+		return false;
 
 	// Load the script.
 	loadOk = luaUqm_loadScript(luaUqm_eventState, contentDir, scriptFileName);
 	ReleaseScriptResData(scriptFileName);
 	if (!loadOk)
-		return FALSE;
+		return false;
 
 	// Call the script.
 	luaUqm_callStackFunction(luaUqm_eventState);
-	return TRUE;
+	return true;
 }
 
 void

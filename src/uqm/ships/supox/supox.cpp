@@ -139,7 +139,7 @@ supox_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 		StarShipPtr->ship_input_state &= ~SPECIAL;
 	else
 	{
-		BOOLEAN LinedUp;
+		bool LinedUp;
 		COUNT direction_angle;
 		SDWORD delta_x, delta_y;
 
@@ -149,7 +149,7 @@ supox_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 				- ShipPtr->next.location.y;
 		direction_angle = ARCTAN (delta_x, delta_y);
 
-		LinedUp = (BOOLEAN)(NORMALIZE_ANGLE (NORMALIZE_ANGLE (direction_angle
+		LinedUp = (bool)(NORMALIZE_ANGLE (NORMALIZE_ANGLE (direction_angle
 				- FACING_TO_ANGLE (StarShipPtr->ShipFacing))
 				+ QUADRANT) <= HALF_CIRCLE);
 

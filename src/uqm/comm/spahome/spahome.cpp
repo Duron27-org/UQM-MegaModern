@@ -270,7 +270,7 @@ ExitConversation (RESPONSE_REF R)
 	{
 		NPCPhrase (DEPART_FOR_EARTH);
 
-		SetRaceAllied (SPATHI_SHIP, TRUE);
+		SetRaceAllied (SPATHI_SHIP, true);
 		AddEvent (RELATIVE_EVENT, 6, 0, 0, SPATHI_SHIELD_EVENT);
 		SET_GAME_STATE (SPATHI_HOME_VISITS, 0);
 		SET_GAME_STATE (SPATHI_VISITS, 0);
@@ -326,7 +326,7 @@ SpathiInfo (RESPONSE_REF R)
 {
 	BYTE InfoLeft;
 	
-	InfoLeft = FALSE;
+	InfoLeft = false;
 	if (PLAYER_SAID (R, like_some_info))
 		NPCPhrase (WHAT_ABOUT);
 	else if (PLAYER_SAID (R, what_about_hierarchy))
@@ -362,27 +362,27 @@ SpathiInfo (RESPONSE_REF R)
 
 	if (PHRASE_ENABLED (what_about_hierarchy))
 	{
-		InfoLeft = TRUE;
+		InfoLeft = true;
 		Response (what_about_hierarchy, SpathiInfo);
 	}
 	if (PHRASE_ENABLED (what_about_history))
 	{
-		InfoLeft = TRUE;
+		InfoLeft = true;
 		Response (what_about_history, SpathiInfo);
 	}
 	if (PHRASE_ENABLED (what_about_alliance))
 	{
-		InfoLeft = TRUE;
+		InfoLeft = true;
 		Response (what_about_alliance, SpathiInfo);
 	}
 	if (PHRASE_ENABLED (what_about_other))
 	{
-		InfoLeft = TRUE;
+		InfoLeft = true;
 		Response (what_about_other, SpathiInfo);
 	}
 	if (PHRASE_ENABLED (what_about_precursors))
 	{
-		InfoLeft = TRUE;
+		InfoLeft = true;
 		Response (what_about_precursors, SpathiInfo);
 	}
 	Response (enough_info, SpathiAllies);
@@ -918,7 +918,7 @@ Intro (void)
 
 	if (IS_HD)
 	{
-		SwitchSequences (FALSE);
+		SwitchSequences (false);
 		EngageFilters (&spahome_filters);
 	}
 

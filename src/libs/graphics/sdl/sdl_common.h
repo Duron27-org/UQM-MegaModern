@@ -62,7 +62,7 @@ int TFB_SetColors (SDL_Surface *surface, SDL_Color *colors, int firstcolor, int 
 
 void UnInit_Screen (SDL_Surface **screen);
 
-extern BOOLEAN TFB_SDL_ScreenShot (const char *path);
+extern bool TFB_SDL_ScreenShot (const char *path);
 
 extern int CopySurfaceToClipboard (SDL_Surface *surface);
 

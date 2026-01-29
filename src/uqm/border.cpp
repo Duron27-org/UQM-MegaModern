@@ -93,7 +93,7 @@ DrawSISFrame (void)
 		DrawStarConBox (&r, 1,
 				SIS_LEFT_BORDER_COLOR,
 				SIS_BOTTOM_RIGHT_BORDER_COLOR,
-				TRUE, BLACK_COLOR, FALSE, TRANSPARENT);
+				true, BLACK_COLOR, false, TRANSPARENT);
 
 		// The big Blue box in the upper edge of screen (SIS Message)
 		r.corner.y = 0;
@@ -103,7 +103,7 @@ DrawSISFrame (void)
 		DrawStarConBox (&r, 1,
 				SIS_MESSAGE_TOP_LEFT_COLOR,
 				SIS_MESSAGE_BOTTOM_RIGHT_COLOR,
-				TRUE, SIS_MESSAGE_BACKGROUND_COLOR, FALSE, TRANSPARENT);
+				true, SIS_MESSAGE_BACKGROUND_COLOR, false, TRANSPARENT);
 
 		// The smaller blue box (SIS Title).
 		r.extent.width = SIS_TITLE_BOX_WIDTH;
@@ -111,7 +111,7 @@ DrawSISFrame (void)
 		DrawStarConBox (&r, 1,
 				SIS_TITLE_TOP_LEFT_COLOR,
 				SIS_TITLE_BOTTOM_RIGHT_COLOR,
-				TRUE, SIS_TITLE_BACKGROUND_COLOR, FALSE, TRANSPARENT);
+				true, SIS_TITLE_BACKGROUND_COLOR, false, TRANSPARENT);
 
 		// Black border between menu area and space window area
 		SetContextForeGroundColor (BLACK_COLOR);

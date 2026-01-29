@@ -166,7 +166,7 @@ static LOCDATA druuge_desc =
 };
 
 static COUNT SlaveryCount = 0;
-static BOOLEAN AttemptedSalvage = FALSE;
+static bool AttemptedSalvage = false;
 
 static void
 ExitConversation (RESPONSE_REF R)
@@ -881,7 +881,7 @@ Intro (void)
 			SET_GAME_STATE (DRUUGE_SALVAGE, NumVisits);
 
 			setSegue (Segue_hostile);
-			AttemptedSalvage = TRUE;
+			AttemptedSalvage = true;
 		}
 		else
 		{
@@ -932,7 +932,7 @@ init_druuge_comm (void)
  	LOCDATA *retval;
 
 	SlaveryCount = 0;
-	AttemptedSalvage = FALSE;
+	AttemptedSalvage = false;
 
 	druuge_desc.init_encounter_func = Intro;
 	druuge_desc.post_encounter_func = post_druuge_enc;

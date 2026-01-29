@@ -95,7 +95,7 @@
 
 // HD
 #define BLASTER_SPEED_HD RES_SCALE (BLASTER_SPEED)
-#define BLASTER_SPEED_BOOL RES_BOOL (BLASTER_SPEED, BLASTER_SPEED_HD)
+#define BLASTER_SPEED_BOOL chooseIfHd (BLASTER_SPEED, BLASTER_SPEED_HD)
 
 
 static RACE_DESC sis_desc =
@@ -264,8 +264,8 @@ sis_hyper_preprocess (ELEMENT *ElementPtr)
 			GetCurrentVelocityComponents (&ElementPtr->velocity,
 					&dx, &dy);
 
-			udx = RES_BOOL (dx << 4, (SDWORD)dx);
-			udy = RES_BOOL (dy << 4, (SDWORD)dy);
+			udx = chooseIfHd (dx << 4, (SDWORD)dx);
+			udy = chooseIfHd (dy << 4, (SDWORD)dy);
 			
 			StarShipPtr->cur_status_flags &= ~THRUST;
 		}
@@ -437,7 +437,7 @@ spawn_point_defense (ELEMENT *ElementPtr)
 	}
 	else
 	{
-		BOOLEAN PaidFor;
+		bool PaidFor;
 		HELEMENT hObject, hNextObject;
 		ELEMENT *ShipPtr;
 		Color LaserColor;
@@ -453,7 +453,7 @@ spawn_point_defense (ELEMENT *ElementPtr)
 			BUILD_COLOR (MAKE_RGB15_INIT (0x1F, 0x1C, 0x00), 0x78),
 		};
 
-		PaidFor = FALSE;
+		PaidFor = false;
 
 		LaserColor = ColorRange[
 				StarShipPtr->RaceDescPtr->characteristics.special_energy_cost
@@ -501,7 +501,7 @@ spawn_point_defense (ELEMENT *ElementPtr)
 								StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 1), ElementPtr);
 						StarShipPtr->special_counter =
 								StarShipPtr->RaceDescPtr->characteristics.special_wait;
-						PaidFor = TRUE;
+						PaidFor = true;
 					}
 
 					LaserBlock.cx = ShipPtr->next.location.x;
@@ -772,7 +772,7 @@ InitWeaponSlots (RACE_DESC *RaceDescPtr, const BYTE *ModuleSlots)
 	for (i = 0; i < NUM_MODULE_SLOTS; ++i)
 	{
 		COUNT which_gun;
-		BOOLEAN IfHard = DIF_HARD && (i == 1 || i == 2) ? TRUE : FALSE;
+		bool IfHard = DIF_HARD && (i == 1 || i == 2) ? true : false;
 
 		if (i == 3)
 			i = NUM_MODULE_SLOTS - 1;

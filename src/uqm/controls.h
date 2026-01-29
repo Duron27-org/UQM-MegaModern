@@ -123,29 +123,29 @@ extern CONTROLLER_INPUT_STATE CurrentInputState;
 extern CONTROLLER_INPUT_STATE PulsedInputState;
 extern volatile CONTROLLER_INPUT_STATE ImmediateInputState;
 extern CONTROL_TEMPLATE PlayerControls[];
-extern BOOLEAN WarpFromMenu;
+extern bool WarpFromMenu;
 
 void UpdateInputState (void);
 extern void FlushInput (void);
-void SetMenuRepeatDelay (DWORD min, DWORD max, DWORD step, BOOLEAN gestalt);
+void SetMenuRepeatDelay (DWORD min, DWORD max, DWORD step, bool gestalt);
 void SetDefaultMenuRepeatDelay (void);
 void ResetKeyRepeat (void);
-BOOLEAN PauseGame (void);
+bool PauseGame (void);
 void SleepGame (void);
-BOOLEAN DoConfirmExit (void);
-BOOLEAN ConfirmExit (void);
+bool DoConfirmExit (void);
+bool ConfirmExit (void);
 
 #define WAIT_INFINITE ((TimePeriod)-1)
-BOOLEAN WaitForAnyButton (BOOLEAN newButton, TimePeriod duration,
-		BOOLEAN resetInput);
-BOOLEAN WaitForActButton (BOOLEAN newButton, TimePeriod duration,
-		BOOLEAN resetInput);
-BOOLEAN WaitForAnyButtonUntil (BOOLEAN newButton, TimeCount timeOut,
-		BOOLEAN resetInput);
-BOOLEAN WaitForActButtonUntil (BOOLEAN newButton, TimeCount timeOut,
-		BOOLEAN resetInput);
-BOOLEAN WaitForNoInput (TimePeriod duration, BOOLEAN resetInput);
-BOOLEAN WaitForNoInputUntil (TimeCount timeOut, BOOLEAN resetInput);
+bool WaitForAnyButton (bool newButton, TimePeriod duration,
+		bool resetInput);
+bool WaitForActButton (bool newButton, TimePeriod duration,
+		bool resetInput);
+bool WaitForAnyButtonUntil (bool newButton, TimeCount timeOut,
+		bool resetInput);
+bool WaitForActButtonUntil (bool newButton, TimeCount timeOut,
+		bool resetInput);
+bool WaitForNoInput (TimePeriod duration, bool resetInput);
+bool WaitForNoInputUntil (TimeCount timeOut, bool resetInput);
 
 extern BATTLE_INPUT_STATE GetDirectionalJoystickInput (int direction, int player);
 
@@ -154,26 +154,26 @@ void DoPopupWindow(const char *msg);
 typedef void (InputFrameCallback) (void);
 InputFrameCallback* SetInputCallback (InputFrameCallback *);
 // pInputState must point to a struct derived from INPUT_STATE_DESC
-void DoInput (void *pInputState, BOOLEAN resetInput);
+void DoInput (void *pInputState, bool resetInput);
 
-extern volatile BOOLEAN GamePaused;
-extern volatile BOOLEAN ExitRequested;
+extern volatile bool GamePaused;
+extern volatile bool ExitRequested;
 
 typedef struct joy_char joy_char_t;
 
 typedef struct textentry_state
 {
 	// standard state required by DoInput
-	BOOLEAN (*InputFunc) (struct textentry_state *pTES);
+	bool (*InputFunc) (struct textentry_state *pTES);
 
 	// these are semi-private read-only
-	BOOLEAN Initialized;
+	bool Initialized;
 	DWORD NextTime;    // use this for input frame timing
-	BOOLEAN Success;   // edit confirmed or canceled
+	bool Success;   // edit confirmed or canceled
 	CHAR_T *CacheStr; // cached copy to revert immediate changes
 	STRING JoyAlphaString; // joystick alphabet definition
-	BOOLEAN JoystickMode;  // TRUE when doing joystick input
-	BOOLEAN UpperRegister; // TRUE when entering Caps
+	bool JoystickMode;  // true when doing joystick input
+	bool UpperRegister; // true when entering Caps
 	joy_char_t *JoyAlpha;  // joystick alphabet
 	int JoyAlphaLength;
 	joy_char_t *JoyUpper;  // joystick upper register
@@ -185,16 +185,16 @@ typedef struct textentry_state
 	int CursorPos;     // set to current cursor pos in chars
 	int MaxSize;       // set to max size of edited string
 
-	BOOLEAN (*ChangeCallback) (struct textentry_state *pTES);
-			// returns TRUE if last change is OK
-	BOOLEAN (*FrameCallback) (struct textentry_state *pTES);
+	bool (*ChangeCallback) (struct textentry_state *pTES);
+			// returns true if last change is OK
+	bool (*FrameCallback) (struct textentry_state *pTES);
 			// called on every input frame; do whatever;
-			// returns TRUE to continue processing
+			// returns true to continue processing
 	void *CbParam;     // callback parameter, use as you like
 	
 } TEXTENTRY_STATE;
 
-extern BOOLEAN DoTextEntry (TEXTENTRY_STATE *pTES);
+extern bool DoTextEntry (TEXTENTRY_STATE *pTES);
 
 extern void TestSpeechSound (STRING snd);
 

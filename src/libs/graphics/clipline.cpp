@@ -31,7 +31,7 @@ _clip_line (const DRECT *pClipRect, BRESENHAM_LINE *pLine)
 	xmax = pClipRect->corner.x + pClipRect->extent.width - 1;
 	ymax = pClipRect->corner.y + pClipRect->extent.height - 1;
 	if (pLine->first.x <= pLine->second.x)
-		pLine->end_points_exchanged = FALSE;
+		pLine->end_points_exchanged = false;
 	else
 	{
 		p = pLine->first.x;
@@ -42,7 +42,7 @@ _clip_line (const DRECT *pClipRect, BRESENHAM_LINE *pLine)
 		pLine->first.y = pLine->second.y;
 		pLine->second.y = p;
 
-		pLine->end_points_exchanged = TRUE;
+		pLine->end_points_exchanged = true;
 	}
 
 	if (pLine->first.x > xmax || pLine->second.x < xmin ||

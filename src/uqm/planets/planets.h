@@ -271,11 +271,11 @@ struct node_info
 struct solarsys_state
 {
 	// Standard field required by DoInput()
-	BOOLEAN (*InputFunc) (struct solarsys_state *);
+	bool (*InputFunc) (struct solarsys_state *);
 
-	BOOLEAN InIpFlight;
-			// Set to TRUE when player is flying around in interplanetary
-			// Reset to FALSE when going into orbit or encounter
+	bool InIpFlight;
+			// Set to true when player is flying around in interplanetary
+			// Reset to false when going into orbit or encounter
 
 	COUNT WaitIntersect;
 			// Planet/moon number with which the flagship should not
@@ -335,8 +335,8 @@ struct solarsys_state
 			 */
 	FRAME TopoFrame;
 	PLANET_ORBIT Orbit;
-	BOOLEAN InOrbit;
-			// Set to TRUE when player hits a world in an inner system
+	bool InOrbit;
+			// Set to true when player hits a world in an inner system
 			// Homeworld encounters count as 'in orbit'
 	FRAME ScanFrame[NUM_SCAN_TYPES];
 			// For PC scan, generated from TopoFrame
@@ -372,8 +372,8 @@ struct portal_location
 extern SOLARSYS_STATE *pSolarSysState;
 extern MUSIC_REF SpaceMusic;
 extern CONTEXT PlanetContext;
-extern BOOLEAN useDosSpheres;
-extern BOOLEAN use3DOSpheres;
+extern bool useDosSpheres;
+extern bool use3DOSpheres;
 
 // Random context used for all solar system, planets, and surfaces
 // generation
@@ -413,23 +413,23 @@ extern void FreeLanderFont (PLANET_INFO *info);
 extern void ExploreSolarSys (void);
 extern void DrawStarBackGround (void);
 extern FRAME GetStarBackFround (void);
-extern void XFormIPLoc (POINT *pIn, POINT *pOut, BOOLEAN ToDisplay);
-extern void DrawOval (DRECT *pRect, BYTE num_off_pixels, BOOLEAN scaled);
+extern void XFormIPLoc (POINT *pIn, POINT *pOut, bool ToDisplay);
+extern void DrawOval (DRECT *pRect, BYTE num_off_pixels, bool scaled);
 extern void DrawFilledOval (DRECT *pRect);
 extern void DrawEllipse (int cx, int cy, int rx, int ry, int shear,
 		int filled, int dotted);
 extern void DrawRotatedEllipse (int cx, int cy, int rx, int ry,
 		int angle_deg, int filled, int dotted);
-extern void ComputeSpeed(PLANET_DESC *planet, BOOLEAN GeneratingMoons,
+extern void ComputeSpeed(PLANET_DESC *planet, bool GeneratingMoons,
 		UWORD rand_val);
 #define NUMPLANETS_PDESC ((BYTE)-2)
 extern void FillOrbits (SOLARSYS_STATE *system, BYTE NumPlanets,
-		PLANET_DESC *pBaseDesc, BOOLEAN TypesDefined);
+		PLANET_DESC *pBaseDesc, bool TypesDefined);
 extern void InitLander (BYTE LanderFlags);
-extern void InitPCLander (BOOLEAN Loading);
+extern void InitPCLander (bool Loading);
 extern void DestroyPCLanderContext (void);
 
-extern void InitSphereRotation (int direction, BOOLEAN shielded,
+extern void InitSphereRotation (int direction, bool shielded,
 		COUNT width, COUNT height);
 extern void UninitSphereRotation (void);
 extern void PrepareNextRotationFrame (void);
@@ -443,16 +443,16 @@ extern void RenderDOSPlanetSphere (PLANET_ORBIT* Orbit, FRAME MaskFrame,
 extern void Render3DOPlanetSphere (PLANET_ORBIT* Orbit, FRAME MaskFrame,
 		int offset, COUNT rotwidth, COUNT height);
 extern void RenderPlanetSphere (PLANET_ORBIT *Orbit, FRAME Frame,
-		int offset, BOOLEAN shielded, BOOLEAN doThrob, COUNT width,
+		int offset, bool shielded, bool doThrob, COUNT width,
 		COUNT height, COUNT radius);
 extern void SetShieldThrobEffect (FRAME FromFrame, int offset,
 		FRAME ToFrame);
 extern void Draw3DOShield (STAMP ShieldFrame);
 
 extern void ZoomInPlanetSphere (void);
-extern void RotatePlanetSphere (BOOLEAN keepRate, STAMP *onTop);
+extern void RotatePlanetSphere (bool keepRate, STAMP *onTop);
 
-extern void DrawScannedObjects (BOOLEAN Reversed);
+extern void DrawScannedObjects (bool Reversed);
 extern void GetPlanetTopography (PLANET_DESC *pPlanetDesc, FRAME SurfDefFrame);
 extern void GeneratePlanetSurface (PLANET_DESC *pPlanetDesc,
 		FRAME SurfDefFrame, COUNT width, COUNT height);
@@ -463,7 +463,7 @@ extern void TransformColor (Color *c, COUNT scan);
 
 extern void DrawPlanetSurfaceBorder (void);
 
-extern FRAME GetStarBackGround (BOOLEAN encounter);
+extern FRAME GetStarBackGround (bool encounter);
 extern CHAR_T* GetNamedPlanetaryBody (void);
 extern void GetPlanetOrMoonName (CHAR_T *buf, COUNT bufsize);
 

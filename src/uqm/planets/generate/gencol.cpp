@@ -98,7 +98,7 @@ GenerateColony_generatePlanets (SOLARSYS_STATE *solarSys)
 	pSunDesc->PlanetByte = 0;
 	pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
 
-	FillOrbits (solarSys, (BYTE)~0, pPlanet, FALSE);
+	FillOrbits (solarSys, (BYTE)~0, pPlanet, false);
 
 	if (PrimeSeed)
 	{
@@ -109,7 +109,7 @@ GenerateColony_generatePlanets (SOLARSYS_STATE *solarSys)
 		pPlanet->location.x = COSINE (angle, pPlanet->radius);
 		pPlanet->location.y = SINE (angle, pPlanet->radius);
 		pPlanet->data_index = WATER_WORLD | PLANET_SHIELDED;
-		ComputeSpeed (pPlanet, FALSE, 1);
+		ComputeSpeed (pPlanet, false, 1);
 		if (EXTENDED)
 			pPlanet->NumPlanets = 1;
 	}

@@ -72,11 +72,11 @@ typedef struct
 
 extern ACTIVITY NextActivity;
 
-extern BOOLEAN LoadGame (COUNT which_game, SUMMARY_DESC* summary_desc, uio_Stream* in_fp, BOOLEAN try_core);
-extern BOOLEAN LoadLegacyGame (COUNT which_game, SUMMARY_DESC *SummPtr, BOOLEAN try_vanilla);
+extern bool LoadGame (COUNT which_game, SUMMARY_DESC* summary_desc, uio_Stream* in_fp, bool try_core);
+extern bool LoadLegacyGame (COUNT which_game, SUMMARY_DESC *SummPtr, bool try_vanilla);
 
 extern void SaveProblem (void);
-extern BOOLEAN SaveGame (COUNT which_game, SUMMARY_DESC *summary_desc, const char *name);
+extern bool SaveGame (COUNT which_game, SUMMARY_DESC *summary_desc, const char *name);
 
 extern const GameStateBitMap gameStateBitMap[];
 

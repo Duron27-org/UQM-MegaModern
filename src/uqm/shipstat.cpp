@@ -147,7 +147,7 @@ OutlineShipStatus (COORD y)
 }
 
 void
-InitShipStatus (SHIP_INFO *SIPtr, STARSHIP *StarShipPtr, RECT *pClipRect, BOOLEAN inMeleeMenu)
+InitShipStatus (SHIP_INFO *SIPtr, STARSHIP *StarShipPtr, RECT *pClipRect, bool inMeleeMenu)
 {
 	RECT r;
 	COORD y = 0; // default, for Melee menu
@@ -279,15 +279,15 @@ InitShipStatus (SHIP_INFO *SIPtr, STARSHIP *StarShipPtr, RECT *pClipRect, BOOLEA
 			r.corner.y = GAUGE_YOFFS - crew_height + y;
 			r.extent.width = STAT_WIDTH + 8;
 			r.extent.height = crew_height + 8;
-			DrawRenderedBox (&r, TRUE, BLACK_COLOR, THIN_INNER_BEVEL,
-					FALSE);
+			DrawRenderedBox (&r, true, BLACK_COLOR, THIN_INNER_BEVEL,
+					false);
 
 			r.corner.x = ENERGY_XOFFS - 4;
 			r.corner.y = GAUGE_YOFFS - energy_height + y;
 			r.extent.width = STAT_WIDTH + 8;
 			r.extent.height = energy_height + 8;
-			DrawRenderedBox (&r, TRUE, BLACK_COLOR, THIN_INNER_BEVEL,
-					FALSE);
+			DrawRenderedBox (&r, true, BLACK_COLOR, THIN_INNER_BEVEL,
+					false);
 		}
 	}
 

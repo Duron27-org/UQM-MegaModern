@@ -44,23 +44,23 @@ res_OpenResFile (uio_DirHandle *dir, const char *filename, const char *mode)
 	return (fp);
 }
 
-BOOLEAN
+bool
 res_CloseResFile (uio_Stream *fp)
 {
 	if (fp)
 	{
 		if (fp != (uio_Stream *)~0)
 			uio_fclose (fp);
-		return (TRUE);
+		return (true);
 	}
 
-	return (FALSE);
+	return (false);
 }
 
-BOOLEAN
+bool
 DeleteResFile (uio_DirHandle *dir, const char *filename)
 {
-	return (BOOLEAN)(uio_unlink (dir, filename) == 0);
+	return (bool)(uio_unlink (dir, filename) == 0);
 }
 
 size_t

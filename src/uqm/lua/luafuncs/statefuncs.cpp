@@ -208,7 +208,7 @@ luaUqm_state_escort_addShips(lua_State *luaState) {
 
 	shipId = testShipId(luaState, 1);
 	if (shipId == (COUNT) -1) {
-		lua_pushboolean(luaState, FALSE);
+		lua_pushboolean(luaState, false);
 		return 1;
 	}
 
@@ -227,7 +227,7 @@ luaUqm_state_escort_canAddShips(lua_State *luaState) {
 
 	shipId = testShipId(luaState, 1);
 	if (shipId == (COUNT) -1) {
-		lua_pushboolean(luaState, FALSE);
+		lua_pushboolean(luaState, false);
 		return 1;
 	}
 
@@ -245,7 +245,7 @@ luaUqm_state_escort_removeShips(lua_State *luaState) {
 
 	shipId = testShipId(luaState, 1);
 	if (shipId == (COUNT) -1) {
-		lua_pushboolean(luaState, FALSE);
+		lua_pushboolean(luaState, false);
 		return 1;
 	}
 
@@ -268,7 +268,7 @@ luaUqm_state_escort_shipCount(lua_State *luaState) {
 
 	shipId = testShipId(luaState, 1);
 	if (shipId == (COUNT) -1) {
-		lua_pushboolean(luaState, FALSE);
+		lua_pushboolean(luaState, false);
 		return 1;
 	}
 
@@ -291,11 +291,11 @@ luaUqm_state_escort_totalValue(lua_State *luaState) {
 static int
 luaUqm_state_race_isAlive(lua_State *luaState) {
 	COUNT raceId;
-	BOOLEAN result;
+	bool result;
 
 	raceId = testRaceId(luaState, 1);
 	if (raceId == (COUNT) -1) {
-		lua_pushboolean(luaState, FALSE);
+		lua_pushboolean(luaState, false);
 		return 1;
 	}
 
@@ -308,11 +308,11 @@ luaUqm_state_race_isAlive(lua_State *luaState) {
 static int
 luaUqm_state_race_isAllied(lua_State *luaState) {
 	COUNT raceId;
-	BOOLEAN result;
+	bool result;
 
 	raceId = testRaceId(luaState, 1);
 	if (raceId == (COUNT) -1) {
-		lua_pushboolean(luaState, FALSE);
+		lua_pushboolean(luaState, false);
 		return 1;
 	}
 
@@ -326,11 +326,11 @@ luaUqm_state_race_isAllied(lua_State *luaState) {
 static int
 luaUqm_state_race_isKnown(lua_State *luaState) {
 	COUNT raceId;
-	BOOLEAN result;
+	bool result;
 
 	raceId = testRaceId(luaState, 1);
 	if (raceId == (COUNT) -1) {
-		lua_pushboolean(luaState, FALSE);
+		lua_pushboolean(luaState, false);
 		return 1;
 	}
 
@@ -345,11 +345,11 @@ static int
 luaUqm_state_race_setAlive(lua_State *luaState) {
 	COUNT raceId;
 	int flag;
-	BOOLEAN result;
+	bool result;
 
 	raceId = testRaceId(luaState, 1);
 	if (raceId == (COUNT) -1) {
-		lua_pushboolean(luaState, FALSE);
+		lua_pushboolean(luaState, false);
 		return 1;
 	}
 
@@ -357,7 +357,7 @@ luaUqm_state_race_setAlive(lua_State *luaState) {
 	if (flag != 0) {
 		log_add(log_Error, "[script] Warning: luaUqm_state_race_setAlive(): "
 				"setAlive(true) is not implemented.");
-		lua_pushboolean(luaState, FALSE);
+		lua_pushboolean(luaState, false);
 		return 1;
 	}
 
@@ -372,11 +372,11 @@ static int
 luaUqm_state_race_setAllied(lua_State *luaState) {
 	COUNT raceId;
 	int flag;
-	BOOLEAN result;
+	bool result;
 
 	raceId = testRaceId(luaState, 1);
 	if (raceId == (COUNT) -1) {
-		lua_pushboolean(luaState, FALSE);
+		lua_pushboolean(luaState, false);
 		return 1;
 	}
 
@@ -393,11 +393,11 @@ static int
 luaUqm_state_race_setKnown(lua_State *luaState) {
 	COUNT raceId;
 	int flag;
-	BOOLEAN result;
+	bool result;
 
 	raceId = testRaceId(luaState, 1);
 	if (raceId == (COUNT) -1) {
-		lua_pushboolean(luaState, FALSE);
+		lua_pushboolean(luaState, false);
 		return 1;
 	}
 
@@ -405,7 +405,7 @@ luaUqm_state_race_setKnown(lua_State *luaState) {
 	if (flag == 0) {
 		log_add(log_Error, "[script] Warning: luaUqm_state_race_setKnown(): "
 				"setKnown(false) is not implemented.");
-		lua_pushboolean(luaState, FALSE);
+		lua_pushboolean(luaState, false);
 		return 1;
 	}
 

@@ -432,7 +432,7 @@ DrawCaptainsWindow (STARSHIP *StarShipPtr)
 		r.corner.y = y - 4;
 		r.extent.width = CAPTAIN_WIDTH + 8;
 		r.extent.height = CAPTAIN_HEIGHT + 8;
-		DrawRenderedBox (&r, TRUE, BLACK_COLOR, THIN_INNER_BEVEL, FALSE);
+		DrawRenderedBox (&r, true, BLACK_COLOR, THIN_INNER_BEVEL, false);
 	}
 
 	s.frame = RDPtr->ship_data.captain_control.background;
@@ -467,17 +467,17 @@ DrawCaptainsWindow (STARSHIP *StarShipPtr)
 	UnbatchGraphics ();
 }
 
-BOOLEAN
+bool
 DeltaEnergy (ELEMENT *ElementPtr, SIZE energy_delta)
 {
-	BOOLEAN retval;
+	bool retval;
 	STARSHIP *StarShipPtr;
 	SHIP_INFO *ShipInfoPtr;
 
-	retval = TRUE;
+	retval = true;
 	
-	if (antiCheat (ElementPtr, FALSE, OPTVAL_INF_ENERGY)
-			|| antiCheat (ElementPtr, FALSE, OPTVAL_FULL_GOD))
+	if (antiCheat (ElementPtr, false, OPTVAL_INF_ENERGY)
+			|| antiCheat (ElementPtr, false, OPTVAL_FULL_GOD))
 		return retval;
 
 	GetElementStarShip (ElementPtr, &StarShipPtr);
@@ -493,7 +493,7 @@ DeltaEnergy (ELEMENT *ElementPtr, SIZE energy_delta)
 	{
 		if ((BYTE)-energy_delta > ShipInfoPtr->energy_level)
 		{
-			retval = FALSE;
+			retval = false;
 		}
 	}
 
@@ -512,18 +512,18 @@ DeltaEnergy (ELEMENT *ElementPtr, SIZE energy_delta)
 	return (retval);
 }
 
-BOOLEAN
+bool
 DeltaCrew (ELEMENT *ElementPtr, SIZE crew_delta)
 {
-	BOOLEAN retval;
+	bool retval;
 	STARSHIP *StarShipPtr;
 	SHIP_INFO *ShipInfoPtr;
 
 	if (LOBYTE (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE
 			&& ElementPtr->playerNr == NPC_PLAYER_NUM)
-		return (TRUE); /* Samatra can't be crew-modified */
+		return (true); /* Samatra can't be crew-modified */
 
-	retval = TRUE;
+	retval = true;
 	GetElementStarShip (ElementPtr, &StarShipPtr);
 	ShipInfoPtr = &StarShipPtr->RaceDescPtr->ship_info;
 	if (crew_delta > 0)
@@ -543,7 +543,7 @@ DeltaCrew (ELEMENT *ElementPtr, SIZE crew_delta)
 		{
 			crew_delta = -(SIZE)ElementPtr->crew_level;
 			ElementPtr->crew_level = 0;
-			retval = FALSE;
+			retval = false;
 		}
 	}
 
@@ -681,7 +681,7 @@ PostProcessStatus (ELEMENT *ShipPtr)
 
 							for (j = 0; j < RES_SCALE (1); j++)
 							{
-								DrawRectangle (&r, FALSE);
+								DrawRectangle (&r, false);
 								++r.corner.x;
 								++r.corner.y;
 								r.extent.width -= 2;

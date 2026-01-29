@@ -28,14 +28,14 @@ extern "C" {
 #define FIELD_WIDTH (STATUS_WIDTH - RES_SCALE (5))
 
 extern void CargoMenu (void);
-extern BOOLEAN RosterMenu (void);
-extern BOOLEAN DevicesMenu (void);
-extern BOOLEAN StarMap (void);
+extern bool RosterMenu (void);
+extern bool DevicesMenu (void);
+extern bool StarMap (void);
 
 extern void DrawCargoStrings (BYTE OldElement, BYTE NewElement);
 extern void ShowRemainingCapacity (void);
 extern void DrawRainbowPlanet (COUNT planet);
-extern BOOLEAN InvokeSpawner (void);
+extern bool InvokeSpawner (void);
 
 extern SIZE InventoryDevices (BYTE *pDeviceMap, COUNT Size);
 

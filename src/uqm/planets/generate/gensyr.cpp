@@ -117,7 +117,7 @@ GenerateSyreen_generateMoons (SOLARSYS_STATE *solarSys,
 			pMoonDesc->radius = MIN_MOON_RADIUS;
 			pMoonDesc->location.x = COSINE (QUADRANT, pMoonDesc->radius);
 			pMoonDesc->location.y = SINE (QUADRANT, pMoonDesc->radius);
-			ComputeSpeed (pMoonDesc, TRUE, 1);
+			ComputeSpeed (pMoonDesc, true, 1);
 		}
 	}
 

@@ -526,15 +526,15 @@ Scale_PerfTest (void)
 	SDL_UnlockSurface (SDL_Screen);
 }
 
-BOOLEAN
+bool
 TFB_SDL_ScreenShot (const char *path)
 {
 	SDL_Surface *tmp = SDL_PNGFormatAlpha (SDL_Screen);
-	BOOLEAN successful = FALSE;
+	bool successful = false;
 
 	SDL_LockSurface (tmp);
 	if (SDL_SavePNG (tmp, path) == 0)
-		successful = TRUE;
+		successful = true;
 
 	if (successful && CopySurfaceToClipboard (tmp) != 0)
 		log_add (log_Warning, "Failed to copy PNG to clipboard\n");

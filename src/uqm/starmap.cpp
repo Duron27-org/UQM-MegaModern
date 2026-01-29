@@ -148,10 +148,10 @@ GetClusterName (const STAR_DESC *pSD, CHAR_T buf[])
 	}
 }
 
-// Finds the nearest (constellation = TRUE / FALSE = star) to the
+// Finds the nearest (constellation = true / false = star) to the
 // point P provided on the starmap, returns pointer to that star.
 STAR_DESC*
-FindNearest (STAR_DESC *starmap, POINT p, BOOLEAN constellation)
+FindNearest (STAR_DESC *starmap, POINT p, bool constellation)
 {
 	if (!starmap || p.x == ~0 || p.y == ~0)
 		return NULL;
@@ -176,14 +176,14 @@ FindNearest (STAR_DESC *starmap, POINT p, BOOLEAN constellation)
 STAR_DESC*
 FindNearestStar (STAR_DESC *starmap, POINT p)
 {
-	return (starmap ? FindNearest (starmap, p, FALSE) : NULL);
+	return (starmap ? FindNearest (starmap, p, false) : NULL);
 }
 
 // Returns a pointer to the closest constellation to point p on the starmap
 STAR_DESC*
 FindNearestConstellation (STAR_DESC *starmap, POINT p)
 {
-	return (starmap ? FindNearest (starmap, p, TRUE) : NULL);
+	return (starmap ? FindNearest (starmap, p, true) : NULL);
 }
 
 // plot_map is a global item (like star_map) that keeps track of the location
@@ -822,12 +822,12 @@ InitMelnormeRainbow (PLOT_LOCATION *plotmap)
 }
 
 // Internal
-// Returns TRUE if all placed plots from plot_id's perspective ONLY are valid
+// Returns true if all placed plots from plot_id's perspective ONLY are valid
 // Don't need to worry about if stars are correct, as they may temporarily
 // go past validation check but eventually if the star is in a bad spot,
 // it will be replaced.  Although it may also impose irrelevant restrictions
 // in the interim.  Do need to worry about undefined plot {~0,~0}.
-BOOLEAN
+bool
 CheckValid (PLOT_LOCATION *plot, COUNT plot_id)
 {
 	COUNT i;
@@ -836,13 +836,13 @@ CheckValid (PLOT_LOCATION *plot, COUNT plot_id)
 	{
 		fprintf (stderr, "CheckValid (plotmap, plot_id) called %d.\n"
 				"with bad data or NULL: PTR", plot_id);
-		return FALSE;
+		return false;
 	}
 	if (!PLOT_SET(plot_id))
 	{
 		fprintf(stderr, "CheckValid (plotmap, plot_id) called %d.\n"
 				"with un-set plot:", plot_id);
-		return FALSE;
+		return false;
 	}
 	for (i = 0; i < NUM_PLOTS; i++)
 	{
@@ -863,9 +863,9 @@ CheckValid (PLOT_LOCATION *plot, COUNT plot_id)
 		if (distance_sq < PLOT_MIN (plot_id, i) ||
 				(distance_sq > PLOT_MAX (plot_id, i) &&
 				PLOT_MAX (plot_id, i) > 0))
-			return FALSE;
+			return false;
 	}
-	return TRUE;
+	return true;
 }
 
 // Plotify (internal) takes
@@ -1100,7 +1100,7 @@ DebugPlotTicker (COUNT plot_id)
 COUNT
 SeedPlot (PLOT_LOCATION *plotmap, STAR_DESC *starmap)
 {
-	static BOOLEAN timer_running = FALSE;
+	static bool timer_running = false;
 	static clock_t timer;
 	if (!plotmap || !starmap)
 	{
@@ -1108,17 +1108,17 @@ SeedPlot (PLOT_LOCATION *plotmap, STAR_DESC *starmap)
 		return 0;
 	}
 	// The clock.  The first time this is called the clock is not running.
-	// It will start the clock, and set timer_running TRUE globally, and
-	// my_clock TRUE *locally*, which is how you detect the top layer of the
+	// It will start the clock, and set timer_running true globally, and
+	// my_clock true *locally*, which is how you detect the top layer of the
 	// recursion and thus stop the clock on failure.
-	BOOLEAN my_clock = FALSE;
+	bool my_clock = false;
 	UWORD rand_val;
 	COUNT plot_id, star_id, i;
 	COUNT return_id;
 	// timelimit is in deciseconds, if loading 60 seconds, if new 2 seconds
 #ifdef DEBUG_STARSEED_TRACE_Z
-	BOOLEAN tried[NUM_SOLAR_SYSTEMS] = {FALSE};
-	//BOOLEAN tried[NUM_SOLAR_SYSTEMS] = {[0 ... NUM_SOLAR_SYSTEMS - 1] = FALSE};
+	bool tried[NUM_SOLAR_SYSTEMS] = {false};
+	//bool tried[NUM_SOLAR_SYSTEMS] = {[0 ... NUM_SOLAR_SYSTEMS - 1] = false};
 	for (i = 0; i < NUM_SOLAR_SYSTEMS; i++)
 		tried[i] = 0;
 #endif
@@ -1140,9 +1140,9 @@ SeedPlot (PLOT_LOCATION *plotmap, STAR_DESC *starmap)
 				optCustomSeed, NUM_PLOTS);
 #endif
 		// Basically a wrapper around the recursion.
-		timer_running = TRUE;
+		timer_running = true;
 		next_plot = ~0;
-		my_clock = TRUE;
+		my_clock = true;
 		timer = clock();
 		RandomContext_SeedRandom (StarGenRNG, optCustomSeed);
 		// NULL out all the plot pointers so that it "places" pregens
@@ -1192,7 +1192,7 @@ SeedPlot (PLOT_LOCATION *plotmap, STAR_DESC *starmap)
 	else if ((clock() - timer) / 100000 > timelimit)
 	{
 		fprintf (stderr, "TIME'S UP!  Giving up on seed %d.\n", optCustomSeed);
-		timer_running = FALSE;
+		timer_running = false;
 		return NUM_PLOTS + 1;
 	}
 
@@ -1206,7 +1206,7 @@ SeedPlot (PLOT_LOCATION *plotmap, STAR_DESC *starmap)
 		// All plots are assigned, but any without location allocated
 		// were passed in and need Plotify().
 		//next_plot = ~0;
-		timer_running = FALSE;
+		timer_running = false;
 		for (i = 1; i < NUM_PLOTS; i++)
 		{
 			if (!plotmap[i].star || plotmap[i].star != FindNearestStar
@@ -1295,7 +1295,7 @@ SeedPlot (PLOT_LOCATION *plotmap, STAR_DESC *starmap)
 
 		if (return_id == NUM_PLOTS)
 		{
-			timer_running = FALSE;
+			timer_running = false;
 			Plotify (starmap, plotmap[plot_id].star);
 			return return_id;
 		}
@@ -1305,7 +1305,7 @@ SeedPlot (PLOT_LOCATION *plotmap, STAR_DESC *starmap)
 		if (my_clock)
 		{
 			fprintf (stderr, "Complete failure, stopping clock.\n");
-			timer_running = FALSE;
+			timer_running = false;
 		}
 		return return_id;
 	}
@@ -1373,7 +1373,7 @@ SeedPlot (PLOT_LOCATION *plotmap, STAR_DESC *starmap)
 			return_id = SeedPlot (plotmap, starmap);
 			if (return_id == NUM_PLOTS)
 			{
-				timer_running = FALSE;
+				timer_running = false;
 				if (plot_id != ARILOU_DEFINED)
 					Plotify (starmap, plotmap[plot_id].star);
 				return return_id;
@@ -1400,7 +1400,7 @@ SeedPlot (PLOT_LOCATION *plotmap, STAR_DESC *starmap)
 				if (my_clock)
 				{
 					fprintf(stderr, "Complete failure, stopping clock.\n");
-					timer_running = FALSE;
+					timer_running = false;
 				}
 				return return_id;
 			}
@@ -1426,7 +1426,7 @@ SeedPlot (PLOT_LOCATION *plotmap, STAR_DESC *starmap)
 	if (my_clock)
 	{
 		fprintf(stderr, "Complete failure, stopping clock.\n");
-		timer_running = FALSE;
+		timer_running = false;
 	}
 	return (plot_id);
 }
@@ -1463,18 +1463,18 @@ DefaultQuasispace (PORTAL_LOCATION *portalmap)
 // and keep them a minimum distance apart as well.
 // Then sort the quasi side based on Y value ascending (starmap requirement)
 // Then shove the coords into the star_map (QUASI side) in the same order
-BOOLEAN
+bool
 SeedQuasispace (PORTAL_LOCATION *portalmap, PLOT_LOCATION *plotmap,
 		STAR_DESC *starmap)
 {
 	PORTAL_LOCATION swap;
 	UWORD rand_val;
 	COUNT i, j;
-	BOOLEAN valid;
+	bool valid;
 	if (!portalmap || !plotmap || !starmap)
 	{
 		fprintf (stderr, "Seed Quasispace called with NULL pointer(s).\n");
-		return FALSE;
+		return false;
 	}
 	if (!StarGenRNG)
 	{
@@ -1487,7 +1487,7 @@ SeedQuasispace (PORTAL_LOCATION *portalmap, PLOT_LOCATION *plotmap,
 	{
 		do
 		{
-			valid = TRUE;
+			valid = true;
 			// Place a portal near, but not too near, SOL first.
 			if (i == 0)
 			{
@@ -1530,7 +1530,7 @@ SeedQuasispace (PORTAL_LOCATION *portalmap, PLOT_LOCATION *plotmap,
 						(portalmap[i].star_pt.y -
 						plotmap[SOL_DEFINED].star_pt.y) > 1000000))
 				{
-					valid = FALSE;
+					valid = false;
 					continue;
 				}
 			}
@@ -1553,7 +1553,7 @@ SeedQuasispace (PORTAL_LOCATION *portalmap, PLOT_LOCATION *plotmap,
 							(portalmap[i].star_pt.y - portalmap[j].star_pt.y) *
 							(portalmap[i].star_pt.y - portalmap[j].star_pt.y) <
 							MIN_PORTAL * MIN_PORTAL)
-						valid = FALSE;
+						valid = false;
 				}
 				if (!valid)
 					continue;
@@ -1567,7 +1567,7 @@ SeedQuasispace (PORTAL_LOCATION *portalmap, PLOT_LOCATION *plotmap,
 					'A' + i, (float) portalmap[i].star_pt.x / 10,
 					(float) portalmap[i].star_pt.y / 10,
 					"but no star found with FindNearestStar.\n");
-				valid = FALSE;
+				valid = false;
 				continue;
 			}
 			// Find the nearest constellation name to assign to this portal
@@ -1579,7 +1579,7 @@ SeedQuasispace (PORTAL_LOCATION *portalmap, PLOT_LOCATION *plotmap,
 					'A' + i, (float) portalmap[i].star_pt.x / 10,
 					(float) portalmap[i].star_pt.y / 10,
 					"but no star found with FindNearestStar.\n");
-				valid = FALSE;
+				valid = false;
 				continue;
 			}
 			if ((portalmap[i].nearest_star->star_pt.x -
@@ -1600,16 +1600,16 @@ SeedQuasispace (PORTAL_LOCATION *portalmap, PLOT_LOCATION *plotmap,
 						(float) portalmap[i].nearest_star->star_pt.y / 10);
 				fprintf(stderr, "portal TOO CLOSE to star.\n");
 #endif
-				valid = FALSE;
+				valid = false;
 				continue;
 			}
 		} while (!valid);
-		valid = FALSE;
+		valid = false;
 		// Now we give a random vortex scaled position,
 		// keeping specific distances in mind.
 		while (!valid)
 		{
-			valid = TRUE;
+			valid = true;
 			rand_val = RandomContext_Random (StarGenRNG);
 			portalmap[i].quasi_pt = POINT
 					{(LOBYTE (rand_val) * 51 / 256 - 25) * VORTEX_SCALE + 5000,
@@ -1621,21 +1621,21 @@ SeedQuasispace (PORTAL_LOCATION *portalmap, PLOT_LOCATION *plotmap,
 						(portalmap[i].quasi_pt.y - portalmap[j].quasi_pt.y) *
 						(portalmap[i].quasi_pt.y - portalmap[j].quasi_pt.y) <
 						MIN_VORTEX * MIN_VORTEX)
-					valid = FALSE;
+					valid = false;
 			}
 			if ((portalmap[i].quasi_pt.x - 5000) *
 					(portalmap[i].quasi_pt.x - 5000) +
 					(portalmap[i].quasi_pt.y - 5000) *
 					(portalmap[i].quasi_pt.y - 5000) <
 					MIN_VORTEX * MIN_VORTEX)
-				valid = FALSE;
+				valid = false;
 		}
 	}
 	// Now we must sort the quasi side and place in the starmap
-	valid = FALSE;
+	valid = false;
 	while (!valid)
 	{
-		valid = TRUE;
+		valid = true;
 		// Yes I know bubble sorts are lazy but we really only do this once.
 		for (i = 0; i < NUM_HYPER_VORTICES - 1; i++)
 			for (j = i + 1; j < NUM_HYPER_VORTICES; j++)
@@ -1643,7 +1643,7 @@ SeedQuasispace (PORTAL_LOCATION *portalmap, PLOT_LOCATION *plotmap,
 						(portalmap[i].quasi_pt.y == portalmap[j].quasi_pt.y &&
 						portalmap[i].quasi_pt.x > portalmap[j].quasi_pt.x))
 				{
-					valid = FALSE;
+					valid = false;
 					swap = portalmap[i];
 					portalmap[i] = portalmap[j];
 					portalmap[j] = swap;
@@ -1653,7 +1653,7 @@ SeedQuasispace (PORTAL_LOCATION *portalmap, PLOT_LOCATION *plotmap,
 	{
 		starmap[j].star_pt = portalmap[i].quasi_pt;
 	}
-	return TRUE;
+	return true;
 }
 
 struct PlotIdMap {

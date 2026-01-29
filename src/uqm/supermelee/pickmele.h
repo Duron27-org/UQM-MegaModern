@@ -33,16 +33,16 @@ void BuildPickMeleeFrame (void);
 void DestroyPickMeleeFrame (void);
 void FillPickMeleeFrame (MeleeSetup *setup);
 void MeleeGameOver (void);
-BOOLEAN GetInitialMeleeStarShips (HSTARSHIP *result);
-BOOLEAN GetNextMeleeStarShip (COUNT which_player, HSTARSHIP *result);
+bool GetInitialMeleeStarShips (HSTARSHIP *result);
+bool GetNextMeleeStarShip (COUNT which_player, HSTARSHIP *result);
 
 bool updateMeleeSelection (GETMELEE_STATE *gms, COUNT player, COUNT ship);
 
-BOOLEAN selectShipHuman (HumanInputContext *context, GETMELEE_STATE *gms);
-BOOLEAN selectShipComputer (ComputerInputContext *context,
+bool selectShipHuman (HumanInputContext *context, GETMELEE_STATE *gms);
+bool selectShipComputer (ComputerInputContext *context,
 		GETMELEE_STATE *gms);
 #ifdef NETPLAY
-BOOLEAN selectShipNetwork (NetworkInputContext *context, GETMELEE_STATE *gms);
+bool selectShipNetwork (NetworkInputContext *context, GETMELEE_STATE *gms);
 #endif  /* NETPLAY */
 
 #if 0 //defined(__cplusplus)
@@ -60,9 +60,9 @@ extern "C" {
 #endif
 
 struct getmelee_struct {
-	BOOLEAN (*InputFunc) (struct getmelee_struct *pInputState);
+	bool (*InputFunc) (struct getmelee_struct *pInputState);
 
-	BOOLEAN Initialized;
+	bool Initialized;
 	
 	struct {
 		TimeCount timeIn;
@@ -77,14 +77,14 @@ struct getmelee_struct {
 				// Number of ships still available.
 		COUNT randomIndex;
 				// Pre-generated random number.
-		BOOLEAN selecting;
+		bool selecting;
 				// Is this player selecting a ship?
-		BOOLEAN done;
+		bool done;
 				// Has a selection been made for this player?
 		FlashContext *flashContext;
 				// Context for controlling the flash rectangle.
 #ifdef NETPLAY
-		BOOLEAN remoteSelected;
+		bool remoteSelected;
 #endif
 	} player[NUM_PLAYERS];
 };

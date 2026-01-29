@@ -46,13 +46,13 @@
 
 static void cleanup_dead_ship (ELEMENT *ElementPtr);
 
-static BOOLEAN dittyIsPlaying;
+static bool dittyIsPlaying;
 static STARSHIP *winnerStarShip;
 		// Indicates which ship is the winner of the current battle.
 		// The winner will be last to pick the next ship.
 
 
-BOOLEAN
+bool
 OpponentAlive (STARSHIP *TestStarShipPtr)
 {
 	HELEMENT hElement, hSuccElement;
@@ -69,17 +69,17 @@ OpponentAlive (STARSHIP *TestStarShipPtr)
 
 		if (StarShipPtr && StarShipPtr != TestStarShipPtr
 				&& StarShipPtr->RaceDescPtr->ship_info.crew_level == 0)
-			return FALSE;
+			return false;
 	}
 
-	return TRUE;
+	return true;
 }
 
 static void
 PlayDitty (STARSHIP *ship)
 {
-	PlayMusic (ship->RaceDescPtr->ship_data.victory_ditty, FALSE, 3);
-	dittyIsPlaying = TRUE;
+	PlayMusic (ship->RaceDescPtr->ship_data.victory_ditty, false, 3);
+	dittyIsPlaying = true;
 }
 
 void
@@ -87,14 +87,14 @@ StopDitty (void)
 {
 	if (dittyIsPlaying)
 		StopMusic ();
-	dittyIsPlaying = FALSE;
+	dittyIsPlaying = false;
 }
 
-static BOOLEAN
+static bool
 DittyPlaying (void)
 {
 	if (!dittyIsPlaying)
-		return FALSE;
+		return false;
 
 	dittyIsPlaying = PLRPlaying ((MUSIC_REF)~0);
 	return dittyIsPlaying;
@@ -296,14 +296,14 @@ cleanup_dead_ship (ELEMENT *DeadShipPtr)
 	{
 		// Ship explosion has finished, or ship has just warped out
 		// if DeadStarShipPtr->crew_level != 0
-		BOOLEAN MusicStarted;
+		bool MusicStarted;
 		HELEMENT hElement, hSuccElement;
 
 		/* Record crew left after the battle */
 		DeadStarShipPtr->crew_level =
 				DeadStarShipPtr->RaceDescPtr->ship_info.crew_level;
 
-		MusicStarted = FALSE;
+		MusicStarted = false;
 
 		for (hElement = GetHeadElement (); hElement; hElement = hSuccElement)
 		{
@@ -341,7 +341,7 @@ cleanup_dead_ship (ELEMENT *DeadShipPtr)
 					&& (StarShipPtr->cur_status_flags & PLAY_VICTORY_DITTY))
 			{
 				// StarShipPtr points to the remaining ship.
-				MusicStarted = TRUE;
+				MusicStarted = true;
 				PlayDitty (StarShipPtr);
 				StarShipPtr->cur_status_flags &= ~PLAY_VICTORY_DITTY;
 			}
@@ -465,7 +465,7 @@ new_ship (ELEMENT *DeadShipPtr)
 	winnerStarShip = NULL;
 
 	{
-		BOOLEAN RestartMusic;
+		bool RestartMusic;
 
 		StopDitty ();
 		StopMusic ();
@@ -474,7 +474,7 @@ new_ship (ELEMENT *DeadShipPtr)
 		SetElementStarShip (DeadShipPtr, 0);
 		RestartMusic = OpponentAlive (DeadStarShipPtr);
 
-		free_ship (DeadStarShipPtr->RaceDescPtr, TRUE, TRUE);
+		free_ship (DeadStarShipPtr->RaceDescPtr, true, true);
 		DeadStarShipPtr->RaceDescPtr = 0;
 		
 		// Graphics are batched while the draw queue is processed,
@@ -522,7 +522,7 @@ new_ship (ELEMENT *DeadShipPtr)
 			}
 #endif
 			if (RestartMusic)
-				BattleSong (TRUE);
+				BattleSong (true);
 		}
 		else if (battle_counter[0] == 0 || battle_counter[1] == 0)
 		{

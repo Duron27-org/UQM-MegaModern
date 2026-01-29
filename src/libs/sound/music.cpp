@@ -32,7 +32,7 @@ static MUSIC_REF curSpeechRef;
 static MUSIC_POSITION resumeMusicArray[PATH_MAX];
 
 void
-PLRPlaySong (MUSIC_REF MusicRef, BOOLEAN Continuous, BYTE Priority)
+PLRPlaySong (MUSIC_REF MusicRef, bool Continuous, BYTE Priority)
 {
 	TFB_SoundSample **pmus = MusicRef;
 
@@ -62,12 +62,12 @@ PLRStop (MUSIC_REF MusicRef)
 	}
 }
 
-BOOLEAN
+bool
 PLRPlaying (MUSIC_REF MusicRef)
 {
 	if (curMusicRef && (MusicRef == curMusicRef || MusicRef == (MUSIC_REF)~0))
 	{
-		BOOLEAN playing;
+		bool playing;
 
 		LockMutex (soundSource[MUSIC_SOURCE].stream_mutex);
 		playing = PlayingStream (MUSIC_SOURCE);
@@ -76,7 +76,7 @@ PLRPlaying (MUSIC_REF MusicRef)
 		return playing;
 	}
 
-	return FALSE;
+	return false;
 }
 
 void
@@ -237,7 +237,7 @@ snd_StopSpeech (void)
 	curSpeechRef = 0;
 }
 
-BOOLEAN
+bool
 DestroyMusic (MUSIC_REF MusicRef)
 {
 	return _ReleaseMusicData (MusicRef);
@@ -301,14 +301,14 @@ _GetMusicData (uio_Stream *fp, DWORD length)
 	return (h);
 }
 
-BOOLEAN
+bool
 _ReleaseMusicData (void *data)
 {
 	TFB_SoundSample **pmus = (TFB_SoundSample**)data;
 	TFB_SoundSample *sample;
 
 	if (pmus == NULL)
-		return (FALSE);
+		return (false);
 
 	sample = *pmus;
 	assert (sample != 0);
@@ -328,7 +328,7 @@ _ReleaseMusicData (void *data)
 	TFB_DestroySoundSample (sample);
 	FreeMusicData (data);
 
-	return (TRUE);
+	return (true);
 }
 
 // For music resume option
@@ -399,7 +399,7 @@ GetMusicPosition ()
 
 #define FIVE_MINUTES (1000 * 300)
 
-BOOLEAN
+bool
 OkayToResume (void)
 {
 	TimeCount TimeIn, difference;
@@ -407,11 +407,11 @@ OkayToResume (void)
 	int i;
 
 	if (!optMusicResume || GLOBAL (CurrentActivity) & CHECK_ABORT)
-		return FALSE;
+		return false;
 
 	filename_hash = PLRGetFilenameHash ();
 	if (!filename_hash)
-		return FALSE;
+		return false;
 
 	for (i = 0; i < PATH_MAX; ++i)
 	{
@@ -420,19 +420,19 @@ OkayToResume (void)
 	}
 
 	if (i == PATH_MAX)
-		return FALSE;
+		return false;
 
 	if (!resumeMusicArray[i].last_played
 			|| !resumeMusicArray[i].position)
-		return FALSE;
+		return false;
 
 	TimeIn = GetTimeCounter ();
 	difference = TimeIn - resumeMusicArray[i].last_played;
 
 	if (optMusicResume == 2 || (difference < FIVE_MINUTES))
-		return TRUE;
+		return true;
 
-	return FALSE;
+	return false;
 }
 
 void

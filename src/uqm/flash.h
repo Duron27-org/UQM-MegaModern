@@ -109,11 +109,12 @@ typedef enum {
 typedef struct FlashContext FlashContext;
 
 #ifdef FLASH_INTERNAL
-typedef enum {
+enum FlashType
+{
 	FlashType_highlight,
 	FlashType_transition,
 	FlashType_overlay,
-} FlashType;
+};
 
 struct FlashContext {
 	CONTEXT gfxContext;
@@ -164,9 +165,9 @@ struct FlashContext {
 	TimeCount lastFrameTime;
 			// Time of the last frame draw.
 
-	BOOLEAN started;
-	BOOLEAN paused;
-	BOOLEAN isPulsing;
+	bool started;
+	bool paused;
+	bool isPulsing;
 
 	FRAME *cache;
 	COUNT cacheSize;
@@ -206,13 +207,13 @@ void Flash_setSpeed (FlashContext *context, TimeCount fadeInTime,
 void Flash_setMergeFactors(FlashContext *context, int startNumer,
 		int endNumer, int denom);
 void Flash_setFrameTime (FlashContext *context, TimeCount frameTime);
-void Flash_setPulseBox (FlashContext *context, BOOLEAN isPulsing);
-BOOLEAN Flash_getPulseBox (FlashContext *context);
+void Flash_setPulseBox (FlashContext *context, bool isPulsing);
+bool Flash_getPulseBox (FlashContext *context);
 TimeCount Flash_nextTime (FlashContext *context);
 void Flash_setRect (FlashContext *context, const RECT *rect);
 void Flash_getRect (FlashContext *context, RECT *rect);
 void Flash_setOverlay(FlashContext *context, const POINT *origin,
-		FRAME overlay, BOOLEAN cleanup); 
+		FRAME overlay, bool cleanup); 
 void Flash_preUpdate (FlashContext *context);
 void Flash_postUpdate (FlashContext *context);
 void Flash_setCacheSize (FlashContext *context, COUNT size);

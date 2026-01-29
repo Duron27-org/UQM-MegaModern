@@ -23,12 +23,12 @@
 #include "libs/memlib.h"
 
 
-static BOOLEAN
+static bool
 FreeLegacyVideoData (void *data)
 {
 	LEGACY_VIDEO pLV;
 	if (!data)
-		return FALSE;
+		return false;
 		
 	pLV = (LEGACY_VIDEO) data;
 	if (pLV->video)
@@ -39,7 +39,7 @@ FreeLegacyVideoData (void *data)
 		HFree (pLV->speech);
 	HFree (pLV);
 	
-	return TRUE;
+	return true;
 }
 
 static void
@@ -158,11 +158,11 @@ err:
 	return;
 }
 
-BOOLEAN
+bool
 InstallVideoResType (void)
 {
 	InstallResTypeVectors ("3DOVID", GetLegacyVideoData, FreeLegacyVideoData, NULL);
-	return TRUE;
+	return true;
 }
 
 LEGACY_VIDEO
@@ -179,7 +179,7 @@ LoadLegacyVideoInstance (RESOURCE res)
 	return (LEGACY_VIDEO)data;
 }
 
-BOOLEAN
+bool
 DestroyLegacyVideo (LEGACY_VIDEO vid)
 {
 	return FreeLegacyVideoData (vid);

@@ -289,12 +289,12 @@ static void
 zoqfotpik_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 		COUNT ConcernCounter)
 {
-	BOOLEAN GiveTongueJob;
+	bool GiveTongueJob;
 	STARSHIP *StarShipPtr;
 
 	GetElementStarShip (ShipPtr, &StarShipPtr);
 
-	GiveTongueJob = FALSE;
+	GiveTongueJob = false;
 	if (StarShipPtr->special_counter == 0)
 	{
 		EVALUATE_DESC *lpEnemyEvalDesc;
@@ -311,7 +311,7 @@ zoqfotpik_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 		{
 			SDWORD delta_x, delta_y;
 
-			GiveTongueJob = TRUE;
+			GiveTongueJob = true;
 
 			lpEnemyEvalDesc->MoveState = PURSUE;
 			delta_x = lpEnemyEvalDesc->ObjectPtr->next.location.x

@@ -25,11 +25,11 @@
 extern "C" {
 #endif
 
-extern BOOLEAN InstallCodeResType (void);
+extern bool InstallCodeResType (void);
 extern void *LoadCodeResInstance (RESOURCE res);
 extern void *CaptureCodeRes (void *hCode, void *pData, void **ppLocData);
 extern void *ReleaseCodeRes (void *CodeRef);
-extern BOOLEAN DestroyCodeRes (void *hCode);
+extern bool DestroyCodeRes (void *hCode);
 
 typedef struct
 {

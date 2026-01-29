@@ -295,8 +295,8 @@ ExitConversation (RESPONSE_REF R)
 				SET_GAME_STATE (SUPOX_HOSTILE, 0);
 				SET_GAME_STATE (UTWIG_HOSTILE, 0);
 
-				SetRaceAllied (UTWIG_SHIP, TRUE);
-				SetRaceAllied (SUPOX_SHIP, TRUE);
+				SetRaceAllied (UTWIG_SHIP, true);
+				SetRaceAllied (SUPOX_SHIP, true);
 			}
 		}
 	}

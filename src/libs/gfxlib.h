@@ -179,10 +179,10 @@ IncreaseBrightness (BYTE *ch, BYTE value)
 		*ch = (BYTE)(((c - *ch) * value) >> 8) + *ch;
 }
 
-static inline BOOLEAN
+static inline bool
 AreTheyShades (Color first_color, Color second_color)
 {
-	return (BOOLEAN)((first_color.r == first_color.g
+	return (bool)((first_color.r == first_color.g
 			&& first_color.g == first_color.b)
 			&& (second_color.r == second_color.g
 			&& second_color.g == second_color.b));
@@ -452,10 +452,10 @@ ZeroPoint (POINT *pt)
 	pt->x = pt->y = ~0;
 }
 
-static inline BOOLEAN
+static inline bool
 ValidPoint (POINT pt)
 {
-	return (BOOLEAN)(pt.x != ~0 && pt.y != ~0);
+	return (bool)(pt.x != ~0 && pt.y != ~0);
 }
 
 typedef enum
@@ -629,10 +629,10 @@ extern FRAME SetContextFGFrame (FRAME Frame);
 extern FRAME GetContextFGFrame (void);
 // Context cliprect defines the drawing bounds. Additionally, all
 // drawing positions (x,y) are relative to the cliprect corner.
-extern BOOLEAN SetContextClipRect (RECT *pRect);
+extern bool SetContextClipRect (RECT *pRect);
 // The returned rect is always filled in. If the context cliprect
 // is undefined, the returned rect has foreground frame dimensions.
-extern BOOLEAN GetContextClipRect (RECT *pRect);
+extern bool GetContextClipRect (RECT *pRect);
 // The actual origin will be orgOffset + context ClipRect.corner
 extern POINT SetContextOrigin (POINT orgOffset);
 extern DrawMode SetContextDrawMode (DrawMode);
@@ -646,17 +646,17 @@ extern TIME_VALUE DrawablesIntersect (INTERSECT_CONTROL *pControl0,
 extern void DrawStamp (STAMP *pStamp);
 extern void DrawFilledStamp (STAMP *pStamp);
 extern void DrawPoint (POINT *pPoint);
-extern void DrawRectangle (RECT *pRect, BOOLEAN scaled);
+extern void DrawRectangle (RECT *pRect, bool scaled);
 extern void DrawFilledRectangle (RECT *pRect);
 extern void DrawLine (LINE *pLine, BYTE thickness);
 extern void ApplyMask (FRAME layer, FRAME base, DrawMode mode, Color *fill);
 extern void InstaPoint (int x, int y);
-extern void InstaRect (int x, int y, int w, int h, BOOLEAN scaled);
+extern void InstaRect (int x, int y, int w, int h, bool scaled);
 extern void InstaFilledRect (int x, int y, int w, int h);
 extern void InstaLine (int x1, int y1, int x2, int y2);
 extern RECT font_GetTextRect (TEXT* pText);
 extern void font_DrawText (TEXT *pText);
-extern void font_DrawText_Fade (TEXT *lpText, FRAME repair, BOOLEAN *skip);
+extern void font_DrawText_Fade (TEXT *lpText, FRAME repair, bool *skip);
 extern void font_DrawTracedText (TEXT *pText, Color text, Color trace);
 extern BYTE font_DrawTextAlt (TEXT *lpText, BYTE swap, FONT AltFontPtr, UniChar key);
 extern void font_DrawTracedTextAlt (TEXT* pText, Color text, Color trace, FONT AltFontPtr,
@@ -677,13 +677,13 @@ extern CONTEXT CreateContextAux (const char *name);
 extern CONTEXT CreateContextAux (void);
 #define CreateContext(name) CreateContextAux()
 #endif  /* !defined(DEBUG) */
-extern BOOLEAN DestroyContext (CONTEXT ContextRef);
+extern bool DestroyContext (CONTEXT ContextRef);
 extern DRAWABLE CreateDisplay (CREATE_FLAGS CreateFlags, SIZE *pwidth,
 		SIZE *pheight);
 extern DRAWABLE CreateDrawable (CREATE_FLAGS CreateFlags, SIZE width,
 		SIZE height, COUNT num_frames);
-extern BOOLEAN DestroyDrawable (DRAWABLE Drawable);
-extern BOOLEAN GetFrameRect (FRAME Frame, RECT *pRect);
+extern bool DestroyDrawable (DRAWABLE Drawable);
+extern bool GetFrameRect (FRAME Frame, RECT *pRect);
 #ifdef DEBUG
 extern const char *GetContextName (CONTEXT context);
 extern CONTEXT GetFirstContext (void);
@@ -693,20 +693,20 @@ extern size_t GetContextCount (void);
 
 extern HOT_SPOT SetFrameHot (FRAME Frame, HOT_SPOT HotSpot);
 extern HOT_SPOT GetFrameHot (FRAME Frame);
-extern BOOLEAN InstallGraphicResTypes (void);
+extern bool InstallGraphicResTypes (void);
 extern DRAWABLE LoadGraphicFile (const char *pStr);
 extern FONT LoadFontFile (const char *pStr);
 extern void *LoadGraphicInstance (RESOURCE res);
 extern DRAWABLE LoadDisplayPixmap (const RECT *area, FRAME frame);
 extern FRAME SetContextFontEffect (FRAME EffectFrame);
 extern FONT SetContextFont (FONT Font);
-extern BOOLEAN DestroyFont (FONT FontRef);
+extern bool DestroyFont (FONT FontRef);
 // The returned pRect is relative to the context drawing origin
-extern BOOLEAN TextRect (TEXT *pText, RECT *pRect, BYTE *pdelta);
-extern BOOLEAN TextRectAlt (TEXT *lpText, RECT *pRect, BYTE *pdelta, BYTE swap, UniChar key, FONT AltFontPtr);
-extern BOOLEAN GetContextFontLeading (SIZE *pheight);
-extern BOOLEAN GetContextFontDispHeight (SIZE *pheight);
-extern BOOLEAN GetContextFontDispWidth (SIZE *pwidth);
+extern bool TextRect (TEXT *pText, RECT *pRect, BYTE *pdelta);
+extern bool TextRectAlt (TEXT *lpText, RECT *pRect, BYTE *pdelta, BYTE swap, UniChar key, FONT AltFontPtr);
+extern bool GetContextFontLeading (SIZE *pheight);
+extern bool GetContextFontDispHeight (SIZE *pheight);
+extern bool GetContextFontDispWidth (SIZE *pwidth);
 extern COUNT GetFrameCount (FRAME Frame);
 extern COUNT GetFrameIndex (FRAME Frame);
 extern FRAME SetAbsFrameIndex (FRAME Frame, COUNT FrameIndex);
@@ -720,17 +720,17 @@ extern DRAWABLE RotateFrame (FRAME Frame, int angle_deg);
 extern DRAWABLE RescaleFrame (FRAME frame, int width, int height);
 extern DRAWABLE RescalePercentage (FRAME frame, float percentage);
 // This pair works for both paletted and trucolor frames
-extern BOOLEAN ReadFramePixelColors (FRAME frame, Color *pixels,
+extern bool ReadFramePixelColors (FRAME frame, Color *pixels,
 		int width, int height);
-extern BOOLEAN WriteFramePixelColors (FRAME frame, const Color *pixels,
+extern bool WriteFramePixelColors (FRAME frame, const Color *pixels,
 		int width, int height);
 // This pair only works for paletted frames
-extern BOOLEAN ReadFramePixelIndexes (FRAME frame, BYTE *pixels,
-		int width, int height, BOOLEAN paletted);
-extern BOOLEAN WriteFramePixelIndexes (FRAME frame, const BYTE *pixels,
+extern bool ReadFramePixelIndexes (FRAME frame, BYTE *pixels,
+		int width, int height, bool paletted);
+extern bool WriteFramePixelIndexes (FRAME frame, const BYTE *pixels,
 		int width, int height);
 extern void SetFrameTransparentColor (FRAME, Color);
-extern BOOLEAN IsFrameIndexed (FRAME Frame);
+extern bool IsFrameIndexed (FRAME Frame);
 
 // If the frame is an active SCREEN_DRAWABLE, this call must be
 // preceeded by FlushGraphics() for draw commands to have taken effect
@@ -741,7 +741,7 @@ extern DRAWABLE ReleaseDrawable (FRAME Frame);
 
 extern DRAWABLE GetFrameParentDrawable (FRAME Frame);
 
-extern BOOLEAN SetColorMap (COLORMAPPTR ColorMapPtr);
+extern bool SetColorMap (COLORMAPPTR ColorMapPtr);
 extern DWORD XFormColorMap (COLORMAPPTR ColorMapPtr, SIZE TimeInterval);
 extern DWORD FadeScreen (ScreenFadeType fadeType, SIZE TimeInterval);
 extern void FlushColorXForms (void);

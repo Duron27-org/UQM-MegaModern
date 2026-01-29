@@ -41,7 +41,7 @@
 
 // Dart Gun
 #define WEAPON_ENERGY_COST 1
-#define SHOFIXTI_OFFSET RES_BOOL (15, 51)
+#define SHOFIXTI_OFFSET chooseIfHd (15, 51)
 #define MISSILE_OFFSET RES_SCALE (1)
 #define MISSILE_SPEED DISPLAY_TO_WORLD (24)
 #define MISSILE_LIFE 10
@@ -301,8 +301,8 @@ self_destruct_kill_objects (ELEMENT *ElementPtr)
 			// XXX: Why not simply call do_damage()?
 			if (ObjPtr->state_flags & PLAYER_SHIP)
 			{
-				if (!(antiCheat (ElementPtr, TRUE, OPTVAL_INF_HEALTH)
-						|| antiCheat (ElementPtr, TRUE, OPTVAL_FULL_GOD)))
+				if (!(antiCheat (ElementPtr, true, OPTVAL_INF_HEALTH)
+						|| antiCheat (ElementPtr, true, OPTVAL_FULL_GOD)))
 				{
 					if (!DeltaCrew (ObjPtr, -destruction))
 						ObjPtr->life_span = 0;

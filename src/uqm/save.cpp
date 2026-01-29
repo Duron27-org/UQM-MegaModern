@@ -51,7 +51,7 @@
 // every single write, but this preserves the older
 // behavior.
 
-static BOOLEAN io_ok = TRUE;
+static bool io_ok = true;
 
 // This defines the order and the number of bits in which the game state
 // properties are saved.
@@ -807,7 +807,7 @@ write_8 (void *fp, BYTE v)
 {
 	if (io_ok)
 		if (WriteResFile (&v, 1, 1, (uio_Stream*)fp) != 1)
-			io_ok = FALSE;
+			io_ok = false;
 }
 
 static inline void
@@ -831,7 +831,7 @@ write_a8 (void *fp, const BYTE *ar, COUNT count)
 {
 	if (io_ok)
 		if (WriteResFile (ar, 1, count, (uio_Stream*)fp) != count)
-			io_ok = FALSE;
+			io_ok = false;
 }
 
 static inline void
@@ -1076,7 +1076,7 @@ SaveClockState (const CLOCK_STATE *ClockPtr, uio_Stream *fh)
 /* Save out the game state chunks. There are two of these; the Global
  * State chunk is fixed size, but the Game State tag can be extended
  * by modders. */
-static BOOLEAN
+static bool
 SaveGameState (const GAME_STATE *GSPtr, uio_Stream *fh)
 {
 	BYTE res_scale;
@@ -1133,9 +1133,9 @@ SaveGameState (const GAME_STATE *GSPtr, uio_Stream *fh)
 			HFree(buf);
 		}
 		else
-			return FALSE;
+			return false;
 	}
-	return TRUE;
+	return true;
 }
 
 /* This is folded into the Summary chunk */
@@ -1314,7 +1314,7 @@ SaveProblemMessage (STAMP *MsgStamp)
 
 	BatchGraphics ();
 	DrawStarConBox (&r, RES_SCALE (2), SHADOWBOX_MEDIUM_COLOR,
-			SHADOWBOX_DARK_COLOR, TRUE, DKGRAY_COLOR, TRUE, TRANSPARENT);
+			SHADOWBOX_DARK_COLOR, true, DKGRAY_COLOR, true, TRANSPARENT);
 	SetContextForeGroundColor (
 			isPC (optWhichFonts) ? WHITE_COLOR : LTGRAY_COLOR);
 
@@ -1340,7 +1340,7 @@ SaveProblem (void)
 	SaveProblemMessage (&s);
 	FlushGraphics ();
 
-	WaitForAnyButton (TRUE, WAIT_INFINITE, FALSE);
+	WaitForAnyButton (true, WAIT_INFINITE, false);
 
 	// Restore the screen under the message
 	DrawStamp (&s);
@@ -1532,7 +1532,7 @@ SaveGroups (uio_Stream *fh)
 
 // This function first writes to a memory file, and then writes the whole
 // lot to the actual save file at once.
-BOOLEAN
+bool
 SaveGame (COUNT which_game, SUMMARY_DESC *SummPtr, const char *name)
 {
 	uio_Stream *out_fp;
@@ -1556,14 +1556,14 @@ SaveGame (COUNT which_game, SUMMARY_DESC *SummPtr, const char *name)
 	sprintf (file, "uqmsave.%02u", which_game);
 	if ((out_fp = res_OpenResFile (saveDir, file, "wb")))
 	{
-		io_ok = TRUE;
+		io_ok = true;
 		write_32 (out_fp, MMV4_TAG);
 
 		PrepareSummary (SummPtr, name);
 		SaveSummary (SummPtr, out_fp);
 
 		if (!SaveGameState (&GlobData.Game_state, out_fp))
-			io_ok = FALSE;
+			io_ok = false;
 
 		// XXX: Restore
 		GLOBAL (ip_location) = pt;
@@ -1608,13 +1608,13 @@ SaveGame (COUNT which_game, SUMMARY_DESC *SummPtr, const char *name)
 		if (!io_ok)
 		{
 			DeleteResFile(saveDir, file);
-			return FALSE;
+			return false;
 		}
 	}
 	else
 	{
-		return FALSE;
+		return false;
 	}
 
-	return TRUE;
+	return true;
 }

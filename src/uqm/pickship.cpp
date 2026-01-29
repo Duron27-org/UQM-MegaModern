@@ -82,7 +82,7 @@ RepairPickFrame (RECT *pRect, COUNT frame)
 	SetContextClipRect (&OldRect);
 }
 
-static BOOLEAN
+static bool
 DoPickBattleShip (MENU_STATE *pMS)
 {
 	RECT r{};
@@ -91,14 +91,14 @@ DoPickBattleShip (MENU_STATE *pMS)
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
 	{
 		pMS->CurFrame = 0;
-		return (FALSE);
+		return (false);
 	}
 
 	SetMenuSounds (MENU_SOUND_NONE, MENU_SOUND_NONE);
 	
 	if (!pMS->Initialized)
 	{
-		pMS->Initialized = TRUE;
+		pMS->Initialized = true;
 		pMS->InputFunc = DoPickBattleShip;
 
 		goto ChangeSelection;
@@ -108,7 +108,7 @@ DoPickBattleShip (MENU_STATE *pMS)
 		if ((HSTARSHIP)pMS->CurFrame)
 		{
 			PlayMenuSound (MENU_SOUND_SUCCESS);
-			return (FALSE);
+			return (false);
 		}
 	}
 	else
@@ -146,7 +146,7 @@ DoPickBattleShip (MENU_STATE *pMS)
 #ifdef NEVER
 			SetContextForeGroundColor (
 					BUILD_COLOR (MAKE_RGB15 (0x0A, 0x0A, 0x0A), 0x1D));
-			DrawRectangle (&pMS->flash_rect0, FALSE);
+			DrawRectangle (&pMS->flash_rect0, false);
 #endif /* NEVER */
 			pMS->first_item.y = new_row;
 			pMS->first_item.x = new_col;
@@ -297,12 +297,12 @@ ChangeSelection:
 				font_DrawText (&t);
 			}
 
-			SetFlashRect (NULL, FALSE);
+			SetFlashRect (NULL, false);
 			SetFlashRect (&pMS->flash_rect0, optWhichMenu == OPT_PC);
 		}
 	}
 
-	return (TRUE);
+	return (true);
 }
 
 static HSTARSHIP
@@ -322,13 +322,13 @@ GetArmadaStarShip (void)
 
 	InitPickFrame ();
 	OldContext = SetContext (SpaceContext);
-	DrawArmadaPickShip (FALSE, &pick_r);
+	DrawArmadaPickShip (false, &pick_r);
 
 	{
 		MENU_STATE MenuState;
 
 		MenuState.InputFunc = DoPickBattleShip;
-		MenuState.Initialized = FALSE;
+		MenuState.Initialized = false;
 		MenuState.first_item.x = NUM_PICK_SHIP_COLUMNS >> 1;
 		MenuState.first_item.y = 0;
 		MenuState.CurFrame = 0;
@@ -336,9 +336,9 @@ GetArmadaStarShip (void)
 		MenuState.flash_rect1.extent.width = 0;
 
 		SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
-		DoInput (&MenuState, FALSE);
+		DoInput (&MenuState, false);
 
-		SetFlashRect (NULL, FALSE);
+		SetFlashRect (NULL, false);
 
 		hBattleShip = (HSTARSHIP)MenuState.CurFrame;
 	}
@@ -406,7 +406,7 @@ GetEncounterStarShip (STARSHIP *LastStarShipPtr, COUNT which_player)
 				if (LastStarShipPtr->crew_level == 0)
 				{	// Died in the line of duty
 					GLOBAL_SIS (CrewEnlisted) = (COUNT)~0;
-					DeathByMelee = TRUE;
+					DeathByMelee = true;
 				}
 				else
 				{	// Player ran away
@@ -448,7 +448,7 @@ GetEncounterStarShip (STARSHIP *LastStarShipPtr, COUNT which_player)
 }
 
 void
-DrawArmadaPickShip (BOOLEAN draw_salvage_frame, RECT *pPickRect)
+DrawArmadaPickShip (bool draw_salvage_frame, RECT *pPickRect)
 {
 #define PICK_NAME_HEIGHT RES_SCALE (6);
 	HSTARSHIP hBattleShip, hNextShip;

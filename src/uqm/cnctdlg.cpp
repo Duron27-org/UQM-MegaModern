@@ -37,10 +37,10 @@
 
 typedef struct connect_dialog_state
 {
-	BOOLEAN (*InputFunc) (struct connect_dialog_state *pInputState);
+	bool (*InputFunc) (struct connect_dialog_state *pInputState);
 
 	DWORD NextTime;
-	BOOLEAN Initialized;
+	bool Initialized;
 	int which_side;
 	
 	int confirmed;
@@ -61,7 +61,7 @@ static WIDGET *menu_widgets[] = {
 	(WIDGET *)&texts[1],
 	(WIDGET *)&buttons[2] };
 
-static BOOLEAN done;
+static bool done;
 
 /* This kind of sucks, but the Button callbacks need access to the
  * CONNECT_DIALOG_STATE, so we need a pointer to it */
@@ -258,7 +258,7 @@ MCD_DrawTextEntry (WIDGET *_self, int x, int y)
 			// will not fit when displayed later
 			UnbatchGraphics ();
 			// disallow the change
-			return (FALSE);
+			return (false);
 		}
 #endif
 
@@ -321,7 +321,7 @@ MCD_DrawTextEntry (WIDGET *_self, int x, int y)
 /* Text entry stuff, mostly C&Ped from setupmenu.c.  Could use some
  * refactoring, as redraw_menu () is the only real change. */
 
-static BOOLEAN
+static bool
 OnTextEntryChange (TEXTENTRY_STATE *pTES)
 {
 	WIDGET_TEXTENTRY *widget = (WIDGET_TEXTENTRY *) pTES->CbParam;
@@ -334,12 +334,12 @@ OnTextEntryChange (TEXTENTRY_STATE *pTES)
 	
 	// XXX TODO: Here, we can examine the text entered so far
 	// to make sure it fits on the screen, for example,
-	// and return FALSE to disallow the last change
+	// and return false to disallow the last change
 	
-	return TRUE; // allow change
+	return true; // allow change
 }
 
-static BOOLEAN
+static bool
 OnTextEntryFrame (TEXTENTRY_STATE *pTES)
 {
 	DrawConnectDialog ();
@@ -348,7 +348,7 @@ OnTextEntryFrame (TEXTENTRY_STATE *pTES)
 	pTES->NextTime = GetTimeCounter () + MENU_FRAME_RATE;
 
 	(void) pTES;  // satisfying compiler
-	return TRUE; // continue
+	return true; // continue
 }
 
 static int
@@ -366,7 +366,7 @@ OnTextEntryEvent (WIDGET_TEXTENTRY *widget)
 	utf8StringCopy (revert_buf, sizeof (revert_buf), widget->value);
 
 	// text entry setup
-	tes.Initialized = FALSE;
+	tes.Initialized = false;
 	tes.NextTime = GetTimeCounter () + MENU_FRAME_RATE;
 	tes.BaseStr = widget->value;
 	tes.MaxSize = widget->maxlen;
@@ -391,7 +391,7 @@ OnTextEntryEvent (WIDGET_TEXTENTRY *widget)
 	widget->state = WTE_NORMAL;
 	DrawConnectDialog ();
 
-	return TRUE; // event handled
+	return true; // event handled
 }
 
 /* Button response routines */
@@ -404,14 +404,14 @@ do_connect (WIDGET *self, int event)
 		/* These assignments are safe exactly because texts[] is file-scope) */
 		netplayOptions.peer[current_state->which_side].host = texts[0].value;
 		netplayOptions.peer[current_state->which_side].port = texts[1].value;
-		netplayOptions.peer[current_state->which_side].isServer = FALSE;
-		current_state->confirmed = TRUE;
+		netplayOptions.peer[current_state->which_side].isServer = false;
+		current_state->confirmed = true;
 		netplayOptions.inputDelay = slider.value;
 
-		done = TRUE;
+		done = true;
 	}
 	(void)self;
-	return FALSE;
+	return false;
 }
 
 static int
@@ -421,13 +421,13 @@ do_listen (WIDGET *self, int event)
 	{
 		/* These assignments are safe exactly because texts[] is file-scope) */
 		netplayOptions.peer[current_state->which_side].port = texts[1].value;
-		netplayOptions.peer[current_state->which_side].isServer = TRUE;
+		netplayOptions.peer[current_state->which_side].isServer = true;
 		netplayOptions.inputDelay = slider.value;
-		current_state->confirmed = TRUE;
-		done = TRUE;
+		current_state->confirmed = true;
+		done = true;
 	}
 	(void)self;
-	return FALSE;
+	return false;
 }
 
 static int
@@ -435,11 +435,11 @@ do_cancel (WIDGET *self, int event)
 {
 	if (event == WIDGET_EVENT_SELECT)
 	{
-		current_state->confirmed = FALSE;
-		done = TRUE;
+		current_state->confirmed = false;
+		done = true;
 	}
 	(void)self;
-	return FALSE;
+	return false;
 }
 
 
@@ -553,17 +553,17 @@ DrawConnectDialog (void)
 
 }
 
-static BOOLEAN
+static bool
 DoMeleeConnectDialog (CONNECT_DIALOG_STATE *state)
 {
-	BOOLEAN changed;
+	bool changed;
 
 	/* Cancel any presses of the Pause key. */
-	GamePaused = FALSE;
+	GamePaused = false;
 
 	if (!state->Initialized)
 	{
-		state->Initialized = TRUE;
+		state->Initialized = true;
 		SetDefaultMenuRepeatDelay ();
 		state->NextTime = GetTimeCounter ();
 		/* Prepare widgets, draw stuff, etc. */
@@ -571,7 +571,7 @@ DoMeleeConnectDialog (CONNECT_DIALOG_STATE *state)
 		DrawConnectDialog ();
 	}
 
-	changed = TRUE;
+	changed = true;
 
 	if (PulsedInputState.menu[KEY_MENU_UP])
 	{
@@ -603,7 +603,7 @@ DoMeleeConnectDialog (CONNECT_DIALOG_STATE *state)
 	}
 	else
 	{
-		changed = FALSE;
+		changed = false;
 	}
 
 	if (changed)
@@ -617,21 +617,21 @@ DoMeleeConnectDialog (CONNECT_DIALOG_STATE *state)
 		 done);
 }
 
-BOOLEAN
+bool
 MeleeConnectDialog (int side)
 {
 	CONNECT_DIALOG_STATE state;
 
 	PlayerFont = LoadFont (PLAYER_FONT);
 
-	state.Initialized = FALSE;
+	state.Initialized = false;
 	state.which_side = side;
 	state.InputFunc = DoMeleeConnectDialog;
-	state.confirmed = TRUE;
+	state.confirmed = true;
 
 	current_state = &state;
 
-	DoInput (&state, TRUE);
+	DoInput (&state, true);
 
 	current_state = NULL;
 

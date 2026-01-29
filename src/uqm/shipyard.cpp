@@ -99,9 +99,9 @@ typedef enum {
 	DMS_Mode_exit,       // Leaving DoModifyShips() mode.
 } DMS_Mode;
 
-static BOOLEAN DoShipSpins;
+static bool DoShipSpins;
 
-static BOOLEAN stowed_q;			// Build queue or storage queue
+static bool stowed_q;			// Build queue or storage queue
 static BYTE currentStowShip = 0;	// Saves location in storage queue
 static COUNT stowCount = 0;			// Number of ships stowed
 static COUNT availableCount = 0;	// Number of ships available to purchase
@@ -240,7 +240,7 @@ DrawShipsDisplay (SHIPS_STATE *shipState)
 	{
 		DrawStarConBox (&r, RES_SCALE (1),
 			SHADOWBOX_MEDIUM_COLOR, SHADOWBOX_DARK_COLOR,
-			TRUE, MODULE_BACK_COLOR, FALSE, TRANSPARENT);
+			true, MODULE_BACK_COLOR, false, TRANSPARENT);
 	}
 	else
 		DrawBorder (DEVICE_CARGO_FRAME);
@@ -558,17 +558,17 @@ CalculateEscortsPoints (void)
 
 #define REMAINING_FP (CalculateAllyPoints () - CalculateEscortsPoints ())
 
-BOOLEAN
+bool
 CanBuyPoints (HFLEETINFO hFleet)
 {
 	if ((!optFleetPointSys && !DIF_HARD)
 			|| GET_GAME_STATE (CHMMR_BOMB_STATE) == 3)
-		return TRUE;
+		return true;
 
 	if (ShipPoints (hFleet) > REMAINING_FP)
-		return FALSE;
+		return false;
 
-	return TRUE;
+	return true;
 }
 
 static void
@@ -677,10 +677,10 @@ SpinStarShip (MENU_STATE *pMS, HFLEETINFO hStarShip)
 	{
 		if (isPC (optWhichIntro))
 			PlayMenuSound (MENU_SOUND_SUCCESS);
-		DoShipSpins = TRUE;
+		DoShipSpins = true;
 		DoShipSpin (Index, pMS->hMusic);
 	}
-	DoShipSpins = FALSE;
+	DoShipSpins = false;
 }
 
 static void
@@ -866,12 +866,12 @@ DrawRaceStrings (BYTE NewRaceItem)
 		{
 			DrawStarConBox (&dosRect, RES_SCALE (1),
 					PCMENU_TOP_LEFT_BORDER_COLOR,
-					PCMENU_BOTTOM_RIGHT_BORDER_COLOR, TRUE, BLACK_COLOR,
-					FALSE, TRANSPARENT);
+					PCMENU_BOTTOM_RIGHT_BORDER_COLOR, true, BLACK_COLOR,
+					false, TRANSPARENT);
 		}
 		else
 		{
-			DrawRenderedBox (&dosRect, TRUE, BLACK_COLOR,
+			DrawRenderedBox (&dosRect, true, BLACK_COLOR,
 					THIN_INNER_BEVEL, optCustomBorder);
 		}
 	}
@@ -1223,14 +1223,14 @@ ShowCombatShip (MENU_STATE *pMS, COUNT which_window,
 
 	if (num_ships)
 	{
-		BOOLEAN AllDoorsFinished;
+		bool AllDoorsFinished;
 		DWORD TimeIn;
 		RECT r;
 		CONTEXT OldContext;
 		RECT OldClipRect;
 		int j;
 
-		AllDoorsFinished = FALSE;
+		AllDoorsFinished = false;
 		r.corner.x = r.corner.y = 0;
 		r.extent.width = SHIP_WIN_WIDTH;
 		r.extent.height = SHIP_WIN_HEIGHT;
@@ -1241,14 +1241,14 @@ ShowCombatShip (MENU_STATE *pMS, COUNT which_window,
 		{
 			SleepThreadUntil (TimeIn + ONE_SECOND / RES_SCALE (24));
 			TimeIn = GetTimeCounter ();
-			if (AnyButtonPress (FALSE))
+			if (AnyButtonPress (false))
 			{
 				if (YankedStarShipPtr != 0)
 				{	// Fully close the doors
 					ship_win_info[0].lfdoor_s.origin.x = 0;
 					ship_win_info[0].rtdoor_s.origin.x = 0;
 				}
-				AllDoorsFinished = TRUE;
+				AllDoorsFinished = true;
 			}
 
 			OldContext = SetContext (SpaceContext);
@@ -1386,8 +1386,8 @@ DMS_FlashFlagShipCrewCount (void)
 {
 	RECT r;
 	SetContext (StatusContext);
-	GetGaugeRect (&r, TRUE);
-	SetFlashRect (&r, FALSE);
+	GetGaugeRect (&r, true);
+	SetFlashRect (&r, false);
 	SetContext (SpaceContext);
 }
 
@@ -1405,7 +1405,7 @@ DMS_FlashEscortShipCrewCount (BYTE slotNr)
 	r.extent.height = RES_SCALE (5); 
 
 	SetContext (SpaceContext);
-	SetFlashRect (&r, FALSE);
+	SetFlashRect (&r, false);
 }
 
 // Helper function for DoModifyShips(). Called to change the flash
@@ -1440,7 +1440,7 @@ DMS_SetMode (MENU_STATE *pMS, DMS_Mode mode)
 			break;
 		case DMS_Mode_addEscort:
 			SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
-			SetFlashRect (DOS_BOOL (SFR_MENU_3DO, SFR_MENU_NON), FALSE);
+			SetFlashRect (DOS_BOOL (SFR_MENU_3DO, SFR_MENU_NON), false);
 			break;
 		case DMS_Mode_editCrew:
 			SetMenuSounds (MENU_SOUND_ARROWS,
@@ -1458,7 +1458,7 @@ DMS_SetMode (MENU_STATE *pMS, DMS_Mode mode)
 			break;
 		case DMS_Mode_exit:
 			SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
-			SetFlashRect (SFR_MENU_3DO, FALSE);
+			SetFlashRect (SFR_MENU_3DO, false);
 			break;
 	}
 }
@@ -1470,7 +1470,7 @@ DMS_SetMode (MENU_STATE *pMS, DMS_Mode mode)
 // the crew, and when a new ship is added.
 // hStarShip is the ship in the slot under the cursor
 // (or 0 if no such ship).
-static BOOLEAN
+static bool
 DMS_SpinShip (MENU_STATE *pMS, HSHIPFRAG hStarShip)
 {
 	HFLEETINFO hSpinShip = 0;
@@ -1479,19 +1479,19 @@ DMS_SpinShip (MENU_STATE *pMS, HSHIPFRAG hStarShip)
 	
 	// No spinning the flagship.
 	if (HINIBBLE (pMS->CurState) != 0)
-		return FALSE;
+		return false;
 
 	// We must either be hovering over a used ship slot, or adding a new
 	// ship to the fleet.
 	if ((hStarShip == 0) == !(pMS->delta_item & MODIFY_CREW_FLAG))
-		return FALSE;
+		return false;
 
 	if (!hStarShip && !stowed_q)
 	{
 		// Selecting a ship to build.
 		hSpinShip = GetAvailableRaceFromIndex (LOBYTE (pMS->delta_item));
 		if (!hSpinShip)
-			return FALSE;
+			return false;
 	}
 	else if (!hStarShip && stowed_q)
 	{
@@ -1514,7 +1514,7 @@ DMS_SpinShip (MENU_STATE *pMS, HSHIPFRAG hStarShip)
 		UnlockShipFrag (&GLOBAL (built_ship_q), hStarShip);
 	}
 	
-	SetFlashRect (NULL, FALSE);
+	SetFlashRect (NULL, false);
 
 	OldContext = SetContext (ScreenContext);
 	GetContextClipRect (&OldClipRect);
@@ -1524,7 +1524,7 @@ DMS_SpinShip (MENU_STATE *pMS, HSHIPFRAG hStarShip)
 	SetContextClipRect (&OldClipRect);
 	SetContext (OldContext);
 
-	return TRUE;
+	return true;
 }
 
 // Helper function for DoModifyShips(), called when the player presses the
@@ -1945,10 +1945,10 @@ DMS_TryUnstowEscortShip (MENU_STATE *pMS)
 // mode to add a new escort ship to the fleet (after pressing select on an
 // empty slot).
 // LOBYTE (pMS->delta_item) is used to store the currently highlighted
-// ship. Returns FALSE if the flash rectangle needs to be updated.
+// ship. Returns false if the flash rectangle needs to be updated.
 static void
-DMS_AddEscortShip (MENU_STATE *pMS, BOOLEAN special, BOOLEAN select,
-		BOOLEAN cancel, SBYTE dx, SBYTE dy)
+DMS_AddEscortShip (MENU_STATE *pMS, bool special, bool select,
+		bool cancel, SBYTE dx, SBYTE dy)
 {
 	assert (pMS->delta_item & MODIFY_CREW_FLAG);
 
@@ -1966,7 +1966,7 @@ DMS_AddEscortShip (MENU_STATE *pMS, BOOLEAN special, BOOLEAN select,
 	{
 		// Cancel selecting an escort ship.
 		pMS->delta_item &= ~MODIFY_CREW_FLAG;
-		SetFlashRect (NULL, FALSE);
+		SetFlashRect (NULL, false);
 
 		DrawMenuStateStrings (PM_CREW, SHIPYARD_CREW);
 		DrawMenuStateStrings (PM_CREW, SHIPYARD_CREW);
@@ -2047,7 +2047,7 @@ DMS_ScrapEscortShip (MENU_STATE *pMS, HSHIPFRAG hStarShip)
 	SHIP_FRAGMENT *StarShipPtr =
 			LockShipFrag (&GLOBAL (built_ship_q), hStarShip);
 
-	SetFlashRect (NULL, FALSE);
+	SetFlashRect (NULL, false);
 	ShowCombatShip (pMS, pMS->CurState, StarShipPtr);
 
 	UnlockShipFrag (&GLOBAL (built_ship_q), hStarShip);
@@ -2072,7 +2072,7 @@ DMS_StowEscortShip (MENU_STATE *pMS, HSHIPFRAG hStarShip)
 	SHIP_FRAGMENT *StarShipPtr =
 			LockShipFrag (&GLOBAL (built_ship_q), hStarShip);
 
-	SetFlashRect (NULL, FALSE);
+	SetFlashRect (NULL, false);
 	ShowCombatShip (pMS, pMS->CurState, StarShipPtr);
 
 	COUNT Index = StarShipPtr->race_id;
@@ -2107,7 +2107,7 @@ DMS_MoveCursor (BYTE curState, SBYTE dx, SBYTE dy)
 {
 	BYTE row = LONIBBLE(curState) / HANGAR_SHIPS_ROW;
 	BYTE col = LONIBBLE(curState) % HANGAR_SHIPS_ROW;
-	BOOLEAN isFlagShipSelected = (HINIBBLE(curState) != 0);
+	bool isFlagShipSelected = (HINIBBLE(curState) != 0);
 
 	if (dy)
 	{
@@ -2145,7 +2145,7 @@ DMS_MoveCursor (BYTE curState, SBYTE dx, SBYTE dy)
 // called when we are in crew editing mode.
 static void
 DMS_EditCrewMode (MENU_STATE *pMS, HSHIPFRAG hStarShip,
-		BOOLEAN select, BOOLEAN cancel, SBYTE dy)
+		bool select, bool cancel, SBYTE dy)
 {
 	if (cancel)
 	{
@@ -2234,8 +2234,8 @@ DMS_EditCrewMode (MENU_STATE *pMS, HSHIPFRAG hStarShip,
 // called when we are in the mode where you can select a ship or empty
 // slot.
 static void
-DMS_NavigateShipSlots (MENU_STATE *pMS, BOOLEAN special, BOOLEAN select,
-		BOOLEAN cancel, SBYTE dx, SBYTE dy)
+DMS_NavigateShipSlots (MENU_STATE *pMS, bool special, bool select,
+		bool cancel, SBYTE dx, SBYTE dy)
 {
 	HSHIPFRAG hStarShip = GetEscortByStarShipIndex (pMS->CurState);
 
@@ -2295,19 +2295,19 @@ DMS_NavigateShipSlots (MENU_STATE *pMS, BOOLEAN special, BOOLEAN select,
  * some bitwise math is still done to scroll through ships, for it to work
  * ships per row number must divide 0xf0 without remainder
  */
-static BOOLEAN
+static bool
 DoModifyShips (MENU_STATE *pMS)
 {
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
 	{
 		pMS->InputFunc = DoShipyard;
-		return TRUE;
+		return true;
 	}
 
 	if (!pMS->Initialized)
 	{
 		pMS->InputFunc = DoModifyShips;
-		pMS->Initialized = TRUE;
+		pMS->Initialized = true;
 		pMS->CurState = MAKE_BYTE (0, 0xF);
 		pMS->delta_item = 0;
 		SetContext (SpaceContext);
@@ -2317,9 +2317,9 @@ DoModifyShips (MENU_STATE *pMS)
 	}
 	else
 	{
-		BOOLEAN special = (PulsedInputState.menu[KEY_MENU_SPECIAL] != 0);
-		BOOLEAN select = (PulsedInputState.menu[KEY_MENU_SELECT] != 0);
-		BOOLEAN cancel = (PulsedInputState.menu[KEY_MENU_CANCEL] != 0);
+		bool special = (PulsedInputState.menu[KEY_MENU_SPECIAL] != 0);
+		bool select = (PulsedInputState.menu[KEY_MENU_SELECT] != 0);
+		bool cancel = (PulsedInputState.menu[KEY_MENU_CANCEL] != 0);
 		SBYTE dx = 0;
 		SBYTE dy = 0;
 
@@ -2377,7 +2377,7 @@ DoModifyShips (MENU_STATE *pMS)
 			// Kruzen: was 30, upped to 60 to fit new HD
 			// powerline animation. No issues detected so far
 
-	return TRUE;
+	return true;
 }
 
 static void
@@ -2398,12 +2398,12 @@ DrawBluePrint (MENU_STATE *pMS)
 	for (num_frames = 0; num_frames < NUM_DRIVE_SLOTS; ++num_frames)
 	{
 		DrawShipPiece (ModuleFrame, GLOBAL_SIS (DriveSlots[num_frames]),
-				num_frames, TRUE);
+				num_frames, true);
 	}
 	for (num_frames = 0; num_frames < NUM_JET_SLOTS; ++num_frames)
 	{
 		DrawShipPiece (ModuleFrame, GLOBAL_SIS (JetSlots[num_frames]),
-				num_frames, TRUE);
+				num_frames, true);
 	}
 	for (num_frames = 0; num_frames < NUM_MODULE_SLOTS; ++num_frames)
 	{
@@ -2413,7 +2413,7 @@ DrawBluePrint (MENU_STATE *pMS)
 
 		if (!(pMS->CurState == SHIPYARD
 				&& (which_piece == CREW_POD || which_piece == STORAGE_BAY)))
-			DrawShipPiece (ModuleFrame, which_piece, num_frames, TRUE);
+			DrawShipPiece (ModuleFrame, which_piece, num_frames, true);
 	}
 
 	SetContextForeGroundColor (
@@ -2425,7 +2425,7 @@ DrawBluePrint (MENU_STATE *pMS)
 		which_piece = GLOBAL_SIS (ModuleSlots[num_frames]);
 		if (pMS->CurState == SHIPYARD
 				&& (which_piece == CREW_POD || which_piece == STORAGE_BAY))
-			DrawShipPiece (ModuleFrame, which_piece, num_frames, TRUE);
+			DrawShipPiece (ModuleFrame, which_piece, num_frames, true);
 	}
 
 	{
@@ -2466,7 +2466,7 @@ DrawBluePrint (MENU_STATE *pMS)
 		}
 	}
 
-	DrawFuelInFTanks (FALSE);
+	DrawFuelInFTanks (false);
 
 	showRemainingCrew ();
 	showRemainingPoints (0);
@@ -2474,10 +2474,10 @@ DrawBluePrint (MENU_STATE *pMS)
 	DestroyDrawable (ReleaseDrawable (ModuleFrame));
 }
 
-BOOLEAN
+bool
 DoShipyard (MENU_STATE *pMS)
 {
-	BOOLEAN select, cancel;
+	bool select, cancel;
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
 		goto ExitShipyard;
 
@@ -2575,10 +2575,10 @@ DoShipyard (MENU_STATE *pMS)
 
 			SetInputCallback (on_input_frame);
 
-			SetFlashRect (SFR_MENU_3DO, FALSE);
+			SetFlashRect (SFR_MENU_3DO, false);
 		}
 
-		pMS->Initialized = TRUE;
+		pMS->Initialized = true;
 	}
 	else if (cancel || (select && pMS->CurState == SHIPYARD_EXIT))
 	{
@@ -2601,13 +2601,13 @@ ExitShipyard:
 
 		SetMusicPosition ();
 
-		return FALSE;
+		return false;
 	}
 	else if (select)
 	{
 		if (pMS->CurState != SHIPYARD_SAVELOAD)
 		{
-			pMS->Initialized = FALSE;
+			pMS->Initialized = false;
 			DrawMenuStateStrings(PM_CREW, pMS->CurState);
 			DoModifyShips (pMS);
 		}
@@ -2617,7 +2617,7 @@ ExitShipyard:
 			if (!GameOptions ())
 				goto ExitShipyard;
 			DrawMenuStateStrings (PM_CREW, pMS->CurState);
-			SetFlashRect (SFR_MENU_3DO, FALSE);
+			SetFlashRect (SFR_MENU_3DO, false);
 		}
 	}
 	else
@@ -2628,5 +2628,5 @@ ExitShipyard:
 	if (optInfiniteRU)
 		GLOBAL_SIS (ResUnits) = 1000000L;
 
-	return TRUE;
+	return true;
 }

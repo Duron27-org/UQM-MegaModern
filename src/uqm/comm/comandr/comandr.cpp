@@ -142,8 +142,8 @@ RaveParty (void)
 	{
 		CommData.AlienFrame = SetAbsFrameIndex (CommData.AlienFrame,
 				(TFB_Random () % 15) + 40);
-		SwitchSequences (FALSE);
-		EnableTalkingAnim (FALSE);
+		SwitchSequences (false);
+		EnableTalkingAnim (false);
 		CommData.AlienAmbientArray[3].AnimFlags &= ~ANIM_DISABLED;
 	}
 	else
@@ -624,7 +624,7 @@ GiveRadios (RESPONSE_REF R)
 			CommData.AlienAmbientArray[0].AnimFlags &= ~ANIM_DISABLED;
 			CommData.AlienAmbientArray[1].AnimFlags &= ~ANIM_DISABLED;
 			CommData.AlienAmbientArray[3].AnimFlags |= ANIM_DISABLED;
-			EnableTalkingAnim (TRUE);
+			EnableTalkingAnim (true);
 
 			EngageFilters (&commander_filters);
 			FilterData.FilterArray[0].Flags = TURN_OFF_OFT;
@@ -648,7 +648,7 @@ GiveRadios (RESPONSE_REF R)
 			CommData.AlienSong = LoadMusic (CommData.AlienSongRes);
 
 			SetMusicVolume (MUTE_VOLUME);
-			PlayMusic (CommData.AlienSong, TRUE, 1);
+			PlayMusic (CommData.AlienSong, true, 1);
 			SeekMusic (MusicPos);
 			FadeMusic (NORMAL_VOLUME, ONE_SECOND);
 

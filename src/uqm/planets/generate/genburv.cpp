@@ -76,7 +76,7 @@ GenerateBurvixese_generatePlanets (SOLARSYS_STATE *solarSys)
 		angle = ARCTAN (pPlanet->location.x, pPlanet->location.y);
 		pPlanet->location.x = COSINE (angle, pPlanet->radius);
 		pPlanet->location.y = SINE (angle, pPlanet->radius);
-		ComputeSpeed (pPlanet, FALSE, 1);
+		ComputeSpeed (pPlanet, false, 1);
 	}
 	else
 	{
@@ -120,7 +120,7 @@ GenerateBurvixese_generateMoons (SOLARSYS_STATE *solarSys,
 		angle = NORMALIZE_ANGLE (LOWORD (rand_val));
 		pMoonDesc->location.x = COSINE (angle, pMoonDesc->radius);
 		pMoonDesc->location.y = SINE (angle, pMoonDesc->radius);
-		ComputeSpeed (pMoonDesc, TRUE, 1);
+		ComputeSpeed (pMoonDesc, true, 1);
 	}
 
 	return true;

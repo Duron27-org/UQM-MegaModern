@@ -81,7 +81,7 @@ GenerateSpathi_generatePlanets (SOLARSYS_STATE *solarSys)
 		pSunDesc->MoonByte = 0;
 		pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
 
-		FillOrbits (solarSys, NUMPLANETS_PDESC, NULL, FALSE);
+		FillOrbits (solarSys, NUMPLANETS_PDESC, NULL, false);
 
 		pPlanet->NumPlanets = 1;
 
@@ -94,7 +94,7 @@ GenerateSpathi_generatePlanets (SOLARSYS_STATE *solarSys)
 			pPlanet->location.x = COSINE (angle, pPlanet->radius);
 			pPlanet->location.y = SINE (angle, pPlanet->radius);
 			pPlanet->data_index = WATER_WORLD;
-			ComputeSpeed (pPlanet, FALSE, 1);
+			ComputeSpeed (pPlanet, false, 1);
 		}
 		else
 		{
@@ -160,7 +160,7 @@ GenerateSpathi_generateMoons (SOLARSYS_STATE *solarSys,
 					LOWORD (RandomContext_Random (SysGenRNG)));
 			pMoonDesc->location.x = COSINE (angle, pMoonDesc->radius);
 			pMoonDesc->location.y = SINE (angle, pMoonDesc->radius);
-			ComputeSpeed (pMoonDesc, TRUE, 1);
+			ComputeSpeed (pMoonDesc, true, 1);
 		}
 		else
 			pMoonDesc->data_index = GenerateWorlds (SMALL_ROCKY);

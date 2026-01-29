@@ -86,9 +86,9 @@ copy_strings_to_strtab (STRING_TABLE_DESC *strtab, size_t firstIndex,
 // increment: size to increment the buffer with if necessary
 // On success, *buf and *curSize are updated. On failure, they are
 // unchanged.
-// returns FALSE if and only if the buffer needs to be enlarged but
+// returns false if and only if the buffer needs to be enlarged but
 // memory allocation failed.
-static BOOLEAN
+static bool
 ensureBufSize (char **buf, size_t *curSize, size_t minSize, size_t increment)
 {
 	char *newBuf;
@@ -97,19 +97,19 @@ ensureBufSize (char **buf, size_t *curSize, size_t minSize, size_t increment)
 	if (minSize <= *curSize)
 	{
 		// Buffer is large enough as it is.
-		return TRUE;
+		return true;
 	}
 
 	newSize = ((minSize + (increment - 1)) / increment) * increment;
 			// Smallest multiple of 'increment' larger or equal to minSize.
 	newBuf = (char*)HRealloc (*buf, newSize);
 	if (newBuf == NULL)
-		return FALSE;
+		return false;
 
 	// Success
 	*buf = newBuf;
 	*curSize = newSize;
-	return TRUE;
+	return true;
 }
 
 void
@@ -308,7 +308,7 @@ _GetConversationData (const char *path, RESOURCE_DATA *resdata)
 					// We have a time stamp file.
 					char TimeStampLine[1024];
 					char *tsptr;
-					BOOLEAN ts_ok = FALSE;
+					bool ts_ok = false;
 					uio_fgets (TimeStampLine, sizeof (TimeStampLine), timestamp_fp);
 					if (TimeStampLine[0] == '#')
 					{
@@ -319,7 +319,7 @@ _GetConversationData (const char *path, RESOURCE_DATA *resdata)
 						if (tsptr)
 						{
 							tsptr += strlen(name) + 1;
-							ts_ok = TRUE;
+							ts_ok = true;
 							while (! strcspn(tsptr," \t\r\n") && *tsptr)
 								tsptr++;
 							if (*tsptr)

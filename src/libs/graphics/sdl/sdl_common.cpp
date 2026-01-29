@@ -53,7 +53,7 @@ static SDL_Rect TransitionClipRect;
 const SDL_VideoInfo *SDL_screen_info; 
 #endif
 
-static volatile BOOLEAN abortFlag = FALSE;
+static volatile bool abortFlag = false;
 
 int GfxFlags = 0;
 
@@ -62,10 +62,10 @@ TFB_GRAPHICS_BACKEND *graphics_backend = NULL;
 volatile int QuitPosted = 0;
 volatile int GameActive = 1; // Track the SDL_ACTIVEEVENT state SDL_APPACTIVE
 
-static inline BOOLEAN
+static inline bool
 IsWholeScreen (RECT *r)
 {
-	return (BOOLEAN)(r->corner.x == 0 && r->corner.y == 0 &&
+	return (bool)(r->corner.x == 0 && r->corner.y == 0 &&
 		r->extent.width == CanvasWidth && r->extent.height == CanvasHeight);
 }
 
@@ -236,7 +236,7 @@ static SDL_Rect system_box;
 void
 SetSystemRect (const RECT *r)
 {
-	system_box_active = TRUE;
+	system_box_active = true;
 	system_box.x = r->corner.x;
 	system_box.y = r->corner.y;
 	system_box.w = r->extent.width;
@@ -246,7 +246,7 @@ SetSystemRect (const RECT *r)
 void
 ClearSystemRect (void)
 {
-	system_box_active = FALSE;
+	system_box_active = false;
 }
 
 void
@@ -397,7 +397,7 @@ void
 TFB_BlitSurface (SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst,
 		SDL_Rect *dstrect, int blend_numer, int blend_denom)
 {
-	BOOLEAN has_colorkey;
+	bool has_colorkey;
 	int x, y, x1, y1, x2, y2, dst_x2, dst_y2, nr, ng, nb;
 	int srcx, srcy, w, h;
 	Uint8 sr, sg, sb, dr, dg, db;
@@ -502,12 +502,12 @@ TFB_BlitSurface (SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst,
 
 	if (TFB_GetColorKey (src, &colorkey) < 0)
 	{
-		has_colorkey = FALSE;
+		has_colorkey = false;
 		colorkey = 0;  /* Satisfying compiler */
 	}
 	else
 	{
-		has_colorkey = TRUE;
+		has_colorkey = true;
 	}
 
 	src_getpix = getpixel_for (src);
@@ -692,7 +692,7 @@ TFB_ScreenShot (void)
 	len = snprintf(NULL, 0,
 			"%s%s v%d.%d.%d %s.png", shotDirName, curTime,
 			UQM_MAJOR_VERSION, UQM_MINOR_VERSION, UQM_PATCH_VERSION,
-			RES_BOOL(UQM_EXTRA_VERSION, "HD " UQM_EXTRA_VERSION));
+			chooseIfHd<const char*>(UQM_EXTRA_VERSION, "HD " UQM_EXTRA_VERSION));
 	
 	if (len < 0)
 		return;
@@ -704,7 +704,7 @@ TFB_ScreenShot (void)
 	snprintf (fullPath, len + 1,
 			"%s%s v%d.%d.%d %s.png", shotDirName, curTime,
 			UQM_MAJOR_VERSION, UQM_MINOR_VERSION, UQM_PATCH_VERSION,
-			RES_BOOL (UQM_EXTRA_VERSION, "HD " UQM_EXTRA_VERSION));
+			chooseIfHd<const char*>(UQM_EXTRA_VERSION, "HD " UQM_EXTRA_VERSION));
 
 	if (stat (shotDirName, &sb) == 0 && S_ISDIR (sb.st_mode))
 	{

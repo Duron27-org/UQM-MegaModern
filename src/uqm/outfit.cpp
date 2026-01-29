@@ -174,7 +174,7 @@ DrawModuleDisplay (MODULES_STATE *modState)
 	{
 		DrawStarConBox (&r, RES_SCALE (1),
 				SHADOWBOX_MEDIUM_COLOR, SHADOWBOX_DARK_COLOR,
-				TRUE, MODULE_BACK_COLOR, FALSE, TRANSPARENT);
+				true, MODULE_BACK_COLOR, false, TRANSPARENT);
 	}
 	else
 		DrawBorder (DEVICE_CARGO_FRAME);
@@ -369,12 +369,12 @@ DrawModuleStrings (MENU_STATE *pMS, BYTE NewModule)
 			if (!IS_HD)
 			{
 				DrawStarConBox (&dosRect, 1, PCMENU_TOP_LEFT_BORDER_COLOR,
-						PCMENU_BOTTOM_RIGHT_BORDER_COLOR, TRUE,
-						BLACK_COLOR, FALSE, TRANSPARENT);
+						PCMENU_BOTTOM_RIGHT_BORDER_COLOR, true,
+						BLACK_COLOR, false, TRANSPARENT);
 			}
 			else
 			{
-				DrawRenderedBox (&dosRect, TRUE, BLACK_COLOR,
+				DrawRenderedBox (&dosRect, true, BLACK_COLOR,
 						THIN_INNER_BEVEL, optCustomBorder);
 			}
 		}
@@ -434,7 +434,7 @@ RedistributeFuel (void)
 	
 	BatchGraphics ();
 	
-	DrawFuelInFTanks (TRUE);
+	DrawFuelInFTanks (true);
 
 	UnbatchGraphics ();
 	SetContext (OldContext);
@@ -605,17 +605,17 @@ DisplayLanders (MENU_STATE *pMS)
 	}
 }
 
-static BOOLEAN
+static bool
 DoInstallModule (MENU_STATE *pMS)
 {
 	BYTE NewState, new_slot_piece, old_slot_piece;
 	SIZE FirstItem, LastItem;
-	BOOLEAN select, cancel, motion;
+	bool select, cancel, motion;
 
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
 	{
 		pMS->InputFunc = DoOutfit;
-		return (TRUE);
+		return (true);
 	}
 
 	select = PulsedInputState.menu[KEY_MENU_SELECT];
@@ -663,14 +663,14 @@ DoInstallModule (MENU_STATE *pMS)
 	if (!pMS->Initialized)
 	{
 		new_slot_piece = old_slot_piece;
-		pMS->Initialized = TRUE;
+		pMS->Initialized = true;
 
 		pMS->InputFunc = DoInstallModule;
 
 
 		SetContext (SpaceContext);
 		ClearSISRect (CLEAR_SIS_RADAR);
-		SetFlashRect (NULL, FALSE);
+		SetFlashRect (NULL, false);
 		goto InitFlash;
 	}
 	else if (select || cancel)
@@ -685,7 +685,7 @@ DoInstallModule (MENU_STATE *pMS)
 						* MODULE_COST_SCALE))
 				{	// not enough RUs to build
 					PlayMenuSound (MENU_SOUND_FAILURE);
-					return (TRUE);
+					return (true);
 				}
 			}
 			else if (new_slot_piece == EMPTY_SLOT + 2)
@@ -697,7 +697,7 @@ DoInstallModule (MENU_STATE *pMS)
 							* (CountSISPieces (CREW_POD) - 1))
 					{	// crew pod still needed for crew recruited
 						PlayMenuSound (MENU_SOUND_FAILURE);
-						return (TRUE);
+						return (true);
 					}
 				}
 				else if (old_slot_piece == FUEL_TANK
@@ -716,7 +716,7 @@ DoInstallModule (MENU_STATE *pMS)
 						if(!optInfiniteFuel)
 						{
 							PlayMenuSound (MENU_SOUND_FAILURE);
-							return (TRUE);
+							return (true);
 						} else {
 							if (old_slot_piece == FUEL_TANK)
 								DeltaSISGauges (0,-FUEL_TANK_CAPACITY,0);
@@ -732,7 +732,7 @@ DoInstallModule (MENU_STATE *pMS)
 							* (CountSISPieces (STORAGE_BAY) - 1))
 					{	// storage bay still needed for the cargo
 						PlayMenuSound (MENU_SOUND_FAILURE);
-						return (TRUE);
+						return (true);
 					}
 				}
 			}
@@ -740,7 +740,7 @@ DoInstallModule (MENU_STATE *pMS)
 
 		SetContext (SpaceContext);
 
-		SetFlashRect (NULL, FALSE);
+		SetFlashRect (NULL, false);
 
 		if (select)
 		{
@@ -792,7 +792,7 @@ DoInstallModule (MENU_STATE *pMS)
 				else
 				{
 					DrawShipPiece (pMS->ModuleFrame, new_slot_piece,
-							pMS->delta_item, FALSE);
+							pMS->delta_item, false);
 
 					if (new_slot_piece > TURNING_JETS
 							&& old_slot_piece > TURNING_JETS)
@@ -802,7 +802,7 @@ DoInstallModule (MENU_STATE *pMS)
 				}
 			}
 
-			cancel = FALSE;
+			cancel = false;
 		}
 
 		if (pMS->CurState < EMPTY_SLOT)
@@ -833,7 +833,7 @@ DoInstallModule (MENU_STATE *pMS)
 		{
 			SetContext (StatusContext);
 			DrawMenuStateStrings (PM_FUEL, pMS->CurState = OUTFIT_MODULES);
-			SetFlashRect (SFR_MENU_3DO, FALSE);
+			SetFlashRect (SFR_MENU_3DO, false);
 
 			pMS->InputFunc = DoOutfit;
 			ClearSISRect (DRAW_SIS_DISPLAY);
@@ -1052,7 +1052,7 @@ InitFlash:
 			ManipulateModules (new_slot_piece);
 			if (pMS->CurState < EMPTY_SLOT)
 			{	// flash with PC menus too
-				SetFlashRect (DOS_BOOL (SFR_MENU_ANY, SFR_MENU_NON), FALSE);
+				SetFlashRect (DOS_BOOL (SFR_MENU_ANY, SFR_MENU_NON), false);
 			}
 			else
 			{
@@ -1068,14 +1068,14 @@ InitFlash:
 						case EMPTY_SLOT + 0:
 						case EMPTY_SLOT + 1:
 						{	// thruster and jets
-							SetAdditionalRect (&pMS->flash_rect1, TRUE);
+							SetAdditionalRect (&pMS->flash_rect1, true);
 							// SetAdditionalRect (&pMS->flash_rect2, 2);
 							break;
 						}
 						default:
 						{	// everything else
 							DumpAdditionalRect ();
-							SetAdditionalRect (&pMS->flash_rect1, TRUE);
+							SetAdditionalRect (&pMS->flash_rect1, true);
 							break;
 						}
 					}
@@ -1085,7 +1085,7 @@ InitFlash:
 						|| pMS->CurState == PLANET_LANDER)
 						&& is3DO (optWhichMenu))
 				{
-					SetFlashRect (&pMS->flash_rect0, TRUE);
+					SetFlashRect (&pMS->flash_rect0, true);
 				}
 				else
 					SetFlashRect (&pMS->flash_rect0, optWhichMenu == OPT_PC);
@@ -1093,7 +1093,7 @@ InitFlash:
 		}
 	}
 
-	return (TRUE);
+	return (true);
 }
 
 static void
@@ -1154,8 +1154,8 @@ ChangeFuelQuantity (void)
 	{   // Make fuel gauge flash.
 		RECT r;
 		CONTEXT oldContext = SetContext (StatusContext);
-		GetGaugeRect (&r, FALSE);
-		SetFlashRect (&r, FALSE);
+		GetGaugeRect (&r, false);
+		SetFlashRect (&r, false);
 		SetContext (oldContext);
 	}
 }
@@ -1164,10 +1164,10 @@ static void
 onNamingDone (void)
 {
 	// In case player just named a ship, redraw it
-	DrawFlagshipName (FALSE, FALSE);
+	DrawFlagshipName (false, false);
 }
 
-BOOLEAN
+bool
 DoOutfit (MENU_STATE *pMS)
 {
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
@@ -1178,7 +1178,7 @@ DoOutfit (MENU_STATE *pMS)
 	if (!pMS->Initialized)
 	{
 		pMS->InputFunc = DoOutfit;
-		pMS->Initialized = TRUE;
+		pMS->Initialized = true;
 		InitializeDOSLanderPos ();
 
 		SetNamingCallback (onNamingDone);
@@ -1225,7 +1225,7 @@ DoOutfit (MENU_STATE *pMS)
 				which_piece = GLOBAL_SIS (DriveSlots[num_frames]);
 				if (which_piece < EMPTY_SLOT)
 					DrawShipPiece (pMS->ModuleFrame, which_piece,
-							num_frames, FALSE);
+							num_frames, false);
 			}
 			for (num_frames = 0; num_frames < NUM_JET_SLOTS;
 					++num_frames)
@@ -1235,7 +1235,7 @@ DoOutfit (MENU_STATE *pMS)
 				which_piece = GLOBAL_SIS (JetSlots[num_frames]);
 				if (which_piece < EMPTY_SLOT)
 					DrawShipPiece (pMS->ModuleFrame, which_piece,
-						num_frames, FALSE);
+						num_frames, false);
 			}
 			for (num_frames = 0; num_frames < NUM_MODULE_SLOTS;
 					++num_frames)
@@ -1245,7 +1245,7 @@ DoOutfit (MENU_STATE *pMS)
 				which_piece = GLOBAL_SIS (ModuleSlots[num_frames]);
 				if (which_piece < EMPTY_SLOT)
 					DrawShipPiece (pMS->ModuleFrame, which_piece,
-							num_frames, FALSE);
+							num_frames, false);
 			}
 			RedistributeFuel ();
 			DisplayLanders (pMS);
@@ -1271,7 +1271,7 @@ DoOutfit (MENU_STATE *pMS)
 			}
 
 			DrawMenuStateStrings (PM_FUEL, pMS->CurState);
-			DrawFlagshipName (FALSE, FALSE);
+			DrawFlagshipName (false, false);
 
 			DrawFlagshipStats ();
 
@@ -1281,7 +1281,7 @@ DoOutfit (MENU_STATE *pMS)
 
 			UnbatchGraphics ();
 			
-			SetFlashRect (SFR_MENU_3DO, FALSE);
+			SetFlashRect (SFR_MENU_3DO, false);
 
 			GLOBAL_SIS (FuelOnBoard) =
 					(GLOBAL_SIS (FuelOnBoard)
@@ -1299,7 +1299,7 @@ DoOutfit (MENU_STATE *pMS)
 		{
 			pMS->CurState = OUTFIT_FUEL;
 			DrawMenuStateStrings (PM_FUEL, pMS->CurState);
-			SetFlashRect (SFR_MENU_3DO, FALSE);
+			SetFlashRect (SFR_MENU_3DO, false);
 		}
 		else
 		{
@@ -1319,7 +1319,7 @@ ExitOutfit:
 
 			SetNamingCallback (NULL);
 
-			return (FALSE);
+			return (false);
 		}
 	}
 	else if (PulsedInputState.menu[KEY_MENU_SELECT])
@@ -1332,14 +1332,14 @@ ExitOutfit:
 				DrawMenuStateStrings (PM_FUEL, pMS->CurState);
 				pMS->CurState = OUTFIT_DOFUEL;
 				SetContext (StatusContext);
-				GetGaugeRect (&r, FALSE);
-				SetFlashRect (&r, FALSE);
+				GetGaugeRect (&r, false);
+				SetFlashRect (&r, false);
 				break;
 			}
 			case OUTFIT_DOFUEL:
 				pMS->CurState = OUTFIT_FUEL;
 				DrawMenuStateStrings(PM_FUEL, pMS->CurState);
-				SetFlashRect (SFR_MENU_3DO, FALSE);
+				SetFlashRect (SFR_MENU_3DO, false);
 				break;
 			case OUTFIT_MODULES:
 
@@ -1365,7 +1365,7 @@ ExitOutfit:
 				if (!GameOptions ())
 					goto ExitOutfit;
 				DrawMenuStateStrings (PM_FUEL, pMS->CurState);
-				SetFlashRect (SFR_MENU_3DO, FALSE);
+				SetFlashRect (SFR_MENU_3DO, false);
 				break;
 		}
 	}
@@ -1401,5 +1401,5 @@ ExitOutfit:
 	if (optInfiniteRU)
 		GLOBAL_SIS (ResUnits) = 1000000L;
 
-	return (TRUE);
+	return (true);
 }

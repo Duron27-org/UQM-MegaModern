@@ -44,7 +44,7 @@
 #define MISSILE_LIFE 20
 #define MISSILE_HITS 10
 #define MISSILE_DAMAGE 6
-#define MISSILE_OFFSET RES_BOOL (8, 21)
+#define MISSILE_OFFSET chooseIfHd (8, 21)
 #define URQUAN_OFFSET RES_SCALE (32)
 
 // Fighters
@@ -278,12 +278,12 @@ fighter_preprocess (ELEMENT *ElementPtr)
 	if (FIGHTER_LIFE - ElementPtr->life_span > TRACK_THRESHOLD
 			&& !(ElementPtr->state_flags & CHANGING))
 	{
-		BOOLEAN Enroute;
+		bool Enroute;
 		COUNT orig_facing, facing;
 		SDWORD delta_x, delta_y;
 		ELEMENT *eptr;
 
-		Enroute = TRUE;
+		Enroute = true;
 
 		delta_x = StarShipPtr->RaceDescPtr->ship_info.crew_level;
 		delta_y = ElementPtr->life_span;
@@ -317,7 +317,7 @@ fighter_preprocess (ELEMENT *ElementPtr)
 #endif /* NEVER */
 				ElementPtr->state_flags &= ~IGNORE_SIMILAR;
 
-			Enroute = FALSE;
+			Enroute = false;
 		}
 
 		if (ElementPtr->thrust_wait > 0)
@@ -490,8 +490,8 @@ spawn_fighters (ELEMENT *ElementPtr)
 		COUNT fighter_facing;
 		ELEMENT *FighterElementPtr;
 
-		if (!(antiCheat (ElementPtr, FALSE, OPTVAL_INF_HEALTH)
-				|| antiCheat (ElementPtr, FALSE, OPTVAL_FULL_GOD)))
+		if (!(antiCheat (ElementPtr, false, OPTVAL_INF_HEALTH)
+				|| antiCheat (ElementPtr, false, OPTVAL_FULL_GOD)))
 		{
 			DeltaCrew (ElementPtr, -1);
 		}

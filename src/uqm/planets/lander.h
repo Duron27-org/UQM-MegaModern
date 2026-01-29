@@ -46,7 +46,7 @@ typedef struct
 //   We may also want to merge it with LanderInputState.
 typedef struct
 {
-	BOOLEAN InTransit;
+	bool InTransit;
 			// Landing on or taking of from a planet.
 			// Setting it while landed will initiate takeoff.
 

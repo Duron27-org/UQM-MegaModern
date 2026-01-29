@@ -115,8 +115,8 @@ UnlockLink (const QUEUE *pq, HLINK h)
 #define _GetSuccLink(lpE) ((lpE)->succ)
 #define _SetSuccLink(lpE,h) ((lpE)->succ = (h))
 
-extern BOOLEAN InitQueue (QUEUE *pq, COUNT num_elements, OBJ_SIZE size);
-extern BOOLEAN UninitQueue (QUEUE *pq);
+extern bool InitQueue (QUEUE *pq, COUNT num_elements, OBJ_SIZE size);
+extern bool UninitQueue (QUEUE *pq);
 extern void ReinitQueue (QUEUE *pq);
 extern void PutQueue (QUEUE *pq, HLINK hLink);
 extern void InsertQueue (QUEUE *pq, HLINK hLink, HLINK hRefLink);

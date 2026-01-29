@@ -155,7 +155,7 @@ DrawCargoDisplay (void)
 	if (!optCustomBorder && !IS_HD)
 		DrawStarConBox (&r, RES_SCALE (1),
 				SHADOWBOX_MEDIUM_COLOR, SHADOWBOX_DARK_COLOR,
-				TRUE, CARGO_BACK_COLOR, FALSE, TRANSPARENT);
+				true, CARGO_BACK_COLOR, false, TRANSPARENT);
 	else
 		DrawBorder (DEVICE_CARGO_FRAME);
 
@@ -306,7 +306,7 @@ DrawRainbowPlanet (COUNT planet)
 	if (!optCustomBorder && !IS_HD)
 		DrawStarConBox (&r, RES_SCALE (1),
 				SHADOWBOX_MEDIUM_COLOR, SHADOWBOX_DARK_COLOR,
-				TRUE, CARGO_BACK_COLOR, FALSE, TRANSPARENT);
+				true, CARGO_BACK_COLOR, false, TRANSPARENT);
 	else
 		DrawBorder (DEVICE_CARGO_FRAME);
 
@@ -382,11 +382,11 @@ DrawRainbowPlanet (COUNT planet)
 	SetContext (OldContext);
 }
 
-static BOOLEAN
+static bool
 DoDiscardCargo (MENU_STATE *pMS)
 {
 	BYTE NewState;
-	BOOLEAN select, cancel, back, forward;
+	bool select, cancel, back, forward;
 	
 	select = PulsedInputState.menu[KEY_MENU_SELECT];
 	cancel = PulsedInputState.menu[KEY_MENU_CANCEL];
@@ -394,11 +394,11 @@ DoDiscardCargo (MENU_STATE *pMS)
 	forward = PulsedInputState.menu[KEY_MENU_DOWN] || PulsedInputState.menu[KEY_MENU_RIGHT];
 
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
-		return FALSE;
+		return false;
 
 	if (cancel)
 	{
-		return FALSE;
+		return false;
 	}
 	else if (select)
 	{
@@ -439,7 +439,7 @@ DoDiscardCargo (MENU_STATE *pMS)
 		}
 	}
 
-	return (TRUE);
+	return (true);
 }
 
 void
@@ -459,7 +459,7 @@ CargoMenu (void)
 	SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
 
 	MenuState.InputFunc = DoDiscardCargo;
-	DoInput (&MenuState, TRUE);
+	DoInput (&MenuState, true);
 
 	// erase the cargo display
 	ClearSISRect (DRAW_SIS_DISPLAY);

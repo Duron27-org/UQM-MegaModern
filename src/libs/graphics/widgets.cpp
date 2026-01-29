@@ -107,7 +107,7 @@ ReleaseArrows (void)
 void
 DrawShadowedBox (RECT *r, Color bg, Color dark, Color medium)
 {	// Dialog box
-	DrawStarConBox (r, RES_SCALE (2), dark, medium, TRUE, bg, TRUE,
+	DrawStarConBox (r, RES_SCALE (2), dark, medium, true, bg, true,
 			TRANSPARENT);
 }
 
@@ -210,7 +210,7 @@ Widget_DrawToolTips (int numlines, const char **tips)
 	int i;
 	const CHAR_T *amperBang = "&!";
 	const size_t abSize = strlen (amperBang);
-	BOOLEAN warning = FALSE;
+	bool warning = false;
 
 	if (cur_font)
 		oldfont = SetContextFont (cur_font);
@@ -229,7 +229,7 @@ Widget_DrawToolTips (int numlines, const char **tips)
 	for (i = 0; i < numlines; i++)
 	{
 		t.pStr = tips[i];
-		warning = (BOOLEAN)(strncmp (amperBang, t.pStr, abSize) == 0);
+		warning = (bool)(strncmp (amperBang, t.pStr, abSize) == 0);
 
 		if (warning)
 		{
@@ -556,8 +556,8 @@ Widget_DrawLabel (WIDGET *_self, int x, int y)
 	const CHAR_T *amperScore = "&_";
 	const CHAR_T *amperBang = "&!";
 	const size_t asSize = strlen (amperScore);
-	BOOLEAN underline = FALSE;
-	BOOLEAN warning = FALSE;
+	bool underline = false;
+	bool warning = false;
 
 	if (cur_font)
 		oldfont = SetContextFont (cur_font);
@@ -570,8 +570,8 @@ Widget_DrawLabel (WIDGET *_self, int x, int y)
 	for (i = 0; i < self->line_count; i++)
 	{
 		t.pStr = self->lines[i];
-		underline = (BOOLEAN)(strncmp (amperScore, t.pStr, asSize) == 0);
-		warning = (BOOLEAN)(strncmp (amperBang, t.pStr, asSize) == 0);
+		underline = (bool)(strncmp (amperScore, t.pStr, asSize) == 0);
+		warning = (bool)(strncmp (amperBang, t.pStr, asSize) == 0);
 
 		if (underline)
 			t.pStr += asSize;
@@ -773,7 +773,7 @@ Widget_DrawTextEntry (WIDGET *_self, int x, int y)
 			// will not fit when displayed later
 			UnbatchGraphics ();
 			// disallow the change
-			return (FALSE);
+			return (false);
 		}
 #endif
 
@@ -936,7 +936,7 @@ Widget_ReceiveFocusSimple (WIDGET *_self, int event)
 {
 	widget_focus = _self;
 	(void)event;
-	return TRUE;
+	return true;
 }
 
 int
@@ -946,7 +946,7 @@ Widget_ReceiveFocusChoice (WIDGET *_self, int event)
 	widget_focus = _self;
 	self->highlighted = self->selected;
 	(void)event;
-	return TRUE;
+	return true;
 }
 
 int
@@ -961,7 +961,7 @@ Widget_ReceiveFocusControlEntry (WIDGET *_self, int event)
 	widget_focus = _self;
 	self->highlighted = oldval;
 	(void)event;
-	return TRUE;
+	return true;
 }
 
 int
@@ -990,7 +990,7 @@ Widget_ReceiveFocusMenuScreen (WIDGET *_self, int event)
 		/* Leave highlighted value the same */
 		WIDGET *child = self->child[self->highlighted];
 		child->receiveFocus (child, event);
-		return TRUE;
+		return true;
 	}
 	for ( ; x != last_x; x += dx) 
 	{
@@ -998,10 +998,10 @@ Widget_ReceiveFocusMenuScreen (WIDGET *_self, int event)
 		if ((*child->receiveFocus)(child, event))
 		{
 			self->highlighted = x;
-			return TRUE;
+			return true;
 		}
 	}
-	return FALSE;
+	return false;
 }
 
 int
@@ -1009,7 +1009,7 @@ Widget_ReceiveFocusRefuseFocus (WIDGET *self, int event)
 {
 	(void)self;
 	(void)event;
-	return FALSE;
+	return false;
 }
 
 int
@@ -1017,7 +1017,7 @@ Widget_HandleEventIgnoreAll (WIDGET *self, int event)
 {
 	(void)event;
 	(void)self;
-	return FALSE;
+	return false;
 }
 
 int
@@ -1030,12 +1030,12 @@ Widget_HandleEventChoice (WIDGET *_self, int event)
 		self->highlighted -= 1;
 		if (self->highlighted < 0)
 			self->highlighted = self->numopts - 1;
-		return TRUE;
+		return true;
 	case WIDGET_EVENT_RIGHT:
 		self->highlighted += 1;
 		if (self->highlighted >= self->numopts)
 			self->highlighted = 0;
-		return TRUE;
+		return true;
 	case WIDGET_EVENT_SELECT:
 	{
 		int oldval = self->selected;
@@ -1044,10 +1044,10 @@ Widget_HandleEventChoice (WIDGET *_self, int event)
 		{
 			(*(self->onChange))(self, oldval);
 		}
-		return TRUE;
+		return true;
 	}
 	default:
-		return FALSE;
+		return false;
 	}
 }
 
@@ -1063,16 +1063,16 @@ Widget_HandleEventSlider (WIDGET *_self, int event)
 			self->value = self->min;
 		if (self->onChange)
 			(*(self->onChange))(self);
-		return TRUE;
+		return true;
 	case WIDGET_EVENT_RIGHT:
 		self->value += self->step;
 		if (self->value > self->max)
 			self->value = self->max;
 		if (self->onChange)
 			(*(self->onChange))(self);
-		return TRUE;
+		return true;
 	default:
-		return FALSE;
+		return false;
 	}
 }
 
@@ -1095,7 +1095,7 @@ Widget_HandleEventMenuScreen (WIDGET *_self, int event)
 		widget_focus = self->child[self->highlighted];
 		return (widget_focus->handleEvent)(widget_focus, WIDGET_EVENT_SELECT);
 	default:
-		return FALSE;
+		return false;
 	}
 	last_x = self->highlighted;
 	x = self->highlighted + dx;
@@ -1110,11 +1110,11 @@ Widget_HandleEventMenuScreen (WIDGET *_self, int event)
 		if ((*child->receiveFocus)(child, event))
 		{
 			self->highlighted = x;
-			return TRUE;
+			return true;
 		}
 		x += dx;
 	}
-	return FALSE;
+	return false;
 }
 
 int
@@ -1123,10 +1123,10 @@ Widget_HandleEventTextEntry (WIDGET *_self, int event)
 	WIDGET_TEXTENTRY *self = (WIDGET_TEXTENTRY *)_self;
 	if (event == WIDGET_EVENT_SELECT) {
 		if (!self->handleEventSelect)
-			return FALSE;
+			return false;
 		return (*self->handleEventSelect)(self);
 	}
-	return FALSE;
+	return false;
 }
 
 int
@@ -1138,7 +1138,7 @@ Widget_HandleEventControlEntry (WIDGET *_self, int event)
 		if (self->onChange)
 		{
 			(self->onChange)(self);
-			return TRUE;
+			return true;
 		}
 	}
 	if (event == WIDGET_EVENT_DELETE)
@@ -1146,16 +1146,16 @@ Widget_HandleEventControlEntry (WIDGET *_self, int event)
 		if (self->onDelete)
 		{
 			(self->onDelete)(self);
-			return TRUE;
+			return true;
 		}
 	}
 	if ((event == WIDGET_EVENT_RIGHT) ||
 	    (event == WIDGET_EVENT_LEFT))
 	{
 		self->highlighted = 1-self->highlighted;
-		return TRUE;
+		return true;
 	}
-	return FALSE;
+	return false;
 }
 
 int
@@ -1165,8 +1165,8 @@ Widget_Event (int event)
 	while (widget != NULL)
 	{
 		if ((*widget->handleEvent)(widget, event))
-			return TRUE;
+			return true;
 		widget = widget->parent;
 	}
-	return FALSE;
+	return false;
 }

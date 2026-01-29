@@ -88,7 +88,7 @@ GenerateChmmr_generatePlanets (SOLARSYS_STATE *solarSys)
 						(RandVal % (MAX_GEN_PLANETS - PByte) + PByte);
 
 				FillOrbits (solarSys, pSunDesc->NumPlanets,
-						solarSys->PlanetDesc, FALSE);
+						solarSys->PlanetDesc, false);
 				GeneratePlanets (solarSys);
 			}
 			else
@@ -150,7 +150,7 @@ GenerateChmmr_generateMoons (SOLARSYS_STATE *solarSys, PLANET_DESC *planet)
 		angle = NORMALIZE_ANGLE (LOWORD (rand_val));
 		pMoonDesc->location.x = COSINE (angle, pMoonDesc->radius);
 		pMoonDesc->location.y = SINE (angle, pMoonDesc->radius);
-		ComputeSpeed (pMoonDesc, TRUE, 1);
+		ComputeSpeed (pMoonDesc, true, 1);
 	}
 
 	return true;
@@ -163,7 +163,7 @@ GenerateChmmr_generateOrbital (SOLARSYS_STATE *solarSys,
 	if (CurStarDescPtr->Index == CHMMR_DEFINED
 			&& matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{
-		BOOLEAN HardModeBS = DIF_HARD && !GET_GAME_STATE (KOHR_AH_FRENZY)
+		bool HardModeBS = DIF_HARD && !GET_GAME_STATE (KOHR_AH_FRENZY)
 			&& !(GET_GAME_STATE (HM_ENCOUNTERS) & 1 << ILWRATH_ENCOUNTER);
 
 		if (RaceDead (CHMMR_SHIP))
@@ -197,7 +197,7 @@ GenerateChmmr_generateOrbital (SOLARSYS_STATE *solarSys,
 				&& StartSphereTracking (ILWRATH_SHIP))
 				|| HardModeBS ))
 		{
-			BOOLEAN Survivors;
+			bool Survivors;
 			UWORD state;
 
 			PutGroupInfo (GROUPS_RANDOM, GROUP_SAVE_IP);
@@ -280,9 +280,9 @@ GenerateChmmr_generateOrbital (SOLARSYS_STATE *solarSys,
 	if (EXTENDED && CurStarDescPtr->Index == MOTHER_ARK_DEFINED
 			&& matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{
-		BOOLEAN MelnormeInfo =
+		bool MelnormeInfo =
 				GET_GAME_STATE (MELNORME_ALIEN_INFO_STACK) >= 8;
-		BOOLEAN ChmmrStack = GET_GAME_STATE (CHMMR_HOME_VISITS);
+		bool ChmmrStack = GET_GAME_STATE (CHMMR_HOME_VISITS);
 
 		LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
 		solarSys->PlanetSideFrame[1] =

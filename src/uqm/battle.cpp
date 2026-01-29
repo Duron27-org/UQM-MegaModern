@@ -53,7 +53,7 @@
 BYTE battle_counter[NUM_SIDES];
 		// The number of ships still available for battle to each side.
 		// A ship that has warped out is no longer available.
-BOOLEAN instantVictory;
+bool instantVictory;
 size_t battleInputOrder[NUM_SIDES];
 		// Indices of the sides in the order their input is processed.
 		// Network sides are last so that the sides will never be waiting
@@ -64,7 +64,7 @@ BattleFrameCounter battleFrameCount;
 		// Used for synchronisation purposes during netplay.
 #endif
 
-BOOLEAN
+bool
 RunAwayAllowed (void)
 {
 	return ((LOBYTE (GLOBAL (CurrentActivity)) == IN_ENCOUNTER
@@ -149,7 +149,7 @@ frameInputHuman (HumanInputContext *context, STARSHIP *StarShipPtr)
 static void
 ProcessInput (void)
 {
-	BOOLEAN CanRunAway;
+	bool CanRunAway;
 	size_t sideI;
 
 #ifdef NETPLAY
@@ -217,7 +217,7 @@ ProcessInput (void)
 					if (CanRunAway && cur_player == 0 &&
 						((InputState & BATTLE_ESCAPE) || WarpFromMenu))
 					{
-						WarpFromMenu = FALSE;
+						WarpFromMenu = false;
 						DoRunAway (StarShipPtr);
 					}
 				}
@@ -243,7 +243,7 @@ static MUSIC_REF BattleRef;
 BYTE inHSpace = 0;
 
 void
-BattleSong (BOOLEAN DoPlay)
+BattleSong (bool DoPlay)
 {
 	if (BattleRef == 0)
 	{
@@ -286,7 +286,7 @@ FreeBattleSong (void)
 	BattleRef = 0;
 }
 
-static BOOLEAN
+static bool
 DoBattle (BATTLE_STATE *bs)
 {
 	extern UWORD nth_frame;
@@ -347,18 +347,18 @@ DoBattle (BATTLE_STATE *bs)
 	if (bs->frame_cb)
 		bs->frame_cb ();
 
-	RedrawQueue (TRUE);
+	RedrawQueue (true);
 
 	if (bs->first_time)
 	{
-		bs->first_time = FALSE;
+		bs->first_time = false;
 		ScreenTransition (optScrTrans, &r);
 	}
 	UnbatchGraphics ();
 	if ((!(GLOBAL (CurrentActivity) & IN_BATTLE)) ||
 			(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
 	{
-		return FALSE;
+		return false;
 	}
 
 	battle_speed = HIBYTE (nth_frame);
@@ -375,12 +375,12 @@ DoBattle (BATTLE_STATE *bs)
 	}
 
 	if ((GLOBAL (CurrentActivity) & IN_BATTLE) == 0)
-		return FALSE;
+		return false;
 
 #ifdef NETPLAY
 	battleFrameCount++;
 #endif
-	return TRUE;
+	return true;
 }
 
 #ifdef NETPLAY
@@ -402,7 +402,7 @@ GetPlayerOrder (COUNT i)
 #endif
 
 // Let each player pick his ship.
-static BOOLEAN
+static bool
 selectAllShips (SIZE num_ships)
 {
 	if (num_ships == 1) {
@@ -416,14 +416,14 @@ selectAllShips (SIZE num_ships)
 	{
 		log_add (log_Error, "Only one side at a time can be network "
 				"controlled.\n");
-		return FALSE;
+		return false;
 	}
 #endif
 
 	return GetInitialStarShips ();
 }
 
-BOOLEAN
+bool
 Battle (BattleFrameCallback *callback)
 {
 	SIZE num_ships;
@@ -440,7 +440,7 @@ Battle (BattleFrameCallback *callback)
 	BattleSeed = TFB_Random (); /* get next battle seed */
 #endif /* DEMO_MODE */
 
-	BattleSong (FALSE);
+	BattleSong (false);
 	
 	num_ships = InitShips ();
 
@@ -449,7 +449,7 @@ Battle (BattleFrameCallback *callback)
 		num_ships = 0;
 		battle_counter[0] = 1;
 		battle_counter[1] = 0;
-		instantVictory = FALSE;
+		instantVictory = false;
 	}
 	
 	if (num_ships)
@@ -479,7 +479,7 @@ Battle (BattleFrameCallback *callback)
 			goto AbortBattle;
 		}
 
-		BattleSong (TRUE);
+		BattleSong (true);
 
 		bs.NextTime = 0;
 #ifdef NETPLAY
@@ -499,7 +499,7 @@ Battle (BattleFrameCallback *callback)
 		if (bs.first_time)
 			EraseRadar ();
 
-		DoInput (&bs, FALSE);
+		DoInput (&bs, false);
 
 AbortBattle:
 		if (LOBYTE (GLOBAL (CurrentActivity)) == SUPER_MELEE)
@@ -541,6 +541,6 @@ AbortBattle:
 	UninitShips ();
 	FreeBattleSong ();
 	
-	return (BOOLEAN) (num_ships < 0);
+	return (bool) (num_ships < 0);
 }
 

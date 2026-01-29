@@ -262,7 +262,7 @@ GetColorMapColors (Color *colors, TFB_ColorMap *map)
 		colors[i] = GetNativePaletteColor (map->palette, i);
 }
 
-BOOLEAN
+bool
 SetColorMap (COLORMAPPTR map)
 {
 	int start, end;
@@ -271,7 +271,7 @@ SetColorMap (COLORMAPPTR map)
 	TFB_ColorMap **mpp;
 	
 	if (!map)
-		return TRUE;
+		return true;
 
 	start = *colors++;
 	end = *colors++;
@@ -280,14 +280,14 @@ SetColorMap (COLORMAPPTR map)
 		log_add (log_Warning, "ERROR: SetColorMap(): "
 				"starting map (%d) not less or eq ending (%d)",
 				start, end);
-		return FALSE;
+		return false;
 	}
 	if (start >= MAX_COLORMAPS)
 	{
 		log_add (log_Warning, "ERROR: SetColorMap(): "
 				"starting map (%d) beyond range (0-%d)",
 				start, (int)MAX_COLORMAPS - 1);
-		return FALSE;
+		return false;
 	}
 	if (end >= MAX_COLORMAPS)
 	{
@@ -331,7 +331,7 @@ SetColorMap (COLORMAPPTR map)
 
 	UnlockMutex (maplock);
 
-	return TRUE;
+	return true;
 }
 
 /* Fade Transforms */
@@ -467,10 +467,10 @@ blendChan (BYTE c1, BYTE c2, int weight, int scale)
 /* This gives the XFormColorMap task a timeslice to do its thing
  * Only one thread should ever be allowed to be calling this at any time
  */
-BOOLEAN
+bool
 XFormColorMap_step (void)
 {
-	BOOLEAN Changed = FALSE;
+	bool Changed = false;
 	int x;
 	DWORD Now = GetTimeCounter ();
 
@@ -540,7 +540,7 @@ XFormColorMap_step (void)
 			finish_colormap_xform (x);
 		}
 		
-		Changed = TRUE;
+		Changed = true;
 	}
 
 	UnlockMutex (XFormControl.Lock);

@@ -41,7 +41,7 @@ static int num_keys = 0;
 static int *kbdstate = NULL;
 		// Holds all SDL keys +1 for holding invalid values
 #else // Later versions of SDL use the text input API instead
-static BOOLEAN set_character_mode = FALSE;
+static bool set_character_mode = false;
 		// Records whether the UI thread has caught up with game thread
 		// on this setting
 #endif // SDL_MAJOR_VERSION
@@ -55,9 +55,9 @@ static volatile int *flight_vec;
 static int num_templ;
 static int num_flight;
 
-static BOOLEAN InputInitialized = FALSE;
+static bool InputInitialized = false;
 
-static BOOLEAN in_character_mode = FALSE;
+static bool in_character_mode = false;
 
 static const char *menu_res_names[] = {
 	"pause",
@@ -111,7 +111,7 @@ register_menu_controls (int index)
 	buf[39] = '\0';
 	
 	i = 1;
-	while (TRUE)
+	while (true)
 	{
 		VCONTROL_GESTURE g;
 
@@ -345,7 +345,7 @@ TFB_InitInput (int driver, int flags)
 	initJoystick ();
 #endif
 
-	in_character_mode = FALSE;
+	in_character_mode = false;
 	resetKeyboardState ();
 
 	/* Prepare the Virtual Controller system. */
@@ -354,7 +354,7 @@ TFB_InitInput (int driver, int flags)
 	initKeyConfig ();
 
 	VControl_ResetInput ();
-	InputInitialized = TRUE;
+	InputInitialized = true;
 
 	return 0;
 }
@@ -376,7 +376,7 @@ EnterCharacterMode (void)
 {
 	kbdhead = kbdtail = 0;
 	lastchar = 0;
-	in_character_mode = TRUE;
+	in_character_mode = true;
 	VControl_ResetInput ();
 }
 
@@ -385,7 +385,7 @@ ExitCharacterMode (void)
 {
 	kbdhead = kbdtail = 0;
 	lastchar = 0;
-	in_character_mode = FALSE;
+	in_character_mode = false;
 	VControl_ResetInput();
 }
 
@@ -519,13 +519,13 @@ ProcessInputEvent (const SDL_Event *Event)
 
 	if (in_character_mode && !set_character_mode)
 	{
-		set_character_mode = TRUE;
+		set_character_mode = true;
 		SDL_StartTextInput ();
 	}
 
 	if (!in_character_mode && set_character_mode)
 	{
-		set_character_mode = FALSE;
+		set_character_mode = false;
 		SDL_StopTextInput ();
 	}
 
@@ -778,7 +778,7 @@ RebindInputState (int templat, int control, int index)
 void
 SaveKeyConfiguration (uio_DirHandle *path, const char *fname)
 {
-	SaveResourceIndex (path, fname, "keys.", TRUE);
+	SaveResourceIndex (path, fname, "keys.", true);
 }
 
 void

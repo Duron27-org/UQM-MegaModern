@@ -144,7 +144,7 @@ WriteIpGroup (GAME_STATE_FILE *fp, const IP_GROUP *GroupPtr)
 }
 
 void
-InitGroupInfo (BOOLEAN FirstTime)
+InitGroupInfo (bool FirstTime)
 {
 	GAME_STATE_FILE *fp;
 
@@ -594,7 +594,7 @@ FlushGroupInfo (GROUP_HEADER* pGH, DWORD offset, BYTE which_group,
 	}
 }
 
-BOOLEAN
+bool
 GetGroupInfo (DWORD offset, BYTE which_group)
 {
 	GAME_STATE_FILE *fp;
@@ -606,7 +606,7 @@ GetGroupInfo (DWORD offset, BYTE which_group)
 		fp = OpenStateFile (RANDGRPINFO_FILE, "r+b");
 
 	if (!fp)
-		return FALSE;
+		return false;
 
 	SeekStateFile (fp, offset, SEEK_SET);
 	ReadGroupHeader (fp, &GH);
@@ -650,7 +650,7 @@ GetGroupInfo (DWORD offset, BYTE which_group)
 			WriteGroupHeader (fp, &GH);
 			CloseStateFile (fp);
 			
-			return FALSE;
+			return false;
 		}
 
 		/* Read IP groups into ip_group_q and send them on their missions */
@@ -731,12 +731,12 @@ GetGroupInfo (DWORD offset, BYTE which_group)
 		}
 
 		if (offset != GROUPS_RANDOM)
-			InitGroupInfo (FALSE); 	/* Wipe out random battle groups */
+			InitGroupInfo (false); 	/* Wipe out random battle groups */
 		else if (ValidateEvent (ABSOLUTE_EVENT, /* still fresh */
 					&month_index, &day_index, &year_index))
 		{
 			CloseStateFile (fp);
-			return TRUE;
+			return true;
 		}
 
 		CloseStateFile (fp);
@@ -747,7 +747,7 @@ GetGroupInfo (DWORD offset, BYTE which_group)
 	{
 		/* Group not present */
 		CloseStateFile (fp);
-		return FALSE;
+		return false;
 	}
 
 

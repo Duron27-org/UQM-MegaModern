@@ -343,7 +343,7 @@ ship_movement (ELEMENT *ShipPtr, EVALUATE_DESC *EvalDescPtr)
 }
 
 // JMS:GFX Made SIZEs SDWORDs and changed the GetNextVelocityComponents to GetNextVelocityComponentsSdword
-BOOLEAN
+bool
 ship_weapons (ELEMENT *ShipPtr, ELEMENT *OtherPtr, COUNT margin_of_error)
 {
 	SDWORD delta_x, delta_y;
@@ -423,25 +423,25 @@ void
 ship_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 				   COUNT ConcernCounter)
 {
-	BOOLEAN ShipMoved, ShipFired;
+	bool ShipMoved, ShipFired;
 	COUNT margin_of_error;
 	STARSHIP *StarShipPtr;
 	// EVALUATE_DESC *ObjectsOfConcernEWeapon; unused
 	
 	GetElementStarShip (ShipPtr, &StarShipPtr);
 	
-	ShipMoved = TRUE;
+	ShipMoved = true;
 	if (ShipPtr->turn_wait == 0)
-		ShipMoved = FALSE;
+		ShipMoved = false;
 	if (ShipPtr->thrust_wait == 0)
-		ShipMoved = FALSE;
+		ShipMoved = false;
 	
-	ShipFired = TRUE;
+	ShipFired = true;
 	if (StarShipPtr->weapon_counter == 0)
 	{
 		StarShipPtr->ship_input_state &= ~WEAPON;
 		if (!(StarShipPtr->RaceDescPtr->ship_info.ship_flags & SEEKING_WEAPON))
-			ShipFired = FALSE;
+			ShipFired = false;
 	}
 	
 	if (StarShipPtr->control & AWESOME_RATING)
@@ -469,7 +469,7 @@ ship_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 										) >= RESOLUTION_COMPENSATED(MEDIUM_SHIP)))
 			{
 				ship_movement (ShipPtr, ObjectsOfConcern);
-				ShipMoved = TRUE;
+				ShipMoved = true;
 			}
 			if (!ShipFired
 				&& (ConcernCounter == ENEMY_SHIP_INDEX
@@ -489,7 +489,7 @@ ship_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 	}
 }
 
-BOOLEAN
+bool
 TurnShip (ELEMENT *ShipPtr, COUNT angle)
 {
 	COUNT f, ship_delta_facing;
@@ -531,28 +531,28 @@ TurnShip (ELEMENT *ShipPtr, COUNT angle)
 		{
 			StarShipPtr->ShipFacing = NORMALIZE_FACING (f);
 			
-			return (TRUE);
+			return (true);
 		}
 	}
 	
-	return (FALSE);
+	return (false);
 }
 
-BOOLEAN
+bool
 ThrustShip (ELEMENT *ShipPtr, COUNT angle)
 {
-	BOOLEAN ShouldThrust;
+	bool ShouldThrust;
 	STARSHIP *StarShipPtr;
 	
 	GetElementStarShip (ShipPtr, &StarShipPtr);
 	if (StarShipPtr->ship_input_state & THRUST)
-		ShouldThrust = TRUE;
+		ShouldThrust = true;
 	else if (NORMALIZE_FACING (ANGLE_TO_FACING (angle)
 							   - ANGLE_TO_FACING (GetVelocityTravelAngle (&ShipPtr->velocity))) == 0
 			 && (StarShipPtr->cur_status_flags
 				 & (SHIP_AT_MAX_SPEED | SHIP_BEYOND_MAX_SPEED))
 			 && !(StarShipPtr->cur_status_flags & SHIP_IN_GRAVITY_WELL))
-		ShouldThrust = FALSE;
+		ShouldThrust = false;
 	else
 	{
 		SIZE ship_delta_facing;
@@ -563,9 +563,9 @@ ThrustShip (ELEMENT *ShipPtr, COUNT angle)
 		if (ship_delta_facing == ANGLE_TO_FACING (QUADRANT)
 			|| ((StarShipPtr->cur_status_flags & SHIP_BEYOND_MAX_SPEED)
 				&& ship_delta_facing <= ANGLE_TO_FACING (HALF_CIRCLE)))
-			ShouldThrust = TRUE;
+			ShouldThrust = true;
 		else
-			ShouldThrust = FALSE;
+			ShouldThrust = false;
 	}
 	
 	if (ShouldThrust)
@@ -1040,7 +1040,7 @@ tactical_intelligence (ComputerInputContext *context, STARSHIP *StarShipPtr)
 	HELEMENT hElement, hNextElement;
 	COUNT ConcernCounter;
 	EVALUATE_DESC ObjectsOfConcern[10];
-	BOOLEAN ShipMoved, UltraManeuverable;
+	bool ShipMoved, UltraManeuverable;
 	STARSHIP *EnemyStarShipPtr;
 	RACE_DESC *RDPtr;
 	RACE_DESC *EnemyRDPtr;
@@ -1058,7 +1058,7 @@ tactical_intelligence (ComputerInputContext *context, STARSHIP *StarShipPtr)
 		return (0);
 	}
 	
-	ShipMoved = TRUE;
+	ShipMoved = true;
 	/* Disable ship's special completely for the Standard AI */
 	if (StarShipPtr->control & STANDARD_RATING)
 		++StarShipPtr->special_counter;
@@ -1081,7 +1081,7 @@ tactical_intelligence (ComputerInputContext *context, STARSHIP *StarShipPtr)
 	}
 	--ConcernCounter;
 	
-	UltraManeuverable = (BOOLEAN)(
+	UltraManeuverable = (bool)(
 			RDPtr->characteristics.thrust_increment ==
 			RDPtr->characteristics.max_thrust
 			&& MANEUVERABILITY (&RDPtr->cyborg_control) >= RESOLUTION_COMPENSATED(MEDIUM_SHIP) 
@@ -1089,12 +1089,12 @@ tactical_intelligence (ComputerInputContext *context, STARSHIP *StarShipPtr)
 	
 	if (Ship.turn_wait == 0)
 	{
-		ShipMoved = FALSE;
+		ShipMoved = false;
 		StarShipPtr->ship_input_state &= ~(LEFT | RIGHT);
 	}
 	if (Ship.thrust_wait == 0)
 	{
-		ShipMoved = FALSE;
+		ShipMoved = false;
 		StarShipPtr->ship_input_state &= ~THRUST;
 	}
 	
@@ -1159,7 +1159,7 @@ tactical_intelligence (ComputerInputContext *context, STARSHIP *StarShipPtr)
 					{	// Try an orbital insertion, don't thrust
 						++Ship.thrust_wait;
 						if (Ship.turn_wait)
-							ShipMoved = TRUE;
+							ShipMoved = true;
 					}
 				}
 			}

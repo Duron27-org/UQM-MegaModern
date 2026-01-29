@@ -246,7 +246,7 @@ LoadGroupQueue (void *fh, QUEUE *pQueue, DWORD size)
 }
 
 static void
-LoadEncounter (ENCOUNTER *EncounterPtr, void *fh, BOOLEAN try_core)
+LoadEncounter (ENCOUNTER *EncounterPtr, void *fh, bool try_core)
 {
 	COUNT i;
 
@@ -312,21 +312,21 @@ LoadClockState (CLOCK_STATE *ClockPtr, void *fh)
 	read_16s (fh, &ClockPtr->day_in_ticks);
 }
 
-static BOOLEAN
-LoadGameState (GAME_STATE *GSPtr, void *fh, BOOLEAN try_core)
+static bool
+LoadGameState (GAME_STATE *GSPtr, void *fh, bool try_core)
 {
 	DWORD magic;
 	legacySave = try_core;
 	read_32 (fh, &magic);
 	if (magic != GLOBAL_STATE_TAG)
 	{
-		return FALSE;
+		return false;
 	}
 	read_32 (fh, &magic);
 	if (magic != 75)
 	{
 		/* Chunk is the wrong size. */
-		return FALSE;
+		return false;
 	}
 	read_8   (fh, &GSPtr->glob_flags);
 	read_8   (fh, &GSPtr->CrewCost);
@@ -379,11 +379,11 @@ LoadGameState (GAME_STATE *GSPtr, void *fh, BOOLEAN try_core)
 	read_32 (fh, &magic);
 	if (magic != GAME_STATE_TAG)
 	{
-		return FALSE;
+		return false;
 	}
 	{
 		BYTE *buf;
-		BOOLEAN result;
+		bool result;
 		int rev;
 		size_t gameStateByteCount;
 
@@ -395,7 +395,7 @@ LoadGameState (GAME_STATE *GSPtr, void *fh, BOOLEAN try_core)
 		{
 			log_add (log_Error, "Warning: Savegame is corrupt: saved game "
 					"state is too small.");
-			return FALSE;
+			return false;
 		}
 
 		log_add (log_Debug, "Detected save game state rev %d: %s",
@@ -406,16 +406,16 @@ LoadGameState (GAME_STATE *GSPtr, void *fh, BOOLEAN try_core)
 		{
 			log_add (log_Error, "Warning: Cannot allocate enough bytes for "
 					"the saved game state (%lu bytes).", (unsigned long)gameStateByteCount);
-			return FALSE;
+			return false;
 		}
 
 		read_a8 (fh, buf, (COUNT)gameStateByteCount);
 		result = deserialiseGameState (gameStateBitMap, buf, gameStateByteCount, rev);
 		HFree (buf);
-		if (result == FALSE)
+		if (result == false)
 		{
 			// An error message is already printed.
-			return FALSE;
+			return false;
 		}
 
 		if (rev < 2)
@@ -435,11 +435,11 @@ LoadGameState (GAME_STATE *GSPtr, void *fh, BOOLEAN try_core)
 			skip_8 (fh, (COUNT)(magic - gameStateByteCount));
 		}
 	}
-	return TRUE;
+	return true;
 }
 
-static BOOLEAN
-LoadSisState (SIS_STATE *SSPtr, void *fp, BOOLEAN try_core,
+static bool
+LoadSisState (SIS_STATE *SSPtr, void *fp, bool try_core,
 		int legacyMM)
 {
 	COUNT SisNameSize = (legacyMM == 1 || try_core) ?
@@ -468,7 +468,7 @@ LoadSisState (SIS_STATE *SSPtr, void *fp, BOOLEAN try_core,
 			(!try_core && (read_32s (fp, &SSPtr->Seed) != 1)) ||
 			(!try_core && !(legacyMM > 0) && (read_8 (fp, &SSPtr->ShipSeed) != 1))
 		)
-		return FALSE;
+		return false;
  	else
  	{
 		if (try_core)
@@ -481,36 +481,36 @@ LoadSisState (SIS_STATE *SSPtr, void *fp, BOOLEAN try_core,
 			SSPtr->log_x <<= RESOLUTION_FACTOR;
 			SSPtr->log_y <<= RESOLUTION_FACTOR;
 		}
-		return TRUE;
+		return true;
 	}
 }
 
-static BOOLEAN
-LoadSummary (SUMMARY_DESC *SummPtr, void *fp, BOOLEAN try_core)
+static bool
+LoadSummary (SUMMARY_DESC *SummPtr, void *fp, bool try_core)
 {
 	DWORD magic;
 	DWORD magicTag = try_core ? SAVEFILE_TAG : MMV4_TAG;
 	DWORD nameSize = 0;
-	int legacyMM = FALSE;
+	int legacyMM = false;
 	if (!read_32 (fp, &magic))
-		return FALSE;
+		return false;
 	if (magic == magicTag || magic == MEGA_TAG || magic == MMV3_TAG)
 	{
 		legacyMM = magic == MEGA_TAG ? 1 : magic == MMV3_TAG ? 2 : 0;
 
 		if (read_32 (fp, &magic) != 1 || magic != SUMMARY_TAG)
-			return FALSE;
+			return false;
 		if (read_32 (fp, &magic) != 1 || magic < 160)
-			return FALSE;
+			return false;
 		nameSize = magic - 160;
 	}
 	else
 	{
-		return FALSE;
+		return false;
 	}
 
 	if (!LoadSisState (&SummPtr->SS, fp, try_core, legacyMM))
-		return FALSE;
+		return false;
 
 	SummPtr->SS.SaveVersion = 0;
 
@@ -538,26 +538,26 @@ LoadSummary (SUMMARY_DESC *SummPtr, void *fp, BOOLEAN try_core)
 			read_a8 (fp, SummPtr->DeviceList, MAX_EXCLUSIVE_DEVICES) != 1 ||
 			(!try_core && (read_8 (fp, &SummPtr->res_factor) != 1))
 		)
-		return FALSE;
+		return false;
 
 	IndependantResFactor = !try_core ? SummPtr->res_factor : 0;
 	
 	if (nameSize < SAVE_NAME_SIZE)
 	{
 		if (read_a8s (fp, SummPtr->SaveName, nameSize) != 1)
-			return FALSE;
+			return false;
 		SummPtr->SaveName[nameSize] = 0;
 	}
 	else
 	{
 		DWORD remaining = nameSize - SAVE_NAME_SIZE + 1;
 		if (read_a8s (fp, SummPtr->SaveName, SAVE_NAME_SIZE-1) != 1)
-			return FALSE;
+			return false;
 		SummPtr->SaveName[SAVE_NAME_SIZE-1] = 0;
 		if (skip_8 (fp, remaining) != 1)
-			return FALSE;
+			return false;
 	}
-	return TRUE;
+	return true;
 }
 
 static void
@@ -685,7 +685,7 @@ LoadBattleGroup (uio_Stream *fh, DWORD chunksize)
 		/* This is the random group. Load in what was there,
 		 * as we might have already seen the Group List. */
 		fp = OpenStateFile (RANDGRPINFO_FILE, "rb");
-		current = FALSE;
+		current = false;
 		offset = 0;
 		ReadGroupHeader (fp, &h);
 	}
@@ -754,7 +754,7 @@ LoadBattleGroup (uio_Stream *fh, DWORD chunksize)
 	}
 }
 
-BOOLEAN
+bool
 LoadCoreGame (COUNT which_game, SUMMARY_DESC* SummPtr)
 {
 	uio_Stream* in_fp;
@@ -764,12 +764,12 @@ LoadCoreGame (COUNT which_game, SUMMARY_DESC* SummPtr)
 	sprintf (file, "uqmsave.%02u", which_game);
 	in_fp = res_OpenResFile (saveDir, file, "rb");
 	if (!in_fp)
-		return LoadLegacyGame (which_game, SummPtr, FALSE);
+		return LoadLegacyGame (which_game, SummPtr, false);
 
-	if (!LoadSummary (&loc_sd, in_fp, TRUE))
+	if (!LoadSummary (&loc_sd, in_fp, true))
 	{
 		res_CloseResFile (in_fp);
-		return LoadLegacyGame (which_game, SummPtr, FALSE);
+		return LoadLegacyGame (which_game, SummPtr, false);
 	}
 
 	if (!SummPtr)
@@ -780,20 +780,20 @@ LoadCoreGame (COUNT which_game, SUMMARY_DESC* SummPtr)
 	{	// only need summary for displaying to user
 		memcpy(SummPtr, &loc_sd, sizeof(*SummPtr));
 		res_CloseResFile (in_fp);
-		return TRUE;
+		return true;
 	}
 		
-	if (!LoadGame (which_game, SummPtr, in_fp, TRUE))
+	if (!LoadGame (which_game, SummPtr, in_fp, true))
 	{
 		res_CloseResFile (in_fp);
-		return FALSE;
+		return false;
 	}
 
-	return TRUE;
+	return true;
 }
 
-BOOLEAN
-LoadGame (COUNT which_game, SUMMARY_DESC *SummPtr, uio_Stream *in_fp, BOOLEAN try_core)
+bool
+LoadGame (COUNT which_game, SUMMARY_DESC *SummPtr, uio_Stream *in_fp, bool try_core)
 {
 	char file[PATH_MAX];
 	SUMMARY_DESC loc_sd;
@@ -801,16 +801,16 @@ LoadGame (COUNT which_game, SUMMARY_DESC *SummPtr, uio_Stream *in_fp, BOOLEAN tr
 	STAR_DESC SD;
 	ACTIVITY Activity;
 	DWORD chunk, chunkSize;
-	BOOLEAN first_group_spec = TRUE;
+	bool first_group_spec = true;
 
 	if (!try_core)
 	{
 		sprintf (file, "uqmsave.%02u", which_game);
 		in_fp = res_OpenResFile (saveDir, file, "rb");
 		if (!in_fp)
-			return LoadLegacyGame (which_game, SummPtr, FALSE);
+			return LoadLegacyGame (which_game, SummPtr, false);
 
-		if (!LoadSummary (&loc_sd, in_fp, FALSE))
+		if (!LoadSummary (&loc_sd, in_fp, false))
 		{
 			res_CloseResFile (in_fp);
 			return LoadCoreGame (which_game, SummPtr);
@@ -824,7 +824,7 @@ LoadGame (COUNT which_game, SUMMARY_DESC *SummPtr, uio_Stream *in_fp, BOOLEAN tr
 		{	// only need summary for displaying to user
 			memcpy (SummPtr, &loc_sd, sizeof (*SummPtr));
 			res_CloseResFile (in_fp);
-			return TRUE;
+			return true;
 		}
 	}
 
@@ -851,13 +851,13 @@ LoadGame (COUNT which_game, SUMMARY_DESC *SummPtr, uio_Stream *in_fp, BOOLEAN tr
 	if (!LoadGameState (&GlobData.Game_state, in_fp, try_core))
 	{
 		res_CloseResFile (in_fp);
-		return FALSE;
+		return false;
 	}
 	NextActivity = GLOBAL (CurrentActivity);
 	GLOBAL (CurrentActivity) = Activity;
 
 	chunk = 0;
-	while (TRUE)
+	while (true)
 	{
 		if (read_32 (in_fp, &chunk) != 1)
 		{
@@ -866,7 +866,7 @@ LoadGame (COUNT which_game, SUMMARY_DESC *SummPtr, uio_Stream *in_fp, BOOLEAN tr
 		if (read_32 (in_fp, &chunkSize) != 1)
 		{
 			res_CloseResFile (in_fp);
-			return FALSE;
+			return false;
 		}
 		switch (chunk)
 		{
@@ -901,7 +901,7 @@ LoadGame (COUNT which_game, SUMMARY_DESC *SummPtr, uio_Stream *in_fp, BOOLEAN tr
 			{
 				HEVENT hEvent;
 				EVENT *EventPtr;
-				BOOLEAN DeCleanse = FALSE;
+				bool DeCleanse = false;
 
 				hEvent = AllocEvent ();
 				LockEvent (hEvent, &EventPtr);
@@ -923,7 +923,7 @@ LoadGame (COUNT which_game, SUMMARY_DESC *SummPtr, uio_Stream *in_fp, BOOLEAN tr
 					if (EventPtr->year_index == 2158)
 					{
 						FreeEvent (hEvent);
-						DeCleanse = TRUE;
+						DeCleanse = true;
 					}
 					continue;
 				}
@@ -955,18 +955,18 @@ LoadGame (COUNT which_game, SUMMARY_DESC *SummPtr, uio_Stream *in_fp, BOOLEAN tr
 		case GROUP_LIST_TAG:
 			if (first_group_spec)
 			{
-				InitGroupInfo (TRUE);
+				InitGroupInfo (true);
 				GLOBAL (BattleGroupRef) = 0;
-				first_group_spec = FALSE;
+				first_group_spec = false;
 			}
 			LoadGroupList (in_fp, chunkSize);
 			break;
 		case BATTLE_GROUP_TAG:
 			if (first_group_spec)
 			{
-				InitGroupInfo (TRUE);
+				InitGroupInfo (true);
 				GLOBAL (BattleGroupRef) = 0;
-				first_group_spec = FALSE;
+				first_group_spec = false;
 			}
 			LoadBattleGroup (in_fp, chunkSize);
 			break;
@@ -975,7 +975,7 @@ LoadGame (COUNT which_game, SUMMARY_DESC *SummPtr, uio_Stream *in_fp, BOOLEAN tr
 			if (skip_8(in_fp, chunkSize) != 1)
 			{
 				res_CloseResFile (in_fp);
-				return FALSE;
+				return false;
 			}
 			break;
 		}
@@ -993,7 +993,7 @@ LoadGame (COUNT which_game, SUMMARY_DESC *SummPtr, uio_Stream *in_fp, BOOLEAN tr
 		NextActivity |= START_INTERPLANETARY;
 
 	// Reset Debug Key
-	DebugKeyPressed = FALSE;
+	DebugKeyPressed = false;
 	// Set the SeedType flag and then start Starseed
 	optSeedType = GET_GAME_STATE (SEED_TYPE);
 	// Assuming load from older version, optSeedType should be 0 (none)
@@ -1015,5 +1015,5 @@ LoadGame (COUNT which_game, SUMMARY_DESC *SummPtr, uio_Stream *in_fp, BOOLEAN tr
 	// If it fails to load the seed, it will return false.  Also, we need to
 	// call this on all load games to reset the starmap as needed to the
 	// proper state, including Prime seed.
-	return InitStarseed (FALSE);
+	return InitStarseed (false);
 }

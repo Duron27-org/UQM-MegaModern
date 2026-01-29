@@ -1005,7 +1005,7 @@ InitDisplayList (void)
 UWORD nth_frame = 0;
 
 void
-RedrawQueue (BOOLEAN clear)
+RedrawQueue (bool clear)
 {
 	SDWORD scroll_x, scroll_y;
 	VIEW_STATE view_state;

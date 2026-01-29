@@ -33,13 +33,13 @@ extern "C" {
 #if !(DEMO_MODE || CREATE_JOURNAL)
 
 #define OpenJournal SeedRandomNumbers
-#define CloseJournal() TRUE
+#define CloseJournal() true
 #define JournalInput(is)
 
 #else
 
 extern void OpenJournal (void);
-extern BOOLEAN CloseJournal (void);
+extern bool CloseJournal (void);
 #if !CREATE_JOURNAL
 #define JournalInput(is)
 #else /* CREATE_JOURNAL */

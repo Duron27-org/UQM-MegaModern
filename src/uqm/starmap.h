@@ -93,7 +93,7 @@ void DefaultQuasispace (PORTAL_LOCATION *portalmap);
 
 // Seeds the portal map, selecting valid locations referencing the
 // provided plot map and star map.
-BOOLEAN SeedQuasispace (PORTAL_LOCATION *portalmap, PLOT_LOCATION *plotmap,
+bool SeedQuasispace (PORTAL_LOCATION *portalmap, PLOT_LOCATION *plotmap,
 		STAR_DESC *starmap);
 
 // Converts the given plot string to the plot ID enum value,
@@ -104,7 +104,7 @@ COUNT PlotIdStrToIndex (const char *plotIdStr);
 
 #define INTERNAL_STAR_INDEX -1
 
-extern BOOLEAN isStarMarked (const int star_index,
+extern bool isStarMarked (const int star_index,
 		const char *marker_state);
 extern void setStarMarked (const int star_index, const char *marker_state);
 

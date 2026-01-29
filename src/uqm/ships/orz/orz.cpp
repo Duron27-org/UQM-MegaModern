@@ -199,7 +199,7 @@ initialize_turret_missile (ELEMENT *ShipPtr, HELEMENT MissileArray[])
 }
 
 static BYTE
-count_marines (STARSHIP *StarShipPtr, BOOLEAN FindSpot)
+count_marines (STARSHIP *StarShipPtr, bool FindSpot)
 {
 	BYTE num_marines, id_use[MAX_MARINES];
 	HELEMENT hElement, hNextElement;
@@ -317,7 +317,7 @@ orz_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 						&EnemyStarShipPtr->RaceDescPtr->cyborg_control
 						) < RESOLUTION_COMPENSATED(SLOW_SHIP)
 				|| lpEvalDesc->which_turn <= 12
-				|| count_marines (StarShipPtr, FALSE) < 2))
+				|| count_marines (StarShipPtr, false) < 2))
 		{
 			StarShipPtr->ship_input_state |= WEAPON | SPECIAL;
 		}
@@ -440,9 +440,9 @@ LeftShip:
 				}
 				else if (randval < (0x0100 / 2 + 0x0100 / 16))
 				{
-					if (!(antiCheat (ElementPtr, TRUE, OPTVAL_INF_HEALTH)
+					if (!(antiCheat (ElementPtr, true, OPTVAL_INF_HEALTH)
 							|| antiCheat (
-								ElementPtr, TRUE, OPTVAL_FULL_GOD)))
+								ElementPtr, true, OPTVAL_FULL_GOD)))
 					{
 						if (!DeltaCrew (ShipPtr, -1))
 							ShipPtr->life_span = 0;
@@ -795,15 +795,15 @@ marine_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 
 				GetElementStarShip (ElementPtr0, &StarShipPtr);
 
-				if (!(antiCheat (ElementPtr1, FALSE, OPTVAL_INF_HEALTH)
+				if (!(antiCheat (ElementPtr1, false, OPTVAL_INF_HEALTH)
 						|| antiCheat (
-							ElementPtr1, FALSE, OPTVAL_FULL_GOD)))
+							ElementPtr1, false, OPTVAL_FULL_GOD)))
 				{
 					if (!DeltaCrew (ElementPtr1, -1))
 						ElementPtr1->life_span = 0;
 				}
 
-				ElementPtr0->turn_wait = count_marines (StarShipPtr, TRUE);
+				ElementPtr0->turn_wait = count_marines (StarShipPtr, true);
 				ElementPtr0->thrust_wait = MARINE_WAIT;
 				ElementPtr0->next.image.frame = SetAbsFrameIndex (
 						ElementPtr0->next.image.farray[0],
@@ -978,7 +978,7 @@ turret_postprocess (ELEMENT *ElementPtr)
 					&& (StarShipPtr->cur_status_flags & SPECIAL)
 					&& (StarShipPtr->cur_status_flags & WEAPON)
 					&& ShipPtr->crew_level > 1
-					&& count_marines (StarShipPtr, FALSE) < MAX_MARINES
+					&& count_marines (StarShipPtr, false) < MAX_MARINES
 					&& TrackShip (ShipPtr, &facing) >= 0
 					&& (hSpaceMarine = AllocElement ()))
 			{
@@ -1018,8 +1018,8 @@ turret_postprocess (ELEMENT *ElementPtr)
 				UnlockElement (hSpaceMarine);
 				PutElement (hSpaceMarine);
 
-				if (!(antiCheat (ElementPtr, FALSE, OPTVAL_INF_HEALTH)
-						|| antiCheat (ElementPtr, FALSE, OPTVAL_FULL_GOD)))
+				if (!(antiCheat (ElementPtr, false, OPTVAL_INF_HEALTH)
+						|| antiCheat (ElementPtr, false, OPTVAL_FULL_GOD)))
 				{
 					DeltaCrew (ShipPtr, -1);
 				}

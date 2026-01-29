@@ -40,14 +40,14 @@ static SWORD *encode_arrays;
 		* sizeof (lson[0])))
 #define FreeCodeArrays HFree
 
-static BOOLEAN
+static bool
 InitTree (void)
 {
 	if ((encode_arrays = (SWORD*)AllocEncodeArrays ()) == NULL)
 	{
 		FreeCodeArrays (encode_arrays);
 		encode_arrays = NULL;
-		return (FALSE);
+		return (false);
 	}
 	else
 	{
@@ -62,7 +62,7 @@ InitTree (void)
 		for (i = 0; i < N; i++)
 			dad[i] = NIL; /* node */
 
-		return (TRUE);
+		return (true);
 	}
 }
 

@@ -39,11 +39,11 @@ typedef struct
 
 typedef struct tfb_soundcallbacks
 {
-	// return TRUE to continue, FALSE to abort
+	// return true to continue, false to abort
 	bool (* OnStartStream) (TFB_SoundSample*);
-	// return TRUE to continue, FALSE to abort
+	// return true to continue, false to abort
 	bool (* OnEndChunk) (TFB_SoundSample*, audio_Object);
-	// return TRUE to continue, FALSE to abort
+	// return true to continue, false to abort
 	void (* OnEndStream) (TFB_SoundSample*);
 	// tagged buffer callback
 	void (* OnTaggedBuffer) (TFB_SoundSample*, TFB_SoundTag*);

@@ -40,19 +40,19 @@ extern "C" {
 
 extern LOCDATA CommData;
 
-static inline BOOLEAN
+static inline bool
 haveTalkingAnim (void)
 {
 	return CommData.AlienTalkDesc.NumFrames > 0;
 }
 
-static inline BOOLEAN
+static inline bool
 haveTransitionAnim (void)
 {
 	return CommData.AlienTransitionDesc.NumFrames > 0;
 }
 
-static inline BOOLEAN
+static inline bool
 wantTalkingAnim (void)
 {
 	return !(CommData.AlienTalkDesc.AnimFlags & PAUSE_TALKING);
@@ -70,7 +70,7 @@ clearRunTalkingAnim (void)
 	CommData.AlienTalkDesc.AnimFlags &= ~WAIT_TALKING;
 }
 
-static inline BOOLEAN
+static inline bool
 runningTalkingAnim (void)
 {
 	return (CommData.AlienTalkDesc.AnimFlags & WAIT_TALKING);
@@ -82,7 +82,7 @@ setRunIntroAnim (void)
 	CommData.AlienTransitionDesc.AnimFlags |= TALK_INTRO;
 }
 
-static inline BOOLEAN
+static inline bool
 runningIntroAnim (void)
 {
 	return (CommData.AlienTransitionDesc.AnimFlags & TALK_INTRO);
@@ -106,7 +106,7 @@ restartStopTalkingAnim (void)
 	CommData.AlienTalkDesc.AnimFlags &= TALK_DONE;
 }
 
-static inline BOOLEAN
+static inline bool
 signaledStopTalkingAnim (void)
 {
 	return CommData.AlienTalkDesc.AnimFlags & TALK_DONE;
@@ -124,7 +124,7 @@ unFreezeTalkingAnim(void)
 	CommData.AlienTalkDesc.AnimFlags &= ~FREEZE_TALKING;
 }
 
-static inline BOOLEAN
+static inline bool
 signaledFreezeTalkingAnim(void)
 {
 	return CommData.AlienTalkDesc.AnimFlags & FREEZE_TALKING;
@@ -147,7 +147,7 @@ extern void RaceCommunication (void);
 
 #define WAIT_TRACK_ALL  ((COUNT)~0)
 extern void AlienTalkSegue (COUNT wait_track);
-BOOLEAN getLineWithinWidth(TEXT *pText, const char **startNext,
+bool getLineWithinWidth(TEXT *pText, const char **startNext,
 		SIZE maxWidth, COUNT maxChars);
 
 extern RECT CommWndRect; /* comm window rect */
@@ -163,17 +163,17 @@ typedef enum
 } CommIntroMode;
 extern void SetCommIntroMode (CommIntroMode, TimeCount howLong);
 
-extern void EnableTalkingAnim (BOOLEAN enable);
-extern void SetCommDarkMode (BOOLEAN state);
+extern void EnableTalkingAnim (bool enable);
+extern void SetCommDarkMode (bool state);
 extern void RedrawSISComWindow (void);
 extern void SetCustomBaseLine (COUNT sentence, POINT bl, TEXT_ALIGN align);
 extern void FlushCustomBaseLine (void);
 extern void BlockTalkingAnim (COUNT trackStart, COUNT trackEnd);
-extern void UpdateDuty (BOOLEAN talk);
+extern void UpdateDuty (bool talk);
 
 extern void DeltaLastTime (TimeCount diff);
 
-extern BOOLEAN cwLock;
+extern bool cwLock;
 
 #define USE_ALT_FRAME (1 << 0)
 #define USE_ALT_COLORMAP (1 << 1)

@@ -79,7 +79,7 @@ GenerateTalkingPet_generatePlanets (SOLARSYS_STATE *solarSys)
 		angle = ARCTAN (pPlanet->location.x, pPlanet->location.y);
 		pPlanet->location.x = COSINE (angle, pPlanet->radius);
 		pPlanet->location.y = SINE (angle, pPlanet->radius);
-		ComputeSpeed (pPlanet, FALSE, 1);
+		ComputeSpeed (pPlanet, false, 1);
 	}
 	else
 	{
@@ -131,7 +131,7 @@ GenerateTalkingPet_generateOrbital (SOLARSYS_STATE *solarSys,
 
 		if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
 		{
-			BOOLEAN UmgahSurvivors;
+			bool UmgahSurvivors;
 
 			UmgahSurvivors = GetHeadLink (
 					&GLOBAL (npc_built_ship_q)) != 0;

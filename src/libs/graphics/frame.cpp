@@ -51,7 +51,7 @@ typedef struct
 
 
 // pValidRect or origin may be NULL
-BOOLEAN
+bool
 GetContextValidRect (RECT *pValidRect, POINT *origin)
 {
 	RECT tempRect;
@@ -74,7 +74,7 @@ GetContextValidRect (RECT *pValidRect, POINT *origin)
 		// bounds we have nothing to draw
 		if (!BoxIntersect (&_pCurContext->ClipRect,
 				pValidRect, pValidRect))
-			return (FALSE);
+			return (false);
 
 		// Foreground frame hotspot defines a drawing position offset
 		// WRT the context cliprect
@@ -82,7 +82,7 @@ GetContextValidRect (RECT *pValidRect, POINT *origin)
 		origin->y += _pCurContext->ClipRect.corner.y;
 	}
 
-	return (TRUE);
+	return (true);
 }
 
 static void
@@ -141,31 +141,31 @@ DrawBatch (PRIMITIVE *lpBasePrim, PRIM_LINKS PrimLinks,
 				case POINT_PRIM:
 					color = GetPrimColor (lpWorkPrim);
 					TFB_Prim_Point (&lpWorkPrim->Object.Point, color,
-							mode, origin, FALSE);
+							mode, origin, false);
 					break;
 				case STAMP_PRIM:
 					if (flags & HYPER_TO_QUASI_COLOR)
 						TFB_Prim_Stamp (&lpWorkPrim->Object.Stamp, 
 							MAKE_DRAW_MODE (DRAW_HYPTOQUAS, TRANSFER_ALPHA),
-							origin, (BOOLEAN)(flags & UNSCALED_STAMP));
+							origin, (bool)(flags & UNSCALED_STAMP));
 					else
 						TFB_Prim_Stamp (&lpWorkPrim->Object.Stamp, mode,
-							origin, (BOOLEAN)(flags & UNSCALED_STAMP));
+							origin, (bool)(flags & UNSCALED_STAMP));
 					break;
 				case STAMPFILL_PRIM:
 					color = GetPrimColor (lpWorkPrim);
 					if (flags & HS_STARMASK)
 						TFB_Prim_StampFill (&lpWorkPrim->Object.Stamp, color,
 							MAKE_DRAW_MODE (DRAW_OVERLAY, TRANSFER_ALPHA), 
-							origin, (BOOLEAN)(flags & UNSCALED_STAMP));
+							origin, (bool)(flags & UNSCALED_STAMP));
 					else
 						TFB_Prim_StampFill (&lpWorkPrim->Object.Stamp, color,
-								mode, origin, (BOOLEAN)(flags & UNSCALED_STAMP));
+								mode, origin, (bool)(flags & UNSCALED_STAMP));
 					break;
 				case LINE_PRIM:
 					color = GetPrimColor (lpWorkPrim);
 					TFB_Prim_Line (&lpWorkPrim->Object.Line, color,
-							mode, origin, RES_BOOL (1, 3));
+							mode, origin, chooseIfHd (1, 3));
 					break;
 				case TEXT_PRIM:
 					if (!TextRect (&lpWorkPrim->Object.Text, &ClipRect, NULL))
@@ -176,7 +176,7 @@ DrawBatch (PRIMITIVE *lpBasePrim, PRIM_LINKS PrimLinks,
 				case RECT_PRIM:
 					color = GetPrimColor (lpWorkPrim);
 					TFB_Prim_Rect (&lpWorkPrim->Object.Rect, color,
-							mode, origin, FALSE);
+							mode, origin, false);
 					break;
 				case RECTFILL_PRIM:
 					color = GetPrimColor (lpWorkPrim);
@@ -186,7 +186,7 @@ DrawBatch (PRIMITIVE *lpBasePrim, PRIM_LINKS PrimLinks,
 				case POINT_PRIM_HD:
 					color = GetPrimColor (lpWorkPrim);
 					TFB_Prim_Point (&lpWorkPrim->Object.Point, color,
-							mode, origin, TRUE);
+							mode, origin, true);
 					break;
 			}
 		}
@@ -230,7 +230,7 @@ DrawPoint (POINT *lpPoint)
 	{
 		Color color = GetPrimColor (&_locPrim);
 		DrawMode mode = _get_context_draw_mode ();
-		TFB_Prim_Point (lpPoint, color, mode, origin, FALSE);
+		TFB_Prim_Point (lpPoint, color, mode, origin, false);
 	}
 }
 
@@ -242,7 +242,7 @@ InstaPoint (int x, int y)
 }
 
 void
-DrawRectangle (RECT *lpRect, BOOLEAN scaled)
+DrawRectangle (RECT *lpRect, bool scaled)
 {
 	POINT origin;
 
@@ -255,7 +255,7 @@ DrawRectangle (RECT *lpRect, BOOLEAN scaled)
 }
 
 void
-InstaRect (int x, int y, int w, int h, BOOLEAN scaled)
+InstaRect (int x, int y, int w, int h, bool scaled)
 {
 	RECT r = { {(COORD)x, (COORD)y}, { (COORD)w, (COORD)h } };
 	DrawRectangle (&r, scaled);
@@ -309,7 +309,7 @@ DrawStamp (STAMP *stmp)
 	if (GraphicsSystemActive () && GetContextValidRect (NULL, &origin))
 	{
 		DrawMode mode = _get_context_draw_mode ();
-		TFB_Prim_Stamp (stmp, mode, origin, FALSE);
+		TFB_Prim_Stamp (stmp, mode, origin, false);
 	}
 }
 
@@ -322,7 +322,7 @@ DrawFilledStamp (STAMP *stmp)
 	{
 		Color color = GetPrimColor (&_locPrim);
 		DrawMode mode = _get_context_draw_mode ();
-		TFB_Prim_StampFill (stmp, color, mode, origin, FALSE);
+		TFB_Prim_StampFill (stmp, color, mode, origin, false);
 	}
 }
 

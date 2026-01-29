@@ -31,12 +31,12 @@ GetMusicFileData (const char *pathname, RESOURCE_DATA *resdata)
 	resdata->ptr = LoadResourceFromPath (pathname, _GetMusicData);
 }
 
-BOOLEAN
+bool
 InstallAudioResTypes (void)
 {
 	InstallResTypeVectors ("SNDRES", GetSoundBankFileData, _ReleaseSoundBankData, NULL);
 	InstallResTypeVectors ("MUSICRES", GetMusicFileData, _ReleaseMusicData, NULL);
-	return (TRUE);
+	return (true);
 }
 
 SOUND_REF

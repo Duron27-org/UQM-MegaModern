@@ -659,7 +659,7 @@ getStripRandomSeed (void)
 			+ GLOBAL_SIS (ModuleSlots[7]) + GLOBAL_SIS (ModuleSlots[10]);
 }
 
-static BOOLEAN
+static bool
 StripShip (COUNT fuel_required)
 {
 	BYTE i, which_module;
@@ -816,7 +816,7 @@ StripShip (COUNT fuel_required)
 		{
 			NPCPhrase (CHARITY);
 			DeltaSISGauges (0, fuel_required, 0);
-			return (FALSE);
+			return (false);
 		}
 		else
 		{
@@ -839,7 +839,7 @@ StripShip (COUNT fuel_required)
 		}
 	}
 
-	return (TRUE);
+	return (true);
 }
 
 static void
@@ -1106,7 +1106,7 @@ DoBuy (RESPONSE_REF R)
 	// If they're out of credits, educate them on how commerce works.
 	if (credit == 0 && !optInfiniteCredits)
 	{
-		AskedToBuy = TRUE;
+		AskedToBuy = true;
 		NPCPhrase (NEED_CREDIT);
 
 		NatureOfConversation (R);
@@ -1339,7 +1339,7 @@ DoSell (RESPONSE_REF R)
 		{
 			DWORD TimeIn;
 			SIZE beast_value = 0;
-			BOOLEAN Sleepy = TRUE;
+			bool Sleepy = true;
 
 			if (EXTENDED && GET_GAME_STATE (VUX_BEAST_ON_SHIP) == 2
 					&& GET_GAME_STATE (VUX_BEAST) == 2)
@@ -1367,8 +1367,8 @@ DoSell (RESPONSE_REF R)
 			TimeIn = GetTimeCounter () + ONE_SECOND / 2;
 			while (GetTimeCounter () < TimeIn && Sleepy)
 			{
-				UpdateDuty(TRUE);
-				Sleepy = !(AnyButtonPress (TRUE) ||
+				UpdateDuty(true);
+				Sleepy = !(AnyButtonPress (true) ||
 					GLOBAL (CurrentActivity) & CHECK_ABORT);
 			}
 			DrawCargoStrings (
@@ -1378,10 +1378,10 @@ DoSell (RESPONSE_REF R)
 
 			while (GLOBAL_SIS (TotalBioMass) && Sleepy)
 			{
-				Sleepy = !(AnyButtonPress (TRUE)
+				Sleepy = !(AnyButtonPress (true)
 						|| GLOBAL (CurrentActivity) & CHECK_ABORT);
 				
-				UpdateDuty (TRUE);
+				UpdateDuty (true);
 
 				--GLOBAL_SIS (TotalBioMass);
 				TaskSwitch ();
@@ -1404,8 +1404,8 @@ DoSell (RESPONSE_REF R)
 				TimeIn = GetTimeCounter () + ONE_SECOND / 2;
 				while (GetTimeCounter () < TimeIn && Sleepy)
 				{
-					UpdateDuty (TRUE);
-					Sleepy = !(AnyButtonPress (TRUE) ||
+					UpdateDuty (true);
+					Sleepy = !(AnyButtonPress (true) ||
 						GLOBAL (CurrentActivity) & CHECK_ABORT);
 				}
 			}
@@ -1414,7 +1414,7 @@ DoSell (RESPONSE_REF R)
 		else /* if (R == sell_rainbow_locations) */
 		{
 			DWORD TimeIn;
-			BOOLEAN Sleepy = TRUE;
+			bool Sleepy = true;
 			BYTE planets;
 			int diffCase = DIF_CASE (250, 500, 125);
 
@@ -1450,8 +1450,8 @@ DoSell (RESPONSE_REF R)
 				TimeIn = GetTimeCounter () + ONE_SECOND / 2;
 				while (GetTimeCounter () < TimeIn && Sleepy)
 				{
-					UpdateDuty (TRUE);
-					Sleepy = !(AnyButtonPress (TRUE) ||
+					UpdateDuty (true);
+					Sleepy = !(AnyButtonPress (true) ||
 							GLOBAL(CurrentActivity) & CHECK_ABORT);
 				}
 
@@ -1461,10 +1461,10 @@ DoSell (RESPONSE_REF R)
 
 				while (planets != 0 && Sleepy)
 				{
-					Sleepy = !(AnyButtonPress (TRUE)
+					Sleepy = !(AnyButtonPress (true)
 							|| GLOBAL (CurrentActivity) & CHECK_ABORT);
 
-					UpdateDuty (TRUE);
+					UpdateDuty (true);
 
 					if (GetTimeCounter () > TimeIn)
 					{
@@ -1485,8 +1485,8 @@ DoSell (RESPONSE_REF R)
 					TimeIn = GetTimeCounter () + ONE_SECOND / 2;
 					while (GetTimeCounter () < TimeIn && Sleepy)
 					{
-						UpdateDuty (TRUE);
-						Sleepy = !(AnyButtonPress (TRUE) ||
+						UpdateDuty (true);
+						Sleepy = !(AnyButtonPress (true) ||
 								GLOBAL (CurrentActivity) & CHECK_ABORT);
 					}
 				}
@@ -1494,7 +1494,7 @@ DoSell (RESPONSE_REF R)
 			}
 		}
 		
-		AskedToBuy = FALSE;
+		AskedToBuy = false;
 	}
 
 	if (GLOBAL_SIS (TotalBioMass) || num_new_rainbows)
@@ -2101,7 +2101,7 @@ init_melnorme_comm (void)
 	prevMsgMode = SMM_UNDEFINED;
 
 	setSegue (Segue_peace);
-	AskedToBuy = FALSE;
+	AskedToBuy = false;
 	retval = &melnorme_desc;
 
 	return (retval);

@@ -54,24 +54,24 @@ extern RACE_ID RaceIdStrToIndex (const char *raceIdStr);
 extern COUNT AddEscortShips (RACE_ID race, SIZE count);
 extern COUNT CalculateEscortsWorth (void);
 extern COUNT CalculateEscortsPoints (void);
-extern BOOLEAN CanBuyPoints (HFLEETINFO hFleet);
-extern BOOLEAN ShipsReady (RACE_ID race);
+extern bool CanBuyPoints (HFLEETINFO hFleet);
+extern bool ShipsReady (RACE_ID race);
 extern void PrepareShip (RACE_ID race);
-extern BOOLEAN SetRaceAllied (RACE_ID race, BOOLEAN flag);
+extern bool SetRaceAllied (RACE_ID race, bool flag);
 extern COUNT StartSphereTracking (RACE_ID race);
-extern BOOLEAN CheckSphereTracking (RACE_ID race);
-extern BOOLEAN KillRace (RACE_ID race);
+extern bool CheckSphereTracking (RACE_ID race);
+extern bool KillRace (RACE_ID race);
 extern COUNT CountEscortShips (RACE_ID race);
-extern BOOLEAN HaveEscortShip (RACE_ID race);
+extern bool HaveEscortShip (RACE_ID race);
 extern COUNT EscortFeasibilityStudy (RACE_ID race);
 extern COUNT CheckAlliance (RACE_ID race);
-extern BOOLEAN RaceDead (RACE_ID race);
+extern bool RaceDead (RACE_ID race);
 extern COUNT RemoveSomeEscortShips (RACE_ID race, COUNT count);
 extern COUNT RemoveEscortShips (RACE_ID race);
 
-extern RACE_DESC *load_ship (SPECIES_ID SpeciesID, BOOLEAN LoadBattleData);
-extern void free_ship (RACE_DESC *RaceDescPtr, BOOLEAN FreeIconData,
-		BOOLEAN FreeBattleData);
+extern RACE_DESC *load_ship (SPECIES_ID SpeciesID, bool LoadBattleData);
+extern void free_ship (RACE_DESC *RaceDescPtr, bool FreeIconData,
+		bool FreeBattleData);
 extern void loadGameCheats (void);
 // WarEraStrength gives the hard coded strength values (formerly an array)
 extern COUNT WarEraStrength (SPECIES_ID SpeciesID);
@@ -81,8 +81,8 @@ extern POINT SeedFleetLocation (FLEET_INFO *FleetPtr, PLOT_LOCATION *plotmap,
 // SeedFleet does initial fleet placement for StarSeed
 extern void SeedFleet (FLEET_INFO *FleetPtr, PLOT_LOCATION *plotmap);
 // SeedShip handles ship seeding, used in build.c to handle the load window
-extern SPECIES_ID SeedShip (SPECIES_ID SpeciesID, BOOLEAN loadWindow);
-extern BOOLEAN legacySave;
+extern SPECIES_ID SeedShip (SPECIES_ID SpeciesID, bool loadWindow);
+extern bool legacySave;
 extern BYTE GTFO;
 
 #if 0 //defined(__cplusplus)

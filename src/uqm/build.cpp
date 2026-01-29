@@ -110,7 +110,7 @@ GetSeededFleetFromIndex (COUNT Index)
 	FLEET_INFO *TemplatePtr = NULL;
 	HFLEETINFO hFleet;
 	SPECIES_ID ship;
-	BOOLEAN loadWindow = ((optShipSeed && GLOBAL_SIS (ShipSeed) == 0) ||
+	bool loadWindow = ((optShipSeed && GLOBAL_SIS (ShipSeed) == 0) ||
 			(!optShipSeed && GLOBAL_SIS (ShipSeed) != 0) ||
 			(optCustomSeed != GLOBAL_SIS (Seed)));
 
@@ -321,7 +321,7 @@ CalculateEscortsWorth (void)
 	return total;
 }
 
-BOOLEAN
+bool
 ShipsReady (RACE_ID race)
 {
 	SIZE i;
@@ -423,18 +423,18 @@ GetRaceKnownSize (RACE_ID race)
  * Start or end an alliance with the specified race.
  * Being in an alliance with a race makes their ships available for building
  * in the shipyard.
- * flag == TRUE: start an alliance
- * flag == FALSE: end an alliance
+ * flag == true: start an alliance
+ * flag == false: end an alliance
  */
-BOOLEAN
-SetRaceAllied (RACE_ID race, BOOLEAN flag)
+bool
+SetRaceAllied (RACE_ID race, bool flag)
 {
 	HFLEETINFO hFleet;
 	FLEET_INFO *FleetPtr;
 
 	hFleet = GetStarShipFromIndex (&GLOBAL (avail_race_q), race);
 	if (!hFleet)
-		return FALSE;
+		return false;
 
 	FleetPtr = LockFleetInfo (&GLOBAL (avail_race_q), hFleet);
 
@@ -448,7 +448,7 @@ SetRaceAllied (RACE_ID race, BOOLEAN flag)
 	}
 
 	UnlockFleetInfo (&GLOBAL (avail_race_q), hFleet);
-	return TRUE;
+	return true;
 }
 
 /*
@@ -496,7 +496,7 @@ StartSphereTracking (RACE_ID race)
  * 	Check whether we are tracking the SoI of a race.
  * 	If a race has no SoI, this function will always return false.
  */
-BOOLEAN
+bool
 CheckSphereTracking (RACE_ID race)
 {
 	HFLEETINFO hFleet;
@@ -505,14 +505,14 @@ CheckSphereTracking (RACE_ID race)
 
 	hFleet = GetStarShipFromIndex (&GLOBAL (avail_race_q), race);
 	if (!hFleet)
-		return FALSE;
+		return false;
 
 	FleetPtr = LockFleetInfo (&GLOBAL (avail_race_q), hFleet);
 
 	if (FleetPtr->actual_strength == 0) {
 		// Race has no Sphere of Influence.
 		// Maybe it never had one, or maybe the race is extinct.
-		result = FALSE;
+		result = false;
 	}
 	else
 	{
@@ -523,7 +523,7 @@ CheckSphereTracking (RACE_ID race)
 	return result;
 }
 
-BOOLEAN
+bool
 KillRace (RACE_ID race)
 {
 	HFLEETINFO hFleet;
@@ -531,7 +531,7 @@ KillRace (RACE_ID race)
 
 	hFleet = GetStarShipFromIndex (&GLOBAL (avail_race_q), race);
 	if (!hFleet)
-		return FALSE;
+		return false;
 
 	FleetPtr = LockFleetInfo (&GLOBAL (avail_race_q), hFleet);
 
@@ -539,7 +539,7 @@ KillRace (RACE_ID race)
 	FleetPtr->actual_strength = 0;
 
 	UnlockFleetInfo (&GLOBAL (avail_race_q), hFleet);
-	return TRUE;
+	return true;
 }
 
 /*
@@ -578,7 +578,7 @@ CountEscortShips (RACE_ID race)
  * Returns true if and only if a ship of the specified race is among the
  * escort ships.
  */
-BOOLEAN
+bool
 HaveEscortShip (RACE_ID race)
 {
 	return (CountEscortShips (race) > 0);
@@ -625,7 +625,7 @@ CheckAlliance (RACE_ID race)
 	return flags;
 }
 
-BOOLEAN
+bool
 RaceDead (RACE_ID race)
 {
 	return CheckAlliance (race) == DEAD_GUY;
@@ -653,7 +653,7 @@ RemoveSomeEscortShips (RACE_ID race, COUNT count)
 	for (hStarShip = GetHeadLink (ship_q); hStarShip;
 			hStarShip = hNextShip)
 	{
-		BOOLEAN RemoveShip;
+		bool RemoveShip;
 		SHIP_FRAGMENT *StarShipPtr;
 
 		StarShipPtr = LockShipFrag (ship_q, hStarShip);
@@ -1400,7 +1400,7 @@ SeedFleetLocation (FLEET_INFO *FleetPtr, PLOT_LOCATION *plotmap, COUNT visit)
 	COUNT strength; // Strength of the fleet
 	POINT warpoint;	// location being visited, or offset for samatra
 	POINT location = {0, 0}; // The results of the seeding
-	BOOLEAN myRNG = false; // If you create RNG, clean up RNG
+	bool myRNG = false; // If you create RNG, clean up RNG
 	CHAR_T buf[256] = ""; // For debug string
 
 	if (!FleetPtr || !plotmap)

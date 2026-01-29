@@ -121,8 +121,8 @@ luaUqm_prepareEnvironment(lua_State *luaState) {
 }
 
 // On success, the script is on the stack as a function.
-// Returns TRUE on success, and FALSE on error.
-BOOLEAN
+// Returns true on success, and false on error.
+bool
 luaUqm_loadScript(lua_State *luaState, uio_DirHandle *dir,
 		const char *fileName) {
 	uio_Stream *in = NULL;
@@ -156,7 +156,7 @@ luaUqm_loadScript(lua_State *luaState, uio_DirHandle *dir,
 
 	free(buf);
 	uio_fclose(in);
-	return TRUE;
+	return true;
 
 err:
 	if (buf != NULL)
@@ -165,16 +165,16 @@ err:
 	if (in != NULL)
 		uio_fclose(in);
 
-	return FALSE;
+	return false;
 }
 
 // Load a script from file and run it.
-BOOLEAN
+bool
 luaUqm_runScript(lua_State *luaState, uio_DirHandle *dir,
 		const char *fileName) {
 	if (!luaUqm_loadScript(luaState, dir, fileName)) {
 		// Could not load script. Error is already printed.
-		return FALSE;
+		return false;
 	}
 
 	return luaUqm_callStackFunction(luaState);
@@ -225,28 +225,28 @@ err:
 // [-1] -> function fun
 // Call a Lua function which is on the stack, taking no parameters and
 // returning no value.
-// returns FALSE on failure and TRUE on success.
-BOOLEAN
+// returns false on failure and true on success.
+bool
 luaUqm_callStackFunction(lua_State *luaState) {
 	if (lua_pcall(luaState, 0, 0, 0) != 0) {
 		log_add(log_Error, "[script] A script error occurred in "
 				"luaUqm_callStackFunction(): %s", lua_tostring(luaState, -1));
 		lua_pop(luaState, 1);
 				// Pop the error.
-		return FALSE;
+		return false;
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Call a Lua function by (char *) name, taking no parameters and returning
-// no value. returns FALSE on failure and TRUE on success.
-BOOLEAN
+// no value. returns false on failure and true on success.
+bool
 luaUqm_callFunction(lua_State *luaState, const char *str) {
 	lua_getglobal(luaState, str);
 	if (!lua_isfunction(luaState, -1)) {
 		lua_pop(luaState, 1);
-		return FALSE;
+		return false;
 	}
 
 	return luaUqm_callStackFunction(luaState);

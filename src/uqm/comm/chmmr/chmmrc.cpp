@@ -173,7 +173,7 @@ ExitConversation (RESPONSE_REF R)
 
 		NPCPhrase (TAKE_2_WEEKS);
 
-		SetRaceAllied (CHMMR_SHIP, TRUE);
+		SetRaceAllied (CHMMR_SHIP, true);
 
 		SET_GAME_STATE (CHMMR_HOME_VISITS, 0);
 		SET_GAME_STATE (CHMMR_STACK, 0);
@@ -289,7 +289,7 @@ NotReady (RESPONSE_REF R)
 	{
 		NPCPhrase (USE_OUR_SHIPS_BEFORE);
 
-		SetRaceAllied (CHMMR_SHIP, TRUE);
+		SetRaceAllied (CHMMR_SHIP, true);
 	}
 	else if (PLAYER_SAID (R, where_weapon))
 	{
@@ -342,7 +342,7 @@ ImproveBomb (RESPONSE_REF R)
 	{
 		NPCPhrase (USE_OUR_SHIPS_AFTER);
 
-		SetRaceAllied (CHMMR_SHIP, TRUE);
+		SetRaceAllied (CHMMR_SHIP, true);
 	}
 
 	if (PHRASE_ENABLED (what_now))
@@ -449,27 +449,27 @@ ChmmrAdvice (RESPONSE_REF R)
 	if (PHRASE_ENABLED (how_defeat_urquan))
 	{
 		Response (how_defeat_urquan, ChmmrAdvice);
-		AdviceLeft = TRUE;
+		AdviceLeft = true;
 	}
 	if (PHRASE_ENABLED (what_about_tpet) && GET_GAME_STATE (TALKING_PET_ON_SHIP))
 	{
 		Response (what_about_tpet, ChmmrAdvice);
-		AdviceLeft = TRUE;
+		AdviceLeft = true;
 	}
 	if (PHRASE_ENABLED (what_about_bomb) && GET_GAME_STATE (UTWIG_BOMB_ON_SHIP))
 	{
 		Response (what_about_bomb, ChmmrAdvice);
-		AdviceLeft = TRUE;
+		AdviceLeft = true;
 	}
 	if (PHRASE_ENABLED (what_about_sun_device) && GET_GAME_STATE (SUN_DEVICE_ON_SHIP))
 	{
 		Response (what_about_sun_device, ChmmrAdvice);
-		AdviceLeft = TRUE;
+		AdviceLeft = true;
 	}
 	if (PHRASE_ENABLED (what_about_samatra) && GET_GAME_STATE (AWARE_OF_SAMATRA))
 	{
 		Response (what_about_samatra, ChmmrAdvice);
-		AdviceLeft = TRUE;
+		AdviceLeft = true;
 	}
 	Response (enough_advice, ChmmrShielded);
 

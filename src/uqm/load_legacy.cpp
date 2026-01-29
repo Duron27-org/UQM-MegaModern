@@ -741,7 +741,7 @@ LoadGroupQueue (DECODE_REF fh, QUEUE *pQueue)
 }
 
 static void
-LoadEncounter (ENCOUNTER *EncounterPtr, DECODE_REF fh, BOOLEAN try_vanilla)
+LoadEncounter (ENCOUNTER *EncounterPtr, DECODE_REF fh, bool try_vanilla)
 {
 	COUNT i;
 	BYTE tmpb;
@@ -854,8 +854,8 @@ LoadClockState (CLOCK_STATE *ClockPtr, DECODE_REF fh)
 	DummyLoadQueue (&ClockPtr->event_q, fh);
 }
 
-static BOOLEAN
-LoadGameState (GAME_STATE *GSPtr, DECODE_REF fh, BOOLEAN vanilla)
+static bool
+LoadGameState (GAME_STATE *GSPtr, DECODE_REF fh, bool vanilla)
 {
 	BYTE dummy8;
 
@@ -875,7 +875,7 @@ LoadGameState (GAME_STATE *GSPtr, DECODE_REF fh, BOOLEAN vanilla)
 	// At this point we must then cease reading the savefile, close it
 	// and re-open it again, this time using the vanilla-reading method.
 	if (GSPtr->FuelCost != FUEL_COST_RU)
-		return FALSE;
+		return false;
 	
 	cread_a8  (fh, GSPtr->ModuleCost, NUM_MODULES);
 	cread_a8  (fh, GSPtr->ElementWorth, NUM_ELEMENT_CATEGORIES);
@@ -959,10 +959,10 @@ LoadGameState (GAME_STATE *GSPtr, DECODE_REF fh, BOOLEAN vanilla)
 
 	cread_8  (fh, NULL); /* GAME_STATE alignment padding */
 	
-	return TRUE;
+	return true;
 }
 
-static BOOLEAN
+static bool
 LoadSisState (SIS_STATE *SSPtr, void *fp)
 {
 	if (
@@ -985,18 +985,18 @@ LoadSisState (SIS_STATE *SSPtr, void *fp)
 
 			read_16  (fp, NULL) != 1 /* padding */
 		)
-		return FALSE;
+		return false;
 	else
 	{
 		// JMS: Let's make savegames work even between different resolution modes.
 		SSPtr->log_x <<= RESOLUTION_FACTOR;
 		SSPtr->log_y <<= RESOLUTION_FACTOR;
-		return TRUE;
+		return true;
 	}
 }
 
-static BOOLEAN
-LoadSummary (SUMMARY_DESC *SummPtr, void *fp, BOOLEAN try_vanilla)
+static bool
+LoadSummary (SUMMARY_DESC *SummPtr, void *fp, bool try_vanilla)
 {
 	// JMS: New variables required for compatibility between
 	// old, unnamed saves and the new, named ones.
@@ -1004,7 +1004,7 @@ LoadSummary (SUMMARY_DESC *SummPtr, void *fp, BOOLEAN try_vanilla)
 	SDWORD  temp_log_y = 0;
 	DWORD   temp_ru    = 0;
 	DWORD   temp_fuel  = 0;
-	BOOLEAN no_savename = FALSE;
+	bool no_savename = false;
 
 	// First we check if there is a savegamename identifier.
 	// The identifier tells us whether the name exists at all.
@@ -1022,7 +1022,7 @@ LoadSummary (SUMMARY_DESC *SummPtr, void *fp, BOOLEAN try_vanilla)
 		// Apparently the bytes read to SummPtr->SaveNameChecker with
 		// read_str are destroyed from fp, so we must copy these bytes
 		// to temp variables at this point to preserve them.
-		no_savename = TRUE;
+		no_savename = true;
 		memcpy(&temp_log_x, SummPtr->SaveNameChecker, sizeof(SDWORD));
 		memcpy(&temp_log_y, &(SummPtr->SaveNameChecker[sizeof(SDWORD)]),
 				sizeof(SDWORD));
@@ -1054,7 +1054,7 @@ LoadSummary (SUMMARY_DESC *SummPtr, void *fp, BOOLEAN try_vanilla)
 	//log_add (log_Debug, "fp: %d Check:%s Name:%s", fp, SummPtr->SaveNameChecker, SummPtr->SaveName);
 	
 	if (!LoadSisState (&SummPtr->SS, fp))
-		return FALSE;
+		return false;
 
 	// Sanitize seed, difficulty, extended, and nomad variables
 	SummPtr->SS.Seed = SummPtr->SS.Difficulty = 0;
@@ -1090,7 +1090,7 @@ LoadSummary (SUMMARY_DESC *SummPtr, void *fp, BOOLEAN try_vanilla)
 		)
 	{
 		LegacyResFactor = !try_vanilla ? SummPtr->res_factor : 0;
-		return FALSE;
+		return false;
 	}
 	else
 	{
@@ -1099,7 +1099,7 @@ LoadSummary (SUMMARY_DESC *SummPtr, void *fp, BOOLEAN try_vanilla)
 		if (!try_vanilla)
 			read_8 (fp, NULL); /* padding */
 
-		return TRUE;
+		return true;
 	}
 }
 
@@ -1114,8 +1114,8 @@ LoadStarDesc (STAR_DESC *SDPtr, DECODE_REF fh)
 	cread_8  (fh, &SDPtr->Postfix);
 }
 
-BOOLEAN
-LoadLegacyGame (COUNT which_game, SUMMARY_DESC *SummPtr, BOOLEAN try_vanilla)
+bool
+LoadLegacyGame (COUNT which_game, SUMMARY_DESC *SummPtr, bool try_vanilla)
 {
 	uio_Stream *in_fp;
 	char file[PATH_MAX];
@@ -1130,14 +1130,14 @@ LoadLegacyGame (COUNT which_game, SUMMARY_DESC *SummPtr, BOOLEAN try_vanilla)
 	sprintf (file, "starcon2.%02u", which_game);
 	in_fp = res_OpenResFile (saveDir, file, "rb");
 	if (!in_fp)
-		return FALSE;
+		return false;
 
 	loc_sd.SaveName[0] = '\0';
 	if (!LoadSummary (&loc_sd, in_fp, try_vanilla))
 	{
 		log_add (log_Error, "Warning: Savegame is corrupt");
 		res_CloseResFile (in_fp);
-		return FALSE;
+		return false;
 	}
 
 	if (!SummPtr)
@@ -1148,7 +1148,7 @@ LoadLegacyGame (COUNT which_game, SUMMARY_DESC *SummPtr, BOOLEAN try_vanilla)
 	{	// only need summary for displaying to user
 		memcpy (SummPtr, &loc_sd, sizeof (*SummPtr));
 		res_CloseResFile (in_fp);
-		return TRUE;
+		return true;
 	}
 
 	// Crude check for big-endian/little-endian incompatibilities.
@@ -1163,7 +1163,7 @@ LoadLegacyGame (COUNT which_game, SUMMARY_DESC *SummPtr, BOOLEAN try_vanilla)
 		log_add (log_Error, "Warning: Savegame corrupt or from "
 				"an incompatible platform.");
 		res_CloseResFile (in_fp);
-		return FALSE;
+		return false;
 	}
 
 	GlobData.SIS_state = SummPtr->SS;
@@ -1171,7 +1171,7 @@ LoadLegacyGame (COUNT which_game, SUMMARY_DESC *SummPtr, BOOLEAN try_vanilla)
 	if ((fh = copen (in_fp, FILE_STREAM, STREAM_READ)) == 0)
 	{
 		res_CloseResFile (in_fp);
-		return FALSE;
+		return false;
 	}
 
 	ReinitQueue (&GLOBAL (GameClock.event_q));
@@ -1198,11 +1198,11 @@ LoadLegacyGame (COUNT which_game, SUMMARY_DESC *SummPtr, BOOLEAN try_vanilla)
 		
 		if (!try_vanilla)
 		{
-			LoadLegacyGame (which_game, NULL, TRUE);
-			return TRUE;
+			LoadLegacyGame (which_game, NULL, true);
+			return true;
 		}
 		else
-			return FALSE;
+			return false;
 	}
 	
 	NextActivity = GLOBAL (CurrentActivity);
@@ -1240,7 +1240,7 @@ LoadLegacyGame (COUNT which_game, SUMMARY_DESC *SummPtr, BOOLEAN try_vanilla)
 		{
 			HEVENT hEvent;
 			EVENT *EventPtr;
-			BOOLEAN DeCleanse = FALSE;
+			bool DeCleanse = false;
 
 			hEvent = AllocEvent ();
 			LockEvent (hEvent, &EventPtr);
@@ -1262,7 +1262,7 @@ LoadLegacyGame (COUNT which_game, SUMMARY_DESC *SummPtr, BOOLEAN try_vanilla)
 				if (EventPtr->year_index == 2158)
 				{
 					FreeEvent (hEvent);
-					DeCleanse = TRUE;
+					DeCleanse = true;
 				}
 				continue;
 			}
@@ -1366,16 +1366,16 @@ LoadLegacyGame (COUNT which_game, SUMMARY_DESC *SummPtr, BOOLEAN try_vanilla)
 	ReinitQueue (&race_q[1]);
 	CurStarDescPtr = FindStar (NULL, &SD.star_pt, 0, 0);
 
-	legacySave = TRUE;
+	legacySave = true;
 
 	if (!(NextActivity & START_ENCOUNTER)
 			&& LOBYTE (NextActivity) == IN_INTERPLANETARY)
 		NextActivity |= START_INTERPLANETARY;
 
 	// Reset Debug Key
-	DebugKeyPressed = FALSE;
+	DebugKeyPressed = false;
 	SET_GAME_STATE (SEED_TYPE, optSeedType = OPTVAL_PRIME);
 	GLOBAL_SIS (Seed) = optCustomSeed = PrimeA;
 
-	return InitStarseed (FALSE);
+	return InitStarseed (false);
 }

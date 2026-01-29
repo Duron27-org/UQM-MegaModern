@@ -44,8 +44,8 @@
 // Positive or negative scroll rate in pixel lines per second
 static int CreditsRate;
 
-static BOOLEAN OutTakesRunning;
-static BOOLEAN CreditsRunning;
+static bool OutTakesRunning;
+static bool CreditsRunning;
 static STRING CreditsTab;
 static FRAME CreditsBack;
 
@@ -404,7 +404,7 @@ InitCredits (void)
 	RenderCreditsScreen (LocalContext);
 
 	CreditsRate = CREDITS_BASE_RATE;
-	CreditsRunning = TRUE;
+	CreditsRunning = true;
 }
 
 static void
@@ -512,7 +512,7 @@ processCreditsFrame (void)
 		}
 		else if (!CreditsRunning)
 		{	// resumed
-			CreditsRunning = TRUE;
+			CreditsRunning = true;
 		}
 
 		if (firstFrame != lastFrame)
@@ -603,20 +603,20 @@ processCreditsFrame (void)
 	}
 }
 
-static BOOLEAN
+static bool
 LoadCredits (void)
 {
 	FONT_SIZE_DEF *fdef;
 
 	CreditsTab = CaptureStringTable (LoadStringTable (CREDITS_STRTAB));
 	if (!CreditsTab)
-		return FALSE;
+		return false;
 	CreditsBack = CaptureDrawable (LoadGraphic (CREDITS_BACK_ANIM));
 	// load fonts
 	for (fdef = CreditsFont; fdef->size; ++fdef)
 		fdef->font = LoadFont (fdef->res);
 
-	return TRUE;
+	return true;
 }
 
 static void
@@ -661,13 +661,13 @@ OutTakes (void)
 		ARILOU_CONVERSATION
 	};
 
-	BOOLEAN oldsubtitles = (BOOLEAN)optSubtitles;
+	bool oldsubtitles = (bool)optSubtitles;
 	int i = 0;
 
 	// Outtakes have no voice tracks, so the subtitles are always on
 	optSubtitles = OPTVAL_ENABLED;
-	sliderDisabled = TRUE;
-	oscillDisabled = TRUE;
+	sliderDisabled = true;
+	oscillDisabled = true;
 
 	for (i = 0; (i < NUM_OUTTAKES) &&
 			!(GLOBAL (CurrentActivity) & CHECK_ABORT); i++)
@@ -677,23 +677,23 @@ OutTakes (void)
 	}
 
 	optSubtitles = (OPT_ENABLABLE)oldsubtitles;
-	sliderDisabled = FALSE;
-	oscillDisabled = FALSE;
+	sliderDisabled = false;
+	oscillDisabled = false;
 }
 
 typedef struct
 {
 	// standard state required by DoInput
-	BOOLEAN (*InputFunc) (void *pInputState);
+	bool (*InputFunc) (void *pInputState);
 
-	BOOLEAN AllowCancel;
-	BOOLEAN AllowSpeedChange;
-	BOOLEAN CloseWhenDone;
+	bool AllowCancel;
+	bool AllowSpeedChange;
+	bool CloseWhenDone;
 	DWORD CloseTimeOut;
 
 } CREDITS_INPUT_STATE;
 
-static BOOLEAN
+static bool
 DoCreditsInput (void *pIS)
 {
 	CREDITS_INPUT_STATE *pCIS = (CREDITS_INPUT_STATE *) pIS;
@@ -709,7 +709,7 @@ DoCreditsInput (void *pIS)
 				PulsedInputState.menu[KEY_MENU_CANCEL]))
 		)
 	{	// aborted
-		return FALSE;
+		return false;
 	}
 	
 	if (pCIS->AllowSpeedChange
@@ -733,7 +733,7 @@ DoCreditsInput (void *pIS)
 
 	if (!CreditsRunning)
 	{	// always allow cancelling once credits run through
-		pCIS->AllowCancel = TRUE;
+		pCIS->AllowCancel = true;
 	}
 
 	if (!CreditsRunning && pCIS->CloseWhenDone)
@@ -744,7 +744,7 @@ DoCreditsInput (void *pIS)
 		}
 		else if (GetTimeCounter () > pCIS->CloseTimeOut)
 		{	// all done!
-			return FALSE;
+			return false;
 		}
 	}
 	
@@ -752,12 +752,12 @@ DoCreditsInput (void *pIS)
 			&& (PulsedInputState.menu[KEY_MENU_SELECT]
 			|| PulsedInputState.menu[KEY_MENU_CANCEL]))
 	{	// credits finished and exit requested
-		return FALSE;
+		return false;
 	}
 
 	SleepThread (ONE_SECOND / CREDITS_FRAME_RATE);
 
-	return TRUE;
+	return true;
 }
 
 static void
@@ -767,7 +767,7 @@ on_input_frame (void)
 }
 
 void
-Credits (BOOLEAN WithOuttakes)
+Credits (bool WithOuttakes)
 {
 	MUSIC_REF hMusic;
 	CREDITS_INPUT_STATE cis;
@@ -802,24 +802,24 @@ Credits (BOOLEAN WithOuttakes)
 
 	if (WithOuttakes)
 	{
-		OutTakesRunning = TRUE;
+		OutTakesRunning = true;
 		OutTakes ();
-		OutTakesRunning = FALSE;
+		OutTakesRunning = false;
 	}
 	
 	if (!(GLOBAL (CurrentActivity) & CHECK_ABORT))
 	{
 		if (hMusic)
-			PlayMusic (hMusic, TRUE, 1);
+			PlayMusic (hMusic, true, 1);
 
 		// nothing to do now but wait until credits
 		//  are done or canceled by user
 		cis.InputFunc = DoCreditsInput;
 		cis.AllowCancel = !WithOuttakes;
 		cis.CloseWhenDone = !WithOuttakes;
-		cis.AllowSpeedChange = TRUE;
+		cis.AllowSpeedChange = true;
 		SetMenuSounds (MENU_SOUND_NONE, MENU_SOUND_NONE);
-		DoInput (&cis, TRUE);
+		DoInput (&cis, true);
 	}
 
 	SetInputCallback (NULL);

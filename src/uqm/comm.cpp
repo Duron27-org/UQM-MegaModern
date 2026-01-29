@@ -56,7 +56,7 @@
 // Oscilloscope frame rate
 // Should be <= COMM_ANIM_RATE
 // XXX: was 32 picked experimentally?
-#define OSCILLOSCOPE_RATE   (ONE_SECOND / RES_BOOL (32, 60))
+#define OSCILLOSCOPE_RATE   (ONE_SECOND / chooseIfHd (32, 60))
 
 // Maximum comm animation frame rate (actual execution rate)
 // A gfx frame is not always produced during an execution frame,
@@ -72,13 +72,13 @@ LOCDATA CommData;
 CHAR_T shared_phrase_buf[2048];
 FONT ComputerFont;
 
-static BOOLEAN TalkingFinished;
+static bool TalkingFinished;
 static CommIntroMode curIntroMode = CIM_DEFAULT;
 static TimeCount fadeTime;
 
 // Dark mode
-BOOLEAN IsDarkMode = FALSE;
-BOOLEAN cwLock = FALSE; // To avoid drawing over comWindow if JumpTrack() is called
+bool IsDarkMode = false;
+bool cwLock = false; // To avoid drawing over comWindow if JumpTrack() is called
 BYTE altResFlags = 0;
 static COUNT fadeIndex;
  
@@ -92,7 +92,7 @@ typedef struct response_entry
 
 typedef struct encounter_state
 {
-	BOOLEAN (*InputFunc) (struct encounter_state *pES);
+	bool (*InputFunc) (struct encounter_state *pES);
 
 	COUNT Initialized;
 	TimeCount NextTime; // framerate control
@@ -119,13 +119,13 @@ static CUSTOM_BASELINE *cur_node; // not null if current sentence number has bee
 
 // Used to disable/enable talking animation
 // Better than current because it works with rewind
-static BOOLEAN haveTalkingLock = FALSE;
+static bool haveTalkingLock = false;
 static COUNT startSentence, endSentence;
 
 static ENCOUNTER_STATE *pCurInputState;
 
-static BOOLEAN clear_subtitles;
-static BOOLEAN next_page = FALSE;
+static bool clear_subtitles;
+static bool next_page = false;
 static TEXT SubtitleText;
 static const CHAR_T *last_subtitle;
 
@@ -140,10 +140,10 @@ RECT CommWndRect = {
 };
 
 static void ClearSubtitles (void);
-static void CheckSubtitles (BOOLEAN really);
+static void CheckSubtitles (bool really);
 static void RedrawSubtitles (void);
 static void runCommAnimFrame (void);
-static BOOLEAN PauseSubtitles(BOOLEAN force);
+static bool PauseSubtitles(bool force);
 
 
 /* _count_lines - sees how many lines a given input string would take to
@@ -155,7 +155,7 @@ _count_lines (TEXT *pText)
 	SIZE text_width;
 	const char *pStr;
 	int numLines = 0;
-	BOOLEAN eol;
+	bool eol;
 
 	text_width = CommData.AlienTextWidth;
 	SetContextFont (CommData.AlienFont);
@@ -187,7 +187,7 @@ add_text (int status, TEXT *pTextIn)
 	SIZE text_width;
 	int num_lines = 0;
 	static COORD last_baseline;
-	BOOLEAN eol;
+	bool eol;
 	CONTEXT OldContext = NULL;
 	RECT arrow;
 	
@@ -392,13 +392,13 @@ CheckTalkingAnim (COUNT i)
 		if (i >= startSentence && i <= endSentence)
 		{
 			CommData.AlienTalkDesc.AnimFlags &= ~WAIT_TALKING;
-			EnableTalkingAnim (FALSE);
+			EnableTalkingAnim (false);
 			ShutYourMouth ();
 		}
 		else
 		{
 			CommData.AlienTalkDesc.AnimFlags |= WAIT_TALKING;
-			EnableTalkingAnim (TRUE);
+			EnableTalkingAnim (true);
 		}
 	}
 }
@@ -409,7 +409,7 @@ BlockTalkingAnim (COUNT trackStart, COUNT trackEnd)
 	if (trackStart >= trackEnd) // Fool-proof
 		return;
 	
-	haveTalkingLock = TRUE;
+	haveTalkingLock = true;
 	startSentence = GetSubtitleNumberByTrack (trackStart);
 	// First sentence of locked interval
 	endSentence = GetSubtitleNumberByTrack (trackEnd) - 1;
@@ -421,10 +421,10 @@ ReleaseTalkingAnim (void)
 {	// Called at restart and at SelectResponce ()
 	if (haveTalkingLock)
 	{
-		haveTalkingLock = FALSE;
+		haveTalkingLock = false;
 		startSentence = (COUNT)~0;
 		endSentence = (COUNT)~0;
-		EnableTalkingAnim (TRUE);
+		EnableTalkingAnim (true);
 	}
 }
 
@@ -442,15 +442,15 @@ ReleaseTalkingAnim (void)
 //   ASSUMPTION: there are no words in the text wider than maxWidth
 // maxChars is the maximum number of characters (not bytes) that are to
 // be fitted.
-// TRUE is returned if a complete line fitted
-// FALSE otherwise
-BOOLEAN
+// true is returned if a complete line fitted
+// false otherwise
+bool
 getLineWithinWidth(TEXT *pText, const char **startNext,
 		SIZE maxWidth, COUNT maxChars)
 {
-	BOOLEAN eol;
+	bool eol;
 			// The end of the line of text has been reached.
-	BOOLEAN done;
+	bool done;
 			// We cannot add any more words.
 	RECT rect;
 	COUNT oldCount;
@@ -461,8 +461,8 @@ getLineWithinWidth(TEXT *pText, const char **startNext,
 
 	//GetContextClipRect (&rect);
 
-	eol = FALSE;
-	done = FALSE;
+	eol = false;
+	done = false;
 	oldCount = 1;
 	charCount = 0;
 	ch = '\0';
@@ -476,8 +476,8 @@ getLineWithinWidth(TEXT *pText, const char **startNext,
 		{
 			if (*ptr == '\0')
 			{
-				eol = TRUE;
-				done = TRUE;
+				eol = true;
+				done = true;
 				break;
 			}
 			ch = getCharFromString (&ptr);
@@ -496,7 +496,7 @@ getLineWithinWidth(TEXT *pText, const char **startNext,
 		{
 			pText->CharCount = oldCount;
 			*startNext = wordStart;
-			return FALSE;
+			return false;
 		}
 
 		if (done)
@@ -736,11 +736,11 @@ UpdateSpeechGraphics (void)
 }
 
 static void
-UpdateAnimations (BOOLEAN paused)
+UpdateAnimations (bool paused)
 {
 	static TimeCount NextTime;
 	CONTEXT OldContext;
-	BOOLEAN change;
+	bool change;
 
 	if (GetTimeCounter () < NextTime)
 		return; // too early
@@ -754,19 +754,19 @@ UpdateAnimations (BOOLEAN paused)
 	if (change || clear_subtitles)
 		RedrawSubtitles ();
 	UnbatchGraphics ();
-	clear_subtitles = FALSE;
+	clear_subtitles = false;
 	SetContext (OldContext);
 }
 
 void
-UpdateDuty (BOOLEAN talk)
+UpdateDuty (bool talk)
 {
 	if (talk)
 	{
 		if (!TalkingFinished)
 			setRunTalkingAnim ();
-		CheckSubtitles (TRUE);
-		UpdateAnimations (FALSE);
+		CheckSubtitles (true);
+		UpdateAnimations (false);
 	}
 	UpdateSpeechGraphics ();
 }
@@ -774,7 +774,7 @@ UpdateDuty (BOOLEAN talk)
 RECT DarkModeRect[6];
 
 void
-InitUIRects (BOOLEAN state)
+InitUIRects (bool state)
 {
 	if (state)
 	{
@@ -834,7 +834,7 @@ FadePlayerUI (void)
 
 		if (fadeIndex > 50)
 		{
-			cwLock = FALSE;
+			cwLock = false;
 			return;
 		}
 
@@ -875,7 +875,7 @@ FadePlayerUI (void)
 static void
 UpdateCommGraphics (void)
 {
-	UpdateAnimations (FALSE);
+	UpdateAnimations (false);
 	UpdateSpeechGraphics ();
 	FadePlayerUI ();
 }
@@ -884,7 +884,7 @@ UpdateCommGraphics (void)
 typedef struct talking_state
 {
 	// Fields required by DoInput()
-	BOOLEAN (*InputFunc) (struct talking_state *);
+	bool (*InputFunc) (struct talking_state *);
 
 	TimeCount NextTime;  // framerate control
 	COUNT waitTrack;
@@ -894,7 +894,7 @@ typedef struct talking_state
 
 } TALKING_STATE;
 
-static BOOLEAN
+static bool
 DoTalkSegue (TALKING_STATE *pTS)
 {
 	bool left = false;
@@ -904,7 +904,7 @@ DoTalkSegue (TALKING_STATE *pTS)
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
 	{
 		pTS->ended = true;
-		return FALSE;
+		return false;
 	}
 	
 	if (optSpeech || optSmoothScroll == OPT_3DO || (LOBYTE(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE))
@@ -913,7 +913,7 @@ DoTalkSegue (TALKING_STATE *pTS)
 		{
 			JumpTrack ();
 			pTS->ended = true;
-			return FALSE;
+			return false;
 		}
 
 		if (optSmoothScroll == OPT_PC || !optSpeech)
@@ -980,25 +980,25 @@ DoTalkSegue (TALKING_STATE *pTS)
 		{
 			FastForward_Page ();
 			FlushInput ();
-			next_page = TRUE;
-			return TRUE;
+			next_page = true;
+			return true;
 		}
 		else if (PulsedInputState.menu[KEY_MENU_SPECIAL])
 		{
 			JumpTrack();
 			pTS->ended = true;
-			return FALSE;
+			return false;
 		}
 		else if (PauseSubtitles (next_page))
 		{
 			/* I would like to NOT count ellipses but whatever */
-			DWORD delay = RecalculateDelay (strlen (SubtitleText.pStr), FALSE);
+			DWORD delay = RecalculateDelay (strlen (SubtitleText.pStr), false);
 			BYTE read_speed = speed_array[GLOBAL (glob_flags) & READ_SPEED_MASK];
 
 			if (delay > 0 || read_speed == VERY_SLOW)
 			{
-				BOOLEAN awake = FALSE;
-				BOOLEAN block = (!wantTalkingAnim () || IsDarkMode
+				bool awake = false;
+				bool block = (!wantTalkingAnim () || IsDarkMode
 								|| !haveTalkingAnim ());
 				TimeCount TimeOut;
 
@@ -1013,7 +1013,7 @@ DoTalkSegue (TALKING_STATE *pTS)
 				{
 					if (read_speed != VERY_SLOW
 							&& GetTimeCounter () >= TimeOut)
-						awake = TRUE;
+						awake = true;
 
 					UpdateCommGraphics ();
 					UpdateInputState ();
@@ -1022,7 +1022,7 @@ DoTalkSegue (TALKING_STATE *pTS)
 						|| PulsedInputState.menu[KEY_MENU_RIGHT]
 						|| (GLOBAL( CurrentActivity) & CHECK_ABORT))
 					{
-						awake = TRUE;
+						awake = true;
 					}
 					else if (PulsedInputState.menu[KEY_MENU_SPECIAL])
 					{
@@ -1032,7 +1032,7 @@ DoTalkSegue (TALKING_STATE *pTS)
 						if (!block)
 							unFreezeTalkingAnim ();
 
-						return FALSE;
+						return false;
 					}
 				}
 
@@ -1043,7 +1043,7 @@ DoTalkSegue (TALKING_STATE *pTS)
 			}
 		}
 
-		next_page = FALSE;
+		next_page = false;
 
 		CheckSubtitles (curTrack && curTrack <= pTS->waitTrack);
 	}
@@ -1071,7 +1071,7 @@ runCommAnimFrame (void)
 	SleepThread (COMM_ANIM_RATE);
 }
 
-static BOOLEAN
+static bool
 TalkSegue (COUNT wait_track)
 {
 	TALKING_STATE talkingState;
@@ -1105,13 +1105,13 @@ TalkSegue (COUNT wait_track)
 	SetMenuSounds (MENU_SOUND_NONE, MENU_SOUND_NONE);
 	talkingState.InputFunc = DoTalkSegue;
 	talkingState.waitTrack = wait_track;
-	DoInput (&talkingState, FALSE);
+	DoInput (&talkingState, false);
 
 	if (talkingState.ended)
 	{	// reached the end; set STOP icon
 		ClearSubtitles ();
 		SetSliderImage (SetAbsFrameIndex (ActivityFrame, 8));
-		cwLock = FALSE;// Do not update comWindow
+		cwLock = false;// Do not update comWindow
 	}
 
 	// transition back to silent, if necessary
@@ -1181,11 +1181,11 @@ AlienTalkSegue (COUNT wait_track)
 		InitSpeechGraphics ();
 		SetColorMap (GetColorMapAddress (CommData.AlienColorMap));
 		SetContext (AnimContext);
-		DrawAlienFrame (NULL, 0, TRUE);
+		DrawAlienFrame (NULL, 0, true);
 		UpdateSpeechGraphics ();
 		CommIntroTransition ();
 		
-		pCurInputState->Initialized = TRUE;
+		pCurInputState->Initialized = true;
 
 		PlayMusicResume (AlienSong, BACKGROUND_VOL);
 
@@ -1197,8 +1197,8 @@ AlienTalkSegue (COUNT wait_track)
 			TimeCount timeout = GetTimeCounter() + ONE_SECOND / 4;
 			while (GetTimeCounter() < timeout)
 			{
-				UpdateDuty(FALSE);
-				UpdateAnimations(FALSE);
+				UpdateDuty(false);
+				UpdateAnimations(false);
 			}
 		}
 
@@ -1214,11 +1214,11 @@ AlienTalkSegue (COUNT wait_track)
 typedef struct summary_state
 {
 	// standard state required by DoInput
-	BOOLEAN (*InputFunc) (struct summary_state *pSS);
+	bool (*InputFunc) (struct summary_state *pSS);
 
 	// extended state
-	BOOLEAN Initialized;
-	BOOLEAN PrintNext;
+	bool Initialized;
+	bool PrintNext;
 	SUBTITLE_REF NextSub;
 	const CHAR_T *LeftOver;
 
@@ -1238,7 +1238,7 @@ remove_char_from_string (CHAR_T* str, const CHAR_T c)
 	*pw = '\0';
 }
 
-static BOOLEAN
+static bool
 DoConvSummary (SUMMARY_STATE *pSS)
 {
 #define DELTA_Y_SUMMARY RES_SCALE (8)
@@ -1246,16 +1246,16 @@ DoConvSummary (SUMMARY_STATE *pSS)
 
 	if (!pSS->Initialized)
 	{
-		pSS->PrintNext = TRUE;
+		pSS->PrintNext = true;
 		pSS->NextSub = GetFirstTrackSubtitle ();
 		pSS->LeftOver = NULL;
 		pSS->InputFunc = DoConvSummary;
-		pSS->Initialized = TRUE;
-		DoInput (pSS, FALSE);
+		pSS->Initialized = true;
+		DoInput (pSS, false);
 	}
 	else if (GLOBAL (CurrentActivity) & CHECK_ABORT)
 	{
-		return FALSE; // bail out
+		return false; // bail out
 	}
 	else if (PulsedInputState.menu[KEY_MENU_SELECT]
 			|| PulsedInputState.menu[KEY_MENU_CANCEL]
@@ -1263,11 +1263,11 @@ DoConvSummary (SUMMARY_STATE *pSS)
 	{
 		if (pSS->NextSub)
 		{	// we want the next page
-			pSS->PrintNext = TRUE;
+			pSS->PrintNext = true;
 		}
 		else
 		{	// no more, we are done
-			return FALSE;
+			return false;
 		}
 	}
 	else if (pSS->PrintNext)
@@ -1381,7 +1381,7 @@ DoConvSummary (SUMMARY_STATE *pSS)
 		}
 
 
-		pSS->PrintNext = FALSE;
+		pSS->PrintNext = false;
 	}
 	else
 	{
@@ -1389,7 +1389,7 @@ DoConvSummary (SUMMARY_STATE *pSS)
 	}
 	UpdateSpeechGraphics();
 
-	return TRUE; // keep going
+	return true; // keep going
 }
 
 static void
@@ -1422,8 +1422,8 @@ SelectResponse (ENCOUNTER_STATE *pES)
 		RefreshResponsesSpecial (pES);
 		while (GetTimeCounter () < timeout)
 		{
-			UpdateDuty (FALSE);
-			UpdateAnimations (FALSE);
+			UpdateDuty (false);
+			UpdateAnimations (false);
 		}
 	}
 	else
@@ -1438,7 +1438,7 @@ SelectResponse (ENCOUNTER_STATE *pES)
 
 	FadeMusic (BACKGROUND_VOL, ONE_SECOND);
 
-	TalkingFinished = FALSE;
+	TalkingFinished = false;
 	pES->num_responses = 0;
 	ClearResponses (pES);
 	(*pES->response_list[pES->cur_response].response_func)
@@ -1454,12 +1454,12 @@ SelectConversationSummary (ENCOUNTER_STATE *pES)
 	if (pES)
 		FeedbackPlayerPhrase (pES->phrase_buf);
 
-	SummaryState.Initialized = FALSE;
+	SummaryState.Initialized = false;
 	DoConvSummary (&SummaryState);
 
 	if (pES)
 		RefreshResponses (pES);
-	clear_subtitles = TRUE;
+	clear_subtitles = true;
 }
 
 static void
@@ -1548,21 +1548,21 @@ PlayerResponseInput (ENCOUNTER_STATE *pES)
 typedef struct last_replay_state
 {
 	// Fields required by DoInput()
-	BOOLEAN (*InputFunc) (struct last_replay_state *);
+	bool (*InputFunc) (struct last_replay_state *);
 
 	TimeCount NextTime; // framerate control
 	TimeCount TimeOut;
 
 } LAST_REPLAY_STATE;
 
-static BOOLEAN
+static bool
 DoLastReplay (LAST_REPLAY_STATE *pLRS)
 {
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
-		return FALSE;
+		return false;
 
 	if (GetTimeCounter () > pLRS->TimeOut)
-		return FALSE; // timed out and done
+		return false; // timed out and done
 
 	if (PulsedInputState.menu[KEY_MENU_CANCEL] &&
 			LOBYTE (GLOBAL (CurrentActivity)) != WON_LAST_BATTLE)
@@ -1582,10 +1582,10 @@ DoLastReplay (LAST_REPLAY_STATE *pLRS)
 		
 	pLRS->NextTime = GetTimeCounter () + COMM_ANIM_RATE;
 
-	return TRUE;
+	return true;
 }
 
-static BOOLEAN
+static bool
 DoCommunication (ENCOUNTER_STATE *pES)
 {
 	if (!IsDarkMode)
@@ -1595,7 +1595,7 @@ DoCommunication (ENCOUNTER_STATE *pES)
 	if (!TalkingFinished)
 	{
 		AlienTalkSegue (WAIT_TRACK_ALL);
-		return TRUE;
+		return true;
 	}
 
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
@@ -1609,12 +1609,12 @@ DoCommunication (ENCOUNTER_STATE *pES)
 		memset (&replayState, 0, sizeof replayState);
 		replayState.TimeOut = FadeMusic (0, ONE_SECOND * 3) + ONE_SECOND / 60;
 		replayState.InputFunc = DoLastReplay;
-		DoInput (&replayState, FALSE);
+		DoInput (&replayState, false);
 	}
 	else
 	{
 		PlayerResponseInput (pES);
-		return TRUE;
+		return true;
 	}
 
 	SetContext (SpaceContext);
@@ -1625,7 +1625,7 @@ DoCommunication (ENCOUNTER_STATE *pES)
 	ClearSubtitles ();
 
 	if (IsDarkMode)
-		SetCommDarkMode (FALSE);
+		SetCommDarkMode (false);
 
 	SetMusicPosition ();
 	StopMusic ();
@@ -1635,7 +1635,7 @@ DoCommunication (ENCOUNTER_STATE *pES)
 
 	UninitOscilloscope ();
 
-	return FALSE;
+	return false;
 }
 
 void
@@ -1750,7 +1750,7 @@ HailAlien (void)
 	pCurInputState = &ES;
 	memset (pCurInputState, 0, sizeof (*pCurInputState));
 
-	TalkingFinished = FALSE;
+	TalkingFinished = false;
 
 	ES.InputFunc = DoCommunication;
 
@@ -1877,7 +1877,7 @@ HailAlien (void)
 
 	LastActivity |= CHECK_LOAD; /* prevent spurious input */
 	(*CommData.init_encounter_func) ();
-	DoInput (&ES, FALSE);
+	DoInput (&ES, false);
 	if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
 		(*CommData.post_encounter_func) ();
 	(*CommData.uninit_encounter_func) ();
@@ -2242,14 +2242,14 @@ RedrawSubtitles (void)
 static void
 ClearSubtitles (void)
 {
-	clear_subtitles = TRUE;
+	clear_subtitles = true;
 	last_subtitle = NULL;
 	SubtitleText.pStr = NULL;
 	SubtitleText.CharCount = 0;
 }
 
-static BOOLEAN
-PauseSubtitles (BOOLEAN force)
+static bool
+PauseSubtitles (bool force)
 {
 	const CHAR_T *pStr;
 	static COUNT num = 0;
@@ -2259,21 +2259,21 @@ PauseSubtitles (BOOLEAN force)
 	if (GetSubtitleNumber (pStr) == 0 || SubtitleText.pStr == NULL)
 	{
 		num = GetSubtitleNumber (pStr);
-		return FALSE;
+		return false;
 	}
 
 	if (num != GetSubtitleNumber (pStr) && !force)
 	{
 		num = GetSubtitleNumber (pStr);
-		return TRUE;
+		return true;
 	}
 
 	num = GetSubtitleNumber (pStr);
-	return FALSE;
+	return false;
 }
 
 static void
-CheckSubtitles (BOOLEAN really)
+CheckSubtitles (bool really)
 {
 	const CHAR_T *pStr;
 	POINT baseline;
@@ -2283,7 +2283,7 @@ CheckSubtitles (BOOLEAN really)
 	if (!really)
 	{	// New check - blocks subtitle change on switching tracks so any code 
 		// that was waiting through AlienTalkSegue(x) would be completed first
-		next_page = TRUE;
+		next_page = true;
 		return;
 	}
 
@@ -2299,7 +2299,7 @@ CheckSubtitles (BOOLEAN really)
 		num = GetSubtitleNumber (pStr);
 		GetCustomBaseline (num);
 		CheckTalkingAnim (num);
-		clear_subtitles = TRUE;
+		clear_subtitles = true;
 		// Baseline may be updated by the ZFP
 		SubtitleText.baseline = baseline;
 		SubtitleText.align = align;
@@ -2320,7 +2320,7 @@ CheckSubtitles (BOOLEAN really)
 }
 
 void
-EnableTalkingAnim (BOOLEAN enable)
+EnableTalkingAnim (bool enable)
 {
 	if (enable)
 		CommData.AlienTalkDesc.AnimFlags &= ~PAUSE_TALKING;
@@ -2329,7 +2329,7 @@ EnableTalkingAnim (BOOLEAN enable)
 }
 
 void
-SetCommDarkMode(BOOLEAN state)
+SetCommDarkMode(bool state)
 {	// Set dark mode (Black UI during Talana sex scene)
 	IsDarkMode = state;
 	oscillDisabled = state;

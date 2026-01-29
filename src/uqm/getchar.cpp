@@ -34,7 +34,7 @@
 
 static RECT cursor;
 static CONTEXT curContext;
-static BOOLEAN block = FALSE;
+static bool block = false;
 
 // TODO: This may be better done with UniChar at the cost of a tiny bit
 //   of overhead to convert UniChar back to UTF8 string. This overhead
@@ -133,7 +133,7 @@ JoyCharToLower (joy_char_t *outch, const joy_char_t *ch,
 }
 
 void
-SetCursorFlashBlock (BOOLEAN state)
+SetCursorFlashBlock (bool state)
 {
 	block = state;
 }
@@ -192,7 +192,7 @@ FlashCursor (void)
 	}
 }
 
-BOOLEAN
+bool
 DoTextEntry (TEXTENTRY_STATE *pTES)
 {
 	UniChar ch;
@@ -200,10 +200,10 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 	CHAR_T *CacheInsPt;
 	int CacheCursorPos;
 	int len;
-	BOOLEAN changed = FALSE;
+	bool changed = false;
 
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
-		return (FALSE);
+		return (false);
 
 	if (!block)
 		FlashCursor ();
@@ -213,10 +213,10 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 		int lwlen;
 
 		pTES->InputFunc = DoTextEntry;
-		pTES->Success = FALSE;
-		pTES->Initialized = TRUE;
-		pTES->JoystickMode = FALSE;
-		pTES->UpperRegister = FALSE;
+		pTES->Success = false;
+		pTES->Initialized = true;
+		pTES->JoystickMode = false;
+		pTES->UpperRegister = false;
 	
 		// init insertion point
 		if ((size_t)pTES->CursorPos > utf8StringCount (pTES->BaseStr))
@@ -247,7 +247,7 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 		pTES->CacheStr = (CHAR_T*)HMalloc (pTES->MaxSize * sizeof (*pTES->CacheStr));
 
 		EnterCharacterMode ();
-		DoInput (pTES, TRUE);
+		DoInput (pTES, true);
 		ExitCharacterMode ();
 
 		if (pTES->CacheStr)
@@ -283,7 +283,7 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 		CHAR_T chbuf[8];
 		int chsize;
 
-		pTES->JoystickMode = FALSE;
+		pTES->JoystickMode = false;
 
 		chsize = getStringFromChar (chbuf, sizeof (chbuf), ch);
 		if (UniChar_isPrint (ch) && chsize > 0)
@@ -294,7 +294,7 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 				memcpy (pStr, chbuf, chsize);
 				pStr += chsize;
 				++pTES->CursorPos;
-				changed = TRUE;
+				changed = true;
 			}
 			else
 			{	// does not fit
@@ -315,7 +315,7 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 			ReadOneChar (&ch, pStr);
 			memmove (pStr, pStr + ch.len, len - ch.len + 1);
 			len -= ch.len;
-			changed = TRUE;
+			changed = true;
 		}
 	}
 	else if (PulsedInputState.menu[KEY_MENU_BACKSPACE])
@@ -328,7 +328,7 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 			memmove (prev, pStr, len + 1);
 			pStr = prev;
 			--pTES->CursorPos;
-			changed = TRUE;
+			changed = true;
 		}
 	}
 	else if (PulsedInputState.menu[KEY_MENU_LEFT])
@@ -341,7 +341,7 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 			pStr = prev;
 			len += (prev - pStr);
 			--pTES->CursorPos;
-			changed = TRUE;
+			changed = true;
 		}
 	}
 	else if (PulsedInputState.menu[KEY_MENU_RIGHT])
@@ -354,7 +354,7 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 			pStr += ch.len;
 			len -= ch.len;
 			++pTES->CursorPos;
-			changed = TRUE;
+			changed = true;
 		}
 	}
 	else if (PulsedInputState.menu[KEY_MENU_HOME])
@@ -364,7 +364,7 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 			pStr = pTES->BaseStr;
 			len = strlen (pStr);
 			pTES->CursorPos = 0;
-			changed = TRUE;
+			changed = true;
 		}
 	}
 	else if (PulsedInputState.menu[KEY_MENU_END])
@@ -374,7 +374,7 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 			pTES->CursorPos += utf8StringCount (pStr);
 			pStr += len;
 			len = 0;
-			changed = TRUE;
+			changed = true;
 		}
 	}
 	
@@ -388,9 +388,9 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 		joy_char_t newch;
 		joy_char_t cmpch;
 		int i;
-		BOOLEAN curCharUpper;
+		bool curCharUpper;
 
-		pTES->JoystickMode = TRUE;
+		pTES->JoystickMode = true;
 
 		if (len)
 		{	// changing an existing character
@@ -462,7 +462,7 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 
 					memcpy (pStr, newch.enc, newch.len);
 					len = l + newch.len;
-					changed = TRUE;
+					changed = true;
 				}
 			}
 			else
@@ -472,7 +472,7 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 					memcpy (pStr, newch.enc, newch.len);
 					pStr[newch.len] = '\0';
 					len += newch.len;
-					changed = TRUE;
+					changed = true;
 				}
 				else
 				{	// does not fit
@@ -484,13 +484,13 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 	
 	if (PulsedInputState.menu[KEY_MENU_SELECT])
 	{	// done entering
-		pTES->Success = TRUE;
-		return FALSE;
+		pTES->Success = true;
+		return false;
 	}
 	else if (PulsedInputState.menu[KEY_MENU_EDIT_CANCEL])
 	{	// canceled entering
-		pTES->Success = FALSE;
-		return FALSE;
+		pTES->Success = false;
+		return false;
 	}
 
 	pTES->InsPt = pStr;
@@ -512,6 +512,6 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 	/*else
 		SleepThread (ONE_SECOND / 30);*/
 
-	return TRUE;
+	return true;
 }
 

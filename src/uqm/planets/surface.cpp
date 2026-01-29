@@ -323,7 +323,7 @@ CustomMineralDeposits (const SYSTEM_INFO *SysInfoPtr, COUNT which_deposit,
 {
 	BYTE j;
 	COUNT num_deposits;
-	BOOLEAN OpenSeason = TRUE;
+	bool OpenSeason = true;
 	NODE_INFO temp_info;
 	const ELEMENT_ENTRY *eptr;
 
@@ -348,7 +348,7 @@ CustomMineralDeposits (const SYSTEM_INFO *SysInfoPtr, COUNT which_deposit,
 			num_possible = numNodes;
 			info->type = type;
 			depositQuality = quality;
-			OpenSeason = FALSE;
+			OpenSeason = false;
 		}
 		else
 		{

@@ -49,9 +49,9 @@
 static STRING SetupTab;
 
 typedef struct setup_menu_state {
-	BOOLEAN (*InputFunc) (struct setup_menu_state *pInputState);
+	bool (*InputFunc) (struct setup_menu_state *pInputState);
 
-	BOOLEAN initialized;
+	bool initialized;
 	int anim_frame_count;
 	DWORD NextTime;
 } SETUP_MENU_STATE;
@@ -84,55 +84,55 @@ whichPlatformRef (OPT_CONSOLETYPE opt)
 	return (opt ? OPT_3DO : OPT_PC);
 }
 
-static BOOLEAN
+static bool
 PutBoolOpt (OPT_ENABLABLE *glob, OPT_ENABLABLE *set, const char *key,
-		BOOLEAN reload)
+		bool reload)
 {
 	if (*glob != *set)
 	{
 		*glob = *set;
-		res_PutBoolean (key, (BOOLEAN)*set);
+		res_PutBoolean (key, (bool)*set);
 		if (reload)
-			optRequiresReload = TRUE;
-		return TRUE;
+			optRequiresReload = true;
+		return true;
 	}
 
-	return FALSE;
+	return false;
 }
 
-static BOOLEAN
-PutIntOpt (int *glob, int *set, const char *key, BOOLEAN reload)
+static bool
+PutIntOpt (int *glob, int *set, const char *key, bool reload)
 {
 	if (*glob != *set)
 	{
 		*glob = *set;
 		res_PutInteger (key, *set);
 		if (reload)
-			optRequiresReload = TRUE;
-		return TRUE;
+			optRequiresReload = true;
+		return true;
 	}
 
-	return FALSE;
+	return false;
 }
 
-static BOOLEAN
+static bool
 PutConsOpt (int *glob, OPT_CONSOLETYPE *set, const char *key,
-		BOOLEAN reload)
+		bool reload)
 {
 	if (*glob != whichPlatformRef (*set))
 	{
 		*glob = whichPlatformRef (*set);
-		res_PutBoolean (key, (BOOLEAN)*set);
+		res_PutBoolean (key, (bool)*set);
 		if (reload)
-			optRequiresReload = TRUE;
-		return TRUE;
+			optRequiresReload = true;
+		return true;
 	}
 
-	return FALSE;
+	return false;
 }
 
-static BOOLEAN DoSetupMenu (SETUP_MENU_STATE *pInputState);
-static BOOLEAN done;
+static bool DoSetupMenu (SETUP_MENU_STATE *pInputState);
+static bool done;
 static WIDGET *current, *next;
 
 static int quit_main_menu (WIDGET *self, int event);
@@ -507,10 +507,10 @@ quit_main_menu (WIDGET *self, int event)
 	if (event == WIDGET_EVENT_SELECT)
 	{
 		next = NULL;
-		return TRUE;
+		return true;
 	}
 	(void)self;
-	return FALSE;
+	return false;
 }
 
 static int
@@ -521,10 +521,10 @@ quit_sub_menu (WIDGET *self, int event)
 		ResetOffset ();
 		next = (WIDGET *)(&menus[MENU_QUITSUB]);
 		(*next->receiveFocus) (next, WIDGET_EVENT_SELECT);
-		return TRUE;
+		return true;
 	}
 	(void)self;
-	return FALSE;
+	return false;
 }
 
 static void
@@ -542,10 +542,10 @@ do_graphics (WIDGET *self, int event)
 		next = (WIDGET *)(&menus[MENU_GRAPHICS]);
 		populate_res ();
 		(*next->receiveFocus) (next, WIDGET_EVENT_DOWN);
-		return TRUE;
+		return true;
 	}
 	(void)self;
-	return FALSE;
+	return false;
 }
 
 static int
@@ -555,10 +555,10 @@ do_audio (WIDGET *self, int event)
 	{
 		next = (WIDGET *)(&menus[MENU_AUDIO]);
 		(*next->receiveFocus) (next, WIDGET_EVENT_DOWN);
-		return TRUE;
+		return true;
 	}
 	(void)self;
-	return FALSE;
+	return false;
 }
 
 static int
@@ -568,10 +568,10 @@ do_engine (WIDGET *self, int event)
 	{
 		next = (WIDGET *)(&menus[MENU_ENGINE]);
 		(*next->receiveFocus) (next, WIDGET_EVENT_DOWN);
-		return TRUE;
+		return true;
 	}
 	(void)self;
-	return FALSE;
+	return false;
 }
 
 static int
@@ -581,10 +581,10 @@ do_cheats (WIDGET *self, int event)
 	{
 		next = (WIDGET *)(&menus[MENU_CHEATS]);
 		(*next->receiveFocus) (next, WIDGET_EVENT_DOWN);
-		return TRUE;
+		return true;
 	}
 	(void)self;
-	return FALSE;
+	return false;
 }
 
 static int
@@ -594,10 +594,10 @@ do_keyconfig (WIDGET *self, int event)
 	{
 		next = (WIDGET *)(&menus[MENY_KEYCONF]);
 		(*next->receiveFocus) (next, WIDGET_EVENT_DOWN);
-		return TRUE;
+		return true;
 	}
 	(void)self;
-	return FALSE;
+	return false;
 }
 
 static void
@@ -618,10 +618,10 @@ do_advanced (WIDGET *self, int event)
 		next = (WIDGET *)(&menus[MENU_ADVANCED]);
 		populate_seed();
 		(*next->receiveFocus) (next, WIDGET_EVENT_DOWN);
-		return TRUE;
+		return true;
 	}
 	(void)self;
-	return FALSE;
+	return false;
 }
 
 static int
@@ -631,10 +631,10 @@ do_music (WIDGET *self, int event)
 	{
 		next = (WIDGET *)(&menus[MENU_MUSIC]);
 		(*next->receiveFocus) (next, WIDGET_EVENT_DOWN);
-		return TRUE;
+		return true;
 	}
 	(void)self;
-	return FALSE;
+	return false;
 }
 
 static int
@@ -644,10 +644,10 @@ do_visual (WIDGET *self, int event)
 	{
 		next = (WIDGET *)(&menus[MENU_VISUAL]);
 		(*next->receiveFocus) (next, WIDGET_EVENT_DOWN);
-		return TRUE;
+		return true;
 	}
 	(void)self;
-	return FALSE;
+	return false;
 }
 
 static int
@@ -657,10 +657,10 @@ do_qol (WIDGET *self, int event)
 	{
 		next = (WIDGET *)(&menus[MENU_QOL]);
 		(*next->receiveFocus) (next, WIDGET_EVENT_DOWN);
-		return TRUE;
+		return true;
 	}
 	(void)self;
-	return FALSE;
+	return false;
 }
 
 static int
@@ -670,10 +670,10 @@ do_devices (WIDGET *self, int event)
 	{
 		next = (WIDGET *)(&menus[MENU_DEVICES]);
 		(*next->receiveFocus) (next, WIDGET_EVENT_DOWN);
-		return TRUE;
+		return true;
 	}
 	(void)self;
-	return FALSE;
+	return false;
 }
 
 static int
@@ -683,10 +683,10 @@ do_upgrades (WIDGET *self, int event)
 	{
 		next = (WIDGET *)(&menus[MENU_UPGRADES]);
 		(*next->receiveFocus) (next, WIDGET_EVENT_DOWN);
-		return TRUE;
+		return true;
 	}
 	(void)self;
-	return FALSE;
+	return false;
 }
 
 static void
@@ -720,10 +720,10 @@ do_editkeys (WIDGET *self, int event)
 		
 		populate_editkeys (0);
 		(*next->receiveFocus) (next, WIDGET_EVENT_DOWN);
-		return TRUE;
+		return true;
 	}
 	(void)self;
-	return FALSE;
+	return false;
 }
 
 static void
@@ -756,7 +756,7 @@ check_for_hd (WIDGET_CHOICE *self, int oldval)
 	(void)oldval; // Satisfy compiler
 }
 
-static BOOLEAN
+static bool
 check_dos_3do_modes (WIDGET_CHOICE *self, int oldval)
 {
 	bool selected = choices[CHOICE_GRAPHICS].selected;
@@ -769,7 +769,7 @@ check_dos_3do_modes (WIDGET_CHOICE *self, int oldval)
 			{
 				oldval = OPTVAL_UQM_WINDOW;
 				addon_unavailable (self, oldval);
-				return FALSE;
+				return false;
 			}
 			break;
 		case OPTVAL_3DO_WINDOW:
@@ -777,20 +777,20 @@ check_dos_3do_modes (WIDGET_CHOICE *self, int oldval)
 			{
 				oldval = OPTVAL_UQM_WINDOW;
 				addon_unavailable (self, OPTVAL_UQM_WINDOW);
-				return FALSE;
+				return false;
 			}
 			break;
 		default:
 			break;
 	}
 
-	return TRUE;
+	return true;
 }
 
-static BOOLEAN
+static bool
 check_remixes (WIDGET_CHOICE *self, int oldval)
 {
-	BOOLEAN addon_available = FALSE;
+	bool addon_available = false;
 	switch (self->choice_num)
 	{
 		case CHOICE_REMIXES1:
@@ -816,10 +816,10 @@ check_remixes (WIDGET_CHOICE *self, int oldval)
 		oldval = OPTVAL_DISABLED;
 		choices[self->choice_num].selected = oldval;
 		addon_unavailable (self, oldval);
-		return FALSE;
+		return false;
 	}
 
-	return TRUE;
+	return true;
 }
 
 static void
@@ -933,7 +933,7 @@ change_scaling (WIDGET_CHOICE *self, int *NewWidth, int *NewHeight)
 	SavedHeight = inBounds(*NewHeight, 200, 1400);
 
 	PutIntOpt ((int *)(&loresBlowupScale), (int *)(&self->selected),
-			"config.loresBlowupScale", FALSE);
+			"config.loresBlowupScale", false);
 	res_PutInteger ("config.reswidth", *NewWidth);
 	res_PutInteger ("config.resheight", *NewHeight);
 }
@@ -1001,7 +1001,7 @@ process_graphics_options (WIDGET_CHOICE *self, int OldVal)
 	int NewGfxDriver = GraphicsDriver;
 	int NewWidth = SavedWidth;
 	int NewHeight = SavedHeight;
-	BOOLEAN isExclusive = FALSE;
+	bool isExclusive = false;
 
 	if (OldVal == self->selected)
 		return;
@@ -1069,19 +1069,19 @@ process_graphics_options (WIDGET_CHOICE *self, int OldVal)
 	populate_res ();
 }
 
-//static BOOLEAN
+//static bool
 //res_check (int width, int height)
 //{
 //	if (width % 320)
-//		return FALSE;
+//		return false;
 //
 //	if (height % DOS_BOOL (240, 200))
-//		return FALSE;
+//		return false;
 //
 //	if (width > 1920 || height > 1440)
-//		return FALSE;
+//		return false;
 //
-//	return TRUE;
+//	return true;
 //}
 
 static void
@@ -1090,7 +1090,7 @@ change_res (WIDGET_TEXTENTRY *self)
 	int NewWidth = SavedWidth;
 	int NewHeight = SavedHeight;
 	int NewGfxFlags = GfxFlags;
-	BOOLEAN isExclusive = NewGfxFlags & TFB_GFXFLAGS_EX_FULLSCREEN;
+	bool isExclusive = NewGfxFlags & TFB_GFXFLAGS_EX_FULLSCREEN;
 
 	if (sscanf (self->value, "%dx%d", &NewWidth, &NewHeight) != 2)
 	{
@@ -1149,7 +1149,7 @@ change_res (WIDGET_TEXTENTRY *self)
 	populate_res();
 
 	PutIntOpt ((int *)(&loresBlowupScale), (int *)(&choices[CHOICE_RESOLUTION].selected),
-			"config.loresBlowupScale", FALSE);
+			"config.loresBlowupScale", false);
 	res_PutInteger ("config.reswidth", SavedWidth);
 	res_PutInteger ("config.resheight", SavedHeight);
 }
@@ -1417,11 +1417,11 @@ PropagateResults (void)
 	SetGlobalOptions (&opts);
 }
 
-static BOOLEAN
+static bool
 DoSetupMenu (SETUP_MENU_STATE *pInputState)
 {
 	/* Cancel any presses of the Pause key. */
-	GamePaused = FALSE;
+	GamePaused = false;
 
 	if (!pInputState->initialized) 
 	{
@@ -1436,7 +1436,7 @@ DoSetupMenu (SETUP_MENU_STATE *pInputState)
 		next = (WIDGET *)(&menus[0]);
 		(*next->receiveFocus) (next, WIDGET_EVENT_DOWN);
 		
-		pInputState->initialized = TRUE;
+		pInputState->initialized = true;
 	}
 	if (current != next)
 	{
@@ -1497,7 +1497,7 @@ redraw_menu (void)
 	UnbatchGraphics ();
 }
 
-static BOOLEAN
+static bool
 OnTextEntryChange (TEXTENTRY_STATE *pTES)
 {
 	WIDGET_TEXTENTRY *widget = (WIDGET_TEXTENTRY *) pTES->CbParam;
@@ -1510,12 +1510,12 @@ OnTextEntryChange (TEXTENTRY_STATE *pTES)
 	
 	// XXX TODO: Here, we can examine the text entered so far
 	// to make sure it fits on the screen, for example,
-	// and return FALSE to disallow the last change
+	// and return false to disallow the last change
 	
-	return TRUE; // allow change
+	return true; // allow change
 }
 
-static BOOLEAN
+static bool
 OnTextEntryFrame (TEXTENTRY_STATE *pTES)
 {
 	redraw_menu ();
@@ -1523,7 +1523,7 @@ OnTextEntryFrame (TEXTENTRY_STATE *pTES)
 	SleepThreadUntil (pTES->NextTime);
 	pTES->NextTime = GetTimeCounter () + MENU_FRAME_RATE;
 
-	return TRUE; // continue
+	return true; // continue
 }
 
 static int
@@ -1541,7 +1541,7 @@ OnTextEntryEvent (WIDGET_TEXTENTRY *widget)
 	utf8StringCopy (revert_buf, sizeof (revert_buf), widget->value);
 
 	// text entry setup
-	tes.Initialized = FALSE;
+	tes.Initialized = false;
 	tes.NextTime = GetTimeCounter () + MENU_FRAME_RATE;
 	tes.BaseStr = widget->value;
 	tes.MaxSize = widget->maxlen;
@@ -1567,7 +1567,7 @@ OnTextEntryEvent (WIDGET_TEXTENTRY *widget)
 	widget->state = WTE_NORMAL;
 	redraw_menu ();
 
-	return TRUE; // event handled
+	return true; // event handled
 }
 
 static inline float
@@ -1652,7 +1652,7 @@ gamma_HandleEventSlider (WIDGET *_self, int event)
 		self->value += self->step;
 		break;
 	default:
-		return FALSE;
+		return false;
 	}
 
 	// Limit the slider to values accepted by gfx subsys
@@ -1679,7 +1679,7 @@ gamma_HandleEventSlider (WIDGET *_self, int event)
 		// at the highest end
 		self->value = 100;
 	}
-	return TRUE;
+	return true;
 }
 
 static void
@@ -2266,7 +2266,7 @@ SetupMenu (void)
 	SETUP_MENU_STATE s;
 
 	s.InputFunc = DoSetupMenu;
-	s.initialized = FALSE;
+	s.initialized = false;
 	SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
 	SetupTab = CaptureStringTable (LoadStringTable (SETUP_MENU_STRTAB));
 	if (SetupTab) 
@@ -2279,9 +2279,9 @@ SetupMenu (void)
 				"PANIC: Could not find strings for the setup menu!");
 		exit (EXIT_FAILURE);
 	}
-	done = FALSE;
+	done = false;
 
-	DoInput (&s, TRUE);
+	DoInput (&s, true);
 	GLOBAL (CurrentActivity) &= ~CHECK_ABORT;
 	PropagateResults ();
 	if (SetupTab)
@@ -2554,7 +2554,7 @@ SetGlobalOptions (GLOBALOPTS *opts)
  */
 
 	newFactor = (int)(opts->screenResolution << 1);
-	PutIntOpt (&resFactor, &newFactor, "config.resolutionfactor", TRUE);
+	PutIntOpt (&resFactor, &newFactor, "config.resolutionfactor", true);
 
 	if (resFactor != (int)resolutionFactor)
 	{
@@ -2583,10 +2583,10 @@ SetGlobalOptions (GLOBALOPTS *opts)
 	if (optWindowType != opts->windowType)
 	{
 		PutIntOpt ((int *)&optWindowType, (int *)&opts->windowType,
-				"mm.windowType", TRUE);
+				"mm.windowType", true);
 	}
 
-	//PutBoolOpt (&optKeepAspectRatio, &opts->keepaspect, "config.keepaspectratio", FALSE);
+	//PutBoolOpt (&optKeepAspectRatio, &opts->keepaspect, "config.keepaspectratio", false);
 
 	// Avoid setting gamma when it is not necessary
 	if (optGamma != 1.0f || sliderToGamma (opts->gamma) != 1.0f)
@@ -2600,14 +2600,14 @@ SetGlobalOptions (GLOBALOPTS *opts)
 /*
  *		Audio options
  */
-	PutBoolOpt (&optStereoSFX, &opts->stereo, "config.positionalsfx", TRUE);
-	PutBoolOpt (&opt3doMusic, &opts->music3do, "config.3domusic", TRUE);
-	PutBoolOpt (&optRemixMusic, &opts->musicremix, "config.remixmusic", TRUE);
-	PutBoolOpt (&optVolasMusic, &opts->volasMusic, "mm.volasMusic", TRUE);
+	PutBoolOpt (&optStereoSFX, &opts->stereo, "config.positionalsfx", true);
+	PutBoolOpt (&opt3doMusic, &opts->music3do, "config.3domusic", true);
+	PutBoolOpt (&optRemixMusic, &opts->musicremix, "config.remixmusic", true);
+	PutBoolOpt (&optVolasMusic, &opts->volasMusic, "mm.volasMusic", true);
 
-	PutIntOpt (&optSpaceMusic, (int *)&opts->spaceMusic, "mm.spaceMusic", TRUE);
+	PutIntOpt (&optSpaceMusic, (int *)&opts->spaceMusic, "mm.spaceMusic", true);
 
-	if (PutBoolOpt (&optMainMenuMusic, &opts->mainMenuMusic, "mm.mainMenuMusic", FALSE))
+	if (PutBoolOpt (&optMainMenuMusic, &opts->mainMenuMusic, "mm.mainMenuMusic", false))
 	{
 		if (optMainMenuMusic)
 			InitMenuMusic ();
@@ -2615,8 +2615,8 @@ SetGlobalOptions (GLOBALOPTS *opts)
 			UninitMenuMusic ();
 	}
 
-	PutIntOpt (&optMusicResume, (int*)&opts->musicResume, "mm.musicResume", FALSE);
-	PutBoolOpt (&optSpeech, &opts->speech, "config.speech", TRUE);
+	PutIntOpt (&optMusicResume, (int*)&opts->musicResume, "mm.musicResume", false);
+	PutBoolOpt (&optSpeech, &opts->speech, "config.speech", true);
 
 	if (audioDriver != opts->adriver)
 	{
@@ -2640,7 +2640,7 @@ SetGlobalOptions (GLOBALOPTS *opts)
 				break;
 		}
 
-		optRequiresRestart = TRUE;
+		optRequiresRestart = true;
 	}
 
 	if (audioQuality != opts->aquality)
@@ -2666,26 +2666,26 @@ SetGlobalOptions (GLOBALOPTS *opts)
 		}
 		soundflags = NewSndFlags;
 
-		optRequiresRestart = TRUE;
+		optRequiresRestart = true;
 	}
 
 	// update actual volumes
-	PutIntOpt (&SfxVol, &opts->sfxvol, "config.sfxvol", FALSE);
-	PutIntOpt (&MusVol, &opts->musicvol, "config.musicvol", FALSE);
-	PutIntOpt (&SpcVol, &opts->speechvol, "config.speechvol", FALSE);
+	PutIntOpt (&SfxVol, &opts->sfxvol, "config.sfxvol", false);
+	PutIntOpt (&MusVol, &opts->musicvol, "config.musicvol", false);
+	PutIntOpt (&SpcVol, &opts->speechvol, "config.speechvol", false);
 
 
 /*
  *		Engine&Visuals options
  */
 	// Mics
-	PutBoolOpt (&optSubtitles, &opts->subtitles, "config.subtitles", FALSE);
-	PutConsOpt (&optWhichMenu, &opts->menu, "config.textmenu", FALSE);
-	PutBoolOpt (&optSubmenu, &opts->submenu, "mm.submenu", FALSE);
-	PutConsOpt (&optWhichFonts, &opts->text, "config.textgradients", FALSE);
-	PutConsOpt (&optScrTrans, &opts->scrTrans, "mm.scrTransition", FALSE);
-	PutConsOpt (&optWhichIntro, &opts->intro, "config.3domovies", TRUE);
-	PutBoolOpt (&optSkipIntro, &opts->skipIntro, "mm.skipIntro", FALSE);
+	PutBoolOpt (&optSubtitles, &opts->subtitles, "config.subtitles", false);
+	PutConsOpt (&optWhichMenu, &opts->menu, "config.textmenu", false);
+	PutBoolOpt (&optSubmenu, &opts->submenu, "mm.submenu", false);
+	PutConsOpt (&optWhichFonts, &opts->text, "config.textgradients", false);
+	PutConsOpt (&optScrTrans, &opts->scrTrans, "mm.scrTransition", false);
+	PutConsOpt (&optWhichIntro, &opts->intro, "config.3domovies", true);
+	PutBoolOpt (&optSkipIntro, &opts->skipIntro, "mm.skipIntro", false);
 	if (optMScale != (int)opts->meleezoom)
 	{
 #ifdef MELEE_ZOOM
@@ -2715,75 +2715,75 @@ SetGlobalOptions (GLOBALOPTS *opts)
 #if SDL_MAJOR_VERSION == 1 // Refined joypad controls aren't supported on SDL1
 		opts->controllerType = 0;
 #endif
-	PutIntOpt (&optControllerType, (int *)(&opts->controllerType), "mm.controllerType", FALSE);
+	PutIntOpt (&optControllerType, (int *)(&opts->controllerType), "mm.controllerType", false);
 #ifdef DIRECTIONAL_JOY
-	PutBoolOpt (&optDirectionalJoystick, &opts->directionalJoystick, "mm.directionalJoystick", FALSE);
+	PutBoolOpt (&optDirectionalJoystick, &opts->directionalJoystick, "mm.directionalJoystick", false);
 #endif
-	PutIntOpt  (&optDateFormat, (int*)(&opts->dateType), "mm.dateFormat", FALSE);
-	PutBoolOpt (&optCustomBorder, &opts->customBorder, "mm.customBorder", FALSE);
-	PutConsOpt (&optFlagshipColor, &opts->flagshipColor, "mm.flagshipColor", FALSE);
-	PutBoolOpt (&optGameOver, &opts->gameOver, "mm.gameOver", FALSE);
-	PutBoolOpt (&optHyperStars, &opts->hyperStars, "mm.hyperStars", FALSE);
-	PutBoolOpt (&optShowVisitedStars, &opts->showVisitedStars, "mm.showVisitedStars", FALSE);
-	PutIntOpt  (&optFuelRange, (int*)(&opts->fuelRange), "mm.fuelRange", FALSE);
-	PutBoolOpt (&optWholeFuel, &opts->wholeFuel, "mm.wholeFuel", FALSE);
-	PutBoolOpt (&optMeleeToolTips, &opts->meleeToolTips, "mm.meleeToolTips", FALSE);
-	PutIntOpt  (&optSphereColors, (int *)&opts->sphereColors, "mm.sphereColors", FALSE);
-	PutBoolOpt (&optScatterElements, &opts->scatterElements, "mm.scatterElements", FALSE);
-	PutBoolOpt (&optShipStore, &opts->shipStore, "mm.shipStore", FALSE);
-	PutBoolOpt (&optCaptainNames, &opts->captainNames, "mm.captainNames", FALSE);
-	PutBoolOpt (&optDosMenus, &opts->dosMenus, "mm.dosMenus", FALSE);
+	PutIntOpt  (&optDateFormat, (int*)(&opts->dateType), "mm.dateFormat", false);
+	PutBoolOpt (&optCustomBorder, &opts->customBorder, "mm.customBorder", false);
+	PutConsOpt (&optFlagshipColor, &opts->flagshipColor, "mm.flagshipColor", false);
+	PutBoolOpt (&optGameOver, &opts->gameOver, "mm.gameOver", false);
+	PutBoolOpt (&optHyperStars, &opts->hyperStars, "mm.hyperStars", false);
+	PutBoolOpt (&optShowVisitedStars, &opts->showVisitedStars, "mm.showVisitedStars", false);
+	PutIntOpt  (&optFuelRange, (int*)(&opts->fuelRange), "mm.fuelRange", false);
+	PutBoolOpt (&optWholeFuel, &opts->wholeFuel, "mm.wholeFuel", false);
+	PutBoolOpt (&optMeleeToolTips, &opts->meleeToolTips, "mm.meleeToolTips", false);
+	PutIntOpt  (&optSphereColors, (int *)&opts->sphereColors, "mm.sphereColors", false);
+	PutBoolOpt (&optScatterElements, &opts->scatterElements, "mm.scatterElements", false);
+	PutBoolOpt (&optShipStore, &opts->shipStore, "mm.shipStore", false);
+	PutBoolOpt (&optCaptainNames, &opts->captainNames, "mm.captainNames", false);
+	PutBoolOpt (&optDosMenus, &opts->dosMenus, "mm.dosMenus", false);
 	
 	// Interplanetary
-	PutBoolOpt (&optNebulae, &opts->nebulae, "mm.nebulae", FALSE);
-	PutIntOpt  (&optNebulaeVolume, &opts->nebulaevol, "mm.nebulaevol", FALSE);
-	PutIntOpt  (&optStarBackground, &opts->starBackground, "mm.starBackground", FALSE);
-	PutBoolOpt (&optUnscaledStarSystem, &opts->unscaledStarSystem, "mm.unscaledStarSystem", FALSE);
-	PutConsOpt (&optPlanetStyle, &opts->planetStyle, "mm.planetStyle", FALSE);
-	PutBoolOpt (&optOrbitingPlanets, &opts->orbitingPlanets, "mm.orbitingPlanets", FALSE);
-	PutBoolOpt (&optTexturedPlanets, &opts->texturedPlanets, "mm.texturedPlanets", FALSE);
+	PutBoolOpt (&optNebulae, &opts->nebulae, "mm.nebulae", false);
+	PutIntOpt  (&optNebulaeVolume, &opts->nebulaevol, "mm.nebulaevol", false);
+	PutIntOpt  (&optStarBackground, &opts->starBackground, "mm.starBackground", false);
+	PutBoolOpt (&optUnscaledStarSystem, &opts->unscaledStarSystem, "mm.unscaledStarSystem", false);
+	PutConsOpt (&optPlanetStyle, &opts->planetStyle, "mm.planetStyle", false);
+	PutBoolOpt (&optOrbitingPlanets, &opts->orbitingPlanets, "mm.orbitingPlanets", false);
+	PutBoolOpt (&optTexturedPlanets, &opts->texturedPlanets, "mm.texturedPlanets", false);
 	
 	// Orbit
-	PutConsOpt (&optLanderHold, &opts->landerHold, "mm.landerHold", FALSE);
-	PutBoolOpt (&optPartialPickup, &opts->partialPickup, "mm.partialPickup", FALSE);
-	PutIntOpt  (&optWhichCoarseScan, &opts->cscan, "config.iconicscan", FALSE);
-	PutBoolOpt (&optHazardColors, &opts->hazardColors, "mm.hazardColors", FALSE);
-	PutConsOpt (&optScanStyle, &opts->scanStyle, "mm.scanStyle", FALSE);
-	PutConsOpt (&optSuperPC, &opts->landerStyle, "mm.landerStyle", FALSE);
-	PutBoolOpt (&optPlanetTexture, &opts->planetTexture, "mm.planetTexture", FALSE);
-	PutIntOpt  (&optScanSphere, (int*)&opts->sphereType, "mm.sphereType", FALSE);
-	PutConsOpt (&optTintPlanSphere, &opts->tintPlanSphere, "mm.tintPlanSphere", FALSE);
-	PutConsOpt (&optWhichShield, &opts->shield, "config.pulseshield", FALSE);
-	PutBoolOpt (&optShowUpgrades, &opts->showUpgrades, "mm.showUpgrades", FALSE);
+	PutConsOpt (&optLanderHold, &opts->landerHold, "mm.landerHold", false);
+	PutBoolOpt (&optPartialPickup, &opts->partialPickup, "mm.partialPickup", false);
+	PutIntOpt  (&optWhichCoarseScan, &opts->cscan, "config.iconicscan", false);
+	PutBoolOpt (&optHazardColors, &opts->hazardColors, "mm.hazardColors", false);
+	PutConsOpt (&optScanStyle, &opts->scanStyle, "mm.scanStyle", false);
+	PutConsOpt (&optSuperPC, &opts->landerStyle, "mm.landerStyle", false);
+	PutBoolOpt (&optPlanetTexture, &opts->planetTexture, "mm.planetTexture", false);
+	PutIntOpt  (&optScanSphere, (int*)&opts->sphereType, "mm.sphereType", false);
+	PutConsOpt (&optTintPlanSphere, &opts->tintPlanSphere, "mm.tintPlanSphere", false);
+	PutConsOpt (&optWhichShield, &opts->shield, "config.pulseshield", false);
+	PutBoolOpt (&optShowUpgrades, &opts->showUpgrades, "mm.showUpgrades", false);
 
 	// Game modes
 	{
-		PutIntOpt (&optSeedType, (int*)(&opts->seedType), "mm.seedType", FALSE);
+		PutIntOpt (&optSeedType, (int*)(&opts->seedType), "mm.seedType", false);
 		int customSeed = atoi (textentries[TEXT_GAMESEED].value);
 		if (!SANE_SEED (customSeed) || optSeedType == OPTVAL_PRIME)
 			customSeed = PrimeA;
-		PutIntOpt (&optCustomSeed, &customSeed, "mm.customSeed", FALSE);
-		PutBoolOpt (&optShipSeed, &opts->shipSeed, "mm.shipSeed", FALSE);
+		PutIntOpt (&optCustomSeed, &customSeed, "mm.customSeed", false);
+		PutBoolOpt (&optShipSeed, &opts->shipSeed, "mm.shipSeed", false);
 	}
 
-	PutIntOpt (&optDiffChooser, (int*)&opts->difficulty, "mm.difficulty", FALSE);
+	PutIntOpt (&optDiffChooser, (int*)&opts->difficulty, "mm.difficulty", false);
 	if ((optDifficulty = opts->difficulty) == OPTVAL_IMPO)
 		optDifficulty = OPTVAL_NORM;
-	PutBoolOpt (&optExtended, &opts->extended, "mm.extended", FALSE);
-	PutIntOpt (&optNomad, (int *)&opts->nomad, "mm.nomad", FALSE);
-	PutBoolOpt (&optSlaughterMode, &opts->slaughterMode, "mm.slaughterMode", FALSE);
-	PutBoolOpt (&optFleetPointSys, &opts->fleetPointSys, "mm.fleetPointSys", FALSE);
+	PutBoolOpt (&optExtended, &opts->extended, "mm.extended", false);
+	PutIntOpt (&optNomad, (int *)&opts->nomad, "mm.nomad", false);
+	PutBoolOpt (&optSlaughterMode, &opts->slaughterMode, "mm.slaughterMode", false);
+	PutBoolOpt (&optFleetPointSys, &opts->fleetPointSys, "mm.fleetPointSys", false);
 
 	// Comm screen
-	PutConsOpt (&optSmoothScroll, &opts->scroll, "config.smoothscroll", FALSE);
-	PutBoolOpt (&optOrzCompFont, &opts->orzCompFont, "mm.orzCompFont", FALSE);
-	PutConsOpt (&optScopeStyle, &opts->scopeStyle, "mm.scopeStyle", FALSE);
-	PutBoolOpt (&optNonStopOscill, &opts->nonStopOscill, "mm.nonStopOscill", FALSE);
+	PutConsOpt (&optSmoothScroll, &opts->scroll, "config.smoothscroll", false);
+	PutBoolOpt (&optOrzCompFont, &opts->orzCompFont, "mm.orzCompFont", false);
+	PutConsOpt (&optScopeStyle, &opts->scopeStyle, "mm.scopeStyle", false);
+	PutBoolOpt (&optNonStopOscill, &opts->nonStopOscill, "mm.nonStopOscill", false);
 
 	// Auto-Pilot
-	PutBoolOpt (&optSmartAutoPilot, &opts->smartAutoPilot, "mm.smartAutoPilot", FALSE);
-	PutBoolOpt (&optAdvancedAutoPilot, &opts->advancedAutoPilot, "mm.advancedAutoPilot", FALSE);
-	PutBoolOpt (&optShipDirectionIP, &opts->shipDirectionIP, "mm.shipDirectionIP", FALSE);
+	PutBoolOpt (&optSmartAutoPilot, &opts->smartAutoPilot, "mm.smartAutoPilot", false);
+	PutBoolOpt (&optAdvancedAutoPilot, &opts->advancedAutoPilot, "mm.advancedAutoPilot", false);
+	PutBoolOpt (&optShipDirectionIP, &opts->shipDirectionIP, "mm.shipDirectionIP", false);
 
 	// Controls
 	PlayerControls[0] = opts->player1;
@@ -2803,19 +2803,19 @@ SetGlobalOptions (GLOBALOPTS *opts)
 /*
  *		Cheats
  */
-	PutBoolOpt (&optCheatMode, &opts->cheatMode, "cheat.kohrStahp", FALSE);
-	PutIntOpt  (&optGodModes, (int*)&opts->godModes, "cheat.godModes", FALSE);
-	PutIntOpt  (&timeDilationScale, (int*)&opts->tdType, "cheat.timeDilation", FALSE);
-	PutBoolOpt (&optBubbleWarp, &opts->bubbleWarp, "cheat.bubbleWarp", FALSE);
-	PutBoolOpt (&optUnlockShips, &opts->unlockShips, "cheat.unlockShips", FALSE);
-	PutBoolOpt (&optHeadStart, &opts->headStart, "cheat.headStart", FALSE);
-	//PutBoolOpt (&optUnlockUpgrades, &opts->unlockUpgrades, "cheat.unlockUpgrades", FALSE);
-	PutBoolOpt (&optInfiniteCredits, &opts->infiniteCredits, "cheat.infiniteCredits", FALSE);
-	PutBoolOpt (&optInfiniteRU, &opts->infiniteRU, "cheat.infiniteRU", FALSE);
-	PutBoolOpt (&optInfiniteFuel, &opts->infiniteFuel, "cheat.infiniteFuel", FALSE);
-	PutBoolOpt (&optNoHQEncounters, &opts->noHQEncounters, "cheat.noHQEncounters", FALSE);
-	PutBoolOpt (&optDeCleansing, &opts->deCleansing, "cheat.deCleansing", FALSE);
-	PutBoolOpt (&optMeleeObstacles, &opts->meleeObstacles, "cheat.meleeObstacles", FALSE);
+	PutBoolOpt (&optCheatMode, &opts->cheatMode, "cheat.kohrStahp", false);
+	PutIntOpt  (&optGodModes, (int*)&opts->godModes, "cheat.godModes", false);
+	PutIntOpt  (&timeDilationScale, (int*)&opts->tdType, "cheat.timeDilation", false);
+	PutBoolOpt (&optBubbleWarp, &opts->bubbleWarp, "cheat.bubbleWarp", false);
+	PutBoolOpt (&optUnlockShips, &opts->unlockShips, "cheat.unlockShips", false);
+	PutBoolOpt (&optHeadStart, &opts->headStart, "cheat.headStart", false);
+	//PutBoolOpt (&optUnlockUpgrades, &opts->unlockUpgrades, "cheat.unlockUpgrades", false);
+	PutBoolOpt (&optInfiniteCredits, &opts->infiniteCredits, "cheat.infiniteCredits", false);
+	PutBoolOpt (&optInfiniteRU, &opts->infiniteRU, "cheat.infiniteRU", false);
+	PutBoolOpt (&optInfiniteFuel, &opts->infiniteFuel, "cheat.infiniteFuel", false);
+	PutBoolOpt (&optNoHQEncounters, &opts->noHQEncounters, "cheat.noHQEncounters", false);
+	PutBoolOpt (&optDeCleansing, &opts->deCleansing, "cheat.deCleansing", false);
+	PutBoolOpt (&optMeleeObstacles, &opts->meleeObstacles, "cheat.meleeObstacles", false);
 
 	// Devices
 	for (i = 0; i < NUM_DEVICES; i++)
@@ -2829,11 +2829,11 @@ SetGlobalOptions (GLOBALOPTS *opts)
 		optUpgradeArray[i] = opts->upgradeArray[i];
 	}
 
-	SaveResourceIndex (configDir, "uqm.cfg", "config.", TRUE);
+	SaveResourceIndex (configDir, "uqm.cfg", "config.", true);
 	SaveKeyConfiguration (configDir, "flight.cfg");
 	
-	SaveResourceIndex (configDir, "megamod.cfg", "mm.", TRUE);
-	SaveResourceIndex (configDir, "cheats.cfg", "cheat.", TRUE);
+	SaveResourceIndex (configDir, "megamod.cfg", "mm.", true);
+	SaveResourceIndex (configDir, "cheats.cfg", "cheat.", true);
 
 	if (optRequiresReload)
 	{
@@ -2879,7 +2879,7 @@ SetGlobalOptions (GLOBALOPTS *opts)
 		FlushColorXForms ();
 
 		TFB_DrawScreen_ReinitVideo (GraphicsDriver, GfxFlags, w, h);
-		InitVideoPlayer (TRUE);
+		InitVideoPlayer (true);
 
 		Reload ();
 	}

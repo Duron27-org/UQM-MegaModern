@@ -115,8 +115,8 @@ ClearSISRect (BYTE ClearFlags)
 		r.extent.height = RADAR_HEIGHT + RES_SCALE (2);
 
 		DrawStarConBox (&r, RES_SCALE (1), SHADOWBOX_MEDIUM_COLOR,
-				SHADOWBOX_DARK_COLOR, TRUE, SCAN_BIOLOGICAL_TEXT_COLOR,
-				FALSE, TRANSPARENT);
+				SHADOWBOX_DARK_COLOR, true, SCAN_BIOLOGICAL_TEXT_COLOR,
+				false, TRANSPARENT);
 #endif /* NEVER */
 	}
 	UnbatchGraphics ();
@@ -251,7 +251,7 @@ DrawSISMessage (const CHAR_T *pStr)
 
 // See sis.h for the allowed flags. This is the field at the top of the
 // screen, on the left hand side.
-BOOLEAN
+bool
 DrawSISMessageEx (const CHAR_T *pStr, SIZE CurPos, SIZE ExPos,
 		COUNT flags)
 {
@@ -342,7 +342,7 @@ DrawSISMessageEx (const CHAR_T *pStr, SIZE CurPos, SIZE ExPos,
 	}
 
 	if (flags & DSME_CLEARFR)
-		SetFlashRect (NULL, FALSE);
+		SetFlashRect (NULL, false);
 
 	if (CurPos < 0 && ExPos < 0)
 	{	// normal state
@@ -374,7 +374,7 @@ DrawSISMessageEx (const CHAR_T *pStr, SIZE CurPos, SIZE ExPos,
 			UnbatchGraphics ();
 			SetContextClipRect (NULL);
 			SetContext (OldContext);
-			return (FALSE);
+			return (false);
 		}
 #endif
 
@@ -397,7 +397,7 @@ DrawSISMessageEx (const CHAR_T *pStr, SIZE CurPos, SIZE ExPos,
 				cur_r.corner.y = 0;
 				cur_r.extent.height = r.extent.height;
 
-				SetCursorFlashBlock (TRUE);
+				SetCursorFlashBlock (true);
 
 				if (CurPos == t.CharCount)
 				{	// cursor at end-line -- use insertion point
@@ -441,7 +441,7 @@ DrawSISMessageEx (const CHAR_T *pStr, SIZE CurPos, SIZE ExPos,
 				if (CurPos == t.CharCount)
 					text_r.corner.x -= IF_HD (3);
 
-				SetCursorFlashBlock (FALSE);
+				SetCursorFlashBlock (false);
 			}
 
 			SetCursorRect (&cur_r, OffScreenContext);
@@ -479,7 +479,7 @@ DrawSISMessageEx (const CHAR_T *pStr, SIZE CurPos, SIZE ExPos,
 	SetContextClipRect (NULL);
 	SetContext (OldContext);
 
-	return (TRUE);
+	return (true);
 }
 
 void
@@ -681,7 +681,7 @@ DrawCaptainsName (bool NewGame)
 }
 
 void
-DrawFlagshipName (BOOLEAN InStatusArea, bool NewGame)
+DrawFlagshipName (bool InStatusArea, bool NewGame)
 {
 	RECT r, rHD;
 	TEXT t;
@@ -747,7 +747,7 @@ DrawFlagshipName (BOOLEAN InStatusArea, bool NewGame)
 			SetContextForeGroundColor (FLAGSHIP_NAME_BACKGROUND_COLOR);
 		}
 
-		DrawFilledRectangle (RES_BOOL (&r, &rHD));
+		DrawFilledRectangle (chooseIfHd (&r, &rHD));
 	}
 
 	if (!NewGame)
@@ -1014,7 +1014,7 @@ DrawLanders (void)
 
 // Draw the storage bays, below the picture of the flagship.
 void
-DrawStorageBays (BOOLEAN Refresh)
+DrawStorageBays (bool Refresh)
 {
 	BYTE i;
 	RECT r;
@@ -1086,7 +1086,7 @@ DrawStorageBays (BOOLEAN Refresh)
 }
 
 void
-GetGaugeRect (RECT *pRect, BOOLEAN IsCrewRect)
+GetGaugeRect (RECT *pRect, bool IsCrewRect)
 {
 	pRect->extent.width = RES_SCALE (24);
 	pRect->corner.x = (STATUS_WIDTH >> 1) - (pRect->extent.width >> 1);
@@ -1100,7 +1100,7 @@ GetGaugeRect (RECT *pRect, BOOLEAN IsCrewRect)
 //	TEXT t;
 //	RECT r;
 //
-//	GetGaugeRect (&r, FALSE);
+//	GetGaugeRect (&r, false);
 //	t.baseline.x = (STATUS_WIDTH >> 1);
 //	t.baseline.y = r.corner.y - RES_SCALE (1);
 //	t.align = ALIGN_CENTER;
@@ -1151,9 +1151,9 @@ Draw_SIS (void)
 {
 	TEXT t;
 	RECT r;
-	BOOLEAN flat = (BOOLEAN)is3DO (optWhichFonts);
+	bool flat = (bool)is3DO (optWhichFonts);
 
-	GetGaugeRect (&r, FALSE);
+	GetGaugeRect (&r, false);
 	t.baseline.x = (STATUS_WIDTH >> 1);
 	t.baseline.y = r.corner.y - RES_SCALE (1);
 	t.align = ALIGN_CENTER;
@@ -1328,7 +1328,7 @@ DeltaSISGauges_crewDelta (SIZE crew_delta)
 
 		snprintf (buf, sizeof buf, "%u", GLOBAL_SIS (CrewEnlisted));
 
-		GetGaugeRect (&r, TRUE);
+		GetGaugeRect (&r, true);
 		
 		t.baseline.x = (STATUS_WIDTH >> 1);
 		t.baseline.y = r.corner.y + r.extent.height;
@@ -1392,7 +1392,7 @@ DeltaSISGauges_fuelDelta (SDWORD fuel_delta)
 			snprintf (buf, sizeof buf, "%s", STR_INFINITY_SIGN);
 
 
-		GetGaugeRect (&r, FALSE);
+		GetGaugeRect (&r, false);
 
 		if (optWhichFonts == OPT_3DO && !optWholeFuel)
 			SetContextFont (TinyFontBold);
@@ -1450,7 +1450,7 @@ DeltaSISGauges_resunitDelta (SIZE resunit_delta)
 	DrawStatusMessage (NULL);
 }
 
-static BOOLEAN
+static bool
 isUndefinedDelta (SIZE size, SDWORD sdword, int integer)
 {
 
@@ -1505,10 +1505,10 @@ DeltaSISGauges (SIZE crew_delta, SDWORD fuel_delta, int resunit_delta)
 
 	if (isUndefinedDelta (crew_delta, fuel_delta, resunit_delta))
 	{
-		DrawFlagshipName (TRUE, FALSE);
-		DrawCaptainsName (FALSE);
+		DrawFlagshipName (true, false);
+		DrawCaptainsName (false);
 		DrawLanders ();
-		DrawStorageBays (FALSE);
+		DrawStorageBays (false);
 	}
 
 	DeltaSISGauges_resunitDelta (resunit_delta);
@@ -1995,12 +1995,12 @@ AutoPilotTextLogic (void)
 }
 
 void
-DrawAutoPilotMessage (BOOLEAN Reset)
+DrawAutoPilotMessage (bool Reset)
 {
-	static BOOLEAN LastPilot = FALSE;
+	static bool LastPilot = false;
 	static TimeCount NextTime = 0;
 	static DWORD cycle_index = 0;
-	BOOLEAN OnAutoPilot;
+	bool OnAutoPilot;
 	
 	static const Color cycle_tab[] = AUTOPILOT_COLOR_CYCLE_TABLE;
 	const size_t cycleCount = ARRAY_SIZE (cycle_tab);
@@ -2008,7 +2008,7 @@ DrawAutoPilotMessage (BOOLEAN Reset)
 
 	if (Reset || optBubbleWarp)
 	{	// Just a reset, not drawing
-		LastPilot = FALSE;
+		LastPilot = false;
 		return;
 	}
 
@@ -2051,7 +2051,7 @@ DrawAutoPilotMessage (BOOLEAN Reset)
 
 // Kruzen: The caller should set the context correctly and batch graphics
 void
-DrawFuelInFTanks (BOOLEAN isOutfit)
+DrawFuelInFTanks (bool isOutfit)
 {
 	RECT r;
 	const DWORD FuelVolume = GLOBAL_SIS (FuelOnBoard);
@@ -2142,7 +2142,7 @@ static FlashContext *flashContext[MAX_NUM_RECTS] =
 		{ NULL, NULL, NULL, NULL, NULL };
 static RECT flash_rect[MAX_NUM_RECTS];
 static Alarm *flashAlarm = NULL;
-static BOOLEAN flashPaused = FALSE;
+static bool flashPaused = false;
 static BYTE count_r = NUM_RECTS;
 
 static void scheduleFlashAlarm (void);
@@ -2208,7 +2208,7 @@ DumpAdditionalRect (void)
 }
 
 void
-SetFlashRect (const RECT *pRect, BOOLEAN pcRect)
+SetFlashRect (const RECT *pRect, bool pcRect)
 {
 	RECT clip_r = {{0, 0}, {0, 0}};
 	RECT temp_r;
@@ -2334,7 +2334,7 @@ PostUpdateFlashRect (void)
 }
 
 // Stop flashing if flashing is active.
-BOOLEAN
+bool
 PauseFlash (void)
 {
 	BYTE i;
@@ -2342,11 +2342,11 @@ PauseFlash (void)
 	if (flashContext[0] != NULL)
 	{
 		if (flashPaused)
-			return FALSE;
+			return false;
 
 		Alarm_remove (flashAlarm);
 		flashAlarm = 0;
-		flashPaused = TRUE;
+		flashPaused = true;
 	}
 	for (i = 0; i < count_r; i++)
 	{
@@ -2354,7 +2354,7 @@ PauseFlash (void)
 				Flash_pause (flashContext[i]);
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Continue flashing after PauseFlash (), if flashing was active.
@@ -2372,6 +2372,6 @@ ContinueFlash (void)
 		}
 
 		scheduleFlashAlarm ();
-		flashPaused = FALSE;
+		flashPaused = false;
 	}
 }

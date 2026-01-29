@@ -50,7 +50,7 @@ static const luaL_Reg commLibs[] = {
 // If 'customFuncs' is NULL, no 'custom' table is added to the Lua environment.
 // If 'scriptRes' is NULL_RESOURCE, then no script is loaded. Lua is only
 // available for string interpolation in this case.
-BOOLEAN
+bool
 luaUqm_comm_init(const luaUqm_custom_Function *customFuncs,
 		RESOURCE scriptRes) {
 	assert(luaUqm_commState == NULL);
@@ -68,25 +68,25 @@ luaUqm_comm_init(const luaUqm_custom_Function *customFuncs,
 	if (scriptRes != NULL_RESOURCE) {
 		// Load the script.
 		char *scriptFileName;
-		BOOLEAN loadOk;
+		bool loadOk;
 
 		// Get the name of the script.
 		scriptFileName = LoadScriptInstance(scriptRes);
 		if (scriptFileName == NULL)
-			return FALSE;
+			return false;
 
 		// Load the script.
 		loadOk = luaUqm_loadScript(luaUqm_commState, contentDir,
 				scriptFileName);
 		ReleaseScriptResData(scriptFileName);
 		if (!loadOk)
-			return FALSE;
+			return false;
 
 		// Call the script.
 		luaUqm_callStackFunction(luaUqm_commState);
 	}
 
-	return TRUE;
+	return true;
 }
 
 void
@@ -118,7 +118,7 @@ luaUqm_comm_genericUninit(void) {
 	luaUqm_comm_uninit();
 }
 
-BOOLEAN
+bool
 luaUqm_comm_stringNeedsInterpolate (const char *str)
 {
 	return strstr (str, "<%") != NULL;

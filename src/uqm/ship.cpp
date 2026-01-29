@@ -164,7 +164,7 @@ DrawHDMeleeBorder (STARSHIP *StarShipPtr)
 	r.extent.width = STATUS_WIDTH;
 	r.extent.height = SHIP_STATUS_HEIGHT - 4;
 
-	DrawRenderedBox (&r, FALSE, NULL_COLOR, THICK_OUTER_BEVEL, FALSE);
+	DrawRenderedBox (&r, false, NULL_COLOR, THICK_OUTER_BEVEL, false);
 }
 
 void
@@ -207,7 +207,7 @@ ship_preprocess (ELEMENT *ElementPtr)
 		{
 			CONTEXT OldContext;
 
-			InitShipStatus (&RDPtr->ship_info, StarShipPtr, NULL, FALSE);
+			InitShipStatus (&RDPtr->ship_info, StarShipPtr, NULL, false);
 			OldContext = SetContext (StatusContext);
 			DrawCaptainsWindow (StarShipPtr);
 
@@ -229,7 +229,7 @@ ship_preprocess (ELEMENT *ElementPtr)
 			{
 				ElementPtr->hTarget = 0;
 				if (!PLRPlaying ((MUSIC_REF)~0) && OpponentAlive (StarShipPtr))
-					BattleSong (TRUE);
+					BattleSong (true);
 			}
 			return;
 		}
@@ -331,7 +331,7 @@ ship_postprocess (ELEMENT *ElementPtr)
 		{
 			HELEMENT *WeaponPtr;
 			STARSHIP *StarShipPtr;
-			BOOLEAN played_sfx = FALSE;
+			bool played_sfx = false;
 
 			GetElementStarShip (ElementPtr, &StarShipPtr);
 			WeaponPtr = &Weapon[0];
@@ -348,7 +348,7 @@ ship_postprocess (ELEMENT *ElementPtr)
 					if (!played_sfx)
 					{
 						ProcessSound (RDPtr->ship_data.ship_sounds, EPtr);
-						played_sfx = TRUE;
+						played_sfx = true;
 					}
 					UnlockElement (w);
 
@@ -401,15 +401,15 @@ collision (ELEMENT *ElementPtr0, POINT *pPt0,
 	(void) pPt1;  /* Satisfying compiler (unused parameter) */
 }
 
-static BOOLEAN
+static bool
 spawn_ship (STARSHIP *StarShipPtr)
 {
 	HELEMENT hShip;
 	RACE_DESC *RDPtr;
 
-	RDPtr = load_ship (StarShipPtr->SpeciesID, TRUE);
+	RDPtr = load_ship (StarShipPtr->SpeciesID, true);
 	if (!RDPtr)
-		return FALSE;
+		return false;
 
 	StarShipPtr->RaceDescPtr = RDPtr;
 
@@ -538,7 +538,7 @@ spawn_ship (STARSHIP *StarShipPtr)
 }
 
 // Select a new ship and spawn it.
-BOOLEAN
+bool
 GetNextStarShip (STARSHIP *LastStarShipPtr, COUNT which_side)
 {
 	HSTARSHIP hBattleShip;
@@ -563,7 +563,7 @@ GetNextStarShip (STARSHIP *LastStarShipPtr, COUNT which_side)
 		if (!spawn_ship (StarShipPtr))
 		{
 			UnlockStarShip (&race_q[which_side], hBattleShip);
-			return (FALSE);
+			return (false);
 		}
 		UnlockStarShip (&race_q[which_side], hBattleShip);
 	}
@@ -574,7 +574,7 @@ GetNextStarShip (STARSHIP *LastStarShipPtr, COUNT which_side)
 	return (hBattleShip != 0);
 }
 
-BOOLEAN
+bool
 GetInitialStarShips (void)
 {
 	if (LOBYTE (GLOBAL (CurrentActivity)) == SUPER_MELEE)
@@ -583,7 +583,7 @@ GetInitialStarShips (void)
 		COUNT i;
 		
 		if (!GetInitialMeleeStarShips (ships))
-			return FALSE;
+			return false;
 
 		for (i = 0; i < NUM_PLAYERS; i++)
 		{
@@ -594,11 +594,11 @@ GetInitialStarShips (void)
 			if (!spawn_ship (StarShipPtr))
 			{
 				UnlockStarShip (&race_q[playerI], ships[playerI]);
-				return FALSE;
+				return false;
 			}
 			UnlockStarShip (&race_q[playerI], ships[playerI]);
 		}
-		return TRUE;
+		return true;
 	}
 	else
 	{
@@ -607,9 +607,9 @@ GetInitialStarShips (void)
 		for (i = NUM_PLAYERS; i > 0; --i)
 		{
 			if (!GetNextStarShip (NULL, i - 1))
-				return FALSE;
+				return false;
 		}
-		return TRUE;
+		return true;
 	}
 }
 

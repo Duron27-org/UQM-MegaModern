@@ -59,7 +59,7 @@ static void Flash_makeFrame (FlashContext *context,
 		FRAME dest, int numer, int denom);
 static inline void Flash_prepareCacheFrame (FlashContext *context,
 		COUNT index);
-static void Flash_drawFrame (FlashContext *context, FRAME frame, BOOLEAN pcRect);
+static void Flash_drawFrame (FlashContext *context, FRAME frame, bool pcRect);
 static void Flash_drawCacheFrame (FlashContext *context, COUNT index);
 static inline void Flash_drawUncachedFrame (FlashContext *context,
 		int numer, int denom);
@@ -165,7 +165,7 @@ Flash_createOverlay (CONTEXT gfxContext, const POINT *origin, FRAME overlay)
 		context->rect.extent.width = 0;
 		context->rect.extent.height = 0;
 	} else
-		Flash_setOverlay (context, origin, overlay, FALSE);
+		Flash_setOverlay (context, origin, overlay, false);
 	
 	return context;
 }
@@ -219,7 +219,7 @@ Flash_terminate (FlashContext *context)
 	{
 		// Restore the flash rectangle IF not quiting:
 		if (!(GLOBAL (CurrentActivity) & CHECK_ABORT))
-			Flash_drawFrame (context, context->original, FALSE);
+			Flash_drawFrame (context, context->original, false);
 
 		Flash_clearCache (context);
 		HFree (context->cache);
@@ -353,7 +353,7 @@ Flash_setMergeFactors(FlashContext *context, int startNumer, int endNumer,
 		int denom) {
 	if (context->started)
 	{
-		Flash_drawFrame (context, context->original, FALSE);
+		Flash_drawFrame (context, context->original, false);
 		Flash_clearCache (context);
 	}
 
@@ -377,12 +377,12 @@ Flash_setFrameTime (FlashContext *context, TimeCount frameTime)
 
 // Set the time between updates of the flash area.
 void
-Flash_setPulseBox (FlashContext *context, BOOLEAN isPulsing)
+Flash_setPulseBox (FlashContext *context, bool isPulsing)
 {
 	context->isPulsing = isPulsing;
 }
 
-BOOLEAN
+bool
 Flash_getPulseBox (FlashContext *context)
 {
 	return context->isPulsing;
@@ -451,7 +451,7 @@ Flash_setRect (FlashContext *context, const RECT *rect)
 
 	if (context->started)
 	{
-		Flash_drawFrame (context, context->original, FALSE);
+		Flash_drawFrame (context, context->original, false);
 		Flash_clearCache (context);
 	}
 
@@ -468,7 +468,8 @@ Flash_setRect (FlashContext *context, const RECT *rect)
 void
 Flash_getRect (FlashContext *context, RECT *rect)
 {
-	assert (!context->type == FlashType_highlight);
+	//assert (!context->type == FlashType_highlight); <-- original expression. hmmm
+	assert (context->type != FlashType_highlight);
 
 	*rect = context->rect;
 }
@@ -477,13 +478,13 @@ Flash_getRect (FlashContext *context, RECT *rect)
 // It ensures that an ugly wrong-sized flash overlay from previous resolution is cleaned
 // from the flash process.
 void
-Flash_setOverlay (FlashContext *context, const POINT *origin, FRAME overlay, BOOLEAN cleanup)
+Flash_setOverlay (FlashContext *context, const POINT *origin, FRAME overlay, bool cleanup)
 {
 	assert(context->type == FlashType_overlay);
 
 	if (context->started && !cleanup)
 	{
-		Flash_drawFrame (context, context->original, FALSE);
+		Flash_drawFrame (context, context->original, false);
 		Flash_clearCache (context);
 	}
 	
@@ -507,7 +508,7 @@ Flash_preUpdate (FlashContext *context)
 {
 	if (context->started)
 	{
-		Flash_drawFrame (context, context->original, FALSE);
+		Flash_drawFrame (context, context->original, false);
 		Flash_clearCache (context);
 	}
 }
@@ -725,7 +726,7 @@ GetFlashPCColor (void)
 }
 
 static void
-Flash_drawFrame (FlashContext *context, FRAME frame, BOOLEAN pcRect)
+Flash_drawFrame (FlashContext *context, FRAME frame, bool pcRect)
 {
 	CONTEXT oldGfxContext;
 	STAMP stamp;
@@ -742,8 +743,8 @@ Flash_drawFrame (FlashContext *context, FRAME frame, BOOLEAN pcRect)
 	{
 		Color color = GetFlashPCColor ();
 		DrawStarConBox (
-				&context->rect, RES_SCALE (1), color, color, FALSE,
-				TRANSPARENT, FALSE, TRANSPARENT
+				&context->rect, RES_SCALE (1), color, color, false,
+				TRANSPARENT, false, TRANSPARENT
 			);
 	}
 
@@ -810,7 +811,7 @@ Flash_drawUncachedFrame (FlashContext *context, int numer, int denom)
 		work = CaptureDrawable (CreateDrawable (WANT_PIXMAP,
 				context->rect.extent.width, context->rect.extent.height, 1));
 		Flash_makeFrame (context, work, numer, denom);
-		Flash_drawFrame (context, work, FALSE);
+		Flash_drawFrame (context, work, false);
 
 		DestroyDrawable (ReleaseDrawable (work));
 	}
@@ -833,7 +834,7 @@ Flash_drawCurrentFrame (FlashContext *context)
 	int denom;
 
 	/*if (GLOBAL (CurrentActivity) & CHECK_ABORT)
-		pcRectBool = FALSE;*/
+		pcRectBool = false;*/
 
 	if (context->state == FlashState_off)
 	{

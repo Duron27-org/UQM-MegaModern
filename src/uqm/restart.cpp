@@ -82,7 +82,7 @@ InitMenuMusic (void)
 	{
 		FadeMusic (MUTE_VOLUME, 0);
 		menuMusic = loadMainMenuMusic (Rando);
-		PlayMusic (menuMusic, TRUE, 1);
+		PlayMusic (menuMusic, true, 1);
 		
 		if (OkayToResume ())
 			SeekMusic (GetMusicPosition ());
@@ -152,7 +152,7 @@ DrawToolTips (MENU_STATE *pMS, int answer)
 }
 
 static void
-DrawDiffChooser (MENU_STATE *pMS, BYTE answer, BOOLEAN confirm)
+DrawDiffChooser (MENU_STATE *pMS, BYTE answer, bool confirm)
 {
 	STAMP s;
 	FONT oldFont;
@@ -190,7 +190,7 @@ DrawDiffChooser (MENU_STATE *pMS, BYTE answer, BOOLEAN confirm)
 	SetContextFont (oldFont);
 }
 
-static BOOLEAN
+static bool
 DoDiffChooser (MENU_STATE *pMS)
 {
 	static TimeCount LastInputTime;
@@ -198,8 +198,8 @@ DoDiffChooser (MENU_STATE *pMS)
 	RECT oldRect;
 	STAMP s;
 	CONTEXT oldContext;
-	BOOLEAN response = FALSE;
-	BOOLEAN done = FALSE;
+	bool response = false;
+	bool done = false;
 	BYTE a = 1;
 
 	InactTimeOut = (optMainMenuMusic ? 60 : 20) * ONE_SECOND;
@@ -209,7 +209,7 @@ DoDiffChooser (MENU_STATE *pMS)
 	GetContextClipRect (&oldRect);
 	s = SaveContextFrame (NULL);
 
-	DrawDiffChooser (pMS, a, FALSE);
+	DrawDiffChooser (pMS, a, false);
 
 	FlushGraphics ();
 	FlushInput ();
@@ -220,20 +220,20 @@ DoDiffChooser (MENU_STATE *pMS)
 
 		if (GLOBAL (CurrentActivity) & CHECK_ABORT)
 		{
-			return FALSE;
+			return false;
 		}
 		else if (PulsedInputState.menu[KEY_MENU_SELECT])
 		{
-			done = TRUE;
-			response = TRUE;
-			DrawDiffChooser (pMS, a, TRUE);
+			done = true;
+			response = true;
+			DrawDiffChooser (pMS, a, true);
 			PlayMenuSound (MENU_SOUND_SUCCESS);
 		}
 		else if (PulsedInputState.menu[KEY_MENU_CANCEL]
 				|| CurrentInputState.menu[KEY_EXIT])
 		{
-			done = TRUE;
-			response = FALSE;
+			done = true;
+			response = false;
 			DrawStamp (&s);
 		}
 		else if (PulsedInputState.menu[KEY_MENU_UP] ||
@@ -263,7 +263,7 @@ DoDiffChooser (MENU_STATE *pMS)
 			if (NewState != a)
 			{
 				BatchGraphics ();
-				DrawDiffChooser (pMS, NewState, FALSE);
+				DrawDiffChooser (pMS, NewState, false);
 				UnbatchGraphics ();
 				a = NewState;
 			}
@@ -276,8 +276,8 @@ DoDiffChooser (MENU_STATE *pMS)
 		else if (GetTimeCounter () - LastInputTime > InactTimeOut)
 		{	// timed out
 			GLOBAL (CurrentActivity) = (ACTIVITY)~0;
-			done = TRUE;
-			response = FALSE;
+			done = true;
+			response = false;
 		}
 
 		SleepThread (ONE_SECOND / 30);
@@ -394,7 +394,7 @@ DrawRestartMenuGraphic (MENU_STATE *pMS)
 	SetContextForeGroundColor (WHITE_COLOR);
 	snprintf (buf, sizeof (buf), "v%d.%d.%d %s",
 			UQM_MAJOR_VERSION, UQM_MINOR_VERSION, UQM_PATCH_VERSION,
-			RES_BOOL (UQM_EXTRA_VERSION, "HD " UQM_EXTRA_VERSION));
+			chooseIfHd (UQM_EXTRA_VERSION, "HD " UQM_EXTRA_VERSION));
 	t.pStr = buf;
 	t.baseline.x = SCREEN_WIDTH - RES_SCALE (2);
 	t.baseline.y = SCREEN_HEIGHT - RES_SCALE (2);
@@ -422,29 +422,29 @@ DrawRestartMenu (MENU_STATE *pMS, BYTE NewState, FRAME f)
 	POINT origin;
 	origin.x = 0;
 	origin.y = 0;
-	Flash_setOverlay (pMS->flashContext, &origin, TextCache[NewState], FALSE);
+	Flash_setOverlay (pMS->flashContext, &origin, TextCache[NewState], false);
 
 	(void)f; // Silence compiler warnings
 }
 
-static BOOLEAN
+static bool
 RestartMessage (void)
 {
 	if (!optRequiresRestart)
-		return FALSE;
+		return false;
 
-	SetFlashRect (NULL, FALSE);
+	SetFlashRect (NULL, false);
 	DoPopupWindow (GAME_STRING (MAINMENU_STRING_BASE + 35));
 	// Got to restart -message
 	SetMenuSounds (MENU_SOUND_UP | MENU_SOUND_DOWN, MENU_SOUND_SELECT);
 	SetTransitionSource (NULL);
 	SleepThreadUntil (FadeScreen (FadeAllToBlack, ONE_SECOND / 2));
 	GLOBAL (CurrentActivity) = CHECK_ABORT;
-	restartGame = TRUE;
-	return TRUE;
+	restartGame = true;
+	return true;
 }
 
-static BOOLEAN
+static bool
 DoRestart (MENU_STATE *pMS)
 {
 	static TimeCount LastInputTime;
@@ -452,10 +452,10 @@ DoRestart (MENU_STATE *pMS)
 	TimeCount TimeIn = GetTimeCounter ();
 
 	/* Cancel any presses of the Pause key. */
-	GamePaused = FALSE;
+	GamePaused = false;
 
 	if (optWindowType < 2)
-		optMeleeToolTips = (OPT_ENABLABLE)FALSE;
+		optMeleeToolTips = (OPT_ENABLABLE)false;
 	
 	if (optSuperMelee && !optLoadGame)
 	{
@@ -489,13 +489,13 @@ DoRestart (MENU_STATE *pMS)
 		Flash_setFrameTime (pMS->flashContext, ONE_SECOND / 16);
 		Flash_setState (pMS->flashContext, FlashState_fadeIn,
 				(3 * ONE_SECOND) / 16);
-		Flash_setPulseBox (pMS->flashContext, FALSE);
+		Flash_setPulseBox (pMS->flashContext, false);
 
 		DrawRestartMenu (pMS, pMS->CurState, NULL);
 		Flash_start (pMS->flashContext);
 
 		LastInputTime = GetTimeCounter ();
-		pMS->Initialized = TRUE;
+		pMS->Initialized = true;
 
 		SleepThreadUntil (FadeScreen (FadeAllToColor, ONE_SECOND / 2));
 	}
@@ -503,7 +503,7 @@ DoRestart (MENU_STATE *pMS)
 	{
 		SleepThreadUntil (
 				FadeScreen (FadeAllToBlack, ONE_SECOND / 2));
-		return FALSE;
+		return false;
 	}
 	else if (PulsedInputState.menu[KEY_MENU_SELECT])
 	{
@@ -512,7 +512,7 @@ DoRestart (MENU_STATE *pMS)
 			case START_NEW_GAME:
 				if (optCustomSeed == 404)
 				{
-					SetFlashRect (NULL, FALSE);
+					SetFlashRect (NULL, false);
 					DoPopupWindow (
 							GAME_STRING (MAINMENU_STRING_BASE + 65));
 					// Got to restart -message
@@ -523,7 +523,7 @@ DoRestart (MENU_STATE *pMS)
 					SleepThreadUntil (
 							FadeScreen (FadeAllToBlack, ONE_SECOND / 2));
 					GLOBAL (CurrentActivity) = CHECK_ABORT;
-					restartGame = TRUE;
+					restartGame = true;
 					break;
 				}
 
@@ -537,7 +537,7 @@ DoRestart (MENU_STATE *pMS)
 						LastInputTime = GetTimeCounter ();// if we timed out - don't start second credit roll
 						if (GLOBAL (CurrentActivity) != (ACTIVITY)~0)// just declined
 							Flash_continue (pMS->flashContext);
-						return TRUE;
+						return true;
 					}
 					Flash_continue (pMS->flashContext);
 				}
@@ -547,13 +547,13 @@ DoRestart (MENU_STATE *pMS)
 			case LOAD_SAVED_GAME:
 				LastActivity = CHECK_LOAD;
 				GLOBAL (CurrentActivity) = IN_INTERPLANETARY;
-				optLoadGame = FALSE;
+				optLoadGame = false;
 				break;
 			case PLAY_SUPER_MELEE:
 				optShipSeed = OPTVAL_DISABLED;
 				ReloadMasterShipList (NULL);
 				GLOBAL (CurrentActivity) = SUPER_MELEE;
-				optSuperMelee = FALSE;
+				optSuperMelee = false;
 				break;
 			case SETUP_GAME:
 				Flash_pause (pMS->flashContext);
@@ -563,7 +563,7 @@ DoRestart (MENU_STATE *pMS)
 				SetupMenu ();
 
 				if (optRequiresReload)
-					return FALSE;
+					return false;
 
 				LastInputTime = GetTimeCounter ();
 				InactTimeOut = (optMainMenuMusic ? 60 : 20) * ONE_SECOND;
@@ -579,7 +579,7 @@ DoRestart (MENU_STATE *pMS)
 
 				RestartMessage ();
 
-				return TRUE;
+				return true;
 			case QUIT_GAME:
 				SleepThreadUntil (
 						FadeScreen (FadeAllToBlack, ONE_SECOND / 2));
@@ -589,7 +589,7 @@ DoRestart (MENU_STATE *pMS)
 
 		Flash_pause (pMS->flashContext);
 
-		return FALSE;
+		return false;
 	}
 	else if (PulsedInputState.menu[KEY_MENU_UP] ||
 			PulsedInputState.menu[KEY_MENU_DOWN])
@@ -648,16 +648,16 @@ DoRestart (MENU_STATE *pMS)
 		if (GetTimeCounter () - LastInputTime > InactTimeOut)
 		{
 			GLOBAL (CurrentActivity) = (ACTIVITY)~0;
-			return FALSE;
+			return false;
 		}
 	}
 
 	SleepThreadUntil (TimeIn + ONE_SECOND / 30);
 
-	return TRUE;
+	return true;
 }
 
-static BOOLEAN
+static bool
 RestartMenu (MENU_STATE *pMS)
 {
 	TimeCount TimeOut;
@@ -689,7 +689,7 @@ RestartMenu (MENU_STATE *pMS)
 		if (optGameOver)
 			GameOver (SUICIDE);
 
-		DeathBySuicide = FALSE;
+		DeathBySuicide = false;
 
 		FreeGameData ();
 		GLOBAL (CurrentActivity) = CHECK_ABORT;
@@ -706,13 +706,13 @@ RestartMenu (MENU_STATE *pMS)
 			{
 				if (optGameOver)
 					GameOver (DIED_IN_BATTLE);
-				DeathByMelee = FALSE;
+				DeathByMelee = false;
 			}
 			else if (DeathBySurrender)
 			{
 				if (optGameOver)
 					GameOver (SURRENDERED);
-				DeathBySurrender = FALSE;
+				DeathBySurrender = false;
 			}
 		}
 
@@ -720,7 +720,7 @@ RestartMenu (MENU_STATE *pMS)
 		{
 			GLOBAL (CurrentActivity) = WON_LAST_BATTLE;
 			Victory ();
-			Credits (TRUE);
+			Credits (true);
 		}
 
 		FreeGameData ();
@@ -745,7 +745,7 @@ RestartMenu (MENU_STATE *pMS)
 	GLOBAL (CurrentActivity) &= ~CHECK_ABORT;
 	SetMenuSounds (MENU_SOUND_UP | MENU_SOUND_DOWN, MENU_SOUND_SELECT);
 	SetDefaultMenuRepeatDelay ();
-	DoInput (pMS, TRUE);
+	DoInput (pMS, true);
 	
 	if (!(optRequiresRestart || optRequiresReload))
 		UninitMenuMusic ();
@@ -765,10 +765,10 @@ RestartMenu (MENU_STATE *pMS)
 		Reload ();
 
 	if (GLOBAL (CurrentActivity) == (ACTIVITY)~0)
-		return (FALSE); // timed out
+		return (false); // timed out
 
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
-		return (FALSE); // quit
+		return (false); // quit
 
 	TimeOut = FadeScreen (FadeAllToBlack, ONE_SECOND / 2);
 	
@@ -780,7 +780,7 @@ RestartMenu (MENU_STATE *pMS)
 	return (LOBYTE (GLOBAL (CurrentActivity)) != SUPER_MELEE);
 }
 
-static BOOLEAN
+static bool
 TryStartGame (void)
 {
 	MENU_STATE MenuState;
@@ -798,23 +798,23 @@ TryStartGame (void)
 		{
 			FreeGameData ();
 			Melee ();
-			MenuState.Initialized = FALSE;
+			MenuState.Initialized = false;
 		}
 		else if (GLOBAL (CurrentActivity) == (ACTIVITY)~0)
 		{	// timed out
 			SleepThreadUntil (FadeScreen (FadeAllToBlack, ONE_SECOND / 2));
-			return (FALSE);
+			return (false);
 		}
 		else if (GLOBAL (CurrentActivity) & CHECK_ABORT)
 		{	// quit
-			return (FALSE);
+			return (false);
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
-BOOLEAN
+bool
 StartGame (void)
 {
 	do
@@ -826,18 +826,18 @@ StartGame (void)
 				GLOBAL (CurrentActivity) = 0;
 
 				if (optRequiresRestart || optRequiresReload)
-					optRequiresRestart = optRequiresReload = FALSE;
+					optRequiresRestart = optRequiresReload = false;
 				else
 				{
 					SplashScreen (0);
 					if (optWhichIntro == OPT_3DO)
 						Drumall ();
-					Credits (FALSE);
+					Credits (false);
 				}
 			}
 
 			if (GLOBAL (CurrentActivity) & CHECK_ABORT)
-				return (FALSE); // quit
+				return (false); // quit
 		}
 
 		if (LastActivity & CHECK_RESTART)
@@ -878,6 +878,6 @@ StartGame (void)
 	PlayerControl[0] = HUMAN_CONTROL | STANDARD_RATING;
 	PlayerControl[1] = COMPUTER_CONTROL | AWESOME_RATING;
 
-	return (TRUE);
+	return (true);
 }
 

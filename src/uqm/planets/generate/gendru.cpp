@@ -86,7 +86,7 @@ GenerateDruuge_generatePlanets (SOLARSYS_STATE *solarSys)
 		pPlanet->location.y = SINE (angle, pPlanet->radius);
 		pPlanet->rand_seed =
 				MAKE_DWORD (pPlanet->location.x, pPlanet->location.y);
-		ComputeSpeed (pPlanet, FALSE, 1);
+		ComputeSpeed (pPlanet, false, 1);
 	}
 	else
 	{

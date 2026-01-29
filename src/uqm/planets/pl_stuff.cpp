@@ -146,7 +146,7 @@ DrawDefaultPlanetSphere (void)
 
 	oldContext = SetContext (PlanetContext);
 	DrawPlanetSphere (
-			RES_SCALE (ORIG_SIS_SCREEN_WIDTH >> 1), PLANET_ORG_Y, TRUE);
+			RES_SCALE (ORIG_SIS_SCREEN_WIDTH >> 1), PLANET_ORG_Y, true);
 	SetContext (oldContext);
 }
 
@@ -178,7 +178,7 @@ RerenderPlanetSphere (void)
 }
 
 void
-InitSphereRotation (int direction, BOOLEAN shielded, COUNT width,
+InitSphereRotation (int direction, bool shielded, COUNT width,
 		COUNT height)
 {
 	PLANET_ORBIT *Orbit = &pSolarSysState->Orbit;
@@ -338,15 +338,15 @@ PrepareNextRotationFrameForIP (PLANET_DESC *pPlanetDesc, SIZE frameCounter)
 	RenderPlanetSphere (Orbit, Orbit->SphereFrame,
 			pPlanetDesc->rotPointIndex,
 			pPlanetDesc->data_index & PLANET_SHIELDED,
-			FALSE, pPlanetDesc->rotwidth, pPlanetDesc->rotheight,
+			false, pPlanetDesc->rotwidth, pPlanetDesc->rotheight,
 			(pPlanetDesc->rotheight >> 1) - IF_HD (2)); // RADIUS
-	Orbit->SphereFrame->image->dirty = TRUE;
+	Orbit->SphereFrame->image->dirty = true;
 	// BW: slightly hacky but, in DrawTexturedBody, the call
 	// to DrawStamp won't re-blit the frame unless scale has changed.
 }
 
 #if SDL_MAJOR_VERSION == 1
-#define ZOOM_RATE  RES_BOOL (24, 42)
+#define ZOOM_RATE  chooseIfHd (24, 42)
 #else
 #define ZOOM_RATE  RES_SCALE (35)
 #endif
@@ -414,7 +414,7 @@ ZoomInPlanetSphere (void)
 
 		oldMode = SetGraphicScaleMode (TFB_SCALE_BILINEAR);
 		oldScale = SetGraphicScale ((int)(base * scale + 0.5));
-		DrawPlanetSphere (pt.x, pt.y, FALSE);
+		DrawPlanetSphere (pt.x, pt.y, false);
 		SetGraphicScale (oldScale);
 		SetGraphicScaleMode (oldMode);
 
@@ -434,13 +434,13 @@ ZoomInPlanetSphere (void)
 }
 
 #if SDL_MAJOR_VERSION == 1
-#define PLANET_ROTATION_FPS (ONE_SECOND / RES_BOOL (24, 42))
+#define PLANET_ROTATION_FPS (ONE_SECOND / chooseIfHd (24, 42))
 #else
 #define PLANET_ROTATION_FPS (ONE_SECOND / 60)
 #endif
 
 void
-RotatePlanetSphere (BOOLEAN keepRate, STAMP *onTop)
+RotatePlanetSphere (bool keepRate, STAMP *onTop)
 {
 	static TimeCount NextTime, OutNextTime, TimeOutClock;
 	TimeCount Now = GetTimeCounter ();

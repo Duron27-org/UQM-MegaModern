@@ -85,13 +85,13 @@ typedef enum
 //   the flagship also moves faster.
 #define INTERPLANETARY_CLOCK_RATE 30
 
-extern BOOLEAN InitGameClock (void);
-extern BOOLEAN UninitGameClock (void);
+extern bool InitGameClock (void);
+extern bool UninitGameClock (void);
 
 extern float daysElapsed (void);
 
 extern void SetGameClockRate (COUNT seconds_per_day);
-extern BOOLEAN ValidateEvent (EVENT_TYPE type, COUNT *pmonth_index,
+extern bool ValidateEvent (EVENT_TYPE type, COUNT *pmonth_index,
 		COUNT *pday_index, COUNT *pyear_index);
 extern HEVENT AddEvent (EVENT_TYPE type, COUNT month_index, COUNT
 		day_index, COUNT year_index, BYTE func_index);
@@ -106,7 +106,7 @@ extern void LockGameClock (void);
 extern void UnlockGameClock (void);
 // A weak indicator of the clock moving. Suitable for debugging,
 // but not much else
-extern BOOLEAN GameClockRunning (void);
+extern bool GameClockRunning (void);
 
 #if 0 //defined(__cplusplus)
 }

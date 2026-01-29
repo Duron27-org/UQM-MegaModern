@@ -232,7 +232,7 @@ static int
 luaUqm_comm_isPhraseEnabled(lua_State *luaState) {
 	int phraseId = testPhraseId(luaState, 1);
 	if (phraseId == -1) {
-		lua_pushboolean(luaState, FALSE);
+		lua_pushboolean(luaState, false);
 		return 1;
 	}
 
@@ -350,7 +350,7 @@ luaUqm_comm_setSegue(lua_State *luaState) {
 
 static int
 luaUqm_comm_isInOuttakes(lua_State *luaState) {
-	BOOLEAN result = (LOBYTE(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE);
+	bool result = (LOBYTE(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE);
 	lua_pushboolean(luaState, result);
 	return 1;
 }

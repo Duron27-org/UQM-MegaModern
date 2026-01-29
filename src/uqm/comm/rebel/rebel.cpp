@@ -211,7 +211,7 @@ RebelInfo (RESPONSE_REF R)
 {
 	BYTE InfoLeft;
 
-	InfoLeft = FALSE;
+	InfoLeft = false;
 	if (PLAYER_SAID (R, give_info_rebels))
 		NPCPhrase (WHAT_INFO);
 	else if (PLAYER_SAID (R, what_about_urquan))
@@ -249,27 +249,27 @@ RebelInfo (RESPONSE_REF R)
 	if (PHRASE_ENABLED (what_about_urquan))
 	{
 		Response (what_about_urquan, RebelInfo);
-		InfoLeft = TRUE;
+		InfoLeft = true;
 	}
 	if (PHRASE_ENABLED (what_about_royalty))
 	{
 		Response (what_about_royalty, RebelInfo);
-		InfoLeft = TRUE;
+		InfoLeft = true;
 	}
 	if (PHRASE_ENABLED (what_about_war))
 	{
 		Response (what_about_war, RebelInfo);
-		InfoLeft = TRUE;
+		InfoLeft = true;
 	}
 	if (PHRASE_ENABLED (what_about_vux))
 	{
 		Response (what_about_vux, RebelInfo);
-		InfoLeft = TRUE;
+		InfoLeft = true;
 	}
 	if (PHRASE_ENABLED (what_about_clue))
 	{
 		Response (what_about_clue, RebelInfo);
-		InfoLeft = TRUE;
+		InfoLeft = true;
 	}
 	Response (enough_info, Rebels);
 

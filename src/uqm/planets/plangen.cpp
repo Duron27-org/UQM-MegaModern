@@ -355,7 +355,7 @@ ExpandLevelMasks (PLANET_ORBIT* Orbit)
 }
 
 static void
-RenderLevelMasks (FRAME mask, SBYTE *pTopoData, BOOLEAN SurfDef)
+RenderLevelMasks (FRAME mask, SBYTE *pTopoData, bool SurfDef)
 {	// Kruzen: Originally there were 3 frames for levels 2,3,4 that was
 	// drawn backwards using masks and prerendered colored spheres
 	// Mask code has been nuked some time ago therefore I'm rendering 1
@@ -467,7 +467,7 @@ RenderLevelMasks (FRAME mask, SBYTE *pTopoData, BOOLEAN SurfDef)
 
 static void
 RenderTopography (FRAME DstFrame, SBYTE *pTopoData, int w, int h,
-		BOOLEAN SurfDef, COLORMAP scanTable)
+		bool SurfDef, COLORMAP scanTable)
 {
 	BYTE AlgoType;
 	SIZE base, d;
@@ -1039,14 +1039,14 @@ void
 Draw3DOShield (STAMP ShieldFrame)
 {
 	static BYTE i, cr;
-	static BOOLEAN flip;
+	static bool flip;
 	DrawMode oldmode;
 	const BYTE factor[6] = { 0xFF, 0xE6, 0xC5, 0xA4, 0x83, 0x62 };
 
 	if (factor[i] == 0x62)
-		flip = TRUE;
+		flip = true;
 	else if (factor[i] == 0xFF)
-		flip = FALSE;
+		flip = false;
 
 	oldmode = SetContextDrawMode (MAKE_DRAW_MODE (DRAW_ADDITIVE,
 			factor[i]));
@@ -1055,7 +1055,7 @@ Draw3DOShield (STAMP ShieldFrame)
 
 	SetContextDrawMode (oldmode);
 
-	if (cr % RES_BOOL (3, 4) == 0)
+	if (cr % chooseIfHd (3, 4) == 0)
 		i += flip ? -1 : 1;
 
 	cr++;
@@ -1157,7 +1157,7 @@ get_map_elev (SBYTE *elevs, int x, int y, int offset, COUNT width)
 // performance
 void
 RenderPlanetSphere (PLANET_ORBIT *Orbit, FRAME MaskFrame, int offset,
-		BOOLEAN shielded, BOOLEAN doThrob, COUNT width, COUNT height,
+		bool shielded, bool doThrob, COUNT width, COUNT height,
 		COUNT radius)
 {
 	POINT pt;
@@ -1471,7 +1471,7 @@ DitherMap (SBYTE *DepthArray, COUNT width, COUNT height)
 
 static void
 MakeCrater (RECT *pRect, SBYTE *DepthArray, SIZE rim_delta, SIZE
-		crater_delta, BOOLEAN SetDepth, COUNT width)
+		crater_delta, bool SetDepth, COUNT width)
 {
 	COORD x, y, lf_x, rt_x;
 	SIZE A, B;
@@ -1673,7 +1673,7 @@ MakeStorms (COUNT storm_count, SBYTE *DepthArray, COUNT width,
 	pstorm_r = &storm_r[i = storm_count];
 	while (i--)
 	{
-		BOOLEAN intersect;
+		bool intersect;
 		DWORD rand_val;
 		UWORD loword, hiword;
 		SIZE band_delta;
@@ -1683,7 +1683,7 @@ MakeStorms (COUNT storm_count, SBYTE *DepthArray, COUNT width,
 		{
 			COUNT j;
 
-			intersect = FALSE;
+			intersect = false;
 
 			rand_val = RandomContext_Random (SysGenRNG);
 			loword = LOWORD (rand_val);
@@ -1743,7 +1743,7 @@ MakeStorms (COUNT storm_count, SBYTE *DepthArray, COUNT width,
 				y = storm_r[j].corner.y - pstorm_r->corner.y;
 				w = x + storm_r[j].extent.width + 4;
 				h = y + storm_r[j].extent.height + 4;
-				intersect = (BOOLEAN) (w > 0 && h > 0
+				intersect = (bool) (w > 0 && h > 0
 						&& x < pstorm_r->extent.width + 4
 						&& y < pstorm_r->extent.height + 4);
 				if (intersect)
@@ -1752,7 +1752,7 @@ MakeStorms (COUNT storm_count, SBYTE *DepthArray, COUNT width,
 
 		} while (intersect);
 
-		MakeCrater (pstorm_r, DepthArray, 6, 6, FALSE, width);
+		MakeCrater (pstorm_r, DepthArray, 6, 6, false, width);
 		++pstorm_r->corner.x;
 		++pstorm_r->corner.y;
 		pstorm_r->extent.width -= 2;
@@ -1761,7 +1761,7 @@ MakeStorms (COUNT storm_count, SBYTE *DepthArray, COUNT width,
 		band_delta = HIBYTE (loword) & ((3 << RANGE_SHIFT) + 20);
 
 		MakeCrater (pstorm_r, DepthArray,
-				band_delta, band_delta, TRUE, width);
+				band_delta, band_delta, true, width);
 		++pstorm_r->corner.x;
 		++pstorm_r->corner.y;
 		pstorm_r->extent.width -= 2;
@@ -1771,7 +1771,7 @@ MakeStorms (COUNT storm_count, SBYTE *DepthArray, COUNT width,
 		if (pstorm_r->extent.width > 2 && pstorm_r->extent.height > 2)
 		{
 			MakeCrater (pstorm_r, DepthArray,
-					band_delta, band_delta, TRUE, width);
+					band_delta, band_delta, true, width);
 			++pstorm_r->corner.x;
 			++pstorm_r->corner.y;
 			pstorm_r->extent.width -= 2;
@@ -1782,7 +1782,7 @@ MakeStorms (COUNT storm_count, SBYTE *DepthArray, COUNT width,
 		if (pstorm_r->extent.width > 2 && pstorm_r->extent.height > 2)
 		{
 			MakeCrater (pstorm_r, DepthArray,
-					band_delta, band_delta, TRUE, width);
+					band_delta, band_delta, true, width);
 			++pstorm_r->corner.x;
 			++pstorm_r->corner.y;
 			pstorm_r->extent.width -= 2;
@@ -1791,7 +1791,7 @@ MakeStorms (COUNT storm_count, SBYTE *DepthArray, COUNT width,
 
 		band_delta += 4;
 		MakeCrater (pstorm_r, DepthArray,
-				band_delta, band_delta, TRUE, width);
+				band_delta, band_delta, true, width);
 	}
 }
 
@@ -1923,7 +1923,7 @@ ValidateMap (SBYTE *DepthArray, COUNT width, COUNT height)
 }
 
 static void
-planet_orbit_init (COUNT width, COUNT height, BOOLEAN forOrbit)
+planet_orbit_init (COUNT width, COUNT height, bool forOrbit)
 {
 	PLANET_ORBIT *Orbit = &pSolarSysState->Orbit;
 	COUNT spherespanx = height;
@@ -2442,7 +2442,7 @@ GenerateLightMap (SBYTE *pTopo, int w, int h)
 void
 load_color_resources (PLANET_DESC *pPlanetDesc,
 		const PlanetFrame *PlanDataPtr, PLANET_INFO *PlanetInfo,
-		BOOLEAN dosshielded, BOOLEAN LoadCustomColorTable)
+		bool dosshielded, bool LoadCustomColorTable)
 {
 	if (LoadCustomColorTable)
 	{	// JMS: Planets with special colormaps
@@ -2560,7 +2560,7 @@ generate_surface_frame (COUNT width, COUNT height, PLANET_ORBIT *Orbit,
 				MakeCrater (&crater_r, Orbit->lpTopoData,
 						PlanDataPtr->fault_depth << 2,
 						-(PlanDataPtr->fault_depth << 2),
-						FALSE, width);
+						false, width);
 			}
 			if (PLANALGO (PlanDataPtr->Type) == CRATERED_ALGO)
 				DitherMap (Orbit->lpTopoData, width, height);
@@ -2572,7 +2572,7 @@ generate_surface_frame (COUNT width, COUNT height, PLANET_ORBIT *Orbit,
 				(SIZE)height, 1));
 
 	RenderTopography (pSolarSysState->TopoFrame,
-			Orbit->lpTopoData, width, height, FALSE, NULL);
+			Orbit->lpTopoData, width, height, false, NULL);
 
 }
 
@@ -2583,7 +2583,7 @@ GetPlanetTopography (PLANET_DESC *pPlanetDesc, FRAME SurfDefFrame)
 	PLANET_INFO *PlanetInfo = &pSolarSysState->SysInfo.PlanetInfo;
 	PLANET_ORBIT *Orbit = &pSolarSysState->Orbit;
 	COUNT width, height;
-	BOOLEAN shielded = (pPlanetDesc->data_index & PLANET_SHIELDED);
+	bool shielded = (pPlanetDesc->data_index & PLANET_SHIELDED);
 
 	width = SCALED_MAP_WIDTH;
 	height = MAP_HEIGHT;
@@ -2648,12 +2648,12 @@ GeneratePlanetSurface (PLANET_DESC *pPlanetDesc, FRAME SurfDefFrame,
 	POINT loc;
 	CONTEXT OldContext, TopoContext;
 	PLANET_ORBIT *Orbit = &pSolarSysState->Orbit;
-	BOOLEAN SurfDef = FALSE;
-	BOOLEAN shielded = (pPlanetDesc->data_index & PLANET_SHIELDED) != 0;
+	bool SurfDef = false;
+	bool shielded = (pPlanetDesc->data_index & PLANET_SHIELDED) != 0;
 	SDWORD PlanetRotation;
 	COUNT spherespanx, radius;
-	BOOLEAN ForIP;
-	BOOLEAN customTexture =
+	bool ForIP;
+	bool customTexture =
 			solTexturesPresent && CurStarDescPtr->Index == SOL_DEFINED;
 
 	if (!width && !height)
@@ -2662,7 +2662,7 @@ GeneratePlanetSurface (PLANET_DESC *pPlanetDesc, FRAME SurfDefFrame,
 		height = MAP_HEIGHT;
 		spherespanx = SPHERE_SPAN_X;
 		radius = RADIUS;
-		ForIP = FALSE;
+		ForIP = false;
 
 		useDosSpheres = optScanSphere == 0;
 		use3DOSpheres = optScanSphere == 1;
@@ -2671,10 +2671,10 @@ GeneratePlanetSurface (PLANET_DESC *pPlanetDesc, FRAME SurfDefFrame,
 	{
 		spherespanx = height;
 		radius = (height >> 1) - IF_HD (2);
-		ForIP = TRUE;
+		ForIP = true;
 
-		useDosSpheres = FALSE;
-		use3DOSpheres = FALSE;
+		useDosSpheres = false;
+		use3DOSpheres = false;
 	}
 
 	RandomContext_SeedRandom (SysGenRNG, pPlanetDesc->rand_seed);
@@ -2695,8 +2695,8 @@ GeneratePlanetSurface (PLANET_DESC *pPlanetDesc, FRAME SurfDefFrame,
 	if (SurfDefFrame)
 	{	// This is a defined planet; pixmap for the topography and
 		// elevation data is supplied in Surface Definition frame
-		BOOLEAN DeleteDef = FALSE;
-		BOOLEAN DeleteElev = FALSE;
+		bool DeleteDef = false;
+		bool DeleteElev = false;
 		FRAME ElevFrame = 0;
 		COUNT index = 0;
 
@@ -2705,7 +2705,7 @@ GeneratePlanetSurface (PLANET_DESC *pPlanetDesc, FRAME SurfDefFrame,
 			index = 2;
 
 		// surface pixmap
-		SurfDef = TRUE;
+		SurfDef = true;
 		SurfDefFrame = SetAbsFrameIndex (SurfDefFrame, index);
 		if (GetFrameWidth (SurfDefFrame) != width
 				|| GetFrameHeight (SurfDefFrame) != height)
@@ -2713,7 +2713,7 @@ GeneratePlanetSurface (PLANET_DESC *pPlanetDesc, FRAME SurfDefFrame,
 			pSolarSysState->TopoFrame = CaptureDrawable (RescaleFrame (
 					SurfDefFrame, width, height));
 			// will not need the passed FRAME anymore
-			DeleteDef = TRUE;
+			DeleteDef = true;
 		}
 		else
 			pSolarSysState->TopoFrame = SurfDefFrame;
@@ -2729,7 +2729,7 @@ GeneratePlanetSurface (PLANET_DESC *pPlanetDesc, FRAME SurfDefFrame,
 			{	// Should ALWAYS be paletted
 				ElevFrame = CaptureDrawable (
 								RescaleFrame (ElevFrame, width, height));
-				DeleteElev = TRUE;
+				DeleteElev = true;
 			}
 
 			// grab the elevation data in 1 byte per pixel format
@@ -2818,7 +2818,7 @@ GeneratePlanetSurface (PLANET_DESC *pPlanetDesc, FRAME SurfDefFrame,
 				scanTable = SetAbsColorMapIndex (scanTable, i);
 
 				RenderTopography (pSolarSysState->ScanFrame[i],
-						Orbit->lpTopoData, width, height, FALSE, scanTable);
+						Orbit->lpTopoData, width, height, false, scanTable);
 			}
 
 			DestroyColorMap (ReleaseColorMap (scanTable));
@@ -2937,7 +2937,7 @@ GeneratePlanetSurface (PLANET_DESC *pPlanetDesc, FRAME SurfDefFrame,
 					SetAbsFrameIndex (Orbit->SphereFrame, facing & 14);
 			ReadFramePixelIndexes (Orbit->SphereFrame, Orbit->sphereBytes,
 					GetFrameWidth(Orbit->SphereFrame),
-					GetFrameHeight(Orbit->SphereFrame), TRUE);
+					GetFrameHeight(Orbit->SphereFrame), true);
 		}
 		else if (use3DOSpheres)
 		{

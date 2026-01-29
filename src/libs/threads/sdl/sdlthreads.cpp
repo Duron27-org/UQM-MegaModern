@@ -487,7 +487,7 @@ SetSemaphore_SDL (Semaphore s)
 {
 	Sem *sem = (Sem *)s;
 #ifdef TRACK_CONTENTION
-	BOOLEAN contention = !(SDL_SemValue (sem->sem));
+	bool contention = !(SDL_SemValue (sem->sem));
 	if (contention && (sem->syncClass & TRACK_CONTENTION_CLASSES))
 	{
 		log_add (log_Debug, "Thread '%s' blocking on semaphore '%s'",

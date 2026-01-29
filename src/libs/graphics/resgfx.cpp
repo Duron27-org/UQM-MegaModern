@@ -31,12 +31,12 @@ GetFontFileData (const char *pathname, RESOURCE_DATA *resdata)
 }
 
 
-BOOLEAN
+bool
 InstallGraphicResTypes (void)
 {
 	InstallResTypeVectors ("GFXRES", GetCelFileData, _ReleaseCelData, NULL);
 	InstallResTypeVectors ("FONTRES", GetFontFileData, _ReleaseFontData, NULL);
-	return (TRUE);
+	return (true);
 }
 
 /* Needs to be void * because it could be either a DRAWABLE or a FONT. */

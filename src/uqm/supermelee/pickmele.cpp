@@ -196,8 +196,8 @@ setShipSelected(GETMELEE_STATE *gms, COUNT playerI, COUNT choice,
 	return true;
 }
 
-// Returns FALSE if aborted.
-static BOOLEAN
+// Returns false if aborted.
+static bool
 SelectShip_processInput (GETMELEE_STATE *gms, COUNT playerI,
 		BATTLE_INPUT_STATE inputState)
 {
@@ -207,21 +207,21 @@ SelectShip_processInput (GETMELEE_STATE *gms, COUNT playerI,
 				gms->player[playerI].row == 0)
 		{
 			// Random ship
-			(void) setShipSelected (gms, playerI, (COUNT) ~0, TRUE);
+			(void) setShipSelected (gms, playerI, (COUNT) ~0, true);
 		}
 		else if (gms->player[playerI].col == NUM_PICKMELEE_COLUMNS &&
 				gms->player[playerI].row == 1)
 		{
 			// Selected exit
 			if (ConfirmExit ())
-				return FALSE;
+				return false;
 		}
 		else
 		{
 			// Selection is on a ship slot.
 			COUNT slotNr = PickMelee_GetShipIndex (gms->player[playerI].row,
 					gms->player[playerI].col);
-			(void) setShipSelected (gms, playerI, slotNr, TRUE);
+			(void) setShipSelected (gms, playerI, slotNr, true);
 					// If the choice is not valid, setShipSelected()
 					// will not set .done.
 		}
@@ -265,10 +265,10 @@ SelectShip_processInput (GETMELEE_STATE *gms, COUNT playerI,
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
-BOOLEAN
+bool
 selectShipHuman (HumanInputContext *context, GETMELEE_STATE *gms)
 {
 	BATTLE_INPUT_STATE inputState =
@@ -277,52 +277,52 @@ selectShipHuman (HumanInputContext *context, GETMELEE_STATE *gms)
 	return SelectShip_processInput (gms, context->playerNr, inputState);
 }
 
-BOOLEAN
+bool
 selectShipComputer (ComputerInputContext *context, GETMELEE_STATE *gms)
 {
 #define COMPUTER_SELECTION_DELAY (ONE_SECOND >> 1)
 	TimeCount now = GetTimeCounter ();
 	if (now < gms->player[context->playerNr].timeIn +
 			COMPUTER_SELECTION_DELAY)
-		return TRUE;
+		return true;
 
 	return SelectShip_processInput (gms, context->playerNr, BATTLE_WEAPON);
 			// Simulate selection of the random choice button.
 }
 
 #ifdef NETPLAY
-BOOLEAN
+bool
 selectShipNetwork (NetworkInputContext *context, GETMELEE_STATE *gms)
 {
 	flushPacketQueues ();
 			// Sets gms->player[context->playerNr].remoteSelected if input
 			// is received.
 	if (gms->player[context->playerNr].remoteSelected)
-		gms->player[context->playerNr].done = TRUE;
+		gms->player[context->playerNr].done = true;
 
-	return TRUE;
+	return true;
 }
 #endif
 
 // Select a new ship from the fleet for battle.
-// Returns 'TRUE' if no choice has been made yet; this function is to be
+// Returns 'true' if no choice has been made yet; this function is to be
 // called again later.
-// Returns 'FALSE' if a choice has been made. gms->hStarShip is set
+// Returns 'false' if a choice has been made. gms->hStarShip is set
 // to the chosen (or randomly selected) ship, or to 0 if 'exit' has
 // been chosen.
 /* TODO: Include player timeouts */
-static BOOLEAN
+static bool
 DoGetMelee (GETMELEE_STATE *gms)
 {
-	BOOLEAN done;
+	bool done;
 	COUNT playerI;
 
 	SetMenuSounds (MENU_SOUND_NONE, MENU_SOUND_NONE);
 
 	if (!gms->Initialized)
 	{
-		gms->Initialized = TRUE;
-		return TRUE;
+		gms->Initialized = true;
+		return true;
 	}
 
 	for (playerI = 0; playerI < NUM_PLAYERS; playerI++)
@@ -346,7 +346,7 @@ DoGetMelee (GETMELEE_STATE *gms)
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
 		goto aborted;
 
-	done = TRUE;
+	done = true;
 	for (playerI = 0; playerI < NUM_PLAYERS; playerI++)
 	{
 		if (!gms->player[playerI].selecting)
@@ -363,7 +363,7 @@ DoGetMelee (GETMELEE_STATE *gms)
 				gms->player[playerI].flashContext = NULL;
 			}
 			else
-				done = FALSE;
+				done = false;
 		}
 	}
 
@@ -385,7 +385,7 @@ aborted:
 		gms->player[playerI].hBattleShip = 0;
 	}
 	GLOBAL (CurrentActivity) &= ~CHECK_ABORT;
-	return FALSE;
+	return false;
 }
 
 static COUNT
@@ -659,7 +659,7 @@ MeleeGameOver (void)
 {
 	COUNT playerI;
 	DWORD TimeOut;
-	BOOLEAN PressState, ButtonState;
+	bool PressState, ButtonState;
 
 	// Show the battle result.
 	for (playerI = 0; playerI < NUM_PLAYERS; playerI++)
@@ -682,7 +682,7 @@ MeleeGameOver (void)
 		if (PressState)
 		{
 			PressState = ButtonState;
-			ButtonState = FALSE;
+			ButtonState = false;
 		}
 
 		Async_process ();
@@ -707,11 +707,11 @@ MeleeShipDeath (STARSHIP *ship)
 }
 
 // Post: the NetState for all players is NetState_interBattle
-static BOOLEAN
+static bool
 GetMeleeStarShips (COUNT playerMask, HSTARSHIP *ships)
 {
 	COUNT playerI;
-	BOOLEAN ok;
+	bool ok;
 	GETMELEE_STATE gmstate;
 	TimeCount now;
 	COUNT i;
@@ -739,7 +739,7 @@ GetMeleeStarShips (COUNT playerMask, HSTARSHIP *ships)
 
 	now = GetTimeCounter ();
 	gmstate.InputFunc = DoGetMelee;
-	gmstate.Initialized = FALSE;
+	gmstate.Initialized = false;
 	for (i = 0; i < NUM_PLAYERS; ++i)
 	{
 		// We have to use TFB_Random() results in specific order
@@ -753,7 +753,7 @@ GetMeleeStarShips (COUNT playerMask, HSTARSHIP *ships)
 		// synchronised.
 		gmstate.player[playerI].randomIndex =
 				(COUNT)TFB_Random () % gmstate.player[playerI].ships_left;
-		gmstate.player[playerI].done = FALSE;
+		gmstate.player[playerI].done = false;
 
 		if (!gmstate.player[playerI].selecting)
 			continue;
@@ -762,7 +762,7 @@ GetMeleeStarShips (COUNT playerMask, HSTARSHIP *ships)
 		gmstate.player[playerI].row = 0;
 		gmstate.player[playerI].col = NUM_PICKMELEE_COLUMNS;
 #ifdef NETPLAY
-		gmstate.player[playerI].remoteSelected = FALSE;
+		gmstate.player[playerI].remoteSelected = false;
 #endif
 
 		gmstate.player[playerI].flashContext =
@@ -772,7 +772,7 @@ GetMeleeStarShips (COUNT playerMask, HSTARSHIP *ships)
 		Flash_setFrameTime (gmstate.player[playerI].flashContext,
 				ONE_SECOND / 16);
 		Flash_setPulseBox(gmstate.player[playerI].flashContext,
-				(BOOLEAN)isPC (optWhichMenu));
+				(bool)isPC (optWhichMenu));
 #ifdef NETPLAY
 		if (PlayerControl[playerI] & NETWORK_CONTROL)
 			Flash_setSpeed (gmstate.player[playerI].flashContext,
@@ -806,7 +806,7 @@ GetMeleeStarShips (COUNT playerMask, HSTARSHIP *ships)
 	SetContext (OffScreenContext);
 
 
-	DoInput (&gmstate, FALSE);
+	DoInput (&gmstate, false);
 	WaitForSoundEnd (0);
 
 
@@ -867,7 +867,7 @@ GetMeleeStarShips (COUNT playerMask, HSTARSHIP *ships)
 	return ok;
 }
 
-BOOLEAN
+bool
 GetInitialMeleeStarShips (HSTARSHIP *result)
 {
 	COUNT playerI;
@@ -894,12 +894,12 @@ GetInitialMeleeStarShips (HSTARSHIP *result)
 }
 
 // Get the next ship to use in SuperMelee.
-BOOLEAN
+bool
 GetNextMeleeStarShip (COUNT which_player, HSTARSHIP *result)
 {
 	COUNT playerMask;
 	HSTARSHIP ships[NUM_PLAYERS];
-	BOOLEAN ok;
+	bool ok;
 
 	DrawPickMeleeFrame (which_player);
 
@@ -933,7 +933,7 @@ updateMeleeSelection (GETMELEE_STATE *gms, COUNT playerI, COUNT ship)
 		return false;
 	}
 
-	gms->player[playerI].remoteSelected = TRUE;
+	gms->player[playerI].remoteSelected = true;
 	return true;
 }
 

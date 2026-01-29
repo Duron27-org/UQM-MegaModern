@@ -68,14 +68,14 @@ extern BATTLE_INPUT_STATE tactical_intelligence (
 		ComputerInputContext *context, STARSHIP *StarShipPtr);
 extern void ship_intelligence (ELEMENT *ShipPtr,
 		EVALUATE_DESC *ObjectsOfConcern, COUNT ConcernCounter);
-extern BOOLEAN ship_weapons (ELEMENT *ShipPtr, ELEMENT *OtherPtr,
+extern bool ship_weapons (ELEMENT *ShipPtr, ELEMENT *OtherPtr,
 		COUNT margin_of_error);
 
 extern void Pursue (ELEMENT *ShipPtr, EVALUATE_DESC *EvalDescPtr);
 extern void Entice (ELEMENT *ShipPtr, EVALUATE_DESC *EvalDescPtr);
 extern void Avoid (ELEMENT *ShipPtr, EVALUATE_DESC *EvalDescPtr);
-extern BOOLEAN TurnShip (ELEMENT *ShipPtr, COUNT angle);
-extern BOOLEAN ThrustShip (ELEMENT *ShipPtr, COUNT angle);
+extern bool TurnShip (ELEMENT *ShipPtr, COUNT angle);
+extern bool ThrustShip (ELEMENT *ShipPtr, COUNT angle);
 
 
 #define HUMAN_CONTROL (BYTE)(1 << 0)
@@ -91,8 +91,8 @@ extern BOOLEAN ThrustShip (ELEMENT *ShipPtr, COUNT angle);
 #define GOOD_RATING (BYTE)(1 << 5)
 #define AWESOME_RATING (BYTE)(1 << 6)
 
-static inline BOOLEAN
-antiCheat (ELEMENT *ElementPtr, BOOLEAN SwapBool, int GodModeType)
+static inline bool
+antiCheat (ELEMENT *ElementPtr, bool SwapBool, int GodModeType)
 {
 	return !(PlayerControl[0] & COMPUTER_CONTROL
 			&& PlayerControl[1] & COMPUTER_CONTROL)
@@ -103,7 +103,7 @@ antiCheat (ELEMENT *ElementPtr, BOOLEAN SwapBool, int GodModeType)
 				&& ElementPtr->playerNr == (SwapBool ? 1 : 0))));
 }
 
-static inline BOOLEAN
+static inline bool
 antiCheatAlt (int GodModeType)
 {
 	return !(PlayerControl[0] & COMPUTER_CONTROL
@@ -115,7 +115,7 @@ antiCheatAlt (int GodModeType)
 				&& PlayerControl[0] & HUMAN_CONTROL)));
 }
 
-static inline BOOLEAN
+static inline bool
 isNetwork (void)
 {
 	return (PlayerControl[0] & NETWORK_CONTROL

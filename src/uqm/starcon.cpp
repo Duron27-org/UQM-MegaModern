@@ -58,7 +58,7 @@
 #include <time.h>//required to use 'srand(time(NULL))'
 #include "sounds.h"
 
-volatile int MainExited = FALSE;
+volatile int MainExited = false;
 #ifdef DEBUG_SLEEP
 uint32 mainThreadId;
 extern uint32 SDL_ThreadID(void);
@@ -96,7 +96,7 @@ on_battle_frame (void)
 		SeedUniverse ();
 	}
 
-	DrawAutoPilotMessage (FALSE);
+	DrawAutoPilotMessage (false);
 }
 
 static void
@@ -118,7 +118,7 @@ BackgroundInitKernel (DWORD TimeOut)
 void
 SignalStopMainThread (void)
 {
-	GamePaused = FALSE;
+	GamePaused = false;
 	GLOBAL (CurrentActivity) |= CHECK_ABORT;
 	TaskSwitch ();
 }
@@ -255,7 +255,7 @@ while (--ac > 0)
 				"*******************\n");
 		log_showBox (true, true);
 
-		MainExited = TRUE;
+		MainExited = true;
 		return EXIT_FAILURE;
 	}
 	log_add (log_Info, "We've loaded the Kernel");
@@ -300,7 +300,7 @@ while (--ac > 0)
 		AddInitialGameEvents ();
 
 		// Reset Debug Key
-		DebugKeyPressed = FALSE;
+		DebugKeyPressed = false;
 
 		// Debug info when starting a new game
 		if (LastActivity == (CHECK_LOAD | CHECK_RESTART))
@@ -377,7 +377,7 @@ while (--ac > 0)
 			{
 				GLOBAL (CurrentActivity) = MAKE_WORD (IN_INTERPLANETARY, 0);
 
-				DrawAutoPilotMessage (TRUE);
+				DrawAutoPilotMessage (true);
 				SetGameClockRate (INTERPLANETARY_CLOCK_RATE);
 				ExploreSolarSys ();
 			}
@@ -386,12 +386,12 @@ while (--ac > 0)
 				// Entering HyperSpace or QuasiSpace.
 				GLOBAL (CurrentActivity) = MAKE_WORD (IN_HYPERSPACE, 0);
 
-				DrawAutoPilotMessage (TRUE);
+				DrawAutoPilotMessage (true);
 				SetGameClockRate (HYPERSPACE_CLOCK_RATE);
 				Battle (&on_battle_frame);
 			}
 
-			SetFlashRect (NULL, FALSE);
+			SetFlashRect (NULL, false);
 
 			LastActivity = GLOBAL (CurrentActivity);
 
@@ -407,7 +407,7 @@ while (--ac > 0)
 				}
 				else if (GLOBAL (CurrentActivity) & CHECK_RESTART){
 					// surrendered to Ur-Quan
-					DeathBySurrender = TRUE;
+					DeathBySurrender = true;
 					GLOBAL (CurrentActivity) &= ~CHECK_RESTART;
 				}
 				break;
@@ -428,7 +428,7 @@ while (--ac > 0)
 	FreeKernel ();
 
 	log_showBox (false, false);
-	MainExited = TRUE;
+	MainExited = true;
 
 	(void) threadArg;  /* Satisfying compiler (unused parameter) */
 	return 0;

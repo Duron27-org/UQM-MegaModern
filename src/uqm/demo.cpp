@@ -110,7 +110,7 @@ OpenJournal (void)
 	}
 }
 
-BOOLEAN
+bool
 CloseJournal (void)
 {
 	if (journal_fh)
@@ -123,7 +123,7 @@ CloseJournal (void)
 		if (ArrowInput == DemoInput)
 		{
 			ArrowInput = OldArrowInput;
-			return (FALSE);
+			return (false);
 		}
 #if CREATE_JOURNAL
 		else if (fp = res_OpenResFile ("starcon.jnl", "wb"))
@@ -134,7 +134,7 @@ CloseJournal (void)
 #endif /* CREATE_JOURNAL */
 	}
 
-	return (TRUE);
+	return (true);
 }
 
 #endif

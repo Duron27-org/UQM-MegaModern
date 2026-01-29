@@ -156,7 +156,7 @@ serialiseBits (BYTE **bufPtrPtr, DWORD *restBitsPtr, size_t *restBitCount,
 // This function fills in '*buf' with the newly allocated buffer, and
 // '*numBytes' with its size. The caller becomes the owner of '*buf' and
 // is responsible for freeing it.
-BOOLEAN
+bool
 serialiseGameState (const GameStateBitMap *bm, BYTE **buf,
 		size_t *numBytes)
 {
@@ -178,7 +178,7 @@ serialiseGameState (const GameStateBitMap *bm, BYTE **buf,
 	// Allocate memory for the serialised data.
 	result = (BYTE*)HMalloc (totalBytes);
 	if (result == NULL)
-		return FALSE;
+		return false;
 
 	bufPtr = result;
 	for (bmPtr = bm; bmPtr; bmPtr++)
@@ -224,7 +224,7 @@ serialiseGameState (const GameStateBitMap *bm, BYTE **buf,
 
 	*buf = result;
 	*numBytes = totalBytes;
-	return TRUE;
+	return true;
 }
 
 // Read 'numBits' bits from '*bytePtr', starting at the bit offset
@@ -275,7 +275,7 @@ deserialiseBits (const BYTE **bytePtr, BYTE *bitPtr, size_t numBits)
 
 // Deserialise the current game state from the bit array in 'buf', which
 // has size 'numBytes', according to the GameStateBitMap 'bm'.
-BOOLEAN
+bool
 deserialiseGameState (const GameStateBitMap *bm,
 		const BYTE *buf, size_t numBytes, int rev)
 {
@@ -286,7 +286,7 @@ deserialiseGameState (const GameStateBitMap *bm,
 	BYTE bitPtr = 0;
 			// Number of bits already processed from the byte pointed at by
 			// bytePtr.
-	BOOLEAN matchRev = TRUE;
+	bool matchRev = true;
 
 	// Sanity check: determine the number of bits required, and check
 	// whether 'numBytes' is large enough.
@@ -295,7 +295,7 @@ deserialiseGameState (const GameStateBitMap *bm,
 	{
 		log_add (log_Error, "Warning: deserialiseGameState(): Corrupt "
 				"save game: state: less bytes available than expected.");
-		return FALSE;
+		return false;
 	}
 
 	for (bmPtr = bm; bmPtr; bmPtr++)
@@ -334,13 +334,13 @@ deserialiseGameState (const GameStateBitMap *bm,
 		else if (bmPtr->numBits == 0)
 			break;
 		else if (bmPtr->numBits > rev)
-			matchRev = FALSE;
+			matchRev = false;
 	}
 #ifdef STATE_DEBUG
 	fflush (stderr);
 #endif  /* STATE_DEBUG */
 
-	return TRUE;
+	return true;
 }
 
 static void
@@ -363,7 +363,7 @@ CreateRadar (void)
 	}
 }
 
-BOOLEAN
+bool
 LoadSC2Data (void)
 {
 	if (FlagStatFrame == 0)
@@ -371,17 +371,17 @@ LoadSC2Data (void)
 		FlagStatFrame = CaptureDrawable (
 				LoadGraphic (FLAGSTAT_MASK_PMAP_ANIM));
 		if (FlagStatFrame == NULL)
-			return FALSE;
+			return false;
 
 		MiscDataFrame = CaptureDrawable (
 				LoadGraphic (MISCDATA_MASK_PMAP_ANIM));
 		if (MiscDataFrame == NULL)
-			return FALSE;
+			return false;
 
 		visitedStarsFrame = CaptureDrawable (
 				LoadGraphic (VISITED_STARS_ANIM));
 		if (visitedStarsFrame == NULL)
-			return FALSE;
+			return false;
 
 		FontGradFrame = CaptureDrawable (
 				LoadGraphic (FONTGRAD_PMAP_ANIM));
@@ -395,7 +395,7 @@ LoadSC2Data (void)
 				GLOBAL (ShipStamp.origin.y) = -1;
 	}
 
-	return TRUE;
+	return true;
 }
 
 static void
@@ -499,13 +499,13 @@ LoadFleetInfo (void)
 		{
 			// Ur-Quan probe.
 			RACE_DESC *RDPtr = load_ship (FleetPtr->SpeciesID,
-					FALSE);
+					false);
 			if (RDPtr)
 			{	// Grab a copy of loaded icons and strings
 				copyFleetInfo (FleetPtr, &RDPtr->ship_info,
 						&RDPtr->fleet);
 				// avail_race_q owns these resources now
-				free_ship (RDPtr, FALSE, FALSE);
+				free_ship (RDPtr, false, false);
 			}
 		}
 
@@ -517,16 +517,16 @@ LoadFleetInfo (void)
 		FleetPtr->growth_err_term = 255 >> 1;
 		FleetPtr->days_left = 0;
 		FleetPtr->func_index = ~0;
-		FleetPtr->can_build = FALSE;
+		FleetPtr->can_build = false;
 		if (optUnlockShips && i < LAST_MELEE_ID)
-			FleetPtr->can_build = TRUE;
+			FleetPtr->can_build = true;
 
 		UnlockFleetInfo (&GLOBAL (avail_race_q), hFleet);
 		PutQueue (&GLOBAL (avail_race_q), hFleet);
 	}
 }
 
-BOOLEAN
+bool
 InitGameStructures (void)
 {
 	COUNT i;
@@ -562,8 +562,8 @@ InitGameStructures (void)
 	// The new seed will be saved to SIS and optCustomSeed
 	// If non-starseed, this will give us a default plot map,
 	// so we still need this.
-	if (!InitStarseed (TRUE))
-		return (FALSE);
+	if (!InitStarseed (true))
+		return (false);
 	GLOBAL_SIS (Seed) = optCustomSeed;	// In case Starseed rolls the seed
 
 	PlayFrame = CaptureDrawable (LoadGraphic (PLAYMENU_ANIM));
@@ -576,7 +576,7 @@ InitGameStructures (void)
 	LoadSC2Data ();
 
 	InitPlanetInfo ();
-	InitGroupInfo (TRUE);
+	InitGroupInfo (true);
 
 	GLOBAL (glob_flags) = NUM_READ_SPEEDS >> 1;
 	
@@ -698,7 +698,7 @@ InitGameStructures (void)
 			sizeof (GLOBAL_SIS (CommanderName)),
 			GAME_STRING (NAMING_STRING_BASE + 6)); // UNNAMED
 
-	SetRaceAllied (HUMAN_SHIP, TRUE);
+	SetRaceAllied (HUMAN_SHIP, true);
 	CloneShipFragment (HUMAN_SHIP, &GLOBAL (built_ship_q), 0);
 
 	if (optHeadStart)
@@ -722,7 +722,7 @@ InitGameStructures (void)
 	ZeroAdvancedAutoPilot ();
 	ZeroAdvancedQuasiPilot ();
 
-	return (TRUE);
+	return (true);
 }
 
 void
@@ -800,7 +800,7 @@ SeedDEBUG ()
 	COUNT histogram[100] = {0};
 	COUNT decisec;
 	clock_t start_clock;
-	BOOLEAN myRNG = false;
+	bool myRNG = false;
 	for (decisec = 0; decisec < 100; decisec++)
 		histogram[decisec] = 0;
 
@@ -854,8 +854,8 @@ SeedDEBUG ()
 // star_array - a copy of the starmap (starmap_array)
 // plot_map - a plot array
 // portal_map - a quasispace portal array
-BOOLEAN
-InitStarseed (BOOLEAN newgame)
+bool
+InitStarseed (bool newgame)
 {
 	COUNT i;
 #ifdef DEBUG_STARSEED_TRACE_V
@@ -881,7 +881,7 @@ InitStarseed (BOOLEAN newgame)
 		if (StarGenRNG)
 			RandomContext_Delete (StarGenRNG);
 		StarGenRNG = NULL;
-		return TRUE;
+		return true;
 	}
 	if (optSeedType == OPTVAL_MRQ)
 	{
@@ -912,7 +912,7 @@ InitStarseed (BOOLEAN newgame)
 			if (StarGenRNG)
 				RandomContext_Delete (StarGenRNG);
 			StarGenRNG = NULL;
-			return FALSE;
+			return false;
 		}
 		if (!SeedQuasispace (portal_map, plot_map, star_array))
 		{
@@ -920,7 +920,7 @@ InitStarseed (BOOLEAN newgame)
 			if (StarGenRNG)
 				RandomContext_Delete (StarGenRNG);
 			StarGenRNG = NULL;
-			return FALSE;
+			return false;
 		}
 	}
 	else
@@ -943,7 +943,7 @@ InitStarseed (BOOLEAN newgame)
 			if (StarGenRNG)
 				RandomContext_Delete (StarGenRNG);
 			StarGenRNG = NULL;
-			return FALSE;
+			return false;
 		}
 		if (!SeedQuasispace (portal_map, plot_map, star_array))
 		{
@@ -951,7 +951,7 @@ InitStarseed (BOOLEAN newgame)
 			if (StarGenRNG)
 				RandomContext_Delete (StarGenRNG);
 			StarGenRNG = NULL;
-			return FALSE;
+			return false;
 		}
 	}
 	if (OOPS_ALL > 0)
@@ -967,10 +967,10 @@ InitStarseed (BOOLEAN newgame)
 	if (StarGenRNG)
 		RandomContext_Delete (StarGenRNG);
 	StarGenRNG = NULL;
-	return (TRUE);
+	return (true);
 }
 
-BOOLEAN
+bool
 inFullGame (void)
 {
 	ACTIVITY act = LOBYTE (GLOBAL (CurrentActivity));
@@ -979,7 +979,7 @@ inFullGame (void)
 			act == WON_LAST_BATTLE);
 }
 
-BOOLEAN
+bool
 inSuperMelee (void)
 {
 	return (LOBYTE (GLOBAL (CurrentActivity)) == SUPER_MELEE);
@@ -987,7 +987,7 @@ inSuperMelee (void)
 }
 
 #if 0
-BOOLEAN
+bool
 inBattle (void)
 {
 	// TODO: IN_BATTLE is also set while in HyperSpace/QuasiSpace.
@@ -998,7 +998,7 @@ inBattle (void)
 #if 0
 // Disabled for now as there are similar functions in uqm/planets/planets.h
 // Pre: inFullGame()
-BOOLEAN
+bool
 inInterPlanetary (void)
 {
 	assert (inFullGame ());
@@ -1006,7 +1006,7 @@ inInterPlanetary (void)
 }
 
 // Pre: inFullGame()
-BOOLEAN
+bool
 inSolarSystem (void)
 {
 	assert (inFullGame ());
@@ -1014,7 +1014,7 @@ inSolarSystem (void)
 }
 
 // Pre: inFullGame()
-BOOLEAN
+bool
 inOrbit (void)
 {
 	assert (inFullGame ());
@@ -1025,7 +1025,7 @@ inOrbit (void)
 
 // In HyperSpace or QuasiSpace
 // Pre: inFullGame()
-BOOLEAN
+bool
 inHQSpace (void)
 {
 	//assert (inFullGame ());
@@ -1035,7 +1035,7 @@ inHQSpace (void)
 
 // In HyperSpace
 // Pre: inFullGame()
-BOOLEAN
+bool
 inHyperSpace (void)
 {
 	//assert (inFullGame ());
@@ -1046,7 +1046,7 @@ inHyperSpace (void)
 
 // In QuasiSpace
 // Pre: inFullGame()
-BOOLEAN
+bool
 inQuasiSpace (void)
 {
 	//assert (inFullGame ());

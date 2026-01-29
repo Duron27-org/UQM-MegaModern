@@ -27,10 +27,10 @@
 #define PAD_SCOPE_BYTES 256
 
 extern void *_GetMusicData (uio_Stream *fp, DWORD length);
-extern BOOLEAN _ReleaseMusicData (void *handle);
+extern bool _ReleaseMusicData (void *handle);
 
 extern void *_GetSoundBankData (uio_Stream *fp, DWORD length);
-extern BOOLEAN _ReleaseSoundBankData (void *handle);
+extern bool _ReleaseSoundBankData (void *handle);
 
 #define AllocMusicData HMalloc
 #define FreeMusicData  HFree

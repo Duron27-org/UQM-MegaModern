@@ -40,10 +40,10 @@ static SEQUENCE* Talk;
 static SEQUENCE* Transit;
 static COUNT FirstAmbient;
 static COUNT TotalSequences;
-static BOOLEAN doFullRedraw = FALSE;
+static bool doFullRedraw = false;
 
 //stuff for Alpha animation in HD
-BOOLEAN filterEnabled = FALSE;
+bool filterEnabled = false;
 FILTER_DESC FilterData;
 
 static inline SWORD
@@ -127,7 +127,7 @@ SetupTalkSequence (SEQUENCE *pSeq, ANIMATION_DESC *ADPtr)
 	pSeq->AnimType = PICTURE_ANIM;
 }
 
-static inline BOOLEAN
+static inline bool
 animAtNeutralIndex (SEQUENCE *pSeq)
 {
 	ANIMATION_DESC *ADPtr = pSeq->ADPtr;
@@ -142,7 +142,7 @@ animAtNeutralIndex (SEQUENCE *pSeq)
 	}
 }
 
-static inline BOOLEAN
+static inline bool
 conflictsWithTalkingAnim (SEQUENCE *pSeq)
 {
 	ANIMATION_DESC *ADPtr = pSeq->ADPtr;
@@ -168,14 +168,14 @@ ProcessColormapAnims (SEQUENCE *pSeq, COUNT Num)
 				SetAbsColorMapIndex (CommData.AlienColorMap,
 				ADPtr->StartIndex + pSeq->CurIndex)),
 				pSeq->Alarm - 1);
-		pSeq->Change = FALSE;
+		pSeq->Change = false;
 	}
 }
 
-static BOOLEAN
+static bool
 AdvanceAmbientSequence (SEQUENCE *pSeq)
 {
-	BOOLEAN active;
+	bool active;
 	ANIMATION_DESC *ADPtr = pSeq->ADPtr;
 
 	--pSeq->FramesLeft;
@@ -184,12 +184,12 @@ AdvanceAmbientSequence (SEQUENCE *pSeq)
 	if (pSeq->FramesLeft
 			|| ((ADPtr->AnimFlags & YOYO_ANIM) && pSeq->NextIndex != 0))
 	{
-		active = TRUE;
+		active = true;
 		pSeq->Alarm = randomFrameRate (pSeq) + 1;
 	}
 	else
 	{	// last animation frame
-		active = FALSE;
+		active = false;
 		pSeq->Alarm = randomRestartRate (pSeq) + 1;
 
 		// RANDOM_ANIM must end on a neutral frame
@@ -199,7 +199,7 @@ AdvanceAmbientSequence (SEQUENCE *pSeq)
 
 	// Will draw the next frame or change to next colormap
 	pSeq->CurIndex = pSeq->NextIndex;
-	pSeq->Change = TRUE;
+	pSeq->Change = true;
 
 	if (pSeq->FramesLeft == 0)
 	{	// Animation ended
@@ -236,7 +236,7 @@ ResetSequence (SEQUENCE *pSeq)
 	// NOTE: This does not handle CIRCULAR_ANIM properly
 	pSeq->Direction = NO_DIR;
 	pSeq->CurIndex = 0;
-	pSeq->Change = TRUE;
+	pSeq->Change = true;
 }
 
 static void
@@ -275,7 +275,7 @@ AdvanceTalkingSequence (SEQUENCE *pSeq, DWORD ElapsedTicks)
 
 	// Time to start or advance the animation
 	pSeq->Alarm = randomFrameRate (pSeq);
-	pSeq->Change = TRUE;
+	pSeq->Change = true;
 	// Talking animation is like RANDOM_ANIM, except that
 	// random frames always alternate with the neutral one
 	// The animation does not stop until we reset it
@@ -292,10 +292,10 @@ AdvanceTalkingSequence (SEQUENCE *pSeq, DWORD ElapsedTicks)
 	}
 }
 
-static BOOLEAN
+static bool
 AdvanceTransitSequence (SEQUENCE *pSeq, DWORD ElapsedTicks)
 {
-	BOOLEAN done = FALSE;
+	bool done = false;
 	// We use the actual descriptor for flags processing and
 	// a copied one for drawing. A copied one is updated only
 	// when it is safe to do so.
@@ -310,11 +310,11 @@ AdvanceTransitSequence (SEQUENCE *pSeq, DWORD ElapsedTicks)
 	if (pSeq->Alarm > ElapsedTicks)
 	{	// Not time yet
 		pSeq->Alarm -= ElapsedTicks;
-		return FALSE;
+		return false;
 	}
 
 	// Time to start or advance the animation
-	pSeq->Change = TRUE;
+	pSeq->Change = true;
 
 	if (pSeq->Direction == NO_DIR)
 	{	// just starting now
@@ -356,7 +356,7 @@ AdvanceTransitSequence (SEQUENCE *pSeq, DWORD ElapsedTicks)
 
 			// Done with all transition frames
 			ADPtr->AnimFlags |= ANIM_DISABLED;
-			done = TRUE;
+			done = true;
 		}
 		pSeq->Direction = NO_DIR;
 	}
@@ -395,8 +395,8 @@ InitCommAnimations (void)
 	LastTime = GetTimeCounter ();
 }
 
-BOOLEAN
-ProcessCommAnimations (BOOLEAN FullRedraw, BOOLEAN paused)
+bool
+ProcessCommAnimations (bool FullRedraw, bool paused)
 {
 	if (paused)
 	{	// Drive colormap xforms and nothing else
@@ -404,16 +404,16 @@ ProcessCommAnimations (BOOLEAN FullRedraw, BOOLEAN paused)
 		if (XFormColorMap_step ())
 		{	// Once seeking is done and colors have
 			// changed - redraw a full frame
-			doFullRedraw = TRUE;
+			doFullRedraw = true;
 		}
-		return FALSE;
+		return false;
 	}
 	else
 	{
 		COUNT i;
 		SEQUENCE *pSeq;
-		BOOLEAN Change;
-		BOOLEAN CanTalk = TRUE;
+		bool Change;
+		bool CanTalk = true;
 		TimeCount CurTime;
 		DWORD ElapsedTicks;
 		DWORD NextActiveMask;
@@ -425,8 +425,8 @@ ProcessCommAnimations (BOOLEAN FullRedraw, BOOLEAN paused)
 		if (doFullRedraw)
 		{	// to make frame colors in sync
 			// mostly for HD
-			FullRedraw = TRUE;
-			doFullRedraw = FALSE;
+			FullRedraw = true;
+			doFullRedraw = false;
 		}
 			
 		// Process ambient animations
@@ -492,12 +492,12 @@ ProcessCommAnimations (BOOLEAN FullRedraw, BOOLEAN paused)
 				}
 				else
 				{	// Otherwise, let the animation run until it's safe
-					CanTalk = FALSE;
+					CanTalk = false;
 				}
 			}
 
 			if (pSeq->Change && ADPtr->AnimFlags & TRIGGER_FULL_REDRAW)
-				FullRedraw = TRUE;
+				FullRedraw = true;
 		}
 		// All ambient animations have been processed. Advance the mask.
 		ActiveMask = NextActiveMask;
@@ -505,7 +505,7 @@ ProcessCommAnimations (BOOLEAN FullRedraw, BOOLEAN paused)
 		// Process the talking and transition animations
 		if (CanTalk	&& haveTalkingAnim () && runningTalkingAnim ())
 		{
-			BOOLEAN done = FALSE;
+			bool done = false;
 
 			if (signaledStopTalkingAnim () && haveTransitionAnim ())
 			{	// Run the transition. We will clear everything
@@ -531,7 +531,7 @@ ProcessCommAnimations (BOOLEAN FullRedraw, BOOLEAN paused)
 			else
 			{	// Not talking
 				ResetSequence (Talk);
-				done = TRUE;
+				done = true;
 			}
 
 			if (signaledStopTalkingAnim () && done)
@@ -550,10 +550,10 @@ ProcessCommAnimations (BOOLEAN FullRedraw, BOOLEAN paused)
 
 		// Draw all animations
 		{
-			BOOLEAN ColorChange = XFormColorMap_step ();
+			bool ColorChange = XFormColorMap_step ();
 
 			if (ColorChange)
-				FullRedraw = TRUE;
+				FullRedraw = true;
 
 			// Colormap animations are processed separately
 			// from picture anims (see XFormColorMap_step)
@@ -562,7 +562,7 @@ ProcessCommAnimations (BOOLEAN FullRedraw, BOOLEAN paused)
 
 			Change = DrawAlienFrame (Sequences, TotalSequences, FullRedraw);
 			if (FullRedraw)
-				Change = TRUE;
+				Change = true;
 		}
 		
 		UnbatchGraphics ();
@@ -585,11 +585,11 @@ ProcessCommAnimations (BOOLEAN FullRedraw, BOOLEAN paused)
 				ADPtr->AnimFlags |= ANIM_DISABLED;
 
 				if (ADPtr->AnimFlags & RESTART_ALL_AFTER)
-					SwitchSequences (TRUE);
+					SwitchSequences (true);
 
 				if (ADPtr->AnimFlags & STOP_ALL_AFTER)
 				{
-					SwitchSequences (FALSE);
+					SwitchSequences (false);
 					CommData.AlienTalkDesc.AnimFlags |= PAUSE_TALKING;
 					TalkDesc.AnimFlags |= ANIM_DISABLED;
 					CommData.AlienFrame = SetAbsFrameIndex
@@ -640,12 +640,12 @@ ApplyFilterToStamp (STAMP s)
 	}
 }
 
-BOOLEAN
-DrawAlienFrame (SEQUENCE *Sequences, COUNT Num, BOOLEAN fullRedraw)
+bool
+DrawAlienFrame (SEQUENCE *Sequences, COUNT Num, bool fullRedraw)
 {
 	int i;
 	STAMP s;
-	BOOLEAN Change = FALSE;
+	bool Change = false;
 
 	BatchGraphics ();
 
@@ -703,14 +703,14 @@ DrawAlienFrame (SEQUENCE *Sequences, COUNT Num, BOOLEAN fullRedraw)
 			if (!fullRedraw && filterEnabled)
 				ApplyFilterToStamp (s);
 
-			pSeq->Change = FALSE;
+			pSeq->Change = false;
 
-			Change = TRUE;
+			Change = true;
 		}
 	}
 	if (filterEnabled && fullRedraw)
 	{	// Kruzen: draw any filter if there are any and we need to
-		// No need to set Change to TRUE since it's already TRUE on
+		// No need to set Change to true since it's already true on
 		// fullRedraw
 		for (i = 0; i < FilterData.NumFilters; i++)
 		{
@@ -778,23 +778,23 @@ DrawAlienFrame (SEQUENCE *Sequences, COUNT Num, BOOLEAN fullRedraw)
 postprocess:
 			if (FTPtr->Flags & TURN_OFF_OFT && factor == 0x00)
 			{
-				filterEnabled = FALSE;
+				filterEnabled = false;
 			}
 
 			if (FTPtr->Flags & TURN_OFF_OFO && factor == 0xFF)
 			{
-				filterEnabled = FALSE;
+				filterEnabled = false;
 			}
 
 			if (FTPtr->Flags & SWITCH_OFF_ANIMS && factor == 0xFF)
 			{
-				SwitchSequences (FALSE);
-				EnableTalkingAnim (FALSE);
+				SwitchSequences (false);
+				EnableTalkingAnim (false);
 			}
 			if (FTPtr->Flags & SWITCH_ON_ANIMS && factor != 0xFF)
 			{
-				SwitchSequences (TRUE);
-				EnableTalkingAnim (TRUE);
+				SwitchSequences (true);
+				EnableTalkingAnim (true);
 			}
 		}
 	}
@@ -815,7 +815,7 @@ ShutYourMouth (void)
 }
 
 void
-SwitchSequences (BOOLEAN enableAll)
+SwitchSequences (bool enableAll)
 {	// Kruzen: Needed for disabling animations during
 	// HD one-time transitions (i.e. orz frumple)
 	COUNT i;
@@ -859,7 +859,7 @@ RunOneTimeSequence (COUNT animIndex, COUNT flags)
 
 		if (!(CommData.AlienAmbientArray[animIndex].AnimFlags
 				& ALPHA_MASK_ANIM))
-			SwitchSequences (FALSE);
+			SwitchSequences (false);
 	}
 }
 
@@ -870,13 +870,13 @@ EngageFilters (FILTER_DESC* f_desc)
 		return;
 
 	FilterData = *f_desc;
-	filterEnabled = TRUE;
+	filterEnabled = true;
 }
 
 void
 DisengageFilters (void)
 {
-	filterEnabled = FALSE;
+	filterEnabled = false;
 }
 
 void

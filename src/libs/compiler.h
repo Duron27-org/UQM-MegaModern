@@ -40,18 +40,8 @@ typedef SWORD              SIZE;
 
 typedef char            CHAR_T;
 
-// TODO-pragmanull: get rid of BOOLEAN and the TRUE/FALSE defines.
-using BOOLEAN = bool;
-#define TRUE true
-#define FALSE false
-//typedef enum
-//{
-//	FALSE = 0,
-//	TRUE
-//} BOOLEAN;
-
 typedef void     (*PVOIDFUNC) (void);
-typedef BOOLEAN  (*PBOOLFUNC) (void);
+typedef bool  (*PBOOLFUNC) (void);
 typedef BYTE     (*PBYTEFUNC) (void);
 typedef UWORD    (*PUWORDFUNC) (void);
 typedef SWORD    (*PSWORDFUNC) (void);

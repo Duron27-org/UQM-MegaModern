@@ -26,7 +26,7 @@ extern "C" {
 
 extern HSTARSHIP GetEncounterStarShip (STARSHIP *LastStarShipPtr,
 		COUNT which_player);
-extern void DrawArmadaPickShip (BOOLEAN draw_salvage_frame, RECT *pPickRect);
+extern void DrawArmadaPickShip (bool draw_salvage_frame, RECT *pPickRect);
 
 extern void InitPickFrame (void);
 extern void DestroyPickFrame (void);

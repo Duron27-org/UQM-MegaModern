@@ -190,11 +190,11 @@ spawn_point_defense (ELEMENT *ElementPtr)
 	}
 	else
 	{
-		BOOLEAN PaidFor;
+		bool PaidFor;
 		HELEMENT hObject, hNextObject;
 		ELEMENT *ShipPtr;
 
-		PaidFor = FALSE;
+		PaidFor = false;
 
 		LockElement (StarShipPtr->hShip, &ShipPtr);
 		for (hObject = GetTailElement (); hObject; hObject = hNextObject)
@@ -237,7 +237,7 @@ spawn_point_defense (ELEMENT *ElementPtr)
 								StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 1), ElementPtr);
 						StarShipPtr->special_counter =
 								StarShipPtr->RaceDescPtr->characteristics.special_wait;
-						PaidFor = TRUE;
+						PaidFor = true;
 					}
 
 					LaserBlock.cx = ShipPtr->next.location.x;

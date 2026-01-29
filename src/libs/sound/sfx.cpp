@@ -29,7 +29,7 @@
 
 static void CheckFinishedChannels (void);
 
-static const SoundPosition notPositional = {FALSE, 0, 0};
+static const SoundPosition notPositional = {false, 0, 0};
 
 void
 PlayChannel (COUNT channel, SOUND snd, SoundPosition pos,
@@ -86,7 +86,7 @@ CheckFinishedChannels (void)
 	}
 }
 
-BOOLEAN
+bool
 ChannelPlaying (COUNT WhichChannel)
 {
 	audio_IntVal state;
@@ -94,8 +94,8 @@ ChannelPlaying (COUNT WhichChannel)
 	audio_GetSourcei (soundSource[WhichChannel].handle,
 			audio_SOURCE_STATE, &state);
 	if (state == audio_PLAYING)
-		return TRUE;
-	return FALSE;
+		return true;
+	return false;
 }
 
 void *
@@ -253,14 +253,14 @@ _GetSoundBankData (uio_Stream *fp, DWORD length)
 	return Snd;
 }
 
-BOOLEAN
+bool
 _ReleaseSoundBankData (void *Snd)
 {
 	STRING_TABLE fxTab = (STRING_TABLE)Snd;
 	int index;
 	
 	if (!fxTab)
-		return FALSE;
+		return false;
 
 	for (index = 0; index < fxTab->size; ++index)
 	{
@@ -287,10 +287,10 @@ _ReleaseSoundBankData (void *Snd)
 	
 	FreeStringTable (fxTab);
 
-	return TRUE;
+	return true;
 }
 
-BOOLEAN
+bool
 DestroySound(SOUND_REF target)
 {
 	return _ReleaseSoundBankData (target);

@@ -23,19 +23,19 @@
 
 //#define DEBUG_GRAVITY
 
-BOOLEAN
+bool
 CalculateGravity (ELEMENT *ElementPtr)
 {
-	BOOLEAN retval, HasGravity;
+	bool retval, HasGravity;
 	HELEMENT hTestElement, hSuccElement;
 
-	retval = FALSE;
-	HasGravity = (BOOLEAN)(CollidingElement (ElementPtr)
+	retval = false;
+	HasGravity = (bool)(CollidingElement (ElementPtr)
 			&& GRAVITY_MASS (ElementPtr->mass_points + 1));
 	for (hTestElement = GetHeadElement ();
 			hTestElement != 0; hTestElement = hSuccElement)
 	{
-		BOOLEAN TestHasGravity;
+		bool TestHasGravity;
 		ELEMENT *TestElementPtr;
 
 		LockElement (hTestElement, &TestElementPtr);
@@ -116,7 +116,7 @@ CalculateGravity (ELEMENT *ElementPtr)
 #endif /* DEBUG_GRAVITY */
 					if (TestHasGravity)
 					{
-						retval = TRUE;
+						retval = true;
 						UnlockElement (hTestElement);
 						break;
 					}
@@ -148,7 +148,7 @@ CalculateGravity (ELEMENT *ElementPtr)
 	return (retval);
 }
 
-BOOLEAN
+bool
 TimeSpaceMatterConflict (ELEMENT *ElementPtr)
 {
 	HELEMENT hTestElement, hSuccElement;
@@ -195,6 +195,6 @@ TimeSpaceMatterConflict (ELEMENT *ElementPtr)
 		UnlockElement (hTestElement);
 	}
 
-	return (hTestElement != 0 ? TRUE : FALSE);
+	return (hTestElement != 0 ? true : false);
 }
 

@@ -70,7 +70,7 @@ GenerateWreck_generatePlanets (SOLARSYS_STATE *solarSys)
 					(RandVal % (MAX_GEN_PLANETS - PByte) + PByte);
 
 			FillOrbits (solarSys, pSunDesc->NumPlanets,
-					solarSys->PlanetDesc, FALSE);
+					solarSys->PlanetDesc, false);
 			GeneratePlanets (solarSys);
 		}
 		else
@@ -121,7 +121,7 @@ GenerateWreck_generateOrbital (SOLARSYS_STATE *solarSys,
 				return true;
 
 			{
-				BOOLEAN Survivors =
+				bool Survivors =
 						GetHeadLink (&GLOBAL(npc_built_ship_q)) != 0;
 
 				GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;

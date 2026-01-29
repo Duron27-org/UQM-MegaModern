@@ -36,7 +36,7 @@ extern "C" {
 
 typedef BATTLE_INPUT_STATE (*BattleFrameInputFunction) (
 		InputContext *context, STARSHIP *StarShipPtr);
-typedef BOOLEAN (*SelectShipFunction) (InputContext *context,
+typedef bool (*SelectShipFunction) (InputContext *context,
 		GETMELEE_STATE *gms);
 typedef bool (*BattleEndReadyFunction) (InputContext *context);
 typedef void (*DeleteInputContextFunction) (InputContext *context);

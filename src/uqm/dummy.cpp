@@ -144,14 +144,14 @@ GetCodeResData (const char *ship_id, RESOURCE_DATA *resdata)
 	resdata->ptr = hData;
 }
 
-static BOOLEAN
+static bool
 _ReleaseCodeResData (void *data)
 {
 	HFree (data);
-	return TRUE;
+	return true;
 }
 
-BOOLEAN
+bool
 InstallCodeResType ()
 {
 	return (InstallResTypeVectors ("SHIP",
@@ -172,11 +172,11 @@ LoadCodeResInstance (RESOURCE res)
 }
 
 
-BOOLEAN
+bool
 DestroyCodeRes (void *hCode)
 {
 	HFree (hCode);
-	return TRUE;
+	return true;
 }
 
 

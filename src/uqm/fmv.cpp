@@ -87,7 +87,7 @@ DoShipSpin (COUNT index, MUSIC_REF hMusic)
 	SetContextClipRect (&old_r);
 
 	if (hMusic)
-		PlayMusic (hMusic, TRUE, 1);
+		PlayMusic (hMusic, true, 1);
 
 	if (is3DO (optWhichIntro))
 		SleepThreadUntil (FadeScreen (FadeAllToColor, ONE_SECOND / 4));

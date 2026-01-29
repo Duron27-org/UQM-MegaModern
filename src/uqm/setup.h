@@ -71,32 +71,32 @@ extern QUEUE race_q[];
 		 * queue element is STARSHIP */
 
 
-extern BOOLEAN solTexturesPresent;
-extern BOOLEAN SyreenVoiceFix;
-extern BOOLEAN EndlessSCLoaded;
-extern BOOLEAN VolasPackPresent;
+extern bool solTexturesPresent;
+extern bool SyreenVoiceFix;
+extern bool EndlessSCLoaded;
+extern bool VolasPackPresent;
 extern BYTE Rando;
-extern BOOLEAN DeathBySurrender;
-extern BOOLEAN DeathByMelee;
-extern BOOLEAN DeathBySuicide;
-extern BOOLEAN SpaceMusicOK;
-extern BOOLEAN oldPlanetsPresent;
-extern BOOLEAN classicPackPresent;
+extern bool DeathBySurrender;
+extern bool DeathByMelee;
+extern bool DeathBySuicide;
+extern bool SpaceMusicOK;
+extern bool oldPlanetsPresent;
+extern bool classicPackPresent;
 
 extern ACTIVITY LastActivity;
 
 extern BYTE PlayerControl[];
 
-extern BOOLEAN usingSpeech;
+extern bool usingSpeech;
 		// Actual speech presence indicator which decouples reality from
 		// the user option, thus the user option remains as pure intent
 
-BOOLEAN InitContexts (void);
+bool InitContexts (void);
 void UninitPlayerInput (void);
-BOOLEAN InitGameKernel (void);
+bool InitGameKernel (void);
 void UninitGameKernel (void);
 
-extern BOOLEAN LoadKernel (int argc, char *argv[]);
+extern bool LoadKernel (int argc, char *argv[]);
 extern void FreeKernel (void);
 
 int initIO (void);

@@ -37,10 +37,10 @@
 #define CONFIRM_WIN_WIDTH RES_SCALE (84)
 #define CONFIRM_WIN_HEIGHT RES_SCALE (26)
 
-BOOLEAN WarpFromMenu = FALSE;
+bool WarpFromMenu = false;
 
 static void
-DrawConfirmationWindow (BOOLEAN answer, BOOLEAN confirm)
+DrawConfirmationWindow (bool answer, bool confirm)
 {
 	Color oldfg = SetContextForeGroundColor (SHADOWBOX_DARK_COLOR);
 	FONT  oldfont = SetContextFont (StarConFont);
@@ -60,8 +60,8 @@ DrawConfirmationWindow (BOOLEAN answer, BOOLEAN confirm)
 	}
 	else
 	{
-		DrawRenderedBox (&r, TRUE, ALT_SHADOWBOX_BACKGROUND_COLOR,
-				THICK_OUTER_BEVEL, FALSE);
+		DrawRenderedBox (&r, true, ALT_SHADOWBOX_BACKGROUND_COLOR,
+				THICK_OUTER_BEVEL, false);
 	}
 
 
@@ -91,11 +91,11 @@ DrawConfirmationWindow (BOOLEAN answer, BOOLEAN confirm)
 	SetContextForeGroundColor (oldfg);
 }
 
-BOOLEAN
+bool
 DoConfirmExit (void)
 {
-	BOOLEAN result;
-	BOOLEAN FlashPaused;
+	bool result;
+	bool FlashPaused;
 
 	if (PlayingTrack ())
 		PauseTrack ();
@@ -108,7 +108,7 @@ DoConfirmExit (void)
 		RECT ctxRect;
 		CONTEXT oldContext;
 		RECT oldRect;
-		BOOLEAN response = FALSE, done;
+		bool response = false, done;
 		Color OldColor;
 		DrawMode mode, oldMode;
 		BYTE oldVolume;
@@ -138,40 +138,40 @@ DoConfirmExit (void)
 
 		// There was a SetSystemRect(&r) call which we don't need anymore
 
-		DrawConfirmationWindow (response, FALSE);
+		DrawConfirmationWindow (response, false);
 		FlushGraphics ();
 
 		FlushInput ();
-		done = FALSE;
+		done = false;
 
 		oldVolume = GetCurrMusicVol();
 		FadeMusic (60, ONE_SECOND / 2);
 		
 		while (!done){
 			// Forbid recursive calls or pausing here!
-			ExitRequested = FALSE;
-			GamePaused = FALSE;
+			ExitRequested = false;
+			GamePaused = false;
 			UpdateInputState ();
 			if (GLOBAL (CurrentActivity) & CHECK_ABORT)
 			{	// something else triggered an exit
-				done = TRUE;
-				response = TRUE;
+				done = true;
+				response = true;
 			}
 			else if (PulsedInputState.menu[KEY_MENU_SELECT])
 			{
-				done = TRUE;
+				done = true;
 				PlayMenuSound (MENU_SOUND_SUCCESS);
 			}
 			else if (PulsedInputState.menu[KEY_MENU_CANCEL])
 			{
-				done = TRUE;
-				response = FALSE;
+				done = true;
+				response = false;
 			}
 			else if (PulsedInputState.menu[KEY_MENU_LEFT]
 					|| PulsedInputState.menu[KEY_MENU_RIGHT])
 			{
 				response = !response;
-				DrawConfirmationWindow (response, FALSE);
+				DrawConfirmationWindow (response, false);
 				PlayMenuSound (MENU_SOUND_MOVE);
 			}
 			SleepThread (ONE_SECOND / 30);
@@ -186,21 +186,21 @@ DoConfirmExit (void)
 		}
 		else
 		{
-			DrawConfirmationWindow (TRUE, TRUE);
+			DrawConfirmationWindow (true, true);
 		}
 		DestroyDrawable (ReleaseDrawable (s.frame));
 		ClearSystemRect ();
 		if (response || (GLOBAL (CurrentActivity) & CHECK_ABORT))
 		{
-			result = TRUE;
+			result = true;
 			GLOBAL (CurrentActivity) |= CHECK_ABORT;
 		}		
 		else
 		{
-			result = FALSE;
+			result = false;
 		}
-		ExitRequested = FALSE;
-		GamePaused = FALSE;
+		ExitRequested = false;
+		GamePaused = false;
 		FlushInput ();
 		SetContextClipRect (&oldRect);
 		SetContext (oldContext);
@@ -218,10 +218,10 @@ DoConfirmExit (void)
 typedef struct popup_state
 {
 	// standard state required by DoInput
-	BOOLEAN (*InputFunc) (struct popup_state *self);
+	bool (*InputFunc) (struct popup_state *self);
 } POPUP_STATE;
 
-static BOOLEAN
+static bool
 DoPopup (struct popup_state *self)
 {
 	(void)self;
@@ -244,7 +244,7 @@ DoPopupWindow (const char *msg)
 	POPUP_STATE state;
 	MENU_SOUND_FLAGS s0, s1;
 	InputFrameCallback *oldCallback;
-	BOOLEAN FlashPaused;
+	bool FlashPaused;
 
 	if (!bank)
 	{
@@ -284,7 +284,7 @@ DoPopupWindow (const char *msg)
 	oldCallback = SetInputCallback (NULL);
 
 	state.InputFunc = DoPopup;
-	DoInput (&state, TRUE);
+	DoInput (&state, true);
 
 	SetInputCallback (oldCallback);
 	ClearSystemRect ();

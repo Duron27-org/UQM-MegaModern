@@ -32,9 +32,9 @@ extern void UninitPlanetInfo (void);
 extern void GetPlanetInfo (void);
 extern void PutPlanetInfo (void);
 
-extern void InitGroupInfo (BOOLEAN FirstTime);
+extern void InitGroupInfo (bool FirstTime);
 extern void UninitGroupInfo (void);
-extern BOOLEAN GetGroupInfo (DWORD offset, BYTE which_group);
+extern bool GetGroupInfo (DWORD offset, BYTE which_group);
 extern DWORD PutGroupInfo (DWORD offset, BYTE which_group);
 #define GROUPS_RANDOM  ((DWORD)(0L))
 #define GROUPS_ADD_NEW ((DWORD)(~0L))

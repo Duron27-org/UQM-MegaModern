@@ -29,7 +29,7 @@ typedef struct bresenham_line
 	POINT first, second;
 	SIZE abs_delta_x, abs_delta_y;
 	SIZE error_term;
-	BOOLEAN end_points_exchanged;
+	bool end_points_exchanged;
 	INTERSECT_CODE intersect_code;
 } BRESENHAM_LINE;
 
@@ -77,13 +77,13 @@ extern INTERSECT_CODE _clip_line (const DRECT *pClipRect,
 		BRESENHAM_LINE *pLine);
 
 extern void *_GetCelData (uio_Stream *fp, DWORD length);
-extern BOOLEAN _ReleaseCelData (void *handle);
+extern bool _ReleaseCelData (void *handle);
 
 extern FRAME _CurFramePtr;
 
 // ClipRect is relative to ctxOrigin
 extern void _text_blt (RECT *pClipRect, TEXT *TextPtr, POINT ctxOrigin);
-extern void _text_blt_fade (RECT *pClipRect, TEXT *TextPtr, POINT ctxOrigin, FRAME repair, BOOLEAN *skip);
+extern void _text_blt_fade (RECT *pClipRect, TEXT *TextPtr, POINT ctxOrigin, FRAME repair, bool *skip);
 extern BYTE _text_blt_alt (RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin, BYTE swap, FONT AltFontPtr, UniChar key);
 
 #endif /* LIBS_GRAPHICS_DRAWABLE_H_ */

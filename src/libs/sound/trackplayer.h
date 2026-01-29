@@ -65,6 +65,6 @@ extern const CHAR_T *GetTrackSubtitleText (SUBTITLE_REF SubRef);
 
 extern const CHAR_T *GetTrackSubtitle (void);
 extern COUNT GetSubtitleNumberByTrack (COUNT track);
-extern DWORD RecalculateDelay (DWORD numChars, BOOLEAN talk);
+extern DWORD RecalculateDelay (DWORD numChars, bool talk);
 
 #endif

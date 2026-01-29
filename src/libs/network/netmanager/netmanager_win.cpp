@@ -426,7 +426,7 @@ NetManager_process(uint32 *timeoutMs) {
 	startEvent = 0;
 	while (startEvent < numActiveEvents) {
 		waitResult = WSAWaitForMultipleEvents(numActiveEvents - startEvent,
-				&events[startEvent], FALSE, timeoutTemp, FALSE);
+				&events[startEvent], false, timeoutTemp, false);
 		
 		if (waitResult == WSA_WAIT_IO_COMPLETION)
 			continue;

@@ -168,7 +168,7 @@ DecFrameIndex (FRAME FramePtr)
 	}
 }
 
-BOOLEAN
+bool
 IsFrameIndexed (FRAME FramePtr)
 {
 	return TFB_DrawCanvas_IsPaletted (FramePtr->image->NormalImg);

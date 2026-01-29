@@ -24,7 +24,7 @@
 
 //#define DEBUG_INTERSEC
 
-static inline BOOLEAN
+static inline bool
 images_intersect (IMAGE_BOX *box1, IMAGE_BOX *box2, const RECT *rect)
 {
 	return TFB_DrawImage_Intersect (box1->FramePtr->image, box1->Box.corner,
@@ -44,7 +44,7 @@ frame_intersect (INTERSECT_CONTROL *pControl0, RECT *pr0,
 	SDWORD iterator, xstep0, ystep0, xstep1, ystep1;
 	RECT r_intersect;
 	IMAGE_BOX IB0, IB1;
-	BOOLEAN check0, check1;
+	bool check0, check1;
 
 	IB0.FramePtr = pControl0->IntersectStamp.frame;
 	IB0.Box.corner = pr0->corner;
@@ -117,7 +117,7 @@ frame_intersect (INTERSECT_CONTROL *pControl0, RECT *pr0,
 		cycle1 = dy_1;
 	xerror1 = yerror1 = cycle1;
 			
-	check0 = check1 = FALSE;
+	check0 = check1 = false;
 	if (t0 <= 1)
 	{
 		time_error0 = time_error1 = 0;
@@ -201,7 +201,7 @@ frame_intersect (INTERSECT_CONTROL *pControl0, RECT *pr0,
 				yerror0 += cycle0;
 			}
 
-			check0 = TRUE;
+			check0 = true;
 			time_error0 -= (1 << TIME_SHIFT);
 		}
 			
@@ -218,7 +218,7 @@ frame_intersect (INTERSECT_CONTROL *pControl0, RECT *pr0,
 				yerror1 += cycle1;
 			}
 
-			check1 = TRUE;
+			check1 = true;
 			time_error1 -= (1 << TIME_SHIFT);
 		}
 
@@ -239,13 +239,13 @@ CheckFirstIntersection:
 			{
 				pr0->corner = IB0.Box.corner;
 				pControl0->last_time_val = t0;
-				check0 = FALSE;
+				check0 = false;
 			}
 			if (check1)
 			{
 				pr1->corner = IB1.Box.corner;
 				pControl1->last_time_val = t0;
-				check1 = FALSE;
+				check1 = false;
 			}
 		}
 	} while (t0 <= t1);

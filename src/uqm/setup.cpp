@@ -82,23 +82,23 @@ FRAME DefBevelFrame;
 STRING GameStrings;
 QUEUE disp_q;
 
-BOOLEAN solTexturesPresent;
-BOOLEAN SyreenVoiceFix;
-BOOLEAN EndlessSCLoaded;
+bool solTexturesPresent;
+bool SyreenVoiceFix;
+bool EndlessSCLoaded;
 BYTE Rando;
-BOOLEAN HDPackPresent;
-BOOLEAN VolasPackPresent;
-BOOLEAN DeathBySurrender = FALSE;
-BOOLEAN DeathByMelee = FALSE;
-BOOLEAN DeathBySuicide = FALSE;
-BOOLEAN SpaceMusicOK;
-BOOLEAN oldPlanetsPresent;
-BOOLEAN classicPackPresent;
+bool HDPackPresent;
+bool VolasPackPresent;
+bool DeathBySurrender = false;
+bool DeathByMelee = false;
+bool DeathBySuicide = false;
+bool SpaceMusicOK;
+bool oldPlanetsPresent;
+bool classicPackPresent;
 
 uio_Repository *repository;
 uio_DirHandle *rootDir;
 
-BOOLEAN usingSpeech;
+bool usingSpeech;
 
 
 static void
@@ -114,20 +114,20 @@ UninitPlayerInput (void)
 #endif /* DEMO_MODE */
 }
 
-BOOLEAN
+bool
 LoadKernel (int argc, char *argv[])
 {
 	InitSound (argc, argv);
-	InitVideoPlayer (TRUE);
+	InitVideoPlayer (true);
 
 	ScreenContext = CreateContext ("ScreenContext");
 	if (ScreenContext == NULL)
-		return FALSE;
+		return false;
 
 	Screen = CaptureDrawable (CreateDisplay (WANT_MASK | WANT_PIXMAP,
 				&screen_width, &screen_height));
 	if (Screen == NULL)
-		return FALSE;
+		return false;
 
 	SetContext (ScreenContext);
 	SetContextFGFrame (Screen);
@@ -135,13 +135,13 @@ LoadKernel (int argc, char *argv[])
 
 	hResIndex = (RESOURCE_INDEX) InitResourceSystem ();
 	if (hResIndex == 0)
-		return FALSE;
+		return false;
 	
 	/* Load base content. */
 	if (loadIndices (contentDir) == 0)
-		return FALSE; // Must have at least one index in content dir
+		return false; // Must have at least one index in content dir
 
-	classicPackPresent = FALSE;
+	classicPackPresent = false;
 
 	if (!IS_HD)
 	{
@@ -151,13 +151,13 @@ LoadKernel (int argc, char *argv[])
 	} 
 	else if (loadAddon ("mm-hd"))
 	{
-		HDPackPresent = TRUE;
+		HDPackPresent = true;
 		solTexturesPresent = loadAddon ("sol-textures-hd");
 		loadAddon ("yellow-fried-hd");
 		if (optWindowType == 2)
 		{
 			classicPackPresent =
-					optNoClassic ? FALSE : loadAddon ("classic-pack");
+					optNoClassic ? false : loadAddon ("classic-pack");
 		}
 	}
 
@@ -166,9 +166,9 @@ LoadKernel (int argc, char *argv[])
 	if (IS_DOS && isAddonAvailable (DOS_MODE (IS_HD)))
 		loadAddon (DOS_MODE (IS_HD));
 
-	usingSpeech = (BOOLEAN)optSpeech;
+	usingSpeech = (bool)optSpeech;
 	if (optSpeech && !loadAddon ("mm-3dovoice"))
-		usingSpeech = FALSE;
+		usingSpeech = false;
 	
 	if (usingSpeech)
 	{
@@ -230,7 +230,7 @@ LoadKernel (int argc, char *argv[])
 
 		ColorMapTab = CaptureColorMap (LoadColorMap (STARCON_COLOR_MAP));
 		if (ColorMapTab == NULL)
-			return FALSE; // The most basic resource is missing
+			return false; // The most basic resource is missing
 		SetColorMap (GetColorMapAddress (ColorMapTab));
 		DestroyColorMap (ReleaseColorMap (ColorMapTab));
 	}
@@ -238,10 +238,10 @@ LoadKernel (int argc, char *argv[])
 	InitPlayerInput ();
 	GLOBAL (CurrentActivity) = (ACTIVITY)~0;
 
-	return TRUE;
+	return true;
 }
 
-BOOLEAN
+bool
 InitContexts (void)
 {
 	RECT r;
@@ -249,7 +249,7 @@ InitContexts (void)
 	
 	StatusContext = CreateContext ("StatusContext");
 	if (StatusContext == NULL)
-		return FALSE;
+		return false;
 	AdvanceLoadProgress ();
 
 	oldContext = SetContext (StatusContext);
@@ -262,23 +262,23 @@ InitContexts (void)
 	
 	SpaceContext = CreateContext ("SpaceContext");
 	if (SpaceContext == NULL)
-		return FALSE;
+		return false;
 	SetContext (oldContext);
 	AdvanceLoadProgress ();
 		
 	OffScreenContext = CreateContext ("OffScreenContext");
 	if (OffScreenContext == NULL)
-		return FALSE;
+		return false;
 	AdvanceLoadProgress ();
 
 	if (!InitQueue (&disp_q, MAX_DISPLAY_ELEMENTS, sizeof (ELEMENT)))
-		return FALSE;
+		return false;
 	AdvanceLoadProgress ();
 
-	return TRUE;
+	return true;
 }
 
-static BOOLEAN
+static bool
 InitKernel (void)
 {
 	COUNT counter;
@@ -288,102 +288,102 @@ InitKernel (void)
 
 	StarConFont = LoadFont (STARCON_FONT);
 	if (StarConFont == NULL)
-		return FALSE;
+		return false;
 	AdvanceLoadProgress ();
 
 	TinyFont = LoadFont (TINY_FONT);
 	if (TinyFont == NULL)
-		return FALSE;
+		return false;
 	AdvanceLoadProgress ();
 
 	TinyFontBold = LoadFont (TINY_FONT_BOLD);
 	if (TinyFontBold == NULL)
-		return FALSE;
+		return false;
 	AdvanceLoadProgress ();
 
 	TinyFontCond = LoadFont (TINY_FONT_COND);
 	if (TinyFontCond == NULL)
-		return FALSE;
+		return false;
 
 	PlyrFont = LoadFont (PLAYER_FONT);
 	if (PlyrFont == NULL)
-		return FALSE;
+		return false;
 	AdvanceLoadProgress ();
 
 	PlayMenuFont = LoadFont (PLAYMENU_FONT);
 	if (PlayMenuFont == NULL)
-		return FALSE;
+		return false;
 
 	BorderFrame = CaptureDrawable (LoadGraphic (BORDER_MASK_PMAP_ANIM));
 	if (BorderFrame == NULL)
-		return FALSE;
+		return false;
 	AdvanceLoadProgress ();
 
 	CustBevelFrame = CaptureDrawable (LoadGraphic (CUST_BEVEL_MASK_PMAP_ANIM));
 	if (CustBevelFrame == NULL)
-		return FALSE;
+		return false;
 
 	if (HDPackPresent)
 	{
 		HDBorderFrame = CaptureDrawable (LoadGraphic (HD_BORDER_MASK_PMAP_ANIM));
 		if (HDBorderFrame == NULL)
-			return FALSE;
+			return false;
 
 		DefBevelFrame = CaptureDrawable (LoadGraphic (DEF_BEVEL_MASK_PMAP_ANIM));
 		if (DefBevelFrame == NULL)
-			return FALSE;
+			return false;
 	}
 
 	ActivityFrame = CaptureDrawable (LoadGraphic (ACTIVITY_ANIM));
 	if (ActivityFrame == NULL)
-		return FALSE;
+		return false;
 	AdvanceLoadProgress ();
 
 	StatusFrame = CaptureDrawable (LoadGraphic (STATUS_MASK_PMAP_ANIM));
 	if (StatusFrame == NULL)
-		return FALSE;
+		return false;
 	AdvanceLoadProgress ();
 
 	SubmenuFrame = CaptureDrawable (LoadGraphic (SUBMENU_MASK_PMAP_ANIM));
 	if (SubmenuFrame == NULL)
-		return FALSE;
+		return false;
 	AdvanceLoadProgress ();
 
 	GameStrings = CaptureStringTable (LoadStringTable (STARCON_GAME_STRINGS));
 	if (GameStrings == 0)
-		return FALSE;
+		return false;
 	AdvanceLoadProgress ();
 
 	MicroFont = LoadFont (MICRO_FONT);
 	if (MicroFont == NULL)
-		return FALSE;
+		return false;
 	AdvanceLoadProgress ();
 
 	LabelFont = LoadFont (LABEL_FONT);
 	if (LabelFont == NULL)
-		return FALSE;
+		return false;
 
 	SquareFont = LoadFont (SQUARE_FONT);
 	if (SquareFont == NULL)
-		return FALSE;
+		return false;
 
 	SlabFont = LoadFont (SLAB_FONT);
 	if (SlabFont == NULL)
-		return FALSE;
+		return false;
 
 	MenuSounds = CaptureSound (LoadSound (MENU_SOUNDS));
 	if (MenuSounds == 0)
-		return FALSE;
+		return false;
 	AdvanceLoadProgress ();
 
 	InitStatusOffsets ();
 	InitSpace ();
 	AdvanceLoadProgress ();
 
-	return TRUE;
+	return true;
 }
 
-BOOLEAN
+bool
 InitGameKernel (void)
 {
 	if (ActivityFrame == 0)
@@ -391,7 +391,7 @@ InitGameKernel (void)
 		InitKernel ();
 		InitContexts ();
 	}
-	return TRUE;
+	return true;
 }
 
 bool

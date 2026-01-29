@@ -29,15 +29,15 @@ extern "C" {
 #endif
 
 
-extern BOOLEAN AnyButtonPress (BOOLEAN DetectSpecial);
-extern BOOLEAN DirKeysPress (void);
-extern BOOLEAN ActKeysPress (void);
+extern bool AnyButtonPress (bool DetectSpecial);
+extern bool DirKeysPress (void);
+extern bool ActKeysPress (void);
 
 extern void TFB_ResetControls (void);
 
 /*
  * Not used right now
-extern BOOLEAN FindMouse (void);
+extern bool FindMouse (void);
 extern void MoveMouse (SWORD x, SWORD y);
 extern BYTE LocateMouse (SWORD *px, SWORD *py);
 */

@@ -40,11 +40,11 @@ typedef char *STRINGPTR;
 extern "C" {
 #endif
 
-extern BOOLEAN InstallStringTableResType (void);
+extern bool InstallStringTableResType (void);
 extern STRING_TABLE LoadStringTableInstance (RESOURCE res);
 extern STRING_TABLE LoadStringTableFile (uio_DirHandle *dir,
 		const char *fileName);
-extern BOOLEAN DestroyStringTable (STRING_TABLE StringTable);
+extern bool DestroyStringTable (STRING_TABLE StringTable);
 extern STRING CaptureStringTable (STRING_TABLE StringTable);
 extern STRING_TABLE ReleaseStringTable (STRING String);
 extern STRING_TABLE GetStringTable (STRING String);
@@ -61,7 +61,7 @@ extern STRINGPTR GetStringName (STRING String);
 extern STRINGPTR GetStringSoundClip (STRING String);
 extern STRINGPTR GetStringTimeStamp (STRING String);
 extern STRING GetStringByName (STRING_TABLE StringTable, const char *index);
-extern BOOLEAN CheckResString (RESOURCE res);
+extern bool CheckResString (RESOURCE res);
 extern const char *LoadStringInstance (RESOURCE res);
 
 #define UNICHAR_TAB           0x0009

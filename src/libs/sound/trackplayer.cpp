@@ -354,7 +354,7 @@ SplitSubPages (CHAR_T *text, CHAR_T *pages[], sint32 timestamp[], int size)
 				&& (LOBYTE (GLOBAL (CurrentActivity)) != WON_LAST_BATTLE))
 		{
 			timestamp[page] =
-					RecalculateDelay (lead_ellips + pos + aft_ellips, TRUE);
+					RecalculateDelay (lead_ellips + pos + aft_ellips, true);
 		}
 		else
 		{
@@ -939,7 +939,7 @@ GetSubtitleNumberByTrack (COUNT track)
 }
 
 DWORD
-RecalculateDelay (DWORD numChars, BOOLEAN talk)
+RecalculateDelay (DWORD numChars, bool talk)
 {
 	DWORD silence_length;
 	DWORD talk_length = ONE_SECOND * numChars / MODERATE_SPEED;

@@ -25,7 +25,7 @@
 extern "C" {
 #endif
 
-BOOLEAN luaUqm_comm_init(const luaUqm_custom_Function *customFuncs,
+bool luaUqm_comm_init(const luaUqm_custom_Function *customFuncs,
 		RESOURCE scriptRes);
 void luaUqm_comm_uninit(void);
 
@@ -33,7 +33,7 @@ void luaUqm_comm_genericInit(void);
 void luaUqm_comm_genericPost(void);
 void luaUqm_comm_genericUninit(void);
 
-BOOLEAN luaUqm_comm_stringNeedsInterpolate(const char *str);
+bool luaUqm_comm_stringNeedsInterpolate(const char *str);
 char *luaUqm_comm_stringInterpolate(const char *str);
 
 extern lua_State *luaUqm_commState;

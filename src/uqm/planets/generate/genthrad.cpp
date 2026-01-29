@@ -91,7 +91,7 @@ GenerateThraddash_generatePlanets (SOLARSYS_STATE *solarSys)
 			pPlanet->location.y = SINE (angle, pPlanet->radius);
 		}
 
-		ComputeSpeed (pPlanet, FALSE, 1);
+		ComputeSpeed (pPlanet, false, 1);
 	}
 	else
 	{
@@ -182,7 +182,7 @@ GenerateThraddash_generateOrbital (SOLARSYS_STATE *solarSys,
 				return true;
 
 			{
-				BOOLEAN Survivors =
+				bool Survivors =
 						GetHeadLink (&GLOBAL (npc_built_ship_q)) != 0;
 
 				GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
@@ -290,7 +290,7 @@ GenerateThraddash_pickupEnergy (SOLARSYS_STATE *solarSys,
 		if (EXTENDED && ThraddPtr->allied_state == GOOD_GUY
 				&& GET_GAME_STATE (ILWRATH_FIGHT_THRADDASH))
 		{
-			SetRaceAllied (THRADDASH_SHIP, FALSE);
+			SetRaceAllied (THRADDASH_SHIP, false);
 			RemoveEscortShips (THRADDASH_SHIP);
 			strength_loss = (SIZE)(ThraddPtr->actual_strength);
 			ThraddPtr->growth =

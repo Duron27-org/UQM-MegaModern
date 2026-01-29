@@ -55,8 +55,8 @@ enum PlanetMenuItems
 CONTEXT PlanetContext;
 		// Context for rotating planet view and lander surface view
 
-BOOLEAN useDosSpheres = FALSE;
-BOOLEAN use3DOSpheres = FALSE;
+bool useDosSpheres = false;
+bool use3DOSpheres = false;
 BYTE OrbitNum = 0;
 
 void
@@ -194,7 +194,7 @@ DestroyPlanetContext (void)
 }
 
 void
-DrawScannedObjects (BOOLEAN Reversed)
+DrawScannedObjects (bool Reversed)
 {
 	HELEMENT hElement, hNextElement;
 
@@ -379,7 +379,7 @@ DrawOrbitMapGraphic (void)
 
 	if (optScanSphere != 1)
 	{
-		BOOLEAN HaveString =
+		bool HaveString =
 				strlen (GAME_STRING (NAVIGATION_STRING_BASE + 8)) > 0;
 
 		s.frame = SetAbsFrameIndex (CaptureDrawable (
@@ -420,7 +420,7 @@ DrawOrbitMapGraphic (void)
 		STAMP ss;
 		PLANET_DESC *pPlanetDesc;
 		PLANET_ORBIT *Orbit = &pSolarSysState->Orbit;
-		int PlanetScale = RES_BOOL (319, 512);
+		int PlanetScale = chooseIfHd (319, 512);
 		int PlanetRescale = 1275;
 
 		pPlanetDesc = pSolarSysState->pOrbitalDesc;
@@ -429,7 +429,7 @@ DrawOrbitMapGraphic (void)
 		ss.origin.x = RES_SCALE (ORIG_SIS_SCREEN_WIDTH >> 1);
 		ss.origin.y = RES_SCALE (191);
 
-		ss.frame = RES_BOOL (Orbit->SphereFrame, CaptureDrawable (
+		ss.frame = chooseIfHd (Orbit->SphereFrame, CaptureDrawable (
 			RescaleFrame (
 				Orbit->SphereFrame, PlanetRescale, PlanetRescale
 			)));
@@ -465,7 +465,7 @@ DrawOrbitalDisplay (DRAW_ORBITAL_MODE Mode)
 		DrawOrbitMapGraphic ();
 
 		if (isPC (optSuperPC))
-			InitPCLander (TRUE);
+			InitPCLander (true);
 	}
 	else if (Mode == DRAW_ORBITAL_FULL)
 	{
@@ -485,7 +485,7 @@ DrawOrbitalDisplay (DRAW_ORBITAL_MODE Mode)
 		SetContext (GetScanContext (NULL));
 		DrawPlanet (0, BLACK_COLOR);
 		if (isPC (optSuperPC))
-			InitPCLander (FALSE);
+			InitPCLander (false);
 	}
 
 	if (Mode != DRAW_ORBITAL_UPDATE)
@@ -615,8 +615,8 @@ FreePlanet (void)
 	DestroyPlanetContext ();
 	DestroyScanContext ();
 	DestroyPCLanderContext ();
-	useDosSpheres = FALSE;
-	use3DOSpheres = FALSE;
+	useDosSpheres = false;
+	use3DOSpheres = false;
 }
 
 void
@@ -636,25 +636,25 @@ FreeLanderFont (PLANET_INFO *info)
 	info->LanderFontEff = NULL;
 }
 
-static BOOLEAN
+static bool
 DoPlanetOrbit (MENU_STATE *pMS)
 {
-	BOOLEAN select = (BOOLEAN)PulsedInputState.menu[KEY_MENU_SELECT];
-	BOOLEAN handled;
+	bool select = (bool)PulsedInputState.menu[KEY_MENU_SELECT];
+	bool handled;
 
 	if ((GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
 			|| GLOBAL_SIS (CrewEnlisted) == (COUNT)~0)
-		return FALSE;
+		return false;
 
 	// XXX: pMS actually refers to pSolarSysState->MenuState
 	handled = DoMenuChooser (pMS, PM_SCAN);
 	if (handled)
-		return TRUE;
+		return true;
 
 	if (!select)
-		return TRUE;
+		return true;
 
-	SetFlashRect (NULL, FALSE);
+	SetFlashRect (NULL, false);
 
 	switch (pMS->CurState)
 	{
@@ -662,7 +662,7 @@ DoPlanetOrbit (MENU_STATE *pMS)
 			ScanSystem ();
 			if (GLOBAL (CurrentActivity) & START_ENCOUNTER)
 			{	// Found Fwiffo on Pluto
-				return FALSE;
+				return false;
 			}
 			break;
 		case EQUIP_DEVICE:
@@ -671,7 +671,7 @@ DoPlanetOrbit (MENU_STATE *pMS)
 			{	// Invoked Talking Pet, a Caster or Sun Device over Chmmr,
 				// or a Caster for Ilwrath
 				// Going into conversation
-				return FALSE;
+				return false;
 			}
 			break;
 		case CARGO:
@@ -682,11 +682,11 @@ DoPlanetOrbit (MENU_STATE *pMS)
 			break;
 		case GAME_MENU:
 			if (!GameOptions ())
-				return FALSE; // abort or load
+				return false; // abort or load
 			break;
 		case STARMAP:
 		{
-			BOOLEAN AutoPilotSet;
+			bool AutoPilotSet;
 			InputFrameCallback *oldCallback;
 
 			// Deactivate planet rotation
@@ -696,7 +696,7 @@ DoPlanetOrbit (MENU_STATE *pMS)
 
 			AutoPilotSet = StarMap ();
 			if (GLOBAL (CurrentActivity) & CHECK_ABORT)
-				return FALSE;
+				return false;
 
 			// Reactivate planet rotation
 			SetInputCallback (oldCallback);
@@ -709,7 +709,7 @@ DoPlanetOrbit (MENU_STATE *pMS)
 			FALLTHROUGH; // Fall through !!!
 		}
 		case NAVIGATION:
-			return FALSE;
+			return false;
 	}
 
 	if (!(GLOBAL (CurrentActivity) & CHECK_ABORT))
@@ -721,17 +721,17 @@ DoPlanetOrbit (MENU_STATE *pMS)
 			if (pMS->CurState != STARMAP)
 				DrawMenuStateStrings (PM_SCAN, pMS->CurState);
 		}
-		SetFlashRect (SFR_MENU_3DO, FALSE);
+		SetFlashRect (SFR_MENU_3DO, false);
 	}
 
-	return TRUE;
+	return true;
 }
 
 static void
 on_input_frame (void)
 {
 	if (!(GLOBAL(CurrentActivity) & CHECK_ABORT))
-		RotatePlanetSphere (TRUE, NULL);
+		RotatePlanetSphere (true, NULL);
 }
 
 void
@@ -742,18 +742,18 @@ PlanetOrbitMenu (void)
 
 	memset (&MenuState, 0, sizeof MenuState);
 	
-	SetFlashRect (SFR_MENU_3DO, FALSE);
+	SetFlashRect (SFR_MENU_3DO, false);
 
 	MenuState.CurState = SCAN;
 	SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
 	oldCallback = SetInputCallback (on_input_frame);
 
 	MenuState.InputFunc = DoPlanetOrbit;
-	DoInput (&MenuState, TRUE);
+	DoInput (&MenuState, true);
 
 	SetInputCallback (oldCallback);
 
-	SetFlashRect (NULL, FALSE);
+	SetFlashRect (NULL, false);
 	if (!(GLOBAL(CurrentActivity) & CHECK_LOAD))
 		DrawMenuStateStrings (PM_STARMAP, -NAVIGATION);
 }

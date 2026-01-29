@@ -43,7 +43,7 @@
 
 typedef struct
 {
-	BOOLEAN (*InputFunc) (void *pInputState);
+	bool (*InputFunc) (void *pInputState);
 } INPUT_STATE_DESC;
 
 // These static variables are the values that are set by the controllers.
@@ -60,17 +60,17 @@ CONTROLLER_INPUT_STATE CurrentInputState, PulsedInputState;
 static CONTROLLER_INPUT_STATE CachedInputState, OldInputState;
 static MENU_ANNOTATIONS RepeatDelays, Times;
 static DWORD GestaltRepeatDelay, GestaltTime;
-static BOOLEAN OldGestalt, CachedGestalt;
+static bool OldGestalt, CachedGestalt;
 static DWORD _max_accel, _min_accel, _step_accel;
-static BOOLEAN _gestalt_keys;
+static bool _gestalt_keys;
 
 static MENU_SOUND_FLAGS sound_0, sound_1;
 
 volatile CONTROLLER_INPUT_STATE ImmediateInputState;
 
-volatile BOOLEAN ExitRequested;
-volatile BOOLEAN GamePaused;
-volatile BOOLEAN OnScreenKeyboardLocked;
+volatile bool ExitRequested;
+volatile bool GamePaused;
+volatile bool OnScreenKeyboardLocked;
 
 static InputFrameCallback *inputCallback;
 
@@ -91,7 +91,7 @@ _clear_menu_state (void)
 		PulsedInputState.menu[i] = 0;
 		CachedInputState.menu[i] = 0;
 	}		
-	CachedGestalt = FALSE;
+	CachedGestalt = false;
 }
 
 void
@@ -151,7 +151,7 @@ _check_for_pulse (int *current, int *cached, int *old, DWORD *accel,
 static void
 _check_gestalt (DWORD NewTime)
 {
-	BOOLEAN CurrentGestalt;
+	bool CurrentGestalt;
 	int i, j;
 	OldGestalt = CachedGestalt;
 
@@ -276,10 +276,10 @@ UpdateInputState (void)
 	}
 
 	if (CurrentInputState.menu[KEY_PAUSE])
-		GamePaused = TRUE;
+		GamePaused = true;
 
 	if (CurrentInputState.menu[KEY_EXIT])
-		ExitRequested = TRUE;
+		ExitRequested = true;
 
 #if defined(DEBUG) || defined(USE_DEBUG_KEY)
 	if (PulsedInputState.menu[KEY_DEBUG])
@@ -307,7 +307,7 @@ SetInputCallback (InputFrameCallback *callback)
 }
 
 void
-SetMenuRepeatDelay (DWORD min, DWORD max, DWORD step, BOOLEAN gestalt)
+SetMenuRepeatDelay (DWORD min, DWORD max, DWORD step, bool gestalt)
 {
 	_min_accel = min;
 	_max_accel = max;
@@ -323,7 +323,7 @@ SetDefaultMenuRepeatDelay (void)
 	_min_accel = ACCELERATION_INCREMENT;
 	_max_accel = MENU_REPEAT_DELAY;
 	_step_accel = ACCELERATION_INCREMENT;
-	_gestalt_keys = FALSE;
+	_gestalt_keys = false;
 	//_clear_menu_state ();
 	ResetKeyRepeat ();
 }
@@ -368,7 +368,7 @@ MenuKeysToSoundFlags (const CONTROLLER_INPUT_STATE *state)
 }
 
 void
-DoInput (void *pInputState, BOOLEAN resetInput)
+DoInput (void *pInputState, bool resetInput)
 {
 	if (resetInput)
 		FlushInput ();
@@ -465,8 +465,8 @@ PulsedInputToBattleInput (COUNT player)
 			PulsedInputState.key[PlayerControls[player]]);
 }
 
-BOOLEAN
-AnyButtonPress (BOOLEAN CheckSpecial)
+bool
+AnyButtonPress (bool CheckSpecial)
 {
 	int i, j;
 	(void) CheckSpecial;   // Ignored
@@ -476,18 +476,18 @@ AnyButtonPress (BOOLEAN CheckSpecial)
 		for (j = 0; j < NUM_KEYS; j++)
 		{
 			if (CurrentInputState.key[i][j])
-				return TRUE;
+				return true;
 		}
 	}
 	for (i = 0; i < NUM_MENU_KEYS; i++)
 	{
 		if (CurrentInputState.menu[i])
-			return TRUE;
+			return true;
 	}
-	return FALSE;
+	return false;
 }
 
-BOOLEAN
+bool
 DirKeysPress (void)
 {
 	return (
@@ -498,7 +498,7 @@ DirKeysPress (void)
 	);
 }
 
-BOOLEAN
+bool
 ActKeysPress (void)
 {
 	UpdateInputState ();
@@ -513,11 +513,11 @@ ActKeysPress (void)
 	);
 }
 
-BOOLEAN
+bool
 ConfirmExit (void)
 {
 	DWORD old_max_accel, old_min_accel, old_step_accel;
-	BOOLEAN old_gestalt_keys, result;
+	bool old_gestalt_keys, result;
 
 	old_max_accel = _max_accel;
 	old_min_accel = _min_accel;

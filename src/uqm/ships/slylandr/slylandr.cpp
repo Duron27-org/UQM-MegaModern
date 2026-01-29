@@ -304,13 +304,13 @@ slylandro_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 	}
 }
 
-static BOOLEAN
+static bool
 harvest_space_junk (ELEMENT *ElementPtr)
 {
-	BOOLEAN retval;
+	bool retval;
 	HELEMENT hElement, hNextElement;
 
-	retval = FALSE;
+	retval = false;
 	for (hElement = GetHeadElement ();
 			hElement; hElement = hNextElement)
 	{
@@ -344,7 +344,7 @@ harvest_space_junk (ELEMENT *ElementPtr)
 				{
 					STARSHIP *StarShipPtr;
 
-					retval = TRUE;
+					retval = true;
 
 					GetElementStarShip (ElementPtr, &StarShipPtr);
 					ProcessSound (SetAbsSoundIndex (

@@ -120,7 +120,7 @@ GenerateVux_generatePlanets (SOLARSYS_STATE *solarSys)
 				pPlanet->location.y);
 		}
 
-		ComputeSpeed (pPlanet, FALSE, 1);
+		ComputeSpeed (pPlanet, false, 1);
 	}
 	else
 	{

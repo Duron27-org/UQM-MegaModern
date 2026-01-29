@@ -129,7 +129,7 @@ initialize_autoaim_laser (ELEMENT *ShipPtr, HELEMENT LaserArray[])
 	SIZE delta_facing;
 	STARSHIP *StarShipPtr;
 	LASER_BLOCK LaserBlock;
-	COUNT LaserRange = RES_BOOL (LASER_RANGE, LASER_RANGE_HD);
+	COUNT LaserRange = chooseIfHd (LASER_RANGE, LASER_RANGE_HD);
 
 	GetElementStarShip (ShipPtr, &StarShipPtr);
 	LaserBlock.face = orig_facing = StarShipPtr->ShipFacing;
@@ -171,7 +171,7 @@ arilou_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 		lpEvalDesc = &ObjectsOfConcern[ENEMY_WEAPON_INDEX];
 		if (lpEvalDesc->ObjectPtr && lpEvalDesc->which_turn <= 6)
 		{
-			BOOLEAN IsTrackingWeapon;
+			bool IsTrackingWeapon;
 			STARSHIP *EnemyStarShipPtr;
 
 			GetElementStarShip (lpEvalDesc->ObjectPtr, &EnemyStarShipPtr);
@@ -183,9 +183,9 @@ arilou_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 					& SEEKING_SPECIAL) &&
 					lpEvalDesc->ObjectPtr->next.image.farray ==
 					EnemyStarShipPtr->RaceDescPtr->ship_data.special))
-				IsTrackingWeapon = TRUE;
+				IsTrackingWeapon = true;
 			else
-				IsTrackingWeapon = FALSE;
+				IsTrackingWeapon = false;
 
 			if (((lpEvalDesc->ObjectPtr->state_flags & PLAYER_SHIP) /* means IMMEDIATE WEAPON */
 					|| (IsTrackingWeapon && (lpEvalDesc->which_turn == 1

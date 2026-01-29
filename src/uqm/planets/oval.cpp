@@ -46,7 +46,7 @@
 #define FULL_VISIBILITY (1 << 4)
 #define ALL_QUAD (FIRST_QUAD | SECOND_QUAD | THIRD_QUAD | FOURTH_QUAD)
 
-static BOOLEAN
+static bool
 PointOnScreen (SDWORD x, SDWORD y)
 {
 	SDWORD extend = 0;
@@ -58,7 +58,7 @@ PointOnScreen (SDWORD x, SDWORD y)
 			&& (y + extend) >= 0 && y <= SIS_SCREEN_HEIGHT);
 }
 
-static BOOLEAN
+static bool
 DPointOnScreen (DPOINT *p)
 {
 	return (p->x >= 0 && p->x <= SIS_SCREEN_WIDTH
@@ -299,7 +299,7 @@ CheckOvalCollision (DPOINT *p0, DPOINT *p1)
 //}
 
 void
-DrawOval (DRECT *pRect, BYTE num_off_pixels, BOOLEAN scaled)
+DrawOval (DRECT *pRect, BYTE num_off_pixels, bool scaled)
 {
 	COUNT off;
 	COORD x, y;
@@ -311,7 +311,7 @@ DrawOval (DRECT *pRect, BYTE num_off_pixels, BOOLEAN scaled)
 	PRIMITIVE prim[NUM_QUADS];
 	COUNT StartPrim;
 	DPOINT p0, p1;
-	BOOLEAN use_pointprim = (!scaled && num_off_pixels <= 1);
+	bool use_pointprim = (!scaled && num_off_pixels <= 1);
 	BYTE render;
 	
 	p0.x = pRect->corner.x;

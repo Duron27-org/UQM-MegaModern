@@ -549,7 +549,7 @@ SpathiBefriend (RESPONSE_REF R)
 	BYTE InfoLeft, LastStack;
 	RESPONSE_REF pStr[2];
 
-	InfoLeft = FALSE;
+	InfoLeft = false;
 	LastStack = 0;
 	pStr[0] = pStr[1] = 0;
 	if (PLAYER_SAID (R, come_in_peace))
@@ -596,18 +596,18 @@ SpathiBefriend (RESPONSE_REF R)
 		pStr[1] = what_you_really_want;
 	if (pStr[LastStack])
 	{
-		InfoLeft = TRUE;
+		InfoLeft = true;
 		Response (pStr[LastStack], SpathiBefriend);
 	}
 	LastStack ^= 1;
 	if (pStr[LastStack])
 	{
-		InfoLeft = TRUE;
+		InfoLeft = true;
 		Response (pStr[LastStack], SpathiBefriend);
 	}
 	if (PHRASE_ENABLED (how_about_alliance))
 	{
-		InfoLeft = TRUE;
+		InfoLeft = true;
 		Response (how_about_alliance, SpathiBefriend);
 	}
 

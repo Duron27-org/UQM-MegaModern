@@ -59,7 +59,7 @@ ScanInterpolation (CHAR_T *start)
 }
 
 // Will the chunk between [end - start] require robot voicing?
-BOOLEAN
+bool
 RoboInterpolation (CHAR_T *start, CHAR_T *end)
 {
 	static constexpr const char* RoboPhrases[] = {
@@ -88,7 +88,7 @@ InterpolateChunk (CHAR_T buffer[], CHAR_T *start)
 	CHAR_T str_buf[MAX_INTERPOLATE] = "";
 	CHAR_T *pStr;
 	COUNT buffsize = 0;
-	BOOLEAN done = false;
+	bool done = false;
 
 	while ((end = strstr (start, "<%")) && !done)
 	{
@@ -180,7 +180,7 @@ NPCPhrase_cb (int index, CallbackFunction cb)
 	CHAR_T *pStr;
 	CHAR_T *pClip;
 	CHAR_T *pTimeStamp;
-	BOOLEAN isPStrAlloced = FALSE;
+	bool isPStrAlloced = false;
 	COUNT clip_number = 0;
 	COUNT i;
 
@@ -199,7 +199,7 @@ NPCPhrase_cb (int index, CallbackFunction cb)
 		if (luaUqm_comm_stringNeedsInterpolate (pStr))
 		{
 			pStr = luaUqm_comm_stringInterpolate (pStr);
-			isPStrAlloced = TRUE;
+			isPStrAlloced = true;
 		}
 		SpliceTrack (pClip, pStr, pTimeStamp, cb);
 		if (isPStrAlloced)
@@ -558,7 +558,7 @@ setSegue (Segue segue)
 			SET_GAME_STATE (BATTLE_SEGUE, 1);
 			break;
 		case Segue_victory:
-			instantVictory = TRUE;
+			instantVictory = true;
 			SET_GAME_STATE (BATTLE_SEGUE, 1);
 			break;
 		case Segue_defeat:

@@ -33,7 +33,7 @@ static FRAME scope_frame;
 static int scope_init = 0;
 static FRAME scopeWork;
 static EXTENT scopeSize;
-BOOLEAN oscillDisabled = FALSE;
+bool oscillDisabled = false;
 
 void
 InitOscilloscope (FRAME scopeBg)
@@ -64,7 +64,7 @@ UninitOscilloscope (void)
 }
 
 BYTE
-ScaleHeightByVolume (uint8 scope_data, BOOLEAN toScale)
+ScaleHeightByVolume (uint8 scope_data, bool toScale)
 {
 	if (!toScale || musicVolume == NORMAL_VOLUME)
 		return scope_data;
@@ -89,7 +89,7 @@ ScaleHeightByVolume (uint8 scope_data, BOOLEAN toScale)
 }
 
 void
-DrawOscilloscopeLines (STAMP *s, uint8 *scope_data, BOOLEAN nonStop, BOOLEAN toScale)
+DrawOscilloscopeLines (STAMP *s, uint8 *scope_data, bool nonStop, bool toScale)
 {
 	int i;
 	CONTEXT oldContext;
@@ -171,16 +171,16 @@ DrawOscilloscope (void)
 	if (GraphForegroundStream (
 			scope_data, scopeSize.width, scopeSize.height, usingSpeech))
 	{
-		DrawOscilloscopeLines (&s, scope_data, FALSE, !usingSpeech);
+		DrawOscilloscopeLines (&s, scope_data, false, !usingSpeech);
 	}
 	else if (GraphForegroundStream (
-			scope_data, scopeSize.width, scopeSize.height, FALSE)
+			scope_data, scopeSize.width, scopeSize.height, false)
 			&& usingSpeech && optNonStopOscill)
 	{
-		DrawOscilloscopeLines (&s, scope_data, TRUE, TRUE);
+		DrawOscilloscopeLines (&s, scope_data, true, true);
 	}
 	else
-		DrawOscilloscopeLines (&s, NULL, FALSE, FALSE);
+		DrawOscilloscopeLines (&s, NULL, false, false);
 
 	// draw the final scope image to screen
 	s.origin.x = 0;
@@ -198,7 +198,7 @@ FlattenOscilloscope (void)
 
 	OldContext = SetContext (RadarContext);
 
-	DrawOscilloscopeLines (&s, NULL, FALSE, FALSE);
+	DrawOscilloscopeLines (&s, NULL, false, false);
 	s.origin = MAKE_POINT(0, 0);
 	DrawStamp (&s);
 	SetContext (OldContext);
@@ -206,9 +206,9 @@ FlattenOscilloscope (void)
 
 static STAMP sliderStamp;
 static STAMP buttonStamp;
-static BOOLEAN sliderChanged = FALSE;
+static bool sliderChanged = false;
 int sliderSpace;  // slider width - button width
-BOOLEAN sliderDisabled = FALSE;
+bool sliderDisabled = false;
 
 /*
  * Initialise the communication progress bar
@@ -242,7 +242,7 @@ InitSlider (int x, int y, int width, FRAME sliderFrame, FRAME buttonFrame)
 void
 SetSliderImage (FRAME f)
 {
-	sliderChanged = TRUE;
+	sliderChanged = true;
 	buttonStamp.frame = f;
 }
 
@@ -258,7 +258,7 @@ DrawSlider (void)
 	offs = GetTrackPosition (sliderSpace);
 	if (offs != last_offs || sliderChanged)
 	{
-		sliderChanged = FALSE;
+		sliderChanged = false;
 		last_offs = offs;
 		buttonStamp.origin.x = sliderStamp.origin.x + offs;
 		BatchGraphics ();

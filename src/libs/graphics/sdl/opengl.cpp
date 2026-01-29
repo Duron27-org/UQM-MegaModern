@@ -30,7 +30,7 @@
 typedef struct _gl_screeninfo {
 	SDL_Surface *scaled;
 	GLuint texture;
-	BOOLEAN dirty, active;
+	bool dirty, active;
 	SDL_Rect updated;
 } TFB_GL_SCREENINFO;
 
@@ -39,7 +39,7 @@ static TFB_GL_SCREENINFO GL_Screens[TFB_GFX_NUMSCREENS];
 static int ScreenFilterMode;
 
 static TFB_ScaleFunc scaler = NULL;
-static BOOLEAN first_init = TRUE;
+static bool first_init = true;
 
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
 #define R_MASK 0xff000000
@@ -241,11 +241,11 @@ TFB_GL_ConfigureVideo (int driver, int flags, int width, int height,
 			for (i = 0; i < TFB_GFX_NUMSCREENS; i++)
 			{
 				GL_Screens[i].scaled = NULL;
-				GL_Screens[i].dirty = TRUE;
-				GL_Screens[i].active = TRUE;
+				GL_Screens[i].dirty = true;
+				GL_Screens[i].active = true;
 			}
-			GL_Screens[1].active = FALSE;
-			first_init = FALSE;
+			GL_Screens[1].active = false;
+			first_init = false;
 		}
 	}
 
@@ -353,7 +353,7 @@ TFB_GL_UploadTransitionScreen (void)
 	GL_Screens[TFB_SCREEN_TRANSITION].updated.y = 0;
 	GL_Screens[TFB_SCREEN_TRANSITION].updated.w = ScreenWidth;
 	GL_Screens[TFB_SCREEN_TRANSITION].updated.h = ScreenHeight;
-	GL_Screens[TFB_SCREEN_TRANSITION].dirty = TRUE;
+	GL_Screens[TFB_SCREEN_TRANSITION].dirty = true;
 }
 
 static void
@@ -388,7 +388,7 @@ TFB_GL_ScanLines (void)
 static void
 TFB_GL_DrawQuad (SDL_Rect *r, BYTE ResFactor)
 {
-	BOOLEAN keep_aspect_ratio = optKeepAspectRatio;
+	bool keep_aspect_ratio = optKeepAspectRatio;
 	int x1 = 0, y1 = 0, x2 = ScreenWidthActual, y2 = ScreenHeightActual;
 	int sx = 0, sy = 0;
 	int sw, sh;
@@ -434,7 +434,7 @@ TFB_GL_DrawQuad (SDL_Rect *r, BYTE ResFactor)
 		else
 		{
 			// screen is 4:3
-			keep_aspect_ratio = FALSE;
+			keep_aspect_ratio = false;
 		}
 	}
 
@@ -490,7 +490,7 @@ TFB_GL_Preprocess (int force_full_redraw, int transition_amount, int fade_amount
 		GL_Screens[TFB_SCREEN_MAIN].updated.y = 0;
 		GL_Screens[TFB_SCREEN_MAIN].updated.w = ScreenWidth;
 		GL_Screens[TFB_SCREEN_MAIN].updated.h = ScreenHeight;
-		GL_Screens[TFB_SCREEN_MAIN].dirty = TRUE;
+		GL_Screens[TFB_SCREEN_MAIN].dirty = true;
 	}
 	else if (TFB_BBox.valid)
 	{
@@ -498,7 +498,7 @@ TFB_GL_Preprocess (int force_full_redraw, int transition_amount, int fade_amount
 		GL_Screens[TFB_SCREEN_MAIN].updated.y = TFB_BBox.region.corner.y;
 		GL_Screens[TFB_SCREEN_MAIN].updated.w = TFB_BBox.region.extent.width;
 		GL_Screens[TFB_SCREEN_MAIN].updated.h = TFB_BBox.region.extent.height;
-		GL_Screens[TFB_SCREEN_MAIN].dirty = TRUE;
+		GL_Screens[TFB_SCREEN_MAIN].dirty = true;
 	}
 }
 
@@ -526,7 +526,7 @@ TFB_GL_Unscaled_ScreenLayer (SCREEN screen, Uint8 a, SDL_Rect *rect)
 					(GL_Screens[screen].updated.y * PitchWords + 
 					GL_Screens[screen].updated.x));
 		SDL_UnlockSurface (SDL_Screens[screen]);
-		GL_Screens[screen].dirty = FALSE;
+		GL_Screens[screen].dirty = false;
 	}
 
 	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, ScreenFilterMode);
@@ -575,7 +575,7 @@ TFB_GL_Scaled_ScreenLayer (SCREEN screen, Uint8 a, SDL_Rect *rect)
 				(GL_Screens[screen].updated.y * 2 * PitchWords + 
 				GL_Screens[screen].updated.x * 2));
 		SDL_UnlockSurface (GL_Screens[screen].scaled);
-		GL_Screens[screen].dirty = FALSE;
+		GL_Screens[screen].dirty = false;
 	}
 
 	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, ScreenFilterMode);

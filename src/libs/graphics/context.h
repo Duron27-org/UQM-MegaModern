@@ -140,7 +140,7 @@ extern GRAPHICS_STATUS _GraphicsStatusFlags;
 							| GRAPHICS_VISIBLE))
 
 // pValidRect or origin may be NULL
-BOOLEAN GetContextValidRect (RECT *pValidRect, POINT *origin);
+bool GetContextValidRect (RECT *pValidRect, POINT *origin);
 extern void FixContextFontEffect (void);
 
 #endif /* LIBS_GRAPHICS_CONTEXT_H_ */

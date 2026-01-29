@@ -40,15 +40,15 @@ extern "C" {
 #define ARILOU_HOME_X 6134 // (QUASI_SPACE_X + ((RADAR_SCAN_WIDTH >> 1) * 3))
 #define ARILOU_HOME_Y 5900 // (QUASI_SPACE_Y + ((RADAR_SCAN_HEIGHT >> 1) * 3))
 
-extern BOOLEAN LoadHyperspace (void);
-extern BOOLEAN FreeHyperspace (void);
+extern bool LoadHyperspace (void);
+extern bool FreeHyperspace (void);
 extern void SeedUniverse (void);
 extern void EraseRadar (void);
 extern void MoveSIS (SDWORD *pdx, SDWORD *pdy);
 
 extern void FreeHyperData (void);
 extern void check_hyperspace_encounter (void);
-extern BOOLEAN hyper_transition (ELEMENT *ElementPtr);
+extern bool hyper_transition (ELEMENT *ElementPtr);
 
 extern void HyperspaceMenu (void);
 extern void SaveSisHyperState (void);

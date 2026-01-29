@@ -161,10 +161,10 @@ res_GetIntResource (RESOURCE res)
 	return desc->resdata.num;
 }
 
-BOOLEAN
+bool
 res_GetBooleanResource (RESOURCE res)
 {
-	return (BOOLEAN)(res_GetIntResource (res) != 0);
+	return (bool)(res_GetIntResource (res) != 0);
 }
 
 // NB: this function appears to be never called!
@@ -254,9 +254,9 @@ res_DetachResource (RESOURCE res)
 	return result;
 }
 
-BOOLEAN
+bool
 FreeResourceData (void *data)
 {
 	HFree (data);
-	return TRUE;
+	return true;
 }

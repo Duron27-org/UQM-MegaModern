@@ -46,7 +46,7 @@ extern void AdvanceLoadProgress (void);
 extern void InitMenuMusic (void);
 extern void UninitMenuMusic (void);
 
-extern BOOLEAN ShowPresentation (RESOURCE presentation);
+extern bool ShowPresentation (RESOURCE presentation);
 
 #if 0 //defined(__cplusplus)
 }

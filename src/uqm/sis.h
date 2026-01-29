@@ -189,12 +189,12 @@ extern void RepairSISBorder (void);
 extern void InitSISContexts (void);
 extern void DrawSISFrame (void);
 extern void ClearSISRect (BYTE ClearFlags);
-extern void SetFlashRect (const RECT *pRect, BOOLEAN purple);
+extern void SetFlashRect (const RECT *pRect, bool purple);
 extern void SetAdditionalRect (const RECT *pRect, COUNT number);
 extern void DumpAdditionalRect (void);
 extern void PreUpdateFlashRect (void);
 extern void PostUpdateFlashRect (void);
-extern BOOLEAN PauseFlash (void);
+extern bool PauseFlash (void);
 extern void ContinueFlash (void);
 
 #define SFR_MENU_3DO ((RECT*)~0L)
@@ -215,7 +215,7 @@ extern void DrawSISTitle (CHAR_T *pStr);
 		// when editing in the message field.
 #define DSME_MYCOLOR  (1 << 3)
 		// Use the current foreground color, instead of the default.
-extern BOOLEAN DrawSISMessageEx (const CHAR_T *pStr, SIZE CurPos,
+extern bool DrawSISMessageEx (const CHAR_T *pStr, SIZE CurPos,
 		SIZE ExPos, COUNT flags);
 
 extern void DrawSISMessage (const CHAR_T *pStr);
@@ -240,10 +240,10 @@ typedef enum
 extern StatMsgMode SetStatusMessageMode (StatMsgMode);
 
 extern void DrawLanders (void);
-extern void DrawStorageBays (BOOLEAN Refresh);
-extern void GetGaugeRect (RECT *pRect, BOOLEAN IsCrewRect);
+extern void DrawStorageBays (bool Refresh);
+extern void GetGaugeRect (RECT *pRect, bool IsCrewRect);
 extern void DrawFlagshipStats (void);
-void DrawAutoPilotMessage (BOOLEAN Reset);
+void DrawAutoPilotMessage (bool Reset);
 
 extern void DeltaSISGauges (SIZE crew_delta, SDWORD fuel_delta, int
 		resunit_delta);
@@ -263,10 +263,10 @@ extern DWORD GetFuelTankCapacity (void);
 
 extern COUNT CountSISPieces (BYTE piece_type);
 
-extern void DrawFlagshipName (BOOLEAN InStatusArea, bool NewGame);
+extern void DrawFlagshipName (bool InStatusArea, bool NewGame);
 extern void DrawCaptainsName (bool NewGame);
 
-extern void DrawFuelInFTanks (BOOLEAN isOutfit);
+extern void DrawFuelInFTanks (bool isOutfit);
 extern FRAME hdFuelFrame;// Frame for HD fuel with smooth gradient
 
 typedef enum

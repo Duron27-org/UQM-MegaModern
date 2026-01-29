@@ -230,16 +230,16 @@ MELEE_STATE *pMeleeState;
 FONT MicroThinFont;
 FONT ButtonFont;
 
-BOOLEAN DoMelee (MELEE_STATE *pMS);
-static BOOLEAN DoEdit (MELEE_STATE *pMS);
-static BOOLEAN DoConfirmSettings (MELEE_STATE *pMS);
+bool DoMelee (MELEE_STATE *pMS);
+static bool DoEdit (MELEE_STATE *pMS);
+static bool DoConfirmSettings (MELEE_STATE *pMS);
 
 #define DTSHS_NORMAL   0
 #define DTSHS_EDIT     1
 #define DTSHS_SELECTED 2
 #define DTSHS_REPAIR   4
 #define DTSHS_BLOCKCUR 8
-static BOOLEAN DrawTeamString (MELEE_STATE *pMS, COUNT side,
+static bool DrawTeamString (MELEE_STATE *pMS, COUNT side,
 		COUNT HiLiteState, const char *str);
 static void DrawFleetValue (MELEE_STATE *pMS, COUNT side, COUNT HiLiteState);
 
@@ -305,7 +305,7 @@ ButtonText (COUNT which_icon)
 }
 
 static void
-DrawControlText (STAMP stamp, COUNT which_icon, BOOLEAN HiLite)
+DrawControlText (STAMP stamp, COUNT which_icon, bool HiLite)
 {
 	RECT r;
 	TEXT t;
@@ -351,7 +351,7 @@ DrawControlText (STAMP stamp, COUNT which_icon, BOOLEAN HiLite)
 }
 
 static void
-DrawBattleText (STAMP stamp, COUNT which_icon, BOOLEAN HiLite)
+DrawBattleText (STAMP stamp, COUNT which_icon, bool HiLite)
 {
 	RECT r;
 	TEXT t;
@@ -394,7 +394,7 @@ DrawBattleText (STAMP stamp, COUNT which_icon, BOOLEAN HiLite)
 }
 
 static void
-DrawButtonText (STAMP stamp, COUNT which_icon, BOOLEAN HiLite)
+DrawButtonText (STAMP stamp, COUNT which_icon, bool HiLite)
 {
 	RECT r;
 	TEXT t;
@@ -661,11 +661,11 @@ WhichText (COUNT which_icon)
 
 // These icons come from ui/meleemenu.ani
 void
-DrawMeleeIcon (COUNT which_icon, BOOLEAN HiLite)
+DrawMeleeIcon (COUNT which_icon, bool HiLite)
 {
 	STAMP s;
 	int which_text = WhichText (which_icon);
-	BOOLEAN NeedBatch = which_text && which_text < 3;
+	bool NeedBatch = which_text && which_text < 3;
 
 	if (NeedBatch)
 		BatchGraphics ();
@@ -735,12 +735,12 @@ GetShipBox (RECT *pRect, COUNT side, COUNT row, COUNT col)
 }
 
 static void
-DrawShipBox (COUNT side, FleetShipIndex index, MeleeShip ship, BOOLEAN HiLite)
+DrawShipBox (COUNT side, FleetShipIndex index, MeleeShip ship, bool HiLite)
 {
 	RECT r;
 	BYTE row = GetShipRow (index);
 	BYTE col = GetShipColumn (index);
-	BOOLEAN FilledSlot = (ship != MELEE_NONE);
+	bool FilledSlot = (ship != MELEE_NONE);
 
 	GetShipBox (&r, side, row, col);
 
@@ -761,13 +761,13 @@ DrawShipBox (COUNT side, FleetShipIndex index, MeleeShip ship, BOOLEAN HiLite)
 			DrawStarConBox (&r, 1,
 					SHIPBOX_TOPLEFT_COLOR_HILITE,
 					SHIPBOX_BOTTOMRIGHT_COLOR_HILITE,
-					FilledSlot, SHIPBOX_INTERIOR_COLOR_HILITE, FALSE,
+					FilledSlot, SHIPBOX_INTERIOR_COLOR_HILITE, false,
 					TRANSPARENT);
 		else
 			DrawStarConBox (&r, 1,
 					SHIPBOX_TOPLEFT_COLOR_NORMAL,
 					SHIPBOX_BOTTOMRIGHT_COLOR_NORMAL,
-					FilledSlot, SHIPBOX_INTERIOR_COLOR_NORMAL, FALSE,
+					FilledSlot, SHIPBOX_INTERIOR_COLOR_NORMAL, false,
 					TRANSPARENT);
 	}
 
@@ -795,7 +795,7 @@ ClearShipBox (COUNT side, FleetShipIndex index)
 }
 
 static void
-DrawShipBoxCurrent (MELEE_STATE *pMS, BOOLEAN HiLite)
+DrawShipBoxCurrent (MELEE_STATE *pMS, bool HiLite)
 {
 	FleetShipIndex slotI = GetShipIndex (pMS->row, pMS->col);
 	MeleeShip ship = MeleeSetup_getShip (pMS->meleeSetup, pMS->side, slotI);
@@ -804,7 +804,7 @@ DrawShipBoxCurrent (MELEE_STATE *pMS, BOOLEAN HiLite)
 
 // Draw an image for one of the control method selection buttons.
 static void
-DrawControls (COUNT which_side, BOOLEAN HiLite)
+DrawControls (COUNT which_side, bool HiLite)
 {
 	COUNT which_icon;
 
@@ -850,7 +850,7 @@ DrawTeams (void)
 	{
 		FleetShipIndex index;
 
-		DrawControls (side, FALSE);
+		DrawControls (side, false);
 
 		for (index = 0; index < MELEE_FLEET_SIZE; index++)
 		{
@@ -860,7 +860,7 @@ DrawTeams (void)
 			if (index == TRUE_MELEE_FLEET_SIZE)
 				break;
 
-			DrawShipBox (side, index, ship, FALSE);
+			DrawShipBox (side, index, ship, false);
 		}
 
 		DrawTeamString (pMeleeState, side, DTSHS_NORMAL, NULL);
@@ -890,7 +890,7 @@ QuickRepair (COUNT whichFrame, RECT *pRect)
 		oldOrigin =
 				SetContextOrigin (MAKE_POINT (-r.corner.x, -r.corner.y));
 
-	DrawMeleeIcon (whichFrame, FALSE);
+	DrawMeleeIcon (whichFrame, false);
 
 	SetContextOrigin (oldOrigin);
 	SetContextClipRect (&OldRect);
@@ -949,7 +949,7 @@ RepairMeleeFrame (const RECT *pRect)
 			-r.corner.y + SAFE_Y));
 	BatchGraphics ();
 
-	DrawMeleeIcon (MELEE_BACKGROUND, FALSE); // Entire melee background
+	DrawMeleeIcon (MELEE_BACKGROUND, false); // Entire melee background
 
 	DrawTeams ();
 
@@ -960,17 +960,17 @@ RepairMeleeFrame (const RECT *pRect)
 
 		DrawSuperMeleeTitle ();
 
-		DrawMeleeIcon (LOAD_BUTTON_TOP, FALSE);
-		DrawMeleeIcon (SAVE_BUTTON_TOP, FALSE);
-		DrawMeleeIcon (LOAD_BUTTON_BOTT, FALSE);
-		DrawMeleeIcon (SAVE_BUTTON_BOTT, FALSE);
-		DrawMeleeIcon (QUIT_BUTTON, FALSE);
+		DrawMeleeIcon (LOAD_BUTTON_TOP, false);
+		DrawMeleeIcon (SAVE_BUTTON_TOP, false);
+		DrawMeleeIcon (LOAD_BUTTON_BOTT, false);
+		DrawMeleeIcon (SAVE_BUTTON_BOTT, false);
+		DrawMeleeIcon (QUIT_BUTTON, false);
 
 #ifdef NETPLAY
-		DrawMeleeIcon (NET_BUTTON_TOP, FALSE);
-		//DrawMeleeIcon (NET_BUTTON_BOTT, FALSE);
+		DrawMeleeIcon (NET_BUTTON_TOP, false);
+		//DrawMeleeIcon (NET_BUTTON_BOTT, false);
 #endif
-		DrawMeleeIcon (BATTLE_BUTTON_HL, TRUE);
+		DrawMeleeIcon (BATTLE_BUTTON_HL, true);
 	}
 
 	if (pMeleeState->MeleeOption == BUILD_PICK)
@@ -1071,7 +1071,7 @@ DrawFleetValue (MELEE_STATE *pMS, COUNT side, COUNT HiLiteState)
 }
 
 // If teamName == NULL, the team name is taken from pMS->meleeSetup
-static BOOLEAN
+static bool
 DrawTeamString (MELEE_STATE *pMS, COUNT side, COUNT HiLiteState,
 		const char *teamName)
 {
@@ -1082,7 +1082,7 @@ DrawTeamString (MELEE_STATE *pMS, COUNT side, COUNT HiLiteState,
 	if (HiLiteState == DTSHS_REPAIR)
 	{
 		RepairMeleeFrame (&r);
-		return TRUE;
+		return true;
 	}
 		
 	SetContextFont (MicroFont);
@@ -1117,7 +1117,7 @@ DrawTeamString (MELEE_STATE *pMS, COUNT side, COUNT HiLiteState,
 			// will not fit when displayed later
 			UnbatchGraphics ();
 			// disallow the change
-			return FALSE;
+			return false;
 		}
 #endif
 
@@ -1138,7 +1138,7 @@ DrawTeamString (MELEE_STATE *pMS, COUNT side, COUNT HiLiteState,
 			text_r.corner.y = r.corner.y + RES_SCALE (1);
 			text_r.extent.height = r.extent.height - RES_SCALE (2);
 
-			SetCursorFlashBlock (TRUE);
+			SetCursorFlashBlock (true);
 
 			if (pMS->CurIndex == lfText.CharCount)
 			{	// cursor at end-line -- use insertion point
@@ -1176,7 +1176,7 @@ DrawTeamString (MELEE_STATE *pMS, COUNT side, COUNT HiLiteState,
 			if (pMS->CurIndex == lfText.CharCount)
 				text_r.corner.x -= IF_HD (3);
 
-			SetCursorFlashBlock (FALSE);
+			SetCursorFlashBlock (false);
 		}
 		// position cursor within input field rect
 		text_r.corner.x += RES_SCALE (1);
@@ -1189,7 +1189,7 @@ DrawTeamString (MELEE_STATE *pMS, COUNT side, COUNT HiLiteState,
 	}
 	UnbatchGraphics ();
 
-	return TRUE;
+	return true;
 }
 
 #ifdef NETPLAY
@@ -1324,37 +1324,37 @@ Deselect (BYTE opt)
 	switch (opt)
 	{
 		case START_MELEE:
-			DrawMeleeIcon (BATTLE_BUTTON, FALSE);
+			DrawMeleeIcon (BATTLE_BUTTON, false);
 				// "Battle!" (not highlighted)
 			break;
 		case LOAD_TOP:
-			DrawMeleeIcon (LOAD_BUTTON_TOP, FALSE);
+			DrawMeleeIcon (LOAD_BUTTON_TOP, false);
 				// "Load" (top, not highlighted)
 			break;
 		case LOAD_BOT:
-			DrawMeleeIcon (LOAD_BUTTON_BOTT, FALSE);
+			DrawMeleeIcon (LOAD_BUTTON_BOTT, false);
 				// "Load" (bottom, not highlighted)
 			break;
 		case SAVE_TOP:
-			DrawMeleeIcon (SAVE_BUTTON_TOP, FALSE);
+			DrawMeleeIcon (SAVE_BUTTON_TOP, false);
 				// "Save" (top, not highlighted)
 			break;
 		case SAVE_BOT:
-			DrawMeleeIcon (SAVE_BUTTON_BOTT, FALSE);
+			DrawMeleeIcon (SAVE_BUTTON_BOTT, false);
 				// "Save" (bottom, not highlighted)
 			break;
 #ifdef NETPLAY
 		case NET_TOP:
-			DrawMeleeIcon (NET_BUTTON_TOP, FALSE);
+			DrawMeleeIcon (NET_BUTTON_TOP, false);
 				// "Net..." (top, not highlighted)
 			break;
 		//case NET_BOT:
-		//	DrawMeleeIcon (NET_BUTTON_BOTT, FALSE);
+		//	DrawMeleeIcon (NET_BUTTON_BOTT, false);
 		//		// "Net..." (bottom, not highlighted)
 		//	break;
 #endif
 		case QUIT_BOT:
-			DrawMeleeIcon (QUIT_BUTTON, FALSE);
+			DrawMeleeIcon (QUIT_BUTTON, false);
 				// "Quit" (not highlighted)
 			break;
 		case CONTROLS_TOP:
@@ -1363,14 +1363,14 @@ Deselect (BYTE opt)
 			COUNT which_side;
 			
 			which_side = opt == CONTROLS_TOP ? 1 : 0;
-			DrawControls (which_side, FALSE);
+			DrawControls (which_side, false);
 			break;
 		}
 		case EDIT_MELEE:
 			if (pMeleeState->InputFunc == DoEdit)
 			{
 				if (pMeleeState->row < NUM_MELEE_ROWS)
-					DrawShipBoxCurrent (pMeleeState, FALSE);
+					DrawShipBoxCurrent (pMeleeState, false);
 				else if (pMeleeState->CurIndex == MELEE_STATE_INDEX_DONE)
 				{
 					// Not currently editing the team name.
@@ -1397,37 +1397,37 @@ Select (BYTE opt)
 	switch (opt)
 	{
 		case START_MELEE:
-			DrawMeleeIcon (BATTLE_BUTTON_HL, TRUE);
+			DrawMeleeIcon (BATTLE_BUTTON_HL, true);
 				/* "Battle!" (highlighted) */
 			break;
 		case LOAD_TOP:
-			DrawMeleeIcon (LOAD_BUTTON_TOP_HL, TRUE);
+			DrawMeleeIcon (LOAD_BUTTON_TOP_HL, true);
 				/* "Load" (top, highlighted) */
 			break;
 		case LOAD_BOT:
-			DrawMeleeIcon (LOAD_BUTTON_BOTT_HL, TRUE);
+			DrawMeleeIcon (LOAD_BUTTON_BOTT_HL, true);
 				/* "Load" (bottom, highlighted) */
 			break;
 		case SAVE_TOP:
-			DrawMeleeIcon (SAVE_BUTTON_TOP_HL, TRUE);
+			DrawMeleeIcon (SAVE_BUTTON_TOP_HL, true);
 				/* "Save" (top; highlighted) */
 			break;
 		case SAVE_BOT:
-			DrawMeleeIcon (SAVE_BUTTON_BOTT_HL, TRUE);
+			DrawMeleeIcon (SAVE_BUTTON_BOTT_HL, true);
 				/* "Save" (bottom; highlighted) */
 			break;
 #ifdef NETPLAY
 		case NET_TOP:
-			DrawMeleeIcon (NET_BUTTON_TOP_HL, TRUE);
+			DrawMeleeIcon (NET_BUTTON_TOP_HL, true);
 				/* "Net..." (top; highlighted) */
 			break;
 		//case NET_BOT:
-		//	DrawMeleeIcon (NET_BUTTON_BOTT_HL, TRUE);
+		//	DrawMeleeIcon (NET_BUTTON_BOTT_HL, true);
 		//		/* "Net..." (bottom; highlighted) */
 		//	break;
 #endif
 		case QUIT_BOT:
-			DrawMeleeIcon (QUIT_BUTTON_HL, TRUE);
+			DrawMeleeIcon (QUIT_BUTTON_HL, true);
 				/* "Quit" (highlighted) */
 			break;
 		case CONTROLS_TOP:
@@ -1436,14 +1436,14 @@ Select (BYTE opt)
 			COUNT which_side;
 					
 			which_side = (opt == CONTROLS_TOP) ? 1 : 0;
-			DrawControls (which_side, TRUE);
+			DrawControls (which_side, true);
 			break;
 		}
 		case EDIT_MELEE:
 			if (pMeleeState->InputFunc == DoEdit)
 			{
 				if (pMeleeState->row < NUM_MELEE_ROWS)
-					DrawShipBoxCurrent (pMeleeState, TRUE);
+					DrawShipBoxCurrent (pMeleeState, true);
 				else if (pMeleeState->CurIndex == MELEE_STATE_INDEX_DONE)
 				{
 					// Not currently editing the team name.
@@ -1570,7 +1570,7 @@ DrawMeleeShipStrings (MELEE_STATE *pMS, MeleeShip NewStarShip)
 		hMasterShip = GetStarShipFromIndex (&master_q, NewStarShip);
 		MasterPtr = LockMasterShip (&master_q, hMasterShip);
 
-		InitShipStatus (&MasterPtr->ShipInfo, NULL, NULL, TRUE);
+		InitShipStatus (&MasterPtr->ShipInfo, NULL, NULL, true);
 		
 		if (optMeleeToolTips && pMS->MeleeOption == BUILD_PICK)
 			DrawTooltip (&MasterPtr->ShipInfo);
@@ -1655,11 +1655,11 @@ AdvanceCursor (MELEE_STATE *pMS)
 	}
 }
 
-static BOOLEAN
+static bool
 OnTeamNameChange (TEXTENTRY_STATE *pTES)
 {
 	MELEE_STATE *pMS = (MELEE_STATE*) pTES->CbParam;
-	BOOLEAN ret;
+	bool ret;
 	COUNT hl = DTSHS_EDIT;
 
 	pMS->CurIndex = pTES->CursorPos;
@@ -1671,7 +1671,7 @@ OnTeamNameChange (TEXTENTRY_STATE *pTES)
 	return ret;
 }
 
-static BOOLEAN
+static bool
 TeamNameFrameCallback (TEXTENTRY_STATE *pTES)
 {
 #ifdef NETPLAY
@@ -1684,7 +1684,7 @@ TeamNameFrameCallback (TEXTENTRY_STATE *pTES)
 
 	(void) pTES;
 
-	return TRUE;
+	return true;
 			// Keep editing
 }
 
@@ -1726,24 +1726,24 @@ BuildPickShipPopup (MELEE_STATE *pMS)
 	pMS->InputFunc = DoEdit;
 }
 
-static BOOLEAN
+static bool
 DoEdit (MELEE_STATE *pMS)
 {
 	DWORD TimeIn = GetTimeCounter ();
 
 	/* Cancel any presses of the Pause key. */
-	GamePaused = FALSE;
+	GamePaused = false;
 
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
-		return FALSE;
+		return false;
 	
 	SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT | MENU_SOUND_DELETE);
 	if (!pMS->Initialized)
 	{
 		UpdateCurrentShip (pMS);
-		pMS->Initialized = TRUE;
+		pMS->Initialized = true;
 		pMS->InputFunc = DoEdit;
-		return TRUE;
+		return true;
 	}
 
 #ifdef NETPLAY
@@ -1810,7 +1810,7 @@ DoEdit (MELEE_STATE *pMS)
 						pMS->meleeSetup, pMS->side), MAX_TEAM_CHARS);
 				buf[MAX_TEAM_CHARS] = '\0';
 
-				tes.Initialized = FALSE;
+				tes.Initialized = false;
 				tes.BaseStr = buf;
 				tes.CursorPos = 0;
 				tes.MaxSize = MAX_TEAM_CHARS + 1;
@@ -1829,7 +1829,7 @@ DoEdit (MELEE_STATE *pMS)
 					Melee_UpdateView_teamName (pMS, pMS->side);
 				}
 				
-				return TRUE;
+				return true;
 			}
 		}
 
@@ -1892,7 +1892,7 @@ DoEdit (MELEE_STATE *pMS)
 
 	SleepThreadUntil (TimeIn + ONE_SECOND / 30);
 
-	return TRUE;
+	return true;
 }
 
 #ifdef NETPLAY
@@ -1934,7 +1934,7 @@ numPlayersReady (void)
 // party.
 // When the other party changes something in the settings, the confirmation
 // is cancelled.
-static BOOLEAN
+static bool
 DoConfirmSettings (MELEE_STATE *pMS)
 {
 #ifdef NETPLAY
@@ -1942,7 +1942,7 @@ DoConfirmSettings (MELEE_STATE *pMS)
 #endif
 
 	/* Cancel any presses of the Pause key. */
-	GamePaused = FALSE;
+	GamePaused = false;
 
 	if (PulsedInputState.menu[KEY_MENU_CANCEL])
 	{
@@ -1953,7 +1953,7 @@ DoConfirmSettings (MELEE_STATE *pMS)
 		DrawMeleeStatusMessage (GAME_STRING (NETMELEE_STRING_BASE + 4));
 				// "Confirmation cancelled. Press FIRE to reconfirm."
 #endif
-		return TRUE;
+		return true;
 	}
 
 	if (PulsedInputState.menu[KEY_MENU_LEFT] ||
@@ -1973,12 +1973,12 @@ DoConfirmSettings (MELEE_STATE *pMS)
 #ifndef NETPLAY
 	pMS->InputFunc = DoMelee;
 	SeedRandomNumbers ();
-	pMS->meleeStarted = TRUE;
+	pMS->meleeStarted = true;
 	StartMelee (pMS);
-	pMS->meleeStarted = FALSE;
+	pMS->meleeStarted = false;
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
-		return FALSE;
-	return TRUE;
+		return false;
+	return true;
 #else
 	closeDisconnectedConnections ();
 	netInput ();
@@ -1991,12 +1991,12 @@ DoConfirmSettings (MELEE_STATE *pMS)
 		cancelConfirmations ();
 		flushPacketQueues ();
 		pMS->InputFunc = DoMelee;
-		return TRUE;
+		return true;
 	}
 	else if (numDone != NUM_SIDES)
 	{
 		// Still waiting for some confirmation.
-		return TRUE;
+		return true;
 	}
 		
 	// All sides have confirmed.
@@ -2035,23 +2035,23 @@ DoConfirmSettings (MELEE_STATE *pMS)
 		// it will have received the seed.
 		bool allOk = negotiateReadyConnections (true, NetState_interBattle);
 		if (!allOk)
-			return FALSE;
+			return false;
 	}
 
 	// The maximum value for all connections is used.
 	{
 		bool ok = setupInputDelay (netplayOptions.inputDelay);
 		if (!ok)
-			return FALSE;
+			return false;
 	}
 	
 	pMS->InputFunc = DoMelee;
 	
 	StartMelee (pMS);
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
-		return FALSE;
+		return false;
 
-	return TRUE;
+	return true;
 #endif  /* defined (NETPLAY) */
 }
 
@@ -2154,7 +2154,7 @@ StartMelee (MELEE_STATE *pMS)
 	} while (0 /* !(GLOBAL (CurrentActivity) & CHECK_ABORT) */);
 	GLOBAL (CurrentActivity) = SUPER_MELEE;
 
-	pMS->Initialized = FALSE;
+	pMS->Initialized = false;
 }
 
 static void
@@ -2252,7 +2252,7 @@ StartMeleeButtonPressed (MELEE_STATE *pMS)
 
 #ifdef NETPLAY
 
-static BOOLEAN
+static bool
 DoConnectingDialog (MELEE_STATE *pMS)
 {
 	DWORD TimeIn = GetTimeCounter ();
@@ -2260,10 +2260,10 @@ DoConnectingDialog (MELEE_STATE *pMS)
 	NetConnection *conn;
 
 	/* Cancel any presses of the Pause key. */
-	GamePaused = FALSE;
+	GamePaused = false;
 
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
-		return FALSE;
+		return false;
 
 	SetMenuSounds (MENU_SOUND_NONE, MENU_SOUND_NONE);
 	if (!pMS->Initialized)
@@ -2277,7 +2277,7 @@ DoConnectingDialog (MELEE_STATE *pMS)
 		if (netConnections[which_side] != NULL)
 			closePlayerNetworkConnection (which_side);
 
-		pMS->Initialized = TRUE;
+		pMS->Initialized = true;
 		conn = openPlayerNetworkConnection (which_side, pMS);
 		pMS->InputFunc = DoConnectingDialog;
 
@@ -2334,7 +2334,7 @@ DoConnectingDialog (MELEE_STATE *pMS)
 
 		flushPacketQueues ();
 
-		return TRUE;
+		return true;
 	}
 
 	conn = netConnections[which_side];
@@ -2346,7 +2346,7 @@ DoConnectingDialog (MELEE_STATE *pMS)
 		{
 			/* Connection complete! */
 			PlayerControl[which_side] = NETWORK_CONTROL | STANDARD_RATING;
-			DrawControls (which_side, TRUE);
+			DrawControls (which_side, true);
 
 			RedrawMeleeFrame ();
 
@@ -2362,7 +2362,7 @@ DoConnectingDialog (MELEE_STATE *pMS)
 
 	SleepThreadUntil (TimeIn + ONE_SECOND / 30);
 
-	return TRUE;
+	return true;
 }
 
 /* Check for disconnects, and revert to human control if there is one */
@@ -2382,7 +2382,7 @@ check_for_disconnects (MELEE_STATE *pMS)
 		if (conn == NULL || !NetConnection_isConnected (conn))
 		{
 			PlayerControl[player] = HUMAN_CONTROL | STANDARD_RATING;
-			DrawControls (player, FALSE);
+			DrawControls (player, false);
 			log_add (log_User, "Player %d has disconnected; shifting "
 					"controls\n", player);
 		}
@@ -2426,7 +2426,7 @@ nextControlType (COUNT which_side)
 			break;
 	}
 
-	DrawControls (which_side, TRUE);
+	DrawControls (which_side, true);
 }
 
 static MELEE_OPTIONS
@@ -2454,7 +2454,7 @@ MeleeOptionSelect (MELEE_STATE *pMS)
 			break;
 		case LOAD_TOP:
 		case LOAD_BOT:
-			pMS->Initialized = FALSE;
+			pMS->Initialized = false;
 			pMS->side = pMS->MeleeOption == LOAD_TOP ? 0 : 1;
 			DoLoadTeam (pMS);
 			break;
@@ -2474,7 +2474,7 @@ MeleeOptionSelect (MELEE_STATE *pMS)
 		//case NET_BOT:
 		{
 			COUNT which_side;
-			BOOLEAN confirmed;
+			bool confirmed;
 
 			which_side = pMS->MeleeOption == NET_TOP ? 1 : 0;
 			confirmed = MeleeConnectDialog (which_side);
@@ -2482,7 +2482,7 @@ MeleeOptionSelect (MELEE_STATE *pMS)
 			pMS->LastInputTime = GetTimeCounter ();
 			if (confirmed)
 			{
-				pMS->Initialized = FALSE;
+				pMS->Initialized = false;
 				pMS->InputFunc = DoConnectingDialog;
 			}
 			break;
@@ -2498,17 +2498,17 @@ MeleeOptionSelect (MELEE_STATE *pMS)
 	}
 }
 
-BOOLEAN
+bool
 DoMelee (MELEE_STATE *pMS)
 {
 	DWORD TimeIn = GetTimeCounter ();
-	BOOLEAN force_select = FALSE;
+	bool force_select = false;
 
 	/* Cancel any presses of the Pause key. */
-	GamePaused = FALSE;
+	GamePaused = false;
 
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
-		return FALSE;
+		return false;
 
 	SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
 	if (!pMS->Initialized)
@@ -2520,7 +2520,7 @@ DoMelee (MELEE_STATE *pMS)
 			pMS->hMusic = 0;
 		}
 		pMS->hMusic = 0;
-		pMS->Initialized = TRUE;
+		pMS->Initialized = true;
 		
 		pMS->MeleeOption = START_MELEE;
 
@@ -2535,7 +2535,7 @@ DoMelee (MELEE_STATE *pMS)
 
 		FadeScreen (FadeAllToColor, ONE_SECOND / 2);
 		pMS->LastInputTime = GetTimeCounter ();
-		return TRUE;
+		return true;
 	}
 
 #ifdef NETPLAY
@@ -2549,7 +2549,7 @@ DoMelee (MELEE_STATE *pMS)
 		pMS->LastInputTime = GetTimeCounter ();
 		Deselect (pMS->MeleeOption);
 		pMS->MeleeOption = EDIT_MELEE;
-		pMS->Initialized = FALSE;
+		pMS->Initialized = false;
 		if (PulsedInputState.menu[KEY_MENU_CANCEL])
 		{
 			pMS->side = 0;
@@ -2583,7 +2583,7 @@ DoMelee (MELEE_STATE *pMS)
 		if ((PlayerControl[0] & PlayerControl[1] & PSYTRON_CONTROL)
 				&& GetTimeCounter () - pMS->LastInputTime > ONE_SECOND * 10)
 		{
-			force_select = TRUE;
+			force_select = true;
 			NewMeleeOption = START_MELEE;
 		}
 
@@ -2614,7 +2614,7 @@ DoMelee (MELEE_STATE *pMS)
 		{
 			MeleeOptionSelect (pMS);
 			if (GLOBAL (CurrentActivity) & CHECK_ABORT)
-				return FALSE;
+				return false;
 		}
 	}
 
@@ -2628,7 +2628,7 @@ DoMelee (MELEE_STATE *pMS)
 
 	SleepThreadUntil (TimeIn + ONE_SECOND / 30);
 
-	return TRUE;
+	return true;
 }
 
 static int
@@ -2720,7 +2720,7 @@ Melee (void)
 		memset (pMeleeState, 0, sizeof (*pMeleeState));
 
 		MenuState.InputFunc = DoMelee;
-		MenuState.Initialized = FALSE;
+		MenuState.Initialized = false;
 
 		MenuState.meleeSetup = MeleeSetup_new ();
 
@@ -2758,7 +2758,7 @@ Melee (void)
 
 		MenuState.side = 0;
 		SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
-		DoInput (&MenuState, TRUE);
+		DoInput (&MenuState, true);
 
 		StopMusic ();
 		WaitForSoundEnd (TFBSOUND_WAIT_ALL);
@@ -2973,7 +2973,7 @@ Melee_UpdateView_ship (MELEE_STATE *pMS, COUNT side, FleetShipIndex index)
 	}
 	else
 	{
-		DrawShipBox (side, index, ship, FALSE);
+		DrawShipBox (side, index, ship, false);
 	}
 }
 

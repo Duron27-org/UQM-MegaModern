@@ -169,12 +169,12 @@ universeToDispy2 (COORD uy)
 #define UNIVERSE_TO_DISPY2(uy) \
 		(IS_HD ? universeToDispy2(uy) : universeToDispy(uy))
 
-static BOOLEAN transition_pending;
+static bool transition_pending;
 
 static void
-flashCurrentLocation (POINT *where, BOOLEAN force)
+flashCurrentLocation (POINT *where, bool force)
 {
-	static BOOLEAN redraw = FALSE;
+	static bool redraw = false;
 	static BYTE c = 0;
 	static int val = -2;
 	static POINT universe;
@@ -191,7 +191,7 @@ flashCurrentLocation (POINT *where, BOOLEAN force)
 			val = -val;
 		c += val;
 
-		redraw = TRUE;
+		redraw = true;
 	}
 
 	if (force || redraw)
@@ -212,7 +212,7 @@ flashCurrentLocation (POINT *where, BOOLEAN force)
 
 		SetContext (OldContext);
 
-		redraw = FALSE;
+		redraw = false;
 	}
 }
 
@@ -509,8 +509,8 @@ CalcEllipsePoint (double a, double b, double rad_one, double rad_two, POINT Pivo
 	return POINT{ UNIVERSE_TO_DISPX2 (x), UNIVERSE_TO_DISPY2 (y) };
 }
 
-BOOLEAN
-onScreen (LINE *l, BOOLEAN ignoreX, BOOLEAN ignoreY)
+bool
+onScreen (LINE *l, bool ignoreX, bool ignoreY)
 {
 	return !((l->first.x < 0 && l->second.x < 0 && !ignoreX)
 			|| (l->first.x >= SIS_SCREEN_WIDTH
@@ -575,7 +575,7 @@ DrawNoReturnZone (void)
 						- (COORD)(err * (rmax_y.y - L.first.y));
 				L.second.y = L.first.y;
 
-				if (onScreen (&L, FALSE, FALSE))
+				if (onScreen (&L, false, false))
 					DrawLine (&L, 1);
 
 				dy = L.first.y - prev.y;
@@ -583,8 +583,8 @@ DrawNoReturnZone (void)
 				MAKE_LINE (&tempLine, L.first, prev);
 
 				if ((abs (dy) > 1)
-						&& onScreen (&tempLine, TRUE,
-							FALSE))
+						&& onScreen (&tempLine, true,
+							false))
 				{
 					LINE L2;
 					COORD iter;
@@ -605,7 +605,7 @@ DrawNoReturnZone (void)
 						L2.second.x = rmax_y.x
 								- (COORD)(err * (rmax_y.y - L2.first.y));
 
-						if (onScreen (&L2, FALSE, FALSE))
+						if (onScreen (&L2, false, false))
 							DrawLine (&L2, 1);
 
 						dy -= iter;
@@ -657,7 +657,7 @@ GetFuelRect (DRECT *r, SDWORD diameter, POINT corner)
 }
 
 static void
-DrawFuelCircle (BOOLEAN secondary)
+DrawFuelCircle (bool secondary)
 {
 	DRECT r;
 	POINT corner;
@@ -682,7 +682,7 @@ DrawFuelCircle (BOOLEAN secondary)
 	if (secondary)
 	{
 		OldColor = SetContextForeGroundColor (DKGRAY_COLOR);
-		DrawOval (&r, RES_BOOL (1,6), FALSE);
+		DrawOval (&r, chooseIfHd (1,6), false);
 		SetContextForeGroundColor (OldColor);
 	}
 	else
@@ -747,105 +747,105 @@ DrawFuelEllipse ()
 	SetContextForeGroundColor (OldColor);
 }*/
 
-BOOLEAN
+bool
 isHomeworld (BYTE Index)
 {
-	BOOLEAN raceBool = FALSE;
+	bool raceBool = false;
 
 	switch (Index)
 	{
 		case CHMMR_DEFINED:
 			if (IsHomeworldKnown (CHMMR_HOME)
 				&& (CheckAlliance (CHMMR_SHIP) != DEAD_GUY || StarSeed))
-				raceBool = TRUE;
+				raceBool = true;
 			break;
 		case ORZ_DEFINED:
 			if (IsHomeworldKnown (ORZ_HOME)
 				&& (CheckAlliance (ORZ_SHIP) != DEAD_GUY || StarSeed))
-				raceBool = TRUE;
+				raceBool = true;
 			break;
 		case PKUNK_DEFINED:
 			if (IsHomeworldKnown (PKUNK_HOME)
 				&& (CheckAlliance (PKUNK_SHIP) != DEAD_GUY || StarSeed))
-				raceBool = TRUE;
+				raceBool = true;
 			break;
 		case SHOFIXTI_DEFINED:
 			if (IsHomeworldKnown (SHOFIXTI_HOME)
 				&& (CheckAlliance (SHOFIXTI_SHIP) != DEAD_GUY || StarSeed))
-				raceBool = TRUE;
+				raceBool = true;
 			break;
 		case SPATHI_DEFINED:
 			if (IsHomeworldKnown (SPATHI_HOME)
 				&& (CheckAlliance (SPATHI_SHIP) != DEAD_GUY || StarSeed))
-				raceBool = TRUE;
+				raceBool = true;
 			break;
 		case SUPOX_DEFINED:
 			if (IsHomeworldKnown (SUPOX_HOME)
 				&& (CheckAlliance (SUPOX_SHIP) != DEAD_GUY || StarSeed))
-				raceBool = TRUE;
+				raceBool = true;
 			break;
 		case THRADD_DEFINED:
 			if (IsHomeworldKnown (THRADDASH_HOME)
 				&& (CheckAlliance (THRADDASH_SHIP) != DEAD_GUY || StarSeed))
-				raceBool = TRUE;
+				raceBool = true;
 			break;
 		case UTWIG_DEFINED:
 			if (IsHomeworldKnown (UTWIG_HOME)
 				&& (CheckAlliance (UTWIG_SHIP) != DEAD_GUY || StarSeed))
-				raceBool = TRUE;
+				raceBool = true;
 			break;
 		case VUX_DEFINED:
 			if (IsHomeworldKnown (VUX_HOME)
 				&& (CheckAlliance (VUX_SHIP) != DEAD_GUY || StarSeed))
-				raceBool = TRUE;
+				raceBool = true;
 			break;
 		case YEHAT_DEFINED:
 			if (IsHomeworldKnown (YEHAT_HOME)
 				&& (CheckAlliance (YEHAT_SHIP) != DEAD_GUY || StarSeed))
-				raceBool = TRUE;
+				raceBool = true;
 			break;
 		case DRUUGE_DEFINED:
 			if (IsHomeworldKnown (DRUUGE_HOME)
 				&& (CheckAlliance (DRUUGE_SHIP) != DEAD_GUY || StarSeed))
-				raceBool = TRUE;
+				raceBool = true;
 			break;
 		case ILWRATH_DEFINED:
 			if (IsHomeworldKnown (ILWRATH_HOME)
 				&& (CheckAlliance (ILWRATH_SHIP) != DEAD_GUY || StarSeed))
-				raceBool = TRUE;
+				raceBool = true;
 			break;
 		case MYCON_DEFINED:
 			if (IsHomeworldKnown (MYCON_HOME)
 				&& (CheckAlliance (MYCON_SHIP) != DEAD_GUY || StarSeed))
-				raceBool = TRUE;
+				raceBool = true;
 			break;
 		case SLYLANDRO_DEFINED:
 			if (IsHomeworldKnown (SLYLANDRO_HOME))
-				raceBool = TRUE;
+				raceBool = true;
 			break;
 		case UMGAH_DEFINED:
 			if (IsHomeworldKnown (UMGAH_HOME)
 				&& (CheckAlliance (UMGAH_SHIP) != DEAD_GUY || StarSeed))
-				raceBool = TRUE;
+				raceBool = true;
 			break;
 		case ZOQFOT_DEFINED:
 			if (IsHomeworldKnown (ZOQFOTPIK_HOME)
 				&& (CheckAlliance (ZOQFOTPIK_SHIP) != DEAD_GUY || StarSeed))
-				raceBool = TRUE;
+				raceBool = true;
 			break;
 		case SYREEN_DEFINED:
 			if (IsHomeworldKnown (SYREEN_HOME)
 				&& (CheckAlliance (SYREEN_SHIP) != DEAD_GUY || StarSeed))
-				raceBool = TRUE;
+				raceBool = true;
 			break;
 		case ANDROSYNTH_DEFINED:
 			if (IsHomeworldKnown (ANDROSYNTH_HOME)
 				&& (CheckAlliance (ANDROSYNTH_SHIP) != DEAD_GUY || StarSeed))
-				raceBool = TRUE;
+				raceBool = true;
 			break;
 		case SOL_DEFINED:
 		case START_COLONY_DEFINED:
-			raceBool = TRUE;
+			raceBool = true;
 			break;
 	}
 
@@ -867,7 +867,7 @@ markerBuf (const int star_index, const char* marker_state)
 	return buf;
 }
 
-BOOLEAN
+bool
 isStarMarked (const int star_index, const char *marker_state)
 {
 	int starIndex = star_index;
@@ -1051,16 +1051,16 @@ DrawStarMap (COUNT race_update, RECT *pClipRect)
 	STAMP s;
 	FRAME star_frame;
 	STAR_DESC *SDPtr;
-	BOOLEAN draw_cursor;
+	bool draw_cursor;
 
 	if (pClipRect == (RECT*)-1)
 	{
 		pClipRect = 0;
-		draw_cursor = FALSE;
+		draw_cursor = false;
 	}
 	else
 	{
-		draw_cursor = TRUE;
+		draw_cursor = true;
 	}
 
 	SetContext (SpaceContext);
@@ -1107,7 +1107,7 @@ DrawStarMap (COUNT race_update, RECT *pClipRect)
 			&& (race_update == 0 && which_space < 2)
 			&& !(optInfiniteFuel || GLOBAL_SIS (FuelOnBoard) == 0))
 	{	// Draw the fuel range circle
-		DrawFuelCircle (FALSE);
+		DrawFuelCircle (false);
 	}
 
 	{	// Horizontal lines
@@ -1156,7 +1156,7 @@ DrawStarMap (COUNT race_update, RECT *pClipRect)
 		&& (optFuelRange == 1 || optFuelRange == 3)
 		&& (GLOBAL (autopilot.x) != ~0 && GLOBAL (autopilot.y) != ~0))
 	{	// Draw the autopilot fuel range circle (on top of the grid)
-		DrawFuelCircle (TRUE);
+		DrawFuelCircle (true);
 	}
 
 	star_frame = SetRelFrameIndex (StarMapFrame, 2);
@@ -1315,7 +1315,7 @@ DrawStarMap (COUNT race_update, RECT *pClipRect)
 		if (currMax > 0)
 		{
 			BYTE j, k;
-			BOOLEAN swapped;
+			bool swapped;
 			COORD offs;
 			TEXT t;
 			Color c;
@@ -1323,18 +1323,18 @@ DrawStarMap (COUNT race_update, RECT *pClipRect)
 
 			for (j = 0; j < currMax - 1; j++)
 			{// Sort nameplates by Y-axis from top to bottom
-				swapped = FALSE;
+				swapped = false;
 				for (k = 0; k < currMax - j - 1; k++)
 				{
 					if (nameplate[k].rect.corner.y > nameplate[k + 1].rect.corner.y)
 					{
 						SwapPlates (&nameplate[k], &nameplate[k + 1]);
-						swapped = TRUE;
+						swapped = true;
 					}
 				}
 				// If no two elements were swapped by inner loop,
 				// then break
-				if (swapped == FALSE)
+				if (swapped == false)
 					break;
 			}
 
@@ -1462,7 +1462,7 @@ DrawStarMap (COUNT race_update, RECT *pClipRect)
 		{
 			BYTE Index = star_array[i].Index;
 			if (isHomeworld (Index))
-				DrawMarker (star_array[i].star_pt, TRUE);
+				DrawMarker (star_array[i].star_pt, true);
 		}
 		for (i = 0; i < NUM_HYPER_VORTICES; ++i)
 		{
@@ -1500,7 +1500,7 @@ DrawStarMap (COUNT race_update, RECT *pClipRect)
 			COUNT i;
 			for (i = RAINBOW0_DEFINED; i <= RAINBOW9_DEFINED; i++)
 				if (rainbow_mask & (1 << (i - RAINBOW0_DEFINED)))
-					DrawMarker (plot_map[i].star_pt, TRUE);
+					DrawMarker (plot_map[i].star_pt, true);
 		}
 	}
 
@@ -1578,14 +1578,14 @@ DrawStarMap (COUNT race_update, RECT *pClipRect)
 	{
 		DrawAutoPilot (&GLOBAL (autopilot));
 		if (IS_HD)
-			DrawMarker (GLOBAL (autopilot), FALSE);
+			DrawMarker (GLOBAL (autopilot), false);
 	}
 
 	if (transition_pending)
 	{
 		GetContextClipRect (&r);
 		ScreenTransition (optScrTrans, &r);
-		transition_pending = FALSE;
+		transition_pending = false;
 	}
 
 	if (pClipRect)
@@ -1600,7 +1600,7 @@ DrawStarMap (COUNT race_update, RECT *pClipRect)
 		LoadIntoExtraScreen (&r);
 		DrawCursor (UNIVERSE_TO_DISPX (cursorLoc.x),
 				UNIVERSE_TO_DISPY (cursorLoc.y));
-		flashCurrentLocation (NULL, TRUE);
+		flashCurrentLocation (NULL, true);
 	}
 
 	UnbatchGraphics ();
@@ -1739,7 +1739,7 @@ UpdateCursorLocation (int sx, int sy, const POINT *newpt)
 		BatchGraphics ();
 		EraseCursor (RES_SCALE (pt.x), RES_SCALE (pt.y));
 		DrawCursor (RES_SCALE (s.origin.x), RES_SCALE (s.origin.y));
-		flashCurrentLocation (NULL, TRUE);
+		flashCurrentLocation (NULL, true);
 		UnbatchGraphics ();
 	}
 }
@@ -1966,8 +1966,8 @@ typedef struct starsearch_state
 	int FirstIndex;
 	int CurIndex;
 	int LastIndex;
-	BOOLEAN SingleClust;
-	BOOLEAN SingleMatch;
+	bool SingleClust;
+	bool SingleMatch;
 	CHAR_T Buffer[STAR_SEARCH_BUFSIZE];
 	const CHAR_T *Prefix;
 	const CHAR_T *Cluster;
@@ -2086,7 +2086,7 @@ SkipStarCluster (int *sortedStars, int istar)
 }
 
 static int
-FindNextStarIndex (STAR_SEARCH_STATE *pSS, int from, BOOLEAN WithinClust)
+FindNextStarIndex (STAR_SEARCH_STATE *pSS, int from, bool WithinClust)
 {
 	int i;
 
@@ -2211,7 +2211,7 @@ DrawMatchedStarName (TEXTENTRY_STATE *pTES)
 }
 
 static void
-MatchNextStar (STAR_SEARCH_STATE *pSS, BOOLEAN Reset)
+MatchNextStar (STAR_SEARCH_STATE *pSS, bool Reset)
 {
 	if (Reset)
 		pSS->FirstIndex = -1; // reset cache
@@ -2220,8 +2220,8 @@ MatchNextStar (STAR_SEARCH_STATE *pSS, BOOLEAN Reset)
 	{	// first time after changes
 		pSS->CurIndex = -1;
 		pSS->LastIndex = -1;
-		pSS->SingleClust = FALSE;
-		pSS->SingleMatch = FALSE;
+		pSS->SingleClust = false;
+		pSS->SingleMatch = false;
 		strcpy (pSS->Buffer, pSS->Text);
 		SplitStarName (pSS);
 	}
@@ -2243,22 +2243,22 @@ MatchNextStar (STAR_SEARCH_STATE *pSS, BOOLEAN Reset)
 		{
 			if (!pSS->Prefix)
 			{	// only one cluster matching
-				pSS->SingleClust = TRUE;
+				pSS->SingleClust = true;
 			}
 			else
 			{	// exact match
-				pSS->SingleMatch = TRUE;
+				pSS->SingleMatch = true;
 			}
 		}
 	}
 }
 
-static BOOLEAN
+static bool
 OnStarNameChange (TEXTENTRY_STATE *pTES)
 {
 	STAR_SEARCH_STATE *pSS = (STAR_SEARCH_STATE *) pTES->CbParam;
 	COUNT flags;
-	BOOLEAN ret = TRUE;
+	bool ret = true;
 
 	if (strcmp (pSS->Text, pSS->LastText) != 0)
 	{	// string changed
@@ -2266,7 +2266,7 @@ OnStarNameChange (TEXTENTRY_STATE *pTES)
 		strcpy (pSS->LastText, pSS->Text);
 		
 		// reset the search
-		MatchNextStar (pSS, TRUE);
+		MatchNextStar (pSS, true);
 	}
 
 	if (pSS->CurIndex < 0)
@@ -2295,7 +2295,7 @@ OnStarNameChange (TEXTENTRY_STATE *pTES)
 	return ret;
 }
 
-static BOOLEAN
+static bool
 OnStarNameFrame (TEXTENTRY_STATE *pTES)
 {
 	STAR_SEARCH_STATE *pSS = (STAR_SEARCH_STATE *) pTES->CbParam;
@@ -2304,13 +2304,13 @@ OnStarNameFrame (TEXTENTRY_STATE *pTES)
 	{	// search for next match
 		STAR_DESC *SDPtr;
 
-		MatchNextStar (pSS, FALSE);
+		MatchNextStar (pSS, false);
 
 		if (pSS->CurIndex < 0)
 		{	// nothing found
 			if (PulsedInputState.menu[KEY_MENU_NEXT])
 				PlayMenuSound (MENU_SOUND_FAILURE);
-			return TRUE;
+			return true;
 		}
 
 		// move the cursor to the found star
@@ -2321,14 +2321,14 @@ OnStarNameFrame (TEXTENTRY_STATE *pTES)
 		UpdateFuelRequirement ();
 	}
 
-	flashCurrentLocation (NULL, FALSE);
+	flashCurrentLocation (NULL, false);
 
 	SleepThread (ONE_SECOND / 30);
 	
-	return TRUE;
+	return true;
 }
 
-BOOLEAN
+bool
 coords_only (CHAR_T *s)
 {
 	BYTE i, count = 0;
@@ -2349,27 +2349,27 @@ coords_only (CHAR_T *s)
 			countC++;
 		}
 		else if (isdigit (s[i]) == 0)
-			return FALSE;
+			return false;
 		else
 			count++;
 	}
 	return i == j && countD <= 2 && countC == 1;
 }
 
-static BOOLEAN
+static bool
 DoStarSearch (MENU_STATE *pMS)
 {
 	TEXTENTRY_STATE tes;
 	STAR_SEARCH_STATE *pss;
-	BOOLEAN success;
+	bool success;
 
 	pss = (STAR_SEARCH_STATE*)HMalloc (sizeof (*pss));
 	if (!pss)
-		return FALSE;
+		return false;
 
 	DrawSISMessageEx ("", 0, 0, DSME_SETFR);
 
-	TextEntry3DO = (BOOLEAN)is3DO (optWhichFonts);
+	TextEntry3DO = (bool)is3DO (optWhichFonts);
 
 	pss->pMS = pMS;
 	pss->LastChangeTime = 0;
@@ -2379,7 +2379,7 @@ DoStarSearch (MENU_STATE *pMS)
 	SortStarsOnName (pss);
 
 	// text entry setup
-	tes.Initialized = FALSE;
+	tes.Initialized = false;
 	tes.BaseStr = pss->Text;
 	tes.MaxSize = sizeof (pss->Text);
 	tes.CursorPos = 0;
@@ -2400,24 +2400,24 @@ DoStarSearch (MENU_STATE *pMS)
 
 		if (coord.x > MAX_X_UNIVERSE || coord.y > MAX_Y_UNIVERSE
 			|| coord.x < 0 || coord.y < 0)
-			success = FALSE;
+			success = false;
 		else
 			UpdateCursorLocation (0, 0, &coord);
 
-		success = TRUE;
+		success = true;
 	}
 	
 	DrawSISMessageEx (pss->Text, -1, -1, DSME_CLEARFR);
 
 	HFree (pss);
 
-	TextEntry3DO = FALSE;
+	TextEntry3DO = false;
 
 	return success;
 }
 
 void
-DoBubbleWarp (BOOLEAN UseFuel)
+DoBubbleWarp (bool UseFuel)
 {
 	PlayMenuSound (MENU_SOUND_BUBBLEWARP);
 
@@ -2490,7 +2490,7 @@ AdvancedAutoPilot (void)
 		InvokeSpawner ();
 }
 
-static BOOLEAN
+static bool
 DoMoveCursor (MENU_STATE *pMS)
 {
 #define MIN_ACCEL_DELAY (ONE_SECOND / 60)
@@ -2499,13 +2499,13 @@ DoMoveCursor (MENU_STATE *pMS)
 	static CHAR_T last_buf[CURSOR_INFO_BUFSIZE];
 	DWORD TimeIn = GetTimeCounter ();
 	static COUNT moveRepeats;
-	BOOLEAN isMove = FALSE;
+	bool isMove = false;
 
 	if (!pMS->Initialized)
 	{
 		POINT universe;
 
-		pMS->Initialized = TRUE;
+		pMS->Initialized = true;
 		pMS->InputFunc = DoMoveCursor;
 
 		if (!inHQSpace ())
@@ -2515,13 +2515,13 @@ DoMoveCursor (MENU_STATE *pMS)
 			universe.x = LOGX_TO_UNIVERSE (GLOBAL_SIS (log_x));
 			universe.y = LOGY_TO_UNIVERSE (GLOBAL_SIS (log_y));
 		}
-		flashCurrentLocation (&universe, FALSE);
+		flashCurrentLocation (&universe, false);
 
 		last_buf[0] = '\0';
 		UpdateCursorInfo (last_buf);
 		UpdateFuelRequirement ();
 
-		return TRUE;
+		return true;
 	}
 	else if (PulsedInputState.menu[KEY_MENU_CANCEL])
 	{
@@ -2531,7 +2531,7 @@ DoMoveCursor (MENU_STATE *pMS)
 				&& GLOBAL (autopilot.x) != ~0 && GLOBAL (autopilot.y) != ~0
 				&& GLOBAL_SIS (FuelOnBoard) >= FuelRequired ())
 		{
-			DoBubbleWarp (TRUE);
+			DoBubbleWarp (true);
 		}
 
 		if (!inQuasiSpace ()
@@ -2552,7 +2552,7 @@ DoMoveCursor (MENU_STATE *pMS)
 			}
 		}
 
-		return FALSE;
+		return false;
 	}
 	else if (PulsedInputState.menu[KEY_MENU_SELECT])
 	{
@@ -2564,8 +2564,8 @@ DoMoveCursor (MENU_STATE *pMS)
 		if (optBubbleWarp && (optInfiniteFuel || inQuasiSpace ()))
 		{
 			GLOBAL (autopilot) = cursorLoc;
-			DoBubbleWarp (FALSE);
-			return FALSE;
+			DoBubbleWarp (false);
+			return false;
 		}
 		else
 		{
@@ -2600,7 +2600,7 @@ DoMoveCursor (MENU_STATE *pMS)
 			UpdateFuelRequirement ();
 
 			SetMenuRepeatDelay (MIN_ACCEL_DELAY, MAX_ACCEL_DELAY,
-					STEP_ACCEL_DELAY, TRUE);
+					STEP_ACCEL_DELAY, true);
 			SetMenuSounds (MENU_SOUND_NONE, MENU_SOUND_NONE);
 		}
 		else
@@ -2701,7 +2701,7 @@ DoMoveCursor (MENU_STATE *pMS)
 			UpdateCursorLocation (sx, sy, NULL);
 			UpdateCursorInfo (last_buf);
 			UpdateFuelRequirement ();
-			isMove = TRUE;
+			isMove = true;
 		}
 
 		SleepThreadUntil (TimeIn + MIN_ACCEL_DELAY);
@@ -2712,7 +2712,7 @@ DoMoveCursor (MENU_STATE *pMS)
 	else
 		moveRepeats = 0;
 
-	flashCurrentLocation (NULL, FALSE);
+	flashCurrentLocation (NULL, false);
 
 	return !(GLOBAL (CurrentActivity) & CHECK_ABORT);
 }
@@ -2770,7 +2770,7 @@ static void
 UpdateMap (void)
 {
 	BYTE ButtonState, VisibleChange;
-	BOOLEAN MapDrawn, Interrupted;
+	bool MapDrawn, Interrupted;
 	COUNT index;
 	HFLEETINFO hStarShip, hNextShip;
 	COUNT GrowthFactor;
@@ -2778,7 +2778,7 @@ UpdateMap (void)
 	FlushInput ();
 	ButtonState = 1; /* assume a button down */
 
-	MapDrawn = Interrupted = FALSE;
+	MapDrawn = Interrupted = false;
 	for (index = 1,
 			hStarShip = GetHeadLink (&GLOBAL (avail_race_q));
 			hStarShip; ++index, hStarShip = hNextShip)
@@ -2790,13 +2790,13 @@ UpdateMap (void)
 
 		if (ButtonState)
 		{
-			if (!AnyButtonPress (TRUE))
+			if (!AnyButtonPress (true))
 				ButtonState = 0;
 		}
-		else if ((Interrupted = (BOOLEAN)(
-				Interrupted || AnyButtonPress (TRUE)
+		else if ((Interrupted = (bool)(
+				Interrupted || AnyButtonPress (true)
 				)))
-			MapDrawn = TRUE;
+			MapDrawn = true;
 
 		if (FleetPtr->known_strength)
 		{
@@ -2839,13 +2839,13 @@ UpdateMap (void)
 				if (!MapDrawn)
 				{
 					DrawStarMap ((COUNT)~0, NULL);
-					MapDrawn = TRUE;
+					MapDrawn = true;
 				}
 
 				GetSphereRect (FleetPtr, &temp_r0, &last_r);
 				last_r.extent.width += RES_SCALE (1) + IF_HD (1);// dot in HD is 5px wide for AA to work
 				last_r.extent.height += RES_SCALE (1) + IF_HD (1);// so we have to add extra 1
-				VisibleChange = FALSE;
+				VisibleChange = false;
 				do
 				{
 					do
@@ -2868,14 +2868,14 @@ UpdateMap (void)
 
 					if (ButtonState)
 					{
-						if (!AnyButtonPress (TRUE))
+						if (!AnyButtonPress (true))
 							ButtonState = 0;
 					}
-					else if ((Interrupted = (BOOLEAN)(
-								Interrupted || AnyButtonPress (TRUE)
+					else if ((Interrupted = (bool)(
+								Interrupted || AnyButtonPress (true)
 								)))
 					{
-						MapDrawn = TRUE;
+						MapDrawn = true;
 						goto DoneSphereMove;
 					}
 
@@ -2884,7 +2884,7 @@ UpdateMap (void)
 					if (temp_r0.corner.x != temp_r1.corner.x
 							|| temp_r0.corner.y != temp_r1.corner.y)
 					{// Ignore name stacking during movement
-						VisibleChange = TRUE;
+						VisibleChange = true;
 						RepairMap (index | IGNORE_MOVING_SOI, &last_r, &r);
 						SleepThread (ONE_SECOND / 24);
 					}
@@ -2902,7 +2902,7 @@ DoneSphereMove:
 				if (!MapDrawn)
 				{
 					DrawStarMap ((COUNT)~0, NULL);
-					MapDrawn = TRUE;
+					MapDrawn = true;
 				}
 
 				if (delta > 0)
@@ -2919,7 +2919,7 @@ DoneSphereMove:
 				last_r.extent.height += RES_SCALE (1);
 				// Kruzen: Font size to clean up double space because of text stacking now
 				last_r.extent.height = MAX (last_r.extent.height, RES_SCALE (14));
-				VisibleChange = FALSE;
+				VisibleChange = false;
 
 				/*printf("%s: %d\n", raceName (index),
 						FleetPtr->actual_strength);*/
@@ -2942,14 +2942,14 @@ DoneSphereMove:
 
 					if (ButtonState)
 					{
-						if (!AnyButtonPress (TRUE))
+						if (!AnyButtonPress (true))
 							ButtonState = 0;
 					}
-					else if ((Interrupted = (BOOLEAN)(
-								Interrupted || AnyButtonPress (TRUE)
+					else if ((Interrupted = (bool)(
+								Interrupted || AnyButtonPress (true)
 								)))
 					{
-						MapDrawn = TRUE;
+						MapDrawn = true;
 						goto DoneSphereGrowth;
 					}
 					r.extent.width += RES_SCALE (1);
@@ -2957,14 +2957,14 @@ DoneSphereMove:
 					if ((temp_r0.extent.height != temp_r1.extent.height) &&
 							!(str > 0 && FleetPtr->known_strength == 0))
 					{// Update race SOI size IF the race didn't die out
-						VisibleChange = TRUE;
+						VisibleChange = true;
 						RepairMap (index, &last_r, &r);
 						SleepThread (
 								ONE_SECOND / (12 + GrowthFactor / 44));
 					}
 					else if (str > 0 && FleetPtr->known_strength == 0)
 					{// Flash dying race name
-						VisibleChange = TRUE;
+						VisibleChange = true;
 						RepairMap (index | PRE_DEATH_SOI, &last_r, &r);
 						SleepThread (ONE_SECOND / 12);
 						RepairMap (index | DEATH_SOI, &last_r, &r);
@@ -3117,7 +3117,7 @@ DrawStarmapHelper (void)
 	SetContext (OldContext);
 }
 
-BOOLEAN
+bool
 StarMap (void)
 {
 	MENU_STATE MenuState;
@@ -3156,9 +3156,9 @@ StarMap (void)
 	}
 
 	MenuState.InputFunc = DoMoveCursor;
-	MenuState.Initialized = FALSE;
+	MenuState.Initialized = false;
 
-	transition_pending = TRUE;
+	transition_pending = true;
 	if (GET_GAME_STATE (ARILOU_SPACE_SIDE) <= 1)
 		UpdateMap ();
 	else
@@ -3173,7 +3173,7 @@ StarMap (void)
 		DrawStarmapHelper ();
 
 	DrawStarMap (0, (RECT*)-1);
-	transition_pending = FALSE;
+	transition_pending = false;
 	
 	BatchGraphics ();
 	OldContext = SetContext (SpaceContext);
@@ -3186,16 +3186,16 @@ StarMap (void)
 
 	SetMenuSounds (MENU_SOUND_NONE, MENU_SOUND_NONE);
 	SetMenuRepeatDelay (MIN_ACCEL_DELAY, MAX_ACCEL_DELAY, STEP_ACCEL_DELAY,
-			TRUE);
+			true);
 
-	DoInput(&MenuState, FALSE);
+	DoInput(&MenuState, false);
 
 	SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
 	SetDefaultMenuRepeatDelay ();
 
 	DrawHyperCoords (universe);
 	if (GLOBAL(autopilot.x) != ~0 && GLOBAL(autopilot.y) != ~0)
-		DrawAutoPilotMessage (FALSE);
+		DrawAutoPilotMessage (false);
 	else
 		DrawSISMessage (NULL);
 	DrawStatusMessage (NULL);

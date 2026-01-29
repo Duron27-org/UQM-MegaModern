@@ -57,7 +57,7 @@ extern bool callPickupForScanType (SOLARSYS_STATE *solarSys,
 		PLANET_DESC *world, COUNT node, BYTE scanType);
 
 extern void RedrawSurfaceScan (const POINT *newLoc);
-extern CONTEXT GetScanContext (BOOLEAN *owner);
+extern CONTEXT GetScanContext (bool *owner);
 extern void DestroyScanContext (void);
 
 bool isNodeRetrieved (PLANET_INFO *planetInfo, BYTE scanType, BYTE nodeNr);

@@ -30,7 +30,7 @@
 #include "uqm/units.h"
 
 void
-TFB_Prim_Point (POINT *p, Color color, DrawMode mode, POINT ctxOrigin, BOOLEAN scaled)
+TFB_Prim_Point (POINT *p, Color color, DrawMode mode, POINT ctxOrigin, bool scaled)
 {
 	RECT r;
 
@@ -46,7 +46,7 @@ TFB_Prim_Point (POINT *p, Color color, DrawMode mode, POINT ctxOrigin, BOOLEAN s
 }
 
 void
-TFB_Prim_Rect (RECT *r, Color color, DrawMode mode, POINT ctxOrigin, BOOLEAN scaled)
+TFB_Prim_Rect (RECT *r, Color color, DrawMode mode, POINT ctxOrigin, bool scaled)
 {
 	RECT arm;
 	int gscale;
@@ -123,7 +123,7 @@ TFB_Prim_Line (LINE *line, Color color, DrawMode mode, POINT ctxOrigin,
 }
 
 void
-TFB_Prim_Stamp (STAMP *stmp, DrawMode mode, POINT ctxOrigin, BOOLEAN unscaled)
+TFB_Prim_Stamp (STAMP *stmp, DrawMode mode, POINT ctxOrigin, bool unscaled)
 {
 	int x, y;
 	FRAME SrcFramePtr;
@@ -179,7 +179,7 @@ TFB_Prim_Stamp (STAMP *stmp, DrawMode mode, POINT ctxOrigin, BOOLEAN unscaled)
 }
 
 void
-TFB_Prim_StampFill (STAMP *stmp, Color color, DrawMode mode, POINT ctxOrigin, BOOLEAN unscaled)
+TFB_Prim_StampFill (STAMP *stmp, Color color, DrawMode mode, POINT ctxOrigin, bool unscaled)
 {
 	int x, y;
 	FRAME SrcFramePtr;

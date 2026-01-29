@@ -28,8 +28,8 @@
 static VIDEO_REF _cur_video = NULL_VIDEO_REF;
 static MUSIC_REF _cur_speech = 0;
 
-BOOLEAN
-InitVideoPlayer (BOOLEAN useCDROM)
+bool
+InitVideoPlayer (bool useCDROM)
 		//useCDROM doesn't really apply to us
 {
 	TFB_PixelFormat fmt;
@@ -37,9 +37,9 @@ InitVideoPlayer (BOOLEAN useCDROM)
 	TFB_DrawCanvas_GetScreenFormat (&fmt);
 	if (!VideoDecoder_Init (0, fmt.BitsPerPixel, fmt.Rmask,
 			fmt.Gmask, fmt.Bmask, 0))
-		return FALSE;
+		return false;
 
-	return (BOOLEAN)TFB_InitVideoPlayer ();
+	return (bool)TFB_InitVideoPlayer ();
 	
 	(void)useCDROM;  /* dodge compiler warning */
 }
@@ -64,7 +64,7 @@ VidStop (void)
 
 VIDEO_REF
 VidPlaying (void)
-		// this should just probably return BOOLEAN
+		// this should just probably return bool
 {
 	if (!_cur_video)
 		return NULL_VIDEO_REF;
@@ -75,12 +75,12 @@ VidPlaying (void)
 	return NULL_VIDEO_REF;
 }
 
-BOOLEAN
+bool
 VidProcessFrame (void)
 {
 	if (!_cur_video)
-		return FALSE;
-	return (BOOLEAN)TFB_ProcessVideoFrame (_cur_video);
+		return false;
+	return (bool)TFB_ProcessVideoFrame (_cur_video);
 }
 
 // return current video position in milliseconds
@@ -92,13 +92,13 @@ VidGetPosition (void)
 	return TFB_GetVideoPosition (_cur_video);
 }
 
-BOOLEAN
+bool
 VidSeek (DWORD pos)
 		// pos in milliseconds
 {
 	if (!VidPlaying ())
-		return FALSE;
-	return (BOOLEAN)TFB_SeekVideo (_cur_video, pos);
+		return false;
+	return (bool)TFB_SeekVideo (_cur_video, pos);
 }
 
 VIDEO_TYPE
@@ -115,7 +115,7 @@ VidPlayEx (VIDEO_REF vid, MUSIC_REF AudRef, MUSIC_REF SpeechRef,
 		if (vid->hAudio)
 			DestroyMusic (vid->hAudio);
 		vid->hAudio = AudRef;
-		vid->decoder->audio_synced = FALSE;
+		vid->decoder->audio_synced = false;
 	}
 
 	vid->loop_frame = LoopFrame;
@@ -174,11 +174,11 @@ _init_video_file (const char *pStr)
 	return (VIDEO_REF) vid;
 }
 
-BOOLEAN
+bool
 DestroyVideo (VIDEO_REF vid)
 {
 	if (!vid)
-		return FALSE;
+		return false;
 
 	// just some armouring; should already be stopped
 	TFB_StopVideo (vid);
@@ -187,5 +187,5 @@ DestroyVideo (VIDEO_REF vid)
 	DestroyMutex (vid->guard);
 	HFree (vid);
 	
-	return TRUE;
+	return true;
 }

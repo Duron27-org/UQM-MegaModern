@@ -50,10 +50,10 @@ luaUqm_event_open(lua_State *luaState) {
 // argn -> the relative index on the lua stack which contains the Lua
 //         string identifying the event.
 // Returns true if and only if an event is registered.
-static BOOLEAN
+static bool
 isEventRegistered(lua_State *luaState, int argn)
 {
-	BOOLEAN result;
+	bool result;
 	argn = lua_absindex(luaState, argn);
 
 	luaUqm_getEventTable(luaState);

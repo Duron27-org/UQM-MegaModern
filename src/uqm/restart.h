@@ -24,7 +24,7 @@ extern "C" {
 #endif
 
 
-extern BOOLEAN StartGame (void);
+extern bool StartGame (void);
 
 #if 0 //defined(__cplusplus)
 }

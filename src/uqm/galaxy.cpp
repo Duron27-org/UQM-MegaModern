@@ -242,7 +242,7 @@ InitGalaxy (void)
 	COUNT i, factor;
 	DPOINT *ppt;
 	PRIM_LINKS Links;
-	BOOLEAN useScenery = (EXTENDED && GET_GAME_STATE (URQUAN_PROTECTING_SAMATRA)
+	bool useScenery = (EXTENDED && GET_GAME_STATE (URQUAN_PROTECTING_SAMATRA)
 							&& LOBYTE (GLOBAL (CurrentActivity)) != IN_HYPERSPACE
 							&& LOBYTE (GLOBAL (CurrentActivity)) != IN_LAST_BATTLE);
 
@@ -329,7 +329,7 @@ InitGalaxy (void)
 	SortStarBlock (&StarBlock[2]);
 }
 
-static BOOLEAN
+static bool
 CmpMovePoints (const POINT *pt1, const DPOINT *pt2, SDWORD dx, SDWORD dy,
 			   SIZE reduction)
 {

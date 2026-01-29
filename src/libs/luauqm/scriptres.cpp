@@ -19,11 +19,11 @@
 #include <string.h>
 
 
-BOOLEAN
+bool
 ReleaseScriptResData (void *data)
 {
 	HFree (data);
-	return TRUE;
+	return true;
 }
 
 static void
@@ -39,12 +39,12 @@ GetScriptResData (const char *pathName, RESOURCE_DATA *resdata)
 	memcpy (resdata->ptr, pathName, pathNameLen + 1);
 }
 
-BOOLEAN
+bool
 InstallScriptResType (void)
 {
 	InstallResTypeVectors ("SCRIPT", GetScriptResData, ReleaseScriptResData,
 			NULL);
-	return TRUE;
+	return true;
 }
 
 // Actually just returns the file name of the script.

@@ -38,10 +38,10 @@ GetFrameForFPS (UniChar ch)
 		return NULL;
 }
 
-BOOLEAN
+bool
 GoodToGoFPS (void)
 {
-	return (BOOLEAN)(StarConFont && !(GLOBAL (CurrentActivity) & CHECK_ABORT)
+	return (bool)(StarConFont && !(GLOBAL (CurrentActivity) & CHECK_ABORT)
 			&& !optRequiresReload);
 }
 
@@ -65,11 +65,11 @@ SetContextFont (FONT Font)
 	return (LastFont);
 }
 
-BOOLEAN
+bool
 DestroyFont (FONT FontRef)
 {
 	if (FontRef == NULL)
-		return (FALSE);
+		return (false);
 
 	if (_CurFontPtr && _CurFontPtr == FontRef)
 		SetContextFont ((FONT)NULL);
@@ -120,7 +120,7 @@ font_DrawText (TEXT *lpText)
 }
 
 void
-font_DrawText_Fade (TEXT *lpText, FRAME repair, BOOLEAN *skip)
+font_DrawText_Fade (TEXT *lpText, FRAME repair, bool *skip)
 {
 	RECT ClipRect;
 	POINT origin;
@@ -272,46 +272,46 @@ font_DrawShadowedText (TEXT *pText, BYTE direction,
 	SetContextForeGroundColor (OldColor);
 }
 
-BOOLEAN
+bool
 GetContextFontLeading (SIZE *pheight)
 {
 	if (_CurFontPtr != 0)
 	{
 		*pheight = (SIZE)_CurFontPtr->Leading;
-		return (TRUE);
+		return (true);
 	}
 
 	*pheight = 0;
-	return (FALSE);
+	return (false);
 }
 
-BOOLEAN
+bool
 GetContextFontDispHeight (SIZE *pheight)
 {
 	if (_CurFontPtr != 0)
 	{
 		*pheight = (SIZE)_CurFontPtr->disp.height;
-		return (TRUE);
+		return (true);
 	}
 
 	*pheight = 0;
-	return (FALSE);
+	return (false);
 }
 
-BOOLEAN
+bool
 GetContextFontDispWidth (SIZE *pwidth)
 {
 	if (_CurFontPtr != 0)
 	{
 		*pwidth = (SIZE)_CurFontPtr->disp.width;
-		return (TRUE);
+		return (true);
 	}
 
 	*pwidth = 0;
-	return (FALSE);
+	return (false);
 }
 
-BOOLEAN
+bool
 TextRect (TEXT *lpText, RECT *pRect, BYTE *pdelta)
 {
 	BYTE char_delta_array[MAX_DELTAS];
@@ -421,7 +421,7 @@ TextRect (TEXT *lpText, RECT *pRect, BYTE *pdelta)
 			pRect->corner.x += lpText->baseline.x;
 			pRect->corner.y += lpText->baseline.y;
 
-			return (TRUE);
+			return (true);
 		}
 	}
 
@@ -429,7 +429,7 @@ TextRect (TEXT *lpText, RECT *pRect, BYTE *pdelta)
 	pRect->extent.width = 0;
 	pRect->extent.height = 0;
 
-	return (FALSE);
+	return (false);
 }
 
 void
@@ -506,7 +506,7 @@ _text_blt (RECT *pClipRect, TEXT *TextPtr, POINT ctxOrigin)
 }
 
 void
-_text_blt_fade (RECT *pClipRect, TEXT *TextPtr, POINT ctxOrigin, FRAME repair, BOOLEAN *skip)
+_text_blt_fade (RECT *pClipRect, TEXT *TextPtr, POINT ctxOrigin, FRAME repair, bool *skip)
 {
 	FONT FontPtr;
 	COUNT num_chars;
@@ -526,9 +526,9 @@ _text_blt_fade (RECT *pClipRect, TEXT *TextPtr, POINT ctxOrigin, FRAME repair, B
 		if (!GetContextFontDispHeight (&h) || !GetContextFontDispWidth (&w))
 			return;
 
-		b_first = TFB_DrawImage_CreateForScreen (w, h, TRUE);
-		b_second = TFB_DrawImage_CreateForScreen (w, h, TRUE);
-		b_clear = TFB_DrawImage_CreateForScreen (w, h, TRUE);
+		b_first = TFB_DrawImage_CreateForScreen (w, h, true);
+		b_second = TFB_DrawImage_CreateForScreen (w, h, true);
+		b_clear = TFB_DrawImage_CreateForScreen (w, h, true);
 
 		r.corner.x = r.corner.y = 0;
 		r.extent.width = w;
@@ -631,7 +631,7 @@ _text_blt_fade (RECT *pClipRect, TEXT *TextPtr, POINT ctxOrigin, FRAME repair, B
 		UpdateInputState ();
 		if (CurrentInputState.menu[KEY_MENU_CANCEL] || 
 					(GLOBAL (CurrentActivity) & CHECK_ABORT))
-			*skip = TRUE;
+			*skip = true;
 	}
 	if (b_first)
 		TFB_DrawScreen_DeleteImage (b_first);
@@ -641,7 +641,7 @@ _text_blt_fade (RECT *pClipRect, TEXT *TextPtr, POINT ctxOrigin, FRAME repair, B
 		TFB_DrawScreen_DeleteImage (b_clear);
 }
 
-BOOLEAN
+bool
 TextRectAlt (TEXT *lpText, RECT *pRect, BYTE *pdelta, BYTE swap,
 		UniChar key, FONT AltFontPtr)
 {
@@ -763,7 +763,7 @@ TextRectAlt (TEXT *lpText, RECT *pRect, BYTE *pdelta, BYTE swap,
 			pRect->corner.x += lpText->baseline.x;
 			pRect->corner.y += lpText->baseline.y;
 
-			return (TRUE);
+			return (true);
 		}
 	}
 
@@ -771,7 +771,7 @@ TextRectAlt (TEXT *lpText, RECT *pRect, BYTE *pdelta, BYTE swap,
 	pRect->extent.width = 0;
 	pRect->extent.height = 0;
 
-	return (FALSE);
+	return (false);
 }
 
 BYTE
@@ -809,7 +809,7 @@ _text_blt_alt (RECT *pClipRect, TEXT *TextPtr, POINT ctxOrigin, BYTE swap,
 		if (w == 0 || h == 0)
 			return 0;
 
-		ext = TFB_DrawImage_CreateForScreen (w, h, TRUE);
+		ext = TFB_DrawImage_CreateForScreen (w, h, true);
 
 		r.corner = MAKE_HOT_SPOT(0, 0);
 		r.extent = MAKE_EXTENT (w, h);

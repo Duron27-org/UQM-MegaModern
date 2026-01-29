@@ -588,7 +588,7 @@ restorePlanetLocationImage (void)
 }
 
 static void
-drawPlanetCursor (BOOLEAN filled)
+drawPlanetCursor (bool filled)
 {
 	STAMP s;
 
@@ -609,7 +609,7 @@ setPlanetCursorLoc (POINT new_pt)
 }
 
 static void
-setPlanetLoc (POINT new_pt, BOOLEAN restoreOld)
+setPlanetLoc (POINT new_pt, bool restoreOld)
 {
 	planetLoc = new_pt;
 
@@ -628,7 +628,7 @@ flashPlanetLocation (void)
 	static int val = -2;
 	static POINT prevPt;
 	static TimeCount NextTime = 0;
-	BOOLEAN locChanged;
+	bool locChanged;
 	TimeCount Now = GetTimeCounter ();
 
 	locChanged = prevPt.x != cursorRect.corner.x
@@ -661,7 +661,7 @@ flashPlanetLocation (void)
 
 	SetContext (ScanContext);
 	SetContextForeGroundColor (BUILD_COLOR (MAKE_RGB15 (c, c, c), c));
-	drawPlanetCursor (TRUE);
+	drawPlanetCursor (true);
 }
 
 void
@@ -673,11 +673,11 @@ RedrawSurfaceScan (const POINT *newLoc)
 
 	BatchGraphics ();
 	DrawPlanet (0, BLACK_COLOR);
-	DrawScannedObjects (TRUE);
+	DrawScannedObjects (true);
 	if (newLoc)
 	{
-		setPlanetLoc (*newLoc, FALSE);
-		drawPlanetCursor (FALSE);
+		setPlanetLoc (*newLoc, false);
+		drawPlanetCursor (false);
 	}
 	UnbatchGraphics ();
 
@@ -721,8 +721,8 @@ spawnFwiffo (void)
 	}
 }
 
-// Returns TRUE if the parent menu should remain
-static BOOLEAN
+// Returns true if the parent menu should remain
+static bool
 DispatchLander (void)
 {
 	InputFrameCallback *oldCallback;
@@ -743,11 +743,11 @@ DispatchLander (void)
 	}
 
 	SetContext (ScanContext);
-	drawPlanetCursor (FALSE);
+	drawPlanetCursor (false);
 
 	PlanetSide (planetLoc);
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
-		return FALSE;
+		return false;
 
 	if (GET_GAME_STATE (FOUND_PLUTO_SPATHI) == 1)
 	{
@@ -758,7 +758,7 @@ DispatchLander (void)
 		GLOBAL (CurrentActivity) |= START_ENCOUNTER;
 		SaveSolarSysLocation ();
 
-		return FALSE;
+		return false;
 	}
 
 	if (optWhichCoarseScan & 1)
@@ -769,7 +769,7 @@ DispatchLander (void)
 	// Reactivate planet rotation callback
 	SetInputCallback (oldCallback);
 
-	return TRUE;
+	return true;
 }
 
 typedef struct
@@ -778,12 +778,12 @@ typedef struct
 			// true when player selected a location
 } PICK_PLANET_STATE;
 
-static BOOLEAN
+static bool
 DoPickPlanetSide (MENU_STATE *pMS)
 {
 	PICK_PLANET_STATE *pickState = (PICK_PLANET_STATE*)pMS->privData;
 	DWORD TimeIn = GetTimeCounter ();
-	BOOLEAN select, cancel;
+	bool select, cancel;
 
 	select = PulsedInputState.menu[KEY_MENU_SELECT];
 	cancel = PulsedInputState.menu[KEY_MENU_CANCEL];
@@ -791,18 +791,18 @@ DoPickPlanetSide (MENU_STATE *pMS)
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
 	{
 		pickState->success = false;
-		return FALSE;
+		return false;
 	}
 
 	if (cancel)
 	{
 		pickState->success = false;
-		return FALSE;
+		return false;
 	}
 	else if (select)
 	{
 		pickState->success = true;
-		return FALSE;
+		return false;
 	}
 	else
 	{
@@ -856,7 +856,7 @@ DoPickPlanetSide (MENU_STATE *pMS)
 
 		if (!pointsEqual (new_pt, planetLoc))
 		{
-			setPlanetLoc (new_pt, TRUE);
+			setPlanetLoc (new_pt, true);
 		}
 
 		flashPlanetLocation ();
@@ -867,7 +867,7 @@ DoPickPlanetSide (MENU_STATE *pMS)
 			tNext = TimeIn + ONE_SECOND / 40;
 	}
 
-	return TRUE;
+	return true;
 }
 
 static void
@@ -907,13 +907,13 @@ eraseLandingFuelUsage (void)
 	DrawStatusMessage (NULL);
 }
 
-static BOOLEAN
+static bool
 PickPlanetSide (void)
 {
 	MENU_STATE MenuState;
 	PICK_PLANET_STATE PickState;
 	COUNT fuel = getLandingFuelNeeded ();
-	BOOLEAN retval = TRUE;
+	bool retval = true;
 
 	memset (&MenuState, 0, sizeof MenuState);
 	MenuState.privData = &PickState;
@@ -924,7 +924,7 @@ PickPlanetSide (void)
 	SetContext (ScanContext);
 	BatchGraphics ();
 	DrawPlanet (0, BLACK_COLOR);
-	DrawScannedObjects (FALSE);
+	DrawScannedObjects (false);
 	UnbatchGraphics ();
 
 	drawLandingFuelUsage (fuel);
@@ -942,7 +942,7 @@ PickPlanetSide (void)
 
 	PickState.success = false;
 	MenuState.InputFunc = DoPickPlanetSide;
-	DoInput (&MenuState, TRUE);
+	DoInput (&MenuState, true);
 
 	eraseLandingFuelUsage ();
 	if (PickState.success)
@@ -1053,7 +1053,7 @@ DrawPCScannedStuff (COUNT scan)
 	hElement = GetHeadElement();
 	now = GetTimeCounter () + interval;
 	
-	while (hElement && !AnyButtonPress (TRUE))
+	while (hElement && !AnyButtonPress (true))
 	{
 		if ((GLOBAL (CurrentActivity) & CHECK_ABORT))
 			return;
@@ -1076,7 +1076,7 @@ DrawPCScannedStuff (COUNT scan)
 				s.origin = ElementPtr->current.location;
 				now = GetTimeCounter () + 17;
 
-				while (growth < NUM_FLASH_COLORS && !AnyButtonPress (TRUE))
+				while (growth < NUM_FLASH_COLORS && !AnyButtonPress (true))
 				{
 					if (GetTimeCounter () >= now)
 					{
@@ -1094,7 +1094,7 @@ DrawPCScannedStuff (COUNT scan)
 						DrawStamp (&s);
 						growth++;
 					}
-					RotatePlanetSphere (TRUE, NULL);
+					RotatePlanetSphere (true, NULL);
 				}
 				if (growth < NUM_FLASH_COLORS)
 				{	// didn't finish - draw 
@@ -1107,7 +1107,7 @@ DrawPCScannedStuff (COUNT scan)
 				hElement = hNextElement;
 			}
 		}
-		RotatePlanetSphere (TRUE, NULL);
+		RotatePlanetSphere (true, NULL);
 	}
 	if (hElement)
 	{	// scan aborted - make everything scanned, workaround for singular
@@ -1177,13 +1177,13 @@ callPickupForScanType (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 static void
 ScanPlanet (COUNT scanType)
 {
-#define SCAN_DURATION   ((ONE_SECOND * 7 / 4 + RES_BOOL (UINT8_MAX, 0)))
+#define SCAN_DURATION   ((ONE_SECOND * 7 / 4 + chooseIfHd (UINT8_MAX, 0)))
 // NUM_FLASH_COLORS for flashing blips; 1 for the final frame
 #define SCAN_LINES_OG   (ORIGINAL_MAP_HEIGHT + NUM_FLASH_COLORS + 1)
 #define SCAN_LINES      RES_SCALE (SCAN_LINES_OG)
 #define SCAN_LINE_WAIT  (SCAN_DURATION / SCAN_LINES_OG)
 	// For taming the scan FPS on underpowered devices
-#define SCAN_LINE_FPS  (ONE_SECOND / RES_BOOL (42, 60))
+#define SCAN_LINE_FPS  (ONE_SECOND / chooseIfHd (42, 60))
 
 	COUNT startScan, endScan;
 	COUNT scan;
@@ -1267,7 +1267,7 @@ ScanPlanet (COUNT scanType)
 				Now = GetTimeCounter ();
 				if (Now >= TimeOut)
 				{
-					if (AnyButtonPress (TRUE))
+					if (AnyButtonPress (true))
 						break;
 
 					TimeOut = Now + SCAN_LINE_WAIT;
@@ -1284,7 +1284,7 @@ ScanPlanet (COUNT scanType)
 						UnbatchGraphics ();
 					}
 				}
-				RotatePlanetSphere (TRUE, NULL);
+				RotatePlanetSphere (true, NULL);
 			}
 		}
 		else
@@ -1299,13 +1299,13 @@ ScanPlanet (COUNT scanType)
 			{	// delay between scans
 				TimeOut = GetTimeCounter () + ONE_SECOND;
 				while (GetTimeCounter () < TimeOut
-						&& !AnyButtonPress (TRUE))
-					RotatePlanetSphere (TRUE, NULL);
+						&& !AnyButtonPress (true))
+					RotatePlanetSphere (true, NULL);
 			}
 			else
 			{	// endless state - mimics PC "Exit Scan"
-				while (!AnyButtonPress (TRUE))
-					RotatePlanetSphere (TRUE, NULL);
+				while (!AnyButtonPress (true))
+					RotatePlanetSphere (true, NULL);
 			}
 		}
 
@@ -1332,26 +1332,26 @@ ScanPlanet (COUNT scanType)
 	{	// clear the last scan
 		DrawPlanet (0, BLACK_COLOR);
 		DrawDefaultPlanetSphere ();
-		DrawScannedObjects (FALSE);
+		DrawScannedObjects (false);
 	}
 
 	FlushInput ();
 }
 
-static BOOLEAN
+static bool
 DoScan (MENU_STATE *pMS)
 {
-	BOOLEAN select, cancel;
+	bool select, cancel;
 
 	select = PulsedInputState.menu[KEY_MENU_SELECT];
 	cancel = PulsedInputState.menu[KEY_MENU_CANCEL];
 	
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
-		return FALSE;
+		return false;
 
 	if (cancel || (select && pMS->CurState == EXIT_SCAN))
 	{
-		return FALSE;
+		return false;
 	}
 	else if (select)
 	{
@@ -1364,7 +1364,7 @@ DoScan (MENU_STATE *pMS)
 						GAS_GIANT_ATMOSPHERE)
 			{	// cannot dispatch to shielded planets or gas giants
 				PlayMenuSound (MENU_SOUND_FAILURE);
-				return TRUE;
+				return true;
 			}
 
 			fuel_required = getLandingFuelNeeded ();
@@ -1373,26 +1373,26 @@ DoScan (MENU_STATE *pMS)
 					|| GLOBAL_SIS (CrewEnlisted) == 0)
 			{
 				PlayMenuSound (MENU_SOUND_FAILURE);
-				return TRUE;
+				return true;
 			}
 
-			SetFlashRect (NULL, FALSE);
+			SetFlashRect (NULL, false);
 			DrawMenuStateStrings (PM_MIN_SCAN, pMS->CurState);
 
 			if (!PickPlanetSide ())
-				return FALSE;
+				return false;
 
 			DrawMenuStateStrings (PM_MIN_SCAN, pMS->CurState);
-			SetFlashRect (SFR_MENU_3DO, FALSE);
+			SetFlashRect (SFR_MENU_3DO, false);
 
-			return TRUE;
+			return true;
 		}
 
 		// Various scans
 		if (pSolarSysState->pOrbitalDesc->data_index & PLANET_SHIELDED)
 		{	// cannot scan shielded planets
 			PlayMenuSound (MENU_SOUND_FAILURE);
-			return TRUE;
+			return true;
 		}
 
 		ScanPlanet (pMS->CurState);
@@ -1408,11 +1408,11 @@ DoScan (MENU_STATE *pMS)
 		DoMenuChooser (pMS, PM_MIN_SCAN);
 	}
 
-	return TRUE;
+	return true;
 }
 
 static CONTEXT
-CreateScanContext (BOOLEAN inSpace)
+CreateScanContext (bool inSpace)
 {
 	CONTEXT oldContext;
 	CONTEXT context;
@@ -1446,23 +1446,23 @@ CreateScanContext (BOOLEAN inSpace)
 }
 
 CONTEXT
-GetScanContext (BOOLEAN *owner)
+GetScanContext (bool *owner)
 {
 	// TODO: Make CONTEXT ref-counted
 	if (ScanContext)
 	{
 		if (owner)
-			*owner = FALSE;
+			*owner = false;
 	}
 	else
 	{
 		if (owner)
 		{
-			*owner = TRUE;
-			ScanContext = CreateScanContext (TRUE);
+			*owner = true;
+			ScanContext = CreateScanContext (true);
 		}
 		else
-			ScanContext = CreateScanContext (FALSE);
+			ScanContext = CreateScanContext (false);
 	}
 	return ScanContext;
 }
@@ -1503,12 +1503,12 @@ ScanSystem (void)
 
 		initPlanetLocationImage ();
 		SetContext (ScanContext);
-		DrawScannedObjects (FALSE);
+		DrawScannedObjects (false);
 	}
 
 	DrawMenuStateStrings (PM_MIN_SCAN, MenuState.CurState);
 
-	SetFlashRect (SFR_MENU_3DO, FALSE);
+	SetFlashRect (SFR_MENU_3DO, false);
 
 	if (optWhichCoarseScan & 1)
 		PrintCoarseScan3DO ();
@@ -1519,9 +1519,9 @@ ScanSystem (void)
 
 	MenuState.InputFunc = DoScan;
 
-	DoInput (&MenuState, FALSE);
+	DoInput (&MenuState, false);
 
-	SetFlashRect (NULL, FALSE);
+	SetFlashRect (NULL, false);
 
 	// cleanup scan graphics
 	if (!(GLOBAL (CurrentActivity) & CHECK_ABORT))
@@ -1570,10 +1570,10 @@ generateBioNode (SOLARSYS_STATE *system, ELEMENT *NodeElementPtr,
 		j = (DWORD)TFB_Random ();
 
 		NodeElementPtr->current.location.x = 
-				((RES_BOOL (LOBYTE (i), LOWORD (j)) %
+				((chooseIfHd (LOBYTE (i), LOWORD (j)) %
 					(SCALED_MAP_WIDTH - (8 << 1))) + 8);
 		NodeElementPtr->current.location.y = 
-				(RES_BOOL (HIBYTE (i), HIWORD (j)) %
+				(chooseIfHd (HIBYTE (i), HIWORD (j)) %
 					(MAP_HEIGHT - (8 << 1))) + 8;
 	}
 

@@ -74,7 +74,7 @@ extern "C" {
 
 #define ALPHA_MASK_ANIM (1 << 14)
 		// Kruzen: New type of animations: Draw transparent frames
-		// on top of all (sets fullRedraw to TRUE
+		// on top of all (sets fullRedraw to true
 
 #define TRIGGER_FULL_REDRAW (1 << 15)
 		// When animation plays - it triggers full redraw
@@ -150,7 +150,7 @@ struct SEQUENCE
 	COUNT NextIndex;
 	COUNT FramesLeft;
 	ANIM_TYPE AnimType;
-	BOOLEAN Change;
+	bool Change;
 };
 #endif
 
@@ -208,12 +208,12 @@ typedef struct
 
 extern FILTER_DESC FilterData;
 
-// Returns TRUE if there was an animation change
-extern BOOLEAN DrawAlienFrame (SEQUENCE *pSeq, COUNT Num, BOOLEAN fullRedraw);
+// Returns true if there was an animation change
+extern bool DrawAlienFrame (SEQUENCE *pSeq, COUNT Num, bool fullRedraw);
 extern void InitCommAnimations (void);
-extern BOOLEAN ProcessCommAnimations (BOOLEAN fullRedraw, BOOLEAN paused);
+extern bool ProcessCommAnimations (bool fullRedraw, bool paused);
 extern void ShutYourMouth (void);
-extern void SwitchSequences (BOOLEAN enableAll);
+extern void SwitchSequences (bool enableAll);
 extern void RunOneTimeSequence (COUNT animIndex, COUNT flags);
 extern void EngageFilters (FILTER_DESC* f_desc);
 extern void DisengageFilters (void);

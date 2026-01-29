@@ -349,7 +349,7 @@ RenderFPS (int *fps)
 		max = (COUNT)utf8StringCount(buf);
 
 		GetFontDims (&w, &h);
-		img = TFB_DrawImage_CreateForScreen (w, h, TRUE);
+		img = TFB_DrawImage_CreateForScreen (w, h, true);
 		tr.corner.x = tr.corner.y = 0;
 		tr.extent.width = w;
 		tr.extent.height = h;
@@ -382,7 +382,7 @@ TFB_FlushGraphics (void)
 {
 	int commands_handled;
 	static int fps = 0;
-	BOOLEAN livelock_deterrence;
+	bool livelock_deterrence;
 
 	// This is technically a locking violation on DrawCommandQueue.Size,
 	// but it is likely to not be very destructive.
@@ -417,7 +417,7 @@ TFB_FlushGraphics (void)
 		computeFPS (&fps);
 
 	commands_handled = 0;
-	livelock_deterrence = FALSE;
+	livelock_deterrence = false;
 
 	if (DrawCommandQueue.FullSize > DCQ_FORCE_BREAK_SIZE)
 	{
@@ -427,7 +427,7 @@ TFB_FlushGraphics (void)
 	if (DrawCommandQueue.Size > DCQ_FORCE_SLOWDOWN_SIZE)
 	{
 		Lock_DCQ (-1);
-		livelock_deterrence = TRUE;
+		livelock_deterrence = true;
 	}
 
 	TFB_BBox_Reset ();
@@ -447,7 +447,7 @@ TFB_FlushGraphics (void)
 				> DCQ_LIVELOCK_MAX)
 		{
 			// log_add (log_Debug, "Initiating livelock deterrence!");
-			livelock_deterrence = TRUE;
+			livelock_deterrence = true;
 			
 			Lock_DCQ (-1);
 		}

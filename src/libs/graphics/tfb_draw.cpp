@@ -241,7 +241,7 @@ TFB_DrawImage_Line (int x1, int y1, int x2, int y2, Color color,
 {
 	LockMutex (target->mutex);
 	TFB_DrawCanvas_Line (x1, y1, x2, y2, color, mode, target->NormalImg, thickness);
-	target->dirty = TRUE;
+	target->dirty = true;
 	UnlockMutex (target->mutex);
 }
 
@@ -250,7 +250,7 @@ TFB_DrawImage_Rect (RECT *rect, Color color, DrawMode mode, TFB_Image *target)
 {
 	LockMutex (target->mutex);
 	TFB_DrawCanvas_Rect (rect, color, mode, target->NormalImg);
-	target->dirty = TRUE;
+	target->dirty = true;
 	UnlockMutex (target->mutex);
 }
 
@@ -261,7 +261,7 @@ TFB_DrawImage_Image (TFB_Image *img, int x, int y, int scale,
 	LockMutex (target->mutex);
 	TFB_DrawCanvas_Image (img, x, y, scale, scaleMode, cmap,
 			mode, target->NormalImg);
-	target->dirty = TRUE;
+	target->dirty = true;
 	UnlockMutex (target->mutex);
 }
 
@@ -272,7 +272,7 @@ TFB_DrawImage_FilledImage (TFB_Image *img, int x, int y, int scale,
 	LockMutex (target->mutex);
 	TFB_DrawCanvas_FilledImage (img, x, y, scale, scaleMode, color,
 			mode, target->NormalImg);
-	target->dirty = TRUE;
+	target->dirty = true;
 	UnlockMutex (target->mutex);
 }
 
@@ -282,7 +282,7 @@ TFB_DrawImage_FontChar (TFB_Char *fontChar, TFB_Image *backing,
 {
 	LockMutex (target->mutex);
 	TFB_DrawCanvas_FontChar (fontChar, backing, x, y, mode, target->NormalImg);
-	target->dirty = TRUE;
+	target->dirty = true;
 	UnlockMutex (target->mutex);
 }
 
@@ -291,7 +291,7 @@ TFB_DrawImage_MaskImage (TFB_Image *img, DrawMode mode, TFB_Image *target, Color
 {
 	LockMutex (target->mutex);
 	TFB_DrawCanvas_MaskImage (img, mode, target->NormalImg, fill);
-	target->dirty = TRUE;
+	target->dirty = true;
 	UnlockMutex (target->mutex);
 }
 
@@ -311,7 +311,7 @@ TFB_DrawImage_New (TFB_Canvas canvas)
 	img->last_scale_hs = NullHs;
 	img->last_scale_type = -1;
 	img->last_scale = 0;
-	img->dirty = FALSE;
+	img->dirty = false;
 	TFB_DrawCanvas_GetExtent (canvas, &img->extent);
 
 	if (TFB_DrawCanvas_IsPaletted (canvas))
@@ -327,7 +327,7 @@ TFB_DrawImage_New (TFB_Canvas canvas)
 }
 
 TFB_Image*
-TFB_DrawImage_CreateForScreen (int w, int h, BOOLEAN withalpha)
+TFB_DrawImage_CreateForScreen (int w, int h, bool withalpha)
 {
 	TFB_Image* img = (TFB_Image*)HMalloc (sizeof (TFB_Image));
 	img->mutex = CreateMutex ("image lock", SYNC_CLASS_VIDEO);
@@ -450,7 +450,7 @@ TFB_DrawImage_FixScaling (TFB_Image *image, int target, int type)
 			target != image->last_scale ||
 			type != image->last_scale_type)
 	{
-		image->dirty = FALSE;
+		image->dirty = false;
 		image->ScaledImg = TFB_DrawCanvas_New_ScaleTarget (image->NormalImg,
 			image->ScaledImg, type, image->last_scale_type);
 		
@@ -473,11 +473,11 @@ TFB_DrawImage_FixScaling (TFB_Image *image, int target, int type)
 	}
 }
 
-BOOLEAN
+bool
 TFB_DrawImage_Intersect (TFB_Image *img1, POINT img1org,
 		TFB_Image *img2, POINT img2org, const RECT *interRect)
 {
-	BOOLEAN ret;
+	bool ret;
 
 	LockMutex (img1->mutex);
 	LockMutex (img2->mutex);
@@ -497,7 +497,7 @@ TFB_DrawImage_CopyRect (TFB_Image *source, const RECT *srcRect,
 	LockMutex (target->mutex);
 	TFB_DrawCanvas_CopyRect (source->NormalImg, srcRect,
 			target->NormalImg, dstPt);
-	target->dirty = TRUE;
+	target->dirty = true;
 	UnlockMutex (target->mutex);
 	UnlockMutex (source->mutex);
 }

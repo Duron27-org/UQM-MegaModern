@@ -109,7 +109,7 @@ static LOCDATA ilwrath_desc =
 static void
 CombatIsInevitable (RESPONSE_REF R)
 {
-	BOOLEAN isGTFO = PLAYER_SAID (R, gtfo);
+	bool isGTFO = PLAYER_SAID (R, gtfo);
 	setSegue (Segue_hostile);
 
 	if (PLAYER_SAID (R, you_are_weak))
@@ -194,7 +194,7 @@ IlwrathGods (RESPONSE_REF R)
 {
 	BYTE GodsLeft;
 
-	GodsLeft = FALSE;
+	GodsLeft = false;
 	if (PLAYER_SAID (R, want_info_on_gods))
 		NPCPhrase (SO_MUCH_TO_KNOW);
 	else if (PLAYER_SAID (R, when_start_worship))
@@ -225,22 +225,22 @@ IlwrathGods (RESPONSE_REF R)
 	if (PHRASE_ENABLED (when_start_worship))
 	{
 		Response (when_start_worship, IlwrathGods);
-		GodsLeft = TRUE;
+		GodsLeft = true;
 	}
 	if (PHRASE_ENABLED (any_good_gods))
 	{
 		Response (any_good_gods, IlwrathGods);
-		GodsLeft = TRUE;
+		GodsLeft = true;
 	}
 	if (PHRASE_ENABLED (how_talk_with_gods))
 	{
 		Response (how_talk_with_gods, IlwrathGods);
-		GodsLeft = TRUE;
+		GodsLeft = true;
 	}
 	else if (PHRASE_ENABLED (why_44))
 	{
 		Response (why_44, IlwrathGods);
-		GodsLeft = TRUE;
+		GodsLeft = true;
 	}
 	Response (enough_gods, IlwrathHome);
 
@@ -253,7 +253,7 @@ IlwrathInfo (RESPONSE_REF R)
 {
 	BYTE InfoLeft;
 
-	InfoLeft = FALSE;
+	InfoLeft = false;
 	if (PLAYER_SAID (R, want_info_on_ilwrath))
 		NPCPhrase (WHAT_ABOUT_ILWRATH);
 	else if (PLAYER_SAID (R, what_about_physio))
@@ -290,32 +290,32 @@ IlwrathInfo (RESPONSE_REF R)
 	if (PHRASE_ENABLED (what_about_physio))
 	{
 		Response (what_about_physio, IlwrathInfo);
-		InfoLeft = TRUE;
+		InfoLeft = true;
 	}
 	if (PHRASE_ENABLED (what_about_history))
 	{
 		Response (what_about_history, IlwrathInfo);
-		InfoLeft = TRUE;
+		InfoLeft = true;
 	}
 	if (PHRASE_ENABLED (what_about_culture))
 	{
 		Response (what_about_culture, IlwrathInfo);
-		InfoLeft = TRUE;
+		InfoLeft = true;
 	}
 	if (PHRASE_ENABLED (what_about_urquan))
 	{
 		Response (what_about_urquan, IlwrathInfo);
-		InfoLeft = TRUE;
+		InfoLeft = true;
 	}
 	if (PHRASE_ENABLED (are_you_evil))
 	{
 		Response (are_you_evil, IlwrathInfo);
-		InfoLeft = TRUE;
+		InfoLeft = true;
 	}
 	else
 	{
 		Response (but_evil_is_defined, CombatIsInevitable);
-		InfoLeft = TRUE;
+		InfoLeft = true;
 	}
 	Response (enough_ilwrath, IlwrathHome);
 
@@ -368,7 +368,7 @@ GodsOrder (RESPONSE_REF R)
 {
 	BYTE OrdersLeft;
 
-	OrdersLeft = FALSE;
+	OrdersLeft = false;
 	if (PLAYER_SAID (R, other_divine_orders))
 		NPCPhrase (WHAT_ORDERS);
 	else if (PLAYER_SAID (R, say_warship))
@@ -399,22 +399,22 @@ GodsOrder (RESPONSE_REF R)
 	if (PHRASE_ENABLED (say_warship))
 	{
 		Response (say_warship, GodsOrder);
-		OrdersLeft = TRUE;
+		OrdersLeft = true;
 	}
 	if (PHRASE_ENABLED (say_dwe))
 	{
 		Response (say_dwe, GodsOrder);
-		OrdersLeft = TRUE;
+		OrdersLeft = true;
 	}
 	if (PHRASE_ENABLED (say_youboo))
 	{
 		Response (say_youboo, GodsOrder);
-		OrdersLeft = TRUE;
+		OrdersLeft = true;
 	}
 	if (PHRASE_ENABLED (say_dillrat))
 	{
 		Response (say_dillrat, GodsOrder);
-		OrdersLeft = TRUE;
+		OrdersLeft = true;
 	}
 	Response (enough_orders, GodsSpeak);
 

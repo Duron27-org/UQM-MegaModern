@@ -86,7 +86,7 @@ TFB_DrawCanvas_Line (int x1, int y1, int x2, int y2, Color color,
 	checkPrimitiveMode (dst, &color, &mode);
 	sdlColor = SDL_MapRGBA (fmt, color.r, color.g, color.b, color.a);
 
-	plotFn = renderpixel_for ((SDL_Surface*)target, (RenderKind)mode.kind, FALSE);
+	plotFn = renderpixel_for ((SDL_Surface*)target, (RenderKind)mode.kind, false);
 	if (!plotFn)
 	{
 		log_add (log_Warning, "ERROR: TFB_DrawCanvas_Line "
@@ -150,7 +150,7 @@ TFB_DrawCanvas_Rect (RECT *rect, Color color, DrawMode mode, TFB_Canvas target)
 	}
 	else
 	{	// Custom fillrect rendering
-		RenderPixelFn plotFn = renderpixel_for ((SDL_Surface*)target, (RenderKind)mode.kind, FALSE);
+		RenderPixelFn plotFn = renderpixel_for ((SDL_Surface*)target, (RenderKind)mode.kind, false);
 		if (!plotFn)
 		{
 			log_add (log_Warning, "ERROR: TFB_DrawCanvas_Rect "
@@ -188,7 +188,7 @@ TFB_DrawCanvas_Blit (SDL_Surface *src, SDL_Rect *src_r,
 	else
 	{	// Custom blit
 		SDL_Rect loc_src_r, loc_dst_r;
-		RenderPixelFn plotFn = renderpixel_for (dst, (RenderKind)mode.kind, FALSE);
+		RenderPixelFn plotFn = renderpixel_for (dst, (RenderKind)mode.kind, false);
 		if (!plotFn)
 		{
 			log_add (log_Warning, "ERROR: TFB_DrawCanvas_Blit "
@@ -711,7 +711,7 @@ TFB_DrawCanvas_FillMask (SDL_Surface *base, DrawMode mode, Color *fill)
 	}
 	else
 	{// Applying blit
-		RenderPixelFn plotFn = renderpixel_for (base, (RenderKind)mode.kind, TRUE);
+		RenderPixelFn plotFn = renderpixel_for (base, (RenderKind)mode.kind, true);
 		
 		if (!plotFn)
 		{
@@ -740,7 +740,7 @@ TFB_DrawCanvas_Mask (SDL_Surface *layer, SDL_Surface *base, DrawMode mode, Color
 	}
 	else
 	{// Applying blit
-		RenderPixelFn plotFn = renderpixel_for (base, (RenderKind)mode.kind, TRUE);
+		RenderPixelFn plotFn = renderpixel_for (base, (RenderKind)mode.kind, true);
 		if (!plotFn)
 		{
 			log_add (log_Warning, "ERROR: TFB_DrawCanvas_Mask "
@@ -799,7 +799,7 @@ TFB_DrawCanvas_MaskImage (TFB_Image *img, DrawMode mode, TFB_Canvas target,	Colo
 }
 
 TFB_Canvas
-TFB_DrawCanvas_New_TrueColor (int w, int h, BOOLEAN hasalpha)
+TFB_DrawCanvas_New_TrueColor (int w, int h, bool hasalpha)
 {
 	SDL_Surface *new_surf;
 	SDL_PixelFormat* fmt = format_conv_surf->format;
@@ -817,7 +817,7 @@ TFB_DrawCanvas_New_TrueColor (int w, int h, BOOLEAN hasalpha)
 }
 
 TFB_Canvas
-TFB_DrawCanvas_New_ForScreen (int w, int h, BOOLEAN withalpha)
+TFB_DrawCanvas_New_ForScreen (int w, int h, bool withalpha)
 {
 	SDL_Surface *new_surf;
 	SDL_PixelFormat* fmt = SDL_Screen->format;
@@ -912,9 +912,9 @@ TFB_DrawCanvas_New_ScaleTarget (TFB_Canvas canvas, TFB_Canvas oldcanvas, int typ
 		// The scaled image may in fact be larger by 1 pixel than the source
 		// because of hotspot alignment and fractional edge pixels
 		if (SDL_Screen->format->BitsPerPixel == 32)
-			newsurf = (SDL_Surface*)TFB_DrawCanvas_New_ForScreen (src->w + 1, src->h + 1, TRUE);
+			newsurf = (SDL_Surface*)TFB_DrawCanvas_New_ForScreen (src->w + 1, src->h + 1, true);
 		else
-			newsurf = (SDL_Surface*)TFB_DrawCanvas_New_TrueColor (src->w + 1, src->h + 1, TRUE);
+			newsurf = (SDL_Surface*)TFB_DrawCanvas_New_TrueColor (src->w + 1, src->h + 1, true);
 	}
 
 	return newsurf;
@@ -980,7 +980,7 @@ TFB_DrawCanvas_Delete (TFB_Canvas canvas)
 	}
 }
 
-BOOLEAN
+bool
 TFB_DrawCanvas_GetFontCharData (TFB_Canvas canvas, BYTE *outData,
 		unsigned dataPitch)
 {
@@ -992,7 +992,7 @@ TFB_DrawCanvas_GetFontCharData (TFB_Canvas canvas, BYTE *outData,
 	GetPixelFn getpix;
 
 	if (!surf || !outData)
-		return FALSE;
+		return false;
 
 	SDL_LockSurface (surf);
 
@@ -1022,7 +1022,7 @@ TFB_DrawCanvas_GetFontCharData (TFB_Canvas canvas, BYTE *outData,
 
 	SDL_UnlockSurface (surf);
 
-	return TRUE;
+	return true;
 }
 
 Color *
@@ -1068,10 +1068,10 @@ TFB_DrawCanvas_ToScreenFormat (TFB_Canvas canvas)
 	return canvas;
 }
 
-BOOLEAN
+bool
 TFB_DrawCanvas_IsPaletted (TFB_Canvas canvas)
 {
-	return (BOOLEAN)(((SDL_Surface *)canvas)->format->palette != NULL);
+	return (bool)(((SDL_Surface *)canvas)->format->palette != NULL);
 }
 
 void
@@ -1098,7 +1098,7 @@ TFB_DrawCanvas_GetTransparentIndex (TFB_Canvas canvas)
 }
 
 void
-TFB_DrawCanvas_SetTransparentIndex (TFB_Canvas canvas, int index, BOOLEAN rleaccel)
+TFB_DrawCanvas_SetTransparentIndex (TFB_Canvas canvas, int index, bool rleaccel)
 {
 	if (index >= 0)
 	{
@@ -1126,17 +1126,17 @@ TFB_DrawCanvas_CopyTransparencyInfo (TFB_Canvas src_canvas,
 	{
 		int index;
 		index = TFB_DrawCanvas_GetTransparentIndex (src_canvas);
-		TFB_DrawCanvas_SetTransparentIndex (dst_canvas, index, FALSE);
+		TFB_DrawCanvas_SetTransparentIndex (dst_canvas, index, false);
 	}
 	else
 	{
 		Color color;
 		if (TFB_DrawCanvas_GetTransparentColor (src_canvas, &color))
-			TFB_DrawCanvas_SetTransparentColor (dst_canvas, color, FALSE);
+			TFB_DrawCanvas_SetTransparentColor (dst_canvas, color, false);
 	}
 }
 
-BOOLEAN
+bool
 TFB_DrawCanvas_GetTransparentColor (TFB_Canvas canvas, Color *color)
 {
 	Uint32 colorkey;
@@ -1149,14 +1149,14 @@ TFB_DrawCanvas_GetTransparentColor (TFB_Canvas canvas, Color *color)
 		color->g = ug;
 		color->b = ub;
 		color->a = 0xff;
-		return TRUE;
+		return true;
 	}
-	return FALSE;
+	return false;
 }
 
 void
 TFB_DrawCanvas_SetTransparentColor (TFB_Canvas canvas, Color color,
-		BOOLEAN rleaccel)
+		bool rleaccel)
 {
 	Uint32 sdlColor;
 	sdlColor = SDL_MapRGBA (((SDL_Surface *)canvas)->format,
@@ -2076,7 +2076,7 @@ TFB_DrawCanvas_Rotate (TFB_Canvas src_canvas, TFB_Canvas dst_canvas,
 
 	if (TFB_DrawCanvas_GetTransparentColor (src, &color))
 	{
-		TFB_DrawCanvas_SetTransparentColor (dst, color, FALSE);
+		TFB_DrawCanvas_SetTransparentColor (dst, color, false);
 		/* fill destination with transparent color before rotating */
 		SDL_FillRect(dst, NULL, SDL_MapRGBA (dst->format,
 				color.r, color.g, color.b, 0));
@@ -2154,11 +2154,11 @@ TFB_DrawCanvas_SetClipRect (TFB_Canvas canvas, const RECT *clipRect)
 	}
 }
 
-BOOLEAN
+bool
 TFB_DrawCanvas_Intersect (TFB_Canvas canvas1, POINT c1org,
 		TFB_Canvas canvas2, POINT c2org, const RECT *interRect)
 {
-	BOOLEAN ret = FALSE;
+	bool ret = false;
 	SDL_Surface *surf1 = (SDL_Surface*)canvas1;
 	SDL_Surface *surf2 = (SDL_Surface*)canvas2;
 	int x, y;
@@ -2215,7 +2215,7 @@ TFB_DrawCanvas_Intersect (TFB_Canvas canvas1, POINT c1org,
 
 			if (p1 != s1key && p2 != s2key)
 			{	// pixel collision
-				ret = TRUE;
+				ret = true;
 				break;
 			}
 		}
@@ -2231,8 +2231,8 @@ TFB_DrawCanvas_Intersect (TFB_Canvas canvas1, POINT c1org,
 // The pixels array is assumed to be at least width * height large.
 // The pixels array can be wider/narrower or taller/shorter than the canvas,
 // and in that case, only the relevant pixels will be transfered.
-static BOOLEAN
-TFB_DrawCanvas_TransferColors (TFB_Canvas canvas, BOOLEAN write,
+static bool
+TFB_DrawCanvas_TransferColors (TFB_Canvas canvas, bool write,
 		Color *pixels, int width, int height)
 {
 	SDL_Surface *surf = (SDL_Surface*)canvas;
@@ -2245,7 +2245,7 @@ TFB_DrawCanvas_TransferColors (TFB_Canvas canvas, BOOLEAN write,
 	{
 		log_add (log_Warning, "ERROR: TFB_DrawCanvas_TransferColors "
 				"passed null canvas");
-		return FALSE;
+		return false;
 	}
 
 	fmt = surf->format;
@@ -2280,27 +2280,27 @@ TFB_DrawCanvas_TransferColors (TFB_Canvas canvas, BOOLEAN write,
 
 	SDL_UnlockSurface (surf);
 
-	return TRUE;
+	return true;
 }
 
 // Read the canvas pixels in a Color format understood by the core.
 // See TFB_DrawCanvas_TransferColors() for pixels array info
-BOOLEAN
+bool
 TFB_DrawCanvas_GetPixelColors (TFB_Canvas canvas, Color *pixels,
 		int width, int height)
 {
-	return TFB_DrawCanvas_TransferColors (canvas, FALSE, pixels,
+	return TFB_DrawCanvas_TransferColors (canvas, false, pixels,
 			width, height);
 }
 
 // Write the canvas pixels from a Color format understood by the core.
 // See TFB_DrawCanvas_TransferColors() for pixels array info
-BOOLEAN
+bool
 TFB_DrawCanvas_SetPixelColors (TFB_Canvas canvas, const Color *pixels,
 		int width, int height)
 {
 	// unconst pixels, but it is safe -- it will not be written to
-	return TFB_DrawCanvas_TransferColors (canvas, TRUE, (Color *)pixels,
+	return TFB_DrawCanvas_TransferColors (canvas, true, (Color *)pixels,
 			width, height);
 }
 
@@ -2308,8 +2308,8 @@ TFB_DrawCanvas_SetPixelColors (TFB_Canvas canvas, const Color *pixels,
 // The data array is assumed to be at least width * height large.
 // The data array can be wider/narrower or taller/shorter than the canvas,
 // and in that case, only the relevant pixels will be transfered.
-static BOOLEAN
-TFB_DrawCanvas_TransferIndexes (TFB_Canvas canvas, BOOLEAN write,
+static bool
+TFB_DrawCanvas_TransferIndexes (TFB_Canvas canvas, bool write,
 		BYTE *data, int width, int height)
 {
 	SDL_Surface *surf = (SDL_Surface*)canvas;
@@ -2320,7 +2320,7 @@ TFB_DrawCanvas_TransferIndexes (TFB_Canvas canvas, BOOLEAN write,
 	{
 		log_add (log_Warning, "ERROR: TFB_DrawCanvas_TransferIndexes "
 				"passed null canvas");
-		return FALSE;
+		return false;
 	}
 	fmt = surf->format;
 	if (!TFB_DrawCanvas_IsPaletted (canvas) || fmt->BitsPerPixel != 8)
@@ -2328,7 +2328,7 @@ TFB_DrawCanvas_TransferIndexes (TFB_Canvas canvas, BOOLEAN write,
 		log_add (log_Warning, "ERROR: TFB_DrawCanvas_TransferIndexes "
 				"unimplemeted function: not an 8bpp indexed canvas"
 				"Actual bits per pixel = %u", fmt->BitsPerPixel);
-		return FALSE;
+		return false;
 	}
 
 	w = width < surf->w ? width : surf->w;
@@ -2354,26 +2354,26 @@ TFB_DrawCanvas_TransferIndexes (TFB_Canvas canvas, BOOLEAN write,
 
 	SDL_UnlockSurface (surf);
 
-	return TRUE;
+	return true;
 }
 
 // Read the indexed canvas pixels as palette indexes.
 // See TFB_DrawCanvas_TransferIndexes() for data array info.
-BOOLEAN
+bool
 TFB_DrawCanvas_GetPixelIndexes (TFB_Canvas canvas, BYTE *data,
 		int width, int height)
 {
-	return TFB_DrawCanvas_TransferIndexes (canvas, FALSE, data,
+	return TFB_DrawCanvas_TransferIndexes (canvas, false, data,
 			width, height);
 }
 
 // Write the indexed canvas pixels as palette indexes.
 // See TFB_DrawCanvas_TransferIndexes() for data array info.
-BOOLEAN
+bool
 TFB_DrawCanvas_SetPixelIndexes (TFB_Canvas canvas, const BYTE *data,
 		int width, int height)
 {
 	// unconst data, but it is safe -- it will not be written to
-	return TFB_DrawCanvas_TransferIndexes (canvas, TRUE, (BYTE *)data,
+	return TFB_DrawCanvas_TransferIndexes (canvas, true, (BYTE *)data,
 			width, height);
 }

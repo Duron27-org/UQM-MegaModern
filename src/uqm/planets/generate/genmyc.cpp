@@ -67,7 +67,7 @@ GenerateMyconDefenders (BYTE index)
 {
 #define STATE_OFFSET 29
 	BYTE shift = index - STATE_OFFSET;
-	BOOLEAN Survivors;
+	bool Survivors;
 	UWORD state;
 	COUNT i;
 
@@ -134,7 +134,7 @@ GenerateMycon_generatePlanets (SOLARSYS_STATE *solarSys)
 		angle = ARCTAN (pPlanet->location.x, pPlanet->location.y);
 		pPlanet->location.x = COSINE (angle, pPlanet->radius);
 		pPlanet->location.y = SINE (angle, pPlanet->radius);
-		ComputeSpeed (pPlanet, FALSE, 1);
+		ComputeSpeed (pPlanet, false, 1);
 	}
 
 	return true;
@@ -211,7 +211,7 @@ GenerateMycon_generateOrbital (SOLARSYS_STATE *solarSys,
 					return true;
 
 				{
-					BOOLEAN MyconSurvivors;
+					bool MyconSurvivors;
 
 					MyconSurvivors =
 							GetHeadLink (&GLOBAL (npc_built_ship_q)) != 0;

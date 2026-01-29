@@ -173,7 +173,7 @@ DoSellMinerals (void)
 {
 	COUNT i;
 	COUNT total = 0;
-	BOOLEAN Sleepy = TRUE;
+	bool Sleepy = true;
 
 	FlushInput ();
 
@@ -188,13 +188,13 @@ DoSellMinerals (void)
 			TimeIn = GetTimeCounter () + ONE_SECOND / 2;
 			while (GetTimeCounter () <= TimeIn)
 			{
-				if (AnyButtonPress (TRUE) ||
+				if (AnyButtonPress (true) ||
 					(GLOBAL (CurrentActivity) & CHECK_ABORT))
 				{
-					Sleepy = FALSE;
+					Sleepy = false;
 					break;
 				}
-				UpdateDuty (FALSE);
+				UpdateDuty (false);
 			}
 
 			if (Sleepy)
@@ -210,10 +210,10 @@ DoSellMinerals (void)
 			total += amount * GLOBAL (ElementWorth[i]);
 			do
 			{
-				if (!Sleepy || AnyButtonPress (TRUE) ||
+				if (!Sleepy || AnyButtonPress (true) ||
 					(GLOBAL (CurrentActivity) & CHECK_ABORT))
 				{
-					Sleepy = FALSE;
+					Sleepy = false;
 					GLOBAL_SIS (ElementAmounts[i]) = 0;
 					GLOBAL_SIS (TotalElementMass) -= amount;
 					DeltaSISGauges (0, 0,
@@ -221,7 +221,7 @@ DoSellMinerals (void)
 					break;
 				}
 
-				UpdateDuty (FALSE);
+				UpdateDuty (false);
 
 				--GLOBAL_SIS (ElementAmounts[i]);
 				--GLOBAL_SIS (TotalElementMass);
@@ -236,13 +236,13 @@ DoSellMinerals (void)
 			TimeIn = GetTimeCounter () + (ONE_SECOND / 4);
 			while (GetTimeCounter () <= TimeIn)
 			{
-				if (AnyButtonPress (TRUE) ||
+				if (AnyButtonPress (true) ||
 					(GLOBAL (CurrentActivity) & CHECK_ABORT))
 				{
-					Sleepy = FALSE;
+					Sleepy = false;
 					break;
 				}
-				UpdateDuty (FALSE);
+				UpdateDuty (false);
 			}
 		}
 	}
@@ -753,7 +753,7 @@ AnalyzeCondition (void)
 				num_batts = 0,
 				num_track = 0,
 				num_defense = 0;
-	BOOLEAN HasMinimum;
+	bool HasMinimum;
 
 	for (i = 0; i < NUM_DRIVE_SLOTS; ++i)
 	{
@@ -829,7 +829,7 @@ AnalyzeCondition (void)
 	{
 		BYTE num_aliens = 0;
 		COUNT FleetStrength;
-		BOOLEAN HasMaximum;
+		bool HasMaximum;
 
 		FleetStrength = CalculateEscortsWorth ();
 		for (i = 0; i < NUM_AVAILABLE_RACES; ++i)
@@ -1148,18 +1148,18 @@ NeedInfo (RESPONSE_REF R)
 	Response (no_need_info, NormalStarbase);
 }
 
-static BOOLEAN
-DiscussDevices (BOOLEAN TalkAbout)
+static bool
+DiscussDevices (bool TalkAbout)
 {
 	COUNT i, VuxBeastIndex, PhraseIndex;
-	//BOOLEAN Undiscussed; unused
+	//bool Undiscussed; unused
 
 	if (TalkAbout)
 		NPCPhrase (DEVICE_HEAD);
 	PhraseIndex = 2;
 
 	VuxBeastIndex = 0;
-	//Undiscussed = FALSE; unused
+	//Undiscussed = false; unused
 	for (i = 0; i < NUM_DEVICES; ++i)
 	{
 		RESPONSE_REF pStr;
@@ -1426,7 +1426,7 @@ DiscussDevices (BOOLEAN TalkAbout)
 	return (PhraseIndex > 2);
 }
 
-static BOOLEAN
+static bool
 CheckTiming (COUNT month_index, COUNT day_index)
 {
 	COUNT mi, year_index;
@@ -1461,7 +1461,7 @@ CheckTiming (COUNT month_index, COUNT day_index)
 }
 
 static void
-CheckBulletins (BOOLEAN Repeat)
+CheckBulletins (bool Repeat)
 {
 	RESPONSE_REF pIntro;
 	BYTE b0;
@@ -1735,9 +1735,9 @@ NormalStarbase (RESPONSE_REF R)
 	if (PLAYER_SAID (R, no_need_info))
 		NPCPhrase (OK_NO_NEED_INFO);
 	else if (PLAYER_SAID (R, new_devices))
-		DiscussDevices (TRUE);
+		DiscussDevices (true);
 	else if (PLAYER_SAID (R, repeat_bulletins))
-		CheckBulletins (TRUE);
+		CheckBulletins (true);
 	else if (R == 0)
 	{
 		if (GET_GAME_STATE (MOONBASE_ON_SHIP))
@@ -1754,7 +1754,7 @@ NormalStarbase (RESPONSE_REF R)
 		}
 		else if (GET_GAME_STATE (STARBASE_VISITED))
 		{
-			CheckBulletins (FALSE);
+			CheckBulletins (false);
 		}
 		else
 		{
@@ -1773,7 +1773,7 @@ NormalStarbase (RESPONSE_REF R)
 				case 7: pStr = NORMAL_HELLO_H; break;
 			}
 			NPCPhrase (pStr);
-			CheckBulletins (FALSE);
+			CheckBulletins (false);
 		}
 
 		SET_GAME_STATE (STARBASE_VISITED, 1);
@@ -1781,7 +1781,7 @@ NormalStarbase (RESPONSE_REF R)
 
 	if (GLOBAL_SIS (TotalElementMass))
 		Response (have_minerals, SellMinerals);
-	if (DiscussDevices (FALSE))
+	if (DiscussDevices (false))
 		Response (new_devices, NormalStarbase);
 	if (CurBulletinMask)
 		Response (repeat_bulletins, NormalStarbase);

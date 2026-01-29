@@ -61,9 +61,9 @@
 typedef struct LanderInputState LanderInputState;
 struct LanderInputState {
 	// Fields required by DoInput()
-	BOOLEAN (*InputFunc) (LanderInputState *pMS);
+	bool (*InputFunc) (LanderInputState *pMS);
 
-	BOOLEAN Initialized;
+	bool Initialized;
 	TimeCount NextTime;
 			// Frame rate control
 };
@@ -227,18 +227,18 @@ CreatePCLanderContext (void)
 }
 
 CONTEXT
-GetPCLanderContext (BOOLEAN *owner)
+GetPCLanderContext (bool *owner)
 {
 	// TODO: Make CONTEXT ref-counted
 	if (PCLanderContext)
 	{
 		if (owner)
-			*owner = FALSE;
+			*owner = false;
 	}
 	else
 	{
 		if (owner)
-			*owner = TRUE;
+			*owner = true;
 		PCLanderContext = CreatePCLanderContext ();
 	}
 	return PCLanderContext;
@@ -660,7 +660,7 @@ pickupNode (PLANETSIDE_DESC *pPSD, COUNT NumRetrieved,
 	BYTE EType;
 	CHAR_T ch, *pStr;
 	COUNT *Amount, Max, Offset;
-	BOOLEAN PartialPickup;
+	bool PartialPickup;
 
 	Amount = &pPSD->BiologicalLevel;
 	Max = MAX_SCROUNGED;
@@ -676,7 +676,7 @@ pickupNode (PLANETSIDE_DESC *pPSD, COUNT NumRetrieved,
 	}
 
 	// JMS: The rest of partially scavenged minerals stay on the surface.
-	PartialPickup = FALSE;
+	PartialPickup = false;
 
 	if (*Amount >= Max)
 	{
@@ -736,7 +736,7 @@ pickupNode (PLANETSIDE_DESC *pPSD, COUNT NumRetrieved,
 						pPrim->Object.Stamp.frame, -gfx_index_change);
 			}
 		
-			PartialPickup = TRUE;
+			PartialPickup = true;
 		}
 
 		if (Scan == BIOLOGICAL_SCAN && optPartialPickup)
@@ -1192,12 +1192,12 @@ AddLightning (void)
 		LightningElementPtr->next.location.x = (curLanderLoc.x
 				+ ((SCALED_MAP_WIDTH << MAG_SHIFT)
 				- ((SURFACE_WIDTH >> 1) - 6))
-				+ (RES_BOOL (LOBYTE (rand_val), rand_val)
+				+ (chooseIfHd (LOBYTE (rand_val), rand_val)
 				% (SURFACE_WIDTH - RES_SCALE (12))))
 				% (SCALED_MAP_WIDTH << MAG_SHIFT);
 		LightningElementPtr->next.location.y = (curLanderLoc.y
 				+ ((MAP_HEIGHT << MAG_SHIFT) - ((SURFACE_HEIGHT >> 1) - 6))
-				+ (RES_BOOL (HIBYTE (rand_val), rand_val)
+				+ (chooseIfHd (HIBYTE (rand_val), rand_val)
 				% (SURFACE_HEIGHT - RES_SCALE (12))))
 				% (MAP_HEIGHT << MAG_SHIFT);
 
@@ -1567,7 +1567,7 @@ ScrollPlanetSide (SIZE dx, SIZE dy, int landingOffset)
 	if (isPC (optSuperPC))
 	{
 		DrawRadarBorder ();
-		RotatePlanetSphere (TRUE, NULL);
+		RotatePlanetSphere (true, NULL);
 	}
 
 
@@ -1584,7 +1584,7 @@ animationInterframe (TimeCount *TimeIn, COUNT periods)
 
 	while (periods > 0)
 	{
-		RotatePlanetSphere (TRUE, NULL);
+		RotatePlanetSphere (true, NULL);
 
 		if (GetTimeCounter () >= *TimeIn + ANIM_FRAME_RATE)
 		{
@@ -1595,7 +1595,7 @@ animationInterframe (TimeCount *TimeIn, COUNT periods)
 }
 
 static void
-AnimateLaunch (FRAME farray, BOOLEAN isLanding)
+AnimateLaunch (FRAME farray, bool isLanding)
 {
 	RECT r;
 	STAMP s;
@@ -1618,7 +1618,7 @@ AnimateLaunch (FRAME farray, BOOLEAN isLanding)
 	psNextTime = GetTimeCounter () + PLANET_SIDE_RATE;
 	while (num_frames > 0)
 	{
-		RotatePlanetSphere (TRUE, &s);
+		RotatePlanetSphere (true, &s);
 
 		Now = GetTimeCounter ();
 
@@ -2056,7 +2056,7 @@ ScatterDeposits (void)
 	}
 }
 
-static BOOLEAN
+static bool
 LanderExplosion (void)
 {
 	HELEMENT hExplosionElement;
@@ -2064,7 +2064,7 @@ LanderExplosion (void)
 
 	hExplosionElement = AllocElement ();
 	if (!hExplosionElement)
-		return FALSE;
+		return false;
 
 	LockElement (hExplosionElement, &ExplosionElementPtr);
 
@@ -2092,10 +2092,10 @@ LanderExplosion (void)
 
 	ScatterDeposits ();
 
-	return TRUE;
+	return true;
 }
 
-static BOOLEAN
+static bool
 DoPlanetSide (LanderInputState *pMS)
 {
 	SIZE dx = 0;
@@ -2103,14 +2103,14 @@ DoPlanetSide (LanderInputState *pMS)
 
 #define SHUTTLE_TURN_WAIT (isPC (optSuperPC) ? 1 : 3)
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
-		return (FALSE);
+		return (false);
 
 	if (!pMS->Initialized)
 	{
 		COUNT landerSpeedNumer;
 		COUNT angle;
 
-		pMS->Initialized = TRUE;
+		pMS->Initialized = true;
 		
 		turn_wait = 0;
 		weapon_wait = 0;
@@ -2128,14 +2128,14 @@ landerSpeedNumer = WORLD_TO_VELOCITY (RES_SCALE (48));
 				COSINE (angle, landerSpeedNumer) / LANDER_SPEED_DENOM,
 				SINE (angle, landerSpeedNumer) / LANDER_SPEED_DENOM);
 
-		return TRUE;
+		return true;
 	}
 	else if (crew_left /* alive and taking off */
 			&& ((CurrentInputState.key[PlayerControls[0]][KEY_ESCAPE] ||
 			CurrentInputState.key[PlayerControls[0]][KEY_SPECIAL])
 			|| planetSideDesc->InTransit))
 	{
-		return FALSE;
+		return false;
 	}
 
 #ifdef DEBUG
@@ -2148,7 +2148,7 @@ landerSpeedNumer = WORLD_TO_VELOCITY (RES_SCALE (48));
 	else if (!crew_left && !damage_index)
 	{	// Dead, damage dealt, and exploding
 		if (explosion_index > EXPLOSION_LIFE + EXPLOSION_WAIT_FRAMES)
-			return FALSE;
+			return false;
 		
 		if (explosion_index > EXPLOSION_LIFE)
 		{	// Keep going until the wait expires
@@ -2248,7 +2248,7 @@ landerSpeedNumer = WORLD_TO_VELOCITY (RES_SCALE (48));
 	// NOTE: The rate is not stabilized
 	pMS->NextTime = GetTimeCounter () + PLANET_SIDE_RATE;
 
-	return TRUE;
+	return true;
 }
 
 void
@@ -2431,7 +2431,7 @@ IdlePlanetSide (LanderInputState *inputState, TimeCount howLong)
 }
 
 static void
-LandingTakeoffSequence (LanderInputState *inputState, BOOLEAN landing)
+LandingTakeoffSequence (LanderInputState *inputState, bool landing)
 {
 // We cannot solve a quadratic equation in a macro, so use a sensible max
 #define MAX_OFFSETS  20
@@ -2450,7 +2450,7 @@ LandingTakeoffSequence (LanderInputState *inputState, BOOLEAN landing)
 	delta = 0;
 	// JMS_GFX: In HD graphics we run out of default offsets. -> Use larger
 	// offset value.
-	max_offsets = RES_BOOL (MAX_OFFSETS, MAX_OFFSETS_HD);
+	max_offsets = chooseIfHd (MAX_OFFSETS, MAX_OFFSETS_HD);
 
 	for (index = 0; index < max_offsets && delta < DISTANCE_COVERED;
 			++index)
@@ -2502,7 +2502,7 @@ SetLanderTakeoff (void)
 {
 	assert (planetSideDesc != NULL);
 	if (planetSideDesc)
-		planetSideDesc->InTransit = TRUE;
+		planetSideDesc->InTransit = true;
 }
 
 // Returns whether the lander is still alive at the end of the sequence
@@ -2579,7 +2579,7 @@ PlanetSide (POINT planetLoc)
 	PLANETSIDE_DESC PSD;
 
 	memset (&PSD, 0, sizeof (PSD));
-	PSD.InTransit = TRUE;
+	PSD.InTransit = true;
 
 	// Set our chances of hazards occurring.
 	PSD.TectonicsChance = GetHazardChance (EARTHQUAKE_DISASTER,
@@ -2630,19 +2630,19 @@ PlanetSide (POINT planetLoc)
 	explosion_index = 0;
 
 	AnimateLanderWarmup ();
-	AnimateLaunch (LanderFrame[5], TRUE);
+	AnimateLaunch (LanderFrame[5], true);
 
 	InitPlanetSide (planetLoc);
 
 	landerInputState.NextTime = GetTimeCounter () + PLANET_SIDE_RATE;
-	LandingTakeoffSequence (&landerInputState, TRUE);
-	PSD.InTransit = FALSE;
+	LandingTakeoffSequence (&landerInputState, true);
+	PSD.InTransit = false;
 
-	landerInputState.Initialized = FALSE;
+	landerInputState.Initialized = false;
 	landerInputState.InputFunc = DoPlanetSide;
 	SetMenuSounds (MENU_SOUND_NONE, MENU_SOUND_NONE);
 
-	DoInput (&landerInputState, FALSE);
+	DoInput (&landerInputState, false);
 
 	if (!(GLOBAL (CurrentActivity) & CHECK_ABORT))
 	{
@@ -2656,16 +2656,16 @@ PlanetSide (POINT planetLoc)
 		}
 		else
 		{
-			PSD.InTransit = TRUE;
+			PSD.InTransit = true;
 			PlaySound (SetAbsSoundIndex (LanderSounds, LANDER_RETURNS),
 					NotPositional (), NULL, GAME_SOUND_PRIORITY + 1);
 
-			LandingTakeoffSequence (&landerInputState, FALSE);
+			LandingTakeoffSequence (&landerInputState, false);
 
 			if (is3DO (optSuperPC))
 				ReturnToOrbit ();
 
-			AnimateLaunch (LanderFrame[6], FALSE);
+			AnimateLaunch (LanderFrame[6], false);
 			if (!optSubmenu)
 				DeltaSISGauges (crew_left, 0, 0);
 			else
@@ -2686,7 +2686,7 @@ PlanetSide (POINT planetLoc)
 							PSD.ElementAmounts[index];
 				}
 				if (!optSubmenu)
-					DrawStorageBays (FALSE);
+					DrawStorageBays (false);
 			}
 
 			GLOBAL_SIS (TotalBioMass) += PSD.BiologicalLevel;
@@ -2694,7 +2694,7 @@ PlanetSide (POINT planetLoc)
 			if (isPC (optSuperPC))
 			{
 				ReturnToOrbit ();
-				InitPCLander (FALSE);
+				InitPCLander (false);
 			}
 		}
 	}
@@ -2870,7 +2870,7 @@ InitLander (BYTE LanderFlags)
 }
 
 void
-InitPCLander (BOOLEAN Loading)
+InitPCLander (bool Loading)
 {
 	RECT r;
 

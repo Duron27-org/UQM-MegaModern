@@ -93,7 +93,7 @@ GenerateSaMatra_initNpcs (SOLARSYS_STATE *solarSys)
 static bool
 GenerateSaMatra_reinitNpcs (SOLARSYS_STATE *solarSys)
 {
-	BOOLEAN GuardEngaged;
+	bool GuardEngaged;
 	HIPGROUP hGroup;
 	HIPGROUP hNextGroup;
 
@@ -104,7 +104,7 @@ GenerateSaMatra_reinitNpcs (SOLARSYS_STATE *solarSys)
 		EncounterRace = -1;
 		// Do not want guards to chase the player
 
-		GuardEngaged = FALSE;
+		GuardEngaged = false;
 		for (hGroup = GetHeadLink (&GLOBAL (ip_group_q));
 			hGroup; hGroup = hNextGroup)
 		{
@@ -126,7 +126,7 @@ GenerateSaMatra_reinitNpcs (SOLARSYS_STATE *solarSys)
 				GroupPtr->task &= ~REFORM_GROUP;
 				GroupPtr->group_counter = 0;
 
-				GuardEngaged = TRUE;
+				GuardEngaged = true;
 			}
 
 			UnlockIpGroup (&GLOBAL (ip_group_q), hGroup);
@@ -143,7 +143,7 @@ GenerateSaMatra_reinitNpcs (SOLARSYS_STATE *solarSys)
 			GLOBAL (ip_location.x) = org.x + COSINE (angle, 3000);
 			GLOBAL (ip_location.y) = org.y + SINE (angle, 3000);
 			XFormIPLoc (&GLOBAL (ip_location),
-				&GLOBAL (ShipStamp.origin), TRUE);
+				&GLOBAL (ShipStamp.origin), true);
 		}
 	}
 
@@ -263,7 +263,7 @@ GenerateSaMatra_generateMoons (SOLARSYS_STATE *solarSys,
 				angle = NORMALIZE_ANGLE (LOWORD (rand_val));
 				pMoonDesc->location.x = COSINE (angle, pMoonDesc->radius);
 				pMoonDesc->location.y = SINE (angle, pMoonDesc->radius);
-				ComputeSpeed (pMoonDesc, TRUE, 1);
+				ComputeSpeed (pMoonDesc, true, 1);
 			}
 		}
 
@@ -325,7 +325,7 @@ GenerateSaMatra_generateOrbital (SOLARSYS_STATE *solarSys,
 
 			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
 			{
-				BOOLEAN UrquanSurvivors;
+				bool UrquanSurvivors;
 
 				UrquanSurvivors =
 						GetHeadLink (&GLOBAL (npc_built_ship_q)) != 0;

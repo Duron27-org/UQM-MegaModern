@@ -51,7 +51,7 @@ typedef enum
 typedef void (*RenderPixelFn)(SDL_Surface *, int x, int y, Uint32 pixel,
 		int factor);
 
-RenderPixelFn renderpixel_for(SDL_Surface *surface, RenderKind kind, BOOLEAN forMask);
+RenderPixelFn renderpixel_for(SDL_Surface *surface, RenderKind kind, bool forMask);
 
 void line_prim(int x1, int y1, int x2, int y2, Uint32 color,
 		RenderPixelFn plot, int factor, SDL_Surface *dst);

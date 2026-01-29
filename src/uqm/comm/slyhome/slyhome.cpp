@@ -256,30 +256,30 @@ HumanInfo (RESPONSE_REF R)
 		SET_GAME_STATE (SLYLANDRO_KNOW_GATHER, 1);
 	}
 
-	InfoLeft = FALSE;
+	InfoLeft = false;
 	if (GET_GAME_STATE (SLYLANDRO_KNOW_URQUAN) == 1)
 	{
-		InfoLeft = TRUE;
+		InfoLeft = true;
 		Response (not_same_urquan, HumanInfo);
 	}
 	if (!GET_GAME_STATE (SLYLANDRO_KNOW_EARTH))
 	{
-		InfoLeft = TRUE;
+		InfoLeft = true;
 		Response (we_come_from_earth, HumanInfo);
 	}
 	if (!GET_GAME_STATE (SLYLANDRO_KNOW_EXPLORE))
 	{
-		InfoLeft = TRUE;
+		InfoLeft = true;
 		Response (we_explore, HumanInfo);
 	}
 	if (!GET_GAME_STATE (SLYLANDRO_KNOW_URQUAN))
 	{
-		InfoLeft = TRUE;
+		InfoLeft = true;
 		Response (we_fight_urquan, HumanInfo);
 	}
 	if (!GET_GAME_STATE (SLYLANDRO_KNOW_GATHER))
 	{
-		InfoLeft = TRUE;
+		InfoLeft = true;
 		Response (we_gather, HumanInfo);
 	}
 
@@ -324,25 +324,25 @@ SlylandroInfo (RESPONSE_REF R)
 		DISABLE_PHRASE (what_about_biology);
 	}
 
-	InfoLeft = FALSE;
+	InfoLeft = false;
 	if (PHRASE_ENABLED (what_about_home))
 	{
-		InfoLeft = TRUE;
+		InfoLeft = true;
 		Response (what_about_home, SlylandroInfo);
 	}
 	if (PHRASE_ENABLED (what_about_culture))
 	{
-		InfoLeft = TRUE;
+		InfoLeft = true;
 		Response (what_about_culture, SlylandroInfo);
 	}
 	if (PHRASE_ENABLED (what_about_history))
 	{
-		InfoLeft = TRUE;
+		InfoLeft = true;
 		Response (what_about_history, SlylandroInfo);
 	}
 	if (PHRASE_ENABLED (what_about_biology))
 	{
-		InfoLeft = TRUE;
+		InfoLeft = true;
 		Response (what_about_biology, SlylandroInfo);
 	}
 
@@ -648,17 +648,17 @@ ProbeInfo (RESPONSE_REF R)
 			break;
 	}
 
-	InfoLeft = FALSE;
+	InfoLeft = false;
 	if (pStr[LastStack])
 	{
-		InfoLeft = TRUE;
+		InfoLeft = true;
 		Response (pStr[LastStack], ProbeInfo);
 	}
 	for (i = 0; i < 3; ++i)
 	{
 		if (i != LastStack && pStr[i])
 		{
-			InfoLeft = TRUE;
+			InfoLeft = true;
 			Response (pStr[i], ProbeInfo);
 		}
 	}

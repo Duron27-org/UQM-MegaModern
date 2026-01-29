@@ -26,7 +26,7 @@
 extern void (* volatile debugHook) (void);
 
 // Prevents repeated debug key presses for certain functions
-extern BOOLEAN DebugKeyPressed;
+extern bool DebugKeyPressed;
 
 // Move the Flagship to the destination of the autopilot.
 // Should only be called from HS/QS.
@@ -45,7 +45,7 @@ void resetEnergyBattle(void);
 
 // If set to true, interactive routines that are called (indirectly) in debug
 // functions are a no-op.
-extern BOOLEAN disableInteractivity;
+extern bool disableInteractivity;
 
 // Called on the main() thread when the debug key (symbol 'Debug' in the
 // keys.cfg) is pressed
@@ -63,7 +63,7 @@ void debugKey4PressedSynchronous (void);
 // Forward time to the next event. If skipHEE is set, the event named
 // HYPERSPACE_ENCOUNTER_EVENT, which normally occurs every game day,
 // is skipped. Must be called on the Starcon2Main thread.
-void forwardToNextEvent (BOOLEAN skipHEE);
+void forwardToNextEvent (bool skipHEE);
 // Generate a list of all events in the event queue.
 // Must be called on the Starcon2Main thread.
 void dumpEvents (FILE *out);
@@ -83,7 +83,7 @@ void giveDevices (void);
 void clearEscorts (void);
 
 // Show all active spheres of influence.
-void showSpheres (BOOLEAN Animated);
+void showSpheres (bool Animated);
 
 // Make the ships of all races available for building at the shipyard.
 void activateAllShips (void);

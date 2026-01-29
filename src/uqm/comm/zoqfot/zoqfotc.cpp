@@ -229,7 +229,7 @@ ExitConversation (RESPONSE_REF R)
 		NPCPhrase_cb (WE_ALLY4, &SelectAlienZOQ);
 		NPCPhrase_cb (WE_ALLY5, &SelectAlienPIK);
 		ZFPTalkSegue ((COUNT)~0);
-		SetRaceAllied (ZOQFOTPIK_SHIP, TRUE);
+		SetRaceAllied (ZOQFOTPIK_SHIP, true);
 		AddEvent (RELATIVE_EVENT, 3, 0, 0, ZOQFOT_DISTRESS_EVENT);
 		SET_GAME_STATE (ZOQFOT_HOME_VISITS, 0);
 	}
@@ -520,31 +520,31 @@ ZoqFotInfo (RESPONSE_REF R)
 		DISABLE_PHRASE (what_about_past);
 	}
 
-	InfoLeft = FALSE;
+	InfoLeft = false;
 	if (PHRASE_ENABLED (what_about_others))
 	{
 		Response (what_about_others, ZoqFotInfo);
-		InfoLeft = TRUE;
+		InfoLeft = true;
 	}
 	if (PHRASE_ENABLED (what_about_zebranky))
 	{
 		Response (what_about_zebranky, ZoqFotInfo);
-		InfoLeft = TRUE;
+		InfoLeft = true;
 	}
 	if (PHRASE_ENABLED (what_about_stinger))
 	{
 		Response (what_about_stinger, ZoqFotInfo);
-		InfoLeft = TRUE;
+		InfoLeft = true;
 	}
 	if (PHRASE_ENABLED (what_about_guy_in_back))
 	{
 		Response (what_about_guy_in_back, ZoqFotInfo);
-		InfoLeft = TRUE;
+		InfoLeft = true;
 	}
 	if (PHRASE_ENABLED (what_about_past))
 	{
 		Response (what_about_past, ZoqFotInfo);
-		InfoLeft = TRUE;
+		InfoLeft = true;
 	}
 	Response (enough_info, ZoqFotHome);
 
@@ -725,7 +725,7 @@ ZoqFotHome (RESPONSE_REF R)
 		NPCPhrase_cb (GOOD9, &SelectAlienPIK);
 		ZFPTalkSegue ((COUNT)~0);
 
-		SetRaceAllied (ZOQFOTPIK_SHIP, TRUE);
+		SetRaceAllied (ZOQFOTPIK_SHIP, true);
 		AddEvent (RELATIVE_EVENT, 3, 0, 0, ZOQFOT_DISTRESS_EVENT);
 	}
 	else if (PLAYER_SAID (R, enough_info))

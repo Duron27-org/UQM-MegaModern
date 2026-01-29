@@ -38,7 +38,7 @@
 // Laser
 #define WEAPON_ENERGY_COST 1
 #define WEAPON_WAIT 0
-#define VUX_OFFSET RES_BOOL (12, 38)
+#define VUX_OFFSET chooseIfHd (12, 38)
 #define LASER_BASE RES_SCALE (150)
 #define LASER_RANGE DISPLAY_TO_WORLD (LASER_BASE + VUX_OFFSET)
 
@@ -168,8 +168,8 @@ limpet_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 
 		GetElementStarShip (ElementPtr1, &StarShipPtr);
 		RDPtr = StarShipPtr->RaceDescPtr;
-		if (!(antiCheat (ElementPtr1, FALSE, OPTVAL_INF_HEALTH)
-				|| antiCheat (ElementPtr1, FALSE, OPTVAL_FULL_GOD)))
+		if (!(antiCheat (ElementPtr1, false, OPTVAL_INF_HEALTH)
+				|| antiCheat (ElementPtr1, false, OPTVAL_FULL_GOD)))
 		{
 			if (++RDPtr->characteristics.turn_wait == 0)
 				--RDPtr->characteristics.turn_wait;

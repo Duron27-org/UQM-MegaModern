@@ -78,7 +78,7 @@ StopSource (int iSource)
 	CleanSource (iSource);
 }
 
-BOOLEAN
+bool
 SoundPlaying (void)
 {
 	int i;
@@ -89,23 +89,23 @@ SoundPlaying (void)
 		sample = soundSource[i].sample;
 		if (sample && sample->decoder)
 		{
-			BOOLEAN result;
+			bool result;
 			LockMutex (soundSource[i].stream_mutex);
 			result = PlayingStream (i);
 			UnlockMutex (soundSource[i].stream_mutex);
 			if (result)
-				return TRUE;
+				return true;
 		}
 		else
 		{
 			audio_IntVal state;
 			audio_GetSourcei (soundSource[i].handle, audio_SOURCE_STATE, &state);
 			if (state == audio_PLAYING)
-				return TRUE;
+				return true;
 		}
 	}
 
-	return FALSE;
+	return false;
 }
 
 // for now just spin in a sleep() loop
@@ -124,13 +124,13 @@ WaitForSoundEnd (COUNT Channel)
 
 
 // Status: Ignored
-BOOLEAN
+bool
 InitSound (int argc, char* argv[])
 {
 	/* Quell compiler warnings */
 	(void)argc;
 	(void)argv;
-	return TRUE;
+	return true;
 }
 
 // Status: Ignored

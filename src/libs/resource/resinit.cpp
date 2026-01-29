@@ -153,11 +153,11 @@ DescriptorToBoolean (const char *descriptor, RESOURCE_DATA *resdata)
 {
 	if (!strcasecmp (descriptor, "true"))
 	{
-		resdata->num = TRUE;
+		resdata->num = true;
 	}
 	else
 	{
-		resdata->num = FALSE;
+		resdata->num = false;
 	}
 }
 
@@ -343,7 +343,7 @@ InitResourceSystem (void)
 	InstallResTypeVectors ("UNKNOWNRES", UseDescriptorAsRes, NULL, NULL);
 	InstallResTypeVectors ("STRING", UseDescriptorAsRes, NULL, RawDescriptor);
 	InstallResTypeVectors ("INT32", DescriptorToInt, NULL, IntToString);
-	InstallResTypeVectors ("BOOLEAN", DescriptorToBoolean, NULL,
+	InstallResTypeVectors ("bool", DescriptorToBoolean, NULL,
 			BooleanToString);
 	InstallResTypeVectors ("COLOR", DescriptorToColor, NULL, ColorToString);
 	InstallGraphicResTypes ();
@@ -378,7 +378,7 @@ static int strptrcmp (const void *a, const void *b)
 }
 
 void
-SaveResourceIndex (uio_DirHandle *dir, const char *rmpfile, const char *root, BOOLEAN strip_root)
+SaveResourceIndex (uio_DirHandle *dir, const char *rmpfile, const char *root, bool strip_root)
 {
 	uio_Stream *f;
 	CharHashTable_Iterator *it;
@@ -452,7 +452,7 @@ UninitResourceSystem (void)
 	_set_current_index_header (NULL);
 }
 
-BOOLEAN
+bool
 InstallResTypeVectors (const char *resType, ResourceLoadFun *loadFun,
 		ResourceFreeFun *freeFun, ResourceStringFun *stringFun)
 {
@@ -469,7 +469,7 @@ InstallResTypeVectors (const char *resType, ResourceLoadFun *loadFun,
 	handlers = (ResourceHandlers*)HMalloc (sizeof (ResourceHandlers));
 	if (handlers == NULL)
 	{
-		return FALSE;
+		return false;
 	}
 	handlers->loadFun = loadFun;
 	handlers->freeFun = freeFun;
@@ -478,7 +478,7 @@ InstallResTypeVectors (const char *resType, ResourceLoadFun *loadFun,
 	
 	result = (ResourceDesc*)HMalloc (sizeof (ResourceDesc));
 	if (result == NULL)
-		return FALSE;
+		return false;
 
 	result->fname = (char*)HMalloc (strlen(resType) + 1);
 	strncpy (result->fname, resType, typelen);
@@ -487,16 +487,16 @@ InstallResTypeVectors (const char *resType, ResourceLoadFun *loadFun,
 	result->resdata.ptr = handlers;
 
 	map = _get_current_index_header ()->map;
-	return (BOOLEAN)(CharHashTable_add (map, key, result) != 0);
+	return (bool)(CharHashTable_add (map, key, result) != 0);
 }
 
 /* These replace the mapres.c calls and probably should be split out at some point. */
-BOOLEAN
+bool
 res_IsString (const char *key)
 {
 	RESOURCE_INDEX idx = _get_current_index_header ();
 	ResourceDesc *desc = lookupResourceDesc (idx, key);
-	return (BOOLEAN)(desc && !strcmp(desc->vtable->resType, "STRING"));
+	return (bool)(desc && !strcmp(desc->vtable->resType, "STRING"));
 }
 
 const char *
@@ -539,12 +539,12 @@ res_PutString (const char *key, const char *value)
 	}
 }
 
-BOOLEAN
+bool
 res_IsInteger (const char *key)
 {
 	RESOURCE_INDEX idx = _get_current_index_header ();
 	ResourceDesc *desc = lookupResourceDesc (idx, key);
-	return (BOOLEAN)(desc && !strcmp(desc->vtable->resType, "INT32"));
+	return (bool)(desc && !strcmp(desc->vtable->resType, "INT32"));
 }
 
 int
@@ -574,47 +574,47 @@ res_PutInteger (const char *key, int value)
 	desc->resdata.num = value;
 }
 
-BOOLEAN
+bool
 res_IsBoolean (const char *key)
 {
 	RESOURCE_INDEX idx = _get_current_index_header ();
 	ResourceDesc *desc = lookupResourceDesc (idx, key);
-	return (BOOLEAN)(desc && !strcmp(desc->vtable->resType, "BOOLEAN"));
+	return (bool)(desc && !strcmp(desc->vtable->resType, "bool"));
 }
 
-BOOLEAN
+bool
 res_GetBoolean (const char *key)
 {
 	RESOURCE_INDEX idx = _get_current_index_header ();
 	ResourceDesc *desc = lookupResourceDesc (idx, key);
-	if (!desc || strcmp(desc->vtable->resType, "BOOLEAN"))
+	if (!desc || strcmp(desc->vtable->resType, "bool"))
 	{
 		// TODO: Better error handling
-		return FALSE;
+		return false;
 	}
-	return desc->resdata.num ? TRUE : FALSE;
+	return desc->resdata.num ? true : false;
 }
 
 void
-res_PutBoolean (const char *key, BOOLEAN value)
+res_PutBoolean (const char *key, bool value)
 {
 	RESOURCE_INDEX idx = _get_current_index_header ();
 	ResourceDesc *desc = lookupResourceDesc (idx, key);
-	if (!desc || strcmp(desc->vtable->resType, "BOOLEAN"))
+	if (!desc || strcmp(desc->vtable->resType, "bool"))
 	{
 		/* TODO: This is kind of roundabout. We can do better by refactoring newResourceDesc */
-		process_resource_desc(key, "BOOLEAN:false");
+		process_resource_desc(key, "bool:false");
 		desc = lookupResourceDesc (idx, key);
 	}
 	desc->resdata.num = value;
 }
 
-BOOLEAN
+bool
 res_IsColor (const char *key)
 {
 	RESOURCE_INDEX idx = _get_current_index_header ();
 	ResourceDesc *desc = lookupResourceDesc (idx, key);
-	return (BOOLEAN)(desc && !strcmp(desc->vtable->resType, "COLOR"));
+	return (bool)(desc && !strcmp(desc->vtable->resType, "COLOR"));
 }
 
 Color
@@ -650,14 +650,14 @@ res_PutColor (const char *key, Color value)
 			(value.r << 24) | (value.g << 16) | (value.b << 8) | value.a;
 }
 
-BOOLEAN
+bool
 res_HasKey (const char *key)
 {
 	RESOURCE_INDEX idx = _get_current_index_header ();
-	return (BOOLEAN)(lookupResourceDesc(idx, key) != NULL);
+	return (bool)(lookupResourceDesc(idx, key) != NULL);
 }
 
-BOOLEAN
+bool
 res_Remove (const char *key)
 {
 	CharHashTable_HashTable *map = _get_current_index_header ()->map;
@@ -676,5 +676,5 @@ res_Remove (const char *key)
 		HFree (oldDesc->fname);
 		HFree (oldDesc);
 	}
-	return (BOOLEAN)CharHashTable_remove (map, key);
+	return (bool)CharHashTable_remove (map, key);
 }

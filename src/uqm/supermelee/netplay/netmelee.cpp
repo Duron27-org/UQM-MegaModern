@@ -495,14 +495,14 @@ typedef struct NegotiateReadyState NegotiateReadyState;
 struct NegotiateReadyState {
 	// Common fields of INPUT_STATE_DESC, from which this structure
 	// "inherits".
-	BOOLEAN(*InputFunc)(void *pInputState);
+	bool(*InputFunc)(void *pInputState);
 
 	NetConnection *conn;
 	NetState nextState;
 	bool done;
 };
 
-static BOOLEAN
+static bool
 negotiateReadyInputFunc(NegotiateReadyState *state) {
 	netInputBlocking(NETWORK_POLL_DELAY);
 	// The timing out is necessary so that immediate key presses get
@@ -514,7 +514,7 @@ negotiateReadyInputFunc(NegotiateReadyState *state) {
 	// right now.
 
 	if (!NetConnection_isConnected(state->conn))
-		return FALSE;
+		return false;
 
 	return !state->done;
 }
@@ -537,7 +537,7 @@ negotiateReadyBothReadyCallback(NetConnection *conn, void *arg) {
 bool
 negotiateReady(NetConnection *conn, bool notifyRemote, NetState nextState) {
 	NegotiateReadyState state;
-	state.InputFunc = (BOOLEAN(*)(void *)) negotiateReadyInputFunc;
+	state.InputFunc = (bool(*)(void *)) negotiateReadyInputFunc;
 	state.conn = conn;
 	state.nextState = nextState;
 	state.done = false;
@@ -546,7 +546,7 @@ negotiateReady(NetConnection *conn, bool notifyRemote, NetState nextState) {
 			(void *) &state, notifyRemote);
 	flushPacketQueue(conn);
 	if (!state.done)
-		DoInput(&state, FALSE);
+		DoInput(&state, false);
 
 	return NetConnection_isConnected(conn);
 }
@@ -582,7 +582,7 @@ typedef struct WaitReadyState WaitReadyState;
 struct WaitReadyState {
 	// Common fields of INPUT_STATE_DESC, from which this structure
 	// "inherits".
-	BOOLEAN (*InputFunc)(void *pInputState);
+	bool (*InputFunc)(void *pInputState);
 
 	NetConnection *conn;
 	NetConnection_ReadyCallback readyCallback;
@@ -599,7 +599,7 @@ waitReadyCallback(NetConnection *conn, void *arg) {
 	state->readyCallback(conn, state->readyCallbackArg);
 }
 
-static BOOLEAN
+static bool
 waitReadyInputFunc(WaitReadyState *state) {
 	netInputBlocking(NETWORK_POLL_DELAY);
 	// The timing out is necessary so that immediate key presses get
@@ -611,7 +611,7 @@ waitReadyInputFunc(WaitReadyState *state) {
 	// right now.
 
 	if (!NetConnection_isConnected(state->conn))
-		return FALSE;
+		return false;
 
 	return !state->done;
 }
@@ -619,7 +619,7 @@ waitReadyInputFunc(WaitReadyState *state) {
 bool
 waitReady(NetConnection *conn) {
 	WaitReadyState state;
-	state.InputFunc =(BOOLEAN(*)(void *)) waitReadyInputFunc;
+	state.InputFunc =(bool(*)(void *)) waitReadyInputFunc;
 	state.conn = conn;
 	state.readyCallback = NetConnection_getReadyCallback(conn);
 	state.readyCallbackArg = NetConnection_getReadyCallbackArg(conn);
@@ -627,7 +627,7 @@ waitReady(NetConnection *conn) {
 
 	NetConnection_setReadyCallback(conn, waitReadyCallback, (void *) &state);
 
-	DoInput(&state, FALSE);
+	DoInput(&state, false);
 
 	return NetConnection_isConnected(conn);
 }
@@ -639,14 +639,14 @@ typedef struct WaitResetState WaitResetState;
 struct WaitResetState {
 	// Common fields of INPUT_STATE_DESC, from which this structure
 	// "inherits".
-	BOOLEAN(*InputFunc)(void *pInputState);
+	bool(*InputFunc)(void *pInputState);
 
 	NetConnection *conn;
 	NetState nextState;
 	bool done;
 };
 
-static BOOLEAN
+static bool
 waitResetInputFunc(WaitResetState *state) {
 	netInputBlocking(NETWORK_POLL_DELAY);
 	// The timing out is necessary so that immediate key presses get
@@ -658,7 +658,7 @@ waitResetInputFunc(WaitResetState *state) {
 	// right now.
 
 	if (!NetConnection_isConnected(state->conn))
-		return FALSE;
+		return false;
 
 	return !state->done;
 }
@@ -683,7 +683,7 @@ waitResetBothResetCallback(NetConnection *conn, void *arg) {
 bool
 waitReset(NetConnection *conn, NetState nextState) {
 	WaitResetState state;
-	state.InputFunc = (BOOLEAN(*)(void *)) waitResetInputFunc;
+	state.InputFunc = (bool(*)(void *)) waitResetInputFunc;
 	state.conn = conn;
 	state.nextState = nextState;
 	state.done = false;
@@ -700,7 +700,7 @@ waitReset(NetConnection *conn, NetState nextState) {
 	}
 
 	if (!state.done)
-		DoInput(&state, FALSE);
+		DoInput(&state, false);
 
 out:
 	return NetConnection_isConnected(conn);

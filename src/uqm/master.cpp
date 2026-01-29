@@ -54,7 +54,7 @@ LoadMasterShipList (void (* YieldProcessing)(void))
 
 		BuiltPtr = LockMasterShip (&master_q, hBuiltShip);
 		BuiltPtr->SpeciesID = postIncSpeciesId_HACK(s_id);
-		RDPtr = load_ship (BuiltPtr->SpeciesID, FALSE);
+		RDPtr = load_ship (BuiltPtr->SpeciesID, false);
 		if (!RDPtr)
 		{
 			UnlockMasterShip (&master_q, hBuiltShip);
@@ -65,7 +65,7 @@ LoadMasterShipList (void (* YieldProcessing)(void))
 		// XXX: SHIP_INFO implicitly referenced here
 		BuiltPtr->ShipInfo = RDPtr->ship_info;
 		BuiltPtr->Fleet = RDPtr->fleet;
-		free_ship (RDPtr, FALSE, FALSE);
+		free_ship (RDPtr, false, false);
 
 		builtName = GetStringAddress (SetAbsStringTableIndex (
 				BuiltPtr->ShipInfo.race_strings, 2));

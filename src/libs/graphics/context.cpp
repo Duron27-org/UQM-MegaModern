@@ -120,13 +120,13 @@ FindContextPtr (CONTEXT context) {
 }
 #endif  /* DEBUG */
 
-BOOLEAN
+bool
 DestroyContext (CONTEXT ContextRef)
 {
 	TFB_Image *img;
 
 	if (ContextRef == 0)
-		return (FALSE);
+		return (false);
 
 	if (_pCurContext && _pCurContext == ContextRef)
 		SetContext ((CONTEXT)0);
@@ -146,7 +146,7 @@ DestroyContext (CONTEXT ContextRef)
 		TFB_DrawImage_Delete (img);
 
 	FreeContext (ContextRef);
-	return TRUE;
+	return true;
 }
 
 Color
@@ -238,11 +238,11 @@ _get_context_fg_rect (void)
 	return r;
 }
 
-BOOLEAN
+bool
 SetContextClipRect (RECT *lpRect)
 {
 	if (!ContextActive ())
-		return (FALSE);
+		return (false);
 
 	if (lpRect)
 	{
@@ -260,14 +260,14 @@ SetContextClipRect (RECT *lpRect)
 		_pCurContext->ClipRect.extent.width = 0;
 	}
 
-	return TRUE;
+	return true;
 }
 
-BOOLEAN
+bool
 GetContextClipRect (RECT *lpRect)
 {
 	if (!ContextActive ())
-		return (FALSE);
+		return (false);
 
 	*lpRect = _pCurContext->ClipRect;
 	if (!_pCurContext->ClipRect.extent.width)
@@ -276,7 +276,7 @@ GetContextClipRect (RECT *lpRect)
 		*lpRect = _get_context_fg_rect ();
 	}
 
-	return (BOOLEAN)(_pCurContext->ClipRect.extent.width != 0);
+	return (bool)(_pCurContext->ClipRect.extent.width != 0);
 }
 
 POINT
@@ -329,7 +329,7 @@ FixContextFontEffect (void)
 	if (img)
 		TFB_DrawScreen_DeleteImage (img);
 
-	img = TFB_DrawImage_CreateForScreen (w, h, TRUE);
+	img = TFB_DrawImage_CreateForScreen (w, h, true);
 	if (_get_context_fbk_flags () & FBK_IMAGE)
 	{	// image pattern backing
 		FRAME EffectFrame = _get_context_fonteff ();

@@ -84,7 +84,7 @@ DrawBaseStateStrings (STARBASE_STATE OldState, STARBASE_STATE NewState)
 
 void
 DrawShipPiece (FRAME ModuleFrame, COUNT which_piece, COUNT which_slot,
-		BOOLEAN DrawBluePrint)
+		bool DrawBluePrint)
 {
 	Color OldColor = UNDEFINED_COLOR;
 			// Initialisation is just to keep the compiler silent.
@@ -307,7 +307,7 @@ rotateStarbase (MENU_STATE *pMS, FRAME AniFrame)
 	}
 }
 
-BOOLEAN
+bool
 DoStarBase (MENU_STATE *pMS)
 {
 	// XXX: This function is full of hacks and otherwise strange code
@@ -324,7 +324,7 @@ DoStarBase (MENU_STATE *pMS)
 		LastActivity &= ~CHECK_LOAD;
 		pMS->InputFunc = DoStarBase;
 
-		SetFlashRect (NULL, FALSE);
+		SetFlashRect (NULL, false);
 
 		if (pMS->hMusic)
 		{
@@ -333,7 +333,7 @@ DoStarBase (MENU_STATE *pMS)
 			pMS->hMusic = 0;
 		}
 
-		pMS->Initialized = TRUE;
+		pMS->Initialized = true;
 
 		pMS->CurFrame = CaptureDrawable (LoadGraphic (STARBASE_ANIM));
 		pMS->hMusic = LoadMusic (STARBASE_MUSIC);
@@ -374,10 +374,10 @@ ExitStarBase:
 			{
 				SET_GAME_STATE (STARBASE_VISITED, 0);
 			}
-			return (FALSE);
+			return (false);
 		}
 
-		pMS->Initialized = FALSE;
+		pMS->Initialized = false;
 		if (pMS->CurState == TALK_COMMANDER)
 		{
 			FlushInput ();
@@ -405,7 +405,7 @@ ExitStarBase:
 			}
 
 			SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
-			DoInput (pMS, TRUE);
+			DoInput (pMS, true);
 
 			if (IS_HD)
 			{
@@ -413,7 +413,7 @@ ExitStarBase:
 				hdFuelFrame = 0;
 			}
 
-			pMS->Initialized = FALSE;
+			pMS->Initialized = false;
 			pMS->CurState = OldState;
 			pMS->InputFunc = DoStarBase;
 		}
@@ -452,7 +452,7 @@ ExitStarBase:
 		SleepThread (ONE_SECOND / 30);
 	}
 
-	return (TRUE);
+	return (true);
 }
 
 static void
@@ -561,7 +561,7 @@ VisitStarBase (void)
 	MenuState.InputFunc = DoStarBase;
 	
 	OldContext = SetContext (ScreenContext);
-	DoInput (&MenuState, TRUE);
+	DoInput (&MenuState, true);
 	SetContext (OldContext);
 
 	SetStatusMessageMode (prevMsgMode);

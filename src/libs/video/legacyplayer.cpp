@@ -75,10 +75,10 @@ StopLegacyVideo (LEGACY_VIDEO_REF ref)
 	HFree (ref);
 }
 
-BOOLEAN
+bool
 PlayingLegacyVideo (LEGACY_VIDEO_REF ref)
 {
 	if (!ref)
-		return FALSE;
-	return (BOOLEAN)TFB_VideoPlaying (ref->vidref);
+		return false;
+	return (bool)TFB_VideoPlaying (ref->vidref);
 }

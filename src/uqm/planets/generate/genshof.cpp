@@ -163,7 +163,7 @@ GenerateShofixti_generatePlanets (SOLARSYS_STATE *solarSys)
 				pCurDesc->data_index = METAL_WORLD;
 		}
 
-		FillOrbits (solarSys, NUM_PLANETS, solarSys->PlanetDesc, TRUE);
+		FillOrbits (solarSys, NUM_PLANETS, solarSys->PlanetDesc, true);
 	}
 	else
 	{
@@ -174,7 +174,7 @@ GenerateShofixti_generatePlanets (SOLARSYS_STATE *solarSys)
 		if (pSunDesc->NumPlanets > 9)
 			pSunDesc->NumPlanets = 9;
 
-		FillOrbits (solarSys, NUMPLANETS_PDESC, NULL, FALSE);
+		FillOrbits (solarSys, NUMPLANETS_PDESC, NULL, false);
 
 		if (StarSeed)
 			pSunDesc->PlanetByte = PickClosestHabitable (solarSys);
@@ -256,9 +256,9 @@ GenerateShofixti_generateOrbital (SOLARSYS_STATE *solarSys,
 	{
 		if (CheckAlliance (SHOFIXTI_SHIP) == GOOD_GUY)
 		{
-			BOOLEAN MaxShips = (CountEscortShips (SHOFIXTI_SHIP) <
-					IF_HARD (2, 1) ? TRUE : FALSE);
-			BOOLEAN RoomInFleet = EscortFeasibilityStudy (SHOFIXTI_SHIP);
+			bool MaxShips = (CountEscortShips (SHOFIXTI_SHIP) <
+					IF_HARD (2, 1) ? true : false);
+			bool RoomInFleet = EscortFeasibilityStudy (SHOFIXTI_SHIP);
 			BYTE Index = !MaxShips ? 0 : (!RoomInFleet ? 1 : 2);
 
 			LoadStdLanderFont(&solarSys->SysInfo.PlanetInfo);

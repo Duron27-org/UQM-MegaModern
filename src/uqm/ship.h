@@ -25,8 +25,8 @@
 extern "C" {
 #endif
 
-extern BOOLEAN GetNextStarShip (STARSHIP *LastStarShipPtr, COUNT which_side);
-extern BOOLEAN GetInitialStarShips (void);
+extern bool GetNextStarShip (STARSHIP *LastStarShipPtr, COUNT which_side);
+extern bool GetInitialStarShips (void);
 
 extern void animation_preprocess (ELEMENT *ElementPtr);
 extern void ship_preprocess (ELEMENT *ElementPtr);

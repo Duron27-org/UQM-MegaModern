@@ -29,7 +29,7 @@ extern lua_State *luaUqm_globalState;
 typedef struct delta_types
 {
 	int _int;
-	BOOLEAN _bool;
+	bool _bool;
 	CHAR_T *_str;
 	char _char;
 } DELTA_TYPES;

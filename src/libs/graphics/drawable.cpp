@@ -84,7 +84,7 @@ request_drawable (COUNT NumFrames, DRAWABLE_TYPE DrawableType,
 		if (DrawableType == RAM_DRAWABLE && width > 0 && height > 0)
 		{
 			FramePtr->image = TFB_DrawImage_New (TFB_DrawCanvas_New_TrueColor (
-					width, height, (flags & WANT_ALPHA) ? TRUE : FALSE));
+					width, height, (flags & WANT_ALPHA) ? true : false));
 		}
 
 		FramePtr->Type = DrawableType;
@@ -243,7 +243,7 @@ CreateIndexedDrawable (Color *palette, SIZE width, SIZE height)
 	return (0);
 }
 
-BOOLEAN
+bool
 DestroyDrawable (DRAWABLE Drawable)
 {
 	if (_CurFramePtr && (Drawable == _CurFramePtr->parent))
@@ -253,13 +253,13 @@ DestroyDrawable (DRAWABLE Drawable)
 	{
 		FreeDrawable (Drawable);
 
-		return (TRUE);
+		return (true);
 	}
 
-	return (FALSE);
+	return (false);
 }
 
-BOOLEAN
+bool
 GetFrameRect (FRAME FramePtr, RECT *pRect)
 {
 	if (FramePtr)
@@ -268,10 +268,10 @@ GetFrameRect (FRAME FramePtr, RECT *pRect)
 		pRect->corner.y = -FramePtr->HotSpot.y;
 		pRect->extent = GetFrameBounds (FramePtr);
 
-		return (TRUE);
+		return (true);
 	}
 
-	return (FALSE);
+	return (false);
 }
 
 HOT_SPOT
@@ -363,7 +363,7 @@ SetFrameTransparentColor (FRAME frame, Color color)
 	LockMutex (img->mutex);
 
 	// TODO: This should defer to TFB_DrawImage instead
-	TFB_DrawCanvas_SetTransparentColor (img->NormalImg, color, FALSE);
+	TFB_DrawCanvas_SetTransparentColor (img->NormalImg, color, false);
 	
 	UnlockMutex (img->mutex);
 }
@@ -572,13 +572,13 @@ RescalePercentage (FRAME frame, float percentage)
 	return ReleaseDrawable(newFrame);
 }
 
-BOOLEAN
+bool
 ReadFramePixelColors (FRAME frame, Color *pixels, int width, int height)
 {
 	TFB_Image *img;
 
 	if (!frame)
-		return FALSE;
+		return false;
 
 	assert (frame->Type != SCREEN_DRAWABLE);
 
@@ -589,13 +589,13 @@ ReadFramePixelColors (FRAME frame, Color *pixels, int width, int height)
 }
 
 // Warning: this functions bypasses DCQ, which is why it is not a DrawXXX
-BOOLEAN
+bool
 WriteFramePixelColors (FRAME frame, const Color *pixels, int width, int height)
 {
 	TFB_Image *img;
 
 	if (!frame)
-		return FALSE;
+		return false;
 
 	assert (frame->Type != SCREEN_DRAWABLE);
 
@@ -605,13 +605,13 @@ WriteFramePixelColors (FRAME frame, const Color *pixels, int width, int height)
 			width, height);
 }
 
-BOOLEAN
-ReadFramePixelIndexes (FRAME frame, BYTE *pixels, int width, int height, BOOLEAN paletted)
+bool
+ReadFramePixelIndexes (FRAME frame, BYTE *pixels, int width, int height, bool paletted)
 {
 	TFB_Image *img;
 
 	if (!frame)
-		return FALSE;
+		return false;
 
 	assert (frame->Type != SCREEN_DRAWABLE);
 
@@ -623,17 +623,17 @@ ReadFramePixelIndexes (FRAME frame, BYTE *pixels, int width, int height, BOOLEAN
 		return TFB_DrawCanvas_GetPixelIndexes (img->NormalImg, pixels,
 			width, height);
 	else
-		return FALSE;
+		return false;
 }
 
 // Warning: this functions bypasses DCQ, which is why it is not a DrawXXX
-BOOLEAN
+bool
 WriteFramePixelIndexes (FRAME frame, const BYTE *pixels, int width, int height)
 {
 	TFB_Image *img;
 
 	if (!frame)
-		return FALSE;
+		return false;
 
 	assert (frame->Type != SCREEN_DRAWABLE);
 

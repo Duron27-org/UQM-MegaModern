@@ -51,21 +51,21 @@
 
 
 static void DrawFadeText (const CHAR_T *str1, const CHAR_T *str2,
-		BOOLEAN fade_in, RECT *pRect);
+		bool fade_in, RECT *pRect);
 
 
-static BOOLEAN
+static bool
 DoSelectAction (MENU_STATE *pMS)
 {
 	SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
 	{
 		pMS->CurState = ATTACK + 1;
-		return (FALSE);
+		return (false);
 	}
 	if (!pMS->Initialized)
 	{
-		pMS->Initialized = TRUE;
+		pMS->Initialized = true;
 		pMS->InputFunc = DoSelectAction;
 	}
 	else if (PulsedInputState.menu[KEY_MENU_SELECT])
@@ -77,20 +77,20 @@ DoSelectAction (MENU_STATE *pMS)
 				DrawMenuStateStrings (PM_CONVERSE, pMS->CurState);
 				if (LOBYTE (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE)
 					pMS->CurState = HAIL;
-				return (FALSE);
+				return (false);
 			case ATTACK + 1:
 				// Clearing FlashRect is not necessary
 				if (!GameOptions ())
-					return FALSE;
+					return false;
 				DrawMenuStateStrings (PM_CONVERSE, pMS->CurState);
-				SetFlashRect (SFR_MENU_3DO, FALSE);
+				SetFlashRect (SFR_MENU_3DO, false);
 				break;
 			default:
 				printf ("Unknown option: %d\n", pMS->CurState);
 		}
 	}
 	DoMenuChooser (pMS, PM_CONVERSE);
-	return (TRUE);
+	return (true);
 }
 
 static QUEUE *
@@ -248,19 +248,19 @@ BuildBattle (COUNT which_player)
 	}
 }
 
-BOOLEAN
+bool
 FleetIsInfinite (COUNT playerNr)
 {
 	QUEUE *pQueue;
 	HSHIPFRAG hShipFrag;
 	SHIP_FRAGMENT *FragPtr;
-	BOOLEAN ret;
+	bool ret;
 
 	pQueue = GetShipFragQueueForPlayer (playerNr);
 	hShipFrag = GetHeadLink (pQueue);
 	if (!hShipFrag)
 	{	// Ship queue is empty in SuperMelee or for RPG player w/o escorts
-		return FALSE;
+		return false;
 	}
 
 	FragPtr = LockShipFrag (pQueue, hShipFrag);
@@ -333,8 +333,8 @@ InitEncounter (void)
 	SetContextFont (MicroFont);
 
 	MR = LoadMusic (REDALERT_MUSIC);
-	PlayMusic (MR, FALSE, 1);
-	SegueFrame = GetStarBackGround (TRUE);
+	PlayMusic (MR, false, 1);
+	SegueFrame = GetStarBackGround (true);
 	WaitForSoundEnd (TFBSOUND_WAIT_ALL);
 	StopMusic ();
 	DestroyMusic (MR);
@@ -461,14 +461,14 @@ InitEncounter (void)
 		MENU_STATE MenuState;
 
 		MenuState.InputFunc = DoSelectAction;
-		MenuState.Initialized = FALSE;
+		MenuState.Initialized = false;
 
 		DrawMenuStateStrings (PM_CONVERSE, MenuState.CurState = HAIL);
-		SetFlashRect (SFR_MENU_3DO, FALSE);
+		SetFlashRect (SFR_MENU_3DO, false);
 
-		DoInput (&MenuState, TRUE);
+		DoInput (&MenuState, true);
 
-		SetFlashRect (NULL, FALSE);
+		SetFlashRect (NULL, false);
 
 		return (MenuState.CurState);
 	}
@@ -509,7 +509,7 @@ InitEncounter (void)
 //}
 
 static void
-DrawFadeText (const CHAR_T *str1, const CHAR_T *str2, BOOLEAN fade_in,
+DrawFadeText (const CHAR_T *str1, const CHAR_T *str2, bool fade_in,
 		RECT *pRect)
 {
 	SIZE i;
@@ -536,7 +536,7 @@ DrawFadeText (const CHAR_T *str1, const CHAR_T *str2, BOOLEAN fade_in,
 
 	for (i = 0; i < (SIZE)NUM_FADES; ++i)
 	{
-		if (AnyButtonPress (TRUE))
+		if (AnyButtonPress (true))
 			i = NUM_FADES - 1;
 
 		if (IS_HD)
@@ -599,7 +599,7 @@ UninitEncounter (void)
 	}
 	else
 	{
-		BOOLEAN Sleepy;
+		bool Sleepy;
 		SIZE VictoryState, i;
 		COUNT RecycleAmount = 0;
 		RECT r;
@@ -639,7 +639,7 @@ UninitEncounter (void)
 
 		ship_s.origin.x = 0;
 		ship_s.origin.y = 0;
-		Sleepy = TRUE;
+		Sleepy = true;
 		for (i = 0; i < NUM_SIDES; ++i)
 		{
 			QUEUE *pQueue;
@@ -666,7 +666,7 @@ UninitEncounter (void)
 					if (VictoryState)
 					{
 						InitPickFrame ();
-						DrawArmadaPickShip (TRUE, &scavenge_r);
+						DrawArmadaPickShip (true, &scavenge_r);
 					}
 				}
 				pQueue = &GLOBAL (npc_built_ship_q);
@@ -708,7 +708,7 @@ UninitEncounter (void)
 								utf8StringCopy (buf, sizeof buf,
 										GetStringAddress (FragPtr->race_strings));
 								// XXX: this will not work with UTF-8 strings
-								strupr (buf);
+								_strupr (buf);
 
 								{	// JMS: Handling the a-umlaut and o-umlaut characters
 									unsigned char *ptr;
@@ -750,7 +750,7 @@ UninitEncounter (void)
 										ENCOUNTER_STRING_BASE + 5);
 										// "Destroyed"
 
-								DrawFadeText (str1, str2, TRUE, &scavenge_r);
+								DrawFadeText (str1, str2, true, &scavenge_r);
 							}
 
 							r.corner.y = scavenge_r.corner.y + RES_SCALE (9);
@@ -825,7 +825,7 @@ UninitEncounter (void)
 								TimeCount Time = GetTimeCounter ();
 								for (j = 0; j < NUM_SHIP_FADES; ++j)
 								{
-									Sleepy = (BOOLEAN)!AnyButtonPress (TRUE) &&
+									Sleepy = (bool)!AnyButtonPress (true) &&
 											!(GLOBAL (CurrentActivity) & CHECK_ABORT);
 
 									if (IS_HD)
@@ -876,10 +876,10 @@ UninitEncounter (void)
 			DestroyDrawable (ReleaseDrawable (s.frame));
 #endif /* NEVER */
 
-			WaitForAnyButton (TRUE, ONE_SECOND * 3, FALSE);
+			WaitForAnyButton (true, ONE_SECOND * 3, false);
 			if (!CurrentInputState.key[PlayerControls[0]][KEY_ESCAPE])
 			{
-				DrawFadeText (str1, str2, FALSE, &scavenge_r);
+				DrawFadeText (str1, str2, false, &scavenge_r);
 				if (!CurrentInputState.key[PlayerControls[0]][KEY_ESCAPE])
 				{
 					SetContextForeGroundColor (BLACK_COLOR);
@@ -906,10 +906,10 @@ UninitEncounter (void)
 					str2 = GAME_STRING (ENCOUNTER_STRING_BASE + 7);
 							// "Scavenged"
 
-					DrawFadeText (str1, str2, TRUE, &scavenge_r);
-					WaitForAnyButton (TRUE, ONE_SECOND * 2, FALSE);
+					DrawFadeText (str1, str2, true, &scavenge_r);
+					WaitForAnyButton (true, ONE_SECOND * 2, false);
 					if (!CurrentInputState.key[PlayerControls[0]][KEY_ESCAPE])
-						DrawFadeText (str1, str2, FALSE, &scavenge_r);
+						DrawFadeText (str1, str2, false, &scavenge_r);
 				}
 			}
 			DrawStatusMessage (NULL);
@@ -930,7 +930,7 @@ UninitEncounter (void)
 		{
 			HFLEETINFO hEncounter;
 			FLEET_INFO *EncounterPtr;
-			BOOLEAN isBanned = FALSE;
+			bool isBanned = false;
 			BYTE j;
 			const BYTE bannedShip[7] =
 				{
@@ -947,7 +947,7 @@ UninitEncounter (void)
 			{
 				if (bannedShip[j] == EncounterRace)
 				{
-					isBanned = TRUE;
+					isBanned = true;
 					break;
 				}
 			}

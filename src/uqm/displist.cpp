@@ -30,14 +30,14 @@
  * and poses a hard limit on the number of elements in the list.
  */
 
-BOOLEAN
+bool
 InitQueue (QUEUE *pq, COUNT num_elements, OBJ_SIZE size)
 {
 	SetHeadLink (pq, NULL_HANDLE);
 	SetTailLink (pq, NULL_HANDLE);
 	SetLinkSize (pq, size);
 #ifndef QUEUE_TABLE
-	return (TRUE);
+	return (true);
 #else /* QUEUE_TABLE */
 	SetFreeList (pq, NULL_HANDLE);
 #if 0	
@@ -50,14 +50,14 @@ InitQueue (QUEUE *pq, COUNT num_elements, OBJ_SIZE size)
 			FreeLink (pq, GetLinkAddr (pq, num_elements));
 		while (--num_elements);
 
-		return (TRUE);
+		return (true);
 	}
 
-	return (FALSE);
+	return (false);
 #endif /* QUEUE_TABLE */
 }
 
-BOOLEAN
+bool
 UninitQueue (QUEUE *pq)
 {
 #ifdef QUEUE_TABLE
@@ -66,7 +66,7 @@ UninitQueue (QUEUE *pq)
 	SetFreeList (pq, NULL_HANDLE);
 	FreeQueueTab (pq);
 
-	return (TRUE);
+	return (true);
 #else /* !QUEUE_TABLE */
 	HLINK hLink;
 
@@ -74,10 +74,10 @@ UninitQueue (QUEUE *pq)
 	{
 		RemoveQueue (pq, hLink);
 		if (!FreeLink (pq, hLink))
-			return (FALSE);
+			return (false);
 	}
 
-	return (TRUE);
+	return (true);
 #endif /* QUEUE_TABLE */
 }
 

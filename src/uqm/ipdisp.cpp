@@ -33,7 +33,7 @@
 #include "ships/slylandr/resinst.h"
 #include "setup.h"
 
-BOOLEAN legacySave;
+bool legacySave;
 BYTE GTFO = 0;
 extern FRAME SpaceJunkFrame;
 
@@ -313,18 +313,18 @@ ip_group_preprocess (ELEMENT *ElementPtr)
 	if (task <= ON_STATION)
 #endif /* NEVER */
 	{
-		BOOLEAN Transition, isOrbiting;
+		bool Transition, isOrbiting;
 		SIZE dx, dy;
 		SIZE delta_x, delta_y;
 		COUNT angle;
 		FRAME suggestedFrame;
-		BOOLEAN FilthyCheater =
+		bool FilthyCheater =
 			(GroupPtr->race_id == URQUAN_DRONE_SHIP
 			&& (optBubbleWarp
 			|| CountSISPieces (FUSION_THRUSTER) > 6));
 
-		Transition = FALSE;
-		isOrbiting = FALSE;
+		Transition = false;
+		isOrbiting = false;
 		if (task == FLEE)
 		{
 			dest_pt.x = GroupPtr->loc.x << 1;
@@ -345,7 +345,7 @@ ip_group_preprocess (ELEMENT *ElementPtr)
 				COUNT orbit_dist;
 				POINT org;
 
-				isOrbiting = TRUE;
+				isOrbiting = true;
 				if (task != ON_STATION)
 				{
 					orbit_dist = ORBIT_RADIUS;
@@ -464,7 +464,7 @@ PartialRevolution:
 					goto PartialRevolution;
 				else if ((long)((COUNT)(dx * dx) + (COUNT)(dy * dy))
 						>= (long)delta_x * delta_x + (long)delta_y * delta_y)
-					Transition = TRUE;
+					Transition = true;
 			}
 			else
 			{	// In inner system; also leaving outer CheckGetAway hack
@@ -477,7 +477,7 @@ CheckGetAway:
 						&& (GroupPtr->loc.x < dest_pt.x
 						&& GroupPtr->loc.y < dest_pt.y)) 
 						|| FilthyCheater)
-					Transition = TRUE;
+					Transition = true;
 			}
 
 			if (Transition)
@@ -907,7 +907,7 @@ flag_ship_preprocess (ELEMENT *ElementPtr)
 			|| CurrentInputState.key[PlayerControls[0]][KEY_THRUST])
 			|| (vdx == 0 && vdy == 0))
 		{
-			legacySave = FALSE;
+			legacySave = false;
 		}
 
 		flagship_loc = getFlagshipLocation ();

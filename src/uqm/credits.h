@@ -23,7 +23,7 @@
 extern "C" {
 #endif
 
-extern void Credits (BOOLEAN WithOuttakes);
+extern void Credits (bool WithOuttakes);
 
 #if 0 //defined(__cplusplus)
 }

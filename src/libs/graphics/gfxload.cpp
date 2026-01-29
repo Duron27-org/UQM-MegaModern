@@ -57,7 +57,7 @@ process_image (FRAME FramePtr, TFB_Canvas img[], AniData *ani, int cel_ct)
 		if (ani[cel_ct].transparent_color >= 0)
 		{
 		    TFB_DrawCanvas_SetTransparentIndex (img[cel_ct],
-					ani[cel_ct].transparent_color, FALSE);
+					ani[cel_ct].transparent_color, false);
 		}
 	}
 	else
@@ -65,12 +65,12 @@ process_image (FRAME FramePtr, TFB_Canvas img[], AniData *ani, int cel_ct)
 		if (ani[cel_ct].transparent_color == 0)
 		{	// make RGB=0,0,0 transparent
 			Color color = {0, 0, 0, 0};
-		    TFB_DrawCanvas_SetTransparentColor (img[cel_ct], color, FALSE);
+		    TFB_DrawCanvas_SetTransparentColor (img[cel_ct], color, false);
 		}
 	}
 	if (ani[cel_ct].transparent_color == -1)
 	{	// enforce -1 to mean 'no transparency'
-		TFB_DrawCanvas_SetTransparentIndex (img[cel_ct], -1, FALSE);
+		TFB_DrawCanvas_SetTransparentIndex (img[cel_ct], -1, false);
 		// set transparent_color == -2 to use PNG tRNS transparency
 	}
 	
@@ -309,7 +309,7 @@ _GetCelData (uio_Stream *fp, DWORD length)
 	return Drawable;
 }
 
-BOOLEAN
+bool
 _ReleaseCelData (void *handle)
 {
 	DRAWABLE DrawablePtr;
@@ -317,7 +317,7 @@ _ReleaseCelData (void *handle)
 	FRAME FramePtr = NULL;
 
 	if ((DrawablePtr = (DRAWABLE)handle) == 0)
-		return (FALSE);
+		return (false);
 
 	cel_ct = DrawablePtr->MaxIndex + 1;
 	FramePtr = DrawablePtr->Frame;
@@ -338,7 +338,7 @@ _ReleaseCelData (void *handle)
 		HFree (FramePtr);
 	}
 
-	return (TRUE);
+	return (true);
 }
 
 typedef struct BuildCharDesc
@@ -507,7 +507,7 @@ _GetFontData (uio_Stream *fp, DWORD length)
 						&fontPtr->CharSpace, &fontPtr->KernAmount,
 						&fontPtr->VertAlign) == 5)
 				{
-					fontPtr->HaveFntData = TRUE;
+					fontPtr->HaveFntData = true;
 				}
 				else
 					break;
@@ -631,12 +631,12 @@ err:
 	return 0;
 }
 
-BOOLEAN
+bool
 _ReleaseFontData (void *handle)
 {
 	FONT font = (FONT) handle;
 	if (font == NULL)
-		return FALSE;
+		return false;
 
 	{
 		FONT_PAGE *page;
@@ -664,5 +664,5 @@ _ReleaseFontData (void *handle)
 
 	HFree (font);
 
-	return TRUE;
+	return true;
 }

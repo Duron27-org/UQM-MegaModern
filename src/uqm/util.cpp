@@ -37,8 +37,8 @@
 
 void
 DrawStarConBox (RECT *pRect, SIZE BorderWidth, Color TopLeftColor,
-		Color BottomRightColor, BOOLEAN FillInterior, Color InteriorColor,
-		BOOLEAN CreateCorners, Color CornerColor)
+		Color BottomRightColor, bool FillInterior, Color InteriorColor,
+		bool CreateCorners, Color CornerColor)
 {
 	RECT locRect;
 	Color oldcolor;
@@ -151,7 +151,7 @@ DrawStarConBox (RECT *pRect, SIZE BorderWidth, Color TopLeftColor,
 }
 
 void
-DrawRenderedBox (RECT *r, BOOLEAN filled, Color fill_color, int type,
+DrawRenderedBox (RECT *r, bool filled, Color fill_color, int type,
 		int custom)
 {
 	int i;
@@ -304,13 +304,13 @@ DrawRadarBorder (void)
 
 	if (IS_HD || optCustomBorder)
 	{
-		DrawRenderedBox (&r, FALSE, NULL_COLOR, THIN_INNER_BEVEL,
+		DrawRenderedBox (&r, false, NULL_COLOR, THIN_INNER_BEVEL,
 				optCustomBorder);
 	}
 	else
 	{
 		DrawStarConBox (&r, RES_SCALE (1), ALT_SHADOWBOX_TOP_LEFT,
-				ALT_SHADOWBOX_BOTTOM_RIGHT, FALSE, TRANSPARENT, FALSE,
+				ALT_SHADOWBOX_BOTTOM_RIGHT, false, TRANSPARENT, false,
 				TRANSPARENT);
 	}
 
@@ -389,7 +389,7 @@ DrawPauseText (RECT *rect)
 	SetContextForeGroundColor (OldColor);
 }
 
-BOOLEAN
+bool
 PauseGame (void)
 {
 	RECT r;
@@ -407,7 +407,7 @@ PauseGame (void)
 	if (ActivityFrame == 0
 			|| (GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_PAUSE))
 			|| (LastActivity & (CHECK_LOAD | CHECK_RESTART)))
-		return (FALSE);
+		return (false);
 		
 	GLOBAL (CurrentActivity) |= CHECK_PAUSE;
 
@@ -465,7 +465,7 @@ PauseGame (void)
 		TaskSwitch ();
 	}
 
-	GamePaused = FALSE;
+	GamePaused = false;
 
 	DrawStamp (&saveStamp);
 	DestroyDrawable (ReleaseDrawable (saveStamp.frame));
@@ -477,7 +477,7 @@ PauseGame (void)
 	SetContextOrigin (OldOrigin);
 	SetContext (OldContext);
 
-	WaitForNoInput (ONE_SECOND / 4, TRUE);
+	WaitForNoInput (ONE_SECOND / 4, true);
 
 	DeltaLastTime (GetTimeCounter () - deltaT);
 
@@ -487,29 +487,29 @@ PauseGame (void)
 
 	TaskSwitch ();
 	GLOBAL (CurrentActivity) &= ~CHECK_PAUSE;
-	return (TRUE);
+	return (true);
 }
 
 // Waits for a button to be pressed
-// Returns TRUE if the wait succeeded (found input)
-//    FALSE if timed out or game aborted
-BOOLEAN
-WaitForAnyButtonUntil (BOOLEAN newButton, TimeCount timeOut,
-		BOOLEAN resetInput)
+// Returns true if the wait succeeded (found input)
+//    false if timed out or game aborted
+bool
+WaitForAnyButtonUntil (bool newButton, TimeCount timeOut,
+		bool resetInput)
 {
-	BOOLEAN buttonPressed;
+	bool buttonPressed;
 
-	if (newButton && !WaitForNoInputUntil (timeOut, FALSE))
-		return FALSE;
+	if (newButton && !WaitForNoInputUntil (timeOut, false))
+		return false;
 
-	buttonPressed = AnyButtonPress (TRUE);
+	buttonPressed = AnyButtonPress (true);
 	while (!buttonPressed
 			&& (timeOut == WAIT_INFINITE || GetTimeCounter () < timeOut)
 			&& !(GLOBAL (CurrentActivity) & CHECK_ABORT)
 			&& !QuitPosted)
 	{
 		SleepThread (ONE_SECOND / 40);
-		buttonPressed = AnyButtonPress (TRUE);
+		buttonPressed = AnyButtonPress (true);
 	} 
 
 	if (resetInput)
@@ -519,16 +519,16 @@ WaitForAnyButtonUntil (BOOLEAN newButton, TimeCount timeOut,
 }
 
 // Waits for action button to be pressed
-// Returns TRUE if the wait succeeded (found input)
-//    FALSE if timed out or game aborted
-BOOLEAN
-WaitForActButtonUntil (BOOLEAN newButton, TimeCount timeOut,
-		BOOLEAN resetInput)
+// Returns true if the wait succeeded (found input)
+//    false if timed out or game aborted
+bool
+WaitForActButtonUntil (bool newButton, TimeCount timeOut,
+		bool resetInput)
 {
-	BOOLEAN buttonPressed;
+	bool buttonPressed;
 
-	if (newButton && !WaitForNoInputUntil (timeOut, FALSE))
-		return FALSE;
+	if (newButton && !WaitForNoInputUntil (timeOut, false))
+		return false;
 
 	buttonPressed = ActKeysPress ();
 	while (!buttonPressed
@@ -546,8 +546,8 @@ WaitForActButtonUntil (BOOLEAN newButton, TimeCount timeOut,
 	return buttonPressed;
 }
 
-BOOLEAN
-WaitForAnyButton (BOOLEAN newButton, TimePeriod duration, BOOLEAN resetInput)
+bool
+WaitForAnyButton (bool newButton, TimePeriod duration, bool resetInput)
 {
 	TimeCount timeOut = duration;
 	if (duration != WAIT_INFINITE)
@@ -555,8 +555,8 @@ WaitForAnyButton (BOOLEAN newButton, TimePeriod duration, BOOLEAN resetInput)
 	return WaitForAnyButtonUntil (newButton, timeOut, resetInput);
 }
 
-BOOLEAN
-WaitForActButton (BOOLEAN newButton, TimePeriod duration, BOOLEAN resetInput)
+bool
+WaitForActButton (bool newButton, TimePeriod duration, bool resetInput)
 {
 	TimeCount timeOut = duration;
 	if (duration != WAIT_INFINITE)
@@ -564,21 +564,21 @@ WaitForActButton (BOOLEAN newButton, TimePeriod duration, BOOLEAN resetInput)
 	return WaitForActButtonUntil (newButton, timeOut, resetInput);
 }
 
-// Returns TRUE if the wait succeeded (found no input)
-//    FALSE if timed out or game aborted
-BOOLEAN
-WaitForNoInputUntil (TimeCount timeOut, BOOLEAN resetInput)
+// Returns true if the wait succeeded (found no input)
+//    false if timed out or game aborted
+bool
+WaitForNoInputUntil (TimeCount timeOut, bool resetInput)
 {
-	BOOLEAN buttonPressed;
+	bool buttonPressed;
 
-	buttonPressed = AnyButtonPress (TRUE);
+	buttonPressed = AnyButtonPress (true);
 	while (buttonPressed
 			&& (timeOut == WAIT_INFINITE || GetTimeCounter () < timeOut)
 			&& !(GLOBAL (CurrentActivity) & CHECK_ABORT)
 			&& !QuitPosted)
 	{
 		SleepThread (ONE_SECOND / 40);
-		buttonPressed = AnyButtonPress (TRUE);
+		buttonPressed = AnyButtonPress (true);
 	} 
 
 	if (resetInput)
@@ -587,8 +587,8 @@ WaitForNoInputUntil (TimeCount timeOut, BOOLEAN resetInput)
 	return !buttonPressed;
 }
 
-BOOLEAN
-WaitForNoInput (TimePeriod duration, BOOLEAN resetInput)
+bool
+WaitForNoInput (TimePeriod duration, bool resetInput)
 {
 	TimeCount timeOut = duration;
 	if (duration != WAIT_INFINITE)
@@ -617,7 +617,7 @@ SleepGame (void)
 
 	log_add (log_Debug, "Game is waking up");
 
-	WaitForNoInput (ONE_SECOND / 10, TRUE);
+	WaitForNoInput (ONE_SECOND / 10, true);
 
 	ResumeMusic ();
 
@@ -667,7 +667,7 @@ DrawFlagStatDisplay (CHAR_T *str)
 	{
 		DrawStarConBox (&r, RES_SCALE (1),
 			SHADOWBOX_MEDIUM_COLOR, SHADOWBOX_DARK_COLOR,
-			TRUE, MODULE_BACK_COLOR, FALSE, TRANSPARENT);
+			true, MODULE_BACK_COLOR, false, TRANSPARENT);
 	}
 	else
 		DrawBorder (DEVICE_CARGO_FRAME);

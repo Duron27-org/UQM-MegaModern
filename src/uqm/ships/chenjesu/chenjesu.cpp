@@ -424,7 +424,7 @@ chenjesu_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 				) <= RESOLUTION_COMPENSATED(SLOW_SHIP) 
 				&& WEAPON_RANGE (
 				&EnemyStarShipPtr->RaceDescPtr->cyborg_control
-				) >= RES_BOOL (LONG_RANGE_WEAPON, LONG_RANGE_WEAPON_HD) * 3 / 4 
+				) >= chooseIfHd (LONG_RANGE_WEAPON, LONG_RANGE_WEAPON_HD) * 3 / 4 
 				&& (EnemyStarShipPtr->RaceDescPtr->ship_info.ship_flags & SEEKING_WEAPON)))
 			lpEvalDesc->MoveState = PURSUE;
 	}
@@ -459,7 +459,7 @@ chenjesu_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 				if (ObjectsOfConcern[ENEMY_SHIP_INDEX].ObjectPtr)
 				{
 					COUNT which_turn;
-					BOOLEAN crystal_would_miss = false;
+					bool crystal_would_miss = false;
 
 					if (!IS_HD || lpEvalDesc != &ObjectsOfConcern[ENEMY_SHIP_INDEX])
 					{

@@ -27,7 +27,7 @@
 extern "C" {
 #endif
 
-BOOLEAN luaUqm_event_init(const luaUqm_custom_Function *customFuncs,
+bool luaUqm_event_init(const luaUqm_custom_Function *customFuncs,
 		RESOURCE scriptRes);
 void luaUqm_event_uninit(void);
 

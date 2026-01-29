@@ -129,7 +129,7 @@ static inline void SeedShipMap (SPECIES_ID *map, int seed)
 // Uses a ship map to map species ID to another species ID.
 // When in load window, it uses two ship maps to fake a valid response.
 SPECIES_ID
-SeedShip (SPECIES_ID SpeciesID, BOOLEAN loadWindow)
+SeedShip (SPECIES_ID SpeciesID, bool loadWindow)
 {
 	static int seedStamp = -1;
 	static int sisStamp = -1;
@@ -178,7 +178,7 @@ SwapStrings (STRING a, STRING b, COUNT ia, COUNT ib)
 }
 
 RACE_DESC *
-load_ship (SPECIES_ID SpeciesID, BOOLEAN LoadBattleData)
+load_ship (SPECIES_ID SpeciesID, bool LoadBattleData)
 {
 	RACE_DESC *RDPtr = 0;
 	void *CodeRef;
@@ -313,8 +313,8 @@ BadLoad:
 }
 
 void
-free_ship (RACE_DESC *raceDescPtr, BOOLEAN FreeIconData,
-		BOOLEAN FreeBattleData)
+free_ship (RACE_DESC *raceDescPtr, bool FreeIconData,
+		bool FreeBattleData)
 {
 	if (raceDescPtr->uninit_func != NULL)
 		(*raceDescPtr->uninit_func) (raceDescPtr);

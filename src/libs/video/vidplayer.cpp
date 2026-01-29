@@ -254,7 +254,7 @@ TFB_PlayVideo (VIDEO_REF vid, uint32 x, uint32 y)
 	vid->decoder->callbacks = vp_DecoderCBs;
 	vid->decoder->data = vid;
 	
-	vid->frame = TFB_DrawImage_CreateForScreen (vid->w, vid->h, FALSE);
+	vid->frame = TFB_DrawImage_CreateForScreen (vid->w, vid->h, false);
 	vid->cur_frame = -1;
 	vid->want_frame = -1;
 
@@ -286,7 +286,7 @@ TFB_PlayVideo (VIDEO_REF vid, uint32 x, uint32 y)
 	
 	loop_music = !vid->decoder->audio_synced && vid->loop_frame != VID_NO_LOOP;
 	if (vid->hAudio)
-		PLRPlaySong (vid->hAudio, (BOOLEAN)loop_music, 1);
+		PLRPlaySong (vid->hAudio, (bool)loop_music, 1);
 
 	if (vid->decoder->audio_synced)
 	{

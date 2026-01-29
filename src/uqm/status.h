@@ -59,15 +59,15 @@ extern void InitStatusOffsets (void);
 extern void DrawCrewFuelString (COORD y, SIZE state);
 extern void ClearShipStatus (COORD y);
 extern void OutlineShipStatus (COORD y);
-extern void InitShipStatus (SHIP_INFO *ShipInfoPtr, STARSHIP *StarShipPtr, RECT *pClipRect, BOOLEAN inMeleeMenu);
+extern void InitShipStatus (SHIP_INFO *ShipInfoPtr, STARSHIP *StarShipPtr, RECT *pClipRect, bool inMeleeMenu);
 			// StarShipPtr or pClipRect can be NULL
 extern void DeltaStatistics (SHIP_INFO *ShipInfoPtr, COORD y_offs,
 		SIZE crew_delta, SIZE energy_delta);
 extern void DrawBattleCrewAmount (SHIP_INFO *ShipInfoPtr, COORD y_offs);
 
 extern void DrawCaptainsWindow (STARSHIP *StarShipPtr);
-extern BOOLEAN DeltaEnergy (ELEMENT *ElementPtr, SIZE energy_delta);
-extern BOOLEAN DeltaCrew (ELEMENT *ElementPtr, SIZE crew_delta);
+extern bool DeltaEnergy (ELEMENT *ElementPtr, SIZE energy_delta);
+extern bool DeltaCrew (ELEMENT *ElementPtr, SIZE crew_delta);
 
 extern void PreProcessStatus (ELEMENT *ShipPtr);
 extern void PostProcessStatus (ELEMENT *ShipPtr);

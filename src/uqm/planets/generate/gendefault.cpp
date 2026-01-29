@@ -92,7 +92,7 @@ GenerateDefault_uninitNpcs (SOLARSYS_STATE *solarSys)
 bool
 GenerateDefault_generatePlanets (SOLARSYS_STATE *solarSys)
 {
-	FillOrbits (solarSys, (BYTE)~0, solarSys->PlanetDesc, FALSE);
+	FillOrbits (solarSys, (BYTE)~0, solarSys->PlanetDesc, false);
 	GeneratePlanets (solarSys);
 	return true;
 }
@@ -100,7 +100,7 @@ GenerateDefault_generatePlanets (SOLARSYS_STATE *solarSys)
 bool
 GenerateDefault_generateMoons (SOLARSYS_STATE *solarSys, PLANET_DESC *planet)
 {
-	FillOrbits (solarSys, planet->NumPlanets, solarSys->MoonDesc, FALSE);
+	FillOrbits (solarSys, planet->NumPlanets, solarSys->MoonDesc, false);
 	return true;
 }
 
@@ -419,7 +419,7 @@ GenerateGasGiantRanged (SOLARSYS_STATE *solarSys)
 		angle = ARCTAN (pPlanet->location.x, pPlanet->location.y);
 		pPlanet->location.x = COSINE (angle, pPlanet->radius);
 		pPlanet->location.y = SINE (angle, pPlanet->radius);
-		ComputeSpeed (pPlanet, FALSE, 1);
+		ComputeSpeed (pPlanet, false, 1);
 	}
 }
 

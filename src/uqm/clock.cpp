@@ -37,7 +37,7 @@
 //   may access the clock and event data from a different thread
 static Mutex clock_mutex;
 
-static BOOLEAN
+static bool
 IsLeapYear (COUNT year)
 {
 	//     every 4th year      but not 100s          yet still 400s
@@ -138,11 +138,11 @@ processClockDayEvents (void)
 	}
 }
 
-BOOLEAN
+bool
 InitGameClock (void)
 {
 	if (!InitQueue (&GLOBAL (GameClock.event_q), NUM_EVENTS, sizeof (EVENT)))
-		return (FALSE);
+		return (false);
 	clock_mutex = CreateMutex ("Clock Mutex", SYNC_CLASS_TOPLEVEL);
 	GLOBAL (GameClock.month_index) = 2;
 	GLOBAL (GameClock.day_index) = 17;
@@ -150,10 +150,10 @@ InitGameClock (void)
 	GLOBAL (GameClock.tick_count) = 0;
 	GLOBAL (GameClock.day_in_ticks) = 0;
 
-	return (TRUE);
+	return (true);
 }
 
-BOOLEAN
+bool
 UninitGameClock (void)
 {
 	DestroyMutex (clock_mutex);
@@ -161,7 +161,7 @@ UninitGameClock (void)
 
 	UninitQueue (&GLOBAL (GameClock.event_q));
 
-	return (TRUE);
+	return (true);
 }
 
 // For debugging use only
@@ -182,13 +182,13 @@ UnlockGameClock (void)
 }
 
 // For debugging use only
-BOOLEAN
+bool
 GameClockRunning (void)
 {
 	SIZE day_in_ticks;
 
 	if (!clock_mutex)
-		return FALSE;
+		return false;
 
 	LockMutex (clock_mutex);
 	day_in_ticks = GLOBAL (GameClock.day_in_ticks);
@@ -229,7 +229,7 @@ SetGameClockRate (COUNT seconds_per_day)
 	GLOBAL (GameClock.tick_count) = new_tick_count;
 }
 
-BOOLEAN
+bool
 ValidateEvent (EVENT_TYPE type, COUNT *pmonth_index, COUNT *pday_index,
 		COUNT *pyear_index)
 {
@@ -260,8 +260,8 @@ ValidateEvent (EVENT_TYPE type, COUNT *pmonth_index, COUNT *pday_index,
 		*pyear_index = year_index;
 	}
 
-	// translation: return (BOOLEAN) !(date < GLOBAL (Gameclock.date));
-	return (BOOLEAN) (!(year_index < GLOBAL (GameClock.year_index)
+	// translation: return (bool) !(date < GLOBAL (Gameclock.date));
+	return (bool) (!(year_index < GLOBAL (GameClock.year_index)
 			|| (year_index == GLOBAL (GameClock.year_index)
 			&& (month_index < GLOBAL (GameClock.month_index)
 			|| (month_index == GLOBAL (GameClock.month_index)

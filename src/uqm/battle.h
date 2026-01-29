@@ -35,14 +35,14 @@ extern "C" {
 typedef void (BattleFrameCallback) (void);
 
 typedef struct battlestate_struct {
-	BOOLEAN (*InputFunc) (struct battlestate_struct *pInputState);
-	BOOLEAN first_time;
+	bool (*InputFunc) (struct battlestate_struct *pInputState);
+	bool first_time;
 	DWORD NextTime;
 	BattleFrameCallback *frame_cb;
 } BATTLE_STATE;
 
 extern BYTE battle_counter[NUM_SIDES];
-extern BOOLEAN instantVictory;
+extern bool instantVictory;
 #if defined (NETPLAY)
 extern BattleFrameCounter battleFrameCount;
 #endif
@@ -52,13 +52,13 @@ COUNT GetPlayerOrder (COUNT i);
 #	define GetPlayerOrder(i) (i)
 #endif
 
-BOOLEAN Battle (BattleFrameCallback *);
+bool Battle (BattleFrameCallback *);
 
 #define BATTLE_FRAME_RATE (ONE_SECOND / 24)
 
-extern void BattleSong (BOOLEAN DoPlay);
+extern void BattleSong (bool DoPlay);
 extern void FreeBattleSong (void);
-extern BOOLEAN RunAwayAllowed (void);
+extern bool RunAwayAllowed (void);
 
 #if 0 //defined(__cplusplus)
 }

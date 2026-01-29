@@ -24,7 +24,7 @@
 
 
 static MUSIC_REF LastMusicRef;
-static BOOLEAN LastContinuous;
+static bool LastContinuous;
 static BYTE LastPriority;
 
 void
@@ -41,7 +41,7 @@ ToggleMusic (void)
 }
 
 void
-PlayMusic (MUSIC_REF MusicRef, BOOLEAN Continuous, BYTE Priority)
+PlayMusic (MUSIC_REF MusicRef, bool Continuous, BYTE Priority)
 {
 	LastMusicRef = MusicRef;
 	LastContinuous = Continuous;
@@ -88,7 +88,7 @@ void
 PlayMusicResume (MUSIC_REF MusicRef, BYTE Volume)
 {
 	SetMusicVolume (MUTE_VOLUME);
-	PlayMusic (MusicRef, TRUE, 1);
+	PlayMusic (MusicRef, true, 1);
 
 	if (OkayToResume ())
 	{

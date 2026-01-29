@@ -89,7 +89,7 @@ MakeReport (SOUND ReadOutSounds, CHAR_T *pStr, COUNT StrLen)
 	CHAR_T end_page_buf[200];
 	UniChar last_c = 0;
 	COUNT row_cells;
-	BOOLEAN Sleepy;
+	bool Sleepy;
 	RECT r, contextRect;
 	TEXT t;
 	Color fgcolor;
@@ -109,7 +109,7 @@ MakeReport (SOUND ReadOutSounds, CHAR_T *pStr, COUNT StrLen)
 	t.align = ALIGN_LEFT;
 	t.CharCount = 1;
 	t.pStr = pStr;
-	Sleepy = TRUE;
+	Sleepy = true;
 
 	FlushInput ();
 
@@ -264,9 +264,9 @@ MakeReport (SOUND ReadOutSounds, CHAR_T *pStr, COUNT StrLen)
 						if (word_chars == 0)
 							TimeOut += ONE_SECOND / (20 << scale);
 
-						if (WaitForActButtonUntil (TRUE, TimeOut, FALSE))
+						if (WaitForActButtonUntil (true, TimeOut, false))
 						{
-							Sleepy = FALSE;
+							Sleepy = false;
 							// We draw the whole thing at once after this
 							BatchGraphics ();
 						}
@@ -296,7 +296,7 @@ MakeReport (SOUND ReadOutSounds, CHAR_T *pStr, COUNT StrLen)
 				UnbatchGraphics ();
 			}
 
-			if (!WaitForActButton (TRUE, WAIT_INFINITE, FALSE))
+			if (!WaitForActButton (true, WAIT_INFINITE, false))
 				break;
 
 			t.baseline.y = r.extent.height + RES_SCALE (1);
@@ -318,7 +318,7 @@ DoDiscoveryReport (SOUND ReadOutSounds)
 {
 	CONTEXT OldContext;
 	CONTEXT context;
-	BOOLEAN ownContext;
+	bool ownContext;
 	STAMP saveStamp;
 
 #ifdef DEBUG
@@ -342,12 +342,12 @@ DoDiscoveryReport (SOUND ReadOutSounds)
 			OldFontEffect = SetContextFontEffect (NULL);
 
 		luaUqm_comm_init (NULL, NULL_RESOURCE);
-		BOOLEAN allocated = FALSE;
+		bool allocated = false;
 		char *StrPtr = (CHAR_T *)GetStringAddress
 				(pSolarSysState->SysInfo.PlanetInfo.DiscoveryString);
 		if (luaUqm_comm_stringNeedsInterpolate (StrPtr))
 		{
-			allocated = TRUE;
+			allocated = true;
 			StrPtr = luaUqm_comm_stringInterpolate (StrPtr);
 		}
 		MakeReport (ReadOutSounds, StrPtr, (COUNT)strlen (StrPtr));
@@ -368,5 +368,5 @@ DoDiscoveryReport (SOUND ReadOutSounds)
 
 	DestroyDrawable (ReleaseDrawable (saveStamp.frame));
 
-	WaitForNoInput (WAIT_INFINITE, TRUE);
+	WaitForNoInput (WAIT_INFINITE, true);
 }

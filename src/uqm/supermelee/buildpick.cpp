@@ -278,18 +278,18 @@ GetBuildPickFrameRect (RECT *r)
 	GetFrameRect (BuildPickFrame, r);
 }
 
-static BOOLEAN
+static bool
 DoPickShip (MELEE_STATE *pMS)
 {
 	DWORD TimeIn = GetTimeCounter ();
 
 	/* Cancel any presses of the Pause key. */
-	GamePaused = FALSE;
+	GamePaused = false;
 
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
 	{
 		pMS->buildPickConfirmed = false;
-		return FALSE;
+		return false;
 	}
 
 	SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
@@ -299,7 +299,7 @@ DoPickShip (MELEE_STATE *pMS)
 	{
 		// Confirm selection or cancel.
 		pMS->buildPickConfirmed = !PulsedInputState.menu[KEY_MENU_CANCEL];
-		return FALSE;
+		return false;
 	}
 	
 	if (PulsedInputState.menu[KEY_MENU_SPECIAL]
@@ -310,7 +310,7 @@ DoPickShip (MELEE_STATE *pMS)
 		// Show ship spin video.
 		DoShipSpin (pMS->currentShip, pMS->hMusic);
 
-		return TRUE;
+		return true;
 	}
 
 	{
@@ -359,7 +359,7 @@ DoPickShip (MELEE_STATE *pMS)
 
 	SleepThreadUntil (TimeIn + ONE_SECOND / 30);
 
-	return TRUE;
+	return true;
 }
 
 // Returns true if a ship has been selected, or false if the operation has
@@ -377,7 +377,7 @@ BuildPickShip (MELEE_STATE *pMS)
 	DrawPickFrame (pMS);
 
 	pMS->InputFunc = DoPickShip;
-	DoInput (pMS, FALSE);
+	DoInput (pMS, false);
 
 	return pMS->buildPickConfirmed;
 }

@@ -59,7 +59,7 @@ struct font_desc
 	BYTE KernAmount;
 	BYTE KernTab[MAX_UNICODE];
 	SBYTE VertAlign;
-	BOOLEAN HaveFntData;
+	bool HaveFntData;
 };
 
 #define CHAR_DESCPTR PCHAR_DESC
@@ -72,10 +72,10 @@ struct font_desc
 extern FONT _CurFontPtr;
 
 extern void *_GetFontData (uio_Stream *fp, DWORD length);
-extern BOOLEAN _ReleaseFontData (void *handle);
+extern bool _ReleaseFontData (void *handle);
 extern TFB_Char *GetFrameForFPS (UniChar ch);
 extern void GetFontDims (SIZE* w, SIZE* h);
-extern BOOLEAN GoodToGoFPS (void);
+extern bool GoodToGoFPS (void);
 
 #endif /* LIBS_GRAPHICS_FONT_H_ */
 

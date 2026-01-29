@@ -24,8 +24,8 @@
 extern "C" {
 #endif
 
-extern BOOLEAN sliderDisabled;
-extern BOOLEAN oscillDisabled;
+extern bool sliderDisabled;
+extern bool oscillDisabled;
 
 extern void InitOscilloscope (FRAME scopeBg);
 extern void DrawOscilloscope (void);

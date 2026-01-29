@@ -38,12 +38,12 @@
 
 #include <ctype.h>
 
-static BOOLEAN ShowSlidePresentation (STRING PresStr);
+static bool ShowSlidePresentation (STRING PresStr);
 
 typedef struct
 {
 	/* standard state required by DoInput */
-	BOOLEAN (*InputFunc) (void *pInputState);
+	bool (*InputFunc) (void *pInputState);
 
 	/* Presentation state */
 	TimeCount StartTime;
@@ -55,7 +55,7 @@ typedef struct
 	FONT Fonts[MAX_FONTS];
 	FRAME Frame;
 	MUSIC_REF MusicRef;
-	BOOLEAN Batched;
+	bool Batched;
 	FRAME SisFrame;
 	FRAME RotatedFrame;
 	int LastDrawKind;
@@ -81,14 +81,14 @@ typedef struct
 	COUNT NumSpinStat;
 	RECT GetRect;
 	COUNT CurrentFrameIndex;
-	BOOLEAN HaveFrame;
-	BOOLEAN Skip;
+	bool HaveFrame;
+	bool Skip;
 
 } PRESENTATION_INPUT_STATE;
 
 typedef struct {
 	/* standard state required by DoInput */
-	BOOLEAN (*InputFunc) (void *pInputState);
+	bool (*InputFunc) (void *pInputState);
 
 	/* Spinanim state */
 	STAMP anim;
@@ -99,27 +99,27 @@ typedef struct {
 typedef struct
 {
 	// standard state required by DoInput
-	BOOLEAN (*InputFunc) (void *pInputState);
+	bool (*InputFunc) (void *pInputState);
 
 	LEGACY_VIDEO_REF CurVideo;
 
 } VIDEO_INPUT_STATE;
 
-static BOOLEAN DoPresentation (void *pIS);
+static bool DoPresentation (void *pIS);
 
-static BOOLEAN
+static bool
 ParseColorString (const char *Src, Color* pColor)
 {
 	unsigned clr;
 	if (1 != sscanf (Src, "%x", &clr))
-		return FALSE;
+		return false;
 
 	*pColor = BUILD_COLOR_RGBA (
 			(clr >> 16) & 0xff, (clr >> 8) & 0xff, clr & 0xff, 0xff);
-	return TRUE;
+	return true;
 }
 
-static BOOLEAN
+static bool
 DoFadeScreen (PRESENTATION_INPUT_STATE* pPIS, const char *Src, BYTE FadeType)
 {
 	int msecs;
@@ -127,9 +127,9 @@ DoFadeScreen (PRESENTATION_INPUT_STATE* pPIS, const char *Src, BYTE FadeType)
 	{
 		pPIS->TimeOut = FadeScreen ((ScreenFadeType)FadeType, msecs * ONE_SECOND / 1000)
 				+ ONE_SECOND / 10;
-		pPIS->TimeOutOnSkip = FALSE;
+		pPIS->TimeOutOnSkip = false;
 	}
-	return TRUE;
+	return true;
 }
 
 static void
@@ -170,18 +170,18 @@ Present_BatchGraphics (PRESENTATION_INPUT_STATE* pPIS)
 {
 	if (!pPIS->Batched)
 	{
-		pPIS->Batched = TRUE;
+		pPIS->Batched = true;
 		BatchGraphics ();
 	}
 }
 
 static void
-Present_UnbatchGraphics (PRESENTATION_INPUT_STATE* pPIS, BOOLEAN bYield)
+Present_UnbatchGraphics (PRESENTATION_INPUT_STATE* pPIS, bool bYield)
 {
 	if (pPIS->Batched)
 	{
 		UnbatchGraphics ();
-		pPIS->Batched = FALSE;
+		pPIS->Batched = false;
 		if (bYield)
 			TaskSwitch ();
 	}
@@ -300,7 +300,7 @@ Present_GenerateSIS (PRESENTATION_INPUT_STATE* pPIS)
 }
 
 static void
-DoSpinText (CHAR_T *buf, COORD x, COORD y, FRAME repair, BOOLEAN *skip)
+DoSpinText (CHAR_T *buf, COORD x, COORD y, FRAME repair, bool *skip)
 {
 	TEXT Text;
 
@@ -314,7 +314,7 @@ DoSpinText (CHAR_T *buf, COORD x, COORD y, FRAME repair, BOOLEAN *skip)
 }
 
 static void
-DoSpinLine (LINE *l, Color front, Color back, BOOLEAN *skip)
+DoSpinLine (LINE *l, Color front, Color back, bool *skip)
 {
 	if (!*skip)
 	{
@@ -328,20 +328,20 @@ DoSpinLine (LINE *l, Color front, Color back, BOOLEAN *skip)
 }
 
 static void
-DoSpinStatBox (RECT *r, Color front, Color back, BOOLEAN *skip)
+DoSpinStatBox (RECT *r, Color front, Color back, bool *skip)
 {
 	if (!*skip)
 	{
-		DrawStarConBox (r, RES_SCALE (1), back, back, FALSE, BLACK_COLOR, FALSE, BLACK_COLOR);
+		DrawStarConBox (r, RES_SCALE (1), back, back, false, BLACK_COLOR, false, BLACK_COLOR);
 		PlayMenuSound (MENU_SOUND_TEXT);
 		SleepThread (ONE_SECOND / 16);
 	}
-	DrawStarConBox (r, RES_SCALE (1), front, front, FALSE, BLACK_COLOR, FALSE, BLACK_COLOR);
+	DrawStarConBox (r, RES_SCALE (1), front, front, false, BLACK_COLOR, false, BLACK_COLOR);
 }
 
 static void
 DoSpinStat (CHAR_T *buf, COORD x, COORD y, COUNT filled, COUNT empty, Color front, Color back,
-		BOOLEAN *skip)
+		bool *skip)
 {
 	TEXT Text;
 	COUNT i;
@@ -387,7 +387,7 @@ DoSpinStat (CHAR_T *buf, COORD x, COORD y, COUNT filled, COUNT empty, Color fron
 		UpdateInputState ();
 		if (CurrentInputState.menu[KEY_MENU_CANCEL] || 
 					(GLOBAL (CurrentActivity) & CHECK_ABORT))
-			*skip = TRUE;
+			*skip = true;
 	}
 	for (i = 0; i < empty; i++)
 	{
@@ -396,7 +396,7 @@ DoSpinStat (CHAR_T *buf, COORD x, COORD y, COUNT filled, COUNT empty, Color fron
 		if (!*skip)
 		{
 			SetContextForeGroundColor (back);
-			DrawStarConBox (&sq, RES_SCALE (1), back, back, FALSE, BLACK_COLOR, FALSE, BLACK_COLOR);
+			DrawStarConBox (&sq, RES_SCALE (1), back, back, false, BLACK_COLOR, false, BLACK_COLOR);
 			if (IS_HD)
 			{
 				chd.corner = c;
@@ -408,7 +408,7 @@ DoSpinStat (CHAR_T *buf, COORD x, COORD y, COUNT filled, COUNT empty, Color fron
 			SleepThread (ONE_SECOND / 16);
 		}
 		SetContextForeGroundColor (front);
-		DrawStarConBox (&sq, RES_SCALE (1), front, front, FALSE, BLACK_COLOR, FALSE, BLACK_COLOR);
+		DrawStarConBox (&sq, RES_SCALE (1), front, front, false, BLACK_COLOR, false, BLACK_COLOR);
 		if (IS_HD)
 		{
 			chd.corner = c;
@@ -421,7 +421,7 @@ DoSpinStat (CHAR_T *buf, COORD x, COORD y, COUNT filled, COUNT empty, Color fron
 		UpdateInputState ();
 		if (CurrentInputState.menu[KEY_MENU_CANCEL] || 
 					(GLOBAL (CurrentActivity) & CHECK_ABORT))
-			*skip = TRUE;
+			*skip = true;
 	}
 }
 
@@ -436,11 +436,11 @@ Present_DrawMovieFrame (PRESENTATION_INPUT_STATE* pPIS)
 	DrawStamp (&s);
 }
 
-static BOOLEAN
+static bool
 ShowPresentationFile (const char *name)
 {
 	STRING pres = CaptureStringTable (LoadStringTableFile (contentDir, name));
-	BOOLEAN result = ShowSlidePresentation (pres);
+	bool result = ShowSlidePresentation (pres);
 	DestroyStringTable (ReleaseStringTable (pres));
 	return result;
 }
@@ -487,7 +487,7 @@ static const SHIPMAP ship_map[] = {
 
 static COUNT shipID = NUM_SHIPS;
 static COUNT raceID = NUM_SHIPS;
-static BOOLEAN linespun = false;
+static bool linespun = false;
 
 static void
 SeedDitty (char *buf, size_t size, char *str)
@@ -668,14 +668,14 @@ SeedTextSpinPassThru:
 	return;
 }
 
-static BOOLEAN
+static bool
 DoPresentation (void *pIS)
 {
 	PRESENTATION_INPUT_STATE* pPIS = (PRESENTATION_INPUT_STATE*) pIS;
 
 	if (PulsedInputState.menu[KEY_MENU_CANCEL]
 			|| (GLOBAL (CurrentActivity) & CHECK_ABORT))
-		return FALSE; /* abort requested - we are done */
+		return false; /* abort requested - we are done */
 
 	if (pPIS->TimeOut)
 	{
@@ -694,7 +694,7 @@ DoPresentation (void *pIS)
 			else
 			{	/* time elapsed - continue normal ops */
 				pPIS->TimeOut = 0;
-				return TRUE;
+				return true;
 			}
 		}
 		
@@ -705,11 +705,11 @@ DoPresentation (void *pIS)
 		{	/* skip requested - continue normal ops */
 			pPIS->TimeOut = 0;
 			pPIS->MovieFrame = -1; /* abort any movie in progress */
-			return TRUE;
+			return true;
 		}
 
 		SleepThread (Delay);
-		return TRUE;
+		return true;
 	}
 
 	while (pPIS->OperIndex < GetStringTableCount (pPIS->SlideShow))
@@ -848,7 +848,7 @@ DoPresentation (void *pIS)
 				DestroyMusic (pPIS->MusicRef);
 			}
 			pPIS->MusicRef = LoadMusicFile (pPIS->Buffer);
-			PlayMusic (pPIS->MusicRef, FALSE, 1);
+			PlayMusic (pPIS->MusicRef, false, 1);
 		}
 		else if (strcmp (Opcode, "DITTY") == 0)
 		{	/* set ditty */
@@ -865,18 +865,18 @@ DoPresentation (void *pIS)
 			}
 
 			pPIS->MusicRef = LoadMusic (pPIS->Buffer);
-			PlayMusic (pPIS->MusicRef, FALSE, 1);
+			PlayMusic (pPIS->MusicRef, false, 1);
 		}
 		else if (strcmp (Opcode, "WAIT") == 0)
 		{	/* wait */
 			int msecs;
-			Present_UnbatchGraphics (pPIS, TRUE);
+			Present_UnbatchGraphics (pPIS, true);
 			if (1 == sscanf (pStr, "%d", &msecs))
 			{
 				pPIS->TimeOut = GetTimeCounter ()
 						+ msecs * ONE_SECOND / 1000;
-				pPIS->TimeOutOnSkip = TRUE;
-				return TRUE;
+				pPIS->TimeOutOnSkip = true;
+				return true;
 			}
 		}
 		else if (strcmp (Opcode, "WAITDITTY") == 0)
@@ -887,8 +887,8 @@ DoPresentation (void *pIS)
 						|| (GLOBAL (CurrentActivity) & CHECK_ABORT))
 				{
 					StopMusic ();
-					pPIS->Skip = TRUE;
-					return TRUE;
+					pPIS->Skip = true;
+					return true;
 				}
 				SleepThread (ONE_SECOND / 10);
 				UpdateInputState ();
@@ -908,8 +908,8 @@ DoPresentation (void *pIS)
 						|| (GLOBAL(CurrentActivity) & CHECK_ABORT))
 					{
 						Present_BatchGraphics (pPIS);
-						pPIS->Skip = TRUE;
-						return TRUE;
+						pPIS->Skip = true;
+						return true;
 					}
 					SleepThread (ONE_SECOND / 84);
 					UpdateInputState ();
@@ -919,14 +919,14 @@ DoPresentation (void *pIS)
 		else if (strcmp (Opcode, "SYNC") == 0)
 		{	/* absolute time-sync */
 			int msecs;
-			Present_UnbatchGraphics (pPIS, TRUE);
+			Present_UnbatchGraphics (pPIS, true);
 			if (1 == sscanf (pStr, "%d", &msecs))
 			{
 				pPIS->LastSyncTime = pPIS->StartTime
 						+ msecs * ONE_SECOND / 1000;
 				pPIS->TimeOut = pPIS->LastSyncTime;
-				pPIS->TimeOutOnSkip = FALSE;
-				return TRUE;
+				pPIS->TimeOutOnSkip = false;
+				return true;
 			}
 		}
 		else if (strcmp (Opcode, "RESYNC") == 0)
@@ -936,13 +936,13 @@ DoPresentation (void *pIS)
 		else if (strcmp (Opcode, "DSYNC") == 0)
 		{	/* delta time-sync; from the last absolute sync */
 			int msecs;
-			Present_UnbatchGraphics (pPIS, TRUE);
+			Present_UnbatchGraphics (pPIS, true);
 			if (1 == sscanf (pStr, "%d", &msecs))
 			{
 				pPIS->TimeOut = pPIS->LastSyncTime
 						+ msecs * ONE_SECOND / 1000;
-				pPIS->TimeOutOnSkip = FALSE;
-				return TRUE;
+				pPIS->TimeOutOnSkip = false;
+				return true;
 			}
 		}
 		else if (strcmp (Opcode, "BGC") == 0)
@@ -1070,7 +1070,7 @@ DoPresentation (void *pIS)
 				{
 					log_add (log_Warning, "SPINSTAT: Number of SPINSTAT "
 						"entries exceeds max amount '%s'", pStr);
-					return FALSE;
+					return false;
 				}
 
 				if (f > 9 || (f + e) > 9)
@@ -1117,7 +1117,7 @@ DoPresentation (void *pIS)
 			pPIS->LinesCount = ParseTextLines (pPIS->TextLines,
 					MAX_TEXT_LINES, pPIS->Buffer);
 			
-			Present_UnbatchGraphics (pPIS, TRUE);
+			Present_UnbatchGraphics (pPIS, true);
 
 			GetContextFontLeading (&leading);
 
@@ -1161,7 +1161,7 @@ DoPresentation (void *pIS)
 		{	/* text fade-out */
 			COUNT i;
 			
-			Present_UnbatchGraphics (pPIS, TRUE);
+			Present_UnbatchGraphics (pPIS, true);
 
 			/* do transition */
 			SetTransitionSource (&pPIS->tfade_r);
@@ -1216,7 +1216,7 @@ DoPresentation (void *pIS)
 			if (cargs < 1)
 			{
 				log_add (log_Warning, "Bad DRAW command '%s'", pStr);
-				pPIS->HaveFrame = FALSE;
+				pPIS->HaveFrame = false;
 				continue;
 			}
 			if (cargs < 5)
@@ -1237,7 +1237,7 @@ DoPresentation (void *pIS)
 			{	/* draw stamp by index */
 				s.frame = SetAbsFrameIndex (pPIS->Frame, (COUNT)index);
 				pPIS->CurrentFrameIndex = (COUNT)index;
-				pPIS->HaveFrame = TRUE;
+				pPIS->HaveFrame = true;
 			}
 			else if (draw_what == PRES_DRAW_SIS)
 			{	/* draw dynamic SIS image with player's modules */
@@ -1273,32 +1273,32 @@ DoPresentation (void *pIS)
 		}
 		else if (strcmp (Opcode, "UNBATCH") == 0)
 		{	/* unbatch graphics */
-			Present_UnbatchGraphics (pPIS, FALSE);
+			Present_UnbatchGraphics (pPIS, false);
 		}
 		else if (strcmp (Opcode, "FTC") == 0)
 		{	/* fade to color */
-			Present_UnbatchGraphics (pPIS, TRUE);
+			Present_UnbatchGraphics (pPIS, true);
 			return DoFadeScreen (pPIS, pStr, FadeAllToColor);
 		}
 		else if (strcmp (Opcode, "FTB") == 0)
 		{	/* fade to black */
-			Present_UnbatchGraphics (pPIS, TRUE);
+			Present_UnbatchGraphics (pPIS, true);
 			return DoFadeScreen (pPIS, pStr, FadeAllToBlack);
 		}
 		else if (strcmp (Opcode, "FTW") == 0)
 		{	/* fade to white */
-			Present_UnbatchGraphics (pPIS, TRUE);
+			Present_UnbatchGraphics (pPIS, true);
 			return DoFadeScreen (pPIS, pStr, FadeAllToWhite);
 		}
 		else if (strcmp (Opcode, "CLS") == 0)
 		{	/* clear screen */
-			Present_UnbatchGraphics (pPIS, TRUE);
+			Present_UnbatchGraphics (pPIS, true);
 
 			ClearScreen ();
 		}
 		else if (strcmp (Opcode, "CALL") == 0)
 		{	/* call another script */
-			Present_UnbatchGraphics (pPIS, TRUE);
+			Present_UnbatchGraphics (pPIS, true);
 
 			utf8StringCopy (pPIS->Buffer, sizeof (pPIS->Buffer), pStr);
 			ShowPresentationFile (pPIS->Buffer);
@@ -1419,15 +1419,15 @@ DoPresentation (void *pIS)
 			if (3 == sscanf (pStr, "%d %d %d", &fps, &from, &to) &&
 					fps > 0 && from >= 0 && to >= 0 && to >= from)
 			{
-				Present_UnbatchGraphics (pPIS, TRUE);
+				Present_UnbatchGraphics (pPIS, true);
 				
 				pPIS->MovieFrame = from;
 				pPIS->MovieEndFrame = to;
 				pPIS->InterframeDelay = ONE_SECOND / fps;
 
 				pPIS->TimeOut = GetTimeCounter ();
-				pPIS->TimeOutOnSkip = TRUE;
-				return TRUE;
+				pPIS->TimeOutOnSkip = true;
+				return true;
 			}
 			else
 			{
@@ -1481,7 +1481,7 @@ DoPresentation (void *pIS)
 						NextTime = Now + animation_rate;
 					}
 				}
-				return TRUE;
+				return true;
 			}
 			else
 			{
@@ -1494,10 +1494,10 @@ DoPresentation (void *pIS)
 		}
 	}
 	/* we are all done */
-	return FALSE;
+	return false;
 }
 
-static BOOLEAN
+static bool
 ShowSlidePresentation (STRING PresStr)
 {
 	CONTEXT OldContext;
@@ -1509,7 +1509,7 @@ ShowSlidePresentation (STRING PresStr)
 	memset (&pis, 0, sizeof(pis));
 	pis.SlideShow = PresStr;
 	if (!pis.SlideShow)
-		return FALSE;
+		return false;
 	pis.SlideShow = SetAbsStringTableIndex (pis.SlideShow, 0);
 	pis.OperIndex = 0;
 
@@ -1525,7 +1525,7 @@ ShowSlidePresentation (STRING PresStr)
 	pis.MovieFrame = -1;
 	pis.StartTime = GetTimeCounter ();
 	pis.LastSyncTime = pis.StartTime;
-	DoInput(&pis, TRUE);
+	DoInput(&pis, true);
 
 	if (pis.MusicRef && PlayingStream (MUSIC_SOURCE))
 	{
@@ -1544,17 +1544,17 @@ ShowSlidePresentation (STRING PresStr)
 	SetContextClipRect (&OldRect);
 	SetContext (OldContext);
 
-	return TRUE;
+	return true;
 }
 
-static BOOLEAN
+static bool
 DoVideoInput (void *pIS)
 {
 	VIDEO_INPUT_STATE* pVIS = (VIDEO_INPUT_STATE*) pIS;
 
 	if (!PlayingLegacyVideo (pVIS->CurVideo))
 	{	// Video probably finished
-		return FALSE;
+		return false;
 	}
 
 	if (PulsedInputState.menu[KEY_MENU_SELECT]
@@ -1562,7 +1562,7 @@ DoVideoInput (void *pIS)
 			|| PulsedInputState.menu[KEY_MENU_SPECIAL]
 			|| (GLOBAL (CurrentActivity) & CHECK_ABORT))
 	{	// abort movie
-		return FALSE;
+		return false;
 	}
 	else if (PulsedInputState.menu[KEY_MENU_LEFT]
 			|| PulsedInputState.menu[KEY_MENU_RIGHT])
@@ -1580,12 +1580,12 @@ DoVideoInput (void *pIS)
 	else
 	{
 		if (!VidProcessFrame ())
-			return FALSE;
+			return false;
 
 		SleepThread (ONE_SECOND / 40);
 	}
 
-	return TRUE;
+	return true;
 }
 
 static void
@@ -1601,7 +1601,7 @@ FadeClearScreen (void)
 	FadeScreen (FadeAllToColor, 0);
 }
 
-static BOOLEAN
+static bool
 ShowLegacyVideo (LEGACY_VIDEO vid)
 {
 	VIDEO_INPUT_STATE vis;
@@ -1611,42 +1611,42 @@ ShowLegacyVideo (LEGACY_VIDEO vid)
 
 	ref = PlayLegacyVideo (vid);
 	if (!ref)
-		return FALSE;
+		return false;
 
 	vis.InputFunc = DoVideoInput;
 	vis.CurVideo = ref;
 	SetMenuSounds (MENU_SOUND_NONE, MENU_SOUND_NONE);
-	DoInput(&vis, TRUE);
+	DoInput(&vis, true);
 
 	StopLegacyVideo (ref);
 	FadeClearScreen ();
 
-	return TRUE;
+	return true;
 }
 
-BOOLEAN
+bool
 ShowPresentation (RESOURCE res)
 {
 	const char *resType = res_GetResourceType (res);
 	if (!resType)
 	{
-		return FALSE;
+		return false;
 	}
 	if (!strcmp (resType, "STRTAB"))
 	{
 		STRING pres = CaptureStringTable (LoadStringTable (res));
-		BOOLEAN result = ShowSlidePresentation (pres);
+		bool result = ShowSlidePresentation (pres);
 		DestroyStringTable (ReleaseStringTable (pres));
 		return result;
 	}
 	else if (!strcmp (resType, "3DOVID"))
 	{
 		LEGACY_VIDEO vid = LoadLegacyVideoInstance (res);
-		BOOLEAN result = ShowLegacyVideo (vid);
+		bool result = ShowLegacyVideo (vid);
 		DestroyLegacyVideo (vid);
 		return result;
 	}
 	
 	log_add (log_Warning, "Tried to present '%s', of non-presentable type '%s'", res, resType);
-	return FALSE;
+	return false;
 }

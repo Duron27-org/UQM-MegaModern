@@ -156,7 +156,7 @@ GetFleetIndexByFileName (MELEE_STATE *pMS, const char *fileName)
 // If highlite is set the text is drawn in the color used for highlighting.
 static void
 DrawFileString (const MeleeTeam *team, const POINT *origin,
-		BOOLEAN drawShips, BOOLEAN highlite)
+		bool drawShips, bool highlite)
 {
 	if (IS_HD)
 	{// Draw the background of the text
@@ -268,7 +268,7 @@ SelectFileString (MELEE_STATE *pMS, bool hilite)
 
 	origin.x = FILE_STRING_ORIGIN_X;
 	origin.y = FILE_STRING_ORIGIN_Y + viewI * ENTRY_HEIGHT;
-	DrawFileString (pMS->load.view[viewI], &origin, FALSE, hilite);
+	DrawFileString (pMS->load.view[viewI], &origin, false, hilite);
 
 	UnbatchGraphics ();
 	SetContext (OldContext);
@@ -287,14 +287,14 @@ DrawFileStrings (MELEE_STATE *pMS)
 	SetContextFont (MicroFont);
 	BatchGraphics ();
 
-	DrawMeleeIcon (30 + optControllerType, FALSE);  /* The load team frame */
+	DrawMeleeIcon (30 + optControllerType, false);  /* The load team frame */
 
 	if (FillFileView (pMS))
 	{
 		COUNT i;
 		for (i = pMS->load.top; i < pMS->load.bot; i++) {
 			DrawFileString (pMS->load.view[i - pMS->load.top], &origin,
-					TRUE, FALSE);
+					true, false);
 			origin.y += ENTRY_HEIGHT;
 		}
 	}
@@ -336,16 +336,16 @@ flashSelectedTeam (MELEE_STATE *pMS)
 	}
 }
 
-BOOLEAN
+bool
 DoLoadTeam (MELEE_STATE *pMS)
 {
 	DWORD TimeIn = GetTimeCounter ();
 
 	/* Cancel any presses of the Pause key. */
-	GamePaused = FALSE;
+	GamePaused = false;
 
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
-		return FALSE;
+		return false;
 
 	SetMenuSounds (MENU_SOUND_UP | MENU_SOUND_DOWN | MENU_SOUND_PAGE, 
 		MENU_SOUND_SELECT);
@@ -354,9 +354,9 @@ DoLoadTeam (MELEE_STATE *pMS)
 	{
 		DrawFileStrings (pMS);
 		SelectFileString (pMS, true);
-		pMS->Initialized = TRUE;
+		pMS->Initialized = true;
 		pMS->InputFunc = DoLoadTeam;
-		return TRUE;
+		return true;
 	}
 
 	if (PulsedInputState.menu[KEY_MENU_SELECT] ||
@@ -377,7 +377,7 @@ DoLoadTeam (MELEE_STATE *pMS)
 			GetFrameRect (SetAbsFrameIndex (MeleeFrame, 30), &r);
 			RepairMeleeFrame (&r);
 		}
-		return TRUE;
+		return true;
 	}
 	
 	{
@@ -450,7 +450,7 @@ DoLoadTeam (MELEE_STATE *pMS)
 
 	SleepThreadUntil (TimeIn + ONE_SECOND / 30);
 
-	return TRUE;
+	return true;
 }
 
 static void
@@ -481,7 +481,7 @@ LoadTeamList (MELEE_STATE *pMS)
 		pMS->load.entryIndices[i] = i;
 }
 
-BOOLEAN
+bool
 DoSaveTeam (MELEE_STATE *pMS)
 {
 	STAMP MsgStamp;

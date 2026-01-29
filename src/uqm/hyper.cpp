@@ -501,7 +501,7 @@ LoadHyperData (void)
 	}
 }
 
-BOOLEAN
+bool
 LoadHyperspace (void)
 {
 	hyper_dx = 0;
@@ -559,7 +559,7 @@ LoadHyperspace (void)
 	}
 //    ClearDrawable ();
 
-	return TRUE;
+	return true;
 }
 
 void
@@ -571,7 +571,7 @@ EraseRadar (void)
 	UnbatchGraphics ();
 }
 
-BOOLEAN
+bool
 FreeHyperspace (void)
 {
 	{
@@ -587,7 +587,7 @@ FreeHyperspace (void)
 
 	//FreeHyperData ();
 
-	return TRUE;
+	return true;
 }
 
 static void
@@ -893,7 +893,7 @@ DoAdvancedAutoPilot (void)
 
 }
 
-BOOLEAN
+bool
 hyper_transition (ELEMENT *ElementPtr)
 {
 	if (ElementPtr->state_flags & APPEARING)
@@ -907,7 +907,7 @@ hyper_transition (ELEMENT *ElementPtr)
 
 			ElementPtr->state_flags |= DEFY_PHYSICS;
 
-			return FALSE;
+			return false;
 		}
 		else
 		{
@@ -981,7 +981,7 @@ hyper_transition (ELEMENT *ElementPtr)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 static void
@@ -1311,7 +1311,7 @@ encounter_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 static HELEMENT
 AddEncounterElement (ENCOUNTER *EncounterPtr, POINT *puniverse)
 {
-	BOOLEAN NewEncounter;
+	bool NewEncounter;
 	HELEMENT hElement;
 	POINT enc_pt;
 	
@@ -1330,7 +1330,7 @@ AddEncounterElement (ENCOUNTER *EncounterPtr, POINT *puniverse)
 
 	if (EncounterPtr->num_ships)
 	{
-		NewEncounter = FALSE;
+		NewEncounter = false;
 		enc_pt = EncounterPtr->loc_pt;
 	}
 	else
@@ -1345,7 +1345,7 @@ AddEncounterElement (ENCOUNTER *EncounterPtr, POINT *puniverse)
 			RACE_ENCOUNTER_MAKEUP
 		};
 
-		NewEncounter = TRUE;
+		NewEncounter = true;
 
 		radius_squared =
 				(DWORD)EncounterPtr->radius * EncounterPtr->radius;
@@ -2086,24 +2086,24 @@ SeedUniverse (void)
 	frameCounter = (frameCounter + 1) & 0x1F;
 }
 
-static BOOLEAN
+static bool
 DoHyperspaceMenu (MENU_STATE *pMS)
 {
-	BOOLEAN select = PulsedInputState.menu[KEY_MENU_SELECT];
-	BOOLEAN handled;
+	bool select = PulsedInputState.menu[KEY_MENU_SELECT];
+	bool handled;
 
 	if ((GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
 			|| GLOBAL_SIS (CrewEnlisted) == (COUNT)~0)
-		return FALSE;
+		return false;
 
 	handled = DoMenuChooser (pMS, PM_STARMAP);
 	if (handled)
-		return TRUE;
+		return true;
 
 	if (!select)
-		return TRUE;
+		return true;
 
-	SetFlashRect (NULL, FALSE);
+	SetFlashRect (NULL, false);
 
 	switch (pMS->CurState)
 	{
@@ -2111,11 +2111,11 @@ DoHyperspaceMenu (MENU_STATE *pMS)
 			select = DevicesMenu ();
 			if (GET_GAME_STATE (PORTAL_COUNTER))
 			{	// A player-induced portal to QuasiSpace is opening
-				return FALSE;
+				return false;
 			}
 			if (GLOBAL (CurrentActivity) & START_ENCOUNTER)
 			{	// Selected Talking Pet, going into conversation
-				return FALSE;
+				return false;
 			}
 			break;
 		case CARGO:
@@ -2126,13 +2126,13 @@ DoHyperspaceMenu (MENU_STATE *pMS)
 			break;
 		case GAME_MENU:
 			if (!GameOptions ())
-				return FALSE; // abort or load
+				return false; // abort or load
 			break;
 		case STARMAP:
 			StarMap ();
-			return FALSE;
+			return false;
 		case NAVIGATION:
-			return FALSE;
+			return false;
 	}
 
 	if (!(GLOBAL (CurrentActivity) & CHECK_ABORT))
@@ -2143,10 +2143,10 @@ DoHyperspaceMenu (MENU_STATE *pMS)
 				pMS->CurState = NAVIGATION;
 			DrawMenuStateStrings (PM_STARMAP, pMS->CurState);
 		}
-		SetFlashRect (SFR_MENU_3DO, FALSE);
+		SetFlashRect (SFR_MENU_3DO, false);
 	}
 
-	return TRUE;
+	return true;
 }
 
 void
@@ -2164,23 +2164,23 @@ UnbatchGraphics ();
 
 	memset (&MenuState, 0, sizeof (MenuState));
 	MenuState.InputFunc = DoHyperspaceMenu;
-	MenuState.Initialized = TRUE;
+	MenuState.Initialized = true;
 	MenuState.CurState = STARMAP;
 
 	DrawMenuStateStrings (PM_STARMAP, STARMAP);
-	SetFlashRect (SFR_MENU_3DO, FALSE);
+	SetFlashRect (SFR_MENU_3DO, false);
 
 	SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
-	DoInput (&MenuState, TRUE);
+	DoInput (&MenuState, true);
 
-	SetFlashRect (NULL, FALSE);
+	SetFlashRect (NULL, false);
 
 	SetContext (SpaceContext);
 
 	if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
 	{
 		ClearSISRect (CLEAR_SIS_RADAR);
-		WaitForNoInput (ONE_SECOND / 2, FALSE);
+		WaitForNoInput (ONE_SECOND / 2, false);
 	}
 
 	SetContextBackGroundColor (OldColor);

@@ -82,7 +82,7 @@ GenerateOrz_generatePlanets (SOLARSYS_STATE *solarSys)
 			angle = ARCTAN (pPlanet->location.x, pPlanet->location.y);
 			pPlanet->location.x = COSINE (angle, pPlanet->radius);
 			pPlanet->location.y = SINE (angle, pPlanet->radius);
-			ComputeSpeed (pPlanet, FALSE, 1);
+			ComputeSpeed (pPlanet, false, 1);
 		}
 		else
 		{
@@ -111,7 +111,7 @@ GenerateOrz_generatePlanets (SOLARSYS_STATE *solarSys)
 				pSunDesc->NumPlanets = (BYTE)~0;
 
 			FillOrbits (solarSys, pSunDesc->NumPlanets,
-				solarSys->PlanetDesc, FALSE);
+				solarSys->PlanetDesc, false);
 
 			if (StarSeed)
 				GenerateGasGiantRanged (solarSys);
@@ -193,7 +193,7 @@ GenerateOrz_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 				return true;
 
 			{
-				BOOLEAN OrzSurvivors;
+				bool OrzSurvivors;
 
 				OrzSurvivors = GetHeadLink (&GLOBAL (npc_built_ship_q))
 						&& (CurStarDescPtr->Index == ORZ_DEFINED

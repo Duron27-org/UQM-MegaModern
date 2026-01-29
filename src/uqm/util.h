@@ -26,13 +26,13 @@ extern "C" {
 #endif
 
 extern void DrawStarConBox (RECT *pRect, SIZE BorderWidth,
-		Color TopLeftColor, Color BottomRightColor, BOOLEAN FillInterior,
-		Color InteriorColor, BOOLEAN CreateCorners, Color CornerColor);
+		Color TopLeftColor, Color BottomRightColor, bool FillInterior,
+		Color InteriorColor, bool CreateCorners, Color CornerColor);
 extern void DrawBorderPadding (DWORD videoWidth);
 extern void DrawRadarBorder (void);
 extern DWORD SeedRandomNumbers (void);
 
-extern void DrawRenderedBox (RECT *r, BOOLEAN filled, Color fill_color,
+extern void DrawRenderedBox (RECT *r, bool filled, Color fill_color,
 		int type, int custom);
 
 // saveRect can be NULL to save the entire context frame

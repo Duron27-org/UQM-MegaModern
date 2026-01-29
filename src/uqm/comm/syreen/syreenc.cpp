@@ -257,7 +257,7 @@ FriendlyExit (RESPONSE_REF R)
 		DrawSISFrame ();
 		DrawSISMessage (NULL);
 		DrawSISTitle (GLOBAL_SIS (PlanetName));
-		SetCommDarkMode (FALSE);
+		SetCommDarkMode (false);
 		RedrawSISComWindow ();
 
 		XFormColorMap (GetColorMapAddress (
@@ -268,8 +268,8 @@ FriendlyExit (RESPONSE_REF R)
 
 		if (IS_HD)
 		{
-			SwitchSequences (TRUE);
-			EnableTalkingAnim (TRUE);
+			SwitchSequences (true);
+			EnableTalkingAnim (true);
 			DisengageFilters ();
 		}
 		FadeScreen (FadeAllToColor, ONE_SECOND / 2);
@@ -350,12 +350,12 @@ Foreplay (RESPONSE_REF R)
 			NPCPhrase (ABOUT_US);
 		NPCPhrase (MORE_COMFORTABLE);
 
-		cwLock = TRUE;
+		cwLock = true;
 
 		AlienTalkSegue (1);
 
 		CommData.AlienTextFColor = BUILD_COLOR_RGBA (85, 255, 255, 0);
-		SetCommDarkMode (TRUE);
+		SetCommDarkMode (true);
 
 		XFormColorMap (GetColorMapAddress (
 				SetAbsColorMapIndex (CommData.AlienColorMap, 1)
@@ -847,7 +847,7 @@ Intro (void)
 		{
 			case 0:
 				NPCPhrase (HELLO_AFTER_AMBUSH_1);
-				SetRaceAllied (SYREEN_SHIP, TRUE);
+				SetRaceAllied (SYREEN_SHIP, true);
 				break;
 			case 1:
 				NPCPhrase (HELLO_AFTER_AMBUSH_2);

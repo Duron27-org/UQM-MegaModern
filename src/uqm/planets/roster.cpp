@@ -113,7 +113,7 @@ flashSupportShip (ROSTER_STATE *rosterState, bool saveFrame)
 	static Color c = BUILD_COLOR (MAKE_RGB15_INIT (0x1F, 0x00, 0x00), 0x24);
 	static TimeCount NextTime = 0;
 
-	drawSupportShip (rosterState, TRUE, saveFrame);
+	drawSupportShip (rosterState, true, saveFrame);
 
 	if (GetTimeCounter () >= NextTime)
 	{
@@ -141,7 +141,7 @@ flashSupportShip (ROSTER_STATE *rosterState, bool saveFrame)
 		}
 		SetContextForeGroundColor (c);
 
-		drawSupportShip (rosterState, TRUE, FALSE);
+		drawSupportShip (rosterState, true, false);
 	}
 }
 
@@ -181,13 +181,13 @@ flashSupportShipCrew (void)
 
 	SetContext (StatusContext);
 	GetStatusMessageRect (&r);
-	SetFlashRect (&r, FALSE);
+	SetFlashRect (&r, false);
 }
 
-static BOOLEAN
+static bool
 DeltaSupportCrew (ROSTER_STATE *rosterState, SIZE crew_delta)
 {
-	BOOLEAN ret = FALSE;
+	bool ret = false;
 	CHAR_T buf[40];
 	HFLEETINFO hTemplate;
 	HSHIPFRAG hShipFrag;
@@ -196,7 +196,7 @@ DeltaSupportCrew (ROSTER_STATE *rosterState, SIZE crew_delta)
 
 	StarShipPtr = LockSupportShip (rosterState, &hShipFrag);
 	if (!StarShipPtr)
-		return FALSE;
+		return false;
 
 	hTemplate = GetStarShipFromIndex (&GLOBAL (avail_race_q),
 			StarShipPtr->race_id);
@@ -226,7 +226,7 @@ DeltaSupportCrew (ROSTER_STATE *rosterState, SIZE crew_delta)
 		{
 			flashSupportShipCrew ();
 		}
-		ret = TRUE;
+		ret = true;
 	}
 
 	UnlockFleetInfo (&GLOBAL (avail_race_q), hTemplate);
@@ -240,7 +240,7 @@ drawModifiedSupportShip (ROSTER_STATE *rosterState)
 {
 	SetContext (StatusContext);
 	SetContextForeGroundColor (ROSTER_MODIFY_SHIP_COLOR);
-	drawSupportShip (rosterState, TRUE, FALSE);
+	drawSupportShip (rosterState, true, false);
 }
 
 static void
@@ -251,14 +251,14 @@ selectSupportShip (ROSTER_STATE *rosterState, COUNT shipIndex)
 	DeltaSupportCrew (rosterState, 0);
 }
 
-static BOOLEAN
+static bool
 DoModifyRoster (MENU_STATE *pMS)
 {
 	ROSTER_STATE *rosterState = (ROSTER_STATE*)pMS->privData;
-	BOOLEAN select, cancel, up, down, pgup, pgdn, horiz;
+	bool select, cancel, up, down, pgup, pgdn, horiz;
 
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
-		return FALSE;
+		return false;
 
 	select = PulsedInputState.menu[KEY_MENU_SELECT];
 	cancel = PulsedInputState.menu[KEY_MENU_CANCEL];
@@ -272,14 +272,14 @@ DoModifyRoster (MENU_STATE *pMS)
 
 	if (cancel && !rosterState->modifyingCrew)
 	{
-		return FALSE;
+		return false;
 	}
 	else if (select || cancel)
 	{
 		rosterState->modifyingCrew ^= true;
 		if (!rosterState->modifyingCrew)
 		{
-			SetFlashRect (NULL, FALSE);
+			SetFlashRect (NULL, false);
 			SetMenuSounds (MENU_SOUND_ARROWS | MENU_SOUND_PAGE, MENU_SOUND_SELECT);
 		}
 		else
@@ -293,21 +293,21 @@ DoModifyRoster (MENU_STATE *pMS)
 	else if (rosterState->modifyingCrew)
 	{
 		COUNT loop, DoLoop = 0;
-		BOOLEAN failed = FALSE;
+		bool failed = false;
 
 		if (up || pgup)
 		{
 			if (GLOBAL_SIS (CrewEnlisted))
 				DoLoop = pgup ? 10 : 1;
 			else
-				failed = TRUE;
+				failed = true;
 		}
 		else if (down || pgdn)
 		{
 			if (GLOBAL_SIS (CrewEnlisted) < GetCrewPodCapacity ())
 				DoLoop = pgdn ? 10 : 1;
 			else
-				failed = TRUE;
+				failed = true;
 		}
 		
 		if (DoLoop != 0)
@@ -380,7 +380,7 @@ DoModifyRoster (MENU_STATE *pMS)
 			if (IS_HD)
 				DrawStamp (&savedShipFrame);
 			else // In 1x mode we just draw the icon.
-				drawSupportShip (rosterState, FALSE, FALSE);
+				drawSupportShip (rosterState, false, false);
 			// Select the new one
 			selectSupportShip (rosterState, NewState);
 			pMS->CurState = NewState;
@@ -388,17 +388,17 @@ DoModifyRoster (MENU_STATE *pMS)
 			// JMS_GFX: In HD mode we now have to capture the
 			// location of this new rectangle.
 			if (IS_HD)
-				flashSupportShip (rosterState, TRUE);
+				flashSupportShip (rosterState, true);
 			else
-				flashSupportShip (rosterState, FALSE);
+				flashSupportShip (rosterState, false);
 		} 
 		else
-			flashSupportShip (rosterState, FALSE);
+			flashSupportShip (rosterState, false);
 
 		UnbatchGraphics ();
 	}
 
-	return TRUE;
+	return true;
 }
 
 static int
@@ -422,7 +422,7 @@ compShipPos (const void *ptr1, const void *ptr2)
 		return 0;
 }
 
-BOOLEAN
+bool
 RosterMenu (void)
 {
 	MENU_STATE MenuState;
@@ -435,7 +435,7 @@ RosterMenu (void)
 	
 	RosterState.count = CountLinks (&GLOBAL (built_ship_q));
 	if (!RosterState.count)
-		return FALSE;
+		return false;
 
 	// Get the escort positions we will use and sort on X then Y
 	assert (sizeof (RosterState.shipPos) == sizeof (ship_pos));
@@ -449,7 +449,7 @@ RosterMenu (void)
 	// JMS_GFX: Remember the location of the first ship to be able to erase
 	// the red junk from around it after rostering.
 	if (IS_HD)
-		drawSupportShip (&RosterState, TRUE, TRUE);
+		drawSupportShip (&RosterState, true, true);
 
 	if (optWhichMenu == OPT_PC)
 		DrawMenuStateStrings (PM_ALT_CARGO, 2);
@@ -457,7 +457,7 @@ RosterMenu (void)
 	SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
 
 	MenuState.InputFunc = DoModifyRoster;
-	DoInput (&MenuState, TRUE);
+	DoInput (&MenuState, true);
 
 	SetContext (StatusContext);
 	
@@ -467,10 +467,10 @@ RosterMenu (void)
 	if (IS_HD)
 		DrawStamp (&savedShipFrame);
 	else // In Original mode we just draw the icon.
-		drawSupportShip (&RosterState, FALSE, FALSE);
+		drawSupportShip (&RosterState, false, false);
 
 	DrawStatusMessage (NULL);
 
-	return TRUE;
+	return true;
 }
 

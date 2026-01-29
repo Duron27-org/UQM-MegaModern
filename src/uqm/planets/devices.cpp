@@ -157,7 +157,7 @@ DrawDevicesDisplay (DEVICES_STATE *devState)
 	if (!optCustomBorder && !IS_HD)
 		DrawStarConBox (&r, RES_SCALE (1),
 				SHADOWBOX_MEDIUM_COLOR, SHADOWBOX_DARK_COLOR,
-				TRUE, DEVICES_BACK_COLOR, FALSE, TRANSPARENT);
+				true, DEVICES_BACK_COLOR, false, TRANSPARENT);
 	else
 		DrawBorder (DEVICE_CARGO_FRAME);
 
@@ -223,9 +223,9 @@ DrawDevices (DEVICES_STATE *devState, COUNT OldDevice, COUNT NewDevice)
 	UnbatchGraphics ();
 }
 
-// Returns TRUE if the broadcaster has been successfully activated,
-// and FALSE otherwise.
-static BOOLEAN
+// Returns true if the broadcaster has been successfully activated,
+// and false otherwise.
+static bool
 UseCaster (void)
 {
 	if (inHQSpace ())
@@ -233,14 +233,14 @@ UseCaster (void)
 		if (GET_GAME_STATE (ARILOU_SPACE_SIDE) <= 1)
 		{
 			SET_GAME_STATE (USED_BROADCASTER, 1);
-			return TRUE;
+			return true;
 		}
-		return FALSE;
+		return false;
 	}
 
 	if (LOBYTE (GLOBAL (CurrentActivity)) != IN_INTERPLANETARY
 			|| !playerInSolarSystem ())
-		return FALSE;
+		return false;
 
 	if (playerInPlanetOrbit ()
 			&& matchWorld (pSolarSysState, pSolarSysState->pOrbitalDesc,
@@ -259,11 +259,11 @@ UseCaster (void)
 
 		SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, 1 << 7);
 		SaveSolarSysLocation ();
-		return TRUE;
+		return true;
 	}
 
 	{
-		BOOLEAN FoundIlwrath;
+		bool FoundIlwrath;
 		HIPGROUP hGroup;
 
 		FoundIlwrath = (CurStarDescPtr->Index == ILWRATH_DEFINED)
@@ -304,11 +304,11 @@ UseCaster (void)
 			
 			if (playerInPlanetOrbit ())
 				SaveSolarSysLocation ();
-			return TRUE;
+			return true;
 		}
 	}
 
-	return FALSE;
+	return false;
 }
 
 static DeviceStatus
@@ -368,7 +368,7 @@ InvokeDevice (BYTE which_device)
 			SET_GAME_STATE (UTWIG_BOMB, 0);
 			GLOBAL (CurrentActivity) &= ~IN_BATTLE;
 			GLOBAL_SIS (CrewEnlisted) = (COUNT)~0;
-			DeathBySuicide = TRUE;
+			DeathBySuicide = true;
 			return DEVICE_SUCCESS;
 		case ULTRON_0_DEVICE:
 			break;
@@ -486,7 +486,7 @@ InvokeDevice (BYTE which_device)
 	return DEVICE_FAILURE;
 }
 
-BOOLEAN
+bool
 InvokeSpawner (void)
 {
 	DeviceStatus status = InvokeDevice (PORTAL_SPAWNER_DEVICE);
@@ -498,12 +498,12 @@ InvokeSpawner (void)
 	return (status == DEVICE_FAILURE);
 }
 
-static BOOLEAN
+static bool
 DoManipulateDevices (MENU_STATE *pMS)
 {
 	DEVICES_STATE *devState = (DEVICES_STATE*)pMS->privData;
-	BOOLEAN select, cancel, back, forward;
-	BOOLEAN pagefwd, pageback;
+	bool select, cancel, back, forward;
+	bool pagefwd, pageback;
 	
 	select = PulsedInputState.menu[KEY_MENU_SELECT];
 	cancel = PulsedInputState.menu[KEY_MENU_CANCEL];
@@ -515,11 +515,11 @@ DoManipulateDevices (MENU_STATE *pMS)
 	pageback = PulsedInputState.menu[KEY_MENU_PAGE_UP];
 
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
-		return FALSE;
+		return false;
 
 	if (cancel)
 	{
-		return FALSE;
+		return false;
 	}
 	else if (select)
 	{
@@ -573,7 +573,7 @@ DoManipulateDevices (MENU_STATE *pMS)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 SIZE
@@ -682,7 +682,7 @@ InventoryDevices (BYTE *pDeviceMap, COUNT Size)
 	return DevicesOnBoard;
 }
 
-BOOLEAN
+bool
 DevicesMenu (void)
 {
 	MENU_STATE MenuState;
@@ -695,7 +695,7 @@ DevicesMenu (void)
 
 	DevicesState.count = InventoryDevices (DevicesState.list, NUM_DEVICES);
 	if (!DevicesState.count)
-		return FALSE;
+		return false;
 
 	DrawDevices (&DevicesState, (COUNT)~0, MenuState.CurState);
 
@@ -706,7 +706,7 @@ DevicesMenu (void)
 		DrawMenuStateStrings (PM_ALT_CARGO, 1);
 
 	MenuState.InputFunc = DoManipulateDevices;
-	DoInput (&MenuState, TRUE);
+	DoInput (&MenuState, true);
 
 	SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
 
@@ -718,9 +718,9 @@ DevicesMenu (void)
 		if (!GET_GAME_STATE (PORTAL_COUNTER)
 				&& !(GLOBAL (CurrentActivity) & START_ENCOUNTER)
 				&& GLOBAL_SIS (CrewEnlisted) != (COUNT)~0)
-			return TRUE;
+			return true;
 	}
 	
-	return FALSE;
+	return false;
 }
 

@@ -228,14 +228,14 @@ umgah_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 	{
 		BYTE this_turn;
 		SDWORD delta_x, delta_y;
-		BOOLEAN EnemyBehind, EnoughJuice;
+		bool EnemyBehind, EnoughJuice;
 
 		if (lpEvalDesc->which_turn >= 0xFF + 1)
 			this_turn = 0xFF;
 		else
 			this_turn = (BYTE)lpEvalDesc->which_turn;
 
-		EnoughJuice = (BOOLEAN)((WORLD_TO_TURN (RES_DESCALE (
+		EnoughJuice = (bool)((WORLD_TO_TURN (RES_DESCALE (
 				JUMP_DIST * StarShipPtr->RaceDescPtr->ship_info.energy_level
 				/ SPECIAL_ENERGY_COST
 				))) > this_turn); 
@@ -243,7 +243,7 @@ umgah_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 				ShipPtr->next.location.x;
 		delta_y = lpEvalDesc->ObjectPtr->next.location.y -
 				ShipPtr->next.location.y;
-		EnemyBehind = (BOOLEAN)(NORMALIZE_ANGLE (
+		EnemyBehind = (bool)(NORMALIZE_ANGLE (
 				ARCTAN (delta_x, delta_y)
 				- (FACING_TO_ANGLE (StarShipPtr->ShipFacing)
 				+ HALF_CIRCLE) + (OCTANT + (OCTANT >> 2))
@@ -268,10 +268,10 @@ umgah_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 			StarShipPtr->ship_input_state &= ~SPECIAL;
 		else
 		{
-			BOOLEAN LinedUp;
+			bool LinedUp;
 
 			StarShipPtr->ship_input_state &= ~THRUST;
-			LinedUp = (BOOLEAN)(ShipPtr->turn_wait == 0
+			LinedUp = (bool)(ShipPtr->turn_wait == 0
 					&& !(StarShipPtr->old_status_flags & (LEFT | RIGHT)));
 			if (((StarShipPtr->old_status_flags & SPECIAL)
 					&& this_turn <= StarShipPtr->RaceDescPtr->characteristics.special_wait)

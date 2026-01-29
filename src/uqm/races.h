@@ -398,7 +398,7 @@ typedef struct
 			 * '(BYTE) ~0' means no function to call. */
 	POINT dest_loc;
 			/* Location to which the fleet (center) is moving. */
-	BOOLEAN can_build;
+	bool can_build;
 			/* Determines if you can build the ship regardless
 			 * of allegiance */
 

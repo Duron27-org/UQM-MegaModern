@@ -221,9 +221,9 @@ struct GameStateBitMap {
 
 size_t totalBitsForGameState (const GameStateBitMap *bm, int rev);
 int getGameStateRevByBytes (const GameStateBitMap *bm, int bytes);
-BOOLEAN serialiseGameState (const GameStateBitMap *bm,
+bool serialiseGameState (const GameStateBitMap *bm,
 		BYTE **buf, size_t *numBytes);
-BOOLEAN deserialiseGameState (const GameStateBitMap *bm,
+bool deserialiseGameState (const GameStateBitMap *bm,
 		const BYTE *buf, size_t numBytes, int rev);
 
 #define START_GAME_STATE enum {
@@ -1112,26 +1112,26 @@ enum {
 extern CONTEXT RadarContext;
 
 extern void FreeSC2Data (void);
-extern BOOLEAN LoadSC2Data (void);
+extern bool LoadSC2Data (void);
 
 extern void InitGlobData (void);
-extern BOOLEAN InitStarseed (BOOLEAN newgame);
+extern bool InitStarseed (bool newgame);
 
-BOOLEAN inFullGame (void);
-BOOLEAN inSuperMelee (void);
-//BOOLEAN inBattle (void);
-//BOOLEAN inInterPlanetary (void);
-//BOOLEAN inSolarSystem (void);
-//BOOLEAN inOrbit (void);
-BOOLEAN inHQSpace (void);
-BOOLEAN inHyperSpace (void);
-BOOLEAN inQuasiSpace (void);
+bool inFullGame (void);
+bool inSuperMelee (void);
+//bool inBattle (void);
+//bool inInterPlanetary (void);
+//bool inSolarSystem (void);
+//bool inOrbit (void);
+bool inHQSpace (void);
+bool inHyperSpace (void);
+bool inQuasiSpace (void);
 OPT_CONSOLETYPE isPC (int optWhich);
 OPT_CONSOLETYPE is3DO (int optWhich);
 extern int replaceChar (char *pStr, const char find, const char replace);
 
 extern void LoadFleetInfo (void);
-extern BOOLEAN InitGameStructures (void);
+extern bool InitGameStructures (void);
 extern void UninitGameStructures (void);
 
 // Difficulty
@@ -1149,12 +1149,12 @@ extern void UninitGameStructures (void);
 #define DIF_STR(a) ((a) == NORM ? "Normal" : ((a) == EASY ? "Easy" : (a) == HARD ? "Hard" : "CYO"))
 
 // Extended
-#define EXTENDED (GLOBAL_SIS (Extended) ? TRUE : FALSE)
+#define EXTENDED (GLOBAL_SIS (Extended) ? true : false)
 #define EXT_CASE(a,b) (!EXTENDED ? (a) : (b))
 
 // Nomad
 #define NOMAD (static_cast<OPT_NOMAD>(GLOBAL_SIS (Nomad)))
-#define NOMAD_DIF(a) (GLOBAL_SIS (Nomad) == (a) ? TRUE : FALSE)
+#define NOMAD_DIF(a) (GLOBAL_SIS (Nomad) == (a) ? true : false)
 #define NOMAD_STR(a) (toString(static_cast<OPT_NOMAD>(a)))
 
 // Storage Queue
@@ -1233,13 +1233,13 @@ ZeroAdvancedAutoPilot (void)
 #define MIN_SOLD DIF_CASE(100, 200, 10)
 #define MAX_SOLD DIF_CASE(250, 500, 25)
 
-static inline BOOLEAN
+static inline bool
 IsHomeworldKnown (DWORD homeworld)
 {
 	if (homeworld > 18)
-		return FALSE;
+		return false;
 
-	return (BOOLEAN)(GET_GAME_STATE (KNOW_HOMEWORLD) & (1 << homeworld));
+	return (bool)(GET_GAME_STATE (KNOW_HOMEWORLD) & (1 << homeworld));
 }
 
 static inline void

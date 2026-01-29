@@ -52,10 +52,10 @@ static COUNT lastUsedSlot;
 
 static NamingCallback *namingCB;
 
-BOOLEAN NewGameInit;
+bool NewGameInit;
 BYTE OutfitOrShipyard = 0;
-BOOLEAN SaveOrLoad = FALSE;
-BOOLEAN TextEntry3DO = FALSE;
+bool SaveOrLoad = false;
+bool TextEntry3DO = false;
 
 void
 ConfirmSaveLoad (STAMP *MsgStamp)
@@ -86,7 +86,7 @@ ConfirmSaveLoad (STAMP *MsgStamp)
 		*MsgStamp = SaveContextFrame (&r);
 	}
 	DrawStarConBox (&r, RES_SCALE (2), SHADOWBOX_MEDIUM_COLOR,
-			SHADOWBOX_DARK_COLOR, TRUE, DKGRAY_COLOR, TRUE, TRANSPARENT);
+			SHADOWBOX_DARK_COLOR, true, DKGRAY_COLOR, true, TRANSPARENT);
 	SetContextForeGroundColor (
 			isPC (optWhichFonts) ? WHITE_COLOR : LTGRAY_COLOR);
 	font_DrawText (&t);
@@ -195,7 +195,7 @@ FeedbackSetting (BYTE which_setting)
 #define DDSHS_EDIT     1
 #define DDSHS_BLOCKCUR 2
 
-static BOOLEAN
+static bool
 DrawNameString (bool nameCaptain, CHAR_T *Str, COUNT CursorPos,
 		COUNT state)
 {
@@ -248,7 +248,7 @@ DrawNameString (bool nameCaptain, CHAR_T *Str, COUNT CursorPos,
 		if (nameCaptain)
 			DrawCaptainsName (nameCaptain);
 		else
-			DrawFlagshipName (TRUE, !nameCaptain);
+			DrawFlagshipName (true, !nameCaptain);
 	}
 	else
 	{	// editing state
@@ -263,7 +263,7 @@ DrawNameString (bool nameCaptain, CHAR_T *Str, COUNT CursorPos,
 		{	// the text does not fit the input box size and so
 			// will not fit when displayed later
 			// disallow the change
-			return (FALSE);
+			return (false);
 		}
 
 		SetContextForeGroundColor (BackGround);
@@ -284,7 +284,7 @@ DrawNameString (bool nameCaptain, CHAR_T *Str, COUNT CursorPos,
 			text_r.corner.y = r.corner.y;
 			text_r.extent.height = r.extent.height;
 
-			SetCursorFlashBlock (TRUE);
+			SetCursorFlashBlock (true);
 
 			if (CursorPos == lf.CharCount)
 			{	// cursor at end-line -- use insertion point
@@ -322,7 +322,7 @@ DrawNameString (bool nameCaptain, CHAR_T *Str, COUNT CursorPos,
 			if (CursorPos == lf.CharCount)
 				text_r.corner.x -= IF_HD (3);
 
-			SetCursorFlashBlock (FALSE);
+			SetCursorFlashBlock (false);
 		}
 
 		SetCursorRect (&text_r, StatusContext);
@@ -331,10 +331,10 @@ DrawNameString (bool nameCaptain, CHAR_T *Str, COUNT CursorPos,
 		font_DrawText (&lf);
 	}
 
-	return (TRUE);
+	return (true);
 }
 
-static BOOLEAN
+static bool
 OnNameChange (TEXTENTRY_STATE *pTES)
 {
 	bool nameCaptain = (bool) pTES->CbParam;
@@ -347,7 +347,7 @@ OnNameChange (TEXTENTRY_STATE *pTES)
 }
 
 static void
-NameCaptainOrShip (BOOLEAN nameCaptain, BOOLEAN gamestart)
+NameCaptainOrShip (bool nameCaptain, bool gamestart)
 {
 	CHAR_T buf[MAX_NAME_SIZE] = "";
 	TEXTENTRY_STATE tes;
@@ -366,17 +366,17 @@ NameCaptainOrShip (BOOLEAN nameCaptain, BOOLEAN gamestart)
 	{
 		Setting = GLOBAL_SIS (CommanderName);
 		tes.MaxSize = sizeof (GLOBAL_SIS (CommanderName));
-		TextEntry3DO = (BOOLEAN)is3DO (optWhichFonts);
+		TextEntry3DO = (bool)is3DO (optWhichFonts);
 	}
 	else
 	{
 		Setting = GLOBAL_SIS (ShipName);
 		tes.MaxSize = sizeof (GLOBAL_SIS (ShipName));
-		TextEntry3DO = FALSE;
+		TextEntry3DO = false;
 	}
 
 	// text entry setup
-	tes.Initialized = FALSE;
+	tes.Initialized = false;
 	tes.BaseStr = buf;
 	tes.CursorPos = CursPos;
 	tes.CbParam = (void*) nameCaptain;
@@ -399,23 +399,23 @@ NameCaptainOrShip (BOOLEAN nameCaptain, BOOLEAN gamestart)
 	}
 
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
-		NewGameInit = FALSE;
+		NewGameInit = false;
 
 	FlushCursorRect ();
 
-	SetFlashRect (SFR_MENU_3DO, FALSE);
+	SetFlashRect (SFR_MENU_3DO, false);
 
 	DrawNameString (nameCaptain, buf, CursPos, DDSHS_NORMAL);
 
 	DrawBorder (SIS_STAT_REPAIR_FRAME);
 
-	TextEntry3DO = FALSE;
+	TextEntry3DO = false;
 
 	if (namingCB)
 		namingCB ();
 }
 
-static BOOLEAN
+static bool
 DrawSaveNameString (CHAR_T *Str, COUNT CursorPos, COUNT state, COUNT gameIndex)
 {
 	RECT r;
@@ -482,7 +482,7 @@ DrawSaveNameString (CHAR_T *Str, COUNT CursorPos, COUNT state, COUNT gameIndex)
 		{	// the text does not fit the input box size and so
 			// will not fit when displayed later
 			// disallow the change
-			return (FALSE);
+			return (false);
 		}
 
 		PreUpdateFlashRect ();
@@ -529,10 +529,10 @@ DrawSaveNameString (CHAR_T *Str, COUNT CursorPos, COUNT state, COUNT gameIndex)
 		PostUpdateFlashRect ();
 	}
 
-	return (TRUE);
+	return (true);
 }
 
-static BOOLEAN
+static bool
 OnSaveNameChange (TEXTENTRY_STATE *pTES)
 {
 	COUNT hl = DDSHS_EDIT;
@@ -544,7 +544,7 @@ OnSaveNameChange (TEXTENTRY_STATE *pTES)
 	return DrawSaveNameString (pTES->BaseStr, pTES->CursorPos, hl, *gameIndex);
 }
 
-static BOOLEAN
+static bool
 NameSaveGame (COUNT gameIndex, CHAR_T *buf)
 {
 	TEXTENTRY_STATE tes;
@@ -558,7 +558,7 @@ NameSaveGame (COUNT gameIndex, CHAR_T *buf)
 	tes.MaxSize = SAVE_NAME_SIZE;
 
 	// text entry setup
-	tes.Initialized = FALSE;
+	tes.Initialized = false;
 	tes.BaseStr = buf;
 	tes.CursorPos = CursPos;
 	tes.CbParam = gIndex;
@@ -570,12 +570,12 @@ NameSaveGame (COUNT gameIndex, CHAR_T *buf)
 	r.corner.x = RES_SCALE (30);
 	r.corner.y = (RES_SCALE (160) + ((gameIndex % SAVES_PER_PAGE)
 			* RES_SCALE (13)));
-	SetFlashRect (&r, FALSE);
+	SetFlashRect (&r, false);
 
 	if (!DoTextEntry (&tes))
 		buf[0] = 0;
 
-	SetFlashRect (NULL, FALSE);
+	SetFlashRect (NULL, false);
 
 	DrawSaveNameString (buf, CursPos, DDSHS_NORMAL, gameIndex);
 
@@ -586,12 +586,12 @@ NameSaveGame (COUNT gameIndex, CHAR_T *buf)
 
 	HFree (gIndex);
 
-	SetFlashRect (NULL, FALSE);
+	SetFlashRect (NULL, false);
 
 	if (tes.Success)
-		return (TRUE);
+		return (true);
 	else
-		return (FALSE);
+		return (false);
 }
 
 void
@@ -600,7 +600,7 @@ SetNamingCallback (NamingCallback *callback)
 	namingCB = callback;
 }
 
-static BOOLEAN
+static bool
 DoSettings (MENU_STATE *pMS)
 {
 	BYTE cur_speed, read_speed;
@@ -609,7 +609,7 @@ DoSettings (MENU_STATE *pMS)
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
 	{
 		i = 0;
-		return FALSE;
+		return false;
 	}
 
 	cur_speed = (GLOBAL (glob_flags) & COMBAT_SPEED_MASK)
@@ -628,7 +628,7 @@ DoSettings (MENU_STATE *pMS)
 			|| (PulsedInputState.menu[KEY_MENU_SELECT]
 			&& pMS->CurState == EXIT_SETTINGS_MENU))
 	{
-		return FALSE;
+		return false;
 	}
 	else if (PulsedInputState.menu[KEY_MENU_SELECT])
 	{
@@ -648,7 +648,7 @@ DoSettings (MENU_STATE *pMS)
 				break;
 			case CHANGE_CAPTAIN_SETTING:
 			case CHANGE_SHIP_SETTING:
-				SetFlashRect (NULL, FALSE);
+				SetFlashRect (NULL, false);
 				DrawMenuStateStrings (PM_SOUND_ON, pMS->CurState);
 				NameCaptainOrShip (pMS->CurState == CHANGE_CAPTAIN_SETTING,
 						NewGameInit);
@@ -701,21 +701,21 @@ DoSettings (MENU_STATE *pMS)
 	{
 		if (i == 1)
 		{
-			SettingsMenu (TRUE);
-			return FALSE;
+			SettingsMenu (true);
+			return false;
 		}
 		else
 		{
-			NewGameInit = FALSE;
+			NewGameInit = false;
 			i = 0;
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 void
-SettingsMenu (BOOLEAN NameFlagship)
+SettingsMenu (bool NameFlagship)
 {
 	MENU_STATE MenuState;
 
@@ -733,7 +733,7 @@ SettingsMenu (BOOLEAN NameFlagship)
 	FeedbackSetting (MenuState.CurState);
 
 	MenuState.InputFunc = DoSettings;
-	DoInput (&MenuState, FALSE);
+	DoInput (&MenuState, false);
 
 	DrawStatusMessage (NULL);
 }
@@ -741,10 +741,10 @@ SettingsMenu (BOOLEAN NameFlagship)
 typedef struct
 {
 	SUMMARY_DESC summary[MAX_SAVED_GAMES];
-	BOOLEAN saving;
-			// TRUE when saving, FALSE when loading
-	BOOLEAN success;
-			// TRUE when load/save succeeded
+	bool saving;
+			// true when saving, false when loading
+	bool success;
+			// true when load/save succeeded
 	FRAME SummaryFrame;
 
 } PICK_GAME_STATE;
@@ -1263,7 +1263,7 @@ DrawSavegameSummary (PICK_GAME_STATE *pickState, COUNT gameIndex)
 
 	BatchGraphics ();
 
-	SaveOrLoad = TRUE;
+	SaveOrLoad = true;
 
 	if (pSD->year_index == 0)
 	{
@@ -1484,11 +1484,11 @@ DrawSavegameSummary (PICK_GAME_STATE *pickState, COUNT gameIndex)
 
 	UnbatchGraphics ();
 
-	SaveOrLoad = FALSE;
+	SaveOrLoad = false;
 }
 
 static void
-TruncateSaveName (CHAR_T* buf, COORD maxWidth, BOOLEAN naming)
+TruncateSaveName (CHAR_T* buf, COORD maxWidth, bool naming)
 {
 	TEXT t;
 	RECT r;
@@ -1592,7 +1592,7 @@ DrawGameSelection (PICK_GAME_STATE *pickState, COUNT selSlot)
 
 			snprintf (buf, sizeof buf, "%s: %s", buf2, SaveName);
 
-			TruncateSaveName (buf, r.extent.width - 7, FALSE);
+			TruncateSaveName (buf, r.extent.width - 7, false);
 		}
 		font_DrawText (&t);
 	}
@@ -1617,12 +1617,12 @@ LoadGameDescriptions (SUMMARY_DESC *pSD)
 
 	for (i = 0; i < MAX_SAVED_GAMES; ++i, ++pSD)
 	{
-		if (!LoadGame (i, pSD, NULL, FALSE))
+		if (!LoadGame (i, pSD, NULL, false))
 			pSD->year_index = 0;
 	}
 }
 
-static BOOLEAN
+static bool
 DoPickGame (MENU_STATE *pMS)
 {
 	PICK_GAME_STATE *pickState = (PICK_GAME_STATE*)pMS->privData;
@@ -1631,12 +1631,12 @@ DoPickGame (MENU_STATE *pMS)
 	DWORD TimeIn = GetTimeCounter ();
 
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
-		return FALSE;
+		return false;
 
 	if (PulsedInputState.menu[KEY_MENU_CANCEL])
 	{
-		pickState->success = FALSE;
-		return FALSE;
+		pickState->success = false;
+		return false;
 	}
 	else if (PulsedInputState.menu[KEY_MENU_SELECT])
 	{
@@ -1661,8 +1661,8 @@ DoPickGame (MENU_STATE *pMS)
 			}
 
 			PlayMenuSound (MENU_SOUND_SUCCESS);
-			pickState->success = TRUE;
-			return FALSE;
+			pickState->success = true;
+			return false;
 		}
 		PlayMenuSound (MENU_SOUND_FAILURE);
 	}
@@ -1714,16 +1714,16 @@ DoPickGame (MENU_STATE *pMS)
 		SleepThreadUntil (TimeIn + ONE_SECOND / 30);
 	}
 
-	return TRUE;
+	return true;
 }
 
-static BOOLEAN
-SaveLoadGame (PICK_GAME_STATE *pickState, COUNT gameIndex, BOOLEAN *canceled_by_user)
+static bool
+SaveLoadGame (PICK_GAME_STATE *pickState, COUNT gameIndex, bool *canceled_by_user)
 {
 	SUMMARY_DESC *desc = pickState->summary + gameIndex;
 	CHAR_T nameBuf[256];
 	STAMP saveStamp;
-	BOOLEAN success;
+	bool success;
 	RECT r;
 
 	GetContextClipRect(&r);
@@ -1732,7 +1732,7 @@ SaveLoadGame (PICK_GAME_STATE *pickState, COUNT gameIndex, BOOLEAN *canceled_by_
 
 	if (pickState->saving)
 	{
-		TruncateSaveName (desc->SaveName, r.extent.width - 104, TRUE);
+		TruncateSaveName (desc->SaveName, r.extent.width - 104, true);
 
 		// Initialize the save name with whatever name is there already
 		// SAVE_NAME_SIZE is less than 256, so this is safe.
@@ -1746,14 +1746,14 @@ SaveLoadGame (PICK_GAME_STATE *pickState, COUNT gameIndex, BOOLEAN *canceled_by_
 		}
 		else
 		{
-			success = FALSE;
-			*canceled_by_user = TRUE;
+			success = false;
+			*canceled_by_user = true;
 		}
 	}
 	else
 	{
 		ConfirmSaveLoad (pickState->saving ? &saveStamp : NULL);
-		success = LoadGame (gameIndex, NULL, NULL, FALSE);
+		success = LoadGame (gameIndex, NULL, NULL, false);
 	}
 
 	// TODO: the same should be done for both save and load if we also
@@ -1768,8 +1768,8 @@ SaveLoadGame (PICK_GAME_STATE *pickState, COUNT gameIndex, BOOLEAN *canceled_by_
 	return success;
 }
 
-static BOOLEAN
-PickGame (BOOLEAN saving, BOOLEAN fromMainMenu)
+static bool
+PickGame (bool saving, bool fromMainMenu)
 {
 	CONTEXT OldContext;
 	MENU_STATE MenuState;
@@ -1836,10 +1836,10 @@ PickGame (BOOLEAN saving, BOOLEAN fromMainMenu)
 	// Save/load retry loop
 	while (1)
 	{
-		BOOLEAN canceled_by_user = FALSE;
+		bool canceled_by_user = false;
 
-		pickState.success = FALSE;
-		DoInput (&MenuState, TRUE);
+		pickState.success = false;
+		DoInput (&MenuState, true);
 		if (!pickState.success)
 			break; // canceled
 
@@ -1892,7 +1892,7 @@ PickGame (BOOLEAN saving, BOOLEAN fromMainMenu)
 	if (!(GLOBAL (CurrentActivity) & CHECK_ABORT) &&
 			(saving || (!pickState.success && !fromMainMenu)))
 	{	// Restore previous screen
-		BOOLEAN InStarbase = (GET_GAME_STATE (GLOBAL_FLAGS_AND_DATA) == (BYTE)~0);
+		bool InStarbase = (GET_GAME_STATE (GLOBAL_FLAGS_AND_DATA) == (BYTE)~0);
 
 		// Math to include the title bars in the screen transition
 		DlgRect.extent.width += DlgRect.corner.x;
@@ -1943,17 +1943,17 @@ PickGame (BOOLEAN saving, BOOLEAN fromMainMenu)
 	return pickState.success;
 }
 
-static BOOLEAN
+static bool
 DoGameOptions (MENU_STATE *pMS)
 {
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
-		return FALSE;
+		return false;
 
 	if (PulsedInputState.menu[KEY_MENU_CANCEL]
 			|| (PulsedInputState.menu[KEY_MENU_SELECT]
 			&& pMS->CurState == EXIT_GAME_MENU))
 	{
-		return FALSE;
+		return false;
 	}
 	else if (PulsedInputState.menu[KEY_MENU_SELECT])
 	{
@@ -1961,21 +1961,21 @@ DoGameOptions (MENU_STATE *pMS)
 		{
 			case SAVE_GAME:
 			case LOAD_GAME:
-				SetFlashRect (NULL, FALSE);
-				if (PickGame (pMS->CurState == SAVE_GAME, FALSE))
-					return FALSE;
+				SetFlashRect (NULL, false);
+				if (PickGame (pMS->CurState == SAVE_GAME, false))
+					return false;
 				DrawMenuStateStrings (PM_SAVE_GAME, pMS->CurState);
-				SetFlashRect (SFR_MENU_3DO, FALSE);
+				SetFlashRect (SFR_MENU_3DO, false);
 				break;
 			case QUIT_GAME:
 				DrawMenuStateStrings (PM_SAVE_GAME, pMS->CurState);
 				if (ConfirmExit ())
-					return FALSE;
+					return false;
 				else
 					DrawMenuStateStrings(PM_SAVE_GAME, pMS->CurState);
 				break;
 			case SETTINGS:
-				SettingsMenu (FALSE);
+				SettingsMenu (false);
 				DrawMenuStateStrings (PM_SAVE_GAME, pMS->CurState);
 				break;
 		}
@@ -1983,11 +1983,11 @@ DoGameOptions (MENU_STATE *pMS)
 	else
 		DoMenuChooser (pMS, PM_SAVE_GAME);
 
-	return TRUE;
+	return true;
 }
 
-// Returns TRUE when the owner menu should continue
-BOOLEAN
+// Returns true when the owner menu should continue
+bool
 GameOptions (void)
 {
 	MENU_STATE MenuState;
@@ -1996,26 +1996,26 @@ GameOptions (void)
 
 	if (LastActivity == CHECK_LOAD)
 	{	// Selected LOAD from main menu
-		BOOLEAN success;
+		bool success;
 
 		DrawMenuStateStrings (PM_SAVE_GAME, LOAD_GAME);
-		success = PickGame (FALSE, TRUE);
+		success = PickGame (false, true);
 		if (!success)
 		{	// Selected LOAD from main menu, and canceled
 			GLOBAL (CurrentActivity) |= CHECK_ABORT;
 		}
-		return FALSE;
+		return false;
 	}
 
 	MenuState.CurState = SAVE_GAME;
 	DrawMenuStateStrings (PM_SAVE_GAME, MenuState.CurState);
 
-	SetFlashRect (SFR_MENU_3DO, FALSE);
+	SetFlashRect (SFR_MENU_3DO, false);
 
 	SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
 	MenuState.InputFunc = DoGameOptions;
-	DoInput (&MenuState, TRUE);
-	SetFlashRect (NULL, FALSE);
+	DoInput (&MenuState, true);
+	SetFlashRect (NULL, false);
 
 	return !(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD));
 }

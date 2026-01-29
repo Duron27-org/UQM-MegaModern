@@ -47,7 +47,7 @@ FRAME blast[NUM_VIEWS];
 FRAME explosion[NUM_VIEWS];
 
 
-BOOLEAN
+bool
 load_animation (FRAME *pixarray, RESOURCE big_res, RESOURCE med_res, RESOURCE
 		sml_res)
 {
@@ -55,14 +55,14 @@ load_animation (FRAME *pixarray, RESOURCE big_res, RESOURCE med_res, RESOURCE
 
 	d = LoadGraphic (big_res);
 	if (!d)
-		return FALSE;
+		return false;
 	pixarray[0] = CaptureDrawable (d);
 
 	if (med_res != NULL_RESOURCE)
 	{
 		d = LoadGraphic (med_res);
 		if (!d)
-			return FALSE;
+			return false;
 	}
 	pixarray[1] = CaptureDrawable (d);
 
@@ -70,40 +70,40 @@ load_animation (FRAME *pixarray, RESOURCE big_res, RESOURCE med_res, RESOURCE
 	{
 		d = LoadGraphic (sml_res);
 		if (!d)
-			return FALSE;
+			return false;
 	}
 	pixarray[2] = CaptureDrawable (d);
 
-	return TRUE;
+	return true;
 }
 
 /* Warning: Some ships (such as the Umgah) will alias their pixarrays,
    so we need to track to make sure that we do not double-free. */
-BOOLEAN
+bool
 free_image (FRAME *pixarray)
 {
-	BOOLEAN retval;
+	bool retval;
 	COUNT i, j;
 	void *already_freed[NUM_VIEWS];
 
-	retval = TRUE;
+	retval = true;
 	for (i = 0; i < NUM_VIEWS; ++i)
 	{
 		if (pixarray[i] != NULL)
 		{
-			BOOLEAN ok = TRUE;
+			bool ok = true;
 			for (j = 0; j < i; j++)
 			{
 				if (already_freed[j] == pixarray[i])
 				{
-					ok = FALSE;
+					ok = false;
 					break;
 				}
 			}
 			if (ok)
 			{
 				if (!DestroyDrawable (ReleaseDrawable (pixarray[i])))
-					retval = FALSE;
+					retval = false;
 			}
 			already_freed[i] = pixarray[i];
 			pixarray[i] = NULL;
@@ -115,7 +115,7 @@ free_image (FRAME *pixarray)
 
 static BYTE space_ini_cnt;
 
-BOOLEAN
+bool
 InitSpace (void)
 {
 	if ((space_ini_cnt++ == 0
@@ -125,12 +125,12 @@ InitSpace (void)
 		stars_in_space = CaptureDrawable (
 				LoadGraphic (STAR_MASK_PMAP_ANIM));
 		if (stars_in_space == NULL)
-			return FALSE;
+			return false;
 
 		scenery = CaptureDrawable (
 				LoadGraphic (SCENERY_MASK_PMAP_ANIM));
 		if (scenery == NULL)
-			return FALSE;
+			return false;
 
 
 		if (IS_HD)
@@ -139,29 +139,29 @@ InitSpace (void)
 					STARMISK_BIG_MASK_PMAP_ANIM,
 					STARMISK_MED_MASK_PMAP_ANIM,
 					STARMISK_SML_MASK_PMAP_ANIM))
-				return FALSE;
+				return false;
 		}
 
 		if (!load_animation (explosion,
 				BOOM_BIG_MASK_PMAP_ANIM,
 				BOOM_MED_MASK_PMAP_ANIM,
 				BOOM_SML_MASK_PMAP_ANIM))
-			return FALSE;
+			return false;
 
 		if (!load_animation (blast,
 				BLAST_BIG_MASK_PMAP_ANIM,
 				BLAST_MED_MASK_PMAP_ANIM,
 				BLAST_SML_MASK_PMAP_ANIM))
-			return FALSE;
+			return false;
 
 		if (!load_animation (asteroid,
 				ASTEROID_BIG_MASK_PMAP_ANIM,
 				ASTEROID_MED_MASK_PMAP_ANIM,
 				ASTEROID_SML_MASK_PMAP_ANIM))
-			return FALSE;
+			return false;
 	}
 
-	return TRUE;
+	return true;
 }
 
 void
@@ -345,7 +345,7 @@ UninitShips (void)
 			StarShipPtr->crew_level =
 					StarShipPtr->RaceDescPtr->ship_info.crew_level;
 			SPtr[StarShipPtr->playerNr] = StarShipPtr;
-			free_ship (StarShipPtr->RaceDescPtr, TRUE, TRUE);
+			free_ship (StarShipPtr->RaceDescPtr, true, true);
 			StarShipPtr->RaceDescPtr = 0;
 		}
 		UnlockElement (hElement);

@@ -237,7 +237,7 @@ ExitConversation (RESPONSE_REF R)
 		SET_GAME_STATE (ORZ_GENERAL_INFO, 0);
 		SET_GAME_STATE (ORZ_PERSONAL_INFO, 0);
 		SET_GAME_STATE (ORZ_MANNER, 3);
-		SetRaceAllied (ORZ_SHIP, TRUE);
+		SetRaceAllied (ORZ_SHIP, true);
 	}
 	else if (PLAYER_SAID (R, demand_to_land))
 	{
@@ -266,7 +266,7 @@ ExitConversation (RESPONSE_REF R)
 		setSegue (Segue_hostile);
 		if (PLAYER_SAID (R, about_andro_3))
 		{
-			SetRaceAllied (ORZ_SHIP, FALSE);
+			SetRaceAllied (ORZ_SHIP, false);
 			RemoveEscortShips (ORZ_SHIP);
 		}
 

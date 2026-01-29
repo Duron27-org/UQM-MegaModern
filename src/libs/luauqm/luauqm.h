@@ -53,9 +53,9 @@ void luaUqm_init(void);
 void luaUqm_uninit(void);
 
 void luaUqm_prepareEnvironment(lua_State *luaState);
-BOOLEAN luaUqm_loadScript(lua_State *luaState, uio_DirHandle *dir,
+bool luaUqm_loadScript(lua_State *luaState, uio_DirHandle *dir,
 		const char *fileName);
-BOOLEAN luaUqm_runScript(lua_State *luaState, uio_DirHandle *dir,
+bool luaUqm_runScript(lua_State *luaState, uio_DirHandle *dir,
 		const char *fileName);
 void luaUqm_runLuaDir(lua_State *luaState, uio_DirHandle *dirHandle,
 		const char *luaDirName);
@@ -63,8 +63,8 @@ void luaUqm_runLuaDir(lua_State *luaState, uio_DirHandle *dirHandle,
 void luaUqm_loadLib(lua_State *luaState, const luaL_Reg *lib);
 void luaUqm_loadLibs(lua_State *luaState, const luaL_Reg *libs);
 void luaUqm_loadSafeDefaultLibs(lua_State *luaState);
-BOOLEAN luaUqm_callStackFunction(lua_State *luaState);
-BOOLEAN luaUqm_callFunction(lua_State *luaState, const char *str);
+bool luaUqm_callStackFunction(lua_State *luaState);
+bool luaUqm_callFunction(lua_State *luaState, const char *str);
 void luaUqm_makeEnum(lua_State *luaState, const luaUqm_EnumValue *enumVals);
 
 #ifdef DEBUG

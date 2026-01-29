@@ -493,7 +493,7 @@ pkunk_preprocess (ELEMENT *ElementPtr)
 	GetElementStarShip (ElementPtr, &StarShipPtr);
 	PkunkData = GetCustomShipData (StarShipPtr->RaceDescPtr);
 
-	BOOLEAN Fwiffo = (StarShipPtr->captains_name_index ==
+	bool Fwiffo = (StarShipPtr->captains_name_index ==
 			NAME_OFFSET + NUM_CAPTAINS_NAMES &&
 			StarShipPtr->SpeciesID == SPATHI_ID);
 	if (Fwiffo && !FwiffoSounds)

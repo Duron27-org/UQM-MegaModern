@@ -26,8 +26,8 @@ extern "C" {
 
 #define LoadScript LoadScriptRes
 
-BOOLEAN ReleaseScriptResData (void *data);
-BOOLEAN InstallScriptResType (void);
+bool ReleaseScriptResData (void *data);
+bool InstallScriptResType (void);
 char *LoadScriptInstance (RESOURCE res);
 
 #if 0 //defined(__cplusplus)

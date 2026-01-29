@@ -31,7 +31,7 @@ extern void PlayMusicResume (MUSIC_REF hMusic, BYTE Volume);
 extern void ToggleSoundEffect (void);
 extern void SeekMusic (DWORD pos);
 
-extern void PlayMusic (MUSIC_REF MusicRef, BOOLEAN Continuous, BYTE Priority);
+extern void PlayMusic (MUSIC_REF MusicRef, bool Continuous, BYTE Priority);
 extern void PlaySoundEffect (SOUND S, COUNT Channel, SoundPosition Pos,
 		void *PositionalObject, BYTE Priority);
 extern void PlaySpeechEffect (SOUND S, SoundPosition Pos, void* PositionalObject, BYTE Priority);

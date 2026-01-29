@@ -246,8 +246,8 @@ ZexBeingEatenAlive (void)
 		{
 			CommData.AlienFrame =
 					SetAbsFrameIndex (CommData.AlienFrame, 126);
-			EnableTalkingAnim (FALSE);
-			SwitchSequences (FALSE);
+			EnableTalkingAnim (false);
+			SwitchSequences (false);
 			RunOneTimeSequence (18, 0);
 		}
 		else

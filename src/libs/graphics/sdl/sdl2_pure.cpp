@@ -28,7 +28,7 @@
 typedef struct tfb_sdl2_screeninfo_s {
 	SDL_Surface *scaled;
 	SDL_Texture *texture;
-	BOOLEAN dirty, active;
+	bool dirty, active;
 	SDL_Rect updated;
 } TFB_SDL2_SCREENINFO;
 
@@ -199,8 +199,8 @@ TFB_Pure_ConfigureVideo (int driver, int flags, int width, int height,
 		{
 			SDL2_Screens[i].scaled = NULL;
 			SDL2_Screens[i].texture = NULL;
-			SDL2_Screens[i].dirty = TRUE;
-			SDL2_Screens[i].active = TRUE;
+			SDL2_Screens[i].dirty = true;
+			SDL2_Screens[i].active = true;
 			if (0 != ReInit_Screen (&SDL_Screens[i], CanvasWidth,
 					CanvasHeight))
 			{
@@ -215,7 +215,7 @@ TFB_Pure_ConfigureVideo (int driver, int flags, int width, int height,
 		}
 		else
 			UnInit_Screen (&SDL_Screen_fps);
-		SDL2_Screens[1].active = FALSE;
+		SDL2_Screens[1].active = false;
 		SDL_Screen = SDL_Screens[0];
 		TransitionScreen = SDL_Screens[2];
 		format_conv_surf = SDL_CreateRGBSurface(SDL_SWSURFACE, 0, 0,
@@ -237,7 +237,7 @@ TFB_Pure_ConfigureVideo (int driver, int flags, int width, int height,
 		{
 			for (i = 0; i < TFB_GFX_NUMSCREENS; i++)
 			{
-				SDL2_Screens[i].dirty = TRUE;
+				SDL2_Screens[i].dirty = true;
 				if (0 != ReInit_Screen(&SDL_Screens[i], CanvasWidth,
 					CanvasHeight))
 				{
@@ -398,7 +398,7 @@ TFB_SDL2_UploadTransitionScreen (void)
 	SDL2_Screens[TFB_SCREEN_TRANSITION].updated.y = 0;
 	SDL2_Screens[TFB_SCREEN_TRANSITION].updated.w = CanvasWidth;
 	SDL2_Screens[TFB_SCREEN_TRANSITION].updated.h = CanvasHeight;
-	SDL2_Screens[TFB_SCREEN_TRANSITION].dirty = TRUE;
+	SDL2_Screens[TFB_SCREEN_TRANSITION].dirty = true;
 }
 
 static void
@@ -476,7 +476,7 @@ TFB_SDL2_Preprocess (int force_full_redraw, int transition_amount,
 		SDL2_Screens[TFB_SCREEN_MAIN].updated.y = 0;
 		SDL2_Screens[TFB_SCREEN_MAIN].updated.w = CanvasWidth;
 		SDL2_Screens[TFB_SCREEN_MAIN].updated.h = CanvasHeight;
-		SDL2_Screens[TFB_SCREEN_MAIN].dirty = TRUE;
+		SDL2_Screens[TFB_SCREEN_MAIN].dirty = true;
 	}
 	else if (TFB_BBox.valid)
 	{
@@ -486,7 +486,7 @@ TFB_SDL2_Preprocess (int force_full_redraw, int transition_amount,
 				TFB_BBox.region.extent.width;
 		SDL2_Screens[TFB_SCREEN_MAIN].updated.h =
 				TFB_BBox.region.extent.height;
-		SDL2_Screens[TFB_SCREEN_MAIN].dirty = TRUE;
+		SDL2_Screens[TFB_SCREEN_MAIN].dirty = true;
 	}
 
 	SDL_SetRenderDrawBlendMode (renderer, SDL_BLENDMODE_NONE);
@@ -622,11 +622,11 @@ TFB_SDL2_GammaCorrection (float gamma)
 	return (SDL_SetWindowBrightness(window, gamma) == 0);
 }
 
-BOOLEAN
+bool
 TFB_SDL_ScreenShot (const char *path)
 {
 	SDL_Surface *tmp = SDL_GetWindowSurface (window);
-	BOOLEAN successful = FALSE;
+	bool successful = false;
 
 	if (GfxFlags & TFB_GFXFLAGS_FULLSCREEN
 			|| GfxFlags & TFB_GFXFLAGS_EX_FULLSCREEN)
@@ -648,7 +648,7 @@ TFB_SDL_ScreenShot (const char *path)
 	SDL_RenderReadPixels (renderer, NULL, tmp->format->format,
 		tmp->pixels, tmp->pitch);
 	if (TFB_sdl_to_png(tmp, SDL_RWFromFile(path, "wb"), 1) == 0)
-		successful = TRUE;
+		successful = true;
 
 	if (successful && CopySurfaceToClipboard (tmp) != 0)
 		log_add (log_Warning, "Failed to copy PNG to clipboard\n");

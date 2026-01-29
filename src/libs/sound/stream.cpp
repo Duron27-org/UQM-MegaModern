@@ -126,7 +126,7 @@ PlayStream (TFB_SoundSample *sample, uint32 source, bool looping, bool scope,
 	// from the very beginning
 	soundSource[source].start_time = GetTimeCounter () - offset;
 	soundSource[source].pause_time = 0;
-	soundSource[source].stream_should_be_playing = TRUE;
+	soundSource[source].stream_should_be_playing = true;
 	audio_SourcePlay (soundSource[source].handle);
 }
 
@@ -135,7 +135,7 @@ StopStream (uint32 source)
 {
 	StopSource (source);
 
-	soundSource[source].stream_should_be_playing = FALSE;
+	soundSource[source].stream_should_be_playing = false;
 	soundSource[source].sample = NULL;
 
 	if (soundSource[source].sbuffer)
@@ -153,7 +153,7 @@ StopStream (uint32 source)
 void
 PauseStream (uint32 source)
 {
-	soundSource[source].stream_should_be_playing = FALSE;
+	soundSource[source].stream_should_be_playing = false;
 	if (!soundSource[source].pause_time)
 		soundSource[source].pause_time = GetTimeCounter ();
 	audio_SourcePause (soundSource[source].handle);
@@ -169,7 +169,7 @@ ResumeStream (uint32 source)
 				- soundSource[source].pause_time;
 	}
 	soundSource[source].pause_time = 0;
-	soundSource[source].stream_should_be_playing = TRUE;
+	soundSource[source].stream_should_be_playing = true;
 	audio_SourcePlay (soundSource[source].handle);
 }
 
@@ -212,18 +212,18 @@ GetNumTrackerPos (uint32 source)
 	return sample->decoder->numpos;
 }
 
-BOOLEAN
+bool
 IsTracker (uint32 source)
 {
 	TFB_SoundSample * sample = soundSource[source].sample;
 	const CHAR_T *filetype;
 
 	if (!sample)
-		return FALSE;
+		return false;
 
 	filetype = SoundDecoder_GetName (sample->decoder);
 
-	return (BOOLEAN)(strcmp (filetype, "MikMod") == 0);
+	return (bool)(strcmp (filetype, "MikMod") == 0);
 }
 
 float
@@ -248,10 +248,10 @@ GetStreamTime (uint32 source)
 	return (DWORD)SoundDecoder_GetTime (sample->decoder) * 1000;
 }
 
-BOOLEAN
+bool
 PlayingStream (uint32 source)
 {	
-	return (BOOLEAN)soundSource[source].stream_should_be_playing;
+	return (bool)soundSource[source].stream_should_be_playing;
 }
 
 
@@ -443,7 +443,7 @@ process_stream (TFB_SoundSource *source)
 			{	// The stream has reached the end
 				log_add (log_Info, "StreamDecoderTaskFunc(): "
 						"finished playing %s", decoder->filename);
-				source->stream_should_be_playing = FALSE;
+				source->stream_should_be_playing = false;
 				
 				if (sample->callbacks.OnEndStream)
 					sample->callbacks.OnEndStream (sample);
@@ -528,7 +528,7 @@ process_stream (TFB_SoundSource *source)
 			log_add (log_Warning, "StreamDecoderTaskFunc(): "
 					"SoundDecoder_Decode error %d, file %s",
 					decoder->error, decoder->filename);
-			source->stream_should_be_playing = FALSE;
+			source->stream_should_be_playing = false;
 			continue;
 		}
 

@@ -50,8 +50,8 @@ extern unsigned int audioDriver;
 extern unsigned int audioQuality;
 
 // Added options
-extern BOOLEAN optRequiresReload;
-extern BOOLEAN optRequiresRestart;
+extern bool optRequiresReload;
+extern bool optRequiresRestart;
 extern OPT_ENABLABLE optCheatMode;
 extern int optGodModes;
 extern int timeDilationScale;
@@ -72,8 +72,8 @@ extern DWORD loadFuel;
 extern OPT_ENABLABLE optPartialPickup;
 extern OPT_ENABLABLE optSubmenu;
 extern OPT_ENABLABLE optInfiniteCredits;
-extern BOOLEAN optSuperMelee;
-extern BOOLEAN optLoadGame;
+extern bool optSuperMelee;
+extern bool optLoadGame;
 extern OPT_ENABLABLE optCustomBorder;
 extern int optSeedType;
 extern int optCustomSeed;
@@ -115,12 +115,12 @@ extern OPT_ENABLABLE optUnscaledStarSystem;
 extern int optScanSphere;
 extern int optNebulaeVolume;
 extern OPT_ENABLABLE optSlaughterMode;
-extern BOOLEAN optMaskOfDeceit;
+extern bool optMaskOfDeceit;
 extern OPT_ENABLABLE optAdvancedAutoPilot;
 extern OPT_ENABLABLE optMeleeToolTips;
 extern int optMusicResume;
 extern DWORD optWindowType;
-extern BOOLEAN optNoClassic;
+extern bool optNoClassic;
 extern OPT_ENABLABLE optScatterElements;
 extern OPT_ENABLABLE optShowUpgrades;
 extern OPT_ENABLABLE optFleetPointSys;
@@ -136,7 +136,7 @@ extern OPT_ENABLABLE optSpeech;
 extern OPT_ENABLABLE optSubtitles;
 extern OPT_ENABLABLE optStereoSFX;
 extern OPT_ENABLABLE optKeepAspectRatio;
-extern BOOLEAN restartGame;
+extern bool restartGame;
 
 #define GAMMA_SCALE  1000
 extern float optGamma;
@@ -198,9 +198,9 @@ void prepareAddons (const char **addons);
 void prepareShadowAddons (const char **addons);
 void unprepareAllDirs (void);
 
-BOOLEAN loadAddon (const char *addon);
+bool loadAddon (const char *addon);
 int loadIndices (uio_DirHandle *baseDir);
-BOOLEAN isAddonAvailable (const char *addon_name);
+bool isAddonAvailable (const char *addon_name);
 
 bool setGammaCorrection (float gamma);
 

@@ -73,10 +73,10 @@
 #define GENERATE_PERIMETER(a) \
 		(a * ORIGINAL_MAP_WIDTH / ORIGINAL_MAP_HEIGHT)
 
-static BOOLEAN DoIpFlight (SOLARSYS_STATE *pSS);
+static bool DoIpFlight (SOLARSYS_STATE *pSS);
 static void DrawInnerPlanets (PLANET_DESC* planet);
 static void DrawOuterPlanets(SIZE radius);
-static void DrawSystem (SIZE radius, BOOLEAN IsInnerSystem);
+static void DrawSystem (SIZE radius, bool IsInnerSystem);
 static void DrawInnerSystem (void);
 static void DrawOuterSystem (void);
 static void SetPlanetColorMap (PLANET_DESC *planet);
@@ -899,7 +899,7 @@ FreeSolarSys (void)
 
 	if (pSolarSysState->InIpFlight)
 	{
-		pSolarSysState->InIpFlight = FALSE;
+		pSolarSysState->InIpFlight = false;
 
 		if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
 		{
@@ -1323,9 +1323,9 @@ DrawOrbit (PLANET_DESC *planet, int sizeNumer, int dyNumer, int denom)
 	dr = RECT_TO_DRECT (r);
 	SetContextForeGroundColor (planet->temp_color);
 	if (!optUnscaledStarSystem)
-		DrawOval (&dr, RES_BOOL (1, 6), FALSE);
+		DrawOval (&dr, chooseIfHd (1, 6), false);
 	else
-		DrawOval (&dr, 1, FALSE);
+		DrawOval (&dr, 1, false);
 }
 
 static SIZE
@@ -1433,8 +1433,8 @@ ScreenCompass (COUNT index)
 	SIZE facing;
 	POINT scrLoc = GLOBAL (ShipStamp.origin);
 	EXTENT sisScr = {(COORD) SIS_SCREEN_WIDTH, (COORD)SIS_SCREEN_HEIGHT };
-	BOOLEAN westOfCenter = scrLoc.x < (sisScr.width >> 1);
-	BOOLEAN northOfCenter = scrLoc.y < (sisScr.height >> 1);
+	bool westOfCenter = scrLoc.x < (sisScr.width >> 1);
+	bool northOfCenter = scrLoc.y < (sisScr.height >> 1);
 	int quadrant = (westOfCenter ? 0 : 1) | (northOfCenter ? 0 : 2);
 
 	switch (quadrant)
@@ -1626,7 +1626,7 @@ leaveInnerSystem (PLANET_DESC *planet)
 	pSolarSysState->SunDesc[0].location =
 			planetOuterLocation (planetIndex (pSolarSysState, planet));
 	GLOBAL (ip_location) = pSolarSysState->SunDesc[0].location;
-	XFormIPLoc (&GLOBAL (ip_location), &GLOBAL (ShipStamp.origin), TRUE);
+	XFormIPLoc (&GLOBAL (ip_location), &GLOBAL (ShipStamp.origin), true);
 	ZeroVelocityComponents (&GLOBAL (velocity));
 
 	// Now the ship is in outer system (as per game logic)
@@ -1675,14 +1675,14 @@ enterOrbital (PLANET_DESC *planet)
 {
 	ZeroVelocityComponents (&GLOBAL (velocity));
 	pSolarSysState->pOrbitalDesc = planet;
-	pSolarSysState->InOrbit = TRUE;
+	pSolarSysState->InOrbit = true;
 }
 
-static BOOLEAN
+static bool
 CheckShipLocation (SIZE *newRadius)
 {
 	SIZE radius;
-	BOOLEAN SISonScreen;
+	bool SISonScreen;
 
 	radius = pSolarSysState->SunDesc[0].radius;
 	*newRadius = pSolarSysState->SunDesc[0].radius;
@@ -1701,7 +1701,7 @@ CheckShipLocation (SIZE *newRadius)
 			{
 				// The ship leaves IP.
 				GLOBAL (CurrentActivity) |= END_INTERPLANETARY;
-				return FALSE; // no location change
+				return false; // no location change
 			}
 
 			*newRadius = FindRadius (GLOBAL (ip_location),
@@ -1725,14 +1725,14 @@ CheckShipLocation (SIZE *newRadius)
 
 		}
 		
-		return TRUE;
+		return true;
 	}
 
 	if (!playerInInnerSystem ()
 			&& pointWithinRect (scaleRect, GLOBAL (ShipStamp.origin)))
 	{	// Outer zoom-in transition
 		*newRadius = FindRadius (GLOBAL (ip_location), radius);
-		return TRUE;
+		return true;
 	}
 
 	if (GLOBAL (autopilot.x) == ~0 && GLOBAL (autopilot.y) == ~0)
@@ -1743,21 +1743,21 @@ CheckShipLocation (SIZE *newRadius)
 			if (playerInInnerSystem ())
 			{	// Entering planet orbit (scans, etc.)
 				enterOrbital (planet);
-				return FALSE; // no location change
+				return false; // no location change
 			}
 			else
 			{	// Transition to inner system
 				enterInnerSystem (planet);
-				return TRUE;
+				return true;
 			}
 		}
 	}
 
-	return FALSE; // no location change
+	return false; // no location change
 }
 
 static void
-DrawSystemTransition (BOOLEAN inner)
+DrawSystemTransition (bool inner)
 {
 	SetTransitionSource (NULL);
 	BatchGraphics ();
@@ -1765,7 +1765,7 @@ DrawSystemTransition (BOOLEAN inner)
 		DrawInnerSystem ();
 	else
 		DrawOuterSystem ();
-	RedrawQueue (FALSE);
+	RedrawQueue (false);
 	ScreenTransition (optScrTrans, NULL);
 	UnbatchGraphics ();
 }
@@ -1806,11 +1806,11 @@ ScaleSystem (SIZE new_radius)
 	{
 		pSolarSysState->SunDesc[0].radius += step;
 		XFormIPLoc (&GLOBAL (ip_location), &GLOBAL (ShipStamp.origin),
-				TRUE);
+				true);
 
 		BatchGraphics ();
 		DrawOuterSystem ();
-		RedrawQueue (FALSE);
+		RedrawQueue (false);
 		UnbatchGraphics ();
 
 		SleepThread (ONE_SECOND / 30);
@@ -1818,24 +1818,24 @@ ScaleSystem (SIZE new_radius)
 	
 	// Final zoom step
 	pSolarSysState->SunDesc[0].radius = new_radius;
-	XFormIPLoc (&GLOBAL (ip_location), &GLOBAL (ShipStamp.origin), TRUE);
+	XFormIPLoc (&GLOBAL (ip_location), &GLOBAL (ShipStamp.origin), true);
 	
 	BatchGraphics ();
 	DrawOuterSystem ();
-	RedrawQueue (FALSE);
+	RedrawQueue (false);
 	UnbatchGraphics ();
 	
 #else // !SMOOTH_SYSTEM_ZOOM
 	RECT r;
 
 	pSolarSysState->SunDesc[0].radius = new_radius;
-	XFormIPLoc (&GLOBAL (ip_location), &GLOBAL (ShipStamp.origin), TRUE);
+	XFormIPLoc (&GLOBAL (ip_location), &GLOBAL (ShipStamp.origin), true);
 
 	GetContextClipRect (&r);
 	SetTransitionSource (&r);
 	BatchGraphics ();
 	DrawOuterSystem ();
-	RedrawQueue (FALSE);
+	RedrawQueue (false);
 	ScreenTransition (optScrTrans, &r);
 	UnbatchGraphics ();
 #endif // SMOOTH_SYSTEM_ZOOM
@@ -1892,7 +1892,7 @@ DrawTexturedBody (PLANET_DESC* planet, STAMP s)
 }
 
 void
-RotatePlanets (BOOLEAN IsInnerSystem)
+RotatePlanets (bool IsInnerSystem)
 {
 	PLANET_DESC *planet;
 	PLANET_DESC *moon;
@@ -1928,7 +1928,7 @@ RotatePlanets (BOOLEAN IsInnerSystem)
 static void
 IP_frame (void)
 {
-	BOOLEAN locChange;
+	bool locChange;
 	SIZE newRadius;
 
 	SetContext (SpaceContext);
@@ -1939,11 +1939,11 @@ IP_frame (void)
 	{
 		if (playerInInnerSystem ())
 		{	// Entering inner system
-			DrawSystemTransition (TRUE);
+			DrawSystemTransition (true);
 		}
 		else if (pSolarSysState->SunDesc[0].radius == newRadius)
 		{	// Leaving inner system to outer
-			DrawSystemTransition (FALSE);
+			DrawSystemTransition (false);
 		}
 		else
 		{	// Zooming outer system
@@ -1970,16 +1970,16 @@ IP_frame (void)
 				DrawOuterPlanets (pSolarSysState->SunDesc[0].radius);
 			}
 		}
-		RedrawQueue (FALSE);
-		DrawAutoPilotMessage (FALSE);
+		RedrawQueue (false);
+		DrawAutoPilotMessage (false);
 		UnbatchGraphics ();
 	}
 }
 
-static BOOLEAN
+static bool
 CheckZoomLevel (void)
 {
-	BOOLEAN InnerSystem;
+	bool InnerSystem;
 	POINT shipLoc;
 
 	InnerSystem = playerInInnerSystem ();
@@ -1992,7 +1992,7 @@ CheckZoomLevel (void)
 			MAX_ZOOM_RADIUS << 1);
 	if (!InnerSystem)
 	{	// Update ship stamp since the radius probably changed
-		XFormIPLoc (&shipLoc, &GLOBAL (ShipStamp.origin), TRUE);
+		XFormIPLoc (&shipLoc, &GLOBAL (ShipStamp.origin), true);
 	}
 
 	return InnerSystem;
@@ -2036,7 +2036,7 @@ static void
 DrawInnerSystem (void)
 {
 	ValidateInnerOrbits ();
-	DrawSystem (pSolarSysState->pOrbitalDesc->radius, TRUE);
+	DrawSystem (pSolarSysState->pOrbitalDesc->radius, true);
 	if (ANIMATED_SUN || optOrbitingPlanets || optTexturedPlanets)
 		DrawInnerPlanets (pSolarSysState->pOrbitalDesc);
 	DrawSISTitle (GLOBAL_SIS (PlanetName));
@@ -2046,7 +2046,7 @@ static void
 DrawOuterSystem (void)
 {
 	ValidateOrbits ();
-	DrawSystem (pSolarSysState->SunDesc[0].radius, FALSE);
+	DrawSystem (pSolarSysState->SunDesc[0].radius, false);
 	if (ANIMATED_SUN || optOrbitingPlanets || optTexturedPlanets)
 		DrawOuterPlanets (pSolarSysState->SunDesc[0].radius);
 	DrawHyperCoords (CurStarDescPtr->star_pt);
@@ -2147,7 +2147,7 @@ ResetSolarSys (void)
 	//   the same time. While quite rare, it's still possible.
 	CheckIntersect ();
 	
-	pSolarSysState->InIpFlight = TRUE;
+	pSolarSysState->InIpFlight = true;
 
 	playSpaceMusic ();
 }
@@ -2238,8 +2238,8 @@ EnterPlanetOrbit (void)
 static void
 InitSolarSys (void)
 {
-	BOOLEAN InnerSystem;
-	BOOLEAN Reentry;
+	bool InnerSystem;
+	bool Reentry;
 	PLANET_DESC *orbital;
 
 
@@ -2266,7 +2266,7 @@ InitSolarSys (void)
 	if (GetFrameCount (SunFrame) > 5)
 		ChangeSunColor ();
 
-	StarsFrame = GetStarBackGround (FALSE);
+	StarsFrame = GetStarBackGround (false);
 	
 	SetContext (SpaceContext);
 	SetContextFGFrame (Screen);
@@ -2325,10 +2325,10 @@ InitSolarSys (void)
 		{	// Starting a new game, NOT from load!
 			// We have to fade the screen in from intro or menu
 			DrawOuterSystem ();
-			RedrawQueue (FALSE);
+			RedrawQueue (false);
 			UnbatchGraphics ();
 			FadeScreen (FadeAllToColor, ONE_SECOND / 2);
-			NewGameInit = TRUE;
+			NewGameInit = true;
 
 			LastActivity = 0;
 		}
@@ -2350,7 +2350,7 @@ InitSolarSys (void)
 			{
 				DrawOuterSystem ();
 			}
-			RedrawQueue (FALSE);
+			RedrawQueue (false);
 			ScreenTransition (optScrTrans, NULL);
 			UnbatchGraphics ();
 
@@ -2489,7 +2489,7 @@ DrawInnerPlanets (PLANET_DESC *planet)
 
 	if (optTexturedPlanets)
 	{	// Draw the planet image
-		RotatePlanets (TRUE);
+		RotatePlanets (true);
 		DrawTexturedBody (planet, s);
 
 		// Draw the moon images
@@ -2553,7 +2553,7 @@ DrawOuterPlanets (SIZE radius)
 		{	// It's a planet
 			if (optTexturedPlanets)
 			{
-				RotatePlanets (FALSE);
+				RotatePlanets (false);
 				DrawTexturedBody (pCurDesc, pCurDesc->image);
 			}
 			else
@@ -2569,7 +2569,7 @@ DrawOuterPlanets (SIZE radius)
 }
 
 static void
-DrawSystem (SIZE radius, BOOLEAN IsInnerSystem)
+DrawSystem (SIZE radius, bool IsInnerSystem)
 {
 	BYTE i;
 	PLANET_DESC *pCurDesc;
@@ -2708,7 +2708,7 @@ CreateStarBackGround (RandomContext *SysRNG, FRAME nebula, FRAME junk)
 	CONTEXT oldContext;
 	RECT clipRect;
 	FRAME frame;
-	BOOLEAN hdScaled = (!optUnscaledStarSystem || !IS_HD);
+	bool hdScaled = (!optUnscaledStarSystem || !IS_HD);
 
 	// Use SpaceContext to find out the dimensions of the background
 	oldContext = SetContext (SpaceContext);
@@ -2741,7 +2741,7 @@ CreateStarBackGround (RandomContext *SysRNG, FRAME nebula, FRAME junk)
 }
 
 FRAME
-GetStarBackGround (BOOLEAN encounter)
+GetStarBackGround (bool encounter)
 {
 	RandomContext *SysRNG;
 	POINT location;
@@ -2792,7 +2792,7 @@ GetStarBackGround (BOOLEAN encounter)
 }
 
 void
-XFormIPLoc (POINT *pIn, POINT *pOut, BOOLEAN ToDisplay)
+XFormIPLoc (POINT *pIn, POINT *pOut, bool ToDisplay)
 {
 	if (ToDisplay)
 		*pOut = locationToDisplay (*pIn,
@@ -2843,7 +2843,7 @@ ExploreSolarSys (void)
 	SetMenuSounds (MENU_SOUND_NONE, MENU_SOUND_NONE);
 	SolarSysState.InputFunc = DoIpFlight;
 
-	DoInput (&SolarSysState, FALSE);
+	DoInput (&SolarSysState, false);
 
 	UninitSolarSys ();
 	pSolarSysState = 0;
@@ -2970,7 +2970,7 @@ GetPlanetOrMoonName (CHAR_T *buf, COUNT bufsize)
 	CHAR_T *named;
 	CHAR_T *tempbuf;
 	int moon, i;
-	BOOLEAN name_has_suffix = FALSE;
+	bool name_has_suffix = false;
 
 	named = GetNamedPlanetaryBody ();
 	if (named)
@@ -3003,7 +3003,7 @@ GetPlanetOrMoonName (CHAR_T *buf, COUNT bufsize)
 	{
 		if(tempbuf[i-1] == 'A' || tempbuf[i-1] == 'B'
 				|| tempbuf[i-1] == 'C' || tempbuf[i-1] == 'D')
-			name_has_suffix = TRUE;
+			name_has_suffix = true;
 	}
 
 	if (bufsize >= 3 && !name_has_suffix)
@@ -3053,27 +3053,27 @@ SaveSolarSysLocation (void)
 	}
 }
 
-static BOOLEAN
+static bool
 DoSolarSysMenu (MENU_STATE *pMS)
 {
-	BOOLEAN select = PulsedInputState.menu[KEY_MENU_SELECT];
-	BOOLEAN handled;
+	bool select = PulsedInputState.menu[KEY_MENU_SELECT];
+	bool handled;
 
 	if ((GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
 			|| GLOBAL_SIS (CrewEnlisted) == (COUNT)~0)
-		return FALSE;
+		return false;
 
 	handled = DoMenuChooser (pMS, PM_STARMAP);
 	if (handled)
-		return TRUE;
+		return true;
 
 	if (LastActivity == CHECK_LOAD)
-		select = TRUE; // Selected LOAD from main menu
+		select = true; // Selected LOAD from main menu
 
 	if (!select)
-		return TRUE;
+		return true;
 
-	SetFlashRect (NULL, FALSE);
+	SetFlashRect (NULL, false);
 
 	switch (pMS->CurState)
 	{
@@ -3082,7 +3082,7 @@ DoSolarSysMenu (MENU_STATE *pMS)
 			if (GLOBAL (CurrentActivity) & START_ENCOUNTER)
 			{	// Invoked Talking Pet or a Caster for Ilwrath
 				// Going into conversation
-				return FALSE;
+				return false;
 			}
 			break;
 		case CARGO:
@@ -3093,12 +3093,12 @@ DoSolarSysMenu (MENU_STATE *pMS)
 			break;
 		case GAME_MENU:
 			if (!GameOptions ())
-				return FALSE; // abort or load
+				return false; // abort or load
 			break;
 		case STARMAP:
 			StarMap ();
 			if (GLOBAL (CurrentActivity) & CHECK_ABORT)
-				return FALSE;
+				return false;
 
 			TransitionSystemIn ();
 
@@ -3106,7 +3106,7 @@ DoSolarSysMenu (MENU_STATE *pMS)
 				DrawMenuStateStrings (PM_STARMAP, NAVIGATION);
 			// Fall through !!!
 		case NAVIGATION:
-			return FALSE;
+			return false;
 	}
 
 	if (!(GLOBAL (CurrentActivity) & CHECK_ABORT))
@@ -3117,10 +3117,10 @@ DoSolarSysMenu (MENU_STATE *pMS)
 				pMS->CurState = NAVIGATION;
 			DrawMenuStateStrings (PM_STARMAP, pMS->CurState);
 		}
-		SetFlashRect (SFR_MENU_3DO, FALSE);
+		SetFlashRect (SFR_MENU_3DO, false);
 	}
 
-	return TRUE;
+	return true;
 }
 
 static void
@@ -3141,27 +3141,27 @@ SolarSysMenu (void)
 	}
 
 	DrawStatusMessage (NULL);
-	SetFlashRect (SFR_MENU_3DO, FALSE);
+	SetFlashRect (SFR_MENU_3DO, false);
 
 	SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
 	MenuState.InputFunc = DoSolarSysMenu;
-	DoInput (&MenuState, TRUE);
+	DoInput (&MenuState, true);
 
 	if (!(GLOBAL (CurrentActivity) & CHECK_LOAD))
 		DrawMenuStateStrings (PM_STARMAP, -NAVIGATION);
 }
 
-static BOOLEAN
+static bool
 DoIpFlight (SOLARSYS_STATE *pSS)
 {
 	//static TimeCount NextTime; unused
-	BOOLEAN cancel = PulsedInputState.menu[KEY_MENU_CANCEL];
+	bool cancel = PulsedInputState.menu[KEY_MENU_CANCEL];
 
 	if (pSS->InOrbit)
 	{	// CheckShipLocation() or InitSolarSys() sent us to orbital
 		EnterPlanetOrbit ();
 		SetMenuSounds (MENU_SOUND_NONE, MENU_SOUND_NONE);
-		pSS->InOrbit = FALSE;
+		pSS->InOrbit = false;
 	}
 	else if (!NewGameInit && (cancel || LastActivity == CHECK_LOAD))
 	{
@@ -3190,7 +3190,7 @@ DoIpFlight (SOLARSYS_STATE *pSS)
 		if (NewGameInit)
 		{
 			SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
-			SettingsMenu (FALSE);
+			SettingsMenu (false);
 			SolarSysMenu ();
 			SetMenuSounds (MENU_SOUND_NONE, MENU_SOUND_NONE);
 		}
