@@ -108,13 +108,13 @@ function (FetchSDL)
 	set (CMAKE_MESSAGE_LOG_LEVEL "STATUS") # Re-enable status messages
 
 	# Set variables
-	set (SDL2_FOUND TRUE PARENT_SCOPE)
-	set (SDL2_LIBRARIES SDL2 PARENT_SCOPE)
-	set (SDL2_INCLUDE_DIRS
-			${CMAKE_CURRENT_BINARY_DIR}/thirdparty/SDL2/include
-			${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/SDL2/include
-			PARENT_SCOPE
-	)
+	#set (SDL2_FOUND TRUE PARENT_SCOPE)
+	# set (SDL2_LIBRARIES SDL2 PARENT_SCOPE)
+	# set (SDL2_INCLUDE_DIRS
+	# 		${CMAKE_CURRENT_BINARY_DIR}/thirdparty/SDL2/include
+	# 		${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/SDL2/include
+	# 		PARENT_SCOPE
+	# )
 
 	file (RELATIVE_PATH SDL2_REL_PATH
 			${CMAKE_SOURCE_DIR}
@@ -123,6 +123,19 @@ function (FetchSDL)
 	set (SDL_DIR           "${SDL2_REL_PATH}" PARENT_SCOPE)
 	set (SDL2_CFLAGS_OTHER ""                 PARENT_SCOPE)
 	set (SDL2_VERSION      "2.32.8"           PARENT_SCOPE)
+
+	
+	add_custom_command(TARGET ${PROJECT_NAME}  PRE_LINK
+		COMMAND ${CMAKE_COMMAND} -E copy_if_different
+			$<TARGET_FILE:SDL2::SDL2>
+			$<TARGET_FILE_DIR:${PROJECT_NAME}>
+	)
+	add_custom_command(TARGET ${PROJECT_NAME}  PRE_LINK
+		COMMAND ${CMAKE_COMMAND} -E copy_if_different
+			$<TARGET_FILE:SDL2::SDL2main>
+			$<TARGET_FILE_DIR:${PROJECT_NAME}>
+	)
+
 endfunction ()
 
 function (FetchPNG)
@@ -167,6 +180,11 @@ function (FetchPNG)
 	set (PNG_CFLAGS_OTHER ""       PARENT_SCOPE)
 	set (PNG_VERSION      "1.6.54" PARENT_SCOPE)
 
+	add_custom_command(TARGET ${PROJECT_NAME}  PRE_LINK
+	COMMAND ${CMAKE_COMMAND} -E copy_if_different
+		$<TARGET_FILE:PNG::PNG>
+		$<TARGET_FILE_DIR:${PROJECT_NAME}>
+	)
 endfunction ()
 
 function (FetchOgg)
@@ -187,16 +205,6 @@ function (FetchOgg)
 
 	set (CMAKE_MESSAGE_LOG_LEVEL "STATUS") # Re-enable status messages
 
-	# Set variables
-	set (OGG_FOUND TRUE PARENT_SCOPE)
-	set (OGG_LIBRARIES ogg PARENT_SCOPE)
-	set (OGG_LIBRARY "${CMAKE_CURRENT_BINARY_DIR}/thirdparty/libogg/")
-	set (OGG_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/libogg/include/")
-	set (OGG_INCLUDE_DIRS
-			${OGG_LIBRARY}/include
-			${OGG_INCLUDE_DIR}
-			PARENT_SCOPE
-	)
 	set (OGG_VERSION "1.3.6" PARENT_SCOPE)
 endfunction ()
 
@@ -214,32 +222,28 @@ function (FetchVorbis)
 			DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 			CMAKE_ARGS
 			-DBUILD_TESTING=OFF
+			-DBUILD_FRAMEWORK=OFF
 			
 	)
 	FetchContent_MakeAvailable (libvorbis)
 
 	set (CMAKE_MESSAGE_LOG_LEVEL "STATUS") # Re-enable status messages
 
-	# Set variables
-	set (VORBIS_FOUND TRUE PARENT_SCOPE)
-	set (VORBIS_LIBRARIES vorbis PARENT_SCOPE)
-	set (VORBIS_INCLUDE_DIRS
-			${CMAKE_CURRENT_BINARY_DIR}/thirdparty/libvorbis/include
-			${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/libvorbis/include
-			PARENT_SCOPE
-	)
 	set (VORBIS_VERSION "1.3.7" PARENT_SCOPE)
+	set (UQM_OGG_CODEC "standard"   PARENT_SCOPE)
 
-	set (VORBISFILE_FOUND TRUE PARENT_SCOPE)
-	set (VORBISFILE_LIBRARIES vorbisfile PARENT_SCOPE)
-	set (VORBISFILE_INCLUDE_DIRS
-			${CMAKE_CURRENT_BINARY_DIR}/thirdparty/libvorbis/include
-			${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/libvorbis/include
-			PARENT_SCOPE
+	add_custom_command(TARGET ${PROJECT_NAME}  PRE_LINK
+		COMMAND ${CMAKE_COMMAND} -E copy_if_different
+			$<TARGET_FILE:Vorbis::vorbis>
+			$<TARGET_FILE_DIR:${PROJECT_NAME}>
 	)
 
-	set (OGGVORBIS     "vorbisfile" PARENT_SCOPE)
-	set (UQM_OGG_CODEC "standard"   PARENT_SCOPE)
+	add_custom_command(TARGET ${PROJECT_NAME}  PRE_LINK
+		COMMAND ${CMAKE_COMMAND} -E copy_if_different
+			$<TARGET_FILE:Vorbis::vorbisfile>
+			$<TARGET_FILE_DIR:${PROJECT_NAME}>
+	)
+	
 endfunction ()
 
 function (FetchZLIB)
@@ -294,22 +298,13 @@ function (FetchZLIB)
 	# ---- Modern target for your code ----
 	add_library(ZLIB::ZLIB ALIAS ${_zlib_target})
 
-	# Set variables
-	# if (TARGET zlibstatic)
-	# 	set (ZLIB_TARGET zlibstatic)
-	# elseif (TARGET zlib)
-	# 	set (ZLIB_TARGET zlib)
-	# else (TARGET zlib)
-	# 	set (ZLIB_TARGET z)
-	# endif ()
-
-	#set (ZLIB_FOUND TRUE PARENT_SCOPE)
-	#set (ZLIB_LIBRARY ${ZLIB_TARGET} PARENT_SCOPE)
-	#set (ZLIB_INCLUDE_DIR 
-	#	${zlib_SOURCE_DIR}
-	#	${zlib_BINARY_DIR}
-	#	 PARENT_SCOPE)
 	set (ZLIB_VERSION "1.3.1" PARENT_SCOPE)
+
+	add_custom_command(TARGET ${PROJECT_NAME}  PRE_LINK
+		COMMAND ${CMAKE_COMMAND} -E copy_if_different
+			$<TARGET_FILE:ZLIB::ZLIB>
+			$<TARGET_FILE_DIR:${PROJECT_NAME}>
+	)
 endfunction ()
 
 function (FetchOpenAL)
@@ -322,18 +317,45 @@ function (FetchOpenAL)
 		SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/OpenAL-Soft
 		DOWNLOAD_NO_PROGRESS TRUE
 		DOWNLOAD_EXTRACT_TIMESTAMP TRUE
-			
-		#CMAKE_ARGS
-		#-DBUILD_SHARED_LIBS=OFF
-		#-DZLIB_BUILD_EXAMPLES=OFF
-       # CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR> -DLIBTYPE=SHARED
-
 	)
 	FetchContent_MakeAvailable (OpenAL-Lib)
 
-	set (OPENAL_INCLUDE_DIRS
-			${CMAKE_CURRENT_BINARY_DIR}/thirdparty/OpenAL-Soft/include/AL
-			${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/OpenAL-Soft/include/AL
-			PARENT_SCOPE
+	if (CMAKE_SIZEOF_VOID_P EQUAL 8)
+		set(_openal_arch Win64)
+	elseif (CMAKE_SIZEOF_VOID_P EQUAL 4)
+		set(_openal_arch Win32)
+	else()
+		message(FATAL_ERROR "Unknown pointer size")
+	endif()
+
+	add_Library(OpenAL::OpenAL SHARED IMPORTED)
+	set(_openal_root "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/OpenAL-Soft/")
+
+	# set header location
+	set_target_properties(OpenAL::OpenAL PROPERTIES
+    	INTERFACE_INCLUDE_DIRECTORIES
+        "${_openal_root}/include/AL"
 	)
+
+	# set import lib and dll locations.
+	set_target_properties(OpenAL::OpenAL PROPERTIES
+		IMPORTED_IMPLIB
+			"${_openal_root}/libs/${_openal_arch}/OpenAL32.lib"
+		IMPORTED_LOCATION
+			"${_openal_root}/bin/${_openal_arch}/soft_oal.dll"
+	)
+
+	set(_openal_target_dll_file "${CMAKE_CURRENT_BINARY_DIR}/OpenAL32.dll")
+
+	add_custom_command(TARGET ${PROJECT_NAME}  
+		PRE_LINK
+    	COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        	$<TARGET_FILE:OpenAL::OpenAL>
+        	${_openal_target_dll_file}
+	)
+	# set (OPENAL_INCLUDE_DIRS
+	# 		${CMAKE_CURRENT_BINARY_DIR}/thirdparty/OpenAL-Soft/include/AL
+	# 		${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/OpenAL-Soft/include/AL
+	# 		PARENT_SCOPE
+	# )
 endfunction()

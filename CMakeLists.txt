@@ -1644,9 +1644,9 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/src/regex"
     "${SDL2_INCLUDE_DIRS}"
 	"${PNG_INCLUDE_DIRS}"
-	"${ZLIB_INCLUDE_DIR}"
-    "${OGG_INCLUDE_DIRS}"
-	"${VORBISFILE_INCLUDE_DIRS}"
+#	"${ZLIB_INCLUDE_DIR}"
+ #   "${OGG_INCLUDE_DIRS}"
+#	"${VORBISFILE_INCLUDE_DIRS}"
     "${OPENAL_INCLUDE_DIRS}"
 )
 
@@ -1750,35 +1750,13 @@ add_custom_command_if(
 # Post build events
 ################################################################################
 
-add_custom_command(TARGET ${PROJECT_NAME}  PRE_LINK
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        $<TARGET_FILE:SDL2::SDL2>
-        $<TARGET_FILE_DIR:${PROJECT_NAME}>
-)
-add_custom_command(TARGET ${PROJECT_NAME}  PRE_LINK
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        $<TARGET_FILE:SDL2::SDL2main>
-        $<TARGET_FILE_DIR:${PROJECT_NAME}>
-)
 
-add_custom_command(TARGET ${PROJECT_NAME}  PRE_LINK
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        $<TARGET_FILE:ZLIB::ZLIB>
-        $<TARGET_FILE_DIR:${PROJECT_NAME}>
-)
 
-add_custom_command(TARGET ${PROJECT_NAME}  PRE_LINK
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        $<TARGET_FILE:${VORBIS_LIBRARIES}>
-        $<TARGET_FILE_DIR:${PROJECT_NAME}>
-)
 
-add_custom_command(TARGET ${PROJECT_NAME}  PRE_LINK
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        $<TARGET_FILE:PNG::PNG>
-        $<TARGET_FILE_DIR:${PROJECT_NAME}>
-)
-message(STATUS "ZLIB_LIBRARIES = ${ZLIB_LIBRARIES}")
+
+
+
+
 ################################################################################
 # Dependencies
 ################################################################################
@@ -1790,7 +1768,9 @@ set(ADDITIONAL_LIBRARY_DEPENDENCIES
     "SDL2::SDL2main"
     "PNG::PNG;"
     "ZLIB::ZLIB;"
-    "${VORBIS_LIBRARIES};"
+    "Vorbis::vorbis;"
+    "Vorbis::vorbisfile;"
+    "OpenAL::OpenAL;"
     "ws2_32"
 )
 #find_library(GOTLIBS, "${ADDITIONAL_LIBRARY_DEPENDENCIES}" PATHS "${CMAKE_SOURCE_DIR}")
