@@ -1644,7 +1644,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/src/regex"
     "${SDL2_INCLUDE_DIRS}"
 	"${PNG_INCLUDE_DIRS}"
-	"${ZLIB_INCLUDE_DIRS_UQM}"
+	"${ZLIB_INCLUDE_DIR}"
     "${OGG_INCLUDE_DIRS}"
 	"${VORBISFILE_INCLUDE_DIRS}"
     "${OPENAL_INCLUDE_DIRS}"
@@ -1740,29 +1740,79 @@ add_custom_command_if(
     TARGET ${PROJECT_NAME}
     POST_BUILD
     COMMANDS
-    COMMAND       $<CONFIG:Debug> xcopy /Y "$<SHELL_PATH:$<TARGET_FILE:${PROJECT_NAME}>>" "$ENV{LocalDebuggerWorkingDirectory}"
+    COMMAND     $<CONFIG:Debug> xcopy /Y "$<SHELL_PATH:$<TARGET_FILE:${PROJECT_NAME}>>" "$ENV{LocalDebuggerWorkingDirectory}"
     COMMAND     $<CONFIG:Release> xcopy /Y "$<SHELL_PATH:$<TARGET_FILE:${PROJECT_NAME}>>" "$ENV{LocalDebuggerWorkingDirectory}"
     COMMAND     $<CONFIG:Release> editbin /REBASE:BASE=0x400000 /DYNAMICBASE:NO "$ENV{LocalDebuggerWorkingDirectory}$<TARGET_FILE_NAME:${PROJECT_NAME}>"
     COMMENT "Stripping debug info..."
 )
 
 ################################################################################
+# Post build events
+################################################################################
+
+add_custom_command(TARGET ${PROJECT_NAME}  PRE_LINK
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        $<TARGET_FILE:SDL2::SDL2>
+        $<TARGET_FILE_DIR:${PROJECT_NAME}>
+)
+add_custom_command(TARGET ${PROJECT_NAME}  PRE_LINK
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        $<TARGET_FILE:SDL2::SDL2main>
+        $<TARGET_FILE_DIR:${PROJECT_NAME}>
+)
+
+add_custom_command(TARGET ${PROJECT_NAME}  PRE_LINK
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        $<TARGET_FILE:ZLIB::ZLIB>
+        $<TARGET_FILE_DIR:${PROJECT_NAME}>
+)
+
+add_custom_command(TARGET ${PROJECT_NAME}  PRE_LINK
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        $<TARGET_FILE:${VORBIS_LIBRARIES}>
+        $<TARGET_FILE_DIR:${PROJECT_NAME}>
+)
+
+add_custom_command(TARGET ${PROJECT_NAME}  PRE_LINK
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        $<TARGET_FILE:PNG::PNG>
+        $<TARGET_FILE_DIR:${PROJECT_NAME}>
+)
+message(STATUS "ZLIB_LIBRARIES = ${ZLIB_LIBRARIES}")
+################################################################################
 # Dependencies
 ################################################################################
 set(ADDITIONAL_LIBRARY_DEPENDENCIES
-    "$<$<CONFIG:Debug>:"
-        "SDL2;"
-        "SDL2main"
-    ">"
     "$<$<CONFIG:Release>:"
-        "SDL2;"
-        "SDL2main;"
         "user32"
     ">"
-    "libpng16;"
-    "zdll;"
+    "SDL2::SDL2;"
+    "SDL2::SDL2main"
+    "PNG::PNG;"
+    "ZLIB::ZLIB;"
+    "${VORBIS_LIBRARIES};"
     "ws2_32"
 )
 #find_library(GOTLIBS, "${ADDITIONAL_LIBRARY_DEPENDENCIES}" PATHS "${CMAKE_SOURCE_DIR}")
 target_link_libraries(${PROJECT_NAME} PRIVATE "${ADDITIONAL_LIBRARY_DEPENDENCIES}")
+#copy_dlls(${PROJECT_NAME})
 
+
+
+message (STATUS "")
+message (STATUS "=== UQM-MegaMod Configuration ===")
+message (STATUS "Build Type:       ${CMAKE_BUILD_TYPE}")
+message (STATUS "Graphics Engine:  ${UQM_GFX_BACKEND} "
+		"(SDL_DIR: ${SDL_DIR})")
+message (STATUS "Sound Backend:    ${UQM_SOUND_BACKEND}")
+message (STATUS "Ogg Vorbis Codec: ${UQM_OGG_CODEC}")
+message (STATUS "Thread Library:   ${UQM_THREAD_LIB}")
+message (STATUS "Features:")
+message (STATUS "  Debug:        ${UQM_DEBUG}")
+message (STATUS "  Strict Debug: ${UQM_STRICT_DEBUG}")
+message (STATUS "  Joystick:     ${UQM_JOYSTICK}")
+message (STATUS "  Netplay:      ${UQM_NETPLAY}")
+message (STATUS "  ZIP I/O:      ${UQM_ZIP_IO}")
+message (STATUS "  Platform Acceleration: ${UQM_PLATFORM_ACCEL}")
+message (STATUS "  Internal MikMod:       ${UQM_USE_INTERNAL_MIKMOD}")
+message (STATUS "  Internal Lua:          ${UQM_USE_INTERNAL_LUA}")

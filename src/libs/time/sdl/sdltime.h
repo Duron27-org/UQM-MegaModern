@@ -21,7 +21,7 @@
 #define LIBS_TIME_SDL_SDLTIME_H_
 
 #include "port.h"
-#include SDL_INCLUDE(SDL.h)
+#include "SDL.h"
 #include "../timecommon.h"
 
 #define NativeInitTimeSystem()

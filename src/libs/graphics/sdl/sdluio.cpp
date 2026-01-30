@@ -18,9 +18,9 @@
 
 #include "port.h"
 #include "libs/uio.h"
-#include SDL_INCLUDE(SDL.h)
-#include SDL_INCLUDE(SDL_error.h)
-#include SDL_INCLUDE(SDL_rwops.h)
+#include "SDL.h"
+#include "SDL_error.h"
+#include "SDL_rwops.h"
 #include "libs/memlib.h"
 #include "png2sdl.h"
 #include <errno.h>

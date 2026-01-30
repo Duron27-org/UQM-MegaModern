@@ -72,6 +72,20 @@ macro(append_list list libraries condition)
     endif()
 endmacro()
 
+function(copy_dlls target)
+    if(WIN32)
+        add_custom_command(
+            TARGET "${target}"
+            POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy
+                "$<TARGET_RUNTIME_DLLS:${target}>"
+                "$<TARGET_FILE_DIR:${target}>"
+            USES_TERMINAL
+            COMMAND_EXPAND_LISTS
+        )
+    endif()
+endfunction()
+
 function (FetchSDL)
 	message (STATUS "Fetching SDL2...")
 
@@ -143,12 +157,13 @@ function (FetchPNG)
 
 	# Set variables
 	set (PNG_FOUND TRUE PARENT_SCOPE)
-	set (PNG_LIBRARIES png_static PARENT_SCOPE)
-	set (PNG_INCLUDE_DIRS
-			${CMAKE_CURRENT_BINARY_DIR}/thirdparty/libpng
-			${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/libpng
-			PARENT_SCOPE
-	)
+	#set (PNG_LIBRARIES png_static PARENT_SCOPE)
+	#set (PNG_INCLUDE_DIRS
+	#		${CMAKE_CURRENT_BINARY_DIR}/thirdparty/libpng
+	#		${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/libpng
+	#		PARENT_SCOPE
+	#)
+	add_library(PNG::PNG ALIAS png_static)
 	set (PNG_CFLAGS_OTHER ""       PARENT_SCOPE)
 	set (PNG_VERSION      "1.6.54" PARENT_SCOPE)
 
@@ -240,32 +255,60 @@ function (FetchZLIB)
 			DOWNLOAD_NO_PROGRESS TRUE
 			DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 			CMAKE_ARGS
-			-DBUILD_SHARED_LIBS=OFF
+			-DBUILD_SHARED_LIBS=ON
 			-DZLIB_BUILD_EXAMPLES=OFF
 			)
 	FetchContent_MakeAvailable (zlib)
 
 	set (CMAKE_MESSAGE_LOG_LEVEL "STATUS") # Re-enable status messages
 
-	# Set variables
+	# Pick the actual zlib target
 	if (TARGET zlibstatic)
-		set (ZLIB_TARGET zlibstatic)
+		set(_zlib_target zlibstatic)
+		set(_zlib_libname zlibstatic)
 	elseif (TARGET zlib)
-		set (ZLIB_TARGET zlib)
-	else (TARGET zlib)
-		set (ZLIB_TARGET z)
-	endif ()
+		set(_zlib_target zlib)
+		set(_zlib_libname zlib)
+	else()
+		message(FATAL_ERROR "No zlib target found")
+	endif()
 
-	set (ZLIB_FOUND TRUE PARENT_SCOPE)
-	set (ZLIB_LIBRARY ${ZLIB_TARGET} PARENT_SCOPE)
-	set (ZLIB_INCLUDE_DIR 
-		${zlib_SOURCE_DIR}
-		${zlib_BINARY_DIR}
-		 PARENT_SCOPE)
-	set (ZLIB_INCLUDE_DIRS_UQM
-		"${zlib_SOURCE_DIR}"
-		"${zlib_BINARY_DIR}"
-		PARENT_SCOPE)
+	# ---- Legacy variables for FindZLIB (libpng) ----
+
+	# Include dir (configure-time safe)
+	set(ZLIB_INCLUDE_DIR
+		"${zlib_SOURCE_DIR};${zlib_BINARY_DIR}"
+		CACHE PATH "ZLIB include directory"
+		FORCE
+	)
+
+	# Library path (configure-time safe, multi-config safe)
+	set(ZLIB_LIBRARY
+		"${zlib_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${_zlib_libname}${CMAKE_STATIC_LIBRARY_SUFFIX}"
+		CACHE FILEPATH "ZLIB library"
+		FORCE
+	)
+	#message(WARNING "zlib_lib=${ZLIB_LIBRARY}")
+	set(ZLIB_FOUND TRUE CACHE BOOL "ZLIB found" FORCE)
+
+	# ---- Modern target for your code ----
+	add_library(ZLIB::ZLIB ALIAS ${_zlib_target})
+
+	# Set variables
+	# if (TARGET zlibstatic)
+	# 	set (ZLIB_TARGET zlibstatic)
+	# elseif (TARGET zlib)
+	# 	set (ZLIB_TARGET zlib)
+	# else (TARGET zlib)
+	# 	set (ZLIB_TARGET z)
+	# endif ()
+
+	#set (ZLIB_FOUND TRUE PARENT_SCOPE)
+	#set (ZLIB_LIBRARY ${ZLIB_TARGET} PARENT_SCOPE)
+	#set (ZLIB_INCLUDE_DIR 
+	#	${zlib_SOURCE_DIR}
+	#	${zlib_BINARY_DIR}
+	#	 PARENT_SCOPE)
 	set (ZLIB_VERSION "1.3.1" PARENT_SCOPE)
 endfunction ()
 

@@ -44,7 +44,7 @@
 #include "libs/math/random.h"
 #include "libs/input/input_common.h"
 
-#include SDL_INCLUDE(SDL_version.h)
+#include "SDL_version.h"
 
 static STRING SetupTab;
 

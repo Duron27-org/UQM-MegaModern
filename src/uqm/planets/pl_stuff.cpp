@@ -27,7 +27,7 @@
 #include "libs/log.h"
 #include <math.h>
 
-#include SDL_INCLUDE(SDL.h)
+#include "SDL.h"
 
 // define USE_ADDITIVE_SCAN_BLIT to use additive blittting
 // instead of transparency for the planet scans.
