@@ -107,15 +107,6 @@ function (FetchSDL)
 
 	set (CMAKE_MESSAGE_LOG_LEVEL "STATUS") # Re-enable status messages
 
-	# Set variables
-	#set (SDL2_FOUND TRUE PARENT_SCOPE)
-	# set (SDL2_LIBRARIES SDL2 PARENT_SCOPE)
-	# set (SDL2_INCLUDE_DIRS
-	# 		${CMAKE_CURRENT_BINARY_DIR}/thirdparty/SDL2/include
-	# 		${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/SDL2/include
-	# 		PARENT_SCOPE
-	# )
-
 	file (RELATIVE_PATH SDL2_REL_PATH
 			${CMAKE_SOURCE_DIR}
 			${sdl2_SOURCE_DIR}
@@ -170,12 +161,7 @@ function (FetchPNG)
 
 	# Set variables
 	set (PNG_FOUND TRUE PARENT_SCOPE)
-	#set (PNG_LIBRARIES png_static PARENT_SCOPE)
-	#set (PNG_INCLUDE_DIRS
-	#		${CMAKE_CURRENT_BINARY_DIR}/thirdparty/libpng
-	#		${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/libpng
-	#		PARENT_SCOPE
-	#)
+
 	add_library(PNG::PNG ALIAS png_static)
 	set (PNG_CFLAGS_OTHER ""       PARENT_SCOPE)
 	set (PNG_VERSION      "1.6.54" PARENT_SCOPE)
@@ -292,7 +278,7 @@ function (FetchZLIB)
 		CACHE FILEPATH "ZLIB library"
 		FORCE
 	)
-	#message(WARNING "zlib_lib=${ZLIB_LIBRARY}")
+	
 	set(ZLIB_FOUND TRUE CACHE BOOL "ZLIB found" FORCE)
 
 	# ---- Modern target for your code ----
@@ -353,9 +339,4 @@ function (FetchOpenAL)
         	$<TARGET_FILE:OpenAL::OpenAL>
         	${_openal_target_dll_file}
 	)
-	# set (OPENAL_INCLUDE_DIRS
-	# 		${CMAKE_CURRENT_BINARY_DIR}/thirdparty/OpenAL-Soft/include/AL
-	# 		${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/OpenAL-Soft/include/AL
-	# 		PARENT_SCOPE
-	# )
 endfunction()

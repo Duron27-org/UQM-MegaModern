@@ -4,8 +4,8 @@ set(CMAKE_SYSTEM_VERSION 10.0 CACHE STRING "" FORCE)
 
 project(UrQuanMastersMegaModern CXX)
 
-#set (CMAKE_CXX_STANDARD 17)
-#set (CMAKE_CXX_STANDARD_REQUIRED ON)
+set (CMAKE_CXX_STANDARD 17)
+set (CMAKE_CXX_STANDARD_REQUIRED ON)
 #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++")
 #set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -stdlib=libc++")
 
@@ -638,7 +638,7 @@ source_group("Source Files\\libs\\time\\sdl No. 4" FILES ${Source_Files__libs__t
 set(Source_Files__libs__uio
     "src/libs/uio/charhashtable.cpp"
     "src/libs/uio/charhashtable.h"
-#    "src/libs/uio/debug.cpp"
+    "src/libs/uio/debug.cpp"
     "src/libs/uio/debug.h"
     "src/libs/uio/defaultfs.cpp"
     "src/libs/uio/defaultfs.h"
@@ -649,7 +649,7 @@ set(Source_Files__libs__uio
     "src/libs/uio/getint.h"
     "src/libs/uio/gphys.cpp"
     "src/libs/uio/gphys.h"
-#    "src/libs/uio/hashtable.cpp"
+    "src/libs/uio/hashtable.cpp"
     "src/libs/uio/hashtable.h"
     "src/libs/uio/io.cpp"
     "src/libs/uio/io.h"
@@ -659,7 +659,7 @@ set(Source_Files__libs__uio
     "src/libs/uio/match.cpp"
     "src/libs/uio/match.h"
     "src/libs/uio/mem.h"
-#    "src/libs/uio/memdebug.cpp"
+    "src/libs/uio/memdebug.cpp"
     "src/libs/uio/memdebug.h"
     "src/libs/uio/mount.cpp"
     "src/libs/uio/mount.h"
@@ -1544,11 +1544,6 @@ add_executable(${PROJECT_NAME} ${ALL_FILES})
 # Dependencies
 ################################################################################
 
-#one way of avoiding warning about DOWNLOAD_EXTRACT_TIMESTAMP in CMake 3.24:
-#if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
-#    cmake_policy(SET CMP0135 NEW)
-#endif()
-
 find_package (SDL2 QUIET)
 if (SDL2_FOUND)
 	message (STATUS "Found SDL2: ${SDL2_VERSION}")
@@ -1641,13 +1636,10 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 ################################################################################
 target_include_directories(${PROJECT_NAME} PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/src;"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/regex"
-    "${SDL2_INCLUDE_DIRS}"
-	"${PNG_INCLUDE_DIRS}"
-#	"${ZLIB_INCLUDE_DIR}"
- #   "${OGG_INCLUDE_DIRS}"
-#	"${VORBISFILE_INCLUDE_DIRS}"
-    "${OPENAL_INCLUDE_DIRS}"
+ #   "${CMAKE_CURRENT_SOURCE_DIR}/src/regex"
+ #   "${SDL2_INCLUDE_DIRS}"
+#	"${PNG_INCLUDE_DIRS}"
+#    "${OPENAL_INCLUDE_DIRS}"
 )
 
 ################################################################################
@@ -1673,7 +1665,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
     "HAVE_ZIP;"
     "HAVE_JOYSTICK;"
     "NETPLAY;"
-    "ZLIB_DLL;"
+   # "ZLIB_DLL;"
     "USE_INTERNAL_MIKMOD;"
     "USE_INTERNAL_LUA;"
     "USE_PLATFORM_ACCEL;"
@@ -1775,7 +1767,6 @@ set(ADDITIONAL_LIBRARY_DEPENDENCIES
 )
 #find_library(GOTLIBS, "${ADDITIONAL_LIBRARY_DEPENDENCIES}" PATHS "${CMAKE_SOURCE_DIR}")
 target_link_libraries(${PROJECT_NAME} PRIVATE "${ADDITIONAL_LIBRARY_DEPENDENCIES}")
-#copy_dlls(${PROJECT_NAME})
 
 
 
