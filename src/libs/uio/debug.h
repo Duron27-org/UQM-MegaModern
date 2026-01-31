@@ -17,9 +17,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
+#pragma once
 
 #ifndef LIBS_UIO_DEBUG_H_
 #define LIBS_UIO_DEBUG_H_
+
+#include <stdio.h>
 
 void uio_debugInteractive(FILE *in, FILE *out, FILE *err);
 

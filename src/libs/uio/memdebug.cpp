@@ -27,41 +27,90 @@
 #include "uioutils.h"
 #include "types.h"
 #include "uioport.h"
+#include "libs/uio/iointrn.h"
 
-// I'm intentionally not including the .h files. It would only make things
-// messy, because the second arguments would be other pointers, which
-// would require typecasts of the functions in uio_MemDebug_logTypeInfo.
-extern void uio_DirHandle_print(FILE *out, const void *);
-extern void uio_printMountInfo(FILE *out, const void *);
-extern void uio_printMountTreeItem(FILE *out, const void *);
-extern void uio_printPathComp(FILE *out, const void *);
+
+struct uio_MemDebug_LogTypeInfo {
+	const char *name;
+	bool havePrintFunction;
+	int flags;
+#define uio_MemDebug_PRINT_ALLOC  0x1
+#define uio_MemDebug_PRINT_FREE   0x2
+#define uio_MemDebug_PRINT_REF    0x4
+#define uio_MemDebug_PRINT_UNREF  0x8
+#define uio_MemDebug_PRINT_ALL \
+		(uio_MemDebug_PRINT_ALLOC | uio_MemDebug_PRINT_FREE | \
+		uio_MemDebug_PRINT_REF | uio_MemDebug_PRINT_UNREF)
+};
 
 // Must be in the same order as in uio_MemDebug_LogTypes
 // Change the third field to have debug info printed for specific actions.
 // See memdebug.h file the possible values.
 const uio_MemDebug_LogTypeInfo uio_MemDebug_logTypeInfo[] = {
-	{ "uio_DirHandle",      uio_DirHandle_print,    0 },
-	{ "uio_FileSystemInfo", NULL,                   0 },
-	{ "uio_GPDir",          NULL,                   0 },
-	{ "uio_GPFile",         NULL,                   0 },
-	{ "uio_GPRoot",         NULL,                   0 },
-	{ "uio_Handle",         NULL,                   0 },
-	{ "uio_MountHandle",    NULL,                   0 },
-	{ "uio_MountInfo",      uio_printMountInfo,     0 },
-	{ "uio_MountTree",      NULL,                   0 },
-	{ "uio_MountTreeItem",  uio_printMountTreeItem, 0 },
-	{ "uio_PathComp",       uio_printPathComp,      0 },
-	{ "uio_PFileHandle",    NULL,                   0 },
-	{ "uio_PDirHandle",     NULL,                   0 },
-	{ "uio_PRoot",          NULL,                   0 },
-	{ "uio_Repository",     NULL,                   0 },
-	{ "uio_Stream",         NULL,                   0 },
-	{ "stdio_GPDirData",    NULL,                   0 },
+	{ "uio_DirHandle",      true,    0 },
+	{ "uio_FileSystemInfo", false,                   0 },
+	{ "uio_GPDir",          false,                   0 },
+	{ "uio_GPFile",         false,                   0 },
+	{ "uio_GPRoot",         false,                   0 },
+	{ "uio_Handle",         false,                   0 },
+	{ "uio_MountHandle",    false,                   0 },
+	{ "uio_MountInfo",      true,     0 },
+	{ "uio_MountTree",      false,                   0 },
+	{ "uio_MountTreeItem",  true, 0 },
+	{ "uio_PathComp",       true,      0 },
+	{ "uio_PFileHandle",    false,                   0 },
+	{ "uio_PDirHandle",     false,                   0 },
+	{ "uio_PRoot",          false,                   0 },
+	{ "uio_Repository",     false,                   0 },
+	{ "uio_Stream",         false,                   0 },
+	{ "stdio_GPDirData",    false,                   0 },
 #ifdef HAVE_ZIP
-	{ "zip_GPFileData",     NULL,                   0 },
-	{ "zip_GPDirData",      NULL,                   0 },
+	{ "zip_GPFileData",     false,                   0 },
+	{ "zip_GPDirData",      false,                   0 },
 #endif
 };
+
+void invokePrintFn(uio_MemDebug_LogType type, FILE* out, const void* arg)
+{
+	switch (type)
+	{
+	case uio_MemDebug_LogType_uio_DirHandle:
+		uio_DirHandle_print((const uio_DirHandle*)out, (FILE*)arg);
+		break;
+	case uio_MemDebug_LogType_uio_FileSystemInfo:
+	case uio_MemDebug_LogType_uio_GPDir:
+	case uio_MemDebug_LogType_uio_GPFile:
+	case uio_MemDebug_LogType_uio_GPRoot:
+	case uio_MemDebug_LogType_uio_Handle:
+	case uio_MemDebug_LogType_uio_MountHandle:
+		break;
+	case uio_MemDebug_LogType_uio_MountInfo:
+		uio_printMountInfo((FILE *)out, (const uio_MountInfo *)arg);
+		break;
+	case uio_MemDebug_LogType_uio_MountTree:
+		break;
+	case uio_MemDebug_LogType_uio_MountTreeItem:
+		uio_printMountTreeItem((FILE *)out, (const uio_MountTreeItem *)arg);
+		break;
+	case uio_MemDebug_LogType_uio_PathComp:
+		uio_printPathComp((FILE *)out, (const uio_PathComp *)arg);
+		break;
+	case uio_MemDebug_LogType_uio_PFileHandle:
+	case uio_MemDebug_LogType_uio_PDirHandle:
+	case uio_MemDebug_LogType_uio_PRoot:
+	case uio_MemDebug_LogType_uio_Repository:
+	case uio_MemDebug_LogType_uio_Stream:
+	case uio_MemDebug_LogType_stdio_GPDirData:
+		break;
+#ifdef HAVE_ZIP
+	case uio_MemDebug_LogType_zip_GPFileData:
+	case uio_MemDebug_LogType_zip_GPDirData:
+		break;
+#endif
+	default:
+		break;
+	}
+}
 
 HashTable_HashTable **uio_MemDebug_logs;
 
@@ -85,7 +134,7 @@ uio_MemDebug_init(void) {
 	assert((int) uio_MemDebug_numLogTypes ==
 			(sizeof uio_MemDebug_logTypeInfo /
 			sizeof uio_MemDebug_logTypeInfo[0]));
-	uio_MemDebug_logs = uio_malloc(uio_MemDebug_numLogTypes *
+	uio_MemDebug_logs = (HashTable_HashTable**)(uio_MemDebug_numLogTypes *
 			sizeof (HashTable_HashTable *));
 
 	for (i = 0; i < uio_MemDebug_numLogTypes; i++) {
@@ -94,7 +143,7 @@ uio_MemDebug_init(void) {
 				uio_MemDebug_pointerCompare,
 				uio_MemDebug_pointerCopy,
 				uio_MemDebug_pointerFree,
-				4, 0.85, 0.90);
+				nullptr, 4, 0.85, 0.90);
 	}
 }
 
@@ -163,7 +212,7 @@ uio_MemDebug_logDeallocation(uio_MemDebug_LogType type, void *ptr) {
 		uio_MemDebug_printPointer(stderr, type, ptr);
 		fprintf(stderr, "\n");
 	}
-	pointerInfo = HashTable_find(uio_MemDebug_logs[type], ptr);
+	pointerInfo = (uio_MemDebug_PointerInfo *)HashTable_find(uio_MemDebug_logs[type], ptr);
 	if (pointerInfo == NULL) {
 		fprintf(stderr, "Fatal: Attempt to free unallocated pointer "
 				"(%s *) %p.\n",
@@ -192,7 +241,7 @@ uio_MemDebug_logRef(uio_MemDebug_LogType type, void *ptr) {
 				uio_MemDebug_logTypeInfo[(int) type].name);
 		abort();
 	}
-	pointerInfo = HashTable_find(uio_MemDebug_logs[type], ptr);
+	pointerInfo = (uio_MemDebug_PointerInfo *)HashTable_find(uio_MemDebug_logs[type], ptr);
 	if (pointerInfo == NULL) {
 		fprintf(stderr, "Fatal: Attempt to increment reference to "
 				"unallocated pointer (%s *) %p.\n",
@@ -217,7 +266,7 @@ uio_MemDebug_logUnref(uio_MemDebug_LogType type, void *ptr) {
 				uio_MemDebug_logTypeInfo[(int) type].name);
 		abort();
 	}
-	pointerInfo = HashTable_find(uio_MemDebug_logs[type], ptr);
+	pointerInfo = (uio_MemDebug_PointerInfo *)HashTable_find(uio_MemDebug_logs[type], ptr);
 	if (pointerInfo == NULL) {
 		fprintf(stderr, "Fatal: Attempt to decrement reference to "
 				"unallocated pointer (%s *) %p.\n",
@@ -241,9 +290,9 @@ uio_MemDebug_logUnref(uio_MemDebug_LogType type, void *ptr) {
 void
 uio_MemDebug_printPointer(FILE *out, uio_MemDebug_LogType type, void *ptr) {
 	fprintf(out, "(%s *) %p", uio_MemDebug_logTypeInfo[(int) type].name, ptr);
-	if (uio_MemDebug_logTypeInfo[(int) type].printFunction != NULL) {
+	if (uio_MemDebug_logTypeInfo[(int) type].havePrintFunction) {
 		fprintf(out, ": ");
-		uio_MemDebug_logTypeInfo[(int) type].printFunction(out, ptr);
+		invokePrintFn(type, out, ptr);
 	}
 }
 
@@ -265,7 +314,7 @@ uio_MemDebug_printPointers(FILE *out) {
 	int i;
 
 	for (i = 0; i < uio_MemDebug_numLogTypes; i++)
-		uio_MemDebug_printPointersType(out, i);
+		uio_MemDebug_printPointersType(out, (uio_MemDebug_LogType)i);
 }
 
 static inline uio_MemDebug_PointerInfo *
@@ -283,7 +332,7 @@ uio_MemDebug_PointerInfo_delete(uio_MemDebug_PointerInfo *pointerInfo) {
 
 static inline uio_MemDebug_PointerInfo *
 uio_MemDebug_PointerInfo_alloc(void) {
-	return uio_malloc(sizeof (uio_MemDebug_PointerInfo));
+	return (uio_MemDebug_PointerInfo*)uio_malloc(sizeof (uio_MemDebug_PointerInfo));
 }
 
 static inline void

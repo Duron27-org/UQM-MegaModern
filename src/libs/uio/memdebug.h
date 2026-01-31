@@ -50,22 +50,7 @@ typedef enum {
 	uio_MemDebug_numLogTypes,  /* This needs to be the last entry */
 } uio_MemDebug_LogType;
 
-typedef void (uio_MemDebug_PrintFunction)(FILE *out, const void *arg);
 
-typedef struct uio_MemDebug_LogTypeInfo {
-	const char *name;
-	uio_MemDebug_PrintFunction *printFunction;
-	int flags;
-#define uio_MemDebug_PRINT_ALLOC  0x1
-#define uio_MemDebug_PRINT_FREE   0x2
-#define uio_MemDebug_PRINT_REF    0x4
-#define uio_MemDebug_PRINT_UNREF  0x8
-#define uio_MemDebug_PRINT_ALL \
-		(uio_MemDebug_PRINT_ALLOC | uio_MemDebug_PRINT_FREE | \
-		uio_MemDebug_PRINT_REF | uio_MemDebug_PRINT_UNREF)
-} uio_MemDebug_LogTypeInfo;
-
-extern const uio_MemDebug_LogTypeInfo uio_MemDebug_logTypeInfo[];
 
 typedef struct uio_MemDebug_PointerInfo {
 	int pointerRef;
