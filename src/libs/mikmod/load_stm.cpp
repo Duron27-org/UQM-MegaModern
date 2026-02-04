@@ -108,15 +108,23 @@ static BOOL STM_Test(void)
 	_mm_fseek(modreader, 20, SEEK_SET);
 	_mm_read_UBYTES(str, 44, modreader);
 	if (str[9] != 2)
+	{
 		return 0; /* STM Module = filetype 2 */
+	}
 
 	/* Prevent false positives for S3M files */
 	if (!memcmp(str + 40, "SCRM", 4))
+	{
 		return 0;
+	}
 
 	for (t = 0; t < STM_NTRACKERS; t++)
+	{
 		if (!memcmp(str, STM_Signatures[t], 8))
+		{
 			return 1;
+		}
+	}
 
 	return 0;
 }
@@ -124,9 +132,13 @@ static BOOL STM_Test(void)
 static BOOL STM_Init(void)
 {
 	if (!(mh = (STMHEADER*)MikMod_malloc(sizeof(STMHEADER))))
+	{
 		return 0;
+	}
 	if (!(stmbuf = (STMNOTE*)MikMod_calloc(64U * 4, sizeof(STMNOTE))))
+	{
 		return 0;
+	}
 
 	return 1;
 }
@@ -151,7 +163,9 @@ static void STM_ConvertNote(STMNOTE* n)
 	inf = n->cmdinf;
 
 	if ((ins) && (ins < 32))
+	{
 		UniInstrument(ins - 1);
+	}
 
 	/* special values of [SBYTE0] are handled here
 	   we have no idea if these strange values will ever be encountered.
@@ -164,11 +178,16 @@ static void STM_ConvertNote(STMNOTE* n)
 	else
 		/* if note < 251, then all three bytes are stored in the file */
 		if (note < 251)
+		{
 			UniNote((((note >> 4) + 2) * OCTAVE) + (note & 0xf));
+		}
 
 	if ((!(n->volcmd & 0x80)) && (vol < 65))
+	{
 		UniPTEffect(0xc, vol);
+	}
 	if (cmd != 255)
+	{
 		switch (cmd)
 		{
 			case 1: /* Axx set speed to xx */
@@ -200,7 +219,9 @@ static void STM_ConvertNote(STMNOTE* n)
 				break;
 			case 0: /* protracker arpeggio */
 				if (!inf)
+				{
 					break;
+				}
 				/* fall through */
 			case 0xa: /* Jxy arpeggio */
 				UniPTEffect(0x0, inf);
@@ -221,6 +242,7 @@ static void STM_ConvertNote(STMNOTE* n)
 				of.flags |= UF_PANNING;
 				break;
 		}
+	}
 }
 
 static UBYTE* STM_ConvertTrack(STMNOTE* n)
@@ -242,9 +264,13 @@ static BOOL STM_LoadPatterns(void)
 	int t, s, tracks = 0;
 
 	if (!AllocPatterns())
+	{
 		return 0;
+	}
 	if (!AllocTracks())
+	{
 		return 0;
+	}
 
 	/* Allocate temporary buffer for loading and converting the patterns */
 	for (t = 0; t < of.numpat; t++)
@@ -264,8 +290,12 @@ static BOOL STM_LoadPatterns(void)
 		}
 
 		for (s = 0; s < of.numchn; s++)
+		{
 			if (!(of.tracks[tracks++] = STM_ConvertTrack(stmbuf + s)))
+			{
 				return 0;
+			}
+		}
 	}
 	return 1;
 }
@@ -325,8 +355,12 @@ static BOOL STM_Load(BOOL curious)
 
 	/* set module variables */
 	for (t = 0; t < STM_NTRACKERS; t++)
+	{
 		if (!memcmp(mh->trackername, STM_Signatures[t], 8))
+		{
 			break;
+		}
+	}
 	of.modtype = MikMod_strdup(STM_Version[t]);
 	of.songname = DupStr(mh->songname, 20, 1); /* make a cstr of songname */
 	of.numpat = mh->numpat;
@@ -339,7 +373,9 @@ static BOOL STM_Load(BOOL curious)
 
 	t = 0;
 	if (!AllocPositions(0x80))
+	{
 		return 0;
+	}
 	/* 99 terminates the patorder list */
 	while ((mh->patorder[t] <= 99) && (mh->patorder[t] < mh->numpat))
 	{
@@ -351,15 +387,21 @@ static BOOL STM_Load(BOOL curious)
 		}
 	}
 	if (mh->patorder[t] <= 99)
+	{
 		t++;
+	}
 	of.numpos = t;
 	of.numtrk = of.numpat * of.numchn;
 	of.numins = of.numsmp = 31;
 
 	if (!AllocSamples())
+	{
 		return 0;
+	}
 	if (!STM_LoadPatterns())
+	{
 		return 0;
+	}
 	MikMod_ISA = _mm_ftell(modreader);
 	MikMod_ISA = (MikMod_ISA + 15) & 0xfffffff0; /* normalize */
 
@@ -371,7 +413,9 @@ static BOOL STM_Load(BOOL curious)
 		q->volume = mh->sample[t].volume;
 		q->length = mh->sample[t].length;
 		if (/*!mh->sample[t].volume || */ q->length == 1)
+		{
 			q->length = 0;
+		}
 		q->loopstart = mh->sample[t].loopbeg;
 		q->loopend = mh->sample[t].loopend;
 		q->seekpos = MikMod_ISA;
@@ -383,7 +427,9 @@ static BOOL STM_Load(BOOL curious)
 		q->flags = SF_SIGNED;
 
 		if (q->loopend && q->loopend != 0xffff)
+		{
 			q->flags |= SF_LOOP;
+		}
 	}
 	return 1;
 }
@@ -394,7 +440,9 @@ static CHAR* STM_LoadTitle(void)
 
 	_mm_fseek(modreader, 0, SEEK_SET);
 	if (!_mm_read_UBYTES(s, 20, modreader))
+	{
 		return NULL;
+	}
 
 	return (DupStr(s, 20, 1));
 }

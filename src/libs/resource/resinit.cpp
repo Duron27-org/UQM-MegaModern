@@ -105,7 +105,9 @@ newResourceDesc(const char* res_id, const char* resval)
 
 	result = (ResourceDesc*)HMalloc(sizeof(ResourceDesc));
 	if (result == NULL)
+	{
 		return NULL;
+	}
 
 	result->fname = (char*)HMalloc(pathlen + 1);
 	strncpy(result->fname, path, pathlen);
@@ -170,7 +172,9 @@ skipWhiteSpace(const char* start)
 {
 	const char* ptr = start;
 	while (isspace(*ptr))
+	{
 		ptr++;
+	}
 	return (ptr - start);
 }
 
@@ -250,10 +254,14 @@ DescriptorToColor(const char* descriptor, RESOURCE_DATA* resdata)
 		comps[3] = 0xff;
 	}
 	else
+	{
 		goto fail;
+	}
 
 	if (descriptor[bytesParsed] != '\0')
+	{
 		log_add(log_Warning, "Junk after color resource string.");
+	}
 
 	maxComponentValue = (1 << componentBits) - 1;
 
@@ -276,9 +284,13 @@ DescriptorToColor(const char* descriptor, RESOURCE_DATA* resdata)
 	}
 
 	if (componentBits == 5)
+	{
 		resdata->num = ((CC5TO8(comps[0]) << 24) | (CC5TO8(comps[1]) << 16) | (CC5TO8(comps[2]) << 8) | comps[3]);
+	}
 	else
+	{
 		resdata->num = ((comps[0] << 24) | (comps[1] << 16) | (comps[2] << 8) | comps[3]);
+	}
 
 	return;
 
@@ -492,7 +504,9 @@ bool InstallResTypeVectors(const char* resType, ResourceLoadFun* loadFun,
 
 	result = (ResourceDesc*)HMalloc(sizeof(ResourceDesc));
 	if (result == NULL)
+	{
 		return false;
+	}
 
 	result->fname = (char*)HMalloc(strlen(resType) + 1);
 	strncpy(result->fname, resType, typelen);
@@ -518,7 +532,9 @@ res_GetString(const char* key)
 	RESOURCE_INDEX idx = _get_current_index_header();
 	ResourceDesc* desc = lookupResourceDesc(idx, key);
 	if (!desc || !desc->resdata.str || strcmp(desc->vtable->resType, "STRING"))
+	{
 		return "";
+	}
 	/* TODO: Work out exact STRING semantics, specifically, the lifetime of
 	 *   the returned value. If caller is allowed to reference the returned
 	 *   value forever, STRING has to be ref-counted. */
@@ -671,7 +687,9 @@ bool res_Remove(const char* key)
 		if (oldDesc->resdata.ptr != NULL)
 		{
 			if (oldDesc->refcount > 0)
+			{
 				log_add(log_Warning, "WARNING: Replacing '%s' while it is live", key);
+			}
 			if (oldDesc->vtable && oldDesc->vtable->freeFun)
 			{
 				oldDesc->vtable->freeFun(oldDesc->resdata.ptr);

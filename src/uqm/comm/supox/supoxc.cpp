@@ -36,7 +36,7 @@ static LOCDATA supox_desc =
 		BLACK_COLOR_INIT, /* AlienTextBColor */
 		{0, 0}, /* AlienTextBaseline */
 		0,
- /* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
+		/* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
 		ALIGN_CENTER, /* AlienTextAlign */
 		VALIGN_TOP, /* AlienTextValign */
 		SUPOX_COLOR_MAP, /* AlienColorMap */
@@ -129,9 +129,13 @@ ExitConversation(RESPONSE_REF R)
 	setSegue(Segue_peace);
 
 	if (PLAYER_SAID(R, bye_neutral))
+	{
 		NPCPhrase(GOODBYE_NEUTRAL);
+	}
 	else if (PLAYER_SAID(R, what_do_i_do_now))
+	{
 		NPCPhrase(FIX_IT);
+	}
 	else if (PLAYER_SAID(R, thanks_now_we_eat_you))
 	{
 		NPCPhrase(HIDEOUS_MONSTERS);
@@ -141,16 +145,24 @@ ExitConversation(RESPONSE_REF R)
 		SET_GAME_STATE(SUPOX_VISITS, 0);
 	}
 	else if (PLAYER_SAID(R, bye_after_space))
+	{
 		NPCPhrase(GOODBYE_AFTER_SPACE);
+	}
 	else if (PLAYER_SAID(R, bye_before_space))
+	{
 		NPCPhrase(GOODBYE_BEFORE_SPACE);
+	}
 	else if (PLAYER_SAID(R, bye_allied_homeworld))
+	{
 		NPCPhrase(GOODBYE_ALLIED_HOMEWORLD);
+	}
 	else if (PLAYER_SAID(R, can_you_help))
 	{
 		NPCPhrase(HOW_HELP);
 		if (EscortFeasibilityStudy(SUPOX_SHIP) == 0)
+		{
 			NPCPhrase(DONT_NEED);
+		}
 		else
 		{
 			NPCPhrase(HAVE_4_SHIPS);
@@ -186,6 +198,7 @@ AlliedHome(RESPONSE_REF R)
 			SET_GAME_STATE(SUPOX_WAR_NEWS, 1);
 		}
 		else
+		{
 			switch (GET_GAME_STATE(SUPOX_WAR_NEWS))
 			{
 				case 0:
@@ -197,13 +210,16 @@ AlliedHome(RESPONSE_REF R)
 					News = 2;
 					break;
 			}
+		}
 
 		DISABLE_PHRASE(how_goes_war);
 	}
 	else if (PLAYER_SAID(R, learn_new_info))
 	{
 		if (NumVisits < 5)
+		{
 			NPCPhrase(NO_NEW_INFO);
+		}
 		else
 		{
 			NPCPhrase(SAMATRA);
@@ -216,9 +232,13 @@ AlliedHome(RESPONSE_REF R)
 	else if (PLAYER_SAID(R, what_now_homeworld))
 	{
 		if (NumVisits < 5)
+		{
 			NPCPhrase(UP_TO_YOU);
+		}
 		else
+		{
 			NPCPhrase(HOPE_KILL_EACH_OTHER);
+		}
 
 		DISABLE_PHRASE(what_now_homeworld);
 	}
@@ -239,22 +259,36 @@ AlliedHome(RESPONSE_REF R)
 	if (NumVisits >= 5)
 	{
 		if (!(News & (1 << 0)))
+		{
 			Response(how_went_war, AlliedHome);
+		}
 	}
 	else if (PHRASE_ENABLED(how_goes_war)
 			 && ((NumVisits == 1 && News == 0)
 				 || (NumVisits && News < 2)))
+	{
 		Response(how_goes_war, AlliedHome);
+	}
 	if (PHRASE_ENABLED(learn_new_info))
+	{
 		Response(learn_new_info, AlliedHome);
+	}
 	if (PHRASE_ENABLED(what_now_homeworld))
+	{
 		Response(what_now_homeworld, AlliedHome);
+	}
 	if (PHRASE_ENABLED(how_is_ultron))
+	{
 		Response(how_is_ultron, AlliedHome);
+	}
 	if (EXTENDED && PHRASE_ENABLED(give_info))
+	{
 		Response(give_info, AlliedHome);
+	}
 	if (EXTENDED && ShipsReady(SUPOX_SHIP))
+	{
 		Response(can_you_help, ExitConversation);
+	}
 	Response(bye_allied_homeworld, ExitConversation);
 }
 
@@ -288,9 +322,13 @@ BeforeKohrAh(RESPONSE_REF R)
 	}
 
 	if (PHRASE_ENABLED(whats_up_before_space))
+	{
 		Response(whats_up_before_space, BeforeKohrAh);
+	}
 	if (PHRASE_ENABLED(what_now_before_space))
+	{
 		Response(what_now_before_space, BeforeKohrAh);
+	}
 	Response(bye_before_space, ExitConversation);
 }
 
@@ -324,9 +362,13 @@ AfterKohrAh(RESPONSE_REF R)
 	}
 
 	if (PHRASE_ENABLED(whats_up_after_space))
+	{
 		Response(whats_up_after_space, AfterKohrAh);
+	}
 	if (PHRASE_ENABLED(what_now_after_space))
+	{
 		Response(what_now_after_space, AfterKohrAh);
+	}
 	Response(bye_after_space, ExitConversation);
 }
 
@@ -445,7 +487,9 @@ NeutralSupox(RESPONSE_REF R)
 		NPCPhrase(ANCIENT_RHYME);
 
 		if (EXTENDED)
+		{
 			StartSphereTracking(DRUUGE_SHIP);
+		}
 		SET_GAME_STATE(SUPOX_ULTRON_HELP, 1);
 	}
 	else if (PLAYER_SAID(R, give_info))
@@ -496,9 +540,13 @@ NeutralSupox(RESPONSE_REF R)
 				if (GET_GAME_STATE(UTWIG_VISITS)
 					|| GET_GAME_STATE(UTWIG_HOME_VISITS)
 					|| GET_GAME_STATE(BOMB_VISITS))
+				{
 					pStr[2] = what_relation_to_utwig;
+				}
 				else
+				{
 					pStr[2] = anyone_around_here;
+				}
 				break;
 			case 1:
 				pStr[2] = whats_wrong_with_utwig;
@@ -509,11 +557,15 @@ NeutralSupox(RESPONSE_REF R)
 		}
 	}
 	if (pStr[LastStack])
+	{
 		Response(pStr[LastStack], NeutralSupox);
+	}
 	for (i = 0; i < 3; ++i)
 	{
 		if (i != LastStack && pStr[i])
+		{
 			Response(pStr[i], NeutralSupox);
+		}
 	}
 	if (!GET_GAME_STATE(SUPOX_ULTRON_HELP))
 	{
@@ -534,7 +586,9 @@ NeutralSupox(RESPONSE_REF R)
 		}
 	}
 	if (EXTENDED && NumVisits && PHRASE_ENABLED(give_info))
+	{
 		Response(give_info, NeutralSupox);
+	}
 	Response(bye_neutral, ExitConversation);
 }
 

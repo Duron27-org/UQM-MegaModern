@@ -173,7 +173,9 @@ void TFB_UninitGraphics(void)
 	Uninit_DrawCommandQueue();
 
 	for (i = 0; i < TFB_GFX_NUMSCREENS; i++)
+	{
 		UnInit_Screen(&SDL_Screens[i]);
+	}
 
 	UnInit_Screen(&SDL_Screen_fps);
 
@@ -260,10 +262,14 @@ void TFB_SwapBuffers(int force_full_redraw)
 	transition_amount = TransitionAmount;
 
 	if (force_full_redraw == TFB_REDRAW_NO && !TFB_BBox.valid && fade_amount == 255 && transition_amount == 255 && last_fade_amount == 255 && last_transition_amount == 255)
+	{
 		return;
+	}
 
 	if (force_full_redraw == TFB_REDRAW_NO && (fade_amount != 255 || transition_amount != 255 || last_fade_amount != 255 || last_transition_amount != 255))
+	{
 		force_full_redraw = TFB_REDRAW_FADING;
+	}
 
 	sfx = last_fade_amount > fade_amount ? 1 : 0;
 
@@ -351,12 +357,18 @@ TFB_DisplayFormatAlpha(SDL_Surface* surface)
 
 	// figure out what format to use (alpha/no alpha)
 	if (surface->format->Amask)
+	{
 		dstfmt = format_conv_surf->format;
+	}
 	else
+	{
 		dstfmt = SDL_Screen->format;
+	}
 
 	if (srcfmt->BytesPerPixel == dstfmt->BytesPerPixel && srcfmt->Rmask == dstfmt->Rmask && srcfmt->Gmask == dstfmt->Gmask && srcfmt->Bmask == dstfmt->Bmask && srcfmt->Amask == dstfmt->Amask)
+	{
 		return surface; // no conversion needed
+	}
 
 	newsurf = SDL_ConvertSurface(surface, dstfmt, surface->flags);
 	// Colorkeys and surface-level alphas cannot work at the same time,
@@ -428,7 +440,9 @@ void TFB_BlitSurface(SDL_Surface* src, SDL_Rect* srcrect, SDL_Surface* dst,
 		}
 		maxw = src->w - srcx;
 		if (maxw < w)
+		{
 			w = maxw;
+		}
 
 		srcy = srcrect->y;
 		h = srcrect->h;
@@ -440,7 +454,9 @@ void TFB_BlitSurface(SDL_Surface* src, SDL_Rect* srcrect, SDL_Surface* dst,
 		}
 		maxh = src->h - srcy;
 		if (maxh < h)
+		{
 			h = maxh;
+		}
 	}
 	else
 	{
@@ -464,7 +480,9 @@ void TFB_BlitSurface(SDL_Surface* src, SDL_Rect* srcrect, SDL_Surface* dst,
 		}
 		dx = dstrect->x + w - clip->x - clip->w;
 		if (dx > 0)
+		{
 			w -= dx;
+		}
 
 		dy = clip->y - dstrect->y;
 		if (dy > 0)
@@ -475,14 +493,18 @@ void TFB_BlitSurface(SDL_Surface* src, SDL_Rect* srcrect, SDL_Surface* dst,
 		}
 		dy = dstrect->y + h - clip->y - clip->h;
 		if (dy > 0)
+		{
 			h -= dy;
+		}
 	}
 
 	dstrect->w = w;
 	dstrect->h = h;
 
 	if (w <= 0 || h <= 0)
+	{
 		return;
+	}
 
 	x1 = srcx;
 	y1 = srcy;
@@ -520,7 +542,9 @@ void TFB_BlitSurface(SDL_Surface* src, SDL_Rect* srcrect, SDL_Surface* dst,
 				src_pixval = src_getpix(src, x, y);
 
 				if (has_colorkey && src_pixval == colorkey)
+				{
 					continue;
+				}
 
 				dst_pixval = dst_getpix(dst, dst_x2, dst_y2);
 
@@ -532,11 +556,17 @@ void TFB_BlitSurface(SDL_Surface* src, SDL_Rect* srcrect, SDL_Surface* dst,
 				nb = sb + db;
 
 				if (nr > 255)
+				{
 					nr = 255;
+				}
 				if (ng > 255)
+				{
 					ng = 255;
+				}
 				if (nb > 255)
+				{
 					nb = 255;
+				}
 
 				putpix(dst, dst_x2, dst_y2,
 					   SDL_MapRGB(dst->format, nr, ng, nb));
@@ -561,7 +591,9 @@ void TFB_BlitSurface(SDL_Surface* src, SDL_Rect* srcrect, SDL_Surface* dst,
 				src_pixval = src_getpix(src, x, y);
 
 				if (has_colorkey && src_pixval == colorkey)
+				{
 					continue;
+				}
 
 				dst_pixval = dst_getpix(dst, dst_x2, dst_y2);
 
@@ -573,11 +605,17 @@ void TFB_BlitSurface(SDL_Surface* src, SDL_Rect* srcrect, SDL_Surface* dst,
 				nb = sb - db;
 
 				if (nr < 0)
+				{
 					nr = 0;
+				}
 				if (ng < 0)
+				{
 					ng = 0;
+				}
 				if (nb < 0)
+				{
 					nb = 0;
+				}
 
 				putpix(dst, dst_x2, dst_y2,
 					   SDL_MapRGB(dst->format, nr, ng, nb));
@@ -604,7 +642,9 @@ void TFB_BlitSurface(SDL_Surface* src, SDL_Rect* srcrect, SDL_Surface* dst,
 				src_pixval = src_getpix(src, x, y);
 
 				if (has_colorkey && src_pixval == colorkey)
+				{
 					continue;
+				}
 
 				SDL_GetRGB(src_pixval, src->format, &sr, &sg, &sb);
 
@@ -613,11 +653,17 @@ void TFB_BlitSurface(SDL_Surface* src, SDL_Rect* srcrect, SDL_Surface* dst,
 				nb = (int)(sb * f);
 
 				if (nr > 255)
+				{
 					nr = 255;
+				}
 				if (ng > 255)
+				{
 					ng = 255;
+				}
 				if (nb > 255)
+				{
 					nb = 255;
+				}
 
 				putpix(dst, dst_x2, dst_y2,
 					   SDL_MapRGB(dst->format, nr, ng, nb));
@@ -629,7 +675,9 @@ void TFB_BlitSurface(SDL_Surface* src, SDL_Rect* srcrect, SDL_Surface* dst,
 void UnInit_Screen(SDL_Surface** screen)
 {
 	if (*screen == NULL)
+	{
 		return;
+	}
 
 	SDL_FreeSurface(*screen);
 	*screen = NULL;
@@ -649,7 +697,9 @@ void TFB_UploadTransitionScreen(RECT* pRect)
 		pTransitionClipRect = &TransitionClipRect;
 	}
 	else
+	{
 		pTransitionClipRect = NULL;
+	}
 #else
 	(void)pRect; /*satisfy compiler (unused parameter)*/
 #endif
@@ -680,11 +730,15 @@ void TFB_ScreenShot(void)
 				   chooseIfHd<const char*>(UQM_EXTRA_VERSION, "HD " UQM_EXTRA_VERSION));
 
 	if (len < 0)
+	{
 		return;
+	}
 
 	fullPath = (char*)HMalloc(len + 1);
 	if (!fullPath)
+	{
 		return;
+	}
 
 	snprintf(fullPath, len + 1,
 			 "%s%s v%d.%d.%d %s.png", shotDirName, curTime,
@@ -694,9 +748,13 @@ void TFB_ScreenShot(void)
 	if (stat(shotDirName, &sb) == 0 && S_ISDIR(sb.st_mode))
 	{
 		if (TFB_SDL_ScreenShot(fullPath))
+		{
 			log_add(log_Info, "Screenshot saved at path, '%s'", fullPath);
+		}
 		else
+		{
 			log_add(log_Debug, "Screenshot not saved due to an error");
+		}
 	}
 
 	HFree(fullPath);

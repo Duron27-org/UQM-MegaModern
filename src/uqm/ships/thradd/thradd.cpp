@@ -152,9 +152,13 @@ thraddash_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 			&lpEvalDesc->ObjectPtr->velocity, &dx, &dy);
 		if (lpEvalDesc->which_turn > 8
 			|| (long)dx * dx + (long)dy * dy <= (long)STATIONARY_SPEED * STATIONARY_SPEED)
+		{
 			lpEvalDesc->MoveState = PURSUE;
+		}
 		else
+		{
 			lpEvalDesc->MoveState = ENTICE;
+		}
 	}
 	ship_intelligence(ShipPtr, ObjectsOfConcern, ConcernCounter);
 
@@ -174,7 +178,9 @@ thraddash_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 										+ HALF_CIRCLE + OCTANT)
 									- StarShipPtr->ShipFacing)
 					   > ANGLE_TO_FACING(QUADRANT))
+			{
 				StarShipPtr->ship_input_state |= SPECIAL;
+			}
 		}
 		else if (lpEvalDesc->ObjectPtr)
 		{
@@ -187,7 +193,9 @@ thraddash_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 					&& (!(StarShipPtr->cur_status_flags & SPECIAL)
 						|| !(StarShipPtr->cur_status_flags
 							 & (SHIP_AT_MAX_SPEED | SHIP_BEYOND_MAX_SPEED))))
+				{
 					StarShipPtr->ship_input_state |= SPECIAL;
+				}
 			}
 			else if (lpEvalDesc->MoveState == ENTICE)
 			{
@@ -214,13 +222,17 @@ thraddash_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 												  + HALF_CIRCLE)
 											   + (OCTANT + 2))
 								   <= ((OCTANT + 2) << 1))))
+				{
 					StarShipPtr->ship_input_state |= SPECIAL;
+				}
 			}
 		}
 
 		if ((StarShipPtr->ship_input_state & SPECIAL)
 			&& StarShipPtr->RaceDescPtr->ship_info.energy_level >= SPECIAL_ENERGY_COST)
+		{
 			StarShipPtr->ship_input_state &= ~THRUST;
+		}
 	}
 }
 
@@ -242,19 +254,25 @@ flame_napalm_preprocess(ELEMENT* ElementPtr)
 	}
 	/* turn_wait is abused here to store the speed of the decay animation */
 	else if (ElementPtr->turn_wait > 0)
+	{
 		--ElementPtr->turn_wait;
+	}
 	else
 	{
 		if (ElementPtr->life_span <= NUM_NAPALM_FADES * (NAPALM_DECAY_RATE + 1)
 			|| GetFrameIndex(
 				   ElementPtr->current.image.frame)
 				   != NUM_NAPALM_FADES)
+		{
 			ElementPtr->next.image.frame =
 				DecFrameIndex(ElementPtr->current.image.frame);
+		}
 		else if (ElementPtr->life_span > NUM_NAPALM_FADES * (NAPALM_DECAY_RATE + 1))
+		{
 			ElementPtr->next.image.frame = SetAbsFrameIndex(
 				ElementPtr->current.image.frame,
 				GetFrameCount(ElementPtr->current.image.frame) - 1);
+		}
 
 		/* turn_wait is abused here to store the speed of the decay
 		 * animation. */
@@ -298,7 +316,9 @@ thraddash_preprocess(ELEMENT* ElementPtr)
 	{
 		if ((StarShipPtr->old_status_flags & SPECIAL)
 			&& (StarShipPtr->cur_status_flags & SHIP_AT_MAX_SPEED))
+		{
 			StarShipPtr->cur_status_flags |= SHIP_BEYOND_MAX_SPEED;
+		}
 	}
 	else if (DeltaEnergy(ElementPtr, -SPECIAL_ENERGY_COST))
 	{
@@ -307,11 +327,15 @@ thraddash_preprocess(ELEMENT* ElementPtr)
 		HELEMENT hTrailElement;
 
 		if (!(StarShipPtr->old_status_flags & SPECIAL))
+		{
 			StarShipPtr->cur_status_flags &=
 				~(SHIP_AT_MAX_SPEED | SHIP_BEYOND_MAX_SPEED);
+		}
 
 		if (ElementPtr->thrust_wait == 0)
+		{
 			++ElementPtr->thrust_wait;
+		}
 
 		thrust_increment =
 			StarShipPtr->RaceDescPtr->characteristics.thrust_increment;

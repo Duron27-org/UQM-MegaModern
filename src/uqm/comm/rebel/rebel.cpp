@@ -36,7 +36,7 @@ static LOCDATA yehat_desc =
 		BLACK_COLOR_INIT, /* AlienTextBColor */
 		{0, 0}, /* AlienTextBaseline */
 		0,
- /* (SIS_TEXT_WIDTH - 16) * 2 / 3, */	 /* AlienTextWidth */
+		/* (SIS_TEXT_WIDTH - 16) * 2 / 3, */	 /* AlienTextWidth */
 		ALIGN_CENTER, /* AlienTextAlign */
 		VALIGN_MIDDLE, /* AlienTextValign */
 		YEHAT_COLOR_MAP, /* AlienColorMap */
@@ -245,7 +245,9 @@ static void
 ExitConversation(RESPONSE_REF R)
 {
 	if (PLAYER_SAID(R, bye_rebel))
+	{
 		NPCPhrase(GOODBYE_REBEL);
+	}
 }
 
 static void Rebels(RESPONSE_REF R);
@@ -257,7 +259,9 @@ RebelInfo(RESPONSE_REF R)
 
 	InfoLeft = false;
 	if (PLAYER_SAID(R, give_info_rebels))
+	{
 		NPCPhrase(WHAT_INFO);
+	}
 	else if (PLAYER_SAID(R, what_about_urquan))
 	{
 		NPCPhrase(ABOUT_URQUAN);
@@ -354,14 +358,20 @@ Rebels(RESPONSE_REF R)
 	else if (PLAYER_SAID(R, any_ships))
 	{
 		if (!ShipsReady(YEHAT_SHIP))
+		{
 			NPCPhrase(NO_SHIPS_YET);
+		}
 		else if ((NumVisits = EscortFeasibilityStudy(YEHAT_SHIP)) == 0)
+		{
 			NPCPhrase(NO_ROOM);
+		}
 		else
 		{
 #define NUM_YEHAT_SHIPS DIF_CASE(4, 4, 2)
 			if (NumVisits < NUM_YEHAT_SHIPS)
+			{
 				NPCPhrase(HAVE_FEW_SHIPS);
+			}
 			else
 			{
 				NumVisits = NUM_YEHAT_SHIPS;
@@ -378,23 +388,35 @@ Rebels(RESPONSE_REF R)
 	else if (PLAYER_SAID(R, what_about_pkunk_rebel))
 	{
 		if (GET_GAME_STATE(YEHAT_ABSORBED_PKUNK))
+		{
 			NPCPhrase(PKUNK_ABSORBED_REBEL);
+		}
 		else
+		{
 			NPCPhrase(HATE_PKUNK_REBEL);
+		}
 
 		SET_GAME_STATE(YEHAT_REBEL_TOLD_PKUNK, 1);
 	}
 	else if (PLAYER_SAID(R, enough_info))
+	{
 		NPCPhrase(OK_ENOUGH_INFO);
+	}
 
 	if (PHRASE_ENABLED(how_goes_revolution))
+	{
 		Response(how_goes_revolution, Rebels);
+	}
 	if (!GET_GAME_STATE(YEHAT_REBEL_TOLD_PKUNK)
 		&& GET_GAME_STATE(PKUNK_VISITS)
 		&& GET_GAME_STATE(PKUNK_HOME_VISITS))
+	{
 		Response(what_about_pkunk_rebel, Rebels);
+	}
 	if (PHRASE_ENABLED(any_ships))
+	{
 		Response(any_ships, Rebels);
+	}
 	if (PHRASE_ENABLED(give_info_rebels))
 	{
 		Response(give_info_rebels, RebelInfo);
@@ -415,7 +437,9 @@ Intro(void)
 
 		NumVisits = (uqm::BYTE)EscortFeasibilityStudy(YEHAT_REBEL_SHIP);
 		if (NumVisits > 8)
+		{
 			NumVisits = DIF_CASE(8, 8, 4);
+		}
 		AddEscortShips(YEHAT_REBEL_SHIP, NumVisits - (NumVisits >> 1));
 		AddEscortShips(PKUNK_SHIP, NumVisits >> 1);
 	}

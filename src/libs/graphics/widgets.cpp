@@ -119,7 +119,9 @@ void DrawLabelAsWindow(WIDGET_LABEL* label, RECT* windowRect)
 	int i, win_w, win_h;
 
 	if (cur_font)
+	{
 		oldfont = SetContextFont(cur_font);
+	}
 
 	/* Compute the dimensions of the label */
 	win_h = label->height((WIDGET*)label) + RES_SCALE(16);
@@ -162,7 +164,9 @@ void DrawLabelAsWindow(WIDGET_LABEL* label, RECT* windowRect)
 
 	SetContextFontEffect(oldFontEffect);
 	if (oldfont)
+	{
 		SetContextFont(oldfont);
+	}
 	SetContextForeGroundColor(oldfg);
 
 	if (windowRect != NULL)
@@ -206,7 +210,9 @@ Widget_DrawToolTips(int numlines, const char** tips)
 	bool warning = false;
 
 	if (cur_font)
+	{
 		oldfont = SetContextFont(cur_font);
+	}
 
 	r.corner.x = RES_SCALE(2);
 	r.corner.y = RES_SCALE(8);
@@ -233,14 +239,18 @@ Widget_DrawToolTips(int numlines, const char** tips)
 		font_DrawText(&t);
 
 		if (warning)
+		{
 			SetContextForeGroundColor(WIDGET_TOOLTIP_COLOR);
+		}
 
 		t.baseline.y += RES_SCALE(9);
 	}
 
 	SetContextFontEffect(oldFontEffect);
 	if (oldfont)
+	{
 		SetContextFont(oldfont);
+	}
 	SetContextForeGroundColor(oldtext);
 }
 
@@ -256,10 +266,14 @@ void Widget_DrawMenuScreen(WIDGET* _self, int x, int y)
 	WIDGET_MENU_SCREEN* self = (WIDGET_MENU_SCREEN*)_self;
 
 	if (!offset_b)
+	{
 		offset_b = ONSCREEN;
+	}
 
 	if (cur_font)
+	{
 		oldfont = SetContextFont(cur_font);
+	}
 
 	r.corner.x = RES_SCALE(2);
 	r.corner.y = RES_SCALE(1);
@@ -341,7 +355,9 @@ void Widget_DrawMenuScreen(WIDGET* _self, int x, int y)
 					offset_b = offset_t + ONSCREEN; // cap bottom offset
 				}
 				else // still moving
+				{
 					offset_b = self->highlighted + (ONSCREEN - SCROLL_OFFSET);
+				}
 			}
 		}
 		if (self->num_children > ONSCREEN)
@@ -369,7 +385,9 @@ void Widget_DrawMenuScreen(WIDGET* _self, int x, int y)
 	on_screen = self->num_children;
 
 	if ((offset_b + 1) < self->num_children)
+	{
 		on_screen = offset_b + 1;
+	}
 
 	for (widget_index = offset_t; widget_index < on_screen; widget_index++)
 	{
@@ -380,7 +398,9 @@ void Widget_DrawMenuScreen(WIDGET* _self, int x, int y)
 
 	SetContextFontEffect(oldFontEffect);
 	if (oldfont)
+	{
 		SetContextFont(oldfont);
+	}
 	SetContextForeGroundColor(oldtext);
 
 	(void)x;
@@ -398,7 +418,9 @@ void Widget_DrawChoice(WIDGET* _self, int x, int y)
 	int i;
 
 	if (cur_font)
+	{
 		oldfont = SetContextFont(cur_font);
+	}
 
 	default_color = WIDGET_INACTIVE_SELECTED_COLOR; // White
 	enabled = WIDGET_ENABLED_COLOR;					// Green
@@ -481,9 +503,13 @@ void Widget_DrawChoice(WIDGET* _self, int x, int y)
 						d.corner.x += RES_SCALE(6);
 
 						if (c == self->highlighted)
+						{
 							SetContextForeGroundColor(enabled);
+						}
 						else
+						{
 							SetContextForeGroundColor(disabled);
+						}
 
 						DrawFilledRectangle(&d);
 					}
@@ -493,7 +519,9 @@ void Widget_DrawChoice(WIDGET* _self, int x, int y)
 	}
 	SetContextFontEffect(oldFontEffect);
 	if (oldfont)
+	{
 		SetContextFont(oldfont);
+	}
 	SetContextForeGroundColor(oldtext);
 }
 
@@ -507,7 +535,9 @@ void Widget_DrawButton(WIDGET* _self, int x, int y)
 	TEXT t;
 
 	if (cur_font)
+	{
 		oldfont = SetContextFont(cur_font);
+	}
 
 	selected = WIDGET_ACTIVE_COLOR;
 	inactive = WIDGET_INACTIVE_COLOR;
@@ -528,7 +558,9 @@ void Widget_DrawButton(WIDGET* _self, int x, int y)
 	font_DrawText(&t);
 	SetContextFontEffect(oldFontEffect);
 	if (oldfont)
+	{
 		SetContextFont(oldfont);
+	}
 	SetContextForeGroundColor(oldtext);
 	(void)x;
 }
@@ -549,7 +581,9 @@ void Widget_DrawLabel(WIDGET* _self, int x, int y)
 	bool warning = false;
 
 	if (cur_font)
+	{
 		oldfont = SetContextFont(cur_font);
+	}
 
 	t.baseline.x = SCREEN_CENTER;
 	t.baseline.y = y;
@@ -563,7 +597,9 @@ void Widget_DrawLabel(WIDGET* _self, int x, int y)
 		warning = (bool)(strncmp(amperBang, t.pStr, asSize) == 0);
 
 		if (underline)
+		{
 			t.pStr += asSize;
+		}
 
 		if (warning)
 		{
@@ -575,7 +611,9 @@ void Widget_DrawLabel(WIDGET* _self, int x, int y)
 		t.baseline.y += RES_SCALE(10);
 
 		if (warning)
+		{
 			SetContextForeGroundColor(WIDGET_LABEL_COLOR);
+		}
 
 		if (underline)
 		{ // Underline labels
@@ -588,7 +626,9 @@ void Widget_DrawLabel(WIDGET* _self, int x, int y)
 
 	SetContextFontEffect(oldFontEffect);
 	if (oldfont)
+	{
 		SetContextFont(oldfont);
+	}
 	SetContextForeGroundColor(oldtext);
 
 	(void)x;
@@ -607,7 +647,9 @@ void Widget_DrawSlider(WIDGET* _self, int x, int y)
 	int slider_width;
 
 	if (cur_font)
+	{
 		oldfont = SetContextFont(cur_font);
+	}
 
 	default_color = WIDGET_INACTIVE_SELECTED_COLOR;
 	selected = WIDGET_ACTIVE_COLOR;
@@ -648,7 +690,9 @@ void Widget_DrawSlider(WIDGET* _self, int x, int y)
 
 	SetContextFontEffect(oldFontEffect);
 	if (oldfont)
+	{
 		SetContextFont(oldfont);
+	}
 	SetContextForeGroundColor(oldtext);
 }
 
@@ -678,7 +722,9 @@ void Widget_DrawTextEntry(WIDGET* _self, int x, int y)
 	TEXT t;
 
 	if (cur_font)
+	{
 		oldfont = SetContextFont(cur_font);
+	}
 
 	default_color = WIDGET_INACTIVE_SELECTED_COLOR;
 	selected = WIDGET_ACTIVE_COLOR;
@@ -768,9 +814,13 @@ void Widget_DrawTextEntry(WIDGET* _self, int x, int y)
 		// calculate the cursor position and draw it
 		pchar_deltas = char_deltas;
 		for (i = self->cursor_pos; i > 0; --i)
+		{
 			r.corner.x += (uqm::SIZE)*pchar_deltas++;
+		}
 		if (self->cursor_pos < t.CharCount) /* cursor mid-line */
+		{
 			r.corner.x -= RES_SCALE(1);
+		}
 
 		if (self->state & WTE_BLOCKCUR)
 		{ // Use block cursor for keyboardless systems
@@ -801,7 +851,9 @@ void Widget_DrawTextEntry(WIDGET* _self, int x, int y)
 			r.extent.width = RES_SCALE(1);
 
 			if (self->cursor_pos == t.CharCount)
+			{
 				r.corner.x -= IF_HD(3);
+			}
 		}
 		// position cursor within input field rect
 		r.corner.x += RES_SCALE(1);
@@ -815,7 +867,9 @@ void Widget_DrawTextEntry(WIDGET* _self, int x, int y)
 	UnbatchGraphics();
 	SetContextFontEffect(oldFontEffect);
 	if (oldfont)
+	{
 		SetContextFont(oldfont);
+	}
 	SetContextForeGroundColor(oldtext);
 }
 
@@ -830,7 +884,9 @@ void Widget_DrawControlEntry(WIDGET* _self, int x, int y)
 	int i, home_x, home_y;
 
 	if (cur_font)
+	{
 		oldfont = SetContextFont(cur_font);
+	}
 
 	default_color = WIDGET_INACTIVE_SELECTED_COLOR;
 	selected = WIDGET_ACTIVE_COLOR;
@@ -876,7 +932,9 @@ void Widget_DrawControlEntry(WIDGET* _self, int x, int y)
 	}
 	SetContextFontEffect(oldFontEffect);
 	if (oldfont)
+	{
 		SetContextFont(oldfont);
+	}
 	SetContextForeGroundColor(oldtext);
 }
 
@@ -1001,12 +1059,16 @@ int Widget_HandleEventChoice(WIDGET* _self, int event)
 		case WIDGET_EVENT_LEFT:
 			self->highlighted -= 1;
 			if (self->highlighted < 0)
+			{
 				self->highlighted = self->numopts - 1;
+			}
 			return true;
 		case WIDGET_EVENT_RIGHT:
 			self->highlighted += 1;
 			if (self->highlighted >= self->numopts)
+			{
 				self->highlighted = 0;
+			}
 			return true;
 		case WIDGET_EVENT_SELECT:
 			{
@@ -1031,16 +1093,24 @@ int Widget_HandleEventSlider(WIDGET* _self, int event)
 		case WIDGET_EVENT_LEFT:
 			self->value -= self->step;
 			if (self->value < self->min)
+			{
 				self->value = self->min;
+			}
 			if (self->onChange)
+			{
 				(*(self->onChange))(self);
+			}
 			return true;
 		case WIDGET_EVENT_RIGHT:
 			self->value += self->step;
 			if (self->value > self->max)
+			{
 				self->value = self->max;
+			}
 			if (self->onChange)
+			{
 				(*(self->onChange))(self);
+			}
 			return true;
 		default:
 			return false;
@@ -1073,9 +1143,13 @@ int Widget_HandleEventMenuScreen(WIDGET* _self, int event)
 	{
 		WIDGET* child;
 		if (x == -1)
+		{
 			x = self->num_children - 1;
+		}
 		if (x == self->num_children)
+		{
 			x = 0;
+		}
 		child = self->child[x];
 		if ((*child->receiveFocus)(child, event))
 		{
@@ -1093,7 +1167,9 @@ int Widget_HandleEventTextEntry(WIDGET* _self, int event)
 	if (event == WIDGET_EVENT_SELECT)
 	{
 		if (!self->handleEventSelect)
+		{
 			return false;
+		}
 		return (*self->handleEventSelect)(self);
 	}
 	return false;
@@ -1132,7 +1208,9 @@ int Widget_Event(int event)
 	while (widget != NULL)
 	{
 		if ((*widget->handleEvent)(widget, event))
+		{
 			return true;
+		}
 		widget = widget->parent;
 	}
 	return false;

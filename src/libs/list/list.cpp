@@ -44,7 +44,9 @@ LIST_(List) * LIST_(newList)(void)
 
 	list = LIST_(allocList)();
 	if (list == NULL)
+	{
 		return NULL;
+	}
 
 	list->first = NULL;
 	list->end = &list->first;
@@ -84,7 +86,9 @@ static inline LIST_(Link) * *LIST_(findLink)(LIST_(List) * list, LIST_(Entry) en
 		 linkPtr = &(*linkPtr)->next)
 	{
 		if ((*linkPtr)->entry == entry)
+		{
 			return linkPtr;
+		}
 	}
 	return NULL;
 }
@@ -96,7 +100,9 @@ LIST_(removeLink)(LIST_(List) * list, LIST_(Link) * *linkPtr)
 
 	*linkPtr = link->next;
 	if (&link->next == list->end)
+	{
 		list->end = linkPtr;
+	}
 	LIST_(freeLink)(link);
 }
 

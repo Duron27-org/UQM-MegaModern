@@ -44,7 +44,7 @@ static LOCDATA chmmr_desc =
 		BLACK_COLOR_INIT, /* AlienTextBColor */
 		{0, 0}, /* AlienTextBaseline */
 		0,
- /* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
+		/* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
 		ALIGN_CENTER, /* AlienTextAlign */
 		VALIGN_TOP, /* AlienTextValign */
 		CHMMR_COLOR_MAP, /* AlienColorMap */
@@ -185,11 +185,17 @@ ExitConversation(RESPONSE_REF R)
 	setSegue(Segue_peace);
 
 	if (PLAYER_SAID(R, bye))
+	{
 		NPCPhrase(GOODBYE);
+	}
 	else if (PLAYER_SAID(R, bye_shielded))
+	{
 		NPCPhrase(GOODBYE_SHIELDED);
+	}
 	else if (PLAYER_SAID(R, bye_after_bomb))
+	{
 		NPCPhrase(GOODBYE_AFTER_BOMB);
+	}
 	else if (PLAYER_SAID(R, proceed))
 	{
 		int i;
@@ -204,9 +210,13 @@ ExitConversation(RESPONSE_REF R)
 		SET_GAME_STATE(UTWIG_BOMB_ON_SHIP, 0);
 
 		if (!optInfiniteRU)
+		{
 			GLOBAL_SIS(ResUnits) = 1000000L;
+		}
 		else
+		{
 			oldRU = 1000000L;
+		}
 
 		GLOBAL_SIS(NumLanders) = 0;
 		GLOBAL(ModuleCost[PLANET_LANDER]) = 0;
@@ -234,9 +244,13 @@ ExitConversation(RESPONSE_REF R)
 			GLOBAL_SIS(TotalElementMass) = 0;
 			GLOBAL(ModuleCost[STORAGE_BAY]) = 0; /* disable Storage Bay */
 			for (i = 0; i < NUM_ELEMENT_CATEGORIES; ++i)
+			{
 				GLOBAL_SIS(ElementAmounts[i]) = 0;
+			}
 			for (i = NUM_BOMB_MODULES; i < NUM_MODULE_SLOTS; ++i)
+			{
 				GLOBAL_SIS(ModuleSlots[i]) = EMPTY_SLOT + 2;
+			}
 
 			/* XXX : this should be unhardcoded eventually */
 			/* transport to Starbase */
@@ -258,14 +272,18 @@ ExitConversation(RESPONSE_REF R)
 					 --i)
 					;
 				if (i == 0)
+				{
 					break;
+				}
 				/* find next module to move */
 				for (m = i - 1; m >= 0
 								&& GLOBAL_SIS(ModuleSlots[m]) == EMPTY_SLOT + 2;
 					 --m)
 					;
 				if (m < 0)
+				{
 					break;
+				}
 
 				/* move the module */
 				GLOBAL_SIS(ModuleSlots[i]) = GLOBAL_SIS(ModuleSlots[m]);
@@ -275,9 +293,13 @@ ExitConversation(RESPONSE_REF R)
 
 		/* install Chmmr-supplied modules */
 		for (i = 0; i < NUM_DRIVE_SLOTS; ++i)
+		{
 			GLOBAL_SIS(DriveSlots[i]) = FUSION_THRUSTER;
+		}
 		for (i = 0; i < NUM_JET_SLOTS; ++i)
+		{
 			GLOBAL_SIS(JetSlots[i]) = TURNING_JETS;
+		}
 		GLOBAL_SIS(ModuleSlots[0]) = BOMB_MODULE_4;
 		GLOBAL_SIS(ModuleSlots[1]) = BOMB_MODULE_5;
 		GLOBAL_SIS(ModuleSlots[2]) = BOMB_MODULE_3;
@@ -301,7 +323,9 @@ static void
 NotReady(RESPONSE_REF R)
 {
 	if (R == 0)
+	{
 		NPCPhrase(RETURN_WHEN_READY);
+	}
 	else if (PLAYER_SAID(R, further_assistance))
 	{
 		NPCPhrase(NO_FURTHER_ASSISTANCE);
@@ -328,13 +352,21 @@ NotReady(RESPONSE_REF R)
 	}
 
 	if (CheckAlliance(CHMMR_SHIP) != GOOD_GUY)
+	{
 		Response(tech_help, NotReady);
+	}
 	else if (PHRASE_ENABLED(further_assistance))
+	{
 		Response(further_assistance, NotReady);
+	}
 	if (PHRASE_ENABLED(where_weapon) && !GET_GAME_STATE(UTWIG_BOMB_ON_SHIP))
+	{
 		Response(where_weapon, NotReady);
+	}
 	if (PHRASE_ENABLED(where_distraction) && !GET_GAME_STATE(TALKING_PET_ON_SHIP))
+	{
 		Response(where_distraction, NotReady);
+	}
 	Response(bye, ExitConversation);
 }
 
@@ -342,7 +374,9 @@ static void
 ImproveBomb(RESPONSE_REF R)
 {
 	if (R == 0)
+	{
 		NPCPhrase(WE_WILL_IMPROVE_BOMB);
+	}
 	else if (PLAYER_SAID(R, what_now))
 	{
 		NPCPhrase(MODIFY_VESSEL);
@@ -369,13 +403,21 @@ ImproveBomb(RESPONSE_REF R)
 	}
 
 	if (PHRASE_ENABLED(what_now))
+	{
 		Response(what_now, ImproveBomb);
+	}
 	else if (PHRASE_ENABLED(wont_hurt_my_ship))
+	{
 		Response(wont_hurt_my_ship, ImproveBomb);
+	}
 	else if (PHRASE_ENABLED(bummer_about_my_ship))
+	{
 		Response(bummer_about_my_ship, ImproveBomb);
+	}
 	if (CheckAlliance(CHMMR_SHIP) != GOOD_GUY)
+	{
 		Response(other_assistance, ImproveBomb);
+	}
 	Response(proceed, ExitConversation);
 	Response(perhaps_not_install, ExitConversation);
 }
@@ -401,7 +443,9 @@ ChmmrFree(RESPONSE_REF R)
 		NPCPhrase(WILL_HELP_ANALYZE_LOGS);
 
 		if (GET_GAME_STATE(AWARE_OF_SAMATRA))
+		{
 			NPCPhrase(YOU_KNOW_SAMATRA);
+		}
 		else
 		{
 			NPCPhrase(DONT_KNOW_ABOUT_SAMATRA);
@@ -410,20 +454,32 @@ ChmmrFree(RESPONSE_REF R)
 		}
 
 		if (GET_GAME_STATE(TALKING_PET_ON_SHIP))
+		{
 			NPCPhrase(HAVE_TALKING_PET);
+		}
 		else
+		{
 			NPCPhrase(NEED_DISTRACTION);
+		}
 
 		if (GET_GAME_STATE(UTWIG_BOMB_ON_SHIP))
+		{
 			NPCPhrase(HAVE_BOMB);
+		}
 		else
+		{
 			NPCPhrase(NEED_WEAPON);
+		}
 
 		if (!GET_GAME_STATE(TALKING_PET_ON_SHIP)
 			|| !GET_GAME_STATE(UTWIG_BOMB_ON_SHIP))
+		{
 			NotReady((RESPONSE_REF)0);
+		}
 		else
+		{
 			ImproveBomb((RESPONSE_REF)0);
+		}
 	}
 }
 
@@ -435,7 +491,9 @@ ChmmrAdvice(RESPONSE_REF R)
 	uqm::BYTE AdviceLeft;
 
 	if (PLAYER_SAID(R, need_advice))
+	{
 		NPCPhrase(WHAT_ADVICE);
+	}
 	else if (PLAYER_SAID(R, how_defeat_urquan))
 	{
 		NPCPhrase(DEFEAT_LIKE_SO);
@@ -497,7 +555,9 @@ ChmmrAdvice(RESPONSE_REF R)
 	Response(enough_advice, ChmmrShielded);
 
 	if (!AdviceLeft)
+	{
 		DISABLE_PHRASE(need_advice);
+	}
 }
 
 static void
@@ -528,7 +588,9 @@ ChmmrShielded(RESPONSE_REF R)
 		SET_GAME_STATE(CHMMR_STACK, 3);
 	}
 	else if (PLAYER_SAID(R, enough_advice))
+	{
 		NPCPhrase(OK_ENOUGH_ADVICE);
+	}
 
 	switch (GET_GAME_STATE(CHMMR_STACK))
 	{
@@ -543,7 +605,9 @@ ChmmrShielded(RESPONSE_REF R)
 			break;
 	}
 	if (PHRASE_ENABLED(find_out_whats_up))
+	{
 		Response(find_out_whats_up, ChmmrShielded);
+	}
 	if (PHRASE_ENABLED(need_advice))
 	{
 		Response(need_advice, ChmmrAdvice);
@@ -557,7 +621,9 @@ AfterBomb(RESPONSE_REF R)
 	if (PLAYER_SAID(R, whats_up_after_bomb))
 	{
 		if (GET_GAME_STATE(CHMMR_STACK))
+		{
 			NPCPhrase(GENERAL_INFO_AFTER_BOMB_2);
+		}
 		else
 		{
 			NPCPhrase(GENERAL_INFO_AFTER_BOMB_1);
@@ -575,9 +641,13 @@ AfterBomb(RESPONSE_REF R)
 	}
 
 	if (PHRASE_ENABLED(whats_up_after_bomb))
+	{
 		Response(whats_up_after_bomb, AfterBomb);
+	}
 	if (PHRASE_ENABLED(what_do_after_bomb))
+	{
 		Response(what_do_after_bomb, AfterBomb);
+	}
 	Response(bye_after_bomb, ExitConversation);
 }
 
@@ -607,7 +677,9 @@ Intro(void)
 	{
 		if (!GET_GAME_STATE(TALKING_PET_ON_SHIP)
 			|| !GET_GAME_STATE(UTWIG_BOMB_ON_SHIP))
+		{
 			NotReady((RESPONSE_REF)0);
+		}
 		else
 		{
 			NPCPhrase(YOU_ARE_READY);
@@ -622,7 +694,9 @@ Intro(void)
 		{
 			// Run filter for HD
 			if (IS_HD)
+			{
 				EngageFilters(&chmmr_filters);
+			}
 
 			CommData.AlienColorMap = SetAbsColorMapIndex(
 				CommData.AlienColorMap, 1);
@@ -723,7 +797,9 @@ init_chmmr_comm(void)
 	// use alternate "Process Complete" track if available
 	if (GET_GAME_STATE(CHMMR_UNLEASHED)
 		|| GET_GAME_STATE(CHMMR_EMERGING))
+	{
 		altResFlags |= USE_ALT_SONG;
+	}
 
 	chmmr_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH >> 1);
 	chmmr_desc.AlienTextBaseline.y = 0;

@@ -264,7 +264,9 @@ luaUqm_comm_disablePhrase(lua_State* luaState)
 {
 	int phraseId = testPhraseId(luaState, 1);
 	if (phraseId == -1)
+	{
 		return 0;
+	}
 
 	DISABLE_PHRASE(phraseId);
 	return 0;
@@ -277,7 +279,9 @@ luaUqm_comm_doNpcPhrase(lua_State* luaState)
 	CallbackFunction callback;
 	int phraseId = testPhraseId(luaState, 1);
 	if (phraseId == -1)
+	{
 		return 0;
+	}
 
 	if (lua_gettop(luaState) >= 2)
 	{
@@ -301,7 +305,9 @@ luaUqm_comm_addResponse(lua_State* luaState)
 {
 	int phraseId = testPhraseId(luaState, 1);
 	if (phraseId == -1)
+	{
 		return 0;
+	}
 
 	luaL_checktype(luaState, 2, LUA_TFUNCTION);
 
@@ -460,13 +466,17 @@ void CheckCase(const char* key, char* dialog)
 {
 	uqm::COUNT i = 0;
 	if (isupper(key[0]) && isupper(key[1]))
+	{
 		while (dialog[i] != '\0')
 		{
 			dialog[i] = toupper(dialog[i]);
 			i++;
 		}
+	}
 	else if (isupper(key[0]) && islower(dialog[0]))
+	{
 		dialog[0] = toupper(dialog[0]);
+	}
 }
 
 // Prints out the fully qualified star name, e.g. "Alpha Pavonis"
@@ -504,7 +514,9 @@ luaUqm_comm_getStarName(lua_State* luaState)
 		RoboTrack[1] = ROBOT_POSTFIX_0 + plot_map[plot_id].star->Postfix;
 	}
 	else
+	{
 		RoboTrack[0] = ROBOT_POSTFIX_0 + plot_map[plot_id].star->Postfix;
+	}
 	return 1;
 }
 

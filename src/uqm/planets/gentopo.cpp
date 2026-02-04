@@ -44,7 +44,9 @@ void DeltaTopography(uqm::COUNT num_iterations, uqm::SBYTE* DepthArray, RECT* pR
 		uqm::SBYTE* lpDst;
 
 		if ((RandomContext_Random(SysGenRNG) & 1) == 0)
+		{
 			depth_delta = -depth_delta;
+		}
 
 		rand_val = RandomContext_Random(SysGenRNG);
 
@@ -65,16 +67,22 @@ void DeltaTopography(uqm::COUNT num_iterations, uqm::SBYTE* DepthArray, RECT* pR
 
 		LineDDA0.delta_x = (LineDDA0.x_bot - LineDDA0.x_top) << 1;
 		if (LineDDA0.delta_x >= 0)
+		{
 			LineDDA0.x_incr = 1;
+		}
 		else
 		{
 			LineDDA0.x_incr = -1;
 			LineDDA0.delta_x = -LineDDA0.delta_x;
 		}
 		if (LineDDA0.delta_x > delta_y)
+		{
 			LineDDA0.error_term = -(LineDDA0.delta_x >> 1);
+		}
 		else
+		{
 			LineDDA0.error_term = -(delta_y >> 1);
+		}
 
 		LineDDA1.x_top = (lowByte(w2) % (ORIGINAL_MAP_WIDTH - 1))
 						   * width / ORIGINAL_MAP_WIDTH
@@ -84,16 +92,22 @@ void DeltaTopography(uqm::COUNT num_iterations, uqm::SBYTE* DepthArray, RECT* pR
 					   + LineDDA0.x_bot + 1;
 		LineDDA1.delta_x = (LineDDA1.x_bot - LineDDA1.x_top) << 1;
 		if (LineDDA1.delta_x >= 0)
+		{
 			LineDDA1.x_incr = 1;
+		}
 		else
 		{
 			LineDDA1.x_incr = -1;
 			LineDDA1.delta_x = -LineDDA1.delta_x;
 		}
 		if (LineDDA1.delta_x > delta_y)
+		{
 			LineDDA1.error_term = -(LineDDA1.delta_x >> 1);
+		}
 		else
+		{
 			LineDDA1.error_term = -(delta_y >> 1);
+		}
 
 		lpDst = &DepthArray[LineDDA0.x_top];
 		h = height;
@@ -105,7 +119,9 @@ void DeltaTopography(uqm::COUNT num_iterations, uqm::SBYTE* DepthArray, RECT* pR
 			w2 = width - w1;
 
 			if ((int)(LineDDA0.x_top + w1) > (int)width)
+			{
 				w = width - LineDDA0.x_top;
+			}
 			else
 			{
 				w = w1;
@@ -116,7 +132,9 @@ void DeltaTopography(uqm::COUNT num_iterations, uqm::SBYTE* DepthArray, RECT* pR
 			{
 				d = *lpDst + depth_delta;
 				if (d >= -128 && d <= 127)
+				{
 					*lpDst = (uqm::SBYTE)d;
+				}
 				++lpDst;
 			}
 			if (w1 == 0)
@@ -135,13 +153,17 @@ void DeltaTopography(uqm::COUNT num_iterations, uqm::SBYTE* DepthArray, RECT* pR
 				{
 					d = *lpDst + depth_delta;
 					if (d >= -128 && d <= 127)
+					{
 						*lpDst = (uqm::SBYTE)d;
+					}
 					++lpDst;
 				} while (--w1);
 			}
 
 			if ((int)(LineDDA0.x_top + w2) > (int)width)
+			{
 				w = width - LineDDA0.x_top;
+			}
 			else
 			{
 				w = w2;
@@ -152,7 +174,9 @@ void DeltaTopography(uqm::COUNT num_iterations, uqm::SBYTE* DepthArray, RECT* pR
 			{
 				d = *lpDst - depth_delta;
 				if (d >= -128 && d <= 127)
+				{
 					*lpDst = (uqm::SBYTE)d;
+				}
 				++lpDst;
 			}
 			if (w2 == 0)
@@ -171,7 +195,9 @@ void DeltaTopography(uqm::COUNT num_iterations, uqm::SBYTE* DepthArray, RECT* pR
 				{
 					d = *lpDst - depth_delta;
 					if (d >= -128 && d <= 127)
+					{
 						*lpDst = (uqm::SBYTE)d;
+					}
 					++lpDst;
 				} while (--w2);
 			}

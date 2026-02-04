@@ -70,12 +70,16 @@ LoadJoystickAlpha(STRING String, int* count)
 	*count = 0;
 	str = GetStringAddress(String);
 	if (!str)
+	{
 		return 0;
+	}
 
 	c = utf8StringCount(str);
 	chars = (joy_char_t*)HMalloc(c * sizeof(*chars));
 	if (!chars)
+	{
 		return 0;
+	}
 
 	for (i = 0, cur = str; i < c; ++i)
 	{
@@ -111,7 +115,9 @@ JoyCharSwitchReg(joy_char_t* ch, const joy_char_t* from,
 {
 	int i = JoyCharFindIn(ch, from, regsize);
 	if (i >= 0)
+	{
 		*ch = to[i];
+	}
 }
 
 static void
@@ -199,10 +205,14 @@ bool DoTextEntry(TEXTENTRY_STATE* pTES)
 	bool changed = false;
 
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+	{
 		return (false);
+	}
 
 	if (!block)
+	{
 		FlashCursor();
+	}
 
 	if (!pTES->Initialized)
 	{ // init basic vars
@@ -216,7 +226,9 @@ bool DoTextEntry(TEXTENTRY_STATE* pTES)
 
 		// init insertion point
 		if ((size_t)pTES->CursorPos > utf8StringCount(pTES->BaseStr))
+		{
 			pTES->CursorPos = utf8StringCount(pTES->BaseStr);
+		}
 		pTES->InsPt = skipUTF8Chars(pTES->BaseStr, pTES->CursorPos);
 
 		// load joystick alphabet
@@ -234,7 +246,9 @@ bool DoTextEntry(TEXTENTRY_STATE* pTES)
 		if (lwlen != pTES->JoyRegLength)
 		{
 			if (lwlen < pTES->JoyRegLength)
+			{
 				pTES->JoyRegLength = lwlen;
+			}
 			log_add(log_Warning, "Warning: Joystick upper-lower registers"
 								 " size mismatch; using the smallest subset (%d)",
 					pTES->JoyRegLength);
@@ -247,13 +261,21 @@ bool DoTextEntry(TEXTENTRY_STATE* pTES)
 		ExitCharacterMode();
 
 		if (pTES->CacheStr)
+		{
 			HFree(pTES->CacheStr);
+		}
 		if (pTES->JoyLower)
+		{
 			HFree(pTES->JoyLower);
+		}
 		if (pTES->JoyUpper)
+		{
 			HFree(pTES->JoyUpper);
+		}
 		if (pTES->JoyAlpha)
+		{
 			HFree(pTES->JoyAlpha);
+		}
 		DestroyStringTable(ReleaseStringTable(pTES->JoyAlphaString));
 
 		return pTES->Success;
@@ -269,7 +291,9 @@ bool DoTextEntry(TEXTENTRY_STATE* pTES)
 	// process the pending character buffer
 	ch = GetNextCharacter();
 	if (TextEntry3DO && ch == UNICHAR_SPACE)
+	{
 		ch = UNICHAR_TAB;
+	}
 	if (!ch && PulsedInputState.menu[KEY_MENU_ANY])
 	{ // keyboard repeat, but only when buffer empty
 		ch = GetLastCharacter();
@@ -299,7 +323,9 @@ bool DoTextEntry(TEXTENTRY_STATE* pTES)
 		}
 		ch = GetNextCharacter();
 		if (TextEntry3DO && ch == UNICHAR_SPACE)
+		{
 			ch = UNICHAR_TAB;
+		}
 	}
 
 	if (PulsedInputState.menu[KEY_MENU_DELETE])
@@ -407,14 +433,18 @@ bool DoTextEntry(TEXTENTRY_STATE* pTES)
 		{
 			--i;
 			if (i < 0)
+			{
 				i = pTES->JoyAlphaLength - 1;
+			}
 			newch = pTES->JoyAlpha[i];
 		}
 		else if (PulsedInputState.menu[KEY_MENU_DOWN])
 		{
 			++i;
 			if (i >= pTES->JoyAlphaLength)
+			{
 				i = 0;
+			}
 			newch = pTES->JoyAlpha[i];
 		}
 
@@ -423,9 +453,13 @@ bool DoTextEntry(TEXTENTRY_STATE* pTES)
 			if (len)
 			{ // single char change
 				if (!curCharUpper)
+				{
 					JoyCharToUpper(&newch, &newch, pTES);
+				}
 				else
+				{
 					JoyCharToLower(&newch, &newch, pTES);
+				}
 			}
 			else
 			{ // register change
@@ -435,9 +469,13 @@ bool DoTextEntry(TEXTENTRY_STATE* pTES)
 		else
 		{ // check register
 			if (curCharUpper)
+			{
 				JoyCharToUpper(&newch, &newch, pTES);
+			}
 			else
+			{
 				JoyCharToLower(&newch, &newch, pTES);
+			}
 		}
 
 		if (strcmp(newch.enc, ch.enc) != 0)
@@ -449,7 +487,9 @@ bool DoTextEntry(TEXTENTRY_STATE* pTES)
 				{
 					// adjust other chars if necessary
 					if (newch.len != ch.len)
+					{
 						memmove(pStr + newch.len, pStr + ch.len, l + 1);
+					}
 
 					memcpy(pStr, newch.enc, newch.len);
 					len = l + newch.len;
@@ -499,7 +539,9 @@ bool DoTextEntry(TEXTENTRY_STATE* pTES)
 	}
 
 	if (pTES->FrameCallback)
+	{
 		return pTES->FrameCallback(pTES);
+	}
 	/*else
 		SleepThread (ONE_SECOND / 30);*/
 

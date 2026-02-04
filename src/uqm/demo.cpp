@@ -61,7 +61,9 @@ demo_input(INPUT_REF InputRef, INPUT_STATE InputState)
 void JournalInput(INPUT_STATE InputState)
 {
 	if (ArrowInput != DemoInput && journal_fh)
+	{
 		cwrite(&InputState, sizeof(InputState), 1, journal_fh);
+	}
 }
 
 #endif /* CREATE_JOURNAL */

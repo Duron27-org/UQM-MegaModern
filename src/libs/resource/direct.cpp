@@ -86,7 +86,9 @@ LoadDirEntryTable(uio_DirHandle* dirHandle, const char* path,
 		int size;
 		STRINGPTR target;
 		if (dirList->names[i] == NULL)
+		{
 			continue;
+		}
 		size = strlen(dirList->names[i]) + 1;
 		target = (STRINGPTR)HMalloc(size);
 		memcpy(target, dirList->names[i], size);

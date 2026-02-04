@@ -98,7 +98,9 @@ GenerateAndrosynth_generatePlanets(SOLARSYS_STATE* solarSys)
 			pSunDesc->PlanetByte = PlanetByteGen(pSunDesc);
 			pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
 			if (pPlanet->data_index > LAST_ROCKY_WORLD)
+			{
 				pPlanet->data_index = GenerateWorlds(ALL_ROCKY);
+			}
 		}
 	}
 
@@ -130,7 +132,9 @@ GenerateAndrosynth_generateOrbital(SOLARSYS_STATE* solarSys,
 		{
 			if (isNodeRetrieved(&solarSys->SysInfo.PlanetInfo,
 								ENERGY_SCAN, i))
+			{
 				++visits;
+			}
 		}
 		if (visits >= GetStringTableCount(
 				solarSys->SysInfo.PlanetInfo.DiscoveryString))
@@ -190,7 +194,9 @@ GenerateAndrosynth_pickupEnergy(SOLARSYS_STATE* solarSys,
 
 		// Ruins previously visited are marked in the upper 16 bits
 		if (isNodeRetrieved(planetInfo, ENERGY_SCAN, whichNode + 16))
+		{
 			return false; // already visited this ruin, do not remove
+		}
 
 		setNodeRetrieved(planetInfo, ENERGY_SCAN, whichNode + 16);
 		// We set the retrieved bit manually here and need to indicate
@@ -202,7 +208,9 @@ GenerateAndrosynth_pickupEnergy(SOLARSYS_STATE* solarSys,
 
 		// "Kill" the Androsynth once you learn they are gone
 		if (CheckAlliance(ANDROSYNTH_SHIP) != DEAD_GUY)
+		{
 			KillRace(ANDROSYNTH_SHIP);
+		}
 
 		return false; // do not remove the node from the surface
 	}

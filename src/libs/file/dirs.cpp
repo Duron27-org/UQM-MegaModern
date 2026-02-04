@@ -105,7 +105,9 @@ int mkdirhier(const char* path)
 
 		// Copy the server part
 		while (*pathstart != '\0' && *pathstart != '\\' && *pathstart != '/')
+		{
 			*(ptr++) = *(pathstart++);
+		}
 
 		if (*pathstart == '\0')
 		{
@@ -118,7 +120,9 @@ int mkdirhier(const char* path)
 
 		// Copy the share part
 		while (*pathstart != '\0' && *pathstart != '\\' && *pathstart != '/')
+		{
 			*(ptr++) = *(pathstart++);
+		}
 
 		ptr[0] = '/';
 		ptr[1] = '\0';
@@ -136,7 +140,9 @@ int mkdirhier(const char* path)
 #endif /* HAVE_UNC_PATHS */
 
 	if (*pathstart == '/')
+	{
 		*(ptr++) = *(pathstart++);
+	}
 
 	if (*pathstart == '\0')
 	{
@@ -149,7 +155,9 @@ int mkdirhier(const char* path)
 	{
 		pathend = strchr(pathstart, '/');
 		if (pathend == NULL)
+		{
 			pathend = path + len;
+		}
 		memcpy(ptr, pathstart, pathend - pathstart);
 		ptr += pathend - pathstart;
 		*ptr = '\0';
@@ -157,7 +165,9 @@ int mkdirhier(const char* path)
 		if (stat(buf, &statbuf) == -1)
 		{
 			if (errno == ENOENT)
+			{
 				break;
+			}
 #ifdef __SYMBIAN32__
 			// XXX: HACK: If we don't have access to a directory, we can
 			// still have access to the underlying entries. We don't
@@ -176,17 +186,23 @@ int mkdirhier(const char* path)
 		}
 
 		if (*pathend == '\0')
+		{
 			goto success;
+		}
 
 		*ptr = '/';
 		ptr++;
 		pathstart = pathend + 1;
 		while (*pathstart == '/')
+		{
 			pathstart++;
+		}
 		// pathstart is the next non-slash character
 
 		if (*pathstart == '\0')
+		{
 			goto success;
+		}
 	}
 
 	// create all components left
@@ -200,21 +216,29 @@ int mkdirhier(const char* path)
 		}
 
 		if (*pathend == '\0')
+		{
 			break;
+		}
 
 		*ptr = '/';
 		ptr++;
 		pathstart = pathend + 1;
 		while (*pathstart == '/')
+		{
 			pathstart++;
+		}
 		// pathstart is the next non-slash character
 
 		if (*pathstart == '\0')
+		{
 			break;
+		}
 
 		pathend = strchr(pathstart, '/');
 		if (pathend == NULL)
+		{
 			pathend = path + len;
+		}
 
 		memcpy(ptr, pathstart, pathend - pathstart);
 		ptr += pathend - pathstart;
@@ -247,11 +271,15 @@ getHomeDir(void)
 
 	home = getenv("HOME");
 	if (home != NULL)
+	{
 		return home;
+	}
 
 	pw = getpwuid(getuid());
 	if (pw == NULL)
+	{
 		return NULL;
+	}
 	// NB: pw points to a static buffer.
 
 	return pw->pw_dir;
@@ -411,7 +439,9 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 						{
 							end = src;
 							while ((*end >= 'A' && *end <= 'Z') || (*end >= 'a' && *end <= 'z') || (*end >= '0' && *end <= '9') || *end == '_')
+							{
 								end++;
+							}
 							envNameLen = end - src;
 						}
 
@@ -444,7 +474,9 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 		srcend = bufptr;
 	} // if (what & EP_ENVVARS)
 	else
+	{
 		srcend = src + strlen(src);
+	}
 
 	if (what & EP_HOME)
 	{
@@ -521,7 +553,9 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 			{
 				char* slash = (char*)memchr(destptr + 2, '/', skip - 2);
 				if (slash)
+				{
 					*slash = '\\';
+				}
 				destptr += skip;
 			}
 		}
@@ -529,7 +563,9 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 		while (*destptr != '\0')
 		{
 			if (*destptr == '\\')
+			{
 				*destptr = '/';
+			}
 			destptr++;
 		}
 	}
@@ -566,7 +602,9 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 		}
 #endif /* HAVE_UNC_PATHS */
 		if (pathStart[0] == '/')
+		{
 			pathStart++;
+		}
 
 		startPart = pathStart;
 		destptr = pathStart;
@@ -574,7 +612,9 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 		{
 			endPart = strchr(startPart, '/');
 			if (endPart == NULL)
+			{
 				endPart = startPart + strlen(startPart);
+			}
 
 			if (endPart - startPart == 1 && startPart[0] == '.')
 			{
@@ -600,7 +640,9 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 				{
 					destptr = lastSlash;
 					if (*endPart == '/')
+					{
 						destptr++;
+					}
 				}
 			}
 			else
@@ -616,7 +658,9 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 				}
 			}
 			if (*endPart == '\0')
+			{
 				break;
+			}
 			startPart = endPart + 1;
 		}
 		*destptr = '\0';
@@ -634,7 +678,9 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 			if (ch == '/')
 			{
 				while (*srcptr == '/')
+				{
 					srcptr++;
+				}
 			}
 		}
 		*destptr = '\0';
@@ -791,9 +837,13 @@ strrchr2(const char* start, int c, const char* end)
 	{
 		end--;
 		if (end < start)
+		{
 			return (char*)NULL;
+		}
 		if (*end == c)
+		{
 			return (char*)unconst(end);
+		}
 	}
 }
 
@@ -807,14 +857,18 @@ skipUNCServerShare(const char* inPath)
 
 	// Skip the initial two backslashes.
 	if (path[0] != '\\' || path[1] != '\\')
+	{
 		return (size_t)0;
+	}
 	path += 2;
 
 	// Skip the server part.
 	while (*path != '\\' && *path != '/')
 	{
 		if (*path == '\0')
+		{
 			return (size_t)0;
+		}
 		path++;
 	}
 
@@ -823,7 +877,9 @@ skipUNCServerShare(const char* inPath)
 
 	// Skip the share part.
 	while (*path != '\0' && *path != '\\' && *path != '/')
+	{
 		path++;
+	}
 
 	return (size_t)(path - inPath);
 }

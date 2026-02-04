@@ -129,9 +129,13 @@ _check_for_pulse(int* current, int* cached, int* old, uqm::DWORD* accel,
 		{
 			*current = *cached;
 			if (*accel > _min_accel)
+			{
 				*accel -= _step_accel;
+			}
 			if (*accel < _min_accel)
+			{
 				*accel = _min_accel;
+			}
 			*oldtime = *newtime;
 		}
 	}
@@ -200,9 +204,13 @@ _check_gestalt(uqm::DWORD NewTime)
 				PulsedInputState.menu[i] = CachedInputState.menu[i];
 			}
 			if (GestaltRepeatDelay > _min_accel)
+			{
 				GestaltRepeatDelay -= _step_accel;
+			}
 			if (GestaltRepeatDelay < _min_accel)
+			{
 				GestaltRepeatDelay = _min_accel;
+			}
 			GestaltTime = NewTime;
 		}
 	}
@@ -235,13 +243,19 @@ void UpdateInputState(void)
 	// Automatically pause and enter low-activity state while inactive,
 	// for example, window minimized.
 	if (!GameActive)
+	{
 		SleepGame();
+	}
 
 	if (GamePaused)
+	{
 		PauseGame();
+	}
 
 	if (ExitRequested)
+	{
 		ConfirmExit();
+	}
 
 	CurrentInputState = ImmediateInputState;
 	OldInputState = CachedInputState;
@@ -274,20 +288,32 @@ void UpdateInputState(void)
 	}
 
 	if (CurrentInputState.menu[KEY_PAUSE])
+	{
 		GamePaused = true;
+	}
 
 	if (CurrentInputState.menu[KEY_EXIT])
+	{
 		ExitRequested = true;
+	}
 
 #if defined(DEBUG) || defined(USE_DEBUG_KEY)
 	if (PulsedInputState.menu[KEY_DEBUG])
+	{
 		debugKeyPressedSynchronous();
+	}
 	if (PulsedInputState.menu[KEY_DEBUG_2])
+	{
 		debugKey2PressedSynchronous();
+	}
 	if (PulsedInputState.menu[KEY_DEBUG_3])
+	{
 		debugKey3PressedSynchronous();
+	}
 	if (PulsedInputState.menu[KEY_DEBUG_4])
+	{
 		debugKey4PressedSynchronous();
+	}
 #endif
 }
 
@@ -337,27 +363,49 @@ MenuKeysToSoundFlags(const CONTROLLER_INPUT_STATE* state)
 
 	soundFlags = MENU_SOUND_NONE;
 	if (state->menu[KEY_MENU_UP])
+	{
 		soundFlags |= MENU_SOUND_UP;
+	}
 	if (state->menu[KEY_MENU_DOWN])
+	{
 		soundFlags |= MENU_SOUND_DOWN;
+	}
 	if (state->menu[KEY_MENU_LEFT])
+	{
 		soundFlags |= MENU_SOUND_LEFT;
+	}
 	if (state->menu[KEY_MENU_RIGHT])
+	{
 		soundFlags |= MENU_SOUND_RIGHT;
+	}
 	if (state->menu[KEY_MENU_SELECT])
+	{
 		soundFlags |= MENU_SOUND_SELECT;
+	}
 	if (state->menu[KEY_MENU_CANCEL])
+	{
 		soundFlags |= MENU_SOUND_CANCEL;
+	}
 	if (state->menu[KEY_MENU_SPECIAL])
+	{
 		soundFlags |= MENU_SOUND_SPECIAL;
+	}
 	if (state->menu[KEY_MENU_PAGE_UP])
+	{
 		soundFlags |= MENU_SOUND_PAGEUP;
+	}
 	if (state->menu[KEY_MENU_PAGE_DOWN])
+	{
 		soundFlags |= MENU_SOUND_PAGEDOWN;
+	}
 	if (state->menu[KEY_MENU_DELETE])
+	{
 		soundFlags |= MENU_SOUND_DELETE;
+	}
 	if (state->menu[KEY_MENU_BACKSPACE])
+	{
 		soundFlags |= MENU_SOUND_DELETE;
+	}
 
 	return soundFlags;
 }
@@ -365,7 +413,9 @@ MenuKeysToSoundFlags(const CONTROLLER_INPUT_STATE* state)
 void DoInput(void* pInputState, bool resetInput)
 {
 	if (resetInput)
+	{
 		FlushInput();
+	}
 
 	do
 	{
@@ -392,18 +442,24 @@ void DoInput(void* pInputState, bool resetInput)
 
 			S = MenuSounds;
 			if (soundFlags & sound_1)
+			{
 				S = SetAbsSoundIndex(S, MENU_SOUND_SUCCESS);
+			}
 
 			PlaySoundEffect(S, 0, NotPositional(), NULL, 0);
 		}
 
 		if (inputCallback)
+		{
 			inputCallback();
+		}
 
 	} while (((INPUT_STATE_DESC*)pInputState)->InputFunc(pInputState));
 
 	if (resetInput)
+	{
 		FlushInput();
+	}
 }
 
 void SetMenuSounds(MENU_SOUND_FLAGS s0, MENU_SOUND_FLAGS s1)
@@ -424,21 +480,37 @@ ControlInputToBattleInput(const int* keyState)
 	BATTLE_INPUT_STATE InputState = 0;
 
 	if (keyState[KEY_UP])
+	{
 		InputState |= BATTLE_THRUST;
+	}
 	if (keyState[KEY_LEFT])
+	{
 		InputState |= BATTLE_LEFT;
+	}
 	if (keyState[KEY_RIGHT])
+	{
 		InputState |= BATTLE_RIGHT;
+	}
 	if (keyState[KEY_WEAPON])
+	{
 		InputState |= BATTLE_WEAPON;
+	}
 	if (keyState[KEY_SPECIAL])
+	{
 		InputState |= BATTLE_SPECIAL;
+	}
 	if (keyState[KEY_ESCAPE])
+	{
 		InputState |= BATTLE_ESCAPE;
+	}
 	if (keyState[KEY_DOWN])
+	{
 		InputState |= BATTLE_DOWN;
+	}
 	if (keyState[KEY_THRUST])
+	{
 		InputState |= BATTLE_THRUST_ALT;
+	}
 
 	return InputState;
 }
@@ -467,13 +539,17 @@ bool AnyButtonPress(bool CheckSpecial)
 		for (j = 0; j < NUM_KEYS; j++)
 		{
 			if (CurrentInputState.key[i][j])
+			{
 				return true;
+			}
 		}
 	}
 	for (i = 0; i < NUM_MENU_KEYS; i++)
 	{
 		if (CurrentInputState.menu[i])
+		{
 			return true;
+		}
 	}
 	return false;
 }

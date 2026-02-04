@@ -138,14 +138,22 @@ ExpandRect(RECT* rect, int expansion)
 	}
 
 	if (rect->corner.x + rect->extent.width + expansion <= CanvasWidth)
+	{
 		rect->extent.width += expansion;
+	}
 	else
+	{
 		rect->extent.width = CanvasWidth - rect->corner.x;
+	}
 
 	if (rect->corner.y + rect->extent.height + expansion <= CanvasHeight)
+	{
 		rect->extent.height += expansion;
+	}
 	else
+	{
 		rect->extent.height = CanvasHeight - rect->corner.y;
+	}
 }
 #endif // SDL_MAJOR_VERSION
 
@@ -174,7 +182,9 @@ void ScreenTransition(int TransType, const RECT* pRect)
 	TimeCount startTime;
 
 	if (TransType == OPT_PC)
+	{
 		return;
+	}
 
 	TFB_UploadTransitionScreen((RECT*)pRect);
 
@@ -191,7 +201,9 @@ void ScreenTransition(int TransType, const RECT* pRect)
 		deltaT = GetTimeCounter() - startTime;
 		newAmount = deltaT * 255 / DURATION;
 		if (newAmount > 255)
+		{
 			newAmount = 255;
+		}
 
 		TransitionAmount = newAmount;
 	}

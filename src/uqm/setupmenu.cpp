@@ -94,7 +94,9 @@ PutBoolOpt(OPT_ENABLABLE* glob, OPT_ENABLABLE* set, const char* key,
 		*glob = *set;
 		res_PutBoolean(key, (bool)*set);
 		if (reload)
+		{
 			optRequiresReload = true;
+		}
 		return true;
 	}
 
@@ -109,7 +111,9 @@ PutIntOpt(int* glob, int* set, const char* key, bool reload)
 		*glob = *set;
 		res_PutInteger(key, *set);
 		if (reload)
+		{
 			optRequiresReload = true;
+		}
 		return true;
 	}
 
@@ -125,7 +129,9 @@ PutConsOpt(int* glob, OPT_CONSOLETYPE* set, const char* key,
 		*glob = whichPlatformRef(*set);
 		res_PutBoolean(key, (bool)*set);
 		if (reload)
+		{
 			optRequiresReload = true;
+		}
 		return true;
 	}
 
@@ -604,7 +610,9 @@ static void
 populate_seed(void)
 {
 	if (choices[CHOICE_GAMESEED].selected == OPTVAL_PRIME || !SANE_SEED(optCustomSeed))
+	{
 		optCustomSeed = PrimeA;
+	}
 	snprintf(textentries[TEXT_GAMESEED].value,
 			 sizeof(textentries[TEXT_GAMESEED].value), "%d", optCustomSeed);
 }
@@ -744,7 +752,9 @@ static void
 check_for_hd(WIDGET_CHOICE* self, int oldval)
 {
 	if (self->selected != OPTVAL_REAL_1280_960)
+	{
 		return;
+	}
 
 	if (!isAddonAvailable(HD_MODE))
 	{
@@ -824,7 +834,9 @@ static void
 check_availability(WIDGET_CHOICE* self, int oldval)
 {
 	if (self->choice_num == CHOICE_GRAPHICS)
+	{
 		check_for_hd(self, oldval);
+	}
 
 	if (self->choice_num == CHOICE_REMIXES1 || self->choice_num == CHOICE_REMIXES2 || self->choice_num == CHOICE_REMIXES3 || self->choice_num == CHOICE_IPMUSIC)
 	{
@@ -901,9 +913,13 @@ static void
 toggle_scanlines(WIDGET_CHOICE* self, int* NewGfxFlags)
 {
 	if (self->selected == 1)
+	{
 		*NewGfxFlags |= TFB_GFXFLAGS_SCANLINES;
+	}
 	else
+	{
 		*NewGfxFlags &= ~TFB_GFXFLAGS_SCANLINES;
+	}
 	res_PutBoolean("config.scanlines", self->selected);
 }
 
@@ -966,9 +982,13 @@ static void
 toggle_showfps(WIDGET_CHOICE* self, int* NewGfxFlags)
 {
 	if (self->selected == 1)
+	{
 		*NewGfxFlags |= TFB_GFXFLAGS_SHOWFPS;
+	}
 	else
+	{
 		*NewGfxFlags &= ~TFB_GFXFLAGS_SHOWFPS;
+	}
 	res_PutBoolean("config.showfps", self->selected);
 }
 
@@ -999,7 +1019,9 @@ void process_graphics_options(WIDGET_CHOICE* self, int OldVal)
 	bool isExclusive = false;
 
 	if (OldVal == self->selected)
+	{
 		return;
+	}
 
 	switch (self->choice_num)
 	{
@@ -1036,15 +1058,21 @@ void process_graphics_options(WIDGET_CHOICE* self, int OldVal)
 		float ratio = (float)NewHeight / (float)NewWidth;
 
 		if (ratio > threshold) // screen is narrower than 4:3
+		{
 			NewWidth = NewHeight / threshold;
+		}
 		else if (ratio < threshold) // screen is wider than 4:3
+		{
 			NewHeight = NewWidth * threshold;
+		}
 	}
 
 	if (NewWidth != WindowWidth || NewHeight != WindowHeight || NewGfxFlags != GfxFlags || NewGfxDriver != GraphicsDriver)
 	{
 		if (isExclusive)
+		{
 			NewGfxFlags &= ~TFB_GFXFLAGS_EX_FULLSCREEN;
+		}
 
 		TFB_DrawScreen_ReinitVideo(NewGfxDriver, NewGfxFlags,
 								   NewWidth, NewHeight);
@@ -1104,24 +1132,34 @@ change_res(WIDGET_TEXTENTRY* self)
 		float ratio = (float)NewHeight / (float)NewWidth;
 
 		if (ratio > threshold) // screen is narrower than 4:3
+		{
 			NewWidth = NewHeight / threshold;
+		}
 		else if (ratio < threshold) // screen is wider than 4:3
+		{
 			NewHeight = NewWidth * threshold;
+		}
 	}
 
 	if (NewWidth != WindowWidth || NewHeight != WindowHeight)
 	{
 		if (isExclusive)
+		{
 			NewGfxFlags &= ~TFB_GFXFLAGS_EX_FULLSCREEN;
+		}
 
 		TFB_DrawScreen_ReinitVideo(GraphicsDriver, GfxFlags,
 								   NewWidth, NewHeight);
 	}
 	else
+	{
 		return;
+	}
 
 	if (NewGfxFlags != GfxFlags)
+	{
 		GfxFlags = NewGfxFlags;
+	}
 
 	FlushInput();
 
@@ -1498,9 +1536,13 @@ OnTextEntryChange(TEXTENTRY_STATE* pTES)
 
 	widget->cursor_pos = pTES->CursorPos;
 	if (pTES->JoystickMode)
+	{
 		widget->state |= WTE_BLOCKCUR;
+	}
 	else
+	{
 		widget->state &= ~WTE_BLOCKCUR;
+	}
 
 	// XXX TODO: Here, we can examine the text entered so far
 	// to make sure it fits on the screen, for example,
@@ -1612,7 +1654,9 @@ updateGammaBounds(bool useUpper)
 	slider = gammaToSlider(1.0f);
 	g = sliderToGamma(slider);
 	if (g == 1.0f)
+	{
 		return; // no adjustment needed
+	}
 
 	x = solveGammaCurve(g);
 	if (useUpper)
@@ -2309,11 +2353,17 @@ void GetGlobalOptions(GLOBALOPTS* opts)
 	opts->screenResolution = (OPT_RESTYPE)(resolutionFactor >> 1);
 
 	if (GfxFlags & TFB_GFXFLAGS_FULLSCREEN)
+	{
 		opts->fullscreen = OPTVAL_BORDERED_FULLSCREEN;
+	}
 	else if (GfxFlags & TFB_GFXFLAGS_EX_FULLSCREEN)
+	{
 		opts->fullscreen = OPTVAL_EXCLUSIVE_FULLSCREEN;
+	}
 	else
+	{
 		opts->fullscreen = OPTVAL_WINDOWED;
+	}
 	/*opts->fullscreen = (GfxFlags & TFB_GFXFLAGS_FULLSCREEN) ?
 		OPTVAL_ENABLED : OPTVAL_DISABLED;*/
 	opts->fps = (GfxFlags & TFB_GFXFLAGS_SHOWFPS) ?
@@ -2353,9 +2403,13 @@ void GetGlobalOptions(GLOBALOPTS* opts)
 	// The option supplied by the user may be beyond our starting range
 	// but valid nonetheless. We need to account for that.
 	if (optGamma <= minGamma)
+	{
 		minGamma = optGamma - 0.03f;
+	}
 	else if (optGamma >= maxGamma)
+	{
 		maxGamma = optGamma + 0.3f;
+	}
 	updateGammaBounds(whichBound);
 	opts->gamma = gammaToSlider(optGamma);
 
@@ -2364,9 +2418,13 @@ void GetGlobalOptions(GLOBALOPTS* opts)
 	/* Work out resolution.  On the way, try to guess a good default
 	 * for config.alwaysgl, then overwrite it if it was set previously. */
 	if ((!IS_HD && (GraphicsDriver != TFB_GFXDRIVER_SDL_PURE) && ((WindowWidth == 320) || (WindowWidth == 640))) || res_GetBoolean("config.alwaysgl"))
+	{
 		opts->driver = OPTVAL_ALWAYS_GL;
+	}
 	else
+	{
 		opts->driver = OPTVAL_PURE_IF_POSSIBLE;
+	}
 
 	opts->windowType = (OPT_WINDOWTYPE)optWindowType;
 	switch (opts->windowType)
@@ -2415,11 +2473,17 @@ void GetGlobalOptions(GLOBALOPTS* opts)
 	audioDriver = opts->adriver;
 
 	if (soundflags & audio_QUALITY_HIGH)
+	{
 		opts->aquality = OPTVAL_HIGH;
+	}
 	else if (soundflags & audio_QUALITY_LOW)
+	{
 		opts->aquality = OPTVAL_LOW;
+	}
 	else
+	{
 		opts->aquality = OPTVAL_MEDIUM;
+	}
 
 	audioQuality = opts->aquality;
 
@@ -2612,9 +2676,13 @@ void SetGlobalOptions(GLOBALOPTS* opts)
 	if (PutBoolOpt(&optMainMenuMusic, &opts->mainMenuMusic, "mm.mainMenuMusic", false))
 	{
 		if (optMainMenuMusic)
+		{
 			InitMenuMusic();
+		}
 		else
+		{
 			UninitMenuMusic();
+		}
 	}
 
 	PutIntOpt(&optMusicResume, (int*)&opts->musicResume, "mm.musicResume", false);
@@ -2762,14 +2830,18 @@ void SetGlobalOptions(GLOBALOPTS* opts)
 		PutIntOpt(&optSeedType, (int*)(&opts->seedType), "mm.seedType", false);
 		int customSeed = atoi(textentries[TEXT_GAMESEED].value);
 		if (!SANE_SEED(customSeed) || optSeedType == OPTVAL_PRIME)
+		{
 			customSeed = PrimeA;
+		}
 		PutIntOpt(&optCustomSeed, &customSeed, "mm.customSeed", false);
 		PutBoolOpt(&optShipSeed, &opts->shipSeed, "mm.shipSeed", false);
 	}
 
 	PutIntOpt(&optDiffChooser, (int*)&opts->difficulty, "mm.difficulty", false);
 	if ((optDifficulty = opts->difficulty) == OPTVAL_IMPO)
+	{
 		optDifficulty = OPTVAL_NORM;
+	}
 	PutBoolOpt(&optExtended, &opts->extended, "mm.extended", false);
 	PutIntOpt(&optNomad, (int*)&opts->nomad, "mm.nomad", false);
 	PutBoolOpt(&optSlaughterMode, &opts->slaughterMode, "mm.slaughterMode", false);
@@ -2865,9 +2937,13 @@ void SetGlobalOptions(GLOBALOPTS* opts)
 			float ratio = (float)h / (float)w;
 
 			if (ratio > threshold) // screen is narrower than 4:3
+			{
 				w = h / threshold;
+			}
 			else if (ratio < threshold) // screen is wider than 4:3
+			{
 				h = w * threshold;
+			}
 		}
 
 		log_add(log_Debug, "ScreenWidth:%d, ScreenHeight:%d, "

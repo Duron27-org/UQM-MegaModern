@@ -84,7 +84,9 @@ void InitMenuMusic(void)
 		PlayMusic(menuMusic, true, 1);
 
 		if (OkayToResume())
+		{
 			SeekMusic(GetMusicPosition());
+		}
 
 		FadeMusic(NORMAL_VOLUME + 70, ONE_SECOND * 3);
 	}
@@ -241,17 +243,25 @@ DoDiffChooser(MENU_STATE* pMS)
 				|| PulsedInputState.menu[KEY_MENU_LEFT])
 			{
 				if (NewState == EASY_DIFF)
+				{
 					NewState = HARD_DIFF;
+				}
 				else
+				{
 					--NewState;
+				}
 			}
 			else if (PulsedInputState.menu[KEY_MENU_DOWN]
 					 || PulsedInputState.menu[KEY_MENU_RIGHT])
 			{
 				if (NewState == HARD_DIFF)
+				{
 					NewState = EASY_DIFF;
+				}
 				else
+				{
 					++NewState;
+				}
 			}
 			if (NewState != a)
 			{
@@ -304,7 +314,9 @@ InitPulseText(void)
 	uqm::COUNT i;
 
 	if (TextCache[0] != NULL)
+	{
 		return;
+	}
 
 	SetContextFont(SlabFont);
 	SetContextBackGroundColor(BLACK_COLOR);
@@ -423,7 +435,9 @@ static bool
 RestartMessage(void)
 {
 	if (!optRequiresRestart)
+	{
 		return false;
+	}
 
 	SetFlashRect(NULL, false);
 	DoPopupWindow(GAME_STRING(MAINMENU_STRING_BASE + 35));
@@ -447,7 +461,9 @@ DoRestart(MENU_STATE* pMS)
 	GamePaused = false;
 
 	if (optWindowType < 2)
+	{
 		optMeleeToolTips = (OPT_ENABLABLE) false;
+	}
 
 	if (optSuperMelee && !optLoadGame)
 	{
@@ -461,7 +477,9 @@ DoRestart(MENU_STATE* pMS)
 	}
 
 	if (pMS->Initialized && !(GLOBAL(CurrentActivity) & CHECK_ABORT))
+	{
 		Flash_process(pMS->flashContext);
+	}
 
 	if (!pMS->Initialized)
 	{ // Kruzen: too much trouble using this one. Better to just turn it off
@@ -528,7 +546,9 @@ DoRestart(MENU_STATE* pMS)
 					{
 						LastInputTime = GetTimeCounter();			 // if we timed out - don't start second credit roll
 						if (GLOBAL(CurrentActivity) != (ACTIVITY)~0) // just declined
+						{
 							Flash_continue(pMS->flashContext);
+						}
 						return true;
 					}
 					Flash_continue(pMS->flashContext);
@@ -555,7 +575,9 @@ DoRestart(MENU_STATE* pMS)
 				SetupMenu();
 
 				if (optRequiresReload)
+				{
 					return false;
+				}
 
 				LastInputTime = GetTimeCounter();
 				InactTimeOut = (optMainMenuMusic ? 60 : 20) * ONE_SECOND;
@@ -591,16 +613,24 @@ DoRestart(MENU_STATE* pMS)
 		if (PulsedInputState.menu[KEY_MENU_UP])
 		{
 			if (NewState == START_NEW_GAME)
+			{
 				NewState = QUIT_GAME;
+			}
 			else
+			{
 				--NewState;
+			}
 		}
 		else if (PulsedInputState.menu[KEY_MENU_DOWN])
 		{
 			if (NewState == QUIT_GAME)
+			{
 				NewState = START_NEW_GAME;
+			}
 			else
+			{
 				++NewState;
+			}
 		}
 		if (NewState != pMS->CurState)
 		{
@@ -677,7 +707,9 @@ RestartMenu(MENU_STATE* pMS)
 		GLOBAL(CurrentActivity) = IN_ENCOUNTER;
 
 		if (optGameOver)
+		{
 			GameOver(SUICIDE);
+		}
 
 		DeathBySuicide = false;
 
@@ -695,13 +727,17 @@ RestartMenu(MENU_STATE* pMS)
 			if (DeathByMelee)
 			{
 				if (optGameOver)
+				{
 					GameOver(DIED_IN_BATTLE);
+				}
 				DeathByMelee = false;
 			}
 			else if (DeathBySurrender)
 			{
 				if (optGameOver)
+				{
 					GameOver(SURRENDERED);
+				}
 				DeathBySurrender = false;
 			}
 		}
@@ -727,7 +763,9 @@ RestartMenu(MENU_STATE* pMS)
 	// the player used the Utwig bomb
 	SleepThreadUntil(FadeScreen(FadeAllToBlack, TimeOut));
 	if (TimeOut == ONE_SECOND / 8)
+	{
 		SleepThread(ONE_SECOND * 3);
+	}
 
 	pMS->CurFrame = CaptureDrawable(LoadGraphic(RESTART_PMAP_ANIM));
 
@@ -738,7 +776,9 @@ RestartMenu(MENU_STATE* pMS)
 	DoInput(pMS, true);
 
 	if (!(optRequiresRestart || optRequiresReload))
+	{
 		UninitMenuMusic();
+	}
 
 	Flash_terminate(pMS->flashContext);
 	pMS->flashContext = 0;
@@ -752,13 +792,19 @@ RestartMenu(MENU_STATE* pMS)
 	}
 
 	if (optRequiresReload)
+	{
 		Reload();
+	}
 
 	if (GLOBAL(CurrentActivity) == (ACTIVITY)~0)
+	{
 		return (false); // timed out
+	}
 
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+	{
 		return (false); // quit
+	}
 
 	TimeOut = FadeScreen(FadeAllToBlack, ONE_SECOND / 2);
 
@@ -814,24 +860,32 @@ bool StartGame(void)
 				GLOBAL(CurrentActivity) = 0;
 
 				if (optRequiresRestart || optRequiresReload)
+				{
 					optRequiresRestart = optRequiresReload = false;
+				}
 				else
 				{
 					SplashScreen(0);
 					if (optWhichIntro == OPT_3DO)
+					{
 						Drumall();
+					}
 					Credits(false);
 				}
 			}
 
 			if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+			{
 				return (false); // quit
+			}
 		}
 
 		if (LastActivity & CHECK_RESTART)
 		{ // starting a new game
 			if (!optSkipIntro)
+			{
 				Introduction();
+			}
 		}
 
 	} while (GLOBAL(CurrentActivity) & CHECK_ABORT);
@@ -858,7 +912,9 @@ bool StartGame(void)
 		fprintf(stderr, "Initializing star_array, just in case...\n");
 #endif
 		for (i = 0; i < NUM_SOLAR_SYSTEMS + 1 + NUM_HYPER_VORTICES + 1 + 1; i++)
+		{
 			star_array[i] = StarmapArray[i];
+		}
 		Elements = ElementsArray;
 		PlanData = PlanetsArray;
 		constel_array = (const POINT*)ConstellationsArray;

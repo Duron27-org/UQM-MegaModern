@@ -155,18 +155,24 @@ spin_preprocess(ELEMENT* ElementPtr)
 	{
 		++ElementPtr->life_span;
 		if (ElementPtr->turn_wait)
+		{
 			--ElementPtr->turn_wait;
+		}
 		else
 		{
 #define LAST_SPIN_INDEX 1
 			if (GetFrameIndex(
 					ElementPtr->current.image.frame)
 				< LAST_SPIN_INDEX)
+			{
 				ElementPtr->next.image.frame =
 					IncFrameIndex(ElementPtr->current.image.frame);
+			}
 			else
+			{
 				ElementPtr->next.image.frame =
 					SetAbsFrameIndex(ElementPtr->current.image.frame, 0);
+			}
 			ElementPtr->state_flags |= CHANGING;
 
 			ElementPtr->turn_wait = SAW_RATE;
@@ -179,7 +185,9 @@ static void
 buzztrack_preprocess(ELEMENT* ElementPtr)
 {
 	if (ElementPtr->thrust_wait)
+	{
 		--ElementPtr->thrust_wait;
+	}
 	else
 	{
 		uqm::COUNT facing = 0;
@@ -206,9 +214,13 @@ buzztrack_preprocess(ELEMENT* ElementPtr)
 				ANGLE_TO_FACING(ARCTAN(delta_x, delta_y)));
 
 			if (delta_x < 0)
+			{
 				delta_x = -delta_x;
+			}
 			if (delta_y < 0)
+			{
 				delta_y = -delta_y;
+			}
 			delta_x = WORLD_TO_DISPLAY(delta_x);
 			delta_y = WORLD_TO_DISPLAY(delta_y);
 			if (delta_x >= ACTIVATE_RANGE
@@ -375,7 +387,9 @@ black_urquan_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 		&& lpEvalDesc->MoveState == ENTICE
 		&& (lpEvalDesc->ObjectPtr->state_flags & CREW_OBJECT)
 		&& lpEvalDesc->which_turn <= 8)
+	{
 		lpEvalDesc->MoveState = PURSUE;
+	}
 
 	ship_intelligence(ShipPtr,
 					  ObjectsOfConcern, ConcernCounter);
@@ -387,7 +401,9 @@ black_urquan_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 		&& StarShipPtr->RaceDescPtr->ship_info.energy_level >= SPECIAL_ENERGY_COST
 		&& lpEvalDesc->ObjectPtr
 		&& lpEvalDesc->which_turn <= 8)
+	{
 		StarShipPtr->ship_input_state |= SPECIAL;
+	}
 
 	lpEvalDesc = &ObjectsOfConcern[ENEMY_SHIP_INDEX];
 	if (lpEvalDesc->ObjectPtr)
@@ -413,9 +429,13 @@ black_urquan_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 					if (!PlotIntercept(BuzzSawPtr,
 									   lpEvalDesc->ObjectPtr, BuzzSawPtr->life_span,
 									   FRAGMENT_RANGE / 2))
+					{
 						StarShipPtr->ship_input_state &= ~WEAPON;
+					}
 					else if (StarShipPtr->weapon_counter == 0)
+					{
 						StarShipPtr->ship_input_state |= WEAPON;
+					}
 
 					UnlockElement(h);
 					break;
@@ -428,17 +448,23 @@ black_urquan_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 		if (h == 0)
 		{
 			if (StarShipPtr->old_status_flags & WEAPON)
+			{
 				StarShipPtr->ship_input_state &= ~WEAPON;
+			}
 			else if (StarShipPtr->weapon_counter == 0
 					 && ship_weapons(ShipPtr, lpEvalDesc->ObjectPtr, FRAGMENT_RANGE / 2))
+			{
 				StarShipPtr->ship_input_state |= WEAPON;
+			}
 
 			if (StarShipPtr->special_counter == 0
 				&& !(StarShipPtr->ship_input_state & WEAPON)
 				&& lpEvalDesc->which_turn <= 8
 				&& (StarShipPtr->ship_input_state & (LEFT | RIGHT))
 				&& StarShipPtr->RaceDescPtr->ship_info.energy_level >= SPECIAL_ENERGY_COST)
+			{
 				StarShipPtr->ship_input_state |= SPECIAL;
+			}
 		}
 	}
 }
@@ -447,7 +473,9 @@ static void
 gas_cloud_preprocess(ELEMENT* ElementPtr)
 {
 	if (ElementPtr->turn_wait)
+	{
 		--ElementPtr->turn_wait;
+	}
 	else
 	{
 		ElementPtr->next.image.frame =
@@ -463,9 +491,13 @@ gas_cloud_collision(ELEMENT* ElementPtr0, POINT* pPt0,
 					ELEMENT* ElementPtr1, POINT* pPt1)
 {
 	if (ElementPtr1->state_flags & PLAYER_SHIP)
+	{
 		ElementPtr0->mass_points = GAS_DAMAGE;
+	}
 	else
+	{
 		ElementPtr0->mass_points = GAS_ALT_DAMAGE;
+	}
 
 	weapon_collision(ElementPtr0, pPt0, ElementPtr1, pPt1);
 }
@@ -549,7 +581,9 @@ black_urquan_preprocess(ELEMENT* ElementPtr)
 	if (StarShipPtr->weapon_counter == 0
 		&& (StarShipPtr->cur_status_flags
 			& StarShipPtr->old_status_flags & WEAPON))
+	{
 		++StarShipPtr->weapon_counter;
+	}
 }
 
 RACE_DESC*

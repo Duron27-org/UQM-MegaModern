@@ -45,7 +45,9 @@ read_8(void* fp, uqm::BYTE* v)
 {
 	uqm::BYTE t;
 	if (!v) /* read value ignored */
+	{
 		v = &t;
+	}
 	return ReadResFile(v, 1, 1, (uio_Stream*)fp);
 }
 
@@ -58,12 +60,16 @@ read_16(void* fp, uqm::UWORD* v)
 	{
 		uqm::BYTE b;
 		if (read_8(fp, &b) != 1)
+		{
 			return 0;
+		}
 		t |= ((uqm::UWORD)b) << shift;
 	}
 
 	if (v)
+	{
 		*v = t;
+	}
 
 	return 1;
 }
@@ -83,12 +89,16 @@ read_32(void* fp, uqm::DWORD* v)
 	{
 		uqm::BYTE b;
 		if (read_8(fp, &b) != 1)
+		{
 			return 0;
+		}
 		t |= ((uqm::DWORD)b) << shift;
 	}
 
 	if (v)
+	{
 		*v = t;
+	}
 
 	return 1;
 }
@@ -119,7 +129,9 @@ skip_8(void* fp, uqm::COUNT count)
 	for (i = 0; i < count; ++i)
 	{
 		if (read_8(fp, NULL) != 1)
+		{
 			return 0;
+		}
 	}
 	return 1;
 }
@@ -139,7 +151,9 @@ read_a16(void* fp, uqm::UWORD* ar, uqm::COUNT count)
 	for (; count > 0; --count, ++ar)
 	{
 		if (read_16(fp, ar) != 1)
+		{
 			return 0;
+		}
 	}
 	return 1;
 }
@@ -193,7 +207,9 @@ LoadRaceQueue(void* fh, QUEUE* pQueue, uqm::DWORD size)
 		read_16(fh, &FleetPtr->allied_state);
 
 		if (FleetPtr->allied_state > 2)
+		{
 			FleetPtr->allied_state = BAD_GUY;
+		}
 
 		read_8(fh, &FleetPtr->days_left);
 		read_8(fh, &FleetPtr->growth_fract);
@@ -420,10 +436,14 @@ LoadGameState(GAME_STATE* GSPtr, void* fh, bool try_core)
 		}
 
 		if (rev < 2)
+		{
 			GSPtr->glob_flags = NUM_READ_SPEEDS >> 1;
+		}
 
 		if (rev < 3)
+		{
 			ZeroLastLoc();
+		}
 
 		if (rev < 4)
 		{
@@ -451,7 +471,9 @@ LoadSisState(SIS_STATE* SSPtr, void* fp, bool try_core,
 		read_32s(fp, &SSPtr->log_x) != 1 || read_32s(fp, &SSPtr->log_y) != 1 || read_32(fp, &SSPtr->ResUnits) != 1 || read_32(fp, &SSPtr->FuelOnBoard) != 1 || read_16(fp, &SSPtr->CrewEnlisted) != 1 || read_16(fp, &SSPtr->TotalElementMass) != 1 || read_16(fp, &SSPtr->TotalBioMass) != 1 || read_a8(fp, SSPtr->ModuleSlots, NUM_MODULE_SLOTS) != 1 || read_a8(fp, SSPtr->DriveSlots, NUM_DRIVE_SLOTS) != 1 || read_a8(fp, SSPtr->JetSlots, NUM_JET_SLOTS) != 1 || read_8(fp, &SSPtr->NumLanders) != 1 || read_a16(fp, SSPtr->ElementAmounts, NUM_ELEMENT_CATEGORIES) != 1 ||
 
 		read_str(fp, SSPtr->ShipName, SisNameSize) != 1 || read_str(fp, SSPtr->CommanderName, SisNameSize) != 1 || read_str(fp, SSPtr->PlanetName, SisNameSize) != 1 || (!try_core && (read_8(fp, &SSPtr->Difficulty) != 1)) || (!try_core && (read_8(fp, &SSPtr->Extended) != 1)) || (!try_core && (read_8(fp, &SSPtr->Nomad) != 1)) || (!try_core && (read_32s(fp, &SSPtr->Seed) != 1)) || (!try_core && !(legacyMM > 0) && (read_8(fp, &SSPtr->ShipSeed) != 1)))
+	{
 		return false;
+	}
 	else
 	{
 		if (try_core)
@@ -476,16 +498,22 @@ LoadSummary(SUMMARY_DESC* SummPtr, void* fp, bool try_core)
 	uqm::DWORD nameSize = 0;
 	int legacyMM = false;
 	if (!read_32(fp, &magic))
+	{
 		return false;
+	}
 	if (magic == magicTag || magic == MEGA_TAG || magic == MMV3_TAG)
 	{
 		legacyMM = magic == MEGA_TAG ? 1 : magic == MMV3_TAG ? 2 :
 															   0;
 
 		if (read_32(fp, &magic) != 1 || magic != SUMMARY_TAG)
+		{
 			return false;
+		}
 		if (read_32(fp, &magic) != 1 || magic < 160)
+		{
 			return false;
+		}
 		nameSize = magic - 160;
 	}
 	else
@@ -494,7 +522,9 @@ LoadSummary(SUMMARY_DESC* SummPtr, void* fp, bool try_core)
 	}
 
 	if (!LoadSisState(&SummPtr->SS, fp, try_core, legacyMM))
+	{
 		return false;
+	}
 
 	SummPtr->SS.SaveVersion = 0;
 
@@ -510,24 +540,32 @@ LoadSummary(SUMMARY_DESC* SummPtr, void* fp, bool try_core)
 	}
 
 	if (read_8(fp, &SummPtr->Activity) != 1 || read_8(fp, &SummPtr->Flags) != 1 || read_8(fp, &SummPtr->day_index) != 1 || read_8(fp, &SummPtr->month_index) != 1 || read_16(fp, &SummPtr->year_index) != 1 || read_8(fp, &SummPtr->MCreditLo) != 1 || read_8(fp, &SummPtr->MCreditHi) != 1 || read_8(fp, &SummPtr->NumShips) != 1 || read_8(fp, &SummPtr->NumDevices) != 1 || read_a8(fp, SummPtr->ShipList, MAX_BUILT_SHIPS) != 1 || read_a8(fp, SummPtr->DeviceList, MAX_EXCLUSIVE_DEVICES) != 1 || (!try_core && (read_8(fp, &SummPtr->res_factor) != 1)))
+	{
 		return false;
+	}
 
 	IndependantResFactor = !try_core ? SummPtr->res_factor : 0;
 
 	if (nameSize < SAVE_NAME_SIZE)
 	{
 		if (read_a8s(fp, SummPtr->SaveName, nameSize) != 1)
+		{
 			return false;
+		}
 		SummPtr->SaveName[nameSize] = 0;
 	}
 	else
 	{
 		uqm::DWORD remaining = nameSize - SAVE_NAME_SIZE + 1;
 		if (read_a8s(fp, SummPtr->SaveName, SAVE_NAME_SIZE - 1) != 1)
+		{
 			return false;
+		}
 		SummPtr->SaveName[SAVE_NAME_SIZE - 1] = 0;
 		if (skip_8(fp, remaining) != 1)
+		{
 			return false;
+		}
 	}
 	return true;
 }
@@ -763,7 +801,9 @@ bool LoadCoreGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr)
 	sprintf(file, "uqmsave.%02u", which_game);
 	in_fp = res_OpenResFile(saveDir, file, "rb");
 	if (!in_fp)
+	{
 		return LoadLegacyGame(which_game, SummPtr, false);
+	}
 
 	if (!LoadSummary(&loc_sd, in_fp, true))
 	{
@@ -806,7 +846,9 @@ bool LoadGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, uio_Stream* in_fp, b
 		sprintf(file, "uqmsave.%02u", which_game);
 		in_fp = res_OpenResFile(saveDir, file, "rb");
 		if (!in_fp)
+		{
 			return LoadLegacyGame(which_game, SummPtr, false);
+		}
 
 		if (!LoadSummary(&loc_sd, in_fp, false))
 		{
@@ -930,8 +972,10 @@ bool LoadGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, uio_Stream* in_fp, b
 					PutEvent(hEvent);
 
 					if (optDeCleansing && DeCleanse)
+					{
 						AddEvent(ABSOLUTE_EVENT, 2, 17, START_YEAR + YEARS_TO_KOHRAH_VICTORY,
 								 KOHR_AH_VICTORIOUS_EVENT);
+					}
 				}
 				break;
 			case STAR_TAG:
@@ -988,7 +1032,9 @@ bool LoadGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, uio_Stream* in_fp, b
 	CurStarDescPtr = FindStar(NULL, &SD.star_pt, 0, 0);
 	if (!(NextActivity & START_ENCOUNTER)
 		&& lowByte(NextActivity) == IN_INTERPLANETARY)
+	{
 		NextActivity |= START_INTERPLANETARY;
+	}
 
 	// Reset Debug Key
 	DebugKeyPressed = false;
@@ -998,9 +1044,13 @@ bool LoadGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, uio_Stream* in_fp, b
 	// If the seed is also 0 it's a really old save file and prime seed
 	// Otherwise if the seed isn't prime, optSeedType goes to 1 (planet)
 	if (optSeedType == OPTVAL_PRIME && optCustomSeed == 0)
+	{
 		GLOBAL_SIS(Seed) = optCustomSeed = PrimeA;
+	}
 	else if (optSeedType == OPTVAL_PRIME && optCustomSeed != PrimeA)
+	{
 		SET_GAME_STATE(SEED_TYPE, optSeedType = OPTVAL_PLANET);
+	}
 #ifdef DEBUG_STARSEED
 	fprintf(stderr, "Loading game with seed type %d, %s\n",
 			optSeedType,

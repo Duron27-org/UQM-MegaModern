@@ -171,7 +171,9 @@ const char*
 SoundDecoder_GetName(TFB_SoundDecoder* decoder)
 {
 	if (!decoder || !decoder->funcs)
+	{
 		return "(Null)";
+	}
 	return decoder->funcs->GetName();
 }
 
@@ -214,7 +216,9 @@ void SoundDecoder_Uninit(void)
 	for (info = sd_decoders; info->used; info++)
 	{
 		if (info->ext) // check if present
+		{
 			info->funcs->TermModule();
+		}
 
 		if (!info->builtin)
 		{
@@ -248,7 +252,9 @@ SoundDecoder_Register(const char* fileext, TFB_SoundDecoderFuncs* decvtbl)
 	{
 		// and pick up an empty slot (where available)
 		if (!newslot && !info->ext)
+		{
 			newslot = info;
+		}
 	}
 
 	if (info >= sd_decoders + MAX_REG_DECODERS)
@@ -374,7 +380,9 @@ SoundDecoder_Load(uio_DirHandle* dir, char* filename,
 
 	struct_size = funcs->GetStructSize();
 	if (struct_size < SD_MIN_SIZE)
+	{
 		struct_size = SD_MIN_SIZE;
+	}
 
 	decoder = (TFB_SoundDecoder*)HCalloc(struct_size);
 	decoder->funcs = funcs;
@@ -412,23 +420,37 @@ SoundDecoder_Load(uio_DirHandle* dir, char* filename,
 
 	decoder->length -= startTime / 1000.0f;
 	if (decoder->length < 0)
+	{
 		decoder->length = 0;
+	}
 	else if (runTime > 0 && runTime / 1000.0 < decoder->length)
+	{
 		decoder->length = (float)(runTime / 1000.0);
+	}
 
 	decoder->start_sample = (uint32)(startTime / 1000.0f * decoder->frequency);
 	decoder->end_sample = decoder->start_sample + (unsigned long)(decoder->length * decoder->frequency);
 	if (decoder->start_sample != 0)
+	{
 		decoder->funcs->Seek(decoder, decoder->start_sample);
+	}
 
 	if (decoder->format == decoder_formats.mono8)
+	{
 		decoder->bytes_per_samp = 1;
+	}
 	else if (decoder->format == decoder_formats.mono16)
+	{
 		decoder->bytes_per_samp = 2;
+	}
 	else if (decoder->format == decoder_formats.stereo8)
+	{
 		decoder->bytes_per_samp = 2;
+	}
 	else if (decoder->format == decoder_formats.stereo16)
+	{
 		decoder->bytes_per_samp = 4;
+	}
 
 	decoder->pos = decoder->start_sample * decoder->bytes_per_samp;
 
@@ -456,7 +478,9 @@ SoundDecoder_Decode(TFB_SoundDecoder* decoder)
 	{
 		max_bytes = decoder->end_sample * decoder->bytes_per_samp;
 		if (max_bytes - decoder->pos < decoder->buffer_size)
+		{
 			buffer_size = max_bytes - decoder->pos;
+		}
 	}
 
 	if (buffer_size == 0)
@@ -508,11 +532,17 @@ SoundDecoder_Decode(TFB_SoundDecoder* decoder)
 	}
 	decoder->pos += decoded_bytes;
 	if (rc < 0)
+	{
 		decoder->error = SOUNDDECODER_ERROR;
+	}
 	else if (rc == 0 || decoder->pos >= max_bytes)
+	{
 		decoder->error = SOUNDDECODER_EOF;
+	}
 	else
+	{
 		decoder->error = SOUNDDECODER_OK;
+	}
 
 	if (decoder->need_swap && decoded_bytes > 0 && (decoder->format == decoder_formats.stereo16 || decoder->format == decoder_formats.mono16))
 	{
@@ -547,7 +577,9 @@ SoundDecoder_DecodeAll(TFB_SoundDecoder* decoder)
 	}
 
 	if (reqbufsize < 4096)
+	{
 		reqbufsize = 4096;
+	}
 
 	for (decoded_bytes = 0, rc = 1; rc > 0;)
 	{
@@ -563,7 +595,9 @@ SoundDecoder_DecodeAll(TFB_SoundDecoder* decoder)
 									decoder->buffer_size - decoded_bytes);
 
 		if (rc > 0)
+		{
 			decoded_bytes += rc;
+		}
 	}
 	decoder->buffer_size = decoded_bytes;
 	decoder->pos += decoded_bytes;
@@ -609,7 +643,9 @@ void SoundDecoder_Seek(TFB_SoundDecoder* decoder, uint32 seekTime)
 	uint32 pcm_pos;
 
 	if (!decoder)
+	{
 		return;
+	}
 	if (!decoder->funcs)
 	{
 		log_add(log_Warning, "SoundDecoder_Seek(): bad decoder passed");
@@ -624,7 +660,9 @@ void SoundDecoder_Seek(TFB_SoundDecoder* decoder, uint32 seekTime)
 		decoder->pos = pcm_pos * decoder->bytes_per_samp;
 	}
 	else
+	{
 		decoder->funcs->Seek(decoder, seekTime);
+	}
 
 	decoder->error = SOUNDDECODER_OK;
 }
@@ -632,7 +670,9 @@ void SoundDecoder_Seek(TFB_SoundDecoder* decoder, uint32 seekTime)
 void SoundDecoder_Free(TFB_SoundDecoder* decoder)
 {
 	if (!decoder)
+	{
 		return;
+	}
 	if (!decoder->funcs)
 	{
 		log_add(log_Warning, "SoundDecoder_Free(): bad decoder passed");
@@ -650,7 +690,9 @@ void SoundDecoder_Free(TFB_SoundDecoder* decoder)
 float SoundDecoder_GetTime(TFB_SoundDecoder* decoder)
 {
 	if (!decoder)
+	{
 		return 0.0f;
+	}
 	if (!decoder->funcs)
 	{
 		log_add(log_Warning, "SoundDecoder_GetTime(): bad decoder passed");
@@ -666,7 +708,9 @@ uint32
 SoundDecoder_GetFrame(TFB_SoundDecoder* decoder)
 {
 	if (!decoder)
+	{
 		return 0;
+	}
 	if (!decoder->funcs)
 	{
 		log_add(log_Warning, "SoundDecoder_GetFrame(): bad decoder passed");
@@ -773,7 +817,9 @@ bufa_Decode(THIS_PTR, void* buf, sint32 bufsize)
 
 	dec_pcm = bufsize / This->bytes_per_samp;
 	if (dec_pcm > bufa->max_pcm - bufa->cur_pcm)
+	{
 		dec_pcm = bufa->max_pcm - bufa->cur_pcm;
+	}
 	dec_bytes = dec_pcm * This->bytes_per_samp;
 
 	// Buffer decode is a hack
@@ -781,7 +827,9 @@ bufa_Decode(THIS_PTR, void* buf, sint32 bufsize)
 				 + bufa->cur_pcm * This->bytes_per_samp;
 
 	if (dec_pcm > 0)
+	{
 		bufa->cur_pcm += dec_pcm;
+	}
 
 	return dec_bytes;
 
@@ -794,7 +842,9 @@ bufa_Seek(THIS_PTR, uint32 pcm_pos)
 	TFB_BufSoundDecoder* bufa = (TFB_BufSoundDecoder*)This;
 
 	if (pcm_pos > bufa->max_pcm)
+	{
 		pcm_pos = bufa->max_pcm;
+	}
 	bufa->cur_pcm = pcm_pos;
 
 	return pcm_pos;
@@ -896,7 +946,9 @@ nula_Decode(THIS_PTR, void* buf, sint32 bufsize)
 	max_pcm = (uint32)(This->length * This->frequency);
 	dec_pcm = bufsize / This->bytes_per_samp;
 	if (dec_pcm > max_pcm - nula->cur_pcm)
+	{
 		dec_pcm = max_pcm - nula->cur_pcm;
+	}
 	dec_bytes = dec_pcm * This->bytes_per_samp;
 
 	if (dec_pcm > 0)
@@ -916,7 +968,9 @@ nula_Seek(THIS_PTR, uint32 pcm_pos)
 
 	max_pcm = (uint32)(This->length * This->frequency);
 	if (pcm_pos > max_pcm)
+	{
 		pcm_pos = max_pcm;
+	}
 	nula->cur_pcm = pcm_pos;
 
 	return pcm_pos;

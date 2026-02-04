@@ -108,26 +108,36 @@ GenerateOrz_generatePlanets(SOLARSYS_STATE* solarSys)
 					(RandVal % (MAX_GEN_PLANETS - PByte) + PByte);
 			}
 			else
+			{
 				pSunDesc->NumPlanets = (uqm::BYTE)~0;
+			}
 
 			FillOrbits(solarSys, pSunDesc->NumPlanets,
 					   solarSys->PlanetDesc, false);
 
 			if (StarSeed)
+			{
 				GenerateGasGiantRanged(solarSys);
+			}
 
 			pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
 
 			if (!StarSeed)
+			{
 				pPlanet->data_index = GenerateWorlds(ONLY_GAS);
+			}
 
 			GeneratePlanets(solarSys);
 
 			if (pPlanet->NumPlanets <= pSunDesc->MoonByte)
+			{
 				pPlanet->NumPlanets = pSunDesc->MoonByte + 1;
+			}
 		}
 		else
+		{
 			GenerateDefault_generatePlanets(solarSys);
+		}
 	}
 
 	return true;
@@ -190,7 +200,9 @@ GenerateOrz_generateOrbital(SOLARSYS_STATE* solarSys, PLANET_DESC* world)
 			InitCommunication(ORZ_CONVERSATION);
 
 			if (GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
+			{
 				return true;
+			}
 
 			{
 				bool OrzSurvivors;
@@ -204,7 +216,9 @@ GenerateOrz_generateOrbital(SOLARSYS_STATE* solarSys, PLANET_DESC* world)
 				GetGroupInfo(GROUPS_RANDOM, GROUP_LOAD_IP);
 
 				if (OrzSurvivors)
+				{
 					return true;
+				}
 
 				RepairSISBorder();
 			}

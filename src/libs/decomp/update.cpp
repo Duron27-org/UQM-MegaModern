@@ -59,9 +59,13 @@ reconst(void)
 	for (i = 0; i < T; i++)
 	{
 		if ((j = _lpCurCodeDesc->son[i]) >= T)
+		{
 			_lpCurCodeDesc->prnt[j] = i;
+		}
 		else
+		{
 			_lpCurCodeDesc->prnt[j] = _lpCurCodeDesc->prnt[j + 1] = i;
+		}
 	}
 }
 
@@ -73,7 +77,9 @@ void _update(uqm::COUNT c)
 	PLZHCODE_DESC lpCD;
 
 	if ((lpCD = _lpCurCodeDesc)->freq[R] == MAX_FREQ)
+	{
 		reconst();
+	}
 
 	c = lpCD->prnt[c];
 	do
@@ -100,11 +106,15 @@ void _update(uqm::COUNT c)
 
 			lpCD->prnt[i] = l;
 			if (i < T)
+			{
 				lpCD->prnt[i + 1] = l;
+			}
 
 			lpCD->prnt[j] = c;
 			if (j < T)
+			{
 				lpCD->prnt[j + 1] = c;
+			}
 
 			c = l;
 		}

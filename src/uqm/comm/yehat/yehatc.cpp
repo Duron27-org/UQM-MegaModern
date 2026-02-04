@@ -40,7 +40,7 @@ static LOCDATA yehat_desc =
 		BLACK_COLOR_INIT, /* AlienTextBColor */
 		{0, 0}, /* AlienTextBaseline */
 		0,
- /* (SIS_TEXT_WIDTH - 16) * 2 / 3, */	 /* AlienTextWidth */
+		/* (SIS_TEXT_WIDTH - 16) * 2 / 3, */	 /* AlienTextWidth */
 		ALIGN_CENTER, /* AlienTextAlign */
 		VALIGN_MIDDLE, /* AlienTextValign */
 		YEHAT_COLOR_MAP, /* AlienColorMap */
@@ -248,9 +248,13 @@ ExitConversation(RESPONSE_REF R)
 	setSegue(Segue_hostile);
 
 	if (PLAYER_SAID(R, bye_homeworld))
+	{
 		NPCPhrase(GOODBYE_AND_DIE_HOMEWORLD);
+	}
 	else if (PLAYER_SAID(R, bye_royalist))
+	{
 		NPCPhrase(GOODBYE_AND_DIE_ROYALIST);
+	}
 	else if (PLAYER_SAID(R, i_demand_you_ally_homeworld))
 	{
 		NPCPhrase(ENEMY_MUST_DIE);
@@ -260,7 +264,9 @@ ExitConversation(RESPONSE_REF R)
 	else if (PLAYER_SAID(R, bye_space))
 	{
 		if ((uqm::BYTE)TFB_Random() & 1)
+		{
 			NPCPhrase(GOODBYE_AND_DIE_SPACE);
+		}
 		else
 		{
 			NPCPhrase(GO_IN_PEACE);
@@ -335,9 +341,13 @@ Royalists(RESPONSE_REF R)
 	else if (PLAYER_SAID(R, what_about_pkunk_royalist))
 	{
 		if (GET_GAME_STATE(YEHAT_ABSORBED_PKUNK))
+		{
 			NPCPhrase(PKUNK_ABSORBED_ROYALIST);
+		}
 		else
+		{
 			NPCPhrase(HATE_PKUNK_ROYALIST);
+		}
 
 		SET_GAME_STATE(YEHAT_ROYALIST_TOLD_PKUNK, 1);
 	}
@@ -349,13 +359,19 @@ Royalists(RESPONSE_REF R)
 	}
 
 	if (PHRASE_ENABLED(how_is_rebellion))
+	{
 		Response(how_is_rebellion, Royalists);
+	}
 	if (!GET_GAME_STATE(YEHAT_ROYALIST_TOLD_PKUNK)
 		&& GET_GAME_STATE(PKUNK_VISITS)
 		&& GET_GAME_STATE(PKUNK_HOME_VISITS))
+	{
 		Response(what_about_pkunk_royalist, Royalists);
+	}
 	if (!GET_GAME_STATE(NO_YEHAT_INFO))
+	{
 		Response(sorry_about_revolution, Royalists);
+	}
 	Response(bye_royalist, ExitConversation);
 }
 
@@ -369,12 +385,18 @@ StartRevolt(RESPONSE_REF R)
 		SET_GAME_STATE(YEHAT_REBEL_TOLD_PKUNK, 1);
 	}
 	else if (PLAYER_SAID(R, shofixti_alive_2))
+	{
 		NPCPhrase(SEND_HIM_OVER_2);
+	}
 
 	if (HaveEscortShip(SHOFIXTI_SHIP))
+	{
 		Response(ok_send, ExitConversation);
+	}
 	else
+	{
 		Response(not_here, ExitConversation);
+	}
 	Response(not_send, ExitConversation);
 }
 
@@ -418,25 +440,39 @@ YehatHome(RESPONSE_REF R)
 	else if (PLAYER_SAID(R, what_about_pkunk_royalist))
 	{
 		if (GET_GAME_STATE(YEHAT_ABSORBED_PKUNK))
+		{
 			NPCPhrase(PKUNK_ABSORBED_ROYALIST);
+		}
 		else
+		{
 			NPCPhrase(HATE_PKUNK_ROYALIST);
+		}
 
 		SET_GAME_STATE(YEHAT_ROYALIST_TOLD_PKUNK, 1);
 	}
 
 	if (PHRASE_ENABLED(whats_up_homeworld))
+	{
 		Response(whats_up_homeworld, YehatHome);
+	}
 	if (!GET_GAME_STATE(YEHAT_ROYALIST_TOLD_PKUNK)
 		&& GET_GAME_STATE(PKUNK_VISITS)
 		&& GET_GAME_STATE(PKUNK_HOME_VISITS))
+	{
 		Response(what_about_pkunk_royalist, YehatHome);
+	}
 	if (!GET_GAME_STATE(NO_YEHAT_HELP_HOME))
+	{
 		Response(at_least_help_us_homeworld, YehatHome);
+	}
 	if (!GET_GAME_STATE(NO_YEHAT_INFO))
+	{
 		Response(give_info, YehatHome);
+	}
 	if (!GET_GAME_STATE(NO_YEHAT_ALLY_HOME))
+	{
 		Response(i_demand_you_ally_homeworld, ExitConversation);
+	}
 	Response(bye_homeworld, ExitConversation);
 }
 
@@ -509,9 +545,13 @@ YehatSpace(RESPONSE_REF R)
 	else if (PLAYER_SAID(R, what_about_pkunk_royalist))
 	{
 		if (GET_GAME_STATE(YEHAT_ABSORBED_PKUNK))
+		{
 			NPCPhrase(PKUNK_ABSORBED_ROYALIST);
+		}
 		else
+		{
 			NPCPhrase(HATE_PKUNK_ROYALIST);
+		}
 
 		SET_GAME_STATE(YEHAT_ROYALIST_TOLD_PKUNK, 1);
 	}
@@ -557,16 +597,22 @@ YehatSpace(RESPONSE_REF R)
 	}
 
 	if (pStr[LastStack])
+	{
 		Response(pStr[LastStack], YehatSpace);
+	}
 	for (i = 0; i < 3; ++i)
 	{
 		if (i != LastStack && pStr[i])
+		{
 			Response(pStr[i], YehatSpace);
+		}
 	}
 	if (!GET_GAME_STATE(YEHAT_ROYALIST_TOLD_PKUNK)
 		&& GET_GAME_STATE(PKUNK_VISITS)
 		&& GET_GAME_STATE(PKUNK_HOME_VISITS))
+	{
 		Response(what_about_pkunk_royalist, YehatSpace);
+	}
 	if (GET_GAME_STATE(SHOFIXTI_VISITS))
 	{
 		switch (GET_GAME_STATE(YEHAT_REBEL_TOLD_PKUNK))

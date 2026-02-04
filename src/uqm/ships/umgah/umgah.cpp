@@ -143,7 +143,9 @@ static void
 SetCustomShipData(RACE_DESC* pRaceDesc, const CustomShipData_t* data)
 {
 	if (pRaceDesc->data == data)
+	{
 		return; // no-op
+	}
 
 	if (pRaceDesc->data) // Out with the old
 	{
@@ -203,12 +205,18 @@ umgah_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 	{
 		if (lpEvalDesc->which_turn > 3
 			|| (StarShipPtr->old_status_flags & SPECIAL))
+		{
 			lpEvalDesc->ObjectPtr = 0;
+		}
 		else if ((lpEvalDesc->ObjectPtr->state_flags & FINITE_LIFE)
 				 && !(lpEvalDesc->ObjectPtr->state_flags & CREW_OBJECT))
+		{
 			lpEvalDesc->MoveState = AVOID;
+		}
 		else
+		{
 			lpEvalDesc->MoveState = PURSUE;
+		}
 	}
 
 	lpEvalDesc = &ObjectsOfConcern[ENEMY_SHIP_INDEX];
@@ -220,7 +228,9 @@ umgah_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 		ship_intelligence(ShipPtr, ObjectsOfConcern, ConcernCounter);
 
 		if (lpEvalDesc->which_turn < 16)
+		{
 			StarShipPtr->ship_input_state |= WEAPON;
+		}
 		StarShipPtr->ship_input_state &= ~SPECIAL;
 	}
 	else
@@ -230,9 +240,13 @@ umgah_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 		bool EnemyBehind, EnoughJuice;
 
 		if (lpEvalDesc->which_turn >= 0xFF + 1)
+		{
 			this_turn = 0xFF;
+		}
 		else
+		{
 			this_turn = (uqm::BYTE)lpEvalDesc->which_turn;
+		}
 
 		EnoughJuice = (bool)((WORLD_TO_TURN(RES_DESCALE(
 								 JUMP_DIST * StarShipPtr->RaceDescPtr->ship_info.energy_level
@@ -256,14 +270,20 @@ umgah_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 						   &EnemyStarShipPtr->RaceDescPtr->cyborg_control)
 						   <= RESOLUTION_COMPENSATED(SLOW_SHIP))
 				|| (this_turn >= 16 && this_turn <= 24)))
+		{
 			StarShipPtr->RaceDescPtr->cyborg_control.WeaponRange = (LONG_RANGE_WEAPON << 3);
+		}
 		else
+		{
 			StarShipPtr->RaceDescPtr->cyborg_control.WeaponRange = CLOSE_RANGE_WEAPON;
+		}
 
 		ship_intelligence(ShipPtr, ObjectsOfConcern, ConcernCounter);
 
 		if (StarShipPtr->RaceDescPtr->cyborg_control.WeaponRange == CLOSE_RANGE_WEAPON)
+		{
 			StarShipPtr->ship_input_state &= ~SPECIAL;
+		}
 		else
 		{
 			bool LinedUp;
@@ -283,9 +303,13 @@ umgah_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 				if (this_turn <= 8 && LinedUp)
 				{
 					if (TFB_Random() & 1)
+					{
 						StarShipPtr->ship_input_state |= LEFT;
+					}
 					else
+					{
 						StarShipPtr->ship_input_state |= RIGHT;
+					}
 				}
 			}
 			else if (StarShipPtr->old_status_flags & SPECIAL)
@@ -296,11 +320,15 @@ umgah_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 		}
 
 		if (this_turn < 16 && !EnemyBehind)
+		{
 			StarShipPtr->ship_input_state |= WEAPON;
+		}
 	}
 
 	if (!(StarShipPtr->ship_input_state & SPECIAL))
+	{
 		StarShipPtr->RaceDescPtr->characteristics.special_wait = 0xFF;
+	}
 }
 
 static uqm::COUNT

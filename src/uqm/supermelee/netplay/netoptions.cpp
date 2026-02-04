@@ -34,5 +34,5 @@ NetplayOptions netplayOptions = {
 		},
 						 },
 	/* .inputDelay = */
-		2,
+	2,
 };

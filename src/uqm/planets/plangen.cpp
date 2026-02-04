@@ -115,16 +115,22 @@ uqm::BYTE
 clip_channel(int c)
 {
 	if (c > 255)
+	{
 		c = 255;
+	}
 	if (c < 0)
+	{
 		c = 0;
+	}
 	return c;
 }
 
 void TransformColor(Color* c, uqm::COUNT scan)
 {
 	if (scan == NUM_SCAN_TYPES)
+	{
 		return;
+	}
 
 	c->r = c->g = c->b = (c->r + c->g + c->b) / 3;
 
@@ -158,15 +164,21 @@ uqm::SBYTE
 ColorDelta(uqm::COUNT scan, uqm::DWORD avg)
 {
 	if (scan == NUM_SCAN_TYPES)
+	{
 		return 0;
+	}
 	else
 	{
 		uqm::SBYTE diff = 0;
 
 		if (avg > (uqm::DWORD)MAX_BRIGHTNESS(scan))
+		{
 			diff = -(uqm::SBYTE)(avg - MAX_BRIGHTNESS(scan));
+		}
 		else if (avg < (uqm::DWORD)MIN_BRIGHTNESS(scan))
+		{
 			diff = MIN_BRIGHTNESS(scan) - avg;
+		}
 
 		return diff;
 	}
@@ -180,11 +192,15 @@ void RepairColorOpacity(Color* TopoColors, int width, int height)
 	c = TopoColors;
 
 	for (y = 0; y < height; y++)
+	{
 		for (x = 0; x < width; x++, c++)
 		{
 			if (c->a != 0xFF)
+			{
 				c->a = 0xFF;
+			}
 		}
+	}
 }
 
 void SetPlanetColors(COLORMAPPTR cmap)
@@ -260,16 +276,24 @@ GetAltColorMap(PLANET_DESC* pPlanetDesc)
 		case PELLUCID_WORLD: /* PLUTO & CALLISTO */
 			{
 				if (worldIsPlanet(pSolarSysState, pPlanetDesc))
+				{
 					return PLUTO_COLOR_TAB;
+				}
 				else
+				{
 					return CALLISTO_COLOR_TAB;
+				}
 			}
 		case SELENIC_WORLD: /* LUNA & CHARON */
 			{
 				if (planetIndex(pSolarSysState, pPlanetDesc) == 2)
+				{
 					return LUNA_COLOR_TAB;
+				}
 				else
+				{
 					return CHARON_COLOR_TAB;
+				}
 			}
 		case RADIOACTIVE_WORLD: /* IO */
 			return IO_COLOR_TAB;
@@ -312,8 +336,10 @@ ExpandLevelMasks(PLANET_ORBIT* Orbit)
 	Orbit->TopoMask = 0;
 
 	for (y = 0; y < colorSize; y += halfBound)
+	{
 		memcpy(colors + y + width, colors + y,
 			   spherespanx * sizeof(Color));
+	}
 
 	if (PlanetInfo->AxialTilt == 0)
 	{
@@ -333,7 +359,9 @@ ExpandLevelMasks(PLANET_ORBIT* Orbit)
 			* (spherespanx - height);
 
 		if (err < 0)
+		{
 			err = -err;
+		}
 
 		err = ceil(err);
 		// Get the closest acceptable value (always ceil)
@@ -398,7 +426,9 @@ RenderLevelMasks(FRAME mask, uqm::SBYTE* pTopoData, bool SurfDef)
 		base = 256;
 	}
 	else
+	{
 		base = PlanDataPtr->base_elevation;
+	}
 
 	xlatDesc = (const XLAT_DESC*)pSolarSysState->XlatPtr;
 	level_tab = (const uqm::SIZE*)xlatDesc->level_tab;
@@ -424,9 +454,13 @@ RenderLevelMasks(FRAME mask, uqm::SBYTE* pTopoData, bool SurfDef)
 				else
 				{
 					if (d < 0)
+					{
 						d = 0;
+					}
 					else if (d > 255)
+					{
 						d = 255;
+					}
 				}
 
 				if (d >= level_tab[num_frames]
@@ -452,7 +486,9 @@ RenderLevelMasks(FRAME mask, uqm::SBYTE* pTopoData, bool SurfDef)
 		}
 
 		if (i < NUM_BATCH_POINTS)
+		{
 			DrawBatch(BatchArray, i, 0);
+		}
 	}
 	SetContextClipRect(&ClipRect);
 	SetContextOrigin(oldOrigin);
@@ -493,15 +529,21 @@ RenderTopography(FRAME DstFrame, uqm::SBYTE* pTopoData, int w, int h,
 		base = 256;
 	}
 	else
+	{
 		base = PlanDataPtr->base_elevation;
+	}
 
 	xlatDesc = (const XLAT_DESC*)pSolarSysState->XlatPtr;
 	xlat_tab = (const uqm::BYTE*)xlatDesc->xlat_tab;
 
 	if (scanTable == NULL)
+	{
 		cbase = (uqm::BYTE*)GetColorMapAddress(pSolarSysState->OrbitalCMap);
+	}
 	else
+	{
 		cbase = (uqm::BYTE*)GetColorMapAddress(scanTable);
+	}
 
 	pSrc = pTopoData;
 	sqr = w * h;
@@ -515,16 +557,22 @@ RenderTopography(FRAME DstFrame, uqm::SBYTE* pTopoData, int w, int h,
 		if (AlgoType == GAS_GIANT_ALGO)
 		{ // make elevation value non-negative
 			if (optScanSphere == 1)
+			{
 				d += base;
+			}
 			d &= 255;
 		}
 		else
 		{
 			d += base;
 			if (d < 0)
+			{
 				d = 0;
+			}
 			else if (d > 255)
+			{
 				d = 255;
+			}
 		}
 
 		d = xlat_tab[d] - cbase[0];
@@ -615,7 +663,9 @@ GenerateSphereMask(POINT loc, uqm::COUNT radius)
 				diff = P3dot(&norm, &light);
 				// negative diffuse is bad
 				if (diff < 0)
+				{
 					diff = 0.0;
+				}
 #if 0
 				// Specular is not used in practice and is left here
 				//  if someone decides to use it later for some reason.
@@ -650,13 +700,17 @@ GenerateSphereMask(POINT loc, uqm::COUNT radius)
 #endif
 				// adjust for the ambient light
 				if (diff < AMBIENT_LIGHT)
+				{
 					diff = AMBIENT_LIGHT;
+				}
 				// Now we antialias the edge of the spere to look nice
 				if (rad_2 > radius_2)
 				{
 					diff *= 1 - (sqrt(rad_2) - radius);
 					if (diff < 0)
+					{
 						diff = 0;
+					}
 				}
 				// diff_int allows us multiply by a ratio without using
 				// floating-point.
@@ -682,13 +736,21 @@ create_aa_points(MAP3D_POINT* ppt, double x, double y, uqm::COUNT height)
 	uqm::COUNT spherespanx = height;
 
 	if (x < 0)
+	{
 		x = 0;
+	}
 	else if (x >= spherespanx)
+	{
 		x = spherespanx - 1;
+	}
 	if (y < 0)
+	{
 		y = 0;
+	}
 	else if (y >= height)
+	{
 		y = height - 1;
+	}
 
 	// get  the integer value of this point
 	ppt->p[0].x = (COORD)x;
@@ -705,13 +767,21 @@ create_aa_points(MAP3D_POINT* ppt, double x, double y, uqm::COUNT height)
 
 	// get the neighboring points surrounding the 'ideal' point
 	if (deltax != 0)
+	{
 		nextx = ppt->p[0].x + 1;
+	}
 	else
+	{
 		nextx = ppt->p[0].x;
+	}
 	if (deltay != 0)
+	{
 		nexty = ppt->p[0].y + 1;
+	}
 	else
+	{
 		nexty = ppt->p[0].y;
+	}
 	//(x1,y)
 	ppt->p[1].x = nextx;
 	ppt->p[1].y = ppt->p[0].y;
@@ -740,7 +810,9 @@ create_aa_points(MAP3D_POINT* ppt, double x, double y, uqm::COUNT height)
 	m[3] = m[0] * d1 / d4;
 
 	for (i = 0; i < 4; i++)
+	{
 		ppt->m[i] = (uqm::DWORD)(m[i] * (1 << AA_WEIGHT_BITS) + 0.5);
+	}
 }
 
 static inline uqm::BYTE
@@ -777,7 +849,9 @@ get_avg_channel(Color p[4], uqm::DWORD mult[4], int channel)
 	ci >>= AA_WEIGHT_BITS;
 	//check for overflow
 	if (ci > 255)
+	{
 		ci = 255;
+	}
 
 	return ((uqm::UBYTE)ci);
 }
@@ -819,7 +893,9 @@ CreateSphereTiltMap(int angle, uqm::COUNT height, uqm::COUNT radius)
 			rad = sqrt(rad_2);
 			// antialiasing goes beyond the actual radius
 			if (rad >= radius)
+			{
 				rad = (double)radius - 0.1;
+			}
 
 			da = atan2((double)y, (double)x);
 			// compute the planet-tilt
@@ -834,9 +910,13 @@ CreateSphereTiltMap(int angle, uqm::COUNT height, uqm::COUNT radius)
 			newy = multy * ya;
 			// Adjust for vertical curvature
 			if (ya <= 0.05 || ya >= 3.1 /* almost PI */)
+			{
 				newx = xadj; // exact centerline
+			}
 			else
+			{
 				newx = xadj + ((newx - xadj) / sin(ya));
+			}
 
 			create_aa_points(ppt, newx, newy, height);
 		}
@@ -914,18 +994,26 @@ CreateShieldMask(uqm::COUNT radius)
 				red -= (int)((red - SHIELD_HALO_GLOW_MIN) * (rad - radius)
 							 / (SHIELD_HALO * radius / RADIUS));
 				if (red < 0)
+				{
 					red = 0;
+				}
 			}
 
 			if (optNebulae)
 			{
 				if (alpha != 255)
+				{
 					*pix = BUILD_COLOR_RGBA(red, 0, 0, alpha);
+				}
 				else
+				{
 					*pix = BUILD_COLOR_RGBA(255, 0, 0, red);
+				}
 			}
 			else
+			{
 				*pix = BUILD_COLOR_RGBA(red, 0, 0, alpha);
+			}
 		}
 	}
 
@@ -1034,9 +1122,13 @@ void Draw3DOShield(STAMP ShieldFrame)
 	const uqm::BYTE factor[6] = {0xFF, 0xE6, 0xC5, 0xA4, 0x83, 0x62};
 
 	if (factor[i] == 0x62)
+	{
 		flip = true;
+	}
 	else if (factor[i] == 0xFF)
+	{
 		flip = false;
+	}
 
 	oldmode = SetContextDrawMode(MAKE_DRAW_MODE(DRAW_ADDITIVE,
 												factor[i]));
@@ -1046,7 +1138,9 @@ void Draw3DOShield(STAMP ShieldFrame)
 	SetContextDrawMode(oldmode);
 
 	if (cr % chooseIfHd(3, 4) == 0)
+	{
 		i += flip ? -1 : 1;
+	}
 
 	cr++;
 }
@@ -1089,9 +1183,13 @@ calc_map_light(uqm::UBYTE val, uqm::DWORD dif, int lvf)
 	i += (lvf * val) >> 7;
 
 	if (i < 0)
+	{
 		i = 0;
+	}
 	else if (i > 255)
+	{
 		i = 255;
+	}
 
 	return ((uqm::UBYTE)i);
 }
@@ -1170,9 +1268,13 @@ void RenderPlanetSphere(PLANET_ORBIT* Orbit, FRAME MaskFrame, int offset,
 	clear = BUILD_COLOR_RGBA(0, 0, 0, 0);
 
 	if ((Orbit->scanType < NUM_SCAN_TYPES) && Orbit->ScanColors)
+	{
 		pixels = Orbit->ScanColors[Orbit->scanType] + offset;
+	}
 	else
+	{
 		pixels = Orbit->TopoColors + offset;
+	}
 
 	elevs = Orbit->lpTopoData;
 
@@ -1207,8 +1309,10 @@ void RenderPlanetSphere(PLANET_ORBIT* Orbit, FRAME MaskFrame, int offset,
 
 				// compute 'ideal' pixel
 				for (i = 0; i < 4; i++)
+				{
 					p[i] = get_map_pixel(pixels, ppt->p[i].x, ppt->p[i].y,
 										 width, spherespanx);
+				}
 
 				c.r = get_avg_channel(p, ppt->m, 0);
 				c.g = get_avg_channel(p, ppt->m, 1);
@@ -1216,9 +1320,11 @@ void RenderPlanetSphere(PLANET_ORBIT* Orbit, FRAME MaskFrame, int offset,
 
 				// compute 'ideal' light variance
 				for (i = 0, lvsum = 0; i < 4; i++)
+				{
 					lvsum += get_map_elev(elevs, ppt->p[0].x, ppt->p[0].y,
 										  offset, width)
 						   * ppt->m[i];
+				}
 				lvf = lvsum >> AA_WEIGHT_BITS;
 			}
 
@@ -1247,7 +1353,9 @@ void RenderPlanetSphere(PLANET_ORBIT* Orbit, FRAME MaskFrame, int offset,
 
 				r += c.r;
 				if (r > 255)
+				{
 					r = 255;
+				}
 				c.r = r;
 			}
 			else
@@ -1261,9 +1369,13 @@ void RenderPlanetSphere(PLANET_ORBIT* Orbit, FRAME MaskFrame, int offset,
 
 			if (optScanStyle == OPT_3DO && optTintPlanSphere == OPT_PC
 				&& Orbit->scanType < NUM_SCAN_TYPES)
+			{
 				*pix = apply_alpha_pixel(c, Orbit->scanType);
+			}
 			else
+			{
 				*pix = c;
+			}
 		}
 	}
 
@@ -1283,14 +1395,18 @@ void RenderPlanetSphere(PLANET_ORBIT* Orbit, FRAME MaskFrame, int offset,
 		t = clock() - t1;
 	}
 	else
+	{
 		frames_done++;
+	}
 #endif
 }
 
 void RenderDOSPlanetSphere(PLANET_ORBIT* Orbit, FRAME MaskFrame, int offset)
 {
 	if (!Orbit->TopoMask)
+	{
 		return;
+	}
 	else
 	{ // Prepare new frame (oh god...)
 		uqm::BYTE* pix;
@@ -1348,8 +1464,10 @@ void RenderDOSPlanetSphere(PLANET_ORBIT* Orbit, FRAME MaskFrame, int offset)
 			DestroyDrawable(ReleaseDrawable(rotFrame));
 		}
 		else
+		{
 			ReadFramePixelColors(dupeframe, Orbit->ScratchArray, width,
 								 height);
+		}
 
 		pix = Orbit->sphereBytes;
 		color = Orbit->ScratchArray;
@@ -1416,10 +1534,14 @@ void Render3DOPlanetSphere(PLANET_ORBIT* Orbit, FRAME MaskFrame, int offset,
 					&& Orbit->scanType < NUM_SCAN_TYPES)
 				{
 					if (optScanStyle == OPT_3DO)
+					{
 						*c = apply_additive_pixel(
 							*c, Orbit->scanType);
+					}
 					else if (optScanStyle == OPT_PC)
+					{
 						TransformColor(c, Orbit->scanType);
+					}
 				}
 			}
 		}
@@ -1445,9 +1567,13 @@ DitherMap(uqm::SBYTE* DepthArray, uqm::COUNT width, uqm::COUNT height)
 	{
 		// Use up the random value byte by byte
 		if ((i & 3) == 0)
+		{
 			rand_val = RandomContext_Random(SysGenRNG);
+		}
 		else
+		{
 			rand_val >>= 8;
+		}
 
 		// Bring the elevation point up or down
 		*elev += DITHER_VARIANCE / 2 - (rand_val & (DITHER_VARIANCE - 1));
@@ -1612,7 +1738,9 @@ MakeCrater(RECT* pRect, uqm::SBYTE* DepthArray, uqm::SIZE rim_delta, uqm::SIZE c
 	lf_x = A - x;
 	rt_x = A + x;
 	if (SetDepth)
+	{
 		memset(&DepthArray[TopIndex + lf_x], 0, rt_x - lf_x + 1);
+	}
 	if (lf_x == rt_x)
 	{
 		DepthArray[TopIndex + lf_x] += rim_delta;
@@ -1623,7 +1751,9 @@ MakeCrater(RECT* pRect, uqm::SBYTE* DepthArray, uqm::SIZE rim_delta, uqm::SIZE c
 		{
 			DepthArray[TopIndex + lf_x] += rim_delta;
 			if (lf_x != rt_x)
+			{
 				DepthArray[TopIndex + rt_x] += rim_delta;
+			}
 			++lf_x;
 			--rt_x;
 		} while (--rim_pixels);
@@ -1695,7 +1825,9 @@ MakeStorms(uqm::COUNT storm_count, uqm::SBYTE* DepthArray, uqm::COUNT width,
 			}
 
 			if (pstorm_r->extent.height <= 4)
+			{
 				pstorm_r->extent.height += 4;
+			}
 
 			rand_val = RandomContext_Random(SysGenRNG);
 			loword = LOWORD(rand_val);
@@ -1731,7 +1863,9 @@ MakeStorms(uqm::COUNT storm_count, uqm::SBYTE* DepthArray, uqm::COUNT width,
 								   && x < pstorm_r->extent.width + 4
 								   && y < pstorm_r->extent.height + 4);
 				if (intersect)
+				{
 					break;
+				}
 			}
 
 		} while (intersect);
@@ -1814,7 +1948,9 @@ MakeGasGiant(uqm::COUNT num_bands, uqm::SBYTE* DepthArray, RECT* pRect, uqm::SIZ
 			band_error += num_bands;
 		}
 		if (i == 1)
+		{
 			cur_y = pRect->extent.height;
+		}
 		else
 		{
 			RECT r;
@@ -1838,7 +1974,9 @@ MakeGasGiant(uqm::COUNT num_bands, uqm::SBYTE* DepthArray, RECT* pRect, uqm::SIZ
 			uqm::COUNT k;
 
 			for (k = pRect->extent.width; k > 0; --k)
+			{
 				*lpDst++ += band_delta;
+			}
 		}
 
 		last_y = cur_y;
@@ -1869,17 +2007,23 @@ ValidateMap(uqm::SBYTE* DepthArray, uqm::COUNT width, uqm::COUNT height)
 	do
 	{
 		if (pixel_count[state]++ == 0)
+		{
 			lb[state] = last_byte;
+		}
 
 		if (last_byte > *lpDst)
 		{
 			if (last_byte - *lpDst > 128)
+			{
 				state ^= 1;
+			}
 		}
 		else
 		{
 			if (*lpDst - last_byte > 128)
+			{
 				state ^= 1;
+			}
 		}
 		last_byte = *lpDst++;
 	} while (--i);
@@ -1887,20 +2031,28 @@ ValidateMap(uqm::SBYTE* DepthArray, uqm::COUNT width, uqm::COUNT height)
 	i = width * height;
 	lpDst = DepthArray;
 	if (pixel_count[0] > pixel_count[1])
+	{
 		last_byte = lb[0];
+	}
 	else
+	{
 		last_byte = lb[1];
+	}
 	do
 	{
 		if (last_byte > *lpDst)
 		{
 			if (last_byte - *lpDst > 128)
+			{
 				*lpDst = last_byte;
+			}
 		}
 		else
 		{
 			if (*lpDst - last_byte > 128)
+			{
 				*lpDst = last_byte;
+			}
 		}
 		last_byte = *lpDst++;
 	} while (--i);
@@ -1924,10 +2076,14 @@ planet_orbit_init(uqm::COUNT width, uqm::COUNT height, bool forOrbit)
 
 		// tints for 3DO scan
 		if (forOrbit && optScanStyle != OPT_PC)
+		{
 			Orbit->TintFrame = CaptureDrawable(CreateDrawable(
 				WANT_PIXMAP, width, height, 1));
+		}
 		else
+		{
 			Orbit->TintFrame = 0;
+		}
 
 		Orbit->TintColor = BLACK_COLOR;
 
@@ -1974,14 +2130,18 @@ planet_orbit_init(uqm::COUNT width, uqm::COUNT height, bool forOrbit)
 		}
 
 		if (!use3DOSpheres)
+		{
 			Orbit->light_diff = (uqm::DWORD**)HMalloc(sizeof(uqm::DWORD*) * diameter);
+		}
 
 		Orbit->map_rotate = (MAP3D_POINT**)HMalloc(sizeof(MAP3D_POINT*) * diameter);
 
 		for (i = 0; i < diameter; i++)
 		{
 			if (!use3DOSpheres)
+			{
 				Orbit->light_diff[i] = (uqm::DWORD*)HMalloc(sizeof(uqm::DWORD) * diameter);
+			}
 			Orbit->map_rotate[i] =
 				(MAP3D_POINT*)HMalloc(sizeof(MAP3D_POINT) * diameter);
 		}
@@ -2020,7 +2180,9 @@ frandom(void)
 	static unsigned seed = 0x12345678;
 
 	if (seed == 0)
+	{
 		seed = 15807;
+	}
 	seed = (seed >> 4) * 227;
 
 	return seed;
@@ -2037,9 +2199,13 @@ static inline int
 TopoVarianceCalc(int factor)
 {
 	if (factor == 0)
+	{
 		return 0;
+	}
 	else
+	{
 		return (frandom() % factor) - (factor >> 1);
+	}
 }
 
 static void
@@ -2120,18 +2286,24 @@ TopoScale4x(uqm::SBYTE* pDstTopo, uqm::SBYTE* pSrcTopo, int num_faults,
 
 		// next point in row
 		if (x < w - 1)
+		{
 			// one right
 			prow[4] = ((int)pSrc[1]) << SCALE_SHIFT;
+		}
 		else
+		{
 			// wrap around
 			prow[4] = ((int)pSrc[1 - spitch]) << SCALE_SHIFT;
+		}
 
 		// compute elevations between 2 points
 		val = prow[0];
 		step = (prow[4] - val) / STEP_RANGE;
 		rndfact = TopoVarianceFactor(step, var_allow, var_min);
 		for (x2 = 1, val += step; x2 < 4; ++x2, val += step)
+		{
 			prow[x2] = val + TopoVarianceCalc(rndfact);
+		}
 	}
 
 	pSrc = pSrcTopo;
@@ -2147,33 +2319,47 @@ TopoScale4x(uqm::SBYTE* pDstTopo, uqm::SBYTE* pSrcTopo, int num_faults,
 		// prime the first interpolated column
 		elev[4][0] = prow[0];
 		if (y < h - 1)
+		{
 			elev[4][4] = ((int)pSrc[spitch]) << SCALE_SHIFT;
+		}
 		else
+		{
 			elev[4][4] = elev[4][0];
+		}
 		// compute elevations for interpolated column
 		val = elev[4][0];
 		step = (elev[4][4] - val) / STEP_RANGE;
 		rndfact = TopoVarianceFactor(step, var_allow, var_min);
 		for (y2 = 1, val += step; y2 < 4; ++y2, val += step)
+		{
 			elev[4][y2] = val + TopoVarianceCalc(rndfact);
+		}
 
 		for (x = 0; x < w; ++x, ++pSrc, pDst += 4, prow += 4)
 		{
 			// recall the first interpolated row from prevrow
 			for (x2 = 0; x2 <= 4; ++x2)
+			{
 				elev[x2][0] = prow[x2];
+			}
 			// recall the first interpolated column
 			for (y2 = 1; y2 <= 4; ++y2)
+			{
 				elev[0][y2] = elev[4][y2];
+			}
 
 			if (y < h - 1)
 			{
 				if (x < w - 1)
+				{
 					// one right, one down
 					elev[4][4] = ((int)pSrc[1 + spitch]) << SCALE_SHIFT;
+				}
 				else
+				{
 					// wrap around, one down
 					elev[4][4] = ((int)pSrc[1]) << SCALE_SHIFT;
+				}
 			}
 			else
 			{
@@ -2185,13 +2371,17 @@ TopoScale4x(uqm::SBYTE* pDstTopo, uqm::SBYTE* pSrcTopo, int num_faults,
 			step = (elev[4][4] - val) / STEP_RANGE;
 			rndfact = TopoVarianceFactor(step, var_allow, var_min);
 			for (x2 = 1, val += step; x2 < 4; ++x2, val += step)
+			{
 				elev[x2][4] = val + TopoVarianceCalc(rndfact);
+			}
 
 			val = elev[4][0];
 			step = (elev[4][4] - val) / STEP_RANGE;
 			rndfact = TopoVarianceFactor(step, var_allow, var_min);
 			for (y2 = 1, val += step; y2 < 4; ++y2, val += step)
+			{
 				elev[4][y2] = val + TopoVarianceCalc(rndfact);
+			}
 
 			// fill in the rest by connecting opposing elevations
 			// some randomness to determine which elevations to connect
@@ -2204,7 +2394,9 @@ TopoScale4x(uqm::SBYTE* pDstTopo, uqm::SBYTE* pSrcTopo, int num_faults,
 				val = elev[x2][y2];
 				num_steps = pld->x1 - pld->x0;
 				if (num_steps == 0)
+				{
 					num_steps = pld->y1 - pld->y0;
+				}
 				step = (elev[pld->x1][pld->y1] - val) / num_steps;
 				rndfact = TopoVarianceFactor(step, var_allow, var_min);
 
@@ -2224,16 +2416,22 @@ TopoScale4x(uqm::SBYTE* pDstTopo, uqm::SBYTE* pSrcTopo, int num_faults,
 				{
 					int e = elev[x2][y2] >> SCALE_SHIFT;
 					if (e > 127)
+					{
 						e = 127;
+					}
 					else if (e < -128)
+					{
 						e = -128;
+					}
 					*p = (uqm::SBYTE)e;
 				}
 			}
 
 			// save last interpolated row to prevrow for later
 			for (x2 = 0; x2 < 4; ++x2)
+			{
 				prow[x2] = elev[x2][4];
+			}
 		}
 		// save last row point
 		prow[0] = elev[4][4];
@@ -2277,9 +2475,13 @@ get_vblock_avg(elev_block_t* pblk, uqm::SBYTE* pTopo, int x, int y,
 	y0 = y - LMAP_MAX_DIST;
 	y1 = y + LMAP_MAX_DIST;
 	if (y0 < 0)
+	{
 		y0 = 0;
+	}
 	if (y1 > height)
+	{
 		y1 = height;
+	}
 
 	elev = pTopo + y0 * height + x;
 	for (i = y0; i < y1; ++i, elev += height)
@@ -2295,9 +2497,13 @@ get_vblock_avg(elev_block_t* pblk, uqm::SBYTE* pTopo, int x, int y,
 		}
 
 		if (v > max)
+		{
 			max = v;
+		}
 		if (v < min)
+		{
 			min = v;
+		}
 		avg += pblk->avg * weight;
 		total_weight += weight;
 	}
@@ -2328,9 +2534,13 @@ GenerateLightMap(uqm::SBYTE* pTopo, int w, int h)
 	{
 		// Louis Delacroix: Bug#1151
 		if (*elev > max)
+		{
 			max = *elev;
+		}
 		if (*elev < min)
+		{
 			min = *elev;
+		}
 	}
 	med = (min + max) / 2;
 	spread = max - med;
@@ -2339,17 +2549,25 @@ GenerateLightMap(uqm::SBYTE* pTopo, int w, int h)
 	{ // perfectly smooth surface -- nothing to do but
 		// level it out completely
 		if (max != 0)
+		{
 			memset(pTopo, 0, w * h);
+		}
 		return;
 	}
 
 	// these are whatever looks right
 	if (spread < 10)
+	{
 		sfact = 30; // minimal spread
+	}
 	else if (spread < 30)
+	{
 		sfact = 60;
+	}
 	else
+	{
 		sfact = 100; // full spread
+	}
 
 	// apply spread
 	for (elev = pTopo; elev != pTopo + w * h; ++elev)
@@ -2400,9 +2618,13 @@ GenerateLightMap(uqm::SBYTE* pTopo, int w, int h)
 				}
 
 				if (pblk->max > max)
+				{
 					max = pblk->max;
+				}
 				if (pblk->min < min)
+				{
 					min = pblk->min;
+				}
 
 				avg += pblk->avg * weight;
 				total_weight += weight;
@@ -2488,9 +2710,11 @@ void generate_surface_frame(uqm::COUNT width, uqm::COUNT height, PLANET_ORBIT* O
 		case TOPO_ALGO:
 		case CRATERED_ALGO:
 			if (PlanDataPtr->num_faults)
+			{
 				DeltaTopography(PlanDataPtr->num_faults,
 								Orbit->lpTopoData, &r,
 								PlanDataPtr->fault_depth);
+			}
 
 			for (i = 0; i < PlanDataPtr->num_blemishes; ++i)
 			{
@@ -2547,7 +2771,9 @@ void generate_surface_frame(uqm::COUNT width, uqm::COUNT height, PLANET_ORBIT* O
 						   false, width);
 			}
 			if (PLANALGO(PlanDataPtr->Type) == CRATERED_ALGO)
+			{
 				DitherMap(Orbit->lpTopoData, width, height);
+			}
 			ValidateMap(Orbit->lpTopoData, width, height);
 			break;
 	}
@@ -2576,10 +2802,14 @@ void GetPlanetTopography(PLANET_DESC* pPlanetDesc, FRAME SurfDefFrame)
 	{
 		if (GetFrameWidth(SurfDefFrame) != width
 			|| GetFrameHeight(SurfDefFrame) != height)
+		{
 			pSolarSysState->TopoFrame = CaptureDrawable(RescaleFrame(
 				SurfDefFrame, width, height));
+		}
 		else
+		{
 			pSolarSysState->TopoFrame = CaptureDrawable(CloneFrame(SurfDefFrame));
+		}
 	}
 	else
 	{
@@ -2679,7 +2909,9 @@ void GeneratePlanetSurface(PLANET_DESC* pPlanetDesc, FRAME SurfDefFrame,
 
 		// load special frame to render Earth with DOS spheres on
 		if (GetFrameCount(SurfDefFrame) == 4 && useDosSpheres && !ForIP)
+		{
 			index = 2;
+		}
 
 		// surface pixmap
 		SurfDef = true;
@@ -2693,7 +2925,9 @@ void GeneratePlanetSurface(PLANET_DESC* pPlanetDesc, FRAME SurfDefFrame,
 			DeleteDef = true;
 		}
 		else
+		{
 			pSolarSysState->TopoFrame = SurfDefFrame;
+		}
 
 		if (GetFrameCount(SurfDefFrame) > 1)
 		{ // 2nd frame is elevation data
@@ -2726,9 +2960,13 @@ void GeneratePlanetSurface(PLANET_DESC* pPlanetDesc, FRAME SurfDefFrame,
 		}
 
 		if (DeleteDef)
+		{
 			DestroyDrawable(ReleaseDrawable(SurfDefFrame));
+		}
 		if (DeleteElev)
+		{
 			DestroyDrawable(ReleaseDrawable(ElevFrame));
+		}
 	}
 	else
 	{
@@ -2740,9 +2978,13 @@ void GeneratePlanetSurface(PLANET_DESC* pPlanetDesc, FRAME SurfDefFrame,
 		RenderLevelMasks(Orbit->TopoMask, Orbit->lpTopoData, SurfDef);
 		SetPlanetColors(GetColorMapAddress(Orbit->sphereMap));
 		if (Orbit->TopoMask != NULL)
+		{
 			ExpandLevelMasks(Orbit);
+		}
 		else
+		{
 			log_add(log_Warning, "No planet mask generated.\n");
+		}
 	}
 
 	if (!ForIP && isPC(optScanStyle) && !shielded)
@@ -2846,12 +3088,16 @@ void GeneratePlanetSurface(PLANET_DESC* pPlanetDesc, FRAME SurfDefFrame,
 		ReadFramePixelColors(pSolarSysState->TopoFrame, Orbit->TopoColors,
 							 width + spherespanx, height);
 		if (SurfDef)
+		{
 			RepairColorOpacity(Orbit->TopoColors, width + spherespanx, height);
+		}
 		// Extend the width from MAP_WIDTH to MAP_WIDTH+SPHERE_SPAN_X
 		for (y = 0; y < (uqm::DWORD)(height * (width + spherespanx));
 			 y += width + spherespanx)
+		{
 			memcpy(Orbit->TopoColors + y + width, Orbit->TopoColors + y,
 				   spherespanx * sizeof(Orbit->TopoColors[0]));
+		}
 	}
 
 	if (Orbit->ScanColors)
@@ -2881,7 +3127,9 @@ void GeneratePlanetSurface(PLANET_DESC* pPlanetDesc, FRAME SurfDefFrame,
 		memset(Orbit->lpTopoData, 0, width * height);
 	}
 	else
+	{
 		GenerateLightMap(Orbit->lpTopoData, width, height);
+	}
 
 	if (pSolarSysState->pOrbitalDesc->pPrevDesc == &pSolarSysState->SunDesc[0])
 	{ // this is a planet -- get its location
@@ -2934,7 +3182,9 @@ void GeneratePlanetSurface(PLANET_DESC* pPlanetDesc, FRAME SurfDefFrame,
 		// Create background frame if we have nebula on
 		// but not for IP and if we're using DOS shield
 		if ((optNebulae || use3DOSpheres) && !ForIP && !useDosSpheres)
+		{
 			Orbit->BackFrame = SaveBackFrame(radius);
+		}
 	}
 
 

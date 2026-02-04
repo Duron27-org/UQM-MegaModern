@@ -79,7 +79,9 @@ void InitColorMaps(void)
 	XFormControl.Highest = -1;
 	XFormControl.Lock = CreateMutex("Transform Lock", SYNC_CLASS_TOPLEVEL | SYNC_CLASS_VIDEO);
 	for (i = 0; i < MAX_XFORMS; ++i)
+	{
 		XFormControl.TaskControl[i].CMapIndex = -1;
+	}
 
 	fadeLock = CreateMutex("Fade Lock", SYNC_CLASS_TOPLEVEL | SYNC_CLASS_VIDEO);
 }
@@ -93,7 +95,9 @@ void UninitColorMaps(void)
 	{
 		TFB_ColorMap* map = colormaps[i];
 		if (!map)
+		{
 			continue;
+		}
 		release_colormap(map);
 		colormaps[i] = 0;
 	}
@@ -160,7 +164,9 @@ clone_colormap(TFB_ColorMap* from, int index)
 	{ // fresh new map
 		map->index = index;
 		if (from)
+		{
 			map->version = from->version;
+		}
 	}
 	map->version++;
 
@@ -215,7 +221,9 @@ static void
 release_colormap(TFB_ColorMap* map)
 {
 	if (!map)
+	{
 		return;
+	}
 
 	if (map->refcount <= 0)
 	{
@@ -225,7 +233,9 @@ release_colormap(TFB_ColorMap* map)
 
 	map->refcount--;
 	if (map->refcount == 0)
+	{
 		free_colormap(map);
+	}
 }
 
 void TFB_ReturnColorMap(TFB_ColorMap* map)
@@ -252,10 +262,14 @@ void GetColorMapColors(Color* colors, TFB_ColorMap* map)
 	int i;
 
 	if (!map)
+	{
 		return;
+	}
 
 	for (i = 0; i < NUMBER_OF_PLUTVALS; ++i)
+	{
 		colors[i] = GetNativePaletteColor(map->palette, i);
+	}
 }
 
 bool SetColorMap(COLORMAPPTR map)
@@ -266,7 +280,9 @@ bool SetColorMap(COLORMAPPTR map)
 	TFB_ColorMap** mpp;
 
 	if (!map)
+	{
 		return true;
+	}
 
 	start = *colors++;
 	end = *colors++;
@@ -297,7 +313,9 @@ bool SetColorMap(COLORMAPPTR map)
 	LockMutex(maplock);
 
 	if (total_size > mapcount)
+	{
 		mapcount = total_size;
+	}
 
 	// parse the supplied PLUTs into our colormaps
 	for (mpp = colormaps + start; start <= end; ++start, ++mpp)
@@ -344,7 +362,9 @@ int GetFadeAmount(void)
 
 		elapsed = Now - fadeStartTime;
 		if (elapsed > fadeInterval)
+		{
 			elapsed = fadeInterval;
+		}
 
 		newAmount = fadeAmount + (long)fadeDelta * elapsed / fadeInterval;
 
@@ -408,7 +428,9 @@ FadeScreen(ScreenFadeType fadeType, uqm::SIZE TimeInterval)
 
 	// Don't make users wait for fades
 	if (QuitPosted)
+	{
 		TimeInterval = 0;
+	}
 
 	LockMutex(fadeLock);
 
@@ -445,8 +467,9 @@ finish_colormap_xform(int which)
 	if (which == XFormControl.Highest)
 	{
 		do
+		{
 			--which;
-		while (which >= 0 && XFormControl.TaskControl[which].CMapIndex == -1);
+		} while (which >= 0 && XFormControl.TaskControl[which].CMapIndex == -1);
 
 		XFormControl.Highest = which;
 	}
@@ -477,7 +500,9 @@ bool XFormColorMap_step(void)
 		TFB_ColorMap* curmap;
 
 		if (index < 0)
+		{
 			continue; // unused slot
+		}
 
 		LockMutex(maplock);
 
@@ -551,7 +576,9 @@ FlushPLUTXForms(void)
 	for (i = 0; i <= XFormControl.Highest; ++i)
 	{
 		if (XFormControl.TaskControl[i].CMapIndex >= 0)
+		{
 			finish_colormap_xform(i);
+		}
 	}
 	XFormControl.Highest = -1; // all gone
 
@@ -579,7 +606,9 @@ XFormPLUT(COLORMAPPTR ColorMapPtr, uqm::SIZE TimeInterval)
 		 ++x)
 	{
 		if (first_avail == -1 && XFormControl.TaskControl[x].CMapIndex == -1)
+		{
 			first_avail = x;
+		}
 	}
 
 	if (index == XFormControl.TaskControl[x].CMapIndex)
@@ -599,7 +628,9 @@ XFormPLUT(COLORMAPPTR ColorMapPtr, uqm::SIZE TimeInterval)
 	// take next unused one
 	control = &XFormControl.TaskControl[x];
 	if (x > XFormControl.Highest)
+	{
 		XFormControl.Highest = x;
+	}
 
 	// make a copy of the current map
 	LockMutex(maplock);
@@ -618,7 +649,9 @@ XFormPLUT(COLORMAPPTR ColorMapPtr, uqm::SIZE TimeInterval)
 	control->CMapPtr = ColorMapPtr;
 	control->Ticks = TimeInterval;
 	if (control->Ticks < 0)
+	{
 		control->Ticks = 0; /* prevent negative fade */
+	}
 	control->StartTime = Now;
 	control->EndTime = EndTime = Now + control->Ticks;
 
@@ -631,11 +664,15 @@ uqm::DWORD
 XFormColorMap(COLORMAPPTR ColorMapPtr, uqm::SIZE TimeInterval)
 {
 	if (!ColorMapPtr)
+	{
 		return (0);
+	}
 
 	// Don't make users wait for transforms
 	if (QuitPosted)
+	{
 		TimeInterval = 0;
+	}
 
 	return XFormPLUT(ColorMapPtr, TimeInterval);
 }
@@ -697,7 +734,9 @@ void SetColorMapColors(Color* colors, COLORMAPPTR ColorMapPtr, uqm::COUNT from,
 					   uqm::COUNT to)
 {
 	if (!ColorMapPtr)
+	{
 		return;
+	}
 
 	DoTransformColorMap(colors, ColorMapPtr, from, to);
 }

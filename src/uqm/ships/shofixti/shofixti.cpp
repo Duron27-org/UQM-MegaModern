@@ -174,11 +174,15 @@ destruct_preprocess(ELEMENT* ElementPtr)
 		// for 3 frames. No explosion element yet.
 		SetPrimType(lpPrim, STAMPFILL_PRIM);
 		if (ElementPtr->life_span == DESTRUCT_SWITCH + 2)
+		{
 			SetPrimColor(lpPrim,
 						 BUILD_COLOR(MAKE_RGB15(0x1F, 0x1F, 0x0A), 0x0E));
+		}
 		else
+		{
 			SetPrimColor(lpPrim,
 						 BUILD_COLOR(MAKE_RGB15(0x1F, 0x1F, 0x1F), 0x0F));
+		}
 	}
 	else if (ElementPtr->life_span < DESTRUCT_SWITCH)
 	{
@@ -190,20 +194,28 @@ destruct_preprocess(ELEMENT* ElementPtr)
 			IncFrameIndex(ElementPtr->current.image.frame);
 		if (sameColor(color,
 					  BUILD_COLOR(MAKE_RGB15(0x1F, 0x1F, 0x1F), 0x0F)))
+		{
 			SetPrimColor(lpPrim,
 						 BUILD_COLOR(MAKE_RGB15(0x1F, 0x1F, 0x0A), 0x0E));
+		}
 		else if (sameColor(color,
 						   BUILD_COLOR(MAKE_RGB15(0x1F, 0x1F, 0x0A), 0x0E)))
+		{
 			SetPrimColor(lpPrim,
 						 BUILD_COLOR(MAKE_RGB15(0x1F, 0x0A, 0x0A), 0x0C));
+		}
 		else if (sameColor(color,
 						   BUILD_COLOR(MAKE_RGB15(0x1F, 0x0A, 0x0A), 0x0C)))
+		{
 			SetPrimColor(lpPrim,
 						 BUILD_COLOR(MAKE_RGB15(0x14, 0x0A, 0x00), 0x06));
+		}
 		else if (sameColor(color,
 						   BUILD_COLOR(MAKE_RGB15(0x14, 0x0A, 0x00), 0x06)))
+		{
 			SetPrimColor(lpPrim,
 						 BUILD_COLOR(MAKE_RGB15(0x14, 0x00, 0x00), 0x04));
+		}
 	}
 	else
 	{
@@ -283,10 +295,14 @@ self_destruct_kill_objects(ELEMENT* ElementPtr)
 
 		delta_x = ObjPtr->next.location.x - ElementPtr->next.location.x;
 		if (delta_x < 0)
+		{
 			delta_x = -delta_x;
+		}
 		delta_y = ObjPtr->next.location.y - ElementPtr->next.location.y;
 		if (delta_y < 0)
+		{
 			delta_y = -delta_y;
+		}
 		delta_x = WORLD_TO_DISPLAY(delta_x);
 		delta_y = WORLD_TO_DISPLAY(delta_y);
 		dist = delta_x * delta_x + delta_y * delta_y;
@@ -302,13 +318,17 @@ self_destruct_kill_objects(ELEMENT* ElementPtr)
 					  || antiCheat(ElementPtr, true, OPTVAL_FULL_GOD)))
 				{
 					if (!DeltaCrew(ObjPtr, -destruction))
+					{
 						ObjPtr->life_span = 0;
+					}
 				}
 			}
 			else if (!GRAVITY_MASS(ObjPtr->mass_points))
 			{
 				if (destruction < ObjPtr->hit_points)
+				{
 					ObjPtr->hit_points -= destruction;
+				}
 				else
 				{
 					ObjPtr->hit_points = 0;
@@ -414,10 +434,14 @@ shofixti_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 
 	GetElementStarShip(ShipPtr, &StarShipPtr);
 	if (StarShipPtr->special_counter != 0)
+	{
 		return;
+	}
 
 	if (StarShipPtr->ship_input_state & SPECIAL)
+	{
 		StarShipPtr->ship_input_state &= ~SPECIAL;
+	}
 	else
 	{
 		EVALUATE_DESC* lpWeaponEvalDesc;
@@ -436,7 +460,9 @@ shofixti_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 						|| (PlotIntercept(lpWeaponEvalDesc->ObjectPtr, ShipPtr, 2, 0)
 							&& lpWeaponEvalDesc->ObjectPtr->mass_points >= ShipPtr->crew_level
 							&& (TFB_Random() & 1))))))
+		{
 			StarShipPtr->ship_input_state |= SPECIAL;
+		}
 	}
 }
 
@@ -452,9 +478,13 @@ shofixti_preprocess(ELEMENT* ElementPtr)
 		&& !(StarShipPtr->cur_status_flags & SPECIAL))
 	{
 		if (!(StarShipPtr->RaceDescPtr->ship_data.captain_control.special_offset & 1))
+		{
 			StarShipPtr->RaceDescPtr->ship_data.captain_control.special_offset++;
+		}
 		else
+		{
 			StarShipPtr->RaceDescPtr->ship_data.captain_control.special_offset += 2;
+		}
 	}
 }
 
@@ -519,7 +549,9 @@ init_shofixti(void)
 
 		/* Weapon doesn't work as well */
 		if (!DIF_HARD)
+		{
 			new_shofixti_desc.characteristics.weapon_wait = 10;
+		}
 
 		/* Simulate VUX limpets */
 		for (i = 0; i < NUM_LIMPETS; ++i)
@@ -527,9 +559,13 @@ init_shofixti(void)
 			if (!DIF_HARD)
 			{
 				if (++new_shofixti_desc.characteristics.turn_wait == 0)
+				{
 					--new_shofixti_desc.characteristics.turn_wait;
+				}
 				if (++new_shofixti_desc.characteristics.thrust_wait == 0)
+				{
 					--new_shofixti_desc.characteristics.thrust_wait;
+				}
 
 				/* This should be the same as MIN_THRUST_INCREMENT in vux.c */
 #define MIN_THRUST_INCREMENT DISPLAY_TO_WORLD(RES_SCALE(1))

@@ -41,7 +41,7 @@ static LOCDATA orz_desc =
 		BLACK_COLOR_INIT, /* AlienTextBColor */
 		{0, 0}, /* AlienTextBaseline */
 		0,
- /* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
+		/* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
 		ALIGN_CENTER, /* AlienTextAlign */
 		VALIGN_TOP, /* AlienTextValign */
 		ORZ_COLOR_MAP, /* AlienColorMap */
@@ -238,17 +238,27 @@ ExitConversation(RESPONSE_REF R)
 	setSegue(Segue_peace);
 
 	if (PLAYER_SAID(R, bye_ally))
+	{
 		NPCPhrase(GOODBYE_ALLY);
+	}
 	else if (PLAYER_SAID(R, bye_neutral))
+	{
 		NPCPhrase(GOODBYE_NEUTRAL);
+	}
 	else if (PLAYER_SAID(R, bye_angry))
+	{
 		NPCPhrase(GOODBYE_ANGRY);
+	}
 	else if (PLAYER_SAID(R, bye_taalo))
 	{
 		if (GET_GAME_STATE(ORZ_MANNER) == 1)
+		{
 			NPCPhrase(ANGRY_TAALO_GOODBYE);
+		}
 		else
+		{
 			NPCPhrase(FRIENDLY_TAALO_GOODBYE);
+		}
 	}
 	else if (PLAYER_SAID(R, hostile_2))
 	{
@@ -266,9 +276,13 @@ ExitConversation(RESPONSE_REF R)
 			 || PLAYER_SAID(R, were_sorry))
 	{
 		if (PLAYER_SAID(R, yes_alliance))
+		{
 			NPCPhrase(GREAT);
+		}
 		else
+		{
 			NPCPhrase(APOLOGY_ACCEPTED);
+		}
 
 		SET_GAME_STATE(ORZ_ANDRO_STATE, 0);
 		SET_GAME_STATE(ORZ_GENERAL_INFO, 0);
@@ -287,16 +301,22 @@ ExitConversation(RESPONSE_REF R)
 	{
 		// Run filter for HD
 		if (IS_HD)
+		{
 			EngageFilters(&orz_filters);
+		}
 
 		XFormColorMap(GetColorMapAddress(
 						  SetAbsColorMapIndex(CommData.AlienColorMap, 1)),
 					  ONE_SECOND / 2);
 
 		if (PLAYER_SAID(R, about_andro_3))
+		{
 			NPCPhrase(BLEW_IT);
+		}
 		else
+		{
 			NPCPhrase(KNOW_TOO_MUCH);
+		}
 
 		SET_GAME_STATE(ORZ_VISITS, 0);
 		SET_GAME_STATE(ORZ_MANNER, 2);
@@ -352,16 +372,22 @@ TaaloWorld(RESPONSE_REF R)
 	else if (PLAYER_SAID(R, why_you_here))
 	{
 		if (Manner != 1)
+		{
 			NPCPhrase(FRIENDLY_EXPLANATION);
+		}
 		else
+		{
 			NPCPhrase(ANGRY_EXPLANATION);
+		}
 
 		DISABLE_PHRASE(why_you_here);
 	}
 	else if (PLAYER_SAID(R, what_is_this_place))
 	{
 		if (Manner != 1)
+		{
 			NPCPhrase(FRIENDLY_PLACE);
+		}
 		else
 		{
 			NPCPhrase(ANGRY_PLACE);
@@ -393,25 +419,41 @@ TaaloWorld(RESPONSE_REF R)
 	if (PHRASE_ENABLED(may_we_land))
 	{
 		if (Manner == 3 && CheckAlliance(ORZ_SHIP) == GOOD_GUY)
+		{
 			Response(may_we_land, ExitConversation);
+		}
 		else
+		{
 			Response(may_we_land, TaaloWorld);
+		}
 	}
 	else if (PHRASE_ENABLED(make_alliance))
+	{
 		Response(make_alliance, TaaloWorld);
+	}
 	else if (PHRASE_ENABLED(why_busy))
+	{
 		Response(why_busy, TaaloWorld);
+	}
 	if (PHRASE_ENABLED(demand_to_land))
 	{
 		if (Manner == 1)
+		{
 			Response(demand_to_land, ExitConversation);
+		}
 		else
+		{
 			Response(demand_to_land, TaaloWorld);
+		}
 	}
 	if (PHRASE_ENABLED(why_you_here))
+	{
 		Response(why_you_here, TaaloWorld);
+	}
 	if (PHRASE_ENABLED(what_is_this_place))
+	{
 		Response(what_is_this_place, TaaloWorld);
+	}
 	Response(bye_taalo, ExitConversation);
 }
 
@@ -480,17 +522,25 @@ OrzAllied(RESPONSE_REF R)
 	}
 
 	if (GET_GAME_STATE(ORZ_ANDRO_STATE) == 0)
+	{
 		Response(about_andro_1, OrzAllied);
+	}
 	else if (GET_GAME_STATE(ORZ_ANDRO_STATE) == 1)
+	{
 		Response(about_andro_2, OrzAllied);
+	}
 	else
 	{
 		Response(about_andro_3, ExitConversation);
 	}
 	if (PHRASE_ENABLED(whats_up_ally))
+	{
 		Response(whats_up_ally, OrzAllied);
+	}
 	if (PHRASE_ENABLED(more_about_you))
+	{
 		Response(more_about_you, OrzAllied);
+	}
 	Response(bye_ally, ExitConversation);
 }
 
@@ -511,9 +561,13 @@ static void
 OfferAlliance(RESPONSE_REF R)
 {
 	if (PLAYER_SAID(R, seem_like_nice_guys))
+	{
 		NPCPhrase(ARE_NICE_WANT_ALLY);
+	}
 	else if (PLAYER_SAID(R, talk_about_alliance))
+	{
 		NPCPhrase(OK_TALK_ALLIANCE);
+	}
 	else if (PLAYER_SAID(R, why_so_trusting))
 	{
 		NPCPhrase(TRUSTING_BECAUSE);
@@ -579,7 +633,9 @@ OrzNeutral(RESPONSE_REF R)
 		SET_GAME_STATE(REFUSED_ORZ_ALLIANCE, 1);
 	}
 	else if (PLAYER_SAID(R, dont_really_care))
+	{
 		NPCPhrase(YOU_ARE_OUR_FRIENDS);
+	}
 	else if (PLAYER_SAID(R, where_androsyn))
 	{
 		WhereAndrosyn(R);
@@ -598,34 +654,52 @@ OrzNeutral(RESPONSE_REF R)
 	}
 
 	if (GET_GAME_STATE(ORZ_ANDRO_STATE) == 0)
+	{
 		pStr[0] = who_you;
+	}
 	else if (GET_GAME_STATE(ORZ_ANDRO_STATE) == 1)
+	{
 		pStr[0] = why_here;
+	}
 	else if (PHRASE_ENABLED(where_androsyn) && GET_GAME_STATE(ORZ_ANDRO_STATE) == 2)
+	{
 		pStr[0] = where_androsyn;
+	}
 	if (GET_GAME_STATE(REFUSED_ORZ_ALLIANCE))
 	{
 		if (PHRASE_ENABLED(talk_about_alliance))
+		{
 			pStr[1] = talk_about_alliance;
+		}
 	}
 	else if (GET_GAME_STATE(ORZ_STACK0) == 0)
 	{
 		pStr[1] = we_are_vindicator;
 	}
 	else
+	{
 		pStr[1] = seem_like_nice_guys;
+	}
 	if (PHRASE_ENABLED(hostile_1))
+	{
 		pStr[2] = hostile_1;
+	}
 	else
+	{
 		pStr[2] = hostile_2;
+	}
 
 	if (pStr[LastStack])
+	{
 		Response(pStr[LastStack], OrzNeutral);
+	}
 
 	for (i = 0; i < 3; ++i)
 	{
 		if (i != LastStack && pStr[i])
+		{
 			Response(pStr[i], OrzNeutral);
+		}
 	}
 	Response(bye_neutral, ExitConversation);
 }
@@ -702,7 +776,9 @@ Intro(void)
 	}
 
 	if (!GET_GAME_STATE(MET_ORZ_BEFORE))
+	{
 		NPCPhrase(INIT_HELLO);
+	}
 
 	Manner = GET_GAME_STATE(ORZ_MANNER);
 	if (Manner == 2)
@@ -715,8 +791,10 @@ Intro(void)
 				LoadGraphic(CommData.AlienFrameRes));
 		}
 		else
+		{
 			CommData.AlienColorMap =
 				SetAbsColorMapIndex(CommData.AlienColorMap, 1);
+		}
 
 		NumVisits = GET_GAME_STATE(ORZ_VISITS);
 		switch (NumVisits++)

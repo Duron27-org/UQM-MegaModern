@@ -113,13 +113,21 @@ DoPickBattleShip(MENU_STATE* pMS)
 	{
 		COORD new_row, new_col;
 		if (PulsedInputState.menu[KEY_MENU_RIGHT])
+		{
 			dx = 1;
+		}
 		if (PulsedInputState.menu[KEY_MENU_LEFT])
+		{
 			dx = -1;
+		}
 		if (PulsedInputState.menu[KEY_MENU_UP])
+		{
 			dy = -1;
+		}
 		if (PulsedInputState.menu[KEY_MENU_DOWN])
+		{
 			dy = 1;
+		}
 
 		new_col = pMS->first_item.x + dx;
 		new_row = pMS->first_item.y + dy;
@@ -132,14 +140,22 @@ DoPickBattleShip(MENU_STATE* pMS)
 			STARSHIP* StarShipPtr;
 
 			if (new_col < 0)
+			{
 				new_col = NUM_PICK_SHIP_COLUMNS;
+			}
 			else if (new_col > NUM_PICK_SHIP_COLUMNS)
+			{
 				new_col = 0;
+			}
 
 			if (new_row < 0)
+			{
 				new_row = NUM_PICK_SHIP_ROWS - 1;
+			}
 			else if (new_row == NUM_PICK_SHIP_ROWS)
+			{
 				new_row = 0;
+			}
 
 			PlayMenuSound(MENU_SOUND_MOVE);
 
@@ -199,7 +215,9 @@ ChangeSelection:
 				}
 
 				if (hBattleShip == GetTailLink(&race_q[0]))
+				{
 					hBattleShip = 0;
+				}
 			}
 
 			pMS->CurFrame = (FRAME)hBattleShip;
@@ -211,9 +229,13 @@ ChangeSelection:
 			r.extent.height = RES_SCALE(7);
 
 			if (IS_HD)
+			{
 				RepairPickFrame(&r, 0);
+			}
 			else
+			{
 				DrawFilledRectangle(&r);
+			}
 
 			if (hBattleShip == 0)
 			{
@@ -270,9 +292,13 @@ ChangeSelection:
 						+ FLAGSHIP_WIDTH - ICON_WIDTH;
 
 			if (IS_HD)
+			{
 				RepairPickFrame(&r, 0);
+			}
 			else
+			{
 				DrawFilledRectangle(&r);
+			}
 
 			if (crew_level)
 			{
@@ -282,9 +308,13 @@ ChangeSelection:
 				t.pStr = buf;
 				t.CharCount = (uqm::COUNT)~0;
 				if (crew_level >= max_crew)
+				{
 					sprintf(buf, "%u", crew_level);
+				}
 				else
+				{
 					sprintf(buf, "%u/%u", crew_level, max_crew);
+				}
 
 				// Code to make use of the PC version's font gradient
 				/*if (isPC (optWhichFonts))
@@ -383,7 +413,9 @@ GetEncounterStarShip(STARSHIP* LastStarShipPtr, uqm::COUNT which_player)
 		}
 
 		if (!GetNextMeleeStarShip(which_player, &hBattleShip))
+		{
 			return 0;
+		}
 
 		return hBattleShip;
 	}
@@ -412,9 +444,13 @@ GetEncounterStarShip(STARSHIP* LastStarShipPtr, uqm::COUNT which_player)
 				else
 				{ // Player ran away
 					if (GLOBAL_SIS(FuelOnBoard) > RUN_AWAY_FUEL_COST && !optInfiniteFuel)
+					{
 						GLOBAL_SIS(FuelOnBoard) -= RUN_AWAY_FUEL_COST;
+					}
 					else
+					{
 						GLOBAL_SIS(FuelOnBoard) = (optInfiniteFuel ? GLOBAL_SIS(FuelOnBoard) : 0);
+					}
 				}
 			}
 			return 0;
@@ -440,7 +476,9 @@ GetEncounterStarShip(STARSHIP* LastStarShipPtr, uqm::COUNT which_player)
 
 			// Get the next ship for the computer
 			if (LastStarShipPtr != 0)
+			{
 				return _GetSuccLink(LastStarShipPtr);
+			}
 
 			// Get the very first ship for the computer
 			return GetHeadLink(&race_q[which_player]);
@@ -506,10 +544,14 @@ void DrawArmadaPickShip(bool draw_salvage_frame, RECT* pPickRect)
 	// Code to make use of the PC version's font gradient
 	// Along with the FRAME "OldFontEffect"
 	if (isPC(optWhichFonts))
+	{
 		SetContextFontEffect(SetAbsFrameIndex(FontGradFrame, 6));
+	}
 	else
+	{
 		SetContextForeGroundColor(
 			BUILD_COLOR(MAKE_RGB15(0x12, 0x12, 0x12), 0x17));
+	}
 
 	SetContextFont(StarConFont);
 	font_DrawText(&t);
@@ -532,7 +574,9 @@ void DrawArmadaPickShip(bool draw_salvage_frame, RECT* pPickRect)
 			s.origin.x = pick_r.corner.x
 					   + (RES_SCALE(5) + ((ICON_WIDTH + RES_SCALE(4)) * (ship_index % NUM_PICK_SHIP_COLUMNS)));
 			if ((ship_index % NUM_PICK_SHIP_COLUMNS) >= (NUM_PICK_SHIP_COLUMNS >> 1))
+			{
 				s.origin.x += FLAGSHIP_WIDTH + RES_SCALE(4);
+			}
 			s.origin.y = pick_r.corner.y
 					   + (RES_SCALE(16) + ((ICON_HEIGHT + RES_SCALE(4)) * (ship_index / NUM_PICK_SHIP_COLUMNS)));
 			s.frame = StarShipPtr->icons;

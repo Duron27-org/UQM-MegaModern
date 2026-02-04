@@ -62,7 +62,9 @@ static void
 lockQueue(void)
 {
 	if (!qlock)
+	{
 		return;
+	}
 
 	LockMutex(qmutex);
 }
@@ -71,7 +73,9 @@ static void
 unlockQueue(void)
 {
 	if (!qlock)
+	{
 		return;
+	}
 
 	UnlockMutex(qmutex);
 }
@@ -81,7 +85,9 @@ removeExcess(int room)
 {
 	room = maxDisp - room;
 	if (room < 0)
+	{
 		room = 0;
+	}
 
 	for (; qtotal > room; --qtotal, ++qtail)
 		;
@@ -117,7 +123,9 @@ queueNonThreaded(void)
 	// the fully or partially overwritten message (by
 	// another competing thread). But it is 'good enough'
 	if (!noThreadReady)
+	{
 		return;
+	}
 	noThreadReady = false;
 
 	slot = acquireSlot();
@@ -133,7 +141,9 @@ void log_init(int max_lines)
 
 	// pre-term queue strings
 	for (i = 0; i < MAX_LOG_ENTRIES; ++i)
+	{
 		queue[i][MAX_LOG_ENTRY_SIZE - 1] = '\0';
+	}
 
 	msgBuf[sizeof(msgBuf) - 1] = '\0';
 	msgNoThread[sizeof(msgNoThread) - 1] = '\0';
@@ -248,9 +258,13 @@ void log_showBox(bool show, bool err)
 void log_captureLines(int num)
 {
 	if (num > MAX_LOG_ENTRIES)
+	{
 		num = MAX_LOG_ENTRIES;
+	}
 	if (num < 1)
+	{
 		num = 1;
+	}
 	maxDisp = num;
 
 	// remove any extra lines already on queue
@@ -263,7 +277,9 @@ static void
 exitCallback(void)
 {
 	if (showBox)
+	{
 		displayLog(errorBox);
+	}
 
 	log_exit(0);
 }
@@ -294,7 +310,9 @@ displayLog(bool isError)
 	{
 		len = strlen(queue[ptr]) + 1;
 		if (len > left)
+		{
 			len = left;
+		}
 		memcpy(p, queue[ptr], len);
 		p[len - 1] = '\n';
 		p += len;
@@ -307,7 +325,9 @@ displayLog(bool isError)
 		noThreadReady = false;
 		len = strlen(msgNoThread);
 		if (len > left)
+		{
 			len = left;
+		}
 		memcpy(p, msgNoThread, len);
 		p += len;
 		left -= len;

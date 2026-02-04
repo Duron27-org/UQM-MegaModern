@@ -44,9 +44,13 @@ static inline int
 AlarmTime_compare(const AlarmTime t1, const AlarmTime t2)
 {
 	if (t1 < t2)
+	{
 		return -1;
+	}
 	if (t1 > t2) // David Benjamin: Bug#1163
+	{
 		return 1;
+	}
 	return 0;
 }
 
@@ -135,12 +139,16 @@ bool Alarm_processOne(void)
 
 	assert(alarmHeap != NULL);
 	if (!Heap_hasMore(alarmHeap))
+	{
 		return false;
+	}
 
 	now = AlarmTime_nowMs();
 	alarm = (Alarm*)Heap_first(alarmHeap);
 	if (now < alarm->time)
+	{
 		return false;
+	}
 
 	Heap_pop(alarmHeap);
 	alarm->callback(alarm->arg);
@@ -177,7 +185,9 @@ Alarm_timeBeforeNextMs(void)
 	Alarm* alarm;
 
 	if (!Heap_hasMore(alarmHeap))
+	{
 		return UINT32_MAX;
+	}
 
 	alarm = (Alarm*)Heap_first(alarmHeap);
 	return alarmTimeToMsUint32(alarm->time);

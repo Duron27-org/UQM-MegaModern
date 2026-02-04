@@ -100,7 +100,9 @@ GenerateMelnorme_generatePlanets(SOLARSYS_STATE* solarSys)
 		pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
 
 		if (EXTENDED && pPlanet->NumPlanets < MAX_GEN_MOONS)
+		{
 			pPlanet->NumPlanets++;
+		}
 
 		if (!PrimeSeed)
 		{

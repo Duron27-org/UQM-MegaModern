@@ -89,9 +89,13 @@ SetupAmbientSequences(SEQUENCE* pSeq, uqm::COUNT Num)
 
 		pSeq->ADPtr = ADPtr;
 		if (ADPtr->AnimFlags & COLORXFORM_ANIM)
+		{
 			pSeq->AnimType = COLOR_ANIM;
+		}
 		else
+		{
 			pSeq->AnimType = PICTURE_ANIM;
+		}
 		pSeq->Direction = UP_DIR;
 		pSeq->FramesLeft = ADPtr->NumFrames;
 		// Default: first frame is neutral
@@ -160,7 +164,9 @@ ProcessColormapAnims(SEQUENCE* pSeq, uqm::COUNT Num)
 		if ((ADPtr->AnimFlags & ANIM_DISABLED)
 			|| pSeq->AnimType != COLOR_ANIM
 			|| !pSeq->Change)
+		{
 			continue;
+		}
 
 		XFormColorMap(GetColorMapAddress(
 						  SetAbsColorMapIndex(CommData.AlienColorMap,
@@ -192,7 +198,9 @@ AdvanceAmbientSequence(SEQUENCE* pSeq)
 
 		// RANDOM_ANIM must end on a neutral frame
 		if (ADPtr->AnimFlags & RANDOM_ANIM)
+		{
 			pSeq->NextIndex = 0;
+		}
 	}
 
 	// Will draw the next frame or change to next colormap
@@ -219,9 +227,13 @@ AdvanceAmbientSequence(SEQUENCE* pSeq)
 	}
 
 	if (ADPtr->AnimFlags & RANDOM_ANIM)
+	{
 		pSeq->NextIndex = randomFrameIndex(pSeq, 0);
+	}
 	else
+	{
 		pSeq->NextIndex += pSeq->Direction;
+	}
 
 	return active;
 }
@@ -434,7 +446,9 @@ bool ProcessCommAnimations(bool FullRedraw, bool paused)
 			uqm::DWORD ActiveBit = 1L << i;
 
 			if (ADPtr->AnimFlags & ANIM_DISABLED)
+			{
 				continue;
+			}
 
 			if (pSeq->Direction == NO_DIR)
 			{ // animation is paused
@@ -492,7 +506,9 @@ bool ProcessCommAnimations(bool FullRedraw, bool paused)
 			}
 
 			if (pSeq->Change && ADPtr->AnimFlags & TRIGGER_FULL_REDRAW)
+			{
 				FullRedraw = true;
+			}
 		}
 		// All ambient animations have been processed. Advance the mask.
 		ActiveMask = NextActiveMask;
@@ -538,7 +554,9 @@ bool ProcessCommAnimations(bool FullRedraw, bool paused)
 		else
 		{ // Not talking -- disable talking anim if it is done
 			if (Talk->Direction == NO_DIR)
+			{
 				TalkDesc.AnimFlags |= ANIM_DISABLED;
+			}
 		}
 
 		BatchGraphics();
@@ -548,7 +566,9 @@ bool ProcessCommAnimations(bool FullRedraw, bool paused)
 			bool ColorChange = XFormColorMap_step();
 
 			if (ColorChange)
+			{
 				FullRedraw = true;
+			}
 
 			// Colormap animations are processed separately
 			// from picture anims (see XFormColorMap_step)
@@ -557,7 +577,9 @@ bool ProcessCommAnimations(bool FullRedraw, bool paused)
 
 			Change = DrawAlienFrame(Sequences, TotalSequences, FullRedraw);
 			if (FullRedraw)
+			{
 				Change = true;
+			}
 		}
 
 		UnbatchGraphics();
@@ -570,7 +592,9 @@ bool ProcessCommAnimations(bool FullRedraw, bool paused)
 			uqm::DWORD ActiveBit = 1L << i;
 
 			if (ADPtr->AnimFlags & ANIM_DISABLED)
+			{
 				continue;
+			}
 
 			// We can only disable a one-shot anim here, otherwise the
 			// last frame will not be drawn
@@ -580,7 +604,9 @@ bool ProcessCommAnimations(bool FullRedraw, bool paused)
 				ADPtr->AnimFlags |= ANIM_DISABLED;
 
 				if (ADPtr->AnimFlags & RESTART_ALL_AFTER)
+				{
 					SwitchSequences(true);
+				}
 
 				if (ADPtr->AnimFlags & STOP_ALL_AFTER)
 				{
@@ -609,7 +635,9 @@ ApplyFilterToStamp(STAMP s)
 		FILTER* FTPtr = &FilterData.FilterArray[i];
 
 		if (FTPtr->Flags & FILTER_DISABLED)
+		{
 			continue;
+		}
 
 		// Get color from colormap
 		FGColor = GetColorMapColor(COMM_COLORMAP_INDEX,
@@ -621,7 +649,9 @@ ApplyFilterToStamp(STAMP s)
 
 		// Image is transparent anyway
 		if (factor == 0x00 && FTPtr->Kind == DRAW_ALPHA)
+		{
 			continue;
+		}
 
 		mode = MAKE_DRAW_MODE((DrawKind)FTPtr->Kind, factor);
 		oldMode = SetContextDrawMode(mode);
@@ -657,7 +687,9 @@ bool DrawAlienFrame(SEQUENCE* Sequences, uqm::COUNT Num, bool fullRedraw)
 			ANIMATION_DESC* ADPtr = &CommData.AlienAmbientArray[i];
 
 			if (ADPtr->AnimFlags & ANIM_MASK)
+			{
 				continue;
+			}
 
 			ADPtr->AnimFlags |= ANIM_DISABLED;
 
@@ -679,22 +711,30 @@ bool DrawAlienFrame(SEQUENCE* Sequences, uqm::COUNT Num, bool fullRedraw)
 
 			if ((ADPtr->AnimFlags & ANIM_DISABLED)
 				|| pSeq->AnimType != PICTURE_ANIM)
+			{
 				continue;
+			}
 
 			// Draw current animation frame only if changed
 			if (!fullRedraw && !pSeq->Change)
+			{
 				continue;
+			}
 
 			// Take into account masks to avoid forbidden overdraws
 			if (fullRedraw && ADPtr->BlockMask & ActiveMask)
+			{
 				continue;
+			}
 
 			s.frame = SetAbsFrameIndex(CommData.AlienFrame,
 									   ADPtr->StartIndex + pSeq->CurIndex);
 
 			DrawStamp(&s);
 			if (!fullRedraw && filterEnabled)
+			{
 				ApplyFilterToStamp(s);
+			}
 
 			pSeq->Change = false;
 
@@ -713,7 +753,9 @@ bool DrawAlienFrame(SEQUENCE* Sequences, uqm::COUNT Num, bool fullRedraw)
 			FILTER* FTPtr = &FilterData.FilterArray[i];
 
 			if (FTPtr->Flags & FILTER_DISABLED)
+			{
 				continue;
+			}
 
 			if (FTPtr->Flags & FRAMED_FILTER)
 			{ // Special case - just draw plain frame
@@ -722,7 +764,9 @@ bool DrawAlienFrame(SEQUENCE* Sequences, uqm::COUNT Num, bool fullRedraw)
 				// Don't draw if index is outside or no frame is set
 				if (factor > FTPtr->OpacityIndex
 					|| FTPtr->FrameIndex == -1)
+				{
 					continue;
+				}
 
 				s.frame = SetAbsFrameIndex(CommData.AlienFrame,
 										   FTPtr->FrameIndex + factor);
@@ -740,7 +784,9 @@ bool DrawAlienFrame(SEQUENCE* Sequences, uqm::COUNT Num, bool fullRedraw)
 
 				// Image is transparent anyway
 				if (factor == 0x00 && FTPtr->Kind == DRAW_ALPHA)
+				{
 					goto postprocess;
+				}
 
 				mode = MAKE_DRAW_MODE((DrawKind)FTPtr->Kind, factor);
 				oldMode = SetContextDrawMode(mode);
@@ -815,12 +861,16 @@ void SwitchSequences(bool enableAll)
 	{
 		// skip one-shot anim
 		if (CommData.AlienAmbientArray[i].AnimFlags & ONE_SHOT_ANIM)
+		{
 			continue;
+		}
 
 		if (!enableAll)
 		{
 			if (CommData.AlienAmbientArray[i].AnimFlags & IMMUME_TO_STOP)
+			{
 				continue;
+			}
 
 			CommData.AlienAmbientArray[i].AnimFlags |= ANIM_DISABLED;
 		}
@@ -828,7 +878,9 @@ void SwitchSequences(bool enableAll)
 		{
 			if (CommData.AlienAmbientArray[i].AnimFlags
 				& IMMUME_TO_RESTART)
+			{
 				continue;
+			}
 
 			CommData.AlienAmbientArray[i].AnimFlags &= ~ANIM_DISABLED;
 		}
@@ -848,14 +900,18 @@ void RunOneTimeSequence(uqm::COUNT animIndex, uqm::COUNT flags)
 
 		if (!(CommData.AlienAmbientArray[animIndex].AnimFlags
 			  & ALPHA_MASK_ANIM))
+		{
 			SwitchSequences(false);
+		}
 	}
 }
 
 void EngageFilters(FILTER_DESC* f_desc)
 {
 	if (!f_desc)
+	{
 		return;
+	}
 
 	FilterData = *f_desc;
 	filterEnabled = true;

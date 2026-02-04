@@ -135,7 +135,9 @@ supox_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 
 	lpEvalDesc = &ObjectsOfConcern[ENEMY_SHIP_INDEX];
 	if (StarShipPtr->special_counter || lpEvalDesc->ObjectPtr == 0)
+	{
 		StarShipPtr->ship_input_state &= ~SPECIAL;
+	}
 	else
 	{
 		bool LinedUp;
@@ -161,19 +163,27 @@ supox_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 					  + HALF_CIRCLE)
 				   + OCTANT)
 				   > QUADRANT)
+		{
 			StarShipPtr->ship_input_state &= ~SPECIAL;
+		}
 		else if (LinedUp && lpEvalDesc->which_turn <= 12)
+		{
 			StarShipPtr->ship_input_state |= SPECIAL;
+		}
 
 		if (StarShipPtr->ship_input_state & SPECIAL)
+		{
 			lpEvalDesc->MoveState = PURSUE;
+		}
 	}
 
 	ship_intelligence(ShipPtr,
 					  ObjectsOfConcern, ConcernCounter);
 
 	if (StarShipPtr->ship_input_state & SPECIAL)
+	{
 		StarShipPtr->ship_input_state |= THRUST | WEAPON;
+	}
 
 	lpEvalDesc = &ObjectsOfConcern[ENEMY_WEAPON_INDEX];
 	if (StarShipPtr->special_counter == 0
@@ -184,10 +194,14 @@ supox_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 		StarShipPtr->ship_input_state &= ~THRUST;
 		StarShipPtr->ship_input_state |= SPECIAL;
 		if (!(StarShipPtr->cur_status_flags & (LEFT | RIGHT)))
+		{
 			StarShipPtr->ship_input_state |= 1 << ((uqm::BYTE)TFB_Random() & 1);
+		}
 		else
+		{
 			StarShipPtr->ship_input_state |=
 				StarShipPtr->cur_status_flags & (LEFT | RIGHT);
+		}
 	}
 }
 
@@ -233,29 +247,43 @@ supox_preprocess(ELEMENT* ElementPtr)
 		if (StarShipPtr->cur_status_flags & THRUST)
 		{
 			if (ElementPtr->thrust_wait == 0)
+			{
 				++ElementPtr->thrust_wait;
+			}
 
 			add_facing = ANGLE_TO_FACING(HALF_CIRCLE);
 		}
 		if (StarShipPtr->cur_status_flags & LEFT)
 		{
 			if (ElementPtr->turn_wait == 0)
+			{
 				++ElementPtr->turn_wait;
+			}
 
 			if (add_facing)
+			{
 				add_facing += ANGLE_TO_FACING(OCTANT);
+			}
 			else
+			{
 				add_facing = -ANGLE_TO_FACING(QUADRANT);
+			}
 		}
 		else if (StarShipPtr->cur_status_flags & RIGHT)
 		{
 			if (ElementPtr->turn_wait == 0)
+			{
 				++ElementPtr->turn_wait;
+			}
 
 			if (add_facing)
+			{
 				add_facing -= ANGLE_TO_FACING(OCTANT);
+			}
 			else
+			{
 				add_facing = ANGLE_TO_FACING(QUADRANT);
+			}
 		}
 
 		if (add_facing)

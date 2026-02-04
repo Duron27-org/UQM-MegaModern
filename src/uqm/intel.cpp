@@ -33,7 +33,9 @@ computer_intelligence(ComputerInputContext* context, STARSHIP* StarShipPtr)
 	BATTLE_INPUT_STATE InputState;
 
 	if (lowByte(GLOBAL(CurrentActivity)) == IN_LAST_BATTLE)
+	{
 		return 0;
+	}
 
 	if (StarShipPtr)
 	{
@@ -44,15 +46,21 @@ computer_intelligence(ComputerInputContext* context, STARSHIP* StarShipPtr)
 
 			// Allow a player to warp-escape in cyborg mode
 			if (StarShipPtr->playerNr == RPG_PLAYER_NUM)
+			{
 				InputState |= CurrentInputToBattleInput(
 								  context->playerNr)
 							& BATTLE_ESCAPE;
+			}
 		}
 		else
+		{
 			InputState = CurrentInputToBattleInput(context->playerNr);
+		}
 	}
 	else if (!(PlayerControl[context->playerNr] & PSYTRON_CONTROL))
+	{
 		InputState = 0;
+	}
 	else
 	{
 		switch (lowByte(GLOBAL(CurrentActivity)))

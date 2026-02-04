@@ -126,7 +126,9 @@ void resetEnergyBattle(void)
 	CONTEXT OldContext;
 
 	if (!(GLOBAL(CurrentActivity) & IN_BATTLE) || inHQSpace())
+	{
 		return;
+	}
 
 	if (PlayerControl[1] & HUMAN_CONTROL)
 	{
@@ -142,7 +144,9 @@ void resetEnergyBattle(void)
 	}
 
 	if (StarShipPtr == NULL || StarShipPtr->RaceDescPtr == NULL)
+	{
 		return;
+	}
 
 	delta = StarShipPtr->RaceDescPtr->ship_info.max_energy - StarShipPtr->RaceDescPtr->ship_info.energy_level;
 
@@ -160,17 +164,27 @@ scuttleOpponent(void)
 	CONTEXT OldContext;
 
 	if (!(GLOBAL(CurrentActivity) & IN_BATTLE) || inHQSpace())
+	{
 		return;
+	}
 
 	if (PlayerControl[1] & HUMAN_CONTROL)
+	{
 		StarShipPtr = findPlayerShip(RPG_PLAYER_NUM);
+	}
 	else if (PlayerControl[0] & HUMAN_CONTROL)
+	{
 		StarShipPtr = findPlayerShip(NPC_PLAYER_NUM);
+	}
 	else
+	{
 		StarShipPtr = NULL;
+	}
 
 	if (StarShipPtr == NULL || StarShipPtr->RaceDescPtr == NULL)
+	{
 		return;
+	}
 
 	delta = StarShipPtr->RaceDescPtr->ship_info.crew_level;
 
@@ -192,14 +206,18 @@ HaltShips(void)
 	uqm::BYTE i;
 
 	if (!(GLOBAL(CurrentActivity) & IN_BATTLE) || inHQSpace())
+	{
 		return;
+	}
 
 	for (i = 0; i < 2; i++)
 	{
 		StarShipPtr = findPlayerShip(i);
 
 		if (StarShipPtr == NULL || StarShipPtr->RaceDescPtr == NULL)
+		{
 			return;
+		}
 
 		LockElement(StarShipPtr->hShip, &ElementPtr);
 		ZeroVelocityComponents(&ElementPtr->velocity);
@@ -362,7 +380,9 @@ void forwardToNextEvent(bool skipHEE)
 	bool done;
 
 	if (!GameClockRunning())
+	{
 		return;
+	}
 
 	LockGameClock();
 
@@ -371,10 +391,14 @@ void forwardToNextEvent(bool skipHEE)
 	{
 		hEvent = GetHeadEvent();
 		if (hEvent == 0)
+		{
 			return;
+		}
 		LockEvent(hEvent, &EventPtr);
 		if (EventPtr->func_index != HYPERSPACE_ENCOUNTER_EVENT)
+		{
 			done = true;
+		}
 		year = EventPtr->year_index;
 		month = EventPtr->month_index;
 		day = EventPtr->day_index;
@@ -383,7 +407,9 @@ void forwardToNextEvent(bool skipHEE)
 		for (;;)
 		{
 			if (GLOBAL(GameClock.year_index) > year || (GLOBAL(GameClock.year_index) == year && (GLOBAL(GameClock.month_index) > month || (GLOBAL(GameClock.month_index) == month && GLOBAL(GameClock.day_index) >= day))))
+			{
 				break;
+			}
 
 			MoveGameClockDays(1);
 		}
@@ -533,15 +559,21 @@ void equipShip(void)
 
 	// Don't do anything unless in the full game.
 	if (lowByte(GLOBAL(CurrentActivity)) == SUPER_MELEE)
+	{
 		return;
+	}
 
 	// Thrusters:
 	for (i = 0; i < NUM_DRIVE_SLOTS; i++)
+	{
 		GLOBAL_SIS(DriveSlots[i]) = FUSION_THRUSTER;
+	}
 
 	// Turning jets:
 	for (i = 0; i < NUM_JET_SLOTS; i++)
+	{
 		GLOBAL_SIS(JetSlots[i]) = TURNING_JETS;
+	}
 
 	// Shields:
 	SET_GAME_STATE(LANDER_SHIELDS,
@@ -616,14 +648,22 @@ void equipShip(void)
 		// Thrusters:
 		pSolarSysState->max_ship_speed = 5 * IP_SHIP_THRUST_INCREMENT;
 		for (i = 0; i < NUM_DRIVE_SLOTS; i++)
+		{
 			if (GLOBAL_SIS(DriveSlots[i] == FUSION_THRUSTER))
+			{
 				pSolarSysState->max_ship_speed += IP_SHIP_THRUST_INCREMENT;
+			}
+		}
 
 		// Turning jets:
 		pSolarSysState->turn_wait = IP_SHIP_TURN_WAIT;
 		for (i = 0; i < NUM_JET_SLOTS; i++)
+		{
 			if (GLOBAL_SIS(JetSlots[i]) == TURNING_JETS)
+			{
 				pSolarSysState->turn_wait -= IP_SHIP_TURN_DECREMENT;
+			}
+		}
 	}
 
 	// Make sure everything is redrawn:
@@ -730,7 +770,9 @@ void showSpheres(bool Animated)
 	{ // Alternative which allows you to view
 		// the animated SOI expand for each race
 		for (i = 0; i <= BLACK_URQUAN_SHIP; i++)
+		{
 			StartSphereTracking((RACE_ID)i);
+		}
 	}
 	else
 	{
@@ -809,7 +851,9 @@ void forAllStars(void (*callback)(STAR_DESC*, void*), void* arg)
 	int i;
 
 	for (i = 0; i < NUM_SOLAR_SYSTEMS; i++)
+	{
 		callback(&star_array[i], arg);
+	}
 }
 
 void forAllPlanets(STAR_DESC* star, SOLARSYS_STATE* system, void (*callback)(STAR_DESC*, SOLARSYS_STATE*, PLANET_DESC*, void*), void* arg)
@@ -820,7 +864,9 @@ void forAllPlanets(STAR_DESC* star, SOLARSYS_STATE* system, void (*callback)(STA
 	assert(pSolarSysState == system);
 
 	for (i = 0; i < system->SunDesc[0].NumPlanets; i++)
+	{
 		callback(star, system, &system->PlanetDesc[i], arg);
+	}
 }
 
 void forAllMoons(STAR_DESC* star, SOLARSYS_STATE* system, PLANET_DESC* planet,
@@ -833,7 +879,9 @@ void forAllMoons(STAR_DESC* star, SOLARSYS_STATE* system, PLANET_DESC* planet,
 	assert(pSolarSysState == system);
 
 	for (i = 0; i < planet->NumPlanets; i++)
+	{
 		callback(star, system, planet, &system->MoonDesc[i], arg);
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////
@@ -849,7 +897,9 @@ void UniverseRecurse(UniverseRecurseArg* universeRecurseArg)
 		&& universeRecurseArg->planetFuncPre == NULL
 		&& universeRecurseArg->planetFuncPost == NULL
 		&& universeRecurseArg->moonFunc == NULL)
+	{
 		return;
+	}
 
 	LockGameClock();
 	//TFB_DEBUG_HALT = 1;
@@ -1367,7 +1417,9 @@ void fprintfWorld(const PLANET_DESC* world)
 	GetPlanetTitle(buf, sizeof(buf));
 
 	if (strcmp(buf, GLOBAL_SIS(PlanetName)) != 0)
+	{
 		fprintf(fp, "Planet:     %s\n", GLOBAL_SIS(PlanetName));
+	}
 
 	info = &pSolarSysState->SysInfo.PlanetInfo;
 	fprintf(fp, "World:      %s\n\n", buf);
@@ -1390,7 +1442,9 @@ void fprintfWorld(const PLANET_DESC* world)
 		return;
 	}
 	else
+	{
 		fprintf(fp, "LifeChance: %d\n", info->LifeChance);
+	}
 
 	fprintf(fp, "Bio: %4d    Min: %4d\n",
 			calculateBioValue(pSolarSysState, world),
@@ -1434,7 +1488,9 @@ void generateBioIndex(const SOLARSYS_STATE* system, const PLANET_DESC* world,
 									 BIOLOGICAL_SCAN, NULL);
 
 	for (i = 0; i < NUM_CREATURE_TYPES + NUM_SPECIAL_CREATURE_TYPES; i++)
+	{
 		bio[i] = 0;
+	}
 
 	for (i = 0; i < numBio; i++)
 	{
@@ -1478,7 +1534,9 @@ void generateMineralIndex(const SOLARSYS_STATE* system, const PLANET_DESC* world
 										  MINERAL_SCAN, NULL);
 
 	for (i = 0; i < NUM_ELEMENT_CATEGORIES; i++)
+	{
 		minerals[i] = 0;
+	}
 
 	for (i = 0; i < numDeposits; i++)
 	{
@@ -1615,7 +1673,9 @@ void forAllPlanetTypes(void (*callback)(int, const PlanetFrame*, void*),
 	int i;
 
 	for (i = 0; i < NUMBER_OF_PLANET_TYPES; i++)
+	{
 		callback(i, &PlanetsArray[i], arg);
+	}
 }
 
 typedef struct
@@ -1663,7 +1723,9 @@ void dumpPlanetType(FILE* out, int index, const PlanetFrame* planetType)
 		const ELEMENT_ENTRY* entry;
 		entry = &planetType->UsefulElements[i];
 		if (entry->Density == 0)
+		{
 			continue;
+		}
 		fprintf(out, "\t\t0 to %d %s-quality (+%d) deposits of %s (%s)\n",
 				DEPOSIT_QUANTITY(entry->Density),
 				depositQualityString(DEPOSIT_QUALITY(entry->Density)),
@@ -1823,11 +1885,15 @@ void resetCrewBattle(void)
 	CONTEXT OldContext;
 
 	if (!(GLOBAL(CurrentActivity) & IN_BATTLE) || (inHQSpace()))
+	{
 		return;
+	}
 
 	StarShipPtr = findPlayerShip(RPG_PLAYER_NUM);
 	if (StarShipPtr == NULL || StarShipPtr->RaceDescPtr == NULL)
+	{
 		return;
+	}
 
 	delta = StarShipPtr->RaceDescPtr->ship_info.max_crew - StarShipPtr->RaceDescPtr->ship_info.crew_level;
 
@@ -1909,7 +1975,9 @@ void dumpStrings(FILE* out)
 	for (stringI = 0; stringI < numStrings; stringI++)
 	{
 		while (categoryI < numCategories && stringI >= categories[categoryI + 1].base)
+		{
 			categoryI++;
+		}
 		fprintf(out, "[ %s + %zu ]  %s\n", categories[categoryI].name,
 				stringI - categories[categoryI].base, GAME_STRING((uqm::COUNT)stringI));
 	}
@@ -1989,7 +2057,9 @@ countVisibleContexts(void)
 		 context = GetNextContext(context))
 	{
 		if (!isContextVisible(context))
+		{
 			continue;
+		}
 
 		contextCount++;
 	}
@@ -2108,7 +2178,9 @@ static bool
 waitForKey(struct wait_state* self)
 {
 	if (PulsedInputState.menu[KEY_MENU_SELECT] || PulsedInputState.menu[KEY_MENU_CANCEL])
+	{
 		return false;
+	}
 
 	SleepThread(ONE_SECOND / 20);
 
@@ -2168,7 +2240,9 @@ void debugContexts(void)
 
 	// Prevent this function from being called from within itself.
 	if (inDebugContexts)
+	{
 		return;
+	}
 	inDebugContexts = true;
 
 	contextCount = countVisibleContexts();

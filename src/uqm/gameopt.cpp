@@ -70,10 +70,14 @@ void ConfirmSaveLoad(STAMP* MsgStamp)
 	t.align = ALIGN_CENTER;
 	t.CharCount = (uqm::COUNT)~0;
 	if (MsgStamp)
+	{
 		t.pStr = GAME_STRING(SAVEGAME_STRING_BASE + 0);
+	}
 	// "Saving . . ."
 	else
+	{
 		t.pStr = GAME_STRING(SAVEGAME_STRING_BASE + 1);
+	}
 	// "Loading . . ."
 	TextRect(&t, &r, NULL);
 	r.corner.x -= RES_SCALE(4);
@@ -153,12 +157,18 @@ FeedbackSetting(uqm::BYTE which_setting)
 			if (optWhichMenu == OPT_PC && which_setting > CYBORG_NORMAL_SETTING)
 			{
 				if (which_setting == CYBORG_DOUBLE_SETTING)
+				{
 					tmpstr = "+";
+				}
 				else
+				{
 					tmpstr = "++";
+				}
 			}
 			else
+			{
 				tmpstr = "";
+			}
 			snprintf(buf, sizeof(buf) - 1, "%s %s%s",
 					 GAME_STRING(OPTION_STRING_BASE + 2),
 					 !(GLOBAL(glob_flags) & CYBORG_ENABLED) ? GAME_STRING(OPTION_STRING_BASE + 3) :
@@ -206,9 +216,13 @@ DrawNameString(bool nameCaptain, uqm::CHAR_T* Str, uqm::COUNT CursorPos,
 		if (nameCaptain)
 		{ // Naming the captain
 			if (isPC(optWhichFonts))
+			{
 				Font = TinyFont;
+			}
 			else
+			{
 				Font = TinyFontBold;
+			}
 
 			r.corner.y = RES_SCALE(10);
 			r.corner.x += RES_SCALE(1);
@@ -240,9 +254,13 @@ DrawNameString(bool nameCaptain, uqm::CHAR_T* Str, uqm::COUNT CursorPos,
 	if (!(state & DDSHS_EDIT))
 	{ // normal state
 		if (nameCaptain)
+		{
 			DrawCaptainsName(nameCaptain);
+		}
 		else
+		{
 			DrawFlagshipName(true, !nameCaptain);
+		}
 	}
 	else
 	{ // editing state
@@ -264,13 +282,19 @@ DrawNameString(bool nameCaptain, uqm::CHAR_T* Str, uqm::COUNT CursorPos,
 		DrawFilledRectangle(&r);
 
 		if (optCustomBorder)
+		{
 			DrawBorder(SIS_STAT_REPAIR_FRAME);
+		}
 
 		pchar_deltas = char_deltas;
 		for (i = CursorPos; i > 0; --i)
+		{
 			text_r.corner.x += *pchar_deltas++;
+		}
 		if (CursorPos < lf.CharCount) /* end of line */
+		{
 			text_r.corner.x -= RES_SCALE(1);
+		}
 
 		if (state & DDSHS_BLOCKCUR)
 		{ // Use block cursor for keyboardless systems
@@ -314,7 +338,9 @@ DrawNameString(bool nameCaptain, uqm::CHAR_T* Str, uqm::COUNT CursorPos,
 			text_r.extent.width = RES_SCALE(1);
 
 			if (CursorPos == lf.CharCount)
+			{
 				text_r.corner.x -= IF_HD(3);
+			}
 
 			SetCursorFlashBlock(false);
 		}
@@ -335,7 +361,9 @@ OnNameChange(TEXTENTRY_STATE* pTES)
 	uqm::COUNT hl = DDSHS_EDIT;
 
 	if (pTES->JoystickMode)
+	{
 		hl |= DDSHS_BLOCKCUR;
+	}
 
 	return DrawNameString(nameCaptain, pTES->BaseStr, pTES->CursorPos, hl);
 }
@@ -377,9 +405,13 @@ NameCaptainOrShip(bool nameCaptain, bool gamestart)
 	tes.FrameCallback = 0;
 
 	if (DoTextEntry(&tes))
+	{
 		utf8StringCopy(Setting, tes.MaxSize, buf);
+	}
 	else
+	{
 		utf8StringCopy(buf, sizeof(buf), Setting);
+	}
 
 	// If the Captain and/or Flagship text entries are blank
 	// at New Game, fill them in with the default names.
@@ -391,7 +423,9 @@ NameCaptainOrShip(bool nameCaptain, bool gamestart)
 	}
 
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+	{
 		NewGameInit = false;
+	}
 
 	FlushCursorRect();
 
@@ -404,7 +438,9 @@ NameCaptainOrShip(bool nameCaptain, bool gamestart)
 	TextEntry3DO = false;
 
 	if (namingCB)
+	{
 		namingCB();
+	}
 }
 
 static bool
@@ -424,7 +460,9 @@ DrawSaveNameString(uqm::CHAR_T* Str, uqm::COUNT CursorPos, uqm::COUNT state, uqm
 	SetContextForeGroundColor(SAVE_SELECTED_COLOR);
 	r.extent.width = RES_SCALE(15);
 	if (MAX_SAVED_GAMES > 99)
+	{
 		r.extent.width += RES_SCALE(5);
+	}
 	r.extent.height = RES_SCALE(11);
 	r.corner.x = RES_SCALE(8);
 	r.corner.y = RES_SCALE(160 + ((gameIndex % SAVES_PER_PAGE) * 13));
@@ -486,10 +524,14 @@ DrawSaveNameString(uqm::CHAR_T* Str, uqm::COUNT CursorPos, uqm::COUNT state, uqm
 
 		FullCursorPos = CursorPos + (uqm::COUNT)utf8StringCount(dateStr);
 		for (i = FullCursorPos; i > 0; --i)
+		{
 			text_r.corner.x += *pchar_deltas++;
+		}
 
 		if (FullCursorPos < lf.CharCount) /* end of line */
+		{
 			text_r.corner.x -= RES_SCALE(1);
+		}
 
 		if (state & DDSHS_BLOCKCUR)
 		{ // Use block cursor for keyboardless systems
@@ -531,7 +573,9 @@ OnSaveNameChange(TEXTENTRY_STATE* pTES)
 	uqm::COUNT* gameIndex = (uqm::COUNT*)pTES->CbParam;
 
 	if (pTES->JoystickMode)
+	{
 		hl |= DDSHS_BLOCKCUR;
+	}
 
 	return DrawSaveNameString(pTES->BaseStr, pTES->CursorPos, hl, *gameIndex);
 }
@@ -564,14 +608,18 @@ NameSaveGame(uqm::COUNT gameIndex, uqm::CHAR_T* buf)
 	SetFlashRect(&r, false);
 
 	if (!DoTextEntry(&tes))
+	{
 		buf[0] = 0;
+	}
 
 	SetFlashRect(NULL, false);
 
 	DrawSaveNameString(buf, CursPos, DDSHS_NORMAL, gameIndex);
 
 	if (namingCB)
+	{
 		namingCB();
+	}
 
 	SetMenuSounds(MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
 
@@ -580,9 +628,13 @@ NameSaveGame(uqm::COUNT gameIndex, uqm::CHAR_T* buf)
 	SetFlashRect(NULL, false);
 
 	if (tes.Success)
+	{
 		return (true);
+	}
 	else
+	{
 		return (false);
+	}
 }
 
 void SetNamingCallback(NamingCallback* callback)
@@ -648,7 +700,9 @@ DoSettings(MENU_STATE* pMS)
 			case CYBORG_DOUBLE_SETTING:
 			case CYBORG_SUPER_SETTING:
 				if (cur_speed++ < NUM_COMBAT_SPEEDS - 1)
+				{
 					GLOBAL(glob_flags) |= CYBORG_ENABLED;
+				}
 				else
 				{
 					cur_speed = 0;
@@ -666,9 +720,13 @@ DoSettings(MENU_STATE* pMS)
 			case READ_FAST_SETTING:
 			case READ_VERY_FAST_SETTING:
 				if (read_speed == NUM_READ_SPEEDS - 1)
+				{
 					read_speed = 0;
+				}
 				else
+				{
 					read_speed++;
+				}
 
 				GLOBAL(glob_flags) =
 					((GLOBAL(glob_flags) & ~READ_SPEED_MASK)
@@ -680,12 +738,16 @@ DoSettings(MENU_STATE* pMS)
 				DrawMenuStateStrings(PM_SOUND_ON, pMS->CurState);
 		}
 		if (optWhichMenu == OPT_PC)
+		{
 			DrawMenuStateStrings(PM_SOUND_ON, pMS->CurState);
+		}
 
 		FeedbackSetting(pMS->CurState);
 	}
 	else if (DoMenuChooser(pMS, PM_SOUND_ON))
+	{
 		FeedbackSetting(pMS->CurState);
+	}
 
 	if (NewGameInit)
 	{
@@ -717,7 +779,9 @@ void SettingsMenu(bool NameFlagship)
 								 CHANGE_SHIP_SETTING;
 	}
 	else
+	{
 		MenuState.CurState = SOUND_ON_SETTING;
+	}
 
 	DrawMenuStateStrings(PM_SOUND_ON, MenuState.CurState);
 	FeedbackSetting(MenuState.CurState);
@@ -821,7 +885,9 @@ DrawAllLabels(RECT rect)
 	for (i = 4; i <= 8; i++)
 	{
 		if (!strlen(GAME_STRING(LABEL_STRING_BASE + i)))
+		{
 			return;
+		}
 	}
 
 	OldColor = SetContextForeGroundColor(BLACK_COLOR);
@@ -897,7 +963,9 @@ DrawSaveLoad(PICK_GAME_STATE* pickState)
 	DrawFilledRectangle(&r);
 
 	if (pickState->saving)
+	{
 		s.frame = DecFrameIndex(s.frame);
+	}
 	DrawStamp(&s);
 }
 
@@ -1055,16 +1123,22 @@ DrawEmptySlot(void)
 	for (stroke = RES_SCALE(3); stroke > 0; stroke -= RES_SCALE(1))
 	{
 		if (stroke == RES_SCALE(2))
+		{
 			SetContextForeGroundColor(EMPTY_SLOT_STROKE_2_COLOR);
+		}
 		else if (stroke == RES_SCALE(1))
+		{
 			SetContextForeGroundColor(EMPTY_SLOT_STROKE_1_COLOR);
+		}
 
 		for (offset.x = -stroke; offset.x <= stroke; ++offset.x)
 		{
 			for (offset.y = -stroke; offset.y <= stroke; ++offset.y)
 			{
 				if (hypot(offset.x, offset.y) > stroke)
+				{
 					continue;
+				}
 				t.baseline =
 					MAKE_POINT(
 						t_baseline.x + offset.x,
@@ -1216,16 +1290,22 @@ DrawNoLimit(void)
 	for (stroke = RES_SCALE(3); stroke > 0; stroke -= RES_SCALE(1))
 	{
 		if (stroke == RES_SCALE(2))
+		{
 			SetContextForeGroundColor(NO_LIMIT_STROKE_2_COLOR);
+		}
 		else if (stroke == RES_SCALE(1))
+		{
 			SetContextForeGroundColor(NO_LIMIT_STROKE_1_COLOR);
+		}
 
 		for (offset.x = -stroke; offset.x <= stroke; ++offset.x)
 		{
 			for (offset.y = -stroke; offset.y <= stroke; ++offset.y)
 			{
 				if (hypot(offset.x, offset.y) > stroke)
+				{
 					continue;
+				}
 				t.baseline =
 					MAKE_POINT(
 						t_baseline.x + offset.x,
@@ -1427,14 +1507,20 @@ DrawSavegameSummary(PICK_GAME_STATE* pickState, uqm::COUNT gameIndex)
 		}
 
 		if (isPC(optWhichFonts))
+		{
 			SetContextFont(TinyFont);
+		}
 		else
+		{
 			SetContextFont(TinyFontBold);
+		}
 
 		SetContextForeGroundColor(SAVE_SELECTED_COLOR);
 		t.CharCount = (uqm::COUNT)~0;
 		if (is3DO(optWhichFonts))
+		{
 			replaceChar(buf, UNICHAR_SPACE, UNICHAR_TAB);
+		}
 		font_DrawText(&t);
 		t.align = ALIGN_CENTER;
 		t.baseline.x = SIS_SCREEN_WIDTH - SIS_TITLE_BOX_WIDTH
@@ -1460,7 +1546,9 @@ DrawSavegameSummary(PICK_GAME_STATE* pickState, uqm::COUNT gameIndex)
 						 starPt.y / 10, starPt.y % 10);
 		}
 		if (is3DO(optWhichFonts))
+		{
 			replaceChar(buf, UNICHAR_SPACE, UNICHAR_TAB);
+		}
 		t.CharCount = (uqm::COUNT)~0;
 		font_DrawText(&t);
 
@@ -1470,7 +1558,9 @@ DrawSavegameSummary(PICK_GAME_STATE* pickState, uqm::COUNT gameIndex)
 		GLOBAL(built_ship_q) = player_built_q;
 		GlobData.SIS_state = SaveSS;
 		if (optCustomBorder)
+		{
 			DrawStatusMessage(NULL);
+		}
 	}
 
 	UnbatchGraphics();
@@ -1500,7 +1590,9 @@ TruncateSaveName(uqm::CHAR_T* buf, COORD maxWidth, bool naming)
 		} while (r.extent.width > maxWidth);
 
 		if (naming)
+		{
 			buf[strlen(buf) - strlen(ellipses)] = '\0';
+		}
 	}
 }
 
@@ -1543,7 +1635,9 @@ DrawGameSelection(PICK_GAME_STATE* pickState, uqm::COUNT selSlot)
 			(curSlot == selSlot) ? Selected : UnSelected);
 		r.extent.width = RES_SCALE(15);
 		if (MAX_SAVED_GAMES > 99)
+		{
 			r.extent.width += RES_SCALE(5);
+		}
 		r.extent.height = RES_SCALE(11);
 		r.corner.x = RES_SCALE(8);
 		r.corner.y = RES_SCALE(160 + (i * 13));
@@ -1577,8 +1671,10 @@ DrawGameSelection(PICK_GAME_STATE* pickState, uqm::COUNT selSlot)
 				SaveName = desc->LegacySaveName;
 			}
 			else
+			{
 				SaveName = desc->SaveName[0] ? desc->SaveName :
 											   GAME_STRING(SAVEGAME_STRING_BASE + 4);
+			}
 
 			snprintf(buf, sizeof buf, "%s: %s", buf2, SaveName);
 
@@ -1608,7 +1704,9 @@ LoadGameDescriptions(SUMMARY_DESC* pSD)
 	for (i = 0; i < MAX_SAVED_GAMES; ++i, ++pSD)
 	{
 		if (!LoadGame(i, pSD, NULL, false))
+		{
 			pSD->year_index = 0;
+		}
 	}
 }
 
@@ -1621,7 +1719,9 @@ DoPickGame(MENU_STATE* pMS)
 	uqm::DWORD TimeIn = GetTimeCounter();
 
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+	{
 		return false;
+	}
 
 	if (PulsedInputState.menu[KEY_MENU_CANCEL])
 	{
@@ -1637,12 +1737,16 @@ DoPickGame(MENU_STATE* pMS)
 			uqm::DWORD TankCapacityScaled = GetFuelTankCapacity() / FUEL_TANK_SCALE;
 
 			if (optInfiniteRU)
+			{
 				GLOBAL_SIS(ResUnits) = oldRU;
+			}
 
 			if (optInfiniteFuel)
 			{
 				if (loadFuel <= GetFuelTankCapacity())
+				{
 					GLOBAL_SIS(FuelOnBoard) = loadFuel;
+				}
 				else
 				{
 					GLOBAL_SIS(ResUnits) += (LoadFuelScaled - TankCapacityScaled) * GLOBAL(FuelCost);
@@ -1663,35 +1767,55 @@ DoPickGame(MENU_STATE* pMS)
 			|| PulsedInputState.menu[KEY_MENU_PAGE_UP])
 		{
 			if (NewState == 0)
+			{
 				NewState = MAX_SAVED_GAMES - 1;
+			}
 			else if ((NewState - SAVES_PER_PAGE) > 0)
+			{
 				NewState -= SAVES_PER_PAGE;
+			}
 			else
+			{
 				NewState = 0;
+			}
 		}
 		else if (PulsedInputState.menu[KEY_MENU_RIGHT]
 				 || PulsedInputState.menu[KEY_MENU_PAGE_DOWN])
 		{
 			if (NewState == MAX_SAVED_GAMES - 1)
+			{
 				NewState = 0;
+			}
 			else if ((NewState + SAVES_PER_PAGE) < MAX_SAVED_GAMES - 1)
+			{
 				NewState += SAVES_PER_PAGE;
+			}
 			else
+			{
 				NewState = MAX_SAVED_GAMES - 1;
+			}
 		}
 		else if (PulsedInputState.menu[KEY_MENU_UP])
 		{
 			if (NewState == 0)
+			{
 				NewState = MAX_SAVED_GAMES - 1;
+			}
 			else
+			{
 				NewState--;
+			}
 		}
 		else if (PulsedInputState.menu[KEY_MENU_DOWN])
 		{
 			if (NewState == MAX_SAVED_GAMES - 1)
+			{
 				NewState = 0;
+			}
 			else
+			{
 				NewState++;
+			}
 		}
 
 		if (NewState != pMS->CurState)
@@ -1831,16 +1955,22 @@ PickGame(bool saving, bool fromMainMenu)
 		pickState.success = false;
 		DoInput(&MenuState, true);
 		if (!pickState.success)
+		{
 			break; // canceled
+		}
 
 		lastUsedSlot = MenuState.CurState;
 
 		if (SaveLoadGame(&pickState, MenuState.CurState, &canceled_by_user))
+		{
 			break; // all good
+		}
 
 		// something broke
 		if (saving && !canceled_by_user)
+		{
 			SaveProblem();
+		}
 		// TODO: Shouldn't we have a Problem() equivalent for Load too?
 
 		// reload and redraw everything
@@ -1897,21 +2027,33 @@ PickGame(bool saving, bool fromMainMenu)
 
 		// Redraws main title bar at the top-left
 		if (InStarbase && OutfitOrShipyard > 1)
+		{
 			DrawSISMessage(GAME_STRING(STARBASE_STRING_BASE + OutfitOrShipyard));
+		}
 		else
+		{
 			DrawSISMessage(NULL);
+		}
 
 		OutfitOrShipyard = 0;
 
 		// Redraws secondary title bar to the right of the main bar
 		if (inHQSpace())
+		{
 			DrawHyperCoords(GLOBAL(ShipStamp.origin));
+		}
 		else if (InStarbase)
+		{
 			DrawSISTitle(GAME_STRING(STARBASE_STRING_BASE + 0));
+		}
 		else if (GLOBAL(ip_planet) == 0)
+		{
 			DrawHyperCoords(CurStarDescPtr->star_pt);
+		}
 		else
+		{
 			DrawSISTitle(GLOBAL_SIS(PlanetName));
+		}
 
 		// Redraws fuel, crew, and status message (green box)
 		DeltaSISGauges(UNDEFINED_DELTA, UNDEFINED_DELTA, UNDEFINED_DELTA);
@@ -1936,7 +2078,9 @@ static bool
 DoGameOptions(MENU_STATE* pMS)
 {
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+	{
 		return false;
+	}
 
 	if (PulsedInputState.menu[KEY_MENU_CANCEL]
 		|| (PulsedInputState.menu[KEY_MENU_SELECT]
@@ -1952,16 +2096,22 @@ DoGameOptions(MENU_STATE* pMS)
 			case LOAD_GAME:
 				SetFlashRect(NULL, false);
 				if (PickGame(pMS->CurState == SAVE_GAME, false))
+				{
 					return false;
+				}
 				DrawMenuStateStrings(PM_SAVE_GAME, pMS->CurState);
 				SetFlashRect(SFR_MENU_3DO, false);
 				break;
 			case QUIT_GAME:
 				DrawMenuStateStrings(PM_SAVE_GAME, pMS->CurState);
 				if (ConfirmExit())
+				{
 					return false;
+				}
 				else
+				{
 					DrawMenuStateStrings(PM_SAVE_GAME, pMS->CurState);
+				}
 				break;
 			case SETTINGS:
 				SettingsMenu(false);
@@ -1970,7 +2120,9 @@ DoGameOptions(MENU_STATE* pMS)
 		}
 	}
 	else
+	{
 		DoMenuChooser(pMS, PM_SAVE_GAME);
+	}
 
 	return true;
 }

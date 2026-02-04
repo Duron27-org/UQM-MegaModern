@@ -37,7 +37,7 @@ static LOCDATA syreen_desc =
 		BLACK_COLOR_INIT, /* AlienTextBColor */
 		{0, 0}, /* AlienTextBaseline */
 		0,
- /* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
+		/* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
 		ALIGN_CENTER, /* AlienTextAlign */
 		VALIGN_TOP, /* AlienTextValign */
 		SYREEN_COLOR_MAP, /* AlienColorMap */
@@ -257,19 +257,31 @@ FriendlyExit(RESPONSE_REF R)
 	setSegue(Segue_peace);
 
 	if (PLAYER_SAID(R, bye))
+	{
 		NPCPhrase(GOODBYE);
+	}
 	else if (PLAYER_SAID(R, im_on_my_way)
 			 || PLAYER_SAID(R, doing_this_for_you)
 			 || PLAYER_SAID(R, if_i_die))
+	{
 		NPCPhrase(GOOD_LUCK);
+	}
 	else if (PLAYER_SAID(R, bye_before_vault))
+	{
 		NPCPhrase(GOODBYE_BEFORE_VAULT);
+	}
 	else if (PLAYER_SAID(R, bye_after_vault))
+	{
 		NPCPhrase(GOODBYE_AFTER_VAULT);
+	}
 	else if (PLAYER_SAID(R, bye_before_ambush))
+	{
 		NPCPhrase(GOODBYE_BEFORE_AMBUSH);
+	}
 	else if (PLAYER_SAID(R, bye_after_ambush))
+	{
 		NPCPhrase(GOODBYE_AFTER_AMBUSH);
+	}
 	else
 	{
 		if (PLAYER_SAID(R, hands_off))
@@ -281,7 +293,9 @@ FriendlyExit(RESPONSE_REF R)
 			NPCPhrase(OK_WONT_USE_HANDS);
 		}
 		else if (PLAYER_SAID(R, not_much_more_to_say))
+		{
 			NPCPhrase(THEN_STOP_TALKING);
+		}
 
 		NPCPhrase(LATER);
 		NPCPhrase(SEX_GOODBYE);
@@ -345,7 +359,9 @@ Sex(RESPONSE_REF R)
 		NPCPhrase(SOMETHING_LIKE_THIS);
 	}
 	else if (PLAYER_SAID(R, disease))
+	{
 		NPCPhrase(JUST_RELAX);
+	}
 	else if (PLAYER_SAID(R, what_happens_if_i_touch_this))
 	{
 		NPCPhrase(THIS_HAPPENS);
@@ -368,15 +384,23 @@ Sex(RESPONSE_REF R)
 	if (!PHRASE_ENABLED(what_happens_if_i_touch_this)
 		&& !PHRASE_ENABLED(are_you_sure_this_is_ok)
 		&& !PHRASE_ENABLED(boy_they_never_taught))
+	{
 		Response(not_much_more_to_say, FriendlyExit);
+	}
 	else
 	{
 		if (PHRASE_ENABLED(what_happens_if_i_touch_this))
+		{
 			Response(what_happens_if_i_touch_this, Sex);
+		}
 		if (PHRASE_ENABLED(are_you_sure_this_is_ok))
+		{
 			Response(are_you_sure_this_is_ok, Sex);
+		}
 		if (PHRASE_ENABLED(boy_they_never_taught))
+		{
 			Response(boy_they_never_taught, Sex);
+		}
 	}
 }
 
@@ -387,9 +411,13 @@ Foreplay(RESPONSE_REF R)
 		|| PLAYER_SAID(R, what_about_us))
 	{
 		if (PLAYER_SAID(R, whats_my_reward))
+		{
 			NPCPhrase(HERES_REWARD);
+		}
 		else
+		{
 			NPCPhrase(ABOUT_US);
+		}
 		NPCPhrase(MORE_COMFORTABLE);
 
 		cwLock = true;
@@ -404,7 +432,9 @@ Foreplay(RESPONSE_REF R)
 					  ONE_SECOND);
 
 		if (IS_HD)
+		{
 			EngageFilters(&syreen_filters);
+		}
 
 		/*if (!EXTENDED)
 			{
@@ -436,11 +466,17 @@ Foreplay(RESPONSE_REF R)
 	}
 
 	if (PHRASE_ENABLED(why_lights_off))
+	{
 		Response(why_lights_off, Foreplay);
+	}
 	else if (PHRASE_ENABLED(evil_monster))
+	{
 		Response(evil_monster, Foreplay);
+	}
 	else
+	{
 		Response(disease, Sex);
+	}
 	Response(in_the_spirit, Sex);
 	Response(what_in_mind, Sex);
 	Response(hands_off, FriendlyExit);
@@ -488,15 +524,21 @@ AfterAmbush(RESPONSE_REF R)
 	}
 
 	if (PHRASE_ENABLED(what_about_you))
+	{
 		Response(what_about_you, AfterAmbush);
+	}
 	else if (!GET_GAME_STATE(PLAYER_HAD_SEX))
 	{
 		Response(what_about_us, Foreplay);
 	}
 	if (PHRASE_ENABLED(what_now_after_ambush))
+	{
 		Response(what_now_after_ambush, AfterAmbush);
+	}
 	if (PHRASE_ENABLED(whats_up_after_ambush))
+	{
 		Response(whats_up_after_ambush, AfterAmbush);
+	}
 	Response(bye_after_ambush, FriendlyExit);
 }
 
@@ -511,7 +553,9 @@ AmbushReady(RESPONSE_REF R)
 	}
 
 	if (PHRASE_ENABLED(repeat_plan))
+	{
 		Response(repeat_plan, AmbushReady);
+	}
 	Response(bye_before_ambush, FriendlyExit);
 }
 
@@ -558,18 +602,24 @@ SyreenShuttle(RESPONSE_REF R)
 	}
 
 	if (PHRASE_ENABLED(whats_next_step))
+	{
 		Response(whats_next_step, SyreenShuttle);
+	}
 	else
 	{
 		if (!GET_GAME_STATE(KNOW_SYREEN_VAULT))
 		{
 			if (PHRASE_ENABLED(where_is_it))
+			{
 				Response(where_is_it, SyreenShuttle);
+			}
 		}
 		else
 		{
 			if (PHRASE_ENABLED(been_there))
+			{
 				Response(been_there, SyreenShuttle);
+			}
 		}
 		if (!PHRASE_ENABLED(where_is_it)
 			|| !PHRASE_ENABLED(been_there))
@@ -580,9 +630,13 @@ SyreenShuttle(RESPONSE_REF R)
 		}
 	}
 	if (PHRASE_ENABLED(what_do_i_get_for_this))
+	{
 		Response(what_do_i_get_for_this, SyreenShuttle);
+	}
 	if (PHRASE_ENABLED(not_sure))
+	{
 		Response(not_sure, SyreenShuttle);
+	}
 }
 
 static void
@@ -594,9 +648,13 @@ NormalSyreen(RESPONSE_REF R)
 	LastStack = 0;
 	pStr[0] = pStr[1] = pStr[2] = pStr[3] = 0;
 	if (PLAYER_SAID(R, we_here_to_help))
+	{
 		NPCPhrase(NO_NEED_HELP);
+	}
 	else if (PLAYER_SAID(R, we_need_help))
+	{
 		NPCPhrase(CANT_GIVE_HELP);
+	}
 	else if (PLAYER_SAID(R, know_about_deep_children))
 	{
 		NPCPhrase(WHAT_ABOUT_DEEP_CHILDREN);
@@ -703,9 +761,13 @@ NormalSyreen(RESPONSE_REF R)
 			&& GET_GAME_STATE(KNOW_SYREEN_WORLD_SHATTERED))
 		{
 			if (PHRASE_ENABLED(know_about_deep_children))
+			{
 				pStr[0] = know_about_deep_children;
+			}
 			else
+			{
 				pStr[0] = mycons_involved;
+			}
 		}
 	}
 	else
@@ -715,9 +777,13 @@ NormalSyreen(RESPONSE_REF R)
 			|| GET_GAME_STATE(EGG_CASE2_ON_SHIP))
 		{
 			if (PHRASE_ENABLED(have_proof))
+			{
 				pStr[0] = have_proof;
+			}
 			else
+			{
 				pStr[0] = look_at_egg_sacks;
+			}
 		}
 		else if (!GET_GAME_STATE(SYREEN_WANT_PROOF))
 		{
@@ -761,11 +827,15 @@ NormalSyreen(RESPONSE_REF R)
 			break;
 	}
 	if (pStr[LastStack])
+	{
 		Response(pStr[LastStack], NormalSyreen);
+	}
 	for (i = 0; i < 4; ++i)
 	{
 		if (i != LastStack && pStr[i])
+		{
 			Response(pStr[i], NormalSyreen);
+		}
 	}
 	Response(bye, FriendlyExit);
 }
@@ -811,9 +881,13 @@ InitialSyreen(RESPONSE_REF R)
 	Response(we_here_to_help, NormalSyreen);
 	Response(we_need_help, NormalSyreen);
 	if (PHRASE_ENABLED(i_need_you))
+	{
 		Response(i_need_you, InitialSyreen);
+	}
 	if (PHRASE_ENABLED(i_need_touch_o_vision))
+	{
 		Response(i_need_touch_o_vision, InitialSyreen);
+	}
 }
 
 static void
@@ -939,7 +1013,9 @@ Intro(void)
 		}
 
 		if (NumVisits > 1)
+		{
 			NormalSyreen((RESPONSE_REF)0);
+		}
 		else
 		{
 			Response(we_are_vice_squad, InitialSyreen);

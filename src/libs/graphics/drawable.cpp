@@ -42,11 +42,15 @@ SetContextFGFrame(FRAME Frame)
 	if (Frame != (LastFrame = (FRAME)_CurFramePtr))
 	{
 		if (LastFrame)
+		{
 			DeactivateDrawable();
+		}
 
 		_CurFramePtr = Frame;
 		if (_CurFramePtr)
+		{
 			ActivateDrawable();
+		}
 
 		if (ContextActive())
 		{
@@ -72,7 +76,9 @@ request_drawable(uqm::COUNT NumFrames, DRAWABLE_TYPE DrawableType,
 
 	Drawable = AllocDrawable(NumFrames);
 	if (!Drawable)
+	{
 		return NULL;
+	}
 
 	Drawable->Flags = flags;
 	Drawable->MaxIndex = NumFrames - 1;
@@ -104,7 +110,9 @@ request_indexed_drawable(Color* palette, uqm::SIZE width, uqm::SIZE height)
 
 	Drawable = AllocDrawable(1);
 	if (!Drawable)
+	{
 		return NULL;
+	}
 
 	Drawable->Flags = WANT_PIXMAP;
 	Drawable->MaxIndex = 0;
@@ -119,7 +127,9 @@ request_indexed_drawable(Color* palette, uqm::SIZE width, uqm::SIZE height)
 					width, height, palette, -1));
 		}
 		else
+		{
 			return NULL;
+		}
 
 		FramePtr->Type = RAM_DRAWABLE;
 		FramePtr->Index = 0;
@@ -145,7 +155,9 @@ CreateDisplay(CREATE_FLAGS CreateFlags, uqm::SIZE* pwidth, uqm::SIZE* pheight)
 
 		F = CaptureDrawable(Drawable);
 		if (F == 0)
+		{
 			DestroyDrawable(Drawable);
+		}
 		else
 		{
 			*pwidth = GetFrameWidth(F);
@@ -245,7 +257,9 @@ CreateIndexedDrawable(Color* palette, uqm::SIZE width, uqm::SIZE height)
 bool DestroyDrawable(DRAWABLE Drawable)
 {
 	if (_CurFramePtr && (Drawable == _CurFramePtr->parent))
+	{
 		SetContextFGFrame((FRAME)NULL);
+	}
 
 	if (Drawable)
 	{
@@ -308,13 +322,17 @@ RotateFrame(FRAME Frame, int angle_deg)
 	double angle = angle_deg * M_PI / 180;
 
 	if (!Frame)
+	{
 		return NULL;
+	}
 
 	assert(Frame->Type != SCREEN_DRAWABLE);
 
 	Drawable = request_drawable(1, RAM_DRAWABLE, WANT_PIXMAP, 0, 0);
 	if (!Drawable)
+	{
 		return 0;
+	}
 	RotFramePtr = CaptureDrawable(Drawable);
 	if (!RotFramePtr)
 	{
@@ -351,7 +369,9 @@ void SetFrameTransparentColor(FRAME frame, Color color)
 	TFB_Image* img;
 
 	if (!frame)
+	{
 		return;
+	}
 
 	assert(frame->Type != SCREEN_DRAWABLE);
 
@@ -370,7 +390,9 @@ Color GetFramePixel(FRAME frame, POINT pixelPt)
 	Color ret;
 
 	if (!frame)
+	{
 		return BUILD_COLOR_RGBA(0, 0, 0, 0);
+	}
 
 	assert(frame->Type != SCREEN_DRAWABLE);
 
@@ -397,7 +419,9 @@ makeMatchingFrame(FRAME frame, int width, int height)
 	flags = dst_has_alpha ? WANT_ALPHA : GetFrameParentDrawable(frame)->Flags;
 	drawable = CreateDrawable(flags, width, height, 1);
 	if (!drawable)
+	{
 		return NULL;
+	}
 	newFrame = CaptureDrawable(drawable);
 	if (!newFrame)
 	{
@@ -421,7 +445,9 @@ makeMatchingIndexedFrame(FRAME frame, int width, int height)
 			TFB_DrawCanvas_ExtractPalette(frame->image->NormalImg),
 			width, height);
 	if (!drawable)
+	{
 		return NULL;
+	}
 	newFrame = CaptureDrawable(drawable);
 	if (!newFrame)
 	{
@@ -441,14 +467,18 @@ CopyFrameRect(FRAME frame, const RECT* area)
 	POINT nullPt = MAKE_POINT(0, 0);
 
 	if (!frame)
+	{
 		return NULL;
+	}
 
 	assert(frame->Type != SCREEN_DRAWABLE);
 
 	newFrame = makeMatchingFrame(frame, area->extent.width,
 								 area->extent.height);
 	if (!newFrame)
+	{
 		return NULL;
+	}
 
 	TFB_DrawImage_CopyRect(frame->image, area, newFrame->image, nullPt);
 
@@ -464,7 +494,9 @@ CloneFrame(FRAME frame)
 	RECT r;
 
 	if (!frame)
+	{
 		return NULL;
+	}
 
 	assert(frame->Type != SCREEN_DRAWABLE);
 
@@ -474,7 +506,9 @@ CloneFrame(FRAME frame)
 
 	newFrame = CaptureDrawable(CopyFrameRect(frame, &r));
 	if (!newFrame)
+	{
 		return NULL;
+	}
 
 	// copy the hot-spot
 	newFrame->HotSpot = frame->HotSpot;
@@ -492,7 +526,9 @@ RescaleFrame(FRAME frame, int width, int height)
 	TFB_Canvas src, dst;
 
 	if (!frame)
+	{
 		return NULL;
+	}
 
 	assert(frame->Type != SCREEN_DRAWABLE);
 
@@ -506,7 +542,9 @@ RescaleFrame(FRAME frame, int width, int height)
 	}
 
 	if (!newFrame)
+	{
 		return NULL;
+	}
 
 	// scale the hot-spot
 	newFrame->HotSpot.x = frame->HotSpot.x * width / frame->Bounds.width;
@@ -536,7 +574,9 @@ RescalePercentage(FRAME frame, float percentage)
 	TFB_Canvas src, dst;
 
 	if (!frame || (frame->Bounds.height == 1 && frame->Bounds.width == 1))
+	{
 		return NULL;
+	}
 
 	assert(frame->Type != SCREEN_DRAWABLE);
 
@@ -547,7 +587,9 @@ RescalePercentage(FRAME frame, float percentage)
 								 (int)(frame->Bounds.height * percentage));
 
 	if (!newFrame)
+	{
 		return NULL;
+	}
 
 	// scale the hot-spot
 	newFrame->HotSpot.x = (COORD)(frame->HotSpot.x * percentage);
@@ -572,7 +614,9 @@ bool ReadFramePixelColors(FRAME frame, Color* pixels, int width, int height)
 	TFB_Image* img;
 
 	if (!frame)
+	{
 		return false;
+	}
 
 	assert(frame->Type != SCREEN_DRAWABLE);
 
@@ -588,7 +632,9 @@ bool WriteFramePixelColors(FRAME frame, const Color* pixels, int width, int heig
 	TFB_Image* img;
 
 	if (!frame)
+	{
 		return false;
+	}
 
 	assert(frame->Type != SCREEN_DRAWABLE);
 
@@ -603,7 +649,9 @@ bool ReadFramePixelIndexes(FRAME frame, uqm::BYTE* pixels, int width, int height
 	TFB_Image* img;
 
 	if (!frame)
+	{
 		return false;
+	}
 
 	assert(frame->Type != SCREEN_DRAWABLE);
 
@@ -612,10 +660,14 @@ bool ReadFramePixelIndexes(FRAME frame, uqm::BYTE* pixels, int width, int height
 
 	// JMS_GFX: Don't try to read pixel indexes for non-indexed images.
 	if (paletted)
+	{
 		return TFB_DrawCanvas_GetPixelIndexes(img->NormalImg, pixels,
 											  width, height);
+	}
 	else
+	{
 		return false;
+	}
 }
 
 // Warning: this functions bypasses DCQ, which is why it is not a DrawXXX
@@ -624,7 +676,9 @@ bool WriteFramePixelIndexes(FRAME frame, const uqm::BYTE* pixels, int width, int
 	TFB_Image* img;
 
 	if (!frame)
+	{
 		return false;
+	}
 
 	assert(frame->Type != SCREEN_DRAWABLE);
 

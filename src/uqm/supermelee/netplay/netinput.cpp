@@ -98,7 +98,9 @@ void initBattleInputBuffers(void)
 			// frames, so we fill the buffer with inputDelay zeros.
 			size_t i;
 			for (i = 0; i < BattleInput_inputDelay; i++)
+			{
 				BattleInputBuffer_push(bib, (BATTLE_INPUT_STATE)0);
+			}
 		}
 	}
 }

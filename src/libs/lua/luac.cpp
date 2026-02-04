@@ -47,9 +47,13 @@ static void cannot(const char* what)
 static void usage(const char* message)
 {
 	if (*message == '-')
+	{
 		fprintf(stderr, "%s: unrecognized option " LUA_QS "\n", progname, message);
+	}
 	else
+	{
 		fprintf(stderr, "%s: %s\n", progname, message);
+	}
 	fprintf(stderr,
 			"usage: %s [options] [filenames]\n"
 			"Available options are:\n"
@@ -71,38 +75,60 @@ static int doargs(int argc, char* argv[])
 	int i;
 	int version = 0;
 	if (argv[0] != NULL && *argv[0] != 0)
+	{
 		progname = argv[0];
+	}
 	for (i = 1; i < argc; i++)
 	{
 		if (*argv[i] != '-') /* end of options; keep it */
+		{
 			break;
+		}
 		else if (IS("--")) /* end of options; skip it */
 		{
 			++i;
 			if (version)
+			{
 				++version;
+			}
 			break;
 		}
 		else if (IS("-")) /* end of options; use stdin */
+		{
 			break;
+		}
 		else if (IS("-l")) /* list */
+		{
 			++listing;
+		}
 		else if (IS("-o")) /* output file */
 		{
 			output = argv[++i];
 			if (output == NULL || *output == 0 || (*output == '-' && output[1] != 0))
+			{
 				usage(LUA_QL("-o") " needs argument");
+			}
 			if (IS("-"))
+			{
 				output = NULL;
+			}
 		}
 		else if (IS("-p")) /* parse only */
+		{
 			dumping = 0;
+		}
 		else if (IS("-s")) /* strip debug information */
+		{
 			stripping = 1;
+		}
 		else if (IS("-v")) /* show version */
+		{
 			++version;
+		}
 		else /* unknown option */
+		{
 			usage(argv[i]);
+		}
 	}
 	if (i == argc && (listing || !dumping))
 	{
@@ -113,7 +139,9 @@ static int doargs(int argc, char* argv[])
 	{
 		printf("%s\n", LUA_COPYRIGHT);
 		if (version == argc - 1)
+		{
 			exit(EXIT_SUCCESS);
+		}
 	}
 	return i;
 }
@@ -140,19 +168,25 @@ static const char* reader(lua_State* L, void* ud, size_t* size)
 static const Proto* combine(lua_State* L, int n)
 {
 	if (n == 1)
+	{
 		return toproto(L, -1);
+	}
 	else
 	{
 		Proto* f;
 		int i = n;
 		if (lua_load(L, reader, &i, "=(" PROGNAME ")", NULL) != LUA_OK)
+		{
 			fatal(lua_tostring(L, -1));
+		}
 		f = toproto(L, -1);
 		for (i = 0; i < n; i++)
 		{
 			f->p[i] = toproto(L, i - n - 1);
 			if (f->p[i]->sizeupvalues > 0)
+			{
 				f->p[i]->upvalues[0].instack = 0;
+			}
 		}
 		f->sizelineinfo = 0;
 		return f;
@@ -172,28 +206,40 @@ static int pmain(lua_State* L)
 	const Proto* f;
 	int i;
 	if (!lua_checkstack(L, argc))
+	{
 		fatal("too many input files");
+	}
 	for (i = 0; i < argc; i++)
 	{
 		const char* filename = IS("-") ? NULL : argv[i];
 		if (luaL_loadfile(L, filename) != LUA_OK)
+		{
 			fatal(lua_tostring(L, -1));
+		}
 	}
 	f = combine(L, argc);
 	if (listing)
+	{
 		luaU_print(f, listing > 1);
+	}
 	if (dumping)
 	{
 		FILE* D = (output == NULL) ? stdout : fopen(output, "wb");
 		if (D == NULL)
+		{
 			cannot("open");
+		}
 		lua_lock(L);
 		luaU_dump(L, f, writer, D, stripping);
 		lua_unlock(L);
 		if (ferror(D))
+		{
 			cannot("write");
+		}
 		if (fclose(D))
+		{
 			cannot("close");
+		}
 	}
 	return 0;
 }
@@ -205,15 +251,21 @@ int main(int argc, char* argv[])
 	argc -= i;
 	argv += i;
 	if (argc <= 0)
+	{
 		usage("no input files given");
+	}
 	L = luaL_newstate();
 	if (L == NULL)
+	{
 		fatal("cannot create state: not enough memory");
+	}
 	lua_pushcfunction(L, &pmain);
 	lua_pushinteger(L, argc);
 	lua_pushlightuserdata(L, argv);
 	if (lua_pcall(L, 2, 0, 0) != LUA_OK)
+	{
 		fatal(lua_tostring(L, -1));
+	}
 	lua_close(L);
 	return EXIT_SUCCESS;
 }
@@ -275,9 +327,13 @@ static void PrintString(const TString* ts)
 				break;
 			default:
 				if (isprint(c))
+				{
 					printf("%c", c);
+				}
 				else
+				{
 					printf("\\%03d", c);
+				}
 		}
 	}
 	printf("%c", '"');
@@ -326,25 +382,37 @@ static void PrintCode(const Proto* f)
 		int line = getfuncline(f, pc);
 		printf("\t%d\t", pc + 1);
 		if (line > 0)
+		{
 			printf("[%d]\t", line);
+		}
 		else
+		{
 			printf("[-]\t");
+		}
 		printf("%-9s\t", luaP_opnames[o]);
 		switch (getOpMode(o))
 		{
 			case iABC:
 				printf("%d", a);
 				if (getBMode(o) != OpArgN)
+				{
 					printf(" %d", ISK(b) ? (MYK(INDEXK(b))) : b);
+				}
 				if (getCMode(o) != OpArgN)
+				{
 					printf(" %d", ISK(c) ? (MYK(INDEXK(c))) : c);
+				}
 				break;
 			case iABx:
 				printf("%d", a);
 				if (getBMode(o) == OpArgK)
+				{
 					printf(" %d", MYK(bx));
+				}
 				if (getBMode(o) == OpArgU)
+				{
 					printf(" %d", bx);
+				}
 				break;
 			case iAsBx:
 				printf("%d %d", a, sbx);
@@ -405,14 +473,22 @@ static void PrintCode(const Proto* f)
 				{
 					printf("\t; ");
 					if (ISK(b))
+					{
 						PrintConstant(f, INDEXK(b));
+					}
 					else
+					{
 						printf("-");
+					}
 					printf(" ");
 					if (ISK(c))
+					{
 						PrintConstant(f, INDEXK(c));
+					}
 					else
+					{
 						printf("-");
+					}
 				}
 				break;
 			case OP_JMP:
@@ -426,9 +502,13 @@ static void PrintCode(const Proto* f)
 				break;
 			case OP_SETLIST:
 				if (c == 0)
+				{
 					printf("\t; %d", (int)code[++pc]);
+				}
 				else
+				{
 					printf("\t; %d", c);
+				}
 				break;
 			case OP_EXTRAARG:
 				printf("\t; ");
@@ -448,11 +528,17 @@ static void PrintHeader(const Proto* f)
 {
 	const char* s = f->source ? getstr(f->source) : "=?";
 	if (*s == '@' || *s == '=')
+	{
 		s++;
+	}
 	else if (*s == LUA_SIGNATURE[0])
+	{
 		s = "(bstring)";
+	}
 	else
+	{
 		s = "(string)";
+	}
 	printf("\n%s <%s:%d,%d> (%d instruction%s at %p)\n",
 		   (f->linedefined == 0) ? "main" : "function", s,
 		   f->linedefined, f->lastlinedefined,
@@ -497,7 +583,11 @@ static void PrintFunction(const Proto* f, int full)
 	PrintHeader(f);
 	PrintCode(f);
 	if (full)
+	{
 		PrintDebug(f);
+	}
 	for (i = 0; i < n; i++)
+	{
 		PrintFunction(f->p[i], full);
+	}
 }

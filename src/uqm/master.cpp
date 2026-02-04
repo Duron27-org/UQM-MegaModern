@@ -44,12 +44,16 @@ void LoadMasterShipList(void (*YieldProcessing)(void))
 
 		hBuiltShip = AllocLink(&master_q);
 		if (!hBuiltShip)
+		{
 			continue;
+		}
 
 		// Allow other things to run
 		//  supposedly, loading ship packages and data takes some time
 		if (YieldProcessing)
+		{
 			YieldProcessing();
+		}
 
 		BuiltPtr = LockMasterShip(&master_q, hBuiltShip);
 		BuiltPtr->SpeciesID = postIncSpeciesId_HACK(s_id);
@@ -85,7 +89,9 @@ void LoadMasterShipList(void (*YieldProcessing)(void))
 			UnlockMasterShip(&master_q, hStarShip);
 
 			if (strcmp(builtName, curName) < 0)
+			{
 				break;
+			}
 		}
 		InsertQueue(&master_q, hBuiltShip, hStarShip);
 		AdvanceLoadProgress();
@@ -143,7 +149,9 @@ FindMasterShip(SPECIES_ID ship_ref)
 		UnlockMasterShip(&master_q, hStarShip);
 
 		if (ref == ship_ref)
+		{
 			break;
+		}
 	}
 
 	return (hStarShip);
@@ -166,7 +174,9 @@ int FindMasterShipIndex(SPECIES_ID ship_ref)
 		UnlockMasterShip(&master_q, hStarShip);
 
 		if (ref == ship_ref)
+		{
 			break;
+		}
 	}
 
 	return hStarShip ? index : -1;
@@ -181,7 +191,9 @@ GetShipCostFromIndex(unsigned Index)
 
 	hMasterShip = GetStarShipFromIndex(&master_q, Index);
 	if (!hMasterShip)
+	{
 		return 0;
+	}
 
 	MasterPtr = LockMasterShip(&master_q, hMasterShip);
 	val = MasterPtr->ShipInfo.ship_cost;
@@ -199,7 +211,9 @@ GetShipIconsFromIndex(unsigned Index)
 
 	hMasterShip = GetStarShipFromIndex(&master_q, Index);
 	if (!hMasterShip)
+	{
 		return 0;
+	}
 
 	MasterPtr = LockMasterShip(&master_q, hMasterShip);
 	val = MasterPtr->ShipInfo.icons;
@@ -217,7 +231,9 @@ GetShipMeleeIconsFromIndex(unsigned Index)
 
 	hMasterShip = GetStarShipFromIndex(&master_q, Index);
 	if (!hMasterShip)
+	{
 		return 0;
+	}
 
 	MasterPtr = LockMasterShip(&master_q, hMasterShip);
 	val = MasterPtr->ShipInfo.melee_icon;

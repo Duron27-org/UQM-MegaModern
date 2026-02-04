@@ -50,7 +50,7 @@ static LOCDATA commander_desc =
 		BLACK_COLOR_INIT, /* AlienTextBColor */
 		{0, 0}, /* AlienTextBaseline */
 		0,
- /* SIS_TEXT_WIDTH, */  /* AlienTextWidth */
+		/* SIS_TEXT_WIDTH, */  /* AlienTextWidth */
 		ALIGN_CENTER, /* AlienTextAlign */
 		VALIGN_MIDDLE, /* AlienTextValign */
 		COMMANDER_COLOR_MAP, /* AlienColorMap */
@@ -237,7 +237,9 @@ DoSellMinerals(void)
 			}
 
 			if (Sleepy)
+			{
 				DrawCargoStrings((uqm::BYTE)0, (uqm::BYTE)0);
+			}
 		}
 		else if (Sleepy)
 		{
@@ -402,7 +404,9 @@ ByeBye(RESPONSE_REF R)
 
 	/* if (R == goodbye_starbase_commander) */
 	if (GET_GAME_STATE(CHMMR_BOMB_STATE) >= 2)
+	{
 		NPCPhrase(GOOD_LUCK_AGAIN);
+	}
 	else
 	{
 		RESPONSE_REF pStr = 0;
@@ -497,17 +501,29 @@ AllianceInfo(RESPONSE_REF R)
 	}
 
 	if (!(AllianceMask & ALLIANCE_SHOFIXTI))
+	{
 		Response(shofixti, AllianceInfo);
+	}
 	if (!(AllianceMask & ALLIANCE_YEHAT))
+	{
 		Response(yehat, AllianceInfo);
+	}
 	if (!(AllianceMask & ALLIANCE_ARILOU))
+	{
 		Response(arilou, AllianceInfo);
+	}
 	if (!(AllianceMask & ALLIANCE_CHENJESU))
+	{
 		Response(chenjesu, AllianceInfo);
+	}
 	if (!(AllianceMask & ALLIANCE_MMRNMHRM))
+	{
 		Response(mmrnmhrm, AllianceInfo);
+	}
 	if (!(AllianceMask & ALLIANCE_SYREEN))
+	{
 		Response(syreen, AllianceInfo);
+	}
 	Response(enough_alliance, AlienRaces);
 }
 
@@ -566,19 +582,33 @@ HierarchyInfo(RESPONSE_REF R)
 	}
 
 	if (!(HierarchyMask & HIERARCHY_URQUAN))
+	{
 		Response(urquan, HierarchyInfo);
+	}
 	if (!(HierarchyMask & HIERARCHY_MYCON))
+	{
 		Response(mycon, HierarchyInfo);
+	}
 	if (!(HierarchyMask & HIERARCHY_SPATHI))
+	{
 		Response(spathi, HierarchyInfo);
+	}
 	if (!(HierarchyMask & HIERARCHY_UMGAH))
+	{
 		Response(umgah, HierarchyInfo);
+	}
 	if (!(HierarchyMask & HIERARCHY_ANDROSYNTH))
+	{
 		Response(androsynth, HierarchyInfo);
+	}
 	if (!(HierarchyMask & HIERARCHY_ILWRATH))
+	{
 		Response(ilwrath, HierarchyInfo);
+	}
 	if (!(HierarchyMask & HIERARCHY_VUX))
+	{
 		Response(vux, HierarchyInfo);
+	}
 	Response(enough_hierarchy, AlienRaces);
 }
 
@@ -662,13 +692,21 @@ WarInfo(RESPONSE_REF R)
 	}
 
 	if (!(WarMask & WAR_STARTED))
+	{
 		Response(what_started_war, WarInfo);
+	}
 	if (!(WarMask & WAR_WAS_LIKE))
+	{
 		Response(what_was_war_like, WarInfo);
+	}
 	if (!(WarMask & WAR_LOST))
+	{
 		Response(why_lose_war, WarInfo);
+	}
 	if (!(WarMask & WAR_AFTERMATH))
+	{
 		Response(what_after_war, WarInfo);
+	}
 	Response(enough_war, TellHistory);
 }
 
@@ -702,11 +740,17 @@ AncientHistory(RESPONSE_REF R)
 	}
 
 	if (!(AncientMask & ANCIENT_PRECURSORS))
+	{
 		Response(precursors, AncientHistory);
+	}
 	if (!(AncientMask & ANCIENT_RACES))
+	{
 		Response(old_races, AncientHistory);
+	}
 	if (!(AncientMask & ANCIENT_EARTH))
+	{
 		Response(aliens_on_earth, AncientHistory);
+	}
 	Response(enough_ancient, TellHistory);
 }
 
@@ -820,13 +864,21 @@ DefeatUrquan(RESPONSE_REF R)
 	}
 
 	if (!(DefeatMask & HOW_FIND_URQUAN))
+	{
 		Response(how_find_urquan, DefeatUrquan);
+	}
 	if (!(DefeatMask & HOW_FIGHT_URQUAN))
+	{
 		Response(how_fight_urquan, DefeatUrquan);
+	}
 	if (!(DefeatMask & HOW_ALLY_AGAINST_URQUAN))
+	{
 		Response(how_ally, DefeatUrquan);
+	}
 	if (!(DefeatMask & HOW_STRONG_AGAINST_URQUAN))
+	{
 		Response(how_get_strong, DefeatUrquan);
+	}
 	Response(enough_defeat, TellMission);
 }
 
@@ -846,12 +898,16 @@ AnalyzeCondition(void)
 	for (i = 0; i < NUM_DRIVE_SLOTS; ++i)
 	{
 		if (GLOBAL_SIS(DriveSlots[i]) < EMPTY_SLOT)
+		{
 			++num_thrusters;
+		}
 	}
 	for (i = 0; i < NUM_JET_SLOTS; ++i)
 	{
 		if (GLOBAL_SIS(JetSlots[i]) < EMPTY_SLOT)
+		{
 			++num_jets;
+		}
 	}
 	for (i = 0; i < NUM_MODULE_SLOTS; ++i)
 	{
@@ -880,7 +936,9 @@ AnalyzeCondition(void)
 		}
 	}
 	if (num_track && num_guns)
+	{
 		num_guns += 2;
+	}
 
 	HasMinimum = (num_thrusters >= 7 && num_jets >= 5
 				  && GLOBAL_SIS(CrewEnlisted) >= CREW_POD_CAPACITY
@@ -892,26 +950,46 @@ AnalyzeCondition(void)
 	{
 		NPCPhrase(IMPROVE_1);
 		if (num_thrusters < 7)
+		{
 			NPCPhrase(NEED_THRUSTERS_1);
+		}
 		if (num_jets < 5)
+		{
 			NPCPhrase(NEED_TURN_1);
+		}
 		if (num_guns < 2)
+		{
 			NPCPhrase(NEED_GUNS_1);
+		}
 		if (GLOBAL_SIS(CrewEnlisted) < CREW_POD_CAPACITY)
+		{
 			NPCPhrase(NEED_CREW_1);
+		}
 		if (GLOBAL_SIS(FuelOnBoard) < FUEL_TANK_CAPACITY)
+		{
 			NPCPhrase(NEED_FUEL_1);
+		}
 		if (num_bays < 1)
+		{
 			NPCPhrase(NEED_STORAGE_1);
+		}
 		if (GLOBAL_SIS(NumLanders) == 0)
+		{
 			NPCPhrase(NEED_LANDERS_2);
+		}
 		if (num_batts < 1)
+		{
 			NPCPhrase(NEED_DYNAMOS_1);
+		}
 
 		if (GLOBAL_SIS(ResUnits) >= 3000)
+		{
 			NPCPhrase(IMPROVE_FLAGSHIP_WITH_RU);
+		}
 		else
+		{
 			NPCPhrase(GO_GET_MINERALS);
+		}
 	}
 	else
 	{
@@ -923,7 +1001,9 @@ AnalyzeCondition(void)
 		for (i = 0; i < NUM_AVAILABLE_RACES; ++i)
 		{
 			if (i != HUMAN_SHIP && CheckAlliance((RACE_ID)i) == GOOD_GUY)
+			{
 				++num_aliens;
+			}
 		}
 
 		HasMaximum = (num_thrusters == NUM_DRIVE_SLOTS
@@ -933,35 +1013,51 @@ AnalyzeCondition(void)
 					  && GLOBAL_SIS(NumLanders) >= 3
 					  && num_batts >= 4 && num_guns >= 7 && num_defense >= 2);
 		if (!HasMaximum && GET_GAME_STATE(CHMMR_BOMB_STATE) < 2)
+		{
 			NPCPhrase(GOT_OK_FLAGSHIP);
+		}
 		else
+		{
 			NPCPhrase(GOT_AWESOME_FLAGSHIP);
+		}
 
 		if (GET_GAME_STATE(CHMMR_BOMB_STATE) >= 2)
 		{
 			NPCPhrase(CHMMR_IMPROVED_BOMB);
 			if (FleetStrength < 20000)
+			{
 				NPCPhrase(MUST_ACQUIRE_AWESOME_FLEET);
+			}
 			else
 			{
 				NPCPhrase(GOT_AWESOME_FLEET);
 				if (!GET_GAME_STATE(TALKING_PET_ON_SHIP))
+				{
 					NPCPhrase(MUST_ELIMINATE_URQUAN_GUARDS);
+				}
 				else
+				{
 					NPCPhrase(GO_DESTROY_SAMATRA);
+				}
 			}
 		}
 		else if (num_aliens < 2)
+		{
 			NPCPhrase(GO_ALLY_WITH_ALIENS);
+		}
 		else
 		{
 			NPCPhrase(MADE_SOME_ALLIES);
 			if (FleetStrength < 6000)
 			{
 				if (GLOBAL_SIS(ResUnits) >= 3000)
+				{
 					NPCPhrase(BUY_COMBAT_SHIPS);
+				}
 				else
+				{
 					NPCPhrase(GET_SHIPS_BY_MINING_OR_ALLIANCE);
+				}
 			}
 			else
 			{
@@ -970,31 +1066,53 @@ AnalyzeCondition(void)
 				{
 					NPCPhrase(IMPROVE_2);
 					if (num_thrusters < NUM_DRIVE_SLOTS)
+					{
 						NPCPhrase(NEED_THRUSTERS_2);
+					}
 					if (num_jets < NUM_JET_SLOTS)
+					{
 						NPCPhrase(NEED_TURN_2);
+					}
 					if (num_guns < 7)
+					{
 						NPCPhrase(NEED_GUNS_2);
+					}
 					if (GLOBAL_SIS(CrewEnlisted) < CREW_POD_CAPACITY * 3)
+					{
 						NPCPhrase(NEED_CREW_2);
+					}
 					if (GLOBAL_SIS(FuelOnBoard) < FUEL_TANK_CAPACITY * 3)
+					{
 						NPCPhrase(NEED_FUEL_2);
+					}
 					if (GLOBAL_SIS(NumLanders) < 3)
+					{
 						NPCPhrase(NEED_LANDERS_1);
+					}
 					if (num_batts < 4)
+					{
 						NPCPhrase(NEED_DYNAMOS_2);
+					}
 					if (num_defense < 2)
+					{
 						NPCPhrase(NEED_POINT);
+					}
 				}
 				else if (!GET_GAME_STATE(AWARE_OF_SAMATRA))
+				{
 					NPCPhrase(GO_LEARN_ABOUT_URQUAN);
+				}
 				else
 				{
 					NPCPhrase(KNOW_ABOUT_SAMATRA);
 					if (!GET_GAME_STATE(UTWIG_BOMB))
+					{
 						NPCPhrase(FIND_WAY_TO_DESTROY_SAMATRA);
+					}
 					else if (GET_GAME_STATE(UTWIG_BOMB_ON_SHIP))
+					{
 						NPCPhrase(MUST_INCREASE_BOMB_STRENGTH);
+					}
 				}
 			}
 		}
@@ -1086,17 +1204,27 @@ TellMission(RESPONSE_REF R)
 	}
 
 	if (pstack[0])
+	{
 		Response(pstack[0], TellMission);
+	}
 	if (pstack[1])
+	{
 		Response(pstack[1], TellMission);
+	}
 	if (pstack[2])
+	{
 		Response(pstack[2], TellMission);
+	}
 	if (pstack[3])
 	{
 		if (stack3 == 1)
+		{
 			Response(pstack[3], DefeatUrquan);
+		}
 		else
+		{
 			Response(pstack[3], TellMission);
+		}
 	}
 
 	Response(enough_mission, NeedInfo);
@@ -1205,13 +1333,21 @@ TellStarBase(RESPONSE_REF R)
 	}
 
 	if (pstack[0])
+	{
 		Response(pstack[0], TellStarBase);
+	}
 	if (pstack[1])
+	{
 		Response(pstack[1], TellStarBase);
+	}
 	if (pstack[2])
+	{
 		Response(pstack[2], TellStarBase);
+	}
 	if (pstack[3])
+	{
 		Response(pstack[3], TellStarBase);
+	}
 
 	Response(enough_starbase, NeedInfo);
 }
@@ -1222,13 +1358,21 @@ static void
 NeedInfo(RESPONSE_REF R)
 {
 	if (PLAYER_SAID(R, need_info))
+	{
 		NPCPhrase(WHAT_KIND_OF_INFO);
+	}
 	else if (PLAYER_SAID(R, enough_starbase))
+	{
 		NPCPhrase(OK_ENOUGH_STARBASE);
+	}
 	else if (PLAYER_SAID(R, enough_history))
+	{
 		NPCPhrase(OK_ENOUGH_HISTORY);
+	}
 	else if (PLAYER_SAID(R, enough_mission))
+	{
 		NPCPhrase(OK_ENOUGH_MISSION);
+	}
 
 	Response(starbase_functions, TellStarBase);
 	Response(history, TellHistory);
@@ -1243,7 +1387,9 @@ DiscussDevices(bool TalkAbout)
 	//bool Undiscussed; unused
 
 	if (TalkAbout)
+	{
 		NPCPhrase(DEVICE_HEAD);
+	}
 	PhraseIndex = 2;
 
 	VuxBeastIndex = 0;
@@ -1486,7 +1632,9 @@ DiscussDevices(bool TalkAbout)
 			if (TalkAbout)
 			{
 				if (PhraseIndex > 2)
+				{
 					NPCPhrase(BETWEEN_DEVICES);
+				}
 				NPCPhrase(pStr);
 				if (pStr == ABOUT_VUXBEAST0)
 				{
@@ -1570,9 +1718,13 @@ CheckBulletins(bool Repeat)
 		GET_GAME_STATE(CREW_SOLD_TO_DRUUGE1));
 
 	if (Repeat)
+	{
 		BulletinMask = CurBulletinMask ^ 0xFFFFFFFFL;
+	}
 	else
+	{
 		BulletinMask = GET_GAME_STATE(STARBASE_BULLETS);
+	}
 
 	pIntro = 0;
 	for (b0 = 0; b0 < 32; ++b0)
@@ -1616,14 +1768,18 @@ CheckBulletins(bool Repeat)
 					break;
 				case 5:
 					if (GET_GAME_STATE(ARILOU_MANNER) == 2)
+					{
 						BulletinMask |= 1L << b0;
+					}
 					else if (GET_GAME_STATE(PORTAL_SPAWNER)
 							 && (Repeat || EscortFeasibilityStudy(ARILOU_SHIP)))
 					{
 #define NUM_GIFT_ARILOUS 3
 						pStr = STARBASE_BULLETIN_6;
 						if (!Repeat)
+						{
 							AddEscortShips(ARILOU_SHIP, NUM_GIFT_ARILOUS);
+						}
 					}
 					break;
 				case 6:
@@ -1634,7 +1790,9 @@ CheckBulletins(bool Repeat)
 					break;
 				case 7:
 					if (GET_GAME_STATE(MET_MELNORME))
+					{
 						BulletinMask |= 1L << b0;
+					}
 					else if (CheckTiming(IF_EASY(3, 1), 0))
 					{
 						pStr = STARBASE_BULLETIN_8;
@@ -1642,7 +1800,9 @@ CheckBulletins(bool Repeat)
 					break;
 				case 8:
 					if (GET_GAME_STATE(MET_MELNORME))
+					{
 						BulletinMask |= 1L << b0;
+					}
 					else if (CheckTiming(IF_EASY(6, 3), 0))
 					{
 						pStr = STARBASE_BULLETIN_9;
@@ -1650,7 +1810,9 @@ CheckBulletins(bool Repeat)
 					break;
 				case 9:
 					if (GET_GAME_STATE(FOUND_PLUTO_SPATHI))
+					{
 						BulletinMask |= 1L << b0;
+					}
 					else if (CheckTiming(0, 7))
 					{
 						pStr = STARBASE_BULLETIN_10;
@@ -1665,7 +1827,9 @@ CheckBulletins(bool Repeat)
 				case 11:
 					if (GET_GAME_STATE(ZOQFOT_HOME_VISITS)
 						|| GET_GAME_STATE(ZOQFOT_GRPOFFS))
+					{
 						BulletinMask |= 1L << b0;
+					}
 					else if (CheckTiming(0, IF_EASY(42, 21)))
 					{
 						pStr = STARBASE_BULLETIN_12;
@@ -1691,7 +1855,9 @@ CheckBulletins(bool Repeat)
 					break;
 				case 15:
 					if (GET_GAME_STATE(DESTRUCT_CODE_ON_SHIP))
+					{
 						BulletinMask |= 1L << b0;
+					}
 					else if (CheckTiming(7, 0))
 					{
 						pStr = STARBASE_BULLETIN_16;
@@ -1734,7 +1900,9 @@ CheckBulletins(bool Repeat)
 						uqm::COUNT crew_sold = CrewSold;
 
 						if (crew_sold > MIN_SOLD)
+						{
 							BulletinMask |= 1L << b0;
+						}
 						else if (crew_sold)
 						{
 							pStr = STARBASE_BULLETIN_27;
@@ -1746,7 +1914,9 @@ CheckBulletins(bool Repeat)
 						uqm::COUNT crew_sold = CrewSold;
 
 						if (crew_sold > MAX_SOLD)
+						{
 							BulletinMask |= 1L << b0;
+						}
 						else if (crew_sold > MIN_SOLD)
 						{
 							pStr = STARBASE_BULLETIN_28;
@@ -1781,9 +1951,13 @@ CheckBulletins(bool Repeat)
 			if (pStr)
 			{
 				if (pIntro)
+				{
 					NPCPhrase(BETWEEN_BULLETINS);
+				}
 				else if (Repeat)
+				{
 					pIntro = BEFORE_WE_GO_ON_1;
+				}
 				else
 				{
 					switch ((uqm::BYTE)TFB_Random() % 7)
@@ -1821,20 +1995,30 @@ CheckBulletins(bool Repeat)
 	}
 
 	if (pIntro == 0 && GET_GAME_STATE(STARBASE_VISITED))
+	{
 		NPCPhrase(RETURN_HELLO);
+	}
 	else if (!Repeat)
+	{
 		SET_GAME_STATE(STARBASE_BULLETS, BulletinMask);
+	}
 }
 
 static void
 NormalStarbase(RESPONSE_REF R)
 {
 	if (PLAYER_SAID(R, no_need_info))
+	{
 		NPCPhrase(OK_NO_NEED_INFO);
+	}
 	else if (PLAYER_SAID(R, new_devices))
+	{
 		DiscussDevices(true);
+	}
 	else if (PLAYER_SAID(R, repeat_bulletins))
+	{
 		CheckBulletins(true);
+	}
 	else if (R == 0)
 	{
 		if (GET_GAME_STATE(MOONBASE_ON_SHIP))
@@ -1894,11 +2078,17 @@ NormalStarbase(RESPONSE_REF R)
 	}
 
 	if (GLOBAL_SIS(TotalElementMass))
+	{
 		Response(have_minerals, SellMinerals);
+	}
 	if (DiscussDevices(false))
+	{
 		Response(new_devices, NormalStarbase);
+	}
 	if (CurBulletinMask)
+	{
 		Response(repeat_bulletins, NormalStarbase);
+	}
 	Response(need_info, NeedInfo);
 	Response(goodbye_commander, ByeBye);
 }
@@ -1917,7 +2107,9 @@ SellMinerals(RESPONSE_REF R)
 
 		NPCPhrase(pStr);
 		if (pStr == LIGHT_LOAD_C0)
+		{
 			NPCPhrase(LIGHT_LOAD_C1);
+		}
 	}
 	else
 	{
@@ -1933,9 +2125,13 @@ SellMinerals(RESPONSE_REF R)
 			{
 				Ru[seg] = amount[seg] * GLOBAL(ElementWorth[i]);
 				if (count > 0)
+				{
 					NPCPhrase(ELLIPSES);
+				}
 				else
+				{
 					NPCPhrase(BLANK);
+				}
 				NPCNumber(amount[seg], NULL);
 				NPCPhrase_splice(KILOTONS_OF);
 				NPCPhrase_splice(COMMONR + i);
@@ -1953,7 +2149,9 @@ SellMinerals(RESPONSE_REF R)
 
 		NPCPhrase(pStr);
 		if (pStr == LIGHT_LOAD_C0)
+		{
 			NPCPhrase(LIGHT_LOAD_C1);
+		}
 
 		for (sseg = 1; sseg < seg + 1; sseg++)
 		{
@@ -1971,7 +2169,9 @@ static void
 Intro(void)
 {
 	if (IS_HD) // To smooth out HD blink animation
+	{
 		CommData.AlienAmbientArray[0].BaseFrameRate = ONE_SECOND / 40;
+	}
 
 	NormalStarbase(0);
 }
@@ -2015,7 +2215,9 @@ init_starbase_comm()
 	altResFlags |= USE_ALT_SONG;
 
 	if (is3DO(optFlagshipColor))
+	{
 		altResFlags |= USE_ALT_FRAME;
+	}
 
 	CurBulletinMask = 0;
 	setSegue(Segue_peace);

@@ -76,12 +76,16 @@ DoSelectAction(MENU_STATE* pMS)
 			case ATTACK:
 				DrawMenuStateStrings(PM_CONVERSE, pMS->CurState);
 				if (lowByte(GLOBAL(CurrentActivity)) == IN_LAST_BATTLE)
+				{
 					pMS->CurState = HAIL;
+				}
 				return (false);
 			case ATTACK + 1:
 				// Clearing FlashRect is not necessary
 				if (!GameOptions())
+				{
 					return false;
+				}
 				DrawMenuStateStrings(PM_CONVERSE, pMS->CurState);
 				SetFlashRect(SFR_MENU_3DO, false);
 				break;
@@ -97,9 +101,13 @@ static QUEUE*
 GetShipFragQueueForPlayer(uqm::COUNT playerNr)
 {
 	if (playerNr == RPG_PLAYER_NUM)
+	{
 		return &GLOBAL(built_ship_q);
+	}
 	else
+	{
 		return &GLOBAL(npc_built_ship_q);
+	}
 }
 
 void SetBattlePlanet(void)
@@ -111,9 +119,13 @@ void SetBattlePlanet(void)
 	if (EXTENDED && (selector == RAINBOW_WORLD || selector == SHATTERED_WORLD))
 	{ // No rainbow or shattered worlds in hyperspace
 		if (selector == RAINBOW_WORLD)
+		{
 			selector--;
+		}
 		if (selector == SHATTERED_WORLD)
+		{
 			selector++;
+		}
 	}
 
 	// Set BATTLE_PLANET state so it can be serialized if game is saved
@@ -147,7 +159,9 @@ void BuildBattle(uqm::COUNT which_player)
 			case IN_HYPERSPACE:
 				{ // If somehow BATTLE_PLANET is invalid (maybe Core game load missalign)
 					if (GET_GAME_STATE(BATTLE_PLANET) > NUMBER_OF_PLANET_TYPES)
+					{
 						SetBattlePlanet();
+					}
 
 					load_gravity_well(GET_GAME_STATE(BATTLE_PLANET));
 					break;
@@ -210,9 +224,13 @@ void BuildBattle(uqm::COUNT which_player)
 			BuiltShipPtr->captains_name_index = FragPtr->captains_name_index;
 			BuiltShipPtr->playerNr = which_player;
 			if (FragPtr->crew_level != INFINITE_FLEET)
+			{
 				BuiltShipPtr->crew_level = FragPtr->crew_level;
+			}
 			else /* if infinite ships */
+			{
 				BuiltShipPtr->crew_level = FragPtr->max_crew;
+			}
 			BuiltShipPtr->max_crew = FragPtr->max_crew;
 			BuiltShipPtr->race_strings = FragPtr->race_strings;
 			BuiltShipPtr->icons = FragPtr->icons;
@@ -414,9 +432,13 @@ InitEncounter(void)
 
 			FragPtr = LockShipFrag(&GLOBAL(npc_built_ship_q), hStarShip);
 			if (FragPtr->crew_level != INFINITE_FLEET)
+			{
 				hNextShip = _GetSuccLink(FragPtr);
+			}
 			else /* if infinite ships */
+			{
 				hNextShip = hStarShip;
+			}
 
 			s.origin = display_pt[i % NUM_DISPLAY_PTS];
 			if (i >= NUM_DISPLAY_PTS)
@@ -533,7 +555,9 @@ DrawFadeText(const uqm::CHAR_T* str1, const uqm::CHAR_T* str2, bool fade_in,
 	for (i = 0; i < (uqm::SIZE)NUM_FADES; ++i)
 	{
 		if (AnyButtonPress(true))
+		{
 			i = NUM_FADES - 1;
+		}
 
 		if (IS_HD)
 		{
@@ -568,9 +592,13 @@ static void
 ClearRectBack(RECT* pRect)
 {
 	if (IS_HD)
+	{
 		RepairPickFrame(pRect, 1);
+	}
 	else
+	{
 		DrawFilledRectangle(pRect);
+	}
 }
 
 uqm::COUNT
@@ -586,7 +614,9 @@ UninitEncounter(void)
 		|| GLOBAL_SIS(CrewEnlisted) == (uqm::COUNT)~0
 		|| lowByte(GLOBAL(CurrentActivity)) == IN_LAST_BATTLE
 		|| lowByte(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE)
+	{
 		goto ExitUninitEncounter;
+	}
 
 	if (GET_GAME_STATE(BATTLE_SEGUE) == 0)
 	{
@@ -634,7 +664,9 @@ UninitEncounter(void)
 		UnlockShipFrag(&GLOBAL(npc_built_ship_q), hStarShip);
 
 		if (VictoryState > 0) // Set RU only when we get them
+		{
 			prevMsgMode = SetStatusMessageMode(SMM_RES_UNITS);
+		}
 
 		ship_s.origin.x = 0;
 		ship_s.origin.y = 0;
@@ -645,21 +677,31 @@ UninitEncounter(void)
 			HSHIPFRAG hNextShip;
 
 			if (i == 0)
+			{
 				pQueue = &GLOBAL(built_ship_q);
+			}
 			else
 			{
 				if (VictoryState < 0)
+				{
 					VictoryState = 0;
+				}
 				else
 				{
 					DrawSISFrame();
 					DrawSISMessage(NULL);
 					if (inHQSpace())
+					{
 						DrawHyperCoords(GLOBAL(ShipStamp.origin));
+					}
 					else if (GLOBAL(ip_planet) == 0)
+					{
 						DrawHyperCoords(CurStarDescPtr->star_pt);
+					}
 					else
+					{
 						DrawSISTitle(GLOBAL_SIS(PlanetName));
+					}
 
 					SetContext(SpaceContext);
 					if (VictoryState)
@@ -719,7 +761,9 @@ UninitEncounter(void)
 										{
 											ptr++;
 											if (*ptr == 0xb6 || *ptr == 0xa4)
+											{
 												*ptr += 'A' - 'a';
+											}
 										}
 										ptr++;
 									}
@@ -768,9 +812,13 @@ UninitEncounter(void)
 							/* collect bounty ResUnits */
 							j = ShipCost(EncounterRace) >> 3;
 							if (EncounterRace == SLYLANDRO_SHIP)
+							{
 								j = 550;
+							}
 							if (EncounterRace == MELNORME_SHIP)
+							{
 								j = j * 2;
+							}
 
 							RecycleAmount += j;
 							sprintf(buf, "%u", RecycleAmount);
@@ -789,7 +837,9 @@ UninitEncounter(void)
 							DeltaSISGauges(0, 0, j);
 
 							if ((VictoryState++ - 1) % MAX_DEAD_DISPLAYED)
+							{
 								ship_s.origin.x += RES_SCALE(17);
+							}
 							else
 							{
 								RECT textRect = font_GetTextRect(&t);
@@ -805,7 +855,9 @@ UninitEncounter(void)
 
 								// Pause between erasing
 								if (Sleepy)
+								{
 									SleepThread(ONE_SECOND / 15);
+								}
 
 								// MAX_DEAD_DISPLAYED reached - erase
 								ClearRectBack(&r);
@@ -839,7 +891,9 @@ UninitEncounter(void)
 									}
 
 									if (!Sleepy)
+									{
 										break;
+									}
 
 									SetContextForeGroundColor(fade_ship_cycle[j]);
 									DrawFilledStamp(&ship_s);
@@ -864,7 +918,9 @@ UninitEncounter(void)
 			}
 		}
 		if (prevMsgMode) // Set Status back only when we get RU
+		{
 			SetStatusMessageMode(prevMsgMode);
+		}
 
 		if (VictoryState)
 		{
@@ -905,7 +961,9 @@ UninitEncounter(void)
 					DrawFadeText(str1, str2, true, &scavenge_r);
 					WaitForAnyButton(true, ONE_SECOND * 2, false);
 					if (!CurrentInputState.key[PlayerControls[0]][KEY_ESCAPE])
+					{
 						DrawFadeText(str1, str2, false, &scavenge_r);
+					}
 				}
 			}
 			DrawStatusMessage(NULL);
@@ -916,7 +974,9 @@ UninitEncounter(void)
 			&& !GET_GAME_STATE(THRADD_MANNER))
 		{
 			if ((ships_killed += GET_GAME_STATE(THRADDASH_BODY_COUNT)) > THRADDASH_BODY_THRESHOLD)
+			{
 				ships_killed = THRADDASH_BODY_THRESHOLD;
+			}
 			SET_GAME_STATE(THRADDASH_BODY_COUNT, ships_killed);
 		}
 
@@ -965,7 +1025,9 @@ UninitEncounter(void)
 						EncounterPtr->allied_state = DEAD_GUY;
 					}
 					else
+					{
 						EncounterPtr->actual_strength = actualStrength;
+					}
 				}
 
 				UnlockFleetInfo(&GLOBAL(avail_race_q), hEncounter);
@@ -988,9 +1050,13 @@ void EncounterBattle(void)
 
 	OldActivity = GLOBAL(CurrentActivity);
 	if (lowByte(OldActivity) == IN_LAST_BATTLE)
+	{
 		GLOBAL(CurrentActivity) = MAKE_WORD(IN_LAST_BATTLE, 0);
+	}
 	else
+	{
 		GLOBAL(CurrentActivity) = MAKE_WORD(IN_ENCOUNTER, 0);
+	}
 
 	//    FreeSC2Data ();
 	//    DestroyFont (ReleaseFont (MicroFont));
@@ -1004,11 +1070,17 @@ void EncounterBattle(void)
 		cur_speed = (uqm::BYTE)(GLOBAL(glob_flags) & COMBAT_SPEED_MASK)
 				 >> COMBAT_SPEED_SHIFT;
 		if (cur_speed == 1)
+		{
 			cur_speed = 0; /* normal speed */
+		}
 		else if (cur_speed == 2)
-			++cur_speed;			   /* 4x speed, 3 of 4 frames skipped */
-		else						   /* if (cur_speed == 3) */
+		{
+			++cur_speed; /* 4x speed, 3 of 4 frames skipped */
+		}
+		else /* if (cur_speed == 3) */
+		{
 			cur_speed = (uqm::BYTE)~0; /* maximum speed - no rendering */
+		}
 		nth_frame = MAKE_WORD(1, cur_speed);
 		PlayerControl[0] = CYBORG_CONTROL | AWESOME_RATING;
 		savedPlayerInput = PlayerInput[0];
@@ -1021,7 +1093,9 @@ void EncounterBattle(void)
 	}
 
 	if (DIF_EASY)
+	{
 		PlayerControl[1] = CYBORG_CONTROL | STANDARD_RATING;
+	}
 
 	// PlayerControl[1] = HUMAN_CONTROL | STANDARD_RATING; // Yes, you can make Adventure mode 2-player
 
@@ -1033,7 +1107,9 @@ void EncounterBattle(void)
 	GameSounds = 0;
 
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+	{
 		GLOBAL_SIS(CrewEnlisted) = (uqm::COUNT)~0;
+	}
 
 	if (GLOBAL(glob_flags) & CYBORG_ENABLED)
 	{

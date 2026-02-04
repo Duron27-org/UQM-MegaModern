@@ -168,7 +168,9 @@ DrawShipsStatus(uqm::COUNT index, uqm::COUNT pos, bool selected)
 	uqm::CHAR_T buf[10];
 
 	if (stowed_q)
+	{
 		index += NUM_BUILDABLE_SHIPS;
+	}
 	t.align = ALIGN_LEFT;
 	t.baseline.x = SHIPS_COL_0;
 
@@ -206,7 +208,9 @@ DrawShipsStatus(uqm::COUNT index, uqm::COUNT pos, bool selected)
 	t.align = ALIGN_RIGHT;
 	t.baseline.x = SHIPS_COL_1 - RES_SCALE(2);
 	if (!stowed_q)
+	{
 		t.baseline.y -= RES_SCALE(3);
+	}
 	snprintf(buf, sizeof(buf), "%u", ShipState.ShipStats[index].ShipCost);
 	t.pStr = buf;
 	t.CharCount = (uqm::COUNT)~0;
@@ -243,7 +247,9 @@ DrawShipsDisplay(SHIPS_STATE* shipState)
 					   true, MODULE_BACK_COLOR, false, TRANSPARENT);
 	}
 	else
+	{
 		DrawBorder(DEVICE_CARGO_FRAME);
+	}
 
 	// print the "SHIPS" title
 	SetContextFont(StarConFont);
@@ -258,9 +264,13 @@ DrawShipsDisplay(SHIPS_STATE* shipState)
 	// Indicate mode
 	t.baseline.y += RES_SCALE(7);
 	if (stowed_q)
+	{
 		t.pStr = "stored";
+	}
 	else
+	{
 		t.pStr = "new";
+	}
 	font_DrawText(&t);
 
 	// print names and costs
@@ -270,7 +280,9 @@ DrawShipsDisplay(SHIPS_STATE* shipState)
 		uqm::COUNT modIndex = shipState->topIndex + i;
 
 		if (modIndex >= count)
+		{
 			break;
+		}
 
 		DrawShipsStatus(modIndex, i, false);
 	}
@@ -299,7 +311,9 @@ ManipulateShips(uqm::SIZE NewState)
 	uqm::SIZE NewTop;
 
 	if (!DOS_MENU)
+	{
 		return;
+	}
 
 	shipState = &ShipState;
 	NewTop = shipState->topIndex;
@@ -311,7 +325,9 @@ ManipulateShips(uqm::SIZE NewState)
 	}
 
 	if (NewState < NewTop || NewState >= NewTop + MAX_VIS_MODULES)
+	{
 		shipState->topIndex = NewState - NewState % MAX_VIS_MODULES;
+	}
 
 	DrawShips(shipState, NewState);
 }
@@ -403,17 +419,25 @@ FillHangarX(void)
 	for (i = 0; i < HANGAR_SHIPS_ROW; i++)
 	{
 		if (IS_PAD)
+		{
 			hangar_x_coords[i] = hangar_x_coords_3do[i];
+		}
 		else
 		{
 			if (!IS_DOS)
+			{
 				hangar_x_coords[i] = hangar_x_coords_uqm[i];
+			}
 			else
+			{
 				hangar_x_coords[i] = hangar_x_coords_dos[i];
+			}
 		}
 
 		if (IS_HD)
+		{
 			hangar_x_coords[i] <<= RESOLUTION_FACTOR;
+		}
 	}
 }
 
@@ -429,7 +453,9 @@ showRemainingCrew(void)
 #define INITIAL_CREW 2000
 
 	if (!DIF_HARD)
+	{
 		return;
+	}
 
 	BatchGraphics();
 
@@ -440,7 +466,9 @@ showRemainingCrew(void)
 						  RES_SCALE(74) - (r.extent.height + RES_SCALE(2)));
 
 	if (optWindowType < 2)
+	{
 		r.corner.y = RES_SCALE(1);
+	}
 
 	SetContextForeGroundColor(BLACK_COLOR);
 	DrawFilledRectangle(&r);
@@ -466,7 +494,9 @@ showRemainingCrew(void)
 														HALF_CREW_COLOR));
 
 	if (CheckAlliance(SHOFIXTI_SHIP) == GOOD_GUY)
+	{
 		sprintf(buf, "%s", STR_INFINITY_SIGN);
+	}
 	else if (remaining_crew == 0)
 	{
 		utf8StringCopy(
@@ -474,7 +504,9 @@ showRemainingCrew(void)
 		// Cdr. Hayes
 	}
 	else
+	{
 		sprintf(buf, "%u", remaining_crew);
+	}
 
 	font_DrawText(&t);
 
@@ -485,7 +517,9 @@ uqm::COUNT
 ShipPoints(HFLEETINFO hFleet)
 {
 	if (!hFleet)
+	{
 		return 0;
+	}
 	FLEET_INFO* FleetPtr = LockFleetInfo(&GLOBAL(avail_race_q), hFleet);
 
 	uqm::COUNT shipCost = GetShipCostFromIndex(FindMasterShipIndex(FleetPtr->SpeciesID));
@@ -512,14 +546,20 @@ CalculateAllyPoints()
 	{
 		hFleet = GetStarShipFromIndex(&GLOBAL(avail_race_q), i);
 		if (!hFleet)
+		{
 			continue;
+		}
 
 		FleetPtr = LockFleetInfo(&GLOBAL(avail_race_q), hFleet);
 		if (!FleetPtr)
+		{
 			continue;
+		}
 
 		if (FleetPtr->allied_state == GOOD_GUY)
+		{
 			MaxPoints += ShipPoints(hFleet) * DIF_CASE(2, 3, 1);
+		}
 
 		UnlockFleetInfo(&GLOBAL(avail_race_q), hFleet);
 	}
@@ -553,10 +593,14 @@ bool CanBuyPoints(HFLEETINFO hFleet)
 {
 	if ((!optFleetPointSys && !DIF_HARD)
 		|| GET_GAME_STATE(CHMMR_BOMB_STATE) == 3)
+	{
 		return true;
+	}
 
 	if (ShipPoints(hFleet) > REMAINING_FP)
+	{
 		return false;
+	}
 
 	return true;
 }
@@ -572,7 +616,9 @@ showRemainingPoints(int delta)
 
 	if ((!optFleetPointSys && !DIF_HARD)
 		|| GET_GAME_STATE(CHMMR_BOMB_STATE) == 3)
+	{
 		return;
+	}
 
 	BatchGraphics();
 
@@ -585,7 +631,9 @@ showRemainingPoints(int delta)
 	r.corner.y = RES_SCALE(74) - (r.extent.height + RES_SCALE(2));
 
 	if (optWindowType < 2)
+	{
 		r.corner.y = RES_SCALE(1);
+	}
 
 	SetContextForeGroundColor(BLACK_COLOR);
 	DrawFilledRectangle(&r);
@@ -637,7 +685,9 @@ animatePowerLines(MENU_STATE* pMS)
 	TimeCount Now = GetTimeCounter();
 
 	if (IS_PAD || GLOBAL(CurrentActivity) & CHECK_ABORT)
+	{
 		return;
+	}
 
 	if (pMS)
 	{ // Init animation
@@ -671,7 +721,9 @@ SpinStarShip(MENU_STATE* pMS, HFLEETINFO hStarShip)
 	if (Index >= 0 && Index < NUM_MELEE_SHIPS)
 	{
 		if (isPC(optWhichIntro))
+		{
 			PlayMenuSound(MENU_SOUND_SUCCESS);
+		}
 		DoShipSpins = true;
 		DoShipSpin(Index, pMS->hMusic);
 	}
@@ -685,7 +737,9 @@ on_input_frame(void)
 
 	oldContext = SetContext(SpaceContext);
 	if (!DoShipSpins)
+	{
 		animatePowerLines(NULL);
+	}
 	SetContext(oldContext);
 }
 
@@ -705,7 +759,9 @@ GetAvailableRaceCount(void)
 		FleetPtr = LockFleetInfo(&GLOBAL(avail_race_q), hStarShip);
 		if (FleetPtr->allied_state == GOOD_GUY
 			|| FleetPtr->can_build)
+		{
 			++Index;
+		}
 
 		hNextShip = _GetSuccLink(FleetPtr);
 		UnlockFleetInfo(&GLOBAL(avail_race_q), hStarShip);
@@ -753,7 +809,9 @@ DrawShipyardShipText(RECT* r, int Index)
 	COORD strip_align;
 
 	if (IS_DOS)
+	{
 		return;
+	}
 
 	HFLEETINFO hStarShip =
 		GetStarShipFromIndex(&GLOBAL(avail_race_q), Index);
@@ -773,7 +831,9 @@ DrawShipyardShipText(RECT* r, int Index)
 	UnlockMasterShip(&master_q, hMasterShip);
 
 	if (!strlen((char*)&race_name) || !strlen((char*)&ship_name))
+	{
 		return;
+	}
 
 	OldFont = SetContextFont(ModuleFont);
 	OldColor = SetContextForeGroundColor(SHP_RECT_COLOR);
@@ -787,7 +847,9 @@ DrawShipyardShipText(RECT* r, int Index)
 		DrawFilledRectangle(&block);
 	}
 	else
+	{
 		DrawBorder(TEXT_LABEL_FRAME);
+	}
 
 	text.align = ALIGN_CENTER;
 	text.baseline.x = r->corner.x + (r->extent.width >> 1);
@@ -833,7 +895,9 @@ DrawRaceStrings(uqm::BYTE NewRaceItem)
 	if (!IS_DOS)
 	{
 		if (!optCustomBorder)
+		{
 			DrawFilledRectangle(&r);
+		}
 
 		textRect = r;
 	}
@@ -941,9 +1005,13 @@ DrawRaceStrings(uqm::BYTE NewRaceItem)
 
 		// Draw additional information
 		if (isPC(optWhichFonts))
+		{
 			SetContextFont(TinyFont);
+		}
 		else
+		{
 			SetContextFont(TinyFontBold);
+		}
 
 		t.baseline.x = RES_SCALE(4) + RADAR_WIDTH - RES_SCALE(2);
 		t.baseline.y = RADAR_Y + RADAR_HEIGHT - RES_SCALE(2)
@@ -957,9 +1025,13 @@ DrawRaceStrings(uqm::BYTE NewRaceItem)
 			sprintf(buf, "%u", shipCost);
 
 			if (shipCost <= (GLOBAL_SIS(ResUnits)))
+			{
 				SetContextForeGroundColor(BRIGHT_GREEN_COLOR);
+			}
 			else if (shipCost > (GLOBAL_SIS(ResUnits)))
+			{
 				SetContextForeGroundColor(BRIGHT_RED_COLOR);
+			}
 		}
 		else
 		{
@@ -967,11 +1039,17 @@ DrawRaceStrings(uqm::BYTE NewRaceItem)
 			sprintf(buf, "%u/%u", shipCrew, maxCrew);
 
 			if (shipCrew == maxCrew)
+			{
 				SetContextForeGroundColor(BRIGHT_GREEN_COLOR);
+			}
 			else if (shipCrew > maxCrew / 2)
+			{
 				SetContextForeGroundColor(BRIGHT_YELLOW_COLOR);
+			}
 			else
+			{
 				SetContextForeGroundColor(BRIGHT_RED_COLOR);
+			}
 		}
 
 		font_DrawText(&t);
@@ -985,11 +1063,17 @@ DrawRaceStrings(uqm::BYTE NewRaceItem)
 			sprintf(buf, "%u", shipPoints);
 
 			if (shipPoints < REMAINING_FP / 2)
+			{
 				SetContextForeGroundColor(BRIGHT_GREEN_COLOR);
+			}
 			else if (shipPoints <= REMAINING_FP)
+			{
 				SetContextForeGroundColor(BRIGHT_YELLOW_COLOR);
+			}
 			else
+			{
 				SetContextForeGroundColor(BRIGHT_RED_COLOR);
+			}
 
 			font_DrawText(&t);
 
@@ -1034,9 +1118,13 @@ ShowShipCrew(SHIP_FRAGMENT* StarShipPtr, const RECT* pRect)
 	STRING captain;
 
 	if (isPC(optWhichFonts))
+	{
 		SetContextFont(TinyFont);
+	}
 	else
+	{
 		SetContextFont(TinyFontBold);
+	}
 
 	hTemplate = GetStarShipFromIndex(&GLOBAL(avail_race_q),
 									 StarShipPtr->race_id);
@@ -1049,14 +1137,22 @@ ShowShipCrew(SHIP_FRAGMENT* StarShipPtr, const RECT* pRect)
 									 StarShipPtr->captains_name_index);
 
 	if (StarShipPtr->crew_level == maxCrewLevel)
+	{
 		sprintf(buf, "%u", StarShipPtr->crew_level);
+	}
 	else if (StarShipPtr->crew_level > maxCrewLevel)
+	{
 		sprintf(buf, "[%u/%u]", StarShipPtr->crew_level - maxCrewLevel, maxCrewLevel);
+	}
 	else if (StarShipPtr->crew_level == 0)
+	{
 		utf8StringCopy(buf, sizeof(buf),
 					   GAME_STRING(STARBASE_STRING_BASE + 5));
+	}
 	else
+	{
 		sprintf(buf, "%u/%u", StarShipPtr->crew_level, maxCrewLevel);
+	}
 
 	r = *pRect;
 	t.baseline.x = r.corner.x + (r.extent.width >> 1);
@@ -1079,7 +1175,9 @@ ShowShipCrew(SHIP_FRAGMENT* StarShipPtr, const RECT* pRect)
 	font_DrawText(&t);
 
 	if (!optCaptainNames)
+	{
 		return;
+	}
 
 	r = *pRect;
 	t.baseline.y = r.corner.y + RES_SCALE(7);
@@ -1303,9 +1401,13 @@ CrewTransaction(uqm::SIZE crew_delta)
 		if (crew_bought < 0)
 		{
 			if (crew_delta < 0)
+			{
 				crew_bought = 0;
+			}
 			else
+			{
 				crew_bought = 0x7FFF;
+			}
 		}
 		else if (crew_delta > 0)
 		{
@@ -1343,9 +1445,13 @@ DMS_FlashFlagShip(void)
 	r.corner.y = 0;
 	r.extent.width = SIS_SCREEN_WIDTH;
 	if (optWhichMenu != OPT_PC)
+	{
 		r.extent.height = RES_SCALE(63) - SAFE_NUM_SCL(2);
+	}
 	else
+	{
 		r.extent.height = RES_SCALE(74) - DOS_NUM_SCL(9) - SAFE_NEG(3);
+	}
 	SetFlashRect(&r, optWhichMenu == OPT_PC);
 }
 
@@ -1468,19 +1574,25 @@ DMS_SpinShip(MENU_STATE* pMS, HSHIPFRAG hStarShip)
 
 	// No spinning the flagship.
 	if (HINIBBLE(pMS->CurState) != 0)
+	{
 		return false;
+	}
 
 	// We must either be hovering over a used ship slot, or adding a new
 	// ship to the fleet.
 	if ((hStarShip == 0) == !(pMS->delta_item & MODIFY_CREW_FLAG))
+	{
 		return false;
+	}
 
 	if (!hStarShip && !stowed_q)
 	{
 		// Selecting a ship to build.
 		hSpinShip = GetAvailableRaceFromIndex(lowByte(pMS->delta_item));
 		if (!hSpinShip)
+		{
 			return false;
+		}
 	}
 	else if (!hStarShip && stowed_q)
 	{
@@ -1710,7 +1822,9 @@ DMS_DismissEscortShipCrew(SHIP_FRAGMENT* StarShipPtr)
 		crew_delta = -1;
 		--StarShipPtr->crew_level;
 		if (StarShipPtr->crew_level == StarShipPtr->max_crew)
+		{
 			StarShipPtr->crew_level = 0;
+		}
 	}
 	else
 	{ // no crew to dismiss
@@ -1746,17 +1860,25 @@ DMS_ModifyCrew(MENU_STATE* pMS, HSHIPFRAG hStarShip, uqm::SBYTE dy)
 	DoLoop = abs(dy);
 
 	if (abs(dy) == 50)
+	{
 		PlayMenuSound(MENU_SOUND_INVOKED);
+	}
 
 	if (hStarShip)
+	{
 		StarShipPtr = LockShipFrag(&GLOBAL(built_ship_q), hStarShip);
+	}
 
 	if (hStarShip == 0)
 	{
 		if (dy == -50)
+		{
 			DoLoop = GetCPodCapacity(&r.corner) - GetCrewCount();
+		}
 		else if (dy == 50)
+		{
 			DoLoop = GetCrewCount();
+		}
 
 		// Add/Dismiss crew for the flagship.
 		for (loop = 0; loop < DoLoop; loop++)
@@ -1773,10 +1895,14 @@ DMS_ModifyCrew(MENU_STATE* pMS, HSHIPFRAG hStarShip, uqm::SBYTE dy)
 			}
 
 			if (crew_delta != 0)
+			{
 				DMS_FlashFlagShipCrewCount();
+			}
 
 			if (crew_delta == 0)
+			{
 				break;
+			}
 
 			CrewTransaction(crew_delta);
 			animatePowerLines(NULL);
@@ -1786,9 +1912,13 @@ DMS_ModifyCrew(MENU_STATE* pMS, HSHIPFRAG hStarShip, uqm::SBYTE dy)
 	{
 		uqm::COUNT crew_level = (StarShipPtr->crew_level > StarShipPtr->max_crew ? StarShipPtr->crew_level - StarShipPtr->max_crew : StarShipPtr->crew_level);
 		if (dy == -50)
+		{
 			DoLoop = StarShipPtr->max_crew - crew_level;
+		}
 		else if (dy == 50)
+		{
 			DoLoop = crew_level;
+		}
 
 		// Add/Dismiss crew for an escort ship.
 		for (loop = 0; loop < DoLoop; loop++)
@@ -1805,10 +1935,14 @@ DMS_ModifyCrew(MENU_STATE* pMS, HSHIPFRAG hStarShip, uqm::SBYTE dy)
 			}
 
 			if (crew_delta != 0)
+			{
 				DMS_FlashEscortShipCrewCount(StarShipPtr->index);
+			}
 
 			if (crew_delta == 0)
+			{
 				break;
+			}
 
 			if (!DIF_HARD || ((dy > 0 && StarShipPtr->crew_level >= 1) || (dy < 0 && StarShipPtr->crew_level != 1)))
 			{
@@ -1819,7 +1953,9 @@ DMS_ModifyCrew(MENU_STATE* pMS, HSHIPFRAG hStarShip, uqm::SBYTE dy)
 	}
 
 	if (crew_delta == 0)
+	{
 		PlayMenuSound(MENU_SOUND_FAILURE);
+	}
 
 	if (hStarShip)
 	{
@@ -1937,7 +2073,9 @@ DMS_AddEscortShip(MENU_STATE* pMS, bool special, bool select,
 	{ // JSD: I don't think we can use delta_item, but SpinShip should be ok
 		//if (DMS_SpinShip (pMS, GetEscortByStarShipIndex (pMS->delta_item)))
 		if (DMS_SpinShip(pMS, NULL))
+		{
 			DMS_SetMode(pMS, DMS_Mode_addEscort);
+		}
 		return;
 	}
 
@@ -1964,9 +2102,13 @@ DMS_AddEscortShip(MENU_STATE* pMS, bool special, bool select,
 		// Selected a ship to be inserted in an empty escort
 		// ship slot.
 		if (!stowed_q)
+		{
 			DMS_TryAddEscortShip(pMS);
+		}
 		else
+		{
 			DMS_TryUnstowEscortShip(pMS);
+		}
 	}
 	else if (dy && STORAGE_Q)
 	{
@@ -1995,17 +2137,25 @@ DMS_AddEscortShip(MENU_STATE* pMS, bool special, bool select,
 			{
 				currentShip = (stowed_q ? stowCount : availableCount) - 1;
 				if (DOS_MENU && dx != -1)
+				{
 					currentShip = currentShip - currentShip % MAX_VIS_MODULES;
+				}
 			}
 			else
+			{
 				currentShip += dx;
+			}
 		}
 		else if (dx > 0)
 		{
 			if (currentShip + dx >= (stowed_q ? stowCount : availableCount))
+			{
 				currentShip = 0;
+			}
 			else
+			{
 				currentShip += dx;
+			}
 		}
 
 		if (currentShip != lowByte(pMS->delta_item))
@@ -2094,7 +2244,9 @@ DMS_MoveCursor(uqm::BYTE curState, uqm::SBYTE dx, uqm::SBYTE dy)
 		// We consider the flagship an extra row (on the bottom),
 		// to ease operations.
 		if (isFlagShipSelected)
+		{
 			row = HANGAR_ROWS;
+		}
 
 		// Move up/down, wrapping around:
 		row = (row + (HANGAR_ROWS + 1) + dy) % (HANGAR_ROWS + 1);
@@ -2102,7 +2254,9 @@ DMS_MoveCursor(uqm::BYTE curState, uqm::SBYTE dx, uqm::SBYTE dy)
 		// If we moved to the 'extra row', this means the flag ship.
 		isFlagShipSelected = (row == HANGAR_ROWS);
 		if (isFlagShipSelected)
+		{
 			row = 0;
+		}
 	}
 	else if (dx)
 	{
@@ -2229,7 +2383,9 @@ DMS_NavigateShipSlots(MENU_STATE* pMS, bool special, bool select,
 	if (special)
 	{
 		if (DMS_SpinShip(pMS, hStarShip))
+		{
 			DMS_SetMode(pMS, DMS_Mode_navigate);
+		}
 	}
 	else if (select)
 	{
@@ -2238,9 +2394,13 @@ DMS_NavigateShipSlots(MENU_STATE* pMS, bool special, bool select,
 			// Select button was pressed over an empty escort
 			// ship slot. Switch to 'add escort ship' mode.
 			if (!STORAGE_Q || !stowCount)
+			{
 				stowed_q = false;
+			}
 			else if (currentStowShip >= stowCount)
+			{
 				currentStowShip = stowCount - 1;
+			}
 			pMS->delta_item = MODIFY_CREW_FLAG | (stowed_q ? currentStowShip : 0);
 			DrawRaceStrings(lowByte(pMS->delta_item));
 			DMS_SetMode(pMS, DMS_Mode_addEscort);
@@ -2303,13 +2463,21 @@ DoModifyShips(MENU_STATE* pMS)
 		{
 			// Navigating through the ship slots.
 			if (PulsedInputState.menu[KEY_MENU_RIGHT])
+			{
 				dx = 1;
+			}
 			if (PulsedInputState.menu[KEY_MENU_LEFT])
+			{
 				dx = -1;
+			}
 			if (PulsedInputState.menu[KEY_MENU_UP])
+			{
 				dy = -1;
+			}
 			if (PulsedInputState.menu[KEY_MENU_DOWN])
+			{
 				dy = 1;
+			}
 
 			DMS_NavigateShipSlots(pMS, special, select, cancel, dx, dy);
 		}
@@ -2323,19 +2491,33 @@ DoModifyShips(MENU_STATE* pMS)
 				// Cursor is over an empty escort ship slot, while we're
 				// in 'add escort ship' mode.
 				if (PulsedInputState.menu[KEY_MENU_RIGHT])
+				{
 					dx = 1;
+				}
 				if (PulsedInputState.menu[KEY_MENU_LEFT])
+				{
 					dx = -1;
+				}
 				if (PulsedInputState.menu[KEY_MENU_UP])
+				{
 					dx = -1;
+				}
 				if (PulsedInputState.menu[KEY_MENU_DOWN])
+				{
 					dx = 1;
+				}
 				if (PulsedInputState.menu[KEY_MENU_ZOOM_IN])
+				{
 					dx = 5;
+				}
 				if (PulsedInputState.menu[KEY_MENU_ZOOM_OUT])
+				{
 					dx = -5;
+				}
 				if (PulsedInputState.menu[KEY_MENU_NEXT])
+				{
 					dy = 1;
+				}
 
 				DMS_AddEscortShip(pMS, special, select, cancel, dx, dy);
 			}
@@ -2343,20 +2525,34 @@ DoModifyShips(MENU_STATE* pMS)
 			{
 				// Crew editing mode.
 				if (PulsedInputState.menu[KEY_MENU_UP])
+				{
 					dy = -1;
+				}
 				if (PulsedInputState.menu[KEY_MENU_DOWN])
+				{
 					dy = 1;
+				}
 				if (PulsedInputState.menu[KEY_MENU_RIGHT])
+				{
 					dy = -10;
+				}
 				if (PulsedInputState.menu[KEY_MENU_LEFT])
+				{
 					dy = 10;
+				}
 				if (PulsedInputState.menu[KEY_MENU_ZOOM_IN])
+				{
 					dy = -50;
+				}
 				if (PulsedInputState.menu[KEY_MENU_ZOOM_OUT])
+				{
 					dy = 50;
+				}
 				special = false;
 				if (PulsedInputState.menu[KEY_MENU_NEXT])
+				{
 					special = true;
+				}
 
 				// Special prepares / unprepares stowing, select = cancel
 				DMS_EditCrewMode(pMS, hStarShip, special && STORAGE_Q,
@@ -2405,7 +2601,9 @@ DrawBluePrint(MENU_STATE* pMS)
 
 		if (!(pMS->CurState == SHIPYARD
 			  && (which_piece == CREW_POD || which_piece == STORAGE_BAY)))
+		{
 			DrawShipPiece(ModuleFrame, which_piece, num_frames, true);
+		}
 	}
 
 	SetContextForeGroundColor(
@@ -2417,7 +2615,9 @@ DrawBluePrint(MENU_STATE* pMS)
 		which_piece = GLOBAL_SIS(ModuleSlots[num_frames]);
 		if (pMS->CurState == SHIPYARD
 			&& (which_piece == CREW_POD || which_piece == STORAGE_BAY))
+		{
 			DrawShipPiece(ModuleFrame, which_piece, num_frames, true);
+		}
 	}
 
 	{
@@ -2471,7 +2671,9 @@ bool DoShipyard(MENU_STATE* pMS)
 {
 	bool select, cancel;
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+	{
 		goto ExitShipyard;
+	}
 
 	select = PulsedInputState.menu[KEY_MENU_SELECT];
 	cancel = PulsedInputState.menu[KEY_MENU_CANCEL];
@@ -2494,7 +2696,9 @@ bool DoShipyard(MENU_STATE* pMS)
 		}
 
 		if (!IS_DOS)
+		{
 			ModuleFont = LoadFont(MODULE_FONT);
+		}
 
 		{
 			STAMP s;
@@ -2539,7 +2743,9 @@ bool DoShipyard(MENU_STATE* pMS)
 				DrawStamp(&s);
 
 				if (optCustomBorder)
+				{
 					DrawBorder(SIS_REPAIR_FRAME);
+				}
 
 				SetContextClipRect(&old_r);
 
@@ -2550,13 +2756,19 @@ bool DoShipyard(MENU_STATE* pMS)
 				DrawStamp(&s);
 
 				if (classicPackPresent)
+				{
 					animatePowerLines(pMS);
+				}
 			}
 
 			if (isPC(optWhichFonts))
+			{
 				SetContextFont(TinyFont);
+			}
 			else
+			{
 				SetContextFont(TinyFontBold);
+			}
 
 			ScreenTransition(optScrTrans, NULL);
 			UnbatchGraphics();
@@ -2579,7 +2791,9 @@ ExitShipyard:
 
 
 		if (pMS->CurState < SHIPYARD_EXIT)
+		{
 			DrawMenuStateStrings(PM_CREW, SHIPYARD_EXIT);
+		}
 
 		DestroyDrawable(ReleaseDrawable(pMS->ModuleFrame));
 		pMS->ModuleFrame = 0;
@@ -2588,7 +2802,9 @@ ExitShipyard:
 
 		// Release Fonts
 		if (!IS_DOS)
+		{
 			DestroyFont(ModuleFont);
+		}
 
 		SetMusicPosition();
 
@@ -2606,7 +2822,9 @@ ExitShipyard:
 		{
 			// Clearing FlashRect is not necessary
 			if (!GameOptions())
+			{
 				goto ExitShipyard;
+			}
 			DrawMenuStateStrings(PM_CREW, pMS->CurState);
 			SetFlashRect(SFR_MENU_3DO, false);
 		}
@@ -2617,7 +2835,9 @@ ExitShipyard:
 	}
 
 	if (optInfiniteRU)
+	{
 		GLOBAL_SIS(ResUnits) = 1000000L;
+	}
 
 	return true;
 }

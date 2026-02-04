@@ -34,7 +34,9 @@ LoadDisplayPixmap(const RECT* area, FRAME frame)
 		buffer = CreateDrawable(WANT_PIXMAP | MAPPED_TO_DISPLAY,
 								area->extent.width, area->extent.height, 1);
 		if (!buffer)
+		{
 			return NULL;
+		}
 
 		index = 0;
 	}

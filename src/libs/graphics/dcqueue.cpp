@@ -59,10 +59,14 @@ TFB_WaitForSpace(int requested_slots)
 	TFB_BatchReset();
 	old_depth = GetRecursiveMutexDepth(DCQ_Mutex);
 	for (i = 0; i < old_depth; i++)
+	{
 		UnlockRecursiveMutex(DCQ_Mutex);
+	}
 	WaitCondVar(RenderingCond);
 	for (i = 0; i < old_depth; i++)
+	{
 		LockRecursiveMutex(DCQ_Mutex);
+	}
 	log_add(log_Debug, "DCQ clear (Size = %d, FullSize = %d).  Continuing.",
 			DrawCommandQueue.Size, DrawCommandQueue.FullSize);
 }
@@ -235,9 +239,13 @@ checkExclusiveThread(TFB_DrawCommand* DrawCommand)
 	}
 
 	if (!exclusiveThreadId)
+	{
 		exclusiveThreadId = SDL_ThreadID();
+	}
 	else
+	{
 		assert(SDL_ThreadID() == exclusiveThreadId);
+	}
 #else
 	(void)DrawCommand; // suppress unused warning
 #endif
@@ -266,9 +274,13 @@ void TFB_EnqueueDrawCommand(TFB_DrawCommand* DrawCommand)
 			TFB_DrawCommand DC;
 
 			if (_pCurContext)
+			{
 				scissor_rect = _pCurContext->ClipRect;
+			}
 			else
+			{
 				scissor_rect.extent.width = 0;
+			}
 
 			if (scissor_rect.extent.width)
 			{
@@ -350,9 +362,13 @@ RenderFPS(int* fps)
 			{
 				TFB_DrawCanvas_FontChar(ch, img, x, y, MAKE_DRAW_MODE(DRAW_ALPHA, 0xff), TFB_GetFPSCanvas());
 				if ((i > 0) && (buf[i - 1] == '1'))
+				{
 					step = 5;
+				}
 				else
+				{
 					step = 6;
+				}
 				x -= step << resolutionFactor;
 			}
 		}
@@ -397,7 +413,9 @@ void TFB_FlushGraphics(void)
 	}
 
 	if (GfxFlags & TFB_GFXFLAGS_SHOWFPS)
+	{
 		computeFPS(&fps);
+	}
 
 	commands_handled = 0;
 	livelock_deterrence = false;
@@ -460,13 +478,17 @@ void TFB_FlushGraphics(void)
 					{
 						LockMutex(DC_image->mutex);
 						if (cmd->scale)
+						{
 							TFB_BBox_RegisterCanvas(DC_image->ScaledImg,
 													x - DC_image->last_scale_hs.x,
 													y - DC_image->last_scale_hs.y);
+						}
 						else
+						{
 							TFB_BBox_RegisterCanvas(DC_image->NormalImg,
 													x - DC_image->NormalHs.x,
 													y - DC_image->NormalHs.y);
+						}
 						UnlockMutex(DC_image->mutex);
 					}
 
@@ -489,13 +511,17 @@ void TFB_FlushGraphics(void)
 					{
 						LockMutex(DC_image->mutex);
 						if (cmd->scale)
+						{
 							TFB_BBox_RegisterCanvas(DC_image->ScaledImg,
 													x - DC_image->last_scale_hs.x,
 													y - DC_image->last_scale_hs.y);
+						}
 						else
+						{
 							TFB_BBox_RegisterCanvas(DC_image->NormalImg,
 													x - DC_image->NormalHs.x,
 													y - DC_image->NormalHs.y);
+						}
 						UnlockMutex(DC_image->mutex);
 					}
 
@@ -553,7 +579,9 @@ void TFB_FlushGraphics(void)
 					TFB_DrawCommand_Rect* cmd = &DC.data.rect;
 
 					if (cmd->destBuffer == TFB_SCREEN_MAIN)
+					{
 						TFB_BBox_RegisterRect(&cmd->rect);
+					}
 					TFB_DrawCanvas_Rect(&cmd->rect, cmd->color, cmd->drawMode,
 										TFB_GetScreenCanvas(cmd->destBuffer));
 
@@ -602,7 +630,9 @@ void TFB_FlushGraphics(void)
 					const RECT r = cmd->rect;
 
 					if (cmd->destBuffer == TFB_SCREEN_MAIN)
+					{
 						TFB_BBox_RegisterRect(&cmd->rect);
+					}
 
 					TFB_DrawCanvas_CopyRect(
 						TFB_GetScreenCanvas(cmd->srcBuffer), &r,
@@ -665,10 +695,14 @@ void TFB_FlushGraphics(void)
 	}
 
 	if (livelock_deterrence)
+	{
 		Unlock_DCQ();
+	}
 
 	if (GfxFlags & TFB_GFXFLAGS_SHOWFPS)
+	{
 		RenderFPS(&fps);
+	}
 
 	TFB_SwapBuffers(TFB_REDRAW_NO);
 	RenderedFrames++;
@@ -707,7 +741,9 @@ void TFB_PurgeDanglingGraphics(void)
 				{
 					TFB_ColorMap* cmap = DC.data.image.colormap;
 					if (cmap)
+					{
 						TFB_ReturnColorMap(cmap);
+					}
 					break;
 				}
 			case TFB_DRAWCOMMANDTYPE_SENDSIGNAL:

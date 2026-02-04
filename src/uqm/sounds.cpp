@@ -34,12 +34,16 @@ void PlaySound(SOUND S, SoundPosition Pos, ELEMENT* PositionalObject,
 	static SOUND channel[NUM_FX_CHANNELS] = {0, 0, 0, 0};
 
 	if (S == 0)
+	{
 		return;
+	}
 
 	for (chan = 0; chan < NUM_FX_CHANNELS; ++chan)
 	{
 		if (S == channel[chan])
+		{
 			break;
+		}
 	}
 
 	if (chan == NUM_FX_CHANNELS)
@@ -47,11 +51,15 @@ void PlaySound(SOUND S, SoundPosition Pos, ELEMENT* PositionalObject,
 		for (chan = 0; chan < NUM_FX_CHANNELS; ++chan)
 		{
 			if (!ChannelPlaying(chan + MIN_FX_CHANNEL))
+			{
 				break;
+			}
 		}
 
 		if (chan == NUM_FX_CHANNELS)
+		{
 			chan = lru_channel[0];
+		}
 	}
 
 	channel[chan] = S;
@@ -143,7 +151,9 @@ void UpdateSoundPositions(void)
 	{
 		ELEMENT* posobj;
 		if (!ChannelPlaying(i))
+		{
 			continue;
+		}
 
 		posobj = (ELEMENT*)GetPositionalObject(i);
 		if (posobj != NULL)
@@ -151,7 +161,9 @@ void UpdateSoundPositions(void)
 			SoundPosition pos;
 			pos = CalcSoundPosition(posobj);
 			if (pos.positional)
+			{
 				UpdateSoundPosition(i, pos);
+			}
 		}
 	}
 }
@@ -181,12 +193,16 @@ void RemoveSoundsForObject(ELEMENT* PosObj)
 	for (i = FIRST_SFX_CHANNEL; i <= LAST_SFX_CHANNEL; ++i)
 	{
 		if (GetPositionalObject(i) == PosObj)
+		{
 			SetPositionalObject(i, NULL);
+		}
 	}
 
 	for (i = 0; i < num_sounds; ++i)
 	{
 		if (sound_posobj[i] == PosObj)
+		{
 			sound_posobj[i] = NULL;
+		}
 	}
 }

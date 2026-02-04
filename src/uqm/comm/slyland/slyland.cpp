@@ -127,7 +127,7 @@ static LOCDATA slylandro_desc =
 		BLACK_COLOR_INIT, /* AlienTextBColor */
 		{0, 0}, /* AlienTextBaseline */
 		0,
- /* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
+		/* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
 		ALIGN_CENTER, /* AlienTextAlign */
 		VALIGN_TOP, /* AlienTextValign */
 		SLYLAND_COLOR_MAP, /* AlienColorMap */
@@ -268,7 +268,9 @@ CombatIsInevitable(RESPONSE_REF R)
 	if (R == 0)
 	{
 		if (GET_GAME_STATE(DESTRUCT_CODE_ON_SHIP))
+		{
 			Response(destruct_code, CombatIsInevitable);
+		}
 		switch (GET_GAME_STATE(SLYLANDRO_PROBE_THREAT))
 		{
 			case 0:

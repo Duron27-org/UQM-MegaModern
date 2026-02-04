@@ -139,7 +139,9 @@ WrapStarBlock(uqm::SIZE plane, uqm::SDWORD dx, uqm::SDWORD dy)
 			ppt->y += offs_y;
 			ppt->x += dx;
 			if (++i < num_stars)
+			{
 				++ppt;
+			}
 			else
 			{
 				i = 0;
@@ -147,7 +149,9 @@ WrapStarBlock(uqm::SIZE plane, uqm::SDWORD dx, uqm::SDWORD dy)
 			}
 
 			if (i == first)
+			{
 				return;
+			}
 		}
 		pStarBlock->min_star_index = i;
 		pStarBlock->pmin_star = ppt;
@@ -197,7 +201,9 @@ WrapStarBlock(uqm::SIZE plane, uqm::SDWORD dx, uqm::SDWORD dy)
 				ppt->y -= offs_y;
 				ppt->x += dx;
 				if (i-- > 0)
+				{
 					--ppt;
+				}
 				else
 				{
 					i = num_stars - 1;
@@ -205,7 +211,9 @@ WrapStarBlock(uqm::SIZE plane, uqm::SDWORD dx, uqm::SDWORD dy)
 				}
 
 				if (i == last)
+				{
 					return;
+				}
 			}
 
 			pStarBlock->pmin_star = ppt + 1;
@@ -266,7 +274,9 @@ void InitGalaxy(void)
 		SetPrimFlags(&DisplayArray[p], 0);
 
 		if (i == BIG_STAR_COUNT || i == BIG_STAR_COUNT + MED_STAR_COUNT)
+		{
 			++factor;
+		}
 
 		ppt->x = (uqm::SDWORD)((uqm::UWORD)TFB_Random() % SPACE_WIDTH) << factor;
 		ppt->y = (uqm::SDWORD)((uqm::UWORD)TFB_Random() % SPACE_HEIGHT) << factor;
@@ -284,7 +294,9 @@ void InitGalaxy(void)
 				num_sceneries = 1;
 			}
 			else
+			{
 				DisplayArray[p].Object.Stamp.frame = stars_in_space;
+			}
 		}
 		else
 		{
@@ -302,24 +314,32 @@ void InitGalaxy(void)
 					DisplayArray[p].Object.Stamp.frame =
 						SetAbsFrameIndex(stars_in_space, 96);
 					if (inQuasiSpace())
+					{
 						SetPrimFlags(&DisplayArray[p], HYPER_TO_QUASI_COLOR);
+					}
 				}
 			}
 			else
 			{ // Pixel starpoints in original res
 				SetPrimType(&DisplayArray[p], POINT_PRIM);
 				if (lowByte(GLOBAL(CurrentActivity)) != IN_HYPERSPACE)
+				{
 					SetPrimColor(&DisplayArray[p],
 								 BUILD_COLOR(
 									 MAKE_RGB15(0x15, 0x15, 0x15), 0x07));
+				}
 				else if (GET_GAME_STATE(ARILOU_SPACE_SIDE) <= 1)
+				{
 					SetPrimColor(&DisplayArray[p],
 								 BUILD_COLOR(
 									 MAKE_RGB15(0x14, 0x00, 0x00), 0x8C));
+				}
 				else
+				{
 					SetPrimColor(&DisplayArray[p],
 								 BUILD_COLOR(
 									 MAKE_RGB15(0x00, 0x0E, 0x00), 0x8C));
+				}
 			}
 		}
 
@@ -379,7 +399,9 @@ void MoveGalaxy(VIEW_STATE view_state, uqm::SDWORD dx, uqm::SDWORD dy)
 								+ star_frame_ofs[iss]);
 
 						if (IS_HD && inQuasiSpace())
+						{
 							SetPrimFlags(pprim, HYPER_TO_QUASI_COLOR);
+						}
 					}
 				}
 			}
@@ -389,15 +411,23 @@ void MoveGalaxy(VIEW_STATE view_state, uqm::SDWORD dx, uqm::SDWORD dy)
 				FRAME star_frame[3];
 
 				if (optMeleeScale == TFB_SCALE_STEP)
+				{
 					scale = reduction;
+				}
 				else
 				{
 					if (reduction == (1 << (ZOOM_SHIFT + 2)))
+					{
 						scale = 2;
+					}
 					else if (reduction < (1 << (ZOOM_SHIFT + 2)) && reduction >= (1 << (ZOOM_SHIFT + 1)))
+					{
 						scale = 1;
+					}
 					else
+					{
 						scale = 0;
+					}
 				}
 
 				if (!IS_HD)
@@ -447,7 +477,9 @@ void MoveGalaxy(VIEW_STATE view_state, uqm::SDWORD dx, uqm::SDWORD dy)
 					else
 					{
 						if (scale == 2)
+						{
 							star_frame[0] = star_frame[1] = star_frame[2];
+						}
 						else if (scale == 1)
 						{
 							/* Kruzen: a hack to slip in unscaled flag */
@@ -499,9 +531,13 @@ void MoveGalaxy(VIEW_STATE view_state, uqm::SDWORD dx, uqm::SDWORD dy)
 			dx = SpaceOrg.x;
 			dy = SpaceOrg.y;
 			if (optMeleeScale == TFB_SCALE_STEP)
+			{
 				reduction += ONE_SHIFT;
+			}
 			else
+			{
 				reduction <<= ONE_SHIFT;
+			}
 		}
 		else
 		{
@@ -512,9 +548,13 @@ void MoveGalaxy(VIEW_STATE view_state, uqm::SDWORD dx, uqm::SDWORD dy)
 			   - (LOG_SPACE_HEIGHT >> ((MAX_REDUCTION + 1)
 									   - MAX_VIS_REDUCTION));
 			if (optMeleeScale == TFB_SCALE_STEP)
+			{
 				reduction = MAX_VIS_REDUCTION + ONE_SHIFT;
+			}
 			else
+			{
 				reduction = MAX_ZOOM_OUT << ONE_SHIFT;
+			}
 		}
 
 		ppt = log_star_array;
@@ -540,9 +580,13 @@ void MoveGalaxy(VIEW_STATE view_state, uqm::SDWORD dx, uqm::SDWORD dy)
 				}
 			}
 			if (optMeleeScale == TFB_SCALE_STEP)
+			{
 				++reduction;
+			}
 			else
+			{
 				reduction <<= 1;
+			}
 		}
 	}
 

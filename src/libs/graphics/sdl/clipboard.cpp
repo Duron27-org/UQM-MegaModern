@@ -44,7 +44,9 @@ sdl_surface_to_bitmap(SDL_Surface* surface)
 
 	convPtr = SDL_ConvertSurface(surface, &format, 0);
 	if (!convPtr)
+	{
 		return NULL;
+	}
 
 	// Create DIB header
 	BIH.biSize = sizeof(BITMAPINFOHEADER);
@@ -71,12 +73,16 @@ CopySurfaceToClipboard_Win32(SDL_Surface* surface)
 	HBITMAP hbitmap;
 
 	if (!surface)
+	{
 		return -1;
+	}
 
 	// Convert surface to Windows bitmap
 	hbitmap = sdl_surface_to_bitmap(surface);
 	if (!hbitmap)
+	{
 		return -1;
+	}
 
 	// Clipboard operations
 	if (!OpenClipboard(NULL))

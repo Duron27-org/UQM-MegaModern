@@ -89,7 +89,9 @@ int Socket_connect(Socket* sock, const struct sockaddr* addr,
 	{
 		connectResult = connect(sock->sock, addr, addrLen);
 		if (connectResult == 0)
+		{
 			return 0;
+		}
 
 		errno = getWinsockErrno();
 	} while (errno == EINTR);

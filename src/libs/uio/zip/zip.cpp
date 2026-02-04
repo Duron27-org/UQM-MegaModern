@@ -457,7 +457,9 @@ zip_readDeflated(uio_Handle* handle, void* buf, size_t count)
 	zipHandle = (zip_Handle*)handle->native;
 
 	if (count > ((zip_GPFileData*)(zipHandle->file->extra))->uncompressedSize - zipHandle->zipStream.total_out)
+	{
 		count = ((zip_GPFileData*)(zipHandle->file->extra))->uncompressedSize - zipHandle->zipStream.total_out;
+	}
 
 	zipHandle->zipStream.next_out = (Bytef*)buf;
 	zipHandle->zipStream.avail_out = count;
@@ -540,8 +542,10 @@ zip_readDeflated(uio_Handle* handle, void* buf, size_t count)
 					abort();
 			}
 			if (zipHandle->zipStream.msg != NULL)
+			{
 				fprintf(stderr, "ZLib reports: %s\n",
 						zipHandle->zipStream.msg);
+			}
 			errno = EIO;
 			// Using EIO to report an error in the backend.
 			return -1;
@@ -595,7 +599,9 @@ zip_seekStored(uio_Handle* handle, off_t offset)
 	zipHandle = (zip_Handle*)handle->native;
 	auto xtra = (zip_GPFileData*)(zipHandle->file->extra);
 	if (offset > xtra->uncompressedSize)
+	{
 		offset = xtra->uncompressedSize;
+	}
 
 	zipHandle->compressedOffset = offset;
 	zipHandle->uncompressedOffset = offset;
@@ -627,7 +633,9 @@ zip_seekDeflated(uio_Handle* handle, off_t offset)
 	}
 
 	if (offset == zipHandle->uncompressedOffset)
+	{
 		return offset;
+	}
 
 	// Seek from the current position.
 	{
@@ -777,7 +785,9 @@ err:
 		int savedErrno = errno;
 
 		if (fileBlock != NULL)
+		{
 			uio_closeFileBlock(fileBlock);
+		}
 		errno = savedErrno;
 		return -1;
 	}
@@ -805,7 +815,9 @@ zip_fillDirStructureCentralProcessEntry(uio_GPDir* topGPDir,
 
 	numBytes = uio_accessFileBlock(fileBlock, *pos, 46, &buf);
 	if (numBytes != 46)
+	{
 		return zip_badFile(NULL, NULL);
+	}
 
 	signature = makeUInt32(buf[0], buf[1], buf[2], buf[3]);
 	if (signature != 0x02014b50)
@@ -846,7 +858,9 @@ zip_fillDirStructureCentralProcessEntry(uio_GPDir* topGPDir,
 
 	numBytes = uio_accessFileBlock(fileBlock, *pos, fileNameLength, &buf);
 	if (numBytes != fileNameLength)
+	{
 		return zip_badFile(gPFileData, NULL);
+	}
 	fileName = (char*)uio_malloc(fileNameLength + 1);
 	memcpy(fileName, buf, fileNameLength);
 	fileName[fileNameLength] = '\0';
@@ -918,7 +932,9 @@ zip_fillDirStructureCentralProcessEntry(uio_GPDir* topGPDir,
 	else if (S_ISDIR(gPFileData->mode))
 	{
 		if (fileName[fileNameLength - 1] == '/')
+		{
 			fileName[fileNameLength - 1] = '\0';
+		}
 		if (zip_foundDir(topGPDir, fileName, gPFileData) == -1)
 		{
 			if (errno == EISDIR)
@@ -968,7 +984,9 @@ zip_findEndOfCentralDirectoryRecord(uio_Handle* handle,
 	fileSize = statBuf.st_size;
 	startPos = fileSize - 0xffff - 22; // max comment and record size
 	if (startPos < 0)
+	{
 		startPos = 0;
+	}
 	endPos = fileSize - 22; // last position to be checked
 	bufLen = uio_accessFileBlock(fileBlock, startPos, endPos - startPos + 4,
 								 &buf);
@@ -998,7 +1016,9 @@ zip_findEndOfCentralDirectoryRecord(uio_Handle* handle,
 			return -1;
 		}
 		if (bufPtr[0] == 0x50 && bufPtr[1] == 0x4b && bufPtr[2] == 0x05 && bufPtr[3] == 0x06)
+		{
 			break;
+		}
 		bufPtr--;
 	}
 	return startPos + (bufPtr - buf);
@@ -1145,9 +1165,13 @@ zip_fillDirStructureLocal(uio_GPDir* top, uio_Handle* handle)
 
 		numBytes = uio_accessFileBlock(fileBlock, pos, 4, &buf);
 		if (numBytes == -1)
+		{
 			goto err;
+		}
 		if (numBytes != 4)
+		{
 			break;
+		}
 		signature = makeUInt32(buf[0], buf[1], buf[2], buf[3]);
 		if (signature != 0x04034b50)
 		{
@@ -1156,7 +1180,9 @@ zip_fillDirStructureLocal(uio_GPDir* top, uio_Handle* handle)
 		}
 		pos += 4;
 		if (zip_fillDirStructureLocalProcessEntry(top, fileBlock, &pos) == -1)
+		{
 			goto err;
+		}
 	}
 
 	uio_closeFileBlock(fileBlock);
@@ -1191,7 +1217,9 @@ zip_fillDirStructureLocalProcessEntry(uio_GPDir* topGPDir,
 
 	numBytes = uio_accessFileBlock(fileBlock, *pos, 26, &buf);
 	if (numBytes != 26)
+	{
 		return zip_badFile(NULL, NULL);
+	}
 
 	gPFileData = zip_GPFileData_new();
 	gPFileData->compressionFlags = makeUInt16(buf[2], buf[3]);
@@ -1253,7 +1281,9 @@ zip_fillDirStructureLocalProcessEntry(uio_GPDir* topGPDir,
 
 	numBytes = uio_accessFileBlock(fileBlock, *pos, fileNameLength, &buf);
 	if (numBytes != fileNameLength)
+	{
 		return zip_badFile(gPFileData, NULL);
+	}
 	*pos += fileNameLength;
 	if (buf[fileNameLength - 1] == '/')
 	{
@@ -1261,7 +1291,9 @@ zip_fillDirStructureLocalProcessEntry(uio_GPDir* topGPDir,
 		fileNameLength--;
 	}
 	else
+	{
 		gPFileData->mode |= S_IFREG;
+	}
 	fileName = uio_malloc(fileNameLength + 1);
 	memcpy(fileName, buf, fileNameLength);
 	fileName[fileNameLength] = '\0';
@@ -1293,11 +1325,15 @@ zip_fillDirStructureLocalProcessEntry(uio_GPDir* topGPDir,
 
 		numBytes = uio_accessFileBlock(fileBlock, *pos, 16, &buf);
 		if (numBytes != 16)
+		{
 			return zip_badFile(gPFileData, fileName);
+		}
 
 		signature = makeUInt32(buf[0], buf[1], buf[2], buf[3]);
 		if (signature != 0x08074b50)
+		{
 			return zip_badFile(gPFileData, fileName);
+		}
 		crc = makeUInt32(buf[4], buf[5], buf[6], buf[7]);
 		gPFileData->compressedSize =
 			makeUInt32(buf[8], buf[9], buf[10], buf[11]);
@@ -1306,10 +1342,14 @@ zip_fillDirStructureLocalProcessEntry(uio_GPDir* topGPDir,
 	}
 
 	if (gPFileData->ctime == (time_t)0)
+	{
 		gPFileData->ctime = gPFileData->mtime;
+	}
 
 	if (gPFileData->atime == (time_t)0)
+	{
 		gPFileData->atime = gPFileData->mtime;
+	}
 
 	if (S_ISREG(gPFileData->mode))
 	{
@@ -1331,7 +1371,9 @@ zip_fillDirStructureLocalProcessEntry(uio_GPDir* topGPDir,
 	else if (S_ISDIR(gPFileData->mode))
 	{
 		if (fileName[fileNameLength - 1] == '/')
+		{
 			fileName[fileNameLength - 1] = '\0';
+		}
 		if (zip_foundDir(topGPDir, fileName, gPFileData) == -1)
 		{
 			if (errno == EISDIR)
@@ -1386,9 +1428,13 @@ int zip_updateFileDataFromLocalHeader(uio_Handle* handle,
 		return -1;
 	}
 	if (gPFileData->ctime == (time_t)0)
+	{
 		gPFileData->ctime = gPFileData->mtime;
+	}
 	if (gPFileData->atime == (time_t)0)
+	{
 		gPFileData->atime = gPFileData->mtime;
+	}
 	uio_closeFileBlock(fileBlock);
 	return 0;
 }
@@ -1413,24 +1459,30 @@ zip_fillDirStructureProcessExtraFields(uio_FileBlock* fileBlock,
 	{
 		numBytes = uio_accessFileBlock(fileBlock, pos, 4, &buf);
 		if (numBytes != 4)
+		{
 			return -1;
+		}
 		headerID = makeUInt16(buf[0], buf[1]);
 		dataSize = (ssize_t)makeUInt16(buf[2], buf[3]);
 		pos += 4;
 		numBytes = uio_accessFileBlock(fileBlock, pos, dataSize, &buf);
 		if (numBytes != dataSize)
+		{
 			return -1;
+		}
 		switch (headerID)
 		{
 			case 0x000d: // 'Unix0'
-						 // fallthrough
+				// fallthrough
 			case 0x5855: // 'Unix1'
 				gPFileData->atime = (time_t)makeUInt32(
 					buf[0], buf[1], buf[2], buf[3]);
 				gPFileData->mtime = (time_t)makeUInt32(
 					buf[4], buf[5], buf[6], buf[7]);
 				if (central)
+				{
 					break;
+				}
 				if (dataSize > 8)
 				{
 					gPFileData->uid = (uid_t)makeUInt16(buf[8], buf[9]);
@@ -1457,7 +1509,9 @@ zip_fillDirStructureProcessExtraFields(uio_FileBlock* fileBlock,
 					// when it is present in the local header too, and
 					// never contains fields for other times.
 					if (central)
+					{
 						break;
+					}
 					if (isBitSet(flags, 1))
 					{
 						// modification time is present
@@ -1470,7 +1524,9 @@ zip_fillDirStructureProcessExtraFields(uio_FileBlock* fileBlock,
 				}
 			case 0x7855: // 'Unix2'
 				if (central)
+				{
 					break;
+				}
 				gPFileData->uid = (uid_t)makeUInt16(buf[0], buf[1]);
 				gPFileData->gid = (uid_t)makeUInt16(buf[2], buf[3]);
 				break;
@@ -1507,7 +1563,9 @@ zip_fillDirStructureProcessExtraFields(uio_FileBlock* fileBlock,
 		pos += dataSize;
 	} // while
 	if (pos != posEnd)
+	{
 		return -1;
+	}
 	return 0;
 }
 
@@ -1516,9 +1574,13 @@ zip_badFile(zip_GPFileData* gPFileData, char* fileName)
 {
 	fprintf(stderr, "Error: Bad file format for .zip file.\n");
 	if (gPFileData != NULL)
+	{
 		zip_GPFileData_delete(gPFileData);
+	}
 	if (fileName != NULL)
+	{
 		uio_free(fileName);
+	}
 	errno = EINVAL; // Is this the best choice?
 	return -1;
 }
@@ -1534,7 +1596,9 @@ zip_foundFile(uio_GPDir* gPDir, const char* path, zip_GPFileData* gPFileData)
 	char* buf;
 
 	if (path[0] == '/')
+	{
 		path++;
+	}
 	pathLen = strlen(path);
 	if (path[pathLen - 1] == '/')
 	{
@@ -1616,7 +1680,9 @@ zip_foundDir(uio_GPDir* gPDir, const char* path, zip_GPDirData* gPDirData)
 	char* buf;
 
 	if (path[0] == '/')
+	{
 		path++;
+	}
 	pathLen = strlen(path);
 	pathEnd = path + pathLen;
 
@@ -1707,7 +1773,9 @@ zip_initZipStream(z_stream* zipStream)
 				abort();
 		}
 		if (zipStream->msg != NULL)
+		{
 			fprintf(stderr, "ZLib reports: %s\n", zipStream->msg);
+		}
 		errno = EIO;
 		// Using EIO to report an error in the backend.
 		return -1;
@@ -1736,7 +1804,9 @@ zip_unInitZipStream(z_stream* zipStream)
 				abort();
 		}
 		if (zipStream->msg != NULL)
+		{
 			fprintf(stderr, "ZLib reports: %s\n", zipStream->msg);
+		}
 		errno = EIO;
 		// Using EIO to report an error in the backend.
 		return -1;
@@ -1767,7 +1837,9 @@ zip_reInitZipStream(z_stream* zipStream)
 				abort();
 		}
 		if (zipStream->msg != NULL)
+		{
 			fprintf(stderr, "ZLib reports: %s\n", zipStream->msg);
+		}
 		errno = EIO;
 		// Using EIO to report an error in the backend.
 		return -1;

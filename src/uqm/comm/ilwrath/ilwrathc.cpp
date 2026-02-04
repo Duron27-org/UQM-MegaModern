@@ -38,7 +38,7 @@ static LOCDATA ilwrath_desc =
 		BLACK_COLOR_INIT, /* AlienTextBColor */
 		{0, 0}, /* AlienTextBaseline */
 		0,
- /* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
+		/* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
 		ALIGN_CENTER, /* AlienTextAlign */
 		VALIGN_MIDDLE, /* AlienTextValign */
 		ILWRATH_COLOR_MAP, /* AlienColorMap */
@@ -131,21 +131,37 @@ CombatIsInevitable(RESPONSE_REF R)
 	setSegue(Segue_hostile);
 
 	if (PLAYER_SAID(R, you_are_weak))
+	{
 		NPCPhrase(STRENGTH_NOT_ALL);
+	}
 	else if (PLAYER_SAID(R, slay_by_thousands))
+	{
 		NPCPhrase(NO_SLAY_BY_THOUSANDS);
+	}
 	else if (PLAYER_SAID(R, ease_up))
+	{
 		NPCPhrase(NO_EASE_UP);
+	}
 	else if (PLAYER_SAID(R, bye_space))
+	{
 		NPCPhrase(GOODBYE_AND_DIE_SPACE);
+	}
 	else if (PLAYER_SAID(R, bye_homeworld))
+	{
 		NPCPhrase(GOODBYE_AND_DIE_HOMEWORLD);
+	}
 	else if (PLAYER_SAID(R, want_peace))
+	{
 		NPCPhrase(NO_PEACE);
+	}
 	else if (PLAYER_SAID(R, want_alliance))
+	{
 		NPCPhrase(NO_ALLIANCE);
+	}
 	else if (PLAYER_SAID(R, but_evil_is_defined))
+	{
 		NPCPhrase(DONT_CONFUSE_US);
+	}
 	else if (PLAYER_SAID(R, bye_gods) || isGTFO)
 	{
 		NPCPhrase(GOODBYE_GODS);
@@ -193,15 +209,25 @@ CombatIsInevitable(RESPONSE_REF R)
 	else
 	{
 		if (PLAYER_SAID(R, bye))
+		{
 			NPCPhrase(GOODBYE_AND_DIE);
+		}
 		else if (PLAYER_SAID(R, where_you_come_from))
+		{
 			NPCPhrase(CAME_FROM);
+		}
 		if (PLAYER_SAID(R, it_will_be_a_pleasure))
+		{
 			NPCPhrase(WHO_BLASTS_WHO);
+		}
 		if (PLAYER_SAID(R, surrender))
+		{
 			NPCPhrase(NO_SURRENDER);
+		}
 		if (PLAYER_SAID(R, be_reasonable))
+		{
 			NPCPhrase(NOT_REASONABLE);
+		}
 	}
 }
 
@@ -214,7 +240,9 @@ IlwrathGods(RESPONSE_REF R)
 
 	GodsLeft = false;
 	if (PLAYER_SAID(R, want_info_on_gods))
+	{
 		NPCPhrase(SO_MUCH_TO_KNOW);
+	}
 	else if (PLAYER_SAID(R, when_start_worship))
 	{
 		NPCPhrase(LONG_AGO);
@@ -263,7 +291,9 @@ IlwrathGods(RESPONSE_REF R)
 	Response(enough_gods, IlwrathHome);
 
 	if (!GodsLeft)
+	{
 		DISABLE_PHRASE(want_info_on_gods);
+	}
 }
 
 static void
@@ -273,7 +303,9 @@ IlwrathInfo(RESPONSE_REF R)
 
 	InfoLeft = false;
 	if (PLAYER_SAID(R, want_info_on_ilwrath))
+	{
 		NPCPhrase(WHAT_ABOUT_ILWRATH);
+	}
 	else if (PLAYER_SAID(R, what_about_physio))
 	{
 		NPCPhrase(ABOUT_PHYSIO);
@@ -338,7 +370,9 @@ IlwrathInfo(RESPONSE_REF R)
 	Response(enough_ilwrath, IlwrathHome);
 
 	if (!InfoLeft)
+	{
 		DISABLE_PHRASE(want_info_on_ilwrath);
+	}
 }
 
 static void
@@ -362,9 +396,13 @@ IlwrathHome(RESPONSE_REF R)
 		SET_GAME_STATE(ILWRATH_HOME_VISITS, NumVisits);
 	}
 	else if (PLAYER_SAID(R, enough_gods))
+	{
 		NPCPhrase(OK_ENOUGH_GODS);
+	}
 	else if (PLAYER_SAID(R, enough_ilwrath))
+	{
 		NPCPhrase(OK_ENOUGH_ILWRATH);
+	}
 
 	if (PHRASE_ENABLED(want_info_on_gods))
 	{
@@ -388,7 +426,9 @@ GodsOrder(RESPONSE_REF R)
 
 	OrdersLeft = false;
 	if (PLAYER_SAID(R, other_divine_orders))
+	{
 		NPCPhrase(WHAT_ORDERS);
+	}
 	else if (PLAYER_SAID(R, say_warship))
 	{
 		NPCPhrase(OK_WARSHIP);
@@ -437,7 +477,9 @@ GodsOrder(RESPONSE_REF R)
 	Response(enough_orders, GodsSpeak);
 
 	if (!OrdersLeft)
+	{
 		DISABLE_PHRASE(other_divine_orders);
+	}
 }
 
 static void
@@ -448,15 +490,21 @@ GodsSpeak(RESPONSE_REF R)
 	if (R == 0)
 	{
 		if (GET_GAME_STATE(ILWRATH_FIGHT_THRADDASH))
+		{
 			NPCPhrase(GLORIOUS_WORSHIP);
+		}
 		else if (GET_GAME_STATE(ILWRATH_DECEIVED))
+		{
 			NPCPhrase(ON_WAY);
+		}
 		else
 		{
 			NumVisits = GET_GAME_STATE(ILWRATH_GODS_SPOKEN);
 
 			if (NumVisits > 3)
+			{
 				NumVisits = 0;
+			}
 
 			switch (NumVisits++)
 			{
@@ -505,12 +553,18 @@ GodsSpeak(RESPONSE_REF R)
 		DISABLE_PHRASE(worship_us);
 	}
 	else if (PLAYER_SAID(R, enough_orders))
+	{
 		NPCPhrase(NEVER_ENOUGH);
+	}
 
 	if (!GET_GAME_STATE(ILWRATH_DECEIVED))
+	{
 		Response(go_kill_thraddash, GodsSpeak);
+	}
 	if (PHRASE_ENABLED(worship_us))
+	{
 		Response(worship_us, GodsSpeak);
+	}
 	if (PHRASE_ENABLED(other_divine_orders))
 	{
 		Response(other_divine_orders, GodsOrder);
@@ -613,9 +667,13 @@ Intro(void)
 	{
 		// Communicating with an Ilwrath ship using a HyperWave Broadcaster.
 		if (GET_GAME_STATE(ILWRATH_FIGHT_THRADDASH))
+		{
 			NPCPhrase(BIG_FUN);
+		}
 		else if (GET_GAME_STATE(ILWRATH_DECEIVED))
+		{
 			NPCPhrase(FAST_AS_CAN);
+		}
 		else
 		{
 			if (EXTENDED)
@@ -654,7 +712,9 @@ Intro(void)
 				SET_GAME_STATE(ILWRATH_GODS_SPOKEN, NumVisits);
 			}
 			else
+			{
 				NPCPhrase(JUST_GRUNTS);
+			}
 
 			setSegue(Segue_peace);
 		}
@@ -670,11 +730,17 @@ Intro(void)
 		setSegue(Segue_peace);
 
 		if (GET_GAME_STATE(ILWRATH_FIGHT_THRADDASH))
+		{
 			NPCPhrase(HAPPY_FIGHTING_THRADDASH);
+		}
 		else if (GET_GAME_STATE(ILWRATH_DECEIVED))
+		{
 			NPCPhrase(ON_WAY_TO_THRADDASH);
+		}
 		else
+		{
 			IlwrathSpace((RESPONSE_REF)0);
+		}
 	}
 }
 

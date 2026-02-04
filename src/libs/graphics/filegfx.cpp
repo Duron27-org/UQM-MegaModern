@@ -28,8 +28,10 @@ LoadGraphicFile(const char* pStr)
 
 	// FIXME: this theoretically needs a mechanism to prevent races
 	if (_cur_resfile_name)
+	{
 		// something else is loading resources atm
 		return 0;
+	}
 
 	fp = res_OpenResFile(contentDir, pStr, "rb");
 	if (fp != NULL)
@@ -52,8 +54,10 @@ FONT LoadFontFile(const char* pStr)
 
 	// FIXME: this theoretically needs a mechanism to prevent races
 	if (_cur_resfile_name)
+	{
 		// something else is loading resources atm
 		return 0;
+	}
 
 	fp = res_OpenResFile(contentDir, pStr, "rb");
 	if (fp != NULL)

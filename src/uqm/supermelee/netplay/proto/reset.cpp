@@ -109,10 +109,14 @@ static void
 Netplay_resetConditionTriggered(NetConnection* conn)
 {
 	if (conn->resetCallback == NULL)
+	{
 		return;
+	}
 
 	if (!conn->stateFlags.reset.localReset || !conn->stateFlags.reset.remoteReset)
+	{
 		return;
+	}
 
 	conn->stateFlags.reset.localReset = false;
 	conn->stateFlags.reset.remoteReset = false;

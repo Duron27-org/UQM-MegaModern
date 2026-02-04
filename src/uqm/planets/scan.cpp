@@ -103,9 +103,13 @@ PrintScanTitleText(TEXT* t)
 								  SCAN_PC_TITLE_COLOR);
 
 	if (!optNebulae)
+	{
 		font_DrawText(t);
+	}
 	else
+	{
 		font_DrawTracedText(t, (optWhichCoarseScan ? SCAN_PC_TITLE_COLOR_6014 : GetContextForeGroundColor()), OUTLINE_COLOR);
+	}
 
 	SetContextForeGroundColor(SCAN_INFO_COLOR);
 }
@@ -130,13 +134,19 @@ static void
 PrintScanText(TEXT* t)
 {
 	if (!(optWhichCoarseScan & 1))
+	{
 		t->CharCount = (uqm::COUNT)~0;
+	}
 
 	if (!optNebulae)
+	{
 		font_DrawText(t);
+	}
 	else
+	{
 		font_DrawTracedText(t, GetContextForeGroundColor(),
 							OUTLINE_COLOR);
+	}
 }
 
 static void
@@ -156,21 +166,29 @@ static void
 MakeDayValue(uqm::CHAR_T* buf, long val, const uqm::CHAR_T* extra)
 {
 	if (pSolarSysState->SysInfo.PlanetInfo.RotationPeriod < 240 * 10)
+	{
 		sprintf(buf, "%ld.%02ld%s", val / 100, val % 100, extra);
+	}
 	else
+	{
 		sprintf(buf, "%ld.%ld%s", val / 10, val % 10, extra);
+	}
 }
 
 static uqm::SIZE
 GetRotationalPeriod(void)
 {
 	if (pSolarSysState->SysInfo.PlanetInfo.RotationPeriod < 240 * 10)
+	{
 		return (uqm::SIZE)(pSolarSysState->SysInfo.PlanetInfo.RotationPeriod
 						   * 10 / 24);
+	}
 	else
+	{
 		return (uqm::SIZE)((pSolarSysState->SysInfo.PlanetInfo.RotationPeriod
 							+ (24 >> 1))
 						   / 24);
+	}
 }
 
 void GetPlanetTitle(uqm::CHAR_T* buf, uqm::COUNT bufsize)
@@ -299,9 +317,13 @@ PrintCoarseScanPC(void)
 
 	if (pSolarSysState->SysInfo.PlanetInfo.AtmoDensity
 		== GAS_GIANT_ATMOSPHERE)
+	{
 		utf8StringCopy(buf, sizeof(buf), ORBITSCAN_TEXT(3)); // "Super Thick"
+	}
 	else if (pSolarSysState->SysInfo.PlanetInfo.AtmoDensity == 0)
+	{
 		utf8StringCopy(buf, sizeof(buf), ORBITSCAN_TEXT(4)); // "Vacuum"
+	}
 	else
 	{
 		val = (pSolarSysState->SysInfo.PlanetInfo.AtmoDensity * 100
@@ -320,7 +342,9 @@ PrintCoarseScanPC(void)
 			 STR_DEGREE_SIGN);
 
 	if (optHazardColors) // Planet Temperature
+	{
 		HazardCase(LAVASPOT_DISASTER);
+	}
 
 	PrintScanText(&t);
 	t.baseline.y += SCAN_LEADING_PC;
@@ -339,7 +363,9 @@ PrintCoarseScanPC(void)
 	}
 
 	if (optHazardColors) // Weather
+	{
 		HazardCase(LIGHTNING_DISASTER);
+	}
 
 	PrintScanText(&t);
 	t.baseline.y += SCAN_LEADING_PC;
@@ -358,7 +384,9 @@ PrintCoarseScanPC(void)
 	}
 
 	if (optHazardColors) // Tectonics
+	{
 		HazardCase(EARTHQUAKE_DISASTER);
+	}
 
 	PrintScanText(&t);
 
@@ -373,7 +401,9 @@ PrintCoarseScanPC(void)
 		   + ((100L * 100L) >> 1))
 		/ (100L * 100L);
 	if (val == 0)
+	{
 		val = 1;
+	}
 	MakeScanValue(buf, val, ORBITSCAN_TEXT(12)); // " e.s."
 	PrintScanText(&t);
 	t.baseline.y += SCAN_LEADING_PC;
@@ -391,7 +421,9 @@ PrintCoarseScanPC(void)
 
 	val = pSolarSysState->SysInfo.PlanetInfo.SurfaceGravity;
 	if (val == 0)
+	{
 		val = 1;
+	}
 	MakeScanValue(buf, val, ORBITSCAN_TEXT(15)); // " g."
 	PrintScanText(&t);
 	t.baseline.y += SCAN_LEADING_PC;
@@ -409,7 +441,9 @@ PrintCoarseScanPC(void)
 
 	val = pSolarSysState->SysInfo.PlanetInfo.AxialTilt;
 	if (val < 0)
+	{
 		val = -val;
+	}
 	snprintf(buf, sizeof(buf), "%d%s", val, STR_DEGREE_SIGN);
 	PrintScanText(&t);
 
@@ -427,7 +461,9 @@ PrintCoarseScan3DO(void)
 	uqm::COUNT frameIndex = 20;
 
 	if (optWhichCoarseScan == 3)
+	{
 		frameIndex = 24;
+	}
 
 	SetContext(PlanetContext);
 
@@ -468,7 +504,9 @@ PrintCoarseScan3DO(void)
 
 	if (pSolarSysState->SysInfo.PlanetInfo.AtmoDensity
 		== GAS_GIANT_ATMOSPHERE)
+	{
 		strcpy(buf, STR_INFINITY_SIGN);
+	}
 	else
 	{
 		val = (pSolarSysState->SysInfo.PlanetInfo.AtmoDensity * 100
@@ -484,7 +522,9 @@ PrintCoarseScan3DO(void)
 			 STR_DEGREE_SIGN);
 
 	if (optHazardColors) // Planet Temperature
+	{
 		HazardCase(LAVASPOT_DISASTER);
+	}
 
 	PrintScanText(&t);
 	t.baseline.y += SCAN_LEADING;
@@ -493,7 +533,9 @@ PrintCoarseScan3DO(void)
 			 pSolarSysState->SysInfo.PlanetInfo.AtmoDensity == 0 ? 0 : (pSolarSysState->SysInfo.PlanetInfo.Weather + 1));
 
 	if (optHazardColors) // Weather
+	{
 		HazardCase(LIGHTNING_DISASTER);
+	}
 
 	PrintScanText(&t);
 	t.baseline.y += SCAN_LEADING;
@@ -506,7 +548,9 @@ PrintCoarseScan3DO(void)
 				 (pSolarSysState->SysInfo.PlanetInfo.Tectonics + 1));
 
 	if (optHazardColors) // Tectonics
+	{
 		HazardCase(EARTHQUAKE_DISASTER);
+	}
 
 	PrintScanText(&t);
 
@@ -520,11 +564,15 @@ PrintCoarseScan3DO(void)
 		   + ((100L * 100L) >> 1))
 		/ (100L * 100L);
 	if (val == 0)
+	{
 		val = 1;
+	}
 	MakeScanValue(buf, val, STR_EARTH_SIGN);
 
 	if (optHazardColors)
+	{
 		SetContextForeGroundColor(SCAN_INFO_COLOR);
+	}
 
 	PrintScanText(&t);
 	t.baseline.y += SCAN_LEADING;
@@ -536,14 +584,18 @@ PrintCoarseScan3DO(void)
 
 	val = pSolarSysState->SysInfo.PlanetInfo.SurfaceGravity;
 	if (val == 0)
+	{
 		val = 1;
+	}
 	MakeScanValue(buf, val, STR_EARTH_SIGN);
 	PrintScanText(&t);
 	t.baseline.y += SCAN_LEADING;
 
 	val = pSolarSysState->SysInfo.PlanetInfo.AxialTilt;
 	if (val < 0)
+	{
 		val = -val;
+	}
 	snprintf(buf, sizeof(buf), "%d%s", val, STR_DEGREE_SIGN);
 	PrintScanText(&t);
 	t.baseline.y += SCAN_LEADING;
@@ -599,9 +651,13 @@ drawPlanetCursor(bool filled)
 	s.origin = cursorRect.corner;
 	s.frame = SetAbsFrameIndex(MiscDataFrame, FLASH_INDEX);
 	if (filled)
+	{
 		DrawFilledStamp(&s);
+	}
 	else
+	{
 		DrawStamp(&s);
+	}
 }
 
 static void
@@ -619,7 +675,9 @@ setPlanetLoc(POINT new_pt, bool restoreOld)
 
 	SetContext(ScanContext);
 	if (restoreOld)
+	{
 		restorePlanetLocationImage();
+	}
 	setPlanetCursorLoc(new_pt);
 	savePlanetLocationImage();
 }
@@ -639,7 +697,9 @@ flashPlanetLocation(void)
 			  || prevPt.y != cursorRect.corner.y;
 
 	if (!locChanged && Now < NextTime)
+	{
 		return; // nothing to do
+	}
 
 	if (locChanged)
 	{ // Reset the flashing cycle
@@ -652,14 +712,20 @@ flashPlanetLocation(void)
 	else
 	{ // Continue the flashing cycle
 		if (c == 0x00 || c == 0x1A)
+		{
 			val = -val;
+		}
 		c += val;
 
 		if (Now - NextTime > FLASH_FRAME_DELAY)
+		{
 			NextTime = Now + FLASH_FRAME_DELAY;
+		}
 		// missed timing by too much
 		else
+		{
 			NextTime += FLASH_FRAME_DELAY;
+		}
 		// stable frame rate
 	}
 
@@ -694,7 +760,9 @@ getLandingFuelNeeded(void)
 
 	fuel = pSolarSysState->SysInfo.PlanetInfo.SurfaceGravity << 1;
 	if (fuel > 3 * FUEL_TANK_SCALE)
+	{
 		fuel = 3 * FUEL_TANK_SCALE;
+	}
 
 	return fuel;
 }
@@ -741,7 +809,9 @@ DispatchLander(void)
 
 		DrawMineralHelpers();
 		if (!optSubmenu)
+		{
 			DeltaSISGauges(0, UNDEFINED_DELTA, 0);
+		}
 	}
 
 	SetContext(ScanContext);
@@ -749,7 +819,9 @@ DispatchLander(void)
 
 	PlanetSide(planetLoc);
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+	{
 		return false;
+	}
 
 	if (GET_GAME_STATE(FOUND_PLUTO_SPATHI) == 1)
 	{
@@ -764,9 +836,13 @@ DispatchLander(void)
 	}
 
 	if (optWhichCoarseScan & 1)
+	{
 		PrintCoarseScan3DO();
+	}
 	else
+	{
 		PrintCoarseScanPC();
+	}
 
 	// Reactivate planet rotation callback
 	SetInputCallback(oldCallback);
@@ -816,18 +892,28 @@ DoPickPlanetSide(MENU_STATE* pMS)
 		new_pt = planetLoc;
 
 		if (tNext && TimeIn >= tNext)
+		{
 			tNext = 0;
+		}
 
 		if (!tNext || TimeIn >= tNext)
 		{
 			if (CurrentInputState.menu[KEY_MENU_LEFT])
+			{
 				dx = -RES_SCALE(1);
+			}
 			if (CurrentInputState.menu[KEY_MENU_RIGHT])
+			{
 				dx = RES_SCALE(1);
+			}
 			if (CurrentInputState.menu[KEY_MENU_UP])
+			{
 				dy = -RES_SCALE(1);
+			}
 			if (CurrentInputState.menu[KEY_MENU_DOWN])
+			{
 				dy = RES_SCALE(1);
+			}
 
 			// Triple the cursor speed when the "Next" key is held down
 			if (DirKeysPress() && CurrentInputState.menu[KEY_MENU_NEXT])
@@ -844,16 +930,22 @@ DoPickPlanetSide(MENU_STATE* pMS)
 		{
 			new_pt.x += dx;
 			if (new_pt.x < 0)
+			{
 				new_pt.x += (SCALED_MAP_WIDTH << MAG_SHIFT);
+			}
 			else if (new_pt.x >= (SCALED_MAP_WIDTH << MAG_SHIFT))
+			{
 				new_pt.x -= (SCALED_MAP_WIDTH << MAG_SHIFT);
+			}
 		}
 		dy = dy << MAG_SHIFT;
 		if (dy)
 		{
 			new_pt.y += dy;
 			if (new_pt.y < 0 || new_pt.y >= (MAP_HEIGHT << MAG_SHIFT))
+			{
 				new_pt.y = planetLoc.y;
+			}
 		}
 
 		if (!pointsEqual(new_pt, planetLoc))
@@ -866,7 +958,9 @@ DoPickPlanetSide(MENU_STATE* pMS)
 		UnbatchGraphics();
 
 		if (dx || dy)
+		{
 			tNext = TimeIn + ONE_SECOND / 40;
+		}
 	}
 
 	return true;
@@ -900,7 +994,9 @@ drawLandingFuelUsage(uqm::COUNT fuel)
 	DrawStatusMessage(buf);
 
 	if (old_status_message_mode != SMM_UNDEFINED)
+	{
 		SetStatusMessageMode(old_status_message_mode);
+	}
 }
 
 static void
@@ -921,7 +1017,9 @@ PickPlanetSide(void)
 	MenuState.privData = &PickState;
 
 	if (is3DO(optSuperPC))
+	{
 		ClearSISRect(CLEAR_SIS_RADAR);
+	}
 
 	SetContext(ScanContext);
 	BatchGraphics();
@@ -1029,7 +1127,9 @@ DrawScannedStuff(uqm::COUNT y, uqm::COUNT scan)
 			nodeSize = GetFrameIndex(ElementPtr->next.image.frame)
 					 - GetFrameIndex(ElementPtr->current.image.frame);
 			if (dy > nodeSize)
+			{
 				dy = nodeSize;
+			}
 
 			s.frame =
 				SetRelFrameIndex(ElementPtr->current.image.frame, dy);
@@ -1058,7 +1158,9 @@ DrawPCScannedStuff(uqm::COUNT scan)
 	while (hElement && !AnyButtonPress(true))
 	{
 		if ((GLOBAL(CurrentActivity) & CHECK_ABORT))
+		{
 			return;
+		}
 
 		if (GetTimeCounter() >= now)
 		{
@@ -1089,7 +1191,9 @@ DrawPCScannedStuff(uqm::COUNT scan)
 								 - GetFrameIndex(
 									   ElementPtr->current.image.frame);
 						if (diff > nodeSize)
+						{
 							diff = nodeSize;
+						}
 
 						s.frame = SetRelFrameIndex(
 							ElementPtr->current.image.frame, diff);
@@ -1214,7 +1318,9 @@ ScanPlanet(uqm::COUNT scanType)
 	}
 
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+	{
 		return;
+	}
 
 	DrawMenuStateStrings(PM_MIN_SCAN, scanType);
 
@@ -1249,7 +1355,9 @@ ScanPlanet(uqm::COUNT scanType)
 
 		// Draw a virgin surface
 		if (optScanStyle != OPT_PC)
+		{
 			DrawPlanet(0, BLACK_COLOR);
+		}
 
 		tintColor = tintColors[scan];
 
@@ -1263,13 +1371,17 @@ ScanPlanet(uqm::COUNT scanType)
 			while (i < SCAN_LINES)
 			{
 				if ((GLOBAL(CurrentActivity) & CHECK_ABORT))
+				{
 					return;
+				}
 
 				Now = GetTimeCounter();
 				if (Now >= TimeOut)
 				{
 					if (AnyButtonPress(true))
+					{
 						break;
+					}
 
 					TimeOut = Now + SCAN_LINE_WAIT;
 
@@ -1294,19 +1406,25 @@ ScanPlanet(uqm::COUNT scanType)
 			DrawPCScannedStuff(scan); // PC-style node pop-in
 
 			if ((GLOBAL(CurrentActivity) & CHECK_ABORT))
+			{
 				return;
+			}
 
 			if (scanType == AUTO_SCAN)
 			{ // delay between scans
 				TimeOut = GetTimeCounter() + ONE_SECOND;
 				while (GetTimeCounter() < TimeOut
 					   && !AnyButtonPress(true))
+				{
 					RotatePlanetSphere(true, NULL);
+				}
 			}
 			else
 			{ // endless state - mimics PC "Exit Scan"
 				while (!AnyButtonPress(true))
+				{
 					RotatePlanetSphere(true, NULL);
+				}
 			}
 		}
 
@@ -1327,7 +1445,9 @@ ScanPlanet(uqm::COUNT scanType)
 	pSolarSysState->Orbit.scanType = NUM_SCAN_TYPES;
 
 	if (optScanStyle == OPT_PC || useDosSpheres)
+	{
 		RerenderPlanetSphere();
+	}
 
 	if (scanType == AUTO_SCAN || optScanStyle == OPT_PC)
 	{ // clear the last scan
@@ -1348,7 +1468,9 @@ DoScan(MENU_STATE* pMS)
 	cancel = PulsedInputState.menu[KEY_MENU_CANCEL];
 
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+	{
 		return false;
+	}
 
 	if (cancel || (select && pMS->CurState == EXIT_SCAN))
 	{
@@ -1380,7 +1502,9 @@ DoScan(MENU_STATE* pMS)
 			DrawMenuStateStrings(PM_MIN_SCAN, pMS->CurState);
 
 			if (!PickPlanetSide())
+			{
 				return false;
+			}
 
 			DrawMenuStateStrings(PM_MIN_SCAN, pMS->CurState);
 			SetFlashRect(SFR_MENU_3DO, false);
@@ -1397,7 +1521,9 @@ DoScan(MENU_STATE* pMS)
 
 		ScanPlanet(pMS->CurState);
 		if (pMS->CurState == AUTO_SCAN)
+		{
 			pMS->CurState = DISPATCH_SHUTTLE;
+		}
 		DrawMenuStateStrings(PM_MIN_SCAN, pMS->CurState);
 	}
 	else if (optWhichMenu == OPT_PC || (!(pSolarSysState->pOrbitalDesc->data_index & PLANET_SHIELDED) && pSolarSysState->SysInfo.PlanetInfo.AtmoDensity != GAS_GIANT_ATMOSPHERE))
@@ -1449,7 +1575,9 @@ GetScanContext(bool* owner)
 	if (ScanContext)
 	{
 		if (owner)
+		{
 			*owner = false;
+		}
 	}
 	else
 	{
@@ -1459,7 +1587,9 @@ GetScanContext(bool* owner)
 			ScanContext = CreateScanContext(true);
 		}
 		else
+		{
 			ScanContext = CreateScanContext(false);
+		}
 	}
 	return ScanContext;
 }
@@ -1503,9 +1633,13 @@ void ScanSystem(void)
 	SetFlashRect(SFR_MENU_3DO, false);
 
 	if (optWhichCoarseScan & 1)
+	{
 		PrintCoarseScan3DO();
+	}
 	else
+	{
 		PrintCoarseScanPC();
+	}
 
 	SetMenuSounds(MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
 
@@ -1569,15 +1703,19 @@ generateBioNode(SOLARSYS_STATE* system, ELEMENT* NodeElementPtr,
 	}
 
 	if (system->PlanetSideFrame[0] == 0)
+	{
 		system->PlanetSideFrame[0] =
 			CaptureDrawable(LoadGraphic(CANNISTER_MASK_PMAP_ANIM));
+	}
 
 	for (i = 0; i < MAX_LIFE_VARIATION
 				&& life_init_tab[i] != (uqm::BYTE)(creatureType + 1);
 		 ++i)
 	{
 		if (life_init_tab[i] != 0)
+		{
 			continue;
+		}
 
 		life_init_tab[i] = (uqm::BYTE)creatureType + 1;
 
@@ -1602,7 +1740,9 @@ void GeneratePlanetSide(void)
 
 	InitDisplayList();
 	if (pSolarSysState->pOrbitalDesc->data_index & PLANET_SHIELDED)
+	{
 		return;
+	}
 
 	memset(life_init_tab, 0, sizeof life_init_tab);
 
@@ -1625,11 +1765,15 @@ void GeneratePlanetSide(void)
 
 			if (isNodeRetrieved(&pSolarSysState->SysInfo.PlanetInfo,
 								scan, num_nodes))
+			{
 				continue;
+			}
 
 			hNodeElement = AllocElement();
 			if (!hNodeElement)
+			{
 				continue;
+			}
 
 			LockElement(hNodeElement, &NodeElementPtr);
 
@@ -1709,7 +1853,9 @@ countNodesRetrieved(PLANET_INFO* planetInfo, uqm::BYTE scanType)
 	for (count = 0; mask != 0; mask >>= 1)
 	{
 		if (mask & 1)
+		{
 			++count;
+		}
 	}
 	return count;
 }

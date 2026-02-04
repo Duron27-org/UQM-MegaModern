@@ -118,7 +118,9 @@ void NetDescriptor_close(NetDescriptor* nd)
 			(CallbackArg)nd);
 	}
 	else
+	{
 		NetDescriptor_decRef(nd);
+	}
 }
 
 void NetDescriptor_incRef(NetDescriptor* nd)
@@ -184,7 +186,9 @@ void NetDescriptor_setReadCallback(NetDescriptor* nd,
 			NetManager_activateReadCallback(nd);
 		}
 		else
+		{
 			NetManager_deactivateReadCallback(nd);
+		}
 	}
 }
 
@@ -199,7 +203,9 @@ void NetDescriptor_setWriteCallback(NetDescriptor* nd,
 			NetManager_activateWriteCallback(nd);
 		}
 		else
+		{
 			NetManager_deactivateWriteCallback(nd);
+		}
 	}
 }
 
@@ -214,7 +220,9 @@ void NetDescriptor_setExceptionCallback(NetDescriptor* nd,
 			NetManager_activateExceptionCallback(nd);
 		}
 		else
+		{
 			NetManager_deactivateExceptionCallback(nd);
+		}
 	}
 }
 

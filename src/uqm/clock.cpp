@@ -65,7 +65,9 @@ DaysInMonth(uqm::COUNT month, uqm::COUNT year)
 		};
 
 	if (month == 2 && IsLeapYear(year))
+	{
 		return 29; /* February, leap year */
+	}
 
 	return days_in_month[month - 1];
 }
@@ -102,7 +104,9 @@ float daysElapsed(void)
 	{
 		days += 365;
 		if (IsLeapYear(index))
+		{
 			days++;
+		}
 	}
 
 	if (GLOBAL(GameClock.month_index) == 1)
@@ -154,7 +158,9 @@ processClockDayEvents(void)
 bool InitGameClock(void)
 {
 	if (!InitQueue(&GLOBAL(GameClock.event_q), NUM_EVENTS, sizeof(EVENT)))
+	{
 		return (false);
+	}
 	clock_mutex = CreateMutex("Clock Mutex", SYNC_CLASS_TOPLEVEL);
 	GLOBAL(GameClock.month_index) = 2;
 	GLOBAL(GameClock.day_index) = 17;
@@ -180,14 +186,18 @@ void LockGameClock(void)
 {
 	// Block the GameClockTick() for executing
 	if (clock_mutex)
+	{
 		LockMutex(clock_mutex);
+	}
 }
 
 // For debugging use only
 void UnlockGameClock(void)
 {
 	if (clock_mutex)
+	{
 		UnlockMutex(clock_mutex);
+	}
 }
 
 // For debugging use only
@@ -196,7 +206,9 @@ bool GameClockRunning(void)
 	uqm::SIZE day_in_ticks;
 
 	if (!clock_mutex)
+	{
 		return false;
+	}
 
 	LockMutex(clock_mutex);
 	day_in_ticks = GLOBAL(GameClock.day_in_ticks);
@@ -226,13 +238,19 @@ void SetGameClockRate(uqm::COUNT seconds_per_day)
 			break;
 	}
 	if (GLOBAL(GameClock.day_in_ticks) == 0)
+	{
 		new_tick_count = new_day_in_ticks;
+	}
 	else if (GLOBAL(GameClock.tick_count) <= 0)
+	{
 		new_tick_count = 0;
+	}
 	else if ((new_tick_count = (uqm::SIZE)((uqm::DWORD)GLOBAL(GameClock.tick_count)
 										   * new_day_in_ticks / GLOBAL(GameClock.day_in_ticks)))
 			 == 0)
+	{
 		new_tick_count = 1;
+	}
 	GLOBAL(GameClock.day_in_ticks) = new_day_in_ticks;
 	GLOBAL(GameClock.tick_count) = new_tick_count;
 }
@@ -284,7 +302,9 @@ AddEvent(EVENT_TYPE type, uqm::COUNT month_index, uqm::COUNT day_index, uqm::COU
 		&& month_index == 0
 		&& day_index == 0
 		&& year_index == 0)
+	{
 		EventHandler(func_index);
+	}
 	else if (ValidateEvent(type, &month_index, &day_index, &year_index)
 			 && (hNewEvent = AllocEvent()))
 	{

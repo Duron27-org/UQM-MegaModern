@@ -53,14 +53,18 @@ bool load_animation(FRAME* pixarray, RESOURCE big_res, RESOURCE med_res, RESOURC
 
 	d = LoadGraphic(big_res);
 	if (!d)
+	{
 		return false;
+	}
 	pixarray[0] = CaptureDrawable(d);
 
 	if (med_res != NULL_RESOURCE)
 	{
 		d = LoadGraphic(med_res);
 		if (!d)
+		{
 			return false;
+		}
 	}
 	pixarray[1] = CaptureDrawable(d);
 
@@ -68,7 +72,9 @@ bool load_animation(FRAME* pixarray, RESOURCE big_res, RESOURCE med_res, RESOURC
 	{
 		d = LoadGraphic(sml_res);
 		if (!d)
+		{
 			return false;
+		}
 	}
 	pixarray[2] = CaptureDrawable(d);
 
@@ -100,7 +106,9 @@ bool free_image(FRAME* pixarray)
 			if (ok)
 			{
 				if (!DestroyDrawable(ReleaseDrawable(pixarray[i])))
+				{
 					retval = false;
+				}
 			}
 			already_freed[i] = pixarray[i];
 			pixarray[i] = NULL;
@@ -121,12 +129,16 @@ bool InitSpace(void)
 		stars_in_space = CaptureDrawable(
 			LoadGraphic(STAR_MASK_PMAP_ANIM));
 		if (stars_in_space == NULL)
+		{
 			return false;
+		}
 
 		scenery = CaptureDrawable(
 			LoadGraphic(SCENERY_MASK_PMAP_ANIM));
 		if (scenery == NULL)
+		{
 			return false;
+		}
 
 
 		if (IS_HD)
@@ -135,26 +147,34 @@ bool InitSpace(void)
 								STARMISK_BIG_MASK_PMAP_ANIM,
 								STARMISK_MED_MASK_PMAP_ANIM,
 								STARMISK_SML_MASK_PMAP_ANIM))
+			{
 				return false;
+			}
 		}
 
 		if (!load_animation(explosion,
 							BOOM_BIG_MASK_PMAP_ANIM,
 							BOOM_MED_MASK_PMAP_ANIM,
 							BOOM_SML_MASK_PMAP_ANIM))
+		{
 			return false;
+		}
 
 		if (!load_animation(blast,
 							BLAST_BIG_MASK_PMAP_ANIM,
 							BLAST_MED_MASK_PMAP_ANIM,
 							BLAST_SML_MASK_PMAP_ANIM))
+		{
 			return false;
+		}
 
 		if (!load_animation(asteroid,
 							ASTEROID_BIG_MASK_PMAP_ANIM,
 							ASTEROID_MED_MASK_PMAP_ANIM,
 							ASTEROID_SML_MASK_PMAP_ANIM))
+		{
 			return false;
+		}
 	}
 
 	return true;
@@ -186,7 +206,9 @@ BuildSIS(void)
 
 	hStarShip = Build(&race_q[0], SIS_SHIP_ID);
 	if (!hStarShip)
+	{
 		return 0;
+	}
 	StarShipPtr = LockStarShip(&race_q[0], hStarShip);
 	StarShipPtr->playerNr = RPG_PLAYER_NUM;
 	StarShipPtr->captains_name_index = 0;
@@ -247,15 +269,21 @@ InitShips(void)
 		}
 
 		if (lowByte(GLOBAL(CurrentActivity)) == IN_LAST_BATTLE)
+		{
 			free_gravity_well();
+		}
 		else
 		{
 #define NUM_ASTEROIDS 5
 			for (i = 0; i < NUM_ASTEROIDS; ++i)
+			{
 				spawn_asteroid(NULL);
+			}
 #define NUM_PLANETS 1
 			for (i = 0; i < NUM_PLANETS; ++i)
+			{
 				spawn_planet();
+			}
 		}
 
 		num_ships = NUM_SIDES;
@@ -282,7 +310,9 @@ CountCrewElements(void)
 		LockElement(hElement, &ElementPtr);
 		hNextElement = GetSuccElement(ElementPtr);
 		if (ElementPtr->state_flags & CREW_OBJECT)
+		{
 			++result;
+		}
 
 		UnlockElement(hElement);
 	}
@@ -302,7 +332,9 @@ void UninitShips(void)
 	UninitSpace();
 
 	for (i = 0; i < NUM_PLAYERS; ++i)
+	{
 		SPtr[i] = 0;
+	}
 
 	// Count the crew floating in space.
 	crew_retrieved = CountCrewElements();
@@ -326,11 +358,15 @@ void UninitShips(void)
 			if (StarShipPtr->RaceDescPtr->ship_info.crew_level)
 			{
 				if (crew_retrieved >= StarShipPtr->RaceDescPtr->ship_info.max_crew - StarShipPtr->RaceDescPtr->ship_info.crew_level)
+				{
 					StarShipPtr->RaceDescPtr->ship_info.crew_level =
 						StarShipPtr->RaceDescPtr->ship_info.max_crew;
+				}
 				else
+				{
 					StarShipPtr->RaceDescPtr->ship_info.crew_level +=
 						crew_retrieved;
+				}
 			}
 
 			/* Record crew left after battle */
@@ -355,7 +391,9 @@ void UninitShips(void)
 		for (i = NUM_PLAYERS - 1; i >= 0; --i)
 		{
 			if (SPtr[i] && !FleetIsInfinite(i))
+			{
 				UpdateShipFragCrew(SPtr[i]);
+			}
 		}
 	}
 
@@ -363,10 +401,14 @@ void UninitShips(void)
 	{
 		// Remove any ships left from the race queue.
 		for (i = 0; i < NUM_PLAYERS; i++)
+		{
 			ReinitQueue(&race_q[i]);
+		}
 
 		if (inHQSpace())
+		{
 			FreeHyperspace();
+		}
 	}
 }
 

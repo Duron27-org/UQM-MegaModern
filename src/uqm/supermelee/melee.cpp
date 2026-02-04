@@ -313,7 +313,9 @@ DrawControlText(STAMP stamp, uqm::COUNT which_icon, bool HiLite)
 	uqm::CHAR_T buf[256];
 
 	if (!ButtonText(which_icon))
+	{
 		return;
+	}
 
 	OldFont = SetContextFont(MicroThinFont);
 
@@ -359,7 +361,9 @@ DrawBattleText(STAMP stamp, uqm::COUNT which_icon, bool HiLite)
 	uqm::CHAR_T buf[256];
 
 	if (!ButtonText(which_icon))
+	{
 		return;
+	}
 
 	OldFont = SetContextFont(LabelFont);
 
@@ -401,7 +405,9 @@ DrawButtonText(STAMP stamp, uqm::COUNT which_icon, bool HiLite)
 	uqm::CHAR_T buf[256];
 
 	if (!ButtonText(which_icon))
+	{
 		return;
+	}
 
 	OldFont = SetContextFont(ButtonFont);
 	OldColor = SetContextForeGroundColor(
@@ -483,7 +489,9 @@ void DrawShipPickerText(STAMP stamp)
 	for (i = 0; i < 2; i++)
 	{ // Check if we actually have text to print
 		if (!strlen(GAME_STRING(MELEE_STRING_BASE + 23 + i)))
+		{
 			return;
+		}
 	}
 
 	OldFont = SetContextFont(LabelFont);
@@ -549,7 +557,9 @@ DrawTeamPickerText(STAMP stamp)
 					   GAME_STRING(MELEE_STRING_BASE + 20 + i));
 
 		if (!strlen(buf))
+		{
 			return;
+		}
 	}
 
 	OldFont = SetContextFont(LabelFont);
@@ -586,7 +596,9 @@ DrawTeamPickerText(STAMP stamp)
 		text_r = font_GetTextRect(&t);
 
 		if (i == 2)
+		{
 			break;
+		}
 
 		s.frame = SetAbsFrameIndex(MeleeFrame,
 								   CANCEL_PC + i + (optControllerType * 4));
@@ -665,7 +677,9 @@ void DrawMeleeIcon(uqm::COUNT which_icon, bool HiLite)
 	bool NeedBatch = which_text && which_text < 3;
 
 	if (NeedBatch)
+	{
 		BatchGraphics();
+	}
 
 	s.origin.x = 0;
 	s.origin.y = 0;
@@ -673,7 +687,9 @@ void DrawMeleeIcon(uqm::COUNT which_icon, bool HiLite)
 	DrawStamp(&s);
 
 	if (!which_text)
+	{
 		return;
+	}
 
 	switch (which_text)
 	{
@@ -695,7 +711,9 @@ void DrawMeleeIcon(uqm::COUNT which_icon, bool HiLite)
 	}
 
 	if (NeedBatch)
+	{
 		UnbatchGraphics();
+	}
 }
 
 static FleetShipIndex
@@ -753,17 +771,21 @@ DrawShipBox(uqm::COUNT side, FleetShipIndex index, MeleeShip ship, bool HiLite)
 	else
 	{
 		if (HiLite)
+		{
 			DrawStarConBox(&r, 1,
 						   SHIPBOX_TOPLEFT_COLOR_HILITE,
 						   SHIPBOX_BOTTOMRIGHT_COLOR_HILITE,
 						   FilledSlot, SHIPBOX_INTERIOR_COLOR_HILITE, false,
 						   TRANSPARENT);
+		}
 		else
+		{
 			DrawStarConBox(&r, 1,
 						   SHIPBOX_TOPLEFT_COLOR_NORMAL,
 						   SHIPBOX_BOTTOMRIGHT_COLOR_NORMAL,
 						   FilledSlot, SHIPBOX_INTERIOR_COLOR_NORMAL, false,
 						   TRANSPARENT);
+		}
 	}
 
 	if (FilledSlot)
@@ -811,7 +833,9 @@ DrawControls(uqm::COUNT which_side, bool HiLite)
 	}
 
 	if (PlayerControl[which_side] & HUMAN_CONTROL)
+	{
 		which_icon = 0;
+	}
 	else
 	{
 		switch (PlayerControl[which_side]
@@ -853,7 +877,9 @@ DrawTeams(void)
 												side, index);
 
 			if (index == TRUE_MELEE_FLEET_SIZE)
+			{
 				break;
+			}
 
 			DrawShipBox(side, index, ship, false);
 		}
@@ -879,10 +905,14 @@ void QuickRepair(uqm::COUNT whichFrame, RECT* pRect)
 	SetContextClipRect(&r);
 
 	if (IS_PAD)
+	{
 		oldOrigin = SetContextOrigin(MAKE_POINT(r.corner.x, r.corner.y));
+	}
 	else
+	{
 		oldOrigin =
 			SetContextOrigin(MAKE_POINT(-r.corner.x, -r.corner.y));
+	}
 
 	DrawMeleeIcon(whichFrame, false);
 
@@ -900,7 +930,9 @@ DrawSuperMeleeTitle(void)
 	uqm::CHAR_T* buf = GAME_STRING(MELEE_STRING_BASE + 9);
 
 	if (strlen(buf) == 0)
+	{
 		return;
+	}
 
 	OldFont = SetContextFont(LoadFont(MELEE_TITLE_FONT));
 	OldFontEffect = SetContextFontEffect(
@@ -967,7 +999,9 @@ void RepairMeleeFrame(const RECT* pRect)
 	}
 
 	if (pMeleeState->MeleeOption == BUILD_PICK)
+	{
 		DrawPickFrame(pMeleeState);
+	}
 
 	UnbatchGraphics();
 	SetContextOrigin(oldOrigin);
@@ -1113,9 +1147,13 @@ DrawTeamString(MELEE_STATE* pMS, uqm::COUNT side, uqm::COUNT HiLiteState,
 		// calculate the cursor position and draw it
 		pchar_deltas = char_deltas;
 		for (i = pMS->CurIndex; i > 0; --i)
+		{
 			text_r.corner.x += (uqm::SIZE)*pchar_deltas++;
+		}
 		if (pMS->CurIndex < lfText.CharCount) /* cursor mid-line */
+		{
 			text_r.corner.x -= RES_SCALE(1);
+		}
 
 		if (HiLiteState & DTSHS_BLOCKCUR)
 		{ // Use block cursor for keyboardless systems
@@ -1159,7 +1197,9 @@ DrawTeamString(MELEE_STATE* pMS, uqm::COUNT side, uqm::COUNT HiLiteState,
 			text_r.extent.width = RES_SCALE(1);
 
 			if (pMS->CurIndex == lfText.CharCount)
+			{
 				text_r.corner.x -= IF_HD(3);
+			}
 
 			SetCursorFlashBlock(false);
 		}
@@ -1198,7 +1238,9 @@ multiLineDrawText(TEXT* textIn, RECT* clipRect)
 	text.baseline.y = 0;
 
 	if (clipRect->extent.width <= text.baseline.x)
+	{
 		goto out;
+	}
 
 	lineWidth = clipRect->extent.width - text.baseline.x;
 
@@ -1283,13 +1325,17 @@ UpdateMeleeStatusMessage(ssize_t player)
 			break;
 		case NetState_connecting:
 			if (NetConnection_getPeerOptions(conn)->isServer)
+			{
 				DrawMeleeStatusMessage(
 					GAME_STRING(NETMELEE_STRING_BASE + 1));
+			}
 			// "Awaiting incoming connection...\n"
 			// "Press RIGHT to cancel."
 			else
+			{
 				DrawMeleeStatusMessage(
 					GAME_STRING(NETMELEE_STRING_BASE + 2));
+			}
 			// "Attempting outgoing connection...\n"
 			// "Press RIGHT to cancel."
 			break;
@@ -1358,12 +1404,16 @@ Deselect(uqm::BYTE opt)
 			if (pMeleeState->InputFunc == DoEdit)
 			{
 				if (pMeleeState->row < NUM_MELEE_ROWS)
+				{
 					DrawShipBoxCurrent(pMeleeState, false);
+				}
 				else if (pMeleeState->CurIndex == MELEE_STATE_INDEX_DONE)
 				{
 					// Not currently editing the team name.
 					if (IS_HD)
+					{
 						DrawTeamStringsBackGround(pMeleeState->side);
+					}
 
 					DrawTeamString(pMeleeState, pMeleeState->side,
 								   DTSHS_NORMAL, NULL);
@@ -1431,12 +1481,16 @@ Select(uqm::BYTE opt)
 			if (pMeleeState->InputFunc == DoEdit)
 			{
 				if (pMeleeState->row < NUM_MELEE_ROWS)
+				{
 					DrawShipBoxCurrent(pMeleeState, true);
+				}
 				else if (pMeleeState->CurIndex == MELEE_STATE_INDEX_DONE)
 				{
 					// Not currently editing the team name.
 					if (IS_HD)
+					{
 						DrawTeamStringsBackGround(pMeleeState->side);
+					}
 
 					DrawTeamString(pMeleeState, pMeleeState->side,
 								   DTSHS_SELECTED, NULL);
@@ -1468,9 +1522,13 @@ void Melee_flashSelection(MELEE_STATE* pMS)
 
 		OldContext = SetContext(SpaceContext);
 		if (select)
+		{
 			Select(pMS->MeleeOption);
+		}
 		else
+		{
 			Deselect(pMS->MeleeOption);
+		}
 		SetContext(OldContext);
 	}
 }
@@ -1559,7 +1617,9 @@ void DrawMeleeShipStrings(MELEE_STATE* pMS, MeleeShip NewStarShip)
 		InitShipStatus(&MasterPtr->ShipInfo, NULL, NULL, true);
 
 		if (optMeleeToolTips && pMS->MeleeOption == BUILD_PICK)
+		{
 			DrawTooltip(&MasterPtr->ShipInfo);
+		}
 
 		UnlockMasterShip(&master_q, hMasterShip);
 	}
@@ -1596,11 +1656,15 @@ GetShipValue(MeleeShip StarShip)
 	uqm::COUNT val;
 
 	if (StarShip == MELEE_NONE)
+	{
 		return 0;
+	}
 
 	val = GetShipCostFromIndex(StarShip);
 	if (val == 0)
+	{
 		val = (uqm::COUNT)~0;
+	}
 
 	return val;
 }
@@ -1616,10 +1680,14 @@ static bool
 isShipSlotSelected(MELEE_STATE* pMS, uqm::COUNT side, FleetShipIndex index)
 {
 	if (pMS->MeleeOption != EDIT_MELEE)
+	{
 		return false;
+	}
 
 	if (pMS->side != side)
+	{
 		return false;
+	}
 
 	return (index == GetShipIndex(pMS->row, pMS->col));
 }
@@ -1632,7 +1700,9 @@ AdvanceCursor(MELEE_STATE* pMS)
 	{
 		++pMS->row;
 		if (pMS->row < NUM_MELEE_ROWS)
+		{
 			pMS->col = 0;
+		}
 		else
 		{
 			pMS->col = NUM_MELEE_COLUMNS - 1;
@@ -1650,7 +1720,9 @@ OnTeamNameChange(TEXTENTRY_STATE* pTES)
 
 	pMS->CurIndex = pTES->CursorPos;
 	if (pTES->JoystickMode)
+	{
 		hl |= DTSHS_BLOCKCUR;
+	}
 
 	ret = DrawTeamString(pMS, pMS->side, hl, pTES->BaseStr);
 
@@ -1721,7 +1793,9 @@ DoEdit(MELEE_STATE* pMS)
 	GamePaused = false;
 
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+	{
 		return false;
+	}
 
 	SetMenuSounds(MENU_SOUND_ARROWS, MENU_SOUND_SELECT | MENU_SOUND_DELETE);
 	if (!pMS->Initialized)
@@ -1821,12 +1895,16 @@ DoEdit(MELEE_STATE* pMS)
 			if (PulsedInputState.menu[KEY_MENU_LEFT])
 			{
 				if (col > 0)
+				{
 					--col;
+				}
 			}
 			else if (PulsedInputState.menu[KEY_MENU_RIGHT])
 			{
 				if (col < NUM_MELEE_COLUMNS - 1)
+				{
 					++col;
+				}
 			}
 
 			if (PulsedInputState.menu[KEY_MENU_UP])
@@ -1834,7 +1912,9 @@ DoEdit(MELEE_STATE* pMS)
 				if (row-- == 0)
 				{
 					if (side == 0)
+					{
 						row = 0;
+					}
 					else
 					{
 						row = NUM_MELEE_ROWS;
@@ -1847,7 +1927,9 @@ DoEdit(MELEE_STATE* pMS)
 				if (row++ == NUM_MELEE_ROWS)
 				{
 					if (side == 1)
+					{
 						row = NUM_MELEE_ROWS;
+					}
 					else
 					{
 						row = 0;
@@ -1902,10 +1984,14 @@ numPlayersReady(void)
 			conn = netConnections[player];
 
 			if (conn == NULL || !NetConnection_isConnected(conn))
+			{
 				return -1;
+			}
 
 			if (NetConnection_getState(conn) > NetState_inSetup)
+			{
 				numDone++;
+			}
 		}
 	}
 
@@ -1959,7 +2045,9 @@ DoConfirmSettings(MELEE_STATE* pMS)
 	StartMelee(pMS);
 	pMS->meleeStarted = false;
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+	{
 		return false;
+	}
 	return true;
 #else
 	closeDisconnectedConnections();
@@ -1995,16 +2083,22 @@ DoConfirmSettings(MELEE_STATE* pMS)
 			NetConnection* conn;
 
 			if (!(PlayerControl[player] & NETWORK_CONTROL))
+			{
 				continue;
+			}
 
 			conn = netConnections[player];
 			assert(conn != NULL);
 
 			if (!NetConnection_isConnected(conn))
+			{
 				continue;
+			}
 
 			if (NetConnection_getDiscriminant(conn))
+			{
 				Netplay_Notify_seedRandom(conn, SeedRandomNumbers());
+			}
 		}
 		flushPacketQueues();
 	}
@@ -2017,21 +2111,27 @@ DoConfirmSettings(MELEE_STATE* pMS)
 		// it will have received the seed.
 		bool allOk = negotiateReadyConnections(true, NetState_interBattle);
 		if (!allOk)
+		{
 			return false;
+		}
 	}
 
 	// The maximum value for all connections is used.
 	{
 		bool ok = setupInputDelay(netplayOptions.inputDelay);
 		if (!ok)
+		{
 			return false;
+		}
 	}
 
 	pMS->InputFunc = DoMelee;
 
 	StartMelee(pMS);
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+	{
 		return false;
+	}
 
 	return true;
 #endif /* defined (NETPLAY) */
@@ -2115,7 +2215,9 @@ StartMelee(MELEE_STATE* pMS)
 	do
 	{
 		if (!SetPlayerInputAll())
+		{
 			break;
+		}
 		BuildAndDrawShipList(pMS);
 
 		WaitForSoundEnd(TFBSOUND_WAIT_ALL);
@@ -2126,7 +2228,9 @@ StartMelee(MELEE_STATE* pMS)
 		ClearPlayerInputAll();
 
 		if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+		{
 			return;
+		}
 
 		SleepThreadUntil(FadeScreen(FadeAllToBlack, ONE_SECOND / 2)
 						 + ONE_SECOND / 60);
@@ -2176,7 +2280,9 @@ StartMeleeButtonPressed(MELEE_STATE* pMS)
 			NetConnection* conn;
 
 			if (!(PlayerControl[player] & NETWORK_CONTROL))
+			{
 				continue;
+			}
 
 			conn = netConnections[player];
 			if (conn == NULL || !NetConnection_isConnected(conn))
@@ -2184,13 +2290,17 @@ StartMeleeButtonPressed(MELEE_STATE* pMS)
 				// Connection for player not established.
 				netReady = false;
 				if (player == 0)
+				{
 					DrawMeleeStatusMessage(
 						GAME_STRING(NETMELEE_STRING_BASE + 5));
+				}
 				// "Connection for bottom player not "
 				// "established."
 				else
+				{
 					DrawMeleeStatusMessage(
 						GAME_STRING(NETMELEE_STRING_BASE + 6));
+				}
 				// "Connection for top player not "
 				// "established."
 			}
@@ -2200,12 +2310,16 @@ StartMeleeButtonPressed(MELEE_STATE* pMS)
 				// is not in a state that setup information can be sent.
 				netReady = false;
 				if (player == 0)
+				{
 					DrawMeleeStatusMessage(
 						GAME_STRING(NETMELEE_STRING_BASE + 14));
+				}
 				// "Connection for bottom player not ready."
 				else
+				{
 					DrawMeleeStatusMessage(
 						GAME_STRING(NETMELEE_STRING_BASE + 15));
+				}
 				// "Connection for top player not ready."
 			}
 		}
@@ -2216,7 +2330,9 @@ StartMeleeButtonPressed(MELEE_STATE* pMS)
 		}
 
 		if (numPlayersReady() != NUM_PLAYERS)
+		{
 			DrawMeleeStatusMessage(GAME_STRING(NETMELEE_STRING_BASE + 7));
+		}
 		// "Waiting for remote confirmation."
 		confirmConnections();
 	}
@@ -2238,7 +2354,9 @@ DoConnectingDialog(MELEE_STATE* pMS)
 	GamePaused = false;
 
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+	{
 		return false;
+	}
 
 	SetMenuSounds(MENU_SOUND_NONE, MENU_SOUND_NONE);
 	if (!pMS->Initialized)
@@ -2250,7 +2368,9 @@ DoConnectingDialog(MELEE_STATE* pMS)
 
 		// Build a network connection.
 		if (netConnections[which_side] != NULL)
+		{
 			closePlayerNetworkConnection(which_side);
+		}
 
 		pMS->Initialized = true;
 		conn = openPlayerNetworkConnection(which_side, pMS);
@@ -2351,7 +2471,9 @@ check_for_disconnects(MELEE_STATE* pMS)
 		NetConnection* conn;
 
 		if (!(PlayerControl[player] & NETWORK_CONTROL))
+		{
 			continue;
+		}
 
 		conn = netConnections[player];
 		if (conn == NULL || !NetConnection_isConnected(conn))
@@ -2390,7 +2512,9 @@ nextControlType(uqm::COUNT which_side)
 #ifdef NETPLAY
 		case NETWORK_CONTROL | STANDARD_RATING:
 			if (netConnections[which_side] != NULL)
+			{
 				closePlayerNetworkConnection(which_side);
+			}
 			UpdateMeleeStatusMessage(-1);
 			PlayerControl[which_side] = HUMAN_CONTROL | STANDARD_RATING;
 			break;
@@ -2410,7 +2534,9 @@ static MELEE_OPTIONS
 MeleeOptionDown(MELEE_OPTIONS current)
 {
 	if (current == QUIT_BOT)
+	{
 		return TOP_ENTRY;
+	}
 	return current + 1;
 }
 
@@ -2418,7 +2544,9 @@ static MELEE_OPTIONS
 MeleeOptionUp(MELEE_OPTIONS current)
 {
 	if (current == TOP_ENTRY)
+	{
 		return QUIT_BOT;
+	}
 	return current - 1;
 }
 
@@ -2440,9 +2568,13 @@ MeleeOptionSelect(MELEE_STATE* pMS)
 		case SAVE_BOT:
 			pMS->side = pMS->MeleeOption == SAVE_TOP ? 0 : 1;
 			if (MeleeSetup_getFleetValue(pMS->meleeSetup, pMS->side) > 0)
+			{
 				DoSaveTeam(pMS);
+			}
 			else
+			{
 				PlayMenuSound(MENU_SOUND_FAILURE);
+			}
 			break;
 		case QUIT_BOT:
 			GLOBAL(CurrentActivity) |= CHECK_ABORT;
@@ -2485,7 +2617,9 @@ bool DoMelee(MELEE_STATE* pMS)
 	GamePaused = false;
 
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+	{
 		return false;
+	}
 
 	SetMenuSounds(MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
 	if (!pMS->Initialized)
@@ -2567,7 +2701,9 @@ bool DoMelee(MELEE_STATE* pMS)
 		{
 #ifdef NETPLAY
 			if (pMS->MeleeOption == CONTROLS_TOP || pMS->MeleeOption == CONTROLS_BOT)
+			{
 				UpdateMeleeStatusMessage(-1);
+			}
 #endif
 			Deselect(pMS->MeleeOption);
 			pMS->MeleeOption = NewMeleeOption;
@@ -2577,9 +2713,13 @@ bool DoMelee(MELEE_STATE* pMS)
 			{
 				uqm::COUNT side = (NewMeleeOption == CONTROLS_TOP) ? 1 : 0;
 				if (PlayerControl[side] & NETWORK_CONTROL)
+				{
 					UpdateMeleeStatusMessage(side);
+				}
 				else
+				{
 					UpdateMeleeStatusMessage(-1);
+				}
 			}
 #endif
 		}
@@ -2588,7 +2728,9 @@ bool DoMelee(MELEE_STATE* pMS)
 		{
 			MeleeOptionSelect(pMS);
 			if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+			{
 				return false;
+			}
 		}
 	}
 
@@ -2614,31 +2756,43 @@ LoadMeleeConfig(MELEE_STATE* pMS)
 
 	stream = uio_fopen(configDir, "melee.cfg", "rb");
 	if (stream == NULL)
+	{
 		goto err;
+	}
 
 	{
 		struct stat sb;
 
 		if (uio_fstat(uio_streamHandle(stream), &sb) == -1)
+		{
 			goto err;
+		}
 		if ((size_t)sb.st_size != (1 + MeleeTeam_serialSize) * NUM_SIDES)
+		{
 			goto err;
+		}
 	}
 
 	for (side = 0; side < NUM_SIDES; side++)
 	{
 		status = uio_getc(stream);
 		if (status == EOF)
+		{
 			goto err;
+		}
 		PlayerControl[side] = (uqm::BYTE)status;
 		// XXX: insert sanity check on PlanetControl here.
 
 		if (MeleeSetup_deserializeTeam(pMS->meleeSetup, side, stream) == -1)
+		{
 			goto err;
+		}
 
 		/* Do not allow netplay mode at the start. */
 		if (PlayerControl[side] & NETWORK_CONTROL)
+		{
 			PlayerControl[side] = HUMAN_CONTROL | STANDARD_RATING;
+		}
 	}
 
 	uio_fclose(stream);
@@ -2646,7 +2800,9 @@ LoadMeleeConfig(MELEE_STATE* pMS)
 
 err:
 	if (stream)
+	{
 		uio_fclose(stream);
+	}
 	return -1;
 }
 
@@ -2658,19 +2814,27 @@ WriteMeleeConfig(MELEE_STATE* pMS)
 
 	stream = res_OpenResFile(configDir, "melee.cfg", "wb");
 	if (stream == NULL)
+	{
 		goto err;
+	}
 
 	for (side = 0; side < NUM_SIDES; side++)
 	{
 		if (uio_putc(PlayerControl[side], stream) == EOF)
+		{
 			goto err;
+		}
 
 		if (MeleeSetup_serializeTeam(pMS->meleeSetup, side, stream) == -1)
+		{
 			goto err;
+		}
 	}
 
 	if (!res_CloseResFile(stream))
+	{
 		goto err;
+	}
 
 	return 0;
 
@@ -2707,7 +2871,9 @@ void Melee(void)
 		{
 			uqm::COUNT player;
 			for (player = 0; player < NUM_PLAYERS; player++)
+			{
 				netConnections[player] = NULL;
+			}
 		}
 #endif
 
@@ -2763,14 +2929,20 @@ void updateRandomSeed(MELEE_STATE* pMS, uqm::COUNT side, uqm::DWORD seed)
 void confirmationCancelled(MELEE_STATE* pMS, uqm::COUNT side)
 {
 	if (side == 0)
+	{
 		DrawMeleeStatusMessage(GAME_STRING(NETMELEE_STRING_BASE + 16));
+	}
 	// "Bottom player changed something -- need to reconfirm."
 	else
+	{
 		DrawMeleeStatusMessage(GAME_STRING(NETMELEE_STRING_BASE + 17));
+	}
 	// "Top player changed something -- need to reconfirm."
 
 	if (pMS->InputFunc == DoConfirmSettings)
+	{
 		pMS->InputFunc = DoMelee;
+	}
 }
 
 static void
@@ -2792,12 +2964,16 @@ connectionFeedback(NetConnection* conn, const char* str, bool forcePopup)
 void connectedFeedback(NetConnection* conn)
 {
 	if (NetConnection_getPlayerNr(conn) == 0)
+	{
 		connectionFeedback(conn, GAME_STRING(NETMELEE_STRING_BASE + 8),
 						   false);
+	}
 	// "Bottom player is connected."
 	else
+	{
 		connectionFeedback(conn, GAME_STRING(NETMELEE_STRING_BASE + 9),
 						   false);
+	}
 	// "Top player is connected."
 
 	PlayMenuSound(MENU_SOUND_INVOKED);
@@ -2834,7 +3010,9 @@ void abortFeedback(NetConnection* conn, NetplayAbortReason reason)
 
 	msg = abortReasonString(reason);
 	if (msg != NULL)
+	{
 		connectionFeedback(conn, msg, true);
+	}
 }
 
 static const char*
@@ -2877,7 +3055,9 @@ void resetFeedback(NetConnection* conn, NetplayResetReason reason,
 
 	msg = resetReasonString(reason);
 	if (msg != NULL)
+	{
 		connectionFeedback(conn, msg, false);
+	}
 
 	// End supermelee. This must not be done before connectionFeedback(),
 	// otherwise the message will immediately disappear.
@@ -2887,24 +3067,32 @@ void resetFeedback(NetConnection* conn, NetplayResetReason reason,
 void errorFeedback(NetConnection* conn)
 {
 	if (NetConnection_getPlayerNr(conn) == 0)
+	{
 		connectionFeedback(conn, GAME_STRING(NETMELEE_STRING_BASE + 10),
 						   false);
+	}
 	// "Bottom player: connection failed."
 	else
+	{
 		connectionFeedback(conn, GAME_STRING(NETMELEE_STRING_BASE + 11),
 						   false);
+	}
 	// "Top player: connection failed."
 }
 
 void closeFeedback(NetConnection* conn)
 {
 	if (NetConnection_getPlayerNr(conn) == 0)
+	{
 		connectionFeedback(conn, GAME_STRING(NETMELEE_STRING_BASE + 12),
 						   false);
+	}
 	// "Bottom player: connection closed."
 	else
+	{
 		connectionFeedback(conn, GAME_STRING(NETMELEE_STRING_BASE + 13),
 						   false);
+	}
 	// "Top player: connection closed."
 }
 
@@ -2920,7 +3108,9 @@ static void
 Melee_UpdateView_fleetValue(MELEE_STATE* pMS, uqm::COUNT side)
 {
 	if (pMS->meleeStarted)
+	{
 		return;
+	}
 
 	DrawFleetValue(pMS, side, DTSHS_REPAIR);
 	// BUG: The fleet value is always drawn as deselected.
@@ -2932,7 +3122,9 @@ Melee_UpdateView_ship(MELEE_STATE* pMS, uqm::COUNT side, FleetShipIndex index)
 	MeleeShip ship;
 
 	if (pMS->meleeStarted)
+	{
 		return;
+	}
 
 	ship = MeleeSetup_getShip(pMS->meleeSetup, side, index);
 
@@ -2950,7 +3142,9 @@ static void
 Melee_UpdateView_teamName(MELEE_STATE* pMS, uqm::COUNT side)
 {
 	if (pMS->meleeStarted)
+	{
 		return;
+	}
 
 	DrawTeamString(pMS, side, DTSHS_REPAIR, NULL);
 }
@@ -3021,7 +3215,9 @@ bool Melee_LocalChange_ship(MELEE_STATE* pMS, uqm::COUNT side, FleetShipIndex in
 							MeleeShip ship)
 {
 	if (!Melee_Change_ship(pMS, side, index, ship))
+	{
 		return false;
+	}
 
 #ifdef NETPLAY
 	{
@@ -3046,7 +3242,9 @@ bool Melee_LocalChange_ship(MELEE_STATE* pMS, uqm::COUNT side, FleetShipIndex in
 bool Melee_LocalChange_teamName(MELEE_STATE* pMS, uqm::COUNT side, const char* name)
 {
 	if (!Melee_Change_teamName(pMS, side, name))
+	{
 		return false;
+	}
 
 #ifdef NETPLAY
 	{
@@ -3076,7 +3274,9 @@ bool Melee_LocalChange_fleet(MELEE_STATE* pMS, size_t teamNr,
 	{
 		if (Melee_LocalChange_ship(
 				pMS, (uqm::COUNT)teamNr, slotI, fleet[slotI]))
+		{
 			changed = true;
+		}
 	}
 	return changed;
 }
@@ -3089,9 +3289,13 @@ bool Melee_LocalChange_team(MELEE_STATE* pMS, size_t teamNr,
 	bool changed = false;
 
 	if (Melee_LocalChange_fleet(pMS, teamNr, fleet))
+	{
 		changed = true;
+	}
 	if (Melee_LocalChange_teamName(pMS, (uqm::COUNT)teamNr, name))
+	{
 		changed = true;
+	}
 
 	return changed;
 }

@@ -42,19 +42,27 @@ ScanInterpolation(uqm::CHAR_T* start)
 {
 	uqm::COUNT depth = 1;
 	if (!start || start[0] != '<')
+	{
 		return start;
+	}
 	start++;
 	while (*start && depth > 0)
 	{
 		if (start[0] == '<' && start[1] == '%')
+		{
 			depth++;
+		}
 		if (start[0] == '%' && start[1] == '>')
+		{
 			depth--;
+		}
 		start++;
 	}
 	// If we're not on a null character, it's the >, roll forward.
 	if (*start)
+	{
 		start++;
+	}
 	return start;
 }
 
@@ -113,7 +121,9 @@ InterpolateChunk(uqm::CHAR_T buffer[], uqm::CHAR_T* start)
 			// already read, we return and handle that first.  Otherwise,
 			// handle this interpolation, but then we're done.
 			if (buffsize > 0)
+			{
 				return start;
+			}
 			done = true;
 		}
 		strncpy(str_buf, start, end - start);
@@ -138,7 +148,9 @@ InterpolateChunk(uqm::CHAR_T buffer[], uqm::CHAR_T* start)
 	}
 	// If we ended because of robointerpolation...
 	if (done)
+	{
 		return start;
+	}
 	// Otherwise we're done with interpolation, write the remainder
 	// to buffer and return
 	buffsize += (uqm::COUNT)strlen(start);
@@ -181,7 +193,9 @@ void NPCPhrase_cb(int index, CallbackFunction cb)
 	uqm::COUNT i;
 
 	if (index == 0)
+	{
 		return;
+	}
 
 	pStr = (uqm::CHAR_T*)GetStringAddress(
 		SetAbsStringTableIndex(CommData.ConversationPhrases, index - 1));
@@ -199,17 +213,23 @@ void NPCPhrase_cb(int index, CallbackFunction cb)
 		}
 		SpliceTrack(pClip, pStr, pTimeStamp, cb);
 		if (isPStrAlloced)
+		{
 			HFree(pStr);
+		}
 		return;
 	}
 
 	// From here on, we are doing StarSeed robo-interpolation.
 	static STRING RoboPhrases = NULL;
 	if (!RoboPhrases)
+	{
 		RoboPhrases = CaptureStringTable(
 			LoadStringTableInstance("comm.robot.dialogue"));
+	}
 	for (i = 0; RoboTrack[i] && i < NUM_ROBO_TRACKS; i++)
+	{
 		RoboTrack[i] = 0;
+	}
 #ifdef DEBUG_STARSEED_TRACE_TIMESTAMP
 	// This code will roll the "SENSE_KOHRAH_VICTORY" dialog and timestamps
 	// instead of the correct ones for debugging or track syncing purposes.
@@ -225,8 +245,12 @@ void NPCPhrase_cb(int index, CallbackFunction cb)
 
 	// Switch to alternate time stamps if they exist
 	if (pTimeStamp)
+	{
 		if (strstr(pTimeStamp, ";"))
+		{
 			pTimeStamp = strstr(pTimeStamp, ";") + 1;
+		}
+	}
 
 #ifdef DEBUG_STARSEED
 	fprintf(stderr, "Received string...\n<<\n%s\n>>\n", pStr);
@@ -274,9 +298,13 @@ void NPCPhrase_cb(int index, CallbackFunction cb)
 				if (pTimeStamp)
 				{
 					if (strstr(pTimeStamp, ";"))
+					{
 						pTimeStamp = strstr(pTimeStamp, ";") + 1;
+					}
 					else
+					{
 						pTimeStamp = NULL;
+					}
 				}
 				clip_number++;
 			}
@@ -315,7 +343,9 @@ void NPCPhrase_cb(int index, CallbackFunction cb)
 #endif
 				}
 				else
+				{
 					tracks[i] = NULL;
+				}
 			}
 #ifdef DEBUG_STARSEED
 			fprintf(stderr, "Splice Multitrack string <<%s>>.\n", str_buf);
@@ -345,7 +375,9 @@ void NPCPhrase_splice(int index)
 
 	assert(index >= 0);
 	if (index == 0)
+	{
 		return;
+	}
 
 	pStr = (uqm::CHAR_T*)GetStringAddress(
 		SetAbsStringTableIndex(CommData.ConversationPhrases, index - 1));
@@ -370,7 +402,9 @@ void NPCNumber(int number, const char* fmt)
 	uqm::CHAR_T buf[32];
 
 	if (!fmt)
+	{
 		fmt = "%d";
+	}
 
 	if (CommData.AlienNumberSpeech)
 	{
@@ -396,13 +430,17 @@ NPCNumberPhrase(int number, const char* fmt, uqm::CHAR_T** ptrack)
 	const SPEECH_DIGIT* dig = NULL;
 
 	if (!speech)
+	{
 		return 0;
+	}
 
 	if (!ptrack)
 	{
 		toplevel = 1;
 		if (!fmt)
+		{
 			fmt = "%d";
+		}
 		sprintf(numbuf, fmt, number);
 		ptrack = TrackNames;
 	}
@@ -415,10 +453,14 @@ NPCNumberPhrase(int number, const char* fmt, uqm::CHAR_T** ptrack)
 		quot = number / dig->Divider;
 
 		if (quot == 0)
+		{
 			continue;
+		}
 		quot -= dig->Subtrahend;
 		if (quot < 0)
+		{
 			continue;
+		}
 
 		if (dig->StrDigits)
 		{
@@ -427,7 +469,9 @@ NPCNumberPhrase(int number, const char* fmt, uqm::CHAR_T** ptrack)
 			assert(quot < 10);
 			index = dig->StrDigits[quot];
 			if (index == 0)
+			{
 				continue;
+			}
 			index -= 1;
 
 			*ptrack++ = GetStringSoundClip(SetAbsStringTableIndex(
@@ -519,7 +563,9 @@ void construct_response(uqm::CHAR_T* buf, int R /* promoted from RESPONSE_REF */
 
 			R = va_arg(vlist, int);
 			if (R == ((RESPONSE_REF)-1))
+			{
 				name = 0;
+			}
 		}
 	} while (name);
 	va_end(vlist);
@@ -597,9 +643,13 @@ init_race(CONVERSATION comm_id)
 			return init_chmmr_comm();
 		case COMMANDER_CONVERSATION:
 			if (!GET_GAME_STATE(STARBASE_AVAILABLE))
+			{
 				return init_commander_comm();
+			}
 			else
+			{
 				return init_starbase_comm();
+			}
 		case DRUUGE_CONVERSATION:
 			return init_druuge_comm();
 		case ILWRATH_CONVERSATION:
@@ -620,9 +670,13 @@ init_race(CONVERSATION comm_id)
 			return init_slylandro_comm();
 		case SPATHI_CONVERSATION:
 			if (!(GET_GAME_STATE(GLOBAL_FLAGS_AND_DATA) & (1 << 7)))
+			{
 				return init_spathi_comm();
+			}
 			else
+			{
 				return init_spahome_comm();
+			}
 		case SUPOX_CONVERSATION:
 			return init_supox_comm();
 		case SYREEN_CONVERSATION:
@@ -657,7 +711,9 @@ phraseIdStrToNum(const char* phraseIdStr)
 										CommData.ConversationPhrases),
 									phraseIdStr);
 	if (phrase == NULL)
+	{
 		return (RESPONSE_REF)-1;
+	}
 
 	return GetStringTableIndex(phrase) + 1;
 	// Index 0 is for NULL_PHRASE, hence the '+ 1"
@@ -670,6 +726,8 @@ phraseIdNumToStr(RESPONSE_REF response)
 		CommData.ConversationPhrases, response - 1);
 	// Index 0 is for NULL_PHRASE, hence the '- 1'.
 	if (phrase == NULL)
+	{
 		return NULL;
+	}
 	return GetStringName(phrase);
 }

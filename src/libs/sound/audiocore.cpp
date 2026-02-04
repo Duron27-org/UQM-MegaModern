@@ -52,11 +52,17 @@ initAudio(sint32 driver, sint32 flags)
 
 #ifdef HAVE_OPENAL
 	if (driver == audio_DRIVER_MIXSDL)
+	{
 		ret = mixSDL_Init(&audiodrv, flags);
+	}
 	else if (driver == audio_DRIVER_OPENAL)
+	{
 		ret = openAL_Init(&audiodrv, flags);
+	}
 	else
+	{
 		ret = noSound_Init(&audiodrv, flags);
+	}
 #else
 	if (driver == audio_DRIVER_OPENAL)
 	{
@@ -64,9 +70,13 @@ initAudio(sint32 driver, sint32 flags)
 		driver = audio_DRIVER_MIXSDL;
 	}
 	if (driver == audio_DRIVER_MIXSDL)
+	{
 		ret = mixSDL_Init(&audiodrv, flags);
+	}
 	else
+	{
 		ret = noSound_Init(&audiodrv, flags);
+	}
 #endif
 
 	if (ret != 0)
@@ -90,7 +100,9 @@ initAudio(sint32 driver, sint32 flags)
 void unInitAudio(void)
 {
 	if (!audio_inited)
+	{
 		return;
+	}
 
 	audio_inited = false;
 	audiodrv.Uninitialize();

@@ -147,7 +147,9 @@ void DrawSISTitle(uqm::CHAR_T* pStr)
 	SetContextFGFrame(Screen);
 	SetContextClipRect(&r);
 	if (isPC(optWhichFonts) || SaveOrLoad)
+	{
 		SetContextFont(TinyFont);
+	}
 	else
 	{
 		uqm::CHAR_T* buf = pStr;
@@ -311,14 +313,18 @@ bool DrawSISMessageEx(const uqm::CHAR_T* pStr, uqm::SIZE CurPos, uqm::SIZE ExPos
 	}
 
 	if (!(flags & DSME_MYCOLOR))
+	{
 		SetContextForeGroundColor(SIS_MESSAGE_TEXT_COLOR);
+	}
 
 	t.baseline.y = SIS_MESSAGE_HEIGHT - RES_SCALE(2);
 	t.baseline.x = RES_SCALE(RES_DESCALE(SIS_MESSAGE_WIDTH) >> 1);
 	t.pStr = pStr;
 	t.CharCount = (uqm::COUNT)~0;
 	if (isPC(optWhichFonts) || SaveOrLoad)
+	{
 		SetContextFont(TinyFont);
+	}
 	else
 	{
 		SetContextFont(TinyFontBold);
@@ -336,7 +342,9 @@ bool DrawSISMessageEx(const uqm::CHAR_T* pStr, uqm::SIZE CurPos, uqm::SIZE ExPos
 	}
 
 	if (flags & DSME_CLEARFR)
+	{
 		SetFlashRect(NULL, false);
+	}
 
 	if (CurPos < 0 && ExPos < 0)
 	{ // normal state
@@ -381,9 +389,13 @@ bool DrawSISMessageEx(const uqm::CHAR_T* pStr, uqm::SIZE CurPos, uqm::SIZE ExPos
 
 			pchar_deltas = char_deltas;
 			for (i = CurPos; i > 0; --i)
+			{
 				cur_r.corner.x += (uqm::SIZE)*pchar_deltas++;
+			}
 			if (CurPos < t.CharCount) /* end of line */
+			{
 				cur_r.corner.x -= RES_SCALE(1);
+			}
 
 			if (flags & DSME_BLOCKCUR)
 			{ // Use block cursor for keyboardless systems
@@ -433,7 +445,9 @@ bool DrawSISMessageEx(const uqm::CHAR_T* pStr, uqm::SIZE CurPos, uqm::SIZE ExPos
 				cur_r.extent.width = RES_SCALE(1);
 
 				if (CurPos == t.CharCount)
+				{
 					text_r.corner.x -= IF_HD(3);
+				}
 
 				SetCursorFlashBlock(false);
 			}
@@ -451,7 +465,9 @@ bool DrawSISMessageEx(const uqm::CHAR_T* pStr, uqm::SIZE CurPos, uqm::SIZE ExPos
 			// print extra chars
 			SetContextForeGroundColor(SIS_MESSAGE_EXTRA_TEXT_COLOR);
 			for (i = ExPos, pchar_deltas = char_deltas; i > 0; --i)
+			{
 				t.baseline.x += (uqm::SIZE)*pchar_deltas++;
+			}
 			t.pStr = skipUTF8Chars(t.pStr, ExPos);
 			t.CharCount = (uqm::COUNT)~0;
 			font_DrawText(&t);
@@ -590,15 +606,21 @@ void DrawStatusMessage(const uqm::CHAR_T* pStr)
 		Color statusColor = STATUS_MESSAGE_TEXT_COLOR;
 
 		if (curMsgMode == SMM_WARNING)
+		{
 			statusColor = STATUS_MESSAGE_WARNING_TEXT_COLOR;
+		}
 		if (curMsgMode == SMM_ALERT)
+		{
 			statusColor = STATUS_MESSAGE_ALERT_TEXT_COLOR;
+		}
 
 		SetContextForeGroundColor(statusColor);
 	}
 
 	if (isPC(optWhichFonts) || optCustomBorder)
+	{
 		SetContextFont(TinyFont);
+	}
 	else
 	{
 		uqm::CHAR_T buf[100];
@@ -639,9 +661,13 @@ void DrawCaptainsName(bool NewGame)
 
 	OldContext = SetContext(StatusContext);
 	if (isPC(optWhichFonts))
+	{
 		OldFont = SetContextFont(TinyFont);
+	}
 	else
+	{
 		OldFont = SetContextFont(TinyFontBold);
+	}
 
 	OldColor = SetContextForeGroundColor(CAPTAIN_NAME_BACKGROUND_COLOR);
 
@@ -652,7 +678,9 @@ void DrawCaptainsName(bool NewGame)
 	DrawFilledRectangle(&r);
 
 	if (!NewGame)
+	{
 		DrawBorder(CAP_NAME_FRAME);
+	}
 
 	t.baseline.x = (STATUS_WIDTH >> 1) - RES_SCALE(1);
 	t.baseline.y = r.corner.y + RES_SCALE(6);
@@ -740,7 +768,9 @@ void DrawFlagshipName(bool InStatusArea, bool NewGame)
 	}
 
 	if (!NewGame)
+	{
 		DrawBorder(SIS_STAT_REPAIR_FRAME);
+	}
 
 	t.baseline.x =
 		r.corner.x + RES_SCALE(RES_DESCALE(r.extent.width) >> 1);
@@ -749,10 +779,14 @@ void DrawFlagshipName(bool InStatusArea, bool NewGame)
 	t.align = ALIGN_CENTER;
 	t.CharCount = (uqm::COUNT)~0;
 	if (isPC(optWhichFonts))
+	{
 		SetContextFontEffect(SetAbsFrameIndex(FontGradFrame,
 											  InStatusArea ? 0 : 3));
+	}
 	else
+	{
 		SetContextForeGroundColor(THREEDO_FLAGSHIP_NAME_TEXT_COLOR);
+	}
 
 	font_DrawText(&t);
 
@@ -780,7 +814,9 @@ void DrawFlagshipStats(void)
 	uqm::SIZE base_y;
 
 	if (is3DO(optWhichFonts) || IS_PAD)
+	{
 		return;
+	}
 
 	/* collect stats */
 #define ENERGY_REGENERATION 1
@@ -809,7 +845,9 @@ void DrawFlagshipStats(void)
 				energy_wait -= 2;
 				num_dynamos++;
 				if (energy_wait < 4)
+				{
 					energy_wait = 4;
+				}
 				break;
 			case SHIVA_FURNACE:
 				energy_regeneration++;
@@ -819,12 +857,20 @@ void DrawFlagshipStats(void)
 	}
 
 	for (i = 0; i < NUM_DRIVE_SLOTS; ++i)
+	{
 		if (GLOBAL_SIS(DriveSlots[i]) == FUSION_THRUSTER)
+		{
 			max_thrust += 2;
+		}
+	}
 
 	for (i = 0; i < NUM_JET_SLOTS; ++i)
+	{
 		if (GLOBAL_SIS(JetSlots[i]) == TURNING_JETS)
+		{
 			turn_wait -= 2;
+		}
+	}
 	/* END collect stats */
 
 	OldContext = SetContext(SpaceContext);
@@ -1283,7 +1329,9 @@ static void
 DeltaSISGauges_crewDelta(uqm::SIZE crew_delta)
 {
 	if (crew_delta == 0)
+	{
 		return;
+	}
 
 	if (crew_delta != UNDEFINED_DELTA)
 	{
@@ -1291,13 +1339,17 @@ DeltaSISGauges_crewDelta(uqm::SIZE crew_delta)
 
 		if (crew_delta < 0
 			&& GLOBAL_SIS(CrewEnlisted) <= (uqm::COUNT)-crew_delta)
+		{
 			GLOBAL_SIS(CrewEnlisted) = 0;
+		}
 		else
 		{
 			GLOBAL_SIS(CrewEnlisted) += crew_delta;
 			CrewCapacity = GetCrewPodCapacity();
 			if (GLOBAL_SIS(CrewEnlisted) > CrewCapacity)
+			{
 				GLOBAL_SIS(CrewEnlisted) = CrewCapacity;
+			}
 		}
 	}
 
@@ -1331,10 +1383,14 @@ DeltaSISGauges_fuelDelta(uqm::SDWORD fuel_delta)
 	uqm::DWORD NewCoarseFuel;
 
 	if (fuel_delta == 0)
+	{
 		return;
+	}
 
 	if (fuel_delta == UNDEFINED_DELTA)
+	{
 		OldCoarseFuel = (uqm::DWORD)~0;
+	}
 	else
 	{
 
@@ -1349,7 +1405,9 @@ DeltaSISGauges_fuelDelta(uqm::SDWORD fuel_delta)
 			uqm::DWORD FuelCapacity = GetFuelTankCapacity();
 			GLOBAL_SIS(FuelOnBoard) += fuel_delta;
 			if (GLOBAL_SIS(FuelOnBoard) > FuelCapacity)
+			{
 				GLOBAL_SIS(FuelOnBoard) = FuelCapacity;
+			}
 		}
 	}
 
@@ -1367,22 +1425,34 @@ DeltaSISGauges_fuelDelta(uqm::SDWORD fuel_delta)
 		if (!optInfiniteFuel)
 		{
 			if (!optWholeFuel)
+			{
 				snprintf(buf, sizeof buf, "%u", NewCoarseFuel);
+			}
 			else if (dblFuelOnBoard > 999.99)
+			{
 				snprintf(buf, sizeof buf, "%.1f", dblFuelOnBoard);
+			}
 			else
+			{
 				snprintf(buf, sizeof buf, "%.2f", dblFuelOnBoard);
+			}
 		}
 		else
+		{
 			snprintf(buf, sizeof buf, "%s", STR_INFINITY_SIGN);
+		}
 
 
 		GetGaugeRect(&r, false);
 
 		if (optWhichFonts == OPT_3DO && !optWholeFuel)
+		{
 			SetContextFont(TinyFontBold);
+		}
 		else
+		{
 			SetContextFont(TinyFont);
+		}
 
 		t.baseline.x = (STATUS_WIDTH >> 1);
 		t.baseline.y = r.corner.y + r.extent.height;
@@ -1416,9 +1486,13 @@ DeltaSISGauges_resunitDelta(uqm::SIZE resunit_delta)
 	{
 		if (resunit_delta < 0
 			&& GLOBAL_SIS(ResUnits) <= (uqm::DWORD)-resunit_delta)
+		{
 			GLOBAL_SIS(ResUnits) = 0;
+		}
 		else
+		{
 			GLOBAL_SIS(ResUnits) += resunit_delta;
+		}
 
 		assert(curMsgMode == SMM_RES_UNITS);
 	}
@@ -1447,7 +1521,9 @@ void DeltaSISGauges(uqm::SIZE crew_delta, uqm::SDWORD fuel_delta, int resunit_de
 	CONTEXT OldContext;
 
 	if (crew_delta == 0 && fuel_delta == 0 && resunit_delta == 0)
+	{
 		return;
+	}
 
 	OldContext = SetContext(StatusContext);
 
@@ -1478,9 +1554,13 @@ void DeltaSISGauges(uqm::SIZE crew_delta, uqm::SDWORD fuel_delta, int resunit_de
 	}
 
 	if (isPC(optWhichFonts))
+	{
 		SetContextFont(TinyFont);
+	}
 	else
+	{
 		SetContextFont(TinyFontBold);
+	}
 
 	DeltaSISGauges_crewDelta(crew_delta);
 	DeltaSISGauges_fuelDelta(fuel_delta);
@@ -1517,7 +1597,9 @@ uqm::COUNT
 GetModuleCrewCapacity(uqm::BYTE moduleType)
 {
 	if (moduleType == CREW_POD)
+	{
 		return CREW_POD_CAPACITY;
+	}
 
 	return 0;
 }
@@ -1593,9 +1675,13 @@ GetCPodCapacity(POINT* ppt)
 	colNr = seatNr % CREW_PER_ROW;
 
 	if (optWhichFonts == OPT_PC)
+	{
 		SetContextForeGroundColor(crewRows[rowNr]);
+	}
 	else
+	{
 		SetContextForeGroundColor(THREEDO_CREW_COLOR);
+	}
 
 	ppt->x = RES_SCALE(27) + (slotNr * SHIP_PIECE_OFFSET)
 		   - RES_SCALE(colNr * 2) - SAFE_PAD;
@@ -1621,7 +1707,9 @@ uqm::COUNT
 GetModuleStorageCapacity(uqm::BYTE moduleType)
 {
 	if (moduleType == STORAGE_BAY)
+	{
 		return STORAGE_BAY_CAPACITY;
+	}
 
 	return 0;
 }
@@ -1697,7 +1785,9 @@ GetSBayCapacity(POINT* ppt)
 	// colNr = cellNr % SBAY_MASS_PER_ROW; Unused
 
 	if (rowNr == 0)
+	{
 		SetContextForeGroundColor(BLACK_COLOR);
+	}
 	else
 	{
 		rowNr--;
@@ -1727,10 +1817,14 @@ uqm::DWORD
 GetModuleFuelCapacity(uqm::BYTE moduleType)
 {
 	if (moduleType == FUEL_TANK)
+	{
 		return FUEL_TANK_CAPACITY;
+	}
 
 	if (moduleType == HIGHEFF_FUELSYS)
+	{
 		return HEFUEL_TANK_CAPACITY;
+	}
 
 	return 0;
 }
@@ -1819,9 +1913,13 @@ GetFTankScreenPos(POINT* ppt)
 	ppt->x = RES_SCALE(21) + (slotNr * SHIP_PIECE_OFFSET)
 		   + IF_HD(OutfitOrShipyard == 2 ? 0 : 2) - SAFE_PAD;
 	if (volume == FUEL_TANK_CAPACITY)
+	{
 		ppt->y = RES_SCALE(27 - rowNr);
+	}
 	else
+	{
 		ppt->y = RES_SCALE(30 - rowNr);
+	}
 
 	assert(rowNr + 1 < (uqm::COUNT)ARRAY_SIZE(fuelColors));
 	SetContextForeGroundColor(fuelColors[rowNr]);
@@ -1844,7 +1942,9 @@ CountSISPieces(uqm::BYTE piece_type)
 		for (i = 0; i < NUM_DRIVE_SLOTS; ++i)
 		{
 			if (GLOBAL_SIS(DriveSlots[i]) == piece_type)
+			{
 				++num_pieces;
+			}
 		}
 	}
 	else if (piece_type == TURNING_JETS)
@@ -1852,7 +1952,9 @@ CountSISPieces(uqm::BYTE piece_type)
 		for (i = 0; i < NUM_JET_SLOTS; ++i)
 		{
 			if (GLOBAL_SIS(JetSlots[i]) == piece_type)
+			{
 				++num_pieces;
+			}
 		}
 	}
 	else
@@ -1860,7 +1962,9 @@ CountSISPieces(uqm::BYTE piece_type)
 		for (i = 0; i < NUM_MODULE_SLOTS; ++i)
 		{
 			if (GLOBAL_SIS(ModuleSlots[i]) == piece_type)
+			{
 				++num_pieces;
+			}
 		}
 	}
 
@@ -1908,7 +2012,9 @@ AutoPilotTextLogic(void)
 	StarPointer = FindStar(NULL, &destination, 1, 1);
 
 	if (inQuasiSpace() && (!pointsEqual(destination, Falayalaralfali) || (pointsEqual(destination, Falayalaralfali) && !(GET_GAME_STATE(KNOW_QS_PORTAL) & (1 << 15)))))
+	{
 		StarPointer = NULL;
+	}
 
 	if (!StarPointer)
 	{ // Show the destination coordinates if the
@@ -2002,7 +2108,9 @@ void DrawAutoPilotMessage(bool Reset)
 			cycle_index = 0;
 
 			if (EXTENDED)
+			{
 				ZeroLastLoc();
+			}
 		}
 		else if (GetTimeCounter() >= NextTime)
 		{
@@ -2037,9 +2145,13 @@ void DrawFuelInFTanks(bool isOutfit)
 	Color c;
 
 	if (isOutfit)
+	{
 		c = BUILD_COLOR(MAKE_RGB15(0x0B, 0x00, 0x00), 0x2E);
+	}
 	else
+	{
 		c = BLACK_COLOR;
+	}
 
 	r.extent.height = RES_SCALE(1);
 
@@ -2130,7 +2242,9 @@ updateFlashRect(void* arg)
 	uqm::COUNT i;
 
 	if (flashContext[0] == NULL)
+	{
 		return;
+	}
 
 	for (i = 0; i < count_r; i++)
 	{
@@ -2165,7 +2279,9 @@ void SetAdditionalRect(const RECT* pRect, uqm::COUNT number)
 		flash_rect[number].corner.y += clip_r.corner.y;
 
 		if (number == count_r)
+		{
 			count_r++;
+		}
 	}
 }
 
@@ -2245,7 +2361,9 @@ void SetFlashRect(const RECT* pRect, bool pcRect)
 				Flash_setPulseBox(flashContext[i], pcRect);
 				Flash_start(flashContext[i]);
 				if (i == (count_r - 1))
+				{
 					scheduleFlashAlarm();
+				}
 			}
 			else
 			{
@@ -2286,7 +2404,9 @@ void PreUpdateFlashRect(void)
 	{
 		updateFlashRectRecursion++;
 		if (updateFlashRectRecursion > 1)
+		{
 			return;
+		}
 		for (i = 0; i < count_r; i++)
 		{
 			Flash_preUpdate(flashContext[i]);
@@ -2302,7 +2422,9 @@ void PostUpdateFlashRect(void)
 	{
 		updateFlashRectRecursion--;
 		if (updateFlashRectRecursion > 0)
+		{
 			return;
+		}
 		for (i = 0; i < count_r; i++)
 		{
 			Flash_postUpdate(flashContext[i]);
@@ -2318,7 +2440,9 @@ bool PauseFlash(void)
 	if (flashContext[0] != NULL)
 	{
 		if (flashPaused)
+		{
 			return false;
+		}
 
 		Alarm_remove(flashAlarm);
 		flashAlarm = 0;
@@ -2327,7 +2451,9 @@ bool PauseFlash(void)
 	for (i = 0; i < count_r; i++)
 	{
 		if (flashContext[i] != NULL && Flash_getPulseBox(flashContext[i]))
+		{
 			Flash_pause(flashContext[i]);
+		}
 	}
 
 	return true;
@@ -2343,7 +2469,9 @@ void ContinueFlash(void)
 		for (i = 0; i < count_r; i++) // need to do before setting clock
 		{
 			if (flashContext[i] != NULL && Flash_getPulseBox(flashContext[i]))
+			{
 				Flash_continue(flashContext[i]);
+			}
 		}
 
 		scheduleFlashAlarm();

@@ -60,12 +60,18 @@ int zoomSurfaceRGBA(SDL_Surface* src, SDL_Surface* dst, int smooth)
 
 #ifndef __SYMBIAN32__
 	if ((sax = (int*)alloca((dst->w + 1) * sizeof(Uint32))) == NULL)
+	{
 		return (-1);
+	}
 	if ((say = (int*)alloca((dst->h + 1) * sizeof(Uint32))) == NULL)
+	{
 		return (-1);
+	}
 #else
 	if ((sax = (int*)HMalloc((dst->w + 1) * sizeof(Uint32))) == NULL)
+	{
 		return (-1);
+	}
 	if ((say = (int*)HMalloc((dst->h + 1) * sizeof(Uint32))) == NULL)
 	{
 		HFree(sax);
@@ -250,12 +256,18 @@ static int zoomSurfaceY(SDL_Surface* src, SDL_Surface* dst)
      */
 #ifndef __SYMBIAN32__
 	if ((sax = (Uint32*)alloca(dst->w * sizeof(Uint32))) == NULL)
+	{
 		return (-1);
+	}
 	if ((say = (Uint32*)alloca(dst->h * sizeof(Uint32))) == NULL)
+	{
 		return (-1);
+	}
 #else
 	if ((sax = (Uint32*)HMalloc(dst->w * sizeof(Uint32))) == NULL)
+	{
 		return (-1);
+	}
 	if ((say = (Uint32*)HMalloc(dst->h * sizeof(Uint32))) == NULL)
 	{
 		HFree(sax);
@@ -658,7 +670,9 @@ SDL_Surface* rotozoomSurface(SDL_Surface* src, double angle, double zoom, int sm
      * Sanity check 
      */
 	if (src == NULL)
+	{
 		return (NULL);
+	}
 
 	/*
      * Determine if source surface is 32bit or 8bit 
@@ -891,9 +905,13 @@ int rotateSurface(SDL_Surface* src, SDL_Surface* dst, double angle, int smooth)
 
 	/* Sanity check */
 	if (!src || !dst)
+	{
 		return -1;
+	}
 	if (src->format->BitsPerPixel != dst->format->BitsPerPixel)
+	{
 		return -1;
+	}
 
 	/* Determine if source surface is 32bit or 8bit */
 	is32bit = (src->format->BitsPerPixel == 32);
@@ -924,7 +942,9 @@ int rotateSurface(SDL_Surface* src, SDL_Surface* dst, double angle, int smooth)
 
 	/* Check if the rotated surface will fit destination */
 	if (dst->w < dstwidth || dst->h < dstheight)
+	{
 		return -1;
+	}
 
 	/* Lock source surface */
 	SDL_LockSurface(src);
@@ -939,7 +959,9 @@ int rotateSurface(SDL_Surface* src, SDL_Surface* dst, double angle, int smooth)
 	{
 		/* Copy palette info */
 		for (i = 0; i < src->format->palette->ncolors; i++)
+		{
 			dst->format->palette->colors[i] = src->format->palette->colors[i];
+		}
 		dst->format->palette->ncolors = src->format->palette->ncolors;
 		/* Call the 8bit transformation routine to do the rotation */
 		transformSurfaceY(src, dst, dstwidthhalf, dstheighthalf,
@@ -1006,7 +1028,9 @@ SDL_Surface* zoomSurface(SDL_Surface* src, double zoomx, double zoomy, int smoot
      * Sanity check 
      */
 	if (src == NULL)
+	{
 		return (NULL);
+	}
 
 	/*
      * Determine if source surface is 32bit or 8bit 

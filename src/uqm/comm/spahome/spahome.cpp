@@ -37,7 +37,7 @@ static LOCDATA spahome_desc =
 		BLACK_COLOR_INIT, /* AlienTextBColor */
 		{0, 0}, /* AlienTextBaseline */
 		0,
- /* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
+		/* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
 		ALIGN_CENTER, /* AlienTextAlign */
 		VALIGN_TOP, /* AlienTextValign */
 		SPATHI_HOME_COLOR_MAP, /* AlienColorMap */
@@ -277,11 +277,17 @@ ExitConversation(RESPONSE_REF R)
 		setSegue(Segue_hostile);
 	}
 	else if (PLAYER_SAID(R, bye_no_ally_offer))
+	{
 		NPCPhrase(GOODBYE_NO_ALLY_OFFER);
+	}
 	else if (PLAYER_SAID(R, bye_angry_spathi))
+	{
 		NPCPhrase(GOODBYE_ANGRY_SPATHI);
+	}
 	else if (PLAYER_SAID(R, bye_ally))
+	{
 		NPCPhrase(GOODBYE_ALLY);
+	}
 	else if (PLAYER_SAID(R, already_got_them))
 	{
 		NPCPhrase(EARLY_BIRD_CHECK);
@@ -292,9 +298,13 @@ ExitConversation(RESPONSE_REF R)
 		SET_GAME_STATE(SPATHI_MANNER, 3);
 	}
 	else if (PLAYER_SAID(R, too_dangerous))
+	{
 		NPCPhrase(WE_AGREE);
+	}
 	else if (PLAYER_SAID(R, think_more))
+	{
 		NPCPhrase(COWARD);
+	}
 	else if (PLAYER_SAID(R, i_accept))
 	{
 		NPCPhrase(AWAIT_RETURN);
@@ -365,7 +375,9 @@ SpathiInfo(RESPONSE_REF R)
 
 	InfoLeft = false;
 	if (PLAYER_SAID(R, like_some_info))
+	{
 		NPCPhrase(WHAT_ABOUT);
+	}
 	else if (PLAYER_SAID(R, what_about_hierarchy))
 	{
 		NPCPhrase(ABOUT_HIERARCHY);
@@ -498,16 +510,26 @@ SpathiAllies(RESPONSE_REF R)
 		SET_GAME_STATE(SPATHI_INFO, 5);
 	}
 	else if (PLAYER_SAID(R, enough_info))
+	{
 		NPCPhrase(OK_ENOUGH_INFO);
+	}
 
 	if (GET_GAME_STATE(SPATHI_INFO) == 4)
+	{
 		Response(something_fishy, SpathiAllies);
+	}
 	if (PHRASE_ENABLED(whats_up))
+	{
 		Response(whats_up, SpathiAllies);
+	}
 	if (PHRASE_ENABLED(resources_please))
+	{
 		Response(resources_please, SpathiAllies);
+	}
 	if (PHRASE_ENABLED(like_some_info))
+	{
 		Response(like_some_info, SpathiInfo);
+	}
 	Response(bye_ally, ExitConversation);
 }
 
@@ -517,9 +539,13 @@ SpathiQuest(RESPONSE_REF R)
 	if (R == 0)
 	{
 		if (!GET_GAME_STATE(LIED_ABOUT_CREATURES))
+		{
 			NPCPhrase(HOW_GO_EFFORTS);
+		}
 		else
+		{
 			NPCPhrase(YOU_LIED_1);
+		}
 	}
 	else if (PLAYER_SAID(R, little_mistake))
 	{
@@ -541,7 +567,9 @@ SpathiQuest(RESPONSE_REF R)
 	}
 
 	if (!GET_GAME_STATE(LIED_ABOUT_CREATURES))
+	{
 		Response(killed_them_all_1, ExitConversation);
+	}
 	else
 	{
 		if (PHRASE_ENABLED(little_mistake))
@@ -579,7 +607,9 @@ LearnQuest(RESPONSE_REF R)
 		}
 	}
 	else if (PLAYER_SAID(R, how_prove))
+	{
 		NPCPhrase(BETTER_IDEA);
+	}
 	else if (PLAYER_SAID(R, what_test))
 	{
 		NPCPhrase(WIPE_EVIL);
@@ -609,7 +639,9 @@ LearnQuest(RESPONSE_REF R)
 	}
 
 	if (PHRASE_ENABLED(what_test))
+	{
 		Response(what_test, LearnQuest);
+	}
 	else if (GET_GAME_STATE(SPATHI_CREATURES_ELIMINATED))
 	{
 		Response(already_got_them, ExitConversation);
@@ -626,9 +658,13 @@ LearnQuest(RESPONSE_REF R)
 		Response(i_accept, ExitConversation);
 	}
 	if (PHRASE_ENABLED(prove_strength) && !GET_GAME_STATE(KNOW_SPATHI_QUEST))
+	{
 		Response(prove_strength, LearnQuest);
+	}
 	if (PHRASE_ENABLED(why_dont_you_do_it))
+	{
 		Response(why_dont_you_do_it, LearnQuest);
+	}
 }
 
 static void
@@ -646,7 +682,9 @@ AllianceOffer(RESPONSE_REF R)
 		SET_GAME_STATE(SPATHI_VISITS, 0);
 	}
 	else if (PLAYER_SAID(R, we_come_in_peace))
+	{
 		NPCPhrase(OF_COURSE);
+	}
 	else if (PLAYER_SAID(R, hand_in_friendship))
 	{
 		NPCPhrase(TOO_AFRAID);
@@ -679,19 +717,29 @@ AllianceOffer(RESPONSE_REF R)
 	}
 
 	if (PHRASE_ENABLED(hand_in_friendship))
+	{
 		Response(hand_in_friendship, AllianceOffer);
+	}
 	else if (PHRASE_ENABLED(stronger))
+	{
 		Response(stronger, AllianceOffer);
+	}
 	else if (PHRASE_ENABLED(yes_we_are))
+	{
 		Response(yes_we_are, AllianceOffer);
+	}
 	else
 	{
 		Response(how_prove, LearnQuest);
 	}
 	if (PHRASE_ENABLED(share_info))
+	{
 		Response(share_info, AllianceOffer);
+	}
 	if (PHRASE_ENABLED(give_us_resources))
+	{
 		Response(give_us_resources, AllianceOffer);
+	}
 }
 
 static void
@@ -775,19 +823,31 @@ SpathiParty(RESPONSE_REF R)
 	}
 
 	if (PHRASE_ENABLED(deals_a_deal))
+	{
 		Response(deals_a_deal, SpathiParty);
+	}
 	else if (PHRASE_ENABLED(how_long))
+	{
 		Response(how_long, SpathiParty);
+	}
 	else if (PHRASE_ENABLED(reneging))
+	{
 		Response(reneging, SpathiParty);
+	}
 	else if (PHRASE_ENABLED(return_beasts))
+	{
 		Response(return_beasts, SpathiParty);
+	}
 	else
 	{
 		if (PHRASE_ENABLED(minds_and_might))
+		{
 			Response(minds_and_might, SpathiParty);
+		}
 		if (PHRASE_ENABLED(fellowship))
+		{
 			Response(fellowship, SpathiParty);
+		}
 		Response(do_as_we_say, ExitConversation);
 
 		return;
@@ -810,7 +870,9 @@ static void
 SpathiCouncil(RESPONSE_REF R)
 {
 	if (R == 0)
+	{
 		NPCPhrase(HELLO_AGAIN);
+	}
 	else if (PLAYER_SAID(R, good_password))
 	{
 		NPCPhrase(YES_GOOD_PASSWORD);
@@ -878,21 +940,29 @@ SpathiCouncil(RESPONSE_REF R)
 		&& GET_GAME_STATE(FOUND_PLUTO_SPATHI) < 3)
 	{
 		if (PHRASE_ENABLED(spathi_on_pluto))
+		{
 			Response(spathi_on_pluto, SpathiCouncil);
+		}
 		else if (HaveEscortShip(SPATHI_SHIP))
 		{
 			if (PHRASE_ENABLED(hostage))
+			{
 				Response(hostage, SpathiCouncil);
+			}
 		}
 		else if (PHRASE_ENABLED(killed_fwiffo))
 		{
 			Response(killed_fwiffo, SpathiCouncil);
 			if (PHRASE_ENABLED(fwiffo_fine))
+			{
 				Response(fwiffo_fine, SpathiCouncil);
+			}
 		}
 	}
 	if (PHRASE_ENABLED(surrender))
+	{
 		Response(surrender, SpathiCouncil);
+	}
 	else
 	{
 		Response(surrender_or_die, ExitConversation);

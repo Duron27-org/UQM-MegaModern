@@ -120,7 +120,9 @@ int eventIdStrToNum(const char* eventIdStr)
 	for (eventI = 0; eventI < eventCount; eventI++)
 	{
 		if (strcmp(eventIdStr, eventNames[eventI]) == 0)
+		{
 			return eventI;
+		}
 	}
 	return -1;
 }
@@ -130,7 +132,9 @@ eventIdNumToStr(int eventNum)
 {
 	size_t eventCount = ARRAY_SIZE(eventNames);
 	if (eventNum < 0 || (size_t)eventNum >= eventCount)
+	{
 		return NULL;
+	}
 	return eventNames[eventNum];
 }
 
@@ -194,7 +198,9 @@ arilou_exit_event(int arg)
 
 	year_index = GLOBAL(GameClock.year_index);
 	if ((month_index = GLOBAL(GameClock.month_index) % 12) == 0)
+	{
 		++year_index;
+	}
 	++month_index;
 
 	SET_GAME_STATE(ARILOU_SPACE, CLOSING);
@@ -227,9 +233,13 @@ check_race_growth(void)
 			if (FleetPtr->growth_err_term <= FleetPtr->growth_fract)
 			{
 				if (delta_strength <= 0)
+				{
 					--delta_strength;
+				}
 				else
+				{
 					++delta_strength;
+				}
 			}
 			FleetPtr->growth_err_term -= FleetPtr->growth_fract;
 
@@ -240,7 +250,9 @@ check_race_growth(void)
 				FleetPtr->allied_state = DEAD_GUY;
 			}
 			else if (delta_strength > MAX_FLEET_STRENGTH)
+			{
 				delta_strength = MAX_FLEET_STRENGTH;
+			}
 
 			FleetPtr->actual_strength = (uqm::COUNT)delta_strength;
 			if (FleetPtr->actual_strength && FleetPtr->days_left)
@@ -252,7 +264,9 @@ check_race_growth(void)
 
 				if (--FleetPtr->days_left == 0
 					&& FleetPtr->func_index != (uqm::BYTE)~0)
+				{
 					EventHandler(FleetPtr->func_index);
+				}
 			}
 		}
 
@@ -265,7 +279,9 @@ hyperspace_encounter_event(int arg)
 {
 	check_race_growth();
 	if (inHyperSpace())
+	{
 		check_hyperspace_encounter();
+	}
 
 	AddEvent(RELATIVE_EVENT, 0, 1, 0, HYPERSPACE_ENCOUNTER_EVENT);
 
@@ -310,7 +326,9 @@ advance_pkunk_mission(int arg)
 			if ((MissionState & 1) /* made it to Yehat space */
 				|| (PkunkPtr->loc.x == yehat.x
 					&& PkunkPtr->loc.y == yehat.y)) // North of yehat by 360
+			{
 				PkunkPtr->actual_strength = 0;
+			}
 			else if (PkunkPtr->loc.x == pkunk.x // Pkunk center of SOI
 					 && PkunkPtr->loc.y == pkunk.y
 					 && GET_GAME_STATE(PKUNK_ON_THE_MOVE))
@@ -333,9 +351,13 @@ advance_pkunk_mission(int arg)
 			POINT loc;
 
 			if (!(MissionState & 1))
+			{
 				loc = yehat;
+			}
 			else
+			{
 				loc = pkunk;
+			}
 			SET_GAME_STATE(PKUNK_ON_THE_MOVE, 1);
 			SET_GAME_STATE(PKUNK_SWITCH, 0);
 			SetRaceDest(PKUNK_SHIP, loc.x, loc.y,
@@ -656,7 +678,9 @@ kohr_ah_genocide_event(int arg)
 					best_dy = dy;
 
 					if (Index == DRUUGE_SHIP)
+					{
 						hNextShip = 0;
+					}
 				}
 			}
 		}
@@ -678,16 +702,24 @@ kohr_ah_genocide_event(int arg)
 		uqm::COUNT speed;
 
 		if (best_dist < 0)
+		{
 			best_dist = (long)best_dx * best_dx + (long)best_dy * best_dy;
+		}
 
 		speed = square_root(best_dist) / 158;
 		if (speed == 0)
+		{
 			speed = 1;
+		}
 		else if (speed > 255)
+		{
 			speed = 255;
+		}
 
 		if (optCheatMode)
+		{
 			speed = 0;
+		}
 
 		SET_GAME_STATE(KOHR_AH_FRENZY, 1);
 		SET_GAME_STATE(KOHR_AH_VISITS, 0);
@@ -729,7 +761,9 @@ spathi_shield_event(int arg)
 		{
 			SetRaceAllied(SPATHI_SHIP, false);
 			if (DIF_HARD)
+			{
 				RemoveEscortShips(SPATHI_SHIP);
+			}
 			SET_GAME_STATE(SPATHI_SHIELDED_SELVES, 1);
 			SpathiPtr->actual_strength = 0;
 		}
@@ -791,9 +825,13 @@ advance_ilwrath_mission(int arg)
 							MADD_LENGTH - 1, ADVANCE_ILWRATH_MISSION);
 
 				if (EXTENDED && ThraddPtr->allied_state == GOOD_GUY)
+				{
 					strength_loss = (uqm::SIZE)(ThraddPtr->actual_strength * 0.25); // Smarterer math
+				}
 				else
+				{
 					strength_loss = (uqm::SIZE)ThraddPtr->actual_strength;
+				}
 
 				ThraddPtr->growth = (uqm::BYTE)(-strength_loss / MADD_LENGTH);
 				ThraddPtr->growth_fract =
@@ -803,7 +841,9 @@ advance_ilwrath_mission(int arg)
 				{
 					SET_GAME_STATE(THRADD_VISITS, 0);
 					if (ThraddPtr->allied_state == GOOD_GUY)
+					{
 						SetRaceAllied(THRADDASH_SHIP, false);
+					}
 				}
 			}
 
@@ -831,7 +871,9 @@ advance_ilwrath_mission(int arg)
 		SET_GAME_STATE(ILWRATH_FIGHT_THRADDASH, 0);
 		SetRaceDest(THRADDASH_SHIP, thradd_home.x, thradd_home.y, 3, (uqm::BYTE)~0);
 		if (!GET_GAME_STATE(AQUA_HELIX))
+		{
 			SET_GAME_STATE(HELIX_UNPROTECTED, 0);
+		}
 	}
 
 	UnlockFleetInfo(&GLOBAL(avail_race_q), hThradd);
@@ -882,7 +924,9 @@ advance_mycon_mission(int arg)
 			MyconPtr->growth_fract = 0;
 		}
 		else if (MyconPtr->loc.x != trap.x || MyconPtr->loc.y != trap.y)
+		{
 			SetRaceDest(MYCON_SHIP, trap.x, trap.y, 30, ADVANCE_MYCON_MISSION);
+		}
 		// To Organon.
 		else
 		{
@@ -977,7 +1021,9 @@ slylandro_ramp_down(int arg)
 
 	ramp_factor = GET_GAME_STATE(SLYLANDRO_MULTIPLIER);
 	if (--ramp_factor)
+	{
 		AddEvent(RELATIVE_EVENT, 0, 23, 0, SLYLANDRO_RAMP_DOWN);
+	}
 	SET_GAME_STATE(SLYLANDRO_MULTIPLIER, ramp_factor);
 
 	(void)arg;

@@ -50,7 +50,7 @@
 #define COMET_HITS DIF_CASE(12, 10, 15)
 #define COMET_SPEED RES_SCALE(DISPLAY_TO_WORLD(IF_EASY(10, 12))) // Kryzen: 17
 #define COMET_LIFE 2
-#define COMET_TURN_WAIT 3 // Kruzen: 2
+#define COMET_TURN_WAIT 3 // Kruzen: 2 \
 						  // compensate high speed with lesser maneuverability
 #define MAX_COMETS DIF_CASE(3, 2, 4)
 #define WEAPON_ENERGY_COST 2
@@ -199,9 +199,13 @@ comet_collision(ELEMENT* ElementPtr0, POINT* pPt0,
 		HELEMENT hBlastElement;
 
 		if (ElementPtr1->state_flags & PLAYER_SHIP)
+		{
 			ElementPtr0->mass_points = COMET_DAMAGE;
+		}
 		else
+		{
 			ElementPtr0->mass_points = 50;
+		}
 
 		old_hits = ElementPtr0->hit_points;
 		old_life = ElementPtr0->life_span;
@@ -283,13 +287,17 @@ spawn_comet(ELEMENT* ElementPtr)
 			}
 
 			if (CometPtr->turn_wait)
+			{
 				--CometPtr->turn_wait;
+			}
 			else
 			{
 				facing = NORMALIZE_FACING(facing);
 				if (TrackShip(CometPtr, &facing) > 0)
+				{
 					SetVelocityVector(&CometPtr->velocity,
 									  COMET_SPEED, facing);
+				}
 				CometPtr->turn_wait = COMET_TURN_WAIT;
 			}
 		}
@@ -303,7 +311,9 @@ static void
 turret_preprocess(ELEMENT* ElementPtr)
 {
 	if (ElementPtr->turn_wait > 0)
+	{
 		--ElementPtr->turn_wait;
+	}
 	else
 	{
 		ElementPtr->next.image.frame =
@@ -327,7 +337,9 @@ gate_collision(ELEMENT* ElementPtr0, POINT* pPt0,
 		if (StarShipPtr->RaceDescPtr->num_generators == 0)
 		{
 			if (!(ElementPtr1->state_flags & FINITE_LIFE))
+			{
 				ElementPtr0->state_flags |= COLLISION;
+			}
 
 			if ((ElementPtr1->state_flags & PLAYER_SHIP)
 				&& GetPrimType(
@@ -343,9 +355,13 @@ gate_collision(ELEMENT* ElementPtr0, POINT* pPt0,
 			HELEMENT hBlastElement;
 
 			if (ElementPtr1->state_flags & PLAYER_SHIP)
+			{
 				ElementPtr0->mass_points = GATE_DAMAGE;
+			}
 			else
+			{
 				ElementPtr0->mass_points = 50;
+			}
 
 			ElementPtr0->hit_points = GATE_HITS;
 			hBlastElement = weapon_collision(ElementPtr0, pPt0, ElementPtr1, pPt1);
@@ -386,9 +402,11 @@ gate_preprocess(ELEMENT* ElementPtr)
 		ElementPtr->next.image.frame =
 			IncFrameIndex(ElementPtr->current.image.frame);
 		if (GetFrameIndex(ElementPtr->next.image.frame) == 0)
+		{
 			ElementPtr->next.image.frame =
 				SetAbsFrameIndex(
 					ElementPtr->next.image.frame, 11);
+		}
 
 		ElementPtr->state_flags |= CHANGING;
 	}
@@ -436,7 +454,9 @@ static void
 generator_preprocess(ELEMENT* ElementPtr)
 {
 	if (ElementPtr->turn_wait > 0)
+	{
 		--ElementPtr->turn_wait;
+	}
 	else if ((ElementPtr->turn_wait =
 				  (uqm::BYTE)((GENERATOR_HITS
 							   - ElementPtr->hit_points)
@@ -472,7 +492,9 @@ sentinel_preprocess(ELEMENT* ElementPtr)
 	++ElementPtr->life_span;
 
 	if (ElementPtr->thrust_wait)
+	{
 		--ElementPtr->thrust_wait;
+	}
 	else
 	{
 		ElementPtr->next.image.frame =
@@ -484,15 +506,19 @@ sentinel_preprocess(ELEMENT* ElementPtr)
 	}
 
 	if (ElementPtr->turn_wait > 0)
+	{
 		--ElementPtr->turn_wait;
+	}
 	else
 	{
 		uqm::COUNT facing;
 		HELEMENT hTarget;
 
 		if (!(ElementPtr->state_flags & NONSOLID))
+		{
 			facing = ANGLE_TO_FACING(
 				GetVelocityTravelAngle(&ElementPtr->velocity));
+		}
 		else
 		{
 			ElementPtr->state_flags &= ~NONSOLID;
@@ -510,9 +536,13 @@ sentinel_preprocess(ELEMENT* ElementPtr)
 		}
 
 		if (ElementPtr->hTarget == 0)
+		{
 			hTarget = StarShipPtr->hShip;
+		}
 		else if (StarShipPtr->hShip == 0)
+		{
 			hTarget = ElementPtr->hTarget;
+		}
 		else
 		{
 			uqm::SDWORD delta_x0, delta_y0, delta_x1, delta_y1;
@@ -537,9 +567,13 @@ sentinel_preprocess(ELEMENT* ElementPtr)
 					+ (long)delta_y0 * delta_y0
 				> (long)delta_x1 * delta_x1
 					  + (long)delta_y1 * delta_y1)
+			{
 				hTarget = StarShipPtr->hShip;
+			}
 			else
+			{
 				hTarget = ElementPtr->hTarget;
+			}
 
 			UnlockElement(ElementPtr->hTarget);
 		}
@@ -564,7 +598,9 @@ sentinel_preprocess(ELEMENT* ElementPtr)
 					 square_root((long)delta_x * delta_x
 								 + (long)delta_y * delta_y))))
 				== 0)
+			{
 				num_frames = 1;
+			}
 
 			TargetVelocity = TargetPtr->velocity;
 			GetNextVelocityComponentsSdword(&TargetVelocity,
@@ -585,9 +621,13 @@ sentinel_preprocess(ELEMENT* ElementPtr)
 			if (delta_x > 0)
 			{
 				if (delta_x <= ANGLE_TO_FACING(HALF_CIRCLE))
+				{
 					++facing;
+				}
 				else
+				{
 					--facing;
+				}
 			}
 
 			SetVelocityVector(&ElementPtr->velocity,
@@ -649,9 +689,13 @@ sentinel_collision(ELEMENT* ElementPtr0, POINT* pPt0,
 			StarShipPtr->cur_status_flags &=
 				~(SHIP_AT_MAX_SPEED | SHIP_BEYOND_MAX_SPEED);
 			if (ElementPtr1->turn_wait < COLLISION_TURN_WAIT)
+			{
 				ElementPtr1->turn_wait += COLLISION_TURN_WAIT;
+			}
 			if (ElementPtr1->thrust_wait < COLLISION_THRUST_WAIT)
+			{
 				ElementPtr1->thrust_wait += COLLISION_THRUST_WAIT;
+			}
 
 			angle = GetVelocityTravelAngle(&ElementPtr0->velocity);
 			DeltaVelocityComponents(&ElementPtr1->velocity,
@@ -671,9 +715,13 @@ sentinel_collision(ELEMENT* ElementPtr0, POINT* pPt0,
 			if (DIF_HARD)
 			{
 				if (StarShipPtr->RaceDescPtr->ship_info.energy_level < ENERGY_DRAIN)
+				{
 					DeltaEnergy(ElementPtr1, -StarShipPtr->RaceDescPtr->ship_info.energy_level);
+				}
 				else
+				{
 					DeltaEnergy(ElementPtr1, -ENERGY_DRAIN);
+				}
 				if (EXTENDED)
 				{
 					GetElementStarShip(ElementPtr0, &StarShipPtr);

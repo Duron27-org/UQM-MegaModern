@@ -115,7 +115,9 @@ setupBattleInputOrder(void)
 
 #ifndef NETPLAY
 	for (i = 0; i < NUM_SIDES; i++)
+	{
 		battleInputOrder[i] = i;
+	}
 #else
 	int j;
 
@@ -205,17 +207,29 @@ ProcessInput(void)
 				if (StarShipPtr->RaceDescPtr->ship_info.crew_level)
 				{
 					if (InputState & BATTLE_LEFT)
+					{
 						StarShipPtr->ship_input_state |= LEFT;
+					}
 					else if (InputState & BATTLE_RIGHT)
+					{
 						StarShipPtr->ship_input_state |= RIGHT;
+					}
 					if (InputState & BATTLE_THRUST)
+					{
 						StarShipPtr->ship_input_state |= THRUST;
+					}
 					if (InputState & BATTLE_THRUST_ALT)
+					{
 						StarShipPtr->ship_input_state |= THRUST;
+					}
 					if (InputState & BATTLE_WEAPON)
+					{
 						StarShipPtr->ship_input_state |= WEAPON;
+					}
 					if (InputState & BATTLE_SPECIAL)
+					{
 						StarShipPtr->ship_input_state |= SPECIAL;
+					}
 
 					if (CanRunAway && cur_player == 0 && ((InputState & BATTLE_ESCAPE) || WarpFromMenu))
 					{
@@ -234,7 +248,9 @@ ProcessInput(void)
 #endif
 
 	if (GLOBAL(CurrentActivity) & (CHECK_LOAD | CHECK_ABORT))
+	{
 		GLOBAL(CurrentActivity) &= ~IN_BATTLE;
+	}
 }
 
 #if DEMO_MODE || CREATE_JOURNAL
@@ -265,10 +281,14 @@ void BattleSong(bool DoPlay)
 				BattleRef = LoadMusic(BATTLE_MUSIC_SAMATRA);
 
 				if (BattleRef == 0)
+				{
 					BattleRef = LoadMusic(BATTLE_MUSIC);
+				}
 			}
 			else
+			{
 				BattleRef = LoadMusic(BATTLE_MUSIC);
+			}
 
 			inHSpace = 0;
 		}
@@ -345,7 +365,9 @@ DoBattle(BATTLE_STATE* bs)
 
 	// Call the callback function, if set
 	if (bs->frame_cb)
+	{
 		bs->frame_cb();
+	}
 
 	RedrawQueue(true);
 
@@ -374,7 +396,9 @@ DoBattle(BATTLE_STATE* bs)
 	}
 
 	if ((GLOBAL(CurrentActivity) & IN_BATTLE) == 0)
+	{
 		return false;
+	}
 
 #ifdef NETPLAY
 	battleFrameCount++;
@@ -391,9 +415,13 @@ GetPlayerOrder(uqm::COUNT i)
 	// If neither is network controlled, the top player (1) is handled
 	// first.
 	if (((PlayerControl[0] & NETWORK_CONTROL) && !NetConnection_getDiscriminant(netConnections[0])) || ((PlayerControl[1] & NETWORK_CONTROL) && NetConnection_getDiscriminant(netConnections[1])))
+	{
 		return i;
+	}
 	else
+	{
 		return 1 - i;
+	}
 }
 #endif
 
@@ -431,7 +459,9 @@ bool Battle(BattleFrameCallback* callback)
 	}
 #else  /* DEMO_MODE */
 	if (BattleSeed == 0)
+	{
 		BattleSeed = TFB_Random();
+	}
 	TFB_SeedRandom(BattleSeed);
 	BattleSeed = TFB_Random(); /* get next battle seed */
 #endif /* DEMO_MODE */
@@ -457,7 +487,9 @@ bool Battle(BattleFrameCallback* callback)
 		battle_counter[1] = CountLinks(&race_q[1]);
 
 		if (optMeleeScale != TFB_SCALE_STEP)
+		{
 			SetGraphicScaleMode(optMeleeScale);
+		}
 
 		setupBattleInputOrder();
 #ifdef NETPLAY
@@ -495,7 +527,9 @@ bool Battle(BattleFrameCallback* callback)
 		bs.first_time = inHQSpace();
 
 		if (bs.first_time)
+		{
 			EraseRadar();
+		}
 
 		DoInput(&bs, false);
 

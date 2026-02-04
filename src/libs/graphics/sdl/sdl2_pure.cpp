@@ -95,7 +95,9 @@ static int
 ReInit_Screen(SDL_Surface** screen, int w, int h)
 {
 	if (*screen)
+	{
 		SDL_FreeSurface(*screen);
+	}
 	*screen = Create_Screen(w, h);
 
 	return *screen == 0 ? -1 : 0;
@@ -105,7 +107,9 @@ static int
 ReInit_FPS_Screen(SDL_Surface** screen, int w, int h)
 {
 	if (*screen)
+	{
 		SDL_FreeSurface(*screen);
+	}
 	*screen = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 32, R_MASK, G_MASK,
 								   B_MASK, A_MASK);
 	if (*screen == 0)
@@ -214,10 +218,14 @@ int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
 		if (flags & TFB_GFXFLAGS_SHOWFPS)
 		{
 			if (0 != ReInit_FPS_Screen(&SDL_Screen_fps, CanvasWidth >> 4, CanvasHeight >> 4))
+			{
 				return -1;
+			}
 		}
 		else
+		{
 			UnInit_Screen(&SDL_Screen_fps);
+		}
 		SDL2_Screens[1].active = false;
 		SDL_Screen = SDL_Screens[0];
 		TransitionScreen = SDL_Screens[2];
@@ -252,10 +260,14 @@ int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
 		if (flags & TFB_GFXFLAGS_SHOWFPS)
 		{
 			if (0 != ReInit_FPS_Screen(&SDL_Screen_fps, CanvasWidth >> 4, CanvasHeight >> 4))
+			{
 				return -1;
+			}
 		}
 		else
+		{
 			UnInit_Screen(&SDL_Screen_fps);
+		}
 		if (flags & TFB_GFXFLAGS_FULLSCREEN)
 		{
 			SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
@@ -312,10 +324,14 @@ int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
 		if (flags & TFB_GFXFLAGS_SHOWFPS)
 		{
 			if (0 != ReInit_FPS_Screen(&SDL_Screen_fps, CanvasWidth * 2, CanvasHeight * 2))
+			{
 				return -1;
+			}
 		}
 		else
+		{
 			UnInit_Screen(&SDL_Screen_fps);
+		}
 		scaler = Scale_PrepPlatform(flags, SDL2_Screens[0].scaled->format);
 		graphics_backend = &sdl2_scaled_backend;
 	}
@@ -606,10 +622,14 @@ static void
 TFB_SDL2_Postprocess(bool hd)
 {
 	if (GfxFlags & TFB_GFXFLAGS_SCANLINES)
+	{
 		TFB_SDL2_ScanLines(hd);
+	}
 
 	if (GfxFlags & TFB_GFXFLAGS_SHOWFPS)
+	{
 		TFB_SDL2_FPS();
+	}
 
 	SDL_RenderPresent(renderer);
 }
@@ -632,9 +652,13 @@ bool TFB_SDL_ScreenShot(const char* path)
 		height = (float)tmp->h / 240;
 
 		if (width > height)
+		{
 			tmp->w = width * 320;
+		}
 		else if (height > width)
+		{
 			tmp->h = width * 240;
+		}
 	}
 
 	tmp = SDL_CreateRGBSurfaceWithFormat(0, tmp->w, tmp->h, 32,
@@ -644,10 +668,14 @@ bool TFB_SDL_ScreenShot(const char* path)
 	SDL_RenderReadPixels(renderer, NULL, tmp->format->format,
 						 tmp->pixels, tmp->pitch);
 	if (TFB_sdl_to_png(tmp, SDL_RWFromFile(path, "wb"), 1) == 0)
+	{
 		successful = true;
+	}
 
 	if (successful && CopySurfaceToClipboard(tmp) != 0)
+	{
 		log_add(log_Warning, "Failed to copy PNG to clipboard\n");
+	}
 
 	SDL_UnlockSurface(tmp);
 	SDL_FreeSurface(tmp);
@@ -658,7 +686,9 @@ bool TFB_SDL_ScreenShot(const char* path)
 void TFB_SDL2_GetDisplaySize(SDL_Rect* bounds)
 {
 	if (SDL_GetDisplayBounds(0, bounds) != 0)
+	{
 		printf("%s\n", SDL_GetError());
+	}
 }
 
 #endif /* SDL_MAJOR_VERSION > 1 */

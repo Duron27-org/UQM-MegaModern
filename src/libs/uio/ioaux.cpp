@@ -219,14 +219,18 @@ int uio_copyFilePhysical(uio_PDirHandle* fromDir, const char* fromName,
 	}
 
 	if ((fromHandler->fstat)(fromHandle, &statBuf) == -1)
+	{
 		return copyError(errno, fromHandler, fromHandle,
 						 toHandler, NULL, NULL, NULL, NULL);
+	}
 
 	toHandle = (toHandler->open)(toDir, toName, O_WRONLY | O_CREAT | O_EXCL,
 								 statBuf.st_mode & (S_IRWXU | S_IRWXG | S_IRWXO));
 	if (toHandle == NULL)
+	{
 		return copyError(errno, fromHandler, fromHandle,
 						 toHandler, NULL, NULL, NULL, NULL);
+	}
 
 	buf = (char*)uio_malloc(BUFSIZE);
 	// not allocated on the stack, as this function may be called
@@ -237,12 +241,16 @@ int uio_copyFilePhysical(uio_PDirHandle* fromDir, const char* fromName,
 		if (numInBuf == -1)
 		{
 			if (errno == EINTR)
+			{
 				continue;
+			}
 			return copyError(errno, fromHandler, fromHandle,
 							 toHandler, toHandle, toDir, toName, buf);
 		}
 		if (numInBuf == 0)
+		{
 			break;
+		}
 
 		bufPtr = buf;
 		do
@@ -251,7 +259,9 @@ int uio_copyFilePhysical(uio_PDirHandle* fromDir, const char* fromName,
 			if (numWritten == -1)
 			{
 				if (errno == EINTR)
+				{
 					continue;
+				}
 				return copyError(errno, fromHandler, fromHandle,
 								 toHandler, toHandle, toDir, toName, buf);
 			}
@@ -284,16 +294,24 @@ copyError(int error,
 #endif
 
 	if (fromHandle != NULL)
+	{
 		(fromHandler->close)(fromHandle);
+	}
 
 	if (toHandle != NULL)
+	{
 		(toHandler->close)(toHandle);
+	}
 
 	if (toName != NULL)
+	{
 		(toHandler->unlink)(toDir, toName);
+	}
 
 	if (buf != NULL)
+	{
 		uio_free(buf);
+	}
 
 	errno = error;
 	return -1;
@@ -416,13 +434,17 @@ int uio_getPhysicalAccess(uio_DirHandle* dirHandle, const char* path,
 			uio_free(fullPath);
 			uio_PDirHandle_unref(pDirHandle);
 			if (readPDirHandle != NULL)
+			{
 				uio_PDirHandle_unref(readPDirHandle);
+			}
 			errno = EISDIR;
 			return -1;
 		}
 		// check if this MountTreeItem is suitable for writing
 		if (writeItem == NULL && !uio_mountInfoIsReadOnly(item->mountInfo))
+		{
 			writeItem = item;
+		}
 		if (strchr(rest, '/') == NULL)
 		{
 			// There's only one dir component that was not matched.
@@ -438,7 +460,9 @@ int uio_getPhysicalAccess(uio_DirHandle* dirHandle, const char* path,
 				uio_PDirEntryHandle_unref(entry);
 				readItem = item;
 				if (readPDirHandle != NULL)
+				{
 					uio_PDirHandle_unref(readPDirHandle);
+				}
 				readPDirHandle = pDirHandle;
 				readPRootPath = pRootPath;
 				readRest = rest;
@@ -471,7 +495,9 @@ int uio_getPhysicalAccess(uio_DirHandle* dirHandle, const char* path,
 				uio_free(fullPath);
 				uio_PDirHandle_unref(pDirHandle);
 				if (readPDirHandle != NULL)
+				{
 					uio_PDirHandle_unref(readPDirHandle);
+				}
 				errno = ENOTDIR;
 				return -1;
 			}
@@ -496,8 +522,10 @@ int uio_getPhysicalAccess(uio_DirHandle* dirHandle, const char* path,
 		*mountInfoReadPtr = readItem->mountInfo;
 		*readPDirHandlePtr = readPDirHandle;
 		if (readPRootPathPtr != NULL)
+		{
 			*readPRootPathPtr = joinPathsAbsolute(
 				readItem->mountInfo->dirName, readPRootPath);
+		}
 		// Don't touch mountInfoWritePtr and writePDirHandlePtr.
 		// they'd be NULL.
 		*restPtr = uio_strdup(readRest);
@@ -545,8 +573,10 @@ int uio_getPhysicalAccess(uio_DirHandle* dirHandle, const char* path,
 		*mountInfoReadPtr = readItem->mountInfo;
 		*readPDirHandlePtr = readPDirHandle;
 		if (readPRootPathPtr != NULL)
+		{
 			*readPRootPathPtr = joinPathsAbsolute(
 				readItem->mountInfo->dirName, readPRootPath);
+		}
 		*mountInfoWritePtr = writeItem->mountInfo;
 		// writeItem == readItem
 		uio_PDirHandle_ref(readPDirHandle);
@@ -554,10 +584,14 @@ int uio_getPhysicalAccess(uio_DirHandle* dirHandle, const char* path,
 		// No copy&paste error, the read PDirHandle is the write
 		// pDirHandle too.
 		if (writePRootPathPtr != NULL)
+		{
 			*writePRootPathPtr = joinPathsAbsolute(
 				writeItem->mountInfo->dirName, writePRootPath);
+		}
 		if (restPtr != NULL)
+		{
 			*restPtr = uio_strdup(readRest);
+		}
 		uio_free(fullPath);
 		return 0;
 	}
@@ -634,15 +668,21 @@ int uio_getPhysicalAccess(uio_DirHandle* dirHandle, const char* path,
 	*mountInfoReadPtr = readItem->mountInfo;
 	*readPDirHandlePtr = readPDirHandle;
 	if (readPRootPathPtr != NULL)
+	{
 		*readPRootPathPtr = joinPathsAbsolute(
 			readItem->mountInfo->dirName, readPRootPath);
+	}
 	*mountInfoWritePtr = writeItem->mountInfo;
 	*writePDirHandlePtr = writePDirHandle;
 	if (writePRootPathPtr != NULL)
+	{
 		*writePRootPathPtr = joinPathsAbsolute(
 			writeItem->mountInfo->dirName, writePRootPath);
+	}
 	if (restPtr != NULL)
+	{
 		*restPtr = uio_strdup(rest);
+	}
 	uio_free(fullPath);
 	return 0;
 }
@@ -715,7 +755,9 @@ int uio_getPathPhysicalDirs(uio_DirHandle* dirHandle, const char* path,
 				// complete path was matched
 				pDirHandles[pDirI] = pDirHandle;
 				if (resItems != NULL)
+				{
 					items[pDirI] = item;
+				}
 				pDirI++;
 				continue;
 			case ENOENT:
@@ -741,8 +783,10 @@ int uio_getPathPhysicalDirs(uio_DirHandle* dirHandle, const char* path,
 	*resPDirHandles = (uio_PDirHandle**)uio_realloc(pDirHandles,
 													numPDirHandles * sizeof(uio_PDirHandle*));
 	if (resItems != NULL)
+	{
 		*resItems = (uio_MountTreeItem**)uio_realloc(items,
 													 numPDirHandles * sizeof(uio_MountTreeItem*));
+	}
 	*resNumPDirHandles = numPDirHandles;
 
 	return 0;

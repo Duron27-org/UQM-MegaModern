@@ -44,7 +44,9 @@ Heap* Heap_new(HeapValue_Comparator comparator, size_t initialSize, size_t minSi
 	heap = (Heap*)malloc(sizeof(Heap));
 
 	if (initialSize < minSize)
+	{
 		initialSize = minSize;
+	}
 
 	heap->comparator = comparator;
 	heap->minSize = minSize;
@@ -69,7 +71,9 @@ void Heap_add(Heap* heap, HeapValue* value)
 	size_t i;
 
 	if (heap->numEntries >= heap->size)
+	{
 		Heap_resize(heap, heap->size * 2);
+	}
 
 	i = heap->numEntries;
 	heap->numEntries++;
@@ -78,7 +82,9 @@ void Heap_add(Heap* heap, HeapValue* value)
 	{
 		size_t parentI = (i - 1) / 2;
 		if (heap->comparator(heap->entries[parentI], value) <= 0)
+		{
 			break;
+		}
 
 		heap->entries[i] = heap->entries[parentI];
 		heap->entries[i]->index = i;
@@ -158,7 +164,9 @@ Heap_removeByIndex(Heap* heap, size_t i)
 
 	// Resize if necessary:
 	if (heap->numEntries < heap->minFill && heap->numEntries > heap->minSize)
+	{
 		Heap_resize(heap, heap->size / 2);
+	}
 }
 
 HeapValue*

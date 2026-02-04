@@ -64,7 +64,9 @@ RandomContext_Random(RandomContext* context)
 		context->seed -= SeedM;
 	}
 	else if (context->seed == 0)
+	{
 		context->seed = 1;
+	}
 
 	return context->seed;
 }
@@ -76,9 +78,13 @@ RandomContext_SeedRandom(RandomContext* context, uqm::DWORD new_seed)
 
 	/* coerce the seed to be in the range 1..M */
 	if (new_seed == 0) /* 0 becomes 1 */
+	{
 		new_seed = 1;
+	}
 	else if (new_seed > SeedM) /* and less than M */
+	{
 		new_seed -= SeedM;
+	}
 
 	old_seed = context->seed;
 	context->seed = new_seed;
@@ -100,7 +106,9 @@ RandomContext_FastRandom(uqm::DWORD seed)
 		res -= SeedM;
 	}
 	else if (res == 0)
+	{
 		res = 1;
+	}
 
 	return res;
 }
@@ -108,7 +116,9 @@ RandomContext_FastRandom(uqm::DWORD seed)
 int RangeMinMax(int min, int max, uqm::DWORD rand)
 {
 	if (min > max)
+	{
 		return max;
+	}
 
 	return rand % ((max + 1) - min) + min;
 }

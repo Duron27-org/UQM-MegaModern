@@ -51,10 +51,14 @@ void DrawStarConBox(RECT* pRect, uqm::SIZE BorderWidth, Color TopLeftColor,
 		SetContextForeGroundColor(TopLeftColor);
 	}
 	else
+	{
 		oldcolor = SetContextForeGroundColor(TopLeftColor);
+	}
 
 	if (BorderWidth == 0)
+	{
 		BorderWidth = RES_SCALE(2);
+	}
 
 	locRect.corner = pRect->corner;
 	locRect.extent.width = pRect->extent.width;
@@ -119,7 +123,9 @@ void DrawStarConBox(RECT* pRect, uqm::SIZE BorderWidth, Color TopLeftColor,
 				CreateAvgShade(TopLeftColor, BottomRightColor));
 		}
 		else
+		{
 			SetContextForeGroundColor(CornerColor);
+		}
 
 		locRect.corner.x = pRect->corner.x;
 		locRect.corner.y = pRect->corner.y + pRect->extent.height
@@ -158,7 +164,9 @@ void DrawRenderedBox(RECT* r, bool filled, Color fill_color, int type,
 	COORD rows = r->extent.height;
 
 	if (!r->extent.width || !r->extent.height)
+	{
 		return;
+	}
 
 	BatchGraphics();
 
@@ -246,14 +254,20 @@ void DrawBorderPadding(uqm::DWORD videoWidth)
 		(videoWidth && videoWidth < 280 ? SAFE_NEG(4) * 2 : SAFE_X);
 
 	if (!safe_x)
+	{
 		return;
+	}
 
 	OldContext = SetContext(ScreenContext);
 
 	if (videoWidth)
+	{
 		SetContextForeGroundColor(BUILD_SHADE_RGBA(0x0C));
+	}
 	else
+	{
 		SetContextForeGroundColor(BLACK_COLOR);
+	}
 
 	// Top bar
 	r.corner = MAKE_POINT(0, 0);
@@ -289,7 +303,9 @@ void DrawRadarBorder(void)
 	CONTEXT OldContext;
 
 	if (IS_PAD)
+	{
 		return;
+	}
 
 	OldContext = SetContext(StatusContext);
 
@@ -353,7 +369,9 @@ DrawPauseText(RECT* rect)
 	RECT block;
 
 	if (!strlen(GAME_STRING(QUITMENU_STRING_BASE + 4)))
+	{
 		return;
+	}
 
 	OldFont = SetContextFont(DOS_BOOL(LabelFont, StarConFont));
 	OldColor = SetContextForeGroundColor(
@@ -402,12 +420,16 @@ bool PauseGame(void)
 	if (ActivityFrame == 0
 		|| (GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_PAUSE))
 		|| (LastActivity & (CHECK_LOAD | CHECK_RESTART)))
+	{
 		return (false);
+	}
 
 	GLOBAL(CurrentActivity) |= CHECK_PAUSE;
 
 	if (PlayingTrack())
+	{
 		PauseTrack();
+	}
 
 	deltaT = GetTimeCounter();
 
@@ -477,7 +499,9 @@ bool PauseGame(void)
 	DeltaLastTime(GetTimeCounter() - deltaT);
 
 	if (PlayingTrack())
+	{
 		ResumeTrack();
+	}
 
 
 	TaskSwitch();
@@ -494,7 +518,9 @@ bool WaitForAnyButtonUntil(bool newButton, TimeCount timeOut,
 	bool buttonPressed;
 
 	if (newButton && !WaitForNoInputUntil(timeOut, false))
+	{
 		return false;
+	}
 
 	buttonPressed = AnyButtonPress(true);
 	while (!buttonPressed
@@ -507,7 +533,9 @@ bool WaitForAnyButtonUntil(bool newButton, TimeCount timeOut,
 	}
 
 	if (resetInput)
+	{
 		FlushInput();
+	}
 
 	return buttonPressed;
 }
@@ -521,7 +549,9 @@ bool WaitForActButtonUntil(bool newButton, TimeCount timeOut,
 	bool buttonPressed;
 
 	if (newButton && !WaitForNoInputUntil(timeOut, false))
+	{
 		return false;
+	}
 
 	buttonPressed = ActKeysPress();
 	while (!buttonPressed
@@ -534,7 +564,9 @@ bool WaitForActButtonUntil(bool newButton, TimeCount timeOut,
 	}
 
 	if (resetInput)
+	{
 		FlushInput();
+	}
 
 	return buttonPressed;
 }
@@ -543,7 +575,9 @@ bool WaitForAnyButton(bool newButton, TimePeriod duration, bool resetInput)
 {
 	TimeCount timeOut = duration;
 	if (duration != WAIT_INFINITE)
+	{
 		timeOut += GetTimeCounter();
+	}
 	return WaitForAnyButtonUntil(newButton, timeOut, resetInput);
 }
 
@@ -551,7 +585,9 @@ bool WaitForActButton(bool newButton, TimePeriod duration, bool resetInput)
 {
 	TimeCount timeOut = duration;
 	if (duration != WAIT_INFINITE)
+	{
 		timeOut += GetTimeCounter();
+	}
 	return WaitForActButtonUntil(newButton, timeOut, resetInput);
 }
 
@@ -572,7 +608,9 @@ bool WaitForNoInputUntil(TimeCount timeOut, bool resetInput)
 	}
 
 	if (resetInput)
+	{
 		FlushInput();
+	}
 
 	return !buttonPressed;
 }
@@ -581,7 +619,9 @@ bool WaitForNoInput(TimePeriod duration, bool resetInput)
 {
 	TimeCount timeOut = duration;
 	if (duration != WAIT_INFINITE)
+	{
 		timeOut += GetTimeCounter();
+	}
 	return WaitForNoInputUntil(timeOut, resetInput);
 }
 
@@ -591,17 +631,23 @@ bool WaitForNoInput(TimePeriod duration, bool resetInput)
 void SleepGame(void)
 {
 	if (QuitPosted)
+	{
 		return; // Do not sleep the game when already asked to quit
+	}
 
 	log_add(log_Debug, "Game is going to sleep");
 
 	if (PlayingTrack())
+	{
 		PauseTrack();
+	}
 	PauseMusic();
 
 
 	while (!GameActive && !QuitPosted)
+	{
 		SleepThread(ONE_SECOND / 2);
+	}
 
 	log_add(log_Debug, "Game is waking up");
 
@@ -610,7 +656,9 @@ void SleepGame(void)
 	ResumeMusic();
 
 	if (PlayingTrack())
+	{
 		ResumeTrack();
+	}
 
 
 	TaskSwitch();
@@ -635,9 +683,13 @@ get_fuel_to_sol(void)
 
 	f = (uqm::DWORD)((long)pt.x * pt.x + (long)pt.y * pt.y);
 	if (f == 0 || GET_GAME_STATE(ARILOU_SPACE_SIDE) > 1)
+	{
 		return 0;
+	}
 	else
+	{
 		return (square_root(f) + (FUEL_TANK_SCALE / 20));
+	}
 }
 
 void DrawFlagStatDisplay(const uqm::CHAR_T* str)
@@ -657,7 +709,9 @@ void DrawFlagStatDisplay(const uqm::CHAR_T* str)
 					   true, MODULE_BACK_COLOR, false, TRANSPARENT);
 	}
 	else
+	{
 		DrawBorder(DEVICE_CARGO_FRAME);
+	}
 
 	// print the "str" title
 	SetContextFont(StarConFont);
@@ -681,14 +735,22 @@ WholeFuelValue(void)
 	if (!optInfiniteFuel)
 	{
 		if (!optWholeFuel)
+		{
 			snprintf(buf, sizeof buf, "%u", CoarseFuel);
+		}
 		else if (dblFuelOnBoard > 999.99)
+		{
 			snprintf(buf, sizeof buf, "%.1f", dblFuelOnBoard);
+		}
 		else
+		{
 			snprintf(buf, sizeof buf, "%.2f", dblFuelOnBoard);
+		}
 	}
 	else
+	{
 		snprintf(buf, sizeof buf, "%s", STR_INFINITY_SIGN);
+	}
 
 	return buf;
 }

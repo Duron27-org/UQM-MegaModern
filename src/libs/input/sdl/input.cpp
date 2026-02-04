@@ -116,7 +116,9 @@ register_menu_controls(int index)
 		snprintf(buf, 39, "menu.%s.%d", menu_res_names[index], i);
 
 		if (!res_IsString(buf))
+		{
 			break;
+		}
 		VControl_ParseGesture(&g, res_GetString(buf));
 		VControl_AddGestureBinding(&g, (int*)&menu_vec[index]);
 		i++;
@@ -188,7 +190,9 @@ initKeyConfig(void)
 	for (i = 0; i < num_menu; i++)
 	{
 		if (!menu_res_names[i])
+		{
 			break;
+		}
 		register_menu_controls(i);
 	}
 
@@ -266,7 +270,9 @@ initJoystick(void)
 		slash = (last_char == '/' || last_char == '\\') ? "" : "/";
 	}
 	else
+	{
 		slash = "/";
+	}
 
 	len = snprintf(NULL, 0, "%s%sgamecontrollerdb.txt",
 				   baseContentPath, slash);
@@ -318,7 +324,9 @@ initJoystick(void)
 		SDL_JoystickEventState(SDL_ENABLE);
 #else
 		for (int i = 0; i < nJoysticks; i++)
+		{
 			create_joystick(i);
+		}
 #endif
 	}
 }
@@ -388,7 +396,9 @@ GetNextCharacter(void)
 {
 	UniChar result;
 	if (kbdhead == kbdtail)
+	{
 		return 0;
+	}
 	result = kbdbuf[kbdhead];
 	kbdhead = (kbdhead + 1) & (KBDBUFSIZE - 1);
 	return result;
@@ -433,14 +443,18 @@ is_numpad_char_event(const SDL_Event* Event)
 void ProcessInputEvent(const SDL_Event* Event)
 {
 	if (!InputInitialized)
+	{
 		return;
+	}
 
 	// ProcessMouseEvent (Event);
 
 	// In character mode with NumLock on, numpad chars bypass VControl
 	// so that menu arrow events are not produced
 	if (!is_numpad_char_event(Event))
+	{
 		VControl_HandleEvent(Event);
+	}
 
 	if (Event->type == SDL_KEYDOWN || Event->type == SDL_KEYUP)
 	{ // process character input event, if any
@@ -450,7 +464,9 @@ void ProcessInputEvent(const SDL_Event* Event)
 		UniChar map_key = Event->key.keysym.unicode;
 
 		if (k < 0 || k > num_keys)
+		{
 			k = num_keys; // for unknown keys
+		}
 
 		if (Event->type == SDL_KEYDOWN)
 		{
@@ -458,7 +474,9 @@ void ProcessInputEvent(const SDL_Event* Event)
 
 			// dont care about the non-printable, non-char
 			if (!map_key)
+			{
 				return;
+			}
 
 			kbdstate[k]++;
 
@@ -483,7 +501,9 @@ void ProcessInputEvent(const SDL_Event* Event)
 			{
 				kbdstate[k]--;
 				if (menu_vec[KEY_MENU_ANY] > 0)
+				{
 					menu_vec[KEY_MENU_ANY]--;
+				}
 			}
 		}
 	}
@@ -503,7 +523,9 @@ is_numpad_char_event(const SDL_Event* Event)
 void ProcessInputEvent(const SDL_Event* Event)
 {
 	if (!InputInitialized)
+	{
 		return;
+	}
 
 	if (in_character_mode && !set_character_mode)
 	{
@@ -561,7 +583,9 @@ void ProcessInputEvent(const SDL_Event* Event)
 
 			/* dont care about the non-printable, non-char */
 			if (!map_key)
+			{
 				return;
+			}
 
 			newtail = (kbdtail + 1) & (KBDBUFSIZE - 1);
 

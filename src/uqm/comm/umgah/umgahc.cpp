@@ -36,7 +36,7 @@ static LOCDATA umgah_desc =
 		BLACK_COLOR_INIT, /* AlienTextBColor */
 		{0, 0}, /* AlienTextBaseline */
 		0,
- /* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
+		/* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
 		ALIGN_CENTER, /* AlienTextAlign */
 		VALIGN_TOP, /* AlienTextValign */
 		UMGAH_COLOR_MAP, /* AlienColorMap */
@@ -254,7 +254,9 @@ CombatIsInevitable(RESPONSE_REF R)
 		setSegue(Segue_peace);
 	}
 	else if (PLAYER_SAID(R, bye_pre_zombie))
+	{
 		NPCPhrase(GOODBYE_PRE_ZOMBIE);
+	}
 	else if (PLAYER_SAID(R, can_we_be_friends))
 	{
 		NPCPhrase(SURE_FRIENDS);
@@ -268,9 +270,13 @@ CombatIsInevitable(RESPONSE_REF R)
 		SET_GAME_STATE(UMGAH_EVIL_BLOBBIES, 1);
 	}
 	else if (PLAYER_SAID(R, evil_blobbies_must_die))
+	{
 		NPCPhrase(OH_NO_WE_WONT);
+	}
 	else if (PLAYER_SAID(R, threat))
+	{
 		NPCPhrase(NO_THREAT);
+	}
 	else if (PLAYER_SAID(R, dont_believe))
 	{
 		NPCPhrase(THEN_DIE);
@@ -319,17 +325,25 @@ Zombies(RESPONSE_REF R)
 		}
 
 		if (PHRASE_ENABLED(whats_up_zombies) && PHRASE_ENABLED(how_goes_tpet))
+		{
 			Response(whats_up_zombies, Zombies);
+		}
 		if (PHRASE_ENABLED(how_goes_tpet))
+		{
 			Response(how_goes_tpet, Zombies);
+		}
 		else if (PHRASE_ENABLED(you_told_us))
+		{
 			Response(you_told_us, Zombies);
+		}
 		else
 		{
 			Response(dont_believe, CombatIsInevitable);
 		}
 		if (PHRASE_ENABLED(whats_up_zombies) && !PHRASE_ENABLED(how_goes_tpet))
+		{
 			Response(whats_up_zombies, Zombies);
+		}
 		Response(threat, CombatIsInevitable);
 		Response(bye_unknown, CombatIsInevitable);
 	}
@@ -407,33 +421,55 @@ Zombies(RESPONSE_REF R)
 		}
 
 		if (PHRASE_ENABLED(evil_blobbies))
+		{
 			pStr[0] = evil_blobbies;
+		}
 		else
+		{
 			pStr[0] = give_up_or_die;
+		}
 
 		if (PHRASE_ENABLED(we_vindicator))
+		{
 			pStr[1] = we_vindicator;
+		}
 		else if (PHRASE_ENABLED(come_in_peace))
+		{
 			pStr[1] = come_in_peace;
+		}
 
 		if (PHRASE_ENABLED(know_any_jokes))
+		{
 			pStr[2] = know_any_jokes;
+		}
 		else if (PHRASE_ENABLED(better_joke))
+		{
 			pStr[2] = better_joke;
+		}
 		else if (PHRASE_ENABLED(not_very_funny))
+		{
 			pStr[2] = not_very_funny;
+		}
 
 		if (PHRASE_ENABLED(what_about_tpet))
+		{
 			pStr[3] = what_about_tpet;
+		}
 		else
+		{
 			pStr[3] = arilou_told_us;
+		}
 
 		if (pStr[LastStack])
+		{
 			Response(pStr[LastStack], Zombies);
+		}
 		for (i = 0; i < 4; ++i)
 		{
 			if (i != LastStack && pStr[i])
+			{
 				Response(pStr[i], Zombies);
+			}
 		}
 		Response(bye_zombie, CombatIsInevitable);
 	}
@@ -456,13 +492,21 @@ NormalUmgah(RESPONSE_REF R)
 	}
 
 	if (!GET_GAME_STATE(UMGAH_EVIL_BLOBBIES))
+	{
 		Response(evil_blobbies_give_up, CombatIsInevitable);
+	}
 	else
+	{
 		Response(evil_blobbies_must_die, CombatIsInevitable);
+	}
 	if (PHRASE_ENABLED(whats_up_pre_zombie))
+	{
 		Response(whats_up_pre_zombie, NormalUmgah);
+	}
 	if (PHRASE_ENABLED(want_to_defeat_urquan))
+	{
 		Response(want_to_defeat_urquan, NormalUmgah);
+	}
 	switch (GET_GAME_STATE(UMGAH_MENTIONED_TRICKS))
 	{
 		case 0:
@@ -525,9 +569,13 @@ UmgahReward(RESPONSE_REF R)
 	if (!GET_GAME_STATE(MET_NORMAL_UMGAH))
 	{
 		if (PHRASE_ENABLED(what_before_tpet))
+		{
 			Response(what_before_tpet, UmgahReward);
+		}
 		else if (PHRASE_ENABLED(where_caster))
+		{
 			Response(where_caster, UmgahReward);
+		}
 	}
 	if (PHRASE_ENABLED(owe_me_big_time))
 	{
@@ -535,11 +583,17 @@ UmgahReward(RESPONSE_REF R)
 		Response(our_largesse, UmgahReward);
 	}
 	if (PHRASE_ENABLED(what_do_with_tpet))
+	{
 		Response(what_do_with_tpet, UmgahReward);
+	}
 	else if (PHRASE_ENABLED(any_jokes) && GET_GAME_STATE(UMGAH_MENTIONED_TRICKS) < 2)
+	{
 		Response(any_jokes, UmgahReward);
+	}
 	if (PHRASE_ENABLED(so_what_for_now))
+	{
 		Response(so_what_for_now, UmgahReward);
+	}
 	Response(bye_post_zombie, CombatIsInevitable);
 }
 

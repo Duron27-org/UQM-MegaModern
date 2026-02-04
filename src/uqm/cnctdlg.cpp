@@ -267,9 +267,13 @@ MCD_DrawTextEntry(WIDGET* _self, int x, int y)
 		// calculate the cursor position and draw it
 		pchar_deltas = char_deltas;
 		for (i = self->cursor_pos; i > 0; --i)
+		{
 			r.corner.x += (uqm::SIZE)*pchar_deltas++;
+		}
 		if (self->cursor_pos < t.CharCount) /* cursor mid-line */
+		{
 			r.corner.x -= RES_SCALE(1);
+		}
 
 		if (self->state & WTE_BLOCKCUR)
 		{ // Use block cursor for keyboardless systems
@@ -300,7 +304,9 @@ MCD_DrawTextEntry(WIDGET* _self, int x, int y)
 			r.extent.width = RES_SCALE(1);
 
 			if (self->cursor_pos == t.CharCount)
+			{
 				text_r.corner.x -= IF_HD(3);
+			}
 		}
 		// position cursor within input field rect
 		r.corner.x += RES_SCALE(1);
@@ -327,9 +333,13 @@ OnTextEntryChange(TEXTENTRY_STATE* pTES)
 
 	widget->cursor_pos = pTES->CursorPos;
 	if (pTES->JoystickMode)
+	{
 		widget->state |= WTE_BLOCKCUR;
+	}
 	else
+	{
 		widget->state &= ~WTE_BLOCKCUR;
+	}
 
 	// XXX TODO: Here, we can examine the text entered so far
 	// to make sure it fits on the screen, for example,

@@ -419,7 +419,9 @@ int TFB_sdl_to_png(SDL_Surface* surface, SDL_RWops* dst, int freedst)
 		free(pal_ptr);
 	}
 	else if (surface->format->BytesPerPixel > 3 || surface->format->Amask)
+	{
 		colortype |= PNG_COLOR_MASK_ALPHA;
+	}
 
 	/* Set the PNG header info */
 	png_set_IHDR(png_ptr, info_ptr, surface->w, surface->h, 8, colortype,
@@ -432,7 +434,9 @@ int TFB_sdl_to_png(SDL_Surface* surface, SDL_RWops* dst, int freedst)
 	if (surface->format->Rmask == B_MASK
 		&& surface->format->Gmask == G_MASK
 		&& surface->format->Bmask == R_MASK)
+	{
 		png_set_bgr(png_ptr);
+	}
 
 	/* Write everything */
 	png_write_info(png_ptr, info_ptr);
@@ -455,12 +459,18 @@ int TFB_sdl_to_png(SDL_Surface* surface, SDL_RWops* dst, int freedst)
 
 done: /* Clean up and return */
 	if (freedst)
+	{
 		SDL_RWclose(dst);
+	}
 	if (row_pointers)
+	{
 		SDL_free(row_pointers);
+	}
 	if (png_ptr)
+	{
 		png_destroy_write_struct(&png_ptr,
 								 info_ptr ? &info_ptr : (png_infopp)0);
+	}
 	if (error)
 	{
 		if (surface)

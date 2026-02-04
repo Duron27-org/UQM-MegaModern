@@ -71,11 +71,17 @@ int NetManager_addDesc(NetDescriptor* nd)
 
 	fd = nd->socket->fd;
 	if (nd->readCallback != NULL)
+	{
 		FD_SET(fd, &readSet);
+	}
 	if (nd->writeCallback != NULL)
+	{
 		FD_SET(fd, &writeSet);
+	}
 	if (nd->exceptionCallback != NULL)
+	{
 		FD_SET(fd, &exceptionSet);
+	}
 	return 0;
 }
 
@@ -177,7 +183,9 @@ int NetManager_process(uint32* timeoutMs)
 
 		nd = NDIndex_getNDForSocketFd(i);
 		if (nd == NULL)
+		{
 			continue;
+		}
 
 		bitSet = false;
 		// Is one of the bits in the fd_sets set?
@@ -192,7 +200,9 @@ int NetManager_process(uint32* timeoutMs)
 			bitSet = true;
 			closed = NetManager_doExceptionCallback(nd);
 			if (closed)
+			{
 				goto next;
+			}
 		}
 
 		if (FD_ISSET(i, &newWriteSet))
@@ -201,7 +211,9 @@ int NetManager_process(uint32* timeoutMs)
 			bitSet = true;
 			closed = NetManager_doWriteCallback(nd);
 			if (closed)
+			{
 				goto next;
+			}
 		}
 
 		if (FD_ISSET(i, &newReadSet))
@@ -210,12 +222,16 @@ int NetManager_process(uint32* timeoutMs)
 			bitSet = true;
 			closed = NetManager_doReadCallback(nd);
 			if (closed)
+			{
 				goto next;
+			}
 		}
 
 next:
 		if (bitSet)
+		{
 			selectResult--;
+		}
 	}
 
 	*timeoutMs = (timeout.tv_sec * 1000) + (timeout.tv_usec / 1000);

@@ -45,7 +45,9 @@ LoadSoundInstance(RESOURCE res)
 
 	hData = res_GetResource(res);
 	if (hData)
+	{
 		res_DetachResource(res);
+	}
 
 	return ((SOUND_REF)hData);
 }
@@ -57,7 +59,9 @@ LoadMusicInstance(RESOURCE res)
 
 	hData = res_GetResource(res);
 	if (hData)
+	{
 		res_DetachResource(res);
+	}
 
 	return ((MUSIC_REF)hData);
 }

@@ -138,14 +138,22 @@ processFontChar(TFB_Char* CharPtr, TFB_Canvas canvas, FONT fontPtr)
 		int tune_amount = 0;
 
 		if (CharPtr->disp.height <= RES_SCALE(8))
+		{
 			tune_amount = RES_SCALE(1);
+		}
 		else if (CharPtr->disp.height == RES_SCALE(9))
+		{
 			tune_amount = RES_SCALE(2);
+		}
 		else if (CharPtr->disp.height > RES_SCALE(9))
+		{
 			tune_amount = RES_SCALE(3);
+		}
 
 		if (fontPtr->HaveFntData)
+		{
 			tune_amount = fontPtr->VertAlign;
+		}
 
 		CharPtr->HotSpot.y = CharPtr->disp.height - tune_amount;
 	}
@@ -181,7 +189,9 @@ void* _GetCelData(uio_Stream* fp, uqm::DWORD length)
 		else
 		{
 			if (s2 > s1)
+			{
 				s1 = s2;
+			}
 			n = s1 - _cur_resfile_name + 1;
 		}
 
@@ -251,7 +261,9 @@ void* _GetCelData(uio_Stream* fp, uqm::DWORD length)
 				   &ani[cel_index].colormap_index,
 				   &ani[cel_index].hotspot_x, &ani[cel_index].hotspot_y)
 			!= 5)
+		{
 			break;
+		}
 
 		img[cel_index] = TFB_DrawCanvas_LoadFromFile(aniDir, filename);
 		if (img[cel_index] == NULL)
@@ -261,7 +273,9 @@ void* _GetCelData(uio_Stream* fp, uqm::DWORD length)
 			err = TFB_DrawCanvas_GetError();
 			log_add(log_Warning, "_GetCelData: Unable to load image!");
 			if (err != NULL)
+			{
 				log_add(log_Warning, "Gfx Driver reports: %s", err);
+			}
 		}
 		else
 		{
@@ -269,7 +283,9 @@ void* _GetCelData(uio_Stream* fp, uqm::DWORD length)
 		}
 
 		if ((int)uio_ftell(aniFile) - (int)opos >= (int)length)
+		{
 			break;
+		}
 	}
 
 	Drawable = NULL;
@@ -278,7 +294,9 @@ void* _GetCelData(uio_Stream* fp, uqm::DWORD length)
 		if (!Drawable)
 		{
 			while (cel_index--)
+			{
 				TFB_DrawCanvas_Delete(img[cel_index]);
+			}
 
 			HFree(Drawable);
 			Drawable = NULL;
@@ -292,13 +310,17 @@ void* _GetCelData(uio_Stream* fp, uqm::DWORD length)
 
 			FramePtr = &Drawable->Frame[cel_index];
 			while (--FramePtr, cel_index--)
+			{
 				process_image(FramePtr, img, ani, cel_index);
+			}
 		}
 	}
 
 	if (Drawable == NULL)
+	{
 		log_add(log_Warning, "Couldn't get cel data for '%s'",
 				_cur_resfile_name);
+	}
 
 	if (aniMount)
 	{
@@ -319,7 +341,9 @@ bool _ReleaseCelData(void* handle)
 	FRAME FramePtr = NULL;
 
 	if ((DrawablePtr = (DRAWABLE)handle) == 0)
+	{
 		return (false);
+	}
 
 	cel_ct = DrawablePtr->MaxIndex + 1;
 	FramePtr = DrawablePtr->Frame;
@@ -372,7 +396,9 @@ void* _GetFontData(uio_Stream* fp, uqm::DWORD length)
 	const char* cfg_name = "kerndat.fnt";
 
 	if (_cur_resfile_name == 0)
+	{
 		goto err;
+	}
 
 	if (fp != (uio_Stream*)~0)
 	{
@@ -392,7 +418,9 @@ void* _GetFontData(uio_Stream* fp, uqm::DWORD length)
 		else
 		{
 			if (s2 > s1)
+			{
 				s1 = s2;
+			}
 			n = s1 - _cur_resfile_name + 1;
 			strncpy(fontDirName, _cur_resfile_name, n - 1);
 			fontDirName[n - 1] = 0;
@@ -410,16 +438,22 @@ void* _GetFontData(uio_Stream* fp, uqm::DWORD length)
 	fontDir = CaptureDirEntryTable(LoadDirEntryTable(contentDir,
 													 _cur_resfile_name, ".", match_MATCH_SUBSTRING));
 	if (fontDir == 0)
+	{
 		goto err;
+	}
 	numDirEntries = GetDirEntryTableCount(fontDir);
 
 	fontDirHandle = uio_openDirRelative(contentDir, _cur_resfile_name, 0);
 	if (fontDirHandle == NULL)
+	{
 		goto err;
+	}
 
 	bcds = (BuildCharDesc*)HMalloc(numDirEntries * sizeof(BuildCharDesc));
 	if (bcds == NULL)
+	{
 		goto err;
+	}
 
 	// Load the surfaces for all dir Entries
 	for (dirEntryI = 0; dirEntryI < numDirEntries; dirEntryI++)
@@ -433,17 +467,25 @@ void* _GetFontData(uio_Stream* fp, uqm::DWORD length)
 			fontDir, dirEntryI));
 
 		if (strcmp(char_name, cfg_name) == 0)
+		{
 			continue;
+		}
 
 		if (sscanf(char_name, "%x.", &charIndex) != 1)
+		{
 			continue;
+		}
 
 		if (charIndex > MAX_UNICODE)
+		{
 			continue;
+		}
 
 		canvas = TFB_DrawCanvas_LoadFromFile(fontDirHandle, char_name);
 		if (canvas == NULL)
+		{
 			continue;
+		}
 
 		TFB_DrawCanvas_GetExtent(canvas, &size);
 		if (size.width == 0 || size.height == 0)
@@ -459,7 +501,9 @@ void* _GetFontData(uio_Stream* fp, uqm::DWORD length)
 
 	fontPtr = AllocFont(0);
 	if (fontPtr == NULL)
+	{
 		goto err;
+	}
 
 	cfgFile = uio_fopen(fontDirHandle, cfg_name, "r");
 
@@ -477,7 +521,9 @@ void* _GetFontData(uio_Stream* fp, uqm::DWORD length)
 		{
 			++cel_total;
 			if (cel_total == MAX_UNICODE)
+			{
 				break;
+			}
 		}
 
 		uio_fseek(cfgFile, opos, SEEK_SET);
@@ -495,9 +541,13 @@ void* _GetFontData(uio_Stream* fp, uqm::DWORD length)
 					== 3)
 				{
 					if (kernLBits > 3 || kernLBits < 0)
+					{
 						kernLBits = 3;
+					}
 					if (kernRBits > 3 || kernRBits < 0)
+					{
 						kernRBits = 3;
+					}
 
 					fontPtr->KernTab[KernChar] =
 						(kernLBits << 2) | kernRBits;
@@ -514,16 +564,22 @@ void* _GetFontData(uio_Stream* fp, uqm::DWORD length)
 					fontPtr->HaveFntData = true;
 				}
 				else
+				{
 					break;
+				}
 			}
 
 			++cel_index;
 			if (cel_index == MAX_UNICODE)
+			{
 				break;
+			}
 
 			if ((int)uio_ftell(cfgFile) - (int)opos
 				>= (int)LengthResFile(cfgFile))
+			{
 				break;
+			}
 		}
 		uio_fclose(cfgFile);
 	}
@@ -531,7 +587,9 @@ void* _GetFontData(uio_Stream* fp, uqm::DWORD length)
 	uio_closeDir(fontDirHandle);
 	DestroyDirEntryTable(ReleaseDirEntryTable(fontDir));
 	if (fontMount != 0)
+	{
 		uio_unmountDir(fontMount);
+	}
 
 #if 0
 	if (numBCDs == 0)
@@ -553,7 +611,9 @@ void* _GetFontData(uio_Stream* fp, uqm::DWORD length)
 
 			endBCD = startBCD;
 			while (endBCD < numBCDs && (bcds[endBCD].index & CHARACTER_PAGE_MASK) == pageStart)
+			{
 				endBCD++;
+			}
 
 			{
 				size_t bcdI;
@@ -588,9 +648,13 @@ void* _GetFontData(uio_Stream* fp, uqm::DWORD length)
 					TFB_DrawCanvas_Delete(bcd->canvas);
 
 					if (destChar->disp.height > fontPtr->disp.height)
+					{
 						fontPtr->disp.height = destChar->disp.height;
+					}
 					if (destChar->disp.width > fontPtr->disp.width)
+					{
 						fontPtr->disp.width = destChar->disp.width;
+					}
 				}
 			}
 
@@ -613,24 +677,34 @@ void* _GetFontData(uio_Stream* fp, uqm::DWORD length)
 
 err:
 	if (fontPtr != 0)
+	{
 		HFree(fontPtr);
+	}
 
 	if (bcds != NULL)
 	{
 		size_t bcdI;
 		for (bcdI = 0; bcdI < numBCDs; bcdI++)
+		{
 			TFB_DrawCanvas_Delete(bcds[bcdI].canvas);
+		}
 		HFree(bcds);
 	}
 
 	if (fontDirHandle != NULL)
+	{
 		uio_closeDir(fontDirHandle);
+	}
 
 	if (fontDir != 0)
+	{
 		DestroyDirEntryTable(ReleaseDirEntryTable(fontDir));
+	}
 
 	if (fontMount != 0)
+	{
 		uio_unmountDir(fontMount);
+	}
 
 	return 0;
 }
@@ -639,7 +713,9 @@ bool _ReleaseFontData(void* handle)
 {
 	FONT font = (FONT)handle;
 	if (font == NULL)
+	{
 		return false;
+	}
 
 	{
 		FONT_PAGE* page;
@@ -653,7 +729,9 @@ bool _ReleaseFontData(void* handle)
 				TFB_Char* c = &page->charDesc[charI];
 
 				if (c->data == NULL)
+				{
 					continue;
+				}
 
 				// XXX: fix this if fonts get per-page data
 				//  rather than per-char

@@ -36,7 +36,9 @@ bool InitVideoPlayer(bool useCDROM)
 	TFB_DrawCanvas_GetScreenFormat(&fmt);
 	if (!VideoDecoder_Init(0, fmt.BitsPerPixel, fmt.Rmask,
 						   fmt.Gmask, fmt.Bmask, 0))
+	{
 		return false;
+	}
 
 	return (bool)TFB_InitVideoPlayer();
 
@@ -52,9 +54,13 @@ void UninitVideoPlayer(void)
 void VidStop(void)
 {
 	if (_cur_speech)
+	{
 		snd_StopSpeech();
+	}
 	if (_cur_video)
+	{
 		TFB_StopVideo(_cur_video);
+	}
 	_cur_speech = 0;
 	_cur_video = NULL_VIDEO_REF;
 }
@@ -64,10 +70,14 @@ VidPlaying(void)
 // this should just probably return bool
 {
 	if (!_cur_video)
+	{
 		return NULL_VIDEO_REF;
+	}
 
 	if (TFB_VideoPlaying(_cur_video))
+	{
 		return _cur_video;
+	}
 
 	return NULL_VIDEO_REF;
 }
@@ -75,7 +85,9 @@ VidPlaying(void)
 bool VidProcessFrame(void)
 {
 	if (!_cur_video)
+	{
 		return false;
+	}
 	return (bool)TFB_ProcessVideoFrame(_cur_video);
 }
 
@@ -84,7 +96,9 @@ uqm::DWORD
 VidGetPosition(void)
 {
 	if (!VidPlaying())
+	{
 		return 0;
+	}
 	return TFB_GetVideoPosition(_cur_video);
 }
 
@@ -92,7 +106,9 @@ bool VidSeek(uqm::DWORD pos)
 // pos in milliseconds
 {
 	if (!VidPlaying())
+	{
 		return false;
+	}
 	return (bool)TFB_SeekVideo(_cur_video, pos);
 }
 
@@ -103,12 +119,16 @@ VidPlayEx(VIDEO_REF vid, MUSIC_REF AudRef, MUSIC_REF SpeechRef,
 	VIDEO_TYPE ret;
 
 	if (!vid)
+	{
 		return NO_FMV;
+	}
 
 	if (AudRef)
 	{
 		if (vid->hAudio)
+		{
 			DestroyMusic(vid->hAudio);
+		}
 		vid->hAudio = AudRef;
 		vid->decoder->audio_synced = false;
 	}
@@ -117,9 +137,13 @@ VidPlayEx(VIDEO_REF vid, MUSIC_REF AudRef, MUSIC_REF SpeechRef,
 	vid->loop_to = 0;
 
 	if (_cur_speech)
+	{
 		snd_StopSpeech();
+	}
 	if (_cur_video)
+	{
 		TFB_StopVideo(_cur_video);
+	}
 	_cur_speech = 0;
 	_cur_video = NULL_VIDEO_REF;
 
@@ -157,7 +181,9 @@ _init_video_file(const char* pStr)
 
 	dec = VideoDecoder_Load(contentDir, pStr);
 	if (!dec)
+	{
 		return NULL_VIDEO_REF;
+	}
 
 	vid = (TFB_VideoClip*)HCalloc(sizeof(*vid));
 	vid->decoder = dec;
@@ -172,7 +198,9 @@ _init_video_file(const char* pStr)
 bool DestroyVideo(VIDEO_REF vid)
 {
 	if (!vid)
+	{
 		return false;
+	}
 
 	// just some armouring; should already be stopped
 	TFB_StopVideo(vid);

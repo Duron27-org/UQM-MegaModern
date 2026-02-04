@@ -464,7 +464,9 @@ cread_8(DECODE_REF fh, uqm::BYTE* v)
 {
 	uqm::BYTE t;
 	if (!v) /* read value ignored */
+	{
 		v = &t;
+	}
 	return cread(v, 1, 1, fh);
 }
 
@@ -473,7 +475,9 @@ cread_16(DECODE_REF fh, uqm::UWORD* v)
 {
 	uqm::UWORD t;
 	if (!v) /* read value ignored */
+	{
 		v = &t;
+	}
 	return cread(v, 2, 1, fh);
 }
 
@@ -486,7 +490,9 @@ cread_16s(DECODE_REF fh, uqm::SWORD* v)
 	ret = cread_16(fh, &t);
 	// unsigned to signed conversion
 	if (v)
+	{
 		*v = t;
+	}
 	return ret;
 }
 
@@ -495,7 +501,9 @@ cread_32(DECODE_REF fh, uqm::DWORD* v)
 {
 	uqm::DWORD t;
 	if (!v) /* read value ignored */
+	{
 		v = &t;
+	}
 	return cread(v, 4, 1, fh);
 }
 
@@ -508,7 +516,9 @@ cread_32s(DECODE_REF fh, uqm::SDWORD* v)
 	ret = cread_32(fh, &t);
 	// unsigned to signed conversion
 	if (v)
+	{
 		*v = t;
+	}
 	return ret;
 }
 
@@ -531,7 +541,9 @@ read_8(void* fp, uqm::BYTE* v)
 {
 	uqm::BYTE t;
 	if (!v) /* read value ignored */
+	{
 		v = &t;
+	}
 	return ReadResFile(v, 1, 1, (uio_Stream*)fp);
 }
 
@@ -540,7 +552,9 @@ read_16(void* fp, uqm::UWORD* v)
 {
 	uqm::UWORD t;
 	if (!v) /* read value ignored */
+	{
 		v = &t;
+	}
 	return ReadResFile(v, 2, 1, (uio_Stream*)fp);
 }
 
@@ -549,7 +563,9 @@ read_32(void* fp, uqm::DWORD* v)
 {
 	uqm::DWORD t;
 	if (!v) /* read value ignored */
+	{
 		v = &t;
+	}
 	return ReadResFile(v, 4, 1, (uio_Stream*)fp);
 }
 
@@ -562,7 +578,9 @@ read_32s(void* fp, uqm::SDWORD* v)
 	ret = (uqm::COUNT)read_32(fp, &t);
 	// unsigned to signed conversion
 	if (v)
+	{
 		*v = t;
+	}
 	return ret;
 }
 
@@ -595,7 +613,9 @@ read_a16(void* fp, uqm::UWORD* ar, uqm::COUNT count)
 	for (; count > 0; --count, ++ar)
 	{
 		if (read_16(fp, ar) != 1)
+		{
 			return 0;
+		}
 	}
 	return 1;
 }
@@ -875,7 +895,9 @@ LoadGameState(GAME_STATE* GSPtr, DECODE_REF fh, bool vanilla)
 	// At this point we must then cease reading the savefile, close it
 	// and re-open it again, this time using the vanilla-reading method.
 	if (GSPtr->FuelCost != FUEL_COST_RU)
+	{
 		return false;
+	}
 
 	cread_a8(fh, GSPtr->ModuleCost, NUM_MODULES);
 	cread_a8(fh, GSPtr->ElementWorth, NUM_ELEMENT_CATEGORIES);
@@ -974,7 +996,9 @@ LoadSisState(SIS_STATE* SSPtr, void* fp)
 
 		read_16(fp, NULL) != 1 /* padding */
 	)
+	{
 		return false;
+	}
 	else
 	{
 		// JMS: Let's make savegames work even between different resolution modes.
@@ -1021,15 +1045,21 @@ LoadSummary(SUMMARY_DESC* SummPtr, void* fp, bool try_vanilla)
 
 		// Rewind the position in savefile.
 		for (i = 0; i < LEGACY_SAVE_CHECKER_SIZE; i++)
+		{
 			uio_backtrack(1, (uio_Stream*)fp);
+		}
 
 		// Zero the bogus savenamechecker.
 		for (i = 0; i < LEGACY_SAVE_CHECKER_SIZE; i++)
+		{
 			SummPtr->SaveNameChecker[i] = 0;
+		}
 
 		// Make sure the save's name is empty.
 		for (i = 0; i < LEGACY_SAVE_NAME_SIZE; i++)
+		{
 			SummPtr->LegacySaveName[i] = 0;
+		}
 	}
 	else
 	{
@@ -1042,7 +1072,9 @@ LoadSummary(SUMMARY_DESC* SummPtr, void* fp, bool try_vanilla)
 	//log_add (log_Debug, "fp: %d Check:%s Name:%s", fp, SummPtr->SaveNameChecker, SummPtr->SaveName);
 
 	if (!LoadSisState(&SummPtr->SS, fp))
+	{
 		return false;
+	}
 
 	// Sanitize seed, difficulty, extended, and nomad variables
 	SummPtr->SS.Seed = SummPtr->SS.Difficulty = 0;
@@ -1074,7 +1106,9 @@ LoadSummary(SUMMARY_DESC* SummPtr, void* fp, bool try_vanilla)
 		// JMS: UQM-HD saves have an extra piece of padding to compensate for the
 		// added res_factor in SummPtr.
 		if (!try_vanilla)
+		{
 			read_8(fp, NULL); /* padding */
+		}
 
 		return true;
 	}
@@ -1106,7 +1140,9 @@ bool LoadLegacyGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, bool try_vanil
 	sprintf(file, "starcon2.%02u", which_game);
 	in_fp = res_OpenResFile(saveDir, file, "rb");
 	if (!in_fp)
+	{
 		return false;
+	}
 
 	loc_sd.SaveName[0] = '\0';
 	if (!LoadSummary(&loc_sd, in_fp, try_vanilla))
@@ -1174,7 +1210,9 @@ bool LoadLegacyGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, bool try_vanil
 			return true;
 		}
 		else
+		{
 			return false;
+		}
 	}
 
 	NextActivity = GLOBAL(CurrentActivity);
@@ -1188,17 +1226,23 @@ bool LoadLegacyGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, bool try_vanil
 	if (!(NextActivity & START_INTERPLANETARY))
 	{
 		if (NextActivity & START_ENCOUNTER)
+		{
 			LoadShipQueue(fh, &GLOBAL(npc_built_ship_q));
+		}
 		else if (lowByte(NextActivity) == IN_INTERPLANETARY)
+		{
 			// XXX: Technically, this queue does not need to be
 			//   saved/loaded at all. IP groups will be reloaded
 			//   from group state files. But the original code did,
 			//   and so will we until we can prove we do not need to.
 			LoadGroupQueue(fh, &GLOBAL(ip_group_q));
+		}
 		else
+		{
 			// XXX: The empty queue read is only needed to maintain
 			//   the savegame compatibility
 			LoadEmptyQueue(fh);
+		}
 	}
 	LoadShipQueue(fh, &GLOBAL(built_ship_q));
 
@@ -1243,8 +1287,10 @@ bool LoadLegacyGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, bool try_vanil
 			PutEvent(hEvent);
 
 			if (optDeCleansing && DeCleanse)
+			{
 				AddEvent(ABSOLUTE_EVENT, 2, 17, START_YEAR + YEARS_TO_KOHRAH_VICTORY,
 						 KOHR_AH_VICTORIOUS_EVENT);
+			}
 		}
 	}
 
@@ -1342,7 +1388,9 @@ bool LoadLegacyGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, bool try_vanil
 
 	if (!(NextActivity & START_ENCOUNTER)
 		&& lowByte(NextActivity) == IN_INTERPLANETARY)
+	{
 		NextActivity |= START_INTERPLANETARY;
+	}
 
 	// Reset Debug Key
 	DebugKeyPressed = false;

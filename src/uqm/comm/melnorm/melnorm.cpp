@@ -133,7 +133,7 @@ static LOCDATA melnorme_desc =
 		BLACK_COLOR_INIT, /* AlienTextBColor */
 		{0, 0}, /* AlienTextBaseline */
 		0,
- /* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
+		/* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
 		ALIGN_CENTER, /* AlienTextAlign */
 		VALIGN_TOP, /* AlienTextValign */
 		MELNORME_COLOR_MAP, /* AlienColorMap */
@@ -307,7 +307,9 @@ GetTechData(TechId_t techId)
 	for (i = 0; i < NUM_TECHNOLOGIES; ++i)
 	{
 		if (tech_data_table[i].id == techId)
+		{
 			return &tech_data_table[i];
+		}
 	}
 	return NULL;
 }
@@ -352,7 +354,9 @@ HasTech(TechId_t techId)
 {
 	const TechData* techData = GetTechData(techId);
 	if (!techData)
+	{
 		return false;
+	}
 
 	switch (techData->type)
 	{
@@ -371,7 +375,9 @@ GrantTech(TechId_t techId)
 {
 	const TechData* techData = GetTechData(techId);
 	if (!techData)
+	{
 		return;
+	}
 
 	switch (techData->type)
 	{
@@ -397,7 +403,9 @@ countTech(void)
 	uqm::BYTE i = 0;
 
 	for (i = 0; i <= NUM_TECHNOLOGIES; ++i)
+	{
 		numTech += HasTech((TechId_t)i);
+	}
 
 	return numTech;
 }
@@ -452,15 +460,25 @@ static size_t
 GetNumLines(const int array[])
 {
 	if (array == ok_buy_event_lines)
+	{
 		return NUM_EVENT_ITEMS;
+	}
 	else if (array == ok_buy_alien_race_lines)
+	{
 		return NUM_ALIEN_RACE_ITEMS;
+	}
 	else if (array == ok_buy_history_lines)
+	{
 		return NUM_HISTORY_ITEMS;
+	}
 	else if (array == hello_and_down_to_business_lines)
+	{
 		return NUM_HELLO_LINES;
+	}
 	else if (array == rescue_lines)
+	{
 		return NUM_RESCUE_LINES;
+	}
 	return 0;
 }
 
@@ -472,7 +490,9 @@ GetLineSafe(const int array[], size_t linenum)
 	const size_t array_size = GetNumLines(array);
 	assert(array_size > 0);
 	if (linenum >= array_size)
+	{
 		linenum = array_size - 1;
+	}
 	return array[linenum];
 }
 
@@ -563,7 +583,9 @@ GetNextTechForSale(void)
 		for (i = i; i < j; ++i)
 		{
 			if (!HasTech(tech_sale_catalog[i].techId))
+			{
 				return &tech_sale_catalog[i];
+			}
 		}
 	}
 	else if (DIF_HARD && !CurStarDescPtr)
@@ -575,7 +597,9 @@ GetNextTechForSale(void)
 		for (i = 0; i < NUM_TECH_ITEMS; ++i)
 		{
 			if (!HasTech(tech_sale_catalog[i].techId))
+			{
 				return &tech_sale_catalog[i];
+			}
 		}
 	}
 	return NULL;
@@ -599,12 +623,16 @@ ShipWorth(void)
 	for (i = 0; i < NUM_DRIVE_SLOTS; ++i)
 	{
 		if (GLOBAL_SIS(DriveSlots[i]) < EMPTY_SLOT)
+		{
 			worth += GLOBAL(ModuleCost[FUSION_THRUSTER]);
+		}
 	}
 	for (i = 0; i < NUM_JET_SLOTS; ++i)
 	{
 		if (GLOBAL_SIS(JetSlots[i]) < EMPTY_SLOT)
+		{
 			worth += GLOBAL(ModuleCost[TURNING_JETS]);
+		}
 	}
 
 	crew_pods = -(uqm::SBYTE)((GLOBAL_SIS(CrewEnlisted) + CREW_POD_CAPACITY - 1)
@@ -703,22 +731,32 @@ StripShip(uqm::COUNT fuel_required)
 	{
 		GLOBAL_SIS(NumLanders) = 0;
 		for (i = 0; i < NUM_DRIVE_SLOTS; ++i)
+		{
 			GLOBAL_SIS(DriveSlots[i]) = EMPTY_SLOT + 0;
+		}
 		for (i = 0; i < NUM_JET_SLOTS; ++i)
+		{
 			GLOBAL_SIS(JetSlots[i]) = EMPTY_SLOT + 1;
+		}
 		if (GLOBAL_SIS(FuelOnBoard) > FUEL_RESERVE)
+		{
 			GLOBAL_SIS(FuelOnBoard) = FUEL_RESERVE;
+		}
 		GLOBAL_SIS(TotalBioMass) = 0;
 		GLOBAL_SIS(TotalElementMass) = 0;
 		for (i = 0; i < NUM_ELEMENT_CATEGORIES; ++i)
+		{
 			GLOBAL_SIS(ElementAmounts[i]) = 0;
+		}
 		for (i = 0; i < NUM_MODULE_SLOTS; ++i)
 		{
 			which_module = GLOBAL_SIS(ModuleSlots[i]);
 			if (which_module < BOMB_MODULE_0
 				&& (which_module != CREW_POD
 					|| ++crew_pods > 0))
+			{
 				GLOBAL_SIS(ModuleSlots[i]) = EMPTY_SLOT + 2;
+			}
 		}
 
 		DeltaSISGauges(UNDEFINED_DELTA, UNDEFINED_DELTA, UNDEFINED_DELTA);
@@ -743,7 +781,9 @@ StripShip(uqm::COUNT fuel_required)
 
 		SIS_copy = GlobData.SIS_state;
 		for (i = PLANET_LANDER; i < BOMB_MODULE_0; ++i)
+		{
 			module_count[i] = 0;
+		}
 
 		capacity = FUEL_RESERVE;
 		slot = NUM_MODULE_SLOTS - 1;
@@ -759,7 +799,9 @@ StripShip(uqm::COUNT fuel_required)
 			}
 		} while (slot--);
 		if (fuel_required > capacity)
+		{
 			fuel_required = capacity;
+		}
 
 		bays = -(uqm::SBYTE)((SIS_copy.TotalElementMass + STORAGE_BAY_CAPACITY - 1)
 							 / STORAGE_BAY_CAPACITY);
@@ -767,9 +809,13 @@ StripShip(uqm::COUNT fuel_required)
 		{
 			which_module = SIS_copy.ModuleSlots[i];
 			if (which_module == CREW_POD)
+			{
 				++crew_pods;
+			}
 			else if (which_module == STORAGE_BAY)
+			{
 				++bays;
+			}
 		}
 
 		worth = fuel_required / FUEL_TANK_SCALE;
@@ -785,27 +831,37 @@ StripShip(uqm::COUNT fuel_required)
 			{
 				case PLANET_LANDER:
 					if (SIS_copy.NumLanders == 0)
+					{
 						continue;
+					}
 					--SIS_copy.NumLanders;
 					break;
 				case FUSION_THRUSTER:
 					for (i = 0; i < NUM_DRIVE_SLOTS; ++i)
 					{
 						if (SIS_copy.DriveSlots[i] < EMPTY_SLOT)
+						{
 							break;
+						}
 					}
 					if (i == NUM_DRIVE_SLOTS)
+					{
 						continue;
+					}
 					SIS_copy.DriveSlots[i] = EMPTY_SLOT + 0;
 					break;
 				case TURNING_JETS:
 					for (i = 0; i < NUM_JET_SLOTS; ++i)
 					{
 						if (SIS_copy.JetSlots[i] < EMPTY_SLOT)
+						{
 							break;
+						}
 					}
 					if (i == NUM_JET_SLOTS)
+					{
 						continue;
+					}
 					SIS_copy.JetSlots[i] = EMPTY_SLOT + 1;
 					break;
 				case CREW_POD:
@@ -818,15 +874,21 @@ StripShip(uqm::COUNT fuel_required)
 							&& module_count[STORAGE_BAY] >= bays)
 						|| (which_module == CREW_POD
 							&& module_count[CREW_POD] >= crew_pods))
+					{
 						continue;
+					}
 					SIS_copy.ModuleSlots[i] = EMPTY_SLOT + 2;
 					break;
 			}
 
 			if (beg_mod == (uqm::BYTE)~0)
+			{
 				beg_mod = end_mod = which_module;
+			}
 			else if (which_module > end_mod)
+			{
 				end_mod = which_module;
+			}
 			++module_count[which_module];
 			total += GLOBAL(ModuleCost[which_module]);
 		}
@@ -843,15 +905,21 @@ StripShip(uqm::COUNT fuel_required)
 			NPCPhrase(RESCUE_OFFER);
 			rescue_fuel = fuel_required;
 			if (rescue_fuel == capacity)
+			{
 				NPCPhrase(RESCUE_TANKS);
+			}
 			else
+			{
 				NPCPhrase(RESCUE_HOME);
+			}
 			for (i = PLANET_LANDER; i < BOMB_MODULE_0; ++i)
 			{
 				if (module_count[i])
 				{
 					if (i == end_mod && i != beg_mod)
+					{
 						NPCPhrase(END_LIST_WITH_AND);
+					}
 					NPCPhrase(ENUMERATE_ONE + (module_count[i] - 1));
 					NPCPhrase(GetStripModuleRef(i));
 				}
@@ -866,7 +934,9 @@ static void
 ExitConversation(RESPONSE_REF R)
 {
 	if (PLAYER_SAID(R, no_trade_now))
+	{
 		NPCPhrase(OK_NO_TRADE_NOW_BYE);
+	}
 	else if (PLAYER_SAID(R, youre_on))
 	{
 		NPCPhrase(YOU_GIVE_US_NO_CHOICE);
@@ -882,12 +952,16 @@ ExitConversation(RESPONSE_REF R)
 		setSegue(Segue_hostile);
 	}
 	else if (PLAYER_SAID(R, bye_melnorme_slightly_angry))
+	{
 		NPCPhrase(MELNORME_SLIGHTLY_ANGRY_GOODBYE);
+	}
 	else if (PLAYER_SAID(R, ok_strip_me))
 	{
 		if (ShipWorth() < 4000 / MODULE_COST_SCALE)
+		{
 			/* is ship worth stripping */
 			NPCPhrase(NOT_WORTH_STRIPPING);
+		}
 		else
 		{
 			SET_GAME_STATE(MELNORME_ANGER, 0);
@@ -904,7 +978,9 @@ ExitConversation(RESPONSE_REF R)
 		setSegue(Segue_hostile);
 	}
 	else if (PLAYER_SAID(R, bye_melnorme_pissed_off))
+	{
 		NPCPhrase(MELNORME_PISSED_OFF_GOODBYE);
+	}
 	else if (PLAYER_SAID(R, well_if_thats_the_way_you_feel))
 	{
 		NPCPhrase(WE_FIGHT_AGAIN);
@@ -912,7 +988,9 @@ ExitConversation(RESPONSE_REF R)
 		setSegue(Segue_hostile);
 	}
 	else if (PLAYER_SAID(R, you_hate_us_so_we_go_away))
+	{
 		NPCPhrase(HATE_YOU_GOODBYE);
+	}
 	else if (PLAYER_SAID(R, take_it))
 	{
 		StripShip(0);
@@ -1139,13 +1217,21 @@ DoBuy(RESPONSE_REF R)
 	{
 		needed_credit = 0;
 		if (PLAYER_SAID(R, buy_1_fuel))
+		{
 			needed_credit = 1;
+		}
 		else if (PLAYER_SAID(R, buy_5_fuel))
+		{
 			needed_credit = 5;
+		}
 		else if (PLAYER_SAID(R, buy_10_fuel))
+		{
 			needed_credit = 10;
+		}
 		else if (PLAYER_SAID(R, buy_25_fuel))
+		{
 			needed_credit = 25;
+		}
 		else if (PLAYER_SAID(R, fill_me_up))
 		{
 			uqm::SIZE remainingCapacity = (capacity - GLOBAL_SIS(FuelOnBoard)
@@ -1153,9 +1239,13 @@ DoBuy(RESPONSE_REF R)
 										/ FUEL_TANK_SCALE;
 
 			if (credit < remainingCapacity && !optInfiniteCredits)
+			{
 				needed_credit = credit;
+			}
 			else
+			{
 				needed_credit = remainingCapacity;
+			}
 		}
 
 		if (needed_credit == 0)
@@ -1182,7 +1272,9 @@ DoBuy(RESPONSE_REF R)
 				uqm::DWORD f;
 
 				if (EXTENDED && PLAYER_SAID(R, fill_me_up))
+				{
 					NPCPhrase(OK_FILL_YOU_UP);
+				}
 
 				NPCPhrase(GOT_FUEL);
 
@@ -1199,9 +1291,13 @@ DoBuy(RESPONSE_REF R)
 		if (needed_credit)
 		{
 			if (!optInfiniteCredits)
+			{
 				DeltaCredit(-needed_credit);
+			}
 			if (GLOBAL_SIS(FuelOnBoard) >= capacity)
+			{
 				goto BuyBuyBuy;
+			}
 		}
 TryFuelAgain:
 		NPCPhrase(HOW_MUCH_FUEL);
@@ -1235,10 +1331,14 @@ TryFuelAgain:
 		{
 			nextTech = GetNextTechForSale();
 			if (!nextTech)
+			{
 				goto BuyBuyBuy; // No tech left to buy
+			}
 
 			if (!optInfiniteCredits && !DeltaCredit(-nextTech->price))
+			{
 				goto BuyBuyBuy; // Can't afford it
+			}
 
 			// Make the sale
 			GrantTech(nextTech->techId);
@@ -1283,14 +1383,22 @@ TryFuelAgain:
 		{
 #define INFO_COST 75
 			if (!optInfiniteCredits && !DeltaCredit(-INFO_COST))
+			{
 				goto BuyBuyBuy;
+			}
 
 			if (PLAYER_SAID(R, buy_current_events))
+			{
 				CurrentEvents();
+			}
 			else if (PLAYER_SAID(R, buy_alien_races))
+			{
 				AlienRaces();
+			}
 			else if (PLAYER_SAID(R, buy_history))
+			{
 				History();
+			}
 		}
 
 		if (!AnyInfoLeftToSell())
@@ -1300,31 +1408,51 @@ TryFuelAgain:
 		}
 
 		if (GET_GAME_STATE(MELNORME_EVENTS_INFO_STACK) < NUM_EVENT_ITEMS)
+		{
 			Response(buy_current_events, DoBuy);
+		}
 		if (GET_GAME_STATE(MELNORME_ALIEN_INFO_STACK) < NUM_ALIEN_RACE_ITEMS)
+		{
 			Response(buy_alien_races, DoBuy);
+		}
 		if (GET_GAME_STATE(MELNORME_HISTORY_INFO_STACK) < NUM_HISTORY_ITEMS)
+		{
 			Response(buy_history, DoBuy);
+		}
 		Response(done_buying_info, DoBuy);
 	}
 	else
 	{
 		if (PLAYER_SAID(R, done_buying_fuel))
+		{
 			NPCPhrase(OK_DONE_BUYING_FUEL);
+		}
 		else if (PLAYER_SAID(R, no_buy_new_tech))
+		{
 			NPCPhrase(OK_NO_BUY_NEW_TECH);
+		}
 		else if (PLAYER_SAID(R, done_buying_info))
+		{
 			NPCPhrase(OK_DONE_BUYING_INFO);
+		}
 		else
+		{
 			NPCPhrase(WHAT_TO_BUY);
+		}
 
 BuyBuyBuy:
 		if (GLOBAL_SIS(FuelOnBoard) < capacity)
+		{
 			Response(buy_fuel, DoBuy);
+		}
 		if (GetNextTechForSale())
+		{
 			Response(buy_technology, DoBuy);
+		}
 		if (AnyInfoLeftToSell())
+		{
 			Response(buy_info, DoBuy);
+		}
 
 		Response(done_buying, NatureOfConversation);
 		Response(be_leaving_now, ExitConversation);
@@ -1347,7 +1475,9 @@ DoSell(RESPONSE_REF R)
 	while (rainbow_mask)
 	{
 		if (rainbow_mask & 1)
+		{
 			++num_new_rainbows;
+		}
 
 		rainbow_mask >>= 1;
 	}
@@ -1362,7 +1492,9 @@ DoSell(RESPONSE_REF R)
 
 			if (EXTENDED && GET_GAME_STATE(VUX_BEAST_ON_SHIP) == 2
 				&& GET_GAME_STATE(VUX_BEAST) == 2)
+			{
 				SET_GAME_STATE(VUX_BEAST_ON_SHIP, 0);
+			}
 
 			added_credit = GLOBAL_SIS(TotalBioMass) * BioCreditValue + beast_value;
 
@@ -1447,7 +1579,9 @@ DoSell(RESPONSE_REF R)
 			num_new_rainbows = 0;
 
 			if (!EXTENDED)
+			{
 				DeltaCredit(added_credit);
+			}
 			else
 			{
 				// queue WHAT_TO_SELL before talk-segue
@@ -1513,18 +1647,26 @@ DoSell(RESPONSE_REF R)
 	if (GLOBAL_SIS(TotalBioMass) || num_new_rainbows)
 	{
 		if (!what_to_sell_queued)
+		{
 			NPCPhrase(WHAT_TO_SELL);
+		}
 
 		if (GLOBAL_SIS(TotalBioMass))
+		{
 			Response(sell_life_data, DoSell);
+		}
 		if (num_new_rainbows)
+		{
 			Response(sell_rainbow_locations, DoSell);
+		}
 		Response(done_selling, NatureOfConversation);
 	}
 	else
 	{
 		if (PLAYER_SAID(R, sell))
+		{
 			NPCPhrase(NOTHING_TO_SELL);
+		}
 		DISABLE_PHRASE(sell);
 
 		NatureOfConversation(R);
@@ -1553,7 +1695,9 @@ NatureOfConversation(RESPONSE_REF R)
 		uqm::BYTE stack = GET_GAME_STATE(MELNORME_YACK_STACK2) - 5;
 		NPCPhrase(GetLineSafe(hello_and_down_to_business_lines, stack));
 		if (stack < (NUM_HELLO_LINES - 1))
+		{
 			++stack;
+		}
 		SET_GAME_STATE(MELNORME_YACK_STACK2, stack + 5);
 	}
 
@@ -1564,7 +1708,9 @@ NatureOfConversation(RESPONSE_REF R)
 	while (rainbow_mask)
 	{
 		if (rainbow_mask & 1)
+		{
 			++num_new_rainbows;
+		}
 
 		rainbow_mask >>= 1;
 	}
@@ -1614,9 +1760,13 @@ NatureOfConversation(RESPONSE_REF R)
 			Response(why_turned_purple, NatureOfConversation);
 		}
 		if (!AskedToBuy)
+		{
 			Response(buy, DoBuy);
+		}
 		if (PHRASE_ENABLED(sell))
+		{
 			Response(sell, DoSell);
+		}
 		Response(goodbye, ExitConversation);
 	}
 	else /* needs to be rescued */
@@ -1691,7 +1841,9 @@ DoBluster(RESPONSE_REF R)
 	}
 
 	if (!GET_GAME_STATE(WHY_MELNORME_BLUE))
+	{
 		Response(why_blue_light, DoBluster);
+	}
 	switch (local_stack0)
 	{
 		case 0:
@@ -2057,9 +2209,13 @@ Intro(void)
 		{
 			case 0:
 				if (GET_GAME_STATE(MELNORME_YACK_STACK2) <= 5)
+				{
 					DoFirstMeeting(0);
+				}
 				else
+				{
 					NatureOfConversation(0);
+				}
 				break;
 			case 1:
 				DoMelnormeMiffed(0);
@@ -2085,7 +2241,9 @@ static void
 post_melnorme_enc(void)
 {
 	if (prevMsgMode != SMM_UNDEFINED)
+	{
 		SetStatusMessageMode(prevMsgMode);
+	}
 	DrawStatusMessage(NULL);
 }
 

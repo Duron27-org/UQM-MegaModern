@@ -114,7 +114,9 @@ mixSDL_ConvertObjectArrayToMixerObjects(uint32 n, audio_Object* arr)
 {
 	uint32 i;
 	if (sizeof(audio_Object) == sizeof(mixer_Object))
+	{
 		return;
+	}
 	for (i = 0; i < n; i++)
 	{
 		((mixer_Object*)arr)[i] = arr[i];
@@ -126,7 +128,9 @@ mixSDL_ConvertObjectArrayFromMixerObjects(uint32 n, audio_Object* arr)
 {
 	uint32 i;
 	if (sizeof(audio_Object) == sizeof(mixer_Object))
+	{
 		return;
+	}
 	i = n;
 	while (i--)
 	{

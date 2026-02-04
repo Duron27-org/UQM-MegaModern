@@ -102,13 +102,19 @@ int speed_to_finetune(ULONG speed, int sample)
 	if (tmp != speed)
 	{
 		if ((tmp - speed) < (speed - ctmp))
+		{
 			while (tmp > speed)
+			{
 				tmp = getfrequency(of.flags, getlinearperiod(note << 1, --ft));
+			}
+		}
 		else
 		{
 			note--;
 			while (ctmp < speed)
+			{
 				ctmp = getfrequency(of.flags, getlinearperiod(note << 1, ++ft));
+			}
 		}
 	}
 
@@ -130,15 +136,21 @@ void S3MIT_CreateOrders(BOOL curious)
 	{
 		int order = origpositions[t];
 		if (order == 255)
+		{
 			order = LAST_PATTERN;
+		}
 		of.positions[of.numpos] = order;
 		poslookup[t] = of.numpos; /* bug fix for freaky S3Ms / ITs */
 		if (origpositions[t] < 254)
+		{
 			of.numpos++;
+		}
 		else
 			/* end of song special order */
 			if ((order == LAST_PATTERN) && (!(curious--)))
+			{
 				break;
+			}
 	}
 }
 
@@ -163,17 +175,25 @@ void S3MIT_ProcessCmd(UBYTE cmd, UBYTE inf, unsigned int flags)
 					/* switch to curious mode if necessary, for example
 					   sympex.it, deep joy.it */
 					if (((SBYTE)poslookup[inf] < 0) && (origpositions[inf] != 255))
+					{
 						S3MIT_CreateOrders(1);
+					}
 
 					if (!((SBYTE)poslookup[inf] < 0))
+					{
 						UniPTEffect(0xb, poslookup[inf]);
+					}
 				}
 				break;
 			case 3: /* Cxx patternbreak to row xx */
 				if ((flags & S3MIT_OLDSTYLE) && !(flags & S3MIT_IT))
+				{
 					UniPTEffect(0xd, (inf >> 4) * 10 + (inf & 0xf));
+				}
 				else
+				{
 					UniPTEffect(0xd, inf);
+				}
 				break;
 			case 4: /* Dxy volumeslide */
 				UniEffect(UNI_S3MEFFECTD, inf);
@@ -186,37 +206,57 @@ void S3MIT_ProcessCmd(UBYTE cmd, UBYTE inf, unsigned int flags)
 				break;
 			case 7: /* Gxx Tone portamento, speed xx */
 				if (flags & S3MIT_OLDSTYLE)
+				{
 					UniPTEffect(0x3, inf);
+				}
 				else
+				{
 					UniEffect(UNI_ITEFFECTG, inf);
+				}
 				break;
 			case 8: /* Hxy vibrato */
 				if (flags & S3MIT_OLDSTYLE)
+				{
 					UniPTEffect(0x4, inf);
+				}
 				else
+				{
 					UniEffect(UNI_ITEFFECTH, inf);
+				}
 				break;
 			case 9: /* Ixy tremor, ontime x, offtime y */
 				if (flags & S3MIT_OLDSTYLE)
+				{
 					UniEffect(UNI_S3MEFFECTI, inf);
+				}
 				else
+				{
 					UniEffect(UNI_ITEFFECTI, inf);
+				}
 				break;
 			case 0xa: /* Jxy arpeggio */
 				UniPTEffect(0x0, inf);
 				break;
 			case 0xb: /* Kxy Dual command H00 & Dxy */
 				if (flags & S3MIT_OLDSTYLE)
+				{
 					UniPTEffect(0x4, 0);
+				}
 				else
+				{
 					UniEffect(UNI_ITEFFECTH, 0);
+				}
 				UniEffect(UNI_S3MEFFECTD, inf);
 				break;
 			case 0xc: /* Lxy Dual command G00 & Dxy */
 				if (flags & S3MIT_OLDSTYLE)
+				{
 					UniPTEffect(0x3, 0);
+				}
 				else
+				{
 					UniEffect(UNI_ITEFFECTG, 0);
+				}
 				UniEffect(UNI_S3MEFFECTD, inf);
 				break;
 			case 0xd: /* Mxx Set Channel Volume */
@@ -234,9 +274,13 @@ void S3MIT_ProcessCmd(UBYTE cmd, UBYTE inf, unsigned int flags)
 			case 0x11: /* Qxy Retrig (+volumeslide) */
 				UniWriteByte(UNI_S3MEFFECTQ);
 				if (inf && !lo && !(flags & S3MIT_OLDSTYLE))
+				{
 					UniWriteByte(1);
+				}
 				else
+				{
 					UniWriteByte(inf);
+				}
 				break;
 			case 0x12: /* Rxy tremolo speed x, depth y */
 				UniEffect(UNI_S3MEFFECTR, inf);
@@ -249,7 +293,9 @@ void S3MIT_ProcessCmd(UBYTE cmd, UBYTE inf, unsigned int flags)
 					{
 						activemacro = inf & 0xf;
 						for (inf = 0; inf < 0x80; inf++)
+						{
 							filtersettings[inf].filter = filtermacros[activemacro];
+						}
 					}
 				}
 				else
@@ -257,26 +303,36 @@ void S3MIT_ProcessCmd(UBYTE cmd, UBYTE inf, unsigned int flags)
 					/* Scream Tracker does not have samples larger than
 					   64 Kb, thus doesn't need the SAx effect */
 					if ((flags & S3MIT_SCREAM) && ((inf & 0xf0) == 0xa0))
+					{
 						break;
+					}
 
 					UniEffect(UNI_ITEFFECTS0, inf);
 				}
 				break;
 			case 0x14: /* Txx tempo */
 				if (inf >= 0x20)
+				{
 					UniEffect(UNI_S3MEFFECTT, inf);
+				}
 				else
 				{
 					if (!(flags & S3MIT_OLDSTYLE))
+					{
 						/* IT Tempo slide */
 						UniEffect(UNI_ITEFFECTT, inf);
+					}
 				}
 				break;
 			case 0x15: /* Uxy Fine Vibrato speed x, depth y */
 				if (flags & S3MIT_OLDSTYLE)
+				{
 					UniEffect(UNI_S3MEFFECTU, inf);
+				}
 				else
+				{
 					UniEffect(UNI_ITEFFECTU, inf);
+				}
 				break;
 			case 0x16: /* Vxx Set Global Volume */
 				UniEffect(UNI_XMEFFECTG, inf);
@@ -288,12 +344,18 @@ void S3MIT_ProcessCmd(UBYTE cmd, UBYTE inf, unsigned int flags)
 				if (flags & S3MIT_OLDSTYLE)
 				{
 					if (inf > 128)
+					{
 						UniEffect(UNI_ITEFFECTS0, 0x91); /* surround */
+					}
 					else
+					{
 						UniPTEffect(0x8, (inf == 128) ? 255 : (inf << 1));
+					}
 				}
 				else
+				{
 					UniPTEffect(0x8, inf);
+				}
 				break;
 			case 0x19: /* Yxy Panbrello  speed x, depth y */
 				UniEffect(UNI_ITEFFECTY, inf);
@@ -316,13 +378,19 @@ void S3MIT_ProcessCmd(UBYTE cmd, UBYTE inf, unsigned int flags)
 void UniEffect(UWORD eff, UWORD dat)
 {
 	if ((!eff) || (eff >= UNI_LAST))
+	{
 		return;
+	}
 
 	UniWriteByte(eff);
 	if (unioperands[eff] == 2)
+	{
 		UniWriteWord(dat);
+	}
 	else
+	{
 		UniWriteByte(dat);
+	}
 }
 
 /*  Appends UNI_PTEFFECTX opcode to the unitrk stream. */
@@ -330,7 +398,9 @@ void UniPTEffect(UBYTE eff, UBYTE dat)
 {
 #ifdef MIKMOD_DEBUG
 	if (eff >= 0x10)
+	{
 		fprintf(stderr, "UniPTEffect called with incorrect eff value %d\n", eff);
+	}
 	else
 #endif
 		if ((eff) || (dat) || (of.flags & UF_ARPMEM))

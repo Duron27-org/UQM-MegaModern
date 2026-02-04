@@ -76,9 +76,13 @@ void SCALE_(BilinearFilter)(SDL_Surface* src, SDL_Surface* dst, SDL_Rect* r)
 		SCALE_(Prefetch)(srow0 + 32);
 
 		if (y < h - 1)
+		{
 			srow1 = srow0 + len;
+		}
 		else
+		{
 			srow1 = srow0;
+		}
 
 		SCALE_(Prefetch)(srow1 + 16);
 		SCALE_(Prefetch)(srow1 + 32);

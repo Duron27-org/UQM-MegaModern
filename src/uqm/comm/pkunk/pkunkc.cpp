@@ -36,7 +36,7 @@ static LOCDATA pkunk_desc =
 		BLACK_COLOR_INIT, /* AlienTextBColor */
 		{0, 0}, /* AlienTextBaseline */
 		0,
- /* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
+		/* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
 		ALIGN_CENTER, /* AlienTextAlign */
 		VALIGN_TOP, /* AlienTextValign */
 		PKUNK_COLOR_MAP, /* AlienColorMap */
@@ -126,20 +126,32 @@ ExitConversation(RESPONSE_REF R)
 	setSegue(Segue_peace);
 
 	if (PLAYER_SAID(R, friendly_bye_space))
+	{
 		NPCPhrase(FRIENDLY_GOODBYE_SPACE);
+	}
 	else if (PLAYER_SAID(R, neutral_bye_space))
+	{
 		NPCPhrase(NEUTRAL_GOODBYE_SPACE);
+	}
 	else if (PLAYER_SAID(R, bye_angry))
+	{
 		NPCPhrase(GOODBYE_ANGRY);
+	}
 	else if (PLAYER_SAID(R, bye_friendly))
+	{
 		NPCPhrase(GOODBYE_FRIENDLY);
+	}
 	else if (PLAYER_SAID(R, we_here_to_help)
 			 || PLAYER_SAID(R, we_need_help))
 	{
 		if (PLAYER_SAID(R, we_here_to_help))
+		{
 			NPCPhrase(NEED_HELP);
+		}
 		else
+		{
 			NPCPhrase(GIVE_HELP);
+		}
 		NPCPhrase(ALMOST_ALLIANCE);
 
 		SET_GAME_STATE(PKUNK_MANNER, 3);
@@ -150,13 +162,17 @@ ExitConversation(RESPONSE_REF R)
 		AddEvent(RELATIVE_EVENT, 6, 0, 0, ADVANCE_PKUNK_MISSION);
 
 		if (EscortFeasibilityStudy(PKUNK_SHIP) == 0)
+		{
 			NPCPhrase(INIT_NO_ROOM);
+		}
 		else
 		{
 			NPCPhrase(INIT_SHIP_GIFT);
 			AlienTalkSegue((uqm::COUNT)~0);
 			if (AddEscortShips(PKUNK_SHIP, DIF_CASE(4, 4, 2)))
+			{
 				PrepareShip(PKUNK_SHIP);
+			}
 		}
 	}
 	else if (PLAYER_SAID(R, try_to_be_nicer))
@@ -173,7 +189,9 @@ ExitConversation(RESPONSE_REF R)
 			 || PLAYER_SAID(R, obey))
 	{
 		if (PLAYER_SAID(R, obey))
+		{
 			NPCPhrase(NO_OBEY);
+		}
 		else
 		{
 			NPCPhrase(BAD_IDEA);
@@ -189,7 +207,9 @@ ExitConversation(RESPONSE_REF R)
 		setSegue(Segue_hostile);
 	}
 	else if (PLAYER_SAID(R, suit_yourself))
+	{
 		NPCPhrase(GOODBYE_MIGRATION);
+	}
 	else
 	{
 		uqm::BYTE ReasonMask;
@@ -252,15 +272,23 @@ PkunkAngry(RESPONSE_REF R)
 	else
 	{
 		if (GET_GAME_STATE(GLOBAL_FLAGS_AND_DATA) & (1 << 7))
+		{
 			Response(try_to_be_nicer, PkunkHome);
+		}
 		else
+		{
 			Response(try_to_be_nicer, ExitConversation);
+		}
 	}
 	Response(die_idiot_fools, ExitConversation);
 	if (PHRASE_ENABLED(why_insults))
+	{
 		Response(why_insults, PkunkAngry);
+	}
 	if (PHRASE_ENABLED(what_about_you))
+	{
 		Response(what_about_you, PkunkAngry);
+	}
 	Response(bye_angry, ExitConversation);
 }
 
@@ -309,7 +337,9 @@ DiscussConquer(RESPONSE_REF R)
 		Response(conquer_because_1, DiscussConquer);
 	}
 	if (PHRASE_ENABLED(conquer_because_2))
+	{
 		Response(conquer_because_2, DiscussConquer);
+	}
 	Response(must_conquer, ExitConversation);
 	Response(no_conquest, PkunkHome);
 }
@@ -318,7 +348,9 @@ static void
 OfferAlliance(RESPONSE_REF R)
 {
 	if (PLAYER_SAID(R, we_are_vindicator))
+	{
 		NPCPhrase(WHY_YOU_HERE);
+	}
 	else if (PLAYER_SAID(R, exploring_universe))
 	{
 		NPCPhrase(SENSE_DEEPER_CONFLICT);
@@ -335,9 +367,13 @@ OfferAlliance(RESPONSE_REF R)
 	Response(we_here_to_help, ExitConversation);
 	Response(we_need_help, ExitConversation);
 	if (PHRASE_ENABLED(exploring_universe))
+	{
 		Response(exploring_universe, OfferAlliance);
+	}
 	if (PHRASE_ENABLED(fun_cruise))
+	{
 		Response(fun_cruise, OfferAlliance);
+	}
 }
 
 static void
@@ -347,7 +383,9 @@ AboutPkunk(RESPONSE_REF R)
 
 	InfoLeft = false;
 	if (PLAYER_SAID(R, what_about_you))
+	{
 		NPCPhrase(ABOUT_US);
+	}
 	else if (PLAYER_SAID(R, what_about_history))
 	{
 		NPCPhrase(ABOUT_HISTORY);
@@ -419,7 +457,9 @@ AboutIlwrath(RESPONSE_REF R)
 
 	InfoLeft = false;
 	if (PLAYER_SAID(R, what_about_ilwrath))
+	{
 		NPCPhrase(ABOUT_ILWRATH);
+	}
 	else if (PLAYER_SAID(R, why_ilwrath_fight))
 	{
 		NPCPhrase(ILWRATH_FIGHT_BECAUSE);
@@ -479,11 +519,17 @@ PkunkHome(RESPONSE_REF R)
 	uqm::BYTE NumVisits;
 
 	if (PLAYER_SAID(R, no_conquest))
+	{
 		NPCPhrase(GOOD_IDEA);
+	}
 	else if (PLAYER_SAID(R, enough_ilwrath))
+	{
 		NPCPhrase(OK_ENOUGH_ILWRATH);
+	}
 	else if (PLAYER_SAID(R, enough_about_you))
+	{
 		NPCPhrase(OK_ENOUGH_ABOUT_US);
+	}
 	else if (PLAYER_SAID(R, where_fleet_1)
 			 || PLAYER_SAID(R, where_fleet_2)
 			 || PLAYER_SAID(R, where_fleet_3))
@@ -643,7 +689,9 @@ PkunkFriendlySpace(RESPONSE_REF R)
 	if (PLAYER_SAID(R, whats_up_space))
 	{
 		if (ShipsReady(PKUNK_SHIP) && GET_GAME_STATE(PKUNK_MANNER) == 3)
+		{
 			NPCPhrase(SHIPS_AT_HOME);
+		}
 		else
 		{
 			NumVisits = GET_GAME_STATE(PKUNK_INFO);
@@ -743,11 +791,17 @@ PkunkFriendlySpace(RESPONSE_REF R)
 	}
 
 	if (PHRASE_ENABLED(whats_up_space))
+	{
 		Response(whats_up_space, PkunkFriendlySpace);
+	}
 	if (!GET_GAME_STATE(PKUNK_DONE_WAR) && PHRASE_ENABLED(how_goes_war))
+	{
 		Response(how_goes_war, PkunkFriendlySpace);
+	}
 	if (PHRASE_ENABLED(tell_my_fortune))
+	{
 		Response(tell_my_fortune, PkunkFriendlySpace);
+	}
 	Response(friendly_bye_space, ExitConversation);
 }
 
@@ -801,17 +855,25 @@ PkunkNeutralSpace(RESPONSE_REF R)
 	}
 
 	if (PHRASE_ENABLED(form_alliance))
+	{
 		Response(form_alliance, PkunkNeutralSpace);
+	}
 	else if (PHRASE_ENABLED(can_you_help))
+	{
 		Response(can_you_help, PkunkNeutralSpace);
+	}
 	if (PHRASE_ENABLED(hostile_greeting))
+	{
 		Response(hostile_greeting, PkunkNeutralSpace);
+	}
 	else
 	{
 		Response(obey, ExitConversation);
 	}
 	if (PHRASE_ENABLED(whats_up_neutral))
+	{
 		Response(whats_up_neutral, PkunkNeutralSpace);
+	}
 	Response(neutral_bye_space, ExitConversation);
 }
 
@@ -823,13 +885,21 @@ PkunkMigrate(RESPONSE_REF R)
 
 	ReasonMask = GET_GAME_STATE(PKUNK_REASONS);
 	if (!(ReasonMask & GOOD_REASON_1))
+	{
 		Response(good_reason_1, ExitConversation);
+	}
 	if (!(ReasonMask & BAD_REASON_1))
+	{
 		Response(bad_reason_1, ExitConversation);
+	}
 	if (!(ReasonMask & GOOD_REASON_2))
+	{
 		Response(good_reason_2, ExitConversation);
+	}
 	if (!(ReasonMask & BAD_REASON_2))
+	{
 		Response(bad_reason_2, ExitConversation);
+	}
 	Response(suit_yourself, ExitConversation);
 }
 
@@ -939,15 +1009,20 @@ Intro(void)
 			if (NumVisits && ShipsReady(PKUNK_SHIP) && GET_GAME_STATE(PKUNK_MANNER) == 3)
 			{
 				if (EscortFeasibilityStudy(PKUNK_SHIP) == 0)
+				{
 					NPCPhrase(NO_ROOM);
+				}
 				else
 				{
 					NPCPhrase(SHIP_GIFT);
 					if (AddEscortShips(PKUNK_SHIP, DIF_CASE(4, 4, 2)))
+					{
 						PrepareShip(PKUNK_SHIP);
+					}
 				}
 			}
 			else
+			{
 				switch (NumVisits++)
 				{
 					case 0:
@@ -976,6 +1051,7 @@ Intro(void)
 						--NumVisits;
 						break;
 				}
+			}
 		}
 		SET_GAME_STATE(PKUNK_HOME_VISITS, NumVisits);
 

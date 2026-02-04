@@ -63,10 +63,14 @@ LoadTeamImage(DIRENTRY DirEntry, MeleeTeam* team)
 
 	stream = uio_fopen(meleeDir, fileName, "rb");
 	if (stream == NULL)
+	{
 		return false;
+	}
 
 	if (MeleeTeam_deserialize(team, stream) == -1)
+	{
 		return false;
+	}
 
 	uio_fclose(stream);
 
@@ -115,7 +119,9 @@ GetFleetByIndex(MELEE_STATE* pMS, uqm::COUNT index, MeleeTeam* result)
 		DIRENTRY entry = SetAbsDirEntryTableIndex(pMS->load.dirEntries,
 												  pMS->load.entryIndices[index]);
 		if (LoadTeamImage(entry, result))
+		{
 			break; // Success
+		}
 
 		{
 			const char* fileName;
@@ -127,7 +133,9 @@ GetFleetByIndex(MELEE_STATE* pMS, uqm::COUNT index, MeleeTeam* result)
 	}
 
 	if (index != firstIndex)
+	{
 		UnindexFleets(pMS, firstIndex, index - firstIndex);
+	}
 
 	return index < pMS->load.numIndices;
 }
@@ -145,7 +153,9 @@ GetFleetIndexByFileName(MELEE_STATE* pMS, const char* fileName)
 		const char* entryName = GetDirEntryAddress(entry);
 
 		if (strcasecmp((const char*)entryName, fileName) == 0)
+		{
 			return pMS->load.preBuiltCount + index;
+		}
 	}
 
 	return (uqm::COUNT)-1;
@@ -214,7 +224,9 @@ DrawFileString(const MeleeTeam* team, const POINT* origin,
 			uqm::BYTE StarShip;
 
 			if (slotI == TRUE_MELEE_FLEET_SIZE)
+			{
 				break;
+			}
 
 			StarShip = team->ships[slotI];
 			if (StarShip != MELEE_NONE)
@@ -240,11 +252,15 @@ FillFileView(MELEE_STATE* pMS)
 		bool success = GetFleetByIndex(pMS, pMS->load.top + viewI,
 									   pMS->load.view[viewI]);
 		if (!success)
+		{
 			break;
+		}
 	}
 
 	if (viewI == 0)
+	{
 		return false;
+	}
 
 	pMS->load.bot = pMS->load.top + viewI;
 	return true;
@@ -312,9 +328,13 @@ RefocusView(MELEE_STATE* pMS, uqm::COUNT index)
 
 	pMS->load.cur = index;
 	if (index <= LOAD_TEAM_VIEW_SIZE / 2)
+	{
 		pMS->load.top = 0;
+	}
 	else
+	{
 		pMS->load.top = index - LOAD_TEAM_VIEW_SIZE / 2;
+	}
 }
 
 static void
@@ -346,7 +366,9 @@ bool DoLoadTeam(MELEE_STATE* pMS)
 	GamePaused = false;
 
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+	{
 		return false;
+	}
 
 	SetMenuSounds(MENU_SOUND_UP | MENU_SOUND_DOWN | MENU_SOUND_PAGE,
 				  MENU_SOUND_SELECT);
@@ -390,9 +412,11 @@ bool DoLoadTeam(MELEE_STATE* pMS)
 			{
 				newIndex--;
 				if (newIndex < newTop)
+				{
 					newTop = (newTop < LOAD_TEAM_VIEW_SIZE) ?
 								 0 :
 								 newTop - LOAD_TEAM_VIEW_SIZE;
+				}
 			}
 		}
 		else if (PulsedInputState.menu[KEY_MENU_DOWN])
@@ -402,7 +426,9 @@ bool DoLoadTeam(MELEE_STATE* pMS)
 			{
 				newIndex++;
 				if (newIndex >= pMS->load.bot)
+				{
 					newTop = pMS->load.bot;
+				}
 			}
 		}
 		else if (PulsedInputState.menu[KEY_MENU_PAGE_UP])
@@ -426,7 +452,9 @@ bool DoLoadTeam(MELEE_STATE* pMS)
 			{
 				newIndex = numEntries - 1;
 				if (newTop + LOAD_TEAM_VIEW_SIZE < numEntries && numEntries > LOAD_TEAM_VIEW_SIZE)
+				{
 					newTop = numEntries - LOAD_TEAM_VIEW_SIZE;
+				}
 			}
 		}
 
@@ -460,7 +488,9 @@ SelectTeamByFileName(MELEE_STATE* pMS, const char* fileName)
 {
 	uqm::COUNT index = GetFleetIndexByFileName(pMS, fileName);
 	if (index == (uqm::COUNT)-1)
+	{
 		return;
+	}
 
 	RefocusView(pMS, index);
 }
@@ -474,11 +504,15 @@ void LoadTeamList(MELEE_STATE* pMS)
 		LoadDirEntryTable(meleeDir, "", ".mle", match_MATCH_SUFFIX));
 
 	if (pMS->load.entryIndices != NULL)
+	{
 		HFree(pMS->load.entryIndices);
+	}
 	pMS->load.numIndices = GetDirEntryTableCount(pMS->load.dirEntries);
 	pMS->load.entryIndices = (uqm::COUNT*)HMalloc(pMS->load.numIndices * sizeof pMS->load.entryIndices[0]);
 	for (i = 0; i < pMS->load.numIndices; i++)
+	{
 		pMS->load.entryIndices[i] = i;
+	}
 }
 
 bool DoSaveTeam(MELEE_STATE* pMS)
@@ -505,7 +539,9 @@ bool DoSaveTeam(MELEE_STATE* pMS)
 		uio_fclose(stream);
 
 		if (!saveOk)
+		{
 			uio_unlink(meleeDir, file);
+		}
 	}
 
 	pMS->load.top = 0;
@@ -517,7 +553,9 @@ bool DoSaveTeam(MELEE_STATE* pMS)
 	SetContext(OldContext);
 
 	if (!saveOk)
+	{
 		SaveProblem();
+	}
 
 	// Update the team list; a previously existing team may have been
 	// deleted when save failed.
@@ -542,7 +580,9 @@ InitPreBuilt(MELEE_STATE* pMS)
 		size_t fleetI;
 
 		for (fleetI = 0; fleetI < pMS->load.preBuiltCount; fleetI++)
+		{
 			pMS->load.preBuiltList[fleetI] = MeleeTeam_new();
+		}
 	}
 
 	list = pMS->load.preBuiltList;
@@ -800,7 +840,9 @@ UninitPreBuilt(MELEE_STATE* pMS)
 {
 	size_t fleetI;
 	for (fleetI = 0; fleetI < pMS->load.preBuiltCount; fleetI++)
+	{
 		MeleeTeam_delete(pMS->load.preBuiltList[fleetI]);
+	}
 	HFree(pMS->load.preBuiltList);
 	pMS->load.preBuiltCount = 0;
 }
@@ -812,7 +854,9 @@ InitLoadView(MELEE_STATE* pMS)
 	MeleeTeam** view = pMS->load.view;
 
 	for (viewI = 0; viewI < LOAD_TEAM_VIEW_SIZE; viewI++)
+	{
 		view[viewI] = MeleeTeam_new();
+	}
 }
 
 static void
@@ -822,7 +866,9 @@ UninitLoadView(MELEE_STATE* pMS)
 	MeleeTeam** view = pMS->load.view;
 
 	for (viewI = 0; viewI < LOAD_TEAM_VIEW_SIZE; viewI++)
+	{
 		MeleeTeam_delete(view[viewI]);
+	}
 }
 
 void InitMeleeLoadState(MELEE_STATE* pMS)
@@ -837,5 +883,7 @@ void UninitMeleeLoadState(MELEE_STATE* pMS)
 	UninitLoadView(pMS);
 	UninitPreBuilt(pMS);
 	if (pMS->load.entryIndices != NULL)
+	{
 		HFree(pMS->load.entryIndices);
+	}
 }

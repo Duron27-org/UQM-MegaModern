@@ -76,7 +76,9 @@ int luaUqm_custom_init(lua_State* luaState,
 	const luaUqm_custom_Function* ptr;
 
 	for (ptr = funs; ptr->name != NULL; ptr++)
+	{
 		funCount++;
+	}
 
 	lua_pushglobaltable(luaState);
 
@@ -85,7 +87,9 @@ int luaUqm_custom_init(lua_State* luaState,
 
 	// Fill the 'custom' table.
 	for (ptr = funs; ptr->name != NULL; ptr++)
+	{
 		luaUqm_custom_addFunction(luaState, ptr);
+	}
 
 	// Set 'custom' to the custom table.
 	// [-2] -> table globalTable

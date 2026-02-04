@@ -84,7 +84,9 @@ sread_8(GAME_STATE_FILE* fp, uqm::BYTE* v)
 {
 	uqm::BYTE t;
 	if (!v) /* read value ignored */
+	{
 		v = &t;
+	}
 	return ReadStateFile(v, 1, 1, fp);
 }
 
@@ -93,7 +95,9 @@ sread_16(GAME_STATE_FILE* fp, uqm::UWORD* v)
 {
 	uqm::UWORD t;
 	if (!v) /* read value ignored */
+	{
 		v = &t;
+	}
 	return ReadStateFile(v, 2, 1, fp);
 }
 
@@ -105,7 +109,9 @@ sread_16s(GAME_STATE_FILE* fp, uqm::SWORD* v)
 	ret = sread_16(fp, &t);
 	// unsigned to signed conversion
 	if (v)
+	{
 		*v = t;
+	}
 	return ret;
 }
 
@@ -114,7 +120,9 @@ sread_32(GAME_STATE_FILE* fp, uqm::DWORD* v)
 {
 	uqm::DWORD t;
 	if (!v) /* read value ignored */
+	{
 		v = &t;
+	}
 	return ReadStateFile(v, 4, 1, fp);
 }
 
@@ -126,7 +134,9 @@ sread_a32(GAME_STATE_FILE* fp, uqm::DWORD* ar, uqm::COUNT count)
 	for (; count > 0; --count, ++ar)
 	{
 		if (sread_32(fp, ar) != 1)
+		{
 			return 0;
+		}
 	}
 	return 1;
 }
@@ -155,7 +165,9 @@ swrite_a32(GAME_STATE_FILE* fp, const uqm::DWORD* ar, uqm::COUNT count)
 	for (; count > 0; --count, ++ar)
 	{
 		if (swrite_32(fp, *ar) != 1)
+		{
 			return 0;
+		}
 	}
 	return 1;
 }

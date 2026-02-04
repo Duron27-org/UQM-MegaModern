@@ -37,7 +37,7 @@ static LOCDATA slylandro_desc =
 		BLACK_COLOR_INIT, /* AlienTextBColor */
 		{0, 0}, /* AlienTextBaseline */
 		0,
- /* SIS_TEXT_WIDTH, */  /* AlienTextWidth */
+		/* SIS_TEXT_WIDTH, */  /* AlienTextWidth */
 		ALIGN_CENTER, /* AlienTextAlign */
 		VALIGN_TOP, /* AlienTextValign */
 		SLYLANDRO_COLOR_MAP, /* AlienColorMap */
@@ -394,7 +394,9 @@ static void
 FixBug(RESPONSE_REF R)
 {
 	if (PLAYER_SAID(R, think_about_rep_priorities))
+	{
 		NPCPhrase(UH_OH);
+	}
 	else if (PLAYER_SAID(R, hunt_them_down))
 	{
 		NPCPhrase(GROW_TOO_FAST);
@@ -415,11 +417,17 @@ FixBug(RESPONSE_REF R)
 	}
 
 	if (PHRASE_ENABLED(hunt_them_down))
+	{
 		Response(hunt_them_down, FixBug);
+	}
 	if (PHRASE_ENABLED(sue_melnorme))
+	{
 		Response(sue_melnorme, FixBug);
+	}
 	if (PHRASE_ENABLED(recall_signal))
+	{
 		Response(recall_signal, FixBug);
+	}
 	Response(mega_self_destruct, HomeWorld);
 }
 
@@ -427,7 +435,9 @@ static void
 ProbeBug(RESPONSE_REF R)
 {
 	if (PLAYER_SAID(R, probe_has_bug))
+	{
 		NPCPhrase(NO_IT_DOESNT);
+	}
 	else if (PLAYER_SAID(R, tell_me_about_rep_2))
 	{
 		NPCPhrase(REP_NO_PROBLEM);
@@ -448,15 +458,21 @@ ProbeBug(RESPONSE_REF R)
 	}
 
 	if (PHRASE_ENABLED(tell_me_about_rep_2))
+	{
 		Response(tell_me_about_rep_2, ProbeBug);
+	}
 	else if (PHRASE_ENABLED(what_about_rep_priorities))
+	{
 		Response(what_about_rep_priorities, ProbeBug);
+	}
 	else
 	{
 		Response(think_about_rep_priorities, FixBug);
 	}
 	if (PHRASE_ENABLED(tell_me_about_attack))
+	{
 		Response(tell_me_about_attack, ProbeBug);
+	}
 }
 
 static void ProbeInfo(RESPONSE_REF R);
@@ -547,14 +563,20 @@ ProbeFunction(RESPONSE_REF R)
 			break;
 		case 3:
 			if (PHRASE_ENABLED(what_set_priority))
+			{
 				pStr[1] = what_set_priority;
+			}
 			break;
 	}
 
 	if (LastStack && pStr[LastStack - 1])
+	{
 		Response(pStr[LastStack - 1], ProbeFunction);
+	}
 	if (!GET_GAME_STATE(PLAYER_KNOWS_PROGRAM))
+	{
 		Response(tell_me_about_basics, ProbeFunction);
+	}
 	else
 	{
 		if (GET_GAME_STATE(PLAYER_KNOWS_PRIORITY))
@@ -564,24 +586,32 @@ ProbeFunction(RESPONSE_REF R)
 				Response(probe_has_bug, ProbeBug);
 			}
 			if (PHRASE_ENABLED(what_effect))
+			{
 				Response(what_effect, ProbeFunction);
+			}
 		}
 		if (PHRASE_ENABLED(tell_basics_again))
+		{
 			Response(tell_basics_again, ProbeFunction);
+		}
 	}
 	if (LastStack == 0)
 	{
 		do
 		{
 			if (pStr[LastStack])
+			{
 				Response(pStr[LastStack], ProbeFunction);
+			}
 		} while (++LastStack < 2);
 	}
 	else
 	{
 		LastStack = (LastStack - 1) ^ 1;
 		if (pStr[LastStack])
+		{
 			Response(pStr[LastStack], ProbeFunction);
+		}
 	}
 
 	Response(enough_problem, ProbeInfo);
@@ -602,7 +632,9 @@ ProbeInfo(RESPONSE_REF R)
 		SET_GAME_STATE(SLYLANDRO_STACK5, 1);
 	}
 	else if (PLAYER_SAID(R, know_more_probe))
+	{
 		NPCPhrase(OK_WHAT_MORE_PROBE);
+	}
 	else if (PLAYER_SAID(R, why_probe_always_attack))
 	{
 		NPCPhrase(ONLY_DEFEND);
@@ -648,7 +680,9 @@ ProbeInfo(RESPONSE_REF R)
 		SET_GAME_STATE(SLYLANDRO_STACK8, 2);
 	}
 	else if (PLAYER_SAID(R, enough_problem))
+	{
 		NPCPhrase(OK_ENOUGH_PROBLEM);
+	}
 
 	if (!GET_GAME_STATE(SLYLANDRO_KNOW_BROKEN)
 		&& GET_GAME_STATE(PROBE_EXHIBITED_BUG))
@@ -793,11 +827,17 @@ HomeWorld(RESPONSE_REF R)
 		return;
 	}
 	else if (PLAYER_SAID(R, enough_about_me))
+	{
 		NPCPhrase(OK_ENOUGH_YOU);
+	}
 	else if (PLAYER_SAID(R, enough_info))
+	{
 		NPCPhrase(OK_ENOUGH_INFO);
+	}
 	else if (PLAYER_SAID(R, enough_probe))
+	{
 		NPCPhrase(OK_ENOUGH_PROBE);
+	}
 	else if (PLAYER_SAID(R, mega_self_destruct))
 	{
 		NPCPhrase(WHY_YES_THERE_IS);
@@ -840,7 +880,9 @@ HomeWorld(RESPONSE_REF R)
 			break;
 		case 1:
 			if (PHRASE_ENABLED(like_more_about_you))
+			{
 				pStr[1] = like_more_about_you;
+			}
 			break;
 	}
 	switch (GET_GAME_STATE(SLYLANDRO_STACK3))
@@ -857,11 +899,15 @@ HomeWorld(RESPONSE_REF R)
 	}
 
 	if (pStr[LastStack])
+	{
 		Response(pStr[LastStack], HomeWorld);
+	}
 	for (i = 0; i < 3; ++i)
 	{
 		if (i != LastStack && pStr[i])
+		{
 			Response(pStr[i], HomeWorld);
+		}
 	}
 	if (GET_GAME_STATE(SLYLANDRO_STACK1))
 	{
@@ -885,7 +931,9 @@ HomeWorld(RESPONSE_REF R)
 				break;
 			case 1:
 				if (PHRASE_ENABLED(know_more_probe))
+				{
 					Response(know_more_probe, ProbeInfo);
+				}
 				break;
 		}
 	}
@@ -899,7 +947,9 @@ Intro(void)
 
 
 	if (IS_HD)
+	{
 		EngageFilters(&slyhome_filters);
+	}
 
 	CommData.AlienAmbientArray[0].AnimFlags &= ~ANIM_DISABLED;
 

@@ -175,7 +175,9 @@ AttemptColorDepth(int flags, int width, int height, int bpp, int resFactor)
 			SDL_Video = SDL_SetVideoMode(ScreenWidthActual, ScreenHeightActual, bpp, videomode_flags);
 
 			if (SDL_Video != NULL)
+			{
 				goto successful_change;
+			}
 		}
 
 		return -1;
@@ -215,7 +217,9 @@ int TFB_GL_ConfigureVideo(int driver, int flags, int width, int height,
 	if (!togglefullscreen)
 	{
 		if (format_conv_surf)
+		{
 			SDL_FreeSurface(format_conv_surf);
+		}
 		format_conv_surf = SDL_CreateRGBSurface(SDL_SWSURFACE, 0, 0, 32,
 												R_MASK, G_MASK, B_MASK, A_MASK);
 		if (format_conv_surf == NULL)
@@ -228,7 +232,9 @@ int TFB_GL_ConfigureVideo(int driver, int flags, int width, int height,
 		for (i = 0; i < TFB_GFX_NUMSCREENS; i++)
 		{
 			if (0 != ReInit_Screen(&SDL_Screens[i], format_conv_surf, ScreenWidth, ScreenHeight))
+			{
 				return -1;
+			}
 		}
 
 		SDL_Screen = SDL_Screens[0];
@@ -254,9 +260,13 @@ int TFB_GL_ConfigureVideo(int driver, int flags, int width, int height,
 			for (i = 0; i < TFB_GFX_NUMSCREENS; i++)
 			{
 				if (!GL_Screens[i].active)
+				{
 					continue;
+				}
 				if (0 != ReInit_Screen(&GL_Screens[i].scaled, format_conv_surf, ScreenWidth * 2, ScreenHeight * 2))
+				{
 					return -1;
+				}
 			}
 			scaler = Scale_PrepPlatform(flags, SDL_Screen->format);
 		}
@@ -277,9 +287,13 @@ int TFB_GL_ConfigureVideo(int driver, int flags, int width, int height,
 
 
 	if (GfxFlags & TFB_GFXFLAGS_SCALE_ANY)
+	{
 		ScreenFilterMode = GL_LINEAR;
+	}
 	else
+	{
 		ScreenFilterMode = GL_NEAREST;
+	}
 
 	glViewport(0, 0, ScreenWidthActual, ScreenHeightActual);
 	glClearColor(0, 0, 0, 0);
@@ -292,7 +306,9 @@ int TFB_GL_ConfigureVideo(int driver, int flags, int width, int height,
 	for (i = 0; i < TFB_GFX_NUMSCREENS; i++)
 	{
 		if (!GL_Screens[i].active)
+		{
 			continue;
+		}
 		glGenTextures(1, &GL_Screens[i].texture);
 		glBindTexture(GL_TEXTURE_2D, GL_Screens[i].texture);
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -338,7 +354,9 @@ void TFB_GL_UninitGraphics(void)
 	int i;
 
 	for (i = 0; i < TFB_GFX_NUMSCREENS; i++)
+	{
 		UnInit_Screen(&GL_Screens[i].scaled);
+	}
 }
 
 static void
@@ -474,7 +492,9 @@ TFB_GL_Preprocess(int force_full_redraw, int transition_amount, int fade_amount)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	if (optKeepAspectRatio)
+	{
 		glClear(GL_COLOR_BUFFER_BIT);
+	}
 
 	(void)transition_amount;
 	(void)fade_amount;
@@ -618,7 +638,9 @@ TFB_GL_Postprocess(bool hd)
 	(void)hd;
 
 	if (GfxFlags & TFB_GFXFLAGS_SCANLINES)
+	{
 		TFB_GL_ScanLines();
+	}
 
 	SDL_GL_SwapBuffers();
 }

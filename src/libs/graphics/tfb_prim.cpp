@@ -39,9 +39,13 @@ void TFB_Prim_Point(POINT* p, Color color, DrawMode mode, POINT ctxOrigin, bool 
 	r.extent.width = r.extent.height = !scaled ? 1 : 3;
 
 	if (_CurFramePtr->Type == SCREEN_DRAWABLE)
+	{
 		TFB_DrawScreen_Rect(&r, color, mode, TFB_SCREEN_MAIN);
+	}
 	else
+	{
 		TFB_DrawImage_Rect(&r, color, mode, _CurFramePtr->image);
+	}
 }
 
 void TFB_Prim_Rect(RECT* r, Color color, DrawMode mode, POINT ctxOrigin, bool scaled)
@@ -100,9 +104,13 @@ void TFB_Prim_FillRect(RECT* r, Color color, DrawMode mode, POINT ctxOrigin)
 	}
 
 	if (_CurFramePtr->Type == SCREEN_DRAWABLE)
+	{
 		TFB_DrawScreen_Rect(&rect, color, mode, TFB_SCREEN_MAIN);
+	}
 	else
+	{
 		TFB_DrawImage_Rect(&rect, color, mode, _CurFramePtr->image);
+	}
 }
 
 void TFB_Prim_Line(LINE* line, Color color, DrawMode mode, POINT ctxOrigin,
@@ -117,9 +125,13 @@ void TFB_Prim_Line(LINE* line, Color color, DrawMode mode, POINT ctxOrigin,
 	y2 = line->second.y + ctxOrigin.y;
 
 	if (_CurFramePtr->Type == SCREEN_DRAWABLE)
+	{
 		TFB_DrawScreen_Line(x1, y1, x2, y2, color, mode, TFB_SCREEN_MAIN, thickness);
+	}
 	else
+	{
 		TFB_DrawImage_Line(x1, y1, x2, y2, color, mode, _CurFramePtr->image, thickness);
+	}
 }
 
 void TFB_Prim_Stamp(STAMP* stmp, DrawMode mode, POINT ctxOrigin, bool unscaled)
@@ -162,9 +174,13 @@ void TFB_Prim_Stamp(STAMP* stmp, DrawMode mode, POINT ctxOrigin, bool unscaled)
 	UnlockMutex(img->mutex);
 
 	if (unscaled)
+	{
 		scaleMode = GSCALE_IDENTITY;
+	}
 	else
+	{
 		scaleMode = GetGraphicScale();
+	}
 
 	if (_CurFramePtr->Type == SCREEN_DRAWABLE)
 	{
@@ -211,9 +227,13 @@ void TFB_Prim_StampFill(STAMP* stmp, Color color, DrawMode mode, POINT ctxOrigin
 	UnlockMutex(img->mutex);
 
 	if (unscaled)
+	{
 		scaleMode = GSCALE_IDENTITY;
+	}
 	else
+	{
 		scaleMode = GetGraphicScale();
+	}
 
 	if (_CurFramePtr->Type == SCREEN_DRAWABLE)
 	{
@@ -262,7 +282,9 @@ void TFB_Prim_MaskFrame(FRAME layer, FRAME base, DrawMode mode, Color* fill)
 	}
 
 	if (!layer)
+	{
 		img = NULL;
+	}
 	else
 	{
 		img = layer->image;

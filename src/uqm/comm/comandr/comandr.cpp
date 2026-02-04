@@ -41,7 +41,7 @@ static LOCDATA commander_desc =
 		BLACK_COLOR_INIT, /* AlienTextBColor */
 		{0, 0}, /* AlienTextBaseline */
 		0,
- /* SIS_TEXT_WIDTH, */  /* AlienTextWidth */
+		/* SIS_TEXT_WIDTH, */  /* AlienTextWidth */
 		ALIGN_CENTER, /* AlienTextAlign */
 		VALIGN_MIDDLE, /* AlienTextValign */
 		COMMANDER_COLOR_MAP, /* AlienColorMap */
@@ -174,7 +174,9 @@ RaveParty(void)
 		CommData.AlienAmbientArray[2].AnimFlags &= ~ANIM_DISABLED;
 
 		if (IS_HD)
+		{
 			EngageFilters(&commander_filters);
+		}
 	}
 }
 
@@ -182,9 +184,13 @@ static void
 ByeBye(RESPONSE_REF R)
 {
 	if (PLAYER_SAID(R, ok_i_will_get_radios))
+	{
 		NPCPhrase(THANKS_FOR_HELPING);
+	}
 	else if (PLAYER_SAID(R, well_go_get_them_now))
+	{
 		NPCPhrase(GLAD_WHEN_YOU_COME_BACK);
+	}
 	else if (PLAYER_SAID(R, we_will_take_care_of_base))
 	{
 		NPCPhrase(GOOD_LUCK_WITH_BASE);
@@ -192,7 +198,9 @@ ByeBye(RESPONSE_REF R)
 		SET_GAME_STATE(WILL_DESTROY_BASE, 1);
 	}
 	else if (PLAYER_SAID(R, take_care_of_base_again))
+	{
 		NPCPhrase(GOOD_LUCK_AGAIN);
+	}
 	else if (PLAYER_SAID(R, base_was_abandoned)
 			 || PLAYER_SAID(R, i_lied_it_was_abandoned))
 	{
@@ -222,11 +230,17 @@ ByeBye(RESPONSE_REF R)
 		SET_GAME_STATE(PROBE_ILWRATH_ENCOUNTER, 0);
 
 		if (PLAYER_SAID(R, cook_their_butts))
+		{
 			NPCPhrase(COOK_BUTTS);
+		}
 		else if (PLAYER_SAID(R, overthrow_evil_aliens))
+		{
 			NPCPhrase(OVERTHROW_ALIENS);
+		}
 		else /* if (R == annihilate_those_monsters) */
+		{
 			NPCPhrase(KILL_MONSTERS);
+		}
 
 		NPCPhrase(THIS_MAY_SEEM_SILLY);
 
@@ -278,7 +292,9 @@ NoRadioactives(RESPONSE_REF R)
 		NPCPhrase(ABOUT_TIME);
 
 		if (GLOBAL_SIS(ElementAmounts[RADIOACTIVE]))
+		{
 			GiveRadios(0);
+		}
 		else
 		{
 			Response(i_lied, NoRadioactives);
@@ -294,12 +310,18 @@ NoRadioactives(RESPONSE_REF R)
 			DISABLE_PHRASE(where_can_i_get_radios);
 		}
 		else if (PLAYER_SAID(R, no_but_well_help))
+		{
 			NPCPhrase(THE_WHAT_FROM_WHERE);
+		}
 		else if (PLAYER_SAID(R, what_slave_planet)
 				 || PLAYER_SAID(R, i_lied))
+		{
 			NPCPhrase(DONT_KNOW_WHO_YOU_ARE);
+		}
 		else if (PLAYER_SAID(R, plumb_out))
+		{
 			NPCPhrase(WHAT_KIND_OF_IDIOT);
+		}
 		else if (PLAYER_SAID(R, i_lost_my_lander))
 		{
 			NPCPhrase(HERE_IS_A_NEW_LANDER);
@@ -330,23 +352,33 @@ NoRadioactives(RESPONSE_REF R)
 		}
 
 		if (GLOBAL_SIS(ElementAmounts[RADIOACTIVE]))
+		{
 			GiveRadios(0);
+		}
 		else
 		{
 			if (GLOBAL_SIS(NumLanders) == 0
 				&& GET_GAME_STATE(CHMMR_BOMB_STATE) < 2)
 			{
 				if (GET_GAME_STATE(LANDERS_LOST))
+				{
 					Response(i_lost_another_lander, NoRadioactives);
+				}
 				else
+				{
 					Response(i_lost_my_lander, NoRadioactives);
+				}
 			}
 			if (GLOBAL_SIS(FuelOnBoard) < 2 * FUEL_TANK_SCALE)
 			{
 				if (GET_GAME_STATE(GIVEN_FUEL_BEFORE))
+				{
 					Response(need_fuel_again, NoRadioactives);
+				}
 				else
+				{
 					Response(need_fuel_mercury, NoRadioactives);
+				}
 			}
 
 			Response(ok_i_will_get_radios, ByeBye);
@@ -401,16 +433,24 @@ AskAfterRadios(RESPONSE_REF R)
 			&& GET_GAME_STATE(CHMMR_BOMB_STATE) < 2)
 		{
 			if (GET_GAME_STATE(LANDERS_LOST))
+			{
 				Response(i_lost_another_lander, AskAfterRadios);
+			}
 			else
+			{
 				Response(i_lost_my_lander, AskAfterRadios);
+			}
 		}
 		if (GLOBAL_SIS(FuelOnBoard) < 2 * FUEL_TANK_SCALE)
 		{
 			if (GET_GAME_STATE(GIVEN_FUEL_BEFORE))
+			{
 				Response(need_fuel_again, AskAfterRadios);
+			}
 			else
+			{
 				Response(need_fuel_mercury, AskAfterRadios);
+			}
 		}
 		Response(well_go_get_them_now, ByeBye);
 		if (PHRASE_ENABLED(where_get_radios))
@@ -501,25 +541,41 @@ TellMoonBase(RESPONSE_REF R)
 		&& GET_GAME_STATE(CHMMR_BOMB_STATE) < 2)
 	{
 		if (GET_GAME_STATE(LANDERS_LOST))
+		{
 			Response(i_lost_another_lander, TellMoonBase);
+		}
 		else
+		{
 			Response(i_lost_my_lander, TellMoonBase);
+		}
 	}
 	if (GLOBAL_SIS(FuelOnBoard) < 2 * FUEL_TANK_SCALE)
 	{
 		if (GET_GAME_STATE(GIVEN_FUEL_BEFORE))
+		{
 			Response(need_fuel_again, TellMoonBase);
+		}
 		else
+		{
 			Response(need_fuel_luna, TellMoonBase);
+		}
 	}
 	if (GET_GAME_STATE(WILL_DESTROY_BASE) == 0)
+	{
 		Response(we_will_take_care_of_base, ByeBye);
+	}
 	else
+	{
 		Response(take_care_of_base_again, ByeBye);
+	}
 	if (GET_GAME_STATE(STARBASE_YACK_STACK1) == 0)
+	{
 		Response(tell_me_about_base, TellMoonBase);
+	}
 	else
+	{
 		Response(tell_me_again, TellMoonBase);
+	}
 }
 
 static void RevealSelf(RESPONSE_REF R);
@@ -583,24 +639,38 @@ RevealSelf(RESPONSE_REF R)
 		DISABLE_PHRASE(where_are_urquan);
 	}
 	else if (PLAYER_SAID(R, it_went_away))
+	{
 		NPCPhrase(DEEP_TROUBLE);
+	}
 	else if (PLAYER_SAID(R, we_destroyed_it))
+	{
 		NPCPhrase(GOOD_NEWS);
+	}
 	else if (PLAYER_SAID(R, what_probe))
+	{
 		NPCPhrase(SURE_HOPE);
+	}
 
 	for (i = 0; i < 2; ++i, stack ^= 1)
 	{
 		if (stack == 1)
 		{
 			if (PHRASE_ENABLED(first_give_info))
+			{
 				Response(first_give_info, RevealSelf);
+			}
 			else if (PHRASE_ENABLED(whats_this_starbase))
+			{
 				Response(whats_this_starbase, RevealSelf);
+			}
 			else if (PHRASE_ENABLED(what_about_earth))
+			{
 				Response(what_about_earth, RevealSelf);
+			}
 			else if (PHRASE_ENABLED(where_are_urquan))
+			{
 				Response(where_are_urquan, RevealSelf);
+			}
 			else if (PHRASE_ENABLED(what_was_red_thing))
 			{
 				Response(what_was_red_thing, TellProbe);
@@ -609,15 +679,23 @@ RevealSelf(RESPONSE_REF R)
 		else
 		{
 			if (PHRASE_ENABLED(we_are_vindicator))
+			{
 				Response(we_are_vindicator, RevealSelf);
+			}
 			else if (PHRASE_ENABLED(our_mission_was_secret))
+			{
 				Response(our_mission_was_secret, RevealSelf);
+			}
 			else
 			{
 				if (GET_GAME_STATE(MOONBASE_DESTROYED) == 0)
+				{
 					Response(we_are_here_to_help, TellMoonBase);
+				}
 				else
+				{
 					Response(we_are_here_to_help, BaseDestroyed);
+				}
 			}
 		}
 	}
@@ -682,9 +760,13 @@ GiveRadios(RESPONSE_REF R)
 	else
 	{
 		if (PLAYER_SAID(R, what_will_you_give_us))
+		{
 			NPCPhrase(MESSAGE_GARBLED_1);
+		}
 		else if (PLAYER_SAID(R, before_radios_we_need_info))
+		{
 			NPCPhrase(MESSAGE_GARBLED_2);
+		}
 
 		Response(we_will_transfer_now, GiveRadios);
 		Response(what_will_you_give_us, GiveRadios);
@@ -696,7 +778,9 @@ static void
 Intro(void)
 {
 	if (IS_HD) // To smooth out HD blink animation
+	{
 		CommData.AlienAmbientArray[0].BaseFrameRate = ONE_SECOND / 40;
+	}
 
 	if (GET_GAME_STATE(PROBE_ILWRATH_ENCOUNTER))
 	{
@@ -726,9 +810,13 @@ Intro(void)
 			NPCPhrase(DO_YOU_HAVE_RADIO_THIS_TIME);
 
 			if (GLOBAL_SIS(ElementAmounts[RADIOACTIVE]))
+			{
 				GiveRadios(0);
+			}
 			else
+			{
 				AskAfterRadios(0);
+			}
 		}
 	}
 	else /* first visit */
@@ -771,10 +859,14 @@ init_commander_comm()
 	// generalised in the future.
 
 	if (!GET_GAME_STATE(RADIOACTIVES_PROVIDED))
+	{
 		altResFlags |= USE_ALT_SONG;
+	}
 
 	if (IS_HD)
+	{
 		altResFlags |= USE_ALT_FRAME;
+	}
 
 
 	commander_desc.AlienTextWidth = RES_SCALE(143);

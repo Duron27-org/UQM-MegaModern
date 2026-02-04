@@ -56,14 +56,20 @@ void DrawCurrentPlanetSphere(void)
 
 		rotPointIndex -= rotDirection; // roll back
 		if (rotPointIndex < 0)
+		{
 			rotPointIndex = rotwidth - 1;
+		}
 		else if (rotPointIndex >= rotwidth)
+		{
 			rotPointIndex = 0;
+		}
 
 		if (useDosSpheres)
 		{
 			if (rotFrameIndex)
+			{
 				Orbit->SphereFrame = IncFrameIndex(Orbit->SphereFrame);
+			}
 
 			RenderDOSPlanetSphere(
 				Orbit, Orbit->SphereFrame, rotPointIndex);
@@ -96,9 +102,13 @@ void DrawCurrentPlanetSphere(void)
 		s.frame = Orbit->ObjectFrame;
 
 		if (use3DOSpheres)
+		{
 			Draw3DOShield(s);
+		}
 		else
+		{
 			DrawStamp(&s);
+		}
 	}
 	UnbatchGraphics();
 	SetContext(oldContext);
@@ -130,9 +140,13 @@ void DrawPlanetSphere(int x, int y, bool back)
 	{
 		s.frame = Orbit->ObjectFrame;
 		if (use3DOSpheres)
+		{
 			Draw3DOShield(s);
+		}
 		else
+		{
 			DrawStamp(&s);
+		}
 	}
 	UnbatchGraphics();
 }
@@ -152,16 +166,22 @@ void RerenderPlanetSphere(void)
 	PLANET_ORBIT* Orbit = &pSolarSysState->Orbit;
 
 	if (optTintPlanSphere != OPT_PC)
+	{
 		return;
+	}
 
 	if (useDosSpheres)
 	{ // palette switch for coloring sphere into scan colors
 		uqm::COUNT sc;
 		sc = Orbit->scanType;
 		if (sc > 2)
+		{
 			sc = 0;
+		}
 		else
+		{
 			sc++;
+		}
 
 		XFormColorMap(
 			GetColorMapAddress(
@@ -229,17 +249,25 @@ void PrepareNextRotationFrame(void)
 	// Go to next point, taking care of wraparounds
 	rotPointIndex += rotDirection;
 	if (rotPointIndex < 0)
+	{
 		rotPointIndex = rotwidth - 1;
+	}
 	else if (rotPointIndex >= rotwidth)
+	{
 		rotPointIndex = 0;
+	}
 
 	// prepare the next sphere frame
 	if (useDosSpheres)
 	{
 		if (rotFrameIndex)
+		{
 			Orbit->SphereFrame = IncFrameIndex(Orbit->SphereFrame);
+		}
 		else
+		{
 			Orbit->SphereFrame = DecFrameIndex(Orbit->SphereFrame);
+		}
 
 		RenderDOSPlanetSphere(Orbit, Orbit->SphereFrame, rotPointIndex);
 	}
@@ -278,7 +306,9 @@ void PrepareNextRotationFrameForIP(PLANET_DESC* pPlanetDesc, uqm::SIZE frameCoun
 
 	// No need to rotate planets that are off screen
 	if (pPlanetDesc->radius > 4 * pSolarSysState->SunDesc[0].radius)
+	{
 		return;
+	}
 
 #ifdef NEVER
 	{
@@ -305,7 +335,9 @@ void PrepareNextRotationFrameForIP(PLANET_DESC* pPlanetDesc, uqm::SIZE frameCoun
 				break;
 		}
 		if ((frameCounter % framerate) != 0)
+		{
 			return;
+		}
 	}
 #endif
 
@@ -317,11 +349,15 @@ void PrepareNextRotationFrameForIP(PLANET_DESC* pPlanetDesc, uqm::SIZE frameCoun
 				   pPlanetDesc->rotwidth));
 
 	if (pPlanetDesc->rotPointIndex < 0)
+	{
 		pPlanetDesc->rotPointIndex += pPlanetDesc->rotwidth;
+	}
 
 	// Nothing to do if there has been no visible rotation
 	if (pPlanetDesc->rotPointIndex == oldPointIndex)
+	{
 		return;
+	}
 
 	// Generate the next rotation frame
 	// We alternate between the frames because we do not call
@@ -374,9 +410,13 @@ void ZoomInPlanetSphere(void)
 	dy = 1 - (zoomCorner & 2);
 
 	if (Orbit->ObjectFrame)
+	{
 		GetFrameRect(Orbit->ObjectFrame, &frameRect);
+	}
 	else
+	{
 		GetFrameRect(Orbit->SphereFrame, &frameRect);
+	}
 	repairRect = frameRect;
 	RenderNextTime = 0;
 
@@ -391,9 +431,13 @@ void ZoomInPlanetSphere(void)
 		// Use 1 + e^-2 - e^(-2x / frameCount)) function to get a
 		// decelerating zoom like the one 3DO does (supposedly)
 		if (i < frameCount)
+		{
 			scale = 1.134 - exp(-2.0 * i / frameCount);
+		}
 		else
+		{
 			scale = 1.0; // final frame
+		}
 
 		// start from beyond the screen
 		pt.x = RES_SCALE(ORIG_SIS_SCREEN_WIDTH >> 1)
@@ -406,7 +450,9 @@ void ZoomInPlanetSphere(void)
 
 		BatchGraphics();
 		if (i > 0)
+		{
 			RepairBackRect(&repairRect);
+		}
 
 		oldMode = SetGraphicScaleMode(TFB_SCALE_BILINEAR);
 		oldScale = SetGraphicScale((int)(base * scale + 0.5));
@@ -441,7 +487,9 @@ void RotatePlanetSphere(bool keepRate, STAMP* onTop)
 	TimeCount Now = GetTimeCounter();
 
 	if (keepRate && Now < NextTime)
+	{
 		return; // not time yet
+	}
 
 	if (DIF_HARD && Now >= TimeOutClock)
 	{
@@ -460,7 +508,9 @@ void RotatePlanetSphere(bool keepRate, STAMP* onTop)
 			DrawDefaultPlanetSphere();
 
 			if (onTop)
+			{
 				DrawStamp(onTop);
+			}
 		}
 		PrepareNextRotationFrame();
 	}
@@ -477,9 +527,13 @@ renderTintFrame(Color tintColor)
 	double is_red;
 
 	if (sameColor(BRIGHT_RED_COLOR, tintColor))
+	{
 		is_red = 0.75;
+	}
 	else
+	{
 		is_red = 0.5;
+	}
 
 	oldContext = SetContext(OffScreenContext);
 	SetContextFGFrame(Orbit->TintFrame);
@@ -588,7 +642,9 @@ void DrawPlanet(int tintY, Color tintColor)
 				SetContextForeGroundColor(tintColor);
 				DrawFilledRectangle(&edge);
 				if (!IS_HD)
+				{
 					break;
+				}
 				edge.corner.y++;
 			}
 		}

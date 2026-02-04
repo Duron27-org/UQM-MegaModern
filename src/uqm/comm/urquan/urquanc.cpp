@@ -33,7 +33,7 @@ static LOCDATA urquan_desc =
 		BLACK_COLOR_INIT, /* AlienTextBColor */
 		{0, 0}, /* AlienTextBaseline */
 		0,
- /* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
+		/* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
 		ALIGN_CENTER, /* AlienTextAlign */
 		VALIGN_TOP, /* AlienTextValign */
 		URQUAN_COLOR_MAP, /* AlienColorMap */
@@ -175,7 +175,9 @@ CombatIsInevitable(RESPONSE_REF R)
 	setSegue(Segue_hostile);
 
 	if (PLAYER_SAID(R, you_must_surrender))
+	{
 		NPCPhrase(NOPE);
+	}
 	else if (PLAYER_SAID(R, whats_up_1)
 			 || PLAYER_SAID(R, whats_up_2)
 			 || PLAYER_SAID(R, whats_up_3)
@@ -203,7 +205,9 @@ CombatIsInevitable(RESPONSE_REF R)
 		SET_GAME_STATE(URQUAN_INFO, NumVisits);
 	}
 	else if (PLAYER_SAID(R, i_wont_surrender))
+	{
 		NPCPhrase(BAD_CHOICE);
+	}
 	else if (PLAYER_SAID(R, i_will_surrender))
 	{
 		NPCPhrase(GOOD_CHOICE);
@@ -211,7 +215,9 @@ CombatIsInevitable(RESPONSE_REF R)
 		setSegue(Segue_defeat);
 	}
 	else if (PLAYER_SAID(R, like_to_leave))
+	{
 		NPCPhrase(INDEPENDENCE_IS_BAD);
+	}
 	else if (PLAYER_SAID(R, bye_wars_over))
 	{
 		NPCPhrase(GOODBYE_WARS_OVER);
@@ -219,7 +225,9 @@ CombatIsInevitable(RESPONSE_REF R)
 		setSegue(Segue_peace);
 	}
 	else if (PLAYER_SAID(R, bye_sub_hypno))
+	{
 		NPCPhrase(GOODBYE_AND_DIE_SUB_HYPNO);
+	}
 	else if (PLAYER_SAID(R, bye_init_hypno))
 	{
 		NPCPhrase(GOODBYE_AND_DIE_INIT_HYPNO);
@@ -248,7 +256,9 @@ static void
 DescribePet(RESPONSE_REF R)
 {
 	if (PLAYER_SAID(R, wascally_little_guy))
+	{
 		NPCPhrase(WHAT_IT_LOOK_LIKE);
+	}
 	else if (PLAYER_SAID(R, turd_and_toad))
 	{
 		NPCPhrase(WHAT_IS_TURD_AND_TOAD);
@@ -268,7 +278,9 @@ static void
 DescribeCompulsion(RESPONSE_REF R)
 {
 	if (PLAYER_SAID(R, alien_mind_control))
+	{
 		NPCPhrase(WHAT_FELT_LIKE);
+	}
 	else if (PLAYER_SAID(R, before_coffee))
 	{
 		NPCPhrase(EXPLAIN);
@@ -309,9 +321,13 @@ MentionCompulsion(RESPONSE_REF R)
 	Response(wascally_little_guy, DescribePet);
 	Response(alien_mind_control, DescribeCompulsion);
 	if (PHRASE_ENABLED(possessed_by_devil))
+	{
 		Response(possessed_by_devil, MentionCompulsion);
+	}
 	if (PHRASE_ENABLED(why_explain))
+	{
 		Response(why_explain, MentionCompulsion);
+	}
 }
 
 static void
@@ -320,7 +336,9 @@ UrquanHypno(RESPONSE_REF R)
 	if (GET_GAME_STATE(URQUAN_HYPNO_VISITS) == 0)
 	{
 		if (R == 0)
+		{
 			NPCPhrase(INIT_URQUAN_WAKE_UP);
+		}
 		else if (PLAYER_SAID(R, where_am_i))
 		{
 			NPCPhrase(YOU_ARE_HERE);
@@ -341,18 +359,26 @@ UrquanHypno(RESPONSE_REF R)
 		}
 
 		if (PHRASE_ENABLED(where_am_i))
+		{
 			Response(where_am_i, UrquanHypno);
+		}
 		if (PHRASE_ENABLED(why_does_my_head_hurt))
+		{
 			Response(why_does_my_head_hurt, UrquanHypno);
+		}
 		if (PHRASE_ENABLED(what_about_2_weeks))
+		{
 			Response(what_about_2_weeks, UrquanHypno);
+		}
 		Response(compulsion, MentionCompulsion);
 		Response(bye_init_hypno, CombatIsInevitable);
 	}
 	else
 	{
 		if (R == 0)
+		{
 			NPCPhrase(SUBSEQUENT_URQUAN_WAKE_UP);
+		}
 		else if (PLAYER_SAID(R, uh_oh))
 		{
 			NPCPhrase(NO_UH_OH);
@@ -367,9 +393,13 @@ UrquanHypno(RESPONSE_REF R)
 		}
 
 		if (PHRASE_ENABLED(uh_oh))
+		{
 			Response(uh_oh, UrquanHypno);
+		}
 		if (PHRASE_ENABLED(stop_meeting))
+		{
 			Response(stop_meeting, UrquanHypno);
+		}
 		if (!GET_GAME_STATE(MENTIONED_PET_COMPULSION))
 		{
 			Response(compulsion, MentionCompulsion);
@@ -445,11 +475,17 @@ LoserUrquan(RESPONSE_REF R)
 	}
 
 	if (PHRASE_ENABLED(why_flee))
+	{
 		Response(why_flee, LoserUrquan);
+	}
 	if (PHRASE_ENABLED(what_happens_now))
+	{
 		Response(what_happens_now, LoserUrquan);
+	}
 	if (PHRASE_ENABLED(what_about_you))
+	{
 		Response(what_about_you, LoserUrquan);
+	}
 	Response(bye_wars_over, CombatIsInevitable);
 }
 
@@ -600,10 +636,14 @@ init_urquan_comm(void)
 	if ((lowByte(GLOBAL(CurrentActivity)) == IN_INTERPLANETARY
 		 && GLOBAL(BattleGroupRef)
 		 && GLOBAL(BattleGroupRef) == GrpOffs))
+	{
 		altResFlags |= USE_ALT_SONG;
+	}
 
 	if (EXTENDED)
+	{
 		altResFlags |= USE_ALT_COLORMAP;
+	}
 
 	if (GET_GAME_STATE(PLAYER_HYPNOTIZED)
 		|| lowByte(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE

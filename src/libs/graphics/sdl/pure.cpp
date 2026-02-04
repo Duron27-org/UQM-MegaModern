@@ -219,8 +219,10 @@ int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
 			CalcAlphaFormat(fmt, &conv_fmt);
 			fmt = format_conv_surf->format;
 			if (conv_fmt.Rmask != fmt->Rmask || conv_fmt.Bmask != fmt->Bmask)
+			{
 				log_add(log_Warning, "Warning: pixel format has changed "
 									 "significantly. Rendering will be slow.");
+			}
 			return 0;
 		}
 	}
@@ -252,24 +254,32 @@ int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
 	for (i = 0; i < TFB_GFX_NUMSCREENS; i++)
 	{
 		if (0 != ReInit_Screen(&SDL_Screens[i], format_conv_surf, ScreenWidth, ScreenHeight))
+		{
 			return -1;
+		}
 	}
 
 	SDL_Screen = SDL_Screens[0];
 	TransitionScreen = SDL_Screens[2];
 
 	if (0 != ReInit_Screen(&fade_color_surface, format_conv_surf, ScreenWidth, ScreenHeight))
+	{
 		return -1;
+	}
 	fade_color = SDL_MapRGB(fade_color_surface->format, 0, 0, 0);
 	SDL_FillRect(fade_color_surface, NULL, fade_color);
 
 	if (0 != ReInit_Screen(&fade_temp, format_conv_surf, ScreenWidth, ScreenHeight))
+	{
 		return -1;
+	}
 
 	if (ScreenWidthActual > ScreenWidth || ScreenHeightActual > ScreenHeight)
 	{
 		if (0 != ReInit_Screen(&scaled_display, format_conv_surf, ScreenWidthActual, ScreenHeightActual))
+		{
 			return -1;
+		}
 
 		scaler = Scale_PrepPlatform(flags, SDL_Screen->format);
 	}
@@ -372,17 +382,25 @@ TFB_Pure_Scaled_Preprocess(int force_full_redraw, int transition_amount, int fad
 	}
 
 	if (transition_amount == 255 && fade_amount == 255)
+	{
 		backbuffer = SDL_Screens[TFB_SCREEN_MAIN];
+	}
 	else
+	{
 		backbuffer = fade_temp;
+	}
 
 	// we can scale directly onto SDL_Video if video is compatible
 	if (SDL_Video->format->BitsPerPixel == SDL_Screen->format->BitsPerPixel
 		&& SDL_Video->format->Rmask == SDL_Screen->format->Rmask
 		&& SDL_Video->format->Bmask == SDL_Screen->format->Bmask)
+	{
 		scalebuffer = SDL_Video;
+	}
 	else
+	{
 		scalebuffer = scaled_display;
+	}
 }
 
 static void
@@ -414,10 +432,14 @@ TFB_Pure_Scaled_Postprocess(bool hd)
 	SDL_LockSurface(backbuffer);
 
 	if (scaler)
+	{
 		scaler(backbuffer, scalebuffer, &updated);
+	}
 
 	if (GfxFlags & TFB_GFXFLAGS_SCANLINES)
+	{
 		ScanLines(scalebuffer, &updated);
+	}
 
 	SDL_UnlockSurface(backbuffer);
 	SDL_UnlockSurface(scalebuffer);
@@ -427,7 +449,9 @@ TFB_Pure_Scaled_Postprocess(bool hd)
 	updated.w *= 2;
 	updated.h *= 2;
 	if (scalebuffer != SDL_Video)
+	{
 		SDL_BlitSurface(scalebuffer, &updated, SDL_Video, &updated);
+	}
 
 	SDL_UpdateRects(SDL_Video, 1, &updated);
 
@@ -453,7 +477,9 @@ static void
 TFB_Pure_ScreenLayer(SCREEN screen, Uint8 a, SDL_Rect* rect)
 {
 	if (SDL_Screens[screen] == backbuffer)
+	{
 		return;
+	}
 	SDL_SetAlpha(SDL_Screens[screen], SDL_SRCALPHA, a);
 	SDL_BlitSurface(SDL_Screens[screen], rect, backbuffer, rect);
 }
@@ -501,7 +527,9 @@ void Scale_PerfTest(void)
 		scaler(SDL_Screen, scaled_display, &updated);
 
 		if (GfxFlags & TFB_GFXFLAGS_SCANLINES)
+		{
 			ScanLines(scaled_display, &updated);
+		}
 
 		if (i % 100 == 0)
 		{
@@ -526,10 +554,14 @@ bool TFB_SDL_ScreenShot(const char* path)
 
 	SDL_LockSurface(tmp);
 	if (SDL_SavePNG(tmp, path) == 0)
+	{
 		successful = true;
+	}
 
 	if (successful && CopySurfaceToClipboard(tmp) != 0)
+	{
 		log_add(log_Warning, "Failed to copy PNG to clipboard\n");
+	}
 
 	SDL_UnlockSurface(tmp);
 	SDL_FreeSurface(tmp);

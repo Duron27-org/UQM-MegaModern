@@ -47,25 +47,37 @@ void PlayStream(TFB_SoundSample* sample, uint32 source, bool looping, bool scope
 	TFB_SoundDecoder* decoder;
 
 	if (!sample)
+	{
 		return;
+	}
 
 	StopStream(source);
 	if (sample->callbacks.OnStartStream && !sample->callbacks.OnStartStream(sample))
+	{
 		return; // callback failed
+	}
 
 	if (sample->buffer_tag)
+	{
 		memset(sample->buffer_tag, 0,
 			   sample->num_buffers * sizeof(sample->buffer_tag[0]));
+	}
 
 	decoder = sample->decoder;
 	offset = sample->offset;
 	if (rewind)
+	{
 		SoundDecoder_Rewind(decoder);
+	}
 	else
+	{
 		offset += (sint32)(SoundDecoder_GetTime(decoder) * ONE_SECOND);
+	}
 
 	if (source == MUSIC_SOURCE)
+	{
 		soundSource[source].start_time = 0;
+	}
 
 	soundSource[source].sample = sample;
 	decoder->looping = looping;
@@ -90,17 +102,23 @@ void PlayStream(TFB_SoundSample* sample, uint32 source, bool looping, bool scope
 				decoder->pos, decoded_bytes);
 #endif
 		if (decoded_bytes == 0)
+		{
 			break;
+		}
 
 		audio_BufferData(sample->buffer[i], decoder->format,
 						 decoder->buffer, decoded_bytes, decoder->frequency);
 		audio_SourceQueueBuffers(soundSource[source].handle, 1,
 								 &sample->buffer[i]);
 		if (sample->callbacks.OnQueueBuffer)
+		{
 			sample->callbacks.OnQueueBuffer(sample, sample->buffer[i]);
+		}
 
 		if (scope)
+		{
 			add_scope_data(&soundSource[source], decoded_bytes);
+		}
 
 		if (decoder->error != SOUNDDECODER_OK)
 		{
@@ -148,7 +166,9 @@ void PauseStream(uint32 source)
 {
 	soundSource[source].stream_should_be_playing = false;
 	if (!soundSource[source].pause_time)
+	{
 		soundSource[source].pause_time = GetTimeCounter();
+	}
 	audio_SourcePause(soundSource[source].handle);
 }
 
@@ -172,7 +192,9 @@ void SeekStream(uint32 source, uint32 pos)
 	bool scope;
 
 	if (!sample)
+	{
 		return;
+	}
 	looping = sample->decoder->looping;
 	scope = soundSource[source].sbuffer != NULL;
 
@@ -187,7 +209,9 @@ GetStreamFrame(uint32 source)
 	TFB_SoundSample* sample = soundSource[source].sample;
 
 	if (!sample)
+	{
 		return 0;
+	}
 
 	return SoundDecoder_GetFrame(sample->decoder);
 }
@@ -198,7 +222,9 @@ GetNumTrackerPos(uint32 source)
 	TFB_SoundSample* sample = soundSource[source].sample;
 
 	if (!sample)
+	{
 		return 0;
+	}
 
 	return sample->decoder->numpos;
 }
@@ -209,7 +235,9 @@ bool IsTracker(uint32 source)
 	const uqm::CHAR_T* filetype;
 
 	if (!sample)
+	{
 		return false;
+	}
 
 	filetype = SoundDecoder_GetName(sample->decoder);
 
@@ -221,7 +249,9 @@ float GetStreamLength(uint32 source)
 	TFB_SoundSample* sample = soundSource[source].sample;
 
 	if (!sample)
+	{
 		return 0;
+	}
 
 	return sample->decoder->length * 1000;
 }
@@ -232,7 +262,9 @@ GetStreamTime(uint32 source)
 	TFB_SoundSample* sample = soundSource[source].sample;
 
 	if (!sample)
+	{
 		return 0;
+	}
 
 	return (uqm::DWORD)SoundDecoder_GetTime(sample->decoder) * 1000;
 }
@@ -255,7 +287,9 @@ TFB_CreateSoundSample(TFB_SoundDecoder* decoder, uint32 num_buffers,
 	sample->buffer = (audio_Object*)HCalloc(sizeof(audio_Object) * num_buffers);
 	audio_GenBuffers(num_buffers, sample->buffer);
 	if (pcbs)
+	{
 		sample->callbacks = *pcbs;
+	}
 
 	return sample;
 }
@@ -286,9 +320,13 @@ void TFB_SetSoundSampleCallbacks(TFB_SoundSample* sample,
 								 const TFB_SoundCallbacks* pcbs /* can be NULL */)
 {
 	if (pcbs)
+	{
 		sample->callbacks = *pcbs;
+	}
 	else
+	{
 		memset(&sample->callbacks, 0, sizeof(sample->callbacks));
+	}
 }
 
 TFB_SoundDecoder*
@@ -303,7 +341,9 @@ TFB_FindTaggedBuffer(TFB_SoundSample* sample, audio_Object buffer)
 	uint32 buf_num;
 
 	if (!sample->buffer_tag)
+	{
 		return NULL; // do not have any tags
+	}
 
 	for (buf_num = 0;
 		 buf_num < sample->num_buffers && (!sample->buffer_tag[buf_num].in_use || sample->buffer_tag[buf_num].buf_name != buffer);
@@ -320,7 +360,9 @@ bool TFB_TagBuffer(TFB_SoundSample* sample, audio_Object buffer, intptr_t data)
 	uint32 buf_num;
 
 	if (!sample->buffer_tag)
+	{
 		sample->buffer_tag = (TFB_SoundTag*)HCalloc(sizeof(TFB_SoundTag) * sample->num_buffers);
+	}
 
 	for (buf_num = 0;
 		 buf_num < sample->num_buffers && sample->buffer_tag[buf_num].in_use && sample->buffer_tag[buf_num].buf_name != buffer;
@@ -328,7 +370,9 @@ bool TFB_TagBuffer(TFB_SoundSample* sample, audio_Object buffer, intptr_t data)
 		;
 
 	if (buf_num >= sample->num_buffers)
+	{
 		return false; // no empty slot
+	}
 
 	sample->buffer_tag[buf_num].in_use = 1;
 	sample->buffer_tag[buf_num].buf_name = buffer;
@@ -424,7 +468,9 @@ process_stream(TFB_SoundSource* source)
 				source->stream_should_be_playing = false;
 
 				if (sample->callbacks.OnEndStream)
+				{
 					sample->callbacks.OnEndStream(sample);
+				}
 			}
 			else
 			{
@@ -461,11 +507,15 @@ process_stream(TFB_SoundSource* source)
 		{
 			TFB_SoundTag* tag = TFB_FindTaggedBuffer(sample, buffer);
 			if (tag)
+			{
 				sample->callbacks.OnTaggedBuffer(sample, tag);
+			}
 		}
 
 		if (source->sbuffer)
+		{
 			remove_scope_data(source, buffer);
+		}
 
 		// See what state the decoder was left in last time around
 		if (decoder->error != SOUNDDECODER_OK)
@@ -473,7 +523,9 @@ process_stream(TFB_SoundSource* source)
 			if (decoder->error == SOUNDDECODER_EOF)
 			{
 				if (end_chunk_failed)
+				{
 					continue; // should not do it again
+				}
 
 				if (!sample->callbacks.OnEndChunk || !sample->callbacks.OnEndChunk(sample, source->last_q_buf))
 				{ // Reached the end of the current stream and we did not
@@ -544,10 +596,14 @@ process_stream(TFB_SoundSource* source)
 		// Remember the last queued buffer so we can pass it to callbacks
 		source->last_q_buf = buffer;
 		if (sample->callbacks.OnQueueBuffer)
+		{
 			sample->callbacks.OnQueueBuffer(sample, buffer);
+		}
 
 		if (source->sbuffer)
+		{
 			add_scope_data(source, decoded_bytes);
+		}
 	}
 }
 
@@ -569,13 +625,17 @@ processMusicFade(void)
 	Now = GetTimeCounter();
 	elapsed = Now - musicFadeStartTime;
 	if (elapsed > musicFadeInterval)
+	{
 		elapsed = musicFadeInterval;
+	}
 
 	newVolume = musicFadeStartVolume + (long)musicFadeDelta * elapsed / musicFadeInterval;
 	SetMusicVolume(newVolume);
 
 	if (elapsed >= musicFadeInterval)
+	{
 		musicFadeInterval = 0; // fade is over
+	}
 
 	UnlockMutex(fade_mutex);
 }
@@ -616,7 +676,9 @@ StreamDecoderTaskFunc(void* data)
 			HibernateThread(ONE_SECOND / 10);
 		}
 		else
+		{
 			TaskSwitch();
+		}
 	}
 
 	FinishTask(task);
@@ -627,9 +689,13 @@ static inline sint32
 readSoundSample(void* ptr, int sample_size)
 {
 	if (sample_size == sizeof(uint8))
+	{
 		return (*(uint8*)ptr - 128) << 8;
+	}
 	else
+	{
 		return *(sint16*)ptr;
+	}
 }
 
 // Graphs the current sound data for the oscilloscope.
@@ -750,7 +816,9 @@ int GraphForegroundStream(uint8* data, sint32 width, sint32 height,
 	// Step is in 11025 Hz units, so we need to adjust to source frequency
 	step = decoder->frequency * step / 11025;
 	if (step == 0)
+	{
 		step = 1;
+	}
 	step *= full_sample;
 
 	sbuffer = (uint8*)source->sbuffer;
@@ -772,18 +840,26 @@ int GraphForegroundStream(uint8* data, sint32 width, sint32 height,
 
 		s = readSoundSample(sbuffer + pos, sample_size);
 		if (channels > 1)
+		{
 			s += readSoundSample(sbuffer + pos + sample_size, sample_size);
+		}
 
 		energy += (s * s) / 0x10000;
 		t = abs(s);
 		if (t > max_a)
+		{
 			max_a = t;
+		}
 
 		s = (s / scale) + (height >> 1);
 		if (s < 0)
+		{
 			s = 0;
+		}
 		else if (s > height - 1)
+		{
 			s = height - 1;
+		}
 
 		data[i] = s;
 	}
@@ -823,14 +899,18 @@ bool SetMusicStreamFade(sint32 howLong, int endVolume)
 	LockMutex(fade_mutex);
 
 	if (howLong < 0)
+	{
 		howLong = 0;
+	}
 
 	musicFadeStartTime = GetTimeCounter();
 	musicFadeInterval = howLong;
 	musicFadeStartVolume = musicVolume;
 	musicFadeDelta = endVolume - musicFadeStartVolume;
 	if (!musicFadeInterval)
+	{
 		ret = false; // reject
+	}
 
 	UnlockMutex(fade_mutex);
 
@@ -841,12 +921,16 @@ int InitStreamDecoder(void)
 {
 	fade_mutex = CreateMutex("Stream fade mutex", SYNC_CLASS_AUDIO);
 	if (!fade_mutex)
+	{
 		return -1;
+	}
 
 	decoderTask = AssignTask(StreamDecoderTaskFunc, 1024,
 							 "audio stream decoder");
 	if (!decoderTask)
+	{
 		return -1;
+	}
 
 	return 0;
 }

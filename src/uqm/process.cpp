@@ -64,11 +64,17 @@ CALC_ZOOM_STUFF(uqm::COUNT* idx, uqm::COUNT* sc)
 	int i;
 
 	if (zoom_out < 2 << ZOOM_SHIFT)
+	{
 		i = 0;
+	}
 	else if (zoom_out < 4 << ZOOM_SHIFT)
+	{
 		i = 1;
+	}
 	else
+	{
 		i = 2;
+	}
 	*idx = i;
 	*sc = (1 << (i + ZOOM_SHIFT + 8)) / zoom_out;
 }
@@ -133,11 +139,15 @@ PreProcess(ELEMENT* ElementPtr)
 	if (ElementPtr->life_span == 0)
 	{
 		if (ElementPtr->pParent) /* untarget this dead element */
+		{
 			Untarget(ElementPtr);
+		}
 
 		ElementPtr->state_flags |= DISAPPEARING;
 		if (ElementPtr->death_func)
+		{
 			(*ElementPtr->death_func)(ElementPtr);
+		}
 	}
 
 	state_flags = ElementPtr->state_flags;
@@ -148,7 +158,9 @@ PreProcess(ELEMENT* ElementPtr)
 			SetUpElement(ElementPtr);
 
 			if (state_flags & PLAYER_SHIP)
+			{
 				state_flags &= ~APPEARING; /* want to preprocess ship */
+			}
 		}
 
 		if (ElementPtr->preprocess_func && !(state_flags & APPEARING))
@@ -157,7 +169,9 @@ PreProcess(ELEMENT* ElementPtr)
 
 			state_flags = ElementPtr->state_flags;
 			if ((state_flags & CHANGING) && CollidingElement(ElementPtr))
+			{
 				InitIntersectFrame(ElementPtr);
+			}
 		}
 
 		if (!(state_flags & IGNORE_VELOCITY))
@@ -175,10 +189,14 @@ PreProcess(ELEMENT* ElementPtr)
 		}
 
 		if (CollidingElement(ElementPtr))
+		{
 			InitIntersectEndPoint(ElementPtr);
+		}
 
 		if (state_flags & FINITE_LIFE)
+		{
 			--ElementPtr->life_span;
+		}
 	}
 
 	ElementPtr->state_flags = (state_flags & ~(POST_PROCESS | COLLISION))
@@ -189,7 +207,9 @@ static void
 PostProcess(ELEMENT* ElementPtr)
 {
 	if (ElementPtr->postprocess_func)
+	{
 		(*ElementPtr->postprocess_func)(ElementPtr);
+	}
 	ElementPtr->current = ElementPtr->next;
 
 	if (CollidingElement(ElementPtr))
@@ -217,7 +237,9 @@ CalcReduction(uqm::SDWORD dx, uqm::SDWORD dy)
 		uqm::SDWORD sdx, sdy;
 
 		if (lowByte(GLOBAL(CurrentActivity)) > IN_ENCOUNTER)
+		{
 			return (0);
+		}
 
 		sdx = dx;
 		sdy = dy;
@@ -240,39 +262,59 @@ CalcReduction(uqm::SDWORD dx, uqm::SDWORD dy)
 				|| ((sdy + HYSTERESIS_Y)
 					<< (MAX_VIS_REDUCTION - next_reduction))
 					   > TRANSITION_HEIGHT)
+			{
 				/* if we don't zoom in, we want to stay at next+1 */
 				next_reduction += REDUCTION_SHIFT;
+			}
 		}
 
 		if (next_reduction == 0
 			&& lowByte(GLOBAL(CurrentActivity)) == IN_LAST_BATTLE)
+		{
 			next_reduction += REDUCTION_SHIFT;
+		}
 	}
 	else
 	{
 		if (lowByte(GLOBAL(CurrentActivity)) > IN_ENCOUNTER)
+		{
 			return (1 << ZOOM_SHIFT);
+		}
 
 		dx = (dx * MAX_ZOOM_OUT) / (LOG_SPACE_WIDTH >> 2);
 		if (dx < (1 << ZOOM_SHIFT))
+		{
 			dx = 1 << ZOOM_SHIFT;
+		}
 		else if (dx > MAX_ZOOM_OUT)
+		{
 			dx = MAX_ZOOM_OUT;
+		}
 
 		dy = (dy * MAX_ZOOM_OUT) / (LOG_SPACE_HEIGHT >> 2);
 		if (dy < (1 << ZOOM_SHIFT))
+		{
 			dy = 1 << ZOOM_SHIFT;
+		}
 		else if (dy > MAX_ZOOM_OUT)
+		{
 			dy = MAX_ZOOM_OUT;
+		}
 
 		if (dy > dx)
+		{
 			next_reduction = dy;
+		}
 		else
+		{
 			next_reduction = dx;
+		}
 
 		if (next_reduction < (2 << ZOOM_SHIFT)
 			&& lowByte(GLOBAL(CurrentActivity)) == IN_LAST_BATTLE)
+		{
 			next_reduction = (2 << ZOOM_SHIFT);
+		}
 	}
 
 #ifdef KDEBUG
@@ -301,20 +343,32 @@ CalcView(DPOINT* pNewScrollPt, uqm::SIZE next_reduction,
 #define ORG_JUMP_X ((uqm::SDWORD)DISPLAY_ALIGN(LOG_SPACE_WIDTH / 75))
 #define ORG_JUMP_Y ((uqm::SDWORD)DISPLAY_ALIGN(LOG_SPACE_HEIGHT / 75))
 		if (dx > ORG_JUMP_X)
+		{
 			dx = ORG_JUMP_X;
+		}
 		else if (dx < -ORG_JUMP_X)
+		{
 			dx = -ORG_JUMP_X;
+		}
 		if (dy > ORG_JUMP_Y)
+		{
 			dy = ORG_JUMP_Y;
+		}
 		else if (dy < -ORG_JUMP_Y)
+		{
 			dy = -ORG_JUMP_Y;
+		}
 	}
 
 	if ((dx || dy) && inHQSpace())
+	{
 		MoveSIS(&dx, &dy);
+	}
 
 	if (zoom_out == next_reduction)
+	{
 		view_state = dx == 0 && dy == 0 && !inHQSpace() ? VIEW_STABLE : VIEW_SCROLL;
+	}
 	else
 	{
 		if (optMeleeScale == TFB_SCALE_STEP)
@@ -333,7 +387,9 @@ CalcView(DPOINT* pNewScrollPt, uqm::SIZE next_reduction,
 				&& zoom_out > next_reduction
 				&& zoom_out <= MAX_ZOOM_OUT
 				&& zoom_out - next_reduction > ZOOM_JUMP)
+			{
 				next_reduction = zoom_out - ZOOM_JUMP;
+			}
 
 			// Always align the origin on a whole pixel to reduce the
 			// amount of object positioning jitter
@@ -345,7 +401,9 @@ CalcView(DPOINT* pNewScrollPt, uqm::SIZE next_reduction,
 	}
 
 	if (lowByte(GLOBAL(CurrentActivity)) <= IN_HYPERSPACE)
+	{
 		MoveGalaxy(view_state, dx, dy);
+	}
 
 	*pdx = dx;
 	*pdy = dy;
@@ -369,7 +427,9 @@ ProcessCollisions(HELEMENT hSuccElement, ELEMENT* ElementPtr,
 
 		LockElement(hTestElement, &TestElementPtr);
 		if (!(TestElementPtr->state_flags & process_flags))
+		{
 			PreProcess(TestElementPtr);
+		}
 		hSuccElement = GetSuccElement(TestElementPtr);
 
 		if (TestElementPtr == ElementPtr)
@@ -390,7 +450,9 @@ ProcessCollisions(HELEMENT hSuccElement, ELEMENT* ElementPtr,
 					 && ElementPtr->life_span > 1)
 					|| ((test_state_flags & APPEARING)
 						&& TestElementPtr->life_span > 1)))
+			{
 				time_val = 0;
+			}
 			else
 			{
 				while ((time_val = DrawablesIntersect(&ElementPtr->IntersectControl,
@@ -428,21 +490,29 @@ ProcessCollisions(HELEMENT hSuccElement, ELEMENT* ElementPtr,
 							{
 								do_damage(TestElementPtr, TestElementPtr->hit_points);
 								if (TestElementPtr->pParent) /* untarget this dead element */
+								{
 									Untarget(TestElementPtr);
+								}
 
 								TestElementPtr->state_flags |= (COLLISION | DISAPPEARING);
 								if (TestElementPtr->death_func)
+								{
 									(*TestElementPtr->death_func)(TestElementPtr);
+								}
 							}
 							if (state_flags & APPEARING)
 							{
 								do_damage(ElementPtr, ElementPtr->hit_points);
 								if (ElementPtr->pParent) /* untarget this dead element */
+								{
 									Untarget(ElementPtr);
+								}
 
 								ElementPtr->state_flags |= (COLLISION | DISAPPEARING);
 								if (ElementPtr->death_func)
+								{
 									(*ElementPtr->death_func)(ElementPtr);
+								}
 
 								UnlockElement(hTestElement);
 								return (COLLISION);
@@ -453,27 +523,35 @@ ProcessCollisions(HELEMENT hSuccElement, ELEMENT* ElementPtr,
 						else
 						{
 							if (GetFrameIndex(CurFrame) != GetFrameIndex(NextFrame))
+							{
 								ElementPtr->next.image.frame =
 									SetEquFrameIndex(NextFrame,
 													 CurFrame);
+							}
 							else if (NextFrame != CurFrame)
 							{
 								ElementPtr->next.image =
 									ElementPtr->current.image;
 								if (ElementPtr->life_span > NORMAL_LIFE)
+								{
 									ElementPtr->life_span = NORMAL_LIFE;
+								}
 							}
 
 							if (GetFrameIndex(TestCurFrame) != GetFrameIndex(TestNextFrame))
+							{
 								TestElementPtr->next.image.frame =
 									SetEquFrameIndex(TestNextFrame,
 													 TestCurFrame);
+							}
 							else if (TestNextFrame != TestCurFrame)
 							{
 								TestElementPtr->next.image =
 									TestElementPtr->current.image;
 								if (TestElementPtr->life_span > NORMAL_LIFE)
+								{
 									TestElementPtr->life_span = NORMAL_LIFE;
+								}
 							}
 
 							InitIntersectStartPoint(ElementPtr);
@@ -636,9 +714,13 @@ PreProcessQueue(uqm::SDWORD* pscroll_x, uqm::SDWORD* pscroll_y)
 				 + (battle_counter[1] ? 1 : 0);
 
 	if (optMeleeScale == TFB_SCALE_STEP)
+	{
 		min_reduction = max_reduction = MAX_VIS_REDUCTION + 1;
+	}
 	else
+	{
 		min_reduction = max_reduction = MAX_ZOOM_OUT + (1 << ZOOM_SHIFT);
+	}
 
 	Origin.x = (uqm::SDWORD)(LOG_SPACE_WIDTH >> 1);
 	Origin.y = (uqm::SDWORD)(LOG_SPACE_HEIGHT >> 1);
@@ -653,13 +735,17 @@ PreProcessQueue(uqm::SDWORD* pscroll_x, uqm::SDWORD* pscroll_y)
 		LockElement(hElement, &ElementPtr);
 
 		if (!(ElementPtr->state_flags & PRE_PROCESS))
+		{
 			PreProcess(ElementPtr);
+		}
 		hNextElement = GetSuccElement(ElementPtr);
 
 		if (CollidingElement(ElementPtr)
 			&& !(ElementPtr->state_flags & COLLISION))
+		{
 			ProcessCollisions(hNextElement, ElementPtr,
 							  MAX_TIME_VALUE, PRE_PROCESS);
+		}
 
 		if (ElementPtr->state_flags & PLAYER_SHIP)
 		{
@@ -684,9 +770,13 @@ PreProcessQueue(uqm::SDWORD* pscroll_x, uqm::SDWORD* pscroll_y)
 				Origin.y = DISPLAY_ALIGN(Origin.y + (dy >> 1));
 
 				if (dx < 0)
+				{
 					dx = -dx;
+				}
 				if (dy < 0)
+				{
 					dy = -dy;
+				}
 				max_reduction = CalcReduction(dx, dy);
 			}
 			else if (max_reduction > opt_max_zoom_out
@@ -696,9 +786,13 @@ PreProcessQueue(uqm::SDWORD* pscroll_x, uqm::SDWORD* pscroll_y)
 				Origin.y = DISPLAY_ALIGN(Origin.y + (dy >> 1));
 
 				if (dx < 0)
+				{
 					dx = -dx;
+				}
 				if (dy < 0)
+				{
 					dy = -dy;
+				}
 				min_reduction = CalcReduction(dx, dy);
 			}
 			else
@@ -706,14 +800,20 @@ PreProcessQueue(uqm::SDWORD* pscroll_x, uqm::SDWORD* pscroll_y)
 				uqm::SIZE reduction;
 
 				if (dx < 0)
+				{
 					dx = -dx;
+				}
 				if (dy < 0)
+				{
 					dy = -dy;
+				}
 				reduction = CalcReduction(dx << 1, dy << 1);
 
 				if (min_reduction > opt_max_zoom_out
 					|| reduction < min_reduction)
+				{
 					min_reduction = reduction;
+				}
 			}
 			//			log_add (log_Debug, "dx = %d dy = %d min_red = %d max_red = %d",
 			//					dx, dy, min_reduction, max_reduction);
@@ -728,9 +828,13 @@ PreProcessQueue(uqm::SDWORD* pscroll_x, uqm::SDWORD* pscroll_y)
 		&& (min_reduction = zoom_out) > opt_max_zoom_out)
 	{
 		if (optMeleeScale == TFB_SCALE_STEP)
+		{
 			min_reduction = 0;
+		}
 		else
+		{
 			min_reduction = 1 << ZOOM_SHIFT;
+		}
 	}
 
 #ifdef KDEBUG
@@ -748,15 +852,21 @@ void InsertPrim(PRIM_LINKS* pLinks, uqm::COUNT primIndex, uqm::COUNT iPI)
 	{
 		Link = GetSuccLink(*pLinks); /* get tail */
 		if (Link == END_OF_LIST)
+		{
 			*pLinks = MakeLinks(primIndex, primIndex);
+		}
 		else
+		{
 			*pLinks = MakeLinks(GetPredLink(*pLinks), primIndex);
+		}
 	}
 	else
 	{
 		PL = GetPrimLinks(&DisplayArray[iPI]);
 		if (iPI != GetPredLink(*pLinks)) /* if not the head */
+		{
 			Link = GetPredLink(PL);
+		}
 		else
 		{
 			Link = END_OF_LIST;
@@ -799,9 +909,13 @@ PostProcessQueue(VIEW_STATE view_state, uqm::SDWORD scroll_x, uqm::SDWORD scroll
 	log_add(log_Debug, "PostProcess:");
 #endif
 	if (optMeleeScale == TFB_SCALE_STEP)
+	{
 		reduction = zoom_out + ONE_SHIFT;
+	}
 	else
+	{
 		reduction = zoom_out << ONE_SHIFT;
+	}
 
 	hElement = GetHeadElement();
 	while (hElement != 0)
@@ -816,9 +930,13 @@ PostProcessQueue(VIEW_STATE view_state, uqm::SDWORD scroll_x, uqm::SDWORD scroll
 		if (state_flags & PRE_PROCESS)
 		{
 			if (!(state_flags & COLLISION))
+			{
 				ElementPtr->state_flags &= ~DEFY_PHYSICS;
+			}
 			else
+			{
 				ElementPtr->state_flags &= ~COLLISION;
+			}
 
 			if (state_flags & POST_PROCESS)
 			{
@@ -842,13 +960,17 @@ PostProcessQueue(VIEW_STATE view_state, uqm::SDWORD scroll_x, uqm::SDWORD scroll
 
 				LockElement(hPostElement, &PostElementPtr);
 				if (!(PostElementPtr->state_flags & PRE_PROCESS))
+				{
 					PreProcess(PostElementPtr);
+				}
 				hNextElement = GetSuccElement(PostElementPtr);
 
 				if (CollidingElement(PostElementPtr)
 					&& !(PostElementPtr->state_flags & COLLISION))
+				{
 					ProcessCollisions(GetHeadElement(), PostElementPtr,
 									  MAX_TIME_VALUE, PRE_PROCESS | POST_PROCESS);
+				}
 				UnlockElement(hPostElement);
 				hPostElement = hNextElement;
 			} while (hPostElement != 0);
@@ -912,9 +1034,13 @@ PostProcessQueue(VIEW_STATE view_state, uqm::SDWORD scroll_x, uqm::SDWORD scroll
 							uqm::COUNT index, scale = GSCALE_IDENTITY;
 
 							if (optMeleeScale == TFB_SCALE_STEP)
+							{
 								index = zoom_out;
+							}
 							else
+							{
 								CALC_ZOOM_STUFF(&index, &scale);
+							}
 
 							ElementPtr->next.image.frame = SetEquFrameIndex(
 								ElementPtr->next.image.farray[index],
@@ -952,7 +1078,9 @@ PostProcessQueue(VIEW_STATE view_state, uqm::SDWORD scroll_x, uqm::SDWORD scroll
 			PostProcess(ElementPtr);
 
 			if (ObjType < NUM_PRIMS)
+			{
 				InsertPrim(&DisplayLinks, ElementPtr->PrimIndex, END_OF_LIST);
+			}
 
 			hNextElement = GetSuccElement(ElementPtr);
 			UnlockElement(hElement);
@@ -983,7 +1111,9 @@ void InitDisplayList(void)
 	ReinitQueue(&disp_q);
 
 	for (i = 0; i < MAX_DISPLAY_PRIMS; ++i)
+	{
 		SetPrimLinks(&DisplayArray[i], END_OF_LIST, i + 1);
+	}
 	SetPrimLinks(&DisplayArray[i - 1], END_OF_LIST, END_OF_LIST);
 	DisplayFreeList = 0;
 	DisplayLinks = MakeLinks(END_OF_LIST, END_OF_LIST);
@@ -1002,7 +1132,9 @@ void RedrawQueue(bool clear)
 	PostProcessQueue(view_state, scroll_x, scroll_y);
 
 	if (optStereoSFX)
+	{
 		UpdateSoundPositions();
+	}
 
 	SetContext(SpaceContext);
 	if (lowByte(GLOBAL(CurrentActivity)) == SUPER_MELEE
@@ -1016,7 +1148,9 @@ void RedrawQueue(bool clear)
 		{
 			nth_frame += skip_frames;
 			if (clear)
+			{
 				ClearDrawable(); // this is for BATCH_BUILD_PAGE effect, but not scaled by SetGraphicScale
+			}
 
 			if (optMeleeScale != TFB_SCALE_STEP)
 			{
@@ -1062,7 +1196,9 @@ void Untarget(ELEMENT* ElementPtr)
 
 			LockElement(hTarget, &TargetElementPtr);
 			if (TargetElementPtr == ElementPtr)
+			{
 				ListPtr->hTarget = 0;
+			}
 			UnlockElement(hTarget);
 		}
 
@@ -1078,7 +1214,9 @@ void RemoveElement(HLINK hLink)
 
 		LockElement(hLink, &ElementPtr);
 		if (ElementPtr != NULL)
+		{
 			RemoveSoundsForObject(ElementPtr);
+		}
 		UnlockElement(hLink);
 	}
 	RemoveQueue(&disp_q, hLink);

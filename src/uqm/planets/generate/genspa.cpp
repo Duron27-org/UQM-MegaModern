@@ -163,7 +163,9 @@ GenerateSpathi_generateMoons(SOLARSYS_STATE* solarSys,
 			ComputeSpeed(pMoonDesc, true, 1);
 		}
 		else
+		{
 			pMoonDesc->data_index = GenerateWorlds(SMALL_ROCKY);
+		}
 	}
 
 	return true;

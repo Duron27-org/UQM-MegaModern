@@ -54,16 +54,22 @@ void CleanSource(int iSource)
 		audio_Object* bufs;
 
 		if (processed > MAX_STACK_BUFFERS)
+		{
 			bufs = (audio_Object*)HMalloc(
 				sizeof(audio_Object) * processed);
+		}
 		else
+		{
 			bufs = stack_bufs;
+		}
 
 		audio_SourceUnqueueBuffers(soundSource[iSource].handle,
 								   processed, bufs);
 
 		if (processed > MAX_STACK_BUFFERS)
+		{
 			HFree(bufs);
+		}
 	}
 	// set the source state to 'initial'
 	audio_SourceRewind(soundSource[iSource].handle);
@@ -90,14 +96,18 @@ bool SoundPlaying(void)
 			result = PlayingStream(i);
 			UnlockMutex(soundSource[i].stream_mutex);
 			if (result)
+			{
 				return true;
+			}
 		}
 		else
 		{
 			audio_IntVal state;
 			audio_GetSourcei(soundSource[i].handle, audio_SOURCE_STATE, &state);
 			if (state == audio_PLAYING)
+			{
 				return true;
+			}
 		}
 	}
 
@@ -114,7 +124,9 @@ void WaitForSoundEnd(uqm::COUNT Channel)
 	{
 		SleepThread(ONE_SECOND / 20);
 		if (QuitPosted) // Don't make users wait for sounds to end
+		{
 			break;
+		}
 	}
 }
 
@@ -151,10 +163,14 @@ uqm::DWORD
 FadeMusic(uqm::BYTE end_vol, uqm::SIZE TimeInterval)
 {
 	if (QuitPosted) // Don't make users wait for fades
+	{
 		TimeInterval = 0;
+	}
 
 	if (TimeInterval < 0)
+	{
 		TimeInterval = 0;
+	}
 
 	if (!SetMusicStreamFade(TimeInterval, end_vol))
 	{ // fade rejected, maybe due to TimeInterval==0

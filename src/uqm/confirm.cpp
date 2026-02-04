@@ -97,7 +97,9 @@ bool DoConfirmExit(void)
 	bool FlashPaused;
 
 	if (PlayingTrack())
+	{
 		PauseTrack();
+	}
 
 	FlashPaused = PauseFlash();
 
@@ -206,10 +208,14 @@ bool DoConfirmExit(void)
 	}
 
 	if (FlashPaused)
+	{
 		ContinueFlash();
+	}
 
 	if (PlayingTrack() && !result)
+	{
 		ResumeTrack();
+	}
 
 	return (result);
 }
@@ -290,7 +296,9 @@ void DoPopupWindow(const char* msg)
 	SetContext(oldContext);
 
 	if (FlashPaused)
+	{
 		ContinueFlash();
+	}
 
 	SetMenuSounds(s0, s1);
 	StringBank_Free(bank);

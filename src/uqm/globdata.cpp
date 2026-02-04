@@ -83,11 +83,17 @@ totalBitsForGameState(const GameStateBitMap* bm, int rev)
 	for (bmPtr = bm; bmPtr; bmPtr++)
 	{
 		if (bmPtr->name != NULL)
+		{
 			totalBits += bmPtr->numBits;
+		}
 		else if (bmPtr->numBits == 0)
+		{
 			break;
+		}
 		else if (rev >= 0 && bmPtr->numBits > rev)
+		{
 			break;
+		}
 	}
 
 	return totalBits;
@@ -104,17 +110,27 @@ int getGameStateRevByBytes(const GameStateBitMap* bm, int bytes)
 	for (bmPtr = bm; bmPtr; bmPtr++)
 	{
 		if (bmPtr->name != NULL)
+		{
 			totalBits += bmPtr->numBits;
+		}
 		else if (bmPtr->numBits == 0)
+		{
 			break;
+		}
 		else if ((int)((totalBits + 7) >> 3) >= bytes)
+		{
 			break;
+		}
 		else
+		{
 			rev = bmPtr->numBits;
+		}
 	}
 
 	if ((int)((totalBits + 7) >> 3) != bytes)
+	{
 		rev = -1;
+	}
 
 	return rev;
 }
@@ -176,7 +192,9 @@ bool serialiseGameState(const GameStateBitMap* bm, uqm::BYTE** buf,
 	// Allocate memory for the serialised data.
 	result = (uqm::BYTE*)HMalloc(totalBytes);
 	if (result == NULL)
+	{
 		return false;
+	}
 
 	bufPtr = result;
 	for (bmPtr = bm; bmPtr; bmPtr++)
@@ -208,17 +226,23 @@ bool serialiseGameState(const GameStateBitMap* bm, uqm::BYTE** buf,
 				numBits -= 8;
 			}
 			if (numBits > 0)
+			{
 				serialiseBits(&bufPtr, &restBits, &restBitCount, value,
 							  numBits);
+			}
 		}
 		else if (bmPtr->numBits == 0)
+		{
 			break;
+		}
 	}
 
 	// Pad the end up to a byte.
 	if (restBitCount > 0)
+	{
 		serialiseBits(&bufPtr, &restBits, &restBitCount, 0,
 					  8 - restBitCount);
+	}
 
 	*buf = result;
 	*numBytes = totalBytes;
@@ -329,9 +353,13 @@ bool deserialiseGameState(const GameStateBitMap* bm,
 			setGameStateUint(bmPtr->name, value);
 		}
 		else if (bmPtr->numBits == 0)
+		{
 			break;
+		}
 		else if (bmPtr->numBits > rev)
+		{
 			matchRev = false;
+		}
 	}
 #ifdef STATE_DEBUG
 	fflush(stderr);
@@ -367,17 +395,23 @@ bool LoadSC2Data(void)
 		FlagStatFrame = CaptureDrawable(
 			LoadGraphic(FLAGSTAT_MASK_PMAP_ANIM));
 		if (FlagStatFrame == NULL)
+		{
 			return false;
+		}
 
 		MiscDataFrame = CaptureDrawable(
 			LoadGraphic(MISCDATA_MASK_PMAP_ANIM));
 		if (MiscDataFrame == NULL)
+		{
 			return false;
+		}
 
 		visitedStarsFrame = CaptureDrawable(
 			LoadGraphic(VISITED_STARS_ANIM));
 		if (visitedStarsFrame == NULL)
+		{
 			return false;
+		}
 
 		FontGradFrame = CaptureDrawable(
 			LoadGraphic(FONTGRAD_PMAP_ANIM));
@@ -422,15 +456,23 @@ void LoadFleetInfo(void)
 		FLEET_INFO* FleetPtr;
 
 		if (i < num_ships - 2)
+		{
 			ship_ref = (SPECIES_ID)((int)(ship_ref) + 1);
+		}
 		else if (i == num_ships - 2)
+		{
 			ship_ref = YEHAT_ID;
+		}
 		else /* (i == num_ships - 1) */
+		{
 			ship_ref = UR_QUAN_PROBE_ID;
+		}
 
 		hFleet = AllocLink(&GLOBAL(avail_race_q));
 		if (!hFleet)
+		{
 			continue;
+		}
 		FleetPtr = LockFleetInfo(&GLOBAL(avail_race_q), hFleet);
 		FleetPtr->SpeciesID = ship_ref;
 
@@ -449,7 +491,9 @@ void LoadFleetInfo(void)
 			SeedFleet(FleetPtr, plot_map);
 			// Rebel special case
 			if (i == YEHAT_REBEL_SHIP)
+			{
 				FleetPtr->actual_strength = 0;
+			}
 #ifdef DEBUG_SPHERE_COLOR
 			switch (i)
 			{
@@ -514,7 +558,9 @@ void LoadFleetInfo(void)
 		FleetPtr->func_index = ~0;
 		FleetPtr->can_build = false;
 		if (optUnlockShips && i < LAST_MELEE_ID)
+		{
 			FleetPtr->can_build = true;
+		}
 
 		UnlockFleetInfo(&GLOBAL(avail_race_q), hFleet);
 		PutQueue(&GLOBAL(avail_race_q), hFleet);
@@ -558,7 +604,9 @@ bool InitGameStructures(void)
 	// If non-starseed, this will give us a default plot map,
 	// so we still need this.
 	if (!InitStarseed(true))
+	{
 		return (false);
+	}
 	GLOBAL_SIS(Seed) = optCustomSeed; // In case Starseed rolls the seed
 
 	PlayFrame = CaptureDrawable(LoadGraphic(PLAYMENU_ANIM));
@@ -609,15 +657,21 @@ bool InitGameStructures(void)
 	}
 
 	for (i = 0; i < NUM_DRIVE_SLOTS; ++i)
+	{
 		GLOBAL_SIS(DriveSlots[i]) = EMPTY_SLOT + 0;
+	}
 	GLOBAL_SIS(DriveSlots[5]) =
 		GLOBAL_SIS(DriveSlots[6]) = FUSION_THRUSTER;
 	for (i = 0; i < NUM_JET_SLOTS; ++i)
+	{
 		GLOBAL_SIS(JetSlots[i]) = EMPTY_SLOT + 1;
+	}
 	GLOBAL_SIS(JetSlots[0]) =
 		GLOBAL_SIS(JetSlots[6]) = TURNING_JETS;
 	for (i = 0; i < NUM_MODULE_SLOTS; ++i)
+	{
 		GLOBAL_SIS(ModuleSlots[i]) = EMPTY_SLOT + 2;
+	}
 	GLOBAL_SIS(ModuleSlots[15]) = GUN_WEAPON;
 	GLOBAL_SIS(ModuleSlots[2]) = CREW_POD;
 	// Make crew 31 at start to align with the amount of crew lost on the
@@ -794,7 +848,9 @@ void SeedDEBUG()
 	clock_t start_clock;
 	bool myRNG = false;
 	for (decisec = 0; decisec < 100; decisec++)
+	{
 		histogram[decisec] = 0;
+	}
 
 	if (!StarGenRNG)
 	{
@@ -818,17 +874,23 @@ void SeedDEBUG()
 			decisec = 98;
 		}
 		else
+		{
 			decisec = (double)(clock() - start_clock) / 100000;
+		}
 		fprintf(stderr, "Complete %6.6f seconds.\n",
 				(double)(clock() - start_clock) / 1000000);
 		if (decisec > 99)
+		{
 			decisec = 99;
+		}
 		histogram[decisec]++;
 	}
 	for (decisec = 0; decisec < 100; decisec++)
 	{
 		if (decisec % 10 == 0)
+		{
 			fprintf(stderr, "\n");
+		}
 		fprintf(stderr, "%3d ", histogram[decisec]);
 	}
 	optCustomSeed = save;
@@ -871,7 +933,9 @@ bool InitStarseed(bool newgame)
 		DefaultQuasispace(portal_map);
 		// Done with StarGenRNG for now; will create later if moving fleets
 		if (StarGenRNG)
+		{
 			RandomContext_Delete(StarGenRNG);
+		}
 		StarGenRNG = NULL;
 		return true;
 	}
@@ -902,7 +966,9 @@ bool InitStarseed(bool newgame)
 		{
 			fprintf(stderr, "Seed Plot Failed.\n");
 			if (StarGenRNG)
+			{
 				RandomContext_Delete(StarGenRNG);
+			}
 			StarGenRNG = NULL;
 			return false;
 		}
@@ -910,7 +976,9 @@ bool InitStarseed(bool newgame)
 		{
 			fprintf(stderr, "Seed Quasisapce Failed.\n");
 			if (StarGenRNG)
+			{
 				RandomContext_Delete(StarGenRNG);
+			}
 			StarGenRNG = NULL;
 			return false;
 		}
@@ -933,7 +1001,9 @@ bool InitStarseed(bool newgame)
 		{
 			fprintf(stderr, "Seed Plot Failed.\n");
 			if (StarGenRNG)
+			{
 				RandomContext_Delete(StarGenRNG);
+			}
 			StarGenRNG = NULL;
 			return false;
 		}
@@ -941,15 +1011,23 @@ bool InitStarseed(bool newgame)
 		{
 			fprintf(stderr, "Seed Quasisapce Failed.\n");
 			if (StarGenRNG)
+			{
 				RandomContext_Delete(StarGenRNG);
+			}
 			StarGenRNG = NULL;
 			return false;
 		}
 	}
 	if (OOPS_ALL > 0)
+	{
 		for (i = 0; i < NUM_SOLAR_SYSTEMS; i++)
+		{
 			if (!star_array[i].Index)
+			{
 				star_array[i].Index = OOPS_ALL;
+			}
+		}
+	}
 	// In case the seed changed above, reset SIS
 	GLOBAL_SIS(Seed) = optCustomSeed;
 #ifdef DEBUG_STARSEED
@@ -957,7 +1035,9 @@ bool InitStarseed(bool newgame)
 #endif
 	// Done with StarGenRNG for now; will create later if moving fleets
 	if (StarGenRNG)
+	{
 		RandomContext_Delete(StarGenRNG);
+	}
 	StarGenRNG = NULL;
 	return (true);
 }
@@ -1062,10 +1142,14 @@ int replaceChar(char* pStr, const char find, const char replace)
 	size_t len = strlen(pStr);
 
 	if (!pStr || !find || !replace)
+	{
 		return -1; // pStr, find, or replace is NULL
+	}
 
 	if (utf8StringPos(pStr, find) == -1)
+	{
 		return 0; // 'find' not found
+	}
 
 	for (i = 0; i < len; i++)
 	{
@@ -1073,7 +1157,9 @@ int replaceChar(char* pStr, const char find, const char replace)
 		{
 			pStr[i] = replace;
 			if (pStr[i] == replace)
+			{
 				count++;
+			}
 		}
 	}
 

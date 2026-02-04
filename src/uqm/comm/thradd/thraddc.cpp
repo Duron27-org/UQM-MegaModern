@@ -37,7 +37,7 @@ static LOCDATA thradd_desc =
 		BLACK_COLOR_INIT, /* AlienTextBColor */
 		{0, 0}, /* AlienTextBaseline */
 		0,
- /* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
+		/* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
 		ALIGN_CENTER, /* AlienTextAlign */
 		VALIGN_TOP, /* AlienTextValign */
 		THRADD_COLOR_MAP, /* AlienColorMap */
@@ -273,7 +273,9 @@ ExitConversation(RESPONSE_REF R)
 	setSegue(Segue_hostile);
 
 	if (PLAYER_SAID(R, bye_hostile_2))
+	{
 		NPCPhrase(GOODBYE_HOSTILE_2);
+	}
 	else if (PLAYER_SAID(R, bye_hostile_1))
 	{
 		NPCPhrase(GOODBYE_HOSTILE_1);
@@ -287,7 +289,9 @@ ExitConversation(RESPONSE_REF R)
 		SET_GAME_STATE(THRADD_HOSTILE_STACK_2, 1);
 	}
 	else if (PLAYER_SAID(R, submit_2))
+	{
 		NPCPhrase(NO_SUBMIT_2);
+	}
 	else if (PLAYER_SAID(R, got_idea))
 	{
 		NPCPhrase(GOOD_IDEA);
@@ -297,7 +301,9 @@ ExitConversation(RESPONSE_REF R)
 		SET_GAME_STATE(THRADD_STACK_1, 5);
 	}
 	else if (PLAYER_SAID(R, bye_hostile_helix))
+	{
 		NPCPhrase(GOODBYE_HOSTILE_HELIX);
+	}
 	else if (PLAYER_SAID(R, bye_ally))
 	{
 		uqm::BYTE NumVisits;
@@ -330,9 +336,13 @@ ExitConversation(RESPONSE_REF R)
 		setSegue(Segue_peace);
 	}
 	else if (PLAYER_SAID(R, demand_to_land))
+	{
 		NPCPhrase(NO_DEMAND);
+	}
 	else if (PLAYER_SAID(R, i_need_to_land_lie))
+	{
 		NPCPhrase(CAUGHT_LIE);
+	}
 	else
 	{
 		if (PLAYER_SAID(R, contemplative))
@@ -412,27 +422,43 @@ ThraddAllies(RESPONSE_REF R)
 		{
 			case 0:
 				if (!(NumVisits & ~((1 << 2) - 1)))
+				{
 					NPCPhrase(CONTEMP_GOES_1);
+				}
 				else
+				{
 					NPCPhrase(CONTEMP_GOES_2);
+				}
 				break;
 			case 1:
 				if (!(NumVisits & ~((1 << 2) - 1)))
+				{
 					NPCPhrase(FRIENDLY_GOES_1);
+				}
 				else
+				{
 					NPCPhrase(FRIENDLY_GOES_2);
+				}
 				break;
 			case 2:
 				if (!(NumVisits & ~((1 << 2) - 1)))
+				{
 					NPCPhrase(WACKY_GOES_1);
+				}
 				else
+				{
 					NPCPhrase(WACKY_GOES_2);
+				}
 				break;
 			case 3:
 				if (!(NumVisits & ~((1 << 2) - 1)))
+				{
 					NPCPhrase(LIKE_YOU_GOES_1);
+				}
 				else
+				{
 					NPCPhrase(LIKE_YOU_GOES_2);
+				}
 				break;
 		}
 		NumVisits |= 1 << 2;
@@ -444,18 +470,26 @@ ThraddAllies(RESPONSE_REF R)
 	if (GET_GAME_STATE(GLOBAL_FLAGS_AND_DATA) & (1 << 6))
 	{
 		if (PHRASE_ENABLED(why_you_here_ally))
+		{
 			Response(why_you_here_ally, ThraddAllies);
+		}
 		else
 		{
 			if (PHRASE_ENABLED(whats_helix_ally))
+			{
 				Response(whats_helix_ally, ThraddAllies);
+			}
 			Response(may_i_land, ExitConversation);
 		}
 	}
 	if (PHRASE_ENABLED(whats_up_ally))
+	{
 		Response(whats_up_ally, ThraddAllies);
+	}
 	if (PHRASE_ENABLED(how_goes_culture))
+	{
 		Response(how_goes_culture, ThraddAllies);
+	}
 	Response(bye_ally, ExitConversation);
 }
 
@@ -566,7 +600,9 @@ HelixWorld(RESPONSE_REF R)
 	}
 
 	if (!GET_GAME_STATE(THRADD_CULTURE))
+	{
 		Response(why_you_here_hostile, HelixWorld);
+	}
 	else
 	{
 		Response(demand_to_land, ExitConversation);
@@ -668,9 +704,13 @@ ThraddHostile(RESPONSE_REF R)
 	}
 
 	if (GET_GAME_STATE(THRADD_INFO) == 0)
+	{
 		Response(whats_up_hostile_1, ThraddHostile);
+	}
 	else if (PHRASE_ENABLED(whats_up_hostile_2))
+	{
 		Response(whats_up_hostile_2, ThraddHostile);
+	}
 	switch (GET_GAME_STATE(THRADD_STACK_1))
 	{
 		case 0:
@@ -687,7 +727,9 @@ ThraddHostile(RESPONSE_REF R)
 			break;
 		case 4:
 			if (!GET_GAME_STATE(KOHR_AH_FRENZY))
+			{
 				Response(got_idea, ExitConversation);
+			}
 			else
 			{
 				SET_GAME_STATE(THRADD_STACK_1, 5);
@@ -695,24 +737,40 @@ ThraddHostile(RESPONSE_REF R)
 			break;
 	}
 	if (GET_GAME_STATE(THRADD_HOSTILE_STACK_2) == 0)
+	{
 		Response(submit_1, ExitConversation);
+	}
 	else
+	{
 		Response(submit_2, ExitConversation);
+	}
 	if (GET_GAME_STATE(THRADD_HOSTILE_STACK_3) == 0)
+	{
 		Response(be_friends_1, ThraddHostile);
+	}
 	else if (PHRASE_ENABLED(be_friends_2))
+	{
 		Response(be_friends_2, ThraddHostile);
+	}
 	if (GET_GAME_STATE(THRADD_MISSION) == 4)
 	{
 		if (GET_GAME_STATE(THRADD_HOSTILE_STACK_4) == 0)
+		{
 			Response(how_impressed_urquan_1, ThraddHostile);
+		}
 		else
+		{
 			Response(how_impressed_urquan_2, ThraddHostile);
+		}
 	}
 	if (GET_GAME_STATE(THRADD_HOSTILE_STACK_5) == 0)
+	{
 		Response(bye_hostile_1, ExitConversation);
+	}
 	else
+	{
 		Response(bye_hostile_2, ExitConversation);
+	}
 }
 
 static void
@@ -956,21 +1014,33 @@ Intro(void)
 				{
 					case 1:
 						if (GET_GAME_STATE(THRADD_MISSION_VISITS) == 0)
+						{
 							NPCPhrase(WE_GO_TO_IMPRESS_URQUAN_1);
+						}
 						else
+						{
 							NPCPhrase(WE_GO_TO_IMPRESS_URQUAN_2);
+						}
 						break;
 					case 2:
 						if (GET_GAME_STATE(THRADD_MISSION_VISITS) == 0)
+						{
 							NPCPhrase(WE_IMPRESSING_URQUAN_1);
+						}
 						else
+						{
 							NPCPhrase(WE_IMPRESSING_URQUAN_2);
+						}
 						break;
 					case 3:
 						if (GET_GAME_STATE(THRADD_MISSION_VISITS) == 0)
+						{
 							NPCPhrase(WE_IMPRESSED_URQUAN_1);
+						}
 						else
+						{
 							NPCPhrase(WE_IMPRESSED_URQUAN_2);
+						}
 						break;
 				}
 				SET_GAME_STATE(THRADD_MISSION_VISITS, 1);

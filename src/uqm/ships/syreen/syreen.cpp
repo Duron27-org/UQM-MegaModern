@@ -197,10 +197,14 @@ spawn_crew(ELEMENT* ElementPtr)
 
 				dx = ObjPtr->next.location.x - ElementPtr->next.location.x;
 				if (dx < 0)
+				{
 					dx = -dx;
+				}
 				dy = ObjPtr->next.location.y - ElementPtr->next.location.y;
 				if (dy < 0)
+				{
 					dy = -dy;
+				}
 
 				dx = WORLD_TO_DISPLAY(dx);
 				dy = WORLD_TO_DISPLAY(dy);
@@ -218,10 +222,14 @@ spawn_crew(ELEMENT* ElementPtr)
 						crew_loss = ((MAX_ABANDONERS * (ABANDONER_RANGE - square_root(d_squared))) / ABANDONER_RANGE) + 1;
 					}
 					else
+					{
 						crew_loss = 0;
+					}
 
 					if (crew_loss >= ObjPtr->crew_level)
+					{
 						crew_loss = ObjPtr->crew_level - 1;
+					}
 
 					AbandonShip(ObjPtr, ElementPtr, crew_loss);
 				}
@@ -253,9 +261,13 @@ syreen_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 			&& StarShipPtr->special_counter == 0
 			&& lpEvalDesc->ObjectPtr->crew_level > 1
 			&& lpEvalDesc->which_turn <= 14)
+		{
 			StarShipPtr->ship_input_state |= SPECIAL;
+		}
 		else
+		{
 			StarShipPtr->ship_input_state &= ~SPECIAL;
+		}
 	}
 }
 

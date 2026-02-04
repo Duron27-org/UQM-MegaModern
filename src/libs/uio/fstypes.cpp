@@ -115,8 +115,12 @@ uio_registerFileSystem(uio_FileSystemID wantedID, const char* name,
 		// it is put in wantedID
 
 		for (ptr = &uio_fileSystems; *ptr != NULL; ptr = &(*ptr)->next)
+		{
 			if ((*ptr)->id >= uio_FS_FIRST_CUSTOM_ID)
+			{
 				break;
+			}
+		}
 
 		wantedID = uio_FS_FIRST_CUSTOM_ID;
 		while (*ptr != NULL)
@@ -140,7 +144,9 @@ uio_registerFileSystem(uio_FileSystemID wantedID, const char* name,
 			if ((*ptr)->id <= wantedID)
 			{
 				if ((*ptr)->id == wantedID)
+				{
 					return 0;
+				}
 				break;
 			}
 		}
@@ -218,7 +224,9 @@ uio_getFileSystemHandler(uio_FileSystemID id)
 	for (ptr = uio_fileSystems; ptr != NULL; ptr = ptr->next)
 	{
 		if (ptr->id == id)
+		{
 			return ptr->handler;
+		}
 	}
 	return NULL;
 }
@@ -231,7 +239,9 @@ uio_getFileSystemInfo(uio_FileSystemID id)
 	for (ptr = uio_fileSystems; ptr != NULL; ptr = ptr->next)
 	{
 		if (ptr->id == id)
+		{
 			return ptr;
+		}
 	}
 	return NULL;
 }
@@ -244,7 +254,9 @@ uio_getFileSystemInfoPtr(uio_FileSystemID id)
 	for (ptr = &uio_fileSystems; *ptr != NULL; ptr = &(*ptr)->next)
 	{
 		if ((*ptr)->id == id)
+		{
 			return ptr;
+		}
 	}
 	return NULL;
 }

@@ -61,22 +61,32 @@ void PropFile_from_string(char* d, PROPERTY_HANDLER handler, const char* prefix)
 		int key_start, key_end, value_start, value_end;
 		/* Starting a line: search for non-whitespace */
 		while ((i < len) && isspace(d[i]))
+		{
 			i++;
+		}
 		if (i >= len)
+		{
 			break; /* Done parsing! */
+		}
 		/* If it was a comment, skip to end of comment/file */
 		if (d[i] == '#')
 		{
 			while ((i < len) && (d[i] != '\n'))
+			{
 				i++;
+			}
 			if (i >= len)
+			{
 				break;
+			}
 			continue; /* Back to keyword search */
 		}
 		key_start = i;
 		/* Find the = on this line */
 		while ((i < len) && (d[i] != '=') && (d[i] != '\n') && (d[i] != '#'))
+		{
 			i++;
+		}
 		if (i >= len)
 		{ /* Bare key at EOF */
 			log_add(log_Warning, "Warning: Bare keyword at EOF");
@@ -87,31 +97,45 @@ void PropFile_from_string(char* d, PROPERTY_HANDLER handler, const char* prefix)
 		{
 			log_add(log_Warning, "Warning: Key without value");
 			while ((i < len) && (d[i] != '\n'))
+			{
 				i++;
+			}
 			if (i >= len)
+			{
 				break;
+			}
 			continue; /* Back to keyword search */
 		}
 		/* Key ends at first whitespace before = , or at key_start*/
 		key_end = i;
 		while ((key_end > key_start) && isspace(d[key_end - 1]))
+		{
 			key_end--;
+		}
 
 		/* Consume the = */
 		i++;
 		/* Value starts at first non-whitespace after = on line... */
 		while ((i < len) && (d[i] != '#') && (d[i] != '\n') && isspace(d[i]))
+		{
 			i++;
+		}
 		value_start = i;
 		/* Until first non-whitespace before terminator */
 		while ((i < len) && (d[i] != '#') && (d[i] != '\n'))
+		{
 			i++;
+		}
 		value_end = i;
 		while ((value_end > value_start) && isspace(d[value_end - 1]))
+		{
 			value_end--;
+		}
 		/* Skip past EOL or EOF */
 		while ((i < len) && (d[i] != '\n'))
+		{
 			i++;
+		}
 		i++;
 
 		/* We now have start and end values for key and value.

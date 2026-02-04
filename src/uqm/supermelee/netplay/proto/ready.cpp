@@ -59,7 +59,9 @@ bool Netplay_localReady(NetConnection* conn, NetConnection_ReadyCallback callbac
 	NetConnection_setReadyCallback(conn, callback, readyArg);
 
 	if (notifyRemote)
+	{
 		sendReady(conn);
+	}
 	if (!conn->stateFlags.ready.remoteReady)
 	{
 		conn->stateFlags.ready.localReady = true;

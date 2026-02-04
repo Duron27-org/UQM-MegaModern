@@ -102,7 +102,9 @@ int TFB_ReInitGraphics(int driver, int flags, int width, int height,
 		SDL_ShowCursor(SDL_DISABLE);
 	}
 	else
+	{
 		SDL_ShowCursor(SDL_ENABLE);
+	}
 
 	return result;
 }

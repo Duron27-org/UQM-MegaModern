@@ -75,14 +75,18 @@ bool luaUqm_comm_init(const luaUqm_custom_Function* customFuncs,
 		// Get the name of the script.
 		scriptFileName = LoadScriptInstance(scriptRes);
 		if (scriptFileName == NULL)
+		{
 			return false;
+		}
 
 		// Load the script.
 		loadOk = luaUqm_loadScript(luaUqm_commState, contentDir,
 								   scriptFileName);
 		ReleaseScriptResData(scriptFileName);
 		if (!loadOk)
+		{
 			return false;
+		}
 
 		// Call the script.
 		luaUqm_callStackFunction(luaUqm_commState);
@@ -179,7 +183,9 @@ char* luaUqm_comm_stringInterpolate(const char* str)
 	bufLen = 2048;
 	buf = (char*)HMalloc(bufLen);
 	if (buf == NULL)
+	{
 		return NULL;
+	}
 
 	strPtr = str;
 	bufPtr = buf;
@@ -193,7 +199,9 @@ char* luaUqm_comm_stringInterpolate(const char* str)
 
 		startTag = strstr(strPtr, "<%");
 		if (startTag == NULL)
+		{
 			break;
+		}
 		luaStart = startTag + 2;
 
 		// Store the string before the '<%'.
@@ -289,7 +297,9 @@ out:
 			// function worry about the impending memory shortage.
 		}
 		else
+		{
 			buf = newBuf;
+		}
 	}
 
 	return buf;

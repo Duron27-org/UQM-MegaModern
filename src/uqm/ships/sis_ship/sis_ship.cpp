@@ -206,7 +206,9 @@ static void
 SetCustomShipData(RACE_DESC* pRaceDesc, const CustomShipData_t* data)
 {
 	if (pRaceDesc->data == data)
+	{
 		return; // no-op
+	}
 
 	if (pRaceDesc->data) // Out with the old
 	{
@@ -231,7 +233,9 @@ sis_hyper_preprocess(ELEMENT* ElementPtr)
 	STARSHIP* StarShipPtr;
 
 	if (ElementPtr->state_flags & APPEARING)
+	{
 		ElementPtr->velocity = GLOBAL(velocity);
+	}
 
 	AccelerateDirection = 0;
 
@@ -279,11 +283,17 @@ LeaveAutoPilot:
 		udx = (GLOBAL(autopilot)).x - universe.x;
 		udy = -((GLOBAL(autopilot)).y - universe.y);
 		if ((dx = (uqm::SIZE)udx) < 0)
+		{
 			dx = -dx;
+		}
 		if ((dy = (uqm::SIZE)udy) < 0)
+		{
 			dy = -dy;
+		}
 		if (dx <= RES_SCALE(1) && dy <= RES_SCALE(1))
+		{
 			goto LeaveAutoPilot;
+		}
 
 		facing = NORMALIZE_FACING(ANGLE_TO_FACING(ARCTAN(udx, udy)));
 
@@ -296,7 +306,9 @@ LeaveAutoPilot:
 								 + ANGLE_TO_FACING(QUADRANT)
 								 - facing)
 				> ANGLE_TO_FACING(HALF_CIRCLE))
+			{
 				goto LeaveAutoPilot;
+			}
 
 			facing = StarShipPtr->ShipFacing;
 		}
@@ -347,16 +359,22 @@ LeaveAutoPilot:
 			StarShipPtr->RaceDescPtr->characteristics.thrust_increment);
 
 		if ((dist = square_root((long)udx * udx + (long)udy * udy)) == 0)
+		{
 			dist = 1; /* prevent divide by zero */
+		}
 
 		speed = square_root((long)dx * dx + (long)dy * dy);
 		if (AccelerateDirection < 0)
 		{
 			dy = (speed / velocity_increment - 1) * velocity_increment;
 			if (dy < speed - velocity_increment)
+			{
 				dy = speed - velocity_increment;
+			}
 			if ((speed = dy) < 0)
+			{
 				speed = 0;
+			}
 
 			StarShipPtr->cur_status_flags &= ~SHIP_AT_MAX_SPEED;
 		}
@@ -372,7 +390,9 @@ LeaveAutoPilot:
 			dy = (speed / velocity_increment + 1)
 			   * velocity_increment;
 			if (dy < speed + velocity_increment)
+			{
 				dy = speed + velocity_increment;
+			}
 			if ((speed = dy) > max_velocity)
 			{
 				speed = max_velocity;
@@ -469,9 +489,13 @@ spawn_point_defense(ELEMENT* ElementPtr)
 				delta_x = ObjectPtr->next.location.x - ShipPtr->next.location.x;
 				delta_y = ObjectPtr->next.location.y - ShipPtr->next.location.y;
 				if (delta_x < 0)
+				{
 					delta_x = -delta_x;
+				}
 				if (delta_y < 0)
+				{
 					delta_y = -delta_y;
+				}
 				delta_x = WORLD_TO_DISPLAY(delta_x);
 				delta_y = WORLD_TO_DISPLAY(delta_y);
 				if ((uqm::UWORD)delta_x <= LASER_RANGE && (uqm::UWORD)delta_y <= LASER_RANGE && (uqm::UWORD)delta_x * (uqm::UWORD)delta_x + (uqm::UWORD)delta_y * (uqm::UWORD)delta_y <= LASER_RANGE * LASER_RANGE)
@@ -484,7 +508,9 @@ spawn_point_defense(ELEMENT* ElementPtr)
 						if (!DeltaEnergy(ShipPtr,
 										 -(StarShipPtr->RaceDescPtr->characteristics.special_energy_cost
 										   << 2)))
+						{
 							break;
+						}
 
 						ProcessSound(SetAbsSoundIndex(
 										 /* POINT_DEFENSE_LASER */
@@ -613,17 +639,23 @@ blaster_preprocess(ELEMENT* ElementPtr)
 			break;
 		case BLASTER_DAMAGE * 3:
 			if (GetFrameIndex(ElementPtr->current.image.frame) < 19)
+			{
 				ElementPtr->next.image.frame =
 					IncFrameIndex(ElementPtr->current.image.frame);
+			}
 			else
+			{
 				ElementPtr->next.image.frame =
 					SetAbsFrameIndex(ElementPtr->current.image.frame, 16);
+			}
 			ElementPtr->state_flags |= CHANGING;
 			break;
 	}
 
 	if (LONIBBLE(ElementPtr->turn_wait))
+	{
 		--ElementPtr->turn_wait;
+	}
 	else if ((wait = HINIBBLE(ElementPtr->turn_wait)))
 	{
 		uqm::COUNT facing;
@@ -631,7 +663,9 @@ blaster_preprocess(ELEMENT* ElementPtr)
 		facing = NORMALIZE_FACING(ANGLE_TO_FACING(
 			GetVelocityTravelAngle(&ElementPtr->velocity)));
 		if (TrackShip(ElementPtr, &facing) > 0)
+		{
 			SetVelocityVector(&ElementPtr->velocity, BLASTER_SPEED_BOOL, facing);
+		}
 
 		ElementPtr->turn_wait = MAKE_BYTE(wait, wait);
 	}
@@ -697,9 +731,13 @@ sis_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 					 && lpEvalDesc->which_turn <= 2)
 					|| (ObjectsOfConcern[ENEMY_SHIP_INDEX].ObjectPtr != NULL
 						&& ObjectsOfConcern[ENEMY_SHIP_INDEX].which_turn <= 4)))
+			{
 				StarShipPtr->ship_input_state |= SPECIAL;
+			}
 			else
+			{
 				StarShipPtr->ship_input_state &= ~SPECIAL;
+			}
 			lpEvalDesc->ObjectPtr = NULL;
 		}
 		else if (MANEUVERABILITY(&StarShipPtr->RaceDescPtr->cyborg_control)
@@ -711,7 +749,9 @@ sis_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 					 || (lpEvalDesc->ObjectPtr->mass_points >= 4
 						 && lpEvalDesc->which_turn == 2
 						 && ObjectsOfConcern[ENEMY_SHIP_INDEX].which_turn > 16)))
+		{
 			lpEvalDesc->MoveState = PURSUE;
+		}
 	}
 
 	ship_intelligence(ShipPtr, ObjectsOfConcern, ConcernCounter);
@@ -763,12 +803,16 @@ InitWeaponSlots(RACE_DESC* RaceDescPtr, const uqm::BYTE* ModuleSlots)
 		bool IfHard = DIF_HARD && (i == 1 || i == 2) ? true : false;
 
 		if (i == 3)
+		{
 			i = NUM_MODULE_SLOTS - 1;
+		}
 
 		which_gun = ModuleSlots[(NUM_MODULE_SLOTS - 1) - i];
 
 		if (which_gun < GUN_WEAPON || which_gun > CANNON_WEAPON)
+		{
 			continue; /* not a gun */
+		}
 
 		which_gun -= GUN_WEAPON - 1;
 		RaceDescPtr->characteristics.weapon_energy_cost +=
@@ -783,11 +827,17 @@ InitWeaponSlots(RACE_DESC* RaceDescPtr, const uqm::BYTE* ModuleSlots)
 		lpMB->life = BLASTER_LIFE + ((BLASTER_LIFE >> 2) * (which_gun - 1));
 
 		if (which_gun == 1)
+		{
 			lpMB->index = 0;
+		}
 		else if (which_gun == 2)
+		{
 			lpMB->index = 9;
+		}
 		else
+		{
 			lpMB->index = 16;
+		}
 
 		switch (i)
 		{
@@ -863,13 +913,17 @@ InitModuleSlots(RACE_DESC* RaceDescPtr, const uqm::BYTE* ModuleSlots)
 				RaceDescPtr->characteristics.energy_wait -=
 					DYNAMO_UNIT_ENERGY_WAIT_DEC;
 				if (RaceDescPtr->characteristics.energy_wait < MIN_ENERGY_WAIT)
+				{
 					RaceDescPtr->characteristics.energy_wait = MIN_ENERGY_WAIT;
+				}
 				break;
 		}
 	}
 
 	if (num_trackers > MAX_TRACKING)
+	{
 		num_trackers = MAX_TRACKING;
+	}
 	RaceDescPtr->characteristics.weapon_energy_cost +=
 		num_trackers * TRACKER_ENERGY_COST;
 	SisData->num_trackers = num_trackers;
@@ -877,7 +931,9 @@ InitModuleSlots(RACE_DESC* RaceDescPtr, const uqm::BYTE* ModuleSlots)
 	{
 		RaceDescPtr->ship_info.ship_flags |= POINT_DEFENSE;
 		if (RaceDescPtr->characteristics.special_energy_cost > MAX_DEFENSE)
+		{
 			RaceDescPtr->characteristics.special_energy_cost = MAX_DEFENSE;
+		}
 	}
 }
 
@@ -991,7 +1047,9 @@ init_sis(void)
 		}
 
 		if (GET_GAME_STATE(CHMMR_BOMB_STATE) == 3)
+		{
 			SET_GAME_STATE(BOMB_CARRIER, 1);
+		}
 	}
 
 	SetCustomShipData(&new_sis_desc, &empty_data);
@@ -1026,8 +1084,10 @@ uninit_sis(RACE_DESC* pRaceDesc)
 	{
 		GLOBAL_SIS(CrewEnlisted) = pRaceDesc->ship_info.crew_level;
 		if (pRaceDesc->ship_info.ship_flags & PLAYER_CAPTAIN)
+		{
 			GLOBAL_SIS(CrewEnlisted)
 			--;
+		}
 	}
 
 	SetCustomShipData(pRaceDesc, NULL);

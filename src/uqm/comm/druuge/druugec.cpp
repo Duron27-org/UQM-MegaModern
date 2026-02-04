@@ -40,7 +40,7 @@ static LOCDATA druuge_desc =
 		BLACK_COLOR_INIT, /* AlienTextBColor */
 		{0, 0}, /* AlienTextBaseline */
 		0,
- /* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
+		/* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
 		ALIGN_CENTER, /* AlienTextAlign */
 		VALIGN_MIDDLE, /* AlienTextValign */
 		DRUUGE_COLOR_MAP, /* AlienColorMap */
@@ -224,12 +224,18 @@ ExitConversation(RESPONSE_REF R)
 				if (SlaveryCount > MAX_SOLD && PreviousSlaves <= MAX_SOLD)
 				{
 					if (PreviousSlaves > MIN_SOLD)
+					{
 						GLOBAL(CrewCost) += (22 - 7);
+					}
 					else
+					{
 						GLOBAL(CrewCost) += 22;
+					}
 				}
 				else if (SlaveryCount > MIN_SOLD && PreviousSlaves <= MIN_SOLD)
+				{
 					GLOBAL(CrewCost) += 7;
+				}
 
 				SET_GAME_STATE(CREW_SOLD_TO_DRUUGE0, lowByte(SlaveryCount));
 				SET_GAME_STATE(CREW_SOLD_TO_DRUUGE1, highByte(SlaveryCount));
@@ -246,9 +252,13 @@ ExitConversation(RESPONSE_REF R)
 			}
 		}
 		else if (GET_GAME_STATE(GLOBAL_FLAGS_AND_DATA) & (1 << 6))
+		{
 			NPCPhrase(GOODBYE_FROM_BOMB_PLANET);
+		}
 		else
+		{
 			NPCPhrase(GOODBYE_FROM_SPACE);
+		}
 	}
 	else /* if (R == then_we_take_bomb) */
 	{
@@ -268,11 +278,17 @@ Buy(RESPONSE_REF R)
 	{
 		NPCPhrase(READY_TO_SELL);
 		if (!GET_GAME_STATE(ROSY_SPHERE))
+		{
 			NPCPhrase(HAVE_SPHERE);
+		}
 		if (!GET_GAME_STATE(WIMBLIS_TRIDENT_ON_SHIP))
+		{
 			NPCPhrase(HAVE_ART_1);
+		}
 		if (!GET_GAME_STATE(GLOWING_ROD_ON_SHIP))
+		{
 			NPCPhrase(HAVE_ART_2);
+		}
 		NPCPhrase(SHIPS_AND_FUEL);
 
 		SET_GAME_STATE(KNOW_DRUUGE_SLAVERS, 3);
@@ -281,9 +297,13 @@ Buy(RESPONSE_REF R)
 	{
 #define SHIP_CREW_COST 100
 		if (GLOBAL_SIS(CrewEnlisted) < SHIP_CREW_COST)
+		{
 			NPCPhrase(NOT_ENOUGH_CREW);
+		}
 		else if (EscortFeasibilityStudy(DRUUGE_SHIP) == 0)
+		{
 			NPCPhrase(NOT_ENOUGH_ROOM);
+		}
 		else
 		{
 			DeltaSISGauges(-SHIP_CREW_COST, 0, 0);
@@ -297,7 +317,9 @@ Buy(RESPONSE_REF R)
 	else if (PLAYER_SAID(R, buy_rosy_sphere))
 	{
 		if (GLOBAL_SIS(CrewEnlisted) < ARTIFACT_CREW_COST)
+		{
 			NPCPhrase(NOT_ENOUGH_CREW);
+		}
 		else
 		{
 			DeltaSISGauges(-ARTIFACT_CREW_COST, 0, 0);
@@ -311,7 +333,9 @@ Buy(RESPONSE_REF R)
 	else if (PLAYER_SAID(R, buy_art_1))
 	{
 		if (GLOBAL_SIS(CrewEnlisted) < ARTIFACT_CREW_COST)
+		{
 			NPCPhrase(NOT_ENOUGH_CREW);
+		}
 		else
 		{
 			DeltaSISGauges(-ARTIFACT_CREW_COST, 0, 0);
@@ -324,7 +348,9 @@ Buy(RESPONSE_REF R)
 	else if (PLAYER_SAID(R, buy_art_2))
 	{
 		if (GLOBAL_SIS(CrewEnlisted) < ARTIFACT_CREW_COST)
+		{
 			NPCPhrase(NOT_ENOUGH_CREW);
+		}
 		else
 		{
 			DeltaSISGauges(-ARTIFACT_CREW_COST, 0, 0);
@@ -338,7 +364,9 @@ Buy(RESPONSE_REF R)
 	{
 #define FUEL_CREW_COST 10
 		if (GLOBAL_SIS(CrewEnlisted) < FUEL_CREW_COST)
+		{
 			NPCPhrase(NOT_ENOUGH_CREW);
+		}
 		else
 		{
 			DeltaSISGauges(-FUEL_CREW_COST,
@@ -351,11 +379,17 @@ Buy(RESPONSE_REF R)
 
 	Response(buy_druuge_ship, Buy);
 	if (!GET_GAME_STATE(ROSY_SPHERE))
+	{
 		Response(buy_rosy_sphere, Buy);
+	}
 	if (!GET_GAME_STATE(WIMBLIS_TRIDENT_ON_SHIP))
+	{
 		Response(buy_art_1, Buy);
+	}
 	if (!GET_GAME_STATE(GLOWING_ROD_ON_SHIP))
+	{
 		Response(buy_art_2, Buy);
+	}
 	Response(buy_fuel, Buy);
 	Response(done_buying, TradeWorld);
 }
@@ -476,14 +510,22 @@ DoTransaction(RESPONSE_REF R)
 			AddEscortShips(DRUUGE_SHIP, ships_to_trade);
 
 			if (ship_slots >= ships_to_trade)
+			{
 				NPCPhrase(DEAL_FOR_STATED_SHIPS);
+			}
 			else if (ship_slots == 0)
+			{
 				NPCPhrase(DEAL_FOR_NO_SHIPS);
+			}
 			else
+			{
 				NPCPhrase(DEAL_FOR_LESS_SHIPS);
+			}
 
 			if (trade_gas)
+			{
 				NPCPhrase(YOU_ALSO_GET);
+			}
 		}
 
 		if (trade_gas)
@@ -528,15 +570,25 @@ DoTransaction(RESPONSE_REF R)
 			NPCPhrase(FUEL1);
 
 			if (f >= 250)
+			{
 				NPCPhrase(HIDEOUS_DEAL);
+			}
 			else if (f >= 100)
+			{
 				NPCPhrase(BAD_DEAL);
+			}
 			else if (f >= 50)
+			{
 				NPCPhrase(FAIR_DEAL);
+			}
 			else if (f >= 10)
+			{
 				NPCPhrase(GOOD_DEAL);
+			}
 			else
+			{
 				NPCPhrase(FINE_DEAL);
+			}
 		}
 	}
 }
@@ -547,12 +599,16 @@ Sell(RESPONSE_REF R)
 	RESPONSE_FUNC RespFunc;
 
 	if (PLAYER_SAID(R, want_to_sell))
+	{
 		NPCPhrase(READY_TO_BUY);
+	}
 	else if (PLAYER_SAID(R, no_way)
 			 || PLAYER_SAID(R, way))
 	{
 		if (PLAYER_SAID(R, no_way))
+		{
 			NPCPhrase(OK_REGULAR_DEAL);
+		}
 		else
 		{
 			NPCPhrase(OK_HERES_SPHERE);
@@ -573,23 +629,37 @@ Sell(RESPONSE_REF R)
 	if (!GET_GAME_STATE(ROSY_SPHERE))
 	{
 		if ((DIF_HARD && GET_GAME_STATE(HM_ENCOUNTERS) & 1 << READY_TO_BARGAIN) || !DIF_HARD)
+		{
 			RespFunc = (RESPONSE_FUNC)Trade;
+		}
 		else
+		{
 			RespFunc = (RESPONSE_FUNC)Sell;
+		}
 	}
 	else
+	{
 		RespFunc = (RESPONSE_FUNC)Sell;
+	}
 	if (GET_GAME_STATE(MAIDENS_ON_SHIP))
+	{
 		Response(sell_maidens, RespFunc);
+	}
 	if ((GET_GAME_STATE(EGG_CASE0_ON_SHIP)
 		 || GET_GAME_STATE(EGG_CASE1_ON_SHIP)
 		 || GET_GAME_STATE(EGG_CASE2_ON_SHIP))
 		&& GET_GAME_STATE(FRAGMENTS_BOUGHT) < 2)
+	{
 		Response(sell_fragments, RespFunc);
+	}
 	if (GET_GAME_STATE(BURV_BROADCASTERS_ON_SHIP))
+	{
 		Response(sell_caster, RespFunc);
+	}
 	if (GET_GAME_STATE(PORTAL_SPAWNER_ON_SHIP))
+	{
 		Response(sell_spawner, RespFunc);
+	}
 	Response(done_selling, TradeWorld);
 }
 
@@ -597,7 +667,9 @@ static void
 ExplainSlaveTrade(RESPONSE_REF R)
 {
 	if (PLAYER_SAID(R, want_to_buy))
+	{
 		NPCPhrase(WE_SELL_FOR_CREW);
+	}
 	else if (PLAYER_SAID(R, isnt_this_slave_trading))
 	{
 		NPCPhrase(NO_SLAVE_TRADE);
@@ -656,11 +728,17 @@ TradeWorld(RESPONSE_REF R)
 		DISABLE_PHRASE(whats_up_at_trade_world);
 	}
 	else if (PLAYER_SAID(R, done_selling))
+	{
 		NPCPhrase(OK_DONE_SELLING);
+	}
 	else if (PLAYER_SAID(R, done_buying))
+	{
 		NPCPhrase(OK_DONE_BUYING);
+	}
 	else if (PLAYER_SAID(R, i_will_never_trade_crew))
+	{
 		NPCPhrase(YOUR_LOSS);
+	}
 
 	if (PHRASE_ENABLED(whats_up_at_trade_world))
 	{
@@ -668,9 +746,13 @@ TradeWorld(RESPONSE_REF R)
 	}
 	Response(want_to_sell, Sell);
 	if (GET_GAME_STATE(KNOW_DRUUGE_SLAVERS) == 3)
+	{
 		Response(want_to_buy, Buy);
+	}
 	else
+	{
 		Response(want_to_buy, ExplainSlaveTrade);
+	}
 	Response(bye, ExitConversation);
 }
 
@@ -832,9 +914,13 @@ Intro(void)
 			&& !GET_GAME_STATE(SCANNED_FRAGMENTS))
 		{
 			if (GET_GAME_STATE(FRAGMENTS_BOUGHT) < 2)
+			{
 				NPCPhrase(SCAN_FRAGMENTS);
+			}
 			else
+			{
 				NPCPhrase(ENOUGH_FRAGMENTS);
+			}
 			SET_GAME_STATE(SCANNED_FRAGMENTS, 1);
 		}
 		if (GET_GAME_STATE(BURV_BROADCASTERS_ON_SHIP)
@@ -855,7 +941,9 @@ Intro(void)
 	else if (GET_GAME_STATE(GLOBAL_FLAGS_AND_DATA) & (1 << 6))
 	{
 		if (GET_GAME_STATE(BOMB_VISITS))
+		{
 			NPCPhrase(SUBSEQ_BOMB_WORLD_HELLO);
+		}
 		else
 		{
 			NPCPhrase(INIT_BOMB_WORLD_HELLO);

@@ -121,7 +121,7 @@ void BoxUnion(RECT* pr1, RECT* pr2, RECT* punion)
 
 
 #if NEVER // FIXME - I think this is broken, but keeping it around for reference
-		  // FIXME - just in case.
+	// FIXME - just in case.
 
 #if 1 /* alter based on 0 widths */
 
@@ -149,7 +149,9 @@ void BoxUnion(RECT* pr1, RECT* pr2, RECT* punion)
 	x2 = pr2->corner.x;
 	w2 = pr2->extent.width;
 	if ((delta = x1 - x2) >= 0)
+	{
 		w1 += delta;
+	}
 	else
 	{
 		w2 -= delta;
@@ -161,7 +163,9 @@ void BoxUnion(RECT* pr1, RECT* pr2, RECT* punion)
 	y2 = pr2->corner.y;
 	h2 = pr2->extent.height;
 	if ((delta = y1 - y2) >= 0)
+	{
 		h1 += delta;
+	}
 	else
 	{
 		h2 -= delta;
@@ -169,9 +173,13 @@ void BoxUnion(RECT* pr1, RECT* pr2, RECT* punion)
 	}
 
 	if ((delta = w1 - w2) > 0)
+	{
 		w2 += delta;
+	}
 	if ((delta = h1 - h2) > 0)
+	{
 		h2 += delta;
+	}
 #endif
 
 	punion->corner.x = x2;

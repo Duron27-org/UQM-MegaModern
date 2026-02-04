@@ -125,7 +125,11 @@ loadMainMenuMusic(uqm::BYTE selector)
 int num_orbit_themes(void)
 {
 	if (VolasPackPresent)
+	{
 		return NUM_ORBIT_THEMES;
+	}
 	else
+	{
 		return NUM_ORBIT_THEMES - 1;
+	}
 }

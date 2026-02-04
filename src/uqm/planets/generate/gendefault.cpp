@@ -57,7 +57,9 @@ bool GenerateDefault_initNpcs(SOLARSYS_STATE* solarSys)
 	}
 
 	if (SpaceMusicOK)
+	{
 		findRaceSOI();
+	}
 
 	(void)solarSys;
 	return true;
@@ -237,7 +239,9 @@ bool GenerateDefault_landerReport(SOLARSYS_STATE* solarSys)
 	PLANET_INFO* planetInfo = &solarSys->SysInfo.PlanetInfo;
 
 	if (!planetInfo->DiscoveryString)
+	{
 		return false;
+	}
 
 	runLanderReport();
 
@@ -257,7 +261,9 @@ bool GenerateDefault_landerReportCycle(SOLARSYS_STATE* solarSys)
 	PLANET_INFO* planetInfo = &solarSys->SysInfo.PlanetInfo;
 
 	if (!planetInfo->DiscoveryString)
+	{
 		return false;
+	}
 
 	runLanderReport();
 	// Advance to the next report
@@ -300,7 +306,9 @@ void GeneratePlanets(SOLARSYS_STATE* solarSys)
 				if (byte_val < 0x00FF * 25 / 100)
 				{
 					if (byte_val < 0x00FF * 5 / 100)
+					{
 						++num_moons;
+					}
 					++num_moons;
 				}
 				break;
@@ -312,7 +320,9 @@ void GeneratePlanets(SOLARSYS_STATE* solarSys)
 						if (byte_val < 0x00FF * 50 / 100)
 						{
 							if (byte_val < 0x00FF * 25 / 100)
+							{
 								++num_moons;
+							}
 							++num_moons;
 						}
 						++num_moons;
@@ -339,21 +349,27 @@ GenerateWorlds(uqm::BYTE whichType)
 		planet = FIRST_LARGE_ROCKY_WORLD + RandomContext_Random(SysGenRNG) % (NUMBER_OF_LARGE_ROCKY_WORLDS - 2);
 		// Skip over rainbow_world and shattered_world, which are adjacent.
 		if (planet >= RAINBOW_WORLD)
+		{
 			planet += 2;
+		}
 	}
 	else if (whichType & ALL_ROCKY)
 	{
 		planet = FIRST_ROCKY_WORLD + RandomContext_Random(SysGenRNG) % (NUMBER_OF_ROCKY_WORLDS - 2);
 		// Skip over rainbow_world and shattered_world, which are adjacent.
 		if (planet >= RAINBOW_WORLD)
+		{
 			planet += 2;
+		}
 	}
 	else if (whichType & ONLY_LARGE)
 	{
 		planet = FIRST_LARGE_ROCKY_WORLD + RandomContext_Random(SysGenRNG) % (NUMBER_OF_LARGE_ROCKY_WORLDS + NUMBER_OF_GAS_GIANTS - 2);
 		// Skip over rainbow_world and shattered_world, which are adjacent.
 		if (planet >= RAINBOW_WORLD)
+		{
 			planet += 2;
+		}
 	}
 	else if (whichType & ONLY_GAS)
 	{
@@ -374,13 +390,19 @@ void GenerateGasGiantRanged(SOLARSYS_STATE* solarSys)
 	for (i = 0; i < pSunDesc->NumPlanets; i++)
 	{
 		if (solarSys->PlanetDesc[i].radius >= DWARF_GASG_DIST)
+		{
 			break;
+		}
 	}
 
 	if (i == pSunDesc->NumPlanets)
+	{
 		i = rand % (pSunDesc->NumPlanets);
+	}
 	else
+	{
 		i += rand % (pSunDesc->NumPlanets - i);
+	}
 	pSunDesc->PlanetByte = i;
 	pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
 
@@ -445,9 +467,13 @@ GenerateMinPlanets(uqm::BYTE min)
 	const uqm::BYTE max = MAX_GEN_PLANETS + 1;
 
 	if (min == 0)
+	{
 		min = 1;
+	}
 	if (min >= MAX_GEN_PLANETS)
+	{
 		min = MAX_GEN_PLANETS;
+	}
 
 	return RandomContext_Random(SysGenRNG) % (max - min) + min;
 }
@@ -483,7 +509,9 @@ check_yehat_rebellion(void)
 	// TRANSLATION: "If the civil war has not started yet, or the player
 	//   battled a ship -- bail."
 	if (!GET_GAME_STATE(YEHAT_CIVIL_WAR) || EncounterRace >= 0)
+	{
 		return; // not this time
+	}
 
 	// Send Yehat groups to flee the system, but only if the player
 	// has actually talked to a ship.

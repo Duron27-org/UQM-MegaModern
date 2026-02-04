@@ -104,7 +104,9 @@ get_current_music_pos(MUSIC_REF MusicRef)
 	//uqm::CHAR_T *filename;
 
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+	{
 		return 0;
+	}
 
 	if (MusicRef == curMusicRef || MusicRef == (MUSIC_REF)~0)
 	{
@@ -126,10 +128,14 @@ get_current_music_pos(MUSIC_REF MusicRef)
 		UnlockMutex(soundSource[MUSIC_SOURCE].stream_mutex);
 	}
 	else
+	{
 		return 0;
+	}
 
 	if (pos > (uqm::DWORD)length)
+	{
 		pos = 0;
+	}
 
 	return pos;
 }
@@ -146,7 +152,9 @@ get_current_music_filename(MUSIC_REF MusicRef)
 	uqm::CHAR_T* filename;
 
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+	{
 		return 0;
+	}
 
 	if (MusicRef == curMusicRef || MusicRef == (MUSIC_REF)~0)
 	{
@@ -157,7 +165,9 @@ get_current_music_filename(MUSIC_REF MusicRef)
 		return filename;
 	}
 	else
+	{
 		return 0;
+	}
 }
 
 uqm::CHAR_T*
@@ -182,7 +192,9 @@ get_current_music_filename_hash(MUSIC_REF MusicRef)
 	uint32 filename_hash;
 
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+	{
 		return 0;
+	}
 
 	if (MusicRef == curMusicRef || MusicRef == (MUSIC_REF)~0)
 	{
@@ -193,7 +205,9 @@ get_current_music_filename_hash(MUSIC_REF MusicRef)
 		return filename_hash;
 	}
 	else
+	{
 		return 0;
+	}
 }
 
 uint32
@@ -220,7 +234,9 @@ void snd_PlaySpeech(MUSIC_REF SpeechRef)
 void snd_StopSpeech(void)
 {
 	if (!curSpeechRef)
+	{
 		return;
+	}
 
 	LockMutex(soundSource[SPEECH_SOURCE].stream_mutex);
 	StopStream(SPEECH_SOURCE);
@@ -244,7 +260,9 @@ void SetMusicVolume(uqm::COUNT Volume)
 char* CheckMusicResName(char* fileName)
 {
 	if (!fileExists2(contentDir, fileName))
+	{
 		log_add(log_Warning, "Requested track '%s' not found.", fileName);
+	}
 	return fileName;
 }
 
@@ -256,7 +274,9 @@ void* _GetMusicData(uio_Stream* fp, uqm::DWORD length)
 	char filename[256];
 
 	if (!_cur_resfile_name)
+	{
 		return NULL;
+	}
 
 	strncpy(filename, _cur_resfile_name, sizeof(filename) - 1);
 	filename[sizeof(filename) - 1] = '\0';
@@ -295,7 +315,9 @@ bool _ReleaseMusicData(void* data)
 	TFB_SoundSample* sample;
 
 	if (pmus == NULL)
+	{
 		return (false);
+	}
 
 	sample = *pmus;
 	assert(sample != 0);
@@ -326,11 +348,15 @@ void SetMusicPosition(void)
 
 	if (!optMusicResume || GLOBAL(CurrentActivity) & CHECK_ABORT
 		|| !PLRPlaying((MUSIC_REF)~0))
+	{
 		return;
+	}
 
 	temp.filename_hash = PLRGetFilenameHash();
 	if (!temp.filename_hash)
+	{
 		return;
+	}
 
 	temp.position = PLRGetPos();
 	temp.last_played = GetTimeCounter();
@@ -365,19 +391,27 @@ GetMusicPosition()
 	int i;
 
 	if (!optMusicResume || GLOBAL(CurrentActivity) & CHECK_ABORT)
+	{
 		return 0;
+	}
 
 	filename_hash = PLRGetFilenameHash();
 	if (!filename_hash)
+	{
 		return 0;
+	}
 
 	for (i = 0; i < PATH_MAX; ++i)
 	{
 		if (!resumeMusicArray[i].filename_hash)
+		{
 			return 0;
+		}
 
 		if (resumeMusicArray[i].filename_hash == filename_hash)
+		{
 			return resumeMusicArray[i].position;
+		}
 	}
 
 	return 0; // Shouldn't happen, music array completely full
@@ -392,30 +426,42 @@ bool OkayToResume(void)
 	int i;
 
 	if (!optMusicResume || GLOBAL(CurrentActivity) & CHECK_ABORT)
+	{
 		return false;
+	}
 
 	filename_hash = PLRGetFilenameHash();
 	if (!filename_hash)
+	{
 		return false;
+	}
 
 	for (i = 0; i < PATH_MAX; ++i)
 	{
 		if (resumeMusicArray[i].filename_hash == filename_hash)
+		{
 			break;
+		}
 	}
 
 	if (i == PATH_MAX)
+	{
 		return false;
+	}
 
 	if (!resumeMusicArray[i].last_played
 		|| !resumeMusicArray[i].position)
+	{
 		return false;
+	}
 
 	TimeIn = GetTimeCounter();
 	difference = TimeIn - resumeMusicArray[i].last_played;
 
 	if (optMusicResume == 2 || (difference < FIVE_MINUTES))
+	{
 		return true;
+	}
 
 	return false;
 }

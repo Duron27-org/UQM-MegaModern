@@ -1245,7 +1245,9 @@ static inline bool
 IsHomeworldKnown(uqm::DWORD homeworld)
 {
 	if (homeworld > 18)
+	{
 		return false;
+	}
 
 	return (bool)(GET_GAME_STATE(KNOW_HOMEWORLD) & (1 << homeworld));
 }
@@ -1256,7 +1258,9 @@ SetHomeworldKnown(uqm::DWORD homeworld)
 	uqm::DWORD current;
 
 	if (IsHomeworldKnown(homeworld))
+	{
 		return;
+	}
 
 	current = GET_GAME_STATE(KNOW_HOMEWORLD);
 	current |= 1 << homeworld;

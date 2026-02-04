@@ -33,13 +33,19 @@ void Netplay_NotifyAll_setTeamName(MELEE_STATE* pMS, size_t playerNr)
 		NetConnection* conn = netConnections[playerI];
 
 		if (conn == NULL)
+		{
 			continue;
+		}
 
 		if (!NetConnection_isConnected(conn))
+		{
 			continue;
+		}
 
 		if (NetConnection_getState(conn) != NetState_inSetup)
+		{
 			continue;
+		}
 
 		Netplay_Notify_setTeamName(conn, playerNr, name, len);
 	}
@@ -57,13 +63,19 @@ void Netplay_NotifyAll_setFleet(MELEE_STATE* pMS, size_t playerNr)
 		NetConnection* conn = netConnections[playerI];
 
 		if (conn == NULL)
+		{
 			continue;
+		}
 
 		if (!NetConnection_isConnected(conn))
+		{
 			continue;
+		}
 
 		if (NetConnection_getState(conn) != NetState_inSetup)
+		{
 			continue;
+		}
 
 		Netplay_Notify_setFleet(conn, playerNr, ships, MELEE_FLEET_SIZE);
 	}
@@ -82,13 +94,19 @@ void Netplay_NotifyAll_setShip(MELEE_STATE* pMS, size_t playerNr, size_t index)
 		NetConnection* conn = netConnections[playerI];
 
 		if (conn == NULL)
+		{
 			continue;
+		}
 
 		if (!NetConnection_isConnected(conn))
+		{
 			continue;
+		}
 
 		if (NetConnection_getState(conn) != NetState_inSetup)
+		{
 			continue;
+		}
 
 		Netplay_Notify_setShip(
 			conn, playerNr, (FleetShipIndex)index, ship);
@@ -118,10 +136,14 @@ void Netplay_NotifyAll_checksum(BattleFrameCounter frameNr, Checksum checksum)
 	{
 		NetConnection* conn = netConnections[player];
 		if (conn == NULL)
+		{
 			continue;
+		}
 
 		if (!NetConnection_isConnected(conn))
+		{
 			continue;
+		}
 
 		Netplay_Notify_checksum(conn, frameNr, checksum);
 	}
@@ -136,10 +158,14 @@ void Netplay_NotifyAll_battleInput(BATTLE_INPUT_STATE input)
 	{
 		NetConnection* conn = netConnections[player];
 		if (conn == NULL)
+		{
 			continue;
+		}
 
 		if (!NetConnection_isConnected(conn))
+		{
 			continue;
+		}
 
 		Netplay_Notify_battleInput(conn, input);
 	}

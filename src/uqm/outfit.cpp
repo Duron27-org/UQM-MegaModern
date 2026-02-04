@@ -60,7 +60,9 @@ InitializeDOSLanderPos(void)
 	POINT temp[MAX_LANDERS] = {LANDER_DOS_PTS};
 
 	if (!IS_DOS)
+	{
 		return;
+	}
 
 	if (lander_pos[0].x != RES_SCALE(temp[0].x))
 	{
@@ -180,7 +182,9 @@ DrawModuleDisplay(MODULES_STATE* modState)
 					   true, MODULE_BACK_COLOR, false, TRANSPARENT);
 	}
 	else
+	{
 		DrawBorder(DEVICE_CARGO_FRAME);
+	}
 
 	// print the "MODULES" title
 	SetContextFont(StarConFont);
@@ -198,7 +202,9 @@ DrawModuleDisplay(MODULES_STATE* modState)
 		uqm::COUNT modIndex = modState->topIndex + i;
 
 		if (modIndex >= modState->count)
+		{
 			break;
+		}
 
 		DrawModuleStatus(modState->list[modIndex], i, false);
 	}
@@ -227,7 +233,9 @@ ManipulateModules(uqm::SIZE NewState)
 	uqm::SIZE NewTop;
 
 	if (!DOS_MENU)
+	{
 		return;
+	}
 
 	modState = &ModuleState;
 	NewTop = modState->topIndex;
@@ -239,7 +247,9 @@ ManipulateModules(uqm::SIZE NewState)
 	}
 
 	if (NewState < NewTop || NewState >= NewTop + MAX_VIS_MODULES)
+	{
 		modState->topIndex = NewState - NewState % MAX_VIS_MODULES;
+	}
 
 	DrawModules(modState, NewState);
 }
@@ -277,7 +287,9 @@ DrawModuleMenuText(RECT* r, int Index)
 	COORD og_baseline_x;
 
 	if (IS_DOS || !strlen(GAME_STRING(TDO_STARBASE_STRING_BASE + Index)))
+	{
 		return;
+	}
 
 	SetContextFont(ModuleFont);
 
@@ -292,7 +304,9 @@ DrawModuleMenuText(RECT* r, int Index)
 		DrawFilledRectangle(&block);
 	}
 	else
+	{
 		DrawBorder(TEXT_LABEL_FRAME);
+	}
 
 	text.baseline.x = r->corner.x + (r->extent.width >> 1);
 	text.baseline.y = r->corner.y + leading - RES_SCALE(1);
@@ -344,7 +358,9 @@ DrawModuleStrings(MENU_STATE* pMS, uqm::BYTE NewModule)
 		//	ClearSISRect (CLEAR_SIS_RADAR); // blinks otherwise
 		SetContextForeGroundColor(MENU_FOREGROUND_COLOR);
 		if (!optCustomBorder)
+		{
 			DrawFilledRectangle(&r); // drawn over anyway
+		}
 	}
 
 	DrawBorder(SIS_RADAR_FRAME);
@@ -412,19 +428,29 @@ DrawModuleStrings(MENU_STATE* pMS, uqm::BYTE NewModule)
 		sprintf(buf, "%u",
 				GLOBAL(ModuleCost[NewModule]) * MODULE_COST_SCALE);
 		if (isPC(optWhichFonts))
+		{
 			SetContextFont(TinyFont);
+		}
 		else
+		{
 			SetContextFont(TinyFontBold);
+		}
 
 		if ((GLOBAL_SIS(ResUnits))
 			>= (uqm::DWORD)((GLOBAL(ModuleCost[NewModule])
 							 * MODULE_COST_SCALE)))
+		{
 			SetContextForeGroundColor(BRIGHT_GREEN_COLOR);
+		}
 		else
+		{
 			SetContextForeGroundColor(BRIGHT_RED_COLOR);
+		}
 
 		if (!IS_DOS)
+		{
 			font_DrawText(&t);
+		}
 	}
 	UnbatchGraphics();
 	SetContext(OldContext);
@@ -455,7 +481,9 @@ DrawEscapePodText(RECT rect)
 	COORD og_baseline_x;
 
 	if (!strlen(GAME_STRING(END_STARBASE_STRING_BASE + 1)))
+	{
 		return;
+	}
 
 	OldFont = SetContextFont(SquareFont);
 	OldColor = SetContextForeGroundColor(BLACK_COLOR);
@@ -517,7 +545,9 @@ DrawNoLandersText(RECT rect)
 	RECT block;
 
 	if (IS_DOS || !strlen(GAME_STRING(END_STARBASE_STRING_BASE)))
+	{
 		return;
+	}
 
 	OldFont = SetContextFont(SquareFont);
 	OldColor = SetContextForeGroundColor(BLACK_COLOR);
@@ -649,15 +679,21 @@ DoInstallModule(MENU_STATE* pMS)
 		default:
 			old_slot_piece = GLOBAL_SIS(ModuleSlots[pMS->delta_item]);
 			if (GET_GAME_STATE(CHMMR_BOMB_STATE) == 3)
+			{
 				FirstItem = NUM_BOMB_MODULES;
+			}
 			LastItem = NUM_MODULE_SLOTS - 1;
 			break;
 	}
 
 	if (NewState < CREW_POD)
+	{
 		FirstItem = LastItem = NewState;
+	}
 	else if (NewState < EMPTY_SLOT)
+	{
 		FirstItem = CREW_POD, LastItem = NUM_PURCHASE_MODULES - 1;
+	}
 
 	if (!pMS->Initialized)
 	{
@@ -718,9 +754,13 @@ DoInstallModule(MENU_STATE* pMS)
 						else
 						{
 							if (old_slot_piece == FUEL_TANK)
+							{
 								DeltaSISGauges(0, -FUEL_TANK_CAPACITY, 0);
+							}
 							else
+							{
 								DeltaSISGauges(0, -HEFUEL_TANK_CAPACITY, 0);
+							}
 						}
 					}
 				}
@@ -748,7 +788,9 @@ DoInstallModule(MENU_STATE* pMS)
 			{
 				new_slot_piece -= EMPTY_SLOT - 1;
 				if (new_slot_piece > CREW_POD)
+				{
 					new_slot_piece = PLANET_LANDER;
+				}
 			}
 			else
 			{
@@ -777,16 +819,22 @@ DoInstallModule(MENU_STATE* pMS)
 				}
 
 				if (new_slot_piece < EMPTY_SLOT)
+				{
 					DeltaSISGauges(UNDEFINED_DELTA, UNDEFINED_DELTA,
 								   -(GLOBAL(ModuleCost[new_slot_piece])
 									 * MODULE_COST_SCALE));
+				}
 				else /* if (old_slot_piece < EMPTY_SLOT) */
+				{
 					DeltaSISGauges(UNDEFINED_DELTA, UNDEFINED_DELTA,
 								   GLOBAL(ModuleCost[old_slot_piece])
 									   * MODULE_COST_SCALE);
+				}
 
 				if (pMS->CurState == PLANET_LANDER || pMS->CurState == EMPTY_SLOT + 3)
+				{
 					DisplayLanders(pMS);
+				}
 				else
 				{
 					DrawShipPiece(pMS->ModuleFrame, new_slot_piece,
@@ -794,7 +842,9 @@ DoInstallModule(MENU_STATE* pMS)
 
 					if (new_slot_piece > TURNING_JETS
 						&& old_slot_piece > TURNING_JETS)
+					{
 						RedistributeFuel();
+					}
 
 					DrawFlagshipStats();
 				}
@@ -807,21 +857,33 @@ DoInstallModule(MENU_STATE* pMS)
 		{
 			pMS->CurState += EMPTY_SLOT - 1;
 			if ((pMS->CurState == EMPTY_SLOT - 1) && pMS->delta_item + 1 > GLOBAL_SIS(NumLanders))
+			{
 				new_slot_piece = old_slot_piece;
+			}
 			if (pMS->CurState < EMPTY_SLOT)
+			{
 				pMS->CurState = EMPTY_SLOT + 3;
+			}
 			else if (pMS->CurState > EMPTY_SLOT + 2)
+			{
 				pMS->CurState = EMPTY_SLOT + 2;
+			}
 			if (cancel)
+			{
 				new_slot_piece = pMS->CurState;
+			}
 			goto InitFlash;
 		}
 		else if (!cancel)
 		{
 			if ((new_slot_piece == EMPTY_SLOT + 3) && (old_slot_piece == PLANET_LANDER) && (pMS->delta_item < GLOBAL_SIS(NumLanders)))
+			{
 				new_slot_piece = old_slot_piece;
+			}
 			else
+			{
 				pMS->CurState = new_slot_piece;
+			}
 			goto InitFlash;
 		}
 		else
@@ -848,34 +910,46 @@ DoInstallModule(MENU_STATE* pMS)
 				if (PulsedInputState.menu[KEY_MENU_UP])
 				{
 					if (NewState-- == EMPTY_SLOT)
+					{
 						NewState = EMPTY_SLOT + 3;
+					}
 				}
 				else
 				{
 					if (NewState++ == EMPTY_SLOT + 3)
+					{
 						NewState = EMPTY_SLOT;
+					}
 				}
 				NewItem = 0;
 				if (GET_GAME_STATE(CHMMR_BOMB_STATE) == 3)
 				{
 					if (NewState == EMPTY_SLOT + 3)
+					{
 						NewState = PulsedInputState.menu[KEY_MENU_UP] ?
 									   EMPTY_SLOT + 2 :
 									   EMPTY_SLOT;
+					}
 					if (NewState == EMPTY_SLOT + 2)
+					{
 						NewItem = NUM_BOMB_MODULES;
+					}
 				}
 				pMS->delta_item = NewItem;
 			}
 			else if (PulsedInputState.menu[KEY_MENU_LEFT] || PulsedInputState.menu[KEY_MENU_UP])
 			{
 				if (NewItem-- == FirstItem)
+				{
 					NewItem = LastItem;
+				}
 			}
 			else if (PulsedInputState.menu[KEY_MENU_RIGHT] || PulsedInputState.menu[KEY_MENU_DOWN])
 			{
 				if (NewItem++ == LastItem)
+				{
 					NewItem = FirstItem;
+				}
 			}
 		} while (NewState < EMPTY_SLOT
 				 && (GLOBAL(ModuleCost[NewItem]) == 0
@@ -926,7 +1000,9 @@ DoInstallModule(MENU_STATE* pMS)
 					w = LANDER_WIDTH;
 				}
 				else
+				{
 					w = SHIP_PIECE_OFFSET;
+				}
 
 				w *= (NewItem - pMS->delta_item);
 				if (IS_DOS && (NewState == PLANET_LANDER || NewState == EMPTY_SLOT + 3))
@@ -937,7 +1013,9 @@ DoInstallModule(MENU_STATE* pMS)
 											  - RES_SCALE(1);
 				}
 				else
+				{
 					pMS->flash_rect0.corner.x += w;
+				}
 				pMS->flash_rect1.corner.x += w;
 				//pMS->flash_rect2.corner.x += w;
 				pMS->delta_item = NewItem;
@@ -1034,7 +1112,9 @@ InitFlash:
 						lander_pos[pMS->delta_item].y - RES_SCALE(1);
 				}
 				else
+				{
 					pMS->flash_rect0.corner.x += w;
+				}
 				pMS->flash_rect1.corner.x += w;
 				//pMS->flash_rect2.corner.x += w;
 			}
@@ -1078,7 +1158,9 @@ InitFlash:
 					SetFlashRect(&pMS->flash_rect0, true);
 				}
 				else
+				{
 					SetFlashRect(&pMS->flash_rect0, optWhichMenu == OPT_PC);
+				}
 			}
 		}
 	}
@@ -1095,36 +1177,58 @@ ChangeFuelQuantity(void)
 	const uqm::SDWORD minFit = -(uqm::SDWORD)GLOBAL_SIS(FuelOnBoard);
 
 	if (PulsedInputState.menu[KEY_MENU_UP])
+	{
 		incr = FUEL_TANK_SCALE; // +1 Unit
+	}
 	else if (PulsedInputState.menu[KEY_MENU_DOWN])
+	{
 		incr = -FUEL_TANK_SCALE; // -1 Unit
+	}
 	else if (PulsedInputState.menu[KEY_MENU_RIGHT])
+	{
 		incr = (FUEL_TANK_SCALE * 10); // +1 Bar
+	}
 	else if (PulsedInputState.menu[KEY_MENU_LEFT])
+	{
 		incr = -(FUEL_TANK_SCALE * 10); // -1 Bar
+	}
 	else if (PulsedInputState.menu[KEY_MENU_ZOOM_IN])
+	{
 		incr = maxFit; // Fill to max
+	}
 	else if (PulsedInputState.menu[KEY_MENU_ZOOM_OUT])
+	{
 		incr = minFit; // Empty the tanks
+	}
 	else
+	{
 		return;
+	}
 
 	if (PulsedInputState.menu[KEY_MENU_ZOOM_IN]
 		|| PulsedInputState.menu[KEY_MENU_ZOOM_OUT])
+	{
 		PlayMenuSound(MENU_SOUND_INVOKED);
+	}
 
 	// Clamp incr to what we can afford/hold/have.
 	{
 		const uqm::SDWORD maxAfford = GLOBAL_SIS(ResUnits) / GLOBAL(FuelCost);
 
 		if (incr > maxFit)
+		{
 			incr = maxFit; // All we can hold.
+		}
 
 		if (incr > maxAfford * FUEL_TANK_SCALE)
+		{
 			incr = maxAfford * FUEL_TANK_SCALE; // All we can afford.
+		}
 
 		if (incr < minFit)
+		{
 			incr = minFit; // All we have.
+		}
 	}
 
 	if (!incr)
@@ -1160,7 +1264,9 @@ onNamingDone(void)
 bool DoOutfit(MENU_STATE* pMS)
 {
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+	{
 		goto ExitOutfit;
+	}
 
 	OutfitOrShipyard = 2;
 
@@ -1177,7 +1283,9 @@ bool DoOutfit(MENU_STATE* pMS)
 			STAMP s;
 
 			if (!IS_DOS)
+			{
 				ModuleFont = LoadFont(MODULE_FONT);
+			}
 
 			pMS->CurFrame = CaptureDrawable(
 				LoadGraphic(MODULES_PMAP_ANIM));
@@ -1191,9 +1299,13 @@ bool DoOutfit(MENU_STATE* pMS)
 				LoadGraphic(OUTFIT_PMAP_ANIM));
 
 			if (optFlagshipColor == OPT_3DO)
+			{
 				s.frame = SetAbsFrameIndex(s.frame, 1);
+			}
 			else
+			{
 				s.frame = SetAbsFrameIndex(s.frame, 0);
+			}
 
 			SetTransitionSource(NULL);
 			BatchGraphics();
@@ -1213,8 +1325,10 @@ bool DoOutfit(MENU_STATE* pMS)
 
 				which_piece = GLOBAL_SIS(DriveSlots[num_frames]);
 				if (which_piece < EMPTY_SLOT)
+				{
 					DrawShipPiece(pMS->ModuleFrame, which_piece,
 								  num_frames, false);
+				}
 			}
 			for (num_frames = 0; num_frames < NUM_JET_SLOTS;
 				 ++num_frames)
@@ -1223,8 +1337,10 @@ bool DoOutfit(MENU_STATE* pMS)
 
 				which_piece = GLOBAL_SIS(JetSlots[num_frames]);
 				if (which_piece < EMPTY_SLOT)
+				{
 					DrawShipPiece(pMS->ModuleFrame, which_piece,
 								  num_frames, false);
+				}
 			}
 			for (num_frames = 0; num_frames < NUM_MODULE_SLOTS;
 				 ++num_frames)
@@ -1233,8 +1349,10 @@ bool DoOutfit(MENU_STATE* pMS)
 
 				which_piece = GLOBAL_SIS(ModuleSlots[num_frames]);
 				if (which_piece < EMPTY_SLOT)
+				{
 					DrawShipPiece(pMS->ModuleFrame, which_piece,
 								  num_frames, false);
+				}
 			}
 			RedistributeFuel();
 			DisplayLanders(pMS);
@@ -1247,16 +1365,24 @@ bool DoOutfit(MENU_STATE* pMS)
 				s.frame = SetAbsFrameIndex(pMS->ModuleFrame,
 										   SHIELD_LOCATION_IN_MODULE_ANI);
 				if (ShieldFlags & (1 << EARTHQUAKE_DISASTER))
+				{
 					DrawStamp(&s);
+				}
 				s.frame = IncFrameIndex(s.frame);
 				if (ShieldFlags & (1 << BIOLOGICAL_DISASTER))
+				{
 					DrawStamp(&s);
+				}
 				s.frame = IncFrameIndex(s.frame);
 				if (ShieldFlags & (1 << LIGHTNING_DISASTER))
+				{
 					DrawStamp(&s);
+				}
 				s.frame = IncFrameIndex(s.frame);
 				if (ShieldFlags & (1 << LAVASPOT_DISASTER))
+				{
 					DrawStamp(&s);
+				}
 			}
 
 			DrawMenuStateStrings(PM_FUEL, pMS->CurState);
@@ -1295,7 +1421,9 @@ bool DoOutfit(MENU_STATE* pMS)
 		{
 ExitOutfit:
 			if (pMS->CurState < OUTFIT_EXIT)
+			{
 				DrawMenuStateStrings(PM_FUEL, OUTFIT_EXIT);
+			}
 			DestroyDrawable(ReleaseDrawable(pMS->CurFrame));
 			pMS->CurFrame = 0;
 			DestroyDrawable(ReleaseDrawable(pMS->ModuleFrame));
@@ -1303,7 +1431,9 @@ ExitOutfit:
 
 			// Release Fonts
 			if (!IS_DOS)
+			{
 				DestroyFont(ModuleFont);
+			}
 
 			SetMusicPosition();
 
@@ -1343,9 +1473,13 @@ ExitOutfit:
 				DrawMenuStateStrings(PM_FUEL, pMS->CurState);
 				pMS->CurState = EMPTY_SLOT + 2;
 				if (GET_GAME_STATE(CHMMR_BOMB_STATE) != 3)
+				{
 					pMS->delta_item = 0;
+				}
 				else
+				{
 					pMS->delta_item = NUM_BOMB_MODULES;
+				}
 				pMS->first_item.y = 0;
 				pMS->Initialized = 0;
 				DoInstallModule(pMS);
@@ -1353,7 +1487,9 @@ ExitOutfit:
 			case OUTFIT_SAVELOAD:
 				// Clearing FlashRect is not necessary
 				if (!GameOptions())
+				{
 					goto ExitOutfit;
+				}
 				DrawMenuStateStrings(PM_FUEL, pMS->CurState);
 				SetFlashRect(SFR_MENU_3DO, false);
 				break;
@@ -1375,12 +1511,16 @@ ExitOutfit:
 		if (pMS->CurState == OUTFIT_DOFUEL)
 		{
 			if (!optInfiniteFuel)
+			{
 				ChangeFuelQuantity();
+			}
 
 			SleepThread(ONE_SECOND / 30);
 		}
 		else
+		{
 			DoMenuChooser(pMS, PM_FUEL);
+		}
 	}
 
 	if (optInfiniteFuel)
@@ -1389,7 +1529,9 @@ ExitOutfit:
 		RedistributeFuel();
 	}
 	if (optInfiniteRU)
+	{
 		GLOBAL_SIS(ResUnits) = 1000000L;
+	}
 
 	return (true);
 }

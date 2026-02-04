@@ -72,7 +72,9 @@ bool CalculateGravity(ELEMENT* ElementPtr)
 			dy = WRAP_DELTA_Y(dy);
 #ifdef DEBUG_GRAVITY
 			if (TestElementPtr->state_flags & PLAYER_SHIP)
+			{
 				log_add(log_Debug, "\twrap_dx = %d, wrap_dy = %d", dx, dy);
+			}
 #endif /* DEBUG_GRAVITY */
 			abs_dx = dx >= 0 ? dx : -dx;
 			abs_dy = dy >= 0 ? dy : -dy;
@@ -80,8 +82,10 @@ bool CalculateGravity(ELEMENT* ElementPtr)
 			abs_dy = WORLD_TO_DISPLAY(abs_dy);
 #ifdef DEBUG_GRAVITY
 			if (TestElementPtr->state_flags & PLAYER_SHIP)
+			{
 				log_add(log_Debug, "\tdisplay_dx = %d, display_dy = %d",
 						abs_dx, abs_dy);
+			}
 #endif /* DEBUG_GRAVITY */
 			if (abs_dx <= GRAVITY_THRESHOLD
 				&& abs_dy <= GRAVITY_THRESHOLD)
@@ -104,17 +108,23 @@ bool CalculateGravity(ELEMENT* ElementPtr)
 															   * GRAVITY_THRESHOLD)
 												  / dist_squared))
 						== 0)
+					{
 						magnitude = 1;
+					}
 
 #define MAX_MAGNITUDE RES_SCALE(6) // JMS_GFX: Because of the ifdef NEVER this is actually never run. Well, changed it for consistency
 					else if (magnitude > MAX_MAGNITUDE)
+					{
 						magnitude = MAX_MAGNITUDE;
+					}
 					log_add(log_Debug, "magnitude = %u", magnitude);
 #endif /* NEVER */
 
 #ifdef DEBUG_GRAVITY
 					if (TestElementPtr->state_flags & PLAYER_SHIP)
+					{
 						log_add(log_Debug, "dist_squared = %lu", dist_squared);
+					}
 #endif /* DEBUG_GRAVITY */
 					if (TestHasGravity)
 					{

@@ -275,7 +275,9 @@ static void
 animate(ELEMENT* ElementPtr)
 {
 	if (ElementPtr->turn_wait > 0)
+	{
 		--ElementPtr->turn_wait;
+	}
 	else
 	{
 		ElementPtr->next.image.frame =
@@ -361,7 +363,9 @@ initialize_pump_up(ELEMENT* ShipPtr, HELEMENT PumpUpArray[])
 			PumpUpPtr->thrust_wait = 5;
 		}
 		else
+		{
 			PumpUpPtr->thrust_wait = LEVEL_COUNTER;
+		}
 
 		UnlockElement(PumpUpArray[0]);
 	}
@@ -413,8 +417,10 @@ confuse_preprocess_april(ELEMENT* ElementPtr)
 			if (GetFrameIndex(ElementPtr->next.image.frame =
 								  IncFrameIndex(ElementPtr->current.image.frame))
 				== 0)
+			{
 				ElementPtr->next.image.frame =
 					SetRelFrameIndex(ElementPtr->next.image.frame, -8);
+			}
 
 			GetElementStarShip(eptr, &StarShipPtr);
 			StarShipPtr->ship_input_state =
@@ -431,7 +437,9 @@ confuse_preprocess_april(ELEMENT* ElementPtr)
 				ElementPtr->colorCycleIndex++;
 
 				if (ElementPtr->colorCycleIndex == colorTabCount)
+				{
 					ElementPtr->colorCycleIndex = 0;
+				}
 			}
 			else
 			{
@@ -494,8 +502,10 @@ confuse_preprocess(ELEMENT* ElementPtr)
 			if (GetFrameIndex(ElementPtr->next.image.frame =
 								  IncFrameIndex(ElementPtr->current.image.frame))
 				== 0)
+			{
 				ElementPtr->next.image.frame =
 					SetRelFrameIndex(ElementPtr->next.image.frame, -8);
+			}
 
 			GetElementStarShip(eptr, &StarShipPtr);
 			StarShipPtr->ship_input_state =
@@ -682,7 +692,9 @@ melnorme_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 	old_count = StarShipPtr->weapon_counter;
 
 	if (StarShipPtr->weapon_counter == WEAPON_WAIT)
+	{
 		StarShipPtr->weapon_counter = 0;
+	}
 
 	lpEvalDesc = &ObjectsOfConcern[ENEMY_SHIP_INDEX];
 	if (lpEvalDesc->ObjectPtr)
@@ -690,7 +702,9 @@ melnorme_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 		if (StarShipPtr->RaceDescPtr->ship_info.energy_level < SPECIAL_ENERGY_COST
 																   + WEAPON_ENERGY_COST
 			&& !(StarShipPtr->old_status_flags & WEAPON))
+		{
 			lpEvalDesc->MoveState = ENTICE;
+		}
 		else
 		{
 			STARSHIP* EnemyStarShipPtr;
@@ -698,7 +712,9 @@ melnorme_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 			GetElementStarShip(lpEvalDesc->ObjectPtr, &EnemyStarShipPtr);
 			if (!(EnemyStarShipPtr->RaceDescPtr->ship_info.ship_flags
 				  & IMMEDIATE_WEAPON))
+			{
 				lpEvalDesc->MoveState = PURSUE;
+			}
 		}
 	}
 	ship_intelligence(ShipPtr, ObjectsOfConcern, ConcernCounter);
@@ -709,7 +725,9 @@ melnorme_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 				 || StarShipPtr->RaceDescPtr->ship_info.energy_level >= SPECIAL_ENERGY_COST
 																			+ WEAPON_ENERGY_COST)
 				&& !(StarShipPtr->ship_input_state & WEAPON))))
+	{
 		StarShipPtr->ship_input_state ^= WEAPON;
+	}
 
 	StarShipPtr->ship_input_state &= ~SPECIAL;
 	if (StarShipPtr->special_counter == 0

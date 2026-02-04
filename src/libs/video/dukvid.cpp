@@ -255,9 +255,13 @@ dukv_DecodeFrameV3(uint8* src_p, uint32* dst_p, uint32 wb, uint32 hb,
 			for (i = 0; i < 4; ++i, ++d_p)
 			{
 				if (y == 0)
+				{
 					pix = 0;
+				}
 				else
+				{
 					pix = d_p[-w];
+				}
 
 				// get next luma delta
 				delta = deltas->lumas[iVec][iSeq];
@@ -300,7 +304,9 @@ dukv_ReadFrames(TFB_DuckVideoDecoder* dukv)
 	strcat(strcpy(filename, dukv->basename), ".frm");
 
 	if (!(fp = uio_fopen(dukv->basedir, filename, "rb")))
+	{
 		return false;
+	}
 
 	// get number of frames
 	uio_fseek(fp, 0, SEEK_END);
@@ -319,7 +325,9 @@ dukv_ReadFrames(TFB_DuckVideoDecoder* dukv)
 	uio_fclose(fp);
 
 	for (i = 0; i < dukv->cframes; ++i)
+	{
 		dukv->frames[i] = UQM_SwapBE32(dukv->frames[i]);
+	}
 
 	return true;
 }
@@ -334,7 +342,9 @@ dukv_ReadVectors(TFB_DuckVideoDecoder* dukv, uint8* vectors)
 	strcat(strcpy(filename, dukv->basename), ".tbl");
 
 	if (!(fp = uio_fopen(dukv->basedir, filename, "rb")))
+	{
 		return false;
+	}
 
 	ret = uio_fread(vectors, NUM_VEC_ITEMS, NUM_VECTORS, fp);
 	uio_fclose(fp);
@@ -354,12 +364,16 @@ dukv_ReadHeader(TFB_DuckVideoDecoder* dukv, sint32* pl, sint32* pc)
 	strcat(strcpy(filename, dukv->basename), ".hdr");
 
 	if (!(fp = uio_fopen(dukv->basedir, filename, "rb")))
+	{
 		return false;
+	}
 
 	ret = uio_fread(&hdr, sizeof(hdr), 1, fp);
 	uio_fclose(fp);
 	if (!ret)
+	{
 		return false;
+	}
 
 	dukv->version = UQM_SwapBE32(hdr.version);
 	dukv->wb = UQM_SwapBE16(hdr.wb);
@@ -424,7 +438,9 @@ dukv_DecodeVector(uint8* vec, sint32* p, bool is_chroma, sint32* deltas)
 		sint32 d = dukv_make_delta(p, is_chroma, vec[1], vec[2]);
 
 		if (i == citems - 2)
+		{
 			d |= DUCK_END_OF_SEQUENCE;
+		}
 
 		deltas[0] = d;
 		deltas[1] = dukv_make_corr(p, is_chroma, vec[1], vec[2]);
@@ -483,7 +499,9 @@ dukv_RenderFrame(THIS_PTR)
 					This, y * 2 + 1);
 
 				if (IS_HD && y % scale != 0)
+				{
 					dec -= dukv->decoder.w;
+				}
 
 				for (x = 0; x < dukv->decoder.w; ++x, chooseIfHd(++dec, reinterpret_cast<uint32*>(++bufInc)), ++dst0, ++dst1)
 				{
@@ -493,7 +511,9 @@ dukv_RenderFrame(THIS_PTR)
 						++dec;*/
 
 					if (bufInc % scale == 0 && IS_HD)
+					{
 						dec++;
+					}
 
 					pair = *dec;
 					*dst0 = dukv_PixelConv((uint16)(pair >> 16), fmt);
@@ -512,7 +532,9 @@ dukv_RenderFrame(THIS_PTR)
 					This, y * 2 + 1);
 
 				if (IS_HD && y % scale != 0)
+				{
 					dec -= dukv->decoder.w;
+				}
 
 				for (x = 0; x < dukv->decoder.w; ++x, chooseIfHd(++dec, reinterpret_cast<uint32*>(++bufInc)), dst0 += 3, dst1 += 3)
 				{
@@ -522,7 +544,9 @@ dukv_RenderFrame(THIS_PTR)
 						++dec;*/
 
 					if (bufInc % scale == 0 && IS_HD)
+					{
 						dec++;
+					}
 
 					pair = *dec;
 					*(uint32*)dst0 =
@@ -543,7 +567,9 @@ dukv_RenderFrame(THIS_PTR)
 					This, y * 2 + 1);
 
 				if (IS_HD && y % scale != 0)
+				{
 					dec -= RES_DESCALE(dukv->decoder.w);
+				}
 
 				for (x = 0; x < dukv->decoder.w; ++x, chooseIfHd(++dec, reinterpret_cast<uint32*>(++bufInc)), ++dst0, ++dst1)
 				{
@@ -553,7 +579,9 @@ dukv_RenderFrame(THIS_PTR)
 						++dec;*/
 
 					if (bufInc % scale == 0 && IS_HD)
+					{
 						dec++;
+					}
 
 					pair = *dec;
 					*dst0 = dukv_PixelConv((uint16)(pair >> 16), fmt);
@@ -628,7 +656,9 @@ dukv_Open(THIS_PTR, uio_DirHandle* dir, const char* filename)
 	strcpy(dukv->basename, filename);
 	pext = strrchr(dukv->basename, '.');
 	if (pext) // strip extension
+	{
 		*pext = 0;
+	}
 
 	vectors = (uint8*)HMalloc(NUM_VEC_ITEMS * NUM_VECTORS);
 
@@ -699,7 +729,9 @@ dukv_DecodeNext(THIS_PTR)
 	uint16 ver;
 
 	if (!dukv->stream || dukv->iframe >= dukv->cframes)
+	{
 		return 0;
+	}
 
 	uio_fseek(dukv->stream, dukv->frames[dukv->iframe], SEEK_SET);
 	if (uio_fread(&fh, sizeof(fh), 1, dukv->stream) != 1)
@@ -725,11 +757,15 @@ dukv_DecodeNext(THIS_PTR)
 
 	ver = UQM_SwapBE16(*(uint16*)dukv->inbuf);
 	if (ver == 0x0300)
+	{
 		dukv_DecodeFrameV3(dukv->inbuf + 0x10, dukv->decbuf,
 						   dukv->wb, dukv->hb, &dukv->d);
+	}
 	else
+	{
 		dukv_DecodeFrame(dukv->inbuf + 0x10, dukv->decbuf,
 						 dukv->wb, dukv->hb, &dukv->d);
+	}
 
 	dukv->iframe++;
 
@@ -738,7 +774,9 @@ dukv_DecodeNext(THIS_PTR)
 	This->callbacks.EndFrame(This);
 
 	if (!This->audio_synced)
+	{
 		This->callbacks.SetTimer(This, (uint32)(1000.0f / DUCK_GENERAL_FPS));
+	}
 
 	return 1;
 }
@@ -749,7 +787,9 @@ dukv_SeekFrame(THIS_PTR, uint32 frame)
 	TFB_DuckVideoDecoder* dukv = (TFB_DuckVideoDecoder*)This;
 
 	if (frame > dukv->cframes)
+	{
 		frame = dukv->cframes; // EOS
+	}
 
 	return dukv->iframe = frame;
 }

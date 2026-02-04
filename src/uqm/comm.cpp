@@ -221,9 +221,13 @@ add_text(int status, TEXT* pTextIn)
 
 		text_width = CommData.AlienTextWidth;
 		if (CommData.AlienConv == ORZ_CONVERSATION && optOrzCompFont && CommData.AlienTalkDesc.AnimFlags & PAUSE_TALKING)
+		{
 			SetContextFont(ComputerFont); // Orz intro
+		}
 		else
+		{
 			SetContextFont(CommData.AlienFont);
+		}
 		GetContextFontLeading(&leading);
 
 		pText = pTextIn;
@@ -249,31 +253,43 @@ add_text(int status, TEXT* pTextIn)
 					// Unknown. Never reached; color matches the background color.
 					// reused to mimic DOS
 					if (!IsDarkMode)
+					{
 						SetContextForeGroundColor(
 							BUILD_COLOR(
 								MAKE_RGB15(0x00, 0x00, 0x14), 0x01));
+					}
 					else
+					{
 						SetContextForeGroundColor(BLACK_COLOR);
+					}
 					break;
 				}
 			case -2:
 				{ // Not highlighted dialog options.
 					if (!IsDarkMode)
+					{
 						SetContextForeGroundColor(
 							COMM_PLAYER_TEXT_NORMAL_COLOR);
+					}
 					else
+					{
 						SetContextForeGroundColor(
 							BUILD_COLOR_RGBA(0x00, 0x00, 0xAA, 0xFF));
+					}
 					break;
 				}
 			case -1:
 				{ // Currently highlighted dialog option.
 					if (!IsDarkMode)
+					{
 						SetContextForeGroundColor(
 							COMM_PLAYER_TEXT_HIGHLIGHT_COLOR);
+					}
 					else
+					{
 						SetContextForeGroundColor(
 							BUILD_COLOR_RGBA(0x55, 0x55, 0xFF, 0xFF));
+					}
 					break;
 				}
 		}
@@ -297,11 +313,17 @@ add_text(int status, TEXT* pTextIn)
 	{
 		num_lines = _count_lines(pText);
 		if (CommData.AlienTextValign == VALIGN_BOTTOM)
+		{
 			pText->baseline.y -= (leading * num_lines);
+		}
 		else if (CommData.AlienTextValign == VALIGN_MIDDLE)
+		{
 			pText->baseline.y -= ((leading * num_lines) / 2);
+		}
 		if (pText->baseline.y < 0)
+		{
 			pText->baseline.y = 0;
+		}
 	}
 
 	do
@@ -313,7 +335,9 @@ add_text(int status, TEXT* pTextIn)
 
 		maxchars -= pText->CharCount;
 		if (maxchars != 0)
+		{
 			--maxchars;
+		}
 		numchars += pText->CharCount;
 
 		if (status <= 0)
@@ -321,7 +345,9 @@ add_text(int status, TEXT* pTextIn)
 			// Player dialog option or (status == -4) other non-alien
 			// text.
 			if (pText->baseline.y < SIS_SCREEN_HEIGHT)
+			{
 				font_DrawText(pText);
+			}
 
 			if (status < -4 && pText->baseline.y >= -status - 10)
 			{
@@ -371,13 +397,17 @@ add_text(int status, TEXT* pTextIn)
 void GetCustomBaseline(uqm::COUNT i)
 {
 	if (head_node == NULL)
+	{
 		return;
+	}
 	else
 	{ // Set cur_node if current sentence number equals to one of list
 		// indices. MUST be NULL otherwise
 		cur_node = head_node;
 		while (cur_node != NULL && cur_node->index != i)
+		{
 			cur_node = cur_node->next;
+		}
 	}
 }
 
@@ -402,7 +432,9 @@ void CheckTalkingAnim(uqm::COUNT i)
 void BlockTalkingAnim(uqm::COUNT trackStart, uqm::COUNT trackEnd)
 {
 	if (trackStart >= trackEnd) // Fool-proof
+	{
 		return;
+	}
 
 	haveTalkingLock = true;
 	startSentence = GetSubtitleNumberByTrack(trackStart);
@@ -476,7 +508,9 @@ bool getLineWithinWidth(TEXT* pText, const char** startNext,
 			eol = ch == '\0' || ch == '\n' || ch == '\r';
 			done = eol || charCount >= maxChars;
 			if (done || ch == ' ')
+			{
 				break;
+			}
 			charCount++;
 		}
 
@@ -552,13 +586,19 @@ DrawSISComWindow(void)
 		r.extent.width = SIS_SCREEN_WIDTH;
 		r.extent.height = SIS_SCREEN_HEIGHT - r.corner.y;
 		if (!IsDarkMode)
+		{
 			SetContextForeGroundColor(COMM_PLAYER_BACKGROUND_COLOR);
+		}
 		else
+		{
 			SetContextForeGroundColor(BLACK_COLOR);
+		}
 		DrawFilledRectangle(&r);
 
 		if (!usingSpeech && optSmoothScroll == OPT_PC && !IsDarkMode)
+		{
 			DrawCommBorder(r);
+		}
 
 		SetContext(OldContext);
 	}
@@ -596,9 +636,13 @@ RefreshResponsesSpecial(ENCOUNTER_STATE* pES)
 			y + leading;
 		pES->response_list[response].response_text.align = ALIGN_LEFT;
 		if (response == pES->cur_response)
+		{
 			y = add_text(-1, &pES->response_list[response].response_text);
+		}
 		else
+		{
 			y = add_text(-3, &pES->response_list[response].response_text);
+		}
 	}
 
 	UnbatchGraphics();
@@ -628,9 +672,13 @@ RefreshResponses(ENCOUNTER_STATE* pES)
 			y + leading;
 		pES->response_list[response].response_text.align = ALIGN_LEFT;
 		if (response == pES->cur_response)
+		{
 			y = add_text(-1, &pES->response_list[response].response_text);
+		}
 		else
+		{
 			y = add_text(-2, &pES->response_list[response].response_text);
+		}
 	}
 
 	if (pES->top_response)
@@ -644,7 +692,9 @@ RefreshResponses(ENCOUNTER_STATE* pES)
 		s.frame = SetAbsFrameIndex(ActivityFrame, 7);
 	}
 	else
+	{
 		s.frame = 0;
+	}
 	if (s.frame)
 	{
 		RECT r;
@@ -683,8 +733,10 @@ FeedbackPlayerPhrase(uqm::CHAR_T* pStr)
 			SetContextForeGroundColor(COMM_FEEDBACK_TEXT_COLOR);
 		}
 		else
+		{
 			SetContextForeGroundColor(
 				BUILD_COLOR_RGBA(0x55, 0x55, 0xFF, 0xFF));
+		}
 
 		ct.baseline.y += RES_SCALE(16);
 		ct.pStr = pStr;
@@ -697,9 +749,13 @@ static void
 InitSpeechGraphics(void)
 {
 	if (optScopeStyle != OPT_PC)
+	{
 		InitOscilloscope(SetAbsFrameIndex(ActivityFrame, 9));
+	}
 	else
+	{
 		InitOscilloscope(SetAbsFrameIndex(ActivityFrame, 10));
+	}
 
 	InitSlider(0, SLIDER_Y, SIS_SCREEN_WIDTH,
 			   SetAbsFrameIndex(ActivityFrame, 5),
@@ -713,7 +769,9 @@ UpdateSpeechGraphics(void)
 	CONTEXT OldContext;
 
 	if (GetTimeCounter() < NextTime)
+	{
 		return; // too early
+	}
 
 	NextTime = GetTimeCounter() + OSCILLOSCOPE_RATE;
 
@@ -732,7 +790,9 @@ UpdateAnimations(bool paused)
 	bool change;
 
 	if (GetTimeCounter() < NextTime)
+	{
 		return; // too early
+	}
 
 	NextTime = GetTimeCounter() + COMM_ANIM_RATE;
 
@@ -741,7 +801,9 @@ UpdateAnimations(bool paused)
 	// Advance and draw ambient, transit and talk animations
 	change = ProcessCommAnimations(clear_subtitles, paused);
 	if (change || clear_subtitles)
+	{
 		RedrawSubtitles();
+	}
 	UnbatchGraphics();
 	clear_subtitles = false;
 	SetContext(OldContext);
@@ -752,7 +814,9 @@ void UpdateDuty(bool talk)
 	if (talk)
 	{
 		if (!TalkingFinished)
+		{
 			setRunTalkingAnim();
+		}
 		CheckSubtitles(true);
 		UpdateAnimations(false);
 	}
@@ -800,14 +864,18 @@ void InitUIRects(bool state)
 											 SIS_SCREEN_HEIGHT - (SLIDER_Y + SLIDER_HEIGHT));
 	}
 	else
+	{
 		memset(&DarkModeRect, 0, sizeof(DarkModeRect));
+	}
 }
 
 static void
 FadePlayerUI(void)
 {
 	if (!IsDarkMode)
+	{
 		return;
+	}
 	else
 	{
 		static TimeCount NextTime;
@@ -826,7 +894,9 @@ FadePlayerUI(void)
 		}
 
 		if (GetTimeCounter() < NextTime)
+		{
 			return;
+		}
 
 		NextTime = GetTimeCounter() + ONE_SECOND / 15;
 
@@ -839,7 +909,9 @@ FadePlayerUI(void)
 		BatchGraphics();
 
 		for (i = 0; i < (ARRAY_SIZE(DarkModeRect) - 1); i++)
+		{
 			DrawFilledRectangle(&DarkModeRect[i]);
+		}
 
 		if (fadeIndex < 16)
 		{
@@ -850,7 +922,9 @@ FadePlayerUI(void)
 		}
 
 		if (cwLock)
+		{
 			DrawFilledRectangle(&DarkModeRect[5]);
+		}
 
 		UnbatchGraphics();
 		SetContext(OldContext);
@@ -923,9 +997,13 @@ DoTalkSegue(TALKING_STATE* pTS)
 		{
 			SetSliderImage(SetAbsFrameIndex(ActivityFrame, 3));
 			if (optSmoothScroll == OPT_PC || !optSpeech)
+			{
 				FastForward_Page();
+			}
 			else if (optSmoothScroll == OPT_3DO)
+			{
 				FastForward_Smooth();
+			}
 			pTS->seeking = true;
 		}
 		else if (left || pTS->rewind)
@@ -933,9 +1011,13 @@ DoTalkSegue(TALKING_STATE* pTS)
 			pTS->rewind = false;
 			SetSliderImage(SetAbsFrameIndex(ActivityFrame, 4));
 			if (optSmoothScroll == OPT_PC || !optSpeech)
+			{
 				FastReverse_Page();
+			}
 			else if (optSmoothScroll == OPT_3DO)
+			{
 				FastReverse_Smooth();
+			}
 			pTS->seeking = true;
 		}
 		else if (pTS->seeking)
@@ -991,7 +1073,9 @@ DoTalkSegue(TALKING_STATE* pTS)
 				PauseTrack();
 
 				if (!block)
+				{
 					freezeTalkingAnim();
+				}
 
 				TimeOut = GetTimeCounter() + delay;
 
@@ -999,7 +1083,9 @@ DoTalkSegue(TALKING_STATE* pTS)
 				{
 					if (read_speed != VERY_SLOW
 						&& GetTimeCounter() >= TimeOut)
+					{
 						awake = true;
+					}
 
 					UpdateCommGraphics();
 					UpdateInputState();
@@ -1016,14 +1102,18 @@ DoTalkSegue(TALKING_STATE* pTS)
 						pTS->ended = true;
 
 						if (!block)
+						{
 							unFreezeTalkingAnim();
+						}
 
 						return false;
 					}
 				}
 
 				if (!block)
+				{
 					unFreezeTalkingAnim();
+				}
 
 				ResumeTrack();
 			}
@@ -1066,13 +1156,17 @@ TalkSegue(uqm::COUNT wait_track)
 	if (wantTalkingAnim() && haveTalkingAnim())
 	{
 		if (haveTransitionAnim())
+		{
 			setRunIntroAnim();
+		}
 
 		setRunTalkingAnim();
 
 		// wait until the transition finishes
 		while (runningIntroAnim())
+		{
 			runCommAnimFrame();
+		}
 	}
 
 	memset(&talkingState, 0, sizeof talkingState);
@@ -1102,12 +1196,16 @@ TalkSegue(uqm::COUNT wait_track)
 
 	// transition back to silent, if necessary
 	if (runningTalkingAnim())
+	{
 		setStopTalkingAnim();
+	}
 
 	if (!(GLOBAL(CurrentActivity) & CHECK_ABORT))
 	{ // Wait until the animation task stops "talking"
 		while (runningTalkingAnim())
+		{
 			runCommAnimFrame();
+		}
 	}
 
 	return talkingState.ended;
@@ -1157,7 +1255,9 @@ void AlienTalkSegue(uqm::COUNT wait_track)
 {
 	// this skips any talk segues that follow an aborted one
 	if ((GLOBAL(CurrentActivity) & CHECK_ABORT) || TalkingFinished)
+	{
 		return;
+	}
 
 	if (!pCurInputState->Initialized)
 	{
@@ -1192,7 +1292,9 @@ void AlienTalkSegue(uqm::COUNT wait_track)
 
 	TalkingFinished = TalkSegue(wait_track);
 	if (TalkingFinished && !VolasPackPresent)
+	{
 		FadeMusic(FOREGROUND_VOL, ONE_SECOND);
+	}
 }
 
 
@@ -1293,7 +1395,9 @@ DoConvSummary(SUMMARY_STATE* pSS)
 			{
 				t.pStr = GetTrackSubtitleText(pSS->NextSub);
 				if (!t.pStr)
+				{
 					continue;
+				}
 			}
 
 			t.CharCount = (uqm::COUNT)~0;
@@ -1312,7 +1416,9 @@ DoConvSummary(SUMMARY_STATE* pSS)
 					font_DrawText(&t);
 				}
 				else
+				{
 					font_DrawText(&t);
+				}
 
 				t.baseline.y += DELTA_Y_SUMMARY;
 				t.pStr = next;
@@ -1337,7 +1443,9 @@ DoConvSummary(SUMMARY_STATE* pSS)
 				font_DrawText(&t);
 			}
 			else
+			{
 				font_DrawText(&t);
+			}
 			t.baseline.y += DELTA_Y_SUMMARY;
 		}
 
@@ -1411,7 +1519,9 @@ SelectResponse(ENCOUNTER_STATE* pES)
 		}
 	}
 	else
+	{
 		FeedbackPlayerPhrase(pES->phrase_buf);
+	}
 
 	StopTrack();
 	ClearSubtitles();
@@ -1435,13 +1545,17 @@ SelectConversationSummary(ENCOUNTER_STATE* pES)
 	SUMMARY_STATE SummaryState;
 
 	if (pES)
+	{
 		FeedbackPlayerPhrase(pES->phrase_buf);
+	}
 
 	SummaryState.Initialized = false;
 	DoConvSummary(&SummaryState);
 
 	if (pES)
+	{
 		RefreshResponses(pES);
+	}
 	clear_subtitles = true;
 }
 
@@ -1450,7 +1564,9 @@ SelectReplay(ENCOUNTER_STATE* pES)
 {
 	FadeMusic(BACKGROUND_VOL, ONE_SECOND);
 	if (pES)
+	{
 		FeedbackPlayerPhrase(pES->phrase_buf);
+	}
 
 	TalkSegue(0);
 }
@@ -1488,10 +1604,14 @@ PlayerResponseInput(ENCOUNTER_STATE* pES)
 			}
 		}
 		else if (PulsedInputState.menu[KEY_MENU_UP])
+		{
 			response = (uqm::BYTE)((response + (uqm::BYTE)(pES->num_responses - 1))
 								   % pES->num_responses);
+		}
 		else if (PulsedInputState.menu[KEY_MENU_DOWN])
+		{
 			response = (uqm::BYTE)((uqm::BYTE)(response + 1) % pES->num_responses);
+		}
 
 		if (response != pES->cur_response)
 		{
@@ -1516,7 +1636,9 @@ PlayerResponseInput(ENCOUNTER_STATE* pES)
 				RefreshResponses(pES);
 			}
 			else if (IS_HD)
+			{
 				RefreshResponses(pES);
+			}
 
 			UnbatchGraphics();
 		}
@@ -1540,10 +1662,14 @@ static bool
 DoLastReplay(LAST_REPLAY_STATE* pLRS)
 {
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+	{
 		return false;
+	}
 
 	if (GetTimeCounter() > pLRS->TimeOut)
+	{
 		return false; // timed out and done
+	}
 
 	if (PulsedInputState.menu[KEY_MENU_CANCEL] && lowByte(GLOBAL(CurrentActivity)) != WON_LAST_BATTLE)
 	{
@@ -1558,7 +1684,9 @@ DoLastReplay(LAST_REPLAY_STATE* pLRS)
 	}
 
 	while (GetTimeCounter() < pLRS->NextTime)
+	{
 		UpdateCommGraphics();
+	}
 
 	pLRS->NextTime = GetTimeCounter() + COMM_ANIM_RATE;
 
@@ -1569,7 +1697,9 @@ static bool
 DoCommunication(ENCOUNTER_STATE* pES)
 {
 	if (!IsDarkMode)
+	{
 		SetMenuSounds(MENU_SOUND_UP | MENU_SOUND_DOWN, MENU_SOUND_SELECT);
+	}
 
 	// First, finish playing all queued tracks if not done yet
 	if (!TalkingFinished)
@@ -1579,7 +1709,9 @@ DoCommunication(ENCOUNTER_STATE* pES)
 	}
 
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+	{
 		UninitOscilloscope();
+	}
 	else if (pES->num_responses == 0)
 	{
 		// The player doesn't get a chance to say anything,
@@ -1605,7 +1737,9 @@ DoCommunication(ENCOUNTER_STATE* pES)
 	ClearSubtitles();
 
 	if (IsDarkMode)
+	{
 		SetCommDarkMode(false);
+	}
 
 	SetMusicPosition();
 	StopMusic();
@@ -1625,7 +1759,9 @@ void DoResponsePhrase(RESPONSE_REF R, RESPONSE_FUNC response_func,
 	RESPONSE_ENTRY* pEntry;
 
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+	{
 		return;
+	}
 
 	if (pES->num_responses == 0)
 	{
@@ -1637,7 +1773,9 @@ void DoResponsePhrase(RESPONSE_REF R, RESPONSE_FUNC response_func,
 	pEntry->response_ref = R;
 	pEntry->response_text.pStr = ConstructStr;
 	if (pEntry->response_text.pStr)
+	{
 		pEntry->response_text.CharCount = (uqm::COUNT)~0;
+	}
 	else
 	{
 		STRING locString;
@@ -1676,8 +1814,10 @@ void SetUpCommData(void)
 		}
 	}
 	else
+	{
 		CommData.AlienFrame = CaptureDrawable(
 			LoadGraphic(CommData.AlienFrameRes));
+	}
 
 	// Loading alien font
 	CommData.AlienFont = LoadFont(CommData.AlienFontRes);
@@ -1696,8 +1836,10 @@ void SetUpCommData(void)
 		}
 	}
 	else
+	{
 		CommData.AlienColorMap = CaptureColorMap(
 			LoadColorMap(CommData.AlienColorMapRes));
+	}
 
 	// Loading alien song
 	if (altResFlags & USE_ALT_SONG)
@@ -1711,7 +1853,9 @@ void SetUpCommData(void)
 		}
 	}
 	else
+	{
 		CommData.AlienSong = LoadMusic(CommData.AlienSongRes);
+	}
 
 	// Load alien convo lines
 	CommData.ConversationPhrases = CaptureStringTable(
@@ -1733,9 +1877,13 @@ HailAlien(void)
 	ES.InputFunc = DoCommunication;
 
 	if (isPC(optWhichFonts))
+	{
 		PlayerFont = LoadFont(PLAYER_FONT);
+	}
 	else
+	{
 		PlayerFont = LoadFont(TINY_FONT_BOLD);
+	}
 
 	if (optOrzCompFont)
 	{
@@ -1842,9 +1990,13 @@ HailAlien(void)
 					}
 				}
 				else if (GLOBAL(ip_planet) == 0)
+				{
 					DrawHyperCoords(CurStarDescPtr->star_pt);
+				}
 				else
+				{
 					DrawSISTitle(GLOBAL_SIS(PlanetName));
+				}
 			}
 		}
 
@@ -1856,7 +2008,9 @@ HailAlien(void)
 	(*CommData.init_encounter_func)();
 	DoInput(&ES, false);
 	if (!(GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
+	{
 		(*CommData.post_encounter_func)();
+	}
 	(*CommData.uninit_encounter_func)();
 
 	ClearResponses(&ES);
@@ -1874,7 +2028,9 @@ HailAlien(void)
 
 	DestroyFont(PlayerFont);
 	if (optOrzCompFont)
+	{
 		DestroyFont(ComputerFont);
+	}
 
 	ReleaseTalkingAnim();
 	DisengageFilters();
@@ -1901,7 +2057,9 @@ InitCommunication(CONVERSATION which_comm)
 
 #ifdef DEBUG
 	if (disableInteractivity)
+	{
 		return 0;
+	}
 #endif
 
 
@@ -1921,9 +2079,13 @@ InitCommunication(CONVERSATION which_comm)
 			}
 			DrawSISMessage(NULL);
 			if (inHQSpace())
+			{
 				DrawHyperCoords(GLOBAL(ShipStamp.origin));
+			}
 			else if (GLOBAL(ip_planet) == 0)
+			{
 				DrawHyperCoords(CurStarDescPtr->star_pt);
+			}
 			else
 			{ // to fix moon suffix on load
 				if (pSolarSysState && lowByte(GLOBAL(CurrentActivity)) != IN_LAST_BATTLE
@@ -1976,7 +2138,9 @@ InitCommunication(CONVERSATION which_comm)
 					|| lowByte(GLOBAL(CurrentActivity)) == IN_LAST_BATTLE))
 			|| (which_comm != CHMMR_CONVERSATION
 				&& which_comm != SYREEN_CONVERSATION)) //&& CheckAlliance (status) == BAD_GUY))
+		{
 			BuildBattle(NPC_PLAYER_NUM);
+		}
 	}
 
 	LocDataPtr = init_race(
@@ -2011,7 +2175,9 @@ InitCommunication(CONVERSATION which_comm)
 	else if (LocDataPtr)
 	{ // only when comm initied successfully
 		if (!(GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
+		{
 			(*CommData.post_encounter_func)(); // process states
+		}
 
 		(*CommData.uninit_encounter_func)(); // cleanup
 	}
@@ -2024,7 +2190,9 @@ InitCommunication(CONVERSATION which_comm)
 		// to do in this battle.
 		if (lowByte(GLOBAL(CurrentActivity)) == IN_LAST_BATTLE
 			&& (GLOBAL(glob_flags) & CYBORG_ENABLED))
+		{
 			ReinitQueue(&GLOBAL(npc_built_ship_q));
+		}
 
 		// Clear the location flags
 		SET_GAME_STATE(GLOBAL_FLAGS_AND_DATA, 0);
@@ -2082,19 +2250,29 @@ void RaceCommunication(void)
 		ec = GET_GAME_STATE(ESCAPE_COUNTER);
 
 		if (GET_GAME_STATE(FOUND_PLUTO_SPATHI) == 1)
+		{
 			InitCommunication(SPATHI_CONVERSATION);
+		}
 		else if (GET_GAME_STATE(GLOBAL_FLAGS_AND_DATA) == 0)
+		{
 			InitCommunication(TALKING_PET_CONVERSATION);
+		}
 		else if (GET_GAME_STATE(GLOBAL_FLAGS_AND_DATA) & ((1 << 4) | (1 << 5)))
+		{
 			// Communicate with the Ilwrath using a Hyperwave Broadcaster.
 			InitCommunication(ILWRATH_CONVERSATION);
+		}
 		else
+		{
 			InitCommunication(CHMMR_CONVERSATION);
+		}
 		if (GLOBAL_SIS(CrewEnlisted) != (uqm::COUNT)~0)
 		{
 			NextActivity = GLOBAL(CurrentActivity) & ~START_ENCOUNTER;
 			if (lowByte(NextActivity) == IN_INTERPLANETARY)
+			{
 				NextActivity |= START_INTERPLANETARY;
+			}
 			GLOBAL(CurrentActivity) |= CHECK_LOAD; /* fake a load game */
 		}
 
@@ -2143,16 +2321,22 @@ void RaceCommunication(void)
 	status = InitCommunication(RaceComm[i]);
 
 	if (GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
+	{
 		return;
+	}
 
 	if (i == CHMMR_SHIP)
+	{
 		ReinitQueue(&GLOBAL(npc_built_ship_q));
+	}
 
 	if (lowByte(GLOBAL(CurrentActivity)) == IN_INTERPLANETARY)
 	{
 		/* if used destruct code in interplanetary */
 		if (i == SLYLANDRO_SHIP && status == 0)
+		{
 			ReinitQueue(&GLOBAL(npc_built_ship_q));
+		}
 	}
 	else if (hEncounter)
 	{
@@ -2166,7 +2350,9 @@ void RaceCommunication(void)
 		EncounterPtr->num_ships = NumShips;
 		EncounterPtr->flags |= ENCOUNTER_REFORMING;
 		if (status == 0)
+		{
 			EncounterPtr->flags |= ONE_SHOT_ENCOUNTER;
+		}
 
 		for (i = 0; i < NumShips; ++i)
 		{
@@ -2195,7 +2381,9 @@ RedrawSubtitles(void)
 	TEXT t;
 
 	if (!optSubtitles)
+	{
 		return;
+	}
 
 	if (SubtitleText.pStr)
 	{
@@ -2282,18 +2470,26 @@ CheckSubtitles(bool really)
 		SubtitleText.pStr = pStr;
 		// may have been cleared too
 		if (pStr)
+		{
 			SubtitleText.CharCount = (uqm::COUNT)~0;
+		}
 		else
+		{
 			SubtitleText.CharCount = 0;
+		}
 	}
 }
 
 void EnableTalkingAnim(bool enable)
 {
 	if (enable)
+	{
 		CommData.AlienTalkDesc.AnimFlags &= ~PAUSE_TALKING;
+	}
 	else
+	{
 		CommData.AlienTalkDesc.AnimFlags |= PAUSE_TALKING;
+	}
 }
 
 void SetCommDarkMode(bool state)
@@ -2304,7 +2500,9 @@ void SetCommDarkMode(bool state)
 	InitUIRects(state);
 	fadeIndex = state;
 	if (!state)
+	{
 		ReleaseTalkingAnim();
+	}
 }
 
 void RedrawSISComWindow(void)
@@ -2323,12 +2521,16 @@ void SetCustomBaseLine(uqm::COUNT sentence, POINT bl, TEXT_ALIGN align)
 	cur->align = align;
 
 	if (head_node == NULL)
+	{
 		head_node = cur;
+	}
 	else
 	{
 		sPtr = head_node;
 		while (sPtr->next != NULL)
+		{
 			sPtr = sPtr->next;
+		}
 		sPtr->next = cur;
 	}
 }
@@ -2338,7 +2540,9 @@ void FlushCustomBaseLine(void)
 	CUSTOM_BASELINE *cur, *next;
 
 	if (head_node == NULL)
+	{
 		return;
+	}
 
 	cur = head_node;
 	while (cur != NULL)

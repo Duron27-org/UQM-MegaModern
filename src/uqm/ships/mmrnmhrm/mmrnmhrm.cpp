@@ -157,7 +157,9 @@ static void
 SetCustomShipData(RACE_DESC* pRaceDesc, const CustomShipData_t* data)
 {
 	if (pRaceDesc->data == data)
+	{
 		return; // no-op
+	}
 
 	if (pRaceDesc->data) // Out with the old
 	{
@@ -177,7 +179,9 @@ static void
 missile_preprocess(ELEMENT* ElementPtr)
 {
 	if (ElementPtr->turn_wait > 0)
+	{
 		--ElementPtr->turn_wait;
+	}
 	else
 	{
 		uqm::COUNT facing;
@@ -230,7 +234,9 @@ mmrnmhrm_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 		GetCurrentVelocityComponentsSdword(&lpEvalDesc->ObjectPtr->velocity,
 										   &delta_x, &delta_y);
 		if (delta_x == 0 && delta_y == 0)
+		{
 			direction_angle = travel_angle = 0;
+		}
 		else
 		{
 			delta_x = lpEvalDesc->ObjectPtr->current.location.x
@@ -250,7 +256,9 @@ mmrnmhrm_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 					|| NORMALIZE_ANGLE(
 						   direction_angle - travel_angle + QUADRANT)
 						   > HALF_CIRCLE)
+				{
 					StarShipPtr->ship_input_state |= SPECIAL;
+				}
 			}
 		}
 		else
@@ -268,13 +276,17 @@ mmrnmhrm_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 					|| NORMALIZE_ANGLE(
 						   direction_angle - travel_angle + OCTANT)
 						   <= QUADRANT)
+				{
 					StarShipPtr->ship_input_state |= SPECIAL;
+				}
 			}
 			else if (lpEvalDesc->which_turn > 32
 					 && NORMALIZE_ANGLE(
 							direction_angle - travel_angle + QUADRANT)
 							> HALF_CIRCLE)
+			{
 				StarShipPtr->ship_input_state |= SPECIAL;
+			}
 		}
 	}
 
@@ -282,9 +294,13 @@ mmrnmhrm_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 	{
 		if (!(StarShipPtr->ship_input_state & SPECIAL)
 			&& lpEvalDesc->ObjectPtr)
+		{
 			StarShipPtr->ship_input_state |= WEAPON;
+		}
 		else
+		{
 			StarShipPtr->ship_input_state &= ~WEAPON;
+		}
 	}
 }
 
@@ -294,7 +310,9 @@ twin_laser_collision(ELEMENT* ElementPtr0, POINT* pPt0,
 {
 	if (!(ElementPtr1->state_flags & PLAYER_SHIP)
 		|| !elementsOfSamePlayer(ElementPtr0, ElementPtr1))
+	{
 		weapon_collision(ElementPtr0, pPt0, ElementPtr1, pPt1);
+	}
 }
 
 static uqm::COUNT
@@ -416,7 +434,9 @@ mmrnmhrm_postprocess(ELEMENT* ElementPtr)
 		/* Swap characteristics descriptors around */
 		otherwing_desc = GetCustomShipData(StarShipPtr->RaceDescPtr);
 		if (!otherwing_desc)
+		{
 			return; // No ship data (?!)
+		}
 
 		tempShipData = *otherwing_desc;
 		SetCustomShipData(StarShipPtr->RaceDescPtr, &StarShipPtr->RaceDescPtr->characteristics);
@@ -444,8 +464,10 @@ mmrnmhrm_postprocess(ELEMENT* ElementPtr)
 
 			if (StarShipPtr->cur_status_flags
 				& (SHIP_AT_MAX_SPEED | SHIP_BEYOND_MAX_SPEED))
+			{
 				StarShipPtr->cur_status_flags |=
 					SHIP_AT_MAX_SPEED | SHIP_BEYOND_MAX_SPEED;
+			}
 		}
 	}
 }
@@ -467,11 +489,15 @@ mmrnmhrm_preprocess(ELEMENT* ElementPtr)
 							-StarShipPtr->RaceDescPtr->characteristics.special_energy_cost))
 			{
 				if (ElementPtr->next.image.farray == StarShipPtr->RaceDescPtr->ship_data.ship)
+				{
 					ElementPtr->next.image.farray =
 						StarShipPtr->RaceDescPtr->ship_data.special;
+				}
 				else
+				{
 					ElementPtr->next.image.farray =
 						StarShipPtr->RaceDescPtr->ship_data.ship;
+				}
 				ElementPtr->next.image.frame =
 					SetEquFrameIndex(ElementPtr->next.image.farray[0],
 									 ElementPtr->next.image.frame);

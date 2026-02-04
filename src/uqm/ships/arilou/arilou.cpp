@@ -133,7 +133,9 @@ initialize_autoaim_laser(ELEMENT* ShipPtr, HELEMENT LaserArray[])
 	GetElementStarShip(ShipPtr, &StarShipPtr);
 	LaserBlock.face = orig_facing = StarShipPtr->ShipFacing;
 	if ((delta_facing = TrackShip(ShipPtr, &LaserBlock.face)) > 0)
+	{
 		LaserBlock.face = NORMALIZE_FACING(orig_facing + delta_facing);
+	}
 	ShipPtr->hTarget = 0;
 
 	LaserBlock.cx = ShipPtr->next.location.x;
@@ -180,9 +182,13 @@ arilou_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 				|| ((EnemyStarShipPtr->RaceDescPtr->ship_info.ship_flags
 					 & SEEKING_SPECIAL)
 					&& lpEvalDesc->ObjectPtr->next.image.farray == EnemyStarShipPtr->RaceDescPtr->ship_data.special))
+			{
 				IsTrackingWeapon = true;
+			}
 			else
+			{
 				IsTrackingWeapon = false;
+			}
 
 			if (((lpEvalDesc->ObjectPtr->state_flags & PLAYER_SHIP)															  /* means IMMEDIATE WEAPON */
 				 || (IsTrackingWeapon && (lpEvalDesc->which_turn == 1 || (lpEvalDesc->ObjectPtr->state_flags & CREW_OBJECT))) /* FIGHTERS!!! */
@@ -195,7 +201,9 @@ arilou_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 		}
 	}
 	if (StarShipPtr->RaceDescPtr->ship_info.energy_level <= SPECIAL_ENERGY_COST << 1)
+	{
 		StarShipPtr->ship_input_state &= ~WEAPON;
+	}
 }
 
 static void
@@ -271,11 +279,15 @@ arilou_preprocess(ELEMENT* ElementPtr)
 			if (life_span != 2)
 			{
 				if (life_span < 2)
+				{
 					ElementPtr->next.image.frame =
 						DecFrameIndex(ElementPtr->next.image.frame);
+				}
 				else
+				{
 					ElementPtr->next.image.frame =
 						IncFrameIndex(ElementPtr->next.image.frame);
+				}
 			}
 			else
 			{ // JMS: Reduce the odds of teleporting into Sa-Matra.

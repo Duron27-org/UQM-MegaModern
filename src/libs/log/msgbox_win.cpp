@@ -31,11 +31,15 @@ toWideChar(const /*UTF-8*/ char* str)
 
 	cch = MultiByteToWideChar(CP_UTF8, 0, str, -1, NULL, 0);
 	if (cch == 0)
+	{
 		return NULL; // failed, probably no UTF8 converter
+	}
 
 	wstr = (LPWSTR)malloc(cch * sizeof(WCHAR));
 	if (!wstr)
+	{
 		return NULL; // out of memory
+	}
 
 	cch = MultiByteToWideChar(CP_UTF8, 0, str, -1, wstr, cch);
 	if (cch == 0)
@@ -56,9 +60,13 @@ void log_displayBox(const /*UTF-8*/ char* title, int isError,
 	UINT uType = isError ? MB_ICONWARNING : MB_ICONINFORMATION;
 
 	if (swTitle && swMsg)
+	{
 		MessageBoxW(NULL, swMsg, swTitle, uType);
+	}
 	else // Could not convert; let's try ASCII, though it may look ugly
+	{
 		MessageBoxA(NULL, msg, title, uType);
+	}
 
 	free(swTitle);
 	free(swMsg);

@@ -132,22 +132,36 @@ ARCTAN(uqm::SDWORD delta_x, uqm::SDWORD delta_y)
 	v1 = delta_x;
 	v2 = delta_y;
 	if (v1 == 0 && v2 == 0)
+	{
 		return (FULL_CIRCLE);
+	}
 
 	if (v1 < 0)
+	{
 		v1 = -v1;
+	}
 	if (v2 < 0)
+	{
 		v2 = -v2;
+	}
 	if (v1 > v2)
+	{
 		v1 = QUADRANT
 		   - atantab[(((uqm::DWORD)v2 << (CIRCLE_SHIFT - 1)) + (v1 >> 1)) / v1];
+	}
 	else
+	{
 		v1 = atantab[(((uqm::DWORD)v1 << (CIRCLE_SHIFT - 1)) + (v2 >> 1)) / v2];
+	}
 
 	if (delta_x < 0)
+	{
 		v1 = FULL_CIRCLE - v1;
+	}
 	if (delta_y > 0)
+	{
 		v1 = HALF_CIRCLE - v1;
+	}
 
 	return (NORMALIZE_ANGLE(v1));
 }

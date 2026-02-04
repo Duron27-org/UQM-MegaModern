@@ -41,7 +41,7 @@ static LOCDATA talkpet_desc =
 		BLACK_COLOR_INIT, /* AlienTextBColor */
 		{0, 0}, /* AlienTextBaseline */
 		0,
- /* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
+		/* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
 		ALIGN_CENTER, /* AlienTextAlign */
 		VALIGN_TOP, /* AlienTextValign */
 		TALKING_PET_COLOR_MAP, /* AlienColorMap */
@@ -292,20 +292,30 @@ ExitConversation(RESPONSE_REF R)
 		SET_GAME_STATE(URQUAN_MESSED_UP, 1);
 	}
 	else if (PLAYER_SAID(R, wish_to_go_now))
+	{
 		NPCPhrase(EXCELLENT_IDEA);
+	}
 	else if (PLAYER_SAID(R, bye_onboard))
+	{
 		NPCPhrase(GOODBYE_ONBOARD);
+	}
 	else if (PLAYER_SAID(R, compel_that_ship))
+	{
 		NPCPhrase(SAVING_MY_POWER);
+	}
 	else if (PLAYER_SAID(R, ok_lets_do_it)
 			 || PLAYER_SAID(R, want_kill_1)
 			 || PLAYER_SAID(R, want_kill_2)
 			 || PLAYER_SAID(R, want_kill_3))
 	{
 		if (PLAYER_SAID(R, ok_lets_do_it))
+		{
 			NPCPhrase(COMING_ABOARD);
+		}
 		else
+		{
 			NPCPhrase(GLAD_YOU_WONT_KILL);
+		}
 
 		SET_GAME_STATE(TALKING_PET, 1);
 		SET_GAME_STATE(TALKING_PET_ON_SHIP, 1);
@@ -333,9 +343,13 @@ MindFuckUrquan(RESPONSE_REF R)
 	}
 
 	if (PHRASE_ENABLED(what_now))
+	{
 		Response(what_now, MindFuckUrquan);
+	}
 	if (PHRASE_ENABLED(im_scared))
+	{
 		Response(im_scared, MindFuckUrquan);
+	}
 	Response(compel_urquan, ExitConversation);
 }
 
@@ -348,7 +362,9 @@ MindControlStrobe(void)
 	CommData.AlienAmbientArray[16].AnimFlags &= ~ANIM_DISABLED;
 
 	if (IS_HD)
+	{
 		EngageFilters(&talkpet_filters);
+	}
 }
 
 static void
@@ -381,7 +397,9 @@ static void
 PetInfo(RESPONSE_REF R)
 {
 	if (PLAYER_SAID(R, about_your_race))
+	{
 		NPCPhrase(WHAT_ABOUT_RACE);
+	}
 	else if (PLAYER_SAID(R, what_about_physiology))
 	{
 		NPCPhrase(NO_TALK_ABOUT_SELF);
@@ -416,11 +434,17 @@ PetInfo(RESPONSE_REF R)
 		Response(what_about_powers, MindControl);
 	}
 	if (PHRASE_ENABLED(what_about_your_history))
+	{
 		Response(what_about_your_history, PetInfo);
+	}
 	else if (PHRASE_ENABLED(sentient_milieu))
+	{
 		Response(sentient_milieu, PetInfo);
+	}
 	else if (PHRASE_ENABLED(what_about_war))
+	{
 		Response(what_about_war, PetInfo);
+	}
 	Response(enough_info, PetDevice);
 }
 
@@ -500,7 +524,9 @@ PetDevice(RESPONSE_REF R)
 		DISABLE_PHRASE(any_suggestions);
 	}
 	else if (PLAYER_SAID(R, enough_info))
+	{
 		NPCPhrase(OK_ENOUGH_INFO);
+	}
 	else if (PLAYER_SAID(R, you_lied))
 	{
 		NPCPhrase(SO_WHAT);
@@ -513,12 +539,18 @@ PetDevice(RESPONSE_REF R)
 		Response(compel_that_ship, ExitConversation);
 	}
 	if (PHRASE_ENABLED(whats_up_onboard))
+	{
 		Response(whats_up_onboard, PetDevice);
+	}
 	if (PHRASE_ENABLED(any_suggestions))
+	{
 		Response(any_suggestions, PetDevice);
+	}
 	Response(about_your_race, PetInfo);
 	if (GET_GAME_STATE(DNYARRI_LIED) && GET_GAME_STATE(LEARNED_TALKING_PET))
+	{
 		Response(you_lied, PetDevice);
+	}
 	Response(bye_onboard, ExitConversation);
 }
 
@@ -553,13 +585,21 @@ CompelPlayer(RESPONSE_REF R)
 	else if (R != 0)
 	{
 		if (PLAYER_SAID(R, bye_at_umgah))
+		{
 			NPCPhrase(GOODBYE_AT_UMGAH);
+		}
 		else if (PLAYER_SAID(R, must_explain_presence))
+		{
 			NPCPhrase(EXPLAIN_NOTHING_MONKEY_BOY);
+		}
 		else if (PLAYER_SAID(R, umgah_zombies))
+		{
 			NPCPhrase(WORKS_LIKE_THIS);
+		}
 		else if (PLAYER_SAID(R, talking_pets_dumb))
+		{
 			NPCPhrase(OH_NO_YOU_DONT);
+		}
 
 		SET_GAME_STATE(KNOW_UMGAH_ZOMBIES, 1);
 		if (!GET_GAME_STATE(TAALO_PROTECTOR_ON_SHIP))
@@ -577,27 +617,43 @@ CompelPlayer(RESPONSE_REF R)
 	}
 
 	if (PHRASE_ENABLED(what_are_you))
+	{
 		pStr[0] = what_are_you;
+	}
 	else
+	{
 		pStr[0] = talking_pets_dumb;
+	}
 	if (GET_GAME_STATE(KNOW_UMGAH_ZOMBIES))
 	{
 		if (PHRASE_ENABLED(what_do_to_umgah))
+		{
 			pStr[1] = what_do_to_umgah;
+		}
 		else
+		{
 			pStr[1] = umgah_zombies;
+		}
 	}
 	if (PHRASE_ENABLED(we_are_vindicator))
+	{
 		pStr[2] = we_are_vindicator;
+	}
 	else
+	{
 		pStr[2] = must_explain_presence;
+	}
 
 	if (pStr[LastStack])
+	{
 		Response(pStr[LastStack], CompelPlayer);
+	}
 	for (i = 0; i < 3; ++i)
 	{
 		if (i != LastStack && pStr[i])
+		{
 			Response(pStr[i], CompelPlayer);
+		}
 	}
 	Response(bye_at_umgah, CompelPlayer);
 }
@@ -668,26 +724,40 @@ PetDeal(RESPONSE_REF R)
 	}
 
 	if (PHRASE_ENABLED(what_kind_of_deal))
+	{
 		Response(what_kind_of_deal, PetDeal);
+	}
 	else
 	{
 		if (PHRASE_ENABLED(how_trust))
+		{
 			Response(how_trust, PetDeal);
+		}
 		else if (PHRASE_ENABLED(boneless_dweeb))
+		{
 			Response(boneless_dweeb, PetDeal);
+		}
 		Response(ok_lets_do_it, ExitConversation);
 	}
 	if (PHRASE_ENABLED(what_are_you_really))
+	{
 		Response(what_are_you_really, PetDeal);
+	}
 	else
 	{
 		if (PHRASE_ENABLED(hard_to_believe) && !GET_GAME_STATE(LEARNED_TALKING_PET))
+		{
 			Response(hard_to_believe, PetDeal);
+		}
 		else if (PHRASE_ENABLED(bullshit) && GET_GAME_STATE(LEARNED_TALKING_PET))
+		{
 			Response(bullshit, PetDeal);
+		}
 	}
 	if (PHRASE_ENABLED(kill_you))
+	{
 		Response(kill_you, PetDeal);
+	}
 	else if (PHRASE_ENABLED(must_kill))
 	{
 		Response(must_kill, KillPet);
@@ -729,9 +799,13 @@ Intro(void)
 		{
 			NPCPhrase(HAVENT_GOT_EVERYTHING);
 			if (!GET_GAME_STATE(UTWIG_BOMB_ON_SHIP))
+			{
 				NPCPhrase(NEED_BOMB);
+			}
 			else
+			{
 				NPCPhrase(SOUP_UP_BOMB);
+			}
 
 			setSegue(Segue_peace);
 		}
@@ -757,7 +831,9 @@ Intro(void)
 		// you willingly, but his complaints about the Taalo shield as in
 		// HELLO_AS_DEVICE_1 do not make any sense.
 		if (!GET_GAME_STATE(TAALO_PROTECTOR_ON_SHIP) && NumVisits == 0)
+		{
 			++NumVisits; // skip HELLO_AS_DEVICE_1
+		}
 
 		switch (NumVisits++)
 		{

@@ -156,7 +156,9 @@ static void
 SetCustomShipData(RACE_DESC* pRaceDesc, const CustomShipData_t* data)
 {
 	if (pRaceDesc->data == data)
+	{
 		return; // no-op
+	}
 
 	if (pRaceDesc->data) // Out with the old
 	{
@@ -176,7 +178,9 @@ static void
 animate(ELEMENT* ElementPtr)
 {
 	if (ElementPtr->turn_wait > 0)
+	{
 		--ElementPtr->turn_wait;
+	}
 	else
 	{
 		ElementPtr->next.image.frame =
@@ -215,7 +219,9 @@ initialize_bug_missile(ELEMENT* ShipPtr, HELEMENT MissileArray[])
 			StarShipPtr->ShipFacing
 			+ (ANGLE_TO_FACING(QUADRANT) * i);
 		if (i == 2)
+		{
 			MissileBlock.face += ANGLE_TO_FACING(QUADRANT);
+		}
 		MissileBlock.face = NORMALIZE_FACING(MissileBlock.face);
 
 		if ((MissileArray[i] = initialize_missile(&MissileBlock)))
@@ -256,9 +262,13 @@ pkunk_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 	if (StarShipPtr->RaceDescPtr->ship_info.energy_level < StarShipPtr->RaceDescPtr->ship_info.max_energy
 		&& (StarShipPtr->special_counter == 0
 			|| (uqm::BYTE)TFB_Random() < 20))
+	{
 		StarShipPtr->ship_input_state |= SPECIAL;
+	}
 	else
+	{
 		StarShipPtr->ship_input_state &= ~SPECIAL;
+	}
 	ship_intelligence(ShipPtr, ObjectsOfConcern, ConcernCounter);
 }
 
@@ -491,14 +501,18 @@ pkunk_preprocess(ELEMENT* ElementPtr)
 
 	bool Fwiffo = (StarShipPtr->captains_name_index == NAME_OFFSET + NUM_CAPTAINS_NAMES && StarShipPtr->SpeciesID == SPATHI_ID);
 	if (Fwiffo && !FwiffoSounds)
+	{
 		FwiffoSounds = CaptureSound(LoadSound("ship.spathi.sounds"));
+	}
 
 	if (ElementPtr->state_flags & APPEARING)
 	{
 		HELEMENT hPhoenix = 0;
 
 		if (TFB_Random() & 1)
+		{
 			hPhoenix = AllocElement();
+		}
 
 		// The hPhoenix element is created and placed at the head of the
 		// queue so that it is preprocessed before any of the ships' elements
@@ -535,11 +549,15 @@ pkunk_preprocess(ELEMENT* ElementPtr)
 			uqm::COUNT angle, facing;
 
 			if (Fwiffo)
+			{
 				ProcessSound(SetAbsSoundIndex(FwiffoSounds, 1), ElementPtr);
+			}
 			else
+			{
 				ProcessSound(SetAbsSoundIndex(
 								 StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 1),
 							 ElementPtr);
+			}
 
 			ElementPtr->life_span = PHOENIX_LIFE;
 			SetPrimType(&(GLOBAL(DisplayArray))[ElementPtr->PrimIndex],
@@ -592,7 +610,9 @@ pkunk_postprocess(ELEMENT* ElementPtr)
 
 	GetElementStarShip(ElementPtr, &StarShipPtr);
 	if (StarShipPtr->RaceDescPtr->characteristics.special_wait)
+	{
 		--StarShipPtr->RaceDescPtr->characteristics.special_wait;
+	}
 	else if ((StarShipPtr->cur_status_flags & SPECIAL)
 			 && StarShipPtr->RaceDescPtr->ship_info.energy_level < StarShipPtr->RaceDescPtr->ship_info.max_energy)
 	{

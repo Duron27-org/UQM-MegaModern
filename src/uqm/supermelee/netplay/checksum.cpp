@@ -211,7 +211,9 @@ void initChecksumBuffers(void)
 
 		conn = netConnections[player];
 		if (conn == NULL)
+		{
 			continue;
+		}
 
 		cb = NetConnection_getChecksumBuffer(conn);
 		ChecksumBuffer_init(cb, getBattleInputDelay(),
@@ -233,7 +235,9 @@ void uninitChecksumBuffers(void)
 
 		conn = netConnections[player];
 		if (conn == NULL)
+		{
 			continue;
+		}
 
 		cb = NetConnection_getChecksumBuffer(conn);
 
@@ -284,12 +288,16 @@ bool verifyChecksums(BattleFrameCounter frameNr)
 
 		conn = netConnections[player];
 		if (conn == NULL)
+		{
 			continue;
+		}
 
 		cb = NetConnection_getChecksumBuffer(conn);
 
 		if (!ChecksumBuffer_getChecksum(cb, frameNr, &remoteChecksum))
+		{
 			return false;
+		}
 
 		if (localChecksum != remoteChecksum)
 		{

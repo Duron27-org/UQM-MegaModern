@@ -105,7 +105,9 @@ bool cdp_Init(void)
 	hkernel = dlopen(NULL, RTLD_LAZY);
 
 	for (i = 0; cdp_modules[i].builtin; ++i)
+	{
 		cdp_modules[i].hmodule = hkernel;
+	}
 
 	// clear the rest
 	//memset (cdp_modules + i, 0,
@@ -145,7 +147,9 @@ cdp_LoadModule(const char* modname)
 	cdp_Itf* ihost;
 
 	if (modname == NULL)
+	{
 		return cdp_modules;
+	}
 
 	if (!cdp_inited)
 	{
@@ -168,7 +172,9 @@ cdp_LoadModule(const char* modname)
 	{
 		// and pick up an empty slot (where available)
 		if (!newslot && !cdp->hmodule)
+		{
 			newslot = cdp;
+		}
 	}
 	if (i >= MAX_CDPS)
 	{
@@ -251,9 +257,13 @@ cdp_Module*
 cdp_CheckModule(cdp_Module* module)
 {
 	if (module < cdp_modules || module >= cdp_modules + MAX_CDPS || !module->hmodule || !module->info)
+	{
 		return NULL;
+	}
 	else
+	{
 		return module;
+	}
 }
 
 void cdp_FreeModule(cdp_Module* module)
@@ -261,11 +271,15 @@ void cdp_FreeModule(cdp_Module* module)
 	cdp_Module* modslot = cdp_CheckModule(module);
 
 	if (!modslot || modslot->builtin)
+	{
 		return;
+	}
 
 	modslot->refcount--;
 	if (modslot->refcount == 0)
+	{
 		modslot->info->module_term();
+	}
 
 	dlclose(modslot->hmodule);
 
@@ -283,9 +297,13 @@ cdp_GetModuleContext(cdp_Module* module, bool bMetaString)
 	if (bMetaString)
 	{
 		if (!modslot)
+		{
 			return "(Error)";
+		}
 		if (!modslot->info->context_name)
+		{
 			return "(Null)";
+		}
 	}
 	else if (!modslot)
 	{
@@ -301,9 +319,13 @@ cdp_GetModuleName(cdp_Module* module, bool bMetaString)
 	if (bMetaString)
 	{
 		if (!modslot)
+		{
 			return "(Error)";
+		}
 		if (!modslot->info->name)
+		{
 			return "(Null)";
+		}
 	}
 	else if (!modslot)
 	{
@@ -317,7 +339,9 @@ cdp_GetModuleVersion(cdp_Module* module)
 {
 	cdp_Module* modslot = cdp_CheckModule(module);
 	if (!modslot)
+	{
 		return 0;
+	}
 	return (modslot->info->ver_major << 16) | modslot->info->ver_minor;
 }
 
@@ -328,9 +352,13 @@ cdp_GetModuleVersionString(cdp_Module* module, bool bMetaString)
 	if (bMetaString)
 	{
 		if (!modslot)
+		{
 			return "(Error)";
+		}
 		if (!modslot->info->ver_string)
+		{
 			return "(Null)";
+		}
 	}
 	else if (!modslot)
 	{
@@ -346,9 +374,13 @@ cdp_GetModuleComment(cdp_Module* module, bool bMetaString)
 	if (bMetaString)
 	{
 		if (!modslot)
+		{
 			return "(Error)";
+		}
 		if (!modslot->info->comments)
+		{
 			return "(Null)";
+		}
 	}
 	else if (!modslot)
 	{
@@ -372,13 +404,17 @@ int cdp_LoadAllModules(void)
 	}
 
 	if (!cdpDir)
+	{
 		return 0;
+	}
 
 	fprintf(stderr, "Loading all CDPs...\n");
 
 	dirList = uio_getDirList(cdpDir, "", CDPEXT, match_MATCH_SUFFIX);
 	if (!dirList)
+	{
 		return 0;
+	}
 
 	for (i = 0; i < dirList->numNames; i++)
 	{
@@ -390,7 +426,9 @@ int cdp_LoadAllModules(void)
 		strcpy(modname, dirList->names[i]);
 		pext = strrchr(modname, '.');
 		if (pext) // strip extension
+		{
 			*pext = 0;
+		}
 
 		mod = cdp_LoadModule(modname);
 		if (mod)
@@ -425,6 +463,8 @@ void cdp_FreeAllModules(void)
 	for (cdp = cdp_modules; cdp->used; ++cdp)
 	{
 		if (!cdp->builtin && cdp->hmodule)
+		{
 			cdp_FreeModule(cdp);
+		}
 	}
 }

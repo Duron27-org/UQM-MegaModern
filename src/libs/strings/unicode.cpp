@@ -34,7 +34,9 @@ static inline void
 resyncUTF8(const unsigned char** ptr)
 {
 	while ((**ptr & 0xc0) == 0x80)
+	{
 		(*ptr)++;
+	}
 }
 
 // Get one character from a UTF-8 encoded string.
@@ -65,7 +67,9 @@ getCharFromString(const unsigned char** ptr)
 		(*ptr)++;
 
 		if ((**ptr & 0xc0) != 0x80)
+		{
 			goto err;
+		}
 		result = (result << 6) | ((**ptr) & 0x3f);
 		(*ptr)++;
 
@@ -85,12 +89,16 @@ getCharFromString(const unsigned char** ptr)
 		(*ptr)++;
 
 		if ((**ptr & 0xc0) != 0x80)
+		{
 			goto err;
+		}
 		result = (result << 6) | ((**ptr) & 0x3f);
 		(*ptr)++;
 
 		if ((**ptr & 0xc0) != 0x80)
+		{
 			goto err;
+		}
 		result = (result << 6) | ((**ptr) & 0x3f);
 		(*ptr)++;
 
@@ -110,17 +118,23 @@ getCharFromString(const unsigned char** ptr)
 		(*ptr)++;
 
 		if ((**ptr & 0xc0) != 0x80)
+		{
 			goto err;
+		}
 		result = (result << 6) | ((**ptr) & 0x3f);
 		(*ptr)++;
 
 		if ((**ptr & 0xc0) != 0x80)
+		{
 			goto err;
+		}
 		result = (result << 6) | ((**ptr) & 0x3f);
 		(*ptr)++;
 
 		if ((**ptr & 0xc0) != 0x80)
+		{
 			goto err;
+		}
 		result = (result << 6) | ((**ptr) & 0x3f);
 		(*ptr)++;
 
@@ -135,11 +149,17 @@ getCharFromString(const unsigned char** ptr)
 err:
 	errData = origPtr[0] * 0x1000000;
 	if (origPtr[0] && origPtr[1])
+	{
 		errData &= origPtr[1] * 0x10000;
+	}
 	if (origPtr[0] && origPtr[1] && origPtr[2])
+	{
 		errData &= origPtr[2] * 0x100;
+	}
 	if (origPtr[0] && origPtr[1] && origPtr[2] && origPtr[3])
+	{
 		errData &= origPtr[3];
+	}
 	log_add(log_Warning, "Warning: Invalid UTF8 sequence: result 0x%x last byte 0x%02x str 0x%08x %s", result, (unsigned)(**ptr), errData, origPtr);
 
 	// Resynchronise (skip everything starting with 0x10xxxxxx):
@@ -154,7 +174,9 @@ getCharFromStringN(const unsigned char** ptr, const unsigned char* end)
 	size_t numBytes;
 
 	if (*ptr == end)
+	{
 		goto err;
+	}
 
 	if (**ptr < 0x80)
 	{
@@ -173,10 +195,14 @@ getCharFromStringN(const unsigned char** ptr, const unsigned char* end)
 		numBytes = 4;
 	}
 	else
+	{
 		goto err;
+	}
 
 	if (*ptr + numBytes > end)
+	{
 		goto err;
+	}
 
 	return getCharFromString(ptr);
 
@@ -265,7 +291,9 @@ utf8StringCount(const unsigned char* start)
 	{
 		ch = getCharFromString(&start);
 		if (ch == '\0')
+		{
 			return count;
+		}
 		count++;
 	}
 }
@@ -280,7 +308,9 @@ utf8StringCountN(const unsigned char* start, const unsigned char* end)
 	{
 		ch = getCharFromStringN(&start, end);
 		if (ch == '\0')
+		{
 			return count;
+		}
 		count++;
 	}
 }
@@ -295,9 +325,13 @@ utf8CharCount(const unsigned char* start, UniChar uni_char)
 	{
 		ch = getCharFromString(&start);
 		if (ch == '\0')
+		{
 			return count;
+		}
 		if (ch == uni_char)
+		{
 			count++;
+		}
 	}
 }
 
@@ -311,11 +345,15 @@ int utf8StringPos(const unsigned char* pStr, UniChar ch)
 	for (pos = 0; *pStr != '\0'; ++pos)
 	{
 		if (getCharFromString(&pStr) == ch)
+		{
 			return pos;
+		}
 	}
 
 	if (ch == '\0' && *pStr == '\0')
+	{
 		return pos;
+	}
 
 	return -1;
 }
@@ -331,14 +369,20 @@ int utf8StringLastPos(const unsigned char* pStr, UniChar ch)
 	for (pos = 0; *pStr != '\0'; ++pos)
 	{
 		if (getCharFromString(&pStr) == ch)
+		{
 			last_pos = pos;
+		}
 	}
 
 	if (last_pos != -1)
+	{
 		return last_pos;
+	}
 
 	if (ch == '\0' && *pStr == '\0')
+	{
 		return pos;
+	}
 
 	return -1;
 }
@@ -352,7 +396,9 @@ unsigned char*
 utf8StringCopy(unsigned char* dst, size_t size, const unsigned char* src)
 {
 	if (size == 0)
+	{
 		return 0;
+	}
 
 	strncpy((char*)dst, (const char*)src, size);
 	dst[size - 1] = '\0';
@@ -416,7 +462,9 @@ skipUTF8Chars(const unsigned char* ptr, size_t num)
 		oldPtr = ptr;
 		ch = getCharFromString(&ptr);
 		if (ch == '\0')
+		{
 			return (unsigned char*)unconst(oldPtr);
+		}
 	}
 	return (unsigned char*)unconst(ptr);
 }
@@ -433,7 +481,9 @@ getUniCharFromStringN(UniChar* wstr, size_t maxcount,
 	UniChar* next;
 
 	if (maxcount == 0)
+	{
 		return 0;
+	}
 
 	// always leave room for 0-term
 	--maxcount;
@@ -442,7 +492,9 @@ getUniCharFromStringN(UniChar* wstr, size_t maxcount,
 	{
 		*next = getCharFromStringN(&start, end);
 		if (*next == 0)
+		{
 			break;
+		}
 	}
 
 	*next = 0; // term
@@ -460,7 +512,9 @@ getUniCharFromString(UniChar* wstr, size_t maxcount,
 	UniChar* next;
 
 	if (maxcount == 0)
+	{
 		return 0;
+	}
 
 	// always leave room for 0-term
 	--maxcount;
@@ -469,7 +523,9 @@ getUniCharFromString(UniChar* wstr, size_t maxcount,
 	{
 		*next = getCharFromString(&start);
 		if (*next == 0)
+		{
 			break;
+		}
 	}
 
 	*next = 0; // term
@@ -514,7 +570,9 @@ int getStringFromChar(unsigned char* ptr, size_t size, UniChar ch)
 	}
 
 	if ((size_t)i + 1 > size)
+	{
 		return -(i + 1);
+	}
 
 	// unrolled for speed
 	switch (i)
@@ -554,7 +612,9 @@ getStringFromWideN(unsigned char* ptr, size_t size,
 	int used;
 
 	if (size == 0)
+	{
 		return 0;
+	}
 
 	// always leave room for 0-term
 	--size;
@@ -564,7 +624,9 @@ getStringFromWideN(unsigned char* ptr, size_t size,
 	{
 		used = getStringFromChar(next, size, *wstr);
 		if (used < 0)
+		{
 			break; // not enough room
+		}
 		if (used == 0)
 		{ // bad char?
 			*next = '?';
@@ -638,7 +700,9 @@ AlignText(const uqm::CHAR_T* str, sint16* loc_x)
 	if (utf8CharCount((unsigned char*)str, UNICHAR_PIPE) != 2
 		|| str == NULL || first_pos != 0 || last_pos == -1
 		|| last_pos == 0)
+	{
 		return (uqm::CHAR_T*)str;
+	}
 
 	if (sscanf(str, "|%d|", &modSize) != 1)
 	{
@@ -650,7 +714,9 @@ AlignText(const uqm::CHAR_T* str, sint16* loc_x)
 	}
 
 	if (modSize != 0)
+	{
 		*loc_x += RES_SCALE(modSize);
+	}
 
 	return (uqm::CHAR_T*)skipUTF8Chars((unsigned char*)str, last_pos + 1);
 }
@@ -665,7 +731,9 @@ AddPadd(const uqm::CHAR_T* str, sint16* padding)
 	if (utf8CharCount((unsigned char*)str, UNICHAR_COLON) != 2
 		|| str == NULL || first_pos != 0 || last_pos == -1
 		|| last_pos == 0)
+	{
 		return (uqm::CHAR_T*)str;
+	}
 
 	if (sscanf(str, ":%d:", &modSize) != 1)
 	{
@@ -677,7 +745,9 @@ AddPadd(const uqm::CHAR_T* str, sint16* padding)
 	}
 
 	if (modSize != 0)
+	{
 		*padding += RES_SCALE(modSize);
+	}
 
 	return (uqm::CHAR_T*)skipUTF8Chars((unsigned char*)str, last_pos + 1);
 }

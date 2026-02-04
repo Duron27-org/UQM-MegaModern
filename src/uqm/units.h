@@ -289,9 +289,13 @@ static inline uqm::SDWORD
 inBounds(uqm::SDWORD val, uqm::SDWORD min, uqm::SDWORD max)
 {
 	if (val < min)
+	{
 		return min;
+	}
 	if (val > max)
+	{
 		return max;
+	}
 	return val;
 }
 

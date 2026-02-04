@@ -68,7 +68,9 @@ drawSupportShip(ROSTER_STATE* rosterState, bool filled, bool saveFrame)
 	STAMP s;
 
 	if (!rosterState->curShipFrame)
+	{
 		return;
+	}
 
 	s.origin.x = RES_SCALE(rosterState->curShipPt.x);
 	s.origin.y = RES_SCALE(rosterState->curShipPt.y);
@@ -88,9 +90,13 @@ drawSupportShip(ROSTER_STATE* rosterState, bool filled, bool saveFrame)
 	else
 	{
 		if (filled)
+		{
 			DrawFilledStamp(&s);
+		}
 		else
+		{
 			DrawStamp(&s);
+		}
 	}
 }
 
@@ -103,7 +109,9 @@ getSupportShipIcon(ROSTER_STATE* rosterState)
 	rosterState->curShipFrame = NULL;
 	ShipFragPtr = LockSupportShip(rosterState, &hShipFrag);
 	if (!ShipFragPtr)
+	{
 		return;
+	}
 
 	rosterState->curShipFrame = SetAbsFrameIndex(ShipFragPtr->icons, 2);
 	UnlockShipFrag(&GLOBAL(built_ship_q), hShipFrag);
@@ -198,7 +206,9 @@ DeltaSupportCrew(ROSTER_STATE* rosterState, uqm::SIZE crew_delta)
 
 	StarShipPtr = LockSupportShip(rosterState, &hShipFrag);
 	if (!StarShipPtr)
+	{
 		return false;
+	}
 
 	hTemplate = GetStarShipFromIndex(&GLOBAL(avail_race_q),
 									 StarShipPtr->race_id);
@@ -207,17 +217,25 @@ DeltaSupportCrew(ROSTER_STATE* rosterState, uqm::SIZE crew_delta)
 	StarShipPtr->crew_level += crew_delta;
 
 	if (StarShipPtr->crew_level == 0)
+	{
 		StarShipPtr->crew_level = 1;
+	}
 	else if (StarShipPtr->crew_level > TemplatePtr->crew_level && crew_delta > 0)
+	{
 		StarShipPtr->crew_level -= crew_delta;
+	}
 	else
 	{
 		if (StarShipPtr->crew_level >= TemplatePtr->crew_level)
+		{
 			sprintf(buf, "%u", StarShipPtr->crew_level);
+		}
 		else
+		{
 			sprintf(buf, "%u/%u",
 					StarShipPtr->crew_level,
 					TemplatePtr->crew_level);
+		}
 
 		PreUpdateFlashRect();
 		DrawStatusMessage(buf);
@@ -259,7 +277,9 @@ DoModifyRoster(MENU_STATE* pMS)
 	bool select, cancel, up, down, pgup, pgdn, horiz;
 
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+	{
 		return false;
+	}
 
 	select = PulsedInputState.menu[KEY_MENU_SELECT];
 	cancel = PulsedInputState.menu[KEY_MENU_CANCEL];
@@ -298,22 +318,32 @@ DoModifyRoster(MENU_STATE* pMS)
 		if (up || pgup)
 		{
 			if (GLOBAL_SIS(CrewEnlisted))
+			{
 				DoLoop = pgup ? 10 : 1;
+			}
 			else
+			{
 				failed = true;
+			}
 		}
 		else if (down || pgdn)
 		{
 			if (GLOBAL_SIS(CrewEnlisted) < GetCrewPodCapacity())
+			{
 				DoLoop = pgdn ? 10 : 1;
+			}
 			else
+			{
 				failed = true;
+			}
 		}
 
 		if (DoLoop != 0)
 		{
 			for (loop = 0; loop < DoLoop; loop++)
+			{
 				failed = !DeltaSupportCrew(rosterState, (down || pgdn) ? -1 : 1);
+			}
 		}
 
 		if (failed)
@@ -336,37 +366,53 @@ DoModifyRoster(MENU_STATE* pMS)
 		else if (horiz)
 		{
 			if (NewState == top_right - 1)
+			{
 				NewState = rosterState->count - 1;
+			}
 			else if (NewState >= top_right)
 			{
 				NewState -= top_right;
 				if (pship_pos[NewState].y < pship_pos[pMS->CurState].y)
+				{
 					++NewState;
+				}
 			}
 			else
 			{
 				NewState += top_right;
 				if (NewState != top_right
 					&& pship_pos[NewState].y > pship_pos[pMS->CurState].y)
+				{
 					--NewState;
+				}
 			}
 		}
 		else if (down)
 		{
 			++NewState;
 			if (NewState == rosterState->count)
+			{
 				NewState = top_right;
+			}
 			else if (NewState == top_right)
+			{
 				NewState = 0;
+			}
 		}
 		else if (up)
 		{
 			if (NewState == 0)
+			{
 				NewState = top_right - 1;
+			}
 			else if (NewState == top_right)
+			{
 				NewState = rosterState->count - 1;
+			}
 			else
+			{
 				--NewState;
+			}
 		}
 
 		BatchGraphics();
@@ -378,9 +424,13 @@ DoModifyRoster(MENU_STATE* pMS)
 			// JMS_GFX: In HD mode we draw the rectangle of screen
 			// we captured earlier.
 			if (IS_HD)
+			{
 				DrawStamp(&savedShipFrame);
+			}
 			else // In 1x mode we just draw the icon.
+			{
 				drawSupportShip(rosterState, false, false);
+			}
 			// Select the new one
 			selectSupportShip(rosterState, NewState);
 			pMS->CurState = NewState;
@@ -388,12 +438,18 @@ DoModifyRoster(MENU_STATE* pMS)
 			// JMS_GFX: In HD mode we now have to capture the
 			// location of this new rectangle.
 			if (IS_HD)
+			{
 				flashSupportShip(rosterState, true);
+			}
 			else
+			{
 				flashSupportShip(rosterState, false);
+			}
 		}
 		else
+		{
 			flashSupportShip(rosterState, false);
+		}
 
 		UnbatchGraphics();
 	}
@@ -409,17 +465,27 @@ compShipPos(const void* ptr1, const void* ptr2)
 
 	// Ships on the left in the lower half
 	if (pt1->x < pt2->x)
+	{
 		return -1;
+	}
 	else if (pt1->x > pt2->x)
+	{
 		return 1;
+	}
 
 	// and ordered on Y
 	if (pt1->y < pt2->y)
+	{
 		return -1;
+	}
 	else if (pt1->y > pt2->y)
+	{
 		return 1;
+	}
 	else
+	{
 		return 0;
+	}
 }
 
 bool RosterMenu(void)
@@ -434,7 +500,9 @@ bool RosterMenu(void)
 
 	RosterState.count = CountLinks(&GLOBAL(built_ship_q));
 	if (!RosterState.count)
+	{
 		return false;
+	}
 
 	// Get the escort positions we will use and sort on X then Y
 	assert(sizeof(RosterState.shipPos) == sizeof(ship_pos));
@@ -448,10 +516,14 @@ bool RosterMenu(void)
 	// JMS_GFX: Remember the location of the first ship to be able to erase
 	// the red junk from around it after rostering.
 	if (IS_HD)
+	{
 		drawSupportShip(&RosterState, true, true);
+	}
 
 	if (optWhichMenu == OPT_PC)
+	{
 		DrawMenuStateStrings(PM_ALT_CARGO, 2);
+	}
 
 	SetMenuSounds(MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
 
@@ -464,9 +536,13 @@ bool RosterMenu(void)
 	// JMS_GFX: In HD mode we draw the rectangle of screen
 	// we captured earlier.
 	if (IS_HD)
+	{
 		DrawStamp(&savedShipFrame);
+	}
 	else // In Original mode we just draw the icon.
+	{
 		drawSupportShip(&RosterState, false, false);
+	}
 
 	DrawStatusMessage(NULL);
 

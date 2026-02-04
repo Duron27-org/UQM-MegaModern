@@ -146,7 +146,9 @@ int flushPacketQueue(NetConnection* conn)
 
 	flushResult = flushPacketQueueLinks(conn, &queue->first);
 	if (queue->first == NULL)
+	{
 		queue->end = &queue->first;
+	}
 	if (flushResult == -1)
 	{
 		// errno is set

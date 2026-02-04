@@ -36,7 +36,7 @@ static LOCDATA spathi_desc =
 		BLACK_COLOR_INIT, /* AlienTextBColor */
 		{0, 0}, /* AlienTextBaseline */
 		0,
- /* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
+		/* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
 		ALIGN_CENTER, /* AlienTextAlign */
 		VALIGN_TOP, /* AlienTextValign */
 		SPATHI_COLOR_MAP, /* AlienColorMap */
@@ -181,17 +181,29 @@ ExitConversation(RESPONSE_REF Response)
 	setSegue(Segue_peace);
 
 	if (PLAYER_SAID(Response, bye_ally_space))
+	{
 		NPCPhrase(GOODBYE_ALLY_SPACE);
+	}
 	else if (PLAYER_SAID(Response, bye_friendly_space))
+	{
 		NPCPhrase(GOODBYE_FRIENDLY_SPACE);
+	}
 	else if (PLAYER_SAID(Response, part_in_peace))
+	{
 		NPCPhrase(KEEP_IT_SECRET);
+	}
 	else if (PLAYER_SAID(Response, we_sorry_space))
+	{
 		NPCPhrase(APOLOGIZE_AT_HOMEWORLD);
+	}
 	else if (PLAYER_SAID(Response, give_info_space))
+	{
 		NPCPhrase(HERES_SOME_INFO);
+	}
 	else if (PLAYER_SAID(Response, bye_angry_space))
+	{
 		NPCPhrase(GOODBYE_ANGRY_SPACE);
+	}
 	else if (PLAYER_SAID(Response, attack_you_now))
 	{
 		NPCPhrase(YIPES);
@@ -212,7 +224,9 @@ ExitConversation(RESPONSE_REF Response)
 			 || PLAYER_SAID(Response, changed_mind))
 	{
 		if (PLAYER_SAID(Response, tell_me_coordinates))
+		{
 			NPCPhrase(FAKE_COORDINATES);
+		}
 		NPCPhrase(OK_WE_FIGHT_AT_PLUTO);
 
 		setSegue(Segue_hostile);
@@ -220,7 +234,9 @@ ExitConversation(RESPONSE_REF Response)
 	else if (PLAYER_SAID(Response, join_us))
 	{
 		if (EscortFeasibilityStudy(SPATHI_SHIP) == 0)
+		{
 			NPCPhrase(TOO_SCARY);
+		}
 		else
 		{
 			NPCPhrase(WILL_JOIN);
@@ -255,17 +271,29 @@ static void
 SpathiOnPluto(RESPONSE_REF R)
 {
 	if (PLAYER_SAID(R, hi_there))
+	{
 		NPCPhrase(ARE_YOU_SURE);
+	}
 	else if (PLAYER_SAID(R, dont_kill))
+	{
 		NPCPhrase(OK_WONT);
+	}
 	else if (PLAYER_SAID(R, youre_forgiven))
+	{
 		NPCPhrase(THANKS_FOR_FORGIVENESS);
+	}
 	else if (PLAYER_SAID(R, you_wont_die_yet))
+	{
 		NPCPhrase(ETERNAL_GRATITUDE);
+	}
 	else if (PLAYER_SAID(R, you_may_live))
+	{
 		NPCPhrase(GEE_THANKS);
+	}
 	else if (PLAYER_SAID(R, youve_got_me_all_wrong))
+	{
 		NPCPhrase(SORRY_NO_COORDS);
+	}
 	else if (PLAYER_SAID(R, what_doing_on_pluto_1))
 	{
 		NPCPhrase(ABOUT_20_YEARS_AGO);
@@ -381,54 +409,92 @@ SpathiOnPluto(RESPONSE_REF R)
 			++join_us_refusals;
 		}
 		else
+		{
 			NPCPhrase(WONT_JOIN_3);
+		}
 	}
 
 	if (PHRASE_ENABLED(what_doing_on_pluto_1))
+	{
 		Response(what_doing_on_pluto_1, SpathiOnPluto);
+	}
 	else if (PHRASE_ENABLED(what_doing_on_pluto_2))
+	{
 		Response(what_doing_on_pluto_2, SpathiOnPluto);
+	}
 	else if (PHRASE_ENABLED(what_doing_on_pluto_3))
+	{
 		Response(what_doing_on_pluto_3, SpathiOnPluto);
+	}
 	else
 	{
 		if (PHRASE_ENABLED(what_about_ilwrath))
+		{
 			Response(what_about_ilwrath, SpathiOnPluto);
+		}
 		else if (PHRASE_ENABLED(when_ilwrath))
+		{
 			Response(when_ilwrath, SpathiOnPluto);
+		}
 
 		if (PHRASE_ENABLED(what_about_moonbase))
+		{
 			Response(what_about_moonbase, SpathiOnPluto);
+		}
 		else if (PHRASE_ENABLED(what_about_other_spathi))
+		{
 			Response(what_about_other_spathi, SpathiOnPluto);
+		}
 		else
 		{
 			if (PHRASE_ENABLED(how_many_crew))
+			{
 				Response(how_many_crew, SpathiOnPluto);
+			}
 			else if (PHRASE_ENABLED(really_thousands))
+			{
 				Response(really_thousands, SpathiOnPluto);
+			}
 			else if (PHRASE_ENABLED(full_of_monsters))
+			{
 				Response(full_of_monsters, SpathiOnPluto);
+			}
 
 			if (PHRASE_ENABLED(what_enemy))
+			{
 				Response(what_enemy, SpathiOnPluto);
+			}
 			else if (PHRASE_ENABLED(why_you_here))
+			{
 				Response(why_you_here, SpathiOnPluto);
+			}
 		}
 	}
 	if (PHRASE_ENABLED(where_are_urquan))
+	{
 		Response(where_are_urquan, SpathiOnPluto);
+	}
 	else if (PHRASE_ENABLED(what_about_other_races))
+	{
 		Response(what_about_other_races, SpathiOnPluto);
+	}
 	else if (PHRASE_ENABLED(what_blaze_of_glory))
+	{
 		Response(what_blaze_of_glory, SpathiOnPluto);
+	}
 	else if (PHRASE_ENABLED(what_about_yourself))
+	{
 		Response(what_about_yourself, SpathiOnPluto);
+	}
 
 	if (!PHRASE_ENABLED(full_of_monsters))
+	{
 		Response(join_us, ExitConversation);
+	}
 	else
+	{
 		Response(join_us, SpathiOnPluto);
+	}
 	Response(changed_mind, ExitConversation);
 }
 
@@ -514,15 +580,25 @@ SpathiAllies(RESPONSE_REF R)
 	}
 
 	if (PHRASE_ENABLED(whats_up_space_2))
+	{
 		Response(whats_up_space_2, SpathiAllies);
+	}
 	if (PHRASE_ENABLED(give_us_info_from_space))
+	{
 		Response(give_us_info_from_space, SpathiAllies);
+	}
 	if (PHRASE_ENABLED(give_us_resources_space))
+	{
 		Response(give_us_resources_space, SpathiAllies);
+	}
 	if (PHRASE_ENABLED(what_do_for_fun))
+	{
 		Response(what_do_for_fun, SpathiAllies);
+	}
 	if (NOMAD_DIF(OPTVAL_NOM_EASY))
+	{
 		Response(join_us_nomad, ExitConversation);
+	}
 	Response(bye_ally_space, ExitConversation);
 }
 
@@ -560,9 +636,13 @@ SpathiFriendly(RESPONSE_REF R)
 	}
 
 	if (PHRASE_ENABLED(whats_up_space_1))
+	{
 		Response(whats_up_space_1, SpathiFriendly);
+	}
 	if (PHRASE_ENABLED(since_friendly_give_stuff))
+	{
 		Response(since_friendly_give_stuff, SpathiFriendly);
+	}
 	Response(bye_friendly_space, ExitConversation);
 }
 
@@ -578,7 +658,9 @@ SpathiBefriend(RESPONSE_REF R)
 	LastStack = 0;
 	pStr[0] = pStr[1] = 0;
 	if (PLAYER_SAID(R, come_in_peace))
+	{
 		NPCPhrase(AGAINST_NATURE);
+	}
 	else if (PLAYER_SAID(R, looking_for_a_few_good_squids))
 	{
 		NPCPhrase(URQUAN_SLAVES);
@@ -612,13 +694,21 @@ SpathiBefriend(RESPONSE_REF R)
 	}
 
 	if (PHRASE_ENABLED(looking_for_a_few_good_squids))
+	{
 		pStr[0] = looking_for_a_few_good_squids;
+	}
 	else if (PHRASE_ENABLED(why_slaves))
+	{
 		pStr[0] = why_slaves;
+	}
 	if (PHRASE_ENABLED(tell_us_about_you))
+	{
 		pStr[1] = tell_us_about_you;
+	}
 	else if (PHRASE_ENABLED(what_you_really_want))
+	{
 		pStr[1] = what_you_really_want;
+	}
 	if (pStr[LastStack])
 	{
 		InfoLeft = true;
@@ -678,13 +768,21 @@ SpathiAntagonize(RESPONSE_REF R)
 	}
 
 	if (PHRASE_ENABLED(wanna_fight))
+	{
 		Response(wanna_fight, SpathiAntagonize);
+	}
 	else if (PHRASE_ENABLED(so_lets_fight))
+	{
 		Response(so_lets_fight, SpathiAntagonize);
+	}
 	else if (PHRASE_ENABLED(so_lets_fight_already))
+	{
 		Response(so_lets_fight_already, SpathiAntagonize);
+	}
 	if (PHRASE_ENABLED(heard_youre_cowards))
+	{
 		Response(heard_youre_cowards, SpathiAntagonize);
+	}
 	Response(attack_you_now, ExitConversation);
 }
 
@@ -862,7 +960,9 @@ init_spathi_comm(void)
 
 	// use alternate Fwiffo track if available
 	if (GET_GAME_STATE(FOUND_PLUTO_SPATHI) == 1)
+	{
 		altResFlags |= USE_ALT_SONG;
+	}
 
 	if (GET_GAME_STATE(FOUND_PLUTO_SPATHI) == 1
 		|| GET_GAME_STATE(SPATHI_MANNER) == 3

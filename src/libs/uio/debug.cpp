@@ -239,7 +239,9 @@ void unInitRepository(void)
 	for (i = 7; i >= 0; i--)
 	{
 		if (mountHandles[i] != NULL)
+		{
 			uio_unmountDir(mountHandles[i]);
+		}
 		//		uio_printMountTree(stderr, repository->mountTree, 0);
 		//		uio_printMounts(stderr, repository);
 		//		fprintf(stderr, "\n");
@@ -275,7 +277,9 @@ void uio_debugInteractive(FILE* in, FILE* out, FILE* err)
 	do
 	{
 		if (interactive)
+		{
 			fprintf(out, "> ");
+		}
 		if (fgets(lineBuf, LINEBUFLEN, in) == NULL)
 		{
 			if (feof(in))
@@ -304,7 +308,9 @@ void uio_debugInteractive(FILE* in, FILE* out, FILE* err)
 		uio_free(argv);
 	} while (!debugContext.exit);
 	if (interactive)
+	{
 		fprintf(out, "\n");
+	}
 	uio_closeDir(debugContext.cwd);
 }
 
@@ -320,12 +326,18 @@ makeArgs(char* lineBuf, int* argc, char*** argv)
 	while (true)
 	{
 		while (isspace((int)*ptr))
+		{
 			ptr++;
+		}
 		if (*ptr == '\0')
+		{
 			break;
+		}
 		numArg++;
 		while (!isspace((int)*ptr))
+		{
 			ptr++;
+		}
 	}
 
 	args = (char**)uio_malloc((numArg + 1) * sizeof(char*));
@@ -334,15 +346,23 @@ makeArgs(char* lineBuf, int* argc, char*** argv)
 	while (true)
 	{
 		while (isspace((int)*ptr))
+		{
 			ptr++;
+		}
 		if (*ptr == '\0')
+		{
 			break;
+		}
 		args[numArg] = ptr;
 		numArg++;
 		while (!isspace((int)*ptr))
+		{
 			ptr++;
+		}
 		if (*ptr == '\0')
+		{
 			break;
+		}
 		*ptr = '\0';
 		ptr++;
 	}
@@ -368,7 +388,9 @@ debugCallCommand(DebugContext* debugContext, int argc, char* argv[])
 			return 1;
 		}
 		if (strcmp(argv[0], debugCommands[i].name) == 0)
+		{
 			break;
+		}
 		i++;
 	}
 	return debugCommands[i].fun(debugContext, argc, argv);
@@ -410,14 +432,18 @@ debugCmdCat(DebugContext* debugContext, int argc, char* argv[])
 		if (numInBuf == -1)
 		{
 			if (errno == EINTR)
+			{
 				continue;
+			}
 			fprintf(debugContext->err, "Could not read from file: %s\n",
 					strerror(errno));
 			uio_close(handle);
 			return 1;
 		}
 		if (numInBuf == 0)
+		{
 			break;
+		}
 		bufPtr = readBuf;
 		do
 		{
@@ -425,7 +451,9 @@ debugCmdCat(DebugContext* debugContext, int argc, char* argv[])
 			if (numWritten == -1)
 			{
 				if (errno == EINTR)
+				{
 					continue;
+				}
 				fprintf(debugContext->err, "Could not read from file: %s\n",
 						strerror(errno));
 				uio_close(handle);
@@ -526,7 +554,9 @@ debugCmdExec(DebugContext* debugContext, int argc, char* argv[])
 
 	fprintf(debugContext->err, "Executing: %s", newArgs[0]);
 	for (i = 1; i < argc - 1; i++)
+	{
 		fprintf(debugContext->err, " %s", newArgs[i]);
+	}
 	fprintf(debugContext->err, "\n");
 
 #if defined(__unix__) && !defined(_WIN32_WCE)
@@ -557,7 +587,9 @@ debugCmdExec(DebugContext* debugContext, int argc, char* argv[])
 					{
 						retVal = waitpid(pid, &status, 0);
 						if (retVal != -1)
+						{
 							break;
+						}
 						if (errno != EINTR)
 						{
 							fprintf(debugContext->err, "Error: waitpid() "
@@ -567,7 +599,9 @@ debugCmdExec(DebugContext* debugContext, int argc, char* argv[])
 						}
 					}
 					if (retVal == -1)
+					{
 						break;
+					}
 
 					if (WIFEXITED(status))
 					{
@@ -596,7 +630,9 @@ err:
 	for (i = 1; i < argc - 1; i++)
 	{
 		if (handles[i] != NULL)
+		{
 			uio_releaseStdioAccess(handles[i]);
+		}
 	}
 	uio_free(handles);
 	uio_free((void*)newArgs);
@@ -673,7 +709,9 @@ debugCmdFwriteTest(DebugContext* debugContext, int argc, char* argv[])
 		{
 			ptr = uio_fgets(buf, sizeof buf, stream);
 			if (ptr == NULL)
+			{
 				break;
+			}
 			fprintf(debugContext->out, "%d: [%s]\n", i, ptr);
 			i++;
 		}
@@ -785,14 +823,20 @@ listOneDir(DebugContext* debugContext, const char* arg)
 		fprintf(debugContext->out, "Error in uio_getDirList(): %s.\n",
 				strerror(errno));
 		if (buf != NULL)
+		{
 			uio_free(buf);
+		}
 		return 1;
 	}
 	for (i = 0; i < dirList->numNames; i++)
+	{
 		fprintf(debugContext->out, "%s\n", dirList->names[i]);
+	}
 	uio_DirList_free(dirList);
 	if (buf != NULL)
+	{
 		uio_free(buf);
+	}
 	return 0;
 }
 
@@ -803,13 +847,17 @@ debugCmdLs(DebugContext* debugContext, int argc, char* argv[])
 	int retVal;
 
 	if (argc == 1)
+	{
 		return listOneDir(debugContext, (const char*)unconst(""));
+	}
 
 	for (argI = 1; argI < argc; argI++)
 	{
 		retVal = listOneDir(debugContext, argv[argI]);
 		if (retVal != 0)
+		{
 			return retVal;
+		}
 	}
 
 	return 0;

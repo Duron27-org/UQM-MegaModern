@@ -82,9 +82,13 @@ frame_intersect(INTERSECT_CONTROL* pControl0, RECT* pr0,
 		dy_0 = -dy_0;
 	}
 	if (dx_0 >= dy_0)
+	{
 		cycle0 = dx_0;
+	}
 	else
+	{
 		cycle0 = dy_0;
+	}
 	xerror0 = yerror0 = cycle0;
 
 	dx_1 = pr1->extent.width;
@@ -112,9 +116,13 @@ frame_intersect(INTERSECT_CONTROL* pControl0, RECT* pr0,
 		dy_1 = -dy_1;
 	}
 	if (dx_1 >= dy_1)
+	{
 		cycle1 = dx_1;
+	}
 	else
+	{
 		cycle1 = dy_1;
+	}
 	xerror1 = yerror1 = cycle1;
 
 	check0 = check1 = false;
@@ -140,7 +148,9 @@ frame_intersect(INTERSECT_CONTROL* pControl0, RECT* pr0,
 			if ((error = (long)xerror0
 					   - (long)dx_0 * (long)start)
 				> 0)
+			{
 				xerror0 = (uqm::SDWORD)error;
+			}
 			else
 			{
 				delta = -(uqm::SDWORD)(error / (long)cycle0) + 1;
@@ -150,7 +160,9 @@ frame_intersect(INTERSECT_CONTROL* pControl0, RECT* pr0,
 			if ((error = (long)yerror0
 					   - (long)dy_0 * (long)start)
 				> 0)
+			{
 				yerror0 = (uqm::SDWORD)error;
+			}
 			else
 			{
 				delta = -(uqm::SDWORD)(error / (long)cycle0) + 1;
@@ -167,7 +179,9 @@ frame_intersect(INTERSECT_CONTROL* pControl0, RECT* pr0,
 			if ((error = (long)xerror1
 					   - (long)dx_1 * (long)start)
 				> 0)
+			{
 				xerror1 = (uqm::SDWORD)error;
+			}
 			else
 			{
 				delta = -(uqm::SDWORD)(error / (long)cycle1) + 1;
@@ -177,7 +191,9 @@ frame_intersect(INTERSECT_CONTROL* pControl0, RECT* pr0,
 			if ((error = (long)yerror1
 					   - (long)dy_1 * (long)start)
 				> 0)
+			{
 				yerror1 = (uqm::SDWORD)error;
+			}
 			else
 			{
 				delta = -(uqm::SDWORD)(error / (long)cycle1) + 1;
@@ -237,7 +253,9 @@ frame_intersect(INTERSECT_CONTROL* pControl0, RECT* pr0,
 CheckFirstIntersection:
 			if (BoxIntersect(&IB0.Box, &IB1.Box, &r_intersect)
 				&& images_intersect(&IB0, &IB1, &r_intersect))
+			{
 				return (t0);
+			}
 
 			if (check0)
 			{
@@ -267,9 +285,13 @@ DrawablesIntersect(INTERSECT_CONTROL* pControl0,
 	FRAME FramePtr0, FramePtr1;
 
 	if (!ContextActive() || max_time_val == 0)
+	{
 		return ((TIME_VALUE)0);
+	}
 	else if (max_time_val > MAX_TIME_VALUE)
+	{
 		max_time_val = MAX_TIME_VALUE;
+	}
 
 	pControl0->last_time_val = pControl1->last_time_val = 0;
 
@@ -283,13 +305,17 @@ DrawablesIntersect(INTERSECT_CONTROL* pControl0,
 
 	FramePtr0 = pControl0->IntersectStamp.frame;
 	if (FramePtr0 == 0)
+	{
 		return (0);
+	}
 	r0.corner.x -= FramePtr0->HotSpot.x;
 	r0.corner.y -= FramePtr0->HotSpot.y;
 
 	FramePtr1 = pControl1->IntersectStamp.frame;
 	if (FramePtr1 == 0)
+	{
 		return (0);
+	}
 	r1.corner.x -= FramePtr1->HotSpot.x;
 	r1.corner.y -= FramePtr1->HotSpot.y;
 
@@ -317,7 +343,9 @@ DrawablesIntersect(INTERSECT_CONTROL* pControl0,
 			TIME_VALUE intersect_time;
 
 			if (dx == 0 && dy == 0)
+			{
 				time_y_0 = time_y_1 = 0;
+			}
 			else
 			{
 				uqm::SDWORD t;
@@ -332,13 +360,19 @@ DrawablesIntersect(INTERSECT_CONTROL* pControl0,
 				else if (time_y_0 <= 0)
 				{
 					if (dy < 0)
+					{
 						time_y_1 = -time_y_0;
+					}
 					time_y_0 = 0;
 				}
 				if (dy < 0)
+				{
 					dy = -dy;
+				}
 				if (dy < time_y_1)
+				{
 					time_y_1 = dy;
+				}
 				/* just to be safe, widen search area */
 				--time_y_0;
 				++time_y_1;
@@ -352,13 +386,19 @@ DrawablesIntersect(INTERSECT_CONTROL* pControl0,
 				else if (time_x_0 <= 0)
 				{
 					if (dx < 0)
+					{
 						time_x_1 = -time_x_0;
+					}
 					time_x_0 = 0;
 				}
 				if (dx < 0)
+				{
 					dx = -dx;
+				}
 				if (dx < time_x_1)
+				{
 					time_x_1 = dx;
+				}
 				/* just to be safe, widen search area */
 				--time_x_0;
 				++time_x_1;
@@ -401,15 +441,23 @@ DrawablesIntersect(INTERSECT_CONTROL* pControl0,
 				}
 
 				if ((time_beg <<= TIME_SHIFT) < fract)
+				{
 					time_y_0 = 0;
+				}
 				else
+				{
 					time_y_0 = (uqm::SDWORD)(time_beg / fract);
+				}
 
 				if (time_end >= fract /* just in case of overflow */
 					|| (time_end <<= TIME_SHIFT) >= fract * (long)max_time_val)
+				{
 					time_y_1 = max_time_val - 1;
+				}
 				else
+				{
 					time_y_1 = (uqm::SDWORD)((time_end + fract - 1) / fract) - 1;
+				}
 			}
 
 #ifdef DEBUG_INTERSEC

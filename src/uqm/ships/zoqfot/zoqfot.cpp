@@ -139,16 +139,22 @@ spit_preprocess(ELEMENT* ElementPtr)
 		IncFrameIndex(ElementPtr->next.image.frame);
 	/* turn_wait is abused here to control the animation speed. */
 	if (ElementPtr->turn_wait > 0)
+	{
 		--ElementPtr->turn_wait;
+	}
 	else
 	{
 		uqm::COUNT index, angle, speed;
 
 		angle = GetVelocityTravelAngle(&ElementPtr->velocity);
 		if ((index = GetFrameIndex(ElementPtr->next.image.frame)) == 1)
+		{
 			angle = angle + (((uqm::COUNT)TFB_Random() % 3) - 1);
+		}
 		else
+		{
 			index >>= 1;
+		}
 
 		speed = WORLD_TO_VELOCITY(DISPLAY_TO_WORLD(
 									  RES_SCALE(GetFrameCount(ElementPtr->next.image.frame)) - index)
@@ -207,7 +213,9 @@ static void
 tongue_postprocess(ELEMENT* ElementPtr)
 {
 	if (ElementPtr->turn_wait)
+	{
 		spawn_tongue(ElementPtr);
+	}
 }
 
 static void
@@ -218,7 +226,9 @@ tongue_collision(ELEMENT* ElementPtr0, POINT* pPt0,
 
 	GetElementStarShip(ElementPtr0, &StarShipPtr);
 	if (StarShipPtr->special_counter == StarShipPtr->RaceDescPtr->characteristics.special_wait)
+	{
 		weapon_collision(ElementPtr0, pPt0, ElementPtr1, pPt1);
+	}
 
 	StarShipPtr->special_counter -= ElementPtr0->turn_wait;
 	ElementPtr0->turn_wait = 0;
@@ -255,7 +265,9 @@ spawn_tongue(ELEMENT* ElementPtr)
 		TonguePtr->postprocess_func = tongue_postprocess;
 		TonguePtr->collision_func = tongue_collision;
 		if (ElementPtr->state_flags & PLAYER_SHIP)
+		{
 			TonguePtr->turn_wait = StarShipPtr->special_counter;
+		}
 		else
 		{
 			uqm::COUNT angle;
@@ -270,13 +282,21 @@ spawn_tongue(ELEMENT* ElementPtr)
 
 			angle = FACING_TO_ANGLE(StarShipPtr->ShipFacing);
 			if (angle > HALF_CIRCLE && angle < FULL_CIRCLE)
+			{
 				TonguePtr->current.location.x -= x_offs;
+			}
 			else if (angle > 0 && angle < HALF_CIRCLE)
+			{
 				TonguePtr->current.location.x += x_offs;
+			}
 			if (angle < QUADRANT || angle > FULL_CIRCLE - QUADRANT)
+			{
 				TonguePtr->current.location.y -= y_offs;
+			}
 			else if (angle > QUADRANT && angle < FULL_CIRCLE - QUADRANT)
+			{
 				TonguePtr->current.location.y += y_offs;
+			}
 		}
 
 		SetElementStarShip(TonguePtr, StarShipPtr);
@@ -319,7 +339,9 @@ zoqfotpik_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 			delta_y = lpEnemyEvalDesc->ObjectPtr->next.location.y
 					- ShipPtr->next.location.y;
 			if (StarShipPtr->ShipFacing == NORMALIZE_FACING(ANGLE_TO_FACING(ARCTAN(delta_x, delta_y))))
+			{
 				StarShipPtr->ship_input_state |= SPECIAL;
+			}
 		}
 	}
 
@@ -375,7 +397,9 @@ zoqfotpik_postprocess(ELEMENT* ElementPtr)
 	}
 
 	if (StarShipPtr->special_counter)
+	{
 		spawn_tongue(ElementPtr);
+	}
 }
 
 RACE_DESC*

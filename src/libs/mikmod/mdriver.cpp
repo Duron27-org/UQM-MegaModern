@@ -94,38 +94,58 @@ static void LimitHardVoices(int limit)
 	int t = 0;
 
 	if (!(md_mode & DMODE_SOFT_SNDFX) && (md_sfxchn > limit))
+	{
 		md_sfxchn = limit;
+	}
 	if (!(md_mode & DMODE_SOFT_MUSIC) && (md_sngchn > limit))
+	{
 		md_sngchn = limit;
+	}
 
 	if (!(md_mode & DMODE_SOFT_SNDFX))
+	{
 		md_hardchn = md_sfxchn;
+	}
 	else
+	{
 		md_hardchn = 0;
+	}
 
 	if (!(md_mode & DMODE_SOFT_MUSIC))
+	{
 		md_hardchn += md_sngchn;
+	}
 
 	while (md_hardchn > limit)
 	{
 		if (++t & 1)
 		{
 			if (!(md_mode & DMODE_SOFT_SNDFX) && (md_sfxchn > 4))
+			{
 				md_sfxchn--;
+			}
 		}
 		else
 		{
 			if (!(md_mode & DMODE_SOFT_MUSIC) && (md_sngchn > 8))
+			{
 				md_sngchn--;
+			}
 		}
 
 		if (!(md_mode & DMODE_SOFT_SNDFX))
+		{
 			md_hardchn = md_sfxchn;
+		}
 		else
+		{
 			md_hardchn = 0;
+		}
 
 		if (!(md_mode & DMODE_SOFT_MUSIC))
+		{
 			md_hardchn += md_sngchn;
+		}
 	}
 	md_numchn = md_hardchn + md_softchn;
 }
@@ -137,38 +157,58 @@ static void LimitSoftVoices(int limit)
 	int t = 0;
 
 	if ((md_mode & DMODE_SOFT_SNDFX) && (md_sfxchn > limit))
+	{
 		md_sfxchn = limit;
+	}
 	if ((md_mode & DMODE_SOFT_MUSIC) && (md_sngchn > limit))
+	{
 		md_sngchn = limit;
+	}
 
 	if (md_mode & DMODE_SOFT_SNDFX)
+	{
 		md_softchn = md_sfxchn;
+	}
 	else
+	{
 		md_softchn = 0;
+	}
 
 	if (md_mode & DMODE_SOFT_MUSIC)
+	{
 		md_softchn += md_sngchn;
+	}
 
 	while (md_softchn > limit)
 	{
 		if (++t & 1)
 		{
 			if ((md_mode & DMODE_SOFT_SNDFX) && (md_sfxchn > 4))
+			{
 				md_sfxchn--;
+			}
 		}
 		else
 		{
 			if ((md_mode & DMODE_SOFT_MUSIC) && (md_sngchn > 8))
+			{
 				md_sngchn--;
+			}
 		}
 
 		if (!(md_mode & DMODE_SOFT_SNDFX))
+		{
 			md_softchn = md_sfxchn;
+		}
 		else
+		{
 			md_softchn = 0;
+		}
 
 		if (!(md_mode & DMODE_SOFT_MUSIC))
+		{
 			md_softchn += md_sngchn;
+		}
 	}
 	md_numchn = md_hardchn + md_softchn;
 }
@@ -178,9 +218,13 @@ static void LimitSoftVoices(int limit)
 ULONG MD_SampleSpace(int type)
 {
 	if (type == MD_MUSIC)
+	{
 		type = (md_mode & DMODE_SOFT_MUSIC) ? MD_SOFTWARE : MD_HARDWARE;
+	}
 	else if (type == MD_SNDFX)
+	{
 		type = (md_mode & DMODE_SOFT_SNDFX) ? MD_SOFTWARE : MD_HARDWARE;
+	}
 
 	return md_driver->FreeSampleSpace(type);
 }
@@ -188,9 +232,13 @@ ULONG MD_SampleSpace(int type)
 ULONG MD_SampleLength(int type, SAMPLE* s)
 {
 	if (type == MD_MUSIC)
+	{
 		type = (md_mode & DMODE_SOFT_MUSIC) ? MD_SOFTWARE : MD_HARDWARE;
+	}
 	else if (type == MD_SNDFX)
+	{
 		type = (md_mode & DMODE_SOFT_SNDFX) ? MD_SOFTWARE : MD_HARDWARE;
+	}
 
 	return md_driver->RealSampleLength(type, s);
 }
@@ -205,9 +253,12 @@ MIKMODAPI CHAR* MikMod_InfoDriver(void)
 	MUTEX_LOCK(lists);
 	/* compute size of buffer */
 	for (l = firstdriver; l; l = l->next)
+	{
 		len += 4 + (l->next ? 1 : 0) + strlen(l->Version);
+	}
 
 	if (len)
+	{
 		if ((list = (CHAR*)MikMod_malloc(len * sizeof(CHAR))) != NULL)
 		{
 			CHAR* list_end = list;
@@ -218,6 +269,7 @@ MIKMODAPI CHAR* MikMod_InfoDriver(void)
 				list_end += sprintf(list_end, "%2d %s%s", t, l->Version, (l->next) ? "\n" : "");
 			}
 		}
+	}
 	MUTEX_UNLOCK(lists);
 	return list;
 }
@@ -232,17 +284,23 @@ void _mm_registerdriver(struct MDRIVER* drv)
 		if (cruise)
 		{
 			if (cruise == drv)
+			{
 				return;
+			}
 			while (cruise->next)
 			{
 				cruise = cruise->next;
 				if (cruise == drv)
+				{
 					return;
+				}
 			}
 			cruise->next = drv;
 		}
 		else
+		{
 			firstdriver = drv;
+		}
 	}
 }
 
@@ -251,7 +309,9 @@ MIKMODAPI void MikMod_RegisterDriver(struct MDRIVER* drv)
 	/* if we try to register an invalid driver, or an already registered driver,
 	   ignore this attempt */
 	if ((!drv) || (drv->next) || (!drv->Name))
+	{
 		return;
+	}
 
 	MUTEX_LOCK(lists);
 	_mm_registerdriver(drv);
@@ -270,13 +330,17 @@ MIKMODAPI int MikMod_DriverFromAlias(const CHAR* alias)
 		if (cruise->Alias)
 		{
 			if (!(strcasecmp(alias, cruise->Alias)))
+			{
 				break;
+			}
 			rank++;
 		}
 		cruise = cruise->next;
 	}
 	if (!cruise)
+	{
 		rank = 0;
+	}
 	MUTEX_UNLOCK(lists);
 
 	return rank;
@@ -288,12 +352,16 @@ MIKMODAPI MDRIVER* MikMod_DriverByOrdinal(int ordinal)
 
 	/* Allow only driver ordinals > 0 */
 	if (!ordinal)
+	{
 		return NULL;
+	}
 
 	MUTEX_LOCK(lists);
 	cruise = firstdriver;
 	while (cruise && --ordinal)
+	{
 		cruise = cruise->next;
+	}
 	MUTEX_UNLOCK(lists);
 	return cruise;
 }
@@ -303,9 +371,13 @@ SWORD MD_SampleLoad(SAMPLOAD* s, int type)
 	SWORD result;
 
 	if (type == MD_MUSIC)
+	{
 		type = (md_mode & DMODE_SOFT_MUSIC) ? MD_SOFTWARE : MD_HARDWARE;
+	}
 	else if (type == MD_SNDFX)
+	{
 		type = (md_mode & DMODE_SOFT_SNDFX) ? MD_SOFTWARE : MD_HARDWARE;
+	}
 
 	SL_Init(s);
 	result = md_driver->SampleLoad(s, type);
@@ -337,11 +409,15 @@ MIKMODAPI void MikMod_Update(void)
 	if (isplaying)
 	{
 		if ((!pf) || (!pf->forbid))
+		{
 			md_driver->Update();
+		}
 		else
 		{
 			if (md_driver->Pause)
+			{
 				md_driver->Pause();
+			}
 		}
 	}
 	MUTEX_UNLOCK(vars);
@@ -352,15 +428,23 @@ void Voice_SetVolume_internal(SBYTE voice, UWORD vol)
 	ULONG tmp;
 
 	if ((voice < 0) || (voice >= md_numchn))
+	{
 		return;
+	}
 
 	/* range checks */
 	if (md_musicvolume > 128)
+	{
 		md_musicvolume = 128;
+	}
 	if (md_sndfxvolume > 128)
+	{
 		md_sndfxvolume = 128;
+	}
 	if (md_volume > 128)
+	{
 		md_volume = 128;
+	}
 
 	tmp = (ULONG)vol * (ULONG)md_volume * ((voice < md_sngchn) ? (ULONG)md_musicvolume : (ULONG)md_sndfxvolume);
 	md_driver->VoiceSetVolume(voice, tmp / 16384UL);
@@ -379,7 +463,9 @@ MIKMODAPI UWORD Voice_GetVolume(SBYTE voice)
 
 	MUTEX_LOCK(vars);
 	if ((voice >= 0) && (voice < md_numchn))
+	{
 		result = md_driver->VoiceGetVolume(voice);
+	}
 	MUTEX_UNLOCK(vars);
 
 	return result;
@@ -388,9 +474,13 @@ MIKMODAPI UWORD Voice_GetVolume(SBYTE voice)
 void Voice_SetFrequency_internal(SBYTE voice, ULONG frq)
 {
 	if ((voice < 0) || (voice >= md_numchn))
+	{
 		return;
+	}
 	if ((md_sample[voice]) && (md_sample[voice]->divfactor))
+	{
 		frq /= md_sample[voice]->divfactor;
+	}
 	md_driver->VoiceSetFrequency(voice, frq);
 }
 
@@ -407,7 +497,9 @@ MIKMODAPI ULONG Voice_GetFrequency(SBYTE voice)
 
 	MUTEX_LOCK(vars);
 	if ((voice >= 0) && (voice < md_numchn))
+	{
 		result = md_driver->VoiceGetFrequency(voice);
+	}
 	MUTEX_UNLOCK(vars);
 
 	return result;
@@ -416,13 +508,19 @@ MIKMODAPI ULONG Voice_GetFrequency(SBYTE voice)
 void Voice_SetPanning_internal(SBYTE voice, ULONG pan)
 {
 	if ((voice < 0) || (voice >= md_numchn))
+	{
 		return;
+	}
 	if (pan != PAN_SURROUND)
 	{
 		if (md_pansep > 128)
+		{
 			md_pansep = 128;
+		}
 		if (md_mode & DMODE_REVERSE)
+		{
 			pan = 255 - pan;
+		}
 		pan = (((SWORD)(pan - 128) * md_pansep) / 128) + 128;
 	}
 	md_driver->VoiceSetPanning(voice, pan);
@@ -432,7 +530,9 @@ MIKMODAPI void Voice_SetPanning(SBYTE voice, ULONG pan)
 {
 #ifdef MIKMOD_DEBUG
 	if ((pan != PAN_SURROUND) && ((pan < 0) || (pan > 255)))
+	{
 		fprintf(stderr, "\rVoice_SetPanning called with pan=%ld\n", (long)pan);
+	}
 #endif
 
 	MUTEX_LOCK(vars);
@@ -446,7 +546,9 @@ MIKMODAPI ULONG Voice_GetPanning(SBYTE voice)
 
 	MUTEX_LOCK(vars);
 	if ((voice >= 0) && (voice < md_numchn))
+	{
 		result = md_driver->VoiceGetPanning(voice);
+	}
 	MUTEX_UNLOCK(vars);
 
 	return result;
@@ -457,15 +559,21 @@ void Voice_Play_internal(SBYTE voice, SAMPLE* s, ULONG start)
 	ULONG repend;
 
 	if ((voice < 0) || (voice >= md_numchn))
+	{
 		return;
+	}
 
 	md_sample[voice] = s;
 	repend = s->loopend;
 
 	if (s->flags & SF_LOOP)
+	{
 		/* repend can't be bigger than size */
 		if (repend > s->length)
+		{
 			repend = s->length;
+		}
+	}
 
 	md_driver->VoicePlay(voice, s->handle, start, s->length, s->loopstart, repend, s->flags);
 }
@@ -473,7 +581,9 @@ void Voice_Play_internal(SBYTE voice, SAMPLE* s, ULONG start)
 MIKMODAPI void Voice_Play(SBYTE voice, SAMPLE* s, ULONG start)
 {
 	if (start > s->length)
+	{
 		return;
+	}
 
 	MUTEX_LOCK(vars);
 	Voice_Play_internal(voice, s, start);
@@ -483,10 +593,14 @@ MIKMODAPI void Voice_Play(SBYTE voice, SAMPLE* s, ULONG start)
 void Voice_Stop_internal(SBYTE voice)
 {
 	if ((voice < 0) || (voice >= md_numchn))
+	{
 		return;
+	}
 	if (voice >= md_sngchn)
+	{
 		/* It is a sound effects channel, so flag the voice as non-critical! */
 		sfxinfo[voice - md_sngchn] = 0;
+	}
 	md_driver->VoiceStop(voice);
 }
 
@@ -500,7 +614,9 @@ MIKMODAPI void Voice_Stop(SBYTE voice)
 BOOL Voice_Stopped_internal(SBYTE voice)
 {
 	if ((voice < 0) || (voice >= md_numchn))
+	{
 		return 0;
+	}
 	return (md_driver->VoiceStopped(voice));
 }
 
@@ -523,9 +639,13 @@ MIKMODAPI SLONG Voice_GetPosition(SBYTE voice)
 	if ((voice >= 0) && (voice < md_numchn))
 	{
 		if (md_driver->VoiceGetPosition)
+		{
 			result = (md_driver->VoiceGetPosition(voice));
+		}
 		else
+		{
 			result = -1;
+		}
 	}
 	MUTEX_UNLOCK(vars);
 
@@ -538,7 +658,9 @@ MIKMODAPI ULONG Voice_RealVolume(SBYTE voice)
 
 	MUTEX_LOCK(vars);
 	if ((voice >= 0) && (voice < md_numchn) && md_driver->VoiceRealVolume)
+	{
 		result = (md_driver->VoiceRealVolume(voice));
+	}
 	MUTEX_UNLOCK(vars);
 
 	return result;
@@ -561,14 +683,20 @@ static int _mm_init(const CHAR* cmdline)
 		cmdline = NULL;
 
 		for (t = 1, md_driver = firstdriver; md_driver; md_driver = md_driver->next, t++)
+		{
 			if (md_driver->IsPresent())
+			{
 				break;
+			}
+		}
 
 		if (!md_driver)
 		{
 			_mm_errno = MMERR_DETECTING_DEVICE;
 			if (_mm_errorhandler)
+			{
 				_mm_errorhandler();
+			}
 			md_driver = &drv_nos;
 			return 1;
 		}
@@ -579,26 +707,34 @@ static int _mm_init(const CHAR* cmdline)
 	{
 		/* if n>0, use that driver */
 		for (t = 1, md_driver = firstdriver; (md_driver) && (t != md_device); md_driver = md_driver->next)
+		{
 			t++;
+		}
 
 		if (!md_driver)
 		{
 			_mm_errno = MMERR_INVALID_DEVICE;
 			if (_mm_errorhandler)
+			{
 				_mm_errorhandler();
+			}
 			md_driver = &drv_nos;
 			return 1;
 		}
 
 		/* arguments here might be necessary for the presence check to succeed */
 		if (cmdline && (md_driver->CommandLine))
+		{
 			md_driver->CommandLine(cmdline);
+		}
 
 		if (!md_driver->IsPresent())
 		{
 			_mm_errno = MMERR_DETECTING_DEVICE;
 			if (_mm_errorhandler)
+			{
 				_mm_errorhandler();
+			}
 			md_driver = &drv_nos;
 			return 1;
 		}
@@ -609,7 +745,9 @@ static int _mm_init(const CHAR* cmdline)
 	{
 		MikMod_Exit_internal();
 		if (_mm_errorhandler)
+		{
 			_mm_errorhandler();
+		}
 		return 1;
 	}
 
@@ -663,7 +801,9 @@ static int _mm_reset(const CHAR* cmdline)
 	BOOL wasplaying = 0;
 
 	if (!initialized)
+	{
 		return _mm_init(cmdline);
+	}
 
 	if (isplaying)
 	{
@@ -680,8 +820,12 @@ static int _mm_reset(const CHAR* cmdline)
 		{
 			MikMod_Exit_internal();
 			if (_mm_errno)
+			{
 				if (_mm_errorhandler)
+				{
 					_mm_errorhandler();
+				}
+			}
 			return 1;
 		}
 	}
@@ -691,14 +835,20 @@ static int _mm_reset(const CHAR* cmdline)
 		{
 			MikMod_Exit_internal();
 			if (_mm_errno)
+			{
 				if (_mm_errorhandler)
+				{
 					_mm_errorhandler();
+				}
+			}
 			return 1;
 		}
 	}
 
 	if (wasplaying)
+	{
 		return md_driver->PlayStart();
+	}
 	return 0;
 }
 
@@ -722,7 +872,9 @@ int MikMod_SetNumVoices_internal(int music, int sfx)
 	int t, oldchn = 0;
 
 	if ((!music) && (!sfx))
+	{
 		return 1;
+	}
 	_mm_critical = 1;
 	if (isplaying)
 	{
@@ -737,9 +889,13 @@ int MikMod_SetNumVoices_internal(int music, int sfx)
 	sfxinfo = NULL;
 
 	if (music != -1)
+	{
 		md_sngchn = music;
+	}
 	if (sfx != -1)
+	{
 		md_sfxchn = sfx;
+	}
 	md_numchn = md_sngchn + md_sfxchn;
 
 	LimitHardVoices(md_driver->HardVoiceLimit);
@@ -749,24 +905,36 @@ int MikMod_SetNumVoices_internal(int music, int sfx)
 	{
 		MikMod_Exit_internal();
 		if (_mm_errno)
+		{
 			if (_mm_errorhandler != NULL)
+			{
 				_mm_errorhandler();
+			}
+		}
 		md_numchn = md_softchn = md_hardchn = md_sfxchn = md_sngchn = 0;
 		return 1;
 	}
 
 	if (md_sngchn + md_sfxchn)
+	{
 		md_sample = (SAMPLE**)MikMod_calloc(md_sngchn + md_sfxchn, sizeof(SAMPLE*));
+	}
 	if (md_sfxchn)
+	{
 		sfxinfo = (UBYTE*)MikMod_calloc(md_sfxchn, sizeof(UBYTE));
+	}
 
 	/* make sure the player doesn't start with garbage */
 	for (t = oldchn; t < md_numchn; t++)
+	{
 		Voice_Stop_internal(t);
+	}
 
 	sfxpool = 0;
 	if (resume)
+	{
 		MikMod_EnableOutput_internal();
+	}
 	_mm_critical = 0;
 
 	return 0;
@@ -789,7 +957,9 @@ int MikMod_EnableOutput_internal(void)
 	if (!isplaying)
 	{
 		if (md_driver->PlayStart())
+		{
 			return 1;
+		}
 		isplaying = 1;
 	}
 	_mm_critical = 0;
@@ -850,9 +1020,13 @@ static SBYTE Sample_Play_internal(SAMPLE* s, ULONG start, UBYTE flags)
 	int c;
 
 	if (!md_sfxchn)
+	{
 		return -1;
+	}
 	if (s->volume > 64)
+	{
 		s->volume = 64;
+	}
 
 	/* check the first location after sfxpool */
 	do
@@ -868,7 +1042,9 @@ static SBYTE Sample_Play_internal(SAMPLE* s, ULONG start, UBYTE flags)
 				md_driver->VoiceSetFrequency(c, s->speed);
 				sfxpool++;
 				if (sfxpool >= md_sfxchn)
+				{
 					sfxpool = 0;
+				}
 				return c;
 			}
 		}
@@ -881,13 +1057,17 @@ static SBYTE Sample_Play_internal(SAMPLE* s, ULONG start, UBYTE flags)
 			md_driver->VoiceSetFrequency(c, s->speed);
 			sfxpool++;
 			if (sfxpool >= md_sfxchn)
+			{
 				sfxpool = 0;
+			}
 			return c;
 		}
 
 		sfxpool++;
 		if (sfxpool >= md_sfxchn)
+		{
 			sfxpool = 0;
+		}
 	} while (sfxpool != orig);
 
 	return -1;
@@ -948,12 +1128,18 @@ MIKMODAPI BOOL MikMod_InitThreads(void)
 			result = 0;
 		}
 		else
+		{
 			result = 1;
+		}
 #elif defined(_WIN32)
 		if ((!(_mm_mutex_lists = CreateMutex(NULL, false, TEXT("libmikmod(lists)")))) || (!(_mm_mutex_vars = CreateMutex(NULL, false, TEXT("libmikmod(vars)")))))
+		{
 			result = 0;
+		}
 		else
+		{
 			result = 1;
+		}
 #endif
 	}
 	return result;
@@ -991,7 +1177,9 @@ CHAR* MD_GetAtom(const CHAR* atomname, const CHAR* cmdline, BOOL implicit)
 					;
 				ret = (CHAR*)MikMod_malloc((1 + ptr - buf) * sizeof(CHAR));
 				if (ret)
+				{
 					strncpy(ret, buf, ptr - buf);
+				}
 			}
 			else if ((*ptr == ',') || (!*ptr))
 			{
@@ -999,7 +1187,9 @@ CHAR* MD_GetAtom(const CHAR* atomname, const CHAR* cmdline, BOOL implicit)
 				{
 					ret = (CHAR*)MikMod_malloc((1 + ptr - buf) * sizeof(CHAR));
 					if (ret)
+					{
 						strncpy(ret, buf, ptr - buf);
+					}
 				}
 			}
 		}
@@ -1024,23 +1214,33 @@ BOOL MD_Access(const CHAR* filename)
 	{
 		/* not a regular file ? */
 		if (!S_ISREG(buf.st_mode))
+		{
 			return 0;
+		}
 		/* more than one hard link to the file ? */
 		if (buf.st_nlink > 1)
+		{
 			return 0;
+		}
 		/* check access rights with the real user and group id */
 		if (getuid() == buf.st_uid)
 		{
 			if (!(buf.st_mode & S_IWUSR))
+			{
 				return 0;
+			}
 		}
 		else if (getgid() == buf.st_gid)
 		{
 			if (!(buf.st_mode & S_IWGRP))
+			{
 				return 0;
+			}
 		}
 		else if (!(buf.st_mode & S_IWOTH))
+		{
 			return 0;
+		}
 	}
 
 	return 1;
@@ -1055,7 +1255,9 @@ int MD_DropPrivileges(void)
 		{
 			/* we are setuid root -> drop setuid to become the real user */
 			if (setuid(getuid()))
+			{
 				return 1;
+			}
 		}
 		else
 		{
@@ -1064,12 +1266,18 @@ int MD_DropPrivileges(void)
 			int uid;
 
 			if (!(nobody = getpwnam("nobody")))
+			{
 				return 1; /* no such user ? */
+			}
 			uid = nobody->pw_uid;
 			if (!uid) /* user 'nobody' has root privileges ? weird... */
+			{
 				return 1;
+			}
 			if (setuid(uid))
+			{
 				return 1;
+			}
 		}
 	}
 	return 0;

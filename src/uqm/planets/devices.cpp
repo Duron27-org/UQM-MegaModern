@@ -122,9 +122,13 @@ DrawDevice(uqm::COUNT device, uqm::COUNT pos, bool selected)
 	DrawFilledRectangle(&r);
 
 	if (isPC(optWhichFonts))
+	{
 		SetContextFont(TinyFont);
+	}
 	else
+	{
 		SetContextFont(TinyFontBold);
+	}
 
 	// print device name
 	SetContextForeGroundColor(selected ?
@@ -157,11 +161,15 @@ DrawDevicesDisplay(DEVICES_STATE* devState)
 	r.extent.height = (RES_SCALE(129) - r.corner.y);
 
 	if (!optCustomBorder && !IS_HD)
+	{
 		DrawStarConBox(&r, RES_SCALE(1),
 					   SHADOWBOX_MEDIUM_COLOR, SHADOWBOX_DARK_COLOR,
 					   true, DEVICES_BACK_COLOR, false, TRANSPARENT);
+	}
 	else
+	{
 		DrawBorder(DEVICE_CARGO_FRAME);
+	}
 
 	// print the "DEVICES" title
 	SetContextFont(StarConFont);
@@ -182,7 +190,9 @@ DrawDevicesDisplay(DEVICES_STATE* devState)
 		uqm::COUNT devIndex = devState->topIndex + i;
 
 		if (devIndex >= devState->count)
+		{
 			break;
+		}
 
 		// draw device icon
 		s.origin.y = cy + ICON_OFS_Y;
@@ -242,7 +252,9 @@ UseCaster(void)
 
 	if (lowByte(GLOBAL(CurrentActivity)) != IN_INTERPLANETARY
 		|| !playerInSolarSystem())
+	{
 		return false;
+	}
 
 	if (playerInPlanetOrbit()
 		&& matchWorld(pSolarSysState, pSolarSysState->pOrbitalDesc,
@@ -304,7 +316,9 @@ UseCaster(void)
 			}
 
 			if (playerInPlanetOrbit())
+			{
 				SaveSolarSysLocation();
+			}
 			return true;
 		}
 	}
@@ -412,7 +426,9 @@ InvokeDevice(uqm::BYTE which_device)
 					SET_GAME_STATE(READY_TO_CONFUSE_URQUAN, 1);
 				}
 				if (playerInPlanetOrbit())
+				{
 					SaveSolarSysLocation();
+				}
 			}
 			return DEVICE_SUCCESS;
 		case AQUA_HELIX_DEVICE:
@@ -440,7 +456,9 @@ InvokeDevice(uqm::BYTE which_device)
 		case UMGAH_HYPERWAVE_DEVICE:
 		case BURVIX_HYPERWAVE_DEVICE:
 			if (UseCaster())
+			{
 				return DEVICE_SUCCESS;
+			}
 			break;
 		case TAALO_PROTECTOR_DEVICE:
 			break;
@@ -465,7 +483,9 @@ InvokeDevice(uqm::BYTE which_device)
 				if (!optInfiniteFuel
 					|| (EXTENDED && !optInfiniteFuel
 						&& inHyperSpace()))
+				{
 					GLOBAL_SIS(FuelOnBoard) -= PORTAL_FUEL_COST;
+				}
 
 				if (EXTENDED && inHyperSpace())
 				{
@@ -491,9 +511,13 @@ bool InvokeSpawner(void)
 {
 	DeviceStatus status = InvokeDevice(PORTAL_SPAWNER_DEVICE);
 	if (status == DEVICE_FAILURE)
+	{
 		PlayMenuSound(MENU_SOUND_FAILURE);
+	}
 	else if (status == DEVICE_SUCCESS)
+	{
 		PlayMenuSound(MENU_SOUND_INVOKED);
+	}
 
 	return (status == DEVICE_FAILURE);
 }
@@ -514,7 +538,9 @@ DoManipulateDevices(MENU_STATE* pMS)
 	pageback = PulsedInputState.menu[KEY_MENU_PAGE_UP];
 
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+	{
 		return false;
+	}
 
 	if (cancel)
 	{
@@ -526,9 +552,13 @@ DoManipulateDevices(MENU_STATE* pMS)
 
 		status = InvokeDevice(devState->list[pMS->CurState]);
 		if (status == DEVICE_FAILURE)
+		{
 			PlayMenuSound(MENU_SOUND_FAILURE);
+		}
 		else if (status == DEVICE_SUCCESS)
+		{
 			PlayMenuSound(MENU_SOUND_INVOKED);
+		}
 
 		return (status == DEVICE_FAILURE);
 	}
@@ -541,21 +571,35 @@ DoManipulateDevices(MENU_STATE* pMS)
 		NewState = pMS->CurState;
 
 		if (back)
+		{
 			--NewState;
+		}
 		else if (forward)
+		{
 			++NewState;
+		}
 		else if (pagefwd)
+		{
 			NewState += MAX_VIS_DEVICES;
+		}
 		else if (pageback)
+		{
 			NewState -= MAX_VIS_DEVICES;
+		}
 
 		if (NewState < 0)
+		{
 			NewState = 0;
+		}
 		else if (NewState >= devState->count)
+		{
 			NewState = devState->count - 1;
+		}
 
 		if (NewState < NewTop || NewState >= NewTop + MAX_VIS_DEVICES)
+		{
 			NewTop = NewState - NewState % MAX_VIS_DEVICES;
+		}
 
 		if (NewState != pMS->CurState)
 		{
@@ -693,7 +737,9 @@ bool DevicesMenu(void)
 
 	DevicesState.count = InventoryDevices(DevicesState.list, NUM_DEVICES);
 	if (!DevicesState.count)
+	{
 		return false;
+	}
 
 	DrawDevices(&DevicesState, (uqm::COUNT)~0, MenuState.CurState);
 
@@ -701,7 +747,9 @@ bool DevicesMenu(void)
 				  MENU_SOUND_SELECT);
 
 	if (optWhichMenu == OPT_PC)
+	{
 		DrawMenuStateStrings(PM_ALT_CARGO, 1);
+	}
 
 	MenuState.InputFunc = DoManipulateDevices;
 	DoInput(&MenuState, true);
@@ -716,7 +764,9 @@ bool DevicesMenu(void)
 		if (!GET_GAME_STATE(PORTAL_COUNTER)
 			&& !(GLOBAL(CurrentActivity) & START_ENCOUNTER)
 			&& GLOBAL_SIS(CrewEnlisted) != (uqm::COUNT)~0)
+		{
 			return true;
+		}
 	}
 
 	return false;

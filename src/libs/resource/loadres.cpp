@@ -31,7 +31,9 @@ void* GetResourceData(uio_Stream* fp, uqm::DWORD length)
 	// a length prefix ~0 meant uncompressed.
 	// Currently, .ct and .xlt files still carry a ~0 length prefix.
 	if (ReadResFile(&compLen, sizeof(compLen), 1, fp) != 1)
+	{
 		return NULL;
+	}
 	if (compLen != ~(uqm::DWORD)0)
 	{
 		log_add(log_Warning, "LZ-compressed binary data not supported");
@@ -41,7 +43,9 @@ void* GetResourceData(uio_Stream* fp, uqm::DWORD length)
 
 	result = AllocResourceData(length);
 	if (!result)
+	{
 		return NULL;
+	}
 
 	if (ReadResFile(result, 1, length, fp) != length)
 	{

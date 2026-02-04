@@ -79,14 +79,18 @@ GenerateMyconDefenders(uqm::BYTE index)
 		assert(CountLinks(&GLOBAL(npc_built_ship_q)) == 0);
 
 		for (i = 0; i < 4; ++i)
+		{
 			CloneShipFragment(MYCON_SHIP,
 							  &GLOBAL(npc_built_ship_q), 0);
+		}
 
 		GLOBAL(CurrentActivity) |= START_INTERPLANETARY;
 		InitCommunication(MYCON_CONVERSATION);
 
 		if (GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
+		{
 			return true;
+		}
 
 		Survivors = GetHeadLink(&GLOBAL(npc_built_ship_q)) != 0;
 
@@ -95,7 +99,9 @@ GenerateMyconDefenders(uqm::BYTE index)
 		GetGroupInfo(GROUPS_RANDOM, GROUP_LOAD_IP);
 
 		if (Survivors)
+		{
 			return true;
+		}
 
 		state = GET_GAME_STATE(HM_ENCOUNTERS);
 		state |= 1 << shift;
@@ -118,7 +124,9 @@ GenerateMycon_generatePlanets(SOLARSYS_STATE* solarSys)
 	pSunDesc->PlanetByte = 0;
 
 	if (!PrimeSeed)
+	{
 		pSunDesc->PlanetByte = PickClosestHabitable(solarSys);
+	}
 
 	pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
 
@@ -130,7 +138,9 @@ GenerateMycon_generatePlanets(SOLARSYS_STATE* solarSys)
 
 		pPlanet->radius = EARTH_RADIUS * 80L / 100;
 		if (pPlanet->NumPlanets > 2)
+		{
 			pPlanet->NumPlanets = 2;
+		}
 		angle = ARCTAN(pPlanet->location.x, pPlanet->location.y);
 		pPlanet->location.x = COSINE(angle, pPlanet->radius);
 		pPlanet->location.y = SINE(angle, pPlanet->radius);
@@ -192,8 +202,10 @@ GenerateMycon_generateOrbital(SOLARSYS_STATE* solarSys,
 					uqm::COUNT sum = DIF_CASE(5, 3, 12);
 
 					for (i = 0; i < sum; ++i)
+					{
 						CloneShipFragment(MYCON_SHIP,
 										  &GLOBAL(npc_built_ship_q), 0);
+					}
 				}
 
 				GLOBAL(CurrentActivity) |= START_INTERPLANETARY;
@@ -208,7 +220,9 @@ GenerateMycon_generateOrbital(SOLARSYS_STATE* solarSys,
 				InitCommunication(MYCON_CONVERSATION);
 
 				if (GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
+				{
 					return true;
+				}
 
 				{
 					bool MyconSurvivors;
@@ -221,7 +235,9 @@ GenerateMycon_generateOrbital(SOLARSYS_STATE* solarSys,
 					GetGroupInfo(GROUPS_RANDOM, GROUP_LOAD_IP);
 
 					if (MyconSurvivors)
+					{
 						return true;
+					}
 
 					SET_GAME_STATE(SUN_DEVICE_UNGUARDED, 1);
 					RepairSISBorder();
@@ -248,12 +264,16 @@ GenerateMycon_generateOrbital(SOLARSYS_STATE* solarSys,
 			case EGG_CASE1_DEFINED:
 			case EGG_CASE2_DEFINED:
 				if (GET_GAME_STATE(KNOW_ABOUT_SHATTERED) == 0)
+				{
 					SET_GAME_STATE(KNOW_ABOUT_SHATTERED, 1);
+				}
 
 				if (DIF_HARD && StartSphereTracking(MYCON_SHIP))
 				{
 					if (GenerateMyconDefenders(CurStarDescPtr->Index))
+					{
 						return true;
+					}
 				}
 
 				if (!isNodeRetrieved(&solarSys->SysInfo.PlanetInfo,

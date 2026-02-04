@@ -146,14 +146,22 @@ void SCALE_(HqFilter)(SDL_Surface* src, SDL_Surface* dst, SDL_Rect* r)
 	for (y = region->y; y < yend; ++y, dst_p += ddst, src_p += dsrc)
 	{
 		if (y > 0)
+		{
 			prevline = -slen;
+		}
 		else
+		{
 			prevline = 0;
+		}
 
 		if (y < h - 1)
+		{
 			nextline = slen;
+		}
 		else
+		{
 			nextline = 0;
+		}
 
 		// prime the (tiny) sliding-window pixel arrays
 		pix[3] = src_p[prevline];

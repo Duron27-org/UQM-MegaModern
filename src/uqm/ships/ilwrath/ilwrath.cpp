@@ -128,7 +128,9 @@ static void
 flame_preprocess(ELEMENT* ElementPtr)
 {
 	if (ElementPtr->turn_wait > 0)
+	{
 		--ElementPtr->turn_wait;
+	}
 	else
 	{
 		ElementPtr->next.image.frame =
@@ -158,8 +160,10 @@ ilwrath_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 	lpEvalDesc = &ObjectsOfConcern[ENEMY_SHIP_INDEX];
 	lpEvalDesc->MoveState = PURSUE;
 	if (lpEvalDesc->ObjectPtr && lpEvalDesc->which_turn <= 10)
+	{
 		/* don't want to dodge when you could be flaming */
 		ObjectsOfConcern[ENEMY_WEAPON_INDEX].ObjectPtr = 0;
+	}
 
 	ship_intelligence(ShipPtr, ObjectsOfConcern, ConcernCounter);
 
@@ -184,7 +188,9 @@ ilwrath_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 		StarShipPtr->ship_input_state &= ~SPECIAL;
 		if (!OBJECT_CLOAKED(ShipPtr)
 			&& !(StarShipPtr->ship_input_state & WEAPON))
+		{
 			StarShipPtr->ship_input_state |= SPECIAL;
+		}
 	}
 }
 
@@ -254,23 +260,33 @@ ilwrath_preprocess(ELEMENT* ElementPtr)
 		{
 			if (sameColor(color,
 						  BUILD_COLOR(MAKE_RGB15(0x1F, 0x1F, 0x1F), 0x0F)))
+			{
 				SetPrimType(lpPrim, STAMP_PRIM);
+			}
 			else if (sameColor(color,
 							   BUILD_COLOR(MAKE_RGB15(0x0A, 0x1F, 0x1F), 0x0B)))
+			{
 				SetPrimColor(lpPrim,
 							 BUILD_COLOR(MAKE_RGB15(0x1F, 0x1F, 0x1F), 0x0F));
+			}
 			else if (sameColor(color,
 							   BUILD_COLOR(MAKE_RGB15(0x00, 0x14, 0x14), 0x03)))
+			{
 				SetPrimColor(lpPrim,
 							 BUILD_COLOR(MAKE_RGB15(0x0A, 0x1F, 0x1F), 0x0B));
+			}
 			else if (sameColor(color,
 							   BUILD_COLOR(MAKE_RGB15(0x0A, 0x0A, 0x1F), 0x09)))
+			{
 				SetPrimColor(lpPrim,
 							 BUILD_COLOR(MAKE_RGB15(0x00, 0x14, 0x14), 0x03));
+			}
 			else if (sameColor(color,
 							   BUILD_COLOR(MAKE_RGB15(0x00, 0x00, 0x14), 0x01)))
+			{
 				SetPrimColor(lpPrim,
 							 BUILD_COLOR(MAKE_RGB15(0x0A, 0x0A, 0x1F), 0x09));
+			}
 			else
 			{
 				ProcessSound(SetAbsSoundIndex(
@@ -332,7 +348,9 @@ ilwrath_preprocess(ELEMENT* ElementPtr)
 						}
 #endif /* NOTYET */
 						if (ElementPtr->turn_wait == 0)
+						{
 							++ElementPtr->turn_wait;
+						}
 						ElementPtr->next.image.frame =
 							SetAbsFrameIndex(ElementPtr->next.image.frame,
 											 StarShipPtr->ShipFacing);
@@ -355,19 +373,27 @@ ilwrath_preprocess(ELEMENT* ElementPtr)
 			}
 			else if (sameColor(color,
 							   BUILD_COLOR(MAKE_RGB15(0x0A, 0x0A, 0x1F), 0x09)))
+			{
 				SetPrimColor(lpPrim,
 							 BUILD_COLOR(MAKE_RGB15(0x00, 0x00, 0x14), 0x01));
+			}
 			else if (sameColor(color,
 							   BUILD_COLOR(MAKE_RGB15(0x00, 0x14, 0x14), 0x03)))
+			{
 				SetPrimColor(lpPrim,
 							 BUILD_COLOR(MAKE_RGB15(0x0A, 0x0A, 0x1F), 0x09));
+			}
 			else if (sameColor(color,
 							   BUILD_COLOR(MAKE_RGB15(0x0A, 0x1F, 0x1F), 0x0B)))
+			{
 				SetPrimColor(lpPrim,
 							 BUILD_COLOR(MAKE_RGB15(0x00, 0x14, 0x14), 0x03));
+			}
 			else
+			{
 				SetPrimColor(lpPrim,
 							 BUILD_COLOR(MAKE_RGB15(0x0A, 0x1F, 0x1F), 0x0B));
+			}
 
 			ElementPtr->state_flags |= CHANGING;
 		}

@@ -131,7 +131,9 @@ static void
 animate(ELEMENT* ElementPtr)
 {
 	if (ElementPtr->turn_wait > 0)
+	{
 		--ElementPtr->turn_wait;
+	}
 	else
 	{
 		ElementPtr->next.image.frame =
@@ -279,7 +281,9 @@ chmmr_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 				  + HALF_CIRCLE)
 			   + QUADRANT)
 			   > HALF_CIRCLE)
+	{
 		StarShipPtr->ship_input_state |= SPECIAL;
+	}
 }
 
 static void
@@ -395,10 +399,14 @@ chmmr_postprocess(ELEMENT* ElementPtr)
 				EnemyStarShipPtr->cur_status_flags &= ~(SHIP_AT_MAX_SPEED
 														| SHIP_BEYOND_MAX_SPEED);
 				if (current_speed > max_speed)
+				{
 					EnemyStarShipPtr->cur_status_flags |= (SHIP_AT_MAX_SPEED
 														   | SHIP_BEYOND_MAX_SPEED);
+				}
 				else if (current_speed == max_speed)
+				{
 					EnemyStarShipPtr->cur_status_flags |= SHIP_AT_MAX_SPEED;
+				}
 
 				// add tractor beam graphical effects
 				for (i = 0; i < NUM_SHADOWS; ++i)
@@ -477,9 +485,11 @@ satellite_preprocess(ELEMENT* ElementPtr)
 		dy = WRAP_DELTA_Y(dy);
 		if ((long)dx * dx + (long)dy * dy
 			<= DISPLAY_TO_WORLD(RES_SCALE(20L)) * DISPLAY_TO_WORLD(RES_SCALE(20L)))
+		{
 			SetVelocityComponents(&ElementPtr->velocity,
 								  WORLD_TO_VELOCITY(dx),
 								  WORLD_TO_VELOCITY(dy));
+		}
 		else
 		{
 			uqm::COUNT angle;
@@ -529,9 +539,13 @@ spawn_point_defense(ELEMENT* ElementPtr)
 			delta_y = ObjectPtr->next.location.y
 					- SattPtr->next.location.y;
 			if (delta_x < 0)
+			{
 				delta_x = -delta_x;
+			}
 			if (delta_y < 0)
+			{
 				delta_y = -delta_y;
+			}
 			delta_x = WORLD_TO_DISPLAY(delta_x);
 			delta_y = WORLD_TO_DISPLAY(delta_y);
 			if ((uqm::UWORD)delta_x <= DEFENSE_RANGE && (uqm::UWORD)delta_y <= DEFENSE_RANGE && (dist = (uqm::UWORD)delta_x * (uqm::UWORD)delta_x + (uqm::UWORD)delta_y * (uqm::UWORD)delta_y) <= DEFENSE_RANGE * DEFENSE_RANGE
@@ -593,7 +607,9 @@ satellite_postprocess(ELEMENT* ElementPtr)
 	STARSHIP* StarShipPtr;
 
 	if (ElementPtr->thrust_wait || ElementPtr->life_span == 0)
+	{
 		--ElementPtr->thrust_wait;
+	}
 	else
 	{
 		HELEMENT hDefense;

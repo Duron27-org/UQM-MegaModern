@@ -63,7 +63,9 @@ GenerateSlylandro_generatePlanets(SOLARSYS_STATE* solarSys)
 		pPlanet->NumPlanets = 1;
 	}
 	else
+	{
 		GenerateGasGiantRanged(solarSys);
+	}
 
 	return true;
 }

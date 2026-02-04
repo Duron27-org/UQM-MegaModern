@@ -44,7 +44,9 @@ square_root(uqm::DWORD value)
 			mask_squared >>= 1;
 			mask_squared >>= 1;
 			if ((remainder = result_shift + mask_squared) > value)
+			{
 				result_shift >>= 1;
+			}
 			else
 			{
 				value -= remainder;
@@ -77,7 +79,9 @@ square_root(uqm::DWORD value)
 			mask_squared >>= 1;
 			mask_squared >>= 1;
 			if ((remainder = result_shift + mask_squared) > sig_word)
+			{
 				result_shift >>= 1;
+			}
 			else
 			{
 				sig_word -= remainder;

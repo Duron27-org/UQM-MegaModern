@@ -84,14 +84,18 @@ void* MikMod_amalloc(size_t size)
 
 	_mm_errno = MMERR_OUT_OF_MEMORY;
 	if (_mm_errorhandler)
+	{
 		_mm_errorhandler();
+	}
 	return NULL;
 }
 
 void MikMod_afree(void* data)
 {
 	if (!data)
+	{
 		return;
+	}
 #if defined(HAVE_POSIX_MEMALIGN)
 	free(data);
 #elif defined(WIN32_ALIGNED_MALLOC)
@@ -105,7 +109,9 @@ void MikMod_afree(void* data)
 void* MikMod_realloc(void* data, size_t size)
 {
 	if (data)
+	{
 		return realloc(data, size);
+	}
 	return calloc(1, size);
 }
 
@@ -120,18 +126,24 @@ void* MikMod_calloc(size_t nitems, size_t size)
 {
 	void* d = calloc(nitems, size);
 	if (d)
+	{
 		return d;
+	}
 
 	_mm_errno = MMERR_OUT_OF_MEMORY;
 	if (_mm_errorhandler)
+	{
 		_mm_errorhandler();
+	}
 	return NULL;
 }
 
 void MikMod_free(void* data)
 {
 	if (data)
+	{
 		free(data);
+	}
 }
 
 /* like strdup(), but the result must be freed using MikMod_free() */
@@ -141,12 +153,16 @@ CHAR* MikMod_strdup(const CHAR* s)
 	CHAR* d;
 
 	if (!s)
+	{
 		return NULL;
+	}
 
 	l = strlen(s) + 1;
 	d = (CHAR*)MikMod_calloc(1, l * sizeof(CHAR));
 	if (d)
+	{
 		strcpy(d, s);
+	}
 	return d;
 }
 

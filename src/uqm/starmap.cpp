@@ -71,14 +71,22 @@ FindStar(STAR_DESC* LastSDPtr, POINT* puniverse, uqm::SIZE xbounds,
 	}
 
 	if (LastSDPtr == NULL)
+	{
 		lo = 0;
+	}
 	else if ((lo = LastSDPtr - BaseSDPtr + 1) > hi)
+	{
 		return (0);
+	}
 	else
+	{
 		hi = lo;
+	}
 
 	if (ybounds <= 0)
+	{
 		min_y = max_y = puniverse->y;
+	}
 	else
 	{
 		min_y = puniverse->y - ybounds;
@@ -91,9 +99,13 @@ FindStar(STAR_DESC* LastSDPtr, POINT* puniverse, uqm::SIZE xbounds,
 
 		mid = (lo + hi) >> 1;
 		if (BaseSDPtr[mid].star_pt.y >= min_y)
+		{
 			hi = mid - 1;
+		}
 		else
+		{
 			lo = mid + 1;
+		}
 	}
 
 	LastSDPtr = &BaseSDPtr[lo];
@@ -102,7 +114,9 @@ FindStar(STAR_DESC* LastSDPtr, POINT* puniverse, uqm::SIZE xbounds,
 		COORD min_x, max_x;
 
 		if (xbounds <= 0)
+		{
 			min_x = max_x = puniverse->x;
+		}
 		else
 		{
 			min_x = puniverse->x - xbounds;
@@ -115,7 +129,9 @@ FindStar(STAR_DESC* LastSDPtr, POINT* puniverse, uqm::SIZE xbounds,
 				&& (xbounds < 0
 					|| (LastSDPtr->star_pt.x >= min_x
 						&& LastSDPtr->star_pt.x <= max_x)))
+			{
 				return (LastSDPtr);
+			}
 		} while ((++LastSDPtr)->star_pt.y <= max_y);
 	}
 
@@ -138,7 +154,9 @@ void GetClusterName(const STAR_DESC* pSD, uqm::CHAR_T buf[])
 		}
 	}
 	if ((pStr = GAME_STRING(pSD->Postfix)) == 0)
+	{
 		*pBuf = '\0';
+	}
 	else
 	{
 		while ((*pBuf++ = *pStr++))
@@ -152,7 +170,9 @@ STAR_DESC*
 FindNearest(STAR_DESC* starmap, POINT p, bool constellation)
 {
 	if (!starmap || p.x == ~0 || p.y == ~0)
+	{
 		return NULL;
+	}
 	uqm::COUNT index, star_id = 0;
 	uqm::DWORD dist, min_dist = MAX_X_UNIVERSE * MAX_Y_UNIVERSE;
 	for (index = 0; index < NUM_SOLAR_SYSTEMS; index++)
@@ -277,7 +297,9 @@ void DefaultStarmap(STAR_DESC* starmap)
 #endif
 	uqm::COUNT i;
 	for (i = 0; i < NUM_SOLAR_SYSTEMS + 1 + NUM_HYPER_VORTICES + 1 + 1; i++)
+	{
 		starmap[i] = StarmapArray[i];
+	}
 }
 
 // Seed the type of each star, randomly selecting a color and
@@ -399,11 +421,17 @@ void SetPlotLength(PLOT_LOCATION* plot, uqm::COUNT plotA, uqm::COUNT plotB,
 	// If you zero out max, it will treat it as MAX_PLOT (any length)
 	// If your plot max/min is too small/large, push it up/down to the cap
 	if ((max > MAX_PLOT) || (max == 0))
+	{
 		max = MAX_PLOT;
+	}
 	if (max < MIN_PLOT)
+	{
 		max = MIN_PLOT;
+	}
 	if (min > MAX_PLOT)
+	{
 		min = MAX_PLOT;
+	}
 
 	// If the plots already have a min or max, remove it from the plot_weight
 	if (PLOT_MIN(plotA, plotB) > 0)
@@ -489,12 +517,18 @@ GetNextPlot(PLOT_LOCATION* plot)
 
 	// If we're already working on one, continue to try that one.
 	if (next_plot < NUM_PLOTS && !PLOT_SET(next_plot))
+	{
 		return next_plot;
+	}
 
 	// If we have hard coded plots still waiting to be placed, do one.
 	for (i = 0; i < NUM_PLOTS; i++)
+	{
 		if (PLOT_HARDCODE(i))
+		{
 			return next_plot = i;
+		}
+	}
 
 #if 0
 	// Leaving this in for now as a stern reminder:
@@ -512,17 +546,23 @@ GetNextPlot(PLOT_LOCATION* plot)
 
 	// Otherwise find the heaviest plot available.
 	for (i = 0; i < NUM_PLOTS; i++)
+	{
 		if ((PLOT_WEIGHT(i) > top_weight) && !(PLOT_SET(i)))
 		{
 			plot_id = i;
 			top_weight = PLOT_WEIGHT(i);
 		}
+	}
 
 	// After loop if top weight is 0 (plot_id will also be 0) there may be
 	// unassigned plots without weight, find the first one:
 	if (top_weight == 0)
+	{
 		while ((plot_id < NUM_PLOTS) && (PLOT_SET(plot_id)))
+		{
 			plot_id++;
+		}
+	}
 
 	// Now plot_id contains either the first unassigned plot with highest
 	// weight, OR NUM_PLOTS
@@ -546,7 +586,9 @@ void ResetPlot(PLOT_LOCATION* plot)
 	for (i = 0; i < NUM_PLOTS; i++)
 	{
 		for (j = 0; j < NUM_PLOTS; j++)
+		{
 			plot[i].dist_sq[j] = 0;
+		}
 		plot[i].star_pt = POINT {~0, ~0};
 		plot[i].star = NULL;
 	}
@@ -570,13 +612,17 @@ void DefaultPlot(PLOT_LOCATION* plot, STAR_DESC* starmap)
 	plot[0].star_pt = POINT {ARILOU_SPACE_X, ARILOU_SPACE_Y};
 	plot[0].star = &(starmap[NUM_SOLAR_SYSTEMS + 1 + NUM_HYPER_VORTICES + 1]);
 	for (i = 0; i < NUM_SOLAR_SYSTEMS; i++)
+	{
 		if (starmap[i].Index > 0)
 		{
 			if (starmap[i].Index >= NUM_PLOTS)
+			{
 				continue;
+			}
 			plot[starmap[i].Index].star_pt = starmap[i].star_pt;
 			plot[starmap[i].Index].star = &(starmap[i]);
 		}
+	}
 }
 
 // InitPlot will set the plotmap up with weighted connections to help
@@ -626,12 +672,16 @@ void InitPlot(PLOT_LOCATION* plotmap)
 	// Total 8 + 7 + 8 currently 23 homeworlds
 	// Set the homeworlds apart first (can be overwritten later)
 	for (i = 0; i < 22; i++)
+	{
 		for (j = i + 1; j < 23; j++)
+		{
 			SetPlotLength(plotmap, home_map[i][0], home_map[j][0],
 						  (home_map[i][1] > home_map[j][1]) ?
 							  home_map[i][1] :
 							  home_map[j][1],
 						  MAX_PLOT);
+		}
+	}
 
 	// Sets up Melnormes and Rainbow Worlds with minimal plot weight
 	// also their connections to other races.
@@ -793,24 +843,36 @@ void InitMelnormeRainbow(PLOT_LOCATION* plotmap)
 		plotmap[i].star = NULL;
 		plotmap[i].star_pt = POINT {~0, ~0};
 		for (j = RAINBOW0_DEFINED; j <= RAINBOW9_DEFINED; j++)
+		{
 			if (i != j)
+			{
 				SetPlotLength(plotmap, i, j, 2500, MAX_PLOT);
+			}
+		}
 	}
 	for (i = MELNORME0_DEFINED; i <= MELNORME8_DEFINED; i++)
 	{
 		plotmap[i].star = NULL;
 		plotmap[i].star_pt = POINT {~0, ~0};
 		for (j = MELNORME0_DEFINED; j <= MELNORME8_DEFINED; j++)
+		{
 			if (i != j)
+			{
 				SetPlotLength(plotmap, i, j, 2750, MAX_PLOT);
+			}
+		}
 	}
 
 	// Zero out their weights - just seeding them mostly last removes a
 	// lot of the issues.
 	for (i = RAINBOW0_DEFINED; i <= RAINBOW9_DEFINED; i++)
+	{
 		plotmap[i].dist_sq[i] *= 0;
+	}
 	for (i = MELNORME0_DEFINED; i <= MELNORME8_DEFINED; i++)
+	{
 		plotmap[i].dist_sq[i] *= 0;
+	}
 
 	// 670 Tanaka mentions a rainbow world, in Yehat space
 	// 580 Thraddash mention a rainbow world,
@@ -853,18 +915,26 @@ bool CheckValid(PLOT_LOCATION* plot, uqm::COUNT plot_id)
 	for (i = 0; i < NUM_PLOTS; i++)
 	{
 		if (i == plot_id)
+		{
 			continue; // Don't check yourself
+		}
 		if (!PLOT_SET(i))
+		{
 			continue;
+		}
 		if (PLOT_MIN(plot_id, i) == 0 && PLOT_MAX(plot_id, i) == MAX_PWEIGHT)
+		{
 			continue;
+		}
 		distance_sq = ((plot[plot_id].star_pt.x - plot[i].star_pt.x) * (plot[plot_id].star_pt.x - plot[i].star_pt.x) + (plot[plot_id].star_pt.y - plot[i].star_pt.y) * (plot[plot_id].star_pt.y - plot[i].star_pt.y));
 #ifdef DEBUG_STARSEED_TRACE_X
 		fprintf(stderr, "__dsq %d mindsq %d maxdsq %d__", distance_sq,
 				PLOT_MIN(plot_id, i), PLOT_MAX(plot_id, i));
 #endif
 		if (distance_sq < PLOT_MIN(plot_id, i) || (distance_sq > PLOT_MAX(plot_id, i) && PLOT_MAX(plot_id, i) > 0))
+		{
 			return false;
+		}
 	}
 	return true;
 }
@@ -886,42 +956,58 @@ void Plotify(STAR_DESC* starmap, STAR_DESC* star)
 	uqm::COUNT i = 0;
 
 	while (star->Index != StarmapArray[i].Index)
+	{
 		if (++i >= NUM_SOLAR_SYSTEMS)
+		{
 			return; // It doesn't have one
+		}
+	}
 
 	// Section 1: change the star to the right size for the plot
 	if (STAR_TYPE(StarmapArray[i].Type) == SUPER_GIANT_STAR)
+	{
 		star->Type = MAKE_STAR(
 			SUPER_GIANT_STAR,
 			STAR_COLOR(star->Type),
 			STAR_OWNER(star->Type));
+	}
 	if (STAR_TYPE(StarmapArray[i].Type) == GIANT_STAR)
+	{
 		star->Type = MAKE_STAR(
 			GIANT_STAR,
 			STAR_COLOR(star->Type),
 			STAR_OWNER(star->Type));
+	}
 	if (STAR_TYPE(StarmapArray[i].Type) == DWARF_STAR)
+	{
 		star->Type = MAKE_STAR(
 			DWARF_STAR,
 			STAR_COLOR(star->Type),
 			STAR_OWNER(star->Type));
+	}
 
 	// Section 2: change colors of stars based on plot
 	// Specific homeworlds that work best with their correct color star (SOL)
 	if (star->Index == SOL_DEFINED)
+	{
 		star->Type = StarmapArray[i].Type;
+	}
 	// On world 44s, the Eye Of Dogar is Green, of course
 	// All other channels are false gods
 	if (star->Index == ILWRATH_DEFINED)
 	{
 		uqm::COUNT newcolor = (STAR_COLOR(star->Type) + optCustomSeed) % 5;
 		if (optCustomSeed % 44 == 0 || optCustomSeed % 100 == 44)
+		{
 			star->Type = StarmapArray[i].Type;
+		}
 		else
+		{
 			star->Type = MAKE_STAR(
 				STAR_TYPE(star->Type),
 				newcolor >= GREEN_BODY ? newcolor + 1 : newcolor,
 				STAR_OWNER(star->Type));
+		}
 	}
 #if 0
 	// Shofixti can't be orange due to planet types
@@ -940,20 +1026,26 @@ void Plotify(STAR_DESC* starmap, STAR_DESC* star)
 	if (star->Index == SPATHI_DEFINED)
 	{
 		if (STAR_COLOR(star->Type) == WHITE_BODY)
+		{
 			star->Type = MAKE_STAR(
 				STAR_TYPE(star->Type),
 				YELLOW_BODY,
 				STAR_OWNER(star->Type));
+		}
 		if (STAR_COLOR(star->Type) == BLUE_BODY)
+		{
 			star->Type = MAKE_STAR(
 				STAR_TYPE(star->Type),
 				ORANGE_BODY,
 				STAR_OWNER(star->Type));
+		}
 		if (STAR_COLOR(star->Type) == GREEN_BODY)
+		{
 			star->Type = MAKE_STAR(
 				STAR_TYPE(star->Type),
 				RED_BODY,
 				STAR_OWNER(star->Type));
+		}
 	}
 	// Supox will NOT be the same color as rainbow world
 	// This swaps yellow/blue, red/white, and green/orange
@@ -961,8 +1053,12 @@ void Plotify(STAR_DESC* starmap, STAR_DESC* star)
 	{
 		int j = 0;
 		while (RAINBOW0_DEFINED != starmap[j].Index)
+		{
 			if (++j >= NUM_SOLAR_SYSTEMS)
+			{
 				return; // It doesn't have one
+			}
+		}
 		// This will either increment or decriment based on even/odd
 		// and then % 6 to put back into star_color.
 		star->Type = MAKE_STAR(DWARF_STAR,
@@ -975,8 +1071,12 @@ void Plotify(STAR_DESC* starmap, STAR_DESC* star)
 	{
 		int j = 0;
 		while (RAINBOW0_DEFINED != starmap[j].Index)
+		{
 			if (++j >= NUM_SOLAR_SYSTEMS)
+			{
 				return; // It doesn't have one
+			}
+		}
 		star->Type = MAKE_STAR(STAR_TYPE(star->Type),
 							   STAR_COLOR(starmap[j].Type),
 							   STAR_OWNER(star->Type));
@@ -989,8 +1089,12 @@ void Plotify(STAR_DESC* starmap, STAR_DESC* star)
 	{
 		int j = 0;
 		while ((starmap[j].Postfix != star->Postfix) || (starmap[j].Prefix != 1))
+		{
 			if (++j >= NUM_SOLAR_SYSTEMS)
+			{
 				return; // It doesn't have one
+			}
+		}
 #ifdef DEBUG_STARSEED
 		fprintf(stderr, "Melnorme %d swapping %d %d at %d.%d : %d.%d for "
 						"%d %d at %d.%d : %d.%d\n",
@@ -1009,8 +1113,12 @@ void Plotify(STAR_DESC* starmap, STAR_DESC* star)
 	{
 		int j = 0;
 		while (starmap[j].Postfix != 129) // Postfix 129 = "Sol"
+		{
 			if (++j >= NUM_SOLAR_SYSTEMS)
+			{
 				return; // Somehow, Sol does not exist
+			}
+		}
 		if (star->Prefix == 0)
 		{
 			starmap[j].Postfix = star->Postfix;
@@ -1022,8 +1130,12 @@ void Plotify(STAR_DESC* starmap, STAR_DESC* star)
 			int k;
 			// Re-order the stars to remove new Sol's prefix
 			for (k = 0; k < NUM_SOLAR_SYSTEMS; k++)
+			{
 				if (starmap[k].Postfix == star->Postfix && starmap[k].Prefix > star->Prefix)
+				{
 					starmap[k].Prefix--;
+				}
+			}
 			// New Sol gets its name
 			star->Prefix = 0;
 			star->Postfix = 129;
@@ -1032,8 +1144,12 @@ void Plotify(STAR_DESC* starmap, STAR_DESC* star)
 													   starmap[j].star_pt);
 			// Find the highest Prefix
 			for (k = 0; k < NUM_SOLAR_SYSTEMS; k++)
+			{
 				if (starmap[k].Postfix == pStr->Postfix && starmap[k].Prefix > prefix)
+				{
 					prefix = starmap[k].Prefix;
+				}
+			}
 			// Old Sol gets new Prefix/Postfix.  It shouldn't be possible,
 			// but just in case, cap Prefix at 14 ("Xi")
 			starmap[j].Postfix = pStr->Postfix;
@@ -1050,11 +1166,17 @@ void Plotify(STAR_DESC* starmap, STAR_DESC* star)
 		for (j = 0; j < NUM_SOLAR_SYSTEMS; j++)
 		{
 			if (&starmap[j] == star)
+			{
 				continue; // Not yet...
+			}
 			if (starmap[j].Postfix == star->Postfix)
+			{
 				starmap[j].Postfix = 113;
+			}
 			else if (starmap[j].Postfix == 113)
+			{
 				starmap[j].Postfix = star->Postfix;
+			}
 		}
 		star->Postfix = 113;
 	}
@@ -1110,7 +1232,9 @@ SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap)
 	bool tried[NUM_SOLAR_SYSTEMS] = {false};
 	//bool tried[NUM_SOLAR_SYSTEMS] = {[0 ... NUM_SOLAR_SYSTEMS - 1] = false};
 	for (i = 0; i < NUM_SOLAR_SYSTEMS; i++)
+	{
 		tried[i] = 0;
+	}
 #endif
 	uqm::COUNT timelimit = (GLOBAL(CurrentActivity) ? 600 : 20);
 #ifdef DEBUG_STARSEED_TRACE
@@ -1139,12 +1263,16 @@ SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap)
 		// NULL out all the plot pointers so that it "places" pregens
 		// in order to properly Plotify () the pregens.  ARILOU don't need.
 		for (i = 1; i < NUM_PLOTS; i++)
+		{
 			plotmap[i].star = NULL;
+		}
 		// Just in case hard coded ARILOU doesn't have a pointer
 		// use Arilou homeworld pointer so we can just skip it
 		if (plotmap[ARILOU_DEFINED].star_pt.x != ~0 && plotmap[ARILOU_DEFINED].star_pt.y != ~0)
+		{
 			plotmap[ARILOU_DEFINED].star =
 				&(starmap[NUM_SOLAR_SYSTEMS + 1 + NUM_HYPER_VORTICES + 1]);
+		}
 #if 0
 		// Place down any plots which were already assigned in plotmap
 		for (i = 1; i < NUM_PLOTS; i++)
@@ -1314,7 +1442,9 @@ SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap)
 														   plotmap[ARILOU_DEFINED].star_pt);
 			// Anything less than 2.0 units from a star is too close
 			if ((plotmap[ARILOU_DEFINED].star) && ((plotmap[ARILOU_DEFINED].star_pt.x - plotmap[ARILOU_DEFINED].star->star_pt.x) * (plotmap[ARILOU_DEFINED].star_pt.x - plotmap[ARILOU_DEFINED].star->star_pt.x) + (plotmap[ARILOU_DEFINED].star_pt.y - plotmap[ARILOU_DEFINED].star->star_pt.y) * (plotmap[ARILOU_DEFINED].star_pt.y - plotmap[ARILOU_DEFINED].star->star_pt.y) < 400))
+			{
 				continue;
+			}
 			// Arilou homeworld pointer for reasons
 			star_id = NUM_SOLAR_SYSTEMS + 1 + NUM_HYPER_VORTICES + 1;
 			plotmap[plot_id].star = &(starmap[star_id]);
@@ -1324,7 +1454,9 @@ SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap)
 			star_id = (rand_val + i * STAR_FACTOR) % NUM_SOLAR_SYSTEMS;
 			// Not empty, requeue
 			if (starmap[star_id].Index != 0)
+			{
 				continue;
+			}
 			// Put the plot in the starsystem
 			starmap[star_id].Index = plot_id;
 			// Put the starsystem in the plot
@@ -1353,7 +1485,9 @@ SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap)
 			{
 				timer_running = false;
 				if (plot_id != ARILOU_DEFINED)
+				{
 					Plotify(starmap, plotmap[plot_id].star);
+				}
 				return return_id;
 			}
 			// If we ran out of time or the plot is not heavily connected,
@@ -1370,7 +1504,9 @@ SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap)
 												  (uqm::DWORD)sqrt(ConnectedPlot(plotmap, plot_id, return_id)));
 #endif
 				if (plot_id != ARILOU_DEFINED)
+				{
 					starmap[star_id].Index = 0;
+				}
 				plotmap[plot_id].star_pt = POINT {~0, ~0};
 				plotmap[plot_id].star = NULL;
 				if (my_clock)
@@ -1390,7 +1526,9 @@ SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap)
 				(float)plotmap[plot_id].star_pt.y / 10);
 #endif
 		if (plot_id != ARILOU_DEFINED)
+		{
 			starmap[star_id].Index = 0;
+		}
 		plotmap[plot_id].star_pt = POINT {~0, ~0};
 		plotmap[plot_id].star = NULL;
 	}
@@ -1424,10 +1562,12 @@ void DefaultQuasispace(PORTAL_LOCATION* portalmap)
 		portalmap[i].quasi_pt = portalmap_array[i].quasi_pt;
 		portalmap[i].nearest_star = FindNearestConstellation((STAR_DESC*)StarmapArray, portalmap[i].star_pt);
 		if (!portalmap[i].nearest_star)
+		{
 			fprintf(stderr, "BAD Quasi Portal %c at %05.1f : %05.1f, %s",
 					'A' + i, (float)portalmap[i].star_pt.x / 10,
 					(float)portalmap[i].star_pt.y / 10,
 					"but no star found with FindNearestStar.\n");
+		}
 	}
 }
 
@@ -1500,10 +1640,14 @@ bool SeedQuasispace(PORTAL_LOCATION* portalmap, PLOT_LOCATION* plotmap,
 				for (j = 0; j < i; j++)
 				{
 					if ((portalmap[i].star_pt.x - portalmap[j].star_pt.x) * (portalmap[i].star_pt.x - portalmap[j].star_pt.x) + (portalmap[i].star_pt.y - portalmap[j].star_pt.y) * (portalmap[i].star_pt.y - portalmap[j].star_pt.y) < MIN_PORTAL * MIN_PORTAL)
+					{
 						valid = false;
+					}
 				}
 				if (!valid)
+				{
 					continue;
+				}
 			}
 			if (portalmap[i].star_pt.x <= 0 || portalmap[i].star_pt.x >= MAX_X_UNIVERSE || portalmap[i].star_pt.y <= 0 || portalmap[i].star_pt.y >= MAX_Y_UNIVERSE)
 			{
@@ -1552,10 +1696,14 @@ bool SeedQuasispace(PORTAL_LOCATION* portalmap, PLOT_LOCATION* plotmap,
 			for (j = 0; j < i; j++)
 			{
 				if ((portalmap[i].quasi_pt.x - portalmap[j].quasi_pt.x) * (portalmap[i].quasi_pt.x - portalmap[j].quasi_pt.x) + (portalmap[i].quasi_pt.y - portalmap[j].quasi_pt.y) * (portalmap[i].quasi_pt.y - portalmap[j].quasi_pt.y) < MIN_VORTEX * MIN_VORTEX)
+				{
 					valid = false;
+				}
 			}
 			if ((portalmap[i].quasi_pt.x - 5000) * (portalmap[i].quasi_pt.x - 5000) + (portalmap[i].quasi_pt.y - 5000) * (portalmap[i].quasi_pt.y - 5000) < MIN_VORTEX * MIN_VORTEX)
+			{
 				valid = false;
+			}
 		}
 	}
 	// Now we must sort the quasi side and place in the starmap
@@ -1565,7 +1713,9 @@ bool SeedQuasispace(PORTAL_LOCATION* portalmap, PLOT_LOCATION* plotmap,
 		valid = true;
 		// Yes I know bubble sorts are lazy but we really only do this once.
 		for (i = 0; i < NUM_HYPER_VORTICES - 1; i++)
+		{
 			for (j = i + 1; j < NUM_HYPER_VORTICES; j++)
+			{
 				if (portalmap[i].quasi_pt.y > portalmap[j].quasi_pt.y || (portalmap[i].quasi_pt.y == portalmap[j].quasi_pt.y && portalmap[i].quasi_pt.x > portalmap[j].quasi_pt.x))
 				{
 					valid = false;
@@ -1573,6 +1723,8 @@ bool SeedQuasispace(PORTAL_LOCATION* portalmap, PLOT_LOCATION* plotmap,
 					portalmap[i] = portalmap[j];
 					portalmap[j] = swap;
 				}
+			}
+		}
 	}
 	for (i = 0, j = NUM_SOLAR_SYSTEMS + 1; i < NUM_HYPER_VORTICES; ++i, ++j)
 	{
@@ -1682,7 +1834,9 @@ PlotIdStrToIndex(const char* plotIdStr)
 	PlotIdMap* found = (PlotIdMap*)bsearch(&key, plotIdMap, ARRAY_SIZE(plotIdMap),
 										   sizeof plotIdMap[0], PlotIdCompare);
 	if (found == NULL)
+	{
 		return NUM_PLOTS + 1;
+	}
 #ifdef DEBUG_STARSEED
 	fprintf(stderr, "END PlotIdStrToIndex %s %d.\n", plotIdStr, found->id);
 #endif

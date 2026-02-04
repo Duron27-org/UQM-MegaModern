@@ -147,7 +147,9 @@ bool luaUqm_loadScript(lua_State* luaState, uio_DirHandle* dir,
 
 	buf = (char*)malloc(LOADSCRIPT_BUFSIZE);
 	if (buf == NULL)
+	{
 		goto err;
+	}
 
 	readerState.fileName = fileName;
 	readerState.in = in;
@@ -168,10 +170,14 @@ bool luaUqm_loadScript(lua_State* luaState, uio_DirHandle* dir,
 
 err:
 	if (buf != NULL)
+	{
 		free(buf);
+	}
 
 	if (in != NULL)
+	{
 		uio_fclose(in);
+	}
 
 	return false;
 }
@@ -231,9 +237,13 @@ void luaUqm_runLuaDir(lua_State* luaState, uio_DirHandle* dirHandle,
 
 err:
 	if (luaFiles != NULL)
+	{
 		uio_DirList_free(luaFiles);
+	}
 	if (luaDir != NULL)
+	{
 		uio_closeDir(luaDir);
+	}
 }
 
 // [-1] -> function fun
@@ -278,7 +288,9 @@ void luaUqm_makeEnum(lua_State* luaState, const luaUqm_EnumValue* enumVals)
 
 	// Count the number of enum values.
 	for (enumPtr = enumVals; enumPtr->name != NULL; enumPtr++)
+	{
 		enumCount++;
+	}
 
 	lua_createtable(luaState, 0, enumCount);
 	for (enumPtr = enumVals; enumPtr->name != NULL; enumPtr++)

@@ -249,9 +249,13 @@ void SleepThreadUntil_PT(TimeCount wakeTime)
 
 	now = GetTimeCounter();
 	if (wakeTime <= now)
+	{
 		TaskSwitch_PT();
+	}
 	else
+	{
 		usleep((wakeTime - now) * 1000000 / ONE_SECOND);
+	}
 }
 
 void TaskSwitch_PT(void)
@@ -547,7 +551,9 @@ void LockRecursiveMutex_PT(RecursiveMutex val)
 		}
 #endif
 		while (pthread_mutex_lock(&mtx->mutex))
+		{
 			TaskSwitch_PT();
+		}
 		mtx->thread_id = thread_id;
 	}
 	mtx->locks++;

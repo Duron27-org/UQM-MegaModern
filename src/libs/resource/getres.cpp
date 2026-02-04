@@ -125,9 +125,13 @@ void* res_GetResource(RESOURCE res)
 	}
 
 	if (desc->resdata.ptr == NULL)
+	{
 		loadResourceDesc(desc);
+	}
 	if (desc->resdata.ptr != NULL)
+	{
 		++desc->refcount;
+	}
 
 	return desc->resdata.ptr;
 	// May still be NULL, if the load failed.
@@ -178,11 +182,17 @@ void res_FreeResource(RESOURCE res)
 	}
 
 	if (desc->refcount > 0)
+	{
 		--desc->refcount;
+	}
 	else
+	{
 		log_add(log_Debug, "Warning: freeing an unreferenced resource.");
+	}
 	if (desc->refcount > 0)
+	{
 		return; // Still references left
+	}
 
 	freeFun = desc->vtable->freeFun;
 	if (freeFun == NULL)

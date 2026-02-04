@@ -101,14 +101,18 @@ char** argv;
 		c = getopt_long(argc, argv, "abc:d:0123456789",
 						long_options, &option_index);
 		if (c == -1)
+		{
 			break;
+		}
 
 		switch (c)
 		{
 			case 0:
 				printf("option %s", long_options[option_index].name);
 				if (optarg)
+				{
 					printf(" with arg %s", optarg);
+				}
 				printf("\n");
 				break;
 
@@ -123,7 +127,9 @@ char** argv;
 			case '8':
 			case '9':
 				if (digit_optind != 0 && digit_optind != this_option_optind)
+				{
 					printf("digits occur in two different argv-elements.\n");
+				}
 				digit_optind = this_option_optind;
 				printf("option %c\n", c);
 				break;
@@ -156,7 +162,9 @@ char** argv;
 	{
 		printf("non-option ARGV-elements: ");
 		while (optind < argc)
+		{
 			printf("%s ", argv[optind++]);
+		}
 		printf("\n");
 	}
 

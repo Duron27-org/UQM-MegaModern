@@ -168,7 +168,9 @@ store_default_binding(int is_axis_binding, int axis, int polarity,
 												  sizeof(default_binding) * new_capacity);
 
 		if (!new_bindings)
+		{
 			return;
+		}
 
 		default_bindings = new_bindings;
 		default_binding_capacity = new_capacity;
@@ -190,14 +192,18 @@ apply_default_bindings_to_controller(SDL_JoystickID instance_id,
 	default_binding* binding;
 
 	if (!default_bindings)
+	{
 		return;
+	}
 
 	for (int i = 0; i < default_binding_count; i++)
 	{
 		binding = &default_bindings[i];
 
 		if (binding->logical_port != logical_port)
+		{
 			continue;
+		}
 
 		if (binding->is_axis_binding)
 		{
@@ -226,7 +232,9 @@ void create_joystick(int device_index)
 	joystick* x;
 
 	if (!SDL_IsGameController(device_index))
+	{
 		return;
+	}
 
 	gamecontroller = SDL_GameControllerOpen(device_index);
 	if (!gamecontroller)
@@ -455,7 +463,9 @@ key_init(void)
 	unsigned int i;
 	pool = allocate_key_chunk();
 	for (i = 0; i < KEYBOARD_INPUT_BUCKETS; i++)
+	{
 		bindings[i] = NULL;
+	}
 
 #ifdef HAVE_JOYSTICK
 #if SDL_MAJOR_VERSION > 1
@@ -505,7 +515,9 @@ key_uninit(void)
 	unsigned int i;
 	free_key_pool(pool);
 	for (i = 0; i < KEYBOARD_INPUT_BUCKETS; i++)
+	{
 		bindings[i] = NULL;
+	}
 	pool = NULL;
 
 #ifdef HAVE_JOYSTICK
@@ -530,7 +542,9 @@ key_uninit(void)
 #else
 	// SDL1: Original array-based cleanup
 	for (i = 0; i < joycount; i++)
+	{
 		destroy_joystick(i);
+	}
 	HFree(joysticks);
 #endif // SDL_MAJOR_VERSION
 #endif /* HAVE_JOYSTICK */
@@ -787,7 +801,9 @@ int VControl_AddGestureBinding(VCONTROL_GESTURE* g, int* target)
 					(g->gesture.axis.polarity < 0) ? -1 : 1, target);
 			}
 			else
+			{
 				result = 0;
+			}
 #endif
 			break;
 #endif
@@ -818,7 +834,9 @@ int VControl_AddGestureBinding(VCONTROL_GESTURE* g, int* target)
 					g->gesture.button.index, target);
 			}
 			else
+			{
 				result = 0;
+			}
 #endif
 			break;
 #endif /* HAVE_JOYSTICK */
@@ -905,7 +923,9 @@ int VControl_AddJoyAxisBinding(int port, int axis, int polarity, int* target)
 	{
 		joystick* j = &joysticks[port];
 		if (!(j->stick))
+		{
 			create_joystick(port);
+		}
 		if ((axis >= 0) && (axis < j->numaxes))
 		{
 			if (polarity < 0)
@@ -996,7 +1016,9 @@ void VControl_RemoveJoyAxisBinding(int port, int axis,
 	{
 		joystick* j = &joysticks[port];
 		if (!(j->stick))
+		{
 			create_joystick(port);
+		}
 		if ((axis >= 0) && (axis < j->numaxes))
 		{
 			if (polarity < 0)
@@ -1083,7 +1105,9 @@ int VControl_AddJoyButtonBinding(int port, int button, int* target)
 	{
 		joystick* j = &joysticks[port];
 		if (!(j->stick))
+		{
 			create_joystick(port);
+		}
 		if ((button >= 0) && (button < j->numbuttons))
 		{
 			add_binding(&joysticks[port].buttons[button], target,
@@ -1146,7 +1170,9 @@ void VControl_RemoveJoyButtonBinding(int port, int button, int* target)
 	{
 		joystick* j = &joysticks[port];
 		if (!(j->stick))
+		{
 			create_joystick(port);
+		}
 		if ((button >= 0) && (button < j->numbuttons))
 		{
 			remove_binding(&joysticks[port].buttons[button], target,
@@ -1207,7 +1233,9 @@ int VControl_AddJoyHatBinding(int port, int which, Uint8 dir, int* target)
 	{
 		joystick* j = &joysticks[port];
 		if (!(j->stick))
+		{
 			create_joystick(port);
+		}
 		if ((which >= 0) && (which < j->numhats))
 		{
 			if (dir == SDL_HAT_LEFT)
@@ -1266,7 +1294,9 @@ void VControl_RemoveJoyHatBinding(int port, int which, Uint8 dir, int* target)
 	{
 		joystick* j = &joysticks[port];
 		if (!(j->stick))
+		{
 			create_joystick(port);
+		}
 		if ((which >= 0) && (which < j->numhats))
 		{
 			if (dir == SDL_HAT_LEFT)
@@ -1338,7 +1368,9 @@ void VControl_ProcessJoyButtonDown(int port, int button)
 #ifdef HAVE_JOYSTICK
 #if SDL_MAJOR_VERSION == 1
 	if (!joysticks[port].stick)
+	{
 		return;
+	}
 	activate(joysticks[port].buttons[button], SDLK_UNKNOWN);
 #else
 	controller_list* current = controller_list_head;
@@ -1363,7 +1395,9 @@ void VControl_ProcessJoyButtonUp(int port, int button)
 #ifdef HAVE_JOYSTICK
 #if SDL_MAJOR_VERSION == 1
 	if (!joysticks[port].stick)
+	{
 		return;
+	}
 	deactivate(joysticks[port].buttons[button], SDLK_UNKNOWN);
 #else
 	controller_list* current = controller_list_head;
@@ -1389,7 +1423,9 @@ void VControl_ProcessJoyAxis(int port, int axis, int value)
 #if SDL_MAJOR_VERSION == 1
 	int t;
 	if (!joysticks[port].stick)
+	{
 		return;
+	}
 	t = joysticks[port].threshold;
 	if (value > t)
 	{
@@ -1437,7 +1473,9 @@ void VControl_ProcessJoyAxis(int port, int axis, int value)
 			int t = j->threshold;
 
 			if (axis < 0 || axis >= j->numaxes)
+			{
 				return;
+			}
 
 			if (value > t)
 			{
@@ -1494,24 +1532,42 @@ void VControl_ProcessJoyHat(int port, int which, Uint8 value)
 #ifdef HAVE_JOYSTICK
 	Uint8 old;
 	if (!joysticks[port].stick)
+	{
 		return;
+	}
 	old = joysticks[port].hats[which].last;
 	if (!(old & SDL_HAT_LEFT) && (value & SDL_HAT_LEFT))
+	{
 		activate(joysticks[port].hats[which].left, SDLK_UNKNOWN);
+	}
 	if (!(old & SDL_HAT_RIGHT) && (value & SDL_HAT_RIGHT))
+	{
 		activate(joysticks[port].hats[which].right, SDLK_UNKNOWN);
+	}
 	if (!(old & SDL_HAT_UP) && (value & SDL_HAT_UP))
+	{
 		activate(joysticks[port].hats[which].up, SDLK_UNKNOWN);
+	}
 	if (!(old & SDL_HAT_DOWN) && (value & SDL_HAT_DOWN))
+	{
 		activate(joysticks[port].hats[which].down, SDLK_UNKNOWN);
+	}
 	if ((old & SDL_HAT_LEFT) && !(value & SDL_HAT_LEFT))
+	{
 		deactivate(joysticks[port].hats[which].left, SDLK_UNKNOWN);
+	}
 	if ((old & SDL_HAT_RIGHT) && !(value & SDL_HAT_RIGHT))
+	{
 		deactivate(joysticks[port].hats[which].right, SDLK_UNKNOWN);
+	}
 	if ((old & SDL_HAT_UP) && !(value & SDL_HAT_UP))
+	{
 		deactivate(joysticks[port].hats[which].up, SDLK_UNKNOWN);
+	}
 	if ((old & SDL_HAT_DOWN) && !(value & SDL_HAT_DOWN))
+	{
 		deactivate(joysticks[port].hats[which].down, SDLK_UNKNOWN);
+	}
 	joysticks[port].hats[which].last = value;
 #else
 	(void)port;
@@ -1938,7 +1994,9 @@ void VControl_ParseGesture(VCONTROL_GESTURE* g, const char* spec)
 	next_token(&ps);
 	parse_gesture(&ps, g);
 	if (ps.error)
+	{
 		printf("Error parsing %s\n", spec);
+	}
 }
 
 int VControl_DumpGesture(char* buf, int n, VCONTROL_GESTURE* g)

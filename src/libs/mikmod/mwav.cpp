@@ -152,7 +152,9 @@ static SAMPLE* Sample_LoadGeneric_internal_wav(MREADER* reader)
 					return NULL;
 				}
 				if (!(si = (SAMPLE*)MikMod_malloc(sizeof(SAMPLE))))
+				{
 					return NULL;
+				}
 				si->speed = wh.nSamplesPerSec / wh.nChannels;
 				si->volume = 64;
 				si->length = len;
@@ -172,7 +174,9 @@ static SAMPLE* Sample_LoadGeneric_internal_wav(MREADER* reader)
 		/* onto next block */
 		_mm_fseek(reader, start + len, SEEK_SET);
 		if (_mm_eof(reader))
+		{
 			break;
+		}
 	}
 
 	return si;
@@ -185,7 +189,9 @@ static SAMPLE* Sample_LoadRawGeneric_internal(MREADER* reader, ULONG rate, ULONG
 	int samp_size = 1;
 
 	if (!(si = (SAMPLE*)MikMod_malloc(sizeof(SAMPLE))))
+	{
 		return NULL;
+	}
 
 	/* length */
 	_mm_fseek(reader, 0, SEEK_END);
@@ -294,7 +300,9 @@ MIKMODAPI SAMPLE* Sample_LoadRawMem(const char* buf, int len, ULONG rate, ULONG 
 	MREADER* reader;
 
 	if (!buf || len <= 0)
+	{
 		return NULL;
+	}
 	if ((reader = _mm_new_mem_reader(buf, len)) != NULL)
 	{
 		result = Sample_LoadRawGeneric(reader, rate, channel, flags);
@@ -322,7 +330,9 @@ MIKMODAPI SAMPLE* Sample_LoadRaw(const CHAR* filename, ULONG rate, ULONG channel
 	SAMPLE* si = NULL;
 
 	if (!(md_mode & DMODE_SOFT_SNDFX))
+	{
 		return NULL;
+	}
 	if ((fp = _mm_fopen(filename, "rb")) != NULL)
 	{
 		si = Sample_LoadRawFP(fp, rate, channel, flags);
@@ -348,7 +358,9 @@ MIKMODAPI SAMPLE* Sample_LoadMem(const char* buf, int len)
 	MREADER* reader;
 
 	if (!buf || len <= 0)
+	{
 		return NULL;
+	}
 	if ((reader = _mm_new_mem_reader(buf, len)) != NULL)
 	{
 		result = Sample_LoadGeneric(reader);
@@ -376,7 +388,9 @@ MIKMODAPI SAMPLE* Sample_Load(const CHAR* filename)
 	SAMPLE* si = NULL;
 
 	if (!(md_mode & DMODE_SOFT_SNDFX))
+	{
 		return NULL;
+	}
 	if ((fp = _mm_fopen(filename, "rb")) != NULL)
 	{
 		si = Sample_LoadFP(fp);
@@ -390,7 +404,9 @@ MIKMODAPI void Sample_Free(SAMPLE* si)
 	if (si)
 	{
 		if (si->onfree)
+		{
 			si->onfree(si->ctx);
+		}
 		MD_SampleUnload(si->handle);
 		MikMod_free(si);
 	}

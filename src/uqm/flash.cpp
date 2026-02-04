@@ -103,7 +103,9 @@ Flash_create(CONTEXT gfxContext)
 
 	// TODO: Delete the context somewhere
 	if (!workGfxContext)
+	{
 		workGfxContext = CreateContext("Flash.workGfxContext");
+	}
 
 	return context;
 }
@@ -126,7 +128,9 @@ Flash_createHighlight(CONTEXT gfxContext, const RECT* rect)
 		context->rect.extent.height = 0;
 	}
 	else
+	{
 		context->rect = *rect;
+	}
 	context->type = FlashType_highlight;
 
 	return context;
@@ -166,7 +170,9 @@ Flash_createOverlay(CONTEXT gfxContext, const POINT* origin, FRAME overlay)
 		context->rect.extent.height = 0;
 	}
 	else
+	{
 		Flash_setOverlay(context, origin, overlay, false);
+	}
 
 	return context;
 }
@@ -187,7 +193,9 @@ void Flash_setState(FlashContext* context, FlashState state,
 	context->lastFrameTime = now;
 
 	if (context->started)
+	{
 		Flash_drawCurrentFrame(context);
+	}
 }
 
 void Flash_start(FlashContext* context)
@@ -217,7 +225,9 @@ void Flash_terminate(FlashContext* context)
 	{
 		// Restore the flash rectangle IF not quiting:
 		if (!(GLOBAL(CurrentActivity) & CHECK_ABORT))
+		{
 			Flash_drawFrame(context, context->original, false);
+		}
 
 		Flash_clearCache(context);
 		HFree(context->cache);
@@ -262,7 +272,9 @@ Flash_fixState(FlashContext* context)
 				break;
 		}
 		if (stateTime != 0)
+		{
 			break;
+		}
 		context->state = (FlashState)((context->state + 1) & 0x3);
 	}
 }
@@ -279,7 +291,9 @@ void Flash_process(FlashContext* context)
 	TimeCount now;
 
 	if (!context->started || context->paused)
+	{
 		return;
+	}
 
 	now = GetTimeCounter();
 
@@ -295,7 +309,9 @@ void Flash_process(FlashContext* context)
 			break;
 		case FlashState_on:
 			if (now < context->lastStateTime + context->onTime)
+			{
 				return;
+			}
 			Flash_nextState(context);
 			context->lastStateTime = now;
 			break;
@@ -309,7 +325,9 @@ void Flash_process(FlashContext* context)
 			break;
 		case FlashState_off:
 			if (now < context->lastStateTime + context->offTime)
+			{
 				return;
+			}
 			Flash_nextState(context);
 			context->lastStateTime = now;
 			break;
@@ -386,7 +404,9 @@ TimeCount
 Flash_nextTime(FlashContext* context)
 {
 	if (!context->started || context->paused)
+	{
 		return (TimeCount)-1;
+	}
 
 	if (context->state == FlashState_fadeIn || context->state == FlashState_fadeOut)
 	{
@@ -399,9 +419,13 @@ Flash_nextTime(FlashContext* context)
 		// When the flash area is completely on or off, we don't
 		// need an update until we're ready to change state again.
 		if (context->state == FlashState_on)
+		{
 			return context->lastStateTime + context->onTime;
+		}
 		else /* context->state == FlashState_off */
+		{
 			return context->lastStateTime + context->offTime;
+		}
 	}
 }
 
@@ -477,7 +501,9 @@ void Flash_setOverlay(FlashContext* context, const POINT* origin, FRAME overlay,
 	}
 
 	if (!cleanup)
+	{
 		context->u.overlay.frame = overlay;
+	}
 	GetFrameRect(overlay, &context->rect);
 	context->rect.corner.x += origin->x;
 	context->rect.corner.y += origin->y;
@@ -519,7 +545,9 @@ Flash_initCache(FlashContext* context)
 
 	context->cache = (FRAME*)HMalloc(context->cacheSize * sizeof(FRAME));
 	for (i = 0; i < context->cacheSize; i++)
+	{
 		context->cache[i] = (FRAME)0;
+	}
 }
 
 void Flash_setCacheSize(FlashContext* context, uqm::COUNT size)
@@ -536,7 +564,9 @@ void Flash_setCacheSize(FlashContext* context, uqm::COUNT size)
 	context->cacheSize = size;
 
 	if (size != 0)
+	{
 		Flash_initCache(context);
+	}
 }
 
 uqm::COUNT
@@ -551,7 +581,9 @@ Flash_grabOriginal(FlashContext* context)
 	CONTEXT oldGfxContext;
 
 	if (context->original != (FRAME)0)
+	{
 		DestroyDrawable(ReleaseDrawable(context->original));
+	}
 
 	oldGfxContext = SetContext(context->gfxContext);
 	context->original = CaptureDrawable(CopyContextRect(&context->rect));
@@ -623,10 +655,14 @@ Flash_makeFrame(FlashContext* context, FRAME dest, int numer, int denom)
 
 				first = context->u.transition.first;
 				if (first == (FRAME)0)
+				{
 					first = context->original;
+				}
 				final = context->u.transition.final;
 				if (final == (FRAME)0)
+				{
 					final = context->original;
+				}
 
 				// Draw the first frame at full strength
 				SetContextDrawMode(DRAW_REPLACE_MODE);
@@ -667,19 +703,27 @@ static inline void
 Flash_prepareCacheFrame(FlashContext* context, uqm::COUNT index)
 {
 	if (context->cache[index] != (FRAME)0)
+	{
 		return;
+	}
 
 #ifdef BEGIN_AND_END_FRAME_EXCEPTIONS
 	if (index == 0 && context->type == FlashType_overlay)
+	{
 		context->cache[index] = context->original;
+	}
 	else if (index == 0 && context->type == FlashType_transition)
+	{
 		context->cache[index] = context->u.transition.first != (FRAME)0 ?
 									context->u.transition.first :
 									context->original;
+	}
 	else if (index == context->cacheSize - 1 && context->type == FlashType_transition)
+	{
 		context->cache[index] = context->u.transition.final != (FRAME)0 ?
 									context->u.transition.final :
 									context->original;
+	}
 	else
 #endif /* BEGIN_AND_END_FRMAE_EXCEPTIONS */
 	{
@@ -740,7 +784,9 @@ Flash_drawCacheFrame(FlashContext* context, uqm::COUNT index)
 	FRAME frame;
 
 	if (context->lastFrameIndex == index)
+	{
 		return;
+	}
 
 	frame = context->cache[index];
 
@@ -759,7 +805,9 @@ Flash_drawUncachedFrame(FlashContext* context, int numer, int denom)
 	if (numer == 0 && context->type == FlashType_overlay)
 	{
 		if (context->lastFrameIndex != 0)
+		{
 			return;
+		}
 
 		Flash_drawFrame(context, context->original);
 		context->lastFrameIndex = 0;
@@ -768,7 +816,9 @@ Flash_drawUncachedFrame(FlashContext* context, int numer, int denom)
 	else if (numer == 0 && context->type == FlashType_transition)
 	{
 		if (context->lastFrameIndex == 0)
+		{
 			return;
+		}
 
 		Flash_drawFrame(context, context->u.transition.first);
 		context->lastFrameIndex = 0;
@@ -777,7 +827,9 @@ Flash_drawUncachedFrame(FlashContext* context, int numer, int denom)
 	else if (numer == denom && context->type == FlashType_transition)
 	{
 		if (context->lastFrameIndex == 1)
+		{
 			return;
+		}
 
 		Flash_drawFrame(context, context->u.transition.final);
 		context->lastFrameIndex = 1;
@@ -834,21 +886,33 @@ Flash_drawCurrentFrame(FlashContext* context)
 		TimeCount now = GetTimeCounter();
 
 		if (context->state == FlashState_fadeIn)
+		{
 			denom = (int)context->fadeInTime;
+		}
 		else
+		{
 			denom = (int)context->fadeOutTime;
+		}
 
 		numer = (int)(now - context->lastStateTime);
 
 		if (numer > denom)
+		{
 			numer = denom;
+		}
 
 		if (context->state == FlashState_fadeOut)
+		{
 			numer = (int)context->fadeOutTime - numer;
+		}
 	}
 
 	if (context->cacheSize == 0)
+	{
 		Flash_drawUncachedFrame(context, numer, denom);
+	}
 	else
+	{
 		Flash_drawCachedFrame(context, numer, denom);
+	}
 }

@@ -125,20 +125,30 @@ static BOOL S3M_Test(void)
 
 	_mm_fseek(modreader, 0x2c, SEEK_SET);
 	if (!_mm_read_UBYTES(id, 4, modreader))
+	{
 		return 0;
+	}
 	if (!memcmp(id, "SCRM", 4))
+	{
 		return 1;
+	}
 	return 0;
 }
 
 static BOOL S3M_Init(void)
 {
 	if (!(s3mbuf = (S3MNOTE*)MikMod_malloc(32 * 64 * sizeof(S3MNOTE))))
+	{
 		return 0;
+	}
 	if (!(mh = (S3MHEADER*)MikMod_malloc(sizeof(S3MHEADER))))
+	{
 		return 0;
+	}
 	if (!(poslookup = (UBYTE*)MikMod_malloc(sizeof(UBYTE) * 256)))
+	{
 		return 0;
+	}
 	memset(poslookup, -1, 256);
 
 	return 1;
@@ -187,14 +197,18 @@ static BOOL S3M_GetNumChannels(void)
 		{
 			ch = flag & 31;
 			if (mh->channels[ch] < 32)
+			{
 				remap[ch] = 0;
+			}
 			if (flag & 32)
 			{
 				_mm_skip_BYTE(modreader);
 				_mm_skip_BYTE(modreader);
 			}
 			if (flag & 64)
+			{
 				_mm_skip_BYTE(modreader);
+			}
 			if (flag & 128)
 			{
 				_mm_skip_BYTE(modreader);
@@ -202,7 +216,9 @@ static BOOL S3M_GetNumChannels(void)
 			}
 		}
 		else
+		{
 			row++;
+		}
 	}
 	return 1;
 }
@@ -230,9 +246,13 @@ static BOOL S3M_ReadPattern(void)
 			ch = remap[flag & 31];
 
 			if (ch != -1)
+			{
 				n = &s3mbuf[(64U * ch) + row];
+			}
 			else
+			{
 				n = &dummy;
+			}
 
 			if (flag & 32)
 			{
@@ -243,7 +263,9 @@ static BOOL S3M_ReadPattern(void)
 			{
 				n->vol = _mm_read_UBYTE(modreader);
 				if (n->vol > 64)
+				{
 					n->vol = 64;
+				}
 			}
 			if (flag & 128)
 			{
@@ -252,7 +274,9 @@ static BOOL S3M_ReadPattern(void)
 			}
 		}
 		else
+		{
 			row++;
+		}
 	}
 	return 1;
 }
@@ -271,7 +295,9 @@ static UBYTE* S3M_ConvertTrack(S3MNOTE* tr)
 		vol = tr[t].vol;
 
 		if ((ins) && (ins != 255))
+		{
 			UniInstrument(ins - 1);
+		}
 		if (note != 255)
 		{
 			if (note == 254)
@@ -280,10 +306,14 @@ static UBYTE* S3M_ConvertTrack(S3MNOTE* tr)
 				vol = 255;
 			}
 			else
+			{
 				UniNote(((note >> 4) * OCTAVE) + (note & 0xf)); /* normal note */
+			}
 		}
 		if (vol < 255)
+		{
 			UniPTEffect(0xc, vol);
+		}
 
 		S3MIT_ProcessCmd(tr[t].cmd, tr[t].inf,
 						 tracker == 1 ? S3MIT_OLDSTYLE | S3MIT_SCREAM : S3MIT_OLDSTYLE);
@@ -334,15 +364,23 @@ static BOOL S3M_Load(BOOL curious)
 	/* then we can decide the module type */
 	tracker = mh->tracker >> 12;
 	if ((!tracker) || (tracker >= NUMTRACKERS))
+	{
 		tracker = NUMTRACKERS - 1; /* unknown tracker */
+	}
 	else
 	{
 		if (mh->tracker >= 0x3217)
+		{
 			tracker = NUMTRACKERS + 1; /* IT 2.14p4 */
+		}
 		else if (mh->tracker >= 0x3216)
+		{
 			tracker = NUMTRACKERS; /* IT 2.14p3 */
+		}
 		else
+		{
 			tracker--;
+		}
 	}
 	of.modtype = MikMod_strdup(S3M_Version[tracker]);
 	if (tracker < NUMTRACKERS)
@@ -361,20 +399,28 @@ static BOOL S3M_Load(BOOL curious)
 	of.initvolume = mh->mastervol << 1;
 	of.flags |= UF_ARPMEM | UF_PANNING;
 	if ((mh->tracker == 0x1300) || (mh->flags & 64))
+	{
 		of.flags |= UF_S3MSLIDES;
+	}
 	of.bpmlimit = 32;
 
 	/* read the order data */
 	if (!AllocPositions(mh->ordnum))
+	{
 		return 0;
+	}
 	if (!(origpositions = (UWORD*)MikMod_calloc(mh->ordnum, sizeof(UWORD))))
+	{
 		return 0;
+	}
 
 	for (t = 0; t < mh->ordnum; t++)
 	{
 		origpositions[t] = _mm_read_UBYTE(modreader);
 		if ((origpositions[t] >= mh->patnum) && (origpositions[t] < 254))
+		{
 			origpositions[t] = 255 /*mh->patnum-1*/;
+		}
 	}
 
 	if (_mm_eof(modreader))
@@ -387,7 +433,9 @@ static BOOL S3M_Load(BOOL curious)
 	S3MIT_CreateOrders(curious);
 
 	if (!(paraptr = (UWORD*)MikMod_malloc((of.numins + of.numpat) * sizeof(UWORD))))
+	{
 		return 0;
+	}
 
 	/* read the instrument+pattern parapointers */
 	_mm_read_I_UWORDS(paraptr, of.numins + of.numpat, modreader);
@@ -407,7 +455,9 @@ static BOOL S3M_Load(BOOL curious)
 
 	/* load samples */
 	if (!AllocSamples())
+	{
 		return 0;
+	}
 	q = of.samples;
 	for (t = 0; t < of.numins; t++)
 	{
@@ -435,7 +485,9 @@ static BOOL S3M_Load(BOOL curious)
 		/* ScreamTracker imposes a 64000 bytes (not 64k !) limit */
 		/* enforce it, if we'll use S3MIT_SCREAM in S3M_ConvertTrack() */
 		if (s.length > 64000 && tracker == 1)
+		{
 			s.length = 64000;
+		}
 
 		if (_mm_eof(modreader))
 		{
@@ -452,15 +504,23 @@ static BOOL S3M_Load(BOOL curious)
 		q->seekpos = (((ULONG)s.memsegh) << 16 | s.memsegl) << 4;
 
 		if (s.flags & 1)
+		{
 			q->flags |= SF_LOOP;
+		}
 		if (s.flags & 4)
+		{
 			q->flags |= SF_16BITS;
+		}
 		if (mh->fileformat == 1)
+		{
 			q->flags |= SF_SIGNED;
+		}
 
 		/* don't load sample if it doesn't have the SCRS tag */
 		if (memcmp(s.scrs, "SCRS", 4))
+		{
 			q->length = 0;
+		}
 
 		q++;
 	}
@@ -473,45 +533,73 @@ static BOOL S3M_Load(BOOL curious)
 		/* seek to pattern position (+2 skip pattern length) */
 		_mm_fseek(modreader, (long)((paraptr[of.numins + t]) << 4) + 2, SEEK_SET);
 		if (!S3M_GetNumChannels())
+		{
 			return 0;
+		}
 	}
 
 	/* build the remap array  */
 	for (t = 0; t < 32; t++)
+	{
 		if (!remap[t])
+		{
 			remap[t] = of.numchn++;
+		}
+	}
 
 	/* set panning positions after building remap chart! */
 	for (t = 0; t < 32; t++)
+	{
 		if ((mh->channels[t] < 32) && (remap[t] != -1))
 		{
 			if (mh->channels[t] < 8)
+			{
 				of.panning[remap[t]] = 0x30;
+			}
 			else
+			{
 				of.panning[remap[t]] = 0xc0;
+			}
 		}
+	}
 	if (mh->pantable == 252)
+	{
 		/* set panning positions according to panning table (new for st3.2) */
 		for (t = 0; t < 32; t++)
+		{
 			if ((pan[t] & 0x20) && (mh->channels[t] < 32) && (remap[t] != -1))
+			{
 				of.panning[remap[t]] = (pan[t] & 0xf) << 4;
+			}
+		}
+	}
 
 	/* load pattern info */
 	of.numtrk = of.numpat * of.numchn;
 	if (!AllocTracks())
+	{
 		return 0;
+	}
 	if (!AllocPatterns())
+	{
 		return 0;
+	}
 
 	for (t = 0; t < of.numpat; t++)
 	{
 		/* seek to pattern position (+2 skip pattern length) */
 		_mm_fseek(modreader, (((long)paraptr[of.numins + t]) << 4) + 2, SEEK_SET);
 		if (!S3M_ReadPattern())
+		{
 			return 0;
+		}
 		for (u = 0; u < of.numchn; u++)
+		{
 			if (!(of.tracks[track++] = S3M_ConvertTrack(&s3mbuf[u * 64])))
+			{
 				return 0;
+			}
+		}
 	}
 
 	return 1;
@@ -523,7 +611,9 @@ static CHAR* S3M_LoadTitle(void)
 
 	_mm_fseek(modreader, 0, SEEK_SET);
 	if (!_mm_read_UBYTES(s, 28, modreader))
+	{
 		return NULL;
+	}
 
 	return (DupStr(s, 28, 0));
 }

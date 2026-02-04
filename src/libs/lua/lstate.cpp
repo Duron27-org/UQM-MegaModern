@@ -146,7 +146,9 @@ static void stack_init(lua_State* L1, lua_State* L)
 	L1->stack = luaM_newvector(L, BASIC_STACK_SIZE, TValue);
 	L1->stacksize = BASIC_STACK_SIZE;
 	for (i = 0; i < BASIC_STACK_SIZE; i++)
+	{
 		setnilvalue(L1->stack + i); /* erase new stack */
+	}
 	L1->top = L1->stack;
 	L1->stack_last = L1->stack + L1->stacksize - EXTRA_STACK;
 	/* initialize first ci */
@@ -163,7 +165,9 @@ static void stack_init(lua_State* L1, lua_State* L)
 static void freestack(lua_State* L)
 {
 	if (L->stack == NULL)
-		return;			 /* stack not completely built yet */
+	{
+		return; /* stack not completely built yet */
+	}
 	L->ci = &L->base_ci; /* free the entire 'ci' list */
 	luaE_freeCI(L);
 	luaM_freearray(L, L->stack, L->stacksize); /* free stack array */
@@ -283,7 +287,9 @@ LUA_API lua_State* lua_newstate(lua_Alloc f, void* ud)
 	global_State* g;
 	LG* l = cast(LG*, (*f)(ud, NULL, LUA_TTHREAD, sizeof(LG)));
 	if (l == NULL)
+	{
 		return NULL;
+	}
 	L = &l->l.l;
 	g = &l->g;
 	L->next = NULL;
@@ -320,7 +326,9 @@ LUA_API lua_State* lua_newstate(lua_Alloc f, void* ud)
 	g->gcmajorinc = LUAI_GCMAJOR;
 	g->gcstepmul = LUAI_GCMUL;
 	for (i = 0; i < LUA_NUMTAGS; i++)
+	{
 		g->mt[i] = NULL;
+	}
 	if (luaD_rawrunprotected(L, f_luaopen, NULL) != LUA_OK)
 	{
 		/* memory allocation error: free partial state */
@@ -328,7 +336,9 @@ LUA_API lua_State* lua_newstate(lua_Alloc f, void* ud)
 		L = NULL;
 	}
 	else
+	{
 		luai_userstateopen(L);
+	}
 	return L;
 }
 

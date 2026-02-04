@@ -153,7 +153,9 @@ static void
 SetCustomShipData(RACE_DESC* pRaceDesc, const CustomShipData_t* data)
 {
 	if (pRaceDesc->data == data)
+	{
 		return; // no-op
+	}
 
 	if (pRaceDesc->data) // Out with the old
 	{
@@ -200,7 +202,9 @@ bubble_preprocess(ELEMENT* ElementPtr)
 	thrust_wait = HINIBBLE(ElementPtr->turn_wait);
 	turn_wait = LONIBBLE(ElementPtr->turn_wait);
 	if (thrust_wait > 0)
+	{
 		--thrust_wait;
+	}
 	else
 	{
 		ElementPtr->next.image.frame =
@@ -211,7 +215,9 @@ bubble_preprocess(ELEMENT* ElementPtr)
 	}
 
 	if (turn_wait > 0)
+	{
 		--turn_wait;
+	}
 	else
 	{
 		uqm::COUNT facing;
@@ -220,11 +226,17 @@ bubble_preprocess(ELEMENT* ElementPtr)
 		facing = NORMALIZE_FACING(ANGLE_TO_FACING(
 			GetVelocityTravelAngle(&ElementPtr->velocity)));
 		if ((delta_facing = TrackShip(ElementPtr, &facing)) == -1)
+		{
 			facing = (uqm::COUNT)TFB_Random();
+		}
 		else if (delta_facing <= ANGLE_TO_FACING(HALF_CIRCLE))
+		{
 			facing += (uqm::COUNT)TFB_Random() & (ANGLE_TO_FACING(HALF_CIRCLE) - 1);
+		}
 		else
+		{
 			facing -= (uqm::COUNT)TFB_Random() & (ANGLE_TO_FACING(HALF_CIRCLE) - 1);
+		}
 		SetVelocityVector(&ElementPtr->velocity,
 						  MISSILE_SPEED, facing);
 		turn_wait = TRACK_WAIT;
@@ -286,9 +298,13 @@ androsynth_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 		{
 			if ((lpEvalDesc->ObjectPtr->state_flags & FINITE_LIFE)
 				&& !(lpEvalDesc->ObjectPtr->state_flags & CREW_OBJECT))
+			{
 				lpEvalDesc->MoveState = AVOID;
+			}
 			else
+			{
 				lpEvalDesc->ObjectPtr = 0;
+			}
 		}
 
 		ship_intelligence(ShipPtr, ObjectsOfConcern, ConcernCounter);
@@ -308,7 +324,9 @@ androsynth_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 						 && lpEvalDesc->ObjectPtr->crew_level > BLAZER_DAMAGE)
 						|| (lpEvalDesc->ObjectPtr->crew_level > (BLAZER_DAMAGE * 3)
 							&& MANEUVERABILITY(&pEnemyStarShip->RaceDescPtr->cyborg_control) > RESOLUTION_COMPENSATED(SLOW_SHIP)))))
+			{
 				lpEvalDesc->MoveState = ENTICE;
+			}
 		}
 
 		ship_intelligence(ShipPtr, ObjectsOfConcern, ConcernCounter);
@@ -326,7 +344,9 @@ androsynth_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 								|| lpEvalDesc->ObjectPtr->crew_level <= BLAZER_DAMAGE)
 							&& (lpEvalDesc->ObjectPtr->crew_level <= (BLAZER_DAMAGE * 3)
 								|| MANEUVERABILITY(&pEnemyStarShip->RaceDescPtr->cyborg_control) <= RESOLUTION_COMPENSATED(SLOW_SHIP))))))
+			{
 				StarShipPtr->ship_input_state |= SPECIAL;
+			}
 		}
 
 		if (!(StarShipPtr->ship_input_state & SPECIAL)
@@ -334,7 +354,9 @@ androsynth_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 			&& lpEvalDesc->ObjectPtr)
 		{
 			if (lpEvalDesc->which_turn <= 4)
+			{
 				StarShipPtr->ship_input_state |= WEAPON;
+			}
 			else if (lpEvalDesc->MoveState != PURSUE
 					 && lpEvalDesc->which_turn <= 12)
 			{
@@ -360,7 +382,9 @@ androsynth_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 				if (NORMALIZE_ANGLE(travel_facing
 									- direction_facing + OCTANT)
 					<= QUADRANT)
+				{
 					StarShipPtr->ship_input_state |= WEAPON;
+				}
 			}
 		}
 	}
@@ -497,7 +521,9 @@ androsynth_preprocess(ELEMENT* ElementPtr)
 			cur_status_flags |= SPECIAL;
 
 			if (ElementPtr->thrust_wait)
+			{
 				--ElementPtr->thrust_wait;
+			}
 			else
 			{
 				uqm::COUNT facing;
@@ -507,9 +533,13 @@ androsynth_preprocess(ELEMENT* ElementPtr)
 					&& (cur_status_flags & (LEFT | RIGHT)))
 				{
 					if (cur_status_flags & LEFT)
+					{
 						--facing;
+					}
 					else
+					{
 						++facing;
+					}
 				}
 
 				SetVelocityVector(&ElementPtr->velocity,

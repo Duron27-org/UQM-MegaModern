@@ -63,11 +63,17 @@ TFB_Random(void)
 {
 	seed = A * (seed % Q) - R * (seed / Q);
 	if (seed > M)
+	{
 		return (seed -= M);
+	}
 	else if (seed)
+	{
 		return (seed);
+	}
 	else
+	{
 		return (seed = 1L);
+	}
 }
 
 /*****************************************************************************
@@ -90,9 +96,13 @@ TFB_SeedRandom(uqm::DWORD new_seed)
 
 	/* coerce the seed to be in the range 1..M */
 	if (new_seed == 0L) /* 0 becomes 1 */
+	{
 		new_seed = 1;
+	}
 	else if (new_seed > M) /* and less than M */
+	{
 		new_seed -= M;
+	}
 
 	old_seed = seed;
 	seed = new_seed;

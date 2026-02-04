@@ -201,7 +201,9 @@ utwig_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 
 	lpEvalDesc = &ObjectsOfConcern[ENEMY_WEAPON_INDEX];
 	if (StarShipPtr->RaceDescPtr->ship_info.energy_level == 0)
+	{
 		ShieldStatus = 0;
+	}
 	else
 	{
 		ShieldStatus = -1;
@@ -209,17 +211,25 @@ utwig_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 		{
 			ShieldStatus = 0;
 			if (!(lpEvalDesc->ObjectPtr->state_flags & FINITE_LIFE))
+			{
 				lpEvalDesc->MoveState = PURSUE;
+			}
 			else if (lpEvalDesc->ObjectPtr->mass_points
 					 || (lpEvalDesc->ObjectPtr->state_flags & CREW_OBJECT))
 			{
 				if ((lpEvalDesc->which_turn >>= 1) == 0)
+				{
 					lpEvalDesc->which_turn = 1;
+				}
 
 				if (lpEvalDesc->ObjectPtr->mass_points)
+				{
 					lpEvalDesc->ObjectPtr = 0;
+				}
 				else
+				{
 					lpEvalDesc->MoveState = PURSUE;
+				}
 				ShieldStatus = 1;
 			}
 		}
@@ -255,7 +265,9 @@ utwig_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 		GetElementStarShip(lpEvalDesc->ObjectPtr, &EnemyStarShipPtr);
 		if (!(EnemyStarShipPtr->RaceDescPtr->ship_info.ship_flags
 			  & IMMEDIATE_WEAPON))
+		{
 			lpEvalDesc->MoveState = PURSUE;
+		}
 	}
 	ship_intelligence(ShipPtr, ObjectsOfConcern, ConcernCounter);
 }
@@ -267,7 +279,9 @@ utwig_collision(ELEMENT* ElementPtr0, POINT* pPt0,
 	if (ElementPtr0->life_span > NORMAL_LIFE
 		&& (ElementPtr1->state_flags & FINITE_LIFE)
 		&& ElementPtr1->mass_points)
+	{
 		ElementPtr0->life_span += ElementPtr1->mass_points;
+	}
 
 	collision(ElementPtr0, pPt0, ElementPtr1, pPt1);
 }
@@ -295,12 +309,16 @@ utwig_preprocess(ELEMENT* ElementPtr)
 	}
 
 	if (!(StarShipPtr->cur_status_flags & SPECIAL))
+	{
 		StarShipPtr->special_counter = 0;
+	}
 	else if (StarShipPtr->special_counter % (SPECIAL_WAIT >> 1) == 0)
 	{
 		if (!DeltaEnergy(ElementPtr, -SPECIAL_ENERGY_COST))
+		{
 			StarShipPtr->RaceDescPtr->ship_info.ship_flags &=
 				~(POINT_DEFENSE | SHIELD_DEFENSE);
+		}
 		else if (StarShipPtr->special_counter == 0)
 		{
 			StarShipPtr->special_counter =
@@ -348,14 +366,18 @@ utwig_preprocess(ELEMENT* ElementPtr)
 		const size_t colorTableCount = ARRAY_SIZE(colorTable);
 
 		if (StarShipPtr->weapon_counter == 0)
+		{
 			++StarShipPtr->weapon_counter;
+		}
 
 		// colorCycleIndex is actually 1 higher than the entry in colorTable
 		// which is currently used, as it is 0 when the shield is off,
 		// and we don't want to skip over the first entry of the table.
 		ElementPtr->colorCycleIndex++;
 		if (ElementPtr->colorCycleIndex == colorTableCount + 1)
+		{
 			ElementPtr->colorCycleIndex = 1;
+		}
 
 		SetPrimColor(lpPrim, colorTable[ElementPtr->colorCycleIndex - 1]);
 

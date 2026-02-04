@@ -28,15 +28,23 @@ FreeLegacyVideoData(void* data)
 {
 	LEGACY_VIDEO pLV;
 	if (!data)
+	{
 		return false;
+	}
 
 	pLV = (LEGACY_VIDEO)data;
 	if (pLV->video)
+	{
 		HFree(pLV->video);
+	}
 	if (pLV->audio)
+	{
 		HFree(pLV->audio);
+	}
 	if (pLV->speech)
+	{
 		HFree(pLV->speech);
+	}
 	HFree(pLV);
 
 	return true;
@@ -84,13 +92,21 @@ GetLegacyVideoData(const char* path, RESOURCE_DATA* resdata)
 
 	log_add(log_Info, "\t'%s' -- video", paths);
 	if (audio_path)
+	{
 		log_add(log_Info, "\t'%s' -- audio", audio_path);
+	}
 	else
+	{
 		log_add(log_Info, "\tNo associated audio");
+	}
 	if (speech_path)
+	{
 		log_add(log_Info, "\t'%s' -- speech path", speech_path);
+	}
 	else
+	{
 		log_add(log_Info, "\tNo associated speech");
+	}
 	if (loop_str)
 	{
 		char* end;
@@ -104,7 +120,9 @@ GetLegacyVideoData(const char* path, RESOURCE_DATA* resdata)
 		log_add(log_Info, "\tLoop frame is %u", LoopFrame);
 	}
 	else
+	{
 		log_add(log_Info, "\tNo specified loop frame");
+	}
 
 	result = HMalloc(sizeof(LEGACY_VIDEO_DESC));
 	if (result)
@@ -154,7 +172,9 @@ GetLegacyVideoData(const char* path, RESOURCE_DATA* resdata)
 	return;
 err:
 	if (result)
+	{
 		FreeLegacyVideoData((LEGACY_VIDEO)result);
+	}
 
 	resdata->ptr = NULL;
 	return;

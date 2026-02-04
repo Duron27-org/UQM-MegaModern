@@ -68,7 +68,9 @@ bool OpponentAlive(STARSHIP* TestStarShipPtr)
 
 		if (StarShipPtr && StarShipPtr != TestStarShipPtr
 			&& StarShipPtr->RaceDescPtr->ship_info.crew_level == 0)
+		{
 			return false;
+		}
 	}
 
 	return true;
@@ -84,7 +86,9 @@ PlayDitty(STARSHIP* ship)
 void StopDitty(void)
 {
 	if (dittyIsPlaying)
+	{
 		StopMusic();
+	}
 	dittyIsPlaying = false;
 }
 
@@ -92,7 +96,9 @@ static bool
 DittyPlaying(void)
 {
 	if (!dittyIsPlaying)
+	{
 		return false;
+	}
 
 	dittyIsPlaying = PLRPlaying((MUSIC_REF)~0);
 	return dittyIsPlaying;
@@ -128,7 +134,9 @@ readyToEndCallback(NetConnection* conn, void* arg)
 #endif
 	NetConnection_setState(conn, NetState_endingBattle);
 	if (battleFrameCount + 1 > battleStateData->endFrameCount)
+	{
 		battleStateData->endFrameCount = battleFrameCount + 1;
+	}
 	Netplay_Notify_frameCount(conn, battleFrameCount + 1);
 	// The +1 is to ensure that after the remote side receives the
 	// frame count it will still receive one more frame data packet,
@@ -191,7 +199,9 @@ readyForBattleEndPlayer(NetConnection* conn)
 		// This may set the state to endingBattle.
 
 		if (NetConnection_getState(conn) == NetState_inBattle)
+		{
 			return false;
+		}
 	}
 
 	assert(NetConnection_getState(conn) == NetState_endingBattle || NetConnection_getState(conn) == NetState_endingBattle2);
@@ -201,7 +211,9 @@ readyForBattleEndPlayer(NetConnection* conn)
 	// NetState_endingBattle, then we haven't yet received the
 	// remote frame count, so the target frame count may still rise.
 	if (battleFrameCount < battleStateData->endFrameCount)
+	{
 		return false;
+	}
 
 	if (NetConnection_getState(conn) == NetState_endingBattle)
 	{
@@ -214,7 +226,9 @@ readyForBattleEndPlayer(NetConnection* conn)
 
 		// Continue the simulation if the battleFrameCount has gone up.
 		if (battleFrameCount < battleStateData->endFrameCount)
+		{
 			return false;
+		}
 	}
 
 	// We are ready and wait for the other party to become ready too.
@@ -259,12 +273,18 @@ readyForBattleEnd(void)
 	int playerI;
 
 	if (DittyPlaying())
+	{
 		return false;
+	}
 
 	for (playerI = 0; playerI < NUM_PLAYERS; playerI++)
+	{
 		if (!PlayerInput[playerI]->handlers->battleEndReady(
 				PlayerInput[playerI]))
+		{
 			return false;
+		}
+	}
 
 	return true;
 #endif /* defined (NETPLAY) */
@@ -374,7 +394,9 @@ setMinShipLifeSpan(ELEMENT* ship, uqm::COUNT life_span)
 		assert(ship->state_flags & FINITE_LIFE);
 		assert(!(ship->state_flags & DISAPPEARING));
 		if (ship->life_span < life_span)
+		{
 			ship->life_span = life_span;
+		}
 	}
 }
 
@@ -512,7 +534,9 @@ void new_ship(ELEMENT* DeadShipPtr)
 			}
 #endif
 			if (RestartMusic)
+			{
 				BattleSong(true);
+			}
 		}
 		else if (battle_counter[0] == 0 || battle_counter[1] == 0)
 		{
@@ -591,7 +615,9 @@ explosion_preprocess(ELEMENT* ShipPtr)
 			angle = lowByte(HIWORD(rand_val));
 			dist = DISPLAY_TO_WORLD(RES_SCALE(lowByte(LOWORD(rand_val)) % 8));
 			if (highByte(LOWORD(rand_val)) < 256 * 1 / 3)
+			{
 				dist += DISPLAY_TO_WORLD(RES_SCALE(8));
+			}
 			ElementPtr->current.location.x =
 				ShipPtr->current.location.x + COSINE(angle, dist);
 			ElementPtr->current.location.y =
@@ -659,7 +685,9 @@ GetWinnerStarShip(void)
 void SetWinnerStarShip(STARSHIP* winner)
 {
 	if (winner == NULL)
+	{
 		return; // nothing to do
+	}
 
 	winner->cur_status_flags |= PLAY_VICTORY_DITTY;
 
@@ -667,7 +695,9 @@ void SetWinnerStarShip(STARSHIP* winner)
 	// called twice, once for each ship. We need to preserve the winner
 	// determined on the first call.
 	if (winnerStarShip == NULL)
+	{
 		winnerStarShip = winner;
+	}
 }
 
 void RecordShipDeath(ELEMENT* deadShip)
@@ -686,7 +716,9 @@ void RecordShipDeath(ELEMENT* deadShip)
 	}
 
 	if (lowByte(GLOBAL(CurrentActivity)) == SUPER_MELEE)
+	{
 		MeleeShipDeath(deadStarShip);
+	}
 }
 
 void StartShipExplosion(ELEMENT* ShipPtr, bool playSound)
@@ -696,7 +728,9 @@ void StartShipExplosion(ELEMENT* ShipPtr, bool playSound)
 	GetElementStarShip(ShipPtr, &StarShipPtr);
 
 	if (!optExtended || isNetwork())
+	{
 		ZeroVelocityComponents(&ShipPtr->velocity);
+	}
 
 	DeltaEnergy(ShipPtr,
 				-(uqm::SIZE)StarShipPtr->RaceDescPtr->ship_info.energy_level);
@@ -989,13 +1023,17 @@ void flee_preprocess(ELEMENT* ElementPtr)
 
 		ElementPtr->colorCycleIndex++;
 		if (ElementPtr->colorCycleIndex == colorTabCount)
+		{
 			ElementPtr->colorCycleIndex = 0;
+		}
 
 		SetPrimColor(&DisplayArray[ElementPtr->PrimIndex],
 					 colorTab[ElementPtr->colorCycleIndex]);
 
 		if (ElementPtr->colorCycleIndex == 0)
+		{
 			--ElementPtr->thrust_wait;
+		}
 
 		ElementPtr->turn_wait = ElementPtr->thrust_wait;
 		if (ElementPtr->turn_wait)

@@ -43,7 +43,9 @@ void PlayChannel(uqm::COUNT channel, SOUND snd, SoundPosition pos,
 	CheckFinishedChannels();
 
 	if (!snd_ptr)
+	{
 		return; // nothing to play
+	}
 
 	sample = *(TFB_SoundSample**)snd_ptr;
 
@@ -91,7 +93,9 @@ bool ChannelPlaying(uqm::COUNT WhichChannel)
 	audio_GetSourcei(soundSource[WhichChannel].handle,
 					 audio_SOURCE_STATE, &state);
 	if (state == audio_PLAYING)
+	{
 		return true;
+	}
 	return false;
 }
 
@@ -167,11 +171,15 @@ void* _GetSoundBankData(uio_Stream* fp, uqm::DWORD length)
 		if (_cur_resfile_name == 0
 			|| (((s2 = 0), (s1 = strrchr(_cur_resfile_name, '/')) == 0)
 				&& (s2 = strrchr(_cur_resfile_name, '\\')) == 0))
+		{
 			n = 0;
+		}
 		else
 		{
 			if (s2 > s1)
+			{
 				s1 = s2;
+			}
 			n = s1 - _cur_resfile_name + 1;
 			strncpy(filename, _cur_resfile_name, n);
 		}
@@ -221,13 +229,17 @@ void* _GetSoundBankData(uio_Stream* fp, uqm::DWORD length)
 	}
 
 	if (!snd_ct)
+	{
 		return NULL; // no sounds decoded
+	}
 
 	Snd = AllocStringTable(snd_ct, 0);
 	if (!Snd)
 	{ // Oops, have to delete everything now
 		while (snd_ct--)
+		{
 			TFB_DestroySoundSample(sndfx[snd_ct]);
+		}
 
 		return NULL;
 	}
@@ -250,7 +262,9 @@ bool _ReleaseSoundBankData(void* Snd)
 	int index;
 
 	if (!fxTab)
+	{
 		return false;
+	}
 
 	for (index = 0; index < fxTab->size; ++index)
 	{
@@ -269,7 +283,9 @@ bool _ReleaseSoundBankData(void* Snd)
 		}
 
 		if (sample->decoder)
+		{
 			SoundDecoder_Free(sample->decoder);
+		}
 		sample->decoder = NULL;
 		TFB_DestroySoundSample(sample);
 		// sptr will be deleted by FreeStringTable() below

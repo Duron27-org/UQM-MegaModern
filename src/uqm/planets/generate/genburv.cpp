@@ -91,7 +91,9 @@ GenerateBurvixese_generatePlanets(SOLARSYS_STATE* solarSys)
 		pPlanet->NumPlanets = (rand_val % 5 == 0 ? 2 : 1);
 		// Probably use second moon?  Reuse is OK because 3 and 5 are coprime.
 		if (pPlanet->NumPlanets == 2)
+		{
 			pSunDesc->MoonByte = (rand_val % 3 == 0 ? 0 : 1);
+		}
 	}
 
 	return true;
@@ -104,7 +106,9 @@ GenerateBurvixese_generateMoons(SOLARSYS_STATE* solarSys,
 	GenerateDefault_generateMoons(solarSys, planet);
 
 	if (!PrimeSeed)
+	{
 		return true;
+	}
 
 	if (matchWorld(solarSys, planet, MATCH_PBYTE, MATCH_PLANET))
 	{

@@ -181,7 +181,9 @@ static SLONG Mix32MonoNormal(const SWORD* const srce, SLONG* dest, SLONG idx, SL
 			vnf->click--;
 		}
 		else
+		{
 			*dest++ += vnf->lvolsel * sample;
+		}
 	}
 	vnf->lastvalL = vnf->lvolsel * sample;
 
@@ -288,7 +290,9 @@ static SLONGLONG MixMonoNormal(const SWORD* const srce, SLONG* dest, SLONGLONG i
 			vnf->click--;
 		}
 		else
+		{
 			*dest++ += vnf->lvolsel * sample;
+		}
 	}
 	vnf->lastvalL = vnf->lvolsel * sample;
 
@@ -321,7 +325,9 @@ static SLONGLONG MixSIMDStereoNormal(const SWORD* const srce, SLONG* dest, SLONG
 		*dest++ += vol[1] * sample;
 		todo--;
 		if (!todo)
+		{
 			goto end;
+		}
 	}
 
 	/* Srce is always aligned */
@@ -432,6 +438,7 @@ static SLONGLONG MixStereoNormal(const SWORD* const srce, SLONG* dest, SLONGLONG
 	SLONGLONG i, f;
 
 	if (vnf->rampvol)
+	{
 		while (todo)
 		{
 			todo--;
@@ -444,10 +451,14 @@ static SLONGLONG MixStereoNormal(const SWORD* const srce, SLONG* dest, SLONGLONG
 			vnf->rampvol--;
 
 			if (!vnf->rampvol)
+			{
 				break;
+			}
 		}
+	}
 
 	if (vnf->click)
+	{
 		while (todo)
 		{
 			todo--;
@@ -463,8 +474,11 @@ static SLONGLONG MixStereoNormal(const SWORD* const srce, SLONG* dest, SLONGLONG
 			vnf->click--;
 
 			if (!vnf->click)
+			{
 				break;
+			}
 		}
+	}
 
 	if (todo)
 	{
@@ -909,7 +923,9 @@ static void Mix32To16_Stereo_SIMD_4Tap(SWORD* dste, const SLONG* srce, NATIVE co
 		srce += 8;
 		count--;
 		if (!count)
+		{
 			return;
+		}
 	}
 
 	/* dste and srce aligned. srce is always aligned. */
@@ -984,7 +1000,9 @@ static void Mix32To16_Stereo_SIMD_4Tap(SWORD* dste, const SLONG* srce, NATIVE co
 		srce += 8;
 		count--;
 		if (!count)
+		{
 			return;
+		}
 	}
 
 	/* dste and srce aligned. srce is always aligned. */
@@ -1073,9 +1091,11 @@ static void AddChannel(SLONG* ptr, NATIVE todo)
 					vnf->increment = -vnf->increment;
 				}
 				else
+				{
 					/* normal backwards looping, so set the current position to
 					   loopend index */
 					vnf->current = idxlend - (idxlpos - vnf->current);
+				}
 			}
 			else
 			{
@@ -1103,9 +1123,11 @@ static void AddChannel(SLONG* ptr, NATIVE todo)
 					vnf->current = idxlend - (vnf->current - idxlend);
 				}
 				else
+				{
 					/* normal backwards looping, so set the current position
 					   to loopend index */
 					vnf->current = idxlpos + (vnf->current - idxlend);
+				}
 			}
 			else
 			{
@@ -1126,12 +1148,16 @@ static void AddChannel(SLONG* ptr, NATIVE todo)
 
 		/* if the sample is not blocked... */
 		if ((end == vnf->current) || (!vnf->increment))
+		{
 			done = 0;
+		}
 		else
 		{
 			done = MIN((end - vnf->current) / vnf->increment + 1, todo);
 			if (done < 0)
+			{
 				done = 0;
+			}
 		}
 
 		if (!done)
@@ -1151,12 +1177,18 @@ static void AddChannel(SLONG* ptr, NATIVE todo)
 				if (vc_mode & DMODE_STEREO)
 				{
 					if ((vnf->pan == PAN_SURROUND) && (vc_mode & DMODE_SURROUND))
+					{
 						vnf->current = (SLONGLONG)Mix32StereoSurround(s, ptr, vnf->current, vnf->increment, done);
+					}
 					else
+					{
 						vnf->current = Mix32StereoNormal(s, ptr, vnf->current, vnf->increment, done);
+					}
 				}
 				else
+				{
 					vnf->current = Mix32MonoNormal(s, ptr, vnf->current, vnf->increment, done);
+				}
 			}
 			else
 #endif
@@ -1164,12 +1196,18 @@ static void AddChannel(SLONG* ptr, NATIVE todo)
 				if (vc_mode & DMODE_STEREO)
 				{
 					if ((vnf->pan == PAN_SURROUND) && (vc_mode & DMODE_SURROUND))
+					{
 						vnf->current = MixStereoSurround(s, ptr, vnf->current, vnf->increment, done);
+					}
 					else
+					{
 						vnf->current = MixStereoNormal(s, ptr, vnf->current, vnf->increment, done);
+					}
 				}
 				else
+				{
 					vnf->current = MixMonoNormal(s, ptr, vnf->current, vnf->increment, done);
+				}
 			}
 		}
 		else
@@ -1222,7 +1260,9 @@ void VC2_WriteSamples(SBYTE* buf, ULONG todo)
 		if (!tickleft)
 		{
 			if (vc_mode & DMODE_SOFT_MUSIC)
+			{
 				md_player();
+			}
 			tickleft = (md_mixfreq * 125L * SAMPLING_FACTOR) / (md_bpm * 50L);
 			tickleft &= ~(SAMPLING_FACTOR - 1);
 		}
@@ -1250,14 +1290,18 @@ void VC2_WriteSamples(SBYTE* buf, ULONG todo)
 				}
 
 				if (!vnf->frq)
+				{
 					vnf->active = 0;
+				}
 
 				if (vnf->active)
 				{
 					vnf->increment = ((SLONGLONG)(vnf->frq) << (FRACBITS - SAMPLING_SHIFT))
 								   / md_mixfreq;
 					if (vnf->flags & SF_REVERSE)
+					{
 						vnf->increment = -vnf->increment;
+					}
 					vol = vnf->vol;
 					pan = vnf->pan;
 
@@ -1276,7 +1320,9 @@ void VC2_WriteSamples(SBYTE* buf, ULONG todo)
 						}
 					}
 					else
+					{
 						vnf->lvolsel = vol;
+					}
 
 					idxsize = (vnf->size) ? ((SLONGLONG)(vnf->size) << FRACBITS) - 1 : 0;
 					idxlend = (vnf->repend) ? ((SLONGLONG)(vnf->repend) << FRACBITS) - 1 : 0;
@@ -1293,7 +1339,9 @@ void VC2_WriteSamples(SBYTE* buf, ULONG todo)
 			if (md_reverb)
 			{
 				if (md_reverb > 15)
+				{
 					md_reverb = 15;
+				}
 				MixReverb(vc_tickbuf, portion);
 			}
 
@@ -1303,11 +1351,17 @@ void VC2_WriteSamples(SBYTE* buf, ULONG todo)
 			}
 
 			if (vc_mode & DMODE_FLOAT)
+			{
 				Mix32toFP((float*)buffer, vc_tickbuf, portion);
+			}
 			else if (vc_mode & DMODE_16BITS)
+			{
 				Mix32to16((SWORD*)buffer, vc_tickbuf, portion);
+			}
 			else
+			{
 				Mix32to8((SBYTE*)buffer, vc_tickbuf, portion);
+			}
 
 			buffer += samples2bytes(portion) / SAMPLING_FACTOR;
 			left -= portion;
@@ -1320,7 +1374,9 @@ int VC2_Init(void)
 	VC_SetupPointers();
 
 	if (!(md_mode & DMODE_HQMIXER))
+	{
 		return VC1_Init();
+	}
 
 	if (!(Samples = (SWORD**)MikMod_amalloc(MAXSAMPLEHANDLES * sizeof(SWORD*))))
 	{
@@ -1341,7 +1397,9 @@ int VC2_Init(void)
 		Mix32toFP = Mix32ToFP_Stereo;
 #if ((defined HAVE_ALTIVEC || defined HAVE_SSE2) && (SAMPLING_FACTOR == 4))
 		if (md_mode & DMODE_SIMDMIXER)
+		{
 			Mix32to16 = Mix32To16_Stereo_SIMD_4Tap;
+		}
 		else
 #endif
 			Mix32to16 = Mix32To16_Stereo;
@@ -1369,7 +1427,9 @@ int VC2_PlayStart(void)
 
 	samplesthatfit = TICKLSIZE;
 	if (vc_mode & DMODE_STEREO)
+	{
 		samplesthatfit >>= 1;
+	}
 	tickleft = 0;
 
 	RVc1 = (5000L * md_mixfreq) / (REVERBERATION * 10);
@@ -1382,41 +1442,73 @@ int VC2_PlayStart(void)
 	RVc8 = (8828L * md_mixfreq) / (REVERBERATION * 10);
 
 	if (!(RVbufL1 = (SLONG*)MikMod_calloc((RVc1 + 1), sizeof(SLONG))))
+	{
 		return 1;
+	}
 	if (!(RVbufL2 = (SLONG*)MikMod_calloc((RVc2 + 1), sizeof(SLONG))))
+	{
 		return 1;
+	}
 	if (!(RVbufL3 = (SLONG*)MikMod_calloc((RVc3 + 1), sizeof(SLONG))))
+	{
 		return 1;
+	}
 	if (!(RVbufL4 = (SLONG*)MikMod_calloc((RVc4 + 1), sizeof(SLONG))))
+	{
 		return 1;
+	}
 	if (!(RVbufL5 = (SLONG*)MikMod_calloc((RVc5 + 1), sizeof(SLONG))))
+	{
 		return 1;
+	}
 	if (!(RVbufL6 = (SLONG*)MikMod_calloc((RVc6 + 1), sizeof(SLONG))))
+	{
 		return 1;
+	}
 	if (!(RVbufL7 = (SLONG*)MikMod_calloc((RVc7 + 1), sizeof(SLONG))))
+	{
 		return 1;
+	}
 	if (!(RVbufL8 = (SLONG*)MikMod_calloc((RVc8 + 1), sizeof(SLONG))))
+	{
 		return 1;
+	}
 
 	/* allocate reverb buffers for the right channel if in stereo mode only. */
 	if (vc_mode & DMODE_STEREO)
 	{
 		if (!(RVbufR1 = (SLONG*)MikMod_calloc((RVc1 + 1), sizeof(SLONG))))
+		{
 			return 1;
+		}
 		if (!(RVbufR2 = (SLONG*)MikMod_calloc((RVc2 + 1), sizeof(SLONG))))
+		{
 			return 1;
+		}
 		if (!(RVbufR3 = (SLONG*)MikMod_calloc((RVc3 + 1), sizeof(SLONG))))
+		{
 			return 1;
+		}
 		if (!(RVbufR4 = (SLONG*)MikMod_calloc((RVc4 + 1), sizeof(SLONG))))
+		{
 			return 1;
+		}
 		if (!(RVbufR5 = (SLONG*)MikMod_calloc((RVc5 + 1), sizeof(SLONG))))
+		{
 			return 1;
+		}
 		if (!(RVbufR6 = (SLONG*)MikMod_calloc((RVc6 + 1), sizeof(SLONG))))
+		{
 			return 1;
+		}
 		if (!(RVbufR7 = (SLONG*)MikMod_calloc((RVc7 + 1), sizeof(SLONG))))
+		{
 			return 1;
+		}
 		if (!(RVbufR8 = (SLONG*)MikMod_calloc((RVc8 + 1), sizeof(SLONG))))
+		{
 			return 1;
+		}
 	}
 
 	RVRindex = 0;
@@ -1453,11 +1545,15 @@ int VC2_SetNumVoices(void)
 	md_mode |= DMODE_INTERP;
 
 	if (!(vc_softchn = md_softchn))
+	{
 		return 0;
+	}
 
 	MikMod_free(vinf);
 	if (!(vinf = (VINFO*)MikMod_calloc(vc_softchn, sizeof(VINFO))))
+	{
 		return 1;
+	}
 
 	for (t = 0; t < vc_softchn; t++)
 	{

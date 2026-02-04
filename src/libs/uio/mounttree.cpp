@@ -170,7 +170,9 @@ uio_mountTreeAddMountInfoRecTreeSub(uio_Repository* repository,
 		comp = comp->next;
 
 		if (comp == NULL)
+		{
 			break;
+		}
 
 		if (*start == '\0')
 		{
@@ -251,7 +253,9 @@ uio_addMountTreeItem(uio_Repository* repository, uio_MountTreeItem** pLocs,
 			break;
 		case uio_MOUNT_BOTTOM:
 			while (*pLocs != NULL)
+			{
 				pLocs = &(*pLocs)->next;
+			}
 			item->next = NULL;
 			*pLocs = item;
 			break;
@@ -263,7 +267,9 @@ uio_addMountTreeItem(uio_Repository* repository, uio_MountTreeItem** pLocs,
 				{
 					assert(*mountInfo != NULL);
 					if ((*pLocs)->mountInfo == *mountInfo)
+					{
 						pLocs = &(*pLocs)->next;
+					}
 					mountInfo++;
 				}
 				item->next = *pLocs;
@@ -278,7 +284,9 @@ uio_addMountTreeItem(uio_Repository* repository, uio_MountTreeItem** pLocs,
 				{
 					assert(*mountInfo != NULL);
 					if ((*pLocs)->mountInfo == *mountInfo)
+					{
 						pLocs = &(*pLocs)->next;
+					}
 					mountInfo++;
 				}
 				item->next = (*pLocs)->next;
@@ -412,7 +420,9 @@ void uio_mountTreeRemoveMountInfo(uio_Repository* repository,
 	{
 		assert(*subTreePtr != NULL);
 		if (*subTreePtr == mountTree)
+		{
 			break;
+		}
 		subTreePtr = &(*subTreePtr)->next;
 	}
 	*subTreePtr = mountTree->next;
@@ -457,7 +467,9 @@ void uio_mountTreeRemoveMountInfo(uio_Repository* repository,
 		{
 			assert(*subTreePtr != NULL);
 			if (*subTreePtr == upTree)
+			{
 				break;
+			}
 			subTreePtr = &(*subTreePtr)->next;
 		}
 		next = (*subTreePtr)->next;
@@ -483,7 +495,9 @@ uio_mountTreeRemoveMountInfoRec(uio_MountTree* mountTree,
 	// recurse for all subTrees
 	for (subTree = mountTree->subTrees; subTree != NULL;
 		 subTree = subTree->next)
+	{
 		uio_mountTreeRemoveMountInfoRec(subTree, mountInfo);
+	}
 
 	// Find the mount info in this tree.
 	itemPtr = &mountTree->pLocs;
@@ -513,7 +527,9 @@ int uio_mountTreeCountPLocs(const uio_MountTree* tree)
 
 	count = 0;
 	for (item = tree->pLocs; item != NULL; item = item->next)
+	{
 		count++;
+	}
 	return count;
 }
 
@@ -551,7 +567,9 @@ void uio_findMountTree(uio_MountTree* top, const char* path,
 			}
 			comp = sub->comps;
 			if (strncmp(comp->name, start, end - start) == 0 && comp->name[end - start] == '\0')
+			{
 				break;
+			}
 			sub = sub->next;
 		}
 		// Found a Sub dir which matches at least partially.
@@ -561,7 +579,9 @@ void uio_findMountTree(uio_MountTree* top, const char* path,
 			getNextPath0Component(&start, &end);
 			comp = comp->next;
 			if (comp == NULL)
+			{
 				break;
+			}
 			if (*start == '\0' || strncmp(comp->name, start, end - start) != 0 || comp->name[end - start] != '\0')
 			{
 				// either the path ends here, or the path in the tree does.
@@ -589,7 +609,9 @@ char* uio_mountTreeItemRestPath(const uio_MountTreeItem* item,
 
 	i = item->depth;
 	while (i--)
+	{
 		endComp = endComp->up;
+	}
 
 	pathPtr = path;
 	if (endComp != NULL)
@@ -599,7 +621,9 @@ char* uio_mountTreeItemRestPath(const uio_MountTreeItem* item,
 			pathPtr += endComp->nameLen;
 			endComp = endComp->up;
 			if (endComp == NULL)
+			{
 				break;
+			}
 			pathPtr++;
 			// for a '/'
 		}
@@ -655,13 +679,17 @@ void uio_printMountTreeItem(FILE* outStream, const uio_MountTreeItem* item)
 void uio_printMountTreeItems(FILE* outStream, const uio_MountTreeItem* item)
 {
 	if (!item)
+	{
 		return;
+	}
 	while (1)
 	{
 		uio_printMountTreeItem(outStream, item);
 		item = item->next;
 		if (item == NULL)
+		{
 			break;
+		}
 		fprintf(outStream, ", ");
 	}
 }
@@ -673,7 +701,9 @@ void uio_printPathToMountTree(FILE* outStream, const uio_MountTree* tree)
 		fprintf(outStream, "/");
 	}
 	else
+	{
 		uio_printPathToComp(outStream, tree->lastComp);
+	}
 }
 
 void uio_printMountInfo(FILE* outStream, const uio_MountInfo* mountInfo)
@@ -698,7 +728,9 @@ uio_printMount(FILE* outStream, const uio_MountInfo* mountInfo)
 		fprintf(outStream, "ro");
 	}
 	else
+	{
 		fprintf(outStream, "rw");
+	}
 	fprintf(outStream, ")\n");
 }
 
@@ -754,7 +786,9 @@ void uio_MountTree_delete(uio_MountTree* tree)
 	}
 
 	if (tree->comps != NULL)
+	{
 		uio_PathComp_delete(tree->comps);
+	}
 
 	uio_MountTree_free(tree);
 }

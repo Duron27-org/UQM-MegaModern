@@ -109,7 +109,9 @@ noSound_ConvertObjectArrayToMixerObjects(uint32 n, audio_Object* arr)
 {
 	uint32 i;
 	if (sizeof(audio_Object) == sizeof(mixer_Object))
+	{
 		return;
+	}
 	for (i = 0; i < n; i++)
 	{
 		((mixer_Object*)arr)[i] = arr[i];
@@ -121,7 +123,9 @@ noSound_ConvertObjectArrayFromMixerObjects(uint32 n, audio_Object* arr)
 {
 	uint32 i;
 	if (sizeof(audio_Object) == sizeof(mixer_Object))
+	{
 		return;
+	}
 	i = n;
 	while (i--)
 	{
@@ -241,7 +245,9 @@ int PlaybackTaskFunc(void* data)
 		mixer_MixFake(NULL, stream, len);
 		delay = period - (GetTimeCounter() - entryTime);
 		if (delay > 0)
+		{
 			HibernateThread(delay);
+		}
 	}
 
 	HFree(stream);

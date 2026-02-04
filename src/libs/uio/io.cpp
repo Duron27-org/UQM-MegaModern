@@ -177,7 +177,9 @@ uio_mountDir(uio_Repository* destRep, const char* mountPoint,
 	}
 
 	if (mountPoint[0] == '/')
+	{
 		mountPoint++;
+	}
 	if (!validPathName(mountPoint, strlen(mountPoint)))
 	{
 		errno = EINVAL;
@@ -228,7 +230,9 @@ uio_mountDir(uio_Repository* destRep, const char* mountPoint,
 	if (handler == NULL)
 	{
 		if (handle)
+		{
 			uio_close(handle);
+		}
 		errno = ENODEV;
 		return NULL;
 	}
@@ -241,7 +245,9 @@ uio_mountDir(uio_Repository* destRep, const char* mountPoint,
 
 		savedErrno = errno;
 		if (handle)
+		{
 			uio_close(handle);
+		}
 		errno = savedErrno;
 		return NULL;
 	}
@@ -271,7 +277,9 @@ uio_mountDir(uio_Repository* destRep, const char* mountPoint,
 #endif /* BACKSLASH_IS_PATH_SEPARATOR */
 
 		if (inPath[0] == '/')
+		{
 			inPath++;
+		}
 		pRootHandle = uio_PRoot_getRootDirHandle(pRoot);
 		uio_walkPhysicalPath(pRootHandle, inPath, strlen(inPath),
 							 &endDirHandle, &endInPath);
@@ -354,7 +362,9 @@ uio_transplantDir(const char* mountPoint, uio_DirHandle* sourceDir, int flags,
 	}
 
 	if (mountPoint[0] == '/')
+	{
 		mountPoint++;
+	}
 	if (!validPathName(mountPoint, strlen(mountPoint)))
 	{
 		errno = EINVAL;
@@ -387,7 +397,9 @@ uio_transplantDir(const char* mountPoint, uio_DirHandle* sourceDir, int flags,
 
 		// Only interested in read-only dirs in this incarnation
 		if (!uio_mountInfoIsReadOnly(oldMountInfo))
+		{
 			continue;
+		}
 
 		mountInfo = uio_MountInfo_new(oldMountInfo->fsID, NULL, pDirHandle,
 									  uio_strdup(""), oldMountInfo->autoMount, NULL, flags);
@@ -410,7 +422,9 @@ uio_transplantDir(const char* mountPoint, uio_DirHandle* sourceDir, int flags,
 	uio_free(treeItems);
 
 	if (handle == NULL)
+	{
 		errno = ENOENT;
+	}
 
 	return handle;
 }
@@ -455,7 +469,9 @@ int uio_unmountAllDirs(uio_Repository* repository)
 
 	i = repository->numMounts;
 	while (i--)
+	{
 		uio_unmountDir(repository->mounts[i]->mountHandle);
+	}
 	return 0;
 }
 
@@ -818,7 +834,9 @@ int uio_mkdir(uio_DirHandle* dir, const char* path, mode_t mode)
 	{
 		// errno is set
 		if (errno == EISDIR)
+		{
 			errno = EEXIST;
+		}
 		return -1;
 	}
 	uio_PDirHandle_unref(pReadDir);
@@ -975,7 +993,9 @@ uio_openDir(uio_Repository* repository, const char* path, int flags)
 	// TODO: increase ref in repository?
 	dirHandle->rootEnd = dirHandle->path;
 	if (flags & uio_OD_ROOT)
+	{
 		dirHandle->rootEnd += strlen(dirHandle->path);
+	}
 	return dirHandle;
 }
 
@@ -1034,7 +1054,9 @@ int uio_rmdir(uio_DirHandle* dirHandle, const char* path)
 		name = path;
 	}
 	else
+	{
 		name = pathEnd + 1;
+	}
 
 	if (uio_getPathPhysicalDirs(dirHandle, path, pathEnd - path,
 								&pDirHandles, &numPDirHandles, &items)
@@ -1063,7 +1085,9 @@ int uio_rmdir(uio_DirHandle* dirHandle, const char* path)
 		entry = uio_getPDirEntryHandle(pDirHandle, name);
 
 		if (entry == NULL)
+		{
 			continue;
+		}
 
 		if (!uio_PDirEntryHandle_isDir(entry))
 		{
@@ -1109,7 +1133,9 @@ err:
 		uio_PDirHandles_delete(pDirHandles, numPDirHandles);
 		uio_free(items);
 		if (entry != NULL)
+		{
 			uio_PDirEntryHandle_unref(entry);
+		}
 		errno = savedErrno;
 		return -1;
 	}
@@ -1119,7 +1145,9 @@ static void
 uio_PDirHandles_delete(uio_PDirHandle* pDirHandles[], int numPDirHandles)
 {
 	while (numPDirHandles--)
+	{
 		uio_PDirHandle_unref(pDirHandles[numPDirHandles]);
+	}
 	uio_free(pDirHandles);
 }
 
@@ -1161,7 +1189,9 @@ int uio_unlink(uio_DirHandle* dirHandle, const char* path)
 		name = path;
 	}
 	else
+	{
 		name = pathEnd + 1;
+	}
 
 	if (uio_getPathPhysicalDirs(dirHandle, path, pathEnd - path,
 								&pDirHandles, &numPDirHandles, &items)
@@ -1188,7 +1218,9 @@ int uio_unlink(uio_DirHandle* dirHandle, const char* path)
 		entry = uio_getPDirEntryHandle(pDirHandle, name);
 
 		if (entry == NULL)
+		{
 			continue;
+		}
 
 		if (uio_PDirEntryHandle_isDir(entry))
 		{
@@ -1234,7 +1266,9 @@ err:
 		uio_PDirHandles_delete(pDirHandles, numPDirHandles);
 		uio_free(items);
 		if (entry != NULL)
+		{
 			uio_PDirEntryHandle_unref(entry);
+		}
 		errno = savedErrno;
 		return -1;
 	}
@@ -1559,7 +1593,9 @@ uio_getDirListMulti(uio_PDirHandle** pDirHandles,
 
 	// free the old junk
 	for (pDirI = 0; pDirI < numPDirHandles; pDirI++)
+	{
 		uio_DirBufferChain_free(links[pDirI]);
+	}
 	uio_free(links);
 	uio_free(numNames);
 
@@ -1580,11 +1616,15 @@ uio_makeDirList(const char** newNames, const char* const* names,
 	uio_DirList* result;
 
 	if (newNames == NULL)
+	{
 		newNames = (const char**)uio_malloc(numNames * sizeof(char*));
+	}
 
 	totLen = 0;
 	for (i = 0; i < numNames; i++)
+	{
 		totLen += strlen(names[i]);
+	}
 	totLen += numNames;
 	// for the \0's
 
@@ -1704,7 +1744,9 @@ uio_openEntriesPhysical(uio_PDirHandle* dirHandle)
 	assert(pRoot->handler->openEntries != NULL);
 	native = pRoot->handler->openEntries(dirHandle);
 	if (native == NULL)
+	{
 		return NULL;
+	}
 	uio_PRoot_refHandle(pRoot);
 	return uio_EntriesContext_new(pRoot, native);
 }
@@ -1794,9 +1836,13 @@ uio_DirList_alloc(void)
 void uio_DirList_free(uio_DirList* dirList)
 {
 	if (dirList->buffer)
+	{
 		uio_free(dirList->buffer);
+	}
 	if (dirList->names)
+	{
 		uio_free((void*)dirList->names);
+	}
 	uio_free(dirList);
 }
 
@@ -1816,7 +1862,9 @@ uio_getPDirEntryHandle(const uio_PDirHandle* dirHandle,
 void uio_PDirHandle_deletePDirHandleExtra(uio_PDirHandle* pDirHandle)
 {
 	if (pDirHandle->extra == NULL)
+	{
 		return;
+	}
 	assert(pDirHandle->pRoot->handler->deletePDirHandleExtra != NULL);
 	pDirHandle->pRoot->handler->deletePDirHandleExtra(pDirHandle->extra);
 }
@@ -1824,7 +1872,9 @@ void uio_PDirHandle_deletePDirHandleExtra(uio_PDirHandle* pDirHandle)
 void uio_PFileHandle_deletePFileHandleExtra(uio_PFileHandle* pFileHandle)
 {
 	if (pFileHandle->extra == NULL)
+	{
 		return;
+	}
 	assert(pFileHandle->pRoot->handler->deletePFileHandleExtra != NULL);
 	pFileHandle->pRoot->handler->deletePFileHandleExtra(pFileHandle->extra);
 }

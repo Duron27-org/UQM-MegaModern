@@ -163,9 +163,13 @@ void dataReadyCallback(NetDescriptor* nd)
 		if (numRead == -1)
 		{
 			if (errno == EWOULDBLOCK || errno == EAGAIN)
+			{
 				return; // No more data for now.
+			}
 			else if (errno == EINTR)
+			{
 				continue; // System call was interrupted. Retry.
+			}
 			else
 			{
 				int savedErrno = errno;

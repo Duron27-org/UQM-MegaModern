@@ -120,9 +120,13 @@ GeneratePlanetComposition(PLANET_INFO* PlanetInfoPtr, uqm::SIZE SurfaceTemp,
 		if ((range = HINIBBLE(PlanetInfoPtr->PlanDataPtr->AtmoAndDensity)) <= HEAVY)
 		{
 			if (SurfaceTemp < COLD_THRESHOLD)
+			{
 				--range;
+			}
 			else if (SurfaceTemp > HOT_THRESHOLD)
+			{
 				++range;
+			}
 
 			if (range <= HEAVY + 1)
 			{
@@ -148,9 +152,13 @@ GeneratePlanetComposition(PLANET_INFO* PlanetInfoPtr, uqm::SIZE SurfaceTemp,
 
 				radius /= EARTH_RADIUS;
 				if (radius < 2)
+				{
 					PlanetInfoPtr->Weather += 1 << 5;
+				}
 				else if (radius > 10)
+				{
 					PlanetInfoPtr->Weather -= 1 << 5;
+				}
 				atmo = CalcHalfBaseVariance(atmo);
 			}
 		}
@@ -196,9 +204,13 @@ CalcTemp(SYSTEM_INFO* SysInfoPtr, uqm::SIZE radius)
 #define COLD_BONUS 20
 #define HOT_BONUS 200
 		if (centigrade >= HOT_THRESHOLD)
+		{
 			bonus = HOT_BONUS;
+		}
 		else if (centigrade >= COLD_THRESHOLD)
+		{
 			bonus = COLD_BONUS;
+		}
 
 		bonus <<= HINIBBLE(SysInfoPtr->PlanetInfo.PlanDataPtr->AtmoAndDensity);
 		bonus = CalcHalfBaseVariance(bonus);
@@ -211,11 +223,17 @@ static uqm::COUNT
 CalcRotation(PLANET_INFO* PlanetInfoPtr)
 {
 	if (PLANSIZE(PlanetInfoPtr->PlanDataPtr->Type) == GAS_GIANT)
+	{
 		return ((uqm::COUNT)CalcFromBase(80, 80));
+	}
 	else if (lowByte(RandomContext_Random(SysGenRNG)) % 10 == 0)
+	{
 		return ((uqm::COUNT)CalcFromBase((uqm::UWORD)50 * EARTH_HOURS, (uqm::UWORD)200 * EARTH_HOURS));
+	}
 	else
+	{
 		return ((uqm::COUNT)CalcFromBase(150, 150));
+	}
 }
 
 static uqm::SIZE
@@ -250,11 +268,17 @@ CalcTectonics(uqm::UWORD base, uqm::UWORD temp)
 	uqm::UWORD tect = CalcFromBase(base, 3 << 5);
 #ifdef OLD
 	if (temp >= HIGH_TEMP)
+	{
 		tect += HIGH_TEMP_BONUS;
+	}
 	else if (temp >= MED_TEMP)
+	{
 		tect += MED_TEMP_BONUS;
+	}
 	else if (temp >= LOW_TEMP)
+	{
 		tect += LOW_TEMP_BONUS;
+	}
 #else  /* !OLD */
 	(void)temp; /* silence compiler whining */
 #endif /* OLD */
@@ -268,39 +292,69 @@ CalcLifeChance(const PLANET_INFO* PlanetInfoPtr)
 	uqm::SIZE life_var = 0;
 
 	if (PLANSIZE(PlanetInfoPtr->PlanDataPtr->Type) == GAS_GIANT)
+	{
 		return -1;
+	}
 
 	if (PlanetInfoPtr->SurfaceTemperature < -151)
+	{
 		life_var -= 300;
+	}
 	else if (PlanetInfoPtr->SurfaceTemperature < -51)
+	{
 		life_var -= 100;
+	}
 	else if (PlanetInfoPtr->SurfaceTemperature < 0)
+	{
 		life_var += 100;
+	}
 	else if (PlanetInfoPtr->SurfaceTemperature < 50)
+	{
 		life_var += 300;
+	}
 	else if (PlanetInfoPtr->SurfaceTemperature < 150)
+	{
 		life_var += 50;
+	}
 	else if (PlanetInfoPtr->SurfaceTemperature < 250)
+	{
 		life_var -= 100;
+	}
 	else if (PlanetInfoPtr->SurfaceTemperature < 500)
+	{
 		life_var -= 400;
+	}
 	else
+	{
 		life_var -= 800;
+	}
 
 	if (PlanetInfoPtr->AtmoDensity == 0)
+	{
 		life_var -= 1000;
+	}
 	else if (PlanetInfoPtr->AtmoDensity < 15)
+	{
 		life_var += 100;
+	}
 	else if (PlanetInfoPtr->AtmoDensity < 30)
+	{
 		life_var += 200;
+	}
 	else if (PlanetInfoPtr->AtmoDensity < 100)
+	{
 		life_var += 300;
+	}
 	else if (PlanetInfoPtr->AtmoDensity < 1000)
+	{
 		life_var += 150;
+	}
 	else if (PlanetInfoPtr->AtmoDensity < 2500)
 		;
 	else
+	{
 		life_var -= 100;
+	}
 
 #ifndef NOTYET
 	life_var += 200 + 80 + 80;
@@ -308,47 +362,81 @@ CalcLifeChance(const PLANET_INFO* PlanetInfoPtr)
 	if (PlanetInfoPtr->SurfaceGravity < 10)
 		;
 	else if (PlanetInfoPtr->SurfaceGravity < 35)
+	{
 		life_var += 50;
+	}
 	else if (PlanetInfoPtr->SurfaceGravity < 75)
+	{
 		life_var += 100;
+	}
 	else if (PlanetInfoPtr->SurfaceGravity < 150)
+	{
 		life_var += 200;
+	}
 	else if (PlanetInfoPtr->SurfaceGravity < 400)
+	{
 		life_var += 50;
+	}
 	else if (PlanetInfoPtr->SurfaceGravity < 800)
 		;
 	else
+	{
 		life_var -= 100;
+	}
 
 	if (PlanetInfoPtr->Tectonics < 1)
+	{
 		life_var += 80;
+	}
 	else if (PlanetInfoPtr->Tectonics < 2)
+	{
 		life_var += 70;
+	}
 	else if (PlanetInfoPtr->Tectonics < 3)
+	{
 		life_var += 60;
+	}
 	else if (PlanetInfoPtr->Tectonics < 4)
+	{
 		life_var += 50;
+	}
 	else if (PlanetInfoPtr->Tectonics < 5)
+	{
 		life_var += 25;
+	}
 	else if (PlanetInfoPtr->Tectonics < 6)
 		;
 	else
+	{
 		life_var -= 100;
+	}
 
 	if (PlanetInfoPtr->Weather < 1)
+	{
 		life_var += 80;
+	}
 	else if (PlanetInfoPtr->Weather < 2)
+	{
 		life_var += 70;
+	}
 	else if (PlanetInfoPtr->Weather < 3)
+	{
 		life_var += 60;
+	}
 	else if (PlanetInfoPtr->Weather < 4)
+	{
 		life_var += 50;
+	}
 	else if (PlanetInfoPtr->Weather < 5)
+	{
 		life_var += 25;
+	}
 	else if (PlanetInfoPtr->Weather < 6)
 		;
 	else
+	{
 		life_var -= 100;
+	}
 #endif /* NOTYET */
 
 	return life_var;
@@ -395,9 +483,13 @@ void DoPlanetaryAnalysis(SYSTEM_INFO* SysInfoPtr, PLANET_DESC* pPlanetDesc)
 			&PlanData[pPlanetDesc->data_index & ~PLANET_SHIELDED];
 
 		if (pPlanetDesc->pPrevDesc == pSolarSysState->SunDesc)
+		{
 			radius = pPlanetDesc->radius;
+		}
 		else
+		{
 			radius = pPlanetDesc->pPrevDesc->radius;
+		}
 		SysInfoPtr->PlanetInfo.PlanetToSunDist = radius;
 
 		SysInfoPtr->PlanetInfo.SurfaceTemperature =
@@ -453,7 +545,9 @@ void DoPlanetaryAnalysis(SYSTEM_INFO* SysInfoPtr, PLANET_DESC* pPlanetDesc)
 				 CalcTectonics(SysInfoPtr->PlanetInfo.PlanDataPtr->BaseTectonics,
 							   SysInfoPtr->PlanetInfo.SurfaceTemperature))
 			> MAX_TECTONICS)
+		{
 			SysInfoPtr->PlanetInfo.Tectonics = MAX_TECTONICS;
+		}
 
 		SysInfoPtr->PlanetInfo.AtmoDensity =
 			GeneratePlanetComposition(&SysInfoPtr->PlanetInfo,

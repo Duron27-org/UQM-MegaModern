@@ -52,7 +52,9 @@ void BuildBuildPickFrame(void)
 	DrawStamp(&s);
 
 	for (i = 0; i < NUM_PICK_COLS * NUM_PICK_ROWS; ++i)
+	{
 		DrawPickIcon((MeleeShip)i, true);
+	}
 
 	DrawShipPickerText(s);
 
@@ -137,7 +139,9 @@ void DrawPickIcon(MeleeShip ship, bool DrawErase)
 
 	// Draw a rectangle below ship to remove artifacts in HD
 	if (IS_HD)
+	{
 		RepairBuildPickFrame(&r, &s.origin);
+	}
 
 	if (DrawErase)
 	{ // draw icon
@@ -244,10 +248,14 @@ void DrawPickFrame(MELEE_STATE* pMS)
 	r.corner.x = -(ship_r.corner.x
 				   + ((ship_r.extent.width - r.extent.width) >> 1));
 	if (pMS->side)
+	{
 		r.corner.y = -ship_r.corner.y;
+	}
 	else
+	{
 		r.corner.y = -(ship_r.corner.y
 					   + (ship_r.extent.height - r.extent.height));
+	}
 	SetFrameHot(s.frame, MAKE_HOT_SPOT(r.corner.x, r.corner.y));
 	s.origin.x = 0;
 	s.origin.y = 0;
@@ -294,7 +302,9 @@ DoPickShip(MELEE_STATE* pMS)
 		&& (pMS->currentShip != MELEE_NONE))
 	{
 		if (isPC(optWhichIntro))
+		{
 			PlayMenuSound(MENU_SOUND_SUCCESS);
+		}
 		// Show ship spin video.
 		DoShipSpin(pMS->currentShip, pMS->hMusic);
 
@@ -309,29 +319,41 @@ DoPickShip(MELEE_STATE* pMS)
 		if (PulsedInputState.menu[KEY_MENU_LEFT])
 		{
 			if (newSelectedShip % NUM_PICK_COLS == 0)
+			{
 				newSelectedShip += NUM_PICK_COLS;
+			}
 			--newSelectedShip;
 		}
 		else if (PulsedInputState.menu[KEY_MENU_RIGHT])
 		{
 			++newSelectedShip;
 			if (newSelectedShip % NUM_PICK_COLS == 0)
+			{
 				newSelectedShip -= NUM_PICK_COLS;
+			}
 		}
 
 		if (PulsedInputState.menu[KEY_MENU_UP])
 		{
 			if (newSelectedShip >= NUM_PICK_COLS)
+			{
 				newSelectedShip -= NUM_PICK_COLS;
+			}
 			else
+			{
 				newSelectedShip += NUM_PICK_COLS * (NUM_PICK_ROWS - 1);
+			}
 		}
 		else if (PulsedInputState.menu[KEY_MENU_DOWN])
 		{
 			if (newSelectedShip < NUM_PICK_COLS * (NUM_PICK_ROWS - 1))
+			{
 				newSelectedShip += NUM_PICK_COLS;
+			}
 			else
+			{
 				newSelectedShip -= NUM_PICK_COLS * (NUM_PICK_ROWS - 1);
+			}
 		}
 
 		if (newSelectedShip != pMS->currentShip)
@@ -359,7 +381,9 @@ bool BuildPickShip(MELEE_STATE* pMS)
 	FlushInput();
 
 	if (pMS->currentShip == MELEE_NONE)
+	{
 		pMS->currentShip = (MeleeShip)0;
+	}
 
 	DrawPickFrame(pMS);
 

@@ -115,12 +115,16 @@ void DrawShipPiece(FRAME ModuleFrame, uqm::COUNT which_piece, uqm::COUNT which_s
 				if (which_piece < EMPTY_SLOT
 					&& (which_slot == 0
 						|| GLOBAL_SIS(ModuleSlots[which_slot - 1]) < EMPTY_SLOT))
+				{
 					++RepairSlot;
+				}
 			}
 			else if (!DrawBluePrint)
 			{
 				if (which_slot == 0 || which_slot >= NUM_MODULE_SLOTS - 3)
+				{
 					++which_piece;
+				}
 
 				if (which_slot < NUM_MODULE_SLOTS - 1
 					&& GLOBAL_SIS(ModuleSlots[which_slot + 1]) < EMPTY_SLOT)
@@ -128,7 +132,9 @@ void DrawShipPiece(FRAME ModuleFrame, uqm::COUNT which_piece, uqm::COUNT which_s
 					RepairSlot = -1;
 					if (which_piece == EMPTY_SLOT + 3
 						|| which_slot + 1 == NUM_MODULE_SLOTS - 3)
+					{
 						--RepairSlot;
+					}
 				}
 			}
 			Side.origin.x = MODULE_SIDE_X;
@@ -154,10 +160,14 @@ void DrawShipPiece(FRAME ModuleFrame, uqm::COUNT which_piece, uqm::COUNT which_s
 		r.extent.height = RES_SCALE(1);
 		OldColor = SetContextForeGroundColor(BLACK_COLOR);
 		if (!IS_HD)
+		{
 			DrawFilledRectangle(&r);
+		}
 		r.corner.y += RES_SCALE(23 - 1);
 		if (!IS_HD)
+		{
 			DrawFilledRectangle(&r);
+		}
 
 		r.extent.width = RES_SCALE(1);
 		r.extent.height = RES_SCALE(8);
@@ -165,27 +175,37 @@ void DrawShipPiece(FRAME ModuleFrame, uqm::COUNT which_piece, uqm::COUNT which_s
 		{
 			r.corner = Side.origin;
 			if (!IS_HD)
+			{
 				DrawFilledRectangle(&r);
+			}
 			r.corner.y += RES_SCALE(15);
 			if (!IS_HD)
+			{
 				DrawFilledRectangle(&r);
+			}
 		}
 		if (which_slot < (NUM_MODULE_SLOTS - 1))
 		{
 			r.corner = Side.origin;
 			r.corner.x += SHIP_PIECE_OFFSET;
 			if (!IS_HD)
+			{
 				DrawFilledRectangle(&r);
+			}
 			r.corner.y += RES_SCALE(15);
 			if (!IS_HD)
+			{
 				DrawFilledRectangle(&r);
+			}
 		}
 	}
 
 	if (DrawBluePrint)
 	{
 		if (RepairSlot)
+		{
 			SetContextForeGroundColor(OldColor);
+		}
 		Side.frame = SetAbsFrameIndex(ModuleFrame, which_piece - 1);
 		DrawFilledStamp(&Side);
 	}
@@ -203,10 +223,14 @@ void DrawShipPiece(FRAME ModuleFrame, uqm::COUNT which_piece, uqm::COUNT which_s
 			r.extent.width = SHIP_PIECE_OFFSET;
 			r.extent.height = RES_SCALE(1);
 			if (!IS_HD)
+			{
 				DrawFilledRectangle(&r);
+			}
 			r.corner.y += RES_SCALE(32 - 1);
 			if (!IS_HD)
+			{
 				DrawFilledRectangle(&r);
+			}
 
 			r.extent.width = RES_SCALE(1);
 			r.extent.height = RES_SCALE(12);
@@ -214,10 +238,14 @@ void DrawShipPiece(FRAME ModuleFrame, uqm::COUNT which_piece, uqm::COUNT which_s
 			{
 				r.corner = Top.origin;
 				if (!IS_HD)
+				{
 					DrawFilledRectangle(&r);
+				}
 				r.corner.y += RES_SCALE(20);
 				if (!IS_HD)
+				{
 					DrawFilledRectangle(&r);
+				}
 			}
 			RepairSlot = (which_slot < NUM_MODULE_SLOTS - 1);
 			if (RepairSlot)
@@ -225,10 +253,14 @@ void DrawShipPiece(FRAME ModuleFrame, uqm::COUNT which_piece, uqm::COUNT which_s
 				r.corner = Top.origin;
 				r.corner.x += SHIP_PIECE_OFFSET;
 				if (!IS_HD)
+				{
 					DrawFilledRectangle(&r);
+				}
 				r.corner.y += RES_SCALE(20);
 				if (!IS_HD)
+				{
 					DrawFilledRectangle(&r);
+				}
 			}
 		}
 
@@ -259,7 +291,9 @@ void DrawShipPiece(FRAME ModuleFrame, uqm::COUNT which_piece, uqm::COUNT which_s
 			which_piece = GLOBAL_SIS(ModuleSlots[++which_slot]);
 			if (which_piece == EMPTY_SLOT + 2
 				&& which_slot >= NUM_MODULE_SLOTS - 3)
+			{
 				++which_piece;
+			}
 
 			Top.frame = SetAbsFrameIndex(ModuleFrame, which_piece);
 			DrawStamp(&Top);
@@ -385,8 +419,10 @@ ExitStarBase:
 			uqm::BYTE OldState;
 
 			if (IS_HD && !hdFuelFrame)
+			{
 				hdFuelFrame =
 					CaptureDrawable(LoadGraphic(FUEL_PMAP_ANIM));
+			}
 
 			switch (OldState = pMS->CurState)
 			{
@@ -420,12 +456,16 @@ ExitStarBase:
 		if (PulsedInputState.menu[KEY_MENU_LEFT] || PulsedInputState.menu[KEY_MENU_UP])
 		{
 			if (NewState-- == TALK_COMMANDER)
+			{
 				NewState = DEPART_BASE;
+			}
 		}
 		else if (PulsedInputState.menu[KEY_MENU_RIGHT] || PulsedInputState.menu[KEY_MENU_DOWN])
 		{
 			if (NewState++ == DEPART_BASE)
+			{
 				NewState = TALK_COMMANDER;
+			}
 		}
 
 		BatchGraphics();
@@ -518,13 +558,17 @@ void VisitStarBase(void)
 		InitCommunication(ILWRATH_CONVERSATION);
 		if (GLOBAL_SIS(CrewEnlisted) == (uqm::COUNT)~0
 			|| (GLOBAL(CurrentActivity) & CHECK_ABORT))
+		{
 			return; // Killed by Ilwrath
+		}
 
 		// After Ilwrath battle, about-to-ally Starbase conversation
 		SetCommIntroMode(CIM_CROSSFADE_SCREEN, 0);
 		InitCommunication(COMMANDER_CONVERSATION);
 		if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+		{
 			return;
+		}
 		// XXX: InitCommunication() clears these flags, and we need them
 		//   This marks that we are in Starbase.
 		SET_GAME_STATE(GLOBAL_FLAGS_AND_DATA, (uqm::BYTE)~0);
@@ -539,12 +583,16 @@ void VisitStarBase(void)
 		// install the bomb.
 		DoTimePassage();
 		if (GLOBAL_SIS(CrewEnlisted) == (uqm::COUNT)~0)
+		{
 			return; // You are now dead! Thank you! (killed by Kohr-Ah)
+		}
 
 		SetCommIntroMode(CIM_FADE_IN_SCREEN, ONE_SECOND * 2);
 		InitCommunication(COMMANDER_CONVERSATION);
 		if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+		{
 			return;
+		}
 		// XXX: InitCommunication() clears these flags, and we need them
 		//   This marks that we are in Starbase.
 		SET_GAME_STATE(GLOBAL_FLAGS_AND_DATA, (uqm::BYTE)~0);

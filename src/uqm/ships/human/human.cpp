@@ -135,7 +135,9 @@ nuke_preprocess(ELEMENT* ElementPtr)
 
 	facing = GetFrameIndex(ElementPtr->next.image.frame);
 	if (ElementPtr->turn_wait > 0)
+	{
 		--ElementPtr->turn_wait;
+	}
 	else
 	{
 		if (TrackShip(ElementPtr, &facing) > 0)
@@ -153,7 +155,9 @@ nuke_preprocess(ELEMENT* ElementPtr)
 		uqm::SDWORD speed;
 
 		if ((speed = MISSILE_SPEED + ((MISSILE_LIFE - ElementPtr->life_span) * THRUST_SCALE)) > MAX_MISSILE_SPEED)
+		{
 			speed = MAX_MISSILE_SPEED;
+		}
 		SetVelocityVector(&ElementPtr->velocity,
 						  speed, facing);
 	}
@@ -208,9 +212,13 @@ spawn_point_defense(ELEMENT* ElementPtr)
 				delta_x = ObjectPtr->next.location.x - ShipPtr->next.location.x;
 				delta_y = ObjectPtr->next.location.y - ShipPtr->next.location.y;
 				if (delta_x < 0)
+				{
 					delta_x = -delta_x;
+				}
 				if (delta_y < 0)
+				{
 					delta_y = -delta_y;
+				}
 				delta_x = WORLD_TO_DISPLAY(delta_x);
 				delta_y = WORLD_TO_DISPLAY(delta_y);
 				if ((uqm::UWORD)delta_x <= LASER_RANGE && (uqm::UWORD)delta_y <= LASER_RANGE && (uqm::UWORD)delta_x * (uqm::UWORD)delta_x + (uqm::UWORD)delta_y * (uqm::UWORD)delta_y <= LASER_RANGE * LASER_RANGE)
@@ -221,7 +229,9 @@ spawn_point_defense(ELEMENT* ElementPtr)
 					if (!PaidFor)
 					{
 						if (!DeltaEnergy(ShipPtr, -SPECIAL_ENERGY_COST))
+						{
 							break;
+						}
 
 						ProcessSound(SetAbsSoundIndex(
 										 /* POINT_DEFENSE_LASER */
@@ -309,9 +319,13 @@ human_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 			 && ObjectsOfConcern[ENEMY_WEAPON_INDEX].which_turn <= 2)
 			|| (ObjectsOfConcern[ENEMY_SHIP_INDEX].ObjectPtr != NULL
 				&& ObjectsOfConcern[ENEMY_SHIP_INDEX].which_turn <= 4)))
+	{
 		StarShipPtr->ship_input_state |= SPECIAL;
+	}
 	else
+	{
 		StarShipPtr->ship_input_state &= ~SPECIAL;
+	}
 	ObjectsOfConcern[ENEMY_WEAPON_INDEX].ObjectPtr = NULL;
 
 	ship_intelligence(ShipPtr,
@@ -322,7 +336,9 @@ human_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 		if (ObjectsOfConcern[ENEMY_SHIP_INDEX].ObjectPtr
 			&& (!(StarShipPtr->ship_input_state & (LEFT | RIGHT /* | THRUST */))
 				|| ObjectsOfConcern[ENEMY_SHIP_INDEX].which_turn <= 12))
+		{
 			StarShipPtr->ship_input_state |= WEAPON;
+		}
 	}
 }
 

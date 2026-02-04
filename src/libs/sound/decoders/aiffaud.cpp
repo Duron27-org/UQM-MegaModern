@@ -227,7 +227,9 @@ static bool
 read_be_16(uio_Stream* fp, uint16* v)
 {
 	if (!uio_fread(v, sizeof(*v), 1, fp))
+	{
 		return false;
+	}
 	*v = UQM_SwapBE16(*v);
 	return true;
 }
@@ -236,7 +238,9 @@ static bool
 read_be_32(uio_Stream* fp, uint32* v)
 {
 	if (!uio_fread(v, sizeof(*v), 1, fp))
+	{
 		return false;
+	}
 	*v = UQM_SwapBE32(*v);
 	return true;
 }
@@ -252,7 +256,9 @@ read_be_f80(uio_Stream* fp, sint32* v)
 	uint16 se;
 	uint32 mant, mant_low;
 	if (!read_be_16(fp, &se) || !read_be_32(fp, &mant) || !read_be_32(fp, &mant_low))
+	{
 		return false;
+	}
 
 	sign = (se >> 15) & 1;		  // sign is the highest bit
 	exp = (se & ((1 << 15) - 1)); // exponent is next highest 15 bits
@@ -266,9 +272,13 @@ read_be_f80(uio_Stream* fp, sint32* v)
 	exp -= (1 << 14) - 1; // exponent is biased by (2^(e-1) - 1)
 	shift = exp - 31 + 1; // mantissa is already 31 bits before decimal pt.
 	if (shift > 0)
+	{
 		mant = 0x7fffffff; // already too big
+	}
 	else if (shift < 0)
+	{
 		mant >>= -shift;
+	}
 
 	*v = sign ? -(sint32)mant : (sint32)mant;
 
@@ -561,7 +571,9 @@ aifa_DecodePCM(TFB_AiffSoundDecoder* aifa, void* buf, sint32 bufsize)
 
 	dec_pcm = bufsize / aifa->block_align;
 	if (dec_pcm > aifa->max_pcm - aifa->cur_pcm)
+	{
 		dec_pcm = aifa->max_pcm - aifa->cur_pcm;
+	}
 
 	dec_pcm = uio_fread(buf, aifa->file_block, dec_pcm, aifa->fp);
 	aifa->cur_pcm += dec_pcm;
@@ -573,7 +585,9 @@ aifa_DecodePCM(TFB_AiffSoundDecoder* aifa, void* buf, sint32 bufsize)
 		uint8* ptr = (uint8*)buf;
 		uint32 left;
 		for (left = size; left > 0; --left, ++ptr)
+		{
 			*ptr += 128;
+		}
 	}
 
 	return size;
@@ -589,7 +603,9 @@ aifa_DecodeSDX2(TFB_AiffSoundDecoder* aifa, void* buf, sint32 bufsize)
 
 	dec_pcm = bufsize / aifa->block_align;
 	if (dec_pcm > aifa->max_pcm - aifa->cur_pcm)
+	{
 		dec_pcm = aifa->max_pcm - aifa->cur_pcm;
+	}
 
 	src = (sint8*)buf + bufsize - (dec_pcm * aifa->file_block);
 	dec_pcm = uio_fread(src, aifa->file_block, dec_pcm, aifa->fp);
@@ -603,12 +619,18 @@ aifa_DecodeSDX2(TFB_AiffSoundDecoder* aifa, void* buf, sint32 bufsize)
 		{
 			sint32 v = (*src * abs(*src)) << 1;
 			if (*src & 1)
+			{
 				v += *prev;
+			}
 			// saturate the value
 			if (v > 32767)
+			{
 				v = 32767;
+			}
 			else if (v < -32768)
+			{
 				v = -32768;
+			}
 			*prev = v;
 			*dst = v;
 		}
@@ -623,7 +645,9 @@ aifa_Seek(THIS_PTR, uint32 pcm_pos)
 	TFB_AiffSoundDecoder* aifa = (TFB_AiffSoundDecoder*)This;
 
 	if (pcm_pos > aifa->max_pcm)
+	{
 		pcm_pos = aifa->max_pcm;
+	}
 	aifa->cur_pcm = pcm_pos;
 	uio_fseek(aifa->fp,
 			  aifa->data_ofs + pcm_pos * aifa->file_block,

@@ -50,7 +50,9 @@ bool res_CloseResFile(uio_Stream* fp)
 	if (fp)
 	{
 		if (fp != (uio_Stream*)~0)
+		{
 			uio_fclose(fp);
+		}
 		return (true);
 	}
 
@@ -134,8 +136,12 @@ LengthResFile(uio_Stream* fp)
 	struct stat sb;
 
 	if (fp == (uio_Stream*)~0)
+	{
 		return (1);
+	}
 	if (uio_fstat(uio_streamHandle(fp), &sb) == -1)
+	{
 		return 1;
+	}
 	return sb.st_size;
 }

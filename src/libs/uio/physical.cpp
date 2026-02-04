@@ -43,7 +43,9 @@ uio_PRoot_getRootDirHandle(uio_PRoot* pRoot)
 void uio_PRoot_deletePRootExtra(uio_PRoot* pRoot)
 {
 	if (pRoot->extra == NULL)
+	{
 		return;
+	}
 	assert(pRoot->handler->deletePRootExtra != NULL);
 	pRoot->handler->deletePRootExtra(pRoot->extra);
 }
@@ -106,7 +108,9 @@ void uio_PRoot_removeCloseHandlers(uio_PRoot* pRoot)
 {
 	pRoot->numCloseHandlers = 0;
 	if (pRoot->closeHandlers != NULL)
+	{
 		uio_free(pRoot->closeHandlers);
+	}
 	pRoot->closeHandlers = NULL;
 }
 #endif
@@ -121,7 +125,9 @@ uio_PRoot_delete(uio_PRoot* pRoot)
 	assert(pRoot->handler->umount != NULL);
 	pRoot->handler->umount(pRoot);
 	if (pRoot->handle)
+	{
 		uio_Handle_unref(pRoot->handle);
+	}
 	uio_PRoot_deletePRootExtra(pRoot);
 	uio_PRoot_free(pRoot);
 }
@@ -155,7 +161,9 @@ void uio_PRoot_unrefHandle(uio_PRoot* pRoot)
 	assert(pRoot->handleRef > 0);
 	pRoot->handleRef--;
 	if (pRoot->handleRef == 0 && pRoot->mountRef == 0)
+	{
 		uio_PRoot_delete(pRoot);
+	}
 }
 
 void uio_PRoot_refMount(uio_PRoot* pRoot)
@@ -174,5 +182,7 @@ void uio_PRoot_unrefMount(uio_PRoot* pRoot)
 #endif
 	pRoot->mountRef--;
 	if (pRoot->mountRef == 0 && pRoot->handleRef == 0)
+	{
 		uio_PRoot_delete(pRoot);
+	}
 }

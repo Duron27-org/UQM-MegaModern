@@ -83,7 +83,9 @@ void crc_processBytes(crc_State* state, uint8* buf, size_t bufLen)
 	uint32 newCrc = state->crc;
 
 	while (buf < end)
+	{
 		newCrc = (newCrc >> 8) ^ crcTable[(newCrc ^ *buf) & 0xff];
+	}
 
 #ifdef DUMP_CRC_OPS
 	crc_log("crc_processBytes(%08x, [%zu bytes]) --> %08x.",

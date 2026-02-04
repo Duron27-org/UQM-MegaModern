@@ -102,11 +102,15 @@ GenerateChmmr_generatePlanets(SOLARSYS_STATE* solarSys)
 			pPlanet->data_index = GenerateCrystalWorld();
 
 			if (!pPlanet->NumPlanets)
+			{
 				pPlanet->NumPlanets++;
+			}
 		}
 
 		if (!GET_GAME_STATE(CHMMR_UNLEASHED))
+		{
 			pPlanet->data_index |= PLANET_SHIELDED;
+		}
 	}
 
 	if (CurStarDescPtr->Index == MOTHER_ARK_DEFINED)
@@ -116,12 +120,16 @@ GenerateChmmr_generatePlanets(SOLARSYS_STATE* solarSys)
 		pSunDesc->PlanetByte = 3;
 
 		if (!PrimeSeed)
+		{
 			pSunDesc->PlanetByte = PlanetByteGen(pSunDesc);
+		}
 
 		pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
 
 		if (EXTENDED)
+		{
 			pPlanet->data_index = GenerateCrystalWorld();
+		}
 	}
 
 	return true;
@@ -141,9 +149,13 @@ GenerateChmmr_generateMoons(SOLARSYS_STATE* solarSys, PLANET_DESC* planet)
 		PLANET_DESC* pMoonDesc = &solarSys->MoonDesc[MoonByte];
 
 		if (!RaceDead(CHMMR_SHIP))
+		{
 			pMoonDesc->data_index = HIERARCHY_STARBASE;
+		}
 		else
+		{
 			pMoonDesc->data_index = DESTROYED_STARBASE;
+		}
 
 		pMoonDesc->radius = MIN_MOON_RADIUS;
 		rand_val = RandomContext_Random(SysGenRNG);
@@ -209,9 +221,13 @@ GenerateChmmr_generateOrbital(SOLARSYS_STATE* solarSys,
 				uqm::COUNT lim, i;
 
 				if (StartSphereTracking(ILWRATH_SHIP))
+				{
 					lim = 14;
+				}
 				else
+				{
 					lim = 6;
+				}
 
 				for (i = 0; i < lim; ++i)
 				{
@@ -230,7 +246,9 @@ GenerateChmmr_generateOrbital(SOLARSYS_STATE* solarSys,
 			InitCommunication(ILWRATH_CONVERSATION);
 
 			if (GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
+			{
 				return true;
+			}
 
 			Survivors = GetHeadLink(&GLOBAL(npc_built_ship_q)) != 0;
 
@@ -239,7 +257,9 @@ GenerateChmmr_generateOrbital(SOLARSYS_STATE* solarSys,
 			GetGroupInfo(GROUPS_RANDOM, GROUP_LOAD_IP);
 
 			if (Survivors)
+			{
 				return true;
+			}
 
 			state = GET_GAME_STATE(HM_ENCOUNTERS);
 			state |= 1 << ILWRATH_ENCOUNTER;
@@ -264,7 +284,9 @@ GenerateChmmr_generateOrbital(SOLARSYS_STATE* solarSys,
 										 0);
 		}
 		else
+		{
 			str = CaptureStringTable(LoadStringTable(CHMMR_BASE_STRTAB));
+		}
 
 		solarSys->SysInfo.PlanetInfo.DiscoveryString = str;
 

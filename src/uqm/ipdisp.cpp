@@ -48,10 +48,14 @@ RaceIPSpeed(RACE_ID Index)
 	if (!optShipSeed && (seedStamp != -1 || speedMap[0] == 0))
 	{
 		for (x = 0; x < numRaces; x++)
+		{
 			speedMap[x] = defaultMap[x];
+		}
 		seedStamp = -1;
 		if (speedMap[0] == 0)
+		{
 			speedMap[0] = 1;
+		}
 	}
 
 	if (optShipSeed && (seedStamp != optCustomSeed || speedMap[0] == 0))
@@ -61,13 +65,19 @@ RaceIPSpeed(RACE_ID Index)
 		{
 			hFleet = GetSeededFleetFromIndex(x);
 			if (hFleet)
+			{
 				speedMap[x] = defaultMap[GetIndexFromStarShip(
 					&GLOBAL(avail_race_q), hFleet)];
+			}
 			else
+			{
 				speedMap[x] = defaultMap[x];
+			}
 		}
 		if (speedMap[0] == 0)
+		{
 			speedMap[0] = 1;
+		}
 	}
 	return speedMap[Index];
 }
@@ -123,11 +133,15 @@ void NotifyOthers(uqm::COUNT which_race, uqm::BYTE target_loc)
 			if (!(GroupPtr->task & REFORM_GROUP))
 			{
 				if ((GroupPtr->task & ~IGNORE_FLAGSHIP) != EXPLORE)
+				{
 					GroupPtr->group_counter = 0;
+				}
 				else
+				{
 					GroupPtr->group_counter = ((uqm::COUNT)TFB_Random()
 											   % MAX_REVOLUTIONS)
 										   << FACING_SHIFT;
+				}
 			}
 		}
 		else
@@ -174,9 +188,13 @@ static uqm::BYTE
 getFlagshipLocation(void)
 {
 	if (!playerInInnerSystem())
+	{
 		return 0;
+	}
 	else
+	{
 		return 1 + planetIndex(pSolarSysState, pSolarSysState->pOrbitalDesc);
+	}
 }
 
 // These need to be global in case something else uses them
@@ -238,11 +256,15 @@ ip_group_preprocess(ELEMENT* ElementPtr)
 		task &= ~REFORM_GROUP;
 		GroupPtr->task = task;
 		if ((task & ~IGNORE_FLAGSHIP) != EXPLORE)
+		{
 			GroupPtr->group_counter = 0;
+		}
 		else
+		{
 			GroupPtr->group_counter = ((uqm::COUNT)TFB_Random()
 									   % MAX_REVOLUTIONS)
 								   << FACING_SHIFT;
+		}
 	}
 
 	// If fleeing *and* ignoring flagship
@@ -270,13 +292,17 @@ ip_group_preprocess(ELEMENT* ElementPtr)
 			uqm::SWORD detect_dist = 1200;
 
 			if (EXTENDED && CheckAlliance((RACE_ID)GroupPtr->race_id) == GOOD_GUY)
+			{
 				detect_dist = 0;
+			}
 
 			if (group_loc != 0) /* if in planetary views */
 			{
 				detect_dist *= (MAX_ZOOM_RADIUS / MIN_ZOOM_RADIUS);
 				if (GroupPtr->race_id == URQUAN_DRONE_SHIP)
+				{
 					detect_dist <<= 1;
+				}
 			}
 			vdx = GLOBAL(ip_location.x) - GroupPtr->loc.x;
 			vdy = GLOBAL(ip_location.y) - GroupPtr->loc.y;
@@ -291,7 +317,9 @@ ip_group_preprocess(ELEMENT* ElementPtr)
 				task = GroupPtr->task;
 				target_loc = GroupPtr->dest_loc;
 				if (target_loc == IPNL_INTERCEPT_PLAYER)
+				{
 					target_loc = flagship_loc;
+				}
 			}
 		}
 	}
@@ -303,11 +331,15 @@ ip_group_preprocess(ELEMENT* ElementPtr)
 	if (optShipSeed)
 	{
 		if (!Xform)
+		{
 			Xform = CaptureDrawable(
 				LoadGraphic("ship.mmrnmhrm.meleeicons"));
+		}
 		if (!Ywing)
+		{
 			Ywing = CaptureDrawable(
 				LoadGraphic("ship.mmrnmhrm.meleeicons.y"));
+		}
 	}
 
 #ifdef NEVER
@@ -339,7 +371,9 @@ ip_group_preprocess(ELEMENT* ElementPtr)
 					 && group_loc == 0))
 		{
 			if (GroupPtr->dest_loc == IPNL_INTERCEPT_PLAYER)
+			{
 				dest_pt = GLOBAL(ip_location);
+			}
 			// ship is circling around a planet.
 			else
 			{
@@ -374,7 +408,9 @@ ip_group_preprocess(ELEMENT* ElementPtr)
 
 					EPtr->thrust_wait = (uqm::BYTE)~0;
 					if (GroupPtr->group_counter)
+					{
 						--GroupPtr->group_counter;
+					}
 					else if (task == EXPLORE
 							 && (next_loc = (uqm::BYTE)(((uqm::COUNT)TFB_Random()
 														 % pSolarSysState->SunDesc[0].NumPlanets)
@@ -391,14 +427,20 @@ ip_group_preprocess(ELEMENT* ElementPtr)
 		else if (group_loc == 0)
 		{
 			if (GroupPtr->dest_loc == IPNL_INTERCEPT_PLAYER)
+			{
 				dest_pt = pSolarSysState->SunDesc[0].location;
+			}
 			else
+			{
 				dest_pt = planetOuterLocation(target_loc - 1);
+			}
 		}
 		else
 		{
 			if (task == ON_STATION)
+			{
 				target_loc = 0;
+			}
 
 			dest_pt.x = GroupPtr->loc.x << 1;
 			dest_pt.y = GroupPtr->loc.y << 1;
@@ -409,7 +451,9 @@ ip_group_preprocess(ELEMENT* ElementPtr)
 		angle = ARCTAN(delta_x, delta_y);
 
 		if (EPtr->thrust_wait && EPtr->thrust_wait != (uqm::BYTE)~0)
+		{
 			--EPtr->thrust_wait;
+		}
 		else if ((vdx == 0 && vdy == 0)
 				 || angle != GetVelocityTravelAngle(&EPtr->velocity))
 		{
@@ -420,7 +464,9 @@ ip_group_preprocess(ELEMENT* ElementPtr)
 #define ORBIT_SPEED 60
 				speed = ORBIT_SPEED;
 				if (task == ON_STATION)
+				{
 					speed >>= 1;
+				}
 			}
 			else
 			{
@@ -440,7 +486,9 @@ ip_group_preprocess(ELEMENT* ElementPtr)
 			if (target_loc == 0)
 			{
 				if (task == FLEE)
+				{
 					goto CheckGetAway;
+				}
 			}
 			else if (target_loc == GroupPtr->dest_loc)
 			{
@@ -462,10 +510,14 @@ PartialRevolution:
 				adjustDeltaVforZoom(radius, &dx, &dy);
 
 				if (task == ON_STATION && GroupPtr->dest_loc)
+				{
 					goto PartialRevolution;
+				}
 				else if ((long)((uqm::COUNT)(dx * dx) + (uqm::COUNT)(dy * dy))
 						 >= (long)delta_x * delta_x + (long)delta_y * delta_y)
+				{
 					Transition = true;
+				}
 			}
 			else
 			{ // In inner system; also leaving outer CheckGetAway hack
@@ -478,7 +530,9 @@ CheckGetAway:
 					  && (GroupPtr->loc.x < dest_pt.x
 						  && GroupPtr->loc.y < dest_pt.y))
 					|| FilthyCheater)
+				{
 					Transition = true;
+				}
 			}
 
 			if (Transition)
@@ -553,7 +607,9 @@ CheckGetAway:
 				// Set ship sprite when player entering the system (image
 				// index is always 1 by default)
 				if (GetFrameIndex(EPtr->current.image.frame) == 1)
+				{
 					EPtr->next.image.frame = suggestedFrame;
+				}
 
 				if (isOrbiting)
 				{ // JMS: Direction memory prevents jittering of battle
@@ -567,17 +623,25 @@ CheckGetAway:
 					}
 				}
 				else
+				{
 					EPtr->next.image.frame = suggestedFrame;
+				}
 			}
 			// Tumble any probes
 			if (GroupPtr->flags & IS_PROBE)
+			{
 				EPtr->next.image.frame =
 					IncFrameIndex(EPtr->next.image.frame);
+			}
 			// Transform any xforms
 			if (GroupPtr->flags & IS_XFORM && GroupPtr->dest_loc == IPNL_INTERCEPT_PLAYER)
+			{
 				GroupPtr->melee_icon = Ywing;
+			}
 			if (GroupPtr->flags & IS_XFORM && GroupPtr->dest_loc != IPNL_INTERCEPT_PLAYER)
+			{
 				GroupPtr->melee_icon = Xform;
+			}
 			// If destination reached - ship can turn (or ship
 			// leaves/enters inner system, but not reached destination yet)
 			if ((dest_pt.x == GroupPtr->loc.x
@@ -645,7 +709,9 @@ CheckGetAway:
 	{
 		SetPrimType(&DisplayArray[EPtr->PrimIndex], STAMP_PRIM);
 		if (task & REFORM_GROUP)
+		{
 			EPtr->state_flags |= NONSOLID;
+		}
 	}
 
 	EPtr->state_flags |= CHANGING;
@@ -656,7 +722,9 @@ flag_ship_collision(ELEMENT* ElementPtr0, POINT* pPt0,
 					ELEMENT* ElementPtr1, POINT* pPt1)
 {
 	if (GLOBAL(CurrentActivity) & START_ENCOUNTER)
+	{
 		return; // ignore the rest of the collisions
+	}
 
 	if (!(ElementPtr1->state_flags & COLLISION))
 	{ // The other element's collision has not been processed yet
@@ -680,14 +748,18 @@ ip_group_collision(ELEMENT* ElementPtr0, POINT* pPt0,
 	void* OtherPtr;
 
 	if (GLOBAL(CurrentActivity) & START_ENCOUNTER)
+	{
 		return; // ignore the rest of the collisions
+	}
 
 	*(&GroupPtr) = (IP_GROUP*)(ElementPtr0)->pParent;
 	GetElementStarShip(ElementPtr1, &OtherPtr);
 
 	if (!(GLOBAL(autopilot.x) == ~0 && GLOBAL(autopilot.y) == ~0)
 		&& (CheckAlliance((RACE_ID)GroupPtr->race_id) == GOOD_GUY))
+	{
 		return; // Ignore collisions when allied during Auto-Pilot
+	}
 
 	if (OtherPtr)
 	{ // Collision with another group
@@ -763,18 +835,26 @@ spawn_ip_group(IP_GROUP* GroupPtr)
 			 */
 		GroupPtr->flags = 0;
 		if (GroupPtr->race_id != SLYLANDRO_SHIP)
+		{
 			GroupPtr->flags |= ROTATES;
+		}
 		if (GroupPtr->race_id == MMRNMHRM_SHIP)
+		{
 			GroupPtr->flags |= IS_XFORM;
+		}
 		if (GroupPtr->race_id == SLYLANDRO_SHIP)
+		{
 			GroupPtr->flags |= IS_PROBE;
+		}
 		if (optShipSeed)
 		{
 			FLEET_INFO* TemplatePtr = NULL;
 			HFLEETINFO hFleet;
 			hFleet = GetStarShipFromIndex(&GLOBAL(avail_race_q), GroupPtr->race_id);
 			if (hFleet)
+			{
 				TemplatePtr = LockFleetInfo(&GLOBAL(avail_race_q), hFleet);
+			}
 			if (TemplatePtr)
 			{
 				SPECIES_ID ship = SeedShip(TemplatePtr->SpeciesID, false);
@@ -937,7 +1017,9 @@ flag_ship_preprocess(ELEMENT* ElementPtr)
 		if (ElementPtr->sys_loc == flagship_loc)
 		{
 			if (ElementPtr->state_flags & NONSOLID)
+			{
 				ElementPtr->state_flags &= ~NONSOLID;
+			}
 		}
 		else /* no collisions during transition */
 		{
@@ -972,7 +1054,9 @@ AdjustInitialPosition(void)
 	pt = locationToDisplay(GLOBAL(ip_location), radius);
 
 	if (LastActivity & CHECK_LOAD)
+	{
 		InitialIntersect();
+	}
 
 	GLOBAL(ShipStamp.origin) = pt;
 }
@@ -994,7 +1078,9 @@ spawn_flag_ship(void)
 		FlagShipElementPtr->sys_loc = getFlagshipLocation();
 		FlagShipElementPtr->state_flags = APPEARING | IGNORE_VELOCITY;
 		if (GET_GAME_STATE(ESCAPE_COUNTER))
+		{
 			FlagShipElementPtr->state_flags |= NONSOLID;
+		}
 		FlagShipElementPtr->life_span = NORMAL_LIFE;
 		FlagShipElementPtr->thrust_wait = FLIP_WAIT;
 		SetPrimType(&DisplayArray[FlagShipElementPtr->PrimIndex], STAMP_PRIM);

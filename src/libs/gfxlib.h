@@ -159,17 +159,27 @@ IncreaseBrightness(uqm::BYTE* ch, uqm::BYTE value)
 {
 	int c;
 	if (*ch < 128)
+	{
 		c = ((*ch * 255) >> 7);
+	}
 	else
+	{
 		c = (((*ch + 255) << 1) - 255 - ((255 * *ch) >> 7));
+	}
 
 	if (c > 0xFF)
+	{
 		c = 0xFF;
+	}
 
 	if (value == 0xFF)
+	{
 		*ch = (uqm::BYTE)c;
+	}
 	else
+	{
 		*ch = (uqm::BYTE)(((c - *ch) * value) >> 8) + *ch;
+	}
 }
 
 static inline bool
@@ -203,7 +213,9 @@ CreateAvgShade(Color first_color, Color second_color)
 	}
 
 	if (sameColor(first_color, second_color))
+	{
 		return first_color;
+	}
 
 	if (temp.r == first_color.r || temp.r == second_color.r)
 	{
@@ -213,7 +225,9 @@ CreateAvgShade(Color first_color, Color second_color)
 	}
 
 	if (temp.r > 0)
+	{
 		temp.a = 255;
+	}
 
 	return temp;
 }
@@ -343,8 +357,8 @@ RECT_TO_DRECT(RECT r)
 {
 	DRECT dr = {
 		{r.corner.x,	 r.corner.y	   },
-		  {r.extent.width, r.extent.height}
-	   };
+		{r.extent.width, r.extent.height}
+	 };
 
 	return dr;
 }

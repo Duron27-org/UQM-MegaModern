@@ -61,7 +61,9 @@ int setenv(const char* name, const char* value, int overwrite)
 
 		old = getenv(name);
 		if (old != NULL)
+		{
 			return 0;
+		}
 	}
 
 	nameLen = strlen(name);
@@ -126,7 +128,9 @@ int snprintf(char* str, size_t size, const char* format, ...)
 	va_start(args, format);
 	result = _vsnprintf(str, size, format, args);
 	if (str != NULL && size != 0)
+	{
 		str[size - 1] = '\0';
+	}
 	va_end(args);
 
 	return result;
@@ -136,7 +140,9 @@ int vsnprintf(char* str, size_t size, const char* format, va_list args)
 {
 	int result = _vsnprintf(str, size, format, args);
 	if (str != NULL && size != 0)
+	{
 		str[size - 1] = '\0';
+	}
 	return result;
 }
 #endif

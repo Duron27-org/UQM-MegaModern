@@ -127,9 +127,13 @@ plasma_preprocess(ELEMENT* ElementPtr)
 	uqm::COUNT plasma_index;
 
 	if (ElementPtr->mass_points > ElementPtr->hit_points)
+	{
 		ElementPtr->life_span = ElementPtr->hit_points * PLASMA_DURATION;
+	}
 	else
+	{
 		ElementPtr->hit_points = (uqm::BYTE)((ElementPtr->life_span * MISSILE_DAMAGE + (MISSILE_LIFE - 1)) / MISSILE_LIFE);
+	}
 	ElementPtr->mass_points = ElementPtr->hit_points;
 	plasma_index = NUM_PLASMAS - ((ElementPtr->life_span + (PLASMA_DURATION - 1)) / PLASMA_DURATION);
 	if (plasma_index != GetFrameIndex(ElementPtr->next.image.frame))
@@ -141,7 +145,9 @@ plasma_preprocess(ELEMENT* ElementPtr)
 	}
 
 	if (ElementPtr->turn_wait > 0)
+	{
 		--ElementPtr->turn_wait;
+	}
 	else
 	{
 		uqm::COUNT facing;
@@ -149,8 +155,10 @@ plasma_preprocess(ELEMENT* ElementPtr)
 		facing = NORMALIZE_FACING(ANGLE_TO_FACING(
 			GetVelocityTravelAngle(&ElementPtr->velocity)));
 		if (TrackShip(ElementPtr, &facing) > 0)
+		{
 			SetVelocityVector(&ElementPtr->velocity,
 							  MISSILE_SPEED, facing);
+		}
 
 		ElementPtr->turn_wait = TRACK_WAIT;
 	}
@@ -160,11 +168,15 @@ static void
 plasma_blast_preprocess(ELEMENT* ElementPtr)
 {
 	if (ElementPtr->life_span >= ElementPtr->thrust_wait)
+	{
 		ElementPtr->next.image.frame =
 			IncFrameIndex(ElementPtr->next.image.frame);
+	}
 	else
+	{
 		ElementPtr->next.image.frame =
 			DecFrameIndex(ElementPtr->next.image.frame);
+	}
 	if (ElementPtr->hTarget)
 	{
 		ELEMENT* ShipPtr;
@@ -196,7 +208,9 @@ plasma_collision(ELEMENT* ElementPtr0, POINT* pPt0,
 		LockElement(hBlastElement, &BlastElementPtr);
 		BlastElementPtr->pParent = ElementPtr0->pParent;
 		if (!(ElementPtr1->state_flags & PLAYER_SHIP))
+		{
 			BlastElementPtr->hTarget = 0;
+		}
 		else
 		{
 			STARSHIP* StarShipPtr;
@@ -210,7 +224,9 @@ plasma_collision(ELEMENT* ElementPtr0, POINT* pPt0,
 		if ((num_animations =
 				 (old_mass * NUM_GLOBALLS + (MISSILE_DAMAGE - 1)) / MISSILE_DAMAGE)
 			== 0)
+		{
 			num_animations = 1;
+		}
 
 		BlastElementPtr->thrust_wait = (uqm::BYTE)num_animations;
 		BlastElementPtr->life_span = (num_animations << 1) - 1;
@@ -238,16 +254,22 @@ mycon_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 	{
 		if ((lpEvalDesc->ObjectPtr->state_flags & FINITE_LIFE)
 			&& !(lpEvalDesc->ObjectPtr->state_flags & CREW_OBJECT))
+		{
 			lpEvalDesc->MoveState = AVOID;
+		}
 		else
+		{
 			lpEvalDesc->MoveState = PURSUE;
+		}
 	}
 
 	ship_intelligence(ShipPtr, ObjectsOfConcern, ConcernCounter);
 
 	GetElementStarShip(ShipPtr, &StarShipPtr);
 	if (ObjectsOfConcern[ENEMY_WEAPON_INDEX].MoveState == PURSUE)
+	{
 		StarShipPtr->ship_input_state &= ~THRUST; /* don't pursue seekers */
+	}
 
 	lpEvalDesc = &ObjectsOfConcern[ENEMY_SHIP_INDEX];
 	if (StarShipPtr->weapon_counter == 0
@@ -276,7 +298,9 @@ mycon_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 				|| NORMALIZE_FACING(direction_facing
 									- travel_facing + ANGLE_TO_FACING(OCTANT))
 					   <= ANGLE_TO_FACING(QUADRANT)))
+		{
 			StarShipPtr->ship_input_state |= WEAPON;
+		}
 	}
 
 	if (StarShipPtr->special_counter == 0)
@@ -288,7 +312,9 @@ mycon_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 			StarShipPtr->RaceDescPtr->cyborg_control.WeaponRange = MISSILE_SPEED * MISSILE_LIFE;
 			if (StarShipPtr->RaceDescPtr->ship_info.energy_level >= SPECIAL_ENERGY_COST
 				&& !(StarShipPtr->ship_input_state & WEAPON))
+			{
 				StarShipPtr->ship_input_state |= SPECIAL;
+			}
 		}
 	}
 }
@@ -347,7 +373,9 @@ mycon_postprocess(ELEMENT* ElementPtr)
 						 StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 1),
 					 ElementPtr);
 		if ((add_crew = REGENERATION_AMOUNT) > StarShipPtr->RaceDescPtr->ship_info.max_crew - ElementPtr->crew_level)
+		{
 			add_crew = StarShipPtr->RaceDescPtr->ship_info.max_crew - ElementPtr->crew_level;
+		}
 		DeltaCrew(ElementPtr, add_crew);
 
 		StarShipPtr->special_counter =

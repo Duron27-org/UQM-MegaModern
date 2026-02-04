@@ -110,7 +110,9 @@ CallbackLink_find(CallbackLink* link)
 	for (ptr = &callbacks; *ptr != NULL; ptr = &(*ptr)->next)
 	{
 		if (*ptr == link)
+		{
 			return ptr;
+		}
 	}
 	return NULL;
 }
@@ -130,9 +132,13 @@ bool Callback_remove(CallbackID id)
 	}
 
 	if (callbacksEnd == &(*linkPtr)->next)
+	{
 		callbacksEnd = linkPtr;
+	}
 	if (callbacksProcessEnd == &(*linkPtr)->next)
+	{
 		callbacksProcessEnd = linkPtr;
+	}
 	*linkPtr = (*linkPtr)->next;
 
 	CallbackList_unlock();
@@ -181,9 +187,13 @@ void Callback_process(void)
 		link = callbacks;
 		callbacks = link->next;
 		if (callbacksEnd == &link->next)
+		{
 			callbacksEnd = &callbacks;
+		}
 		if (callbacksProcessEnd == &link->next)
+		{
 			callbacksProcessEnd = &callbacks;
+		}
 		CallbackList_unlock();
 
 		CallbackLink_doCallback(link);

@@ -240,22 +240,34 @@ void VC_SetupPointers(void)
 static ULONG samples2bytes(ULONG samples)
 {
 	if (vc_mode & DMODE_FLOAT)
+	{
 		samples <<= 2;
+	}
 	else if (vc_mode & DMODE_16BITS)
+	{
 		samples <<= 1;
+	}
 	if (vc_mode & DMODE_STEREO)
+	{
 		samples <<= 1;
+	}
 	return samples;
 }
 
 static ULONG bytes2samples(ULONG bytes)
 {
 	if (vc_mode & DMODE_FLOAT)
+	{
 		bytes >>= 2;
+	}
 	else if (vc_mode & DMODE_16BITS)
+	{
 		bytes >>= 1;
+	}
 	if (vc_mode & DMODE_STEREO)
+	{
 		bytes >>= 1;
+	}
 	return bytes;
 }
 
@@ -267,9 +279,13 @@ ULONG VC1_SilenceBytes(SBYTE* buf, ULONG todo)
 
 	/* clear the buffer to zero (16 bits signed) or 0x80 (8 bits unsigned) */
 	if (vc_mode & (DMODE_16BITS | DMODE_FLOAT))
+	{
 		memset(buf, 0, todo);
+	}
 	else
+	{
 		memset(buf, 0x80, todo);
+	}
 
 	return todo;
 }
@@ -282,7 +298,9 @@ void VC1_WriteSamples(SBYTE*, ULONG);
 ULONG VC1_WriteBytes(SBYTE* buf, ULONG todo)
 {
 	if (!vc_softchn)
+	{
 		return VC1_SilenceBytes(buf, todo);
+	}
 
 	todo = bytes2samples(todo);
 	VC1_WriteSamples(buf, todo);
@@ -353,7 +371,9 @@ void VC1_VoiceSetVolume(UBYTE voice, UWORD vol)
 {
 	/* protect against clicks if volume variation is too high */
 	if (abs((int)vinf[voice].vol - (int)vol) > 32)
+	{
 		vinf[voice].rampvol = CLICK_BUFFER;
+	}
 	vinf[voice].vol = vol;
 }
 
@@ -361,7 +381,9 @@ void VC1_VoiceSetPanning(UBYTE voice, ULONG pan)
 {
 	/* protect against clicks if panning variation is too high */
 	if (abs((int)vinf[voice].pan - (int)pan) > 48)
+	{
 		vinf[voice].rampvol = CLICK_BUFFER;
+	}
 	vinf[voice].pan = pan;
 }
 
@@ -383,7 +405,9 @@ SWORD VC1_SampleLoad(struct SAMPLOAD* sload, int type)
 	ULONG t, length, loopstart, loopend, looplen;
 
 	if (type == MD_HARDWARE)
+	{
 		return -1;
+	}
 
 	if (s->length > MAX_SAMPLE_SIZE)
 	{
@@ -393,8 +417,12 @@ SWORD VC1_SampleLoad(struct SAMPLOAD* sload, int type)
 
 	/* Find empty slot to put sample address in */
 	for (handle = 0; handle < MAXSAMPLEHANDLES; handle++)
+	{
 		if (!Samples[handle])
+		{
 			break;
+		}
+	}
 
 	if (handle == MAXSAMPLEHANDLES)
 	{
@@ -404,9 +432,13 @@ SWORD VC1_SampleLoad(struct SAMPLOAD* sload, int type)
 
 	/* Reality check for loop settings */
 	if (s->loopend > s->length)
+	{
 		s->loopend = s->length;
+	}
 	if (s->loopstart >= s->loopend)
+	{
 		s->flags &= ~SF_LOOP;
+	}
 
 	length = s->length;
 	loopstart = s->loopstart;
@@ -434,15 +466,27 @@ SWORD VC1_SampleLoad(struct SAMPLOAD* sload, int type)
 	{
 		looplen = loopend - loopstart; /* handle short samples */
 		if (s->flags & SF_BIDI)
+		{
 			for (t = 0; t < 16 && t < looplen; t++)
+			{
 				Samples[handle][loopend + t] = Samples[handle][(loopend - t) - 1];
+			}
+		}
 		else
+		{
 			for (t = 0; t < 16 && t < looplen; t++)
+			{
 				Samples[handle][loopend + t] = Samples[handle][t + loopstart];
+			}
+		}
 	}
 	else
+	{
 		for (t = 0; t < 16; t++)
+		{
 			Samples[handle][t + length] = 0;
+		}
+	}
 
 	return handle;
 }
@@ -455,7 +499,9 @@ ULONG VC1_SampleSpace(int type)
 ULONG VC1_SampleLength(int type, SAMPLE* s)
 {
 	if (!s)
+	{
 		return 0;
+	}
 
 	return (s->length * ((s->flags & SF_16BITS) ? 2 : 1)) + 16;
 }
@@ -469,7 +515,9 @@ ULONG VC1_VoiceRealVolume(UBYTE voice)
 
 	t = (SLONG)(vinf[voice].current >> FRACBITS);
 	if (!vinf[voice].active)
+	{
 		return 0;
+	}
 
 	s = vinf[voice].handle;
 	size = vinf[voice].size;
@@ -479,11 +527,17 @@ ULONG VC1_VoiceRealVolume(UBYTE voice)
 	k = 0;
 	j = 0;
 	if (i > size)
+	{
 		i = size;
+	}
 	if (t < 0)
+	{
 		t = 0;
+	}
 	if (t + i > size)
+	{
 		t = size - i;
+	}
 
 	i &= ~1; /* make sure it's EVEN. */
 
@@ -491,9 +545,13 @@ ULONG VC1_VoiceRealVolume(UBYTE voice)
 	for (; i; i--, smp++)
 	{
 		if (k < *smp)
+		{
 			k = *smp;
+		}
 		if (j > *smp)
+		{
 			j = *smp;
+		}
 	}
 	return abs(k - j);
 }

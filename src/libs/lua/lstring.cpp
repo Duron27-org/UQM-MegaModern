@@ -55,7 +55,9 @@ unsigned int luaS_hash(const char* str, size_t l, unsigned int seed)
 	size_t l1;
 	size_t step = (l >> LUAI_HASHLIMIT) + 1;
 	for (l1 = l; l1 >= step; l1 -= step)
+	{
 		h = h ^ ((h << 5) + (h >> 2) + cast_byte(str[l1 - 1]));
+	}
 	return h;
 }
 
@@ -73,7 +75,9 @@ void luaS_resize(lua_State* L, int newsize)
 	{
 		luaM_reallocvector(L, tb->hash, tb->size, newsize, GCObject*);
 		for (i = tb->size; i < newsize; i++)
+		{
 			tb->hash[i] = NULL;
+		}
 	}
 	/* rehash */
 	for (i = 0; i < tb->size; i++)
@@ -129,7 +133,9 @@ static TString* newshrstr(lua_State* L, const char* str, size_t l,
 	stringtable* tb = &G(L)->strt;
 	TString* s;
 	if (tb->nuse >= cast(lu_int32, tb->size) && tb->size <= MAX_INT / 2)
+	{
 		luaS_resize(L, tb->size * 2); /* too crowded */
+	}
 	list = &tb->hash[lmod(h, tb->size)];
 	s = createstrobj(L, str, l, LUA_TSHRSTR, h, list);
 	tb->nuse++;
@@ -153,7 +159,9 @@ static TString* internshrstr(lua_State* L, const char* str, size_t l)
 		if (h == ts->tsv.hash && l == ts->tsv.len && (memcmp(str, getstr(ts), l * sizeof(char)) == 0))
 		{
 			if (isdead(G(L), o)) /* string is dead (but was not collected yet)? */
-				changewhite(o);	 /* resurrect it */
+			{
+				changewhite(o); /* resurrect it */
+			}
 			return ts;
 		}
 	}
@@ -167,11 +175,15 @@ static TString* internshrstr(lua_State* L, const char* str, size_t l)
 TString* luaS_newlstr(lua_State* L, const char* str, size_t l)
 {
 	if (l <= LUAI_MAXSHORTLEN) /* short string? */
+	{
 		return internshrstr(L, str, l);
+	}
 	else
 	{
 		if (l + 1 > (MAX_SIZET - sizeof(TString)) / sizeof(char))
+		{
 			luaM_toobig(L);
+		}
 		return createstrobj(L, str, l, LUA_TLNGSTR, G(L)->seed, NULL);
 	}
 }
@@ -190,7 +202,9 @@ Udata* luaS_newudata(lua_State* L, size_t s, Table* e)
 {
 	Udata* u;
 	if (s > MAX_SIZET - sizeof(Udata))
+	{
 		luaM_toobig(L);
+	}
 	u = &luaC_newobj(L, LUA_TUSERDATA, sizeof(Udata) + s, NULL, 0)->u;
 	u->uv.len = s;
 	u->uv.metatable = NULL;

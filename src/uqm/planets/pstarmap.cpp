@@ -203,14 +203,18 @@ flashCurrentLocation(POINT* where, bool force)
 	static TimeCount NextTime = 0;
 
 	if (where)
+	{
 		universe = *where;
+	}
 
 	if (GetTimeCounter() >= NextTime)
 	{
 		NextTime = GetTimeCounter() + (ONE_SECOND / 16);
 
 		if (c == 0x00 || c == 0x1A)
+		{
 			val = -val;
+		}
 		c += val;
 
 		redraw = true;
@@ -256,7 +260,9 @@ DrawMarker(POINT dest, uqm::BYTE type)
 	STAMP s;
 
 	if (type > 2)
+	{
 		return;
+	}
 
 	s.origin = MAKE_POINT(
 		UNIVERSE_TO_DISPX(dest.x),
@@ -277,7 +283,9 @@ DrawAutoPilot(POINT* pDstPt)
 	STAMP s;
 
 	if (!inHQSpace())
+	{
 		pt = CurStarDescPtr->star_pt;
+	}
 	else
 	{
 		pt.x = LOGX_TO_UNIVERSE(GLOBAL_SIS(log_x));
@@ -285,14 +293,18 @@ DrawAutoPilot(POINT* pDstPt)
 	}
 
 	if (IS_HD)
+	{
 		s.frame = DecFrameIndex(stars_in_space);
+	}
 
 	pt.x = UNIVERSE_TO_DISPX(pt.x);
 	pt.y = UNIVERSE_TO_DISPY(pt.y);
 
 	dx = UNIVERSE_TO_DISPX(pDstPt->x) - pt.x;
 	if (dx >= 0)
+	{
 		xincr = 1;
+	}
 	else
 	{
 		xincr = -1;
@@ -302,7 +314,9 @@ DrawAutoPilot(POINT* pDstPt)
 
 	dy = UNIVERSE_TO_DISPY(pDstPt->y) - pt.y;
 	if (dy >= 0)
+	{
 		yincr = 1;
+	}
 	else
 	{
 		yincr = -1;
@@ -311,9 +325,13 @@ DrawAutoPilot(POINT* pDstPt)
 	dy <<= 1;
 
 	if (dx >= dy)
+	{
 		cycle = dx;
+	}
 	else
+	{
 		cycle = dy;
+	}
 	delta = xerror = yerror = cycle >> 1;
 
 	SetContextForeGroundColor(
@@ -332,7 +350,9 @@ DrawAutoPilot(POINT* pDstPt)
 			}
 		}
 		else if (!(delta & 1))
+		{
 			DrawPoint(&pt);
+		}
 
 		if ((xerror -= dx) <= 0)
 		{
@@ -356,15 +376,23 @@ GetSphereRect(FLEET_INFO* FleetPtr, RECT* pRect, RECT* pRepairRect)
 	pRect->extent.width = UNIVERSE_TO_DISPX(diameter)
 						- UNIVERSE_TO_DISPX(0);
 	if (pRect->extent.width < 0)
+	{
 		pRect->extent.width = -pRect->extent.width;
+	}
 	else if (pRect->extent.width == 0)
+	{
 		pRect->extent.width = RES_SCALE(1);
+	}
 	pRect->extent.height = UNIVERSE_TO_DISPY(diameter)
 						 - UNIVERSE_TO_DISPY(0);
 	if (pRect->extent.height < 0)
+	{
 		pRect->extent.height = -pRect->extent.height;
+	}
 	else if (pRect->extent.height == 0)
+	{
 		pRect->extent.height = RES_SCALE(1);
+	}
 
 	pRect->corner.x = UNIVERSE_TO_DISPX(FleetPtr->known_loc.x);
 	pRect->corner.y = UNIVERSE_TO_DISPY(FleetPtr->known_loc.y);
@@ -385,17 +413,25 @@ GetSphereRect(FLEET_INFO* FleetPtr, RECT* pRect, RECT* pRepairRect)
 		TextRect(&t, pRepairRect, NULL);
 
 		if (pRepairRect->corner.x <= 0)
+		{
 			pRepairRect->corner.x = RES_SCALE(1);
+		}
 		else if (pRepairRect->corner.x + pRepairRect->extent.width >= SIS_SCREEN_WIDTH)
+		{
 			pRepairRect->corner.x =
 				SIS_SCREEN_WIDTH - pRepairRect->extent.width
 				- RES_SCALE(1);
+		}
 		if (pRepairRect->corner.y <= 0)
+		{
 			pRepairRect->corner.y = RES_SCALE(1);
+		}
 		else if (pRepairRect->corner.y + pRepairRect->extent.height >= SIS_SCREEN_HEIGHT)
+		{
 			pRepairRect->corner.y =
 				SIS_SCREEN_HEIGHT - pRepairRect->extent.height
 				- RES_SCALE(1);
+		}
 
 		BoxUnion(pRepairRect, pRect, pRepairRect);
 		pRepairRect->extent.width += RES_SCALE(1);
@@ -413,15 +449,23 @@ GetWarEraSphereRect(FLEET_INFO* FleetPtr, RECT* pRect, RECT* pRepairRect)
 	pRect->extent.width = UNIVERSE_TO_DISPX(diameter)
 						- UNIVERSE_TO_DISPX(0);
 	if (pRect->extent.width < 0)
+	{
 		pRect->extent.width = -pRect->extent.width;
+	}
 	else if (pRect->extent.width == 0)
+	{
 		pRect->extent.width = RES_SCALE(1);
+	}
 	pRect->extent.height = UNIVERSE_TO_DISPY(diameter)
 						 - UNIVERSE_TO_DISPY(0);
 	if (pRect->extent.height < 0)
+	{
 		pRect->extent.height = -pRect->extent.height;
+	}
 	else if (pRect->extent.height == 0)
+	{
 		pRect->extent.height = RES_SCALE(1);
+	}
 
 	pRect->corner.x = UNIVERSE_TO_DISPX(loc.x);
 	pRect->corner.y = UNIVERSE_TO_DISPY(loc.y);
@@ -429,14 +473,18 @@ GetWarEraSphereRect(FLEET_INFO* FleetPtr, RECT* pRect, RECT* pRepairRect)
 	pRect->corner.y -= pRect->extent.height >> 1;
 
 	if (pRepairRect->corner.x <= 0)
+	{
 		pRepairRect->corner.x = RES_SCALE(1);
+	}
 	else if (pRepairRect->corner.x + pRepairRect->extent.width >= SIS_SCREEN_WIDTH)
 	{
 		pRepairRect->corner.x = SIS_SCREEN_WIDTH - pRepairRect->extent.width - RES_SCALE(1);
 	}
 
 	if (pRepairRect->corner.y <= 0)
+	{
 		pRepairRect->corner.y = RES_SCALE(1);
+	}
 	else if (pRepairRect->corner.y + pRepairRect->extent.height >= SIS_SCREEN_HEIGHT)
 	{
 		pRepairRect->corner.y = SIS_SCREEN_HEIGHT - pRepairRect->extent.height - RES_SCALE(1);
@@ -455,7 +503,9 @@ FuelRequiredTo(POINT dest)
 	POINT pt;
 
 	if (!inHQSpace())
+	{
 		pt = CurStarDescPtr->star_pt;
+	}
 	else
 	{
 		pt.x = LOGX_TO_UNIVERSE(GLOBAL_SIS(log_x));
@@ -467,9 +517,13 @@ FuelRequiredTo(POINT dest)
 
 	f = (uqm::DWORD)((long)pt.x * pt.x + (long)pt.y * pt.y);
 	if (f == 0 || GET_GAME_STATE(ARILOU_SPACE_SIDE) > 1)
+	{
 		fuel_required = 0;
+	}
 	else
+	{
 		fuel_required = square_root(f) + (FUEL_TANK_SCALE / 20);
+	}
 
 	return fuel_required;
 }
@@ -579,10 +633,14 @@ DrawNoReturnZone(void)
 		{
 			curr = CalcEllipsePoint(halfFuel, ry, i, rotation, center);
 			if (curr.y > rmax_y.y)
+			{
 				rmax_y = curr;
+			}
 
 			if (curr.y < rmin_y.y)
+			{
 				rmin_y = curr;
+			}
 		}
 
 		if (rmax_y.y >= 0 || rmin_y.y < SIS_SCREEN_HEIGHT)
@@ -602,7 +660,9 @@ DrawNoReturnZone(void)
 				L.second.y = L.first.y;
 
 				if (onScreen(&L, false, false))
+				{
 					DrawLine(&L, 1);
+				}
 
 				dy = L.first.y - prev.y;
 
@@ -618,9 +678,13 @@ DrawNoReturnZone(void)
 								 / ((double)L.first.y - (double)prev.y);
 
 					if (dy < 0)
+					{
 						iter = -1;
+					}
 					else
+					{
 						iter = 1;
+					}
 
 					while (abs(dy) > 1)
 					{
@@ -632,7 +696,9 @@ DrawNoReturnZone(void)
 									- (COORD)(err * (rmax_y.y - L2.first.y));
 
 						if (onScreen(&L2, false, false))
+						{
 							DrawLine(&L2, 1);
+						}
 
 						dy -= iter;
 					}
@@ -649,11 +715,15 @@ GetFuelRect(DRECT* r, uqm::SDWORD diameter, POINT corner)
 	uqm::SDWORD x, y, width, height;
 
 	if (diameter < 0)
+	{
 		diameter = 0;
+	}
 
 	// Cap the diameter to a sane range
 	if (diameter > MAX_X_UNIVERSE * 4)
+	{
 		diameter = MAX_X_UNIVERSE * 4;
+	}
 
 	// Calculate in case of overflow
 	width = RES_SCALE(signedDivWithError(((diameter - mapOrigin.x) << zoomLevel)
@@ -663,7 +733,9 @@ GetFuelRect(DRECT* r, uqm::SDWORD diameter, POINT corner)
 		  - UNIVERSE_TO_DISPX(0); // Cannot overflow in current HD resolution
 
 	if (width < 0)
+	{
 		width = -width;
+	}
 
 	height = RES_SCALE(signedDivWithError(((mapOrigin.y - diameter) << zoomLevel)
 											  * ORIG_SIS_SCREEN_HEIGHT,
@@ -672,7 +744,9 @@ GetFuelRect(DRECT* r, uqm::SDWORD diameter, POINT corner)
 		   - UNIVERSE_TO_DISPY(0); // Cannot overflow in current HD resolution
 
 	if (height < 0)
+	{
 		height = -height;
+	}
 
 	// SIS cannot leave universe boundaries, so cannot overflow either
 	x = UNIVERSE_TO_DISPX(corner.x) - (width >> 1);
@@ -698,7 +772,9 @@ DrawFuelCircle(bool secondary)
 		corner = GLOBAL(autopilot);
 	}
 	else if (!inHQSpace())
+	{
 		corner = CurStarDescPtr->star_pt;
+	}
 	else
 	{
 		corner.x = LOGX_TO_UNIVERSE(GLOBAL_SIS(log_x));
@@ -730,7 +806,9 @@ DrawFuelCircle(bool secondary)
 				DrawFilledOval(&r);
 			}
 			else
+			{
 				DrawNoReturnZone();
+			}
 
 			SetContextForeGroundColor(OldColor);
 		}
@@ -784,91 +862,127 @@ bool isHomeworld(uqm::BYTE Index)
 		case CHMMR_DEFINED:
 			if (IsHomeworldKnown(CHMMR_HOME)
 				&& (CheckAlliance(CHMMR_SHIP) != DEAD_GUY || StarSeed))
+			{
 				raceBool = true;
+			}
 			break;
 		case ORZ_DEFINED:
 			if (IsHomeworldKnown(ORZ_HOME)
 				&& (CheckAlliance(ORZ_SHIP) != DEAD_GUY || StarSeed))
+			{
 				raceBool = true;
+			}
 			break;
 		case PKUNK_DEFINED:
 			if (IsHomeworldKnown(PKUNK_HOME)
 				&& (CheckAlliance(PKUNK_SHIP) != DEAD_GUY || StarSeed))
+			{
 				raceBool = true;
+			}
 			break;
 		case SHOFIXTI_DEFINED:
 			if (IsHomeworldKnown(SHOFIXTI_HOME)
 				&& (CheckAlliance(SHOFIXTI_SHIP) != DEAD_GUY || StarSeed))
+			{
 				raceBool = true;
+			}
 			break;
 		case SPATHI_DEFINED:
 			if (IsHomeworldKnown(SPATHI_HOME)
 				&& (CheckAlliance(SPATHI_SHIP) != DEAD_GUY || StarSeed))
+			{
 				raceBool = true;
+			}
 			break;
 		case SUPOX_DEFINED:
 			if (IsHomeworldKnown(SUPOX_HOME)
 				&& (CheckAlliance(SUPOX_SHIP) != DEAD_GUY || StarSeed))
+			{
 				raceBool = true;
+			}
 			break;
 		case THRADD_DEFINED:
 			if (IsHomeworldKnown(THRADDASH_HOME)
 				&& (CheckAlliance(THRADDASH_SHIP) != DEAD_GUY || StarSeed))
+			{
 				raceBool = true;
+			}
 			break;
 		case UTWIG_DEFINED:
 			if (IsHomeworldKnown(UTWIG_HOME)
 				&& (CheckAlliance(UTWIG_SHIP) != DEAD_GUY || StarSeed))
+			{
 				raceBool = true;
+			}
 			break;
 		case VUX_DEFINED:
 			if (IsHomeworldKnown(VUX_HOME)
 				&& (CheckAlliance(VUX_SHIP) != DEAD_GUY || StarSeed))
+			{
 				raceBool = true;
+			}
 			break;
 		case YEHAT_DEFINED:
 			if (IsHomeworldKnown(YEHAT_HOME)
 				&& (CheckAlliance(YEHAT_SHIP) != DEAD_GUY || StarSeed))
+			{
 				raceBool = true;
+			}
 			break;
 		case DRUUGE_DEFINED:
 			if (IsHomeworldKnown(DRUUGE_HOME)
 				&& (CheckAlliance(DRUUGE_SHIP) != DEAD_GUY || StarSeed))
+			{
 				raceBool = true;
+			}
 			break;
 		case ILWRATH_DEFINED:
 			if (IsHomeworldKnown(ILWRATH_HOME)
 				&& (CheckAlliance(ILWRATH_SHIP) != DEAD_GUY || StarSeed))
+			{
 				raceBool = true;
+			}
 			break;
 		case MYCON_DEFINED:
 			if (IsHomeworldKnown(MYCON_HOME)
 				&& (CheckAlliance(MYCON_SHIP) != DEAD_GUY || StarSeed))
+			{
 				raceBool = true;
+			}
 			break;
 		case SLYLANDRO_DEFINED:
 			if (IsHomeworldKnown(SLYLANDRO_HOME))
+			{
 				raceBool = true;
+			}
 			break;
 		case UMGAH_DEFINED:
 			if (IsHomeworldKnown(UMGAH_HOME)
 				&& (CheckAlliance(UMGAH_SHIP) != DEAD_GUY || StarSeed))
+			{
 				raceBool = true;
+			}
 			break;
 		case ZOQFOT_DEFINED:
 			if (IsHomeworldKnown(ZOQFOTPIK_HOME)
 				&& (CheckAlliance(ZOQFOTPIK_SHIP) != DEAD_GUY || StarSeed))
+			{
 				raceBool = true;
+			}
 			break;
 		case SYREEN_DEFINED:
 			if (IsHomeworldKnown(SYREEN_HOME)
 				&& (CheckAlliance(SYREEN_SHIP) != DEAD_GUY || StarSeed))
+			{
 				raceBool = true;
+			}
 			break;
 		case ANDROSYNTH_DEFINED:
 			if (IsHomeworldKnown(ANDROSYNTH_HOME)
 				&& (CheckAlliance(ANDROSYNTH_SHIP) != DEAD_GUY || StarSeed))
+			{
 				raceBool = true;
+			}
 			break;
 		case SOL_DEFINED:
 		case START_COLONY_DEFINED:
@@ -900,7 +1014,9 @@ bool isStarMarked(const int star_index, const char* marker_state)
 	uqm::DWORD starData;
 
 	if (star_index == INTERNAL_STAR_INDEX)
+	{
 		starIndex = (uqm::COUNT)(CurStarDescPtr - star_array);
+	}
 
 	starData = D_GET_GAME_STATE(markerBuf(starIndex, marker_state));
 
@@ -913,7 +1029,9 @@ void setStarMarked(const int star_index, const char* marker_state)
 	uqm::DWORD starData;
 
 	if (starIndex == INTERNAL_STAR_INDEX)
+	{
 		starIndex = (uqm::COUNT)(CurStarDescPtr - star_array);
+	}
 
 	starData = D_GET_GAME_STATE(markerBuf(starIndex, marker_state));
 	starData ^= (1 << (starIndex % 32));
@@ -924,10 +1042,14 @@ static COORD
 CheckTextsIntersect(RECT* curr, RECT* prev)
 {
 	if (((curr->corner.x + curr->extent.width) <= prev->corner.x) || ((prev->corner.x + prev->extent.width) <= curr->corner.x))
+	{
 		return 0;
+	}
 
 	if (((curr->corner.y + curr->extent.height) <= prev->corner.y) || ((prev->corner.y + prev->extent.height) <= curr->corner.y))
+	{
 		return 0;
+	}
 
 	return ((prev->extent.height + RES_SCALE(1)) - abs(curr->corner.y - prev->corner.y));
 }
@@ -991,7 +1113,9 @@ Color RaceColor(uqm::COUNT index)
 		{
 			RACE_COLORS};
 	if (optSphereColors == OPTVAL_DEFAULT_COLORS)
+	{
 		return race_colors[index];
+	}
 	// right now, assume OPTVAL_STARSEED_COLORS (option 1), but more options
 	// can be added here with if statements, or with more complicated (better) code
 	switch (index)
@@ -1205,9 +1329,13 @@ DrawStarMap(uqm::COUNT race_update, RECT* pClipRect)
 				RECT repair_r;
 
 				if (which_starmap == WAR_ERA_STARMAP)
+				{
 					GetWarEraSphereRect(FleetPtr, &r, &repair_r);
+				}
 				else
+				{
 					GetSphereRect(FleetPtr, &r, &repair_r);
+				}
 
 
 				if (r.corner.x < SIS_SCREEN_WIDTH
@@ -1231,9 +1359,13 @@ DrawStarMap(uqm::COUNT race_update, RECT* pClipRect)
 
 					c = RaceColor(index);
 					if (index == race_index)
+					{
 						SetContextForeGroundColor(WHITE_COLOR);
+					}
 					else
+					{
 						SetContextForeGroundColor(c);
+					}
 
 					{
 						DRECT dr = RECT_TO_DRECT(r);
@@ -1241,9 +1373,13 @@ DrawStarMap(uqm::COUNT race_update, RECT* pClipRect)
 					}
 
 					if (isPC(optWhichFonts))
+					{
 						SetContextFont(TinyFont);
+					}
 					else
+					{
 						SetContextFont(TinyFontBold);
+					}
 
 					t.baseline.x = r.corner.x + (r.extent.width >> 1);
 					t.baseline.y = r.corner.y + (r.extent.height >> 1)
@@ -1354,17 +1490,25 @@ DrawStarMap(uqm::COUNT race_update, RECT* pClipRect)
 				// If no two elements were swapped by inner loop,
 				// then break
 				if (swapped == false)
+				{
 					break;
+				}
 			}
 
 			for (j = 0; j < currMax; j++, mid--)
 			{
 				if (nameplate[j].index & PRE_DEATH_SOI)
+				{
 					c = WHITE_COLOR;
+				}
 				else if (nameplate[j].index & DEATH_SOI)
+				{
 					c = BUILD_SHADE_RGBA(0x80);
+				}
 				else
+				{
 					c = RaceColor(nameplate[j].index & 0x1F);
+				}
 				r = nameplate[j].rect;
 				t = nameplate[j].text;
 
@@ -1374,7 +1518,9 @@ DrawStarMap(uqm::COUNT race_update, RECT* pClipRect)
 				r.extent.height -= RES_SCALE(2);
 
 				if (r.corner.y > (SIS_SCREEN_HEIGHT >> 1))
+				{
 					break;
+				}
 
 				for (k = 0; k < j; k++)
 				{
@@ -1392,11 +1538,17 @@ DrawStarMap(uqm::COUNT race_update, RECT* pClipRect)
 			for (j = 1; j <= mid; j++)
 			{
 				if (nameplate[currMax - j].index & PRE_DEATH_SOI)
+				{
 					c = WHITE_COLOR;
+				}
 				else if (nameplate[currMax - j].index & DEATH_SOI)
+				{
 					c = BUILD_SHADE_RGBA(0x80);
+				}
 				else
+				{
 					c = RaceColor(nameplate[currMax - j].index & 0x1F);
+				}
 				r = nameplate[currMax - j].rect;
 				t = nameplate[currMax - j].text;
 
@@ -1430,7 +1582,9 @@ DrawStarMap(uqm::COUNT race_update, RECT* pClipRect)
 		int j;
 		int k;
 		for (i = 0; i < 32; i++)
+		{
 			for (j = 0; j < 32; j++)
+			{
 				for (k = 0; k < 32; k++)
 				{
 					TEXT t;
@@ -1451,6 +1605,8 @@ DrawStarMap(uqm::COUNT race_update, RECT* pClipRect)
 					t.CharCount = 10;
 					font_DrawText(&t);
 				}
+			}
+		}
 #else
 		Color oldColor;
 		const POINT* CNPtr;
@@ -1485,12 +1641,16 @@ DrawStarMap(uqm::COUNT race_update, RECT* pClipRect)
 		{
 			uqm::BYTE Index = star_array[i].Index;
 			if (isHomeworld(Index))
+			{
 				DrawMarker(star_array[i].star_pt, true);
+			}
 		}
 		for (i = 0; i < NUM_HYPER_VORTICES; ++i)
 		{
 			if (!(GET_GAME_STATE(KNOW_QS_PORTAL) & (1 << i)))
+			{
 				continue;
+			}
 			TEXT t;
 			uqm::CHAR_T pStr[2];
 			pStr[0] = 'A' + i;
@@ -1517,13 +1677,19 @@ DrawStarMap(uqm::COUNT race_update, RECT* pClipRect)
 			GET_GAME_STATE(RAINBOW_WORLD1));
 
 		if (rainbow_mask == 0)
+		{
 			which_starmap = NORMAL_STARMAP;
+		}
 		else
 		{
 			uqm::COUNT i;
 			for (i = RAINBOW0_DEFINED; i <= RAINBOW9_DEFINED; i++)
+			{
 				if (rainbow_mask & (1 << (i - RAINBOW0_DEFINED)))
+				{
 					DrawMarker(plot_map[i].star_pt, true);
+				}
+			}
 		}
 	}
 
@@ -1567,11 +1733,15 @@ DrawStarMap(uqm::COUNT race_update, RECT* pClipRect)
 		}
 		else if (SDPtr->star_pt.x == ARILOU_HOME_X
 				 && SDPtr->star_pt.y == ARILOU_HOME_Y)
+		{
 			s.frame = SetRelFrameIndex(star_frame,
 									   SUPER_GIANT_STAR * NUM_STAR_COLORS + GREEN_BODY);
+		}
 		else
+		{
 			s.frame = SetRelFrameIndex(star_frame,
 									   GIANT_STAR * NUM_STAR_COLORS + GREEN_BODY);
+		}
 		DrawStamp(&s);
 
 		++SDPtr;
@@ -1601,7 +1771,9 @@ DrawStarMap(uqm::COUNT race_update, RECT* pClipRect)
 	{
 		DrawAutoPilot(&GLOBAL(autopilot));
 		if (IS_HD)
+		{
 			DrawMarker(GLOBAL(autopilot), false);
+		}
 	}
 
 	if (transition_pending)
@@ -1642,14 +1814,18 @@ EraseCursor(COORD curs_x, COORD curs_y)
 		r.corner.x = 0;
 	}
 	else if (r.corner.x + r.extent.width >= SIS_SCREEN_WIDTH)
+	{
 		r.extent.width = SIS_SCREEN_WIDTH - r.corner.x;
+	}
 	if ((r.corner.y += curs_y) < 0)
 	{
 		r.extent.height += r.corner.y;
 		r.corner.y = 0;
 	}
 	else if (r.corner.y + r.extent.height >= SIS_SCREEN_HEIGHT)
+	{
 		r.extent.height = SIS_SCREEN_HEIGHT - r.corner.y;
+	}
 
 #ifndef OLD
 	RepairBackRect(&r);
@@ -1680,7 +1856,9 @@ ZoomStarMap(uqm::SIZE dir)
 		if (zoomLevel > 0)
 		{
 			if (zoomLevel > 1)
+			{
 				mapOrigin = cursorLoc;
+			}
 			else
 			{
 				mapOrigin.x = MAX_X_UNIVERSE >> 1;
@@ -1722,12 +1900,18 @@ UpdateCursorLocation(int sx, int sy, const POINT* newpt)
 	{
 		cursorLoc.x = ORIG_DISP_TO_UNIVERSEX(s.origin.x) - sx;
 		while (ORIG_UNIVERSE_TO_DISPX(cursorLoc.x) == pt.x)
+		{
 			cursorLoc.x += sx;
+		}
 
 		if (cursorLoc.x < 0)
+		{
 			cursorLoc.x = 0;
+		}
 		else if (cursorLoc.x > MAX_X_UNIVERSE)
+		{
 			cursorLoc.x = MAX_X_UNIVERSE;
+		}
 
 		s.origin.x = ORIG_UNIVERSE_TO_DISPX(cursorLoc.x);
 	}
@@ -1736,12 +1920,18 @@ UpdateCursorLocation(int sx, int sy, const POINT* newpt)
 	{
 		cursorLoc.y = ORIG_DISP_TO_UNIVERSEY(s.origin.y) + sy;
 		while (ORIG_UNIVERSE_TO_DISPY(cursorLoc.y) == pt.y)
+		{
 			cursorLoc.y -= sy;
+		}
 
 		if (cursorLoc.y < 0)
+		{
 			cursorLoc.y = 0;
+		}
 		else if (cursorLoc.y > MAX_Y_UNIVERSE)
+		{
 			cursorLoc.y = MAX_Y_UNIVERSE;
+		}
 
 		s.origin.y = ORIG_UNIVERSE_TO_DISPY(cursorLoc.y);
 	}
@@ -1777,7 +1967,9 @@ int starIndex(POINT starPt)
 	{
 		if (star_array[i].star_pt.x == starPt.x
 			&& star_array[i].star_pt.y == starPt.y)
+		{
 			break;
+		}
 	}
 	return i;
 }
@@ -1795,8 +1987,10 @@ UpdateCursorInfo(uqm::CHAR_T* prevbuf)
 		utf8StringCopy(buf, sizeof(buf), GAME_STRING(FEEDBACK_STRING_BASE + 2 + (is3DO(optWhichFonts) || IS_PAD)));
 	}
 	else
+	{
 		utf8StringCopy(buf, sizeof(buf),
 					   GAME_STRING(FEEDBACK_STRING_BASE + 3 + which_starmap));
+	}
 
 	pt.x = UNIVERSE_TO_DISPX(cursorLoc.x);
 	pt.y = UNIVERSE_TO_DISPY(cursorLoc.y);
@@ -1808,7 +2002,9 @@ UpdateCursorInfo(uqm::CHAR_T* prevbuf)
 			&& UNIVERSE_TO_DISPY(SDPtr->star_pt.y) == pt.y
 			&& (BestSDPtr == 0
 				|| STAR_TYPE(SDPtr->Type) >= STAR_TYPE(BestSDPtr->Type)))
+		{
 			BestSDPtr = SDPtr;
+		}
 	}
 
 	if (BestSDPtr)
@@ -1822,12 +2018,16 @@ UpdateCursorInfo(uqm::CHAR_T* prevbuf)
 
 		if (GET_GAME_STATE(ARILOU_SPACE_SIDE) >= 2
 			&& !(GET_GAME_STATE(KNOW_QS_PORTAL) & (1 << whichPortal)))
+		{
 			// "UNKNOWN" string
 			utf8StringCopy(buf, sizeof(buf),
 						   GAME_STRING(STAR_STRING_BASE + 132));
+		}
 		else if (GET_GAME_STATE(ARILOU_SPACE_SIDE) < 2 || whichPortal == NUM_HYPER_VORTICES)
+		{
 			// Hyperspace side, or Arilou homeworld name once known
 			GetClusterName(BestSDPtr, buf);
+		}
 		else
 		{
 			// Use whichPortal (based on the Postfix of the star) to determine
@@ -1844,8 +2044,12 @@ UpdateCursorInfo(uqm::CHAR_T* prevbuf)
 			{
 				uqm::COUNT i;
 				for (i = 9; i > 5; i--)
+				{
 					if (starnameBuf[i] != 'a' && starnameBuf[i] != 'e' && starnameBuf[i] != 'i' && starnameBuf[i] != 'o' && starnameBuf[i] != 'u' && starnameBuf[i] != 'y')
+					{
 						break;
+					}
+				}
 				starnameBuf[i + 1] = '.';
 				starnameBuf[i + 2] = '\0';
 			}
@@ -1865,14 +2069,22 @@ UpdateCursorInfo(uqm::CHAR_T* prevbuf)
 
 		bucket = DISP_TO_UNIVERSEX(pt.x);
 		if (bucket < 0)
+		{
 			cursorLoc.x = 0;
+		}
 		else if (bucket > MAX_X_UNIVERSE)
+		{
 			cursorLoc.x = MAX_X_UNIVERSE;
+		}
 		bucket = DISP_TO_UNIVERSEY(pt.y);
 		if (bucket < 0)
+		{
 			cursorLoc.y = 0;
+		}
 		else if (bucket > MAX_Y_UNIVERSE)
+		{
 			cursorLoc.y = MAX_Y_UNIVERSE;
+		}
 	}
 
 	if (GET_GAME_STATE(ARILOU_SPACE))
@@ -1930,13 +2142,17 @@ UpdateCursorInfo(uqm::CHAR_T* prevbuf)
 				OldContext = SetContext(OffScreenContext);
 
 				if (which_starmap == WAR_ERA_STARMAP)
+				{
 					SetContextForeGroundColor(
 						BUILD_COLOR(
 							MAKE_RGB15(0x18, 0x00, 0x00), 0x00));
+				}
 				else
+				{
 					SetContextForeGroundColor(
 						BUILD_COLOR(
 							MAKE_RGB15(0x0E, 0xA7, 0xD9), 0x00));
+				}
 
 				DrawSISMessageEx(buf, -1, -1, DSME_MYCOLOR);
 				SetContext(OldContext);
@@ -2009,10 +2225,14 @@ compStarName(const void* ptr1, const void* ptr2)
 	}
 
 	if (star_array[index1].Prefix < star_array[index2].Prefix)
+	{
 		return -1;
+	}
 
 	if (star_array[index1].Prefix > star_array[index2].Prefix)
+	{
 		return 1;
+	}
 
 	return 0;
 }
@@ -2024,7 +2244,9 @@ SortStarsOnName(STAR_SEARCH_STATE* pSS)
 	int* sorted = pSS->SortedStars;
 
 	for (i = 0; i < NUM_SOLAR_SYSTEMS; i++)
+	{
 		sorted[i] = i;
+	}
 
 	qsort(sorted, NUM_SOLAR_SYSTEMS, sizeof(int), compStarName);
 }
@@ -2100,7 +2322,9 @@ FindNextStarIndex(STAR_SEARCH_STATE* pSS, int from, bool WithinClust)
 	int i;
 
 	if (!pSS->Cluster)
+	{
 		return -1; // nothing to search for
+	}
 
 	for (i = from; i < NUM_SOLAR_SYSTEMS; ++i)
 	{
@@ -2126,7 +2350,9 @@ FindNextStarIndex(STAR_SEARCH_STATE* pSS, int from, bool WithinClust)
 			UniChar dc = getCharFromString(&dptr);
 
 			if (UniChar_toUpper(sc) != UniChar_toUpper(dc))
+			{
 				break;
+			}
 		}
 
 		if (c < pSS->ClusterLen)
@@ -2136,13 +2362,17 @@ FindNextStarIndex(STAR_SEARCH_STATE* pSS, int from, bool WithinClust)
 		}
 
 		if (pSS->Prefix && !SDPtr->Prefix)
+		{
 			// we were given a prefix but found a singular star;
 			// that is a no match
 			continue;
+		}
 
 		if (WithinClust)
+		{
 			// searching within clusters; any prefix is a match
 			break;
+		}
 
 		if (!pSS->Prefix)
 		{ // searching for cluster name only
@@ -2162,7 +2392,9 @@ FindNextStarIndex(STAR_SEARCH_STATE* pSS, int from, bool WithinClust)
 		GetClusterName(SDPtr, FullName);
 		dlen = utf8StringCount(FullName);
 		if (pSS->PrefixLen > dlen)
+		{
 			continue;
+		}
 
 		for (c = 0, sptr = pSS->Prefix, dptr = FullName;
 			 c < pSS->PrefixLen; ++c)
@@ -2171,11 +2403,15 @@ FindNextStarIndex(STAR_SEARCH_STATE* pSS, int from, bool WithinClust)
 			UniChar dc = getCharFromString(&dptr);
 
 			if (UniChar_toUpper(sc) != UniChar_toUpper(dc))
+			{
 				break;
+			}
 		}
 
 		if (c >= pSS->PrefixLen)
+		{
 			break; // found one
+		}
 	}
 
 	return (i < NUM_SOLAR_SYSTEMS) ? i : -1;
@@ -2211,7 +2447,9 @@ DrawMatchedStarName(TEXTENTRY_STATE* pTES)
 
 		flags = DSME_CLEARFR;
 		if (pTES->JoystickMode)
+		{
 			flags |= DSME_BLOCKCUR;
+		}
 	}
 
 	DrawSISMessageEx(buf, CurPos, ExPos, flags);
@@ -2222,7 +2460,9 @@ static void
 MatchNextStar(STAR_SEARCH_STATE* pSS, bool Reset)
 {
 	if (Reset)
+	{
 		pSS->FirstIndex = -1; // reset cache
+	}
 
 	if (pSS->FirstIndex < 0)
 	{ // first time after changes
@@ -2237,7 +2477,9 @@ MatchNextStar(STAR_SEARCH_STATE* pSS, bool Reset)
 	pSS->CurIndex = FindNextStarIndex(pSS, pSS->CurIndex + 1,
 									  pSS->SingleClust);
 	if (pSS->FirstIndex < 0) // first search
+	{
 		pSS->FirstIndex = pSS->CurIndex;
+	}
 
 	if (pSS->CurIndex >= 0)
 	{ // remember as last (searching forward-only)
@@ -2280,11 +2522,17 @@ OnStarNameChange(TEXTENTRY_STATE* pTES)
 	if (pSS->CurIndex < 0)
 	{ // nothing found
 		if (pSS->Text[0] == '\0')
+		{
 			flags = DSME_SETFR;
+		}
 		else
+		{
 			flags = DSME_CLEARFR;
+		}
 		if (pTES->JoystickMode)
+		{
 			flags |= DSME_BLOCKCUR;
+		}
 
 		ret = DrawSISMessageEx(pSS->Text, pTES->CursorPos, -1, flags);
 	}
@@ -2317,7 +2565,9 @@ OnStarNameFrame(TEXTENTRY_STATE* pTES)
 		if (pSS->CurIndex < 0)
 		{ // nothing found
 			if (PulsedInputState.menu[KEY_MENU_NEXT])
+			{
 				PlayMenuSound(MENU_SOUND_FAILURE);
+			}
 			return true;
 		}
 
@@ -2356,9 +2606,13 @@ bool coords_only(uqm::CHAR_T* s)
 			countC++;
 		}
 		else if (isdigit(s[i]) == 0)
+		{
 			return false;
+		}
 		else
+		{
 			count++;
+		}
 	}
 	return i == j && countD <= 2 && countC == 1;
 }
@@ -2372,7 +2626,9 @@ DoStarSearch(MENU_STATE* pMS)
 
 	pss = (STAR_SEARCH_STATE*)HMalloc(sizeof(*pss));
 	if (!pss)
+	{
 		return false;
+	}
 
 	DrawSISMessageEx("", 0, 0, DSME_SETFR);
 
@@ -2407,9 +2663,13 @@ DoStarSearch(MENU_STATE* pMS)
 
 		if (coord.x > MAX_X_UNIVERSE || coord.y > MAX_Y_UNIVERSE
 			|| coord.x < 0 || coord.y < 0)
+		{
 			success = false;
+		}
 		else
+		{
 			UpdateCursorLocation(0, 0, &coord);
+		}
 
 		success = true;
 	}
@@ -2428,7 +2688,9 @@ void DoBubbleWarp(bool UseFuel)
 	PlayMenuSound(MENU_SOUND_BUBBLEWARP);
 
 	if (UseFuel)
+	{
 		DeltaSISGauges(0, -(int)FuelRequired(), 0);
+	}
 
 	if (lowByte(GLOBAL(CurrentActivity)) == IN_INTERPLANETARY)
 	{
@@ -2462,14 +2724,18 @@ AdvancedAutoPilot(void)
 	current_position.y = LOGY_TO_UNIVERSE(GLOBAL_SIS(log_y));
 
 	if (pointsEqual(current_position, destination))
+	{
 		return;
+	}
 
 	for (i = 0; i < NUM_HYPER_VORTICES; i++)
 	{
 		distance = ptDistance(destination, portal_map[i].star_pt);
 
 		if (!DIF_EASY && !(KnownQSPortals & (1 << i)))
+		{
 			distance = MAX_X_UNIVERSE * MAX_Y_UNIVERSE;
+		}
 
 		if (i == 0 || distance < minimum)
 		{
@@ -2484,16 +2750,22 @@ AdvancedAutoPilot(void)
 	fuel_with_portal = minimum / 100 + PORTAL_FUEL_COST;
 
 	if (fuel_no_portal < fuel_with_portal)
+	{
 		return;
+	}
 
 	SaveAdvancedAutoPilot(destination);
 	SaveAdvancedQuasiPilot(portal_coordinates);
 
 	if (playerInSolarSystem())
+	{
 		GLOBAL(autopilot) = current_position;
+	}
 
 	if (inHyperSpace())
+	{
 		InvokeSpawner();
+	}
 }
 
 static bool
@@ -2515,7 +2787,9 @@ DoMoveCursor(MENU_STATE* pMS)
 		pMS->InputFunc = DoMoveCursor;
 
 		if (!inHQSpace())
+		{
 			universe = CurStarDescPtr->star_pt;
+		}
 		else
 		{
 			universe.x = LOGX_TO_UNIVERSE(GLOBAL_SIS(log_x));
@@ -2577,7 +2851,9 @@ DoMoveCursor(MENU_STATE* pMS)
 		{
 			if (GLOBAL(autopilot.x) == cursorLoc.x
 				&& GLOBAL(autopilot.y) == cursorLoc.y)
+			{
 				GLOBAL(autopilot.x) = GLOBAL(autopilot.y) = ~0;
+			}
 			else
 			{
 				GLOBAL(autopilot) = cursorLoc;
@@ -2624,12 +2900,18 @@ DoMoveCursor(MENU_STATE* pMS)
 			NewState = which_starmap;
 
 			if (NewState == RAINBOW_MAP)
+			{
 				NewState = NORMAL_STARMAP;
+			}
 			else
+			{
 				++NewState;
+			}
 
 			if (NewState != which_starmap)
+			{
 				which_starmap = (CURRENT_STARMAP_SHOWN)NewState;
+			}
 
 			PlayMenuSound(MENU_SOUND_MOVE);
 
@@ -2653,7 +2935,9 @@ DoMoveCursor(MENU_STATE* pMS)
 			DrawStarMap(0, NULL);
 		}
 		else
+		{
 			PlayMenuSound(MENU_SOUND_FAILURE);
+		}
 	}
 	else if (PulsedInputState.menu[KEY_MENU_DELETE])
 	{
@@ -2674,7 +2958,9 @@ DoMoveCursor(MENU_STATE* pMS)
 			}
 		}
 		else
+		{
 			PlayMenuSound(MENU_SOUND_FAILURE);
+		}
 	}
 	else
 	{
@@ -2683,21 +2969,33 @@ DoMoveCursor(MENU_STATE* pMS)
 
 		ZoomIn = ZoomOut = 0;
 		if (PulsedInputState.menu[KEY_MENU_ZOOM_IN])
+		{
 			ZoomIn = 1;
+		}
 		else if (PulsedInputState.menu[KEY_MENU_ZOOM_OUT])
+		{
 			ZoomOut = 1;
+		}
 
 		ZoomStarMap(ZoomIn - ZoomOut);
 
 		sx = sy = 0;
 		if (PulsedInputState.menu[KEY_MENU_LEFT])
+		{
 			sx = -1;
+		}
 		if (PulsedInputState.menu[KEY_MENU_RIGHT])
+		{
 			sx = 1;
+		}
 		if (PulsedInputState.menu[KEY_MENU_UP])
+		{
 			sy = -1;
+		}
 		if (PulsedInputState.menu[KEY_MENU_DOWN])
+		{
 			sy = 1;
+		}
 
 		// Double the cursor speed when the "Next" key is held down
 		if (DirKeysPress() && CurrentInputState.menu[KEY_MENU_NEXT])
@@ -2718,9 +3016,13 @@ DoMoveCursor(MENU_STATE* pMS)
 	}
 
 	if (isMove)
+	{
 		++moveRepeats;
+	}
 	else
+	{
 		moveRepeats = 0;
+	}
 
 	flashCurrentLocation(NULL, false);
 
@@ -2737,16 +3039,24 @@ RepairMap(uqm::COUNT update_race, RECT* pLastRect, RECT* pNextRect)
 	r.corner.x = (pNextRect->corner.x + (pNextRect->extent.width >> 1))
 			   - (r.extent.width >> 1);
 	if (r.corner.x < 0)
+	{
 		r.corner.x = 0;
+	}
 	else if (r.corner.x + r.extent.width >= SIS_SCREEN_WIDTH)
+	{
 		r.corner.x = SIS_SCREEN_WIDTH - r.extent.width;
+	}
 	r.extent.height = 9;
 	r.corner.y = (pNextRect->corner.y + (pNextRect->extent.height >> 1))
 			   - r.extent.height;
 	if (r.corner.y < 0)
+	{
 		r.corner.y = 0;
+	}
 	else if (r.corner.y + r.extent.height >= SIS_SCREEN_HEIGHT)
+	{
 		r.corner.y = SIS_SCREEN_HEIGHT - r.extent.height;
+	}
 	BoxUnion(pLastRect, &r, &r);
 	BoxUnion(pNextRect, &r, &r);
 	*pLastRect = *pNextRect;
@@ -2757,14 +3067,18 @@ RepairMap(uqm::COUNT update_race, RECT* pLastRect, RECT* pNextRect)
 		r.corner.x = 0;
 	}
 	if (r.corner.x + r.extent.width > SIS_SCREEN_WIDTH)
+	{
 		r.extent.width = SIS_SCREEN_WIDTH - r.corner.x;
+	}
 	if (r.corner.y < 0)
 	{
 		r.extent.height += r.corner.y;
 		r.corner.y = 0;
 	}
 	if (r.corner.y + r.extent.height > SIS_SCREEN_HEIGHT)
+	{
 		r.extent.height = SIS_SCREEN_HEIGHT - r.corner.y;
+	}
 
 	r.extent.height += r.corner.y & 1;
 	r.corner.y &= ~1;
@@ -2801,10 +3115,14 @@ UpdateMap(void)
 		if (ButtonState)
 		{
 			if (!AnyButtonPress(true))
+			{
 				ButtonState = 0;
+			}
 		}
 		else if ((Interrupted = (bool)(Interrupted || AnyButtonPress(true))))
+		{
 			MapDrawn = true;
+		}
 
 		if (FleetPtr->known_strength)
 		{
@@ -2821,7 +3139,9 @@ UpdateMap(void)
 					cycle;
 
 				if (dx >= 0)
+				{
 					xincr = 1;
+				}
 				else
 				{
 					xincr = -1;
@@ -2830,7 +3150,9 @@ UpdateMap(void)
 				dx <<= 1;
 
 				if (dy >= 0)
+				{
 					yincr = 1;
+				}
 				else
 				{
 					yincr = -1;
@@ -2839,9 +3161,13 @@ UpdateMap(void)
 				dy <<= 1;
 
 				if (dx >= dy)
+				{
 					cycle = dx;
+				}
 				else
+				{
 					cycle = dy;
+				}
 				delta = xerror = yerror = cycle >> 1;
 
 				if (!MapDrawn)
@@ -2877,7 +3203,9 @@ UpdateMap(void)
 					if (ButtonState)
 					{
 						if (!AnyButtonPress(true))
+						{
 							ButtonState = 0;
+						}
 					}
 					else if ((Interrupted = (bool)(Interrupted || AnyButtonPress(true))))
 					{
@@ -2896,7 +3224,9 @@ UpdateMap(void)
 					}
 				} while (delta >= 0);
 				if (VisibleChange)
+				{
 					RepairMap((uqm::COUNT)~0, &last_r, &r);
+				}
 
 DoneSphereMove:
 				FleetPtr->known_loc = FleetPtr->loc;
@@ -2912,7 +3242,9 @@ DoneSphereMove:
 				}
 
 				if (delta > 0)
+				{
 					dx = 1;
+				}
 				else
 				{
 					delta = -delta;
@@ -2948,7 +3280,9 @@ DoneSphereMove:
 					if (ButtonState)
 					{
 						if (!AnyButtonPress(true))
+						{
 							ButtonState = 0;
+						}
 					}
 					else if ((Interrupted = (bool)(Interrupted || AnyButtonPress(true))))
 					{
@@ -2975,7 +3309,9 @@ DoneSphereMove:
 				} while (delta >= 0);
 				if (VisibleChange
 					|| temp_r0.extent.width != temp_r1.extent.width)
+				{
 					RepairMap((uqm::COUNT)~0, &last_r, &r);
+				}
 
 DoneSphereGrowth:
 				FleetPtr->known_strength = FleetPtr->actual_strength;
@@ -3137,7 +3473,9 @@ bool StarMap(void)
 	StarMapFrame = SetAbsFrameIndex(MiscDataFrame, 48);
 
 	if (!inHQSpace())
+	{
 		universe = CurStarDescPtr->star_pt;
+	}
 	else
 	{
 		universe.x = LOGX_TO_UNIVERSE(GLOBAL_SIS(log_x));
@@ -3146,14 +3484,20 @@ bool StarMap(void)
 
 	cursorLoc = GLOBAL(autopilot);
 	if (cursorLoc.x == ~0 && cursorLoc.y == ~0)
+	{
 		cursorLoc = universe;
+	}
 
 	if (optWhichMenu == OPT_PC)
 	{
 		if (playerInPlanetOrbit())
+		{
 			DrawMenuStateStrings(PM_ALT_SCAN, 1);
+		}
 		else
+		{
 			DrawMenuStateStrings(PM_ALT_STARMAP, 0);
+		}
 	}
 
 	MenuState.InputFunc = DoMoveCursor;
@@ -3161,17 +3505,23 @@ bool StarMap(void)
 
 	transition_pending = true;
 	if (GET_GAME_STATE(ARILOU_SPACE_SIDE) <= 1)
+	{
 		UpdateMap();
+	}
 	else
 	{ // This zooms the Quasi map in by 2 if within the local Quasi star
 		// cluster.
 		if ((universe.x <= ARILOU_HOME_X && universe.y <= ARILOU_HOME_Y)
 			&& (universe.x >= 4480 && universe.y >= 4580))
+		{
 			zoomLevel = 2;
+		}
 	}
 
 	if (optSubmenu)
+	{
 		DrawStarmapHelper();
+	}
 
 	DrawStarMap(0, (RECT*)-1);
 	transition_pending = false;
@@ -3196,13 +3546,19 @@ bool StarMap(void)
 
 	DrawHyperCoords(universe);
 	if (GLOBAL(autopilot.x) != ~0 && GLOBAL(autopilot.y) != ~0)
+	{
 		DrawAutoPilotMessage(false);
+	}
 	else
+	{
 		DrawSISMessage(NULL);
+	}
 	DrawStatusMessage(NULL);
 
 	if (optSubmenu)
+	{
 		DeltaSISGauges(UNDEFINED_DELTA, UNDEFINED_DELTA, UNDEFINED_DELTA);
+	}
 
 	/*if (GLOBAL (autopilot.x) == universe.x
 			&& GLOBAL (autopilot.y) == universe.y)

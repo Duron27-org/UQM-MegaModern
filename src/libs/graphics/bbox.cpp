@@ -49,16 +49,24 @@ void TFB_BBox_SetClipRect(const RECT* r)
 
 	/* Make sure the cliprect is sane */
 	if (TFB_BBox.clip.corner.x < 0)
+	{
 		TFB_BBox.clip.corner.x = 0;
+	}
 
 	if (TFB_BBox.clip.corner.y < 0)
+	{
 		TFB_BBox.clip.corner.y = 0;
+	}
 
 	if (TFB_BBox.clip.corner.x + TFB_BBox.clip.extent.width > maxWidth)
+	{
 		TFB_BBox.clip.extent.width = maxWidth - TFB_BBox.clip.corner.x;
+	}
 
 	if (TFB_BBox.clip.corner.y + TFB_BBox.clip.extent.height > maxHeight)
+	{
 		TFB_BBox.clip.extent.height = maxHeight - TFB_BBox.clip.corner.y;
+	}
 }
 
 void TFB_BBox_RegisterPoint(int x, int y)
@@ -70,13 +78,21 @@ void TFB_BBox_RegisterPoint(int x, int y)
 
 	/* Constrain coordinates */
 	if (x < x1)
+	{
 		x = x1;
+	}
 	if (x >= x2)
+	{
 		x = x2;
+	}
 	if (y < y1)
+	{
 		y = y1;
+	}
 	if (y >= y2)
+	{
 		y = y2;
+	}
 
 	/* Is this the first point?  If so, set a pixel-region and return. */
 	if (!TFB_BBox.valid)

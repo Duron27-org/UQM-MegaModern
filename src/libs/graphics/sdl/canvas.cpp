@@ -41,8 +41,12 @@ void TFB_DrawCanvas_Initialize(void)
 {
 	int i, j;
 	for (i = 0; i < 256; ++i)
+	{
 		for (j = 0; j < 256; ++j)
+		{
 			btable[j][i] = (j * i + 0x80) >> 8;
+		}
+	}
 	// need error correction here
 }
 
@@ -142,7 +146,9 @@ void TFB_DrawCanvas_Rect(RECT* rect, Color color, DrawMode mode, TFB_Canvas targ
 		{ // special case -- alpha surface with colorkey
 			// colorkey rects are transparent
 			if ((sdlColor & ~fmt->Amask) == (colorkey & ~fmt->Amask))
+			{
 				sdlColor &= ~fmt->Amask; // make transparent
+			}
 		}
 		SDL_FillRect(dst, &sr, sdlColor);
 	}
@@ -240,7 +246,9 @@ void TFB_DrawCanvas_Image(TFB_Image* img, int x, int y, int scale,
 	NormalPal = ((SDL_Surface*)img->NormalImg)->format->palette;
 	// only set the new palette if it changed
 	if (NormalPal && cmap && img->colormap_version != cmap->version)
+	{
 		TFB_SetColors((SDL_Surface*)img->NormalImg, cmap->palette->colors, 0, 256);
+	}
 
 	if (scale != 0 && scale != GSCALE_IDENTITY)
 	{
@@ -249,7 +257,9 @@ void TFB_DrawCanvas_Image(TFB_Image* img, int x, int y, int scale,
 			// only set the new palette if it changed
 			if (TFB_DrawCanvas_IsPaletted(img->MipmapImg)
 				&& cmap && img->colormap_version != cmap->version)
+			{
 				TFB_SetColors((SDL_Surface*)img->MipmapImg, cmap->palette->colors, 0, 256);
+			}
 		}
 		else if (scaleMode == TFB_SCALE_TRILINEAR && !img->MipmapImg)
 		{ // Do bilinear scaling instead when mipmap is unavailable
@@ -425,7 +435,9 @@ TFB_DrawCanvas_Fill(SDL_Surface* src, Uint32 fillcolor, SDL_Surface* dst)
 		for (y = 0; y < height; ++y, dst_p += ddst, src_p += dsrc)
 		{
 			for (x = 0; x < width; ++x, ++src_p, ++dst_p)
+			{
 				*dst_p = fillcolor;
+			}
 		}
 		//log_add (log_Warning, "TFB_DrawCanvas_Fill: Unsupported source"
 		//		"surface format\n");
@@ -465,11 +477,15 @@ void TFB_DrawCanvas_FilledImage(TFB_Image* img, int x, int y, int scale,
 	if (scale != 0 && scale != GSCALE_IDENTITY)
 	{
 		if (scaleMode == TFB_SCALE_TRILINEAR)
+		{
 			scaleMode = TFB_SCALE_BILINEAR;
+		}
 		// no point in trilinear for filled images
 
 		if (scale != img->last_scale || scaleMode != img->last_scale_type)
+		{
 			force_fill = true;
+		}
 
 		TFB_DrawImage_FixScaling(img, scale, scaleMode);
 		surf = (SDL_Surface*)img->ScaledImg;
@@ -512,7 +528,9 @@ void TFB_DrawCanvas_FilledImage(TFB_Image* img, int x, int y, int scale,
 
 		colors[0] = ColorToNative(color);
 		for (i = 1; i < palette->ncolors; i++)
+		{
 			colors[i] = colors[0];
+		}
 
 		TFB_SetColors(surf, colors, 0, palette->ncolors);
 		// reflect the change in *actual* image palette
@@ -674,7 +692,9 @@ void TFB_DrawCanvas_FontChar(TFB_Char* fontChar, TFB_Image* backing,
 					Uint32 a = *src_p;
 
 					if (a != 0x00)
+					{
 						a = 0xff;
+					}
 					*dst_p = p | (a << ashift);
 				}
 			}
@@ -719,7 +739,9 @@ TFB_DrawCanvas_FillMask(SDL_Surface* base, DrawMode mode, Color* fill)
 		}
 
 		if (mode.factor == TRANSFER_ALPHA)
+		{
 			mode.factor = 0xFF;
+		}
 
 		SDL_LockSurface(base);
 		blt_filtered_fill(base, plotFn, mode.factor, fill);
@@ -756,7 +778,9 @@ TFB_DrawCanvas_Mask(SDL_Surface* layer, SDL_Surface* base, DrawMode mode, Color*
 			pal = (Color*)HCalloc(sizeof(Color) * 256);
 			assert(palette->ncolors <= 256);
 			for (i = 0; i < palette->ncolors; ++i)
+			{
 				pal[i] = NativeToColor(palette->colors[i]);
+			}
 
 			SDL_LockSurface(base);
 			blt_filtered_pal(layer, base, pal);
@@ -775,7 +799,9 @@ TFB_DrawCanvas_Mask(SDL_Surface* layer, SDL_Surface* base, DrawMode mode, Color*
 void TFB_DrawCanvas_MaskImage(TFB_Image* img, DrawMode mode, TFB_Canvas target, Color* fill)
 {
 	if (!img) // No layer - do a fill instead
+	{
 		TFB_DrawCanvas_FillMask((SDL_Surface*)target, mode, fill);
+	}
 	else
 	{
 		SDL_Surface* surf;
@@ -830,7 +856,9 @@ TFB_DrawCanvas_New_ForScreen(int w, int h, bool withalpha)
 	else
 	{
 		if (withalpha && fmt->Amask == 0)
+		{
 			fmt = format_conv_surf->format; // Screen has no alpha and we need it
+		}
 
 		new_surf = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h,
 										fmt->BitsPerPixel, fmt->Rmask, fmt->Gmask, fmt->Bmask,
@@ -883,9 +911,13 @@ TFB_DrawCanvas_New_ScaleTarget(TFB_Canvas canvas, TFB_Canvas oldcanvas, int type
 
 	// For the purposes of this function, bilinear == trilinear
 	if (type == TFB_SCALE_TRILINEAR)
+	{
 		type = TFB_SCALE_BILINEAR;
+	}
 	if (last_type == TFB_SCALE_TRILINEAR)
+	{
 		last_type = TFB_SCALE_BILINEAR;
+	}
 
 	if (old && type != last_type)
 	{
@@ -893,7 +925,9 @@ TFB_DrawCanvas_New_ScaleTarget(TFB_Canvas canvas, TFB_Canvas oldcanvas, int type
 		old = NULL;
 	}
 	if (old)
+	{
 		return old; /* can just reuse the old one */
+	}
 
 	if (type == TFB_SCALE_NEAREST)
 	{
@@ -911,9 +945,13 @@ TFB_DrawCanvas_New_ScaleTarget(TFB_Canvas canvas, TFB_Canvas oldcanvas, int type
 		// The scaled image may in fact be larger by 1 pixel than the source
 		// because of hotspot alignment and fractional edge pixels
 		if (SDL_Screen->format->BitsPerPixel == 32)
+		{
 			newsurf = (SDL_Surface*)TFB_DrawCanvas_New_ForScreen(src->w + 1, src->h + 1, true);
+		}
 		else
+		{
 			newsurf = (SDL_Surface*)TFB_DrawCanvas_New_TrueColor(src->w + 1, src->h + 1, true);
+		}
 	}
 
 	return newsurf;
@@ -952,7 +990,9 @@ TFB_DrawCanvas_LoadFromFile(void* dir, const char* fileName)
 {
 	SDL_Surface* surf = sdluio_loadImage((uio_DirHandle*)dir, fileName);
 	if (!surf)
+	{
 		return NULL;
+	}
 
 	if (surf->format->BitsPerPixel < 8)
 	{
@@ -989,7 +1029,9 @@ bool TFB_DrawCanvas_GetFontCharData(TFB_Canvas canvas, uqm::BYTE* outData,
 	GetPixelFn getpix;
 
 	if (!surf || !outData)
+	{
 		return false;
+	}
 
 	SDL_LockSurface(surf);
 
@@ -1031,13 +1073,17 @@ TFB_DrawCanvas_ExtractPalette(TFB_Canvas canvas)
 	SDL_Palette* palette = surf->format->palette;
 
 	if (!palette)
+	{
 		return NULL;
+	}
 
 	// There may be less colors in the surface than 256. Init to 0 first.
 	result = (Color*)HCalloc(sizeof(Color) * 256);
 	assert(palette->ncolors <= 256);
 	for (i = 0; i < palette->ncolors; ++i)
+	{
 		result[i] = NativeToColor(palette->colors[i]);
+	}
 
 	return result;
 }
@@ -1076,7 +1122,9 @@ void TFB_DrawCanvas_SetPalette(TFB_Canvas target, Color palette[256])
 	int i;
 
 	for (i = 0; i < 256; ++i)
+	{
 		colors[i] = ColorToNative(palette[i]);
+	}
 
 	TFB_SetColors((SDL_Surface*)target, colors, 0, 256);
 }
@@ -1124,7 +1172,9 @@ void TFB_DrawCanvas_CopyTransparencyInfo(TFB_Canvas src_canvas,
 	{
 		Color color;
 		if (TFB_DrawCanvas_GetTransparentColor(src_canvas, &color))
+		{
 			TFB_DrawCanvas_SetTransparentColor(dst_canvas, color, false);
+		}
 	}
 }
 
@@ -1223,9 +1273,13 @@ void TFB_DrawCanvas_GetScaledExtent(TFB_Canvas src_canvas, HOT_SPOT* src_hs,
 	assert(size->width <= src->w + 1 && size->height <= src->h + 1);
 
 	if (!size->width && src->w)
+	{
 		size->width = 1;
+	}
 	if (!size->height && src->h)
+	{
 		size->height = 1;
+	}
 }
 
 void TFB_DrawCanvas_GetExtent(TFB_Canvas canvas, EXTENT* size)
@@ -1271,9 +1325,13 @@ void TFB_DrawCanvas_Rescale_Nearest(TFB_Canvas src_canvas, TFB_Canvas dst_canvas
 	}
 
 	if (w > 1)
+	{
 		fsx = ((src->w - 1) << 16) / (w - 1);
+	}
 	if (h > 1)
+	{
 		fsy = ((src->h - 1) << 16) / (h - 1);
+	}
 	// We start with a value in 0..0.5 range to shift the bigger
 	// jumps towards the center of the image
 	ssx = 0x6000;
@@ -1429,9 +1487,13 @@ static
 			p.c.g = (c >> fmt->Gshift) & 0xff;
 			p.c.b = (c >> fmt->Bshift) & 0xff;
 			if (fmt->Amask)
+			{
 				p.c.a = (c >> fmt->Ashift) & 0xff;
+			}
 			else
+			{
 				p.c.a = SDL_ALPHA_OPAQUE;
+			}
 		}
 #endif
 	}
@@ -1445,7 +1507,9 @@ scale_get_pixel(SDL_Surface* src, Uint32 mask, Uint32 key, int x, int y)
 	SDL_Color* pal = src->format->palette ? src->format->palette->colors : 0;
 
 	if (x < 0 || x >= src->w || y < 0 || y >= src->h)
+	{
 		return 0;
+	}
 
 	return scale_read_pixel((Uint8*)src->pixels + y * src->pitch + x * src->format->BytesPerPixel, src->format, pal, mask, key);
 }
@@ -1716,8 +1780,12 @@ void TFB_DrawCanvas_Rescale_Trilinear(TFB_Canvas src_canvas, TFB_Canvas src_mipm
 				{
 					int i;
 					for (i = 0; i < 4; ++i)
+					{
 						if (p0[i].c.a == 0)
+						{
 							w0[i] = 0;
+						}
+					}
 
 					p0[4].c.r = weight_product_8_4(p0, 0, w0);
 					p0[4].c.g = weight_product_8_4(p0, 1, w0);
@@ -1727,8 +1795,12 @@ void TFB_DrawCanvas_Rescale_Trilinear(TFB_Canvas src_canvas, TFB_Canvas src_mipm
 				{
 					int i;
 					for (i = 0; i < 4; ++i)
+					{
 						if (p1[i].c.a == 0)
+						{
 							w1[i] = 0;
+						}
+					}
 
 					p1[4].c.r = weight_product_8_4(p1, 0, w1);
 					p1[4].c.g = weight_product_8_4(p1, 1, w1);
@@ -1749,7 +1821,9 @@ void TFB_DrawCanvas_Rescale_Trilinear(TFB_Canvas src_canvas, TFB_Canvas src_mipm
 				// error-correct alpha to fully opaque to remove
 				// the often unwanted and unnecessary blending
 				if (res_a > 0xf8)
+				{
 					res_a = 0xff;
+				}
 
 				*dst_p =
 					(p0[4].c.r << dstfmt->Rshift) | (p0[4].c.g << dstfmt->Gshift) | (p0[4].c.b << dstfmt->Bshift) | (res_a << dstfmt->Ashift);
@@ -1924,8 +1998,12 @@ void TFB_DrawCanvas_Rescale_Bilinear(TFB_Canvas src_canvas, TFB_Canvas dst_canva
 				// skew the result and make resulting alpha useless
 				int i;
 				for (i = 0; i < 4; ++i)
+				{
 					if (p[i].c.a == 0)
+					{
 						weight[i] = 0;
+					}
+				}
 
 				p[4].c.r = weight_product_8_4(p, 0, weight);
 				p[4].c.g = weight_product_8_4(p, 1, weight);
@@ -1934,7 +2012,9 @@ void TFB_DrawCanvas_Rescale_Bilinear(TFB_Canvas src_canvas, TFB_Canvas dst_canva
 				// error-correct alpha to fully opaque to remove
 				// the often unwanted and unnecessary blending
 				if (p[4].c.a > 0xf8)
+				{
 					p[4].c.a = 0xff;
+				}
 
 				*dst_p =
 					(p[4].c.r << dstfmt->Rshift) | (p[4].c.g << dstfmt->Gshift) | (p[4].c.b << dstfmt->Bshift) | (p[4].c.a << dstfmt->Ashift);

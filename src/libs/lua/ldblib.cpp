@@ -53,9 +53,13 @@ static int db_setmetatable(lua_State* L)
 static int db_getuservalue(lua_State* L)
 {
 	if (lua_type(L, 1) != LUA_TUSERDATA)
+	{
 		lua_pushnil(L);
+	}
 	else
+	{
 		lua_getuservalue(L, 1);
+	}
 	return 1;
 }
 
@@ -63,10 +67,14 @@ static int db_getuservalue(lua_State* L)
 static int db_setuservalue(lua_State* L)
 {
 	if (lua_type(L, 1) == LUA_TLIGHTUSERDATA)
+	{
 		luaL_argerror(L, 1, "full userdata expected, got light userdata");
+	}
 	luaL_checktype(L, 1, LUA_TUSERDATA);
 	if (!lua_isnoneornil(L, 2))
+	{
 		luaL_checktype(L, 2, LUA_TTABLE);
+	}
 	lua_settop(L, 2);
 	lua_setuservalue(L, 1);
 	return 1;
@@ -117,7 +125,9 @@ static void treatstackoption(lua_State* L, lua_State* L1, const char* fname)
 		lua_remove(L, -3);
 	}
 	else
+	{
 		lua_xmove(L1, L, 1);
+	}
 	lua_setfield(L, -2, fname);
 }
 
@@ -144,9 +154,13 @@ static int db_getinfo(lua_State* L)
 		lua_xmove(L, L1, 1);
 	}
 	else
+	{
 		return luaL_argerror(L, arg + 1, "function or level expected");
+	}
 	if (!lua_getinfo(L1, options, &ar))
+	{
 		return luaL_argerror(L, arg + 2, "invalid option");
+	}
 	lua_createtable(L, 0, 2);
 	if (strchr(options, 'S'))
 	{
@@ -157,7 +171,9 @@ static int db_getinfo(lua_State* L)
 		settabss(L, "what", ar.what);
 	}
 	if (strchr(options, 'l'))
+	{
 		settabsi(L, "currentline", ar.currentline);
+	}
 	if (strchr(options, 'u'))
 	{
 		settabsi(L, "nups", ar.nups);
@@ -170,11 +186,17 @@ static int db_getinfo(lua_State* L)
 		settabss(L, "namewhat", ar.namewhat);
 	}
 	if (strchr(options, 't'))
+	{
 		settabsb(L, "istailcall", ar.istailcall);
+	}
 	if (strchr(options, 'L'))
+	{
 		treatstackoption(L, L1, "activelines");
+	}
 	if (strchr(options, 'f'))
+	{
 		treatstackoption(L, L1, "func");
+	}
 	return 1; /* return table */
 }
 
@@ -195,7 +217,9 @@ static int db_getlocal(lua_State* L)
 	else
 	{														   /* stack-level argument */
 		if (!lua_getstack(L1, luaL_checkint(L, arg + 1), &ar)) /* out of range? */
+		{
 			return luaL_argerror(L, arg + 1, "level out of range");
+		}
 		name = lua_getlocal(L1, &ar, nvar);
 		if (name)
 		{
@@ -219,7 +243,9 @@ static int db_setlocal(lua_State* L)
 	lua_State* L1 = getthread(L, &arg);
 	lua_Debug ar;
 	if (!lua_getstack(L1, luaL_checkint(L, arg + 1), &ar)) /* out of range? */
+	{
 		return luaL_argerror(L, arg + 1, "level out of range");
+	}
 	luaL_checkany(L, arg + 3);
 	lua_settop(L, arg + 3);
 	lua_xmove(L, L1, 1);
@@ -235,7 +261,9 @@ static int auxupvalue(lua_State* L, int get)
 	luaL_checktype(L, 1, LUA_TFUNCTION);
 	name = get ? lua_getupvalue(L, 1, n) : lua_setupvalue(L, 1, n);
 	if (name == NULL)
+	{
 		return 0;
+	}
 	lua_pushstring(L, name);
 	lua_insert(L, -(get + 1));
 	return get + 1;
@@ -300,9 +328,13 @@ static void hookf(lua_State* L, lua_Debug* ar)
 	{
 		lua_pushstring(L, hooknames[(int)ar->event]);
 		if (ar->currentline >= 0)
+		{
 			lua_pushinteger(L, ar->currentline);
+		}
 		else
+		{
 			lua_pushnil(L);
+		}
 		lua_assert(lua_getinfo(L, "lS", ar));
 		lua_call(L, 2, 0);
 	}
@@ -313,13 +345,21 @@ static int makemask(const char* smask, int count)
 {
 	int mask = 0;
 	if (strchr(smask, 'c'))
+	{
 		mask |= LUA_MASKCALL;
+	}
 	if (strchr(smask, 'r'))
+	{
 		mask |= LUA_MASKRET;
+	}
 	if (strchr(smask, 'l'))
+	{
 		mask |= LUA_MASKLINE;
+	}
 	if (count > 0)
+	{
 		mask |= LUA_MASKCOUNT;
+	}
 	return mask;
 }
 
@@ -328,11 +368,17 @@ static char* unmakemask(int mask, char* smask)
 {
 	int i = 0;
 	if (mask & LUA_MASKCALL)
+	{
 		smask[i++] = 'c';
+	}
 	if (mask & LUA_MASKRET)
+	{
 		smask[i++] = 'r';
+	}
 	if (mask & LUA_MASKLINE)
+	{
 		smask[i++] = 'l';
+	}
 	smask[i] = '\0';
 	return smask;
 }
@@ -382,7 +428,9 @@ static int db_gethook(lua_State* L)
 	int mask = lua_gethookmask(L1);
 	lua_Hook hook = lua_gethook(L1);
 	if (hook != NULL && hook != hookf) /* external hook? */
+	{
 		lua_pushliteral(L, "external hook");
+	}
 	else
 	{
 		gethooktable(L);
@@ -404,9 +452,13 @@ static int db_debug(lua_State* L)
 		char buffer[250];
 		luai_writestringerror("%s", "lua_debug> ");
 		if (fgets(buffer, sizeof(buffer), stdin) == 0 || strcmp(buffer, "cont\n") == 0)
+		{
 			return 0;
+		}
 		if (luaL_loadbuffer(L, buffer, strlen(buffer), "=(debug command)") || lua_pcall(L, 0, 0, 0))
+		{
 			luai_writestringerror("%s\n", lua_tostring(L, -1));
+		}
 		lua_settop(L, 0); /* remove eventual returns */
 	}
 }
@@ -418,7 +470,9 @@ static int db_traceback(lua_State* L)
 	lua_State* L1 = getthread(L, &arg);
 	const char* msg = lua_tostring(L, arg + 1);
 	if (msg == NULL && !lua_isnoneornil(L, arg + 1)) /* non-string 'msg'? */
-		lua_pushvalue(L, arg + 1);					 /* return it untouched */
+	{
+		lua_pushvalue(L, arg + 1); /* return it untouched */
+	}
 	else
 	{
 		int level = luaL_optint(L, arg + 2, (L == L1) ? 1 : 0);

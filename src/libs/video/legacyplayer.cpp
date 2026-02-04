@@ -29,10 +29,14 @@ PlayLegacyVideo(LEGACY_VIDEO vid)
 	VIDEO_TYPE type;
 
 	if (!vid)
+	{
 		return NULL;
+	}
 	ref = (LEGACY_VIDEO_REF)HCalloc(sizeof(*ref));
 	if (!ref)
+	{
 		return NULL;
+	}
 	name = vid->video;
 	audname = vid->audio;
 	speechname = vid->speech;
@@ -40,14 +44,20 @@ PlayLegacyVideo(LEGACY_VIDEO vid)
 
 	ref->vidref = LoadVideoFile(name);
 	if (!ref->vidref)
+	{
 		return NULL;
+	}
 
 	DrawBorderPadding(ref->vidref->w);
 
 	if (audname)
+	{
 		ref->audref = LoadMusicFile(audname);
+	}
 	if (speechname)
+	{
 		ref->speechref = LoadMusicFile(speechname);
+	}
 
 	type = VidPlayEx(ref->vidref, ref->audref, ref->speechref, loopframe);
 	if (type == NO_FMV)
@@ -62,14 +72,20 @@ PlayLegacyVideo(LEGACY_VIDEO vid)
 void StopLegacyVideo(LEGACY_VIDEO_REF ref)
 {
 	if (!ref)
+	{
 		return;
+	}
 	VidStop();
 
 	DestroyVideo(ref->vidref);
 	if (ref->speechref)
+	{
 		DestroyMusic(ref->speechref);
+	}
 	if (ref->audref)
+	{
 		DestroyMusic(ref->audref);
+	}
 
 	HFree(ref);
 }
@@ -77,6 +93,8 @@ void StopLegacyVideo(LEGACY_VIDEO_REF ref)
 bool PlayingLegacyVideo(LEGACY_VIDEO_REF ref)
 {
 	if (!ref)
+	{
 		return false;
+	}
 	return (bool)TFB_VideoPlaying(ref->vidref);
 }

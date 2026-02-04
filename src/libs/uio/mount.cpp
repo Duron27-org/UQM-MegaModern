@@ -70,7 +70,9 @@ void uio_repositoryAddMount(uio_Repository* repository,
 
 				i = 0;
 				while (repository->mounts[i] != relative)
+				{
 					i++;
+				}
 				newMounts = (uio_MountInfo**)insertArrayPointer(
 					(const void**)repository->mounts,
 					repository->numMounts + 1, i, (void*)mountInfo);
@@ -86,7 +88,9 @@ void uio_repositoryAddMount(uio_Repository* repository,
 
 				i = 0;
 				while (repository->mounts[i] != relative)
+				{
 					i++;
+				}
 				i++;
 				newMounts = (uio_MountInfo**)insertArrayPointer(
 					(const void**)repository->mounts,
@@ -111,7 +115,9 @@ void uio_repositoryRemoveMount(uio_Repository* repository, uio_MountInfo* mountI
 
 	i = 0;
 	while (repository->mounts[i] != mountInfo)
+	{
 		i++;
+	}
 	newMounts = (uio_MountInfo**)excludeArrayPointer(
 		(const void**)repository->mounts, repository->numMounts + 1,
 		i, 1);
@@ -142,7 +148,9 @@ void uio_Repository_unref(uio_Repository* repository)
 	assert(repository->ref > 0);
 	repository->ref--;
 	if (repository->ref == 0)
+	{
 		uio_Repository_delete(repository);
+	}
 }
 
 static uio_Repository*

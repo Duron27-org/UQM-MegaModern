@@ -104,14 +104,20 @@ DrawPCMenu(uqm::BYTE beg_index, uqm::BYTE end_index, uqm::BYTE NewState, uqm::BY
 	rt.extent.width += RES_SCALE(2);
 	rt.extent.height += DOS_BOOL_SCL(2, -6);
 	if (!optCustomBorder)
+	{
 		DrawFilledRectangle(&rt);
+	}
 
 	DrawBorder(SIS_RADAR_FRAME);
 
 	if (num_items * PC_MENU_HEIGHT > r->extent.height)
+	{
 		log_add(log_Error, "Warning, no room for all menu items!");
+	}
 	else
+	{
 		r->corner.y += (r->extent.height - (num_items * PC_MENU_HEIGHT)) / 2;
+	}
 	r->extent.height = num_items * PC_MENU_HEIGHT + RES_SCALE(3);
 
 	r->corner.y += DOS_NUM_SCL(1);
@@ -159,12 +165,16 @@ DrawPCMenu(uqm::BYTE beg_index, uqm::BYTE end_index, uqm::BYTE NewState, uqm::BY
 					DrawStamp(&s);
 				}
 				else
+				{
 					DrawFilledRectangle(r);
+				}
 
 				rd = pos;
 			}
 			else
+			{
 				rd = 0;
+			}
 
 			// Draw the text of the selected item.
 			SetContextForeGroundColor(PCMENU_SELECTION_TEXT_COLOR);
@@ -237,14 +247,22 @@ FixMenuState(uqm::BYTE BadState)
 	{
 		case PM_SOUND_ON:
 			if (GLOBAL(glob_flags) & SOUND_DISABLED)
+			{
 				return PM_SOUND_OFF;
+			}
 			else
+			{
 				return PM_SOUND_ON;
+			}
 		case PM_MUSIC_ON:
 			if (GLOBAL(glob_flags) & MUSIC_DISABLED)
+			{
 				return PM_MUSIC_OFF;
+			}
 			else
+			{
 				return PM_MUSIC_ON;
+			}
 		case PM_CYBORG_OFF:
 			return (PM_CYBORG_OFF + ((uqm::BYTE)(GLOBAL(glob_flags) & COMBAT_SPEED_MASK) >> COMBAT_SPEED_SHIFT));
 		case PM_READ_VERY_SLOW:
@@ -261,7 +279,9 @@ NextMenuState(uqm::BYTE BaseState, uqm::BYTE CurState)
 	uqm::BYTE AdjBase = BaseState;
 
 	if (BaseState == PM_STARMAP)
+	{
 		AdjBase--;
+	}
 
 	switch (AdjBase + CurState)
 	{
@@ -278,9 +298,13 @@ NextMenuState(uqm::BYTE BaseState, uqm::BYTE CurState)
 		case PM_CYBORG_DOUBLE:
 		case PM_CYBORG_SUPER:
 			if ((isPC(optSmoothScroll) && !usingSpeech) || isPC(optWhichMenu))
+			{
 				NextState = PM_READ_VERY_SLOW;
+			}
 			else
+			{
 				NextState = PM_CHANGE_CAPTAIN;
+			}
 			break;
 		case PM_READ_VERY_SLOW:
 		case PM_READ_SLOW:
@@ -293,7 +317,9 @@ NextMenuState(uqm::BYTE BaseState, uqm::BYTE CurState)
 			NextState = AdjBase + CurState + 1;
 	}
 	if (NextState > GetEndMenuState(BaseState))
+	{
 		NextState = GetBeginMenuState(BaseState);
+	}
 	return (FixMenuState(NextState) - AdjBase);
 }
 
@@ -305,7 +331,9 @@ PreviousMenuState(uqm::BYTE BaseState, uqm::BYTE CurState)
 	uqm::BYTE AdjBase = BaseState;
 
 	if (BaseState == PM_STARMAP)
+	{
 		AdjBase--;
+	}
 
 	switch (AdjBase + CurState)
 	{
@@ -331,15 +359,21 @@ PreviousMenuState(uqm::BYTE BaseState, uqm::BYTE CurState)
 			break;
 		case PM_CHANGE_CAPTAIN:
 			if ((isPC(optSmoothScroll) && !usingSpeech) || isPC(optWhichMenu))
+			{
 				NextState = PM_READ_VERY_SLOW;
+			}
 			else
+			{
 				NextState = PM_CYBORG_OFF;
+			}
 			break;
 		default:
 			NextState = AdjBase + CurState - 1;
 	}
 	if (NextState < GetBeginMenuState(BaseState))
+	{
 		NextState = GetEndMenuState(BaseState);
+	}
 	return (FixMenuState((uqm::BYTE)NextState) - AdjBase);
 }
 
@@ -479,11 +513,17 @@ bool DoMenuChooser(MENU_STATE* pMS, uqm::BYTE BaseState)
 	uqm::BYTE OrigBase = BaseState;
 	bool useAltMenu = false;
 	if (optWhichMenu == OPT_PC)
+	{
 		useAltMenu = GetAlternateMenu(&BaseState, &NewState);
+	}
 	if (PulsedInputState.menu[KEY_MENU_LEFT] || PulsedInputState.menu[KEY_MENU_UP])
+	{
 		NewState = PreviousMenuState(BaseState, NewState);
+	}
 	else if (PulsedInputState.menu[KEY_MENU_RIGHT] || PulsedInputState.menu[KEY_MENU_DOWN])
+	{
 		NewState = NextMenuState(BaseState, NewState);
+	}
 	else if (useAltMenu && PulsedInputState.menu[KEY_MENU_SELECT])
 	{
 		NewState = ConvertAlternateMenu(BaseState, NewState);
@@ -496,11 +536,15 @@ bool DoMenuChooser(MENU_STATE* pMS, uqm::BYTE BaseState)
 		if (NewState == ALT_EXIT_MANIFEST)
 		{
 			if (OrigBase == PM_SCAN)
+			{
 				DrawMenuStateStrings(PM_ALT_SCAN,
 									 PM_ALT_MANIFEST - PM_ALT_SCAN);
+			}
 			else
+			{
 				DrawMenuStateStrings(PM_ALT_STARMAP,
 									 PM_ALT_MANIFEST - PM_ALT_STARMAP);
+			}
 			pMS->CurState = ALT_MANIFEST;
 			return true;
 		}
@@ -509,20 +553,28 @@ bool DoMenuChooser(MENU_STATE* pMS, uqm::BYTE BaseState)
 	else if ((optWhichMenu == OPT_PC) && PulsedInputState.menu[KEY_MENU_CANCEL] && (BaseState == PM_ALT_CARGO))
 	{
 		if (OrigBase == PM_SCAN)
+		{
 			DrawMenuStateStrings(PM_ALT_SCAN,
 								 PM_ALT_MANIFEST - PM_ALT_SCAN);
+		}
 		else
+		{
 			DrawMenuStateStrings(PM_ALT_STARMAP,
 								 PM_ALT_MANIFEST - PM_ALT_STARMAP);
+		}
 		pMS->CurState = ALT_MANIFEST;
 		return true;
 	}
 	else
+	{
 		return false;
+	}
 
 	DrawMenuStateStrings(BaseState, NewState);
 	if (useAltMenu)
+	{
 		NewState = ConvertAlternateMenu(BaseState, NewState);
+	}
 	pMS->CurState = NewState;
 
 	return true;
@@ -534,7 +586,9 @@ IndexToText(int Index)
 	int i = -1;
 
 	if (Index < PM_EXIT_GAME_MENU)
+	{
 		i = Index;
+	}
 
 	switch (Index)
 	{
@@ -600,7 +654,9 @@ IndexToText(int Index)
 	}
 
 	if (i == -1 || !strlen(GAME_STRING(PLAYMENU_STRING_BASE + i)))
+	{
 		return NULL;
+	}
 
 	return GAME_STRING(PLAYMENU_STRING_BASE + i);
 }
@@ -615,7 +671,9 @@ Draw3DOMenuText(RECT* r, int Index)
 	Color OldColor;
 
 	if (IndexToText(Index) == NULL)
+	{
 		return;
+	}
 
 	OldFont = SetContextFont(PlayMenuFont);
 	OldColor = SetContextForeGroundColor(PM_RECT_COLOR);
@@ -630,7 +688,9 @@ Draw3DOMenuText(RECT* r, int Index)
 		DrawFilledRectangle(&block); // with PM_RECT_COLOR
 	}
 	else
+	{
 		DrawBorder(TEXT_LABEL_FRAME);
+	}
 
 	text.align = ALIGN_CENTER;
 	text.baseline.x = r->corner.x + (r->extent.width >> 1);
@@ -656,7 +716,9 @@ void DrawMenuStateStrings(uqm::BYTE beg_index, uqm::SWORD NewState)
 	extern FRAME PlayFrame;
 
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+	{
 		return;
+	}
 
 	if (NewState < 0)
 	{
@@ -672,12 +734,16 @@ void DrawMenuStateStrings(uqm::BYTE beg_index, uqm::SWORD NewState)
 	}
 
 	if (beg_index == PM_STARMAP)
+	{
 		NewState--;
+	}
 	end_index = GetEndMenuState(beg_index);
 
 	s.frame = 0;
 	if (NewState <= end_index - beg_index)
+	{
 		s.frame = SetAbsFrameIndex(PlayFrame, beg_index + NewState);
+	}
 
 	PreUpdateFlashRect();
 	OldContext = SetContext(StatusContext);
@@ -686,9 +752,13 @@ void DrawMenuStateStrings(uqm::BYTE beg_index, uqm::SWORD NewState)
 	s.origin.y = RADAR_Y - r.corner.y;
 	r.corner.x = s.origin.x - RES_SCALE(1);
 	if (optWhichMenu == OPT_PC)
+	{
 		r.corner.y = s.origin.y - PC_MENU_HEIGHT - IF_HD(2);
+	}
 	else
+	{
 		r.corner.y = s.origin.y - RES_SCALE(11) + DOS_NUM_SCL(3);
+	}
 	r.extent.width = RADAR_WIDTH + RES_SCALE(3);
 	BatchGraphics();
 	SetContextForeGroundColor(
@@ -696,13 +766,17 @@ void DrawMenuStateStrings(uqm::BYTE beg_index, uqm::SWORD NewState)
 	if (s.frame && optWhichMenu == OPT_PC)
 	{
 		if (beg_index == PM_CREW)
+		{
 			snprintf(pm_crew_str, sizeof pm_crew_str, "%s(%d)",
 					 GAME_STRING(MAINMENU_STRING_BASE + PM_CREW),
 					 GLOBAL(CrewCost));
+		}
 		if (beg_index == PM_FUEL)
+		{
 			snprintf(pm_fuel_str, sizeof pm_fuel_str, "%s(%d)",
 					 GAME_STRING(MAINMENU_STRING_BASE + PM_FUEL),
 					 GLOBAL(FuelCost));
+		}
 		if (beg_index == PM_SOUND_ON)
 		{
 			end_index = beg_index + 6;
@@ -747,7 +821,9 @@ void DrawMenuStateStrings(uqm::BYTE beg_index, uqm::SWORD NewState)
 		s.frame = 0;
 
 		if (optSubmenu)
+		{
 			FunkyMenu(beg_index + (uqm::BYTE)NewState, s);
+		}
 	}
 	else
 	{
@@ -760,16 +836,24 @@ void DrawMenuStateStrings(uqm::BYTE beg_index, uqm::SWORD NewState)
 		r.extent.height -= DOS_NUM_SCL(6);
 
 		if (!optCustomBorder)
+		{
 			DrawFilledRectangle(&r);
+		}
 		else
+		{
 			DrawBorder(SIS_RADAR_FRAME);
+		}
 	}
 	if (s.frame)
 	{
 		if (optSubmenu)
+		{
 			FunkyMenu(beg_index + (uqm::BYTE)NewState, s);
+		}
 		else
+		{
 			DrawStamp(&s);
+		}
 
 		Draw3DOMenuText(&r, beg_index + NewState);
 
@@ -786,9 +870,13 @@ void DrawMenuStateStrings(uqm::BYTE beg_index, uqm::SWORD NewState)
 				t.pStr = buf;
 				snprintf(buf, sizeof buf, "%u", GLOBAL(CrewCost));
 				if (isPC(optWhichFonts))
+				{
 					SetContextFont(TinyFont);
+				}
 				else
+				{
 					SetContextFont(TinyFontBold);
+				}
 				SetContextForeGroundColor(THREEDOMENU_TEXT_COLOR);
 				font_DrawText(&t);
 				break;
@@ -800,9 +888,13 @@ void DrawMenuStateStrings(uqm::BYTE beg_index, uqm::SWORD NewState)
 				t.pStr = buf;
 				snprintf(buf, sizeof buf, "%u", GLOBAL(FuelCost));
 				if (optWhichFonts == OPT_3DO && !optWholeFuel)
+				{
 					SetContextFont(TinyFontBold);
+				}
 				else
+				{
 					SetContextFont(TinyFont);
+				}
 				SetContextForeGroundColor(THREEDOMENU_TEXT_COLOR);
 				font_DrawText(&t);
 				break;
@@ -824,7 +916,9 @@ void DrawMineralHelpers(void)
 	uqm::SIZE leading;
 
 	if (!optSubmenu)
+	{
 		return;
+	}
 
 	OldContext = SetContext(StatusContext);
 
@@ -961,11 +1055,17 @@ void DrawMineralHelpers(void)
 							/ (float)GetStorageBayCapacity() * 100;
 
 		if (totalCapacity == 100)
+		{
 			snprintf(buf, sizeof(buf), "%.0f%%", totalCapacity);
+		}
 		else if (totalCapacity > 9)
+		{
 			snprintf(buf, sizeof(buf), "%.1f%%", totalCapacity);
+		}
 		else
+		{
 			snprintf(buf, sizeof(buf), "%.2f%%", totalCapacity);
+		}
 	}
 	else
 	{
@@ -1014,14 +1114,18 @@ void FunkyMenu(uqm::BYTE m, STAMP stmp)
 		|| m == PM_LAUNCH_LANDER)
 	{
 		if (stmp.frame)
+		{
 			DrawStamp(&stmp);
+		}
 
 		DrawMineralHelpers();
 
 		subMenuFlag = true;
 
 		if (stmp.frame)
+		{
 			return;
+		}
 	}
 	else if (subMenuFlag == true)
 	{
@@ -1030,5 +1134,7 @@ void FunkyMenu(uqm::BYTE m, STAMP stmp)
 	}
 
 	if (stmp.frame)
+	{
 		DrawStamp(&stmp);
+	}
 }

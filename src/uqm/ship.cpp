@@ -40,7 +40,9 @@
 void animation_preprocess(ELEMENT* ElementPtr)
 {
 	if (ElementPtr->turn_wait > 0)
+	{
 		--ElementPtr->turn_wait;
+	}
 	else
 	{
 		ElementPtr->next.image.frame =
@@ -114,8 +116,10 @@ inertial_thrust(ELEMENT* ElementPtr)
 		else if (TravelAngle == CurrentAngle)
 		{ // normal max acceleration, same vector
 			if (current_speed <= max_speed)
+			{
 				SetVelocityVector(VelocityPtr, max_thrust,
 								  StarShipPtr->ShipFacing);
+			}
 			return (SHIP_AT_MAX_SPEED);
 		}
 		else
@@ -135,7 +139,9 @@ inertial_thrust(ELEMENT* ElementPtr)
 			if (desired_speed > max_speed)
 			{
 				if (desired_speed < current_speed)
+				{
 					*VelocityPtr = v;
+				}
 				return (SHIP_AT_MAX_SPEED | SHIP_BEYOND_MAX_SPEED);
 			}
 
@@ -153,7 +159,9 @@ void DrawHDMeleeBorder(STARSHIP* StarShipPtr)
 
 	if (lowByte(GLOBAL(CurrentActivity)) == IN_LAST_BATTLE
 		&& StarShipPtr->playerNr != RPG_PLAYER_NUM)
+	{
 		return;
+	}
 
 	y = status_y_offsets[StarShipPtr->playerNr];
 
@@ -209,11 +217,15 @@ void ship_preprocess(ELEMENT* ElementPtr)
 			DrawCaptainsWindow(StarShipPtr);
 
 			if (IS_HD)
+			{
 				DrawHDMeleeBorder(StarShipPtr);
+			}
 
 			SetContext(OldContext);
 			if (RDPtr->preprocess_func)
+			{
 				(*RDPtr->preprocess_func)(ElementPtr);
+			}
 
 			// XXX: Hack: Pkunk sets hTarget!=0 when it reincarnates. In that
 			//   case there is no ship_transition() but a Phoenix transition
@@ -226,7 +238,9 @@ void ship_preprocess(ELEMENT* ElementPtr)
 			{
 				ElementPtr->hTarget = 0;
 				if (!PLRPlaying((MUSIC_REF)~0) && OpponentAlive(StarShipPtr))
+				{
 					BattleSong(true);
+				}
 			}
 			return;
 		}
@@ -239,17 +253,23 @@ void ship_preprocess(ELEMENT* ElementPtr)
 			InitIntersectEndPoint(ElementPtr);
 
 			if (hyper_transition(ElementPtr))
+			{
 				return;
+			}
 		}
 	}
 	StarShipPtr->cur_status_flags = cur_status_flags;
 
 	if (StarShipPtr->energy_counter)
+	{
 		--StarShipPtr->energy_counter;
+	}
 	else if (RDPtr->ship_info.energy_level < (uqm::BYTE)RDPtr->ship_info.max_energy
 			 || (uqm::SBYTE)RDPtr->characteristics.energy_regeneration < 0)
+	{
 		DeltaEnergy(ElementPtr,
 					(uqm::SBYTE)RDPtr->characteristics.energy_regeneration);
+	}
 
 	if (RDPtr->preprocess_func)
 	{
@@ -258,15 +278,21 @@ void ship_preprocess(ELEMENT* ElementPtr)
 	}
 
 	if (ElementPtr->turn_wait)
+	{
 		--ElementPtr->turn_wait;
+	}
 	else if (cur_status_flags & (LEFT | RIGHT))
 	{
 		if (cur_status_flags & LEFT)
+		{
 			StarShipPtr->ShipFacing =
 				NORMALIZE_FACING(StarShipPtr->ShipFacing - 1);
+		}
 		else
+		{
 			StarShipPtr->ShipFacing =
 				NORMALIZE_FACING(StarShipPtr->ShipFacing + 1);
+		}
 		ElementPtr->next.image.frame =
 			SetAbsFrameIndex(ElementPtr->next.image.frame,
 							 StarShipPtr->ShipFacing);
@@ -276,7 +302,9 @@ void ship_preprocess(ELEMENT* ElementPtr)
 	}
 
 	if (ElementPtr->thrust_wait)
+	{
 		--ElementPtr->thrust_wait;
+	}
 	else if (cur_status_flags & THRUST)
 	{
 		STATUS_FLAGS thrust_status;
@@ -298,7 +326,9 @@ void ship_preprocess(ELEMENT* ElementPtr)
 	}
 
 	if (lowByte(GLOBAL(CurrentActivity)) <= IN_ENCOUNTER)
+	{
 		PreProcessStatus(ElementPtr);
+	}
 }
 
 void ship_postprocess(ELEMENT* ElementPtr)
@@ -307,13 +337,17 @@ void ship_postprocess(ELEMENT* ElementPtr)
 	RACE_DESC* RDPtr;
 
 	if (ElementPtr->crew_level == 0)
+	{
 		return;
+	}
 
 	GetElementStarShip(ElementPtr, &StarShipPtr);
 	RDPtr = StarShipPtr->RaceDescPtr;
 
 	if (StarShipPtr->weapon_counter)
+	{
 		--StarShipPtr->weapon_counter;
+	}
 	else if ((StarShipPtr->cur_status_flags
 			  & WEAPON)
 			 && DeltaEnergy(ElementPtr,
@@ -354,7 +388,9 @@ void ship_postprocess(ELEMENT* ElementPtr)
 			} while (--num_weapons);
 
 			if (!played_sfx)
+			{
 				ProcessSound(RDPtr->ship_data.ship_sounds, ElementPtr);
+			}
 		}
 
 		StarShipPtr->weapon_counter =
@@ -362,13 +398,19 @@ void ship_postprocess(ELEMENT* ElementPtr)
 	}
 
 	if (StarShipPtr->special_counter)
+	{
 		--StarShipPtr->special_counter;
+	}
 
 	if (RDPtr->postprocess_func)
+	{
 		(*RDPtr->postprocess_func)(ElementPtr);
+	}
 
 	if (lowByte(GLOBAL(CurrentActivity)) <= IN_ENCOUNTER)
+	{
 		PostProcessStatus(ElementPtr);
+	}
 }
 
 void collision(ELEMENT* ElementPtr0, POINT* pPt0,
@@ -384,12 +426,16 @@ void collision(ELEMENT* ElementPtr0, POINT* pPt0,
 
 			damage = ElementPtr0->hit_points >> 2;
 			if (damage == 0)
+			{
 				damage = 1;
+			}
 			do_damage(ElementPtr0, damage);
 
 			damage = TARGET_DAMAGED_FOR_1_PT + (damage >> 1);
 			if (damage > TARGET_DAMAGED_FOR_6_PLUS_PT)
+			{
 				damage = TARGET_DAMAGED_FOR_6_PLUS_PT;
+			}
 			ProcessSound(SetAbsSoundIndex(GameSounds, damage), ElementPtr0);
 		}
 	}
@@ -405,7 +451,9 @@ spawn_ship(STARSHIP* StarShipPtr)
 
 	RDPtr = load_ship(StarShipPtr->SpeciesID, true);
 	if (!RDPtr)
+	{
 		return false;
+	}
 
 	StarShipPtr->RaceDescPtr = RDPtr;
 
@@ -422,10 +470,14 @@ spawn_ship(STARSHIP* StarShipPtr)
 			// RDPtr->ship_info.crew_level = GLOBAL_SIS (CrewEnlisted);
 		}
 		else
+		{
 			RDPtr->ship_info.crew_level = StarShipPtr->crew_level;
+		}
 
 		if (RDPtr->ship_info.crew_level > RDPtr->ship_info.max_crew)
+		{
 			RDPtr->ship_info.crew_level = RDPtr->ship_info.max_crew;
+		}
 	}
 
 	StarShipPtr->energy_counter = 0;
@@ -437,7 +489,9 @@ spawn_ship(STARSHIP* StarShipPtr)
 	{
 		hShip = AllocElement();
 		if (hShip != 0)
+		{
 			InsertElement(hShip, GetHeadElement());
+		}
 	}
 
 	StarShipPtr->hShip = hShip;
@@ -480,7 +534,9 @@ spawn_ship(STARSHIP* StarShipPtr)
 				uqm::COUNT facing = GLOBAL(ShipFacing);
 				// XXX: Solar system reentry test depends on ShipFacing != 0
 				if (facing > 0)
+				{
 					--facing;
+				}
 
 				// XXX: This appears to set the facing to a random value
 				//   for when the ship returns from an encounter back
@@ -497,12 +553,18 @@ spawn_ship(STARSHIP* StarShipPtr)
 					Color c;
 
 					if (inHyperSpace())
+					{
 						c = BUILD_COLOR_RGB(0xFF, 0x00, 0x00);
+					}
 					else
+					{
 						c = BUILD_COLOR_RGB(0x00, 0xE4, 0x00);
+					}
 
 					for (i = 0; i < numFrames; i++)
+					{
 						ApplyMask(NULL, SetAbsFrameIndex(RDPtr->ship_data.ship[0], i), mode, &c);
+					}
 				}
 			}
 			ShipElementPtr->current.image.frame =
@@ -552,7 +614,9 @@ bool GetNextStarShip(STARSHIP* LastStarShipPtr, uqm::COUNT which_side)
 				LastStarShipPtr = 0;
 			}
 			else
+			{
 				StarShipPtr->hShip = LastStarShipPtr->hShip;
+			}
 		}
 
 		if (!spawn_ship(StarShipPtr))
@@ -564,7 +628,9 @@ bool GetNextStarShip(STARSHIP* LastStarShipPtr, uqm::COUNT which_side)
 	}
 
 	if (LastStarShipPtr)
+	{
 		LastStarShipPtr->hShip = 0;
+	}
 
 	return (hBattleShip != 0);
 }
@@ -577,7 +643,9 @@ bool GetInitialStarShips(void)
 		uqm::COUNT i;
 
 		if (!GetInitialMeleeStarShips(ships))
+		{
 			return false;
+		}
 
 		for (i = 0; i < NUM_PLAYERS; i++)
 		{
@@ -601,7 +669,9 @@ bool GetInitialStarShips(void)
 		for (i = NUM_PLAYERS; i > 0; --i)
 		{
 			if (!GetNextStarShip(NULL, i - 1))
+			{
 				return false;
+			}
 		}
 		return true;
 	}

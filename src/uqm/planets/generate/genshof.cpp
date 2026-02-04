@@ -75,7 +75,9 @@ GenerateShofixti_initNpcs(SOLARSYS_STATE* solarSys)
 			HSHIPFRAG hStarShip;
 
 			if (GLOBAL(BattleGroupRef) == 0)
+			{
 				GLOBAL(BattleGroupRef) = ~0L;
+			}
 
 			hStarShip = CloneShipFragment(SHOFIXTI_SHIP,
 										  &GLOBAL(npc_built_ship_q), 1);
@@ -126,7 +128,9 @@ GenerateShofixti_uninitNpcs(SOLARSYS_STATE* solarSys)
 			SET_GAME_STATE(SHOFIXTI_KIA, 1);
 			SET_GAME_STATE(SHOFIXTI_VISITS, 0);
 			if (DIF_HARD)
+			{
 				SET_GAME_STATE(SHOFIXTI_BRO_KIA, 1);
+			}
 		}
 		else if (GET_GAME_STATE(MAIDENS_ON_SHIP))
 		{
@@ -157,9 +161,13 @@ GenerateShofixti_generatePlanets(SOLARSYS_STATE* solarSys)
 
 			pCurDesc->NumPlanets = 0;
 			if (i < (NUM_PLANETS >> 1))
+			{
 				pCurDesc->data_index = SELENIC_WORLD;
+			}
 			else
+			{
 				pCurDesc->data_index = METAL_WORLD;
+			}
 		}
 
 		FillOrbits(solarSys, NUM_PLANETS, solarSys->PlanetDesc, true);
@@ -171,12 +179,16 @@ GenerateShofixti_generatePlanets(SOLARSYS_STATE* solarSys)
 
 		pSunDesc->NumPlanets = GenerateMinPlanets(2);
 		if (pSunDesc->NumPlanets > 9)
+		{
 			pSunDesc->NumPlanets = 9;
+		}
 
 		FillOrbits(solarSys, NUMPLANETS_PDESC, NULL, false);
 
 		if (StarSeed)
+		{
 			pSunDesc->PlanetByte = PickClosestHabitable(solarSys);
+		}
 
 		// The only benefit to pre-stamping is that it shuffles them.
 		// But this causes problems when the star is orange, due to metal
@@ -185,7 +197,9 @@ GenerateShofixti_generatePlanets(SOLARSYS_STATE* solarSys)
 		// randomness to work, otherwise you'll have to count the bitshifts
 		// and re-random every 4th time.
 		for (i = 0; i < pSunDesc->NumPlanets; ++i)
+		{
 			solarSys->PlanetDesc[i].data_index = METAL_WORLD;
+		}
 		for (i = 0; i < pSunDesc->NumPlanets / 2; ++i)
 		{
 			uqm::BYTE offset = lowByte(rand_val) % (pSunDesc->NumPlanets - i);
@@ -193,7 +207,9 @@ GenerateShofixti_generatePlanets(SOLARSYS_STATE* solarSys)
 			while (solarSys->PlanetDesc[planet].data_index == SELENIC_WORLD || offset > 0)
 			{
 				if (solarSys->PlanetDesc[planet].data_index == METAL_WORLD)
+				{
 					offset--;
+				}
 				planet = (planet + 1) % pSunDesc->NumPlanets;
 			}
 
@@ -203,7 +219,9 @@ GenerateShofixti_generatePlanets(SOLARSYS_STATE* solarSys)
 	}
 
 	if (NOMAD && CheckAlliance(SHOFIXTI_SHIP) == GOOD_GUY)
+	{
 		solarSys->PlanetDesc[pSunDesc->PlanetByte].NumPlanets = 1;
+	}
 
 	return true;
 }
@@ -294,11 +312,15 @@ check_old_shofixti(void)
 	IP_GROUP* GroupPtr;
 
 	if (!GLOBAL(BattleGroupRef))
+	{
 		return; // nothing to check
+	}
 
 	hGroup = GetHeadLink(&GLOBAL(ip_group_q));
 	if (!hGroup)
+	{
 		return; // still nothing to check
+	}
 
 	GroupPtr = LockIpGroup(&GLOBAL(ip_group_q), hGroup);
 	// REFORM_GROUP was set in ipdisp.c:ip_group_collision()

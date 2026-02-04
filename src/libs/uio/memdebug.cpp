@@ -150,7 +150,9 @@ void uio_MemDebug_unInit(void)
 	int i;
 
 	for (i = 0; i < uio_MemDebug_numLogTypes; i++)
+	{
 		HashTable_deleteHashTable(uio_MemDebug_logs[i]);
+	}
 
 	uio_free(uio_MemDebug_logs);
 }
@@ -330,7 +332,9 @@ void uio_MemDebug_printPointers(FILE* out)
 	int i;
 
 	for (i = 0; i < uio_MemDebug_numLogTypes; i++)
+	{
 		uio_MemDebug_printPointersType(out, (uio_MemDebug_LogType)i);
+	}
 }
 
 static inline uio_MemDebug_PointerInfo*

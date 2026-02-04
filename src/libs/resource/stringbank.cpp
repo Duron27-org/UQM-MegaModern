@@ -33,7 +33,9 @@ add_chunk(stringbank* bank)
 	if (bank)
 	{
 		while (bank->next)
+		{
 			bank = bank->next;
+		}
 		bank->next = n;
 	}
 	return n;
@@ -60,7 +62,9 @@ StringBank_AddString(stringbank* bank, const char* str)
 	unsigned int len = strlen(str) + 1;
 	stringbank* x = bank;
 	if (len > STRBANK_CHUNK_SIZE)
+	{
 		return NULL;
+	}
 	while (x)
 	{
 		unsigned int remaining = STRBANK_CHUNK_SIZE - x->len;
@@ -86,16 +90,22 @@ StringBank_AddOrFindString(stringbank* bank, const char* str)
 	unsigned int len = strlen(str) + 1;
 	stringbank* x = bank;
 	if (len > STRBANK_CHUNK_SIZE)
+	{
 		return NULL;
+	}
 	while (x)
 	{
 		int i = 0;
 		while (i < x->len)
 		{
 			if (!strcmp(x->data + i, str))
+			{
 				return x->data + i;
+			}
 			while (x->data[i])
+			{
 				i++;
+			}
 			i++;
 		}
 		x = x->next;
@@ -176,7 +186,9 @@ void StringBank_Dump(stringbank* bank, FILE* s)
 		{
 			fprintf(s, "\"%s\"\n", x->data + i);
 			while (x->data[i])
+			{
 				i++;
+			}
 			i++;
 		}
 		x = x->next;

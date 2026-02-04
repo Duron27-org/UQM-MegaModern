@@ -172,21 +172,31 @@ yehat_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 	{
 		ShieldStatus = 0;
 		if (!(lpEvalDesc->ObjectPtr->state_flags & (FINITE_LIFE | CREW_OBJECT)))
+		{
 			lpEvalDesc->MoveState = PURSUE;
+		}
 		else if (lpEvalDesc->ObjectPtr->mass_points
 				 || (lpEvalDesc->ObjectPtr->state_flags & CREW_OBJECT))
 		{
 			if (!(lpEvalDesc->ObjectPtr->state_flags & FINITE_LIFE))
+			{
 				lpEvalDesc->which_turn <<= 1;
+			}
 			else
 			{
 				if ((lpEvalDesc->which_turn >>= 1) == 0)
+				{
 					lpEvalDesc->which_turn = 1;
+				}
 
 				if (lpEvalDesc->ObjectPtr->mass_points)
+				{
 					lpEvalDesc->ObjectPtr = 0;
+				}
 				else
+				{
 					lpEvalDesc->MoveState = PURSUE;
+				}
 			}
 			ShieldStatus = 1;
 		}
@@ -207,11 +217,15 @@ yehat_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 					|| PlotIntercept(lpEvalDesc->ObjectPtr,
 									 ShipPtr, 2, 0))
 				&& (TFB_Random() & 3))
+			{
 				StarShipPtr->ship_input_state |= SPECIAL;
+			}
 
 			if (lpEvalDesc->ObjectPtr
 				&& !(lpEvalDesc->ObjectPtr->state_flags & CREW_OBJECT))
+			{
 				lpEvalDesc->ObjectPtr = 0;
+			}
 		}
 	}
 
@@ -222,7 +236,9 @@ yehat_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 		GetElementStarShip(lpEvalDesc->ObjectPtr, &EnemyStarShipPtr);
 		if (!(EnemyStarShipPtr->RaceDescPtr->ship_info.ship_flags
 			  & IMMEDIATE_WEAPON))
+		{
 			lpEvalDesc->MoveState = PURSUE;
+		}
 	}
 	ship_intelligence(ShipPtr, ObjectsOfConcern, ConcernCounter);
 	/*
@@ -243,7 +259,9 @@ yehat_postprocess(ELEMENT* ElementPtr)
 		if (StarShipPtr->special_counter > 0)
 		{
 			if (ElementPtr->life_span == NORMAL_LIFE)
+			{
 				StarShipPtr->special_counter = 0;
+			}
 			else
 			{
 #ifdef OLD
@@ -336,7 +354,9 @@ yehat_preprocess(ELEMENT* ElementPtr)
 			&& StarShipPtr->special_counter == 0)
 		{
 			if (StarShipPtr->RaceDescPtr->ship_info.energy_level < SPECIAL_ENERGY_COST)
+			{
 				DeltaEnergy(ElementPtr, -SPECIAL_ENERGY_COST); /* so text will flash */
+			}
 			else
 			{
 				ElementPtr->life_span = SHIELD_LIFE + NORMAL_LIFE;

@@ -87,11 +87,15 @@ GenerateSyreen_generatePlanets(SOLARSYS_STATE* solarSys)
 		pPlanet->data_index = GenerateHabitableWorld();
 
 		if (!pPlanet->NumPlanets)
+		{
 			pPlanet->NumPlanets++;
+		}
 	}
 
 	if (!RaceDead(SYREEN_SHIP))
+	{
 		pPlanet->data_index |= PLANET_SHIELDED;
+	}
 
 	return true;
 }
@@ -108,9 +112,13 @@ GenerateSyreen_generateMoons(SOLARSYS_STATE* solarSys,
 		PLANET_DESC* pMoonDesc = &solarSys->MoonDesc[MoonByte];
 
 		if (!RaceDead(SYREEN_SHIP))
+		{
 			pMoonDesc->data_index = HIERARCHY_STARBASE;
+		}
 		else
+		{
 			pMoonDesc->data_index = DESTROYED_STARBASE;
+		}
 
 		if (PrimeSeed || StarSeed)
 		{

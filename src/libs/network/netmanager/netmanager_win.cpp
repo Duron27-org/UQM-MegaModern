@@ -88,7 +88,9 @@ int closeWSAEvent(WSAEVENT event)
 		int error;
 
 		if (WSACloseEvent(event))
+		{
 			break;
+		}
 
 		error = WSAGetLastError();
 		if (error != WSAEINPROGRESS)
@@ -115,13 +117,19 @@ int NetManager_addDesc(NetDescriptor* nd)
 	}
 
 	if (nd->readCallback != NULL)
+	{
 		eventMask |= FD_READ | FD_ACCEPT;
+	}
 
 	if (nd->writeCallback != NULL)
+	{
 		eventMask |= FD_WRITE /* | FD_CONNECT */;
+	}
 
 	if (nd->exceptionCallback != NULL)
+	{
 		eventMask |= FD_OOB;
+	}
 
 	eventMask |= FD_CLOSE;
 
@@ -189,7 +197,9 @@ void NetManager_removeDesc(NetDescriptor* nd)
 	{
 		int closeStatus = closeWSAEvent(events[nd->smd->index]);
 		if (closeStatus == -1)
+		{
 			explode();
+		}
 	}
 
 	if (nd->smd->index < numActiveEvents)
@@ -372,7 +382,9 @@ NetManager_processEvent(size_t index)
 
 		closed = NetManager_doReadCallback(netDescriptors[index]);
 		if (closed)
+		{
 			goto closed;
+		}
 	}
 	if (networkEvents.lNetworkEvents & FD_WRITE)
 	{
@@ -385,7 +397,9 @@ NetManager_processEvent(size_t index)
 
 		closed = NetManager_doWriteCallback(netDescriptors[index]);
 		if (closed)
+		{
 			goto closed;
+		}
 	}
 	if (networkEvents.lNetworkEvents & FD_OOB)
 	{
@@ -398,7 +412,9 @@ NetManager_processEvent(size_t index)
 
 		closed = NetManager_doExceptionCallback(netDescriptors[index]);
 		if (closed)
+		{
 			goto closed;
+		}
 	}
 	if (networkEvents.lNetworkEvents & FD_ACCEPT)
 	{
@@ -414,7 +430,9 @@ NetManager_processEvent(size_t index)
 
 		closed = NetManager_doReadCallback(netDescriptors[index]);
 		if (closed)
+		{
 			goto closed;
+		}
 	}
 #if 0
 	// No need for this. Windows also sets FD_WRITE in this case, and
@@ -471,7 +489,9 @@ int NetManager_process(uint32* timeoutMs)
 											  &events[startEvent], false, timeoutTemp, false);
 
 		if (waitResult == WSA_WAIT_IO_COMPLETION)
+		{
 			continue;
+		}
 
 		if (waitResult == WSA_WAIT_TIMEOUT)
 		{

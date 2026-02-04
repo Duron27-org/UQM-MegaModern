@@ -149,7 +149,9 @@ SelectAlienZOQ(CallbackArg arg)
 	{
 		// Transition to neutral state first if Pik was talking
 		if (LastAlien != FOT_ALIEN)
+		{
 			CommData.AlienTransitionDesc.AnimFlags |= TALK_DONE;
+		}
 		LastAlien = ZOQ_ALIEN;
 		CommData.AlienTransitionDesc.AnimFlags |= TALK_INTRO;
 		CommData.AlienTransitionDesc.StartIndex = FOT_TO_ZOQ;
@@ -174,7 +176,9 @@ SelectAlienPIK(CallbackArg arg)
 	{
 		// Transition to neutral state first if Zoq was talking
 		if (LastAlien != FOT_ALIEN)
+		{
 			CommData.AlienTransitionDesc.AnimFlags |= TALK_DONE;
+		}
 		LastAlien = PIK_ALIEN;
 		CommData.AlienTransitionDesc.AnimFlags |= TALK_INTRO;
 		CommData.AlienTransitionDesc.StartIndex = FOT_TO_PIK;
@@ -385,18 +389,28 @@ ZoqFotIntro(RESPONSE_REF R)
 		|| PHRASE_ENABLED(what_emergency))
 	{
 		if (PHRASE_ENABLED(your_race))
+		{
 			Response(your_race, ZoqFotIntro);
+		}
 		if (PHRASE_ENABLED(where_from))
+		{
 			Response(where_from, ZoqFotIntro);
+		}
 		if (PHRASE_ENABLED(what_emergency))
+		{
 			Response(what_emergency, ZoqFotIntro);
+		}
 	}
 	else
 	{
 		if (PHRASE_ENABLED(tough_luck))
+		{
 			Response(tough_luck, ZoqFotIntro);
+		}
 		if (PHRASE_ENABLED(what_look_like))
+		{
 			Response(what_look_like, ZoqFotIntro);
+		}
 		Response(all_very_interesting, ExitConversation);
 		if (GET_GAME_STATE(GLOBAL_FLAGS_AND_DATA) & (1 << 7))
 		{
@@ -443,11 +457,17 @@ AquaintZoqFot(RESPONSE_REF R)
 	}
 
 	if (PHRASE_ENABLED(which_fot))
+	{
 		Response(which_fot, AquaintZoqFot);
+	}
 	if (PHRASE_ENABLED(we_are_vindicator))
+	{
 		Response(we_are_vindicator, ZoqFotIntro);
+	}
 	if (PHRASE_ENABLED(quiet_toadies))
+	{
 		Response(quiet_toadies, AquaintZoqFot);
+	}
 	Response(all_very_interesting, ExitConversation);
 	Response(valuable_info, ExitConversation);
 }
@@ -686,10 +706,14 @@ ZoqFotHome(RESPONSE_REF R)
 
 			i = START_YEAR + (YEARS_TO_KOHRAH_VICTORY + DIF_CASE(0, 2, -1));
 			if (NumVisits)
+			{
 				++i;
+			}
 			if ((i -= GLOBAL(GameClock.year_index)) == 1
 				&& GLOBAL(GameClock.month_index) > 2)
+			{
 				i = 0;
+			}
 			if (!(KnowMask & URQUAN_LOSE) && i <= 0)
 			{
 				NPCPhrase_cb(URQUAN_NEARLY_GONE0, &SelectAlienZOQ);
@@ -753,11 +777,17 @@ ZoqFotHome(RESPONSE_REF R)
 	}
 
 	if (PHRASE_ENABLED(whats_up_homeworld))
+	{
 		Response(whats_up_homeworld, ZoqFotHome);
+	}
 	if (PHRASE_ENABLED(any_war_news))
+	{
 		Response(any_war_news, ZoqFotHome);
+	}
 	if (CheckAlliance(ZOQFOTPIK_SHIP) != GOOD_GUY)
+	{
 		Response(i_want_alliance, ZoqFotHome);
+	}
 	else if (PHRASE_ENABLED(want_specific_info))
 	{
 		Response(want_specific_info, ZoqFotInfo);

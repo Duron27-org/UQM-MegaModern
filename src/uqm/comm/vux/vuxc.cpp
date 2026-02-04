@@ -34,7 +34,7 @@ static LOCDATA vux_desc =
 		BLACK_COLOR_INIT, /* AlienTextBColor */
 		{0, 0}, /* AlienTextBaseline */
 		0,
- /* (SIS_TEXT_WIDTH - 16) >> 1, */  /* AlienTextWidth */
+		/* (SIS_TEXT_WIDTH - 16) >> 1, */  /* AlienTextWidth */
 		ALIGN_CENTER, /* AlienTextAlign */
 		VALIGN_TOP, /* AlienTextValign */
 		VUX_COLOR_MAP, /* AlienColorMap */
@@ -316,7 +316,9 @@ ZexBeingEatenAlive(void)
 					  ONE_SECOND / 4);
 
 		if (IS_HD)
+		{
 			EngageFilters(&vux_filters);
+		}
 	}
 }
 
@@ -464,7 +466,9 @@ Menagerie(RESPONSE_REF R)
 		|| PLAYER_SAID(R, why_trust_3))
 	{
 		if (PLAYER_SAID(R, i_have_beast))
+		{
 			NPCPhrase(GIVE_BEAST);
+		}
 		else if (PLAYER_SAID(R, why_trust_1))
 		{
 			NPCPhrase(TRUST_1);
@@ -485,11 +489,17 @@ Menagerie(RESPONSE_REF R)
 		}
 
 		if (PHRASE_ENABLED(why_trust_1))
+		{
 			Response(why_trust_1, Menagerie);
+		}
 		else if (PHRASE_ENABLED(why_trust_2))
+		{
 			Response(why_trust_2, Menagerie);
+		}
 		else if (PHRASE_ENABLED(why_trust_3))
+		{
 			Response(why_trust_3, Menagerie);
+		}
 		Response(ok_take_beast, CombatIsInevitable);
 	}
 	else if (PLAYER_SAID(R, kill_you))
@@ -614,7 +624,9 @@ Menagerie(RESPONSE_REF R)
 
 		if (GET_GAME_STATE(KNOW_ZEX_WANTS_MONSTER)
 			&& GET_GAME_STATE(VUX_BEAST_ON_SHIP))
+		{
 			pStr[0] = i_have_beast;
+		}
 		else
 		{
 			switch (GET_GAME_STATE(ZEX_STACK_1))
@@ -630,7 +642,9 @@ Menagerie(RESPONSE_REF R)
 					break;
 				case 3:
 					if (PHRASE_ENABLED(about_creature_again))
+					{
 						pStr[0] = about_creature_again;
+					}
 					break;
 			}
 		}
@@ -663,11 +677,15 @@ Menagerie(RESPONSE_REF R)
 		}
 
 		if (pStr[LastStack])
+		{
 			Response(pStr[LastStack], Menagerie);
+		}
 		for (i = 0; i < 3; ++i)
 		{
 			if (i != LastStack && pStr[i])
+			{
 				Response(pStr[i], Menagerie);
+			}
 		}
 		Response(bye_zex, CombatIsInevitable);
 	}
@@ -813,7 +831,9 @@ static void
 Intro(void)
 {
 	if (altResFlags & USE_ALT_FRAME)
+	{
 		CommData.AlienAmbientArray[17].AnimFlags &= ~ANIM_DISABLED;
+	}
 
 	if (lowByte(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE)
 	{
@@ -916,7 +936,9 @@ init_vux_comm(void)
 		altResFlags |= USE_ALT_SONG;
 
 		if (EXTENDED)
+		{
 			altResFlags |= USE_ALT_FRAME;
+		}
 	}
 
 	if ((GET_GAME_STATE(GLOBAL_FLAGS_AND_DATA) & (1 << 6))

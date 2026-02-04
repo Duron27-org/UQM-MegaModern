@@ -43,7 +43,9 @@ Build(QUEUE* pQueue, SPECIES_ID SpeciesID)
 
 	hNewShip = AllocLink(pQueue);
 	if (!hNewShip)
+	{
 		return 0;
+	}
 
 	ShipPtr = (SHIP_BASE*)LockLink(pQueue, hNewShip);
 	memset(ShipPtr, 0, GetLinkSize(pQueue));
@@ -113,10 +115,14 @@ GetSeededFleetFromIndex(uqm::COUNT Index)
 
 	hFleet = GetStarShipFromIndex(&GLOBAL(avail_race_q), Index);
 	if (!hFleet)
+	{
 		return hFleet;
+	}
 	TemplatePtr = LockFleetInfo(&GLOBAL(avail_race_q), hFleet);
 	if (!TemplatePtr)
+	{
 		return NULL;
+	}
 	ship = SeedShip(TemplatePtr->SpeciesID, loadWindow);
 	UnlockFleetInfo(&GLOBAL(avail_race_q), hFleet);
 	hFleet = GetFleetFromSpecies(ship);
@@ -231,7 +237,9 @@ RaceIdStrToIndex(const char* raceIdStr)
 										   sizeof raceIdMap[0], RaceIdCompare);
 
 	if (found == NULL)
+	{
 		return (RACE_ID)-1;
+	}
 
 	return found->id;
 }
@@ -250,7 +258,9 @@ AddEscortShips(RACE_ID race, uqm::SIZE count)
 
 	hFleet = GetStarShipFromIndex(&GLOBAL(avail_race_q), race);
 	if (!hFleet || count <= 0)
+	{
 		return 0;
+	}
 
 	which_window = 0;
 	for (i = 0; i < (uqm::COUNT)count; i++)
@@ -260,15 +270,21 @@ AddEscortShips(RACE_ID race, uqm::SIZE count)
 		SHIP_FRAGMENT* StarShipPtr;
 
 		if (!STORAGE_Q)
+		{
 			hStarShip = CloneShipFragment(race, &GLOBAL(built_ship_q), 0);
+		}
 		else if (!CanBuyPoints(hFleet) || !(hStarShip = CloneShipFragment(race, &GLOBAL(built_ship_q), 0)))
 		{ // If we don't have room or failed to create in built queue, stow it
 			if ((hStarShip =
 					 CloneShipFragment(race, &GLOBAL(stowed_ship_q), 0)))
+			{
 				continue;
+			}
 		}
 		if (!hStarShip)
+		{
 			break;
+		}
 
 		RemoveQueue(&GLOBAL(built_ship_q), hStarShip);
 
@@ -282,7 +298,9 @@ AddEscortShips(RACE_ID race, uqm::SIZE count)
 			win_loc = StarShipPtr->index;
 			UnlockShipFrag(&GLOBAL(built_ship_q), hOldShip);
 			if (which_window <= win_loc)
+			{
 				break;
+			}
 		}
 
 		StarShipPtr = LockShipFrag(&GLOBAL(built_ship_q), hStarShip);
@@ -357,7 +375,9 @@ void PrepareShip(RACE_ID race)
 
 	mi = GLOBAL(GameClock.month_index);
 	if ((di = GLOBAL(GameClock.day_index)) > 28)
+	{
 		di = 28;
+	}
 	yi = (uqm::BYTE)(GLOBAL(GameClock.year_index) - START_YEAR) + 1;
 	switch (race)
 	{
@@ -426,7 +446,9 @@ bool SetRaceAllied(RACE_ID race, bool flag)
 
 	hFleet = GetStarShipFromIndex(&GLOBAL(avail_race_q), race);
 	if (!hFleet)
+	{
 		return false;
+	}
 
 	FleetPtr = LockFleetInfo(&GLOBAL(avail_race_q), hFleet);
 
@@ -459,7 +481,9 @@ StartSphereTracking(RACE_ID race)
 
 	hFleet = GetStarShipFromIndex(&GLOBAL(avail_race_q), race);
 	if (!hFleet)
+	{
 		return 0;
+	}
 
 	FleetPtr = LockFleetInfo(&GLOBAL(avail_race_q), hFleet);
 
@@ -496,7 +520,9 @@ bool CheckSphereTracking(RACE_ID race)
 
 	hFleet = GetStarShipFromIndex(&GLOBAL(avail_race_q), race);
 	if (!hFleet)
+	{
 		return false;
+	}
 
 	FleetPtr = LockFleetInfo(&GLOBAL(avail_race_q), hFleet);
 
@@ -522,7 +548,9 @@ bool KillRace(RACE_ID race)
 
 	hFleet = GetStarShipFromIndex(&GLOBAL(avail_race_q), race);
 	if (!hFleet)
+	{
 		return false;
+	}
 
 	FleetPtr = LockFleetInfo(&GLOBAL(avail_race_q), hFleet);
 
@@ -546,7 +574,9 @@ CountEscortShips(RACE_ID race)
 
 	hFleet = GetStarShipFromIndex(&GLOBAL(avail_race_q), race);
 	if (!hFleet)
+	{
 		return 0;
+	}
 
 	for (hStarShip = GetHeadLink(&GLOBAL(built_ship_q)); hStarShip;
 		 hStarShip = hNextShip)
@@ -560,7 +590,9 @@ CountEscortShips(RACE_ID race)
 		UnlockShipFrag(&GLOBAL(built_ship_q), hStarShip);
 
 		if (ship_type == race)
+		{
 			result++;
+		}
 	}
 	return result;
 }
@@ -586,7 +618,9 @@ EscortFeasibilityStudy(RACE_ID race)
 
 	hFleet = GetStarShipFromIndex(&GLOBAL(avail_race_q), race);
 	if (!hFleet)
+	{
 		return 0;
+	}
 
 	return (MAX_BUILT_SHIPS - CountLinks(&GLOBAL(built_ship_q)) + (STORAGE_Q ? MAX_STOWED_SHIPS - CountLinks(&GLOBAL(stowed_ship_q)) : 0));
 }
@@ -605,7 +639,9 @@ CheckAlliance(RACE_ID race)
 
 	hFleet = GetStarShipFromIndex(&GLOBAL(avail_race_q), race);
 	if (!hFleet)
+	{
 		return 0;
+	}
 
 	FleetPtr = LockFleetInfo(&GLOBAL(avail_race_q), hFleet);
 	flags = FleetPtr->allied_state;
@@ -631,7 +667,9 @@ RemoveSomeEscortShips(RACE_ID race, uqm::COUNT count)
 	HSHIPFRAG hNextShip;
 
 	if (count == 0)
+	{
 		return 0;
+	}
 	if (!hStarShip && count > MAX_BUILT_SHIPS)
 	{
 		ship_q = &GLOBAL(stowed_ship_q);
@@ -655,7 +693,9 @@ RemoveSomeEscortShips(RACE_ID race, uqm::COUNT count)
 			FreeShipFrag(ship_q, hStarShip);
 			count--;
 			if (count == 0)
+			{
 				break;
+			}
 		}
 		if (count > MAX_BUILT_SHIPS && !hNextShip && ship_q == &GLOBAL(built_ship_q))
 		{
@@ -723,11 +763,15 @@ NameCaptain(QUEUE* pQueue, SPECIES_ID SpeciesID)
 			ShipPtr = (SHIP_BASE*)LockLink(pQueue, hStarShip);
 			hNextShip = _GetSuccLink(ShipPtr);
 			if (ShipPtr->SpeciesID == SpeciesID)
+			{
 				test_name_index = ShipPtr->captains_name_index;
+			}
 			UnlockLink(pQueue, hStarShip);
 
 			if (name_index == test_name_index)
+			{
 				break;
+			}
 		}
 	} while (hStarShip /* name matched another ship */);
 
@@ -751,19 +795,29 @@ CloneShipFragment(RACE_ID shipIndex, QUEUE* pDstQueue, uqm::COUNT crew_level)
 	if ((optShipSeed && GLOBAL_SIS(ShipSeed) == 0)
 		|| (!optShipSeed && GLOBAL_SIS(ShipSeed) != 0)
 		|| (optCustomSeed != GLOBAL_SIS(Seed)))
+	{
 		hFleet = GetSeededFleetFromIndex(shipIndex);
+	}
 	else
+	{
 		hFleet = GetStarShipFromIndex(&GLOBAL(avail_race_q), shipIndex);
+	}
 
 	if (!hFleet)
+	{
 		return 0;
+	}
 
 	TemplatePtr = LockFleetInfo(&GLOBAL(avail_race_q), hFleet);
 	if (shipIndex == SAMATRA_SHIP)
+	{
 		captains_name_index = 0;
+	}
 	else
+	{
 		captains_name_index = NameCaptain(pDstQueue,
 										  TemplatePtr->SpeciesID);
+	}
 	hBuiltShip = Build(pDstQueue, TemplatePtr->SpeciesID);
 	if (hBuiltShip)
 	{
@@ -775,9 +829,13 @@ CloneShipFragment(RACE_ID shipIndex, QUEUE* pDstQueue, uqm::COUNT crew_level)
 		ShipFragPtr->icons = TemplatePtr->icons;
 		ShipFragPtr->melee_icon = TemplatePtr->melee_icon;
 		if (crew_level)
+		{
 			ShipFragPtr->crew_level = crew_level;
+		}
 		else
+		{
 			ShipFragPtr->crew_level = TemplatePtr->crew_level;
+		}
 		ShipFragPtr->max_crew = TemplatePtr->max_crew;
 		ShipFragPtr->energy_level = 0;
 		ShipFragPtr->max_energy = TemplatePtr->max_energy;
@@ -802,7 +860,9 @@ int SetEscortCrewComplement(RACE_ID which_ship, uqm::COUNT crew_level, uqm::BYTE
 
 	hFleet = GetStarShipFromIndex(&GLOBAL(avail_race_q), which_ship);
 	if (!hFleet)
+	{
 		return -1;
+	}
 	TemplatePtr = LockFleetInfo(&GLOBAL(avail_race_q), hFleet);
 
 	/* Find first ship of which_ship race */
@@ -812,7 +872,9 @@ int SetEscortCrewComplement(RACE_ID which_ship, uqm::COUNT crew_level, uqm::BYTE
 		StarShipPtr = LockShipFrag(&GLOBAL(built_ship_q), hStarShip);
 		hNextShip = _GetSuccLink(StarShipPtr);
 		if (which_ship == StarShipPtr->race_id && StarShipPtr->crew_level == TemplatePtr->crew_level)
+		{
 			break; /* found one */
+		}
 		UnlockShipFrag(&GLOBAL(built_ship_q), hStarShip);
 	}
 	if (hStarShip)
@@ -824,7 +886,9 @@ int SetEscortCrewComplement(RACE_ID which_ship, uqm::COUNT crew_level, uqm::BYTE
 		UnlockShipFrag(&GLOBAL(built_ship_q), hStarShip);
 	}
 	else
+	{
 		Index = -1;
+	}
 
 	UnlockFleetInfo(&GLOBAL(avail_race_q), hFleet);
 	return Index;
@@ -836,7 +900,9 @@ deviceSwitch(int device, int val)
 	int var = 0;
 
 	if (val)
+	{
 		var = val - 1;
+	}
 
 	switch (device)
 	{
@@ -889,15 +955,23 @@ deviceSwitch(int device, int val)
 		case 16:
 		case 17:
 			if (GET_GAME_STATE(KNOW_ABOUT_SHATTERED) < 2 && var)
+			{
 				SET_GAME_STATE(KNOW_ABOUT_SHATTERED, 2);
+			}
 			SET_GAME_STATE(KNOW_SYREEN_WORLD_SHATTERED, var);
 
 			if (device == 15)
+			{
 				SET_GAME_STATE(EGG_CASE0_ON_SHIP, var);
+			}
 			else if (device == 16)
+			{
 				SET_GAME_STATE(EGG_CASE1_ON_SHIP, var);
+			}
 			else
+			{
 				SET_GAME_STATE(EGG_CASE2_ON_SHIP, var);
+			}
 			break;
 		case 18:
 			SET_GAME_STATE(SYREEN_SHUTTLE_ON_SHIP, var);
@@ -937,7 +1011,9 @@ upgradeSwitch(int upgrade, int val)
 	int ModuleCost;
 
 	if (val)
+	{
 		var = val - 1;
+	}
 
 	if (upgrade > 2 || upgrade < 7)
 	{
@@ -957,30 +1033,46 @@ upgradeSwitch(int upgrade, int val)
 			break;
 		case 3:
 			if (var)
+			{
 				LanderShields |= (1 << BIOLOGICAL_DISASTER);
+			}
 			else
+			{
 				LanderShields &= ~(1 << BIOLOGICAL_DISASTER);
+			}
 			SET_GAME_STATE(LANDER_SHIELDS, LanderShields);
 			break;
 		case 4:
 			if (var)
+			{
 				LanderShields |= (1 << EARTHQUAKE_DISASTER);
+			}
 			else
+			{
 				LanderShields &= ~(1 << EARTHQUAKE_DISASTER);
+			}
 			SET_GAME_STATE(LANDER_SHIELDS, LanderShields);
 			break;
 		case 5:
 			if (var)
+			{
 				LanderShields |= (1 << LIGHTNING_DISASTER);
+			}
 			else
+			{
 				LanderShields &= ~(1 << LIGHTNING_DISASTER);
+			}
 			SET_GAME_STATE(LANDER_SHIELDS, LanderShields);
 			break;
 		case 6:
 			if (var)
+			{
 				LanderShields |= (1 << LAVASPOT_DISASTER);
+			}
 			else
+			{
 				LanderShields &= ~(1 << LAVASPOT_DISASTER);
+			}
 			SET_GAME_STATE(LANDER_SHIELDS, LanderShields);
 			break;
 		case 7:
@@ -1020,9 +1112,13 @@ cheatAddRemoveDevices(void)
 	for (i = 0; i < ARRAY_SIZE(optDeviceArray); i++)
 	{
 		if (!optDeviceArray[i])
+		{
 			continue;
+		}
 		else
+		{
 			deviceSwitch(i, optDeviceArray[i]);
+		}
 	}
 }
 
@@ -1034,9 +1130,13 @@ cheatAddRemoveUpgrades(void)
 	for (i = 0; i < NUM_UPGRADES; i++)
 	{
 		if (!optUpgradeArray[i])
+		{
 			continue;
+		}
 		else
+		{
 			upgradeSwitch(i, optUpgradeArray[i]);
+		}
 	}
 }
 
@@ -1049,9 +1149,13 @@ void loadGameCheats(void)
 	}
 
 	if (optInfiniteRU)
+	{
 		oldRU = GlobData.SIS_state.ResUnits;
+	}
 	else
+	{
 		oldRU = 0;
+	}
 
 	//for (uqm::BYTE i = ARILOU_SHIP; i <= MMRNMHRM_SHIP; ++i)
 	//{
@@ -1069,7 +1173,9 @@ void loadGameCheats(void)
 		GLOBAL_SIS(FuelOnBoard) = GetFuelTankCapacity();
 	}
 	else
+	{
 		loadFuel = 0;
+	}
 
 	cheatAddRemoveDevices();
 	cheatAddRemoveUpgrades();
@@ -1135,69 +1241,117 @@ DefaultFleetLocation(SPECIES_ID SpeciesID, uqm::COUNT visit)
 			return POINT {1806, 1476}; // War era map
 		case PKUNK_ID:
 			if (visit == YEHAT_DEFINED)
+			{
 				return POINT {4970, 400}; // Rejoin Yehat
+			}
 			else if (visit == WAR_ERA)
+			{
 				return POINT {577, 463}; // War Era 'Unknown'
+			}
 			else
+			{
 				return POINT {502, 401}; // Return homeworld
+			}
 		case SHOFIXTI_ID:
 			return POINT {2852, 242}; // War era map
 		case SPATHI_ID:
 			return POINT {2416, 3687}; // War era map
 		case SUPOX_ID:
 			if (visit == SAMATRA_DEFINED)
+			{
 				return POINT {6479, 7541}; // Attack Kohr-Ah
+			}
 			else
+			{
 				return POINT {7468, 9246}; // Return homeworld
+			}
 		case THRADDASH_ID:
 			if (visit == SAMATRA_DEFINED)
+			{
 				return POINT {4879, 7201}; // Attack Kohr-Ah
+			}
 			else if (visit == WAR_ERA)
+			{
 				return POINT {2808, 8522}; // War Era 'Unknown'
+			}
 			else
+			{
 				return POINT {2535, 8358}; // Return homeworld
+			}
 		case UTWIG_ID:
 			if (visit == SAMATRA_DEFINED)
+			{
 				return POINT {7208, 7000}; // Attack Kohr-Ah
+			}
 			else
+			{
 				return POINT {8534, 8797}; // Return homeworld
+			}
 		case VUX_ID:
 			return POINT {4333, 1520}; // War era map
 		case YEHAT_ID:
 			if (visit == YEHAT_DEFINED)
+			{
 				return POINT {5150, 0}; // Here there be rebels
+			}
 			else if (visit == WAR_ERA)
+			{
 				return POINT {4969, 75}; // War era map
+			}
 			else
+			{
 				return POINT {4970, 40}; // Filthy Royalists
+			}
 		case DRUUGE_ID:
 			return POINT {9421, 2754}; // War Era 'Unknown'
 		case ILWRATH_ID:
 			if (visit == THRADD_DEFINED)
+			{
 				return POINT {2500, 8070}; // Thraddash/Ilwrath zone
+			}
 			else if (visit == PKUNK_DEFINED)
+			{
 				return POINT {48, 1700}; // Attacking Pkunk (unused?)
+			}
 			else if (visit == WAR_ERA)
+			{
 				return POINT {0, 3589}; // War era map
+			}
 			else
+			{
 				return POINT {215, 3630}; // Homeworld (extended lore)
+			}
 		case MYCON_ID:
 			if (visit == MYCON_TRAP_DEFINED)
+			{
 				return POINT {6858, 577}; // Goin to the party
+			}
 			else if (visit == WAR_ERA)
+			{
 				return POINT {6278, 2399}; // War era map
+			}
 			else
+			{
 				return POINT {6392, 2200}; // Going back home
+			}
 		case UMGAH_ID:
 			if (visit == SAMATRA_DEFINED)
+			{
 				return POINT {5288, 4892}; // Compelled to seek death
+			}
 			else
+			{
 				return POINT {1860, 6099}; // War era map
+			}
 		case SYREEN_ID:
 			if (visit == MYCON_TRAP_DEFINED)
+			{
 				return POINT {6858, 577}; // Goin to the party
+			}
 			else
+			{
 				return POINT {4125, 3770}; // Going back home
+			}
 		case ANDROSYNTH_ID:
 			return POINT {3676, 2619}; // War era map
 		case CHENJESU_ID:
@@ -1322,7 +1476,9 @@ Homeworld(SPECIES_ID SpeciesID)
 void SeedFleet(FLEET_INFO* FleetPtr, PLOT_LOCATION* plotmap)
 {
 	if ((!StarSeed) || (optSeedType == OPTVAL_MRQ))
+	{
 		return;
+	}
 	if (!FleetPtr || !plotmap)
 	{
 		fprintf(stderr, "SeedFleet called with NULL PTR(s).\n");
@@ -1388,11 +1544,15 @@ SeedFleetLocation(FLEET_INFO* FleetPtr, PLOT_LOCATION* plotmap, uqm::COUNT visit
 
 	// Firstly, handle hard coded data from prime seed
 	if (!StarSeed || optSeedType == OPTVAL_MRQ)
+	{
 		return DefaultFleetLocation(FleetPtr->SpeciesID, visit);
+	}
 
 	home = Homeworld(FleetPtr->SpeciesID);
 	if (home >= NUM_PLOTS)
+	{
 		return POINT {~0, ~0}; // Error already messaged in Homeworld ().
+	}
 	if (visit >= NUM_PLOTS && visit != WAR_ERA && visit != HOME)
 	{
 		fprintf(stderr, "%s %d\n",
@@ -1449,7 +1609,9 @@ SeedFleetLocation(FLEET_INFO* FleetPtr, PLOT_LOCATION* plotmap, uqm::COUNT visit
 				 (float)warpoint.x / 10, (float)warpoint.y / 10);
 	}
 	else
+	{
 		warpoint = plotmap[home].star_pt; // just in case
+	}
 
 	strength = (visit == WAR_ERA ? WarEraStrength(FleetPtr->SpeciesID) :
 								   FleetPtr->actual_strength);
@@ -1664,18 +1826,28 @@ SeedFleetLocation(FLEET_INFO* FleetPtr, PLOT_LOCATION* plotmap, uqm::COUNT visit
 			break;
 	}
 	if (location.x < 0)
+	{
 		location.x = 0;
+	}
 	if (location.x >= MAX_X_UNIVERSE)
+	{
 		location.x = MAX_X_UNIVERSE - 1;
+	}
 	if (location.y < 0)
+	{
 		location.y = 0;
+	}
 	if (location.y >= MAX_Y_UNIVERSE)
+	{
 		location.y = MAX_Y_UNIVERSE - 1;
+	}
 
 #ifdef DEBUG_STARSEED
 	JitDebug(FleetPtr, rand_val_x, rand_val_y);
 	if (buf[0])
+	{
 		fprintf(stderr, "%s", buf);
+	}
 #endif
 	if (StarGenRNG && myRNG)
 	{

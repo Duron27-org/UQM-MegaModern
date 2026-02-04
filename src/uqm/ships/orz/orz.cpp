@@ -142,7 +142,9 @@ howitzer_collision(ELEMENT* ElementPtr0, POINT* pPt0,
 				   ELEMENT* ElementPtr1, POINT* pPt1)
 {
 	if (!elementsOfSamePlayer(ElementPtr0, ElementPtr1))
+	{
 		weapon_collision(ElementPtr0, pPt0, ElementPtr1, pPt1);
+	}
 }
 
 static uqm::COUNT
@@ -163,9 +165,13 @@ initialize_turret_missile(ELEMENT* ShipPtr, HELEMENT MissileArray[])
 		&& (StarShipPtr->cur_status_flags & (LEFT | RIGHT)))
 	{
 		if (StarShipPtr->cur_status_flags & RIGHT)
+		{
 			++TurretPtr->thrust_wait;
+		}
 		else
+		{
 			--TurretPtr->thrust_wait;
+		}
 
 		TurretPtr->turn_wait = TURRET_WAIT + 1;
 	}
@@ -205,7 +211,9 @@ count_marines(STARSHIP* StarShipPtr, bool FindSpot)
 
 	num_marines = MAX_MARINES;
 	while (num_marines--)
+	{
 		id_use[num_marines] = 0;
+	}
 
 	num_marines = 0;
 	for (hElement = GetTailElement(); hElement; hElement = hNextElement)
@@ -236,7 +244,9 @@ count_marines(STARSHIP* StarShipPtr, bool FindSpot)
 	{
 		num_marines = 0;
 		while (id_use[num_marines])
+		{
 			++num_marines;
+		}
 	}
 
 	return (num_marines);
@@ -259,7 +269,9 @@ orz_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 	GetElementStarShip(ShipPtr, &StarShipPtr);
 	lpEvalDesc = &ObjectsOfConcern[ENEMY_SHIP_INDEX];
 	if (lpEvalDesc->ObjectPtr == 0)
+	{
 		StarShipPtr->ship_input_state &= ~SPECIAL;
+	}
 	else if (StarShipPtr->special_counter != 1)
 	{
 		STARSHIP* EnemyStarShipPtr;
@@ -279,7 +291,9 @@ orz_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 						   - ShipPtr->next.location.y)
 				   + (QUADRANT - (OCTANT >> 1)))
 				   >= ((QUADRANT - (OCTANT >> 1)) << 1))
+		{
 			StarShipPtr->ship_input_state &= ~(LEFT | RIGHT);
+		}
 
 		StarShipPtr->ship_input_state &= ~SPECIAL;
 		if (ShipPtr->turn_wait == 0
@@ -295,12 +309,18 @@ orz_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 			{
 				StarShipPtr->ship_input_state |= SPECIAL;
 				if (delta_facing == ANGLE_TO_FACING(HALF_CIRCLE))
+				{
 					delta_facing += (((uqm::BYTE)TFB_Random() & 1) << 1) - 1;
+				}
 
 				if (delta_facing < ANGLE_TO_FACING(HALF_CIRCLE))
+				{
 					StarShipPtr->ship_input_state |= RIGHT;
+				}
 				else
+				{
 					StarShipPtr->ship_input_state |= LEFT;
+				}
 			}
 		}
 
@@ -381,7 +401,9 @@ void intruder_preprocess(ELEMENT* ElementPtr)
 	UnlockElement(StarShipPtr->hShip);
 
 	if (ElementPtr->thrust_wait)
+	{
 		--ElementPtr->thrust_wait;
+	}
 
 	for (hElement = GetHeadElement(); hElement; hElement = hNextElement)
 	{
@@ -400,7 +422,9 @@ void intruder_preprocess(ELEMENT* ElementPtr)
 				s.frame = SetAbsFrameIndex(ElementPtr->next.image.farray[0],
 										   GetFrameCount(ElementPtr->next.image.farray[0]) - 2);
 				if (IS_HD) // Clear background
+				{
 					ModifySilhouette(ShipPtr, &s, MODIFY_SWAP);
+				}
 				ModifySilhouette(ShipPtr, &s, 0);
 			}
 
@@ -441,7 +465,9 @@ LeftShip:
 							  ElementPtr, true, OPTVAL_FULL_GOD)))
 					{
 						if (!DeltaCrew(ShipPtr, -1))
+						{
 							ShipPtr->life_span = 0;
+						}
 					}
 
 					++ElementPtr->thrust_wait;
@@ -552,7 +578,9 @@ marine_preprocess(ELEMENT* ElementPtr)
 	UnlockElement(StarShipPtr->hShip);
 
 	if (LONIBBLE(ElementPtr->turn_wait))
+	{
 		--ElementPtr->turn_wait;
+	}
 	else
 	{
 		uqm::COUNT facing, pfacing = 0;
@@ -602,17 +630,23 @@ marine_preprocess(ELEMENT* ElementPtr)
 				if (!elementsOfSamePlayer(ObjectPtr, ElementPtr))
 				{
 					if (ElementPtr->state_flags & IGNORE_SIMILAR)
+					{
 						hTarget = hObject;
+					}
 				}
 				else if (hTarget == 0)
+				{
 					hTarget = hObject;
+				}
 			}
 			UnlockElement(hObject);
 		}
 
 		facing = HINIBBLE(ElementPtr->turn_wait);
 		if (hTarget == 0)
+		{
 			delta_facing = -1;
+		}
 		else
 		{
 			LockElement(hTarget, &ObjectPtr);
@@ -628,15 +662,23 @@ marine_preprocess(ELEMENT* ElementPtr)
 												+ ANGLE_TO_FACING(OCTANT));
 
 				if (delta_facing > ANGLE_TO_FACING(QUADRANT))
+				{
 					delta_facing = 0;
+				}
 				else
 				{
 					if (delta_facing == ANGLE_TO_FACING(OCTANT))
+					{
 						facing += (((uqm::SIZE)TFB_Random() & 1) << 1) - 1;
+					}
 					else if (delta_facing < ANGLE_TO_FACING(OCTANT))
+					{
 						++facing;
+					}
 					else
+					{
 						--facing;
+					}
 				}
 			}
 			else
@@ -659,7 +701,9 @@ marine_preprocess(ELEMENT* ElementPtr)
 								+ (long)delta_y * delta_y)));
 
 				if (num_frames == 0)
+				{
 					num_frames = 1;
+				}
 
 				ShipVelocity = ObjectPtr->velocity;
 				GetNextVelocityComponentsSdword(&ShipVelocity,
@@ -676,11 +720,17 @@ marine_preprocess(ELEMENT* ElementPtr)
 				if (delta_facing > 0)
 				{
 					if (delta_facing == ANGLE_TO_FACING(HALF_CIRCLE))
+					{
 						facing += (((uqm::BYTE)TFB_Random() & 1) << 1) - 1;
+					}
 					else if (delta_facing < ANGLE_TO_FACING(HALF_CIRCLE))
+					{
 						++facing;
+					}
 					else
+					{
 						--facing;
+					}
 				}
 			}
 			UnlockElement(hTarget);
@@ -792,7 +842,9 @@ void marine_collision(ELEMENT* ElementPtr0, POINT* pPt0,
 						  ElementPtr1, false, OPTVAL_FULL_GOD)))
 				{
 					if (!DeltaCrew(ElementPtr1, -1))
+					{
 						ElementPtr1->life_span = 0;
+					}
 				}
 
 				ElementPtr0->turn_wait = count_marines(StarShipPtr, true);
@@ -825,7 +877,9 @@ static void
 animate(ELEMENT* ElementPtr)
 {
 	if (ElementPtr->turn_wait > 0)
+	{
 		--ElementPtr->turn_wait;
+	}
 	else
 	{
 		ElementPtr->next.image.frame =
@@ -870,14 +924,20 @@ turret_postprocess(ELEMENT* ElementPtr)
 				TurretPtr->thrust_wait = ElementPtr->thrust_wait;
 
 				if (TurretPtr->turn_wait)
+				{
 					--TurretPtr->turn_wait;
+				}
 				else if ((StarShipPtr->cur_status_flags & SPECIAL)
 						 && (StarShipPtr->cur_status_flags & (LEFT | RIGHT)))
 				{
 					if (StarShipPtr->cur_status_flags & RIGHT)
+					{
 						++TurretPtr->thrust_wait;
+					}
 					else
+					{
 						--TurretPtr->thrust_wait;
+					}
 
 					TurretPtr->turn_wait = TURRET_WAIT;
 				}

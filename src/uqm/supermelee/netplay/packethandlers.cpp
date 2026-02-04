@@ -67,19 +67,31 @@ versionCompare(int major1, int minor1, float patch1,
 			   int major2, int minor2, float patch2)
 {
 	if (major1 < major2)
+	{
 		return -1;
+	}
 	if (major1 > major2)
+	{
 		return 1;
+	}
 
 	if (minor1 < minor2)
+	{
 		return -1;
+	}
 	if (minor1 > minor2)
+	{
 		return 1;
+	}
 
 	if (patch1 < patch2)
+	{
 		return -1;
+	}
 	if (patch1 > patch2)
+	{
 		return 1;
+	}
 
 	return 0;
 }
@@ -87,7 +99,9 @@ versionCompare(int major1, int minor1, float patch1,
 int PacketHandler_Init(NetConnection* conn, const Packet_Init* packet)
 {
 	if (conn->stateFlags.reset.localReset)
+	{
 		return 0;
+	}
 	if (conn->stateFlags.reset.remoteReset)
 	{
 		errno = EBADMSG;
@@ -95,7 +109,9 @@ int PacketHandler_Init(NetConnection* conn, const Packet_Init* packet)
 	}
 
 	if (!testNetState(conn->state == NetState_init && !conn->stateFlags.ready.remoteReady, PACKET_INIT))
+	{
 		return -1; // errno is set
+	}
 
 	if (packet->protoVersion.major != NETPLAY_PROTOCOL_VERSION_MAJOR || packet->protoVersion.minor != NETPLAY_PROTOCOL_VERSION_MINOR)
 	{
@@ -131,7 +147,9 @@ int PacketHandler_Init(NetConnection* conn, const Packet_Init* packet)
 int PacketHandler_Ping(NetConnection* conn, const Packet_Ping* packet)
 {
 	if (!testNetState(conn->state > NetState_init, PACKET_PING))
+	{
 		return -1; // errno is set
+	}
 
 	sendAck(conn, packet->id);
 	return 0;
@@ -140,7 +158,9 @@ int PacketHandler_Ping(NetConnection* conn, const Packet_Ping* packet)
 int PacketHandler_Ack(NetConnection* conn, const Packet_Ack* packet)
 {
 	if (!testNetState(conn->state > NetState_init, PACKET_ACK))
+	{
 		return -1; // errno is set
+	}
 
 	(void)conn;
 	(void)packet;
@@ -164,7 +184,9 @@ localSide(NetConnection* conn, NetplaySide side)
 int PacketHandler_Ready(NetConnection* conn, const Packet_Ready* packet)
 {
 	if (conn->stateFlags.reset.localReset)
+	{
 		return 0;
+	}
 	if (conn->stateFlags.reset.remoteReset)
 	{
 		errno = EBADMSG;
@@ -172,7 +194,9 @@ int PacketHandler_Ready(NetConnection* conn, const Packet_Ready* packet)
 	}
 
 	if (!testNetState(readyFlagsMeaningful(conn->state) && !conn->stateFlags.ready.remoteReady, PACKET_READY))
+	{
 		return -1; // errno is set
+	}
 
 	Netplay_remoteReady(conn);
 
@@ -191,7 +215,9 @@ int PacketHandler_Fleet(NetConnection* conn, const Packet_Fleet* packet)
 	BattleStateData* battleStateData;
 
 	if (conn->stateFlags.reset.localReset)
+	{
 		return 0;
+	}
 	if (conn->stateFlags.reset.remoteReset)
 	{
 		errno = EBADMSG;
@@ -199,7 +225,9 @@ int PacketHandler_Fleet(NetConnection* conn, const Packet_Fleet* packet)
 	}
 
 	if (!testNetState(conn->state == NetState_inSetup, PACKET_FLEET))
+	{
 		return -1; // errno is set
+	}
 
 	player = localSide(conn, (NetplaySide)packet->side);
 
@@ -260,7 +288,9 @@ int PacketHandler_TeamName(NetConnection* conn, const Packet_TeamName* packet)
 	BattleStateData* battleStateData;
 
 	if (conn->stateFlags.reset.localReset)
+	{
 		return 0;
+	}
 	if (conn->stateFlags.reset.remoteReset)
 	{
 		errno = EBADMSG;
@@ -268,7 +298,9 @@ int PacketHandler_TeamName(NetConnection* conn, const Packet_TeamName* packet)
 	}
 
 	if (!testNetState(conn->state == NetState_inSetup, PACKET_FLEET))
+	{
 		return -1; // errno is set
+	}
 
 	battleStateData = (BattleStateData*)NetConnection_getStateData(conn);
 
@@ -287,7 +319,9 @@ int PacketHandler_TeamName(NetConnection* conn, const Packet_TeamName* packet)
 		char buf[MAX_TEAM_CHARS + 1];
 
 		if (nameLen > MAX_TEAM_CHARS)
+		{
 			nameLen = MAX_TEAM_CHARS;
+		}
 		memcpy(buf, (const char*)packet->name, nameLen);
 		buf[nameLen] = '\0';
 
@@ -314,7 +348,9 @@ int PacketHandler_Handshake0(NetConnection* conn,
 							 const Packet_Handshake0* packet)
 {
 	if (conn->stateFlags.reset.localReset)
+	{
 		return 0;
+	}
 	if (conn->stateFlags.reset.remoteReset)
 	{
 		errno = EBADMSG;
@@ -324,11 +360,15 @@ int PacketHandler_Handshake0(NetConnection* conn,
 	if (!testNetState(handshakeMeaningful(conn->state)
 						  && !conn->stateFlags.handshake.remoteOk,
 					  PACKET_HANDSHAKE0))
+	{
 		return -1; // errno is set
+	}
 
 	conn->stateFlags.handshake.remoteOk = true;
 	if (conn->stateFlags.handshake.localOk && !conn->stateFlags.handshake.canceling)
+	{
 		sendHandshake1(conn);
+	}
 
 	(void)packet;
 	// Its contents is not interesting.
@@ -340,7 +380,9 @@ int PacketHandler_Handshake1(NetConnection* conn,
 							 const Packet_Handshake1* packet)
 {
 	if (conn->stateFlags.reset.localReset)
+	{
 		return 0;
+	}
 	if (conn->stateFlags.reset.remoteReset)
 	{
 		errno = EBADMSG;
@@ -348,7 +390,9 @@ int PacketHandler_Handshake1(NetConnection* conn,
 	}
 
 	if (!testNetState(handshakeMeaningful(conn->state) && (conn->stateFlags.handshake.localOk || conn->stateFlags.handshake.canceling), PACKET_HANDSHAKE1))
+	{
 		return -1; // errno is set
+	}
 
 	if (conn->stateFlags.handshake.canceling)
 	{
@@ -382,7 +426,9 @@ int PacketHandler_HandshakeCancel(NetConnection* conn,
 								  const Packet_HandshakeCancel* packet)
 {
 	if (conn->stateFlags.reset.localReset)
+	{
 		return 0;
+	}
 	if (conn->stateFlags.reset.remoteReset)
 	{
 		errno = EBADMSG;
@@ -392,7 +438,9 @@ int PacketHandler_HandshakeCancel(NetConnection* conn,
 	if (!testNetState(handshakeMeaningful(conn->state)
 						  && conn->stateFlags.handshake.remoteOk,
 					  PACKET_HANDSHAKECANCEL))
+	{
 		return -1; // errno is set
+	}
 
 	conn->stateFlags.handshake.remoteOk = false;
 	sendHandshakeCancelAck(conn);
@@ -407,7 +455,9 @@ int PacketHandler_HandshakeCancelAck(NetConnection* conn,
 									 const Packet_HandshakeCancelAck* packet)
 {
 	if (conn->stateFlags.reset.localReset)
+	{
 		return 0;
+	}
 	if (conn->stateFlags.reset.remoteReset)
 	{
 		errno = EBADMSG;
@@ -417,7 +467,9 @@ int PacketHandler_HandshakeCancelAck(NetConnection* conn,
 	if (!testNetState(handshakeMeaningful(conn->state)
 						  && conn->stateFlags.handshake.canceling,
 					  PACKET_HANDSHAKECANCELACK))
+	{
 		return -1; // errno is set
+	}
 
 	conn->stateFlags.handshake.canceling = false;
 	if (conn->stateFlags.handshake.localOk)
@@ -427,7 +479,9 @@ int PacketHandler_HandshakeCancelAck(NetConnection* conn,
 			sendHandshake1(conn);
 		}
 		else
+		{
 			sendHandshake0(conn);
+		}
 	}
 
 	(void)packet;
@@ -442,7 +496,9 @@ int PacketHandler_SeedRandom(NetConnection* conn,
 	BattleStateData* battleStateData;
 
 	if (conn->stateFlags.reset.localReset)
+	{
 		return 0;
+	}
 	if (conn->stateFlags.reset.remoteReset)
 	{
 		errno = EBADMSG;
@@ -450,7 +506,9 @@ int PacketHandler_SeedRandom(NetConnection* conn,
 	}
 
 	if (!testNetState(conn->state == NetState_preBattle && !conn->stateFlags.discriminant, PACKET_SEEDRANDOM))
+	{
 		return -1; // errno is set
+	}
 
 	battleStateData = (BattleStateData*)NetConnection_getStateData(conn);
 	updateRandomSeed(battleStateData->meleeState, conn->player,
@@ -467,7 +525,9 @@ int PacketHandler_InputDelay(NetConnection* conn,
 	uint32 delay;
 
 	if (conn->stateFlags.reset.localReset)
+	{
 		return 0;
+	}
 	if (conn->stateFlags.reset.remoteReset)
 	{
 		errno = EBADMSG;
@@ -475,7 +535,9 @@ int PacketHandler_InputDelay(NetConnection* conn,
 	}
 
 	if (!testNetState(conn->state == NetState_preBattle, PACKET_INPUTDELAY))
+	{
 		return -1; // errno is set
+	}
 
 	// battleStateData = (BattleStateData *) NetConnection_getStateData(conn);
 	delay = ntoh32(packet->delay);
@@ -498,7 +560,9 @@ int PacketHandler_SelectShip(NetConnection* conn,
 	BattleStateData* battleStateData;
 
 	if (conn->stateFlags.reset.localReset)
+	{
 		return 0;
+	}
 	if (conn->stateFlags.reset.remoteReset)
 	{
 		errno = EBADMSG;
@@ -506,7 +570,9 @@ int PacketHandler_SelectShip(NetConnection* conn,
 	}
 
 	if (!testNetState(conn->state == NetState_selectShip, PACKET_SELECTSHIP))
+	{
 		return -1; // errno is set
+	}
 
 	battleStateData = (BattleStateData*)NetConnection_getStateData(conn);
 	updateResult = updateMeleeSelection(battleStateData->getMeleeState,
@@ -527,7 +593,9 @@ int PacketHandler_BattleInput(NetConnection* conn,
 	BattleInputBuffer* bib;
 
 	if (conn->stateFlags.reset.localReset)
+	{
 		return 0;
+	}
 	if (conn->stateFlags.reset.remoteReset)
 	{
 		errno = EBADMSG;
@@ -535,7 +603,9 @@ int PacketHandler_BattleInput(NetConnection* conn,
 	}
 
 	if (!testNetState(conn->state == NetState_inBattle || conn->state == NetState_endingBattle || conn->state == NetState_endingBattle2, PACKET_BATTLEINPUT))
+	{
 		return -1; // errno is set
+	}
 
 	input = (BATTLE_INPUT_STATE)packet->state;
 	bib = getBattleInputBuffer(conn->player);
@@ -555,7 +625,9 @@ int PacketHandler_FrameCount(NetConnection* conn,
 	BattleFrameCounter frameCount;
 
 	if (conn->stateFlags.reset.localReset)
+	{
 		return 0;
+	}
 	if (conn->stateFlags.reset.remoteReset)
 	{
 		errno = EBADMSG;
@@ -564,7 +636,9 @@ int PacketHandler_FrameCount(NetConnection* conn,
 
 	if (!testNetState(conn->state == NetState_endingBattle,
 					  PACKET_FRAMECOUNT))
+	{
 		return -1; // errno is set
+	}
 
 	frameCount = (BattleFrameCounter)ntoh32(packet->frameCount);
 #ifdef NETPLAY_DEBUG
@@ -574,7 +648,9 @@ int PacketHandler_FrameCount(NetConnection* conn,
 
 	battleStateData = (BattleStateData*)NetConnection_getStateData(conn);
 	if (frameCount > battleStateData->endFrameCount)
+	{
 		battleStateData->endFrameCount = frameCount;
+	}
 	Netplay_remoteReady(conn);
 
 	return 0;
@@ -590,7 +666,9 @@ int PacketHandler_Checksum(NetConnection* conn, const Packet_Checksum* packet)
 #endif
 
 	if (conn->stateFlags.reset.localReset)
+	{
 		return 0;
+	}
 	if (conn->stateFlags.reset.remoteReset)
 	{
 		errno = EBADMSG;
@@ -598,7 +676,9 @@ int PacketHandler_Checksum(NetConnection* conn, const Packet_Checksum* packet)
 	}
 
 	if (!testNetState(NetState_battleActive(conn->state), PACKET_CHECKSUM))
+	{
 		return -1; // errno is set
+	}
 
 #ifdef NETPLAY_CHECKSUM
 	frameNr = ntoh32(packet->frameNr);
@@ -676,7 +756,9 @@ int PacketHandler_Reset(NetConnection* conn, const Packet_Reset* packet)
 	NetplayResetReason reason;
 
 	if (!testNetState(!conn->stateFlags.reset.remoteReset, PACKET_RESET))
+	{
 		return -1; // errno is set
+	}
 
 	reason = (NetplayResetReason)ntoh16(packet->reason);
 

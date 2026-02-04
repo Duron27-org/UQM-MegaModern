@@ -58,9 +58,13 @@ InitTree(void)
 		dad = rson + (N + 257);
 
 		for (i = N + 1; i <= N + 256; i++)
+		{
 			rson[i] = NIL; /* root */
+		}
 		for (i = 0; i < N; i++)
+		{
 			dad[i] = NIL; /* node */
+		}
 
 		return (true);
 	}
@@ -84,7 +88,9 @@ InsertNode(uqm::SWORD r)
 		if (cmp >= 0)
 		{
 			if (rson[p] != NIL)
+			{
 				p = rson[p];
+			}
 			else
 			{
 				rson[p] = r;
@@ -95,7 +101,9 @@ InsertNode(uqm::SWORD r)
 		else
 		{
 			if (lson[p] != NIL)
+			{
 				p = lson[p];
+			}
 			else
 			{
 				lson[p] = r;
@@ -119,7 +127,9 @@ InsertNode(uqm::SWORD r)
 			{
 				match_position = ((r - p) & (N - 1)) - 1;
 				if ((match_length = i) >= F)
+				{
 					break;
+				}
 			}
 			else if (i == match_length)
 			{
@@ -136,9 +146,13 @@ InsertNode(uqm::SWORD r)
 	dad[lson[p]] = r;
 	dad[rson[p]] = r;
 	if (rson[dad[p]] == p)
+	{
 		rson[dad[p]] = r;
+	}
 	else
+	{
 		lson[dad[p]] = r;
+	}
 	dad[p] = NIL; /* remove p */
 }
 
@@ -148,11 +162,17 @@ DeleteNode(uqm::SWORD p)
 	uqm::SWORD q;
 
 	if (dad[p] == NIL)
+	{
 		return; /* unregistered */
+	}
 	if (rson[p] == NIL)
+	{
 		q = lson[p];
+	}
 	else if (lson[p] == NIL)
+	{
 		q = rson[p];
+	}
 	else
 	{
 		q = lson[p];
@@ -172,9 +192,13 @@ DeleteNode(uqm::SWORD p)
 	}
 	dad[q] = dad[p];
 	if (rson[dad[p]] == p)
+	{
 		rson[dad[p]] = q;
+	}
 	else
+	{
 		lson[dad[p]] = q;
+	}
 	dad[p] = NIL;
 }
 
@@ -221,7 +245,9 @@ EncodeChar(uqm::UWORD c)
 		else output 0
 		*/
 		if (k & 1)
+		{
 			i += 0x8000;
+		}
 
 		j++;
 	} while ((k = _lpCurCodeDesc->prnt[k]) != R);
@@ -298,13 +324,17 @@ _encode_cleanup(void)
 	s = _lpCurCodeDesc->restart_index;
 	last_match_length = _lpCurCodeDesc->bytes_left;
 	if (_lpCurCodeDesc->StreamLength >= F)
+	{
 		len = F;
+	}
 	else
 	{
 		uqm::UWORD i;
 
 		for (i = 1; i <= F; i++)
+		{
 			InsertNode(r - i);
+		}
 		InsertNode(r);
 
 		len = (uqm::UWORD)_lpCurCodeDesc->StreamLength;
@@ -325,10 +355,14 @@ _encode_cleanup(void)
 				_lpCurCodeDesc->StreamIndex += 4;
 				/* rewind */
 				if (_lpCurCodeDesc->StreamType == FILE_STREAM)
+				{
 					SeekResFile((uio_Stream*)_Stream,
 								-(int)_lpCurCodeDesc->StreamIndex, SEEK_CUR);
+				}
 				else /* _lpCurCodeDesc->StreamType == MEMORY_STREAM */
+				{
 					_Stream = (uqm::BYTE*)_Stream - _lpCurCodeDesc->StreamIndex;
+				}
 
 				loword = LOWORD(_lpCurCodeDesc->StreamLength);
 				lobyte = lowByte(loword);
@@ -348,7 +382,9 @@ _encode_cleanup(void)
 			InsertNode(r);
 		}
 		if (match_length > len)
+		{
 			match_length = len;
+		}
 		if (match_length <= THRESHOLD)
 		{
 			match_length = 1;
@@ -372,7 +408,9 @@ cwrite(const void* buf, uqm::COUNT size, uqm::COUNT count, PLZHCODE_DESC lpCodeD
 
 	if ((_lpCurCodeDesc = lpCodeDesc) == 0
 		|| (size *= count) == 0)
+	{
 		return (0);
+	}
 
 	_StreamType = lpCodeDesc->StreamType;
 	_Stream = (uqm::BYTE*)lpCodeDesc->Stream;
@@ -396,7 +434,9 @@ cwrite(const void* buf, uqm::COUNT size, uqm::COUNT count, PLZHCODE_DESC lpCodeD
 		if ((i = (uqm::UWORD)lpCodeDesc->StreamLength) == 0)
 		{
 			if (!InitTree())
+			{
 				return (0);
+			}
 
 			_lpCurCodeDesc->StreamIndex = 0;
 			lpCodeDesc->CleanupFunc = _encode_cleanup;
@@ -405,23 +445,35 @@ cwrite(const void* buf, uqm::COUNT size, uqm::COUNT count, PLZHCODE_DESC lpCodeD
 		lpCodeDesc->StreamLength += size;
 
 		for (; i < F && size; ++i, --size)
+		{
 			lpBuf[r + i] = *lpStr++;
+		}
 		if (i < F)
+		{
 			goto EncodeExit;
+		}
 
 		for (i = 1; i <= F; i++)
+		{
 			InsertNode(r - i);
+		}
 		InsertNode(r);
 		if (size == 0)
+		{
 			goto EncodeExit;
+		}
 	}
 	else
+	{
 		lpCodeDesc->StreamLength += size;
+	}
 
 	do
 	{
 		if (match_length > F)
+		{
 			match_length = F;
+		}
 		if (match_length <= THRESHOLD)
 		{
 			match_length = 1;
@@ -445,7 +497,9 @@ EncodeRestart:
 			c = *lpStr++;
 			lpBuf[s] = c;
 			if (s < F - 1)
+			{
 				lpBuf[s + N] = c;
+			}
 			s = (s + 1) & (N - 1);
 			r = (r + 1) & (N - 1);
 			InsertNode(r);

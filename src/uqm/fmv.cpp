@@ -54,7 +54,9 @@ void DoShipSpin(uqm::COUNT index, MUSIC_REF hMusic)
 	LoadIntoExtraScreen(NULL);
 
 	if (hMusic)
+	{
 		StopMusic();
+	}
 
 	FreeHyperData();
 
@@ -75,7 +77,9 @@ void DoShipSpin(uqm::COUNT index, MUSIC_REF hMusic)
 	ShowPresentation(vnbuf);
 
 	if (is3DO(optWhichIntro))
+	{
 		SleepThreadUntil(FadeScreen(FadeAllToBlack, ONE_SECOND / 4));
+	}
 	FlushColorXForms();
 
 	SetContext(OldContext);
@@ -86,10 +90,14 @@ void DoShipSpin(uqm::COUNT index, MUSIC_REF hMusic)
 	SetContextClipRect(&old_r);
 
 	if (hMusic)
+	{
 		PlayMusic(hMusic, true, 1);
+	}
 
 	if (is3DO(optWhichIntro))
+	{
 		SleepThreadUntil(FadeScreen(FadeAllToColor, ONE_SECOND / 4));
+	}
 	FlushColorXForms();
 }
 
@@ -107,9 +115,13 @@ void SplashScreen(void (*DoProcessing)(uqm::DWORD TimeOut))
 		s.frame = CaptureDrawable(LoadGraphic(TITLE_ANIM));
 
 		if (optFlagshipColor == OPT_3DO)
+		{
 			s.frame = SetAbsFrameIndex(s.frame, 1);
+		}
 		else
+		{
 			s.frame = SetAbsFrameIndex(s.frame, 0);
+		}
 
 		DrawStamp(&s);
 		DestroyDrawable(ReleaseDrawable(s.frame));
@@ -118,9 +130,13 @@ void SplashScreen(void (*DoProcessing)(uqm::DWORD TimeOut))
 	}
 
 	if (DoProcessing)
+	{
 		DoProcessing(TimeOut);
+	}
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+	{
 		return;
+	}
 
 	/* There was a forcible setting of CHECK_ABORT here.  I cannot
 	 * find any purpose for this that DoRestart doesn't handle
@@ -130,13 +146,19 @@ void SplashScreen(void (*DoProcessing)(uqm::DWORD TimeOut))
 	 * --Michael */
 
 	if (!optSkipIntro)
+	{
 		SleepThreadUntil(OverallWait);
+	}
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+	{
 		return;
+	}
 	GLOBAL(CurrentActivity) &= ~CHECK_ABORT;
 
 	if (!optSkipIntro)
+	{
 		SleepThreadUntil(FadeScreen(FadeAllToBlack, ONE_SECOND / 2));
+	}
 }
 
 void Introduction(void)
@@ -159,7 +181,9 @@ void Victory(void)
 void GameOver(uqm::BYTE DeathType)
 {
 	if (DeathType != SUICIDE)
+	{
 		SleepThreadUntil(FadeScreen(FadeAllToBlack, ONE_SECOND / 2));
+	}
 
 	switch (DeathType)
 	{

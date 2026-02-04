@@ -164,7 +164,9 @@ static bool
 read_le_16(uio_Stream* fp, uint16* v)
 {
 	if (!uio_fread(v, sizeof(*v), 1, fp))
+	{
 		return false;
+	}
 	*v = UQM_SwapLE16(*v);
 	return true;
 }
@@ -173,7 +175,9 @@ static bool
 read_le_32(uio_Stream* fp, uint32* v)
 {
 	if (!uio_fread(v, sizeof(*v), 1, fp))
+	{
 		return false;
+	}
 	*v = UQM_SwapLE32(*v);
 	return true;
 }
@@ -303,8 +307,10 @@ wava_Open(THIS_PTR, uio_DirHandle* dir, const char* filename)
 	}
 
 	if (dataLeft != 0)
+	{
 		log_add(log_Warning, "wava_Open(): bad or unsupported wave file, "
 							 "size in header does not match read chunks");
+	}
 
 	This->format = (wava->fmtHdr.channels == 1 ?
 						(wava->fmtHdr.bitsPerSample == 8 ?
@@ -345,7 +351,9 @@ wava_Decode(THIS_PTR, void* buf, sint32 bufsize)
 
 	dec_pcm = bufsize / wava->fmtHdr.blockAlign;
 	if (dec_pcm > wava->max_pcm - wava->cur_pcm)
+	{
 		dec_pcm = wava->max_pcm - wava->cur_pcm;
+	}
 
 	dec_pcm = uio_fread(buf, wava->fmtHdr.blockAlign, dec_pcm, wava->fp);
 	wava->cur_pcm += dec_pcm;
@@ -359,7 +367,9 @@ wava_Seek(THIS_PTR, uint32 pcm_pos)
 	TFB_WaveSoundDecoder* wava = (TFB_WaveSoundDecoder*)This;
 
 	if (pcm_pos > wava->max_pcm)
+	{
 		pcm_pos = wava->max_pcm;
+	}
 	wava->cur_pcm = pcm_pos;
 	uio_fseek(wava->fp,
 			  wava->data_ofs + pcm_pos * wava->fmtHdr.blockAlign,

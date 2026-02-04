@@ -181,14 +181,18 @@ SCALE_(CmpYUV)(const SDL_PixelFormat* fmt, Uint32 pix1, Uint32 pix2, int toler)
 				+ dRGB_to_dYUV[YUV_XFORM_G][YUV_XFORM_Y][dg]
 				+ dRGB_to_dYUV[YUV_XFORM_B][YUV_XFORM_Y][db]);
 	if (delta > toler)
+	{
 		return false;
+	}
 
 	// compute U delta
 	delta += abs(dRGB_to_dYUV[YUV_XFORM_R][YUV_XFORM_U][dr]
 				 + dRGB_to_dYUV[YUV_XFORM_G][YUV_XFORM_U][dg]
 				 + dRGB_to_dYUV[YUV_XFORM_B][YUV_XFORM_U][db]);
 	if (delta > toler)
+	{
 		return false;
+	}
 
 	// compute V delta
 	delta += abs(dRGB_to_dYUV[YUV_XFORM_R][YUV_XFORM_V][dr]
@@ -209,12 +213,16 @@ SCALE_(CmpYUV)(const SDL_PixelFormat* fmt, Uint32 pix1, Uint32 pix2, int toler)
 	// compute Y delta
 	delta = abs((yuv1 & 0xff0000) - (yuv2 & 0xff0000)) >> 16;
 	if (delta > toler)
+	{
 		return false;
+	}
 
 	// compute U delta
 	delta += abs((yuv1 & 0x00ff00) - (yuv2 & 0x00ff00)) >> 8;
 	if (delta > toler)
+	{
 		return false;
+	}
 
 	// compute V delta
 	delta += abs((yuv1 & 0x0000ff) - (yuv2 & 0x0000ff));
@@ -235,7 +243,9 @@ SCALE_(DiffYUV)(Uint32 yuv1, Uint32 yuv2)
 	sint32 delta, ret;
 
 	if (yuv1 == yuv2)
+	{
 		return 0;
+	}
 
 	// compute Y delta
 	delta = abs(int(yuv1 & 0xff0000u) - int(yuv2 & 0xff0000u));

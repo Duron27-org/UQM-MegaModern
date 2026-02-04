@@ -161,7 +161,9 @@ void UniSkipOpcode(void)
 		UWORD t = unioperands[lastbyte];
 
 		while (t--)
+		{
 			UniGetByte();
+		}
 	}
 }
 
@@ -172,17 +174,23 @@ UBYTE* UniFindRow(UBYTE* t, UWORD row)
 	UBYTE c, l;
 
 	if (t)
+	{
 		while (1)
 		{
 			c = *t; /* get rep/len byte */
 			if (!c)
-				return NULL;  /* zero ? -> end of track.. */
+			{
+				return NULL; /* zero ? -> end of track.. */
+			}
 			l = (c >> 5) + 1; /* extract repeat value */
 			if (l > row)
-				break;	   /* reached wanted row? -> return pointer */
+			{
+				break; /* reached wanted row? -> return pointer */
+			}
 			row -= l;	   /* haven't reached row yet.. update row */
 			t += c & 0x1f; /* point t to the next row */
 		}
+	}
 	return t;
 }
 
@@ -222,7 +230,9 @@ static BOOL UniExpand(int wanted)
 			return 1;
 		}
 		else
+		{
 			return 0;
+		}
 	}
 	return 1;
 }
@@ -231,8 +241,10 @@ static BOOL UniExpand(int wanted)
 void UniWriteByte(UBYTE data)
 {
 	if (UniExpand(1))
+	{
 		/* write byte to current position and update */
 		unibuf[unipc++] = data;
+	}
 }
 
 void UniWriteWord(UWORD data)
@@ -249,8 +261,12 @@ static BOOL MyCmp(const UBYTE* a, const UBYTE* b, UWORD l)
 	UWORD t;
 
 	for (t = 0; t < l; t++)
+	{
 		if (*(a++) != *(b++))
+		{
 			return 0;
+		}
+	}
 	return 1;
 }
 
@@ -291,11 +307,15 @@ UBYTE* UniDup(void)
 	void* d;
 
 	if (!UniExpand(unipc - unitt))
+	{
 		return NULL;
+	}
 	unibuf[unitt] = 0;
 
 	if (!(d = MikMod_malloc(unipc)))
+	{
 		return NULL;
+	}
 	memcpy(d, unibuf, unipc);
 
 	return (UBYTE*)d;
@@ -306,7 +326,9 @@ BOOL UniInit(void)
 	unimax = BUFPAGE;
 
 	if (!(unibuf = (UBYTE*)MikMod_malloc(unimax * sizeof(UBYTE))))
+	{
 		return 0;
+	}
 	return 1;
 }
 

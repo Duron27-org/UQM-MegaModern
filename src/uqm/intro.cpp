@@ -113,7 +113,9 @@ ParseColorString(const char* Src, Color* pColor)
 {
 	unsigned clr;
 	if (1 != sscanf(Src, "%x", &clr))
+	{
 		return false;
+	}
 
 	*pColor = BUILD_COLOR_RGBA(
 		(clr >> 16) & 0xff, (clr >> 8) & 0xff, clr & 0xff, 0xff);
@@ -157,7 +159,9 @@ ParseTextLines(TEXT* Lines, uqm::COUNT MaxLines, char* Buffer)
 	{
 		char* pTerm = strchr(Buffer, '\n');
 		if (!pTerm)
+		{
 			pTerm = Buffer + strlen(Buffer);
+		}
 		*pTerm = '\0'; /* terminate string */
 		Lines->pStr = Buffer;
 		Lines->CharCount = ~0;
@@ -184,7 +188,9 @@ Present_UnbatchGraphics(PRESENTATION_INPUT_STATE* pPIS, bool bYield)
 		UnbatchGraphics();
 		pPIS->Batched = false;
 		if (bYield)
+		{
 			TaskSwitch();
+		}
 	}
 }
 
@@ -386,7 +392,9 @@ DoSpinStat(uqm::CHAR_T* buf, COORD x, COORD y, uqm::COUNT filled, uqm::COUNT emp
 
 		UpdateInputState();
 		if (CurrentInputState.menu[KEY_MENU_CANCEL] || (GLOBAL(CurrentActivity) & CHECK_ABORT))
+		{
 			*skip = true;
+		}
 	}
 	for (i = 0; i < empty; i++)
 	{
@@ -402,7 +410,9 @@ DoSpinStat(uqm::CHAR_T* buf, COORD x, COORD y, uqm::COUNT filled, uqm::COUNT emp
 				DrawFilledRectangle(&chd);
 			}
 			else
+			{
 				DrawPoint(&c);
+			}
 			PlayMenuSound(MENU_SOUND_TEXT);
 			SleepThread(ONE_SECOND / 16);
 		}
@@ -414,12 +424,16 @@ DoSpinStat(uqm::CHAR_T* buf, COORD x, COORD y, uqm::COUNT filled, uqm::COUNT emp
 			DrawFilledRectangle(&chd);
 		}
 		else
+		{
 			DrawPoint(&c);
+		}
 		sq.corner.x += RES_SCALE(6);
 
 		UpdateInputState();
 		if (CurrentInputState.menu[KEY_MENU_CANCEL] || (GLOBAL(CurrentActivity) & CHECK_ABORT))
+		{
 			*skip = true;
+		}
 	}
 }
 
@@ -491,19 +505,33 @@ static void
 SeedDitty(char* buf, size_t size, char* str)
 {
 	if (!optShipSeed)
+	{
 		goto SeedDittyPassThru;
+	}
 
 	for (shipID = 0; shipID < NUM_SHIPS; shipID++)
+	{
 		if (!strcasecmp(str, ship_map[shipID].ditty))
+		{
 			break;
+		}
+	}
 	if (shipID >= NUM_SHIPS)
+	{
 		goto SeedDittyPassThru;
+	}
 
 	for (raceID = 0; raceID < NUM_SHIPS; raceID++)
+	{
 		if (SeedShip(ship_map[raceID].sID, false) == ship_map[shipID].sID)
+		{
 			break;
+		}
+	}
 	if (raceID >= NUM_SHIPS)
+	{
 		goto SeedDittyPassThru;
+	}
 
 	linespun = false;
 	snprintf(buf, size, "ship.%s.ditty", ship_map[raceID].ditty);
@@ -519,10 +547,14 @@ static void
 SeedLineSpin(int* x1, int* y1, int* x2, int* y2)
 {
 	if (!optShipSeed || !x1 || !x2 || !y1 || !y2 || shipID == raceID || shipID >= NUM_SHIPS || raceID >= NUM_SHIPS)
+	{
 		goto SeedLineSpinPassThru;
+	}
 
 	if (ship_map[shipID].sID == KOHR_AH_ID && ship_map[raceID].sID != ARILOU_ID && ship_map[raceID].width > 80 && *y2 == 122)
+	{
 		*x2 -= ship_map[raceID].width - 80; // Shorten line for Spinning Blade
+	}
 	if (ship_map[shipID].sID == DRUUGE_ID && !IS_HD && ship_map[raceID].width > 80 && *y1 == 21)
 	{ // Line for High-recoil Cannon in SD, needs to move down for wide ships
 		*y1 += 10;
@@ -536,22 +568,38 @@ static void
 SeedTextSpin(char* buf, size_t size, char* str, int* x, int* y)
 {
 	if (!optShipSeed || !x || !y || shipID == raceID || shipID >= NUM_SHIPS || raceID >= NUM_SHIPS)
+	{
 		goto SeedTextSpinPassThru;
+	}
 
 	if (ship_map[shipID].sID == SPATHI_ID && IS_HD && ship_map[raceID].sID != ARILOU_ID && ship_map[raceID].width > 80 && (*x == 25 || *x == 40))
+	{
 		*x -= 15; // Rear-firing Missile Launch Tube, move left for wide ships
+	}
 	if (ship_map[shipID].sID == DRUUGE_ID && !IS_HD && ship_map[raceID].width > 80 && *x == 108)
+	{
 		*y += 10; // This is High-recoil Cannon, move down for wide ships
+	}
 	if (ship_map[shipID].sID == SLYLANDRO_ID && *x == 18)
+	{
 		goto SeedTextSpinSkipLine; // This is 2418-B skip unless O.G.
+	}
 	if (ship_map[shipID].spinline != *y)
+	{
 		goto SeedTextSpinPassThru; // This is anything not on the spinline
+	}
 	if (ship_map[shipID].sID == MELNORME_ID && *x == 215)
+	{
 		goto SeedTextSpinPassThru; // This is Confusion Ray, on the spinline
+	}
 	if (ship_map[shipID].sID == UR_QUAN_ID && *x == 222)
+	{
 		goto SeedTextSpinPassThru; // This is Fusion Blast, on the spinline
+	}
 	if (linespun)
+	{
 		goto SeedTextSpinSkipLine; // Anything on the spinline we've done
+	}
 
 	linespun = true;
 	utf8StringCopy(buf, size, ship_map[raceID].race);
@@ -571,7 +619,9 @@ SeedTextSpin(char* buf, size_t size, char* str, int* x, int* y)
 				break;
 			}
 			if (ship_map[shipID].sID == CHENJESU_ID && IS_HD)
+			{
 				*x -= 10; // Better centering the gap over the broodhome
+			}
 			*x += ship_map[shipID].width - ship_map[raceID].width;
 			break;
 		case SHOFIXTI_ID: // Right hand hugger but squeeze it a little
@@ -600,9 +650,13 @@ SeedTextSpin(char* buf, size_t size, char* str, int* x, int* y)
 				break;
 			}
 			if (ship_map[shipID].sID == SPATHI_ID)
+			{
 				*x += 2; // Better centering over (In Attack Position)
+			}
 			if (ship_map[shipID].sID == ARILOU_ID)
+			{
 				*x += 4; // Better centering over (Last Reported Position)
+			}
 			*x += (ship_map[shipID].width - ship_map[raceID].width) / 2;
 			break;
 		case CHMMR_ID:
@@ -658,7 +712,9 @@ DoPresentation(void* pIS)
 
 	if (PulsedInputState.menu[KEY_MENU_CANCEL]
 		|| (GLOBAL(CurrentActivity) & CHECK_ABORT))
+	{
 		return false; /* abort requested - we are done */
+	}
 
 	if (pPIS->TimeOut)
 	{
@@ -671,7 +727,9 @@ DoPresentation(void* pIS)
 				Present_DrawMovieFrame(pPIS);
 				++pPIS->MovieFrame;
 				if (pPIS->MovieFrame > pPIS->MovieEndFrame)
+				{
 					pPIS->MovieFrame = -1; /* movie is done */
+				}
 				Delay = pPIS->InterframeDelay;
 			}
 			else
@@ -701,12 +759,18 @@ DoPresentation(void* pIS)
 		pPIS->SlideShow = SetRelStringTableIndex(pPIS->SlideShow, 1);
 
 		if (!pStr)
+		{
 			continue;
+		}
 		if (1 != sscanf(pStr, "%15s", Opcode))
+		{
 			continue;
+		}
 		pStr += strlen(Opcode);
 		if (*pStr != '\0')
+		{
 			++pStr;
+		}
 		_strupr(Opcode);
 
 		if (strcmp(Opcode, "DIMS") == 0)
@@ -743,7 +807,9 @@ DoPresentation(void* pIS)
 			if (pPIS->Buffer[0])
 			{ /* asked to load a font */
 				if (*pFont)
+				{
 					DestroyFont(*pFont);
+				}
 				*pFont = LoadFontFile(pPIS->Buffer);
 			}
 
@@ -767,7 +833,9 @@ DoPresentation(void* pIS)
 			if (pPIS->Buffer[0])
 			{ /* asked to load a font */
 				if (*pFont)
+				{
 					DestroyFont(*pFont);
+				}
 				*pFont = LoadFontFile(pPIS->Buffer);
 			}
 			SetContextFont(*pFont);
@@ -790,7 +858,9 @@ DoPresentation(void* pIS)
 			if (pPIS->Buffer[0])
 			{ /* asked to load a font */
 				if (*pFont)
+				{
 					DestroyFont(*pFont);
+				}
 				*pFont = LoadFontFile(pPIS->Buffer);
 			}
 			SetContextFont(*pFont);
@@ -799,21 +869,27 @@ DoPresentation(void* pIS)
 		{ /* set ani */
 			utf8StringCopy(pPIS->Buffer, sizeof(pPIS->Buffer), pStr);
 			if (pPIS->Frame)
+			{
 				DestroyDrawable(ReleaseDrawable(pPIS->Frame));
+			}
 			pPIS->Frame = CaptureDrawable(LoadGraphicFile(pPIS->Buffer));
 		}
 		else if (strcmp(Opcode, "ANI1X") == 0 && !IS_HD)
 		{ /* set ani */
 			utf8StringCopy(pPIS->Buffer, sizeof(pPIS->Buffer), pStr);
 			if (pPIS->Frame)
+			{
 				DestroyDrawable(ReleaseDrawable(pPIS->Frame));
+			}
 			pPIS->Frame = CaptureDrawable(LoadGraphicFile(pPIS->Buffer));
 		}
 		else if (strcmp(Opcode, "ANI4X") == 0 && IS_HD)
 		{ /* set ani */
 			utf8StringCopy(pPIS->Buffer, sizeof(pPIS->Buffer), pStr);
 			if (pPIS->Frame)
+			{
 				DestroyDrawable(ReleaseDrawable(pPIS->Frame));
+			}
 			pPIS->Frame = CaptureDrawable(LoadGraphicFile(pPIS->Buffer));
 		}
 		else if (strcmp(Opcode, "MUSIC") == 0)
@@ -830,10 +906,14 @@ DoPresentation(void* pIS)
 		else if (strcmp(Opcode, "DITTY") == 0)
 		{ /* set ditty */
 			if (optShipSeed)
+			{
 				SeedDitty(pPIS->Buffer, sizeof(pPIS->Buffer), pStr);
+			}
 			else
+			{
 				snprintf(pPIS->Buffer, sizeof(pPIS->Buffer),
 						 "ship.%s.ditty", pStr);
+			}
 
 			if (pPIS->MusicRef)
 			{
@@ -978,11 +1058,15 @@ DoPresentation(void* pIS)
 			if (2 == sscanf(pStr, "%d %d %n", &x, &y, &n))
 			{
 				if (optShipSeed)
+				{
 					SeedTextSpin(pPIS->Buffer, sizeof(pPIS->Buffer),
 								 pStr + n, &x, &y);
+				}
 				else
+				{
 					utf8StringCopy(pPIS->Buffer, sizeof(pPIS->Buffer),
 								   pStr + n);
+				}
 				x <<= RESOLUTION_FACTOR;
 				y <<= RESOLUTION_FACTOR;
 
@@ -1023,7 +1107,9 @@ DoPresentation(void* pIS)
 				}
 
 				if (pPIS->Skip)
+				{
 					Present_BatchGraphics(pPIS);
+				}
 			}
 		}
 		else if (strcmp(Opcode, "SPINSTAT") == 0)
@@ -1077,7 +1163,9 @@ DoPresentation(void* pIS)
 							   pPIS->TextColor, pPIS->TextBackColor, &pPIS->Skip);
 
 					if (pPIS->Skip)
+					{
 						Present_BatchGraphics(pPIS);
+					}
 				}
 			}
 			else
@@ -1123,15 +1211,19 @@ DoPresentation(void* pIS)
 			}
 
 			for (i = 0; i < pPIS->LinesCount; ++i)
+			{
 				DrawTextEffect(pPIS->TextLines + i, pPIS->TextFadeColor,
 							   pPIS->TextFadeColor, pPIS->TextEffect);
+			}
 
 			/* do transition */
 			SetTransitionSource(&pPIS->tfade_r);
 			BatchGraphics();
 			for (i = 0; i < pPIS->LinesCount; ++i)
+			{
 				DrawTextEffect(pPIS->TextLines + i, pPIS->TextColor,
 							   pPIS->TextBackColor, pPIS->TextEffect);
+			}
 			ScreenTransition(3, &pPIS->tfade_r);
 			UnbatchGraphics();
 		}
@@ -1145,8 +1237,10 @@ DoPresentation(void* pIS)
 			SetTransitionSource(&pPIS->tfade_r);
 			BatchGraphics();
 			for (i = 0; i < pPIS->LinesCount; ++i)
+			{
 				DrawTextEffect(pPIS->TextLines + i, pPIS->TextFadeColor,
 							   pPIS->TextFadeColor, pPIS->TextEffect);
+			}
 			ScreenTransition(3, &pPIS->tfade_r);
 			UnbatchGraphics();
 		}
@@ -1199,9 +1293,13 @@ DoPresentation(void* pIS)
 				continue;
 			}
 			if (cargs < 5)
+			{
 				angle = 0;
+			}
 			if (cargs < 4)
+			{
 				scale = GSCALE_IDENTITY;
+			}
 			if (cargs < 3)
 			{
 				x = 0;
@@ -1221,7 +1319,9 @@ DoPresentation(void* pIS)
 			else if (draw_what == PRES_DRAW_SIS)
 			{ /* draw dynamic SIS image with player's modules */
 				if (!pPIS->SisFrame)
+				{
 					Present_GenerateSIS(pPIS);
+				}
 
 				s.frame = SetAbsFrameIndex(pPIS->SisFrame, 0);
 			}
@@ -1308,7 +1408,9 @@ DoPresentation(void* pIS)
 			if (4 == sscanf(pStr, "%d %d %d %d", &x1, &y1, &x2, &y2))
 			{
 				if (optShipSeed)
+				{
 					SeedLineSpin(&x1, &y1, &x2, &y2);
+				}
 				LINE l;
 
 				x1 <<= RESOLUTION_FACTOR;
@@ -1334,7 +1436,9 @@ DoPresentation(void* pIS)
 				DoSpinLine(&l, pPIS->TextColor, pPIS->TextBackColor, &pPIS->Skip);
 
 				if (pPIS->Skip)
+				{
 					Present_BatchGraphics(pPIS);
+				}
 			}
 			else
 			{
@@ -1384,7 +1488,9 @@ DoPresentation(void* pIS)
 							  pPIS->TextBackColor, &pPIS->Skip);
 
 				if (pPIS->Skip)
+				{
 					Present_BatchGraphics(pPIS);
+				}
 			}
 			else
 			{
@@ -1435,7 +1541,9 @@ DoPresentation(void* pIS)
 					Now = GetTimeCounter();
 
 					if (ActKeysPress())
+					{
 						break;
+					}
 
 					if (Now >= NextTime)
 					{
@@ -1450,10 +1558,14 @@ DoPresentation(void* pIS)
 						}
 
 						if (num_loops > 0 && loops == num_loops)
+						{
 							break;
+						}
 
 						if (Now >= timeout)
+						{
 							break;
+						}
 
 						NextTime = Now + animation_rate;
 					}
@@ -1486,7 +1598,9 @@ ShowSlidePresentation(STRING PresStr)
 	memset(&pis, 0, sizeof(pis));
 	pis.SlideShow = PresStr;
 	if (!pis.SlideShow)
+	{
 		return false;
+	}
 	pis.SlideShow = SetAbsStringTableIndex(pis.SlideShow, 0);
 	pis.OperIndex = 0;
 
@@ -1515,7 +1629,9 @@ ShowSlidePresentation(STRING PresStr)
 	DestroyDrawable(ReleaseDrawable(pis.RotatedFrame));
 	DestroyDrawable(ReleaseDrawable(pis.Frame));
 	for (i = 0; i < MAX_FONTS; ++i)
+	{
 		DestroyFont(pis.Fonts[i]);
+	}
 
 	SetContextFont(OldFont);
 	SetContextClipRect(&OldRect);
@@ -1546,18 +1662,26 @@ DoVideoInput(void* pIS)
 	{
 		uqm::SDWORD newpos = VidGetPosition();
 		if (PulsedInputState.menu[KEY_MENU_LEFT])
+		{
 			newpos -= 2000;
+		}
 		else if (PulsedInputState.menu[KEY_MENU_RIGHT])
+		{
 			newpos += 1000;
+		}
 		if (newpos < 0)
+		{
 			newpos = 0;
+		}
 
 		VidSeek(newpos);
 	}
 	else
 	{
 		if (!VidProcessFrame())
+		{
 			return false;
+		}
 
 		SleepThread(ONE_SECOND / 40);
 	}
@@ -1588,7 +1712,9 @@ ShowLegacyVideo(LEGACY_VIDEO vid)
 
 	ref = PlayLegacyVideo(vid);
 	if (!ref)
+	{
 		return false;
+	}
 
 	vis.InputFunc = DoVideoInput;
 	vis.CurVideo = ref;

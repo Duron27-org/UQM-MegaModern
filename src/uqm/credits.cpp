@@ -122,7 +122,9 @@ ParseTextLines(TEXT* Lines, int MaxLines, char* Buffer)
 	{
 		char* pTerm = strchr(Buffer, '\n');
 		if (!pTerm)
+		{
 			pTerm = Buffer + strlen(Buffer);
+		}
 		*pTerm = '\0'; /* terminate string */
 		Lines->pStr = Buffer;
 		Lines->CharCount = ~0;
@@ -165,7 +167,9 @@ Credits_RenderTextFrame(CONTEXT TempContext, int* istr, int dir,
 		int next_s = *istr + dir;
 
 		if (next_s < 0 || next_s >= GetStringTableCount(CreditsTab))
+		{
 			return 0;
+		}
 
 		*istr = next_s;
 	}
@@ -177,21 +181,29 @@ Credits_RenderTextFrame(CONTEXT TempContext, int* istr, int dir,
 			SetAbsStringTableIndex(CreditsTab, *istr));
 		*istr += dir;
 		if (pStr && *pStr != '\0')
+		{
 			break;
+		}
 	}
 
 	if (!pStr || *pStr == '\0')
+	{
 		return 0;
+	}
 
 	if (2 != sscanf(pStr, "%d %31s %n", &size, salign, &scaned)
 		|| size <= 0)
+	{
 		return 0;
+	}
 	pStr += scaned;
 
 	utf8StringCopy(buf, sizeof(buf), pStr);
 	rows = ParseTextLines(TextLines, MAX_TEXT_LINES, buf);
 	if (rows == 0)
+	{
 		return 0;
+	}
 	// parse text columns
 	for (i = 0, cnt = rows; i < rows; ++i)
 	{
@@ -232,7 +244,9 @@ Credits_RenderTextFrame(CONTEXT TempContext, int* istr, int dir,
 	for (fdef = CreditsFont; fdef->size && size > fdef->size; ++fdef)
 		;
 	if (!fdef->size)
+	{
 		return 0;
+	}
 
 	t.align = ALIGN_LEFT;
 	t.baseline.x = 100; // any value will do
@@ -274,21 +288,31 @@ Credits_RenderTextFrame(CONTEXT TempContext, int* istr, int dir,
 			case 'L':
 				colfmt[i].align = ALIGN_LEFT;
 				if (n >= 2)
+				{
 					colfmt[i].basex = x;
+				}
 				break;
 			case 'C':
 				colfmt[i].align = ALIGN_CENTER;
 				if (n >= 2)
+				{
 					colfmt[i].basex = x;
+				}
 				else
+				{
 					colfmt[i].basex = CreditsExtent.width / 2;
+				}
 				break;
 			case 'R':
 				colfmt[i].align = ALIGN_RIGHT;
 				if (n >= 2)
+				{
 					colfmt[i].basex = x;
+				}
 				else
+				{
 					colfmt[i].basex = CreditsExtent.width - r.extent.width;
+				}
 				break;
 		}
 	}
@@ -309,7 +333,9 @@ Credits_RenderTextFrame(CONTEXT TempContext, int* istr, int dir,
 	// draw text
 	SetContextForeGroundColor(ForeColor);
 	for (i = 0; i < cnt; ++i)
+	{
 		font_DrawText(TextLines + i);
+	}
 
 	SetContextFGFrame(OldFrame);
 	SetContext(OldContext);
@@ -426,7 +452,9 @@ UninitCredits(void)
 	DestroyDrawable(ReleaseDrawable(CreditsFrame));
 	CreditsFrame = NULL;
 	for (; firstFrame != lastFrame; firstFrame = frameIndex(firstFrame + 1))
+	{
 		freeCreditTextFrame(&textFrames[firstFrame]);
+	}
 }
 
 static int
@@ -501,12 +529,16 @@ processCreditsFrame(void)
 		if (curFrameOfs < -(CreditsExtent.height / 20))
 		{ // at the begining, deceleration
 			if (CreditsRate < 0)
+			{
 				CreditsRate -= CreditsRate / 10 - 1;
+			}
 		}
 		else if (deficitHeight > CreditsExtent.height / 25)
 		{ // frame deficit -- credits almost over, deceleration
 			if (CreditsRate > 0)
+			{
 				CreditsRate -= CreditsRate / 10 + 1;
+			}
 
 			CreditsRunning = (CreditsRate != 0);
 		}
@@ -552,7 +584,9 @@ processCreditsFrame(void)
 
 			// get next string
 			if (firstFrame != lastFrame)
+			{
 				next_s = textFrames[frameIndex(lastFrame - 1)].strIndex + 1;
+			}
 
 			while (totalHeight - curFrameOfs < CreditsExtent.height
 				   && next_s < GetStringTableCount(CreditsTab))
@@ -577,7 +611,9 @@ processCreditsFrame(void)
 
 			// get next string
 			if (firstFrame != lastFrame)
+			{
 				next_s = textFrames[firstFrame].strIndex - 1;
+			}
 
 			while (curFrameOfs < 0 && next_s >= 0)
 			{
@@ -610,11 +646,15 @@ LoadCredits(void)
 
 	CreditsTab = CaptureStringTable(LoadStringTable(CREDITS_STRTAB));
 	if (!CreditsTab)
+	{
 		return false;
+	}
 	CreditsBack = CaptureDrawable(LoadGraphic(CREDITS_BACK_ANIM));
 	// load fonts
 	for (fdef = CreditsFont; fdef->size; ++fdef)
+	{
 		fdef->font = LoadFont(fdef->res);
+	}
 
 	return true;
 }
@@ -715,13 +755,21 @@ DoCreditsInput(void* pIS)
 		int step = abs(CreditsRate) / 5 + 1;
 
 		if (PulsedInputState.menu[KEY_MENU_DOWN])
+		{
 			newrate += step;
+		}
 		else if (PulsedInputState.menu[KEY_MENU_UP])
+		{
 			newrate -= step;
+		}
 		if (newrate < -CREDITS_MAX_RATE)
+		{
 			newrate = -CREDITS_MAX_RATE;
+		}
 		else if (newrate > CREDITS_MAX_RATE)
+		{
 			newrate = CREDITS_MAX_RATE;
+		}
 
 		CreditsRate = newrate;
 	}
@@ -777,7 +825,9 @@ void Credits(bool WithOuttakes)
 	ClearDrawable();
 
 	if (!LoadCredits())
+	{
 		return;
+	}
 
 	// Fade in the background
 	s.origin.x = 0;
@@ -804,7 +854,9 @@ void Credits(bool WithOuttakes)
 	if (!(GLOBAL(CurrentActivity) & CHECK_ABORT))
 	{
 		if (hMusic)
+		{
 			PlayMusic(hMusic, true, 1);
+		}
 
 		// nothing to do now but wait until credits
 		//  are done or canceled by user

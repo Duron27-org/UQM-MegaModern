@@ -85,7 +85,9 @@ GeneratePkunk_generatePlanets(SOLARSYS_STATE* solarSys)
 			pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
 		}
 		else
+		{
 			CheckForHabitable(solarSys);
+		}
 
 		pPlanet->data_index = GenerateHabitableWorld();
 	}

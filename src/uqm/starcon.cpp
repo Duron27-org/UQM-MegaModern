@@ -75,12 +75,16 @@ checkArilouGate(void)
 	if (GET_GAME_STATE(ARILOU_SPACE) == OPENING)
 	{ // The portal is opening or fully open
 		if (counter < 9)
+		{
 			++counter;
+		}
 	}
 	else
 	{ // The portal is closing or fully closed
 		if (counter > 0)
+		{
 			--counter;
+		}
 	}
 	SET_GAME_STATE(ARILOU_SPACE_COUNTER, counter);
 }
@@ -141,10 +145,14 @@ void ProcessUtilityKeys(void)
 			flags &= ~TFB_GFXFLAGS_EX_FULLSCREEN;
 		}
 		else
+		{
 			flags ^= TFB_GFXFLAGS_FULLSCREEN;
+		}
 
 		if (IS_HD)
+		{
 			flags ^= TFB_GFXFLAGS_SCALE_BILINEAR;
+		}
 
 		// clear ImmediateInputState so we don't repeat this next frame
 		FlushInput();
@@ -167,19 +175,27 @@ void ProcessUtilityKeys(void)
 			debugKey3State, debugKey4State;
 
 		if (ImmediateInputState.menu[KEY_DEBUG] && debugKeyState == 0)
+		{
 			debugKeyPressed();
+		}
 		debugKeyState = ImmediateInputState.menu[KEY_DEBUG];
 
 		if (ImmediateInputState.menu[KEY_DEBUG_2] && debugKey2State == 0)
+		{
 			debugKey2Pressed();
+		}
 		debugKey2State = ImmediateInputState.menu[KEY_DEBUG_2];
 
 		if (ImmediateInputState.menu[KEY_DEBUG_3] && debugKey3State == 0)
+		{
 			debugKey3Pressed();
+		}
 		debugKey3State = ImmediateInputState.menu[KEY_DEBUG_3];
 
 		if (ImmediateInputState.menu[KEY_DEBUG_4] && debugKey4State == 0)
+		{
 			debugKey4Pressed();
+		}
 		debugKey4State = ImmediateInputState.menu[KEY_DEBUG_4];
 	}
 #endif /* DEBUG */
@@ -261,7 +277,9 @@ int Starcon2Main(void* threadArg)
 	luaUqm_initState();
 	// show logo then splash and init the kernel in the meantime
 	if (!optSkipIntro)
+	{
 		Logo();
+	}
 
 	SetRandomMenuMusic();
 	InitMenuMusic();
@@ -339,10 +357,14 @@ int Starcon2Main(void* threadArg)
 			SetStatusMessageMode(SMM_DEFAULT);
 
 			if (!((GLOBAL(CurrentActivity) | NextActivity) & CHECK_LOAD))
+			{
 				ZeroVelocityComponents(&GLOBAL(velocity));
+			}
 			// not going into talking pet conversation
 			else if (GLOBAL(CurrentActivity) & CHECK_LOAD)
+			{
 				GLOBAL(CurrentActivity) = NextActivity;
+			}
 
 			if ((GLOBAL(CurrentActivity) & START_ENCOUNTER)
 				|| GET_GAME_STATE(CHMMR_BOMB_STATE) == 2)
@@ -368,7 +390,9 @@ int Starcon2Main(void* threadArg)
 				{
 					GLOBAL(CurrentActivity) &= ~START_ENCOUNTER;
 					if (lowByte(GLOBAL(CurrentActivity)) == IN_INTERPLANETARY)
+					{
 						GLOBAL(CurrentActivity) |= START_INTERPLANETARY;
+					}
 				}
 			}
 			else if (GLOBAL(CurrentActivity) & START_INTERPLANETARY)
@@ -402,7 +426,9 @@ int Starcon2Main(void* threadArg)
 				{
 					InitCommunication(BLACKURQ_CONVERSATION);
 					if (optGameOver)
+					{
 						GameOver(DEATH_MARCH);
+					}
 				}
 				else if (GLOBAL(CurrentActivity) & CHECK_RESTART)
 				{

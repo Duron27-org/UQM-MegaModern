@@ -118,7 +118,7 @@ static inline void
 SCALE_(Prefetch)(const void* p)
 {
 	(void)p; // silence compiler
-			 /* no-op */
+	/* no-op */
 }
 
 #endif /* HAVE_PREFETCH */

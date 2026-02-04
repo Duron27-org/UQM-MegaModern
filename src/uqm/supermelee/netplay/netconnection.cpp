@@ -243,7 +243,9 @@ closeCallback(NetDescriptor* nd)
 {
 	NetConnection* conn = (NetConnection*)NetDescriptor_getExtra(nd);
 	if (conn == NULL)
+	{
 		return;
+	}
 	conn->nd = NULL;
 	NetConnection_doClose(conn);
 }
@@ -261,7 +263,9 @@ void NetConnection_close(NetConnection* conn)
 		conn->nd = NULL;
 	}
 	if (!conn->stateFlags.disconnected)
+	{
 		NetConnection_doClose(conn);
+	}
 	NetConnection_delete(conn);
 }
 

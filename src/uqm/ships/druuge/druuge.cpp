@@ -209,7 +209,9 @@ druuge_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 
 	lpEvalDesc = &ObjectsOfConcern[ENEMY_SHIP_INDEX];
 	if (StarShipPtr->cur_status_flags & SHIP_BEYOND_MAX_SPEED)
+	{
 		lpEvalDesc->MoveState = ENTICE;
+	}
 	else if (lpEvalDesc->ObjectPtr
 			 && lpEvalDesc->which_turn <= RES_DESCALE(WORLD_TO_TURN(RES_SCALE(MISSILE_RANGE) * 3 / 4)))
 	{
@@ -220,7 +222,9 @@ druuge_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 
 		lpEvalDesc->MoveState = PURSUE;
 		if (ShipPtr->thrust_wait == 0)
+		{
 			++ShipPtr->thrust_wait;
+		}
 	}
 	ship_intelligence(ShipPtr, ObjectsOfConcern, ConcernCounter);
 	if (EnemyStarShipPtr)
@@ -235,16 +239,22 @@ druuge_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 	{
 		StarShipPtr->ship_input_state |= WEAPON;
 		if (ShipPtr->thrust_wait < WEAPON_WAIT + 1)
+		{
 			ShipPtr->thrust_wait = WEAPON_WAIT + 1;
+		}
 	}
 
 
 	if ((StarShipPtr->ship_input_state & WEAPON)
 		&& StarShipPtr->RaceDescPtr->ship_info.energy_level < WEAPON_ENERGY_COST
 		&& ShipPtr->crew_level > 1)
+	{
 		StarShipPtr->ship_input_state |= SPECIAL;
+	}
 	else
+	{
 		StarShipPtr->ship_input_state &= ~SPECIAL;
+	}
 }
 
 static void
@@ -292,7 +302,9 @@ druuge_preprocess(ELEMENT* ElementPtr)
 			|| ElementPtr->crew_level == 1
 			|| StarShipPtr->RaceDescPtr->ship_info.energy_level
 				   == StarShipPtr->RaceDescPtr->ship_info.max_energy)
+		{
 			StarShipPtr->cur_status_flags &= ~SPECIAL;
+		}
 		else
 		{
 			ProcessSound(SetAbsSoundIndex(

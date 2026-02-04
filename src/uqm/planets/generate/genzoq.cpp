@@ -62,10 +62,14 @@ static bool
 GenerateZoqFotPik_initNpcs(SOLARSYS_STATE* solarSys)
 {
 	if (GET_GAME_STATE(ZOQFOT_DISTRESS) != 1)
+	{
 		GenerateDefault_initNpcs(solarSys);
+	}
 
 	if (SpaceMusicOK)
+	{
 		findRaceSOI();
+	}
 
 	return true;
 }
@@ -118,12 +122,16 @@ GenerateZoqFotPik_generatePlanets(SOLARSYS_STATE* solarSys)
 			if (!PrimeSeed)
 			{ // preserving the integrity of the universe
 				while (pPlanet->NumPlanets == 0)
+				{
 					GeneratePlanets(solarSys);
+				}
 				pSunDesc->MoonByte = PlanetByteGen(pPlanet);
 			}
 		}
 		else
+		{
 			pPlanet->data_index = GenerateHabitableWorld();
+		}
 	}
 
 	return true;
@@ -171,7 +179,9 @@ GenerateZoqFotPik_generateOrbital(SOLARSYS_STATE* solarSys,
 				InitCommunication(BLACKURQ_CONVERSATION);
 
 				if (GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
+				{
 					return true;
+				}
 
 				if (GetHeadLink(&GLOBAL(npc_built_ship_q)))
 				{

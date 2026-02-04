@@ -189,24 +189,38 @@ static BOOL IT_Test(void)
 	UBYTE id[4];
 
 	if (!_mm_read_UBYTES(id, 4, modreader))
+	{
 		return 0;
+	}
 	if (!memcmp(id, "IMPM", 4))
+	{
 		return 1;
+	}
 	return 0;
 }
 
 static BOOL IT_Init(void)
 {
 	if (!(mh = (ITHEADER*)MikMod_malloc(sizeof(ITHEADER))))
+	{
 		return 0;
+	}
 	if (!(poslookup = (UBYTE*)MikMod_malloc(256 * sizeof(UBYTE))))
+	{
 		return 0;
+	}
 	if (!(itpat = (ITNOTE*)MikMod_malloc(200 * 64 * sizeof(ITNOTE))))
+	{
 		return 0;
+	}
 	if (!(mask = (UBYTE*)MikMod_malloc(64 * sizeof(UBYTE))))
+	{
 		return 0;
+	}
 	if (!(last = (ITNOTE*)MikMod_malloc(64 * sizeof(ITNOTE))))
+	{
 		return 0;
+	}
 
 	return 1;
 }
@@ -253,19 +267,29 @@ static BOOL IT_GetNumChannels(UWORD patrows)
 		}
 		flag = _mm_read_UBYTE(modreader);
 		if (!flag)
+		{
 			row++;
+		}
 		else
 		{
 			ch = (flag - 1) & 63;
 			remap[ch] = 0;
 			if (flag & 128)
+			{
 				mask[ch] = _mm_read_UBYTE(modreader);
+			}
 			if (mask[ch] & 1)
+			{
 				_mm_skip_BYTE(modreader);
+			}
 			if (mask[ch] & 2)
+			{
 				_mm_skip_BYTE(modreader);
+			}
 			if (mask[ch] & 4)
+			{
 				_mm_skip_BYTE(modreader);
+			}
 			if (mask[ch] & 8)
 			{
 				_mm_skip_BYTE(modreader);
@@ -293,20 +317,28 @@ static UBYTE* IT_ConvertTrack(ITNOTE* tr, UWORD numrows)
 		if (note != 255)
 		{
 			if (note == 253)
+			{
 				UniWriteByte(UNI_KEYOFF);
+			}
 			else if (note == 254)
 			{
 				UniPTEffect(0xc, -1); /* note cut command */
 				volpan = 255;
 			}
 			else
+			{
 				UniNote(note);
+			}
 		}
 
 		if ((ins) && (ins < 100))
+		{
 			UniInstrument(ins - 1);
+		}
 		else if (ins == 253)
+		{
 			UniWriteByte(UNI_KEYOFF);
+		}
 		else if (ins != 255)
 		{ /* crap */
 			_mm_errno = MMERR_LOADING_PATTERN;
@@ -317,38 +349,58 @@ static UBYTE* IT_ConvertTrack(ITNOTE* tr, UWORD numrows)
 		   volume / panning effects do NOT all share the same memory address
 		   yet. */
 		if (volpan <= 64)
+		{
 			UniVolEffect(VOL_VOLUME, volpan);
+		}
 		else if (volpan == 65) /* fine volume slide up (65-74) - A0 case */
+		{
 			UniVolEffect(VOL_VOLSLIDE, 0);
+		}
 		else if (volpan <= 74)
 		{ /* fine volume slide up (65-74) - general case */
 			UniVolEffect(VOL_VOLSLIDE, 0x0f + ((volpan - 65) << 4));
 		}
 		else if (volpan == 75) /* fine volume slide down (75-84) - B0 case */
+		{
 			UniVolEffect(VOL_VOLSLIDE, 0);
+		}
 		else if (volpan <= 84)
 		{ /* fine volume slide down (75-84) - general case*/
 			UniVolEffect(VOL_VOLSLIDE, 0xf0 + (volpan - 75));
 		}
 		else if (volpan <= 94) /* volume slide up (85-94) */
+		{
 			UniVolEffect(VOL_VOLSLIDE, ((volpan - 85) << 4));
+		}
 		else if (volpan <= 104) /* volume slide down (95-104) */
+		{
 			UniVolEffect(VOL_VOLSLIDE, (volpan - 95));
+		}
 		else if (volpan <= 114) /* pitch slide down (105-114) */
+		{
 			UniVolEffect(VOL_PITCHSLIDEDN, (volpan - 105));
+		}
 		else if (volpan <= 124) /* pitch slide up (115-124) */
+		{
 			UniVolEffect(VOL_PITCHSLIDEUP, (volpan - 115));
+		}
 		else if (volpan <= 127)
 		{ /* crap */
 			_mm_errno = MMERR_LOADING_PATTERN;
 			return NULL;
 		}
 		else if (volpan <= 192)
+		{
 			UniVolEffect(VOL_PANNING, ((volpan - 128) == 64) ? 255 : ((volpan - 128) << 2));
+		}
 		else if (volpan <= 202) /* portamento to note */
+		{
 			UniVolEffect(VOL_PORTAMENTO, portatable[volpan - 193]);
+		}
 		else if (volpan <= 212) /* vibrato */
+		{
 			UniVolEffect(VOL_VIBRATO, (volpan - 203));
+		}
 		else if ((volpan != 239) && (volpan != 255))
 		{ /* crap */
 			_mm_errno = MMERR_LOADING_PATTERN;
@@ -408,26 +460,42 @@ static BOOL IT_ReadPattern(UWORD patrows)
 			}
 
 			if (flag & 128)
+			{
 				*m = _mm_read_UBYTE(modreader);
+			}
 			if (*m & 1)
+			{
 				/* convert IT note off to internal note off */
 				if ((l->note = n->note = _mm_read_UBYTE(modreader)) == 255)
+				{
 					l->note = n->note = 253;
+				}
+			}
 			if (*m & 2)
+			{
 				l->ins = n->ins = _mm_read_UBYTE(modreader);
+			}
 			if (*m & 4)
+			{
 				l->volpan = n->volpan = _mm_read_UBYTE(modreader);
+			}
 			if (*m & 8)
 			{
 				l->cmd = n->cmd = _mm_read_UBYTE(modreader);
 				l->inf = n->inf = _mm_read_UBYTE(modreader);
 			}
 			if (*m & 16)
+			{
 				n->note = l->note;
+			}
 			if (*m & 32)
+			{
 				n->ins = l->ins;
+			}
 			if (*m & 64)
+			{
 				n->volpan = l->volpan;
+			}
 			if (*m & 128)
 			{
 				n->cmd = l->cmd;
@@ -439,7 +507,9 @@ static BOOL IT_ReadPattern(UWORD patrows)
 	for (blah = 0; blah < of.numchn; blah++)
 	{
 		if (!(of.tracks[numtrk++] = IT_ConvertTrack(&itpat[blah], patrows)))
+		{
 			return 0;
+		}
 	}
 
 	return 1;
@@ -455,7 +525,9 @@ static void LoadMidiString(MREADER* r, CHAR* dest)
 	while (*lastp)
 	{
 		if (mik_isalnum((int)*lastp))
+		{
 			*(curp++) = mik_toupper((int)*lastp);
+		}
 		lastp++;
 	}
 	*curp = 0;
@@ -482,7 +554,9 @@ static void IT_LoadMidiConfiguration(MREADER* r)
 		{
 			LoadMidiString(r, midiline);
 			if ((!strncmp(midiline, "F0F00", 5)) && ((midiline[5] == '0') || (midiline[5] == '1')))
+			{
 				filtermacros[i] = (midiline[5] - '0') | 0x80;
+			}
 		}
 
 		/* read standalone filters */
@@ -494,7 +568,9 @@ static void IT_LoadMidiConfiguration(MREADER* r)
 				filtersettings[i].filter = (midiline[5] - '0') | 0x80;
 				dat = (midiline[6]) ? (midiline[6] - '0') : 0;
 				if (midiline[7])
+				{
 					dat = (dat << 4) | (midiline[7] - '0');
+				}
 				filtersettings[i].inf = dat;
 			}
 		}
@@ -572,7 +648,9 @@ static BOOL IT_Load(BOOL curious)
 	of.initvolume = mh->globvol;
 	of.flags |= UF_BGSLIDES | UF_ARPMEM;
 	if (!(mh->flags & 1))
+	{
 		of.flags |= UF_PANNING;
+	}
 	of.bpmlimit = 32;
 
 	if (mh->songname[25])
@@ -588,9 +666,13 @@ static BOOL IT_Load(BOOL curious)
 	/* 2.16 : IT 2.14p3 with resonant filters */
 	/* 2.15 : IT 2.14p3 (improved compression) */
 	if ((mh->cwt <= 0x219) && (mh->cwt >= 0x217))
+	{
 		of.modtype = MikMod_strdup(IT_Version[mh->cmwt < 0x214 ? 4 : 5]);
+	}
 	else if (mh->cwt >= 0x215)
+	{
 		of.modtype = MikMod_strdup(IT_Version[mh->cmwt < 0x214 ? 2 : 3]);
+	}
 	else
 	{
 		of.modtype = MikMod_strdup(IT_Version[mh->cmwt < 0x214 ? 0 : 1]);
@@ -600,50 +682,76 @@ static BOOL IT_Load(BOOL curious)
 	}
 
 	if (mh->flags & 8)
+	{
 		of.flags |= UF_XMPERIODS | UF_LINEAR;
+	}
 
 	if ((mh->cwt >= 0x106) && (mh->flags & 16))
+	{
 		old_effect = S3MIT_OLDSTYLE;
+	}
 	else
+	{
 		old_effect = 0;
+	}
 
 	/* set panning positions */
 	if (mh->flags & 1)
+	{
 		for (t = 0; t < 64; t++)
 		{
 			mh->pantable[t] &= 0x7f;
 			if (mh->pantable[t] < 64)
+			{
 				of.panning[t] = mh->pantable[t] << 2;
+			}
 			else if (mh->pantable[t] == 64)
+			{
 				of.panning[t] = 255;
+			}
 			else if (mh->pantable[t] == 100)
+			{
 				of.panning[t] = PAN_SURROUND;
+			}
 			else if (mh->pantable[t] == 127)
+			{
 				of.panning[t] = PAN_CENTER;
+			}
 			else
 			{
 				_mm_errno = MMERR_LOADING_HEADER;
 				return 0;
 			}
 		}
+	}
 	else
+	{
 		for (t = 0; t < 64; t++)
+		{
 			of.panning[t] = PAN_CENTER;
+		}
+	}
 
 	/* set channel volumes */
 	memcpy(of.chanvol, mh->voltable, 64);
 
 	/* read the order data */
 	if (!AllocPositions(mh->ordnum))
+	{
 		return 0;
+	}
 	if (!(origpositions = (UWORD*)MikMod_calloc(mh->ordnum, sizeof(UWORD))))
+	{
 		return 0;
+	}
 
 	for (t = 0; t < mh->ordnum; t++)
 	{
 		origpositions[t] = _mm_read_UBYTE(modreader);
 		if ((origpositions[t] > mh->patnum) && (origpositions[t] < 254))
+		{
 			origpositions[t] = 255;
+		}
 	}
 
 	if (_mm_eof(modreader))
@@ -656,7 +764,9 @@ static BOOL IT_Load(BOOL curious)
 	S3MIT_CreateOrders(curious);
 
 	if (!(paraptr = (ULONG*)MikMod_malloc((mh->insnum + mh->smpnum + of.numpat) * sizeof(ULONG))))
+	{
 		return 0;
+	}
 
 	/* read the instrument, sample, and pattern parapointers */
 	_mm_read_I_ULONGS(paraptr, mh->insnum + mh->smpnum + of.numpat, modreader);
@@ -680,7 +790,9 @@ static BOOL IT_Load(BOOL curious)
 			}
 		}
 		else
+		{
 			IT_LoadMidiConfiguration(NULL);
+		}
 		filters = 1;
 	}
 
@@ -689,16 +801,24 @@ static BOOL IT_Load(BOOL curious)
 	{
 		_mm_fseek(modreader, (long)(mh->msgoffset), SEEK_SET);
 		if (!ReadComment(mh->msglength))
+		{
 			return 0;
+		}
 	}
 
 	if (!(mh->flags & 4))
+	{
 		of.numins = of.numsmp;
+	}
 	if (!AllocSamples())
+	{
 		return 0;
+	}
 
 	if (!AllocLinear())
+	{
 		return 0;
+	}
 
 	/* Load all samples */
 	q = of.samples;
@@ -758,10 +878,14 @@ static BOOL IT_Load(BOOL curious)
 
 		/* Convert speed to XM linear finetune */
 		if (of.flags & UF_LINEAR)
+		{
 			q->speed = speed_to_finetune(s.c5spd, t);
+		}
 
 		if (s.panning & 128)
+		{
 			q->flags |= SF_OWNPAN;
+		}
 
 		if (s.vibrate)
 		{
@@ -773,23 +897,33 @@ static BOOL IT_Load(BOOL curious)
 		}
 
 		if (s.flag & 2)
+		{
 			q->flags |= SF_16BITS;
+		}
 		if ((s.flag & 8) && (mh->cwt >= 0x214))
 		{
 			q->flags |= SF_ITPACKED;
 			/*compressed=1;*/
 		}
 		if (s.flag & 16)
+		{
 			q->flags |= SF_LOOP;
+		}
 		if (s.flag & 64)
+		{
 			q->flags |= SF_BIDI;
+		}
 
 		if (mh->cwt >= 0x200)
 		{
 			if (s.convert & 1)
+			{
 				q->flags |= SF_SIGNED;
+			}
 			if (s.convert & 4)
+			{
 				q->flags |= SF_DELTA;
+			}
 		}
 		q++;
 	}
@@ -798,7 +932,9 @@ static BOOL IT_Load(BOOL curious)
 	if (mh->flags & 4)
 	{
 		if (!AllocInstruments())
+		{
 			return 0;
+		}
 		d = of.instruments;
 		of.flags |= UF_NNA | UF_INST;
 
@@ -919,11 +1055,17 @@ static BOOL IT_Load(BOOL curious)
 				}
 
 				if (ih.volflg & 1)
+				{
 					d->volflg |= EF_ON;
+				}
 				if (ih.volflg & 2)
+				{
 					d->volflg |= EF_LOOP;
+				}
 				if (ih.volflg & 4)
+				{
 					d->volflg |= EF_SUSTAIN;
+				}
 
 				/* XM conversion of IT envelope Array */
 				d->volbeg = ih.volbeg;
@@ -934,6 +1076,7 @@ static BOOL IT_Load(BOOL curious)
 				if (ih.volflg & 1)
 				{
 					for (u = 0; u < ITENVCNT; u++)
+					{
 						if (ih.oldvoltick[d->volpts] != 0xff)
 						{
 							d->volenv[d->volpts].val = (ih.volnode[d->volpts] << 2);
@@ -941,14 +1084,19 @@ static BOOL IT_Load(BOOL curious)
 							d->volpts++;
 						}
 						else
+						{
 							break;
+						}
+					}
 				}
 			}
 			else
 			{
 				d->panning = ((ih.chanpan & 127) == 64) ? 255 : (ih.chanpan & 127) << 2;
 				if (!(ih.chanpan & 128))
+				{
 					d->flags |= IF_OWNPAN;
+				}
 
 				if (!(ih.ppsep & 128))
 				{
@@ -1010,16 +1158,22 @@ static BOOL IT_Load(BOOL curious)
 				IT_ProcessEnvelope(vol);
 
 				for (u = 0; u < ih.volpts; u++)
+				{
 					d->volenv[u].val = (ih.volnode[u] << 2);
+				}
 
 				IT_ProcessEnvelope(pan);
 				for (u = 0; u < ih.panpts; u++)
+				{
 					d->panenv[u].val =
 						ih.pannode[u] == 32 ? 255 : (ih.pannode[u] + 32) << 2;
+				}
 
 				IT_ProcessEnvelope(pit);
 				for (u = 0; u < ih.pitpts; u++)
+				{
 					d->pitenv[u].val = ih.pitnode[u] + 32;
+				}
 #undef IT_ProcessEnvelope
 
 				if (ih.pitflg & 0x80)
@@ -1032,7 +1186,9 @@ static BOOL IT_Load(BOOL curious)
 						static int warn = 0;
 
 						if (!warn)
+						{
 							fprintf(stderr, "\rFilter envelopes not supported yet\n");
+						}
 						warn = 1;
 					}
 #endif
@@ -1045,7 +1201,9 @@ static BOOL IT_Load(BOOL curious)
 				d->samplenumber[u] =
 					(ih.samptable[u] >> 8) ? ((ih.samptable[u] >> 8) - 1) : 0xffff;
 				if (d->samplenumber[u] >= of.numsmp)
+				{
 					d->samplenote[u] = 255;
+				}
 				else if (of.flags & UF_LINEAR)
 				{
 					int note = (int)d->samplenote[u] + noteindex[d->samplenumber[u]];
@@ -1059,21 +1217,27 @@ static BOOL IT_Load(BOOL curious)
 	else if (of.flags & UF_LINEAR)
 	{
 		if (!AllocInstruments())
+		{
 			return 0;
+		}
 		d = of.instruments;
 		of.flags |= UF_INST;
 
 		for (t = 0; t < mh->smpnum; t++, d++)
+		{
 			for (u = 0; u < ITNOTECNT; u++)
 			{
 				if (d->samplenumber[u] >= of.numsmp)
+				{
 					d->samplenote[u] = 255;
+				}
 				else
 				{
 					int note = (int)d->samplenote[u] + noteindex[d->samplenumber[u]];
 					d->samplenote[u] = (note < 0) ? 0 : (note > 255 ? 255 : note);
 				}
 			}
+		}
 	}
 
 	/* Figure out how many channels this song actually uses */
@@ -1100,24 +1264,38 @@ static BOOL IT_Load(BOOL curious)
 			}
 			_mm_read_I_ULONG(modreader);
 			if (!IT_GetNumChannels(packlen))
+			{
 				return 0;
+			}
 		}
 	}
 
 	/* give each of them a different number */
 	for (t = 0; t < UF_MAXCHAN; t++)
+	{
 		if (!remap[t])
+		{
 			remap[t] = of.numchn++;
+		}
+	}
 
 	of.numtrk = of.numpat * of.numchn;
 	if (of.numvoices)
+	{
 		if (of.numvoices < of.numchn)
+		{
 			of.numvoices = of.numchn;
+		}
+	}
 
 	if (!AllocPatterns())
+	{
 		return 0;
+	}
 	if (!AllocTracks())
+	{
 		return 0;
+	}
 
 	for (t = 0; t < of.numpat; t++)
 	{
@@ -1133,7 +1311,9 @@ static BOOL IT_Load(BOOL curious)
 
 				UniReset();
 				for (k = 0; k < 64; k++)
+				{
 					UniNewline();
+				}
 				of.tracks[numtrk++] = UniDup();
 			}
 		}
@@ -1145,7 +1325,9 @@ static BOOL IT_Load(BOOL curious)
 			of.pattrows[t] = _mm_read_I_UWORD(modreader);
 			_mm_read_I_ULONG(modreader);
 			if (!IT_ReadPattern(of.pattrows[t]))
+			{
 				return 0;
+			}
 		}
 	}
 
@@ -1158,7 +1340,9 @@ static CHAR* IT_LoadTitle(void)
 
 	_mm_fseek(modreader, 4, SEEK_SET);
 	if (!_mm_read_UBYTES(s, 26, modreader))
+	{
 		return NULL;
+	}
 
 	return (DupStr(s, 26, 0));
 }

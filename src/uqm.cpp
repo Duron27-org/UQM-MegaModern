@@ -442,7 +442,9 @@ int main(int argc, char* argv[])
 		setbuf(stderr, NULL);
 #endif
 		for (i = 0; i < argc; ++i)
+		{
 			log_add(log_User, "argv[%d] = [%s]", i, argv[i]);
+		}
 	}
 
 	if (options.runMode == options_struct::runMode_version)
@@ -693,9 +695,13 @@ int main(int argc, char* argv[])
 			float ratio = (float)SavedHeight / (float)SavedWidth;
 
 			if (ratio > threshold) // screen is narrower than 4:3
+			{
 				options.resolution.width = SavedHeight / threshold;
+			}
 			else if (ratio < threshold) // screen is wider than 4:3
+			{
 				options.resolution.height = SavedWidth * threshold;
+			}
 		}
 		else
 		{
@@ -736,21 +742,33 @@ int main(int argc, char* argv[])
 	if (options.fullscreen.value)
 	{
 		if (options.fullscreen.value > 1)
+		{
 			gfxFlags |= TFB_GFXFLAGS_FULLSCREEN;
+		}
 		else
+		{
 			gfxFlags |= TFB_GFXFLAGS_EX_FULLSCREEN;
+		}
 	}
 	if (options.scanlines.value)
+	{
 		gfxFlags |= TFB_GFXFLAGS_SCANLINES;
+	}
 	if (options.showFps.value)
+	{
 		gfxFlags |= TFB_GFXFLAGS_SHOWFPS;
+	}
 	TFB_InitGraphics(gfxDriver, gfxFlags, options.graphicsBackend,
 					 options.resolution.width, options.resolution.height,
 					 &resolutionFactor, &optWindowType);
 	if (options.gamma.set && setGammaCorrection(options.gamma.value))
+	{
 		optGamma = options.gamma.value;
+	}
 	else
+	{
 		optGamma = 1.0f; // failed or default
+	}
 
 	InitColorMaps();
 	init_communication();
@@ -856,13 +874,19 @@ lookupOptionValue(const struct option_list_value* list,
 				  const char* strval, int* ret)
 {
 	if (!list)
+	{
 		return false;
+	}
 
 	// The list is terminated by a NULL 'str' value.
 	while (list->str && strcmp(strval, list->str) != 0)
+	{
 		++list;
+	}
 	if (!list->str)
+	{
 		return false;
+	}
 
 	*ret = list->value;
 	return true;
@@ -872,7 +896,9 @@ static void
 getBoolConfigValue(struct bool_option* option, const char* config_val)
 {
 	if (option->set || !res_IsBoolean(config_val))
+	{
 		return;
+	}
 
 	option->value = res_GetBoolean(config_val);
 	option->set = true;
@@ -883,7 +909,9 @@ getBoolConfigValueXlat(struct int_option* option, const char* config_val,
 					   int true_val, int false_val)
 {
 	if (option->set || !res_IsBoolean(config_val))
+	{
 		return;
+	}
 
 	option->value = res_GetBoolean(config_val) ? true_val : false_val;
 	option->set = true;
@@ -893,7 +921,9 @@ static void
 getVolumeConfigValue(struct float_option* option, const char* config_val)
 {
 	if (option->set || !res_IsInteger(config_val))
+	{
 		return;
+	}
 
 	parseIntVolume(res_GetInteger(config_val), &option->value);
 	option->set = true;
@@ -905,17 +935,23 @@ getGammaConfigValue(struct float_option* option, const char* config_val)
 	int val;
 
 	if (option->set || !res_IsInteger(config_val))
+	{
 		return;
+	}
 
 	val = res_GetInteger(config_val);
 	// gamma config option is a fixed-point number
 	// ignore ridiculously out-of-range values
 	if (val < (int)(0.03 * GAMMA_SCALE) || val > (int)(9.9 * GAMMA_SCALE))
+	{
 		return;
+	}
 	option->value = val / (float)GAMMA_SCALE;
 	// avoid setting gamma when not necessary
 	if (option->value != 1.0f)
+	{
 		option->set = true;
+	}
 }
 
 static bool
@@ -926,7 +962,9 @@ getListConfigValue(struct int_option* option, const char* config_val,
 	bool found;
 
 	if (option->set || !res_IsString(config_val) || !list)
+	{
 		return false;
+	}
 
 	strval = res_GetString(config_val);
 	found = lookupOptionValue(list, strval, &option->value);
@@ -965,7 +1003,9 @@ getUserConfigOptions(struct options_struct* options)
 
 	//getBoolConfigValue (&options->fullscreen, "config.fullscreen");
 	if (res_IsInteger("config.fullscreen") && !options->fullscreen.set)
+	{
 		options->fullscreen.value = res_GetInteger("config.fullscreen");
+	}
 	getBoolConfigValue(&options->scanlines, "config.scanlines");
 	getBoolConfigValue(&options->showFps, "config.showfps");
 	getBoolConfigValue(&options->keepAspectRatio,
@@ -979,7 +1019,9 @@ getUserConfigOptions(struct options_struct* options)
 	getBoolConfigValueXlat(&options->whichFonts, "config.textgradients",
 						   OPT_3DO, OPT_PC);
 	if (res_IsInteger("config.iconicscan") && !options->whichCoarseScan.set)
+	{
 		options->whichCoarseScan.value = res_GetInteger("config.iconicscan");
+	}
 	getBoolConfigValueXlat(&options->smoothScroll, "config.smoothscroll",
 						   OPT_3DO, OPT_PC);
 	getBoolConfigValueXlat(&options->whichShield, "config.pulseshield",
@@ -1032,7 +1074,9 @@ getUserConfigOptions(struct options_struct* options)
 	getBoolConfigValue(&options->cheatMode, "cheat.kohrStahp");
 
 	if (res_IsInteger("cheat.godModes") && !options->optGodModes.set)
+	{
 		options->optGodModes.value = res_GetInteger("cheat.godModes");
+	}
 
 	if (res_IsInteger("cheat.timeDilation")
 		&& !options->timeDilationScale.set)
@@ -1069,7 +1113,9 @@ getUserConfigOptions(struct options_struct* options)
 	{
 		options->customSeed.value = res_GetInteger("mm.customSeed");
 		if (!SANE_SEED(options->customSeed.value))
+		{
 			options->customSeed.value = PrimeA;
+		}
 	}
 	getBoolConfigValue(&options->shipSeed, "mm.shipSeed");
 	if (res_IsInteger("mm.sphereColors") && !options->sphereColors.set)
@@ -1097,7 +1143,9 @@ getUserConfigOptions(struct options_struct* options)
 		options->optDifficulty.value = res_GetInteger("mm.difficulty");
 		options->optDiffChooser.value = options->optDifficulty.value;
 		if (options->optDifficulty.value > 2)
+		{
 			options->optDifficulty.value = 0;
+		}
 	}
 	if (res_IsInteger("mm.fuelRange") && !options->optFuelRange.set)
 	{
@@ -1108,7 +1156,9 @@ getUserConfigOptions(struct options_struct* options)
 	{
 		options->nomad.value = res_GetInteger("mm.nomad");
 		if (options->nomad.value > 2)
+		{
 			options->nomad.value = 0;
+		}
 	}
 	getBoolConfigValue(&options->gameOver, "mm.gameOver");
 	getBoolConfigValue(&options->shipDirectionIP, "mm.shipDirectionIP");
@@ -1173,7 +1223,9 @@ getUserConfigOptions(struct options_struct* options)
 	{
 		options->nebulaevol.value = res_GetInteger("mm.nebulaevol");
 		if (options->nebulaevol.value > 50)
+		{
 			options->nebulaevol.value = 11;
+		}
 	}
 
 	getBoolConfigValue(&options->slaughterMode, "mm.slaughterMode");
@@ -1455,7 +1507,9 @@ setFloatOption(struct float_option* option, const char* strval,
 			   const char* optName)
 {
 	if (parseFloatOption(strval, &option->value, optName) != 0)
+	{
 		return false;
+	}
 	option->set = true;
 	return true;
 }
@@ -1468,7 +1522,9 @@ setListOption(struct int_option* option, const char* strval,
 	bool found;
 
 	if (!list)
+	{
 		return false; // not found
+	}
 
 	found = lookupOptionValue(list, strval, &option->value);
 	option->set = found;
@@ -1489,7 +1545,9 @@ setVolumeOption(struct float_option* option, const char* strval,
 	int intVol;
 
 	if (parseIntOption(strval, &intVol, optName) != 0)
+	{
 		return false;
+	}
 	parseIntVolume(intVol, &option->value);
 	option->set = true;
 	return true;
@@ -1530,7 +1588,9 @@ parseOptions(int argc, char* argv[], struct options_struct* options)
 		optionIndex = -1;
 		c = getopt_long(argc, argv, optString, longOptions, &optionIndex);
 		if (c == -1)
+		{
 			break;
+		}
 
 		switch (c)
 		{
@@ -1999,7 +2059,9 @@ parseOptions(int argc, char* argv[], struct options_struct* options)
 					{
 						options->optDiffChooser.value = options->optDifficulty.value = temp;
 						if (temp > 2)
+						{
 							options->optDifficulty.value = 0;
+						}
 						options->optDifficulty.set = true;
 					}
 					break;
@@ -2157,9 +2219,13 @@ parseOptions(int argc, char* argv[], struct options_struct* options)
 				break;
 			case PLANTEX_OPT:
 				if (strcmp(optarg, "uqm") == 0)
+				{
 					setBoolOption(&options->planetTexture, true);
+				}
 				else if (strcmp(optarg, "3do") == 0)
+				{
 					setBoolOption(&options->planetTexture, false);
+				}
 				else
 				{
 					InvalidArgument(optarg, "--planettexture");

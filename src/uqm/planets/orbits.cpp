@@ -488,9 +488,13 @@ void ComputeSpeed(PLANET_DESC* planet, bool GeneratingMoons,
 			FULL_CIRCLE / (29 * pow((double)planet->radius / (MIN_MOON_RADIUS + (MAX_GEN_MOONS - 1) * MOON_DELTA), 1.5));
 		if ((planet->pPrevDesc->data_index & ~PLANET_SHIELDED)
 			>= FIRST_GAS_GIANT)
+		{
 			planet->orb_speed *= 2;
+		}
 		if (!(rand_val % 7))
+		{
 			planet->orb_speed = -planet->orb_speed;
+		}
 	}
 	else
 	{
@@ -541,9 +545,10 @@ void FillOrbits(SOLARSYS_STATE* system, uqm::BYTE NumPlanets,
 		//   we spin in a loop until the result > 0.
 		//   Note that this behavior must be kept to preserve the universe.
 		do
+		{
 			NumPlanets = LOWORD(RandomContext_Random(SysGenRNG))
 					   % (MAX_GEN_PLANETS + 1);
-		while (NumPlanets == 0);
+		} while (NumPlanets == 0);
 		system->SunDesc[0].NumPlanets = NumPlanets;
 	}
 
@@ -556,9 +561,13 @@ void FillOrbits(SOLARSYS_STATE* system, uqm::BYTE NumPlanets,
 	GeneratingMoons = (bool)(pBaseDesc == system->MoonDesc);
 	bool GasGiant = pPD && pPD->pPrevDesc && (pPD->pPrevDesc->data_index & ~PLANET_SHIELDED) >= FIRST_GAS_GIANT;
 	if (GeneratingMoons)
+	{
 		MaxPlanet = (PrimeSeed || (StarSeed && !GasGiant) ? FIRST_LARGE_ROCKY_WORLD : (StarSeed ? FIRST_GAS_GIANT : LAST_LARGE_ROCKY_WORLD));
+	}
 	else
+	{
 		MaxPlanet = NUMBER_OF_PLANET_TYPES;
+	}
 	PlanetCount = NumPlanets;
 	while (NumPlanets--)
 	{
@@ -571,10 +580,14 @@ void FillOrbits(SOLARSYS_STATE* system, uqm::BYTE NumPlanets,
 		{
 			rand_val = RandomContext_Random(SysGenRNG);
 			if (TypesDefined)
+			{
 				rand_val = 0;
+			}
 			else
+			{
 				pPD->data_index =
 					(uqm::BYTE)(highByte(LOWORD(rand_val)) % MaxPlanet);
+			}
 
 
 			chance = PLANET_NEVER;
@@ -602,9 +615,13 @@ void FillOrbits(SOLARSYS_STATE* system, uqm::BYTE NumPlanets,
 		} while (lowByte(LOWORD(rand_val)) >= chance);
 
 		if (pPD->data_index < FIRST_GAS_GIANT)
+		{
 			min_radius = Suns[StarSize].MinRockyDist;
+		}
 		else
+		{
 			min_radius = Suns[StarSize].MinGasGDist;
+		}
 RelocatePlanet:
 		rand_val = RandomContext_Random(SysGenRNG);
 		if (GeneratingMoons)
@@ -614,7 +631,9 @@ RelocatePlanet:
 			for (pLocPD = pPD - 1; pLocPD >= pBaseDesc; --pLocPD)
 			{
 				if (pPD->radius == pLocPD->radius)
+				{
 					goto RelocatePlanet;
+				}
 			}
 			pPD->NumPlanets = 0;
 		}
@@ -637,7 +656,9 @@ RelocatePlanet:
 				}
 
 				if (delta_r <= 0)
+				{
 					delta_r = -delta_r;
+				}
 				if (delta_r <= orbitDiff && loopCounter < (UINT16_MAX * 2))
 				{
 					loopCounter++;
@@ -728,12 +749,16 @@ PickClosestHabitable(SOLARSYS_STATE* solarSys)
 	starType = STAR_TYPE(CurStarDescPtr->Type);
 
 	if (starType == SUPER_GIANT_STAR)
+	{
 		return numPlanets--;
+	}
 
 	if (starType == DWARF_STAR)
 	{
 		if (starColor == RED_BODY)
+		{
 			return 0;
+		}
 
 		hRangeMin = hRangesD[starColor][0];
 		hRangeMax = hRangesD[starColor][1];
@@ -775,7 +800,9 @@ PickClosestHabitable(SOLARSYS_STATE* solarSys)
 		}
 	}
 	else
+	{
 		pByte = 0;
+	}
 
 	pPlanet = &pPD[pByte];
 
@@ -831,7 +858,9 @@ bool CheckForHabitable(SOLARSYS_STATE* solarSys)
 	// Terrible, but efficient, hack to ensure some semblance of sanity.
 	// Eventually, we will need further code if we care about habitable homes.
 	if (StarSeed && starColor == RED_BODY)
+	{
 		starColor = ORANGE_BODY;
+	}
 
 	pPD = solarSys->PlanetDesc;
 	oldRadius = pPD[planetByte].radius;
@@ -843,7 +872,9 @@ bool CheckForHabitable(SOLARSYS_STATE* solarSys)
 	// mirrors UNSCALE_RADIUS logic from FillOrbits (radius / 2^6 / 5)
 	if (StarSeed && numPlanets > 1 && pPD[1].radius < habitableRangeMax + 320
 		&& pPD[1].radius > habitableRangeMin + 320)
+	{
 		habitableRangeMax = pPD[1].radius - 320;
+	}
 
 	if ((oldRadius >= habitableRangeMin && oldRadius <= habitableRangeMax)
 		|| starColor == RED_BODY || planetByte > 0)
@@ -852,7 +883,9 @@ bool CheckForHabitable(SOLARSYS_STATE* solarSys)
 	}
 
 	for (i = 0; i < numPlanets; ++i)
+	{
 		planetRadii[i] = pPD[i].radius;
+	}
 
 	rand_val = RandomContext_Random(SysGenRNG);
 
@@ -875,7 +908,9 @@ bool CheckForHabitable(SOLARSYS_STATE* solarSys)
 		return true;
 	}
 	else
+	{
 		return false;
+	}
 
 	/*if (planetByte > 0 && newRadius < pPD[planetByte-1].radius)
 	{

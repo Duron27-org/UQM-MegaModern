@@ -46,8 +46,9 @@ bool InitQueue(QUEUE* pq, uqm::COUNT num_elements, OBJ_SIZE size)
 	if (AllocQueueTab(pq, num_elements) != NULL)
 	{
 		do
+		{
 			FreeLink(pq, GetLinkAddr(pq, num_elements));
-		while (--num_elements);
+		} while (--num_elements);
 
 		return (true);
 	}
@@ -72,7 +73,9 @@ bool UninitQueue(QUEUE* pq)
 	{
 		RemoveQueue(pq, hLink);
 		if (!FreeLink(pq, hLink))
+		{
 			return (false);
+		}
 	}
 
 	return (true);
@@ -94,8 +97,9 @@ void ReinitQueue(QUEUE* pq)
 		if (num_elements)
 		{
 			do
+			{
 				FreeLink(pq, GetLinkAddr(pq, num_elements));
-			while (--num_elements);
+			} while (--num_elements);
 		}
 	}
 #endif /* QUEUE_TABLE */
@@ -117,7 +121,9 @@ AllocLink(QUEUE* pq)
 		UnlockLink(pq, hLink);
 	}
 	else
+	{
 		log_add(log_Debug, "AllocLink(): No more elements");
+	}
 
 	return (hLink);
 }
@@ -139,7 +145,9 @@ void PutQueue(QUEUE* pq, HLINK hLink)
 	LINK* LinkPtr;
 
 	if (GetHeadLink(pq) == 0)
+	{
 		SetHeadLink(pq, hLink);
+	}
 	else
 	{
 		HLINK hTail;
@@ -162,7 +170,9 @@ void PutQueue(QUEUE* pq, HLINK hLink)
 void InsertQueue(QUEUE* pq, HLINK hLink, HLINK hRefLink)
 {
 	if (hRefLink == 0)
+	{
 		PutQueue(pq, hLink);
+	}
 	else
 	{
 		LINK* LinkPtr;
@@ -175,7 +185,9 @@ void InsertQueue(QUEUE* pq, HLINK hLink, HLINK hRefLink)
 		_SetSuccLink(LinkPtr, hRefLink);
 
 		if (GetHeadLink(pq) == hRefLink)
+		{
 			SetHeadLink(pq, hLink);
+		}
 		else
 		{
 			HLINK hPredLink;

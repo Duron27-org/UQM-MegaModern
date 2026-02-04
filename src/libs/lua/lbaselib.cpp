@@ -33,10 +33,14 @@ static int luaB_print(lua_State* L)
 		lua_call(L, 1, 1);
 		s = lua_tolstring(L, -1, &l); /* get result */
 		if (s == NULL)
+		{
 			return luaL_error(L,
 							  LUA_QL("tostring") " must return a string to " LUA_QL("print"));
+		}
 		if (i > 1)
+		{
 			luai_writestring("\t", 1);
+		}
 		luai_writestring(s, l);
 		lua_pop(L, 1); /* pop result */
 	}
@@ -75,7 +79,9 @@ static int luaB_tonumber(lua_State* L)
 			neg = 1;
 		} /* handle signal */
 		else if (*s == '+')
+		{
 			s++;
+		}
 		if (isalnum((unsigned char)*s))
 		{
 			lua_Number n = 0;
@@ -83,7 +89,9 @@ static int luaB_tonumber(lua_State* L)
 			{
 				int digit = (isdigit((unsigned char)*s)) ? *s - '0' : toupper((unsigned char)*s) - 'A' + 10;
 				if (digit >= base)
+				{
 					break; /* invalid numeral; force a fail */
+				}
 				n = n * (lua_Number)base + (lua_Number)digit;
 				s++;
 			} while (isalnum((unsigned char)*s));
@@ -134,7 +142,9 @@ static int luaB_setmetatable(lua_State* L)
 	luaL_argcheck(L, t == LUA_TNIL || t == LUA_TTABLE, 2,
 				  "nil or table expected");
 	if (luaL_getmetafield(L, 1, "__metatable"))
+	{
 		return luaL_error(L, "cannot change a protected metatable");
+	}
 	lua_settop(L, 2);
 	lua_setmetatable(L, 1);
 	return 1;
@@ -232,9 +242,13 @@ static int pairsmeta(lua_State* L, const char* method, int iszero,
 		lua_pushcfunction(L, iter);		  /* will return generator, */
 		lua_pushvalue(L, 1);			  /* state, */
 		if (iszero)
+		{
 			lua_pushinteger(L, 0); /* and initial value */
+		}
 		else
+		{
 			lua_pushnil(L);
+		}
 	}
 	else
 	{
@@ -250,7 +264,9 @@ static int luaB_next(lua_State* L)
 	luaL_checktype(L, 1, LUA_TTABLE);
 	lua_settop(L, 2); /* create a 2nd argument if there isn't one */
 	if (lua_next(L, 1))
+	{
 		return 2;
+	}
 	else
 	{
 		lua_pushnil(L);
@@ -290,7 +306,9 @@ static int load_aux(lua_State* L, int status, int envidx)
 		{								   /* 'env' parameter? */
 			lua_pushvalue(L, envidx);	   /* environment for loaded function */
 			if (!lua_setupvalue(L, -2, 1)) /* set it as 1st upvalue */
-				lua_pop(L, 1);			   /* remove 'env' if not used by previous call */
+			{
+				lua_pop(L, 1); /* remove 'env' if not used by previous call */
+			}
 		}
 		return 1;
 	}
@@ -347,7 +365,9 @@ static const char* generic_reader(lua_State* L, void* ud, size_t* size)
 		return NULL;
 	}
 	else if (!lua_isstring(L, -1))
+	{
 		luaL_error(L, "reader function must return a string");
+	}
 	lua_replace(L, RESERVEDSLOT); /* save string in reserved slot */
 	return lua_tolstring(L, RESERVEDSLOT, size);
 }
@@ -389,7 +409,9 @@ static int luaB_dofile(lua_State* L)
 	const char* fname = luaL_optstring(L, 1, NULL);
 	lua_settop(L, 1);
 	if (luaL_loadfile(L, fname) != LUA_OK)
+	{
 		return lua_error(L);
+	}
 	lua_callk(L, 0, LUA_MULTRET, 0, dofilecont);
 	return dofilecont(L);
 }
@@ -398,7 +420,9 @@ static int luaB_dofile(lua_State* L)
 static int luaB_assert(lua_State* L)
 {
 	if (!lua_toboolean(L, 1))
+	{
 		return luaL_error(L, "%s", luaL_optstring(L, 2, "assertion failed!"));
+	}
 	return lua_gettop(L);
 }
 
@@ -415,9 +439,13 @@ static int luaB_select(lua_State* L)
 	{
 		int i = luaL_checkint(L, 1);
 		if (i < 0)
+		{
 			i = n + i;
+		}
 		else if (i > n)
+		{
 			i = n;
+		}
 		luaL_argcheck(L, 1 <= i, 1, "index out of range");
 		return n - i;
 	}

@@ -57,12 +57,18 @@ typedef struct ITPACK
 BOOL SL_Init(SAMPLOAD* s)
 {
 	if (!sl_buffer)
+	{
 		if (!(sl_buffer = (SWORD*)MikMod_malloc(SLBUFSIZE * sizeof(SWORD))))
+		{
 			return 0;
+		}
+	}
 
 	sl_rlength = s->length;
 	if (s->infmt & SF_16BITS)
+	{
 		sl_rlength >>= 1;
+	}
 	sl_old = 0;
 
 	return 1;
@@ -71,7 +77,9 @@ BOOL SL_Init(SAMPLOAD* s)
 void SL_Exit(SAMPLOAD* s)
 {
 	if (sl_rlength > 0)
+	{
 		_mm_fseek(s->reader, sl_rlength, SEEK_CUR);
+	}
 
 	MikMod_free(sl_buffer);
 	sl_buffer = NULL;
@@ -97,9 +105,13 @@ static int read_itcompr8(ITPACK* status, MREADER* reader, SWORD* out, UWORD coun
 			if (!bufbits)
 			{
 				if ((*incnt)--)
+				{
 					buf = _mm_read_UBYTE(reader);
+				}
 				else
+				{
 					buf = 0;
+				}
 				bufbits = 8;
 			}
 			/* get as many bits as necessary */
@@ -114,7 +126,9 @@ static int read_itcompr8(ITPACK* status, MREADER* reader, SWORD* out, UWORD coun
 		{
 			new_count = 0;
 			if (++x >= bits)
+			{
 				x++;
+			}
 			bits = x;
 			continue;
 		}
@@ -132,7 +146,9 @@ static int read_itcompr8(ITPACK* status, MREADER* reader, SWORD* out, UWORD coun
 			if ((x > y) && (x <= y + 8))
 			{
 				if ((x -= y) >= bits)
+				{
 					x++;
+				}
 				bits = x;
 				continue;
 			}
@@ -153,7 +169,9 @@ static int read_itcompr8(ITPACK* status, MREADER* reader, SWORD* out, UWORD coun
 		}
 
 		if (bits < 8) /* extend sign */
+		{
 			x = ((SBYTE)(x << (8 - bits))) >> (8 - bits);
+		}
 		*(dest++) = (last += x) << 8; /* convert to 16 bit */
 	}
 	status->bits = bits;
@@ -183,9 +201,13 @@ static int read_itcompr16(ITPACK* status, MREADER* reader, SWORD* out, UWORD cou
 			if (!bufbits)
 			{
 				if ((*incnt)--)
+				{
 					buf = _mm_read_UBYTE(reader);
+				}
 				else
+				{
 					buf = 0;
+				}
 				bufbits = 8;
 			}
 			/* get as many bits as necessary */
@@ -200,7 +222,9 @@ static int read_itcompr16(ITPACK* status, MREADER* reader, SWORD* out, UWORD cou
 		{
 			new_count = 0;
 			if (++x >= bits)
+			{
 				x++;
+			}
 			bits = (UWORD)x;
 			continue;
 		}
@@ -218,7 +242,9 @@ static int read_itcompr16(ITPACK* status, MREADER* reader, SWORD* out, UWORD cou
 			if ((x > y) && (x <= y + 16))
 			{
 				if ((x -= y) >= bits)
+				{
 					x++;
+				}
 				bits = (UWORD)x;
 				continue;
 			}
@@ -239,7 +265,9 @@ static int read_itcompr16(ITPACK* status, MREADER* reader, SWORD* out, UWORD cou
 		}
 
 		if (bits < 16) /* extend sign */
+		{
 			x = ((SWORD)(x << (16 - bits))) >> (16 - bits);
+		}
 		*(dest++) = (last += x);
 	}
 	status->bits = bits;
@@ -278,17 +306,23 @@ static int SL_LoadInternal(void* buffer, UWORD infmt, UWORD outfmt, int scalefac
 				incnt = _mm_read_I_UWORD(reader);
 				c_block = (infmt & SF_16BITS) ? 0x4000 : 0x8000;
 				if (infmt & SF_DELTA)
+				{
 					sl_old = 0;
+				}
 			}
 			if (infmt & SF_16BITS)
 			{
 				if (!(result = read_itcompr16(&status, reader, sl_buffer, stodo, &incnt)))
+				{
 					return 1;
+				}
 			}
 			else
 			{
 				if (!(result = read_itcompr8(&status, reader, sl_buffer, stodo, &incnt)))
+				{
 					return 1;
+				}
 			}
 			if (result != stodo)
 			{
@@ -307,9 +341,13 @@ static int SL_LoadInternal(void* buffer, UWORD infmt, UWORD outfmt, int scalefac
 					return 1;
 				}
 				if (infmt & SF_BIG_ENDIAN)
+				{
 					_mm_read_M_SWORDS(sl_buffer, stodo, reader);
+				}
 				else
+				{
 					_mm_read_I_SWORDS(sl_buffer, stodo, reader);
+				}
 			}
 			else
 			{
@@ -338,15 +376,21 @@ static int SL_LoadInternal(void* buffer, UWORD infmt, UWORD outfmt, int scalefac
 		}
 
 		if (infmt & SF_DELTA)
+		{
 			for (t = 0; t < stodo; t++)
 			{
 				sl_buffer[t] += sl_old;
 				sl_old = sl_buffer[t];
 			}
+		}
 
 		if ((infmt ^ outfmt) & SF_SIGNED)
+		{
 			for (t = 0; t < stodo; t++)
+			{
 				sl_buffer[t] ^= 0x8000;
+			}
+		}
 
 		if (scalefactor)
 		{
@@ -359,14 +403,18 @@ static int SL_LoadInternal(void* buffer, UWORD infmt, UWORD outfmt, int scalefac
 			{
 				scaleval = 0;
 				for (u = scalefactor; u && t < stodo; u--, t++)
+				{
 					scaleval += sl_buffer[t];
+				}
 				sl_buffer[idx++] = (UWORD)(scaleval / (scalefactor - u));
 				length--;
 			}
 			stodo = idx;
 		}
 		else
+		{
 			length -= stodo;
+		}
 
 		if (dither)
 		{
@@ -391,12 +439,16 @@ static int SL_LoadInternal(void* buffer, UWORD infmt, UWORD outfmt, int scalefac
 		if (outfmt & SF_16BITS)
 		{
 			for (t = 0; t < stodo; t++)
+			{
 				*(wptr++) = sl_buffer[t];
+			}
 		}
 		else
 		{
 			for (t = 0; t < stodo; t++)
+			{
 				*(bptr++) = sl_buffer[t] >> 8;
+			}
 		}
 	}
 	return 0;
@@ -424,20 +476,28 @@ SAMPLOAD* SL_RegisterSample(SAMPLE* s, int type, MREADER* reader)
 		cruise = sndfxlist;
 	}
 	else
+	{
 		return NULL;
+	}
 
 	/* Allocate and add structure to the END of the list */
 	if (!(news = (SAMPLOAD*)MikMod_malloc(sizeof(SAMPLOAD))))
+	{
 		return NULL;
+	}
 
 	if (cruise)
 	{
 		while (cruise->next)
+		{
 			cruise = cruise->next;
+		}
 		cruise->next = news;
 	}
 	else
+	{
 		*samplist = news;
+	}
 
 	news->infmt = s->flags & SF_FORMATMASK;
 	news->outfmt = news->infmt;
@@ -490,9 +550,12 @@ static int DitherSamples(SAMPLOAD* samplist, int type)
 	SAMPLOAD* s;
 
 	if (!samplist)
+	{
 		return 0;
+	}
 
 	if ((maxsize = MD_SampleSpace(type) * 1024) != 0)
+	{
 		while (SampleTotal(samplist, type) > maxsize)
 		{
 			/* First Pass - check for any 16 bit samples */
@@ -522,9 +585,12 @@ static int DitherSamples(SAMPLOAD* samplist, int type)
 					s = s->next;
 				}
 				if (c2smp)
+				{
 					SL_HalveSample(c2smp, 2);
+				}
 			}
 		}
+	}
 
 	/* Samples dithered, now load them ! */
 	s = samplist;
@@ -535,7 +601,9 @@ static int DitherSamples(SAMPLOAD* samplist, int type)
 		if (s->sample->length)
 		{
 			if (s->sample->seekpos)
+			{
 				_mm_fseek(s->reader, s->sample->seekpos, SEEK_SET);
+			}
 
 			/* Call the sample load routine of the driver module. It has to
 			   return a 'handle' (>=0) that identifies the sample. */
@@ -545,7 +613,9 @@ static int DitherSamples(SAMPLOAD* samplist, int type)
 			{
 				FreeSampleList(samplist);
 				if (_mm_errorhandler)
+				{
 					_mm_errorhandler();
+				}
 				return 1;
 			}
 		}
@@ -563,7 +633,9 @@ int SL_LoadSamples(void)
 	_mm_critical = 0;
 
 	if ((!musiclist) && (!sndfxlist))
+	{
 		return 0;
+	}
 	rc = DitherSamples(musiclist, MD_MUSIC) || DitherSamples(sndfxlist, MD_SNDFX);
 	musiclist = sndfxlist = NULL;
 

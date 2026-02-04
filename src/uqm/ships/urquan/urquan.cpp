@@ -293,7 +293,9 @@ fighter_preprocess(ELEMENT* ElementPtr)
 		if (((delta_y & 1) || ElementPtr->hTarget
 			 || TrackShip(ElementPtr, &facing) >= 0)
 			&& (delta_x == 0 || delta_y >= ONE_WAY_FLIGHT))
+		{
 			ElementPtr->state_flags |= IGNORE_SIMILAR;
+		}
 		else if (delta_x)
 		{
 			LockElement(StarShipPtr->hShip, &eptr);
@@ -309,9 +311,13 @@ fighter_preprocess(ELEMENT* ElementPtr)
 
 #ifdef NEVER
 			if (delta_x < 0)
+			{
 				delta_x = -delta_x;
+			}
 			if (delta_y < 0)
+			{
 				delta_y = -delta_y;
+			}
 			if (delta_x <= LASER_RANGE && delta_y <= LASER_RANGE)
 #endif /* NEVER */
 				ElementPtr->state_flags &= ~IGNORE_SIMILAR;
@@ -320,7 +326,9 @@ fighter_preprocess(ELEMENT* ElementPtr)
 		}
 
 		if (ElementPtr->thrust_wait > 0)
+		{
 			--ElementPtr->thrust_wait;
+		}
 
 		if (ElementPtr->hTarget)
 		{
@@ -368,8 +376,10 @@ fighter_preprocess(ELEMENT* ElementPtr)
 		ElementPtr->state_flags |= CHANGING;
 
 		if (facing != orig_facing)
+		{
 			ElementPtr->next.image.frame = SetAbsFrameIndex(
 				ElementPtr->next.image.frame, facing);
+		}
 		SetVelocityVector(
 			&ElementPtr->velocity, FIGHTER_SPEED, facing);
 		//spawn_fighter_ion_trail (ElementPtr, StarShipPtr, facing);
@@ -411,14 +421,22 @@ fighter_collision(ELEMENT* ElementPtr0, POINT* pPt0,
 			if (delta_facing == 0)
 			{
 				if (FighterElementPtr->turn_wait & LEFT)
+				{
 					travel_facing -= QUADRANT;
+				}
 				else
+				{
 					travel_facing += QUADRANT;
+				}
 			}
 			else if (delta_facing <= HALF_CIRCLE)
+			{
 				travel_facing -= QUADRANT;
+			}
 			else
+			{
 				travel_facing += QUADRANT;
+			}
 
 			travel_facing = NORMALIZE_FACING(ANGLE_TO_FACING(
 				NORMALIZE_ANGLE(travel_facing)));
@@ -558,7 +576,9 @@ urquan_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 			|| (lpEvalDesc->ObjectPtr->mass_points >= 4
 				&& lpEvalDesc->which_turn == 2
 				&& ObjectsOfConcern[ENEMY_SHIP_INDEX].which_turn > 16)))
+	{
 		lpEvalDesc->MoveState = PURSUE;
+	}
 
 	ship_intelligence(ShipPtr,
 					  ObjectsOfConcern, ConcernCounter);
@@ -568,7 +588,9 @@ urquan_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 		STARSHIP* EnemyStarShipPtr = NULL;
 
 		if (lpEvalDesc->ObjectPtr)
+		{
 			GetElementStarShip(lpEvalDesc->ObjectPtr, &EnemyStarShipPtr);
+		}
 		if (StarShipPtr->special_counter == 0
 			&& lpEvalDesc->ObjectPtr
 			&& StarShipPtr->RaceDescPtr->ship_info.crew_level > (StarShipPtr->RaceDescPtr->ship_info.max_crew >> 2)
@@ -583,9 +605,13 @@ urquan_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 					&& (StarShipPtr->ship_input_state & (LEFT | RIGHT))
 					&& StarShipPtr->RaceDescPtr->ship_info.energy_level >= (uqm::BYTE)(StarShipPtr->RaceDescPtr->ship_info.max_energy >> 1)))
 			&& !OBJECT_CLOAKED(lpEvalDesc->ObjectPtr))
+		{
 			StarShipPtr->ship_input_state |= SPECIAL;
+		}
 		else
+		{
 			StarShipPtr->ship_input_state &= ~SPECIAL;
+		}
 	}
 
 	StarShipPtr->RaceDescPtr->characteristics.special_wait = 0;

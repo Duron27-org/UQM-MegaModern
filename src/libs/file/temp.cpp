@@ -53,10 +53,14 @@ tryTempDir(char* buf, size_t buflen, const char* dir)
 	int haveSlash;
 
 	if (dir == NULL)
+	{
 		return EINVAL;
+	}
 
 	if (dir[0] == '\0')
+	{
 		return EINVAL;
+	}
 
 	len = strlen(dir);
 	haveSlash = (dir[len - 1] == '/'
@@ -65,7 +69,9 @@ tryTempDir(char* buf, size_t buflen, const char* dir)
 #endif
 	);
 	if ((haveSlash ? len : len + 1) >= buflen)
+	{
 		return ENAMETOOLONG;
+	}
 
 	strcpy(buf, dir);
 #if 0
@@ -86,7 +92,9 @@ tryTempDir(char* buf, size_t buflen, const char* dir)
 		buf[len] = '\0';
 	}
 	if (access(buf, R_OK | W_OK) == -1)
+	{
 		return errno;
+	}
 
 	return 0;
 }
@@ -164,13 +172,17 @@ void initTempDir(void)
 	{
 		sprintf(tempPtr, "%08x", num + i);
 		if (createDirectory(tempDirName, 0700) == -1)
+		{
 			continue;
+		}
 
 		// Success, we've got a temp dir.
 		tempDirName = HRealloc(tempDirName, len + 9);
 		atexit(removeTempDir);
 		if (mountTempDir(tempDirName) == -1)
+		{
 			exit(EXIT_FAILURE);
+		}
 		return;
 	}
 

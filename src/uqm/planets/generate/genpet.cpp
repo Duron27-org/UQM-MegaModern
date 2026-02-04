@@ -139,7 +139,9 @@ GenerateTalkingPet_generateOrbital(SOLARSYS_STATE* solarSys,
 			GLOBAL(CurrentActivity) &= ~START_INTERPLANETARY;
 
 			if (GET_GAME_STATE(PLAYER_HYPNOTIZED))
+			{
 				ZapToUrquanEncounter();
+			}
 			else if (GET_GAME_STATE(UMGAH_ZOMBIE_BLOBBIES)
 					 && !UmgahSurvivors)
 			{
@@ -172,7 +174,9 @@ GenerateTalkingPet_generateOrbital(SOLARSYS_STATE* solarSys,
 	GenerateDefault_generateOrbital(solarSys, world);
 
 	if (matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET))
+	{
 		solarSys->SysInfo.PlanetInfo.Weather = 0;
+	}
 
 	return true;
 }
@@ -221,7 +225,9 @@ ZapToUrquanEncounter(void)
 		LockEncounter(hEncounter, &EncounterPtr);
 
 		if (hEncounter == GetHeadEncounter())
+		{
 			RemoveEncounter(hEncounter);
+		}
 		memset(EncounterPtr, 0, sizeof(*EncounterPtr));
 
 		InsertEncounter(hEncounter, GetHeadEncounter());
@@ -269,7 +275,9 @@ ZapToUrquanEncounter(void)
 		   + (FUEL_TANK_SCALE >> 1);
 
 		if (!optInfiniteFuel)
+		{
 			DeltaSISGauges(0, -dx, 0);
+		}
 
 		if (GLOBAL_SIS(FuelOnBoard) < 5 * FUEL_TANK_SCALE)
 		{

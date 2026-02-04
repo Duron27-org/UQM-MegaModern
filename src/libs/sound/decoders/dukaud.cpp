@@ -127,7 +127,9 @@ duka_readAudFrameHeader(TFB_DuckSoundDecoder* duka, uint32 iframe,
 
 	aud->magic = UQM_SwapBE16(aud->magic);
 	if (aud->magic != 0xf77f)
+	{
 		return duka->last_error = dukae_BadFile;
+	}
 
 	aud->numsamples = UQM_SwapBE16(aud->numsamples);
 	aud->tag = UQM_SwapBE16(aud->tag);
@@ -233,9 +235,13 @@ decode_nibbles(sint16* output, sint32 output_size, sint32 channels,
 #endif
 
 		if (sign)
+		{
 			predictors[channel_number] -= diff;
+		}
 		else
+		{
 			predictors[channel_number] += diff;
+		}
 
 		CLAMP_S16(predictors[channel_number]);
 		output[i] = predictors[channel_number];
@@ -301,7 +307,9 @@ duka_readNextFrame(TFB_DuckSoundDecoder* duka)
 
 	aud->magic = UQM_SwapBE16(aud->magic);
 	if (aud->magic != 0xf77f)
+	{
 		return duka->last_error = dukae_BadFile;
+	}
 
 	aud->numsamples = UQM_SwapBE16(aud->numsamples);
 	aud->tag = UQM_SwapBE16(aud->tag);
@@ -322,13 +330,17 @@ duka_stuffBuffer(TFB_DuckSoundDecoder* duka, void* buf, sint32 bufsize)
 	if (dataleft > 0)
 	{
 		if (dataleft > bufsize)
+		{
 			dataleft = bufsize & (-4);
+		}
 		memcpy(buf, (uint8*)duka->data + duka->dataofs, dataleft);
 		duka->dataofs += dataleft;
 	}
 
 	if (duka->cbdata > 0 && duka->dataofs >= duka->cbdata)
+	{
 		duka->cbdata = duka->dataofs = 0; // reset for new data
+	}
 
 	return dataleft;
 }
@@ -400,7 +412,9 @@ duka_Open(THIS_PTR, uio_DirHandle* dir, const char* file)
 
 	filelen = strlen(file);
 	if (filelen > sizeof(filename) - 1)
+	{
 		return false;
+	}
 	strcpy(filename, file);
 
 	duk = uio_fopen(dir, filename, "rb");
@@ -443,7 +457,9 @@ duka_Open(THIS_PTR, uio_DirHandle* dir, const char* file)
 	}
 
 	for (i = 0; i < duka->cframes; ++i)
+	{
 		duka->frames[i] = UQM_SwapBE32(duka->frames[i]);
+	}
 
 	if (duka_readAudFrameHeader(duka, 0, &aud) < 0)
 	{
@@ -499,7 +515,9 @@ duka_Decode(THIS_PTR, void* buf, sint32 bufsize)
 	sint32 total = 0;
 
 	if (bufsize <= 0)
+	{
 		return duka->last_error = dukae_BadArg;
+	}
 
 	do
 	{
@@ -512,7 +530,9 @@ duka_Decode(THIS_PTR, void* buf, sint32 bufsize)
 		{
 			stuffed = duka_readNextFrame(duka);
 			if (stuffed <= 0)
+			{
 				return stuffed;
+			}
 		}
 	} while (bufsize > 0 && duka->iframe < duka->cframes);
 

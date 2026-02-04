@@ -217,7 +217,9 @@ findFileInDirs(const char* locs[], int numLocs, const char* file)
 		snprintf(path, sizeof path, "%s%s%s", loc, needSlash ? "/" : "",
 				 file);
 		if (fileExists(path))
+		{
 			return loc;
+		}
 	}
 
 	// No matching location was found.
@@ -301,12 +303,16 @@ void prepareContentDir(const char* contentDirName, const char* addonDirName,
 	contentMountHandle = mountContentDir(repository, baseContentPath);
 
 	if (contentDirName && contentDirPath == NULL)
+	{
 		contentDirPath = (char*)contentDirName;
+	}
 
 	if (addonDirName)
 	{
 		if (addonDirPath == NULL)
+		{
 			addonDirPath = (char*)addonDirName;
+		}
 
 		log_add(log_Debug, "Using '%s' as addon dir.", addonDirName);
 	}
@@ -328,7 +334,9 @@ void prepareConfigDir(const char* configDirName)
 		configDirName = getenv("UQM_CONFIG_DIR");
 
 		if (configDirName == NULL)
+		{
 			configDirName = CONFIGDIR;
+		}
 	}
 
 	if (expandPath(buf, PATH_MAX - 13, configDirName, EP_ALL_SYSTEM)
@@ -349,7 +357,9 @@ void prepareConfigDir(const char* configDirName)
 
 	// Create the path upto the config dir, if not already existing.
 	if (mkdirhier(configDirName) == -1)
+	{
 		exit(EXIT_FAILURE);
+	}
 
 	contentHandle = uio_mountDir(repository, "/",
 								 uio_FSTYPE_STDIO, NULL, NULL, configDirName, autoMount,
@@ -377,7 +387,9 @@ void prepareSaveDir(void)
 
 	saveDirName = getenv("UQM_SAVE_DIR");
 	if (saveDirName == NULL)
+	{
 		saveDirName = SAVEDIR;
+	}
 
 	if (expandPath(buf, PATH_MAX - 13, saveDirName, EP_ALL_SYSTEM) == -1)
 	{
@@ -392,7 +404,9 @@ void prepareSaveDir(void)
 
 	// Create the path upto the save dir, if not already existing.
 	if (mkdirhier(saveDirName) == -1)
+	{
 		exit(EXIT_FAILURE);
+	}
 
 	log_add(log_Debug, "Saved games are kept in %s.", saveDirName);
 
@@ -414,7 +428,9 @@ void prepareMeleeDir(void)
 
 	meleeDirName = getenv("UQM_MELEE_DIR");
 	if (meleeDirName == NULL)
+	{
 		meleeDirName = MELEEDIR;
+	}
 
 	if (expandPath(buf, PATH_MAX - 13, meleeDirName, EP_ALL_SYSTEM) == -1)
 	{
@@ -429,7 +445,9 @@ void prepareMeleeDir(void)
 
 	// Create the path upto the save dir, if not already existing.
 	if (mkdirhier(meleeDirName) == -1)
+	{
 		exit(EXIT_FAILURE);
+	}
 
 	meleeDir = uio_openDirRelative(configDir, "teams", 0);
 	// TODO: this doesn't work if the save dir is not
@@ -449,7 +467,9 @@ void prepareScrShotDir(void)
 
 	shotDirName = getenv("UQM_SCR_SHOT_DIR");
 	if (shotDirName == NULL)
+	{
 		shotDirName = SCRSHOTDIR;
+	}
 
 	if (expandPath(buf, PATH_MAX - 13, shotDirName, EP_ALL_SYSTEM) == -1)
 	{
@@ -464,7 +484,9 @@ void prepareScrShotDir(void)
 
 	// Create the path upto the save dir, if not already existing.
 	if (mkdirhier(shotDirName) == -1)
+	{
 		exit(EXIT_FAILURE);
+	}
 
 	scrShotDir = uio_openDirRelative(configDir, "screenshots", 0);
 	// TODO: this doesn't work if the save dir is not
@@ -584,7 +606,9 @@ mountAddonDir(uio_Repository* repository, uio_MountHandle* contentMountHandle,
 			const char* addon = availableAddons->names[i];
 
 			if (!addon)
+			{
 				continue;
+			}
 
 			addonList.name_hash[count] = crc32b(addon);
 
@@ -622,12 +646,16 @@ bool isAddonAvailable(const char* addon_name)
 	uqm::DWORD name_hash = crc32b(addon_name);
 
 	if (!name_hash)
+	{
 		return false;
+	}
 
 	for (i = 0; i < addonList.amount; i++)
 	{
 		if (addonList.name_hash[i] == name_hash)
+		{
 			return true;
+		}
 	}
 
 	return false;
@@ -681,7 +709,9 @@ mountBaseZip(uio_DirHandle* dirHandle, const char* mountPoint,
 		{
 			names_hash = crc32b(dirList->names[i]);
 			if (name_hash == names_hash)
+			{
 				break;
+			}
 		}
 
 		if (i == dirList->numNames)
@@ -695,7 +725,9 @@ mountBaseZip(uio_DirHandle* dirHandle, const char* mountPoint,
 				return;
 			}
 			else
+			{
 				i--;
+			}
 		}
 
 		if (uio_mountDir(repository, mountPoint, uio_FSTYPE_ZIP,
@@ -781,7 +813,9 @@ void prepareShadowAddons(const char** addons)
 	// If anything fails here, it will fail again later, so
 	// we'll just keep quiet about it for now
 	if (addonsDir == NULL)
+	{
 		return;
+	}
 
 	for (; *addons != NULL; addons++)
 	{
@@ -791,7 +825,9 @@ void prepareShadowAddons(const char** addons)
 
 		addonDir = uio_openDirRelative(addonsDir, addon, 0);
 		if (addonDir == NULL)
+		{
 			continue;
+		}
 
 		// Mount addon's "shadow-content" on top of "/"
 		shadowDir = uio_openDirRelative(addonDir, shadowDirName, 0);
@@ -863,8 +899,12 @@ bool setGammaCorrection(float gamma)
 {
 	bool set = TFB_SetGamma(gamma);
 	if (set)
+	{
 		log_add(log_Info, "Gamma correction set to %.4f.", gamma);
+	}
 	else
+	{
 		log_add(log_Warning, "Unable to set gamma correction.");
+	}
 	return set;
 }

@@ -31,7 +31,9 @@ uio_getU8(uio_Stream* stream, uio_uint8* result)
 {
 	int val = uio_getc(stream);
 	if (val == EOF)
+	{
 		return false;
+	}
 
 	*result = (uio_uint8)val;
 	return true;
@@ -42,7 +44,9 @@ uio_getS8(uio_Stream* stream, uio_sint8* result)
 {
 	int val = uio_getc(stream);
 	if (val == EOF)
+	{
 		return false;
+	}
 
 	*result = (uio_sint8)val;
 	return true;
@@ -54,7 +58,9 @@ uio_getU16LE(uio_Stream* stream, uio_uint16* result)
 	uio_uint8 buf[2];
 
 	if (uio_fread(buf, sizeof buf, 1, stream) != 1)
+	{
 		return false;
+	}
 
 	*result = (buf[1] << 8) | buf[0];
 	return true;
@@ -66,7 +72,9 @@ uio_getU16BE(uio_Stream* stream, uio_uint16* result)
 	uio_uint8 buf[2];
 
 	if (uio_fread(buf, sizeof buf, 1, stream) != 1)
+	{
 		return false;
+	}
 
 	*result = (buf[0] << 8) | buf[1];
 	return true;
@@ -78,7 +86,9 @@ uio_getS16LE(uio_Stream* stream, uio_sint16* result)
 	uio_uint8 buf[2];
 
 	if (uio_fread(buf, sizeof buf, 1, stream) != 1)
+	{
 		return false;
+	}
 
 	*result = (uio_sint16)((buf[1] << 8) | buf[0]);
 	return true;
@@ -90,7 +100,9 @@ uio_getS16BE(uio_Stream* stream, uio_sint16* result)
 	uio_uint8 buf[2];
 
 	if (uio_fread(buf, sizeof buf, 1, stream) != 1)
+	{
 		return false;
+	}
 
 	*result = (uio_sint16)((buf[0] << 8) | buf[1]);
 	return true;
@@ -102,7 +114,9 @@ uio_getU32LE(uio_Stream* stream, uio_uint32* result)
 	uio_uint8 buf[4];
 
 	if (uio_fread(buf, sizeof buf, 1, stream) != 1)
+	{
 		return false;
+	}
 
 	*result = (buf[3] << 24) | (buf[2] << 16) | (buf[1] << 8) | buf[0];
 	return true;
@@ -114,7 +128,9 @@ uio_getU32BE(uio_Stream* stream, uio_uint32* result)
 	uio_uint8 buf[4];
 
 	if (uio_fread(buf, sizeof buf, 1, stream) != 1)
+	{
 		return false;
+	}
 
 	*result = (buf[0] << 24) | (buf[1] << 16) | (buf[2] << 8) | buf[3];
 	return true;
@@ -126,7 +142,9 @@ uio_getS32LE(uio_Stream* stream, uio_sint32* result)
 	uio_uint8 buf[4];
 
 	if (uio_fread(buf, sizeof buf, 1, stream) != 1)
+	{
 		return false;
+	}
 
 	*result = (uio_sint32)((buf[3] << 24) | (buf[2] << 16) | (buf[1] << 8) | buf[0]);
 	return true;
@@ -138,7 +156,9 @@ uio_getS32BE(uio_Stream* stream, uio_sint32* result)
 	uio_uint8 buf[4];
 
 	if (uio_fread(buf, sizeof buf, 1, stream) != 1)
+	{
 		return false;
+	}
 
 	*result = (uio_sint32)((buf[0] << 24) | (buf[1] << 16) | (buf[2] << 8) | buf[3]);
 	return true;

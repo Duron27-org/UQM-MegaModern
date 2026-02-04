@@ -96,10 +96,14 @@ void SCALE_(BiAdaptFilter)(SDL_Surface* src, SDL_Surface* dst, SDL_Rect* r)
 				pixval_bl = SCALE_GETPIX(SRC(0, 1));
 
 				if (pixval_tl == pixval_bl)
+				{
 					SCALE_SETPIX(dst_p + dlen, pixval_tl);
+				}
 				else
+				{
 					SCALE_SETPIX(dst_p + dlen, Scale_Blend_11(
 												   pixval_tl, pixval_bl));
+				}
 			}
 			else
 			{
@@ -115,10 +119,14 @@ void SCALE_(BiAdaptFilter)(SDL_Surface* src, SDL_Surface* dst, SDL_Rect* r)
 				SCALE_SETPIX(dst_p, pixval_tl);
 
 				if (pixval_tl == pixval_bl)
+				{
 					SCALE_SETPIX(dst_p + dlen, pixval_tl);
+				}
 				else
+				{
 					SCALE_SETPIX(dst_p + dlen, Scale_Blend_11(
 												   pixval_tl, pixval_bl));
+				}
 				continue;
 			}
 
@@ -126,10 +134,14 @@ void SCALE_(BiAdaptFilter)(SDL_Surface* src, SDL_Surface* dst, SDL_Rect* r)
 			pixval_tr = SCALE_GETPIX(SRC(1, 0));
 
 			if (pixval_tl == pixval_tr)
+			{
 				SCALE_SETPIX(dst_p, pixval_tr);
+			}
 			else
+			{
 				SCALE_SETPIX(dst_p, Scale_Blend_11(
 										pixval_tl, pixval_tr));
+			}
 
 			if (y + 1 >= h)
 			{
@@ -164,70 +176,108 @@ void SCALE_(BiAdaptFilter)(SDL_Surface* src, SDL_Surface* dst, SDL_Rect* r)
 				{
 					clr = SCALE_GETPIX(SRC(-1, 0));
 					if (clr == pixval_tl)
+					{
 						cl++;
+					}
 					else if (clr == pixval_tr)
+					{
 						cr++;
+					}
 
 					clr = SCALE_GETPIX(SRC(-1, 1));
 					if (clr == pixval_tl)
+					{
 						cl++;
+					}
 					else if (clr == pixval_tr)
+					{
 						cr++;
+					}
 				}
 
 				if (y > 0)
 				{
 					clr = SCALE_GETPIX(SRC(0, -1));
 					if (clr == pixval_tl)
+					{
 						cl++;
+					}
 					else if (clr == pixval_tr)
+					{
 						cr++;
+					}
 
 					clr = SCALE_GETPIX(SRC(1, -1));
 					if (clr == pixval_tl)
+					{
 						cl++;
+					}
 					else if (clr == pixval_tr)
+					{
 						cr++;
+					}
 				}
 
 				if (x + 2 < w)
 				{
 					clr = SCALE_GETPIX(SRC(2, 0));
 					if (clr == pixval_tl)
+					{
 						cl++;
+					}
 					else if (clr == pixval_tr)
+					{
 						cr++;
+					}
 
 					clr = SCALE_GETPIX(SRC(2, 1));
 					if (clr == pixval_tl)
+					{
 						cl++;
+					}
 					else if (clr == pixval_tr)
+					{
 						cr++;
+					}
 				}
 
 				if (y + 2 < h)
 				{
 					clr = SCALE_GETPIX(SRC(0, 2));
 					if (clr == pixval_tl)
+					{
 						cl++;
+					}
 					else if (clr == pixval_tr)
+					{
 						cr++;
+					}
 
 					clr = SCALE_GETPIX(SRC(1, 2));
 					if (clr == pixval_tl)
+					{
 						cl++;
+					}
 					else if (clr == pixval_tr)
+					{
 						cr++;
+					}
 				}
 
 				// least count wins
 				if (cl > cr)
+				{
 					SCALE_SETPIX(dst_p + dlen, pixval_tr);
+				}
 				else if (cr > cl)
+				{
 					SCALE_SETPIX(dst_p + dlen, pixval_tl);
+				}
 				else
+				{
 					SCALE_SETPIX(dst_p + dlen,
 								 Scale_Blend_11(pixval_tl, pixval_tr));
+				}
 			}
 			else if (pixval_tl == pixval_br)
 			{

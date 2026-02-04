@@ -37,7 +37,7 @@ static LOCDATA arilou_desc =
 		BLACK_COLOR_INIT, /* AlienTextBColor */
 		{0, 0}, /* AlienTextBaseline */
 		0,
- /* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
+		/* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
 		ALIGN_CENTER, /* AlienTextAlign */
 		VALIGN_TOP, /* AlienTextValign */
 		ARILOU_COLOR_MAP, /* AlienColorMap */
@@ -237,13 +237,21 @@ ExitConversation(RESPONSE_REF R)
 	setSegue(Segue_peace);
 
 	if (PLAYER_SAID(R, bye_angry_space))
+	{
 		NPCPhrase(GOODBYE_ANGRY_SPACE);
+	}
 	else if (PLAYER_SAID(R, bye_friendly_space))
+	{
 		NPCPhrase(GOODBYE_FRIENDLY_SPACE);
+	}
 	else if (PLAYER_SAID(R, bye_friendly_homeworld))
+	{
 		NPCPhrase(GOODBYE_FRDLY_HOMEWORLD);
+	}
 	else if (PLAYER_SAID(R, lets_fight))
+	{
 		NPCPhrase(NO_FIGHT);
+	}
 	else if (PLAYER_SAID(R, bug_eyed_fruitcakes))
 	{
 		NPCPhrase(WE_NEVER_FRIENDS);
@@ -267,13 +275,21 @@ ArilouHome(RESPONSE_REF R)
 	LastStack = 0;
 	pStr[0] = pStr[1] = pStr[2] = pStr[3] = 0;
 	if (PLAYER_SAID(R, confused_by_hello))
+	{
 		NPCPhrase(CONFUSED_RESPONSE);
+	}
 	else if (PLAYER_SAID(R, happy_by_hello))
+	{
 		NPCPhrase(HAPPY_RESPONSE);
+	}
 	else if (PLAYER_SAID(R, miffed_by_hello))
+	{
 		NPCPhrase(MIFFED_RESPONSE);
+	}
 	else if (PLAYER_SAID(R, ok_lets_be_friends))
+	{
 		NPCPhrase(NO_ALLY_BUT_MUCH_GIVE);
+	}
 	else if (PLAYER_SAID(R, what_about_war))
 	{
 		NPCPhrase(ABOUT_WAR);
@@ -305,7 +321,9 @@ ArilouHome(RESPONSE_REF R)
 	else if (PLAYER_SAID(R, learned_about_umgah))
 	{
 		if (GET_GAME_STATE(ARILOU_CHECKED_UMGAH) != 2)
+		{
 			NPCPhrase(NO_NEWS_YET);
+		}
 		else
 		{
 			NPCPhrase(UMGAH_UNDER_COMPULSION);
@@ -378,7 +396,9 @@ ArilouHome(RESPONSE_REF R)
 	else if (PLAYER_SAID(R, got_it))
 	{
 		if (GET_GAME_STATE(ARILOU_HOME_VISITS) == 1)
+		{
 			NPCPhrase(CLEVER_HUMAN);
+		}
 		NPCPhrase(GIVE_PORTAL);
 
 		SET_GAME_STATE(PORTAL_KEY_ON_SHIP, 0);
@@ -407,7 +427,9 @@ ArilouHome(RESPONSE_REF R)
 	{
 #ifdef NEVER
 		if (GET_GAME_STATE(ARILOU_STACK_2) == 0)
+		{
 			pStr[1] = got_tpet;
+		}
 #endif /* NEVER */
 	}
 	else
@@ -427,11 +449,17 @@ ArilouHome(RESPONSE_REF R)
 		else if (GET_GAME_STATE(KNOW_UMGAH_ZOMBIES))
 		{
 			if (!GET_GAME_STATE(ARILOU_CHECKED_UMGAH))
+			{
 				pStr[1] = umgah_acting_weird;
+			}
 			else if (PHRASE_ENABLED(learned_about_umgah) && PHRASE_ENABLED(umgah_acting_weird))
+			{
 				pStr[1] = learned_about_umgah;
+			}
 			else if (GET_GAME_STATE(ARILOU_CHECKED_UMGAH) == 2)
+			{
 				pStr[1] = what_do_now;
+			}
 		}
 	}
 	switch (GET_GAME_STATE(ARILOU_STACK_3))
@@ -447,27 +475,41 @@ ArilouHome(RESPONSE_REF R)
 			break;
 	}
 	if (!GET_GAME_STATE(KNOW_ARILOU_WANT_WRECK))
+	{
 		pStr[3] = what_give_me;
+	}
 	else if (!GET_GAME_STATE(ARILOU_STACK_4))
+	{
 		pStr[3] = what_about_tpet;
+	}
 
 	if (pStr[LastStack])
+	{
 		Response(pStr[LastStack], ArilouHome);
+	}
 	for (i = 0; i < 4; ++i)
 	{
 		if (i != LastStack && pStr[i])
+		{
 			Response(pStr[i], ArilouHome);
+		}
 	}
 
 	if (GET_GAME_STATE(KNOW_ARILOU_WANT_WRECK))
 	{
 		if (GET_GAME_STATE(PORTAL_KEY_ON_SHIP))
+		{
 			Response(got_it, ArilouHome);
+		}
 		else if (PHRASE_ENABLED(about_portal_again) && !GET_GAME_STATE(PORTAL_SPAWNER))
+		{
 			Response(about_portal_again, ArilouHome);
+		}
 	}
 	if (GET_GAME_STATE(ARILOU_MANNER) != 3)
+	{
 		Response(best_if_i_killed_you, ExitConversation);
+	}
 	Response(bye_friendly_homeworld, ExitConversation);
 }
 
@@ -549,11 +591,17 @@ FriendlySpaceArilou(RESPONSE_REF R)
 	uqm::BYTE NumVisits;
 
 	if (PLAYER_SAID(R, confused_by_hello))
+	{
 		NPCPhrase(CONFUSED_RESPONSE);
+	}
 	else if (PLAYER_SAID(R, happy_by_hello))
+	{
 		NPCPhrase(HAPPY_RESPONSE);
+	}
 	else if (PLAYER_SAID(R, miffed_by_hello))
+	{
 		NPCPhrase(MIFFED_RESPONSE);
+	}
 	else if (PLAYER_SAID(R, whats_up_1)
 			 || PLAYER_SAID(R, whats_up_2))
 	{
@@ -642,16 +690,24 @@ FriendlySpaceArilou(RESPONSE_REF R)
 	if (PHRASE_ENABLED(whats_up_2))
 	{
 		if (GET_GAME_STATE(ARILOU_INFO) == 0)
+		{
 			Response(whats_up_1, FriendlySpaceArilou);
+		}
 		else
+		{
 			Response(whats_up_2, FriendlySpaceArilou);
+		}
 	}
 	if (PHRASE_ENABLED(give_me_info_2))
 	{
 		if (GET_GAME_STATE(ARILOU_HINTS) == 0)
+		{
 			Response(give_me_info_1, FriendlySpaceArilou);
+		}
 		else
+		{
 			Response(give_me_info_2, FriendlySpaceArilou);
+		}
 	}
 	Response(bye_friendly_space, ExitConversation);
 }

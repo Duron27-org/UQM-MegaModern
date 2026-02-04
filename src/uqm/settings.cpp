@@ -33,9 +33,13 @@ void ToggleMusic(void)
 	if (LastPriority <= 1)
 	{
 		if (GLOBAL(glob_flags) & MUSIC_DISABLED)
+		{
 			PLRStop(LastMusicRef);
+		}
 		else if (LastMusicRef)
+		{
 			PLRPlaySong(LastMusicRef, LastContinuous, LastPriority);
+		}
 	}
 }
 
@@ -88,7 +92,9 @@ void PlayMusicResume(MUSIC_REF MusicRef, uqm::BYTE Volume)
 		FadeMusic(Volume, ONE_SECOND * 2);
 	}
 	else
+	{
 		SetMusicVolume(Volume);
+	}
 }
 
 void ToggleSoundEffect(void)

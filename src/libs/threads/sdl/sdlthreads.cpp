@@ -109,7 +109,9 @@ void PrintThreadsStats_SDL(void)
 				((now - ptr->startTime) / 1000) % 60);
 		LocalStats(ptr->native);
 		if (ptr->next != NULL)
+		{
 			fprintf(stderr, "\n");
+		}
 	}
 	SDL_mutexV(threadQueueMutex);
 	fprintf(stderr, "----------------------\n");
@@ -310,9 +312,13 @@ void SleepThreadUntil_SDL(TimeCount wakeTime)
 
 	now = GetTimeCounter();
 	if (wakeTime <= now)
+	{
 		TaskSwitch_SDL();
+	}
 	else
+	{
 		SDL_Delay((wakeTime - now) * 1000 / ONE_SECOND);
+	}
 }
 
 void TaskSwitch_SDL(void)
@@ -584,7 +590,9 @@ void LockRecursiveMutex_SDL(RecursiveMutex val)
 		}
 #endif
 		while (SDL_mutexP(mtx->mutex))
+		{
 			TaskSwitch_SDL();
+		}
 		mtx->thread_id = thread_id;
 	}
 	mtx->locks++;

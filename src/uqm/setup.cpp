@@ -120,12 +120,16 @@ bool LoadKernel(int argc, char* argv[])
 
 	ScreenContext = CreateContext("ScreenContext");
 	if (ScreenContext == NULL)
+	{
 		return false;
+	}
 
 	Screen = CaptureDrawable(CreateDisplay(WANT_MASK | WANT_PIXMAP,
 										   &screen_width, &screen_height));
 	if (Screen == NULL)
+	{
 		return false;
+	}
 
 	SetContext(ScreenContext);
 	SetContextFGFrame(Screen);
@@ -133,11 +137,15 @@ bool LoadKernel(int argc, char* argv[])
 
 	hResIndex = (RESOURCE_INDEX)InitResourceSystem();
 	if (hResIndex == 0)
+	{
 		return false;
+	}
 
 	/* Load base content. */
 	if (loadIndices(contentDir) == 0)
+	{
 		return false; // Must have at least one index in content dir
+	}
 
 	classicPackPresent = false;
 
@@ -160,13 +168,19 @@ bool LoadKernel(int argc, char* argv[])
 	}
 
 	if (IS_PAD && isAddonAvailable(THREEDO_MODE(IS_HD)))
+	{
 		loadAddon(THREEDO_MODE(IS_HD));
+	}
 	if (IS_DOS && isAddonAvailable(DOS_MODE(IS_HD)))
+	{
 		loadAddon(DOS_MODE(IS_HD));
+	}
 
 	usingSpeech = (bool)optSpeech;
 	if (optSpeech && !loadAddon("mm-3dovoice"))
+	{
 		usingSpeech = false;
+	}
 
 	if (usingSpeech)
 	{
@@ -178,10 +192,14 @@ bool LoadKernel(int argc, char* argv[])
 	}
 
 	if (opt3doMusic)
+	{
 		loadAddon("3domusic");
+	}
 
 	if (optRemixMusic)
+	{
 		loadAddon("remix");
+	}
 
 	if (optVolasMusic)
 	{
@@ -191,10 +209,14 @@ bool LoadKernel(int argc, char* argv[])
 	}
 
 	if (!VolasPackPresent)
+	{
 		SpaceMusicOK = optSpaceMusic && loadAddon("SpaceMusic");
+	}
 
 	if (optWhichIntro == OPT_3DO)
+	{
 		loadAddon("3dovideo");
+	}
 
 	loadAddon("ProfanePkunk");
 	loadAddon("GlaDOS");
@@ -228,7 +250,9 @@ bool LoadKernel(int argc, char* argv[])
 
 		ColorMapTab = CaptureColorMap(LoadColorMap(STARCON_COLOR_MAP));
 		if (ColorMapTab == NULL)
+		{
 			return false; // The most basic resource is missing
+		}
 		SetColorMap(GetColorMapAddress(ColorMapTab));
 		DestroyColorMap(ReleaseColorMap(ColorMapTab));
 	}
@@ -246,7 +270,9 @@ bool InitContexts(void)
 
 	StatusContext = CreateContext("StatusContext");
 	if (StatusContext == NULL)
+	{
 		return false;
+	}
 	AdvanceLoadProgress();
 
 	oldContext = SetContext(StatusContext);
@@ -259,17 +285,23 @@ bool InitContexts(void)
 
 	SpaceContext = CreateContext("SpaceContext");
 	if (SpaceContext == NULL)
+	{
 		return false;
+	}
 	SetContext(oldContext);
 	AdvanceLoadProgress();
 
 	OffScreenContext = CreateContext("OffScreenContext");
 	if (OffScreenContext == NULL)
+	{
 		return false;
+	}
 	AdvanceLoadProgress();
 
 	if (!InitQueue(&disp_q, MAX_DISPLAY_ELEMENTS, sizeof(ELEMENT)))
+	{
 		return false;
+	}
 	AdvanceLoadProgress();
 
 	return true;
@@ -281,96 +313,136 @@ InitKernel(void)
 	uqm::COUNT counter;
 
 	for (counter = 0; counter < NUM_PLAYERS; ++counter)
+	{
 		InitQueue(&race_q[counter], MAX_SHIPS_PER_SIDE, sizeof(STARSHIP));
+	}
 
 	StarConFont = LoadFont(STARCON_FONT);
 	if (StarConFont == NULL)
+	{
 		return false;
+	}
 	AdvanceLoadProgress();
 
 	TinyFont = LoadFont(TINY_FONT);
 	if (TinyFont == NULL)
+	{
 		return false;
+	}
 	AdvanceLoadProgress();
 
 	TinyFontBold = LoadFont(TINY_FONT_BOLD);
 	if (TinyFontBold == NULL)
+	{
 		return false;
+	}
 	AdvanceLoadProgress();
 
 	TinyFontCond = LoadFont(TINY_FONT_COND);
 	if (TinyFontCond == NULL)
+	{
 		return false;
+	}
 
 	PlyrFont = LoadFont(PLAYER_FONT);
 	if (PlyrFont == NULL)
+	{
 		return false;
+	}
 	AdvanceLoadProgress();
 
 	PlayMenuFont = LoadFont(PLAYMENU_FONT);
 	if (PlayMenuFont == NULL)
+	{
 		return false;
+	}
 
 	BorderFrame = CaptureDrawable(LoadGraphic(BORDER_MASK_PMAP_ANIM));
 	if (BorderFrame == NULL)
+	{
 		return false;
+	}
 	AdvanceLoadProgress();
 
 	CustBevelFrame = CaptureDrawable(LoadGraphic(CUST_BEVEL_MASK_PMAP_ANIM));
 	if (CustBevelFrame == NULL)
+	{
 		return false;
+	}
 
 	if (HDPackPresent)
 	{
 		HDBorderFrame = CaptureDrawable(LoadGraphic(HD_BORDER_MASK_PMAP_ANIM));
 		if (HDBorderFrame == NULL)
+		{
 			return false;
+		}
 
 		DefBevelFrame = CaptureDrawable(LoadGraphic(DEF_BEVEL_MASK_PMAP_ANIM));
 		if (DefBevelFrame == NULL)
+		{
 			return false;
+		}
 	}
 
 	ActivityFrame = CaptureDrawable(LoadGraphic(ACTIVITY_ANIM));
 	if (ActivityFrame == NULL)
+	{
 		return false;
+	}
 	AdvanceLoadProgress();
 
 	StatusFrame = CaptureDrawable(LoadGraphic(STATUS_MASK_PMAP_ANIM));
 	if (StatusFrame == NULL)
+	{
 		return false;
+	}
 	AdvanceLoadProgress();
 
 	SubmenuFrame = CaptureDrawable(LoadGraphic(SUBMENU_MASK_PMAP_ANIM));
 	if (SubmenuFrame == NULL)
+	{
 		return false;
+	}
 	AdvanceLoadProgress();
 
 	GameStrings = CaptureStringTable(LoadStringTable(STARCON_GAME_STRINGS));
 	if (GameStrings == 0)
+	{
 		return false;
+	}
 	AdvanceLoadProgress();
 
 	MicroFont = LoadFont(MICRO_FONT);
 	if (MicroFont == NULL)
+	{
 		return false;
+	}
 	AdvanceLoadProgress();
 
 	LabelFont = LoadFont(LABEL_FONT);
 	if (LabelFont == NULL)
+	{
 		return false;
+	}
 
 	SquareFont = LoadFont(SQUARE_FONT);
 	if (SquareFont == NULL)
+	{
 		return false;
+	}
 
 	SlabFont = LoadFont(SLAB_FONT);
 	if (SlabFont == NULL)
+	{
 		return false;
+	}
 
 	MenuSounds = CaptureSound(LoadSound(MENU_SOUNDS));
 	if (MenuSounds == 0)
+	{
 		return false;
+	}
 	AdvanceLoadProgress();
 
 	InitStatusOffsets();
@@ -431,8 +503,12 @@ bool SetPlayerInputAll(void)
 {
 	uqm::COUNT playerI;
 	for (playerI = 0; playerI < NUM_PLAYERS; playerI++)
+	{
 		if (!SetPlayerInput(playerI))
+		{
 			return false;
+		}
+	}
 	return true;
 }
 
@@ -453,7 +529,9 @@ void ClearPlayerInputAll(void)
 {
 	uqm::COUNT playerI;
 	for (playerI = 0; playerI < NUM_PLAYERS; playerI++)
+	{
 		ClearPlayerInput(playerI);
+	}
 }
 
 int initIO(void)

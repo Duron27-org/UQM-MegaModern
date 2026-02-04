@@ -87,7 +87,9 @@ HASHTABLE_(add)(HASHTABLE_(HashTable) * hashTable,
 
 #ifdef HashTable_PROFILE
 	if (hashTable->entries[hash & hashTable->hashMask] != NULL)
+	{
 		hashTable->numCollisions++;
+	}
 #endif
 	hashTable->entries[hash & hashTable->hashMask] =
 		HASHTABLE_(newHashEntry)(hash,
@@ -96,7 +98,9 @@ HASHTABLE_(add)(HASHTABLE_(HashTable) * hashTable,
 
 	hashTable->numEntries++;
 	if (hashTable->numEntries > hashTable->maxSize)
+	{
 		HASHTABLE_(resize)(hashTable);
+	}
 
 	return true;
 }
@@ -114,7 +118,9 @@ HASHTABLE_(remove)(HASHTABLE_(HashTable) * hashTable,
 	while (1)
 	{
 		if (*entry == NULL)
+		{
 			return false;
+		}
 		if (HASHTABLE_(EQUAL)(hashTable, key, (*entry)->key))
 		{
 			// found the key
@@ -130,7 +136,9 @@ HASHTABLE_(remove)(HASHTABLE_(HashTable) * hashTable,
 
 	hashTable->numEntries--;
 	if (hashTable->numEntries < hashTable->minSize)
+	{
 		HASHTABLE_(resize)(hashTable);
+	}
 
 	return true;
 }
@@ -167,7 +175,9 @@ static void
 HASHTABLE_(setup)(HASHTABLE_(HashTable) * hashTable, uio_uint32 initialSize)
 {
 	if (initialSize < 4)
+	{
 		initialSize = 4;
+	}
 	hashTable->size = nextPower2((uio_uint32)ceil(((double)initialSize) / hashTable->maxFillQuotient));
 	hashTable->hashMask = hashTable->size - 1;
 	hashTable->minSize = (uio_uint32)ceil(((double)(hashTable->size >> 1))
@@ -208,7 +218,9 @@ HASHTABLE_(resize)(HASHTABLE_(HashTable) * hashTable)
 			newLocation = &hashTable->entries[entry->hash & hashTable->hashMask];
 #ifdef HashTable_PROFILE
 			if (*newLocation != NULL)
+			{
 				hashTable->numCollisions++;
+			}
 #endif
 			entry->next = *newLocation;
 			*newLocation = entry;
@@ -294,7 +306,9 @@ HASHTABLE_(Iterator) * HASHTABLE_(iteratorNext)(HASHTABLE_(Iterator) * iterator)
 	// If there's another entry in this bucket, use that.
 	iterator->entry = iterator->entry->next;
 	if (iterator->entry != NULL)
+	{
 		return iterator;
+	}
 
 	// Look for the next used bucket.
 	for (i = iterator->bucketNr + 1; i < iterator->hashTable->size; i++)

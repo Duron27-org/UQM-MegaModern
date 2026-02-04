@@ -88,10 +88,14 @@ processAudioSyncedFrame(VIDEO_REF vid)
 	TimeCount Now = GetTimeCounter();
 
 	if (!vid->playing)
+	{
 		return false;
+	}
 
 	if (Now < vid->frame_time)
+	{
 		return true; // not time yet
+	}
 
 	LockMutex(vid->guard);
 	want_frame = vid->want_frame;
@@ -173,7 +177,9 @@ processMuteFrame(VIDEO_REF vid)
 	TimeCount Now = GetTimeCounter();
 
 	if (!vid->playing)
+	{
 		return false;
+	}
 
 	// this works like so:
 	//  1. you call VideoDecoder_Seek() [when necessary] and
@@ -199,11 +205,15 @@ processMuteFrame(VIDEO_REF vid)
 		FlushGraphics(); // needed to prevent half-frame updates
 
 		if (vid->cur_frame == vid->loop_frame)
+		{
 			VideoDecoder_SeekFrame(vid->decoder, vid->loop_to);
+		}
 
 		ret = VideoDecoder_Decode(vid->decoder);
 		if (ret <= 0)
+		{
 			vid->playing = false;
+		}
 	}
 
 	return vid->playing;
@@ -222,19 +232,23 @@ bool TFB_PlayVideo(VIDEO_REF vid, uint32 x, uint32 y)
 	 };
 	RECT dr = {
 		{(COORD)x,	   (COORD)y	   },
-		  {(COORD)vid->w, (COORD)vid->h}
-	};
+		{(COORD)vid->w, (COORD)vid->h}
+	  };
 	RECT sr;
 	bool loop_music = false;
 	int ret;
 
 	if (!vid)
+	{
 		return false;
+	}
 
 	// calculate the frame-source and screen-destination rects
 	GetContextClipRect(&scrn_r);
 	if (!BoxIntersect(&scrn_r, &vid_r, &scrn_r))
+	{
 		return false; // drawing outside visible
+	}
 
 	sr = dr;
 	// JMS_GFX: Added this if-clause around the following lines to make the
@@ -244,13 +258,17 @@ bool TFB_PlayVideo(VIDEO_REF vid, uint32 x, uint32 y)
 		sr.corner.x = -sr.corner.x;
 		sr.corner.y = -sr.corner.y;
 		if (!BoxIntersect(&clip_r, &sr, &sr))
+		{
 			return false; // drawing outside visible
+		}
 	}
 
 	dr.corner.x += scrn_r.corner.x;
 	dr.corner.y += scrn_r.corner.y;
 	if (!BoxIntersect(&scrn_r, &dr, &vid->dst_rect))
+	{
 		return false; // drawing outside visible
+	}
 
 	vid->src_rect = vid->dst_rect;
 	vid->src_rect.corner.x = sr.corner.x;
@@ -285,13 +303,17 @@ bool TFB_PlayVideo(VIDEO_REF vid, uint32 x, uint32 y)
 	// get the first frame
 	ret = VideoDecoder_Decode(vid->decoder);
 	if (ret < 0)
+	{
 		return false;
+	}
 
 	vid->playing = true;
 
 	loop_music = !vid->decoder->audio_synced && vid->loop_frame != VID_NO_LOOP;
 	if (vid->hAudio)
+	{
 		PLRPlaySong(vid->hAudio, (bool)loop_music, 1);
+	}
 
 	if (vid->decoder->audio_synced)
 	{
@@ -305,7 +327,9 @@ bool TFB_PlayVideo(VIDEO_REF vid, uint32 x, uint32 y)
 void TFB_StopVideo(VIDEO_REF vid)
 {
 	if (!vid)
+	{
 		return;
+	}
 
 	vid->playing = false;
 
@@ -329,7 +353,9 @@ void TFB_StopVideo(VIDEO_REF vid)
 bool TFB_VideoPlaying(VIDEO_REF vid)
 {
 	if (!vid)
+	{
 		return false;
+	}
 
 	return vid->playing;
 }
@@ -337,12 +363,18 @@ bool TFB_VideoPlaying(VIDEO_REF vid)
 bool TFB_ProcessVideoFrame(VIDEO_REF vid)
 {
 	if (!vid)
+	{
 		return false;
+	}
 
 	if (vid->decoder->audio_synced)
+	{
 		return processAudioSyncedFrame(vid);
+	}
 	else
+	{
 		return processMuteFrame(vid);
+	}
 }
 
 uint32
@@ -351,7 +383,9 @@ TFB_GetVideoPosition(VIDEO_REF vid)
 	uint32 pos;
 
 	if (!TFB_VideoPlaying(vid))
+	{
 		return 0;
+	}
 
 	LockMutex(vid->guard);
 	pos = (uint32)(vid->decoder->pos * 1000);
@@ -363,7 +397,9 @@ TFB_GetVideoPosition(VIDEO_REF vid)
 bool TFB_SeekVideo(VIDEO_REF vid, uint32 pos)
 {
 	if (!TFB_VideoPlaying(vid))
+	{
 		return false;
+	}
 
 	if (vid->decoder->audio_synced)
 	{
@@ -386,7 +422,9 @@ vp_BeginFrame(TFB_VideoDecoder* decoder)
 	TFB_VideoClip* vid = (TFB_VideoClip*)decoder->data;
 
 	if (vid)
+	{
 		TFB_DrawCanvas_Lock(vid->frame->NormalImg);
+	}
 }
 
 static void
@@ -395,7 +433,9 @@ vp_EndFrame(TFB_VideoDecoder* decoder)
 	TFB_VideoClip* vid = (TFB_VideoClip*)decoder->data;
 
 	if (vid)
+	{
 		TFB_DrawCanvas_Unlock(vid->frame->NormalImg);
+	}
 }
 
 static void*
@@ -404,7 +444,9 @@ vp_GetCanvasLine(TFB_VideoDecoder* decoder, uint32 line)
 	TFB_VideoClip* vid = (TFB_VideoClip*)decoder->data;
 
 	if (!vid)
+	{
 		return NULL;
+	}
 
 	return TFB_DrawCanvas_GetLine(vid->frame->NormalImg, line);
 }
@@ -424,7 +466,9 @@ vp_SetTimer(TFB_VideoDecoder* decoder, uint32 msecs)
 	TFB_VideoClip* vid = (TFB_VideoClip*)decoder->data;
 
 	if (!vid)
+	{
 		return false;
+	}
 
 	// time when next frame should be displayed
 	vid->frame_time = GetTimeCounter() + msecs * ONE_SECOND / 1000;

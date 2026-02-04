@@ -77,10 +77,14 @@ int uio_copyFile(uio_DirHandle* srcDir, const char* srcName,
 				   ,
 				   0);
 	if (src == NULL)
+	{
 		return -1;
+	}
 
 	if (uio_fstat(src, &sb) == -1)
+	{
 		return uio_copyError(src, NULL, NULL, NULL, NULL);
+	}
 
 	dst = uio_open(dstDir, newName, O_WRONLY | O_CREAT | O_EXCL
 #ifdef WIN32
@@ -89,7 +93,9 @@ int uio_copyFile(uio_DirHandle* srcDir, const char* srcName,
 				   ,
 				   sb.st_mode & (S_IRWXU | S_IRWXG | S_IRWXO));
 	if (dst == NULL)
+	{
 		return uio_copyError(src, NULL, NULL, NULL, NULL);
+	}
 
 	buf = (uio_uint8*)uio_malloc(BUFSIZE);
 	// This was originally a statically allocated buffer,
@@ -101,11 +107,15 @@ int uio_copyFile(uio_DirHandle* srcDir, const char* srcName,
 		if (numInBuf == -1)
 		{
 			if (errno == EINTR)
+			{
 				continue;
+			}
 			return uio_copyError(src, dst, dstDir, newName, buf);
 		}
 		if (numInBuf == 0)
+		{
 			break;
+		}
 
 		bufPtr = buf;
 		do
@@ -114,7 +124,9 @@ int uio_copyFile(uio_DirHandle* srcDir, const char* srcName,
 			if (numWritten == -1)
 			{
 				if (errno == EINTR)
+				{
 					continue;
+				}
 				return uio_copyError(src, dst, dstDir, newName, buf);
 			}
 			numInBuf -= numWritten;
@@ -150,16 +162,24 @@ uio_copyError(uio_Handle* srcHandle, uio_Handle* dstHandle,
 #endif
 
 	if (srcHandle != NULL)
+	{
 		uio_close(srcHandle);
+	}
 
 	if (dstHandle != NULL)
+	{
 		uio_close(dstHandle);
+	}
 
 	if (unlinkPath != NULL)
+	{
 		uio_unlink(unlinkHandle, unlinkPath);
+	}
 
 	if (buf != NULL)
+	{
 		uio_free(buf);
+	}
 
 	errno = savedErrno;
 	return -1;
@@ -225,7 +245,9 @@ uio_getStdioAccess(uio_DirHandle* dir, const char* path, int flags,
 			{
 				int savedErrno;
 				if (errno == EEXIST)
+				{
 					continue;
+				}
 				savedErrno = errno;
 #ifdef DEBUG
 				fprintf(stderr, "Error: Could not create temporary dir: %s\n",
@@ -248,9 +270,11 @@ uio_getStdioAccess(uio_DirHandle* dir, const char* path, int flags,
 			res = uio_rmdir(tempDir, tempDirName);
 #ifdef DEBUG
 			if (res == -1)
+			{
 				fprintf(stderr, "Warning: Could not remove temporary dir: "
 								"%s.\n",
 						strerror(errno));
+			}
 #endif
 			uio_free(tempDirName);
 			errno = EIO;
@@ -261,7 +285,9 @@ uio_getStdioAccess(uio_DirHandle* dir, const char* path, int flags,
 		// access.
 		name = strrchr(path, '/');
 		if (name == NULL)
+		{
 			name = path;
+		}
 
 		// Copy the file
 		res = uio_copyFile(dir, path, newDir, name);
@@ -376,13 +402,21 @@ static inline void
 uio_StdioAccessHandle_delete(uio_StdioAccessHandle* handle)
 {
 	if (handle->tempDir != NULL)
+	{
 		uio_DirHandle_unref(handle->tempDir);
+	}
 	if (handle->fileName != NULL)
+	{
 		uio_free(handle->fileName);
+	}
 	if (handle->tempRoot != NULL)
+	{
 		uio_DirHandle_unref(handle->tempRoot);
+	}
 	if (handle->tempDirName != NULL)
+	{
 		uio_free(handle->tempDirName);
+	}
 	uio_free(handle->stdioPath);
 	uio_StdioAccessHandle_free(handle);
 }
@@ -429,7 +463,9 @@ vsnprintf(char* str, size_t size, const char* format, va_list args)
 {
 	int result = _vsnprintf(str, size, format, args);
 	if (str != NULL && size != 0)
+	{
 		str[size - 1] = '\0';
+	}
 	return result;
 }
 #endif

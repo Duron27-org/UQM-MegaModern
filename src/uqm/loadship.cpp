@@ -75,8 +75,12 @@ SPECIES_ID* scout = &(ship[NUM_CAPITALS + NUM_ESCORTS]);
 static inline uqm::COUNT ShipIndex(SPECIES_ID SpeciesID)
 {
 	for (uqm::COUNT x = 0; x < NUM_SHIPS; x++)
+	{
 		if (SpeciesID == ship[x])
+		{
 			return x;
+		}
+	}
 	return (NUM_SHIPS);
 }
 
@@ -93,29 +97,39 @@ static inline void SeedShipMap(SPECIES_ID* map, int seed)
 	int saveSeedType = optSeedType;
 	// Planet generation uses a different seeding math
 	if (optSeedType == OPTVAL_PLANET)
+	{
 		optSeedType = OPTVAL_MRQ;
+	}
 	RandomContext_SeedRandom(ShipGenRNG, seed);
 	for (x = 0; x < NUM_SHIPS; x++)
+	{
 		map[x] = NUM_SPECIES_ID;
+	}
 	for (x = 0; x < NUM_CAPITALS; x++)
 	{
 		rand_val = RandomContext_Random(ShipGenRNG) % NUM_CAPITALS;
 		while (cMap[rand_val] != NUM_SPECIES_ID)
+		{
 			rand_val = (rand_val + 1) % NUM_CAPITALS;
+		}
 		cMap[rand_val] = capital[x];
 	}
 	for (x = 0; x < NUM_ESCORTS; x++)
 	{
 		rand_val = RandomContext_Random(ShipGenRNG) % NUM_ESCORTS;
 		while (eMap[rand_val] != NUM_SPECIES_ID)
+		{
 			rand_val = (rand_val + 1) % NUM_ESCORTS;
+		}
 		eMap[rand_val] = escort[x];
 	}
 	for (x = 0; x < NUM_SCOUTS; x++)
 	{
 		rand_val = RandomContext_Random(ShipGenRNG) % NUM_SCOUTS;
 		while (sMap[rand_val] != NUM_SPECIES_ID)
+		{
 			rand_val = (rand_val + 1) % NUM_SCOUTS;
+		}
 		sMap[rand_val] = scout[x];
 	}
 	if (ShipGenRNG)
@@ -140,30 +154,48 @@ SeedShip(SPECIES_ID SpeciesID, bool loadWindow)
 
 #ifdef DEBUG_SHIPSEED
 	if (loadWindow)
+	{
 		fprintf(stderr, "Calling SeedShip (load window) species %d, "
 						"Seed %d, ShipSeed %s, SIS (Seed) %d, SIS (ShipSeed) %d\n",
 				SpeciesID, optCustomSeed, optShipSeed ? "on" : "off",
 				GLOBAL_SIS(Seed), GLOBAL_SIS(ShipSeed));
+	}
 #endif
 	if (seedStamp != optCustomSeed)
+	{
 		SeedShipMap(shipMap, seedStamp = optCustomSeed);
+	}
 	if (sisStamp != GLOBAL_SIS(Seed) && loadWindow)
+	{
 		SeedShipMap(shipWindowMap, sisStamp = GLOBAL_SIS(Seed));
+	}
 
 	target = SpeciesID;
 	if ((index = ShipIndex(SpeciesID)) < NUM_SHIPS)
 	{
 		if (!loadWindow && optShipSeed)
+		{
 			return shipMap[index];
+		}
 		if (GLOBAL_SIS(ShipSeed) != 0)
+		{
 			target = shipWindowMap[index];
+		}
 		if (!optShipSeed)
+		{
 			return target;
+		}
 		for (index = 0; index < NUM_SHIPS; index++)
+		{
 			if (shipMap[index] == target)
+			{
 				break;
+			}
+		}
 		if (index < NUM_SHIPS)
+		{
 			return (ship[index]);
+		}
 	}
 	return target;
 }
@@ -186,7 +218,9 @@ load_ship(SPECIES_ID SpeciesID, bool LoadBattleData)
 	void* CodeRefSwap;
 
 	if (SpeciesID >= NUM_SPECIES_ID)
+	{
 		return NULL;
+	}
 
 #ifdef DEBUG_SHIPSEED
 	fprintf(stderr, "Calling load_ship species %d, Seed %d, "
@@ -204,7 +238,9 @@ load_ship(SPECIES_ID SpeciesID, bool LoadBattleData)
 								 &GlobData, (void**)(&RDPtrSwap));
 
 	if (!CodeRef || !CodeRefSwap)
+	{
 		goto BadLoad;
+	}
 	RDPtr->CodeRef = CodeRef;
 	RDPtrSwap->CodeRef = CodeRefSwap;
 
@@ -255,7 +291,9 @@ load_ship(SPECIES_ID SpeciesID, bool LoadBattleData)
 							RawPtr->ship_rsc[0],
 							RawPtr->ship_rsc[1],
 							RawPtr->ship_rsc[2]))
+		{
 			goto BadLoad;
+		}
 
 		if (RawPtr->weapon_rsc[0] != NULL_RESOURCE)
 		{
@@ -263,7 +301,9 @@ load_ship(SPECIES_ID SpeciesID, bool LoadBattleData)
 								RawPtr->weapon_rsc[0],
 								RawPtr->weapon_rsc[1],
 								RawPtr->weapon_rsc[2]))
+			{
 				goto BadLoad;
+			}
 		}
 
 		if (RawPtr->special_rsc[0] != NULL_RESOURCE)
@@ -272,7 +312,9 @@ load_ship(SPECIES_ID SpeciesID, bool LoadBattleData)
 								RawPtr->special_rsc[0],
 								RawPtr->special_rsc[1],
 								RawPtr->special_rsc[2]))
+			{
 				goto BadLoad;
+			}
 		}
 
 		if (RDPtrSwap->ship_data.captain_control.captain_rsc != NULL_RESOURCE)
@@ -280,7 +322,9 @@ load_ship(SPECIES_ID SpeciesID, bool LoadBattleData)
 			RawPtr->captain_control.background = CaptureDrawable(LoadGraphic(
 				RDPtrSwap->ship_data.captain_control.captain_rsc));
 			if (!RawPtr->captain_control.background)
+			{
 				goto BadLoad;
+			}
 		}
 
 		if (RDPtrSwap->ship_data.victory_ditty_rsc != NULL_RESOURCE)
@@ -288,7 +332,9 @@ load_ship(SPECIES_ID SpeciesID, bool LoadBattleData)
 			RawPtr->victory_ditty =
 				LoadMusic(RDPtrSwap->ship_data.victory_ditty_rsc);
 			if (!RawPtr->victory_ditty)
+			{
 				goto BadLoad;
+			}
 		}
 
 		if (RawPtr->ship_sounds_rsc != NULL_RESOURCE)
@@ -296,7 +342,9 @@ load_ship(SPECIES_ID SpeciesID, bool LoadBattleData)
 			RawPtr->ship_sounds = CaptureSound(
 				LoadSound(RawPtr->ship_sounds_rsc));
 			if (!RawPtr->ship_sounds)
+			{
 				goto BadLoad;
+			}
 		}
 	}
 
@@ -307,7 +355,9 @@ ExitFunc:
 	// TODO: We should really free the resources that did load here
 BadLoad:
 	if (CodeRef)
+	{
 		DestroyCodeRes(ReleaseCodeRes(CodeRef));
+	}
 
 	RDPtr = 0; /* failed */
 
@@ -318,7 +368,9 @@ void free_ship(RACE_DESC* raceDescPtr, bool FreeIconData,
 			   bool FreeBattleData)
 {
 	if (raceDescPtr->uninit_func != NULL)
+	{
 		(*raceDescPtr->uninit_func)(raceDescPtr);
+	}
 
 	if (FreeBattleData)
 	{

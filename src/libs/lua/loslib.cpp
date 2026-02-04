@@ -87,7 +87,9 @@ static int os_execute(lua_State* L)
 	const char* cmd = luaL_optstring(L, 1, NULL);
 	int stat = system(cmd);
 	if (cmd != NULL)
+	{
 		return luaL_execresult(L, stat);
+	}
 	else
 	{
 		lua_pushboolean(L, stat); /* true if there is a shell */
@@ -117,7 +119,9 @@ static int os_tmpname(lua_State* L)
 	int err;
 	lua_tmpnam(buff, err);
 	if (err)
+	{
 		return luaL_error(L, "unable to generate a unique filename");
+	}
 	lua_pushstring(L, buff);
 	return 1;
 }
@@ -154,7 +158,9 @@ static void setfield(lua_State* L, const char* key, int value)
 static void setboolfield(lua_State* L, const char* key, int value)
 {
 	if (value < 0) /* undefined? */
-		return;	   /* does not set field */
+	{
+		return; /* does not set field */
+	}
 	lua_pushboolean(L, value);
 	lua_setfield(L, -2, key);
 }
@@ -177,7 +183,9 @@ static int getfield(lua_State* L, const char* key, int d)
 	if (!isnum)
 	{
 		if (d < 0)
+		{
 			return luaL_error(L, "field " LUA_QS " missing in date table", key);
+		}
 		res = d;
 	}
 	lua_pop(L, 1);
@@ -224,9 +232,13 @@ static int os_date(lua_State* L)
 		s++; /* skip `!' */
 	}
 	else
+	{
 		stm = l_localtime(&t, &tmr);
+	}
 	if (stm == NULL) /* invalid date? */
+	{
 		lua_pushnil(L);
+	}
 	else if (strcmp(s, "*t") == 0)
 	{
 		lua_createtable(L, 0, 9); /* 9 = number of fields */
@@ -249,7 +261,9 @@ static int os_date(lua_State* L)
 		while (*s)
 		{
 			if (*s != '%') /* no conversion specifier? */
+			{
 				luaL_addchar(&b, *s++);
+			}
 			else
 			{
 				size_t reslen;
@@ -269,7 +283,9 @@ static int os_time(lua_State* L)
 {
 	time_t t;
 	if (lua_isnoneornil(L, 1)) /* called without args? */
-		t = time(NULL);		   /* get current time */
+	{
+		t = time(NULL); /* get current time */
+	}
 	else
 	{
 		struct tm ts;
@@ -285,9 +301,13 @@ static int os_time(lua_State* L)
 		t = mktime(&ts);
 	}
 	if (t == (time_t)(-1))
+	{
 		lua_pushnil(L);
+	}
 	else
+	{
 		lua_pushnumber(L, (lua_Number)t);
+	}
 	return 1;
 }
 
@@ -319,13 +339,21 @@ static int os_exit(lua_State* L)
 {
 	int status;
 	if (lua_isboolean(L, 1))
+	{
 		status = (lua_toboolean(L, 1) ? EXIT_SUCCESS : EXIT_FAILURE);
+	}
 	else
+	{
 		status = luaL_optint(L, 1, EXIT_SUCCESS);
+	}
 	if (lua_toboolean(L, 2))
+	{
 		lua_close(L);
+	}
 	if (L)
+	{
 		exit(status); /* 'if' to avoid warnings for unreachable 'return' */
+	}
 	return 0;
 }
 

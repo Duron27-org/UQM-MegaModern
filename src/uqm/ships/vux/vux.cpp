@@ -170,9 +170,13 @@ limpet_collision(ELEMENT* ElementPtr0, POINT* pPt0,
 			  || antiCheat(ElementPtr1, false, OPTVAL_FULL_GOD)))
 		{
 			if (++RDPtr->characteristics.turn_wait == 0)
+			{
 				--RDPtr->characteristics.turn_wait;
+			}
 			if (++RDPtr->characteristics.thrust_wait == 0)
+			{
 				--RDPtr->characteristics.thrust_wait;
+			}
 			if (RDPtr->characteristics.thrust_increment <= MIN_THRUST_INCREMENT)
 			{
 				RDPtr->characteristics.max_thrust =
@@ -290,9 +294,13 @@ vux_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 			 & FINITE_LIFE)
 			&& !(ObjectsOfConcern[ENEMY_WEAPON_INDEX].ObjectPtr->state_flags
 				 & CREW_OBJECT))
+		{
 			ObjectsOfConcern[ENEMY_WEAPON_INDEX].MoveState = AVOID;
+		}
 		else
+		{
 			ObjectsOfConcern[ENEMY_WEAPON_INDEX].MoveState = PURSUE;
+		}
 	}
 
 	ship_intelligence(ShipPtr,
@@ -304,9 +312,13 @@ vux_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 		&& lpEvalDesc->which_turn <= 12
 		&& (StarShipPtr->ship_input_state & (LEFT | RIGHT))
 		&& StarShipPtr->RaceDescPtr->ship_info.energy_level >= (uqm::BYTE)(StarShipPtr->RaceDescPtr->ship_info.max_energy >> 1))
+	{
 		StarShipPtr->ship_input_state |= SPECIAL;
+	}
 	else
+	{
 		StarShipPtr->ship_input_state &= ~SPECIAL;
+	}
 }
 
 static void
@@ -351,7 +363,9 @@ vux_preprocess(ELEMENT* ElementPtr)
 			// JMS: Not REALLY necessary as VUX can ordinarily never be played against Sa-Matra.
 			// But handy in debugging as a single VUX limpet incapacitates Sa-Matra completely.
 			if (lowByte(GLOBAL(CurrentActivity)) == IN_LAST_BATTLE)
+			{
 				SA_MATRA_EXTRA_DIST += RES_SCALE(1000);
+			}
 
 			do
 			{

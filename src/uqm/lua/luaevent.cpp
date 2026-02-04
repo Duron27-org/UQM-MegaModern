@@ -68,13 +68,17 @@ bool luaUqm_event_init(const luaUqm_custom_Function* customFuncs,
 	// Get the name of the script.
 	scriptFileName = LoadScriptInstance(scriptRes);
 	if (scriptFileName == NULL)
+	{
 		return false;
+	}
 
 	// Load the script.
 	loadOk = luaUqm_loadScript(luaUqm_eventState, contentDir, scriptFileName);
 	ReleaseScriptResData(scriptFileName);
 	if (!loadOk)
+	{
 		return false;
+	}
 
 	// Call the script.
 	luaUqm_callStackFunction(luaUqm_eventState);

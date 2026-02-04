@@ -224,7 +224,9 @@ my_index(const char* str, int chr)
 	while (*str)
 	{
 		if (*str == chr)
+		{
 			return (char*)str;
+		}
 		str++;
 	}
 	return 0;
@@ -322,7 +324,9 @@ exchange(char** argv)
 	 presents new arguments.  */
 		char* new_str = HMalloc(top + 1);
 		if (new_str == NULL)
+		{
 			nonoption_flags_len = nonoption_flags_max_len = 0;
+		}
 		else
 		{
 			memset(__mempcpy(new_str, __getopt_nonoption_flags,
@@ -409,9 +413,13 @@ _getopt_initialize(int argc, char* const* argv, const char* optstring)
 		++optstring;
 	}
 	else if (posixly_correct != NULL)
+	{
 		ordering = REQUIRE_ORDER;
+	}
 	else
+	{
 		ordering = PERMUTE;
+	}
 
 #if defined _LIBC && defined USE_NONOPTION_FLAGS
 	if (posixly_correct == NULL
@@ -421,26 +429,36 @@ _getopt_initialize(int argc, char* const* argv, const char* optstring)
 		{
 			if (__getopt_nonoption_flags == NULL
 				|| __getopt_nonoption_flags[0] == '\0')
+			{
 				nonoption_flags_max_len = -1;
+			}
 			else
 			{
 				const char* orig_str = __getopt_nonoption_flags;
 				int len = nonoption_flags_max_len = strlen(orig_str);
 				if (nonoption_flags_max_len < argc)
+				{
 					nonoption_flags_max_len = argc;
+				}
 				__getopt_nonoption_flags =
 					(char*)HMalloc(nonoption_flags_max_len);
 				if (__getopt_nonoption_flags == NULL)
+				{
 					nonoption_flags_max_len = -1;
+				}
 				else
+				{
 					memset(__mempcpy(__getopt_nonoption_flags, orig_str, len),
 						   '\0', nonoption_flags_max_len - len);
+				}
 			}
 		}
 		nonoption_flags_len = nonoption_flags_max_len;
 	}
 	else
+	{
 		nonoption_flags_len = 0;
+	}
 #endif
 
 	return optstring;
@@ -506,17 +524,23 @@ int _getopt_internal(int argc, char* const* argv, const char* optstring, const s
 {
 	int print_errors = opterr;
 	if (optstring[0] == ':')
+	{
 		print_errors = 0;
+	}
 
 	if (argc < 1)
+	{
 		return -1;
+	}
 
 	optarg = NULL;
 
 	if (optind == 0 || !__getopt_initialized)
 	{
 		if (optind == 0)
+		{
 			optind = 1; /* Don't scan ARGV[0], the program name.  */
+		}
 		optstring = _getopt_initialize(argc, argv, optstring);
 		__getopt_initialized = 1;
 	}
@@ -540,9 +564,13 @@ int _getopt_internal(int argc, char* const* argv, const char* optstring, const s
 		/* Give FIRST_NONOPT & LAST_NONOPT rational values if OPTIND has been
 	 moved back by the user (who may also have changed the arguments).  */
 		if (last_nonopt > optind)
+		{
 			last_nonopt = optind;
+		}
 		if (first_nonopt > optind)
+		{
 			first_nonopt = optind;
+		}
 
 		if (ordering == PERMUTE)
 		{
@@ -550,15 +578,21 @@ int _getopt_internal(int argc, char* const* argv, const char* optstring, const s
 	     exchange them so that the options come first.  */
 
 			if (first_nonopt != last_nonopt && last_nonopt != optind)
+			{
 				exchange((char**)argv);
+			}
 			else if (last_nonopt != optind)
+			{
 				first_nonopt = optind;
+			}
 
 			/* Skip any additional non-options
 	     and extend the range of non-options previously skipped.  */
 
 			while (optind < argc && NONOPTION_P)
+			{
 				optind++;
+			}
 			last_nonopt = optind;
 		}
 
@@ -572,9 +606,13 @@ int _getopt_internal(int argc, char* const* argv, const char* optstring, const s
 			optind++;
 
 			if (first_nonopt != last_nonopt && last_nonopt != optind)
+			{
 				exchange((char**)argv);
+			}
 			else if (first_nonopt == last_nonopt)
+			{
 				first_nonopt = optind;
+			}
 			last_nonopt = argc;
 
 			optind = argc;
@@ -588,7 +626,9 @@ int _getopt_internal(int argc, char* const* argv, const char* optstring, const s
 			/* Set the next-arg-index to point at the non-options
 	     that we previously skipped, so the caller will digest them.  */
 			if (first_nonopt != last_nonopt)
+			{
 				optind = first_nonopt;
+			}
 			return -1;
 		}
 
@@ -598,7 +638,9 @@ int _getopt_internal(int argc, char* const* argv, const char* optstring, const s
 		if (NONOPTION_P)
 		{
 			if (ordering == REQUIRE_ORDER)
+			{
 				return -1;
+			}
 			optarg = argv[optind++];
 			return 1;
 		}
@@ -643,6 +685,7 @@ int _getopt_internal(int argc, char* const* argv, const char* optstring, const s
 		/* Test all long options for either exact match
 	 or abbreviated matches.  */
 		for (p = longopts, option_index = 0; p->name; p++, option_index++)
+		{
 			if (!strncmp(p->name, nextchar, nameend - nextchar))
 			{
 				if ((unsigned int)(nameend - nextchar)
@@ -664,15 +707,20 @@ int _getopt_internal(int argc, char* const* argv, const char* optstring, const s
 						 || pfound->has_arg != p->has_arg
 						 || pfound->flag != p->flag
 						 || pfound->val != p->val)
+				{
 					/* Second or later nonexact match found.  */
 					ambig = 1;
+				}
 			}
+		}
 
 		if (ambig && !exact)
 		{
 			if (print_errors)
+			{
 				fprintf(stderr, _("%s: option `%s' is ambiguous\n"),
 						argv[0], argv[optind]);
+			}
 			nextchar += strlen(nextchar);
 			optind++;
 			optopt = 0;
@@ -688,21 +736,27 @@ int _getopt_internal(int argc, char* const* argv, const char* optstring, const s
 				/* Don't test has_arg with >, because some C compilers don't
 		 allow it to be used on enums.  */
 				if (pfound->has_arg)
+				{
 					optarg = nameend + 1;
+				}
 				else
 				{
 					if (print_errors)
 					{
 						if (argv[optind - 1][1] == '-')
+						{
 							/* --option */
 							fprintf(stderr,
 									_("%s: option `--%s' doesn't allow an argument\n"),
 									argv[0], pfound->name);
+						}
 						else
+						{
 							/* +option or -option */
 							fprintf(stderr,
 									_("%s: option `%c%s' doesn't allow an argument\n"),
 									argv[0], argv[optind - 1][0], pfound->name);
+						}
 					}
 
 					nextchar += strlen(nextchar);
@@ -714,13 +768,17 @@ int _getopt_internal(int argc, char* const* argv, const char* optstring, const s
 			else if (pfound->has_arg == 1)
 			{
 				if (optind < argc)
+				{
 					optarg = argv[optind++];
+				}
 				else
 				{
 					if (print_errors)
+					{
 						fprintf(stderr,
 								_("%s: option `%s' requires an argument\n"),
 								argv[0], argv[optind - 1]);
+					}
 					nextchar += strlen(nextchar);
 					optopt = pfound->val;
 					return optstring[0] == ':' ? ':' : '?';
@@ -728,7 +786,9 @@ int _getopt_internal(int argc, char* const* argv, const char* optstring, const s
 			}
 			nextchar += strlen(nextchar);
 			if (longind != NULL)
+			{
 				*longind = option_index;
+			}
 			if (pfound->flag)
 			{
 				*(pfound->flag) = pfound->val;
@@ -747,13 +807,17 @@ int _getopt_internal(int argc, char* const* argv, const char* optstring, const s
 			if (print_errors)
 			{
 				if (argv[optind][1] == '-')
+				{
 					/* --option */
 					fprintf(stderr, _("%s: unrecognized option `--%s'\n"),
 							argv[0], nextchar);
+				}
 				else
+				{
 					/* +option or -option */
 					fprintf(stderr, _("%s: unrecognized option `%c%s'\n"),
 							argv[0], argv[optind][0], nextchar);
+				}
 			}
 			nextchar = (char*)"";
 			optind++;
@@ -770,19 +834,25 @@ int _getopt_internal(int argc, char* const* argv, const char* optstring, const s
 
 		/* Increment `optind' when we start to process its last character.  */
 		if (*nextchar == '\0')
+		{
 			++optind;
+		}
 
 		if (temp == NULL || c == ':')
 		{
 			if (print_errors)
 			{
 				if (posixly_correct)
+				{
 					/* 1003.2 specifies the format of this message.  */
 					fprintf(stderr, _("%s: illegal option -- %c\n"),
 							argv[0], c);
+				}
 				else
+				{
 					fprintf(stderr, _("%s: invalid option -- %c\n"),
 							argv[0], c);
+				}
 			}
 			optopt = c;
 			return '?';
@@ -816,15 +886,21 @@ int _getopt_internal(int argc, char* const* argv, const char* optstring, const s
 				}
 				optopt = c;
 				if (optstring[0] == ':')
+				{
 					c = ':';
+				}
 				else
+				{
 					c = '?';
+				}
 				return c;
 			}
 			else
+			{
 				/* We already incremented `optind' once;
 	     increment it again when taking next ARGV-elt as argument.  */
 				optarg = argv[optind++];
+			}
 
 			/* optarg is now the argument, see if it's in the
 	   table of longopts.  */
@@ -835,6 +911,7 @@ int _getopt_internal(int argc, char* const* argv, const char* optstring, const s
 			/* Test all long options for either exact match
 	   or abbreviated matches.  */
 			for (p = longopts, option_index = 0; p->name; p++, option_index++)
+			{
 				if (!strncmp(p->name, nextchar, nameend - nextchar))
 				{
 					if ((unsigned int)(nameend - nextchar) == strlen(p->name))
@@ -852,14 +929,19 @@ int _getopt_internal(int argc, char* const* argv, const char* optstring, const s
 						indfound = option_index;
 					}
 					else
+					{
 						/* Second or later nonexact match found.  */
 						ambig = 1;
+					}
 				}
+			}
 			if (ambig && !exact)
 			{
 				if (print_errors)
+				{
 					fprintf(stderr, _("%s: option `-W %s' is ambiguous\n"),
 							argv[0], argv[optind]);
+				}
 				nextchar += strlen(nextchar);
 				optind++;
 				return '?';
@@ -872,13 +954,17 @@ int _getopt_internal(int argc, char* const* argv, const char* optstring, const s
 					/* Don't test has_arg with >, because some C compilers don't
 		   allow it to be used on enums.  */
 					if (pfound->has_arg)
+					{
 						optarg = nameend + 1;
+					}
 					else
 					{
 						if (print_errors)
+						{
 							fprintf(stderr, _("\
 %s: option `-W %s' doesn't allow an argument\n"),
 									argv[0], pfound->name);
+						}
 
 						nextchar += strlen(nextchar);
 						return '?';
@@ -887,20 +973,26 @@ int _getopt_internal(int argc, char* const* argv, const char* optstring, const s
 				else if (pfound->has_arg == 1)
 				{
 					if (optind < argc)
+					{
 						optarg = argv[optind++];
+					}
 					else
 					{
 						if (print_errors)
+						{
 							fprintf(stderr,
 									_("%s: option `%s' requires an argument\n"),
 									argv[0], argv[optind - 1]);
+						}
 						nextchar += strlen(nextchar);
 						return optstring[0] == ':' ? ':' : '?';
 					}
 				}
 				nextchar += strlen(nextchar);
 				if (longind != NULL)
+				{
 					*longind = option_index;
+				}
 				if (pfound->flag)
 				{
 					*(pfound->flag) = pfound->val;
@@ -922,7 +1014,9 @@ int _getopt_internal(int argc, char* const* argv, const char* optstring, const s
 					optind++;
 				}
 				else
+				{
 					optarg = NULL;
+				}
 				nextchar = NULL;
 			}
 			else
@@ -946,14 +1040,20 @@ int _getopt_internal(int argc, char* const* argv, const char* optstring, const s
 					}
 					optopt = c;
 					if (optstring[0] == ':')
+					{
 						c = ':';
+					}
 					else
+					{
 						c = '?';
+					}
 				}
 				else
+				{
 					/* We already incremented `optind' once;
 		 increment it again when taking next ARGV-elt as argument.  */
 					optarg = argv[optind++];
+				}
 				nextchar = NULL;
 			}
 		}
@@ -989,7 +1089,9 @@ char** argv;
 
 		c = getopt(argc, argv, "abc:d:0123456789");
 		if (c == -1)
+		{
 			break;
+		}
 
 		switch (c)
 		{
@@ -1004,7 +1106,9 @@ char** argv;
 			case '8':
 			case '9':
 				if (digit_optind != 0 && digit_optind != this_option_optind)
+				{
 					printf("digits occur in two different argv-elements.\n");
+				}
 				digit_optind = this_option_optind;
 				printf("option %c\n", c);
 				break;
@@ -1033,7 +1137,9 @@ char** argv;
 	{
 		printf("non-option ARGV-elements: ");
 		while (optind < argc)
+		{
 			printf("%s ", argv[optind++]);
+		}
 		printf("\n");
 	}
 

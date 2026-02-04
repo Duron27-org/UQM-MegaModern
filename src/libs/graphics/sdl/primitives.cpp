@@ -170,9 +170,13 @@ static inline Uint8
 clip_channel(int c)
 {
 	if (c < 0)
+	{
 		c = 0;
+	}
 	else if (c > 255)
+	{
 		c = 255;
+	}
 	return c;
 }
 
@@ -195,9 +199,13 @@ alpha_blend(Uint8 dc, Uint8 sc, int alpha)
 	// No need to clip since we should never get values outside of 0..255
 	// range, unless alpha is over 255, which is not supported.
 	if (alpha == 0xff)
+	{
 		return sc;
+	}
 	else
+	{
 		return (((sc - dc) * alpha) >> 8) + dc;
+	}
 }
 
 static inline Uint8
@@ -214,9 +222,13 @@ overlay_blend(Uint8 dc, Uint8 sc)
 	// https://en.wikipedia.org/wiki/Blend_modes#Overlay
 
 	if (dc < 128)
+	{
 		return ((dc * sc) >> 7);
+	}
 	else
+	{
 		return clip_channel(((dc + sc) << 1) - 255 - ((dc * sc) >> 7));
+	}
 }
 
 static inline Uint8
@@ -230,9 +242,13 @@ linburn_blend(Uint8 dc, Uint8 sc)
 { // Custom "linear burn" blend mode
 
 	if (dc + sc < 0xff)
+	{
 		return 0;
+	}
 	else
+	{
 		return dc + sc - 0xff;
+	}
 }
 
 // Assumes 8 bits/channel, a safe assumption for 32bpp surfaces
@@ -489,11 +505,15 @@ renderpixel_for(SDL_Surface* surface, RenderKind kind, bool forMask)
 
 	// The only supported rendering is to 32bpp surfaces
 	if (fmt->BytesPerPixel != 4 && !forMask)
+	{
 		return NULL;
+	}
 
 	// Rendering other than REPLACE is not supported on RGBA surfaces
 	if (fmt->Amask != 0 && kind != renderReplace && !forMask)
+	{
 		return NULL;
+	}
 
 	switch (kind)
 	{
@@ -534,7 +554,9 @@ void line_prim(int x1, int y1, int x2, int y2, Uint32 color, RenderPixelFn plot,
 
 	SDL_GetClipRect(dst, &clip_r);
 	if (!clip_line(&x1, &y1, &x2, &y2, &clip_r))
+	{
 		return; // line is completely outside clipping rectangle
+	}
 
 	dx = x2 - x1;
 	ax = ((dx < 0) ? -dx : dx) << 1;
@@ -553,7 +575,9 @@ void line_prim(int x1, int y1, int x2, int y2, Uint32 color, RenderPixelFn plot,
 			(*plot)(dst, x, y, color, factor);
 
 			if (x == x2)
+			{
 				return;
+			}
 			if (d >= 0)
 			{
 				y += sy;
@@ -571,7 +595,9 @@ void line_prim(int x1, int y1, int x2, int y2, Uint32 color, RenderPixelFn plot,
 			(*plot)(dst, x, y, color, factor);
 
 			if (y == y2)
+			{
 				return;
+			}
 			if (d >= 0)
 			{
 				x += sx;
@@ -591,7 +617,9 @@ void line_aa_prim(int x1, int y1, int x2, int y2, Uint32 color, RenderPixelFn pl
 
 	SDL_GetClipRect(dst, &clip_r);
 	if (!clip_line(&x1, &y1, &x2, &y2, &clip_r))
+	{
 		return; // line is completely outside clipping rectangle
+	}
 
 	clip_r.w = clip_r.h = thickness;
 
@@ -615,7 +643,9 @@ void line_aa_prim(int x1, int y1, int x2, int y2, Uint32 color, RenderPixelFn pl
 			fillrect_prim(clip_r, color, plot, factor, dst);
 
 			if (x == x2)
+			{
 				return;
+			}
 			if (d >= 0)
 			{
 				y += sy;
@@ -636,7 +666,9 @@ void line_aa_prim(int x1, int y1, int x2, int y2, Uint32 color, RenderPixelFn pl
 			fillrect_prim(clip_r, color, plot, factor, dst);
 
 			if (y == y2)
+			{
 				return;
+			}
 			if (d >= 0)
 			{
 				x += sx;
@@ -664,13 +696,21 @@ compute_code(float x, float y, float xmin, float ymin, float xmax, float ymax)
 {
 	int c = 0;
 	if (y > ymax)
+	{
 		c |= C_TOP;
+	}
 	else if (y < ymin)
+	{
 		c |= C_BOTTOM;
+	}
 	if (x > xmax)
+	{
 		c |= C_RIGHT;
+	}
 	else if (x < xmin)
+	{
 		c |= C_LEFT;
+	}
 	return c;
 }
 
@@ -706,7 +746,9 @@ int clip_line(int* lx1, int* ly1, int* lx2, int* ly2, const SDL_Rect* r)
 
 		/* trivial reject: both ends on the external side of the rectangle */
 		if ((C0 & C1) != 0)
+		{
 			return 0;
+		}
 
 		/* normal case: clip end outside rectangle */
 		C = C0 ? C0 : C1;
@@ -756,7 +798,9 @@ void fillrect_prim(SDL_Rect r, Uint32 color, RenderPixelFn plot, int factor,
 
 	SDL_GetClipRect(dst, &clip_r);
 	if (!clip_rect(&r, &clip_r))
+	{
 		return; // rect is completely outside clipping rectangle
+	}
 
 	// TODO: calculate destination pointer directly instead of
 	//   using the plot(x,y) version
@@ -765,7 +809,9 @@ void fillrect_prim(SDL_Rect r, Uint32 color, RenderPixelFn plot, int factor,
 	for (y = r.y; y < y1; ++y)
 	{
 		for (x = r.x; x < x1; ++x)
+		{
 			plot(dst, x, y, color, factor);
+		}
 	}
 }
 
@@ -787,7 +833,9 @@ int clip_rect(SDL_Rect* r, const SDL_Rect* clip_r)
 	}
 	dx = r->x + w - clip_r->x - clip_r->w;
 	if (dx > 0)
+	{
 		w -= dx;
+	}
 
 	dy = clip_r->y - r->y;
 	if (dy > 0)
@@ -797,7 +845,9 @@ int clip_rect(SDL_Rect* r, const SDL_Rect* clip_r)
 	}
 	dy = r->y + h - clip_r->y - clip_r->h;
 	if (dy > 0)
+	{
 		h -= dy;
+	}
 
 	if (w <= 0 || h <= 0)
 	{
@@ -825,15 +875,23 @@ void blt_prim(SDL_Surface* src, SDL_Rect src_r, RenderPixelFn plot, int factor,
 
 	SDL_GetClipRect(dst, &clip_r);
 	if (!clip_blt_rects(&src_r, &dst_r, &clip_r))
+	{
 		return; // rect is completely outside clipping rectangle
+	}
 
 	if (src_r.x >= src->w || src_r.y >= src->h)
+	{
 		return; // rect is completely outside source bounds
+	}
 
 	if (src_r.x + src_r.w > src->w)
+	{
 		src_r.w = src->w - src_r.x;
+	}
 	if (src_r.y + src_r.h > src->h)
+	{
 		src_r.h = src->h - src_r.y;
+	}
 
 	// use colorkeys where appropriate
 	if (srcfmt->Amask)
@@ -858,12 +916,16 @@ void blt_prim(SDL_Surface* src, SDL_Rect src_r, RenderPixelFn plot, int factor,
 			if (srcpal)
 			{ // source is paletted, colorkey does not use mask
 				if (p == key)
+				{
 					continue; // transparent pixel
+				}
 			}
 			else
 			{ // source is RGB(A), colorkey uses mask
 				if ((p & mask) == key)
+				{
 					continue; // transparent pixel
+				}
 			}
 
 			// convert pixel format to destination
@@ -890,9 +952,13 @@ void blt_filtered_prim(SDL_Surface* layer, RenderPixelFn plot, int factor,
 
 	// Cannot process surfaces of different formats
 	if (lrfmt->BytesPerPixel != bsfmt->BytesPerPixel)
+	{
 		return;
+	}
 	else
+	{
 		getpix = getpixel_for(layer); // For both layer and base
+	}
 
 	// For paletted
 	if (lrfmt->palette)
@@ -913,7 +979,9 @@ void blt_filtered_prim(SDL_Surface* layer, RenderPixelFn plot, int factor,
 				bp = ((Uint8*)base->pixels + y * base->pitch + x);
 
 				if (lp == lkey || *bp == bkey)
+				{
 					continue;
+				}
 
 				*bp = lp;
 			}
@@ -922,7 +990,9 @@ void blt_filtered_prim(SDL_Surface* layer, RenderPixelFn plot, int factor,
 	else
 	{ // For truecolor
 		if (fill)
+		{
 			color = SDL_MapRGB(bsfmt, fill->r, fill->g, fill->b);
+		}
 
 		for (y = 0; y < base->h; ++y)
 		{
@@ -936,7 +1006,9 @@ void blt_filtered_prim(SDL_Surface* layer, RenderPixelFn plot, int factor,
 				bp = (Uint32*)((Uint8*)base->pixels + y * base->pitch + x * 4);
 
 				if ((lp & lrfmt->Amask) == 0 || (*bp & bsfmt->Amask) == 0)
+				{
 					continue; // transparent pixel
+				}
 
 				al = (lp >> (lrfmt->Ashift)) & 0xFF;
 				ab = (*bp >> (bsfmt->Ashift)) & 0xFF;
@@ -961,7 +1033,9 @@ void blt_filtered_fill(SDL_Surface* base, RenderPixelFn plot, int factor,
 
 	// Not for paletted yet!
 	if (fmt->palette)
+	{
 		return;
+	}
 
 	color = SDL_MapRGB(fmt, fill->r, fill->g, fill->b);
 
@@ -975,7 +1049,9 @@ void blt_filtered_fill(SDL_Surface* base, RenderPixelFn plot, int factor,
 			p = (Uint32*)((Uint8*)base->pixels + y * base->pitch + x * 4);
 
 			if ((*p & fmt->Amask) == 0)
+			{
 				continue; // transparent pixel
+			}
 
 			a = (*p >> (fmt->Ashift)) & 0xFF;
 
@@ -996,7 +1072,9 @@ void blt_filtered_pal(SDL_Surface* layer, SDL_Surface* base, Color* fill)
 
 	// Wrong formats
 	if (!lrfmt->palette || bsfmt->BytesPerPixel != 4)
+	{
 		return;
+	}
 
 	for (y = 0; y < base->h; ++y)
 	{
@@ -1009,7 +1087,9 @@ void blt_filtered_pal(SDL_Surface* layer, SDL_Surface* base, Color* fill)
 			bp = (Uint32*)((Uint8*)base->pixels + y * base->pitch + x * 4);
 
 			if ((*bp & bsfmt->Amask) == 0)
+			{
 				continue; // transparent pixel
+			}
 
 			lp = (Uint8*)layer->pixels + y * layer->pitch + x;
 
@@ -1056,7 +1136,9 @@ int clip_blt_rects(SDL_Rect* src_r, SDL_Rect* dst_r, const SDL_Rect* clip_r)
 	}
 	dx = dst_r->x + w - clip_r->x - clip_r->w;
 	if (dx > 0)
+	{
 		w -= dx;
+	}
 
 	dy = clip_r->y - dst_r->y;
 	if (dy > 0)
@@ -1067,7 +1149,9 @@ int clip_blt_rects(SDL_Rect* src_r, SDL_Rect* dst_r, const SDL_Rect* clip_r)
 	}
 	dy = dst_r->y + h - clip_r->y - clip_r->h;
 	if (dy > 0)
+	{
 		h -= dy;
+	}
 
 	if (w <= 0 || h <= 0)
 	{

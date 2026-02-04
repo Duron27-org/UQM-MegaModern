@@ -121,10 +121,14 @@ static BOOL MOD_CheckType(UBYTE* id, UBYTE* numchn, CHAR** descr)
 		modtype = trekker = 1;
 		*numchn = id[3] - '0';
 		if (*numchn == 4 || *numchn == 8)
+		{
 			return 1;
+		}
 #ifdef MIKMOD_DEBUG
 		else
+		{
 			fprintf(stderr, "\rUnknown FLT%d module type\n", *numchn);
+		}
 #endif
 		return 0;
 	}
@@ -183,10 +187,14 @@ static BOOL MOD_Test(void)
 
 	_mm_fseek(modreader, MODULEHEADERSIZE, SEEK_SET);
 	if (!_mm_read_UBYTES(id, 4, modreader))
+	{
 		return 0;
+	}
 
 	if (MOD_CheckType(id, &numchn, &descr))
+	{
 		return 1;
+	}
 
 	return 0;
 }
@@ -194,7 +202,9 @@ static BOOL MOD_Test(void)
 static BOOL MOD_Init(void)
 {
 	if (!(mh = (MODULEHEADER*)MikMod_malloc(sizeof(MODULEHEADER))))
+	{
 		return 0;
+	}
 	return 1;
 }
 
@@ -236,12 +246,20 @@ static UBYTE ConvertNote(MODNOTE* n, UBYTE lasteffect)
 	if (period)
 	{
 		for (note = 0; note < 7 * OCTAVE; note++)
+		{
 			if (period >= npertab[note])
+			{
 				break;
+			}
+		}
 		if (note == 7 * OCTAVE)
+		{
 			note = 0;
+		}
 		else
+		{
 			note++;
+		}
 	}
 
 	if (instrument)
@@ -251,7 +269,9 @@ static UBYTE ConvertNote(MODNOTE* n, UBYTE lasteffect)
 		{
 			UniPTEffect(0xc, 0);
 			if (effect == 0xc)
+			{
 				effect = effdat = 0;
+			}
 		}
 		else
 		{
@@ -260,7 +280,9 @@ static UBYTE ConvertNote(MODNOTE* n, UBYTE lasteffect)
 			{
 				/* if we had a note, then change instrument... */
 				if (note)
+				{
 					UniInstrument(instrument - 1);
+				}
 				/* ...otherwise, only adjust volume... */
 				else
 				{
@@ -272,8 +294,10 @@ static UBYTE ConvertNote(MODNOTE* n, UBYTE lasteffect)
 						note = lastnote;
 					}
 					else
+					{
 						UniPTEffect(0xc,
 									mh->samples[instrument - 1].volume & 0x7f);
+					}
 				}
 			}
 			else
@@ -281,7 +305,9 @@ static UBYTE ConvertNote(MODNOTE* n, UBYTE lasteffect)
 				/* Fasttracker handling */
 				UniInstrument(instrument - 1);
 				if (!note)
+				{
 					note = lastnote;
+				}
 			}
 		}
 	}
@@ -293,25 +319,35 @@ static UBYTE ConvertNote(MODNOTE* n, UBYTE lasteffect)
 
 	/* Convert pattern jump from Dec to Hex */
 	if (effect == 0xd)
+	{
 		effdat = (((effdat & 0xf0) >> 4) * 10) + (effdat & 0xf);
+	}
 
 	/* Volume slide, up has priority */
 	if ((effect == 0xa) && (effdat & 0xf) && (effdat & 0xf0))
+	{
 		effdat &= 0xf0;
+	}
 
 	/* Handle ``heavy'' volumes correctly */
 	if ((effect == 0xc) && (effdat > 0x40))
+	{
 		effdat = 0x40;
+	}
 
 	/* An isolated 100, 200 or 300 effect should be ignored (no
 	   "standalone" porta memory in mod files). However, a sequence such
 	   as 1XX, 100, 100, 100 is fine. */
 	if ((!effdat) && ((effect == 1) || (effect == 2) || (effect == 3)) && (lasteffect < 0x10) && (effect != lasteffect))
+	{
 		effect = 0;
+	}
 
 	UniPTEffect(effect, effdat);
 	if (effect == 8)
+	{
 		of.flags |= UF_PANNING;
+	}
 
 	return effect;
 }
@@ -337,13 +373,19 @@ static BOOL ML_LoadPatterns(void)
 	int t, s, tracks = 0;
 
 	if (!AllocPatterns())
+	{
 		return 0;
+	}
 	if (!AllocTracks())
+	{
 		return 0;
+	}
 
 	/* Allocate temporary buffer for loading and converting the patterns */
 	if (!(patbuf = (MODNOTE*)MikMod_calloc(64U * of.numchn, sizeof(MODNOTE))))
+	{
 		return 0;
+	}
 
 	if (trekker && of.numchn == 8)
 	{
@@ -358,8 +400,12 @@ static BOOL ML_LoadPatterns(void)
 				patbuf[s].d = _mm_read_UBYTE(modreader);
 			}
 			for (s = 0; s < 4; s++)
+			{
 				if (!(of.tracks[tracks++] = ConvertTrack(patbuf + s, 4)))
+				{
 					return 0;
+				}
+			}
 			for (s = 0; s < (64U * 4); s++)
 			{
 				patbuf[s].a = _mm_read_UBYTE(modreader);
@@ -368,8 +414,12 @@ static BOOL ML_LoadPatterns(void)
 				patbuf[s].d = _mm_read_UBYTE(modreader);
 			}
 			for (s = 0; s < 4; s++)
+			{
 				if (!(of.tracks[tracks++] = ConvertTrack(patbuf + s, 4)))
+				{
 					return 0;
+				}
+			}
 		}
 	}
 	else
@@ -386,8 +436,12 @@ static BOOL ML_LoadPatterns(void)
 				patbuf[s].d = _mm_read_UBYTE(modreader);
 			}
 			for (s = 0; s < of.numchn; s++)
+			{
 				if (!(of.tracks[tracks++] = ConvertTrack(patbuf + s, of.numchn)))
+				{
 					return 0;
+				}
+			}
 		}
 	}
 	return 1;
@@ -444,7 +498,9 @@ static BOOL MOD_Load(BOOL curious)
 		return 0;
 	}
 	if (trekker && of.numchn == 8)
+	{
 		for (t = 0; t < 128; t++)
+		{
 			/* if module pretends to be FLT8, yet the order table
 			   contains odd numbers, chances are it's a lying FLT4... */
 			if (mh->positions[t] & 1)
@@ -452,9 +508,15 @@ static BOOL MOD_Load(BOOL curious)
 				of.numchn = 4;
 				break;
 			}
+		}
+	}
 	if (trekker && of.numchn == 8)
+	{
 		for (t = 0; t < 128; t++)
+		{
 			mh->positions[t] >>= 1;
+		}
+	}
 
 	of.songname = DupStr(mh->songname, 21, 1);
 	of.numpos = mh->songlength;
@@ -463,36 +525,56 @@ static BOOL MOD_Load(BOOL curious)
 	/* Count the number of patterns */
 	of.numpat = 0;
 	for (t = 0; t < of.numpos; t++)
+	{
 		if (mh->positions[t] > of.numpat)
+		{
 			of.numpat = mh->positions[t];
+		}
+	}
 
 	/* since some old modules embed extra patterns, we have to check the
 	   whole list to get the samples' file offsets right - however we can find
 	   garbage here, so check carefully */
 	scan = 1;
 	for (t = of.numpos; t < 128; t++)
+	{
 		if (mh->positions[t] >= 0x80)
+		{
 			scan = 0;
+		}
+	}
 	if (scan)
+	{
 		for (t = of.numpos; t < 128; t++)
 		{
 			if (mh->positions[t] > of.numpat)
+			{
 				of.numpat = mh->positions[t];
+			}
 			if ((curious) && (mh->positions[t]))
+			{
 				of.numpos = t + 1;
+			}
 		}
+	}
 	of.numpat++;
 	of.numtrk = of.numpat * of.numchn;
 
 	if (!AllocPositions(of.numpos))
+	{
 		return 0;
+	}
 	for (t = 0; t < of.numpos; t++)
+	{
 		of.positions[t] = mh->positions[t];
+	}
 
 	/* Finally, init the sampleinfo structures  */
 	of.numins = of.numsmp = 31;
 	if (!AllocSamples())
+	{
 		return 0;
+	}
 	s = mh->samples;
 	q = of.samples;
 	for (t = 0; t < of.numins; t++)
@@ -513,7 +595,9 @@ static BOOL MOD_Load(BOOL curious)
 			descr = orpheus;
 		}
 		if (s->replen > 2)
+		{
 			q->flags |= SF_LOOP;
+		}
 
 		s++;
 		q++;
@@ -522,7 +606,9 @@ static BOOL MOD_Load(BOOL curious)
 	of.modtype = MikMod_strdup(descr);
 
 	if (!ML_LoadPatterns())
+	{
 		return 0;
+	}
 
 	return 1;
 }
@@ -533,7 +619,9 @@ static CHAR* MOD_LoadTitle(void)
 
 	_mm_fseek(modreader, 0, SEEK_SET);
 	if (!_mm_read_UBYTES(s, 20, modreader))
+	{
 		return NULL;
+	}
 	s[20] = 0; /* just in case */
 
 	return (DupStr(s, 21, 1));

@@ -37,7 +37,7 @@ static LOCDATA shofixti_desc =
 		BLACK_COLOR_INIT, /* AlienTextBColor */
 		{0, 0}, /* AlienTextBaseline */
 		0,
- /* SIS_TEXT_WIDTH, */  /* AlienTextWidth */
+		/* SIS_TEXT_WIDTH, */  /* AlienTextWidth */
 		ALIGN_CENTER, /* AlienTextAlign */
 		VALIGN_TOP, /* AlienTextValign */
 		SHOFIXTI_COLOR_MAP, /* AlienColorMap */
@@ -200,9 +200,13 @@ static void
 GetShofixtiName(void)
 {
 	if (GET_GAME_STATE(SHOFIXTI_KIA))
+	{
 		shofixti_name = katana;
+	}
 	else
+	{
 		shofixti_name = tanaka;
+	}
 }
 
 static void
@@ -345,7 +349,9 @@ ConsoleShofixti(RESPONSE_REF R)
 		DISABLE_PHRASE(dont_do_it);
 	}
 	else
+	{
 		NPCPhrase(VERY_SAD_KILL_SELF);
+	}
 
 	if (GET_GAME_STATE(MAIDENS_ON_SHIP))
 	{
@@ -363,11 +369,17 @@ static void
 ExplainDefeat(RESPONSE_REF R)
 {
 	if (PLAYER_SAID(R, i_am_nice))
+	{
 		NPCPhrase(MUST_UNDERSTAND);
+	}
 	else if (PLAYER_SAID(R, i_am_guy))
+	{
 		NPCPhrase(NICE_BUT_WHAT_IS_DONKEY);
+	}
 	else /* if (PLAYER_SAID (R, i_am_captain)) */
+	{
 		NPCPhrase(SO_SORRY);
+	}
 	NPCPhrase(IS_DEFEAT_TRUE);
 
 	Response(yes_and_no, ConsoleShofixti);
@@ -547,11 +559,15 @@ Friendly(RESPONSE_REF R)
 	}
 
 	if (Resp[LastStack].pStr)
+	{
 		DoResponsePhrase(Resp[LastStack].pStr, Friendly, Resp[LastStack].c_buf);
+	}
 	for (i = 0; i < 3; ++i)
 	{
 		if (i != LastStack && Resp[i].pStr)
+		{
 			DoResponsePhrase(Resp[i].pStr, Friendly, Resp[i].c_buf);
+		}
 	}
 	if (GET_GAME_STATE(MAIDENS_ON_SHIP))
 	{
@@ -675,7 +691,9 @@ init_shofixti_comm(void)
 	// Initialise Lua for string interpolation. This will be
 	// generalised in the future.
 	if (EXTENDED)
+	{
 		altResFlags |= USE_ALT_FRAME;
+	}
 
 	shofixti_desc.AlienTextBaseline.x =
 		TEXT_X_OFFS + (SIS_TEXT_WIDTH >> 1);

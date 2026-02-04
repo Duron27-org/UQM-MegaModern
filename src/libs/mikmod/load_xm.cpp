@@ -147,18 +147,26 @@ static BOOL XM_Test(void)
 	UBYTE id[38];
 
 	if (!_mm_read_UBYTES(id, 38, modreader))
+	{
 		return 0;
+	}
 	if (memcmp(id, "Extended Module: ", 17))
+	{
 		return 0;
+	}
 	if (id[37] == 0x1a)
+	{
 		return 1;
+	}
 	return 0;
 }
 
 static BOOL XM_Init(void)
 {
 	if (!(mh = (XMHEADER*)MikMod_malloc(sizeof(XMHEADER))))
+	{
 		return 0;
+	}
 	return 1;
 }
 
@@ -232,22 +240,32 @@ static UBYTE* XM_Convert(XMNOTE* xmtrack, UWORD rows)
 		if (note)
 		{
 			if (note > XMNOTECNT)
+			{
 				UniEffect(UNI_KEYFADE, 0);
+			}
 			else
+			{
 				UniNote(note - 1);
+			}
 		}
 		if (ins)
+		{
 			UniInstrument(ins - 1);
+		}
 
 		switch (vol >> 4)
 		{
 			case 0x6: /* volslide down */
 				if (vol & 0xf)
+				{
 					UniEffect(UNI_XMEFFECTA, vol & 0xf);
+				}
 				break;
 			case 0x7: /* volslide up */
 				if (vol & 0xf)
+				{
 					UniEffect(UNI_XMEFFECTA, vol << 4);
+				}
 				break;
 
 				/* volume-row fine volume slide is compatible with protracker
@@ -270,18 +288,24 @@ static UBYTE* XM_Convert(XMNOTE* xmtrack, UWORD rows)
 				break;
 			case 0xd: /* panning slide left (only slide when data not zero) */
 				if (vol & 0xf)
+				{
 					UniEffect(UNI_XMEFFECTP, vol & 0xf);
+				}
 				break;
 			case 0xe: /* panning slide right (only slide when data not zero) */
 				if (vol & 0xf)
+				{
 					UniEffect(UNI_XMEFFECTP, vol << 4);
+				}
 				break;
 			case 0xf: /* tone porta */
 				UniPTEffect(0x3, vol << 4);
 				break;
 			default:
 				if ((vol >= 0x10) && (vol <= 0x50))
+				{
 					UniPTEffect(0xc, vol - 0x10);
+				}
 		}
 
 		switch (eff)
@@ -353,10 +377,14 @@ static UBYTE* XM_Convert(XMNOTE* xmtrack, UWORD rows)
 					   but it seems some poor tracker software writes them
 					   in hexadecimal... (sigh) */
 					if (eff == 0xd)
+					{
 						/* don't change anything if we're sure it's in hexa */
 						if ((((dat & 0xf0) >> 4) <= 9) && ((dat & 0xf) <= 9))
+						{
 							/* otherwise, convert from dec to hex */
 							dat = (((dat & 0xf0) >> 4) * 10) + (dat & 0xf);
+						}
+					}
 					UniPTEffect(eff, dat);
 				}
 				break;
@@ -372,9 +400,13 @@ static BOOL LoadPatterns(BOOL dummypat)
 	int t, u, v, numtrk;
 
 	if (!AllocTracks())
+	{
 		return 0;
+	}
 	if (!AllocPatterns())
+	{
 		return 0;
+	}
 
 	numtrk = 0;
 	for (t = 0; t < mh->numpat; t++)
@@ -394,29 +426,41 @@ static BOOL LoadPatterns(BOOL dummypat)
 			return 0;
 		}
 		if (mh->version == 0x0102)
+		{
 			ph.numrows = _mm_read_UBYTE(modreader) + 1;
+		}
 		else
+		{
 			ph.numrows = _mm_read_I_UWORD(modreader);
+		}
 		ph.packsize = _mm_read_I_UWORD(modreader);
 
 		ph.size -= (mh->version == 0x0102 ? 8 : 9);
 		if (ph.size)
+		{
 			_mm_fseek(modreader, ph.size, SEEK_CUR);
+		}
 
 		of.pattrows[t] = ph.numrows;
 
 		if (ph.numrows)
 		{
 			if (!(xmpat = (XMNOTE*)MikMod_calloc(ph.numrows * of.numchn, sizeof(XMNOTE))))
+			{
 				return 0;
+			}
 
 			/* when packsize is 0, don't try to load a pattern.. it's empty. */
 			if (ph.packsize)
+			{
 				for (u = 0; u < ph.numrows; u++)
+				{
 					for (v = 0; v < of.numchn; v++)
 					{
 						if (!ph.packsize)
+						{
 							break;
+						}
 
 						ph.packsize -= XM_ReadNote(&xmpat[(v * ph.numrows) + u]);
 						if (ph.packsize < 0)
@@ -427,6 +471,8 @@ static BOOL LoadPatterns(BOOL dummypat)
 							return 0;
 						}
 					}
+				}
+			}
 
 			if (ph.packsize)
 			{
@@ -442,7 +488,9 @@ static BOOL LoadPatterns(BOOL dummypat)
 			}
 
 			for (v = 0; v < of.numchn; v++)
+			{
 				of.tracks[numtrk++] = XM_Convert(&xmpat[v * ph.numrows], ph.numrows);
+			}
 
 			MikMod_free(xmpat);
 			xmpat = NULL;
@@ -450,7 +498,9 @@ static BOOL LoadPatterns(BOOL dummypat)
 		else
 		{
 			for (v = 0; v < of.numchn; v++)
+			{
 				of.tracks[numtrk++] = XM_Convert(NULL, ph.numrows);
+			}
 		}
 	}
 
@@ -458,9 +508,13 @@ static BOOL LoadPatterns(BOOL dummypat)
 	{
 		of.pattrows[t] = 64;
 		if (!(xmpat = (XMNOTE*)MikMod_calloc(64 * of.numchn, sizeof(XMNOTE))))
+		{
 			return 0;
+		}
 		for (v = 0; v < of.numchn; v++)
+		{
 			of.tracks[numtrk++] = XM_Convert(&xmpat[v * 64], 64);
+		}
 		MikMod_free(xmpat);
 		xmpat = NULL;
 	}
@@ -487,9 +541,13 @@ static void FixEnvelope(ENVPT* cur, int pts)
 			if (cur->pos < 0x100)
 			{
 				if (cur->pos > old) /* same hex century */
+				{
 					tmp = cur->pos + (prev->pos - old);
+				}
 				else
+				{
 					tmp = cur->pos | ((prev->pos + 0x100) & 0xff00);
+				}
 				old = cur->pos;
 				cur->pos = tmp;
 #ifdef MIKMOD_DEBUG
@@ -508,7 +566,9 @@ static void FixEnvelope(ENVPT* cur, int pts)
 			}
 		}
 		else
+		{
 			old = cur->pos;
+		}
 	}
 }
 
@@ -526,7 +586,9 @@ static BOOL LoadInstruments(void)
 	_mm_fseek(modreader, ck, SEEK_SET);
 
 	if (!AllocInstruments())
+	{
 		return 0;
+	}
 	d = of.instruments;
 	for (t = 0; t < of.numins; t++, d++)
 	{
@@ -591,9 +653,13 @@ static BOOL LoadInstruments(void)
 				   modules have incorrect values (K_OSPACE.XM reports 32 volume
 				   points, for example). */
 				if (pth.volpts > XMENVCNT / 2)
+				{
 					pth.volpts = XMENVCNT / 2;
+				}
 				if (pth.panpts > XMENVCNT / 2)
+				{
 					pth.panpts = XMENVCNT / 2;
+				}
 
 				if ((_mm_eof(modreader)) || (pth.volpts > XMENVCNT / 2) || (pth.panpts > XMENVCNT / 2))
 				{
@@ -606,7 +672,9 @@ static BOOL LoadInstruments(void)
 				}
 
 				for (u = 0; u < XMNOTECNT; u++)
+				{
 					d->samplenumber[u] = pth.what[u] + of.numsmp;
+				}
 				d->volfade = pth.volfade;
 
 #if defined __STDC__ || defined _MSC_VER || defined MPW_C
@@ -665,16 +733,22 @@ static BOOL LoadInstruments(void)
 #undef XM_ProcessEnvelope
 
 				if (d->volflg & EF_ON)
+				{
 					FixEnvelope(d->volenv, d->volpts);
+				}
 				if (d->panflg & EF_ON)
+				{
 					FixEnvelope(d->panenv, d->panpts);
+				}
 
 				/* Samples are stored outside the instrument struct now, so we
 				   have to load them all into a temp area, count the of.numsmp
 				   along the way and then do an AllocSamples() and move
 				   everything over */
 				if (mh->version > 0x0103)
+				{
 					next = 0;
+				}
 				for (u = 0; u < ih.numsmp; u++, s++)
 				{
 					/* XM sample header is 40 bytes: make sure we won't hit EOF */
@@ -731,11 +805,15 @@ static BOOL LoadInstruments(void)
 				if (mh->version > 0x0103)
 				{
 					for (u = 0; u < ih.numsmp; u++)
+					{
 						nextwav[of.numsmp++] += _mm_ftell(modreader);
+					}
 					_mm_fseek(modreader, next, SEEK_CUR);
 				}
 				else
+				{
 					of.numsmp += ih.numsmp;
+				}
 			}
 			else
 			{
@@ -792,7 +870,9 @@ static BOOL XM_Load(BOOL curious)
 	_mm_read_string(mh->trackername, 20, modreader);
 	mh->version = _mm_read_I_UWORD(modreader);
 	if (mh->version < 0x102 || mh->version > 0x104)
+	{
 		goto bad_xm;
+	}
 	mh->headersize = _mm_read_I_ULONG(modreader);
 	mh->songlength = _mm_read_I_UWORD(modreader);
 	mh->restart = _mm_read_I_UWORD(modreader);
@@ -803,18 +883,28 @@ static BOOL XM_Load(BOOL curious)
 	mh->tempo = _mm_read_I_UWORD(modreader);
 	mh->bpm = _mm_read_I_UWORD(modreader);
 	if (mh->numchn > 64)
+	{
 		goto bad_xm;
+	}
 	if (mh->tempo > 32 || mh->bpm < 32 || mh->bpm > 255)
+	{
 		goto bad_xm;
+	}
 	if (mh->songlength > 256 || mh->headersize < 20 || mh->headersize > 20 + 256)
+	{
 		goto bad_xm;
+	}
 	if (mh->numpat > 256 || mh->numins > 255 || mh->restart > 255)
+	{
 		goto bad_xm;
+	}
 	/*	_mm_read_UBYTES(mh->orders,256,modreader);*/
 	/*	_mm_read_UBYTES(mh->orders,mh->headersize-20,modreader);*/
 	_mm_read_UBYTES(mh->orders, mh->songlength, modreader);
 	if (_mm_fseek(modreader, mh->headersize + 60, SEEK_SET) || _mm_eof(modreader))
+	{
 		goto bad_hdr;
+	}
 
 	/* set module variables */
 	of.initspeed = mh->tempo;
@@ -822,11 +912,15 @@ static BOOL XM_Load(BOOL curious)
 	strncpy(tracker, mh->trackername, 20);
 	tracker[20] = 0;
 	for (t = 20; (t >= 0) && (tracker[t] <= ' '); t--)
+	{
 		tracker[t] = 0;
+	}
 
 	/* some modules have the tracker name empty */
 	if (!tracker[0])
+	{
 		strcpy(tracker, "Unknown tracker");
+	}
 
 #ifdef HAVE_SNPRINTF
 	snprintf(modtype, 60, "%s (XM format %d.%02d)",
@@ -845,15 +939,21 @@ static BOOL XM_Load(BOOL curious)
 	of.numins = mh->numins;
 	of.flags |= UF_XMPERIODS | UF_INST | UF_NOWRAP | UF_FT2QUIRKS | UF_PANNING;
 	if (mh->flags & 1)
+	{
 		of.flags |= UF_LINEAR;
+	}
 	of.bpmlimit = 32;
 
 	memset(of.chanvol, 64, of.numchn); /* store channel volumes */
 
 	if (!AllocPositions(of.numpos + 1))
+	{
 		return 0;
+	}
 	for (t = 0; t < of.numpos; t++)
+	{
 		of.positions[t] = mh->orders[t];
+	}
 
 	/* We have to check for any pattern numbers in the order list greater than
 	   the number of patterns total. If one or more is found, we set it equal to
@@ -875,18 +975,28 @@ static BOOL XM_Load(BOOL curious)
 	if (mh->version < 0x0104)
 	{
 		if (!LoadInstruments())
+		{
 			return 0;
+		}
 		if (!LoadPatterns(dummypat))
+		{
 			return 0;
+		}
 		for (t = 0; t < of.numsmp; t++)
+		{
 			nextwav[t] += _mm_ftell(modreader);
+		}
 	}
 	else
 	{
 		if (!LoadPatterns(dummypat))
+		{
 			return 0;
+		}
 		if (!LoadInstruments())
+		{
 			return 0;
+		}
 	}
 
 	if (!AllocSamples())
@@ -923,26 +1033,36 @@ static BOOL XM_Load(BOOL curious)
 
 		q->flags |= SF_OWNPAN | SF_DELTA | SF_SIGNED;
 		if (s->type & 0x3)
+		{
 			q->flags |= SF_LOOP;
+		}
 		if (s->type & 0x2)
+		{
 			q->flags |= SF_BIDI;
+		}
 		if (s->type & 0x10)
+		{
 			q->flags |= SF_16BITS;
+		}
 	}
 
 	d = of.instruments;
 	s = wh;
 	for (u = 0; u < of.numins; u++, d++)
+	{
 		for (t = 0; t < XMNOTECNT; t++)
 		{
 			if (d->samplenumber[t] >= of.numsmp)
+			{
 				d->samplenote[t] = 255;
+			}
 			else
 			{
 				int note = t + s[d->samplenumber[t]].relnote;
 				d->samplenote[t] = (note < 0) ? 0 : note;
 			}
 		}
+	}
 
 	MikMod_free(wh);
 	MikMod_free(nextwav);
@@ -964,7 +1084,9 @@ static CHAR* XM_LoadTitle(void)
 
 	_mm_fseek(modreader, 17, SEEK_SET);
 	if (!_mm_read_UBYTES(str, 21, modreader))
+	{
 		return NULL;
+	}
 
 	return (DupStr(str, 21, 1));
 }

@@ -32,7 +32,9 @@ static inline NetplaySide
 netSide(NetConnection* conn, int side)
 {
 	if (side == conn->player)
+	{
 		return NetplaySide_remote;
+	}
 
 	return NetplaySide_local;
 }

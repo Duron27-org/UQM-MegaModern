@@ -33,9 +33,13 @@ TFB_Char*
 GetFrameForFPS(UniChar ch)
 {
 	if (StarConFont && !(GLOBAL(CurrentActivity) & CHECK_ABORT))
+	{
 		return getCharFrame(StarConFont, ch);
+	}
 	else
+	{
 		return NULL;
+	}
 }
 
 bool GoodToGoFPS(void)
@@ -57,7 +61,9 @@ FONT SetContextFont(FONT Font)
 	LastFont = _CurFontPtr;
 	_CurFontPtr = Font;
 	if (ContextActive())
+	{
 		SwitchContextFont(Font);
+	}
 
 	return (LastFont);
 }
@@ -65,10 +71,14 @@ FONT SetContextFont(FONT Font)
 bool DestroyFont(FONT FontRef)
 {
 	if (FontRef == NULL)
+	{
 		return (false);
+	}
 
 	if (_CurFontPtr && _CurFontPtr == FontRef)
+	{
 		SetContextFont((FONT)NULL);
+	}
 
 	return (FreeFont(FontRef));
 }
@@ -84,12 +94,16 @@ RECT font_GetTextRect(TEXT* lpText)
 
 	FixContextFontEffect();
 	if (!GraphicsSystemActive() || !GetContextValidRect(NULL, &origin))
+	{
 		return ClipRect;
+	}
 
 	// TextRect() clobbers TEXT.CharCount so we have to make a copy
 	text = *lpText;
 	if (!TextRect(&text, &ClipRect, NULL))
+	{
 		return ClipRect;
+	}
 
 	return ClipRect;
 }
@@ -103,12 +117,16 @@ void font_DrawText(TEXT* lpText)
 
 	FixContextFontEffect();
 	if (!GraphicsSystemActive() || !GetContextValidRect(NULL, &origin))
+	{
 		return;
+	}
 
 	// TextRect() clobbers TEXT.CharCount so we have to make a copy
 	text = *lpText;
 	if (!TextRect(&text, &ClipRect, NULL))
+	{
 		return;
+	}
 	// ClipRect is relative to origin
 	_text_blt(&ClipRect, &text, origin);
 }
@@ -120,12 +138,16 @@ void font_DrawText_Fade(TEXT* lpText, FRAME repair, bool* skip)
 	TEXT text;
 
 	if (!GraphicsSystemActive() || !GetContextValidRect(NULL, &origin))
+	{
 		return;
+	}
 
 	// TextRect() clobbers TEXT.CharCount so we have to make a copy
 	text = *lpText;
 	if (!TextRect(&text, &ClipRect, NULL))
+	{
 		return;
+	}
 	// ClipRect is relative to origin
 	_text_blt_fade(&ClipRect, &text, origin, repair, skip);
 }
@@ -146,7 +168,9 @@ void font_DrawTracedText(TEXT* pText, Color text, Color trace)
 		for (offset.y = -stroke; offset.y <= stroke; ++offset.y)
 		{
 			if (hypot(offset.x, offset.y) > stroke)
+			{
 				continue;
+			}
 			pText->baseline =
 				MAKE_POINT(
 					t_baseline.x + offset.x,
@@ -171,12 +195,16 @@ font_DrawTextAlt(TEXT* lpText, uqm::BYTE swap, FONT AltFontPtr, UniChar key)
 
 	FixContextFontEffect();
 	if (!GraphicsSystemActive() || !GetContextValidRect(NULL, &origin))
+	{
 		return 0;
+	}
 
 	// TextRect() clobbers TEXT.CharCount so we have to make a copy
 	text = *lpText;
 	if (!TextRectAlt(&text, &ClipRect, NULL, swap, key, AltFontPtr))
+	{
 		return 0;
+	}
 	// ClipRect is relative to origin
 	return _text_blt_alt(&ClipRect, &text, origin, swap, AltFontPtr, key);
 }
@@ -196,7 +224,9 @@ void font_DrawTracedTextAlt(TEXT* pText, Color text, Color trace, FONT AltFontPt
 		for (offset.y = -stroke; offset.y <= stroke; ++offset.y)
 		{
 			if (hypot(offset.x, offset.y) > stroke)
+			{
 				continue;
+			}
 			pText->baseline =
 				MAKE_POINT(
 					t_baseline.x + offset.x,
@@ -335,7 +365,9 @@ bool TextRect(TEXT* lpText, RECT* pRect, uqm::BYTE* pdelta)
 		{
 			next_ch = getCharFromString(&pStr);
 			if (next_ch == '\0')
+			{
 				num_chars = 0;
+			}
 		}
 		while (num_chars--)
 		{
@@ -363,10 +395,14 @@ bool TextRect(TEXT* lpText, RECT* pRect, uqm::BYTE* pdelta)
 
 				y = -charFrame->HotSpot.y;
 				if (y < top_y)
+				{
 					top_y = y;
+				}
 				y += charFrame->disp.height;
 				if (y > bot_y)
+				{
 					bot_y = y;
+				}
 
 				width += charFrame->disp.width + FontPtr->CharSpace;
 
@@ -395,11 +431,17 @@ bool TextRect(TEXT* lpText, RECT* pRect, uqm::BYTE* pdelta)
 			}
 
 			if (lpText->align == ALIGN_LEFT)
+			{
 				pRect->corner.x = 0;
+			}
 			else if (lpText->align == ALIGN_CENTER)
+			{
 				pRect->corner.x = -RES_SCALE((RES_DESCALE(width) >> 1));
+			}
 			else
+			{
 				pRect->corner.x = -width;
+			}
 			pRect->corner.y = top_y;
 			pRect->extent.width = width;
 			pRect->extent.height = bot_y;
@@ -430,22 +472,30 @@ void _text_blt(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin)
 
 	FontPtr = _CurFontPtr;
 	if (FontPtr == NULL)
+	{
 		return;
+	}
 	backing = _get_context_font_backing();
 	if (!backing)
+	{
 		return;
+	}
 
 	origin.x = pClipRect->corner.x;
 	origin.y = TextPtr->baseline.y;
 	num_chars = TextPtr->CharCount;
 	if (num_chars == 0)
+	{
 		return;
+	}
 
 	pStr = TextPtr->pStr;
 
 	next_ch = getCharFromString(&pStr);
 	if (next_ch == '\0')
+	{
 		num_chars = 0;
+	}
 	while (num_chars--)
 	{
 		UniChar ch;
@@ -456,7 +506,9 @@ void _text_blt(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin)
 		{
 			next_ch = getCharFromString(&pStr);
 			if (next_ch == '\0')
+			{
 				num_chars = 0;
+			}
 		}
 
 		fontChar = getCharFrame(FontPtr, ch);
@@ -508,7 +560,9 @@ void _text_blt_fade(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin, FRAME repai
 		uqm::SIZE w, h;
 
 		if (!GetContextFontDispHeight(&h) || !GetContextFontDispWidth(&w))
+		{
 			return;
+		}
 
 		b_first = TFB_DrawImage_CreateForScreen(w, h, true);
 		b_second = TFB_DrawImage_CreateForScreen(w, h, true);
@@ -522,20 +576,26 @@ void _text_blt_fade(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin, FRAME repai
 		TFB_DrawImage_Rect(&r, _get_context_fg_color(), DRAW_REPLACE_MODE, b_second);
 	}
 	else
+	{
 		return;
+	}
 
 	origin.x = pClipRect->corner.x;
 	origin.y = TextPtr->baseline.y;
 	GetContextFontLeading(&leading);
 	num_chars = TextPtr->CharCount;
 	if (num_chars == 0)
+	{
 		return;
+	}
 
 	pStr = TextPtr->pStr;
 
 	next_ch = getCharFromString(&pStr);
 	if (next_ch == '\0')
+	{
 		num_chars = 0;
+	}
 	while (num_chars--)
 	{
 		UniChar ch;
@@ -553,7 +613,9 @@ void _text_blt_fade(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin, FRAME repai
 		{
 			next_ch = getCharFromString(&pStr);
 			if (next_ch == '\0')
+			{
 				num_chars = 0;
+			}
 		}
 
 		fontChar = getCharFrame(FontPtr, ch);
@@ -614,14 +676,22 @@ void _text_blt_fade(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin, FRAME repai
 		}
 		UpdateInputState();
 		if (CurrentInputState.menu[KEY_MENU_CANCEL] || (GLOBAL(CurrentActivity) & CHECK_ABORT))
+		{
 			*skip = true;
+		}
 	}
 	if (b_first)
+	{
 		TFB_DrawScreen_DeleteImage(b_first);
+	}
 	if (b_second)
+	{
 		TFB_DrawScreen_DeleteImage(b_second);
+	}
 	if (b_clear)
+	{
 		TFB_DrawScreen_DeleteImage(b_clear);
+	}
 }
 
 bool TextRectAlt(TEXT* lpText, RECT* pRect, uqm::BYTE* pdelta, uqm::BYTE swap,
@@ -662,7 +732,9 @@ bool TextRectAlt(TEXT* lpText, RECT* pRect, uqm::BYTE* pdelta, uqm::BYTE swap,
 		{
 			next_ch = getCharFromString(&pStr);
 			if (next_ch == '\0')
+			{
 				num_chars = 0;
+			}
 		}
 		while (num_chars--)
 		{
@@ -701,10 +773,14 @@ bool TextRectAlt(TEXT* lpText, RECT* pRect, uqm::BYTE* pdelta, uqm::BYTE swap,
 
 				y = -charFrame->HotSpot.y;
 				if (y < top_y)
+				{
 					top_y = y;
+				}
 				y += charFrame->disp.height;
 				if (y > bot_y)
+				{
 					bot_y = y;
+				}
 
 				width += charFrame->disp.width + FontPtr->CharSpace;
 
@@ -733,11 +809,17 @@ bool TextRectAlt(TEXT* lpText, RECT* pRect, uqm::BYTE* pdelta, uqm::BYTE swap,
 			}
 
 			if (lpText->align == ALIGN_LEFT)
+			{
 				pRect->corner.x = 0;
+			}
 			else if (lpText->align == ALIGN_CENTER)
+			{
 				pRect->corner.x = -RES_SCALE((RES_DESCALE(width) >> 1));
+			}
 			else
+			{
 				pRect->corner.x = -width;
+			}
 			pRect->corner.y = top_y;
 			pRect->extent.width = width;
 			pRect->extent.height = bot_y;
@@ -775,10 +857,14 @@ _text_blt_alt(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin, uqm::BYTE swap,
 
 	FontPtr = _CurFontPtr;
 	if (FontPtr == NULL)
+	{
 		return 0;
+	}
 	stock = _get_context_font_backing();
 	if (!stock)
+	{
 		return 0;
+	}
 
 	if (AltFontPtr != NULL)
 	{ // Local backing needed for alt font
@@ -789,7 +875,9 @@ _text_blt_alt(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin, uqm::BYTE swap,
 		w = (uqm::SIZE)AltFontPtr->disp.width;
 		h = (uqm::SIZE)AltFontPtr->disp.height;
 		if (w == 0 || h == 0)
+		{
 			return 0;
+		}
 
 		ext = TFB_DrawImage_CreateForScreen(w, h, true);
 
@@ -799,20 +887,26 @@ _text_blt_alt(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin, uqm::BYTE swap,
 		TFB_DrawImage_Rect(&r, color, DRAW_REPLACE_MODE, ext);
 	}
 	else
+	{
 		return 0;
+	}
 
 	origin.x = pClipRect->corner.x;
 	origin.y = TextPtr->baseline.y;
 	num_chars = TextPtr->CharCount;
 	if (num_chars == 0)
+	{
 		return 0;
+	}
 
 	leading_step = AltFontPtr->Leading - _CurFontPtr->Leading;
 	pStr = TextPtr->pStr;
 
 	next_ch = getCharFromString(&pStr);
 	if (next_ch == '\0')
+	{
 		num_chars = 0;
+	}
 	backing = stock;
 	while (num_chars--)
 	{
@@ -824,7 +918,9 @@ _text_blt_alt(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin, uqm::BYTE swap,
 		{
 			next_ch = getCharFromString(&pStr);
 			if (next_ch == '\0')
+			{
 				num_chars = 0;
+			}
 		}
 
 		if (ch == key)
@@ -873,7 +969,9 @@ _text_blt_alt(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin, uqm::BYTE swap,
 	}
 
 	if (ext)
+	{
 		TFB_DrawImage_Delete(ext);
+	}
 
 	return swap;
 }
@@ -888,10 +986,14 @@ getCharFrame(FONT_DESC* fontPtr, UniChar ch)
 	for (;;)
 	{
 		if (page == NULL)
+		{
 			return NULL;
+		}
 
 		if (page->pageStart == pageStart)
+		{
 			break;
+		}
 
 		page = page->next;
 	}

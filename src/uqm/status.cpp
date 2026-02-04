@@ -62,9 +62,13 @@ CalculateAnimOffsets(CAPTAIN_STUFF* CSPtr,
 			CSPtr->tr_offset = 0;
 
 			if (cur_status_flags & LEFT)
+			{
 				CSPtr->tl_offset++;
+			}
 			else
+			{
 				CSPtr->tl_offset--;
+			}
 
 			redraw_flag |= LEFT;
 		}
@@ -88,9 +92,13 @@ CalculateAnimOffsets(CAPTAIN_STUFF* CSPtr,
 		CSPtr->tl_offset = 0;
 
 		if (cur_status_flags & RIGHT)
+		{
 			CSPtr->tr_offset++;
+		}
 		else
+		{
 			CSPtr->tr_offset--;
+		}
 
 		redraw_flag |= RIGHT;
 	}
@@ -98,9 +106,13 @@ CalculateAnimOffsets(CAPTAIN_STUFF* CSPtr,
 	if (delta_status_flags & THRUST || CSPtr->thrust_offset & 1)
 	{
 		if (cur_status_flags & THRUST)
+		{
 			CSPtr->thrust_offset++;
+		}
 		else
+		{
 			CSPtr->thrust_offset--;
+		}
 
 		redraw_flag |= THRUST;
 	}
@@ -108,9 +120,13 @@ CalculateAnimOffsets(CAPTAIN_STUFF* CSPtr,
 	if (delta_status_flags & WEAPON || CSPtr->weapon_offset & 1)
 	{
 		if (cur_status_flags & WEAPON)
+		{
 			CSPtr->weapon_offset++;
+		}
 		else
+		{
 			CSPtr->weapon_offset--;
+		}
 
 		redraw_flag |= WEAPON;
 	}
@@ -118,9 +134,13 @@ CalculateAnimOffsets(CAPTAIN_STUFF* CSPtr,
 	if (delta_status_flags & SPECIAL || CSPtr->special_offset & 1)
 	{
 		if (cur_status_flags & SPECIAL)
+		{
 			CSPtr->special_offset++;
+		}
 		else
+		{
 			CSPtr->special_offset--;
+		}
 
 		redraw_flag |= SPECIAL;
 	}
@@ -468,15 +488,19 @@ bool DeltaEnergy(ELEMENT* ElementPtr, uqm::SIZE energy_delta)
 
 	if (antiCheat(ElementPtr, false, OPTVAL_INF_ENERGY)
 		|| antiCheat(ElementPtr, false, OPTVAL_FULL_GOD))
+	{
 		return retval;
+	}
 
 	GetElementStarShip(ElementPtr, &StarShipPtr);
 	ShipInfoPtr = &StarShipPtr->RaceDescPtr->ship_info;
 	if (energy_delta >= 0)
 	{
 		if ((uqm::BYTE)(ShipInfoPtr->energy_level + (uqm::BYTE)energy_delta) > ShipInfoPtr->max_energy)
+		{
 			energy_delta = ShipInfoPtr->max_energy
 						 - ShipInfoPtr->energy_level;
+		}
 	}
 	else
 	{
@@ -487,7 +511,9 @@ bool DeltaEnergy(ELEMENT* ElementPtr, uqm::SIZE energy_delta)
 	}
 
 	if (!retval)
+	{
 		StarShipPtr->cur_status_flags |= LOW_ON_ENERGY;
+	}
 	else
 	{
 		StarShipPtr->cur_status_flags &= ~LOW_ON_ENERGY;
@@ -509,7 +535,9 @@ bool DeltaCrew(ELEMENT* ElementPtr, uqm::SIZE crew_delta)
 
 	if (lowByte(GLOBAL(CurrentActivity)) == IN_LAST_BATTLE
 		&& ElementPtr->playerNr == NPC_PLAYER_NUM)
+	{
 		return (true); /* Samatra can't be crew-modified */
+	}
 
 	retval = true;
 	GetElementStarShip(ElementPtr, &StarShipPtr);
@@ -526,7 +554,9 @@ bool DeltaCrew(ELEMENT* ElementPtr, uqm::SIZE crew_delta)
 	else if (crew_delta < 0)
 	{
 		if (ElementPtr->crew_level > (uqm::COUNT)-crew_delta)
+		{
 			ElementPtr->crew_level += crew_delta;
+		}
 		else
 		{
 			crew_delta = -(uqm::SIZE)ElementPtr->crew_level;
@@ -565,7 +595,9 @@ void PreProcessStatus(ELEMENT* ShipPtr)
 			redraw_flags = CalculateAnimOffsets(CSPtr, old_status_flags, cur_status_flags);
 
 			if (redraw_flags)
+			{
 				DrawCaptainWindowAnimation(CSPtr, status_y_offsets[StarShipPtr->playerNr], redraw_flags);
+			}
 		}
 	}
 }
@@ -662,7 +694,9 @@ void PostProcessStatus(ELEMENT* ShipPtr)
 							r.extent.height = CAPTAIN_HEIGHT - RES_SCALE((i << 1));
 
 							if (r.extent.height == RES_SCALE(2))
+							{
 								r.extent.height += RES_SCALE(1);
+							}
 
 							for (j = 0; j < RES_SCALE(1); j++)
 							{
@@ -720,7 +754,9 @@ void PostProcessStatus(ELEMENT* ShipPtr)
 						else
 						{
 							if ((i -= 5) > 2)
+							{
 								c = BLACK_COLOR;
+							}
 							else
 							{
 								static const Color flash_tab2[] =
@@ -754,9 +790,13 @@ void PostProcessStatus(ELEMENT* ShipPtr)
 			if (old_status_flags & LOW_ON_ENERGY)
 			{
 				if (!(cur_status_flags & LOW_ON_ENERGY))
+				{
 					DrawCrewFuelString(y, 1);
+				}
 				else
+				{
 					DrawCrewFuelString(y, -1);
+				}
 			}
 		}
 

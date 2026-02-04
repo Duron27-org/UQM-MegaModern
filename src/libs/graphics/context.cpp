@@ -116,7 +116,9 @@ FindContextPtr(CONTEXT context)
 	for (ptr = &firstContext; *ptr != NULL; ptr = &(*ptr)->next)
 	{
 		if (*ptr == context)
+		{
 			break;
+		}
 	}
 	return ptr;
 }
@@ -127,24 +129,32 @@ bool DestroyContext(CONTEXT ContextRef)
 	TFB_Image* img;
 
 	if (ContextRef == 0)
+	{
 		return (false);
+	}
 
 	if (_pCurContext && _pCurContext == ContextRef)
+	{
 		SetContext((CONTEXT)0);
+	}
 
 #ifdef DEBUG
 	// Unlink the context.
 	{
 		CONTEXT* contextPtr = FindContextPtr(ContextRef);
 		if (contextEnd == &ContextRef->next)
+		{
 			contextEnd = contextPtr;
+		}
 		*contextPtr = ContextRef->next;
 	}
 #endif /* DEBUG */
 
 	img = ContextRef->FontBacking;
 	if (img)
+	{
 		TFB_DrawImage_Delete(img);
+	}
 
 	FreeContext(ContextRef);
 	return true;
@@ -155,7 +165,9 @@ Color SetContextForeGroundColor(Color color)
 	Color oldColor;
 
 	if (!ContextActive())
+	{
 		return DEFAULT_FORE_COLOR;
+	}
 
 	oldColor = _get_context_fg_color();
 	if (!sameColor(oldColor, color))
@@ -175,7 +187,9 @@ Color SetContextForeGroundColor(Color color)
 Color GetContextForeGroundColor(void)
 {
 	if (!ContextActive())
+	{
 		return DEFAULT_FORE_COLOR;
+	}
 
 	return _get_context_fg_color();
 }
@@ -185,11 +199,15 @@ Color SetContextBackGroundColor(Color color)
 	Color oldColor;
 
 	if (!ContextActive())
+	{
 		return DEFAULT_BACK_COLOR;
+	}
 
 	oldColor = _get_context_bg_color();
 	if (!sameColor(oldColor, color))
+	{
 		SwitchContextBackGroundColor(color);
+	}
 
 	return oldColor;
 }
@@ -197,7 +215,9 @@ Color SetContextBackGroundColor(Color color)
 Color GetContextBackGroundColor(void)
 {
 	if (!ContextActive())
+	{
 		return DEFAULT_BACK_COLOR;
+	}
 
 	return _get_context_bg_color();
 }
@@ -208,7 +228,9 @@ SetContextDrawMode(DrawMode mode)
 	DrawMode oldMode;
 
 	if (!ContextActive())
+	{
 		return DEFAULT_DRAW_MODE;
+	}
 
 	oldMode = _get_context_draw_mode();
 	SwitchContextDrawMode(mode);
@@ -220,7 +242,9 @@ DrawMode
 GetContextDrawMode(void)
 {
 	if (!ContextActive())
+	{
 		return DEFAULT_DRAW_MODE;
+	}
 
 	return _get_context_draw_mode();
 }
@@ -234,14 +258,18 @@ _get_context_fg_rect(void)
 		{0, 0}
 	  };
 	if (_CurFramePtr)
+	{
 		r.extent = GetFrameBounds(_CurFramePtr);
+	}
 	return r;
 }
 
 bool SetContextClipRect(RECT* lpRect)
 {
 	if (!ContextActive())
+	{
 		return (false);
+	}
 
 	if (lpRect)
 	{
@@ -265,7 +293,9 @@ bool SetContextClipRect(RECT* lpRect)
 bool GetContextClipRect(RECT* lpRect)
 {
 	if (!ContextActive())
+	{
 		return (false);
+	}
 
 	*lpRect = _pCurContext->ClipRect;
 	if (!_pCurContext->ClipRect.extent.width)
@@ -290,7 +320,9 @@ SetContextFontEffect(FRAME EffectFrame)
 	FRAME LastEffect;
 
 	if (!ContextActive())
+	{
 		return (NULL);
+	}
 
 	LastEffect = _get_context_fonteff();
 	if (EffectFrame != LastEffect)
@@ -316,14 +348,20 @@ void FixContextFontEffect(void)
 	TFB_Image* img;
 
 	if (!ContextActive() || (_get_context_font_backing() != 0 && !(_get_context_fbk_flags() & FBK_DIRTY)))
+	{
 		return;
+	}
 
 	if (!GetContextFontDispHeight(&h) || !GetContextFontDispWidth(&w))
+	{
 		return;
+	}
 
 	img = _pCurContext->FontBacking;
 	if (img)
+	{
 		TFB_DrawScreen_DeleteImage(img);
+	}
 
 	img = TFB_DrawImage_CreateForScreen(w, h, true);
 	if (_get_context_fbk_flags() & FBK_IMAGE)
@@ -359,7 +397,9 @@ CopyContextRect(const RECT* area)
 	RECT r;
 
 	if (!ContextActive() || !_CurFramePtr)
+	{
 		return NULL;
+	}
 
 	fgRect = _get_context_fg_rect();
 	GetContextClipRect(&clipRect);
@@ -373,12 +413,18 @@ CopyContextRect(const RECT* area)
 	// TODO: Should this take CONTEXT origin into account too?
 	// validate the rect
 	if (!BoxIntersect(&r, &fgRect, &r))
+	{
 		return NULL;
+	}
 
 	if (_CurFramePtr->Type == SCREEN_DRAWABLE)
+	{
 		return LoadDisplayPixmap(&r, NULL);
+	}
 	else
+	{
 		return CopyFrameRect(_CurFramePtr, &r);
+	}
 }
 
 #ifdef DEBUG

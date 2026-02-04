@@ -365,7 +365,9 @@ void TFB_DrawImage_SetMipmap(TFB_Image* img, TFB_Image* mmimg, int hotx, int hot
 	bool mmpal;
 
 	if (!img || !mmimg)
+	{
 		return;
+	}
 
 	LockMutex(img->mutex);
 	LockMutex(mmimg->mutex);
@@ -430,18 +432,24 @@ void TFB_DrawImage_FixScaling(TFB_Image* image, int target, int type)
 														  image->ScaledImg, type, image->last_scale_type);
 
 		if (type == TFB_SCALE_NEAREST)
+		{
 			TFB_DrawCanvas_Rescale_Nearest(image->NormalImg,
 										   image->ScaledImg, target, &image->NormalHs,
 										   &image->extent, &image->last_scale_hs);
+		}
 		else if (type == TFB_SCALE_BILINEAR)
+		{
 			TFB_DrawCanvas_Rescale_Bilinear(image->NormalImg,
 											image->ScaledImg, target, &image->NormalHs,
 											&image->extent, &image->last_scale_hs);
+		}
 		else
+		{
 			TFB_DrawCanvas_Rescale_Trilinear(image->NormalImg,
 											 image->MipmapImg, image->ScaledImg, target,
 											 &image->NormalHs, &image->MipmapHs,
 											 &image->extent, &image->last_scale_hs);
+		}
 
 		image->last_scale_type = type;
 		image->last_scale = target;

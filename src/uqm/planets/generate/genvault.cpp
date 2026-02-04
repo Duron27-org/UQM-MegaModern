@@ -82,7 +82,9 @@ GenerateVault_generatePlanets(SOLARSYS_STATE* solarSys)
 		pPlanet->data_index = GenerateWorlds(LARGE_ROCKY);
 
 		if (!pPlanet->NumPlanets)
+		{
 			pPlanet->NumPlanets++;
+		}
 	}
 
 	return true;
@@ -119,15 +121,19 @@ GenerateVault_generateOrbital(SOLARSYS_STATE* solarSys,
 				assert(CountLinks(&GLOBAL(npc_built_ship_q)) == 0);
 
 				for (i = 0; i < 6; ++i)
+				{
 					CloneShipFragment(URQUAN_SHIP,
 									  &GLOBAL(npc_built_ship_q), 0);
+				}
 
 				SET_GAME_STATE(GLOBAL_FLAGS_AND_DATA, 1 << 6);
 				GLOBAL(CurrentActivity) |= START_INTERPLANETARY;
 				InitCommunication(URQUAN_CONVERSATION);
 
 				if (GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
+				{
 					return true;
+				}
 
 				Survivors = GetHeadLink(&GLOBAL(npc_built_ship_q)) != 0;
 
@@ -136,7 +142,9 @@ GenerateVault_generateOrbital(SOLARSYS_STATE* solarSys,
 				GetGroupInfo(GROUPS_RANDOM, GROUP_LOAD_IP);
 
 				if (Survivors)
+				{
 					return true;
+				}
 
 				state = GET_GAME_STATE(HM_ENCOUNTERS);
 				state |= 1 << URQUAN_ENCOUNTER;

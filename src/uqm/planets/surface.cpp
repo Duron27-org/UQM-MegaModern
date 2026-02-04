@@ -64,7 +64,9 @@ CalcMineralDeposits(const SYSTEM_INFO* SysInfoPtr, uqm::COUNT which_deposit,
 			// JMS: This makes the mineral blip smaller in case it is
 			// partially scavenged.
 			if (which_deposit < 32)
+			{
 				temp_deposit_quality = deposit_quality_fine - ((SysInfoPtr->PlanetInfo.PartiallyScavengedList[MINERAL_SCAN][which_deposit]) * 10);
+			}
 			// JMS: In case which_deposit >= 32 (most likely 65535), it
 			// means that this function is being called only to count the
 			// number of deposit nodes on the surface. In that case we
@@ -73,17 +75,27 @@ CalcMineralDeposits(const SYSTEM_INFO* SysInfoPtr, uqm::COUNT which_deposit,
 			// (AND we cannot use the list since accessing element 65535
 			// would crash the game ;)
 			else
+			{
 				temp_deposit_quality = deposit_quality_fine;
+			}
 
 			if (temp_deposit_quality < 0)
+			{
 				temp_deposit_quality = 0;
+			}
 
 			if (temp_deposit_quality < MEDIUM_DEPOSIT_THRESHOLD)
+			{
 				deposit_quality_gross = 0;
+			}
 			else if (temp_deposit_quality < LARGE_DEPOSIT_THRESHOLD)
+			{
 				deposit_quality_gross = 1;
+			}
 			else
+			{
 				deposit_quality_gross = 2;
+			}
 
 			GenerateRandomLocation(&info->loc_pt);
 
@@ -117,7 +129,9 @@ GenerateMineralDeposits(const SYSTEM_INFO* SysInfoPtr, uqm::COUNT whichDeposit,
 {
 	NODE_INFO temp_info;
 	if (!info) // user not interested in info but we need space for it
+	{
 		info = &temp_info;
+	}
 	RandomContext_SeedRandom(SysGenRNG,
 							 SysInfoPtr->PlanetInfo.ScanSeed[MINERAL_SCAN]);
 	return CalcMineralDeposits(SysInfoPtr, whichDeposit, info);
@@ -187,7 +201,9 @@ GenerateLifeForms(const SYSTEM_INFO* SysInfoPtr, uqm::COUNT whichLife,
 {
 	NODE_INFO temp_info;
 	if (!info) // user not interested in info but we need space for it
+	{
 		info = &temp_info;
+	}
 	RandomContext_SeedRandom(SysGenRNG,
 							 SysInfoPtr->PlanetInfo.ScanSeed[BIOLOGICAL_SCAN]);
 	return CalcLifeForms(SysInfoPtr, whichLife, info);
@@ -206,7 +222,9 @@ GeneratePresetLife(const SYSTEM_INFO* SysInfoPtr, const uqm::SBYTE* lifeTypes,
 	NODE_INFO temp_info;
 
 	if (!info) // user not interested in info but we need space for it
+	{
 		info = &temp_info;
+	}
 
 	// This function may look unnecessarily complicated, but it must be
 	// kept this way to preserve the universe. That is done by preserving
@@ -223,7 +241,9 @@ GeneratePresetLife(const SYSTEM_INFO* SysInfoPtr, const uqm::SBYTE* lifeTypes,
 		info->density = 0;
 
 		if (i >= whichLife)
+		{
 			break;
+		}
 	}
 
 	return i;
@@ -252,7 +272,9 @@ scaleMapWidth(COORD value)
 	float percentage = 1;
 
 	if (UNSCALED_MAP_WIDTH != widthPick())
+	{
 		percentage = scaleThing(UNSCALED_MAP_WIDTH, widthPick());
+	}
 
 	return RES_SCALE((COORD)(value * percentage));
 }
@@ -263,7 +285,9 @@ scaleMapHeight(COORD value)
 	float percentage = 1;
 
 	if (SC2_MAP_HEIGHT != heightPick())
+	{
 		percentage = scaleThing(SC2_MAP_HEIGHT, heightPick());
+	}
 
 	return RES_SCALE((COORD)(value * percentage));
 }
@@ -290,7 +314,9 @@ GenerateRandomNodes(const SYSTEM_INFO* SysInfoPtr, uqm::COUNT scan, uqm::COUNT n
 	NODE_INFO temp_info;
 
 	if (!info) // user not interested in info but we need space for it
+	{
 		info = &temp_info;
+	}
 
 	RandomContext_SeedRandom(SysGenRNG,
 							 SysInfoPtr->PlanetInfo.ScanSeed[scan]);
@@ -304,7 +330,9 @@ GenerateRandomNodes(const SYSTEM_INFO* SysInfoPtr, uqm::COUNT scan, uqm::COUNT n
 		info->density = 0;
 
 		if (i >= whichNode)
+		{
 			break;
+		}
 	}
 
 	return i;
@@ -321,7 +349,9 @@ CustomMineralDeposits(const SYSTEM_INFO* SysInfoPtr, uqm::COUNT which_deposit,
 	const ELEMENT_ENTRY* eptr;
 
 	if (!info) // user not interested in info but we need space for it
+	{
 		info = &temp_info;
+	}
 
 	RandomContext_SeedRandom(SysGenRNG,
 							 SysInfoPtr->PlanetInfo.ScanSeed[MINERAL_SCAN]);
@@ -364,25 +394,37 @@ CustomMineralDeposits(const SYSTEM_INFO* SysInfoPtr, uqm::COUNT which_deposit,
 
 			// JMS: This makes the mineral blip smaller in case it is partially scavenged.
 			if (which_deposit < 32)
+			{
 				temp_deposit_quality = deposit_quality_fine
 									 - ((SysInfoPtr->PlanetInfo.PartiallyScavengedList[MINERAL_SCAN][which_deposit]) * 10);
+			}
 			// JMS: In case which_deposit >= 32 (most likely 65535), it means that this
 			// function is being called only to count the number of deposit nodes on the
 			// surface. In that case we don't need to use the PartiallyScavengedList
 			// since the amount of minerals in that node is not stored yet.
 			// (AND we cannot use the list since accessing element 65535 would crash the game ;)
 			else
+			{
 				temp_deposit_quality = deposit_quality_fine;
+			}
 
 			if (temp_deposit_quality < 0)
+			{
 				temp_deposit_quality = 0;
+			}
 
 			if (temp_deposit_quality < MEDIUM_DEPOSIT_THRESHOLD)
+			{
 				deposit_quality_gross = 0;
+			}
 			else if (temp_deposit_quality < LARGE_DEPOSIT_THRESHOLD)
+			{
 				deposit_quality_gross = 1;
+			}
 			else
+			{
 				deposit_quality_gross = 2;
+			}
 
 			GenerateRandomLocation(&info->loc_pt);
 
@@ -413,18 +455,26 @@ CustomMineralDeposit(NODE_INFO* info, uqm::COUNT type, uqm::BYTE quality,
 	uqm::COUNT deposit_quality_gross;
 
 	if (!info)
+	{
 		return 0;
+	}
 
 	info->type = type;
 
 	deposit_quality_fine = quality * 10;
 
 	if (deposit_quality_fine < MEDIUM_DEPOSIT_THRESHOLD)
+	{
 		deposit_quality_gross = 0;
+	}
 	else if (deposit_quality_fine < LARGE_DEPOSIT_THRESHOLD)
+	{
 		deposit_quality_gross = 1;
+	}
 	else
+	{
 		deposit_quality_gross = 2;
+	}
 
 	info->loc_pt = location;
 

@@ -45,7 +45,9 @@ void* LoadGraphicInstance(RESOURCE res)
 
 	hData = res_GetResource(res);
 	if (hData)
+	{
 		res_DetachResource(res);
+	}
 
 	return (hData);
 }

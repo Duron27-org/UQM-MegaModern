@@ -34,7 +34,9 @@ void Async_process(void)
 	for (;;)
 	{
 		if (!Alarm_processOne())
+		{
 			return;
+		}
 
 		// Call callbacks scheduled from the last alarm.
 		Callback_process();

@@ -111,7 +111,9 @@ GenerateColony_generatePlanets(SOLARSYS_STATE* solarSys)
 		pPlanet->data_index = WATER_WORLD | PLANET_SHIELDED;
 		ComputeSpeed(pPlanet, false, 1);
 		if (EXTENDED)
+		{
 			pPlanet->NumPlanets = 1;
+		}
 	}
 	else
 	{
@@ -137,7 +139,9 @@ GenerateColony_generateMoons(SOLARSYS_STATE* solarSys,
 	GenerateDefault_generateMoons(solarSys, planet);
 
 	if (!PrimeSeed)
+	{
 		return true;
+	}
 
 	if (EXTENDED
 		&& matchWorld(solarSys, planet, MATCH_PBYTE, MATCH_PLANET))

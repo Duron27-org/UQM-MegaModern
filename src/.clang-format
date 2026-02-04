@@ -170,3 +170,7 @@ TabWidth: 4
 UseCRLF: true
 UseTab: Always
 BreakAfterReturnType: None
+AllowShortCaseExpressionOnASingleLine: false
+AllowShortCompoundRequirementOnASingleLine: true
+InsertBraces: true
+LineEnding: CRLF

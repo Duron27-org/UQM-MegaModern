@@ -279,7 +279,9 @@ uio_GPDirEntry_unref(uio_GPDirEntry* gPDirEntry)
 #endif
 	gPDirEntry->ref--;
 	if (gPDirEntry->ref == 0)
+	{
 		uio_GPDirEntry_delete(gPDirEntry);
+	}
 }
 
 static inline void
@@ -300,7 +302,9 @@ uio_GPDir_unref(uio_GPDir* gPDir)
 #endif
 	gPDir->ref--;
 	if (gPDir->ref == 0)
+	{
 		uio_GPDir_delete(gPDir);
+	}
 }
 
 static inline void
@@ -321,7 +325,9 @@ uio_GPFile_unref(uio_GPFile* gPFile)
 #endif
 	gPFile->ref--;
 	if (gPFile->ref == 0)
+	{
 		uio_GPFile_delete(gPFile);
+	}
 }
 
 

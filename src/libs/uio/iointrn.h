@@ -138,7 +138,9 @@ uio_Handle_unref(uio_Handle* handle)
 	assert(handle->ref > 0);
 	handle->ref--;
 	if (handle->ref == 0)
+	{
 		uio_Handle_delete(handle);
+	}
 }
 
 static inline void
@@ -153,7 +155,9 @@ uio_DirHandle_unref(uio_DirHandle* dirHandle)
 	assert(dirHandle->ref > 0);
 	dirHandle->ref--;
 	if (dirHandle->ref == 0)
+	{
 		uio_DirHandle_delete(dirHandle);
+	}
 }
 
 static inline uio_bool
@@ -174,7 +178,9 @@ uio_PDirEntryHandle_unref(uio_PDirEntryHandle* handle)
 	assert(handle->ref > 0);
 	handle->ref--;
 	if (handle->ref == 0)
+	{
 		uio_PDirEntryHandle_delete(handle);
+	}
 }
 
 static inline void
@@ -189,7 +195,9 @@ uio_PDirHandle_unref(uio_PDirHandle* handle)
 	assert(handle->ref > 0);
 	handle->ref--;
 	if (handle->ref == 0)
+	{
 		uio_PDirHandle_delete(handle);
+	}
 }
 
 static inline void
@@ -204,7 +212,9 @@ uio_PFileHandle_unref(uio_PFileHandle* handle)
 	assert(handle->ref > 0);
 	handle->ref--;
 	if (handle->ref == 0)
+	{
 		uio_PFileHandle_delete(handle);
+	}
 }
 
 

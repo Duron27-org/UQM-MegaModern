@@ -36,12 +36,18 @@ void* dlopen(const char* filename, int flag)
 	HMODULE hlib;
 
 	if (filename == NULL)
+	{
 		hlib = GetModuleHandleA(NULL);
+	}
 	else
+	{
 		hlib = LoadLibraryA(filename);
+	}
 
 	if (!hlib)
+	{
 		wdl_last_error = GetLastError();
+	}
 
 	return hlib;
 }
@@ -50,7 +56,9 @@ void* dlsym(void* handle, const char* symbol)
 {
 	void* ptr = GetProcAddress(handle, symbol);
 	if (!ptr)
+	{
 		wdl_last_error = GetLastError();
+	}
 	return ptr;
 }
 
@@ -68,5 +76,7 @@ char* dlerror(void)
 		return wdl_errstr;
 	}
 	else
+	{
 		return NULL;
+	}
 }

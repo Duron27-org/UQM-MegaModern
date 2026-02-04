@@ -29,8 +29,10 @@ LoadStringTableFile(uio_DirHandle* dir, const char* fileName)
 
 	// FIXME: this theoretically needs a mechanism to prevent races
 	if (_cur_resfile_name)
+	{
 		// something else is loading resources atm
 		return 0;
+	}
 
 	fp = res_OpenResFile(dir, fileName, "rb");
 	if (fp)

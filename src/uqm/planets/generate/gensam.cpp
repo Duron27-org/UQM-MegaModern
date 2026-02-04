@@ -84,7 +84,9 @@ GenerateSaMatra_initNpcs(SOLARSYS_STATE* solarSys)
 	}
 
 	if (SpaceMusicOK)
+	{
 		findRaceSOI();
+	}
 
 	(void)solarSys;
 	return true;
@@ -176,7 +178,9 @@ GenerateSaMatra_generatePlanets(SOLARSYS_STATE* solarSys)
 			pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
 
 			if (!pPlanet->NumPlanets)
+			{
 				pPlanet->NumPlanets++;
+			}
 
 			pSunDesc->MoonByte = PlanetByteGen(pPlanet);
 
@@ -199,7 +203,9 @@ GenerateSaMatra_generatePlanets(SOLARSYS_STATE* solarSys)
 		}
 
 		if (!pPlanet->NumPlanets)
+		{
 			pPlanet->NumPlanets++;
+		}
 
 		pSunDesc->MoonByte = PlanetByteGen(pPlanet);
 	}
@@ -213,7 +219,9 @@ GenerateSaMatra_generatePlanets(SOLARSYS_STATE* solarSys)
 		for (i = 0; i < pSunDesc->NumPlanets; i++)
 		{
 			if (solarSys->PlanetDesc[i].NumPlanets <= 1)
+			{
 				break;
+			}
 		}
 
 		pSunDesc->PlanetByte = i;
@@ -232,7 +240,9 @@ GenerateSaMatra_generatePlanets(SOLARSYS_STATE* solarSys)
 			pSunDesc->MoonByte = PlanetByteGen(pPlanet);
 		}
 		else
+		{
 			pSunDesc->MoonByte = 0;
+		}
 	}
 
 	return true;
@@ -320,9 +330,13 @@ GenerateSaMatra_generateOrbital(SOLARSYS_STATE* solarSys,
 			SET_GAME_STATE(GLOBAL_FLAGS_AND_DATA, 1 << 7);
 			SET_GAME_STATE(URQUAN_PROTECTING_SAMATRA, 1);
 			if (EXTENDED && GET_GAME_STATE(KOHR_AH_FRENZY))
+			{
 				InitCommunication(BLACKURQ_CONVERSATION);
+			}
 			else
+			{
 				InitCommunication(URQUAN_CONVERSATION);
+			}
 
 			if (!(GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
 			{
@@ -341,7 +355,9 @@ GenerateSaMatra_generateOrbital(SOLARSYS_STATE* solarSys,
 				else
 				{
 					if (DIF_HARD && (GET_GAME_STATE(HM_ENCOUNTERS) & 1 << NO_HELP_FROM_PKUNK))
+					{
 						return true;
+					}
 
 					EncounterGroup = 0;
 					EncounterRace = -1;
@@ -350,7 +366,9 @@ GenerateSaMatra_generateOrbital(SOLARSYS_STATE* solarSys,
 					if (GET_GAME_STATE(YEHAT_CIVIL_WAR)
 						&& StartSphereTracking(YEHAT_SHIP)
 						&& EscortFeasibilityStudy(YEHAT_REBEL_SHIP))
+					{
 						InitCommunication(YEHAT_REBEL_CONVERSATION);
+					}
 				}
 			}
 			return true;
@@ -375,9 +393,11 @@ GenerateSaMatra_generateOrbital(SOLARSYS_STATE* solarSys,
 					// use alternate text if the player
 					// hasn't freed the Earth starbase yet
 					if (!GET_GAME_STATE(STARBASE_AVAILABLE))
+					{
 						solarSys->SysInfo.PlanetInfo.DiscoveryString =
 							SetRelStringTableIndex(
 								solarSys->SysInfo.PlanetInfo.DiscoveryString, 1);
+					}
 				}
 				else
 				{
@@ -440,7 +460,9 @@ BuildUrquanGuard(SOLARSYS_STATE* solarSys)
 	assert(CountLinks(&GLOBAL(npc_built_ship_q)) == 0);
 
 	for (b0 = 0; b0 < MAX_SHIPS_PER_SIDE; ++b0)
+	{
 		CloneShipFragment((RACE_ID)ship1, &GLOBAL(npc_built_ship_q), 0);
+	}
 
 	if (GLOBAL(BattleGroupRef) == 0)
 	{
@@ -450,16 +472,22 @@ BuildUrquanGuard(SOLARSYS_STATE* solarSys)
 
 #define NUM_URQUAN_GUARDS0 12
 	for (b0 = 1; b0 <= NUM_URQUAN_GUARDS0; ++b0)
+	{
 		PutGroupInfo(GLOBAL(BattleGroupRef), b0);
+	}
 
 	ReinitQueue(&GLOBAL(npc_built_ship_q));
 	for (b0 = 0; b0 < MAX_SHIPS_PER_SIDE; ++b0)
+	{
 		CloneShipFragment((RACE_ID)ship2, &GLOBAL(npc_built_ship_q), 0);
+	}
 
 #define NUM_URQUAN_GUARDS1 4
 	for (b0 = 1; b0 <= NUM_URQUAN_GUARDS1; ++b0)
+	{
 		PutGroupInfo(GLOBAL(BattleGroupRef),
 					 (uqm::BYTE)(NUM_URQUAN_GUARDS0 + b0));
+	}
 
 	ReinitQueue(&GLOBAL(npc_built_ship_q));
 
@@ -474,7 +502,9 @@ BuildUrquanGuard(SOLARSYS_STATE* solarSys)
 		IP_GROUP* GroupPtr;
 
 		if (b1 % (FULL_CIRCLE / NUM_URQUAN_GUARDS1) == 0)
+		{
 			b1 += FULL_CIRCLE / (NUM_URQUAN_GUARDS0 + NUM_URQUAN_GUARDS1);
+		}
 
 		GroupPtr = LockIpGroup(&GLOBAL(ip_group_q), hGroup);
 		hNextGroup = _GetSuccLink(GroupPtr);

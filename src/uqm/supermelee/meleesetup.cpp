@@ -32,7 +32,9 @@ void MeleeTeam_init(MeleeTeam* team)
 	FleetShipIndex slotI;
 
 	for (slotI = 0; slotI < MELEE_FLEET_SIZE; slotI++)
+	{
 		team->ships[slotI] = MELEE_NONE;
+	}
 
 	team->name[0] = '\0';
 }
@@ -63,12 +65,16 @@ int MeleeTeam_serialize(const MeleeTeam* team, uio_Stream* stream)
 	for (slotI = 0; slotI < MELEE_FLEET_SIZE; slotI++)
 	{
 		if (uio_putc((int)team->ships[slotI], stream) == EOF)
+		{
 			return -1;
+		}
 	}
 	if (uio_fwrite((const char*)team->name, sizeof team->name, 1,
 				   stream)
 		!= 1)
+	{
 		return -1;
+	}
 
 	return 0;
 }
@@ -82,11 +88,15 @@ int MeleeTeam_deserialize(MeleeTeam* team, uio_Stream* stream)
 	{
 		int ship = uio_getc(stream);
 		if (ship == EOF)
+		{
 			goto err;
+		}
 		team->ships[slotI] = (MeleeShip)ship;
 
 		if (team->ships[slotI] == MELEE_NONE)
+		{
 			continue;
+		}
 
 		if (team->ships[slotI] >= NUM_MELEE_SHIPS)
 		{
@@ -98,7 +108,9 @@ int MeleeTeam_deserialize(MeleeTeam* team, uio_Stream* stream)
 	}
 
 	if (uio_fread(team->name, sizeof team->name, 1, stream) != 1)
+	{
 		goto err;
+	}
 
 	team->name[MAX_TEAM_CHARS] = '\0';
 
@@ -200,7 +212,9 @@ MeleeSetup_initSentTeam(MeleeSetup* setup, size_t teamNr)
 	FleetShipIndex slotI;
 
 	for (slotI = 0; slotI < MELEE_FLEET_SIZE; slotI++)
+	{
 		MeleeTeam_setShip(team, slotI, MELEE_UNSET);
+	}
 
 	setup->haveSentTeamName[teamNr] = false;
 #ifdef DEBUG
@@ -218,7 +232,9 @@ MeleeSetup_new(void)
 	size_t teamI;
 	MeleeSetup* result = (MeleeSetup*)HMalloc(sizeof(MeleeSetup));
 	if (result == NULL)
+	{
 		return NULL;
+	}
 
 	for (teamI = 0; teamI < NUM_SIDES; teamI++)
 	{
@@ -242,7 +258,9 @@ void MeleeSetup_resetSentTeams(MeleeSetup* setup)
 	size_t teamI;
 
 	for (teamI = 0; teamI < NUM_SIDES; teamI++)
+	{
 		MeleeSetup_initSentTeam(setup, teamI);
+	}
 }
 #endif /* NETPLAY */
 
@@ -254,15 +272,21 @@ bool MeleeSetup_setShip(MeleeSetup* setup, size_t teamNr, FleetShipIndex slotNr,
 	MeleeShip oldShip = MeleeTeam_getShip(team, slotNr);
 
 	if (ship == oldShip)
+	{
 		return false;
+	}
 
 	if (oldShip != MELEE_NONE)
+	{
 		setup->fleetValue[teamNr] -= GetShipCostFromIndex(oldShip);
+	}
 
 	MeleeTeam_setShip(team, slotNr, ship);
 
 	if (ship != MELEE_NONE)
+	{
 		setup->fleetValue[teamNr] += GetShipCostFromIndex(ship);
+	}
 
 	return true;
 }
@@ -288,7 +312,9 @@ bool MeleeSetup_setTeamName(MeleeSetup* setup, size_t teamNr,
 	const char* oldName = MeleeTeam_getTeamName(team);
 
 	if (strcmp(oldName, name) == 0)
+	{
 		return false;
+	}
 
 	MeleeTeam_setName(team, name);
 	return true;
@@ -314,7 +340,9 @@ int MeleeSetup_deserializeTeam(MeleeSetup* setup, size_t teamNr,
 	MeleeTeam* team = &setup->teams[teamNr];
 	int ret = MeleeTeam_deserialize(team, stream);
 	if (ret == 0)
+	{
 		setup->fleetValue[teamNr] = MeleeTeam_getValue(team);
+	}
 	return ret;
 }
 
@@ -341,7 +369,9 @@ const char*
 MeleeSetup_getSentTeamName(const MeleeSetup* setup, size_t teamNr)
 {
 	if (!setup->haveSentTeamName[teamNr])
+	{
 		return NULL;
+	}
 
 	return MeleeTeam_getTeamName(&setup->sentTeams[teamNr]);
 }
@@ -354,7 +384,9 @@ bool MeleeSetup_setSentShip(MeleeSetup* setup, size_t teamNr,
 	MeleeShip oldShip = MeleeTeam_getShip(team, slotNr);
 
 	if (ship == oldShip)
+	{
 		return false;
+	}
 
 	MeleeTeam_setShip(team, slotNr, ship);
 	return true;
@@ -396,7 +428,9 @@ bool MeleeSetup_setSentTeamName(MeleeSetup* setup, size_t teamNr,
 			// Have sent a team name. Check whether it has actually changed.
 			const char* oldName = MeleeTeam_getTeamName(team);
 			if (strcmp(oldName, name) == 0)
+			{
 				return false; // Team name has not changed.
+			}
 		}
 
 		MeleeTeam_setName(team, name);

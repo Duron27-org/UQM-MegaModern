@@ -145,7 +145,9 @@ SetAbsStringTableIndex(STRING String, uqm::COUNT StringTableIndex)
 	STRING_TABLE StringTablePtr;
 
 	if (!String)
+	{
 		return NULL;
+	}
 
 	StringTablePtr = String->parent;
 
@@ -168,7 +170,9 @@ SetRelStringTableIndex(STRING String, uqm::SIZE StringTableOffs)
 	STRING_TABLE StringTablePtr;
 
 	if (!String)
+	{
 		return NULL;
+	}
 
 	StringTablePtr = String->parent;
 
@@ -181,7 +185,9 @@ SetRelStringTableIndex(STRING String, uqm::SIZE StringTableOffs)
 		uqm::COUNT StringTableIndex;
 
 		while (StringTableOffs < 0)
+		{
 			StringTableOffs += StringTablePtr->size;
+		}
 		StringTableIndex = (String->index + StringTableOffs)
 						 % StringTablePtr->size;
 
@@ -349,7 +355,9 @@ bool CheckResString(RESOURCE res)
 	STRING string = CaptureStringTable(LoadStringTableInstance(res));
 
 	if (string != NULL)
+	{
 		check = true;
+	}
 
 	DestroyStringTable(ReleaseStringTable(string));
 	string = 0;

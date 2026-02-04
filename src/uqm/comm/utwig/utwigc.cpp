@@ -37,7 +37,7 @@ static LOCDATA utwig_desc =
 		BLACK_COLOR_INIT, /* AlienTextBColor */
 		{0, 0}, /* AlienTextBaseline */
 		0,
- /* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
+		/* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
 		ALIGN_CENTER, /* AlienTextAlign */
 		VALIGN_MIDDLE, /* AlienTextValign */
 		UTWIG_COLOR_MAP, /* AlienColorMap */
@@ -250,15 +250,25 @@ ExitConversation(RESPONSE_REF R)
 	setSegue(Segue_peace);
 
 	if (PLAYER_SAID(R, bye_neutral))
+	{
 		NPCPhrase(GOODBYE_NEUTRAL);
+	}
 	else if (PLAYER_SAID(R, bye_after_space))
+	{
 		NPCPhrase(GOODBYE_AFTER_SPACE);
+	}
 	else if (PLAYER_SAID(R, bye_before_space))
+	{
 		NPCPhrase(GOODBYE_BEFORE_SPACE);
+	}
 	else if (PLAYER_SAID(R, bye_allied_homeworld))
+	{
 		NPCPhrase(GOODBYE_ALLIED_HOMEWORLD);
+	}
 	else if (PLAYER_SAID(R, bye_bomb))
+	{
 		NPCPhrase(GOODBYE_BOMB);
+	}
 	else if (PLAYER_SAID(R, demand_bomb))
 	{
 		NPCPhrase(GUARDS_FIGHT);
@@ -279,16 +289,22 @@ ExitConversation(RESPONSE_REF R)
 		else
 		{
 			if (PLAYER_SAID(R, got_ultron))
+			{
 				NPCPhrase(DONT_WANT_TO_LOOK);
+			}
 			else
+			{
 				NPCPhrase(TAUNT_US_BUT_WE_LOOK);
+			}
 			if (GET_GAME_STATE(ULTRON_CONDITION) < 4)
 			{
 				switch (GET_GAME_STATE(UTWIG_INFO))
 				{
 					case 0:
 						if (PLAYER_SAID(R, got_ultron))
+						{
 							NPCPhrase(SICK_TRICK_1);
+						}
 						else
 						{
 							NPCPhrase(TRICKED_US_1);
@@ -298,7 +314,9 @@ ExitConversation(RESPONSE_REF R)
 						break;
 					case 1:
 						if (PLAYER_SAID(R, got_ultron))
+						{
 							NPCPhrase(SICK_TRICK_2);
+						}
 						else
 						{
 							NPCPhrase(TRICKED_US_2);
@@ -313,7 +331,9 @@ ExitConversation(RESPONSE_REF R)
 			{
 				NPCPhrase(HAPPY_DAYS);
 				if (GET_GAME_STATE(KOHR_AH_FRENZY))
+				{
 					NPCPhrase(TOO_LATE);
+				}
 				else
 				{
 					NPCPhrase(OK_ATTACK_KOHRAH);
@@ -346,7 +366,9 @@ ExitConversation(RESPONSE_REF R)
 	{
 		NPCPhrase(HOW_HELP);
 		if (EscortFeasibilityStudy(UTWIG_SHIP) == 0)
+		{
 			NPCPhrase(DONT_NEED);
+		}
 		else
 		{
 			NPCPhrase(HAVE_4_SHIPS);
@@ -382,6 +404,7 @@ AlliedHome(RESPONSE_REF R)
 			SET_GAME_STATE(UTWIG_WAR_NEWS, 1);
 		}
 		else
+		{
 			switch (GET_GAME_STATE(UTWIG_WAR_NEWS))
 			{
 				case 0:
@@ -393,13 +416,16 @@ AlliedHome(RESPONSE_REF R)
 					News = 2;
 					break;
 			}
+		}
 
 		DISABLE_PHRASE(how_goes_war);
 	}
 	else if (PLAYER_SAID(R, learn_new_info))
 	{
 		if (NumVisits < 5)
+		{
 			NPCPhrase(NO_NEW_INFO);
+		}
 		else
 		{
 			NPCPhrase(SAMATRA);
@@ -412,9 +438,13 @@ AlliedHome(RESPONSE_REF R)
 	else if (PLAYER_SAID(R, what_now_homeworld))
 	{
 		if (NumVisits < 5)
+		{
 			NPCPhrase(UP_TO_YOU);
+		}
 		else
+		{
 			NPCPhrase(HOPE_KILL_EACH_OTHER);
+		}
 
 		DISABLE_PHRASE(what_now_homeworld);
 	}
@@ -429,20 +459,32 @@ AlliedHome(RESPONSE_REF R)
 	if (NumVisits >= 5)
 	{
 		if (!(News & (1 << 0)))
+		{
 			Response(how_went_war, AlliedHome);
+		}
 	}
 	else if (PHRASE_ENABLED(how_goes_war)
 			 && ((NumVisits == 1 && News == 0)
 				 || (NumVisits && News < 2)))
+	{
 		Response(how_goes_war, AlliedHome);
+	}
 	if (PHRASE_ENABLED(learn_new_info))
+	{
 		Response(learn_new_info, AlliedHome);
+	}
 	if (PHRASE_ENABLED(what_now_homeworld))
+	{
 		Response(what_now_homeworld, AlliedHome);
+	}
 	if (PHRASE_ENABLED(how_is_ultron))
+	{
 		Response(how_is_ultron, AlliedHome);
+	}
 	if (EXTENDED && ShipsReady(UTWIG_SHIP))
+	{
 		Response(can_you_help, ExitConversation);
+	}
 	Response(bye_allied_homeworld, ExitConversation);
 }
 
@@ -476,9 +518,13 @@ BeforeKohrAh(RESPONSE_REF R)
 	}
 
 	if (PHRASE_ENABLED(whats_up_before_space))
+	{
 		Response(whats_up_before_space, BeforeKohrAh);
+	}
 	if (PHRASE_ENABLED(what_now_before_space))
+	{
 		Response(what_now_before_space, BeforeKohrAh);
+	}
 	Response(bye_before_space, ExitConversation);
 }
 
@@ -512,9 +558,13 @@ AfterKohrAh(RESPONSE_REF R)
 	}
 
 	if (PHRASE_ENABLED(whats_up_after_space))
+	{
 		Response(whats_up_after_space, AfterKohrAh);
+	}
 	if (PHRASE_ENABLED(what_now_after_space))
+	{
 		Response(what_now_after_space, AfterKohrAh);
+	}
 	Response(bye_after_space, ExitConversation);
 }
 
@@ -639,14 +689,20 @@ NeutralUtwig(RESPONSE_REF R)
 	}
 
 	if (pStr[LastStack])
+	{
 		Response(pStr[LastStack], NeutralUtwig);
+	}
 	for (i = 0; i < 4; ++i)
 	{
 		if (i != LastStack && pStr[i])
+		{
 			Response(pStr[i], NeutralUtwig);
+		}
 	}
 	if (GET_GAME_STATE(ULTRON_CONDITION))
+	{
 		Response(got_ultron, ExitConversation);
+	}
 	Response(bye_neutral, ExitConversation);
 }
 
@@ -704,7 +760,9 @@ BombWorld(RESPONSE_REF R)
 	else if (PLAYER_SAID(R, whats_up_bomb))
 	{
 		if (GET_GAME_STATE(BOMB_INFO))
+		{
 			NPCPhrase(GENERAL_INFO_BOMB_2);
+		}
 		else
 		{
 			NPCPhrase(GENERAL_INFO_BOMB_1);
@@ -743,17 +801,25 @@ BombWorld(RESPONSE_REF R)
 	}
 
 	if (pStr[LastStack])
+	{
 		Response(pStr[LastStack], BombWorld);
+	}
 	LastStack ^= 1;
 	if (pStr[LastStack])
+	{
 		Response(pStr[LastStack], BombWorld);
+	}
 
 	if (PHRASE_ENABLED(whats_up_bomb) && (GET_GAME_STATE(BOMB_STACK1) > 1))
+	{
 		Response(whats_up_bomb, BombWorld);
+	}
 
 	if (GET_GAME_STATE(ULTRON_CONDITION)
 		&& !GET_GAME_STATE(REFUSED_ULTRON_AT_BOMB))
+	{
 		Response(got_ultron, ExitConversation);
+	}
 
 	if (GET_GAME_STATE(BOMB_INFO))
 	{
@@ -1007,7 +1073,9 @@ init_utwig_comm(void)
 
 	// use alternate 'Happy Utwig!' track
 	if (GET_GAME_STATE(UTWIG_HAVE_ULTRON))
+	{
 		altResFlags |= USE_ALT_SONG;
+	}
 
 
 	if (GET_GAME_STATE(UTWIG_HAVE_ULTRON)

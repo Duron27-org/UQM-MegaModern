@@ -50,13 +50,13 @@ void SCALE_(BiAdaptAdvFilter)(SDL_Surface* src, SDL_Surface* dst, SDL_Rect* r)
 	static int resolve_coord[][2] =
 		{
 			{0,	-1 },
-			 {1,	 -1 },
-			  {2,	  0  },
-			  {2,	  1  },
-			  {1,	  2  },
-			  {0,	  2  },
-			  {-1,  1	},
-			   {-1,	0	 },
+			{1,	-1 },
+			{2,	0	 },
+			{2,	1	 },
+			{1,	2	 },
+			{0,	2	 },
+			{-1,	 1  },
+			{-1,	 0  },
 			{100, 100}  // term
 	};
 	Uint32* src_p = (Uint32*)src->pixels;
@@ -189,21 +189,33 @@ void SCALE_(BiAdaptAdvFilter)(SDL_Surface* src, SDL_Surface* dst, SDL_Rect* r)
 			// some neighboors are different, lets check them
 
 			if (x > 0)
+			{
 				PIX(-1, 0) = SCALE_GETPIX(SRC(-1, 0));
+			}
 			else
+			{
 				PIX(-1, 0) = PIX(0, 0);
+			}
 
 			if (x + 2 < w)
+			{
 				PIX(2, 0) = SCALE_GETPIX(SRC(2, 0));
+			}
 			else
+			{
 				PIX(2, 0) = PIX(1, 0);
+			}
 
 			if (y + 1 < h)
 			{
 				if (x > 0)
+				{
 					PIX(-1, 1) = SCALE_GETPIX(SRC(-1, 1));
+				}
 				else
+				{
 					PIX(-1, 1) = PIX(0, 1);
+				}
 
 				if (x + 2 < w)
 				{
@@ -234,9 +246,13 @@ void SCALE_(BiAdaptAdvFilter)(SDL_Surface* src, SDL_Surface* dst, SDL_Rect* r)
 				PIX(0, 2) = SCALE_GETPIX(SRC(0, 2));
 
 				if (x > 0)
+				{
 					PIX(-1, 2) = SCALE_GETPIX(SRC(-1, 2));
+				}
 				else
+				{
 					PIX(-1, 2) = PIX(0, 2);
+				}
 
 				if (x + 2 < w)
 				{
@@ -268,9 +284,13 @@ void SCALE_(BiAdaptAdvFilter)(SDL_Surface* src, SDL_Surface* dst, SDL_Rect* r)
 				PIX(0, -1) = SCALE_GETPIX(SRC(0, -1));
 
 				if (x > 0)
+				{
 					PIX(-1, -1) = SCALE_GETPIX(SRC(-1, -1));
+				}
 				else
+				{
 					PIX(-1, -1) = PIX(0, -1);
+				}
 
 				if (x + 2 < w)
 				{
@@ -360,8 +380,10 @@ void SCALE_(BiAdaptAdvFilter)(SDL_Surface* src, SDL_Surface* dst, SDL_Rect* r)
 					SCALE_SETPIX(dst_p + dlen, PIX(0, 1));
 				}
 				else
+				{
 					SCALE_SETPIX(dst_p + dlen, Scale_Blend_11(
 												   PIX(0, 0), PIX(0, 1)));
+				}
 			}
 
 			dst_p++;
@@ -431,8 +453,10 @@ void SCALE_(BiAdaptAdvFilter)(SDL_Surface* src, SDL_Surface* dst, SDL_Rect* r)
 					SCALE_SETPIX(dst_p, PIX(1, 0));
 				}
 				else
+				{
 					SCALE_SETPIX(dst_p, Scale_Blend_11(
 											PIX(0, 0), PIX(1, 0)));
+				}
 			}
 
 			if (PIX(0, 0) == PIX(1, 1) && PIX(1, 0) == PIX(0, 1))
@@ -453,18 +477,28 @@ void SCALE_(BiAdaptAdvFilter)(SDL_Surface* src, SDL_Surface* dst, SDL_Rect* r)
 					clr = PIX(coord[0], coord[1]);
 
 					if (BIADAPT_CMPYUV_MED(clr, PIX(0, 0)))
+					{
 						cl++;
+					}
 					else if (BIADAPT_CMPYUV_MED(clr, PIX(1, 0)))
+					{
 						cr++;
+					}
 				}
 
 				// least count wins
 				if (cl > cr)
+				{
 					clr = PIX(1, 0);
+				}
 				else if (cr > cl)
+				{
 					clr = PIX(0, 0);
+				}
 				else
+				{
 					clr = Scale_Blend_11(PIX(0, 0), PIX(1, 0));
+				}
 
 				SCALE_SETPIX(dst_p + dlen, clr);
 				continue;

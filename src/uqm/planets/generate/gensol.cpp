@@ -76,7 +76,9 @@ static bool
 GenerateSol_initNpcs(SOLARSYS_STATE* solarSys)
 {
 	if (optHeadStart)
+	{
 		SET_GAME_STATE(PROBE_MESSAGE_DELIVERED, 1);
+	}
 	GLOBAL(BattleGroupRef) = GET_GAME_STATE(URQUAN_PROBE_GRPOFFS);
 	if (GLOBAL(BattleGroupRef) == 0 && !GET_GAME_STATE(PROBE_MESSAGE_DELIVERED))
 	{
@@ -88,9 +90,13 @@ GenerateSol_initNpcs(SOLARSYS_STATE* solarSys)
 	}
 
 	if (!init_probe())
+	{
 		GenerateDefault_initNpcs(solarSys);
+	}
 	else if (SpaceMusicOK)
+	{
 		findRaceSOI();
+	}
 
 	return true;
 }
@@ -181,7 +187,9 @@ GenerateSol_generatePlanets(SOLARSYS_STATE* solarSys)
 				pCurDesc->radius = EARTH_RADIUS * 1550L /* 3937L */ / 100;
 				pCurDesc->NumPlanets = EXTENDED;
 				if (PrimeSeed)
+				{
 					pCurDesc->angle = FULL_CIRCLE - OCTANT;
+				}
 				break;
 		}
 		pCurDesc->orb_speed = FULL_CIRCLE / (365.25 * pow((float)pCurDesc->radius / EARTH_RADIUS, 1.5));
@@ -492,7 +500,9 @@ GenerateSol_generateOrbital(SOLARSYS_STATE* solarSys, PLANET_DESC* world)
 				}
 			}
 			else if (planetNr == 2)
+			{
 				maskAnim = EARTH_MASK_ANIM;
+			}
 
 			LoadPlanet(CaptureDrawable(LoadGraphic(maskAnim)));
 		}
@@ -619,7 +629,9 @@ GenerateSol_generateOrbital(SOLARSYS_STATE* solarSys, PLANET_DESC* world)
 				{
 					case 2: // moon of EARTH: LUNA
 						if (moonNr == 1)
+						{
 							maskAnim = LUNA_MASK_ANIM;
+						}
 						break;
 					case 4: // moons of JUPITER
 						switch (moonNr)
@@ -673,7 +685,9 @@ GenerateSol_generateMinerals(const SOLARSYS_STATE* solarSys,
 									 5, RADIOACTIVE_COMPOUNDS, LIGHT);
 	}
 	else
+	{
 		return GenerateMineralDeposits(&solarSys->SysInfo, whichNode, info);
+	}
 }
 
 
@@ -735,7 +749,9 @@ GenerateSol_pickupEnergy(SOLARSYS_STATE* solarSys, PLANET_DESC* world,
 // Ran into Fwiffo on Pluto
 #define FWIFFO_FRAGS 8
 		if (!KillLanderCrewSeq(FWIFFO_FRAGS, ONE_SECOND / 20))
+		{
 			return false; // lander probably died
+		}
 
 		SET_GAME_STATE(FOUND_PLUTO_SPATHI, 1);
 
@@ -764,7 +780,9 @@ GenerateSol_pickupEnergy(SOLARSYS_STATE* solarSys, PLANET_DESC* world,
 			return true; // picked up
 		}
 		else
+		{
 			return false;
+		}
 	}
 
 	(void)whichNode;
@@ -809,7 +827,9 @@ init_probe(void)
 		return 1;
 	}
 	else
+	{
 		return 0;
+	}
 }
 
 static void
@@ -819,11 +839,15 @@ check_probe(void)
 	IP_GROUP* GroupPtr;
 
 	if (!GLOBAL(BattleGroupRef))
+	{
 		return; // nothing to check
+	}
 
 	hGroup = GetHeadLink(&GLOBAL(ip_group_q));
 	if (!hGroup)
+	{
 		return; // still nothing to check
+	}
 
 	GroupPtr = LockIpGroup(&GLOBAL(ip_group_q), hGroup);
 	// REFORM_GROUP was set in ipdisp.c:ip_group_collision()

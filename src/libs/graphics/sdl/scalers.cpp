@@ -71,9 +71,9 @@ const int YUV_matrix[3][3] =
 		/*         Y      U      V    */
 		/* R */ {9794,  -2764, 8192 },
 		/* G */
-			{19224, -5428, -6853},
+		{19224, -5428, -6853},
 		/* B */
-			{3749,  8192,	 -1339}
+		{3749,  8192,	 -1339}
 };
 #endif
 
@@ -93,24 +93,34 @@ void Scale_Init(void)
 {
 	int i1, i2, i3;
 
-	for (i1 = 0; i1 < 3; i1++)			 // enum R,G,B
-		for (i2 = 0; i2 < 3; i2++)		 // enum Y,U,V
+	for (i1 = 0; i1 < 3; i1++) // enum R,G,B
+	{
+		for (i2 = 0; i2 < 3; i2++) // enum Y,U,V
+		{
 			for (i3 = 0; i3 < 256; i3++) // enum possible channel vals
 			{
 				RGB_to_YUV[i1][i2][i3] =
 					(YUV_matrix[i1][i2] * i3) >> 14;
 			}
+		}
+	}
 
-	for (i1 = 0; i1 < 3; i1++)				// enum R,G,B
-		for (i2 = 0; i2 < 3; i2++)			// enum Y,U,V
+	for (i1 = 0; i1 < 3; i1++) // enum R,G,B
+	{
+		for (i2 = 0; i2 < 3; i2++) // enum Y,U,V
+		{
 			for (i3 = -255; i3 < 256; i3++) // enum possible channel delta vals
 			{
 				dRGB_to_dYUV[i1][i2][i3 + 255] =
 					(YUV_matrix[i1][i2] * i3) >> 14;
 			}
+		}
+	}
 
 	for (i1 = 0; i1 < 32; ++i1)
+	{
 		for (i2 = 0; i2 < 32; ++i2)
+		{
 			for (i3 = 0; i3 < 32; ++i3)
 			{
 				int y, u, v;
@@ -131,6 +141,8 @@ void Scale_Init(void)
 
 				RGB15_to_YUV[(i1 << 10) | (i2 << 5) | i3] = (y << 16) | (u << 8) | v;
 			}
+		}
+	}
 }
 
 
@@ -161,14 +173,22 @@ void Scale_ExpandRect(SDL_Rect* rect, int expansion, const SDL_Rect* limits)
 	}
 
 	if (rect->x + rect->w + expansion <= limits->w)
+	{
 		rect->w += expansion;
+	}
 	else
+	{
 		rect->w = limits->w - rect->x;
+	}
 
 	if (rect->y + rect->h + expansion <= limits->h)
+	{
 		rect->h += expansion;
+	}
 	else
+	{
 		rect->h = limits->h - rect->y;
+	}
 }
 
 
@@ -243,13 +263,21 @@ Scale_PrepPlatform(int flags, const SDL_PixelFormat* fmt)
 	if (Scale_Platform == SCALEPLAT_NULL)
 	{ // Plain C versions
 		if (fmt->Rmask == 0xff000000 && fmt->Bmask == 0x0000ff00)
+		{
 			Scale_Platform = SCALEPLAT_C_RGBA;
+		}
 		else if (fmt->Rmask == 0x00ff0000 && fmt->Bmask == 0x000000ff)
+		{
 			Scale_Platform = SCALEPLAT_C_ARGB;
+		}
 		else if (fmt->Rmask == 0x0000ff00 && fmt->Bmask == 0xff000000)
+		{
 			Scale_Platform = SCALEPLAT_C_BGRA;
+		}
 		else if (fmt->Rmask == 0x000000ff && fmt->Bmask == 0x00ff0000)
+		{
 			Scale_Platform = SCALEPLAT_C_ABGR;
+		}
 		else
 		{ // use slowest default
 			log_add(log_Warning, "Scale_PrepPlatform(): unknown masks "
@@ -259,9 +287,13 @@ Scale_PrepPlatform(int flags, const SDL_PixelFormat* fmt)
 		}
 
 		if (Scale_Platform == SCALEPLAT_C)
+		{
 			log_add(log_Info, "Screen scalers are using slow generic C code");
+		}
 		else
+		{
 			log_add(log_Info, "Screen scalers are using optimized C code");
+		}
 	}
 
 	// Lookup the scaling function

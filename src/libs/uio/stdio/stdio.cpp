@@ -116,7 +116,9 @@ void stdio_close(uio_Handle* handle)
 	{
 		result = _close(fd);
 		if (result == 0)
+		{
 			break;
+		}
 		if (errno != EINTR)
 		{
 			fprintf(stderr, "Warning: Error while closing socket: %s\n",
@@ -438,7 +440,9 @@ stdio_getPDirEntryHandle(const uio_PDirHandle* pDirHandle, const char* name)
 
 	result = uio_GPDir_getPDirEntryHandle(pDirHandle, name);
 	if (result != NULL)
+	{
 		return result;
+	}
 
 #if defined(HAVE_DRIVE_LETTERS) || defined(HAVE_UNC_PATHS)
 	if (xtra->upDir == NULL)
@@ -595,7 +599,9 @@ stdio_openEntries(uio_PDirHandle* pDirHandle)
 		iterator->status = 1;
 	}
 	else
+	{
 		iterator->status = 0;
+	}
 	return iterator;
 }
 #endif
@@ -902,7 +908,9 @@ stdio_GPDirData_delete(void* arg)
 {
 	stdio_GPDirData* gPDirData = (stdio_GPDirData*)arg;
 	if (gPDirData->upDir != NULL)
+	{
 		uio_GPDir_unref(gPDirData->upDir);
+	}
 	stdio_GPDirData_free(gPDirData);
 }
 
@@ -926,6 +934,8 @@ stdio_GPDirData_free(stdio_GPDirData* gPDirData)
 #endif
 	uio_free(gPDirData->name);
 	if (gPDirData->cachedPath != NULL)
+	{
 		uio_free(gPDirData->cachedPath);
+	}
 	uio_free(gPDirData);
 }

@@ -57,9 +57,13 @@ bool GetContextValidRect(RECT* pValidRect, POINT* origin)
 	POINT tempPt;
 
 	if (!pValidRect)
+	{
 		pValidRect = &tempRect;
+	}
 	if (!origin)
+	{
 		origin = &tempPt;
+	}
 
 	// Start with a rect the size of foreground frame
 	pValidRect->corner.x = 0;
@@ -73,7 +77,9 @@ bool GetContextValidRect(RECT* pValidRect, POINT* origin)
 		// bounds we have nothing to draw
 		if (!BoxIntersect(&_pCurContext->ClipRect,
 						  pValidRect, pValidRect))
+		{
 			return (false);
+		}
 
 		// Foreground frame hotspot defines a drawing position offset
 		// WRT the context cliprect
@@ -129,7 +135,9 @@ void DrawBatch(PRIMITIVE* lpBasePrim, PRIM_LINKS PrimLinks,
 			lpPrim = &lpBasePrim[CurIndex];
 			PrimType = GetPrimType(lpPrim);
 			if (!ValidPrimType(PrimType))
+			{
 				continue;
+			}
 			flags = GetPrimFlags(lpPrim);
 
 			lpWorkPrim = lpPrim;
@@ -143,22 +151,30 @@ void DrawBatch(PRIMITIVE* lpBasePrim, PRIM_LINKS PrimLinks,
 					break;
 				case STAMP_PRIM:
 					if (flags & HYPER_TO_QUASI_COLOR)
+					{
 						TFB_Prim_Stamp(&lpWorkPrim->Object.Stamp,
 									   MAKE_DRAW_MODE(DRAW_HYPTOQUAS, TRANSFER_ALPHA),
 									   origin, (bool)(flags & UNSCALED_STAMP));
+					}
 					else
+					{
 						TFB_Prim_Stamp(&lpWorkPrim->Object.Stamp, mode,
 									   origin, (bool)(flags & UNSCALED_STAMP));
+					}
 					break;
 				case STAMPFILL_PRIM:
 					color = GetPrimColor(lpWorkPrim);
 					if (flags & HS_STARMASK)
+					{
 						TFB_Prim_StampFill(&lpWorkPrim->Object.Stamp, color,
 										   MAKE_DRAW_MODE(DRAW_OVERLAY, TRANSFER_ALPHA),
 										   origin, (bool)(flags & UNSCALED_STAMP));
+					}
 					else
+					{
 						TFB_Prim_StampFill(&lpWorkPrim->Object.Stamp, color,
 										   mode, origin, (bool)(flags & UNSCALED_STAMP));
+					}
 					break;
 				case LINE_PRIM:
 					color = GetPrimColor(lpWorkPrim);
@@ -167,7 +183,9 @@ void DrawBatch(PRIMITIVE* lpBasePrim, PRIM_LINKS PrimLinks,
 					break;
 				case TEXT_PRIM:
 					if (!TextRect(&lpWorkPrim->Object.Text, &ClipRect, NULL))
+					{
 						continue;
+					}
 					// ClipRect is relative to origin
 					_text_blt(&ClipRect, &lpWorkPrim->Object.Text, origin);
 					break;
@@ -208,7 +226,9 @@ void ClearScreen(void)
 	RECT ValidRect;
 
 	if (!GraphicsSystemActive())
+	{
 		return;
+	}
 
 	ValidRect.corner = MAKE_POINT(0, 0);
 	ValidRect.extent.width = CanvasWidth;
@@ -251,8 +271,8 @@ void InstaRect(int x, int y, int w, int h, bool scaled)
 {
 	RECT r = {
 		{(COORD)x, (COORD)y},
-		  {(COORD)w, (COORD)h}
-	  };
+		{(COORD)w, (COORD)h}
+	};
 	DrawRectangle(&r, scaled);
 }
 
@@ -272,8 +292,8 @@ void InstaFilledRect(int x, int y, int w, int h)
 {
 	RECT r = {
 		{(COORD)x, (COORD)y},
-		  {(COORD)w, (COORD)h}
-	  };
+		{(COORD)w, (COORD)h}
+	};
 	DrawFilledRectangle(&r);
 }
 

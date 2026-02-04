@@ -170,7 +170,9 @@ listenPortSingle(struct ListenState* listenState, struct addrinfo* info)
 #endif
 		}
 		else
+		{
 			log_add(log_Error, "bind() failed: %s.", strerror(errno));
+		}
 		Socket_close(sock);
 		errno = savedErrno;
 		return NULL;
@@ -213,7 +215,9 @@ listenPortMulti(struct ListenState* listenState, struct addrinfo* info)
 	// Count how many addresses we've got.
 	addrCount = 0;
 	for (addrPtr = info; addrPtr != NULL; addrPtr = addrPtr->ai_next)
+	{
 		addrCount++;
+	}
 
 	// This is where we intend to store the file descriptors of the
 	// listening sockets.

@@ -71,7 +71,9 @@ GenerateUtwig_initNpcs(SOLARSYS_STATE* solarSys)
 		assert(CountLinks(&GLOBAL(npc_built_ship_q)) == 0);
 
 		if (SpaceMusicOK)
+		{
 			findRaceSOI();
+		}
 	}
 	else
 	{
@@ -130,26 +132,36 @@ GenerateUtwig_generatePlanets(SOLARSYS_STATE* solarSys)
 					(RandVal % (MAX_GEN_PLANETS - PByte) + PByte);
 			}
 			else
+			{
 				pSunDesc->NumPlanets = (uqm::BYTE)~0;
+			}
 
 			FillOrbits(solarSys, pSunDesc->NumPlanets,
 					   solarSys->PlanetDesc, false);
 
 			if (StarSeed)
+			{
 				GenerateGasGiantRanged(solarSys);
+			}
 
 			pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
 
 			if (!StarSeed)
+			{
 				pPlanet->data_index = GenerateWorlds(ONLY_GAS);
+			}
 
 			GeneratePlanets(solarSys);
 
 			if (pPlanet->NumPlanets <= pSunDesc->MoonByte)
+			{
 				pPlanet->NumPlanets = pSunDesc->MoonByte + 1;
+			}
 		}
 		else
+		{
 			GenerateDefault_generatePlanets(solarSys);
+		}
 	}
 
 	return true;
@@ -241,7 +253,9 @@ GenerateUtwig_generateOrbital(SOLARSYS_STATE* solarSys,
 			InitCommunication(DRUUGE_CONVERSATION);
 
 			if (GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
+			{
 				return true;
+			}
 
 			{
 				bool DruugeSurvivors;
@@ -254,7 +268,9 @@ GenerateUtwig_generateOrbital(SOLARSYS_STATE* solarSys,
 				GetGroupInfo(GROUPS_RANDOM, GROUP_LOAD_IP);
 
 				if (DruugeSurvivors)
+				{
 					return true;
+				}
 
 				RepairSISBorder();
 				SET_GAME_STATE(BOMB_UNPROTECTED, 1);

@@ -110,9 +110,13 @@ void collide(ELEMENT* ElementPtr0, ELEMENT* ElementPtr1)
 				if (!(ElementPtr0->state_flags & DEFY_PHYSICS))
 				{
 					if (ElementPtr0->turn_wait < COLLISION_TURN_WAIT)
+					{
 						ElementPtr0->turn_wait += COLLISION_TURN_WAIT;
+					}
 					if (ElementPtr0->thrust_wait < COLLISION_THRUST_WAIT)
+					{
 						ElementPtr0->thrust_wait += COLLISION_THRUST_WAIT;
+					}
 				}
 			}
 
@@ -123,16 +127,22 @@ void collide(ELEMENT* ElementPtr0, ELEMENT* ElementPtr1)
 
 			GetCurrentVelocityComponents(&ElementPtr0->velocity, &dx0, &dy0);
 			if (dx0 < 0)
+			{
 				dx0 = -dx0;
+			}
 			if (dy0 < 0)
+			{
 				dy0 = -dy0;
+			}
 
 			if (VELOCITY_TO_WORLD(dx0 + dy0) < SCALED_ONE)
+			{
 				SetVelocityComponents(&ElementPtr0->velocity,
 									  COSINE(ImpactAngle0,
 											 WORLD_TO_VELOCITY(SCALED_ONE) - 1),
 									  SINE(ImpactAngle0,
 										   WORLD_TO_VELOCITY(SCALED_ONE) - 1));
+			}
 		}
 
 		if (!GRAVITY_MASS(ElementPtr1->mass_points + 1))
@@ -147,9 +157,13 @@ void collide(ELEMENT* ElementPtr0, ELEMENT* ElementPtr1)
 				if (!(ElementPtr1->state_flags & DEFY_PHYSICS))
 				{
 					if (ElementPtr1->turn_wait < COLLISION_TURN_WAIT)
+					{
 						ElementPtr1->turn_wait += COLLISION_TURN_WAIT;
+					}
 					if (ElementPtr1->thrust_wait < COLLISION_THRUST_WAIT)
+					{
 						ElementPtr1->thrust_wait += COLLISION_THRUST_WAIT;
+					}
 				}
 			}
 
@@ -160,16 +174,22 @@ void collide(ELEMENT* ElementPtr0, ELEMENT* ElementPtr1)
 
 			GetCurrentVelocityComponents(&ElementPtr1->velocity, &dx1, &dy1);
 			if (dx1 < 0)
+			{
 				dx1 = -dx1;
+			}
 			if (dy1 < 0)
+			{
 				dy1 = -dy1;
+			}
 
 			if (VELOCITY_TO_WORLD(dx1 + dy1) < SCALED_ONE)
+			{
 				SetVelocityComponents(&ElementPtr1->velocity,
 									  COSINE(ImpactAngle1,
 											 WORLD_TO_VELOCITY(SCALED_ONE) - 1),
 									  SINE(ImpactAngle1,
 										   WORLD_TO_VELOCITY(SCALED_ONE) - 1));
+			}
 		}
 #ifdef DEBUG_COLLIDE
 		GetCurrentVelocityComponents(&ElementPtr0->velocity, &dx0, &dy0);

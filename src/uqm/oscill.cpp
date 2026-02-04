@@ -65,7 +65,9 @@ uqm::BYTE
 ScaleHeightByVolume(uint8 scope_data, bool toScale)
 {
 	if (!toScale || musicVolume == NORMAL_VOLUME)
+	{
 		return scope_data;
+	}
 	else
 	{
 		float scale = (float)musicVolume / NORMAL_VOLUME;
@@ -156,7 +158,9 @@ void DrawOscilloscope(void)
 	uqm::BYTE scope_data[128];
 
 	if (oscillDisabled)
+	{
 		return;
+	}
 
 	// log_add (log_Debug, "(size_t)scopeSize.width %lu,
 	//		sizeof (scope_data) %lu", (size_t)scopeSize.width,
@@ -177,7 +181,9 @@ void DrawOscilloscope(void)
 		DrawOscilloscopeLines(&s, scope_data, true, true);
 	}
 	else
+	{
 		DrawOscilloscopeLines(&s, NULL, false, false);
+	}
 
 	// draw the final scope image to screen
 	s.origin.x = 0;
@@ -245,7 +251,9 @@ void DrawSlider(void)
 	static int last_offs = -1;
 
 	if (sliderDisabled || (!usingSpeech && optSmoothScroll == OPT_PC))
+	{
 		return;
+	}
 
 	offs = GetTrackPosition(sliderSpace);
 	if (offs != last_offs || sliderChanged)

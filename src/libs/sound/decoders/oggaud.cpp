@@ -208,9 +208,13 @@ ova_Open(THIS_PTR, uio_DirHandle* dir, const char* filename)
 #endif /* OVCODEC_TREMOR */
 
 	if (vinfo->channels == 1)
+	{
 		This->format = ova_formats->mono16;
+	}
 	else
+	{
 		This->format = ova_formats->stereo16;
+	}
 
 	This->filename_hash = crc32b(filename);
 
@@ -242,9 +246,13 @@ ova_Decode(THIS_PTR, void* buf, sint32 bufsize)
 #endif /* OVCODEC_TREMOR */
 
 	if (rc < 0)
+	{
 		ova->last_error = rc;
+	}
 	else
+	{
 		ova->last_error = 0;
+	}
 
 	return rc;
 }
@@ -262,7 +270,9 @@ ova_Seek(THIS_PTR, uint32 pcm_pos)
 		return (uint32)ov_pcm_tell(&ova->vf);
 	}
 	else
+	{
 		return pcm_pos;
+	}
 }
 
 static uint32

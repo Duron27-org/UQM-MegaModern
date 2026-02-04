@@ -173,7 +173,9 @@ match_errorString(match_MatchContext* context, match_Result result)
 	}
 
 	if (context == NULL)
+	{
 		return "Unknown match-type specific error.";
+	}
 	// We can't be any more specific if no 'context' is supplied.
 
 	switch (context->type)
@@ -242,7 +244,9 @@ match_matchPatternOnce(const char* pattern, match_MatchType type,
 
 	result = match_prepareContext(pattern, &context, type);
 	if (result != match_OK)
+	{
 		goto out;
+	}
 
 	result = match_matchPattern(context, string);
 
@@ -328,7 +332,9 @@ match_matchPrefix(match_PrefixContext* context, const char* string)
 			return match_NOMATCH;
 		}
 		if (*patPtr != *string)
+		{
 			return match_NOMATCH;
+		}
 		patPtr++;
 		string++;
 	}
@@ -563,7 +569,9 @@ match_matchRegex(match_RegexContext* context, const char* string)
 	}
 
 	if (std::regex_search(string, context->native))
+	{
 		return match_MATCH;
+	}
 
 	return match_NOMATCH;
 }
@@ -575,7 +583,9 @@ match_errorStringRegex(match_RegexContext* context, int errorCode)
 	constexpr size_t errorStringLength {sizeof(err)};
 
 	if (context->errorString != NULL)
+	{
 		uio_free(context->errorString);
+	}
 
 	context->errorString = (char*)uio_malloc(errorStringLength);
 	strncpy(context->errorString, err, errorStringLength);
@@ -588,7 +598,9 @@ void match_freeRegex(match_RegexContext* context)
 {
 
 	if (context->errorString)
+	{
 		uio_free(context->errorString);
+	}
 	match_freeRegexContext(context);
 }
 

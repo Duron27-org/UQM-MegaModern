@@ -284,7 +284,9 @@ void HibernateThread(TimePeriod timePeriod)
 {
 #ifdef DEBUG_SLEEP
 	if (SDL_ThreadID() == mainThreadId)
+	{
 		log_add(log_Debug, "HibernateThread called from main thread.\n");
+	}
 #endif /* DEBUG_SLEEP */
 
 	NativeSleepThread(timePeriod);
@@ -294,8 +296,10 @@ void HibernateThreadUntil(TimeCount wakeTime)
 {
 #ifdef DEBUG_SLEEP
 	if (SDL_ThreadID() == mainThreadId)
+	{
 		log_add(log_Debug, "HibernateThreadUntil called from main "
 						   "thread.\n");
+	}
 #endif /* DEBUG_SLEEP */
 
 	NativeSleepThreadUntil(wakeTime);
@@ -307,8 +311,10 @@ void SleepThread(TimePeriod timePeriod)
 
 #ifdef DEBUG_SLEEP
 	if (SDL_ThreadID() != mainThreadId)
+	{
 		log_add(log_Debug, "SleepThread called from non-main "
 						   "thread.\n");
+	}
 #endif /* DEBUG_SLEEP */
 
 	now = GetTimeCounter();
@@ -320,8 +326,10 @@ void SleepThreadUntil(TimeCount wakeTime)
 {
 #ifdef DEBUG_SLEEP
 	if (SDL_ThreadID() != mainThreadId)
+	{
 		log_add(log_Debug, "SleepThreadUntil called from non-main "
 						   "thread.\n");
+	}
 #endif /* DEBUG_SLEEP */
 
 	for (;;)
@@ -334,13 +342,17 @@ void SleepThreadUntil(TimeCount wakeTime)
 
 		now = GetTimeCounter();
 		if (wakeTime <= now)
+		{
 			return;
+		}
 
 		nextTimeMs = Async_timeBeforeNextMs();
 		nextTime = (nextTimeMs / 1000) * ONE_SECOND + ((nextTimeMs % 1000) * ONE_SECOND / 1000);
 		// Overflow-safe conversion.
 		if (wakeTime < nextTime)
+		{
 			nextTime = wakeTime;
+		}
 
 		NativeSleepThreadUntil(nextTime);
 	}

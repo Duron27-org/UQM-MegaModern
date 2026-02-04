@@ -191,7 +191,9 @@ crystal_preprocess(ELEMENT* ElementPtr)
 
 	GetElementStarShip(ElementPtr, &StarShipPtr);
 	if (StarShipPtr->cur_status_flags & WEAPON)
+	{
 		++ElementPtr->life_span; /* keep it going while key pressed */
+	}
 	else
 	{
 		ElementPtr->life_span = 1;
@@ -204,7 +206,9 @@ static void
 animate(ELEMENT* ElementPtr)
 {
 	if (ElementPtr->turn_wait > 0)
+	{
 		--ElementPtr->turn_wait;
+	}
 	else
 	{
 		ElementPtr->next.image.frame =
@@ -253,7 +257,9 @@ doggy_preprocess(ELEMENT* ElementPtr)
 	GetElementStarShip(ElementPtr, &StarShipPtr);
 	++StarShipPtr->special_counter;
 	if (ElementPtr->thrust_wait > 0) /* could be non-zero after a collision */
+	{
 		--ElementPtr->thrust_wait;
+	}
 	else
 	{
 		uqm::COUNT facing, orig_facing;
@@ -263,7 +269,9 @@ doggy_preprocess(ELEMENT* ElementPtr)
 			NORMALIZE_FACING(ANGLE_TO_FACING(
 				GetVelocityTravelAngle(&ElementPtr->velocity)));
 		if ((delta_facing = TrackShip(ElementPtr, &facing)) < 0)
+		{
 			facing = NORMALIZE_FACING(TFB_Random());
+		}
 		else
 		{
 			ELEMENT* ShipPtr;
@@ -278,17 +286,23 @@ doggy_preprocess(ELEMENT* ElementPtr)
 			if (delta_facing > ANGLE_TO_FACING(HALF_CIRCLE - OCTANT) && delta_facing < ANGLE_TO_FACING(HALF_CIRCLE + OCTANT))
 			{
 				if (delta_facing >= ANGLE_TO_FACING(HALF_CIRCLE))
+				{
 					facing -= ANGLE_TO_FACING(QUADRANT);
+				}
 				else
+				{
 					facing += ANGLE_TO_FACING(QUADRANT);
+				}
 			}
 
 			facing = NORMALIZE_FACING(facing);
 		}
 
 		if (facing != orig_facing)
+		{
 			SetVelocityVector(&ElementPtr->velocity,
 							  DOGGY_SPEED, facing);
+		}
 	}
 }
 
@@ -333,12 +347,18 @@ doggy_collision(ELEMENT* ElementPtr0, POINT* pPt0,
 					 ElementPtr0);
 		GetElementStarShip(ElementPtr1, &StarShipPtr);
 		if (StarShipPtr->RaceDescPtr->ship_info.energy_level < ENERGY_DRAIN)
+		{
 			DeltaEnergy(ElementPtr1, -StarShipPtr->RaceDescPtr->ship_info.energy_level);
+		}
 		else
+		{
 			DeltaEnergy(ElementPtr1, -ENERGY_DRAIN);
+		}
 	}
 	if (ElementPtr0->thrust_wait <= COLLISION_THRUST_WAIT)
+	{
 		ElementPtr0->thrust_wait += COLLISION_THRUST_WAIT << 1;
+	}
 }
 
 static void
@@ -423,7 +443,9 @@ chenjesu_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 					   &EnemyStarShipPtr->RaceDescPtr->cyborg_control)
 					   >= chooseIfHd(LONG_RANGE_WEAPON, LONG_RANGE_WEAPON_HD) * 3 / 4
 				&& (EnemyStarShipPtr->RaceDescPtr->ship_info.ship_flags & SEEKING_WEAPON)))
+		{
 			lpEvalDesc->MoveState = PURSUE;
+		}
 	}
 
 	if (StarShipPtr->special_counter == 1
@@ -502,7 +524,9 @@ chenjesu_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 							&& ((ObjectsOfConcern[ENEMY_WEAPON_INDEX].ObjectPtr
 								 && ObjectsOfConcern[ENEMY_WEAPON_INDEX].which_turn > 8)
 								|| !(ObjectsOfConcern[ENEMY_WEAPON_INDEX].ObjectPtr)))
+						{
 							StarShipPtr->weapon_counter = 10;
+						}
 					}
 					else if (StarShipPtr->weapon_counter == 0)
 					{
@@ -525,7 +549,9 @@ chenjesu_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 				StarShipPtr->ship_input_state &= ~WEAPON;
 				old_dist[ShipPtr->playerNr] = (uqm::DWORD)~0;
 				if (lpEvalDesc == &ObjectsOfConcern[ENEMY_WEAPON_INDEX])
+				{
 					StarShipPtr->weapon_counter = 3;
+				}
 			}
 			else if (StarShipPtr->weapon_counter == 0
 					 && ship_weapons(ShipPtr, lpEvalDesc->ObjectPtr, FRAGMENT_RANGE / 2))
@@ -581,7 +607,9 @@ chenjesu_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 		if (lpEvalDesc->ObjectPtr
 			&& StarShipPtr->RaceDescPtr->ship_info.energy_level <= SPECIAL_ENERGY_COST
 			&& !(StarShipPtr->ship_input_state & WEAPON))
+		{
 			StarShipPtr->ship_input_state |= SPECIAL;
+		}
 	}
 }
 
@@ -647,11 +675,15 @@ chenjesu_preprocess(ELEMENT* ElementPtr)
 	if (StarShipPtr->special_counter > 1) /* only when STANDARD
 											 * computer opponent
 											 */
+	{
 		StarShipPtr->special_counter += MAX_DOGGIES;
+	}
 	if (StarShipPtr->cur_status_flags
 		& StarShipPtr->old_status_flags
 		& WEAPON)
+	{
 		++StarShipPtr->weapon_counter;
+	}
 }
 
 RACE_DESC*

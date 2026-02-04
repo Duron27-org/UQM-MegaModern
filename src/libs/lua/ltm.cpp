@@ -60,7 +60,9 @@ const TValue* luaT_gettm(Table* events, TMS event, TString* ename)
 		return NULL;
 	}
 	else
+	{
 		return tm;
+	}
 }
 
 

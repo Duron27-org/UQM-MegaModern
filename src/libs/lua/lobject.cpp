@@ -36,7 +36,9 @@ int luaO_int2fb(unsigned int x)
 {
 	int e = 0; /* exponent */
 	if (x < 8)
+	{
 		return x;
+	}
 	while (x >= 0x10)
 	{
 		x = (x + 1) >> 1;
@@ -51,9 +53,13 @@ int luaO_fb2int(int x)
 {
 	int e = (x >> 3) & 0x1f;
 	if (e == 0)
+	{
 		return x;
+	}
 	else
+	{
 		return ((x & 7) + 8) << (e - 1);
+	}
 }
 
 
@@ -107,9 +113,13 @@ lua_Number luaO_arith(int op, lua_Number v1, lua_Number v2)
 int luaO_hexavalue(int c)
 {
 	if (lisdigit(c))
+	{
 		return c - '0';
+	}
 	else
+	{
 		return ltolower(c) - 'a' + 10;
+	}
 }
 
 
@@ -126,7 +136,9 @@ static int isneg(const char** s)
 		return 1;
 	}
 	else if (**s == '+')
+	{
 		(*s)++;
+	}
 	return 0;
 }
 
@@ -153,19 +165,25 @@ static lua_Number lua_strx2number(const char* s, char** endptr)
 	int neg = 0;			  /* 1 if number is negative */
 	*endptr = cast(char*, s); /* nothing is valid yet */
 	while (lisspace(cast_uchar(*s)))
-		s++;												  /* skip initial spaces */
+	{
+		s++; /* skip initial spaces */
+	}
 	neg = isneg(&s);										  /* check signal */
 	if (!(*s == '0' && (*(s + 1) == 'x' || *(s + 1) == 'X'))) /* check '0x' */
-		return 0.0;											  /* invalid format (no '0x') */
-	s += 2;													  /* skip '0x' */
-	r = readhexa(&s, r, &i);								  /* read integer part */
+	{
+		return 0.0; /* invalid format (no '0x') */
+	}
+	s += 2;					 /* skip '0x' */
+	r = readhexa(&s, r, &i); /* read integer part */
 	if (*s == '.')
 	{
 		s++;					 /* skip dot */
 		r = readhexa(&s, r, &e); /* read fractional part */
 	}
 	if (i == 0 && e == 0)
-		return 0.0;			  /* invalid format (no digit) */
+	{
+		return 0.0; /* invalid format (no digit) */
+	}
 	e *= -4;				  /* each fractional digit divides value by 2^-4 */
 	*endptr = cast(char*, s); /* valid up to here */
 	if (*s == 'p' || *s == 'P')
@@ -175,17 +193,25 @@ static lua_Number lua_strx2number(const char* s, char** endptr)
 		s++;			  /* skip 'p' */
 		neg1 = isneg(&s); /* signal */
 		if (!lisdigit(cast_uchar(*s)))
-			goto ret;					 /* must have at least one digit */
+		{
+			goto ret; /* must have at least one digit */
+		}
 		while (lisdigit(cast_uchar(*s))) /* read exponent */
+		{
 			exp1 = exp1 * 10 + *(s++) - '0';
+		}
 		if (neg1)
+		{
 			exp1 = -exp1;
+		}
 		e += exp1;
 	}
 	*endptr = cast(char*, s); /* valid up to here */
 ret:
 	if (neg)
+	{
 		r = -r;
+	}
 	return l_mathop(ldexp)(r, e);
 }
 
@@ -196,15 +222,25 @@ int luaO_str2d(const char* s, size_t len, lua_Number* result)
 {
 	char* endptr;
 	if (strpbrk(s, "nN")) /* reject 'inf' and 'nan' */
+	{
 		return 0;
+	}
 	else if (strpbrk(s, "xX")) /* hexa? */
+	{
 		*result = lua_strx2number(s, &endptr);
+	}
 	else
+	{
 		*result = lua_str2number(s, &endptr);
+	}
 	if (endptr == s)
+	{
 		return 0; /* nothing recognized */
+	}
 	while (lisspace(cast_uchar(*endptr)))
+	{
 		endptr++;
+	}
 	return (endptr == s + len); /* OK if no trailing characters */
 }
 
@@ -223,7 +259,9 @@ const char* luaO_pushvfstring(lua_State* L, const char* fmt, va_list argp)
 	{
 		const char* e = strchr(fmt, '%');
 		if (e == NULL)
+		{
 			break;
+		}
 		luaD_checkstack(L, 2); /* fmt + item */
 		pushstr(L, fmt, e - fmt);
 		switch (*(e + 1))
@@ -232,7 +270,9 @@ const char* luaO_pushvfstring(lua_State* L, const char* fmt, va_list argp)
 				{
 					const char* s = va_arg(argp, char*);
 					if (s == NULL)
+					{
 						s = "(null)";
+					}
 					pushstr(L, s, strlen(s));
 					break;
 				}
@@ -278,7 +318,9 @@ const char* luaO_pushvfstring(lua_State* L, const char* fmt, va_list argp)
 	luaD_checkstack(L, 1);
 	pushstr(L, fmt, strlen(fmt));
 	if (n > 0)
+	{
 		luaV_concat(L, n + 1);
+	}
 	return svalue(L->top - 1);
 }
 
@@ -309,7 +351,9 @@ void luaO_chunkid(char* out, const char* source, size_t bufflen)
 	if (*source == '=')
 	{					  /* 'literal' source */
 		if (l <= bufflen) /* small enough? */
+		{
 			memcpy(out, source + 1, l * sizeof(char));
+		}
 		else
 		{ /* truncate it */
 			addstr(out, source + 1, bufflen - 1);
@@ -319,7 +363,9 @@ void luaO_chunkid(char* out, const char* source, size_t bufflen)
 	else if (*source == '@')
 	{					  /* file name */
 		if (l <= bufflen) /* small enough? */
+		{
 			memcpy(out, source + 1, l * sizeof(char));
+		}
 		else
 		{ /* add '...' before rest of name */
 			addstr(out, RETS, LL(RETS));
@@ -339,9 +385,13 @@ void luaO_chunkid(char* out, const char* source, size_t bufflen)
 		else
 		{
 			if (nl != NULL)
+			{
 				l = nl - source; /* stop at first newline */
+			}
 			if (l > bufflen)
+			{
 				l = bufflen;
+			}
 			addstr(out, source, l);
 			addstr(out, RETS, LL(RETS));
 		}

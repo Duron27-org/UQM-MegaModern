@@ -74,11 +74,15 @@ GenerateZoqFotPikScout_reinitNpcs(SOLARSYS_STATE* solarSys)
 	GenerateDefault_reinitNpcs(solarSys);
 
 	if (!GLOBAL(BattleGroupRef))
+	{
 		return true; // nothing to check
+	}
 
 	hGroup = GetHeadLink(&GLOBAL(ip_group_q));
 	if (!hGroup)
+	{
 		return true; // still nothing to check
+	}
 
 	GroupPtr = LockIpGroup(&GLOBAL(ip_group_q), hGroup);
 	// REFORM_GROUP was set in ipdisp.c:ip_group_collision()

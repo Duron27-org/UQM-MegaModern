@@ -119,7 +119,9 @@ uio_fopen(uio_DirHandle* dir, const char* path, const char* mode)
 int uio_fclose(uio_Stream* stream)
 {
 	if (stream->operation == uio_StreamOperation_write)
+	{
 		uio_Stream_flushWriteBuffer(stream);
+	}
 	uio_close(stream->handle);
 	uio_Stream_delete(stream);
 	return 0;
@@ -181,7 +183,9 @@ uio_fread(void* buf, size_t size, size_t nmemb, uio_Stream* stream)
 
 out:
 	if (bytesToRead == 0)
+	{
 		return nmemb;
+	}
 	return bytesRead / size;
 }
 
@@ -368,7 +372,9 @@ int uio_fputs(const char* s, uio_Stream* stream)
 
 	result = uio_fwrite(s, strlen(s), 1, stream);
 	if (result != 1)
+	{
 		return EOF;
+	}
 	return 0;
 }
 
@@ -479,11 +485,15 @@ uio_fwrite(const void* buf, size_t size, size_t nmemb, uio_Stream* stream)
 	{
 		stream->status = uio_Stream_STATUS_ERROR;
 		if (bytesWritten == -1)
+		{
 			return 0;
+		}
 	}
 
 	if (bytesWritten == bytesToWrite)
+	{
 		return nmemb;
+	}
 	return (size_t)bytesWritten / size;
 }
 
@@ -612,7 +622,9 @@ uio_Stream_fillReadBuffer(uio_Stream* stream)
 	numRead = uio_read(stream->handle, stream->buf,
 					   uio_Stream_BLOCK_SIZE);
 	if (numRead == -1)
+	{
 		return -1;
+	}
 	stream->dataStart = stream->buf;
 	stream->dataEnd = stream->buf + numRead;
 	return 0;

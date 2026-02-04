@@ -53,9 +53,13 @@ static bool
 GenerateRainbowWorld_initNpcs(SOLARSYS_STATE* solarSys)
 {
 	if (DIF_HARD && GET_GAME_STATE(SLYLANDRO_MULTIPLIER) > 0)
+	{
 		GenerateSlylandro(solarSys);
+	}
 	else
+	{
 		GenerateDefault_initNpcs(solarSys);
+	}
 
 	return true;
 }
@@ -81,9 +85,13 @@ GenerateRainbowWorld_generatePlanets(SOLARSYS_STATE* solarSys)
 		pPlanet->radius = EARTH_RADIUS * 50L / 100;
 		angle = ARCTAN(pPlanet->location.x, pPlanet->location.y);
 		if (angle <= QUADRANT)
+		{
 			angle += QUADRANT;
+		}
 		else if (angle >= FULL_CIRCLE - QUADRANT)
+		{
 			angle -= QUADRANT;
+		}
 		pPlanet->location.x = COSINE(angle, pPlanet->radius);
 		pPlanet->location.y = SINE(angle, pPlanet->radius);
 		ComputeSpeed(pPlanet, false, 1);
@@ -163,6 +171,8 @@ GenerateSlylandro(SOLARSYS_STATE* solarSys)
 
 		// Normalize angle
 		if (angle > FULL_CIRCLE)
+		{
 			angle -= FULL_CIRCLE;
+		}
 	}
 }

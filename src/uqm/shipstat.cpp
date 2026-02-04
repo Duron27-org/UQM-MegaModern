@@ -34,17 +34,25 @@ void DrawCrewFuelString(COORD y, uqm::SIZE state)
 	{
 		Stamp.origin.x = CREW_XOFFS + RES_SCALE(RES_DESCALE(STAT_WIDTH) >> 1) + RES_SCALE(5);
 		if (optWhichMenu == OPT_PC)
+		{
 			Stamp.frame = SetAbsFrameIndex(StatusFrame, 4);
+		}
 		else
+		{
 			Stamp.frame = SetAbsFrameIndex(StatusFrame, 0);
+		}
 		DrawStamp(&Stamp);
 	}
 
 	Stamp.origin.x = ENERGY_XOFFS + RES_SCALE(RES_DESCALE(STAT_WIDTH) >> 1) - RES_SCALE(4);
 	if (optWhichMenu == OPT_PC)
+	{
 		Stamp.frame = SetAbsFrameIndex(StatusFrame, 5);
+	}
 	else
+	{
 		Stamp.frame = SetAbsFrameIndex(StatusFrame, 1);
+	}
 	if (state >= 0)
 	{
 		if (IS_HD)
@@ -186,7 +194,9 @@ void InitShipStatus(SHIP_INFO* SIPtr, STARSHIP* StarShipPtr, RECT* pClipRect, bo
 	BatchGraphics();
 
 	if (!inMeleeMenu)
+	{
 		OutlineShipStatus(y);
+	}
 	ClearShipStatus(y);
 
 	Stamp.origin.x = (STATUS_WIDTH >> 1);
@@ -199,9 +209,13 @@ void InitShipStatus(SHIP_INFO* SIPtr, STARSHIP* StarShipPtr, RECT* pClipRect, bo
 
 #define MIN(a, b) (((a) <= (b)) ? (a) : (b))
 		if (!IS_HD)
+		{
 			crew_height = ((MIN(SIPtr->max_crew, MAX_CREW_SIZE) + 1) & ~1) + 1;
+		}
 		else
+		{
 			crew_height = ((MIN(SIPtr->max_crew, MAX_CREW_SIZE) + 1) * RES_SCALE(1));
+		}
 		energy_height = (((SIPtr->max_energy + 1) >> 1) << RES_TRP(1)) + RES_SCALE(1);
 #undef MIN
 
@@ -321,7 +335,9 @@ void InitShipStatus(SHIP_INFO* SIPtr, STARSHIP* StarShipPtr, RECT* pClipRect, bo
 							   (uqm::CHAR_T*)GetStringAddress(locString));
 
 				if (is3DO(optWhichMenu))
+				{
 					replaceChar(buf, UNICHAR_SPACE, UNICHAR_TAB);
+				}
 
 				Text.pStr = buf;
 				Text.CharCount = (uqm::COUNT)utf8StringCount(buf);
@@ -375,7 +391,9 @@ void DeltaStatistics(SHIP_INFO* ShipInfoPtr, COORD y_offs,
 	RECT r;
 
 	if (crew_delta == 0 && energy_delta == 0)
+	{
 		return;
+	}
 
 	x = 0;
 	// Y coordinates for the crew and energy rectangles

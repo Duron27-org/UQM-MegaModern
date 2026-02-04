@@ -301,7 +301,9 @@ void DrawPlanetSurfaceBorder(void)
 		DrawBorder(LANDER_DOS_FRAME);
 	}
 	else
+	{
 		DrawBorder(LANDER_3DO_FRAME);
+	}
 
 	UnbatchGraphics();
 
@@ -461,7 +463,9 @@ DrawOrbitalDisplay(DRAW_ORBITAL_MODE Mode)
 		DrawOrbitMapGraphic();
 
 		if (isPC(optSuperPC))
+		{
 			InitPCLander(true);
+		}
 	}
 	else if (Mode == DRAW_ORBITAL_FULL)
 	{
@@ -474,14 +478,18 @@ DrawOrbitalDisplay(DRAW_ORBITAL_MODE Mode)
 		DrawMenuStateStrings(PM_SCAN, STARMAP);
 	}
 	else
+	{
 		DrawMenuStateStrings(PM_SCAN, SCAN);
+	}
 
 	if (Mode != DRAW_ORBITAL_WAIT)
 	{
 		SetContext(GetScanContext(NULL));
 		DrawPlanet(0, BLACK_COLOR);
 		if (isPC(optSuperPC))
+		{
 			InitPCLander(false);
+		}
 	}
 
 	if (Mode != DRAW_ORBITAL_UPDATE)
@@ -511,7 +519,9 @@ void LoadPlanet(FRAME SurfDefFrame)
 
 #ifdef DEBUG
 	if (disableInteractivity)
+	{
 		return;
+	}
 #endif
 
 	assert(pSolarSysState->InOrbit && !pSolarSysState->TopoFrame);
@@ -526,7 +536,9 @@ void LoadPlanet(FRAME SurfDefFrame)
 	if (WaitMode)
 	{
 		if (optScanSphere == 1)
+		{
 			GetPlanetTopography(pPlanetDesc, SurfDefFrame);
+		}
 		DrawOrbitalDisplay(DRAW_ORBITAL_WAIT);
 	}
 
@@ -536,7 +548,9 @@ void LoadPlanet(FRAME SurfDefFrame)
 	MaskLanderGraphics();
 
 	if (isPC(optScrTrans))
+	{
 		SleepThreadUntil(sleep);
+	}
 
 	if (!PLRPlaying((MUSIC_REF)~0))
 	{
@@ -546,7 +560,9 @@ void LoadPlanet(FRAME SurfDefFrame)
 	if (WaitMode)
 	{
 		if (is3DO(optScrTrans) || optScanSphere == 1)
+		{
 			ZoomInPlanetSphere();
+		}
 		DrawOrbitalDisplay(DRAW_ORBITAL_UPDATE);
 	}
 	else
@@ -635,15 +651,21 @@ DoPlanetOrbit(MENU_STATE* pMS)
 
 	if ((GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
 		|| GLOBAL_SIS(CrewEnlisted) == (uqm::COUNT)~0)
+	{
 		return false;
+	}
 
 	// XXX: pMS actually refers to pSolarSysState->MenuState
 	handled = DoMenuChooser(pMS, PM_SCAN);
 	if (handled)
+	{
 		return true;
+	}
 
 	if (!select)
+	{
 		return true;
+	}
 
 	SetFlashRect(NULL, false);
 
@@ -673,7 +695,9 @@ DoPlanetOrbit(MENU_STATE* pMS)
 			break;
 		case GAME_MENU:
 			if (!GameOptions())
+			{
 				return false; // abort or load
+			}
 			break;
 		case STARMAP:
 			{
@@ -687,7 +711,9 @@ DoPlanetOrbit(MENU_STATE* pMS)
 
 				AutoPilotSet = StarMap();
 				if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+				{
 					return false;
+				}
 
 				// Reactivate planet rotation
 				SetInputCallback(oldCallback);
@@ -708,9 +734,13 @@ DoPlanetOrbit(MENU_STATE* pMS)
 		if (select)
 		{ // 3DO menu jumps to NAVIGATE after a successful submenu run
 			if (optWhichMenu != OPT_PC)
+			{
 				pMS->CurState = NAVIGATION;
+			}
 			if (pMS->CurState != STARMAP)
+			{
 				DrawMenuStateStrings(PM_SCAN, pMS->CurState);
+			}
 		}
 		SetFlashRect(SFR_MENU_3DO, false);
 	}
@@ -722,7 +752,9 @@ static void
 on_input_frame(void)
 {
 	if (!(GLOBAL(CurrentActivity) & CHECK_ABORT))
+	{
 		RotatePlanetSphere(true, NULL);
+	}
 }
 
 void PlanetOrbitMenu(void)
@@ -745,5 +777,7 @@ void PlanetOrbitMenu(void)
 
 	SetFlashRect(NULL, false);
 	if (!(GLOBAL(CurrentActivity) & CHECK_LOAD))
+	{
 		DrawMenuStateStrings(PM_STARMAP, -NAVIGATION);
+	}
 }

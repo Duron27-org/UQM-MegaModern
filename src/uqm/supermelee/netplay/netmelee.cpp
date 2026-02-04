@@ -80,13 +80,19 @@ bool forEachConnectedPlayer(ForEachConnectionCallback callback, void* arg)
 	{
 		NetConnection* conn = netConnections[player];
 		if (conn == NULL)
+		{
 			continue;
+		}
 
 		if (!NetConnection_isConnected(conn))
+		{
 			continue;
+		}
 
 		if (!(*callback)(conn, arg))
+		{
 			return false;
+		}
 	}
 	return true;
 }
@@ -100,7 +106,9 @@ void closeAllConnections(void)
 		NetConnection* conn = netConnections[player];
 
 		if (conn != NULL)
+		{
 			closePlayerNetworkConnection(player);
+		}
 	}
 }
 
@@ -113,7 +121,9 @@ void closeDisconnectedConnections(void)
 		NetConnection* conn = netConnections[player];
 
 		if (conn != NULL && !NetConnection_isConnected(conn))
+		{
 			closePlayerNetworkConnection(player);
+		}
 	}
 }
 
@@ -181,7 +191,9 @@ void netInputBlocking(uint32 timeoutMs)
 
 	nextAsyncMs = Async_timeBeforeNextMs();
 	if (nextAsyncMs < timeoutMs)
+	{
 		timeoutMs = nextAsyncMs;
+	}
 
 	netInputAux(timeoutMs);
 }
@@ -202,14 +214,20 @@ void flushPacketQueues(void)
 
 		conn = netConnections[player];
 		if (conn == NULL)
+		{
 			continue;
+		}
 
 		if (!NetConnection_isConnected(conn))
+		{
 			continue;
+		}
 
 		flushStatus = flushPacketQueue(conn);
 		if (flushStatus == -1 && errno != EAGAIN && errno != EWOULDBLOCK)
+		{
 			closePlayerNetworkConnection(player);
+		}
 	}
 }
 
@@ -221,10 +239,14 @@ void confirmConnections(void)
 	{
 		NetConnection* conn = netConnections[player];
 		if (conn == NULL)
+		{
 			continue;
+		}
 
 		if (!NetConnection_isConnected(conn))
+		{
 			continue;
+		}
 
 		Netplay_confirm(conn);
 	}
@@ -238,10 +260,14 @@ void cancelConfirmations(void)
 	{
 		NetConnection* conn = netConnections[player];
 		if (conn == NULL)
+		{
 			continue;
+		}
 
 		if (!NetConnection_isConnected(conn))
+		{
 			continue;
+		}
 
 		Netplay_cancelConfirmation(conn);
 	}
@@ -255,10 +281,14 @@ void connectionsLocalReady(NetConnection_ReadyCallback callback, void* arg)
 	{
 		NetConnection* conn = netConnections[player];
 		if (conn == NULL)
+		{
 			continue;
+		}
 
 		if (!NetConnection_isConnected(conn))
+		{
 			continue;
+		}
 
 		Netplay_localReady(conn, callback, arg, true);
 	}
@@ -272,10 +302,14 @@ bool allConnected(void)
 	{
 		NetConnection* conn = netConnections[player];
 		if (conn == NULL)
+		{
 			continue;
+		}
 
 		if (!NetConnection_isConnected(conn))
+		{
 			return false;
+		}
 	}
 	return true;
 }
@@ -289,7 +323,9 @@ void initBattleStateDataConnections(void)
 		BattleStateData* battleStateData;
 		NetConnection* conn = netConnections[player];
 		if (conn == NULL)
+		{
 			continue;
+		}
 
 		battleStateData =
 			(BattleStateData*)NetConnection_getStateData(conn);
@@ -306,7 +342,9 @@ void setBattleStateConnections(struct battlestate_struct* bs)
 		BattleStateData* battleStateData;
 		NetConnection* conn = netConnections[player];
 		if (conn == NULL)
+		{
 			continue;
+		}
 
 		battleStateData =
 			(BattleStateData*)NetConnection_getStateData(conn);
@@ -341,7 +379,9 @@ networkBattleInput(NetworkInputContext* context, STARSHIP* StarShipPtr)
 		// Get the input from the front of the
 		// buffer.
 		if (ok)
+		{
 			break;
+		}
 
 		{
 			NetConnection* conn = netConnections[context->playerNr];
@@ -358,7 +398,9 @@ networkBattleInput(NetworkInputContext* context, STARSHIP* StarShipPtr)
 			}
 
 			if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+			{
 				return (BATTLE_INPUT_STATE)0;
+			}
 
 #if 0
 			log_add(log_Warning, "NETPLAY: [%d] stalling for "
@@ -420,18 +462,26 @@ bool setupInputDelay(size_t localInputDelay)
 	{
 		NetConnection* conn = netConnections[player];
 		if (conn == NULL)
+		{
 			continue;
+		}
 
 		if (!NetConnection_isConnected(conn))
+		{
 			continue;
+		}
 
 		haveNetworkPlayer = true;
 		if (NetConnection_getInputDelay(conn) > inputDelay)
+		{
 			inputDelay = NetConnection_getInputDelay(conn);
+		}
 	}
 
 	if (haveNetworkPlayer && inputDelay < localInputDelay)
+	{
 		inputDelay = localInputDelay;
+	}
 
 	setBattleInputDelay(inputDelay);
 	return true;
@@ -535,7 +585,9 @@ negotiateReadyInputFunc(NegotiateReadyState* state)
 	// right now.
 
 	if (!NetConnection_isConnected(state->conn))
+	{
 		return false;
+	}
 
 	return !state->done;
 }
@@ -568,7 +620,9 @@ bool negotiateReady(NetConnection* conn, bool notifyRemote, NetState nextState)
 					   (void*)&state, notifyRemote);
 	flushPacketQueue(conn);
 	if (!state.done)
+	{
 		DoInput(&state, false);
+	}
 
 	return NetConnection_isConnected(conn);
 }
@@ -587,7 +641,9 @@ bool negotiateReadyConnections(bool notifyRemote, NetState nextState)
 	{
 		NetConnection* conn = netConnections[player];
 		if (conn == NULL)
+		{
 			continue;
+		}
 
 		if (!NetConnection_isConnected(conn))
 		{
@@ -637,7 +693,9 @@ waitReadyInputFunc(WaitReadyState* state)
 	// right now.
 
 	if (!NetConnection_isConnected(state->conn))
+	{
 		return false;
+	}
 
 	return !state->done;
 }
@@ -686,7 +744,9 @@ waitResetInputFunc(WaitResetState* state)
 	// right now.
 
 	if (!NetConnection_isConnected(state->conn))
+	{
 		return false;
+	}
 
 	return !state->done;
 }
@@ -721,7 +781,9 @@ bool waitReset(NetConnection* conn, NetState nextState)
 	Netplay_setResetCallback(conn, waitResetBothResetCallback,
 							 (void*)&state);
 	if (state.done)
+	{
 		goto out;
+	}
 
 
 	if (!Netplay_isLocalReset(conn))
@@ -731,7 +793,9 @@ bool waitReset(NetConnection* conn, NetState nextState)
 	}
 
 	if (!state.done)
+	{
 		DoInput(&state, false);
+	}
 
 out:
 	return NetConnection_isConnected(conn);
@@ -754,7 +818,9 @@ bool waitResetConnections(NetState nextState)
 	{
 		NetConnection* conn = netConnections[player];
 		if (conn == NULL)
+		{
 			continue;
+		}
 
 		if (!NetConnection_isConnected(conn))
 		{

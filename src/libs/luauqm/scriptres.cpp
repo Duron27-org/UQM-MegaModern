@@ -33,7 +33,9 @@ GetScriptResData(const char* pathName, RESOURCE_DATA* resdata)
 	size_t pathNameLen = strlen(pathName);
 	resdata->ptr = HMalloc(pathNameLen + 1);
 	if (resdata->ptr == NULL)
+	{
 		return;
+	}
 
 	memcpy(resdata->ptr, pathName, pathNameLen + 1);
 }
@@ -50,7 +52,9 @@ char* LoadScriptInstance(RESOURCE res)
 {
 	void* data = res_GetResource(res);
 	if (data)
+	{
 		res_DetachResource(res);
+	}
 
 	return (char*)data;
 }

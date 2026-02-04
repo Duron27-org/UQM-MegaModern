@@ -54,9 +54,13 @@ void ShowRemainingCapacity(void)
 
 	OldContext = SetContext(StatusContext);
 	if (isPC(optWhichFonts))
+	{
 		SetContextFont(TinyFont);
+	}
 	else
+	{
 		SetContextFont(TinyFontBold);
+	}
 
 	r.corner.x = RES_SCALE(40);
 	r.corner.y = FREE_ORG_Y;
@@ -96,9 +100,13 @@ DrawElementAmount(uqm::COUNT element, bool selected)
 	r.extent.height = ELEMENT_SPACING_Y - RES_SCALE(2);
 
 	if (element == NUM_ELEMENT_CATEGORIES)
+	{
 		r.corner.y = BIO_ORG_Y;
+	}
 	else
+	{
 		r.corner.y = ELEMENT_ORG_Y + (element * ELEMENT_SPACING_Y);
+	}
 
 	// draw line background
 	SetContextForeGroundColor(selected ?
@@ -154,11 +162,15 @@ DrawCargoDisplay(void)
 	r.extent.height = (RES_SCALE(129) - r.corner.y);
 
 	if (!optCustomBorder && !IS_HD)
+	{
 		DrawStarConBox(&r, RES_SCALE(1),
 					   SHADOWBOX_MEDIUM_COLOR, SHADOWBOX_DARK_COLOR,
 					   true, CARGO_BACK_COLOR, false, TRANSPARENT);
+	}
 	else
+	{
 		DrawBorder(DEVICE_CARGO_FRAME);
+	}
 
 	// draw the "CARGO" title
 	SetContextFont(StarConFont);
@@ -171,9 +183,13 @@ DrawCargoDisplay(void)
 	font_DrawText(&t);
 
 	if (isPC(optWhichFonts))
+	{
 		SetContextFont(TinyFont);
+	}
 	else
+	{
 		SetContextFont(TinyFontBold);
+	}
 
 	s.frame = SetAbsFrameIndex(MiscDataFrame,
 							   (NUM_SCANDOT_TRANSITIONS * 2) + 3);
@@ -251,9 +267,13 @@ void DrawCargoStrings(uqm::BYTE OldElement, uqm::BYTE NewElement)
 
 	OldContext = SetContext(StatusContext);
 	if (isPC(optWhichFonts))
+	{
 		SetContextFont(TinyFont);
+	}
 	else
+	{
 		SetContextFont(TinyFontBold);
+	}
 
 	BatchGraphics();
 
@@ -303,11 +323,15 @@ void DrawRainbowPlanet(uqm::COUNT planet)
 	BatchGraphics();
 
 	if (!optCustomBorder && !IS_HD)
+	{
 		DrawStarConBox(&r, RES_SCALE(1),
 					   SHADOWBOX_MEDIUM_COLOR, SHADOWBOX_DARK_COLOR,
 					   true, CARGO_BACK_COLOR, false, TRANSPARENT);
+	}
 	else
+	{
 		DrawBorder(DEVICE_CARGO_FRAME);
+	}
 
 	// draw the "DATALOG" title
 	SetContextFont(StarConFont);
@@ -344,9 +368,13 @@ void DrawRainbowPlanet(uqm::COUNT planet)
 								  PCMENU_SELECTION_TEXT_COLOR :
 								  PCMENU_TEXT_COLOR);
 	if (isPC(optWhichFonts))
+	{
 		SetContextFont(TinyFont);
+	}
 	else
+	{
 		SetContextFont(TinyFontBold);
+	}
 	font_DrawText(&t);
 
 	// decoration text rect
@@ -395,7 +423,9 @@ DoDiscardCargo(MENU_STATE* pMS)
 	forward = PulsedInputState.menu[KEY_MENU_DOWN] || PulsedInputState.menu[KEY_MENU_RIGHT];
 
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+	{
 		return false;
+	}
 
 	if (cancel)
 	{
@@ -422,14 +452,18 @@ DoDiscardCargo(MENU_STATE* pMS)
 		if (back)
 		{
 			if (NewState == 0)
+			{
 				NewState += NUM_ELEMENT_CATEGORIES;
+			}
 			--NewState;
 		}
 		else if (forward)
 		{
 			++NewState;
 			if (NewState == NUM_ELEMENT_CATEGORIES)
+			{
 				NewState = 0;
+			}
 		}
 
 		if (NewState != pMS->CurState)
@@ -454,7 +488,9 @@ void CargoMenu(void)
 	DrawElementDescription(MenuState.CurState);
 
 	if (optWhichMenu == OPT_PC)
+	{
 		DrawMenuStateStrings(PM_ALT_CARGO, 0);
+	}
 
 	SetMenuSounds(MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
 

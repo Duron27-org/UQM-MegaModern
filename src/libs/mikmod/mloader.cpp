@@ -66,9 +66,12 @@ MIKMODAPI CHAR* MikMod_InfoLoader(void)
 	MUTEX_LOCK(lists);
 	/* compute size of buffer */
 	for (l = firstloader; l; l = l->next)
+	{
 		len += 1 + (l->next ? 1 : 0) + strlen(l->version);
+	}
 
 	if (len)
+	{
 		if ((list = (CHAR*)MikMod_malloc(len * sizeof(CHAR))) != NULL)
 		{
 			CHAR* list_end = list;
@@ -79,6 +82,7 @@ MIKMODAPI CHAR* MikMod_InfoLoader(void)
 				list_end += sprintf(list_end, "%s%s", l->version, (l->next) ? "\n" : "");
 			}
 		}
+	}
 	MUTEX_UNLOCK(lists);
 	return list;
 }
@@ -90,11 +94,15 @@ void _mm_registerloader(MLOADER* ldr)
 	if (cruise)
 	{
 		while (cruise->next)
+		{
 			cruise = cruise->next;
+		}
 		cruise->next = ldr;
 	}
 	else
+	{
 		firstloader = ldr;
+	}
 }
 
 MIKMODAPI void MikMod_RegisterLoader(struct MLOADER* ldr)
@@ -102,7 +110,9 @@ MIKMODAPI void MikMod_RegisterLoader(struct MLOADER* ldr)
 	/* if we try to register an invalid loader, or an already registered loader,
 	   ignore this attempt */
 	if ((!ldr) || (ldr->next))
+	{
 		return;
+	}
 
 	MUTEX_LOCK(lists);
 	_mm_registerloader(ldr);
@@ -116,13 +126,19 @@ BOOL ReadComment(UWORD len)
 		int i;
 
 		if (!(of.comment = (CHAR*)MikMod_malloc(len + 1)))
+		{
 			return 0;
+		}
 		_mm_read_UBYTES(of.comment, len, modreader);
 
 		/* translate IT linefeeds */
 		for (i = 0; i < len; i++)
+		{
 			if (of.comment[i] == '\r')
+			{
 				of.comment[i] = '\n';
+			}
+		}
 
 		of.comment[len] = 0; /* just in case */
 	}
@@ -141,12 +157,18 @@ BOOL ReadLinedComment(UWORD len, UWORD linelen)
 	size_t numlines, line, fpos, cpos, lpos, cnt;
 
 	if (!linelen)
+	{
 		return 0;
+	}
 	if (!len)
+	{
 		return 1;
+	}
 
 	if (!(buf = (CHAR*)MikMod_malloc(len)))
+	{
 		return 0;
+	}
 	numlines = (len + linelen - 1) / linelen;
 	cnt = (linelen + 1) * numlines;
 	if (!(storage = (CHAR*)MikMod_malloc(cnt + 1)))
@@ -161,7 +183,9 @@ BOOL ReadLinedComment(UWORD len, UWORD linelen)
 	{
 		cnt = len - fpos;
 		if (cnt > linelen)
+		{
 			cnt = linelen;
+		}
 		p = storage + cpos;
 		memcpy(p, buf + fpos, cnt);
 		p[cnt] = '\r';
@@ -192,7 +216,9 @@ BOOL AllocPositions(int total)
 		return 0;
 	}
 	if (!(of.positions = (UWORD*)MikMod_calloc(total, sizeof(UWORD))))
+	{
 		return 0;
+	}
 	return 1;
 }
 
@@ -207,15 +233,21 @@ BOOL AllocPatterns(void)
 	}
 	/* Allocate track sequencing array */
 	if (!(of.patterns = (UWORD*)MikMod_calloc((ULONG)(of.numpat + 1) * of.numchn, sizeof(UWORD))))
+	{
 		return 0;
+	}
 	if (!(of.pattrows = (UWORD*)MikMod_calloc(of.numpat + 1, sizeof(UWORD))))
+	{
 		return 0;
+	}
 
 	for (t = 0; t <= of.numpat; t++)
 	{
 		of.pattrows[t] = 64;
 		for (s = 0; s < of.numchn; s++)
+		{
 			of.patterns[(t * of.numchn) + s] = tracks++;
+		}
 	}
 
 	return 1;
@@ -229,7 +261,9 @@ BOOL AllocTracks(void)
 		return 0;
 	}
 	if (!(of.tracks = (UBYTE**)MikMod_calloc(of.numtrk, sizeof(UBYTE*))))
+	{
 		return 0;
+	}
 	return 1;
 }
 
@@ -243,7 +277,9 @@ BOOL AllocInstruments(void)
 		return 0;
 	}
 	if (!(of.instruments = (INSTRUMENT*)MikMod_calloc(of.numins, sizeof(INSTRUMENT))))
+	{
 		return 0;
+	}
 
 	for (t = 0; t < of.numins; t++)
 	{
@@ -268,7 +304,9 @@ BOOL AllocSamples(void)
 		return 0;
 	}
 	if (!(of.samples = (SAMPLE*)MikMod_calloc(of.numsmp, sizeof(SAMPLE))))
+	{
 		return 0;
+	}
 
 	for (u = 0; u < of.numsmp; u++)
 	{
@@ -286,8 +324,12 @@ static BOOL ML_LoadSamples(void)
 	int u;
 
 	for (u = of.numsmp, s = of.samples; u; u--, s++)
+	{
 		if (s->length)
+		{
 			SL_RegisterSample(s, MD_MUSIC, modreader);
+		}
+	}
 
 	return 1;
 }
@@ -303,7 +345,9 @@ CHAR* DupStr(const CHAR* s, UWORD len, BOOL strict)
 	while (len)
 	{
 		if (s[len - 1] > 0x20)
+		{
 			break;
+		}
 		len--;
 	}
 
@@ -311,10 +355,16 @@ CHAR* DupStr(const CHAR* s, UWORD len, BOOL strict)
 	if (strict)
 	{
 		for (t = 0; t < len; t++)
+		{
 			if (!s[t])
+			{
 				break;
+			}
+		}
 		if (t < len)
+		{
 			len = t;
+		}
 	}
 
 	/* When the buffer wasn't completely empty, allocate a cstring and copy the
@@ -322,7 +372,9 @@ CHAR* DupStr(const CHAR* s, UWORD len, BOOL strict)
 	if ((d = (CHAR*)MikMod_malloc(sizeof(CHAR) * (len + 1))) != NULL)
 	{
 		for (t = 0; t < len; t++)
+		{
 			d[t] = (s[t] < 32) ? '.' : s[t];
+		}
 		d[len] = 0;
 	}
 	return d;
@@ -331,7 +383,9 @@ CHAR* DupStr(const CHAR* s, UWORD len, BOOL strict)
 static void ML_XFreeSample(SAMPLE* s)
 {
 	if (s->handle >= 0)
+	{
 		MD_SampleUnload(s->handle);
+	}
 
 	/* moved samplename freeing to our caller ML_FreeEx(),
  * because we are called conditionally. */
@@ -357,13 +411,17 @@ static void ML_FreeEx(MODULE* mf)
 	if (mf->tracks)
 	{
 		for (t = 0; t < mf->numtrk; t++)
+		{
 			MikMod_free(mf->tracks[t]);
+		}
 		MikMod_free(mf->tracks);
 	}
 	if (mf->instruments)
 	{
 		for (t = 0; t < mf->numins; t++)
+		{
 			ML_XFreeInstrument(&mf->instruments[t]);
+		}
 		MikMod_free(mf->instruments);
 	}
 	if (mf->samples)
@@ -372,13 +430,17 @@ static void ML_FreeEx(MODULE* mf)
 		{
 			MikMod_free(mf->samples[t].samplename);
 			if (mf->samples[t].length)
+			{
 				ML_XFreeSample(&mf->samples[t]);
+			}
 		}
 		MikMod_free(mf->samples);
 	}
 	memset(mf, 0, sizeof(MODULE));
 	if (mf != &of)
+	{
 		MikMod_free(mf);
+	}
 }
 
 static MODULE* ML_AllocUniMod(void)
@@ -397,7 +459,9 @@ static BOOL ML_TryUnpack(MREADER* reader, void** out, long* outlen)
 	{
 		_mm_rewind(reader);
 		if (unpackers[i](reader, out, outlen))
+		{
 			return 1;
+		}
 	}
 	return 0;
 }
@@ -445,7 +509,9 @@ static CHAR* Player_LoadTitle_internal(MREADER* reader)
 	{
 		_mm_rewind(modreader);
 		if (l->Test())
+		{
 			break;
+		}
 	}
 
 	if (l)
@@ -456,7 +522,9 @@ static CHAR* Player_LoadTitle_internal(MREADER* reader)
 	{
 		_mm_errno = MMERR_NOT_A_MODULE;
 		if (_mm_errorhandler)
+		{
 			_mm_errorhandler();
+		}
 		title = NULL;
 	}
 
@@ -490,7 +558,9 @@ MIKMODAPI CHAR* Player_LoadTitleMem(const char* buffer, int len)
 	MREADER* reader;
 
 	if (!buffer || len <= 0)
+	{
 		return NULL;
+	}
 	if ((reader = _mm_new_mem_reader(buffer, len)) != NULL)
 	{
 		MUTEX_LOCK(lists);
@@ -565,7 +635,9 @@ static MODULE* Player_LoadGeneric_internal(MREADER* reader, int maxchan, BOOL cu
 	{
 		_mm_rewind(modreader);
 		if (l->Test())
+		{
 			break;
+		}
 	}
 
 	if (!l)
@@ -578,7 +650,9 @@ static MODULE* Player_LoadGeneric_internal(MREADER* reader, int maxchan, BOOL cu
 			MikMod_free(unpk);
 		}
 		if (_mm_errorhandler)
+		{
 			_mm_errorhandler();
+		}
 		_mm_rewind(modreader);
 		_mm_iobase_revert(modreader);
 		return NULL;
@@ -594,7 +668,9 @@ static MODULE* Player_LoadGeneric_internal(MREADER* reader, int maxchan, BOOL cu
 			MikMod_free(unpk);
 		}
 		if (_mm_errorhandler)
+		{
 			_mm_errorhandler();
+		}
 		_mm_rewind(modreader);
 		_mm_iobase_revert(modreader);
 		return NULL;
@@ -605,9 +681,13 @@ static MODULE* Player_LoadGeneric_internal(MREADER* reader, int maxchan, BOOL cu
 	of.bpmlimit = 33;
 	of.initvolume = 128;
 	for (t = 0; t < UF_MAXCHAN; t++)
+	{
 		of.chanvol[t] = 64;
+	}
 	for (t = 0; t < UF_MAXCHAN; t++)
+	{
 		of.panning[t] = ((t + 1) & 2) ? PAN_RIGHT : PAN_LEFT;
+	}
 
 	/* init module loader and load the header / patterns */
 	if (!l->Init || l->Init())
@@ -618,22 +698,34 @@ static MODULE* Player_LoadGeneric_internal(MREADER* reader, int maxchan, BOOL cu
 		{
 			/* propagate inflags=flags for in-module samples */
 			for (t = 0; t < of.numsmp; t++)
+			{
 				if (of.samples[t].inflags == 0)
+				{
 					of.samples[t].inflags = of.samples[t].flags;
+				}
+			}
 		}
 	}
 	else
+	{
 		ok = 0;
+	}
 
 	/* free loader and unitrk allocations */
 	if (l->Cleanup)
+	{
 		l->Cleanup();
+	}
 	UniCleanup();
 
 	if (ok)
+	{
 		ok = ML_LoadSamples();
+	}
 	if (ok)
+	{
 		ok = ((mf = ML_AllocUniMod()) != NULL);
+	}
 	if (!ok)
 	{
 		ML_FreeEx(&of);
@@ -644,7 +736,9 @@ static MODULE* Player_LoadGeneric_internal(MREADER* reader, int maxchan, BOOL cu
 			MikMod_free(unpk);
 		}
 		if (_mm_errorhandler)
+		{
 			_mm_errorhandler();
+		}
 		_mm_rewind(modreader);
 		_mm_iobase_revert(modreader);
 		return NULL;
@@ -653,8 +747,12 @@ static MODULE* Player_LoadGeneric_internal(MREADER* reader, int maxchan, BOOL cu
 	/* If the module doesn't have any specific panning, create a
 	   MOD-like panning, with the channels half-separated. */
 	if (!(of.flags & UF_PANNING))
+	{
 		for (t = 0; t < of.numchn; t++)
+		{
 			of.panning[t] = ((t + 1) & 2) ? PAN_HALFRIGHT : PAN_HALFLEFT;
+		}
+	}
 
 	/* Copy the static MODULE contents into the dynamic MODULE struct. */
 	memcpy(mf, &of, sizeof(MODULE));
@@ -662,20 +760,30 @@ static MODULE* Player_LoadGeneric_internal(MREADER* reader, int maxchan, BOOL cu
 	if (maxchan > 0)
 	{
 		if (!(mf->flags & UF_NNA) && (mf->numchn < maxchan))
+		{
 			maxchan = mf->numchn;
+		}
 		else if ((mf->numvoices) && (mf->numvoices < maxchan))
+		{
 			maxchan = mf->numvoices;
+		}
 
 		if (maxchan < mf->numchn)
+		{
 			mf->flags |= UF_NNA;
+		}
 
 		ok = !MikMod_SetNumVoices_internal(maxchan, -1);
 	}
 
 	if (ok)
+	{
 		ok = !SL_LoadSamples();
+	}
 	if (ok)
+	{
 		ok = !Player_Init(mf);
+	}
 
 	if (modreader != reader)
 	{
@@ -712,7 +820,9 @@ MIKMODAPI MODULE* Player_LoadMem(const char* buffer, int len, int maxchan, BOOL 
 	MREADER* reader;
 
 	if (!buffer || len <= 0)
+	{
 		return NULL;
+	}
 	if ((reader = _mm_new_mem_reader(buffer, len)) != NULL)
 	{
 		result = Player_LoadGeneric(reader, maxchan, curious);

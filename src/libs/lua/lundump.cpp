@@ -46,7 +46,9 @@ static l_noret error(LoadState* S, const char* why)
 static void LoadBlock(LoadState* S, void* b, size_t size)
 {
 	if (luaZ_read(S->Z, b, size) != 0)
+	{
 		error(S, "truncated");
+	}
 }
 
 static int LoadChar(LoadState* S)
@@ -61,7 +63,9 @@ static int LoadInt(LoadState* S)
 	int x;
 	LoadVar(S, x);
 	if (x < 0)
+	{
 		error(S, "corrupted");
+	}
 	return x;
 }
 
@@ -77,7 +81,9 @@ static TString* LoadString(LoadState* S)
 	size_t size;
 	LoadVar(S, size);
 	if (size == 0)
+	{
 		return NULL;
+	}
 	else
 	{
 		char* s = luaZ_openspace(S->L, S->b, size);
@@ -103,7 +109,9 @@ static void LoadConstants(LoadState* S, Proto* f)
 	f->k = luaM_newvector(S->L, n, TValue);
 	f->sizek = n;
 	for (i = 0; i < n; i++)
+	{
 		setnilvalue(&f->k[i]);
+	}
 	for (i = 0; i < n; i++)
 	{
 		TValue* o = &f->k[i];
@@ -130,7 +138,9 @@ static void LoadConstants(LoadState* S, Proto* f)
 	f->p = luaM_newvector(S->L, n, Proto*);
 	f->sizep = n;
 	for (i = 0; i < n; i++)
+	{
 		f->p[i] = NULL;
+	}
 	for (i = 0; i < n; i++)
 	{
 		f->p[i] = luaF_newproto(S->L);
@@ -145,7 +155,9 @@ static void LoadUpvalues(LoadState* S, Proto* f)
 	f->upvalues = luaM_newvector(S->L, n, Upvaldesc);
 	f->sizeupvalues = n;
 	for (i = 0; i < n; i++)
+	{
 		f->upvalues[i].name = NULL;
+	}
 	for (i = 0; i < n; i++)
 	{
 		f->upvalues[i].instack = LoadByte(S);
@@ -165,7 +177,9 @@ static void LoadDebug(LoadState* S, Proto* f)
 	f->locvars = luaM_newvector(S->L, n, LocVar);
 	f->sizelocvars = n;
 	for (i = 0; i < n; i++)
+	{
 		f->locvars[i].varname = NULL;
+	}
 	for (i = 0; i < n; i++)
 	{
 		f->locvars[i].varname = LoadString(S);
@@ -174,7 +188,9 @@ static void LoadDebug(LoadState* S, Proto* f)
 	}
 	n = LoadInt(S);
 	for (i = 0; i < n; i++)
+	{
 		f->upvalues[i].name = LoadString(S);
+	}
 }
 
 static void LoadFunction(LoadState* S, Proto* f)
@@ -204,15 +220,25 @@ static void LoadHeader(LoadState* S)
 	memcpy(s, h, sizeof(char)); /* first char already read */
 	LoadBlock(S, s + sizeof(char), LUAC_HEADERSIZE - sizeof(char));
 	if (memcmp(h, s, N0) == 0)
+	{
 		return;
+	}
 	if (memcmp(h, s, N1) != 0)
+	{
 		error(S, "not a");
+	}
 	if (memcmp(h, s, N2) != 0)
+	{
 		error(S, "version mismatch in");
+	}
 	if (memcmp(h, s, N3) != 0)
+	{
 		error(S, "incompatible");
+	}
 	else
+	{
 		error(S, "corrupted");
+	}
 }
 
 /*
@@ -223,11 +249,17 @@ Closure* luaU_undump(lua_State* L, ZIO* Z, Mbuffer* buff, const char* name)
 	LoadState S;
 	Closure* cl;
 	if (*name == '@' || *name == '=')
+	{
 		S.name = name + 1;
+	}
 	else if (*name == LUA_SIGNATURE[0])
+	{
 		S.name = "binary string";
+	}
 	else
+	{
 		S.name = name;
+	}
 	S.L = L;
 	S.Z = Z;
 	S.b = buff;

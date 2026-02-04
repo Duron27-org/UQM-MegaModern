@@ -45,7 +45,9 @@ void SCALE_(Nearest)(SDL_Surface* src, SDL_Surface* dst, SDL_Rect* r)
 
 	// guard asm code against such atrocities
 	if (rw == 0 || rh == 0)
+	{
 		return;
+	}
 
 	SCALE_(PlatInit)();
 

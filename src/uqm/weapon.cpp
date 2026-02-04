@@ -139,7 +139,9 @@ weapon_collision(ELEMENT* WeaponElementPtr, POINT* pWPt,
 	HELEMENT hBlastElement;
 
 	if (WeaponElementPtr->state_flags & COLLISION) /* if already did effect */
+	{
 		return ((HELEMENT)0);
+	}
 
 	damage = (uqm::SIZE)WeaponElementPtr->mass_points;
 	if (damage
@@ -155,7 +157,9 @@ weapon_collision(ELEMENT* WeaponElementPtr, POINT* pWPt,
 			{
 				do_damage(HitElementPtr, damage);
 				if (HitElementPtr->hit_points)
+				{
 					WeaponElementPtr->state_flags |= COLLISION;
+				}
 			}
 
 	if (!(HitElementPtr->state_flags & FINITE_LIFE)
@@ -169,14 +173,18 @@ weapon_collision(ELEMENT* WeaponElementPtr, POINT* pWPt,
 		{
 			damage = TARGET_DAMAGED_FOR_1_PT + (damage >> 1);
 			if (damage > TARGET_DAMAGED_FOR_6_PLUS_PT)
+			{
 				damage = TARGET_DAMAGED_FOR_6_PLUS_PT;
+			}
 			ProcessSound(SetAbsSoundIndex(GameSounds, damage),
 						 HitElementPtr);
 		}
 
 		if (GetPrimType(&DisplayArray[WeaponElementPtr->PrimIndex])
 			!= LINE_PRIM)
+		{
 			WeaponElementPtr->state_flags |= DISAPPEARING;
+		}
 
 		WeaponElementPtr->hit_points = 0;
 		WeaponElementPtr->life_span = 0;
@@ -267,7 +275,9 @@ ModifySilhouette(ELEMENT* ElementPtr, STAMP* modify_stamp,
 		ShipIntersect.IntersectStamp.frame = SetAbsFrameIndex(
 			StarShipPtr->RaceDescPtr->ship_info.icons, 1);
 		if (ShipIntersect.IntersectStamp.frame == 0)
+		{
 			return (0);
+		}
 
 		GetFrameRect(ShipIntersect.IntersectStamp.frame, &r);
 
@@ -376,9 +386,13 @@ CheckTracking:
 					ANGLE_TO_FACING(ARCTAN(delta_x, delta_y)) - *pfacing);
 
 				if (delta_x < 0)
+				{
 					delta_x = -delta_x;
+				}
 				if (delta_y < 0)
+				{
 					delta_y = -delta_y;
+				}
 				delta_x += delta_y;
 				// 'delta_x + delta_y' is used as an approximation
 				// of the actual distance 'sqrt(sqr(delta_x) +
@@ -401,11 +415,17 @@ CheckTracking:
 
 		facing = *pfacing;
 		if (best_delta_facing == ANGLE_TO_FACING(HALF_CIRCLE))
+		{
 			facing += (((uqm::BYTE)TFB_Random() & 1) << 1) - 1;
+		}
 		else if (best_delta_facing < ANGLE_TO_FACING(HALF_CIRCLE))
+		{
 			++facing;
+		}
 		else
+		{
 			--facing;
+		}
 		*pfacing = NORMALIZE_FACING(facing);
 	}
 

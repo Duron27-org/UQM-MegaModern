@@ -99,7 +99,9 @@ MeleeShipByQueueIndex(const QUEUE* queue, uqm::COUNT index)
 		{
 			hNextShip = hShip;
 			if (StarShipPtr->SpeciesID == NO_ID)
+			{
 				hShip = 0;
+			}
 			UnlockStarShip(queue, hNextShip);
 			break;
 		}
@@ -178,14 +180,18 @@ bool setShipSelected(GETMELEE_STATE* gms, uqm::COUNT playerI, uqm::COUNT choice,
 	}
 
 	if (ship == 0)
+	{
 		return false;
+	}
 
 	gms->player[playerI].choice = choice;
 	gms->player[playerI].hBattleShip = ship;
 	PlayMenuSound(MENU_SOUND_SUCCESS);
 #ifdef NETPLAY
 	if (reportNetwork)
+	{
 		reportShipSelected(gms, choice);
+	}
 #else
 	(void)reportNetwork;
 #endif
@@ -209,7 +215,9 @@ SelectShip_processInput(GETMELEE_STATE* gms, uqm::COUNT playerI,
 		{
 			// Selected exit
 			if (ConfirmExit())
+			{
 				return false;
+			}
 		}
 		else
 		{
@@ -231,22 +239,30 @@ SelectShip_processInput(GETMELEE_STATE* gms, uqm::COUNT playerI,
 		if (inputState & BATTLE_LEFT)
 		{
 			if (new_col-- == 0)
+			{
 				new_col = NUM_PICKMELEE_COLUMNS;
+			}
 		}
 		else if (inputState & BATTLE_RIGHT)
 		{
 			if (new_col++ == NUM_PICKMELEE_COLUMNS)
+			{
 				new_col = 0;
+			}
 		}
 		if (inputState & BATTLE_THRUST)
 		{
 			if (new_row-- == 0)
+			{
 				new_row = NUM_PICKMELEE_ROWS - 1;
+			}
 		}
 		else if (inputState & BATTLE_DOWN)
 		{
 			if (++new_row == NUM_PICKMELEE_ROWS)
+			{
 				new_row = 0;
+			}
 		}
 
 		if (new_row != gms->player[playerI].row || new_col != gms->player[playerI].col)
@@ -275,7 +291,9 @@ bool selectShipComputer(ComputerInputContext* context, GETMELEE_STATE* gms)
 #define COMPUTER_SELECTION_DELAY (ONE_SECOND >> 1)
 	TimeCount now = GetTimeCounter();
 	if (now < gms->player[context->playerNr].timeIn + COMPUTER_SELECTION_DELAY)
+	{
 		return true;
+	}
 
 	return SelectShip_processInput(gms, context->playerNr, BATTLE_WEAPON);
 	// Simulate selection of the random choice button.
@@ -288,7 +306,9 @@ bool selectShipNetwork(NetworkInputContext* context, GETMELEE_STATE* gms)
 	// Sets gms->player[context->playerNr].remoteSelected if input
 	// is received.
 	if (gms->player[context->playerNr].remoteSelected)
+	{
 		gms->player[context->playerNr].done = true;
+	}
 
 	return true;
 }
@@ -318,10 +338,14 @@ DoGetMelee(GETMELEE_STATE* gms)
 	for (playerI = 0; playerI < NUM_PLAYERS; playerI++)
 	{
 		if (!gms->player[playerI].selecting)
+		{
 			continue;
+		}
 
 		if (!gms->player[playerI].done)
+		{
 			Flash_process(gms->player[playerI].flashContext);
+		}
 	}
 
 	SleepThread(ONE_SECOND / 120);
@@ -330,23 +354,31 @@ DoGetMelee(GETMELEE_STATE* gms)
 	netInput();
 
 	if (!allConnected())
+	{
 		goto aborted;
+	}
 #endif
 
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+	{
 		goto aborted;
+	}
 
 	done = true;
 	for (playerI = 0; playerI < NUM_PLAYERS; playerI++)
 	{
 		if (!gms->player[playerI].selecting)
+		{
 			continue;
+		}
 
 		if (!gms->player[playerI].done)
 		{
 			if (!PlayerInput[playerI]->handlers->selectShip(
 					PlayerInput[playerI], gms))
+			{
 				goto aborted;
+			}
 
 			if (gms->player[playerI].done)
 			{
@@ -354,7 +386,9 @@ DoGetMelee(GETMELEE_STATE* gms)
 				gms->player[playerI].flashContext = NULL;
 			}
 			else
+			{
 				done = false;
+			}
 		}
 	}
 
@@ -370,7 +404,9 @@ aborted:
 	for (playerI = 0; playerI < NUM_PLAYERS; playerI++)
 	{
 		if (!gms->player[playerI].selecting)
+		{
 			continue;
+		}
 
 		gms->player[playerI].choice = 0;
 		gms->player[playerI].hBattleShip = 0;
@@ -393,7 +429,9 @@ GetRaceQueueValue(const QUEUE* queue)
 		hNextShip = _GetSuccLink(StarShipPtr);
 
 		if (StarShipPtr->SpeciesID == NO_ID)
+		{
 			continue; // Not active any more.
+		}
 
 		result += StarShipPtr->ship_cost;
 
@@ -462,9 +500,13 @@ UpdatePickMeleeFleetValue(FRAME frame, uqm::COUNT which_player)
 	t.pStr = buf;
 	t.CharCount = (uqm::COUNT)~0;
 	if (isPC(optWhichFonts))
+	{
 		SetContextFont(TinyFont);
+	}
 	else
+	{
 		SetContextFont(TinyFontBold);
+	}
 	SetContextForeGroundColor(PICK_VALUE_COLOR);
 	font_DrawText(&t);
 
@@ -479,7 +521,9 @@ void BuildPickMeleeFrame(void)
 	CONTEXT OldContext = SetContext(OffScreenContext);
 
 	if (PickMeleeFrame)
+	{
 		DestroyDrawable(ReleaseDrawable(PickMeleeFrame));
+	}
 
 	PickMeleeFrame = CaptureDrawable(CreateDrawable(
 		WANT_PIXMAP, MELEE_WIDTH, MELEE_HEIGHT, 2));
@@ -547,9 +591,13 @@ void FillPickMeleeFrame(MeleeSetup* setup)
 		t.pStr = MeleeSetup_getTeamName(setup, sideI);
 		t.CharCount = (uqm::COUNT)~0;
 		if (isPC(optWhichFonts))
+		{
 			SetContextFont(TinyFont);
+		}
 		else
+		{
 			SetContextFont(TinyFontBold);
+		}
 		SetContextForeGroundColor(PICKSHIP_TEAM_NAME_TEXT_COLOR);
 		font_DrawText(&t);
 
@@ -571,7 +619,9 @@ void FillPickMeleeFrame(MeleeSetup* setup)
 
 			StarShip = MeleeSetup_getShip(setup, sideI, index);
 			if (StarShip == MELEE_NONE)
+			{
 				continue;
+			}
 
 			{
 				uqm::BYTE row, col;
@@ -651,7 +701,9 @@ void MeleeGameOver(void)
 
 	// Show the battle result.
 	for (playerI = 0; playerI < NUM_PLAYERS; playerI++)
+	{
 		DrawPickMeleeFrame(playerI);
+	}
 
 
 #ifdef NETPLAY
@@ -704,7 +756,9 @@ GetMeleeStarShips(uqm::COUNT playerMask, HSTARSHIP* ships)
 		NetConnection* conn;
 
 		if ((playerMask & (1 << playerI)) == 0)
+		{
 			continue;
+		}
 
 		// XXX: This does not have to be done per connection.
 		conn = netConnections[playerI];
@@ -739,7 +793,9 @@ GetMeleeStarShips(uqm::COUNT playerMask, HSTARSHIP* ships)
 		gmstate.player[playerI].done = false;
 
 		if (!gmstate.player[playerI].selecting)
+		{
 			continue;
+		}
 
 		gmstate.player[playerI].timeIn = now;
 		gmstate.player[playerI].row = 0;
@@ -758,8 +814,10 @@ GetMeleeStarShips(uqm::COUNT playerMask, HSTARSHIP* ships)
 						  (bool)isPC(optWhichMenu));
 #ifdef NETPLAY
 		if (PlayerControl[playerI] & NETWORK_CONTROL)
+		{
 			Flash_setSpeed(gmstate.player[playerI].flashContext,
 						   ONE_SECOND / 2, 0, ONE_SECOND / 2, 0);
+		}
 		else
 #endif
 		{
@@ -796,7 +854,9 @@ GetMeleeStarShips(uqm::COUNT playerMask, HSTARSHIP* ships)
 	for (playerI = 0; playerI < NUM_PLAYERS; playerI++)
 	{
 		if (!gmstate.player[playerI].selecting)
+		{
 			continue;
+		}
 
 		if (gmstate.player[playerI].done)
 		{
@@ -815,10 +875,14 @@ GetMeleeStarShips(uqm::COUNT playerMask, HSTARSHIP* ships)
 	if (ok)
 	{
 		if (!negotiateReadyConnections(true, NetState_interBattle))
+		{
 			ok = false;
+		}
 	}
 	else
+	{
 		setStateConnections(NetState_interBattle);
+	}
 #endif
 
 	if (!ok)
@@ -833,7 +897,9 @@ GetMeleeStarShips(uqm::COUNT playerMask, HSTARSHIP* ships)
 		NetConnection* conn;
 
 		if ((playerMask & (1 << playerI)) == 0)
+		{
 			continue;
+		}
 
 		// XXX: This does not have to be done per connection.
 		conn = netConnections[playerI];
@@ -870,7 +936,9 @@ bool GetInitialMeleeStarShips(HSTARSHIP* result)
 
 	playerMask = 0;
 	for (playerI = 0; playerI < NUM_PLAYERS; playerI++)
+	{
 		playerMask |= (1 << playerI);
+	}
 
 	return GetMeleeStarShips(playerMask, result);
 }
@@ -887,7 +955,9 @@ bool GetNextMeleeStarShip(uqm::COUNT which_player, HSTARSHIP* result)
 	playerMask = 1 << which_player;
 	ok = GetMeleeStarShips(playerMask, ships);
 	if (ok)
+	{
 		*result = ships[which_player];
+	}
 
 	return ok;
 }
@@ -925,10 +995,14 @@ reportShipSelected(GETMELEE_STATE* gms, uqm::COUNT index)
 		NetConnection* conn = netConnections[playerI];
 
 		if (conn == NULL)
+		{
 			continue;
+		}
 
 		if (!NetConnection_isConnected(conn))
+		{
 			continue;
+		}
 
 		Netplay_Notify_shipSelected(conn, index);
 	}

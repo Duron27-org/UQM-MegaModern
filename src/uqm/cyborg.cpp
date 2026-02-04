@@ -53,19 +53,27 @@ PlotIntercept(ELEMENT* ElementPtr0, ELEMENT* ElementPtr1,
 		if (!(ElementPtr0->state_flags & FINITE_LIFE))
 		{
 			if (ElementPtr1->life_span < max_turns)
+			{
 				max_turns = ElementPtr1->life_span;
+			}
 		}
 		else if (!(ElementPtr1->state_flags & FINITE_LIFE))
 		{
 			if (ElementPtr0->life_span < max_turns)
+			{
 				max_turns = ElementPtr0->life_span;
+			}
 		}
 		else
 		{
 			if (ElementPtr0->life_span < max_turns)
+			{
 				max_turns = ElementPtr0->life_span;
+			}
 			if (ElementPtr1->life_span < max_turns)
+			{
 				max_turns = ElementPtr1->life_span;
+			}
 		}
 	}
 
@@ -134,7 +142,9 @@ PlotIntercept(ELEMENT* ElementPtr0, ELEMENT* ElementPtr1,
 			|| (time_x_1 < 0 && dx <= time_x_1))
 		{
 			if (dx == 0 && dy == 0)
+			{
 				time_y_0 = time_y_1 = 0;
+			}
 			else
 			{
 				uqm::SDWORD t;
@@ -149,13 +159,19 @@ PlotIntercept(ELEMENT* ElementPtr0, ELEMENT* ElementPtr1,
 				else if (time_y_0 <= 0)
 				{
 					if (dy < 0)
+					{
 						time_y_1 = -time_y_0;
+					}
 					time_y_0 = 0;
 				}
 				if (dy < 0)
+				{
 					dy = -dy;
+				}
 				if (dy < time_y_1)
+				{
 					time_y_1 = dy;
+				}
 
 				if (time_x_1 < 0)
 				{
@@ -166,13 +182,19 @@ PlotIntercept(ELEMENT* ElementPtr0, ELEMENT* ElementPtr1,
 				else if (time_x_0 <= 0)
 				{
 					if (dx < 0)
+					{
 						time_x_1 = -time_x_0;
+					}
 					time_x_0 = 0;
 				}
 				if (dx < 0)
+				{
 					dx = -dx;
+				}
 				if (dx < time_x_1)
+				{
 					time_x_1 = dx;
+				}
 
 				if (dx == 0)
 				{
@@ -202,20 +224,30 @@ PlotIntercept(ELEMENT* ElementPtr0, ELEMENT* ElementPtr1,
 				}
 
 				if ((time_beg *= max_turns) < fract)
+				{
 					time_y_0 = 0;
+				}
 				else
+				{
 					time_y_0 = (uqm::SDWORD)(time_beg / fract);
+				}
 
 				if (time_end >= fract) /* just in case of overflow */
+				{
 					time_y_1 = max_turns - 1;
+				}
 				else
+				{
 					time_y_1 = (uqm::SDWORD)((time_end * max_turns) / fract);
+				}
 			}
 
 			if (time_y_0 <= time_y_1)
 			{
 				if (margin_of_error != 0)
+				{
 					return ((uqm::COUNT)time_y_0 + 1);
+				}
 				else
 				{
 					DPOINT Pt0, Pt1;
@@ -287,7 +319,9 @@ PlotIntercept(ELEMENT* ElementPtr0, ELEMENT* ElementPtr1,
 							}
 
 							if (when)
+							{
 								return ((uqm::COUNT)time_y_0);
+							}
 						}
 					} while (time_y_0 < time_y_1);
 				}
@@ -308,9 +342,13 @@ InitCyborg(STARSHIP* StarShipPtr)
 	if ((Divisor = StarShipPtr->RaceDescPtr->characteristics.turn_wait
 				 + StarShipPtr->RaceDescPtr->characteristics.thrust_wait)
 		> 0)
+	{
 		Index /= Divisor;
+	}
 	else
+	{
 		Index >>= 1;
+	}
 #ifdef PRINT_MI
 	{
 		char* shipName;
@@ -329,7 +367,9 @@ static void
 ship_movement(ELEMENT* ShipPtr, EVALUATE_DESC* EvalDescPtr)
 {
 	if (EvalDescPtr->which_turn == 0)
+	{
 		EvalDescPtr->which_turn = 1;
+	}
 
 	switch (EvalDescPtr->MoveState)
 	{
@@ -359,7 +399,9 @@ bool ship_weapons(ELEMENT* ShipPtr, ELEMENT* OtherPtr, uqm::COUNT margin_of_erro
 	STARSHIP* StarShipPtr;
 
 	if (OBJECT_CLOAKED(OtherPtr))
+	{
 		margin_of_error += DISPLAY_TO_WORLD(RES_SCALE(40));
+	}
 
 	Ship = *ShipPtr;
 	GetNextVelocityComponentsSdword(&Ship.velocity,
@@ -414,7 +456,9 @@ bool ship_weapons(ELEMENT* ShipPtr, ELEMENT* OtherPtr, uqm::COUNT margin_of_erro
 			{
 				w = *WeaponPtr++;
 				if (w)
+				{
 					FreeElement(w);
+				}
 			} while (--n);
 		}
 	}
@@ -437,24 +481,36 @@ void ship_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 
 	ShipMoved = true;
 	if (ShipPtr->turn_wait == 0)
+	{
 		ShipMoved = false;
+	}
 	if (ShipPtr->thrust_wait == 0)
+	{
 		ShipMoved = false;
+	}
 
 	ShipFired = true;
 	if (StarShipPtr->weapon_counter == 0)
 	{
 		StarShipPtr->ship_input_state &= ~WEAPON;
 		if (!(StarShipPtr->RaceDescPtr->ship_info.ship_flags & SEEKING_WEAPON))
+		{
 			ShipFired = false;
+		}
 	}
 
 	if (StarShipPtr->control & AWESOME_RATING)
+	{
 		margin_of_error = 0;
+	}
 	else if (StarShipPtr->control & GOOD_RATING)
+	{
 		margin_of_error = DISPLAY_TO_WORLD(RES_SCALE(20));
+	}
 	else /* if (StarShipPtr->control & STANDARD_RATING) */
+	{
 		margin_of_error = DISPLAY_TO_WORLD(RES_SCALE(40));
+	}
 
 	ObjectsOfConcern += ConcernCounter;
 
@@ -488,7 +544,9 @@ void ship_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 				ShipFired = ship_weapons(ShipPtr,
 										 ObjectsOfConcern->ObjectPtr, margin_of_error);
 				if (ShipFired)
+				{
 					StarShipPtr->ship_input_state |= WEAPON;
+				}
 			}
 		}
 	}
@@ -505,8 +563,10 @@ bool TurnShip(ELEMENT* ShipPtr, uqm::COUNT angle)
 	if (ship_delta_facing)
 	{
 		if (ship_delta_facing == ANGLE_TO_FACING(HALF_CIRCLE))
+		{
 			ship_delta_facing =
 				NORMALIZE_FACING(ship_delta_facing + (TFB_Random() & 1 ? ANGLE_TO_FACING(OCTANT >> 1) : -ANGLE_TO_FACING(OCTANT >> 1)));
+		}
 
 		if (ship_delta_facing < ANGLE_TO_FACING(HALF_CIRCLE))
 		{
@@ -527,7 +587,9 @@ bool TurnShip(ELEMENT* ShipPtr, uqm::COUNT angle)
 		if (((StarShipPtr->ship_input_state & (LEFT | RIGHT))
 			 ^ (StarShipPtr->cur_status_flags & (LEFT | RIGHT)))
 			== (LEFT | RIGHT))
+		{
 			StarShipPtr->ship_input_state &= ~(LEFT | RIGHT);
+		}
 		else
 #endif /* NOTYET */
 		{
@@ -547,14 +609,18 @@ bool ThrustShip(ELEMENT* ShipPtr, uqm::COUNT angle)
 
 	GetElementStarShip(ShipPtr, &StarShipPtr);
 	if (StarShipPtr->ship_input_state & THRUST)
+	{
 		ShouldThrust = true;
+	}
 	else if (NORMALIZE_FACING(ANGLE_TO_FACING(angle)
 							  - ANGLE_TO_FACING(GetVelocityTravelAngle(&ShipPtr->velocity)))
 				 == 0
 			 && (StarShipPtr->cur_status_flags
 				 & (SHIP_AT_MAX_SPEED | SHIP_BEYOND_MAX_SPEED))
 			 && !(StarShipPtr->cur_status_flags & SHIP_IN_GRAVITY_WELL))
+	{
 		ShouldThrust = false;
+	}
 	else
 	{
 		uqm::SIZE ship_delta_facing;
@@ -565,9 +631,13 @@ bool ThrustShip(ELEMENT* ShipPtr, uqm::COUNT angle)
 		if (ship_delta_facing == ANGLE_TO_FACING(QUADRANT)
 			|| ((StarShipPtr->cur_status_flags & SHIP_BEYOND_MAX_SPEED)
 				&& ship_delta_facing <= ANGLE_TO_FACING(HALF_CIRCLE)))
+		{
 			ShouldThrust = true;
+		}
 		else
+		{
 			ShouldThrust = false;
+		}
 	}
 
 	if (ShouldThrust)
@@ -616,12 +686,16 @@ void Pursue(ELEMENT* ShipPtr, EVALUATE_DESC* EvalDescPtr)
 
 	maneuver_state = 0;
 	if (ShipPtr->turn_wait == 0)
+	{
 		maneuver_state |= LEFT | RIGHT;
+	}
 	if (ShipPtr->thrust_wait == 0
 		&& ((OtherObjPtr->state_flags & PLAYER_SHIP)
 			|| elementsOfSamePlayer(OtherObjPtr, ShipPtr)
 			|| OtherObjPtr->preprocess_func == crew_preprocess))
+	{
 		maneuver_state |= THRUST;
+	}
 
 	desired_turn_angle = NORMALIZE_ANGLE(desired_thrust_angle + HALF_CIRCLE);
 	/* other player's ship */
@@ -685,9 +759,13 @@ void Pursue(ELEMENT* ShipPtr, EVALUATE_DESC* EvalDescPtr)
 			if (StarShipPtr->SpeciesID == (KOHR_AH_ID | UR_QUAN_ID)
 				&& EnemyStarShipPtr->SpeciesID == EARTHLING_ID
 				&& !(EnemyStarShipPtr->cur_status_flags & (SHIP_BEYOND_MAX_SPEED | SHIP_IN_GRAVITY_WELL)))
+			{
 				distance_to_give_up_and_turn = 44;
+			}
 			else
+			{
 				distance_to_give_up_and_turn = 24;
+			}
 
 			if (desired_thrust_angle != desired_turn_angle
 				&& (other_delta_x || other_delta_y)
@@ -709,15 +787,21 @@ void Pursue(ELEMENT* ShipPtr, EVALUATE_DESC* EvalDescPtr)
 						   - FACING_TO_ANGLE(StarShipPtr->ShipFacing)
 						   + OCTANT)
 						   <= QUADRANT))
+			{
 				desired_thrust_angle = desired_turn_angle;
+			}
 		}
 	}
 
 	if (maneuver_state & (LEFT | RIGHT))
+	{
 		TurnShip(ShipPtr, desired_thrust_angle);
+	}
 
 	if (maneuver_state & THRUST)
+	{
 		ThrustShip(ShipPtr, desired_thrust_angle);
+	}
 }
 
 // JMS:GFX Made SIZEs SDWORDs and changed the GetNextVelocityComponents to GetNextVelocityComponentsSdword
@@ -757,9 +841,13 @@ void Entice(ELEMENT* ShipPtr, EVALUATE_DESC* EvalDescPtr)
 
 	maneuver_state = 0;
 	if (ShipPtr->turn_wait == 0)
+	{
 		maneuver_state |= LEFT | RIGHT;
+	}
 	if (ShipPtr->thrust_wait == 0)
+	{
 		maneuver_state |= THRUST;
+	}
 
 	delta_x = ship_delta_x - other_delta_x;
 	delta_y = ship_delta_y - other_delta_y;
@@ -776,9 +864,13 @@ void Entice(ELEMENT* ShipPtr, EVALUATE_DESC* EvalDescPtr)
 		if (NORMALIZE_FACING(ANGLE_TO_FACING(desired_turn_angle)))
 		{
 			if (desired_turn_angle <= HALF_CIRCLE)
+			{
 				desired_thrust_angle = RIGHT;
+			}
 			else /* if (desired_turn_angle > HALF_CIRCLE) */
+			{
 				desired_thrust_angle = LEFT;
+			}
 		}
 		else
 		{
@@ -786,9 +878,13 @@ void Entice(ELEMENT* ShipPtr, EVALUATE_DESC* EvalDescPtr)
 				FACING_TO_ANGLE(StarShipPtr->ShipFacing)
 				- EvalDescPtr->facing);
 			if ((desired_turn_angle & (HALF_CIRCLE - 1)) == 0)
+			{
 				desired_thrust_angle = TFB_Random() & 1 ? RIGHT : LEFT;
+			}
 			else
+			{
 				desired_thrust_angle = desired_turn_angle < HALF_CIRCLE ? RIGHT : LEFT;
+			}
 		}
 
 		if (desired_thrust_angle == LEFT)
@@ -819,15 +915,21 @@ void Entice(ELEMENT* ShipPtr, EVALUATE_DESC* EvalDescPtr)
 			+ ANGLE_TO_FACING(QUADRANT));
 
 		if (RDPtr->characteristics.thrust_increment != RDPtr->characteristics.max_thrust)
+		{
 			maneuver_state &= ~THRUST;
+		}
 
 		/* if not pointing towards planet */
 		if (cone_of_fire > ANGLE_TO_FACING(QUADRANT << 1))
+		{
 			desired_turn_angle = desired_thrust_angle;
+		}
 		/* if pointing directly at planet */
 		else if (cone_of_fire == ANGLE_TO_FACING(QUADRANT)
 				 && NORMALIZE_FACING(ANGLE_TO_FACING(travel_angle)) != planet_facing)
+		{
 			desired_turn_angle = travel_angle;
+		}
 		else if (cone_of_fire == 0
 				 || cone_of_fire == ANGLE_TO_FACING(QUADRANT << 1)
 				 || (!(maneuver_state & THRUST)
@@ -838,9 +940,13 @@ void Entice(ELEMENT* ShipPtr, EVALUATE_DESC* EvalDescPtr)
 			if (NORMALIZE_ANGLE(desired_turn_angle
 								- travel_angle + QUADRANT)
 				> HALF_CIRCLE)
+			{
 				desired_turn_angle = travel_angle;
+			}
 			if (ShipPtr->thrust_wait == 0)
+			{
 				maneuver_state |= THRUST;
+			}
 		}
 
 		desired_thrust_angle = desired_turn_angle;
@@ -896,14 +1002,16 @@ void Entice(ELEMENT* ShipPtr, EVALUATE_DESC* EvalDescPtr)
 
 			if (EvalDescPtr->which_turn <= 8
 				&& RDPtr->characteristics.max_thrust <= EnemyStarShipPtr->RaceDescPtr->characteristics.max_thrust)
+			{
 				goto DoManeuver;
+			}
 		}
 
 		if (
 #ifdef NOTYET
 			WRange < RES_SCALE(LONG_RANGE_WEAPON)
 			&&
-#endif		/* NOTYET */
+#endif /* NOTYET */
 			/* not at full speed */
 			!(StarShipPtr->cur_status_flags
 			  & (SHIP_AT_MAX_SPEED | SHIP_BEYOND_MAX_SPEED))
@@ -946,7 +1054,9 @@ void Entice(ELEMENT* ShipPtr, EVALUATE_DESC* EvalDescPtr)
 						NORMALIZE_ANGLE((EvalDescPtr->facing + HALF_CIRCLE)
 										+ (travel_angle - desired_turn_angle));
 					if (!(maneuver_state & (LEFT | RIGHT)))
+					{
 						maneuver_state &= ~THRUST;
+					}
 				}
 
 				if (maneuver_state & (LEFT | RIGHT))
@@ -981,7 +1091,9 @@ void Entice(ELEMENT* ShipPtr, EVALUATE_DESC* EvalDescPtr)
 					/* or not on collision course */
 					|| !PlotIntercept(
 						ShipPtr, OtherObjPtr, 30, RES_SCALE(CLOSE_RANGE_WEAPON) << 1)))
+			{
 				maneuver_state &= ~THRUST;
+			}
 			/* veer off */
 			else if (cone_of_fire == 1
 					 || RDPtr->characteristics.thrust_increment != RDPtr->characteristics.max_thrust)
@@ -996,19 +1108,27 @@ void Entice(ELEMENT* ShipPtr, EVALUATE_DESC* EvalDescPtr)
 									- ARCTAN(ship_delta_x, ship_delta_y)
 									+ (OCTANT + 2))
 					<= ((OCTANT + 2) << 1))
+				{
 					desired_thrust_angle = FACING_TO_ANGLE(StarShipPtr->ShipFacing);
+				}
 				else
+				{
 					desired_thrust_angle = desired_turn_angle;
+				}
 			}
 		}
 	}
 
 DoManeuver:
 	if (maneuver_state & (LEFT | RIGHT))
+	{
 		TurnShip(ShipPtr, desired_thrust_angle);
+	}
 
 	if (maneuver_state & THRUST)
+	{
 		ThrustShip(ShipPtr, desired_thrust_angle);
+	}
 }
 
 void Avoid(ELEMENT* ShipPtr, EVALUATE_DESC* EvalDescPtr)
@@ -1034,7 +1154,9 @@ tactical_intelligence(ComputerInputContext* context, STARSHIP* StarShipPtr)
 	RDPtr = StarShipPtr->RaceDescPtr;
 
 	if (RDPtr->cyborg_control.ManeuverabilityIndex == 0)
+	{
 		InitCyborg(StarShipPtr);
+	}
 
 	LockElement(StarShipPtr->hShip, &ShipPtr);
 	if (RDPtr->ship_info.crew_level == 0
@@ -1047,13 +1169,17 @@ tactical_intelligence(ComputerInputContext* context, STARSHIP* StarShipPtr)
 	ShipMoved = true;
 	/* Disable ship's special completely for the Standard AI */
 	if (StarShipPtr->control & STANDARD_RATING)
+	{
 		++StarShipPtr->special_counter;
+	}
 
 #ifdef DEBUG_CYBORG
 	if (!(ShipPtr->state_flags & FINITE_LIFE)
 		&& ShipPtr->life_span == NORMAL_LIFE)
+	{
 		ShipPtr->life_span += 2; /* make ship invulnerable */
-#endif							 /* DEBUG_CYBORG */
+	}
+#endif /* DEBUG_CYBORG */
 	Ship = *ShipPtr;
 	UnlockElement(StarShipPtr->hShip);
 	ShipFacing = StarShipPtr->ShipFacing;
@@ -1106,11 +1232,17 @@ tactical_intelligence(ComputerInputContext* context, STARSHIP* StarShipPtr)
 				RECT ship_footprint;
 
 				if (UltraManeuverable)
+				{
 					maneuver_turn = 16;
+				}
 				else if (MANEUVERABILITY(&RDPtr->cyborg_control) <= RESOLUTION_COMPENSATED(MEDIUM_SHIP))
+				{
 					maneuver_turn = 48;
+				}
 				else
+				{
 					maneuver_turn = 32;
+				}
 
 				GetFrameRect(SetAbsFrameIndex(
 								 Ship.IntersectControl.IntersectStamp.frame, 0),
@@ -1130,9 +1262,13 @@ tactical_intelligence(ComputerInputContext* context, STARSHIP* StarShipPtr)
 					{
 						ed.facing = ARCTAN(-dx, -dy);
 						if (UltraManeuverable)
+						{
 							ed.MoveState = AVOID;
+						}
 						else // Try a gravity whip
+						{
 							ed.MoveState = ENTICE;
+						}
 
 						ObjectsOfConcern[GRAVITY_MASS_INDEX] = ed;
 					}
@@ -1140,7 +1276,9 @@ tactical_intelligence(ComputerInputContext* context, STARSHIP* StarShipPtr)
 					{ // Try an orbital insertion, don't thrust
 						++Ship.thrust_wait;
 						if (Ship.turn_wait)
+						{
 							ShipMoved = true;
+						}
 					}
 				}
 			}
@@ -1149,7 +1287,9 @@ tactical_intelligence(ComputerInputContext* context, STARSHIP* StarShipPtr)
 				GetElementStarShip(ed.ObjectPtr, &EnemyStarShipPtr);
 				EnemyRDPtr = EnemyStarShipPtr->RaceDescPtr;
 				if (EnemyRDPtr->cyborg_control.ManeuverabilityIndex == 0)
+				{
 					InitCyborg(EnemyStarShipPtr);
+				}
 
 				ed.which_turn = WORLD_TO_TURN(
 					square_root((long)dx * dx + (long)dy * dy));
@@ -1159,7 +1299,9 @@ tactical_intelligence(ComputerInputContext* context, STARSHIP* StarShipPtr)
 					continue;
 				}
 				else if (ed.which_turn == 0)
+				{
 					ed.which_turn = 1;
+				}
 
 				ed.which_turn >>= RESOLUTION_FACTOR;
 
@@ -1187,7 +1329,9 @@ tactical_intelligence(ComputerInputContext* context, STARSHIP* StarShipPtr)
 								&& WEAPON_RANGE(&RDPtr->cyborg_control) < WEAPON_RANGE(&EnemyRDPtr->cyborg_control)))))
 					ObjectsOfConcern[ENEMY_SHIP_INDEX].MoveState = PURSUE;
 				else
+				{
 					ObjectsOfConcern[ENEMY_SHIP_INDEX].MoveState = ENTICE;
+				}
 
 				if ((EnemyStarShipPtr->RaceDescPtr->ship_info.ship_flags & IMMEDIATE_WEAPON)
 					&& ship_weapons(ed.ObjectPtr, &Ship, 0))
@@ -1235,7 +1379,9 @@ tactical_intelligence(ComputerInputContext* context, STARSHIP* StarShipPtr)
 										   - ARCTAN(-dx, -dy)
 										   + QUADRANT)
 							   > HALF_CIRCLE)
+					{
 						ed.which_turn = 0;
+					}
 					else
 					{
 						ed.which_turn = RES_DESCALE(WORLD_TO_TURN(
@@ -1244,15 +1390,21 @@ tactical_intelligence(ComputerInputContext* context, STARSHIP* StarShipPtr)
 						ed.MoveState = ENTICE;
 
 						if (ed.which_turn == 0)
+						{
 							ed.which_turn = 1;
+						}
 						/* Shiver: The cap on which_turn for seeking weapons raised from 16 to 20.
 						 The horrible cap of 8 for above-medium speed ships has been obliterated. */
 						else if (ed.which_turn > 20)
+						{
 							ed.which_turn = 0;
+						}
 					}
 				}
 				else if (!(StarShipPtr->control & AWESOME_RATING))
+				{
 					ed.which_turn = 0;
+				}
 				else
 				{
 					ed.which_turn =
@@ -1283,7 +1435,9 @@ tactical_intelligence(ComputerInputContext* context, STARSHIP* StarShipPtr)
 					square_root((long)dx * dx + (long)dy * dy)));
 
 				if (ed.which_turn == 0)
+				{
 					ed.which_turn = 1;
+				}
 
 				if (ObjectsOfConcern[CREW_OBJECT_INDEX].which_turn > ed.which_turn
 					&& (ObjectsOfConcern[ENEMY_SHIP_INDEX].which_turn > 32
@@ -1311,15 +1465,25 @@ tactical_intelligence(ComputerInputContext* context, STARSHIP* StarShipPtr)
 
 		InputState = 0;
 		if (StarShipPtr->ship_input_state & LEFT)
+		{
 			InputState |= BATTLE_LEFT;
+		}
 		else if (StarShipPtr->ship_input_state & RIGHT)
+		{
 			InputState |= BATTLE_RIGHT;
+		}
 		if (StarShipPtr->ship_input_state & THRUST)
+		{
 			InputState |= BATTLE_THRUST;
+		}
 		if (StarShipPtr->ship_input_state & WEAPON)
+		{
 			InputState |= BATTLE_WEAPON;
+		}
 		if (StarShipPtr->ship_input_state & SPECIAL)
+		{
 			InputState |= BATTLE_SPECIAL;
+		}
 
 		(void)context;
 		return (InputState);

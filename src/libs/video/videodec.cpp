@@ -47,7 +47,9 @@ const char*
 VideoDecoder_GetName(TFB_VideoDecoder* decoder)
 {
 	if (!decoder || !decoder->funcs)
+	{
 		return "(Null)";
+	}
 	return decoder->funcs->GetName();
 }
 
@@ -111,7 +113,9 @@ void VideoDecoder_Uninit(void)
 	for (info = vd_decoders; info->used; info++)
 	{
 		if (info->ext) // check if present
+		{
 			info->funcs->TermModule();
+		}
 
 		if (!info->builtin)
 		{
@@ -147,7 +151,9 @@ VideoDecoder_Register(const char* fileext, TFB_VideoDecoderFuncs* decvtbl)
 	{
 		// and pick up an empty slot (where available)
 		if (!newslot && !info->ext)
+		{
 			newslot = info;
+		}
 	}
 
 	if (info >= vd_decoders + MAX_REG_DECODERS)
@@ -220,7 +226,9 @@ VideoDecoder_Load(uio_DirHandle* dir, const char* filename)
 
 
 	if (!vd_inited)
+	{
 		return NULL;
+	}
 
 	pext = strrchr(filename, '.');
 	if (!pext)
@@ -279,18 +287,26 @@ int VideoDecoder_Decode(TFB_VideoDecoder* decoder)
 	int ret;
 
 	if (!decoder)
+	{
 		return 0;
+	}
 
 	decoder->cur_frame = decoder->funcs->GetFrame(decoder);
 	decoder->pos = decoder->funcs->GetTime(decoder);
 
 	ret = decoder->funcs->DecodeNext(decoder);
 	if (ret == 0)
+	{
 		decoder->error = VIDEODECODER_EOF;
+	}
 	else if (ret < 0)
+	{
 		decoder->error = VIDEODECODER_ERROR;
+	}
 	else
+	{
 		decoder->error = VIDEODECODER_OK;
+	}
 
 	return ret;
 }
@@ -298,7 +314,9 @@ int VideoDecoder_Decode(TFB_VideoDecoder* decoder)
 float VideoDecoder_Seek(TFB_VideoDecoder* decoder, float pos)
 {
 	if (!decoder)
+	{
 		return 0.0;
+	}
 
 	decoder->pos = decoder->funcs->SeekTime(decoder, pos);
 	decoder->cur_frame = decoder->funcs->GetFrame(decoder);
@@ -310,7 +328,9 @@ uint32
 VideoDecoder_SeekFrame(TFB_VideoDecoder* decoder, uint32 frame)
 {
 	if (!decoder)
+	{
 		return 0;
+	}
 
 	decoder->cur_frame = decoder->funcs->SeekFrame(decoder, frame);
 	decoder->pos = decoder->funcs->GetTime(decoder);
@@ -321,7 +341,9 @@ VideoDecoder_SeekFrame(TFB_VideoDecoder* decoder, uint32 frame)
 void VideoDecoder_Rewind(TFB_VideoDecoder* decoder)
 {
 	if (!decoder)
+	{
 		return;
+	}
 
 	VideoDecoder_Seek(decoder, 0);
 }
@@ -329,7 +351,9 @@ void VideoDecoder_Rewind(TFB_VideoDecoder* decoder)
 void VideoDecoder_Free(TFB_VideoDecoder* decoder)
 {
 	if (!decoder)
+	{
 		return;
+	}
 
 	decoder->funcs->Close(decoder);
 	decoder->funcs->Term(decoder);
@@ -347,10 +371,14 @@ vd_computeMasks(uint32 mask, uqm::DWORD* shift, uqm::DWORD* loss)
 	if (mask)
 	{
 		for (; !(mask & 1); mask >>= 1)
+		{
 			++*shift;
+		}
 
 		for (; (mask & 1); mask >>= 1)
+		{
 			--*loss;
+		}
 	}
 }
 // END: adapted from SDL

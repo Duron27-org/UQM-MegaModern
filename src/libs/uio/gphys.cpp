@@ -174,7 +174,9 @@ void uio_GPDir_setComplete(uio_GPDir* gPDir, uio_bool flag)
 		gPDir->flags |= uio_GPDir_COMPLETE;
 	}
 	else
+	{
 		gPDir->flags &= ~uio_GPDir_COMPLETE;
+	}
 }
 
 int uio_GPDir_entryCount(const uio_GPDir* gPDir)
@@ -186,7 +188,9 @@ static void
 uio_GPDir_access(uio_GPDir* gPDir)
 {
 	if (!(gPDir->flags & uio_GPDir_COMPLETE))
+	{
 		uio_GPDir_fill(gPDir);
+	}
 }
 
 // The ref counter for the dir entry is not incremented.
@@ -206,7 +210,9 @@ uio_GPDir_getPDirEntryHandle(const uio_PDirHandle* pDirHandle,
 
 	gPDirEntry = uio_GPDir_getGPDirEntry(pDirHandle->extra, name);
 	if (gPDirEntry == NULL)
+	{
 		return NULL;
+	}
 	uio_GPDirEntry_ref(gPDirEntry);
 	if (uio_GPDirEntry_isDir(gPDirEntry))
 	{
@@ -346,7 +352,9 @@ void uio_GPDir_closeEntries(uio_GPDirEntries_Iterator* iterator)
 void uio_GPDir_fill(uio_GPDir* gPDir)
 {
 	if ((gPDir->flags & uio_GPDir_COMPLETE) && !(gPDir->flags & uio_GPDir_NOCACHE))
+	{
 		return;
+	}
 	auto xtra = (uio_GPRoot*)gPDir->pRoot->extra;
 	assert(xtra->ops->fillGPDir != NULL);
 	xtra->ops->fillGPDir(gPDir);
@@ -355,7 +363,9 @@ void uio_GPDir_fill(uio_GPDir* gPDir)
 void uio_GPRoot_deleteGPRootExtra(uio_GPRoot* gPRoot)
 {
 	if (gPRoot->extra == NULL)
+	{
 		return;
+	}
 	assert(gPRoot->ops->deleteGPRootExtra != NULL);
 	gPRoot->ops->deleteGPRootExtra(gPRoot->extra);
 }
@@ -363,7 +373,9 @@ void uio_GPRoot_deleteGPRootExtra(uio_GPRoot* gPRoot)
 void uio_GPDir_deleteGPDirExtra(uio_GPDir* gPDir)
 {
 	if (gPDir->extra == NULL)
+	{
 		return;
+	}
 	auto xtra = (uio_GPRoot*)gPDir->pRoot->extra;
 	assert(xtra->ops->deleteGPDirExtra != NULL);
 	xtra->ops->deleteGPDirExtra(gPDir->extra);
@@ -372,7 +384,9 @@ void uio_GPDir_deleteGPDirExtra(uio_GPDir* gPDir)
 void uio_GPFile_deleteGPFileExtra(uio_GPFile* gPFile)
 {
 	if (gPFile->extra == NULL)
+	{
 		return;
+	}
 
 	auto xtra = (uio_GPRoot*)gPFile->pRoot->extra;
 	assert(xtra->ops->deleteGPFileExtra != NULL);
@@ -385,7 +399,9 @@ int uio_gPDirFlagsFromPRootFlags(int flags)
 
 	newFlags = 0;
 	if (flags & uio_PRoot_NOCACHE)
+	{
 		newFlags |= uio_GPDir_NOCACHE;
+	}
 
 	return newFlags;
 }
@@ -396,7 +412,9 @@ int uio_gPFileFlagsFromPRootFlags(int flags)
 
 	newFlags = 0;
 	if (flags & uio_PRoot_NOCACHE)
+	{
 		newFlags |= uio_GPFile_NOCACHE;
+	}
 
 	return newFlags;
 }
@@ -445,7 +463,9 @@ uio_GPDir_new(uio_PRoot* pRoot, uio_GPDirExtra extra, int flags)
 	flags |= uio_gPDirFlagsFromPRootFlags(gPDir->pRoot->flags);
 	auto xtra = (uio_GPRoot*)pRoot->extra;
 	if (xtra->flags & uio_GPRoot_PERSISTENT)
+	{
 		flags |= uio_GPDir_PERSISTENT;
+	}
 	gPDir->flags = flags | uio_GPDirEntry_TYPE_DIR;
 	return gPDir;
 }
@@ -583,7 +603,9 @@ uio_GPRoot_makePRoot(uio_FileSystemHandler* handler, int pRootFlags,
 
 	gPTopDir = uio_GPDir_new(result, gPDirExtra, gPDirFlags);
 	if (gPRoot->flags & uio_GPRoot_PERSISTENT)
+	{
 		uio_GPDir_ref(gPTopDir);
+	}
 	result->rootDir = uio_GPDir_makePDirHandle(gPTopDir);
 
 	return result;
@@ -599,7 +621,9 @@ int uio_GPRoot_umount(uio_PRoot* pRoot)
 	topDir = topDirHandle->extra;
 	auto xtra = (uio_GPRoot*)pRoot->extra;
 	if (xtra->flags & uio_GPRoot_PERSISTENT)
+	{
 		uio_GPDir_deepPersistentUnref(topDir);
+	}
 	uio_PDirHandle_unref(topDirHandle);
 	(void)pRoot;
 	return 0;

@@ -115,7 +115,9 @@ openAL_ConvertObjectArrayToALuints(uint32 n, audio_Object* arr)
 {
 	uint32 i;
 	if (sizeof(audio_Object) == sizeof(ALuint))
+	{
 		return;
+	}
 	for (i = 0; i < n; i++)
 	{
 		((ALuint*)arr)[i] = arr[i];
@@ -127,7 +129,9 @@ openAL_ConvertObjectArrayFromALuints(uint32 n, audio_Object* arr)
 {
 	uint32 i;
 	if (sizeof(audio_Object) == sizeof(ALuint))
+	{
 		return;
+	}
 	i = n;
 	while (i--)
 	{

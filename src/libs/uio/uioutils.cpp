@@ -213,7 +213,9 @@ char* dosToUnixPath(const char* path)
 
 		slash = (char*)memchr(srcPtr + 2, '/', skip - 2);
 		if (slash != NULL)
+		{
 			*slash = '\\';
+		}
 
 		srcPtr += skip;
 		dstPtr += skip;
@@ -226,7 +228,9 @@ char* dosToUnixPath(const char* path)
 			*dstPtr = '/';
 		}
 		else
+		{
 			*dstPtr = *srcPtr;
+		}
 		srcPtr++;
 		dstPtr++;
 	}

@@ -43,7 +43,9 @@ bool fileExists2(uio_DirHandle* dir, const char* fileName)
 
 	stream = uio_fopen(dir, fileName, "rb");
 	if (stream == NULL)
+	{
 		return 0;
+	}
 
 	uio_fclose(stream);
 	return 1;
@@ -76,10 +78,14 @@ int copyFile(uio_DirHandle* srcDir, const char* srcName,
 				   ,
 				   0);
 	if (src == NULL)
+	{
 		return -1;
+	}
 
 	if (uio_fstat(src, &sb) == -1)
+	{
 		return copyError(src, NULL, NULL, NULL, NULL);
+	}
 
 	dst = uio_open(dstDir, newName, O_WRONLY | O_CREAT | O_EXCL
 #ifdef WIN32
@@ -88,7 +94,9 @@ int copyFile(uio_DirHandle* srcDir, const char* srcName,
 				   ,
 				   sb.st_mode & (S_IRWXU | S_IRWXG | S_IRWXO));
 	if (dst == NULL)
+	{
 		return copyError(src, NULL, NULL, NULL, NULL);
+	}
 
 	buf = (uint8*)HMalloc(BUFSIZE);
 	// This was originally a statically allocated buffer,
@@ -100,11 +108,15 @@ int copyFile(uio_DirHandle* srcDir, const char* srcName,
 		if (numInBuf == -1)
 		{
 			if (errno == EINTR)
+			{
 				continue;
+			}
 			return copyError(src, dst, dstDir, newName, buf);
 		}
 		if (numInBuf == 0)
+		{
 			break;
+		}
 
 		bufPtr = buf;
 		do
@@ -113,7 +125,9 @@ int copyFile(uio_DirHandle* srcDir, const char* srcName,
 			if (numWritten == -1)
 			{
 				if (errno == EINTR)
+				{
 					continue;
+				}
 				return copyError(src, dst, dstDir, newName, buf);
 			}
 			numInBuf -= numWritten;
@@ -147,16 +161,24 @@ copyError(uio_Handle* srcHandle, uio_Handle* dstHandle,
 	log_add(log_Debug, "Error while copying: %s", strerror(errno));
 
 	if (srcHandle != NULL)
+	{
 		uio_close(srcHandle);
+	}
 
 	if (dstHandle != NULL)
+	{
 		uio_close(dstHandle);
+	}
 
 	if (unlinkPath != NULL)
+	{
 		uio_unlink(unlinkHandle, unlinkPath);
+	}
 
 	if (buf != NULL)
+	{
 		HFree(buf);
+	}
 
 	errno = savedErrno;
 	return -1;

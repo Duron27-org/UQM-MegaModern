@@ -103,7 +103,9 @@ ensureBufSize(char** buf, size_t* curSize, size_t minSize, size_t increment)
 	// Smallest multiple of 'increment' larger or equal to minSize.
 	newBuf = (char*)HRealloc(*buf, newSize);
 	if (newBuf == NULL)
+	{
 		return false;
+	}
 
 	// Success
 	*buf = newBuf;
@@ -193,13 +195,21 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 	log_add(log_Info, "\t'%s' -- conversation phrases -- %lu bytes", paths,
 			dataLen);
 	if (clip_path)
+	{
 		log_add(log_Info, "\t'%s' -- voice clip directory", clip_path);
+	}
 	else
+	{
 		log_add(log_Info, "\tNo associated voice clips");
+	}
 	if (ts_path)
+	{
 		log_add(log_Info, "\t'%s' -- timestamps", ts_path);
+	}
 	else
+	{
 		log_add(log_Info, "\tNo associated timestamp file");
+	}
 
 	if (dataLen == 0)
 	{
@@ -211,23 +221,31 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 	tot_string_size = POOL_SIZE;
 	strdata = (char*)HMalloc(tot_string_size);
 	if (strdata == 0)
+	{
 		goto err;
+	}
 
 	tot_name_size = POOL_SIZE;
 	namedata = (char*)HMalloc(tot_name_size);
 	if (namedata == 0)
+	{
 		goto err;
+	}
 
 	tot_clip_size = POOL_SIZE;
 	clipdata = (char*)HMalloc(tot_clip_size);
 	if (clipdata == 0)
+	{
 		goto err;
+	}
 	ts_data = NULL;
 
 	nameHashTable = StringHashTable_newHashTable(
 		NULL, NULL, NULL, NULL, NULL, 0, 0.85, 0.9);
 	if (nameHashTable == NULL)
+	{
 		goto err;
+	}
 
 	path_len = clip_path ? strlen(clip_path) : 0;
 
@@ -239,7 +257,9 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 			tot_ts_size = POOL_SIZE;
 			ts_data = (char*)HMalloc(tot_ts_size);
 			if (ts_data == 0)
+			{
 				goto err;
+			}
 		}
 	}
 
@@ -293,7 +313,9 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 				l = strlen(name) + 1;
 				if (!ensureBufSize(&namedata, &tot_name_size,
 								   NameOffs + l, POOL_SIZE))
+				{
 					goto err;
+				}
 				strcpy(&namedata[NameOffs], name);
 				NameOffs += l;
 				nlen[stringI] = l;
@@ -317,13 +339,17 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 							tsptr += strlen(name) + 1;
 							ts_ok = true;
 							while (!strcspn(tsptr, " \t\r\n") && *tsptr)
+							{
 								tsptr++;
+							}
 							if (*tsptr)
 							{
 								l = strlen(tsptr) + 1;
 								if (!ensureBufSize(&ts_data, &tot_ts_size, TSOffs + l,
 												   POOL_SIZE))
+								{
 									goto err;
+								}
 
 								strcpy(&ts_data[TSOffs], tsptr);
 								TSOffs += l;
@@ -351,10 +377,14 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 					l = path_len + strlen(ts) + 1;
 					if (!ensureBufSize(&clipdata, &tot_clip_size,
 									   ClipOffs + l, POOL_SIZE))
+					{
 						goto err;
+					}
 
 					if (clip_path)
+					{
 						strcpy(&clipdata[ClipOffs], clip_path);
+					}
 					strcpy(&clipdata[ClipOffs + path_len], ts);
 					ClipOffs += l;
 					clen[stringI] = l;
@@ -368,7 +398,9 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 
 			if (!ensureBufSize(&strdata, &tot_string_size, StringOffs + l,
 							   POOL_SIZE))
+			{
 				goto err;
+			}
 
 			if (slen[stringI])
 			{
@@ -383,7 +415,9 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 		}
 
 		if ((int)uio_ftell(fp) - (int)opos >= (int)dataLen)
+		{
 			break;
+		}
 	}
 	if (stringI >= 0)
 	{
@@ -396,7 +430,9 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 	}
 
 	if (timestamp_fp)
+	{
 		uio_fclose(timestamp_fp);
+	}
 
 	result = NULL;
 	// num_data_sets = (ClipOffs ? 1 : 0) + (TSOffs ? 1 : 0) + 1; unused
@@ -406,9 +442,13 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 		int stringCount = stringI;
 
 		if (ClipOffs)
+		{
 			flags |= HAS_SOUND_CLIPS;
+		}
 		if (TSOffs)
+		{
 			flags |= HAS_TIMESTAMP;
+		}
 		flags |= HAS_NAMEINDEX;
 
 		result = AllocStringTable(stringCount, flags);
@@ -459,22 +499,34 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 	}
 	HFree(strdata);
 	if (clipdata != NULL)
+	{
 		HFree(clipdata);
+	}
 	if (ts_data != NULL)
+	{
 		HFree(ts_data);
+	}
 
 	resdata->ptr = result;
 	return;
 
 err:
 	if (nameHashTable != NULL)
+	{
 		StringHashTable_deleteHashTable(nameHashTable);
+	}
 	if (ts_data != NULL)
+	{
 		HFree(ts_data);
+	}
 	if (clipdata != NULL)
+	{
 		HFree(clipdata);
+	}
 	if (strdata != NULL)
+	{
 		HFree(strdata);
+	}
 	res_CloseResFile(fp);
 	resdata->ptr = NULL;
 }
@@ -494,7 +546,9 @@ void* _GetStringData(uio_Stream* fp, uqm::DWORD length)
 	tot_string_size = POOL_SIZE;
 	strdata = (char*)HMalloc(tot_string_size);
 	if (strdata == 0)
+	{
 		goto err;
+	}
 
 	opos = uio_ftell(fp);
 	stringI = -1;
@@ -544,7 +598,9 @@ void* _GetStringData(uio_Stream* fp, uqm::DWORD length)
 
 			if (!ensureBufSize(&strdata, &tot_string_size, StringOffs + l,
 							   POOL_SIZE))
+			{
 				goto err;
+			}
 
 			if (slen[stringI])
 			{
@@ -559,7 +615,9 @@ void* _GetStringData(uio_Stream* fp, uqm::DWORD length)
 		}
 
 		if ((int)uio_ftell(fp) - (int)opos >= (int)length)
+		{
 			break;
+		}
 	}
 	if (stringI >= 0)
 	{
@@ -590,7 +648,9 @@ void* _GetStringData(uio_Stream* fp, uqm::DWORD length)
 
 err:
 	if (strdata != NULL)
+	{
 		HFree(strdata);
+	}
 	return 0;
 }
 

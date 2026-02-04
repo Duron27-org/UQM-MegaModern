@@ -52,9 +52,13 @@ ClearReportArea(COORD startx)
 	STAMP s;
 
 	if (optWhichFonts == OPT_PC)
+	{
 		s.frame = SetAbsFrameIndex(SpaceJunkFrame, 21);
+	}
 	else
+	{
 		s.frame = SetAbsFrameIndex(SpaceJunkFrame, 18);
+	}
 	GetFrameRect(s.frame, &r);
 	BatchGraphics();
 
@@ -70,9 +74,13 @@ ClearReportArea(COORD startx)
 		for (x = 0; x < NUM_CELL_COLS; ++x)
 		{
 			if (optWhichFonts == OPT_PC)
+			{
 				DrawStamp(&s);
+			}
 			else
+			{
 				DrawFilledStamp(&s);
+			}
 
 			s.origin.x += r.extent.width + RES_SCALE(1);
 		}
@@ -119,7 +127,9 @@ MakeReport(SOUND ReadOutSounds, uqm::CHAR_T* pStr, uqm::COUNT StrLen)
 	fgcolor = BUILD_COLOR(MAKE_RGB15(0x00, 0x1F, 0x00), 0xFF);
 
 	if (contextRect.extent.width < SCALED_MAP_WIDTH)
+	{
 		startx = RES_SCALE(1); // Special case if we're in space
+	}
 	else
 	{ // In DOS version first cell is 3p away from the edge of the
 		// context, and 2 in UQM
@@ -146,10 +156,14 @@ MakeReport(SOUND ReadOutSounds, uqm::CHAR_T* pStr, uqm::COUNT StrLen)
 			for (length = StrLen; length > 0; length--)
 			{
 				if (getCharFromString(&pCurrStr) == '\n')
+				{
 					total_lines++;
+				}
 
 				if (total_lines == 0)
+				{
 					first_line_length++;
+				}
 			}
 		}
 	}
@@ -181,15 +195,21 @@ MakeReport(SOUND ReadOutSounds, uqm::CHAR_T* pStr, uqm::COUNT StrLen)
 
 			// We're adding lines - compensate for it
 			if (curr_line >= 0)
+			{
 				curr_line--;
+			}
 		}
 		if (total_lines >= 0)
 		{
 			if (curr_line == 0)
+			{
 				col_cells = (NUM_CELL_COLS - first_line_length) >> 1;
+			}
 
 			if (curr_line == total_lines)
+			{
 				col_cells = ((NUM_CELL_COLS - (StrLen - 2)) >> 1) - 2;
+			}
 		}
 
 		t.baseline.x = startx + (col_cells * (r.extent.width + RES_SCALE(1)));
@@ -203,7 +223,9 @@ MakeReport(SOUND ReadOutSounds, uqm::CHAR_T* pStr, uqm::COUNT StrLen)
 			pStr = t.pStr;
 			pNextStr = t.pStr;
 			while (UniChar_isGraph(getCharFromString(&pNextStr)))
+			{
 				pStr = pNextStr;
+			}
 
 			word_chars = (uqm::COUNT)utf8StringCountN(t.pStr, pStr);
 			if ((col_cells += word_chars) <= NUM_CELL_COLS)
@@ -211,7 +233,9 @@ MakeReport(SOUND ReadOutSounds, uqm::CHAR_T* pStr, uqm::COUNT StrLen)
 				TimeCount TimeOut;
 
 				if (StrLen -= word_chars)
+				{
 					--StrLen;
+				}
 				TimeOut = GetTimeCounter();
 				while (word_chars--)
 				{
@@ -219,16 +243,22 @@ MakeReport(SOUND ReadOutSounds, uqm::CHAR_T* pStr, uqm::COUNT StrLen)
 					c = getCharFromString(&pNextStr);
 
 					if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+					{
 						return;
+					}
 					if (!Sleepy)
+					{
 						font_DrawText(&t);
+					}
 					else
 					{
 						uqm::BYTE scale = 0;
 						font_DrawText(&t);
 
 						if (CurrentInputState.menu[KEY_MENU_RIGHT])
+						{
 							scale = 2;
+						}
 
 						PlaySound(ReadOutSounds, NotPositional(), NULL,
 								  GAME_SOUND_PRIORITY);
@@ -243,15 +273,23 @@ MakeReport(SOUND ReadOutSounds, uqm::CHAR_T* pStr, uqm::COUNT StrLen)
 								break;
 							case '!':
 								if (last_c != '!' && last_c != ' ')
+								{
 									TimeOut += ONE_SECOND / (2 << scale);
+								}
 								else
+								{
 									TimeOut += ONE_SECOND / (20 << scale);
+								}
 								break;
 							case '?':
 								if (last_c != '?' && last_c != ' ')
+								{
 									TimeOut += ONE_SECOND / (2 << scale);
+								}
 								else
+								{
 									TimeOut += ONE_SECOND / (20 << scale);
+								}
 								break;
 							default:
 								TimeOut += ONE_SECOND / (20 << scale);
@@ -261,7 +299,9 @@ MakeReport(SOUND ReadOutSounds, uqm::CHAR_T* pStr, uqm::COUNT StrLen)
 						last_c = c;
 
 						if (word_chars == 0)
+						{
 							TimeOut += ONE_SECOND / (20 << scale);
+						}
 
 						if (WaitForActButtonUntil(true, TimeOut, false))
 						{
@@ -281,7 +321,9 @@ MakeReport(SOUND ReadOutSounds, uqm::CHAR_T* pStr, uqm::COUNT StrLen)
 				// Space spacing
 
 				if (curr_line >= 0 && last_c == '\n')
+				{
 					curr_line++;
+				}
 			}
 		} while (col_cells <= NUM_CELL_COLS && last_c != '\n' && StrLen);
 
@@ -296,7 +338,9 @@ MakeReport(SOUND ReadOutSounds, uqm::CHAR_T* pStr, uqm::COUNT StrLen)
 			}
 
 			if (!WaitForActButton(true, WAIT_INFINITE, false))
+			{
 				break;
+			}
 
 			t.baseline.y = r.extent.height + RES_SCALE(1);
 			// Text vertical alignment
@@ -304,7 +348,9 @@ MakeReport(SOUND ReadOutSounds, uqm::CHAR_T* pStr, uqm::COUNT StrLen)
 			if (StrLen)
 			{
 				if (!Sleepy)
+				{
 					BatchGraphics();
+				}
 				ClearReportArea(startx);
 				SetContextForeGroundColor(fgcolor);
 			}
@@ -321,7 +367,9 @@ void DoDiscoveryReport(SOUND ReadOutSounds)
 
 #ifdef DEBUG
 	if (disableInteractivity)
+	{
 		return;
+	}
 #endif
 
 	context = GetScanContext(&ownContext);
@@ -334,10 +382,14 @@ void DoDiscoveryReport(SOUND ReadOutSounds)
 		OldFont = SetContextFont(
 			pSolarSysState->SysInfo.PlanetInfo.LanderFont);
 		if (optWhichFonts == OPT_PC)
+		{
 			OldFontEffect = SetContextFontEffect(
 				pSolarSysState->SysInfo.PlanetInfo.LanderFontEff);
+		}
 		else
+		{
 			OldFontEffect = SetContextFontEffect(NULL);
+		}
 
 		luaUqm_comm_init(NULL, NULL_RESOURCE);
 		bool allocated = false;
@@ -351,7 +403,9 @@ void DoDiscoveryReport(SOUND ReadOutSounds)
 
 		luaUqm_comm_uninit();
 		if (allocated)
+		{
 			HFree(StrPtr);
+		}
 
 		SetContextFontEffect(OldFontEffect);
 		SetContextFont(OldFont);
@@ -361,7 +415,9 @@ void DoDiscoveryReport(SOUND ReadOutSounds)
 	SetContext(OldContext);
 	// TODO: Make CONTEXT ref-counted
 	if (ownContext)
+	{
 		DestroyScanContext();
+	}
 
 	DestroyDrawable(ReleaseDrawable(saveStamp.frame));
 

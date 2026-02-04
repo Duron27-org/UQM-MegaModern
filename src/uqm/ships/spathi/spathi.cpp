@@ -134,7 +134,9 @@ static void
 butt_missile_preprocess(ELEMENT* ElementPtr)
 {
 	if (ElementPtr->turn_wait > 0)
+	{
 		--ElementPtr->turn_wait;
+	}
 	else
 	{
 		uqm::COUNT facing;
@@ -242,7 +244,9 @@ spathi_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 				|| NORMALIZE_FACING(direction_facing
 									- travel_facing + ANGLE_TO_FACING(QUADRANT))
 					   <= ANGLE_TO_FACING(HALF_CIRCLE)))
+		{
 			StarShipPtr->ship_input_state |= SPECIAL;
+		}
 	}
 }
 

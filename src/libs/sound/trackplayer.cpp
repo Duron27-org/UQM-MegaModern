@@ -93,7 +93,9 @@ tracks_end_time(void)
 void JumpTrack(void)
 {
 	if (!sound_sample)
+	{
 		return; // nothing to skip
+	}
 
 	LockMutex(soundSource[SPEECH_SOURCE].stream_mutex);
 	seek_track(tracks_length + 1);
@@ -104,7 +106,9 @@ void JumpTrack(void)
 void PlayTrack(void)
 {
 	if (!sound_sample)
+	{
 		return; // nothing to play
+	}
 
 	LockMutex(soundSource[SPEECH_SOURCE].stream_mutex);
 	tracks_length = tracks_end_time();
@@ -118,7 +122,9 @@ void PlayTrack(void)
 void PauseTrack(void)
 {
 	if (!sound_sample)
+	{
 		return; // nothing to pause
+	}
 
 	LockMutex(soundSource[SPEECH_SOURCE].stream_mutex);
 	PauseStream(SPEECH_SOURCE);
@@ -131,7 +137,9 @@ void ResumeTrack(void)
 	audio_IntVal state;
 
 	if (!sound_sample)
+	{
 		return; // nothing to resume
+	}
 
 	LockMutex(soundSource[SPEECH_SOURCE].stream_mutex);
 
@@ -143,7 +151,9 @@ void ResumeTrack(void)
 
 	audio_GetSourcei(soundSource[SPEECH_SOURCE].handle, audio_SOURCE_STATE, &state);
 	if (state == audio_PAUSED)
+	{
 		ResumeStream(SPEECH_SOURCE);
+	}
 
 	UnlockMutex(soundSource[SPEECH_SOURCE].stream_mutex);
 }
@@ -156,11 +166,15 @@ PlayingTrack(void)
 	uqm::COUNT result = 0; // default is none
 
 	if (!sound_sample)
+	{
 		return 0; // not playing anything
+	}
 
 	LockMutex(soundSource[SPEECH_SOURCE].stream_mutex);
 	if (cur_sub_chunk)
+	{
 		result = cur_sub_chunk->track_num + 1;
+	}
 	UnlockMutex(soundSource[SPEECH_SOURCE].stream_mutex);
 
 	return result;
@@ -197,7 +211,9 @@ DoTrackTag(TFB_SoundChunk* chunk)
 {
 	LockMutex(soundSource[SPEECH_SOURCE].stream_mutex);
 	if (chunk->callback)
+	{
 		chunk->callback(0);
+	}
 
 	cur_sub_chunk = chunk;
 	UnlockMutex(soundSource[SPEECH_SOURCE].stream_mutex);
@@ -210,17 +226,23 @@ static bool
 OnStreamStart(TFB_SoundSample* sample)
 {
 	if (sample != sound_sample)
+	{
 		return false; // Huh? Why did we get called on this?
+	}
 
 	if (!cur_chunk)
+	{
 		return false; // Stream shouldn't be playing at all
+	}
 
 	// Adjust the sample to play what we want
 	sample->decoder = cur_chunk->decoder;
 	sample->offset = (sint32)(cur_chunk->start_time * ONE_SECOND);
 
 	if (cur_chunk->tag_me)
+	{
 		DoTrackTag(cur_chunk);
+	}
 
 	return true;
 }
@@ -232,7 +254,9 @@ static bool
 OnChunkEnd(TFB_SoundSample* sample, audio_Object buffer)
 {
 	if (sample != sound_sample)
+	{
 		return false; // Huh? Why did we get called on this?
+	}
 
 	if (!cur_chunk || !cur_chunk->next)
 	{ // all chunks and tracks are done
@@ -262,7 +286,9 @@ static void
 OnStreamEnd(TFB_SoundSample* sample)
 {
 	if (sample != sound_sample)
+	{
 		return; // Huh? Why did we get called on this?
+	}
 
 	cur_chunk = NULL;
 	cur_sub_chunk = NULL;
@@ -279,7 +305,9 @@ OnBufferTag(TFB_SoundSample* sample, TFB_SoundTag* tag)
 	assert(sizeof(tag->data) >= sizeof(chunk));
 
 	if (sample != sound_sample)
+	{
 		return; // Huh? Why did we get called on this?
+	}
 
 	TFB_ClearBufferTag(tag);
 	DoTrackTag(chunk);
@@ -310,7 +338,9 @@ GetTimeStamps(uqm::CHAR_T* TimeStamps, sint32* time_stamps)
 		}
 		TimeStamps += pos;
 		if (TimeStamps[0] == ';')
+		{
 			break;
+		}
 		TimeStamps += strspn(TimeStamps, ",\r\n");
 	}
 	return (num);
@@ -336,11 +366,15 @@ SplitSubPages(uqm::CHAR_T* text, uqm::CHAR_T* pages[], sint32 timestamp[], int s
 		aft_ellips = 3 * (text[pos] != '\0' && pos > 0 && !ispunct(text[pos - 1]) && !isspace(text[pos - 1]));
 		pages[page] = (uqm::CHAR_T*)HMalloc(sizeof(uqm::CHAR_T) * (lead_ellips + pos + aft_ellips + 1));
 		if (lead_ellips)
+		{
 			strcpy(pages[page], "...");
+		}
 		memcpy(pages[page] + lead_ellips, text, pos);
 		pages[page][lead_ellips + pos] = '\0'; // string term
 		if (aft_ellips)
+		{
 			strcpy(pages[page] + lead_ellips + pos, "...");
+		}
 
 		if (optSmoothScroll == OPT_PC && !usingSpeech
 			&& (lowByte(GLOBAL(CurrentActivity)) != WON_LAST_BATTLE))
@@ -353,7 +387,9 @@ SplitSubPages(uqm::CHAR_T* text, uqm::CHAR_T* pages[], sint32 timestamp[], int s
 			timestamp[page] = pos * TEXT_SPEED;
 
 			if (timestamp[page] < 1000)
+			{
 				timestamp[page] = 1000;
+			}
 		}
 		lead_ellips = aft_ellips ? 3 : 0;
 		text += pos;
@@ -442,7 +478,9 @@ void SpliceTrack(uqm::CHAR_T* TrackName, uqm::CHAR_T* TrackText, uqm::CHAR_T* Ti
 	int page;
 
 	if (!TrackText)
+	{
 		return;
+	}
 
 	if (!TrackName)
 	{ // Appending a piece of subtitles to the last track
@@ -538,7 +576,9 @@ void SpliceTrack(uqm::CHAR_T* TrackName, uqm::CHAR_T* TrackText, uqm::CHAR_T* Ti
 			HFree(pages[0]);
 		}
 		else
+		{
 			track_count++;
+		}
 
 		log_add(log_Info, "SpliceTrack(): loading %s", TrackName);
 
@@ -623,12 +663,18 @@ seek_track(sint32 offset)
 	TFB_SoundChunk* last_tag = NULL;
 
 	if (!sound_sample)
+	{
 		return; // nothing to recompute
+	}
 
 	if (offset < 0)
+	{
 		offset = 0;
+	}
 	else if ((uint32)offset > tracks_length)
+	{
 		offset = tracks_length + 1;
+	}
 
 	// Adjusting the stream start time is the only way we can arbitrarily
 	// seek the stream right now
@@ -643,7 +689,9 @@ seek_track(sint32 offset)
 		// TODO: this should be somehow changed if we implement more
 		//   callbacks, like Melnorme trading, offloading at Starbase, etc.
 		if (cur->tag_me)
+		{
 			last_tag = cur;
+		}
 	}
 
 	if (cur)
@@ -655,9 +703,13 @@ seek_track(sint32 offset)
 		sound_sample->decoder = cur->decoder;
 
 		if (cur->tag_me)
+		{
 			last_tag = cur;
+		}
 		if (last_tag)
+		{
 			DoTrackTag(last_tag);
+		}
 	}
 	else
 	{ // The offset is beyond the length of all tracks
@@ -673,9 +725,13 @@ get_current_track_pos(void)
 	sint32 start_time = soundSource[SPEECH_SOURCE].start_time;
 	sint32 pos = GetTimeCounter() - start_time;
 	if (pos < 0)
+	{
 		pos = 0;
+	}
 	else if ((uint32)pos > tracks_length)
+	{
 		pos = tracks_length;
+	}
 	return pos;
 }
 
@@ -684,7 +740,9 @@ void FastReverse_Smooth(void)
 	sint32 offset;
 
 	if (!sound_sample)
+	{
 		return; // nothing is playing, so.. bye!
+	}
 
 	LockMutex(soundSource[SPEECH_SOURCE].stream_mutex);
 
@@ -694,7 +752,9 @@ void FastReverse_Smooth(void)
 
 	// Restart the stream in case it ended previously
 	if (!PlayingStream(SPEECH_SOURCE))
+	{
 		PlayStream(sound_sample, SPEECH_SOURCE, false, true, false);
+	}
 	UnlockMutex(soundSource[SPEECH_SOURCE].stream_mutex);
 }
 
@@ -703,7 +763,9 @@ void FastForward_Smooth(void)
 	sint32 offset;
 
 	if (!sound_sample)
+	{
 		return; // nothing is playing, so.. bye!
+	}
 
 	LockMutex(soundSource[SPEECH_SOURCE].stream_mutex);
 
@@ -719,7 +781,9 @@ void FastReverse_Page(void)
 	TFB_SoundChunk* prev;
 
 	if (!sound_sample)
+	{
 		return; // nothing is playing, so.. bye!
+	}
 
 	LockMutex(soundSource[SPEECH_SOURCE].stream_mutex);
 	prev = find_prev_page(cur_sub_chunk);
@@ -738,7 +802,9 @@ void FastForward_Page(void)
 	TFB_SoundChunk* next;
 
 	if (!sound_sample)
+	{
 		return; // nothing is playing, so.. bye!
+	}
 
 	LockMutex(soundSource[SPEECH_SOURCE].stream_mutex);
 	next = find_next_page(cur_sub_chunk);
@@ -767,7 +833,9 @@ int GetTrackPosition(int in_units)
 	// it and thus divide by 0
 
 	if (!sound_sample || length == 0)
+	{
 		return 0; // nothing is playing
+	}
 
 	LockMutex(soundSource[SPEECH_SOURCE].stream_mutex);
 	offset = get_current_track_pos();
@@ -793,7 +861,9 @@ void destroy_SoundChunk_list(TFB_SoundChunk* chunk)
 	{
 		next = chunk->next;
 		if (chunk->decoder)
+		{
 			SoundDecoder_Free(chunk->decoder);
+		}
 		HFree(chunk->text);
 		HFree(chunk);
 	}
@@ -804,7 +874,9 @@ TFB_SoundChunk*
 find_next_page(TFB_SoundChunk* cur)
 {
 	if (!cur)
+	{
 		return NULL;
+	}
 	for (cur = cur->next; cur && !cur->tag_me; cur = cur->next)
 		;
 	return cur;
@@ -819,12 +891,16 @@ find_prev_page(TFB_SoundChunk* cur)
 	TFB_SoundChunk* last_valid = chunks_head;
 
 	if (cur == chunks_head)
+	{
 		return cur; // cannot go below the first track
+	}
 
 	for (prev = chunks_head; prev && prev != cur; prev = prev->next)
 	{
 		if (prev->tag_me)
+		{
 			last_valid = prev;
+		}
 	}
 	return last_valid;
 }
@@ -842,7 +918,9 @@ SUBTITLE_REF
 GetNextTrackSubtitle(SUBTITLE_REF LastRef)
 {
 	if (!LastRef)
+	{
 		return NULL; // enumeration already ended
+	}
 
 	return find_next_page(LastRef);
 }
@@ -852,7 +930,9 @@ const uqm::CHAR_T*
 GetTrackSubtitleText(SUBTITLE_REF SubRef)
 {
 	if (!SubRef)
+	{
 		return NULL;
+	}
 
 	return SubRef->text;
 }
@@ -865,11 +945,15 @@ GetTrackSubtitle(void)
 	const uqm::CHAR_T* cur_sub = NULL;
 
 	if (!sound_sample)
+	{
 		return NULL; // not playing anything
+	}
 
 	LockMutex(soundSource[SPEECH_SOURCE].stream_mutex);
 	if (cur_sub_chunk)
+	{
 		cur_sub = cur_sub_chunk->text;
+	}
 	UnlockMutex(soundSource[SPEECH_SOURCE].stream_mutex);
 
 	return cur_sub;
@@ -882,10 +966,14 @@ GetSubtitleNumber(const uqm::CHAR_T* sub)
 	TFB_SoundChunk* now;
 
 	if (sub == NULL) // If no sub - get current one
+	{
 		sub = GetTrackSubtitle();
+	}
 
 	if (sub == NULL) // Nothing playing - no subs
+	{
 		return -1;
+	}
 
 	now = chunks_head;
 
@@ -905,7 +993,9 @@ GetSubtitleNumberByTrack(uqm::COUNT track)
 	TFB_SoundChunk* now;
 
 	if (chunks_head == NULL) // Fool-proof
+	{
 		return i;
+	}
 
 	now = chunks_head;
 
@@ -918,7 +1008,9 @@ GetSubtitleNumberByTrack(uqm::COUNT track)
 	// A trick if we need to lock the last track in responce
 	// Never used in game, kept for future
 	if (now->next == NULL && now->track_num != track)
+	{
 		i++;
+	}
 
 	return i;
 }
@@ -934,14 +1026,22 @@ RecalculateDelay(uqm::DWORD numChars, bool talk)
 	{
 		silence_length = ONE_SECOND * (numChars + MODERATE_SPEED) / read_speed;
 		if (silence_length < talk_length)
+		{
 			talk_length = silence_length;
+		}
 		silence_length -= talk_length;
 	}
 	else
+	{
 		silence_length = 0;
+	}
 
 	if (talk)
+	{
 		return talk_length;
+	}
 	else
+	{
 		return silence_length;
+	}
 }

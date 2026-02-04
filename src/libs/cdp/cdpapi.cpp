@@ -223,7 +223,9 @@ void cdp_UninitApi(void)
 		{
 			itf->used = false;
 			if (itf->name)
+			{
 				HFree(itf->name);
+			}
 			itf->name = NULL;
 			itf->itfvtbl = NULL;
 			itf->module = NULL;
@@ -372,7 +374,9 @@ cdp_Host_RegisterItf(const char* name, cdp_ApiVersion ver_from,
 	// be allowed to expose interfaces that support and/or utilize obsoleted
 	// API versions
 	if (ver_from < CDPAPI_VERSION_MIN)
+	{
 		ver_from = CDPAPI_VERSION_MIN;
+	}
 	if (ver_to < CDPAPI_VERSION_MIN)
 	{
 		fprintf(stderr, "cdp_Host_RegisterItf(): "
@@ -389,7 +393,9 @@ cdp_Host_RegisterItf(const char* name, cdp_ApiVersion ver_from,
 	{
 		// and pick up an empty slot (where available)
 		if (!newslot && !itfreg->name)
+		{
 			newslot = itfreg;
+		}
 	}
 
 	if (itfreg >= cdp_itfs + MAX_REG_ITFS)
@@ -480,7 +486,9 @@ cdp_Host_UnregisterItfs(cdp_ItfDef* defs)
 	for (def = defs; def->name; ++def)
 	{
 		if (def->reg)
+		{
 			cdp_Host_UnregisterItf(def->reg);
+		}
 	}
 }
 
@@ -536,13 +544,19 @@ cdp_AllocEventBinds(cdp_EventBind* binds, uint32 ccur, uint32 cnew)
 
 	newsize = cnew * sizeof(cdp_EventBind);
 	if (binds)
+	{
 		newbinds = HRealloc(binds, newsize);
+	}
 	else
+	{
 		newbinds = HMalloc(newsize);
+	}
 
 	if (cnew > ccur)
+	{
 		memset(newbinds + ccur, 0,
 			   (cnew - ccur) * sizeof(cdp_EventBind));
+	}
 
 	return newbinds;
 }
@@ -621,7 +635,9 @@ cdp_Host_RegisterEvent(const char* name, cdp_Module* owner)
 	{
 		// and pick up an empty slot (where available)
 		if (!newslot && !evtreg->name)
+		{
 			newslot = evtreg;
+		}
 	}
 
 	if (evtreg >= cdp_evts + MAX_REG_EVENTS)
@@ -676,7 +692,9 @@ cdp_Host_UnregisterEvent(cdp_EventReg* evtreg)
 	evtreg->module = NULL;
 	evtreg->name = NULL;
 	if (evtreg->binds)
+	{
 		HFree(evtreg->binds);
+	}
 	evtreg->binds = NULL;
 	evtreg->bindslots = 0;
 }
@@ -712,7 +730,9 @@ cdp_Host_UnregisterEvents(cdp_EventDef* defs)
 	for (def = defs; def->name; ++def)
 	{
 		if (def->reg)
+		{
 			cdp_Host_UnregisterEvent(def->reg);
+		}
 	}
 }
 
@@ -774,14 +794,18 @@ cdp_Host_UnsubscribeEvent(cdp_Event event, cdp_EventProc proc)
 	}
 
 	if (!reg->binds || !reg->bindslots)
+	{
 		return; // hmm, no bindings
+	}
 
 	// check for duplicate or find a new slot
 	for (i = 0, bind = reg->binds; i < reg->bindslots && bind->proc != proc;
 		 ++i, ++bind)
 		;
 	if (i >= reg->bindslots)
+	{
 		return; // binding not found
+	}
 
 	bind->proc = NULL;
 	bind->module = NULL;
@@ -796,8 +820,12 @@ cdp_Host_SubscribeEvents(cdp_EventDef* defs, cdp_Module* module)
 	for (def = defs; def->name; ++def)
 	{
 		if (def->event != CDP_EVENT_INVALID && def->proc)
+		{
 			if (!cdp_Host_SubscribeEvent(def->event, def->proc, module))
+			{
 				++errors;
+			}
+		}
 	}
 	return !errors;
 }
@@ -810,7 +838,9 @@ cdp_Host_UnsubscribeEvents(cdp_EventDef* defs)
 	for (def = defs; def->name; ++def)
 	{
 		if (def->event != CDP_EVENT_INVALID && def->proc)
+		{
 			cdp_Host_UnsubscribeEvent(def->event, def->proc);
+		}
 	}
 }
 
@@ -832,7 +862,9 @@ cdp_Host_FireEvent(cdp_EventReg* evtreg, uint32 iparam, void* pparam)
 	}
 
 	if (!evtreg->binds)
+	{
 		return 0; // no subscribers
+	}
 
 	event = cdp_EventFromReg(evtreg);
 
@@ -842,7 +874,9 @@ cdp_Host_FireEvent(cdp_EventReg* evtreg, uint32 iparam, void* pparam)
 		 --i, --bind)
 	{
 		if (bind->proc)
+		{
 			ret = bind->proc(event, iparam, pparam, &bHandled);
+		}
 	}
 	return ret;
 }

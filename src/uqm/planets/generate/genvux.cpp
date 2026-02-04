@@ -130,7 +130,9 @@ GenerateVux_generatePlanets(SOLARSYS_STATE* solarSys)
 			pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
 		}
 		else
+		{
 			CheckForHabitable(solarSys);
+		}
 
 		pPlanet->data_index = GenerateHabitableWorld();
 	}
@@ -167,7 +169,9 @@ GenerateVux_generateOrbital(SOLARSYS_STATE* solarSys, PLANET_DESC* world)
 		InitCommunication(VUX_CONVERSATION);
 
 		if (GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
+		{
 			return true;
+		}
 
 		{
 			GLOBAL(CurrentActivity) &= ~START_INTERPLANETARY;
@@ -176,7 +180,9 @@ GenerateVux_generateOrbital(SOLARSYS_STATE* solarSys, PLANET_DESC* world)
 
 			if (CurStarDescPtr->Index == VUX_DEFINED
 				|| !GET_GAME_STATE(ZEX_IS_DEAD))
+			{
 				return true;
+			}
 
 			RepairSISBorder();
 		}
@@ -348,7 +354,9 @@ GenerateVux_pickupLife(SOLARSYS_STATE* solarSys, PLANET_DESC* world,
 		if (whichNode == 0)
 		{ // Picked up Zex' Beauty
 			if (GET_GAME_STATE(VUX_BEAST) && StarSeed)
+			{
 				return true; // no need to core, just pick it up
+			}
 			assert(!GET_GAME_STATE(VUX_BEAST));
 
 			GenerateDefault_landerReport(solarSys);

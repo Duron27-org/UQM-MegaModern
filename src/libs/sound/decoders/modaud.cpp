@@ -121,7 +121,9 @@ moda_mmout_Update(void)
 {
 	written = 0;
 	if (!buffer || bufsize == 0)
+	{
 		return;
+	}
 
 	written = VC_WriteBytes((uqm::SBYTE*)buffer, bufsize);
 }
@@ -239,7 +241,9 @@ static void
 moda_delete_uioReader(MREADER* reader)
 {
 	if (reader)
+	{
 		HFree(reader);
+	}
 }
 
 
@@ -400,7 +404,9 @@ moda_Decode(THIS_PTR, void* buf, sint32 bufsize)
 
 	Player_Start(moda->module);
 	if (!Player_Active())
+	{
 		return 0;
+	}
 
 	poutsize = moda_mmout_SetOutputBuffer(buf, bufsize);
 	MikMod_Update();

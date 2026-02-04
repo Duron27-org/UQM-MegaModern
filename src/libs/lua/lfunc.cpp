@@ -33,7 +33,9 @@ Closure* luaF_newLclosure(lua_State* L, int n)
 	c->l.p = NULL;
 	c->l.nupvalues = cast_byte(n);
 	while (n--)
+	{
 		c->l.upvals[n] = NULL;
+	}
 	return c;
 }
 
@@ -59,9 +61,11 @@ UpVal* luaF_findupval(lua_State* L, StkId level)
 		lua_assert(p->v != &p->u.value);
 		lua_assert(!isold(o) || isold(obj2gco(L)));
 		if (p->v == level)
-		{						/* found a corresponding upvalue? */
-			if (isdead(g, o))	/* is it dead? */
+		{					  /* found a corresponding upvalue? */
+			if (isdead(g, o)) /* is it dead? */
+			{
 				changewhite(o); /* resurrect it */
+			}
 			return p;
 		}
 		pp = &p->next;
@@ -89,8 +93,10 @@ static void unlinkupval(UpVal* uv)
 void luaF_freeupval(lua_State* L, UpVal* uv)
 {
 	if (uv->v != &uv->u.value) /* is it open? */
-		unlinkupval(uv);	   /* remove from open list */
-	luaM_free(L, uv);		   /* free upvalue */
+	{
+		unlinkupval(uv); /* remove from open list */
+	}
+	luaM_free(L, uv); /* free upvalue */
 }
 
 
@@ -104,7 +110,9 @@ void luaF_close(lua_State* L, StkId level)
 		lua_assert(!isblack(o) && uv->v != &uv->u.value);
 		L->openupval = uv->next; /* remove from `open' list */
 		if (isdead(g, o))
+		{
 			luaF_freeupval(L, uv); /* free upvalue */
+		}
 		else
 		{
 			unlinkupval(uv);				/* remove upvalue from 'uvhead' list */
@@ -169,7 +177,9 @@ const char* luaF_getlocalname(const Proto* f, int local_number, int pc)
 		{ /* is variable active? */
 			local_number--;
 			if (local_number == 0)
+			{
 				return getstr(f->locvars[i].varname);
+			}
 		}
 	}
 	return NULL; /* not found */

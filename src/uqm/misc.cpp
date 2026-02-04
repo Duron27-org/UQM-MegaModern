@@ -89,7 +89,7 @@ void spawn_planet(void)
 		PutElement(hPlanetElement);
 	}
 	if (EXTENDED && GET_GAME_STATE(URQUAN_PROTECTING_SAMATRA))
-	{	// Works inconsistently because planet is on top star layer
+	{ // Works inconsistently because planet is on top star layer
 		// and Sa-Matra on second, therefore scrollig is a bit off
 		pt.x += 1200;
 		pt.y += 780;
@@ -124,9 +124,13 @@ spawn_rubble(ELEMENT* AsteroidElementPtr)
 
 
 		if (!IS_HD)
+		{
 			RubbleElementPtr->current.image.frame = SetAbsFrameIndex(asteroid[0], ANGLE_TO_FACING(FULL_CIRCLE));
+		}
 		else
+		{
 			RubbleElementPtr->current.image.frame = SetAbsFrameIndex(asteroid[0], 29);
+		}
 
 		RubbleElementPtr->current.location = AsteroidElementPtr->current.location;
 		RubbleElementPtr->preprocess_func = animation_preprocess;
@@ -139,22 +143,32 @@ static void
 asteroid_preprocess(ELEMENT* ElementPtr)
 {
 	if (ElementPtr->turn_wait > 0)
+	{
 		--ElementPtr->turn_wait;
+	}
 	else
 	{
 		uqm::COUNT frame_index;
 
 		frame_index = GetFrameIndex(ElementPtr->current.image.frame);
 		if (ElementPtr->thrust_wait & (1 << 7))
+		{
 			--frame_index;
+		}
 		else
+		{
 			++frame_index;
+		}
 
 
 		if (!IS_HD)
+		{
 			ElementPtr->next.image.frame = SetAbsFrameIndex(ElementPtr->current.image.frame, NORMALIZE_FACING(frame_index));
+		}
 		else
+		{
 			ElementPtr->next.image.frame = SetAbsFrameIndex(ElementPtr->current.image.frame, frame_index % 30);
+		}
 
 		ElementPtr->state_flags |= CHANGING;
 
@@ -191,9 +205,13 @@ void spawn_asteroid(ELEMENT* ElementPtr)
 		if ((val = (uqm::COUNT)TFB_Random()) & (1 << 0))
 		{
 			if (!(val & (1 << 1)))
+			{
 				AsteroidElementPtr->current.location.x = 0;
+			}
 			else
+			{
 				AsteroidElementPtr->current.location.x = LOG_SPACE_WIDTH;
+			}
 			AsteroidElementPtr->current.location.y =
 				WRAP_Y(DISPLAY_ALIGN_Y(TFB_Random()));
 		}
@@ -202,9 +220,13 @@ void spawn_asteroid(ELEMENT* ElementPtr)
 			AsteroidElementPtr->current.location.x =
 				WRAP_X(DISPLAY_ALIGN_X(TFB_Random()));
 			if (!(val & (1 << 1)))
+			{
 				AsteroidElementPtr->current.location.y = 0;
+			}
 			else
+			{
 				AsteroidElementPtr->current.location.y = LOG_SPACE_HEIGHT;
+			}
 		}
 
 		{
@@ -254,7 +276,9 @@ void do_damage(ELEMENT* ElementPtr, uqm::SIZE damage)
 	else if (!GRAVITY_MASS(ElementPtr->mass_points))
 	{
 		if ((uqm::BYTE)damage < ElementPtr->hit_points)
+		{
 			ElementPtr->hit_points -= (uqm::BYTE)damage;
+		}
 		else
 		{
 			ElementPtr->hit_points = 0;
@@ -288,7 +312,9 @@ void crew_preprocess(ELEMENT* ElementPtr)
 
 		GetElementStarShip(ElementPtr, &StarShipPtr);
 		if (StarShipPtr && StarShipPtr->RaceDescPtr->ship_info.crew_level)
+		{
 			ElementPtr->hTarget = StarShipPtr->hShip;
+		}
 		else
 		{
 			uqm::COUNT facing;
@@ -309,16 +335,24 @@ void crew_preprocess(ELEMENT* ElementPtr)
 			  - ElementPtr->current.location.x;
 		delta = WRAP_DELTA_X(delta);
 		if (delta > 0)
+		{
 			ElementPtr->next.location.x += CREW_DELTA;
+		}
 		else if (delta < 0)
+		{
 			ElementPtr->next.location.x -= CREW_DELTA;
+		}
 
 		delta = ShipPtr->current.location.y - ElementPtr->current.location.y;
 		delta = WRAP_DELTA_Y(delta);
 		if (delta > 0)
+		{
 			ElementPtr->next.location.y += CREW_DELTA;
+		}
 		else if (delta < 0)
+		{
 			ElementPtr->next.location.y -= CREW_DELTA;
+		}
 		UnlockElement(hTarget);
 	}
 }
@@ -359,7 +393,9 @@ void AbandonShip(ELEMENT* ShipPtr, ELEMENT* TargetPtr,
 
 	GetElementStarShip(ShipPtr, &StarShipPtr);
 	if (StarShipPtr->RaceDescPtr->ship_info.ship_flags & CREW_IMMUNE)
+	{
 		return;
+	}
 
 	ShipIntersect = ShipPtr->IntersectControl;
 	GetFrameRect(ShipIntersect.IntersectStamp.frame, &r);
@@ -367,7 +403,9 @@ void AbandonShip(ELEMENT* ShipPtr, ELEMENT* TargetPtr,
 	if ((direction = GetVelocityTravelAngle(
 			 &ShipPtr->velocity))
 		== FULL_CIRCLE)
+	{
 		dx = dy = 0;
+	}
 	else
 	{
 #define MORE_THAN_ENOUGH RES_SCALE(100)
@@ -432,17 +470,29 @@ void AbandonShip(ELEMENT* ShipPtr, ELEMENT* TargetPtr,
 			else
 			{
 				if (dx == 0)
+				{
 					CrewIntersect.EndPoint.x += w - (r.extent.width >> 1);
+				}
 				else if (dx > 0)
+				{
 					CrewIntersect.EndPoint.x += w;
+				}
 				else
+				{
 					CrewIntersect.EndPoint.x -= w;
+				}
 				if (dy == 0)
+				{
 					CrewIntersect.EndPoint.y += h - (r.extent.height >> 1);
+				}
 				else if (dy > 0)
+				{
 					CrewIntersect.EndPoint.y += h;
+				}
 				else
+				{
 					CrewIntersect.EndPoint.y -= h;
+				}
 				CrewIntersect.IntersectStamp.origin.x =
 					CrewIntersect.EndPoint.x + dx;
 				CrewIntersect.IntersectStamp.origin.y =

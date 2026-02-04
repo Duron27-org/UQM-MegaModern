@@ -138,7 +138,9 @@ uio_accessFileBlockNoMmap(uio_FileBlock* block, off_t offset, size_t length,
 		return 0;
 	}
 	if (length > block->blockSize - offset)
+	{
 		length = block->blockSize - offset;
+	}
 
 	if (block->buffer != NULL)
 	{
@@ -212,7 +214,9 @@ uio_accessFileBlockNoMmap(uio_FileBlock* block, off_t offset, size_t length,
 		// memmove(...)
 
 		if (oldBuffer != block->buffer)
+		{
 			uio_free(oldBuffer);
+		}
 	}
 	block->bufFill = 0;
 	block->bufOffset = start;
@@ -236,9 +240,13 @@ uio_accessFileBlockNoMmap(uio_FileBlock* block, off_t offset, size_t length,
 	block->bufFill = numRead;
 	*buffer = block->buffer + (offset - block->bufOffset);
 	if (numRead <= (offset - block->bufOffset))
+	{
 		return 0;
+	}
 	if ((size_t)numRead >= length)
+	{
 		return length;
+	}
 	return numRead - offset;
 }
 
@@ -280,9 +288,13 @@ int uio_copyFileBlock(uio_FileBlock* block, off_t offset, char* buffer,
 
 		// Don't go beyond the end of the block.
 		if (offset > (off_t)block->blockSize)
+		{
 			return 0;
+		}
 		if (length > block->blockSize - offset)
+		{
 			length = block->blockSize - offset;
+		}
 
 		// Check whether (part of) the requested data is already in our
 		// own buffer.
@@ -291,13 +303,17 @@ int uio_copyFileBlock(uio_FileBlock* block, off_t offset, char* buffer,
 		{
 			size_t toCopy = block->bufFill - offset;
 			if (toCopy > length)
+			{
 				toCopy = length;
+			}
 			memcpy(buffer, block->buffer + (offset - block->bufOffset),
 				   toCopy);
 			numCopied += toCopy;
 			length -= toCopy;
 			if (length == 0)
+			{
 				return numCopied;
+			}
 			buffer += toCopy;
 			offset += toCopy;
 		}
@@ -334,7 +350,9 @@ int uio_closeFileBlock(uio_FileBlock* block)
 	else
 	{
 		if (block->buffer != NULL)
+		{
 			uio_free(block->buffer);
+		}
 	}
 	uio_Handle_unref(block->handle);
 	uio_FileBlock_free(block);

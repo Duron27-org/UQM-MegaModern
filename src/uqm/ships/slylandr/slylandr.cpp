@@ -133,7 +133,9 @@ lightning_postprocess(ELEMENT* ElementPtr)
 
 		initialize_lightning(ElementPtr, &Lightning);
 		if (Lightning)
+		{
 			PutElement(Lightning);
+		}
 	}
 }
 
@@ -145,8 +147,10 @@ lightning_collision(ELEMENT* ElementPtr0, POINT* pPt0,
 
 	GetElementStarShip(ElementPtr0, &StarShipPtr);
 	if (StarShipPtr->weapon_counter > WEAPON_WAIT >> 1)
+	{
 		StarShipPtr->weapon_counter =
 			WEAPON_WAIT - StarShipPtr->weapon_counter;
+	}
 	StarShipPtr->weapon_counter -= ElementPtr0->turn_wait;
 	ElementPtr0->turn_wait = 0;
 
@@ -205,10 +209,14 @@ initialize_lightning(ELEMENT* ElementPtr, HELEMENT LaserArray[])
 			angle = FACING_TO_ANGLE(facing);
 
 			if ((LaserPtr->turn_wait = StarShipPtr->weapon_counter) == 0)
+			{
 				LaserPtr->turn_wait = WEAPON_WAIT;
+			}
 
 			if (LaserPtr->turn_wait > WEAPON_WAIT >> 1)
+			{
 				LaserPtr->turn_wait = WEAPON_WAIT - LaserPtr->turn_wait;
+			}
 
 			switch (highByte(LOWORD(rand_val)) & 3)
 			{
@@ -236,13 +244,21 @@ initialize_lightning(ELEMENT* ElementPtr, HELEMENT LaserArray[])
 		}
 
 		if (delta == -1 || delta == ANGLE_TO_FACING(HALF_CIRCLE))
+		{
 			angle += LOWORD(rand_val);
+		}
 		else if (delta == 0)
+		{
 			angle += LOWORD(rand_val) & 1 ? -1 : 1;
+		}
 		else if (delta < ANGLE_TO_FACING(HALF_CIRCLE))
+		{
 			angle += LOWORD(rand_val) & (QUADRANT - 1);
+		}
 		else
+		{
 			angle -= LOWORD(rand_val) & (QUADRANT - 1);
+		}
 		delta = WORLD_TO_VELOCITY(
 			DISPLAY_TO_WORLD((HIWORD(rand_val) & (LASER_LENGTH - 1)) + 4));
 		SetVelocityComponents(&LaserPtr->velocity,
@@ -265,7 +281,9 @@ slylandro_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 	// no dodging in role playing game, unless you haven't
 	// visited the starbase yet or difficulty is set to Hard
 	if ((lowByte(GLOBAL(CurrentActivity)) == IN_ENCOUNTER) && GET_GAME_STATE(STARBASE_AVAILABLE) && !DIF_HARD)
+	{
 		ObjectsOfConcern[ENEMY_WEAPON_INDEX].ObjectPtr = 0;
+	}
 
 	lpEvalDesc = &ObjectsOfConcern[ENEMY_SHIP_INDEX];
 
@@ -273,26 +291,36 @@ slylandro_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 	if (StarShipPtr->special_counter == 0
 		&& StarShipPtr->RaceDescPtr->ship_info.energy_level == 0
 		&& ObjectsOfConcern[GRAVITY_MASS_INDEX].ObjectPtr == 0)
+	{
 		ConcernCounter = FIRST_EMPTY_INDEX + 1;
+	}
 	if (lpEvalDesc->ObjectPtr && lpEvalDesc->MoveState == PURSUE
 		&& lpEvalDesc->which_turn <= 6)
+	{
 		lpEvalDesc->MoveState = ENTICE;
+	}
 
 	++ShipPtr->thrust_wait;
 	ship_intelligence(ShipPtr, ObjectsOfConcern, ConcernCounter);
 	--ShipPtr->thrust_wait;
 
 	if (lpEvalDesc->ObjectPtr && lpEvalDesc->which_turn <= 14)
+	{
 		StarShipPtr->ship_input_state |= WEAPON;
+	}
 	else
+	{
 		StarShipPtr->ship_input_state &= ~WEAPON;
+	}
 
 	StarShipPtr->ship_input_state &= ~SPECIAL;
 	if (StarShipPtr->RaceDescPtr->ship_info.energy_level < StarShipPtr->RaceDescPtr->ship_info.max_energy)
 	{
 		lpEvalDesc = &ObjectsOfConcern[FIRST_EMPTY_INDEX];
 		if (lpEvalDesc->ObjectPtr && lpEvalDesc->which_turn <= 14)
+		{
 			StarShipPtr->ship_input_state |= SPECIAL;
+		}
 	}
 }
 
@@ -321,11 +349,15 @@ harvest_space_junk(ELEMENT* ElementPtr)
 			if ((dx = ObjPtr->next.location.x
 					- ElementPtr->next.location.x)
 				< 0)
+			{
 				dx = -dx;
+			}
 			if ((dy = ObjPtr->next.location.y
 					- ElementPtr->next.location.y)
 				< 0)
+			{
 				dy = -dy;
+			}
 			dx = WORLD_TO_DISPLAY(dx);
 			dy = WORLD_TO_DISPLAY(dy);
 			if (dx <= HARVEST_RANGE && dy <= HARVEST_RANGE
@@ -368,7 +400,9 @@ slylandro_postprocess(ELEMENT* ElementPtr)
 
 		initialize_lightning(ElementPtr, &Lightning);
 		if (Lightning)
+		{
 			PutElement(Lightning);
+		}
 	}
 
 	if (StarShipPtr->special_counter == 0
@@ -390,16 +424,22 @@ slylandro_preprocess(ELEMENT* ElementPtr)
 		GetElementStarShip(ElementPtr, &StarShipPtr);
 		if ((StarShipPtr->cur_status_flags & THRUST)
 			&& !(StarShipPtr->old_status_flags & THRUST))
+		{
 			StarShipPtr->ShipFacing += ANGLE_TO_FACING(HALF_CIRCLE);
+		}
 
 		if (ElementPtr->turn_wait == 0)
 		{
 			ElementPtr->turn_wait +=
 				StarShipPtr->RaceDescPtr->characteristics.turn_wait + 1;
 			if (StarShipPtr->cur_status_flags & LEFT)
+			{
 				--StarShipPtr->ShipFacing;
+			}
 			else if (StarShipPtr->cur_status_flags & RIGHT)
+			{
 				++StarShipPtr->ShipFacing;
+			}
 		}
 
 		StarShipPtr->ShipFacing = NORMALIZE_FACING(StarShipPtr->ShipFacing);

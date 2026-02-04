@@ -67,7 +67,9 @@ static void NS_Exit(void)
 static void NS_Update(void)
 {
 	if (zerobuf)
+	{
 		VC_WriteBytes(zerobuf, ZEROLEN);
+	}
 }
 
 MIKMODAPI MDRIVER drv_nos = {

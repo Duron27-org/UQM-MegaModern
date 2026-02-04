@@ -85,22 +85,34 @@ void SCALE_(TriScanFilter)(SDL_Surface* src, SDL_Surface* dst, SDL_Rect* r)
 	for (y = region->y; y < yend; ++y, dst_p += ddst, src_p += dsrc)
 	{
 		if (y > 0)
+		{
 			prevline = -slen;
+		}
 		else
+		{
 			prevline = 0;
+		}
 
 		if (y < h - 1)
+		{
 			nextline = slen;
+		}
 		else
+		{
 			nextline = 0;
+		}
 
 		// prime the (tiny) sliding-window pixel arrays
 		PIX(1, 0) = src_p[0];
 
 		if (region->x > 0)
+		{
 			PIX(0, 0) = src_p[-1];
+		}
 		else
+		{
 			PIX(0, 0) = PIX(1, 0);
+		}
 
 		for (x = region->x; x < xend; ++x, ++src_p, dst_p += 2)
 		{
@@ -112,31 +124,51 @@ void SCALE_(TriScanFilter)(SDL_Surface* src, SDL_Surface* dst, SDL_Rect* r)
 			PIX(0, 1) = src_p[nextline];
 
 			if (x < w - 1)
+			{
 				PIX(1, 0) = src_p[1];
+			}
 			else
+			{
 				PIX(1, 0) = PIX(0, 0);
+			}
 
 			if (!TRISCAN_CMPYUV((0, -1), (0, 1)) && !TRISCAN_CMPYUV((-1, 0), (1, 0)))
 			{
 				if (TRISCAN_CMPYUV((-1, 0), (0, -1)))
+				{
 					dst_p[0] = Scale_Blend_11(PIX(-1, 0), PIX(0, -1));
+				}
 				else
+				{
 					dst_p[0] = PIX(0, 0);
+				}
 
 				if (TRISCAN_CMPYUV((1, 0), (0, -1)))
+				{
 					dst_p[1] = Scale_Blend_11(PIX(1, 0), PIX(0, -1));
+				}
 				else
+				{
 					dst_p[1] = PIX(0, 0);
+				}
 
 				if (TRISCAN_CMPYUV((-1, 0), (0, 1)))
+				{
 					dst_p[dlen] = Scale_Blend_11(PIX(-1, 0), PIX(0, 1));
+				}
 				else
+				{
 					dst_p[dlen] = PIX(0, 0);
+				}
 
 				if (TRISCAN_CMPYUV((1, 0), (0, 1)))
+				{
 					dst_p[dlen + 1] = Scale_Blend_11(PIX(1, 0), PIX(0, 1));
+				}
 				else
+				{
 					dst_p[dlen + 1] = PIX(0, 0);
+				}
 			}
 			else
 			{

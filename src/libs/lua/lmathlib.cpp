@@ -136,14 +136,20 @@ static int math_log(lua_State* L)
 	lua_Number x = luaL_checknumber(L, 1);
 	lua_Number res;
 	if (lua_isnoneornil(L, 2))
+	{
 		res = l_mathop(log)(x);
+	}
 	else
 	{
 		lua_Number base = luaL_checknumber(L, 2);
 		if (base == (lua_Number)10.0)
+		{
 			res = l_mathop(log10)(x);
+		}
 		else
+		{
 			res = l_mathop(log)(x) / l_mathop(log)(base);
+		}
 	}
 	lua_pushnumber(L, res);
 	return 1;
@@ -201,7 +207,9 @@ static int math_min(lua_State* L)
 	{
 		lua_Number d = luaL_checknumber(L, i);
 		if (d < dmin)
+		{
 			dmin = d;
+		}
 	}
 	lua_pushnumber(L, dmin);
 	return 1;
@@ -217,7 +225,9 @@ static int math_max(lua_State* L)
 	{
 		lua_Number d = luaL_checknumber(L, i);
 		if (d > dmax)
+		{
 			dmax = d;
+		}
 	}
 	lua_pushnumber(L, dmax);
 	return 1;

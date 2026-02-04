@@ -77,7 +77,9 @@ FILE* _mm_fopen(const CHAR* fname, const CHAR* attrib)
 	{
 		_mm_errno = MMERR_OPENING_FILE;
 		if (_mm_errorhandler)
+		{
 			_mm_errorhandler();
+		}
 	}
 	return fp;
 }
@@ -87,7 +89,9 @@ BOOL _mm_FileExists(const CHAR* fname)
 	FILE* fp;
 
 	if (!(fp = fopen(fname, "r")))
+	{
 		return 0;
+	}
 	fclose(fp);
 
 	return 1;
@@ -248,9 +252,13 @@ static BOOL _mm_MemReader_Eof(MREADER* reader)
 {
 	MMEMREADER* mr = (MMEMREADER*)reader;
 	if (!mr)
+	{
 		return 1;
+	}
 	if (mr->pos >= mr->len)
+	{
 		return 1;
+	}
 	return 0;
 }
 
@@ -263,12 +271,16 @@ static BOOL _mm_MemReader_Read(MREADER* reader, void* ptr, size_t size)
 	BOOL ret;
 
 	if (!reader || !size || (size > (size_t)LONG_MAX))
+	{
 		return 0;
+	}
 
 	mr = (MMEMREADER*)reader;
 	siz = (long)size;
 	if (mr->pos >= mr->len)
+	{
 		return 0; /* @ eof */
+	}
 	if (mr->pos + siz > mr->len)
 	{
 		siz = mr->len - mr->pos;
@@ -300,7 +312,9 @@ static int _mm_MemReader_Get(MREADER* reader)
 
 	mr = (MMEMREADER*)reader;
 	if (mr->pos >= mr->len)
+	{
 		return EOF;
+	}
 	c = ((const unsigned char*)mr->buffer)[mr->pos];
 	mr->pos++;
 
@@ -312,7 +326,9 @@ static int _mm_MemReader_Seek(MREADER* reader, long offset, int whence)
 	MMEMREADER* mr;
 
 	if (!reader)
+	{
 		return -1;
+	}
 	mr = (MMEMREADER*)reader;
 	switch (whence)
 	{
@@ -354,7 +370,9 @@ static long _mm_MemReader_Tell(MREADER* reader)
 void _mm_write_string(const CHAR* data, MWRITER* writer)
 {
 	if (data)
+	{
 		_mm_write_UBYTES(data, strlen(data), writer);
+	}
 }
 
 void _mm_write_M_UWORD(UWORD data, MWRITER* writer)
@@ -404,49 +422,65 @@ void _mm_write_I_SLONG(SLONG data, MWRITER* writer)
 void _mm_write_M_SWORDS(SWORD* buffer, int cnt, MWRITER* writer)
 {
 	while (cnt-- > 0)
+	{
 		_mm_write_M_SWORD(*(buffer++), writer);
+	}
 }
 
 void _mm_write_M_UWORDS(UWORD* buffer, int cnt, MWRITER* writer)
 {
 	while (cnt-- > 0)
+	{
 		_mm_write_M_UWORD(*(buffer++), writer);
+	}
 }
 
 void _mm_write_I_SWORDS(SWORD* buffer, int cnt, MWRITER* writer)
 {
 	while (cnt-- > 0)
+	{
 		_mm_write_I_SWORD(*(buffer++), writer);
+	}
 }
 
 void _mm_write_I_UWORDS(UWORD* buffer, int cnt, MWRITER* writer)
 {
 	while (cnt-- > 0)
+	{
 		_mm_write_I_UWORD(*(buffer++), writer);
+	}
 }
 
 void _mm_write_M_SLONGS(SLONG* buffer, int cnt, MWRITER* writer)
 {
 	while (cnt-- > 0)
+	{
 		_mm_write_M_SLONG(*(buffer++), writer);
+	}
 }
 
 void _mm_write_M_ULONGS(ULONG* buffer, int cnt, MWRITER* writer)
 {
 	while (cnt-- > 0)
+	{
 		_mm_write_M_ULONG(*(buffer++), writer);
+	}
 }
 
 void _mm_write_I_SLONGS(SLONG* buffer, int cnt, MWRITER* writer)
 {
 	while (cnt-- > 0)
+	{
 		_mm_write_I_SLONG(*(buffer++), writer);
+	}
 }
 
 void _mm_write_I_ULONGS(ULONG* buffer, int cnt, MWRITER* writer)
 {
 	while (cnt-- > 0)
+	{
 		_mm_write_I_ULONG(*(buffer++), writer);
+	}
 }
 
 /*========== Read functions */
@@ -507,56 +541,72 @@ SLONG _mm_read_I_SLONG(MREADER* reader)
 BOOL _mm_read_M_SWORDS(SWORD* buffer, int cnt, MREADER* reader)
 {
 	while (cnt-- > 0)
+	{
 		*(buffer++) = _mm_read_M_SWORD(reader);
+	}
 	return !reader->Eof(reader);
 }
 
 BOOL _mm_read_M_UWORDS(UWORD* buffer, int cnt, MREADER* reader)
 {
 	while (cnt-- > 0)
+	{
 		*(buffer++) = _mm_read_M_UWORD(reader);
+	}
 	return !reader->Eof(reader);
 }
 
 BOOL _mm_read_I_SWORDS(SWORD* buffer, int cnt, MREADER* reader)
 {
 	while (cnt-- > 0)
+	{
 		*(buffer++) = _mm_read_I_SWORD(reader);
+	}
 	return !reader->Eof(reader);
 }
 
 BOOL _mm_read_I_UWORDS(UWORD* buffer, int cnt, MREADER* reader)
 {
 	while (cnt-- > 0)
+	{
 		*(buffer++) = _mm_read_I_UWORD(reader);
+	}
 	return !reader->Eof(reader);
 }
 
 BOOL _mm_read_M_SLONGS(SLONG* buffer, int cnt, MREADER* reader)
 {
 	while (cnt-- > 0)
+	{
 		*(buffer++) = _mm_read_M_SLONG(reader);
+	}
 	return !reader->Eof(reader);
 }
 
 BOOL _mm_read_M_ULONGS(ULONG* buffer, int cnt, MREADER* reader)
 {
 	while (cnt-- > 0)
+	{
 		*(buffer++) = _mm_read_M_ULONG(reader);
+	}
 	return !reader->Eof(reader);
 }
 
 BOOL _mm_read_I_SLONGS(SLONG* buffer, int cnt, MREADER* reader)
 {
 	while (cnt-- > 0)
+	{
 		*(buffer++) = _mm_read_I_SLONG(reader);
+	}
 	return !reader->Eof(reader);
 }
 
 BOOL _mm_read_I_ULONGS(ULONG* buffer, int cnt, MREADER* reader)
 {
 	while (cnt-- > 0)
+	{
 		*(buffer++) = _mm_read_I_ULONG(reader);
+	}
 	return !reader->Eof(reader);
 }
 

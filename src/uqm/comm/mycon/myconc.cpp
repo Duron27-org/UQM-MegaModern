@@ -38,7 +38,7 @@ static LOCDATA mycon_desc =
 		BLACK_COLOR_INIT, /* AlienTextBColor */
 		{0, 0}, /* AlienTextBaseline */
 		0,
- /* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
+		/* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
 		ALIGN_CENTER, /* AlienTextAlign */
 		VALIGN_TOP, /* AlienTextValign */
 		MYCON_COLOR_MAP, /* AlienColorMap */
@@ -277,11 +277,17 @@ CombatIsInevitable(RESPONSE_REF R)
 	setSegue(Segue_hostile);
 
 	if (PLAYER_SAID(R, bye_space))
+	{
 		NPCPhrase(BYE_AND_DIE_SPACE);
+	}
 	else if (PLAYER_SAID(R, bye_homeworld))
+	{
 		NPCPhrase(BYE_AND_DIE_HOMEWORLD);
+	}
 	else if (PLAYER_SAID(R, like_to_land))
+	{
 		NPCPhrase(NEVER_LET_LAND);
+	}
 	else if (PLAYER_SAID(R, bye_sun_device))
 	{
 		NPCPhrase(GOODBYE_SUN_DEVICE);
@@ -292,9 +298,13 @@ CombatIsInevitable(RESPONSE_REF R)
 	{
 		DoRamble(R);
 		if (!(GET_GAME_STATE(GLOBAL_FLAGS_AND_DATA) & (1 << 7)))
+		{
 			NPCPhrase(BYE_AND_DIE_SPACE);
+		}
 		else
+		{
 			NPCPhrase(BYE_AND_DIE_HOMEWORLD);
+		}
 	}
 	MadeChoice = 0;
 }
@@ -322,16 +332,22 @@ SunDevice(RESPONSE_REF R)
 	}
 
 	if (PHRASE_ENABLED(whats_up_sun_device))
+	{
 		Response(whats_up_sun_device, SunDevice);
+	}
 	if (GET_GAME_STATE(MYCON_FELL_FOR_AMBUSH))
 	{
 		if (PHRASE_ENABLED(how_goes_implanting) && GET_GAME_STATE(MYCON_FELL_FOR_AMBUSH))
+		{
 			Response(how_goes_implanting, SunDevice);
+		}
 		Response(like_to_land, CombatIsInevitable);
 	}
 	else if (GET_GAME_STATE(MYCON_AMBUSH)
 			 && !GET_GAME_STATE(NO_TRICK_AT_SUN))
+	{
 		Response(i_have_a_cunning_plan, SunDevice);
+	}
 	Response(bye_sun_device, CombatIsInevitable);
 }
 
@@ -374,14 +390,22 @@ TrickMycon(RESPONSE_REF R)
 		AddEvent(RELATIVE_EVENT, 0, 0, 0, ADVANCE_MYCON_MISSION);
 	}
 	else
+	{
 		NPCPhrase(AMBUSH_TAIL);
+	}
 
 	if (PHRASE_ENABLED(clue_1))
+	{
 		Response(clue_1, TrickMycon);
+	}
 	if (PHRASE_ENABLED(clue_2))
+	{
 		Response(clue_2, TrickMycon);
+	}
 	if (PHRASE_ENABLED(clue_3))
+	{
 		Response(clue_3, TrickMycon);
+	}
 }
 
 static void
@@ -404,16 +428,25 @@ NormalMycon(RESPONSE_REF R)
 	}
 
 	if ((uqm::BYTE)TFB_Random() < 256 * 30 / 100)
+	{
 		RespFunc = (RESPONSE_FUNC)CombatIsInevitable;
+	}
 	else
+	{
 		RespFunc = (RESPONSE_FUNC)NormalMycon;
+	}
 	if (!(GET_GAME_STATE(GLOBAL_FLAGS_AND_DATA) & (1 << 7)))
 	{
 		if (PHRASE_ENABLED(come_in_peace))
+		{
 			Response(come_in_peace, RespFunc);
+		}
 		if (PHRASE_ENABLED(gonna_die))
+		{
 			Response(gonna_die, RespFunc);
+		}
 		if (!MadeChoice)
+		{
 			switch (GET_GAME_STATE(MYCON_INSULTS))
 			{
 				case 0:
@@ -441,11 +474,13 @@ NormalMycon(RESPONSE_REF R)
 					Response(insult_8, RespFunc);
 					break;
 			}
+		}
 		Response(bye_space, CombatIsInevitable);
 	}
 	else
 	{
 		if (!MadeChoice)
+		{
 			switch (GET_GAME_STATE(MYCON_INFO))
 			{
 				case 0:
@@ -497,16 +532,25 @@ NormalMycon(RESPONSE_REF R)
 					Response(question_16, RespFunc);
 					break;
 			}
+		}
 		if (PHRASE_ENABLED(lets_be_friends))
+		{
 			Response(lets_be_friends, RespFunc);
+		}
 		if (PHRASE_ENABLED(came_to_homeworld))
+		{
 			Response(came_to_homeworld, RespFunc);
+		}
 		if (PHRASE_ENABLED(submit_to_us))
+		{
 			Response(submit_to_us, RespFunc);
+		}
 		if (!GET_GAME_STATE(MYCON_FELL_FOR_AMBUSH))
 		{
 			if (GET_GAME_STATE(KNOW_ABOUT_SHATTERED) == 1)
+			{
 				Response(what_about_shattered, NormalMycon);
+			}
 			if (GET_GAME_STATE(MYCON_AMBUSH))
 			{
 				Response(i_have_a_cunning_plan, TrickMycon);

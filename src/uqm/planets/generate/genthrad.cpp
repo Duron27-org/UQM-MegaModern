@@ -135,7 +135,9 @@ GenerateThraddash_generateOrbital(SOLARSYS_STATE* solarSys,
 			InitCommunication(THRADD_CONVERSATION);
 
 			if (GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
+			{
 				return true;
+			}
 
 			GLOBAL(CurrentActivity) &= ~START_INTERPLANETARY;
 			ReinitQueue(&GLOBAL(npc_built_ship_q));
@@ -144,7 +146,9 @@ GenerateThraddash_generateOrbital(SOLARSYS_STATE* solarSys,
 			if (CurStarDescPtr->Index == THRADD_DEFINED
 				|| (!GET_GAME_STATE(HELIX_UNPROTECTED)
 					&& (uqm::BYTE)(GET_GAME_STATE(THRADD_MISSION) - 1) >= 3))
+			{
 				return true;
+			}
 
 			RepairSISBorder();
 			// reachable if you're frendly with thraddsh and talk to
@@ -166,20 +170,28 @@ GenerateThraddash_generateOrbital(SOLARSYS_STATE* solarSys,
 
 			if (!StartSphereTracking(THRADDASH_SHIP)
 				|| GET_GAME_STATE(ILWRATH_FIGHT_THRADDASH))
+			{
 				sum = 6;
+			}
 			else
+			{
 				sum = 12;
+			}
 
 			for (i = 0; i < sum; ++i)
+			{
 				CloneShipFragment(THRADDASH_SHIP,
 								  &GLOBAL(npc_built_ship_q), 0);
+			}
 
 			SET_GAME_STATE(GLOBAL_FLAGS_AND_DATA, 1 << 6);
 			GLOBAL(CurrentActivity) |= START_INTERPLANETARY;
 			InitCommunication(THRADD_CONVERSATION);
 
 			if (GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
+			{
 				return true;
+			}
 
 			{
 				bool Survivors =
@@ -190,7 +202,9 @@ GenerateThraddash_generateOrbital(SOLARSYS_STATE* solarSys,
 				GetGroupInfo(GROUPS_RANDOM, GROUP_LOAD_IP);
 
 				if (Survivors && !GET_GAME_STATE(HELIX_UNPROTECTED))
+				{
 					return true;
+				}
 
 				{
 					uqm::UWORD state;

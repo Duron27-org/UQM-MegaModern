@@ -30,8 +30,10 @@ LoadSoundFile(const char* pStr)
 
 	// FIXME: this theoretically needs a mechanism to prevent races
 	if (_cur_resfile_name)
+	{
 		// something else is loading resources atm
 		return 0;
+	}
 
 	fp = res_OpenResFile(contentDir, pStr, "rb");
 	if (fp)
@@ -58,8 +60,10 @@ LoadMusicFile(const char* pStr)
 
 	// FIXME: this theoretically needs a mechanism to prevent races
 	if (_cur_resfile_name)
+	{
 		// something else is loading resources atm
 		return 0;
+	}
 
 	strncpy(filename, pStr, sizeof(filename) - 1);
 	filename[sizeof(filename) - 1] = '\0';

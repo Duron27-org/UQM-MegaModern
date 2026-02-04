@@ -52,7 +52,9 @@ PointOnScreen(uqm::SDWORD x, uqm::SDWORD y)
 	uqm::SDWORD extend = 0;
 
 	if (IS_HD)
+	{
 		extend = 5;
+	}
 
 	return ((x + extend) >= 0 && x <= SIS_SCREEN_WIDTH
 			&& (y + extend) >= 0 && y <= SIS_SCREEN_HEIGHT);
@@ -122,7 +124,9 @@ CheckOvalCollision(DPOINT* p0, DPOINT* p1)
 
 	// Step 2
 	if (x0 < 0 && y0 < 0 && x1 > SIS_SCREEN_WIDTH && y1 > SIS_SCREEN_HEIGHT)
+	{
 		return quad_visible;
+	}
 
 	// Step 3
 	mp.x = (p0->x + p1->x) >> 1;
@@ -145,7 +149,9 @@ CheckOvalCollision(DPOINT* p0, DPOINT* p1)
 	{
 		// Step 5
 		if (PointOnScreen(mp.x, p0->y) || PointOnScreen(p1->x, mp.y))
+		{
 			quad_visible |= FIRST_QUAD;
+		}
 		else
 		{
 			// Step 6
@@ -158,7 +164,9 @@ CheckOvalCollision(DPOINT* p0, DPOINT* p1)
 			r1 = ((x * x) / asquared) + ((y * y) / bsquared);
 
 			if (r0 >= 1.0f && r1 <= 1.0f)
+			{
 				quad_visible |= FIRST_QUAD;
+			}
 		}
 	}
 
@@ -167,7 +175,9 @@ CheckOvalCollision(DPOINT* p0, DPOINT* p1)
 	{
 		// Step 5
 		if (PointOnScreen(p0->x, mp.y) || PointOnScreen(mp.x, p0->y))
+		{
 			quad_visible |= SECOND_QUAD;
+		}
 		else
 		{
 			// Step 6
@@ -180,7 +190,9 @@ CheckOvalCollision(DPOINT* p0, DPOINT* p1)
 			r1 = ((x * x) / asquared) + ((y * y) / bsquared);
 
 			if (r0 >= 1.0f && r1 <= 1.0f)
+			{
 				quad_visible |= SECOND_QUAD;
+			}
 		}
 	}
 
@@ -189,7 +201,9 @@ CheckOvalCollision(DPOINT* p0, DPOINT* p1)
 	{
 		// Step 5
 		if (PointOnScreen(p0->x, mp.y) || PointOnScreen(mp.x, p1->y))
+		{
 			quad_visible |= THIRD_QUAD;
+		}
 		else
 		{
 			// Step 6
@@ -202,7 +216,9 @@ CheckOvalCollision(DPOINT* p0, DPOINT* p1)
 			r1 = ((x * x) / asquared) + ((y * y) / bsquared);
 
 			if (r0 >= 1.0f && r1 <= 1.0f)
+			{
 				quad_visible |= THIRD_QUAD;
+			}
 		}
 	}
 
@@ -211,7 +227,9 @@ CheckOvalCollision(DPOINT* p0, DPOINT* p1)
 	{
 		// Step 5
 		if (PointOnScreen(mp.x, p1->y) || PointOnScreen(p1->x, mp.y))
+		{
 			quad_visible |= FOURTH_QUAD;
+		}
 		else
 		{
 			// Step 6
@@ -224,7 +242,9 @@ CheckOvalCollision(DPOINT* p0, DPOINT* p1)
 			r1 = ((x * x) / asquared) + ((y * y) / bsquared);
 
 			if (r0 >= 1.0f && r1 <= 1.0f)
+			{
 				quad_visible |= FOURTH_QUAD;
+			}
 		}
 	}
 
@@ -326,9 +346,13 @@ void DrawOval(DRECT* pRect, uqm::BYTE num_off_pixels, bool scaled)
 		LINE corners;
 
 		if (p1.x < p0.x)
+		{
 			p1.x = p0.x;
+		}
 		if (p1.y < p0.y)
+		{
 			p1.y = p0.y;
+		}
 
 		TruncateDPoint(&p0);
 		TruncateDPoint(&p1);
@@ -346,7 +370,9 @@ void DrawOval(DRECT* pRect, uqm::BYTE num_off_pixels, bool scaled)
 	quad_visible = CheckOvalCollision(&p0, &p1);
 
 	if (!quad_visible)
+	{
 		return;
+	}
 
 	StartPrim = END_OF_LIST;
 	for (x = 0; x < NUM_QUADS; ++x)
@@ -362,7 +388,9 @@ void DrawOval(DRECT* pRect, uqm::BYTE num_off_pixels, bool scaled)
 			StartPrim = x;
 		}
 		else // Kruzen: just to be sure so DrawBatch() skip it
+		{
 			SetPrimType(&prim[x], OFFSCREEN_PRIM);
+		}
 	}
 
 	A = pRect->extent.width >> 1;
@@ -416,7 +444,9 @@ void DrawOval(DRECT* pRect, uqm::BYTE num_off_pixels, bool scaled)
 							render++;
 						}
 						else
+						{
 							SetPrimType(&prim[0], OFFSCREEN_PRIM);
+						}
 					}
 
 					if (quad_visible & SECOND_QUAD)
@@ -427,7 +457,9 @@ void DrawOval(DRECT* pRect, uqm::BYTE num_off_pixels, bool scaled)
 							render++;
 						}
 						else
+						{
 							SetPrimType(&prim[1], OFFSCREEN_PRIM);
+						}
 					}
 
 					if (quad_visible & THIRD_QUAD)
@@ -438,7 +470,9 @@ void DrawOval(DRECT* pRect, uqm::BYTE num_off_pixels, bool scaled)
 							render++;
 						}
 						else
+						{
 							SetPrimType(&prim[2], OFFSCREEN_PRIM);
+						}
 					}
 
 					if (quad_visible & FOURTH_QUAD)
@@ -449,11 +483,15 @@ void DrawOval(DRECT* pRect, uqm::BYTE num_off_pixels, bool scaled)
 							render++;
 						}
 						else
+						{
 							SetPrimType(&prim[3], OFFSCREEN_PRIM);
+						}
 					}
 
 					if (render > 0)
+					{
 						DrawBatch(prim, StartPrim, 0);
+					}
 				}
 				off = num_off_pixels;
 			}
@@ -496,7 +534,9 @@ void DrawOval(DRECT* pRect, uqm::BYTE num_off_pixels, bool scaled)
 							render++;
 						}
 						else
+						{
 							SetPrimType(&prim[0], OFFSCREEN_PRIM);
+						}
 					}
 
 					if (quad_visible & SECOND_QUAD)
@@ -507,7 +547,9 @@ void DrawOval(DRECT* pRect, uqm::BYTE num_off_pixels, bool scaled)
 							render++;
 						}
 						else
+						{
 							SetPrimType(&prim[1], OFFSCREEN_PRIM);
+						}
 					}
 
 					if (quad_visible & THIRD_QUAD)
@@ -518,7 +560,9 @@ void DrawOval(DRECT* pRect, uqm::BYTE num_off_pixels, bool scaled)
 							render++;
 						}
 						else
+						{
 							SetPrimType(&prim[2], OFFSCREEN_PRIM);
+						}
 					}
 
 					if (quad_visible & FOURTH_QUAD)
@@ -529,11 +573,15 @@ void DrawOval(DRECT* pRect, uqm::BYTE num_off_pixels, bool scaled)
 							render++;
 						}
 						else
+						{
 							SetPrimType(&prim[3], OFFSCREEN_PRIM);
+						}
 					}
 
 					if (render > 0)
+					{
 						DrawBatch(prim, StartPrim, 0);
+					}
 				}
 				off = num_off_pixels;
 			}
@@ -579,7 +627,9 @@ void DrawOval(DRECT* pRect, uqm::BYTE num_off_pixels, bool scaled)
 							render++;
 						}
 						else
+						{
 							SetPrimType(&prim[0], OFFSCREEN_PRIM);
+						}
 					}
 
 					if (quad_visible & SECOND_QUAD)
@@ -590,7 +640,9 @@ void DrawOval(DRECT* pRect, uqm::BYTE num_off_pixels, bool scaled)
 							render++;
 						}
 						else
+						{
 							SetPrimType(&prim[1], OFFSCREEN_PRIM);
+						}
 					}
 
 					if (quad_visible & THIRD_QUAD)
@@ -601,7 +653,9 @@ void DrawOval(DRECT* pRect, uqm::BYTE num_off_pixels, bool scaled)
 							render++;
 						}
 						else
+						{
 							SetPrimType(&prim[2], OFFSCREEN_PRIM);
+						}
 					}
 
 					if (quad_visible & FOURTH_QUAD)
@@ -612,11 +666,15 @@ void DrawOval(DRECT* pRect, uqm::BYTE num_off_pixels, bool scaled)
 							render++;
 						}
 						else
+						{
 							SetPrimType(&prim[3], OFFSCREEN_PRIM);
+						}
 					}
 
 					if (render > 0)
+					{
 						DrawBatch(prim, StartPrim, 0);
+					}
 				}
 				off = num_off_pixels;
 			}
@@ -659,7 +717,9 @@ void DrawOval(DRECT* pRect, uqm::BYTE num_off_pixels, bool scaled)
 							render++;
 						}
 						else
+						{
 							SetPrimType(&prim[0], OFFSCREEN_PRIM);
+						}
 					}
 
 					if (quad_visible & SECOND_QUAD)
@@ -670,7 +730,9 @@ void DrawOval(DRECT* pRect, uqm::BYTE num_off_pixels, bool scaled)
 							render++;
 						}
 						else
+						{
 							SetPrimType(&prim[1], OFFSCREEN_PRIM);
+						}
 					}
 
 					if (quad_visible & THIRD_QUAD)
@@ -681,7 +743,9 @@ void DrawOval(DRECT* pRect, uqm::BYTE num_off_pixels, bool scaled)
 							render++;
 						}
 						else
+						{
 							SetPrimType(&prim[2], OFFSCREEN_PRIM);
+						}
 					}
 
 					if (quad_visible & FOURTH_QUAD)
@@ -692,11 +756,15 @@ void DrawOval(DRECT* pRect, uqm::BYTE num_off_pixels, bool scaled)
 							render++;
 						}
 						else
+						{
 							SetPrimType(&prim[3], OFFSCREEN_PRIM);
+						}
 					}
 
 					if (render > 0)
+					{
 						DrawBatch(prim, StartPrim, 0);
+					}
 				}
 				off = num_off_pixels;
 			}
@@ -739,9 +807,13 @@ void DrawFilledOval(DRECT* pRect)
 		LINE corners;
 
 		if (p1.x < p0.x)
+		{
 			p1.x = p0.x;
+		}
 		if (p1.y < p0.y)
+		{
 			p1.y = p0.y;
+		}
 
 		TruncateDPoint(&p0);
 		TruncateDPoint(&p1);
@@ -806,7 +878,9 @@ void DrawFilledOval(DRECT* pRect)
 				lines_r++;
 			}
 			else
+			{
 				SetPrimType(&prim[0], OFFSCREEN_PRIM);
+			}
 
 			first.y = second.y = B + y;
 			if (((B + y) >= 0 && (B + y) <= SIS_SCREEN_HEIGHT))
@@ -817,10 +891,14 @@ void DrawFilledOval(DRECT* pRect)
 				lines_r++;
 			}
 			else
+			{
 				SetPrimType(&prim[1], OFFSCREEN_PRIM);
+			}
 
 			if (lines_r > 0)
+			{
 				DrawBatch(prim, StartPrim, 0);
+			}
 
 			--y;
 			dy -= TwoAsquared;
@@ -849,7 +927,9 @@ void DrawFilledOval(DRECT* pRect)
 			lines_r++;
 		}
 		else
+		{
 			SetPrimType(&prim[0], OFFSCREEN_PRIM);
+		}
 
 		first.y = second.y = B + y;
 		if (((B + y) >= 0 && (B + y) <= SIS_SCREEN_HEIGHT))
@@ -860,10 +940,14 @@ void DrawFilledOval(DRECT* pRect)
 			lines_r++;
 		}
 		else
+		{
 			SetPrimType(&prim[1], OFFSCREEN_PRIM);
+		}
 
 		if (lines_r > 0)
+		{
 			DrawBatch(prim, StartPrim, 0);
+		}
 
 		if (d < 0)
 		{
@@ -933,9 +1017,13 @@ void DrawEllipse(int cx, int cy, int rx, int ry, int shear, int filled, int dott
 	uqm::SQWORD e2;
 
 	if (rx < 0)
+	{
 		rx = 0;
+	}
 	if (ry < 0)
+	{
 		ry = 0;
+	}
 	if (!rx || !ry)
 	{
 		LINE l;

@@ -33,7 +33,7 @@ static LOCDATA blackurq_desc =
 		BLACK_COLOR_INIT, /* AlienTextBColor */
 		{0, 0}, /* AlienTextBaseline */
 		0,
- /* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
+		/* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
 		ALIGN_CENTER, /* AlienTextAlign */
 		VALIGN_TOP, /* AlienTextValign */
 		BLACKURQ_COLOR_MAP, /* AlienColorMap */
@@ -182,14 +182,20 @@ CombatIsInevitable(RESPONSE_REF R)
 	if (PLAYER_SAID(R, bye))
 	{
 		if (GET_GAME_STATE(KOHR_AH_BYES) == 0)
+		{
 			NPCPhrase(GOODBYE_AND_DIE);
+		}
 		else
+		{
 			NPCPhrase(DIE_HUMAN /* GOODBYE_AND_DIE_2 */);
+		}
 
 		SET_GAME_STATE(KOHR_AH_BYES, 1);
 	}
 	else if (PLAYER_SAID(R, guess_thats_all))
+	{
 		NPCPhrase(THEN_DIE);
+	}
 	else if (PLAYER_SAID(R, what_are_you_hovering_over))
 	{
 		NPCPhrase(BONE_PILE);
@@ -417,13 +423,21 @@ KohrAhStory(RESPONSE_REF R)
 	}
 
 	if (PHRASE_ENABLED(why_do_you_destroy))
+	{
 		Response(why_do_you_destroy, KohrAhStory);
+	}
 	if (PHRASE_ENABLED(relationship_with_urquan))
+	{
 		Response(relationship_with_urquan, KohrAhStory);
+	}
 	if (PHRASE_ENABLED(what_about_culture))
+	{
 		Response(what_about_culture, KohrAhStory);
+	}
 	if (PHRASE_ENABLED(how_leave_me_alone))
+	{
 		Response(how_leave_me_alone, KohrAhStory);
+	}
 	Response(guess_thats_all, CombatIsInevitable);
 }
 
