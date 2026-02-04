@@ -20,7 +20,7 @@
 #define SDL_COMMON_H
 
 #include "port.h"
-#include "SDL.h"
+#include <SDL.h>
 
 #include "../gfxintrn.h"
 #include "libs/graphics/tfb_draw.h"

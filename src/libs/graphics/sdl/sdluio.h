@@ -19,8 +19,8 @@
 
 #include "port.h"
 #include "libs/uio.h"
-#include "SDL.h"
-#include "SDL_rwops.h"
+#include <SDL.h>
+#include <SDL_rwops.h>
 
 SDL_Surface *sdluio_loadImage (uio_DirHandle *dir, const char *fileName);
 #if SDL_MAJOR_VERSION == 1

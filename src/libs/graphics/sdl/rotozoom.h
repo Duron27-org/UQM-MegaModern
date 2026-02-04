@@ -19,7 +19,7 @@
 #endif
 
 #include "port.h"
-#include "SDL.h"
+#include <SDL.h>
 
 
 /* ---- Defines */

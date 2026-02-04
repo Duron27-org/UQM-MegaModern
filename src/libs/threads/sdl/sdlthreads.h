@@ -18,8 +18,8 @@
 #define LIBS_THREADS_SDL_SDLTHREADS_H_
 
 #include "port.h"
-#include "SDL.h"
-#include "SDL_thread.h"
+#include <SDL.h>
+#include <SDL_thread.h>
 #include "libs/threadlib.h"
 #include "libs/timelib.h"
 

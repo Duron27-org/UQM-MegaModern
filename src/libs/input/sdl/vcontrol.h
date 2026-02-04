@@ -18,7 +18,7 @@
 #define LIBS_INPUT_SDL_VCONTROL_H_
 
 #include "port.h"
-#include "SDL.h"
+#include <SDL.h>
 
 #if SDL_MAJOR_VERSION == 1
 typedef SDLKey sdl_key_t;

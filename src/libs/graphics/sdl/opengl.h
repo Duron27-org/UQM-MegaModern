@@ -80,12 +80,12 @@ typedef unsigned short wchar_t;
 #define LIBS_GRAPHICS_SDL_OPENGL_H_
 #endif
 
-#include "GL/glu.h"
+#include <GL/glu.h>
 
 #else /* !defined(WIN32) */
 
 #include "port.h"
-#include "SDL_opengl.h"
+#include <SDL_opengl.h>
 
 #endif /* WIN32 */
 #endif /* SDL_MAJOR_VERSION == 1 */
