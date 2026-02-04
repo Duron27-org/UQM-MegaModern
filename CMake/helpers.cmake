@@ -278,6 +278,8 @@ function (FetchZLIB)
 		CACHE FILEPATH "ZLIB library"
 		FORCE
 	)
+
+	message(STATUS "zlib lib=${ZLIB_LIBRARY}")
 	
 	set(ZLIB_FOUND TRUE CACHE BOOL "ZLIB found" FORCE)
 
@@ -339,4 +341,12 @@ function (FetchOpenAL)
         	$<TARGET_FILE:OpenAL::OpenAL>
         	${_openal_target_dll_file}
 	)
+endfunction()
+
+function(copy_runtime_dll target dll_target)
+    add_custom_command(TARGET ${target} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_FILE:${dll_target}>
+            $<TARGET_FILE_DIR:${target}>
+    )
 endfunction()

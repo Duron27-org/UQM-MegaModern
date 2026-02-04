@@ -1,100 +1,111 @@
 cmake_minimum_required(VERSION 3.16.0 FATAL_ERROR)
-
-set(CMAKE_SYSTEM_VERSION 10.0 CACHE STRING "" FORCE)
-
 project(UrQuanMastersMegaModern CXX)
 
-set (CMAKE_CXX_STANDARD 17)
-set (CMAKE_CXX_STANDARD_REQUIRED ON)
-#set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++")
-#set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -stdlib=libc++")
-
-
-################################################################################
-# Set target arch type if empty. Visual studio solution generator provides it.
-################################################################################
-if(NOT CMAKE_VS_PLATFORM_NAME)
-    set(CMAKE_VS_PLATFORM_NAME "x64")
-endif()
-message("${CMAKE_VS_PLATFORM_NAME} architecture in use")
-
-#if(NOT ("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "Win32"))
-#    message(FATAL_ERROR "${CMAKE_VS_PLATFORM_NAME} arch is not supported!")
-#endif()
-
-################################################################################
-# Global configuration types
-################################################################################
-set(CMAKE_CONFIGURATION_TYPES
-    "Debug"
-    "Release"
-    CACHE STRING "" FORCE
-)
-
-################################################################################
-# Global compiler options
-################################################################################
-if(MSVC)
-    # remove default flags provided with CMake for MSVC
-    set(CMAKE_C_FLAGS "")
-    set(CMAKE_C_FLAGS_DEBUG "")
-    set(CMAKE_C_FLAGS_RELEASE "")
-endif()
-
-################################################################################
-# Global linker options
-################################################################################
-if(MSVC)
-    # remove default flags provided with CMake for MSVC
-    set(CMAKE_EXE_LINKER_FLAGS "")
-    set(CMAKE_MODULE_LINKER_FLAGS "")
-    set(CMAKE_SHARED_LINKER_FLAGS "")
-    set(CMAKE_STATIC_LINKER_FLAGS "")
-    set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS}")
-    set(CMAKE_MODULE_LINKER_FLAGS_DEBUG "${CMAKE_MODULE_LINKER_FLAGS}")
-    set(CMAKE_SHARED_LINKER_FLAGS_DEBUG "${CMAKE_SHARED_LINKER_FLAGS}")
-    set(CMAKE_STATIC_LINKER_FLAGS_DEBUG "${CMAKE_STATIC_LINKER_FLAGS}")
-    set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS}")
-    set(CMAKE_MODULE_LINKER_FLAGS_RELEASE "${CMAKE_MODULE_LINKER_FLAGS}")
-    set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS}")
-    set(CMAKE_STATIC_LINKER_FLAGS_RELEASE "${CMAKE_STATIC_LINKER_FLAGS}")
-endif()
-
-################################################################################
-# Nuget packages function stub.
-################################################################################
-function(use_package TARGET PACKAGE VERSION)
-    message(WARNING "No implementation of use_package. Create yours. "
-                    "Package \"${PACKAGE}\" with version \"${VERSION}\" "
-                    "for target \"${TARGET}\" is ignored!")
-endfunction()
-
-################################################################################
-# Common utils
-################################################################################
-include(CMake/Utils.cmake)
 include(CMake/helpers.cmake)
+#set(CMAKE_SYSTEM_VERSION 10.0 CACHE STRING "" FORCE)
 
-################################################################################
-# Additional Global Settings(add specific info there)
-################################################################################
-include(CMake/GlobalSettingsInclude.cmake OPTIONAL)
-
-################################################################################
-# Use solution folders feature
-################################################################################
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
-################################################################################
-# Sub-projects
-################################################################################
-
-
-
-
+if (WIN32)
+    if (NOT CMAKE_GENERATOR MATCHES "Visual Studio")
+        find_program(CLANG_CL clang-cl)
+        if (NOT CLANG_CL)
+            message(FATAL_ERROR "clang-cl not found")
+        endif()
+        message(STATUS "Using clang-cl")
+        set(CMAKE_C_COMPILER   ${CLANG_CL} CACHE STRING "" FORCE)
+        set(CMAKE_CXX_COMPILER ${CLANG_CL} CACHE STRING "" FORCE)
+        set(CMAKE_C_CLANG_TIDY clang-tidy)
+        set(CMAKE_CXX_CLANG_TIDY clang-tidy)
+    endif()
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
+endif()
 
 
 
+# set (CMAKE_CXX_STANDARD 17)
+# set (CMAKE_CXX_STANDARD_REQUIRED ON)
+# #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++")
+# #set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -stdlib=libc++")
+
+
+
+# ################################################################################
+# # Set target arch type if empty. Visual studio solution generator provides it.
+# ################################################################################
+# if(NOT CMAKE_VS_PLATFORM_NAME)
+#     set(CMAKE_VS_PLATFORM_NAME "x64")
+# endif()
+# message("${CMAKE_VS_PLATFORM_NAME} architecture in use")
+
+# #if(NOT ("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "Win32"))
+# #    message(FATAL_ERROR "${CMAKE_VS_PLATFORM_NAME} arch is not supported!")
+# #endif()
+
+# ################################################################################
+# # Global configuration types
+# ################################################################################
+# set(CMAKE_CONFIGURATION_TYPES
+#     "Debug"
+#     "Release"
+#     CACHE STRING "" FORCE
+# )
+
+# ################################################################################
+# # Global compiler options
+# ################################################################################
+# if(MSVC)
+#     # remove default flags provided with CMake for MSVC
+#     set(CMAKE_C_FLAGS "")
+#     set(CMAKE_C_FLAGS_DEBUG "")
+#     set(CMAKE_C_FLAGS_RELEASE "")
+# endif()
+
+# ################################################################################
+# # Global linker options
+# ################################################################################
+# if(MSVC)
+#     # remove default flags provided with CMake for MSVC
+#     set(CMAKE_EXE_LINKER_FLAGS "")
+#     set(CMAKE_MODULE_LINKER_FLAGS "")
+#     set(CMAKE_SHARED_LINKER_FLAGS "")
+#     set(CMAKE_STATIC_LINKER_FLAGS "")
+#     set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS}")
+#     set(CMAKE_MODULE_LINKER_FLAGS_DEBUG "${CMAKE_MODULE_LINKER_FLAGS}")
+#     set(CMAKE_SHARED_LINKER_FLAGS_DEBUG "${CMAKE_SHARED_LINKER_FLAGS}")
+#     set(CMAKE_STATIC_LINKER_FLAGS_DEBUG "${CMAKE_STATIC_LINKER_FLAGS}")
+#     set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS}")
+#     set(CMAKE_MODULE_LINKER_FLAGS_RELEASE "${CMAKE_MODULE_LINKER_FLAGS}")
+#     set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS}")
+#     set(CMAKE_STATIC_LINKER_FLAGS_RELEASE "${CMAKE_STATIC_LINKER_FLAGS}")
+# endif()
+
+# ################################################################################
+# # Nuget packages function stub.
+# ################################################################################
+# function(use_package TARGET PACKAGE VERSION)
+#     message(WARNING "No implementation of use_package. Create yours. "
+#                     "Package \"${PACKAGE}\" with version \"${VERSION}\" "
+#                     "for target \"${TARGET}\" is ignored!")
+# endfunction()
+
+# ################################################################################
+# # Common utils
+# ################################################################################
+# include(CMake/Utils.cmake)
+# include(CMake/helpers.cmake)
+
+# ################################################################################
+# # Additional Global Settings(add specific info there)
+# ################################################################################
+# include(CMake/GlobalSettingsInclude.cmake OPTIONAL)
+
+# ################################################################################
+# # Use solution folders feature
+# ################################################################################
+# set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+# ################################################################################
+# # Sub-projects
+# ################################################################################
 
 
 
@@ -115,7 +126,14 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 
 
-set(PROJECT_NAME UrQuanMasters)
+
+
+
+
+
+
+
+set(APP_TARGET UrQuanMasters)
 
 ################################################################################
 # Source groups
@@ -1538,88 +1556,111 @@ set(ALL_FILES
 ################################################################################
 # Target
 ################################################################################
-add_executable(${PROJECT_NAME} ${ALL_FILES})
+add_executable(${APP_TARGET} ${ALL_FILES})
 
 ################################################################################
 # Dependencies
 ################################################################################
 
-find_package (SDL2 QUIET)
-if (SDL2_FOUND)
-	message (STATUS "Found SDL2: ${SDL2_VERSION}")
-else ()
-	FetchSDL ()
-	message (STATUS "Fetched SDL2: ${SDL2_VERSION}")
-endif ()
+find_package(SDL2 REQUIRED)
+find_package(ZLIB REQUIRED)
+find_package(PNG REQUIRED)
+find_package(Ogg REQUIRED)
+find_package(Vorbis REQUIRED)
+find_package(OpenAL REQUIRED)
 
-find_package (ZLIB QUIET)
-if (ZLIB_FOUND)
-    message (STATUS "Found ZLIB: ${ZLIB_VERSION}")
-else ()
-    FetchZLIB ()
-    message (STATUS "Fetched ZLIB: ${ZLIB_VERSION}")
-endif ()
+# set (UQM_PACKAGE_TARGETS 
+#     SDL2::SDL2
+#     SDL2::SDL2main
+#     ZLIB::ZLIB
+#     PNG::PNG
+#     Ogg::ogg
+#     Vorbis::vorbis
+#     OpenAL::OpenAL
+#     )
 
-find_package (PNG QUIET)
-if (PNG_FOUND)
-	message (STATUS "Found libPNG: ${PNG_VERSION_STRING}")
-else ()
-	FetchPNG ()
-	message (STATUS "Fetched libPNG: ${PNG_VERSION}")
-endif ()
+# add_custom_command(TARGET ${APP_TARGET}  
+#     PRE_LINK
+#     COMMAND ${CMAKE_COMMAND} -E copy_if_different
+#         $<TARGET_FILE:OpenAL::OpenAL>
+#         ${_openal_target_dll_file}
+# )
+# find_package (SDL2 QUIET)
+# if (SDL2_FOUND)
+# 	message (STATUS "Found SDL2: ${SDL2_VERSION}")
+# else ()
+# 	FetchSDL ()
+# 	message (STATUS "Fetched SDL2: ${SDL2_VERSION}")
+# endif ()
 
+# find_package (ZLIB QUIET)
+# if (ZLIB_FOUND)
+#     message (STATUS "Found ZLIB: ${ZLIB_VERSION}")
+# else ()
+#     FetchZLIB ()
+#     message (STATUS "Fetched ZLIB: ${ZLIB_VERSION}")
+# endif ()
 
-find_package (Ogg QUIET)
-if (Ogg_FOUND)
-	message (STATUS "Found ogg: ${Ogg_VERSION}")
-else ()
-	FetchOgg ()
-	message (STATUS "Fetched ogg: ${OGG_VERSION}")
-endif ()
-
-find_package (Vorbis QUIET)
-if (Vorbis_FOUND)
-	message (STATUS "Found Vorbis: ${Vorbis_VERSION}")
-	set (UQM_OGG_CODEC "standard")
-else ()
-	FetchVorbis ()
-	message (STATUS "Fetched Vorbis: ${VORBIS_VERSION}")
-endif ()
-
-find_package(OpenAL QUIET)
-if (OpenAL_FOUND)
-    message (STATUS "Found OpenAL: ${OpenAL_VERSION}")
-else()
-    FetchOpenAL()
-endif()
+# find_package (PNG QUIET)
+# if (PNG_FOUND)
+# 	message (STATUS "Found libPNG: ${PNG_VERSION_STRING}")
+# else ()
+# 	FetchPNG ()
+# 	message (STATUS "Fetched libPNG: ${PNG_VERSION}")
+# endif ()
 
 
-use_props(${PROJECT_NAME} "${CMAKE_CONFIGURATION_TYPES}" "${DEFAULT_CXX_PROPS}")
+# find_package (Ogg QUIET)
+# if (Ogg_FOUND)
+# 	message (STATUS "Found ogg: ${Ogg_VERSION}")
+# else ()
+# 	FetchOgg ()
+# 	message (STATUS "Fetched ogg: ${OGG_VERSION}")
+# endif ()
+
+# find_package (Vorbis QUIET)
+# if (Vorbis_FOUND)
+# 	message (STATUS "Found Vorbis: ${Vorbis_VERSION}")
+# 	set (UQM_OGG_CODEC "standard")
+# else ()
+# 	FetchVorbis ()
+# 	message (STATUS "Fetched Vorbis: ${VORBIS_VERSION}")
+# endif ()
+
+# find_package(OpenAL QUIET)
+# if (OpenAL_FOUND)
+#     message (STATUS "Found OpenAL: ${OpenAL_VERSION}")
+# else()
+#     FetchOpenAL()
+# endif()
+
+
+#use_props(${APP_TARGET} "${CMAKE_CONFIGURATION_TYPES}" "${DEFAULT_CXX_PROPS}")
 ################################################################################
 # Target name
 ################################################################################
-set_target_properties(${PROJECT_NAME} PROPERTIES
-    TARGET_NAME_DEBUG       "${OUTPUT_DIRECTORY}$<TARGET_FILE_NAME:${PROJECT_NAME}>"
-    TARGET_NAME_RELEASE     "${OUTPUT_DIRECTORY}$<TARGET_FILE_NAME:${PROJECT_NAME}>"
-)
-################################################################################
-# Output directory
-################################################################################
-set_target_properties(${PROJECT_NAME} PROPERTIES
-    OUTPUT_DIRECTORY_DEBUG       "${CMAKE_CURRENT_SOURCE_DIR}"
-    OUTPUT_DIRECTORY_RELEASE     "${CMAKE_CURRENT_SOURCE_DIR}"
-)
+# set_target_properties(${APP_TARGET} PROPERTIES
+#     TARGET_NAME_DEBUG       "${OUTPUT_DIRECTORY}$<TARGET_FILE_NAME:${APP_TARGET}>"
+#     TARGET_NAME_RELEASE     "${OUTPUT_DIRECTORY}$<TARGET_FILE_NAME:${APP_TARGET}>"
+# )
+# ################################################################################
+# # Output directory
+# ################################################################################
+# set_target_properties(${APP_TARGET} PROPERTIES
+#     OUTPUT_DIRECTORY_DEBUG       "${CMAKE_CURRENT_SOURCE_DIR}"
+#     OUTPUT_DIRECTORY_RELEASE     "${CMAKE_CURRENT_SOURCE_DIR}"
+# )
 ################################################################################
 # Linker Language
 ################################################################################
-set_target_properties(${PROJECT_NAME} PROPERTIES
-    LINKER_LANGUAGE CXX
-    LINKER_LANGUAGE CXX
-)
+# set_target_properties(${APP_TARGET} PROPERTIES
+#     LINKER_LANGUAGE CXX
+#     LINKER_LANGUAGE CXX
+# )
 ################################################################################
 # MSVC runtime library
 ################################################################################
-# get_property(MSVC_RUNTIME_LIBRARY_DEFAULT TARGET ${PROJECT_NAME} PROPERTY MSVC_RUNTIME_LIBRARY)
+# get_property(MSVC_RUNTIME_LIBRARY_DEFAULT TARGET ${APP_TARGET} PROPERTY MSVC_RUNTIME_LIBRARY)
 # string(CONCAT "MSVC_RUNTIME_LIBRARY_STR"
 #     $<$<CONFIG:Debug>:
 #         MultiThreadedDebugDLL
@@ -1629,23 +1670,19 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 #     >cmd.exe /C 
 #     $<$<NOT:$<OR:$<CONFIG:Debug>,$<CONFIG:Release>>>:${MSVC_RUNTIME_LIBRARY_DEFAULT}>
 # )
-# set_target_properties(${PROJECT_NAME} PROPERTIES MSVC_RUNTIME_LIBRARY ${MSVC_RUNTIME_LIBRARY_STR})
+# set_target_properties(${APP_TARGET} PROPERTIES MSVC_RUNTIME_LIBRARY ${MSVC_RUNTIME_LIBRARY_STR})
 
 ################################################################################
 # Include directories
 ################################################################################
-target_include_directories(${PROJECT_NAME} PUBLIC
+target_include_directories(${APP_TARGET} PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/src;"
- #   "${CMAKE_CURRENT_SOURCE_DIR}/src/regex"
- #   "${SDL2_INCLUDE_DIRS}"
-#	"${PNG_INCLUDE_DIRS}"
-#    "${OPENAL_INCLUDE_DIRS}"
 )
 
 ################################################################################
 # Compile definitions
 ################################################################################
-target_compile_definitions(${PROJECT_NAME} PRIVATE
+target_compile_definitions(${APP_TARGET} PRIVATE
     "$<$<CONFIG:Debug>:"
         "DEBUG;"
         "_DEBUG;"
@@ -1678,112 +1715,201 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
 ################################################################################
 # Compile and link options
 ################################################################################
-target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
+#target_compile_features(${APP_TARGET} PRIVATE cxx_std_17)
 
-if(MSVC)
-    target_compile_options(${PROJECT_NAME} PRIVATE
-        $<$<CONFIG:Debug>:
-            /Od;
-            /RTC1;
-            /Gy-;
-            /W3;
-            /fp:except-;
-            /GR;
-            /TP
-        >
-        $<$<CONFIG:Release>:
-            /O2;
-            /Oi;
-            /GF;
-            /Gy;
-            /W2
-        >
-        /MP;
-        /sdl-;
-        ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
-        /TP;
-        ${DEFAULT_CXX_EXCEPTION_HANDLING}
-    )
-    target_link_options(${PROJECT_NAME} PRIVATE
-        $<$<CONFIG:Debug>:
-            /NODEFAULTLIB:msvcrt.lib;
-            /DEBUG;
-            /SUBSYSTEM:CONSOLE;
-            /NXCOMPAT:NO;
-            /DYNAMICBASE:NO;
-            /INCREMENTAL
-        >
-        $<$<CONFIG:Release>:
-            /NODEFAULTLIB:msvcrtd.lib;
-            /DEBUG;
-            /SUBSYSTEM:WINDOWS;
-            /INCREMENTAL:NO
-        >
-        /NOLOGO
-    )
-endif()
+# if(MSVC)
+#     target_compile_options(${APP_TARGET} PRIVATE
+#         $<$<CONFIG:Debug>:
+#             /Od;
+#             /RTC1;
+#             /Gy-;
+#             /W3;
+#             /fp:except-;
+#             /GR
+#         >
+#         $<$<CONFIG:Release>:
+#             /O2;
+#             /Oi;
+#             /GF;
+#             /Gy;
+#             /W2
+#         >
+#         /MP;
+#         /sdl-;
+#         ${DEFAULT_CXX_DEBUG_INFORMATION_FORMAT};
+#         /TP;
+#         ${DEFAULT_CXX_EXCEPTION_HANDLING}
+#     )
+#     target_link_options(${APP_TARGET} PRIVATE
+#         $<$<CONFIG:Debug>:
+#             /NODEFAULTLIB:msvcrt.lib;
+#             /DEBUG;
+#             /SUBSYSTEM:CONSOLE;
+#             /NXCOMPAT:NO;
+#             /DYNAMICBASE:NO;
+#             /INCREMENTAL
+#         >
+#         $<$<CONFIG:Release>:
+#             /NODEFAULTLIB:msvcrtd.lib;
+#             /DEBUG;
+#             /SUBSYSTEM:WINDOWS;
+#             /INCREMENTAL:NO
+#         >
+#         /NOLOGO
+#     )
+# endif()
 
 
 
 ################################################################################
 # Post build events
 ################################################################################
-add_custom_command_if(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMANDS
-    COMMAND     $<CONFIG:Debug> xcopy /Y "$<SHELL_PATH:$<TARGET_FILE:${PROJECT_NAME}>>" "$ENV{LocalDebuggerWorkingDirectory}"
-    COMMAND     $<CONFIG:Release> xcopy /Y "$<SHELL_PATH:$<TARGET_FILE:${PROJECT_NAME}>>" "$ENV{LocalDebuggerWorkingDirectory}"
-    COMMAND     $<CONFIG:Release> editbin /REBASE:BASE=0x400000 /DYNAMICBASE:NO "$ENV{LocalDebuggerWorkingDirectory}$<TARGET_FILE_NAME:${PROJECT_NAME}>"
-    COMMENT "Stripping debug info..."
-)
+# add_custom_command_if(
+#     TARGET ${APP_TARGET}
+#     POST_BUILD
+#     COMMANDS
+#     COMMAND     $<CONFIG:Debug> xcopy /Y "$<SHELL_PATH:$<TARGET_FILE:${APP_TARGET}>>" "$ENV{LocalDebuggerWorkingDirectory}"
+#     COMMAND     $<CONFIG:Release> xcopy /Y "$<SHELL_PATH:$<TARGET_FILE:${APP_TARGET}>>" "$ENV{LocalDebuggerWorkingDirectory}"
+#     COMMAND     $<CONFIG:Release> editbin /REBASE:BASE=0x400000 /DYNAMICBASE:NO "$ENV{LocalDebuggerWorkingDirectory}$<TARGET_FILE_NAME:${APP_TARGET}>"
+#     COMMENT "Stripping debug info..."
+# )
 
 ################################################################################
 # Post build events
 ################################################################################
-
-
-
-
-
-
 
 
 ################################################################################
 # Dependencies
 ################################################################################
-set(ADDITIONAL_LIBRARY_DEPENDENCIES
-    "$<$<CONFIG:Release>:"
-        "user32"
-    ">"
-    "SDL2::SDL2;"
-    "SDL2::SDL2main"
-    "PNG::PNG;"
-    "ZLIB::ZLIB;"
-    "Vorbis::vorbis;"
-    "Vorbis::vorbisfile;"
-    "OpenAL::OpenAL;"
-    "ws2_32"
+target_link_libraries(${APP_TARGET}
+        SDL2::SDL2main 
+        PNG::PNG 
+        ZLIB::ZLIB 
+        vorbis::vorbis 
+        Ogg::ogg 
+        OpenAL::OpenAL
+        ws2_32
+        $<$<CONFIG:Release>:user32>
 )
-#find_library(GOTLIBS, "${ADDITIONAL_LIBRARY_DEPENDENCIES}" PATHS "${CMAKE_SOURCE_DIR}")
-target_link_libraries(${PROJECT_NAME} PRIVATE "${ADDITIONAL_LIBRARY_DEPENDENCIES}")
 
+#copy_runtime_dll(${APP_TARGET} OpenAL::OpenAL)
+add_custom_command(TARGET ${APP_TARGET} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        $<TARGET_RUNTIME_DLLS:${APP_TARGET}>
+        $<TARGET_FILE_DIR:${APP_TARGET}>
+    COMMAND_EXPAND_LISTS
+)
+#include(CMakePrintHelpers)
+#cmake_print_properties(TARGETS OpenAL::OpenAL PROPERTIES LOCATION INCLUDE_DIRECTORIES INTERFACE_INCLUDE_DIRECTORIES BINARY_DIR LOCATION LINK_LIBRARIES)
+# cmake_print_properties(TARGETS OpenAL::OpenAL PROPERTIES
+#         ALIASED_TARGET
+#         ARCHIVE_OUTPUT_DIRECTORY
+#         ARCHIVE_OUTPUT_DIRECTORY_DEBUG
+#         ARCHIVE_OUTPUT_DIRECTORY_RELEASE
+#         ARCHIVE_OUTPUT_DIRECTORY_RELWITHDEBINFO
+#         ARCHIVE_OUTPUT_DIRECTORY_MINSIZEREL
+#         AUTOMOC
+#         AUTOMOC_EXECUTABLE
+#         AUTORCC
+#         AUTOUIC
+#         AUTOUIC_EXECUTABLE
+#         BINARY_DIR
+#         BUILD_RPATH
+#         BUILD_RPATH_USE_ORIGIN
+#         BUILD_WITH_INSTALL_RPATH
+#         COMPILE_DEFINITIONS
+#         COMPILE_DEFINITIONS_DEBUG
+#         COMPILE_DEFINITIONS_RELEASE
+#         COMPILE_DEFINITIONS_RELWITHDEBINFO
+#         COMPILE_DEFINITIONS_MINSIZEREL
+#         COMPILE_FEATURES
+#         COMPILE_OPTIONS
+#         DEBUG_POSTFIX
+#         ENABLE_EXPORTS
+#         EXCLUDE_FROM_ALL
+#         EXPORT_NAME
+#         FOLDER
+#         FRAMEWORK
+#         IMPORTED
+#         IMPORTED_CONFIGURATIONS
+#         IMPORTED_IMPLIB
+#         IMPORTED_IMPLIB_DEBUG
+#         IMPORTED_IMPLIB_RELEASE
+#         IMPORTED_LOCATION
+#         IMPORTED_LOCATION_DEBUG
+#         IMPORTED_LOCATION_RELEASE
+#         INCLUDE_DIRECTORIES
+#         INSTALL_NAME_DIR
+#         INTERFACE_COMPILE_DEFINITIONS
+#         INTERFACE_COMPILE_FEATURES
+#         INTERFACE_COMPILE_OPTIONS
+#         INTERFACE_INCLUDE_DIRECTORIES
+#         INTERFACE_LINK_DIRECTORIES
+#         INTERFACE_LINK_LIBRARIES
+#         INTERFACE_POSITION_INDEPENDENT_CODE
+#         INTERFACE_SOURCES
+#         INTERFACE_SYSTEM_INCLUDE_DIRECTORIES
+#         LINK_DEPENDS
+#         LINK_DIRECTORIES
+#         LINK_INTERFACE_LIBRARIES
+#         LINK_OPTIONS
+#         LINK_SEARCH_END_STATIC
+#         LINK_SEARCH_START_STATIC
+#         LINK_WHAT_YOU_USE
+#         LOCATION
+#         MACHO_COMPATIBILITY_VERSION
+#         MACHO_CURRENT_VERSION
+#         MACOSX_BUNDLE
+#         MACOSX_BUNDLE_INFO_PLIST
+#         MAP_IMPORTED_CONFIG_DEBUG
+#         MAP_IMPORTED_CONFIG_RELEASE
+#         NAME
+#         NO_SONAME
+#         OUTPUT_NAME
+#         POSITION_INDEPENDENT_CODE
+#         PREFIX
+#         PUBLIC_HEADER
+#         RUNTIME_OUTPUT_DIRECTORY
+#         RUNTIME_OUTPUT_DIRECTORY_DEBUG
+#         RUNTIME_OUTPUT_DIRECTORY_RELEASE
+#         RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO
+#         RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL
+#         SKIP_BUILD_RPATH
+#         SOURCES
+#         SOVERSION
+#         STATIC_LIBRARY_OPTIONS
+#         SUFFIX
+#         TYPE
+#         VERSION
+#         VS_DEBUGGER_ENVIRONMENT
+#         VS_DEBUGGER_WORKING_DIRECTORY
+#         WINDOWS_EXPORT_ALL_SYMBOLS
+# )
 
+# message (STATUS "")
+# message (STATUS "=== UQM-MegaMod Configuration ===")
+# message (STATUS "Build Type:       ${CMAKE_BUILD_TYPE}")
+# message (STATUS "Graphics Engine:  ${UQM_GFX_BACKEND} "
+# 		"(SDL_DIR: ${SDL_DIR})")
+# message (STATUS "Sound Backend:    ${UQM_SOUND_BACKEND}")
+# message (STATUS "Ogg Vorbis Codec: ${UQM_OGG_CODEC}")
+# message (STATUS "Thread Library:   ${UQM_THREAD_LIB}")
+# message (STATUS "Features:")
+# message (STATUS "  Debug:        ${UQM_DEBUG}")
+# message (STATUS "  Strict Debug: ${UQM_STRICT_DEBUG}")
+# message (STATUS "  Joystick:     ${UQM_JOYSTICK}")
+# message (STATUS "  Netplay:      ${UQM_NETPLAY}")
+# message (STATUS "  ZIP I/O:      ${UQM_ZIP_IO}")
+# message (STATUS "  Platform Acceleration: ${UQM_PLATFORM_ACCEL}")
+# message (STATUS "  Internal MikMod:       ${UQM_USE_INTERNAL_MIKMOD}")
+# message (STATUS "  Internal Lua:          ${UQM_USE_INTERNAL_LUA}")
 
-message (STATUS "")
-message (STATUS "=== UQM-MegaMod Configuration ===")
-message (STATUS "Build Type:       ${CMAKE_BUILD_TYPE}")
-message (STATUS "Graphics Engine:  ${UQM_GFX_BACKEND} "
-		"(SDL_DIR: ${SDL_DIR})")
-message (STATUS "Sound Backend:    ${UQM_SOUND_BACKEND}")
-message (STATUS "Ogg Vorbis Codec: ${UQM_OGG_CODEC}")
-message (STATUS "Thread Library:   ${UQM_THREAD_LIB}")
-message (STATUS "Features:")
-message (STATUS "  Debug:        ${UQM_DEBUG}")
-message (STATUS "  Strict Debug: ${UQM_STRICT_DEBUG}")
-message (STATUS "  Joystick:     ${UQM_JOYSTICK}")
-message (STATUS "  Netplay:      ${UQM_NETPLAY}")
-message (STATUS "  ZIP I/O:      ${UQM_ZIP_IO}")
-message (STATUS "  Platform Acceleration: ${UQM_PLATFORM_ACCEL}")
-message (STATUS "  Internal MikMod:       ${UQM_USE_INTERNAL_MIKMOD}")
-message (STATUS "  Internal Lua:          ${UQM_USE_INTERNAL_LUA}")
+########################
+## Debugging
+########################
+    set_target_properties(${APP_TARGET} PROPERTIES 
+        VS_DEBUGGER_COMMAND_ARGUMENTS 
+        "--n ../content"
+    )
+
