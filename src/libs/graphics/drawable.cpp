@@ -29,28 +29,28 @@
 #include "libs/log.h"
 
 #ifndef M_PI
-#	define M_PI 3.14159265358979323846
+#define M_PI 3.14159265358979323846
 #endif
 
 FRAME _CurFramePtr;
 
 FRAME
-SetContextFGFrame (FRAME Frame)
+SetContextFGFrame(FRAME Frame)
 {
 	FRAME LastFrame;
 
 	if (Frame != (LastFrame = (FRAME)_CurFramePtr))
 	{
 		if (LastFrame)
-			DeactivateDrawable ();
+			DeactivateDrawable();
 
 		_CurFramePtr = Frame;
 		if (_CurFramePtr)
-			ActivateDrawable ();
+			ActivateDrawable();
 
-		if (ContextActive ())
+		if (ContextActive())
 		{
-			SwitchContextFGFrame (Frame);
+			SwitchContextFGFrame(Frame);
 		}
 	}
 
@@ -58,19 +58,19 @@ SetContextFGFrame (FRAME Frame)
 }
 
 FRAME
-GetContextFGFrame (void)
+GetContextFGFrame(void)
 {
 	return _CurFramePtr;
 }
 
 static DRAWABLE
-request_drawable (uqm::COUNT NumFrames, DRAWABLE_TYPE DrawableType,
-		CREATE_FLAGS flags, uqm::SIZE width, uqm::SIZE height)
+request_drawable(uqm::COUNT NumFrames, DRAWABLE_TYPE DrawableType,
+				 CREATE_FLAGS flags, uqm::SIZE width, uqm::SIZE height)
 {
 	DRAWABLE Drawable;
 	uqm::COUNT i;
 
-	Drawable = AllocDrawable (NumFrames);
+	Drawable = AllocDrawable(NumFrames);
 	if (!Drawable)
 		return NULL;
 
@@ -83,13 +83,13 @@ request_drawable (uqm::COUNT NumFrames, DRAWABLE_TYPE DrawableType,
 
 		if (DrawableType == RAM_DRAWABLE && width > 0 && height > 0)
 		{
-			FramePtr->image = TFB_DrawImage_New (TFB_DrawCanvas_New_TrueColor (
-					width, height, (flags & WANT_ALPHA) ? true : false));
+			FramePtr->image = TFB_DrawImage_New(TFB_DrawCanvas_New_TrueColor(
+				width, height, (flags & WANT_ALPHA) ? true : false));
 		}
 
 		FramePtr->Type = DrawableType;
 		FramePtr->Index = i;
-		SetFrameBounds (FramePtr, width, height);
+		SetFrameBounds(FramePtr, width, height);
 	}
 
 	return Drawable;
@@ -98,60 +98,60 @@ request_drawable (uqm::COUNT NumFrames, DRAWABLE_TYPE DrawableType,
 // Kruzen: New construct to create paletted drawable
 // Uses previously unused TFB_DrawCanvas_New_Paletted()
 static DRAWABLE
-request_indexed_drawable (Color *palette, uqm::SIZE width, uqm::SIZE height)
+request_indexed_drawable(Color* palette, uqm::SIZE width, uqm::SIZE height)
 {
 	DRAWABLE Drawable;
 
-	Drawable = AllocDrawable (1);
+	Drawable = AllocDrawable(1);
 	if (!Drawable)
 		return NULL;
 
 	Drawable->Flags = WANT_PIXMAP;
-	Drawable->MaxIndex =0;
+	Drawable->MaxIndex = 0;
 
 	{
 		FRAME FramePtr = &Drawable->Frame[0];
 
 		if (width > 0 && height > 0)
 		{
-			FramePtr->image = TFB_DrawImage_New (
-					TFB_DrawCanvas_New_Paletted (
-						width, height, palette, -1));
+			FramePtr->image = TFB_DrawImage_New(
+				TFB_DrawCanvas_New_Paletted(
+					width, height, palette, -1));
 		}
 		else
 			return NULL;
 
 		FramePtr->Type = RAM_DRAWABLE;
 		FramePtr->Index = 0;
-		SetFrameBounds (FramePtr, width, height);
+		SetFrameBounds(FramePtr, width, height);
 	}
 
 	return Drawable;
 }
 
 DRAWABLE
-CreateDisplay (CREATE_FLAGS CreateFlags, uqm::SIZE *pwidth, uqm::SIZE *pheight)
+CreateDisplay(CREATE_FLAGS CreateFlags, uqm::SIZE* pwidth, uqm::SIZE* pheight)
 {
 	DRAWABLE Drawable;
 
 	// TODO: CanvasWidth and CanvasHeight should be passed in
 	//   instead of returned.
-	Drawable = request_drawable (1, SCREEN_DRAWABLE,
-			(CreateFlags & (WANT_PIXMAP | WANT_MASK)),
-			CanvasWidth, CanvasHeight);
+	Drawable = request_drawable(1, SCREEN_DRAWABLE,
+								(CreateFlags & (WANT_PIXMAP | WANT_MASK)),
+								CanvasWidth, CanvasHeight);
 	if (Drawable)
 	{
 		FRAME F;
 
-		F = CaptureDrawable (Drawable);
+		F = CaptureDrawable(Drawable);
 		if (F == 0)
-			DestroyDrawable (Drawable);
+			DestroyDrawable(Drawable);
 		else
 		{
-			*pwidth = GetFrameWidth (F);
-			*pheight = GetFrameHeight (F);
+			*pwidth = GetFrameWidth(F);
+			*pheight = GetFrameHeight(F);
 
-			ReleaseDrawable (F);
+			ReleaseDrawable(F);
 			return (Drawable);
 		}
 	}
@@ -161,23 +161,24 @@ CreateDisplay (CREATE_FLAGS CreateFlags, uqm::SIZE *pwidth, uqm::SIZE *pheight)
 }
 
 DRAWABLE
-AllocDrawable (uqm::COUNT n)
+AllocDrawable(uqm::COUNT n)
 {
 	DRAWABLE Drawable;
-	Drawable = (DRAWABLE) HCalloc(sizeof (DRAWABLE_DESC));
+	Drawable = (DRAWABLE)HCalloc(sizeof(DRAWABLE_DESC));
 	if (Drawable)
 	{
 		int i;
-		Drawable->Frame = (FRAME)HMalloc (sizeof (FRAME_DESC) * n);
+		Drawable->Frame = (FRAME)HMalloc(sizeof(FRAME_DESC) * n);
 		if (Drawable->Frame == NULL)
 		{
-			HFree (Drawable);
+			HFree(Drawable);
 			return NULL;
 		}
 
 		/* Zero out the newly allocated frames, since HMalloc doesn't have
 		 * MEM_ZEROINIT. */
-		for (i = 0; i < n; i++) {
+		for (i = 0; i < n; i++)
+		{
 			FRAME F;
 			F = &Drawable->Frame[i];
 			F->parent = Drawable;
@@ -194,23 +195,21 @@ AllocDrawable (uqm::COUNT n)
 }
 
 DRAWABLE
-CreateDrawable (CREATE_FLAGS CreateFlags, uqm::SIZE width, uqm::SIZE height, uqm::COUNT
-		num_frames)
+CreateDrawable(CREATE_FLAGS CreateFlags, uqm::SIZE width, uqm::SIZE height, uqm::COUNT num_frames)
 {
 	DRAWABLE Drawable;
 
-	Drawable = request_drawable (num_frames, RAM_DRAWABLE,
-			(CreateFlags & (WANT_MASK | WANT_PIXMAP
-				| WANT_ALPHA | MAPPED_TO_DISPLAY)),
-			width, height);
+	Drawable = request_drawable(num_frames, RAM_DRAWABLE,
+								(CreateFlags & (WANT_MASK | WANT_PIXMAP | WANT_ALPHA | MAPPED_TO_DISPLAY)),
+								width, height);
 	if (Drawable)
 	{
 		FRAME F;
 
-		F = CaptureDrawable (Drawable);
+		F = CaptureDrawable(Drawable);
 		if (F)
 		{
-			ReleaseDrawable (F);
+			ReleaseDrawable(F);
 
 			return (Drawable);
 		}
@@ -221,20 +220,20 @@ CreateDrawable (CREATE_FLAGS CreateFlags, uqm::SIZE width, uqm::SIZE height, uqm
 
 // Kruzen: New construct to create paletted drawable
 DRAWABLE
-CreateIndexedDrawable (Color *palette, uqm::SIZE width, uqm::SIZE height)
+CreateIndexedDrawable(Color* palette, uqm::SIZE width, uqm::SIZE height)
 {
 	DRAWABLE Drawable;
 
-	Drawable = request_indexed_drawable (palette, width, height);
-		
+	Drawable = request_indexed_drawable(palette, width, height);
+
 	if (Drawable)
 	{
 		FRAME F;
 
-		F = CaptureDrawable (Drawable);
+		F = CaptureDrawable(Drawable);
 		if (F)
 		{
-			ReleaseDrawable (F);
+			ReleaseDrawable(F);
 
 			return (Drawable);
 		}
@@ -243,15 +242,14 @@ CreateIndexedDrawable (Color *palette, uqm::SIZE width, uqm::SIZE height)
 	return (0);
 }
 
-bool
-DestroyDrawable (DRAWABLE Drawable)
+bool DestroyDrawable(DRAWABLE Drawable)
 {
 	if (_CurFramePtr && (Drawable == _CurFramePtr->parent))
-		SetContextFGFrame ((FRAME)NULL);
+		SetContextFGFrame((FRAME)NULL);
 
 	if (Drawable)
 	{
-		FreeDrawable (Drawable);
+		FreeDrawable(Drawable);
 
 		return (true);
 	}
@@ -259,14 +257,13 @@ DestroyDrawable (DRAWABLE Drawable)
 	return (false);
 }
 
-bool
-GetFrameRect (FRAME FramePtr, RECT *pRect)
+bool GetFrameRect(FRAME FramePtr, RECT* pRect)
 {
 	if (FramePtr)
 	{
 		pRect->corner.x = -FramePtr->HotSpot.x;
 		pRect->corner.y = -FramePtr->HotSpot.y;
-		pRect->extent = GetFrameBounds (FramePtr);
+		pRect->extent = GetFrameBounds(FramePtr);
 
 		return (true);
 	}
@@ -275,7 +272,7 @@ GetFrameRect (FRAME FramePtr, RECT *pRect)
 }
 
 HOT_SPOT
-SetFrameHot (FRAME FramePtr, HOT_SPOT HotSpot)
+SetFrameHot(FRAME FramePtr, HOT_SPOT HotSpot)
 {
 	if (FramePtr)
 	{
@@ -287,22 +284,22 @@ SetFrameHot (FRAME FramePtr, HOT_SPOT HotSpot)
 		return (OldHot);
 	}
 
-	return (MAKE_HOT_SPOT (0, 0));
+	return (MAKE_HOT_SPOT(0, 0));
 }
 
 HOT_SPOT
-GetFrameHot (FRAME FramePtr)
+GetFrameHot(FRAME FramePtr)
 {
 	if (FramePtr)
 	{
 		return FramePtr->HotSpot;
 	}
 
-	return (MAKE_HOT_SPOT (0, 0));
+	return (MAKE_HOT_SPOT(0, 0));
 }
 
 DRAWABLE
-RotateFrame (FRAME Frame, int angle_deg)
+RotateFrame(FRAME Frame, int angle_deg)
 {
 	DRAWABLE Drawable;
 	FRAME RotFramePtr;
@@ -313,100 +310,98 @@ RotateFrame (FRAME Frame, int angle_deg)
 	if (!Frame)
 		return NULL;
 
-	assert (Frame->Type != SCREEN_DRAWABLE);
+	assert(Frame->Type != SCREEN_DRAWABLE);
 
-	Drawable = request_drawable (1, RAM_DRAWABLE, WANT_PIXMAP, 0, 0);
+	Drawable = request_drawable(1, RAM_DRAWABLE, WANT_PIXMAP, 0, 0);
 	if (!Drawable)
 		return 0;
-	RotFramePtr = CaptureDrawable (Drawable);
+	RotFramePtr = CaptureDrawable(Drawable);
 	if (!RotFramePtr)
 	{
-		FreeDrawable (Drawable);
+		FreeDrawable(Drawable);
 		return 0;
 	}
 
-	RotFramePtr->image = TFB_DrawImage_New_Rotated (
-			Frame->image, angle_deg);
-	SetFrameBounds (RotFramePtr, RotFramePtr->image->extent.width,
-			RotFramePtr->image->extent.height);
+	RotFramePtr->image = TFB_DrawImage_New_Rotated(
+		Frame->image, angle_deg);
+	SetFrameBounds(RotFramePtr, RotFramePtr->image->extent.width,
+				   RotFramePtr->image->extent.height);
 
 	/* now we need to rotate the hot-spot, eww */
-	dx = Frame->HotSpot.x - (GetFrameWidth (Frame) / 2);
-	dy = Frame->HotSpot.y - (GetFrameHeight (Frame) / 2);
-	d = sqrt ((double)dx*dx + (double)dy*dy);
+	dx = Frame->HotSpot.x - (GetFrameWidth(Frame) / 2);
+	dy = Frame->HotSpot.y - (GetFrameHeight(Frame) / 2);
+	d = sqrt((double)dx * dx + (double)dy * dy);
 	if ((int)d != 0)
 	{
-		double organg = atan2 (-dy, dx);
-		dx = cos (organg + angle) * d;
-		dy = -sin (organg + angle) * d;
+		double organg = atan2(-dy, dx);
+		dx = cos(organg + angle) * d;
+		dy = -sin(organg + angle) * d;
 	}
-	RotFramePtr->HotSpot.x = (GetFrameWidth (RotFramePtr) / 2) + (int)dx;
-	RotFramePtr->HotSpot.y = (GetFrameHeight (RotFramePtr) / 2) + (int)dy;
+	RotFramePtr->HotSpot.x = (GetFrameWidth(RotFramePtr) / 2) + (int)dx;
+	RotFramePtr->HotSpot.y = (GetFrameHeight(RotFramePtr) / 2) + (int)dy;
 
-	ReleaseDrawable (RotFramePtr);
+	ReleaseDrawable(RotFramePtr);
 
 	return Drawable;
 }
 
 // color.a is ignored
-void
-SetFrameTransparentColor (FRAME frame, Color color)
+void SetFrameTransparentColor(FRAME frame, Color color)
 {
-	TFB_Image *img;
+	TFB_Image* img;
 
 	if (!frame)
 		return;
 
-	assert (frame->Type != SCREEN_DRAWABLE);
+	assert(frame->Type != SCREEN_DRAWABLE);
 
 	img = frame->image;
-	LockMutex (img->mutex);
+	LockMutex(img->mutex);
 
 	// TODO: This should defer to TFB_DrawImage instead
-	TFB_DrawCanvas_SetTransparentColor (img->NormalImg, color, false);
-	
-	UnlockMutex (img->mutex);
+	TFB_DrawCanvas_SetTransparentColor(img->NormalImg, color, false);
+
+	UnlockMutex(img->mutex);
 }
 
-Color
-GetFramePixel (FRAME frame, POINT pixelPt)
+Color GetFramePixel(FRAME frame, POINT pixelPt)
 {
-	TFB_Image *img;
+	TFB_Image* img;
 	Color ret;
 
 	if (!frame)
-		return BUILD_COLOR_RGBA (0, 0, 0, 0);
+		return BUILD_COLOR_RGBA(0, 0, 0, 0);
 
-	assert (frame->Type != SCREEN_DRAWABLE);
+	assert(frame->Type != SCREEN_DRAWABLE);
 
 	img = frame->image;
-	LockMutex (img->mutex);
+	LockMutex(img->mutex);
 
 	// TODO: This should defer to TFB_DrawImage instead
-	ret = TFB_DrawCanvas_GetPixel (img->NormalImg, pixelPt.x, pixelPt.y);
+	ret = TFB_DrawCanvas_GetPixel(img->NormalImg, pixelPt.x, pixelPt.y);
 
-	UnlockMutex (img->mutex);
+	UnlockMutex(img->mutex);
 
 	return ret;
 }
 
 static FRAME
-makeMatchingFrame (FRAME frame, int width, int height)
+makeMatchingFrame(FRAME frame, int width, int height)
 {
 	DRAWABLE drawable;
 	FRAME newFrame;
 	CREATE_FLAGS flags;
 	const bool dst_has_alpha =
-			((SDL_Surface*)(frame->image->NormalImg))->format->Amask != 0;
+		((SDL_Surface*)(frame->image->NormalImg))->format->Amask != 0;
 
-	flags = dst_has_alpha ? WANT_ALPHA : GetFrameParentDrawable (frame)->Flags;
-	drawable = CreateDrawable (flags, width, height, 1);
+	flags = dst_has_alpha ? WANT_ALPHA : GetFrameParentDrawable(frame)->Flags;
+	drawable = CreateDrawable(flags, width, height, 1);
 	if (!drawable)
 		return NULL;
-	newFrame = CaptureDrawable (drawable);
+	newFrame = CaptureDrawable(drawable);
 	if (!newFrame)
 	{
-		FreeDrawable (drawable);
+		FreeDrawable(drawable);
 		return NULL;
 	}
 
@@ -416,21 +411,21 @@ makeMatchingFrame (FRAME frame, int width, int height)
 // Kruzen: New construct to create paletted drawable
 // Copies makeMatchingFrame() call hierarchy
 static FRAME
-makeMatchingIndexedFrame (FRAME frame, int width, int height)
+makeMatchingIndexedFrame(FRAME frame, int width, int height)
 {
 	DRAWABLE drawable;
 	FRAME newFrame;
-	
+
 	drawable =
-			CreateIndexedDrawable (
-					TFB_DrawCanvas_ExtractPalette (frame->image->NormalImg),
-					width, height);
+		CreateIndexedDrawable(
+			TFB_DrawCanvas_ExtractPalette(frame->image->NormalImg),
+			width, height);
 	if (!drawable)
 		return NULL;
-	newFrame = CaptureDrawable (drawable);
+	newFrame = CaptureDrawable(drawable);
 	if (!newFrame)
 	{
-		FreeDrawable (drawable);
+		FreeDrawable(drawable);
 		return NULL;
 	}
 
@@ -440,30 +435,30 @@ makeMatchingIndexedFrame (FRAME frame, int width, int height)
 // Creates an new DRAWABLE containing a copy of specified FRAME's rect
 // Source FRAME must not be a SCREEN_DRAWABLE
 DRAWABLE
-CopyFrameRect (FRAME frame, const RECT *area)
+CopyFrameRect(FRAME frame, const RECT* area)
 {
 	FRAME newFrame;
-	POINT nullPt = MAKE_POINT (0, 0);
+	POINT nullPt = MAKE_POINT(0, 0);
 
 	if (!frame)
 		return NULL;
 
-	assert (frame->Type != SCREEN_DRAWABLE);
+	assert(frame->Type != SCREEN_DRAWABLE);
 
-	newFrame = makeMatchingFrame (frame, area->extent.width,
-			area->extent.height);
+	newFrame = makeMatchingFrame(frame, area->extent.width,
+								 area->extent.height);
 	if (!newFrame)
 		return NULL;
 
-	TFB_DrawImage_CopyRect (frame->image, area, newFrame->image, nullPt);
+	TFB_DrawImage_CopyRect(frame->image, area, newFrame->image, nullPt);
 
-	return ReleaseDrawable (newFrame);
+	return ReleaseDrawable(newFrame);
 }
 
 // Creates an new DRAWABLE mostly identical to specified FRAME
 // Source FRAME must not be a SCREEN_DRAWABLE
 DRAWABLE
-CloneFrame (FRAME frame)
+CloneFrame(FRAME frame)
 {
 	FRAME newFrame;
 	RECT r;
@@ -471,43 +466,43 @@ CloneFrame (FRAME frame)
 	if (!frame)
 		return NULL;
 
-	assert (frame->Type != SCREEN_DRAWABLE);
+	assert(frame->Type != SCREEN_DRAWABLE);
 
-	GetFrameRect (frame, &r);
+	GetFrameRect(frame, &r);
 	r.corner.x = 0;
 	r.corner.y = 0;
 
-	newFrame = CaptureDrawable (CopyFrameRect (frame, &r));
+	newFrame = CaptureDrawable(CopyFrameRect(frame, &r));
 	if (!newFrame)
 		return NULL;
 
 	// copy the hot-spot
 	newFrame->HotSpot = frame->HotSpot;
 
-	return ReleaseDrawable (newFrame);
+	return ReleaseDrawable(newFrame);
 }
 
 // Creates a new DRAWABLE of specified size and scales the passed
 // frame onto it. The aspect ratio is not preserved.
 DRAWABLE
-RescaleFrame (FRAME frame, int width, int height)
+RescaleFrame(FRAME frame, int width, int height)
 {
 	FRAME newFrame;
-	TFB_Image *img;
+	TFB_Image* img;
 	TFB_Canvas src, dst;
 
 	if (!frame)
 		return NULL;
 
-	assert (frame->Type != SCREEN_DRAWABLE);
+	assert(frame->Type != SCREEN_DRAWABLE);
 
-	if (TFB_DrawCanvas_IsPaletted (frame->image->NormalImg))
-	{	// request Paletted frame
-		newFrame = makeMatchingIndexedFrame (frame, width, height);
+	if (TFB_DrawCanvas_IsPaletted(frame->image->NormalImg))
+	{ // request Paletted frame
+		newFrame = makeMatchingIndexedFrame(frame, width, height);
 	}
 	else
-	{	// request TrueColor frame
-		newFrame = makeMatchingFrame (frame, width, height);
+	{ // request TrueColor frame
+		newFrame = makeMatchingFrame(frame, width, height);
 	}
 
 	if (!newFrame)
@@ -518,23 +513,23 @@ RescaleFrame (FRAME frame, int width, int height)
 	newFrame->HotSpot.y = frame->HotSpot.y * height / frame->Bounds.height;
 
 	img = frame->image;
-	LockMutex (img->mutex);
+	LockMutex(img->mutex);
 	// NOTE: We do not lock the target image because nothing has a
 	//   reference to it yet!
 	src = img->NormalImg;
 	dst = newFrame->image->NormalImg;
 
-	TFB_DrawCanvas_Rescale_Nearest (src, dst, -1, NULL, NULL, NULL);
-	
-	UnlockMutex (img->mutex);
+	TFB_DrawCanvas_Rescale_Nearest(src, dst, -1, NULL, NULL, NULL);
 
-	return ReleaseDrawable (newFrame);
+	UnlockMutex(img->mutex);
+
+	return ReleaseDrawable(newFrame);
 }
 
 // Creates a new DRAWABLE of specified percentage and scales the passed
 // frame onto it. The aspect ratio is preserved.
 DRAWABLE
-RescalePercentage (FRAME frame, float percentage)
+RescalePercentage(FRAME frame, float percentage)
 {
 	FRAME newFrame;
 	TFB_Image* img;
@@ -547,9 +542,9 @@ RescalePercentage (FRAME frame, float percentage)
 
 	percentage = percentage / 100;
 
-	newFrame = makeMatchingFrame (frame,
-			(int)(frame->Bounds.width * percentage),
-			(int)(frame->Bounds.height * percentage));
+	newFrame = makeMatchingFrame(frame,
+								 (int)(frame->Bounds.width * percentage),
+								 (int)(frame->Bounds.height * percentage));
 
 	if (!newFrame)
 		return NULL;
@@ -559,86 +554,82 @@ RescalePercentage (FRAME frame, float percentage)
 	newFrame->HotSpot.y = (COORD)(frame->HotSpot.y * percentage);
 
 	img = frame->image;
-	LockMutex (img->mutex);
+	LockMutex(img->mutex);
 	// NOTE: We do not lock the target image because nothing has a
 	//   reference to it yet!
 	src = img->NormalImg;
 	dst = newFrame->image->NormalImg;
 
-	TFB_DrawCanvas_Rescale_Bilinear (src, dst, -1, NULL, NULL, NULL);
+	TFB_DrawCanvas_Rescale_Bilinear(src, dst, -1, NULL, NULL, NULL);
 
-	UnlockMutex (img->mutex);
+	UnlockMutex(img->mutex);
 
 	return ReleaseDrawable(newFrame);
 }
 
-bool
-ReadFramePixelColors (FRAME frame, Color *pixels, int width, int height)
+bool ReadFramePixelColors(FRAME frame, Color* pixels, int width, int height)
 {
-	TFB_Image *img;
+	TFB_Image* img;
 
 	if (!frame)
 		return false;
 
-	assert (frame->Type != SCREEN_DRAWABLE);
+	assert(frame->Type != SCREEN_DRAWABLE);
 
 	// TODO: Do we need to lock the img->mutex here?
 	img = frame->image;
-	return TFB_DrawCanvas_GetPixelColors (img->NormalImg, pixels,
-			width, height);
+	return TFB_DrawCanvas_GetPixelColors(img->NormalImg, pixels,
+										 width, height);
 }
 
 // Warning: this functions bypasses DCQ, which is why it is not a DrawXXX
-bool
-WriteFramePixelColors (FRAME frame, const Color *pixels, int width, int height)
+bool WriteFramePixelColors(FRAME frame, const Color* pixels, int width, int height)
 {
-	TFB_Image *img;
+	TFB_Image* img;
 
 	if (!frame)
 		return false;
 
-	assert (frame->Type != SCREEN_DRAWABLE);
+	assert(frame->Type != SCREEN_DRAWABLE);
 
 	// TODO: Do we need to lock the img->mutex here?
 	img = frame->image;
-	return TFB_DrawCanvas_SetPixelColors (img->NormalImg, pixels,
-			width, height);
+	return TFB_DrawCanvas_SetPixelColors(img->NormalImg, pixels,
+										 width, height);
 }
 
-bool
-ReadFramePixelIndexes (FRAME frame, uqm::BYTE *pixels, int width, int height, bool paletted)
+bool ReadFramePixelIndexes(FRAME frame, uqm::BYTE* pixels, int width, int height, bool paletted)
 {
-	TFB_Image *img;
+	TFB_Image* img;
 
 	if (!frame)
 		return false;
 
-	assert (frame->Type != SCREEN_DRAWABLE);
+	assert(frame->Type != SCREEN_DRAWABLE);
 
 	// TODO: Do we need to lock the img->mutex here?
 	img = frame->image;
-	
+
 	// JMS_GFX: Don't try to read pixel indexes for non-indexed images.
 	if (paletted)
-		return TFB_DrawCanvas_GetPixelIndexes (img->NormalImg, pixels,
-			width, height);
+		return TFB_DrawCanvas_GetPixelIndexes(img->NormalImg, pixels,
+											  width, height);
 	else
 		return false;
 }
 
 // Warning: this functions bypasses DCQ, which is why it is not a DrawXXX
-bool
-WriteFramePixelIndexes (FRAME frame, const uqm::BYTE *pixels, int width, int height)
+bool WriteFramePixelIndexes(FRAME frame, const uqm::BYTE* pixels, int width, int height)
 {
-	TFB_Image *img;
+	TFB_Image* img;
 
 	if (!frame)
 		return false;
 
-	assert (frame->Type != SCREEN_DRAWABLE);
+	assert(frame->Type != SCREEN_DRAWABLE);
 
 	// TODO: Do we need to lock the img->mutex here?
 	img = frame->image;
-	return TFB_DrawCanvas_SetPixelIndexes (img->NormalImg, pixels,
-			width, height);
+	return TFB_DrawCanvas_SetPixelIndexes(img->NormalImg, pixels,
+										  width, height);
 }

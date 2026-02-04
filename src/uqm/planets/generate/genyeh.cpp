@@ -27,13 +27,13 @@
 #include "libs/mathlib.h"
 
 
-static bool GenerateYehat_generatePlanets (SOLARSYS_STATE *solarSys);
-static bool GenerateYehat_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world);
-static uqm::COUNT GenerateYehat_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
-static bool GenerateYehat_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, uqm::COUNT whichNode);
+static bool GenerateYehat_generatePlanets(SOLARSYS_STATE* solarSys);
+static bool GenerateYehat_generateOrbital(SOLARSYS_STATE* solarSys,
+										  PLANET_DESC* world);
+static uqm::COUNT GenerateYehat_generateEnergy(const SOLARSYS_STATE*,
+											   const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO*);
+static bool GenerateYehat_pickupEnergy(SOLARSYS_STATE* solarSys,
+									   PLANET_DESC* world, uqm::COUNT whichNode);
 
 
 const GenerateFunctions generateYehatFunctions = {
@@ -54,12 +54,12 @@ const GenerateFunctions generateYehatFunctions = {
 
 
 static bool
-GenerateYehat_generatePlanets (SOLARSYS_STATE *solarSys)
+GenerateYehat_generatePlanets(SOLARSYS_STATE* solarSys)
 {
-	PLANET_DESC *pSunDesc = &solarSys->SunDesc[0];
-	PLANET_DESC *pPlanet;
+	PLANET_DESC* pSunDesc = &solarSys->SunDesc[0];
+	PLANET_DESC* pPlanet;
 
-	GenerateDefault_generatePlanets (solarSys);
+	GenerateDefault_generatePlanets(solarSys);
 
 	if (PrimeSeed)
 	{
@@ -71,87 +71,87 @@ GenerateYehat_generatePlanets (SOLARSYS_STATE *solarSys)
 		pPlanet->data_index = WATER_WORLD;
 		pPlanet->NumPlanets = 1;
 		pPlanet->radius = EARTH_RADIUS * 106L / 100;
-		angle = ARCTAN (pPlanet->location.x, pPlanet->location.y);
-		pPlanet->location.x = COSINE (angle, pPlanet->radius);
-		pPlanet->location.y = SINE (angle, pPlanet->radius);
-		ComputeSpeed (pPlanet, false, 1);
+		angle = ARCTAN(pPlanet->location.x, pPlanet->location.y);
+		pPlanet->location.x = COSINE(angle, pPlanet->radius);
+		pPlanet->location.y = SINE(angle, pPlanet->radius);
+		ComputeSpeed(pPlanet, false, 1);
 	}
 	else
 	{
-		pSunDesc->PlanetByte = PickClosestHabitable (solarSys);
+		pSunDesc->PlanetByte = PickClosestHabitable(solarSys);
 		pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
 
-		pPlanet->data_index = GenerateHabitableWorld ();
+		pPlanet->data_index = GenerateHabitableWorld();
 	}
 
 	return true;
 }
 
 static bool
-GenerateYehat_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world)
+GenerateYehat_generateOrbital(SOLARSYS_STATE* solarSys,
+							  PLANET_DESC* world)
 {
-	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
+	if (matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{
-		if (StartSphereTracking (YEHAT_SHIP))
+		if (StartSphereTracking(YEHAT_SHIP))
 		{
-			NotifyOthers (YEHAT_SHIP, IPNL_ALL_CLEAR);
-			PutGroupInfo (GROUPS_RANDOM, GROUP_SAVE_IP);
-			ReinitQueue (&GLOBAL (ip_group_q));
-			assert (CountLinks (&GLOBAL (npc_built_ship_q)) == 0);
+			NotifyOthers(YEHAT_SHIP, IPNL_ALL_CLEAR);
+			PutGroupInfo(GROUPS_RANDOM, GROUP_SAVE_IP);
+			ReinitQueue(&GLOBAL(ip_group_q));
+			assert(CountLinks(&GLOBAL(npc_built_ship_q)) == 0);
 
-			CloneShipFragment (YEHAT_SHIP, &GLOBAL (npc_built_ship_q),
-					INFINITE_FLEET);
+			CloneShipFragment(YEHAT_SHIP, &GLOBAL(npc_built_ship_q),
+							  INFINITE_FLEET);
 
-			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-			SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, 1 << 7);
-			InitCommunication (YEHAT_CONVERSATION);
+			GLOBAL(CurrentActivity) |= START_INTERPLANETARY;
+			SET_GAME_STATE(GLOBAL_FLAGS_AND_DATA, 1 << 7);
+			InitCommunication(YEHAT_CONVERSATION);
 
-			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
+			if (!(GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
 			{
-				GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
-				ReinitQueue (&GLOBAL (npc_built_ship_q));
-				GetGroupInfo (GROUPS_RANDOM, GROUP_LOAD_IP);
+				GLOBAL(CurrentActivity) &= ~START_INTERPLANETARY;
+				ReinitQueue(&GLOBAL(npc_built_ship_q));
+				GetGroupInfo(GROUPS_RANDOM, GROUP_LOAD_IP);
 			}
 
 			return true;
 		}
 
-		LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
+		LoadStdLanderFont(&solarSys->SysInfo.PlanetInfo);
 		solarSys->PlanetSideFrame[1] =
-				CaptureDrawable (LoadGraphic (RUINS_MASK_PMAP_ANIM));
+			CaptureDrawable(LoadGraphic(RUINS_MASK_PMAP_ANIM));
 		solarSys->SysInfo.PlanetInfo.DiscoveryString =
-				CaptureStringTable (LoadStringTable (RUINS_STRTAB));
+			CaptureStringTable(LoadStringTable(RUINS_STRTAB));
 	}
 
-	GenerateDefault_generateOrbital (solarSys, world);
+	GenerateDefault_generateOrbital(solarSys, world);
 
 	return true;
 }
 
 static uqm::COUNT
-GenerateYehat_generateEnergy (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *info)
+GenerateYehat_generateEnergy(const SOLARSYS_STATE* solarSys,
+							 const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO* info)
 {
-	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
+	if (matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{
-		return GenerateDefault_generateRuins (solarSys, whichNode, info);
+		return GenerateDefault_generateRuins(solarSys, whichNode, info);
 	}
 
 	return 0;
 }
 
 static bool
-GenerateYehat_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		uqm::COUNT whichNode)
+GenerateYehat_pickupEnergy(SOLARSYS_STATE* solarSys, PLANET_DESC* world,
+						   uqm::COUNT whichNode)
 {
-	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
+	if (matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{
 		// Standard ruins report
-		GenerateDefault_landerReportCycle (solarSys);
+		GenerateDefault_landerReportCycle(solarSys);
 		return false;
 	}
 
-	(void) whichNode;
+	(void)whichNode;
 	return false;
 }

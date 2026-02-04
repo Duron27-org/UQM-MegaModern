@@ -28,4 +28,4 @@
 #include "cdp_ivid.h"
 // TODO: add more cdp_iXXX.h here as they are defined
 
-#endif  /* LIBS_CDP_CDP_ALLI_H_ */
+#endif /* LIBS_CDP_CDP_ALLI_H_ */

@@ -23,9 +23,9 @@
 #include "netinput.h"
 
 #include "../../intel.h"
-		// for NETWORK_CONTROL
+// for NETWORK_CONTROL
 #include "../../setup.h"
-		// For PlayerControl
+// For PlayerControl
 #include "libs/log.h"
 
 #include <errno.h>
@@ -36,27 +36,31 @@ static BattleInputBuffer battleInputBuffers[NUM_PLAYERS];
 static size_t BattleInput_inputDelay;
 
 // Call before initBattleInputBuffers()
-void
-setBattleInputDelay(size_t delay) {
+void setBattleInputDelay(size_t delay)
+{
 	BattleInput_inputDelay = delay;
 }
 
 size_t
-getBattleInputDelay(void) {
+getBattleInputDelay(void)
+{
 	return BattleInput_inputDelay;
 }
 
 static void
-BattleInputBuffer_init(BattleInputBuffer *bib, size_t bufSize) {
-	bib->buf = (BATTLE_INPUT_STATE*) malloc(bufSize * sizeof (BATTLE_INPUT_STATE));
+BattleInputBuffer_init(BattleInputBuffer* bib, size_t bufSize)
+{
+	bib->buf = (BATTLE_INPUT_STATE*)malloc(bufSize * sizeof(BATTLE_INPUT_STATE));
 	bib->maxSize = bufSize;
 	bib->first = 0;
 	bib->size = 0;
 }
 
 static void
-BattleInputBuffer_uninit(BattleInputBuffer *bib) {
-	if (bib->buf != NULL) {
+BattleInputBuffer_uninit(BattleInputBuffer* bib)
+{
+	if (bib->buf != NULL)
+	{
 		free(bib->buf);
 		bib->buf = NULL;
 	}
@@ -65,11 +69,11 @@ BattleInputBuffer_uninit(BattleInputBuffer *bib) {
 	bib->size = 0;
 }
 
-void
-initBattleInputBuffers(void) {
+void initBattleInputBuffers(void)
+{
 	size_t player;
 	int bufSize = BattleInput_inputDelay * 2 + 2;
-	
+
 	// The input of frame n will be processed in frame 'n + delay'.
 	//
 	// In the worst case, side 1 processes frames 'n' through 'n + delay - 1',
@@ -86,7 +90,7 @@ initBattleInputBuffers(void) {
 
 	for (player = 0; player < NUM_PLAYERS; player++)
 	{
-		BattleInputBuffer *bib = &battleInputBuffers[player];
+		BattleInputBuffer* bib = &battleInputBuffers[player];
 		BattleInputBuffer_init(bib, bufSize);
 
 		{
@@ -94,19 +98,18 @@ initBattleInputBuffers(void) {
 			// frames, so we fill the buffer with inputDelay zeros.
 			size_t i;
 			for (i = 0; i < BattleInput_inputDelay; i++)
-				BattleInputBuffer_push(bib, (BATTLE_INPUT_STATE) 0);
+				BattleInputBuffer_push(bib, (BATTLE_INPUT_STATE)0);
 		}
 	}
 }
 
-void
-uninitBattleInputBuffers(void)
+void uninitBattleInputBuffers(void)
 {
 	size_t player;
 
 	for (player = 0; player < NUM_PLAYERS; player++)
 	{
-		BattleInputBuffer *bib;
+		BattleInputBuffer* bib;
 
 		bib = &battleInputBuffers[player];
 		BattleInputBuffer_uninit(bib);
@@ -114,12 +117,12 @@ uninitBattleInputBuffers(void)
 }
 
 // On error, returns false and sets errno.
-bool
-BattleInputBuffer_push(BattleInputBuffer *bib, BATTLE_INPUT_STATE input)
+bool BattleInputBuffer_push(BattleInputBuffer* bib, BATTLE_INPUT_STATE input)
 {
 	size_t next;
 
-	if (bib->size == bib->maxSize) {
+	if (bib->size == bib->maxSize)
+	{
 		// No more space.
 		log_add(log_Error, "NETPLAY:     battleInputBuffer full.\n");
 		errno = ENOBUFS;
@@ -133,8 +136,7 @@ BattleInputBuffer_push(BattleInputBuffer *bib, BATTLE_INPUT_STATE input)
 }
 
 // On error, returns false and sets errno, and *input remains unchanged.
-bool
-BattleInputBuffer_pop(BattleInputBuffer *bib, BATTLE_INPUT_STATE *input)
+bool BattleInputBuffer_pop(BattleInputBuffer* bib, BATTLE_INPUT_STATE* input)
 {
 	if (bib->size == 0)
 	{
@@ -149,9 +151,8 @@ BattleInputBuffer_pop(BattleInputBuffer *bib, BATTLE_INPUT_STATE *input)
 	return true;
 }
 
-BattleInputBuffer *
-getBattleInputBuffer(size_t player) {
+BattleInputBuffer*
+getBattleInputBuffer(size_t player)
+{
 	return &battleInputBuffers[player];
 }
-
-

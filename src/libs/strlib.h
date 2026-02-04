@@ -29,9 +29,9 @@
 typedef struct string_table_entry STRING_TABLE_ENTRY_DESC;
 typedef struct string_table STRING_TABLE_DESC;
 
-typedef STRING_TABLE_DESC *STRING_TABLE;
-typedef STRING_TABLE_ENTRY_DESC *STRING;
-typedef char *STRINGPTR;
+typedef STRING_TABLE_DESC* STRING_TABLE;
+typedef STRING_TABLE_ENTRY_DESC* STRING;
+typedef char* STRINGPTR;
 
 /* This has to go here because reslib requires the above typedefs. */
 #include "libs/reslib.h"
@@ -40,58 +40,58 @@ typedef char *STRINGPTR;
 extern "C" {
 #endif
 
-extern bool InstallStringTableResType (void);
-extern STRING_TABLE LoadStringTableInstance (RESOURCE res);
-extern STRING_TABLE LoadStringTableFile (uio_DirHandle *dir,
-		const char *fileName);
-extern bool DestroyStringTable (STRING_TABLE StringTable);
-extern STRING CaptureStringTable (STRING_TABLE StringTable);
-extern STRING_TABLE ReleaseStringTable (STRING String);
-extern STRING_TABLE GetStringTable (STRING String);
-extern uqm::COUNT GetStringTableCount (STRING String);
-extern uqm::COUNT GetStringTableIndex (STRING String);
-extern STRING SetAbsStringTableIndex (STRING String, uqm::COUNT
-		StringTableIndex);
-extern STRING SetRelStringTableIndex (STRING String, uqm::SIZE
-		StringTableOffs);
-extern uqm::COUNT GetStringLength (STRING String);
-extern uqm::COUNT GetStringLengthBin (STRING String);
-extern STRINGPTR GetStringAddress (STRING String);
-extern STRINGPTR GetStringName (STRING String);
-extern STRINGPTR GetStringSoundClip (STRING String);
-extern STRINGPTR GetStringTimeStamp (STRING String);
-extern STRING GetStringByName (STRING_TABLE StringTable, const char *index);
-extern bool CheckResString (RESOURCE res);
-extern const char *LoadStringInstance (RESOURCE res);
+extern bool InstallStringTableResType(void);
+extern STRING_TABLE LoadStringTableInstance(RESOURCE res);
+extern STRING_TABLE LoadStringTableFile(uio_DirHandle* dir,
+										const char* fileName);
+extern bool DestroyStringTable(STRING_TABLE StringTable);
+extern STRING CaptureStringTable(STRING_TABLE StringTable);
+extern STRING_TABLE ReleaseStringTable(STRING String);
+extern STRING_TABLE GetStringTable(STRING String);
+extern uqm::COUNT GetStringTableCount(STRING String);
+extern uqm::COUNT GetStringTableIndex(STRING String);
+extern STRING SetAbsStringTableIndex(STRING String, uqm::COUNT
+														StringTableIndex);
+extern STRING SetRelStringTableIndex(STRING String, uqm::SIZE
+														StringTableOffs);
+extern uqm::COUNT GetStringLength(STRING String);
+extern uqm::COUNT GetStringLengthBin(STRING String);
+extern STRINGPTR GetStringAddress(STRING String);
+extern STRINGPTR GetStringName(STRING String);
+extern STRINGPTR GetStringSoundClip(STRING String);
+extern STRINGPTR GetStringTimeStamp(STRING String);
+extern STRING GetStringByName(STRING_TABLE StringTable, const char* index);
+extern bool CheckResString(RESOURCE res);
+extern const char* LoadStringInstance(RESOURCE res);
 
-#define UNICHAR_TAB           0x0009
-#define STR_TAB             "\x09"
-#define UNICHAR_SPACE         0x0020
-#define STR_SPACE           "\x20"
-#define UNICHAR_DEGREE_SIGN   0x00b0
-#define STR_DEGREE_SIGN     "\xC2\xB0"
+#define UNICHAR_TAB 0x0009
+#define STR_TAB "\x09"
+#define UNICHAR_SPACE 0x0020
+#define STR_SPACE "\x20"
+#define UNICHAR_DEGREE_SIGN 0x00b0
+#define STR_DEGREE_SIGN "\xC2\xB0"
 #define UNICHAR_INFINITY_SIGN 0x221e
-#define STR_INFINITY_SIGN   "\xE2\x88\x9E"
-#define UNICHAR_EARTH_SIGN    0x2641
-#define STR_EARTH_SIGN      "\xE2\x99\x81"
-#define UNICHAR_MIDDLE_DOT    0x00b7
-#define STR_MIDDLE_DOT      "\xC2\xB7"
-#define UNICHAR_BULLET        0x2022
-#define STR_BULLET          "\xE2\x80\xA2"
-#define UNICHAR_CROSS         0x2573
-#define STR_CROSS           "\xE2\x95\xB3"
-#define UNICHAR_SQUARE        0x25A1
-#define STR_SQUARE          "\xE2\x96\xA1"
-#define UNICHAR_TRIANGLE      0x25B3
-#define STR_TRIANGLE        "\xE2\x96\xB3"
-#define UNICHAR_CIRCLE        0x25EF
-#define STR_CIRCLE          "\xE2\x97\xAf"
-#define UNICHAR_PIPE          0x007C
-#define STR_PIPE            "\x7C"
-#define UNICHAR_AMP           0x0026
-#define STR_AMP             "\x26"
-#define UNICHAR_COLON         0x003A
-#define STR_COLON           "\x3A"
+#define STR_INFINITY_SIGN "\xE2\x88\x9E"
+#define UNICHAR_EARTH_SIGN 0x2641
+#define STR_EARTH_SIGN "\xE2\x99\x81"
+#define UNICHAR_MIDDLE_DOT 0x00b7
+#define STR_MIDDLE_DOT "\xC2\xB7"
+#define UNICHAR_BULLET 0x2022
+#define STR_BULLET "\xE2\x80\xA2"
+#define UNICHAR_CROSS 0x2573
+#define STR_CROSS "\xE2\x95\xB3"
+#define UNICHAR_SQUARE 0x25A1
+#define STR_SQUARE "\xE2\x96\xA1"
+#define UNICHAR_TRIANGLE 0x25B3
+#define STR_TRIANGLE "\xE2\x96\xB3"
+#define UNICHAR_CIRCLE 0x25EF
+#define STR_CIRCLE "\xE2\x97\xAf"
+#define UNICHAR_PIPE 0x007C
+#define STR_PIPE "\x7C"
+#define UNICHAR_AMP 0x0026
+#define STR_AMP "\x26"
+#define UNICHAR_COLON 0x003A
+#define STR_COLON "\x3A"
 
 
 #define STR_NULL "null"
@@ -101,4 +101,3 @@ extern const char *LoadStringInstance (RESOURCE res);
 #endif
 
 #endif /* LIBS_STRLIB_H_ */
-

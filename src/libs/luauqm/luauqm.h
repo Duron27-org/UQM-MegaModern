@@ -18,11 +18,11 @@
 #define LIBS_LUAUQM_LUAUQM_H_
 
 #ifdef USE_INTERNAL_LUA
-#   include "libs/lua/lua.h"
-#   include "libs/lua/lauxlib.h"
+#include "libs/lua/lua.h"
+#include "libs/lua/lauxlib.h"
 #else
-#	include "lua.h"
-#	include "lauxlib.h"
+#include "lua.h"
+#include "lauxlib.h"
 #endif
 
 #if 0 //defined(__cplusplus)
@@ -44,36 +44,36 @@ typedef struct luaUqm_EnumValue luaUqm_EnumValue;
 extern "C" {
 #endif
 
-struct luaUqm_EnumValue {
-	const char *name;
+struct luaUqm_EnumValue
+{
+	const char* name;
 	int value;
 };
 
 void luaUqm_init(void);
 void luaUqm_uninit(void);
 
-void luaUqm_prepareEnvironment(lua_State *luaState);
-bool luaUqm_loadScript(lua_State *luaState, uio_DirHandle *dir,
-		const char *fileName);
-bool luaUqm_runScript(lua_State *luaState, uio_DirHandle *dir,
-		const char *fileName);
-void luaUqm_runLuaDir(lua_State *luaState, uio_DirHandle *dirHandle,
-		const char *luaDirName);
+void luaUqm_prepareEnvironment(lua_State* luaState);
+bool luaUqm_loadScript(lua_State* luaState, uio_DirHandle* dir,
+					   const char* fileName);
+bool luaUqm_runScript(lua_State* luaState, uio_DirHandle* dir,
+					  const char* fileName);
+void luaUqm_runLuaDir(lua_State* luaState, uio_DirHandle* dirHandle,
+					  const char* luaDirName);
 
-void luaUqm_loadLib(lua_State *luaState, const luaL_Reg *lib);
-void luaUqm_loadLibs(lua_State *luaState, const luaL_Reg *libs);
-void luaUqm_loadSafeDefaultLibs(lua_State *luaState);
-bool luaUqm_callStackFunction(lua_State *luaState);
-bool luaUqm_callFunction(lua_State *luaState, const char *str);
-void luaUqm_makeEnum(lua_State *luaState, const luaUqm_EnumValue *enumVals);
+void luaUqm_loadLib(lua_State* luaState, const luaL_Reg* lib);
+void luaUqm_loadLibs(lua_State* luaState, const luaL_Reg* libs);
+void luaUqm_loadSafeDefaultLibs(lua_State* luaState);
+bool luaUqm_callStackFunction(lua_State* luaState);
+bool luaUqm_callFunction(lua_State* luaState, const char* str);
+void luaUqm_makeEnum(lua_State* luaState, const luaUqm_EnumValue* enumVals);
 
 #ifdef DEBUG
-void luaUqm_dumpStack(lua_State *luaState);
+void luaUqm_dumpStack(lua_State* luaState);
 #endif
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* LIBS_LUAUQM_LUAUQM_H_ */
-
+#endif /* LIBS_LUAUQM_LUAUQM_H_ */

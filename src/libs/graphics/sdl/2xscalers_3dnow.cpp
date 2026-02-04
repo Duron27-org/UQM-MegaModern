@@ -28,12 +28,12 @@
 
 // 3DNow! name for all functions
 #undef SCALE_
-#define SCALE_(name) Scale ## _3DNow_ ## name
+#define SCALE_(name) Scale##_3DNow_##name
 
 // Tell them which opcodes we want to support
-#undef  USE_MOVNTQ
-#define USE_PREFETCH  AMD_PREFETCH
-#undef  USE_PSADBW
+#undef USE_MOVNTQ
+#define USE_PREFETCH AMD_PREFETCH
+#undef USE_PSADBW
 // Bring in inline asm functions
 #include "scalemmx.h"
 
@@ -41,22 +41,21 @@
 // Scaler function lookup table
 //
 const Scale_FuncDef_t
-Scale_3DNow_Functions[] =
-{
-	{TFB_GFXFLAGS_SCALE_BILINEAR,   Scale_3DNow_BilinearFilter},
-	{TFB_GFXFLAGS_SCALE_BIADAPT,    Scale_BiAdaptFilter},
-	{TFB_GFXFLAGS_SCALE_BIADAPTADV, Scale_MMX_BiAdaptAdvFilter},
-	{TFB_GFXFLAGS_SCALE_TRISCAN,    Scale_MMX_TriScanFilter},
-	{TFB_GFXFLAGS_SCALE_HQXX,       Scale_MMX_HqFilter},
-	// Default
-	{0,                             Scale_3DNow_Nearest}
+	Scale_3DNow_Functions[] =
+		{
+			{TFB_GFXFLAGS_SCALE_BILINEAR,	  Scale_3DNow_BilinearFilter},
+			{TFB_GFXFLAGS_SCALE_BIADAPT,	 Scale_BiAdaptFilter		},
+			{TFB_GFXFLAGS_SCALE_BIADAPTADV, Scale_MMX_BiAdaptAdvFilter},
+			{TFB_GFXFLAGS_SCALE_TRISCAN,	 Scale_MMX_TriScanFilter	},
+			{TFB_GFXFLAGS_SCALE_HQXX,		  Scale_MMX_HqFilter		},
+			// Default
+			{0,							 Scale_3DNow_Nearest	   }
 };
 
 
-void
-Scale_3DNow_PrepPlatform (const SDL_PixelFormat* fmt)
+void Scale_3DNow_PrepPlatform(const SDL_PixelFormat* fmt)
 {
-	Scale_MMX_PrepPlatform (fmt);
+	Scale_MMX_PrepPlatform(fmt);
 }
 
 // Nearest Neighbor scaling to 2x
@@ -99,4 +98,3 @@ Scale_3DNow_PrepPlatform (const SDL_PixelFormat* fmt)
 #endif /* NO_IMPROVEMENT */
 
 #endif /* MMX_ASM */
-

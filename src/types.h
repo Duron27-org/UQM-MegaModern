@@ -92,8 +92,8 @@ using sint64 = int64_t;
 #undef SINT64_MIN
 #undef SINT64_MAX
 
-#define SINT8_MIN  std::numeric_limits<sint8>::min()
-#define SINT8_MAX  std::numeric_limits<sint8>::max()
+#define SINT8_MIN std::numeric_limits<sint8>::min()
+#define SINT8_MAX std::numeric_limits<sint8>::max()
 #define SINT16_MIN std::numeric_limits<sint16>::min()
 #define SINT16_MAX std::numeric_limits<sint16>::max()
 #define SINT32_MIN std::numeric_limits<sint32>::min()

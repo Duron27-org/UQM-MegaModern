@@ -34,55 +34,55 @@
 #include "ifontres.h"
 #include "libs/graphics/drawable.h"
 
-static uqm::BYTE GetEndMenuState (uqm::BYTE BaseState);
-static uqm::BYTE GetBeginMenuState (uqm::BYTE BaseState);
-static uqm::BYTE FixMenuState (uqm::BYTE BadState);
-static uqm::BYTE NextMenuState (uqm::BYTE BaseState, uqm::BYTE CurState);
-static uqm::BYTE PreviousMenuState (uqm::BYTE BaseState, uqm::BYTE CurState);
-static bool GetAlternateMenu (uqm::BYTE *BaseState, uqm::BYTE *CurState);
-static uqm::BYTE ConvertAlternateMenu (uqm::BYTE BaseState, uqm::BYTE NewState);
-void FunkyMenu (uqm::BYTE m, STAMP stmp);
+static uqm::BYTE GetEndMenuState(uqm::BYTE BaseState);
+static uqm::BYTE GetBeginMenuState(uqm::BYTE BaseState);
+static uqm::BYTE FixMenuState(uqm::BYTE BadState);
+static uqm::BYTE NextMenuState(uqm::BYTE BaseState, uqm::BYTE CurState);
+static uqm::BYTE PreviousMenuState(uqm::BYTE BaseState, uqm::BYTE CurState);
+static bool GetAlternateMenu(uqm::BYTE* BaseState, uqm::BYTE* CurState);
+static uqm::BYTE ConvertAlternateMenu(uqm::BYTE BaseState, uqm::BYTE NewState);
+void FunkyMenu(uqm::BYTE m, STAMP stmp);
 
 /* Draw the blue background for PC Menu Text, with a border around it.
  * The specified rectangle includes the border. */
 static void
-DrawPCMenuFrame (RECT *r)
+DrawPCMenuFrame(RECT* r)
 {
 
 	if (IS_HD || optCustomBorder)
 	{
-		DrawRenderedBox (r, true, PCMENU_BACKGROUND_COLOR,
-				optCustomBorder ? SPECIAL_BEVEL : THIN_INNER_BEVEL,
-				optCustomBorder);
+		DrawRenderedBox(r, true, PCMENU_BACKGROUND_COLOR,
+						optCustomBorder ? SPECIAL_BEVEL : THIN_INNER_BEVEL,
+						optCustomBorder);
 	}
 	else
 	{
-		DrawStarConBox (r, RES_SCALE (1), PCMENU_TOP_LEFT_BORDER_COLOR,
-				PCMENU_BOTTOM_RIGHT_BORDER_COLOR, true,
-				PCMENU_BACKGROUND_COLOR, false, NULL_COLOR);
+		DrawStarConBox(r, RES_SCALE(1), PCMENU_TOP_LEFT_BORDER_COLOR,
+					   PCMENU_BOTTOM_RIGHT_BORDER_COLOR, true,
+					   PCMENU_BACKGROUND_COLOR, false, NULL_COLOR);
 	}
 
 	// Draw the right and bottom of the outer border.
 	// This actually draws a rectangle, with the top and left segments just
 	// within the total area, but these segments are drawn over in the next
 	// step.
-	r->corner.x += RES_SCALE (1);
-	r->corner.y += RES_SCALE (1);
-	r->extent.height -= RES_SCALE (2);
-	r->extent.width -= RES_SCALE (2);
+	r->corner.x += RES_SCALE(1);
+	r->corner.y += RES_SCALE(1);
+	r->extent.height -= RES_SCALE(2);
+	r->extent.width -= RES_SCALE(2);
 }
 
 #define ALT_MANIFEST 0x80
 #define ALT_EXIT_MANIFEST 0x81
 
-#define PC_MENU_HEIGHT (RES_SCALE (8))
+#define PC_MENU_HEIGHT (RES_SCALE(8))
 
 static uqm::CHAR_T pm_crew_str[128];
 static uqm::CHAR_T pm_fuel_str[128];
 
 /* Actually display the menu text */
 static void
-DrawPCMenu (uqm::BYTE beg_index, uqm::BYTE end_index, uqm::BYTE NewState, uqm::BYTE hilite, RECT *r)
+DrawPCMenu(uqm::BYTE beg_index, uqm::BYTE end_index, uqm::BYTE NewState, uqm::BYTE hilite, RECT* r)
 {
 	uqm::BYTE pos;
 	uqm::COUNT i, j;
@@ -95,70 +95,71 @@ DrawPCMenu (uqm::BYTE beg_index, uqm::BYTE end_index, uqm::BYTE NewState, uqm::B
 
 	pos = beg_index + NewState;
 	num_items = 1 + end_index - beg_index;
-	r->extent.width -= RES_SCALE (1);
+	r->extent.width -= RES_SCALE(1);
 
 	// Gray rectangle behind PC menu
 	rt = *r;
-	rt.corner.x -= RES_SCALE (1);
-	rt.corner.y += PC_MENU_HEIGHT - DOS_BOOL_SCL (12, 3);
-	rt.extent.width += RES_SCALE (2);
-	rt.extent.height += DOS_BOOL_SCL (2, -6);
+	rt.corner.x -= RES_SCALE(1);
+	rt.corner.y += PC_MENU_HEIGHT - DOS_BOOL_SCL(12, 3);
+	rt.extent.width += RES_SCALE(2);
+	rt.extent.height += DOS_BOOL_SCL(2, -6);
 	if (!optCustomBorder)
-		DrawFilledRectangle (&rt);
+		DrawFilledRectangle(&rt);
 
-	DrawBorder (SIS_RADAR_FRAME);
+	DrawBorder(SIS_RADAR_FRAME);
 
 	if (num_items * PC_MENU_HEIGHT > r->extent.height)
-		log_add (log_Error, "Warning, no room for all menu items!");
+		log_add(log_Error, "Warning, no room for all menu items!");
 	else
 		r->corner.y += (r->extent.height - (num_items * PC_MENU_HEIGHT)) / 2;
-	r->extent.height = num_items * PC_MENU_HEIGHT + RES_SCALE (3);
-	
-	r->corner.y += DOS_NUM_SCL (1);
-	r->corner.y -= SAFE_NUM_SCL (4);
+	r->extent.height = num_items * PC_MENU_HEIGHT + RES_SCALE(3);
 
-	DrawPCMenuFrame (r);
+	r->corner.y += DOS_NUM_SCL(1);
+	r->corner.y -= SAFE_NUM_SCL(4);
 
-	OldFont = SetContextFont (StarConFont);
+	DrawPCMenuFrame(r);
+
+	OldFont = SetContextFont(StarConFont);
 	t.align = ALIGN_LEFT;
-	t.baseline.x = r->corner.x + RES_SCALE (2);
-	t.baseline.y = r->corner.y + PC_MENU_HEIGHT - RES_SCALE (1);
+	t.baseline.x = r->corner.x + RES_SCALE(2);
+	t.baseline.y = r->corner.y + PC_MENU_HEIGHT - RES_SCALE(1);
 	t.pStr = buf;
 	t.CharCount = (uqm::COUNT)~0;
-	r->corner.x += RES_SCALE (1);
-	r->extent.width -= RES_SCALE (2);
+	r->corner.x += RES_SCALE(1);
+	r->extent.width -= RES_SCALE(2);
 	for (i = beg_index; i <= end_index; i++)
 	{
 		// To compensate for the read speed menu entries
 		j = i > PM_EXIT_SETTINGS ?
-				(i - (PM_CHANGE_CAPTAIN - PM_READ_VERY_SLOW)) : i;
+				(i - (PM_CHANGE_CAPTAIN - PM_READ_VERY_SLOW)) :
+				i;
 
-		utf8StringCopy (buf, sizeof buf,
-						(i == PM_FUEL) ? pm_fuel_str :
-						(i == PM_CREW) ? pm_crew_str :
-						GAME_STRING (MAINMENU_STRING_BASE + j));
+		utf8StringCopy(buf, sizeof buf,
+					   (i == PM_FUEL) ? pm_fuel_str :
+					   (i == PM_CREW) ? pm_crew_str :
+										GAME_STRING(MAINMENU_STRING_BASE + j));
 		if (hilite && pos == i)
 		{
 			// Currently selected menu option.
 			if (pos != rd)
-			{	// Draw the background of the selection.
-				SetContextForeGroundColor (
-						PCMENU_SELECTION_BACKGROUND_COLOR);
+			{ // Draw the background of the selection.
+				SetContextForeGroundColor(
+					PCMENU_SELECTION_BACKGROUND_COLOR);
 				r->corner.y = t.baseline.y - PC_MENU_HEIGHT
-						+ RES_SCALE (2);
-				r->extent.height = PC_MENU_HEIGHT - RES_SCALE (1);
+							+ RES_SCALE(2);
+				r->extent.height = PC_MENU_HEIGHT - RES_SCALE(1);
 				if (optCustomBorder)
 				{
 					STAMP s;
 
 					s.origin = r->corner;
 
-					s.frame = SetAbsFrameIndex (CustBevelFrame,
-							DOS_MENU_HILITE);
-					DrawStamp (&s);
+					s.frame = SetAbsFrameIndex(CustBevelFrame,
+											   DOS_MENU_HILITE);
+					DrawStamp(&s);
 				}
 				else
-					DrawFilledRectangle (r);
+					DrawFilledRectangle(r);
 
 				rd = pos;
 			}
@@ -166,23 +167,23 @@ DrawPCMenu (uqm::BYTE beg_index, uqm::BYTE end_index, uqm::BYTE NewState, uqm::B
 				rd = 0;
 
 			// Draw the text of the selected item.
-			SetContextForeGroundColor (PCMENU_SELECTION_TEXT_COLOR);
-			font_DrawText (&t);
+			SetContextForeGroundColor(PCMENU_SELECTION_TEXT_COLOR);
+			font_DrawText(&t);
 		}
 		else
 		{
 			// Draw the text of an unselected item.
-			SetContextForeGroundColor (PCMENU_TEXT_COLOR);
-			font_DrawText (&t);
+			SetContextForeGroundColor(PCMENU_TEXT_COLOR);
+			font_DrawText(&t);
 		}
 		t.baseline.y += PC_MENU_HEIGHT;
 	}
-	SetContextFont (OldFont);
+	SetContextFont(OldFont);
 }
 
 /* Determine the last text item to display */
 static uqm::BYTE
-GetEndMenuState (uqm::BYTE BaseState)
+GetEndMenuState(uqm::BYTE BaseState)
 {
 	switch (BaseState)
 	{
@@ -223,41 +224,38 @@ GetEndMenuState (uqm::BYTE BaseState)
 }
 
 static uqm::BYTE
-GetBeginMenuState (uqm::BYTE BaseState)
+GetBeginMenuState(uqm::BYTE BaseState)
 {
 	return BaseState;
 }
 
 /* Correct Menu State for cases where the Menu shouldn't move */
 static uqm::BYTE
-FixMenuState (uqm::BYTE BadState)
+FixMenuState(uqm::BYTE BadState)
 {
 	switch (BadState)
 	{
 		case PM_SOUND_ON:
-			if (GLOBAL (glob_flags) & SOUND_DISABLED)
+			if (GLOBAL(glob_flags) & SOUND_DISABLED)
 				return PM_SOUND_OFF;
 			else
 				return PM_SOUND_ON;
 		case PM_MUSIC_ON:
-			if (GLOBAL (glob_flags) & MUSIC_DISABLED)
+			if (GLOBAL(glob_flags) & MUSIC_DISABLED)
 				return PM_MUSIC_OFF;
 			else
 				return PM_MUSIC_ON;
 		case PM_CYBORG_OFF:
-			return (PM_CYBORG_OFF +
-				((uqm::BYTE)(GLOBAL (glob_flags) & COMBAT_SPEED_MASK) >>
-				COMBAT_SPEED_SHIFT));
+			return (PM_CYBORG_OFF + ((uqm::BYTE)(GLOBAL(glob_flags) & COMBAT_SPEED_MASK) >> COMBAT_SPEED_SHIFT));
 		case PM_READ_VERY_SLOW:
-			return (PM_READ_VERY_SLOW +
-				(uqm::BYTE)(GLOBAL (glob_flags) & READ_SPEED_MASK));
+			return (PM_READ_VERY_SLOW + (uqm::BYTE)(GLOBAL(glob_flags) & READ_SPEED_MASK));
 	}
 	return BadState;
 }
 
-/* Choose the next menu to hilight in the 'forward' direction */ 
+/* Choose the next menu to hilight in the 'forward' direction */
 static uqm::BYTE
-NextMenuState (uqm::BYTE BaseState, uqm::BYTE CurState)
+NextMenuState(uqm::BYTE BaseState, uqm::BYTE CurState)
 {
 	uqm::BYTE NextState;
 	uqm::BYTE AdjBase = BaseState;
@@ -279,7 +277,7 @@ NextMenuState (uqm::BYTE BaseState, uqm::BYTE CurState)
 		case PM_CYBORG_NORMAL:
 		case PM_CYBORG_DOUBLE:
 		case PM_CYBORG_SUPER:
-			if ((isPC (optSmoothScroll) && !usingSpeech) || isPC (optWhichMenu))
+			if ((isPC(optSmoothScroll) && !usingSpeech) || isPC(optWhichMenu))
 				NextState = PM_READ_VERY_SLOW;
 			else
 				NextState = PM_CHANGE_CAPTAIN;
@@ -293,15 +291,15 @@ NextMenuState (uqm::BYTE BaseState, uqm::BYTE CurState)
 			break;
 		default:
 			NextState = AdjBase + CurState + 1;
-	}	
-	if (NextState > GetEndMenuState (BaseState))
-		NextState = GetBeginMenuState (BaseState);
-	return (FixMenuState (NextState) - AdjBase);
+	}
+	if (NextState > GetEndMenuState(BaseState))
+		NextState = GetBeginMenuState(BaseState);
+	return (FixMenuState(NextState) - AdjBase);
 }
 
-/* Choose the next menu to hilight in the 'back' direction */ 
+/* Choose the next menu to hilight in the 'back' direction */
 uqm::BYTE
-PreviousMenuState (uqm::BYTE BaseState, uqm::BYTE CurState)
+PreviousMenuState(uqm::BYTE BaseState, uqm::BYTE CurState)
 {
 	uqm::SWORD NextState;
 	uqm::BYTE AdjBase = BaseState;
@@ -332,23 +330,23 @@ PreviousMenuState (uqm::BYTE BaseState, uqm::BYTE CurState)
 			NextState = PM_CYBORG_OFF;
 			break;
 		case PM_CHANGE_CAPTAIN:
-			if ((isPC (optSmoothScroll) && !usingSpeech) || isPC (optWhichMenu))
+			if ((isPC(optSmoothScroll) && !usingSpeech) || isPC(optWhichMenu))
 				NextState = PM_READ_VERY_SLOW;
 			else
 				NextState = PM_CYBORG_OFF;
 			break;
 		default:
 			NextState = AdjBase + CurState - 1;
-	}	
-	if (NextState < GetBeginMenuState (BaseState))
-		NextState = GetEndMenuState (BaseState);
-	return (FixMenuState ((uqm::BYTE)NextState) - AdjBase);
+	}
+	if (NextState < GetBeginMenuState(BaseState))
+		NextState = GetEndMenuState(BaseState);
+	return (FixMenuState((uqm::BYTE)NextState) - AdjBase);
 }
 
 
 /* When using PC hierarchy, convert 3do->PC */
 static bool
-GetAlternateMenu (uqm::BYTE *BaseState, uqm::BYTE *CurState)
+GetAlternateMenu(uqm::BYTE* BaseState, uqm::BYTE* CurState)
 {
 	uqm::BYTE AdjBase = *BaseState;
 	uqm::BYTE adj = 0;
@@ -370,7 +368,7 @@ GetAlternateMenu (uqm::BYTE *BaseState, uqm::BYTE *CurState)
 				*CurState = PM_ALT_EXIT_MANIFEST - PM_ALT_CARGO;
 				return true;
 		}
-		log_add (log_Error, "Unknown state combination: %d, %d",
+		log_add(log_Error, "Unknown state combination: %d, %d",
 				*BaseState, *CurState);
 		return false;
 	}
@@ -437,7 +435,7 @@ GetAlternateMenu (uqm::BYTE *BaseState, uqm::BYTE *CurState)
 
 /* When using PC hierarchy, convert PC->3DO */
 static uqm::BYTE
-ConvertAlternateMenu (uqm::BYTE BaseState, uqm::BYTE NewState)
+ConvertAlternateMenu(uqm::BYTE BaseState, uqm::BYTE NewState)
 {
 	switch (BaseState + NewState)
 	{
@@ -475,68 +473,63 @@ ConvertAlternateMenu (uqm::BYTE BaseState, uqm::BYTE NewState)
 	return (NewState);
 }
 
-bool
-DoMenuChooser (MENU_STATE *pMS, uqm::BYTE BaseState)
+bool DoMenuChooser(MENU_STATE* pMS, uqm::BYTE BaseState)
 {
 	uqm::BYTE NewState = pMS->CurState;
 	uqm::BYTE OrigBase = BaseState;
 	bool useAltMenu = false;
 	if (optWhichMenu == OPT_PC)
-		useAltMenu = GetAlternateMenu (&BaseState, &NewState);
-	if (PulsedInputState.menu[KEY_MENU_LEFT] ||
-			PulsedInputState.menu[KEY_MENU_UP])
-		NewState = PreviousMenuState (BaseState, NewState);
-	else if (PulsedInputState.menu[KEY_MENU_RIGHT] ||
-			PulsedInputState.menu[KEY_MENU_DOWN])
-		NewState = NextMenuState (BaseState, NewState);
+		useAltMenu = GetAlternateMenu(&BaseState, &NewState);
+	if (PulsedInputState.menu[KEY_MENU_LEFT] || PulsedInputState.menu[KEY_MENU_UP])
+		NewState = PreviousMenuState(BaseState, NewState);
+	else if (PulsedInputState.menu[KEY_MENU_RIGHT] || PulsedInputState.menu[KEY_MENU_DOWN])
+		NewState = NextMenuState(BaseState, NewState);
 	else if (useAltMenu && PulsedInputState.menu[KEY_MENU_SELECT])
 	{
-		NewState = ConvertAlternateMenu (BaseState, NewState);
+		NewState = ConvertAlternateMenu(BaseState, NewState);
 		if (NewState == ALT_MANIFEST)
 		{
-			DrawMenuStateStrings (PM_ALT_CARGO, 0);
+			DrawMenuStateStrings(PM_ALT_CARGO, 0);
 			pMS->CurState = PM_CARGO - PM_SCAN;
 			return true;
 		}
 		if (NewState == ALT_EXIT_MANIFEST)
 		{
 			if (OrigBase == PM_SCAN)
-				DrawMenuStateStrings (PM_ALT_SCAN,
-						PM_ALT_MANIFEST - PM_ALT_SCAN);
+				DrawMenuStateStrings(PM_ALT_SCAN,
+									 PM_ALT_MANIFEST - PM_ALT_SCAN);
 			else
-				DrawMenuStateStrings (PM_ALT_STARMAP,
-						PM_ALT_MANIFEST - PM_ALT_STARMAP);
+				DrawMenuStateStrings(PM_ALT_STARMAP,
+									 PM_ALT_MANIFEST - PM_ALT_STARMAP);
 			pMS->CurState = ALT_MANIFEST;
 			return true;
 		}
 		return false;
 	}
-	else if ((optWhichMenu == OPT_PC) &&
-			PulsedInputState.menu[KEY_MENU_CANCEL] && 
-			(BaseState == PM_ALT_CARGO))
+	else if ((optWhichMenu == OPT_PC) && PulsedInputState.menu[KEY_MENU_CANCEL] && (BaseState == PM_ALT_CARGO))
 	{
 		if (OrigBase == PM_SCAN)
-			DrawMenuStateStrings (PM_ALT_SCAN,
-					PM_ALT_MANIFEST - PM_ALT_SCAN);
+			DrawMenuStateStrings(PM_ALT_SCAN,
+								 PM_ALT_MANIFEST - PM_ALT_SCAN);
 		else
-			DrawMenuStateStrings (PM_ALT_STARMAP,
-					PM_ALT_MANIFEST - PM_ALT_STARMAP);
+			DrawMenuStateStrings(PM_ALT_STARMAP,
+								 PM_ALT_MANIFEST - PM_ALT_STARMAP);
 		pMS->CurState = ALT_MANIFEST;
 		return true;
 	}
 	else
 		return false;
 
-	DrawMenuStateStrings (BaseState, NewState);
+	DrawMenuStateStrings(BaseState, NewState);
 	if (useAltMenu)
-		NewState = ConvertAlternateMenu (BaseState, NewState);
+		NewState = ConvertAlternateMenu(BaseState, NewState);
 	pMS->CurState = NewState;
 
 	return true;
 }
 
-const uqm::CHAR_T *
-IndexToText (int Index)
+const uqm::CHAR_T*
+IndexToText(int Index)
 {
 	int i = -1;
 
@@ -606,14 +599,14 @@ IndexToText (int Index)
 			break;
 	}
 
-	if (i == -1 || !strlen (GAME_STRING (PLAYMENU_STRING_BASE + i)))
+	if (i == -1 || !strlen(GAME_STRING(PLAYMENU_STRING_BASE + i)))
 		return NULL;
 
-	return GAME_STRING (PLAYMENU_STRING_BASE + i);
+	return GAME_STRING(PLAYMENU_STRING_BASE + i);
 }
 
 static void
-Draw3DOMenuText (RECT *r, int Index)
+Draw3DOMenuText(RECT* r, int Index)
 {
 	TEXT text;
 	uqm::SIZE leading;
@@ -621,40 +614,39 @@ Draw3DOMenuText (RECT *r, int Index)
 	FONT OldFont;
 	Color OldColor;
 
-	if (IndexToText (Index) == NULL)
+	if (IndexToText(Index) == NULL)
 		return;
 
-	OldFont = SetContextFont (PlayMenuFont);
-	OldColor = SetContextForeGroundColor (PM_RECT_COLOR);
+	OldFont = SetContextFont(PlayMenuFont);
+	OldColor = SetContextForeGroundColor(PM_RECT_COLOR);
 
-	GetContextFontLeading (&leading);
+	GetContextFontLeading(&leading);
 
 	if (!optCustomBorder)
 	{
 		block = *r;
-		block.corner.y += DOS_NUM_SCL (2);
+		block.corner.y += DOS_NUM_SCL(2);
 		block.extent.height = leading;
-		DrawFilledRectangle (&block); // with PM_RECT_COLOR
+		DrawFilledRectangle(&block); // with PM_RECT_COLOR
 	}
 	else
-		DrawBorder (TEXT_LABEL_FRAME);
+		DrawBorder(TEXT_LABEL_FRAME);
 
 	text.align = ALIGN_CENTER;
 	text.baseline.x = r->corner.x + (r->extent.width >> 1);
-	text.baseline.y = r->corner.y + leading - NDOS_NUM_SCL (2);
-	text.pStr = AlignText (IndexToText (Index),
-			&text.baseline.x);
+	text.baseline.y = r->corner.y + leading - NDOS_NUM_SCL(2);
+	text.pStr = AlignText(IndexToText(Index),
+						  &text.baseline.x);
 	text.CharCount = (uqm::COUNT)~0;
 
-	font_DrawShadowedText (&text, NORTH_WEST_SHADOW, PM_TEXT_COLOR,
-			PM_SHADOW_COLOR);
+	font_DrawShadowedText(&text, NORTH_WEST_SHADOW, PM_TEXT_COLOR,
+						  PM_SHADOW_COLOR);
 
-	SetContextFont (OldFont);
-	SetContextForeGroundColor (OldColor);
+	SetContextFont(OldFont);
+	SetContextForeGroundColor(OldColor);
 }
 
-void
-DrawMenuStateStrings (uqm::BYTE beg_index, uqm::SWORD NewState)
+void DrawMenuStateStrings(uqm::BYTE beg_index, uqm::SWORD NewState)
 {
 	uqm::BYTE end_index;
 	RECT r;
@@ -663,7 +655,7 @@ DrawMenuStateStrings (uqm::BYTE beg_index, uqm::SWORD NewState)
 	uqm::BYTE hilite = 1;
 	extern FRAME PlayFrame;
 
-	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
+	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
 		return;
 
 	if (NewState < 0)
@@ -675,42 +667,42 @@ DrawMenuStateStrings (uqm::BYTE beg_index, uqm::SWORD NewState)
 	if (optWhichMenu == OPT_PC)
 	{
 		uqm::BYTE tmpState = (uqm::BYTE)NewState;
-		GetAlternateMenu (&beg_index, &tmpState);
+		GetAlternateMenu(&beg_index, &tmpState);
 		NewState = tmpState;
 	}
 
 	if (beg_index == PM_STARMAP)
 		NewState--;
-	end_index = GetEndMenuState (beg_index);
+	end_index = GetEndMenuState(beg_index);
 
 	s.frame = 0;
 	if (NewState <= end_index - beg_index)
-		s.frame = SetAbsFrameIndex (PlayFrame, beg_index + NewState);
+		s.frame = SetAbsFrameIndex(PlayFrame, beg_index + NewState);
 
-	PreUpdateFlashRect ();
-	OldContext = SetContext (StatusContext);
-	GetContextClipRect (&r);
+	PreUpdateFlashRect();
+	OldContext = SetContext(StatusContext);
+	GetContextClipRect(&r);
 	s.origin.x = RADAR_X - r.corner.x;
 	s.origin.y = RADAR_Y - r.corner.y;
-	r.corner.x = s.origin.x - RES_SCALE (1);
+	r.corner.x = s.origin.x - RES_SCALE(1);
 	if (optWhichMenu == OPT_PC)
-		r.corner.y = s.origin.y - PC_MENU_HEIGHT - IF_HD (2);
+		r.corner.y = s.origin.y - PC_MENU_HEIGHT - IF_HD(2);
 	else
-		r.corner.y = s.origin.y - RES_SCALE (11) + DOS_NUM_SCL (3);
-	r.extent.width = RADAR_WIDTH + RES_SCALE (3);
-	BatchGraphics ();
-	SetContextForeGroundColor (
-			BUILD_COLOR (MAKE_RGB15 (0x0A, 0x0A, 0x0A), 0x08));
+		r.corner.y = s.origin.y - RES_SCALE(11) + DOS_NUM_SCL(3);
+	r.extent.width = RADAR_WIDTH + RES_SCALE(3);
+	BatchGraphics();
+	SetContextForeGroundColor(
+		BUILD_COLOR(MAKE_RGB15(0x0A, 0x0A, 0x0A), 0x08));
 	if (s.frame && optWhichMenu == OPT_PC)
 	{
 		if (beg_index == PM_CREW)
-			snprintf (pm_crew_str, sizeof pm_crew_str, "%s(%d)",
-					 GAME_STRING (MAINMENU_STRING_BASE + PM_CREW),
-					 GLOBAL (CrewCost));
+			snprintf(pm_crew_str, sizeof pm_crew_str, "%s(%d)",
+					 GAME_STRING(MAINMENU_STRING_BASE + PM_CREW),
+					 GLOBAL(CrewCost));
 		if (beg_index == PM_FUEL)
-			snprintf (pm_fuel_str, sizeof pm_fuel_str, "%s(%d)",
-					 GAME_STRING (MAINMENU_STRING_BASE + PM_FUEL),
-					 GLOBAL (FuelCost));
+			snprintf(pm_fuel_str, sizeof pm_fuel_str, "%s(%d)",
+					 GAME_STRING(MAINMENU_STRING_BASE + PM_FUEL),
+					 GLOBAL(FuelCost));
 		if (beg_index == PM_SOUND_ON)
 		{
 			end_index = beg_index + 6;
@@ -749,37 +741,37 @@ DrawMenuStateStrings (uqm::BYTE beg_index, uqm::SWORD NewState)
 					break;
 			}
 		}
-		r.extent.height = RADAR_HEIGHT + RES_SCALE (12);
+		r.extent.height = RADAR_HEIGHT + RES_SCALE(12);
 
-		DrawPCMenu (beg_index, end_index, (uqm::BYTE)NewState, hilite, &r);
+		DrawPCMenu(beg_index, end_index, (uqm::BYTE)NewState, hilite, &r);
 		s.frame = 0;
 
 		if (optSubmenu)
-			FunkyMenu (beg_index + (uqm::BYTE)NewState, s);
+			FunkyMenu(beg_index + (uqm::BYTE)NewState, s);
 	}
 	else
 	{
 		// Gray rectangle behind Lander and HyperSpace radar
-		r.corner.x -= RES_SCALE (1);
-		r.corner.y += DOS_NUM_SCL (5);
-		r.extent.width += RES_SCALE (1);
+		r.corner.x -= RES_SCALE(1);
+		r.corner.y += DOS_NUM_SCL(5);
+		r.extent.width += RES_SCALE(1);
 		r.extent.height = RADAR_HEIGHT
-				+ RES_SCALE (isPC (optWhichMenu) ? 9 : 12);
-		r.extent.height -= DOS_NUM_SCL (6);
+						+ RES_SCALE(isPC(optWhichMenu) ? 9 : 12);
+		r.extent.height -= DOS_NUM_SCL(6);
 
 		if (!optCustomBorder)
-			DrawFilledRectangle (&r);
+			DrawFilledRectangle(&r);
 		else
-			DrawBorder (SIS_RADAR_FRAME);
+			DrawBorder(SIS_RADAR_FRAME);
 	}
 	if (s.frame)
 	{
 		if (optSubmenu)
-			FunkyMenu (beg_index + (uqm::BYTE)NewState, s);
+			FunkyMenu(beg_index + (uqm::BYTE)NewState, s);
 		else
-			DrawStamp (&s);
+			DrawStamp(&s);
 
-		Draw3DOMenuText (&r, beg_index + NewState);
+		Draw3DOMenuText(&r, beg_index + NewState);
 
 		TEXT t;
 		uqm::CHAR_T buf[20];
@@ -787,42 +779,41 @@ DrawMenuStateStrings (uqm::BYTE beg_index, uqm::SWORD NewState)
 		switch (beg_index + NewState)
 		{
 			case PM_CREW:
-				t.baseline.x = s.origin.x + RADAR_WIDTH - RES_SCALE (2);
-				t.baseline.y = s.origin.y + RADAR_HEIGHT - RES_SCALE (2);
+				t.baseline.x = s.origin.x + RADAR_WIDTH - RES_SCALE(2);
+				t.baseline.y = s.origin.y + RADAR_HEIGHT - RES_SCALE(2);
 				t.align = ALIGN_RIGHT;
 				t.CharCount = (uqm::COUNT)~0;
 				t.pStr = buf;
-				snprintf (buf, sizeof buf, "%u", GLOBAL (CrewCost));
-				if (isPC (optWhichFonts))
-					SetContextFont (TinyFont);
+				snprintf(buf, sizeof buf, "%u", GLOBAL(CrewCost));
+				if (isPC(optWhichFonts))
+					SetContextFont(TinyFont);
 				else
-					SetContextFont (TinyFontBold);
-				SetContextForeGroundColor (THREEDOMENU_TEXT_COLOR);
-				font_DrawText (&t);
+					SetContextFont(TinyFontBold);
+				SetContextForeGroundColor(THREEDOMENU_TEXT_COLOR);
+				font_DrawText(&t);
 				break;
 			case PM_FUEL:
-				t.baseline.x = s.origin.x + RADAR_WIDTH - RES_SCALE (2);
-				t.baseline.y = s.origin.y + RADAR_HEIGHT - RES_SCALE (2);
+				t.baseline.x = s.origin.x + RADAR_WIDTH - RES_SCALE(2);
+				t.baseline.y = s.origin.y + RADAR_HEIGHT - RES_SCALE(2);
 				t.align = ALIGN_RIGHT;
 				t.CharCount = (uqm::COUNT)~0;
 				t.pStr = buf;
-				snprintf (buf, sizeof buf, "%u", GLOBAL (FuelCost));
+				snprintf(buf, sizeof buf, "%u", GLOBAL(FuelCost));
 				if (optWhichFonts == OPT_3DO && !optWholeFuel)
-					SetContextFont (TinyFontBold);
+					SetContextFont(TinyFontBold);
 				else
-					SetContextFont (TinyFont);
-				SetContextForeGroundColor (THREEDOMENU_TEXT_COLOR);
-				font_DrawText (&t);
+					SetContextFont(TinyFont);
+				SetContextForeGroundColor(THREEDOMENU_TEXT_COLOR);
+				font_DrawText(&t);
 				break;
 		}
 	}
-	UnbatchGraphics ();
-	SetContext (OldContext);
-	PostUpdateFlashRect ();
+	UnbatchGraphics();
+	SetContext(OldContext);
+	PostUpdateFlashRect();
 }
 
-void
-DrawMineralHelpers (void)
+void DrawMineralHelpers(void)
 {
 	CONTEXT OldContext;
 	uqm::COUNT i;
@@ -835,199 +826,197 @@ DrawMineralHelpers (void)
 	if (!optSubmenu)
 		return;
 
-	OldContext = SetContext (StatusContext);
+	OldContext = SetContext(StatusContext);
 
-	BatchGraphics ();
+	BatchGraphics();
 
-	DrawFlagStatDisplay (""); // (GAME_STRING (STATUS_STRING_BASE + 6));
+	DrawFlagStatDisplay(""); // (GAME_STRING (STATUS_STRING_BASE + 6));
 
-	SetContextFont (TinyFont);
+	SetContextFont(TinyFont);
 
-	GetContextFontLeading (&leading);
-	leading -= RES_SCALE (1);
+	GetContextFontLeading(&leading);
+	leading -= RES_SCALE(1);
 
-#define ELEMENT_ORG_Y      RES_SCALE (24)
-#define ELEMENT_SPACING_Y  RES_SCALE (9)
+#define ELEMENT_ORG_Y RES_SCALE(24)
+#define ELEMENT_SPACING_Y RES_SCALE(9)
 
-#define ELEMENT_COL_0      RES_SCALE (10)
-#define ELEMENT_COL_1      RES_SCALE (32)
-#define ELEMENT_COL_2      RES_SCALE (58)
+#define ELEMENT_COL_0 RES_SCALE(10)
+#define ELEMENT_COL_1 RES_SCALE(32)
+#define ELEMENT_COL_2 RES_SCALE(58)
 
 	// setup element icons
-	s.frame = SetAbsFrameIndex (MiscDataFrame,
-			(NUM_SCANDOT_TRANSITIONS << 1) + 3);
+	s.frame = SetAbsFrameIndex(MiscDataFrame,
+							   (NUM_SCANDOT_TRANSITIONS << 1) + 3);
 	s.origin.x = ELEMENT_COL_0;
 	s.origin.y = ELEMENT_ORG_Y;
 	// setup element worths
 	t.baseline.x = ELEMENT_COL_1;
-	t.baseline.y = ELEMENT_ORG_Y + RES_SCALE (3);
+	t.baseline.y = ELEMENT_ORG_Y + RES_SCALE(3);
 	t.align = ALIGN_RIGHT;
 	t.pStr = buf;
 	t.CharCount = (uqm::COUNT)~0;
 
-	r.extent = GetFrameBounds (s.frame);
-	r.corner.x = ELEMENT_COL_0 - RES_SCALE (3);
+	r.extent = GetFrameBounds(s.frame);
+	r.corner.x = ELEMENT_COL_0 - RES_SCALE(3);
 
 	// draw element icons and worths
 	for (i = 0; i < NUM_ELEMENT_CATEGORIES; ++i)
 	{
 		// draw element icon
-		DrawStamp (&s);
-		s.frame = SetRelFrameIndex (s.frame, 5);
+		DrawStamp(&s);
+		s.frame = SetRelFrameIndex(s.frame, 5);
 		s.origin.y += ELEMENT_SPACING_Y;
 
 		// print element worth
-		SetContextForeGroundColor (MODULE_PRICE_COLOR);
-		snprintf (buf, sizeof buf, "%u", GLOBAL (ElementWorth[i]));
-		font_DrawText (&t);
+		SetContextForeGroundColor(MODULE_PRICE_COLOR);
+		snprintf(buf, sizeof buf, "%u", GLOBAL(ElementWorth[i]));
+		font_DrawText(&t);
 
 		// print x'es
-		snprintf (buf, sizeof buf, "x");
-		t.baseline.x -= RES_SCALE (11);
-		font_DrawText (&t);
+		snprintf(buf, sizeof buf, "x");
+		t.baseline.x -= RES_SCALE(11);
+		font_DrawText(&t);
 
 		// print the element amount
-		SetContextForeGroundColor (MODULE_NAME_COLOR);
+		SetContextForeGroundColor(MODULE_NAME_COLOR);
 		t.baseline.x = ELEMENT_COL_2;
-		snprintf (buf, sizeof buf, "%u", GLOBAL_SIS (ElementAmounts[i]));
-		font_DrawText (&t);
+		snprintf(buf, sizeof buf, "%u", GLOBAL_SIS(ElementAmounts[i]));
+		font_DrawText(&t);
 
 		t.baseline.x = ELEMENT_COL_1;
 		t.baseline.y += ELEMENT_SPACING_Y;
 	}
 
-	SetContextForeGroundColor (BLACK_COLOR);
-	r.corner.y = s.origin.y - RES_SCALE (3);
-	DrawFilledRectangle (&r);
+	SetContextForeGroundColor(BLACK_COLOR);
+	r.corner.y = s.origin.y - RES_SCALE(3);
+	DrawFilledRectangle(&r);
 
-	s.frame = SetAbsFrameIndex (s.frame, 68);
-	s.origin.x = r.corner.x + RES_RECENTER (r.extent.height);
-	s.origin.y = r.corner.y + RES_RECENTER (r.extent.height);
-	DrawStamp (&s);
+	s.frame = SetAbsFrameIndex(s.frame, 68);
+	s.origin.x = r.corner.x + RES_RECENTER(r.extent.height);
+	s.origin.y = r.corner.y + RES_RECENTER(r.extent.height);
+	DrawStamp(&s);
 
 	// print the bio amount
-	SetContextForeGroundColor (MODULE_NAME_COLOR);
+	SetContextForeGroundColor(MODULE_NAME_COLOR);
 	t.baseline.x = ELEMENT_COL_2;
-	snprintf (buf, sizeof buf, "%u", GLOBAL_SIS (TotalBioMass));
-	font_DrawText (&t);
+	snprintf(buf, sizeof buf, "%u", GLOBAL_SIS(TotalBioMass));
+	font_DrawText(&t);
 	t.baseline.y += ELEMENT_SPACING_Y;
 
-	r.corner.x = RES_SCALE (4);
-	r.corner.y = t.baseline.y - RES_SCALE (7);
-	r.extent.width = FIELD_WIDTH - RES_SCALE (3);
-	r.extent.height = RES_SCALE (1);
-	SetContextForeGroundColor (CARGO_SELECTED_BACK_COLOR);
-	DrawFilledRectangle (&r);
+	r.corner.x = RES_SCALE(4);
+	r.corner.y = t.baseline.y - RES_SCALE(7);
+	r.extent.width = FIELD_WIDTH - RES_SCALE(3);
+	r.extent.height = RES_SCALE(1);
+	SetContextForeGroundColor(CARGO_SELECTED_BACK_COLOR);
+	DrawFilledRectangle(&r);
 
-	SetContextForeGroundColor (MODULE_NAME_COLOR);
+	SetContextForeGroundColor(MODULE_NAME_COLOR);
 	t.align = ALIGN_LEFT;
-	t.baseline.x = r.corner.x + RES_SCALE (2);
-	t.baseline.y = r.corner.y + leading + RES_SCALE (1);
-	t.pStr = GAME_STRING (STATUS_STRING_BASE + 8); // FUEL:
+	t.baseline.x = r.corner.x + RES_SCALE(2);
+	t.baseline.y = r.corner.y + leading + RES_SCALE(1);
+	t.pStr = GAME_STRING(STATUS_STRING_BASE + 8); // FUEL:
 	t.CharCount = (uqm::COUNT)~0;
-	font_DrawText (&t);
+	font_DrawText(&t);
 
 	t.baseline.y += leading;
-	t.pStr = GAME_STRING (STATUS_STRING_BASE + 9); // CREW:
+	t.pStr = GAME_STRING(STATUS_STRING_BASE + 9); // CREW:
 	t.CharCount = (uqm::COUNT)~0;
-	font_DrawText (&t);
+	font_DrawText(&t);
 
 	t.baseline.y += leading;
-	t.pStr = GAME_STRING (STATUS_STRING_BASE + 10); // LAND.:
+	t.pStr = GAME_STRING(STATUS_STRING_BASE + 10); // LAND.:
 	t.CharCount = (uqm::COUNT)~0;
-	font_DrawText (&t);
+	font_DrawText(&t);
 
 	t.baseline.y += leading;
-	t.pStr = GAME_STRING (STATUS_STRING_BASE + 11); // CARGO:
+	t.pStr = GAME_STRING(STATUS_STRING_BASE + 11); // CARGO:
 	t.CharCount = (uqm::COUNT)~0;
-	font_DrawText (&t);
+	font_DrawText(&t);
 
-	SetContextForeGroundColor (MODULE_PRICE_COLOR);
+	SetContextForeGroundColor(MODULE_PRICE_COLOR);
 	t.align = ALIGN_RIGHT;
-	t.baseline.x = r.extent.width + RES_SCALE (2);
-	t.baseline.y = r.corner.y + leading + RES_SCALE (1);
-	t.pStr = WholeFuelValue ();
+	t.baseline.x = r.extent.width + RES_SCALE(2);
+	t.baseline.y = r.corner.y + leading + RES_SCALE(1);
+	t.pStr = WholeFuelValue();
 	t.CharCount = (uqm::COUNT)~0;
-	font_DrawText (&t);
+	font_DrawText(&t);
 
 	t.baseline.y += leading;
-	snprintf (buf, sizeof (buf), "%u", GLOBAL_SIS (CrewEnlisted));
+	snprintf(buf, sizeof(buf), "%u", GLOBAL_SIS(CrewEnlisted));
 	t.pStr = buf;
 	t.CharCount = (uqm::COUNT)~0;
-	font_DrawText (&t);
+	font_DrawText(&t);
 
 	t.baseline.y += leading;
-	snprintf (buf, sizeof (buf), "%u", GLOBAL_SIS (NumLanders));
+	snprintf(buf, sizeof(buf), "%u", GLOBAL_SIS(NumLanders));
 	t.pStr = buf;
 	t.CharCount = (uqm::COUNT)~0;
-	font_DrawText (&t);
+	font_DrawText(&t);
 
 	t.baseline.y += leading;
 
-	if (GetStorageBayCapacity ())
+	if (GetStorageBayCapacity())
 	{
-		float totalCapacity = (float)GLOBAL_SIS (TotalElementMass)
-				/ (float)GetStorageBayCapacity () * 100;
+		float totalCapacity = (float)GLOBAL_SIS(TotalElementMass)
+							/ (float)GetStorageBayCapacity() * 100;
 
 		if (totalCapacity == 100)
-			snprintf (buf, sizeof (buf), "%.0f%%", totalCapacity);
+			snprintf(buf, sizeof(buf), "%.0f%%", totalCapacity);
 		else if (totalCapacity > 9)
-			snprintf (buf, sizeof (buf), "%.1f%%", totalCapacity);
+			snprintf(buf, sizeof(buf), "%.1f%%", totalCapacity);
 		else
-			snprintf (buf, sizeof (buf), "%.2f%%", totalCapacity);
+			snprintf(buf, sizeof(buf), "%.2f%%", totalCapacity);
 	}
 	else
 	{
-		snprintf (buf, sizeof (buf), "---");
+		snprintf(buf, sizeof(buf), "---");
 	}
 
 	t.pStr = buf;
 	t.CharCount = (uqm::COUNT)~0;
-	font_DrawText (&t);
+	font_DrawText(&t);
 
-	UnbatchGraphics ();
+	UnbatchGraphics();
 
-	SetContext (OldContext);
+	SetContext(OldContext);
 }
 
-void
-DrawBorder (uqm::BYTE Visible)
+void DrawBorder(uqm::BYTE Visible)
 {
 	STAMP s;
 	CONTEXT OldContext;
 
-	OldContext = SetContext (ScreenContext);
+	OldContext = SetContext(ScreenContext);
 
 	s.origin.x = 0;
 	s.origin.y = 0;
 
 	if (optCustomBorder)
 	{
-		s.frame = SetAbsFrameIndex (BorderFrame, Visible);
-		DrawStamp (&s);
+		s.frame = SetAbsFrameIndex(BorderFrame, Visible);
+		DrawStamp(&s);
 	}
 	else if (IS_HD)
 	{
-		s.frame = SetAbsFrameIndex (HDBorderFrame, Visible);
-		DrawStamp (&s);
+		s.frame = SetAbsFrameIndex(HDBorderFrame, Visible);
+		DrawStamp(&s);
 	}
-	
-	SetContext (OldContext);
+
+	SetContext(OldContext);
 }
 
-void
-FunkyMenu (uqm::BYTE m, STAMP stmp)
+void FunkyMenu(uqm::BYTE m, STAMP stmp)
 {
 	static bool subMenuFlag;
 
 	if ((!stmp.frame && m >= PM_ALT_MSCAN
-			&& m <= PM_ALT_EXIT_SCAN)
-			|| m == PM_LAUNCH_LANDER)
+		 && m <= PM_ALT_EXIT_SCAN)
+		|| m == PM_LAUNCH_LANDER)
 	{
 		if (stmp.frame)
-			DrawStamp (&stmp);
+			DrawStamp(&stmp);
 
-		DrawMineralHelpers ();
+		DrawMineralHelpers();
 
 		subMenuFlag = true;
 
@@ -1036,10 +1025,10 @@ FunkyMenu (uqm::BYTE m, STAMP stmp)
 	}
 	else if (subMenuFlag == true)
 	{
-		DeltaSISGauges (UNDEFINED_DELTA, UNDEFINED_DELTA, UNDEFINED_DELTA);
+		DeltaSISGauges(UNDEFINED_DELTA, UNDEFINED_DELTA, UNDEFINED_DELTA);
 		subMenuFlag = false;
 	}
 
 	if (stmp.frame)
-		DrawStamp (&stmp);
+		DrawStamp(&stmp);
 }

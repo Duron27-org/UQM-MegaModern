@@ -22,7 +22,8 @@
 #define LIBS_UIOUTILS_H_
 
 #if defined(__cplusplus)
-extern "C" {
+extern "C"
+{
 #endif
 
 #include "uio/utils.h"
@@ -31,5 +32,4 @@ extern "C" {
 }
 #endif
 
-#endif  /* LIBS_UIOUTILS_H_ */
-
+#endif /* LIBS_UIOUTILS_H_ */

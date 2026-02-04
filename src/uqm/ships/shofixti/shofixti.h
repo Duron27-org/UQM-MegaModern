@@ -21,11 +21,10 @@
 extern "C" {
 #endif
 
-RACE_DESC *init_shofixti (void);
+RACE_DESC* init_shofixti(void);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* SHOFIXTI_H */
-
+#endif /* SHOFIXTI_H */

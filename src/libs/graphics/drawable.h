@@ -22,7 +22,7 @@
 #include <stdio.h>
 #include "tfb_draw.h"
 
-#define ValidPrimType(pt) ((pt)<NUM_PRIMS)
+#define ValidPrimType(pt) ((pt) < NUM_PRIMS)
 
 typedef struct bresenham_line
 {
@@ -44,28 +44,28 @@ struct frame_desc
 	uqm::UWORD Index;
 	HOT_SPOT HotSpot;
 	EXTENT Bounds;
-	TFB_Image *image;
-	struct drawable_desc *parent;
+	TFB_Image* image;
+	struct drawable_desc* parent;
 };
 
 struct drawable_desc
 {
 	CREATE_FLAGS Flags;
 	uqm::UWORD MaxIndex;
-	FRAME_DESC *Frame;
+	FRAME_DESC* Frame;
 };
 
 #define GetFrameWidth(f) ((f)->Bounds.width)
 #define GetFrameHeight(f) ((f)->Bounds.height)
 #define GetFrameBounds(f) ((f)->Bounds)
-#define SetFrameBounds(f,w,h) \
-		((f)->Bounds.width=(w), \
-		((f))->Bounds.height=(h))
+#define SetFrameBounds(f, w, h) \
+	((f)->Bounds.width = (w),   \
+	 ((f))->Bounds.height = (h))
 
 #define DRAWABLE_PRIORITY DEFAULT_MEM_PRIORITY
 
-extern DRAWABLE AllocDrawable (uqm::COUNT num_frames);
-#define FreeDrawable(D) _ReleaseCelData (D)
+extern DRAWABLE AllocDrawable(uqm::COUNT num_frames);
+#define FreeDrawable(D) _ReleaseCelData(D)
 
 typedef struct
 {
@@ -73,18 +73,17 @@ typedef struct
 	FRAME FramePtr;
 } IMAGE_BOX;
 
-extern INTERSECT_CODE _clip_line (const DRECT *pClipRect,
-		BRESENHAM_LINE *pLine);
+extern INTERSECT_CODE _clip_line(const DRECT* pClipRect,
+								 BRESENHAM_LINE* pLine);
 
-extern void *_GetCelData (uio_Stream *fp, uqm::DWORD length);
-extern bool _ReleaseCelData (void *handle);
+extern void* _GetCelData(uio_Stream* fp, uqm::DWORD length);
+extern bool _ReleaseCelData(void* handle);
 
 extern FRAME _CurFramePtr;
 
 // ClipRect is relative to ctxOrigin
-extern void _text_blt (RECT *pClipRect, TEXT *TextPtr, POINT ctxOrigin);
-extern void _text_blt_fade (RECT *pClipRect, TEXT *TextPtr, POINT ctxOrigin, FRAME repair, bool *skip);
-extern uqm::BYTE _text_blt_alt (RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin, uqm::BYTE swap, FONT AltFontPtr, UniChar key);
+extern void _text_blt(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin);
+extern void _text_blt_fade(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin, FRAME repair, bool* skip);
+extern uqm::BYTE _text_blt_alt(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin, uqm::BYTE swap, FONT AltFontPtr, UniChar key);
 
 #endif /* LIBS_GRAPHICS_DRAWABLE_H_ */
-

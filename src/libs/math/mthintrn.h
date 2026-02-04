@@ -22,4 +22,3 @@
 #include "libs/mathlib.h"
 
 #endif /* LIBS_MATH_MTHINTRN_H_ */
-

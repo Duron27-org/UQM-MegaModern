@@ -19,7 +19,7 @@
 #include "oscill.h"
 
 #include "setup.h"
-		// for OffScreenContext
+// for OffScreenContext
 #include "libs/graphics/gfx_common.h"
 #include "libs/graphics/drawable.h"
 #include "libs/sound/sound.h"
@@ -35,36 +35,34 @@ static FRAME scopeWork;
 static EXTENT scopeSize;
 bool oscillDisabled = false;
 
-void
-InitOscilloscope (FRAME scopeBg)
+void InitOscilloscope(FRAME scopeBg)
 {
 	scope_frame = scopeBg;
 	if (!scope_init)
 	{
-		EXTENT size = GetFrameBounds (scope_frame);
-		
-		scopeWork = CaptureDrawable (CreateDrawable (
-				WANT_PIXMAP | MAPPED_TO_DISPLAY,
-				size.width, size.height, 1));
+		EXTENT size = GetFrameBounds(scope_frame);
+
+		scopeWork = CaptureDrawable(CreateDrawable(
+			WANT_PIXMAP | MAPPED_TO_DISPLAY,
+			size.width, size.height, 1));
 
 		// assume and subtract the borders
-		scopeSize.width = RES_DESCALE (size.width);
-		scopeSize.height = RES_DESCALE (size.height);
+		scopeSize.width = RES_DESCALE(size.width);
+		scopeSize.height = RES_DESCALE(size.height);
 
 		scope_init = 1;
 	}
 }
 
-void
-UninitOscilloscope (void)
+void UninitOscilloscope(void)
 {
-	DestroyDrawable (ReleaseDrawable (scopeWork));
+	DestroyDrawable(ReleaseDrawable(scopeWork));
 	scopeWork = NULL;
 	scope_init = 0;
 }
 
 uqm::BYTE
-ScaleHeightByVolume (uint8 scope_data, bool toScale)
+ScaleHeightByVolume(uint8 scope_data, bool toScale)
 {
 	if (!toScale || musicVolume == NORMAL_VOLUME)
 		return scope_data;
@@ -88,37 +86,37 @@ ScaleHeightByVolume (uint8 scope_data, bool toScale)
 	}
 }
 
-void
-DrawOscilloscopeLines (STAMP *s, uint8 *scope_data, bool nonStop, bool toScale)
+void DrawOscilloscopeLines(STAMP* s, uint8* scope_data, bool nonStop, bool toScale)
 {
 	int i;
 	CONTEXT oldContext;
 	Color scopeColor;
 
-	oldContext = SetContext (OffScreenContext);
-	SetContextFGFrame (scopeWork);
-	SetContextClipRect (NULL);
+	oldContext = SetContext(OffScreenContext);
+	SetContextFGFrame(scopeWork);
+	SetContextClipRect(NULL);
 
 	// draw the background image
 	s->origin.x = 0;
 	s->origin.y = 0;
 	s->frame = scope_frame;
 
-	DrawStamp (s);
+	DrawStamp(s);
 
 	// Set oscilloscope line color
 	scopeColor = optScopeStyle != OPT_PC ?
-			SCOPE_COLOR_3DO : SCOPE_COLOR_PC;
+					 SCOPE_COLOR_3DO :
+					 SCOPE_COLOR_PC;
 
 	if (nonStop)
-	{	// Dim the oscilloscope lines for Non-Stop option
+	{ // Dim the oscilloscope lines for Non-Stop option
 #define DIM_PERCENTAGE 0.77
 		scopeColor.r *= DIM_PERCENTAGE;
 		scopeColor.g *= DIM_PERCENTAGE;
 		scopeColor.b *= DIM_PERCENTAGE;
 	}
 
-	SetContextForeGroundColor (scopeColor);
+	SetContextForeGroundColor(scopeColor);
 
 	if (scope_data)
 	{
@@ -126,13 +124,13 @@ DrawOscilloscopeLines (STAMP *s, uint8 *scope_data, bool nonStop, bool toScale)
 		{
 			LINE line;
 
-			line.first.x = RES_SCALE (i);
-			line.first.y = RES_SCALE (ScaleHeightByVolume (scope_data[i],
-					toScale));
-			line.second.x = RES_SCALE (i + 1);
-			line.second.y = RES_SCALE (ScaleHeightByVolume (
-					scope_data[i + 1], toScale));
-			DrawLine (&line, RES_SCALE (1));
+			line.first.x = RES_SCALE(i);
+			line.first.y = RES_SCALE(ScaleHeightByVolume(scope_data[i],
+														 toScale));
+			line.second.x = RES_SCALE(i + 1);
+			line.second.y = RES_SCALE(ScaleHeightByVolume(
+				scope_data[i + 1], toScale));
+			DrawLine(&line, RES_SCALE(1));
 		}
 	}
 	else
@@ -140,20 +138,19 @@ DrawOscilloscopeLines (STAMP *s, uint8 *scope_data, bool nonStop, bool toScale)
 		LINE line;
 
 		line.first.x = 0;
-		line.first.y = RES_SCALE ((scopeSize.height / 2));
-		line.second.x = RES_SCALE (scopeSize.width);
+		line.first.y = RES_SCALE((scopeSize.height / 2));
+		line.second.x = RES_SCALE(scopeSize.width);
 		line.second.y = line.first.y;
-		DrawLine (&line, RES_SCALE (1));
+		DrawLine(&line, RES_SCALE(1));
 	}
 
-	SetContext (oldContext);
+	SetContext(oldContext);
 
 	s->frame = scopeWork;
 }
 
 // draws the oscilloscope
-void
-DrawOscilloscope (void)
+void DrawOscilloscope(void)
 {
 	STAMP s;
 	uqm::BYTE scope_data[128];
@@ -164,50 +161,49 @@ DrawOscilloscope (void)
 	// log_add (log_Debug, "(size_t)scopeSize.width %lu,
 	//		sizeof (scope_data) %lu", (size_t)scopeSize.width,
 	//		sizeof (scope_data));
-	
-	assert ((size_t)scopeSize.width <= sizeof (scope_data));
-	assert (scopeSize.height < 128);
 
-	if (GraphForegroundStream (
+	assert((size_t)scopeSize.width <= sizeof(scope_data));
+	assert(scopeSize.height < 128);
+
+	if (GraphForegroundStream(
 			scope_data, scopeSize.width, scopeSize.height, usingSpeech))
 	{
-		DrawOscilloscopeLines (&s, scope_data, false, !usingSpeech);
+		DrawOscilloscopeLines(&s, scope_data, false, !usingSpeech);
 	}
-	else if (GraphForegroundStream (
-			scope_data, scopeSize.width, scopeSize.height, false)
-			&& usingSpeech && optNonStopOscill)
+	else if (GraphForegroundStream(
+				 scope_data, scopeSize.width, scopeSize.height, false)
+			 && usingSpeech && optNonStopOscill)
 	{
-		DrawOscilloscopeLines (&s, scope_data, true, true);
+		DrawOscilloscopeLines(&s, scope_data, true, true);
 	}
 	else
-		DrawOscilloscopeLines (&s, NULL, false, false);
+		DrawOscilloscopeLines(&s, NULL, false, false);
 
 	// draw the final scope image to screen
 	s.origin.x = 0;
 	s.origin.y = 0;
-	DrawStamp (&s);
+	DrawStamp(&s);
 
-	DrawRadarBorder ();
+	DrawRadarBorder();
 }
 
-void
-FlattenOscilloscope (void)
+void FlattenOscilloscope(void)
 {
 	STAMP s;
 	CONTEXT OldContext;
 
-	OldContext = SetContext (RadarContext);
+	OldContext = SetContext(RadarContext);
 
-	DrawOscilloscopeLines (&s, NULL, false, false);
+	DrawOscilloscopeLines(&s, NULL, false, false);
 	s.origin = MAKE_POINT(0, 0);
-	DrawStamp (&s);
-	SetContext (OldContext);
+	DrawStamp(&s);
+	SetContext(OldContext);
 }
 
 static STAMP sliderStamp;
 static STAMP buttonStamp;
 static bool sliderChanged = false;
-int sliderSpace;  // slider width - button width
+int sliderSpace; // slider width - button width
 bool sliderDisabled = false;
 
 /*
@@ -219,51 +215,47 @@ bool sliderDisabled = false;
  * bwidth - width of button indicating current progress
  * bheight - height of button indicating progress
  * f - image for the slider
- */                        
+ */
 
-void
-InitSlider (int x, int y, int width, FRAME sliderFrame, FRAME buttonFrame)
+void InitSlider(int x, int y, int width, FRAME sliderFrame, FRAME buttonFrame)
 {
-	EXTENT sliderSize = GetFrameBounds (sliderFrame);
-	EXTENT buttonSize = GetFrameBounds (buttonFrame);
+	EXTENT sliderSize = GetFrameBounds(sliderFrame);
+	EXTENT buttonSize = GetFrameBounds(buttonFrame);
 
 	sliderStamp.origin.x = x;
 	sliderStamp.origin.y = y;
 	sliderStamp.frame = sliderFrame;
-	
+
 	buttonStamp.origin.x = x;
-	buttonStamp.origin.y = y - (
-			(buttonSize.height - sliderSize.height) / 2);
+	buttonStamp.origin.y = y - ((buttonSize.height - sliderSize.height) / 2);
 	buttonStamp.frame = buttonFrame;
 
 	sliderSpace = width - buttonSize.width;
 }
 
-void
-SetSliderImage (FRAME f)
+void SetSliderImage(FRAME f)
 {
 	sliderChanged = true;
 	buttonStamp.frame = f;
 }
 
-void
-DrawSlider (void)
+void DrawSlider(void)
 {
 	int offs;
 	static int last_offs = -1;
 
 	if (sliderDisabled || (!usingSpeech && optSmoothScroll == OPT_PC))
 		return;
-	
-	offs = GetTrackPosition (sliderSpace);
+
+	offs = GetTrackPosition(sliderSpace);
 	if (offs != last_offs || sliderChanged)
 	{
 		sliderChanged = false;
 		last_offs = offs;
 		buttonStamp.origin.x = sliderStamp.origin.x + offs;
-		BatchGraphics ();
-		DrawStamp (&sliderStamp);
-		DrawStamp (&buttonStamp);
-		UnbatchGraphics ();
+		BatchGraphics();
+		DrawStamp(&sliderStamp);
+		DrawStamp(&buttonStamp);
+		UnbatchGraphics();
 	}
 }

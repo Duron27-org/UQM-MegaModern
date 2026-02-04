@@ -28,52 +28,51 @@
 #define POOL_SIZE 4096
 
 static void
-dword_convert (uqm::DWORD *dword_array, uqm::COUNT num_dwords)
+dword_convert(uqm::DWORD* dword_array, uqm::COUNT num_dwords)
 {
-	uqm::BYTE *p = (uqm::BYTE*)dword_array;
+	uqm::BYTE* p = (uqm::BYTE*)dword_array;
 
 	do
 	{
-		*dword_array++ = MAKE_DWORD (
-				MAKE_WORD (p[3], p[2]),
-				MAKE_WORD (p[1], p[0])
-				);
+		*dword_array++ = MAKE_DWORD(
+			MAKE_WORD(p[3], p[2]),
+			MAKE_WORD(p[1], p[0]));
 		p += 4;
 	} while (--num_dwords);
 }
 
 static STRING
-set_strtab_entry (STRING_TABLE_DESC *strtab, int index, const char *value,
-		int len)
+set_strtab_entry(STRING_TABLE_DESC* strtab, int index, const char* value,
+				 int len)
 {
 	STRING str = &strtab->strings[index];
 
 	if (str->data)
 	{
-		HFree (str->data);
+		HFree(str->data);
 		str->data = NULL;
 		str->length = 0;
 	}
 	if (len)
 	{
-		str->data = (STRINGPTR)HMalloc (len);
+		str->data = (STRINGPTR)HMalloc(len);
 		str->length = len;
-		memcpy (str->data, value, len);
+		memcpy(str->data, value, len);
 	}
 	return str;
 }
 
 static void
-copy_strings_to_strtab (STRING_TABLE_DESC *strtab, size_t firstIndex,
-		size_t count, const char *data, const uqm::DWORD *lens)
+copy_strings_to_strtab(STRING_TABLE_DESC* strtab, size_t firstIndex,
+					   size_t count, const char* data, const uqm::DWORD* lens)
 {
 	size_t stringI;
-	const char *off = data;
+	const char* off = data;
 
 	for (stringI = 0; stringI < count; stringI++)
 	{
 		set_strtab_entry(strtab, firstIndex + stringI,
-				off, lens[stringI]);
+						 off, lens[stringI]);
 		off += lens[stringI];
 	}
 }
@@ -89,9 +88,9 @@ copy_strings_to_strtab (STRING_TABLE_DESC *strtab, size_t firstIndex,
 // returns false if and only if the buffer needs to be enlarged but
 // memory allocation failed.
 static bool
-ensureBufSize (char **buf, size_t *curSize, size_t minSize, size_t increment)
+ensureBufSize(char** buf, size_t* curSize, size_t minSize, size_t increment)
 {
-	char *newBuf;
+	char* newBuf;
 	size_t newSize;
 
 	if (minSize <= *curSize)
@@ -101,8 +100,8 @@ ensureBufSize (char **buf, size_t *curSize, size_t minSize, size_t increment)
 	}
 
 	newSize = ((minSize + (increment - 1)) / increment) * increment;
-			// Smallest multiple of 'increment' larger or equal to minSize.
-	newBuf = (char*)HRealloc (*buf, newSize);
+	// Smallest multiple of 'increment' larger or equal to minSize.
+	newBuf = (char*)HRealloc(*buf, newSize);
 	if (newBuf == NULL)
 		return false;
 
@@ -112,60 +111,59 @@ ensureBufSize (char **buf, size_t *curSize, size_t minSize, size_t increment)
 	return true;
 }
 
-void
-_GetConversationData (const char *path, RESOURCE_DATA *resdata)
+void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 {
 	unsigned long dataLen;
-	void *result;
+	void* result;
 	int stringI;
 	int path_len;
 	// int num_data_sets; unused
 	uqm::DWORD opos;
-	
-	char *namedata = NULL;
-			// Contains the names (indexes) of the dialogs.
+
+	char* namedata = NULL;
+	// Contains the names (indexes) of the dialogs.
 	uqm::DWORD nlen[MAX_STRINGS];
-			// Length of each of the names.
+	// Length of each of the names.
 	uqm::DWORD NameOffs;
 	size_t tot_name_size;
 
-	char *strdata = NULL;
-			// Contains the dialog strings.
+	char* strdata = NULL;
+	// Contains the dialog strings.
 	uqm::DWORD slen[MAX_STRINGS];
-			// Length of each of the dialog strings.
+	// Length of each of the dialog strings.
 	uqm::DWORD StringOffs;
 	size_t tot_string_size;
 
-	char *clipdata = NULL;
-			// Contains the file names of the speech files.
+	char* clipdata = NULL;
+	// Contains the file names of the speech files.
 	uqm::DWORD clen[MAX_STRINGS];
-			// Length of each of the speech file names.
+	// Length of each of the speech file names.
 	uqm::DWORD ClipOffs;
 	size_t tot_clip_size;
 
-	char *ts_data = NULL;
-			// Contains the timestamp data for synching the text with the
-			// speech.
+	char* ts_data = NULL;
+	// Contains the timestamp data for synching the text with the
+	// speech.
 	uqm::DWORD tslen[MAX_STRINGS];
-			// Length of each of the timestamp strings.
+	// Length of each of the timestamp strings.
 	uqm::DWORD TSOffs;
 	size_t tot_ts_size = 0;
 
 	char CurrentLine[1024];
 	char paths[1024];
-	char *clip_path;
-	char *ts_path;
+	char* clip_path;
+	char* ts_path;
 
-	uio_Stream *fp = NULL;
-	uio_Stream *timestamp_fp = NULL;
-	StringHashTable_HashTable *nameHashTable = NULL;
-			// Hash table of string names (such as "GLAD_WHEN_YOU_COME_BACK")
-			// to a STRING.
+	uio_Stream* fp = NULL;
+	uio_Stream* timestamp_fp = NULL;
+	StringHashTable_HashTable* nameHashTable = NULL;
+	// Hash table of string names (such as "GLAD_WHEN_YOU_COME_BACK")
+	// to a STRING.
 
 	/* Parse out the conversation components. */
-	strncpy (paths, path, 1023);
+	strncpy(paths, path, 1023);
 	paths[1023] = '\0';
-	clip_path = strchr (paths, ':');
+	clip_path = strchr(paths, ':');
 	if (clip_path == NULL)
 	{
 		ts_path = NULL;
@@ -175,7 +173,7 @@ _GetConversationData (const char *path, RESOURCE_DATA *resdata)
 		*clip_path = '\0';
 		clip_path++;
 
-		ts_path = strchr (clip_path, ':');
+		ts_path = strchr(clip_path, ':');
 		if (ts_path != NULL)
 		{
 			*ts_path = '\0';
@@ -183,69 +181,69 @@ _GetConversationData (const char *path, RESOURCE_DATA *resdata)
 		}
 	}
 
-	fp = res_OpenResFile (contentDir, paths, "rb");
+	fp = res_OpenResFile(contentDir, paths, "rb");
 	if (fp == NULL)
 	{
-		log_add (log_Warning, "Warning: Can't open '%s'", paths);
+		log_add(log_Warning, "Warning: Can't open '%s'", paths);
 		resdata->ptr = NULL;
 		return;
 	}
 
-	dataLen = LengthResFile (fp);
-	log_add (log_Info, "\t'%s' -- conversation phrases -- %lu bytes", paths,
+	dataLen = LengthResFile(fp);
+	log_add(log_Info, "\t'%s' -- conversation phrases -- %lu bytes", paths,
 			dataLen);
 	if (clip_path)
-		log_add (log_Info, "\t'%s' -- voice clip directory", clip_path);
+		log_add(log_Info, "\t'%s' -- voice clip directory", clip_path);
 	else
-		log_add (log_Info, "\tNo associated voice clips");
+		log_add(log_Info, "\tNo associated voice clips");
 	if (ts_path)
-		log_add (log_Info, "\t'%s' -- timestamps", ts_path);
+		log_add(log_Info, "\t'%s' -- timestamps", ts_path);
 	else
-		log_add (log_Info, "\tNo associated timestamp file");
+		log_add(log_Info, "\tNo associated timestamp file");
 
 	if (dataLen == 0)
 	{
-		log_add (log_Warning, "Warning: Trying to load empty file '%s'.",
+		log_add(log_Warning, "Warning: Trying to load empty file '%s'.",
 				path);
 		goto err;
 	}
-	
+
 	tot_string_size = POOL_SIZE;
-	strdata = (char*)HMalloc (tot_string_size);
+	strdata = (char*)HMalloc(tot_string_size);
 	if (strdata == 0)
 		goto err;
-	
+
 	tot_name_size = POOL_SIZE;
-	namedata = (char*)HMalloc (tot_name_size);
+	namedata = (char*)HMalloc(tot_name_size);
 	if (namedata == 0)
 		goto err;
-	
+
 	tot_clip_size = POOL_SIZE;
-	clipdata = (char*)HMalloc (tot_clip_size);
+	clipdata = (char*)HMalloc(tot_clip_size);
 	if (clipdata == 0)
 		goto err;
 	ts_data = NULL;
 
 	nameHashTable = StringHashTable_newHashTable(
-			NULL, NULL, NULL, NULL, NULL, 0, 0.85, 0.9);
+		NULL, NULL, NULL, NULL, NULL, 0, 0.85, 0.9);
 	if (nameHashTable == NULL)
 		goto err;
-	
-	path_len = clip_path ? strlen (clip_path) : 0;
+
+	path_len = clip_path ? strlen(clip_path) : 0;
 
 	if (ts_path)
 	{
-		timestamp_fp = uio_fopen (contentDir, ts_path, "rb");
+		timestamp_fp = uio_fopen(contentDir, ts_path, "rb");
 		if (timestamp_fp != NULL)
 		{
 			tot_ts_size = POOL_SIZE;
-			ts_data = (char*)HMalloc (tot_ts_size);
+			ts_data = (char*)HMalloc(tot_ts_size);
 			if (ts_data == 0)
 				goto err;
 		}
 	}
-	
-	opos = uio_ftell (fp);
+
+	opos = uio_ftell(fp);
 	stringI = -1;
 	NameOffs = 0;
 	StringOffs = 0;
@@ -255,12 +253,12 @@ _GetConversationData (const char *path, RESOURCE_DATA *resdata)
 	{
 		int l;
 
-		if (uio_fgets (CurrentLine, sizeof (CurrentLine), fp) == NULL)
+		if (uio_fgets(CurrentLine, sizeof(CurrentLine), fp) == NULL)
 		{
 			// EOF or read error.
 			break;
 		}
-	
+
 		if (stringI >= MAX_STRINGS - 1)
 		{
 			// Too many strings.
@@ -272,18 +270,16 @@ _GetConversationData (const char *path, RESOURCE_DATA *resdata)
 			// String header, of the following form:
 			//     #(GLAD_WHEN_YOU_COME_BACK) commander-000.ogg
 			char CopyLine[1024];
-			char *name;
-			char *ts;
+			char* name;
+			char* ts;
 
-			strcpy (CopyLine, CurrentLine);
-			name = strtok (&CopyLine[1], "()");
+			strcpy(CopyLine, CurrentLine);
+			name = strtok(&CopyLine[1], "()");
 			if (name)
 			{
 				if (stringI >= 0)
 				{
-					while (slen[stringI] > 1 &&
-							(strdata[StringOffs - 2] == '\n' ||
-							strdata[StringOffs - 2] == '\r'))
+					while (slen[stringI] > 1 && (strdata[StringOffs - 2] == '\n' || strdata[StringOffs - 2] == '\r'))
 					{
 						--slen[stringI];
 						--StringOffs;
@@ -294,11 +290,11 @@ _GetConversationData (const char *path, RESOURCE_DATA *resdata)
 				slen[++stringI] = 0;
 
 				// Store the string name.
-				l = strlen (name) + 1;
-				if (!ensureBufSize (&namedata, &tot_name_size,
-						NameOffs + l, POOL_SIZE))
+				l = strlen(name) + 1;
+				if (!ensureBufSize(&namedata, &tot_name_size,
+								   NameOffs + l, POOL_SIZE))
 					goto err;
-				strcpy (&namedata[NameOffs], name);
+				strcpy(&namedata[NameOffs], name);
 				NameOffs += l;
 				nlen[stringI] = l;
 
@@ -307,29 +303,29 @@ _GetConversationData (const char *path, RESOURCE_DATA *resdata)
 				{
 					// We have a time stamp file.
 					char TimeStampLine[1024];
-					char *tsptr;
+					char* tsptr;
 					bool ts_ok = false;
-					uio_fgets (TimeStampLine, sizeof (TimeStampLine), timestamp_fp);
+					uio_fgets(TimeStampLine, sizeof(TimeStampLine), timestamp_fp);
 					if (TimeStampLine[0] == '#')
 					{
 						// Line is of the following form:
 						//     #(GIVE_FUEL_AGAIN) 3304,3255
 						tslen[stringI] = 0;
-						tsptr = strstr (TimeStampLine, name);
+						tsptr = strstr(TimeStampLine, name);
 						if (tsptr)
 						{
 							tsptr += strlen(name) + 1;
 							ts_ok = true;
-							while (! strcspn(tsptr," \t\r\n") && *tsptr)
+							while (!strcspn(tsptr, " \t\r\n") && *tsptr)
 								tsptr++;
 							if (*tsptr)
 							{
-								l = strlen (tsptr) + 1;
-								if (!ensureBufSize (&ts_data, &tot_ts_size, TSOffs + l,
-										POOL_SIZE))
+								l = strlen(tsptr) + 1;
+								if (!ensureBufSize(&ts_data, &tot_ts_size, TSOffs + l,
+												   POOL_SIZE))
 									goto err;
 
-								strcpy (&ts_data[TSOffs], tsptr);
+								strcpy(&ts_data[TSOffs], tsptr);
 								TSOffs += l;
 								tslen[stringI] = l;
 							}
@@ -338,27 +334,28 @@ _GetConversationData (const char *path, RESOURCE_DATA *resdata)
 					if (!ts_ok)
 					{
 						// timestamp data is invalid, remove all of it
-						log_add (log_Warning, "Invalid timestamp data "
-								"for '%s'.  Disabling timestamps", name);
-						HFree (ts_data);
+						log_add(log_Warning, "Invalid timestamp data "
+											 "for '%s'.  Disabling timestamps",
+								name);
+						HFree(ts_data);
 						ts_data = NULL;
-						uio_fclose (timestamp_fp);
+						uio_fclose(timestamp_fp);
 						timestamp_fp = NULL;
 						TSOffs = 0;
 					}
 				}
 				clen[stringI] = 0;
-				ts = strtok (NULL, " \t\r\n)");
+				ts = strtok(NULL, " \t\r\n)");
 				if (ts)
 				{
-					l = path_len + strlen (ts) + 1;
-					if (!ensureBufSize (&clipdata, &tot_clip_size,
-							ClipOffs + l, POOL_SIZE))
+					l = path_len + strlen(ts) + 1;
+					if (!ensureBufSize(&clipdata, &tot_clip_size,
+									   ClipOffs + l, POOL_SIZE))
 						goto err;
 
 					if (clip_path)
-						strcpy (&clipdata[ClipOffs], clip_path);
-					strcpy (&clipdata[ClipOffs + path_len], ts);
+						strcpy(&clipdata[ClipOffs], clip_path);
+					strcpy(&clipdata[ClipOffs + path_len], ts);
 					ClipOffs += l;
 					clen[stringI] = l;
 				}
@@ -366,11 +363,11 @@ _GetConversationData (const char *path, RESOURCE_DATA *resdata)
 		}
 		else if (stringI >= 0)
 		{
-			char *s;
-			l = strlen (CurrentLine) + 1;
+			char* s;
+			l = strlen(CurrentLine) + 1;
 
-			if (!ensureBufSize (&strdata, &tot_string_size, StringOffs + l,
-					POOL_SIZE))
+			if (!ensureBufSize(&strdata, &tot_string_size, StringOffs + l,
+							   POOL_SIZE))
 				goto err;
 
 			if (slen[stringI])
@@ -382,16 +379,15 @@ _GetConversationData (const char *path, RESOURCE_DATA *resdata)
 			slen[stringI] += l;
 			StringOffs += l;
 
-			strcpy (s, CurrentLine);
+			strcpy(s, CurrentLine);
 		}
 
-		if ((int)uio_ftell (fp) - (int)opos >= (int)dataLen)
+		if ((int)uio_ftell(fp) - (int)opos >= (int)dataLen)
 			break;
 	}
 	if (stringI >= 0)
 	{
-		while (slen[stringI] > 1 && (strdata[StringOffs - 2] == '\n'
-				|| strdata[StringOffs - 2] == '\r'))
+		while (slen[stringI] > 1 && (strdata[StringOffs - 2] == '\n' || strdata[StringOffs - 2] == '\r'))
 		{
 			--slen[stringI];
 			--StringOffs;
@@ -400,7 +396,7 @@ _GetConversationData (const char *path, RESOURCE_DATA *resdata)
 	}
 
 	if (timestamp_fp)
-		uio_fclose (timestamp_fp);
+		uio_fclose(timestamp_fp);
 
 	result = NULL;
 	// num_data_sets = (ClipOffs ? 1 : 0) + (TSOffs ? 1 : 0) + 1; unused
@@ -415,37 +411,37 @@ _GetConversationData (const char *path, RESOURCE_DATA *resdata)
 			flags |= HAS_TIMESTAMP;
 		flags |= HAS_NAMEINDEX;
 
-		result = AllocStringTable (stringCount, flags);
+		result = AllocStringTable(stringCount, flags);
 		if (result)
 		{
 			// Copy all the gatherered data in a STRING_TABLE
-			STRING_TABLE_DESC *lpST = (STRING_TABLE) result;
+			STRING_TABLE_DESC* lpST = (STRING_TABLE)result;
 			STRING str;
 			stringI = 0;
 
 			// Store the dialog string.
-			copy_strings_to_strtab (
-					lpST, stringI, stringCount, strdata, slen);
+			copy_strings_to_strtab(
+				lpST, stringI, stringCount, strdata, slen);
 			stringI += stringCount;
-			
+
 			// Store the dialog names.
-			copy_strings_to_strtab (
-					lpST, stringI, stringCount, namedata, nlen);
+			copy_strings_to_strtab(
+				lpST, stringI, stringCount, namedata, nlen);
 			stringI += stringCount;
-				
+
 			// Store sound clip file names.
 			if (lpST->flags & HAS_SOUND_CLIPS)
 			{
-				copy_strings_to_strtab (
-						lpST, stringI, stringCount, clipdata, clen);
+				copy_strings_to_strtab(
+					lpST, stringI, stringCount, clipdata, clen);
 				stringI += stringCount;
 			}
 
 			// Store time stamp data.
 			if (lpST->flags & HAS_TIMESTAMP)
 			{
-				copy_strings_to_strtab (
-						lpST, stringI, stringCount, ts_data, tslen);
+				copy_strings_to_strtab(
+					lpST, stringI, stringCount, ts_data, tslen);
 				//stringI += stringCount;
 			}
 
@@ -454,39 +450,38 @@ _GetConversationData (const char *path, RESOURCE_DATA *resdata)
 			str = &lpST->strings[stringCount];
 			for (stringI = 0; stringI < stringCount; stringI++)
 			{
-				StringHashTable_add (nameHashTable, str[stringI].data,
-						&str[stringI]);
+				StringHashTable_add(nameHashTable, str[stringI].data,
+									&str[stringI]);
 			}
 
 			lpST->nameIndex = nameHashTable;
 		}
 	}
-	HFree (strdata);
+	HFree(strdata);
 	if (clipdata != NULL)
-		HFree (clipdata);
+		HFree(clipdata);
 	if (ts_data != NULL)
-		HFree (ts_data);
+		HFree(ts_data);
 
 	resdata->ptr = result;
 	return;
 
 err:
 	if (nameHashTable != NULL)
-		StringHashTable_deleteHashTable (nameHashTable);
+		StringHashTable_deleteHashTable(nameHashTable);
 	if (ts_data != NULL)
-		HFree (ts_data);
+		HFree(ts_data);
 	if (clipdata != NULL)
-		HFree (clipdata);
+		HFree(clipdata);
 	if (strdata != NULL)
-		HFree (strdata);
-	res_CloseResFile (fp);
+		HFree(strdata);
+	res_CloseResFile(fp);
 	resdata->ptr = NULL;
 }
 
-void *
-_GetStringData (uio_Stream *fp, uqm::DWORD length)
+void* _GetStringData(uio_Stream* fp, uqm::DWORD length)
 {
-	void *result;
+	void* result;
 
 	int stringI;
 	uqm::DWORD opos;
@@ -494,26 +489,26 @@ _GetStringData (uio_Stream *fp, uqm::DWORD length)
 	uqm::DWORD StringOffs;
 	size_t tot_string_size;
 	char CurrentLine[1024];
-	char *strdata = NULL;
+	char* strdata = NULL;
 
 	tot_string_size = POOL_SIZE;
-	strdata = (char*)HMalloc (tot_string_size);
+	strdata = (char*)HMalloc(tot_string_size);
 	if (strdata == 0)
 		goto err;
 
-	opos = uio_ftell (fp);
+	opos = uio_ftell(fp);
 	stringI = -1;
 	StringOffs = 0;
 	for (;;)
 	{
 		int l;
 
-		if (uio_fgets (CurrentLine, sizeof (CurrentLine), fp) == NULL)
+		if (uio_fgets(CurrentLine, sizeof(CurrentLine), fp) == NULL)
 		{
 			// EOF or read error.
 			break;
 		}
-	
+
 		if (stringI >= MAX_STRINGS - 1)
 		{
 			// Too many strings.
@@ -523,17 +518,15 @@ _GetStringData (uio_Stream *fp, uqm::DWORD length)
 		if (CurrentLine[0] == '#')
 		{
 			char CopyLine[1024];
-			char *s;
+			char* s;
 
-			strcpy (CopyLine, CurrentLine);
-			s = strtok (&CopyLine[1], "()");
+			strcpy(CopyLine, CurrentLine);
+			s = strtok(&CopyLine[1], "()");
 			if (s)
 			{
 				if (stringI >= 0)
 				{
-					while (slen[stringI] > 1 && 
-							(strdata[StringOffs - 2] == '\n' ||
-							strdata[StringOffs - 2] == '\r'))
+					while (slen[stringI] > 1 && (strdata[StringOffs - 2] == '\n' || strdata[StringOffs - 2] == '\r'))
 					{
 						--slen[stringI];
 						--StringOffs;
@@ -546,11 +539,11 @@ _GetStringData (uio_Stream *fp, uqm::DWORD length)
 		}
 		else if (stringI >= 0)
 		{
-			char *s;
-			l = strlen (CurrentLine) + 1;
+			char* s;
+			l = strlen(CurrentLine) + 1;
 
-			if (!ensureBufSize (&strdata, &tot_string_size, StringOffs + l,
-					POOL_SIZE))
+			if (!ensureBufSize(&strdata, &tot_string_size, StringOffs + l,
+							   POOL_SIZE))
 				goto err;
 
 			if (slen[stringI])
@@ -562,16 +555,15 @@ _GetStringData (uio_Stream *fp, uqm::DWORD length)
 			slen[stringI] += l;
 			StringOffs += l;
 
-			strcpy (s, CurrentLine);
+			strcpy(s, CurrentLine);
 		}
 
-		if ((int)uio_ftell (fp) - (int)opos >= (int)length)
+		if ((int)uio_ftell(fp) - (int)opos >= (int)length)
 			break;
 	}
 	if (stringI >= 0)
 	{
-		while (slen[stringI] > 1 && (strdata[StringOffs - 2] == '\n'
-				|| strdata[StringOffs - 2] == '\r'))
+		while (slen[stringI] > 1 && (strdata[StringOffs - 2] == '\n' || strdata[StringOffs - 2] == '\r'))
 		{
 			--slen[stringI];
 			--StringOffs;
@@ -585,59 +577,57 @@ _GetStringData (uio_Stream *fp, uqm::DWORD length)
 		int flags = 0;
 		int stringCount = stringI;
 
-		result = AllocStringTable (stringI, flags);
+		result = AllocStringTable(stringI, flags);
 		if (result)
 		{
-			STRING_TABLE_DESC *lpST = (STRING_TABLE) result;
-			copy_strings_to_strtab (lpST, 0, stringCount, strdata, slen);
+			STRING_TABLE_DESC* lpST = (STRING_TABLE)result;
+			copy_strings_to_strtab(lpST, 0, stringCount, strdata, slen);
 		}
 	}
-	HFree (strdata);
+	HFree(strdata);
 
 	return result;
 
 err:
 	if (strdata != NULL)
-		HFree (strdata);
+		HFree(strdata);
 	return 0;
 }
 
 
-void *
-_GetBinaryTableData (uio_Stream *fp, uqm::DWORD length)
+void* _GetBinaryTableData(uio_Stream* fp, uqm::DWORD length)
 {
-	void *result;
-	result = GetResourceData (fp, length);
+	void* result;
+	result = GetResourceData(fp, length);
 
 	if (result)
 	{
-		uqm::DWORD *fileData;
+		uqm::DWORD* fileData;
 		STRING_TABLE lpST;
 
-		fileData = (uqm::DWORD *)result;
+		fileData = (uqm::DWORD*)result;
 
-		dword_convert (fileData, 1); /* Length */
+		dword_convert(fileData, 1); /* Length */
 
-		lpST = AllocStringTable (fileData[0], 0);
+		lpST = AllocStringTable(fileData[0], 0);
 		if (lpST)
 		{
 			int i, size;
-			uqm::BYTE *stringptr;
+			uqm::BYTE* stringptr;
 
 			size = lpST->size;
 
-			dword_convert (fileData+1, size + 1);
-			stringptr = (uqm::BYTE *)(fileData + 2 + size + fileData[1]);
+			dword_convert(fileData + 1, size + 1);
+			stringptr = (uqm::BYTE*)(fileData + 2 + size + fileData[1]);
 			for (i = 0; i < size; i++)
 			{
-				set_strtab_entry (lpST, i, (char *)stringptr, fileData[2+i]);
-				stringptr += fileData[2+i];
+				set_strtab_entry(lpST, i, (char*)stringptr, fileData[2 + i]);
+				stringptr += fileData[2 + i];
 			}
 		}
-		HFree (result);
+		HFree(result);
 		result = lpST;
 	}
 
 	return result;
 }
-

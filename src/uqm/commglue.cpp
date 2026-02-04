@@ -20,7 +20,7 @@
 #include "commglue.h"
 
 #include "battle.h"
-		// For instantVictory
+// For instantVictory
 #include "races.h"
 #include "lua/luacomm.h"
 #include "libs/log.h"
@@ -33,12 +33,12 @@
 
 uqm::COUNT RoboTrack[NUM_ROBO_TRACKS];
 
-static int NPCNumberPhrase (int number, const char *fmt, uqm::CHAR_T **ptrack);
+static int NPCNumberPhrase(int number, const char* fmt, uqm::CHAR_T** ptrack);
 
 // Scans forward until outside of the interpolation then returns the start
 // of the new section of text.
-uqm::CHAR_T *
-ScanInterpolation (uqm::CHAR_T *start)
+uqm::CHAR_T*
+ScanInterpolation(uqm::CHAR_T* start)
 {
 	uqm::COUNT depth = 1;
 	if (!start || start[0] != '<')
@@ -59,16 +59,15 @@ ScanInterpolation (uqm::CHAR_T *start)
 }
 
 // Will the chunk between [end - start] require robot voicing?
-bool
-RoboInterpolation (uqm::CHAR_T *start, uqm::CHAR_T *end)
+bool RoboInterpolation(uqm::CHAR_T* start, uqm::CHAR_T* end)
 {
 	static constexpr const char* RoboPhrases[] = {
-			"getPoint",
-			"getStarName",
-			"getConstellation",
-			"getColor",
-			"swapIfSeeded"};
-	
+		"getPoint",
+		"getStarName",
+		"getConstellation",
+		"getColor",
+		"swapIfSeeded"};
+
 	for (const char* phrase : RoboPhrases)
 	{
 		if (uqm::CHAR_T* result {strstr(start, phrase)}; result && result < end)
@@ -81,16 +80,16 @@ RoboInterpolation (uqm::CHAR_T *start, uqm::CHAR_T *end)
 
 // This will write to buffer the interpolated chunk, while returning a new
 // "start" value from the original string where interpolation ended.
-uqm::CHAR_T *
-InterpolateChunk (uqm::CHAR_T buffer[], uqm::CHAR_T *start)
+uqm::CHAR_T*
+InterpolateChunk(uqm::CHAR_T buffer[], uqm::CHAR_T* start)
 {
-	uqm::CHAR_T *end = start;
+	uqm::CHAR_T* end = start;
 	uqm::CHAR_T str_buf[MAX_INTERPOLATE] = "";
-	uqm::CHAR_T *pStr;
+	uqm::CHAR_T* pStr;
 	uqm::COUNT buffsize = 0;
 	bool done = false;
 
-	while ((end = strstr (start, "<%")) && !done)
+	while ((end = strstr(start, "<%")) && !done)
 	{
 		// Copy over plain text part
 		if (end != start)
@@ -98,17 +97,17 @@ InterpolateChunk (uqm::CHAR_T buffer[], uqm::CHAR_T *start)
 			buffsize += end - start;
 			if (buffsize > MAX_INTERPOLATE)
 			{
-				fprintf (stderr, "String too long to interpolate.\n");
+				fprintf(stderr, "String too long to interpolate.\n");
 				return NULL;
 			}
-			strncpy (buffer, start, end - start);
+			strncpy(buffer, start, end - start);
 			buffer = &buffer[end - start];
 			start = end;
 		}
 
 		// Next we grab only the smallest chunk we can interpolate
-		end = ScanInterpolation (start);
-		if (RoboInterpolation (start, end))
+		end = ScanInterpolation(start);
+		if (RoboInterpolation(start, end))
 		{
 			// This requires robo-interpolation.  If anything else was
 			// already read, we return and handle that first.  Otherwise,
@@ -116,24 +115,23 @@ InterpolateChunk (uqm::CHAR_T buffer[], uqm::CHAR_T *start)
 			if (buffsize > 0)
 				return start;
 			done = true;
-
 		}
-		strncpy (str_buf, start, end - start);
+		strncpy(str_buf, start, end - start);
 		str_buf[end - start] = '\0';
-		pStr = luaUqm_comm_stringInterpolate (str_buf);
+		pStr = luaUqm_comm_stringInterpolate(str_buf);
 		if (!pStr)
 		{
-			fprintf (stderr, "Interpolation failure (null return).\n");
+			fprintf(stderr, "Interpolation failure (null return).\n");
 			return NULL;
 		}
-		buffsize += (uqm::COUNT)strlen (pStr);
+		buffsize += (uqm::COUNT)strlen(pStr);
 		if (buffsize > MAX_INTERPOLATE)
 		{
-			fprintf (stderr, "String too long to interpolate.\n");
+			fprintf(stderr, "String too long to interpolate.\n");
 			return NULL;
 		}
-		strncpy (buffer, pStr, strlen (pStr));
-		HFree (pStr);
+		strncpy(buffer, pStr, strlen(pStr));
+		HFree(pStr);
 		pStr = NULL;
 		buffer = &buffer[end - start];
 		start = end;
@@ -143,43 +141,41 @@ InterpolateChunk (uqm::CHAR_T buffer[], uqm::CHAR_T *start)
 		return start;
 	// Otherwise we're done with interpolation, write the remainder
 	// to buffer and return
-	buffsize += (uqm::COUNT)strlen (start);
+	buffsize += (uqm::COUNT)strlen(start);
 	if (buffsize > MAX_INTERPOLATE)
 	{
-		fprintf (stderr, "String too long to interpolate.\n");
+		fprintf(stderr, "String too long to interpolate.\n");
 		return NULL;
 	}
-	strcpy (buffer, start);
+	strcpy(buffer, start);
 	return NULL;
 }
 
 // Creates the file name of subclip # clip_number, and prints it to buffer.
 // Assumes track names end in ".ogg".
-void
-GetSubClip (uqm::CHAR_T buffer[], uqm::CHAR_T *pClip, uqm::COUNT clip_number)
+void GetSubClip(uqm::CHAR_T buffer[], uqm::CHAR_T* pClip, uqm::COUNT clip_number)
 {
-	uqm::CHAR_T *pStr = strstr (pClip, ".ogg");
+	uqm::CHAR_T* pStr = strstr(pClip, ".ogg");
 	if (!pStr)
 	{
 		// Fall through passing back the whole thing
-		strcpy (buffer, pClip);
+		strcpy(buffer, pClip);
 		return;
 	}
-	strncpy (buffer, pClip, pStr - pClip);
+	strncpy(buffer, pClip, pStr - pClip);
 	buffer[pStr - pClip] = 'a' + clip_number;
 	pStr++;
-	strncpy (&buffer[pStr - pClip], ".ogg\0", 5);
+	strncpy(&buffer[pStr - pClip], ".ogg\0", 5);
 	return;
 }
 
 // The CallbackFunction is queued and executes synchronously
 // on the Starcon2Main thread
-void
-NPCPhrase_cb (int index, CallbackFunction cb)
+void NPCPhrase_cb(int index, CallbackFunction cb)
 {
-	uqm::CHAR_T *pStr;
-	uqm::CHAR_T *pClip;
-	uqm::CHAR_T *pTimeStamp;
+	uqm::CHAR_T* pStr;
+	uqm::CHAR_T* pClip;
+	uqm::CHAR_T* pTimeStamp;
 	bool isPStrAlloced = false;
 	uqm::COUNT clip_number = 0;
 	uqm::COUNT i;
@@ -187,53 +183,53 @@ NPCPhrase_cb (int index, CallbackFunction cb)
 	if (index == 0)
 		return;
 
-	pStr = (uqm::CHAR_T *)GetStringAddress (
-			SetAbsStringTableIndex (CommData.ConversationPhrases, index - 1));
-	pClip = GetStringSoundClip (
-			SetAbsStringTableIndex (CommData.ConversationPhrases, index - 1));
-	pTimeStamp = GetStringTimeStamp (
-			SetAbsStringTableIndex (CommData.ConversationPhrases, index - 1));
+	pStr = (uqm::CHAR_T*)GetStringAddress(
+		SetAbsStringTableIndex(CommData.ConversationPhrases, index - 1));
+	pClip = GetStringSoundClip(
+		SetAbsStringTableIndex(CommData.ConversationPhrases, index - 1));
+	pTimeStamp = GetStringTimeStamp(
+		SetAbsStringTableIndex(CommData.ConversationPhrases, index - 1));
 
 	if (!StarSeed)
 	{
-		if (luaUqm_comm_stringNeedsInterpolate (pStr))
+		if (luaUqm_comm_stringNeedsInterpolate(pStr))
 		{
-			pStr = luaUqm_comm_stringInterpolate (pStr);
+			pStr = luaUqm_comm_stringInterpolate(pStr);
 			isPStrAlloced = true;
 		}
-		SpliceTrack (pClip, pStr, pTimeStamp, cb);
+		SpliceTrack(pClip, pStr, pTimeStamp, cb);
 		if (isPStrAlloced)
-			HFree (pStr);
+			HFree(pStr);
 		return;
 	}
 
 	// From here on, we are doing StarSeed robo-interpolation.
 	static STRING RoboPhrases = NULL;
 	if (!RoboPhrases)
-		RoboPhrases = CaptureStringTable (
-				LoadStringTableInstance ("comm.robot.dialogue"));
+		RoboPhrases = CaptureStringTable(
+			LoadStringTableInstance("comm.robot.dialogue"));
 	for (i = 0; RoboTrack[i] && i < NUM_ROBO_TRACKS; i++)
 		RoboTrack[i] = 0;
 #ifdef DEBUG_STARSEED_TRACE_TIMESTAMP
 	// This code will roll the "SENSE_KOHRAH_VICTORY" dialog and timestamps
 	// instead of the correct ones for debugging or track syncing purposes.
-	STRING Pkunk = CaptureStringTable (
-			LoadStringTableInstance ("comm.pkunk.dialogue"));
-	pStr = (uqm::CHAR_T *)GetStringAddress (
-			SetAbsStringTableIndex (Pkunk, 43));
-	pClip = GetStringSoundClip (
-			SetAbsStringTableIndex (Pkunk, 43));
-	pTimeStamp = GetStringTimeStamp (
-			SetAbsStringTableIndex (Pkunk, 43));
+	STRING Pkunk = CaptureStringTable(
+		LoadStringTableInstance("comm.pkunk.dialogue"));
+	pStr = (uqm::CHAR_T*)GetStringAddress(
+		SetAbsStringTableIndex(Pkunk, 43));
+	pClip = GetStringSoundClip(
+		SetAbsStringTableIndex(Pkunk, 43));
+	pTimeStamp = GetStringTimeStamp(
+		SetAbsStringTableIndex(Pkunk, 43));
 #endif
 
 	// Switch to alternate time stamps if they exist
 	if (pTimeStamp)
-		if (strstr (pTimeStamp, ";"))
-			pTimeStamp = strstr (pTimeStamp, ";") + 1;
+		if (strstr(pTimeStamp, ";"))
+			pTimeStamp = strstr(pTimeStamp, ";") + 1;
 
 #ifdef DEBUG_STARSEED
-	fprintf (stderr, "Received string...\n<<\n%s\n>>\n", pStr);
+	fprintf(stderr, "Received string...\n<<\n%s\n>>\n", pStr);
 #endif
 
 	// Here we will loop through and get the string up to the smallest
@@ -252,33 +248,33 @@ NPCPhrase_cb (int index, CallbackFunction cb)
 #endif
 		// InterpolateChunk returns a pointer to the start of the next
 		// chunk, or NULL if done.  Writes the interpolation to str_buf.
-		pStr = InterpolateChunk (str_buf, pStr);
+		pStr = InterpolateChunk(str_buf, pStr);
 #ifdef DEBUG_STARSEED
-		fprintf (stderr, "Chunk\n<<%s>>\n", str_buf);
+		fprintf(stderr, "Chunk\n<<%s>>\n", str_buf);
 #endif
 		if (!RoboTrack[0])
 		{
 			if (clip_number == 0 && !pStr)
 			{
 #ifdef DEBUG_STARSEED
-				fprintf (stderr, "Regular splicetrack.\n");
+				fprintf(stderr, "Regular splicetrack.\n");
 #endif
 				// There's no sub-clips here, return regular clip
-				SpliceTrack (pClip, str_buf, pTimeStamp, cb);
+				SpliceTrack(pClip, str_buf, pTimeStamp, cb);
 			}
 			else
 			{
 #ifdef DEBUG_STARSEED
-				fprintf (stderr, "Subclip splicetrack.\n");
+				fprintf(stderr, "Subclip splicetrack.\n");
 #endif
 				// This is a subclip of the main dialog
-				GetSubClip (clip_buf, pClip, clip_number);
-				SpliceTrack (clip_buf, str_buf, pTimeStamp, cb);
+				GetSubClip(clip_buf, pClip, clip_number);
+				SpliceTrack(clip_buf, str_buf, pTimeStamp, cb);
 				// Advance to the next timestamp if it exists
 				if (pTimeStamp)
 				{
-					if (strstr (pTimeStamp, ";"))
-						pTimeStamp = strstr (pTimeStamp, ";") + 1;
+					if (strstr(pTimeStamp, ";"))
+						pTimeStamp = strstr(pTimeStamp, ";") + 1;
 					else
 						pTimeStamp = NULL;
 				}
@@ -290,89 +286,86 @@ NPCPhrase_cb (int index, CallbackFunction cb)
 			// This requires one or more robo-tracks or swap-if subclips
 			// which we will MultiSplice into the main track.
 			//uqm::CHAR_T *tracks[NUM_ROBO_TRACKS + 1] =
-					//{ [0 ... NUM_ROBO_TRACKS] = NULL };
-			uqm::CHAR_T *tracks[NUM_ROBO_TRACKS + 1] = {NULL};
+			//{ [0 ... NUM_ROBO_TRACKS] = NULL };
+			uqm::CHAR_T* tracks[NUM_ROBO_TRACKS + 1] = {NULL};
 			for (i = 0; i < NUM_ROBO_TRACKS && RoboTrack[i]; i++)
 			{
-				if (RoboTrack[i] == (uqm::COUNT) ~0)
+				if (RoboTrack[i] == (uqm::COUNT)~0)
 				{
 					// ~0 is a subclip whose name is based off the primary clip
 					// We need to allocate a temp buffer and clean it up later
 #ifdef DEBUG_STARSEED
-					fprintf (stderr, "Allocating for track %d.\n", i);
+					fprintf(stderr, "Allocating for track %d.\n", i);
 #endif
-					tracks[i] = (uqm::CHAR_T*)HCalloc (sizeof (char) * MAX_CLIPNAME);
-					GetSubClip (tracks[i], pClip, clip_number);
+					tracks[i] = (uqm::CHAR_T*)HCalloc(sizeof(char) * MAX_CLIPNAME);
+					GetSubClip(tracks[i], pClip, clip_number);
 #ifdef DEBUG_STARSEED
-					fprintf (stderr, "RoboTrack[%d] = <<%s>>.\n", i, tracks[i]);
+					fprintf(stderr, "RoboTrack[%d] = <<%s>>.\n", i, tracks[i]);
 #endif
 					clip_number++;
 				}
 				else if (RoboTrack[i] > 0)
 				{
 					// Otherwise the robo-track is an index into robo-phrases
-					tracks[i] = GetStringSoundClip (
-							SetAbsStringTableIndex (RoboPhrases,
-							RoboTrack[i] - 1));
+					tracks[i] = GetStringSoundClip(
+						SetAbsStringTableIndex(RoboPhrases,
+											   RoboTrack[i] - 1));
 #ifdef DEBUG_STARSEED
-					fprintf (stderr, "RoboTrack[%d] = <<%s>>.\n", i, tracks[i]);
+					fprintf(stderr, "RoboTrack[%d] = <<%s>>.\n", i, tracks[i]);
 #endif
 				}
 				else
 					tracks[i] = NULL;
 			}
 #ifdef DEBUG_STARSEED
-			fprintf (stderr, "Splice Multitrack string <<%s>>.\n", str_buf);
+			fprintf(stderr, "Splice Multitrack string <<%s>>.\n", str_buf);
 #endif
-			SpliceMultiTrack (tracks, str_buf);
+			SpliceMultiTrack(tracks, str_buf);
 			for (i = 0; i < NUM_ROBO_TRACKS && RoboTrack[i]; i++)
 			{
-				if (RoboTrack[i] == (uqm::COUNT) ~0)
+				if (RoboTrack[i] == (uqm::COUNT)~0)
 				{
 #ifdef DEBUG_STARSEED
-					fprintf (stderr, "Freeing track %d.\n", i);
+					fprintf(stderr, "Freeing track %d.\n", i);
 #endif
-					HFree (tracks[i]);
+					HFree(tracks[i]);
 				}
 				tracks[i] = NULL;
 				RoboTrack[i] = 0;
 			}
 		}
-	}
-	while (pStr);
+	} while (pStr);
 }
 
 // Special case variant: prevents page breaks.
-void
-NPCPhrase_splice (int index)
+void NPCPhrase_splice(int index)
 {
-	uqm::CHAR_T *pStr;
-	void *pClip;
+	uqm::CHAR_T* pStr;
+	void* pClip;
 
-	assert (index >= 0);
+	assert(index >= 0);
 	if (index == 0)
 		return;
 
-	pStr = (uqm::CHAR_T *)GetStringAddress (
-			SetAbsStringTableIndex (CommData.ConversationPhrases, index - 1));
-	pClip = GetStringSoundClip (
-			SetAbsStringTableIndex (CommData.ConversationPhrases, index - 1));
+	pStr = (uqm::CHAR_T*)GetStringAddress(
+		SetAbsStringTableIndex(CommData.ConversationPhrases, index - 1));
+	pClip = GetStringSoundClip(
+		SetAbsStringTableIndex(CommData.ConversationPhrases, index - 1));
 
 	if (!pClip)
-	{	// Just appending some text
-		SpliceTrack (NULL, pStr, NULL, NULL);
+	{ // Just appending some text
+		SpliceTrack(NULL, pStr, NULL, NULL);
 	}
 	else
-	{	// Splicing in some voice
-		uqm::CHAR_T *tracks[] = {NULL, NULL};
+	{ // Splicing in some voice
+		uqm::CHAR_T* tracks[] = {NULL, NULL};
 
 		tracks[0] = (uqm::CHAR_T*)pClip;
-		SpliceMultiTrack (tracks, pStr);
+		SpliceMultiTrack(tracks, pStr);
 	}
 }
 
-void
-NPCNumber (int number, const char *fmt)
+void NPCNumber(int number, const char* fmt)
 {
 	uqm::CHAR_T buf[32];
 
@@ -381,24 +374,24 @@ NPCNumber (int number, const char *fmt)
 
 	if (CommData.AlienNumberSpeech)
 	{
-		NPCNumberPhrase (number, fmt, NULL);
+		NPCNumberPhrase(number, fmt, NULL);
 		return;
 	}
-	
+
 	// just splice in the subtitle text
-	snprintf (buf, sizeof buf, fmt, number);
-	SpliceTrack (NULL, buf, NULL, NULL);
+	snprintf(buf, sizeof buf, fmt, number);
+	SpliceTrack(NULL, buf, NULL, NULL);
 }
 
 static int
-NPCNumberPhrase (int number, const char *fmt, uqm::CHAR_T **ptrack)
+NPCNumberPhrase(int number, const char* fmt, uqm::CHAR_T** ptrack)
 {
 #define MAX_NUMBER_TRACKS 20
 	NUMBER_SPEECH speech = CommData.AlienNumberSpeech;
 	uqm::COUNT i;
 	int queued = 0;
 	int toplevel = 0;
-	uqm::CHAR_T *TrackNames[MAX_NUMBER_TRACKS];
+	uqm::CHAR_T* TrackNames[MAX_NUMBER_TRACKS];
 	uqm::CHAR_T numbuf[60];
 	const SPEECH_DIGIT* dig = NULL;
 
@@ -410,7 +403,7 @@ NPCNumberPhrase (int number, const char *fmt, uqm::CHAR_T **ptrack)
 		toplevel = 1;
 		if (!fmt)
 			fmt = "%d";
-		sprintf (numbuf, fmt, number);
+		sprintf(numbuf, fmt, number);
 		ptrack = TrackNames;
 	}
 
@@ -420,7 +413,7 @@ NPCNumberPhrase (int number, const char *fmt, uqm::CHAR_T **ptrack)
 
 		dig = speech->Digits + i;
 		quot = number / dig->Divider;
-	
+
 		if (quot == 0)
 			continue;
 		quot -= dig->Subtrahend;
@@ -431,20 +424,19 @@ NPCNumberPhrase (int number, const char *fmt, uqm::CHAR_T **ptrack)
 		{
 			uqm::COUNT index;
 
-			assert (quot < 10);
+			assert(quot < 10);
 			index = dig->StrDigits[quot];
 			if (index == 0)
 				continue;
 			index -= 1;
 
-			*ptrack++ = GetStringSoundClip (SetAbsStringTableIndex (
-					CommData.ConversationPhrases, index
-					));
+			*ptrack++ = GetStringSoundClip(SetAbsStringTableIndex(
+				CommData.ConversationPhrases, index));
 			queued++;
 		}
 		else
 		{
-			int ctracks = NPCNumberPhrase (quot, NULL, ptrack);
+			int ctracks = NPCNumberPhrase(quot, NULL, ptrack);
 			ptrack += ctracks;
 			queued += ctracks;
 		}
@@ -457,8 +449,8 @@ NPCNumberPhrase (int number, const char *fmt, uqm::CHAR_T **ptrack)
 			{
 				if (number % name->Divider <= name->MaxRemainder)
 				{
-					*ptrack++ = GetStringSoundClip (
-							SetAbsStringTableIndex (
+					*ptrack++ = GetStringSoundClip(
+						SetAbsStringTableIndex(
 							CommData.ConversationPhrases, name->StrIndex - 1));
 					queued++;
 					break;
@@ -467,8 +459,8 @@ NPCNumberPhrase (int number, const char *fmt, uqm::CHAR_T **ptrack)
 		}
 		else if (dig->CommonNameIndex != 0)
 		{
-			*ptrack++ = GetStringSoundClip (SetAbsStringTableIndex (
-					CommData.ConversationPhrases, dig->CommonNameIndex - 1));
+			*ptrack++ = GetStringSoundClip(SetAbsStringTableIndex(
+				CommData.ConversationPhrases, dig->CommonNameIndex - 1));
 			queued++;
 		}
 
@@ -478,202 +470,206 @@ NPCNumberPhrase (int number, const char *fmt, uqm::CHAR_T **ptrack)
 	if (toplevel)
 	{
 		if (queued == 0)
-		{	// nothing queued, say "zero"
-			assert (number == 0);
-			*ptrack++ = GetStringSoundClip (SetAbsStringTableIndex (
-					CommData.ConversationPhrases, dig->StrDigits[number] - 1));
+		{ // nothing queued, say "zero"
+			assert(number == 0);
+			*ptrack++ = GetStringSoundClip(SetAbsStringTableIndex(
+				CommData.ConversationPhrases, dig->StrDigits[number] - 1));
 		}
 		*ptrack++ = NULL; // term
-		
-		SpliceMultiTrack (TrackNames, numbuf);
+
+		SpliceMultiTrack(TrackNames, numbuf);
 	}
-	
+
 	return queued;
 }
 
-void
-construct_response (uqm::CHAR_T *buf, int R /* promoted from RESPONSE_REF */, ...)
+void construct_response(uqm::CHAR_T* buf, int R /* promoted from RESPONSE_REF */, ...)
 {
-	uqm::CHAR_T *buf_start = buf;
-	uqm::CHAR_T *name;
+	uqm::CHAR_T* buf_start = buf;
+	uqm::CHAR_T* name;
 	va_list vlist;
-	
-	va_start (vlist, R);
-	
+
+	va_start(vlist, R);
+
 	do
 	{
 		uqm::COUNT len;
 		STRING S;
-		
-		S = SetAbsStringTableIndex (CommData.ConversationPhrases, R - 1);
-		
-		strcpy (buf, (uqm::CHAR_T *)GetStringAddress (S));
-		
-		len = (uqm::COUNT)strlen (buf);
-		
+
+		S = SetAbsStringTableIndex(CommData.ConversationPhrases, R - 1);
+
+		strcpy(buf, (uqm::CHAR_T*)GetStringAddress(S));
+
+		len = (uqm::COUNT)strlen(buf);
+
 		buf += len;
-		
-		name = va_arg (vlist, uqm::CHAR_T *);
-		
+
+		name = va_arg(vlist, uqm::CHAR_T*);
+
 		if (name)
 		{
-			len = (uqm::COUNT)strlen (name);
-			strcpy (buf, name);
+			len = (uqm::COUNT)strlen(name);
+			strcpy(buf, name);
 			buf += len;
-			
+
 			/*
 			if ((R = va_arg (vlist, RESPONSE_REF)) == (RESPONSE_REF)-1)
 				name = 0;
 			*/
-					
+
 			R = va_arg(vlist, int);
-			if (R == ((RESPONSE_REF) -1))
+			if (R == ((RESPONSE_REF)-1))
 				name = 0;
 		}
 	} while (name);
-	va_end (vlist);
-	
+	va_end(vlist);
+
 	*buf = '\0';
 
 	// XXX: this should someday be changed so that the function takes
 	//   the buffer size as an argument
-	if ((buf_start == shared_phrase_buf) &&
-			(buf > shared_phrase_buf + sizeof (shared_phrase_buf)))
+	if ((buf_start == shared_phrase_buf) && (buf > shared_phrase_buf + sizeof(shared_phrase_buf)))
 	{
-		log_add (log_Fatal, "Error: shared_phrase_buf size exceeded,"
-				" please increase!\n");
-		exit (EXIT_FAILURE);
+		log_add(log_Fatal, "Error: shared_phrase_buf size exceeded,"
+						   " please increase!\n");
+		exit(EXIT_FAILURE);
 	}
 }
 
-void
-setSegue (Segue segue)
+void setSegue(Segue segue)
 {
 	switch (segue)
 	{
 		case Segue_peace:
-			SET_GAME_STATE (BATTLE_SEGUE, 0);
+			SET_GAME_STATE(BATTLE_SEGUE, 0);
 			break;
 		case Segue_hostile:
-			SET_GAME_STATE (BATTLE_SEGUE, 1);
+			SET_GAME_STATE(BATTLE_SEGUE, 1);
 			break;
 		case Segue_victory:
 			instantVictory = true;
-			SET_GAME_STATE (BATTLE_SEGUE, 1);
+			SET_GAME_STATE(BATTLE_SEGUE, 1);
 			break;
 		case Segue_defeat:
-			SET_GAME_STATE (BATTLE_SEGUE, 0);
+			SET_GAME_STATE(BATTLE_SEGUE, 0);
 			GLOBAL_SIS(CrewEnlisted) = (uqm::COUNT)~0;
 			GLOBAL(CurrentActivity) |= CHECK_RESTART;
 			break;
 	}
 }
 
-Segue
-getSegue (void)
+Segue getSegue(void)
 {
-	if (GET_GAME_STATE(BATTLE_SEGUE) == 0) {
-		if (GLOBAL_SIS(CrewEnlisted) == (uqm::COUNT)~0 &&
-				(GLOBAL(CurrentActivity) & CHECK_RESTART)) {
+	if (GET_GAME_STATE(BATTLE_SEGUE) == 0)
+	{
+		if (GLOBAL_SIS(CrewEnlisted) == (uqm::COUNT)~0 && (GLOBAL(CurrentActivity) & CHECK_RESTART))
+		{
 			return Segue_defeat;
-		} else {
+		}
+		else
+		{
 			return Segue_peace;
 		}
-	} else /* GET_GAME_STATE(BATTLE_SEGUE) == 1) */ {
-		if (instantVictory) {
+	}
+	else /* GET_GAME_STATE(BATTLE_SEGUE) == 1) */
+	{
+		if (instantVictory)
+		{
 			return Segue_victory;
-		} else {
+		}
+		else
+		{
 			return Segue_hostile;
 		}
 	}
 }
 
 LOCDATA*
-init_race (CONVERSATION comm_id)
+init_race(CONVERSATION comm_id)
 {
 	switch (comm_id)
 	{
 		case ARILOU_CONVERSATION:
-			return init_arilou_comm ();
+			return init_arilou_comm();
 		case BLACKURQ_CONVERSATION:
-			return init_blackurq_comm ();
+			return init_blackurq_comm();
 		case CHMMR_CONVERSATION:
-			return init_chmmr_comm ();
+			return init_chmmr_comm();
 		case COMMANDER_CONVERSATION:
-			if (!GET_GAME_STATE (STARBASE_AVAILABLE))
-				return init_commander_comm ();
+			if (!GET_GAME_STATE(STARBASE_AVAILABLE))
+				return init_commander_comm();
 			else
-				return init_starbase_comm ();
+				return init_starbase_comm();
 		case DRUUGE_CONVERSATION:
-			return init_druuge_comm ();
+			return init_druuge_comm();
 		case ILWRATH_CONVERSATION:
-			return init_ilwrath_comm ();
+			return init_ilwrath_comm();
 		case MELNORME_CONVERSATION:
-			return init_melnorme_comm ();
+			return init_melnorme_comm();
 		case MYCON_CONVERSATION:
-			return init_mycon_comm ();
+			return init_mycon_comm();
 		case ORZ_CONVERSATION:
-			return init_orz_comm ();
+			return init_orz_comm();
 		case PKUNK_CONVERSATION:
-			return init_pkunk_comm ();
+			return init_pkunk_comm();
 		case SHOFIXTI_CONVERSATION:
-			return init_shofixti_comm ();
+			return init_shofixti_comm();
 		case SLYLANDRO_CONVERSATION:
-			return init_slyland_comm ();
+			return init_slyland_comm();
 		case SLYLANDRO_HOME_CONVERSATION:
-			return init_slylandro_comm ();
+			return init_slylandro_comm();
 		case SPATHI_CONVERSATION:
-			if (!(GET_GAME_STATE (GLOBAL_FLAGS_AND_DATA) & (1 << 7)))
-				return init_spathi_comm ();
+			if (!(GET_GAME_STATE(GLOBAL_FLAGS_AND_DATA) & (1 << 7)))
+				return init_spathi_comm();
 			else
-				return init_spahome_comm ();
+				return init_spahome_comm();
 		case SUPOX_CONVERSATION:
-			return init_supox_comm ();
+			return init_supox_comm();
 		case SYREEN_CONVERSATION:
-			return init_syreen_comm ();
+			return init_syreen_comm();
 		case TALKING_PET_CONVERSATION:
-			return init_talkpet_comm ();
+			return init_talkpet_comm();
 		case THRADD_CONVERSATION:
-			return init_thradd_comm ();
+			return init_thradd_comm();
 		case UMGAH_CONVERSATION:
-			return init_umgah_comm ();
+			return init_umgah_comm();
 		case URQUAN_CONVERSATION:
-			return init_urquan_comm ();
+			return init_urquan_comm();
 		case UTWIG_CONVERSATION:
-			return init_utwig_comm ();
+			return init_utwig_comm();
 		case VUX_CONVERSATION:
-			return init_vux_comm ();
+			return init_vux_comm();
 		case YEHAT_REBEL_CONVERSATION:
-			return init_rebel_yehat_comm ();
+			return init_rebel_yehat_comm();
 		case YEHAT_CONVERSATION:
-			return init_yehat_comm ();
+			return init_yehat_comm();
 		case ZOQFOTPIK_CONVERSATION:
-			return init_zoqfot_comm ();
+			return init_zoqfot_comm();
 		default:
-			return init_chmmr_comm ();
+			return init_chmmr_comm();
 	}
 }
 
 RESPONSE_REF
-phraseIdStrToNum(const char *phraseIdStr)
+phraseIdStrToNum(const char* phraseIdStr)
 {
-	STRING phrase = GetStringByName (GetStringTable(
-			CommData.ConversationPhrases), phraseIdStr);
+	STRING phrase = GetStringByName(GetStringTable(
+										CommData.ConversationPhrases),
+									phraseIdStr);
 	if (phrase == NULL)
-		return (RESPONSE_REF) -1;
+		return (RESPONSE_REF)-1;
 
-	return GetStringTableIndex (phrase) + 1;
-			// Index 0 is for NULL_PHRASE, hence the '+ 1"
+	return GetStringTableIndex(phrase) + 1;
+	// Index 0 is for NULL_PHRASE, hence the '+ 1"
 }
 
-const char *
-phraseIdNumToStr (RESPONSE_REF response)
+const char*
+phraseIdNumToStr(RESPONSE_REF response)
 {
-	STRING phrase = SetAbsStringTableIndex (
-			CommData.ConversationPhrases, response - 1);
-			// Index 0 is for NULL_PHRASE, hence the '- 1'.
+	STRING phrase = SetAbsStringTableIndex(
+		CommData.ConversationPhrases, response - 1);
+	// Index 0 is for NULL_PHRASE, hence the '- 1'.
 	if (phrase == NULL)
 		return NULL;
-	return GetStringName (phrase);
+	return GetStringName(phrase);
 }
-

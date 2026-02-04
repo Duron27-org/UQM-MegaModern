@@ -29,18 +29,18 @@
 #include "../setup.h"
 #include "../state.h"
 #include "../sis.h"
-		// for ClearSISRect()
+// for ClearSISRect()
 #include "../grpinfo.h"
 #include "../sounds.h"
 #include "../util.h"
 #include "../hyper.h"
-		// for SaveSisHyperState()
+// for SaveSisHyperState()
 #include "planets.h"
-		// for SaveSolarSysLocation() and tests
+// for SaveSolarSysLocation() and tests
 #include "libs/strlib.h"
 #include "../../options.h"
 #include "libs/graphics/gfx_common.h"
-                // for scaling down devices in HD
+// for scaling down devices in HD
 
 
 // If DEBUG_DEVICES is defined, the device list shown in the game will
@@ -48,24 +48,24 @@
 // devices the player actually possesses.
 //#define DEBUG_DEVICES
 
-#define DEVICE_ICON_WIDTH  RES_SCALE (16)
-#define DEVICE_ICON_HEIGHT RES_SCALE (16)
+#define DEVICE_ICON_WIDTH RES_SCALE(16)
+#define DEVICE_ICON_HEIGHT RES_SCALE(16)
 
-#define DEVICE_ORG_Y       RES_SCALE (33)
-#define DEVICE_SPACING_Y   (DEVICE_ICON_HEIGHT + RES_SCALE (2))
+#define DEVICE_ORG_Y RES_SCALE(33)
+#define DEVICE_SPACING_Y (DEVICE_ICON_HEIGHT + RES_SCALE(2))
 
-#define DEVICE_COL_0       RES_SCALE (4)
-#define DEVICE_COL_1       RES_SCALE (40)
+#define DEVICE_COL_0 RES_SCALE(4)
+#define DEVICE_COL_1 RES_SCALE(40)
 
-#define DEVICE_SEL_ORG_X  (DEVICE_COL_0 + DEVICE_ICON_WIDTH)
-#define DEVICE_SEL_WIDTH  (FIELD_WIDTH + RES_SCALE (2) - DEVICE_SEL_ORG_X)
+#define DEVICE_SEL_ORG_X (DEVICE_COL_0 + DEVICE_ICON_WIDTH)
+#define DEVICE_SEL_WIDTH (FIELD_WIDTH + RES_SCALE(2) - DEVICE_SEL_ORG_X)
 
-#define ICON_OFS_Y         RES_SCALE (1)
-#define NAME_OFS_Y         RES_SCALE (2)
-#define TEXT_BASELINE      RES_SCALE (6)
-#define TEXT_SPACING_Y     RES_SCALE (7)
+#define ICON_OFS_Y RES_SCALE(1)
+#define NAME_OFS_Y RES_SCALE(2)
+#define TEXT_BASELINE RES_SCALE(6)
+#define TEXT_SPACING_Y RES_SCALE(7)
 
-#define MAX_VIS_DEVICES    ((RES_SCALE (129) - DEVICE_ORG_Y) / DEVICE_SPACING_Y)
+#define MAX_VIS_DEVICES ((RES_SCALE(129) - DEVICE_ORG_Y) / DEVICE_SPACING_Y)
 
 
 typedef enum
@@ -78,11 +78,11 @@ typedef enum
 typedef struct
 {
 	uqm::BYTE list[NUM_DEVICES];
-			// List of all devices player has
+	// List of all devices player has
 	uqm::COUNT count;
-			// Number of devices in the list
+	// Number of devices in the list
 	uqm::COUNT topIndex;
-			// Index of the top device displayed
+	// Index of the top device displayed
 } DEVICES_STATE;
 
 
@@ -102,7 +102,7 @@ EraseDevicesBackground (void)
 #endif
 
 static void
-DrawDevice (uqm::COUNT device, uqm::COUNT pos, bool selected)
+DrawDevice(uqm::COUNT device, uqm::COUNT pos, bool selected)
 {
 	RECT r;
 	TEXT t;
@@ -116,30 +116,32 @@ DrawDevice (uqm::COUNT device, uqm::COUNT pos, bool selected)
 
 	// draw line background
 	r.corner.y = DEVICE_ORG_Y + pos * DEVICE_SPACING_Y + NAME_OFS_Y;
-	SetContextForeGroundColor (selected ?
-			DEVICES_SELECTED_BACK_COLOR : DEVICES_BACK_COLOR);
-	DrawFilledRectangle (&r);
+	SetContextForeGroundColor(selected ?
+								  DEVICES_SELECTED_BACK_COLOR :
+								  DEVICES_BACK_COLOR);
+	DrawFilledRectangle(&r);
 
-	if (isPC (optWhichFonts))
-		SetContextFont (TinyFont);
+	if (isPC(optWhichFonts))
+		SetContextFont(TinyFont);
 	else
-		SetContextFont (TinyFontBold);
+		SetContextFont(TinyFontBold);
 
 	// print device name
-	SetContextForeGroundColor (selected ?
-			DEVICES_SELECTED_NAME_COLOR : DEVICES_NAME_COLOR);
+	SetContextForeGroundColor(selected ?
+								  DEVICES_SELECTED_NAME_COLOR :
+								  DEVICES_NAME_COLOR);
 	t.baseline.y = r.corner.y + TEXT_BASELINE;
-	t.pStr = GAME_STRING (device + DEVICE_STRING_BASE + 1);
-	t.CharCount = utf8StringPos (t.pStr, ' ');
-	font_DrawText (&t);
+	t.pStr = GAME_STRING(device + DEVICE_STRING_BASE + 1);
+	t.CharCount = utf8StringPos(t.pStr, ' ');
+	font_DrawText(&t);
 	t.baseline.y += TEXT_SPACING_Y;
-	t.pStr = skipUTF8Chars (t.pStr, t.CharCount + 1);
+	t.pStr = skipUTF8Chars(t.pStr, t.CharCount + 1);
 	t.CharCount = (uqm::COUNT)~0;
-	font_DrawText (&t);
+	font_DrawText(&t);
 }
 
 static void
-DrawDevicesDisplay (DEVICES_STATE *devState)
+DrawDevicesDisplay(DEVICES_STATE* devState)
 {
 	TEXT t;
 	RECT r;
@@ -147,29 +149,29 @@ DrawDevicesDisplay (DEVICES_STATE *devState)
 	COORD cy;
 	uqm::COUNT i;
 
-	r.corner.x = RES_SCALE (2);
-	r.corner.y = RES_SCALE (20);
-	r.extent.width = FIELD_WIDTH + RES_SCALE (1);
+	r.corner.x = RES_SCALE(2);
+	r.corner.y = RES_SCALE(20);
+	r.extent.width = FIELD_WIDTH + RES_SCALE(1);
 	// XXX: Shouldn't the height be 1 less? This draws the bottom border
 	//   1 pixel too low. Or if not, why do we need another box anyway?
-	r.extent.height = (RES_SCALE (129) - r.corner.y);
+	r.extent.height = (RES_SCALE(129) - r.corner.y);
 
 	if (!optCustomBorder && !IS_HD)
-		DrawStarConBox (&r, RES_SCALE (1),
-				SHADOWBOX_MEDIUM_COLOR, SHADOWBOX_DARK_COLOR,
-				true, DEVICES_BACK_COLOR, false, TRANSPARENT);
+		DrawStarConBox(&r, RES_SCALE(1),
+					   SHADOWBOX_MEDIUM_COLOR, SHADOWBOX_DARK_COLOR,
+					   true, DEVICES_BACK_COLOR, false, TRANSPARENT);
 	else
-		DrawBorder (DEVICE_CARGO_FRAME);
+		DrawBorder(DEVICE_CARGO_FRAME);
 
 	// print the "DEVICES" title
-	SetContextFont (StarConFont);
-	t.baseline.x = (STATUS_WIDTH >> 1) - RES_SCALE (1);
-	t.baseline.y = r.corner.y + RES_SCALE (7);
+	SetContextFont(StarConFont);
+	t.baseline.x = (STATUS_WIDTH >> 1) - RES_SCALE(1);
+	t.baseline.y = r.corner.y + RES_SCALE(7);
 	t.align = ALIGN_CENTER;
-	t.pStr = GAME_STRING (DEVICE_STRING_BASE);
+	t.pStr = GAME_STRING(DEVICE_STRING_BASE);
 	t.CharCount = (uqm::COUNT)~0;
-	SetContextForeGroundColor (DEVICES_SELECTED_NAME_COLOR);
-	font_DrawText (&t);
+	SetContextForeGroundColor(DEVICES_SELECTED_NAME_COLOR);
+	font_DrawText(&t);
 
 	s.origin.x = DEVICE_COL_0;
 	cy = DEVICE_ORG_Y;
@@ -184,81 +186,81 @@ DrawDevicesDisplay (DEVICES_STATE *devState)
 
 		// draw device icon
 		s.origin.y = cy + ICON_OFS_Y;
-		s.frame = SetAbsFrameIndex (MiscDataFrame,
-				77 + devState->list[devIndex]);
-		
-		DrawStamp (&s);
+		s.frame = SetAbsFrameIndex(MiscDataFrame,
+								   77 + devState->list[devIndex]);
 
-		DrawDevice (devState->list[devIndex], i, false);
+		DrawStamp(&s);
+
+		DrawDevice(devState->list[devIndex], i, false);
 	}
 }
 
 static void
-DrawDevices (DEVICES_STATE *devState, uqm::COUNT OldDevice, uqm::COUNT NewDevice)
+DrawDevices(DEVICES_STATE* devState, uqm::COUNT OldDevice, uqm::COUNT NewDevice)
 {
-	BatchGraphics ();
+	BatchGraphics();
 
-	SetContext (StatusContext);
+	SetContext(StatusContext);
 
 	if (OldDevice > NUM_DEVICES)
-	{	// Asked for the initial display or refresh
-		DrawDevicesDisplay (devState);
+	{ // Asked for the initial display or refresh
+		DrawDevicesDisplay(devState);
 
 		// do not draw unselected again this time
 		OldDevice = NewDevice;
 	}
 
 	if (OldDevice != NewDevice)
-	{	// unselect the previous element
-		DrawDevice (devState->list[OldDevice], OldDevice - devState->topIndex,
-				false);
+	{ // unselect the previous element
+		DrawDevice(devState->list[OldDevice], OldDevice - devState->topIndex,
+				   false);
 	}
 
 	if (NewDevice < NUM_DEVICES)
-	{	// select the new element
-		DrawDevice (devState->list[NewDevice], NewDevice - devState->topIndex,
-				true);
+	{ // select the new element
+		DrawDevice(devState->list[NewDevice], NewDevice - devState->topIndex,
+				   true);
 	}
 
-	UnbatchGraphics ();
+	UnbatchGraphics();
 }
 
 // Returns true if the broadcaster has been successfully activated,
 // and false otherwise.
 static bool
-UseCaster (void)
+UseCaster(void)
 {
-	if (inHQSpace ())
+	if (inHQSpace())
 	{
-		if (GET_GAME_STATE (ARILOU_SPACE_SIDE) <= 1)
+		if (GET_GAME_STATE(ARILOU_SPACE_SIDE) <= 1)
 		{
-			SET_GAME_STATE (USED_BROADCASTER, 1);
+			SET_GAME_STATE(USED_BROADCASTER, 1);
 			return true;
 		}
 		return false;
 	}
 
-	if (lowByte (GLOBAL (CurrentActivity)) != IN_INTERPLANETARY
-			|| !playerInSolarSystem ())
+	if (lowByte(GLOBAL(CurrentActivity)) != IN_INTERPLANETARY
+		|| !playerInSolarSystem())
 		return false;
 
-	if (playerInPlanetOrbit ()
-			&& matchWorld (pSolarSysState, pSolarSysState->pOrbitalDesc,
-					MATCH_PBYTE, MATCH_PLANET)
-			&& CurStarDescPtr->Index == CHMMR_DEFINED
-			&& !GET_GAME_STATE (CHMMR_UNLEASHED))
+	if (playerInPlanetOrbit()
+		&& matchWorld(pSolarSysState, pSolarSysState->pOrbitalDesc,
+					  MATCH_PBYTE, MATCH_PLANET)
+		&& CurStarDescPtr->Index == CHMMR_DEFINED
+		&& !GET_GAME_STATE(CHMMR_UNLEASHED))
 	{
 		// In orbit around the Chenjesu/Mmrnmhrm home planet.
-		NextActivity |= CHECK_LOAD;  /* fake a load game */
-		GLOBAL (CurrentActivity) |= START_ENCOUNTER;
+		NextActivity |= CHECK_LOAD; /* fake a load game */
+		GLOBAL(CurrentActivity) |= START_ENCOUNTER;
 
 		EncounterGroup = 0;
-		PutGroupInfo (GROUPS_RANDOM, GROUP_SAVE_IP);
-		ReinitQueue (&GLOBAL (ip_group_q));
-		assert (CountLinks (&GLOBAL (npc_built_ship_q)) == 0);
+		PutGroupInfo(GROUPS_RANDOM, GROUP_SAVE_IP);
+		ReinitQueue(&GLOBAL(ip_group_q));
+		assert(CountLinks(&GLOBAL(npc_built_ship_q)) == 0);
 
-		SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, 1 << 7);
-		SaveSolarSysLocation ();
+		SET_GAME_STATE(GLOBAL_FLAGS_AND_DATA, 1 << 7);
+		SaveSolarSysLocation();
 		return true;
 	}
 
@@ -267,43 +269,42 @@ UseCaster (void)
 		HIPGROUP hGroup;
 
 		FoundIlwrath = (CurStarDescPtr->Index == ILWRATH_DEFINED)
-				&& StartSphereTracking (ILWRATH_SHIP);
-				// In the Ilwrath home system and they are alive?
+					&& StartSphereTracking(ILWRATH_SHIP);
+		// In the Ilwrath home system and they are alive?
 
-		if (!FoundIlwrath &&
-				(hGroup = GetHeadLink (&GLOBAL (ip_group_q))))
+		if (!FoundIlwrath && (hGroup = GetHeadLink(&GLOBAL(ip_group_q))))
 		{
 			// Is an Ilwrath ship in the system?
-			IP_GROUP *GroupPtr;
+			IP_GROUP* GroupPtr;
 
-			GroupPtr = LockIpGroup (&GLOBAL (ip_group_q), hGroup);
+			GroupPtr = LockIpGroup(&GLOBAL(ip_group_q), hGroup);
 			FoundIlwrath = (GroupPtr->race_id == ILWRATH_SHIP);
-			UnlockIpGroup (&GLOBAL (ip_group_q), hGroup);
+			UnlockIpGroup(&GLOBAL(ip_group_q), hGroup);
 		}
 
 		if (FoundIlwrath)
 		{
 			NextActivity |= CHECK_LOAD; /* fake a load game */
-			GLOBAL (CurrentActivity) |= START_ENCOUNTER;
+			GLOBAL(CurrentActivity) |= START_ENCOUNTER;
 
 			EncounterGroup = 0;
-			PutGroupInfo (GROUPS_RANDOM, GROUP_SAVE_IP);
-			ReinitQueue (&GLOBAL (ip_group_q));
-			assert (CountLinks (&GLOBAL (npc_built_ship_q)) == 0);
+			PutGroupInfo(GROUPS_RANDOM, GROUP_SAVE_IP);
+			ReinitQueue(&GLOBAL(ip_group_q));
+			assert(CountLinks(&GLOBAL(npc_built_ship_q)) == 0);
 
 			if (CurStarDescPtr->Index == ILWRATH_DEFINED)
 			{
 				// Ilwrath home system.
-				SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, 1 << 4);
+				SET_GAME_STATE(GLOBAL_FLAGS_AND_DATA, 1 << 4);
 			}
 			else
 			{
 				// Ilwrath ship.
-				SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, 1 << 5);
+				SET_GAME_STATE(GLOBAL_FLAGS_AND_DATA, 1 << 5);
 			}
-			
-			if (playerInPlanetOrbit ())
-				SaveSolarSysLocation ();
+
+			if (playerInPlanetOrbit())
+				SaveSolarSysLocation();
 			return true;
 		}
 	}
@@ -312,20 +313,20 @@ UseCaster (void)
 }
 
 static DeviceStatus
-InvokeDevice (uqm::BYTE which_device)
+InvokeDevice(uqm::BYTE which_device)
 {
 	uqm::BYTE val;
 
 	switch (which_device)
 	{
 		case ROSY_SPHERE_DEVICE:
-			val = GET_GAME_STATE (ULTRON_CONDITION);
+			val = GET_GAME_STATE(ULTRON_CONDITION);
 			if (val)
 			{
-				SET_GAME_STATE (ULTRON_CONDITION, val + 1);
-				SET_GAME_STATE (ROSY_SPHERE_ON_SHIP, 0);
-				SET_GAME_STATE (DISCUSSED_ULTRON, 0);
-				SET_GAME_STATE (SUPOX_ULTRON_HELP, 0);
+				SET_GAME_STATE(ULTRON_CONDITION, val + 1);
+				SET_GAME_STATE(ROSY_SPHERE_ON_SHIP, 0);
+				SET_GAME_STATE(DISCUSSED_ULTRON, 0);
+				SET_GAME_STATE(SUPOX_ULTRON_HELP, 0);
 				return DEVICE_SUCCESS;
 			}
 			break;
@@ -334,40 +335,40 @@ InvokeDevice (uqm::BYTE which_device)
 		case GLOWING_ROD_DEVICE:
 			break;
 		case SUN_EFFICIENCY_DEVICE:
-			if (lowByte (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY
-					&& playerInPlanetOrbit ())
+			if (lowByte(GLOBAL(CurrentActivity)) == IN_INTERPLANETARY
+				&& playerInPlanetOrbit())
 			{
-				PlayMenuSound (MENU_SOUND_INVOKED);
-				SleepThreadUntil (FadeScreen (FadeAllToWhite, ONE_SECOND * 1)
-						+ (ONE_SECOND * 2));
+				PlayMenuSound(MENU_SOUND_INVOKED);
+				SleepThreadUntil(FadeScreen(FadeAllToWhite, ONE_SECOND * 1)
+								 + (ONE_SECOND * 2));
 				if (CurStarDescPtr->Index != CHMMR_DEFINED
-						|| !matchWorld (pSolarSysState,
-								pSolarSysState->pOrbitalDesc,
-								MATCH_PBYTE, MATCH_PLANET))
+					|| !matchWorld(pSolarSysState,
+								   pSolarSysState->pOrbitalDesc,
+								   MATCH_PBYTE, MATCH_PLANET))
 				{
-					FadeScreen (FadeAllToColor, ONE_SECOND * 2);
+					FadeScreen(FadeAllToColor, ONE_SECOND * 2);
 				}
 				else
 				{
-					SET_GAME_STATE (CHMMR_EMERGING, 1);
+					SET_GAME_STATE(CHMMR_EMERGING, 1);
 
 					EncounterGroup = 0;
-					GLOBAL (CurrentActivity) |= START_ENCOUNTER;
+					GLOBAL(CurrentActivity) |= START_ENCOUNTER;
 
-					PutGroupInfo (GROUPS_RANDOM, GROUP_SAVE_IP);
-					ReinitQueue (&GLOBAL (ip_group_q));
-					assert (CountLinks (&GLOBAL (npc_built_ship_q)) == 0);
+					PutGroupInfo(GROUPS_RANDOM, GROUP_SAVE_IP);
+					ReinitQueue(&GLOBAL(ip_group_q));
+					assert(CountLinks(&GLOBAL(npc_built_ship_q)) == 0);
 
-					CloneShipFragment (CHMMR_SHIP,
-							&GLOBAL (npc_built_ship_q), 0);
+					CloneShipFragment(CHMMR_SHIP,
+									  &GLOBAL(npc_built_ship_q), 0);
 				}
 				return DEVICE_SUCCESS_NO_SOUND;
 			}
 			break;
 		case UTWIG_BOMB_DEVICE:
-			SET_GAME_STATE (UTWIG_BOMB, 0);
-			GLOBAL (CurrentActivity) &= ~IN_BATTLE;
-			GLOBAL_SIS (CrewEnlisted) = (uqm::COUNT)~0;
+			SET_GAME_STATE(UTWIG_BOMB, 0);
+			GLOBAL(CurrentActivity) &= ~IN_BATTLE;
+			GLOBAL_SIS(CrewEnlisted) = (uqm::COUNT)~0;
 			DeathBySuicide = true;
 			return DEVICE_SUCCESS;
 		case ULTRON_0_DEVICE:
@@ -382,63 +383,63 @@ InvokeDevice (uqm::BYTE which_device)
 			break;
 		case TALKING_PET_DEVICE:
 			NextActivity |= CHECK_LOAD; /* fake a load game */
-			GLOBAL (CurrentActivity) |= START_ENCOUNTER;
-			SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, 0);
-			if (inHQSpace ())
+			GLOBAL(CurrentActivity) |= START_ENCOUNTER;
+			SET_GAME_STATE(GLOBAL_FLAGS_AND_DATA, 0);
+			if (inHQSpace())
 			{
-				if (GetHeadEncounter ())
+				if (GetHeadEncounter())
 				{
-					SET_GAME_STATE (SHIP_TO_COMPEL, 1);
+					SET_GAME_STATE(SHIP_TO_COMPEL, 1);
 				}
-				GLOBAL (CurrentActivity) &= ~IN_BATTLE;
+				GLOBAL(CurrentActivity) &= ~IN_BATTLE;
 
-				SaveSisHyperState ();
+				SaveSisHyperState();
 			}
 			else
 			{
 				EncounterGroup = 0;
-				if (GetHeadLink (&GLOBAL (ip_group_q)))
+				if (GetHeadLink(&GLOBAL(ip_group_q)))
 				{
-					SET_GAME_STATE (SHIP_TO_COMPEL, 1);
+					SET_GAME_STATE(SHIP_TO_COMPEL, 1);
 
-					PutGroupInfo (GROUPS_RANDOM, GROUP_SAVE_IP);
-					ReinitQueue (&GLOBAL (ip_group_q));
-					assert (CountLinks (&GLOBAL (npc_built_ship_q)) == 0);
+					PutGroupInfo(GROUPS_RANDOM, GROUP_SAVE_IP);
+					ReinitQueue(&GLOBAL(ip_group_q));
+					assert(CountLinks(&GLOBAL(npc_built_ship_q)) == 0);
 				}
 
 				if (CurStarDescPtr->Index == SAMATRA_DEFINED)
 				{
-					SET_GAME_STATE (READY_TO_CONFUSE_URQUAN, 1);
+					SET_GAME_STATE(READY_TO_CONFUSE_URQUAN, 1);
 				}
-				if (playerInPlanetOrbit ())
-					SaveSolarSysLocation ();
+				if (playerInPlanetOrbit())
+					SaveSolarSysLocation();
 			}
 			return DEVICE_SUCCESS;
 		case AQUA_HELIX_DEVICE:
-			val = GET_GAME_STATE (ULTRON_CONDITION);
+			val = GET_GAME_STATE(ULTRON_CONDITION);
 			if (val)
 			{
-				SET_GAME_STATE (ULTRON_CONDITION, val + 1);
-				SET_GAME_STATE (AQUA_HELIX_ON_SHIP, 0);
-				SET_GAME_STATE (DISCUSSED_ULTRON, 0);
-				SET_GAME_STATE (SUPOX_ULTRON_HELP, 0);
+				SET_GAME_STATE(ULTRON_CONDITION, val + 1);
+				SET_GAME_STATE(AQUA_HELIX_ON_SHIP, 0);
+				SET_GAME_STATE(DISCUSSED_ULTRON, 0);
+				SET_GAME_STATE(SUPOX_ULTRON_HELP, 0);
 				return DEVICE_SUCCESS;
 			}
 			break;
 		case CLEAR_SPINDLE_DEVICE:
-			val = GET_GAME_STATE (ULTRON_CONDITION);
+			val = GET_GAME_STATE(ULTRON_CONDITION);
 			if (val)
 			{
-				SET_GAME_STATE (ULTRON_CONDITION, val + 1);
-				SET_GAME_STATE (CLEAR_SPINDLE_ON_SHIP, 0);
-				SET_GAME_STATE (DISCUSSED_ULTRON, 0);
-				SET_GAME_STATE (SUPOX_ULTRON_HELP, 0);
+				SET_GAME_STATE(ULTRON_CONDITION, val + 1);
+				SET_GAME_STATE(CLEAR_SPINDLE_ON_SHIP, 0);
+				SET_GAME_STATE(DISCUSSED_ULTRON, 0);
+				SET_GAME_STATE(SUPOX_ULTRON_HELP, 0);
 				return DEVICE_SUCCESS;
 			}
 			break;
 		case UMGAH_HYPERWAVE_DEVICE:
 		case BURVIX_HYPERWAVE_DEVICE:
-			if (UseCaster ())
+			if (UseCaster())
 				return DEVICE_SUCCESS;
 			break;
 		case TAALO_PROTECTOR_DEVICE:
@@ -455,25 +456,25 @@ InvokeDevice (uqm::BYTE which_device)
 			break;
 		case PORTAL_SPAWNER_DEVICE:
 #define PORTAL_FUEL_COST (DIF_CASE(10, 5, 20) * FUEL_TANK_SCALE)
-			if ((inHyperSpace () || (EXTENDED && inHQSpace ()))
-					&& GLOBAL_SIS (FuelOnBoard) >= (uqm::DWORD)PORTAL_FUEL_COST)
+			if ((inHyperSpace() || (EXTENDED && inHQSpace()))
+				&& GLOBAL_SIS(FuelOnBoard) >= (uqm::DWORD)PORTAL_FUEL_COST)
 			{
 				/* No DeltaSISGauges because the flagship picture
 				 * is currently obscured.
 				 */
 				if (!optInfiniteFuel
-						|| (EXTENDED && !optInfiniteFuel
-						&& inHyperSpace ()))
-					GLOBAL_SIS (FuelOnBoard) -= PORTAL_FUEL_COST;
+					|| (EXTENDED && !optInfiniteFuel
+						&& inHyperSpace()))
+					GLOBAL_SIS(FuelOnBoard) -= PORTAL_FUEL_COST;
 
-				if (EXTENDED && inHyperSpace ())
+				if (EXTENDED && inHyperSpace())
 				{
-					SaveLastLoc (MAKE_POINT (
-							LOGX_TO_UNIVERSE (GLOBAL_SIS (log_x)),
-							LOGY_TO_UNIVERSE (GLOBAL_SIS (log_y))));
+					SaveLastLoc(MAKE_POINT(
+						LOGX_TO_UNIVERSE(GLOBAL_SIS(log_x)),
+						LOGY_TO_UNIVERSE(GLOBAL_SIS(log_y))));
 				}
 
-				SET_GAME_STATE (PORTAL_COUNTER, 1);
+				SET_GAME_STATE(PORTAL_COUNTER, 1);
 				return DEVICE_SUCCESS;
 			}
 			break;
@@ -486,35 +487,33 @@ InvokeDevice (uqm::BYTE which_device)
 	return DEVICE_FAILURE;
 }
 
-bool
-InvokeSpawner (void)
+bool InvokeSpawner(void)
 {
-	DeviceStatus status = InvokeDevice (PORTAL_SPAWNER_DEVICE);
+	DeviceStatus status = InvokeDevice(PORTAL_SPAWNER_DEVICE);
 	if (status == DEVICE_FAILURE)
-		PlayMenuSound (MENU_SOUND_FAILURE);
+		PlayMenuSound(MENU_SOUND_FAILURE);
 	else if (status == DEVICE_SUCCESS)
-		PlayMenuSound (MENU_SOUND_INVOKED);
+		PlayMenuSound(MENU_SOUND_INVOKED);
 
 	return (status == DEVICE_FAILURE);
 }
 
 static bool
-DoManipulateDevices (MENU_STATE *pMS)
+DoManipulateDevices(MENU_STATE* pMS)
 {
-	DEVICES_STATE *devState = (DEVICES_STATE*)pMS->privData;
+	DEVICES_STATE* devState = (DEVICES_STATE*)pMS->privData;
 	bool select, cancel, back, forward;
 	bool pagefwd, pageback;
-	
+
 	select = PulsedInputState.menu[KEY_MENU_SELECT];
 	cancel = PulsedInputState.menu[KEY_MENU_CANCEL];
-	back = PulsedInputState.menu[KEY_MENU_UP] ||
-			PulsedInputState.menu[KEY_MENU_LEFT];
+	back = PulsedInputState.menu[KEY_MENU_UP] || PulsedInputState.menu[KEY_MENU_LEFT];
 	forward = PulsedInputState.menu[KEY_MENU_DOWN]
-			|| PulsedInputState.menu[KEY_MENU_RIGHT];
+		   || PulsedInputState.menu[KEY_MENU_RIGHT];
 	pagefwd = PulsedInputState.menu[KEY_MENU_PAGE_DOWN];
 	pageback = PulsedInputState.menu[KEY_MENU_PAGE_UP];
 
-	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
+	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
 		return false;
 
 	if (cancel)
@@ -525,11 +524,11 @@ DoManipulateDevices (MENU_STATE *pMS)
 	{
 		DeviceStatus status;
 
-		status = InvokeDevice (devState->list[pMS->CurState]);
+		status = InvokeDevice(devState->list[pMS->CurState]);
 		if (status == DEVICE_FAILURE)
-			PlayMenuSound (MENU_SOUND_FAILURE);
+			PlayMenuSound(MENU_SOUND_FAILURE);
 		else if (status == DEVICE_SUCCESS)
-			PlayMenuSound (MENU_SOUND_INVOKED);
+			PlayMenuSound(MENU_SOUND_INVOKED);
 
 		return (status == DEVICE_FAILURE);
 	}
@@ -540,7 +539,7 @@ DoManipulateDevices (MENU_STATE *pMS)
 
 		NewTop = devState->topIndex;
 		NewState = pMS->CurState;
-		
+
 		if (back)
 			--NewState;
 		else if (forward)
@@ -561,13 +560,13 @@ DoManipulateDevices (MENU_STATE *pMS)
 		if (NewState != pMS->CurState)
 		{
 			if (NewTop != devState->topIndex)
-			{	// redraw the display
+			{ // redraw the display
 				devState->topIndex = NewTop;
-				DrawDevices (devState, (uqm::COUNT)~0, NewState);
+				DrawDevices(devState, (uqm::COUNT)~0, NewState);
 			}
 			else
-			{	// move selection to new device
-				DrawDevices (devState, pMS->CurState, NewState);
+			{ // move selection to new device
+				DrawDevices(devState, pMS->CurState, NewState);
 			}
 			pMS->CurState = NewState;
 		}
@@ -577,11 +576,11 @@ DoManipulateDevices (MENU_STATE *pMS)
 }
 
 uqm::SIZE
-InventoryDevices (uqm::BYTE *pDeviceMap, uqm::COUNT Size)
+InventoryDevices(uqm::BYTE* pDeviceMap, uqm::COUNT Size)
 {
 	uqm::BYTE i;
 	uqm::SIZE DevicesOnBoard;
-	
+
 	DevicesOnBoard = 0;
 	for (i = 0; i < NUM_DEVICES && Size > 0; ++i)
 	{
@@ -591,81 +590,81 @@ InventoryDevices (uqm::BYTE *pDeviceMap, uqm::COUNT Size)
 		switch (i)
 		{
 			case ROSY_SPHERE_DEVICE:
-				DeviceState = GET_GAME_STATE (ROSY_SPHERE_ON_SHIP);
+				DeviceState = GET_GAME_STATE(ROSY_SPHERE_ON_SHIP);
 				break;
 			case WIMBLIS_TRIDENT_DEVICE:
-				DeviceState = GET_GAME_STATE (WIMBLIS_TRIDENT_ON_SHIP);
+				DeviceState = GET_GAME_STATE(WIMBLIS_TRIDENT_ON_SHIP);
 				break;
 			case GLOWING_ROD_DEVICE:
-				DeviceState = GET_GAME_STATE (GLOWING_ROD_ON_SHIP);
+				DeviceState = GET_GAME_STATE(GLOWING_ROD_ON_SHIP);
 				break;
 			case SUN_EFFICIENCY_DEVICE:
-				DeviceState = GET_GAME_STATE (SUN_DEVICE_ON_SHIP);
+				DeviceState = GET_GAME_STATE(SUN_DEVICE_ON_SHIP);
 				break;
 			case UTWIG_BOMB_DEVICE:
-				DeviceState = GET_GAME_STATE (UTWIG_BOMB_ON_SHIP);
+				DeviceState = GET_GAME_STATE(UTWIG_BOMB_ON_SHIP);
 				break;
 			case ULTRON_0_DEVICE:
-				DeviceState = (GET_GAME_STATE (ULTRON_CONDITION) == 1);
+				DeviceState = (GET_GAME_STATE(ULTRON_CONDITION) == 1);
 				break;
 			case ULTRON_1_DEVICE:
-				DeviceState = (GET_GAME_STATE (ULTRON_CONDITION) == 2);
+				DeviceState = (GET_GAME_STATE(ULTRON_CONDITION) == 2);
 				break;
 			case ULTRON_2_DEVICE:
-				DeviceState = (GET_GAME_STATE (ULTRON_CONDITION) == 3);
+				DeviceState = (GET_GAME_STATE(ULTRON_CONDITION) == 3);
 				break;
 			case ULTRON_3_DEVICE:
-				DeviceState = (GET_GAME_STATE (ULTRON_CONDITION) == 4);
+				DeviceState = (GET_GAME_STATE(ULTRON_CONDITION) == 4);
 				break;
 			case MAIDENS_DEVICE:
-				DeviceState = GET_GAME_STATE (MAIDENS_ON_SHIP);
+				DeviceState = GET_GAME_STATE(MAIDENS_ON_SHIP);
 				break;
 			case TALKING_PET_DEVICE:
-				DeviceState = GET_GAME_STATE (TALKING_PET_ON_SHIP);
+				DeviceState = GET_GAME_STATE(TALKING_PET_ON_SHIP);
 				break;
 			case AQUA_HELIX_DEVICE:
-				DeviceState = GET_GAME_STATE (AQUA_HELIX_ON_SHIP);
+				DeviceState = GET_GAME_STATE(AQUA_HELIX_ON_SHIP);
 				break;
 			case CLEAR_SPINDLE_DEVICE:
-				DeviceState = GET_GAME_STATE (CLEAR_SPINDLE_ON_SHIP);
+				DeviceState = GET_GAME_STATE(CLEAR_SPINDLE_ON_SHIP);
 				break;
 			case UMGAH_HYPERWAVE_DEVICE:
-				DeviceState = GET_GAME_STATE (UMGAH_BROADCASTERS_ON_SHIP);
+				DeviceState = GET_GAME_STATE(UMGAH_BROADCASTERS_ON_SHIP);
 				break;
 			case TAALO_PROTECTOR_DEVICE:
-				DeviceState = GET_GAME_STATE (TAALO_PROTECTOR_ON_SHIP);
+				DeviceState = GET_GAME_STATE(TAALO_PROTECTOR_ON_SHIP);
 				break;
 			case EGG_CASING0_DEVICE:
-				DeviceState = GET_GAME_STATE (EGG_CASE0_ON_SHIP);
+				DeviceState = GET_GAME_STATE(EGG_CASE0_ON_SHIP);
 				break;
 			case EGG_CASING1_DEVICE:
-				DeviceState = GET_GAME_STATE (EGG_CASE1_ON_SHIP);
+				DeviceState = GET_GAME_STATE(EGG_CASE1_ON_SHIP);
 				break;
 			case EGG_CASING2_DEVICE:
-				DeviceState = GET_GAME_STATE (EGG_CASE2_ON_SHIP);
+				DeviceState = GET_GAME_STATE(EGG_CASE2_ON_SHIP);
 				break;
 			case SYREEN_SHUTTLE_DEVICE:
-				DeviceState = GET_GAME_STATE (SYREEN_SHUTTLE_ON_SHIP);
+				DeviceState = GET_GAME_STATE(SYREEN_SHUTTLE_ON_SHIP);
 				break;
 			case VUX_BEAST_DEVICE:
-				DeviceState = GET_GAME_STATE (VUX_BEAST_ON_SHIP);
+				DeviceState = GET_GAME_STATE(VUX_BEAST_ON_SHIP);
 				break;
 			case DESTRUCT_CODE_DEVICE:
 #ifdef NEVER
-				DeviceState = GET_GAME_STATE (DESTRUCT_CODE_ON_SHIP);
+				DeviceState = GET_GAME_STATE(DESTRUCT_CODE_ON_SHIP);
 #endif /* NEVER */
 				break;
 			case PORTAL_SPAWNER_DEVICE:
-				DeviceState = GET_GAME_STATE (PORTAL_SPAWNER_ON_SHIP);
+				DeviceState = GET_GAME_STATE(PORTAL_SPAWNER_ON_SHIP);
 				break;
 			case URQUAN_WARP_DEVICE:
-				DeviceState = GET_GAME_STATE (PORTAL_KEY_ON_SHIP);
+				DeviceState = GET_GAME_STATE(PORTAL_KEY_ON_SHIP);
 				break;
 			case BURVIX_HYPERWAVE_DEVICE:
-				DeviceState = GET_GAME_STATE (BURV_BROADCASTERS_ON_SHIP);
+				DeviceState = GET_GAME_STATE(BURV_BROADCASTERS_ON_SHIP);
 				break;
 			case LUNAR_BASE_DEVICE:
-				DeviceState = GET_GAME_STATE (MOONBASE_ON_SHIP);
+				DeviceState = GET_GAME_STATE(MOONBASE_ON_SHIP);
 				break;
 		}
 
@@ -678,49 +677,47 @@ InventoryDevices (uqm::BYTE *pDeviceMap, uqm::COUNT Size)
 			--Size;
 		}
 	}
-	
+
 	return DevicesOnBoard;
 }
 
-bool
-DevicesMenu (void)
+bool DevicesMenu(void)
 {
 	MENU_STATE MenuState;
 	DEVICES_STATE DevicesState;
 
-	memset (&MenuState, 0, sizeof MenuState);
+	memset(&MenuState, 0, sizeof MenuState);
 	MenuState.privData = &DevicesState;
 
-	memset (&DevicesState, 0, sizeof DevicesState);
+	memset(&DevicesState, 0, sizeof DevicesState);
 
-	DevicesState.count = InventoryDevices (DevicesState.list, NUM_DEVICES);
+	DevicesState.count = InventoryDevices(DevicesState.list, NUM_DEVICES);
 	if (!DevicesState.count)
 		return false;
 
-	DrawDevices (&DevicesState, (uqm::COUNT)~0, MenuState.CurState);
+	DrawDevices(&DevicesState, (uqm::COUNT)~0, MenuState.CurState);
 
-	SetMenuSounds (MENU_SOUND_ARROWS | MENU_SOUND_PAGE,
-			MENU_SOUND_SELECT);
+	SetMenuSounds(MENU_SOUND_ARROWS | MENU_SOUND_PAGE,
+				  MENU_SOUND_SELECT);
 
 	if (optWhichMenu == OPT_PC)
-		DrawMenuStateStrings (PM_ALT_CARGO, 1);
+		DrawMenuStateStrings(PM_ALT_CARGO, 1);
 
 	MenuState.InputFunc = DoManipulateDevices;
-	DoInput (&MenuState, true);
+	DoInput(&MenuState, true);
 
-	SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
+	SetMenuSounds(MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
 
-	if (GLOBAL_SIS (CrewEnlisted) != (uqm::COUNT)~0
-			&& !(GLOBAL (CurrentActivity) & CHECK_ABORT))
+	if (GLOBAL_SIS(CrewEnlisted) != (uqm::COUNT)~0
+		&& !(GLOBAL(CurrentActivity) & CHECK_ABORT))
 	{
-		ClearSISRect (DRAW_SIS_DISPLAY);
+		ClearSISRect(DRAW_SIS_DISPLAY);
 
-		if (!GET_GAME_STATE (PORTAL_COUNTER)
-				&& !(GLOBAL (CurrentActivity) & START_ENCOUNTER)
-				&& GLOBAL_SIS (CrewEnlisted) != (uqm::COUNT)~0)
+		if (!GET_GAME_STATE(PORTAL_COUNTER)
+			&& !(GLOBAL(CurrentActivity) & START_ENCOUNTER)
+			&& GLOBAL_SIS(CrewEnlisted) != (uqm::COUNT)~0)
 			return true;
 	}
-	
+
 	return false;
 }
-

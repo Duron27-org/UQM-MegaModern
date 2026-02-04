@@ -24,43 +24,42 @@
 // Converts a UTF-8 string to Windows WideChar.
 // Caller is responsible for free()ing the returned string.
 static LPWSTR
-toWideChar (const /*UTF-8*/char *str)
+toWideChar(const /*UTF-8*/ char* str)
 {
 	int cch;
 	LPWSTR wstr;
 
-	cch = MultiByteToWideChar (CP_UTF8, 0, str, -1, NULL, 0);
+	cch = MultiByteToWideChar(CP_UTF8, 0, str, -1, NULL, 0);
 	if (cch == 0)
 		return NULL; // failed, probably no UTF8 converter
 
-	wstr = (LPWSTR) malloc (cch * sizeof (WCHAR));
+	wstr = (LPWSTR)malloc(cch * sizeof(WCHAR));
 	if (!wstr)
 		return NULL; // out of memory
 
-	cch = MultiByteToWideChar (CP_UTF8, 0, str, -1, wstr, cch);
+	cch = MultiByteToWideChar(CP_UTF8, 0, str, -1, wstr, cch);
 	if (cch == 0)
-	{	// Failed. It should not fail here if it succeeded just above,
+	{ // Failed. It should not fail here if it succeeded just above,
 		// but it did. Not much can be done about it.
-		free (wstr);
+		free(wstr);
 		return NULL;
 	}
 
 	return wstr;
 }
 
-void
-log_displayBox (const /*UTF-8*/char *title, int isError,
-		const /*UTF-8*/char *msg)
+void log_displayBox(const /*UTF-8*/ char* title, int isError,
+					const /*UTF-8*/ char* msg)
 {
-	LPWSTR swTitle = toWideChar (title);
-	LPWSTR swMsg = toWideChar (msg);
+	LPWSTR swTitle = toWideChar(title);
+	LPWSTR swMsg = toWideChar(msg);
 	UINT uType = isError ? MB_ICONWARNING : MB_ICONINFORMATION;
 
 	if (swTitle && swMsg)
-		MessageBoxW (NULL, swMsg, swTitle, uType);
+		MessageBoxW(NULL, swMsg, swTitle, uType);
 	else // Could not convert; let's try ASCII, though it may look ugly
-		MessageBoxA (NULL, msg, title, uType);
+		MessageBoxA(NULL, msg, title, uType);
 
-	free (swTitle);
-	free (swMsg);
+	free(swTitle);
+	free(swMsg);
 }

@@ -21,21 +21,21 @@
 
 struct tfb_soundchunk
 {
-	TFB_SoundDecoder *decoder;  // decoder for this chunk
-	float start_time;           // relative time from track start
-	int tag_me;                 // set for chunks with subtitles
-	uint32 track_num;           // logical track #, comm code needs this
-	uqm::CHAR_T *text;              // subtitle text
-	CallbackFunction callback;  // comm callback, executed on chunk start
-	struct tfb_soundchunk *next;
+	TFB_SoundDecoder* decoder; // decoder for this chunk
+	float start_time;		   // relative time from track start
+	int tag_me;				   // set for chunks with subtitles
+	uint32 track_num;		   // logical track #, comm code needs this
+	uqm::CHAR_T* text;		   // subtitle text
+	CallbackFunction callback; // comm callback, executed on chunk start
+	struct tfb_soundchunk* next;
 };
 
 typedef struct tfb_soundchunk TFB_SoundChunk;
 
-TFB_SoundChunk *create_SoundChunk (TFB_SoundDecoder *decoder, float start_time);
-void destroy_SoundChunk_list (TFB_SoundChunk *chain);
-TFB_SoundChunk *find_next_page (TFB_SoundChunk *cur);
-TFB_SoundChunk *find_prev_page (TFB_SoundChunk *cur);
+TFB_SoundChunk* create_SoundChunk(TFB_SoundDecoder* decoder, float start_time);
+void destroy_SoundChunk_list(TFB_SoundChunk* chain);
+TFB_SoundChunk* find_next_page(TFB_SoundChunk* cur);
+TFB_SoundChunk* find_prev_page(TFB_SoundChunk* cur);
 
 
 #endif // TRACKINT_H

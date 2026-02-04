@@ -27,9 +27,9 @@ extern "C" {
 
 #include "math/random.h"
 
-extern uqm::COUNT square_root (uqm::DWORD value);
+extern uqm::COUNT square_root(uqm::DWORD value);
 inline uint32_t crc32b(const char* str)
-{	// Source: https://stackoverflow.com/a/21001712
+{ // Source: https://stackoverflow.com/a/21001712
 	unsigned int byte, crc, mask;
 	int i = 0, j;
 
@@ -51,7 +51,7 @@ inline uint32_t crc32b(const char* str)
 }
 
 inline static float
-scaleThing (float original, float thingToScale)
+scaleThing(float original, float thingToScale)
 {
 	return (original / thingToScale);
 }

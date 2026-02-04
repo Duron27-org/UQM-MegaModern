@@ -43,130 +43,129 @@
 #include <stdio.h>
 #include <errno.h>
 
-void (* volatile debugHook) (void) = NULL;
+void (*volatile debugHook)(void) = NULL;
 bool DebugKeyPressed;
 
 // Move the Flagship to the destination of the autopilot.
 // Should only be called from HyperSpace/QuasiSpace.
 // It can be called from debugHook directly after entering HS/QS though.
-void
-doInstantMove (void)
+void doInstantMove(void)
 {
 	// Move to the new location:
-	if ((GLOBAL (autopilot)).x == ~0 || (GLOBAL (autopilot)).y == ~0)
+	if ((GLOBAL(autopilot)).x == ~0 || (GLOBAL(autopilot)).y == ~0)
 	{
 		// If no destination has been selected, use the current location
 		// as the destination.
-		(GLOBAL (autopilot)).x = LOGX_TO_UNIVERSE(GLOBAL_SIS (log_x));
-		(GLOBAL (autopilot)).y = LOGY_TO_UNIVERSE(GLOBAL_SIS (log_y));
+		(GLOBAL(autopilot)).x = LOGX_TO_UNIVERSE(GLOBAL_SIS(log_x));
+		(GLOBAL(autopilot)).y = LOGY_TO_UNIVERSE(GLOBAL_SIS(log_y));
 	}
 	else
 	{
 		// A new destination has been selected.
-		GLOBAL_SIS (log_x) = UNIVERSE_TO_LOGX((GLOBAL (autopilot)).x);
-		GLOBAL_SIS (log_y) = UNIVERSE_TO_LOGY((GLOBAL (autopilot)).y);
+		GLOBAL_SIS(log_x) = UNIVERSE_TO_LOGX((GLOBAL(autopilot)).x);
+		GLOBAL_SIS(log_y) = UNIVERSE_TO_LOGY((GLOBAL(autopilot)).y);
 	}
 
 	// Check for a solar systems at the destination.
-	if (GET_GAME_STATE (ARILOU_SPACE_SIDE) <= 1)
+	if (GET_GAME_STATE(ARILOU_SPACE_SIDE) <= 1)
 	{
 		// If there's a solar system at the destination, enter it.
-		CurStarDescPtr = FindStar (0, &(GLOBAL (autopilot)), 0, 0);
+		CurStarDescPtr = FindStar(0, &(GLOBAL(autopilot)), 0, 0);
 		if (CurStarDescPtr)
 		{
 			// Leave HyperSpace/QuasiSpace if we're there:
-			SET_GAME_STATE (USED_BROADCASTER, 0);
-			GLOBAL (CurrentActivity) &= ~IN_BATTLE;
+			SET_GAME_STATE(USED_BROADCASTER, 0);
+			GLOBAL(CurrentActivity) &= ~IN_BATTLE;
 
 			// Enter IP:
-			GLOBAL (ShipFacing) = 0;
-			GLOBAL (ip_planet) = 0;
-			GLOBAL (in_orbit) = 0;
-					// This causes the ship position in IP to be reset.
-			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
+			GLOBAL(ShipFacing) = 0;
+			GLOBAL(ip_planet) = 0;
+			GLOBAL(in_orbit) = 0;
+			// This causes the ship position in IP to be reset.
+			GLOBAL(CurrentActivity) |= START_INTERPLANETARY;
 		}
 	}
 
 	// Turn off the autopilot:
-	(GLOBAL (autopilot)).x = ~0;
-	(GLOBAL (autopilot)).y = ~0;
+	(GLOBAL(autopilot)).x = ~0;
+	(GLOBAL(autopilot)).y = ~0;
 }
 
 // playerNr should be 0 or 1
 STARSHIP*
-findPlayerShip (uqm::SIZE playerNr)
+findPlayerShip(uqm::SIZE playerNr)
 {
 	HELEMENT hElement, hNextElement;
 
-	for (hElement = GetHeadElement (); hElement; hElement = hNextElement)
+	for (hElement = GetHeadElement(); hElement; hElement = hNextElement)
 	{
-		ELEMENT *ElementPtr;
+		ELEMENT* ElementPtr;
 
-		LockElement (hElement, &ElementPtr);
-		hNextElement = GetSuccElement (ElementPtr);
-					
-		if ((ElementPtr->state_flags & PLAYER_SHIP)	&&
-				ElementPtr->playerNr == playerNr)
+		LockElement(hElement, &ElementPtr);
+		hNextElement = GetSuccElement(ElementPtr);
+
+		if ((ElementPtr->state_flags & PLAYER_SHIP) && ElementPtr->playerNr == playerNr)
 		{
-			STARSHIP *StarShipPtr;
-			GetElementStarShip (ElementPtr, &StarShipPtr);
-			UnlockElement (hElement);
+			STARSHIP* StarShipPtr;
+			GetElementStarShip(ElementPtr, &StarShipPtr);
+			UnlockElement(hElement);
 			return StarShipPtr;
 		}
-		
-		UnlockElement (hElement);
+
+		UnlockElement(hElement);
 	}
 	return NULL;
 }
 
 ////////////////////////////////////////////////////////////////////////////
 
-void
-resetEnergyBattle (void)
+void resetEnergyBattle(void)
 {
-	STARSHIP *StarShipPtr;
+	STARSHIP* StarShipPtr;
 	uqm::COUNT delta;
 	CONTEXT OldContext;
-	
-	if (!(GLOBAL (CurrentActivity) & IN_BATTLE) ||
-			inHQSpace())
+
+	if (!(GLOBAL(CurrentActivity) & IN_BATTLE) || inHQSpace())
 		return;
 
-	if (PlayerControl[1] & HUMAN_CONTROL){
-		StarShipPtr = findPlayerShip (NPC_PLAYER_NUM);
-	} else if (PlayerControl[0] & HUMAN_CONTROL) {
-		StarShipPtr = findPlayerShip (RPG_PLAYER_NUM);
-	} else {
+	if (PlayerControl[1] & HUMAN_CONTROL)
+	{
+		StarShipPtr = findPlayerShip(NPC_PLAYER_NUM);
+	}
+	else if (PlayerControl[0] & HUMAN_CONTROL)
+	{
+		StarShipPtr = findPlayerShip(RPG_PLAYER_NUM);
+	}
+	else
+	{
 		StarShipPtr = NULL;
 	}
 
 	if (StarShipPtr == NULL || StarShipPtr->RaceDescPtr == NULL)
 		return;
 
-	delta = StarShipPtr->RaceDescPtr->ship_info.max_energy -
-			StarShipPtr->RaceDescPtr->ship_info.energy_level;
+	delta = StarShipPtr->RaceDescPtr->ship_info.max_energy - StarShipPtr->RaceDescPtr->ship_info.energy_level;
 
-	OldContext = SetContext (StatusContext);
-	DeltaEnergy ((ELEMENT*)StarShipPtr->hShip, delta);
-	SetContext (OldContext);
+	OldContext = SetContext(StatusContext);
+	DeltaEnergy((ELEMENT*)StarShipPtr->hShip, delta);
+	SetContext(OldContext);
 }
 
 // Kills the opponent of the player controlled ship
 static void
-scuttleOpponent (void)
+scuttleOpponent(void)
 {
-	STARSHIP *StarShipPtr;
+	STARSHIP* StarShipPtr;
 	uqm::COUNT delta;
 	CONTEXT OldContext;
-	
-	if (!(GLOBAL (CurrentActivity) & IN_BATTLE) ||
-			inHQSpace())
+
+	if (!(GLOBAL(CurrentActivity) & IN_BATTLE) || inHQSpace())
 		return;
 
 	if (PlayerControl[1] & HUMAN_CONTROL)
-		StarShipPtr = findPlayerShip (RPG_PLAYER_NUM);
+		StarShipPtr = findPlayerShip(RPG_PLAYER_NUM);
 	else if (PlayerControl[0] & HUMAN_CONTROL)
-		StarShipPtr = findPlayerShip (NPC_PLAYER_NUM);
+		StarShipPtr = findPlayerShip(NPC_PLAYER_NUM);
 	else
 		StarShipPtr = NULL;
 
@@ -177,137 +176,130 @@ scuttleOpponent (void)
 
 	if (delta > 0)
 	{
-		OldContext = SetContext (StatusContext);
-		DeltaCrew ((ELEMENT*)StarShipPtr->hShip, -delta);
-		SetContext (OldContext);
-		ship_death ((ELEMENT*)StarShipPtr->hShip);
+		OldContext = SetContext(StatusContext);
+		DeltaCrew((ELEMENT*)StarShipPtr->hShip, -delta);
+		SetContext(OldContext);
+		ship_death((ELEMENT*)StarShipPtr->hShip);
 	}
 }
 
 // Zeroes out all ship's velocity, freezing them in their tracks
 static void
-HaltShips (void)
+HaltShips(void)
 {
-	STARSHIP *StarShipPtr;
-	ELEMENT *ElementPtr;
+	STARSHIP* StarShipPtr;
+	ELEMENT* ElementPtr;
 	uqm::BYTE i;
 
-	if (!(GLOBAL (CurrentActivity) & IN_BATTLE) ||
-		inHQSpace ())
+	if (!(GLOBAL(CurrentActivity) & IN_BATTLE) || inHQSpace())
 		return;
 
 	for (i = 0; i < 2; i++)
 	{
-		StarShipPtr = findPlayerShip (i);
+		StarShipPtr = findPlayerShip(i);
 
 		if (StarShipPtr == NULL || StarShipPtr->RaceDescPtr == NULL)
 			return;
 
-		LockElement (StarShipPtr->hShip, &ElementPtr);
-		ZeroVelocityComponents (&ElementPtr->velocity);
-		UnlockElement (StarShipPtr->hShip);
+		LockElement(StarShipPtr->hShip, &ElementPtr);
+		ZeroVelocityComponents(&ElementPtr->velocity);
+		UnlockElement(StarShipPtr->hShip);
 	}
 }
 
 #if defined(DEBUG) || defined(USE_DEBUG_KEY)
 
-static void dumpEventCallback (const EVENT *eventPtr, void *arg);
+static void dumpEventCallback(const EVENT* eventPtr, void* arg);
 
-static void starRecurse (STAR_DESC *star, void *arg);
-static void planetRecurse (STAR_DESC *star, SOLARSYS_STATE *system,
-		PLANET_DESC *planet, void *arg);
-static void moonRecurse (STAR_DESC *star, SOLARSYS_STATE *system,
-		PLANET_DESC *planet, PLANET_DESC *moon, void *arg);
+static void starRecurse(STAR_DESC* star, void* arg);
+static void planetRecurse(STAR_DESC* star, SOLARSYS_STATE* system,
+						  PLANET_DESC* planet, void* arg);
+static void moonRecurse(STAR_DESC* star, SOLARSYS_STATE* system,
+						PLANET_DESC* planet, PLANET_DESC* moon, void* arg);
 
-static void dumpSystemCallback (const STAR_DESC *star,
-		const SOLARSYS_STATE *system, void *arg);
-static void dumpPlanetCallback (const PLANET_DESC *planet, void *arg);
-static void dumpMoonCallback (const PLANET_DESC *moon, void *arg);
-static void dumpWorld (FILE *out, const PLANET_DESC *world);
+static void dumpSystemCallback(const STAR_DESC* star,
+							   const SOLARSYS_STATE* system, void* arg);
+static void dumpPlanetCallback(const PLANET_DESC* planet, void* arg);
+static void dumpMoonCallback(const PLANET_DESC* moon, void* arg);
+static void dumpWorld(FILE* out, const PLANET_DESC* world);
 
 typedef struct TallyResourcesArg TallyResourcesArg;
-static void tallySystemPreCallback (const STAR_DESC *star, const
-		SOLARSYS_STATE *system, void *arg);
-static void tallySystemPostCallback (const STAR_DESC *star, const
-		SOLARSYS_STATE *system, void *arg);
-static void tallyPlanetCallback (const PLANET_DESC *planet, void *arg);
-static void tallyMoonCallback (const PLANET_DESC *moon, void *arg);
-static void tallyResourcesWorld (TallyResourcesArg *arg,
-		const PLANET_DESC *world);
+static void tallySystemPreCallback(const STAR_DESC* star, const SOLARSYS_STATE* system, void* arg);
+static void tallySystemPostCallback(const STAR_DESC* star, const SOLARSYS_STATE* system, void* arg);
+static void tallyPlanetCallback(const PLANET_DESC* planet, void* arg);
+static void tallyMoonCallback(const PLANET_DESC* moon, void* arg);
+static void tallyResourcesWorld(TallyResourcesArg* arg,
+								const PLANET_DESC* world);
 
-static void dumpPlanetTypeCallback (int index, const PlanetFrame *planet,
-		void *arg);
+static void dumpPlanetTypeCallback(int index, const PlanetFrame* planet,
+								   void* arg);
 
 bool disableInteractivity = false;
 bool EnableDebugEvents = false;
 
 // Must be called on the Starcon2Main thread.
 // This function is called synchronously wrt the game logic thread.
-void
-debugKeyPressedSynchronous (void)
+void debugKeyPressedSynchronous(void)
 {
 	if (!DebugKeyPressed)
 	{
 		printf("Debug Key Activated\n\n");
-		equipShip ();
-		showSpheres (false);
-		SET_GAME_STATE (KNOW_QS_PORTAL, ~0);
-		SET_GAME_STATE (KNOW_HOMEWORLD, ~0);
+		equipShip();
+		showSpheres(false);
+		SET_GAME_STATE(KNOW_QS_PORTAL, ~0);
+		SET_GAME_STATE(KNOW_HOMEWORLD, ~0);
 	}
 
-	forwardToNextEvent (true);
+	forwardToNextEvent(true);
 
 	if (EnableDebugEvents)
 	{
 		// State modifying:
-		giveDevices ();
+		giveDevices();
 
 		// Give the player the ships you can't ally with under normal
 		// conditions.
-		clearEscorts ();
-		AddEscortShips (ARILOU_SHIP, 1);
-		AddEscortShips (PKUNK_SHIP, 1);
-		AddEscortShips (VUX_SHIP, 1);
-		AddEscortShips (YEHAT_SHIP, 1);
-		AddEscortShips (MELNORME_SHIP, 1);
-		AddEscortShips (DRUUGE_SHIP, 1);
-		AddEscortShips (ILWRATH_SHIP, 1);
-		AddEscortShips (MYCON_SHIP, 1);
-		AddEscortShips (SLYLANDRO_SHIP, 1);
-		AddEscortShips (UMGAH_SHIP, 1);
-		AddEscortShips (URQUAN_SHIP, 1);
-		AddEscortShips (BLACK_URQUAN_SHIP, 1);
+		clearEscorts();
+		AddEscortShips(ARILOU_SHIP, 1);
+		AddEscortShips(PKUNK_SHIP, 1);
+		AddEscortShips(VUX_SHIP, 1);
+		AddEscortShips(YEHAT_SHIP, 1);
+		AddEscortShips(MELNORME_SHIP, 1);
+		AddEscortShips(DRUUGE_SHIP, 1);
+		AddEscortShips(ILWRATH_SHIP, 1);
+		AddEscortShips(MYCON_SHIP, 1);
+		AddEscortShips(SLYLANDRO_SHIP, 1);
+		AddEscortShips(UMGAH_SHIP, 1);
+		AddEscortShips(URQUAN_SHIP, 1);
+		AddEscortShips(BLACK_URQUAN_SHIP, 1);
 
-		resetCrewBattle ();
-		resetEnergyBattle ();
-		activateAllShips ();
-		SET_GAME_STATE (MELNORME_CREDIT1, 100);
-		GLOBAL_SIS (ResUnits) = 100000;
+		resetCrewBattle();
+		resetEnergyBattle();
+		activateAllShips();
+		SET_GAME_STATE(MELNORME_CREDIT1, 100);
+		GLOBAL_SIS(ResUnits) = 100000;
 
 		// Informational:
-		dumpEvents (stderr);
+		dumpEvents(stderr);
 
 		// Graphical and textual:
-		debugContexts ();
+		debugContexts();
 	}
 
 	DebugKeyPressed = true;
 }
 
-void
-debugKey2PressedSynchronous (void)
+void debugKey2PressedSynchronous(void)
 {
-	scuttleOpponent ();
+	scuttleOpponent();
 }
 
-void
-debugKey3PressedSynchronous (void)
+void debugKey3PressedSynchronous(void)
 {
-	HaltShips ();
+	HaltShips();
 }
 
-void
-debugKey4PressedSynchronous (void)
+void debugKey4PressedSynchronous(void)
 {
 }
 
@@ -316,45 +308,41 @@ debugKey4PressedSynchronous (void)
 // which means locking applies. Use carefully.
 // TODO: Once game logic thread is purged of graphics and clock locks,
 //   this function may not call graphics and game clock functions at all.
-void
-debugKeyPressed (void)
+void debugKeyPressed(void)
 {
 	if (EnableDebugEvents)
 	{
-#if	SDL_MAJOR_VERSION == 1
+#if SDL_MAJOR_VERSION == 1
 		// Tests
-		Scale_PerfTest ();
+		Scale_PerfTest();
 #endif
 		// Informational:
-		dumpStrings (stdout);
-		dumpPlanetTypes (stderr);
+		dumpStrings(stdout);
+		dumpPlanetTypes(stderr);
 		debugHook = dumpUniverseToFile;
-				// This will cause dumpUniverseToFile to be called from the
-				// Starcon2Main loop. Calling it from here would give threading
-				// problems.
+		// This will cause dumpUniverseToFile to be called from the
+		// Starcon2Main loop. Calling it from here would give threading
+		// problems.
 		debugHook = tallyResourcesToFile;
-				// This will cause tallyResourcesToFile to be called from the
-				// Starcon2Main loop. Calling it from here would give threading
-				// problems.
+		// This will cause tallyResourcesToFile to be called from the
+		// Starcon2Main loop. Calling it from here would give threading
+		// problems.
 
 		// Interactive:
-		uio_debugInteractive (stdin, stdout, stderr);
-		luaUqm_debug_run ();
+		uio_debugInteractive(stdin, stdout, stderr);
+		luaUqm_debug_run();
 	}
 }
 
-void
-debugKey2Pressed (void)
+void debugKey2Pressed(void)
 {
 }
 
-void
-debugKey3Pressed (void)
+void debugKey3Pressed(void)
 {
 }
 
-void
-debugKey4Pressed (void)
+void debugKey4Pressed(void)
 {
 }
 
@@ -365,98 +353,97 @@ debugKey4Pressed (void)
 // Must be called from the Starcon2Main thread.
 // TODO: LockGameClock may be removed since it is only
 //   supposed to be called synchronously wrt the game logic thread.
-void
-forwardToNextEvent (bool skipHEE)
+void forwardToNextEvent(bool skipHEE)
 {
 	HEVENT hEvent;
-	EVENT *EventPtr;
+	EVENT* EventPtr;
 	uqm::COUNT year, month, day;
-			// time of next event
+	// time of next event
 	bool done;
 
-	if (!GameClockRunning ())
+	if (!GameClockRunning())
 		return;
 
-	LockGameClock ();
+	LockGameClock();
 
 	done = !skipHEE;
-	do {
-		hEvent = GetHeadEvent ();
+	do
+	{
+		hEvent = GetHeadEvent();
 		if (hEvent == 0)
 			return;
-		LockEvent (hEvent, &EventPtr);
+		LockEvent(hEvent, &EventPtr);
 		if (EventPtr->func_index != HYPERSPACE_ENCOUNTER_EVENT)
 			done = true;
 		year = EventPtr->year_index;
 		month = EventPtr->month_index;
 		day = EventPtr->day_index;
-		UnlockEvent (hEvent);
+		UnlockEvent(hEvent);
 
-		for (;;) {
-			if (GLOBAL (GameClock.year_index) > year ||
-					(GLOBAL (GameClock.year_index) == year &&
-					(GLOBAL (GameClock.month_index) > month ||
-					(GLOBAL (GameClock.month_index) == month &&
-					GLOBAL (GameClock.day_index) >= day))))
+		for (;;)
+		{
+			if (GLOBAL(GameClock.year_index) > year || (GLOBAL(GameClock.year_index) == year && (GLOBAL(GameClock.month_index) > month || (GLOBAL(GameClock.month_index) == month && GLOBAL(GameClock.day_index) >= day))))
 				break;
 
-			MoveGameClockDays (1);
+			MoveGameClockDays(1);
 		}
 	} while (!done);
 
-	UnlockGameClock ();
+	UnlockGameClock();
 }
 
-const char *
-eventName (uqm::BYTE func_index)
+const char*
+eventName(uqm::BYTE func_index)
 {
-	switch (func_index) {
-	case ARILOU_ENTRANCE_EVENT:
-		return "ARILOU_ENTRANCE_EVENT";
-	case ARILOU_EXIT_EVENT:
-		return "ARILOU_EXIT_EVENT";
-	case HYPERSPACE_ENCOUNTER_EVENT:
-		return "HYPERSPACE_ENCOUNTER_EVENT";
-	case KOHR_AH_VICTORIOUS_EVENT:
-		return "KOHR_AH_VICTORIOUS_EVENT";
-	case ADVANCE_PKUNK_MISSION:
-		return "ADVANCE_PKUNK_MISSION";
-	case ADVANCE_THRADD_MISSION:
-		return "ADVANCE_THRADD_MISSION";
-	case ZOQFOT_DISTRESS_EVENT:
-		return "ZOQFOT_DISTRESS";
-	case ZOQFOT_DEATH_EVENT:
-		return "ZOQFOT_DEATH_EVENT";
-	case SHOFIXTI_RETURN_EVENT:
-		return "SHOFIXTI_RETURN_EVENT";
-	case ADVANCE_UTWIG_SUPOX_MISSION:
-		return "ADVANCE_UTWIG_SUPOX_MISSION";
-	case KOHR_AH_GENOCIDE_EVENT:
-		return "KOHR_AH_GENOCIDE_EVENT";
-	case SPATHI_SHIELD_EVENT:
-		return "SPATHI_SHIELD_EVENT";
-	case ADVANCE_ILWRATH_MISSION:
-		return "ADVANCE_ILWRATH_MISSION";
-	case ADVANCE_MYCON_MISSION:
-		return "ADVANCE_MYCON_MISSION";
-	case ARILOU_UMGAH_CHECK:
-		return "ARILOU_UMGAH_CHECK";
-	case YEHAT_REBEL_EVENT:
-		return "YEHAT_REBEL_EVENT";
-	case SLYLANDRO_RAMP_UP:
-		return "SLYLANDRO_RAMP_UP";
-	case SLYLANDRO_RAMP_DOWN:
-		return "SLYLANDRO_RAMP_DOWN";
-	default:
-		// Should not happen
-		return "???";
+	switch (func_index)
+	{
+		case ARILOU_ENTRANCE_EVENT:
+			return "ARILOU_ENTRANCE_EVENT";
+		case ARILOU_EXIT_EVENT:
+			return "ARILOU_EXIT_EVENT";
+		case HYPERSPACE_ENCOUNTER_EVENT:
+			return "HYPERSPACE_ENCOUNTER_EVENT";
+		case KOHR_AH_VICTORIOUS_EVENT:
+			return "KOHR_AH_VICTORIOUS_EVENT";
+		case ADVANCE_PKUNK_MISSION:
+			return "ADVANCE_PKUNK_MISSION";
+		case ADVANCE_THRADD_MISSION:
+			return "ADVANCE_THRADD_MISSION";
+		case ZOQFOT_DISTRESS_EVENT:
+			return "ZOQFOT_DISTRESS";
+		case ZOQFOT_DEATH_EVENT:
+			return "ZOQFOT_DEATH_EVENT";
+		case SHOFIXTI_RETURN_EVENT:
+			return "SHOFIXTI_RETURN_EVENT";
+		case ADVANCE_UTWIG_SUPOX_MISSION:
+			return "ADVANCE_UTWIG_SUPOX_MISSION";
+		case KOHR_AH_GENOCIDE_EVENT:
+			return "KOHR_AH_GENOCIDE_EVENT";
+		case SPATHI_SHIELD_EVENT:
+			return "SPATHI_SHIELD_EVENT";
+		case ADVANCE_ILWRATH_MISSION:
+			return "ADVANCE_ILWRATH_MISSION";
+		case ADVANCE_MYCON_MISSION:
+			return "ADVANCE_MYCON_MISSION";
+		case ARILOU_UMGAH_CHECK:
+			return "ARILOU_UMGAH_CHECK";
+		case YEHAT_REBEL_EVENT:
+			return "YEHAT_REBEL_EVENT";
+		case SLYLANDRO_RAMP_UP:
+			return "SLYLANDRO_RAMP_UP";
+		case SLYLANDRO_RAMP_DOWN:
+			return "SLYLANDRO_RAMP_DOWN";
+		default:
+			// Should not happen
+			return "???";
 	}
 }
 
 const char*
-raceName (uqm::BYTE func_index)
+raceName(uqm::BYTE func_index)
 {
-	switch (func_index) {
+	switch (func_index)
+	{
 		case ARILOU_ID:
 			return "Arilou Lalee'lay";
 		case CHMMR_ID:
@@ -514,116 +501,111 @@ raceName (uqm::BYTE func_index)
 }
 
 static void
-dumpEventCallback (const EVENT *eventPtr, void *arg)
+dumpEventCallback(const EVENT* eventPtr, void* arg)
 {
-	FILE *out = (FILE *) arg;
-	dumpEvent (out, eventPtr);
+	FILE* out = (FILE*)arg;
+	dumpEvent(out, eventPtr);
 }
 
-void
-dumpEvent (FILE *out, const EVENT *eventPtr)
+void dumpEvent(FILE* out, const EVENT* eventPtr)
 {
-	fprintf (out, "%4u/%02u/%02u: %s\n",
+	fprintf(out, "%4u/%02u/%02u: %s\n",
 			eventPtr->year_index,
 			eventPtr->month_index,
 			eventPtr->day_index,
-			eventName (eventPtr->func_index));
+			eventName(eventPtr->func_index));
 }
 
-void
-dumpEvents (FILE *out)
+void dumpEvents(FILE* out)
 {
-	LockGameClock ();
-	ForAllEvents (dumpEventCallback, out);
-	UnlockGameClock ();
+	LockGameClock();
+	ForAllEvents(dumpEventCallback, out);
+	UnlockGameClock();
 }
 
 ////////////////////////////////////////////////////////////////////////////
 
 // NB: Ship maximum speed and turning rate aren't updated in
 // HyperSpace/QuasiSpace or in melee.
-void
-equipShip (void)
+void equipShip(void)
 {
 	int i;
 
 	// Don't do anything unless in the full game.
-	if (lowByte (GLOBAL (CurrentActivity)) == SUPER_MELEE)
+	if (lowByte(GLOBAL(CurrentActivity)) == SUPER_MELEE)
 		return;
 
 	// Thrusters:
 	for (i = 0; i < NUM_DRIVE_SLOTS; i++)
-		GLOBAL_SIS (DriveSlots[i]) = FUSION_THRUSTER;
+		GLOBAL_SIS(DriveSlots[i]) = FUSION_THRUSTER;
 
 	// Turning jets:
 	for (i = 0; i < NUM_JET_SLOTS; i++)
-		GLOBAL_SIS (JetSlots[i]) = TURNING_JETS;
+		GLOBAL_SIS(JetSlots[i]) = TURNING_JETS;
 
 	// Shields:
-	SET_GAME_STATE (LANDER_SHIELDS,
-			(1 << EARTHQUAKE_DISASTER) |
-			(1 << BIOLOGICAL_DISASTER) |
-			(1 << LIGHTNING_DISASTER) |
-			(1 << LAVASPOT_DISASTER));
+	SET_GAME_STATE(LANDER_SHIELDS,
+				   (1 << EARTHQUAKE_DISASTER) | (1 << BIOLOGICAL_DISASTER) | (1 << LIGHTNING_DISASTER) | (1 << LAVASPOT_DISASTER));
 	// Lander upgrades:
-	SET_GAME_STATE (IMPROVED_LANDER_SPEED, 1);
-	SET_GAME_STATE (IMPROVED_LANDER_CARGO, 1);
-	SET_GAME_STATE (IMPROVED_LANDER_SHOT, 1);
+	SET_GAME_STATE(IMPROVED_LANDER_SPEED, 1);
+	SET_GAME_STATE(IMPROVED_LANDER_CARGO, 1);
+	SET_GAME_STATE(IMPROVED_LANDER_SHOT, 1);
 
 	// Modules:
-	if (GET_GAME_STATE (CHMMR_BOMB_STATE) < 2)
+	if (GET_GAME_STATE(CHMMR_BOMB_STATE) < 2)
 	{
 		// The Precursor bomb has not been installed.
 		// This is the original TFB testing layout.
 		i = 0;
-		GLOBAL_SIS (ModuleSlots[i++]) = HIGHEFF_FUELSYS;
-		GLOBAL_SIS (ModuleSlots[i++]) = CREW_POD;
-		GLOBAL_SIS (ModuleSlots[i++]) = STORAGE_BAY;
-		GLOBAL_SIS (ModuleSlots[i++]) = STORAGE_BAY;
-		GLOBAL_SIS (ModuleSlots[i++]) = ANTIMISSILE_DEFENSE;
-		GLOBAL_SIS (ModuleSlots[i++]) = TRACKING_SYSTEM;
-		GLOBAL_SIS (ModuleSlots[i++]) = TRACKING_SYSTEM;
-		GLOBAL_SIS (ModuleSlots[i++]) = TRACKING_SYSTEM;
-		GLOBAL_SIS (ModuleSlots[i++]) = DYNAMO_UNIT;
-		GLOBAL_SIS (ModuleSlots[i++]) = DYNAMO_UNIT;
-		GLOBAL_SIS (ModuleSlots[i++]) = DYNAMO_UNIT;
-		GLOBAL_SIS (ModuleSlots[i++]) = SHIVA_FURNACE;
-		GLOBAL_SIS (ModuleSlots[i++]) = SHIVA_FURNACE;
-		GLOBAL_SIS (ModuleSlots[i++]) = SHIVA_FURNACE;
-		GLOBAL_SIS (ModuleSlots[i++]) = CANNON_WEAPON;
-		GLOBAL_SIS (ModuleSlots[i++]) = CANNON_WEAPON;
-		
+		GLOBAL_SIS(ModuleSlots[i++]) = HIGHEFF_FUELSYS;
+		GLOBAL_SIS(ModuleSlots[i++]) = CREW_POD;
+		GLOBAL_SIS(ModuleSlots[i++]) = STORAGE_BAY;
+		GLOBAL_SIS(ModuleSlots[i++]) = STORAGE_BAY;
+		GLOBAL_SIS(ModuleSlots[i++]) = ANTIMISSILE_DEFENSE;
+		GLOBAL_SIS(ModuleSlots[i++]) = TRACKING_SYSTEM;
+		GLOBAL_SIS(ModuleSlots[i++]) = TRACKING_SYSTEM;
+		GLOBAL_SIS(ModuleSlots[i++]) = TRACKING_SYSTEM;
+		GLOBAL_SIS(ModuleSlots[i++]) = DYNAMO_UNIT;
+		GLOBAL_SIS(ModuleSlots[i++]) = DYNAMO_UNIT;
+		GLOBAL_SIS(ModuleSlots[i++]) = DYNAMO_UNIT;
+		GLOBAL_SIS(ModuleSlots[i++]) = SHIVA_FURNACE;
+		GLOBAL_SIS(ModuleSlots[i++]) = SHIVA_FURNACE;
+		GLOBAL_SIS(ModuleSlots[i++]) = SHIVA_FURNACE;
+		GLOBAL_SIS(ModuleSlots[i++]) = CANNON_WEAPON;
+		GLOBAL_SIS(ModuleSlots[i++]) = CANNON_WEAPON;
+
 		// Landers:
-		GLOBAL_SIS (NumLanders) = MAX_LANDERS;
+		GLOBAL_SIS(NumLanders) = MAX_LANDERS;
 	}
 	else
 	{
 		// The Precursor bomb has been installed.
 		i = NUM_BOMB_MODULES;
-		GLOBAL_SIS (ModuleSlots[i++]) = HIGHEFF_FUELSYS;
-		GLOBAL_SIS (ModuleSlots[i++]) = CREW_POD;
-		GLOBAL_SIS (ModuleSlots[i++]) = DYNAMO_UNIT;
-		GLOBAL_SIS (ModuleSlots[i++]) = SHIVA_FURNACE;
-		GLOBAL_SIS (ModuleSlots[i++]) = CANNON_WEAPON;
-		GLOBAL_SIS (ModuleSlots[i++]) = TRACKING_SYSTEM;
+		GLOBAL_SIS(ModuleSlots[i++]) = HIGHEFF_FUELSYS;
+		GLOBAL_SIS(ModuleSlots[i++]) = CREW_POD;
+		GLOBAL_SIS(ModuleSlots[i++]) = DYNAMO_UNIT;
+		GLOBAL_SIS(ModuleSlots[i++]) = SHIVA_FURNACE;
+		GLOBAL_SIS(ModuleSlots[i++]) = CANNON_WEAPON;
+		GLOBAL_SIS(ModuleSlots[i++]) = TRACKING_SYSTEM;
 	}
 
-	assert (i <= NUM_MODULE_SLOTS);
+	assert(i <= NUM_MODULE_SLOTS);
 
 	// Fill the fuel and crew compartments to the maximum.
-	GLOBAL_SIS (FuelOnBoard) = FUEL_RESERVE;
-	GLOBAL_SIS (CrewEnlisted) = 0;
+	GLOBAL_SIS(FuelOnBoard) = FUEL_RESERVE;
+	GLOBAL_SIS(CrewEnlisted) = 0;
 	for (i = 0; i < NUM_MODULE_SLOTS; i++)
 	{
-		switch (GLOBAL_SIS (ModuleSlots[i])) {
+		switch (GLOBAL_SIS(ModuleSlots[i]))
+		{
 			case CREW_POD:
-				GLOBAL_SIS (CrewEnlisted) += CREW_POD_CAPACITY;
+				GLOBAL_SIS(CrewEnlisted) += CREW_POD_CAPACITY;
 				break;
 			case FUEL_TANK:
-				GLOBAL_SIS (FuelOnBoard) += FUEL_TANK_CAPACITY;
+				GLOBAL_SIS(FuelOnBoard) += FUEL_TANK_CAPACITY;
 				break;
 			case HIGHEFF_FUELSYS:
-				GLOBAL_SIS (FuelOnBoard) += HEFUEL_TANK_CAPACITY;
+				GLOBAL_SIS(FuelOnBoard) += HEFUEL_TANK_CAPACITY;
 				break;
 		}
 	}
@@ -634,79 +616,77 @@ equipShip (void)
 		// Thrusters:
 		pSolarSysState->max_ship_speed = 5 * IP_SHIP_THRUST_INCREMENT;
 		for (i = 0; i < NUM_DRIVE_SLOTS; i++)
-			if (GLOBAL_SIS (DriveSlots[i] == FUSION_THRUSTER))
+			if (GLOBAL_SIS(DriveSlots[i] == FUSION_THRUSTER))
 				pSolarSysState->max_ship_speed += IP_SHIP_THRUST_INCREMENT;
 
 		// Turning jets:
 		pSolarSysState->turn_wait = IP_SHIP_TURN_WAIT;
 		for (i = 0; i < NUM_JET_SLOTS; i++)
-			if (GLOBAL_SIS (JetSlots[i]) == TURNING_JETS)
+			if (GLOBAL_SIS(JetSlots[i]) == TURNING_JETS)
 				pSolarSysState->turn_wait -= IP_SHIP_TURN_DECREMENT;
 	}
 
 	// Make sure everything is redrawn:
-	if (inHQSpace () ||
-			lowByte (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY)
+	if (inHQSpace() || lowByte(GLOBAL(CurrentActivity)) == IN_INTERPLANETARY)
 	{
-		DeltaSISGauges (UNDEFINED_DELTA, UNDEFINED_DELTA, UNDEFINED_DELTA);
+		DeltaSISGauges(UNDEFINED_DELTA, UNDEFINED_DELTA, UNDEFINED_DELTA);
 	}
 }
 
 ////////////////////////////////////////////////////////////////////////////
 
-void
-giveDevices (void) {
-	SET_GAME_STATE (ROSY_SPHERE_ON_SHIP, 1);
-	SET_GAME_STATE (WIMBLIS_TRIDENT_ON_SHIP, 1);
-	SET_GAME_STATE (GLOWING_ROD_ON_SHIP, 1);
-	SET_GAME_STATE (SUN_DEVICE_ON_SHIP, 1);
-	SET_GAME_STATE (UTWIG_BOMB_ON_SHIP, 1); 
-	SET_GAME_STATE (UTWIG_BOMB, 1);
-	SET_GAME_STATE (ULTRON_CONDITION, 1);
+void giveDevices(void)
+{
+	SET_GAME_STATE(ROSY_SPHERE_ON_SHIP, 1);
+	SET_GAME_STATE(WIMBLIS_TRIDENT_ON_SHIP, 1);
+	SET_GAME_STATE(GLOWING_ROD_ON_SHIP, 1);
+	SET_GAME_STATE(SUN_DEVICE_ON_SHIP, 1);
+	SET_GAME_STATE(UTWIG_BOMB_ON_SHIP, 1);
+	SET_GAME_STATE(UTWIG_BOMB, 1);
+	SET_GAME_STATE(ULTRON_CONDITION, 1);
 	//SET_GAME_STATE (ULTRON_CONDITION, 2);
 	//SET_GAME_STATE (ULTRON_CONDITION, 3);
 	//SET_GAME_STATE (ULTRON_CONDITION, 4);
-	SET_GAME_STATE (MAIDENS_ON_SHIP, 1);
-	SET_GAME_STATE (TALKING_PET_ON_SHIP, 1);
-	SET_GAME_STATE (AQUA_HELIX_ON_SHIP, 1);
-	SET_GAME_STATE (CLEAR_SPINDLE_ON_SHIP, 1);
-	SET_GAME_STATE (UMGAH_BROADCASTERS_ON_SHIP, 1);
-	SET_GAME_STATE (TAALO_PROTECTOR_ON_SHIP, 1);
-	SET_GAME_STATE (EGG_CASE0_ON_SHIP, 1);
-	SET_GAME_STATE (EGG_CASE1_ON_SHIP, 1);
-	SET_GAME_STATE (EGG_CASE2_ON_SHIP, 1);
-	SET_GAME_STATE (SYREEN_SHUTTLE_ON_SHIP, 1);
-	SET_GAME_STATE (VUX_BEAST_ON_SHIP, 1);
-	SET_GAME_STATE (PORTAL_SPAWNER_ON_SHIP, 1);
-	SET_GAME_STATE (PORTAL_KEY_ON_SHIP, 1);
-	SET_GAME_STATE (BURV_BROADCASTERS_ON_SHIP, 1);
-	SET_GAME_STATE (MOONBASE_ON_SHIP, 1);
-	
+	SET_GAME_STATE(MAIDENS_ON_SHIP, 1);
+	SET_GAME_STATE(TALKING_PET_ON_SHIP, 1);
+	SET_GAME_STATE(AQUA_HELIX_ON_SHIP, 1);
+	SET_GAME_STATE(CLEAR_SPINDLE_ON_SHIP, 1);
+	SET_GAME_STATE(UMGAH_BROADCASTERS_ON_SHIP, 1);
+	SET_GAME_STATE(TAALO_PROTECTOR_ON_SHIP, 1);
+	SET_GAME_STATE(EGG_CASE0_ON_SHIP, 1);
+	SET_GAME_STATE(EGG_CASE1_ON_SHIP, 1);
+	SET_GAME_STATE(EGG_CASE2_ON_SHIP, 1);
+	SET_GAME_STATE(SYREEN_SHUTTLE_ON_SHIP, 1);
+	SET_GAME_STATE(VUX_BEAST_ON_SHIP, 1);
+	SET_GAME_STATE(PORTAL_SPAWNER_ON_SHIP, 1);
+	SET_GAME_STATE(PORTAL_KEY_ON_SHIP, 1);
+	SET_GAME_STATE(BURV_BROADCASTERS_ON_SHIP, 1);
+	SET_GAME_STATE(MOONBASE_ON_SHIP, 1);
+
 	// Not strictly a device (although it originally was one).
-	SET_GAME_STATE (DESTRUCT_CODE_ON_SHIP, 1);
+	SET_GAME_STATE(DESTRUCT_CODE_ON_SHIP, 1);
 }
 
 ////////////////////////////////////////////////////////////////////////////
 
-void
-clearEscorts (void)
+void clearEscorts(void)
 {
 	HSHIPFRAG hStarShip, hNextShip;
 
-	for (hStarShip = GetHeadLink (&GLOBAL (built_ship_q));
-			hStarShip; hStarShip = hNextShip)
+	for (hStarShip = GetHeadLink(&GLOBAL(built_ship_q));
+		 hStarShip; hStarShip = hNextShip)
 	{
-		SHIP_FRAGMENT *StarShipPtr;
+		SHIP_FRAGMENT* StarShipPtr;
 
-		StarShipPtr = LockShipFrag (&GLOBAL (built_ship_q), hStarShip);
-		hNextShip = _GetSuccLink (StarShipPtr);
-		UnlockShipFrag (&GLOBAL (built_ship_q), hStarShip);
+		StarShipPtr = LockShipFrag(&GLOBAL(built_ship_q), hStarShip);
+		hNextShip = _GetSuccLink(StarShipPtr);
+		UnlockShipFrag(&GLOBAL(built_ship_q), hStarShip);
 
-		RemoveQueue (&GLOBAL (built_ship_q), hStarShip);
-		FreeShipFrag (&GLOBAL (built_ship_q), hStarShip);
+		RemoveQueue(&GLOBAL(built_ship_q), hStarShip);
+		FreeShipFrag(&GLOBAL(built_ship_q), hStarShip);
 	}
 
-	DeltaSISGauges (UNDEFINED_DELTA, UNDEFINED_DELTA, UNDEFINED_DELTA);
+	DeltaSISGauges(UNDEFINED_DELTA, UNDEFINED_DELTA, UNDEFINED_DELTA);
 }
 
 ////////////////////////////////////////////////////////////////////////////
@@ -742,103 +722,97 @@ findFlagshipElement (void)
 
 ////////////////////////////////////////////////////////////////////////////
 
-void
-showSpheres (bool Animated)
-{	
+void showSpheres(bool Animated)
+{
 	uqm::BYTE i;
 
 	if (Animated)
-	{	// Alternative which allows you to view		
+	{ // Alternative which allows you to view
 		// the animated SOI expand for each race
 		for (i = 0; i <= BLACK_URQUAN_SHIP; i++)
-			StartSphereTracking ((RACE_ID)i);
+			StartSphereTracking((RACE_ID)i);
 	}
 	else
 	{
 		HFLEETINFO hStarShip, hNextShip;
 
-		for (hStarShip = GetHeadLink (&GLOBAL (avail_race_q));
-				hStarShip != NULL; hStarShip = hNextShip)
+		for (hStarShip = GetHeadLink(&GLOBAL(avail_race_q));
+			 hStarShip != NULL; hStarShip = hNextShip)
 		{
-			FLEET_INFO *FleetPtr;
+			FLEET_INFO* FleetPtr;
 
-			FleetPtr = LockFleetInfo (&GLOBAL (avail_race_q), hStarShip);
-			hNextShip = _GetSuccLink (FleetPtr);
+			FleetPtr = LockFleetInfo(&GLOBAL(avail_race_q), hStarShip);
+			hNextShip = _GetSuccLink(FleetPtr);
 
-			if ((FleetPtr->actual_strength != INFINITE_RADIUS) &&
-					(FleetPtr->known_strength != FleetPtr->actual_strength))
+			if ((FleetPtr->actual_strength != INFINITE_RADIUS) && (FleetPtr->known_strength != FleetPtr->actual_strength))
 			{
 				FleetPtr->known_strength = FleetPtr->actual_strength;
 				FleetPtr->known_loc = FleetPtr->loc;
 			}
 
-			UnlockFleetInfo (&GLOBAL (avail_race_q), hStarShip);
+			UnlockFleetInfo(&GLOBAL(avail_race_q), hStarShip);
 		}
 	}
 
 	if (EXTENDED)
 	{
-		HFLEETINFO hSyreen = GetStarShipFromIndex (
-				&GLOBAL (avail_race_q), SYREEN_SHIP);
-		FLEET_INFO *SyreenPtr = LockFleetInfo (
-				&GLOBAL (avail_race_q), hSyreen);
-		HFLEETINFO hChmmr = GetStarShipFromIndex (
-				&GLOBAL (avail_race_q), CHMMR_SHIP);
-		FLEET_INFO *ChmmrPtr = LockFleetInfo (
-				&GLOBAL (avail_race_q), hChmmr);
+		HFLEETINFO hSyreen = GetStarShipFromIndex(
+			&GLOBAL(avail_race_q), SYREEN_SHIP);
+		FLEET_INFO* SyreenPtr = LockFleetInfo(
+			&GLOBAL(avail_race_q), hSyreen);
+		HFLEETINFO hChmmr = GetStarShipFromIndex(
+			&GLOBAL(avail_race_q), CHMMR_SHIP);
+		FLEET_INFO* ChmmrPtr = LockFleetInfo(
+			&GLOBAL(avail_race_q), hChmmr);
 
 		SyreenPtr->actual_strength = 300 / SPHERE_RADIUS_INCREMENT * 2;
-		SyreenPtr->loc = SeedFleetLocation (SyreenPtr, plot_map, HOME);
-		StartSphereTracking (SYREEN_SHIP);
+		SyreenPtr->loc = SeedFleetLocation(SyreenPtr, plot_map, HOME);
+		StartSphereTracking(SYREEN_SHIP);
 
 		ChmmrPtr->actual_strength = 986 / SPHERE_RADIUS_INCREMENT * 2;
-		ChmmrPtr->loc = SeedFleetLocation (ChmmrPtr, plot_map, HOME);
-		StartSphereTracking (CHMMR_SHIP);
+		ChmmrPtr->loc = SeedFleetLocation(ChmmrPtr, plot_map, HOME);
+		StartSphereTracking(CHMMR_SHIP);
 
-		UnlockFleetInfo (&GLOBAL (avail_race_q), hSyreen);
-		UnlockFleetInfo (&GLOBAL (avail_race_q), hChmmr);
+		UnlockFleetInfo(&GLOBAL(avail_race_q), hSyreen);
+		UnlockFleetInfo(&GLOBAL(avail_race_q), hChmmr);
 	}
 }
 
 ////////////////////////////////////////////////////////////////////////////
 
-void
-activateAllShips (void)
+void activateAllShips(void)
 {
 	HFLEETINFO hStarShip, hNextShip;
-	
-	for (hStarShip = GetHeadLink (&GLOBAL (avail_race_q));
-			hStarShip != NULL; hStarShip = hNextShip)
-	{
-		FLEET_INFO *FleetPtr;
 
-		FleetPtr = LockFleetInfo (&GLOBAL (avail_race_q), hStarShip);
-		hNextShip = _GetSuccLink (FleetPtr);
+	for (hStarShip = GetHeadLink(&GLOBAL(avail_race_q));
+		 hStarShip != NULL; hStarShip = hNextShip)
+	{
+		FLEET_INFO* FleetPtr;
+
+		FleetPtr = LockFleetInfo(&GLOBAL(avail_race_q), hStarShip);
+		hNextShip = _GetSuccLink(FleetPtr);
 
 		if (FleetPtr->icons != NULL)
-				// Skip the Ur-Quan probe.
+		// Skip the Ur-Quan probe.
 		{
 			FleetPtr->allied_state = GOOD_GUY;
 		}
 
-		UnlockFleetInfo (&GLOBAL (avail_race_q), hStarShip);
+		UnlockFleetInfo(&GLOBAL(avail_race_q), hStarShip);
 	}
 }
 
 ////////////////////////////////////////////////////////////////////////////
 
-void
-forAllStars (void (*callback) (STAR_DESC *, void *), void *arg)
+void forAllStars(void (*callback)(STAR_DESC*, void*), void* arg)
 {
 	int i;
 
 	for (i = 0; i < NUM_SOLAR_SYSTEMS; i++)
-		callback (&star_array[i], arg);
+		callback(&star_array[i], arg);
 }
 
-void
-forAllPlanets (STAR_DESC *star, SOLARSYS_STATE *system, void (*callback) (
-		STAR_DESC *, SOLARSYS_STATE *, PLANET_DESC *, void *), void *arg)
+void forAllPlanets(STAR_DESC* star, SOLARSYS_STATE* system, void (*callback)(STAR_DESC*, SOLARSYS_STATE*, PLANET_DESC*, void*), void* arg)
 {
 	uqm::COUNT i;
 
@@ -846,104 +820,103 @@ forAllPlanets (STAR_DESC *star, SOLARSYS_STATE *system, void (*callback) (
 	assert(pSolarSysState == system);
 
 	for (i = 0; i < system->SunDesc[0].NumPlanets; i++)
-		callback (star, system, &system->PlanetDesc[i], arg);
+		callback(star, system, &system->PlanetDesc[i], arg);
 }
 
-void
-forAllMoons (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
-		void (*callback) (STAR_DESC *, SOLARSYS_STATE *, PLANET_DESC *,
-		PLANET_DESC *, void *), void *arg)
+void forAllMoons(STAR_DESC* star, SOLARSYS_STATE* system, PLANET_DESC* planet,
+				 void (*callback)(STAR_DESC*, SOLARSYS_STATE*, PLANET_DESC*,
+								  PLANET_DESC*, void*),
+				 void* arg)
 {
 	uqm::COUNT i;
 
 	assert(pSolarSysState == system);
 
 	for (i = 0; i < planet->NumPlanets; i++)
-		callback (star, system, planet, &system->MoonDesc[i], arg);
+		callback(star, system, planet, &system->MoonDesc[i], arg);
 }
 
 ////////////////////////////////////////////////////////////////////////////
 
 // Must be called from the Starcon2Main thread.
 // TODO: LockGameClock may be removed
-void
-UniverseRecurse (UniverseRecurseArg *universeRecurseArg)
+void UniverseRecurse(UniverseRecurseArg* universeRecurseArg)
 {
 	ACTIVITY savedActivity;
-	
+
 	if (universeRecurseArg->systemFuncPre == NULL
-			&& universeRecurseArg->systemFuncPost == NULL
-			&& universeRecurseArg->planetFuncPre == NULL
-			&& universeRecurseArg->planetFuncPost == NULL
-			&& universeRecurseArg->moonFunc == NULL)
+		&& universeRecurseArg->systemFuncPost == NULL
+		&& universeRecurseArg->planetFuncPre == NULL
+		&& universeRecurseArg->planetFuncPost == NULL
+		&& universeRecurseArg->moonFunc == NULL)
 		return;
-	
-	LockGameClock ();
+
+	LockGameClock();
 	//TFB_DEBUG_HALT = 1;
-	savedActivity = GLOBAL (CurrentActivity);
+	savedActivity = GLOBAL(CurrentActivity);
 	disableInteractivity = true;
 
-	forAllStars (starRecurse, (void *) universeRecurseArg);
-	
+	forAllStars(starRecurse, (void*)universeRecurseArg);
+
 	disableInteractivity = false;
-	GLOBAL (CurrentActivity) = savedActivity;
-	UnlockGameClock ();
+	GLOBAL(CurrentActivity) = savedActivity;
+	UnlockGameClock();
 }
 
 static void
-starRecurse (STAR_DESC *star, void *arg)
+starRecurse(STAR_DESC* star, void* arg)
 {
-	UniverseRecurseArg *universeRecurseArg = (UniverseRecurseArg *) arg;
+	UniverseRecurseArg* universeRecurseArg = (UniverseRecurseArg*)arg;
 
 	SOLARSYS_STATE SolarSysState;
-	SOLARSYS_STATE *oldPSolarSysState = pSolarSysState;
-	STAR_DESC *oldStarDescPtr = CurStarDescPtr;
+	SOLARSYS_STATE* oldPSolarSysState = pSolarSysState;
+	STAR_DESC* oldStarDescPtr = CurStarDescPtr;
 	CurStarDescPtr = star;
 
-	RandomContext_SeedRandom (SysGenRNGDebug, GetRandomSeedForStar (star));
+	RandomContext_SeedRandom(SysGenRNGDebug, GetRandomSeedForStar(star));
 
-	memset (&SolarSysState, 0, sizeof (SolarSysState));
+	memset(&SolarSysState, 0, sizeof(SolarSysState));
 	SolarSysState.SunDesc[0].pPrevDesc = 0;
-	SolarSysState.SunDesc[0].rand_seed = RandomContext_Random (SysGenRNGDebug);
-	SolarSysState.SunDesc[0].data_index = STAR_TYPE (star->Type);
+	SolarSysState.SunDesc[0].rand_seed = RandomContext_Random(SysGenRNGDebug);
+	SolarSysState.SunDesc[0].data_index = STAR_TYPE(star->Type);
 	SolarSysState.SunDesc[0].location.x = 0;
 	SolarSysState.SunDesc[0].location.y = 0;
 	//SolarSysState.SunDesc[0].radius = MIN_ZOOM_RADIUS;
-	SolarSysState.genFuncs = getGenerateFunctions (star->Index);
+	SolarSysState.genFuncs = getGenerateFunctions(star->Index);
 
 	pSolarSysState = &SolarSysState;
-	(*SolarSysState.genFuncs->generatePlanets) (&SolarSysState);
+	(*SolarSysState.genFuncs->generatePlanets)(&SolarSysState);
 
 	if (universeRecurseArg->systemFuncPre != NULL)
 	{
-		(*universeRecurseArg->systemFuncPre) (
-				star, &SolarSysState, universeRecurseArg->arg);
+		(*universeRecurseArg->systemFuncPre)(
+			star, &SolarSysState, universeRecurseArg->arg);
 	}
-	
+
 	if (universeRecurseArg->planetFuncPre != NULL
-			|| universeRecurseArg->planetFuncPost != NULL
-			|| universeRecurseArg->moonFunc != NULL)
+		|| universeRecurseArg->planetFuncPost != NULL
+		|| universeRecurseArg->moonFunc != NULL)
 	{
-		forAllPlanets (star, &SolarSysState, planetRecurse,
-				(void *) universeRecurseArg);
+		forAllPlanets(star, &SolarSysState, planetRecurse,
+					  (void*)universeRecurseArg);
 	}
 
 	if (universeRecurseArg->systemFuncPost != NULL)
 	{
-		(*universeRecurseArg->systemFuncPost) (
-				star, &SolarSysState, universeRecurseArg->arg);
+		(*universeRecurseArg->systemFuncPost)(
+			star, &SolarSysState, universeRecurseArg->arg);
 	}
-	
+
 	pSolarSysState = oldPSolarSysState;
 	CurStarDescPtr = oldStarDescPtr;
 }
 
 static void
-planetRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
-		void *arg)
+planetRecurse(STAR_DESC* star, SOLARSYS_STATE* system, PLANET_DESC* planet,
+			  void* arg)
 {
-	UniverseRecurseArg *universeRecurseArg = (UniverseRecurseArg *) arg;
-	
+	UniverseRecurseArg* universeRecurseArg = (UniverseRecurseArg*)arg;
+
 	assert(CurStarDescPtr == star);
 	assert(pSolarSysState == system);
 
@@ -952,65 +925,65 @@ planetRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
 	if (universeRecurseArg->planetFuncPre != NULL)
 	{
 		system->pOrbitalDesc = planet;
-		DoPlanetaryAnalysis (&system->SysInfo, planet);
-				// When GenerateDefaultFunctions is used as genFuncs,
-				// generateOrbital will also call DoPlanetaryAnalysis,
-				// but with other GenerateFunctions this is not guaranteed.
-		(*system->genFuncs->generateOrbital) (system, planet);
-		(*universeRecurseArg->planetFuncPre) (
-				planet, universeRecurseArg->arg);
+		DoPlanetaryAnalysis(&system->SysInfo, planet);
+		// When GenerateDefaultFunctions is used as genFuncs,
+		// generateOrbital will also call DoPlanetaryAnalysis,
+		// but with other GenerateFunctions this is not guaranteed.
+		(*system->genFuncs->generateOrbital)(system, planet);
+		(*universeRecurseArg->planetFuncPre)(
+			planet, universeRecurseArg->arg);
 	}
 
 	if (universeRecurseArg->moonFunc != NULL)
 	{
-		RandomContext_SeedRandom (SysGenRNGDebug, planet->rand_seed);
-		
-		(*system->genFuncs->generateMoons) (system, planet);
+		RandomContext_SeedRandom(SysGenRNGDebug, planet->rand_seed);
 
-		forAllMoons (star, system, planet, moonRecurse,
-				(void *) universeRecurseArg);
+		(*system->genFuncs->generateMoons)(system, planet);
+
+		forAllMoons(star, system, planet, moonRecurse,
+					(void*)universeRecurseArg);
 	}
-	
+
 	if (universeRecurseArg->planetFuncPost != NULL)
 	{
 		system->pOrbitalDesc = planet;
-		DoPlanetaryAnalysis (&system->SysInfo, planet);
-				// When GenerateDefaultFunctions is used as genFuncs,
-				// generateOrbital will also call DoPlanetaryAnalysis,
-				// but with other GenerateFunctions this is not guaranteed.
-		(*system->genFuncs->generateOrbital) (system, planet);
-		(*universeRecurseArg->planetFuncPost) (
-				planet, universeRecurseArg->arg);
+		DoPlanetaryAnalysis(&system->SysInfo, planet);
+		// When GenerateDefaultFunctions is used as genFuncs,
+		// generateOrbital will also call DoPlanetaryAnalysis,
+		// but with other GenerateFunctions this is not guaranteed.
+		(*system->genFuncs->generateOrbital)(system, planet);
+		(*universeRecurseArg->planetFuncPost)(
+			planet, universeRecurseArg->arg);
 	}
 }
 
 static void
-moonRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
-		PLANET_DESC *moon, void *arg)
+moonRecurse(STAR_DESC* star, SOLARSYS_STATE* system, PLANET_DESC* planet,
+			PLANET_DESC* moon, void* arg)
 {
-	UniverseRecurseArg *universeRecurseArg = (UniverseRecurseArg *) arg;
-	
+	UniverseRecurseArg* universeRecurseArg = (UniverseRecurseArg*)arg;
+
 	assert(CurStarDescPtr == star);
 	assert(pSolarSysState == system);
-	
+
 	moon->pPrevDesc = planet;
 
 	if (universeRecurseArg->moonFunc != NULL)
 	{
 		system->pOrbitalDesc = moon;
-		if (moon->data_index != HIERARCHY_STARBASE 
-			&& moon->data_index != SA_MATRA 
+		if (moon->data_index != HIERARCHY_STARBASE
+			&& moon->data_index != SA_MATRA
 			&& moon->data_index != DESTROYED_STARBASE
 			&& moon->data_index != PRECURSOR_STARBASE)
 		{
-			DoPlanetaryAnalysis (&system->SysInfo, moon);
-				// When GenerateDefaultFunctions is used as genFuncs,
-				// generateOrbital will also call DoPlanetaryAnalysis,
-				// but with other GenerateFunctions this is not guaranteed.
+			DoPlanetaryAnalysis(&system->SysInfo, moon);
+			// When GenerateDefaultFunctions is used as genFuncs,
+			// generateOrbital will also call DoPlanetaryAnalysis,
+			// but with other GenerateFunctions this is not guaranteed.
 		}
-		(*system->genFuncs->generateOrbital) (system, moon);
-		(*universeRecurseArg->moonFunc) (
-				moon, universeRecurseArg->arg);
+		(*system->genFuncs->generateOrbital)(system, moon);
+		(*universeRecurseArg->moonFunc)(
+			moon, universeRecurseArg->arg);
 	}
 }
 
@@ -1018,16 +991,15 @@ moonRecurse (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
 
 typedef struct
 {
-	FILE *out;
+	FILE* out;
 } DumpUniverseArg;
 
 // Must be called from the Starcon2Main thread.
-void
-dumpUniverse (FILE *out)
+void dumpUniverse(FILE* out)
 {
 	DumpUniverseArg dumpUniverseArg;
 	UniverseRecurseArg universeRecurseArg;
-	
+
 	dumpUniverseArg.out = out;
 
 	universeRecurseArg.systemFuncPre = dumpSystemCallback;
@@ -1035,68 +1007,68 @@ dumpUniverse (FILE *out)
 	universeRecurseArg.planetFuncPre = dumpPlanetCallback;
 	universeRecurseArg.planetFuncPost = NULL;
 	universeRecurseArg.moonFunc = dumpMoonCallback;
-	universeRecurseArg.arg = (void *) &dumpUniverseArg;
+	universeRecurseArg.arg = (void*)&dumpUniverseArg;
 
-	UniverseRecurse (&universeRecurseArg);
+	UniverseRecurse(&universeRecurseArg);
 }
 
 // Must be called from the Starcon2Main thread.
-void
-dumpUniverseToFile (void)
+void dumpUniverseToFile(void)
 {
-	FILE *out;
+	FILE* out;
 
-#	define UNIVERSE_DUMP_FILE "PlanetInfo"
+#define UNIVERSE_DUMP_FILE "PlanetInfo"
 	out = fopen(UNIVERSE_DUMP_FILE, "w");
 	if (out == NULL)
 	{
 		fprintf(stderr, "Error: Could not open file '%s' for "
-				"writing: %s\n", UNIVERSE_DUMP_FILE, strerror(errno));
+						"writing: %s\n",
+				UNIVERSE_DUMP_FILE, strerror(errno));
 		return;
 	}
 
-	dumpUniverse (out);
-	
+	dumpUniverse(out);
+
 	fclose(out);
 
 	fprintf(stdout, "*** Star dump complete. The game may be in an "
-			"undefined state.\n");
-			// Data generation may have changed the game state,
-			// in particular for special planet generation.
+					"undefined state.\n");
+	// Data generation may have changed the game state,
+	// in particular for special planet generation.
 }
 
 static void
-dumpSystemCallback (const STAR_DESC *star, const SOLARSYS_STATE *system,
-		void *arg)
+dumpSystemCallback(const STAR_DESC* star, const SOLARSYS_STATE* system,
+				   void* arg)
 {
-	FILE *out = ((DumpUniverseArg *) arg)->out;
-	dumpSystem (out, star, system);
+	FILE* out = ((DumpUniverseArg*)arg)->out;
+	dumpSystem(out, star, system);
 }
 
-void
-dumpSystem (FILE *out, const STAR_DESC *star, const SOLARSYS_STATE *system)
+void dumpSystem(FILE* out, const STAR_DESC* star, const SOLARSYS_STATE* system)
 {
 	uqm::CHAR_T name[256];
 	uqm::CHAR_T buf[40];
 
-	GetClusterName (star, name);
-	snprintf (buf, sizeof buf, "%s %s",
-			bodyColorString (STAR_COLOR(star->Type)),
-			starTypeString (STAR_TYPE(star->Type)));
-	fprintf (out, "%-22s  (%3d.%1d, %3d.%1d) %-19s  %s\n",
+	GetClusterName(star, name);
+	snprintf(buf, sizeof buf, "%s %s",
+			 bodyColorString(STAR_COLOR(star->Type)),
+			 starTypeString(STAR_TYPE(star->Type)));
+	fprintf(out, "%-22s  (%3d.%1d, %3d.%1d) %-19s  %s\n",
 			name,
 			star->star_pt.x / 10, star->star_pt.x % 10,
 			star->star_pt.y / 10, star->star_pt.y % 10,
 			buf,
-			starPresenceString (star->Index));
+			starPresenceString(star->Index));
 
-	(void) system;  /* satisfy compiler */
+	(void)system; /* satisfy compiler */
 }
 
-const char *
-bodyColorString (uqm::BYTE col)
+const char*
+bodyColorString(uqm::BYTE col)
 {
-	switch (col) {
+	switch (col)
+	{
 		case BLUE_BODY:
 			return "blue";
 		case GREEN_BODY:
@@ -1121,10 +1093,11 @@ bodyColorString (uqm::BYTE col)
 	}
 }
 
-const char *
-starTypeString (uqm::BYTE type)
+const char*
+starTypeString(uqm::BYTE type)
 {
-	switch (type) {
+	switch (type)
+	{
 		case DWARF_STAR:
 			return "dwarf";
 		case GIANT_STAR:
@@ -1137,10 +1110,11 @@ starTypeString (uqm::BYTE type)
 	}
 }
 
-const char *
-starPresenceString (uqm::BYTE index)
+const char*
+starPresenceString(uqm::BYTE index)
 {
-	switch (index) {
+	switch (index)
+	{
 		case 0:
 			// nothing
 			return "";
@@ -1267,33 +1241,31 @@ starPresenceString (uqm::BYTE index)
 }
 
 static void
-dumpPlanetCallback (const PLANET_DESC *planet, void *arg)
+dumpPlanetCallback(const PLANET_DESC* planet, void* arg)
 {
-	FILE *out = ((DumpUniverseArg *) arg)->out;
-	dumpPlanet (out, planet);
+	FILE* out = ((DumpUniverseArg*)arg)->out;
+	dumpPlanet(out, planet);
 }
 
-void
-dumpPlanet (FILE *out, const PLANET_DESC *planet)
+void dumpPlanet(FILE* out, const PLANET_DESC* planet)
 {
-	(*pSolarSysState->genFuncs->generateName) (pSolarSysState, planet);
-	fprintf (out, "- %-37s  %s\n", GLOBAL_SIS (PlanetName),
-			planetTypeString (planet->data_index & ~PLANET_SHIELDED));
-	dumpWorld (out, planet);
+	(*pSolarSysState->genFuncs->generateName)(pSolarSysState, planet);
+	fprintf(out, "- %-37s  %s\n", GLOBAL_SIS(PlanetName),
+			planetTypeString(planet->data_index & ~PLANET_SHIELDED));
+	dumpWorld(out, planet);
 }
 
 static void
-dumpMoonCallback (const PLANET_DESC *moon, void *arg)
+dumpMoonCallback(const PLANET_DESC* moon, void* arg)
 {
-	FILE *out = ((DumpUniverseArg *) arg)->out;
-	dumpMoon (out, moon);
+	FILE* out = ((DumpUniverseArg*)arg)->out;
+	dumpMoon(out, moon);
 }
 
-void
-dumpMoon (FILE *out, const PLANET_DESC *moon)
+void dumpMoon(FILE* out, const PLANET_DESC* moon)
 {
-	const char *typeStr;
-	
+	const char* typeStr;
+
 	if (moon->data_index == HIERARCHY_STARBASE)
 	{
 		typeStr = "StarBase";
@@ -1312,32 +1284,36 @@ dumpMoon (FILE *out, const PLANET_DESC *moon)
 	}
 	else
 	{
-		typeStr = planetTypeString (moon->data_index & ~PLANET_SHIELDED);
+		typeStr = planetTypeString(moon->data_index & ~PLANET_SHIELDED);
 	}
-	fprintf (out, "  - Moon %-30c  %s\n",
+	fprintf(out, "  - Moon %-30c  %s\n",
 			'a' + (uqm::CHAR_T)(moon - &pSolarSysState->MoonDesc[0]), typeStr);
 
-	dumpWorld (out, moon);
+	dumpWorld(out, moon);
 }
 
 static void
-dumpWorld (FILE *out, const PLANET_DESC *world)
+dumpWorld(FILE* out, const PLANET_DESC* world)
 {
-	PLANET_INFO *info;
-	
-	if (world->data_index == HIERARCHY_STARBASE) {
-		return;
-	}
-	
-	if (world->data_index == SA_MATRA) {
+	PLANET_INFO* info;
+
+	if (world->data_index == HIERARCHY_STARBASE)
+	{
 		return;
 	}
 
-	if (world->data_index == DESTROYED_STARBASE) {
+	if (world->data_index == SA_MATRA)
+	{
 		return;
 	}
 
-	if (world->data_index == PRECURSOR_STARBASE) {
+	if (world->data_index == DESTROYED_STARBASE)
+	{
+		return;
+	}
+
+	if (world->data_index == PRECURSOR_STARBASE)
+	{
 		return;
 	}
 
@@ -1354,22 +1330,22 @@ dumpWorld (FILE *out, const PLANET_DESC *world)
 	fprintf(out, "          LifeChance: %d\n", info->LifeChance);
 	fprintf(out, "          DistToSun:  %d\n", info->PlanetToSunDist);
 
-	if (world->data_index & PLANET_SHIELDED) {
+	if (world->data_index & PLANET_SHIELDED)
+	{
 		// Slave-shielded planet
 		return;
 	}
 
-	fprintf (out, "          Bio: %4d    Min: %4d\n",
-			calculateBioValue (pSolarSysState, world),
-			calculateMineralValue (pSolarSysState, world));
+	fprintf(out, "          Bio: %4d    Min: %4d\n",
+			calculateBioValue(pSolarSysState, world),
+			calculateMineralValue(pSolarSysState, world));
 }
 
-void
-fprintfWorld (const PLANET_DESC *world)
+void fprintfWorld(const PLANET_DESC* world)
 {
-	PLANET_INFO *info;
+	PLANET_INFO* info;
 	uqm::CHAR_T buf[200];
-	FILE *fp = fopen ("planetLog.txt", "a");
+	FILE* fp = fopen("planetLog.txt", "a");
 	POINT universe = CurStarDescPtr->star_pt;
 
 	if (world->data_index == HIERARCHY_STARBASE
@@ -1380,139 +1356,135 @@ fprintfWorld (const PLANET_DESC *world)
 		return;
 	}
 
-	fprintf (fp, "Coords:     %03u.%01u : %03u.%01u\n",
+	fprintf(fp, "Coords:     %03u.%01u : %03u.%01u\n",
 			universe.x / 10, universe.x % 10,
 			universe.y / 10, universe.y % 10);
-	
-	GetClusterName (CurStarDescPtr, buf);
 
-	fprintf (fp, "Star:       %s\n", buf);
+	GetClusterName(CurStarDescPtr, buf);
 
-	GetPlanetTitle (buf, sizeof (buf));
+	fprintf(fp, "Star:       %s\n", buf);
 
-	if (strcmp (buf, GLOBAL_SIS (PlanetName)) != 0)
-		fprintf (fp, "Planet:     %s\n", GLOBAL_SIS (PlanetName));
+	GetPlanetTitle(buf, sizeof(buf));
+
+	if (strcmp(buf, GLOBAL_SIS(PlanetName)) != 0)
+		fprintf(fp, "Planet:     %s\n", GLOBAL_SIS(PlanetName));
 
 	info = &pSolarSysState->SysInfo.PlanetInfo;
-	fprintf (fp, "World:      %s\n\n", buf);
-	fprintf (fp, "DistToSun:  %d\n", info->PlanetToSunDist);
-	fprintf (fp, "Atmosphere: %d\n", info->AtmoDensity);
-	fprintf (fp, "Temp:       %d\n", info->SurfaceTemperature);
-	fprintf (fp, "Weather:    %d\n", info->Weather);
-	fprintf (fp, "Tectonics:  %d\n\n", info->Tectonics);
-	fprintf (fp, "Density:    %d\n", info->PlanetDensity);
-	fprintf (fp, "Radius:     %d\n", info->PlanetRadius);
-	fprintf (fp, "Gravity:    %d\n", info->SurfaceGravity);
-	fprintf (fp, "Day:        %d\n", info->RotationPeriod);
-	fprintf (fp, "AxialTilt:  %d\n\n", info->AxialTilt);
+	fprintf(fp, "World:      %s\n\n", buf);
+	fprintf(fp, "DistToSun:  %d\n", info->PlanetToSunDist);
+	fprintf(fp, "Atmosphere: %d\n", info->AtmoDensity);
+	fprintf(fp, "Temp:       %d\n", info->SurfaceTemperature);
+	fprintf(fp, "Weather:    %d\n", info->Weather);
+	fprintf(fp, "Tectonics:  %d\n\n", info->Tectonics);
+	fprintf(fp, "Density:    %d\n", info->PlanetDensity);
+	fprintf(fp, "Radius:     %d\n", info->PlanetRadius);
+	fprintf(fp, "Gravity:    %d\n", info->SurfaceGravity);
+	fprintf(fp, "Day:        %d\n", info->RotationPeriod);
+	fprintf(fp, "AxialTilt:  %d\n\n", info->AxialTilt);
 
 	if (world->data_index & PLANET_SHIELDED)
-	{	// Slave-shielded planet
-		fprintf (fp, "LifeChance: %d\n", info->LifeChance);
-		fprintf (fp, "____________________________________\n\n");
-		fclose (fp);
+	{ // Slave-shielded planet
+		fprintf(fp, "LifeChance: %d\n", info->LifeChance);
+		fprintf(fp, "____________________________________\n\n");
+		fclose(fp);
 		return;
 	}
 	else
-		fprintf (fp, "LifeChance: %d\n", info->LifeChance);
+		fprintf(fp, "LifeChance: %d\n", info->LifeChance);
 
-	fprintf (fp, "Bio: %4d    Min: %4d\n",
-			calculateBioValue (pSolarSysState, world),
-			calculateMineralValue (pSolarSysState, world));
-	fprintf (fp, "____________________________________\n\n");
+	fprintf(fp, "Bio: %4d    Min: %4d\n",
+			calculateBioValue(pSolarSysState, world),
+			calculateMineralValue(pSolarSysState, world));
+	fprintf(fp, "____________________________________\n\n");
 
-	fclose (fp);
+	fclose(fp);
 }
 
 uqm::COUNT
-calculateBioValue (const SOLARSYS_STATE *system, const PLANET_DESC *world)
+calculateBioValue(const SOLARSYS_STATE* system, const PLANET_DESC* world)
 {
 	uqm::COUNT result;
 	uqm::COUNT numBio;
 	uqm::COUNT i;
 
-	assert (system->pOrbitalDesc == world);
-	
-	numBio = callGenerateForScanType (system, world, GENERATE_ALL,
-			BIOLOGICAL_SCAN, NULL);
+	assert(system->pOrbitalDesc == world);
+
+	numBio = callGenerateForScanType(system, world, GENERATE_ALL,
+									 BIOLOGICAL_SCAN, NULL);
 
 	result = 0;
 	for (i = 0; i < numBio; i++)
 	{
 		NODE_INFO info;
-		callGenerateForScanType (system, world, i, BIOLOGICAL_SCAN, &info);
-		result += BIO_CREDIT_VALUE *
-				LONIBBLE (CreatureData[info.type].ValueAndHitPoints);
+		callGenerateForScanType(system, world, i, BIOLOGICAL_SCAN, &info);
+		result += BIO_CREDIT_VALUE * LONIBBLE(CreatureData[info.type].ValueAndHitPoints);
 	}
 	return result;
 }
 
-void
-generateBioIndex(const SOLARSYS_STATE *system, const PLANET_DESC *world,
-		uqm::COUNT bio[])
+void generateBioIndex(const SOLARSYS_STATE* system, const PLANET_DESC* world,
+					  uqm::COUNT bio[])
 {
 	uqm::COUNT numBio;
 	uqm::COUNT i;
 
-	assert (system->pOrbitalDesc == world);
-	
-	numBio = callGenerateForScanType (system, world, GENERATE_ALL,
-			BIOLOGICAL_SCAN, NULL);
+	assert(system->pOrbitalDesc == world);
+
+	numBio = callGenerateForScanType(system, world, GENERATE_ALL,
+									 BIOLOGICAL_SCAN, NULL);
 
 	for (i = 0; i < NUM_CREATURE_TYPES + NUM_SPECIAL_CREATURE_TYPES; i++)
 		bio[i] = 0;
-	
+
 	for (i = 0; i < numBio; i++)
 	{
 		NODE_INFO info;
-		callGenerateForScanType (system, world, i, BIOLOGICAL_SCAN, &info);
+		callGenerateForScanType(system, world, i, BIOLOGICAL_SCAN, &info);
 		bio[info.type]++;
 	}
 }
 
 uqm::COUNT
-calculateMineralValue (const SOLARSYS_STATE *system, const PLANET_DESC *world)
+calculateMineralValue(const SOLARSYS_STATE* system, const PLANET_DESC* world)
 {
 	uqm::COUNT result;
 	uqm::COUNT numDeposits;
 	uqm::COUNT i;
 
-	assert (system->pOrbitalDesc == world);
-	
-	numDeposits = callGenerateForScanType (system, world, GENERATE_ALL,
-			MINERAL_SCAN, NULL);
+	assert(system->pOrbitalDesc == world);
+
+	numDeposits = callGenerateForScanType(system, world, GENERATE_ALL,
+										  MINERAL_SCAN, NULL);
 
 	result = 0;
 	for (i = 0; i < numDeposits; i++)
 	{
 		NODE_INFO info;
-		callGenerateForScanType (system, world, i, MINERAL_SCAN, &info);
-		result += highByte (info.density) *
-				GLOBAL (ElementWorth[ElementCategory (info.type)]);
+		callGenerateForScanType(system, world, i, MINERAL_SCAN, &info);
+		result += highByte(info.density) * GLOBAL(ElementWorth[ElementCategory(info.type)]);
 	}
 	return result;
 }
 
-void
-generateMineralIndex(const SOLARSYS_STATE *system, const PLANET_DESC *world,
-		uqm::COUNT minerals[])
+void generateMineralIndex(const SOLARSYS_STATE* system, const PLANET_DESC* world,
+						  uqm::COUNT minerals[])
 {
 	uqm::COUNT numDeposits;
 	uqm::COUNT i;
 
-	assert (system->pOrbitalDesc == world);
-	
-	numDeposits = callGenerateForScanType (system, world, GENERATE_ALL,
-			MINERAL_SCAN, NULL);
+	assert(system->pOrbitalDesc == world);
+
+	numDeposits = callGenerateForScanType(system, world, GENERATE_ALL,
+										  MINERAL_SCAN, NULL);
 
 	for (i = 0; i < NUM_ELEMENT_CATEGORIES; i++)
 		minerals[i] = 0;
-	
+
 	for (i = 0; i < numDeposits; i++)
 	{
 		NODE_INFO info;
-		callGenerateForScanType (system, world, i, MINERAL_SCAN, &info);
-		minerals[ElementCategory (info.type)] += highByte (info.density);
+		callGenerateForScanType(system, world, i, MINERAL_SCAN, &info);
+		minerals[ElementCategory(info.type)] += highByte(info.density);
 	}
 }
 
@@ -1520,18 +1492,17 @@ generateMineralIndex(const SOLARSYS_STATE *system, const PLANET_DESC *world,
 
 struct TallyResourcesArg
 {
-	FILE *out;
+	FILE* out;
 	uqm::COUNT mineralCount;
 	uqm::COUNT bioCount;
 };
 
 // Must be called from the Starcon2Main thread.
-void
-tallyResources (FILE *out)
+void tallyResources(FILE* out)
 {
 	TallyResourcesArg tallyResourcesArg;
 	UniverseRecurseArg universeRecurseArg;
-	
+
 	tallyResourcesArg.out = out;
 
 	universeRecurseArg.systemFuncPre = tallySystemPreCallback;
@@ -1539,138 +1510,139 @@ tallyResources (FILE *out)
 	universeRecurseArg.planetFuncPre = tallyPlanetCallback;
 	universeRecurseArg.planetFuncPost = NULL;
 	universeRecurseArg.moonFunc = tallyMoonCallback;
-	universeRecurseArg.arg = (void *) &tallyResourcesArg;
+	universeRecurseArg.arg = (void*)&tallyResourcesArg;
 
-	UniverseRecurse (&universeRecurseArg);
+	UniverseRecurse(&universeRecurseArg);
 }
 
 // Must be called from the Starcon2Main thread.
-void
-tallyResourcesToFile (void)
+void tallyResourcesToFile(void)
 {
-	FILE *out;
+	FILE* out;
 
-#	define RESOURCE_TALLY_FILE "ResourceTally"
+#define RESOURCE_TALLY_FILE "ResourceTally"
 	out = fopen(RESOURCE_TALLY_FILE, "w");
 	if (out == NULL)
 	{
 		fprintf(stderr, "Error: Could not open file '%s' for "
-				"writing: %s\n", RESOURCE_TALLY_FILE, strerror(errno));
+						"writing: %s\n",
+				RESOURCE_TALLY_FILE, strerror(errno));
 		return;
 	}
 
-	tallyResources (out);
-	
+	tallyResources(out);
+
 	fclose(out);
 
 	fprintf(stdout, "*** Resource tally complete. The game may be in an "
-			"undefined state.\n");
-			// Data generation may have changed the game state,
-			// in particular for special planet generation.
+					"undefined state.\n");
+	// Data generation may have changed the game state,
+	// in particular for special planet generation.
 }
 
 static void
-tallySystemPreCallback (const STAR_DESC *star, const SOLARSYS_STATE *system,
-		void *arg)
+tallySystemPreCallback(const STAR_DESC* star, const SOLARSYS_STATE* system,
+					   void* arg)
 {
-	TallyResourcesArg *tallyResourcesArg = (TallyResourcesArg *) arg;
+	TallyResourcesArg* tallyResourcesArg = (TallyResourcesArg*)arg;
 	tallyResourcesArg->mineralCount = 0;
 	tallyResourcesArg->bioCount = 0;
-	
-	(void) star;  /* satisfy compiler */
-	(void) system;  /* satisfy compiler */
+
+	(void)star;	  /* satisfy compiler */
+	(void)system; /* satisfy compiler */
 }
 
 static void
-tallySystemPostCallback (const STAR_DESC *star, const SOLARSYS_STATE *system,
-		void *arg)
+tallySystemPostCallback(const STAR_DESC* star, const SOLARSYS_STATE* system,
+						void* arg)
 {
 	uqm::CHAR_T name[256];
-	TallyResourcesArg *tallyResourcesArg = (TallyResourcesArg *) arg;
-	FILE *out = tallyResourcesArg->out;
+	TallyResourcesArg* tallyResourcesArg = (TallyResourcesArg*)arg;
+	FILE* out = tallyResourcesArg->out;
 
-	GetClusterName (star, name);
-	fprintf (out, "%s\t%d\t%d\n", name, tallyResourcesArg->mineralCount,
+	GetClusterName(star, name);
+	fprintf(out, "%s\t%d\t%d\n", name, tallyResourcesArg->mineralCount,
 			tallyResourcesArg->bioCount);
 
-	(void) star;  /* satisfy compiler */
-	(void) system;  /* satisfy compiler */
+	(void)star;	  /* satisfy compiler */
+	(void)system; /* satisfy compiler */
 }
 
 static void
-tallyPlanetCallback (const PLANET_DESC *planet, void *arg)
+tallyPlanetCallback(const PLANET_DESC* planet, void* arg)
 {
-	tallyResourcesWorld ((TallyResourcesArg *) arg, planet);
+	tallyResourcesWorld((TallyResourcesArg*)arg, planet);
 }
 
 static void
-tallyMoonCallback (const PLANET_DESC *moon, void *arg)
+tallyMoonCallback(const PLANET_DESC* moon, void* arg)
 {
-	tallyResourcesWorld ((TallyResourcesArg *) arg, moon);
+	tallyResourcesWorld((TallyResourcesArg*)arg, moon);
 }
 
 static void
-tallyResourcesWorld (TallyResourcesArg *arg, const PLANET_DESC *world)
+tallyResourcesWorld(TallyResourcesArg* arg, const PLANET_DESC* world)
 {
-	if (world->data_index == HIERARCHY_STARBASE) {
-		return;
-	}
-	
-	if (world->data_index == SA_MATRA) {
+	if (world->data_index == HIERARCHY_STARBASE)
+	{
 		return;
 	}
 
-	if (world->data_index == DESTROYED_STARBASE) {
+	if (world->data_index == SA_MATRA)
+	{
 		return;
 	}
 
-	if (world->data_index == PRECURSOR_STARBASE) {
+	if (world->data_index == DESTROYED_STARBASE)
+	{
 		return;
 	}
 
-	arg->bioCount += calculateBioValue (pSolarSysState, world),
-	arg->mineralCount += calculateMineralValue (pSolarSysState, world);
+	if (world->data_index == PRECURSOR_STARBASE)
+	{
+		return;
+	}
+
+	arg->bioCount += calculateBioValue(pSolarSysState, world),
+		arg->mineralCount += calculateMineralValue(pSolarSysState, world);
 }
 
 ////////////////////////////////////////////////////////////////////////////
 
-void
-forAllPlanetTypes (void (*callback) (int, const PlanetFrame *, void *),
-		void *arg)
+void forAllPlanetTypes(void (*callback)(int, const PlanetFrame*, void*),
+					   void* arg)
 {
 	int i;
-	
+
 	for (i = 0; i < NUMBER_OF_PLANET_TYPES; i++)
-		callback (i, &PlanetsArray[i], arg);
+		callback(i, &PlanetsArray[i], arg);
 }
-	
+
 typedef struct
 {
-	FILE *out;
+	FILE* out;
 } DumpPlanetTypesArg;
 
-void
-dumpPlanetTypes (FILE *out)
+void dumpPlanetTypes(FILE* out)
 {
 	DumpPlanetTypesArg dumpPlanetTypesArg;
 	dumpPlanetTypesArg.out = out;
 
-	forAllPlanetTypes (dumpPlanetTypeCallback, (void *) &dumpPlanetTypesArg);
+	forAllPlanetTypes(dumpPlanetTypeCallback, (void*)&dumpPlanetTypesArg);
 }
 
 static void
-dumpPlanetTypeCallback (int index, const PlanetFrame *planetType, void *arg)
+dumpPlanetTypeCallback(int index, const PlanetFrame* planetType, void* arg)
 {
-	DumpPlanetTypesArg *dumpPlanetTypesArg = (DumpPlanetTypesArg *) arg;
+	DumpPlanetTypesArg* dumpPlanetTypesArg = (DumpPlanetTypesArg*)arg;
 
 	dumpPlanetType(dumpPlanetTypesArg->out, index, planetType);
 }
 
-void
-dumpPlanetType (FILE *out, int index, const PlanetFrame *planetType)
+void dumpPlanetType(FILE* out, int index, const PlanetFrame* planetType)
 {
 	int i;
-	fprintf (out,
+	fprintf(out,
 			"%s\n"
 			"\tType: %s\n"
 			"\tColor: %s\n"
@@ -1679,34 +1651,31 @@ dumpPlanetType (FILE *out, int index, const PlanetFrame *planetType)
 			"\tAtmosphere: %s\n"
 			"\tDensity: %s\n"
 			"\tElements:\n",
-			planetTypeString (index),
-			worldSizeString (PLANSIZE (planetType->Type)),
-			bodyColorString (PLANCOLOR (planetType->Type)),
-			worldGenAlgoString (PLANALGO (planetType->Type)),
-			tectonicsString (planetType->BaseTectonics),
-			atmosphereString (HINIBBLE (planetType->AtmoAndDensity)),
-			densityString (LONIBBLE (planetType->AtmoAndDensity))
-			);
+			planetTypeString(index),
+			worldSizeString(PLANSIZE(planetType->Type)),
+			bodyColorString(PLANCOLOR(planetType->Type)),
+			worldGenAlgoString(PLANALGO(planetType->Type)),
+			tectonicsString(planetType->BaseTectonics),
+			atmosphereString(HINIBBLE(planetType->AtmoAndDensity)),
+			densityString(LONIBBLE(planetType->AtmoAndDensity)));
 	for (i = 0; i < NUM_USEFUL_ELEMENTS; i++)
 	{
-		const ELEMENT_ENTRY *entry;
+		const ELEMENT_ENTRY* entry;
 		entry = &planetType->UsefulElements[i];
 		if (entry->Density == 0)
 			continue;
 		fprintf(out, "\t\t0 to %d %s-quality (+%d) deposits of %s (%s)\n",
-				DEPOSIT_QUANTITY (entry->Density),
-				depositQualityString (DEPOSIT_QUALITY (entry->Density)),
-				DEPOSIT_QUALITY (entry->Density) * 5,
-				GAME_STRING (ELEMENTS_STRING_BASE + entry->ElementType),
-				GAME_STRING (CARGO_STRING_BASE + 2 + ElementCategory (
-				entry->ElementType))
-			);
+				DEPOSIT_QUANTITY(entry->Density),
+				depositQualityString(DEPOSIT_QUALITY(entry->Density)),
+				DEPOSIT_QUALITY(entry->Density) * 5,
+				GAME_STRING(ELEMENTS_STRING_BASE + entry->ElementType),
+				GAME_STRING(CARGO_STRING_BASE + 2 + ElementCategory(entry->ElementType)));
 	}
-	fprintf (out, "\n");
+	fprintf(out, "\n");
 }
 
-const char *
-planetTypeString (int typeIndex)
+const char*
+planetTypeString(int typeIndex)
 {
 	static uqm::CHAR_T typeStr[40];
 
@@ -1714,21 +1683,21 @@ planetTypeString (int typeIndex)
 	{
 		// "Gas Giant"
 		snprintf(typeStr, sizeof typeStr, "%s",
-				GAME_STRING (SCAN_STRING_BASE + 4 + 51));
+				 GAME_STRING(SCAN_STRING_BASE + 4 + 51));
 	}
 	else
 	{
 		// "<type> World" (eg. "Water World")
 		snprintf(typeStr, sizeof typeStr, "%s %s",
-				GAME_STRING (SCAN_STRING_BASE + 4 + typeIndex),
-				GAME_STRING (SCAN_STRING_BASE + 4 + 50));
+				 GAME_STRING(SCAN_STRING_BASE + 4 + typeIndex),
+				 GAME_STRING(SCAN_STRING_BASE + 4 + 50));
 	}
 	return typeStr;
 }
 
 // size is what you get from PLANSIZE (planetFrame.Type)
-const char *
-worldSizeString (uqm::BYTE size)
+const char*
+worldSizeString(uqm::BYTE size)
 {
 	switch (size)
 	{
@@ -1745,8 +1714,8 @@ worldSizeString (uqm::BYTE size)
 }
 
 // algo is what you get from PLANALGO (planetFrame.Type)
-const char *
-worldGenAlgoString (uqm::BYTE algo)
+const char*
+worldGenAlgoString(uqm::BYTE algo)
 {
 	switch (algo)
 	{
@@ -1764,8 +1733,8 @@ worldGenAlgoString (uqm::BYTE algo)
 
 // tectonics is what you get from planetFrame.BaseTechtonics
 // not reentrant
-const char *
-tectonicsString (uqm::BYTE tectonics)
+const char*
+tectonicsString(uqm::BYTE tectonics)
 {
 	static char buf[sizeof "-127"];
 	switch (tectonics)
@@ -1781,14 +1750,14 @@ tectonicsString (uqm::BYTE tectonics)
 		case SUPER_TECTONICS:
 			return "super";
 		default:
-			snprintf (buf, sizeof buf, "%d", tectonics);
+			snprintf(buf, sizeof buf, "%d", tectonics);
 			return buf;
 	}
 }
 
 // atmosphere is what you get from HINIBBLE (planetFrame.AtmoAndDensity)
-const char *
-atmosphereString (uqm::BYTE atmosphere)
+const char*
+atmosphereString(uqm::BYTE atmosphere)
 {
 	switch (atmosphere)
 	{
@@ -1804,8 +1773,8 @@ atmosphereString (uqm::BYTE atmosphere)
 }
 
 // density is what you get from LONIBBLE (planetFrame.AtmoAndDensity)
-const char *
-densityString (uqm::BYTE density)
+const char*
+densityString(uqm::BYTE density)
 {
 	switch (density)
 	{
@@ -1828,8 +1797,8 @@ densityString (uqm::BYTE density)
 }
 
 // quality is what you get from DEPOSIT_QUALITY (elementEntry.Density)
-const char *
-depositQualityString (uqm::BYTE quality)
+const char*
+depositQualityString(uqm::BYTE quality)
 {
 	switch (quality)
 	{
@@ -1847,49 +1816,46 @@ depositQualityString (uqm::BYTE quality)
 
 ////////////////////////////////////////////////////////////////////////////
 
-void
-resetCrewBattle (void)
+void resetCrewBattle(void)
 {
-	STARSHIP *StarShipPtr;
+	STARSHIP* StarShipPtr;
 	uqm::COUNT delta;
 	CONTEXT OldContext;
-	
-	if (!(GLOBAL (CurrentActivity) & IN_BATTLE) ||
-			(inHQSpace ()))
+
+	if (!(GLOBAL(CurrentActivity) & IN_BATTLE) || (inHQSpace()))
 		return;
-	
-	StarShipPtr = findPlayerShip (RPG_PLAYER_NUM);
+
+	StarShipPtr = findPlayerShip(RPG_PLAYER_NUM);
 	if (StarShipPtr == NULL || StarShipPtr->RaceDescPtr == NULL)
 		return;
 
-	delta = StarShipPtr->RaceDescPtr->ship_info.max_crew -
-			StarShipPtr->RaceDescPtr->ship_info.crew_level;
+	delta = StarShipPtr->RaceDescPtr->ship_info.max_crew - StarShipPtr->RaceDescPtr->ship_info.crew_level;
 
-	OldContext = SetContext (StatusContext);
-	DeltaCrew ((ELEMENT*)StarShipPtr->hShip, delta);
-	SetContext (OldContext);
+	OldContext = SetContext(StatusContext);
+	DeltaCrew((ELEMENT*)StarShipPtr->hShip, delta);
+	SetContext(OldContext);
 }
 
 ////////////////////////////////////////////////////////////////////////////
 
 // This function should help in making sure that gamestr.h matches
 // gamestrings.txt.
-void
-dumpStrings (FILE *out)
+void dumpStrings(FILE* out)
 {
 #define STRINGIZE(a) #a
-#define MAKE_STRING_CATEGORY(prefix) \
-		{ \
-			/* .name  = */ STRINGIZE(prefix ## _BASE), \
-			/* .base  = */ prefix ## _BASE, \
-			/* .count = */ prefix ## _COUNT \
-		}
-	struct {
-		const char *name;
+#define MAKE_STRING_CATEGORY(prefix)                           \
+	{                                                          \
+		/* .name  = */ STRINGIZE(prefix ## _BASE),               \
+								 /* .base  = */ prefix##_BASE, \
+								 /* .count = */ prefix##_COUNT \
+	}
+	struct
+	{
+		const char* name;
 		size_t base;
 		size_t count;
 	} categories[] = {
-		{ "0", 0, 0 },
+		{"0",			  0,			 0		  },
 		MAKE_STRING_CATEGORY(STAR_STRING),
 		MAKE_STRING_CATEGORY(DEVICE_STRING),
 		MAKE_STRING_CATEGORY(CARGO_STRING),
@@ -1913,33 +1879,36 @@ dumpStrings (FILE *out)
 		MAKE_STRING_CATEGORY(MAINMENU_STRING),
 		MAKE_STRING_CATEGORY(NETMELEE_STRING),
 		MAKE_STRING_CATEGORY(BIOLOGICAL_STRING),
-		{ "GAMESTR_COUNT", GAMESTR_COUNT, (size_t) -1 }
+		{"GAMESTR_COUNT", GAMESTR_COUNT, (size_t)-1}
 	};
-	size_t numCategories = ARRAY_SIZE (categories);
-	size_t numStrings = GetStringTableCount (GameStrings);
+	size_t numCategories = ARRAY_SIZE(categories);
+	size_t numStrings = GetStringTableCount(GameStrings);
 	size_t stringI;
 	size_t categoryI = 0;
 
 	// Start with a sanity check to see if gamestr.h has been changed but
 	// not this file.
-	for (categoryI = 0; categoryI < numCategories - 1; categoryI++) {
-		if (categories[categoryI].base + categories[categoryI].count !=
-				categories[categoryI + 1].base) {
+	for (categoryI = 0; categoryI < numCategories - 1; categoryI++)
+	{
+		if (categories[categoryI].base + categories[categoryI].count != categories[categoryI + 1].base)
+		{
 			fprintf(stderr, "Error: String category list in dumpStrings() is "
-					"not up to date.\n");
+							"not up to date.\n");
 			return;
 		}
 	}
-	
-	if (GAMESTR_COUNT != numStrings) {
+
+	if (GAMESTR_COUNT != numStrings)
+	{
 		fprintf(stderr, "Warning: GAMESTR_COUNT is %i, but GameStrings "
-				"contains %zu strings.\n", GAMESTR_COUNT, numStrings);
+						"contains %zu strings.\n",
+				GAMESTR_COUNT, numStrings);
 	}
 
 	categoryI = 0;
-	for (stringI = 0; stringI < numStrings; stringI++) {
-		while (categoryI < numCategories &&
-				stringI >= categories[categoryI + 1].base)
+	for (stringI = 0; stringI < numStrings; stringI++)
+	{
+		while (categoryI < numCategories && stringI >= categories[categoryI + 1].base)
 			categoryI++;
 		fprintf(out, "[ %s + %zu ]  %s\n", categories[categoryI].name,
 				stringI - categories[categoryI].base, GAME_STRING((uqm::COUNT)stringI));
@@ -1950,71 +1919,78 @@ dumpStrings (FILE *out)
 
 
 static Color
-hsvaToRgba (double hue, double sat, double val, uqm::BYTE alpha)
+hsvaToRgba(double hue, double sat, double val, uqm::BYTE alpha)
 {
-	unsigned int hi = (int) (hue / 60.0);
-	double f = (hue / 60.0) - ((int) (hue / 60.0));
+	unsigned int hi = (int)(hue / 60.0);
+	double f = (hue / 60.0) - ((int)(hue / 60.0));
 	double p = val * (1.0 - sat);
 	double q = val * (1.0 - f * sat);
 	double t = val * (1.0 - (1.0 - f * sat));
 
 	// Convert p, q, t, and v from [0..1] to [0..255]
-	uqm::BYTE pb = (uqm::BYTE) (p * 255.0 + 0.5);
-	uqm::BYTE qb = (uqm::BYTE) (q * 255.0 + 0.5);
-	uqm::BYTE tb = (uqm::BYTE) (t * 255.0 + 0.5);
-	uqm::BYTE vb = (uqm::BYTE) (val * 255.0 + 0.5);
+	uqm::BYTE pb = (uqm::BYTE)(p * 255.0 + 0.5);
+	uqm::BYTE qb = (uqm::BYTE)(q * 255.0 + 0.5);
+	uqm::BYTE tb = (uqm::BYTE)(t * 255.0 + 0.5);
+	uqm::BYTE vb = (uqm::BYTE)(val * 255.0 + 0.5);
 
-	assert (hue >= 0.0 && hue < 360.0);
-	assert (sat >= 0 && sat <= 1.0);
-	assert (val >= 0 && val <= 1.0);
+	assert(hue >= 0.0 && hue < 360.0);
+	assert(sat >= 0 && sat <= 1.0);
+	assert(val >= 0 && val <= 1.0);
 	/*fprintf(stderr, "hsva = (%.1f, %.2f, %.2f, %.2d)\n",
 			hue, sat, val, alpha);*/
-	
-	assert (hi < 6);
-	switch (hi) {
-		case 0: return BUILD_COLOR_RGBA (vb, tb, pb, alpha);
-		case 1: return BUILD_COLOR_RGBA (qb, vb, pb, alpha);
-		case 2: return BUILD_COLOR_RGBA (pb, vb, tb, alpha);
-		case 3: return BUILD_COLOR_RGBA (pb, qb, vb, alpha);
-		case 4: return BUILD_COLOR_RGBA (tb, pb, vb, alpha);
-		case 5: return BUILD_COLOR_RGBA (vb, pb, qb, alpha);
+
+	assert(hi < 6);
+	switch (hi)
+	{
+		case 0:
+			return BUILD_COLOR_RGBA(vb, tb, pb, alpha);
+		case 1:
+			return BUILD_COLOR_RGBA(qb, vb, pb, alpha);
+		case 2:
+			return BUILD_COLOR_RGBA(pb, vb, tb, alpha);
+		case 3:
+			return BUILD_COLOR_RGBA(pb, qb, vb, alpha);
+		case 4:
+			return BUILD_COLOR_RGBA(tb, pb, vb, alpha);
+		case 5:
+			return BUILD_COLOR_RGBA(vb, pb, qb, alpha);
 	}
 
 	// Should not happen.
-	return BUILD_COLOR_RGBA (0, 0, 0, alpha);
+	return BUILD_COLOR_RGBA(0, 0, 0, alpha);
 }
 
 // Returns true iff this context has a visible FRAME.
 static bool
-isContextVisible (CONTEXT context)
+isContextVisible(CONTEXT context)
 {
 	FRAME contextFrame;
 
 	// Save the original context.
-	CONTEXT oldContext = SetContext (context);
-	
+	CONTEXT oldContext = SetContext(context);
+
 	// Get the frame of the specified context.
-	contextFrame = GetContextFGFrame ();
+	contextFrame = GetContextFGFrame();
 
 	// Restore the original context.
-	SetContext (oldContext);
+	SetContext(oldContext);
 
 	return contextFrame == Screen;
 }
 
 static size_t
-countVisibleContexts (void)
+countVisibleContexts(void)
 {
 	size_t contextCount;
 	CONTEXT context;
 
 	contextCount = 0;
-	for (context = GetFirstContext (); context != NULL;
-			context = GetNextContext (context))
+	for (context = GetFirstContext(); context != NULL;
+		 context = GetNextContext(context))
 	{
-		if (!isContextVisible (context))
+		if (!isContextVisible(context))
 			continue;
-		
+
 		contextCount++;
 	}
 
@@ -2022,7 +1998,7 @@ countVisibleContexts (void)
 }
 
 static void
-drawContext (CONTEXT context, double hue /* no pun intended */)
+drawContext(CONTEXT context, double hue /* no pun intended */)
 {
 	//FRAME drawFrame; unused
 	CONTEXT oldContext;
@@ -2039,18 +2015,18 @@ drawContext (CONTEXT context, double hue /* no pun intended */)
 	POINT p1, p2, p3, p4;
 
 	//drawFrame = GetContextFGFrame (); unused
-	rectCol = hsvaToRgba (hue, 1.0, 0.5, 100);
-	lineCol = hsvaToRgba (hue, 1.0, 1.0, 90);
+	rectCol = hsvaToRgba(hue, 1.0, 0.5, 100);
+	lineCol = hsvaToRgba(hue, 1.0, 1.0, 90);
 	textCol = lineCol;
 
 	// Save the original context.
-	oldContext = SetContext (context);
-	
+	oldContext = SetContext(context);
+
 	// Get the clipping rectangle of the specified context.
-	GetContextClipRect (&rect);
+	GetContextClipRect(&rect);
 
 	// Switch back the old context; we're going to draw in it.
-	(void) SetContext (oldContext);
+	(void)SetContext(oldContext);
 
 	p1 = rect.corner;
 	p2.x = rect.corner.x + rect.extent.width - 1;
@@ -2060,78 +2036,91 @@ drawContext (CONTEXT context, double hue /* no pun intended */)
 	p4.x = rect.corner.x + rect.extent.width - 1;
 	p4.y = rect.corner.y + rect.extent.height - 1;
 
-	oldFgCol = SetContextForeGroundColor (rectCol);
-	DrawFilledRectangle (&rect);
+	oldFgCol = SetContextForeGroundColor(rectCol);
+	DrawFilledRectangle(&rect);
 
-	SetContextForeGroundColor (lineCol);
-	line.first = p1; line.second = p2; DrawLine (&line, 1);
-	line.first = p2; line.second = p4; DrawLine (&line, 1);
-	line.first = p1; line.second = p3; DrawLine (&line, 1);
-	line.first = p3; line.second = p4; DrawLine (&line, 1);
-	line.first = p1; line.second = p4; DrawLine (&line, 1);
-	line.first = p2; line.second = p3; DrawLine (&line, 1);
+	SetContextForeGroundColor(lineCol);
+	line.first = p1;
+	line.second = p2;
+	DrawLine(&line, 1);
+	line.first = p2;
+	line.second = p4;
+	DrawLine(&line, 1);
+	line.first = p1;
+	line.second = p3;
+	DrawLine(&line, 1);
+	line.first = p3;
+	line.second = p4;
+	DrawLine(&line, 1);
+	line.first = p1;
+	line.second = p4;
+	DrawLine(&line, 1);
+	line.first = p2;
+	line.second = p3;
+	DrawLine(&line, 1);
 	// Gimme C'99! So I can do:
 	//     DrawLine ((LINE) { .first = p1, .second = p2 })
 
-	oldFont = SetContextFont (TinyFont);
-	SetContextForeGroundColor (textCol);
+	oldFont = SetContextFont(TinyFont);
+	SetContextForeGroundColor(textCol);
 	// Text prim does not yet support alpha via Color.a
-	oldMode = SetContextDrawMode (MAKE_DRAW_MODE (DRAW_ALPHA, textCol.a));
+	oldMode = SetContextDrawMode(MAKE_DRAW_MODE(DRAW_ALPHA, textCol.a));
 	text.baseline.x = (p1.x + (p2.x + 1)) / 2;
 	text.baseline.y = p1.y + 8;
-	text.pStr = GetContextName (context);
+	text.pStr = GetContextName(context);
 	text.align = ALIGN_CENTER;
-	text.CharCount = (uqm::COUNT) ~0;
-	font_DrawText (&text);
-	(void) SetContextDrawMode (oldMode);
+	text.CharCount = (uqm::COUNT)~0;
+	font_DrawText(&text);
+	(void)SetContextDrawMode(oldMode);
 
-	(void) SetContextForeGroundColor (oldFgCol);
-	(void) SetContextFont (oldFont);
+	(void)SetContextForeGroundColor(oldFgCol);
+	(void)SetContextFont(oldFont);
 }
 
 static void
-describeContext (FILE *out, const CONTEXT context) {
+describeContext(FILE* out, const CONTEXT context)
+{
 	RECT rect;
-	CONTEXT oldContext = SetContext (context);
-	
-	GetContextClipRect (&rect);
+	CONTEXT oldContext = SetContext(context);
+
+	GetContextClipRect(&rect);
 	fprintf(out, "Context '%s':\n"
-			"\tClipRect = (%d, %d)-(%d, %d)  (%d x %d)\n",
-		   GetContextName (context),
-		   rect.corner.x, rect.corner.y,
-		   rect.corner.x + rect.extent.width,
-		   rect.corner.y + rect.extent.height,
-		   rect.extent.width, rect.extent.height);
-	
-	SetContext (oldContext);
+				 "\tClipRect = (%d, %d)-(%d, %d)  (%d x %d)\n",
+			GetContextName(context),
+			rect.corner.x, rect.corner.y,
+			rect.corner.x + rect.extent.width,
+			rect.corner.y + rect.extent.height,
+			rect.extent.width, rect.extent.height);
+
+	SetContext(oldContext);
 }
 
 
 typedef struct wait_state
 {
 	// standard state required by DoInput
-	bool (*InputFunc) (struct wait_state *self);
+	bool (*InputFunc)(struct wait_state* self);
 } WAIT_STATE;
 
-		
+
 // Maybe move to elsewhere, where it can be reused?
 static bool
-waitForKey (struct wait_state *self) {
-	if (PulsedInputState.menu[KEY_MENU_SELECT] ||
-			PulsedInputState.menu[KEY_MENU_CANCEL])
+waitForKey(struct wait_state* self)
+{
+	if (PulsedInputState.menu[KEY_MENU_SELECT] || PulsedInputState.menu[KEY_MENU_CANCEL])
 		return false;
 
-	SleepThread (ONE_SECOND / 20);
-	
-	(void) self;
+	SleepThread(ONE_SECOND / 20);
+
+	(void)self;
 	return true;
 }
 
 // Maybe move to elsewhere, where it can be reused?
 static FRAME
-getScreen (void)
+getScreen(void)
 {
-	CONTEXT oldContext = SetContext (ScreenContext);
+	CONTEXT oldContext = SetContext(ScreenContext);
 	FRAME savedFrame;
 	RECT screenRect;
 
@@ -2139,37 +2128,37 @@ getScreen (void)
 	screenRect.corner.y = 0;
 	screenRect.extent.width = CanvasWidth;
 	screenRect.extent.height = CanvasHeight;
-	savedFrame = CaptureDrawable (LoadDisplayPixmap (&screenRect, (FRAME) 0));
+	savedFrame = CaptureDrawable(LoadDisplayPixmap(&screenRect, (FRAME)0));
 
-	(void) SetContext (oldContext);
+	(void)SetContext(oldContext);
 	return savedFrame;
 }
 
 static void
-putScreen (FRAME savedFrame) {
+putScreen(FRAME savedFrame)
+{
 	STAMP stamp;
-	
-	CONTEXT oldContext = SetContext (ScreenContext);
+
+	CONTEXT oldContext = SetContext(ScreenContext);
 
 	stamp.origin.x = 0;
 	stamp.origin.y = 0;
 	stamp.frame = savedFrame;
-	DrawStamp (&stamp);
+	DrawStamp(&stamp);
 
-	(void) SetContext (oldContext);
+	(void)SetContext(oldContext);
 }
 
 // Show the contexts on the screen.
 // Must be called from the main thread.
-void
-debugContexts (void)
+void debugContexts(void)
 {
 	static volatile bool inDebugContexts = false;
-			// Prevent this function from being called from within itself.
-	
+	// Prevent this function from being called from within itself.
+
 	CONTEXT orgContext;
 	CONTEXT debugDrawContext;
-			// We're going to use this context to draw in.
+	// We're going to use this context to draw in.
 	FRAME debugDrawFrame;
 	double hueIncrement;
 	size_t visibleContextI;
@@ -2182,47 +2171,48 @@ debugContexts (void)
 		return;
 	inDebugContexts = true;
 
-	contextCount = countVisibleContexts ();
+	contextCount = countVisibleContexts();
 	if (contextCount == 0)
 	{
 		goto out;
 	}
-	
-	savedScreen = getScreen ();
-	FlushGraphics ();
-			// Make sure that the screen has actually been captured,
-			// before we use the frame.
+
+	savedScreen = getScreen();
+	FlushGraphics();
+	// Make sure that the screen has actually been captured,
+	// before we use the frame.
 
 	// Create a new frame to draw on.
-	debugDrawContext = CreateContext ("debugDrawContext");
+	debugDrawContext = CreateContext("debugDrawContext");
 	// New work frame is a copy of the original.
-	debugDrawFrame = CaptureDrawable (CloneFrame (savedScreen));
-	orgContext = SetContext (debugDrawContext);
-	SetContextFGFrame (debugDrawFrame);
+	debugDrawFrame = CaptureDrawable(CloneFrame(savedScreen));
+	orgContext = SetContext(debugDrawContext);
+	SetContextFGFrame(debugDrawFrame);
 
 	hueIncrement = 360.0 / contextCount;
 
 	visibleContextI = 0;
-	for (context = GetFirstContext (); context != NULL;
-			context = GetNextContext (context))
+	for (context = GetFirstContext(); context != NULL;
+		 context = GetNextContext(context))
 	{
-		if (context == debugDrawContext) {
+		if (context == debugDrawContext)
+		{
 			// Skip our own context.
 			continue;
 		}
-	
-		if (isContextVisible (context))
+
+		if (isContextVisible(context))
 		{
 			// Only draw the visible contexts.
-			drawContext (context, visibleContextI * hueIncrement);
+			drawContext(context, visibleContextI * hueIncrement);
 			visibleContextI++;
 		}
 
-		describeContext (stderr, context);
+		describeContext(stderr, context);
 	}
 
 	// Blit the final debugging frame to the screen.
-	putScreen (debugDrawFrame);
+	putScreen(debugDrawFrame);
 
 	// Wait for a key:
 	{
@@ -2231,21 +2221,20 @@ debugContexts (void)
 		DoInput(&state, true);
 	}
 
-	SetContext (orgContext);
+	SetContext(orgContext);
 
 	// Destroy the debugging frame and context.
-	DestroyContext (debugDrawContext);
-			// This does nothing with the drawable set with
-			// SetContextFGFrame().
-	DestroyDrawable (ReleaseDrawable (debugDrawFrame));
-	
-	putScreen (savedScreen);
+	DestroyContext(debugDrawContext);
+	// This does nothing with the drawable set with
+	// SetContextFGFrame().
+	DestroyDrawable(ReleaseDrawable(debugDrawFrame));
 
-	DestroyDrawable (ReleaseDrawable (savedScreen));
+	putScreen(savedScreen);
+
+	DestroyDrawable(ReleaseDrawable(savedScreen));
 
 out:
 	inDebugContexts = false;
 }
 
-#endif  /* DEBUG */
-
+#endif /* DEBUG */

@@ -20,21 +20,19 @@
 #include <android/log.h>
 #endif
 
-void
-log_displayBox (const /*UTF-8*/char *title, int isError,
-		const /*UTF-8*/char *msg)
+void log_displayBox(const /*UTF-8*/ char* title, int isError,
+					const /*UTF-8*/ char* msg)
 {
 	// We do not know how to display a box. Perhaps it's done with a
 	// hefty dose of pixie dust, or perhaps with a hammer and nails.
 	// So just inform the user of our predicament
-	fprintf (streamOut, "Do not know how to display %s box\n",
+	fprintf(streamOut, "Do not know how to display %s box\n",
 			isError ? "an error" : "a");
 #if defined(ANDROID) || defined(__ANDROID__)
-	__android_log_print( isError ? ANDROID_LOG_FATAL : ANDROID_LOG_INFO, "Ur-Quan Masters MegaMod", "%s: %s", title, msg );
+	__android_log_print(isError ? ANDROID_LOG_FATAL : ANDROID_LOG_INFO, "Ur-Quan Masters MegaMod", "%s: %s", title, msg);
 #endif
-	
+
 	// Suppress the compiler warnings in any case.
 	(void)title;
 	(void)msg;
 }
-

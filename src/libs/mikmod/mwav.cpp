@@ -42,17 +42,18 @@
 #include "mikmod_internals.h"
 
 #ifdef SUNOS
-extern int fprintf(FILE *, const char *, ...);
+extern int fprintf(FILE*, const char*, ...);
 #endif
 
-static void extract_channel(const char *src, char *dst, int num_chan, int num_samples, int samp_size, int channel);
+static void extract_channel(const char* src, char* dst, int num_chan, int num_samples, int samp_size, int channel);
 
 
-typedef struct WAV {
-	CHAR  rID[4];
+typedef struct WAV
+{
+	CHAR rID[4];
 	ULONG rLen;
-	CHAR  wID[4];
-	CHAR  fID[4];
+	CHAR wID[4];
+	CHAR fID[4];
 	ULONG fLen;
 	UWORD wFormatTag;
 	UWORD nChannels;
@@ -69,12 +70,13 @@ static BOOL isWaveFile(MREADER* reader)
 	_mm_fseek(reader, SEEK_SET, 0);
 
 	/* read wav header */
-	_mm_read_string(wh.rID,4,reader);
+	_mm_read_string(wh.rID, 4, reader);
 	wh.rLen = _mm_read_I_ULONG(reader);
-	_mm_read_string(wh.wID,4,reader);
+	_mm_read_string(wh.wID, 4, reader);
 
 	/* check for correct header */
-	if(_mm_eof(reader)|| memcmp(wh.rID,"RIFF",4) || memcmp(wh.wID,"WAVE",4)) {
+	if (_mm_eof(reader) || memcmp(wh.rID, "RIFF", 4) || memcmp(wh.wID, "WAVE", 4))
+	{
 		return 0;
 	}
 	return 1;
@@ -82,83 +84,93 @@ static BOOL isWaveFile(MREADER* reader)
 
 static SAMPLE* Sample_LoadGeneric_internal_wav(MREADER* reader)
 {
-	SAMPLE *si=NULL;
+	SAMPLE* si = NULL;
 	WAV wh;
-	BOOL have_fmt=0;
+	BOOL have_fmt = 0;
 
 	_mm_fseek(reader, SEEK_SET, 0);
 
 	/* read wav header */
-	_mm_read_string(wh.rID,4,reader);
+	_mm_read_string(wh.rID, 4, reader);
 	wh.rLen = _mm_read_I_ULONG(reader);
-	_mm_read_string(wh.wID,4,reader);
+	_mm_read_string(wh.wID, 4, reader);
 
 	/* check for correct header */
-	if(_mm_eof(reader)|| memcmp(wh.rID,"RIFF",4) || memcmp(wh.wID,"WAVE",4)) {
+	if (_mm_eof(reader) || memcmp(wh.rID, "RIFF", 4) || memcmp(wh.wID, "WAVE", 4))
+	{
 		_mm_errno = MMERR_UNKNOWN_WAVE_TYPE;
 		return NULL;
 	}
 
 	/* scan all RIFF blocks until we find the sample data */
-	for(;;) {
+	for (;;)
+	{
 		CHAR dID[4];
-		ULONG len,start;
+		ULONG len, start;
 
-		_mm_read_string(dID,4,reader);
+		_mm_read_string(dID, 4, reader);
 		len = _mm_read_I_ULONG(reader);
 		/* truncated file ? */
-		if (_mm_eof(reader)) {
-			_mm_errno=MMERR_UNKNOWN_WAVE_TYPE;
+		if (_mm_eof(reader))
+		{
+			_mm_errno = MMERR_UNKNOWN_WAVE_TYPE;
 			return NULL;
 		}
 		start = _mm_ftell(reader);
 
 		/* sample format block
 		   should be present only once and before a data block */
-		if(!memcmp(dID,"fmt ",4)) {
-			wh.wFormatTag      = _mm_read_I_UWORD(reader);
-			wh.nChannels       = _mm_read_I_UWORD(reader);
-			wh.nSamplesPerSec  = _mm_read_I_ULONG(reader);
+		if (!memcmp(dID, "fmt ", 4))
+		{
+			wh.wFormatTag = _mm_read_I_UWORD(reader);
+			wh.nChannels = _mm_read_I_UWORD(reader);
+			wh.nSamplesPerSec = _mm_read_I_ULONG(reader);
 			wh.nAvgBytesPerSec = _mm_read_I_ULONG(reader);
-			wh.nBlockAlign     = _mm_read_I_UWORD(reader);
+			wh.nBlockAlign = _mm_read_I_UWORD(reader);
 			wh.nFormatSpecific = _mm_read_I_UWORD(reader);
 
 #ifdef MIKMOD_DEBUG
-			fprintf(stderr,"\rwavloader : wFormatTag=%04x blockalign=%04x nFormatSpc=%04x\n",
-				wh.wFormatTag,wh.nBlockAlign,wh.nFormatSpecific);
+			fprintf(stderr, "\rwavloader : wFormatTag=%04x blockalign=%04x nFormatSpc=%04x\n",
+					wh.wFormatTag, wh.nBlockAlign, wh.nFormatSpecific);
 #endif
 
-			if((have_fmt)||(wh.nChannels>1)) {
-				_mm_errno=MMERR_UNKNOWN_WAVE_TYPE;
+			if ((have_fmt) || (wh.nChannels > 1))
+			{
+				_mm_errno = MMERR_UNKNOWN_WAVE_TYPE;
 				return NULL;
 			}
-			have_fmt=1;
-		} else
-		/* sample data block
-		   should be present only once and after a format block */
-		  if(!memcmp(dID,"data",4)) {
-			if(!have_fmt) {
-				_mm_errno=MMERR_UNKNOWN_WAVE_TYPE;
-				return NULL;
-			}
-			if(!(si=(SAMPLE*)MikMod_malloc(sizeof(SAMPLE)))) return NULL;
-			si->speed  = wh.nSamplesPerSec/wh.nChannels;
-			si->volume = 64;
-			si->length = len;
-			if(wh.nBlockAlign == 2) {
-				si->flags    = SF_16BITS | SF_SIGNED;
-				si->length >>= 1;
-			}
-			si->inflags = si->flags;
-			SL_RegisterSample(si,MD_SNDFX,reader);
-			SL_LoadSamples();
-
-			/* skip any other remaining blocks - so in case of repeated sample
-			   fragments, we'll return the first anyway instead of an error */
-			break;
+			have_fmt = 1;
 		}
+		else
+			/* sample data block
+		   should be present only once and after a format block */
+			if (!memcmp(dID, "data", 4))
+			{
+				if (!have_fmt)
+				{
+					_mm_errno = MMERR_UNKNOWN_WAVE_TYPE;
+					return NULL;
+				}
+				if (!(si = (SAMPLE*)MikMod_malloc(sizeof(SAMPLE))))
+					return NULL;
+				si->speed = wh.nSamplesPerSec / wh.nChannels;
+				si->volume = 64;
+				si->length = len;
+				if (wh.nBlockAlign == 2)
+				{
+					si->flags = SF_16BITS | SF_SIGNED;
+					si->length >>= 1;
+				}
+				si->inflags = si->flags;
+				SL_RegisterSample(si, MD_SNDFX, reader);
+				SL_LoadSamples();
+
+				/* skip any other remaining blocks - so in case of repeated sample
+			   fragments, we'll return the first anyway instead of an error */
+				break;
+			}
 		/* onto next block */
-		_mm_fseek(reader,start+len,SEEK_SET);
+		_mm_fseek(reader, start + len, SEEK_SET);
 		if (_mm_eof(reader))
 			break;
 	}
@@ -168,26 +180,28 @@ static SAMPLE* Sample_LoadGeneric_internal_wav(MREADER* reader)
 
 static SAMPLE* Sample_LoadRawGeneric_internal(MREADER* reader, ULONG rate, ULONG channel, ULONG flags)
 {
-	SAMPLE *si;
+	SAMPLE* si;
 	long len;
-	int samp_size=1;
+	int samp_size = 1;
 
-	if(!(si=(SAMPLE*)MikMod_malloc(sizeof(SAMPLE)))) return NULL;
+	if (!(si = (SAMPLE*)MikMod_malloc(sizeof(SAMPLE))))
+		return NULL;
 
 	/* length */
 	_mm_fseek(reader, 0, SEEK_END);
 	len = _mm_ftell(reader);
 
 	si->panning = PAN_CENTER;
-	si->speed = rate/1;
+	si->speed = rate / 1;
 	si->volume = 64;
 	si->length = len;
-	si->loopstart=0;
+	si->loopstart = 0;
 	si->loopend = len;
 	si->susbegin = 0;
 	si->susend = 0;
 	si->inflags = si->flags = flags;
-	if (si->flags & SF_16BITS) {
+	if (si->flags & SF_16BITS)
+	{
 		si->length >>= 1;
 		si->loopstart >>= 1;
 		si->loopend >>= 1;
@@ -197,14 +211,23 @@ static SAMPLE* Sample_LoadRawGeneric_internal(MREADER* reader, ULONG rate, ULONG
 	if (si->flags & SF_STEREO)
 	{
 		char *data, *channel_data;
-		int num_samp = si->length/samp_size/2;
-		MREADER *chn_reader;
+		int num_samp = si->length / samp_size / 2;
+		MREADER* chn_reader;
 
 		data = (char*)MikMod_malloc(si->length);
-		if (!data) { MikMod_free(si); return NULL; }
+		if (!data)
+		{
+			MikMod_free(si);
+			return NULL;
+		}
 
-		channel_data = (char*)MikMod_malloc(si->length/2);
-		if (!channel_data) { MikMod_free(data); MikMod_free(si); return NULL; }
+		channel_data = (char*)MikMod_malloc(si->length / 2);
+		if (!channel_data)
+		{
+			MikMod_free(data);
+			MikMod_free(si);
+			return NULL;
+		}
 
 		/* load the raw samples completely, and fully extract the
 		 * requested channel. Create a memory reader pointing to
@@ -214,7 +237,8 @@ static SAMPLE* Sample_LoadRawGeneric_internal(MREADER* reader, ULONG rate, ULONG
 
 		extract_channel(data, channel_data, 2, num_samp, samp_size, channel);
 		chn_reader = _mm_new_mem_reader(channel_data, num_samp * samp_size);
-		if (!chn_reader) {
+		if (!chn_reader)
+		{
 			MikMod_free(channel_data);
 			MikMod_free(data);
 			MikMod_free(si);
@@ -222,9 +246,9 @@ static SAMPLE* Sample_LoadRawGeneric_internal(MREADER* reader, ULONG rate, ULONG
 		}
 
 		/* half of the samples were in the other channel */
-		si->loopstart=0;
-		si->length=num_samp;
-		si->loopend=num_samp;
+		si->loopstart = 0;
+		si->length = num_samp;
+		si->loopend = num_samp;
 
 		SL_RegisterSample(si, MD_SNDFX, chn_reader);
 		SL_LoadSamples();
@@ -243,9 +267,10 @@ static SAMPLE* Sample_LoadRawGeneric_internal(MREADER* reader, ULONG rate, ULONG
 	return si;
 }
 
-static SAMPLE* Sample_LoadGeneric_internal(MREADER* reader, const char *options)
+static SAMPLE* Sample_LoadGeneric_internal(MREADER* reader, const char* options)
 {
-	if (isWaveFile(reader)) {
+	if (isWaveFile(reader))
+	{
 		return Sample_LoadGeneric_internal_wav(reader);
 	}
 
@@ -263,26 +288,29 @@ MIKMODAPI SAMPLE* Sample_LoadRawGeneric(MREADER* reader, ULONG rate, ULONG chann
 	return result;
 }
 
-MIKMODAPI SAMPLE *Sample_LoadRawMem(const char *buf, int len, ULONG rate, ULONG channel, ULONG flags)
+MIKMODAPI SAMPLE* Sample_LoadRawMem(const char* buf, int len, ULONG rate, ULONG channel, ULONG flags)
 {
-	SAMPLE *result=NULL;
-	MREADER *reader;
+	SAMPLE* result = NULL;
+	MREADER* reader;
 
-	if (!buf || len <= 0) return NULL;
-	if ((reader=_mm_new_mem_reader(buf, len)) != NULL) {
-		result=Sample_LoadRawGeneric(reader, rate, channel, flags);
+	if (!buf || len <= 0)
+		return NULL;
+	if ((reader = _mm_new_mem_reader(buf, len)) != NULL)
+	{
+		result = Sample_LoadRawGeneric(reader, rate, channel, flags);
 		_mm_delete_mem_reader(reader);
 	}
 	return result;
 }
 
-MIKMODAPI SAMPLE* Sample_LoadRawFP(FILE *fp, ULONG rate, ULONG channel, ULONG flags)
+MIKMODAPI SAMPLE* Sample_LoadRawFP(FILE* fp, ULONG rate, ULONG channel, ULONG flags)
 {
-	SAMPLE* result=NULL;
+	SAMPLE* result = NULL;
 	MREADER* reader;
 
-	if(fp && (reader=_mm_new_file_reader(fp)) != NULL) {
-		result=Sample_LoadRawGeneric(reader, rate, channel, flags);
+	if (fp && (reader = _mm_new_file_reader(fp)) != NULL)
+	{
+		result = Sample_LoadRawGeneric(reader, rate, channel, flags);
 		_mm_delete_file_reader(reader);
 	}
 	return result;
@@ -290,11 +318,13 @@ MIKMODAPI SAMPLE* Sample_LoadRawFP(FILE *fp, ULONG rate, ULONG channel, ULONG fl
 
 MIKMODAPI SAMPLE* Sample_LoadRaw(const CHAR* filename, ULONG rate, ULONG channel, ULONG flags)
 {
-	FILE *fp;
-	SAMPLE *si=NULL;
+	FILE* fp;
+	SAMPLE* si = NULL;
 
-	if(!(md_mode & DMODE_SOFT_SNDFX)) return NULL;
-	if((fp=_mm_fopen(filename,"rb")) != NULL) {
+	if (!(md_mode & DMODE_SOFT_SNDFX))
+		return NULL;
+	if ((fp = _mm_fopen(filename, "rb")) != NULL)
+	{
 		si = Sample_LoadRawFP(fp, rate, channel, flags);
 		_mm_fclose(fp);
 	}
@@ -306,32 +336,35 @@ MIKMODAPI SAMPLE* Sample_LoadGeneric(MREADER* reader)
 	SAMPLE* result;
 
 	MUTEX_LOCK(vars);
-	result=Sample_LoadGeneric_internal(reader, NULL);
+	result = Sample_LoadGeneric_internal(reader, NULL);
 	MUTEX_UNLOCK(vars);
 
 	return result;
 }
 
-MIKMODAPI SAMPLE *Sample_LoadMem(const char *buf, int len)
+MIKMODAPI SAMPLE* Sample_LoadMem(const char* buf, int len)
 {
-	SAMPLE* result=NULL;
+	SAMPLE* result = NULL;
 	MREADER* reader;
 
-	if (!buf || len <= 0) return NULL;
-	if ((reader=_mm_new_mem_reader(buf, len)) != NULL) {
-		result=Sample_LoadGeneric(reader);
+	if (!buf || len <= 0)
+		return NULL;
+	if ((reader = _mm_new_mem_reader(buf, len)) != NULL)
+	{
+		result = Sample_LoadGeneric(reader);
 		_mm_delete_mem_reader(reader);
 	}
 	return result;
 }
 
-MIKMODAPI SAMPLE* Sample_LoadFP(FILE *fp)
+MIKMODAPI SAMPLE* Sample_LoadFP(FILE* fp)
 {
-	SAMPLE* result=NULL;
+	SAMPLE* result = NULL;
 	MREADER* reader;
 
-	if(fp && (reader=_mm_new_file_reader(fp)) != NULL) {
-		result=Sample_LoadGeneric(reader);
+	if (fp && (reader = _mm_new_file_reader(fp)) != NULL)
+	{
+		result = Sample_LoadGeneric(reader);
 		_mm_delete_file_reader(reader);
 	}
 	return result;
@@ -339,11 +372,13 @@ MIKMODAPI SAMPLE* Sample_LoadFP(FILE *fp)
 
 MIKMODAPI SAMPLE* Sample_Load(const CHAR* filename)
 {
-	FILE *fp;
-	SAMPLE *si=NULL;
+	FILE* fp;
+	SAMPLE* si = NULL;
 
-	if(!(md_mode & DMODE_SOFT_SNDFX)) return NULL;
-	if((fp=_mm_fopen(filename,"rb")) != NULL) {
+	if (!(md_mode & DMODE_SOFT_SNDFX))
+		return NULL;
+	if ((fp = _mm_fopen(filename, "rb")) != NULL)
+	{
 		si = Sample_LoadFP(fp);
 		_mm_fclose(fp);
 	}
@@ -352,32 +387,35 @@ MIKMODAPI SAMPLE* Sample_Load(const CHAR* filename)
 
 MIKMODAPI void Sample_Free(SAMPLE* si)
 {
-	if(si) {
-		if (si->onfree) si->onfree(si->ctx);
+	if (si)
+	{
+		if (si->onfree)
+			si->onfree(si->ctx);
 		MD_SampleUnload(si->handle);
 		MikMod_free(si);
 	}
 }
 
-void Sample_Free_internal(SAMPLE *si)
+void Sample_Free_internal(SAMPLE* si)
 {
 	MUTEX_LOCK(vars);
 	Sample_Free(si);
 	MUTEX_UNLOCK(vars);
 }
 
-static void extract_channel(const char *src, char *dst, int num_chan, int num_samples, int samp_size, int channel)
+static void extract_channel(const char* src, char* dst, int num_chan, int num_samples, int samp_size, int channel)
 {
 	int i;
 #ifdef MIKMOD_DEBUG
-	fprintf(stderr,"Extract channel: %p %p, num_chan=%d, num_samples=%d, samp_size=%d, channel=%d\n",
-		src,dst,num_chan,num_samples,samp_size,channel);
+	fprintf(stderr, "Extract channel: %p %p, num_chan=%d, num_samples=%d, samp_size=%d, channel=%d\n",
+			src, dst, num_chan, num_samples, samp_size, channel);
 #endif
 	src += channel * samp_size;
 
 	while (num_samples--)
 	{
-		for (i=0; i<samp_size; i++) {
+		for (i = 0; i < samp_size; i++)
+		{
 			dst[i] = src[i];
 		}
 		src += samp_size * num_chan;

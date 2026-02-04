@@ -359,4 +359,3 @@ enum
 };
 
 #endif /* UQM_COMM_ZOQFOT_STRINGS_H */
-

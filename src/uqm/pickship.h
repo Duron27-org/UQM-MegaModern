@@ -24,16 +24,16 @@
 extern "C" {
 #endif
 
-extern HSTARSHIP GetEncounterStarShip (STARSHIP *LastStarShipPtr,
-		uqm::COUNT which_player);
-extern void DrawArmadaPickShip (bool draw_salvage_frame, RECT *pPickRect);
+extern HSTARSHIP GetEncounterStarShip(STARSHIP* LastStarShipPtr,
+									  uqm::COUNT which_player);
+extern void DrawArmadaPickShip(bool draw_salvage_frame, RECT* pPickRect);
 
-extern void InitPickFrame (void);
-extern void DestroyPickFrame (void);
-extern void RepairPickFrame (RECT *pRect, uqm::COUNT frame);
+extern void InitPickFrame(void);
+extern void DestroyPickFrame(void);
+extern void RepairPickFrame(RECT* pRect, uqm::COUNT frame);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* UQM_PICKSHIP_H_INCL_ */
+#endif /* UQM_PICKSHIP_H_INCL_ */

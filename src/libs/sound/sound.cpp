@@ -30,76 +30,72 @@ float speechVolumeScale;
 TFB_SoundSource soundSource[NUM_SOUNDSOURCES];
 
 
-void
-StopSound (void)
+void StopSound(void)
 {
 	int i;
 
 	for (i = FIRST_SFX_SOURCE; i <= LAST_SFX_SOURCE; ++i)
 	{
-		StopSource (i);
+		StopSource(i);
 	}
 }
 
-void
-CleanSource (int iSource)
+void CleanSource(int iSource)
 {
-#define MAX_STACK_BUFFERS 64	
+#define MAX_STACK_BUFFERS 64
 	audio_IntVal processed;
 
 	soundSource[iSource].positional_object = NULL;
-	audio_GetSourcei (soundSource[iSource].handle,
-			audio_BUFFERS_PROCESSED, &processed);
+	audio_GetSourcei(soundSource[iSource].handle,
+					 audio_BUFFERS_PROCESSED, &processed);
 	if (processed != 0)
 	{
 		audio_Object stack_bufs[MAX_STACK_BUFFERS];
-		audio_Object *bufs;
+		audio_Object* bufs;
 
 		if (processed > MAX_STACK_BUFFERS)
-			bufs = (audio_Object *) HMalloc (
-					sizeof (audio_Object) * processed);
+			bufs = (audio_Object*)HMalloc(
+				sizeof(audio_Object) * processed);
 		else
 			bufs = stack_bufs;
 
-		audio_SourceUnqueueBuffers (soundSource[iSource].handle,
-				processed, bufs);
-		
+		audio_SourceUnqueueBuffers(soundSource[iSource].handle,
+								   processed, bufs);
+
 		if (processed > MAX_STACK_BUFFERS)
-			HFree (bufs);
+			HFree(bufs);
 	}
 	// set the source state to 'initial'
-	audio_SourceRewind (soundSource[iSource].handle);
+	audio_SourceRewind(soundSource[iSource].handle);
 }
 
-void
-StopSource (int iSource)
+void StopSource(int iSource)
 {
-	audio_SourceStop (soundSource[iSource].handle);
-	CleanSource (iSource);
+	audio_SourceStop(soundSource[iSource].handle);
+	CleanSource(iSource);
 }
 
-bool
-SoundPlaying (void)
+bool SoundPlaying(void)
 {
 	int i;
 
 	for (i = 0; i < NUM_SOUNDSOURCES; ++i)
 	{
-		TFB_SoundSample *sample;
+		TFB_SoundSample* sample;
 		sample = soundSource[i].sample;
 		if (sample && sample->decoder)
 		{
 			bool result;
-			LockMutex (soundSource[i].stream_mutex);
-			result = PlayingStream (i);
-			UnlockMutex (soundSource[i].stream_mutex);
+			LockMutex(soundSource[i].stream_mutex);
+			result = PlayingStream(i);
+			UnlockMutex(soundSource[i].stream_mutex);
 			if (result)
 				return true;
 		}
 		else
 		{
 			audio_IntVal state;
-			audio_GetSourcei (soundSource[i].handle, audio_SOURCE_STATE, &state);
+			audio_GetSourcei(soundSource[i].handle, audio_SOURCE_STATE, &state);
 			if (state == audio_PLAYING)
 				return true;
 		}
@@ -110,13 +106,13 @@ SoundPlaying (void)
 
 // for now just spin in a sleep() loop
 // perhaps later change to condvar implementation
-void
-WaitForSoundEnd (uqm::COUNT Channel)
+void WaitForSoundEnd(uqm::COUNT Channel)
 {
 	while (Channel == TFBSOUND_WAIT_ALL ?
-			SoundPlaying () : ChannelPlaying (Channel))
+			   SoundPlaying() :
+			   ChannelPlaying(Channel))
 	{
-		SleepThread (ONE_SECOND / 20);
+		SleepThread(ONE_SECOND / 20);
 		if (QuitPosted) // Don't make users wait for sounds to end
 			break;
 	}
@@ -124,8 +120,7 @@ WaitForSoundEnd (uqm::COUNT Channel)
 
 
 // Status: Ignored
-bool
-InitSound (int argc, char* argv[])
+bool InitSound(int argc, char* argv[])
 {
 	/* Quell compiler warnings */
 	(void)argc;
@@ -134,29 +129,26 @@ InitSound (int argc, char* argv[])
 }
 
 // Status: Ignored
-void
-UninitSound (void)
+void UninitSound(void)
 {
 }
 
-void
-SetSFXVolume (float volume)
+void SetSFXVolume(float volume)
 {
 	int i;
 	for (i = FIRST_SFX_SOURCE; i <= LAST_SFX_SOURCE; ++i)
 	{
-		audio_Sourcef (soundSource[i].handle, audio_GAIN, volume);
-	}	
+		audio_Sourcef(soundSource[i].handle, audio_GAIN, volume);
+	}
 }
 
-void
-SetSpeechVolume (float volume)
+void SetSpeechVolume(float volume)
 {
-	audio_Sourcef (soundSource[SPEECH_SOURCE].handle, audio_GAIN, volume);
+	audio_Sourcef(soundSource[SPEECH_SOURCE].handle, audio_GAIN, volume);
 }
 
 uqm::DWORD
-FadeMusic (uqm::BYTE end_vol, uqm::SIZE TimeInterval)
+FadeMusic(uqm::BYTE end_vol, uqm::SIZE TimeInterval)
 {
 	if (QuitPosted) // Don't make users wait for fades
 		TimeInterval = 0;
@@ -164,19 +156,18 @@ FadeMusic (uqm::BYTE end_vol, uqm::SIZE TimeInterval)
 	if (TimeInterval < 0)
 		TimeInterval = 0;
 
-	if (!SetMusicStreamFade (TimeInterval, end_vol))
-	{	// fade rejected, maybe due to TimeInterval==0
-		SetMusicVolume (end_vol);
-		return GetTimeCounter ();
+	if (!SetMusicStreamFade(TimeInterval, end_vol))
+	{ // fade rejected, maybe due to TimeInterval==0
+		SetMusicVolume(end_vol);
+		return GetTimeCounter();
 	}
 	else
 	{
-		return GetTimeCounter () + TimeInterval + 1;
+		return GetTimeCounter() + TimeInterval + 1;
 	}
 }
 
-uqm::BYTE GetCurrMusicVol (void)
+uqm::BYTE GetCurrMusicVol(void)
 {
 	return (uqm::BYTE)musicVolume;
 }
-

@@ -28,7 +28,8 @@ extern "C" {
 #endif
 
 // Enumerated type for controls
-enum {
+enum
+{
 	KEY_UP,
 	KEY_DOWN,
 	KEY_LEFT,
@@ -39,7 +40,8 @@ enum {
 	KEY_THRUST,
 	NUM_KEYS
 };
-enum {
+enum
+{
 	KEY_PAUSE,
 	KEY_EXIT,
 	KEY_ABORT,
@@ -72,7 +74,8 @@ enum {
 	NUM_MENU_KEYS
 };
 
-typedef enum {
+typedef enum
+{
 	CONTROL_TEMPLATE_KB_1,
 	CONTROL_TEMPLATE_KB_2,
 	CONTROL_TEMPLATE_KB_3,
@@ -82,12 +85,13 @@ typedef enum {
 	NUM_TEMPLATES
 } CONTROL_TEMPLATE;
 
-struct CONTROLLER_INPUT_STATE {
+struct CONTROLLER_INPUT_STATE
+{
 	int key[NUM_TEMPLATES][NUM_KEYS];
 	int menu[NUM_MENU_KEYS];
 
 	// TODO: need to define this because of volatile ImmediateInputState variable!? Figure this out. This is ugly
-	CONTROLLER_INPUT_STATE& operator=(const volatile CONTROLLER_INPUT_STATE& rhs) 
+	CONTROLLER_INPUT_STATE& operator=(const volatile CONTROLLER_INPUT_STATE& rhs)
 	{
 		for (int t = 0; t < NUM_TEMPLATES; ++t)
 		{
@@ -96,7 +100,7 @@ struct CONTROLLER_INPUT_STATE {
 				key[t][k] = rhs.key[t][k];
 			}
 		}
-		
+
 		for (int mk = 0; mk < NUM_MENU_KEYS; ++mk)
 		{
 			menu[mk] = rhs.menu[mk];
@@ -107,17 +111,17 @@ struct CONTROLLER_INPUT_STATE {
 };
 
 typedef uqm::UBYTE BATTLE_INPUT_STATE;
-#define BATTLE_LEFT       ((BATTLE_INPUT_STATE)(1 << 0))
-#define BATTLE_RIGHT      ((BATTLE_INPUT_STATE)(1 << 1))
-#define BATTLE_THRUST     ((BATTLE_INPUT_STATE)(1 << 2))
-#define BATTLE_WEAPON     ((BATTLE_INPUT_STATE)(1 << 3))
-#define BATTLE_SPECIAL    ((BATTLE_INPUT_STATE)(1 << 4))
-#define BATTLE_ESCAPE     ((BATTLE_INPUT_STATE)(1 << 5))
-#define BATTLE_DOWN       ((BATTLE_INPUT_STATE)(1 << 6))
+#define BATTLE_LEFT ((BATTLE_INPUT_STATE)(1 << 0))
+#define BATTLE_RIGHT ((BATTLE_INPUT_STATE)(1 << 1))
+#define BATTLE_THRUST ((BATTLE_INPUT_STATE)(1 << 2))
+#define BATTLE_WEAPON ((BATTLE_INPUT_STATE)(1 << 3))
+#define BATTLE_SPECIAL ((BATTLE_INPUT_STATE)(1 << 4))
+#define BATTLE_ESCAPE ((BATTLE_INPUT_STATE)(1 << 5))
+#define BATTLE_DOWN ((BATTLE_INPUT_STATE)(1 << 6))
 #define BATTLE_THRUST_ALT ((BATTLE_INPUT_STATE)(1 << 7))
 
-BATTLE_INPUT_STATE CurrentInputToBattleInput (uqm::COUNT player);
-BATTLE_INPUT_STATE PulsedInputToBattleInput (uqm::COUNT player);
+BATTLE_INPUT_STATE CurrentInputToBattleInput(uqm::COUNT player);
+BATTLE_INPUT_STATE PulsedInputToBattleInput(uqm::COUNT player);
 
 extern CONTROLLER_INPUT_STATE CurrentInputState;
 extern CONTROLLER_INPUT_STATE PulsedInputState;
@@ -125,36 +129,36 @@ extern volatile CONTROLLER_INPUT_STATE ImmediateInputState;
 extern CONTROL_TEMPLATE PlayerControls[];
 extern bool WarpFromMenu;
 
-void UpdateInputState (void);
-extern void FlushInput (void);
-void SetMenuRepeatDelay (uqm::DWORD min, uqm::DWORD max, uqm::DWORD step, bool gestalt);
-void SetDefaultMenuRepeatDelay (void);
-void ResetKeyRepeat (void);
-bool PauseGame (void);
-void SleepGame (void);
-bool DoConfirmExit (void);
-bool ConfirmExit (void);
+void UpdateInputState(void);
+extern void FlushInput(void);
+void SetMenuRepeatDelay(uqm::DWORD min, uqm::DWORD max, uqm::DWORD step, bool gestalt);
+void SetDefaultMenuRepeatDelay(void);
+void ResetKeyRepeat(void);
+bool PauseGame(void);
+void SleepGame(void);
+bool DoConfirmExit(void);
+bool ConfirmExit(void);
 
-#define WAIT_INFINITE ((TimePeriod)-1)
-bool WaitForAnyButton (bool newButton, TimePeriod duration,
-		bool resetInput);
-bool WaitForActButton (bool newButton, TimePeriod duration,
-		bool resetInput);
-bool WaitForAnyButtonUntil (bool newButton, TimeCount timeOut,
-		bool resetInput);
-bool WaitForActButtonUntil (bool newButton, TimeCount timeOut,
-		bool resetInput);
-bool WaitForNoInput (TimePeriod duration, bool resetInput);
-bool WaitForNoInputUntil (TimeCount timeOut, bool resetInput);
+#define WAIT_INFINITE ((TimePeriod) - 1)
+bool WaitForAnyButton(bool newButton, TimePeriod duration,
+					  bool resetInput);
+bool WaitForActButton(bool newButton, TimePeriod duration,
+					  bool resetInput);
+bool WaitForAnyButtonUntil(bool newButton, TimeCount timeOut,
+						   bool resetInput);
+bool WaitForActButtonUntil(bool newButton, TimeCount timeOut,
+						   bool resetInput);
+bool WaitForNoInput(TimePeriod duration, bool resetInput);
+bool WaitForNoInputUntil(TimeCount timeOut, bool resetInput);
 
-extern BATTLE_INPUT_STATE GetDirectionalJoystickInput (int direction, int player);
+extern BATTLE_INPUT_STATE GetDirectionalJoystickInput(int direction, int player);
 
-void DoPopupWindow(const char *msg);
+void DoPopupWindow(const char* msg);
 
-typedef void (InputFrameCallback) (void);
-InputFrameCallback* SetInputCallback (InputFrameCallback *);
+typedef void(InputFrameCallback)(void);
+InputFrameCallback* SetInputCallback(InputFrameCallback*);
 // pInputState must point to a struct derived from INPUT_STATE_DESC
-void DoInput (void *pInputState, bool resetInput);
+void DoInput(void* pInputState, bool resetInput);
 
 extern volatile bool GamePaused;
 extern volatile bool ExitRequested;
@@ -164,44 +168,42 @@ typedef struct joy_char joy_char_t;
 typedef struct textentry_state
 {
 	// standard state required by DoInput
-	bool (*InputFunc) (struct textentry_state *pTES);
+	bool (*InputFunc)(struct textentry_state* pTES);
 
 	// these are semi-private read-only
 	bool Initialized;
-	uqm::DWORD NextTime;    // use this for input frame timing
-	bool Success;   // edit confirmed or canceled
-	uqm::CHAR_T *CacheStr; // cached copy to revert immediate changes
+	uqm::DWORD NextTime;   // use this for input frame timing
+	bool Success;		   // edit confirmed or canceled
+	uqm::CHAR_T* CacheStr; // cached copy to revert immediate changes
 	STRING JoyAlphaString; // joystick alphabet definition
-	bool JoystickMode;  // true when doing joystick input
-	bool UpperRegister; // true when entering Caps
-	joy_char_t *JoyAlpha;  // joystick alphabet
+	bool JoystickMode;	   // true when doing joystick input
+	bool UpperRegister;	   // true when entering Caps
+	joy_char_t* JoyAlpha;  // joystick alphabet
 	int JoyAlphaLength;
-	joy_char_t *JoyUpper;  // joystick upper register
-	joy_char_t *JoyLower;  // joystick lower register
+	joy_char_t* JoyUpper; // joystick upper register
+	joy_char_t* JoyLower; // joystick lower register
 	int JoyRegLength;
-	uqm::CHAR_T *InsPt;        // set to current pos of insertion point
+	uqm::CHAR_T* InsPt; // set to current pos of insertion point
 	// these are public and must be set before calling DoTextEntry
-	uqm::CHAR_T *BaseStr;  // set to string to edit
-	int CursorPos;     // set to current cursor pos in chars
-	int MaxSize;       // set to max size of edited string
+	uqm::CHAR_T* BaseStr; // set to string to edit
+	int CursorPos;		  // set to current cursor pos in chars
+	int MaxSize;		  // set to max size of edited string
 
-	bool (*ChangeCallback) (struct textentry_state *pTES);
-			// returns true if last change is OK
-	bool (*FrameCallback) (struct textentry_state *pTES);
-			// called on every input frame; do whatever;
-			// returns true to continue processing
-	void *CbParam;     // callback parameter, use as you like
-	
+	bool (*ChangeCallback)(struct textentry_state* pTES);
+	// returns true if last change is OK
+	bool (*FrameCallback)(struct textentry_state* pTES);
+	// called on every input frame; do whatever;
+	// returns true to continue processing
+	void* CbParam; // callback parameter, use as you like
+
 } TEXTENTRY_STATE;
 
-extern bool DoTextEntry (TEXTENTRY_STATE *pTES);
+extern bool DoTextEntry(TEXTENTRY_STATE* pTES);
 
-extern void TestSpeechSound (STRING snd);
+extern void TestSpeechSound(STRING snd);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
 #endif
-
-

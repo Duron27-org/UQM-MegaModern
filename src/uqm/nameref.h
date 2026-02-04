@@ -21,14 +21,13 @@
 
 #include "libs/reslib.h"
 
-#define LoadCodeRes     LoadCodeResInstance
-#define LoadGraphic     (DRAWABLE)LoadGraphicInstance
-#define LoadFont        (FONT)LoadGraphicInstance
-#define LoadColorMap    LoadColorMapInstance
+#define LoadCodeRes LoadCodeResInstance
+#define LoadGraphic (DRAWABLE) LoadGraphicInstance
+#define LoadFont (FONT) LoadGraphicInstance
+#define LoadColorMap LoadColorMapInstance
 #define LoadStringTable LoadStringTableInstance
-#define LoadString      LoadStringInstance
-#define LoadSound       LoadSoundInstance
-#define LoadMusic       LoadMusicInstance
+#define LoadString LoadStringInstance
+#define LoadSound LoadSoundInstance
+#define LoadMusic LoadMusicInstance
 
 #endif /* UQM_NAMEREF_H_ */
-

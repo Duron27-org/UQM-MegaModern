@@ -25,19 +25,19 @@
 extern "C" {
 #endif
 
-extern bool GetNextStarShip (STARSHIP *LastStarShipPtr, uqm::COUNT which_side);
-extern bool GetInitialStarShips (void);
+extern bool GetNextStarShip(STARSHIP* LastStarShipPtr, uqm::COUNT which_side);
+extern bool GetInitialStarShips(void);
 
-extern void animation_preprocess (ELEMENT *ElementPtr);
-extern void ship_preprocess (ELEMENT *ElementPtr);
-extern void ship_postprocess (ELEMENT *ElementPtr);
-extern void collision (ELEMENT *ElementPtr0, POINT *pPt0,
-		ELEMENT *ElementPtr1, POINT *pPt1);
+extern void animation_preprocess(ELEMENT* ElementPtr);
+extern void ship_preprocess(ELEMENT* ElementPtr);
+extern void ship_postprocess(ELEMENT* ElementPtr);
+extern void collision(ELEMENT* ElementPtr0, POINT* pPt0,
+					  ELEMENT* ElementPtr1, POINT* pPt1);
 
-extern STATUS_FLAGS inertial_thrust (ELEMENT *ElementPtr);
+extern STATUS_FLAGS inertial_thrust(ELEMENT* ElementPtr);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* UQM_SHIP_H_INCL_ */
+#endif /* UQM_SHIP_H_INCL_ */

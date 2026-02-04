@@ -21,11 +21,10 @@
 extern "C" {
 #endif
 
-RACE_DESC *init_yehat (void);
+RACE_DESC* init_yehat(void);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* YEHAT_H */
-
+#endif /* YEHAT_H */

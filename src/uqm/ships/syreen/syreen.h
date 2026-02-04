@@ -21,11 +21,10 @@
 extern "C" {
 #endif
 
-RACE_DESC *init_syreen (void);
+RACE_DESC* init_syreen(void);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* SYREEN_H */
-
+#endif /* SYREEN_H */

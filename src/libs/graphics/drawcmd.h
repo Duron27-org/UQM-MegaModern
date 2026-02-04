@@ -62,10 +62,10 @@ typedef struct tfb_dc_rect
 
 typedef struct tfb_dc_img
 {
-	TFB_Image *image;
+	TFB_Image* image;
 	int x, y;
 	SCREEN destBuffer;
-	TFB_ColorMap *colormap;
+	TFB_ColorMap* colormap;
 	DrawMode drawMode;
 	int scale;
 	int scaleMode;
@@ -73,7 +73,7 @@ typedef struct tfb_dc_img
 
 typedef struct tfb_dc_filledimg
 {
-	TFB_Image *image;
+	TFB_Image* image;
 	int x, y;
 	Color color;
 	SCREEN destBuffer;
@@ -84,8 +84,8 @@ typedef struct tfb_dc_filledimg
 
 typedef struct tfb_dc_fontchar
 {
-	TFB_Char *fontchar;
-	TFB_Image *backing;
+	TFB_Char* fontchar;
+	TFB_Image* backing;
 	int x, y;
 	DrawMode drawMode;
 	SCREEN destBuffer;
@@ -99,7 +99,7 @@ typedef struct tfb_dc_copy
 
 typedef struct tfb_dc_copyimg
 {
-	TFB_Image *image;
+	TFB_Image* image;
 	RECT rect;
 	SCREEN srcBuffer;
 } TFB_DrawCommand_CopyToImage;
@@ -111,20 +111,20 @@ typedef struct tfb_dc_scissor
 
 typedef struct tfb_dc_setmip
 {
-	TFB_Image *image;
-	TFB_Image *mipmap;
+	TFB_Image* image;
+	TFB_Image* mipmap;
 	int hotx, hoty;
 } TFB_DrawCommand_SetMipmap;
 
 typedef struct tfb_dc_delimg
 {
-	TFB_Image *image;
+	TFB_Image* image;
 } TFB_DrawCommand_DeleteImage;
 
 typedef struct tfb_dc_deldata
 {
-	void *data;
-		// data must be a result of HXalloc() call
+	void* data;
+	// data must be a result of HXalloc() call
 } TFB_DrawCommand_DeleteData;
 
 typedef struct tfb_dc_signal
@@ -139,14 +139,15 @@ typedef struct tfb_dc_reinit_video
 
 typedef struct tfb_dc_callback
 {
-	void (*callback)(void *arg);
-	void *arg;
+	void (*callback)(void* arg);
+	void* arg;
 } TFB_DrawCommand_Callback;
 
 struct TFB_DrawCommand
 {
-	int Type{};
-	union {
+	int Type {};
+	union
+	{
 		TFB_DrawCommand_Line line;
 		TFB_DrawCommand_Rect rect;
 		TFB_DrawCommand_Image image;
@@ -161,7 +162,7 @@ struct TFB_DrawCommand
 		TFB_DrawCommand_SendSignal sendsignal;
 		TFB_DrawCommand_ReinitVideo reinitvideo;
 		TFB_DrawCommand_Callback callback;
-	} data{};
+	} data {};
 };
 
 // Queue Stuff
@@ -176,28 +177,28 @@ typedef struct tfb_drawcommandqueue
 	volatile int Size;
 } TFB_DrawCommandQueue;
 
-void Init_DrawCommandQueue (void);
+void Init_DrawCommandQueue(void);
 
-void Uninit_DrawCommandQueue (void);
+void Uninit_DrawCommandQueue(void);
 
-void TFB_BatchGraphics (void);
+void TFB_BatchGraphics(void);
 
-void TFB_UnbatchGraphics (void);
+void TFB_UnbatchGraphics(void);
 
-void TFB_BatchReset (void);
+void TFB_BatchReset(void);
 
-void TFB_DrawCommandQueue_Push (TFB_DrawCommand* Command);
+void TFB_DrawCommandQueue_Push(TFB_DrawCommand* Command);
 
-int TFB_DrawCommandQueue_Pop (TFB_DrawCommand* Command);
+int TFB_DrawCommandQueue_Pop(TFB_DrawCommand* Command);
 
-void TFB_DrawCommandQueue_Clear (void);
+void TFB_DrawCommandQueue_Clear(void);
 
 extern TFB_DrawCommandQueue DrawCommandQueue;
 
-void TFB_EnqueueDrawCommand (TFB_DrawCommand* DrawCommand);
+void TFB_EnqueueDrawCommand(TFB_DrawCommand* DrawCommand);
 
-void Lock_DCQ (int slots);
+void Lock_DCQ(int slots);
 
-void Unlock_DCQ (void);
+void Unlock_DCQ(void);
 
 #endif

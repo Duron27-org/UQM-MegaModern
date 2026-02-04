@@ -28,13 +28,13 @@
 #include "libs/mathlib.h"
 
 
-static bool GeneratePkunk_generatePlanets (SOLARSYS_STATE *solarSys);
-static bool GeneratePkunk_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world);
-static uqm::COUNT GeneratePkunk_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
-static bool GeneratePkunk_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, uqm::COUNT whichNode);
+static bool GeneratePkunk_generatePlanets(SOLARSYS_STATE* solarSys);
+static bool GeneratePkunk_generateOrbital(SOLARSYS_STATE* solarSys,
+										  PLANET_DESC* world);
+static uqm::COUNT GeneratePkunk_generateEnergy(const SOLARSYS_STATE*,
+											   const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO*);
+static bool GeneratePkunk_pickupEnergy(SOLARSYS_STATE* solarSys,
+									   PLANET_DESC* world, uqm::COUNT whichNode);
 
 
 const GenerateFunctions generatePkunkFunctions = {
@@ -55,15 +55,15 @@ const GenerateFunctions generatePkunkFunctions = {
 
 
 static bool
-GeneratePkunk_generatePlanets (SOLARSYS_STATE *solarSys)
+GeneratePkunk_generatePlanets(SOLARSYS_STATE* solarSys)
 {
-	PLANET_DESC *pPlanet;
-	PLANET_DESC *pSunDesc = &solarSys->SunDesc[0];
+	PLANET_DESC* pPlanet;
+	PLANET_DESC* pSunDesc = &solarSys->SunDesc[0];
 
 	solarSys->SunDesc[0].PlanetByte = 0;
 	pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
 
-	GenerateDefault_generatePlanets (solarSys);
+	GenerateDefault_generatePlanets(solarSys);
 
 	if (PrimeSeed)
 	{
@@ -72,107 +72,107 @@ GeneratePkunk_generatePlanets (SOLARSYS_STATE *solarSys)
 		pPlanet->data_index = WATER_WORLD;
 		pPlanet->NumPlanets = 1;
 		pPlanet->radius = EARTH_RADIUS * 104L / 100;
-		angle = ARCTAN (pPlanet->location.x, pPlanet->location.y);
-		pPlanet->location.x = COSINE (angle, pPlanet->radius);
-		pPlanet->location.y = SINE (angle, pPlanet->radius);
-		ComputeSpeed (pPlanet, false, 1);
+		angle = ARCTAN(pPlanet->location.x, pPlanet->location.y);
+		pPlanet->location.x = COSINE(angle, pPlanet->radius);
+		pPlanet->location.y = SINE(angle, pPlanet->radius);
+		ComputeSpeed(pPlanet, false, 1);
 	}
 	else
 	{
 		if (StarSeed)
 		{
-			pSunDesc->PlanetByte = PickClosestHabitable (solarSys);
+			pSunDesc->PlanetByte = PickClosestHabitable(solarSys);
 			pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
 		}
 		else
-			CheckForHabitable (solarSys);
+			CheckForHabitable(solarSys);
 
-		pPlanet->data_index = GenerateHabitableWorld ();
+		pPlanet->data_index = GenerateHabitableWorld();
 	}
 
 	return true;
 }
 
 static bool
-GeneratePkunk_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
+GeneratePkunk_generateOrbital(SOLARSYS_STATE* solarSys, PLANET_DESC* world)
 {
-	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
+	if (matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{
-		if (StartSphereTracking (PKUNK_SHIP))
+		if (StartSphereTracking(PKUNK_SHIP))
 		{
-			NotifyOthers (PKUNK_SHIP, IPNL_ALL_CLEAR);
-			PutGroupInfo (GROUPS_RANDOM, GROUP_SAVE_IP);
-			ReinitQueue (&GLOBAL (ip_group_q));
-			assert (CountLinks (&GLOBAL (npc_built_ship_q)) == 0);
+			NotifyOthers(PKUNK_SHIP, IPNL_ALL_CLEAR);
+			PutGroupInfo(GROUPS_RANDOM, GROUP_SAVE_IP);
+			ReinitQueue(&GLOBAL(ip_group_q));
+			assert(CountLinks(&GLOBAL(npc_built_ship_q)) == 0);
 
-			CloneShipFragment (PKUNK_SHIP,
-					&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
+			CloneShipFragment(PKUNK_SHIP,
+							  &GLOBAL(npc_built_ship_q), INFINITE_FLEET);
 
-			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-			SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, 1 << 7);
-			InitCommunication (PKUNK_CONVERSATION);
+			GLOBAL(CurrentActivity) |= START_INTERPLANETARY;
+			SET_GAME_STATE(GLOBAL_FLAGS_AND_DATA, 1 << 7);
+			InitCommunication(PKUNK_CONVERSATION);
 
-			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
+			if (!(GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
 			{
-				GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
-				ReinitQueue (&GLOBAL (npc_built_ship_q));
-				GetGroupInfo (GROUPS_RANDOM, GROUP_LOAD_IP);
+				GLOBAL(CurrentActivity) &= ~START_INTERPLANETARY;
+				ReinitQueue(&GLOBAL(npc_built_ship_q));
+				GetGroupInfo(GROUPS_RANDOM, GROUP_LOAD_IP);
 			}
 			return true;
 		}
 		else
 		{
-			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
+			LoadStdLanderFont(&solarSys->SysInfo.PlanetInfo);
 			solarSys->PlanetSideFrame[1] =
-					CaptureDrawable (LoadGraphic (RUINS_MASK_PMAP_ANIM));
+				CaptureDrawable(LoadGraphic(RUINS_MASK_PMAP_ANIM));
 			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-					CaptureStringTable (
-						LoadStringTable (PKUNK_RUINS_STRTAB));
-			if (GET_GAME_STATE (CLEAR_SPINDLE))
-			{	// Already picked up the Clear Spindle, skip the report
+				CaptureStringTable(
+					LoadStringTable(PKUNK_RUINS_STRTAB));
+			if (GET_GAME_STATE(CLEAR_SPINDLE))
+			{ // Already picked up the Clear Spindle, skip the report
 				solarSys->SysInfo.PlanetInfo.DiscoveryString =
-						SetAbsStringTableIndex (
+					SetAbsStringTableIndex(
 						solarSys->SysInfo.PlanetInfo.DiscoveryString, 1);
 			}
 		}
 	}
 
-	GenerateDefault_generateOrbital (solarSys, world);
+	GenerateDefault_generateOrbital(solarSys, world);
 
 	return true;
 }
 
 static bool
-GeneratePkunk_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		uqm::COUNT whichNode)
+GeneratePkunk_pickupEnergy(SOLARSYS_STATE* solarSys, PLANET_DESC* world,
+						   uqm::COUNT whichNode)
 {
-	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
+	if (matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{
-		GenerateDefault_landerReportCycle (solarSys);
+		GenerateDefault_landerReportCycle(solarSys);
 
 		// The artifact can be picked up from any ruin
-		if (!GET_GAME_STATE (CLEAR_SPINDLE))
-		{	// Just picked up the Clear Spindle from a ruin
-			SetLanderTakeoff ();
+		if (!GET_GAME_STATE(CLEAR_SPINDLE))
+		{ // Just picked up the Clear Spindle from a ruin
+			SetLanderTakeoff();
 
-			SET_GAME_STATE (CLEAR_SPINDLE, 1);
-			SET_GAME_STATE (CLEAR_SPINDLE_ON_SHIP, 1);
+			SET_GAME_STATE(CLEAR_SPINDLE, 1);
+			SET_GAME_STATE(CLEAR_SPINDLE_ON_SHIP, 1);
 		}
 
 		return false; // do not remove the node
 	}
 
-	(void) whichNode;
+	(void)whichNode;
 	return false;
 }
 
 static uqm::COUNT
-GeneratePkunk_generateEnergy (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *info)
+GeneratePkunk_generateEnergy(const SOLARSYS_STATE* solarSys,
+							 const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO* info)
 {
-	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
+	if (matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{
-		return GenerateDefault_generateRuins (solarSys, whichNode, info);
+		return GenerateDefault_generateRuins(solarSys, whichNode, info);
 	}
 
 	return 0;

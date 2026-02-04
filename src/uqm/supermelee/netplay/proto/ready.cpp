@@ -27,9 +27,10 @@
 #include <assert.h>
 
 static void
-Netplay_bothReady(NetConnection *conn) {
+Netplay_bothReady(NetConnection* conn)
+{
 	NetConnection_ReadyCallback callback;
-	void *readyArg;
+	void* readyArg;
 
 	assert(conn->readyCallback != NULL);
 
@@ -37,9 +38,9 @@ Netplay_bothReady(NetConnection *conn) {
 	readyArg = conn->readyCallbackArg;
 
 	NetConnection_setReadyCallback(conn, NULL, NULL);
-			// Clear the readyCallback field before performing the callback,
-			// so that it can be set again from inside the callback
-			// function.
+	// Clear the readyCallback field before performing the callback,
+	// so that it can be set again from inside the callback
+	// function.
 
 	callback(conn, readyArg);
 }
@@ -48,9 +49,9 @@ Netplay_bothReady(NetConnection *conn) {
 // returns true iff both sides are ready.
 // Inside the callback function, ready flags may be set for a possible
 // next Ready communication.
-bool
-Netplay_localReady(NetConnection *conn, NetConnection_ReadyCallback callback,
-		void *readyArg, bool notifyRemote) {
+bool Netplay_localReady(NetConnection* conn, NetConnection_ReadyCallback callback,
+						void* readyArg, bool notifyRemote)
+{
 	assert(readyFlagsMeaningful(NetConnection_getState(conn)));
 	assert(!conn->stateFlags.ready.localReady);
 	assert(callback != NULL);
@@ -59,7 +60,8 @@ Netplay_localReady(NetConnection *conn, NetConnection_ReadyCallback callback,
 
 	if (notifyRemote)
 		sendReady(conn);
-	if (!conn->stateFlags.ready.remoteReady) {
+	if (!conn->stateFlags.ready.remoteReady)
+	{
 		conn->stateFlags.ready.localReady = true;
 		return false;
 	}
@@ -73,14 +75,15 @@ Netplay_localReady(NetConnection *conn, NetConnection_ReadyCallback callback,
 }
 
 // returns true iff both sides are ready.
-bool
-Netplay_remoteReady(NetConnection *conn) {
+bool Netplay_remoteReady(NetConnection* conn)
+{
 	assert(readyFlagsMeaningful(NetConnection_getState(conn)));
-			// This is supposed to be already verified by the calling
-			// function.
+	// This is supposed to be already verified by the calling
+	// function.
 	assert(!conn->stateFlags.ready.remoteReady);
-	
-	if (!conn->stateFlags.ready.localReady) {
+
+	if (!conn->stateFlags.ready.localReady)
+	{
 		conn->stateFlags.ready.remoteReady = true;
 		return false;
 	}
@@ -93,14 +96,12 @@ Netplay_remoteReady(NetConnection *conn) {
 	return true;
 }
 
-bool
-Netplay_isLocalReady(const NetConnection *conn) {
+bool Netplay_isLocalReady(const NetConnection* conn)
+{
 	return conn->stateFlags.ready.localReady;
 }
 
-bool
-Netplay_isRemoteReady(const NetConnection *conn) {
+bool Netplay_isRemoteReady(const NetConnection* conn)
+{
 	return conn->stateFlags.ready.remoteReady;
 }
-
-

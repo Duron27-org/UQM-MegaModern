@@ -24,5 +24,4 @@
 void Async_process(void);
 uint32 Async_timeBeforeNextMs(void);
 
-#endif  /* LIBS_CALLBACK_ASYNC_H_ */
-
+#endif /* LIBS_CALLBACK_ASYNC_H_ */

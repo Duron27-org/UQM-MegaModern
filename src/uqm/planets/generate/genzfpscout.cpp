@@ -23,8 +23,8 @@
 #include "../../state.h"
 
 
-static bool GenerateZoqFotPikScout_initNpcs (SOLARSYS_STATE *solarSys);
-static bool GenerateZoqFotPikScout_reinitNpcs (SOLARSYS_STATE *solarSys);
+static bool GenerateZoqFotPikScout_initNpcs(SOLARSYS_STATE* solarSys);
+static bool GenerateZoqFotPikScout_reinitNpcs(SOLARSYS_STATE* solarSys);
 
 
 const GenerateFunctions generateZoqFotPikScoutFunctions = {
@@ -45,51 +45,51 @@ const GenerateFunctions generateZoqFotPikScoutFunctions = {
 
 
 static bool
-GenerateZoqFotPikScout_initNpcs (SOLARSYS_STATE *solarSys)
+GenerateZoqFotPikScout_initNpcs(SOLARSYS_STATE* solarSys)
 {
-	if (!GET_GAME_STATE (MET_ZOQFOT))
+	if (!GET_GAME_STATE(MET_ZOQFOT))
 	{
-		GLOBAL (BattleGroupRef) = GET_GAME_STATE (ZOQFOT_GRPOFFS);
-		if (GLOBAL (BattleGroupRef) == 0)
+		GLOBAL(BattleGroupRef) = GET_GAME_STATE(ZOQFOT_GRPOFFS);
+		if (GLOBAL(BattleGroupRef) == 0)
 		{
-			CloneShipFragment (ZOQFOTPIK_SHIP,
-					&GLOBAL (npc_built_ship_q), 0);
-			GLOBAL (BattleGroupRef) = PutGroupInfo (GROUPS_ADD_NEW, 1);
-			ReinitQueue (&GLOBAL (npc_built_ship_q));
-			SET_GAME_STATE (ZOQFOT_GRPOFFS, GLOBAL (BattleGroupRef));
+			CloneShipFragment(ZOQFOTPIK_SHIP,
+							  &GLOBAL(npc_built_ship_q), 0);
+			GLOBAL(BattleGroupRef) = PutGroupInfo(GROUPS_ADD_NEW, 1);
+			ReinitQueue(&GLOBAL(npc_built_ship_q));
+			SET_GAME_STATE(ZOQFOT_GRPOFFS, GLOBAL(BattleGroupRef));
 		}
 	}
 
-	GenerateDefault_initNpcs (solarSys);
+	GenerateDefault_initNpcs(solarSys);
 
 	return true;
 }
 
 static bool
-GenerateZoqFotPikScout_reinitNpcs (SOLARSYS_STATE *solarSys)
+GenerateZoqFotPikScout_reinitNpcs(SOLARSYS_STATE* solarSys)
 {
 	HIPGROUP hGroup;
-	IP_GROUP *GroupPtr;
+	IP_GROUP* GroupPtr;
 
-	GenerateDefault_reinitNpcs (solarSys);
+	GenerateDefault_reinitNpcs(solarSys);
 
-	if (!GLOBAL (BattleGroupRef))
+	if (!GLOBAL(BattleGroupRef))
 		return true; // nothing to check
 
-	hGroup = GetHeadLink (&GLOBAL (ip_group_q));
+	hGroup = GetHeadLink(&GLOBAL(ip_group_q));
 	if (!hGroup)
 		return true; // still nothing to check
 
-	GroupPtr = LockIpGroup (&GLOBAL (ip_group_q), hGroup);
+	GroupPtr = LockIpGroup(&GLOBAL(ip_group_q), hGroup);
 	// REFORM_GROUP was set in ipdisp.c:ip_group_collision()
 	// during a collision with the flagship.
 	if (GroupPtr->race_id == ZOQFOTPIK_SHIP
-			&& (GroupPtr->task & REFORM_GROUP))
+		&& (GroupPtr->task & REFORM_GROUP))
 	{
 		GroupPtr->task = FLEE | IGNORE_FLAGSHIP | REFORM_GROUP;
 		GroupPtr->dest_loc = 0;
 	}
-	UnlockIpGroup (&GLOBAL (ip_group_q), hGroup);
+	UnlockIpGroup(&GLOBAL(ip_group_q), hGroup);
 
 	return true;
 }

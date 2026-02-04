@@ -23,13 +23,12 @@ typedef struct SocketManagementDataWin SocketManagementDataWin;
 typedef SocketManagementDataWin SocketManagementData;
 
 #ifdef NETMANAGER_INTERNAL
-struct SocketManagementDataWin {
+struct SocketManagementDataWin
+{
 	size_t index;
 	long eventMask;
 };
-#endif  /* NETMANAGER_INTERNAL */
+#endif /* NETMANAGER_INTERNAL */
 
 
-#endif  /* LIBS_NETWORK_NETMANAGER_NETMANAGER_WIN_H_ */
-
-
+#endif /* LIBS_NETWORK_NETMANAGER_NETMANAGER_WIN_H_ */

@@ -32,64 +32,64 @@ extern "C" {
 #define ONLY_GAS (1 << 4)
 
 
-bool GenerateDefault_initNpcs (SOLARSYS_STATE *solarSys);
-bool GenerateDefault_reinitNpcs (SOLARSYS_STATE *solarSys);
-bool GenerateDefault_uninitNpcs (SOLARSYS_STATE *solarSys);
-bool GenerateDefault_generatePlanets (SOLARSYS_STATE *solarSys);
-bool GenerateDefault_generateMoons (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *planet);
-bool GenerateDefault_generateName (const SOLARSYS_STATE *,
-		const PLANET_DESC *world);
-bool GenerateDefault_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world);
-uqm::COUNT GenerateDefault_generateMinerals (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
-uqm::COUNT GenerateDefault_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
-uqm::COUNT GenerateDefault_generateLife (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
-bool GenerateDefault_pickupMinerals (SOLARSYS_STATE *, PLANET_DESC *world,
-		uqm::COUNT whichNode);
-bool GenerateDefault_pickupEnergy (SOLARSYS_STATE *, PLANET_DESC *world,
-		uqm::COUNT whichNode);
-bool GenerateDefault_pickupLife (SOLARSYS_STATE *, PLANET_DESC *world,
-		uqm::COUNT whichNode);
+bool GenerateDefault_initNpcs(SOLARSYS_STATE* solarSys);
+bool GenerateDefault_reinitNpcs(SOLARSYS_STATE* solarSys);
+bool GenerateDefault_uninitNpcs(SOLARSYS_STATE* solarSys);
+bool GenerateDefault_generatePlanets(SOLARSYS_STATE* solarSys);
+bool GenerateDefault_generateMoons(SOLARSYS_STATE* solarSys,
+								   PLANET_DESC* planet);
+bool GenerateDefault_generateName(const SOLARSYS_STATE*,
+								  const PLANET_DESC* world);
+bool GenerateDefault_generateOrbital(SOLARSYS_STATE* solarSys,
+									 PLANET_DESC* world);
+uqm::COUNT GenerateDefault_generateMinerals(const SOLARSYS_STATE*,
+											const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO*);
+uqm::COUNT GenerateDefault_generateEnergy(const SOLARSYS_STATE*,
+										  const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO*);
+uqm::COUNT GenerateDefault_generateLife(const SOLARSYS_STATE*,
+										const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO*);
+bool GenerateDefault_pickupMinerals(SOLARSYS_STATE*, PLANET_DESC* world,
+									uqm::COUNT whichNode);
+bool GenerateDefault_pickupEnergy(SOLARSYS_STATE*, PLANET_DESC* world,
+								  uqm::COUNT whichNode);
+bool GenerateDefault_pickupLife(SOLARSYS_STATE*, PLANET_DESC* world,
+								uqm::COUNT whichNode);
 
-uqm::COUNT GenerateDefault_generateArtifact (const SOLARSYS_STATE *,
-		uqm::COUNT whichNode, NODE_INFO *info);
-uqm::COUNT GenerateDefault_generateRuins (const SOLARSYS_STATE *,
-		uqm::COUNT whichNode, NODE_INFO *info);
-bool GenerateDefault_landerReport (SOLARSYS_STATE *);
-bool GenerateDefault_landerReportCycle (SOLARSYS_STATE *);
-extern void GeneratePlanets (SOLARSYS_STATE *system);
-extern bool CheckForHabitable (SOLARSYS_STATE *solarSys);
-extern uqm::BYTE GenerateWorlds (uqm::BYTE whichType);
-extern void GenerateGasGiantRanged (SOLARSYS_STATE *solarSys);
-extern uqm::BYTE GenerateCrystalWorld (void);
-extern uqm::BYTE GenerateDesolateWorld (void);
-extern uqm::BYTE GenerateHabitableWorld (void);
-extern uqm::BYTE GenerateGasGiantWorld (void);
-extern uqm::BYTE GenerateMinPlanets (uqm::BYTE min);
-extern uqm::BYTE GenerateNumberOfPlanets (uqm::BYTE minimum);
-extern uqm::BYTE PlanetByteGen (PLANET_DESC *pPDesc);
+uqm::COUNT GenerateDefault_generateArtifact(const SOLARSYS_STATE*,
+											uqm::COUNT whichNode, NODE_INFO* info);
+uqm::COUNT GenerateDefault_generateRuins(const SOLARSYS_STATE*,
+										 uqm::COUNT whichNode, NODE_INFO* info);
+bool GenerateDefault_landerReport(SOLARSYS_STATE*);
+bool GenerateDefault_landerReportCycle(SOLARSYS_STATE*);
+extern void GeneratePlanets(SOLARSYS_STATE* system);
+extern bool CheckForHabitable(SOLARSYS_STATE* solarSys);
+extern uqm::BYTE GenerateWorlds(uqm::BYTE whichType);
+extern void GenerateGasGiantRanged(SOLARSYS_STATE* solarSys);
+extern uqm::BYTE GenerateCrystalWorld(void);
+extern uqm::BYTE GenerateDesolateWorld(void);
+extern uqm::BYTE GenerateHabitableWorld(void);
+extern uqm::BYTE GenerateGasGiantWorld(void);
+extern uqm::BYTE GenerateMinPlanets(uqm::BYTE min);
+extern uqm::BYTE GenerateNumberOfPlanets(uqm::BYTE minimum);
+extern uqm::BYTE PlanetByteGen(PLANET_DESC* pPDesc);
 
 extern const GenerateFunctions generateDefaultFunctions;
 
-typedef enum {
-	ILWRATH_ENCOUNTER, // 14/6 ships at procyon even if ilwrath left
-	PROBE_ENCOUNTER, // 4/2 probes at dreadnought wreck
-	URQUAN_ENCOUNTER, // 6 dreadnoughts at vault if the shuttle is on board
+typedef enum
+{
+	ILWRATH_ENCOUNTER,	 // 14/6 ships at procyon even if ilwrath left
+	PROBE_ENCOUNTER,	 // 4/2 probes at dreadnought wreck
+	URQUAN_ENCOUNTER,	 // 6 dreadnoughts at vault if the shuttle is on board
 	EGGCASE00_ENCOUNTER, // 4 mycon
 	EGGCASE01_ENCOUNTER, // 4 mycon
 	EGGCASE02_ENCOUNTER, // 4 mycon
 	THRADDASH_ENCOUNTER, // 12/6 thraddash minimum at all time
-	NO_HELP_FROM_PKUNK, // no help before final battle if pkunk are absorbed before the revolt
-	READY_TO_BARGAIN // druuge sell rosy sphere on second deal
+	NO_HELP_FROM_PKUNK,	 // no help before final battle if pkunk are absorbed before the revolt
+	READY_TO_BARGAIN	 // druuge sell rosy sphere on second deal
 } HARDMODE_ENCOUNTERS;
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* GENDEFAULT_H */
-
+#endif /* GENDEFAULT_H */

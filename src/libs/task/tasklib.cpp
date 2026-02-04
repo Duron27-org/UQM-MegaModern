@@ -26,114 +26,109 @@
 
 static struct taskstruct task_array[TASK_MAX];
 
-Task
-AssignTask (ThreadFunction task_func, uqm::SDWORD stackSize, const char *name)
+Task AssignTask(ThreadFunction task_func, uqm::SDWORD stackSize, const char* name)
 {
 	int i;
 	for (i = 0; i < TASK_MAX; ++i)
 	{
-		if (!Task_SetState (task_array+i, TASK_INUSE))
+		if (!Task_SetState(task_array + i, TASK_INUSE))
 		{
 			// log_add (log_Debug, "Assigning Task #%i: %s", i+1, name);
-			Task_ClearState (task_array+i, ~TASK_INUSE);
+			Task_ClearState(task_array + i, ~TASK_INUSE);
 			task_array[i].name = name;
-			task_array[i].thread = CreateThread (task_func, task_array+i,
-					stackSize, name);
-			return task_array+i;
+			task_array[i].thread = CreateThread(task_func, task_array + i,
+												stackSize, name);
+			return task_array + i;
 		}
 	}
-	log_add (log_Error, "Task error!  Task array exhausted.  Check for thread leaks.");
+	log_add(log_Error, "Task error!  Task array exhausted.  Check for thread leaks.");
 	return NULL;
 }
 
-void
-FinishTask (Task task)
+void FinishTask(Task task)
 {
 	// log_add (log_Debug, "Releasing Task: %s", task->name);
 	task->thread = 0;
-	if (!Task_ClearState (task, TASK_INUSE))
+	if (!Task_ClearState(task, TASK_INUSE))
 	{
-		log_add (log_Debug, "Task error!  Attempted to FinishTask '%s'... "
-				"but it was already done!", task->name);
+		log_add(log_Debug, "Task error!  Attempted to FinishTask '%s'... "
+						   "but it was already done!",
+				task->name);
 	}
 }
 
 /* This could probably be done better with a condition variable of some kind. */
-void
-ConcludeTask (Task task)
+void ConcludeTask(Task task)
 {
 	Thread old = task->thread;
 	// log_add (log_Debug, "Awaiting conclusion of %s", task->name);
 	if (old)
 	{
-		Task_SetState (task, TASK_EXIT);
+		Task_SetState(task, TASK_EXIT);
 		while (task->thread == old)
 		{
-			TaskSwitch ();
+			TaskSwitch();
 		}
 	}
 }
 
 uqm::DWORD
-Task_SetState (Task task, uqm::DWORD state_mask)
+Task_SetState(Task task, uqm::DWORD state_mask)
 {
 	uqm::DWORD old_state;
-	LockMutex (task->state_mutex);
+	LockMutex(task->state_mutex);
 	old_state = task->state;
 	task->state |= state_mask;
-	UnlockMutex (task->state_mutex);
+	UnlockMutex(task->state_mutex);
 	old_state &= state_mask;
 	return old_state;
 }
 
 uqm::DWORD
-Task_ClearState (Task task, uqm::DWORD state_mask)
+Task_ClearState(Task task, uqm::DWORD state_mask)
 {
 	uqm::DWORD old_state;
-	LockMutex (task->state_mutex);
+	LockMutex(task->state_mutex);
 	old_state = task->state;
 	task->state &= ~state_mask;
-	UnlockMutex (task->state_mutex);
+	UnlockMutex(task->state_mutex);
 	old_state &= state_mask;
 	return old_state;
 }
 
 uqm::DWORD
-Task_ToggleState (Task task, uqm::DWORD state_mask)
+Task_ToggleState(Task task, uqm::DWORD state_mask)
 {
 	uqm::DWORD old_state;
-	LockMutex (task->state_mutex);
+	LockMutex(task->state_mutex);
 	old_state = task->state;
 	task->state ^= state_mask;
-	UnlockMutex (task->state_mutex);
+	UnlockMutex(task->state_mutex);
 	old_state &= state_mask;
 	return old_state;
 }
 
 uqm::DWORD
-Task_ReadState (Task task, uqm::DWORD state_mask)
+Task_ReadState(Task task, uqm::DWORD state_mask)
 {
 	return task->state & state_mask;
 }
 
-void 
-InitTaskSystem (void)
+void InitTaskSystem(void)
 {
 	int i;
 	for (i = 0; i < TASK_MAX; ++i)
 	{
-		task_array[i].state_mutex = CreateMutex ("task manager lock", SYNC_CLASS_TOPLEVEL | SYNC_CLASS_RESOURCE);
+		task_array[i].state_mutex = CreateMutex("task manager lock", SYNC_CLASS_TOPLEVEL | SYNC_CLASS_RESOURCE);
 	}
 }
 
-void 
-CleanupTaskSystem (void)
+void CleanupTaskSystem(void)
 {
 	int i;
 	for (i = 0; i < TASK_MAX; ++i)
 	{
-		DestroyMutex (task_array[i].state_mutex);
+		DestroyMutex(task_array[i].state_mutex);
 		task_array[i].state_mutex = 0;
 	}
 }
-

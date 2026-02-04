@@ -24,86 +24,81 @@
 #include "uqm/units.h"
 
 
-#define NULL_VIDEO_REF	(0)
+#define NULL_VIDEO_REF (0)
 static VIDEO_REF _cur_video = NULL_VIDEO_REF;
 static MUSIC_REF _cur_speech = 0;
 
-bool
-InitVideoPlayer (bool useCDROM)
-		//useCDROM doesn't really apply to us
+bool InitVideoPlayer(bool useCDROM)
+//useCDROM doesn't really apply to us
 {
 	TFB_PixelFormat fmt;
-	
-	TFB_DrawCanvas_GetScreenFormat (&fmt);
-	if (!VideoDecoder_Init (0, fmt.BitsPerPixel, fmt.Rmask,
-			fmt.Gmask, fmt.Bmask, 0))
+
+	TFB_DrawCanvas_GetScreenFormat(&fmt);
+	if (!VideoDecoder_Init(0, fmt.BitsPerPixel, fmt.Rmask,
+						   fmt.Gmask, fmt.Bmask, 0))
 		return false;
 
-	return (bool)TFB_InitVideoPlayer ();
-	
-	(void)useCDROM;  /* dodge compiler warning */
+	return (bool)TFB_InitVideoPlayer();
+
+	(void)useCDROM; /* dodge compiler warning */
 }
 
-void
-UninitVideoPlayer (void)
+void UninitVideoPlayer(void)
 {
-	TFB_UninitVideoPlayer ();
-	VideoDecoder_Uninit ();
+	TFB_UninitVideoPlayer();
+	VideoDecoder_Uninit();
 }
 
-void
-VidStop (void)
+void VidStop(void)
 {
 	if (_cur_speech)
-		snd_StopSpeech ();
+		snd_StopSpeech();
 	if (_cur_video)
-		TFB_StopVideo (_cur_video);
+		TFB_StopVideo(_cur_video);
 	_cur_speech = 0;
 	_cur_video = NULL_VIDEO_REF;
 }
 
 VIDEO_REF
-VidPlaying (void)
-		// this should just probably return bool
+VidPlaying(void)
+// this should just probably return bool
 {
 	if (!_cur_video)
 		return NULL_VIDEO_REF;
-	
-	if (TFB_VideoPlaying (_cur_video))
+
+	if (TFB_VideoPlaying(_cur_video))
 		return _cur_video;
 
 	return NULL_VIDEO_REF;
 }
 
-bool
-VidProcessFrame (void)
+bool VidProcessFrame(void)
 {
 	if (!_cur_video)
 		return false;
-	return (bool)TFB_ProcessVideoFrame (_cur_video);
+	return (bool)TFB_ProcessVideoFrame(_cur_video);
 }
 
 // return current video position in milliseconds
 uqm::DWORD
-VidGetPosition (void)
+VidGetPosition(void)
 {
-	if (!VidPlaying ())
+	if (!VidPlaying())
 		return 0;
-	return TFB_GetVideoPosition (_cur_video);
+	return TFB_GetVideoPosition(_cur_video);
 }
 
-bool
-VidSeek (uqm::DWORD pos)
-		// pos in milliseconds
+bool VidSeek(uqm::DWORD pos)
+// pos in milliseconds
 {
-	if (!VidPlaying ())
+	if (!VidPlaying())
 		return false;
-	return (bool)TFB_SeekVideo (_cur_video, pos);
+	return (bool)TFB_SeekVideo(_cur_video, pos);
 }
 
 VIDEO_TYPE
-VidPlayEx (VIDEO_REF vid, MUSIC_REF AudRef, MUSIC_REF SpeechRef,
-		uqm::DWORD LoopFrame)
+VidPlayEx(VIDEO_REF vid, MUSIC_REF AudRef, MUSIC_REF SpeechRef,
+		  uqm::DWORD LoopFrame)
 {
 	VIDEO_TYPE ret;
 
@@ -113,7 +108,7 @@ VidPlayEx (VIDEO_REF vid, MUSIC_REF AudRef, MUSIC_REF SpeechRef,
 	if (AudRef)
 	{
 		if (vid->hAudio)
-			DestroyMusic (vid->hAudio);
+			DestroyMusic(vid->hAudio);
 		vid->hAudio = AudRef;
 		vid->decoder->audio_synced = false;
 	}
@@ -122,21 +117,21 @@ VidPlayEx (VIDEO_REF vid, MUSIC_REF AudRef, MUSIC_REF SpeechRef,
 	vid->loop_to = 0;
 
 	if (_cur_speech)
-		snd_StopSpeech ();
+		snd_StopSpeech();
 	if (_cur_video)
-		TFB_StopVideo (_cur_video);
+		TFB_StopVideo(_cur_video);
 	_cur_speech = 0;
 	_cur_video = NULL_VIDEO_REF;
 
 	// play video in the center of the screen
-	if (TFB_PlayVideo (vid, (CanvasWidth - vid->w) / 2,
-			(CanvasHeight - vid->h) / 2))
+	if (TFB_PlayVideo(vid, (CanvasWidth - vid->w) / 2,
+					  (CanvasHeight - vid->h) / 2))
 	{
 		_cur_video = vid;
 		ret = SOFTWARE_FMV;
 		if (SpeechRef)
 		{
-			snd_PlaySpeech (SpeechRef);
+			snd_PlaySpeech(SpeechRef);
 			_cur_speech = SpeechRef;
 		}
 	}
@@ -149,43 +144,42 @@ VidPlayEx (VIDEO_REF vid, MUSIC_REF AudRef, MUSIC_REF SpeechRef,
 }
 
 VIDEO_TYPE
-VidPlay (VIDEO_REF VidRef)
+VidPlay(VIDEO_REF VidRef)
 {
-	return VidPlayEx (VidRef, 0, 0, VID_NO_LOOP);
+	return VidPlayEx(VidRef, 0, 0, VID_NO_LOOP);
 }
 
 VIDEO_REF
-_init_video_file (const char *pStr)
+_init_video_file(const char* pStr)
 {
 	TFB_VideoClip* vid;
 	TFB_VideoDecoder* dec;
 
-	dec = VideoDecoder_Load (contentDir, pStr);
+	dec = VideoDecoder_Load(contentDir, pStr);
 	if (!dec)
 		return NULL_VIDEO_REF;
 
-	vid = (TFB_VideoClip*)HCalloc (sizeof (*vid));
+	vid = (TFB_VideoClip*)HCalloc(sizeof(*vid));
 	vid->decoder = dec;
 	vid->length = dec->length;
-	vid->w = vid->decoder->w - IF_HD (4);
-	vid->h = vid->decoder->h + IF_HD (7);
-	vid->guard = CreateMutex ("video guard", SYNC_CLASS_VIDEO);
+	vid->w = vid->decoder->w - IF_HD(4);
+	vid->h = vid->decoder->h + IF_HD(7);
+	vid->guard = CreateMutex("video guard", SYNC_CLASS_VIDEO);
 
-	return (VIDEO_REF) vid;
+	return (VIDEO_REF)vid;
 }
 
-bool
-DestroyVideo (VIDEO_REF vid)
+bool DestroyVideo(VIDEO_REF vid)
 {
 	if (!vid)
 		return false;
 
 	// just some armouring; should already be stopped
-	TFB_StopVideo (vid);
+	TFB_StopVideo(vid);
 
-	VideoDecoder_Free (vid->decoder);
-	DestroyMutex (vid->guard);
-	HFree (vid);
-	
+	VideoDecoder_Free(vid->decoder);
+	DestroyMutex(vid->guard);
+	HFree(vid);
+
 	return true;
 }

@@ -35,11 +35,11 @@
  * @returns A newly allocated string consisting of the concatenation of
  * 		'first' and 'second', to be freed using uio_free().
  */
-char *
-strcata(const char *first, const char *second) {
+char* strcata(const char* first, const char* second)
+{
 	char *result, *resPtr;
 	size_t firstLen, secondLen;
-	
+
 	firstLen = strlen(first);
 	secondLen = strlen(second);
 	result = (char*)uio_malloc(firstLen + secondLen + 1);
@@ -57,84 +57,86 @@ strcata(const char *first, const char *second) {
 
 // returns a copy of a generic array 'array' with 'element' inserted in
 // position 'insertPos'
-void *
-insertArray(const void *array, size_t oldNumElements, int insertPos,
-		const void *element, size_t elementSize) {
+void* insertArray(const void* array, size_t oldNumElements, int insertPos,
+				  const void* element, size_t elementSize)
+{
 	void *newArray, *newArrayPtr;
-	const void *arrayPtr;
+	const void* arrayPtr;
 	size_t preInsertSize;
 
 	newArray = uio_malloc((oldNumElements + 1) * elementSize);
 	preInsertSize = insertPos * elementSize;
 	memcpy(newArray, array, preInsertSize);
-	newArrayPtr = (char *) newArray + preInsertSize;
-	arrayPtr = (const char *) array + preInsertSize;
+	newArrayPtr = (char*)newArray + preInsertSize;
+	arrayPtr = (const char*)array + preInsertSize;
 	memcpy(newArrayPtr, element, elementSize);
-	newArrayPtr = (char *) newArrayPtr + elementSize;
+	newArrayPtr = (char*)newArrayPtr + elementSize;
 	memcpy(newArrayPtr, arrayPtr,
-			(oldNumElements - insertPos) * elementSize);
+		   (oldNumElements - insertPos) * elementSize);
 	return newArray;
 }
 
 // returns a copy of a pointer array 'array' with 'element' inserted in
 // position 'insertPos'
-void **
-insertArrayPointer(const void **array, size_t oldNumElements, int insertPos,
-		const void *element) {
+void**
+insertArrayPointer(const void** array, size_t oldNumElements, int insertPos,
+				   const void* element)
+{
 	void **newArray, **newArrayPtr;
-	const void **arrayPtr;
+	const void** arrayPtr;
 	size_t preInsertSize;
 
-	newArray = (void**)uio_malloc((oldNumElements + 1) * sizeof (void *));
-	preInsertSize = insertPos * sizeof (void *);
+	newArray = (void**)uio_malloc((oldNumElements + 1) * sizeof(void*));
+	preInsertSize = insertPos * sizeof(void*);
 	memcpy(newArray, array, preInsertSize);
 	newArrayPtr = newArray + insertPos;
 	arrayPtr = array + insertPos;
 	*newArrayPtr = unconst(element);
 	newArrayPtr++;
 	memcpy(newArrayPtr, arrayPtr,
-			(oldNumElements - insertPos) * sizeof (void *));
+		   (oldNumElements - insertPos) * sizeof(void*));
 	return newArray;
 }
 
 // returns a copy of a generic array 'array' with 'numExclude' elements,
 // starting from startpos, removed.
-void *
-excludeArray(const void *array, size_t oldNumElements, int startPos,
-		int numExclude, size_t elementSize) {
+void* excludeArray(const void* array, size_t oldNumElements, int startPos,
+				   int numExclude, size_t elementSize)
+{
 	void *newArray, *newArrayPtr;
-	const void *arrayPtr;
+	const void* arrayPtr;
 	size_t preExcludeSize;
 
 	newArray = uio_malloc((oldNumElements - numExclude) * elementSize);
 	preExcludeSize = startPos * elementSize;
 	memcpy(newArray, array, preExcludeSize);
-	newArrayPtr = (char *) newArray + preExcludeSize;
-	arrayPtr = (const char *) array +
-			(startPos + numExclude) * sizeof (elementSize);
+	newArrayPtr = (char*)newArray + preExcludeSize;
+	arrayPtr = (const char*)array + (startPos + numExclude) * sizeof(elementSize);
 	memcpy(newArrayPtr, arrayPtr,
-			(oldNumElements - startPos - numExclude) * elementSize);
+		   (oldNumElements - startPos - numExclude) * elementSize);
 	return newArray;
 }
 
 // returns a copy of a pointer array 'array' with 'numExclude' elements,
 // starting from startpos, removed.
-void **
-excludeArrayPointer(const void **array, size_t oldNumElements, int startPos,
-		int numExclude) {
-	void **newArray;
+void**
+excludeArrayPointer(const void** array, size_t oldNumElements, int startPos,
+					int numExclude)
+{
+	void** newArray;
 
-	newArray = (void**)uio_malloc((oldNumElements - numExclude) * sizeof (void *));
-	memcpy(newArray, array, startPos * sizeof (void *));
+	newArray = (void**)uio_malloc((oldNumElements - numExclude) * sizeof(void*));
+	memcpy(newArray, array, startPos * sizeof(void*));
 	memcpy(&newArray[startPos], &array[startPos + numExclude],
-			(oldNumElements - startPos - numExclude) * sizeof (void *));
+		   (oldNumElements - startPos - numExclude) * sizeof(void*));
 	return newArray;
 }
 
 // If the given DOS date/time is invalid, the result is unspecified,
 // but the function won't crash.
 time_t
-dosToUnixTime(uio_uint16 date, uio_uint16 tm) {
+dosToUnixTime(uio_uint16 date, uio_uint16 tm)
+{
 	// DOS date has the following format:
 	//   bits 0-4 specify the number of the day in the month (1-31).
 	//   bits 5-8 specify the number of the month in the year (1-12).
@@ -150,26 +152,29 @@ dosToUnixTime(uio_uint16 date, uio_uint16 tm) {
 	long result;
 
 	static const int daysUntilMonth[] = {
-			0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334,
-			334, 334, 334, 334 };
-			// The last 4 entries are there so that there's no
-			// invalid memory access if the date is invalid.
+		0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334,
+		334, 334, 334, 334};
+	// The last 4 entries are there so that there's no
+	// invalid memory access if the date is invalid.
 
 	year = date >> 9;
-	month = ((date >> 5) - 1) & 0x0f;  // Number in [0..15]
-	day = (date - 1) & 0x1f;  // Number in [0..31]
+	month = ((date >> 5) - 1) & 0x0f; // Number in [0..15]
+	day = (date - 1) & 0x1f;		  // Number in [0..31]
 	hours = tm >> 11;
 	minutes = (tm >> 5) & 0x3f;
 	seconds = (tm & 0x1f) * 2; // Even number in [0..62]
 
 	result = year * 365 + daysUntilMonth[month] + day;
-			// Count the (non-leap) days in all those years
+	// Count the (non-leap) days in all those years
 
 	// Add a leapday for each 4th year
-	if (year % 4 == 0 && month <= 2) {
+	if (year % 4 == 0 && month <= 2)
+	{
 		// The given date is a leap-year but the leapday hasn't occured yet.
 		result += year / 4;
-	} else {
+	}
+	else
+	{
 		result += 1 + year / 4;
 	}
 	// result now is the number of days between 1980-01-01 and the given day.
@@ -178,16 +183,16 @@ dosToUnixTime(uio_uint16 date, uio_uint16 tm) {
 	// (2 leapdays in this period)
 	result += 365 * 10 + 2;
 
-	result = (result * 24) + hours;  // days to hours
-	result = (result * 60) + minutes;  // hours to minutes
-	result = (result * 60) + seconds;  // minutes to seconds
-	
-	return (time_t) result;	
+	result = (result * 24) + hours;	  // days to hours
+	result = (result * 60) + minutes; // hours to minutes
+	result = (result * 60) + seconds; // minutes to seconds
+
+	return (time_t)result;
 }
 
-char *
-dosToUnixPath(const char *path) {
-	const char *srcPtr;
+char* dosToUnixPath(const char* path)
+{
+	const char* srcPtr;
 	char *result, *dstPtr;
 	size_t skip;
 
@@ -201,8 +206,9 @@ dosToUnixPath(const char *path) {
 	// The goal is that at every forward slash, the path should be
 	// stat()'able.
 	skip = uio_skipUNCServerShare(srcPtr);
-	if (skip != 0) {
-		char *slash;
+	if (skip != 0)
+	{
+		char* slash;
 		memcpy(dstPtr, srcPtr, skip);
 
 		slash = (char*)memchr(srcPtr + 2, '/', skip - 2);
@@ -213,10 +219,13 @@ dosToUnixPath(const char *path) {
 		dstPtr += skip;
 	}
 
-	while (*srcPtr != '\0') {
-		if (*srcPtr == '\\') {
+	while (*srcPtr != '\0')
+	{
+		if (*srcPtr == '\\')
+		{
 			*dstPtr = '/';
-		} else
+		}
+		else
 			*dstPtr = *srcPtr;
 		srcPtr++;
 		dstPtr++;
@@ -224,5 +233,3 @@ dosToUnixPath(const char *path) {
 	*dstPtr = '\0';
 	return result;
 }
-
-

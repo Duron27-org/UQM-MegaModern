@@ -21,11 +21,10 @@
 extern "C" {
 #endif
 
-RACE_DESC *init_urquan (void);
+RACE_DESC* init_urquan(void);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* URQUAN_H */
-
+#endif /* URQUAN_H */

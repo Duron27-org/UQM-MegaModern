@@ -73,135 +73,157 @@ typedef enum
 	PROBE_CODE_RES
 } ShipCodeRes;
 
-typedef RACE_DESC *(*RaceDescInitFunc)(void);
+typedef RACE_DESC* (*RaceDescInitFunc)(void);
 
 static RaceDescInitFunc
 CodeResToInitFunc(ShipCodeRes res)
 {
 	switch (res)
 	{
-		case ANDROSYN_CODE_RES: return &init_androsynth;
-		case ARILOU_CODE_RES: return &init_arilou;
-		case BLACKURQ_CODE_RES: return &init_black_urquan;
-		case CHENJESU_CODE_RES: return &init_chenjesu;
-		case CHMMR_CODE_RES: return &init_chmmr;
-		case DRUUGE_CODE_RES: return &init_druuge;
-		case HUMAN_CODE_RES: return &init_human;
-		case ILWRATH_CODE_RES: return &init_ilwrath;
-		case MELNORME_CODE_RES: return &init_melnorme;
-		case MMRNMHRM_CODE_RES: return &init_mmrnmhrm;
-		case MYCON_CODE_RES: return &init_mycon;
-		case ORZ_CODE_RES: return &init_orz;
-		case PKUNK_CODE_RES: return &init_pkunk;
-		case SHOFIXTI_CODE_RES: return &init_shofixti;
-		case SLYLANDR_CODE_RES: return &init_slylandro;
-		case SPATHI_CODE_RES: return &init_spathi;
-		case SUPOX_CODE_RES: return &init_supox;
-		case SYREEN_CODE_RES: return &init_syreen;
-		case THRADD_CODE_RES: return &init_thraddash;
-		case UMGAH_CODE_RES: return &init_umgah;
-		case URQUAN_CODE_RES: return &init_urquan;
-		case UTWIG_CODE_RES: return &init_utwig;
-		case VUX_CODE_RES: return &init_vux;
-		case YEHAT_CODE_RES: return &init_yehat;
-		case ZOQFOT_CODE_RES: return &init_zoqfotpik;
-		case SAMATRA_CODE_RES: return &init_samatra;
-		case SIS_CODE_RES: return &init_sis;
-		case PROBE_CODE_RES: return &init_probe;
+		case ANDROSYN_CODE_RES:
+			return &init_androsynth;
+		case ARILOU_CODE_RES:
+			return &init_arilou;
+		case BLACKURQ_CODE_RES:
+			return &init_black_urquan;
+		case CHENJESU_CODE_RES:
+			return &init_chenjesu;
+		case CHMMR_CODE_RES:
+			return &init_chmmr;
+		case DRUUGE_CODE_RES:
+			return &init_druuge;
+		case HUMAN_CODE_RES:
+			return &init_human;
+		case ILWRATH_CODE_RES:
+			return &init_ilwrath;
+		case MELNORME_CODE_RES:
+			return &init_melnorme;
+		case MMRNMHRM_CODE_RES:
+			return &init_mmrnmhrm;
+		case MYCON_CODE_RES:
+			return &init_mycon;
+		case ORZ_CODE_RES:
+			return &init_orz;
+		case PKUNK_CODE_RES:
+			return &init_pkunk;
+		case SHOFIXTI_CODE_RES:
+			return &init_shofixti;
+		case SLYLANDR_CODE_RES:
+			return &init_slylandro;
+		case SPATHI_CODE_RES:
+			return &init_spathi;
+		case SUPOX_CODE_RES:
+			return &init_supox;
+		case SYREEN_CODE_RES:
+			return &init_syreen;
+		case THRADD_CODE_RES:
+			return &init_thraddash;
+		case UMGAH_CODE_RES:
+			return &init_umgah;
+		case URQUAN_CODE_RES:
+			return &init_urquan;
+		case UTWIG_CODE_RES:
+			return &init_utwig;
+		case VUX_CODE_RES:
+			return &init_vux;
+		case YEHAT_CODE_RES:
+			return &init_yehat;
+		case ZOQFOT_CODE_RES:
+			return &init_zoqfotpik;
+		case SAMATRA_CODE_RES:
+			return &init_samatra;
+		case SIS_CODE_RES:
+			return &init_sis;
+		case PROBE_CODE_RES:
+			return &init_probe;
 		default:
-		{
-			log_add (log_Warning, "Unknown SHIP identifier '%d'", res);
-			return NULL;
-		}
+			{
+				log_add(log_Warning, "Unknown SHIP identifier '%d'", res);
+				return NULL;
+			}
 	}
 }
 
 static void
-GetCodeResData (const char *ship_id, RESOURCE_DATA *resdata)
+GetCodeResData(const char* ship_id, RESOURCE_DATA* resdata)
 {
 	uqm::BYTE which_res;
-	void *hData;
+	void* hData;
 
-	which_res = atoi (ship_id);
-	hData = HMalloc (sizeof (CODERES_STRUCT));
+	which_res = atoi(ship_id);
+	hData = HMalloc(sizeof(CODERES_STRUCT));
 	if (hData)
 	{
-		RaceDescInitFunc initFunc = CodeResToInitFunc ((ShipCodeRes)which_res);
-		RACE_DESC *RDPtr = (initFunc == NULL) ? NULL : (*initFunc)();
+		RaceDescInitFunc initFunc = CodeResToInitFunc((ShipCodeRes)which_res);
+		RACE_DESC* RDPtr = (initFunc == NULL) ? NULL : (*initFunc)();
 		if (RDPtr == 0)
 		{
-			HFree (hData);
+			HFree(hData);
 			hData = 0;
 		}
 		else
 		{
-			CODERES_STRUCT *cs;
+			CODERES_STRUCT* cs;
 
-			cs = (CODERES_STRUCT *) hData;
-			cs->data = *RDPtr;  // Structure assignment.
+			cs = (CODERES_STRUCT*)hData;
+			cs->data = *RDPtr; // Structure assignment.
 		}
 	}
 	resdata->ptr = hData;
 }
 
 static bool
-_ReleaseCodeResData (void *data)
+_ReleaseCodeResData(void* data)
 {
-	HFree (data);
+	HFree(data);
 	return true;
 }
 
-bool
-InstallCodeResType ()
+bool InstallCodeResType()
 {
-	return (InstallResTypeVectors ("SHIP",
-			GetCodeResData, _ReleaseCodeResData, NULL));
+	return (InstallResTypeVectors("SHIP",
+								  GetCodeResData, _ReleaseCodeResData, NULL));
 }
 
 
-void *
-LoadCodeResInstance (RESOURCE res)
+void* LoadCodeResInstance(RESOURCE res)
 {
-	void *hData;
+	void* hData;
 
-	hData = res_GetResource (res);
+	hData = res_GetResource(res);
 	if (hData)
-		res_DetachResource (res);
+		res_DetachResource(res);
 
 	return hData;
 }
 
 
-bool
-DestroyCodeRes (void *hCode)
+bool DestroyCodeRes(void* hCode)
 {
-	HFree (hCode);
+	HFree(hCode);
 	return true;
 }
 
 
-void*
-CaptureCodeRes (void *hCode, void *pData, void **ppLocData)
+void* CaptureCodeRes(void* hCode, void* pData, void** ppLocData)
 {
-	CODERES_STRUCT *cs;
+	CODERES_STRUCT* cs;
 
 	if (hCode == NULL)
 	{
-		log_add (log_Fatal, "dummy.c::CaptureCodeRes() hCode==NULL! FATAL!");
-		return(NULL);
+		log_add(log_Fatal, "dummy.c::CaptureCodeRes() hCode==NULL! FATAL!");
+		return (NULL);
 	}
 
-	cs = (CODERES_STRUCT *) hCode;
+	cs = (CODERES_STRUCT*)hCode;
 	*ppLocData = &cs->data;
 
-	(void) pData;  /* Satisfying compiler (unused parameter) */
+	(void)pData; /* Satisfying compiler (unused parameter) */
 	return cs;
 }
 
 
-void *
-ReleaseCodeRes (void *CodeRef)
+void* ReleaseCodeRes(void* CodeRef)
 {
 	return CodeRef;
 }
-

@@ -29,28 +29,28 @@ typedef struct uio_Stream uio_Stream;
 #include <stdarg.h>
 
 
-uio_Stream *uio_fopen(uio_DirHandle *dir, const char *path, const char *mode);
-int uio_fclose(uio_Stream *stream);
-size_t uio_fread(void *buf, size_t size, size_t nmemb, uio_Stream *stream);
-char *uio_fgets(char *buf, int size, uio_Stream *stream);
-int uio_fgetc(uio_Stream *stream);
+uio_Stream* uio_fopen(uio_DirHandle* dir, const char* path, const char* mode);
+int uio_fclose(uio_Stream* stream);
+size_t uio_fread(void* buf, size_t size, size_t nmemb, uio_Stream* stream);
+char* uio_fgets(char* buf, int size, uio_Stream* stream);
+int uio_fgetc(uio_Stream* stream);
 #define uio_getc uio_fgetc
-int uio_ungetc(int c, uio_Stream *stream);
-int uio_backtrack(int rewinded_bytes, uio_Stream *stream);
-int uio_vfprintf(uio_Stream *stream, const char *format, va_list args);
-int uio_fprintf(uio_Stream *stream, const char *format, ...);
-int uio_fputc(int c, uio_Stream *stream);
+int uio_ungetc(int c, uio_Stream* stream);
+int uio_backtrack(int rewinded_bytes, uio_Stream* stream);
+int uio_vfprintf(uio_Stream* stream, const char* format, va_list args);
+int uio_fprintf(uio_Stream* stream, const char* format, ...);
+int uio_fputc(int c, uio_Stream* stream);
 #define uio_putc uio_fputc
-int uio_fputs(const char *s, uio_Stream *stream);
-int uio_fseek(uio_Stream *stream, long offset, int whence);
-long uio_ftell(uio_Stream *stream);
-size_t uio_fwrite(const void *buf, size_t size, size_t nmemb,
-		uio_Stream *stream);
-int uio_fflush(uio_Stream *stream);
-int uio_feof(uio_Stream *stream);
-int uio_ferror(uio_Stream *stream);
-void uio_clearerr(uio_Stream *stream);
-uio_Handle *uio_streamHandle(uio_Stream *stream);
+int uio_fputs(const char* s, uio_Stream* stream);
+int uio_fseek(uio_Stream* stream, long offset, int whence);
+long uio_ftell(uio_Stream* stream);
+size_t uio_fwrite(const void* buf, size_t size, size_t nmemb,
+				  uio_Stream* stream);
+int uio_fflush(uio_Stream* stream);
+int uio_feof(uio_Stream* stream);
+int uio_ferror(uio_Stream* stream);
+void uio_clearerr(uio_Stream* stream);
+uio_Handle* uio_streamHandle(uio_Stream* stream);
 
 
 /* *** Internal definitions follow *** */
@@ -60,39 +60,39 @@ uio_Handle *uio_streamHandle(uio_Stream *stream);
 #include <fcntl.h>
 #include "iointrn.h"
 
-typedef enum {
+typedef enum
+{
 	uio_StreamOperation_none,
 	uio_StreamOperation_read,
 	uio_StreamOperation_write
 } uio_StreamOperation;
 
-struct uio_Stream {
-	char *buf;
-			// Start of the buffer.
-	char *dataStart;
-			// Start of the part of the buffer that is in use.
-	char *dataEnd;
-			// Start of the unused part of the buffer.
-	char *bufEnd;
-			// End of the buffer.
+struct uio_Stream
+{
+	char* buf;
+	// Start of the buffer.
+	char* dataStart;
+	// Start of the part of the buffer that is in use.
+	char* dataEnd;
+	// Start of the unused part of the buffer.
+	char* bufEnd;
+	// End of the buffer.
 	// INV: buf <= dataStart <= dataEnd <= bufEnd
 	// INV: if 'operation == uio_StreamOperation_write' then buf == dataStart
 
-	uio_Handle *handle;
+	uio_Handle* handle;
 	int status;
 #define uio_Stream_STATUS_OK 0
 #define uio_Stream_STATUS_EOF 1
 #define uio_Stream_STATUS_ERROR 2
 	uio_StreamOperation operation;
-			// What was the last action (reading or writing). This
-			// determines whether the buffer is a read or write buffer.
+	// What was the last action (reading or writing). This
+	// determines whether the buffer is a read or write buffer.
 	int openFlags;
-			// Flags used for opening the file.
+	// Flags used for opening the file.
 };
 
 
-#endif  /* uio_INTERNAL */
+#endif /* uio_INTERNAL */
 
-#endif  /* LIBS_UIO_UIOSTREAM_H_ */
-
-
+#endif /* LIBS_UIO_UIOSTREAM_H_ */

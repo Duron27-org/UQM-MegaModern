@@ -21,11 +21,10 @@
 extern "C" {
 #endif
 
-RACE_DESC *init_probe (void);
+RACE_DESC* init_probe(void);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* PROBE_H */
-
+#endif /* PROBE_H */

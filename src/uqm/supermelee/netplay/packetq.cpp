@@ -23,54 +23,58 @@
 #include "netsend.h"
 #include "packetsenders.h"
 #ifdef NETPLAY_DEBUG
-#	include "libs/log.h"
+#include "libs/log.h"
 #endif
 
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 
-static inline PacketQueueLink *
-PacketQueueLink_alloc(void) {
+static inline PacketQueueLink*
+PacketQueueLink_alloc(void)
+{
 	// XXX: perhaps keep a pool of links?
-	return (PacketQueueLink*)malloc(sizeof (PacketQueueLink));
+	return (PacketQueueLink*)malloc(sizeof(PacketQueueLink));
 }
 
 static inline void
-PacketQueueLink_delete(PacketQueueLink *link) {
+PacketQueueLink_delete(PacketQueueLink* link)
+{
 	free(link);
 }
 
 // 'maxSize' should at least be 1
-void
-PacketQueue_init(PacketQueue *queue) {
+void PacketQueue_init(PacketQueue* queue)
+{
 	queue->size = 0;
 	queue->first = NULL;
 	queue->end = &queue->first;
 }
 
 static void
-PacketQueue_deleteLinks(PacketQueueLink *link) {
-	while (link != NULL) {
-		PacketQueueLink *next = link->next;
+PacketQueue_deleteLinks(PacketQueueLink* link)
+{
+	while (link != NULL)
+	{
+		PacketQueueLink* next = link->next;
 		Packet_delete(link->packet);
 		PacketQueueLink_delete(link);
 		link = next;
 	}
 }
 
-void
-PacketQueue_uninit(PacketQueue *queue) {
+void PacketQueue_uninit(PacketQueue* queue)
+{
 	PacketQueue_deleteLinks(queue->first);
 }
 
-void
-queuePacket(NetConnection *conn, Packet *packet) {
-	PacketQueue *queue;
-	PacketQueueLink *link;
+void queuePacket(NetConnection* conn, Packet* packet)
+{
+	PacketQueue* queue;
+	PacketQueueLink* link;
 
 	assert(NetConnection_isConnected(conn));
-	
+
 	queue = &conn->queue;
 
 	link = PacketQueueLink_alloc();
@@ -83,8 +87,8 @@ queuePacket(NetConnection *conn, Packet *packet) {
 	// XXX: perhaps check that this queue isn't getting too large?
 
 #ifdef NETPLAY_DEBUG
-	if (packetType(packet) != PACKET_BATTLEINPUT &&
-			packetType(packet) != PACKET_CHECKSUM) {
+	if (packetType(packet) != PACKET_BATTLEINPUT && packetType(packet) != PACKET_CHECKSUM)
+	{
 		// Reporting BattleInput or Checksum would get so spammy that it
 		// would slow down the battle.
 		log_add(log_Debug, "NETPLAY: [%d] ==> Queueing packet of type %s.\n",
@@ -92,14 +96,15 @@ queuePacket(NetConnection *conn, Packet *packet) {
 				packetTypeData[packetType(packet)].name);
 	}
 #ifdef NETPLAY_DEBUG_FILE
-	if (conn->debugFile != NULL) {
+	if (conn->debugFile != NULL)
+	{
 		uio_fprintf(conn->debugFile,
-				"NETPLAY: [%d] ==> Queueing packet of type %s.\n",
-				NetConnection_getPlayerNr(conn),
-				packetTypeData[packetType(packet)].name);
+					"NETPLAY: [%d] ==> Queueing packet of type %s.\n",
+					NetConnection_getPlayerNr(conn),
+					packetTypeData[packetType(packet)].name);
 	}
-#endif  /* NETPLAY_DEBUG_FILE */
-#endif  /* NETPLAY_DEBUG */
+#endif /* NETPLAY_DEBUG_FILE */
+#endif /* NETPLAY_DEBUG */
 }
 
 // If an error occurs during sending, we leave the unsent packets in
@@ -107,18 +112,21 @@ queuePacket(NetConnection *conn, Packet *packet) {
 // This function may return -1 with errno EAGAIN or EWOULDBLOCK
 // if we're waiting for the other party to act first.
 static int
-flushPacketQueueLinks(NetConnection *conn, PacketQueueLink **first) {
-	PacketQueueLink *link;
-	PacketQueueLink *next;
-	PacketQueue *queue = &conn->queue;
-	
-	for (link = *first; link != NULL; link = next) {
-		if (sendPacket(conn, link->packet) == -1) {
+flushPacketQueueLinks(NetConnection* conn, PacketQueueLink** first)
+{
+	PacketQueueLink* link;
+	PacketQueueLink* next;
+	PacketQueue* queue = &conn->queue;
+
+	for (link = *first; link != NULL; link = next)
+	{
+		if (sendPacket(conn, link->packet) == -1)
+		{
 			// Errno is set.
 			*first = link;
 			return -1;
 		}
-		
+
 		next = link->next;
 		Packet_delete(link->packet);
 		PacketQueueLink_delete(link);
@@ -129,21 +137,21 @@ flushPacketQueueLinks(NetConnection *conn, PacketQueueLink **first) {
 	return 0;
 }
 
-int
-flushPacketQueue(NetConnection *conn) {
+int flushPacketQueue(NetConnection* conn)
+{
 	int flushResult;
-	PacketQueue *queue = &conn->queue;
-	
+	PacketQueue* queue = &conn->queue;
+
 	assert(NetConnection_isConnected(conn));
 
 	flushResult = flushPacketQueueLinks(conn, &queue->first);
 	if (queue->first == NULL)
 		queue->end = &queue->first;
-	if (flushResult == -1) {
+	if (flushResult == -1)
+	{
 		// errno is set
 		return -1;
 	}
-	
+
 	return 0;
 }
-

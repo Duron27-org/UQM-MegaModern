@@ -37,7 +37,7 @@
 #include "../lua/luacomm.h"
 
 
-#define COL_MULTIPLIER (isPC (optSuperPC) || IS_PAD ? 7 : 6)
+#define COL_MULTIPLIER (isPC(optSuperPC) || IS_PAD ? 7 : 6)
 #define NUM_CELL_COLS (UQM_MAP_WIDTH / COL_MULTIPLIER)
 #define NUM_CELL_ROWS (SC2_MAP_HEIGHT / 6)
 #define MAX_CELL_COLS 40 // Why is this is never used???
@@ -45,45 +45,45 @@
 extern FRAME SpaceJunkFrame;
 
 static void
-ClearReportArea (COORD startx)
+ClearReportArea(COORD startx)
 {
 	uqm::COUNT x, y;
 	RECT r;
 	STAMP s;
 
 	if (optWhichFonts == OPT_PC)
-		s.frame = SetAbsFrameIndex (SpaceJunkFrame, 21);
+		s.frame = SetAbsFrameIndex(SpaceJunkFrame, 21);
 	else
-		s.frame = SetAbsFrameIndex (SpaceJunkFrame, 18);
-	GetFrameRect (s.frame, &r);
-	BatchGraphics ();
+		s.frame = SetAbsFrameIndex(SpaceJunkFrame, 18);
+	GetFrameRect(s.frame, &r);
+	BatchGraphics();
 
-	SetContextBackGroundColor (BLACK_COLOR);
-	ClearDrawable ();
-	SetContextForeGroundColor (
-		BUILD_COLOR (MAKE_RGB15 (0x00, 0x07, 0x00), 0x57));
+	SetContextBackGroundColor(BLACK_COLOR);
+	ClearDrawable();
+	SetContextForeGroundColor(
+		BUILD_COLOR(MAKE_RGB15(0x00, 0x07, 0x00), 0x57));
 
-	s.origin.y = RES_SCALE (1);
+	s.origin.y = RES_SCALE(1);
 	for (y = 0; y < NUM_CELL_ROWS; ++y)
 	{
 		s.origin.x = startx;
 		for (x = 0; x < NUM_CELL_COLS; ++x)
 		{
 			if (optWhichFonts == OPT_PC)
-				DrawStamp (&s);
+				DrawStamp(&s);
 			else
-				DrawFilledStamp (&s);
+				DrawFilledStamp(&s);
 
-			s.origin.x += r.extent.width + RES_SCALE (1);
+			s.origin.x += r.extent.width + RES_SCALE(1);
 		}
-		s.origin.y += r.extent.height + RES_SCALE (1);
+		s.origin.y += r.extent.height + RES_SCALE(1);
 	}
 
-	UnbatchGraphics ();
+	UnbatchGraphics();
 }
 
 static void
-MakeReport (SOUND ReadOutSounds, uqm::CHAR_T *pStr, uqm::COUNT StrLen)
+MakeReport(SOUND ReadOutSounds, uqm::CHAR_T* pStr, uqm::COUNT StrLen)
 {
 	int end_page_len;
 	uqm::CHAR_T end_page_buf[200];
@@ -99,42 +99,42 @@ MakeReport (SOUND ReadOutSounds, uqm::CHAR_T *pStr, uqm::COUNT StrLen)
 	uqm::SIZE curr_line = -1;
 	uqm::COUNT first_line_length = 0;
 
-	sprintf (end_page_buf, "%s\n",
-			GAME_STRING (SCAN_STRING_BASE + NUM_SCAN_TYPES));
-	end_page_len = utf8StringCount (end_page_buf);
+	sprintf(end_page_buf, "%s\n",
+			GAME_STRING(SCAN_STRING_BASE + NUM_SCAN_TYPES));
+	end_page_len = utf8StringCount(end_page_buf);
 
-	GetFrameRect (SetAbsFrameIndex (SpaceJunkFrame, 18), &r);
-	GetContextClipRect (&contextRect);
+	GetFrameRect(SetAbsFrameIndex(SpaceJunkFrame, 18), &r);
+	GetContextClipRect(&contextRect);
 
 	t.align = ALIGN_LEFT;
 	t.CharCount = 1;
 	t.pStr = pStr;
 	Sleepy = true;
 
-	FlushInput ();
+	FlushInput();
 
-	t.baseline.y = r.extent.height + RES_SCALE (1);
-			// Text vertical alignment
+	t.baseline.y = r.extent.height + RES_SCALE(1);
+	// Text vertical alignment
 	row_cells = 0;
-	fgcolor = BUILD_COLOR (MAKE_RGB15 (0x00, 0x1F, 0x00), 0xFF);
+	fgcolor = BUILD_COLOR(MAKE_RGB15(0x00, 0x1F, 0x00), 0xFF);
 
 	if (contextRect.extent.width < SCALED_MAP_WIDTH)
-		startx = RES_SCALE (1); // Special case if we're in space
+		startx = RES_SCALE(1); // Special case if we're in space
 	else
-	{	// In DOS version first cell is 3p away from the edge of the
+	{ // In DOS version first cell is 3p away from the edge of the
 		// context, and 2 in UQM
-		startx = RES_SCALE (RES_DESCALE (r.extent.width) >> 1)
-			+ (isPC (optSuperPC) ? RES_SCALE (1) : 0);
+		startx = RES_SCALE(RES_DESCALE(r.extent.width) >> 1)
+			   + (isPC(optSuperPC) ? RES_SCALE(1) : 0);
 	}
 
-	startx += SAFE_NUM_SCL (1);
+	startx += SAFE_NUM_SCL(1);
 
 	if (StrLen)
 	{
-		ClearReportArea (startx);
-		SetContextForeGroundColor (fgcolor);
+		ClearReportArea(startx);
+		SetContextForeGroundColor(fgcolor);
 
-		if (is3DO (optSuperPC))
+		if (is3DO(optSuperPC))
 		{
 			const uqm::CHAR_T* pCurrStr;
 			uqm::COUNT length;
@@ -145,7 +145,7 @@ MakeReport (SOUND ReadOutSounds, uqm::CHAR_T *pStr, uqm::COUNT StrLen)
 
 			for (length = StrLen; length > 0; length--)
 			{
-				if (getCharFromString (&pCurrStr) == '\n')
+				if (getCharFromString(&pCurrStr) == '\n')
 					total_lines++;
 
 				if (total_lines == 0)
@@ -157,8 +157,8 @@ MakeReport (SOUND ReadOutSounds, uqm::CHAR_T *pStr, uqm::COUNT StrLen)
 	while (StrLen)
 	{
 		uqm::COUNT col_cells;
-		const uqm::CHAR_T *pLastStr;
-		const uqm::CHAR_T *pNextStr;
+		const uqm::CHAR_T* pLastStr;
+		const uqm::CHAR_T* pNextStr;
 		uqm::COUNT lf_pos;
 
 		pLastStr = t.pStr;
@@ -166,14 +166,14 @@ MakeReport (SOUND ReadOutSounds, uqm::CHAR_T *pStr, uqm::COUNT StrLen)
 		// scan for LFs in the remaining string
 		// trailing LF will be ignored
 		for (lf_pos = StrLen, pNextStr = t.pStr;
-				lf_pos && getCharFromString (&pNextStr) != '\n';
-				--lf_pos)
- 			;
+			 lf_pos && getCharFromString(&pNextStr) != '\n';
+			 --lf_pos)
+			;
 
 		col_cells = 0;
 		// check if the remaining text fits on current screen
 		if (row_cells == NUM_CELL_ROWS - 1
-				&& (StrLen > NUM_CELL_COLS || lf_pos > 1))
+			&& (StrLen > NUM_CELL_COLS || lf_pos > 1))
 		{
 			col_cells = (NUM_CELL_COLS >> 1) - (end_page_len >> 1);
 			t.pStr = end_page_buf;
@@ -192,47 +192,46 @@ MakeReport (SOUND ReadOutSounds, uqm::CHAR_T *pStr, uqm::COUNT StrLen)
 				col_cells = ((NUM_CELL_COLS - (StrLen - 2)) >> 1) - 2;
 		}
 
-		t.baseline.x = startx + (col_cells *
-				(r.extent.width + RES_SCALE (1)));
+		t.baseline.x = startx + (col_cells * (r.extent.width + RES_SCALE(1)));
 
 		do
 		{
 			uqm::COUNT word_chars;
-			const uqm::CHAR_T *pStr;
+			const uqm::CHAR_T* pStr;
 			UniChar c;
- 
+
 			pStr = t.pStr;
 			pNextStr = t.pStr;
-			while (UniChar_isGraph (getCharFromString (&pNextStr)))
+			while (UniChar_isGraph(getCharFromString(&pNextStr)))
 				pStr = pNextStr;
 
-			word_chars = (uqm::COUNT)utf8StringCountN (t.pStr, pStr);
+			word_chars = (uqm::COUNT)utf8StringCountN(t.pStr, pStr);
 			if ((col_cells += word_chars) <= NUM_CELL_COLS)
 			{
 				TimeCount TimeOut;
 
 				if (StrLen -= word_chars)
 					--StrLen;
-				TimeOut = GetTimeCounter ();
+				TimeOut = GetTimeCounter();
 				while (word_chars--)
 				{
 					pNextStr = t.pStr;
-					c = getCharFromString (&pNextStr);
-					
-					if (GLOBAL (CurrentActivity) & CHECK_ABORT)
+					c = getCharFromString(&pNextStr);
+
+					if (GLOBAL(CurrentActivity) & CHECK_ABORT)
 						return;
 					if (!Sleepy)
-						font_DrawText (&t);
+						font_DrawText(&t);
 					else
 					{
 						uqm::BYTE scale = 0;
-						font_DrawText (&t);
+						font_DrawText(&t);
 
 						if (CurrentInputState.menu[KEY_MENU_RIGHT])
 							scale = 2;
 
-						PlaySound (ReadOutSounds, NotPositional (), NULL,
-								GAME_SOUND_PRIORITY);
+						PlaySound(ReadOutSounds, NotPositional(), NULL,
+								  GAME_SOUND_PRIORITY);
 
 						switch (c)
 						{
@@ -264,57 +263,56 @@ MakeReport (SOUND ReadOutSounds, uqm::CHAR_T *pStr, uqm::COUNT StrLen)
 						if (word_chars == 0)
 							TimeOut += ONE_SECOND / (20 << scale);
 
-						if (WaitForActButtonUntil (true, TimeOut, false))
+						if (WaitForActButtonUntil(true, TimeOut, false))
 						{
 							Sleepy = false;
 							// We draw the whole thing at once after this
-							BatchGraphics ();
+							BatchGraphics();
 						}
 					}
 					t.pStr = pNextStr;
-					t.baseline.x += r.extent.width + RES_SCALE (1);
-							// Text spacing
+					t.baseline.x += r.extent.width + RES_SCALE(1);
+					// Text spacing
 				}
 
 				++col_cells;
-				last_c = getCharFromString (&t.pStr);
-				t.baseline.x += r.extent.width + RES_SCALE (1);
-						// Space spacing
+				last_c = getCharFromString(&t.pStr);
+				t.baseline.x += r.extent.width + RES_SCALE(1);
+				// Space spacing
 
 				if (curr_line >= 0 && last_c == '\n')
 					curr_line++;
 			}
 		} while (col_cells <= NUM_CELL_COLS && last_c != '\n' && StrLen);
 
-		t.baseline.y += r.extent.height + RES_SCALE (1);
-				// Text vertical spacing
+		t.baseline.y += r.extent.height + RES_SCALE(1);
+		// Text vertical spacing
 		if (++row_cells == NUM_CELL_ROWS || StrLen == 0)
 		{
 			t.pStr = pLastStr;
 			if (!Sleepy)
 			{
-				UnbatchGraphics ();
+				UnbatchGraphics();
 			}
 
-			if (!WaitForActButton (true, WAIT_INFINITE, false))
+			if (!WaitForActButton(true, WAIT_INFINITE, false))
 				break;
 
-			t.baseline.y = r.extent.height + RES_SCALE (1);
-					// Text vertical alignment
+			t.baseline.y = r.extent.height + RES_SCALE(1);
+			// Text vertical alignment
 			row_cells = 0;
 			if (StrLen)
 			{
 				if (!Sleepy)
-					BatchGraphics ();
-				ClearReportArea (startx);
-				SetContextForeGroundColor (fgcolor);
+					BatchGraphics();
+				ClearReportArea(startx);
+				SetContextForeGroundColor(fgcolor);
 			}
 		}
 	}
 }
 
-void
-DoDiscoveryReport (SOUND ReadOutSounds)
+void DoDiscoveryReport(SOUND ReadOutSounds)
 {
 	CONTEXT OldContext;
 	CONTEXT context;
@@ -326,47 +324,46 @@ DoDiscoveryReport (SOUND ReadOutSounds)
 		return;
 #endif
 
-	context = GetScanContext (&ownContext);
-	OldContext = SetContext (context);
-	saveStamp = SaveContextFrame (NULL);
+	context = GetScanContext(&ownContext);
+	OldContext = SetContext(context);
+	saveStamp = SaveContextFrame(NULL);
 	{
 		FONT OldFont;
 		FRAME OldFontEffect;
 
-		OldFont = SetContextFont (
-				pSolarSysState->SysInfo.PlanetInfo.LanderFont);
+		OldFont = SetContextFont(
+			pSolarSysState->SysInfo.PlanetInfo.LanderFont);
 		if (optWhichFonts == OPT_PC)
-			OldFontEffect = SetContextFontEffect (
-					pSolarSysState->SysInfo.PlanetInfo.LanderFontEff);
+			OldFontEffect = SetContextFontEffect(
+				pSolarSysState->SysInfo.PlanetInfo.LanderFontEff);
 		else
-			OldFontEffect = SetContextFontEffect (NULL);
+			OldFontEffect = SetContextFontEffect(NULL);
 
-		luaUqm_comm_init (NULL, NULL_RESOURCE);
+		luaUqm_comm_init(NULL, NULL_RESOURCE);
 		bool allocated = false;
-		char *StrPtr = (uqm::CHAR_T *)GetStringAddress
-				(pSolarSysState->SysInfo.PlanetInfo.DiscoveryString);
-		if (luaUqm_comm_stringNeedsInterpolate (StrPtr))
+		char* StrPtr = (uqm::CHAR_T*)GetStringAddress(pSolarSysState->SysInfo.PlanetInfo.DiscoveryString);
+		if (luaUqm_comm_stringNeedsInterpolate(StrPtr))
 		{
 			allocated = true;
-			StrPtr = luaUqm_comm_stringInterpolate (StrPtr);
+			StrPtr = luaUqm_comm_stringInterpolate(StrPtr);
 		}
-		MakeReport (ReadOutSounds, StrPtr, (uqm::COUNT)strlen (StrPtr));
-		
-		luaUqm_comm_uninit ();
-		if (allocated)
-			HFree (StrPtr);
+		MakeReport(ReadOutSounds, StrPtr, (uqm::COUNT)strlen(StrPtr));
 
-		SetContextFontEffect (OldFontEffect);
-		SetContextFont (OldFont);
+		luaUqm_comm_uninit();
+		if (allocated)
+			HFree(StrPtr);
+
+		SetContextFontEffect(OldFontEffect);
+		SetContextFont(OldFont);
 	}
 	// Restore previous screen
-	DrawStamp (&saveStamp);
-	SetContext (OldContext);
+	DrawStamp(&saveStamp);
+	SetContext(OldContext);
 	// TODO: Make CONTEXT ref-counted
 	if (ownContext)
-		DestroyScanContext ();
+		DestroyScanContext();
 
-	DestroyDrawable (ReleaseDrawable (saveStamp.frame));
+	DestroyDrawable(ReleaseDrawable(saveStamp.frame));
 
-	WaitForNoInput (WAIT_INFINITE, true);
+	WaitForNoInput(WAIT_INFINITE, true);
 }

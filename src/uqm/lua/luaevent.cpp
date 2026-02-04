@@ -26,7 +26,7 @@
 #include "luaevent.h"
 
 #include "options.h"
-		// For contentDir
+// For contentDir
 #include "libs/scriptlib.h"
 #include "uqm/lua/luastate.h"
 #include "luafuncs/customfuncs.h"
@@ -35,20 +35,20 @@
 #include "luafuncs/statefuncs.h"
 #include "libs/log.h"
 
-lua_State *luaUqm_eventState = NULL;
-	
+lua_State* luaUqm_eventState = NULL;
+
 static const luaL_Reg eventLibs[] = {
-	{ "event", luaUqm_event_open },
-	{ "log",   luaUqm_log_open },
-	{ "state", luaUqm_state_open },
-	{ NULL, NULL }
+	{"event", luaUqm_event_open},
+	{"log",	luaUqm_log_open  },
+	{"state", luaUqm_state_open},
+	{NULL,	   NULL			   }
 };
 
 // Not reentrant.
-bool
-luaUqm_event_init(const luaUqm_custom_Function *customFuncs,
-		RESOURCE scriptRes) {
-	char *scriptFileName;
+bool luaUqm_event_init(const luaUqm_custom_Function* customFuncs,
+					   RESOURCE scriptRes)
+{
+	char* scriptFileName;
 	bool loadOk;
 
 	assert(luaUqm_eventState == NULL);
@@ -81,8 +81,8 @@ luaUqm_event_init(const luaUqm_custom_Function *customFuncs,
 	return true;
 }
 
-void
-luaUqm_event_uninit(void) {
+void luaUqm_event_uninit(void)
+{
 	assert(luaUqm_eventState != NULL);
 
 #ifdef EVENT_DEBUG
@@ -92,8 +92,8 @@ luaUqm_event_uninit(void) {
 	luaUqm_eventState = NULL;
 }
 
-void
-luaUqm_event_callEvent(const char *eventIdStr) {
+void luaUqm_event_callEvent(const char* eventIdStr)
+{
 	assert(luaUqm_eventState != NULL);
 
 #ifdef EVENT_DEBUG
@@ -109,9 +109,11 @@ luaUqm_event_callEvent(const char *eventIdStr) {
 
 	// [-2] -> table eventTable
 	// [-1] -> function eventFun
-	if (lua_isnil(luaUqm_eventState, -1)) {
+	if (lua_isnil(luaUqm_eventState, -1))
+	{
 		log_add(log_Warning, "[script] Warning: luaUqm_event_callEvent(): "
-				"Event '%s' is not registered.", eventIdStr);
+							 "Event '%s' is not registered.",
+				eventIdStr);
 		lua_pop(luaUqm_eventState, 2);
 		return;
 	}
@@ -123,4 +125,3 @@ luaUqm_event_callEvent(const char *eventIdStr) {
 	// [-1] -> function eventFun
 	luaUqm_callStackFunction(luaUqm_eventState);
 }
-

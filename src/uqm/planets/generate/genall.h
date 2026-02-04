@@ -53,5 +53,4 @@ extern const GenerateFunctions generateYehatFunctions;
 extern const GenerateFunctions generateZoqFotPikFunctions;
 extern const GenerateFunctions generateZoqFotPikScoutFunctions;
 
-#endif  /* UQM_PLANETS_GENERATE_GENALL_H_ */
-
+#endif /* UQM_PLANETS_GENERATE_GENALL_H_ */

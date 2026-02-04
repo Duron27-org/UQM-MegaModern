@@ -22,15 +22,14 @@ extern "C" {
 #endif
 
 extern volatile int MainExited;
-extern void SignalStopMainThread (void);
-extern void ProcessUtilityKeys (void);
+extern void SignalStopMainThread(void);
+extern void ProcessUtilityKeys(void);
 
-extern int Starcon2Main (void *threadArg);
-extern void FreeGameData (void);
+extern int Starcon2Main(void* threadArg);
+extern void FreeGameData(void);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* UQM_STARCON_H_ */
-
+#endif /* UQM_STARCON_H_ */

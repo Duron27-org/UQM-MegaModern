@@ -25,29 +25,29 @@
 #include "packetsenders.h"
 
 #include "../../battlecontrols.h"
-		// for NetworkInputContext
+// for NetworkInputContext
 #include "../../controls.h"
-		// for BATTLE_INPUT_STATE
+// for BATTLE_INPUT_STATE
 #include "../../races.h"
-		// for STARSHIP
+// for STARSHIP
 
 #if 0 //defined(__cplusplus)
 extern "C" {
 #endif
 
-extern struct NetConnection *netConnections[];
+extern struct NetConnection* netConnections[];
 
 
-void addNetConnection(NetConnection *conn, int playerNr);
+void addNetConnection(NetConnection* conn, int playerNr);
 void removeNetConnection(int playerNr);
 void closeAllConnections(void);
 void closeDisconnectedConnections(void);
 size_t getNumNetConnections(void);
-typedef bool(*ForEachConnectionCallback)(NetConnection *conn, void *arg);
-bool forEachConnectedPlayer(ForEachConnectionCallback callback, void *arg);
+typedef bool (*ForEachConnectionCallback)(NetConnection* conn, void* arg);
+bool forEachConnectedPlayer(ForEachConnectionCallback callback, void* arg);
 
-struct melee_state *NetMelee_getMeleeState(NetConnection *conn);
-struct battlestate_struct *NetMelee_getBattleState(NetConnection *conn);
+struct melee_state* NetMelee_getMeleeState(NetConnection* conn);
+struct battlestate_struct* NetMelee_getBattleState(NetConnection* conn);
 
 void netInput(void);
 void netInputBlocking(uint32 timeoutMs);
@@ -55,17 +55,17 @@ void flushPacketQueues(void);
 
 void confirmConnections(void);
 void cancelConfirmations(void);
-void connectionsLocalReady(NetConnection_ReadyCallback callback, void *arg);
+void connectionsLocalReady(NetConnection_ReadyCallback callback, void* arg);
 
 bool allConnected(void);
 
 void initBattleStateDataConnections(void);
-void setBattleStateConnections(struct battlestate_struct *bs);
+void setBattleStateConnections(struct battlestate_struct* bs);
 
-BATTLE_INPUT_STATE networkBattleInput(NetworkInputContext *context,
-		STARSHIP *StarShipPtr);
+BATTLE_INPUT_STATE networkBattleInput(NetworkInputContext* context,
+									  STARSHIP* StarShipPtr);
 
-NetConnection *openPlayerNetworkConnection(uqm::COUNT player, void *extra);
+NetConnection* openPlayerNetworkConnection(uqm::COUNT player, void* extra);
 void closePlayerNetworkConnection(uqm::COUNT player);
 
 bool setupInputDelay(size_t localInputDelay);
@@ -73,20 +73,18 @@ bool setStateConnections(NetState state);
 bool sendAbortConnections(NetplayAbortReason reason);
 bool resetConnections(NetplayResetReason reason);
 bool localReadyConnections(NetConnection_ReadyCallback readyCallback,
-		void *arg, bool notifyRemote);
+						   void* arg, bool notifyRemote);
 
-bool negotiateReady(NetConnection *conn, bool notifyRemote,
-		NetState nextState);
+bool negotiateReady(NetConnection* conn, bool notifyRemote,
+					NetState nextState);
 bool negotiateReadyConnections(bool notifyRemote, NetState nextState);
-bool waitReady(NetConnection *conn);
+bool waitReady(NetConnection* conn);
 
-bool waitReset(NetConnection *conn, NetState nextState);
+bool waitReset(NetConnection* conn, NetState nextState);
 bool waitResetConnections(NetState nextState);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* UQM_SUPERMELEE_NETPLAY_NETMELEE_H_ */
-
-
+#endif /* UQM_SUPERMELEE_NETPLAY_NETMELEE_H_ */

@@ -26,11 +26,11 @@
 #include "libs/threadlib.h"
 
 #ifndef MAX_LOG_ENTRY_SIZE
-#	define MAX_LOG_ENTRY_SIZE 1024
+#define MAX_LOG_ENTRY_SIZE 1024
 #endif
 
 #ifndef MAX_LOG_ENTRIES
-#	define MAX_LOG_ENTRIES 128
+#define MAX_LOG_ENTRIES 128
 #endif
 
 typedef char log_Entry[MAX_LOG_ENTRY_SIZE];
@@ -50,64 +50,64 @@ static volatile bool noThreadReady = false;
 static bool showBox = true;
 static bool errorBox = true;
 
-FILE *streamOut;
+FILE* streamOut;
 
 static volatile int qlock = 0;
 static Mutex qmutex;
 
-static void exitCallback (void);
-static void displayLog (bool isError);
+static void exitCallback(void);
+static void displayLog(bool isError);
 
 static void
-lockQueue (void)
+lockQueue(void)
 {
 	if (!qlock)
 		return;
 
-	LockMutex (qmutex);
+	LockMutex(qmutex);
 }
 
 static void
-unlockQueue (void)
+unlockQueue(void)
 {
 	if (!qlock)
 		return;
 
-	UnlockMutex (qmutex);
+	UnlockMutex(qmutex);
 }
 
 static void
-removeExcess (int room)
+removeExcess(int room)
 {
 	room = maxDisp - room;
 	if (room < 0)
 		room = 0;
 
-	for ( ; qtotal > room; --qtotal, ++qtail)
+	for (; qtotal > room; --qtotal, ++qtail)
 		;
 	qtail %= MAX_LOG_ENTRIES;
 }
 
 static int
-acquireSlot (void)
+acquireSlot(void)
 {
 	int slot;
 
-	lockQueue ();
-	
-	removeExcess (1);
+	lockQueue();
+
+	removeExcess(1);
 	slot = qhead;
 	qhead = (qhead + 1) % MAX_LOG_ENTRIES;
 	++qtotal;
-	
-	unlockQueue ();
+
+	unlockQueue();
 
 	return slot;
 }
 
 // queues the non-threaded message when present
 static void
-queueNonThreaded (void)
+queueNonThreaded(void)
 {
 	int slot;
 
@@ -120,12 +120,11 @@ queueNonThreaded (void)
 		return;
 	noThreadReady = false;
 
-	slot = acquireSlot ();
-	memcpy (queue[slot], msgNoThread, sizeof (msgNoThread));
+	slot = acquireSlot();
+	memcpy(queue[slot], msgNoThread, sizeof(msgNoThread));
 }
 
-void
-log_init (int max_lines)
+void log_init(int max_lines)
 {
 	int i;
 
@@ -135,113 +134,110 @@ log_init (int max_lines)
 	// pre-term queue strings
 	for (i = 0; i < MAX_LOG_ENTRIES; ++i)
 		queue[i][MAX_LOG_ENTRY_SIZE - 1] = '\0';
-	
-	msgBuf[sizeof (msgBuf) - 1] = '\0';
-	msgNoThread[sizeof (msgNoThread) - 1] = '\0';
+
+	msgBuf[sizeof(msgBuf) - 1] = '\0';
+	msgNoThread[sizeof(msgNoThread) - 1] = '\0';
 
 	// install exit handlers
-	atexit (exitCallback);
+	atexit(exitCallback);
 }
 
-void
-log_initThreads (void)
+void log_initThreads(void)
 {
-	qmutex = CreateMutex ("Logging Lock", SYNC_CLASS_RESOURCE);
+	qmutex = CreateMutex("Logging Lock", SYNC_CLASS_RESOURCE);
 	qlock = 1;
 }
 
-int
-log_exit (int code)
+int log_exit(int code)
 {
 	showBox = false;
 
 	if (qlock)
 	{
 		qlock = 0;
-		DestroyMutex (qmutex);
+		DestroyMutex(qmutex);
 		qmutex = 0;
 	}
 
 	return code;
 }
 
-void
-log_setLevel (int level)
+void log_setLevel(int level)
 {
 	maxLevel = level;
 	//maxStreamLevel = level;
 }
 
-FILE *
-log_setOutput (FILE *out)
+FILE* log_setOutput(FILE* out)
 {
-	FILE *old = streamOut;
+	FILE* old = streamOut;
 	streamOut = out;
-	
+
 	return old;
 }
 
-void
-log_addV (log_Level level, const char *fmt, va_list list) {
+void log_addV(log_Level level, const char* fmt, va_list list)
+{
 	log_Entry full_msg;
-	vsnprintf (full_msg, sizeof (full_msg) - 1, fmt, list);
-	full_msg[sizeof (full_msg) - 1] = '\0';
-	
-	if ((int)level <= maxStreamLevel) {
-		fprintf (streamOut, "%s\n", full_msg);
+	vsnprintf(full_msg, sizeof(full_msg) - 1, fmt, list);
+	full_msg[sizeof(full_msg) - 1] = '\0';
+
+	if ((int)level <= maxStreamLevel)
+	{
+		fprintf(streamOut, "%s\n", full_msg);
 	}
 
-	if ((int)level <= maxLevel) {
+	if ((int)level <= maxLevel)
+	{
 		int slot;
 
-		queueNonThreaded ();
-		
-		slot = acquireSlot ();
-		memcpy (queue[slot], full_msg, sizeof (queue[0]));
+		queueNonThreaded();
+
+		slot = acquireSlot();
+		memcpy(queue[slot], full_msg, sizeof(queue[0]));
 	}
 }
 
-void
-log_add (log_Level level, const char *fmt, ...)
+void log_add(log_Level level, const char* fmt, ...)
 {
 	va_list list;
 
-	va_start (list, fmt);
-	log_addV (level, fmt, list);
-	va_end (list);
+	va_start(list, fmt);
+	log_addV(level, fmt, list);
+	va_end(list);
 }
 
 // non-threaded version of 'add'
 // uses single-instance static storage with entry into the
 // queue delayed until the next threaded 'add' or 'exit'
-void
-log_add_nothreadV (log_Level level, const char *fmt, va_list list) {
+void log_add_nothreadV(log_Level level, const char* fmt, va_list list)
+{
 	log_Entry full_msg;
-	vsnprintf (full_msg, sizeof (full_msg) - 1, fmt, list);
-	full_msg[sizeof (full_msg) - 1] = '\0';
-	
-	if ((int)level <= maxStreamLevel) {
-		fprintf (streamOut, "%s\n", full_msg);
+	vsnprintf(full_msg, sizeof(full_msg) - 1, fmt, list);
+	full_msg[sizeof(full_msg) - 1] = '\0';
+
+	if ((int)level <= maxStreamLevel)
+	{
+		fprintf(streamOut, "%s\n", full_msg);
 	}
 
-	if ((int)level <= maxLevel) {
-		memcpy (msgNoThread, full_msg, sizeof (msgNoThread));
+	if ((int)level <= maxLevel)
+	{
+		memcpy(msgNoThread, full_msg, sizeof(msgNoThread));
 		noThreadReady = true;
 	}
 }
 
-void
-log_add_nothread (log_Level level, const char *fmt, ...)
+void log_add_nothread(log_Level level, const char* fmt, ...)
 {
 	va_list list;
 
-	va_start (list, fmt);
-	log_add_nothreadV (level, fmt, list);
-	va_end (list);
+	va_start(list, fmt);
+	log_add_nothreadV(level, fmt, list);
+	va_end(list);
 }
 
-void
-log_showBox (bool show, bool err)
+void log_showBox(bool show, bool err)
 {
 	showBox = show;
 	errorBox = err;
@@ -249,8 +245,7 @@ log_showBox (bool show, bool err)
 
 // sets the maximum log lines captured for the final
 // display to the user on failure exit
-void
-log_captureLines (int num)
+void log_captureLines(int num)
 {
 	if (num > MAX_LOG_ENTRIES)
 		num = MAX_LOG_ENTRIES;
@@ -259,33 +254,33 @@ log_captureLines (int num)
 	maxDisp = num;
 
 	// remove any extra lines already on queue
-	lockQueue ();
-	removeExcess (0);
-	unlockQueue ();
+	lockQueue();
+	removeExcess(0);
+	unlockQueue();
 }
 
 static void
-exitCallback (void)
+exitCallback(void)
 {
 	if (showBox)
-		displayLog (errorBox);
+		displayLog(errorBox);
 
-	log_exit (0);
+	log_exit(0);
 }
 
 static void
-displayLog (bool isError)
+displayLog(bool isError)
 {
-	char *p = msgBuf;
-	int left = sizeof (msgBuf) - 1;
+	char* p = msgBuf;
+	int left = sizeof(msgBuf) - 1;
 	int len;
 	int ptr;
 
 	if (isError)
 	{
-		strcpy (p, "The Ur-Quan Masters MegaMod encountered a fatal error.\n\n"
-				"Part of the log follows:\n\n");
-		len = strlen (p);
+		strcpy(p, "The Ur-Quan Masters MegaMod encountered a fatal error.\n\n"
+				  "Part of the log follows:\n\n");
+		len = strlen(p);
 		p += len;
 		left -= len;
 	}
@@ -295,12 +290,12 @@ displayLog (bool isError)
 	// really need it -- the worst that can happen is we get
 	// an extra or an incomplete message
 	for (ptr = qtail; ptr != qhead && left > 0;
-			ptr = (ptr + 1) % MAX_LOG_ENTRIES)
+		 ptr = (ptr + 1) % MAX_LOG_ENTRIES)
 	{
-		len = strlen (queue[ptr]) + 1;
+		len = strlen(queue[ptr]) + 1;
 		if (len > left)
 			len = left;
-		memcpy (p, queue[ptr], len);
+		memcpy(p, queue[ptr], len);
 		p[len - 1] = '\n';
 		p += len;
 		left -= len;
@@ -310,16 +305,15 @@ displayLog (bool isError)
 	if (noThreadReady)
 	{
 		noThreadReady = false;
-		len = strlen (msgNoThread);
+		len = strlen(msgNoThread);
 		if (len > left)
 			len = left;
-		memcpy (p, msgNoThread, len);
+		memcpy(p, msgNoThread, len);
 		p += len;
 		left -= len;
 	}
-	
+
 	*p = '\0';
 
-	log_displayBox ("The Ur-Quan Masters", isError, msgBuf);
+	log_displayBox("The Ur-Quan Masters", isError, msgBuf);
 }
-

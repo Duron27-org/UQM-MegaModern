@@ -23,23 +23,22 @@
 extern "C" {
 #endif
 
-extern void ToggleMusic (void);
-extern void StopMusic (void);
-extern void ResumeMusic (void);
-extern void PauseMusic (void);
-extern void PlayMusicResume (MUSIC_REF hMusic, uqm::BYTE Volume);
-extern void ToggleSoundEffect (void);
-extern void SeekMusic (uqm::DWORD pos);
+extern void ToggleMusic(void);
+extern void StopMusic(void);
+extern void ResumeMusic(void);
+extern void PauseMusic(void);
+extern void PlayMusicResume(MUSIC_REF hMusic, uqm::BYTE Volume);
+extern void ToggleSoundEffect(void);
+extern void SeekMusic(uqm::DWORD pos);
 
-extern void PlayMusic (MUSIC_REF MusicRef, bool Continuous, uqm::BYTE Priority);
-extern void PlaySoundEffect (SOUND S, uqm::COUNT Channel, SoundPosition Pos,
-		void *PositionalObject, uqm::BYTE Priority);
-extern void PlaySpeechEffect (SOUND S, SoundPosition Pos, void* PositionalObject, uqm::BYTE Priority);
+extern void PlayMusic(MUSIC_REF MusicRef, bool Continuous, uqm::BYTE Priority);
+extern void PlaySoundEffect(SOUND S, uqm::COUNT Channel, SoundPosition Pos,
+							void* PositionalObject, uqm::BYTE Priority);
+extern void PlaySpeechEffect(SOUND S, SoundPosition Pos, void* PositionalObject, uqm::BYTE Priority);
 
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* UQM_SETTINGS_H_ */
-
+#endif /* UQM_SETTINGS_H_ */

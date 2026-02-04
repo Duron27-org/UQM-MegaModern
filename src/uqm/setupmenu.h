@@ -25,12 +25,14 @@
 extern "C" {
 #endif
 
-typedef enum {
+typedef enum
+{
 	OPTVAL_DISABLED,
 	OPTVAL_ENABLED
 } OPT_ENABLABLE;
 
-typedef enum {
+typedef enum
+{
 	OPTVAL_PC,
 	OPTVAL_3DO
 } OPT_CONSOLETYPE;
@@ -42,7 +44,8 @@ enum OPT_FULLSCREEN
 	OPTVAL_BORDERED_FULLSCREEN
 };
 
-typedef enum {
+typedef enum
+{
 	OPTVAL_NO_SCALE,
 	OPTVAL_BILINEAR_SCALE,
 	OPTVAL_BIADAPT_SCALE,
@@ -51,12 +54,14 @@ typedef enum {
 	OPTVAL_HQXX_SCALE,
 } OPT_SCALETYPE;
 
-typedef enum {
+typedef enum
+{
 	OPTVAL_320_240,
 	OPTVAL_REAL_1280_960,
 } OPT_RESTYPE;
 
-typedef enum {
+typedef enum
+{
 	NO_BLOWUP,
 	OPTVAL_SCALE_640_480,
 	OPTVAL_SCALE_960_720,
@@ -65,126 +70,144 @@ typedef enum {
 	OPTVAL_SCALE_1920_1440,
 } OPT_RESSCALER;
 
-typedef enum {
+typedef enum
+{
 	OPTVAL_PURE_IF_POSSIBLE,
 	OPTVAL_ALWAYS_GL
 } OPT_DRIVERTYPE;
 
-typedef enum {
+typedef enum
+{
 	OPTVAL_SILENCE,
 	OPTVAL_MIXSDL,
 	OPTVAL_OPENAL
 } OPT_ADRIVERTYPE;
 
-typedef enum {
+typedef enum
+{
 	OPTVAL_LOW,
 	OPTVAL_MEDIUM,
 	OPTVAL_HIGH
 } OPT_AQUALITYTYPE;
 
-typedef enum {
+typedef enum
+{
 	OPTVAL_NO_GOD,
 	OPTVAL_INF_ENERGY,
 	OPTVAL_INF_HEALTH,
 	OPTVAL_FULL_GOD
 } OPT_GODTYPE;
- 
-typedef enum {
+
+typedef enum
+{
 	OPTVAL_NORMAL,
 	OPTVAL_SLOW,
 	OPTVAL_FAST
 } OPT_TDTYPE;
 
-typedef enum {
+typedef enum
+{
 	OPTVAL_MMMDDYYYY,
 	OPTVAL_MMDDYYYY,
 	OPTVAL_DDMMMYYYY,
 	OPTVAL_DDMMYYYY
 } OPT_DATETYPE;
 
-typedef enum {
+typedef enum
+{
 	OPTVAL_NORM,
 	OPTVAL_EASY,
 	OPTVAL_HARD,
 	OPTVAL_IMPO
 } OPT_DIFFICULTY;
 
-enum OPT_NOMAD {
+enum OPT_NOMAD
+{
 	OPTVAL_NOM_OFF,
 	OPTVAL_NOM_EASY,
 	OPTVAL_NOM_NORM
-} ;
+};
 inline static const char* toString(const OPT_NOMAD optVal)
 {
-	static constexpr const char* Strings[3]{
-		"Off", "Easy", "Normal"
-	};
+	static constexpr const char* Strings[3] {
+		"Off", "Easy", "Normal"};
 	return Strings[static_cast<int>(optVal)];
 }
 
-typedef enum {
+typedef enum
+{
 	OPTVAL_KBM,
 	OPTVAL_XBX,
 	OPTVAL_PS4
 } OPT_CONTROLLER;
 
-typedef enum {
+typedef enum
+{
 	OPTVAL_FUEL_NORM,
 	OPTVAL_FUEL_AT_DEST,
 	OPTVAL_FUEL_TO_SOL,
 	OPTVAL_FUEL_ALL
 } OPT_FUELRANGE;
 
-typedef enum {
+typedef enum
+{
 	OPTVAL_STEP,
 	OPTVAL_NEAREST,
 	OPTVAL_BILINEAR,
 	OPTVAL_TRILINEAR
 } OPT_MELEEZOOM;
 
-typedef enum {
+typedef enum
+{
 	OPTVAL_PC_SPHERE,
 	OPTVAL_3DO_SPHERE,
 	OPTVAL_UQM_SPHERE
 } OPT_SPHERETYPE;
 
-typedef enum {
+typedef enum
+{
 	OPTVAL_PC_WINDOW,
 	OPTVAL_3DO_WINDOW,
 	OPTVAL_UQM_WINDOW
 } OPT_WINDOWTYPE;
 
-typedef enum {
+typedef enum
+{
 	OPTVAL_RESUME_DISABLED,
 	OPTVAL_RESUME_5MIN,
 	OPTVAL_RESUME_INDEFINITE
 } OPT_MUSICRESUME;
 
-typedef enum {
+typedef enum
+{
 	OPTVAL_PRIME,
 	OPTVAL_PLANET,
 	OPTVAL_MRQ,
 	OPTVAL_STAR
 } OPT_SEED;
 
-typedef enum {
+typedef enum
+{
 	OPTVAL_DEFAULT_COLORS,
 	OPTVAL_STARSEED_COLORS
 } OPT_SPHERECOLORS;
 
-typedef enum {
+typedef enum
+{
 	OPTVAL_NO_SPACEMUSIC,
 	OPTVAL_SM_NO_SPOILERS,
 	OPTVAL_SM_SPOILERS
 } OPT_SPACEMUSIC;
 
-typedef enum {
+typedef enum
+{
 	OPTVAL_DO_NOTHING,
 	OPTVAL_REM_THING,
 	OPTVAL_ADD_THING
 } OPT_ADD_REMOVE;
 
-enum {
+enum
+{
 	CHOICE_GRAPHICS,
 	CHOICE_FRBUFFER,
 	CHOICE_SCALER,
@@ -318,25 +341,27 @@ enum {
 	CHOICE_COUNT
 };
 
-enum {
+enum
+{
 	MENU_QUITSUB,  // Quits settings sub menu
 	MENU_GRAPHICS, // Graphics menu
-	MENU_AUDIO,    // General audio menu (volume, quality etc)
+	MENU_AUDIO,	   // General audio menu (volume, quality etc)
 	MENU_ENGINE,   // Engine behaviour menu (PC/3DO)
 	MENU_CHEATS,   // Cheats menu
 	MENY_KEYCONF,  // Main key configuration menu (input device etc)
 	MENU_ADVANCED, // Advanced settings menu
 	MENU_EDITKEYS, // Key layout editing menu (submenu for KEYCONF)
-	MENU_MUSIC,    // Music menu (remixes)
+	MENU_MUSIC,	   // Music menu (remixes)
 	MENU_VISUAL,   // Visual menu
-	MENU_QOL,      // Quality of life features menu
+	MENU_QOL,	   // Quality of life features menu
 	MENU_DEVICES,  // Add devices cheat submenu
 	MENU_UPGRADES, // Add upgrades cheat submenu
-	
+
 	MENU_COUNT
 };
 
-enum {
+enum
+{
 	SLIDER_MUSVOLUME,
 	SLIDER_SFXVOLUME,
 	SLIDER_SPCHVOLUME,
@@ -346,7 +371,8 @@ enum {
 	SLIDER_COUNT
 };
 
-enum {
+enum
+{
 	BTN_QUITSETUP,
 	BTN_QUITSUBMENU,
 	BTN_GFXMENU,
@@ -367,7 +393,8 @@ enum {
 	BUTTON_COUNT
 };
 
-enum {
+enum
+{
 	LABEL_UNUSED,
 	LABEL_KEYSTOOLTIP,
 	LABEL_TAPTOOLTIP,
@@ -381,7 +408,8 @@ enum {
 	LABEL_COUNT
 };
 
-enum {
+enum
+{
 	TEXT_LOUTNAME,
 	TEXT_GAMESEED,
 	TEXT_CUSTMRES,
@@ -389,7 +417,8 @@ enum {
 	TEXTENTRY_COUNT
 };
 
-enum {
+enum
+{
 	CONTROL_UP,
 	CONTROL_DOWN,
 	CONTROL_LEFT,
@@ -407,7 +436,8 @@ enum {
 /* At the moment, CONTROL_TEMPLATE is directly in this structure.  If
  * CONTROL_TEMPLATE and the options available diverge, this will need
  * to change */
-typedef struct globalopts_struct {
+typedef struct globalopts_struct
+{
 	OPT_SCALETYPE scaler;
 	OPT_RESTYPE screenResolution;
 	OPT_RESSCALER loresBlowup;
@@ -430,30 +460,30 @@ typedef struct globalopts_struct {
 	OPT_SPACEMUSIC spaceMusic;
 	OPT_ADD_REMOVE deviceArray[28], upgradeArray[NUM_UPGRADES];
 	OPT_ENABLABLE subtitles, scanlines, fps, stereo, music3do,
-			musicremix, speech, keepaspect, cheatMode, mainMenuMusic,
-			nebulae, orbitingPlanets, texturedPlanets, godMode, bubbleWarp,
-			unlockShips, headStart, unlockUpgrades, infiniteRU, skipIntro,
-			infiniteFuel, partialPickup, submenu, infiniteCredits,
-			customBorder, volasMusic, directionalJoystick, wholeFuel,
-			extended, gameOver, shipDirectionIP, hazardColors, orzCompFont,
-			smartAutoPilot, nonStopOscill, hyperStars, planetTexture,
-			noHQEncounters, deCleansing, meleeObstacles, showVisitedStars,
-			unscaledStarSystem, slaughterMode, advancedAutoPilot,
-			meleeToolTips, scatterElements, showUpgrades, fleetPointSys,
-			shipSeed, shipStore, captainNames, dosMenus;
+		musicremix, speech, keepaspect, cheatMode, mainMenuMusic,
+		nebulae, orbitingPlanets, texturedPlanets, godMode, bubbleWarp,
+		unlockShips, headStart, unlockUpgrades, infiniteRU, skipIntro,
+		infiniteFuel, partialPickup, submenu, infiniteCredits,
+		customBorder, volasMusic, directionalJoystick, wholeFuel,
+		extended, gameOver, shipDirectionIP, hazardColors, orzCompFont,
+		smartAutoPilot, nonStopOscill, hyperStars, planetTexture,
+		noHQEncounters, deCleansing, meleeObstacles, showVisitedStars,
+		unscaledStarSystem, slaughterMode, advancedAutoPilot,
+		meleeToolTips, scatterElements, showUpgrades, fleetPointSys,
+		shipSeed, shipStore, captainNames, dosMenus;
 	OPT_FULLSCREEN fullscreen;
 	OPT_CONSOLETYPE menu, text, scroll, intro, shield, scrTrans,
-			landerHold, tintPlanSphere, planetStyle, scanStyle,
-			scopeStyle, landerStyle, flagshipColor;
+		landerHold, tintPlanSphere, planetStyle, scanStyle,
+		scopeStyle, landerStyle, flagshipColor;
 	CONTROL_TEMPLATE player1, player2;
 	int speechvol, musicvol, sfxvol, nebulaevol, cscan;
 	int gamma, starBackground;
 } GLOBALOPTS;
 
-void SetupMenu (void);
+void SetupMenu(void);
 
-void GetGlobalOptions (GLOBALOPTS *opts);
-void SetGlobalOptions (GLOBALOPTS *opts);
+void GetGlobalOptions(GLOBALOPTS* opts);
+void SetGlobalOptions(GLOBALOPTS* opts);
 
 #if 0 //defined(__cplusplus)
 }

@@ -36,29 +36,29 @@ typedef struct uio_AutoMount uio_AutoMount;
 #include "mounttree.h"
 #include "match.h"
 
-struct uio_Repository {
-	int ref;            /* reference counter */
+struct uio_Repository
+{
+	int ref; /* reference counter */
 	int flags;
 	int numMounts;
-	struct uio_MountInfo **mounts;
-			// first in the list is considered the top
-			// last entry is NULL
-	struct uio_MountTree *mountTree;
+	struct uio_MountInfo** mounts;
+	// first in the list is considered the top
+	// last entry is NULL
+	struct uio_MountTree* mountTree;
 };
 
 #define lockRepository(repository, prot)
 #define unlockRepository(repository)
 
-uio_Repository *uio_Repository_new(int flags);
-void uio_Repository_unref(uio_Repository *repository);
-void uio_repositoryAddMount(uio_Repository *repository,
-		uio_MountInfo *mountInfo, uio_MountLocation location,
-		uio_MountInfo *relative);
-void uio_repositoryRemoveMount(uio_Repository *repository,
-		uio_MountInfo *mountInfo);
+uio_Repository* uio_Repository_new(int flags);
+void uio_Repository_unref(uio_Repository* repository);
+void uio_repositoryAddMount(uio_Repository* repository,
+							uio_MountInfo* mountInfo, uio_MountLocation location,
+							uio_MountInfo* relative);
+void uio_repositoryRemoveMount(uio_Repository* repository,
+							   uio_MountInfo* mountInfo);
 
 
-#endif  /* uio_INTERNAL */
+#endif /* uio_INTERNAL */
 
-#endif  /* LIBS_UIO_MOUNT_H_ */
-
+#endif /* LIBS_UIO_MOUNT_H_ */

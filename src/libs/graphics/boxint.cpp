@@ -24,7 +24,7 @@
 #define MAX(a, b) (((a) >= (b)) ? (a) : (b))
 
 INTERSECT_CODE
-BoxIntersect (RECT *pr1, RECT *pr2, RECT *pinter)
+BoxIntersect(RECT* pr1, RECT* pr2, RECT* pinter)
 {
 	INTERSECT_CODE intersect_code;
 	COORD x1;
@@ -101,44 +101,45 @@ BoxIntersect (RECT *pr1, RECT *pr2, RECT *pinter)
 	return ((INTERSECT_CODE)0);
 }
 
-void
-BoxUnion (RECT *pr1, RECT *pr2, RECT *punion)
+void BoxUnion(RECT* pr1, RECT* pr2, RECT* punion)
 {
 #if NEVER // Part of lower FIXME.
 	COORD x2, y2, w2, h2;
-#endif  // NEVER
+#endif // NEVER
 
 	// Union is A AND B, put together, correct?  Returns a bigger box that
 	// encompasses the two.
 	punion->corner.x = MIN(pr1->corner.x, pr2->corner.x);
 	punion->corner.y = MIN(pr1->corner.y, pr2->corner.y);
-	
-	punion->extent.width  = MAX(pr1->corner.x + pr1->extent.width,
-						        pr2->corner.x + pr2->extent.width) - punion->corner.x;
+
+	punion->extent.width = MAX(pr1->corner.x + pr1->extent.width,
+							   pr2->corner.x + pr2->extent.width)
+						 - punion->corner.x;
 	punion->extent.height = MAX(pr1->corner.y + pr1->extent.height,
-						        pr2->corner.y + pr2->extent.height) - punion->corner.y;
+								pr2->corner.y + pr2->extent.height)
+						  - punion->corner.y;
 
 
 #if NEVER // FIXME - I think this is broken, but keeping it around for reference
-	      // FIXME - just in case.
+		  // FIXME - just in case.
 
 #if 1 /* alter based on 0 widths */
 
 	x2 =
-		(pr1->corner.x < pr2->corner.x)? pr1->corner.x : pr2->corner.x;
+		(pr1->corner.x < pr2->corner.x) ? pr1->corner.x : pr2->corner.x;
 
 	y2 =
-		(pr1->corner.y < pr2->corner.y)? pr1->corner.y : pr2->corner.y;
+		(pr1->corner.y < pr2->corner.y) ? pr1->corner.y : pr2->corner.y;
 
-	w2 = (
-		((pr1->corner.x + pr1->extent.width) > (pr2->corner.x + pr2->extent.width))?
-		(pr1->corner.x + pr1->extent.width)  : (pr2->corner.x + pr2->extent.width)
-		) - punion->corner.x;
+	w2 = (((pr1->corner.x + pr1->extent.width) > (pr2->corner.x + pr2->extent.width)) ?
+			  (pr1->corner.x + pr1->extent.width) :
+			  (pr2->corner.x + pr2->extent.width))
+	   - punion->corner.x;
 
-	h2 = (
-		((pr1->corner.y + pr1->extent.height) > (pr2->corner.y + pr2->extent.height))?
-		(pr1->corner.y + pr1->extent.height)  : (pr2->corner.y + pr2->extent.height)
-		) - punion->corner.y;
+	h2 = (((pr1->corner.y + pr1->extent.height) > (pr2->corner.y + pr2->extent.height)) ?
+			  (pr1->corner.y + pr1->extent.height) :
+			  (pr2->corner.y + pr2->extent.height))
+	   - punion->corner.y;
 #else
 	uqm::SIZE delta;
 	COORD x1, y1, w1, h1;
@@ -180,4 +181,3 @@ BoxUnion (RECT *pr1, RECT *pr2, RECT *punion)
 
 #endif // NEVER
 }
-

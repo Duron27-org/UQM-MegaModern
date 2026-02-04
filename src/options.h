@@ -34,7 +34,7 @@ extern "C" {
 #endif
 
 #define OPT_3DO 0x01
-#define OPT_PC  0x02
+#define OPT_PC 0x02
 #define OPT_ALL 0xFF
 
 extern int optWhichCoarseScan;
@@ -138,20 +138,20 @@ extern OPT_ENABLABLE optStereoSFX;
 extern OPT_ENABLABLE optKeepAspectRatio;
 extern bool restartGame;
 
-#define GAMMA_SCALE  1000
+#define GAMMA_SCALE 1000
 extern float optGamma;
 
-extern uio_DirHandle *contentDir;
-extern uio_DirHandle *configDir;
-extern uio_DirHandle *saveDir;
-extern uio_DirHandle *meleeDir;
-extern uio_DirHandle *scrShotDir;
+extern uio_DirHandle* contentDir;
+extern uio_DirHandle* configDir;
+extern uio_DirHandle* saveDir;
+extern uio_DirHandle* meleeDir;
+extern uio_DirHandle* scrShotDir;
 extern char baseContentPath[PATH_MAX];
 
-extern char *contentDirPath;
-extern char *addonDirPath;
+extern char* contentDirPath;
+extern char* addonDirPath;
 
-extern const char **optAddons;
+extern const char** optAddons;
 
 // addon availability
 typedef struct
@@ -164,21 +164,21 @@ extern ADDON_COUNT addonList;
 
 // addon names to check against
 #define THREEDO_MUSIC "3domusic"
-#define REMIX_MUSIC   "remix"
+#define REMIX_MUSIC "remix"
 #define VOL_RMX_MUSIC "volasaurus-remix-pack"
-#define REGION_MUSIC  "SpaceMusic"
-#define HD_MODE       "mm-hd"
+#define REGION_MUSIC "SpaceMusic"
+#define HD_MODE "mm-hd"
 
-#define DOS_MODE(a)      ((a) ? "dos-mode-hd" : "dos-mode-sd")
-#define THREEDO_MODE(a)  ((a) ? "3do-mode-hd" : "3do-mode-sd")
-#define WINDOW_MODE(a,b) ((b) == 0 ? DOS_MODE(a) : THREEDO_MODE(a))
+#define DOS_MODE(a) ((a) ? "dos-mode-hd" : "dos-mode-sd")
+#define THREEDO_MODE(a) ((a) ? "3do-mode-hd" : "3do-mode-sd")
+#define WINDOW_MODE(a, b) ((b) == 0 ? DOS_MODE(a) : THREEDO_MODE(a))
 
-#define BASE_CONTENT_NAME "mm-" UQM_MAJOR_VERSION_S "." \
-		UQM_MINOR_VERSION_S "." UQM_PATCH_VERSION_S "-content.uqm"
+#define BASE_CONTENT_NAME "mm-" UQM_MAJOR_VERSION_S "." UQM_MINOR_VERSION_S "." UQM_PATCH_VERSION_S "-content.uqm"
 
 /* These get edited by TEXTENTRY widgets, so they should have room to
  * hold as much as one of them allows by default. */
-typedef struct _input_template {
+typedef struct _input_template
+{
 	char name[30];
 
 	/* This should eventually also hold things like Joystick Port
@@ -189,20 +189,20 @@ typedef struct _input_template {
 
 extern INPUT_TEMPLATE input_templates[6];
 
-void prepareContentDir (const char *contentDirName, const char *addonDirName, const char *execFile);
-void prepareConfigDir (const char *configDirName);
-void prepareMeleeDir (void);
-void prepareSaveDir (void);
-void prepareScrShotDir (void);
-void prepareAddons (const char **addons);
-void prepareShadowAddons (const char **addons);
-void unprepareAllDirs (void);
+void prepareContentDir(const char* contentDirName, const char* addonDirName, const char* execFile);
+void prepareConfigDir(const char* configDirName);
+void prepareMeleeDir(void);
+void prepareSaveDir(void);
+void prepareScrShotDir(void);
+void prepareAddons(const char** addons);
+void prepareShadowAddons(const char** addons);
+void unprepareAllDirs(void);
 
-bool loadAddon (const char *addon);
-int loadIndices (uio_DirHandle *baseDir);
-bool isAddonAvailable (const char *addon_name);
+bool loadAddon(const char* addon);
+int loadIndices(uio_DirHandle* baseDir);
+bool isAddonAvailable(const char* addon_name);
 
-bool setGammaCorrection (float gamma);
+bool setGammaCorrection(float gamma);
 
 #if 0 //defined(__cplusplus)
 }

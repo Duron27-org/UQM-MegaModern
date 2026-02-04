@@ -20,46 +20,44 @@
 #include "sndintrn.h"
 
 static void
-GetSoundBankFileData (const char *pathname, RESOURCE_DATA *resdata)
+GetSoundBankFileData(const char* pathname, RESOURCE_DATA* resdata)
 {
-	resdata->ptr = LoadResourceFromPath (pathname, _GetSoundBankData);
+	resdata->ptr = LoadResourceFromPath(pathname, _GetSoundBankData);
 }
 
 static void
-GetMusicFileData (const char *pathname, RESOURCE_DATA *resdata)
+GetMusicFileData(const char* pathname, RESOURCE_DATA* resdata)
 {
-	resdata->ptr = LoadResourceFromPath (pathname, _GetMusicData);
+	resdata->ptr = LoadResourceFromPath(pathname, _GetMusicData);
 }
 
-bool
-InstallAudioResTypes (void)
+bool InstallAudioResTypes(void)
 {
-	InstallResTypeVectors ("SNDRES", GetSoundBankFileData, _ReleaseSoundBankData, NULL);
-	InstallResTypeVectors ("MUSICRES", GetMusicFileData, _ReleaseMusicData, NULL);
+	InstallResTypeVectors("SNDRES", GetSoundBankFileData, _ReleaseSoundBankData, NULL);
+	InstallResTypeVectors("MUSICRES", GetMusicFileData, _ReleaseMusicData, NULL);
 	return (true);
 }
 
 SOUND_REF
-LoadSoundInstance (RESOURCE res)
+LoadSoundInstance(RESOURCE res)
 {
-	void *hData;
+	void* hData;
 
-	hData = res_GetResource (res);
+	hData = res_GetResource(res);
 	if (hData)
-		res_DetachResource (res);
+		res_DetachResource(res);
 
 	return ((SOUND_REF)hData);
 }
 
 MUSIC_REF
-LoadMusicInstance (RESOURCE res)
+LoadMusicInstance(RESOURCE res)
 {
-	void *hData;
+	void* hData;
 
-	hData = res_GetResource (res);
+	hData = res_GetResource(res);
 	if (hData)
-		res_DetachResource (res);
+		res_DetachResource(res);
 
 	return ((MUSIC_REF)hData);
 }
-

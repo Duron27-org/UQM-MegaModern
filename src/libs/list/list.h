@@ -24,7 +24,7 @@
 // this file as a template more than once.
 #if !defined(_LIST_H) || defined(LIST_GENERIC)
 #if defined(LIST_)
-#	define LIST_GENERIC
+#define LIST_GENERIC
 #endif
 
 #include "types.h"
@@ -36,35 +36,36 @@
 // In the .c file, #define LIST_INTERNAL, #include the .h file
 // and list.c (in this order), and add the necessary functions.
 #ifndef LIST_
-#	define LIST_(identifier) List ## _ ## identifier
-	typedef void *List_Entry;
+#define LIST_(identifier) List##_##identifier
+typedef void* List_Entry;
 #endif
 
 
 typedef struct LIST_(List) LIST_(List);
 typedef struct LIST_(Link) LIST_(Link);
 
-struct LIST_(Link) {
-	LIST_(Entry) entry;
-	LIST_(Link) *next;
+struct LIST_(Link)
+{
+	LIST_(Entry)
+	entry;
+	LIST_(Link) * next;
 };
 
-struct LIST_(List) {
-	LIST_(Link) *first;
-	LIST_(Link) **end;
+struct LIST_(List)
+{
+	LIST_(Link) * first;
+	LIST_(Link) * *end;
 };
 
 
-LIST_(List) *LIST_(newList)(void);
-void LIST_(deleteList)(LIST_(List) *list);
-void LIST_(add)(LIST_(List) *list, LIST_(Entry) entry);
-void LIST_(remove)(LIST_(List) *list, LIST_(Entry) entry);
+LIST_(List) * LIST_(newList)(void);
+void LIST_(deleteList)(LIST_(List) * list);
+void LIST_(add)(LIST_(List) * list, LIST_(Entry) entry);
+void LIST_(remove)(LIST_(List) * list, LIST_(Entry) entry);
 
 
 #ifndef LIST_INTERNAL
-#	undef LIST_
+#undef LIST_
 #endif
 
 #endif /* !defined(_LIST_H) || defined(LIST_GENERIC) */
-
-

@@ -26,12 +26,12 @@
 #include "../../globdata.h"
 #include "libs/mathlib.h"
 
-static bool GenerateRainbowWorld_initNpcs (SOLARSYS_STATE *solarSys);
-static bool GenerateRainbowWorld_generatePlanets (
-		SOLARSYS_STATE *solarSys);
-static bool GenerateRainbowWorld_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world);
-static void GenerateSlylandro (SOLARSYS_STATE *solarSys);
+static bool GenerateRainbowWorld_initNpcs(SOLARSYS_STATE* solarSys);
+static bool GenerateRainbowWorld_generatePlanets(
+	SOLARSYS_STATE* solarSys);
+static bool GenerateRainbowWorld_generateOrbital(SOLARSYS_STATE* solarSys,
+												 PLANET_DESC* world);
+static void GenerateSlylandro(SOLARSYS_STATE* solarSys);
 
 const GenerateFunctions generateRainbowWorldFunctions = {
 	/* .initNpcs         = */ GenerateRainbowWorld_initNpcs,
@@ -50,23 +50,23 @@ const GenerateFunctions generateRainbowWorldFunctions = {
 };
 
 static bool
-GenerateRainbowWorld_initNpcs (SOLARSYS_STATE *solarSys)
+GenerateRainbowWorld_initNpcs(SOLARSYS_STATE* solarSys)
 {
-	if (DIF_HARD && GET_GAME_STATE (SLYLANDRO_MULTIPLIER) > 0)
-		GenerateSlylandro (solarSys);
+	if (DIF_HARD && GET_GAME_STATE(SLYLANDRO_MULTIPLIER) > 0)
+		GenerateSlylandro(solarSys);
 	else
-		GenerateDefault_initNpcs (solarSys);
+		GenerateDefault_initNpcs(solarSys);
 
 	return true;
 }
 
 static bool
-GenerateRainbowWorld_generatePlanets (SOLARSYS_STATE *solarSys)
+GenerateRainbowWorld_generatePlanets(SOLARSYS_STATE* solarSys)
 {
-	PLANET_DESC *pSunDesc = &solarSys->SunDesc[0];
-	PLANET_DESC *pPlanet;
+	PLANET_DESC* pSunDesc = &solarSys->SunDesc[0];
+	PLANET_DESC* pPlanet;
 
-	GenerateDefault_generatePlanets (solarSys);
+	GenerateDefault_generatePlanets(solarSys);
 
 	pSunDesc->PlanetByte = 0;
 	pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
@@ -79,88 +79,87 @@ GenerateRainbowWorld_generatePlanets (SOLARSYS_STATE *solarSys)
 
 		pPlanet->NumPlanets = 0;
 		pPlanet->radius = EARTH_RADIUS * 50L / 100;
-		angle = ARCTAN (pPlanet->location.x, pPlanet->location.y);
+		angle = ARCTAN(pPlanet->location.x, pPlanet->location.y);
 		if (angle <= QUADRANT)
 			angle += QUADRANT;
 		else if (angle >= FULL_CIRCLE - QUADRANT)
 			angle -= QUADRANT;
-		pPlanet->location.x = COSINE (angle, pPlanet->radius);
-		pPlanet->location.y = SINE (angle, pPlanet->radius);
-		ComputeSpeed (pPlanet, false, 1);
+		pPlanet->location.x = COSINE(angle, pPlanet->radius);
+		pPlanet->location.y = SINE(angle, pPlanet->radius);
+		ComputeSpeed(pPlanet, false, 1);
 	}
 
 	return true;
 }
 
 static bool
-GenerateRainbowWorld_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world)
+GenerateRainbowWorld_generateOrbital(SOLARSYS_STATE* solarSys,
+									 PLANET_DESC* world)
 {
-	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET)
-			&& CurStarDescPtr->Index >= RAINBOW0_DEFINED
-			&& CurStarDescPtr->Index <= RAINBOW9_DEFINED)
+	if (matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET)
+		&& CurStarDescPtr->Index >= RAINBOW0_DEFINED
+		&& CurStarDescPtr->Index <= RAINBOW9_DEFINED)
 	{
 		uqm::UWORD rainbow_mask;
 
-		rainbow_mask = MAKE_WORD (
-				GET_GAME_STATE (RAINBOW_WORLD0),
-				GET_GAME_STATE (RAINBOW_WORLD1));
+		rainbow_mask = MAKE_WORD(
+			GET_GAME_STATE(RAINBOW_WORLD0),
+			GET_GAME_STATE(RAINBOW_WORLD1));
 
 		rainbow_mask |= 1 << (CurStarDescPtr->Index - RAINBOW0_DEFINED);
-		SET_GAME_STATE (RAINBOW_WORLD0, lowByte (rainbow_mask));
-		SET_GAME_STATE (RAINBOW_WORLD1, highByte (rainbow_mask));
+		SET_GAME_STATE(RAINBOW_WORLD0, lowByte(rainbow_mask));
+		SET_GAME_STATE(RAINBOW_WORLD1, highByte(rainbow_mask));
 	}
 
-	GenerateDefault_generateOrbital (solarSys, world);
+	GenerateDefault_generateOrbital(solarSys, world);
 	return true;
 }
 
 static void
-GenerateSlylandro (SOLARSYS_STATE *solarSys)
+GenerateSlylandro(SOLARSYS_STATE* solarSys)
 {
 	HIPGROUP hGroup, hNextGroup;
 	uqm::BYTE angle, num_groups, which_group;
 
-	if (!GetGroupInfo (GLOBAL (BattleGroupRef), GROUP_INIT_IP))
-	{// This code will run if we have no battle group generated
-	 // or all are expired
-		GLOBAL (BattleGroupRef) = 0;
+	if (!GetGroupInfo(GLOBAL(BattleGroupRef), GROUP_INIT_IP))
+	{ // This code will run if we have no battle group generated
+		// or all are expired
+		GLOBAL(BattleGroupRef) = 0;
 		/* 1-3, 3-5, 5-7, 7-9 Probes total */
-		num_groups = (GET_GAME_STATE (SLYLANDRO_MULTIPLIER) * 2) - 1 +
-			(uqm::COUNT)TFB_Random () % 3;
+		num_groups = (GET_GAME_STATE(SLYLANDRO_MULTIPLIER) * 2) - 1 + (uqm::COUNT)TFB_Random() % 3;
 		which_group = 0;
 		do
 		{
-			CloneShipFragment (SLYLANDRO_SHIP,
-				&GLOBAL (npc_built_ship_q), 0);
-			PutGroupInfo (GROUPS_RANDOM, ++which_group);
-			ReinitQueue (&GLOBAL (npc_built_ship_q));
+			CloneShipFragment(SLYLANDRO_SHIP,
+							  &GLOBAL(npc_built_ship_q), 0);
+			PutGroupInfo(GROUPS_RANDOM, ++which_group);
+			ReinitQueue(&GLOBAL(npc_built_ship_q));
 		} while (--num_groups);
 
-		GetGroupInfo (GROUPS_RANDOM, GROUP_INIT_IP);
+		GetGroupInfo(GROUPS_RANDOM, GROUP_INIT_IP);
 	}
 	// Fresh groups or not - force probes to rotate around rainbow
 	// world and not spread around the system
-	angle = (uqm::COUNT)TFB_Random () % 9; // Initial angle = 0 - OCTANT
-	for (hGroup = GetHeadLink (&GLOBAL (ip_group_q));
-		hGroup; hGroup = hNextGroup)
+	angle = (uqm::COUNT)TFB_Random() % 9; // Initial angle = 0 - OCTANT
+	for (hGroup = GetHeadLink(&GLOBAL(ip_group_q));
+		 hGroup; hGroup = hNextGroup)
 	{
-		IP_GROUP *GroupPtr;
+		IP_GROUP* GroupPtr;
 
-		GroupPtr = LockIpGroup (&GLOBAL (ip_group_q), hGroup);
-		hNextGroup = _GetSuccLink (GroupPtr);
+		GroupPtr = LockIpGroup(&GLOBAL(ip_group_q), hGroup);
+		hNextGroup = _GetSuccLink(GroupPtr);
 
 		GroupPtr->task = IN_ORBIT;
 		GroupPtr->sys_loc = solarSys->SunDesc[0].PlanetByte + 1;
 		GroupPtr->dest_loc = GroupPtr->sys_loc;
 		GroupPtr->orbit_pos =
-			NORMALIZE_FACING (ANGLE_TO_FACING (angle));
+			NORMALIZE_FACING(ANGLE_TO_FACING(angle));
 		GroupPtr->group_counter = 0;
-		UnlockIpGroup (&GLOBAL (ip_group_q), hGroup);
+		UnlockIpGroup(&GLOBAL(ip_group_q), hGroup);
 
-		// Next ship in queue will add random value to its angle 
+		// Next ship in queue will add random value to its angle
 		// between OCTANT and HALF_CIRCLE
-		angle += ((uqm::COUNT)TFB_Random () % 25) + OCTANT;
+		angle += ((uqm::COUNT)TFB_Random() % 25) + OCTANT;
 
 		// Normalize angle
 		if (angle > FULL_CIRCLE)

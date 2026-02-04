@@ -30,44 +30,40 @@
 static uint32 wdl_last_error = 0;
 static char wdl_errstr[128] = "";
 
-void*
-dlopen (const char *filename, int flag)
-		// all defined flags are not possible on win32
+void* dlopen(const char* filename, int flag)
+// all defined flags are not possible on win32
 {
 	HMODULE hlib;
 
 	if (filename == NULL)
 		hlib = GetModuleHandleA(NULL);
 	else
-		hlib = LoadLibraryA (filename);
+		hlib = LoadLibraryA(filename);
 
 	if (!hlib)
-		wdl_last_error = GetLastError ();
+		wdl_last_error = GetLastError();
 
 	return hlib;
 }
 
-void*
-dlsym (void *handle, const char *symbol)
+void* dlsym(void* handle, const char* symbol)
 {
-	void* ptr = GetProcAddress (handle, symbol);
+	void* ptr = GetProcAddress(handle, symbol);
 	if (!ptr)
-		wdl_last_error = GetLastError ();
+		wdl_last_error = GetLastError();
 	return ptr;
 }
 
-int
-dlclose (void *handle)
+int dlclose(void* handle)
 {
-	return FreeLibrary (handle);
+	return FreeLibrary(handle);
 }
 
-char*
-dlerror (void)
+char* dlerror(void)
 {
 	if (wdl_last_error)
 	{
-		sprintf (wdl_errstr, "Windows error %u", wdl_last_error);
+		sprintf(wdl_errstr, "Windows error %u", wdl_last_error);
 		wdl_last_error = 0;
 		return wdl_errstr;
 	}

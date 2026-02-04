@@ -23,11 +23,11 @@
 #include <sys/socket.h>
 
 #ifdef SOCKET_INTERNAL
-struct Socket {
+struct Socket
+{
 	int fd;
 };
-#endif  /* SOCKET_INTERNAL */
+#endif /* SOCKET_INTERNAL */
 
 
 #endif /* LIBS_NETWORK_SOCKET_SOCKET_BSD_H_ */
-

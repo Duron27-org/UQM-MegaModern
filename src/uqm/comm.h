@@ -22,7 +22,7 @@
 #include "units.h"
 #include "libs/compiler.h"
 #include "libs/gfxlib.h"
-		// for CONVERSATION
+// for CONVERSATION
 
 #if 0 //defined(__cplusplus)
 extern "C" {
@@ -30,84 +30,82 @@ extern "C" {
 
 #ifdef COMM_INTERNAL
 
-#define SLIDER_Y (RES_SCALE (107))
-#define SLIDER_HEIGHT RES_SCALE ((!usingSpeech && isPC (optSmoothScroll)) \
-		? 4 : DOS_BOOL (15, 4))
+#define SLIDER_Y (RES_SCALE(107))
+#define SLIDER_HEIGHT RES_SCALE((!usingSpeech && isPC(optSmoothScroll)) ? 4 : DOS_BOOL(15, 4))
 
 #include "commanim.h"
-
 
 
 extern LOCDATA CommData;
 
 static inline bool
-haveTalkingAnim (void)
+haveTalkingAnim(void)
 {
 	return CommData.AlienTalkDesc.NumFrames > 0;
 }
 
 static inline bool
-haveTransitionAnim (void)
+haveTransitionAnim(void)
 {
 	return CommData.AlienTransitionDesc.NumFrames > 0;
 }
 
 static inline bool
-wantTalkingAnim (void)
+wantTalkingAnim(void)
 {
 	return !(CommData.AlienTalkDesc.AnimFlags & PAUSE_TALKING);
 }
 
 static inline void
-setRunTalkingAnim (void)
+setRunTalkingAnim(void)
 {
 	CommData.AlienTalkDesc.AnimFlags |= WAIT_TALKING;
 }
 
 static inline void
-clearRunTalkingAnim (void)
+clearRunTalkingAnim(void)
 {
 	CommData.AlienTalkDesc.AnimFlags &= ~WAIT_TALKING;
 }
 
 static inline bool
-runningTalkingAnim (void)
+runningTalkingAnim(void)
 {
 	return (CommData.AlienTalkDesc.AnimFlags & WAIT_TALKING);
 }
 
 static inline void
-setRunIntroAnim (void)
+setRunIntroAnim(void)
 {
 	CommData.AlienTransitionDesc.AnimFlags |= TALK_INTRO;
 }
 
 static inline bool
-runningIntroAnim (void)
+runningIntroAnim(void)
 {
 	return (CommData.AlienTransitionDesc.AnimFlags & TALK_INTRO);
 }
 
 static inline void
-setStopTalkingAnim (void)
+setStopTalkingAnim(void)
 {
 	CommData.AlienTalkDesc.AnimFlags |= TALK_DONE;
 }
 
 static inline void
-clearStopTalkingAnim (void)
+clearStopTalkingAnim(void)
 {
 	CommData.AlienTalkDesc.AnimFlags &= ~TALK_DONE;
 }
 
 static inline void
-restartStopTalkingAnim (void)
+restartStopTalkingAnim(void)
 {
 	CommData.AlienTalkDesc.AnimFlags &= TALK_DONE;
 }
 
 static inline bool
-signaledStopTalkingAnim (void)
+signaledStopTalkingAnim(void)
 {
 	return CommData.AlienTalkDesc.AnimFlags & TALK_DONE;
 }
@@ -132,23 +130,23 @@ signaledFreezeTalkingAnim(void)
 
 #endif
 
-#define TEXT_X_OFFS RES_SCALE (1)
-#define TEXT_Y_OFFS RES_SCALE (1)
+#define TEXT_X_OFFS RES_SCALE(1)
+#define TEXT_Y_OFFS RES_SCALE(1)
 #define SIS_TEXT_WIDTH (SIS_SCREEN_WIDTH - (TEXT_X_OFFS << 1))
 
 #define BACKGROUND_VOL (usingSpeech && !VolasPackPresent ? (NORMAL_VOLUME / 2) : NORMAL_VOLUME)
 #define FOREGROUND_VOL NORMAL_VOLUME
 
-extern void init_communication (void);
-extern void uninit_communication (void);
+extern void init_communication(void);
+extern void uninit_communication(void);
 
-extern uqm::COUNT InitCommunication (CONVERSATION which_comm);
-extern void RaceCommunication (void);
+extern uqm::COUNT InitCommunication(CONVERSATION which_comm);
+extern void RaceCommunication(void);
 
-#define WAIT_TRACK_ALL  ((uqm::COUNT)~0)
-extern void AlienTalkSegue (uqm::COUNT wait_track);
-bool getLineWithinWidth(TEXT *pText, const char **startNext,
-		uqm::SIZE maxWidth, uqm::COUNT maxChars);
+#define WAIT_TRACK_ALL ((uqm::COUNT)~0)
+extern void AlienTalkSegue(uqm::COUNT wait_track);
+bool getLineWithinWidth(TEXT* pText, const char** startNext,
+						uqm::SIZE maxWidth, uqm::COUNT maxChars);
 
 extern RECT CommWndRect; /* comm window rect */
 
@@ -161,17 +159,17 @@ typedef enum
 
 	CIM_DEFAULT = CIM_CROSSFADE_SPACE,
 } CommIntroMode;
-extern void SetCommIntroMode (CommIntroMode, TimeCount howLong);
+extern void SetCommIntroMode(CommIntroMode, TimeCount howLong);
 
-extern void EnableTalkingAnim (bool enable);
-extern void SetCommDarkMode (bool state);
-extern void RedrawSISComWindow (void);
-extern void SetCustomBaseLine (uqm::COUNT sentence, POINT bl, TEXT_ALIGN align);
-extern void FlushCustomBaseLine (void);
-extern void BlockTalkingAnim (uqm::COUNT trackStart, uqm::COUNT trackEnd);
-extern void UpdateDuty (bool talk);
+extern void EnableTalkingAnim(bool enable);
+extern void SetCommDarkMode(bool state);
+extern void RedrawSISComWindow(void);
+extern void SetCustomBaseLine(uqm::COUNT sentence, POINT bl, TEXT_ALIGN align);
+extern void FlushCustomBaseLine(void);
+extern void BlockTalkingAnim(uqm::COUNT trackStart, uqm::COUNT trackEnd);
+extern void UpdateDuty(bool talk);
 
-extern void DeltaLastTime (TimeCount diff);
+extern void DeltaLastTime(TimeCount diff);
 
 extern bool cwLock;
 
@@ -185,6 +183,4 @@ extern uqm::BYTE altResFlags;
 }
 #endif
 
-#endif  /* UQM_COMM_H_ */
-
-
+#endif /* UQM_COMM_H_ */

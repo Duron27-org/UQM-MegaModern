@@ -29,5 +29,4 @@ void luaUqm_runInitScripts(void);
 }
 #endif
 
-#endif  /* UQM_LUA_LUAINIT_H_ */
-
+#endif /* UQM_LUA_LUAINIT_H_ */

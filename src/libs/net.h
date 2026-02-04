@@ -33,5 +33,4 @@ extern "C" {
 }
 #endif
 
-#endif  /* LIBS_NET_H_ */
-
+#endif /* LIBS_NET_H_ */

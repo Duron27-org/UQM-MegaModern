@@ -28,13 +28,13 @@
 #include "../../comm.h"
 
 
-static bool GenerateVault_generatePlanets (SOLARSYS_STATE *solarSys);
-static bool GenerateVault_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world);
-static uqm::COUNT GenerateVault_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
-static bool GenerateVault_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, uqm::COUNT whichNode);
+static bool GenerateVault_generatePlanets(SOLARSYS_STATE* solarSys);
+static bool GenerateVault_generateOrbital(SOLARSYS_STATE* solarSys,
+										  PLANET_DESC* world);
+static uqm::COUNT GenerateVault_generateEnergy(const SOLARSYS_STATE*,
+											   const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO*);
+static bool GenerateVault_pickupEnergy(SOLARSYS_STATE* solarSys,
+									   PLANET_DESC* world, uqm::COUNT whichNode);
 
 
 const GenerateFunctions generateVaultFunctions = {
@@ -54,12 +54,12 @@ const GenerateFunctions generateVaultFunctions = {
 };
 
 static bool
-GenerateVault_generatePlanets (SOLARSYS_STATE *solarSys)
+GenerateVault_generatePlanets(SOLARSYS_STATE* solarSys)
 {
-	PLANET_DESC *pSunDesc = &solarSys->SunDesc[0];
-	PLANET_DESC *pPlanet;
+	PLANET_DESC* pSunDesc = &solarSys->SunDesc[0];
+	PLANET_DESC* pPlanet;
 
-	GenerateDefault_generatePlanets (solarSys);
+	GenerateDefault_generatePlanets(solarSys);
 
 	pSunDesc->PlanetByte = 0;
 	pSunDesc->MoonByte = 0;
@@ -68,18 +68,18 @@ GenerateVault_generatePlanets (SOLARSYS_STATE *solarSys)
 
 	if (StarSeed)
 	{
-		pSunDesc->PlanetByte = PlanetByteGen (pSunDesc);
+		pSunDesc->PlanetByte = PlanetByteGen(pSunDesc);
 		pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
 
 		pPlanet->NumPlanets =
-				RandomContext_GetSeed (SysGenRNG) % 5 == 0 ? 2 : 1;
+			RandomContext_GetSeed(SysGenRNG) % 5 == 0 ? 2 : 1;
 
-		pSunDesc->MoonByte = PlanetByteGen (pPlanet);
+		pSunDesc->MoonByte = PlanetByteGen(pPlanet);
 	}
 
 	if (!PrimeSeed)
 	{
-		pPlanet->data_index = GenerateWorlds (LARGE_ROCKY);
+		pPlanet->data_index = GenerateWorlds(LARGE_ROCKY);
 
 		if (!pPlanet->NumPlanets)
 			pPlanet->NumPlanets++;
@@ -89,114 +89,113 @@ GenerateVault_generatePlanets (SOLARSYS_STATE *solarSys)
 }
 
 static bool
-GenerateVault_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world)
+GenerateVault_generateOrbital(SOLARSYS_STATE* solarSys,
+							  PLANET_DESC* world)
 {
-	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_MBYTE))
+	if (matchWorld(solarSys, world, MATCH_PBYTE, MATCH_MBYTE))
 	{
-		LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
+		LoadStdLanderFont(&solarSys->SysInfo.PlanetInfo);
 		solarSys->PlanetSideFrame[1] =
-				CaptureDrawable (LoadGraphic (VAULT_MASK_PMAP_ANIM));
+			CaptureDrawable(LoadGraphic(VAULT_MASK_PMAP_ANIM));
 		solarSys->SysInfo.PlanetInfo.DiscoveryString =
-				CaptureStringTable (LoadStringTable (VAULT_STRTAB));
-		if (GET_GAME_STATE (SHIP_VAULT_UNLOCKED))
+			CaptureStringTable(LoadStringTable(VAULT_STRTAB));
+		if (GET_GAME_STATE(SHIP_VAULT_UNLOCKED))
 		{
 			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-					SetAbsStringTableIndex (
+				SetAbsStringTableIndex(
 					solarSys->SysInfo.PlanetInfo.DiscoveryString, 2);
 		}
-		else if (GET_GAME_STATE (SYREEN_SHUTTLE_ON_SHIP))
+		else if (GET_GAME_STATE(SYREEN_SHUTTLE_ON_SHIP))
 		{
-			if (DIF_HARD && !(GET_GAME_STATE (HM_ENCOUNTERS)
-						& 1 << URQUAN_ENCOUNTER)
-					&& !(GET_GAME_STATE(KOHR_AH_FRENZY)))
+			if (DIF_HARD && !(GET_GAME_STATE(HM_ENCOUNTERS) & 1 << URQUAN_ENCOUNTER)
+				&& !(GET_GAME_STATE(KOHR_AH_FRENZY)))
 			{
 				uqm::COUNT i;
 				bool Survivors;
 				uqm::UWORD state;
 
-				PutGroupInfo (GROUPS_RANDOM, GROUP_SAVE_IP);
-				ReinitQueue (&GLOBAL (ip_group_q));
-				assert (CountLinks (&GLOBAL (npc_built_ship_q)) == 0);
+				PutGroupInfo(GROUPS_RANDOM, GROUP_SAVE_IP);
+				ReinitQueue(&GLOBAL(ip_group_q));
+				assert(CountLinks(&GLOBAL(npc_built_ship_q)) == 0);
 
 				for (i = 0; i < 6; ++i)
-					CloneShipFragment (URQUAN_SHIP,
-						&GLOBAL (npc_built_ship_q), 0);
+					CloneShipFragment(URQUAN_SHIP,
+									  &GLOBAL(npc_built_ship_q), 0);
 
-				SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, 1 << 6);
-				GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-				InitCommunication (URQUAN_CONVERSATION);
+				SET_GAME_STATE(GLOBAL_FLAGS_AND_DATA, 1 << 6);
+				GLOBAL(CurrentActivity) |= START_INTERPLANETARY;
+				InitCommunication(URQUAN_CONVERSATION);
 
-				if (GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
+				if (GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
 					return true;
 
-				Survivors = GetHeadLink (&GLOBAL(npc_built_ship_q)) != 0;
+				Survivors = GetHeadLink(&GLOBAL(npc_built_ship_q)) != 0;
 
-				GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
-				ReinitQueue (&GLOBAL (npc_built_ship_q));
-				GetGroupInfo (GROUPS_RANDOM, GROUP_LOAD_IP);
+				GLOBAL(CurrentActivity) &= ~START_INTERPLANETARY;
+				ReinitQueue(&GLOBAL(npc_built_ship_q));
+				GetGroupInfo(GROUPS_RANDOM, GROUP_LOAD_IP);
 
 				if (Survivors)
 					return true;
 
-				state = GET_GAME_STATE (HM_ENCOUNTERS);
+				state = GET_GAME_STATE(HM_ENCOUNTERS);
 				state |= 1 << URQUAN_ENCOUNTER;
 
-				SET_GAME_STATE (HM_ENCOUNTERS, state);
+				SET_GAME_STATE(HM_ENCOUNTERS, state);
 
-				RepairSISBorder ();
+				RepairSISBorder();
 			}
 			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-					SetAbsStringTableIndex (
+				SetAbsStringTableIndex(
 					solarSys->SysInfo.PlanetInfo.DiscoveryString, 1);
 		}
 	}
 
-	GenerateDefault_generateOrbital (solarSys, world);
+	GenerateDefault_generateOrbital(solarSys, world);
 	return true;
 }
 
 static uqm::COUNT
-GenerateVault_generateEnergy (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *info)
+GenerateVault_generateEnergy(const SOLARSYS_STATE* solarSys,
+							 const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO* info)
 {
-	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_MBYTE))
+	if (matchWorld(solarSys, world, MATCH_PBYTE, MATCH_MBYTE))
 	{
-		return GenerateDefault_generateArtifact (
-				solarSys, whichNode, info);
+		return GenerateDefault_generateArtifact(
+			solarSys, whichNode, info);
 	}
 
 	return 0;
 }
 
 static bool
-GenerateVault_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		uqm::COUNT whichNode)
+GenerateVault_pickupEnergy(SOLARSYS_STATE* solarSys, PLANET_DESC* world,
+						   uqm::COUNT whichNode)
 {
-	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_MBYTE))
+	if (matchWorld(solarSys, world, MATCH_PBYTE, MATCH_MBYTE))
 	{
-		assert (whichNode == 0);
+		assert(whichNode == 0);
 
-		if (GET_GAME_STATE (SHIP_VAULT_UNLOCKED))
-		{	// Give the final report, "omg empty" and whatnot
-			GenerateDefault_landerReportCycle (solarSys);
+		if (GET_GAME_STATE(SHIP_VAULT_UNLOCKED))
+		{ // Give the final report, "omg empty" and whatnot
+			GenerateDefault_landerReportCycle(solarSys);
 		}
-		else if (GET_GAME_STATE (SYREEN_SHUTTLE_ON_SHIP))
+		else if (GET_GAME_STATE(SYREEN_SHUTTLE_ON_SHIP))
 		{
-			GenerateDefault_landerReportCycle (solarSys);
-			SetLanderTakeoff ();
+			GenerateDefault_landerReportCycle(solarSys);
+			SetLanderTakeoff();
 
-			SET_GAME_STATE (SHIP_VAULT_UNLOCKED, 1);
-			SET_GAME_STATE (SYREEN_SHUTTLE_ON_SHIP, 0);
-			SET_GAME_STATE (SYREEN_HOME_VISITS, 0);
+			SET_GAME_STATE(SHIP_VAULT_UNLOCKED, 1);
+			SET_GAME_STATE(SYREEN_SHUTTLE_ON_SHIP, 0);
+			SET_GAME_STATE(SYREEN_HOME_VISITS, 0);
 		}
 		else
 		{
-			GenerateDefault_landerReport (solarSys);
+			GenerateDefault_landerReport(solarSys);
 
-			if (!GET_GAME_STATE (KNOW_SYREEN_VAULT))
+			if (!GET_GAME_STATE(KNOW_SYREEN_VAULT))
 			{
-				SET_GAME_STATE (KNOW_SYREEN_VAULT, 1);
+				SET_GAME_STATE(KNOW_SYREEN_VAULT, 1);
 			}
 		}
 
@@ -204,6 +203,6 @@ GenerateVault_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 		return false;
 	}
 
-	(void) whichNode;
+	(void)whichNode;
 	return false;
 }

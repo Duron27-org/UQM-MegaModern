@@ -23,11 +23,11 @@
 #include "nameref.h"
 #include "setup.h"
 #include "units.h"
-		// for NUM_VIEWS
+// for NUM_VIEWS
 #include "planets/planets.h"
-		// for NUMBER_OF_PLANET_TYPES, PLANET_SHIELDED
+// for NUMBER_OF_PLANET_TYPES, PLANET_SHIELDED
 
-static const char *planet_types[] = {
+static const char* planet_types[] = {
 	"oolite", "yttric", "quasidegenerate", "lanthanide", "treasure",
 	"urea", "metal", "radioactive", "opalescent", "cyanic",
 	"acid", "alkali", "halide", "green", "copper",
@@ -39,40 +39,35 @@ static const char *planet_types[] = {
 	"chlorine", "magnetic", "water", "telluric", "hydrocarbon",
 	"iodine", "vinylogous", "ruby", "magma", "maroon",
 	"bluegas", "cyangas", "greengas", "greygas", "orangegas",
-	"purplegas", "redgas", "violetgas", "yellowgas"
-};
+	"purplegas", "redgas", "violetgas", "yellowgas"};
 
-static const char *planet_sizes[] = {
-	"large", "medium", "small"
-}; 
+static const char* planet_sizes[] = {
+	"large", "medium", "small"};
 
 FRAME planet[NUM_VIEWS];
 static char buffer[80];
 
-void
-load_gravity_well (uqm::BYTE selector)
+void load_gravity_well(uqm::BYTE selector)
 {
 	uqm::COUNT i;
 
 	if (selector == SA_MATRA)
 	{
-		if (EXTENDED && lowByte (GLOBAL (CurrentActivity)) != IN_LAST_BATTLE)
+		if (EXTENDED && lowByte(GLOBAL(CurrentActivity)) != IN_LAST_BATTLE)
 		{
-			planet[0] = CaptureDrawable (
-					LoadGraphic (SCENERY_MASK_PMAP_ANIM)
-					);
+			planet[0] = CaptureDrawable(
+				LoadGraphic(SCENERY_MASK_PMAP_ANIM));
 		}
 		else
 		{
-			planet[0] = CaptureDrawable (
-					LoadGraphic (SAMATRA_BIG_MASK_PMAP_ANIM)
-					);
+			planet[0] = CaptureDrawable(
+				LoadGraphic(SAMATRA_BIG_MASK_PMAP_ANIM));
 		}
 		planet[1] = planet[2] = 0;
 	}
 	else
 	{
-		const char *ptype;
+		const char* ptype;
 		if (selector & PLANET_SHIELDED)
 		{
 			ptype = "slaveshield";
@@ -84,54 +79,50 @@ load_gravity_well (uqm::BYTE selector)
 
 		for (i = 0; i < NUM_VIEWS; ++i)
 		{
-			snprintf (buffer, 79, "planet.%s.%s", ptype, planet_sizes[i]);
+			snprintf(buffer, 79, "planet.%s.%s", ptype, planet_sizes[i]);
 			buffer[79] = '\0';
-			planet[i] = CaptureDrawable (LoadGraphic (buffer));
+			planet[i] = CaptureDrawable(LoadGraphic(buffer));
 		}
 	}
-
 }
 
 
-void
-free_gravity_well (void)
+void free_gravity_well(void)
 {
 	uqm::COUNT i;
 
 	for (i = 0; i < NUM_VIEWS; ++i)
 	{
-		DestroyDrawable (ReleaseDrawable (planet[i]));
+		DestroyDrawable(ReleaseDrawable(planet[i]));
 		planet[i] = 0;
-
 	}
 }
 
 FRAME
-load_life_form (uqm::BYTE selector)
+load_life_form(uqm::BYTE selector)
 {
-	snprintf (buffer, 79, "graphics.life.%d", selector);
+	snprintf(buffer, 79, "graphics.life.%d", selector);
 	buffer[79] = '\0'; /* Shouldn't be necessary, but better safe than sorry */
-	return CaptureDrawable (LoadGraphic (buffer));
+	return CaptureDrawable(LoadGraphic(buffer));
 }
 
 MUSIC_REF
-load_orbit_theme (uqm::BYTE selector)
+load_orbit_theme(uqm::BYTE selector)
 {
-	snprintf (buffer, 79, "music.orbit%d", selector + 1);
-	buffer[79] = '\0'; /* Shouldn't be necessary, but better safe than sorry */	
-	return LoadMusic (buffer);
+	snprintf(buffer, 79, "music.orbit%d", selector + 1);
+	buffer[79] = '\0'; /* Shouldn't be necessary, but better safe than sorry */
+	return LoadMusic(buffer);
 }
 
 MUSIC_REF
-loadMainMenuMusic (uqm::BYTE selector)
+loadMainMenuMusic(uqm::BYTE selector)
 {
-	snprintf (buffer, 79, "music.mainmenu%d", selector + 1);
-	buffer[79] = '\0'; /* Shouldn't be necessary, but better safe than sorry */	
-	return LoadMusic (buffer);
+	snprintf(buffer, 79, "music.mainmenu%d", selector + 1);
+	buffer[79] = '\0'; /* Shouldn't be necessary, but better safe than sorry */
+	return LoadMusic(buffer);
 }
 
-int
-num_orbit_themes (void)
+int num_orbit_themes(void)
 {
 	if (VolasPackPresent)
 		return NUM_ORBIT_THEMES;

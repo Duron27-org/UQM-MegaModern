@@ -20,104 +20,103 @@
 #include "notify.h"
 
 // Notify the network connections of a team name change.
-void
-Netplay_NotifyAll_setTeamName (MELEE_STATE *pMS, size_t playerNr)
+void Netplay_NotifyAll_setTeamName(MELEE_STATE* pMS, size_t playerNr)
 {
-	const char *name;
+	const char* name;
 	size_t len;
 	size_t playerI;
 
-	name = MeleeSetup_getTeamName (pMS->meleeSetup, playerNr);
-	len = strlen (name);
+	name = MeleeSetup_getTeamName(pMS->meleeSetup, playerNr);
+	len = strlen(name);
 	for (playerI = 0; playerI < NUM_PLAYERS; playerI++)
 	{
-		NetConnection *conn = netConnections[playerI];
+		NetConnection* conn = netConnections[playerI];
 
 		if (conn == NULL)
 			continue;
 
-		if (!NetConnection_isConnected (conn))
+		if (!NetConnection_isConnected(conn))
 			continue;
 
-		if (NetConnection_getState (conn) != NetState_inSetup)
+		if (NetConnection_getState(conn) != NetState_inSetup)
 			continue;
 
-		Netplay_Notify_setTeamName (conn, playerNr, name, len);
+		Netplay_Notify_setTeamName(conn, playerNr, name, len);
 	}
 }
 
 // Notify the network connections of the configuration of a fleet.
-void
-Netplay_NotifyAll_setFleet (MELEE_STATE *pMS, size_t playerNr)
+void Netplay_NotifyAll_setFleet(MELEE_STATE* pMS, size_t playerNr)
 {
-	MeleeSetup *setup = pMS->meleeSetup;
-	const MeleeShip *ships = MeleeSetup_getFleet (setup, playerNr);
+	MeleeSetup* setup = pMS->meleeSetup;
+	const MeleeShip* ships = MeleeSetup_getFleet(setup, playerNr);
 	size_t playerI;
 
-	for (playerI = 0; playerI < NUM_PLAYERS; playerI++) {
-		NetConnection *conn = netConnections[playerI];
+	for (playerI = 0; playerI < NUM_PLAYERS; playerI++)
+	{
+		NetConnection* conn = netConnections[playerI];
 
 		if (conn == NULL)
 			continue;
 
-		if (!NetConnection_isConnected (conn))
+		if (!NetConnection_isConnected(conn))
 			continue;
 
-		if (NetConnection_getState (conn) != NetState_inSetup)
+		if (NetConnection_getState(conn) != NetState_inSetup)
 			continue;
 
-		Netplay_Notify_setFleet (conn, playerNr, ships, MELEE_FLEET_SIZE);
+		Netplay_Notify_setFleet(conn, playerNr, ships, MELEE_FLEET_SIZE);
 	}
 }
 
 // Notify the network of a change in the configuration of a fleet.
-void
-Netplay_NotifyAll_setShip (MELEE_STATE *pMS, size_t playerNr, size_t index)
+void Netplay_NotifyAll_setShip(MELEE_STATE* pMS, size_t playerNr, size_t index)
 {
-	MeleeSetup *setup = pMS->meleeSetup;
-	MeleeShip ship = MeleeSetup_getShip (
-			setup, playerNr, (FleetShipIndex)index);
+	MeleeSetup* setup = pMS->meleeSetup;
+	MeleeShip ship = MeleeSetup_getShip(
+		setup, playerNr, (FleetShipIndex)index);
 
 	size_t playerI;
 	for (playerI = 0; playerI < NUM_PLAYERS; playerI++)
 	{
-		NetConnection *conn = netConnections[playerI];
+		NetConnection* conn = netConnections[playerI];
 
 		if (conn == NULL)
 			continue;
 
-		if (!NetConnection_isConnected (conn))
+		if (!NetConnection_isConnected(conn))
 			continue;
 
-		if (NetConnection_getState (conn) != NetState_inSetup)
+		if (NetConnection_getState(conn) != NetState_inSetup)
 			continue;
 
-		Netplay_Notify_setShip (
-				conn, playerNr, (FleetShipIndex)index, ship);
+		Netplay_Notify_setShip(
+			conn, playerNr, (FleetShipIndex)index, ship);
 	}
 }
 
 static bool
-Netplay_NotifyAll_inputDelayCallback(NetConnection *conn, void *arg) {
-	const size_t *delay = (size_t *) arg;
+Netplay_NotifyAll_inputDelayCallback(NetConnection* conn, void* arg)
+{
+	const size_t* delay = (size_t*)arg;
 	Netplay_Notify_inputDelay(conn, *delay);
 	return true;
 }
 
-bool
-Netplay_NotifyAll_inputDelay(size_t delay) {
+bool Netplay_NotifyAll_inputDelay(size_t delay)
+{
 	return forEachConnectedPlayer(Netplay_NotifyAll_inputDelayCallback,
-			&delay);
+								  &delay);
 }
 
 #ifdef NETPLAY_CHECKSUM
-void
-Netplay_NotifyAll_checksum(BattleFrameCounter frameNr, Checksum checksum) {
+void Netplay_NotifyAll_checksum(BattleFrameCounter frameNr, Checksum checksum)
+{
 	uqm::COUNT player;
 
 	for (player = 0; player < NUM_PLAYERS; player++)
 	{
-		NetConnection *conn = netConnections[player];
+		NetConnection* conn = netConnections[player];
 		if (conn == NULL)
 			continue;
 
@@ -127,15 +126,15 @@ Netplay_NotifyAll_checksum(BattleFrameCounter frameNr, Checksum checksum) {
 		Netplay_Notify_checksum(conn, frameNr, checksum);
 	}
 }
-#endif  /* NETPLAY_CHECKSUM */
+#endif /* NETPLAY_CHECKSUM */
 
-void
-Netplay_NotifyAll_battleInput(BATTLE_INPUT_STATE input) {
+void Netplay_NotifyAll_battleInput(BATTLE_INPUT_STATE input)
+{
 	uqm::COUNT player;
 
 	for (player = 0; player < NUM_PLAYERS; player++)
 	{
-		NetConnection *conn = netConnections[player];
+		NetConnection* conn = netConnections[player];
 		if (conn == NULL)
 			continue;
 
@@ -145,4 +144,3 @@ Netplay_NotifyAll_battleInput(BATTLE_INPUT_STATE input) {
 		Netplay_Notify_battleInput(conn, input);
 	}
 }
-

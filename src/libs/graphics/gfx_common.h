@@ -41,59 +41,56 @@ enum
 };
 
 // flags for TFB_InitGraphics
-#define TFB_GFXFLAGS_FULLSCREEN         (1<<0)
-#define TFB_GFXFLAGS_SHOWFPS            (1<<1)
-#define TFB_GFXFLAGS_SCANLINES          (1<<2)
-#define TFB_GFXFLAGS_SCALE_BILINEAR     (1<<3)
-#define TFB_GFXFLAGS_SCALE_BIADAPT      (1<<4)
-#define TFB_GFXFLAGS_SCALE_BIADAPTADV   (1<<5)
-#define TFB_GFXFLAGS_SCALE_TRISCAN      (1<<6)
-#define TFB_GFXFLAGS_SCALE_HQXX         (1<<7)
+#define TFB_GFXFLAGS_FULLSCREEN (1 << 0)
+#define TFB_GFXFLAGS_SHOWFPS (1 << 1)
+#define TFB_GFXFLAGS_SCANLINES (1 << 2)
+#define TFB_GFXFLAGS_SCALE_BILINEAR (1 << 3)
+#define TFB_GFXFLAGS_SCALE_BIADAPT (1 << 4)
+#define TFB_GFXFLAGS_SCALE_BIADAPTADV (1 << 5)
+#define TFB_GFXFLAGS_SCALE_TRISCAN (1 << 6)
+#define TFB_GFXFLAGS_SCALE_HQXX (1 << 7)
 #define TFB_GFXFLAGS_SCALE_ANY \
-		( TFB_GFXFLAGS_SCALE_BILINEAR   | \
-		  TFB_GFXFLAGS_SCALE_BIADAPT    | \
-		  TFB_GFXFLAGS_SCALE_BIADAPTADV | \
-		  TFB_GFXFLAGS_SCALE_TRISCAN    | \
-		  TFB_GFXFLAGS_SCALE_HQXX )
+	(TFB_GFXFLAGS_SCALE_BILINEAR | TFB_GFXFLAGS_SCALE_BIADAPT | TFB_GFXFLAGS_SCALE_BIADAPTADV | TFB_GFXFLAGS_SCALE_TRISCAN | TFB_GFXFLAGS_SCALE_HQXX)
 #define TFB_GFXFLAGS_SCALE_SOFT_ONLY \
-		( TFB_GFXFLAGS_SCALE_ANY & ~TFB_GFXFLAGS_SCALE_BILINEAR )
-#define TFB_GFXFLAGS_EX_FULLSCREEN      (1<<8)
+	(TFB_GFXFLAGS_SCALE_ANY & ~TFB_GFXFLAGS_SCALE_BILINEAR)
+#define TFB_GFXFLAGS_EX_FULLSCREEN (1 << 8)
 
 // The flag variable itself
 extern int GfxFlags;
 
 // The following functions are driver-defined
-void TFB_PreInit (void);
-int TFB_InitGraphics (int driver, int flags, const char* renderer,
-		int width, int height, unsigned int *resFactor,
-		unsigned int *windowType);
-int TFB_ReInitGraphics (int driver, int flags, int width, int height,
-		unsigned int *resFactor, unsigned int *windowType);
-void TFB_UninitGraphics (void);
-void TFB_ProcessEvents (void);
-bool TFB_SetGamma (float gamma);
-void TFB_UploadTransitionScreen (RECT *pRect);
-int TFB_SupportsHardwareScaling (void);
+void TFB_PreInit(void);
+int TFB_InitGraphics(int driver, int flags, const char* renderer,
+					 int width, int height, unsigned int* resFactor,
+					 unsigned int* windowType);
+int TFB_ReInitGraphics(int driver, int flags, int width, int height,
+					   unsigned int* resFactor, unsigned int* windowType);
+void TFB_UninitGraphics(void);
+void TFB_ProcessEvents(void);
+bool TFB_SetGamma(float gamma);
+void TFB_UploadTransitionScreen(RECT* pRect);
+int TFB_SupportsHardwareScaling(void);
 // This function should not be called directly
-void TFB_SwapBuffers (int force_full_redraw);
+void TFB_SwapBuffers(int force_full_redraw);
 
 #define GSCALE_IDENTITY 256
 
-typedef enum {
+typedef enum
+{
 	TFB_SCALE_STEP, /* not really a scaler */
 	TFB_SCALE_NEAREST,
 	TFB_SCALE_BILINEAR,
 	TFB_SCALE_TRILINEAR
 } SCALE;
 
-void LoadIntoExtraScreen (RECT *r);
-void DrawFromExtraScreen (RECT *r);
-int SetGraphicScale (int scale);
-int GetGraphicScale (void);
-int SetGraphicScaleMode (int mode /* enum SCALE */);
-int GetGraphicScaleMode (void);
-void SetTransitionSource (const RECT *pRect);
-void ScreenTransition (int transition, const RECT *pRect);
+void LoadIntoExtraScreen(RECT* r);
+void DrawFromExtraScreen(RECT* r);
+int SetGraphicScale(int scale);
+int GetGraphicScale(void);
+int SetGraphicScaleMode(int mode /* enum SCALE */);
+int GetGraphicScaleMode(void);
+void SetTransitionSource(const RECT* pRect);
+void ScreenTransition(int transition, const RECT* pRect);
 
 // TODO: there should be accessor functions for these
 extern volatile int TransitionAmount;
@@ -101,10 +98,10 @@ extern volatile int TransitionAmount;
 extern float FrameRate;
 extern int FrameRateTickBase;
 
-void TFB_FlushGraphics (void); // Only call from main thread!!
-void TFB_PurgeDanglingGraphics (void); // Only call from main thread as part of shutdown.
+void TFB_FlushGraphics(void);		  // Only call from main thread!!
+void TFB_PurgeDanglingGraphics(void); // Only call from main thread as part of shutdown.
 
-extern int fs_height; 
+extern int fs_height;
 extern int fs_width;
 
 extern int CanvasWidth;
@@ -120,8 +117,8 @@ extern int ScreenHeightActual;
 extern int ScreenColorDepth;
 extern int GraphicsDriver;
 
-void TFB_ScreenShot (void);
-void TFB_ClearFPSCanvas (void);
-void TFB_GetScreenSize (uqm::SIZE *width, uqm::SIZE *height);
+void TFB_ScreenShot(void);
+void TFB_ClearFPSCanvas(void);
+void TFB_GetScreenSize(uqm::SIZE* width, uqm::SIZE* height);
 
 #endif

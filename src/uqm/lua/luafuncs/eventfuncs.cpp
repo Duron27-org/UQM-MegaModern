@@ -25,21 +25,21 @@
 #include "libs/log.h"
 
 
-static int luaUqm_event_addAbsolute(lua_State *luaState);
-static int luaUqm_event_addRelative(lua_State *luaState);
-static int luaUqm_event_register(lua_State *luaState);
-static int luaUqm_event_unregister(lua_State *luaState);
+static int luaUqm_event_addAbsolute(lua_State* luaState);
+static int luaUqm_event_addRelative(lua_State* luaState);
+static int luaUqm_event_register(lua_State* luaState);
+static int luaUqm_event_unregister(lua_State* luaState);
 
 static const luaL_Reg eventFuncs[] = {
-	{ "addAbsolute", luaUqm_event_addAbsolute },
-	{ "addRelative", luaUqm_event_addRelative },
-	{ "register",    luaUqm_event_register },
-	{ "unregister",  luaUqm_event_unregister },
-	{ NULL,          NULL },
+	{"addAbsolute", luaUqm_event_addAbsolute},
+	{"addRelative", luaUqm_event_addRelative},
+	{"register",	 luaUqm_event_register	  },
+	{"unregister",  luaUqm_event_unregister },
+	{NULL,		   NULL					},
 };
 
-int
-luaUqm_event_open(lua_State *luaState) {
+int luaUqm_event_open(lua_State* luaState)
+{
 	luaL_newlib(luaState, eventFuncs);
 
 	return 1;
@@ -51,7 +51,7 @@ luaUqm_event_open(lua_State *luaState) {
 //         string identifying the event.
 // Returns true if and only if an event is registered.
 static bool
-isEventRegistered(lua_State *luaState, int argn)
+isEventRegistered(lua_State* luaState, int argn)
 {
 	bool result;
 	argn = lua_absindex(luaState, argn);
@@ -82,28 +82,31 @@ isEventRegistered(lua_State *luaState, int argn)
 // TODO: make this function return an identifier for the event, so that it
 // can be removed.
 static int
-addEvent(lua_State *luaState, EVENT_TYPE type) {
+addEvent(lua_State* luaState, EVENT_TYPE type)
+{
 	int year = luaL_checkint(luaState, 1);
 	int month = luaL_checkint(luaState, 2);
 	int day = luaL_checkint(luaState, 3);
-	const char *eventIdStr = luaL_checkstring(luaState, 4);
+	const char* eventIdStr = luaL_checkstring(luaState, 4);
 	int eventNum;
 	HEVENT event;
 
-	if (!isEventRegistered(luaState, 4)) {
+	if (!isEventRegistered(luaState, 4))
+	{
 		log_add(log_Warning, "[script] event.%s(): Event '%s' is "
-				"not registered.",
+							 "not registered.",
 				(type == RELATIVE_EVENT) ? "addRelative" : "addAbsolute",
 				lua_tostring(luaState, 1));
 		lua_pushinteger(luaState, -1);
 		return 1;
 	}
-	
+
 	eventNum = eventIdStrToNum(eventIdStr);
-	if (eventNum == -1) {
+	if (eventNum == -1)
+	{
 		log_add(log_Warning, "[script] event.%s(): Event '%s' is "
-				"not known. It must currently be one of the hard-coded "
-				"strings.",
+							 "not known. It must currently be one of the hard-coded "
+							 "strings.",
 				(type == RELATIVE_EVENT) ? "addRelative" : "addAbsolute",
 				lua_tostring(luaState, 1));
 		lua_pushinteger(luaState, -1);
@@ -124,7 +127,8 @@ addEvent(lua_State *luaState, EVENT_TYPE type) {
 // TODO: make this function return an identifier for the event, so that it
 // can be removed.
 static int
-luaUqm_event_addAbsolute(lua_State *luaState) {
+luaUqm_event_addAbsolute(lua_State* luaState)
+{
 	return addEvent(luaState, ABSOLUTE_EVENT);
 }
 
@@ -136,23 +140,27 @@ luaUqm_event_addAbsolute(lua_State *luaState) {
 // TODO: make this function return an identifier for the event, so that it
 // can be removed.
 static int
-luaUqm_event_addRelative(lua_State *luaState) {
+luaUqm_event_addRelative(lua_State* luaState)
+{
 	return addEvent(luaState, RELATIVE_EVENT);
 }
 
 // [1] -> string eventIdStr
 // [2] -> function eventFun
 static int
-luaUqm_event_register(lua_State *luaState) {
-	(void) luaL_checkstring(luaState, 1);
+luaUqm_event_register(lua_State* luaState)
+{
+	(void)luaL_checkstring(luaState, 1);
 	luaL_checktype(luaState, 2, LUA_TFUNCTION);
 
-	if (isEventRegistered(luaState, 1)) {
+	if (isEventRegistered(luaState, 1))
+	{
 		log_add(log_Warning, "[script] event.register(): Event '%s' is "
-				"already registered.", lua_tostring(luaState, 1));
+							 "already registered.",
+				lua_tostring(luaState, 1));
 		return 0;
 	}
-	
+
 	luaUqm_getEventTable(luaState);
 	lua_pushvalue(luaState, 1);
 	lua_pushvalue(luaState, 2);
@@ -169,15 +177,18 @@ luaUqm_event_register(lua_State *luaState) {
 
 // [1] -> string eventIdStr
 static int
-luaUqm_event_unregister(lua_State *luaState) {
-	(void) luaL_checkstring(luaState, 1);
+luaUqm_event_unregister(lua_State* luaState)
+{
+	(void)luaL_checkstring(luaState, 1);
 
-	if (!isEventRegistered(luaState, 1)) {
+	if (!isEventRegistered(luaState, 1))
+	{
 		log_add(log_Warning, "[script] event.unregister(): Event '%s' was "
-				"not registered.", lua_tostring(luaState, 1));
+							 "not registered.",
+				lua_tostring(luaState, 1));
 		return 0;
 	}
-	
+
 	luaUqm_getEventTable(luaState);
 	lua_pushvalue(luaState, 1);
 	lua_pushnil(luaState);
@@ -191,4 +202,3 @@ luaUqm_event_unregister(lua_State *luaState) {
 
 	return 0;
 }
-

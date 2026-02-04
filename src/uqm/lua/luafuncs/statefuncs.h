@@ -23,10 +23,10 @@
 extern "C" {
 #endif
 
-int luaUqm_state_open(lua_State *luaState);
+int luaUqm_state_open(lua_State* luaState);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* UQM_LUA_LUAFUNCS_STATEFUNCS_H_ */
+#endif /* UQM_LUA_LUAFUNCS_STATEFUNCS_H_ */

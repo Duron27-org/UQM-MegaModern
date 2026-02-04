@@ -26,7 +26,8 @@
 
 // Important: if you add an item here, add it to uio_MemDebug_LogTypeInfo
 // too. The order should be the same.
-typedef enum {
+typedef enum
+{
 	uio_MemDebug_LogType_uio_DirHandle,
 	uio_MemDebug_LogType_uio_FileSystemInfo,
 	uio_MemDebug_LogType_uio_GPDir,
@@ -47,36 +48,35 @@ typedef enum {
 	uio_MemDebug_LogType_zip_GPFileData,
 	uio_MemDebug_LogType_zip_GPDirData,
 
-	uio_MemDebug_numLogTypes,  /* This needs to be the last entry */
+	uio_MemDebug_numLogTypes, /* This needs to be the last entry */
 } uio_MemDebug_LogType;
 
 
-
-typedef struct uio_MemDebug_PointerInfo {
+typedef struct uio_MemDebug_PointerInfo
+{
 	int pointerRef;
-			// Ref counter for the associated pointer, not the pointerInfo
-			// itself.
+	// Ref counter for the associated pointer, not the pointerInfo
+	// itself.
 } uio_MemDebug_PointerInfo;
 
 void uio_MemDebug_init(void);
 void uio_MemDebug_unInit(void);
-void uio_MemDebug_logAllocation(uio_MemDebug_LogType type, void *ptr);
-void uio_MemDebug_logDeallocation(uio_MemDebug_LogType type, void *ptr);
-void uio_MemDebug_logRef(uio_MemDebug_LogType type, void *ptr);
-void uio_MemDebug_logUnref(uio_MemDebug_LogType type, void *ptr);
-void uio_MemDebug_printPointer(FILE *out, uio_MemDebug_LogType type,
-		void *ptr);
-void uio_MemDebug_printPointersType(FILE *out, uio_MemDebug_LogType type);
-void uio_MemDebug_printPointers(FILE *out);
+void uio_MemDebug_logAllocation(uio_MemDebug_LogType type, void* ptr);
+void uio_MemDebug_logDeallocation(uio_MemDebug_LogType type, void* ptr);
+void uio_MemDebug_logRef(uio_MemDebug_LogType type, void* ptr);
+void uio_MemDebug_logUnref(uio_MemDebug_LogType type, void* ptr);
+void uio_MemDebug_printPointer(FILE* out, uio_MemDebug_LogType type,
+							   void* ptr);
+void uio_MemDebug_printPointersType(FILE* out, uio_MemDebug_LogType type);
+void uio_MemDebug_printPointers(FILE* out);
 
 #define uio_MemDebug_debugAlloc(type, pointer) \
-	uio_MemDebug_logAllocation(uio_MemDebug_LogType_ ## type, pointer)
+	uio_MemDebug_logAllocation(uio_MemDebug_LogType_##type, pointer)
 #define uio_MemDebug_debugFree(type, pointer) \
-	uio_MemDebug_logDeallocation(uio_MemDebug_LogType_ ## type, pointer)
+	uio_MemDebug_logDeallocation(uio_MemDebug_LogType_##type, pointer)
 #define uio_MemDebug_debugRef(type, pointer) \
-	uio_MemDebug_logRef(uio_MemDebug_LogType_ ## type, pointer)
+	uio_MemDebug_logRef(uio_MemDebug_LogType_##type, pointer)
 #define uio_MemDebug_debugUnref(type, pointer) \
-	uio_MemDebug_logUnref(uio_MemDebug_LogType_ ## type, pointer)
+	uio_MemDebug_logUnref(uio_MemDebug_LogType_##type, pointer)
 
-#endif  /* LIBS_UIO_MEMDEBUG_H_ */
-
+#endif /* LIBS_UIO_MEMDEBUG_H_ */

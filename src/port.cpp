@@ -25,25 +25,24 @@
 #include <ctype.h>
 #include <errno.h>
 #ifdef _MSC_VER
-#	include <stdarg.h>
-#	include <stdio.h>
-#endif  /* _MSC_VER */
+#include <stdarg.h>
+#include <stdio.h>
+#endif /* _MSC_VER */
 #include <stdlib.h>
 #include <string.h>
-#if !defined (_MSC_VER) && !defined (HAVE_READDIR_R)
-#	include <dirent.h>
+#if !defined(_MSC_VER) && !defined(HAVE_READDIR_R)
+#include <dirent.h>
 #endif
 
 #ifndef HAVE_STRUPR
-char *
-strupr (char *str)
+char* strupr(char* str)
 {
-	char *ptr;
-	
+	char* ptr;
+
 	ptr = str;
 	while (*ptr)
 	{
-		*ptr = (char) toupper (*ptr);
+		*ptr = (char)toupper(*ptr);
 		ptr++;
 	}
 	return str;
@@ -51,43 +50,42 @@ strupr (char *str)
 #endif
 
 #ifndef HAVE_SETENV
-int
-setenv (const char *name, const char *value, int overwrite)
+int setenv(const char* name, const char* value, int overwrite)
 {
 	char *string, *ptr;
 	size_t nameLen, valueLen;
 
 	if (!overwrite)
 	{
-		char *old;
+		char* old;
 
-		old = getenv (name);
+		old = getenv(name);
 		if (old != NULL)
 			return 0;
 	}
 
-	nameLen = strlen (name);	
-	valueLen = strlen (value);
+	nameLen = strlen(name);
+	valueLen = strlen(value);
 
-	string = (char*)malloc (nameLen + valueLen + 2);
-			// "NAME=VALUE\0"
-			// putenv() does NOT make a copy, but uses the string passed.
+	string = (char*)malloc(nameLen + valueLen + 2);
+	// "NAME=VALUE\0"
+	// putenv() does NOT make a copy, but uses the string passed.
 
 	ptr = string;
 
-	strcpy (string, name);
+	strcpy(string, name);
 	ptr += nameLen;
 
 	*ptr = '=';
 	ptr++;
-	
-	strcpy (ptr, value);
-	
-	return _putenv (string);
+
+	strcpy(ptr, value);
+
+	return _putenv(string);
 }
 #endif
 
-#if !defined (_MSC_VER) && !defined (HAVE_READDIR_R)
+#if !defined(_MSC_VER) && !defined(HAVE_READDIR_R)
 // NB. This function calls readdir() directly, and as such has the same
 //     reentrance issues as that function. For the purposes of UQM it will
 //     do though.
@@ -98,12 +96,13 @@ setenv (const char *name, const char *value, int overwrite)
 //     stream."
 // NB. This function makes an extra copy of the dirent and will hence be
 //     slower than a direct call to readdir() or readdir_r().
-int
-readdir_r(DIR *dirp, struct dirent *entry, struct dirent **result) {
-	struct dirent *readdir_entry;
+int readdir_r(DIR* dirp, struct dirent* entry, struct dirent** result)
+{
+	struct dirent* readdir_entry;
 
 	readdir_entry = readdir(dirp);
-	if (readdir_entry == NULL) {
+	if (readdir_entry == NULL)
+	{
 		*result = NULL;
 		return errno;
 	}
@@ -119,29 +118,26 @@ readdir_r(DIR *dirp, struct dirent *entry, struct dirent **result) {
 // MSVC does not have snprintf() and vsnprintf(). It does have a _snprintf()
 // and _vsnprintf(), but these do not terminate a truncated string as
 // the C standard prescribes.
-int
-snprintf(char *str, size_t size, const char *format, ...)
+int snprintf(char* str, size_t size, const char* format, ...)
 {
 	int result;
 	va_list args;
-	
-	va_start (args, format);
-	result = _vsnprintf (str, size, format, args);
+
+	va_start(args, format);
+	result = _vsnprintf(str, size, format, args);
 	if (str != NULL && size != 0)
 		str[size - 1] = '\0';
-	va_end (args);
+	va_end(args);
 
 	return result;
 }
 
-int
-vsnprintf(char *str, size_t size, const char *format, va_list args)
+int vsnprintf(char* str, size_t size, const char* format, va_list args)
 {
-	int result = _vsnprintf (str, size, format, args);
+	int result = _vsnprintf(str, size, format, args);
 	if (str != NULL && size != 0)
 		str[size - 1] = '\0';
 	return result;
 }
 #endif
-#endif  /* _MSC_VER */
-
+#endif /* _MSC_VER */

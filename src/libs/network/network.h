@@ -22,6 +22,4 @@
 void Network_init(void);
 void Network_uninit(void);
 
-#endif  /* LIBS_NETWORK_NETWORK_H_ */
-
-
+#endif /* LIBS_NETWORK_NETWORK_H_ */

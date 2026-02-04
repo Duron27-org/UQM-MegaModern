@@ -20,5 +20,4 @@
 
 #include "../file.h"
 
-#endif  /* _FILEINTRN_H */
-
+#endif /* _FILEINTRN_H */

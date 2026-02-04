@@ -19,36 +19,33 @@
 #include "gfxintrn.h"
 
 static void
-GetCelFileData (const char *pathname, RESOURCE_DATA *resdata)
+GetCelFileData(const char* pathname, RESOURCE_DATA* resdata)
 {
-	resdata->ptr = LoadResourceFromPath (pathname, _GetCelData);
+	resdata->ptr = LoadResourceFromPath(pathname, _GetCelData);
 }
 
 static void
-GetFontFileData (const char *pathname, RESOURCE_DATA *resdata)
+GetFontFileData(const char* pathname, RESOURCE_DATA* resdata)
 {
-	resdata->ptr = LoadResourceFromPath (pathname, _GetFontData);
+	resdata->ptr = LoadResourceFromPath(pathname, _GetFontData);
 }
 
 
-bool
-InstallGraphicResTypes (void)
+bool InstallGraphicResTypes(void)
 {
-	InstallResTypeVectors ("GFXRES", GetCelFileData, _ReleaseCelData, NULL);
-	InstallResTypeVectors ("FONTRES", GetFontFileData, _ReleaseFontData, NULL);
+	InstallResTypeVectors("GFXRES", GetCelFileData, _ReleaseCelData, NULL);
+	InstallResTypeVectors("FONTRES", GetFontFileData, _ReleaseFontData, NULL);
 	return (true);
 }
 
 /* Needs to be void * because it could be either a DRAWABLE or a FONT. */
-void *
-LoadGraphicInstance (RESOURCE res)
+void* LoadGraphicInstance(RESOURCE res)
 {
-	void *hData;
+	void* hData;
 
-	hData = res_GetResource (res);
+	hData = res_GetResource(res);
 	if (hData)
-		res_DetachResource (res);
+		res_DetachResource(res);
 
 	return (hData);
 }
-

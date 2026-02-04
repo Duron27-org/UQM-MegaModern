@@ -23,12 +23,12 @@
 extern "C" {
 #endif
 
-extern void ConfirmSaveLoad (STAMP *MsgStamp);
-extern bool GameOptions (void);
+extern void ConfirmSaveLoad(STAMP* MsgStamp);
+extern bool GameOptions(void);
 
-typedef void (NamingCallback) (void);
-extern void SetNamingCallback (NamingCallback *);
-extern void SettingsMenu (bool NameFlagship);
+typedef void(NamingCallback)(void);
+extern void SetNamingCallback(NamingCallback*);
+extern void SettingsMenu(bool NameFlagship);
 extern bool NewGameInit;
 
 extern uqm::BYTE OutfitOrShipyard;
@@ -39,5 +39,4 @@ extern bool TextEntry3DO;
 }
 #endif
 
-#endif  /* UQM_GAMEOPT_H_ */
-
+#endif /* UQM_GAMEOPT_H_ */

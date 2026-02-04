@@ -26,92 +26,92 @@
 #include "uqm/lua/luastate.h"
 
 
-static int luaUqm_state_clock_getDate(lua_State *luaState);
-static int luaUqm_state_escort_addShips(lua_State *luaState);
-static int luaUqm_state_escort_canAddShips(lua_State *luaState);
-static int luaUqm_state_escort_removeShips (lua_State *luaState);
-static int luaUqm_state_escort_shipCount(lua_State *luaState);
-static int luaUqm_state_escort_totalValue(lua_State *luaState);
-static int luaUqm_state_race_isAlive(lua_State *luaState);
-static int luaUqm_state_race_isAllied(lua_State *luaState);
-static int luaUqm_state_race_isKnown(lua_State *luaState);
-static int luaUqm_state_race_setAlive(lua_State *luaState);
-static int luaUqm_state_race_setAllied(lua_State *luaState);
-static int luaUqm_state_race_setKnown(lua_State *luaState);
-static int luaUqm_state_sis_addCrew(lua_State *luaState);
-static int luaUqm_state_sis_addFuel(lua_State *luaState);
-static int luaUqm_state_sis_addLanders(lua_State *luaState);
-static int luaUqm_state_sis_addResUnits(lua_State *luaState);
-static int luaUqm_state_sis_getCaptainName(lua_State *luaState);
-static int luaUqm_state_sis_getCrew(lua_State *luaState);
-static int luaUqm_state_sis_getFuel(lua_State *luaState);
-static int luaUqm_state_sis_getLanders(lua_State *luaState);
-static int luaUqm_state_sis_getResUnits(lua_State *luaState);
-static int luaUqm_state_sis_getShipName(lua_State *luaState);
-static int luaUqm_state_prop_get(lua_State *luaState);
-static int luaUqm_state_prop_set(lua_State *luaState);
-static int luaUqm_state_misc_alignText (lua_State *luaState);
+static int luaUqm_state_clock_getDate(lua_State* luaState);
+static int luaUqm_state_escort_addShips(lua_State* luaState);
+static int luaUqm_state_escort_canAddShips(lua_State* luaState);
+static int luaUqm_state_escort_removeShips(lua_State* luaState);
+static int luaUqm_state_escort_shipCount(lua_State* luaState);
+static int luaUqm_state_escort_totalValue(lua_State* luaState);
+static int luaUqm_state_race_isAlive(lua_State* luaState);
+static int luaUqm_state_race_isAllied(lua_State* luaState);
+static int luaUqm_state_race_isKnown(lua_State* luaState);
+static int luaUqm_state_race_setAlive(lua_State* luaState);
+static int luaUqm_state_race_setAllied(lua_State* luaState);
+static int luaUqm_state_race_setKnown(lua_State* luaState);
+static int luaUqm_state_sis_addCrew(lua_State* luaState);
+static int luaUqm_state_sis_addFuel(lua_State* luaState);
+static int luaUqm_state_sis_addLanders(lua_State* luaState);
+static int luaUqm_state_sis_addResUnits(lua_State* luaState);
+static int luaUqm_state_sis_getCaptainName(lua_State* luaState);
+static int luaUqm_state_sis_getCrew(lua_State* luaState);
+static int luaUqm_state_sis_getFuel(lua_State* luaState);
+static int luaUqm_state_sis_getLanders(lua_State* luaState);
+static int luaUqm_state_sis_getResUnits(lua_State* luaState);
+static int luaUqm_state_sis_getShipName(lua_State* luaState);
+static int luaUqm_state_prop_get(lua_State* luaState);
+static int luaUqm_state_prop_set(lua_State* luaState);
+static int luaUqm_state_misc_alignText(lua_State* luaState);
 
 static const luaL_Reg stateClockFuncs[] = {
-	{ "getDate",         luaUqm_state_clock_getDate },
-	{ NULL,              NULL },
+	{"getDate", luaUqm_state_clock_getDate},
+	{NULL,	   NULL					  },
 };
 
 static const luaL_Reg stateEscortFuncs[] = {
-	{ "addShips",        luaUqm_state_escort_addShips },
-	{ "canAddShips",     luaUqm_state_escort_canAddShips },
-	{ "removeShips",     luaUqm_state_escort_removeShips },
-	{ "shipCount",       luaUqm_state_escort_shipCount },
-	{ "totalValue",      luaUqm_state_escort_totalValue },
-	{ NULL,              NULL },
+	{"addShips",	 luaUqm_state_escort_addShips	 },
+	{"canAddShips", luaUqm_state_escort_canAddShips},
+	{"removeShips", luaUqm_state_escort_removeShips},
+	{"shipCount",	  luaUqm_state_escort_shipCount  },
+	{"totalValue",  luaUqm_state_escort_totalValue },
+	{NULL,		   NULL						   },
 };
 
 static const luaL_Reg statePropFuncs[] = {
-	{ "get",             luaUqm_state_prop_get },
-	{ "set",             luaUqm_state_prop_set },
-	{ NULL,              NULL },
+	{"get", luaUqm_state_prop_get},
+	{"set", luaUqm_state_prop_set},
+	{NULL,  NULL				 },
 };
 
 static const luaL_Reg stateRaceFuncs[] = {
-	{ "isAlive",         luaUqm_state_race_isAlive },
-	{ "isAllied",        luaUqm_state_race_isAllied },
-	{ "isKnown",         luaUqm_state_race_isKnown },
-	{ "setAlive",        luaUqm_state_race_setAlive },
-	{ "setAllied",       luaUqm_state_race_setAllied },
-	{ "setKnown",        luaUqm_state_race_setKnown },
-	{ NULL,              NULL },
+	{"isAlive",	luaUqm_state_race_isAlive	 },
+	{"isAllied",	 luaUqm_state_race_isAllied },
+	{"isKnown",	luaUqm_state_race_isKnown	 },
+	{"setAlive",	 luaUqm_state_race_setAlive },
+	{"setAllied", luaUqm_state_race_setAllied},
+	{"setKnown",	 luaUqm_state_race_setKnown },
+	{NULL,		   NULL					   },
 };
 
 static const luaL_Reg stateSisFuncs[] = {
-	{ "addCrew",         luaUqm_state_sis_addCrew },
-	{ "addFuel",         luaUqm_state_sis_addFuel },
-	{ "addLanders",      luaUqm_state_sis_addLanders },
-	{ "addResUnits",     luaUqm_state_sis_addResUnits },
-	{ "getCaptainName",  luaUqm_state_sis_getCaptainName },
-	{ "getCrew",         luaUqm_state_sis_getCrew },
-	{ "getFuel",         luaUqm_state_sis_getFuel },
-	{ "getLanders",      luaUqm_state_sis_getLanders },
-	{ "getResUnits",     luaUqm_state_sis_getResUnits },
-	{ "getShipName",     luaUqm_state_sis_getShipName },
-	{ NULL,              NULL },
+	{"addCrew",		luaUqm_state_sis_addCrew		},
+	{"addFuel",		luaUqm_state_sis_addFuel		},
+	{"addLanders",	   luaUqm_state_sis_addLanders	  },
+	{"addResUnits",	luaUqm_state_sis_addResUnits	},
+	{"getCaptainName", luaUqm_state_sis_getCaptainName},
+	{"getCrew",		luaUqm_state_sis_getCrew		},
+	{"getFuel",		luaUqm_state_sis_getFuel		},
+	{"getLanders",	   luaUqm_state_sis_getLanders	  },
+	{"getResUnits",	luaUqm_state_sis_getResUnits	},
+	{"getShipName",	luaUqm_state_sis_getShipName	},
+	{NULL,			 NULL						   },
 };
 
 static const luaL_Reg stateMiscFuncs[] = {
-	{ "alignText",       luaUqm_state_misc_alignText },
-	{ NULL,              NULL },
+	{"alignText", luaUqm_state_misc_alignText},
+	{NULL,		   NULL					   },
 };
 
-int
-luaUqm_state_open(lua_State *luaState) {
+int luaUqm_state_open(lua_State* luaState)
+{
 	// Create a table on the stack with space reserved for five fields.
 	lua_createtable(luaState, 0, 5);
 
 	luaL_newlib(luaState, stateClockFuncs);
 	lua_setfield(luaState, -2, "clock");
-	
+
 	luaL_newlib(luaState, stateEscortFuncs);
 	lua_setfield(luaState, -2, "escort");
-	
+
 	luaL_newlib(luaState, statePropFuncs);
 	lua_setfield(luaState, -2, "prop");
 
@@ -134,17 +134,20 @@ luaUqm_state_open(lua_State *luaState) {
 // If it does not exist, -1 is returned and a warning is printed.
 // [1] -> string raceIdStr
 static uqm::COUNT
-testRaceId(lua_State *luaState, int argn) {
-	const char *raceIdStr = luaL_checkstring(luaState, argn);
+testRaceId(lua_State* luaState, int argn)
+{
+	const char* raceIdStr = luaL_checkstring(luaState, argn);
 	uqm::COUNT raceId = RaceIdStrToIndex(raceIdStr);
-	if (raceId == (uqm::COUNT) -1) {
+	if (raceId == (uqm::COUNT)-1)
+	{
 		// TODO: print script file name.
 		log_add(log_Error, "[script] Warning: testRaceId(): No race exists "
-				"with id '%s'.", raceIdStr);
-		return (uqm::COUNT) -1;
+						   "with id '%s'.",
+				raceIdStr);
+		return (uqm::COUNT)-1;
 	}
 
-	return (uqm::COUNT) raceId;
+	return (uqm::COUNT)raceId;
 }
 
 // Helper function. Returns an index for the ship in the avail_race_q
@@ -152,17 +155,20 @@ testRaceId(lua_State *luaState, int argn) {
 // If it does not exist, -1 is returned and a warning is printed.
 // [1] -> string shipIdStr
 static uqm::COUNT
-testShipId(lua_State *luaState, int argn) {
-	const char *shipIdStr = luaL_checkstring(luaState, argn);
+testShipId(lua_State* luaState, int argn)
+{
+	const char* shipIdStr = luaL_checkstring(luaState, argn);
 	uqm::COUNT shipId = ShipIdStrToIndex(shipIdStr);
-	if (shipId == (uqm::COUNT) -1) {
+	if (shipId == (uqm::COUNT)-1)
+	{
 		// TODO: print script file name.
 		log_add(log_Error, "[script] Warning: testShipId(): No ship exists "
-				"with id '%s'.", shipIdStr);
-		return (uqm::COUNT) -1;
+						   "with id '%s'.",
+				shipIdStr);
+		return (uqm::COUNT)-1;
 	}
 
-	return (uqm::COUNT) shipId;
+	return (uqm::COUNT)shipId;
 }
 
 #if 0
@@ -182,13 +188,14 @@ pushRaceId(lua_State *luaState, uqm::COUNT raceId) {
 
 // Returns a table with the fields 'year', 'month', and 'day'.
 static int
-luaUqm_state_clock_getDate(lua_State *luaState) {
+luaUqm_state_clock_getDate(lua_State* luaState)
+{
 	// Create a table on the stack with space reserved for 3 fields.
 	lua_createtable(luaState, 0, 3);
 
 	lua_pushinteger(luaState, GLOBAL(GameClock.year_index));
 	lua_setfield(luaState, -2, "year");
-	
+
 	lua_pushinteger(luaState, GLOBAL(GameClock.month_index));
 	lua_setfield(luaState, -2, "month");
 
@@ -201,13 +208,15 @@ luaUqm_state_clock_getDate(lua_State *luaState) {
 // [1] -> string shipIdStr
 // [2] -> int count
 static int
-luaUqm_state_escort_addShips(lua_State *luaState) {
+luaUqm_state_escort_addShips(lua_State* luaState)
+{
 	uqm::COUNT shipId;
 	int count;
 	int numAdded;
 
 	shipId = testShipId(luaState, 1);
-	if (shipId == (uqm::COUNT) -1) {
+	if (shipId == (uqm::COUNT)-1)
+	{
 		lua_pushboolean(luaState, false);
 		return 1;
 	}
@@ -221,12 +230,14 @@ luaUqm_state_escort_addShips(lua_State *luaState) {
 
 // [1] -> string shipIdStr
 static int
-luaUqm_state_escort_canAddShips(lua_State *luaState) {
+luaUqm_state_escort_canAddShips(lua_State* luaState)
+{
 	uqm::COUNT shipId;
 	int result;
 
 	shipId = testShipId(luaState, 1);
-	if (shipId == (uqm::COUNT) -1) {
+	if (shipId == (uqm::COUNT)-1)
+	{
 		lua_pushboolean(luaState, false);
 		return 1;
 	}
@@ -239,19 +250,24 @@ luaUqm_state_escort_canAddShips(lua_State *luaState) {
 // [1] -> string shipIdStr
 // [2] -> int count
 static int
-luaUqm_state_escort_removeShips(lua_State *luaState) {
+luaUqm_state_escort_removeShips(lua_State* luaState)
+{
 	uqm::COUNT shipId;
 	int numRemoved;
 
 	shipId = testShipId(luaState, 1);
-	if (shipId == (uqm::COUNT) -1) {
+	if (shipId == (uqm::COUNT)-1)
+	{
 		lua_pushboolean(luaState, false);
 		return 1;
 	}
 
-	if (lua_isnil(luaState, 2)) {
+	if (lua_isnil(luaState, 2))
+	{
 		numRemoved = RemoveEscortShips((RACE_ID)(shipId - 1));
-	} else {
+	}
+	else
+	{
 		int count = luaL_checkint(luaState, 2);
 		numRemoved = RemoveSomeEscortShips((RACE_ID)(shipId - 1), count);
 	}
@@ -262,12 +278,14 @@ luaUqm_state_escort_removeShips(lua_State *luaState) {
 
 // [1] -> string shipIdStr
 static int
-luaUqm_state_escort_shipCount(lua_State *luaState) {
+luaUqm_state_escort_shipCount(lua_State* luaState)
+{
 	uqm::COUNT shipId;
 	int result;
 
 	shipId = testShipId(luaState, 1);
-	if (shipId == (uqm::COUNT) -1) {
+	if (shipId == (uqm::COUNT)-1)
+	{
 		lua_pushboolean(luaState, false);
 		return 1;
 	}
@@ -279,7 +297,8 @@ luaUqm_state_escort_shipCount(lua_State *luaState) {
 
 // No arguments
 static int
-luaUqm_state_escort_totalValue(lua_State *luaState) {
+luaUqm_state_escort_totalValue(lua_State* luaState)
+{
 	uqm::COUNT result = CalculateEscortsWorth();
 	lua_pushinteger(luaState, result);
 	return 1;
@@ -289,12 +308,14 @@ luaUqm_state_escort_totalValue(lua_State *luaState) {
 
 // [1] -> string raceIdStr
 static int
-luaUqm_state_race_isAlive(lua_State *luaState) {
+luaUqm_state_race_isAlive(lua_State* luaState)
+{
 	uqm::COUNT raceId;
 	bool result;
 
 	raceId = testRaceId(luaState, 1);
-	if (raceId == (uqm::COUNT) -1) {
+	if (raceId == (uqm::COUNT)-1)
+	{
 		lua_pushboolean(luaState, false);
 		return 1;
 	}
@@ -306,12 +327,14 @@ luaUqm_state_race_isAlive(lua_State *luaState) {
 
 // [1] -> string raceIdStr
 static int
-luaUqm_state_race_isAllied(lua_State *luaState) {
+luaUqm_state_race_isAllied(lua_State* luaState)
+{
 	uqm::COUNT raceId;
 	bool result;
 
 	raceId = testRaceId(luaState, 1);
-	if (raceId == (uqm::COUNT) -1) {
+	if (raceId == (uqm::COUNT)-1)
+	{
 		lua_pushboolean(luaState, false);
 		return 1;
 	}
@@ -324,12 +347,14 @@ luaUqm_state_race_isAllied(lua_State *luaState) {
 // [1] -> string raceIdStr
 // Note that if a race has no SoI, this function will return false.
 static int
-luaUqm_state_race_isKnown(lua_State *luaState) {
+luaUqm_state_race_isKnown(lua_State* luaState)
+{
 	uqm::COUNT raceId;
 	bool result;
 
 	raceId = testRaceId(luaState, 1);
-	if (raceId == (uqm::COUNT) -1) {
+	if (raceId == (uqm::COUNT)-1)
+	{
 		lua_pushboolean(luaState, false);
 		return 1;
 	}
@@ -342,21 +367,24 @@ luaUqm_state_race_isKnown(lua_State *luaState) {
 // [1] -> string raceIdStr
 // [2] -> boolean flag
 static int
-luaUqm_state_race_setAlive(lua_State *luaState) {
+luaUqm_state_race_setAlive(lua_State* luaState)
+{
 	uqm::COUNT raceId;
 	int flag;
 	bool result;
 
 	raceId = testRaceId(luaState, 1);
-	if (raceId == (uqm::COUNT) -1) {
+	if (raceId == (uqm::COUNT)-1)
+	{
 		lua_pushboolean(luaState, false);
 		return 1;
 	}
 
 	flag = lua_toboolean(luaState, 2);
-	if (flag != 0) {
+	if (flag != 0)
+	{
 		log_add(log_Error, "[script] Warning: luaUqm_state_race_setAlive(): "
-				"setAlive(true) is not implemented.");
+						   "setAlive(true) is not implemented.");
 		lua_pushboolean(luaState, false);
 		return 1;
 	}
@@ -369,13 +397,15 @@ luaUqm_state_race_setAlive(lua_State *luaState) {
 // [1] -> string raceIdStr
 // [2] -> boolean flag
 static int
-luaUqm_state_race_setAllied(lua_State *luaState) {
+luaUqm_state_race_setAllied(lua_State* luaState)
+{
 	uqm::COUNT raceId;
 	int flag;
 	bool result;
 
 	raceId = testRaceId(luaState, 1);
-	if (raceId == (uqm::COUNT) -1) {
+	if (raceId == (uqm::COUNT)-1)
+	{
 		lua_pushboolean(luaState, false);
 		return 1;
 	}
@@ -390,21 +420,24 @@ luaUqm_state_race_setAllied(lua_State *luaState) {
 // [1] -> string raceIdStr
 // [2] -> boolean flag
 static int
-luaUqm_state_race_setKnown(lua_State *luaState) {
+luaUqm_state_race_setKnown(lua_State* luaState)
+{
 	uqm::COUNT raceId;
 	int flag;
 	bool result;
 
 	raceId = testRaceId(luaState, 1);
-	if (raceId == (uqm::COUNT) -1) {
+	if (raceId == (uqm::COUNT)-1)
+	{
 		lua_pushboolean(luaState, false);
 		return 1;
 	}
 
 	flag = lua_toboolean(luaState, 2);
-	if (flag == 0) {
+	if (flag == 0)
+	{
 		log_add(log_Error, "[script] Warning: luaUqm_state_race_setKnown(): "
-				"setKnown(false) is not implemented.");
+						   "setKnown(false) is not implemented.");
 		lua_pushboolean(luaState, false);
 		return 1;
 	}
@@ -418,11 +451,12 @@ luaUqm_state_race_setKnown(lua_State *luaState) {
 
 // [1] -> int delta
 static int
-luaUqm_state_sis_addCrew(lua_State *luaState) {
+luaUqm_state_sis_addCrew(lua_State* luaState)
+{
 	int delta;
 	uqm::COUNT oldCrew;
 	uqm::COUNT newCrew;
-	
+
 	delta = luaL_checkint(luaState, 1);
 
 	oldCrew = GLOBAL_SIS(CrewEnlisted);
@@ -435,11 +469,12 @@ luaUqm_state_sis_addCrew(lua_State *luaState) {
 
 // [1] -> int delta
 static int
-luaUqm_state_sis_addFuel(lua_State *luaState) {
+luaUqm_state_sis_addFuel(lua_State* luaState)
+{
 	int delta;
 	uqm::COUNT oldFuel;
 	uqm::COUNT newFuel;
-	
+
 	delta = luaL_checkint(luaState, 1);
 
 	oldFuel = GLOBAL_SIS(FuelOnBoard);
@@ -452,18 +487,22 @@ luaUqm_state_sis_addFuel(lua_State *luaState) {
 
 // [1] -> int delta
 static int
-luaUqm_state_sis_addLanders(lua_State *luaState) {
+luaUqm_state_sis_addLanders(lua_State* luaState)
+{
 	int delta;
 	int oldCount;
 	int newCount;
-	
+
 	delta = luaL_checkint(luaState, 1);
 
 	oldCount = GLOBAL_SIS(NumLanders);
 	newCount = oldCount + delta;
-	if (newCount < 0) {
+	if (newCount < 0)
+	{
 		newCount = 0;
-	} else if (newCount > MAX_LANDERS) {
+	}
+	else if (newCount > MAX_LANDERS)
+	{
 		newCount = MAX_LANDERS;
 	}
 
@@ -479,11 +518,12 @@ luaUqm_state_sis_addLanders(lua_State *luaState) {
 
 // [1] -> int delta
 static int
-luaUqm_state_sis_addResUnits(lua_State *luaState) {
+luaUqm_state_sis_addResUnits(lua_State* luaState)
+{
 	int delta;
 	uqm::COUNT oldResUnits;
 	uqm::COUNT newResUnits;
-	
+
 	delta = luaL_checkint(luaState, 1);
 
 	oldResUnits = GLOBAL_SIS(ResUnits);
@@ -495,38 +535,44 @@ luaUqm_state_sis_addResUnits(lua_State *luaState) {
 }
 
 static int
-luaUqm_state_sis_getCaptainName(lua_State *luaState) {
-	lua_pushstring(luaState, GLOBAL_SIS (CommanderName));
+luaUqm_state_sis_getCaptainName(lua_State* luaState)
+{
+	lua_pushstring(luaState, GLOBAL_SIS(CommanderName));
 	return 1;
 }
 
 static int
-luaUqm_state_sis_getCrew(lua_State *luaState) {
-	lua_pushinteger(luaState, GLOBAL_SIS (CrewEnlisted));
+luaUqm_state_sis_getCrew(lua_State* luaState)
+{
+	lua_pushinteger(luaState, GLOBAL_SIS(CrewEnlisted));
 	return 1;
 }
 
 static int
-luaUqm_state_sis_getFuel(lua_State *luaState) {
-	lua_pushinteger(luaState, GLOBAL_SIS (FuelOnBoard));
+luaUqm_state_sis_getFuel(lua_State* luaState)
+{
+	lua_pushinteger(luaState, GLOBAL_SIS(FuelOnBoard));
 	return 1;
 }
 
 static int
-luaUqm_state_sis_getResUnits(lua_State *luaState) {
-	lua_pushinteger(luaState, GLOBAL_SIS (ResUnits));
+luaUqm_state_sis_getResUnits(lua_State* luaState)
+{
+	lua_pushinteger(luaState, GLOBAL_SIS(ResUnits));
 	return 1;
 }
 
 static int
-luaUqm_state_sis_getLanders(lua_State *luaState) {
-	lua_pushinteger(luaState, GLOBAL_SIS (NumLanders));
+luaUqm_state_sis_getLanders(lua_State* luaState)
+{
+	lua_pushinteger(luaState, GLOBAL_SIS(NumLanders));
 	return 1;
 }
 
 static int
-luaUqm_state_sis_getShipName(lua_State *luaState) {
-	lua_pushstring(luaState, GLOBAL_SIS (ShipName));
+luaUqm_state_sis_getShipName(lua_State* luaState)
+{
+	lua_pushstring(luaState, GLOBAL_SIS(ShipName));
 	return 1;
 }
 
@@ -534,7 +580,8 @@ luaUqm_state_sis_getShipName(lua_State *luaState) {
 
 // [1] -> int name
 static int
-luaUqm_state_prop_get(lua_State *luaState) {
+luaUqm_state_prop_get(lua_State* luaState)
+{
 	luaL_checktype(luaState, 1, LUA_TSTRING);
 
 	luaUqm_getProp(luaState, 1);
@@ -544,7 +591,8 @@ luaUqm_state_prop_get(lua_State *luaState) {
 // [1] -> int name
 // [2] -> int|bool|string value
 static int
-luaUqm_state_prop_set(lua_State *luaState) {
+luaUqm_state_prop_set(lua_State* luaState)
+{
 	luaL_checktype(luaState, 1, LUA_TSTRING);
 	luaUqm_checkPropValueType(luaState, "state.prop.set", 2);
 
@@ -554,11 +602,10 @@ luaUqm_state_prop_set(lua_State *luaState) {
 
 // [1] -> int delta
 static int
-luaUqm_state_misc_alignText (lua_State *luaState)
+luaUqm_state_misc_alignText(lua_State* luaState)
 {
-	luaUqm_delta._int = luaL_checkint (luaState, 1);
-	lua_pushstring (luaState, "");
+	luaUqm_delta._int = luaL_checkint(luaState, 1);
+	lua_pushstring(luaState, "");
 
 	return 1;
 }
-

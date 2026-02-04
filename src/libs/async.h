@@ -7,4 +7,3 @@ extern "C" {
 #if 0 //defined(__cplusplus)
 }
 #endif
-

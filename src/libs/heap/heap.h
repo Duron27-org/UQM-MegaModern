@@ -29,41 +29,42 @@ typedef struct Heap Heap;
 typedef struct HeapValue HeapValue;
 
 // The actual value stored should "inherit" from this.
-struct HeapValue {
+struct HeapValue
+{
 	size_t index;
 };
-typedef int (*HeapValue_Comparator)(HeapValue *v1, HeapValue *v2);
+typedef int (*HeapValue_Comparator)(HeapValue* v1, HeapValue* v2);
 
 
-struct Heap {
+struct Heap
+{
 	HeapValue_Comparator comparator;
-			// Comparison function to determine the order of the
-			// elements.
+	// Comparison function to determine the order of the
+	// elements.
 	size_t minSize;
-			// Never resize below this many number of entries.
+	// Never resize below this many number of entries.
 	double minFillQuotient;
-			// How much of half of the heap needs to be filled before
-			// resizing to size/2.
-	
-	HeapValue **entries;
-			// Actual values
+	// How much of half of the heap needs to be filled before
+	// resizing to size/2.
+
+	HeapValue** entries;
+	// Actual values
 	size_t numEntries;
 	size_t size;
-			// Number of entries that fit in the heap as it is now.
+	// Number of entries that fit in the heap as it is now.
 	size_t minFill;
-			// Resize to size/2 when below this size.
+	// Resize to size/2 when below this size.
 };
 
 
-Heap *Heap_new(HeapValue_Comparator comparator, size_t initialSize,
-		size_t minSize, double minFillQuotient);
-void Heap_delete(Heap *heap);
-void Heap_add(Heap *heap, HeapValue *value);
-HeapValue *Heap_first(const Heap *heap);
-HeapValue *Heap_pop(Heap *heap);
-size_t Heap_count(const Heap *heap);
-bool Heap_hasMore(const Heap *heap);
-void Heap_remove(Heap *heap, HeapValue *value);
+Heap* Heap_new(HeapValue_Comparator comparator, size_t initialSize,
+			   size_t minSize, double minFillQuotient);
+void Heap_delete(Heap* heap);
+void Heap_add(Heap* heap, HeapValue* value);
+HeapValue* Heap_first(const Heap* heap);
+HeapValue* Heap_pop(Heap* heap);
+size_t Heap_count(const Heap* heap);
+bool Heap_hasMore(const Heap* heap);
+void Heap_remove(Heap* heap, HeapValue* value);
 
-#endif  /* LIBS_HEAP_HEAP_H_ */
-
+#endif /* LIBS_HEAP_HEAP_H_ */

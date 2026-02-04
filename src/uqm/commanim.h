@@ -29,95 +29,95 @@ extern "C" {
 // frame is neutral depends on the animation type.
 // Animation types:
 #define RANDOM_ANIM (1 << 0)
-		// The next index is randomly chosen.
-		// The first frame is neutral
+// The next index is randomly chosen.
+// The first frame is neutral
 #define CIRCULAR_ANIM (1 << 1)
-		// After the last index has been reached, the animation starts over.
-		// The last frame is neutral. This complicates the animation task.
+// After the last index has been reached, the animation starts over.
+// The last frame is neutral. This complicates the animation task.
 #define YOYO_ANIM (1 << 2)
-		// After the last index has been reached, the order that the
-		// animation frames are used is reversed.
-		// The first frame is neutral
+// After the last index has been reached, the order that the
+// animation frames are used is reversed.
+// The first frame is neutral
 #define ANIM_MASK (RANDOM_ANIM | CIRCULAR_ANIM | YOYO_ANIM)
-		// Mask of all animation types.
-		// Static frames do not have any of these flags set.
+// Mask of all animation types.
+// Static frames do not have any of these flags set.
 
 #define WAIT_TALKING (1 << 3)
-		// This is set in AlienTalkDesc when the talking animation is active
-		// or should be active.
-		// In AlienAmbientArray, this is set for those ambient animations
-		// which can not be active while the talking animation is active.
-		// Such animations stop at the end of the current animation cycle
-		// when the talking animation activates.
+// This is set in AlienTalkDesc when the talking animation is active
+// or should be active.
+// In AlienAmbientArray, this is set for those ambient animations
+// which can not be active while the talking animation is active.
+// Such animations stop at the end of the current animation cycle
+// when the talking animation activates.
 #define PAUSE_TALKING (1 << 4)
-		// Set in AlienTalkDesc when we do not want the talking animation
+// Set in AlienTalkDesc when we do not want the talking animation
 #define TALK_INTRO (1 << 5)
-		// In AlienTransitionDesc: indicates a transition to talking state
+// In AlienTransitionDesc: indicates a transition to talking state
 #define TALK_DONE (1 << 6)
-		// In AlienTransitionDesc: indicates a transition to silent state
-		// In AlienTalkDesc: signals the end of talking animation
-#define WHEN_TALKING (1L << 7) // JMS
+// In AlienTransitionDesc: indicates a transition to silent state
+// In AlienTalkDesc: signals the end of talking animation
+#define WHEN_TALKING (1L << 7)	// JMS
 #define ANIM_DISABLED (1L << 8) // BW (needed for news anchor and animated background)
 
 #define FREEZE_TALKING (1 << 9)
-		// Kr (needed for blocking animations that are WAIT_TALKING even
-		// if talking itself is stopped. Used only in PS-DOS style scrolling)
+// Kr (needed for blocking animations that are WAIT_TALKING even
+// if talking itself is stopped. Used only in PS-DOS style scrolling)
 
 #define RESTART_ALL_AFTER (1 << 10)
 #define STOP_ALL_AFTER (1 << 11)
-		// Kruzen: Needed for ONE_SHOT_ANIM in HD to define - should we restart
-		// other ambient animations or no
+// Kruzen: Needed for ONE_SHOT_ANIM in HD to define - should we restart
+// other ambient animations or no
 
 #define IMMUME_TO_RESTART (1 << 12)
 #define IMMUME_TO_STOP (1 << 13)
-		// Kruzen: Some animations needed to be handled individually
+// Kruzen: Some animations needed to be handled individually
 
 #define ALPHA_MASK_ANIM (1 << 14)
-		// Kruzen: New type of animations: Draw transparent frames
-		// on top of all (sets fullRedraw to true
+// Kruzen: New type of animations: Draw transparent frames
+// on top of all (sets fullRedraw to true
 
 #define TRIGGER_FULL_REDRAW (1 << 15)
-		// When animation plays - it triggers full redraw
+// When animation plays - it triggers full redraw
 
 #define FAST_STOP_AT_TALK_START (TALK_DONE) // JMS: If there's a very loooong animation, it can be forced to stop when talking with this.
-// (otherwise there'll be nasty, unwanted pauses in the conversation.) 
+// (otherwise there'll be nasty, unwanted pauses in the conversation.)
 
 #define COLORXFORM_ANIM PAUSE_TALKING
 
-#define ONE_SHOT_ANIM  TALK_INTRO
-		// Set in AlienAmbientArray for animations that should be
-		// disabled after they run once.
+#define ONE_SHOT_ANIM TALK_INTRO
+// Set in AlienAmbientArray for animations that should be
+// disabled after they run once.
 
 #define BLOCK_ALL_BEFORE_ME(m) ((1 << m) - 1)
 
 typedef struct
 {
 	uqm::COUNT StartIndex;
-			// Index of the first image (for image animation) or
-			// index of the first color map (for palette animation)
+	// Index of the first image (for image animation) or
+	// index of the first color map (for palette animation)
 	uqm::BYTE NumFrames;
-			// Number of frames in the animation.
+	// Number of frames in the animation.
 
 	uqm::COUNT AnimFlags;
-			// One of RANDOM_ANIM, CIRCULAR_ANIM, or YOYO_ANIM
-			// plus flags (WAIT_TALKING, ANIM_DISABLED)
-			// JMS: Changed from uqm::BYTE to uqm::COUNT to house more possible flags
+	// One of RANDOM_ANIM, CIRCULAR_ANIM, or YOYO_ANIM
+	// plus flags (WAIT_TALKING, ANIM_DISABLED)
+	// JMS: Changed from uqm::BYTE to uqm::COUNT to house more possible flags
 
 	uqm::COUNT BaseFrameRate;
-			// Minimum interframe delay
+	// Minimum interframe delay
 	uqm::COUNT RandomFrameRate;
-			// Maximum additional interframe delay
-			// Actual delay: BaseFrameRate + Random(0..RandomFrameRate)
+	// Maximum additional interframe delay
+	// Actual delay: BaseFrameRate + Random(0..RandomFrameRate)
 	uqm::COUNT BaseRestartRate;
-			// Minimum delay before restarting animation
+	// Minimum delay before restarting animation
 	uqm::COUNT RandomRestartRate;
-			// Maximum additional delay before restarting animation
-			// Actual delay: BaseRestartRate + Random(0..RandomRestartRate)
+	// Maximum additional delay before restarting animation
+	// Actual delay: BaseRestartRate + Random(0..RandomRestartRate)
 
 	uqm::DWORD BlockMask;
-			// Bit mask of the indices of all animations that can not
-			// be active at the same time as this animation, usually,
-			// due to the image overlap conflicts.
+	// Bit mask of the indices of all animations that can not
+	// be active at the same time as this animation, usually,
+	// due to the image overlap conflicts.
 } ANIMATION_DESC;
 
 #define MAX_ANIMATIONS 30 // JMS: Was 20
@@ -129,21 +129,21 @@ typedef enum
 {
 	DOWN_DIR = -1, // Animation indices are decreasing
 	NO_DIR = 0,
-	UP_DIR = 1,    // Animation indices are increasing
+	UP_DIR = 1, // Animation indices are increasing
 } ANIM_DIR;
 
 typedef enum
 {
 	PICTURE_ANIM,
-			// Parts of a picture are replaced
+	// Parts of a picture are replaced
 	COLOR_ANIM
-			// Colormap tricks on a picture
+	// Colormap tricks on a picture
 } ANIM_TYPE;
 
 // Describes an active animation.
 struct SEQUENCE
 {
-	ANIMATION_DESC *ADPtr;
+	ANIMATION_DESC* ADPtr;
 	uqm::DWORD Alarm;
 	ANIM_DIR Direction;
 	uqm::COUNT CurIndex;
@@ -168,8 +168,8 @@ typedef struct SEQUENCE SEQUENCE;
 #define COMM_COLORMAP_INDEX 10
 #define MAX_FILTERS 3 // Could be more, but for now more that enough
 
-#define TURN_OFF_OFT (1 << 0) // on full transparency
-#define TURN_OFF_OFO (1 << 1) // on full opacity
+#define TURN_OFF_OFT (1 << 0)  // on full transparency
+#define TURN_OFF_OFO (1 << 1)  // on full opacity
 #define FRAMED_FILTER (1 << 2) // filter draws frame and nothing else
 #define FILTER_DISABLED (1 << 3)
 #define SWITCH_OFF_ANIMS (1 << 4)
@@ -209,17 +209,17 @@ typedef struct
 extern FILTER_DESC FilterData;
 
 // Returns true if there was an animation change
-extern bool DrawAlienFrame (SEQUENCE *pSeq, uqm::COUNT Num, bool fullRedraw);
-extern void InitCommAnimations (void);
-extern bool ProcessCommAnimations (bool fullRedraw, bool paused);
-extern void ShutYourMouth (void);
-extern void SwitchSequences (bool enableAll);
-extern void RunOneTimeSequence (uqm::COUNT animIndex, uqm::COUNT flags);
-extern void EngageFilters (FILTER_DESC* f_desc);
-extern void DisengageFilters (void);
+extern bool DrawAlienFrame(SEQUENCE* pSeq, uqm::COUNT Num, bool fullRedraw);
+extern void InitCommAnimations(void);
+extern bool ProcessCommAnimations(bool fullRedraw, bool paused);
+extern void ShutYourMouth(void);
+extern void SwitchSequences(bool enableAll);
+extern void RunOneTimeSequence(uqm::COUNT animIndex, uqm::COUNT flags);
+extern void EngageFilters(FILTER_DESC* f_desc);
+extern void DisengageFilters(void);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* UQM_COMMANIM_H_ */
+#endif /* UQM_COMMANIM_H_ */

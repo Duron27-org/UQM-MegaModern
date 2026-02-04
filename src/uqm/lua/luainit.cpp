@@ -25,7 +25,7 @@
 
 #include "luainit.h"
 #include "options.h"
-		// for contentDir
+// for contentDir
 #include "uqm/resinst.h"
 #include "uqm/lua/luastate.h"
 #include "luafuncs/eventfuncs.h"
@@ -34,15 +34,15 @@
 #include "libs/log.h"
 
 static const luaL_Reg initLibs[] = {
-	{ "event",  luaUqm_event_open },
-	{ "log",    luaUqm_log_open },
-	{ "state",  luaUqm_state_open },
-	{ NULL, NULL }
+	{"event", luaUqm_event_open},
+	{"log",	luaUqm_log_open  },
+	{"state", luaUqm_state_open},
+	{NULL,	   NULL			   }
 };
 
-void
-luaUqm_runInitScripts(void) {
-	const char *scriptDir;
+void luaUqm_runInitScripts(void)
+{
+	const char* scriptDir;
 
 	// Set up an environment and run the init scripts in this environment.
 	// Note that the environment will not be used after this; when a script
@@ -50,12 +50,15 @@ luaUqm_runInitScripts(void) {
 	luaUqm_prepareEnvironment(luaUqm_globalState);
 	luaUqm_loadLibs(luaUqm_globalState, initLibs);
 
-	scriptDir = res_GetString (SCRIPT_DIR_INITGAME);
-	if (scriptDir == NULL) {
+	scriptDir = res_GetString(SCRIPT_DIR_INITGAME);
+	if (scriptDir == NULL)
+	{
 		log_add(log_Warning, "Location of game initialisation scripts ('%s')"
-				" was not specified.", SCRIPT_DIR_INITGAME);
-	} else {
+							 " was not specified.",
+				SCRIPT_DIR_INITGAME);
+	}
+	else
+	{
 		luaUqm_runLuaDir(luaUqm_globalState, contentDir, scriptDir);
 	}
 }
-

@@ -24,25 +24,25 @@
 
 
 SOUND_REF
-LoadSoundFile (const char *pStr)
+LoadSoundFile(const char* pStr)
 {
-	uio_Stream *fp;
+	uio_Stream* fp;
 
 	// FIXME: this theoretically needs a mechanism to prevent races
 	if (_cur_resfile_name)
 		// something else is loading resources atm
 		return 0;
 
-	fp = res_OpenResFile (contentDir, pStr, "rb");
+	fp = res_OpenResFile(contentDir, pStr, "rb");
 	if (fp)
 	{
 		SOUND_REF hData;
 
 		_cur_resfile_name = pStr;
-		hData = (SOUND_REF)_GetSoundBankData (fp, LengthResFile (fp));
+		hData = (SOUND_REF)_GetSoundBankData(fp, LengthResFile(fp));
 		_cur_resfile_name = 0;
 
-		res_CloseResFile (fp);
+		res_CloseResFile(fp);
 
 		return hData;
 	}
@@ -51,9 +51,9 @@ LoadSoundFile (const char *pStr)
 }
 
 MUSIC_REF
-LoadMusicFile (const char *pStr)
+LoadMusicFile(const char* pStr)
 {
-	uio_Stream *fp;
+	uio_Stream* fp;
 	char filename[256];
 
 	// FIXME: this theoretically needs a mechanism to prevent races
@@ -61,27 +61,26 @@ LoadMusicFile (const char *pStr)
 		// something else is loading resources atm
 		return 0;
 
-	strncpy (filename, pStr, sizeof(filename) - 1);
+	strncpy(filename, pStr, sizeof(filename) - 1);
 	filename[sizeof(filename) - 1] = '\0';
-	CheckMusicResName (filename);
+	CheckMusicResName(filename);
 
 	// Opening the res file is not technically necessary right now
 	// since _GetMusicData() completely ignores the arguments
 	// But just for the sake of correctness
-	fp = res_OpenResFile (contentDir, filename, "rb");
+	fp = res_OpenResFile(contentDir, filename, "rb");
 	if (fp)
 	{
 		MUSIC_REF hData;
 
 		_cur_resfile_name = filename;
-		hData = (MUSIC_REF)_GetMusicData (fp, LengthResFile (fp));
+		hData = (MUSIC_REF)_GetMusicData(fp, LengthResFile(fp));
 		_cur_resfile_name = 0;
 
-		res_CloseResFile (fp);
+		res_CloseResFile(fp);
 
 		return hData;
 	}
 
 	return (0);
 }
-

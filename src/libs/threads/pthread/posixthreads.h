@@ -20,50 +20,50 @@
 #include "port.h"
 #include "libs/threadlib.h"
 
-void InitThreadSystem_PT (void);
-void UnInitThreadSystem_PT (void);
+void InitThreadSystem_PT(void);
+void UnInitThreadSystem_PT(void);
 
 #ifdef NAMED_SYNCHRO
 /* Prototypes with the "name" field */
-Thread CreateThread_PT (ThreadFunction func, void *data, uqm::SDWORD stackSize, const char *name);
-Mutex CreateMutex_PT (const char *name, uqm::DWORD syncClass);
-Semaphore CreateSemaphore_PT (uqm::DWORD initial, const char *name, uqm::DWORD syncClass);
-RecursiveMutex CreateRecursiveMutex_PT (const char *name, uqm::DWORD syncClass);
-CondVar CreateCondVar_PT (const char *name, uqm::DWORD syncClass);
+Thread CreateThread_PT(ThreadFunction func, void* data, uqm::SDWORD stackSize, const char* name);
+Mutex CreateMutex_PT(const char* name, uqm::DWORD syncClass);
+Semaphore CreateSemaphore_PT(uqm::DWORD initial, const char* name, uqm::DWORD syncClass);
+RecursiveMutex CreateRecursiveMutex_PT(const char* name, uqm::DWORD syncClass);
+CondVar CreateCondVar_PT(const char* name, uqm::DWORD syncClass);
 #else
 /* Prototypes without the "name" field. */
-Thread CreateThread_PT (ThreadFunction func, void *data, uqm::SDWORD stackSize);
-Mutex CreateMutex_PT (void);
-Semaphore CreateSemaphore_PT (uqm::DWORD initial);
-RecursiveMutex CreateRecursiveMutex_PT (void);
-CondVar CreateCondVar_PT (void);
+Thread CreateThread_PT(ThreadFunction func, void* data, uqm::SDWORD stackSize);
+Mutex CreateMutex_PT(void);
+Semaphore CreateSemaphore_PT(uqm::DWORD initial);
+RecursiveMutex CreateRecursiveMutex_PT(void);
+CondVar CreateCondVar_PT(void);
 #endif
 
-ThreadLocal *GetMyThreadLocal_PT (void);
+ThreadLocal* GetMyThreadLocal_PT(void);
 
-void SleepThread_PT (TimeCount sleepTime);
-void SleepThreadUntil_PT (TimeCount wakeTime);
-void TaskSwitch_PT (void);
-void WaitThread_PT (Thread thread, int *status);
-void DestroyThread_PT (Thread thread);
+void SleepThread_PT(TimeCount sleepTime);
+void SleepThreadUntil_PT(TimeCount wakeTime);
+void TaskSwitch_PT(void);
+void WaitThread_PT(Thread thread, int* status);
+void DestroyThread_PT(Thread thread);
 
-void DestroyMutex_PT (Mutex m);
-void LockMutex_PT (Mutex m);
-void UnlockMutex_PT (Mutex m);
+void DestroyMutex_PT(Mutex m);
+void LockMutex_PT(Mutex m);
+void UnlockMutex_PT(Mutex m);
 
-void DestroySemaphore_PT (Semaphore sem);
-void SetSemaphore_PT (Semaphore sem);
-void ClearSemaphore_PT (Semaphore sem);
+void DestroySemaphore_PT(Semaphore sem);
+void SetSemaphore_PT(Semaphore sem);
+void ClearSemaphore_PT(Semaphore sem);
 
-void DestroyCondVar_PT (CondVar c);
-void WaitCondVar_PT (CondVar c);
-void SignalCondVar_PT (CondVar c);
-void BroadcastCondVar_PT (CondVar c);
+void DestroyCondVar_PT(CondVar c);
+void WaitCondVar_PT(CondVar c);
+void SignalCondVar_PT(CondVar c);
+void BroadcastCondVar_PT(CondVar c);
 
-void DestroyRecursiveMutex_PT (RecursiveMutex m);
-void LockRecursiveMutex_PT (RecursiveMutex m);
-void UnlockRecursiveMutex_PT (RecursiveMutex m);
-int  GetRecursiveMutexDepth_PT (RecursiveMutex m);
+void DestroyRecursiveMutex_PT(RecursiveMutex m);
+void LockRecursiveMutex_PT(RecursiveMutex m);
+void UnlockRecursiveMutex_PT(RecursiveMutex m);
+int GetRecursiveMutexDepth_PT(RecursiveMutex m);
 
 #define NativeInitThreadSystem InitThreadSystem_PT
 #define NativeUnInitThreadSystem UnInitThreadSystem_PT
@@ -99,5 +99,4 @@ int  GetRecursiveMutexDepth_PT (RecursiveMutex m);
 #define NativeUnlockRecursiveMutex UnlockRecursiveMutex_PT
 #define NativeGetRecursiveMutexDepth GetRecursiveMutexDepth_PT
 
-#endif  /* _PTTHREAD_H */
-
+#endif /* _PTTHREAD_H */

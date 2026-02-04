@@ -38,138 +38,136 @@
 // Laser
 #define WEAPON_ENERGY_COST 1
 #define WEAPON_WAIT 0
-#define VUX_OFFSET chooseIfHd (12, 38)
-#define LASER_BASE RES_SCALE (150)
-#define LASER_RANGE DISPLAY_TO_WORLD (LASER_BASE + VUX_OFFSET)
+#define VUX_OFFSET chooseIfHd(12, 38)
+#define LASER_BASE RES_SCALE(150)
+#define LASER_RANGE DISPLAY_TO_WORLD(LASER_BASE + VUX_OFFSET)
 
 // Limpet
 #define SPECIAL_ENERGY_COST 2
 #define SPECIAL_WAIT 7
-#define LIMPET_SPEED RES_SCALE (25)
-#define LIMPET_OFFSET RES_SCALE (8)
+#define LIMPET_SPEED RES_SCALE(25)
+#define LIMPET_OFFSET RES_SCALE(8)
 #define LIMPET_LIFE 80
 #define LIMPET_HITS 1
 #define LIMPET_DAMAGE 0
-#define MIN_THRUST_INCREMENT DISPLAY_TO_WORLD (RES_SCALE (1))
+#define MIN_THRUST_INCREMENT DISPLAY_TO_WORLD(RES_SCALE(1))
 
 // Aggressive Entry
-#define WARP_OFFSET RES_SCALE (46)
-		/* How far outside of the laser range can the ship warp in. */
-#define MAXX_ENTRY_DIST DISPLAY_TO_WORLD ((LASER_BASE + VUX_OFFSET + WARP_OFFSET) << 1)
-#define MAXY_ENTRY_DIST DISPLAY_TO_WORLD ((LASER_BASE + VUX_OFFSET + WARP_OFFSET) << 1)
-		/* Originally, the warp distance was:
+#define WARP_OFFSET RES_SCALE(46)
+/* How far outside of the laser range can the ship warp in. */
+#define MAXX_ENTRY_DIST DISPLAY_TO_WORLD((LASER_BASE + VUX_OFFSET + WARP_OFFSET) << 1)
+#define MAXY_ENTRY_DIST DISPLAY_TO_WORLD((LASER_BASE + VUX_OFFSET + WARP_OFFSET) << 1)
+/* Originally, the warp distance was:
 		 * DISPLAY_TO_WORLD (SPACE_HEIGHT << 1)
 		 * where SPACE_HEIGHT = SCREEN_HEIGHT
 		 * But in reality this should be relative to the laser-range. */
 
 static RACE_DESC vux_desc =
-{
-	{ /* SHIP_INFO */
-		"intruder",
-		FIRES_FORE | SEEKING_SPECIAL | IMMEDIATE_WEAPON,
-		12, /* Super Melee cost */
-		MAX_CREW, MAX_CREW,
-		MAX_ENERGY, MAX_ENERGY,
-		VUX_RACE_STRINGS,
-		VUX_ICON_MASK_PMAP_ANIM,
-		VUX_MICON_MASK_PMAP_ANIM,
-		NULL, NULL, NULL
-	},
-	{ /* FLEET_STUFF */
-		900 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
-		{ /* Known location (center of SoI) */
-			4412, 1558,
-		},
-	},
 	{
-		MAX_THRUST,
-		THRUST_INCREMENT,
-		ENERGY_REGENERATION,
-		WEAPON_ENERGY_COST,
-		SPECIAL_ENERGY_COST,
-		ENERGY_WAIT,
-		TURN_WAIT,
-		THRUST_WAIT,
-		WEAPON_WAIT,
-		SPECIAL_WAIT,
-		SHIP_MASS,
-	},
-	{
+		{/* SHIP_INFO */
+		 "intruder",
+		 FIRES_FORE | SEEKING_SPECIAL | IMMEDIATE_WEAPON,
+		 12, /* Super Melee cost */
+		 MAX_CREW, MAX_CREW,
+		 MAX_ENERGY, MAX_ENERGY,
+		 VUX_RACE_STRINGS,
+		 VUX_ICON_MASK_PMAP_ANIM,
+		 VUX_MICON_MASK_PMAP_ANIM,
+		 NULL, NULL, NULL},
 		{
-			VUX_BIG_MASK_PMAP_ANIM,
-			VUX_MED_MASK_PMAP_ANIM,
-			VUX_SML_MASK_PMAP_ANIM,
-		},
+			/* FLEET_STUFF */
+			900 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
+			{
+				/* Known location (center of SoI) */
+				4412,
+				1558,
+			},
+		 },
 		{
-			SLIME_MASK_PMAP_ANIM,
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-		},
+			MAX_THRUST,
+			THRUST_INCREMENT,
+			ENERGY_REGENERATION,
+			WEAPON_ENERGY_COST,
+			SPECIAL_ENERGY_COST,
+			ENERGY_WAIT,
+			TURN_WAIT,
+			THRUST_WAIT,
+			WEAPON_WAIT,
+			SPECIAL_WAIT,
+			SHIP_MASS,
+		 },
+		{{
+			 VUX_BIG_MASK_PMAP_ANIM,
+			 VUX_MED_MASK_PMAP_ANIM,
+			 VUX_SML_MASK_PMAP_ANIM,
+		 },
+		 {
+			 SLIME_MASK_PMAP_ANIM,
+			 NULL_RESOURCE,
+			 NULL_RESOURCE,
+		 },
+		 {
+			 LIMPETS_BIG_MASK_PMAP_ANIM,
+			 LIMPETS_MED_MASK_PMAP_ANIM,
+			 LIMPETS_SML_MASK_PMAP_ANIM,
+		 },
+		 {VUX_CAPTAIN_MASK_PMAP_ANIM,
+		  NULL, NULL, NULL, NULL, NULL,
+		  0, 0, 0, 0, 0},
+		 VUX_VICTORY_SONG,
+		 VUX_SHIP_SOUNDS,
+		 {NULL, NULL, NULL},
+		 {NULL, NULL, NULL},
+		 {NULL, NULL, NULL},
+		 NULL,
+		 NULL},
 		{
-			LIMPETS_BIG_MASK_PMAP_ANIM,
-			LIMPETS_MED_MASK_PMAP_ANIM,
-			LIMPETS_SML_MASK_PMAP_ANIM,
-		},
-		{
-			VUX_CAPTAIN_MASK_PMAP_ANIM,
-			NULL, NULL, NULL, NULL, NULL,
-			0, 0, 0, 0, 0
-		},
-		VUX_VICTORY_SONG,
-		VUX_SHIP_SOUNDS,
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		NULL, NULL
-	},
-	{
+			0,
+			CLOSE_RANGE_WEAPON,
+			NULL,
+		 },
+		(UNINIT_FUNC*)NULL,
+		(PREPROCESS_FUNC*)NULL,
+		(POSTPROCESS_FUNC*)NULL,
+		(INIT_WEAPON_FUNC*)NULL,
 		0,
-		CLOSE_RANGE_WEAPON,
-		NULL,
-	},
-	(UNINIT_FUNC *) NULL,
-	(PREPROCESS_FUNC *) NULL,
-	(POSTPROCESS_FUNC *) NULL,
-	(INIT_WEAPON_FUNC *) NULL,
-	0,
-	0, /* CodeRef */
+		0, /* CodeRef */
 };
 
 
 static void
-limpet_preprocess (ELEMENT *ElementPtr)
+limpet_preprocess(ELEMENT* ElementPtr)
 {
 	uqm::COUNT facing, orig_facing;
 	uqm::SIZE delta_facing;
 
-	facing = orig_facing = NORMALIZE_FACING (ANGLE_TO_FACING (
-			GetVelocityTravelAngle (&ElementPtr->velocity)
-			));
-	if ((delta_facing = TrackShip (ElementPtr, &facing)) > 0)
+	facing = orig_facing = NORMALIZE_FACING(ANGLE_TO_FACING(
+		GetVelocityTravelAngle(&ElementPtr->velocity)));
+	if ((delta_facing = TrackShip(ElementPtr, &facing)) > 0)
 	{
 		facing = orig_facing + delta_facing;
-		SetVelocityVector (&ElementPtr->velocity, LIMPET_SPEED, facing);
+		SetVelocityVector(&ElementPtr->velocity, LIMPET_SPEED, facing);
 	}
 	ElementPtr->next.image.frame =
-			 IncFrameIndex (ElementPtr->next.image.frame);
+		IncFrameIndex(ElementPtr->next.image.frame);
 
 	ElementPtr->state_flags |= CHANGING;
 }
 
 static void
-limpet_collision (ELEMENT *ElementPtr0, POINT *pPt0,
-		ELEMENT *ElementPtr1, POINT *pPt1)
+limpet_collision(ELEMENT* ElementPtr0, POINT* pPt0,
+				 ELEMENT* ElementPtr1, POINT* pPt1)
 {
 	if (ElementPtr1->state_flags & PLAYER_SHIP)
 	{
-	STAMP s;
-	STARSHIP *StarShipPtr;
-	RACE_DESC *RDPtr;
+		STAMP s;
+		STARSHIP* StarShipPtr;
+		RACE_DESC* RDPtr;
 
-		GetElementStarShip (ElementPtr1, &StarShipPtr);
+		GetElementStarShip(ElementPtr1, &StarShipPtr);
 		RDPtr = StarShipPtr->RaceDescPtr;
-		if (!(antiCheat (ElementPtr1, false, OPTVAL_INF_HEALTH)
-				|| antiCheat (ElementPtr1, false, OPTVAL_FULL_GOD)))
+		if (!(antiCheat(ElementPtr1, false, OPTVAL_INF_HEALTH)
+			  || antiCheat(ElementPtr1, false, OPTVAL_FULL_GOD)))
 		{
 			if (++RDPtr->characteristics.turn_wait == 0)
 				--RDPtr->characteristics.turn_wait;
@@ -178,35 +176,35 @@ limpet_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 			if (RDPtr->characteristics.thrust_increment <= MIN_THRUST_INCREMENT)
 			{
 				RDPtr->characteristics.max_thrust =
-						RDPtr->characteristics.thrust_increment << 1;
+					RDPtr->characteristics.thrust_increment << 1;
 			}
 			else
 			{
 				uqm::COUNT num_thrusts;
 
-				num_thrusts = RDPtr->characteristics.max_thrust /
-						RDPtr->characteristics.thrust_increment;
-				RDPtr->characteristics.thrust_increment -= RES_SCALE (1);
+				num_thrusts = RDPtr->characteristics.max_thrust / RDPtr->characteristics.thrust_increment;
+				RDPtr->characteristics.thrust_increment -= RES_SCALE(1);
 				RDPtr->characteristics.max_thrust =
-						RDPtr->characteristics.thrust_increment * num_thrusts;
+					RDPtr->characteristics.thrust_increment * num_thrusts;
 			}
 			RDPtr->cyborg_control.ManeuverabilityIndex = 0;
 
-			GetElementStarShip (ElementPtr0, &StarShipPtr);
-			ProcessSound (SetAbsSoundIndex (
-							/* LIMPET_AFFIXES */
-					StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 2), ElementPtr1);
-			s.frame = SetAbsFrameIndex (
-						StarShipPtr->RaceDescPtr->ship_data.weapon[0], (uqm::COUNT)TFB_Random ()
-						);
-			ModifySilhouette (ElementPtr1, &s, MODIFY_IMAGE);
+			GetElementStarShip(ElementPtr0, &StarShipPtr);
+			ProcessSound(SetAbsSoundIndex(
+							 /* LIMPET_AFFIXES */
+							 StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 2),
+						 ElementPtr1);
+			s.frame = SetAbsFrameIndex(
+				StarShipPtr->RaceDescPtr->ship_data.weapon[0], (uqm::COUNT)TFB_Random());
+			ModifySilhouette(ElementPtr1, &s, MODIFY_IMAGE);
 		}
 		else
 		{
-			GetElementStarShip (ElementPtr0, &StarShipPtr);
-			ProcessSound (SetAbsSoundIndex (
-							/* LIMPET_AFFIXES */
-					StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 2), ElementPtr1);
+			GetElementStarShip(ElementPtr0, &StarShipPtr);
+			ProcessSound(SetAbsSoundIndex(
+							 /* LIMPET_AFFIXES */
+							 StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 2),
+						 ElementPtr1);
 		}
 	}
 
@@ -214,18 +212,18 @@ limpet_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 	ElementPtr0->life_span = 0;
 	ElementPtr0->state_flags |= COLLISION | DISAPPEARING;
 
-	(void) pPt0;  /* Satisfying compiler (unused parameter) */
-	(void) pPt1;  /* Satisfying compiler (unused parameter) */
+	(void)pPt0; /* Satisfying compiler (unused parameter) */
+	(void)pPt1; /* Satisfying compiler (unused parameter) */
 }
 
 static void
-spawn_limpets (ELEMENT *ElementPtr)
+spawn_limpets(ELEMENT* ElementPtr)
 {
 	HELEMENT Limpet;
-	STARSHIP *StarShipPtr;
+	STARSHIP* StarShipPtr;
 	MISSILE_BLOCK MissileBlock;
 
-	GetElementStarShip (ElementPtr, &StarShipPtr);
+	GetElementStarShip(ElementPtr, &StarShipPtr);
 	MissileBlock.farray = StarShipPtr->RaceDescPtr->ship_data.special;
 	MissileBlock.face = StarShipPtr->ShipFacing + HALF_CIRCLE;
 	MissileBlock.index = 0;
@@ -241,161 +239,156 @@ spawn_limpets (ELEMENT *ElementPtr)
 
 	MissileBlock.cx = ElementPtr->next.location.x;
 	MissileBlock.cy = ElementPtr->next.location.y;
-	Limpet = initialize_missile (&MissileBlock);
+	Limpet = initialize_missile(&MissileBlock);
 	if (Limpet)
 	{
-		ELEMENT *LimpetPtr;
+		ELEMENT* LimpetPtr;
 
-		LockElement (Limpet, &LimpetPtr);
+		LockElement(Limpet, &LimpetPtr);
 		LimpetPtr->collision_func = limpet_collision;
-		SetElementStarShip (LimpetPtr, StarShipPtr);
-		UnlockElement (Limpet);
+		SetElementStarShip(LimpetPtr, StarShipPtr);
+		UnlockElement(Limpet);
 
-		PutElement (Limpet);
+		PutElement(Limpet);
 	}
 }
 
 static uqm::COUNT
-initialize_horrific_laser (ELEMENT *ShipPtr, HELEMENT LaserArray[])
+initialize_horrific_laser(ELEMENT* ShipPtr, HELEMENT LaserArray[])
 {
-	STARSHIP *StarShipPtr;
+	STARSHIP* StarShipPtr;
 	LASER_BLOCK LaserBlock;
 
-	GetElementStarShip (ShipPtr, &StarShipPtr);
+	GetElementStarShip(ShipPtr, &StarShipPtr);
 	LaserBlock.face = StarShipPtr->ShipFacing;
 	LaserBlock.cx = ShipPtr->next.location.x;
 	LaserBlock.cy = ShipPtr->next.location.y;
-	LaserBlock.ex = COSINE (FACING_TO_ANGLE (LaserBlock.face), LASER_RANGE);
-	LaserBlock.ey = SINE (FACING_TO_ANGLE (LaserBlock.face), LASER_RANGE);
+	LaserBlock.ex = COSINE(FACING_TO_ANGLE(LaserBlock.face), LASER_RANGE);
+	LaserBlock.ey = SINE(FACING_TO_ANGLE(LaserBlock.face), LASER_RANGE);
 	LaserBlock.sender = ShipPtr->playerNr;
 	LaserBlock.flags = IGNORE_SIMILAR;
 	LaserBlock.pixoffs = VUX_OFFSET;
-	LaserBlock.color = BUILD_COLOR (MAKE_RGB15 (0x0A, 0x1F, 0x0A), 0x0A);
-	LaserArray[0] = initialize_laser (&LaserBlock);
+	LaserBlock.color = BUILD_COLOR(MAKE_RGB15(0x0A, 0x1F, 0x0A), 0x0A);
+	LaserArray[0] = initialize_laser(&LaserBlock);
 
 	return (1);
 }
 
 static void
-vux_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
-		uqm::COUNT ConcernCounter)
+vux_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
+				 uqm::COUNT ConcernCounter)
 {
-	EVALUATE_DESC *lpEvalDesc;
-	STARSHIP *StarShipPtr;
+	EVALUATE_DESC* lpEvalDesc;
+	STARSHIP* StarShipPtr;
 
 	lpEvalDesc = &ObjectsOfConcern[ENEMY_SHIP_INDEX];
-	 lpEvalDesc->MoveState = PURSUE;
+	lpEvalDesc->MoveState = PURSUE;
 	if (ObjectsOfConcern[ENEMY_WEAPON_INDEX].ObjectPtr != 0
-			&& ObjectsOfConcern[ENEMY_WEAPON_INDEX].MoveState == ENTICE)
+		&& ObjectsOfConcern[ENEMY_WEAPON_INDEX].MoveState == ENTICE)
 	{
 		if ((ObjectsOfConcern[ENEMY_WEAPON_INDEX].ObjectPtr->state_flags
-				& FINITE_LIFE)
-				&& !(ObjectsOfConcern[ENEMY_WEAPON_INDEX].ObjectPtr->state_flags
-				& CREW_OBJECT))
+			 & FINITE_LIFE)
+			&& !(ObjectsOfConcern[ENEMY_WEAPON_INDEX].ObjectPtr->state_flags
+				 & CREW_OBJECT))
 			ObjectsOfConcern[ENEMY_WEAPON_INDEX].MoveState = AVOID;
 		else
 			ObjectsOfConcern[ENEMY_WEAPON_INDEX].MoveState = PURSUE;
 	}
 
-	ship_intelligence (ShipPtr,
-			ObjectsOfConcern, ConcernCounter);
+	ship_intelligence(ShipPtr,
+					  ObjectsOfConcern, ConcernCounter);
 
-	GetElementStarShip (ShipPtr, &StarShipPtr);
+	GetElementStarShip(ShipPtr, &StarShipPtr);
 	if (StarShipPtr->special_counter == 0
-			&& lpEvalDesc->ObjectPtr != 0
-			&& lpEvalDesc->which_turn <= 12
-			&& (StarShipPtr->ship_input_state & (LEFT | RIGHT))
-			&& StarShipPtr->RaceDescPtr->ship_info.energy_level >=
-			(uqm::BYTE)(StarShipPtr->RaceDescPtr->ship_info.max_energy >> 1))
+		&& lpEvalDesc->ObjectPtr != 0
+		&& lpEvalDesc->which_turn <= 12
+		&& (StarShipPtr->ship_input_state & (LEFT | RIGHT))
+		&& StarShipPtr->RaceDescPtr->ship_info.energy_level >= (uqm::BYTE)(StarShipPtr->RaceDescPtr->ship_info.max_energy >> 1))
 		StarShipPtr->ship_input_state |= SPECIAL;
 	else
 		StarShipPtr->ship_input_state &= ~SPECIAL;
 }
 
 static void
-vux_postprocess (ELEMENT *ElementPtr)
+vux_postprocess(ELEMENT* ElementPtr)
 {
-	STARSHIP *StarShipPtr;
+	STARSHIP* StarShipPtr;
 
-	GetElementStarShip (ElementPtr, &StarShipPtr);
+	GetElementStarShip(ElementPtr, &StarShipPtr);
 	if ((StarShipPtr->cur_status_flags & SPECIAL)
-			&& StarShipPtr->special_counter == 0
-			&& DeltaEnergy (ElementPtr, -SPECIAL_ENERGY_COST))
+		&& StarShipPtr->special_counter == 0
+		&& DeltaEnergy(ElementPtr, -SPECIAL_ENERGY_COST))
 	{
-		ProcessSound (SetAbsSoundIndex (
-						/* LAUNCH_LIMPET */
-				StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 1), ElementPtr);
-		spawn_limpets (ElementPtr);
+		ProcessSound(SetAbsSoundIndex(
+						 /* LAUNCH_LIMPET */
+						 StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 1),
+					 ElementPtr);
+		spawn_limpets(ElementPtr);
 
 		StarShipPtr->special_counter =
-				StarShipPtr->RaceDescPtr->characteristics.special_wait;
+			StarShipPtr->RaceDescPtr->characteristics.special_wait;
 	}
 }
 
 static void
-vux_preprocess (ELEMENT *ElementPtr)
+vux_preprocess(ELEMENT* ElementPtr)
 {
 	if (ElementPtr->state_flags & APPEARING)
 	{
 		uqm::COUNT facing;
-		STARSHIP *StarShipPtr;
+		STARSHIP* StarShipPtr;
 
-		GetElementStarShip (ElementPtr, &StarShipPtr);
+		GetElementStarShip(ElementPtr, &StarShipPtr);
 		facing = StarShipPtr->ShipFacing;
-		if ((lowByte (GLOBAL (CurrentActivity)) != IN_ENCOUNTER
-				|| DIF_HARD)
-				&& TrackShip (ElementPtr, &facing) >= 0)
+		if ((lowByte(GLOBAL(CurrentActivity)) != IN_ENCOUNTER
+			 || DIF_HARD)
+			&& TrackShip(ElementPtr, &facing) >= 0)
 		{
-			ELEMENT *OtherShipPtr;
+			ELEMENT* OtherShipPtr;
 			uqm::SIZE SA_MATRA_EXTRA_DIST = 0;
-			LockElement (ElementPtr->hTarget, &OtherShipPtr);
+			LockElement(ElementPtr->hTarget, &OtherShipPtr);
 
-			// JMS: Not REALLY necessary as VUX can ordinarily never be played against Sa-Matra. 
-            // But handy in debugging as a single VUX limpet incapacitates Sa-Matra completely.
-            if (lowByte (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE)
-				SA_MATRA_EXTRA_DIST += RES_SCALE (1000);
+			// JMS: Not REALLY necessary as VUX can ordinarily never be played against Sa-Matra.
+			// But handy in debugging as a single VUX limpet incapacitates Sa-Matra completely.
+			if (lowByte(GLOBAL(CurrentActivity)) == IN_LAST_BATTLE)
+				SA_MATRA_EXTRA_DIST += RES_SCALE(1000);
 
-			do 
+			do
 			{
 				// JMS_GFX: Circumventing overflows by using temp variables
-                // instead of subtracting straight from the POINT sized
-                // ShipImagePtr->current.location.
+				// instead of subtracting straight from the POINT sized
+				// ShipImagePtr->current.location.
 				uqm::SDWORD dx, dy;
 				uqm::SDWORD temp_x =
-						((uqm::SDWORD)OtherShipPtr->current.location.x -
-						(MAXX_ENTRY_DIST >> 1)) +
-						((uqm::COUNT)TFB_Random () % MAXX_ENTRY_DIST);
+					((uqm::SDWORD)OtherShipPtr->current.location.x - (MAXX_ENTRY_DIST >> 1)) + ((uqm::COUNT)TFB_Random() % MAXX_ENTRY_DIST);
 				uqm::SDWORD temp_y =
-						((uqm::SDWORD)OtherShipPtr->current.location.y -
-						(MAXY_ENTRY_DIST >> 1)) +
-						((uqm::COUNT)TFB_Random () % MAXY_ENTRY_DIST);
-                
-                temp_x += temp_x > 0 ? SA_MATRA_EXTRA_DIST : -SA_MATRA_EXTRA_DIST;
-                temp_y += temp_y > 0 ? SA_MATRA_EXTRA_DIST : -SA_MATRA_EXTRA_DIST;
-                
+					((uqm::SDWORD)OtherShipPtr->current.location.y - (MAXY_ENTRY_DIST >> 1)) + ((uqm::COUNT)TFB_Random() % MAXY_ENTRY_DIST);
+
+				temp_x += temp_x > 0 ? SA_MATRA_EXTRA_DIST : -SA_MATRA_EXTRA_DIST;
+				temp_y += temp_y > 0 ? SA_MATRA_EXTRA_DIST : -SA_MATRA_EXTRA_DIST;
+
 				dx = OtherShipPtr->current.location.x - temp_x;
 				dy = OtherShipPtr->current.location.y - temp_y;
-				facing = NORMALIZE_FACING (
-						ANGLE_TO_FACING (ARCTAN (dx, dy))
-						);
+				facing = NORMALIZE_FACING(
+					ANGLE_TO_FACING(ARCTAN(dx, dy)));
 				ElementPtr->current.image.frame =
-						SetAbsFrameIndex (ElementPtr->current.image.frame,
-						facing);
+					SetAbsFrameIndex(ElementPtr->current.image.frame,
+									 facing);
 
 				ElementPtr->current.location.x =
-						WRAP_X (DISPLAY_ALIGN (temp_x));
+					WRAP_X(DISPLAY_ALIGN(temp_x));
 				ElementPtr->current.location.y =
-						WRAP_Y (DISPLAY_ALIGN (temp_y));
-			} while (CalculateGravity (ElementPtr)
-					|| TimeSpaceMatterConflict (ElementPtr));
+					WRAP_Y(DISPLAY_ALIGN(temp_y));
+			} while (CalculateGravity(ElementPtr)
+					 || TimeSpaceMatterConflict(ElementPtr));
 
-			UnlockElement (ElementPtr->hTarget);
+			UnlockElement(ElementPtr->hTarget);
 			ElementPtr->hTarget = 0;
 
 			ElementPtr->next = ElementPtr->current;
-			InitIntersectStartPoint (ElementPtr);
-			InitIntersectEndPoint (ElementPtr);
-			InitIntersectFrame (ElementPtr);
+			InitIntersectStartPoint(ElementPtr);
+			InitIntersectEndPoint(ElementPtr);
+			InitIntersectFrame(ElementPtr);
 
 			StarShipPtr->ShipFacing = facing;
 		}
@@ -405,14 +398,14 @@ vux_preprocess (ELEMENT *ElementPtr)
 }
 
 RACE_DESC*
-init_vux (void)
+init_vux(void)
 {
-	RACE_DESC *RaceDescPtr;
+	RACE_DESC* RaceDescPtr;
 
 	if (IS_HD)
 	{
-		vux_desc.characteristics.max_thrust = RES_SCALE (MAX_THRUST);
-		vux_desc.characteristics.thrust_increment = RES_SCALE (THRUST_INCREMENT);
+		vux_desc.characteristics.max_thrust = RES_SCALE(MAX_THRUST);
+		vux_desc.characteristics.thrust_increment = RES_SCALE(THRUST_INCREMENT);
 		vux_desc.cyborg_control.WeaponRange = CLOSE_RANGE_WEAPON_HD;
 	}
 	else
@@ -431,4 +424,3 @@ init_vux (void)
 
 	return (RaceDescPtr);
 }
-

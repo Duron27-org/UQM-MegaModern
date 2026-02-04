@@ -21,12 +21,12 @@
 
 /* Function types for the pixel functions */
 
-typedef Uint32 (*GetPixelFn)(SDL_Surface *, int x, int y);
+typedef Uint32 (*GetPixelFn)(SDL_Surface*, int x, int y);
 // 'pixel' is in destination surface format
-typedef void (*PutPixelFn)(SDL_Surface *, int x, int y, Uint32 pixel);
+typedef void (*PutPixelFn)(SDL_Surface*, int x, int y, Uint32 pixel);
 
-GetPixelFn getpixel_for(SDL_Surface *surface);
-PutPixelFn putpixel_for(SDL_Surface *surface);
+GetPixelFn getpixel_for(SDL_Surface* surface);
+PutPixelFn putpixel_for(SDL_Surface* surface);
 
 // This currently matches gfxlib.h:DrawKind for simplicity
 typedef enum
@@ -43,35 +43,35 @@ typedef enum
 	renderDesatur,
 } RenderKind;
 
-#define FULLY_OPAQUE_ALPHA  255
-#define ADDITIVE_FACTOR_1   255
+#define FULLY_OPAQUE_ALPHA 255
+#define ADDITIVE_FACTOR_1 255
 
 // 'pixel' is in destination surface format
 // See gfxlib.h:DrawKind for 'factor' spec
-typedef void (*RenderPixelFn)(SDL_Surface *, int x, int y, Uint32 pixel,
-		int factor);
+typedef void (*RenderPixelFn)(SDL_Surface*, int x, int y, Uint32 pixel,
+							  int factor);
 
-RenderPixelFn renderpixel_for(SDL_Surface *surface, RenderKind kind, bool forMask);
+RenderPixelFn renderpixel_for(SDL_Surface* surface, RenderKind kind, bool forMask);
 
 void line_prim(int x1, int y1, int x2, int y2, Uint32 color,
-		RenderPixelFn plot, int factor, SDL_Surface *dst);
+			   RenderPixelFn plot, int factor, SDL_Surface* dst);
 void line_aa_prim(int x1, int y1, int x2, int y2, Uint32 color,
-		RenderPixelFn plot,	int factor, SDL_Surface* dst,
-		uqm::BYTE thickness);
+				  RenderPixelFn plot, int factor, SDL_Surface* dst,
+				  uqm::BYTE thickness);
 void fillrect_prim(SDL_Rect r, Uint32 color,
-		RenderPixelFn plot, int factor, SDL_Surface *dst);
-void blt_prim(SDL_Surface *src, SDL_Rect src_r,
-		RenderPixelFn plot, int factor,
-		SDL_Surface *dst, SDL_Rect dst_r);
-void blt_filtered_prim(SDL_Surface *layer, RenderPixelFn plot, int factor,
-		SDL_Surface *base, Color *fill);
-void blt_filtered_fill(SDL_Surface *base, RenderPixelFn plot, int factor,
-		Color *fill);
-void blt_filtered_pal(SDL_Surface *layer, SDL_Surface *base, Color *fill);
+				   RenderPixelFn plot, int factor, SDL_Surface* dst);
+void blt_prim(SDL_Surface* src, SDL_Rect src_r,
+			  RenderPixelFn plot, int factor,
+			  SDL_Surface* dst, SDL_Rect dst_r);
+void blt_filtered_prim(SDL_Surface* layer, RenderPixelFn plot, int factor,
+					   SDL_Surface* base, Color* fill);
+void blt_filtered_fill(SDL_Surface* base, RenderPixelFn plot, int factor,
+					   Color* fill);
+void blt_filtered_pal(SDL_Surface* layer, SDL_Surface* base, Color* fill);
 
-int clip_line(int *lx1, int *ly1, int *lx2, int *ly2, const SDL_Rect *clip_r);
-int clip_rect(SDL_Rect *r, const SDL_Rect *clip_r);
-int clip_blt_rects(SDL_Rect *src_r, SDL_Rect *dst_r, const SDL_Rect *clip_r);
+int clip_line(int* lx1, int* ly1, int* lx2, int* ly2, const SDL_Rect* clip_r);
+int clip_rect(SDL_Rect* r, const SDL_Rect* clip_r);
+int clip_blt_rects(SDL_Rect* src_r, SDL_Rect* dst_r, const SDL_Rect* clip_r);
 
 
 #endif /* PRIMITIVES_H */

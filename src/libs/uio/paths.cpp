@@ -27,19 +27,20 @@
 #include "uioport.h"
 #include "mem.h"
 
-static inline uio_PathComp *uio_PathComp_alloc(void);
-static inline void uio_PathComp_free(uio_PathComp *pathComp);
+static inline uio_PathComp* uio_PathComp_alloc(void);
+static inline void uio_PathComp_free(uio_PathComp* pathComp);
 
 // gets the first dir component of a path
 // sets '*start' to the start of the first component
 // sets '*end' to the end of the first component
 // if *start >= dirEnd, then the end has been reached.
-void
-getFirstPathComponent(const char *dir, const char *dirEnd,
-		const char **startComp, const char **endComp) {
+void getFirstPathComponent(const char* dir, const char* dirEnd,
+						   const char** startComp, const char** endComp)
+{
 	assert(dir <= dirEnd);
 	*startComp = dir;
-	if (*startComp == dirEnd) {
+	if (*startComp == dirEnd)
+	{
 		*endComp = *startComp;
 		return;
 	}
@@ -52,11 +53,12 @@ getFirstPathComponent(const char *dir, const char *dirEnd,
 // sets '*start' to the start of the first component
 // sets '*end' to the end of the first component
 // if **start == '\0', then the end has been reached.
-void
-getFirstPath0Component(const char *dir,
-		const char **startComp, const char **endComp) {
+void getFirstPath0Component(const char* dir,
+							const char** startComp, const char** endComp)
+{
 	*startComp = dir;
-	if (**startComp == '\0') {
+	if (**startComp == '\0')
+	{
 		*endComp = *startComp;
 		return;
 	}
@@ -71,11 +73,12 @@ getFirstPath0Component(const char *dir,
 // '*start' will be set to the start of the next component
 // '*end' will be set to the end of the next component
 // if *start >= dirEnd, then the end has been reached.
-void
-getNextPathComponent(const char *dirEnd,
-		const char **startComp, const char **endComp) {
+void getNextPathComponent(const char* dirEnd,
+						  const char** startComp, const char** endComp)
+{
 	assert(*endComp <= dirEnd);
-	if (*endComp == dirEnd) {
+	if (*endComp == dirEnd)
+	{
 		*startComp = *endComp;
 		return;
 	}
@@ -92,9 +95,10 @@ getNextPathComponent(const char *dirEnd,
 // '*start' will be set to the start of the next component
 // '*end' will be set to the end of the next component
 // if **start == '\0', then the end has been reached.
-void
-getNextPath0Component(const char **startComp, const char **endComp) {
-	if (**endComp == '\0') {
+void getNextPath0Component(const char** startComp, const char** endComp)
+{
+	if (**endComp == '\0')
+	{
 		*startComp = *endComp;
 		return;
 	}
@@ -106,12 +110,12 @@ getNextPath0Component(const char **startComp, const char **endComp) {
 }
 
 // if *end == dir, the beginning has been reached
-void
-getLastPathComponent(const char *dir, const char *endDir,
-		const char **startComp, const char **endComp) {
+void getLastPathComponent(const char* dir, const char* endDir,
+						  const char** startComp, const char** endComp)
+{
 	*endComp = endDir;
-//	if (*(*endComp - 1) == '/')
-//		(*endComp)--;
+	//	if (*(*endComp - 1) == '/')
+	//		(*endComp)--;
 	*startComp = *endComp;
 	// TODO: use memrchr where available
 	while ((*startComp) - 1 >= dir && *(*startComp - 1) != '/')
@@ -120,12 +124,12 @@ getLastPathComponent(const char *dir, const char *endDir,
 
 // if *end == dir, the beginning has been reached
 // pre: dir is \0-terminated
-void
-getLastPath0Component(const char *dir,
-		const char **startComp, const char **endComp) {
+void getLastPath0Component(const char* dir,
+						   const char** startComp, const char** endComp)
+{
 	*endComp = dir + strlen(dir);
-//	if (*(*endComp - 1) == '/')
-//		(*endComp)--;
+	//	if (*(*endComp - 1) == '/')
+	//		(*endComp)--;
 	*startComp = *endComp;
 	// TODO: use memrchr where available
 	while ((*startComp) - 1 >= dir && *(*startComp - 1) != '/')
@@ -133,10 +137,11 @@ getLastPath0Component(const char *dir,
 }
 
 // if *end == dir, the beginning has been reached
-void
-getPreviousPathComponent(const char *dir,
-		const char **startComp, const char **endComp) {
-	if (*startComp == dir) {
+void getPreviousPathComponent(const char* dir,
+							  const char** startComp, const char** endComp)
+{
+	if (*startComp == dir)
+	{
 		*endComp = *startComp;
 		return;
 	}
@@ -150,14 +155,14 @@ getPreviousPathComponent(const char *dir,
 // The new path starts with a '/' only when the first part does.
 // The first path may (but doesn't have to) end on a '/', or may be empty.
 // Pre: the second path doesn't start with a '/'
-char *
-joinPaths(const char *first, const char *second) {
+char* joinPaths(const char* first, const char* second)
+{
 	char *result, *resPtr;
 	size_t firstLen, secondLen;
 
 	if (first[0] == '\0')
 		return uio_strdup(second);
-	
+
 	firstLen = strlen(first);
 	if (first[firstLen - 1] == '/')
 		firstLen--;
@@ -182,12 +187,13 @@ joinPaths(const char *first, const char *second) {
 // The new path will always start with a '/'.
 // The first path may (but doesn't have to) end on a '/', or may be empty.
 // Pre: the second path doesn't start with a '/'
-char *
-joinPathsAbsolute(const char *first, const char *second) {
+char* joinPathsAbsolute(const char* first, const char* second)
+{
 	char *result, *resPtr;
 	size_t firstLen, secondLen;
 
-	if (first[0] == '\0') {
+	if (first[0] == '\0')
+	{
 		secondLen = strlen(second);
 		result = (char*)uio_malloc(secondLen + 2);
 		result[0] = '/';
@@ -225,15 +231,16 @@ joinPathsAbsolute(const char *first, const char *second) {
 // - one of the path components is ".."
 // and 'true' otherwise.
 uio_bool
-validPathName(const char *path, size_t len) {
-	const char *pathEnd;
+validPathName(const char* path, size_t len)
+{
+	const char* pathEnd;
 	const char *start, *end;
 
 	pathEnd = path + len;
 	getFirstPathComponent(path, pathEnd, &start, &end);
-	while (start < pathEnd) {
-		if (end == start || (end - start == 1 && start[0] == '.') ||
-				(end - start == 2 && start[0] == '.' && start[1] == '.'))
+	while (start < pathEnd)
+	{
+		if (end == start || (end - start == 1 && start[0] == '.') || (end - start == 2 && start[0] == '.' && start[1] == '.'))
 			return false;
 		getNextPathComponent(pathEnd, &start, &end);
 	}
@@ -243,18 +250,20 @@ validPathName(const char *path, size_t len) {
 // returns 0 if the path is not a valid UNC path.
 // Does not skip trailing slashes.
 size_t
-uio_skipUNCServerShare(const char *inPath) {
-	const char *path = inPath;
+uio_skipUNCServerShare(const char* inPath)
+{
+	const char* path = inPath;
 
 	// Skip the initial two backslashes.
 	if (path[0] != '\\' || path[1] != '\\')
-		return (size_t) 0;
+		return (size_t)0;
 	path += 2;
 
 	// Skip the server part.
-	while (*path != '\\' && *path != '/') {
+	while (*path != '\\' && *path != '/')
+	{
 		if (*path == '\0')
-			return (size_t) 0;
+			return (size_t)0;
 		path++;
 	}
 
@@ -264,8 +273,8 @@ uio_skipUNCServerShare(const char *inPath) {
 	// Skip the share part.
 	while (*path != '\0' && *path != '\\' && *path != '/')
 		path++;
-	
-	return (size_t) (path - inPath);
+
+	return (size_t)(path - inPath);
 }
 
 /**
@@ -288,14 +297,15 @@ uio_skipUNCServerShare(const char *inPath) {
  * 		was not a valid UNC path.
  */
 size_t
-uio_getUNCServerShare(const char *inPath, char **outPath, size_t *outLen) {
-	const char *ptr;
-	const char *server;
-	const char *serverEnd;
-	const char *share;
-	const char *shareEnd;
-	char *name;
-	char *nameEnd;
+uio_getUNCServerShare(const char* inPath, char** outPath, size_t* outLen)
+{
+	const char* ptr;
+	const char* server;
+	const char* serverEnd;
+	const char* share;
+	const char* shareEnd;
+	char* name;
+	char* nameEnd;
 	size_t nameLen;
 
 	ptr = inPath;
@@ -306,7 +316,8 @@ uio_getUNCServerShare(const char *inPath, char **outPath, size_t *outLen) {
 	// Parse the server part.
 	server = ptr + 2;
 	serverEnd = server;
-	for (;;) {
+	for (;;)
+	{
 		if (*serverEnd == '\0')
 			goto noMatch;
 		if (isPathDelimiter(*serverEnd))
@@ -319,7 +330,8 @@ uio_getUNCServerShare(const char *inPath, char **outPath, size_t *outLen) {
 	// Parse the share part.
 	share = serverEnd + 1;
 	shareEnd = share;
-	while (*shareEnd != '\0') {
+	while (*shareEnd != '\0')
+	{
 		if (isPathDelimiter(*shareEnd))
 			break;
 		serverEnd++;
@@ -344,13 +356,13 @@ uio_getUNCServerShare(const char *inPath, char **outPath, size_t *outLen) {
 	*outPath = name;
 	if (outLen != NULL)
 		*outLen = nameLen;
-	return (size_t) (ptr - inPath);
+	return (size_t)(ptr - inPath);
 
 noMatch:
 	*outPath = NULL;
 	if (outLen != NULL)
 		*outLen = 0;
-	return (size_t) 0;
+	return (size_t)0;
 }
 
 // Decomposes a path into its components.
@@ -359,19 +371,20 @@ noMatch:
 // As POSIX considers multiple consecutive slashes to be equivalent to
 // a single slash, so will uio (but not in the "\\MACHINE\share" part
 // of a Windows UNC path).
-int
-decomposePath(const char *path, uio_PathComp **pathComp,
-		uio_bool *isAbsolute) {
-	uio_PathComp *result;
-	uio_PathComp *last;
-	uio_PathComp **endResult = &result;
+int decomposePath(const char* path, uio_PathComp** pathComp,
+				  uio_bool* isAbsolute)
+{
+	uio_PathComp* result;
+	uio_PathComp* last;
+	uio_PathComp** endResult = &result;
 	uio_bool absolute = false;
-	char *name;
+	char* name;
 #ifdef HAVE_UNC_PATHS
 	size_t nameLen;
-#endif  /* HAVE_UNC_PATHS */
+#endif /* HAVE_UNC_PATHS */
 
-	if (path[0] == '\0') {
+	if (path[0] == '\0')
+	{
 		errno = ENOENT;
 		return -1;
 	}
@@ -379,19 +392,23 @@ decomposePath(const char *path, uio_PathComp **pathComp,
 	last = NULL;
 #ifdef HAVE_UNC_PATHS
 	path += uio_getUNCServerShare(path, &name, &nameLen);
-	if (name != NULL) {
+	if (name != NULL)
+	{
 		// UNC path
 		*endResult = uio_PathComp_new(name, nameLen, last);
 		last = *endResult;
 		endResult = &last->next;
 
 		absolute = true;
-	} else
-#endif  /* HAVE_UNC_PATHS */
+	}
+	else
+#endif /* HAVE_UNC_PATHS */
 #ifdef HAVE_DRIVE_LETTERS
-	if (isDriveLetter(path[0]) && path[1] == ':') {
+		if (isDriveLetter(path[0]) && path[1] == ':')
+	{
 		// DOS/Windows drive letter.
-		if (path[2] != '\0' && !isPathDelimiter(path[2])) {
+		if (path[2] != '\0' && !isPathDelimiter(path[2]))
+		{
 			errno = ENOENT;
 			return -1;
 		}
@@ -400,22 +417,26 @@ decomposePath(const char *path, uio_PathComp **pathComp,
 		last = *endResult;
 		endResult = &last->next;
 		absolute = true;
-	} else
-#endif  /* HAVE_DRIVE_LETTERS */
+	}
+	else
+#endif /* HAVE_DRIVE_LETTERS */
 	{
-		if (isPathDelimiter(*path)) {
+		if (isPathDelimiter(*path))
+		{
 			absolute = true;
-			do {
+			do
+			{
 				path++;
 			} while (isPathDelimiter(*path));
 		}
 	}
 
-	while (*path != '\0') {
-		const char *start = path;
+	while (*path != '\0')
+	{
+		const char* start = path;
 		while (*path != '\0' && !isPathDelimiter(*path))
 			path++;
-		
+
 		name = uio_memdup0(path, path - start);
 		*endResult = uio_PathComp_new(name, path - start, last);
 		last = *endResult;
@@ -433,13 +454,13 @@ decomposePath(const char *path, uio_PathComp **pathComp,
 }
 
 // Pre: pathComp forms a valid path for the platform.
-void
-composePath(const uio_PathComp *pathComp, uio_bool absolute,
-		char **path, size_t *pathLen) {
+void composePath(const uio_PathComp* pathComp, uio_bool absolute,
+				 char** path, size_t* pathLen)
+{
 	size_t len;
-	const uio_PathComp *ptr;
-	char *result;
-	char *pathPtr;
+	const uio_PathComp* ptr;
+	char* result;
+	char* pathPtr;
 
 	assert(pathComp != NULL);
 
@@ -448,45 +469,51 @@ composePath(const uio_PathComp *pathComp, uio_bool absolute,
 	if (absolute)
 		len++;
 	ptr = pathComp;
-	while (ptr != NULL) {
+	while (ptr != NULL)
+	{
 		len += ptr->nameLen;
 		ptr = ptr->next;
 	}
 
 	// Allocate the required space.
-	result = (char *) uio_malloc(len + 1);
+	result = (char*)uio_malloc(len + 1);
 
 	// Fill the path.
 	pathPtr = result;
 	ptr = pathComp;
-	if (absolute) {
+	if (absolute)
+	{
 #ifdef HAVE_UNC_PATHS
-		if (ptr->name[0] == '\\') {
+		if (ptr->name[0] == '\\')
+		{
 			// UNC path
 			assert(ptr->name[1] == '\\');
 			// Nothing to do.
-		} else
-#endif  /* HAVE_UNC_PATHS */
+		}
+		else
+#endif /* HAVE_UNC_PATHS */
 #ifdef HAVE_DRIVE_LETTERS
-		if (ptr->nameLen == 2 && ptr->name[1] == ':'
-				&& isDriveLetter(ptr->name[0])) {
+			if (ptr->nameLen == 2 && ptr->name[1] == ':'
+				&& isDriveLetter(ptr->name[0]))
+		{
 			// Nothing to do.
 		}
 		else
-#endif  /* HAVE_DRIVE_LETTERS */
+#endif /* HAVE_DRIVE_LETTERS */
 		{
 			*(pathPtr++) = '/';
 		}
 	}
 
-	for (;;) {
+	for (;;)
+	{
 		memcpy(pathPtr, ptr->name, ptr->nameLen);
 		pathPtr += ptr->nameLen;
 
 		ptr = ptr->next;
 		if (ptr == NULL)
 			break;
-		
+
 		*(pathPtr++) = '/';
 	}
 
@@ -497,19 +524,21 @@ composePath(const uio_PathComp *pathComp, uio_bool absolute,
 
 // *** uio_PathComp *** //
 
-static inline uio_PathComp *
-uio_PathComp_alloc(void) {
-	uio_PathComp *result = (uio_PathComp*)uio_malloc(sizeof (uio_PathComp));
+static inline uio_PathComp*
+uio_PathComp_alloc(void)
+{
+	uio_PathComp* result = (uio_PathComp*)uio_malloc(sizeof(uio_PathComp));
 #ifdef uio_MEM_DEBUG
-	uio_MemDebug_debugAlloc(uio_PathComp, (void *) result);
+	uio_MemDebug_debugAlloc(uio_PathComp, (void*)result);
 #endif
 	return result;
 }
 
 static inline void
-uio_PathComp_free(uio_PathComp *pathComp) {
+uio_PathComp_free(uio_PathComp* pathComp)
+{
 #ifdef uio_MEM_DEBUG
-	uio_MemDebug_debugFree(uio_PathComp, (void *) pathComp);
+	uio_MemDebug_debugFree(uio_PathComp, (void*)pathComp);
 #endif
 	uio_free(pathComp);
 }
@@ -517,10 +546,11 @@ uio_PathComp_free(uio_PathComp *pathComp) {
 // 'name' should be a null terminated string. It is stored in the PathComp,
 // no copy is made.
 // 'namelen' should be the length of 'name'
-uio_PathComp *
-uio_PathComp_new(char *name, size_t nameLen, uio_PathComp *upComp) {
-	uio_PathComp *result;
-	
+uio_PathComp*
+uio_PathComp_new(char* name, size_t nameLen, uio_PathComp* upComp)
+{
+	uio_PathComp* result;
+
 	result = uio_PathComp_alloc();
 	result->name = name;
 	result->nameLen = nameLen;
@@ -528,11 +558,12 @@ uio_PathComp_new(char *name, size_t nameLen, uio_PathComp *upComp) {
 	return result;
 }
 
-void
-uio_PathComp_delete(uio_PathComp *pathComp) {
-	uio_PathComp *next;
+void uio_PathComp_delete(uio_PathComp* pathComp)
+{
+	uio_PathComp* next;
 
-	while (pathComp != NULL) {
+	while (pathComp != NULL)
+	{
 		next = pathComp->next;
 		uio_free(pathComp->name);
 		uio_PathComp_free(pathComp);
@@ -541,18 +572,19 @@ uio_PathComp_delete(uio_PathComp *pathComp) {
 }
 
 // Count the number of path components that 'comp' leads to.
-int
-uio_countPathComps(const uio_PathComp *comp) {
+int uio_countPathComps(const uio_PathComp* comp)
+{
 	int count;
-	
+
 	count = 0;
 	for (; comp != NULL; comp = comp->next)
 		count++;
 	return count;
 }
 
-uio_PathComp *
-uio_lastPathComp(uio_PathComp *comp) {
+uio_PathComp*
+uio_lastPathComp(uio_PathComp* comp)
+{
 	if (comp == NULL)
 		return NULL;
 
@@ -562,20 +594,22 @@ uio_lastPathComp(uio_PathComp *comp) {
 }
 
 // make a list of uio_PathComps from a path string
-uio_PathComp *
-uio_makePathComps(const char *path, uio_PathComp *upComp) {
+uio_PathComp*
+uio_makePathComps(const char* path, uio_PathComp* upComp)
+{
 	const char *start, *end;
-	char *str;
-	uio_PathComp *result;
-	uio_PathComp **compPtr;  // Where to put the next PathComp
-	
+	char* str;
+	uio_PathComp* result;
+	uio_PathComp** compPtr; // Where to put the next PathComp
+
 	compPtr = &result;
 	getFirstPath0Component(path, &start, &end);
-	while (*start != '\0') {
+	while (*start != '\0')
+	{
 		str = (char*)uio_malloc(end - start + 1);
 		memcpy(str, start, end - start);
 		str[end - start] = '\0';
-		
+
 		*compPtr = uio_PathComp_new(str, end - start, upComp);
 		upComp = *compPtr;
 		compPtr = &(*compPtr)->next;
@@ -585,18 +619,16 @@ uio_makePathComps(const char *path, uio_PathComp *upComp) {
 	return result;
 }
 
-void
-uio_printPathComp(FILE *outStream, const uio_PathComp *comp) {
+void uio_printPathComp(FILE* outStream, const uio_PathComp* comp)
+{
 	fprintf(outStream, "%s", comp->name);
 }
 
-void
-uio_printPathToComp(FILE *outStream, const uio_PathComp *comp) {
+void uio_printPathToComp(FILE* outStream, const uio_PathComp* comp)
+{
 	if (comp == NULL)
 		return;
 	uio_printPathToComp(outStream, comp->up);
 	fprintf(outStream, "/");
 	uio_printPathComp(outStream, comp);
 }
-
-

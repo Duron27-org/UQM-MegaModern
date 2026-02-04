@@ -21,11 +21,10 @@
 extern "C" {
 #endif
 
-RACE_DESC *init_utwig (void);
+RACE_DESC* init_utwig(void);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* UTWIG_H */
-
+#endif /* UTWIG_H */

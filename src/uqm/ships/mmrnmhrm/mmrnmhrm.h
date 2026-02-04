@@ -21,11 +21,10 @@
 extern "C" {
 #endif
 
-RACE_DESC *init_mmrnmhrm (void);
+RACE_DESC* init_mmrnmhrm(void);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* MMRNMHRM_H */
-
+#endif /* MMRNMHRM_H */

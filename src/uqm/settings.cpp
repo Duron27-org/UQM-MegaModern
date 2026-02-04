@@ -27,21 +27,19 @@ static MUSIC_REF LastMusicRef;
 static bool LastContinuous;
 static uqm::BYTE LastPriority;
 
-void
-ToggleMusic (void)
+void ToggleMusic(void)
 {
-	GLOBAL (glob_flags) ^= MUSIC_DISABLED;
+	GLOBAL(glob_flags) ^= MUSIC_DISABLED;
 	if (LastPriority <= 1)
 	{
-		if (GLOBAL (glob_flags) & MUSIC_DISABLED)
-			PLRStop (LastMusicRef);
+		if (GLOBAL(glob_flags) & MUSIC_DISABLED)
+			PLRStop(LastMusicRef);
 		else if (LastMusicRef)
-			PLRPlaySong (LastMusicRef, LastContinuous, LastPriority);
+			PLRPlaySong(LastMusicRef, LastContinuous, LastPriority);
 	}
 }
 
-void
-PlayMusic (MUSIC_REF MusicRef, bool Continuous, uqm::BYTE Priority)
+void PlayMusic(MUSIC_REF MusicRef, bool Continuous, uqm::BYTE Priority)
 {
 	LastMusicRef = MusicRef;
 	LastContinuous = Continuous;
@@ -52,76 +50,67 @@ PlayMusic (MUSIC_REF MusicRef, bool Continuous, uqm::BYTE Priority)
 		Priority > 1
 		||
 #endif /* NEVER */
-		!(GLOBAL (glob_flags) & MUSIC_DISABLED)
-		)
+		!(GLOBAL(glob_flags) & MUSIC_DISABLED))
 	{
-		PLRPlaySong (MusicRef, Continuous, Priority);
+		PLRPlaySong(MusicRef, Continuous, Priority);
 	}
 }
 
-void
-SeekMusic (uqm::DWORD pos)
+void SeekMusic(uqm::DWORD pos)
 {
-	PLRSeek (LastMusicRef, pos);
+	PLRSeek(LastMusicRef, pos);
 }
 
-void
-StopMusic (void)
+void StopMusic(void)
 {
-	PLRStop (LastMusicRef);
+	PLRStop(LastMusicRef);
 	LastMusicRef = 0;
 }
 
-void
-ResumeMusic (void)
+void ResumeMusic(void)
 {
-	PLRResume (LastMusicRef);
+	PLRResume(LastMusicRef);
 }
 
-void
-PauseMusic (void)
+void PauseMusic(void)
 {
-	PLRPause (LastMusicRef);
+	PLRPause(LastMusicRef);
 }
 
-void
-PlayMusicResume (MUSIC_REF MusicRef, uqm::BYTE Volume)
+void PlayMusicResume(MUSIC_REF MusicRef, uqm::BYTE Volume)
 {
-	SetMusicVolume (MUTE_VOLUME);
-	PlayMusic (MusicRef, true, 1);
+	SetMusicVolume(MUTE_VOLUME);
+	PlayMusic(MusicRef, true, 1);
 
-	if (OkayToResume ())
+	if (OkayToResume())
 	{
-		SeekMusic (GetMusicPosition ());
-		FadeMusic (Volume, ONE_SECOND * 2);
+		SeekMusic(GetMusicPosition());
+		FadeMusic(Volume, ONE_SECOND * 2);
 	}
 	else
-		SetMusicVolume (Volume);
+		SetMusicVolume(Volume);
 }
 
-void
-ToggleSoundEffect (void)
+void ToggleSoundEffect(void)
 {
-	GLOBAL (glob_flags) ^= SOUND_DISABLED;
+	GLOBAL(glob_flags) ^= SOUND_DISABLED;
 }
 
-void
-PlaySoundEffect (SOUND S, uqm::COUNT Channel, SoundPosition Pos,
-		void *PositionalObject, uqm::BYTE Priority)
-{
-	if (!(GLOBAL (glob_flags) & SOUND_DISABLED))
-	{
-		SetChannelVolume (Channel, MAX_VOLUME >> 1, Priority);
-		//SetChannelRate (Channel, GetSampleRate (S), Priority);
-		PlayChannel (Channel, S, Pos, PositionalObject, Priority);
-	}
-}
-
-void
-PlaySpeechEffect (SOUND S, SoundPosition Pos, void *PositionalObject, uqm::BYTE Priority)
+void PlaySoundEffect(SOUND S, uqm::COUNT Channel, SoundPosition Pos,
+					 void* PositionalObject, uqm::BYTE Priority)
 {
 	if (!(GLOBAL(glob_flags) & SOUND_DISABLED))
 	{
-		PlayChannel (6, S, Pos, PositionalObject, Priority);
+		SetChannelVolume(Channel, MAX_VOLUME >> 1, Priority);
+		//SetChannelRate (Channel, GetSampleRate (S), Priority);
+		PlayChannel(Channel, S, Pos, PositionalObject, Priority);
+	}
+}
+
+void PlaySpeechEffect(SOUND S, SoundPosition Pos, void* PositionalObject, uqm::BYTE Priority)
+{
+	if (!(GLOBAL(glob_flags) & SOUND_DISABLED))
+	{
+		PlayChannel(6, S, Pos, PositionalObject, Priority);
 	}
 }

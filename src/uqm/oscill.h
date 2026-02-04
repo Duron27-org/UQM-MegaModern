@@ -27,19 +27,18 @@ extern "C" {
 extern bool sliderDisabled;
 extern bool oscillDisabled;
 
-extern void InitOscilloscope (FRAME scopeBg);
-extern void DrawOscilloscope (void);
-extern void UninitOscilloscope (void);
-extern void FlattenOscilloscope (void);
+extern void InitOscilloscope(FRAME scopeBg);
+extern void DrawOscilloscope(void);
+extern void UninitOscilloscope(void);
+extern void FlattenOscilloscope(void);
 
-extern void InitSlider (int x, int y, int width, FRAME sliderFrame,
-		FRAME buttonFrame);
-extern void SetSliderImage (FRAME f);
-void DrawSlider (void);
+extern void InitSlider(int x, int y, int width, FRAME sliderFrame,
+					   FRAME buttonFrame);
+extern void SetSliderImage(FRAME f);
+void DrawSlider(void);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* UQM_OSCILL_H_ */
-
+#endif /* UQM_OSCILL_H_ */

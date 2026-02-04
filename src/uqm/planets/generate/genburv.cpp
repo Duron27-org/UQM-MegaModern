@@ -25,15 +25,15 @@
 #include "libs/mathlib.h"
 
 
-static bool GenerateBurvixese_generatePlanets (SOLARSYS_STATE *solarSys);
-static bool GenerateBurvixese_generateMoons (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *planet);
-static bool GenerateBurvixese_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world);
-static uqm::COUNT GenerateBurvixese_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
-static bool GenerateBurvixese_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, uqm::COUNT whichNode);
+static bool GenerateBurvixese_generatePlanets(SOLARSYS_STATE* solarSys);
+static bool GenerateBurvixese_generateMoons(SOLARSYS_STATE* solarSys,
+											PLANET_DESC* planet);
+static bool GenerateBurvixese_generateOrbital(SOLARSYS_STATE* solarSys,
+											  PLANET_DESC* world);
+static uqm::COUNT GenerateBurvixese_generateEnergy(const SOLARSYS_STATE*,
+												   const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO*);
+static bool GenerateBurvixese_pickupEnergy(SOLARSYS_STATE* solarSys,
+										   PLANET_DESC* world, uqm::COUNT whichNode);
 
 
 const GenerateFunctions generateBurvixeseFunctions = {
@@ -54,15 +54,15 @@ const GenerateFunctions generateBurvixeseFunctions = {
 
 
 static bool
-GenerateBurvixese_generatePlanets (SOLARSYS_STATE *solarSys)
+GenerateBurvixese_generatePlanets(SOLARSYS_STATE* solarSys)
 {
-	PLANET_DESC *pPlanet;
-	PLANET_DESC *pSunDesc = &solarSys->SunDesc[0];
+	PLANET_DESC* pPlanet;
+	PLANET_DESC* pSunDesc = &solarSys->SunDesc[0];
 
 	pSunDesc->MoonByte = 0;
 	pSunDesc->PlanetByte = 0;
 
-	GenerateDefault_generatePlanets (solarSys);
+	GenerateDefault_generatePlanets(solarSys);
 
 	if (PrimeSeed)
 	{
@@ -73,19 +73,19 @@ GenerateBurvixese_generatePlanets (SOLARSYS_STATE *solarSys)
 		pPlanet->data_index = REDUX_WORLD;
 		pPlanet->NumPlanets = 1;
 		pPlanet->radius = EARTH_RADIUS * 39L / 100;
-		angle = ARCTAN (pPlanet->location.x, pPlanet->location.y);
-		pPlanet->location.x = COSINE (angle, pPlanet->radius);
-		pPlanet->location.y = SINE (angle, pPlanet->radius);
-		ComputeSpeed (pPlanet, false, 1);
+		angle = ARCTAN(pPlanet->location.x, pPlanet->location.y);
+		pPlanet->location.x = COSINE(angle, pPlanet->radius);
+		pPlanet->location.y = SINE(angle, pPlanet->radius);
+		ComputeSpeed(pPlanet, false, 1);
 	}
 	else
 	{
-		uqm::DWORD rand_val = RandomContext_Random (SysGenRNG);
+		uqm::DWORD rand_val = RandomContext_Random(SysGenRNG);
 
 		//pSunDesc->PlanetByte = PickClosestHabitable (solarSys);
 		pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
 
-		pPlanet->data_index = GenerateHabitableWorld ();
+		pPlanet->data_index = GenerateHabitableWorld();
 
 		// A large rocky with 1 moon has a 1 in 5 chance of a second moon.
 		pPlanet->NumPlanets = (rand_val % 5 == 0 ? 2 : 1);
@@ -98,61 +98,61 @@ GenerateBurvixese_generatePlanets (SOLARSYS_STATE *solarSys)
 }
 
 static bool
-GenerateBurvixese_generateMoons (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *planet)
+GenerateBurvixese_generateMoons(SOLARSYS_STATE* solarSys,
+								PLANET_DESC* planet)
 {
-	GenerateDefault_generateMoons (solarSys, planet);
+	GenerateDefault_generateMoons(solarSys, planet);
 
 	if (!PrimeSeed)
 		return true;
 
-	if (matchWorld (solarSys, planet, MATCH_PBYTE, MATCH_PLANET))
+	if (matchWorld(solarSys, planet, MATCH_PBYTE, MATCH_PLANET))
 	{
 		uqm::BYTE MoonByte = solarSys->SunDesc[0].MoonByte;
-		PLANET_DESC *pMoonDesc = &solarSys->MoonDesc[MoonByte];
+		PLANET_DESC* pMoonDesc = &solarSys->MoonDesc[MoonByte];
 		uqm::COUNT angle;
 		uqm::DWORD rand_val;
 
 		pMoonDesc->data_index = SELENIC_WORLD;
 		pMoonDesc->radius =
-				MIN_MOON_RADIUS + (MAX_GEN_MOONS - 1) * MOON_DELTA;
-		rand_val = RandomContext_Random (SysGenRNG);
-		angle = NORMALIZE_ANGLE (LOWORD (rand_val));
-		pMoonDesc->location.x = COSINE (angle, pMoonDesc->radius);
-		pMoonDesc->location.y = SINE (angle, pMoonDesc->radius);
-		ComputeSpeed (pMoonDesc, true, 1);
+			MIN_MOON_RADIUS + (MAX_GEN_MOONS - 1) * MOON_DELTA;
+		rand_val = RandomContext_Random(SysGenRNG);
+		angle = NORMALIZE_ANGLE(LOWORD(rand_val));
+		pMoonDesc->location.x = COSINE(angle, pMoonDesc->radius);
+		pMoonDesc->location.y = SINE(angle, pMoonDesc->radius);
+		ComputeSpeed(pMoonDesc, true, 1);
 	}
 
 	return true;
 }
 
 static bool
-GenerateBurvixese_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world)
+GenerateBurvixese_generateOrbital(SOLARSYS_STATE* solarSys,
+								  PLANET_DESC* world)
 {
 	uqm::DWORD rand_val;
 
-	DoPlanetaryAnalysis (&solarSys->SysInfo, world);
-	rand_val = RandomContext_GetSeed (SysGenRNG);
+	DoPlanetaryAnalysis(&solarSys->SysInfo, world);
+	rand_val = RandomContext_GetSeed(SysGenRNG);
 
 	solarSys->SysInfo.PlanetInfo.ScanSeed[BIOLOGICAL_SCAN] = rand_val;
-	GenerateLifeForms (&solarSys->SysInfo, GENERATE_ALL, NULL);
-	rand_val = RandomContext_GetSeed (SysGenRNG);
+	GenerateLifeForms(&solarSys->SysInfo, GENERATE_ALL, NULL);
+	rand_val = RandomContext_GetSeed(SysGenRNG);
 
 	solarSys->SysInfo.PlanetInfo.ScanSeed[MINERAL_SCAN] = rand_val;
-	GenerateMineralDeposits (&solarSys->SysInfo, GENERATE_ALL, NULL);
+	GenerateMineralDeposits(&solarSys->SysInfo, GENERATE_ALL, NULL);
 
 	solarSys->SysInfo.PlanetInfo.ScanSeed[ENERGY_SCAN] = rand_val;
 
-	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
+	if (matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{
-		LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
+		LoadStdLanderFont(&solarSys->SysInfo.PlanetInfo);
 		solarSys->PlanetSideFrame[1] =
-				CaptureDrawable (
-				LoadGraphic (RUINS_MASK_PMAP_ANIM));
+			CaptureDrawable(
+				LoadGraphic(RUINS_MASK_PMAP_ANIM));
 		solarSys->SysInfo.PlanetInfo.DiscoveryString =
-				CaptureStringTable (
-						LoadStringTable (BURV_RUINS_STRTAB));
+			CaptureStringTable(
+				LoadStringTable(BURV_RUINS_STRTAB));
 
 		if (!DIF_HARD)
 		{
@@ -160,14 +160,14 @@ GenerateBurvixese_generateOrbital (SOLARSYS_STATE *solarSys,
 			solarSys->SysInfo.PlanetInfo.Tectonics = 0;
 		}
 	}
-	else if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_MBYTE)
-			&& !GET_GAME_STATE (BURVIXESE_BROADCASTERS))
+	else if (matchWorld(solarSys, world, MATCH_PBYTE, MATCH_MBYTE)
+			 && !GET_GAME_STATE(BURVIXESE_BROADCASTERS))
 	{
-		LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
-		solarSys->PlanetSideFrame[1] = CaptureDrawable (
-				LoadGraphic (BURV_BCS_MASK_PMAP_ANIM));
+		LoadStdLanderFont(&solarSys->SysInfo.PlanetInfo);
+		solarSys->PlanetSideFrame[1] = CaptureDrawable(
+			LoadGraphic(BURV_BCS_MASK_PMAP_ANIM));
 		solarSys->SysInfo.PlanetInfo.DiscoveryString =
-				CaptureStringTable (LoadStringTable (BURV_BCS_STRTAB));
+			CaptureStringTable(LoadStringTable(BURV_BCS_STRTAB));
 
 		if (!DIF_HARD)
 		{
@@ -176,60 +176,60 @@ GenerateBurvixese_generateOrbital (SOLARSYS_STATE *solarSys,
 		}
 	}
 
-	LoadPlanet (NULL);
+	LoadPlanet(NULL);
 
 	return true;
 }
 
 static uqm::COUNT
-GenerateBurvixese_generateEnergy (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *info)
+GenerateBurvixese_generateEnergy(const SOLARSYS_STATE* solarSys,
+								 const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO* info)
 {
-	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
+	if (matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{
-		return GenerateDefault_generateRuins (solarSys, whichNode, info);
+		return GenerateDefault_generateRuins(solarSys, whichNode, info);
 	}
 
-	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_MBYTE))
+	if (matchWorld(solarSys, world, MATCH_PBYTE, MATCH_MBYTE))
 	{
 		// This check is redundant since the retrieval bit will keep the
 		// node from showing up again
-		if (GET_GAME_STATE (BURVIXESE_BROADCASTERS))
-		{	// already picked up
+		if (GET_GAME_STATE(BURVIXESE_BROADCASTERS))
+		{ // already picked up
 			return 0;
 		}
 
-		return GenerateDefault_generateArtifact (
-				solarSys, whichNode, info);
+		return GenerateDefault_generateArtifact(
+			solarSys, whichNode, info);
 	}
 
 	return 0;
 }
 
 static bool
-GenerateBurvixese_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, uqm::COUNT whichNode)
+GenerateBurvixese_pickupEnergy(SOLARSYS_STATE* solarSys,
+							   PLANET_DESC* world, uqm::COUNT whichNode)
 {
-	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
+	if (matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{
 		// Standard ruins report
-		GenerateDefault_landerReportCycle (solarSys);
+		GenerateDefault_landerReportCycle(solarSys);
 		return false;
 	}
 
-	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_MBYTE))
+	if (matchWorld(solarSys, world, MATCH_PBYTE, MATCH_MBYTE))
 	{
-		assert (!GET_GAME_STATE (BURVIXESE_BROADCASTERS) && whichNode == 0);
+		assert(!GET_GAME_STATE(BURVIXESE_BROADCASTERS) && whichNode == 0);
 
-		GenerateDefault_landerReport (solarSys);
-		SetLanderTakeoff ();
+		GenerateDefault_landerReport(solarSys);
+		SetLanderTakeoff();
 
-		SET_GAME_STATE (BURVIXESE_BROADCASTERS, 1);
-		SET_GAME_STATE (BURV_BROADCASTERS_ON_SHIP, 1);
+		SET_GAME_STATE(BURVIXESE_BROADCASTERS, 1);
+		SET_GAME_STATE(BURV_BROADCASTERS_ON_SHIP, 1);
 
 		return true; // picked up
 	}
 
-	(void) whichNode;
+	(void)whichNode;
 	return false;
 }

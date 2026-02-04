@@ -27,15 +27,13 @@ extern uio_FileSystemHandler zip_fileSystemHandler;
 #endif
 
 const uio_DefaultFileSystemSetup defaultFileSystems[] = {
-	{ uio_FSTYPE_STDIO, "stdio", &stdio_fileSystemHandler },
+	{uio_FSTYPE_STDIO, "stdio", &stdio_fileSystemHandler},
 #ifdef HAVE_ZIP
-	{ uio_FSTYPE_ZIP, "zip", &zip_fileSystemHandler },
+	{uio_FSTYPE_ZIP,	 "zip",	&zip_fileSystemHandler  },
 #endif
 };
 
-int
-uio_numDefaultFileSystems(void) {
+int uio_numDefaultFileSystems(void)
+{
 	return sizeof defaultFileSystems / sizeof defaultFileSystems[0];
 }
-
-

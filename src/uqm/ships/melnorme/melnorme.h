@@ -21,11 +21,10 @@
 extern "C" {
 #endif
 
-RACE_DESC *init_melnorme (void);
+RACE_DESC* init_melnorme(void);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* MELNORME_H */
-
+#endif /* MELNORME_H */

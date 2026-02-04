@@ -26,16 +26,15 @@
 extern "C" {
 #endif
 
-void Netplay_setResetCallback(NetConnection *conn,
-		NetConnection_ResetCallback callback, void *resetArg);
-void Netplay_localReset(NetConnection *conn, NetplayResetReason reason);
-void Netplay_remoteReset(NetConnection *conn, NetplayResetReason reason);
-bool Netplay_isLocalReset(const NetConnection *conn);
-bool Netplay_isRemoteReset(const NetConnection *conn);
+void Netplay_setResetCallback(NetConnection* conn,
+							  NetConnection_ResetCallback callback, void* resetArg);
+void Netplay_localReset(NetConnection* conn, NetplayResetReason reason);
+void Netplay_remoteReset(NetConnection* conn, NetplayResetReason reason);
+bool Netplay_isLocalReset(const NetConnection* conn);
+bool Netplay_isRemoteReset(const NetConnection* conn);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* UQM_SUPERMELEE_NETPLAY_PROTO_RESET_H_ */
-
+#endif /* UQM_SUPERMELEE_NETPLAY_PROTO_RESET_H_ */

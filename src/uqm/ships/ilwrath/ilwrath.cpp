@@ -35,15 +35,15 @@
 #define TURN_WAIT 2
 #define SHIP_MASS 7
 #define LOOK_AHEAD 4
-		/* Controls how much the auto-turn will attempt to "lead"
+/* Controls how much the auto-turn will attempt to "lead"
 		 * its target. */
 
 // Hellfire Spout
 #define WEAPON_ENERGY_COST 1
 #define WEAPON_WAIT 0
 #define MISSILE_LIFE 8
-#define ILWRATH_OFFSET RES_SCALE (29)
-#define MISSILE_SPEED RES_SCALE (MAX_THRUST)
+#define ILWRATH_OFFSET RES_SCALE(29)
+#define MISSILE_SPEED RES_SCALE(MAX_THRUST)
 #define MISSILE_HITS 1
 #define MISSILE_DAMAGE 1
 #define MISSILE_OFFSET 0
@@ -53,87 +53,86 @@
 #define SPECIAL_WAIT 13
 
 static RACE_DESC ilwrath_desc =
-{
-	{ /* SHIP_INFO */
-		"avenger",
-		FIRES_FORE,
-		10, /* Super Melee cost */
-		MAX_CREW, MAX_CREW,
-		MAX_ENERGY, MAX_ENERGY,
-		ILWRATH_RACE_STRINGS,
-		ILWRATH_ICON_MASK_PMAP_ANIM,
-		ILWRATH_MICON_MASK_PMAP_ANIM,
-		NULL, NULL, NULL
-	},
-	{ /* FLEET_STUFF */
-		1410 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
-		{ /* Known location (center of SoI) */
-			48, 1700,
-		},
-	},
 	{
-		MAX_THRUST,
-		THRUST_INCREMENT,
-		ENERGY_REGENERATION,
-		WEAPON_ENERGY_COST,
-		SPECIAL_ENERGY_COST,
-		ENERGY_WAIT,
-		TURN_WAIT,
-		THRUST_WAIT,
-		WEAPON_WAIT,
-		SPECIAL_WAIT,
-		SHIP_MASS,
-	},
-	{
+		{/* SHIP_INFO */
+		 "avenger",
+		 FIRES_FORE,
+		 10, /* Super Melee cost */
+		 MAX_CREW, MAX_CREW,
+		 MAX_ENERGY, MAX_ENERGY,
+		 ILWRATH_RACE_STRINGS,
+		 ILWRATH_ICON_MASK_PMAP_ANIM,
+		 ILWRATH_MICON_MASK_PMAP_ANIM,
+		 NULL, NULL, NULL},
 		{
-			ILWRATH_BIG_MASK_PMAP_ANIM,
-			ILWRATH_MED_MASK_PMAP_ANIM,
-			ILWRATH_SML_MASK_PMAP_ANIM,
-		},
+			/* FLEET_STUFF */
+			1410 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
+			{
+				/* Known location (center of SoI) */
+				48,
+				1700,
+			},
+		 },
 		{
-			FIRE_BIG_MASK_PMAP_ANIM,
-			FIRE_MED_MASK_PMAP_ANIM,
-			FIRE_SML_MASK_PMAP_ANIM,
-		},
+			MAX_THRUST,
+			THRUST_INCREMENT,
+			ENERGY_REGENERATION,
+			WEAPON_ENERGY_COST,
+			SPECIAL_ENERGY_COST,
+			ENERGY_WAIT,
+			TURN_WAIT,
+			THRUST_WAIT,
+			WEAPON_WAIT,
+			SPECIAL_WAIT,
+			SHIP_MASS,
+		 },
+		{{
+			 ILWRATH_BIG_MASK_PMAP_ANIM,
+			 ILWRATH_MED_MASK_PMAP_ANIM,
+			 ILWRATH_SML_MASK_PMAP_ANIM,
+		 },
+		 {
+			 FIRE_BIG_MASK_PMAP_ANIM,
+			 FIRE_MED_MASK_PMAP_ANIM,
+			 FIRE_SML_MASK_PMAP_ANIM,
+		 },
+		 {
+			 NULL_RESOURCE,
+			 NULL_RESOURCE,
+			 NULL_RESOURCE,
+		 },
+		 {ILWRATH_CAPTAIN_MASK_PMAP_ANIM,
+		  NULL, NULL, NULL, NULL, NULL,
+		  0, 0, 0, 0, 0},
+		 ILWRATH_VICTORY_SONG,
+		 ILWRATH_SHIP_SOUNDS,
+		 {NULL, NULL, NULL},
+		 {NULL, NULL, NULL},
+		 {NULL, NULL, NULL},
+		 NULL,
+		 NULL},
 		{
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-		},
-		{
-			ILWRATH_CAPTAIN_MASK_PMAP_ANIM,
-			NULL, NULL, NULL, NULL, NULL,
-			0, 0, 0, 0, 0
-		},
-		ILWRATH_VICTORY_SONG,
-		ILWRATH_SHIP_SOUNDS,
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		NULL, NULL
-	},
-	{
+			0,
+			CLOSE_RANGE_WEAPON,
+			NULL,
+		 },
+		(UNINIT_FUNC*)NULL,
+		(PREPROCESS_FUNC*)NULL,
+		(POSTPROCESS_FUNC*)NULL,
+		(INIT_WEAPON_FUNC*)NULL,
 		0,
-		CLOSE_RANGE_WEAPON,
-		NULL,
-	},
-	(UNINIT_FUNC *) NULL,
-	(PREPROCESS_FUNC *) NULL,
-	(POSTPROCESS_FUNC *) NULL,
-	(INIT_WEAPON_FUNC *) NULL,
-	0,
-	0, /* CodeRef */
+		0, /* CodeRef */
 };
 
 static void
-flame_preprocess (ELEMENT *ElementPtr)
+flame_preprocess(ELEMENT* ElementPtr)
 {
 	if (ElementPtr->turn_wait > 0)
 		--ElementPtr->turn_wait;
 	else
 	{
 		ElementPtr->next.image.frame =
-				IncFrameIndex (ElementPtr->current.image.frame);
+			IncFrameIndex(ElementPtr->current.image.frame);
 		ElementPtr->state_flags |= CHANGING;
 
 		ElementPtr->turn_wait = ElementPtr->next_turn;
@@ -141,37 +140,37 @@ flame_preprocess (ELEMENT *ElementPtr)
 }
 
 static void
-flame_collision (ELEMENT *ElementPtr0, POINT *pPt0,
-		ELEMENT *ElementPtr1, POINT *pPt1)
+flame_collision(ELEMENT* ElementPtr0, POINT* pPt0,
+				ELEMENT* ElementPtr1, POINT* pPt1)
 {
-	weapon_collision (ElementPtr0, pPt0, ElementPtr1, pPt1);
+	weapon_collision(ElementPtr0, pPt0, ElementPtr1, pPt1);
 	ElementPtr0->state_flags &= ~DISAPPEARING;
 	ElementPtr0->state_flags |= NONSOLID;
 }
 
 static void
-ilwrath_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
-		uqm::COUNT ConcernCounter)
+ilwrath_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
+					 uqm::COUNT ConcernCounter)
 {
-	EVALUATE_DESC *lpEvalDesc;
-	STARSHIP *StarShipPtr;
+	EVALUATE_DESC* lpEvalDesc;
+	STARSHIP* StarShipPtr;
 
 	lpEvalDesc = &ObjectsOfConcern[ENEMY_SHIP_INDEX];
-	 lpEvalDesc->MoveState = PURSUE;
+	lpEvalDesc->MoveState = PURSUE;
 	if (lpEvalDesc->ObjectPtr && lpEvalDesc->which_turn <= 10)
-				/* don't want to dodge when you could be flaming */
+		/* don't want to dodge when you could be flaming */
 		ObjectsOfConcern[ENEMY_WEAPON_INDEX].ObjectPtr = 0;
 
-	ship_intelligence (ShipPtr, ObjectsOfConcern, ConcernCounter);
+	ship_intelligence(ShipPtr, ObjectsOfConcern, ConcernCounter);
 
-	GetElementStarShip (ShipPtr, &StarShipPtr);
+	GetElementStarShip(ShipPtr, &StarShipPtr);
 	if (lpEvalDesc->ObjectPtr
-			&& (lpEvalDesc->which_turn <= 6
+		&& (lpEvalDesc->which_turn <= 6
 			|| (lpEvalDesc->which_turn <= 10
-			&& ObjectsOfConcern[ENEMY_WEAPON_INDEX].which_turn <= 10)))
+				&& ObjectsOfConcern[ENEMY_WEAPON_INDEX].which_turn <= 10)))
 	{
 		StarShipPtr->ship_input_state &= ~SPECIAL;
-		if (OBJECT_CLOAKED (ShipPtr))
+		if (OBJECT_CLOAKED(ShipPtr))
 		{
 			StarShipPtr->ship_input_state &= ~LEFT | RIGHT;
 			StarShipPtr->ship_input_state |= THRUST;
@@ -179,23 +178,23 @@ ilwrath_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 		StarShipPtr->ship_input_state |= WEAPON;
 	}
 	else if (StarShipPtr->special_counter == 0
-			&& (lowByte (GLOBAL (CurrentActivity)) != IN_ENCOUNTER
-			|| !GET_GAME_STATE (PROBE_ILWRATH_ENCOUNTER)))
+			 && (lowByte(GLOBAL(CurrentActivity)) != IN_ENCOUNTER
+				 || !GET_GAME_STATE(PROBE_ILWRATH_ENCOUNTER)))
 	{
 		StarShipPtr->ship_input_state &= ~SPECIAL;
-		if (!OBJECT_CLOAKED (ShipPtr)
-				&& !(StarShipPtr->ship_input_state & WEAPON))
+		if (!OBJECT_CLOAKED(ShipPtr)
+			&& !(StarShipPtr->ship_input_state & WEAPON))
 			StarShipPtr->ship_input_state |= SPECIAL;
 	}
 }
 
 static uqm::COUNT
-initialize_flame (ELEMENT *ShipPtr, HELEMENT FlameArray[])
+initialize_flame(ELEMENT* ShipPtr, HELEMENT FlameArray[])
 {
-	STARSHIP *StarShipPtr;
+	STARSHIP* StarShipPtr;
 	MISSILE_BLOCK MissileBlock;
 
-	GetElementStarShip (ShipPtr, &StarShipPtr);
+	GetElementStarShip(ShipPtr, &StarShipPtr);
 	MissileBlock.cx = ShipPtr->next.location.x;
 	MissileBlock.cy = ShipPtr->next.location.y;
 	MissileBlock.farray = StarShipPtr->RaceDescPtr->ship_data.weapon;
@@ -210,105 +209,104 @@ initialize_flame (ELEMENT *ShipPtr, HELEMENT FlameArray[])
 	MissileBlock.life = MISSILE_LIFE;
 	MissileBlock.preprocess_func = flame_preprocess;
 	MissileBlock.blast_offs = MISSILE_OFFSET;
-	FlameArray[0] = initialize_missile (&MissileBlock);
+	FlameArray[0] = initialize_missile(&MissileBlock);
 
 	if (FlameArray[0])
 	{
 		uqm::SDWORD dx, dy;
-		ELEMENT *FlamePtr;
+		ELEMENT* FlamePtr;
 
-		LockElement (FlameArray[0], &FlamePtr);
-		GetCurrentVelocityComponentsSdword (&ShipPtr->velocity, &dx, &dy);
-		DeltaVelocityComponents (&FlamePtr->velocity, dx, dy);
-		FlamePtr->current.location.x -= VELOCITY_TO_WORLD (dx);
-		FlamePtr->current.location.y -= VELOCITY_TO_WORLD (dy);
+		LockElement(FlameArray[0], &FlamePtr);
+		GetCurrentVelocityComponentsSdword(&ShipPtr->velocity, &dx, &dy);
+		DeltaVelocityComponents(&FlamePtr->velocity, dx, dy);
+		FlamePtr->current.location.x -= VELOCITY_TO_WORLD(dx);
+		FlamePtr->current.location.y -= VELOCITY_TO_WORLD(dy);
 
 		FlamePtr->collision_func = flame_collision;
 		FlamePtr->turn_wait = 0;
-		UnlockElement (FlameArray[0]);
+		UnlockElement(FlameArray[0]);
 	}
 
 	return (1);
 }
 
 static void
-ilwrath_preprocess (ELEMENT *ElementPtr)
+ilwrath_preprocess(ELEMENT* ElementPtr)
 {
 	STATUS_FLAGS status_flags;
-	STARSHIP *StarShipPtr;
-	PRIMITIVE *lpPrim;
+	STARSHIP* StarShipPtr;
+	PRIMITIVE* lpPrim;
 
-	GetElementStarShip (ElementPtr, &StarShipPtr);
+	GetElementStarShip(ElementPtr, &StarShipPtr);
 	status_flags = StarShipPtr->cur_status_flags;
-	lpPrim = &(GLOBAL (DisplayArray))[ElementPtr->PrimIndex];
-	if (GetPrimType (lpPrim) == STAMPFILL_PRIM)
+	lpPrim = &(GLOBAL(DisplayArray))[ElementPtr->PrimIndex];
+	if (GetPrimType(lpPrim) == STAMPFILL_PRIM)
 	{
 		Color color;
 		bool weapon_discharge;
 
-		color = GetPrimColor (lpPrim);
+		color = GetPrimColor(lpPrim);
 		weapon_discharge = ((status_flags & WEAPON)
-				&& StarShipPtr->RaceDescPtr->ship_info.energy_level >= WEAPON_ENERGY_COST);
+							&& StarShipPtr->RaceDescPtr->ship_info.energy_level >= WEAPON_ENERGY_COST);
 		if (weapon_discharge
-				|| (StarShipPtr->special_counter == 0
-				&& ((status_flags & SPECIAL) ||
-				!sameColor (color, BLACK_COLOR))))
+			|| (StarShipPtr->special_counter == 0
+				&& ((status_flags & SPECIAL) || !sameColor(color, BLACK_COLOR))))
 		{
-			if (sameColor (color,
-					BUILD_COLOR (MAKE_RGB15 (0x1F, 0x1F, 0x1F), 0x0F)))
-				SetPrimType (lpPrim, STAMP_PRIM);
-			else if (sameColor (color,
-					BUILD_COLOR (MAKE_RGB15 (0x0A, 0x1F, 0x1F), 0x0B)))
-				SetPrimColor (lpPrim,
-						BUILD_COLOR (MAKE_RGB15 (0x1F, 0x1F, 0x1F), 0x0F));
-			else if (sameColor (color,
-					BUILD_COLOR (MAKE_RGB15 (0x00, 0x14, 0x14), 0x03)))
-				SetPrimColor (lpPrim,
-						BUILD_COLOR (MAKE_RGB15 (0x0A, 0x1F, 0x1F), 0x0B));
-			else if (sameColor (color,
-					BUILD_COLOR (MAKE_RGB15 (0x0A, 0x0A, 0x1F), 0x09)))
-				SetPrimColor (lpPrim,
-						BUILD_COLOR (MAKE_RGB15 (0x00, 0x14, 0x14), 0x03));
-			else if (sameColor (color,
-					BUILD_COLOR (MAKE_RGB15 (0x00, 0x00, 0x14), 0x01)))
-				SetPrimColor (lpPrim,
-						BUILD_COLOR (MAKE_RGB15 (0x0A, 0x0A, 0x1F), 0x09));
+			if (sameColor(color,
+						  BUILD_COLOR(MAKE_RGB15(0x1F, 0x1F, 0x1F), 0x0F)))
+				SetPrimType(lpPrim, STAMP_PRIM);
+			else if (sameColor(color,
+							   BUILD_COLOR(MAKE_RGB15(0x0A, 0x1F, 0x1F), 0x0B)))
+				SetPrimColor(lpPrim,
+							 BUILD_COLOR(MAKE_RGB15(0x1F, 0x1F, 0x1F), 0x0F));
+			else if (sameColor(color,
+							   BUILD_COLOR(MAKE_RGB15(0x00, 0x14, 0x14), 0x03)))
+				SetPrimColor(lpPrim,
+							 BUILD_COLOR(MAKE_RGB15(0x0A, 0x1F, 0x1F), 0x0B));
+			else if (sameColor(color,
+							   BUILD_COLOR(MAKE_RGB15(0x0A, 0x0A, 0x1F), 0x09)))
+				SetPrimColor(lpPrim,
+							 BUILD_COLOR(MAKE_RGB15(0x00, 0x14, 0x14), 0x03));
+			else if (sameColor(color,
+							   BUILD_COLOR(MAKE_RGB15(0x00, 0x00, 0x14), 0x01)))
+				SetPrimColor(lpPrim,
+							 BUILD_COLOR(MAKE_RGB15(0x0A, 0x0A, 0x1F), 0x09));
 			else
 			{
-				ProcessSound (SetAbsSoundIndex (
-								/* CLOAKING_OFF */
-						StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 2), ElementPtr);
-				SetPrimColor (lpPrim,
-						BUILD_COLOR (MAKE_RGB15 (0x00, 0x00, 0x14), 0x01));
+				ProcessSound(SetAbsSoundIndex(
+								 /* CLOAKING_OFF */
+								 StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 2),
+							 ElementPtr);
+				SetPrimColor(lpPrim,
+							 BUILD_COLOR(MAKE_RGB15(0x00, 0x00, 0x14), 0x01));
 				if (weapon_discharge)
 				{
 					uqm::COUNT facing;
 
 					facing = StarShipPtr->ShipFacing;
-					if (TrackShip (ElementPtr, &facing) >= 0)
+					if (TrackShip(ElementPtr, &facing) >= 0)
 					{
-						ELEMENT *eptr;
+						ELEMENT* eptr;
 						uqm::SIZE dx0, dy0, dx1, dy1;
 						VELOCITY_DESC v;
 
-						LockElement (ElementPtr->hTarget, &eptr);
+						LockElement(ElementPtr->hTarget, &eptr);
 						v = eptr->velocity;
-						GetNextVelocityComponents (&v, &dx0, &dy0, LOOK_AHEAD);
+						GetNextVelocityComponents(&v, &dx0, &dy0, LOOK_AHEAD);
 						v = ElementPtr->velocity;
-						GetNextVelocityComponents (&v, &dx1, &dy1, LOOK_AHEAD);
+						GetNextVelocityComponents(&v, &dx1, &dy1, LOOK_AHEAD);
 						dx0 = (eptr->current.location.x + dx0)
-								- (ElementPtr->current.location.x + dx1);
+							- (ElementPtr->current.location.x + dx1);
 						dy0 = (eptr->current.location.y + dy0)
-								- (ElementPtr->current.location.y + dy1);
-						UnlockElement (ElementPtr->hTarget);
+							- (ElementPtr->current.location.y + dy1);
+						UnlockElement(ElementPtr->hTarget);
 
 						StarShipPtr->ShipFacing =
-								NORMALIZE_FACING (
-								ANGLE_TO_FACING (ARCTAN (dx0, dy0))
-								);
+							NORMALIZE_FACING(
+								ANGLE_TO_FACING(ARCTAN(dx0, dy0)));
 #ifdef NOTYET
 						if (ElementPtr->thrust_wait == 0
-								&& (StarShipPtr->cur_status_flags & THRUST))
+							&& (StarShipPtr->cur_status_flags & THRUST))
 						{
 							uqm::COUNT last_facing;
 
@@ -317,28 +315,27 @@ ilwrath_preprocess (ELEMENT *ElementPtr)
 								VELOCITY_DESC temp_v;
 
 								last_facing = StarShipPtr->ShipFacing;
-								inertial_thrust (ElementPtr);
+								inertial_thrust(ElementPtr);
 								temp_v = ElementPtr->velocity;
 								ElementPtr->velocity = v;
 
 								dx0 += dx1;
 								dy0 += dy1;
-								GetNextVelocityComponents (&temp_v,
-										&dx1, &dy1, LOOK_AHEAD);
+								GetNextVelocityComponents(&temp_v,
+														  &dx1, &dy1, LOOK_AHEAD);
 								dx0 -= dx1;
 								dy0 -= dy1;
 								StarShipPtr->ShipFacing =
-										NORMALIZE_FACING (
-										ANGLE_TO_FACING (ARCTAN (dx0, dy0))
-										);
+									NORMALIZE_FACING(
+										ANGLE_TO_FACING(ARCTAN(dx0, dy0)));
 							} while (StarShipPtr->ShipFacing != last_facing);
 						}
 #endif /* NOTYET */
 						if (ElementPtr->turn_wait == 0)
 							++ElementPtr->turn_wait;
 						ElementPtr->next.image.frame =
-								SetAbsFrameIndex (ElementPtr->next.image.frame,
-								StarShipPtr->ShipFacing);
+							SetAbsFrameIndex(ElementPtr->next.image.frame,
+											 StarShipPtr->ShipFacing);
 					}
 					ElementPtr->hTarget = 0;
 				}
@@ -348,63 +345,63 @@ ilwrath_preprocess (ELEMENT *ElementPtr)
 			status_flags &= ~SPECIAL;
 			StarShipPtr->special_counter = 0;
 		}
-		else if (!sameColor (color, BLACK_COLOR))
+		else if (!sameColor(color, BLACK_COLOR))
 		{
-			if (sameColor (color,
-					BUILD_COLOR (MAKE_RGB15 (0x00, 0x00, 0x14), 0x01)))
+			if (sameColor(color,
+						  BUILD_COLOR(MAKE_RGB15(0x00, 0x00, 0x14), 0x01)))
 			{
-				SetPrimColor (lpPrim, BLACK_COLOR);
-				Untarget (ElementPtr);
+				SetPrimColor(lpPrim, BLACK_COLOR);
+				Untarget(ElementPtr);
 			}
-			else if (sameColor (color,
-					BUILD_COLOR (MAKE_RGB15 (0x0A, 0x0A, 0x1F), 0x09)))
-				SetPrimColor (lpPrim,
-						BUILD_COLOR (MAKE_RGB15 (0x00, 0x00, 0x14), 0x01));
-			else if (sameColor (color,
-					BUILD_COLOR (MAKE_RGB15 (0x00, 0x14, 0x14), 0x03)))
-				SetPrimColor (lpPrim,
-						BUILD_COLOR (MAKE_RGB15 (0x0A, 0x0A, 0x1F), 0x09));
-			else if (sameColor (color,
-					BUILD_COLOR (MAKE_RGB15 (0x0A, 0x1F, 0x1F), 0x0B)))
-				SetPrimColor (lpPrim,
-						BUILD_COLOR (MAKE_RGB15 (0x00, 0x14, 0x14), 0x03));
+			else if (sameColor(color,
+							   BUILD_COLOR(MAKE_RGB15(0x0A, 0x0A, 0x1F), 0x09)))
+				SetPrimColor(lpPrim,
+							 BUILD_COLOR(MAKE_RGB15(0x00, 0x00, 0x14), 0x01));
+			else if (sameColor(color,
+							   BUILD_COLOR(MAKE_RGB15(0x00, 0x14, 0x14), 0x03)))
+				SetPrimColor(lpPrim,
+							 BUILD_COLOR(MAKE_RGB15(0x0A, 0x0A, 0x1F), 0x09));
+			else if (sameColor(color,
+							   BUILD_COLOR(MAKE_RGB15(0x0A, 0x1F, 0x1F), 0x0B)))
+				SetPrimColor(lpPrim,
+							 BUILD_COLOR(MAKE_RGB15(0x00, 0x14, 0x14), 0x03));
 			else
-				SetPrimColor (lpPrim,
-						BUILD_COLOR (MAKE_RGB15 (0x0A, 0x1F, 0x1F), 0x0B));
+				SetPrimColor(lpPrim,
+							 BUILD_COLOR(MAKE_RGB15(0x0A, 0x1F, 0x1F), 0x0B));
 
 			ElementPtr->state_flags |= CHANGING;
 		}
 	}
 
 	if ((status_flags & SPECIAL)
-			&& StarShipPtr->special_counter == 0
-			&& DeltaEnergy (ElementPtr, -SPECIAL_ENERGY_COST))
+		&& StarShipPtr->special_counter == 0
+		&& DeltaEnergy(ElementPtr, -SPECIAL_ENERGY_COST))
 	{
-		SetPrimColor (lpPrim,
-				BUILD_COLOR (MAKE_RGB15 (0x1F, 0x1F, 0x1F), 0x0F));
-		SetPrimType (lpPrim, STAMPFILL_PRIM);
+		SetPrimColor(lpPrim,
+					 BUILD_COLOR(MAKE_RGB15(0x1F, 0x1F, 0x1F), 0x0F));
+		SetPrimType(lpPrim, STAMPFILL_PRIM);
 
-		ProcessSound (SetAbsSoundIndex (
-						/* CLOAKING_ON */
-				StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 1),
-				ElementPtr);
+		ProcessSound(SetAbsSoundIndex(
+						 /* CLOAKING_ON */
+						 StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 1),
+					 ElementPtr);
 		StarShipPtr->special_counter =
-				StarShipPtr->RaceDescPtr->characteristics.special_wait;
+			StarShipPtr->RaceDescPtr->characteristics.special_wait;
 
 		ElementPtr->state_flags |= CHANGING;
 	}
 }
 
 RACE_DESC*
-init_ilwrath (void)
+init_ilwrath(void)
 {
-	RACE_DESC *RaceDescPtr;
+	RACE_DESC* RaceDescPtr;
 
 	if (IS_HD)
 	{
-		ilwrath_desc.characteristics.max_thrust = RES_SCALE (MAX_THRUST);
+		ilwrath_desc.characteristics.max_thrust = RES_SCALE(MAX_THRUST);
 		ilwrath_desc.characteristics.thrust_increment =
-				RES_SCALE (THRUST_INCREMENT);
+			RES_SCALE(THRUST_INCREMENT);
 		ilwrath_desc.cyborg_control.WeaponRange = CLOSE_RANGE_WEAPON_HD;
 	}
 	else
@@ -422,4 +419,3 @@ init_ilwrath (void)
 
 	return (RaceDescPtr);
 }
-

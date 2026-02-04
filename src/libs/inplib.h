@@ -29,11 +29,11 @@ extern "C" {
 #endif
 
 
-extern bool AnyButtonPress (bool DetectSpecial);
-extern bool DirKeysPress (void);
-extern bool ActKeysPress (void);
+extern bool AnyButtonPress(bool DetectSpecial);
+extern bool DirKeysPress(void);
+extern bool ActKeysPress(void);
 
-extern void TFB_ResetControls (void);
+extern void TFB_ResetControls(void);
 
 /*
  * Not used right now
@@ -48,26 +48,25 @@ extern volatile int GameActive;
 
 /* Functions for dealing with Character Mode */
 
-void EnterCharacterMode (void);
-void ExitCharacterMode (void);
-UniChar GetNextCharacter (void);
-UniChar GetLastCharacter (void);
+void EnterCharacterMode(void);
+void ExitCharacterMode(void);
+UniChar GetNextCharacter(void);
+UniChar GetLastCharacter(void);
 
 /* Interrogating the current key configuration */
 
-void InterrogateInputState (int templat, int control, int index, char *buffer, int maxlen);
-void RemoveInputState (int templat, int control, int index);
-void RebindInputState (int templat, int control, int index);
+void InterrogateInputState(int templat, int control, int index, char* buffer, int maxlen);
+void RemoveInputState(int templat, int control, int index);
+void RebindInputState(int templat, int control, int index);
 
-void SaveKeyConfiguration (uio_DirHandle *path, const char *fname);
+void SaveKeyConfiguration(uio_DirHandle* path, const char* fname);
 
 /* Separate inputs into frames for dealing with very fast inputs */
 
-void BeginInputFrame (void);
+void BeginInputFrame(void);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
 #endif /* LIBS_INPLIB_H_ */
-

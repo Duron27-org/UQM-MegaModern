@@ -25,19 +25,19 @@
 extern "C" {
 #endif
 
-#define FIELD_WIDTH (STATUS_WIDTH - RES_SCALE (5))
+#define FIELD_WIDTH (STATUS_WIDTH - RES_SCALE(5))
 
-extern void CargoMenu (void);
-extern bool RosterMenu (void);
-extern bool DevicesMenu (void);
-extern bool StarMap (void);
+extern void CargoMenu(void);
+extern bool RosterMenu(void);
+extern bool DevicesMenu(void);
+extern bool StarMap(void);
 
-extern void DrawCargoStrings (uqm::BYTE OldElement, uqm::BYTE NewElement);
-extern void ShowRemainingCapacity (void);
-extern void DrawRainbowPlanet (uqm::COUNT planet);
-extern bool InvokeSpawner (void);
+extern void DrawCargoStrings(uqm::BYTE OldElement, uqm::BYTE NewElement);
+extern void ShowRemainingCapacity(void);
+extern void DrawRainbowPlanet(uqm::COUNT planet);
+extern bool InvokeSpawner(void);
 
-extern uqm::SIZE InventoryDevices (uqm::BYTE *pDeviceMap, uqm::COUNT Size);
+extern uqm::SIZE InventoryDevices(uqm::BYTE* pDeviceMap, uqm::COUNT Size);
 
 extern FONT ModuleFont;
 

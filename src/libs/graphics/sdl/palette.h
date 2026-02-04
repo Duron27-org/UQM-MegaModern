@@ -29,7 +29,7 @@ struct NativePalette
 };
 
 static inline Color
-NativeToColor (SDL_Color native)
+NativeToColor(SDL_Color native)
 {
 	Color color;
 	color.r = native.r;
@@ -40,7 +40,7 @@ NativeToColor (SDL_Color native)
 }
 
 static inline SDL_Color
-ColorToNative (Color color)
+ColorToNative(Color color)
 {
 	SDL_Color native;
 	native.r = color.r;

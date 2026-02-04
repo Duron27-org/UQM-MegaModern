@@ -25,12 +25,12 @@
 //typedef CallbackLink* CallbackID;
 typedef void* CallbackID;
 #else
-typedef void *CallbackID;
-		// Uniquely identifies a queued callback.
+typedef void* CallbackID;
+// Uniquely identifies a queued callback.
 #endif
-#define CallbackID_invalid ((CallbackID ) NULL)
+#define CallbackID_invalid ((CallbackID)NULL)
 
-typedef void *CallbackArg;
+typedef void* CallbackArg;
 typedef void (*CallbackFunction)(CallbackArg arg);
 
 void Callback_init(void);
@@ -40,5 +40,4 @@ bool Callback_remove(CallbackID id);
 void Callback_process(void);
 bool Callback_haveMore(void);
 
-#endif  /* LIBS_CALLBACK_CALLBACK_H_ */
-
+#endif /* LIBS_CALLBACK_CALLBACK_H_ */

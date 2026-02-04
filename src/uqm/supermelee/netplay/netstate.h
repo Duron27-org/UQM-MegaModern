@@ -28,17 +28,18 @@ extern "C" {
 typedef struct NetConnectionStateData NetConnectionStateData;
 
 // State of a NetConnection.
-typedef enum {
-	NetState_unconnected,    /* No connection initiated */
-	NetState_connecting,     /* Connection being setup */
-	NetState_init,           /* Initialising the connection */
-	NetState_inSetup,        /* In the network game setup */
-	NetState_preBattle,      /* Pre-battle initialisations */
-	NetState_interBattle,    /* Negotiations between battles. */
-	NetState_selectShip,     /* Selecting a ship in battle */
-	NetState_inBattle,       /* Battle has started */
-	NetState_endingBattle,   /* Both sides are prepared to end */
-	NetState_endingBattle2,  /* Waiting for the final synchronisation */
+typedef enum
+{
+	NetState_unconnected,	/* No connection initiated */
+	NetState_connecting,	/* Connection being setup */
+	NetState_init,			/* Initialising the connection */
+	NetState_inSetup,		/* In the network game setup */
+	NetState_preBattle,		/* Pre-battle initialisations */
+	NetState_interBattle,	/* Negotiations between battles. */
+	NetState_selectShip,	/* Selecting a ship in battle */
+	NetState_inBattle,		/* Battle has started */
+	NetState_endingBattle,	/* Both sides are prepared to end */
+	NetState_endingBattle2, /* Waiting for the final synchronisation */
 } NetState;
 
 #if 0 //defined(__cplusplus)
@@ -51,28 +52,30 @@ typedef enum {
 extern "C" {
 #endif
 
-typedef struct {
-	const char *name;
+typedef struct
+{
+	const char* name;
 } NetStateData;
 extern NetStateData netStateData[];
 
 typedef void (*NetConnectionStateData_ReleaseFunction)(
-		NetConnectionStateData *stateData);
+	NetConnectionStateData* stateData);
 
 #define NETCONNECTION_STATE_DATA_COMMON \
-		NetConnectionStateData_ReleaseFunction releaseFunction;
+	NetConnectionStateData_ReleaseFunction releaseFunction;
 
 struct
-NetConnectionStateData {
+	NetConnectionStateData
+{
 	NETCONNECTION_STATE_DATA_COMMON
 };
 
-void NetConnectionStateData_release(NetConnectionStateData *stateData);
+void NetConnectionStateData_release(NetConnectionStateData* stateData);
 
 static inline bool
-NetState_battleActive(NetState state) {
-	return state == NetState_inBattle || state == NetState_endingBattle ||
-			state == NetState_endingBattle2;
+NetState_battleActive(NetState state)
+{
+	return state == NetState_inBattle || state == NetState_endingBattle || state == NetState_endingBattle2;
 }
 
 
@@ -80,5 +83,4 @@ NetState_battleActive(NetState state) {
 }
 #endif
 
-#endif  /* UQM_SUPERMELEE_NETPLAY_NETSTATE_H_ */
-
+#endif /* UQM_SUPERMELEE_NETPLAY_NETSTATE_H_ */

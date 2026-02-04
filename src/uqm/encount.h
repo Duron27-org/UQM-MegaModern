@@ -46,8 +46,8 @@ typedef HLINK HENCOUNTER;
 //   and bits 0-3 available in the game but will not be saved.
 #define ONE_SHOT_ENCOUNTER (1 << 7)
 #define ENCOUNTER_REFORMING (1 << 6)
-#define ENCOUNTER_SHIPS_MASK  0x0f
-#define ENCOUNTER_FLAGS_MASK  0xf0
+#define ENCOUNTER_SHIPS_MASK 0x0f
+#define ENCOUNTER_FLAGS_MASK 0xf0
 
 struct brief_ship_info
 {
@@ -56,7 +56,6 @@ struct brief_ship_info
 	uqm::COUNT crew_level;
 	uqm::COUNT max_crew;
 	uqm::BYTE max_energy;
-
 };
 
 struct encounter
@@ -72,26 +71,26 @@ struct encounter
 	uqm::BYTE race_id;
 	uqm::BYTE num_ships;
 	uqm::BYTE flags;
-			// See ENCOUNTER.flags above
+	// See ENCOUNTER.flags above
 	POINT loc_pt;
 
 	BRIEF_SHIP_INFO ShipList[MAX_HYPER_SHIPS];
-			// Only the crew_level member is currently used
+	// Only the crew_level member is currently used
 
 	uqm::SDWORD log_x, log_y;
 };
 
-#define AllocEncounter() AllocLink (&GLOBAL (encounter_q))
-#define PutEncounter(h) PutQueue (&GLOBAL (encounter_q), h)
-#define InsertEncounter(h,i) InsertQueue (&GLOBAL (encounter_q), h, i)
-#define GetHeadEncounter() GetHeadLink (&GLOBAL (encounter_q))
-#define GetTailEncounter() GetTailLink (&GLOBAL (encounter_q))
-#define LockEncounter(h,ppe) (*(ppe) = (ENCOUNTER*)LockLink (&GLOBAL (encounter_q), h))
-#define UnlockEncounter(h) UnlockLink (&GLOBAL (encounter_q), h)
-#define RemoveEncounter(h) RemoveQueue (&GLOBAL (encounter_q), h)
-#define FreeEncounter(h) FreeLink (&GLOBAL (encounter_q), h)
-#define GetPredEncounter(l) _GetPredLink (l)
-#define GetSuccEncounter(l) _GetSuccLink (l)
+#define AllocEncounter() AllocLink(&GLOBAL(encounter_q))
+#define PutEncounter(h) PutQueue(&GLOBAL(encounter_q), h)
+#define InsertEncounter(h, i) InsertQueue(&GLOBAL(encounter_q), h, i)
+#define GetHeadEncounter() GetHeadLink(&GLOBAL(encounter_q))
+#define GetTailEncounter() GetTailLink(&GLOBAL(encounter_q))
+#define LockEncounter(h, ppe) (*(ppe) = (ENCOUNTER*)LockLink(&GLOBAL(encounter_q), h))
+#define UnlockEncounter(h) UnlockLink(&GLOBAL(encounter_q), h)
+#define RemoveEncounter(h) RemoveQueue(&GLOBAL(encounter_q), h)
+#define FreeEncounter(h) FreeLink(&GLOBAL(encounter_q), h)
+#define GetPredEncounter(l) _GetPredLink(l)
+#define GetSuccEncounter(l) _GetSuccLink(l)
 
 enum
 {
@@ -99,14 +98,14 @@ enum
 	ATTACK
 };
 
-extern void EncounterBattle (void);
-extern void BuildBattle (uqm::COUNT which_player);
-extern uqm::COUNT InitEncounter (void);
-extern uqm::COUNT UninitEncounter (void);
-extern bool FleetIsInfinite (uqm::COUNT playerNr);
-extern void UpdateShipFragCrew (STARSHIP *);
+extern void EncounterBattle(void);
+extern void BuildBattle(uqm::COUNT which_player);
+extern uqm::COUNT InitEncounter(void);
+extern uqm::COUNT UninitEncounter(void);
+extern bool FleetIsInfinite(uqm::COUNT playerNr);
+extern void UpdateShipFragCrew(STARSHIP*);
 
-extern void SetBattlePlanet (void);
+extern void SetBattlePlanet(void);
 
 // Last race the player battled with, or -1 if no battle took place.
 // Set to -1 by some funcs to inhibit IP groups from intercepting
@@ -119,4 +118,3 @@ extern uqm::BYTE EncounterGroup;
 #endif
 
 #endif /* UQM_ENCOUNT_H_ */
-

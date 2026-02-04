@@ -38,20 +38,20 @@
 #include "util.h"
 
 
-static void CleanupAfterStarBase (void);
+static void CleanupAfterStarBase(void);
 
 static void
-DrawBaseStateStrings (STARBASE_STATE OldState, STARBASE_STATE NewState)
+DrawBaseStateStrings(STARBASE_STATE OldState, STARBASE_STATE NewState)
 {
 	TEXT t;
-	uqm::COUNT text_base_y = RES_SCALE (106 + 28);
-	uqm::COUNT text_spacing_y = RES_SCALE (23 - 4);
+	uqm::COUNT text_base_y = RES_SCALE(106 + 28);
+	uqm::COUNT text_spacing_y = RES_SCALE(23 - 4);
 
-	SetContext (ScreenContext);
-	SetContextFont (StarConFont);
-	SetContextForeGroundColor (BLACK_COLOR);
+	SetContext(ScreenContext);
+	SetContextFont(StarConFont);
+	SetContextForeGroundColor(BLACK_COLOR);
 
-	t.baseline.x = RES_SCALE (73 - 4) + SAFE_X;
+	t.baseline.x = RES_SCALE(73 - 4) + SAFE_X;
 	t.align = ALIGN_CENTER;
 
 	if (OldState == (STARBASE_STATE)~0)
@@ -61,33 +61,32 @@ DrawBaseStateStrings (STARBASE_STATE OldState, STARBASE_STATE NewState)
 		{
 			if (OldState != NewState)
 			{
-				t.pStr = GAME_STRING (STARBASE_STRING_BASE + 1 + OldState);
+				t.pStr = GAME_STRING(STARBASE_STRING_BASE + 1 + OldState);
 				t.CharCount = (uqm::COUNT)~0;
-				font_DrawText (&t);
+				font_DrawText(&t);
 			}
 			t.baseline.y += text_spacing_y;
 		}
 	}
 
 	t.baseline.y = text_base_y + SAFE_Y + (text_spacing_y * OldState);
-	t.pStr = GAME_STRING (STARBASE_STRING_BASE + 1 + OldState);
+	t.pStr = GAME_STRING(STARBASE_STRING_BASE + 1 + OldState);
 	t.CharCount = (uqm::COUNT)~0;
-	font_DrawText (&t);
+	font_DrawText(&t);
 
-	SetContextForeGroundColor (
-			BUILD_COLOR (MAKE_RGB15 (0x1F, 0x1F, 0x0A), 0x0E));
+	SetContextForeGroundColor(
+		BUILD_COLOR(MAKE_RGB15(0x1F, 0x1F, 0x0A), 0x0E));
 	t.baseline.y = text_base_y + SAFE_Y + (text_spacing_y * NewState);
-	t.pStr = GAME_STRING (STARBASE_STRING_BASE + 1 + NewState);
+	t.pStr = GAME_STRING(STARBASE_STRING_BASE + 1 + NewState);
 	t.CharCount = (uqm::COUNT)~0;
-	font_DrawText (&t);
+	font_DrawText(&t);
 }
 
-void
-DrawShipPiece (FRAME ModuleFrame, uqm::COUNT which_piece, uqm::COUNT which_slot,
-		bool DrawBluePrint)
+void DrawShipPiece(FRAME ModuleFrame, uqm::COUNT which_piece, uqm::COUNT which_slot,
+				   bool DrawBluePrint)
 {
 	Color OldColor = UNDEFINED_COLOR;
-			// Initialisation is just to keep the compiler silent.
+	// Initialisation is just to keep the compiler silent.
 	RECT r;
 	STAMP Side, Top;
 	uqm::SBYTE RepairSlot;
@@ -114,10 +113,8 @@ DrawShipPiece (FRAME ModuleFrame, uqm::COUNT which_piece, uqm::COUNT which_slot,
 			{
 				RepairSlot = 1;
 				if (which_piece < EMPTY_SLOT
-						&& (which_slot == 0
-						|| GLOBAL_SIS (ModuleSlots[
-								which_slot - 1
-								]) < EMPTY_SLOT))
+					&& (which_slot == 0
+						|| GLOBAL_SIS(ModuleSlots[which_slot - 1]) < EMPTY_SLOT))
 					++RepairSlot;
 			}
 			else if (!DrawBluePrint)
@@ -126,13 +123,11 @@ DrawShipPiece (FRAME ModuleFrame, uqm::COUNT which_piece, uqm::COUNT which_slot,
 					++which_piece;
 
 				if (which_slot < NUM_MODULE_SLOTS - 1
-						&& GLOBAL_SIS (ModuleSlots[
-								which_slot + 1
-								]) < EMPTY_SLOT)
+					&& GLOBAL_SIS(ModuleSlots[which_slot + 1]) < EMPTY_SLOT)
 				{
 					RepairSlot = -1;
 					if (which_piece == EMPTY_SLOT + 3
-							|| which_slot + 1 == NUM_MODULE_SLOTS - 3)
+						|| which_slot + 1 == NUM_MODULE_SLOTS - 3)
 						--RepairSlot;
 				}
 			}
@@ -147,82 +142,82 @@ DrawShipPiece (FRAME ModuleFrame, uqm::COUNT which_piece, uqm::COUNT which_slot,
 	Side.frame = NULL;
 	if (RepairSlot < 0)
 	{
-		Side.frame = SetAbsFrameIndex (ModuleFrame,
-				((NUM_MODULES - 1) + (6 - 2)) + (NUM_MODULES + 6)
-				- (RepairSlot + 1));
-		DrawStamp (&Side);
+		Side.frame = SetAbsFrameIndex(ModuleFrame,
+									  ((NUM_MODULES - 1) + (6 - 2)) + (NUM_MODULES + 6)
+										  - (RepairSlot + 1));
+		DrawStamp(&Side);
 	}
 	else if (RepairSlot)
 	{
 		r.corner = Side.origin;
 		r.extent.width = SHIP_PIECE_OFFSET;
-		r.extent.height = RES_SCALE (1);
-		OldColor = SetContextForeGroundColor (BLACK_COLOR);
+		r.extent.height = RES_SCALE(1);
+		OldColor = SetContextForeGroundColor(BLACK_COLOR);
 		if (!IS_HD)
-			DrawFilledRectangle (&r);
-		r.corner.y += RES_SCALE (23 - 1);
+			DrawFilledRectangle(&r);
+		r.corner.y += RES_SCALE(23 - 1);
 		if (!IS_HD)
-			DrawFilledRectangle (&r);
+			DrawFilledRectangle(&r);
 
-		r.extent.width = RES_SCALE (1);
-		r.extent.height = RES_SCALE (8);
+		r.extent.width = RES_SCALE(1);
+		r.extent.height = RES_SCALE(8);
 		if (RepairSlot == 2)
 		{
 			r.corner = Side.origin;
 			if (!IS_HD)
-				DrawFilledRectangle (&r);
-			r.corner.y += RES_SCALE (15);
+				DrawFilledRectangle(&r);
+			r.corner.y += RES_SCALE(15);
 			if (!IS_HD)
-				DrawFilledRectangle (&r);
+				DrawFilledRectangle(&r);
 		}
 		if (which_slot < (NUM_MODULE_SLOTS - 1))
 		{
 			r.corner = Side.origin;
 			r.corner.x += SHIP_PIECE_OFFSET;
 			if (!IS_HD)
-				DrawFilledRectangle (&r);
-			r.corner.y += RES_SCALE (15);
+				DrawFilledRectangle(&r);
+			r.corner.y += RES_SCALE(15);
 			if (!IS_HD)
-				DrawFilledRectangle (&r);
+				DrawFilledRectangle(&r);
 		}
 	}
 
 	if (DrawBluePrint)
 	{
 		if (RepairSlot)
-			SetContextForeGroundColor (OldColor);
-		Side.frame = SetAbsFrameIndex (ModuleFrame, which_piece - 1);
-		DrawFilledStamp (&Side);
+			SetContextForeGroundColor(OldColor);
+		Side.frame = SetAbsFrameIndex(ModuleFrame, which_piece - 1);
+		DrawFilledStamp(&Side);
 	}
 	else
 	{
 		Top.origin.x += which_slot * SHIP_PIECE_OFFSET;
 		if (RepairSlot < 0)
 		{
-			Top.frame = SetRelFrameIndex (Side.frame, -((NUM_MODULES - 1) + 6));
-			DrawStamp (&Top);
+			Top.frame = SetRelFrameIndex(Side.frame, -((NUM_MODULES - 1) + 6));
+			DrawStamp(&Top);
 		}
 		else if (RepairSlot)
 		{
 			r.corner = Top.origin;
 			r.extent.width = SHIP_PIECE_OFFSET;
-			r.extent.height = RES_SCALE (1);
+			r.extent.height = RES_SCALE(1);
 			if (!IS_HD)
-				DrawFilledRectangle (&r);
-			r.corner.y += RES_SCALE (32 - 1);
+				DrawFilledRectangle(&r);
+			r.corner.y += RES_SCALE(32 - 1);
 			if (!IS_HD)
-				DrawFilledRectangle (&r);
+				DrawFilledRectangle(&r);
 
-			r.extent.width = RES_SCALE (1);
-			r.extent.height = RES_SCALE (12);
+			r.extent.width = RES_SCALE(1);
+			r.extent.height = RES_SCALE(12);
 			if (RepairSlot == 2)
 			{
 				r.corner = Top.origin;
 				if (!IS_HD)
-					DrawFilledRectangle (&r);
-				r.corner.y += RES_SCALE (20);
+					DrawFilledRectangle(&r);
+				r.corner.y += RES_SCALE(20);
 				if (!IS_HD)
-					DrawFilledRectangle (&r);
+					DrawFilledRectangle(&r);
 			}
 			RepairSlot = (which_slot < NUM_MODULE_SLOTS - 1);
 			if (RepairSlot)
@@ -230,18 +225,18 @@ DrawShipPiece (FRAME ModuleFrame, uqm::COUNT which_piece, uqm::COUNT which_slot,
 				r.corner = Top.origin;
 				r.corner.x += SHIP_PIECE_OFFSET;
 				if (!IS_HD)
-					DrawFilledRectangle (&r);
-				r.corner.y += RES_SCALE (20); 
+					DrawFilledRectangle(&r);
+				r.corner.y += RES_SCALE(20);
 				if (!IS_HD)
-					DrawFilledRectangle (&r);
+					DrawFilledRectangle(&r);
 			}
 		}
 
-		Top.frame = SetAbsFrameIndex (ModuleFrame, which_piece);
-		DrawStamp (&Top);
+		Top.frame = SetAbsFrameIndex(ModuleFrame, which_piece);
+		DrawStamp(&Top);
 
-		Side.frame = SetRelFrameIndex (Top.frame, (NUM_MODULES - 1) + 6);
-		DrawStamp (&Side);
+		Side.frame = SetRelFrameIndex(Top.frame, (NUM_MODULES - 1) + 6);
+		DrawStamp(&Side);
 
 		if (which_slot == 1 && which_piece == EMPTY_SLOT + 2)
 		{
@@ -249,45 +244,45 @@ DrawShipPiece (FRAME ModuleFrame, uqm::COUNT which_piece, uqm::COUNT which_slot,
 
 			s.origin = Top.origin;
 			s.origin.x -= SHIP_PIECE_OFFSET;
-			s.frame = SetAbsFrameIndex (ModuleFrame, NUM_MODULES + 5);
-			DrawStamp (&s);
+			s.frame = SetAbsFrameIndex(ModuleFrame, NUM_MODULES + 5);
+			DrawStamp(&s);
 			s.origin = Side.origin;
 			s.origin.x -= SHIP_PIECE_OFFSET;
-			s.frame = SetRelFrameIndex (s.frame, (NUM_MODULES - 1) + 6);
-			DrawStamp (&s);
+			s.frame = SetRelFrameIndex(s.frame, (NUM_MODULES - 1) + 6);
+			DrawStamp(&s);
 		}
 
 		if (RepairSlot)
 		{
 			Top.origin.x += SHIP_PIECE_OFFSET;
 			Side.origin.x += SHIP_PIECE_OFFSET;
-			which_piece = GLOBAL_SIS (ModuleSlots[++which_slot]);
+			which_piece = GLOBAL_SIS(ModuleSlots[++which_slot]);
 			if (which_piece == EMPTY_SLOT + 2
-					&& which_slot >= NUM_MODULE_SLOTS - 3)
+				&& which_slot >= NUM_MODULE_SLOTS - 3)
 				++which_piece;
 
-			Top.frame = SetAbsFrameIndex (ModuleFrame, which_piece);
-			DrawStamp (&Top);
+			Top.frame = SetAbsFrameIndex(ModuleFrame, which_piece);
+			DrawStamp(&Top);
 
-			Side.frame = SetRelFrameIndex (Top.frame, (NUM_MODULES - 1) + 6);
-			DrawStamp (&Side);
+			Side.frame = SetRelFrameIndex(Top.frame, (NUM_MODULES - 1) + 6);
+			DrawStamp(&Side);
 		}
 	}
 }
 
 static void
-rotateStarbase (MENU_STATE *pMS, FRAME AniFrame)
+rotateStarbase(MENU_STATE* pMS, FRAME AniFrame)
 {
 	static TimeCount NextTime = 0;
-	TimeCount Now = GetTimeCounter ();
+	TimeCount Now = GetTimeCounter();
 
 	if (AniFrame)
-	{	// Setup the animation
+	{ // Setup the animation
 		pMS->flash_frame0 = AniFrame;
 		pMS->flash_rect0.corner.x = SAFE_X;
 		pMS->flash_rect0.corner.y = SAFE_Y;
 	}
-	
+
 	if (Now >= NextTime || AniFrame)
 	{
 		STAMP s;
@@ -296,83 +291,82 @@ rotateStarbase (MENU_STATE *pMS, FRAME AniFrame)
 
 		s.origin = pMS->flash_rect0.corner;
 		s.frame = pMS->flash_frame0;
-		DrawStamp (&s);
+		DrawStamp(&s);
 
-		s.frame = IncFrameIndex (s.frame);
-		if (GetFrameIndex (s.frame) == 0)
-		{	// Do not redraw the base frame, animation loops to frame 1
-			s.frame = IncFrameIndex (s.frame);
+		s.frame = IncFrameIndex(s.frame);
+		if (GetFrameIndex(s.frame) == 0)
+		{ // Do not redraw the base frame, animation loops to frame 1
+			s.frame = IncFrameIndex(s.frame);
 		}
 		pMS->flash_frame0 = s.frame;
 	}
 }
 
-bool
-DoStarBase (MENU_STATE *pMS)
+bool DoStarBase(MENU_STATE* pMS)
 {
 	// XXX: This function is full of hacks and otherwise strange code
 
-	if (GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
+	if (GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
 	{
 		pMS->CurState = DEPART_BASE;
 		goto ExitStarBase;
 	}
-	SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
+	SetMenuSounds(MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
 
 	if (!pMS->Initialized)
 	{
 		LastActivity &= ~CHECK_LOAD;
 		pMS->InputFunc = DoStarBase;
 
-		SetFlashRect (NULL, false);
+		SetFlashRect(NULL, false);
 
 		if (pMS->hMusic)
 		{
-			StopMusic ();
-			DestroyMusic (pMS->hMusic);
+			StopMusic();
+			DestroyMusic(pMS->hMusic);
 			pMS->hMusic = 0;
 		}
 
 		pMS->Initialized = true;
 
-		pMS->CurFrame = CaptureDrawable (LoadGraphic (STARBASE_ANIM));
-		pMS->hMusic = LoadMusic (STARBASE_MUSIC);
+		pMS->CurFrame = CaptureDrawable(LoadGraphic(STARBASE_ANIM));
+		pMS->hMusic = LoadMusic(STARBASE_MUSIC);
 
-		SetContext (ScreenContext);
-		SetTransitionSource (NULL);
-		BatchGraphics ();
-		SetContextBackGroundColor (BLACK_COLOR);
-		ClearDrawable ();
-		rotateStarbase (pMS, pMS->CurFrame);
-		DrawBaseStateStrings ((STARBASE_STATE)~0, pMS->CurState);
-		ScreenTransition (optScrTrans, NULL);
+		SetContext(ScreenContext);
+		SetTransitionSource(NULL);
+		BatchGraphics();
+		SetContextBackGroundColor(BLACK_COLOR);
+		ClearDrawable();
+		rotateStarbase(pMS, pMS->CurFrame);
+		DrawBaseStateStrings((STARBASE_STATE)~0, pMS->CurState);
+		ScreenTransition(optScrTrans, NULL);
 
-		PlayMusicResume (pMS->hMusic, NORMAL_VOLUME);
+		PlayMusicResume(pMS->hMusic, NORMAL_VOLUME);
 
-		DrawBorderPadding (0);
+		DrawBorderPadding(0);
 
-		UnbatchGraphics ();
+		UnbatchGraphics();
 	}
 	else if (PulsedInputState.menu[KEY_MENU_SELECT])
 	{
 ExitStarBase:
-		DestroyDrawable (ReleaseDrawable (pMS->CurFrame));
+		DestroyDrawable(ReleaseDrawable(pMS->CurFrame));
 		pMS->CurFrame = 0;
 
-		SetMusicPosition ();
+		SetMusicPosition();
 
-		StopMusic ();
+		StopMusic();
 		if (pMS->hMusic)
 		{
-			DestroyMusic (pMS->hMusic);
+			DestroyMusic(pMS->hMusic);
 			pMS->hMusic = 0;
 		}
 
 		if (pMS->CurState == DEPART_BASE)
 		{
-			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
+			if (!(GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
 			{
-				SET_GAME_STATE (STARBASE_VISITED, 0);
+				SET_GAME_STATE(STARBASE_VISITED, 0);
 			}
 			return (false);
 		}
@@ -380,11 +374,11 @@ ExitStarBase:
 		pMS->Initialized = false;
 		if (pMS->CurState == TALK_COMMANDER)
 		{
-			FlushInput ();
-			InitCommunication (COMMANDER_CONVERSATION);
+			FlushInput();
+			InitCommunication(COMMANDER_CONVERSATION);
 			// XXX: InitCommunication() clears these flags, and we need them
 			//   This marks that we are in Starbase.
-			SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, (uqm::BYTE)~0);
+			SET_GAME_STATE(GLOBAL_FLAGS_AND_DATA, (uqm::BYTE)~0);
 		}
 		else
 		{
@@ -392,7 +386,7 @@ ExitStarBase:
 
 			if (IS_HD && !hdFuelFrame)
 				hdFuelFrame =
-						CaptureDrawable (LoadGraphic (FUEL_PMAP_ANIM));
+					CaptureDrawable(LoadGraphic(FUEL_PMAP_ANIM));
 
 			switch (OldState = pMS->CurState)
 			{
@@ -404,12 +398,12 @@ ExitStarBase:
 					break;
 			}
 
-			SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
-			DoInput (pMS, true);
+			SetMenuSounds(MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
+			DoInput(pMS, true);
 
 			if (IS_HD)
 			{
-				DestroyDrawable (ReleaseDrawable (hdFuelFrame));
+				DestroyDrawable(ReleaseDrawable(hdFuelFrame));
 				hdFuelFrame = 0;
 			}
 
@@ -434,178 +428,176 @@ ExitStarBase:
 				NewState = TALK_COMMANDER;
 		}
 
-		BatchGraphics ();
-		SetContext (ScreenContext);
+		BatchGraphics();
+		SetContext(ScreenContext);
 
 		if (NewState != pMS->CurState)
 		{
-			DrawBaseStateStrings (pMS->CurState, NewState);
+			DrawBaseStateStrings(pMS->CurState, NewState);
 			pMS->CurState = NewState;
 		}
 
-		rotateStarbase (pMS, NULL);
+		rotateStarbase(pMS, NULL);
 
-		DrawBorderPadding (0);
+		DrawBorderPadding(0);
 
-		UnbatchGraphics ();
+		UnbatchGraphics();
 
-		SleepThread (ONE_SECOND / 30);
+		SleepThread(ONE_SECOND / 30);
 	}
 
 	return (true);
 }
 
 static void
-DoTimePassage (void)
+DoTimePassage(void)
 {
 #define LOST_DAYS 14
-	SleepThreadUntil (FadeScreen (FadeAllToBlack, ONE_SECOND * 2));
-	MoveGameClockDays (LOST_DAYS);
+	SleepThreadUntil(FadeScreen(FadeAllToBlack, ONE_SECOND * 2));
+	MoveGameClockDays(LOST_DAYS);
 
 	// JMS: Calculate flagship location in IP.
 	if (optOrbitingPlanets)
 	{
 		double newAngle;
 		POINT starbase_coords;
-		
+
 		// Calculate the starbase position on a circle with the help of sin and cos.
-		newAngle = ((double)(10) + daysElapsed() * (FULL_CIRCLE / 11.46)) * M_PI / 32 - M_PI/2 ; // JMS: Starbase orbit values copied from gensol.c
+		newAngle = ((double)(10) + daysElapsed() * (FULL_CIRCLE / 11.46)) * M_PI / 32 - M_PI / 2; // JMS: Starbase orbit values copied from gensol.c
 		starbase_coords.x = (COORD)(cos(newAngle) * MIN_MOON_RADIUS);
 		starbase_coords.y = (COORD)(sin(newAngle) * MIN_MOON_RADIUS);
-		
+
 		//log_add (log_Debug, "startangle:%d angle:%f, radius:%d, speed:%f, days:%f X:%d, y:%d", 10, newAngle, MIN_MOON_RADIUS, FULL_CIRCLE / 11.46, daysElapsed(), starbase_coords.x, starbase_coords.y);
-		
+
 		// Translate the coordinates on a circle to an ellipse and update the ship's graphics' coordinates on the screen.
-		GLOBAL (ShipStamp.origin.x) = RES_SCALE (ORIG_SIS_SCREEN_WIDTH >> 1) + starbase_coords.x;
-		GLOBAL (ShipStamp.origin.y) = RES_SCALE (ORIG_SIS_SCREEN_HEIGHT >> 1) + (starbase_coords.y >> 1);
+		GLOBAL(ShipStamp.origin.x) = RES_SCALE(ORIG_SIS_SCREEN_WIDTH >> 1) + starbase_coords.x;
+		GLOBAL(ShipStamp.origin.y) = RES_SCALE(ORIG_SIS_SCREEN_HEIGHT >> 1) + (starbase_coords.y >> 1);
 	}
 }
 
-void
-VisitStarBase (void)
+void VisitStarBase(void)
 {
 	MENU_STATE MenuState;
 	CONTEXT OldContext;
 	StatMsgMode prevMsgMode = SMM_UNDEFINED;
 
 	// XXX: This should probably be moved out to Starcon2Main()
-	if (GET_GAME_STATE (CHMMR_BOMB_STATE) == 2)
-	{	// We were just transported by Chmmr to the Starbase
+	if (GET_GAME_STATE(CHMMR_BOMB_STATE) == 2)
+	{ // We were just transported by Chmmr to the Starbase
 		// Force a reload of the SolarSys
 		CurStarDescPtr = NULL;
 		// This marks that we are in Starbase.
-		SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, (uqm::BYTE)~0);
+		SET_GAME_STATE(GLOBAL_FLAGS_AND_DATA, (uqm::BYTE)~0);
 	}
 
-	if (!GET_GAME_STATE (STARBASE_AVAILABLE))
+	if (!GET_GAME_STATE(STARBASE_AVAILABLE))
 	{
 		HSHIPFRAG hStarShip;
-		SHIP_FRAGMENT *FragPtr;
+		SHIP_FRAGMENT* FragPtr;
 
 		// Unallied Starbase conversation
-		SetCommIntroMode (CIM_CROSSFADE_SCREEN, 0);
-		InitCommunication (COMMANDER_CONVERSATION);
-		if (!GET_GAME_STATE (PROBE_ILWRATH_ENCOUNTER)
-				|| (GLOBAL (CurrentActivity) & CHECK_ABORT))
+		SetCommIntroMode(CIM_CROSSFADE_SCREEN, 0);
+		InitCommunication(COMMANDER_CONVERSATION);
+		if (!GET_GAME_STATE(PROBE_ILWRATH_ENCOUNTER)
+			|| (GLOBAL(CurrentActivity) & CHECK_ABORT))
 		{
-			CleanupAfterStarBase ();
+			CleanupAfterStarBase();
 			return;
 		}
 
 		/* Create an Ilwrath ship responding to the Ur-Quan
 		 * probe's broadcast */
-		hStarShip = CloneShipFragment (ILWRATH_SHIP,
-				&GLOBAL (npc_built_ship_q), 7);
-		FragPtr = LockShipFrag (&GLOBAL (npc_built_ship_q), hStarShip);
+		hStarShip = CloneShipFragment(ILWRATH_SHIP,
+									  &GLOBAL(npc_built_ship_q), 7);
+		FragPtr = LockShipFrag(&GLOBAL(npc_built_ship_q), hStarShip);
 		/* Hack (sort of): Suppress the tally and salvage info
 		 * after the battle */
 		FragPtr->race_id = (uqm::BYTE)~0;
-		UnlockShipFrag (&GLOBAL (npc_built_ship_q), hStarShip);
+		UnlockShipFrag(&GLOBAL(npc_built_ship_q), hStarShip);
 
-		InitCommunication (ILWRATH_CONVERSATION);
-		if (GLOBAL_SIS (CrewEnlisted) == (uqm::COUNT)~0
-				|| (GLOBAL (CurrentActivity) & CHECK_ABORT))
+		InitCommunication(ILWRATH_CONVERSATION);
+		if (GLOBAL_SIS(CrewEnlisted) == (uqm::COUNT)~0
+			|| (GLOBAL(CurrentActivity) & CHECK_ABORT))
 			return; // Killed by Ilwrath
-		
+
 		// After Ilwrath battle, about-to-ally Starbase conversation
-		SetCommIntroMode (CIM_CROSSFADE_SCREEN, 0);
-		InitCommunication (COMMANDER_CONVERSATION);
-		if (GLOBAL (CurrentActivity) & CHECK_ABORT)
+		SetCommIntroMode(CIM_CROSSFADE_SCREEN, 0);
+		InitCommunication(COMMANDER_CONVERSATION);
+		if (GLOBAL(CurrentActivity) & CHECK_ABORT)
 			return;
 		// XXX: InitCommunication() clears these flags, and we need them
 		//   This marks that we are in Starbase.
-		SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, (uqm::BYTE)~0);
+		SET_GAME_STATE(GLOBAL_FLAGS_AND_DATA, (uqm::BYTE)~0);
 	}
 
-	prevMsgMode = SetStatusMessageMode (SMM_RES_UNITS);
+	prevMsgMode = SetStatusMessageMode(SMM_RES_UNITS);
 
-	if (GET_GAME_STATE (MOONBASE_ON_SHIP)
-			|| GET_GAME_STATE (CHMMR_BOMB_STATE) == 2)
-	{	// Go immediately into a conversation with the Commander when the
+	if (GET_GAME_STATE(MOONBASE_ON_SHIP)
+		|| GET_GAME_STATE(CHMMR_BOMB_STATE) == 2)
+	{ // Go immediately into a conversation with the Commander when the
 		// Starbase becomes available for the first time, or after Chmmr
 		// install the bomb.
-		DoTimePassage ();
-		if (GLOBAL_SIS (CrewEnlisted) == (uqm::COUNT)~0)
+		DoTimePassage();
+		if (GLOBAL_SIS(CrewEnlisted) == (uqm::COUNT)~0)
 			return; // You are now dead! Thank you! (killed by Kohr-Ah)
 
-		SetCommIntroMode (CIM_FADE_IN_SCREEN, ONE_SECOND * 2);
-		InitCommunication (COMMANDER_CONVERSATION);
-		if (GLOBAL (CurrentActivity) & CHECK_ABORT)
+		SetCommIntroMode(CIM_FADE_IN_SCREEN, ONE_SECOND * 2);
+		InitCommunication(COMMANDER_CONVERSATION);
+		if (GLOBAL(CurrentActivity) & CHECK_ABORT)
 			return;
 		// XXX: InitCommunication() clears these flags, and we need them
 		//   This marks that we are in Starbase.
-		SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, (uqm::BYTE)~0);
+		SET_GAME_STATE(GLOBAL_FLAGS_AND_DATA, (uqm::BYTE)~0);
 	}
 
-	memset (&MenuState, 0, sizeof (MenuState));
+	memset(&MenuState, 0, sizeof(MenuState));
 	MenuState.InputFunc = DoStarBase;
-	
-	OldContext = SetContext (ScreenContext);
-	DoInput (&MenuState, true);
-	SetContext (OldContext);
 
-	SetStatusMessageMode (prevMsgMode);
-	CleanupAfterStarBase ();
+	OldContext = SetContext(ScreenContext);
+	DoInput(&MenuState, true);
+	SetContext(OldContext);
+
+	SetStatusMessageMode(prevMsgMode);
+	CleanupAfterStarBase();
 }
 
 static void
-CleanupAfterStarBase (void)
+CleanupAfterStarBase(void)
 {
-	if (!(GLOBAL (CurrentActivity) & (CHECK_LOAD | CHECK_ABORT)))
+	if (!(GLOBAL(CurrentActivity) & (CHECK_LOAD | CHECK_ABORT)))
 	{
 		// Mark as not in Starbase anymore
-		SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, 0);
+		SET_GAME_STATE(GLOBAL_FLAGS_AND_DATA, 0);
 		// Fake a load so Starcon2Main takes us to IP
-		GLOBAL (CurrentActivity) = CHECK_LOAD;
-		NextActivity = MAKE_WORD (IN_INTERPLANETARY, 0)
-				| START_INTERPLANETARY;
+		GLOBAL(CurrentActivity) = CHECK_LOAD;
+		NextActivity = MAKE_WORD(IN_INTERPLANETARY, 0)
+					 | START_INTERPLANETARY;
 	}
 }
 
-void
-InstallBombAtEarth (void)
+void InstallBombAtEarth(void)
 {
-	DoTimePassage ();
+	DoTimePassage();
 
-	GLOBAL (ShipStamp.origin.x) = RES_SCALE (ORIG_SIS_SCREEN_WIDTH >> 1);
-	GLOBAL (ShipStamp.origin.y) = RES_SCALE (ORIG_SIS_SCREEN_HEIGHT >> 1);
+	GLOBAL(ShipStamp.origin.x) = RES_SCALE(ORIG_SIS_SCREEN_WIDTH >> 1);
+	GLOBAL(ShipStamp.origin.y) = RES_SCALE(ORIG_SIS_SCREEN_HEIGHT >> 1);
 
-	SetContext (ScreenContext);
-	SetTransitionSource (NULL);
-	SetContextBackGroundColor (BLACK_COLOR);
-	ClearDrawable ();
-	
-	SleepThreadUntil (FadeScreen (FadeAllToColor, 0));
-	
-	SET_GAME_STATE (CHMMR_BOMB_STATE, 3); /* bomb processed */
-	GLOBAL (CurrentActivity) = CHECK_LOAD; /* fake a load game */
-	NextActivity = MAKE_WORD (IN_INTERPLANETARY, 0) | START_INTERPLANETARY;
+	SetContext(ScreenContext);
+	SetTransitionSource(NULL);
+	SetContextBackGroundColor(BLACK_COLOR);
+	ClearDrawable();
+
+	SleepThreadUntil(FadeScreen(FadeAllToColor, 0));
+
+	SET_GAME_STATE(CHMMR_BOMB_STATE, 3);  /* bomb processed */
+	GLOBAL(CurrentActivity) = CHECK_LOAD; /* fake a load game */
+	NextActivity = MAKE_WORD(IN_INTERPLANETARY, 0) | START_INTERPLANETARY;
 	CurStarDescPtr = 0; /* force SolarSys reload */
 }
 
 // XXX: Doesn't really belong in this file.
 uqm::COUNT
-WrapText (const uqm::CHAR_T *pStr, uqm::COUNT len, TEXT *tarray, uqm::SIZE field_width)
+WrapText(const uqm::CHAR_T* pStr, uqm::COUNT len, TEXT* tarray, uqm::SIZE field_width)
 {
 	uqm::COUNT num_lines;
 
@@ -614,21 +606,21 @@ WrapText (const uqm::CHAR_T *pStr, uqm::COUNT len, TEXT *tarray, uqm::SIZE field
 	{
 		RECT r;
 		uqm::COUNT OldCount;
-		
+
 		tarray->align = ALIGN_LEFT; /* set alignment to something */
 		tarray->pStr = pStr;
 		tarray->CharCount = 1;
 		++num_lines;
-		
+
 		do
 		{
 			OldCount = tarray->CharCount;
 			while (*++pStr != ' ' && (uqm::COUNT)(pStr - tarray->pStr) < len)
 				;
 			tarray->CharCount = pStr - tarray->pStr;
-			TextRect (tarray, &r, NULL);
+			TextRect(tarray, &r, NULL);
 		} while (tarray->CharCount < len && r.extent.width < field_width);
-	
+
 		if (r.extent.width >= field_width)
 		{
 			if ((tarray->CharCount = OldCount) == 1)
@@ -636,16 +628,16 @@ WrapText (const uqm::CHAR_T *pStr, uqm::COUNT len, TEXT *tarray, uqm::SIZE field
 				do
 				{
 					++tarray->CharCount;
-					TextRect (tarray, &r, NULL);
+					TextRect(tarray, &r, NULL);
 				} while (r.extent.width < field_width);
 				--tarray->CharCount;
 			}
 		}
-	
+
 		pStr = tarray->pStr + tarray->CharCount;
 		len -= tarray->CharCount;
 		++tarray;
-	
+
 		if (len && (r.extent.width < field_width || OldCount > 1))
 		{
 			++pStr; /* skip white space */
@@ -656,4 +648,3 @@ WrapText (const uqm::CHAR_T *pStr, uqm::COUNT len, TEXT *tarray, uqm::SIZE field
 
 	return (num_lines);
 }
-

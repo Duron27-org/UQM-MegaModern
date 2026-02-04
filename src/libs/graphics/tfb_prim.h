@@ -20,12 +20,12 @@
 #include "tfb_draw.h"
 
 
-void TFB_Prim_Line (LINE *, Color, DrawMode, POINT ctxOrigin, uqm::BYTE thickness);
-void TFB_Prim_Point (POINT *, Color, DrawMode, POINT ctxOrigin, bool scaled);
-void TFB_Prim_Rect (RECT *, Color, DrawMode, POINT ctxOrigin, bool scaled);
-void TFB_Prim_FillRect (RECT *, Color, DrawMode, POINT ctxOrigin);
-void TFB_Prim_Stamp (STAMP *, DrawMode, POINT ctxOrigin, bool unscaled);
-void TFB_Prim_StampFill (STAMP *, Color, DrawMode, POINT ctxOrigin, bool unscaled);
-void TFB_Prim_FontChar (POINT charOrigin, TFB_Char *fontChar,
-		TFB_Image *backing, DrawMode, POINT ctxOrigin);
-void TFB_Prim_MaskFrame (FRAME layer, FRAME base, DrawMode mode, Color *fill);
+void TFB_Prim_Line(LINE*, Color, DrawMode, POINT ctxOrigin, uqm::BYTE thickness);
+void TFB_Prim_Point(POINT*, Color, DrawMode, POINT ctxOrigin, bool scaled);
+void TFB_Prim_Rect(RECT*, Color, DrawMode, POINT ctxOrigin, bool scaled);
+void TFB_Prim_FillRect(RECT*, Color, DrawMode, POINT ctxOrigin);
+void TFB_Prim_Stamp(STAMP*, DrawMode, POINT ctxOrigin, bool unscaled);
+void TFB_Prim_StampFill(STAMP*, Color, DrawMode, POINT ctxOrigin, bool unscaled);
+void TFB_Prim_FontChar(POINT charOrigin, TFB_Char* fontChar,
+					   TFB_Image* backing, DrawMode, POINT ctxOrigin);
+void TFB_Prim_MaskFrame(FRAME layer, FRAME base, DrawMode mode, Color* fill);

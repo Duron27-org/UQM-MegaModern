@@ -25,14 +25,15 @@
 
 #include "libs/log/uqmlog.h"
 
-typedef struct _thread {
+typedef struct _thread
+{
 	pthread_t native;
 #ifdef NAMED_SYNCHRO
-	const char *name;
+	const char* name;
 #endif
-	ThreadLocal *localData;
-	struct _thread *next;
-} *TrueThread;
+	ThreadLocal* localData;
+	struct _thread* next;
+}* TrueThread;
 
 static volatile TrueThread threadQueue = NULL;
 static pthread_mutex_t threadQueueMutex;
@@ -40,38 +41,36 @@ static pthread_mutex_t threadQueueMutex;
 struct ThreadStartInfo
 {
 	ThreadFunction func;
-	void *data;
+	void* data;
 	sem_t sem;
 	TrueThread thread;
 };
 
-void
-InitThreadSystem_PT (void)
+void InitThreadSystem_PT(void)
 {
-	pthread_mutex_init (&threadQueueMutex, NULL);
+	pthread_mutex_init(&threadQueueMutex, NULL);
 }
 
-void
-UnInitThreadSystem_PT (void)
+void UnInitThreadSystem_PT(void)
 {
-	pthread_mutex_destroy (&threadQueueMutex);
+	pthread_mutex_destroy(&threadQueueMutex);
 }
 
 static void
-QueueThread (TrueThread thread)
+QueueThread(TrueThread thread)
 {
-	pthread_mutex_lock (&threadQueueMutex);
+	pthread_mutex_lock(&threadQueueMutex);
 	thread->next = threadQueue;
 	threadQueue = thread;
-	pthread_mutex_unlock (&threadQueueMutex);
+	pthread_mutex_unlock(&threadQueueMutex);
 }
 
 static void
-UnQueueThread (TrueThread thread)
+UnQueueThread(TrueThread thread)
 {
-	volatile TrueThread *ptr;
+	volatile TrueThread* ptr;
 
-	pthread_mutex_lock (&threadQueueMutex);
+	pthread_mutex_lock(&threadQueueMutex);
 	ptr = &threadQueue;
 	while (*ptr != thread)
 	{
@@ -79,199 +78,199 @@ UnQueueThread (TrueThread thread)
 		if (*ptr == NULL)
 		{
 			// Should not happen.
-			log_add (log_Debug, "Error: Trying to remove non-present thread "
-					"from thread queue.");
-			fflush (stderr);
-			explode ();
+			log_add(log_Debug, "Error: Trying to remove non-present thread "
+							   "from thread queue.");
+			fflush(stderr);
+			explode();
 		}
-#endif  /* DEBUG_THREADS */
+#endif /* DEBUG_THREADS */
 		ptr = &(*ptr)->next;
 	}
 	*ptr = (*ptr)->next;
-	pthread_mutex_unlock (&threadQueueMutex);
+	pthread_mutex_unlock(&threadQueueMutex);
 }
 
 static TrueThread
-FindThreadInfo (pthread_t threadID)
+FindThreadInfo(pthread_t threadID)
 {
 	TrueThread ptr;
 
-	pthread_mutex_lock (&threadQueueMutex);
+	pthread_mutex_lock(&threadQueueMutex);
 	ptr = threadQueue;
 	while (ptr)
 	{
 		if (ptr->native == threadID)
 		{
-			pthread_mutex_unlock (&threadQueueMutex);
+			pthread_mutex_unlock(&threadQueueMutex);
 			return ptr;
 		}
 		ptr = ptr->next;
 	}
-	pthread_mutex_unlock (&threadQueueMutex);
+	pthread_mutex_unlock(&threadQueueMutex);
 	return NULL;
 }
 
 #ifdef NAMED_SYNCHRO
-static const char *
-MyThreadName (void)
+static const char*
+MyThreadName(void)
 {
-	TrueThread t = FindThreadInfo (pthread_self());
+	TrueThread t = FindThreadInfo(pthread_self());
 	return t ? t->name : "Unknown (probably renderer)";
 }
 #endif
 
-static void *
-ThreadHelper (void *startInfo) {
+static void*
+ThreadHelper(void* startInfo)
+{
 	ThreadFunction func;
-	void *data;
-	sem_t *sem;
+	void* data;
+	sem_t* sem;
 	TrueThread thread;
 	int result;
-	
+
 	//log_add (log_Debug, "ThreadHelper()");
-	
-	func = ((struct ThreadStartInfo *) startInfo)->func;
-	data = ((struct ThreadStartInfo *) startInfo)->data;
-	sem  = &((struct ThreadStartInfo *) startInfo)->sem;
+
+	func = ((struct ThreadStartInfo*)startInfo)->func;
+	data = ((struct ThreadStartInfo*)startInfo)->data;
+	sem = &((struct ThreadStartInfo*)startInfo)->sem;
 
 	// Wait until the Thread structure is available.
-	if (sem_wait (sem))
+	if (sem_wait(sem))
 	{
 		log_add(log_Fatal, "ThreadHelper sem_wait fail");
 		exit(EXIT_FAILURE);
 	}
-	if (sem_destroy (sem))
+	if (sem_destroy(sem))
 	{
 		log_add(log_Fatal, "ThreadHelper sem_destroy fail");
 		exit(EXIT_FAILURE);
 	}
-	
-	thread = ((struct ThreadStartInfo *) startInfo)->thread;
-	HFree (startInfo);
 
-	result = (*func) (data);
+	thread = ((struct ThreadStartInfo*)startInfo)->thread;
+	HFree(startInfo);
+
+	result = (*func)(data);
 
 #ifdef DEBUG_THREADS
-	log_add (log_Debug, "Thread '%s' done (returned %d).",
+	log_add(log_Debug, "Thread '%s' done (returned %d).",
 			thread->name, result);
-	fflush (stderr);
+	fflush(stderr);
 #endif
 
-	UnQueueThread (thread);
-	DestroyThreadLocal (thread->localData);
-	FinishThread (thread);
+	UnQueueThread(thread);
+	DestroyThreadLocal(thread->localData);
+	FinishThread(thread);
 	/* Destroying the thread is the responsibility of ProcessThreadLifecycles() */
 	return (void*)result;
 }
 
-void
-DestroyThread_PT (Thread t)
+void DestroyThread_PT(Thread t)
 {
-	HFree (t);
-}	
+	HFree(t);
+}
 
 Thread
-CreateThread_PT (ThreadFunction func, void *data, uqm::SDWORD stackSize
+CreateThread_PT(ThreadFunction func, void* data, uqm::SDWORD stackSize
 #ifdef NAMED_SYNCHRO
-		  , const char *name
+				,
+				const char* name
 #endif
-	)
+)
 {
 	TrueThread thread;
-	struct ThreadStartInfo *startInfo;
+	struct ThreadStartInfo* startInfo;
 	pthread_attr_t attr;
 
-	
+
 	//log_add (log_Debug, "CreateThread_PT '%s'", name);
-	
-	thread = (struct _thread *) HMalloc (sizeof *thread);
+
+	thread = (struct _thread*)HMalloc(sizeof *thread);
 #ifdef NAMED_SYNCHRO
 	thread->name = name;
 #endif
 
-	thread->localData = CreateThreadLocal ();
+	thread->localData = CreateThreadLocal();
 
-	startInfo = (struct ThreadStartInfo *) HMalloc (sizeof (*startInfo));
+	startInfo = (struct ThreadStartInfo*)HMalloc(sizeof(*startInfo));
 	startInfo->func = func;
 	startInfo->data = data;
 	if (sem_init(&startInfo->sem, 0, 0) < 0)
 	{
-		log_add (log_Fatal, "createthread seminit fail");
+		log_add(log_Fatal, "createthread seminit fail");
 		exit(EXIT_FAILURE);
 	}
 	startInfo->thread = thread;
-		
+
 	pthread_attr_init(&attr);
- 	if (pthread_attr_setstacksize(&attr, 75000))
- 	{
- 		log_add (log_Debug, "pthread stacksize fail");
- 	}
-	if (pthread_create(&thread->native, &attr, ThreadHelper, (void *)startInfo))
+	if (pthread_attr_setstacksize(&attr, 75000))
 	{
-		log_add (log_Debug, "pthread create fail");
-		DestroyThreadLocal (thread->localData);
-		HFree (startInfo);
-		HFree (thread);
+		log_add(log_Debug, "pthread stacksize fail");
+	}
+	if (pthread_create(&thread->native, &attr, ThreadHelper, (void*)startInfo))
+	{
+		log_add(log_Debug, "pthread create fail");
+		DestroyThreadLocal(thread->localData);
+		HFree(startInfo);
+		HFree(thread);
 		return NULL;
 	}
 	// The responsibility to free 'startInfo' and 'thread' is now by the new
 	// thread.
-	
-	QueueThread (thread);
+
+	QueueThread(thread);
 
 #ifdef DEBUG_THREADS
-//#if 0	
-	log_add (log_Debug, "Thread '%s' created.", thread->name);
-	fflush (stderr);
+	//#if 0
+	log_add(log_Debug, "Thread '%s' created.", thread->name);
+	fflush(stderr);
 //#endif
 #endif
 
 	// Signal to the new thread that the thread structure is ready
 	// and it can begin to use it.
-	if (sem_post (&startInfo->sem))
+	if (sem_post(&startInfo->sem))
 	{
 		log_add(log_Fatal, "CreateThread sem_post fail");
 		exit(EXIT_FAILURE);
 	}
 
-	(void) stackSize;  /* Satisfying compiler (unused parameter) */
+	(void)stackSize; /* Satisfying compiler (unused parameter) */
 	return thread;
 }
 
-void
-SleepThread_PT (TimeCount sleepTime)
+void SleepThread_PT(TimeCount sleepTime)
 {
-	usleep (sleepTime * 1000000 / ONE_SECOND);
+	usleep(sleepTime * 1000000 / ONE_SECOND);
 }
 
-void
-SleepThreadUntil_PT (TimeCount wakeTime) {
+void SleepThreadUntil_PT(TimeCount wakeTime)
+{
 	TimeCount now;
 
-	now = GetTimeCounter ();
+	now = GetTimeCounter();
 	if (wakeTime <= now)
-		TaskSwitch_PT ();
+		TaskSwitch_PT();
 	else
-		usleep ((wakeTime - now) * 1000000 / ONE_SECOND);
+		usleep((wakeTime - now) * 1000000 / ONE_SECOND);
 }
 
-void
-TaskSwitch_PT (void) {
-	usleep (1000);
+void TaskSwitch_PT(void)
+{
+	usleep(1000);
 }
 
-void
-WaitThread_PT (Thread thread, int *status) {
+void WaitThread_PT(Thread thread, int* status)
+{
 	//log_add(log_Debug, "WaitThread_PT '%s', status %x", ((TrueThread)thread)->name, status);
 	//pthread_join(((TrueThread)thread)->native, status);
 	pthread_join(((TrueThread)thread)->native, NULL);
 	//log_add(log_Debug, "WaitThread_PT '%s' complete", ((TrueThread)thread)->name);
 }
 
-ThreadLocal *
-GetMyThreadLocal_PT (void)
+ThreadLocal*
+GetMyThreadLocal_PT(void)
 {
-	TrueThread t = FindThreadInfo (pthread_self());
+	TrueThread t = FindThreadInfo(pthread_self());
 	return t ? t->localData : NULL;
 }
 
@@ -281,27 +280,28 @@ GetMyThreadLocal_PT (void)
 /* TODO.  The w_memlib uses Mutexes right now, so we can't use HMalloc
  * or HFree. Once that goes, this needs to change. */
 
-typedef struct _mutex {
+typedef struct _mutex
+{
 	pthread_mutex_t mutex;
 #ifdef TRACK_CONTENTION
 	pthread_t owner;
 #endif
 #ifdef NAMED_SYNCHRO
-	const char *name;
+	const char* name;
 	uqm::DWORD syncClass;
 #endif
 } Mut;
-	
+
 
 Mutex
 #ifdef NAMED_SYNCHRO
-CreateMutex_PT (const char *name, uqm::DWORD syncClass)
+CreateMutex_PT(const char* name, uqm::DWORD syncClass)
 #else
-CreateMutex_PT (void)
+CreateMutex_PT(void)
 #endif
 {
-	Mut *mutex = malloc (sizeof (Mut));
-	
+	Mut* mutex = malloc(sizeof(Mut));
+
 	if (mutex != NULL)
 	{
 		pthread_mutexattr_t attr;
@@ -312,16 +312,17 @@ CreateMutex_PT (void)
 #ifdef NAMED_SYNCHRO
 			/* logging depends on Mutexes, so we have to use the
 			 * non-threaded version instead */
-			log_add_nothread (log_Fatal, "Could not initialize mutex '%s':"
-				"aborting.", name);
+			log_add_nothread(log_Fatal, "Could not initialize mutex '%s':"
+										"aborting.",
+							 name);
 #else
-			log_add_nothread (log_Fatal, "Could not initialize mutex:"
-					"aborting.");
+			log_add_nothread(log_Fatal, "Could not initialize mutex:"
+										"aborting.");
 #endif
-			exit (EXIT_FAILURE);			
+			exit(EXIT_FAILURE);
 		}
 		pthread_mutexattr_destroy(&attr);
-		 
+
 #ifdef TRACK_CONTENTION
 		mutex->owner = 0;
 #endif
@@ -334,19 +335,17 @@ CreateMutex_PT (void)
 	return mutex;
 }
 
-void
-DestroyMutex_PT (Mutex m)
+void DestroyMutex_PT(Mutex m)
 {
-	Mut *mutex = (Mut *)m;
+	Mut* mutex = (Mut*)m;
 	//log_add_nothread(log_Debug, "Destroying mutex '%s'", mutex->name);
-	pthread_mutex_destroy (&mutex->mutex);
-	free (mutex);
+	pthread_mutex_destroy(&mutex->mutex);
+	free(mutex);
 }
 
-void
-LockMutex_PT (Mutex m)
+void LockMutex_PT(Mutex m)
 {
-	Mut *mutex = (Mut *)m;
+	Mut* mutex = (Mut*)m;
 #ifdef TRACK_CONTENTION
 	/* This code isn't really quite right; race conditions between
 	 * check and lock remain and can produce reports of contention
@@ -358,127 +357,127 @@ LockMutex_PT (Mutex m)
 	 * CrossThreadMutex code).  This almost-measure is being added
 	 * because for the most part it should suffice. */
 	if (mutex->owner && (mutex->syncClass & TRACK_CONTENTION_CLASSES))
-	{	/* logging depends on Mutexes, so we have to use the
+	{ /* logging depends on Mutexes, so we have to use the
 		 * non-threaded version instead */
-		log_add_nothread (log_Debug, "Thread '%s' blocking on mutex '%s'",
-				MyThreadName (), mutex->name);
+		log_add_nothread(log_Debug, "Thread '%s' blocking on mutex '%s'",
+						 MyThreadName(), mutex->name);
 	}
 #endif
 
-	while (pthread_mutex_lock (&mutex->mutex) != 0)
-	{		
+	while (pthread_mutex_lock(&mutex->mutex) != 0)
+	{
 		//log_add_nothread (log_Debug, "Attempt to acquire mutex '%s' failretry", mutex->name);
-		TaskSwitch_PT ();
+		TaskSwitch_PT();
 	}
 #ifdef TRACK_CONTENTION
 	mutex->owner = pthread_self();
 #endif
 }
 
-void
-UnlockMutex_PT (Mutex m)
+void UnlockMutex_PT(Mutex m)
 {
-	Mut *mutex = (Mut *)m;
+	Mut* mutex = (Mut*)m;
 #ifdef TRACK_CONTENTION
 	mutex->owner = 0;
 #endif
-	while (pthread_mutex_unlock (&mutex->mutex) != 0)
+	while (pthread_mutex_unlock(&mutex->mutex) != 0)
 	{
-		TaskSwitch_PT ();
+		TaskSwitch_PT();
 	}
 }
 
 /* Semaphores. */
 
-typedef struct _sem {
+typedef struct _sem
+{
 	sem_t sem;
 #ifdef NAMED_SYNCHRO
-	const char *name;
+	const char* name;
 	uqm::DWORD syncClass;
 #endif
 } Sem;
 
 Semaphore
-CreateSemaphore_PT (uqm::DWORD initial
+CreateSemaphore_PT(uqm::DWORD initial
 #ifdef NAMED_SYNCHRO
-		  , const char *name, uqm::DWORD syncClass
+				   ,
+				   const char* name, uqm::DWORD syncClass
 #endif
-	)
+)
 {
-	Sem *sem = (Sem *) HMalloc (sizeof (struct _sem));
+	Sem* sem = (Sem*)HMalloc(sizeof(struct _sem));
 #ifdef NAMED_SYNCHRO
 	sem->name = name;
 	sem->syncClass = syncClass;
 #endif
-	
+
 	//log_add (log_Debug, "Creating semaphore '%s'", sem->name);
-	
+
 	if (sem_init(&sem->sem, 0, initial) < 0)
 	{
 #ifdef NAMED_SYNCHRO
-		log_add (log_Fatal, "Could not initialize semaphore '%s':"
-				" aborting.", name);
+		log_add(log_Fatal, "Could not initialize semaphore '%s':"
+						   " aborting.",
+				name);
 #else
-		log_add (log_Fatal, "Could not initialize semaphore:"
-				" aborting.");
+		log_add(log_Fatal, "Could not initialize semaphore:"
+						   " aborting.");
 #endif
-		exit (EXIT_FAILURE);
+		exit(EXIT_FAILURE);
 	}
 	//log_add (log_Debug, "Creating semaphore '%s' success", sem->name);
 	return sem;
 }
 
-void
-DestroySemaphore_PT (Semaphore s)
+void DestroySemaphore_PT(Semaphore s)
 {
-	Sem *sem = (Sem *)s;
+	Sem* sem = (Sem*)s;
 	//log_add (log_Debug, "Destroying semaphore '%s'", sem->name);
-	if (sem_destroy (&sem->sem))
+	if (sem_destroy(&sem->sem))
 	{
-		log_add (log_Debug, "Destroying semaphore '%s' failed", sem->name);
+		log_add(log_Debug, "Destroying semaphore '%s' failed", sem->name);
 	}
-	HFree (sem);
+	HFree(sem);
 }
 
-void
-SetSemaphore_PT (Semaphore s)
+void SetSemaphore_PT(Semaphore s)
 {
-	Sem *sem = (Sem *)s;
+	Sem* sem = (Sem*)s;
 #ifdef TRACK_CONTENTION
 	int contention = 0;
 	sem_getvalue(&sem->sem, &contention);
 	contention = !contention;
 	if (contention && (sem->syncClass & TRACK_CONTENTION_CLASSES))
 	{
-		log_add (log_Debug, "Thread '%s' blocking on semaphore '%s'",
-				MyThreadName (), sem->name);
+		log_add(log_Debug, "Thread '%s' blocking on semaphore '%s'",
+				MyThreadName(), sem->name);
 	}
 #endif
 	//log_add (log_Debug, "Attempt to set semaphore '%s'", sem->name);
-	while (sem_wait (&sem->sem) == -1)
+	while (sem_wait(&sem->sem) == -1)
 	{
 		//log_add (log_Debug, "Attempt to set semaphore '%s' failretry", sem->name);
-		TaskSwitch_PT ();
+		TaskSwitch_PT();
 	}
 	//log_add (log_Debug, "Attempt to set semaphore '%s' success", sem->name);
 #ifdef TRACK_CONTENTION
 	if (contention && (sem->syncClass & TRACK_CONTENTION_CLASSES))
 	{
-		log_add (log_Debug, "Thread '%s' awakens,"
-				" released from semaphore '%s'", MyThreadName (), sem->name);
+		log_add(log_Debug, "Thread '%s' awakens,"
+						   " released from semaphore '%s'",
+				MyThreadName(), sem->name);
 	}
 #endif
 }
 
-void
-ClearSemaphore_PT (Semaphore s)
+void ClearSemaphore_PT(Semaphore s)
 {
-	Sem *sem = (Sem *)s;
+	Sem* sem = (Sem*)s;
 	//log_add (log_Debug, "Attempt to clear semaphore '%s' %x", sem->name, sem);
-	while (sem_post (&sem->sem) == -1)
+	while (sem_post(&sem->sem) == -1)
 	{
 		//log_add (log_Debug, "Attempt to clear semaphore %x failretry", sem);
-		TaskSwitch_PT ();
+		TaskSwitch_PT();
 	}
 	//log_add (log_Debug, "Attempt to clear semaphore %x success", sem);
 }
@@ -486,84 +485,84 @@ ClearSemaphore_PT (Semaphore s)
 /* Recursive mutexes. Adapted from mixSDL code, which was adapted from
    the original DCQ code. */
 
-typedef struct _recm {
+typedef struct _recm
+{
 	pthread_mutex_t mutex;
 	pthread_t thread_id;
 	unsigned int locks;
 #ifdef NAMED_SYNCHRO
-	const char *name;
+	const char* name;
 	uqm::DWORD syncClass;
 #endif
 } RecM;
 
 RecursiveMutex
 #ifdef NAMED_SYNCHRO
-CreateRecursiveMutex_PT (const char *name, uqm::DWORD syncClass)
+CreateRecursiveMutex_PT(const char* name, uqm::DWORD syncClass)
 #else
-CreateRecursiveMutex_PT (void)
+CreateRecursiveMutex_PT(void)
 #endif
 {
-	RecM *mtx = (RecM *) HMalloc (sizeof (struct _recm));
+	RecM* mtx = (RecM*)HMalloc(sizeof(struct _recm));
 
 	mtx->thread_id = 0;
 	if (pthread_mutex_init(&mtx->mutex, NULL))
 	{
 #ifdef NAMED_SYNCHRO
-		log_add (log_Fatal, "Could not initialize recursive "
-				"mutex '%s': aborting.", name);
+		log_add(log_Fatal, "Could not initialize recursive "
+						   "mutex '%s': aborting.",
+				name);
 #else
-		log_add (log_Fatal, "Could not initialize recursive "
-				"mutex: aborting.");
+		log_add(log_Fatal, "Could not initialize recursive "
+						   "mutex: aborting.");
 #endif
-		exit (EXIT_FAILURE);
+		exit(EXIT_FAILURE);
 	}
 #ifdef NAMED_SYNCHRO
 	mtx->name = name;
 	mtx->syncClass = syncClass;
 #endif
 	mtx->locks = 0;
-	return (RecursiveMutex) mtx;
+	return (RecursiveMutex)mtx;
 }
 
-void
-DestroyRecursiveMutex_PT (RecursiveMutex val)
+void DestroyRecursiveMutex_PT(RecursiveMutex val)
 {
-	RecM *mtx = (RecM *)val;
+	RecM* mtx = (RecM*)val;
 	pthread_mutex_destroy(&mtx->mutex);
-	HFree (mtx);
+	HFree(mtx);
 }
 
-void
-LockRecursiveMutex_PT (RecursiveMutex val)
+void LockRecursiveMutex_PT(RecursiveMutex val)
 {
-	RecM *mtx = (RecM *)val;
+	RecM* mtx = (RecM*)val;
 	pthread_t thread_id = pthread_self();
 	if (!mtx->locks || mtx->thread_id != thread_id)
 	{
 #ifdef TRACK_CONTENTION
 		if (mtx->thread_id && (mtx->syncClass & TRACK_CONTENTION_CLASSES))
 		{
-			log_add (log_Debug, "Thread '%s' blocking on '%s'",
-					MyThreadName (), mtx->name);
+			log_add(log_Debug, "Thread '%s' blocking on '%s'",
+					MyThreadName(), mtx->name);
 		}
 #endif
-		while (pthread_mutex_lock (&mtx->mutex))
-			TaskSwitch_PT ();
+		while (pthread_mutex_lock(&mtx->mutex))
+			TaskSwitch_PT();
 		mtx->thread_id = thread_id;
 	}
 	mtx->locks++;
 }
 
-void
-UnlockRecursiveMutex_PT (RecursiveMutex val)
+void UnlockRecursiveMutex_PT(RecursiveMutex val)
 {
-	RecM *mtx = (RecM *)val;
+	RecM* mtx = (RecM*)val;
 	pthread_t thread_id = pthread_self();
 	if (!mtx->locks || mtx->thread_id != thread_id)
 	{
 #ifdef NAMED_SYNCHRO
-		log_add (log_Debug, "'%s' attempted to unlock %s when it "
-				"didn't hold it", MyThreadName (), mtx->name);
+		log_add(log_Debug, "'%s' attempted to unlock %s when it "
+						   "didn't hold it",
+				MyThreadName(), mtx->name);
 #endif
 	}
 	else
@@ -572,48 +571,49 @@ UnlockRecursiveMutex_PT (RecursiveMutex val)
 		if (!mtx->locks)
 		{
 			mtx->thread_id = 0;
-			pthread_mutex_unlock (&mtx->mutex);
+			pthread_mutex_unlock(&mtx->mutex);
 		}
 	}
 }
 
-int
-GetRecursiveMutexDepth_PT (RecursiveMutex val)
+int GetRecursiveMutexDepth_PT(RecursiveMutex val)
 {
-	RecM *mtx = (RecM *)val;
+	RecM* mtx = (RecM*)val;
 	return mtx->locks;
 }
 
-typedef struct _cond {
+typedef struct _cond
+{
 	pthread_cond_t cond;
 	pthread_mutex_t mutex;
 #ifdef NAMED_SYNCHRO
-	const char *name;
+	const char* name;
 	uqm::DWORD syncClass;
 #endif
 } cvar;
 
 CondVar
 #ifdef NAMED_SYNCHRO
-CreateCondVar_PT (const char *name, uqm::DWORD syncClass)
+CreateCondVar_PT(const char* name, uqm::DWORD syncClass)
 #else
-CreateCondVar_PT (void)
+CreateCondVar_PT(void)
 #endif
 {
 	int err1, err2;
-	cvar *cv = (cvar *) HMalloc (sizeof (cvar));
+	cvar* cv = (cvar*)HMalloc(sizeof(cvar));
 	err1 = pthread_cond_init(&cv->cond, NULL);
 	err2 = pthread_mutex_init(&cv->mutex, NULL);
 	if (err1 || err2)
 	{
 #ifdef NAMED_SYNCHRO
-		log_add (log_Fatal, "Could not initialize condition variable '%s':"
-				" aborting.", name);
+		log_add(log_Fatal, "Could not initialize condition variable '%s':"
+						   " aborting.",
+				name);
 #else
-		log_add (log_Fatal, "Could not initialize condition variable:"
-				" aborting.");
+		log_add(log_Fatal, "Could not initialize condition variable:"
+						   " aborting.");
 #endif
-		exit (EXIT_FAILURE);
+		exit(EXIT_FAILURE);
 	}
 #ifdef NAMED_SYNCHRO
 	cv->name = name;
@@ -622,51 +622,48 @@ CreateCondVar_PT (void)
 	return cv;
 }
 
-void
-DestroyCondVar_PT (CondVar c)
+void DestroyCondVar_PT(CondVar c)
 {
-	cvar *cv = (cvar *) c;
+	cvar* cv = (cvar*)c;
 	pthread_cond_destroy(&cv->cond);
 	pthread_mutex_destroy(&cv->mutex);
-	HFree (cv);
+	HFree(cv);
 }
 
-void
-WaitCondVar_PT (CondVar c)
+void WaitCondVar_PT(CondVar c)
 {
-	cvar *cv = (cvar *) c;
-	pthread_mutex_lock (&cv->mutex);
+	cvar* cv = (cvar*)c;
+	pthread_mutex_lock(&cv->mutex);
 #ifdef TRACK_CONTENTION
 	if (cv->syncClass & TRACK_CONTENTION_CLASSES)
 	{
-		log_add (log_Debug, "Thread '%s' waiting for signal from '%s'",
-				MyThreadName (), cv->name);
+		log_add(log_Debug, "Thread '%s' waiting for signal from '%s'",
+				MyThreadName(), cv->name);
 	}
 #endif
-	while (pthread_cond_wait (&cv->cond, &cv->mutex) != 0)
+	while (pthread_cond_wait(&cv->cond, &cv->mutex) != 0)
 	{
-		TaskSwitch_PT ();
+		TaskSwitch_PT();
 	}
 #ifdef TRACK_CONTENTION
 	if (cv->syncClass & TRACK_CONTENTION_CLASSES)
 	{
-		log_add (log_Debug, "Thread '%s' received signal from '%s',"
-				" awakening.", MyThreadName (), cv->name);
+		log_add(log_Debug, "Thread '%s' received signal from '%s',"
+						   " awakening.",
+				MyThreadName(), cv->name);
 	}
 #endif
-	pthread_mutex_unlock (&cv->mutex);
+	pthread_mutex_unlock(&cv->mutex);
 }
 
-void
-SignalCondVar_PT (CondVar c)
+void SignalCondVar_PT(CondVar c)
 {
-	cvar *cv = (cvar *) c;
+	cvar* cv = (cvar*)c;
 	pthread_cond_signal(&cv->cond);
 }
 
-void
-BroadcastCondVar_PT (CondVar c)
+void BroadcastCondVar_PT(CondVar c)
 {
-	cvar *cv = (cvar *) c;
+	cvar* cv = (cvar*)c;
 	pthread_cond_broadcast(&cv->cond);
 }

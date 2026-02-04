@@ -24,17 +24,19 @@
 
 typedef uint32 AlarmTime;
 static inline uint32
-alarmTimeToMsUint32(AlarmTime time) {
-	return (uint32) time;
+alarmTimeToMsUint32(AlarmTime time)
+{
+	return (uint32)time;
 }
 
 typedef struct Alarm Alarm;
-typedef void *AlarmCallbackArg;
+typedef void* AlarmCallbackArg;
 typedef void (*AlarmCallback)(AlarmCallbackArg arg);
 
-struct Alarm {
+struct Alarm
+{
 	size_t index;
-			// For the HeapValue 'base struct'.
+	// For the HeapValue 'base struct'.
 
 	AlarmTime time;
 	AlarmCallback callback;
@@ -43,14 +45,13 @@ struct Alarm {
 
 void Alarm_init(void);
 void Alarm_uninit(void);
-Alarm *Alarm_addAbsoluteMs(uint32 ms, AlarmCallback callback,
-		AlarmCallbackArg arg);
-Alarm *Alarm_addRelativeMs(uint32 ms, AlarmCallback callback,
-		AlarmCallbackArg arg);
-void Alarm_remove(Alarm *alarm);
+Alarm* Alarm_addAbsoluteMs(uint32 ms, AlarmCallback callback,
+						   AlarmCallbackArg arg);
+Alarm* Alarm_addRelativeMs(uint32 ms, AlarmCallback callback,
+						   AlarmCallbackArg arg);
+void Alarm_remove(Alarm* alarm);
 bool Alarm_processOne(void);
 void Alarm_processAll(void);
 uint32 Alarm_timeBeforeNextMs(void);
 
-#endif  /* LIBS_CALLBACK_ALARM_H_ */
-
+#endif /* LIBS_CALLBACK_ALARM_H_ */

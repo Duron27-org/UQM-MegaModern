@@ -32,16 +32,16 @@
 #include <string.h>
 
 
-int
-sendPacket(NetConnection *conn, Packet *packet) {
+int sendPacket(NetConnection* conn, Packet* packet)
+{
 	ssize_t sendResult;
 	size_t len;
-	Socket *socket;
-		
+	Socket* socket;
+
 	assert(NetConnection_isConnected(conn));
 
 #ifdef NETPLAY_DEBUG
-	//if (packetType(packet) != PACKET_BATTLEINPUT && 
+	//if (packetType(packet) != PACKET_BATTLEINPUT &&
 	//		packetType(packet) != PACKET_CHECKSUM) {
 	//	// Reporting BattleInput or Checksum would get so spammy that it
 	//	// would slow down the battle.
@@ -49,38 +49,44 @@ sendPacket(NetConnection *conn, Packet *packet) {
 	//			conn->player, packetTypeData[packetType(packet)].name);
 	//}
 #ifdef NETPLAY_DEBUG_FILE
-	if (conn->debugFile != NULL) {
+	if (conn->debugFile != NULL)
+	{
 		uio_fprintf(conn->debugFile,
-				"NETPLAY: [%d] ==> Sending packet of type %s.\n",
-				conn->player, packetTypeData[packetType(packet)].name);
+					"NETPLAY: [%d] ==> Sending packet of type %s.\n",
+					conn->player, packetTypeData[packetType(packet)].name);
 	}
-#endif  /* NETPLAY_DEBUG_FILE */
-#endif  /* NETPLAY_DEBUG */
+#endif /* NETPLAY_DEBUG_FILE */
+#endif /* NETPLAY_DEBUG */
 
 	socket = NetDescriptor_getSocket(conn->nd);
 
 	len = packetLength(packet);
-	while (len > 0) {
-		sendResult = Socket_send(socket, (void *) packet, len, 0);
-		if (sendResult >= 0) {
+	while (len > 0)
+	{
+		sendResult = Socket_send(socket, (void*)packet, len, 0);
+		if (sendResult >= 0)
+		{
 			len -= sendResult;
 			continue;
 		}
 
-		switch (errno) {
-			case EINTR:  // System call interrupted, retry;
+		switch (errno)
+		{
+			case EINTR: // System call interrupted, retry;
 				continue;
-			case ECONNRESET: {  // Connection reset by peer.
-				// keep errno
-				return -1;
-			}
-			default: {
-				// Should not happen.
-				int savedErrno = errno;
-				log_add(log_Error, "send() failed: %s.\n", strerror(errno));
-				errno = savedErrno;
-				return -1;
-			}
+			case ECONNRESET:
+				{ // Connection reset by peer.
+					// keep errno
+					return -1;
+				}
+			default:
+				{
+					// Should not happen.
+					int savedErrno = errno;
+					log_add(log_Error, "send() failed: %s.\n", strerror(errno));
+					errno = savedErrno;
+					return -1;
+				}
 		}
 	}
 
@@ -91,5 +97,3 @@ sendPacket(NetConnection *conn, Packet *packet) {
 
 	return 0;
 }
-
-

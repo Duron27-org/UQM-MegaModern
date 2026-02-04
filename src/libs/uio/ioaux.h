@@ -25,29 +25,28 @@
 #include "physical.h"
 #include "uioport.h"
 
-int uio_walkPhysicalPath(uio_PDirHandle *startPDirHandle, const char *path,
-		size_t pathLen, uio_PDirHandle **endPDirHandle,
-		const char **pathRest);
-uio_PDirHandle *uio_makePath(uio_PDirHandle *pDirHandle, const char *path,
-		size_t pathLen, mode_t mode);
-int uio_copyFilePhysical(uio_PDirHandle *fromDir, const char *fromName,
-		uio_PDirHandle *toDir, const char *toName);
-int uio_getPhysicalAccess(uio_DirHandle *dirHandle, const char *path,
-		int flags, int extraFlags,
-		uio_MountInfo **mountInfoReadPtr, uio_PDirHandle **readPDirHandlePtr,
-		char **readPRootPathPtr,
-		uio_MountInfo **mountInfoWritePtr, uio_PDirHandle **writePDirHandlePtr,
-		char **writePRootPathPtr,
-		char **restPtr);
+int uio_walkPhysicalPath(uio_PDirHandle* startPDirHandle, const char* path,
+						 size_t pathLen, uio_PDirHandle** endPDirHandle,
+						 const char** pathRest);
+uio_PDirHandle* uio_makePath(uio_PDirHandle* pDirHandle, const char* path,
+							 size_t pathLen, mode_t mode);
+int uio_copyFilePhysical(uio_PDirHandle* fromDir, const char* fromName,
+						 uio_PDirHandle* toDir, const char* toName);
+int uio_getPhysicalAccess(uio_DirHandle* dirHandle, const char* path,
+						  int flags, int extraFlags,
+						  uio_MountInfo** mountInfoReadPtr, uio_PDirHandle** readPDirHandlePtr,
+						  char** readPRootPathPtr,
+						  uio_MountInfo** mountInfoWritePtr, uio_PDirHandle** writePDirHandlePtr,
+						  char** writePRootPathPtr,
+						  char** restPtr);
 #define uio_GPA_NOWRITE 1
-int uio_getPathPhysicalDirs(uio_DirHandle *dirHandle, const char *path,
-		size_t pathLen, uio_PDirHandle ***resPDirHandles,
-		int *resNumPDirHandles, uio_MountTreeItem ***resItems);
-int uio_verifyPath(uio_DirHandle *dirHandle, const char *path,
-		char **resolvedPath);
-ssize_t uio_resolvePath(uio_DirHandle *dirHandle, const char *path,
-		size_t pathLen, char **destPath);
+int uio_getPathPhysicalDirs(uio_DirHandle* dirHandle, const char* path,
+							size_t pathLen, uio_PDirHandle*** resPDirHandles,
+							int* resNumPDirHandles, uio_MountTreeItem*** resItems);
+int uio_verifyPath(uio_DirHandle* dirHandle, const char* path,
+				   char** resolvedPath);
+ssize_t uio_resolvePath(uio_DirHandle* dirHandle, const char* path,
+						size_t pathLen, char** destPath);
 
 
-#endif  /* LIBS_UIO_IOAUX_H_ */
-
+#endif /* LIBS_UIO_IOAUX_H_ */

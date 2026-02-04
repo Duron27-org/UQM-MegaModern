@@ -20,9 +20,9 @@
 #include "libs/memlib.h"
 
 STRING_TABLE
-AllocStringTable (int num_entries, int flags)
+AllocStringTable(int num_entries, int flags)
 {
-	STRING_TABLE strtab = (STRING_TABLE)HMalloc (sizeof (STRING_TABLE_DESC));
+	STRING_TABLE strtab = (STRING_TABLE)HMalloc(sizeof(STRING_TABLE_DESC));
 	int i, multiplier = 1;
 
 	if (flags & HAS_NAMEINDEX)
@@ -40,7 +40,7 @@ AllocStringTable (int num_entries, int flags)
 	strtab->flags = flags;
 	strtab->size = num_entries;
 	num_entries *= multiplier;
-	strtab->strings = (STRING_TABLE_ENTRY_DESC*)HMalloc (sizeof (STRING_TABLE_ENTRY_DESC) * num_entries);
+	strtab->strings = (STRING_TABLE_ENTRY_DESC*)HMalloc(sizeof(STRING_TABLE_ENTRY_DESC) * num_entries);
 	for (i = 0; i < num_entries; i++)
 	{
 		strtab->strings[i].data = NULL;
@@ -52,8 +52,7 @@ AllocStringTable (int num_entries, int flags)
 	return strtab;
 }
 
-void
-FreeStringTable (STRING_TABLE strtab)
+void FreeStringTable(STRING_TABLE strtab)
 {
 	int i, multiplier = 1;
 
@@ -75,23 +74,22 @@ FreeStringTable (STRING_TABLE strtab)
 	{
 		if (strtab->strings[i].data != NULL)
 		{
-			HFree (strtab->strings[i].data);
+			HFree(strtab->strings[i].data);
 		}
 	}
 
-	HFree (strtab->strings);
-	HFree (strtab);
+	HFree(strtab->strings);
+	HFree(strtab);
 }
 
-bool
-DestroyStringTable (STRING_TABLE StringTable)
+bool DestroyStringTable(STRING_TABLE StringTable)
 {
-	FreeStringTable (StringTable);
+	FreeStringTable(StringTable);
 	return true;
 }
 
 STRING
-CaptureStringTable (STRING_TABLE StringTable)
+CaptureStringTable(STRING_TABLE StringTable)
 {
 	if ((StringTable != 0) && (StringTable->size > 0))
 	{
@@ -102,17 +100,17 @@ CaptureStringTable (STRING_TABLE StringTable)
 }
 
 STRING_TABLE
-ReleaseStringTable (STRING String)
+ReleaseStringTable(STRING String)
 {
 	STRING_TABLE StringTable;
 
-	StringTable = GetStringTable (String);
+	StringTable = GetStringTable(String);
 
 	return (StringTable);
 }
 
 STRING_TABLE
-GetStringTable (STRING String)
+GetStringTable(STRING String)
 {
 	if (String && String->parent)
 	{
@@ -122,7 +120,7 @@ GetStringTable (STRING String)
 }
 
 uqm::COUNT
-GetStringTableCount (STRING String)
+GetStringTableCount(STRING String)
 {
 	if (String && String->parent)
 	{
@@ -132,7 +130,7 @@ GetStringTableCount (STRING String)
 }
 
 uqm::COUNT
-GetStringTableIndex (STRING String)
+GetStringTableIndex(STRING String)
 {
 	if (String)
 	{
@@ -142,15 +140,15 @@ GetStringTableIndex (STRING String)
 }
 
 STRING
-SetAbsStringTableIndex (STRING String, uqm::COUNT StringTableIndex)
+SetAbsStringTableIndex(STRING String, uqm::COUNT StringTableIndex)
 {
 	STRING_TABLE StringTablePtr;
 
 	if (!String)
 		return NULL;
-	
+
 	StringTablePtr = String->parent;
-	
+
 	if (StringTablePtr == NULL)
 	{
 		String = NULL;
@@ -165,15 +163,15 @@ SetAbsStringTableIndex (STRING String, uqm::COUNT StringTableIndex)
 }
 
 STRING
-SetRelStringTableIndex (STRING String, uqm::SIZE StringTableOffs)
+SetRelStringTableIndex(STRING String, uqm::SIZE StringTableOffs)
 {
 	STRING_TABLE StringTablePtr;
 
 	if (!String)
 		return NULL;
-	
+
 	StringTablePtr = String->parent;
-	
+
 	if (StringTablePtr == NULL)
 	{
 		String = NULL;
@@ -185,7 +183,7 @@ SetRelStringTableIndex (STRING String, uqm::SIZE StringTableOffs)
 		while (StringTableOffs < 0)
 			StringTableOffs += StringTablePtr->size;
 		StringTableIndex = (String->index + StringTableOffs)
-				% StringTablePtr->size;
+						 % StringTablePtr->size;
 
 		String = &StringTablePtr->strings[StringTableIndex];
 	}
@@ -194,18 +192,18 @@ SetRelStringTableIndex (STRING String, uqm::SIZE StringTableOffs)
 }
 
 uqm::COUNT
-GetStringLength (STRING String)
+GetStringLength(STRING String)
 {
 	if (String == NULL)
 	{
 		return 0;
 	}
-	return (uqm::COUNT)utf8StringCountN (
-			String->data, String->data + String->length);
+	return (uqm::COUNT)utf8StringCountN(
+		String->data, String->data + String->length);
 }
 
 uqm::COUNT
-GetStringLengthBin (STRING String)
+GetStringLengthBin(STRING String)
 {
 	if (String == NULL)
 	{
@@ -215,7 +213,7 @@ GetStringLengthBin (STRING String)
 }
 
 STRINGPTR
-GetStringName (STRING String)
+GetStringName(STRING String)
 {
 	STRING_TABLE StringTablePtr;
 	uqm::COUNT StringIndex;
@@ -249,7 +247,7 @@ GetStringName (STRING String)
 }
 
 STRINGPTR
-GetStringSoundClip (STRING String)
+GetStringSoundClip(STRING String)
 {
 	STRING_TABLE StringTablePtr;
 	uqm::COUNT StringIndex;
@@ -287,7 +285,7 @@ GetStringSoundClip (STRING String)
 }
 
 STRINGPTR
-GetStringTimeStamp (STRING String)
+GetStringTimeStamp(STRING String)
 {
 	STRING_TABLE StringTablePtr;
 	uqm::COUNT StringIndex;
@@ -314,7 +312,7 @@ GetStringTimeStamp (STRING String)
 	{
 		StringIndex += StringTablePtr->size;
 	}
-	
+
 	if (StringTablePtr->flags & HAS_SOUND_CLIPS)
 	{
 		StringIndex += StringTablePtr->size;
@@ -330,7 +328,7 @@ GetStringTimeStamp (STRING String)
 }
 
 STRINGPTR
-GetStringAddress (STRING String)
+GetStringAddress(STRING String)
 {
 	if (String == NULL)
 	{
@@ -340,23 +338,21 @@ GetStringAddress (STRING String)
 }
 
 STRING
-GetStringByName (STRING_TABLE StringTable, const char *index)
+GetStringByName(STRING_TABLE StringTable, const char* index)
 {
-	return (STRING) StringHashTable_find (StringTable->nameIndex, index);
+	return (STRING)StringHashTable_find(StringTable->nameIndex, index);
 }
 
-bool
-CheckResString (RESOURCE res)
+bool CheckResString(RESOURCE res)
 {
 	bool check = false;
-	STRING string = CaptureStringTable (LoadStringTableInstance (res));
+	STRING string = CaptureStringTable(LoadStringTableInstance(res));
 
 	if (string != NULL)
 		check = true;
 
-	DestroyStringTable (ReleaseStringTable (string));
+	DestroyStringTable(ReleaseStringTable(string));
 	string = 0;
 
 	return check;
 }
-

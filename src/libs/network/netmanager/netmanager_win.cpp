@@ -43,9 +43,9 @@ int closeWSAEvent(WSAEVENT event);
 // The elements of the following arrays with the same index belong to
 // eachother.
 #define MAX_SOCKETS WSA_MAXIMUM_WAIT_EVENTS
-		// We cannot have more sockets than we can have events, as
-		// all may need an event at some point.
-static NetDescriptor *netDescriptors[MAX_SOCKETS];
+// We cannot have more sockets than we can have events, as
+// all may need an event at some point.
+static NetDescriptor* netDescriptors[MAX_SOCKETS];
 static WSAEVENT events[WSA_MAXIMUM_WAIT_EVENTS];
 static size_t numSockets;
 static size_t numActiveEvents;
@@ -57,38 +57,42 @@ static size_t numActiveEvents;
 //      != 0)
 // Inv: for all i: 0 <= i < numSockets: netDescriptor[i]->smd->index == i
 
-void
-NetManager_init(void) {
+void NetManager_init(void)
+{
 	numActiveEvents = 0;
 }
 
-void
-NetManager_uninit(void) {
+void NetManager_uninit(void)
+{
 	assert(numActiveEvents == 0);
 }
 
-static inline SocketManagementDataWin *
-SocketManagementData_alloc(void) {
-	return (SocketManagementDataWin*) malloc(sizeof (SocketManagementDataWin));
+static inline SocketManagementDataWin*
+SocketManagementData_alloc(void)
+{
+	return (SocketManagementDataWin*)malloc(sizeof(SocketManagementDataWin));
 }
 
 static inline void
-SocketManagementData_free(SocketManagementDataWin *smd) {
+SocketManagementData_free(SocketManagementDataWin* smd)
+{
 	free(smd);
 }
 
 // XXX: This function should be moved to some file with generic network
 // functions.
-int
-closeWSAEvent(WSAEVENT event) {
-	for (;;) {
+int closeWSAEvent(WSAEVENT event)
+{
+	for (;;)
+	{
 		int error;
 
 		if (WSACloseEvent(event))
 			break;
 
 		error = WSAGetLastError();
-		if (error != WSAEINPROGRESS) {
+		if (error != WSAEINPROGRESS)
+		{
 			log_add(log_Error,
 					"WSACloseEvent() failed with error code %d.", error);
 			errno = winsockErrorToErrno(error);
@@ -99,12 +103,13 @@ closeWSAEvent(WSAEVENT event) {
 }
 
 // Register the NetDescriptor with the NetManager.
-int
-NetManager_addDesc(NetDescriptor *nd) {
+int NetManager_addDesc(NetDescriptor* nd)
+{
 	long eventMask = 0;
 	WSAEVENT event;
 
-	if (numSockets >= WSA_MAXIMUM_WAIT_EVENTS) {
+	if (numSockets >= WSA_MAXIMUM_WAIT_EVENTS)
+	{
 		errno = EMFILE;
 		return -1;
 	}
@@ -121,23 +126,26 @@ NetManager_addDesc(NetDescriptor *nd) {
 	eventMask |= FD_CLOSE;
 
 	event = WSACreateEvent();
-	if (event == WSA_INVALID_EVENT) {
+	if (event == WSA_INVALID_EVENT)
+	{
 		errno = getWinsockErrno();
 		return -1;
 	}
 
 	nd->smd = SocketManagementData_alloc();
-	if (eventMask != 0) {
-			// XXX: This guard is now always true, because of FD_CLOSE.
-			//      This means that numActiveEvents will always be equal to
-			//      numEvents.
-			//      Once I'm convinced this is the right way to go,
-			//      I can remove some unnecessary code.
-		if (WSAEventSelect(nd->socket->sock, event, eventMask) ==
-				SOCKET_ERROR) {
+	if (eventMask != 0)
+	{
+		// XXX: This guard is now always true, because of FD_CLOSE.
+		//      This means that numActiveEvents will always be equal to
+		//      numEvents.
+		//      Once I'm convinced this is the right way to go,
+		//      I can remove some unnecessary code.
+		if (WSAEventSelect(nd->socket->sock, event, eventMask) == SOCKET_ERROR)
+		{
 			int savedErrno = getWinsockErrno();
 			int closeStatus = closeWSAEvent(event);
-			if (closeStatus == -1) {
+			if (closeStatus == -1)
+			{
 				log_add(log_Fatal, "closeWSAEvent() failed: %s.",
 						strerror(errno));
 				explode();
@@ -150,14 +158,17 @@ NetManager_addDesc(NetDescriptor *nd) {
 		// Move existing socket for which there exists no event, so
 		// so that all sockets for which there exists an event are at
 		// the front of the array of netdescriptors.
-		if (numActiveEvents < numSockets) {
+		if (numActiveEvents < numSockets)
+		{
 			netDescriptors[numSockets] = netDescriptors[numActiveEvents];
 			netDescriptors[numSockets]->smd->index = numSockets;
 		}
 
 		nd->smd->index = numActiveEvents;
 		numActiveEvents++;
-	} else {
+	}
+	else
+	{
 		nd->smd->index = numSockets;
 	}
 	nd->smd->eventMask = eventMask;
@@ -169,8 +180,8 @@ NetManager_addDesc(NetDescriptor *nd) {
 	return 0;
 }
 
-void
-NetManager_removeDesc(NetDescriptor *nd) {
+void NetManager_removeDesc(NetDescriptor* nd)
+{
 	assert(nd->smd != NULL);
 	assert(nd->smd->index < numSockets);
 	assert(nd == netDescriptors[nd->smd->index]);
@@ -181,9 +192,11 @@ NetManager_removeDesc(NetDescriptor *nd) {
 			explode();
 	}
 
-	if (nd->smd->index < numActiveEvents) {
+	if (nd->smd->index < numActiveEvents)
+	{
 		size_t index = nd->smd->index;
-		if (index + 1 != numActiveEvents) {
+		if (index + 1 != numActiveEvents)
+		{
 			// Keep the list of active events consecutive by filling
 			// the new hole with the last active event.
 			events[index] = events[numActiveEvents - 1];
@@ -200,8 +213,9 @@ NetManager_removeDesc(NetDescriptor *nd) {
 }
 
 static void
-swapSockets(int index1, int index2) {
-	NetDescriptor *tempNd;
+swapSockets(int index1, int index2)
+{
+	NetDescriptor* tempNd;
 	WSAEVENT tempEvent;
 
 	tempNd = netDescriptors[index2];
@@ -217,14 +231,18 @@ swapSockets(int index1, int index2) {
 }
 
 static int
-NetManager_updateEvent(NetDescriptor *nd) {
+NetManager_updateEvent(NetDescriptor* nd)
+{
 	assert(nd == netDescriptors[nd->smd->index]);
 
 	if (WSAEventSelect(nd->socket->sock,
-			events[nd->smd->index], nd->smd->eventMask) == SOCKET_ERROR) {
+					   events[nd->smd->index], nd->smd->eventMask)
+		== SOCKET_ERROR)
+	{
 		int savedErrno = getWinsockErrno();
 		int closeStatus = closeWSAEvent(events[nd->smd->index]);
-		if (closeStatus == -1) {
+		if (closeStatus == -1)
+		{
 			log_add(log_Fatal, "closeWSAEvent() failed: %s.",
 					strerror(errno));
 			explode();
@@ -233,22 +251,29 @@ NetManager_updateEvent(NetDescriptor *nd) {
 		return -1;
 	}
 
-	if (nd->smd->eventMask != 0) {
+	if (nd->smd->eventMask != 0)
+	{
 		// There are some events that we are interested in.
-		if (nd->smd->index >= numActiveEvents) {
+		if (nd->smd->index >= numActiveEvents)
+		{
 			// Event was not yet active.
-			if (nd->smd->index != numActiveEvents) {
+			if (nd->smd->index != numActiveEvents)
+			{
 				// Need to keep the active nds and events in the front of
 				// their arrays.
 				swapSockets(nd->smd->index, numActiveEvents);
 			}
 			numActiveEvents++;
 		}
-	} else {
+	}
+	else
+	{
 		// There are no events that we are interested in.
-		if (nd->smd->index < numActiveEvents) {
+		if (nd->smd->index < numActiveEvents)
+		{
 			// Event was active.
-			if (nd->smd->index != numActiveEvents - 1) {
+			if (nd->smd->index != numActiveEvents - 1)
+			{
 				// Need to keep the active nds and events in the front of
 				// their arrays.
 				swapSockets(nd->smd->index, numActiveEvents - 1);
@@ -257,15 +282,17 @@ NetManager_updateEvent(NetDescriptor *nd) {
 		numActiveEvents--;
 	}
 
-	return 0;	
+	return 0;
 }
 
 static void
-activateSomeCallback(NetDescriptor *nd, long eventMask) {
+activateSomeCallback(NetDescriptor* nd, long eventMask)
+{
 	nd->smd->eventMask |= eventMask;
 	{
 		int status = NetManager_updateEvent(nd);
-		if (status == -1) {
+		if (status == -1)
+		{
 			log_add(log_Fatal, "NetManager_updateEvent() failed: %s.",
 					strerror(errno));
 			explode();
@@ -275,11 +302,13 @@ activateSomeCallback(NetDescriptor *nd, long eventMask) {
 }
 
 static void
-deactivateSomeCallback(NetDescriptor *nd, long eventMask) {
+deactivateSomeCallback(NetDescriptor* nd, long eventMask)
+{
 	nd->smd->eventMask &= ~eventMask;
 	{
 		int status = NetManager_updateEvent(nd);
-		if (status == -1) {
+		if (status == -1)
+		{
 			log_add(log_Fatal, "NetManager_updateEvent() failed: %s.",
 					strerror(errno));
 			explode();
@@ -288,51 +317,55 @@ deactivateSomeCallback(NetDescriptor *nd, long eventMask) {
 	}
 }
 
-void
-NetManager_activateReadCallback(NetDescriptor *nd) {
+void NetManager_activateReadCallback(NetDescriptor* nd)
+{
 	activateSomeCallback(nd, FD_READ | FD_ACCEPT);
 }
 
-void
-NetManager_deactivateReadCallback(NetDescriptor *nd) {
+void NetManager_deactivateReadCallback(NetDescriptor* nd)
+{
 	deactivateSomeCallback(nd, FD_READ | FD_ACCEPT);
 }
 
-void
-NetManager_activateWriteCallback(NetDescriptor *nd) {
+void NetManager_activateWriteCallback(NetDescriptor* nd)
+{
 	activateSomeCallback(nd, FD_WRITE /* | FD_CONNECT */);
 }
 
-void
-NetManager_deactivateWriteCallback(NetDescriptor *nd) {
+void NetManager_deactivateWriteCallback(NetDescriptor* nd)
+{
 	deactivateSomeCallback(nd, FD_WRITE /* | FD_CONNECT */);
 }
 
-void
-NetManager_activateExceptionCallback(NetDescriptor *nd) {
+void NetManager_activateExceptionCallback(NetDescriptor* nd)
+{
 	activateSomeCallback(nd, FD_OOB);
 }
 
-void
-NetManager_deactivateExceptionCallback(NetDescriptor *nd) {
+void NetManager_deactivateExceptionCallback(NetDescriptor* nd)
+{
 	deactivateSomeCallback(nd, FD_OOB);
 }
 
 static inline int
-NetManager_processEvent(size_t index) {
+NetManager_processEvent(size_t index)
+{
 	WSANETWORKEVENTS networkEvents;
 	int enumRes;
 
 	enumRes = WSAEnumNetworkEvents(netDescriptors[index]->socket->sock,
-			events[index], &networkEvents);
-	if (enumRes == SOCKET_ERROR) {
+								   events[index], &networkEvents);
+	if (enumRes == SOCKET_ERROR)
+	{
 		errno = getWinsockErrno();
 		return -1;
 	}
 
-	if (networkEvents.lNetworkEvents & FD_READ) {
+	if (networkEvents.lNetworkEvents & FD_READ)
+	{
 		bool closed;
-		if (networkEvents.iErrorCode[FD_READ_BIT] != 0) {
+		if (networkEvents.iErrorCode[FD_READ_BIT] != 0)
+		{
 			// No special handling is required; the callback function
 			// will try to do a recv() and will get the error then.
 		}
@@ -341,9 +374,11 @@ NetManager_processEvent(size_t index) {
 		if (closed)
 			goto closed;
 	}
-	if (networkEvents.lNetworkEvents & FD_WRITE) {
+	if (networkEvents.lNetworkEvents & FD_WRITE)
+	{
 		bool closed;
-		if (networkEvents.iErrorCode[FD_WRITE_BIT] != 0) {
+		if (networkEvents.iErrorCode[FD_WRITE_BIT] != 0)
+		{
 			// No special handling is required; the callback function
 			// will try to do a send() and will get the error then.
 		}
@@ -352,9 +387,11 @@ NetManager_processEvent(size_t index) {
 		if (closed)
 			goto closed;
 	}
-	if (networkEvents.lNetworkEvents & FD_OOB) {
+	if (networkEvents.lNetworkEvents & FD_OOB)
+	{
 		bool closed;
-		if (networkEvents.iErrorCode[FD_OOB_BIT] != 0) {
+		if (networkEvents.iErrorCode[FD_OOB_BIT] != 0)
+		{
 			// No special handling is required; the callback function
 			// will get the error then when it tries to do a recv().
 		}
@@ -363,12 +400,14 @@ NetManager_processEvent(size_t index) {
 		if (closed)
 			goto closed;
 	}
-	if (networkEvents.lNetworkEvents & FD_ACCEPT) {
+	if (networkEvents.lNetworkEvents & FD_ACCEPT)
+	{
 		// There is no specific accept callback (because the BSD sockets
 		// don't work with specific notification for accept); we use
 		// the read callback instead.
 		bool closed;
-		if (networkEvents.iErrorCode[FD_READ_BIT] != 0) {
+		if (networkEvents.iErrorCode[FD_READ_BIT] != 0)
+		{
 			// No special handling is required; the callback function
 			// will try to do an accept() and will get the error then.
 		}
@@ -395,14 +434,15 @@ NetManager_processEvent(size_t index) {
 			goto closed;
 	}
 #endif
-	if (networkEvents.lNetworkEvents & FD_CLOSE) {
+	if (networkEvents.lNetworkEvents & FD_CLOSE)
+	{
 		// The close event is handled last, in case there was still
 		// data in the buffers which could be processed.
 		NetDescriptor_close(netDescriptors[index]);
 		goto closed;
 	}
 
-closed:  /* No special actions required for now. */
+closed: /* No special actions required for now. */
 
 	return 0;
 }
@@ -411,13 +451,13 @@ closed:  /* No special actions required for now. */
 // triggered by this function. BUG: This may result in callbacks being
 // called multiple times.
 // This function should however not be called from multiple threads at once.
-int
-NetManager_process(uint32 *timeoutMs) {
+int NetManager_process(uint32* timeoutMs)
+{
 	uqm::DWORD timeoutTemp;
 	uqm::DWORD waitResult;
 	uqm::DWORD startEvent;
 
-	timeoutTemp = (uqm::DWORD) *timeoutMs;
+	timeoutTemp = (uqm::DWORD)*timeoutMs;
 
 	// WSAWaitForMultipleEvents only reports events for one socket at a
 	// time. In order to have each socket checked once, we call it
@@ -425,33 +465,37 @@ NetManager_process(uint32 *timeoutMs) {
 	// events not yet processed. The second time, the timeout will be set
 	// to 0, so it won't wait.
 	startEvent = 0;
-	while (startEvent < numActiveEvents) {
+	while (startEvent < numActiveEvents)
+	{
 		waitResult = WSAWaitForMultipleEvents(numActiveEvents - startEvent,
-				&events[startEvent], false, timeoutTemp, false);
-		
+											  &events[startEvent], false, timeoutTemp, false);
+
 		if (waitResult == WSA_WAIT_IO_COMPLETION)
 			continue;
 
-		if (waitResult == WSA_WAIT_TIMEOUT) {
+		if (waitResult == WSA_WAIT_TIMEOUT)
+		{
 			// No events waiting.
 			*timeoutMs = 0;
 			return 0;
 		}
 
-		if (waitResult == WSA_WAIT_FAILED) {
+		if (waitResult == WSA_WAIT_FAILED)
+		{
 			errno = getWinsockErrno();
 			*timeoutMs = timeoutTemp;
 			return -1;
 		}
-		
+
 		{
 			uqm::DWORD eventIndex = waitResult - WSA_WAIT_EVENT_0;
-			if (NetManager_processEvent((size_t) eventIndex) == -1) {
+			if (NetManager_processEvent((size_t)eventIndex) == -1)
+			{
 				// errno is set
 				*timeoutMs = timeoutTemp;
 				return -1;
 			}
-		
+
 			// Check the rest of the sockets, but don't wait anymore.
 			startEvent += eventIndex + 1;
 			timeoutTemp = 0;
@@ -461,5 +505,3 @@ NetManager_process(uint32 *timeoutMs) {
 	*timeoutMs = timeoutTemp;
 	return 0;
 }
-
-

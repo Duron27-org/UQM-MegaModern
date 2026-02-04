@@ -26,13 +26,13 @@
 // First, all scheduled callbacks are called.
 // Then each alarm due is called, and after each of these alarms, the
 // callbacks scheduled by this alarm are called.
-void
-Async_process(void)
+void Async_process(void)
 {
 	// Call pending callbacks.
 	Callback_process();
 
-	for (;;) {
+	for (;;)
+	{
 		if (!Alarm_processOne())
 			return;
 
@@ -45,12 +45,13 @@ Async_process(void)
 // to be called. Note that all values lower than the current time
 // should be considered as 'somewhere in the past'.
 uint32
-Async_timeBeforeNextMs(void) {
-	if (Callback_haveMore()) {
+Async_timeBeforeNextMs(void)
+{
+	if (Callback_haveMore())
+	{
 		// Any time before the current time is ok, though we reserve 0 so
 		// that the caller may use it as a special value in its own code.
 		return 1;
 	}
 	return Alarm_timeBeforeNextMs();
 }
-

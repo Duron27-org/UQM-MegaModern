@@ -31,7 +31,7 @@ typedef struct ChecksumBuffer ChecksumBuffer;
 #endif
 
 #include "../../battle.h"
-		// for BattleFrameCounter
+// for BattleFrameCounter
 #include "checksum.h"
 
 #if 0 //defined(__cplusplus)
@@ -39,40 +39,41 @@ extern "C" {
 #endif
 
 
-struct ChecksumEntry {
+struct ChecksumEntry
+{
 #ifdef NETPLAY_DEBUG
 	BattleFrameCounter frameNr;
-			// The number of the frame this checksum originated from.
-			// If the checksumming code is working correctly, the checksum
-			// can only come from one frame, so this value is not needed
-			// for normal operation.
-			// Its only use is to detect some cases where checksumming code
-			// is *not* working correctly.
+	// The number of the frame this checksum originated from.
+	// If the checksumming code is working correctly, the checksum
+	// can only come from one frame, so this value is not needed
+	// for normal operation.
+	// Its only use is to detect some cases where checksumming code
+	// is *not* working correctly.
 #endif
 	Checksum checksum;
 };
 
-struct ChecksumBuffer {
-	ChecksumEntry *checksums;
-			// Cyclic buffer. if 'size' > 0, then 'first' is an index to
-			// the first used entry, 'size' is the number of used
-			// entries in the buffer, and (first + size) % maxSize is the
-			// index to just past the end of the buffer.
+struct ChecksumBuffer
+{
+	ChecksumEntry* checksums;
+	// Cyclic buffer. if 'size' > 0, then 'first' is an index to
+	// the first used entry, 'size' is the number of used
+	// entries in the buffer, and (first + size) % maxSize is the
+	// index to just past the end of the buffer.
 	size_t maxSize;
 
 	size_t interval;
 };
 
-void ChecksumBuffer_init(ChecksumBuffer *cb, size_t delay, size_t interval);
-void ChecksumBuffer_uninit(ChecksumBuffer *cb);
-bool ChecksumBuffer_addChecksum(ChecksumBuffer *cb,
-		BattleFrameCounter frameNr, Checksum checksum);
-bool ChecksumBuffer_getChecksum(ChecksumBuffer *cb,
-		BattleFrameCounter frameNr, Checksum *result);
+void ChecksumBuffer_init(ChecksumBuffer* cb, size_t delay, size_t interval);
+void ChecksumBuffer_uninit(ChecksumBuffer* cb);
+bool ChecksumBuffer_addChecksum(ChecksumBuffer* cb,
+								BattleFrameCounter frameNr, Checksum checksum);
+bool ChecksumBuffer_getChecksum(ChecksumBuffer* cb,
+								BattleFrameCounter frameNr, Checksum* result);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* UQM_SUPERMELEE_NETPLAY_CHECKBUF_H_ */
-
+#endif /* UQM_SUPERMELEE_NETPLAY_CHECKBUF_H_ */

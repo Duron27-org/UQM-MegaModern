@@ -27,55 +27,63 @@
 #include <assert.h>
 #include <errno.h>
 
-int
-Netplay_confirm(NetConnection *conn) {
+int Netplay_confirm(NetConnection* conn)
+{
 	assert(handshakeMeaningful(NetConnection_getState(conn)));
 
-	if (conn->stateFlags.handshake.localOk) {
+	if (conn->stateFlags.handshake.localOk)
+	{
 		// Already confirmed
 		errno = EINVAL;
 		return -1;
 	}
-	
+
 	conn->stateFlags.handshake.localOk = true;
 
-	if (conn->stateFlags.handshake.canceling) {
+	if (conn->stateFlags.handshake.canceling)
+	{
 		// If a previous confirmation was cancelled, but the cancel
 		// is not acknowledged yet, we don't have to send anything yet.
 		// The handshake0 packet will be sent when the acknowledgement
 		// arrives.
-	} else if (conn->stateFlags.handshake.remoteOk) {
+	}
+	else if (conn->stateFlags.handshake.remoteOk)
+	{
 		// A Handshake0 is implied by the following Handshake1.
 		sendHandshake1(conn);
-	} else {
+	}
+	else
+	{
 		sendHandshake0(conn);
 	}
-	
+
 	return 0;
 }
 
-int
-Netplay_cancelConfirmation(NetConnection *conn) {
+int Netplay_cancelConfirmation(NetConnection* conn)
+{
 	assert(handshakeMeaningful(NetConnection_getState(conn)));
 
-	if (!conn->stateFlags.handshake.localOk) {
+	if (!conn->stateFlags.handshake.localOk)
+	{
 		// Not confirmed, or already canceling.
 		errno = EINVAL;
 		return -1;
 	}
 
 	conn->stateFlags.handshake.localOk = false;
-	if (conn->stateFlags.handshake.canceling) {
+	if (conn->stateFlags.handshake.canceling)
+	{
 		// If previous cancellation is still waiting to be acknowledged,
 		// the confirmation we are cancelling here, has not actually been
 		// sent yet. By setting the localOk flag to false, it is
 		// cancelled, without the need for any packets to be sent.
-	} else {
+	}
+	else
+	{
 		conn->stateFlags.handshake.canceling = true;
 		sendHandshakeCancel(conn);
 	}
 
 	return 0;
 }
-
-

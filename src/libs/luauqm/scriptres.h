@@ -26,13 +26,12 @@ extern "C" {
 
 #define LoadScript LoadScriptRes
 
-bool ReleaseScriptResData (void *data);
-bool InstallScriptResType (void);
-char *LoadScriptInstance (RESOURCE res);
+bool ReleaseScriptResData(void* data);
+bool InstallScriptResType(void);
+char* LoadScriptInstance(RESOURCE res);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* SCRIPTRES_H */
-
+#endif /* SCRIPTRES_H */

@@ -20,9 +20,9 @@
 #include "../planets.h"
 
 
-static bool GenerateTrap_generatePlanets (SOLARSYS_STATE *solarSys);
-static bool GenerateTrap_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world);
+static bool GenerateTrap_generatePlanets(SOLARSYS_STATE* solarSys);
+static bool GenerateTrap_generateOrbital(SOLARSYS_STATE* solarSys,
+										 PLANET_DESC* world);
 
 
 const GenerateFunctions generateTrapFunctions = {
@@ -43,12 +43,12 @@ const GenerateFunctions generateTrapFunctions = {
 
 
 static bool
-GenerateTrap_generatePlanets (SOLARSYS_STATE *solarSys)
+GenerateTrap_generatePlanets(SOLARSYS_STATE* solarSys)
 {
-	PLANET_DESC *pSunDesc = &solarSys->SunDesc[0];
-	PLANET_DESC *pPlanet;
+	PLANET_DESC* pSunDesc = &solarSys->SunDesc[0];
+	PLANET_DESC* pPlanet;
 
-	GenerateDefault_generatePlanets (solarSys);
+	GenerateDefault_generatePlanets(solarSys);
 
 	if (PrimeSeed)
 	{
@@ -60,33 +60,33 @@ GenerateTrap_generatePlanets (SOLARSYS_STATE *solarSys)
 		pPlanet->data_index = TELLURIC_WORLD;
 		pPlanet->NumPlanets = 1;
 		pPlanet->radius = EARTH_RADIUS * 203L / 100;
-		angle = ARCTAN (pPlanet->location.x, pPlanet->location.y);
-		pPlanet->location.x = COSINE (angle, pPlanet->radius);
-		pPlanet->location.y = SINE (angle, pPlanet->radius);
-		ComputeSpeed (pPlanet, false, 1);
+		angle = ARCTAN(pPlanet->location.x, pPlanet->location.y);
+		pPlanet->location.x = COSINE(angle, pPlanet->radius);
+		pPlanet->location.y = SINE(angle, pPlanet->radius);
+		ComputeSpeed(pPlanet, false, 1);
 	}
 	else
 	{
-		pSunDesc->PlanetByte = PickClosestHabitable (solarSys);
+		pSunDesc->PlanetByte = PickClosestHabitable(solarSys);
 		pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
 
-		pPlanet->data_index = GenerateHabitableWorld ();
+		pPlanet->data_index = GenerateHabitableWorld();
 	}
 
 	return true;
 }
 
 static bool
-GenerateTrap_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
+GenerateTrap_generateOrbital(SOLARSYS_STATE* solarSys, PLANET_DESC* world)
 {
-	GenerateDefault_generateOrbital (solarSys, world);
+	GenerateDefault_generateOrbital(solarSys, world);
 
-	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
+	if (matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{
 		if (PrimeSeed)
 		{
 			solarSys->SysInfo.PlanetInfo.AtmoDensity =
-					EARTH_ATMOSPHERE * 2;
+				EARTH_ATMOSPHERE * 2;
 			solarSys->SysInfo.PlanetInfo.SurfaceTemperature = 35;
 		}
 		if (!DIF_HARD)

@@ -29,7 +29,7 @@ extern "C" {
 extern int CanvasWidth;
 extern int CanvasHeight;
 
-		/* Most basic resolution units. */
+/* Most basic resolution units. */
 #define HD 2
 #define SCREEN_WIDTH CanvasWidth
 #define SCREEN_HEIGHT CanvasHeight
@@ -49,60 +49,60 @@ static inline constexpr auto chooseIfHd(const T& a, const T& b) -> const T&
 	return !IS_HD ? a : b;
 }
 #define NRES_BOOL(a) (!IS_HD ? (a) : 0)
-#define RES_DBL(a) (chooseIfHd ((a), (a) * RESOLUTION_FACTOR))
-#define RES_TRP(a) (chooseIfHd ((a), (a) * 3))
-#define IF_HD(a) (chooseIfHd (0, (a)))
+#define RES_DBL(a) (chooseIfHd((a), (a) * RESOLUTION_FACTOR))
+#define RES_TRP(a) (chooseIfHd((a), (a) * 3))
+#define IF_HD(a) (chooseIfHd(0, (a)))
 
-#define RES_RBSHIFT(a,b) (RES_SCALE (RES_DESCALE ((a)) >> (b)))
-#define RES_RECENTER(a) (RES_RBSHIFT ((a), 1))
+#define RES_RBSHIFT(a, b) (RES_SCALE(RES_DESCALE((a)) >> (b)))
+#define RES_RECENTER(a) (RES_RBSHIFT((a), 1))
 
 #define IS_DOS ((optWindowType == 0) ? true : false)
-#define DOS_BOOL(a,b) (IS_DOS ? (b) : (a))
-		// Returns the 2nd input in DOS mode, the 1st input otherwise
-#define DOS_BOOL_SCL(a,b) (RES_SCALE (IS_DOS ? (b) : (a)))
-		// Same as DOS_BOOL but scaled to HD
-#define DOS_NUM(a) (DOS_BOOL (0, (a)))
-		// Returns the input number if DOS mode is active
-#define DOS_NUM_SCL(a) (RES_SCALE (DOS_NUM ((a))))
-		// Same as DOS_NUM but scales it to HD
-#define NDOS_NUM(a) (DOS_BOOL ((a), 0))
-		// Returns the input number if DOS mode is not active
-#define NDOS_NUM_SCL(a) (RES_SCALE (NDOS_NUM ((a))))
-		// Same as NDOS_NUM but scales it to HD
+#define DOS_BOOL(a, b) (IS_DOS ? (b) : (a))
+// Returns the 2nd input in DOS mode, the 1st input otherwise
+#define DOS_BOOL_SCL(a, b) (RES_SCALE(IS_DOS ? (b) : (a)))
+// Same as DOS_BOOL but scaled to HD
+#define DOS_NUM(a) (DOS_BOOL(0, (a)))
+// Returns the input number if DOS mode is active
+#define DOS_NUM_SCL(a) (RES_SCALE(DOS_NUM((a))))
+// Same as DOS_NUM but scales it to HD
+#define NDOS_NUM(a) (DOS_BOOL((a), 0))
+// Returns the input number if DOS mode is not active
+#define NDOS_NUM_SCL(a) (RES_SCALE(NDOS_NUM((a))))
+// Same as NDOS_NUM but scales it to HD
 
 #define IS_PAD ((optWindowType == 1) ? true : false)
-#define SAFE_BOOL(a,b) (IS_PAD ? (b) : (a))
-		// Returns the 2nd input in 3DO mode, the 1st input otherwise
-#define SAFE_BOOL_SCL(a,b) (RES_SCALE (SAFE_BOOL ((a),(b))))
-		// Same as SAFE_BOOL but scaled to HD
-#define SAFE_NUM(a) (SAFE_BOOL (0, (a)))
-		// Returns the input number if 3DO mode is active
-#define SAFE_NUM_SCL(a) (RES_SCALE (SAFE_NUM ((a))))
-		// Same as SAFE_NUM but scaled it to HD
-#define NSAFE_NUM(a) (SAFE_BOOL ((a), 0))
-		// Returns the input number if 3DO mode is not active
-#define NSAFE_NUM_SCL(a) (RES_SCALE (NSAFE_NUM ((a))))
-		// Same as NSAFE_NUM but scaled it to HD
+#define SAFE_BOOL(a, b) (IS_PAD ? (b) : (a))
+// Returns the 2nd input in 3DO mode, the 1st input otherwise
+#define SAFE_BOOL_SCL(a, b) (RES_SCALE(SAFE_BOOL((a), (b))))
+// Same as SAFE_BOOL but scaled to HD
+#define SAFE_NUM(a) (SAFE_BOOL(0, (a)))
+// Returns the input number if 3DO mode is active
+#define SAFE_NUM_SCL(a) (RES_SCALE(SAFE_NUM((a))))
+// Same as SAFE_NUM but scaled it to HD
+#define NSAFE_NUM(a) (SAFE_BOOL((a), 0))
+// Returns the input number if 3DO mode is not active
+#define NSAFE_NUM_SCL(a) (RES_SCALE(NSAFE_NUM((a))))
+// Same as NSAFE_NUM but scaled it to HD
 
-#define MODE_CASE(a,b,c) (IS_DOS ? (a) : (IS_PAD ? (b) : (c)))
-#define MODE_CASE_SCL(a,b,c) RES_SCALE (MODE_CASE ((a),(b),(c)))
+#define MODE_CASE(a, b, c) (IS_DOS ? (a) : (IS_PAD ? (b) : (c)))
+#define MODE_CASE_SCL(a, b, c) RES_SCALE(MODE_CASE((a), (b), (c)))
 
-		// Margins
-#define SAFE_X (SAFE_NUM_SCL (16))
-		// Left and right screen margin used for 3DO mode
+// Margins
+#define SAFE_X (SAFE_NUM_SCL(16))
+// Left and right screen margin used for 3DO mode
 #define SAFE_Y SAFE_X
-		// Top and bottom screen margin used for 3DO mode
+// Top and bottom screen margin used for 3DO mode
 
-#define SAFE_NEG(a) (SAFE_NUM (SAFE_X - RES_SCALE((a))))
-		// Returns SAFE_X minus the input number, scaled to HD
-#define SAFE_POS(a) (SAFE_NUM (SAFE_X + RES_SCALE((a))))
-		// Returns SAFE_X plus the input number, scaled to HD
+#define SAFE_NEG(a) (SAFE_NUM(SAFE_X - RES_SCALE((a))))
+// Returns SAFE_X minus the input number, scaled to HD
+#define SAFE_POS(a) (SAFE_NUM(SAFE_X + RES_SCALE((a))))
+// Returns SAFE_X plus the input number, scaled to HD
 
-#define SIS_ORG_X (RES_SCALE (6) + SAFE_POS (1))
-#define SIS_ORG_Y (RES_SCALE (9) + SAFE_POS (1))
+#define SIS_ORG_X (RES_SCALE(6) + SAFE_POS(1))
+#define SIS_ORG_Y (RES_SCALE(9) + SAFE_POS(1))
 
 /* Status bar & play area sizes. */
-#define STATUS_WIDTH RES_SCALE (64)
+#define STATUS_WIDTH RES_SCALE(64)
 /* Width of the status "window" (the right part of the screen) */
 #define STATUS_HEIGHT SCREEN_HEIGHT
 /* Height of the status "window" (the right part of the screen) */
@@ -110,13 +110,13 @@ static inline constexpr auto chooseIfHd(const T& a, const T& b) -> const T&
 /* Width of the space "window" (the left part of the screen) */
 #define SPACE_HEIGHT (SCREEN_HEIGHT - (SAFE_Y * 2))
 /* Height of the space "window" (the left part of the screen) */
-#define SIS_SCREEN_WIDTH (SPACE_WIDTH - (RES_SCALE (13) + SAFE_NUM_SCL (1)))
+#define SIS_SCREEN_WIDTH (SPACE_WIDTH - (RES_SCALE(13) + SAFE_NUM_SCL(1)))
 /* Width of the usable part of the space "window" */
-#define SIS_SCREEN_HEIGHT (SPACE_HEIGHT - RES_SCALE (13))
+#define SIS_SCREEN_HEIGHT (SPACE_HEIGHT - RES_SCALE(13))
 /* Height of the usable part of the space "window" */
 
-#define ORIG_SIS_SCREEN_WIDTH (RES_DESCALE (SIS_SCREEN_WIDTH))
-#define ORIG_SIS_SCREEN_HEIGHT (RES_DESCALE (SIS_SCREEN_HEIGHT))
+#define ORIG_SIS_SCREEN_WIDTH (RES_DESCALE(SIS_SCREEN_WIDTH))
+#define ORIG_SIS_SCREEN_HEIGHT (RES_DESCALE(SIS_SCREEN_HEIGHT))
 #define DOS_SIS_SCREEN_WIDTH (243)
 #define DOS_SIS_SCREEN_HEIGHT (187)
 #define THREEDO_SIS_SCREEN_WIDTH (210)
@@ -126,35 +126,35 @@ static inline constexpr auto chooseIfHd(const T& a, const T& b) -> const T&
 #define HDMOD_SIS_SCREEN_WIDTH (1074)
 #define HDMOD_SIS_SCREEN_HEIGHT (924)
 
-#define SIS_SCREEN_DIMENSIONS \
-		{DOS_SIS_SCREEN_WIDTH,     DOS_SIS_SCREEN_HEIGHT}, \
+#define SIS_SCREEN_DIMENSIONS                                  \
+	{DOS_SIS_SCREEN_WIDTH, DOS_SIS_SCREEN_HEIGHT},             \
 		{THREEDO_SIS_SCREEN_WIDTH, THREEDO_SIS_SCREEN_HEIGHT}, \
-		{UQM_SIS_SCREEN_WIDTH,     UQM_SIS_SCREEN_HEIGHT}, \
-		{HDMOD_SIS_SCREEN_WIDTH,   HDMOD_SIS_SCREEN_HEIGHT},
+		{UQM_SIS_SCREEN_WIDTH, UQM_SIS_SCREEN_HEIGHT},         \
+		{HDMOD_SIS_SCREEN_WIDTH, HDMOD_SIS_SCREEN_HEIGHT},
 
-		/* Radar. */
-#define RADAR_X (RES_SCALE (4) + (SPACE_WIDTH + SAFE_X))
-#define RADAR_WIDTH (STATUS_WIDTH - RES_SCALE (8))
-#define RADAR_HEIGHT RES_SCALE (53)
+/* Radar. */
+#define RADAR_X (RES_SCALE(4) + (SPACE_WIDTH + SAFE_X))
+#define RADAR_WIDTH (STATUS_WIDTH - RES_SCALE(8))
+#define RADAR_HEIGHT RES_SCALE(53)
 #define RADAR_Y (SIS_ORG_Y + SIS_SCREEN_HEIGHT - RADAR_HEIGHT)
 
-		/* Blue boxes which display messages and the green date box. */
-#define SIS_TITLE_BOX_WIDTH    RES_SCALE (57)
-#define SIS_TITLE_WIDTH        (SIS_TITLE_BOX_WIDTH - RES_SCALE (2))
-#define SIS_TITLE_HEIGHT       RES_SCALE (8)
-#define SIS_SPACER_BOX_WIDTH   RES_SCALE (12)
+/* Blue boxes which display messages and the green date box. */
+#define SIS_TITLE_BOX_WIDTH RES_SCALE(57)
+#define SIS_TITLE_WIDTH (SIS_TITLE_BOX_WIDTH - RES_SCALE(2))
+#define SIS_TITLE_HEIGHT RES_SCALE(8)
+#define SIS_SPACER_BOX_WIDTH RES_SCALE(12)
 
-#define SIS_MESSAGE_BOX_WIDTH  (SIS_SCREEN_WIDTH - SIS_TITLE_BOX_WIDTH - SIS_SPACER_BOX_WIDTH)
-#define SIS_MESSAGE_WIDTH      (SIS_MESSAGE_BOX_WIDTH - RES_SCALE (2))
-#define SIS_MESSAGE_HEIGHT     SIS_TITLE_HEIGHT
+#define SIS_MESSAGE_BOX_WIDTH (SIS_SCREEN_WIDTH - SIS_TITLE_BOX_WIDTH - SIS_SPACER_BOX_WIDTH)
+#define SIS_MESSAGE_WIDTH (SIS_MESSAGE_BOX_WIDTH - RES_SCALE(2))
+#define SIS_MESSAGE_HEIGHT SIS_TITLE_HEIGHT
 
-#define STATUS_MESSAGE_WIDTH   (STATUS_WIDTH - RES_SCALE (4))
-#define STATUS_MESSAGE_HEIGHT  RES_SCALE (7)
+#define STATUS_MESSAGE_WIDTH (STATUS_WIDTH - RES_SCALE(4))
+#define STATUS_MESSAGE_HEIGHT RES_SCALE(7)
 
-#define SHIP_NAME_WIDTH        (STATUS_WIDTH - RES_SCALE (4))
-#define SHIP_NAME_HEIGHT       RES_SCALE (7)
+#define SHIP_NAME_WIDTH (STATUS_WIDTH - RES_SCALE(4))
+#define SHIP_NAME_HEIGHT RES_SCALE(7)
 
-		/* A lot of other shit. */
+/* A lot of other shit. */
 #define MAX_REDUCTION 3
 #define MAX_VIS_REDUCTION 2
 #define REDUCTION_SHIFT 1
@@ -166,32 +166,32 @@ static inline constexpr auto chooseIfHd(const T& a, const T& b) -> const T&
 #define ONE_SHIFT 2
 #define BACKGROUND_SHIFT 3
 #define SCALED_ONE (1 << ONE_SHIFT)
-#define DISPLAY_TO_WORLD(x) ((x)<<ONE_SHIFT)
-#define WORLD_TO_DISPLAY(x) ((x)>>ONE_SHIFT)
+#define DISPLAY_TO_WORLD(x) ((x) << ONE_SHIFT)
+#define WORLD_TO_DISPLAY(x) ((x) >> ONE_SHIFT)
 
-#define LOG_SPACE_WIDTH   (DISPLAY_TO_WORLD (SPACE_WIDTH) << MAX_REDUCTION)
-#define LOG_SPACE_HEIGHT  (DISPLAY_TO_WORLD (SPACE_HEIGHT) << MAX_REDUCTION)
-#define TRANSITION_WIDTH  (DISPLAY_TO_WORLD (SPACE_WIDTH) << MAX_VIS_REDUCTION)
-#define TRANSITION_HEIGHT (DISPLAY_TO_WORLD (SPACE_HEIGHT) << MAX_VIS_REDUCTION)
+#define LOG_SPACE_WIDTH (DISPLAY_TO_WORLD(SPACE_WIDTH) << MAX_REDUCTION)
+#define LOG_SPACE_HEIGHT (DISPLAY_TO_WORLD(SPACE_HEIGHT) << MAX_REDUCTION)
+#define TRANSITION_WIDTH (DISPLAY_TO_WORLD(SPACE_WIDTH) << MAX_VIS_REDUCTION)
+#define TRANSITION_HEIGHT (DISPLAY_TO_WORLD(SPACE_HEIGHT) << MAX_VIS_REDUCTION)
 
 // JMS_GFX: Changed from COORD to uqm::SDWORD and from uqm::COUNT to uqm::DWORD
-#define DISPLAY_ALIGN(x) ((uqm::SDWORD)(x)&~(SCALED_ONE-1))
-#define DISPLAY_ALIGN_X(x) ((uqm::SDWORD)((uqm::DWORD)(x)%LOG_SPACE_WIDTH)&~(SCALED_ONE-1))
-#define DISPLAY_ALIGN_Y(y) ((uqm::SDWORD)((uqm::DWORD)(y)%LOG_SPACE_HEIGHT)&~(SCALED_ONE-1))
+#define DISPLAY_ALIGN(x) ((uqm::SDWORD)(x) & ~(SCALED_ONE - 1))
+#define DISPLAY_ALIGN_X(x) ((uqm::SDWORD)((uqm::DWORD)(x) % LOG_SPACE_WIDTH) & ~(SCALED_ONE - 1))
+#define DISPLAY_ALIGN_Y(y) ((uqm::SDWORD)((uqm::DWORD)(y) % LOG_SPACE_HEIGHT) & ~(SCALED_ONE - 1))
 
 #define MAX_X_UNIVERSE 9999
 #define MAX_Y_UNIVERSE 9999
 // Due to the added rounding error correction, the maximum logical X and Y
 // in Hyperspace cannot go past 999.94999, otherwise the values will be
 // rounded up to 1000.0. We do not want that so we subtract half a unit.
-#define MAX_X_LOGICAL \
-		(UNIVERSE_TO_LOGX (MAX_X_UNIVERSE + 1) - (UNIVERSE_TO_LOGX (1) >> 1) \
-			- 1L)
+#define MAX_X_LOGICAL                                                  \
+	(UNIVERSE_TO_LOGX(MAX_X_UNIVERSE + 1) - (UNIVERSE_TO_LOGX(1) >> 1) \
+	 - 1L)
 // The Y axis is inverted with respect to the screen Y axis.
 // (MAX_Y_UNIVERSE - 1) is really 1 for our purposes.
-#define MAX_Y_LOGICAL \
-		(UNIVERSE_TO_LOGY (-1) - (UNIVERSE_TO_LOGY (MAX_Y_UNIVERSE - 1) >> 1) \
-			- 1L)
+#define MAX_Y_LOGICAL                                                   \
+	(UNIVERSE_TO_LOGY(-1) - (UNIVERSE_TO_LOGY(MAX_Y_UNIVERSE - 1) >> 1) \
+	 - 1L)
 
 #define SPHERE_RADIUS_INCREMENT 11
 
@@ -199,15 +199,15 @@ static inline constexpr auto chooseIfHd(const T& a, const T& b) -> const T&
 
 // XXX: These corrected for the weird screen aspect ratio on DOS
 //   In part because of them, hyperflight is slower vertically
-#define UNIT_SCREEN_WIDTH RES_SCALE (63)
-#define UNIT_SCREEN_HEIGHT RES_SCALE (50)
+#define UNIT_SCREEN_WIDTH RES_SCALE(63)
+#define UNIT_SCREEN_HEIGHT RES_SCALE(50)
 
 // These are for determining the HyperSpace boundaries
 // for culling HyperStars when they move off screen
-#define SIS_WORLD_WIDTH DISPLAY_TO_WORLD (SIS_SCREEN_WIDTH)
-#define SIS_WORLD_HEIGHT DISPLAY_TO_WORLD (SIS_SCREEN_HEIGHT)
+#define SIS_WORLD_WIDTH DISPLAY_TO_WORLD(SIS_SCREEN_WIDTH)
+#define SIS_WORLD_HEIGHT DISPLAY_TO_WORLD(SIS_SCREEN_HEIGHT)
 #define UNIT_SCR_DIFF \
-		DISPLAY_TO_WORLD (UNIT_SCREEN_WIDTH - UNIT_SCREEN_HEIGHT + 1)
+	DISPLAY_TO_WORLD(UNIT_SCREEN_WIDTH - UNIT_SCREEN_HEIGHT + 1)
 
 #define HS_WEST_EDGE ((SIS_WORLD_WIDTH + UNIT_SCR_DIFF) >> 1)
 #define HS_EAST_EDGE ((SIS_WORLD_WIDTH - UNIT_SCR_DIFF) >> 1)
@@ -224,53 +224,51 @@ static inline constexpr auto chooseIfHd(const T& a, const T& b) -> const T&
 
 #define UNIVERSE_UNITS_X (((MAX_X_UNIVERSE + 1) >> 4))
 #define UNIVERSE_UNITS_Y (((MAX_Y_UNIVERSE + 1) >> 4))
-#define LOG_UNITS_X      ((uqm::SDWORD)(UNIVERSE_UNITS_X * RES_SCALE (16)))
-#define LOG_UNITS_Y      ((uqm::SDWORD)(UNIVERSE_UNITS_Y * RES_SCALE (16)))
+#define LOG_UNITS_X ((uqm::SDWORD)(UNIVERSE_UNITS_X * RES_SCALE(16)))
+#define LOG_UNITS_Y ((uqm::SDWORD)(UNIVERSE_UNITS_Y * RES_SCALE(16)))
 
-#define ROUNDING_ERROR(div)  ((div) >> 1)
+#define ROUNDING_ERROR(div) ((div) >> 1)
 
 static inline uqm::SDWORD
-logxToUniverse (uqm::SDWORD lx)
+logxToUniverse(uqm::SDWORD lx)
 {
-	return (uqm::SDWORD) ((lx * UNIVERSE_UNITS_X + ROUNDING_ERROR(LOG_UNITS_X))
-			/ LOG_UNITS_X);
+	return (uqm::SDWORD)((lx * UNIVERSE_UNITS_X + ROUNDING_ERROR(LOG_UNITS_X))
+						 / LOG_UNITS_X);
 }
 #define LOGX_TO_UNIVERSE(lx) \
-		logxToUniverse (lx)
+	logxToUniverse(lx)
 static inline uqm::SDWORD
-logyToUniverse (uqm::SDWORD ly)
+logyToUniverse(uqm::SDWORD ly)
 {
-	return (uqm::SDWORD) (MAX_Y_UNIVERSE -
-			((ly * UNIVERSE_UNITS_Y + ROUNDING_ERROR(LOG_UNITS_Y))
-			/ LOG_UNITS_Y));
+	return (uqm::SDWORD)(MAX_Y_UNIVERSE - ((ly * UNIVERSE_UNITS_Y + ROUNDING_ERROR(LOG_UNITS_Y)) / LOG_UNITS_Y));
 }
 #define LOGY_TO_UNIVERSE(ly) \
-		logyToUniverse (ly)
+	logyToUniverse(ly)
 static inline uqm::SDWORD
-universeToLogx (COORD ux)
+universeToLogx(COORD ux)
 {
 	return (ux * LOG_UNITS_X + ROUNDING_ERROR(UNIVERSE_UNITS_X))
-			/ UNIVERSE_UNITS_X;
+		 / UNIVERSE_UNITS_X;
 }
 #define UNIVERSE_TO_LOGX(ux) \
-		universeToLogx (ux)
+	universeToLogx(ux)
 static inline uqm::SDWORD
-universeToLogy (COORD uy)
+universeToLogy(COORD uy)
 {
 	return ((MAX_Y_UNIVERSE - uy) * LOG_UNITS_Y
 			+ ROUNDING_ERROR(UNIVERSE_UNITS_Y))
-			/ UNIVERSE_UNITS_Y;
+		 / UNIVERSE_UNITS_Y;
 }
 #define UNIVERSE_TO_LOGY(uy) \
-		universeToLogy (uy)
+	universeToLogy(uy)
 
 // Original (and now broken) Hyperspace speed factors
 // Now being utilized to load Vanilla saves properly
 #define SECTOR_WIDTH 195
 #define SECTOR_HEIGHT 25
 
-#define OLD_LOG_UNITS_X      ((uqm::SDWORD)(8192 >> 4) * SECTOR_WIDTH)
-#define OLD_LOG_UNITS_Y      ((uqm::SDWORD)(7680 >> 4) * SECTOR_HEIGHT)
+#define OLD_LOG_UNITS_X ((uqm::SDWORD)(8192 >> 4) * SECTOR_WIDTH)
+#define OLD_LOG_UNITS_Y ((uqm::SDWORD)(7680 >> 4) * SECTOR_HEIGHT)
 #define OLD_UNIVERSE_UNITS_X (((MAX_X_UNIVERSE + 1) >> 4) * 10)
 #define OLD_UNIVERSE_UNITS_Y (((MAX_Y_UNIVERSE + 1) >> 4))
 
@@ -278,15 +276,13 @@ static inline uqm::SDWORD
 oldLogxToUniverse(uqm::SDWORD lx)
 {
 	return (uqm::SDWORD)((lx * OLD_UNIVERSE_UNITS_X + ROUNDING_ERROR(OLD_LOG_UNITS_X))
-		/ OLD_LOG_UNITS_X);
+						 / OLD_LOG_UNITS_X);
 }
 
 static inline uqm::SDWORD
 oldLogyToUniverse(uqm::SDWORD ly)
 {
-	return (uqm::SDWORD)(MAX_Y_UNIVERSE -
-		((ly * OLD_UNIVERSE_UNITS_Y + ROUNDING_ERROR(OLD_LOG_UNITS_Y))
-			/ OLD_LOG_UNITS_Y));
+	return (uqm::SDWORD)(MAX_Y_UNIVERSE - ((ly * OLD_UNIVERSE_UNITS_Y + ROUNDING_ERROR(OLD_LOG_UNITS_Y)) / OLD_LOG_UNITS_Y));
 }
 
 static inline uqm::SDWORD
@@ -308,44 +304,44 @@ inBounds(uqm::SDWORD val, uqm::SDWORD min, uqm::SDWORD max)
 
 #define FACING_SHIFT 4
 
-#define ANGLE_TO_FACING(a) (((a)+(1<<(CIRCLE_SHIFT-FACING_SHIFT-1))) \
-										>>(CIRCLE_SHIFT-FACING_SHIFT))
-#define FACING_TO_ANGLE(f) ((f)<<(CIRCLE_SHIFT-FACING_SHIFT))
+#define ANGLE_TO_FACING(a) (((a) + (1 << (CIRCLE_SHIFT - FACING_SHIFT - 1))) \
+							>> (CIRCLE_SHIFT - FACING_SHIFT))
+#define FACING_TO_ANGLE(f) ((f) << (CIRCLE_SHIFT - FACING_SHIFT))
 
-#define NORMALIZE_ANGLE(a) ((uqm::DWORD)((a)&(FULL_CIRCLE-1)))
-#define NORMALIZE_FACING(f) ((uqm::DWORD)((f)&((1 << FACING_SHIFT)-1)))
+#define NORMALIZE_ANGLE(a) ((uqm::DWORD)((a) & (FULL_CIRCLE - 1)))
+#define NORMALIZE_FACING(f) ((uqm::DWORD)((f) & ((1 << FACING_SHIFT) - 1)))
 
 #define DEGREES_TO_ANGLE(d) NORMALIZE_ANGLE((((d) % 360) * FULL_CIRCLE \
-				+ HALF_CIRCLE) / 360)
+											 + HALF_CIRCLE)            \
+											/ 360)
 #define ANGLE_TO_DEGREES(d) (NORMALIZE_ANGLE(d) * 360 / FULL_CIRCLE)
 
 #define SIN_SHIFT 14
 #define SIN_SCALE (1 << SIN_SHIFT)
-#define INT_ADJUST(x) ((x)<<SIN_SHIFT)
-#define FLT_ADJUST(x) (uqm::SIZE)((x)*SIN_SCALE)
-#define UNADJUST(x) (uqm::SIZE)((x)>>SIN_SHIFT)
-#define ROUND(x,y) ((x)+((x)>=0?((y)>>1):-((y)>>1)))
+#define INT_ADJUST(x) ((x) << SIN_SHIFT)
+#define FLT_ADJUST(x) (uqm::SIZE)((x) * SIN_SCALE)
+#define UNADJUST(x) (uqm::SIZE)((x) >> SIN_SHIFT)
+#define ROUND(x, y) ((x) + ((x) >= 0 ? ((y) >> 1) : -((y) >> 1)))
 
 extern uqm::SDWORD sinetab[];
 #define SINVAL(a) sinetab[NORMALIZE_ANGLE(a)]
-#define COSVAL(a) SINVAL((a)+QUADRANT)
-#define SINE(a,m) ((uqm::SDWORD)((((long)SINVAL(a))*(long)(m))>>SIN_SHIFT))
-#define COSINE(a,m) SINE((a)+QUADRANT,m)
-extern uqm::COUNT ARCTAN (uqm::SDWORD delta_x, uqm::SDWORD delta_y);
+#define COSVAL(a) SINVAL((a) + QUADRANT)
+#define SINE(a, m) ((uqm::SDWORD)((((long)SINVAL(a)) * (long)(m)) >> SIN_SHIFT))
+#define COSINE(a, m) SINE((a) + QUADRANT, m)
+extern uqm::COUNT ARCTAN(uqm::SDWORD delta_x, uqm::SDWORD delta_y);
 
-#define WRAP_VAL(v,w) ((uqm::DWORD)((v)<0?((v)+(w)):((v)>=(w)?((v)-(w)):(v))))
-#define WRAP_X(x) WRAP_VAL(x,LOG_SPACE_WIDTH)
-#define WRAP_Y(y) WRAP_VAL(y,LOG_SPACE_HEIGHT)
-#define WRAP_DELTA_X(dx) ((dx)<0 ? \
-				((-(dx)<=LOG_SPACE_WIDTH>>1)?(dx):(LOG_SPACE_WIDTH+(dx))) : \
-				(((dx)<=LOG_SPACE_WIDTH>>1)?(dx):((dx)-LOG_SPACE_WIDTH)))
-#define WRAP_DELTA_Y(dy) ((dy)<0 ? \
-				((-(dy)<=LOG_SPACE_HEIGHT>>1)?(dy):(LOG_SPACE_HEIGHT+(dy))) : \
-				(((dy)<=LOG_SPACE_HEIGHT>>1)?(dy):((dy)-LOG_SPACE_HEIGHT)))
+#define WRAP_VAL(v, w) ((uqm::DWORD)((v) < 0 ? ((v) + (w)) : ((v) >= (w) ? ((v) - (w)) : (v))))
+#define WRAP_X(x) WRAP_VAL(x, LOG_SPACE_WIDTH)
+#define WRAP_Y(y) WRAP_VAL(y, LOG_SPACE_HEIGHT)
+#define WRAP_DELTA_X(dx) ((dx) < 0 ?                                                                \
+							  ((-(dx) <= LOG_SPACE_WIDTH >> 1) ? (dx) : (LOG_SPACE_WIDTH + (dx))) : \
+							  (((dx) <= LOG_SPACE_WIDTH >> 1) ? (dx) : ((dx) - LOG_SPACE_WIDTH)))
+#define WRAP_DELTA_Y(dy) ((dy) < 0 ?                                                                  \
+							  ((-(dy) <= LOG_SPACE_HEIGHT >> 1) ? (dy) : (LOG_SPACE_HEIGHT + (dy))) : \
+							  (((dy) <= LOG_SPACE_HEIGHT >> 1) ? (dy) : ((dy) - LOG_SPACE_HEIGHT)))
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
 #endif /* UQM_UNITS_H_ */
-

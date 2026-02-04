@@ -7,7 +7,8 @@
 extern "C" {
 #endif
 
-typedef enum MeleeShip {
+typedef enum MeleeShip
+{
 	MELEE_ANDROSYNTH,
 	MELEE_ARILOU,
 	MELEE_CHENJESU,
@@ -33,20 +34,20 @@ typedef enum MeleeShip {
 	MELEE_VUX,
 	MELEE_YEHAT,
 	MELEE_ZOQFOTPIK,
-	
-	MELEE_UNSET = ((uqm::BYTE) ~0) - 1,
-			// Used with the Update protocol, to register in the sentTeam
-	MELEE_NONE = (uqm::BYTE) ~0
-			// Empty fleet position.
+
+	MELEE_UNSET = ((uqm::BYTE)~0) - 1,
+	// Used with the Update protocol, to register in the sentTeam
+	MELEE_NONE = (uqm::BYTE)~0
+	// Empty fleet position.
 } MeleeShip;
 #define NUM_MELEE_SHIPS (MELEE_ZOQFOTPIK + 1)
-inline MeleeShip operator+=(MeleeShip lhs, int rhs) {return static_cast<MeleeShip>(static_cast<int>(lhs) + rhs); }
-inline MeleeShip operator-=(MeleeShip lhs, int rhs) {return static_cast<MeleeShip>(static_cast<int>(lhs) - rhs); }
+inline MeleeShip operator+=(MeleeShip lhs, int rhs) { return static_cast<MeleeShip>(static_cast<int>(lhs) + rhs); }
+inline MeleeShip operator-=(MeleeShip lhs, int rhs) { return static_cast<MeleeShip>(static_cast<int>(lhs) - rhs); }
 inline MeleeShip operator++(MeleeShip val) { return static_cast<MeleeShip>(static_cast<int>(val) + 1); }
 inline MeleeShip operator--(MeleeShip val) { return static_cast<MeleeShip>(static_cast<int>(val) - 1); }
 
 static inline bool
-MeleeShip_valid (MeleeShip ship)
+MeleeShip_valid(MeleeShip ship)
 {
 	return (ship < NUM_MELEE_SHIPS) || (ship == MELEE_NONE);
 }
@@ -55,5 +56,4 @@ MeleeShip_valid (MeleeShip ship)
 }
 #endif
 
-#endif  /* MELEESHIP_H */
-
+#endif /* MELEESHIP_H */

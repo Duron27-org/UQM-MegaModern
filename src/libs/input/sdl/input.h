@@ -22,6 +22,6 @@
 #include "port.h"
 #include <SDL.h>
 
-extern void ProcessInputEvent (const SDL_Event *Event);
+extern void ProcessInputEvent(const SDL_Event* Event);
 
 #endif

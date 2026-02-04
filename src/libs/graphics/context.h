@@ -29,8 +29,8 @@ typedef uqm::UWORD FBK_FLAGS;
 struct context_desc
 {
 	uqm::UWORD Flags;
-			// Low nibble currently unused
-			// High nibble contains GRAPHICS_STATUS
+	// Low nibble currently unused
+	// High nibble contains GRAPHICS_STATUS
 
 	Color ForeGroundColor, BackGroundColor;
 	DrawMode Mode;
@@ -40,16 +40,16 @@ struct context_desc
 	RECT ClipRect;
 
 	FRAME FontEffect;
-	TFB_Image *FontBacking;
+	TFB_Image* FontBacking;
 	FBK_FLAGS BackingFlags;
 
 #ifdef DEBUG
-	const char *name;
+	const char* name;
 	CONTEXT next;
 #endif
 };
 
-#define AllocContext() HCalloc (sizeof (CONTEXT_DESC))
+#define AllocContext() HCalloc(sizeof(CONTEXT_DESC))
 #define FreeContext HFree
 
 extern CONTEXT _pCurContext;
@@ -65,52 +65,52 @@ extern PRIMITIVE _locPrim;
 #define _get_context_font_backing() (_pCurContext->FontBacking)
 #define _get_context_draw_mode() (_pCurContext->Mode)
 
-#define SwitchContextDrawMode(m) \
-{ \
-	_pCurContext->Mode = (m); \
-}
-#define SwitchContextForeGroundColor(c) \
-{ \
-	_pCurContext->ForeGroundColor = (c); \
-}
-#define SwitchContextBackGroundColor(c) \
-{ \
-	_pCurContext->BackGroundColor = (c); \
-}
-#define SetContextFlags(f) \
-{ \
-	_pCurContext->Flags |= (f); \
-}
-#define UnsetContextFlags(f) \
-{ \
-	_pCurContext->Flags &= ~(f); \
-}
-#define SwitchContextFGFrame(f) \
-{ \
-	_pCurContext->ForeGroundFrame = (f); \
-}
-#define SwitchContextFont(f) \
-{ \
-	_pCurContext->Font = (f); \
-	SetContextFBkFlags (FBK_DIRTY); \
-}
-#define SwitchContextBGFunc(f) \
-{ \
-	_pCurContext->BackGroundFunc = (f); \
-}
-#define SetContextFBkFlags(f) \
-{ \
-	_pCurContext->BackingFlags |= (f); \
-}
-#define UnsetContextFBkFlags(f) \
-{ \
-	_pCurContext->BackingFlags &= ~(f); \
-}
-#define SwitchContextFontEffect(f) \
-{ \
-	_pCurContext->FontEffect = (f); \
-	SetContextFBkFlags (FBK_DIRTY); \
-}
+#define SwitchContextDrawMode(m)  \
+	{                             \
+		_pCurContext->Mode = (m); \
+	}
+#define SwitchContextForeGroundColor(c)      \
+	{                                        \
+		_pCurContext->ForeGroundColor = (c); \
+	}
+#define SwitchContextBackGroundColor(c)      \
+	{                                        \
+		_pCurContext->BackGroundColor = (c); \
+	}
+#define SetContextFlags(f)          \
+	{                               \
+		_pCurContext->Flags |= (f); \
+	}
+#define UnsetContextFlags(f)         \
+	{                                \
+		_pCurContext->Flags &= ~(f); \
+	}
+#define SwitchContextFGFrame(f)              \
+	{                                        \
+		_pCurContext->ForeGroundFrame = (f); \
+	}
+#define SwitchContextFont(f)           \
+	{                                  \
+		_pCurContext->Font = (f);      \
+		SetContextFBkFlags(FBK_DIRTY); \
+	}
+#define SwitchContextBGFunc(f)              \
+	{                                       \
+		_pCurContext->BackGroundFunc = (f); \
+	}
+#define SetContextFBkFlags(f)              \
+	{                                      \
+		_pCurContext->BackingFlags |= (f); \
+	}
+#define UnsetContextFBkFlags(f)             \
+	{                                       \
+		_pCurContext->BackingFlags &= ~(f); \
+	}
+#define SwitchContextFontEffect(f)      \
+	{                                   \
+		_pCurContext->FontEffect = (f); \
+		SetContextFBkFlags(FBK_DIRTY);  \
+	}
 
 typedef uqm::BYTE GRAPHICS_STATUS;
 
@@ -134,14 +134,12 @@ extern GRAPHICS_STATUS _GraphicsStatusFlags;
 #define SYSTEM_ACTIVE (GRAPHICS_STATUS)(CONTEXT_ACTIVE | DRAWABLE_ACTIVE)
 
 #define GraphicsSystemActive() \
-		((_GraphicsStatusFlags & SYSTEM_ACTIVE) == SYSTEM_ACTIVE)
+	((_GraphicsStatusFlags & SYSTEM_ACTIVE) == SYSTEM_ACTIVE)
 #define GraphicsStatus() \
-		(_GraphicsStatusFlags & (GRAPHICS_STATUS)(GRAPHICS_ACTIVE \
-							| GRAPHICS_VISIBLE))
+	(_GraphicsStatusFlags & (GRAPHICS_STATUS)(GRAPHICS_ACTIVE | GRAPHICS_VISIBLE))
 
 // pValidRect or origin may be NULL
-bool GetContextValidRect (RECT *pValidRect, POINT *origin);
-extern void FixContextFontEffect (void);
+bool GetContextValidRect(RECT* pValidRect, POINT* origin);
+extern void FixContextFontEffect(void);
 
 #endif /* LIBS_GRAPHICS_CONTEXT_H_ */
-

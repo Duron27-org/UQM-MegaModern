@@ -39,7 +39,7 @@
 #define WEAPON_ENERGY_COST 2
 #define WEAPON_WAIT 1
 #define ARILOU_OFFSET 9
-#define LASER_RANGE DISPLAY_TO_WORLD (100 + ARILOU_OFFSET)
+#define LASER_RANGE DISPLAY_TO_WORLD(100 + ARILOU_OFFSET)
 
 // Teleporter
 #define SPECIAL_ENERGY_COST 3
@@ -47,124 +47,123 @@
 #define HYPER_LIFE 5
 
 // HD Values
-#define LASER_RANGE_HD RES_SCALE (LASER_RANGE)
+#define LASER_RANGE_HD RES_SCALE(LASER_RANGE)
 
 static RACE_DESC arilou_desc =
-{
-	{ /* SHIP_INFO */
-		"skiff",
-		/* FIRES_FORE | */ IMMEDIATE_WEAPON,
-		16, /* Super Melee cost */
-		MAX_CREW, MAX_CREW,
-		MAX_ENERGY, MAX_ENERGY,
-		ARILOU_RACE_STRINGS,
-		ARILOU_ICON_MASK_PMAP_ANIM,
-		ARILOU_MICON_MASK_PMAP_ANIM,
-		NULL, NULL, NULL
-	},
-	{ /* FLEET_STUFF */
-		250 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
-		{ /* Known location (center of SoI) */
-			438, 6372,
-		},
-	},
 	{
-		MAX_THRUST,
-		THRUST_INCREMENT,
-		ENERGY_REGENERATION,
-		WEAPON_ENERGY_COST,
-		SPECIAL_ENERGY_COST,
-		ENERGY_WAIT,
-		TURN_WAIT,
-		THRUST_WAIT,
-		WEAPON_WAIT,
-		SPECIAL_WAIT,
-		SHIP_MASS,
-	},
-	{
+		{/* SHIP_INFO */
+		 "skiff",
+		 /* FIRES_FORE | */ IMMEDIATE_WEAPON,
+		 16, /* Super Melee cost */
+		 MAX_CREW, MAX_CREW,
+		 MAX_ENERGY, MAX_ENERGY,
+		 ARILOU_RACE_STRINGS,
+		 ARILOU_ICON_MASK_PMAP_ANIM,
+		 ARILOU_MICON_MASK_PMAP_ANIM,
+		 NULL, NULL, NULL},
 		{
-			ARILOU_BIG_MASK_PMAP_ANIM,
-			ARILOU_MED_MASK_PMAP_ANIM,
-			ARILOU_SML_MASK_PMAP_ANIM,
-		},
+			/* FLEET_STUFF */
+			250 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
+			{
+				/* Known location (center of SoI) */
+				438,
+				6372,
+			},
+		 },
 		{
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-		},
+			MAX_THRUST,
+			THRUST_INCREMENT,
+			ENERGY_REGENERATION,
+			WEAPON_ENERGY_COST,
+			SPECIAL_ENERGY_COST,
+			ENERGY_WAIT,
+			TURN_WAIT,
+			THRUST_WAIT,
+			WEAPON_WAIT,
+			SPECIAL_WAIT,
+			SHIP_MASS,
+		 },
+		{{
+			 ARILOU_BIG_MASK_PMAP_ANIM,
+			 ARILOU_MED_MASK_PMAP_ANIM,
+			 ARILOU_SML_MASK_PMAP_ANIM,
+		 },
+		 {
+			 NULL_RESOURCE,
+			 NULL_RESOURCE,
+			 NULL_RESOURCE,
+		 },
+		 {
+			 WARP_BIG_MASK_PMAP_ANIM,
+			 WARP_MED_MASK_PMAP_ANIM,
+			 WARP_SML_MASK_PMAP_ANIM,
+		 },
+		 {ARILOU_CAPTAIN_MASK_PMAP_ANIM,
+		  NULL, NULL, NULL, NULL, NULL,
+		  0, 0, 0, 0, 0},
+		 ARILOU_VICTORY_SONG,
+		 ARILOU_SHIP_SOUNDS,
+		 {NULL, NULL, NULL},
+		 {NULL, NULL, NULL},
+		 {NULL, NULL, NULL},
+		 NULL,
+		 NULL},
 		{
-			WARP_BIG_MASK_PMAP_ANIM,
-			WARP_MED_MASK_PMAP_ANIM,
-			WARP_SML_MASK_PMAP_ANIM,
-		},
-		{
-			ARILOU_CAPTAIN_MASK_PMAP_ANIM,
-			NULL, NULL, NULL, NULL, NULL,
-			0, 0, 0, 0, 0
-		},
-		ARILOU_VICTORY_SONG,
-		ARILOU_SHIP_SOUNDS,
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		NULL, NULL
-	},
-	{
+			0,
+			LASER_RANGE >> 1,
+			NULL,
+		 },
+		(UNINIT_FUNC*)NULL,
+		(PREPROCESS_FUNC*)NULL,
+		(POSTPROCESS_FUNC*)NULL,
+		(INIT_WEAPON_FUNC*)NULL,
 		0,
-		LASER_RANGE >> 1,
-		NULL,
-	},
-	(UNINIT_FUNC *) NULL,
-	(PREPROCESS_FUNC *) NULL,
-	(POSTPROCESS_FUNC *) NULL,
-	(INIT_WEAPON_FUNC *) NULL,
-	0,
-	0, /* CodeRef */
+		0, /* CodeRef */
 };
 
 static uqm::COUNT
-initialize_autoaim_laser (ELEMENT *ShipPtr, HELEMENT LaserArray[])
+initialize_autoaim_laser(ELEMENT* ShipPtr, HELEMENT LaserArray[])
 {
 	uqm::COUNT orig_facing;
 	uqm::SIZE delta_facing;
-	STARSHIP *StarShipPtr;
+	STARSHIP* StarShipPtr;
 	LASER_BLOCK LaserBlock;
-	uqm::COUNT LaserRange = chooseIfHd (LASER_RANGE, LASER_RANGE_HD);
+	uqm::COUNT LaserRange = chooseIfHd(LASER_RANGE, LASER_RANGE_HD);
 
-	GetElementStarShip (ShipPtr, &StarShipPtr);
+	GetElementStarShip(ShipPtr, &StarShipPtr);
 	LaserBlock.face = orig_facing = StarShipPtr->ShipFacing;
-	if ((delta_facing = TrackShip (ShipPtr, &LaserBlock.face)) > 0)
-		LaserBlock.face = NORMALIZE_FACING (orig_facing + delta_facing);
+	if ((delta_facing = TrackShip(ShipPtr, &LaserBlock.face)) > 0)
+		LaserBlock.face = NORMALIZE_FACING(orig_facing + delta_facing);
 	ShipPtr->hTarget = 0;
 
 	LaserBlock.cx = ShipPtr->next.location.x;
 	LaserBlock.cy = ShipPtr->next.location.y;
-	LaserBlock.ex = COSINE (FACING_TO_ANGLE (LaserBlock.face), LaserRange);
-	LaserBlock.ey = SINE (FACING_TO_ANGLE (LaserBlock.face), LaserRange);
+	LaserBlock.ex = COSINE(FACING_TO_ANGLE(LaserBlock.face), LaserRange);
+	LaserBlock.ey = SINE(FACING_TO_ANGLE(LaserBlock.face), LaserRange);
 	LaserBlock.sender = ShipPtr->playerNr;
 	LaserBlock.flags = IGNORE_SIMILAR;
-	LaserBlock.pixoffs = RES_SCALE (ARILOU_OFFSET);
-	LaserBlock.color = BUILD_COLOR (MAKE_RGB15 (0x1F, 0x1F, 0x0A), 0x0E);
-	LaserArray[0] = initialize_laser (&LaserBlock);
+	LaserBlock.pixoffs = RES_SCALE(ARILOU_OFFSET);
+	LaserBlock.color = BUILD_COLOR(MAKE_RGB15(0x1F, 0x1F, 0x0A), 0x0E);
+	LaserArray[0] = initialize_laser(&LaserBlock);
 
 	return (1);
 }
 
 static void
-arilou_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
-		uqm::COUNT ConcernCounter)
+arilou_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
+					uqm::COUNT ConcernCounter)
 {
-	STARSHIP *StarShipPtr;
+	STARSHIP* StarShipPtr;
 
-	GetElementStarShip (ShipPtr, &StarShipPtr);
+	GetElementStarShip(ShipPtr, &StarShipPtr);
 	StarShipPtr->ship_input_state |= THRUST;
 
-	 ObjectsOfConcern[ENEMY_SHIP_INDEX].MoveState = ENTICE;
-	ship_intelligence (ShipPtr, ObjectsOfConcern, ConcernCounter);
+	ObjectsOfConcern[ENEMY_SHIP_INDEX].MoveState = ENTICE;
+	ship_intelligence(ShipPtr, ObjectsOfConcern, ConcernCounter);
 
 	if (StarShipPtr->special_counter == 0)
 	{
-		EVALUATE_DESC *lpEvalDesc;
+		EVALUATE_DESC* lpEvalDesc;
 
 		StarShipPtr->ship_input_state &= ~SPECIAL;
 
@@ -172,26 +171,23 @@ arilou_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 		if (lpEvalDesc->ObjectPtr && lpEvalDesc->which_turn <= 6)
 		{
 			bool IsTrackingWeapon;
-			STARSHIP *EnemyStarShipPtr;
+			STARSHIP* EnemyStarShipPtr;
 
-			GetElementStarShip (lpEvalDesc->ObjectPtr, &EnemyStarShipPtr);
+			GetElementStarShip(lpEvalDesc->ObjectPtr, &EnemyStarShipPtr);
 			if (((EnemyStarShipPtr->RaceDescPtr->ship_info.ship_flags
-					& SEEKING_WEAPON) &&
-					lpEvalDesc->ObjectPtr->next.image.farray ==
-					EnemyStarShipPtr->RaceDescPtr->ship_data.weapon) ||
-					((EnemyStarShipPtr->RaceDescPtr->ship_info.ship_flags
-					& SEEKING_SPECIAL) &&
-					lpEvalDesc->ObjectPtr->next.image.farray ==
-					EnemyStarShipPtr->RaceDescPtr->ship_data.special))
+				  & SEEKING_WEAPON)
+				 && lpEvalDesc->ObjectPtr->next.image.farray == EnemyStarShipPtr->RaceDescPtr->ship_data.weapon)
+				|| ((EnemyStarShipPtr->RaceDescPtr->ship_info.ship_flags
+					 & SEEKING_SPECIAL)
+					&& lpEvalDesc->ObjectPtr->next.image.farray == EnemyStarShipPtr->RaceDescPtr->ship_data.special))
 				IsTrackingWeapon = true;
 			else
 				IsTrackingWeapon = false;
 
-			if (((lpEvalDesc->ObjectPtr->state_flags & PLAYER_SHIP) /* means IMMEDIATE WEAPON */
-					|| (IsTrackingWeapon && (lpEvalDesc->which_turn == 1
-					|| (lpEvalDesc->ObjectPtr->state_flags & CREW_OBJECT))) /* FIGHTERS!!! */
-					|| PlotIntercept (lpEvalDesc->ObjectPtr, ShipPtr, 3, 0))
-					&& !(TFB_Random () & 3))
+			if (((lpEvalDesc->ObjectPtr->state_flags & PLAYER_SHIP)															  /* means IMMEDIATE WEAPON */
+				 || (IsTrackingWeapon && (lpEvalDesc->which_turn == 1 || (lpEvalDesc->ObjectPtr->state_flags & CREW_OBJECT))) /* FIGHTERS!!! */
+				 || PlotIntercept(lpEvalDesc->ObjectPtr, ShipPtr, 3, 0))
+				&& !(TFB_Random() & 3))
 			{
 				StarShipPtr->ship_input_state &= ~(LEFT | RIGHT | THRUST | WEAPON);
 				StarShipPtr->ship_input_state |= SPECIAL;
@@ -203,41 +199,42 @@ arilou_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 }
 
 static void
-arilou_preprocess (ELEMENT *ElementPtr)
+arilou_preprocess(ELEMENT* ElementPtr)
 {
-	STARSHIP *StarShipPtr;
+	STARSHIP* StarShipPtr;
 
-	GetElementStarShip (ElementPtr, &StarShipPtr);
+	GetElementStarShip(ElementPtr, &StarShipPtr);
 	if (!(ElementPtr->state_flags & NONSOLID))
 	{
 		if (ElementPtr->thrust_wait == 0)
 		{
-			ZeroVelocityComponents (&ElementPtr->velocity);
+			ZeroVelocityComponents(&ElementPtr->velocity);
 			StarShipPtr->cur_status_flags &= ~SHIP_AT_MAX_SPEED;
 		}
 
 		if ((StarShipPtr->cur_status_flags & SPECIAL)
-				&& StarShipPtr->special_counter == 0
-				&& DeltaEnergy (ElementPtr, -SPECIAL_ENERGY_COST))
+			&& StarShipPtr->special_counter == 0
+			&& DeltaEnergy(ElementPtr, -SPECIAL_ENERGY_COST))
 		{
 			/* Special key is pressed; start teleport */
-			ZeroVelocityComponents (&ElementPtr->velocity);
+			ZeroVelocityComponents(&ElementPtr->velocity);
 			StarShipPtr->cur_status_flags &=
-					~(SHIP_AT_MAX_SPEED | LEFT | RIGHT | THRUST | WEAPON);
+				~(SHIP_AT_MAX_SPEED | LEFT | RIGHT | THRUST | WEAPON);
 
 			ElementPtr->state_flags |= NONSOLID | FINITE_LIFE | CHANGING;
 			ElementPtr->life_span = HYPER_LIFE;
 
 			ElementPtr->next.image.farray =
-					StarShipPtr->RaceDescPtr->ship_data.special;
+				StarShipPtr->RaceDescPtr->ship_data.special;
 			ElementPtr->next.image.frame =
-					StarShipPtr->RaceDescPtr->ship_data.special[0];
+				StarShipPtr->RaceDescPtr->ship_data.special[0];
 
-			ProcessSound (SetAbsSoundIndex (
-							/* HYPERJUMP */
-					StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 1), ElementPtr);
+			ProcessSound(SetAbsSoundIndex(
+							 /* HYPERJUMP */
+							 StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 1),
+						 ElementPtr);
 			StarShipPtr->special_counter =
-					StarShipPtr->RaceDescPtr->characteristics.special_wait;
+				StarShipPtr->RaceDescPtr->characteristics.special_wait;
 		}
 	}
 	else if (ElementPtr->next.image.farray == StarShipPtr->RaceDescPtr->ship_data.special)
@@ -245,10 +242,10 @@ arilou_preprocess (ELEMENT *ElementPtr)
 		uqm::COUNT life_span;
 
 		StarShipPtr->cur_status_flags =
-				(StarShipPtr->cur_status_flags
-				& ~(LEFT | RIGHT | THRUST | WEAPON | SPECIAL))
-				| (StarShipPtr->old_status_flags
-				& (LEFT | RIGHT | THRUST | WEAPON | SPECIAL));
+			(StarShipPtr->cur_status_flags
+			 & ~(LEFT | RIGHT | THRUST | WEAPON | SPECIAL))
+			| (StarShipPtr->old_status_flags
+			   & (LEFT | RIGHT | THRUST | WEAPON | SPECIAL));
 		++StarShipPtr->weapon_counter;
 		++StarShipPtr->special_counter;
 		++StarShipPtr->energy_counter;
@@ -256,33 +253,33 @@ arilou_preprocess (ELEMENT *ElementPtr)
 		++ElementPtr->thrust_wait;
 
 		if ((life_span = ElementPtr->life_span) == NORMAL_LIFE)
-		{	/* Ending teleport */
+		{ /* Ending teleport */
 			ElementPtr->state_flags &= ~(NONSOLID | FINITE_LIFE);
 			ElementPtr->state_flags |= APPEARING;
 			ElementPtr->current.image.farray =
-					ElementPtr->next.image.farray =
+				ElementPtr->next.image.farray =
 					StarShipPtr->RaceDescPtr->ship_data.ship;
 			ElementPtr->current.image.frame =
-					ElementPtr->next.image.frame =
-					SetAbsFrameIndex (StarShipPtr->RaceDescPtr->ship_data.ship[0],
-					StarShipPtr->ShipFacing);
-			InitIntersectStartPoint (ElementPtr);
+				ElementPtr->next.image.frame =
+					SetAbsFrameIndex(StarShipPtr->RaceDescPtr->ship_data.ship[0],
+									 StarShipPtr->ShipFacing);
+			InitIntersectStartPoint(ElementPtr);
 		}
 		else
-		{	/* Teleporting in progress */
+		{ /* Teleporting in progress */
 			--life_span;
 			if (life_span != 2)
 			{
 				if (life_span < 2)
 					ElementPtr->next.image.frame =
-							DecFrameIndex (ElementPtr->next.image.frame);
+						DecFrameIndex(ElementPtr->next.image.frame);
 				else
 					ElementPtr->next.image.frame =
-							IncFrameIndex (ElementPtr->next.image.frame);
+						IncFrameIndex(ElementPtr->next.image.frame);
 			}
 			else
-			{	// JMS: Reduce the odds of teleporting into Sa-Matra.
-				if (lowByte (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE)
+			{ // JMS: Reduce the odds of teleporting into Sa-Matra.
+				if (lowByte(GLOBAL(CurrentActivity)) == IN_LAST_BATTLE)
 				{
 					uqm::SDWORD dist = 0;
 					uqm::SDWORD dx, dy;
@@ -290,23 +287,22 @@ arilou_preprocess (ELEMENT *ElementPtr)
 					do
 					{
 						ElementPtr->next.location.x =
-								WRAP_X (DISPLAY_ALIGN_X (TFB_Random ()));
+							WRAP_X(DISPLAY_ALIGN_X(TFB_Random()));
 						ElementPtr->next.location.y =
-								WRAP_Y (DISPLAY_ALIGN_Y (TFB_Random ()));
+							WRAP_Y(DISPLAY_ALIGN_Y(TFB_Random()));
 
 						dx = ((uqm::SDWORD)ElementPtr->next.location.x - (LOG_SPACE_WIDTH >> 1));
 						dy = ((uqm::SDWORD)ElementPtr->next.location.y - (LOG_SPACE_HEIGHT >> 1));
 
-						dist = sqrt(dx*dx + dy*dy);
-					}
-					while (dist < (RES_SCALE (2800)));
+						dist = sqrt(dx * dx + dy * dy);
+					} while (dist < (RES_SCALE(2800)));
 				}
 				else
 				{
 					ElementPtr->next.location.x =
-							WRAP_X (DISPLAY_ALIGN_X (TFB_Random ()));
+						WRAP_X(DISPLAY_ALIGN_X(TFB_Random()));
 					ElementPtr->next.location.y =
-							WRAP_Y (DISPLAY_ALIGN_Y (TFB_Random ()));
+						WRAP_Y(DISPLAY_ALIGN_Y(TFB_Random()));
 				}
 			}
 		}
@@ -316,13 +312,14 @@ arilou_preprocess (ELEMENT *ElementPtr)
 }
 
 RACE_DESC*
-init_arilou (void)
+init_arilou(void)
 {
-	RACE_DESC *RaceDescPtr;
+	RACE_DESC* RaceDescPtr;
 
-	if (IS_HD) {
-		arilou_desc.characteristics.max_thrust = RES_SCALE (MAX_THRUST);
-		arilou_desc.characteristics.thrust_increment = RES_SCALE (THRUST_INCREMENT);
+	if (IS_HD)
+	{
+		arilou_desc.characteristics.max_thrust = RES_SCALE(MAX_THRUST);
+		arilou_desc.characteristics.thrust_increment = RES_SCALE(THRUST_INCREMENT);
 		arilou_desc.cyborg_control.WeaponRange = LASER_RANGE_HD >> 1;
 	}
 	else

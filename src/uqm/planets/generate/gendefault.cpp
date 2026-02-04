@@ -28,7 +28,7 @@
 #include "libs/mathlib.h"
 
 
-static void check_yehat_rebellion (void);
+static void check_yehat_rebellion(void);
 
 
 const GenerateFunctions generateDefaultFunctions = {
@@ -48,238 +48,226 @@ const GenerateFunctions generateDefaultFunctions = {
 };
 
 
-bool
-GenerateDefault_initNpcs (SOLARSYS_STATE *solarSys)
+bool GenerateDefault_initNpcs(SOLARSYS_STATE* solarSys)
 {
-	if (!GetGroupInfo (GLOBAL (BattleGroupRef), GROUP_INIT_IP))
+	if (!GetGroupInfo(GLOBAL(BattleGroupRef), GROUP_INIT_IP))
 	{
-		GLOBAL (BattleGroupRef) = 0;
-		BuildGroups ();
+		GLOBAL(BattleGroupRef) = 0;
+		BuildGroups();
 	}
 
 	if (SpaceMusicOK)
-		findRaceSOI ();
+		findRaceSOI();
 
-	(void) solarSys;
+	(void)solarSys;
 	return true;
 }
 
-bool
-GenerateDefault_reinitNpcs (SOLARSYS_STATE *solarSys)
+bool GenerateDefault_reinitNpcs(SOLARSYS_STATE* solarSys)
 {
-	GetGroupInfo (GROUPS_RANDOM, GROUP_LOAD_IP);
+	GetGroupInfo(GROUPS_RANDOM, GROUP_LOAD_IP);
 	// This is not a great place to do the Yehat rebellion check, but
 	// since you can start the rebellion in any star system (not just
 	// the Homeworld), I could not find a better place for it.
 	// At least it is better than where it was originally.
-	check_yehat_rebellion ();
+	check_yehat_rebellion();
 
-	(void) solarSys;
+	(void)solarSys;
 	return true;
 }
 
-bool
-GenerateDefault_uninitNpcs (SOLARSYS_STATE *solarSys)
+bool GenerateDefault_uninitNpcs(SOLARSYS_STATE* solarSys)
 {
-	PutGroupInfo (GROUPS_RANDOM, GROUP_SAVE_IP);
-	ReinitQueue (&GLOBAL (npc_built_ship_q));
-	ReinitQueue (&GLOBAL (ip_group_q));
+	PutGroupInfo(GROUPS_RANDOM, GROUP_SAVE_IP);
+	ReinitQueue(&GLOBAL(npc_built_ship_q));
+	ReinitQueue(&GLOBAL(ip_group_q));
 
-	(void) solarSys;
+	(void)solarSys;
 	return true;
 }
 
-bool
-GenerateDefault_generatePlanets (SOLARSYS_STATE *solarSys)
+bool GenerateDefault_generatePlanets(SOLARSYS_STATE* solarSys)
 {
-	FillOrbits (solarSys, (uqm::BYTE)~0, solarSys->PlanetDesc, false);
-	GeneratePlanets (solarSys);
+	FillOrbits(solarSys, (uqm::BYTE)~0, solarSys->PlanetDesc, false);
+	GeneratePlanets(solarSys);
 	return true;
 }
 
-bool
-GenerateDefault_generateMoons (SOLARSYS_STATE *solarSys, PLANET_DESC *planet)
+bool GenerateDefault_generateMoons(SOLARSYS_STATE* solarSys, PLANET_DESC* planet)
 {
-	FillOrbits (solarSys, planet->NumPlanets, solarSys->MoonDesc, false);
+	FillOrbits(solarSys, planet->NumPlanets, solarSys->MoonDesc, false);
 	return true;
 }
 
-bool
-GenerateDefault_generateName (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world)
+bool GenerateDefault_generateName(const SOLARSYS_STATE* solarSys,
+								  const PLANET_DESC* world)
 {
-	uqm::COUNT i = planetIndex (solarSys, world);
-	utf8StringCopy (GLOBAL_SIS (PlanetName), sizeof (GLOBAL_SIS (PlanetName)),
-			GAME_STRING (PLANET_NUMBER_BASE + (9 + 7) + i));
-	SET_GAME_STATE (BATTLE_PLANET, world->data_index);
+	uqm::COUNT i = planetIndex(solarSys, world);
+	utf8StringCopy(GLOBAL_SIS(PlanetName), sizeof(GLOBAL_SIS(PlanetName)),
+				   GAME_STRING(PLANET_NUMBER_BASE + (9 + 7) + i));
+	SET_GAME_STATE(BATTLE_PLANET, world->data_index);
 
 	return true;
 }
 
-bool
-GenerateDefault_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
+bool GenerateDefault_generateOrbital(SOLARSYS_STATE* solarSys, PLANET_DESC* world)
 {
 	uqm::DWORD rand_val;
-	SYSTEM_INFO *sysInfo;
+	SYSTEM_INFO* sysInfo;
 
 #ifdef DEBUG_SOLARSYS
-	if (worldIsPlanet (solarSys, world))
+	if (worldIsPlanet(solarSys, world))
 	{
-		log_add (log_Debug, "Planet index = %d",
-				planetIndex (solarSys, world));
+		log_add(log_Debug, "Planet index = %d",
+				planetIndex(solarSys, world));
 	}
 	else
 	{
-		log_add (log_Debug, "Planet index = %d, Moon index = %d",
-				planetIndex (solarSys, world),
-				moonIndex (solarSys, world));
+		log_add(log_Debug, "Planet index = %d, Moon index = %d",
+				planetIndex(solarSys, world),
+				moonIndex(solarSys, world));
 	}
 #endif /* DEBUG_SOLARSYS */
 
 	sysInfo = &solarSys->SysInfo;
 
-	DoPlanetaryAnalysis (sysInfo, world);
-	rand_val = RandomContext_GetSeed (SysGenRNG);
+	DoPlanetaryAnalysis(sysInfo, world);
+	rand_val = RandomContext_GetSeed(SysGenRNG);
 
 	sysInfo->PlanetInfo.ScanSeed[BIOLOGICAL_SCAN] = rand_val;
-	GenerateLifeForms (sysInfo, GENERATE_ALL, NULL);
-	rand_val = RandomContext_GetSeed (SysGenRNG);
+	GenerateLifeForms(sysInfo, GENERATE_ALL, NULL);
+	rand_val = RandomContext_GetSeed(SysGenRNG);
 
 	sysInfo->PlanetInfo.ScanSeed[MINERAL_SCAN] = rand_val;
-	GenerateMineralDeposits (sysInfo, GENERATE_ALL, NULL);
+	GenerateMineralDeposits(sysInfo, GENERATE_ALL, NULL);
 
 	sysInfo->PlanetInfo.ScanSeed[ENERGY_SCAN] = rand_val;
-	LoadPlanet (NULL);
+	LoadPlanet(NULL);
 
 	return true;
 }
 
 uqm::COUNT
-GenerateDefault_generateMinerals (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *info)
+GenerateDefault_generateMinerals(const SOLARSYS_STATE* solarSys,
+								 const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO* info)
 {
-	return GenerateMineralDeposits (&solarSys->SysInfo, whichNode, info);
-	(void) world;
+	return GenerateMineralDeposits(&solarSys->SysInfo, whichNode, info);
+	(void)world;
 }
 
-bool
-GenerateDefault_pickupMinerals (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		uqm::COUNT whichNode)
+bool GenerateDefault_pickupMinerals(SOLARSYS_STATE* solarSys, PLANET_DESC* world,
+									uqm::COUNT whichNode)
 {
 	// Minerals do not need any extra handling as of now
-	(void) solarSys;
-	(void) world;
-	(void) whichNode;
+	(void)solarSys;
+	(void)world;
+	(void)whichNode;
 	return true;
 }
 
 uqm::COUNT
-GenerateDefault_generateEnergy (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *info)
+GenerateDefault_generateEnergy(const SOLARSYS_STATE* solarSys,
+							   const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO* info)
 {
-	(void) whichNode;
-	(void) solarSys;
-	(void) world;
-	(void) info;
+	(void)whichNode;
+	(void)solarSys;
+	(void)world;
+	(void)info;
 	return 0;
 }
 
-bool
-GenerateDefault_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		uqm::COUNT whichNode)
+bool GenerateDefault_pickupEnergy(SOLARSYS_STATE* solarSys, PLANET_DESC* world,
+								  uqm::COUNT whichNode)
 {
 	// This should never be called since every energy node needs
 	// special handling and the function should be overridden
-	assert (false);
-	(void) solarSys;
-	(void) world;
-	(void) whichNode;
+	assert(false);
+	(void)solarSys;
+	(void)world;
+	(void)whichNode;
 	return false;
 }
 
 uqm::COUNT
-GenerateDefault_generateLife (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *info)
+GenerateDefault_generateLife(const SOLARSYS_STATE* solarSys,
+							 const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO* info)
 {
-	return GenerateLifeForms (&solarSys->SysInfo, whichNode, info);
-	(void) world;
+	return GenerateLifeForms(&solarSys->SysInfo, whichNode, info);
+	(void)world;
 }
 
-bool
-GenerateDefault_pickupLife (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		uqm::COUNT whichNode)
+bool GenerateDefault_pickupLife(SOLARSYS_STATE* solarSys, PLANET_DESC* world,
+								uqm::COUNT whichNode)
 {
 	// Bio does not need any extra handling as of now
-	(void) solarSys;
-	(void) world;
-	(void) whichNode;
+	(void)solarSys;
+	(void)world;
+	(void)whichNode;
 	return true;
 }
 
 uqm::COUNT
-GenerateDefault_generateArtifact (const SOLARSYS_STATE *solarSys,
-		uqm::COUNT whichNode, NODE_INFO *info)
+GenerateDefault_generateArtifact(const SOLARSYS_STATE* solarSys,
+								 uqm::COUNT whichNode, NODE_INFO* info)
 {
 	// Generate an energy node at a random location
-	return GenerateRandomNodes (&solarSys->SysInfo, ENERGY_SCAN, 1, 0,
-			whichNode, info);
+	return GenerateRandomNodes(&solarSys->SysInfo, ENERGY_SCAN, 1, 0,
+							   whichNode, info);
 }
 
 uqm::COUNT
-GenerateDefault_generateRuins (const SOLARSYS_STATE *solarSys,
-		uqm::COUNT whichNode, NODE_INFO *info)
+GenerateDefault_generateRuins(const SOLARSYS_STATE* solarSys,
+							  uqm::COUNT whichNode, NODE_INFO* info)
 {
 	// Generate a standard spread of city ruins of a destroyed civilization
-	return GenerateRandomNodes (&solarSys->SysInfo, ENERGY_SCAN,
-			NUM_RACE_RUINS, 0, whichNode, info);
+	return GenerateRandomNodes(&solarSys->SysInfo, ENERGY_SCAN,
+							   NUM_RACE_RUINS, 0, whichNode, info);
 }
 
 static inline void
-runLanderReport (void)
+runLanderReport(void)
 {
-	UnbatchGraphics ();
-	DoDiscoveryReport (MenuSounds);
-	BatchGraphics ();
+	UnbatchGraphics();
+	DoDiscoveryReport(MenuSounds);
+	BatchGraphics();
 }
 
-bool
-GenerateDefault_landerReport (SOLARSYS_STATE *solarSys)
+bool GenerateDefault_landerReport(SOLARSYS_STATE* solarSys)
 {
-	PLANET_INFO *planetInfo = &solarSys->SysInfo.PlanetInfo;
+	PLANET_INFO* planetInfo = &solarSys->SysInfo.PlanetInfo;
 
 	if (!planetInfo->DiscoveryString)
 		return false;
 
-	runLanderReport ();
+	runLanderReport();
 
 	// XXX: A non-cycling report is given only once and has to be deleted
 	//   in some circumstances (like the Syreen Vault). It does not
 	//   hurt to simply delete it in all cases. Nothing should rely on
 	//   the presence of DiscoveryString, but the Syreen Vault and the
 	//   Mycon Egg Cases rely on its absence.
-	DestroyStringTable (ReleaseStringTable (planetInfo->DiscoveryString));
+	DestroyStringTable(ReleaseStringTable(planetInfo->DiscoveryString));
 	planetInfo->DiscoveryString = 0;
 
 	return true;
 }
 
-bool
-GenerateDefault_landerReportCycle (SOLARSYS_STATE *solarSys)
+bool GenerateDefault_landerReportCycle(SOLARSYS_STATE* solarSys)
 {
-	PLANET_INFO *planetInfo = &solarSys->SysInfo.PlanetInfo;
+	PLANET_INFO* planetInfo = &solarSys->SysInfo.PlanetInfo;
 
 	if (!planetInfo->DiscoveryString)
 		return false;
 
-	runLanderReport ();
+	runLanderReport();
 	// Advance to the next report
-	planetInfo->DiscoveryString = SetRelStringTableIndex (
-			planetInfo->DiscoveryString, 1);
+	planetInfo->DiscoveryString = SetRelStringTableIndex(
+		planetInfo->DiscoveryString, 1);
 
 	// If our discovery strings have cycled, we're done
-	if (GetStringTableIndex (planetInfo->DiscoveryString) == 0)
+	if (GetStringTableIndex(planetInfo->DiscoveryString) == 0)
 	{
-		DestroyStringTable (ReleaseStringTable (planetInfo->DiscoveryString));
+		DestroyStringTable(ReleaseStringTable(planetInfo->DiscoveryString));
 		planetInfo->DiscoveryString = 0;
 	}
 
@@ -287,26 +275,26 @@ GenerateDefault_landerReportCycle (SOLARSYS_STATE *solarSys)
 }
 
 // NB. This function modifies the RNG state.
-void
-GeneratePlanets (SOLARSYS_STATE *solarSys)
+void GeneratePlanets(SOLARSYS_STATE* solarSys)
 {
 	uqm::COUNT i;
-	PLANET_DESC *planet;
+	PLANET_DESC* planet;
 
 	for (i = solarSys->SunDesc[0].NumPlanets,
-			planet = &solarSys->PlanetDesc[0]; i; --i, ++planet)
+		planet = &solarSys->PlanetDesc[0];
+		 i; --i, ++planet)
 	{
 		uqm::DWORD rand_val;
 		uqm::BYTE byte_val;
 		uqm::BYTE num_moons;
 		uqm::BYTE type;
 
-		rand_val = RandomContext_Random (SysGenRNG);
-		byte_val = lowByte (rand_val);
+		rand_val = RandomContext_Random(SysGenRNG);
+		byte_val = lowByte(rand_val);
 
 		num_moons = 0;
 		type = PlanData[planet->data_index & ~PLANET_SHIELDED].Type;
-		switch (PLANSIZE (type))
+		switch (PLANSIZE(type))
 		{
 			case LARGE_ROCKY_WORLD:
 				if (byte_val < 0x00FF * 25 / 100)
@@ -338,62 +326,50 @@ GeneratePlanets (SOLARSYS_STATE *solarSys)
 }
 
 uqm::BYTE
-GenerateWorlds (uqm::BYTE whichType)
+GenerateWorlds(uqm::BYTE whichType)
 {
 	uqm::BYTE planet = FIRST_SMALL_ROCKY_WORLD;
 
 	if (whichType & SMALL_ROCKY)
 	{
-		planet = FIRST_SMALL_ROCKY_WORLD +
-				RandomContext_Random (SysGenRNG) %
-				NUMBER_OF_SMALL_ROCKY_WORLDS;
+		planet = FIRST_SMALL_ROCKY_WORLD + RandomContext_Random(SysGenRNG) % NUMBER_OF_SMALL_ROCKY_WORLDS;
 	}
 	else if (whichType & LARGE_ROCKY)
 	{
-		planet = FIRST_LARGE_ROCKY_WORLD +
-				RandomContext_Random (SysGenRNG) %
-				(NUMBER_OF_LARGE_ROCKY_WORLDS - 2);
+		planet = FIRST_LARGE_ROCKY_WORLD + RandomContext_Random(SysGenRNG) % (NUMBER_OF_LARGE_ROCKY_WORLDS - 2);
 		// Skip over rainbow_world and shattered_world, which are adjacent.
 		if (planet >= RAINBOW_WORLD)
 			planet += 2;
 	}
 	else if (whichType & ALL_ROCKY)
 	{
-		planet = FIRST_ROCKY_WORLD +
-				RandomContext_Random (SysGenRNG) %
-				(NUMBER_OF_ROCKY_WORLDS - 2);
+		planet = FIRST_ROCKY_WORLD + RandomContext_Random(SysGenRNG) % (NUMBER_OF_ROCKY_WORLDS - 2);
 		// Skip over rainbow_world and shattered_world, which are adjacent.
 		if (planet >= RAINBOW_WORLD)
 			planet += 2;
 	}
 	else if (whichType & ONLY_LARGE)
 	{
-		planet = FIRST_LARGE_ROCKY_WORLD +
-				RandomContext_Random (SysGenRNG) %
-				(NUMBER_OF_LARGE_ROCKY_WORLDS
-					+ NUMBER_OF_GAS_GIANTS - 2);
+		planet = FIRST_LARGE_ROCKY_WORLD + RandomContext_Random(SysGenRNG) % (NUMBER_OF_LARGE_ROCKY_WORLDS + NUMBER_OF_GAS_GIANTS - 2);
 		// Skip over rainbow_world and shattered_world, which are adjacent.
 		if (planet >= RAINBOW_WORLD)
 			planet += 2;
 	}
 	else if (whichType & ONLY_GAS)
 	{
-		planet = FIRST_GAS_GIANT +
-				RandomContext_Random (SysGenRNG) %
-				NUMBER_OF_GAS_GIANTS;
+		planet = FIRST_GAS_GIANT + RandomContext_Random(SysGenRNG) % NUMBER_OF_GAS_GIANTS;
 	}
 
 	return planet;
 }
 
-void
-GenerateGasGiantRanged (SOLARSYS_STATE *solarSys)
+void GenerateGasGiantRanged(SOLARSYS_STATE* solarSys)
 {
-	PLANET_DESC *pSunDesc = &solarSys->SunDesc[0];
-	PLANET_DESC *pPlanet;
+	PLANET_DESC* pSunDesc = &solarSys->SunDesc[0];
+	PLANET_DESC* pPlanet;
 	uqm::BYTE i;
-#define DWARF_GASG_DIST SCALE_RADIUS (12)
-	uqm::DWORD rand = RandomContext_GetSeed (SysGenRNG);
+#define DWARF_GASG_DIST SCALE_RADIUS(12)
+	uqm::DWORD rand = RandomContext_GetSeed(SysGenRNG);
 
 	for (i = 0; i < pSunDesc->NumPlanets; i++)
 	{
@@ -408,65 +384,63 @@ GenerateGasGiantRanged (SOLARSYS_STATE *solarSys)
 	pSunDesc->PlanetByte = i;
 	pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
 
-	pPlanet->data_index = GenerateWorlds (ONLY_GAS);
+	pPlanet->data_index = GenerateWorlds(ONLY_GAS);
 
 	if (solarSys->PlanetDesc[i].radius < DWARF_GASG_DIST)
 	{
 		uqm::COUNT angle;
 
 		pPlanet->radius =
-				RangeMinMax (DWARF_GASG_DIST, MAX_PLANET_RADIUS, rand);
-		angle = ARCTAN (pPlanet->location.x, pPlanet->location.y);
-		pPlanet->location.x = COSINE (angle, pPlanet->radius);
-		pPlanet->location.y = SINE (angle, pPlanet->radius);
-		ComputeSpeed (pPlanet, false, 1);
+			RangeMinMax(DWARF_GASG_DIST, MAX_PLANET_RADIUS, rand);
+		angle = ARCTAN(pPlanet->location.x, pPlanet->location.y);
+		pPlanet->location.x = COSINE(angle, pPlanet->radius);
+		pPlanet->location.y = SINE(angle, pPlanet->radius);
+		ComputeSpeed(pPlanet, false, 1);
 	}
 }
 
 uqm::BYTE
-GenerateCrystalWorld (void)
+GenerateCrystalWorld(void)
 {
 	int crystalArray[] = {
-			SAPPHIRE_WORLD,
-			EMERALD_WORLD,
-			RUBY_WORLD};
-	return crystalArray[RandomContext_Random (SysGenRNG) % 3];
+		SAPPHIRE_WORLD,
+		EMERALD_WORLD,
+		RUBY_WORLD};
+	return crystalArray[RandomContext_Random(SysGenRNG) % 3];
 }
 
 uqm::BYTE
-GenerateDesolateWorld (void)
+GenerateDesolateWorld(void)
 {
 	int desolateArray[] = {
-			DUST_WORLD,
-			CRIMSON_WORLD,
-			UREA_WORLD};
-	return desolateArray[RandomContext_Random (SysGenRNG) % 3];
+		DUST_WORLD,
+		CRIMSON_WORLD,
+		UREA_WORLD};
+	return desolateArray[RandomContext_Random(SysGenRNG) % 3];
 }
 
 uqm::BYTE
-GenerateHabitableWorld (void)
+GenerateHabitableWorld(void)
 {
 	int habitableArray[] = {
-			PRIMORDIAL_WORLD,
-			WATER_WORLD,
-			TELLURIC_WORLD,
-			REDUX_WORLD};
-	return habitableArray[RandomContext_Random (SysGenRNG) % 4];
+		PRIMORDIAL_WORLD,
+		WATER_WORLD,
+		TELLURIC_WORLD,
+		REDUX_WORLD};
+	return habitableArray[RandomContext_Random(SysGenRNG) % 4];
 }
 
 uqm::BYTE
-GenerateGasGiantWorld (void)
+GenerateGasGiantWorld(void)
 {
-	return FIRST_GAS_GIANT +
-			RandomContext_Random (SysGenRNG) %
-			NUMBER_OF_GAS_GIANTS;
+	return FIRST_GAS_GIANT + RandomContext_Random(SysGenRNG) % NUMBER_OF_GAS_GIANTS;
 }
 
 // input: 1 <= min <= max
 // output: min <= RNG <= max
 // min 0 will be treated 1; min >= max will return max
 uqm::BYTE
-GenerateMinPlanets (uqm::BYTE min)
+GenerateMinPlanets(uqm::BYTE min)
 {
 	const uqm::BYTE max = MAX_GEN_PLANETS + 1;
 
@@ -475,28 +449,28 @@ GenerateMinPlanets (uqm::BYTE min)
 	if (min >= MAX_GEN_PLANETS)
 		min = MAX_GEN_PLANETS;
 
-	return RandomContext_Random (SysGenRNG) % (max - min) + min;
+	return RandomContext_Random(SysGenRNG) % (max - min) + min;
 }
 
 // input: 0 <= minimum < MAX_GEN_PLANETS
 // output: minimum + 1 <= RNG <= MAX_GEN_PLANETS
 uqm::BYTE
-GenerateNumberOfPlanets (uqm::BYTE minimum)
+GenerateNumberOfPlanets(uqm::BYTE minimum)
 {
 	uqm::BYTE roll = MAX_GEN_PLANETS - minimum;
 	uqm::BYTE adjust = minimum + 1;
-	return (RandomContext_Random (SysGenRNG) % roll) + adjust;
+	return (RandomContext_Random(SysGenRNG) % roll) + adjust;
 }
 
 // "RandomContext_Random PlanetByte Generator"
 uqm::BYTE
-PlanetByteGen (PLANET_DESC *pPDesc)
+PlanetByteGen(PLANET_DESC* pPDesc)
 {
-	return RandomContext_Random (SysGenRNG) % pPDesc->NumPlanets;
+	return RandomContext_Random(SysGenRNG) % pPDesc->NumPlanets;
 }
 
 static void
-check_yehat_rebellion (void)
+check_yehat_rebellion(void)
 {
 	HIPGROUP hGroup, hNextGroup;
 
@@ -508,27 +482,25 @@ check_yehat_rebellion (void)
 	//   in an encounter with Royalists.
 	// TRANSLATION: "If the civil war has not started yet, or the player
 	//   battled a ship -- bail."
-	if (!GET_GAME_STATE (YEHAT_CIVIL_WAR) || EncounterRace >= 0)
+	if (!GET_GAME_STATE(YEHAT_CIVIL_WAR) || EncounterRace >= 0)
 		return; // not this time
 
 	// Send Yehat groups to flee the system, but only if the player
 	// has actually talked to a ship.
-	for (hGroup = GetHeadLink (&GLOBAL (ip_group_q)); hGroup;
-			hGroup = hNextGroup)
+	for (hGroup = GetHeadLink(&GLOBAL(ip_group_q)); hGroup;
+		 hGroup = hNextGroup)
 	{
-		IP_GROUP *GroupPtr = LockIpGroup (&GLOBAL (ip_group_q), hGroup);
-		hNextGroup = _GetSuccLink (GroupPtr);
+		IP_GROUP* GroupPtr = LockIpGroup(&GLOBAL(ip_group_q), hGroup);
+		hNextGroup = _GetSuccLink(GroupPtr);
 		// IGNORE_FLAGSHIP was set in ipdisp.c:ip_group_collision()
 		// during a collision with the flagship.
 		if (GroupPtr->race_id == YEHAT_SHIP
-				&& (GroupPtr->task & IGNORE_FLAGSHIP))
+			&& (GroupPtr->task & IGNORE_FLAGSHIP))
 		{
 			GroupPtr->task &= REFORM_GROUP;
 			GroupPtr->task |= FLEE | IGNORE_FLAGSHIP;
 			GroupPtr->dest_loc = 0;
 		}
-		UnlockIpGroup (&GLOBAL (ip_group_q), hGroup);
+		UnlockIpGroup(&GLOBAL(ip_group_q), hGroup);
 	}
 }
-
-

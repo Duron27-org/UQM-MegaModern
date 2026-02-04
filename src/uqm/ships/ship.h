@@ -33,5 +33,4 @@
 #include "uqm/ship.h"
 
 
-#endif  /* UQM_SHIPS_SHIP_H_ */
-
+#endif /* UQM_SHIPS_SHIP_H_ */

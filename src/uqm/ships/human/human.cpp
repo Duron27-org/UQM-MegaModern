@@ -29,7 +29,7 @@
 #define ENERGY_REGENERATION 1
 #define ENERGY_WAIT 8
 #define MAX_THRUST /* DISPLAY_TO_WORLD (6) */ 24
-#define MAX_THRUST_HD RES_SCALE (MAX_THRUST)
+#define MAX_THRUST_HD RES_SCALE(MAX_THRUST)
 #define THRUST_INCREMENT /* DISPLAY_TO_WORLD (2) */ 3
 #define THRUST_WAIT 4
 #define TURN_WAIT 1
@@ -38,13 +38,14 @@
 // Nuke
 #define WEAPON_ENERGY_COST 9
 #define WEAPON_WAIT 10
-#define HUMAN_OFFSET RES_SCALE (42)
-#define NUKE_OFFSET RES_SCALE (8)
-#define MIN_MISSILE_SPEED DISPLAY_TO_WORLD (RES_SCALE (10))
-#define MAX_MISSILE_SPEED DISPLAY_TO_WORLD (RES_SCALE (20))
+#define HUMAN_OFFSET RES_SCALE(42)
+#define NUKE_OFFSET RES_SCALE(8)
+#define MIN_MISSILE_SPEED DISPLAY_TO_WORLD(RES_SCALE(10))
+#define MAX_MISSILE_SPEED DISPLAY_TO_WORLD(RES_SCALE(20))
 #define MISSILE_SPEED (MAX_THRUST_HD >= MIN_MISSILE_SPEED ? \
-		MAX_THRUST_HD : MIN_MISSILE_SPEED)
-#define THRUST_SCALE DISPLAY_TO_WORLD (RES_SCALE (1))
+						   MAX_THRUST_HD :                  \
+						   MIN_MISSILE_SPEED)
+#define THRUST_SCALE DISPLAY_TO_WORLD(RES_SCALE(1))
 #define MISSILE_LIFE 60
 #define MISSILE_HITS 1
 #define MISSILE_DAMAGE 4
@@ -53,96 +54,95 @@
 // Point-Defense Laser
 #define SPECIAL_ENERGY_COST 4
 #define SPECIAL_WAIT 9
-#define LASER_RANGE (uqm::UWORD)RES_SCALE (100)
+#define LASER_RANGE (uqm::UWORD) RES_SCALE(100)
 
 RACE_DESC human_desc =
-{
-	{ /* SHIP_INFO */
-		"cruiser",
-		FIRES_FORE | SEEKING_WEAPON | POINT_DEFENSE,
-		11, /* Super Melee cost */
-		MAX_CREW, MAX_CREW,
-		MAX_ENERGY, MAX_ENERGY,
-		HUMAN_RACE_STRINGS,
-		HUMAN_ICON_MASK_PMAP_ANIM,
-		HUMAN_MICON_MASK_PMAP_ANIM,
-		NULL, NULL, NULL
-	},
-	{ /* FLEET_STUFF */
-		0, /* Initial sphere of influence radius */
-		{ /* Known location (center of SoI) */
-			1752, 1450,
-		},
-	},
 	{
-		MAX_THRUST,
-		THRUST_INCREMENT,
-		ENERGY_REGENERATION,
-		WEAPON_ENERGY_COST,
-		SPECIAL_ENERGY_COST,
-		ENERGY_WAIT,
-		TURN_WAIT,
-		THRUST_WAIT,
-		WEAPON_WAIT,
-		SPECIAL_WAIT,
-		SHIP_MASS,
-	},
-	{
+		{/* SHIP_INFO */
+		 "cruiser",
+		 FIRES_FORE | SEEKING_WEAPON | POINT_DEFENSE,
+		 11, /* Super Melee cost */
+		 MAX_CREW, MAX_CREW,
+		 MAX_ENERGY, MAX_ENERGY,
+		 HUMAN_RACE_STRINGS,
+		 HUMAN_ICON_MASK_PMAP_ANIM,
+		 HUMAN_MICON_MASK_PMAP_ANIM,
+		 NULL, NULL, NULL},
 		{
-			HUMAN_BIG_MASK_PMAP_ANIM,
-			HUMAN_MED_MASK_PMAP_ANIM,
-			HUMAN_SML_MASK_PMAP_ANIM,
-		},
+			/* FLEET_STUFF */
+			0, /* Initial sphere of influence radius */
+			{
+				/* Known location (center of SoI) */
+				1752,
+				1450,
+			},
+		 },
 		{
-			SATURN_BIG_MASK_PMAP_ANIM,
-			SATURN_MED_MASK_PMAP_ANIM,
-			SATURN_SML_MASK_PMAP_ANIM,
-		},
+			MAX_THRUST,
+			THRUST_INCREMENT,
+			ENERGY_REGENERATION,
+			WEAPON_ENERGY_COST,
+			SPECIAL_ENERGY_COST,
+			ENERGY_WAIT,
+			TURN_WAIT,
+			THRUST_WAIT,
+			WEAPON_WAIT,
+			SPECIAL_WAIT,
+			SHIP_MASS,
+		 },
+		{{
+			 HUMAN_BIG_MASK_PMAP_ANIM,
+			 HUMAN_MED_MASK_PMAP_ANIM,
+			 HUMAN_SML_MASK_PMAP_ANIM,
+		 },
+		 {
+			 SATURN_BIG_MASK_PMAP_ANIM,
+			 SATURN_MED_MASK_PMAP_ANIM,
+			 SATURN_SML_MASK_PMAP_ANIM,
+		 },
+		 {
+			 NULL_RESOURCE,
+			 NULL_RESOURCE,
+			 NULL_RESOURCE,
+		 },
+		 {HUMAN_CAPTAIN_MASK_PMAP_ANIM,
+		  NULL, NULL, NULL, NULL, NULL,
+		  0, 0, 0, 0, 0},
+		 HUMAN_VICTORY_SONG,
+		 HUMAN_SHIP_SOUNDS,
+		 {NULL, NULL, NULL},
+		 {NULL, NULL, NULL},
+		 {NULL, NULL, NULL},
+		 NULL,
+		 NULL},
 		{
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-		},
-		{
-			HUMAN_CAPTAIN_MASK_PMAP_ANIM,
-			NULL, NULL, NULL, NULL, NULL,
-			0, 0, 0, 0, 0
-		},
-		HUMAN_VICTORY_SONG,
-		HUMAN_SHIP_SOUNDS,
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		NULL, NULL
-	},
-	{
+			0,
+			LONG_RANGE_WEAPON,
+			NULL,
+		 },
+		(UNINIT_FUNC*)NULL,
+		(PREPROCESS_FUNC*)NULL,
+		(POSTPROCESS_FUNC*)NULL,
+		(INIT_WEAPON_FUNC*)NULL,
 		0,
-		LONG_RANGE_WEAPON,
-		NULL,
-	},
-	(UNINIT_FUNC *) NULL,
-	(PREPROCESS_FUNC *) NULL,
-	(POSTPROCESS_FUNC *) NULL,
-	(INIT_WEAPON_FUNC *) NULL,
-	0,
-	0, /* CodeRef */
+		0, /* CodeRef */
 };
 
 static void
-nuke_preprocess (ELEMENT *ElementPtr)
+nuke_preprocess(ELEMENT* ElementPtr)
 {
 	uqm::COUNT facing;
 
-	facing = GetFrameIndex (ElementPtr->next.image.frame);
+	facing = GetFrameIndex(ElementPtr->next.image.frame);
 	if (ElementPtr->turn_wait > 0)
 		--ElementPtr->turn_wait;
 	else
 	{
-		if (TrackShip (ElementPtr, &facing) > 0)
+		if (TrackShip(ElementPtr, &facing) > 0)
 		{
 			ElementPtr->next.image.frame =
-					SetAbsFrameIndex (ElementPtr->next.image.frame,
-					facing);
+				SetAbsFrameIndex(ElementPtr->next.image.frame,
+								 facing);
 			ElementPtr->state_flags |= CHANGING;
 		}
 
@@ -152,91 +152,83 @@ nuke_preprocess (ELEMENT *ElementPtr)
 	{
 		uqm::SDWORD speed;
 
-		if ((speed = MISSILE_SPEED +
-				((MISSILE_LIFE - ElementPtr->life_span) *
-				THRUST_SCALE)) > MAX_MISSILE_SPEED)
+		if ((speed = MISSILE_SPEED + ((MISSILE_LIFE - ElementPtr->life_span) * THRUST_SCALE)) > MAX_MISSILE_SPEED)
 			speed = MAX_MISSILE_SPEED;
-		SetVelocityVector (&ElementPtr->velocity,
-				speed, facing);
+		SetVelocityVector(&ElementPtr->velocity,
+						  speed, facing);
 	}
 }
 
 static void
-spawn_point_defense (ELEMENT *ElementPtr)
+spawn_point_defense(ELEMENT* ElementPtr)
 {
-	STARSHIP *StarShipPtr;
+	STARSHIP* StarShipPtr;
 
-	GetElementStarShip (ElementPtr, &StarShipPtr);
+	GetElementStarShip(ElementPtr, &StarShipPtr);
 	if (ElementPtr->state_flags & PLAYER_SHIP)
 	{
 		HELEMENT hDefense;
 
-		hDefense = AllocElement ();
+		hDefense = AllocElement();
 		if (hDefense)
 		{
-			ELEMENT *DefensePtr;
+			ELEMENT* DefensePtr;
 
-			LockElement (hDefense, &DefensePtr);
+			LockElement(hDefense, &DefensePtr);
 			DefensePtr->playerNr = ElementPtr->playerNr;
 			DefensePtr->state_flags = APPEARING | NONSOLID | FINITE_LIFE;
 			DefensePtr->death_func = spawn_point_defense;
 
-			GetElementStarShip (ElementPtr, &StarShipPtr);
-			SetElementStarShip (DefensePtr, StarShipPtr);
-			UnlockElement (hDefense);
+			GetElementStarShip(ElementPtr, &StarShipPtr);
+			SetElementStarShip(DefensePtr, StarShipPtr);
+			UnlockElement(hDefense);
 
-			PutElement (hDefense);
+			PutElement(hDefense);
 		}
 	}
 	else
 	{
 		bool PaidFor;
 		HELEMENT hObject, hNextObject;
-		ELEMENT *ShipPtr;
+		ELEMENT* ShipPtr;
 
 		PaidFor = false;
 
-		LockElement (StarShipPtr->hShip, &ShipPtr);
-		for (hObject = GetTailElement (); hObject; hObject = hNextObject)
+		LockElement(StarShipPtr->hShip, &ShipPtr);
+		for (hObject = GetTailElement(); hObject; hObject = hNextObject)
 		{
-			ELEMENT *ObjectPtr;
+			ELEMENT* ObjectPtr;
 
-			LockElement (hObject, &ObjectPtr);
-			hNextObject = GetPredElement (ObjectPtr);
-			if (ObjectPtr != ShipPtr && CollidingElement (ObjectPtr) &&
-					!OBJECT_CLOAKED (ObjectPtr))
+			LockElement(hObject, &ObjectPtr);
+			hNextObject = GetPredElement(ObjectPtr);
+			if (ObjectPtr != ShipPtr && CollidingElement(ObjectPtr) && !OBJECT_CLOAKED(ObjectPtr))
 			{
 				uqm::SIZE delta_x, delta_y;
 
-				delta_x = ObjectPtr->next.location.x -
-						ShipPtr->next.location.x;
-				delta_y = ObjectPtr->next.location.y -
-						ShipPtr->next.location.y;
+				delta_x = ObjectPtr->next.location.x - ShipPtr->next.location.x;
+				delta_y = ObjectPtr->next.location.y - ShipPtr->next.location.y;
 				if (delta_x < 0)
 					delta_x = -delta_x;
 				if (delta_y < 0)
 					delta_y = -delta_y;
-				delta_x = WORLD_TO_DISPLAY (delta_x);
-				delta_y = WORLD_TO_DISPLAY (delta_y);
-				if ((uqm::UWORD)delta_x <= LASER_RANGE &&
-						(uqm::UWORD)delta_y <= LASER_RANGE &&
-						(uqm::UWORD)delta_x * (uqm::UWORD)delta_x +
-						(uqm::UWORD)delta_y * (uqm::UWORD)delta_y <=
-						LASER_RANGE * LASER_RANGE)
+				delta_x = WORLD_TO_DISPLAY(delta_x);
+				delta_y = WORLD_TO_DISPLAY(delta_y);
+				if ((uqm::UWORD)delta_x <= LASER_RANGE && (uqm::UWORD)delta_y <= LASER_RANGE && (uqm::UWORD)delta_x * (uqm::UWORD)delta_x + (uqm::UWORD)delta_y * (uqm::UWORD)delta_y <= LASER_RANGE * LASER_RANGE)
 				{
 					HELEMENT hPointDefense;
 					LASER_BLOCK LaserBlock;
 
 					if (!PaidFor)
 					{
-						if (!DeltaEnergy (ShipPtr, -SPECIAL_ENERGY_COST))
+						if (!DeltaEnergy(ShipPtr, -SPECIAL_ENERGY_COST))
 							break;
 
-						ProcessSound (SetAbsSoundIndex (
-										/* POINT_DEFENSE_LASER */
-								StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 1), ElementPtr);
+						ProcessSound(SetAbsSoundIndex(
+										 /* POINT_DEFENSE_LASER */
+										 StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 1),
+									 ElementPtr);
 						StarShipPtr->special_counter =
-								StarShipPtr->RaceDescPtr->characteristics.special_wait;
+							StarShipPtr->RaceDescPtr->characteristics.special_wait;
 						PaidFor = true;
 					}
 
@@ -244,40 +236,40 @@ spawn_point_defense (ELEMENT *ElementPtr)
 					LaserBlock.cy = ShipPtr->next.location.y;
 					LaserBlock.face = 0;
 					LaserBlock.ex = ObjectPtr->next.location.x
-							- ShipPtr->next.location.x;
+								  - ShipPtr->next.location.x;
 					LaserBlock.ey = ObjectPtr->next.location.y
-							- ShipPtr->next.location.y;
+								  - ShipPtr->next.location.y;
 					LaserBlock.sender = ShipPtr->playerNr;
 					LaserBlock.flags = IGNORE_SIMILAR;
 					LaserBlock.pixoffs = 0;
-					LaserBlock.color = BUILD_COLOR (MAKE_RGB15 (0x1F, 0x1F, 0x1F), 0x0F);
-					hPointDefense = initialize_laser (&LaserBlock);
+					LaserBlock.color = BUILD_COLOR(MAKE_RGB15(0x1F, 0x1F, 0x1F), 0x0F);
+					hPointDefense = initialize_laser(&LaserBlock);
 					if (hPointDefense)
 					{
-						ELEMENT *PDPtr;
+						ELEMENT* PDPtr;
 
-						LockElement (hPointDefense, &PDPtr);
-						SetElementStarShip (PDPtr, StarShipPtr);
+						LockElement(hPointDefense, &PDPtr);
+						SetElementStarShip(PDPtr, StarShipPtr);
 						PDPtr->hTarget = 0;
-						UnlockElement (hPointDefense);
+						UnlockElement(hPointDefense);
 
-						PutElement (hPointDefense);
+						PutElement(hPointDefense);
 					}
 				}
 			}
-			UnlockElement (hObject);
+			UnlockElement(hObject);
 		}
-		UnlockElement (StarShipPtr->hShip);
+		UnlockElement(StarShipPtr->hShip);
 	}
 }
 
 static uqm::COUNT
-initialize_nuke (ELEMENT *ShipPtr, HELEMENT NukeArray[])
+initialize_nuke(ELEMENT* ShipPtr, HELEMENT NukeArray[])
 {
-	STARSHIP *StarShipPtr;
+	STARSHIP* StarShipPtr;
 	MISSILE_BLOCK MissileBlock;
 
-	GetElementStarShip (ShipPtr, &StarShipPtr);
+	GetElementStarShip(ShipPtr, &StarShipPtr);
 	MissileBlock.cx = ShipPtr->next.location.x;
 	MissileBlock.cy = ShipPtr->next.location.y;
 	MissileBlock.farray = StarShipPtr->RaceDescPtr->ship_data.weapon;
@@ -285,77 +277,77 @@ initialize_nuke (ELEMENT *ShipPtr, HELEMENT NukeArray[])
 	MissileBlock.sender = ShipPtr->playerNr;
 	MissileBlock.flags = 0;
 	MissileBlock.pixoffs = HUMAN_OFFSET;
-	MissileBlock.speed = RES_SCALE (MISSILE_SPEED);
+	MissileBlock.speed = RES_SCALE(MISSILE_SPEED);
 	MissileBlock.hit_points = MISSILE_HITS;
 	MissileBlock.damage = MISSILE_DAMAGE;
 	MissileBlock.life = MISSILE_LIFE;
 	MissileBlock.preprocess_func = nuke_preprocess;
 	MissileBlock.blast_offs = NUKE_OFFSET;
-	NukeArray[0] = initialize_missile (&MissileBlock);
+	NukeArray[0] = initialize_missile(&MissileBlock);
 
 	if (NukeArray[0])
 	{
-		ELEMENT *NukePtr;
+		ELEMENT* NukePtr;
 
-		LockElement (NukeArray[0], &NukePtr);
+		LockElement(NukeArray[0], &NukePtr);
 		NukePtr->turn_wait = TRACK_WAIT;
-		UnlockElement (NukeArray[0]);
+		UnlockElement(NukeArray[0]);
 	}
 
 	return (1);
 }
 
 static void
-human_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
-		uqm::COUNT ConcernCounter)
+human_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
+				   uqm::COUNT ConcernCounter)
 {
-	STARSHIP *StarShipPtr;
+	STARSHIP* StarShipPtr;
 
-	GetElementStarShip (ShipPtr, &StarShipPtr);
+	GetElementStarShip(ShipPtr, &StarShipPtr);
 	if (StarShipPtr->special_counter == 0
-			&& ((ObjectsOfConcern[ENEMY_WEAPON_INDEX].ObjectPtr != NULL
-			&& ObjectsOfConcern[ENEMY_WEAPON_INDEX].which_turn <= 2)
+		&& ((ObjectsOfConcern[ENEMY_WEAPON_INDEX].ObjectPtr != NULL
+			 && ObjectsOfConcern[ENEMY_WEAPON_INDEX].which_turn <= 2)
 			|| (ObjectsOfConcern[ENEMY_SHIP_INDEX].ObjectPtr != NULL
-			&& ObjectsOfConcern[ENEMY_SHIP_INDEX].which_turn <= 4)))
+				&& ObjectsOfConcern[ENEMY_SHIP_INDEX].which_turn <= 4)))
 		StarShipPtr->ship_input_state |= SPECIAL;
 	else
 		StarShipPtr->ship_input_state &= ~SPECIAL;
 	ObjectsOfConcern[ENEMY_WEAPON_INDEX].ObjectPtr = NULL;
 
-	ship_intelligence (ShipPtr,
-			ObjectsOfConcern, ConcernCounter);
+	ship_intelligence(ShipPtr,
+					  ObjectsOfConcern, ConcernCounter);
 
 	if (StarShipPtr->weapon_counter == 0)
 	{
 		if (ObjectsOfConcern[ENEMY_SHIP_INDEX].ObjectPtr
-				&& (!(StarShipPtr->ship_input_state & (LEFT | RIGHT /* | THRUST */))
+			&& (!(StarShipPtr->ship_input_state & (LEFT | RIGHT /* | THRUST */))
 				|| ObjectsOfConcern[ENEMY_SHIP_INDEX].which_turn <= 12))
 			StarShipPtr->ship_input_state |= WEAPON;
 	}
 }
 
 static void
-human_postprocess (ELEMENT *ElementPtr)
+human_postprocess(ELEMENT* ElementPtr)
 {
-	STARSHIP *StarShipPtr;
+	STARSHIP* StarShipPtr;
 
-	GetElementStarShip (ElementPtr, &StarShipPtr);
+	GetElementStarShip(ElementPtr, &StarShipPtr);
 	if ((StarShipPtr->cur_status_flags & SPECIAL)
-			&& StarShipPtr->special_counter == 0)
+		&& StarShipPtr->special_counter == 0)
 	{
-		spawn_point_defense (ElementPtr);
+		spawn_point_defense(ElementPtr);
 	}
 }
 
 RACE_DESC*
-init_human (void)
+init_human(void)
 {
-	RACE_DESC *RaceDescPtr;
+	RACE_DESC* RaceDescPtr;
 
 	if (IS_HD)
 	{
 		human_desc.characteristics.max_thrust = MAX_THRUST_HD;
-		human_desc.characteristics.thrust_increment = RES_SCALE (THRUST_INCREMENT);
+		human_desc.characteristics.thrust_increment = RES_SCALE(THRUST_INCREMENT);
 		human_desc.cyborg_control.WeaponRange = LONG_RANGE_WEAPON_HD;
 	}
 	else
@@ -373,4 +365,3 @@ init_human (void)
 
 	return (RaceDescPtr);
 }
-

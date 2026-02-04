@@ -22,49 +22,48 @@
 
 
 DRAWABLE
-LoadGraphicFile (const char *pStr)
+LoadGraphicFile(const char* pStr)
 {
-	uio_Stream *fp;
+	uio_Stream* fp;
 
 	// FIXME: this theoretically needs a mechanism to prevent races
 	if (_cur_resfile_name)
 		// something else is loading resources atm
 		return 0;
 
-	fp = res_OpenResFile (contentDir, pStr, "rb");
+	fp = res_OpenResFile(contentDir, pStr, "rb");
 	if (fp != NULL)
 	{
 		DRAWABLE hData;
 
 		_cur_resfile_name = pStr;
-		hData = (DRAWABLE)_GetCelData (fp, LengthResFile (fp));
+		hData = (DRAWABLE)_GetCelData(fp, LengthResFile(fp));
 		_cur_resfile_name = 0;
-		res_CloseResFile (fp);
+		res_CloseResFile(fp);
 		return hData;
 	}
 
 	return (NULL);
 }
 
-FONT
-LoadFontFile (const char *pStr)
+FONT LoadFontFile(const char* pStr)
 {
-	uio_Stream *fp;
+	uio_Stream* fp;
 
 	// FIXME: this theoretically needs a mechanism to prevent races
 	if (_cur_resfile_name)
 		// something else is loading resources atm
 		return 0;
 
-	fp = res_OpenResFile (contentDir, pStr, "rb");
+	fp = res_OpenResFile(contentDir, pStr, "rb");
 	if (fp != NULL)
 	{
 		FONT hData;
 
 		_cur_resfile_name = pStr;
-		hData = (FONT)_GetFontData (fp, LengthResFile (fp));
+		hData = (FONT)_GetFontData(fp, LengthResFile(fp));
 		_cur_resfile_name = 0;
-		res_CloseResFile (fp);
+		res_CloseResFile(fp);
 		return hData;
 	}
 

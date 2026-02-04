@@ -26,7 +26,7 @@
 #include "libs/graphics/dcqueue.h"
 #include "libs/graphics/cmap.h"
 #include "libs/input/sdl/input.h"
-		// for ProcessInputEvent()
+// for ProcessInputEvent()
 #include "libs/graphics/bbox.h"
 #include "port.h"
 #include "libs/uio.h"
@@ -36,20 +36,21 @@
 
 #if SDL_MAJOR_VERSION == 1
 
-static void TFB_PreQuit (void);
+static void TFB_PreQuit(void);
 
-void
-TFB_PreInit (void)
+void TFB_PreInit(void)
 {
-	log_add (log_Info, "Initializing base SDL functionality.");
-	log_add (log_Info, "Using SDL version %d.%d.%d (compiled with "
-			"%d.%d.%d)", SDL_Linked_Version ()->major,
-			SDL_Linked_Version ()->minor, SDL_Linked_Version ()->patch,
+	log_add(log_Info, "Initializing base SDL functionality.");
+	log_add(log_Info, "Using SDL version %d.%d.%d (compiled with "
+					  "%d.%d.%d)",
+			SDL_Linked_Version()->major,
+			SDL_Linked_Version()->minor, SDL_Linked_Version()->patch,
 			SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL);
-	printf ("Using SDL version %d.%d.%d\nCompiled with "
-		"%d.%d.%d\n\n", SDL_Linked_Version()->major,
-		SDL_Linked_Version()->minor, SDL_Linked_Version()->patch,
-		SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL);
+	printf("Using SDL version %d.%d.%d\nCompiled with "
+		   "%d.%d.%d\n\n",
+		   SDL_Linked_Version()->major,
+		   SDL_Linked_Version()->minor, SDL_Linked_Version()->patch,
+		   SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL);
 #if 0
 	if (SDL_Linked_Version ()->major != SDL_MAJOR_VERSION ||
 			SDL_Linked_Version ()->minor != SDL_MINOR_VERSION ||
@@ -61,33 +62,29 @@ TFB_PreInit (void)
 	}
 #endif
 
-	if ((SDL_Init (SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE) == -1))
+	if ((SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE) == -1))
 	{
-		log_add (log_Fatal, "Could not initialize SDL: %s.", SDL_GetError ());
-		exit (EXIT_FAILURE);
+		log_add(log_Fatal, "Could not initialize SDL: %s.", SDL_GetError());
+		exit(EXIT_FAILURE);
 	}
 
-	atexit (TFB_PreQuit);
+	atexit(TFB_PreQuit);
 }
 
 static void
-TFB_PreQuit (void)
+TFB_PreQuit(void)
 {
-	SDL_Quit ();
+	SDL_Quit();
 }
 
-int
-TFB_ReInitGraphics (int driver, int flags, int width, int height,
-		unsigned int *resFactor, unsigned int *windowType)
+int TFB_ReInitGraphics(int driver, int flags, int width, int height,
+					   unsigned int* resFactor, unsigned int* windowType)
 {
 	int result;
 	int togglefullscreen = 0;
 	char caption[200];
 
-	if ((GfxFlags == (flags ^ TFB_GFXFLAGS_FULLSCREEN) ||
-			GfxFlags == (flags ^ TFB_GFXFLAGS_EX_FULLSCREEN)) &&
-			driver == GraphicsDriver &&
-			width == ScreenWidthActual && height == ScreenHeightActual)
+	if ((GfxFlags == (flags ^ TFB_GFXFLAGS_FULLSCREEN) || GfxFlags == (flags ^ TFB_GFXFLAGS_EX_FULLSCREEN)) && driver == GraphicsDriver && width == ScreenWidthActual && height == ScreenHeightActual)
 	{
 		togglefullscreen = 1;
 	}
@@ -97,47 +94,45 @@ TFB_ReInitGraphics (int driver, int flags, int width, int height,
 	if (driver == TFB_GFXDRIVER_SDL_OPENGL)
 	{
 #ifdef HAVE_OPENGL
-		result = TFB_GL_ConfigureVideo (driver, flags, width, height,
-				togglefullscreen, *resFactor);
+		result = TFB_GL_ConfigureVideo(driver, flags, width, height,
+									   togglefullscreen, *resFactor);
 #else
 		driver = TFB_GFXDRIVER_SDL_PURE;
-		log_add (log_Warning, "OpenGL support not compiled in,"
-				" so using pure SDL driver");
-		result = TFB_Pure_ConfigureVideo (driver, flags, width, height,
-				togglefullscreen, *resFactor, *windowType);
+		log_add(log_Warning, "OpenGL support not compiled in,"
+							 " so using pure SDL driver");
+		result = TFB_Pure_ConfigureVideo(driver, flags, width, height,
+										 togglefullscreen, *resFactor, *windowType);
 #endif
 	}
 	else
 	{
-		result = TFB_Pure_ConfigureVideo (driver, flags, width, height,
-				togglefullscreen, *resFactor, *windowType);
+		result = TFB_Pure_ConfigureVideo(driver, flags, width, height,
+										 togglefullscreen, *resFactor, *windowType);
 	}
 
-	sprintf (caption, "The Ur-Quan Masters v%d.%d.%d %s",
+	sprintf(caption, "The Ur-Quan Masters v%d.%d.%d %s",
 			UQM_MAJOR_VERSION, UQM_MINOR_VERSION,
 			UQM_PATCH_VERSION,
 			(*resFactor ? "HD " UQM_EXTRA_VERSION : UQM_EXTRA_VERSION));
-	SDL_WM_SetCaption (caption, NULL);
+	SDL_WM_SetCaption(caption, NULL);
 
 	if (flags & TFB_GFXFLAGS_FULLSCREEN
-			|| flags & TFB_GFXFLAGS_EX_FULLSCREEN)
+		|| flags & TFB_GFXFLAGS_EX_FULLSCREEN)
 	{
-		SDL_ShowCursor (SDL_DISABLE);
+		SDL_ShowCursor(SDL_DISABLE);
 	}
 	else
-		SDL_ShowCursor (SDL_ENABLE);
+		SDL_ShowCursor(SDL_ENABLE);
 
 	return result;
 }
 
-bool
-TFB_SetGamma (float gamma)
+bool TFB_SetGamma(float gamma)
 {
-	return (SDL_SetGamma (gamma, gamma, gamma) == 0);
+	return (SDL_SetGamma(gamma, gamma, gamma) == 0);
 }
 
-int
-TFB_HasSurfaceAlphaMod (SDL_Surface *surface)
+int TFB_HasSurfaceAlphaMod(SDL_Surface* surface)
 {
 	if (!surface)
 	{
@@ -146,8 +141,7 @@ TFB_HasSurfaceAlphaMod (SDL_Surface *surface)
 	return (surface->flags & SDL_SRCALPHA) ? 1 : 0;
 }
 
-int
-TFB_GetSurfaceAlphaMod (SDL_Surface *surface, Uint8 *alpha)
+int TFB_GetSurfaceAlphaMod(SDL_Surface* surface, Uint8* alpha)
 {
 	if (!surface || !surface->format || !alpha)
 	{
@@ -164,31 +158,27 @@ TFB_GetSurfaceAlphaMod (SDL_Surface *surface, Uint8 *alpha)
 	return 0;
 }
 
-int
-TFB_SetSurfaceAlphaMod (SDL_Surface *surface, Uint8 alpha)
+int TFB_SetSurfaceAlphaMod(SDL_Surface* surface, Uint8 alpha)
 {
 	if (!surface)
 	{
 		return -1;
 	}
-	return SDL_SetAlpha (surface, SDL_SRCALPHA, alpha);
+	return SDL_SetAlpha(surface, SDL_SRCALPHA, alpha);
 }
 
-int
-TFB_DisableSurfaceAlphaMod (SDL_Surface *surface)
+int TFB_DisableSurfaceAlphaMod(SDL_Surface* surface)
 {
 	if (!surface)
 	{
 		return -1;
 	}
-	return SDL_SetAlpha (surface, 0, 255);
+	return SDL_SetAlpha(surface, 0, 255);
 }
 
-int
-TFB_GetColorKey (SDL_Surface *surface, Uint32 *key)
+int TFB_GetColorKey(SDL_Surface* surface, Uint32* key)
 {
-	if (surface && surface->format && key &&
-			(surface->flags & SDL_SRCCOLORKEY))
+	if (surface && surface->format && key && (surface->flags & SDL_SRCCOLORKEY))
 	{
 		*key = surface->format->colorkey;
 		return 0;
@@ -196,34 +186,30 @@ TFB_GetColorKey (SDL_Surface *surface, Uint32 *key)
 	return -1;
 }
 
-int
-TFB_SetColorKey (SDL_Surface *surface, Uint32 key, int rleaccel)
+int TFB_SetColorKey(SDL_Surface* surface, Uint32 key, int rleaccel)
 {
 	if (!surface)
 	{
 		return -1;
 	}
-	return SDL_SetColorKey (surface, SDL_SRCCOLORKEY | (rleaccel ? SDL_RLEACCEL : 0), key);
+	return SDL_SetColorKey(surface, SDL_SRCCOLORKEY | (rleaccel ? SDL_RLEACCEL : 0), key);
 }
 
-int
-TFB_DisableColorKey (SDL_Surface *surface)
+int TFB_DisableColorKey(SDL_Surface* surface)
 {
 	if (!surface)
 	{
 		return -1;
 	}
-	return SDL_SetColorKey (surface, 0, 0);
+	return SDL_SetColorKey(surface, 0, 0);
 }
 
-int
-TFB_SetColors (SDL_Surface *surface, SDL_Color *colors, int firstcolor, int ncolors)
+int TFB_SetColors(SDL_Surface* surface, SDL_Color* colors, int firstcolor, int ncolors)
 {
-	return SDL_SetColors (surface, colors, firstcolor, ncolors);
+	return SDL_SetColors(surface, colors, firstcolor, ncolors);
 }
 
-int
-TFB_SupportsHardwareScaling (void)
+int TFB_SupportsHardwareScaling(void)
 {
 #ifdef HAVE_OPENGL
 	return 1;

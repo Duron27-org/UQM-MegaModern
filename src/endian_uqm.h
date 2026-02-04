@@ -25,28 +25,26 @@
 #include "config.h"
 #include "types.h"
 
-#if defined (__APPLE__) && defined (__GNUC__)
+#if defined(__APPLE__) && defined(__GNUC__)
 // When using the MacOS gcc compiler to build universal binaries,
 // each file will be compiled once for each platform.
 // This means that checking endianness beforehand from build.sh will not do,
 // but fortunately, gcc defines __BIG_ENDIAN__ or __LITTLE_ENDIAN__ on
 // this platform.
-#	if defined(__BIG_ENDIAN__)
-#		undef WORDS_BIGENDIAN
-#		define WORDS_BIGENDIAN
-#	elif defined(__LITTLE_ENDIAN__)
-#		undef WORDS_BIGENDIAN
-#	else
-		// Neither __BIG_ENDIAN__ nor __LITTLE_ENDIAN__ is defined.
-		// Fallback to using the build.sh defined value.
-#	endif
-#endif  /* __APPLE__ */
+#if defined(__BIG_ENDIAN__)
+#undef WORDS_BIGENDIAN
+#define WORDS_BIGENDIAN
+#elif defined(__LITTLE_ENDIAN__)
+#undef WORDS_BIGENDIAN
+#else
+// Neither __BIG_ENDIAN__ nor __LITTLE_ENDIAN__ is defined.
+// Fallback to using the build.sh defined value.
+#endif
+#endif /* __APPLE__ */
 
-#if defined(_MSC_VER) || defined(__BORLANDC__) || \
-    defined(__DMC__) || defined(__SC__) || \
-    defined(__WATCOMC__) || defined(__LCC__)
+#if defined(_MSC_VER) || defined(__BORLANDC__) || defined(__DMC__) || defined(__SC__) || defined(__WATCOMC__) || defined(__LCC__)
 #ifndef __inline__
-#define __inline__	__inline
+#define __inline__ __inline
 #endif
 #endif
 
@@ -55,10 +53,10 @@
 #ifdef linux
 #include <endian.h>
 #ifdef __arch__swab16
-#define UQM_Swap16  __arch__swab16
+#define UQM_Swap16 __arch__swab16
 #endif
 #ifdef __arch__swab32
-#define UQM_Swap32  __arch__swab32
+#define UQM_Swap32 __arch__swab32
 #endif
 #endif /* linux */
 
@@ -74,13 +72,13 @@ extern "C" {
 #ifndef UQM_Swap16
 static __inline__ uint16 UQM_Swap16(uint16 D)
 {
-	return((D<<8)|(D>>8));
+	return ((D << 8) | (D >> 8));
 }
 #endif
 #ifndef UQM_Swap32
 static __inline__ uint32 UQM_Swap32(uint32 D)
 {
-	return((D<<24)|((D<<8)&0x00FF0000)|((D>>8)&0x0000FF00)|(D>>24));
+	return ((D << 24) | ((D << 8) & 0x00FF0000) | ((D >> 8) & 0x0000FF00) | (D >> 24));
 }
 #endif
 #ifdef UQM_INT64
@@ -90,13 +88,13 @@ static __inline__ uint64 UQM_Swap64(uint64 val)
 	uint32 hi, lo;
 
 	/* Separate into high and low 32-bit values and swap them */
-	lo = (uint32)(val&0xFFFFFFFF);
+	lo = (uint32)(val & 0xFFFFFFFF);
 	val >>= 32;
-	hi = (uint32)(val&0xFFFFFFFF);
+	hi = (uint32)(val & 0xFFFFFFFF);
 	val = UQM_Swap32(lo);
 	val <<= 32;
 	val |= UQM_Swap32(hi);
-	return(val);
+	return (val);
 }
 #endif
 #else
@@ -105,7 +103,7 @@ static __inline__ uint64 UQM_Swap64(uint64 val)
    If there is no real 64-bit datatype, then compilers will complain about
    the fake 64-bit datatype that SDL provides when it compiles user code.
 */
-#define UQM_Swap64(X)	(X)
+#define UQM_Swap64(X) (X)
 #endif
 #endif /* UQM_INT64 */
 
@@ -114,19 +112,19 @@ static __inline__ uint64 UQM_Swap64(uint64 val)
  * or vice versa.
  */
 #ifndef WORDS_BIGENDIAN
-#define UQM_SwapLE16(X)	(X)
-#define UQM_SwapLE32(X)	(X)
-#define UQM_SwapLE64(X)	(X)
-#define UQM_SwapBE16(X)	UQM_Swap16(X)
-#define UQM_SwapBE32(X)	UQM_Swap32(X)
-#define UQM_SwapBE64(X)	UQM_Swap64(X)
+#define UQM_SwapLE16(X) (X)
+#define UQM_SwapLE32(X) (X)
+#define UQM_SwapLE64(X) (X)
+#define UQM_SwapBE16(X) UQM_Swap16(X)
+#define UQM_SwapBE32(X) UQM_Swap32(X)
+#define UQM_SwapBE64(X) UQM_Swap64(X)
 #else
-#define UQM_SwapLE16(X)	UQM_Swap16(X)
-#define UQM_SwapLE32(X)	UQM_Swap32(X)
-#define UQM_SwapLE64(X)	UQM_Swap64(X)
-#define UQM_SwapBE16(X)	(X)
-#define UQM_SwapBE32(X)	(X)
-#define UQM_SwapBE64(X)	(X)
+#define UQM_SwapLE16(X) UQM_Swap16(X)
+#define UQM_SwapLE32(X) UQM_Swap32(X)
+#define UQM_SwapLE64(X) UQM_Swap64(X)
+#define UQM_SwapBE16(X) (X)
+#define UQM_SwapBE32(X) (X)
+#define UQM_SwapBE64(X) (X)
 #endif
 
 #if 0 //defined(__cplusplus)

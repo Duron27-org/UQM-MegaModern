@@ -26,20 +26,21 @@
 
 #include <errno.h>
 
-static uio_FileBlock *uio_FileBlock_new(uio_Handle *handle, int flags,
-		off_t offset, size_t blockSize, char *buffer, size_t bufSize,
-		off_t bufOffset, size_t bufFill, size_t readAheadBufSize);
-static inline uio_FileBlock *uio_FileBlock_alloc(void);
-static void uio_FileBlock_free(uio_FileBlock *block);
+static uio_FileBlock* uio_FileBlock_new(uio_Handle* handle, int flags,
+										off_t offset, size_t blockSize, char* buffer, size_t bufSize,
+										off_t bufOffset, size_t bufFill, size_t readAheadBufSize);
+static inline uio_FileBlock* uio_FileBlock_alloc(void);
+static void uio_FileBlock_free(uio_FileBlock* block);
 
 // caller should uio_Handle_ref(handle) (unless it doesn't need it's own
 // reference anymore).
-static uio_FileBlock *
-uio_FileBlock_new(uio_Handle *handle, int flags, off_t offset,
-		size_t blockSize, char *buffer, size_t bufSize, off_t bufOffset,
-		size_t bufFill, size_t readAheadBufSize) {
-	uio_FileBlock *result;
-	
+static uio_FileBlock*
+uio_FileBlock_new(uio_Handle* handle, int flags, off_t offset,
+				  size_t blockSize, char* buffer, size_t bufSize, off_t bufOffset,
+				  size_t bufFill, size_t readAheadBufSize)
+{
+	uio_FileBlock* result;
+
 	result = uio_FileBlock_alloc();
 	result->handle = handle;
 	result->flags = flags;
@@ -53,18 +54,21 @@ uio_FileBlock_new(uio_Handle *handle, int flags, off_t offset,
 	return result;
 }
 
-static inline uio_FileBlock *
-uio_FileBlock_alloc(void) {
-	return (uio_FileBlock*)uio_malloc(sizeof (uio_FileBlock));
+static inline uio_FileBlock*
+uio_FileBlock_alloc(void)
+{
+	return (uio_FileBlock*)uio_malloc(sizeof(uio_FileBlock));
 }
 
 static inline void
-uio_FileBlock_free(uio_FileBlock *block) {
+uio_FileBlock_free(uio_FileBlock* block)
+{
 	uio_free(block);
 }
 
-uio_FileBlock *
-uio_openFileBlock(uio_Handle *handle) {
+uio_FileBlock*
+uio_openFileBlock(uio_Handle* handle)
+{
 	// TODO: if mmap support is available, and it is available natively
 	//       for the filesystem (make some sort of sysctl for filesystems
 	//       to check this?), use mmap.
@@ -72,7 +76,8 @@ uio_openFileBlock(uio_Handle *handle) {
 	//       N.B. Keep in mind streams of which the size is not known in
 	//       advance.
 	struct stat statBuf;
-	if (uio_fstat(handle, &statBuf) == -1) {
+	if (uio_fstat(handle, &statBuf) == -1)
+	{
 		// errno is set
 		return NULL;
 	}
@@ -80,8 +85,9 @@ uio_openFileBlock(uio_Handle *handle) {
 	return uio_FileBlock_new(handle, 0, 0, statBuf.st_size, NULL, 0, 0, 0, 0);
 }
 
-uio_FileBlock *
-uio_openFileBlock2(uio_Handle *handle, off_t offset, size_t size) {
+uio_FileBlock*
+uio_openFileBlock2(uio_Handle* handle, off_t offset, size_t size)
+{
 	// TODO: mmap (see uio_openFileBlock)
 
 	// TODO: check if offset and size are acceptable.
@@ -102,76 +108,88 @@ uio_openFileBlock2(uio_Handle *handle, off_t offset, size_t size) {
 }
 
 static inline ssize_t
-uio_accessFileBlockMmap(uio_FileBlock *block, off_t offset, size_t length,
-		char **buffer) {
+uio_accessFileBlockMmap(uio_FileBlock* block, off_t offset, size_t length,
+						char** buffer)
+{
 	// TODO
 	errno = ENOSYS;
-	(void) block;
-	(void) offset;
-	(void) length;
-	(void) buffer;
+	(void)block;
+	(void)offset;
+	(void)length;
+	(void)buffer;
 	return -1;
 }
 
 static inline ssize_t
-uio_accessFileBlockNoMmap(uio_FileBlock *block, off_t offset, size_t length,
-		char **buffer) {
+uio_accessFileBlockNoMmap(uio_FileBlock* block, off_t offset, size_t length,
+						  char** buffer)
+{
 	ssize_t numRead;
 	off_t start;
 	off_t end;
 	size_t bufSize;
-	char *oldBuffer;
+	char* oldBuffer;
 	//size_t oldBufSize;
 
 	// Don't go beyond the end of the block.
-	if (offset > (off_t) block->blockSize) {
+	if (offset > (off_t)block->blockSize)
+	{
 		*buffer = block->buffer;
 		return 0;
 	}
 	if (length > block->blockSize - offset)
 		length = block->blockSize - offset;
 
-	if (block->buffer != NULL) {
+	if (block->buffer != NULL)
+	{
 		// Check whether the requested data is already in the buffer.
-		if (offset >= block->bufOffset &&
-				(offset - block->bufOffset) + length < block->bufFill) {
+		if (offset >= block->bufOffset && (offset - block->bufOffset) + length < block->bufFill)
+		{
 			*buffer = block->buffer + (offset - block->bufOffset);
 			return length;
 		}
 	}
 
-	if (length < block->readAheadBufSize &&
-			(block->flags & uio_FB_USAGE_MASK) != 0) {
+	if (length < block->readAheadBufSize && (block->flags & uio_FB_USAGE_MASK) != 0)
+	{
 		// We can buffer more data.
-		switch (block->flags & uio_FB_USAGE_MASK) {
+		switch (block->flags & uio_FB_USAGE_MASK)
+		{
 			case uio_FB_USAGE_FORWARD:
 				// Read extra data after the requested data.
 				start = offset;
 				end = (block->readAheadBufSize > block->blockSize - offset) ?
-						block->blockSize : offset + block->readAheadBufSize;
+						  block->blockSize :
+						  offset + block->readAheadBufSize;
 				break;
 			case uio_FB_USAGE_BACKWARD:
 				// Read extra data before the requested data.
 				end = offset + length;
-				start = (end <= (off_t) block->blockSize) ?
-						0 : end - block->bufSize;
+				start = (end <= (off_t)block->blockSize) ?
+							0 :
+							end - block->bufSize;
 				break;
-			case uio_FB_USAGE_FORWARD | uio_FB_USAGE_BACKWARD: {
-				// Read extra data both before and after the requested data.
-				off_t extraBefore = (block->readAheadBufSize - length) / 2;
-				start = (offset < extraBefore) ? 0 : offset - extraBefore;
+			case uio_FB_USAGE_FORWARD | uio_FB_USAGE_BACKWARD:
+				{
+					// Read extra data both before and after the requested data.
+					off_t extraBefore = (block->readAheadBufSize - length) / 2;
+					start = (offset < extraBefore) ? 0 : offset - extraBefore;
 
-				end = (block->readAheadBufSize > block->blockSize - start) ?
-						block->blockSize : start + block->readAheadBufSize;
-				break;
-			}
+					end = (block->readAheadBufSize > block->blockSize - start) ?
+							  block->blockSize :
+							  start + block->readAheadBufSize;
+					break;
+				}
 		}
-	} else {
+	}
+	else
+	{
 		start = offset;
 		end = offset + length;
 	}
 	bufSize = (length > block->readAheadBufSize) ?
-			length : block->readAheadBufSize;
+				  length :
+				  block->readAheadBufSize;
 
 	// Start contains the start index in the block of the data we're going
 	// to read.
@@ -180,13 +198,15 @@ uio_accessFileBlockNoMmap(uio_FileBlock *block, off_t offset, size_t length,
 
 	oldBuffer = block->buffer;
 	//oldBufSize = block->bufSize;
-	if (block->buffer != NULL || block->bufSize != bufSize) {
+	if (block->buffer != NULL || block->bufSize != bufSize)
+	{
 		// We don't have a buffer, or we have one, but of the wrong size.
 		block->buffer = (char*)uio_malloc(bufSize);
 		block->bufSize = bufSize;
 	}
 
-	if (oldBuffer != NULL) {
+	if (oldBuffer != NULL)
+	{
 		// TODO: If we have part of the data still in the old buffer, we
 		// can keep that.
 		// memmove(...)
@@ -198,14 +218,15 @@ uio_accessFileBlockNoMmap(uio_FileBlock *block, off_t offset, size_t length,
 	block->bufOffset = start;
 
 	// TODO: lock handle
-	if (uio_lseek(block->handle, block->offset + start, SEEK_SET) ==
-			(off_t) -1) {
+	if (uio_lseek(block->handle, block->offset + start, SEEK_SET) == (off_t)-1)
+	{
 		// errno is set
 		return -1;
 	}
-	
+
 	numRead = uio_read(block->handle, block->buffer, end - start);
-	if (numRead == -1) {
+	if (numRead == -1)
+	{
 		// errno is set
 		// TODO: unlock handle
 		return -1;
@@ -216,7 +237,7 @@ uio_accessFileBlockNoMmap(uio_FileBlock *block, off_t offset, size_t length,
 	*buffer = block->buffer + (offset - block->bufOffset);
 	if (numRead <= (offset - block->bufOffset))
 		return 0;
-	if ((size_t) numRead >= length)
+	if ((size_t)numRead >= length)
 		return length;
 	return numRead - offset;
 }
@@ -230,41 +251,49 @@ uio_accessFileBlockNoMmap(uio_FileBlock *block, off_t offset, size_t length,
 // as with those functions, trying to go beyond the end of a file just
 // goes to the end. The return value is the number of bytes in the buffer.
 ssize_t
-uio_accessFileBlock(uio_FileBlock *block, off_t offset, size_t length,
-		char **buffer) {
-	if (block->flags & uio_FB_USE_MMAP) {
+uio_accessFileBlock(uio_FileBlock* block, off_t offset, size_t length,
+					char** buffer)
+{
+	if (block->flags & uio_FB_USE_MMAP)
+	{
 		return uio_accessFileBlockMmap(block, offset, length, buffer);
-	} else {
+	}
+	else
+	{
 		return uio_accessFileBlockNoMmap(block, offset, length, buffer);
 	}
 }
 
-int
-uio_copyFileBlock(uio_FileBlock *block, off_t offset, char *buffer,
-		size_t length) {
-	if (block->flags & uio_FB_USE_MMAP) {
+int uio_copyFileBlock(uio_FileBlock* block, off_t offset, char* buffer,
+					  size_t length)
+{
+	if (block->flags & uio_FB_USE_MMAP)
+	{
 		// TODO
 		errno = ENOSYS;
 		return -1;
-	} else {
+	}
+	else
+	{
 		ssize_t numCopied = 0;
 		ssize_t readResult;
 
 		// Don't go beyond the end of the block.
-		if (offset > (off_t) block->blockSize)
+		if (offset > (off_t)block->blockSize)
 			return 0;
 		if (length > block->blockSize - offset)
 			length = block->blockSize - offset;
-		
+
 		// Check whether (part of) the requested data is already in our
 		// own buffer.
 		if (block->buffer != NULL && offset >= block->bufOffset
-				&& offset < block->bufOffset + (off_t) block->bufFill) {
+			&& offset < block->bufOffset + (off_t)block->bufFill)
+		{
 			size_t toCopy = block->bufFill - offset;
 			if (toCopy > length)
 				toCopy = length;
 			memcpy(buffer, block->buffer + (offset - block->bufOffset),
-					toCopy);
+				   toCopy);
 			numCopied += toCopy;
 			length -= toCopy;
 			if (length == 0)
@@ -274,15 +303,16 @@ uio_copyFileBlock(uio_FileBlock *block, off_t offset, char *buffer,
 		}
 
 		// TODO: lock handle
-		if (uio_lseek(block->handle, block->offset + offset, SEEK_SET) ==
-				(off_t) -1) {
+		if (uio_lseek(block->handle, block->offset + offset, SEEK_SET) == (off_t)-1)
+		{
 			// errno is set
 			return -1;
 		}
-		
+
 		readResult = uio_read(block->handle, buffer, length);
 		// TODO: unlock handle
-		if (readResult == -1) {
+		if (readResult == -1)
+		{
 			// errno is set
 			return -1;
 		}
@@ -292,14 +322,17 @@ uio_copyFileBlock(uio_FileBlock *block, off_t offset, char *buffer,
 	}
 }
 
-int
-uio_closeFileBlock(uio_FileBlock *block) {
-	if (block->flags & uio_FB_USE_MMAP) {
+int uio_closeFileBlock(uio_FileBlock* block)
+{
+	if (block->flags & uio_FB_USE_MMAP)
+	{
 #if 0
 		if (block->buffer != NULL)
 			uio_mmunmap(block->buffer);
 #endif
-	} else {
+	}
+	else
+	{
 		if (block->buffer != NULL)
 			uio_free(block->buffer);
 	}
@@ -310,23 +343,21 @@ uio_closeFileBlock(uio_FileBlock *block) {
 
 // Usage is the or'ed value of zero or more of uio_FB_USAGE_FORWARD,
 // and uio_FB_USAGE_BACKWARD.
-void
-uio_setFileBlockUsageHint(uio_FileBlock *block, int usage,
-		size_t readAheadBufSize) {
-	block->flags = (block->flags & ~uio_FB_USAGE_MASK) |
-			(usage & uio_FB_USAGE_MASK);
+void uio_setFileBlockUsageHint(uio_FileBlock* block, int usage,
+							   size_t readAheadBufSize)
+{
+	block->flags = (block->flags & ~uio_FB_USAGE_MASK) | (usage & uio_FB_USAGE_MASK);
 	block->readAheadBufSize = readAheadBufSize;
 }
 
 // Call if you want the memory used by the fileblock to be released, but
 // still want to use the fileblock later. If you don't need the fileblock,
 // call uio_closeFileBlock() instead.
-void
-uio_clearFileBlockBuffers(uio_FileBlock *block) {
-	if (block->buffer != NULL) {
+void uio_clearFileBlockBuffers(uio_FileBlock* block)
+{
+	if (block->buffer != NULL)
+	{
 		uio_free(block->buffer);
 		block->buffer = NULL;
 	}
 }
-
-

@@ -21,14 +21,13 @@
 
 #ifdef SOCKET_INTERNAL
 #include <winsock2.h>
-struct Socket {
+struct Socket
+{
 	SOCKET sock;
 };
-#endif  /* SOCKET_INTERNAL */
+#endif /* SOCKET_INTERNAL */
 
 typedef int socklen_t;
 struct sockaddr;
 
 #endif /* LIBS_NETWORK_SOCKET_SOCKET_WIN_H_ */
-
-

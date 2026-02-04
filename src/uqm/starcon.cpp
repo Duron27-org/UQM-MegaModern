@@ -33,11 +33,11 @@
 #include "controls.h"
 #include "starcon.h"
 #include "clock.h"
-		// for GameClockTick()
+// for GameClockTick()
 #include "hyper.h"
-		// for SeedUniverse()
+// for SeedUniverse()
 #include "planets/planets.h"
-		// for ExploreSolarSys()
+// for ExploreSolarSys()
 #include "uqmdebug.h"
 #include "uqm/lua/luastate.h"
 #include "libs/tasklib.h"
@@ -55,7 +55,7 @@
 #include "nameref.h"
 #include "settings.h"
 #include "cons_res.h"
-#include <time.h>//required to use 'srand(time(NULL))'
+#include <time.h> //required to use 'srand(time(NULL))'
 #include "sounds.h"
 
 volatile int MainExited = false;
@@ -67,72 +67,70 @@ extern uint32 SDL_ThreadID(void);
 // Open or close the periodically occuring QuasiSpace portal.
 // It changes the appearant portal size when necessary.
 static void
-checkArilouGate (void)
+checkArilouGate(void)
 {
 	uqm::BYTE counter;
 
-	counter = GET_GAME_STATE (ARILOU_SPACE_COUNTER);
-	if (GET_GAME_STATE (ARILOU_SPACE) == OPENING)
-	{	// The portal is opening or fully open
+	counter = GET_GAME_STATE(ARILOU_SPACE_COUNTER);
+	if (GET_GAME_STATE(ARILOU_SPACE) == OPENING)
+	{ // The portal is opening or fully open
 		if (counter < 9)
 			++counter;
 	}
 	else
-	{	// The portal is closing or fully closed
+	{ // The portal is closing or fully closed
 		if (counter > 0)
 			--counter;
 	}
-	SET_GAME_STATE (ARILOU_SPACE_COUNTER, counter);
+	SET_GAME_STATE(ARILOU_SPACE_COUNTER, counter);
 }
 
 // Battle frame callback function.
 static void
-on_battle_frame (void)
+on_battle_frame(void)
 {
-	GameClockTick ();
-	checkArilouGate ();
+	GameClockTick();
+	checkArilouGate();
 
-	if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))){
-		SeedUniverse ();
+	if (!(GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
+	{
+		SeedUniverse();
 	}
 
-	DrawAutoPilotMessage (false);
+	DrawAutoPilotMessage(false);
 }
 
 static void
-BackgroundInitKernel (uqm::DWORD TimeOut)
+BackgroundInitKernel(uqm::DWORD TimeOut)
 {
-	LoadMasterShipList (TaskSwitch);
-	TaskSwitch ();
-	InitGameKernel ();
+	LoadMasterShipList(TaskSwitch);
+	TaskSwitch();
+	InitGameKernel();
 
-	while ((GetTimeCounter () <= TimeOut) &&
-			!(GLOBAL (CurrentActivity) & CHECK_ABORT))
+	while ((GetTimeCounter() <= TimeOut) && !(GLOBAL(CurrentActivity) & CHECK_ABORT))
 	{
-		UpdateInputState ();
-		TaskSwitch ();
+		UpdateInputState();
+		TaskSwitch();
 	}
 }
 
 // Executes on the main() thread
-void
-SignalStopMainThread (void)
+void SignalStopMainThread(void)
 {
 	GamePaused = false;
-	GLOBAL (CurrentActivity) |= CHECK_ABORT;
-	TaskSwitch ();
+	GLOBAL(CurrentActivity) |= CHECK_ABORT;
+	TaskSwitch();
 }
 
 // Executes on the main() thread
-void
-ProcessUtilityKeys (void)
+void ProcessUtilityKeys(void)
 {
 	if (ImmediateInputState.menu[KEY_ABORT])
 	{
-		log_showBox (false, false);
-		exit (EXIT_SUCCESS);
+		log_showBox(false, false);
+		exit(EXIT_SUCCESS);
 	}
-	
+
 	if (ImmediateInputState.menu[KEY_FULLSCREEN])
 	{
 		int flags = GfxFlags;
@@ -149,46 +147,46 @@ ProcessUtilityKeys (void)
 			flags ^= TFB_GFXFLAGS_SCALE_BILINEAR;
 
 		// clear ImmediateInputState so we don't repeat this next frame
-		FlushInput ();
-		TFB_DrawScreen_ReinitVideo (GraphicsDriver, flags,
-				WindowWidth, WindowHeight);
+		FlushInput();
+		TFB_DrawScreen_ReinitVideo(GraphicsDriver, flags,
+								   WindowWidth, WindowHeight);
 	}
 
 	if (ImmediateInputState.menu[KEY_SCREENSHOT])
 	{
-		TFB_ScreenShot ();
-		FlushInput ();
+		TFB_ScreenShot();
+		FlushInput();
 	}
 
 #if defined(DEBUG) || defined(USE_DEBUG_KEY)
-	{	// Only call the debug func on the rising edge of
+	{ // Only call the debug func on the rising edge of
 		// ImmediateInputState[KEY_DEBUG] so it does not execute repeatedly.
 		// This duplicates the PulsedInputState somewhat, but we cannot
 		// use PulsedInputState here because it is meant for another thread.
 		static int debugKeyState, debugKey2State,
-				debugKey3State, debugKey4State;
+			debugKey3State, debugKey4State;
 
 		if (ImmediateInputState.menu[KEY_DEBUG] && debugKeyState == 0)
-			debugKeyPressed ();
+			debugKeyPressed();
 		debugKeyState = ImmediateInputState.menu[KEY_DEBUG];
 
 		if (ImmediateInputState.menu[KEY_DEBUG_2] && debugKey2State == 0)
-			debugKey2Pressed ();
+			debugKey2Pressed();
 		debugKey2State = ImmediateInputState.menu[KEY_DEBUG_2];
 
 		if (ImmediateInputState.menu[KEY_DEBUG_3] && debugKey3State == 0)
-			debugKey3Pressed ();
+			debugKey3Pressed();
 		debugKey3State = ImmediateInputState.menu[KEY_DEBUG_3];
 
 		if (ImmediateInputState.menu[KEY_DEBUG_4] && debugKey4State == 0)
-			debugKey4Pressed ();
+			debugKey4Pressed();
 		debugKey4State = ImmediateInputState.menu[KEY_DEBUG_4];
 	}
-#endif  /* DEBUG */
+#endif /* DEBUG */
 }
 
 static void
-SetRandomMenuMusic (void)
+SetRandomMenuMusic(void)
 {
 	time_t t = time(NULL);
 	struct tm tm = *localtime(&t);
@@ -201,103 +199,103 @@ SetRandomMenuMusic (void)
 /* TODO: Remove these declarations once threading is gone. */
 extern int snddriver, soundflags;
 
-int
-Starcon2Main (void *threadArg)
+int Starcon2Main(void* threadArg)
 {
 #ifdef DEBUG_SLEEP
 	mainThreadId = SDL_ThreadID();
 #endif
 
 #if CREATE_JOURNAL
-{
-int ac = argc;
-char **av = argv;
-
-while (--ac > 0)
-{
-	++av;
-	if ((*av)[0] == '-')
 	{
-		switch ((*av)[1])
+		int ac = argc;
+		char** av = argv;
+
+		while (--ac > 0)
 		{
+			++av;
+			if ((*av)[0] == '-')
+			{
+				switch ((*av)[1])
+				{
 #if CREATE_JOURNAL
-			case 'j':
-				++create_journal;
-				break;
+					case 'j':
+						++create_journal;
+						break;
 #endif //CREATE_JOURNAL
+				}
+			}
 		}
 	}
-}
-}
 #endif // CREATE_JOURNAL
 
 	{
 		/* TODO: Put initAudio back in main where it belongs once threading
 		 *       is gone.
 		 */
-		extern sint32 initAudio (sint32 driver, sint32 flags);
-		initAudio (snddriver, soundflags);
+		extern sint32 initAudio(sint32 driver, sint32 flags);
+		initAudio(snddriver, soundflags);
 	}
 
-	if (!LoadKernel (0,0))
+	if (!LoadKernel(0, 0))
 	{
-		log_add (log_Fatal, "\n  *** FATAL ERROR: Could not load basic "
-				"content ***\n\nUQM requires at least the base content "
-				"pack to run properly.");
-		log_add (log_Fatal, "This file is typically called "
-				"mm-%d.%d.%d-content.uqm.  UQM was expecting",
+		log_add(log_Fatal, "\n  *** FATAL ERROR: Could not load basic "
+						   "content ***\n\nUQM requires at least the base content "
+						   "pack to run properly.");
+		log_add(log_Fatal, "This file is typically called "
+						   "mm-%d.%d.%d-content.uqm.  UQM was expecting",
 				UQM_MAJOR_VERSION, UQM_MINOR_VERSION, UQM_PATCH_VERSION);
-		log_add (log_Fatal, "it in the %s/packages directory.",
+		log_add(log_Fatal, "it in the %s/packages directory.",
 				baseContentPath);
-		log_add (log_Fatal, "Either your installation did not install the "
-				"content pack at all, or it\ninstalled it in a different "
-				"directory.\n\nFix your installation and rerun UQM.\n\n  "
-				"*******************\n");
-		log_showBox (true, true);
+		log_add(log_Fatal, "Either your installation did not install the "
+						   "content pack at all, or it\ninstalled it in a different "
+						   "directory.\n\nFix your installation and rerun UQM.\n\n  "
+						   "*******************\n");
+		log_showBox(true, true);
 
 		MainExited = true;
 		return EXIT_FAILURE;
 	}
-	log_add (log_Info, "We've loaded the Kernel");
+	log_add(log_Info, "We've loaded the Kernel");
 
-	GLOBAL (CurrentActivity) = 0;
-	luaUqm_initState ();
+	GLOBAL(CurrentActivity) = 0;
+	luaUqm_initState();
 	// show logo then splash and init the kernel in the meantime
-	if(!optSkipIntro)
-		Logo ();
+	if (!optSkipIntro)
+		Logo();
 
-	SetRandomMenuMusic ();
-	InitMenuMusic ();
+	SetRandomMenuMusic();
+	InitMenuMusic();
 
-	SplashScreen (BackgroundInitKernel);
+	SplashScreen(BackgroundInitKernel);
 
 #ifdef DEBUG
-	printf ("Set Seed Type: %s\n", SeedStr ());
-	printf ("Set Seed: %d\n", optCustomSeed);
-	printf ("Set Difficulty: %s\n", DIF_STR (optDifficulty));
-	printf ("Set Extended: %s\n", BOOL_STR (optExtended));
-	printf ("Set Nomad: %s\n\n", NOMAD_STR (optNomad));
+	printf("Set Seed Type: %s\n", SeedStr());
+	printf("Set Seed: %d\n", optCustomSeed);
+	printf("Set Difficulty: %s\n", DIF_STR(optDifficulty));
+	printf("Set Extended: %s\n", BOOL_STR(optExtended));
+	printf("Set Nomad: %s\n\n", NOMAD_STR(optNomad));
 #endif
-	log_add (log_Info, "Set Seed Type: %s\n", SeedStr ());
-	log_add (log_Info, "Set Seed: %d\n", optCustomSeed);
-	log_add (log_Info, "Set Difficulty: %s\n", DIF_STR (optDifficulty));
-	log_add (log_Info, "Set Extended: %s\n", BOOL_STR (optExtended));
-	log_add (log_Info, "Set Nomad: %s\n\n", NOMAD_STR (optNomad));
+	log_add(log_Info, "Set Seed Type: %s\n", SeedStr());
+	log_add(log_Info, "Set Seed: %d\n", optCustomSeed);
+	log_add(log_Info, "Set Difficulty: %s\n", DIF_STR(optDifficulty));
+	log_add(log_Info, "Set Extended: %s\n", BOOL_STR(optExtended));
+	log_add(log_Info, "Set Nomad: %s\n\n", NOMAD_STR(optNomad));
 
-//	OpenJournal ();
-	while (StartGame ())
+	//	OpenJournal ();
+	while (StartGame())
 	{
 		// Initialise a new game
-		if (!SetPlayerInputAll ()) {
-			log_add (log_Fatal, "Could not set player input.");
-			explode ();  // Does not return;
+		if (!SetPlayerInputAll())
+		{
+			log_add(log_Fatal, "Could not set player input.");
+			explode(); // Does not return;
 		}
 
-		luaUqm_reinitState ();
-		InitGameStructures ();
-		InitGameClock ();
-		initEventSystem ();
-		AddInitialGameEvents ();
+		luaUqm_reinitState();
+		InitGameStructures();
+		InitGameClock();
+		initEventSystem();
+		AddInitialGameEvents();
 
 		// Reset Debug Key
 		DebugKeyPressed = false;
@@ -306,131 +304,132 @@ while (--ac > 0)
 		if (LastActivity == (CHECK_LOAD | CHECK_RESTART))
 		{
 #ifdef DEBUG
-			printf ("New Game Seed Type: %s\n", SeedStr ());
-			printf ("New Game Seed: %d\n", GLOBAL_SIS (Seed));
-			printf ("New Game Difficulty: %s\n",
-					DIF_STR (GLOBAL_SIS (Difficulty)));
-			printf ("New Game Extended: %s\n",
-					BOOL_STR (GLOBAL_SIS (Extended)));
-			printf ("New Game Nomad: %s\n\n",
-					NOMAD_STR (GLOBAL_SIS (Nomad)));
+			printf("New Game Seed Type: %s\n", SeedStr());
+			printf("New Game Seed: %d\n", GLOBAL_SIS(Seed));
+			printf("New Game Difficulty: %s\n",
+				   DIF_STR(GLOBAL_SIS(Difficulty)));
+			printf("New Game Extended: %s\n",
+				   BOOL_STR(GLOBAL_SIS(Extended)));
+			printf("New Game Nomad: %s\n\n",
+				   NOMAD_STR(GLOBAL_SIS(Nomad)));
 #endif
-			log_add (log_Info, "New Game Seed Type: %s\n", SeedStr ());
-			log_add (log_Info, "New Game Seed: %d\n", GLOBAL_SIS (Seed));
-			log_add (log_Info, "New Game Difficulty: %s\n",
-					DIF_STR (GLOBAL_SIS (Difficulty)));
-			log_add (log_Info, "New Game Extended: %s\n",
-					BOOL_STR (GLOBAL_SIS (Extended)));
-			log_add (log_Info, "New Game Nomad: %s\n\n",
-					NOMAD_STR (GLOBAL_SIS (Nomad)));
+			log_add(log_Info, "New Game Seed Type: %s\n", SeedStr());
+			log_add(log_Info, "New Game Seed: %d\n", GLOBAL_SIS(Seed));
+			log_add(log_Info, "New Game Difficulty: %s\n",
+					DIF_STR(GLOBAL_SIS(Difficulty)));
+			log_add(log_Info, "New Game Extended: %s\n",
+					BOOL_STR(GLOBAL_SIS(Extended)));
+			log_add(log_Info, "New Game Nomad: %s\n\n",
+					NOMAD_STR(GLOBAL_SIS(Nomad)));
 		}
 
 		do
 		{
 			if (debugHook != NULL)
 			{
-				void (*saveDebugHook) (void);
+				void (*saveDebugHook)(void);
 				saveDebugHook = debugHook;
 				debugHook = NULL;
-						// No further debugHook calls unless the called
-						// function resets debugHook.
-				(*saveDebugHook) ();
+				// No further debugHook calls unless the called
+				// function resets debugHook.
+				(*saveDebugHook)();
 				continue;
 			}
 
-			SetStatusMessageMode (SMM_DEFAULT);
+			SetStatusMessageMode(SMM_DEFAULT);
 
-			if (!((GLOBAL (CurrentActivity) | NextActivity) & CHECK_LOAD))
-				ZeroVelocityComponents (&GLOBAL (velocity));
-					// not going into talking pet conversation
-			else if (GLOBAL (CurrentActivity) & CHECK_LOAD)
-				GLOBAL (CurrentActivity) = NextActivity;
+			if (!((GLOBAL(CurrentActivity) | NextActivity) & CHECK_LOAD))
+				ZeroVelocityComponents(&GLOBAL(velocity));
+			// not going into talking pet conversation
+			else if (GLOBAL(CurrentActivity) & CHECK_LOAD)
+				GLOBAL(CurrentActivity) = NextActivity;
 
-			if ((GLOBAL (CurrentActivity) & START_ENCOUNTER)
-					|| GET_GAME_STATE (CHMMR_BOMB_STATE) == 2)
+			if ((GLOBAL(CurrentActivity) & START_ENCOUNTER)
+				|| GET_GAME_STATE(CHMMR_BOMB_STATE) == 2)
 			{
-				if (GET_GAME_STATE (CHMMR_BOMB_STATE) == 2
-						&& !GET_GAME_STATE (STARBASE_AVAILABLE))
-				{	/* BGD mode */
-					InstallBombAtEarth ();
+				if (GET_GAME_STATE(CHMMR_BOMB_STATE) == 2
+					&& !GET_GAME_STATE(STARBASE_AVAILABLE))
+				{ /* BGD mode */
+					InstallBombAtEarth();
 				}
-				else if (GET_GAME_STATE (GLOBAL_FLAGS_AND_DATA) == (uqm::BYTE)~0
-						|| GET_GAME_STATE (CHMMR_BOMB_STATE) == 2)
+				else if (GET_GAME_STATE(GLOBAL_FLAGS_AND_DATA) == (uqm::BYTE)~0
+						 || GET_GAME_STATE(CHMMR_BOMB_STATE) == 2)
 				{
-					GLOBAL (CurrentActivity) |= START_ENCOUNTER;
-					VisitStarBase ();
+					GLOBAL(CurrentActivity) |= START_ENCOUNTER;
+					VisitStarBase();
 				}
 				else
 				{
-					GLOBAL (CurrentActivity) |= START_ENCOUNTER;
-					RaceCommunication ();
+					GLOBAL(CurrentActivity) |= START_ENCOUNTER;
+					RaceCommunication();
 				}
 
-				if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
+				if (!(GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
 				{
-					GLOBAL (CurrentActivity) &= ~START_ENCOUNTER;
-					if (lowByte (GLOBAL (CurrentActivity)) == IN_INTERPLANETARY)
-						GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
+					GLOBAL(CurrentActivity) &= ~START_ENCOUNTER;
+					if (lowByte(GLOBAL(CurrentActivity)) == IN_INTERPLANETARY)
+						GLOBAL(CurrentActivity) |= START_INTERPLANETARY;
 				}
 			}
-			else if (GLOBAL (CurrentActivity) & START_INTERPLANETARY)
+			else if (GLOBAL(CurrentActivity) & START_INTERPLANETARY)
 			{
-				GLOBAL (CurrentActivity) = MAKE_WORD (IN_INTERPLANETARY, 0);
+				GLOBAL(CurrentActivity) = MAKE_WORD(IN_INTERPLANETARY, 0);
 
-				DrawAutoPilotMessage (true);
-				SetGameClockRate (INTERPLANETARY_CLOCK_RATE);
-				ExploreSolarSys ();
+				DrawAutoPilotMessage(true);
+				SetGameClockRate(INTERPLANETARY_CLOCK_RATE);
+				ExploreSolarSys();
 			}
 			else
 			{
 				// Entering HyperSpace or QuasiSpace.
-				GLOBAL (CurrentActivity) = MAKE_WORD (IN_HYPERSPACE, 0);
+				GLOBAL(CurrentActivity) = MAKE_WORD(IN_HYPERSPACE, 0);
 
-				DrawAutoPilotMessage (true);
-				SetGameClockRate (HYPERSPACE_CLOCK_RATE);
-				Battle (&on_battle_frame);
+				DrawAutoPilotMessage(true);
+				SetGameClockRate(HYPERSPACE_CLOCK_RATE);
+				Battle(&on_battle_frame);
 			}
 
-			SetFlashRect (NULL, false);
+			SetFlashRect(NULL, false);
 
-			LastActivity = GLOBAL (CurrentActivity);
+			LastActivity = GLOBAL(CurrentActivity);
 
-			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
-					&& (lowByte (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE
-							// if died for some reason
-					|| GLOBAL_SIS (CrewEnlisted) == (uqm::COUNT)~0))
+			if (!(GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
+				&& (lowByte(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE
+					// if died for some reason
+					|| GLOBAL_SIS(CrewEnlisted) == (uqm::COUNT)~0))
 			{
-				if (GET_GAME_STATE(KOHR_AH_KILLED_ALL)) {
+				if (GET_GAME_STATE(KOHR_AH_KILLED_ALL))
+				{
 					InitCommunication(BLACKURQ_CONVERSATION);
 					if (optGameOver)
-						GameOver (DEATH_MARCH);
+						GameOver(DEATH_MARCH);
 				}
-				else if (GLOBAL (CurrentActivity) & CHECK_RESTART){
+				else if (GLOBAL(CurrentActivity) & CHECK_RESTART)
+				{
 					// surrendered to Ur-Quan
 					DeathBySurrender = true;
-					GLOBAL (CurrentActivity) &= ~CHECK_RESTART;
+					GLOBAL(CurrentActivity) &= ~CHECK_RESTART;
 				}
 				break;
 			}
-		} while (!(GLOBAL (CurrentActivity) & CHECK_ABORT));
+		} while (!(GLOBAL(CurrentActivity) & CHECK_ABORT));
 
-		StopSound ();
-		uninitEventSystem ();
-		UninitGameClock ();
-		UninitGameStructures ();
-		ClearPlayerInputAll ();
+		StopSound();
+		uninitEventSystem();
+		UninitGameClock();
+		UninitGameStructures();
+		ClearPlayerInputAll();
 	}
-//	CloseJournal ();
-	luaUqm_uninitState ();
+	//	CloseJournal ();
+	luaUqm_uninitState();
 
-	UninitGameKernel ();
-	FreeMasterShipList ();
-	FreeKernel ();
+	UninitGameKernel();
+	FreeMasterShipList();
+	FreeKernel();
 
-	log_showBox (false, false);
+	log_showBox(false, false);
 	MainExited = true;
 
-	(void) threadArg;  /* Satisfying compiler (unused parameter) */
+	(void)threadArg; /* Satisfying compiler (unused parameter) */
 	return 0;
 }
-

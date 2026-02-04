@@ -28,7 +28,7 @@
 
 // MMX name for all functions
 #undef SCALE_
-#define SCALE_(name) Scale ## _MMX_ ## name
+#define SCALE_(name) Scale##_MMX_##name
 
 // Tell them which opcodes we want to support
 #undef USE_MOVNTQ
@@ -41,15 +41,15 @@
 // Scaler function lookup table
 //
 const Scale_FuncDef_t
-Scale_MMX_Functions[] =
-{
-	{TFB_GFXFLAGS_SCALE_BILINEAR,   Scale_MMX_BilinearFilter},
-	{TFB_GFXFLAGS_SCALE_BIADAPT,    Scale_BiAdaptFilter},
-	{TFB_GFXFLAGS_SCALE_BIADAPTADV, Scale_MMX_BiAdaptAdvFilter},
-	{TFB_GFXFLAGS_SCALE_TRISCAN,    Scale_MMX_TriScanFilter},
-	{TFB_GFXFLAGS_SCALE_HQXX,       Scale_MMX_HqFilter},
-	// Default
-	{0,                             Scale_MMX_Nearest}
+	Scale_MMX_Functions[] =
+		{
+			{TFB_GFXFLAGS_SCALE_BILINEAR,	  Scale_MMX_BilinearFilter  },
+			{TFB_GFXFLAGS_SCALE_BIADAPT,	 Scale_BiAdaptFilter		},
+			{TFB_GFXFLAGS_SCALE_BIADAPTADV, Scale_MMX_BiAdaptAdvFilter},
+			{TFB_GFXFLAGS_SCALE_TRISCAN,	 Scale_MMX_TriScanFilter	},
+			{TFB_GFXFLAGS_SCALE_HQXX,		  Scale_MMX_HqFilter		},
+			// Default
+			{0,							 Scale_MMX_Nearest		 }
 };
 
 // MMX transformation multipliers
@@ -61,38 +61,37 @@ Uint64 mmx_V_mult;
 //Uint64 mmx_YUV_threshold = 0x0030100e;
 Uint64 mmx_YUV_threshold = 0x0040120c;
 
-void
-Scale_MMX_PrepPlatform (const SDL_PixelFormat* fmt)
+void Scale_MMX_PrepPlatform(const SDL_PixelFormat* fmt)
 {
 	// prepare the channel-shuffle multiplier
 	mmx_888to555_mult = ((Uint64)0x0400) << (fmt->Rshift * 2)
-	                  | ((Uint64)0x0020) << (fmt->Gshift * 2)
-	                  | ((Uint64)0x0001) << (fmt->Bshift * 2);
+					  | ((Uint64)0x0020) << (fmt->Gshift * 2)
+					  | ((Uint64)0x0001) << (fmt->Bshift * 2);
 
 	// prepare the RGB->YUV multipliers
-	mmx_Y_mult  = ((Uint64)(uint16)YUV_matrix[YUV_XFORM_R][YUV_XFORM_Y])
-					<< (fmt->Rshift * 2)
-	            | ((Uint64)(uint16)YUV_matrix[YUV_XFORM_G][YUV_XFORM_Y])
-					<< (fmt->Gshift * 2)
-	            | ((Uint64)(uint16)YUV_matrix[YUV_XFORM_B][YUV_XFORM_Y])
-					<< (fmt->Bshift * 2);
+	mmx_Y_mult = ((Uint64)(uint16)YUV_matrix[YUV_XFORM_R][YUV_XFORM_Y])
+				  << (fmt->Rshift * 2)
+			   | ((Uint64)(uint16)YUV_matrix[YUV_XFORM_G][YUV_XFORM_Y])
+					 << (fmt->Gshift * 2)
+			   | ((Uint64)(uint16)YUV_matrix[YUV_XFORM_B][YUV_XFORM_Y])
+					 << (fmt->Bshift * 2);
 
-	mmx_U_mult  = ((Uint64)(uint16)YUV_matrix[YUV_XFORM_R][YUV_XFORM_U])
-					<< (fmt->Rshift * 2)
-	            | ((Uint64)(uint16)YUV_matrix[YUV_XFORM_G][YUV_XFORM_U])
-					<< (fmt->Gshift * 2)
-	            | ((Uint64)(uint16)YUV_matrix[YUV_XFORM_B][YUV_XFORM_U])
-					<< (fmt->Bshift * 2);
+	mmx_U_mult = ((Uint64)(uint16)YUV_matrix[YUV_XFORM_R][YUV_XFORM_U])
+				  << (fmt->Rshift * 2)
+			   | ((Uint64)(uint16)YUV_matrix[YUV_XFORM_G][YUV_XFORM_U])
+					 << (fmt->Gshift * 2)
+			   | ((Uint64)(uint16)YUV_matrix[YUV_XFORM_B][YUV_XFORM_U])
+					 << (fmt->Bshift * 2);
 
-	mmx_V_mult  = ((Uint64)(uint16)YUV_matrix[YUV_XFORM_R][YUV_XFORM_V])
-					<< (fmt->Rshift * 2)
-	            | ((Uint64)(uint16)YUV_matrix[YUV_XFORM_G][YUV_XFORM_V])
-					<< (fmt->Gshift * 2)
-	            | ((Uint64)(uint16)YUV_matrix[YUV_XFORM_B][YUV_XFORM_V])
-					<< (fmt->Bshift * 2);
+	mmx_V_mult = ((Uint64)(uint16)YUV_matrix[YUV_XFORM_R][YUV_XFORM_V])
+				  << (fmt->Rshift * 2)
+			   | ((Uint64)(uint16)YUV_matrix[YUV_XFORM_G][YUV_XFORM_V])
+					 << (fmt->Gshift * 2)
+			   | ((Uint64)(uint16)YUV_matrix[YUV_XFORM_B][YUV_XFORM_V])
+					 << (fmt->Bshift * 2);
 
 	mmx_YUV_threshold = (SCALE_DIFFYUV_TY << 16) | (SCALE_DIFFYUV_TU << 8)
-			| SCALE_DIFFYUV_TV;
+					  | SCALE_DIFFYUV_TV;
 }
 
 
@@ -133,4 +132,3 @@ Scale_MMX_PrepPlatform (const SDL_PixelFormat* fmt)
 
 
 #endif /* MMX_ASM */
-

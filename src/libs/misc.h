@@ -16,7 +16,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-// This file includes some misc things, previously in SDL_wrapper.h 
+// This file includes some misc things, previously in SDL_wrapper.h
 // before modularization. -Mika
 
 #ifndef MISC_H
@@ -33,26 +33,28 @@ extern "C" {
 
 extern int TFB_DEBUG_HALT;
 
-static inline void explode (void) _NORETURN;
+static inline void explode(void) _NORETURN;
 
-static inline void explode (void)
+static inline void explode(void)
 {
 #ifdef DEBUG
 	// give debugger a chance to hook
-	abort ();
+	abort();
 #else
-	exit (EXIT_FAILURE);
+	exit(EXIT_FAILURE);
 #endif
 }
 
 /* Sometimes you just have to remove a 'const'.
  * (for instance, when implementing a function like strchr)
  */
-static inline void *
-unconst(const void *arg) {
-	union {
-		void *c;
-		const void *cc;
+static inline void*
+unconst(const void* arg)
+{
+	union
+	{
+		void* c;
+		const void* cc;
 	} u;
 	u.cc = arg;
 	return u.c;
@@ -63,4 +65,3 @@ unconst(const void *arg) {
 #endif
 
 #endif
-

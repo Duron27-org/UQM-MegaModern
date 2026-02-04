@@ -22,9 +22,8 @@
 #include "libs/mathlib.h"
 #include "planets.h"
 
-void
-DeltaTopography (uqm::COUNT num_iterations, uqm::SBYTE *DepthArray, RECT *pRect,
-		uqm::SIZE depth_delta)
+void DeltaTopography(uqm::COUNT num_iterations, uqm::SBYTE* DepthArray, RECT* pRect,
+					 uqm::SIZE depth_delta)
 {
 	uqm::SIZE width, height, delta_y;
 	struct
@@ -33,7 +32,7 @@ DeltaTopography (uqm::COUNT num_iterations, uqm::SBYTE *DepthArray, RECT *pRect,
 		uqm::SIZE x_incr, delta_x, error_term;
 	} LineDDA0, LineDDA1;
 
-	
+
 	width = pRect->extent.width;
 	height = pRect->extent.height;
 	delta_y = (height - 1) << 1;
@@ -42,23 +41,23 @@ DeltaTopography (uqm::COUNT num_iterations, uqm::SBYTE *DepthArray, RECT *pRect,
 		uqm::SIZE d;
 		uqm::COUNT h, w1, w2;
 		uqm::DWORD rand_val;
-		uqm::SBYTE *lpDst;
+		uqm::SBYTE* lpDst;
 
-		if ((RandomContext_Random (SysGenRNG) & 1) == 0)
+		if ((RandomContext_Random(SysGenRNG) & 1) == 0)
 			depth_delta = -depth_delta;
 
-		rand_val = RandomContext_Random (SysGenRNG);
+		rand_val = RandomContext_Random(SysGenRNG);
 
-		w1 = LOWORD (rand_val);
-		w2 = HIWORD (rand_val);
+		w1 = LOWORD(rand_val);
+		w2 = HIWORD(rand_val);
 
-		LineDDA0.x_top = (lowByte (w1) % ORIGINAL_MAP_WIDTH)
-				* width / ORIGINAL_MAP_WIDTH;
-		LineDDA0.x_bot = (highByte (w1) % ORIGINAL_MAP_WIDTH)
-				* width / ORIGINAL_MAP_WIDTH;
+		LineDDA0.x_top = (lowByte(w1) % ORIGINAL_MAP_WIDTH)
+					   * width / ORIGINAL_MAP_WIDTH;
+		LineDDA0.x_bot = (highByte(w1) % ORIGINAL_MAP_WIDTH)
+					   * width / ORIGINAL_MAP_WIDTH;
 		// LineDDA0.x_top = w1 % width; // JMS_GFX: Replaced previous lines with
 		// these: uqm::BYTE is too small for 640x480 sized maps.
-		// LineDDA0.x_bot = w2 % width; 
+		// LineDDA0.x_bot = w2 % width;
 		// Using w1 and w2 to get difference between top and bottom.
 		// BW: reinstate previous method and adapt it for higher res.
 		// Overusing w1 and w2 was hampering randomness.
@@ -77,10 +76,12 @@ DeltaTopography (uqm::COUNT num_iterations, uqm::SBYTE *DepthArray, RECT *pRect,
 		else
 			LineDDA0.error_term = -(delta_y >> 1);
 
-		LineDDA1.x_top = (lowByte (w2) % (ORIGINAL_MAP_WIDTH - 1))
-				* width / ORIGINAL_MAP_WIDTH + LineDDA0.x_top + 1;
-		LineDDA1.x_bot = (highByte (w2) % (ORIGINAL_MAP_WIDTH - 1))
-				* width / ORIGINAL_MAP_WIDTH + LineDDA0.x_bot + 1;
+		LineDDA1.x_top = (lowByte(w2) % (ORIGINAL_MAP_WIDTH - 1))
+						   * width / ORIGINAL_MAP_WIDTH
+					   + LineDDA0.x_top + 1;
+		LineDDA1.x_bot = (highByte(w2) % (ORIGINAL_MAP_WIDTH - 1))
+						   * width / ORIGINAL_MAP_WIDTH
+					   + LineDDA0.x_bot + 1;
 		LineDDA1.delta_x = (LineDDA1.x_bot - LineDDA1.x_top) << 1;
 		if (LineDDA1.delta_x >= 0)
 			LineDDA1.x_incr = 1;
@@ -215,6 +216,3 @@ DeltaTopography (uqm::COUNT num_iterations, uqm::SBYTE *DepthArray, RECT *pRect,
 		} while (--h);
 	} while (--num_iterations);
 }
-
-
-

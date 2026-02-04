@@ -28,23 +28,23 @@
 // CDP IO Interface entry points
 typedef struct
 {
-	uio_Stream* (* fopen) (uio_DirHandle *dir, const char *path,
-			const char *mode);
-	int (* fclose) (uio_Stream *stream);
-	size_t (* fread) (void *buf, size_t size, size_t nmemb,
-			uio_Stream *stream);
-	size_t (* fwrite) (const void *buf, size_t size, size_t nmemb,
-			uio_Stream *stream);
-	int (* fseek) (uio_Stream *stream, long offset, int whence);
-	long (* ftell) (uio_Stream *stream);
-	int (* fflush) (uio_Stream *stream);
-	int (* feof) (uio_Stream *stream);
-	int (* ferror) (uio_Stream *stream);
+	uio_Stream* (*fopen)(uio_DirHandle* dir, const char* path,
+						 const char* mode);
+	int (*fclose)(uio_Stream* stream);
+	size_t (*fread)(void* buf, size_t size, size_t nmemb,
+					uio_Stream* stream);
+	size_t (*fwrite)(const void* buf, size_t size, size_t nmemb,
+					 uio_Stream* stream);
+	int (*fseek)(uio_Stream* stream, long offset, int whence);
+	long (*ftell)(uio_Stream* stream);
+	int (*fflush)(uio_Stream* stream);
+	int (*feof)(uio_Stream* stream);
+	int (*ferror)(uio_Stream* stream);
 
 } cdp_Itf_IoVtbl_v1;
 
 // the following are for the sake of module writers
 typedef cdp_Itf_IoVtbl_v1 cdp_Itf_IoVtbl;
-typedef cdp_Itf_IoVtbl    cdp_Itf_Io;
+typedef cdp_Itf_IoVtbl cdp_Itf_Io;
 
-#endif  /* LIBS_CDP_CDP_IIO_H_ */
+#endif /* LIBS_CDP_CDP_IIO_H_ */

@@ -54,7 +54,7 @@ typedef struct /* queue */
 	HLINK head;
 	HLINK tail;
 #ifdef QUEUE_TABLE
-	uqm::BYTE  *pq_tab;
+	uqm::BYTE* pq_tab;
 	HLINK free_list;
 #endif
 	uqm::COUNT object_size;
@@ -65,68 +65,66 @@ typedef struct /* queue */
 
 #ifdef QUEUE_TABLE
 
-extern HLINK AllocLink (QUEUE *pq);
-extern void FreeLink (QUEUE *pq, HLINK hLink);
+extern HLINK AllocLink(QUEUE* pq);
+extern void FreeLink(QUEUE* pq, HLINK hLink);
 
-static inline LINK *
-LockLink (const QUEUE *pq, HLINK h)
+static inline LINK*
+LockLink(const QUEUE* pq, HLINK h)
 {
 	if (h) // Apparently, h==0 is OK
-	{	// Make sure the link is actually in our queue!
-		assert (pq->pq_tab && (uqm::BYTE*)h >= pq->pq_tab &&
-				(uqm::BYTE*)h < pq->pq_tab + pq->object_size * pq->num_objects);
+	{	   // Make sure the link is actually in our queue!
+		assert(pq->pq_tab && (uqm::BYTE*)h >= pq->pq_tab && (uqm::BYTE*)h < pq->pq_tab + pq->object_size * pq->num_objects);
 	}
 	return (LINK*)h;
 }
 
 static inline void
-UnlockLink (const QUEUE *pq, HLINK h)
+UnlockLink(const QUEUE* pq, HLINK h)
 {
 	if (h) // Apparently, h==0 is OK
-	{	// Make sure the link is actually in our queue!
-		assert (pq->pq_tab && (uqm::BYTE*)h >= pq->pq_tab &&
-				(uqm::BYTE*)h < pq->pq_tab + pq->object_size * pq->num_objects);
+	{	   // Make sure the link is actually in our queue!
+		assert(pq->pq_tab && (uqm::BYTE*)h >= pq->pq_tab && (uqm::BYTE*)h < pq->pq_tab + pq->object_size * pq->num_objects);
 	}
 }
 
 #define GetFreeList(pq) (pq)->free_list
 #define SetFreeList(pq, h) (pq)->free_list = (h)
-#define AllocQueueTab(pq,n) \
-		((pq)->pq_tab = (uqm::BYTE*)HMalloc (((uqm::COUNT)(pq)->object_size * \
-		(uqm::COUNT)((pq)->num_objects = (uqm::BYTE)(n)))))
-#define FreeQueueTab(pq) HFree ((pq)->pq_tab); (pq)->pq_tab = NULL
+#define AllocQueueTab(pq, n) \
+	((pq)->pq_tab = (uqm::BYTE*)HMalloc(((uqm::COUNT)(pq)->object_size * (uqm::COUNT)((pq)->num_objects = (uqm::BYTE)(n)))))
+#define FreeQueueTab(pq) \
+	HFree((pq)->pq_tab); \
+	(pq)->pq_tab = NULL
 #define SizeQueueTab(pq) (uqm::COUNT)((pq)->num_objects)
-#define GetLinkAddr(pq,i) (HLINK)((pq)->pq_tab + ((pq)->object_size * ((i) - 1)))
+#define GetLinkAddr(pq, i) (HLINK)((pq)->pq_tab + ((pq)->object_size * ((i) - 1)))
 #else /* !QUEUE_TABLE */
-#define AllocLink(pq)     (HLINK)HMalloc ((pq)->object_size)
-#define LockLink(pq, h)   ((LINK*)(h))
+#define AllocLink(pq) (HLINK) HMalloc((pq)->object_size)
+#define LockLink(pq, h) ((LINK*)(h))
 #define UnlockLink(pq, h) ((void)(h))
-#define FreeLink(pq,h)    HFree (h)
+#define FreeLink(pq, h) HFree(h)
 #endif /* QUEUE_TABLE */
 
-#define SetLinkSize(pq,s) ((pq)->object_size = (uqm::COUNT)(s))
+#define SetLinkSize(pq, s) ((pq)->object_size = (uqm::COUNT)(s))
 #define GetLinkSize(pq) (uqm::COUNT)((pq)->object_size)
 #define GetHeadLink(pq) ((pq)->head)
-#define SetHeadLink(pq,h) ((pq)->head = (h))
+#define SetHeadLink(pq, h) ((pq)->head = (h))
 #define GetTailLink(pq) ((pq)->tail)
-#define SetTailLink(pq,h) ((pq)->tail = (h))
+#define SetTailLink(pq, h) ((pq)->tail = (h))
 #define _GetPredLink(lpE) ((lpE)->pred)
-#define _SetPredLink(lpE,h) ((lpE)->pred = (h))
+#define _SetPredLink(lpE, h) ((lpE)->pred = (h))
 #define _GetSuccLink(lpE) ((lpE)->succ)
-#define _SetSuccLink(lpE,h) ((lpE)->succ = (h))
+#define _SetSuccLink(lpE, h) ((lpE)->succ = (h))
 
-extern bool InitQueue (QUEUE *pq, uqm::COUNT num_elements, OBJ_SIZE size);
-extern bool UninitQueue (QUEUE *pq);
-extern void ReinitQueue (QUEUE *pq);
-extern void PutQueue (QUEUE *pq, HLINK hLink);
-extern void InsertQueue (QUEUE *pq, HLINK hLink, HLINK hRefLink);
-extern void RemoveQueue (QUEUE *pq, HLINK hLink);
-extern uqm::COUNT CountLinks (QUEUE *pq);
-void ForAllLinks(QUEUE *pq, void (*callback)(LINK *, void *), void *arg);
+extern bool InitQueue(QUEUE* pq, uqm::COUNT num_elements, OBJ_SIZE size);
+extern bool UninitQueue(QUEUE* pq);
+extern void ReinitQueue(QUEUE* pq);
+extern void PutQueue(QUEUE* pq, HLINK hLink);
+extern void InsertQueue(QUEUE* pq, HLINK hLink, HLINK hRefLink);
+extern void RemoveQueue(QUEUE* pq, HLINK hLink);
+extern uqm::COUNT CountLinks(QUEUE* pq);
+void ForAllLinks(QUEUE* pq, void (*callback)(LINK*, void*), void* arg);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
 #endif /* UQM_DISPLIST_H_ */
-

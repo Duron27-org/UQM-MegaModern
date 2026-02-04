@@ -21,11 +21,10 @@
 extern "C" {
 #endif
 
-RACE_DESC *init_samatra (void);
+RACE_DESC* init_samatra(void);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* LASTBAT_H */
-
+#endif /* LASTBAT_H */

@@ -25,21 +25,24 @@
 #include <stdlib.h>
 
 
-Heap *alarmHeap;
+Heap* alarmHeap;
 
 
-static inline Alarm *
-Alarm_alloc(void) {
-	return (Alarm * )malloc(sizeof (Alarm));
+static inline Alarm*
+Alarm_alloc(void)
+{
+	return (Alarm*)malloc(sizeof(Alarm));
 }
 
 static inline void
-Alarm_free(Alarm *alarm) {
+Alarm_free(Alarm* alarm)
+{
 	free(alarm);
 }
 
 static inline int
-AlarmTime_compare(const AlarmTime t1, const AlarmTime t2) {
+AlarmTime_compare(const AlarmTime t1, const AlarmTime t2)
+{
 	if (t1 < t2)
 		return -1;
 	if (t1 > t2) // David Benjamin: Bug#1163
@@ -48,23 +51,25 @@ AlarmTime_compare(const AlarmTime t1, const AlarmTime t2) {
 }
 
 static int
-Alarm_compare(const Alarm *a1, const Alarm *a2) {
+Alarm_compare(const Alarm* a1, const Alarm* a2)
+{
 	return AlarmTime_compare(a1->time, a2->time);
 }
 
-void
-Alarm_init(void) {
+void Alarm_init(void)
+{
 	assert(alarmHeap == NULL);
-	alarmHeap = Heap_new((HeapValue_Comparator) Alarm_compare,
-			4, 4, 0.8);
+	alarmHeap = Heap_new((HeapValue_Comparator)Alarm_compare,
+						 4, 4, 0.8);
 }
 
-void
-Alarm_uninit(void) {
+void Alarm_uninit(void)
+{
 	assert(alarmHeap != NULL);
 
-	while (Heap_hasMore(alarmHeap)) {
-		Alarm *alarm = (Alarm *) Heap_pop(alarmHeap);
+	while (Heap_hasMore(alarmHeap))
+	{
+		Alarm* alarm = (Alarm*)Heap_pop(alarmHeap);
 		Alarm_free(alarm);
 	}
 	Heap_delete(alarmHeap);
@@ -72,14 +77,16 @@ Alarm_uninit(void) {
 }
 
 static inline AlarmTime
-AlarmTime_nowMs(void) {
+AlarmTime_nowMs(void)
+{
 	return SDL_GetTicks();
 }
 
-Alarm *
+Alarm*
 Alarm_addAbsoluteMs(uint32 ms, AlarmCallback callback,
-		AlarmCallbackArg arg) {
-	Alarm *alarm;
+					AlarmCallbackArg arg)
+{
+	Alarm* alarm;
 
 	assert(alarmHeap != NULL);
 
@@ -88,15 +95,16 @@ Alarm_addAbsoluteMs(uint32 ms, AlarmCallback callback,
 	alarm->callback = callback;
 	alarm->arg = arg;
 
-	Heap_add(alarmHeap, (HeapValue *) alarm);
+	Heap_add(alarmHeap, (HeapValue*)alarm);
 
 	return alarm;
 }
 
-Alarm *
+Alarm*
 Alarm_addRelativeMs(uint32 ms, AlarmCallback callback,
-		AlarmCallbackArg arg) {
-	Alarm *alarm;
+					AlarmCallbackArg arg)
+{
+	Alarm* alarm;
 
 	assert(alarmHeap != NULL);
 
@@ -105,33 +113,32 @@ Alarm_addRelativeMs(uint32 ms, AlarmCallback callback,
 	alarm->callback = callback;
 	alarm->arg = arg;
 
-	Heap_add(alarmHeap, (HeapValue *) alarm);
+	Heap_add(alarmHeap, (HeapValue*)alarm);
 
 	return alarm;
 }
 
-void
-Alarm_remove(Alarm *alarm) {
+void Alarm_remove(Alarm* alarm)
+{
 	assert(alarmHeap != NULL);
-	Heap_remove(alarmHeap, (HeapValue *) alarm);
+	Heap_remove(alarmHeap, (HeapValue*)alarm);
 	Alarm_free(alarm);
 }
 
 // Process at most one alarm, if its time has come.
 // It is safe to call this function again from inside a callback function
 // that it called. It should not be called from multiple threads at once.
-bool
-Alarm_processOne(void)
+bool Alarm_processOne(void)
 {
 	AlarmTime now;
-	Alarm *alarm;
-	
+	Alarm* alarm;
+
 	assert(alarmHeap != NULL);
 	if (!Heap_hasMore(alarmHeap))
 		return false;
-	
+
 	now = AlarmTime_nowMs();
-	alarm = (Alarm *) Heap_first(alarmHeap);
+	alarm = (Alarm*)Heap_first(alarmHeap);
 	if (now < alarm->time)
 		return false;
 
@@ -165,13 +172,13 @@ Alarm_processAll(void) {
 #endif
 
 uint32
-Alarm_timeBeforeNextMs(void) {
-	Alarm *alarm;
+Alarm_timeBeforeNextMs(void)
+{
+	Alarm* alarm;
 
 	if (!Heap_hasMore(alarmHeap))
 		return UINT32_MAX;
-	
-	alarm = (Alarm *) Heap_first(alarmHeap);
+
+	alarm = (Alarm*)Heap_first(alarmHeap);
 	return alarmTimeToMsUint32(alarm->time);
 }
-

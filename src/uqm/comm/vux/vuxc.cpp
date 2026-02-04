@@ -23,439 +23,488 @@
 #include "uqm/lua/luacomm.h"
 
 static LOCDATA vux_desc =
-{
-	VUX_CONVERSATION, /* AlienConv */
-	NULL, /* init_encounter_func */
-	NULL, /* post_encounter_func */
-	NULL, /* uninit_encounter_func */
-	VUX_PMAP_ANIM, /* AlienFrame */
-	VUX_FONT, /* AlienFont */
-	WHITE_COLOR_INIT, /* AlienTextFColor */
-	BLACK_COLOR_INIT, /* AlienTextBColor */
-	{0, 0}, /* AlienTextBaseline */
-	0, /* (SIS_TEXT_WIDTH - 16) >> 1, */ /* AlienTextWidth */
-	ALIGN_CENTER, /* AlienTextAlign */
-	VALIGN_TOP, /* AlienTextValign */
-	VUX_COLOR_MAP, /* AlienColorMap */
-	VUX_MUSIC, /* AlienSong */
 	{
-		VUX_ZEX_PMAP_ANIM, /* AlienAltFrame */
-		NULL_RESOURCE, /* AlienAltColorMap */
-		VUX_ZEX_MUSIC, /* AlienAltSong */
-	},
-	VUX_CONVERSATION_PHRASES, /* PlayerPhrases */
-	19, /* NumAnimations */
-	{ /* AlienAmbientArray (ambient animations) */
+		VUX_CONVERSATION, /* AlienConv */
+		NULL, /* init_encounter_func */
+		NULL, /* post_encounter_func */
+		NULL, /* uninit_encounter_func */
+		VUX_PMAP_ANIM, /* AlienFrame */
+		VUX_FONT, /* AlienFont */
+		WHITE_COLOR_INIT, /* AlienTextFColor */
+		BLACK_COLOR_INIT, /* AlienTextBColor */
+		{0, 0}, /* AlienTextBaseline */
+		0,
+ /* (SIS_TEXT_WIDTH - 16) >> 1, */  /* AlienTextWidth */
+		ALIGN_CENTER, /* AlienTextAlign */
+		VALIGN_TOP, /* AlienTextValign */
+		VUX_COLOR_MAP, /* AlienColorMap */
+		VUX_MUSIC, /* AlienSong */
 		{
-			12, /* StartIndex */
-			3, /* NumFrames */
-			RANDOM_ANIM, /* AnimFlags */
-			ONE_SECOND / 30, ONE_SECOND / 30, /* FrameRate */
-			ONE_SECOND / 30, ONE_SECOND / 30, /* RestartRate */
+								VUX_ZEX_PMAP_ANIM, /* AlienAltFrame */
+			NULL_RESOURCE,	   /* AlienAltColorMap */
+			VUX_ZEX_MUSIC,	   /* AlienAltSong */
+		},
+		VUX_CONVERSATION_PHRASES, /* PlayerPhrases */
+		19, /* NumAnimations */
+		{
+								/* AlienAmbientArray (ambient animations) */
+			{
+				12,			 /* StartIndex */
+				3,			 /* NumFrames */
+				RANDOM_ANIM, /* AnimFlags */
+				ONE_SECOND / 30,
+				ONE_SECOND / 30, /* FrameRate */
+				ONE_SECOND / 30,
+				ONE_SECOND / 30, /* RestartRate */
+				0,				 /* BlockMask */
+			},
+								{
+				15,			 /* StartIndex */
+				5,			 /* NumFrames */
+				RANDOM_ANIM, /* AnimFlags */
+				ONE_SECOND / 30,
+				ONE_SECOND / 30, /* FrameRate */
+				ONE_SECOND / 30,
+				ONE_SECOND / 30, /* RestartRate */
+				0,				 /* BlockMask */
+			},
+								{
+				20,			   /* StartIndex */
+				14,			   /* NumFrames */
+				CIRCULAR_ANIM, /* AnimFlags */
+				ONE_SECOND / 30,
+				0, /* FrameRate */
+				ONE_SECOND / 30,
+				0, /* RestartRate */
+				0, /* BlockMask */
+			},
+								{
+				34,			   /* StartIndex */
+				7,			   /* NumFrames */
+				CIRCULAR_ANIM, /* AnimFlags */
+				ONE_SECOND / 30,
+				ONE_SECOND / 30, /* FrameRate */
+				ONE_SECOND / 30,
+				ONE_SECOND / 30, /* RestartRate */
+				0,				 /* BlockMask */
+			},
+								{
+				41,			 /* StartIndex */
+				6,			 /* NumFrames */
+				RANDOM_ANIM, /* AnimFlags */
+				ONE_SECOND / 30,
+				ONE_SECOND / 30, /* FrameRate */
+				ONE_SECOND / 30,
+				ONE_SECOND / 30, /* RestartRate */
+				0,				 /* BlockMask */
+			},
+								{
+				47,			   /* StartIndex */
+				11,			   /* NumFrames */
+				CIRCULAR_ANIM, /* AnimFlags */
+				ONE_SECOND / 30,
+				ONE_SECOND / 30, /* FrameRate */
+				ONE_SECOND / 30,
+				ONE_SECOND / 30, /* RestartRate */
+				0,				 /* BlockMask */
+			},
+								{
+				58,			 /* StartIndex */
+				3,			 /* NumFrames */
+				RANDOM_ANIM, /* AnimFlags */
+				ONE_SECOND / 30,
+				ONE_SECOND / 30, /* FrameRate */
+				ONE_SECOND / 30,
+				ONE_SECOND / 30, /* RestartRate */
+				0,				 /* BlockMask */
+			},
+								{
+				61,			 /* StartIndex */
+				4,			 /* NumFrames */
+				RANDOM_ANIM, /* AnimFlags */
+				ONE_SECOND / 30,
+				ONE_SECOND / 30, /* FrameRate */
+				ONE_SECOND / 30,
+				ONE_SECOND / 30, /* RestartRate */
+				0,				 /* BlockMask */
+			},
+								{
+				65,			 /* StartIndex */
+				4,			 /* NumFrames */
+				RANDOM_ANIM, /* AnimFlags */
+				ONE_SECOND / 30,
+				ONE_SECOND / 30, /* FrameRate */
+				ONE_SECOND / 30,
+				ONE_SECOND / 30, /* RestartRate */
+				0,				 /* BlockMask */
+			},
+								{
+				69,			 /* StartIndex */
+				2,			 /* NumFrames */
+				RANDOM_ANIM, /* AnimFlags */
+				ONE_SECOND / 30,
+				ONE_SECOND / 30, /* FrameRate */
+				ONE_SECOND / 30,
+				ONE_SECOND / 30, /* RestartRate */
+				0,				 /* BlockMask */
+			},
+								{
+				71,		   /* StartIndex */
+				3,		   /* NumFrames */
+				YOYO_ANIM, /* AnimFlags */
+				ONE_SECOND / 20,
+				0, /* FrameRate */
+				ONE_SECOND,
+				ONE_SECOND * 3, /* RestartRate */
+				0,				/* BlockMask */
+			},
+								{
+				74,		   /* StartIndex */
+				6,		   /* NumFrames */
+				YOYO_ANIM, /* AnimFlags */
+				ONE_SECOND / 15,
+				ONE_SECOND / 15, /* FrameRate */
+				ONE_SECOND / 15,
+				ONE_SECOND / 15, /* RestartRate */
+				0,				 /* BlockMask */
+			},
+								{
+				80,		   /* StartIndex */
+				5,		   /* NumFrames */
+				YOYO_ANIM, /* AnimFlags */
+				ONE_SECOND / 15,
+				ONE_SECOND / 15, /* FrameRate */
+				ONE_SECOND / 15,
+				ONE_SECOND / 15, /* RestartRate */
+				(1 << 14),		 /* BlockMask */
+			},
+								{
+				85,		   /* StartIndex */
+				5,		   /* NumFrames */
+				YOYO_ANIM, /* AnimFlags */
+				ONE_SECOND / 15,
+				ONE_SECOND / 15, /* FrameRate */
+				ONE_SECOND / 15,
+				ONE_SECOND / 15, /* RestartRate */
+				0,				 /* BlockMask */
+			},
+								{
+				90,		   /* StartIndex */
+				5,		   /* NumFrames */
+				YOYO_ANIM, /* AnimFlags */
+				ONE_SECOND / 15,
+				ONE_SECOND / 15, /* FrameRate */
+				ONE_SECOND / 15,
+				ONE_SECOND / 15, /* RestartRate */
+				(1 << 12),		 /* BlockMask */
+			},
+								{
+				95,		   /* StartIndex */
+				4,		   /* NumFrames */
+				YOYO_ANIM, /* AnimFlags */
+				ONE_SECOND / 15,
+				ONE_SECOND / 15, /* FrameRate */
+				ONE_SECOND * 5,
+				ONE_SECOND * 5, /* RestartRate */
+				0,				/* BlockMask */
+			},
+								{
+				99,		   /* StartIndex */
+				4,		   /* NumFrames */
+				YOYO_ANIM, /* AnimFlags */
+				ONE_SECOND / 15,
+				ONE_SECOND / 15, /* FrameRate */
+				ONE_SECOND * 5,
+				ONE_SECOND * 5, /* RestartRate */
+				0,				/* BlockMask */
+			},
+								{
+				103,						   /* StartIndex */
+				16,							   /* NumFrames */
+				CIRCULAR_ANIM | ANIM_DISABLED, /* AnimFlags */
+				ONE_SECOND / 30,
+				ONE_SECOND / 30, /* FrameRate */
+				ONE_SECOND / 30,
+				ONE_SECOND / 30, /* RestartRate */
+				0,				 /* BlockMask */
+			},
+								{
+				119, /* StartIndex */
+				8,	 /* NumFrames */
+				CIRCULAR_ANIM | ONE_SHOT_ANIM
+					| WAIT_TALKING | ANIM_DISABLED, /* AnimFlags */
+				ONE_SECOND / 15,
+				0, /* FrameRate */
+				0,
+				0, /* RestartRate */
+				0, /* BlockMask */
+			},
+								},
+		{
+								/* AlienTransitionDesc */
+			0, /* StartIndex */
+			0, /* NumFrames */
+			0, /* AnimFlags */
+			0,
+								0, /* FrameRate */
+			0,
+								0, /* RestartRate */
 			0, /* BlockMask */
 		},
 		{
-			15, /* StartIndex */
-			5, /* NumFrames */
-			RANDOM_ANIM, /* AnimFlags */
-			ONE_SECOND / 30, ONE_SECOND / 30, /* FrameRate */
-			ONE_SECOND / 30, ONE_SECOND / 30, /* RestartRate */
-			0, /* BlockMask */
-		},
-		{
-			20, /* StartIndex */
-			14, /* NumFrames */
-			CIRCULAR_ANIM, /* AnimFlags */
-			ONE_SECOND / 30, 0, /* FrameRate */
-			ONE_SECOND / 30, 0, /* RestartRate */
-			0, /* BlockMask */
-		},
-		{
-			34, /* StartIndex */
-			7, /* NumFrames */
-			CIRCULAR_ANIM, /* AnimFlags */
-			ONE_SECOND / 30, ONE_SECOND / 30, /* FrameRate */
-			ONE_SECOND / 30, ONE_SECOND / 30, /* RestartRate */
-			0, /* BlockMask */
-		},
-		{
-			41, /* StartIndex */
-			6, /* NumFrames */
-			RANDOM_ANIM, /* AnimFlags */
-			ONE_SECOND / 30, ONE_SECOND / 30, /* FrameRate */
-			ONE_SECOND / 30, ONE_SECOND / 30, /* RestartRate */
-			0, /* BlockMask */
-		},
-		{
-			47, /* StartIndex */
+								/* AlienTalkDesc */
+			1,	/* StartIndex */
 			11, /* NumFrames */
-			CIRCULAR_ANIM, /* AnimFlags */
-			ONE_SECOND / 30, ONE_SECOND / 30, /* FrameRate */
-			ONE_SECOND / 30, ONE_SECOND / 30, /* RestartRate */
+			0,	/* AnimFlags */
+			ONE_SECOND / 15,
+								0, /* FrameRate */
+			ONE_SECOND / 12,
+								0, /* RestartRate */
 			0, /* BlockMask */
 		},
-		{
-			58, /* StartIndex */
-			3, /* NumFrames */
-			RANDOM_ANIM, /* AnimFlags */
-			ONE_SECOND / 30, ONE_SECOND / 30, /* FrameRate */
-			ONE_SECOND / 30, ONE_SECOND / 30, /* RestartRate */
-			0, /* BlockMask */
-		},
-		{
-			61, /* StartIndex */
-			4, /* NumFrames */
-			RANDOM_ANIM, /* AnimFlags */
-			ONE_SECOND / 30, ONE_SECOND / 30, /* FrameRate */
-			ONE_SECOND / 30, ONE_SECOND / 30, /* RestartRate */
-			0, /* BlockMask */
-		},
-		{
-			65, /* StartIndex */
-			4, /* NumFrames */
-			RANDOM_ANIM, /* AnimFlags */
-			ONE_SECOND / 30, ONE_SECOND / 30, /* FrameRate */
-			ONE_SECOND / 30, ONE_SECOND / 30, /* RestartRate */
-			0, /* BlockMask */
-		},
-		{
-			69, /* StartIndex */
-			2, /* NumFrames */
-			RANDOM_ANIM, /* AnimFlags */
-			ONE_SECOND / 30, ONE_SECOND / 30, /* FrameRate */
-			ONE_SECOND / 30, ONE_SECOND / 30, /* RestartRate */
-			0, /* BlockMask */
-		},
-		{
-			71, /* StartIndex */
-			3, /* NumFrames */
-			YOYO_ANIM, /* AnimFlags */
-			ONE_SECOND / 20, 0, /* FrameRate */
-			ONE_SECOND, ONE_SECOND * 3, /* RestartRate */
-			0, /* BlockMask */
-		},
-		{
-			74, /* StartIndex */
-			6, /* NumFrames */
-			YOYO_ANIM, /* AnimFlags */
-			ONE_SECOND / 15, ONE_SECOND / 15, /* FrameRate */
-			ONE_SECOND / 15, ONE_SECOND / 15, /* RestartRate */
-			0, /* BlockMask */
-		},
-		{
-			80, /* StartIndex */
-			5, /* NumFrames */
-			YOYO_ANIM, /* AnimFlags */
-			ONE_SECOND / 15, ONE_SECOND / 15, /* FrameRate */
-			ONE_SECOND / 15, ONE_SECOND / 15, /* RestartRate */
-			(1 << 14), /* BlockMask */
-		},
-		{
-			85, /* StartIndex */
-			5, /* NumFrames */
-			YOYO_ANIM, /* AnimFlags */
-			ONE_SECOND / 15, ONE_SECOND / 15, /* FrameRate */
-			ONE_SECOND / 15, ONE_SECOND / 15, /* RestartRate */
-			0, /* BlockMask */
-		},
-		{
-			90, /* StartIndex */
-			5, /* NumFrames */
-			YOYO_ANIM, /* AnimFlags */
-			ONE_SECOND / 15, ONE_SECOND / 15, /* FrameRate */
-			ONE_SECOND / 15, ONE_SECOND / 15, /* RestartRate */
-			(1 << 12), /* BlockMask */
-		},
-		{
-			95, /* StartIndex */
-			4, /* NumFrames */
-			YOYO_ANIM, /* AnimFlags */
-			ONE_SECOND / 15, ONE_SECOND / 15, /* FrameRate */
-			ONE_SECOND * 5, ONE_SECOND * 5,/* RestartRate */
-			0, /* BlockMask */
-		},
-		{
-			99, /* StartIndex */
-			4, /* NumFrames */
-			YOYO_ANIM, /* AnimFlags */
-			ONE_SECOND / 15, ONE_SECOND / 15, /* FrameRate */
-			ONE_SECOND * 5, ONE_SECOND * 5,/* RestartRate */
-			0, /* BlockMask */
-		},
-		{
-			103, /* StartIndex */
-			16, /* NumFrames */
-			CIRCULAR_ANIM | ANIM_DISABLED, /* AnimFlags */
-			ONE_SECOND / 30, ONE_SECOND / 30, /* FrameRate */
-			ONE_SECOND / 30, ONE_SECOND / 30, /* RestartRate */
-			0, /* BlockMask */
-		},
-		{
-			119, /* StartIndex */
-			8, /* NumFrames */
-			CIRCULAR_ANIM | ONE_SHOT_ANIM
-			| WAIT_TALKING | ANIM_DISABLED, /* AnimFlags */
-			ONE_SECOND / 15, 0, /* FrameRate */
-			0, 0,/* RestartRate */
-			0, /* BlockMask */
-		},
-	},
-	{ /* AlienTransitionDesc */
-		0, /* StartIndex */
-		0, /* NumFrames */
-		0, /* AnimFlags */
-		0, 0, /* FrameRate */
-		0, 0, /* RestartRate */
-		0, /* BlockMask */
-	},
-	{ /* AlienTalkDesc */
-		1, /* StartIndex */
-		11, /* NumFrames */
-		0, /* AnimFlags */
-		ONE_SECOND / 15, 0, /* FrameRate */
-		ONE_SECOND / 12, 0, /* RestartRate */
-		0, /* BlockMask */
-	},
-	NULL, /* AlienNumberSpeech - none */
-	/* Filler for loaded resources */
-	NULL, NULL, NULL,
-	NULL,
-	NULL,
+		NULL, /* AlienNumberSpeech - none */
+		/* Filler for loaded resources */
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
 };
 
 static FILTER_DESC vux_filters =
-{
-	1, /* Number of filters */
-	{ /* Filter array */
+	{
+		1, /* Number of filters */
 		{
-			0, /* Color index */
-			1, /* Opacity index */
-			-1, /* Frame index */
-			DRAW_ALPHA, /* DrawKind*/
-			SWITCH_OFF_ANIMS, /* Flags */
-		},
-	}
+								  /* Filter array */
+			{
+				0,				  /* Color index */
+				1,				  /* Opacity index */
+				-1,				  /* Frame index */
+				DRAW_ALPHA,		  /* DrawKind*/
+				SWITCH_OFF_ANIMS, /* Flags */
+			},
+								  }
 };
 
 static void
-ZexBeingEatenAlive (void)
+ZexBeingEatenAlive(void)
 {
 	if (altResFlags & USE_ALT_FRAME)
-	{	// make sure we're using the correct set of frames
+	{ // make sure we're using the correct set of frames
 		if (IS_HD)
 		{
 			CommData.AlienFrame =
-					SetAbsFrameIndex (CommData.AlienFrame, 126);
-			EnableTalkingAnim (false);
-			SwitchSequences (false);
-			RunOneTimeSequence (18, 0);
+				SetAbsFrameIndex(CommData.AlienFrame, 126);
+			EnableTalkingAnim(false);
+			SwitchSequences(false);
+			RunOneTimeSequence(18, 0);
 		}
 		else
 		{
 			CommData.AlienFrame =
-					SetAbsFrameIndex (CommData.AlienFrame, 119);
+				SetAbsFrameIndex(CommData.AlienFrame, 119);
 
-			XFormColorMap (GetColorMapAddress (
-					SetAbsColorMapIndex (CommData.AlienColorMap, 1)
-						), ONE_SECOND / 4);
+			XFormColorMap(GetColorMapAddress(
+							  SetAbsColorMapIndex(CommData.AlienColorMap, 1)),
+						  ONE_SECOND / 4);
 		}
 	}
 	else
 	{
-		XFormColorMap (GetColorMapAddress (
-				SetAbsColorMapIndex (CommData.AlienColorMap, 1)
-					), ONE_SECOND / 4);
+		XFormColorMap(GetColorMapAddress(
+						  SetAbsColorMapIndex(CommData.AlienColorMap, 1)),
+					  ONE_SECOND / 4);
 
 		if (IS_HD)
-			EngageFilters (&vux_filters);
+			EngageFilters(&vux_filters);
 	}
 }
 
 static void
-CombatIsInevitable (RESPONSE_REF R)
+CombatIsInevitable(RESPONSE_REF R)
 {
 	uqm::BYTE NumVisits;
 
-	setSegue (Segue_hostile);
+	setSegue(Segue_hostile);
 
-	if (PLAYER_SAID (R, ok_take_beast))
+	if (PLAYER_SAID(R, ok_take_beast))
 	{
-		NPCPhrase (FOOL_AIEE0);
-		NPCPhrase (FOOL_AIEE1);
+		NPCPhrase(FOOL_AIEE0);
+		NPCPhrase(FOOL_AIEE1);
 
-		AlienTalkSegue (1);
+		AlienTalkSegue(1);
 
-		ZexBeingEatenAlive ();
+		ZexBeingEatenAlive();
 
-		AlienTalkSegue ((uqm::COUNT)~0);
+		AlienTalkSegue((uqm::COUNT)~0);
 
-		SET_GAME_STATE (VUX_BEAST_ON_SHIP, 0);
-		SET_GAME_STATE (ZEX_IS_DEAD, 1);
-		setSegue (Segue_peace);
+		SET_GAME_STATE(VUX_BEAST_ON_SHIP, 0);
+		SET_GAME_STATE(ZEX_IS_DEAD, 1);
+		setSegue(Segue_peace);
 	}
-	else if (PLAYER_SAID (R, try_any_way))
+	else if (PLAYER_SAID(R, try_any_way))
 	{
-		NPCPhrase (NOPE);
+		NPCPhrase(NOPE);
 
-		SET_GAME_STATE (VUX_STACK_1, 4);
+		SET_GAME_STATE(VUX_STACK_1, 4);
 	}
-	else if (PLAYER_SAID (R, kill_you_squids_1)
-			|| PLAYER_SAID (R, kill_you_squids_2)
-			|| PLAYER_SAID (R, kill_you_squids_3)
-			|| PLAYER_SAID (R, kill_you_squids_4))
+	else if (PLAYER_SAID(R, kill_you_squids_1)
+			 || PLAYER_SAID(R, kill_you_squids_2)
+			 || PLAYER_SAID(R, kill_you_squids_3)
+			 || PLAYER_SAID(R, kill_you_squids_4))
 	{
-		NPCPhrase (WE_FIGHT);
+		NPCPhrase(WE_FIGHT);
 
-		NumVisits = GET_GAME_STATE (VUX_STACK_2) + 1;
+		NumVisits = GET_GAME_STATE(VUX_STACK_2) + 1;
 		if (NumVisits <= 3)
 		{
-			SET_GAME_STATE (VUX_STACK_2, NumVisits);
+			SET_GAME_STATE(VUX_STACK_2, NumVisits);
 		}
 	}
-	else if (PLAYER_SAID (R, cant_we_be_friends_1)
-			|| PLAYER_SAID (R, cant_we_be_friends_2)
-			|| PLAYER_SAID (R, cant_we_be_friends_3)
-			|| PLAYER_SAID (R, cant_we_be_friends_4))
+	else if (PLAYER_SAID(R, cant_we_be_friends_1)
+			 || PLAYER_SAID(R, cant_we_be_friends_2)
+			 || PLAYER_SAID(R, cant_we_be_friends_3)
+			 || PLAYER_SAID(R, cant_we_be_friends_4))
 	{
-		NumVisits = GET_GAME_STATE (VUX_STACK_3);
+		NumVisits = GET_GAME_STATE(VUX_STACK_3);
 		switch (NumVisits++)
 		{
 			case 0:
-				NPCPhrase (NEVER_UGLY_HUMANS_1);
+				NPCPhrase(NEVER_UGLY_HUMANS_1);
 				break;
 			case 1:
-				NPCPhrase (NEVER_UGLY_HUMANS_2);
+				NPCPhrase(NEVER_UGLY_HUMANS_2);
 				break;
 			case 2:
-				NPCPhrase (NEVER_UGLY_HUMANS_3);
+				NPCPhrase(NEVER_UGLY_HUMANS_3);
 				break;
 			case 3:
-				NPCPhrase (NEVER_UGLY_HUMANS_4);
+				NPCPhrase(NEVER_UGLY_HUMANS_4);
 				--NumVisits;
 				break;
 		}
-		SET_GAME_STATE (VUX_STACK_3, NumVisits);
+		SET_GAME_STATE(VUX_STACK_3, NumVisits);
 	}
-	else if (PLAYER_SAID (R, bye_hostile_space))
+	else if (PLAYER_SAID(R, bye_hostile_space))
 	{
-		NumVisits = GET_GAME_STATE (VUX_STACK_4);
+		NumVisits = GET_GAME_STATE(VUX_STACK_4);
 		switch (NumVisits++)
 		{
 			case 0:
-				NPCPhrase (GOODBYE_AND_DIE_HOSTILE_SPACE_1);
+				NPCPhrase(GOODBYE_AND_DIE_HOSTILE_SPACE_1);
 				break;
 			case 1:
-				NPCPhrase (GOODBYE_AND_DIE_HOSTILE_SPACE_2);
+				NPCPhrase(GOODBYE_AND_DIE_HOSTILE_SPACE_2);
 				break;
 			case 2:
-				NPCPhrase (GOODBYE_AND_DIE_HOSTILE_SPACE_3);
+				NPCPhrase(GOODBYE_AND_DIE_HOSTILE_SPACE_3);
 				break;
 			case 3:
-				NPCPhrase (GOODBYE_AND_DIE_HOSTILE_SPACE_4);
+				NPCPhrase(GOODBYE_AND_DIE_HOSTILE_SPACE_4);
 				--NumVisits;
 				break;
 		}
-		SET_GAME_STATE (VUX_STACK_4, NumVisits);
+		SET_GAME_STATE(VUX_STACK_4, NumVisits);
 	}
-	else if (PLAYER_SAID (R, bye_zex))
+	else if (PLAYER_SAID(R, bye_zex))
 	{
-		NPCPhrase (GOODBYE_ZEX);
+		NPCPhrase(GOODBYE_ZEX);
 
-		setSegue (Segue_peace);
+		setSegue(Segue_peace);
 	}
 	else
 	{
-		NumVisits = GET_GAME_STATE (VUX_STACK_1);
+		NumVisits = GET_GAME_STATE(VUX_STACK_1);
 		switch (NumVisits++)
 		{
 			case 4:
-				NPCPhrase (NOT_ACCEPTED_1);
+				NPCPhrase(NOT_ACCEPTED_1);
 				break;
 			case 5:
-				NPCPhrase (NOT_ACCEPTED_2);
+				NPCPhrase(NOT_ACCEPTED_2);
 				break;
 			case 6:
-				NPCPhrase (NOT_ACCEPTED_3);
+				NPCPhrase(NOT_ACCEPTED_3);
 				break;
 			case 7:
-				NPCPhrase (NOT_ACCEPTED_4);
+				NPCPhrase(NOT_ACCEPTED_4);
 				break;
 			case 8:
-				NPCPhrase (NOT_ACCEPTED_5);
+				NPCPhrase(NOT_ACCEPTED_5);
 				break;
 			case 9:
-				NPCPhrase (NOT_ACCEPTED_6);
+				NPCPhrase(NOT_ACCEPTED_6);
 				break;
 			case 10:
-				NPCPhrase (NOT_ACCEPTED_7);
+				NPCPhrase(NOT_ACCEPTED_7);
 				break;
 			case 11:
-				NPCPhrase (NOT_ACCEPTED_8);
+				NPCPhrase(NOT_ACCEPTED_8);
 				break;
 			case 12:
-				NPCPhrase (NOT_ACCEPTED_9);
+				NPCPhrase(NOT_ACCEPTED_9);
 				break;
 			case 13:
-				NPCPhrase (TRUTH);
+				NPCPhrase(TRUTH);
 				break;
 		}
-		SET_GAME_STATE (VUX_STACK_1, NumVisits);
+		SET_GAME_STATE(VUX_STACK_1, NumVisits);
 	}
 }
 
 static void
-Menagerie (RESPONSE_REF R)
+Menagerie(RESPONSE_REF R)
 {
 	uqm::BYTE i, LastStack;
 	RESPONSE_REF pStr[3];
 
-	if (PLAYER_SAID (R, i_have_beast)
-			|| PLAYER_SAID (R, why_trust_1)
-			|| PLAYER_SAID (R, why_trust_2)
-			|| PLAYER_SAID (R, why_trust_3))
+	if (PLAYER_SAID(R, i_have_beast)
+		|| PLAYER_SAID(R, why_trust_1)
+		|| PLAYER_SAID(R, why_trust_2)
+		|| PLAYER_SAID(R, why_trust_3))
 	{
-		if (PLAYER_SAID (R, i_have_beast))
-			NPCPhrase (GIVE_BEAST);
-		else if (PLAYER_SAID (R, why_trust_1))
+		if (PLAYER_SAID(R, i_have_beast))
+			NPCPhrase(GIVE_BEAST);
+		else if (PLAYER_SAID(R, why_trust_1))
 		{
-			NPCPhrase (TRUST_1);
+			NPCPhrase(TRUST_1);
 
-			DISABLE_PHRASE (why_trust_1);
+			DISABLE_PHRASE(why_trust_1);
 		}
-		else if (PLAYER_SAID (R, why_trust_2))
+		else if (PLAYER_SAID(R, why_trust_2))
 		{
-			NPCPhrase (TRUST_2);
+			NPCPhrase(TRUST_2);
 
-			DISABLE_PHRASE (why_trust_2);
+			DISABLE_PHRASE(why_trust_2);
 		}
-		else if (PLAYER_SAID (R, why_trust_3))
+		else if (PLAYER_SAID(R, why_trust_3))
 		{
-			NPCPhrase (TRUST_3);
+			NPCPhrase(TRUST_3);
 
-			DISABLE_PHRASE (why_trust_3);
+			DISABLE_PHRASE(why_trust_3);
 		}
 
-		if (PHRASE_ENABLED (why_trust_1))
-			Response (why_trust_1, Menagerie);
-		else if (PHRASE_ENABLED (why_trust_2))
-			Response (why_trust_2, Menagerie);
-		else if (PHRASE_ENABLED (why_trust_3))
-			Response (why_trust_3, Menagerie);
-		Response (ok_take_beast, CombatIsInevitable);
+		if (PHRASE_ENABLED(why_trust_1))
+			Response(why_trust_1, Menagerie);
+		else if (PHRASE_ENABLED(why_trust_2))
+			Response(why_trust_2, Menagerie);
+		else if (PHRASE_ENABLED(why_trust_3))
+			Response(why_trust_3, Menagerie);
+		Response(ok_take_beast, CombatIsInevitable);
 	}
-	else if (PLAYER_SAID (R, kill_you))
+	else if (PLAYER_SAID(R, kill_you))
 	{
-		NPCPhrase (FIGHT_AGAIN);
+		NPCPhrase(FIGHT_AGAIN);
 
-		setSegue (Segue_hostile);
+		setSegue(Segue_hostile);
 	}
-	else if (PLAYER_SAID (R, regardless))
+	else if (PLAYER_SAID(R, regardless))
 	{
-		NPCPhrase (THEN_FIGHT);
+		NPCPhrase(THEN_FIGHT);
 
-		setSegue (Segue_hostile);
-		SET_GAME_STATE (ZEX_STACK_3, 2);
-		SET_GAME_STATE (ZEX_VISITS, 0);
+		setSegue(Segue_hostile);
+		SET_GAME_STATE(ZEX_STACK_3, 2);
+		SET_GAME_STATE(ZEX_VISITS, 0);
 	}
 	else
 	{
@@ -465,16 +514,16 @@ Menagerie (RESPONSE_REF R)
 		{
 			uqm::BYTE NumVisits;
 
-			NumVisits = GET_GAME_STATE (ZEX_VISITS);
-			if (GET_GAME_STATE (ZEX_STACK_3) >= 2)
+			NumVisits = GET_GAME_STATE(ZEX_VISITS);
+			if (GET_GAME_STATE(ZEX_STACK_3) >= 2)
 			{
 				switch (NumVisits++)
 				{
 					case 0:
-						NPCPhrase (FIGHT_OR_TRADE_1);
+						NPCPhrase(FIGHT_OR_TRADE_1);
 						break;
 					case 1:
-						NPCPhrase (FIGHT_OR_TRADE_2);
+						NPCPhrase(FIGHT_OR_TRADE_2);
 						--NumVisits;
 						break;
 				}
@@ -484,91 +533,91 @@ Menagerie (RESPONSE_REF R)
 				switch (NumVisits++)
 				{
 					case 0:
-						NPCPhrase (ZEX_HELLO_1);
+						NPCPhrase(ZEX_HELLO_1);
 						break;
 					case 1:
-						NPCPhrase (ZEX_HELLO_2);
+						NPCPhrase(ZEX_HELLO_2);
 						break;
 					case 2:
-						NPCPhrase (ZEX_HELLO_3);
+						NPCPhrase(ZEX_HELLO_3);
 						break;
 					case 3:
-						NPCPhrase (ZEX_HELLO_4);
+						NPCPhrase(ZEX_HELLO_4);
 						--NumVisits;
 						break;
 				}
 			}
-			SET_GAME_STATE (ZEX_VISITS, NumVisits);
+			SET_GAME_STATE(ZEX_VISITS, NumVisits);
 		}
-		else if (PLAYER_SAID (R, what_you_do_here))
+		else if (PLAYER_SAID(R, what_you_do_here))
 		{
-			NPCPhrase (MY_MENAGERIE);
+			NPCPhrase(MY_MENAGERIE);
 
-			SET_GAME_STATE (ZEX_STACK_1, 1);
+			SET_GAME_STATE(ZEX_STACK_1, 1);
 		}
-		else if (PLAYER_SAID (R, what_about_menagerie))
+		else if (PLAYER_SAID(R, what_about_menagerie))
 		{
-			NPCPhrase (NEED_NEW_CREATURE);
+			NPCPhrase(NEED_NEW_CREATURE);
 
-			SET_GAME_STATE (ZEX_STACK_1, 2);
+			SET_GAME_STATE(ZEX_STACK_1, 2);
 		}
-		else if (PLAYER_SAID (R, what_about_creature))
+		else if (PLAYER_SAID(R, what_about_creature))
 		{
-			NPCPhrase (ABOUT_CREATURE);
+			NPCPhrase(ABOUT_CREATURE);
 
-			SET_GAME_STATE (KNOW_ZEX_WANTS_MONSTER, 1);
-			SET_GAME_STATE (ZEX_STACK_1, 3);
+			SET_GAME_STATE(KNOW_ZEX_WANTS_MONSTER, 1);
+			SET_GAME_STATE(ZEX_STACK_1, 3);
 
 			R = about_creature_again;
-			DISABLE_PHRASE (what_about_creature);
+			DISABLE_PHRASE(what_about_creature);
 		}
-		else if (PLAYER_SAID (R, about_creature_again))
+		else if (PLAYER_SAID(R, about_creature_again))
 		{
-			NPCPhrase (CREATURE_AGAIN);
+			NPCPhrase(CREATURE_AGAIN);
 
-			DISABLE_PHRASE (about_creature_again);
+			DISABLE_PHRASE(about_creature_again);
 		}
-		else if (PLAYER_SAID (R, why_dont_you_attack))
+		else if (PLAYER_SAID(R, why_dont_you_attack))
 		{
-			NPCPhrase (LIKE_YOU);
+			NPCPhrase(LIKE_YOU);
 
 			LastStack = 1;
-			SET_GAME_STATE (ZEX_STACK_2, 1);
+			SET_GAME_STATE(ZEX_STACK_2, 1);
 		}
-		else if (PLAYER_SAID (R, why_like_me))
+		else if (PLAYER_SAID(R, why_like_me))
 		{
-			NPCPhrase (LIKE_BECAUSE);
+			NPCPhrase(LIKE_BECAUSE);
 
 			LastStack = 1;
-			SET_GAME_STATE (ZEX_STACK_2, 2);
+			SET_GAME_STATE(ZEX_STACK_2, 2);
 		}
-		else if (PLAYER_SAID (R, are_you_a_pervert))
+		else if (PLAYER_SAID(R, are_you_a_pervert))
 		{
-			NPCPhrase (CALL_ME_WHAT_YOU_WISH);
+			NPCPhrase(CALL_ME_WHAT_YOU_WISH);
 
-			SET_GAME_STATE (ZEX_STACK_2, 3);
+			SET_GAME_STATE(ZEX_STACK_2, 3);
 		}
-		else if (PLAYER_SAID (R, take_by_force))
+		else if (PLAYER_SAID(R, take_by_force))
 		{
-			NPCPhrase (PRECURSOR_DEVICE);
+			NPCPhrase(PRECURSOR_DEVICE);
 
 			LastStack = 2;
-			SET_GAME_STATE (ZEX_STACK_3, 1);
+			SET_GAME_STATE(ZEX_STACK_3, 1);
 		}
-		else if (PLAYER_SAID (R, you_lied))
+		else if (PLAYER_SAID(R, you_lied))
 		{
-			NPCPhrase (YUP_LIED);
+			NPCPhrase(YUP_LIED);
 
 			LastStack = 2;
-			SET_GAME_STATE (ZEX_STACK_3, 3);
+			SET_GAME_STATE(ZEX_STACK_3, 3);
 		}
 
-		if (GET_GAME_STATE (KNOW_ZEX_WANTS_MONSTER)
-				&& GET_GAME_STATE (VUX_BEAST_ON_SHIP))
+		if (GET_GAME_STATE(KNOW_ZEX_WANTS_MONSTER)
+			&& GET_GAME_STATE(VUX_BEAST_ON_SHIP))
 			pStr[0] = i_have_beast;
 		else
 		{
-			switch (GET_GAME_STATE (ZEX_STACK_1))
+			switch (GET_GAME_STATE(ZEX_STACK_1))
 			{
 				case 0:
 					pStr[0] = what_you_do_here;
@@ -580,12 +629,12 @@ Menagerie (RESPONSE_REF R)
 					pStr[0] = what_about_creature;
 					break;
 				case 3:
-					if (PHRASE_ENABLED (about_creature_again))
+					if (PHRASE_ENABLED(about_creature_again))
 						pStr[0] = about_creature_again;
 					break;
 			}
 		}
-		switch (GET_GAME_STATE (ZEX_STACK_2))
+		switch (GET_GAME_STATE(ZEX_STACK_2))
 		{
 			case 0:
 				pStr[1] = why_dont_you_attack;
@@ -597,7 +646,7 @@ Menagerie (RESPONSE_REF R)
 				pStr[1] = are_you_a_pervert;
 				break;
 		}
-		switch (GET_GAME_STATE (ZEX_STACK_3))
+		switch (GET_GAME_STATE(ZEX_STACK_3))
 		{
 			case 0:
 				pStr[2] = take_by_force;
@@ -614,255 +663,255 @@ Menagerie (RESPONSE_REF R)
 		}
 
 		if (pStr[LastStack])
-			Response (pStr[LastStack], Menagerie);
+			Response(pStr[LastStack], Menagerie);
 		for (i = 0; i < 3; ++i)
 		{
 			if (i != LastStack && pStr[i])
-				Response (pStr[i], Menagerie);
+				Response(pStr[i], Menagerie);
 		}
-		Response (bye_zex, CombatIsInevitable);
+		Response(bye_zex, CombatIsInevitable);
 	}
 }
 
 static void
-NormalVux (RESPONSE_REF R)
+NormalVux(RESPONSE_REF R)
 {
-	if (PLAYER_SAID (R, why_so_mean))
+	if (PLAYER_SAID(R, why_so_mean))
 	{
-		NPCPhrase (URQUAN_SLAVES);
+		NPCPhrase(URQUAN_SLAVES);
 
-		SET_GAME_STATE (VUX_STACK_1, 1);
+		SET_GAME_STATE(VUX_STACK_1, 1);
 	}
-	else if (PLAYER_SAID (R, deeper_reason))
+	else if (PLAYER_SAID(R, deeper_reason))
 	{
-		NPCPhrase (OLD_INSULT);
+		NPCPhrase(OLD_INSULT);
 
-		SET_GAME_STATE (VUX_STACK_1, 2);
+		SET_GAME_STATE(VUX_STACK_1, 2);
 	}
-	else if (PLAYER_SAID (R, if_we_apologize))
+	else if (PLAYER_SAID(R, if_we_apologize))
 	{
-		NPCPhrase (PROBABLY_NOT);
+		NPCPhrase(PROBABLY_NOT);
 
-		SET_GAME_STATE (VUX_STACK_1, 3);
+		SET_GAME_STATE(VUX_STACK_1, 3);
 	}
-	else if (PLAYER_SAID (R, whats_up_hostile))
+	else if (PLAYER_SAID(R, whats_up_hostile))
 	{
 		uqm::BYTE NumVisits;
 
-		NumVisits = GET_GAME_STATE (VUX_INFO);
+		NumVisits = GET_GAME_STATE(VUX_INFO);
 		switch (NumVisits++)
 		{
 			case 0:
-				NPCPhrase (GENERAL_INFO_HOSTILE_1);
+				NPCPhrase(GENERAL_INFO_HOSTILE_1);
 				break;
 			case 1:
-				NPCPhrase (GENERAL_INFO_HOSTILE_2);
+				NPCPhrase(GENERAL_INFO_HOSTILE_2);
 				break;
 			case 2:
-				NPCPhrase (GENERAL_INFO_HOSTILE_3);
+				NPCPhrase(GENERAL_INFO_HOSTILE_3);
 				break;
 			case 3:
-				NPCPhrase (GENERAL_INFO_HOSTILE_4);
+				NPCPhrase(GENERAL_INFO_HOSTILE_4);
 				--NumVisits;
 				break;
 		}
-		SET_GAME_STATE (VUX_INFO, NumVisits);
+		SET_GAME_STATE(VUX_INFO, NumVisits);
 
-		DISABLE_PHRASE (whats_up_hostile);
+		DISABLE_PHRASE(whats_up_hostile);
 	}
 
-	switch (GET_GAME_STATE (VUX_STACK_1))
+	switch (GET_GAME_STATE(VUX_STACK_1))
 	{
 		case 0:
-			Response (why_so_mean, NormalVux);
+			Response(why_so_mean, NormalVux);
 			break;
 		case 1:
-			Response (deeper_reason, NormalVux);
+			Response(deeper_reason, NormalVux);
 			break;
 		case 2:
-			Response (if_we_apologize, NormalVux);
+			Response(if_we_apologize, NormalVux);
 			break;
 		case 3:
-			Response (try_any_way, CombatIsInevitable);
+			Response(try_any_way, CombatIsInevitable);
 			break;
 		case 4:
-			Response (apology_1, CombatIsInevitable);
+			Response(apology_1, CombatIsInevitable);
 			break;
 		case 5:
-			Response (apology_2, CombatIsInevitable);
+			Response(apology_2, CombatIsInevitable);
 			break;
 		case 6:
-			Response (apology_3, CombatIsInevitable);
+			Response(apology_3, CombatIsInevitable);
 			break;
 		case 7:
-			Response (apology_4, CombatIsInevitable);
+			Response(apology_4, CombatIsInevitable);
 			break;
 		case 8:
-			Response (apology_5, CombatIsInevitable);
+			Response(apology_5, CombatIsInevitable);
 			break;
 		case 9:
-			Response (apology_6, CombatIsInevitable);
+			Response(apology_6, CombatIsInevitable);
 			break;
 		case 10:
-			Response (apology_7, CombatIsInevitable);
+			Response(apology_7, CombatIsInevitable);
 			break;
 		case 11:
-			Response (apology_8, CombatIsInevitable);
+			Response(apology_8, CombatIsInevitable);
 			break;
 		case 12:
-			Response (apology_9, CombatIsInevitable);
+			Response(apology_9, CombatIsInevitable);
 			break;
 		case 13:
-			Response (apology_10, CombatIsInevitable);
+			Response(apology_10, CombatIsInevitable);
 			break;
 	}
 
-	switch (GET_GAME_STATE (VUX_STACK_2))
+	switch (GET_GAME_STATE(VUX_STACK_2))
 	{
 		case 0:
-			Response (kill_you_squids_1, CombatIsInevitable);
+			Response(kill_you_squids_1, CombatIsInevitable);
 			break;
 		case 1:
-			Response (kill_you_squids_2, CombatIsInevitable);
+			Response(kill_you_squids_2, CombatIsInevitable);
 			break;
 		case 2:
-			Response (kill_you_squids_3, CombatIsInevitable);
+			Response(kill_you_squids_3, CombatIsInevitable);
 			break;
 		case 3:
-			Response (kill_you_squids_4, CombatIsInevitable);
+			Response(kill_you_squids_4, CombatIsInevitable);
 			break;
 	}
 
-	if (PHRASE_ENABLED (whats_up_hostile))
+	if (PHRASE_ENABLED(whats_up_hostile))
 	{
-		Response (whats_up_hostile, NormalVux);
+		Response(whats_up_hostile, NormalVux);
 	}
 
-	if (GET_GAME_STATE (VUX_STACK_1) > 13)
+	if (GET_GAME_STATE(VUX_STACK_1) > 13)
 	{
-		switch (GET_GAME_STATE (VUX_STACK_3))
+		switch (GET_GAME_STATE(VUX_STACK_3))
 		{
 			case 0:
-				Response (cant_we_be_friends_1, CombatIsInevitable);
+				Response(cant_we_be_friends_1, CombatIsInevitable);
 				break;
 			case 1:
-				Response (cant_we_be_friends_2, CombatIsInevitable);
+				Response(cant_we_be_friends_2, CombatIsInevitable);
 				break;
 			case 2:
-				Response (cant_we_be_friends_3, CombatIsInevitable);
+				Response(cant_we_be_friends_3, CombatIsInevitable);
 				break;
 			case 3:
-				Response (cant_we_be_friends_4, CombatIsInevitable);
+				Response(cant_we_be_friends_4, CombatIsInevitable);
 				break;
 		}
 	}
 
-	Response (bye_hostile_space, CombatIsInevitable);
+	Response(bye_hostile_space, CombatIsInevitable);
 }
 
 static void
-Intro (void)
+Intro(void)
 {
 	if (altResFlags & USE_ALT_FRAME)
 		CommData.AlienAmbientArray[17].AnimFlags &= ~ANIM_DISABLED;
 
-	if (lowByte (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
+	if (lowByte(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE)
 	{
-		NPCPhrase (OUT_TAKES);
+		NPCPhrase(OUT_TAKES);
 
-		setSegue (Segue_peace);
+		setSegue(Segue_peace);
 		return;
 	}
 
-	if (GET_GAME_STATE (GLOBAL_FLAGS_AND_DATA) & (1 << 6))
+	if (GET_GAME_STATE(GLOBAL_FLAGS_AND_DATA) & (1 << 6))
 	{
-		Menagerie ((RESPONSE_REF)0);
+		Menagerie((RESPONSE_REF)0);
 	}
 	else
 	{
 		uqm::BYTE NumVisits;
 
-		if (GET_GAME_STATE (GLOBAL_FLAGS_AND_DATA) & (1 << 7))
+		if (GET_GAME_STATE(GLOBAL_FLAGS_AND_DATA) & (1 << 7))
 		{
-			NumVisits = GET_GAME_STATE (VUX_HOME_VISITS);
+			NumVisits = GET_GAME_STATE(VUX_HOME_VISITS);
 			switch (NumVisits++)
 			{
 				case 0:
-					NPCPhrase (HOMEWORLD_HELLO_1);
+					NPCPhrase(HOMEWORLD_HELLO_1);
 					break;
 				case 1:
-					NPCPhrase (HOMEWORLD_HELLO_2);
+					NPCPhrase(HOMEWORLD_HELLO_2);
 					break;
 				case 2:
-					NPCPhrase (HOMEWORLD_HELLO_3);
+					NPCPhrase(HOMEWORLD_HELLO_3);
 					break;
 				case 3:
-					NPCPhrase (HOMEWORLD_HELLO_4);
+					NPCPhrase(HOMEWORLD_HELLO_4);
 					--NumVisits;
 					break;
 			}
-			SET_GAME_STATE (VUX_HOME_VISITS, NumVisits);
+			SET_GAME_STATE(VUX_HOME_VISITS, NumVisits);
 
-			SetHomeworldKnown (VUX_HOME);
+			SetHomeworldKnown(VUX_HOME);
 		}
 		else
 		{
-			NumVisits = GET_GAME_STATE (VUX_VISITS);
+			NumVisits = GET_GAME_STATE(VUX_VISITS);
 			switch (NumVisits++)
 			{
 				case 0:
-					NPCPhrase (SPACE_HELLO_1);
+					NPCPhrase(SPACE_HELLO_1);
 					break;
 				case 1:
-					NPCPhrase (SPACE_HELLO_2);
+					NPCPhrase(SPACE_HELLO_2);
 					break;
 				case 2:
-					NPCPhrase (SPACE_HELLO_3);
+					NPCPhrase(SPACE_HELLO_3);
 					break;
 				case 3:
-					NPCPhrase (SPACE_HELLO_4);
+					NPCPhrase(SPACE_HELLO_4);
 					--NumVisits;
 					break;
 			}
-			SET_GAME_STATE (VUX_VISITS, NumVisits);
+			SET_GAME_STATE(VUX_VISITS, NumVisits);
 		}
 
-		NormalVux ((RESPONSE_REF)0);
+		NormalVux((RESPONSE_REF)0);
 	}
 }
 
 static uqm::COUNT
-uninit_vux (void)
+uninit_vux(void)
 {
-	luaUqm_comm_uninit ();
+	luaUqm_comm_uninit();
 	return (0);
 }
 
 static void
-post_vux_enc (void)
+post_vux_enc(void)
 {
 	// nothing defined so far
 }
 
 LOCDATA*
-init_vux_comm (void)
+init_vux_comm(void)
 {
- 	LOCDATA *retval;
-	
+	LOCDATA* retval;
+
 	vux_desc.init_encounter_func = Intro;
 	vux_desc.post_encounter_func = post_vux_enc;
 	vux_desc.uninit_encounter_func = uninit_vux;
 
-	luaUqm_comm_init (NULL, NULL_RESOURCE);
+	luaUqm_comm_init(NULL, NULL_RESOURCE);
 
 	vux_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH >> 1)
-			+ (SIS_TEXT_WIDTH >> 2) - SAFE_NUM_SCL (4);
+								 + (SIS_TEXT_WIDTH >> 2) - SAFE_NUM_SCL(4);
 	vux_desc.AlienTextBaseline.y = 0;
-	vux_desc.AlienTextWidth = ((SIS_TEXT_WIDTH - RES_SCALE (16)) >> 1)
-			+ SAFE_X;
+	vux_desc.AlienTextWidth = ((SIS_TEXT_WIDTH - RES_SCALE(16)) >> 1)
+							+ SAFE_X;
 
 	// use alternate "ZEX" track and frame if available
-	if (GET_GAME_STATE (GLOBAL_FLAGS_AND_DATA) & (1 << 6))
+	if (GET_GAME_STATE(GLOBAL_FLAGS_AND_DATA) & (1 << 6))
 	{
 		altResFlags |= USE_ALT_SONG;
 
@@ -870,14 +919,14 @@ init_vux_comm (void)
 			altResFlags |= USE_ALT_FRAME;
 	}
 
-	if ((GET_GAME_STATE (GLOBAL_FLAGS_AND_DATA) & (1 << 6))
-			|| lowByte (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
+	if ((GET_GAME_STATE(GLOBAL_FLAGS_AND_DATA) & (1 << 6))
+		|| lowByte(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE)
 	{
-		setSegue (Segue_peace);
+		setSegue(Segue_peace);
 	}
 	else
 	{
-		setSegue (Segue_hostile);
+		setSegue(Segue_hostile);
 	}
 	retval = &vux_desc;
 

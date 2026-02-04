@@ -21,11 +21,10 @@
 extern "C" {
 #endif
 
-RACE_DESC *init_vux (void);
+RACE_DESC* init_vux(void);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* VUX_H */
-
+#endif /* VUX_H */

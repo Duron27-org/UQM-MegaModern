@@ -24,9 +24,9 @@
 #include "config.h"
 
 #ifdef _MSC_VER
-#	if (_MSC_VER >= 1800)
-#		include <stdbool.h>
-#	endif
+#if (_MSC_VER >= 1800)
+#include <stdbool.h>
+#endif
 #endif
 
 // ISO C99 compatible boolean types. The ISO C99 standard defines:
@@ -46,25 +46,23 @@
 #undef true
 #ifndef HAVE__BOOL
 typedef unsigned char _Bool;
-#endif  /* HAVE_BOOL */
+#endif /* HAVE_BOOL */
 #define bool _Bool
 #define true 1
 #define false 0
 #define __bool_true_false_are_defined
-#endif  /* __bool_true_false_are_defined */
+#endif /* __bool_true_false_are_defined */
 
 typedef bool uio_bool;
 
-typedef unsigned char  uio_uint8;
-typedef   signed char  uio_sint8;
+typedef unsigned char uio_uint8;
+typedef signed char uio_sint8;
 typedef unsigned short uio_uint16;
-typedef   signed short uio_sint16;
-typedef unsigned int   uio_uint32;
-typedef   signed int   uio_sint32;
+typedef signed short uio_sint16;
+typedef unsigned int uio_uint32;
+typedef signed int uio_sint32;
 
-typedef unsigned long  uio_uintptr;
-		// Needs to be adapted for 64 bits systems
+typedef unsigned long uio_uintptr;
+// Needs to be adapted for 64 bits systems
 
-#endif  /* _uio_TYPES_H */
-
-
+#endif /* _uio_TYPES_H */

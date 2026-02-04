@@ -34,17 +34,17 @@ extern "C" {
 #endif
 
 struct
-luaUqm_custom_Function {
-	const char *name;
+	luaUqm_custom_Function
+{
+	const char* name;
 	int (*fun)(int);
 };
 
-int luaUqm_custom_init(lua_State *luaState,
-		const luaUqm_custom_Function *funs);
+int luaUqm_custom_init(lua_State* luaState,
+					   const luaUqm_custom_Function* funs);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* CUSTOMFUNCS_H */
-
+#endif /* CUSTOMFUNCS_H */

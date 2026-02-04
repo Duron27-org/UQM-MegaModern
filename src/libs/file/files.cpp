@@ -29,25 +29,23 @@
 #include "libs/memlib.h"
 #include "libs/log.h"
 
-static int copyError(uio_Handle *srcHandle, uio_Handle *dstHandle,
-		uio_DirHandle *unlinkHandle, const char *unlinkPath, uint8 *buf);
+static int copyError(uio_Handle* srcHandle, uio_Handle* dstHandle,
+					 uio_DirHandle* unlinkHandle, const char* unlinkPath, uint8* buf);
 
-bool
-fileExists (const char *name)
+bool fileExists(const char* name)
 {
-	return access (name, F_OK) == 0;
+	return access(name, F_OK) == 0;
 }
 
-bool
-fileExists2(uio_DirHandle *dir, const char *fileName)
+bool fileExists2(uio_DirHandle* dir, const char* fileName)
 {
-	uio_Stream *stream;
+	uio_Stream* stream;
 
-	stream = uio_fopen (dir, fileName, "rb");
+	stream = uio_fopen(dir, fileName, "rb");
 	if (stream == NULL)
 		return 0;
 
-	uio_fclose (stream);
+	uio_fclose(stream);
 	return 1;
 }
 
@@ -62,69 +60,70 @@ fileExists2(uio_DirHandle *dir, const char *fileName)
  * If an error occurs during copying, an attempt will be made to
  * remove the copy.
  */
-int
-copyFile (uio_DirHandle *srcDir, const char *srcName,
-		uio_DirHandle *dstDir, const char *newName)
+int copyFile(uio_DirHandle* srcDir, const char* srcName,
+			 uio_DirHandle* dstDir, const char* newName)
 {
 	uio_Handle *src, *dst;
 	struct stat sb;
 #define BUFSIZE 65536
 	uint8 *buf, *bufPtr;
 	ssize_t numInBuf, numWritten;
-	
-	src = uio_open (srcDir, srcName, O_RDONLY
+
+	src = uio_open(srcDir, srcName, O_RDONLY
 #ifdef WIN32
-			| O_BINARY
+										| O_BINARY
 #endif
-			, 0);
+				   ,
+				   0);
 	if (src == NULL)
 		return -1;
-	
-	if (uio_fstat (src, &sb) == -1)
-		return copyError (src, NULL, NULL, NULL, NULL);
-	
-	dst = uio_open (dstDir, newName, O_WRONLY | O_CREAT | O_EXCL
+
+	if (uio_fstat(src, &sb) == -1)
+		return copyError(src, NULL, NULL, NULL, NULL);
+
+	dst = uio_open(dstDir, newName, O_WRONLY | O_CREAT | O_EXCL
 #ifdef WIN32
-			| O_BINARY
+										| O_BINARY
 #endif
-			, sb.st_mode & (S_IRWXU | S_IRWXG | S_IRWXO));
+				   ,
+				   sb.st_mode & (S_IRWXU | S_IRWXG | S_IRWXO));
 	if (dst == NULL)
-		return copyError (src, NULL, NULL, NULL, NULL);
-	
+		return copyError(src, NULL, NULL, NULL, NULL);
+
 	buf = (uint8*)HMalloc(BUFSIZE);
-			// This was originally a statically allocated buffer,
-			// but as this function might be run from a thread with
-			// a small stack, this is better.
+	// This was originally a statically allocated buffer,
+	// but as this function might be run from a thread with
+	// a small stack, this is better.
 	while (1)
 	{
-		numInBuf = uio_read (src, buf, BUFSIZE);
+		numInBuf = uio_read(src, buf, BUFSIZE);
 		if (numInBuf == -1)
 		{
 			if (errno == EINTR)
 				continue;
-			return copyError (src, dst, dstDir, newName, buf);
+			return copyError(src, dst, dstDir, newName, buf);
 		}
 		if (numInBuf == 0)
 			break;
-		
+
 		bufPtr = buf;
 		do
 		{
-			numWritten = uio_write (dst, bufPtr, numInBuf);
+			numWritten = uio_write(dst, bufPtr, numInBuf);
 			if (numWritten == -1)
 			{
 				if (errno == EINTR)
 					continue;
-				return copyError (src, dst, dstDir, newName, buf);
+				return copyError(src, dst, dstDir, newName, buf);
 			}
 			numInBuf -= numWritten;
 			bufPtr += numWritten;
 		} while (numInBuf > 0);
 	}
-	
-	HFree (buf);
-	uio_close (src);
-	uio_close (dst);
+
+	HFree(buf);
+	uio_close(src);
+	uio_close(dst);
 	errno = 0;
 	return 0;
 }
@@ -138,28 +137,27 @@ copyFile (uio_DirHandle *srcDir, const char *srcName,
  * errno is what was before the call.
  */
 static int
-copyError(uio_Handle *srcHandle, uio_Handle *dstHandle,
-		uio_DirHandle *unlinkHandle, const char *unlinkPath, uint8 *buf)
+copyError(uio_Handle* srcHandle, uio_Handle* dstHandle,
+		  uio_DirHandle* unlinkHandle, const char* unlinkPath, uint8* buf)
 {
 	int savedErrno;
 
 	savedErrno = errno;
 
-	log_add (log_Debug, "Error while copying: %s", strerror (errno));
+	log_add(log_Debug, "Error while copying: %s", strerror(errno));
 
 	if (srcHandle != NULL)
-		uio_close (srcHandle);
-	
+		uio_close(srcHandle);
+
 	if (dstHandle != NULL)
-		uio_close (dstHandle);
-	
+		uio_close(dstHandle);
+
 	if (unlinkPath != NULL)
-		uio_unlink (unlinkHandle, unlinkPath);
-	
+		uio_unlink(unlinkHandle, unlinkPath);
+
 	if (buf != NULL)
 		HFree(buf);
-	
+
 	errno = savedErrno;
 	return -1;
 }
-

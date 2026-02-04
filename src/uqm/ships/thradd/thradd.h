@@ -21,11 +21,10 @@
 extern "C" {
 #endif
 
-RACE_DESC *init_thraddash (void);
+RACE_DESC* init_thraddash(void);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* THRADD_H */
-
+#endif /* THRADD_H */

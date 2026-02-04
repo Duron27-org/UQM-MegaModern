@@ -20,10 +20,10 @@
 #include "libs/compiler.h"
 
 #include <stdio.h>
- 
+
 // If a function is assigned to this, it will be called from the
 // Starcon2Main thread, in the main game loop.
-extern void (* volatile debugHook) (void);
+extern void (*volatile debugHook)(void);
 
 // Prevents repeated debug key presses for certain functions
 extern bool DebugKeyPressed;
@@ -31,10 +31,10 @@ extern bool DebugKeyPressed;
 // Move the Flagship to the destination of the autopilot.
 // Should only be called from HS/QS.
 // It can be called from debugHook directly after entering HS/QS though.
-void doInstantMove (void);
+void doInstantMove(void);
 
 // Find a player ship. Setting playerNr to non-0 is only meaningful in battle.
-STARSHIP* findPlayerShip (uqm::SIZE playerNr);
+STARSHIP* findPlayerShip(uqm::SIZE playerNr);
 
 // Resets the energy of the first player (the bottom one) to its maximum.
 void resetEnergyBattle(void);
@@ -49,158 +49,160 @@ extern bool disableInteractivity;
 
 // Called on the main() thread when the debug key (symbol 'Debug' in the
 // keys.cfg) is pressed
-void debugKeyPressed (void);
-void debugKey2Pressed (void);
-void debugKey3Pressed (void);
-void debugKey4Pressed (void);
+void debugKeyPressed(void);
+void debugKey2Pressed(void);
+void debugKey3Pressed(void);
+void debugKey4Pressed(void);
 // Called on the Starcon2Main() thread when the debug key (symbol 'Debug'
 // in the keys.cfg) is pressed.
-void debugKeyPressedSynchronous (void);
-void debugKey2PressedSynchronous (void);
-void debugKey3PressedSynchronous (void);
-void debugKey4PressedSynchronous (void);
+void debugKeyPressedSynchronous(void);
+void debugKey2PressedSynchronous(void);
+void debugKey3PressedSynchronous(void);
+void debugKey4PressedSynchronous(void);
 
 // Forward time to the next event. If skipHEE is set, the event named
 // HYPERSPACE_ENCOUNTER_EVENT, which normally occurs every game day,
 // is skipped. Must be called on the Starcon2Main thread.
-void forwardToNextEvent (bool skipHEE);
+void forwardToNextEvent(bool skipHEE);
 // Generate a list of all events in the event queue.
 // Must be called on the Starcon2Main thread.
-void dumpEvents (FILE *out);
+void dumpEvents(FILE* out);
 // Describe one event.
-void dumpEvent (FILE *out, const EVENT *eventPtr);
+void dumpEvent(FILE* out, const EVENT* eventPtr);
 // Get the name of one event.
-const char *eventName (uqm::BYTE func_index);
+const char* eventName(uqm::BYTE func_index);
 // Get the name of one race.
-const char *raceName (uqm::BYTE func_index);
+const char* raceName(uqm::BYTE func_index);
 
 // Give the flagship a decent equipment for debugging.
-void equipShip (void);
+void equipShip(void);
 // Give the player all devices.
-void giveDevices (void);
+void giveDevices(void);
 
 // Remove all escort ships.
-void clearEscorts (void);
+void clearEscorts(void);
 
 // Show all active spheres of influence.
-void showSpheres (bool Animated);
+void showSpheres(bool Animated);
 
 // Make the ships of all races available for building at the shipyard.
-void activateAllShips (void);
+void activateAllShips(void);
 
 // Call a function for all stars.
-void forAllStars (void (*callback) (STAR_DESC *, void *), void *arg);
+void forAllStars(void (*callback)(STAR_DESC*, void*), void* arg);
 // Call a function for all planets in a star system.
-void forAllPlanets (STAR_DESC *star, SOLARSYS_STATE *system,
-		void (*callback) (STAR_DESC *, SOLARSYS_STATE *, PLANET_DESC *,
-		void *), void *arg);
+void forAllPlanets(STAR_DESC* star, SOLARSYS_STATE* system,
+				   void (*callback)(STAR_DESC*, SOLARSYS_STATE*, PLANET_DESC*,
+									void*),
+				   void* arg);
 // Call a function for all moons of a planet.
-void forAllMoons (STAR_DESC *star, SOLARSYS_STATE *system, PLANET_DESC *planet,
-		void (*callback) (STAR_DESC *, SOLARSYS_STATE *, PLANET_DESC *,
-		PLANET_DESC *, void *), void *arg);
+void forAllMoons(STAR_DESC* star, SOLARSYS_STATE* system, PLANET_DESC* planet,
+				 void (*callback)(STAR_DESC*, SOLARSYS_STATE*, PLANET_DESC*,
+								  PLANET_DESC*, void*),
+				 void* arg);
 
 // Argument to UniverseRecurse()
 typedef struct
 {
-	void (*systemFuncPre) (const STAR_DESC *star,
-			const SOLARSYS_STATE *system, void *arg);
-			// Called for each system prior to recursing to its planets.
-	void (*systemFuncPost) (const STAR_DESC *star,
-			const SOLARSYS_STATE *system, void *arg);
-			// Called for each system after recursing to its planets.
-	void (*planetFuncPre) (const PLANET_DESC *planet, void *arg);
-			// Called for each planet prior to recursing to its moons.
-	void (*planetFuncPost) (const PLANET_DESC *planet, void *arg);
-			// Called for each planet after recursing to its moons.
-	void (*moonFunc) (const PLANET_DESC *moon, void *arg);
-			// Called for each moon.
-	void *arg;
-			// User data.
+	void (*systemFuncPre)(const STAR_DESC* star,
+						  const SOLARSYS_STATE* system, void* arg);
+	// Called for each system prior to recursing to its planets.
+	void (*systemFuncPost)(const STAR_DESC* star,
+						   const SOLARSYS_STATE* system, void* arg);
+	// Called for each system after recursing to its planets.
+	void (*planetFuncPre)(const PLANET_DESC* planet, void* arg);
+	// Called for each planet prior to recursing to its moons.
+	void (*planetFuncPost)(const PLANET_DESC* planet, void* arg);
+	// Called for each planet after recursing to its moons.
+	void (*moonFunc)(const PLANET_DESC* moon, void* arg);
+	// Called for each moon.
+	void* arg;
+	// User data.
 } UniverseRecurseArg;
 // Recurse through all systems, planets, and moons in the universe.
 // Must be called on the Starcon2Main thread.
-void UniverseRecurse (UniverseRecurseArg *universeRecurseArg);
+void UniverseRecurse(UniverseRecurseArg* universeRecurseArg);
 
 // Describe the entire universe. Must be called on the Starcon2Main thread.
-void dumpUniverse (FILE *out);
+void dumpUniverse(FILE* out);
 // Describe the entire universe, output to a file "./PlanetInfo".
 // Must be called on the Starcon2Main thread.
-void dumpUniverseToFile (void);
+void dumpUniverseToFile(void);
 // Describe one star system.
-void dumpSystem (FILE *out, const STAR_DESC *star,
-		const SOLARSYS_STATE *system);
+void dumpSystem(FILE* out, const STAR_DESC* star,
+				const SOLARSYS_STATE* system);
 // Get a star color as a string.
-const char *bodyColorString (uqm::BYTE col);
+const char* bodyColorString(uqm::BYTE col);
 // Get a star type as a string.
-const char *starTypeString (uqm::BYTE type);
+const char* starTypeString(uqm::BYTE type);
 // Get a string describing special presence in the star system.
-const char *starPresenceString (uqm::BYTE index);
+const char* starPresenceString(uqm::BYTE index);
 // Get a list describing all planets in a star.
-void dumpPlanets (FILE *out, const STAR_DESC *star);
+void dumpPlanets(FILE* out, const STAR_DESC* star);
 // Describe one planet.
-void dumpPlanet(FILE *out, const PLANET_DESC *planet);
+void dumpPlanet(FILE* out, const PLANET_DESC* planet);
 // Describe one moon.
-void dumpMoon (FILE *out, const PLANET_DESC *moon);
+void dumpMoon(FILE* out, const PLANET_DESC* moon);
 // Calculate the total value of all minerals on a world.
-uqm::COUNT calculateMineralValue (const SOLARSYS_STATE *system,
-		const PLANET_DESC *world);
+uqm::COUNT calculateMineralValue(const SOLARSYS_STATE* system,
+								 const PLANET_DESC* world);
 // Determine how much of each mineral type is present on a world
-void generateMineralIndex(const SOLARSYS_STATE *system,
-		const PLANET_DESC *world, uqm::COUNT minerals[]);
+void generateMineralIndex(const SOLARSYS_STATE* system,
+						  const PLANET_DESC* world, uqm::COUNT minerals[]);
 // Calculate the total value of all bio on a world.
-uqm::COUNT calculateBioValue (const SOLARSYS_STATE *system,
-		const PLANET_DESC *world);
+uqm::COUNT calculateBioValue(const SOLARSYS_STATE* system,
+							 const PLANET_DESC* world);
 // Determine how much of each mineral type is present on a world
-void generateBioIndex(const SOLARSYS_STATE *system,
-		const PLANET_DESC *world, uqm::COUNT bio[]);
+void generateBioIndex(const SOLARSYS_STATE* system,
+					  const PLANET_DESC* world, uqm::COUNT bio[]);
 
 // Tally the resources for each star system.
 // Must be called on the Starcon2Main thread.
-void tallyResources (FILE *out);
+void tallyResources(FILE* out);
 // Tally the resources for each star system, output to a file
 // "./ResourceTally". Must be called on the Starcon2Main thread.
-void tallyResourcesToFile (void);
+void tallyResourcesToFile(void);
 
 
 // Call a function for all planet types.
-void forAllPlanetTypes (void (*callBack) (int, const PlanetFrame *,
-		void *), void *arg);
+void forAllPlanetTypes(void (*callBack)(int, const PlanetFrame*,
+										void*),
+					   void* arg);
 // Describe one planet type.
-void dumpPlanetType(FILE *out, int index, const PlanetFrame *planetFrame);
+void dumpPlanetType(FILE* out, int index, const PlanetFrame* planetFrame);
 // Generate a list of all planet types.
-void dumpPlanetTypes(FILE *out);
+void dumpPlanetTypes(FILE* out);
 // Get a string describing a planet type.
-const char *planetTypeString (int typeIndex);
+const char* planetTypeString(int typeIndex);
 // Get a string describing the size of a type of planet.
-const char *worldSizeString (uqm::BYTE size);
+const char* worldSizeString(uqm::BYTE size);
 // Get a string describing a planet type map generation algoritm.
-const char *worldGenAlgoString (uqm::BYTE algo);
+const char* worldGenAlgoString(uqm::BYTE algo);
 // Get a string describing the severity of a tectonics on a type of planet.
-const char *tectonicsString (uqm::BYTE tectonics);
+const char* tectonicsString(uqm::BYTE tectonics);
 // Get a string describing the atmospheric pressure on a type of planet.
-const char *atmosphereString (uqm::BYTE atmosphere);
+const char* atmosphereString(uqm::BYTE atmosphere);
 // Get a string describing the density of a type of planet.
-const char *densityString (uqm::BYTE density);
+const char* densityString(uqm::BYTE density);
 
 // Get a string describing the quality of a deposit.
-const char *depositQualityString (uqm::BYTE quality);
+const char* depositQualityString(uqm::BYTE quality);
 
 // Resets the crew of the first player (the bottom one) to its maximum.
 void resetCrewBattle(void);
 
 // Dump all game strings.
-void dumpStrings(FILE *out);
+void dumpStrings(FILE* out);
 
 
 // Graphically and textually show all the contexts.
 // Must be called on the Starcon2Main thread.
-void debugContexts (void);
+void debugContexts(void);
 
-void fprintfWorld (const PLANET_DESC *world);
+void fprintfWorld(const PLANET_DESC* world);
 
 
 // To add some day:
 // - a function to fast forward the game clock to a specifiable time.
 
-#endif  /* UQM_UQMDEBUG_H_ */
-
+#endif /* UQM_UQMDEBUG_H_ */

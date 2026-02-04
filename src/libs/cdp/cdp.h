@@ -27,21 +27,21 @@
 
 // these will be called by the UQM engine
 // and plugins manager
-bool cdp_Init (void);
-void cdp_Uninit (void);
-cdp_Error cdp_GetError (void);
-cdp_Module* cdp_LoadModule (const char* modname);
-void cdp_FreeModule (cdp_Module* module);
+bool cdp_Init(void);
+void cdp_Uninit(void);
+cdp_Error cdp_GetError(void);
+cdp_Module* cdp_LoadModule(const char* modname);
+void cdp_FreeModule(cdp_Module* module);
 // in the following calls when bMetaString is set
 // function will never return a NULL, instead it will
 // return a valid string -- error meta-string
-const char* cdp_GetModuleContext (cdp_Module* module, bool bMetaString);
-const char* cdp_GetModuleName (cdp_Module* module, bool bMetaString);
-uint32 cdp_GetModuleVersion (cdp_Module* module);
-const char* cdp_GetModuleVersionString (cdp_Module* module, bool bMetaString);
-const char* cdp_GetModuleComment (cdp_Module* module, bool bMetaString);
+const char* cdp_GetModuleContext(cdp_Module* module, bool bMetaString);
+const char* cdp_GetModuleName(cdp_Module* module, bool bMetaString);
+uint32 cdp_GetModuleVersion(cdp_Module* module);
+const char* cdp_GetModuleVersionString(cdp_Module* module, bool bMetaString);
+const char* cdp_GetModuleComment(cdp_Module* module, bool bMetaString);
 
-int cdp_LoadAllModules (void);
-void cdp_FreeAllModules (void);
+int cdp_LoadAllModules(void);
+void cdp_FreeAllModules(void);
 
-#endif  /* LIBS_CDP_CDP_H_ */
+#endif /* LIBS_CDP_CDP_H_ */

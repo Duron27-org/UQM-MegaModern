@@ -25,11 +25,10 @@
 extern "C" {
 #endif
 
-void dataReadyCallback(NetDescriptor *nd);
+void dataReadyCallback(NetDescriptor* nd);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* UQM_SUPERMELEE_NETPLAY_NETRCV_H_ */
-
+#endif /* UQM_SUPERMELEE_NETPLAY_NETRCV_H_ */

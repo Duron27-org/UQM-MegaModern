@@ -26,35 +26,33 @@
 #include "util.h"
 #include "menustat.h"
 
-void
-InitSISContexts (void)
+void InitSISContexts(void)
 {
 	RECT r;
 
-	SetContext (StatusContext);
+	SetContext(StatusContext);
 
-	SetContext (SpaceContext);
-	SetContextFGFrame (Screen);
+	SetContext(SpaceContext);
+	SetContextFGFrame(Screen);
 
 	r.corner.x = SIS_ORG_X;
 	r.corner.y = SIS_ORG_Y;
 	r.extent.width = SIS_SCREEN_WIDTH;
 	r.extent.height = SIS_SCREEN_HEIGHT;
-	SetContextClipRect (&r);
+	SetContextClipRect(&r);
 }
 
-void
-DrawSISFrame (void)
+void DrawSISFrame(void)
 {
 	RECT r;
 
-	SetContext (ScreenContext);
+	SetContext(ScreenContext);
 
-	BatchGraphics ();
+	BatchGraphics();
 
 	if (!IS_HD)
 	{
-		SetContextForeGroundColor (MENU_FOREGROUND_COLOR);
+		SetContextForeGroundColor(MENU_FOREGROUND_COLOR);
 
 		// Top horizontal border behind SIS Title & Message (Small block in
 		// between as well)
@@ -62,83 +60,83 @@ DrawSISFrame (void)
 		r.corner.y = 0;
 		r.extent.width = SIS_ORG_X + SIS_SCREEN_WIDTH + 1;
 		r.extent.height = SIS_ORG_Y - 1;
-		DrawFilledRectangle (&r);
+		DrawFilledRectangle(&r);
 
 		// Left side vertical border
 		r.corner.x = 0;
 		r.corner.y = 0;
 		r.extent.width = SIS_ORG_X - 1;
 		r.extent.height = SIS_ORG_Y + SIS_SCREEN_HEIGHT + 1;
-		DrawFilledRectangle (&r);
+		DrawFilledRectangle(&r);
 
 		// Bottom horizontal border
 		r.corner.x = 0;
 		r.corner.y = r.extent.height;
 		r.extent.width = SIS_ORG_X + SIS_SCREEN_WIDTH + 1;
 		r.extent.height = SCREEN_HEIGHT - SIS_ORG_Y + SIS_SCREEN_HEIGHT;
-		DrawFilledRectangle (&r);
+		DrawFilledRectangle(&r);
 
 		// Right side vertical border and Stat/Menu
 		r.corner.x = SIS_ORG_X + SIS_SCREEN_WIDTH + 1;
 		r.corner.y = 0;
 		r.extent.width = SCREEN_WIDTH - r.corner.x;
 		r.extent.height = SCREEN_HEIGHT;
-		DrawFilledRectangle (&r);
-		
+		DrawFilledRectangle(&r);
+
 		// Light and dark grey edges of the inner space window.
 		r.corner.x = SIS_ORG_X - 1;
 		r.corner.y = SIS_ORG_Y - 1;
 		r.extent.width = SIS_SCREEN_WIDTH + 2;
 		r.extent.height = SIS_SCREEN_HEIGHT + 2;
-		DrawStarConBox (&r, 1,
-				SIS_LEFT_BORDER_COLOR,
-				SIS_BOTTOM_RIGHT_BORDER_COLOR,
-				true, BLACK_COLOR, false, TRANSPARENT);
+		DrawStarConBox(&r, 1,
+					   SIS_LEFT_BORDER_COLOR,
+					   SIS_BOTTOM_RIGHT_BORDER_COLOR,
+					   true, BLACK_COLOR, false, TRANSPARENT);
 
 		// The big Blue box in the upper edge of screen (SIS Message)
 		r.corner.y = 0;
 		r.extent.height = SIS_ORG_Y;
 		r.corner.x = SIS_ORG_X;
 		r.extent.width = SIS_MESSAGE_BOX_WIDTH;
-		DrawStarConBox (&r, 1,
-				SIS_MESSAGE_TOP_LEFT_COLOR,
-				SIS_MESSAGE_BOTTOM_RIGHT_COLOR,
-				true, SIS_MESSAGE_BACKGROUND_COLOR, false, TRANSPARENT);
+		DrawStarConBox(&r, 1,
+					   SIS_MESSAGE_TOP_LEFT_COLOR,
+					   SIS_MESSAGE_BOTTOM_RIGHT_COLOR,
+					   true, SIS_MESSAGE_BACKGROUND_COLOR, false, TRANSPARENT);
 
 		// The smaller blue box (SIS Title).
 		r.extent.width = SIS_TITLE_BOX_WIDTH;
 		r.corner.x = SIS_ORG_X + SIS_SCREEN_WIDTH - SIS_TITLE_BOX_WIDTH;
-		DrawStarConBox (&r, 1,
-				SIS_TITLE_TOP_LEFT_COLOR,
-				SIS_TITLE_BOTTOM_RIGHT_COLOR,
-				true, SIS_TITLE_BACKGROUND_COLOR, false, TRANSPARENT);
+		DrawStarConBox(&r, 1,
+					   SIS_TITLE_TOP_LEFT_COLOR,
+					   SIS_TITLE_BOTTOM_RIGHT_COLOR,
+					   true, SIS_TITLE_BACKGROUND_COLOR, false, TRANSPARENT);
 
 		// Black border between menu area and space window area
-		SetContextForeGroundColor (BLACK_COLOR);
+		SetContextForeGroundColor(BLACK_COLOR);
 		r.corner.x = SAFE_X + SPACE_WIDTH - 1;
 		r.corner.y = 0;
 		r.extent.width = 1;
 		r.extent.height = SCREEN_HEIGHT;
-		DrawFilledRectangle (&r);
-		
+		DrawFilledRectangle(&r);
+
 		// Bottom corners of the SIS gauges
 		r.corner.x = SAFE_X + SPACE_WIDTH;
 		r.corner.y = SAFE_Y + 139;
-		DrawPoint (&r.corner);
+		DrawPoint(&r.corner);
 		r.corner.x = SCREEN_WIDTH - 1;
-		DrawPoint (&r.corner);
+		DrawPoint(&r.corner);
 
 		// Light grey border on the left side of SIS Message
-		SetContextForeGroundColor (SIS_LEFT_BORDER_COLOR);
+		SetContextForeGroundColor(SIS_LEFT_BORDER_COLOR);
 		r.corner.y = 1;
 		r.extent.width = 1;
 		r.extent.height = SAFE_Y + SIS_TITLE_HEIGHT;
 		r.corner.x = SIS_ORG_X - 1;
-		DrawFilledRectangle (&r);
-		
+		DrawFilledRectangle(&r);
+
 		// Light grey border on the left side of SIS Title
 		r.corner.x = SIS_ORG_X + SIS_SCREEN_WIDTH - SIS_TITLE_BOX_WIDTH - 1;
-		DrawFilledRectangle (&r);
+		DrawFilledRectangle(&r);
 
 		// Light grey horizontal line at the bottom of the screen, space
 		// window side
@@ -146,108 +144,108 @@ DrawSISFrame (void)
 		r.corner.y = SCREEN_HEIGHT - 1;
 		r.extent.width = SAFE_X + SPACE_WIDTH - 1;
 		r.extent.height = 1;
-		DrawFilledRectangle (&r);
-		
+		DrawFilledRectangle(&r);
+
 		// Light grey vertical line at the right side of space window
 		r.corner.x = SAFE_X + SPACE_WIDTH - 2;
 		r.corner.y = 0;
 		r.extent.width = 1;
 		r.extent.height = SCREEN_HEIGHT - 1;
-		DrawFilledRectangle (&r);
-		
+		DrawFilledRectangle(&r);
+
 		// Vertical line at the right side of the Flagstats
 		r.corner.x = SCREEN_WIDTH - 1;
 		r.corner.y = 0;
 		r.extent.width = 1;
 		r.extent.height = SAFE_Y + 139;
-		DrawFilledRectangle (&r);
-		
+		DrawFilledRectangle(&r);
+
 		// Horizontal line below the in-game menu
 		r.corner.x = SPACE_WIDTH + SAFE_X;
 		r.corner.y = SCREEN_HEIGHT - 1;
 		r.extent.width = STATUS_WIDTH + SAFE_X;
 		r.extent.height = 1;
-		DrawFilledRectangle (&r);
-		
+		DrawFilledRectangle(&r);
+
 		// Vertical line at the right side in-game menu
 		r.corner.x = SCREEN_WIDTH - 1;
 		r.corner.y = SAFE_Y + 140;
 		r.extent.width = 1;
 		r.extent.height = (SCREEN_HEIGHT - 1) - r.corner.y;
-		DrawFilledRectangle (&r);
+		DrawFilledRectangle(&r);
 
 		// Dark grey border around blue boxes.
-		SetContextForeGroundColor (SIS_BOTTOM_RIGHT_BORDER_COLOR);
+		SetContextForeGroundColor(SIS_BOTTOM_RIGHT_BORDER_COLOR);
 		// Vertical line on the right side of SIS Message
 		r.corner.y = 1;
 		r.extent.width = 1;
-		r.extent.height = SAFE_Y + SIS_MESSAGE_HEIGHT - DOS_NUM (1);
+		r.extent.height = SAFE_Y + SIS_MESSAGE_HEIGHT - DOS_NUM(1);
 		r.corner.x = SIS_ORG_X + SIS_MESSAGE_BOX_WIDTH;
-		DrawFilledRectangle (&r);
+		DrawFilledRectangle(&r);
 
 		// Vertical line on the right side of SIS Title
 		r.corner.x = SIS_ORG_X + SIS_SCREEN_WIDTH;
 		++r.extent.height;
-		DrawFilledRectangle (&r);
+		DrawFilledRectangle(&r);
 
 		//
 		r.corner.y = 0;
 		r.extent.width = (SAFE_X + SPACE_WIDTH - 2) - r.corner.x;
 		r.extent.height = 1;
-		DrawFilledRectangle (&r);
+		DrawFilledRectangle(&r);
 
 		//
 		r.corner.x = 0;
 		r.extent.width = SIS_ORG_X - r.corner.x;
-		DrawFilledRectangle (&r);
+		DrawFilledRectangle(&r);
 
 		// Horizontal line between boxes
 		r.corner.x = SIS_ORG_X + SIS_MESSAGE_BOX_WIDTH;
 		r.extent.width = SIS_SPACER_BOX_WIDTH;
-		DrawFilledRectangle (&r);
+		DrawFilledRectangle(&r);
 
 		//
 		r.corner.x = 0;
 		r.corner.y = 1;
 		r.extent.width = 1;
 		r.extent.height = (SCREEN_HEIGHT - 1) - r.corner.y;
-		DrawFilledRectangle (&r);
+		DrawFilledRectangle(&r);
 
 		// Dark verticle line accent for the top left of the right panel
 		r.corner.x = SAFE_X + SPACE_WIDTH;
 		r.corner.y = 0;
 		r.extent.width = 1;
 		r.extent.height = SAFE_Y + 139;
-		DrawFilledRectangle (&r);
+		DrawFilledRectangle(&r);
 
-		// Horizontal line of the separator below the SIS gauges 
+		// Horizontal line of the separator below the SIS gauges
 		r.corner.x = SAFE_X + SPACE_WIDTH + 1;
 		r.corner.y = SAFE_Y + 139;
 		r.extent.width = STATUS_WIDTH - 2;
 		r.extent.height = 1;
-		DrawFilledRectangle (&r);
+		DrawFilledRectangle(&r);
 
 		// Dark verticle line to the left of in-game menu
 		r.corner.x = SAFE_X + SPACE_WIDTH;
 		r.corner.y = SAFE_Y + 140;
 		r.extent.width = 1;
 		r.extent.height = SCREEN_HEIGHT - r.corner.y;
-		DrawFilledRectangle (&r);
+		DrawFilledRectangle(&r);
 	}
 	else
 	{
-		SetContextForeGroundColor (BLACK_COLOR);
-		r.corner.x = SIS_ORG_X - RES_SCALE (1);
-		r.corner.y = SIS_ORG_Y - RES_SCALE (1);
-		r.extent.width = SIS_SCREEN_WIDTH + RES_SCALE (2);
-		r.extent.height = SIS_SCREEN_HEIGHT + RES_SCALE (2);
-		DrawFilledRectangle (&r);
+		SetContextForeGroundColor(BLACK_COLOR);
+		r.corner.x = SIS_ORG_X - RES_SCALE(1);
+		r.corner.y = SIS_ORG_Y - RES_SCALE(1);
+		r.extent.width = SIS_SCREEN_WIDTH + RES_SCALE(2);
+		r.extent.height = SIS_SCREEN_HEIGHT + RES_SCALE(2);
+		DrawFilledRectangle(&r);
 	}
 
-	DrawBorder (SIS_MAIN_FRAME);
+	DrawBorder(SIS_MAIN_FRAME);
 
-	InitSISContexts ();
-	ClearSISRect (DRAW_SIS_DISPLAY);
+	InitSISContexts();
+	ClearSISRect(DRAW_SIS_DISPLAY);
 
-	UnbatchGraphics ();
+	UnbatchGraphics();
 }

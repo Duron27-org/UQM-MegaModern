@@ -29,11 +29,11 @@ extern "C" {
 
 #define START_YEAR 2155
 
-	// the running of the game-clock is based on game framerates
-	// *not* on the system (or translated) timer
-	// and is hard-coded to the original 24 fps
+// the running of the game-clock is based on game framerates
+// *not* on the system (or translated) timer
+// and is hard-coded to the original 24 fps
 #define CLOCK_BASE_FRAMERATE 24
-#define CLOCK_FRAME_RATE  (ONE_SECOND / CLOCK_BASE_FRAMERATE)
+#define CLOCK_FRAME_RATE (ONE_SECOND / CLOCK_BASE_FRAMERATE)
 
 typedef struct
 {
@@ -42,7 +42,7 @@ typedef struct
 	uqm::SIZE tick_count, day_in_ticks;
 
 	QUEUE event_q;
-			/* Queue element is EVENT */
+	/* Queue element is EVENT */
 } CLOCK_STATE;
 
 typedef HLINK HEVENT;
@@ -63,19 +63,19 @@ typedef enum
 	RELATIVE_EVENT
 } EVENT_TYPE;
 
-#define AllocEvent() AllocLink (&GLOBAL (GameClock.event_q))
-#define PutEvent(h) PutQueue (&GLOBAL (GameClock.event_q), (h))
-#define InsertEvent(h,i) InsertQueue (&GLOBAL (GameClock.event_q), (h), (i))
-#define GetHeadEvent() GetHeadLink (&GLOBAL (GameClock.event_q))
-#define GetTailEvent() GetTailLink (&GLOBAL (GameClock.event_q))
-#define LockEvent(h,ppe) (*(ppe) = (EVENT*)LockLink (&GLOBAL (GameClock.event_q), h))
-#define UnlockEvent(h) UnlockLink (&GLOBAL (GameClock.event_q), (h))
-#define RemoveEvent(h) RemoveQueue (&GLOBAL (GameClock.event_q), (h))
-#define FreeEvent(h) FreeLink (&GLOBAL (GameClock.event_q), (h))
-#define GetPredEvent(l) _GetPredLink (l)
-#define GetSuccEvent(l) _GetSuccLink (l)
-#define ForAllEvents(callback, arg) ForAllLinks(&GLOBAL (GameClock.event_q), \
-		(void (*)(LINK *, void *)) (callback), (arg))
+#define AllocEvent() AllocLink(&GLOBAL(GameClock.event_q))
+#define PutEvent(h) PutQueue(&GLOBAL(GameClock.event_q), (h))
+#define InsertEvent(h, i) InsertQueue(&GLOBAL(GameClock.event_q), (h), (i))
+#define GetHeadEvent() GetHeadLink(&GLOBAL(GameClock.event_q))
+#define GetTailEvent() GetTailLink(&GLOBAL(GameClock.event_q))
+#define LockEvent(h, ppe) (*(ppe) = (EVENT*)LockLink(&GLOBAL(GameClock.event_q), h))
+#define UnlockEvent(h) UnlockLink(&GLOBAL(GameClock.event_q), (h))
+#define RemoveEvent(h) RemoveQueue(&GLOBAL(GameClock.event_q), (h))
+#define FreeEvent(h) FreeLink(&GLOBAL(GameClock.event_q), (h))
+#define GetPredEvent(l) _GetPredLink(l)
+#define GetSuccEvent(l) _GetSuccLink(l)
+#define ForAllEvents(callback, arg) ForAllLinks(&GLOBAL(GameClock.event_q), \
+												(void (*)(LINK*, void*))(callback), (arg))
 
 // Rates are in seconds per game day
 #define HYPERSPACE_CLOCK_RATE 5
@@ -85,32 +85,30 @@ typedef enum
 //   the flagship also moves faster.
 #define INTERPLANETARY_CLOCK_RATE 30
 
-extern bool InitGameClock (void);
-extern bool UninitGameClock (void);
+extern bool InitGameClock(void);
+extern bool UninitGameClock(void);
 
-extern float daysElapsed (void);
+extern float daysElapsed(void);
 
-extern void SetGameClockRate (uqm::COUNT seconds_per_day);
-extern bool ValidateEvent (EVENT_TYPE type, uqm::COUNT *pmonth_index,
-		uqm::COUNT *pday_index, uqm::COUNT *pyear_index);
-extern HEVENT AddEvent (EVENT_TYPE type, uqm::COUNT month_index, uqm::COUNT
-		day_index, uqm::COUNT year_index, uqm::BYTE func_index);
-extern void EventHandler (uqm::BYTE selector);
-extern void GameClockTick (void);
-extern void MoveGameClockDays (uqm::COUNT days);
+extern void SetGameClockRate(uqm::COUNT seconds_per_day);
+extern bool ValidateEvent(EVENT_TYPE type, uqm::COUNT* pmonth_index,
+						  uqm::COUNT* pday_index, uqm::COUNT* pyear_index);
+extern HEVENT AddEvent(EVENT_TYPE type, uqm::COUNT month_index, uqm::COUNT day_index, uqm::COUNT year_index, uqm::BYTE func_index);
+extern void EventHandler(uqm::BYTE selector);
+extern void GameClockTick(void);
+extern void MoveGameClockDays(uqm::COUNT days);
 
 // The lock/unlock/running functions are for debugging use only
 // Locking will block the GameClockTick() function and thus
 // the thread moving the clock.
-extern void LockGameClock (void);
-extern void UnlockGameClock (void);
+extern void LockGameClock(void);
+extern void UnlockGameClock(void);
 // A weak indicator of the clock moving. Suitable for debugging,
 // but not much else
-extern bool GameClockRunning (void);
+extern bool GameClockRunning(void);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
 #endif /* UQM_CLOCK_H_ */
-

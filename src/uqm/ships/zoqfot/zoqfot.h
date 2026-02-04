@@ -21,11 +21,10 @@
 extern "C" {
 #endif
 
-RACE_DESC *init_zoqfotpik (void);
+RACE_DESC* init_zoqfotpik(void);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* ZOQFOT_H */
-
+#endif /* ZOQFOT_H */

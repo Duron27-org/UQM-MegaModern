@@ -37,197 +37,225 @@
 
 #include "mikmod_internals.h"
 
-static	int sl_rlength;
-static	SWORD sl_old;
-static	SWORD *sl_buffer=NULL;
-static	SAMPLOAD *musiclist=NULL,*sndfxlist=NULL;
+static int sl_rlength;
+static SWORD sl_old;
+static SWORD* sl_buffer = NULL;
+static SAMPLOAD *musiclist = NULL, *sndfxlist = NULL;
 
 /* size of the loader buffer in words */
 #define SLBUFSIZE 2048
 
 /* IT-Compressed status structure */
-typedef struct ITPACK {
-	UWORD bits;    /* current number of bits */
+typedef struct ITPACK
+{
+	UWORD bits;	   /* current number of bits */
 	UWORD bufbits; /* bits in buffer */
-	SWORD last;    /* last output */
-	UBYTE buf;     /* bit buffer */
+	SWORD last;	   /* last output */
+	UBYTE buf;	   /* bit buffer */
 } ITPACK;
 
 BOOL SL_Init(SAMPLOAD* s)
 {
-	if(!sl_buffer)
-		if(!(sl_buffer=(SWORD*)MikMod_malloc(SLBUFSIZE*sizeof(SWORD)))) return 0;
+	if (!sl_buffer)
+		if (!(sl_buffer = (SWORD*)MikMod_malloc(SLBUFSIZE * sizeof(SWORD))))
+			return 0;
 
 	sl_rlength = s->length;
-	if(s->infmt & SF_16BITS) sl_rlength>>=1;
+	if (s->infmt & SF_16BITS)
+		sl_rlength >>= 1;
 	sl_old = 0;
 
 	return 1;
 }
 
-void SL_Exit(SAMPLOAD *s)
+void SL_Exit(SAMPLOAD* s)
 {
-	if(sl_rlength>0) _mm_fseek(s->reader,sl_rlength,SEEK_CUR);
+	if (sl_rlength > 0)
+		_mm_fseek(s->reader, sl_rlength, SEEK_CUR);
 
 	MikMod_free(sl_buffer);
-	sl_buffer=NULL;
+	sl_buffer = NULL;
 }
 
 /* unpack a 8bit IT packed sample */
-static int read_itcompr8(ITPACK* status,MREADER *reader,SWORD *out,UWORD count,UWORD* incnt)
+static int read_itcompr8(ITPACK* status, MREADER* reader, SWORD* out, UWORD count, UWORD* incnt)
 {
-	SWORD *dest=out,*end=out+count;
-	UWORD x,y,needbits,havebits,new_count=0;
+	SWORD *dest = out, *end = out + count;
+	UWORD x, y, needbits, havebits, new_count = 0;
 	UWORD bits = status->bits;
 	UWORD bufbits = status->bufbits;
 	SBYTE last = status->last;
 	UBYTE buf = status->buf;
 
-	while (dest<end) {
-		needbits=new_count?3:bits;
-		x=havebits=0;
-		while (needbits) {
+	while (dest < end)
+	{
+		needbits = new_count ? 3 : bits;
+		x = havebits = 0;
+		while (needbits)
+		{
 			/* feed buffer */
-			if (!bufbits) {
-				if((*incnt)--)
-					buf=_mm_read_UBYTE(reader);
+			if (!bufbits)
+			{
+				if ((*incnt)--)
+					buf = _mm_read_UBYTE(reader);
 				else
-					buf=0;
-				bufbits=8;
+					buf = 0;
+				bufbits = 8;
 			}
 			/* get as many bits as necessary */
-			y = needbits<bufbits?needbits:bufbits;
-			x|= (buf & ((1<<y)- 1))<<havebits;
-			buf>>=y;
-			bufbits-=y;
-			needbits-=y;
-			havebits+=y;
+			y = needbits < bufbits ? needbits : bufbits;
+			x |= (buf & ((1 << y) - 1)) << havebits;
+			buf >>= y;
+			bufbits -= y;
+			needbits -= y;
+			havebits += y;
 		}
-		if (new_count) {
+		if (new_count)
+		{
 			new_count = 0;
 			if (++x >= bits)
 				x++;
 			bits = x;
 			continue;
 		}
-		if (bits<7) {
-			if (x==(1<<(bits-1))) {
+		if (bits < 7)
+		{
+			if (x == (1 << (bits - 1)))
+			{
 				new_count = 1;
 				continue;
 			}
 		}
-		else if (bits<9) {
-			y = (0xff >> (9-bits)) - 4;
-			if ((x>y)&&(x<=y+8)) {
-				if ((x-=y)>=bits)
+		else if (bits < 9)
+		{
+			y = (0xff >> (9 - bits)) - 4;
+			if ((x > y) && (x <= y + 8))
+			{
+				if ((x -= y) >= bits)
 					x++;
 				bits = x;
 				continue;
 			}
 		}
-		else if (bits<10) {
-			if (x>=0x100) {
-				bits=x-0x100+1;
+		else if (bits < 10)
+		{
+			if (x >= 0x100)
+			{
+				bits = x - 0x100 + 1;
 				continue;
 			}
-		} else {
+		}
+		else
+		{
 			/* error in compressed data... */
-			_mm_errno=MMERR_ITPACK_INVALID_DATA;
+			_mm_errno = MMERR_ITPACK_INVALID_DATA;
 			return 0;
 		}
 
-		if (bits<8) /* extend sign */
-			x = ((SBYTE)(x <<(8-bits))) >> (8-bits);
-		*(dest++)= (last+=x) << 8; /* convert to 16 bit */
+		if (bits < 8) /* extend sign */
+			x = ((SBYTE)(x << (8 - bits))) >> (8 - bits);
+		*(dest++) = (last += x) << 8; /* convert to 16 bit */
 	}
 	status->bits = bits;
 	status->bufbits = bufbits;
 	status->last = last;
 	status->buf = buf;
-	return (dest-out);
+	return (dest - out);
 }
 
 /* unpack a 16bit IT packed sample */
-static int read_itcompr16(ITPACK *status,MREADER *reader,SWORD *out,UWORD count,UWORD* incnt)
+static int read_itcompr16(ITPACK* status, MREADER* reader, SWORD* out, UWORD count, UWORD* incnt)
 {
-	SWORD *dest=out,*end=out+count;
-	SLONG x,y,needbits,havebits,new_count=0;
+	SWORD *dest = out, *end = out + count;
+	SLONG x, y, needbits, havebits, new_count = 0;
 	UWORD bits = status->bits;
 	UWORD bufbits = status->bufbits;
 	SWORD last = status->last;
 	UBYTE buf = status->buf;
 
-	while (dest<end) {
-		needbits=new_count?4:bits;
-		x=havebits=0;
-		while (needbits) {
+	while (dest < end)
+	{
+		needbits = new_count ? 4 : bits;
+		x = havebits = 0;
+		while (needbits)
+		{
 			/* feed buffer */
-			if (!bufbits) {
-				if((*incnt)--)
-					buf=_mm_read_UBYTE(reader);
+			if (!bufbits)
+			{
+				if ((*incnt)--)
+					buf = _mm_read_UBYTE(reader);
 				else
-					buf=0;
-				bufbits=8;
+					buf = 0;
+				bufbits = 8;
 			}
 			/* get as many bits as necessary */
-			y=needbits<bufbits?needbits:bufbits;
-			x|=(buf &((1<<y)-1))<<havebits;
-			buf>>=y;
-			bufbits-=(UWORD)y;
-			needbits-=(UWORD)y;
-			havebits+=(UWORD)y;
+			y = needbits < bufbits ? needbits : bufbits;
+			x |= (buf & ((1 << y) - 1)) << havebits;
+			buf >>= y;
+			bufbits -= (UWORD)y;
+			needbits -= (UWORD)y;
+			havebits += (UWORD)y;
 		}
-		if (new_count) {
+		if (new_count)
+		{
 			new_count = 0;
 			if (++x >= bits)
 				x++;
 			bits = (UWORD)x;
 			continue;
 		}
-		if (bits<7) {
-			if (x==(1<<(bits-1))) {
-				new_count=1;
+		if (bits < 7)
+		{
+			if (x == (1 << (bits - 1)))
+			{
+				new_count = 1;
 				continue;
 			}
 		}
-		else if (bits<17) {
-			y=(0xffff>>(17-bits))-8;
-			if ((x>y)&&(x<=y+16)) {
-				if ((x-=y)>=bits)
+		else if (bits < 17)
+		{
+			y = (0xffff >> (17 - bits)) - 8;
+			if ((x > y) && (x <= y + 16))
+			{
+				if ((x -= y) >= bits)
 					x++;
 				bits = (UWORD)x;
 				continue;
 			}
 		}
-		else if (bits<18) {
-			if (x>=0x10000) {
-				bits=(UWORD)(x-0x10000+1);
+		else if (bits < 18)
+		{
+			if (x >= 0x10000)
+			{
+				bits = (UWORD)(x - 0x10000 + 1);
 				continue;
 			}
-		} else {
-			 /* error in compressed data... */
-			_mm_errno=MMERR_ITPACK_INVALID_DATA;
+		}
+		else
+		{
+			/* error in compressed data... */
+			_mm_errno = MMERR_ITPACK_INVALID_DATA;
 			return 0;
 		}
 
-		if (bits<16) /* extend sign */
-			x = ((SWORD)(x<<(16-bits)))>>(16-bits);
-		*(dest++)=(last+=x);
+		if (bits < 16) /* extend sign */
+			x = ((SWORD)(x << (16 - bits))) >> (16 - bits);
+		*(dest++) = (last += x);
 	}
 	status->bits = bits;
 	status->bufbits = bufbits;
 	status->last = last;
 	status->buf = buf;
-	return (dest-out);
+	return (dest - out);
 }
 
-static int SL_LoadInternal(void* buffer,UWORD infmt,UWORD outfmt,int scalefactor,ULONG length,MREADER* reader,BOOL dither)
+static int SL_LoadInternal(void* buffer, UWORD infmt, UWORD outfmt, int scalefactor, ULONG length, MREADER* reader, BOOL dither)
 {
-	SBYTE *bptr = (SBYTE*)buffer;
-	SWORD *wptr = (SWORD*)buffer;
-	int stodo,t,u;
+	SBYTE* bptr = (SBYTE*)buffer;
+	SWORD* wptr = (SWORD*)buffer;
+	int stodo, t, u;
 
-	int result,c_block=0;	/* compression bytes until next block */
+	int result, c_block = 0; /* compression bytes until next block */
 	ITPACK status;
 	UWORD incnt = 0;
 
@@ -236,162 +264,198 @@ static int SL_LoadInternal(void* buffer,UWORD infmt,UWORD outfmt,int scalefactor
 	status.bufbits = 0;
 	status.bits = 0;
 
-	while(length) {
-		stodo=(length<SLBUFSIZE)?length:SLBUFSIZE;
+	while (length)
+	{
+		stodo = (length < SLBUFSIZE) ? length : SLBUFSIZE;
 
-		if(infmt&SF_ITPACKED) {
-			sl_rlength=0;
-			if (!c_block) {
+		if (infmt & SF_ITPACKED)
+		{
+			sl_rlength = 0;
+			if (!c_block)
+			{
 				status.bits = (infmt & SF_16BITS) ? 17 : 9;
 				status.last = status.bufbits = 0;
-				incnt=_mm_read_I_UWORD(reader);
+				incnt = _mm_read_I_UWORD(reader);
 				c_block = (infmt & SF_16BITS) ? 0x4000 : 0x8000;
-				if(infmt&SF_DELTA) sl_old=0;
+				if (infmt & SF_DELTA)
+					sl_old = 0;
 			}
-			if (infmt & SF_16BITS) {
-				if(!(result=read_itcompr16(&status,reader,sl_buffer,stodo,&incnt)))
-					return 1;
-			} else {
-				if(!(result=read_itcompr8(&status,reader,sl_buffer,stodo,&incnt)))
+			if (infmt & SF_16BITS)
+			{
+				if (!(result = read_itcompr16(&status, reader, sl_buffer, stodo, &incnt)))
 					return 1;
 			}
-			if(result!=stodo) {
-				_mm_errno=MMERR_ITPACK_INVALID_DATA;
+			else
+			{
+				if (!(result = read_itcompr8(&status, reader, sl_buffer, stodo, &incnt)))
+					return 1;
+			}
+			if (result != stodo)
+			{
+				_mm_errno = MMERR_ITPACK_INVALID_DATA;
 				return 1;
 			}
 			c_block -= stodo;
-		} else {
-			if(infmt&SF_16BITS) {
-				if(_mm_eof(reader)) {
-					_mm_errno=MMERR_NOT_A_STREAM;/* better error? */
+		}
+		else
+		{
+			if (infmt & SF_16BITS)
+			{
+				if (_mm_eof(reader))
+				{
+					_mm_errno = MMERR_NOT_A_STREAM; /* better error? */
 					return 1;
 				}
-				if(infmt&SF_BIG_ENDIAN)
-					_mm_read_M_SWORDS(sl_buffer,stodo,reader);
+				if (infmt & SF_BIG_ENDIAN)
+					_mm_read_M_SWORDS(sl_buffer, stodo, reader);
 				else
-					_mm_read_I_SWORDS(sl_buffer,stodo,reader);
-			} else {
-				SBYTE *src;
-				SWORD *dest;
+					_mm_read_I_SWORDS(sl_buffer, stodo, reader);
+			}
+			else
+			{
+				SBYTE* src;
+				SWORD* dest;
 
-				if(_mm_eof(reader)) {
-					_mm_errno=MMERR_NOT_A_STREAM;/* better error? */
+				if (_mm_eof(reader))
+				{
+					_mm_errno = MMERR_NOT_A_STREAM; /* better error? */
 					return 1;
 				}
-				reader->Read(reader,sl_buffer,sizeof(SBYTE)*stodo);
+				reader->Read(reader, sl_buffer, sizeof(SBYTE) * stodo);
 				src = (SBYTE*)sl_buffer;
-				dest  = sl_buffer;
-				src += stodo;dest += stodo;
+				dest = sl_buffer;
+				src += stodo;
+				dest += stodo;
 
-				for(t=0;t<stodo;t++) {
-					src--;dest--;
-					*dest = (*src)<<8;
+				for (t = 0; t < stodo; t++)
+				{
+					src--;
+					dest--;
+					*dest = (*src) << 8;
 				}
 			}
-			sl_rlength-=stodo;
+			sl_rlength -= stodo;
 		}
 
-		if(infmt & SF_DELTA)
-			for(t=0;t<stodo;t++) {
+		if (infmt & SF_DELTA)
+			for (t = 0; t < stodo; t++)
+			{
 				sl_buffer[t] += sl_old;
 				sl_old = sl_buffer[t];
 			}
 
-		if((infmt^outfmt) & SF_SIGNED)
-			for(t=0;t<stodo;t++)
-				sl_buffer[t]^= 0x8000;
+		if ((infmt ^ outfmt) & SF_SIGNED)
+			for (t = 0; t < stodo; t++)
+				sl_buffer[t] ^= 0x8000;
 
-		if(scalefactor) {
+		if (scalefactor)
+		{
 			int idx = 0;
 			SLONG scaleval;
 
 			/* Sample Scaling... average values for better results. */
-			t= 0;
-			while(t<stodo && length) {
+			t = 0;
+			while (t < stodo && length)
+			{
 				scaleval = 0;
-				for(u=scalefactor;u && t<stodo;u--,t++)
-					scaleval+=sl_buffer[t];
-				sl_buffer[idx++]=(UWORD)(scaleval/(scalefactor-u));
+				for (u = scalefactor; u && t < stodo; u--, t++)
+					scaleval += sl_buffer[t];
+				sl_buffer[idx++] = (UWORD)(scaleval / (scalefactor - u));
 				length--;
 			}
 			stodo = idx;
-		} else
+		}
+		else
 			length -= stodo;
 
-		if (dither) {
-			if((infmt & SF_STEREO) && !(outfmt & SF_STEREO)) {
+		if (dither)
+		{
+			if ((infmt & SF_STEREO) && !(outfmt & SF_STEREO))
+			{
 				/* dither stereo to mono, average together every two samples */
 				SLONG avgval;
 				int idx = 0;
 
-				t=0;
-				while(t<stodo && length) {
-					avgval=sl_buffer[t++];
-					avgval+=sl_buffer[t++];
-					sl_buffer[idx++]=(SWORD)(avgval>>1);
-					length-=2;
+				t = 0;
+				while (t < stodo && length)
+				{
+					avgval = sl_buffer[t++];
+					avgval += sl_buffer[t++];
+					sl_buffer[idx++] = (SWORD)(avgval >> 1);
+					length -= 2;
 				}
 				stodo = idx;
 			}
 		}
 
-		if(outfmt & SF_16BITS) {
-			for(t=0;t<stodo;t++)
-				*(wptr++)=sl_buffer[t];
-		} else {
-			for(t=0;t<stodo;t++)
-				*(bptr++)=sl_buffer[t]>>8;
+		if (outfmt & SF_16BITS)
+		{
+			for (t = 0; t < stodo; t++)
+				*(wptr++) = sl_buffer[t];
+		}
+		else
+		{
+			for (t = 0; t < stodo; t++)
+				*(bptr++) = sl_buffer[t] >> 8;
 		}
 	}
 	return 0;
 }
 
-int SL_Load(void* buffer,SAMPLOAD *smp,ULONG length)
+int SL_Load(void* buffer, SAMPLOAD* smp, ULONG length)
 {
-	return SL_LoadInternal(buffer,smp->infmt,smp->outfmt,smp->scalefactor,
-				length,smp->reader,0);
+	return SL_LoadInternal(buffer, smp->infmt, smp->outfmt, smp->scalefactor,
+						   length, smp->reader, 0);
 }
 
 /* Registers a sample for loading when SL_LoadSamples() is called. */
-SAMPLOAD* SL_RegisterSample(SAMPLE* s,int type,MREADER* reader)
+SAMPLOAD* SL_RegisterSample(SAMPLE* s, int type, MREADER* reader)
 {
-	SAMPLOAD *news,**samplist,*cruise;
+	SAMPLOAD *news, **samplist, *cruise;
 
-	if(type==MD_MUSIC) {
+	if (type == MD_MUSIC)
+	{
 		samplist = &musiclist;
 		cruise = musiclist;
-	} else
-	  if (type==MD_SNDFX) {
+	}
+	else if (type == MD_SNDFX)
+	{
 		samplist = &sndfxlist;
 		cruise = sndfxlist;
-	} else
+	}
+	else
 		return NULL;
 
 	/* Allocate and add structure to the END of the list */
-	if(!(news=(SAMPLOAD*)MikMod_malloc(sizeof(SAMPLOAD)))) return NULL;
+	if (!(news = (SAMPLOAD*)MikMod_malloc(sizeof(SAMPLOAD))))
+		return NULL;
 
-	if(cruise) {
-		while(cruise->next) cruise=cruise->next;
+	if (cruise)
+	{
+		while (cruise->next)
+			cruise = cruise->next;
 		cruise->next = news;
-	} else
+	}
+	else
 		*samplist = news;
 
-	news->infmt     = s->flags & SF_FORMATMASK;
-	news->outfmt    = news->infmt;
-	news->reader    = reader;
-	news->sample    = s;
-	news->length    = s->length;
+	news->infmt = s->flags & SF_FORMATMASK;
+	news->outfmt = news->infmt;
+	news->reader = reader;
+	news->sample = s;
+	news->length = s->length;
 	news->loopstart = s->loopstart;
-	news->loopend   = s->loopend;
+	news->loopend = s->loopend;
 
 	return news;
 }
 
 static void FreeSampleList(SAMPLOAD* s)
 {
-	SAMPLOAD *old;
+	SAMPLOAD* old;
 
-	while(s) {
+	while (s)
+	{
 		old = s;
 		s = s->next;
 		MikMod_free(old);
@@ -399,77 +463,89 @@ static void FreeSampleList(SAMPLOAD* s)
 }
 
 /* Returns the total amount of memory required by the samplelist queue. */
-static ULONG SampleTotal(SAMPLOAD* samplist,int type)
+static ULONG SampleTotal(SAMPLOAD* samplist, int type)
 {
 	int total = 0;
 
-	while(samplist) {
-		samplist->sample->flags=
-		  (samplist->sample->flags&~SF_FORMATMASK)|samplist->outfmt;
-		total += MD_SampleLength(type,samplist->sample);
-		samplist=samplist->next;
+	while (samplist)
+	{
+		samplist->sample->flags =
+			(samplist->sample->flags & ~SF_FORMATMASK) | samplist->outfmt;
+		total += MD_SampleLength(type, samplist->sample);
+		samplist = samplist->next;
 	}
 
 	return total;
 }
 
-static ULONG RealSpeed(SAMPLOAD *s)
+static ULONG RealSpeed(SAMPLOAD* s)
 {
-	return(s->sample->speed/(s->scalefactor?s->scalefactor:1));
+	return (s->sample->speed / (s->scalefactor ? s->scalefactor : 1));
 }
 
-static int DitherSamples(SAMPLOAD* samplist,int type)
+static int DitherSamples(SAMPLOAD* samplist, int type)
 {
-	SAMPLOAD *c2smp=NULL;
+	SAMPLOAD* c2smp = NULL;
 	ULONG maxsize, speed;
-	SAMPLOAD *s;
+	SAMPLOAD* s;
 
-	if(!samplist) return 0;
+	if (!samplist)
+		return 0;
 
-	if((maxsize=MD_SampleSpace(type)*1024) != 0)
-		while(SampleTotal(samplist,type)>maxsize) {
+	if ((maxsize = MD_SampleSpace(type) * 1024) != 0)
+		while (SampleTotal(samplist, type) > maxsize)
+		{
 			/* First Pass - check for any 16 bit samples */
 			s = samplist;
-			while(s) {
-				if(s->outfmt & SF_16BITS) {
+			while (s)
+			{
+				if (s->outfmt & SF_16BITS)
+				{
 					SL_Sample16to8(s);
 					break;
 				}
-				s=s->next;
+				s = s->next;
 			}
 			/* Second pass (if no 16bits found above) is to take the sample with
 			   the highest speed and dither it by half. */
-			if(!s) {
+			if (!s)
+			{
 				s = samplist;
 				speed = 0;
-				while(s) {
-					if((s->sample->length) && (RealSpeed(s)>speed)) {
-						speed=RealSpeed(s);
-						c2smp=s;
+				while (s)
+				{
+					if ((s->sample->length) && (RealSpeed(s) > speed))
+					{
+						speed = RealSpeed(s);
+						c2smp = s;
 					}
-					s=s->next;
+					s = s->next;
 				}
 				if (c2smp)
-					SL_HalveSample(c2smp,2);
+					SL_HalveSample(c2smp, 2);
 			}
 		}
 
 	/* Samples dithered, now load them ! */
 	s = samplist;
-	while(s) {
+	while (s)
+	{
 		/* sample has to be loaded ? -> increase number of samples, allocate
 		   memory and load sample. */
-		if(s->sample->length) {
-			if(s->sample->seekpos)
+		if (s->sample->length)
+		{
+			if (s->sample->seekpos)
 				_mm_fseek(s->reader, s->sample->seekpos, SEEK_SET);
 
 			/* Call the sample load routine of the driver module. It has to
 			   return a 'handle' (>=0) that identifies the sample. */
 			s->sample->handle = MD_SampleLoad(s, type);
-			s->sample->flags  = (s->sample->flags & ~SF_FORMATMASK) | s->outfmt;
-			if(s->sample->handle<0) {
+			s->sample->flags = (s->sample->flags & ~SF_FORMATMASK) | s->outfmt;
+			if (s->sample->handle < 0)
+			{
 				FreeSampleList(samplist);
-				if(_mm_errorhandler) _mm_errorhandler();
+				if (_mm_errorhandler)
+					_mm_errorhandler();
 				return 1;
 			}
 		}
@@ -486,9 +562,10 @@ int SL_LoadSamples(void)
 
 	_mm_critical = 0;
 
-	if((!musiclist)&&(!sndfxlist)) return 0;
-	rc=DitherSamples(musiclist,MD_MUSIC)||DitherSamples(sndfxlist,MD_SNDFX);
-	musiclist=sndfxlist=NULL;
+	if ((!musiclist) && (!sndfxlist))
+		return 0;
+	rc = DitherSamples(musiclist, MD_MUSIC) || DitherSamples(sndfxlist, MD_SNDFX);
+	musiclist = sndfxlist = NULL;
 
 	return rc;
 }
@@ -496,35 +573,35 @@ int SL_LoadSamples(void)
 void SL_Sample16to8(SAMPLOAD* s)
 {
 	s->outfmt &= ~SF_16BITS;
-	s->sample->flags = (s->sample->flags&~SF_FORMATMASK) | s->outfmt;
+	s->sample->flags = (s->sample->flags & ~SF_FORMATMASK) | s->outfmt;
 }
 
 void SL_Sample8to16(SAMPLOAD* s)
 {
 	s->outfmt |= SF_16BITS;
-	s->sample->flags = (s->sample->flags&~SF_FORMATMASK) | s->outfmt;
+	s->sample->flags = (s->sample->flags & ~SF_FORMATMASK) | s->outfmt;
 }
 
 void SL_SampleSigned(SAMPLOAD* s)
 {
 	s->outfmt |= SF_SIGNED;
-	s->sample->flags = (s->sample->flags&~SF_FORMATMASK) | s->outfmt;
+	s->sample->flags = (s->sample->flags & ~SF_FORMATMASK) | s->outfmt;
 }
 
 void SL_SampleUnsigned(SAMPLOAD* s)
 {
 	s->outfmt &= ~SF_SIGNED;
-	s->sample->flags = (s->sample->flags&~SF_FORMATMASK) | s->outfmt;
+	s->sample->flags = (s->sample->flags & ~SF_FORMATMASK) | s->outfmt;
 }
 
-void SL_HalveSample(SAMPLOAD* s,int factor)
+void SL_HalveSample(SAMPLOAD* s, int factor)
 {
-	s->scalefactor=factor>0?factor:2;
+	s->scalefactor = factor > 0 ? factor : 2;
 
 	s->sample->divfactor = s->scalefactor;
-	s->sample->length    = s->length / s->scalefactor;
+	s->sample->length = s->length / s->scalefactor;
 	s->sample->loopstart = s->loopstart / s->scalefactor;
-	s->sample->loopend   = s->loopend / s->scalefactor;
+	s->sample->loopend = s->loopend / s->scalefactor;
 }
 
 /* ex:set ts=4: */

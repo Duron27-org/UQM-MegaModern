@@ -19,6 +19,6 @@
 
 #include <stdio.h>
 
-extern FILE *streamOut;
+extern FILE* streamOut;
 
 #endif /* UQM_LOGINTERNAL_H_INCL__ */

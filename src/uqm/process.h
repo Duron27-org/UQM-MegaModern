@@ -25,13 +25,13 @@
 extern "C" {
 #endif
 
-extern void RedrawQueue (bool clear);
-extern void InitDisplayList (void);
-extern void SetUpElement (ELEMENT *ElementPtr);
-extern void InsertPrim (PRIM_LINKS *pLinks, uqm::COUNT primIndex, uqm::COUNT iPI);
+extern void RedrawQueue(bool clear);
+extern void InitDisplayList(void);
+extern void SetUpElement(ELEMENT* ElementPtr);
+extern void InsertPrim(PRIM_LINKS* pLinks, uqm::COUNT primIndex, uqm::COUNT iPI);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* UQM_PROCESS_H_INCL_ */
+#endif /* UQM_PROCESS_H_INCL_ */

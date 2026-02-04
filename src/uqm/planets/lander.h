@@ -47,8 +47,8 @@ typedef struct
 typedef struct
 {
 	bool InTransit;
-			// Landing on or taking of from a planet.
-			// Setting it while landed will initiate takeoff.
+	// Landing on or taking of from a planet.
+	// Setting it while landed will initiate takeoff.
 
 	uqm::COUNT ElementLevel;
 	uqm::COUNT MaxElementLevel;
@@ -70,20 +70,20 @@ typedef struct
 
 extern MUSIC_REF LanderMusic;
 
-extern void PlanetSide (POINT planetLoc);
-extern void DoDiscoveryReport (SOUND ReadOutSounds);
-extern uqm::BYTE SetPlanetMusic (uqm::BYTE planet_type);
-extern void LoadLanderData (void);
-extern void FreeLanderData (void);
+extern void PlanetSide(POINT planetLoc);
+extern void DoDiscoveryReport(SOUND ReadOutSounds);
+extern uqm::BYTE SetPlanetMusic(uqm::BYTE planet_type);
+extern void LoadLanderData(void);
+extern void FreeLanderData(void);
 
-extern void MaskLanderGraphics (void);
+extern void MaskLanderGraphics(void);
 
-extern void object_animation (ELEMENT *ElementPtr);
+extern void object_animation(ELEMENT* ElementPtr);
 
-extern void SetLanderTakeoff (void);
-extern bool KillLanderCrewSeq (uqm::COUNT numKilled, uqm::DWORD period);
+extern void SetLanderTakeoff(void);
+extern bool KillLanderCrewSeq(uqm::COUNT numKilled, uqm::DWORD period);
 
-extern unsigned GetThermalHazardRating (int temp);
+extern unsigned GetThermalHazardRating(int temp);
 
 // ELEMENT.playerNr constants
 enum
@@ -97,4 +97,3 @@ enum
 #endif
 
 #endif /* UQM_PLANETS_LANDER_H_ */
-

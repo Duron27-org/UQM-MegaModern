@@ -25,15 +25,14 @@
 
 using uio_StdioAccessHandlePtr = void*;
 
-int uio_copyFile(uio_DirHandle *srcDir, const char *srcName,
-		uio_DirHandle *dstDir, const char *newName);
-uio_StdioAccessHandlePtr uio_getStdioAccess(uio_DirHandle *dir,
-		const char *path, int flags, uio_DirHandle *tempDir);
-const char *uio_StdioAccessHandle_getPath(uio_StdioAccessHandlePtr handle);
+int uio_copyFile(uio_DirHandle* srcDir, const char* srcName,
+				 uio_DirHandle* dstDir, const char* newName);
+uio_StdioAccessHandlePtr uio_getStdioAccess(uio_DirHandle* dir,
+											const char* path, int flags, uio_DirHandle* tempDir);
+const char* uio_StdioAccessHandle_getPath(uio_StdioAccessHandlePtr handle);
 void uio_releaseStdioAccess(uio_StdioAccessHandlePtr handle);
 
-char *uio_vasprintf(const char *format, va_list args);
-char *uio_asprintf(const char *format, ...);
+char* uio_vasprintf(const char* format, va_list args);
+char* uio_asprintf(const char* format, ...);
 
-#endif  /* LIBS_UIO_UTILS_H_ */
-
+#endif /* LIBS_UIO_UTILS_H_ */

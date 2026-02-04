@@ -24,8 +24,8 @@
 
 
 #define DEFINE_NETSTATEDATA(stateName) \
-	{ \
-		/* .name = */    #stateName, \
+	{                                  \
+		/* .name = */ #stateName,      \
 	}
 NetStateData netStateData[] = {
 	DEFINE_NETSTATEDATA(unconnected),
@@ -40,9 +40,8 @@ NetStateData netStateData[] = {
 	DEFINE_NETSTATEDATA(endingBattle2),
 };
 
-void
-NetConnectionStateData_release(NetConnectionStateData *stateData) {
+void NetConnectionStateData_release(NetConnectionStateData* stateData)
+{
 	assert(stateData->releaseFunction != NULL);
 	stateData->releaseFunction(stateData);
 }
-

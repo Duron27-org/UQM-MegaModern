@@ -30,47 +30,44 @@ static FRAME BuildPickFrame;
 #define TTIP_FRAME_OFFSET 43
 #define BUILDPICK_FRAME_OFFSET 27
 
-void
-BuildBuildPickFrame (void)
+void BuildBuildPickFrame(void)
 {
 	STAMP s;
-	RECT  r;
+	RECT r;
 	uqm::COUNT i;
-	CONTEXT OldContext = SetContext (OffScreenContext);
-	
+	CONTEXT OldContext = SetContext(OffScreenContext);
+
 	// create team building ship selection box
 	s.origin.x = 0;
 	s.origin.y = 0;
-	s.frame = SetAbsFrameIndex (MeleeFrame,
-			BUILDPICK_FRAME_OFFSET + optControllerType);
-			// 5x5 grid of ships to pick from
-	GetFrameRect (s.frame, &r);
+	s.frame = SetAbsFrameIndex(MeleeFrame,
+							   BUILDPICK_FRAME_OFFSET + optControllerType);
+	// 5x5 grid of ships to pick from
+	GetFrameRect(s.frame, &r);
 
-	BuildPickFrame = CaptureDrawable (CreateDrawable (
-			WANT_PIXMAP, r.extent.width, r.extent.height, 1));
-	SetContextFGFrame (BuildPickFrame);
-	SetFrameHot (s.frame, MAKE_HOT_SPOT (0, 0));
-	DrawStamp (&s);
+	BuildPickFrame = CaptureDrawable(CreateDrawable(
+		WANT_PIXMAP, r.extent.width, r.extent.height, 1));
+	SetContextFGFrame(BuildPickFrame);
+	SetFrameHot(s.frame, MAKE_HOT_SPOT(0, 0));
+	DrawStamp(&s);
 
 	for (i = 0; i < NUM_PICK_COLS * NUM_PICK_ROWS; ++i)
-		DrawPickIcon ((MeleeShip)i, true);
+		DrawPickIcon((MeleeShip)i, true);
 
-	DrawShipPickerText (s);
+	DrawShipPickerText(s);
 
-	SetContext (OldContext);
+	SetContext(OldContext);
 }
 
-void
-DestroyBuildPickFrame (void)
+void DestroyBuildPickFrame(void)
 {
-	DestroyDrawable (ReleaseDrawable (BuildPickFrame));
+	DestroyDrawable(ReleaseDrawable(BuildPickFrame));
 	BuildPickFrame = 0;
 }
 
-Color
-GetShipFlashColor (void)
+Color GetShipFlashColor(void)
 {
-	if (is3DO (optWhichMenu))
+	if (is3DO(optWhichMenu))
 	{
 		return BLACK_COLOR;
 	}
@@ -79,7 +76,7 @@ GetShipFlashColor (void)
 		static uqm::BYTE cycle_index = 0;
 
 		static const Color cycle_tab[] = SHIP_SELECT_COLOR_CYCLE_TABLE;
-		const size_t cycleCount = ARRAY_SIZE (cycle_tab);
+		const size_t cycleCount = ARRAY_SIZE(cycle_tab);
 
 		cycle_index = (cycle_index + 1) % cycleCount;
 
@@ -88,8 +85,7 @@ GetShipFlashColor (void)
 }
 
 // Draw part of the frame underneath the ship (removes artifacts in HD)
-void
-RepairBuildPickFrame (RECT *pRect, POINT *origin)
+void RepairBuildPickFrame(RECT* pRect, POINT* origin)
 {
 	RECT r;
 	CONTEXT OldContext;
@@ -99,91 +95,86 @@ RepairBuildPickFrame (RECT *pRect, POINT *origin)
 
 	r.corner.x = origin->x;
 	r.corner.y = origin->y;
-	r.extent.width = r.extent.height = RES_SCALE (16);
+	r.extent.width = r.extent.height = RES_SCALE(16);
 
-	OldContext = SetContext (SpaceContext);
-	GetContextClipRect (&OldRect);
-	SetContextClipRect (&r);
+	OldContext = SetContext(SpaceContext);
+	GetContextClipRect(&OldRect);
+	SetContextClipRect(&r);
 	if (IS_PAD)
 	{
-		oldOrigin = SetContextOrigin (MAKE_POINT (r.corner.x, r.corner.y));
+		oldOrigin = SetContextOrigin(MAKE_POINT(r.corner.x, r.corner.y));
 	}
 	else
 	{
 		oldOrigin =
-				SetContextOrigin (MAKE_POINT (-r.corner.x, -r.corner.y));
+			SetContextOrigin(MAKE_POINT(-r.corner.x, -r.corner.y));
 	}
 
 	s.origin.x = pRect->corner.x;
 	s.origin.y = pRect->corner.y;
-	s.frame = SetAbsFrameIndex (MeleeFrame,
-			BUILDPICK_FRAME_OFFSET + optControllerType);
+	s.frame = SetAbsFrameIndex(MeleeFrame,
+							   BUILDPICK_FRAME_OFFSET + optControllerType);
 
-	DrawStamp (&s);
+	DrawStamp(&s);
 
-	SetContextOrigin (oldOrigin);
-	SetContextClipRect (&OldRect);
-	SetContext (OldContext);
+	SetContextOrigin(oldOrigin);
+	SetContextClipRect(&OldRect);
+	SetContext(OldContext);
 }
 
 // Draw a ship icon in the ship selection popup.
-void
-DrawPickIcon (MeleeShip ship, bool DrawErase)
+void DrawPickIcon(MeleeShip ship, bool DrawErase)
 {
 	STAMP s;
 	RECT r;
 
-	GetFrameRect (BuildPickFrame, &r);
+	GetFrameRect(BuildPickFrame, &r);
 
-	s.origin.x = r.corner.x + RES_SCALE (20) + (ship % NUM_PICK_COLS)
-			* RES_SCALE (18);
-	s.origin.y = r.corner.y +  RES_SCALE (5) + (ship / NUM_PICK_COLS)
-			* RES_SCALE (18);
+	s.origin.x = r.corner.x + RES_SCALE(20) + (ship % NUM_PICK_COLS) * RES_SCALE(18);
+	s.origin.y = r.corner.y + RES_SCALE(5) + (ship / NUM_PICK_COLS) * RES_SCALE(18);
 
-	s.frame = GetShipIconsFromIndex (ship);
+	s.frame = GetShipIconsFromIndex(ship);
 
 	// Draw a rectangle below ship to remove artifacts in HD
 	if (IS_HD)
-		RepairBuildPickFrame (&r, &s.origin);
+		RepairBuildPickFrame(&r, &s.origin);
 
 	if (DrawErase)
-	{	// draw icon
-		DrawStamp (&s);
+	{ // draw icon
+		DrawStamp(&s);
 	}
 	else
-	{	// erase icon
+	{ // erase icon
 		Color OldColor;
 
-		OldColor = SetContextForeGroundColor (GetShipFlashColor ());
-		DrawFilledStamp (&s);
-		SetContextForeGroundColor (OldColor);
+		OldColor = SetContextForeGroundColor(GetShipFlashColor());
+		DrawFilledStamp(&s);
+		SetContextForeGroundColor(OldColor);
 	}
 }
 
-static void 
-DrawTooltipBox (void)
+static void
+DrawTooltipBox(void)
 {
 	STAMP s;
 
 	s.origin.x = s.origin.y = 0;
-	s.frame = SetAbsFrameIndex (MeleeFrame, TTIP_FRAME_OFFSET);
+	s.frame = SetAbsFrameIndex(MeleeFrame, TTIP_FRAME_OFFSET);
 
-	DrawStamp (&s);
+	DrawStamp(&s);
 }
 
-void
-GetToolTipFrameRect (RECT *r)
+void GetToolTipFrameRect(RECT* r)
 {
-	GetFrameRect (SetAbsFrameIndex (MeleeFrame, TTIP_FRAME_OFFSET), r);
+	GetFrameRect(SetAbsFrameIndex(MeleeFrame, TTIP_FRAME_OFFSET), r);
 }
 
 #define RACE_NAME_OFFSET 0
 #define RACE_SHIP_OFFSET 3
 
-void
-DrawTooltip (SHIP_INFO *SIPtr)
+void DrawTooltip(SHIP_INFO* SIPtr)
 {
-	uqm::CHAR_T *ptr;
+	uqm::CHAR_T* ptr;
 	uqm::CHAR_T buf[PATH_MAX];
 	TEXT Text;
 	CONTEXT oldContext;
@@ -192,123 +183,120 @@ DrawTooltip (SHIP_INFO *SIPtr)
 	RECT r;
 	uqm::CHAR_T delim[] = "\n";
 
-	GetToolTipFrameRect (&r);
-	
-	sprintf (buf, "%s %s",
-			GET_STRING (SIPtr->race_strings, RACE_NAME_OFFSET),
-			GET_STRING (SIPtr->race_strings, RACE_SHIP_OFFSET));
+	GetToolTipFrameRect(&r);
+
+	sprintf(buf, "%s %s",
+			GET_STRING(SIPtr->race_strings, RACE_NAME_OFFSET),
+			GET_STRING(SIPtr->race_strings, RACE_SHIP_OFFSET));
 
 	Text.pStr = buf;
-	Text.CharCount = (uqm::COUNT)utf8StringCount (buf);
+	Text.CharCount = (uqm::COUNT)utf8StringCount(buf);
 	Text.align = ALIGN_CENTER;
-	Text.baseline.y = r.corner.y + RES_SCALE (8) + RES_SCALE (1);
-	Text.baseline.x = r.corner.x + (r.extent.width >> 1) + RES_SCALE (1);
+	Text.baseline.y = r.corner.y + RES_SCALE(8) + RES_SCALE(1);
+	Text.baseline.x = r.corner.x + (r.extent.width >> 1) + RES_SCALE(1);
 
-	oldContext = SetContext (SpaceContext);
-	DrawTooltipBox ();
+	oldContext = SetContext(SpaceContext);
+	DrawTooltipBox();
 
-	oldFont = SetContextFont (StarConFont);
-	oldColor = SetContextForeGroundColor (TOOLTIP_COLOR_NAME_BACK);
-	font_DrawText (&Text);
+	oldFont = SetContextFont(StarConFont);
+	oldColor = SetContextForeGroundColor(TOOLTIP_COLOR_NAME_BACK);
+	font_DrawText(&Text);
 
-	SetContextForeGroundColor (TOOLTIP_COLOR_NAME_FRONT);
-	Text.baseline.x -= RES_SCALE (1);
-	Text.baseline.y -= RES_SCALE (1);
-	font_DrawText (&Text);
+	SetContextForeGroundColor(TOOLTIP_COLOR_NAME_FRONT);
+	Text.baseline.x -= RES_SCALE(1);
+	Text.baseline.y -= RES_SCALE(1);
+	font_DrawText(&Text);
 
-	SetContextForeGroundColor (TOOLTIP_COLOR_DESC_FRONT);
+	SetContextForeGroundColor(TOOLTIP_COLOR_DESC_FRONT);
 
-	utf8StringCopy (buf, sizeof buf,
-			GET_STRING (SIPtr->race_strings, 
-				GetStringTableCount (SIPtr->race_strings) - 1));
-	ptr = strtok (buf, delim);
+	utf8StringCopy(buf, sizeof buf,
+				   GET_STRING(SIPtr->race_strings,
+							  GetStringTableCount(SIPtr->race_strings) - 1));
+	ptr = strtok(buf, delim);
 
-	Text.baseline.y += RES_SCALE (2);
+	Text.baseline.y += RES_SCALE(2);
 
 	while (ptr != NULL)
 	{
 		Text.pStr = ptr;
-		Text.CharCount = (uqm::COUNT)utf8StringCount (ptr);
-		Text.baseline.y += RES_SCALE (9);
-		font_DrawText (&Text);
-		ptr = strtok (NULL, delim);
+		Text.CharCount = (uqm::COUNT)utf8StringCount(ptr);
+		Text.baseline.y += RES_SCALE(9);
+		font_DrawText(&Text);
+		ptr = strtok(NULL, delim);
 	}
 
-	SetContextForeGroundColor (oldColor);
-	SetContextFont (oldFont);
-	SetContext (oldContext);
+	SetContextForeGroundColor(oldColor);
+	SetContextFont(oldFont);
+	SetContext(oldContext);
 }
 
-void
-DrawPickFrame (MELEE_STATE *pMS)
+void DrawPickFrame(MELEE_STATE* pMS)
 {
 	RECT r, r0, r1, ship_r;
 	STAMP s;
 
-	GetShipBox (&r0, 0, 0, 0),
-	GetShipBox (&r1, 1, NUM_MELEE_ROWS - 1, NUM_MELEE_COLUMNS - 1),
-	BoxUnion (&r0, &r1, &ship_r);
+	GetShipBox(&r0, 0, 0, 0),
+		GetShipBox(&r1, 1, NUM_MELEE_ROWS - 1, NUM_MELEE_COLUMNS - 1),
+		BoxUnion(&r0, &r1, &ship_r);
 
-	s.frame = SetAbsFrameIndex (BuildPickFrame, 0);
-	GetFrameRect (s.frame, &r);
+	s.frame = SetAbsFrameIndex(BuildPickFrame, 0);
+	GetFrameRect(s.frame, &r);
 	r.corner.x = -(ship_r.corner.x
-			+ ((ship_r.extent.width - r.extent.width) >> 1));
+				   + ((ship_r.extent.width - r.extent.width) >> 1));
 	if (pMS->side)
 		r.corner.y = -ship_r.corner.y;
 	else
 		r.corner.y = -(ship_r.corner.y
-				+ (ship_r.extent.height - r.extent.height));
-	SetFrameHot (s.frame, MAKE_HOT_SPOT (r.corner.x, r.corner.y));
+					   + (ship_r.extent.height - r.extent.height));
+	SetFrameHot(s.frame, MAKE_HOT_SPOT(r.corner.x, r.corner.y));
 	s.origin.x = 0;
 	s.origin.y = 0;
-	DrawStamp (&s);
-	DrawMeleeShipStrings (pMS, pMS->currentShip);
+	DrawStamp(&s);
+	DrawMeleeShipStrings(pMS, pMS->currentShip);
 
-	if (isPC (optWhichMenu))
-	{	// if PC menu is selected - draw flash on the current ship as soon
+	if (isPC(optWhichMenu))
+	{ // if PC menu is selected - draw flash on the current ship as soon
 		// as we pop up otherwise for 1 frame it will look like nothing is
 		// selected
-		DrawPickIcon (pMS->currentShip, false);
+		DrawPickIcon(pMS->currentShip, false);
 	}
 }
 
-void
-GetBuildPickFrameRect (RECT *r)
+void GetBuildPickFrameRect(RECT* r)
 {
-	GetFrameRect (BuildPickFrame, r);
+	GetFrameRect(BuildPickFrame, r);
 }
 
 static bool
-DoPickShip (MELEE_STATE *pMS)
+DoPickShip(MELEE_STATE* pMS)
 {
-	uqm::DWORD TimeIn = GetTimeCounter ();
+	uqm::DWORD TimeIn = GetTimeCounter();
 
 	/* Cancel any presses of the Pause key. */
 	GamePaused = false;
 
-	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
+	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
 	{
 		pMS->buildPickConfirmed = false;
 		return false;
 	}
 
-	SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
+	SetMenuSounds(MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
 
-	if (PulsedInputState.menu[KEY_MENU_SELECT] ||
-			PulsedInputState.menu[KEY_MENU_CANCEL])
+	if (PulsedInputState.menu[KEY_MENU_SELECT] || PulsedInputState.menu[KEY_MENU_CANCEL])
 	{
 		// Confirm selection or cancel.
 		pMS->buildPickConfirmed = !PulsedInputState.menu[KEY_MENU_CANCEL];
 		return false;
 	}
-	
+
 	if (PulsedInputState.menu[KEY_MENU_SPECIAL]
-			&& (pMS->currentShip != MELEE_NONE))
+		&& (pMS->currentShip != MELEE_NONE))
 	{
-		if (isPC (optWhichIntro))
-			PlayMenuSound (MENU_SOUND_SUCCESS);
+		if (isPC(optWhichIntro))
+			PlayMenuSound(MENU_SOUND_SUCCESS);
 		// Show ship spin video.
-		DoShipSpin (pMS->currentShip, pMS->hMusic);
+		DoShipSpin(pMS->currentShip, pMS->hMusic);
 
 		return true;
 	}
@@ -330,7 +318,7 @@ DoPickShip (MELEE_STATE *pMS)
 			if (newSelectedShip % NUM_PICK_COLS == 0)
 				newSelectedShip -= NUM_PICK_COLS;
 		}
-		
+
 		if (PulsedInputState.menu[KEY_MENU_UP])
 		{
 			if (newSelectedShip >= NUM_PICK_COLS)
@@ -349,15 +337,15 @@ DoPickShip (MELEE_STATE *pMS)
 		if (newSelectedShip != pMS->currentShip)
 		{
 			// A new ship has been selected.
-			DrawPickIcon (pMS->currentShip, true);
+			DrawPickIcon(pMS->currentShip, true);
 			pMS->currentShip = newSelectedShip;
-			DrawMeleeShipStrings (pMS, newSelectedShip);
+			DrawMeleeShipStrings(pMS, newSelectedShip);
 		}
 	}
 
-	Melee_flashSelection (pMS);
+	Melee_flashSelection(pMS);
 
-	SleepThreadUntil (TimeIn + ONE_SECOND / 30);
+	SleepThreadUntil(TimeIn + ONE_SECOND / 30);
 
 	return true;
 }
@@ -366,18 +354,17 @@ DoPickShip (MELEE_STATE *pMS)
 // been cancelled or if the general abort key was pressed (in which case
 // 'GLOBAL (CurrentActivity) & CHECK_ABORT' is true as usual.
 // If a ship was selected, pMS->currentShip is set to the selected ship.
-bool
-BuildPickShip (MELEE_STATE *pMS)
+bool BuildPickShip(MELEE_STATE* pMS)
 {
-	FlushInput ();
+	FlushInput();
 
 	if (pMS->currentShip == MELEE_NONE)
 		pMS->currentShip = (MeleeShip)0;
 
-	DrawPickFrame (pMS);
+	DrawPickFrame(pMS);
 
 	pMS->InputFunc = DoPickShip;
-	DoInput (pMS, false);
+	DoInput(pMS, false);
 
 	return pMS->buildPickConfirmed;
 }

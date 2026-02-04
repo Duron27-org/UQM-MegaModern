@@ -31,7 +31,7 @@
 // themselves being processed in one go, livelock deterrence is
 // enabled, and TFB_FlushGraphics locks the DCQ until it has processed
 // all entries.  If batched but pending commands exceed DCQ_FORCE_BREAK_SIZE,
-// a continuity break is performed.  This will effectively slow down the 
+// a continuity break is performed.  This will effectively slow down the
 // game logic, a fate we seek to avoid - however, it seems to be unavoidable
 // on slower machines.  Even there, it's seems nonexistent outside of
 // communications screens.  --Michael
@@ -51,5 +51,3 @@
 extern CondVar RenderingCond;
 
 #endif
-
-

@@ -25,37 +25,40 @@
 #include "proto/ready.h"
 
 #include "../melee.h"
-		// For feedback functions.
+// For feedback functions.
 
 #include <stdlib.h>
 
 
-static BattleStateData *BattleStateData_alloc(void);
-static void BattleStateData_free(BattleStateData *battleStateData);
-static inline BattleStateData *BattleStateData_new(
-		struct melee_state *meleeState,
-		struct battlestate_struct *battleState,
-		struct getmelee_struct *getMeleeState);
-static void BattleStateData_delete(BattleStateData *battleStateData);
+static BattleStateData* BattleStateData_alloc(void);
+static void BattleStateData_free(BattleStateData* battleStateData);
+static inline BattleStateData* BattleStateData_new(
+	struct melee_state* meleeState,
+	struct battlestate_struct* battleState,
+	struct getmelee_struct* getMeleeState);
+static void BattleStateData_delete(BattleStateData* battleStateData);
 
 
-static BattleStateData *
-BattleStateData_alloc(void) {
-	return (BattleStateData *) malloc(sizeof (BattleStateData));
+static BattleStateData*
+BattleStateData_alloc(void)
+{
+	return (BattleStateData*)malloc(sizeof(BattleStateData));
 }
 
 static void
-BattleStateData_free(BattleStateData *battleStateData) {
+BattleStateData_free(BattleStateData* battleStateData)
+{
 	free(battleStateData);
 }
 
-static inline BattleStateData *
-BattleStateData_new(struct melee_state *meleeState,
-		struct battlestate_struct *battleState,
-		struct getmelee_struct *getMeleeState) {
-	BattleStateData *battleStateData = BattleStateData_alloc();
+static inline BattleStateData*
+BattleStateData_new(struct melee_state* meleeState,
+					struct battlestate_struct* battleState,
+					struct getmelee_struct* getMeleeState)
+{
+	BattleStateData* battleStateData = BattleStateData_alloc();
 	battleStateData->releaseFunction =
-			(NetConnectionStateData_ReleaseFunction) BattleStateData_delete;
+		(NetConnectionStateData_ReleaseFunction)BattleStateData_delete;
 	battleStateData->meleeState = meleeState;
 	battleStateData->battleState = battleState;
 	battleStateData->getMeleeState = getMeleeState;
@@ -63,7 +66,8 @@ BattleStateData_new(struct melee_state *meleeState,
 }
 
 static void
-BattleStateData_delete(BattleStateData *battleStateData) {
+BattleStateData_delete(BattleStateData* battleStateData)
+{
 	BattleStateData_free(battleStateData);
 }
 
@@ -71,64 +75,64 @@ BattleStateData_delete(BattleStateData *battleStateData) {
 ////////////////////////////////////////////////////////////////////////////
 
 
-static void NetMelee_enterState_inSetup(NetConnection *conn, void *arg);
+static void NetMelee_enterState_inSetup(NetConnection* conn, void* arg);
 
 // Called when a connection has been established.
-void
-NetMelee_connectCallback(NetConnection *conn) {
-	BattleStateData *battleStateData;
-	struct melee_state *meleeState;
+void NetMelee_connectCallback(NetConnection* conn)
+{
+	BattleStateData* battleStateData;
+	struct melee_state* meleeState;
 
-	meleeState = (struct melee_state *) NetConnection_getExtra(conn);
+	meleeState = (struct melee_state*)NetConnection_getExtra(conn);
 	battleStateData = BattleStateData_new(meleeState, NULL, NULL);
-	NetConnection_setStateData(conn, (NetConnectionStateData *) battleStateData);
+	NetConnection_setStateData(conn, (NetConnectionStateData*)battleStateData);
 	NetConnection_setExtra(conn, NULL);
 
 	// We have sent no teams yet. Initialize the state accordingly.
-	MeleeSetup_resetSentTeams (meleeState->meleeSetup);
+	MeleeSetup_resetSentTeams(meleeState->meleeSetup);
 
 	sendInit(conn);
-	Netplay_localReady (conn, NetMelee_enterState_inSetup, NULL, false);
+	Netplay_localReady(conn, NetMelee_enterState_inSetup, NULL, false);
 }
 
 // Called when a connection is closed.
-void
-NetMelee_closeCallback(NetConnection *conn) {
+void NetMelee_closeCallback(NetConnection* conn)
+{
 	closeFeedback(conn);
 }
 
 // Called when a network error occurs during connect.
-void
-NetMelee_errorCallback(NetConnection *conn,
-		const NetConnectionError *error) {
+void NetMelee_errorCallback(NetConnection* conn,
+							const NetConnectionError* error)
+{
 	errorFeedback(conn);
-	(void) error;
+	(void)error;
 }
 
 // Callback function for when both sides have finished initialisation after
 // initial connect.
 static void
-NetMelee_enterState_inSetup(NetConnection *conn, void *arg) {
-	BattleStateData *battleStateData;
-	struct melee_state *meleeState;
+NetMelee_enterState_inSetup(NetConnection* conn, void* arg)
+{
+	BattleStateData* battleStateData;
+	struct melee_state* meleeState;
 	int player;
 
 	NetConnection_setState(conn, NetState_inSetup);
-		
-	battleStateData = (BattleStateData *) NetConnection_getStateData(conn);
+
+	battleStateData = (BattleStateData*)NetConnection_getStateData(conn);
 	meleeState = battleStateData->meleeState;
-	
+
 	player = NetConnection_getPlayerNr(conn);
 
 	connectedFeedback(conn);
 
 	// Send our team to the remote side.
 	// XXX This only works with 2 players atm.
-	assert (NUM_PLAYERS == 2);
-	Melee_bootstrapSyncTeam (meleeState, player);
+	assert(NUM_PLAYERS == 2);
+	Melee_bootstrapSyncTeam(meleeState, player);
 
 	flushPacketQueues();
 
-	(void) arg;
+	(void)arg;
 }
-

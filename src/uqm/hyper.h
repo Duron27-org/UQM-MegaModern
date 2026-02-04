@@ -21,7 +21,7 @@
 
 #include "element.h"
 #include "units.h"
-		// for UNIT_SCREEN_WIDTH/HEIGHT
+// for UNIT_SCREEN_WIDTH/HEIGHT
 
 #if 0 //defined(__cplusplus)
 extern "C" {
@@ -29,33 +29,32 @@ extern "C" {
 
 #define NUM_RADAR_SCREENS 12
 
-#define RADAR_SCAN_WIDTH RES_DESCALE (UNIT_SCREEN_WIDTH * NUM_RADAR_SCREENS)
-#define RADAR_SCAN_HEIGHT RES_DESCALE (UNIT_SCREEN_HEIGHT * NUM_RADAR_SCREENS)
+#define RADAR_SCAN_WIDTH RES_DESCALE(UNIT_SCREEN_WIDTH* NUM_RADAR_SCREENS)
+#define RADAR_SCAN_HEIGHT RES_DESCALE(UNIT_SCREEN_HEIGHT* NUM_RADAR_SCREENS)
 
 // QuasiSpace coordinates of the two-way portal
-#define QUASI_SPACE_X  5000
-#define QUASI_SPACE_Y  5000
+#define QUASI_SPACE_X 5000
+#define QUASI_SPACE_Y 5000
 
 // QuasiSpace coordinates of the Arilou home world
 #define ARILOU_HOME_X 6134 // (QUASI_SPACE_X + ((RADAR_SCAN_WIDTH >> 1) * 3))
 #define ARILOU_HOME_Y 5900 // (QUASI_SPACE_Y + ((RADAR_SCAN_HEIGHT >> 1) * 3))
 
-extern bool LoadHyperspace (void);
-extern bool FreeHyperspace (void);
-extern void SeedUniverse (void);
-extern void EraseRadar (void);
-extern void MoveSIS (uqm::SDWORD *pdx, uqm::SDWORD *pdy);
+extern bool LoadHyperspace(void);
+extern bool FreeHyperspace(void);
+extern void SeedUniverse(void);
+extern void EraseRadar(void);
+extern void MoveSIS(uqm::SDWORD* pdx, uqm::SDWORD* pdy);
 
-extern void FreeHyperData (void);
-extern void check_hyperspace_encounter (void);
-extern bool hyper_transition (ELEMENT *ElementPtr);
+extern void FreeHyperData(void);
+extern void check_hyperspace_encounter(void);
+extern bool hyper_transition(ELEMENT* ElementPtr);
 
-extern void HyperspaceMenu (void);
-extern void SaveSisHyperState (void);
+extern void HyperspaceMenu(void);
+extern void SaveSisHyperState(void);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
 #endif /* UQM_HYPER_H_ */
-

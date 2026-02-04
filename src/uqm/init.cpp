@@ -47,44 +47,41 @@ FRAME blast[NUM_VIEWS];
 FRAME explosion[NUM_VIEWS];
 
 
-bool
-load_animation (FRAME *pixarray, RESOURCE big_res, RESOURCE med_res, RESOURCE
-		sml_res)
+bool load_animation(FRAME* pixarray, RESOURCE big_res, RESOURCE med_res, RESOURCE sml_res)
 {
 	DRAWABLE d;
 
-	d = LoadGraphic (big_res);
+	d = LoadGraphic(big_res);
 	if (!d)
 		return false;
-	pixarray[0] = CaptureDrawable (d);
+	pixarray[0] = CaptureDrawable(d);
 
 	if (med_res != NULL_RESOURCE)
 	{
-		d = LoadGraphic (med_res);
+		d = LoadGraphic(med_res);
 		if (!d)
 			return false;
 	}
-	pixarray[1] = CaptureDrawable (d);
+	pixarray[1] = CaptureDrawable(d);
 
 	if (sml_res != NULL_RESOURCE)
 	{
-		d = LoadGraphic (sml_res);
+		d = LoadGraphic(sml_res);
 		if (!d)
 			return false;
 	}
-	pixarray[2] = CaptureDrawable (d);
+	pixarray[2] = CaptureDrawable(d);
 
 	return true;
 }
 
 /* Warning: Some ships (such as the Umgah) will alias their pixarrays,
    so we need to track to make sure that we do not double-free. */
-bool
-free_image (FRAME *pixarray)
+bool free_image(FRAME* pixarray)
 {
 	bool retval;
 	uqm::COUNT i, j;
-	void *already_freed[NUM_VIEWS];
+	void* already_freed[NUM_VIEWS];
 
 	retval = true;
 	for (i = 0; i < NUM_VIEWS; ++i)
@@ -102,7 +99,7 @@ free_image (FRAME *pixarray)
 			}
 			if (ok)
 			{
-				if (!DestroyDrawable (ReleaseDrawable (pixarray[i])))
+				if (!DestroyDrawable(ReleaseDrawable(pixarray[i])))
 					retval = false;
 			}
 			already_freed[i] = pixarray[i];
@@ -115,110 +112,108 @@ free_image (FRAME *pixarray)
 
 static uqm::BYTE space_ini_cnt;
 
-bool
-InitSpace (void)
+bool InitSpace(void)
 {
 	if ((space_ini_cnt++ == 0
-			&& lowByte (GLOBAL (CurrentActivity)) <= IN_ENCOUNTER)
-			|| optRequiresReload)
+		 && lowByte(GLOBAL(CurrentActivity)) <= IN_ENCOUNTER)
+		|| optRequiresReload)
 	{
-		stars_in_space = CaptureDrawable (
-				LoadGraphic (STAR_MASK_PMAP_ANIM));
+		stars_in_space = CaptureDrawable(
+			LoadGraphic(STAR_MASK_PMAP_ANIM));
 		if (stars_in_space == NULL)
 			return false;
 
-		scenery = CaptureDrawable (
-				LoadGraphic (SCENERY_MASK_PMAP_ANIM));
+		scenery = CaptureDrawable(
+			LoadGraphic(SCENERY_MASK_PMAP_ANIM));
 		if (scenery == NULL)
 			return false;
 
 
 		if (IS_HD)
-		{			
-			if (!load_animation (stars_misc,
-					STARMISK_BIG_MASK_PMAP_ANIM,
-					STARMISK_MED_MASK_PMAP_ANIM,
-					STARMISK_SML_MASK_PMAP_ANIM))
+		{
+			if (!load_animation(stars_misc,
+								STARMISK_BIG_MASK_PMAP_ANIM,
+								STARMISK_MED_MASK_PMAP_ANIM,
+								STARMISK_SML_MASK_PMAP_ANIM))
 				return false;
 		}
 
-		if (!load_animation (explosion,
-				BOOM_BIG_MASK_PMAP_ANIM,
-				BOOM_MED_MASK_PMAP_ANIM,
-				BOOM_SML_MASK_PMAP_ANIM))
+		if (!load_animation(explosion,
+							BOOM_BIG_MASK_PMAP_ANIM,
+							BOOM_MED_MASK_PMAP_ANIM,
+							BOOM_SML_MASK_PMAP_ANIM))
 			return false;
 
-		if (!load_animation (blast,
-				BLAST_BIG_MASK_PMAP_ANIM,
-				BLAST_MED_MASK_PMAP_ANIM,
-				BLAST_SML_MASK_PMAP_ANIM))
+		if (!load_animation(blast,
+							BLAST_BIG_MASK_PMAP_ANIM,
+							BLAST_MED_MASK_PMAP_ANIM,
+							BLAST_SML_MASK_PMAP_ANIM))
 			return false;
 
-		if (!load_animation (asteroid,
-				ASTEROID_BIG_MASK_PMAP_ANIM,
-				ASTEROID_MED_MASK_PMAP_ANIM,
-				ASTEROID_SML_MASK_PMAP_ANIM))
+		if (!load_animation(asteroid,
+							ASTEROID_BIG_MASK_PMAP_ANIM,
+							ASTEROID_MED_MASK_PMAP_ANIM,
+							ASTEROID_SML_MASK_PMAP_ANIM))
 			return false;
 	}
 
 	return true;
 }
 
-void
-UninitSpace (void)
+void UninitSpace(void)
 {
 	if (space_ini_cnt && --space_ini_cnt == 0)
 	{
-		free_image (blast);
-		free_image (explosion);
-		free_image (asteroid);
-		
-		free_image (stars_misc);
+		free_image(blast);
+		free_image(explosion);
+		free_image(asteroid);
 
-		DestroyDrawable (ReleaseDrawable (stars_in_space));
+		free_image(stars_misc);
+
+		DestroyDrawable(ReleaseDrawable(stars_in_space));
 		stars_in_space = 0;
 
-		DestroyDrawable (ReleaseDrawable (scenery));
+		DestroyDrawable(ReleaseDrawable(scenery));
 		scenery = 0;
 	}
 }
 
 static HSTARSHIP
-BuildSIS (void)
+BuildSIS(void)
 {
 	HSTARSHIP hStarShip;
-	STARSHIP *StarShipPtr;
+	STARSHIP* StarShipPtr;
 
-	hStarShip = Build (&race_q[0], SIS_SHIP_ID);
+	hStarShip = Build(&race_q[0], SIS_SHIP_ID);
 	if (!hStarShip)
 		return 0;
-	StarShipPtr = LockStarShip (&race_q[0], hStarShip);
+	StarShipPtr = LockStarShip(&race_q[0], hStarShip);
 	StarShipPtr->playerNr = RPG_PLAYER_NUM;
 	StarShipPtr->captains_name_index = 0;
-	UnlockStarShip (&race_q[0], hStarShip);
+	UnlockStarShip(&race_q[0], hStarShip);
 
 	return hStarShip;
 }
 
 uqm::SIZE
-InitShips (void)
+InitShips(void)
 {
 	uqm::SIZE num_ships;
 
-	InitSpace ();
+	InitSpace();
 
-	if (inHQSpace ())
+	if (inHQSpace())
 	{
-		ReinitQueue (&race_q[0]);
-		ReinitQueue (&race_q[1]);
+		ReinitQueue(&race_q[0]);
+		ReinitQueue(&race_q[1]);
 
-		BuildSIS ();
-		LoadHyperspace ();
+		BuildSIS();
+		LoadHyperspace();
 
 		// Kruzen: Moved and duped for melee to load correct stars in InitGalaxy()
 		// Depended on stars_in_space frame, which is redeclared in LoadHyperspace()
-		InitDisplayList ();
-		InitGalaxy ();
+		InitDisplayList();
+		InitGalaxy();
 
 		num_ships = 1;
 	}
@@ -227,42 +222,42 @@ InitShips (void)
 		uqm::COUNT i;
 		RECT r;
 
-		SetContext (SpaceContext);
+		SetContext(SpaceContext);
 
-		InitDisplayList ();
-		InitGalaxy ();
+		InitDisplayList();
+		InitGalaxy();
 
-		SetContextFGFrame (Screen);
+		SetContextFGFrame(Screen);
 		r.corner.x = SAFE_X;
 		r.corner.y = SAFE_Y;
 		r.extent.width = SPACE_WIDTH;
 		r.extent.height = SPACE_HEIGHT;
-		SetContextClipRect (&r);
+		SetContextClipRect(&r);
 
-		SetContextBackGroundColor (BLACK_COLOR);
+		SetContextBackGroundColor(BLACK_COLOR);
 		{
 			CONTEXT OldContext;
 
-			OldContext = SetContext (ScreenContext);
+			OldContext = SetContext(ScreenContext);
 
-			SetContextBackGroundColor (BLACK_COLOR);
-			ClearDrawable ();
+			SetContextBackGroundColor(BLACK_COLOR);
+			ClearDrawable();
 
-			SetContext (OldContext);
+			SetContext(OldContext);
 		}
 
-		if (lowByte (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE)
-			free_gravity_well ();
+		if (lowByte(GLOBAL(CurrentActivity)) == IN_LAST_BATTLE)
+			free_gravity_well();
 		else
 		{
 #define NUM_ASTEROIDS 5
 			for (i = 0; i < NUM_ASTEROIDS; ++i)
-				spawn_asteroid (NULL);
+				spawn_asteroid(NULL);
 #define NUM_PLANETS 1
 			for (i = 0; i < NUM_PLANETS; ++i)
-				spawn_planet ();
+				spawn_planet();
 		}
-	
+
 		num_ships = NUM_SIDES;
 	}
 
@@ -273,39 +268,38 @@ InitShips (void)
 
 // Count the crew elements in the display list.
 static uqm::COUNT
-CountCrewElements (void)
+CountCrewElements(void)
 {
 	uqm::COUNT result;
 	HELEMENT hElement, hNextElement;
 
 	result = 0;
-	for (hElement = GetHeadElement ();
-			hElement != 0; hElement = hNextElement)
+	for (hElement = GetHeadElement();
+		 hElement != 0; hElement = hNextElement)
 	{
-		ELEMENT *ElementPtr;
+		ELEMENT* ElementPtr;
 
-		LockElement (hElement, &ElementPtr);
-		hNextElement = GetSuccElement (ElementPtr);
+		LockElement(hElement, &ElementPtr);
+		hNextElement = GetSuccElement(ElementPtr);
 		if (ElementPtr->state_flags & CREW_OBJECT)
 			++result;
 
-		UnlockElement (hElement);
+		UnlockElement(hElement);
 	}
 
 	return result;
 }
 
-void
-UninitShips (void)
+void UninitShips(void)
 {
 	uqm::COUNT crew_retrieved;
 	int i;
 	HELEMENT hElement, hNextElement;
-	STARSHIP *SPtr[NUM_PLAYERS];
+	STARSHIP* SPtr[NUM_PLAYERS];
 
-	StopSound ();
+	StopSound();
 
-	UninitSpace ();
+	UninitSpace();
 
 	for (i = 0; i < NUM_PLAYERS; ++i)
 		SPtr[i] = 0;
@@ -313,48 +307,46 @@ UninitShips (void)
 	// Count the crew floating in space.
 	crew_retrieved = CountCrewElements();
 
-	for (hElement = GetHeadElement ();
-			hElement != 0; hElement = hNextElement)
+	for (hElement = GetHeadElement();
+		 hElement != 0; hElement = hNextElement)
 	{
-		ELEMENT *ElementPtr;
+		ELEMENT* ElementPtr;
 
-		LockElement (hElement, &ElementPtr);
-		hNextElement = GetSuccElement (ElementPtr);
+		LockElement(hElement, &ElementPtr);
+		hNextElement = GetSuccElement(ElementPtr);
 		if ((ElementPtr->state_flags & PLAYER_SHIP)
-				|| ElementPtr->death_func == new_ship)
+			|| ElementPtr->death_func == new_ship)
 		{
-			STARSHIP *StarShipPtr;
+			STARSHIP* StarShipPtr;
 
-			GetElementStarShip (ElementPtr, &StarShipPtr);
+			GetElementStarShip(ElementPtr, &StarShipPtr);
 
 			// There should only be one ship left in battle.
 			// He gets the crew still floating in space.
 			if (StarShipPtr->RaceDescPtr->ship_info.crew_level)
 			{
-				if (crew_retrieved >=
-						StarShipPtr->RaceDescPtr->ship_info.max_crew -
-						StarShipPtr->RaceDescPtr->ship_info.crew_level)
+				if (crew_retrieved >= StarShipPtr->RaceDescPtr->ship_info.max_crew - StarShipPtr->RaceDescPtr->ship_info.crew_level)
 					StarShipPtr->RaceDescPtr->ship_info.crew_level =
-							StarShipPtr->RaceDescPtr->ship_info.max_crew;
+						StarShipPtr->RaceDescPtr->ship_info.max_crew;
 				else
 					StarShipPtr->RaceDescPtr->ship_info.crew_level +=
-							crew_retrieved;
+						crew_retrieved;
 			}
 
 			/* Record crew left after battle */
 			StarShipPtr->crew_level =
-					StarShipPtr->RaceDescPtr->ship_info.crew_level;
+				StarShipPtr->RaceDescPtr->ship_info.crew_level;
 			SPtr[StarShipPtr->playerNr] = StarShipPtr;
-			free_ship (StarShipPtr->RaceDescPtr, true, true);
+			free_ship(StarShipPtr->RaceDescPtr, true, true);
 			StarShipPtr->RaceDescPtr = 0;
 		}
-		UnlockElement (hElement);
+		UnlockElement(hElement);
 	}
 
-	GLOBAL (CurrentActivity) &= ~IN_BATTLE;
+	GLOBAL(CurrentActivity) &= ~IN_BATTLE;
 
-	if (lowByte (GLOBAL (CurrentActivity)) == IN_ENCOUNTER
-			&& !(GLOBAL (CurrentActivity) & CHECK_ABORT))
+	if (lowByte(GLOBAL(CurrentActivity)) == IN_ENCOUNTER
+		&& !(GLOBAL(CurrentActivity) & CHECK_ABORT))
 	{
 		// Encounter battle in full game.
 		//   Record the crew left in the last ship standing. The crew left
@@ -362,39 +354,38 @@ UninitShips (void)
 		//   above here.
 		for (i = NUM_PLAYERS - 1; i >= 0; --i)
 		{
-			if (SPtr[i] && !FleetIsInfinite (i))
-				UpdateShipFragCrew (SPtr[i]);
+			if (SPtr[i] && !FleetIsInfinite(i))
+				UpdateShipFragCrew(SPtr[i]);
 		}
 	}
 
-	if (lowByte (GLOBAL (CurrentActivity)) != IN_ENCOUNTER)
+	if (lowByte(GLOBAL(CurrentActivity)) != IN_ENCOUNTER)
 	{
 		// Remove any ships left from the race queue.
 		for (i = 0; i < NUM_PLAYERS; i++)
-			ReinitQueue (&race_q[i]);
+			ReinitQueue(&race_q[i]);
 
-		if (inHQSpace ())
-			FreeHyperspace ();
+		if (inHQSpace())
+			FreeHyperspace();
 	}
 }
 
-void
-ReloadGameContent (void)
+void ReloadGameContent(void)
 {
 	//FreeKernel (); Crashes when going from HD to SD
-	UninitGameStructures ();
-	ClearPlayerInputAll ();
-	UninitGameKernel ();
-	FreeMasterShipList ();
+	UninitGameStructures();
+	ClearPlayerInputAll();
+	UninitGameKernel();
+	FreeMasterShipList();
 	//TFB_UninitInput ();
 
-	prepareContentDir (contentDirPath, addonDirPath, 0);
+	prepareContentDir(contentDirPath, addonDirPath, 0);
 
-	if (LoadKernel (0, 0))
+	if (LoadKernel(0, 0))
 	{
 		//TFB_InitInput (TFB_INPUTDRIVER_SDL, 0);
-		LoadMasterShipList (TaskSwitch);
-		TaskSwitch ();
-		InitGameKernel ();
+		LoadMasterShipList(TaskSwitch);
+		TaskSwitch();
+		InitGameKernel();
 	}
 }

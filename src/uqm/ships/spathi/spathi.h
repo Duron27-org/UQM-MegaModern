@@ -21,11 +21,10 @@
 extern "C" {
 #endif
 
-RACE_DESC *init_spathi (void);
+RACE_DESC* init_spathi(void);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* SPATHI_H */
-
+#endif /* SPATHI_H */

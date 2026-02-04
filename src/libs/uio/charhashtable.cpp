@@ -24,29 +24,31 @@
 #include "types.h"
 #include "uioport.h"
 
-static inline uio_uint32 CharHashTable_hash(CharHashTable_HashTable *hashTable,
-		const char *string);
-static inline uio_bool CharHashTable_equal(CharHashTable_HashTable *hashTable,
-		const char *key1, const char *key2);
-static inline char *CharHashTable_copy(CharHashTable_HashTable *hashTable,
-		const char *key);
-static inline void CharHashTable_freeKey(CharHashTable_HashTable *hashTable,
-		char *key);
+static inline uio_uint32 CharHashTable_hash(CharHashTable_HashTable* hashTable,
+											const char* string);
+static inline uio_bool CharHashTable_equal(CharHashTable_HashTable* hashTable,
+										   const char* key1, const char* key2);
+static inline char* CharHashTable_copy(CharHashTable_HashTable* hashTable,
+									   const char* key);
+static inline void CharHashTable_freeKey(CharHashTable_HashTable* hashTable,
+										 char* key);
 
 #include "hashtable.cpp"
 
 
 static inline uio_uint32
-CharHashTable_hash(CharHashTable_HashTable *hashTable, const char *key) {
+CharHashTable_hash(CharHashTable_HashTable* hashTable, const char* key)
+{
 	uio_uint32 hash;
 
-	(void) hashTable;
+	(void)hashTable;
 	// Rotating hash, variation of something on the web which
 	// wasn't original itself.
 	hash = 0;
-			// Hash was on that web page initialised as the length,
-			// but that isn't known at this time.
-	while (*key != '\0') {
+	// Hash was on that web page initialised as the length,
+	// but that isn't known at this time.
+	while (*key != '\0')
+	{
 		hash = (hash << 4) ^ (hash >> 28) ^ *key;
 		key++;
 	}
@@ -54,24 +56,25 @@ CharHashTable_hash(CharHashTable_HashTable *hashTable, const char *key) {
 }
 
 static inline uio_bool
-CharHashTable_equal(CharHashTable_HashTable *hashTable,
-		const char *key1, const char *key2) {
-	(void) hashTable;
+CharHashTable_equal(CharHashTable_HashTable* hashTable,
+					const char* key1, const char* key2)
+{
+	(void)hashTable;
 	return strcmp(key1, key2) == 0;
 }
 
-static inline char *
-CharHashTable_copy(CharHashTable_HashTable *hashTable,
-		const char *key) {
-	(void) hashTable;
+static inline char*
+CharHashTable_copy(CharHashTable_HashTable* hashTable,
+				   const char* key)
+{
+	(void)hashTable;
 	return uio_strdup(key);
 }
 
 static inline void
-CharHashTable_freeKey(CharHashTable_HashTable *hashTable,
-		char *key) {
-	(void) hashTable;
+CharHashTable_freeKey(CharHashTable_HashTable* hashTable,
+					  char* key)
+{
+	(void)hashTable;
 	uio_free(key);
 }
-
-

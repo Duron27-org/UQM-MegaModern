@@ -55,21 +55,20 @@ typedef enum
 	OPENING
 } ARILOU_GATE_STATE;
 
-extern int eventIdStrToNum (const char *eventIdStr);
-extern const char *eventIdNumToStr (int eventNum);
+extern int eventIdStrToNum(const char* eventIdStr);
+extern const char* eventIdNumToStr(int eventNum);
 
-extern void initEventSystem (void);
-extern void uninitEventSystem (void);
+extern void initEventSystem(void);
+extern void uninitEventSystem(void);
 
-extern void AddInitialGameEvents (void);
-extern void EventHandler (uqm::BYTE selector);
-extern void SetRaceDest (uqm::BYTE which_race, COORD x, COORD y, uqm::BYTE days_left,
-		uqm::BYTE func_index);
+extern void AddInitialGameEvents(void);
+extern void EventHandler(uqm::BYTE selector);
+extern void SetRaceDest(uqm::BYTE which_race, COORD x, COORD y, uqm::BYTE days_left,
+						uqm::BYTE func_index);
 
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* UQM_GAMEEV_H_ */
-
+#endif /* UQM_GAMEEV_H_ */

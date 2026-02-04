@@ -26,18 +26,18 @@
 
 #include "libs/strlib.h"
 
-#define HASHTABLE_(identifier) StringHashTable ## _ ## identifier
+#define HASHTABLE_(identifier) StringHashTable##_##identifier
 typedef char HASHTABLE_(Key);
 typedef STRING_TABLE_ENTRY_DESC HASHTABLE_(Value);
 #define StringHashTable_HASH StringHashTable_hash
 #define StringHashTable_EQUAL StringHashTable_equal
 #define StringHashTable_COPY StringHashTable_copy
 #define StringHashTable_FREEKEY(hashTable, key) \
-		((void) (hashTable), (void) (key))
+	((void)(hashTable), (void)(key))
 #define StringHashTable_FREEVALUE(hashTable, value) \
-		((void) (hashTable), (void) (value))
+	((void)(hashTable), (void)(value))
 
 #include "libs/uio/hashtable.h"
 
 
-#endif  /* LIBS_STRINGS_STRINGHASHTABLE_H_ */
+#endif /* LIBS_STRINGS_STRINGHASHTABLE_H_ */

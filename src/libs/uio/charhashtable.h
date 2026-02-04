@@ -22,7 +22,7 @@
 #define LIBS_UIO_CHARHASHTABLE_H_
 
 
-#define HASHTABLE_(identifier) CharHashTable ## _ ## identifier
+#define HASHTABLE_(identifier) CharHashTable##_##identifier
 typedef char HASHTABLE_(Key);
 typedef void HASHTABLE_(Value);
 #define CharHashTable_HASH CharHashTable_hash
@@ -30,10 +30,9 @@ typedef void HASHTABLE_(Value);
 #define CharHashTable_COPY CharHashTable_copy
 #define CharHashTable_FREEKEY CharHashTable_freeKey
 #define CharHashTable_FREEVALUE(hashTable, value) \
-		((void) (hashTable), (void) (value))
+	((void)(hashTable), (void)(value))
 
 #include "hashtable.h"
 
 
-#endif  /* LIBS_UIO_CHARHASHTABLE_H_ */
-
+#endif /* LIBS_UIO_CHARHASHTABLE_H_ */

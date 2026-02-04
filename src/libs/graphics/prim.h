@@ -38,50 +38,50 @@ union PRIM_DESC
 	LINE Line;
 	TEXT Text;
 	RECT Rect;
-} ;
+};
 
 typedef uqm::DWORD PRIM_LINKS;
 
 struct PRIMITIVE
 {
-	PRIM_LINKS Links{};
-	GRAPHICS_PRIM Type{};
-	Color color{};
-	PRIM_DESC Object{};
-	uqm::BYTE flags{};
+	PRIM_LINKS Links {};
+	GRAPHICS_PRIM Type {};
+	Color color {};
+	PRIM_DESC Object {};
+	uqm::BYTE flags {};
 };
 
 #define END_OF_LIST ((uqm::COUNT)0xFFFF)
 
 /* Primitive flags */
-#define UNSCALED_STAMP (1 << 0) // Stamp will not be scaled via smooth scaler
+#define UNSCALED_STAMP (1 << 0)		  // Stamp will not be scaled via smooth scaler
 #define HYPER_TO_QUASI_COLOR (1 << 1) // Stamp be rendered with quasispace filter (for ambience in HD only)
 #define HS_STARMASK (1 << 2)
 
 #define GetPredLink(l) LOWORD(l)
 #define GetSuccLink(l) HIWORD(l)
 #define MakeLinks MAKE_DWORD
-#define SetPrimLinks(pPrim,p,s) ((pPrim)->Links = MakeLinks (p, s))
+#define SetPrimLinks(pPrim, p, s) ((pPrim)->Links = MakeLinks(p, s))
 #define GetPrimLinks(pPrim) ((pPrim)->Links)
-#define SetPrimType(pPrim,t) ((pPrim)->Type = t)
+#define SetPrimType(pPrim, t) ((pPrim)->Type = t)
 #define GetPrimType(pPrim) ((pPrim)->Type)
-#define SetPrimColor(pPrim,c) ((pPrim)->color = c)
+#define SetPrimColor(pPrim, c) ((pPrim)->color = c)
 #define GetPrimColor(pPrim) ((pPrim)->color)
-#define SetPrimFlags(pPrim,f) ((pPrim)->flags = f)
+#define SetPrimFlags(pPrim, f) ((pPrim)->flags = f)
 #define GetPrimFlags(pPrim) ((pPrim)->flags)
 
 static inline void
-SetPrimNextLink (PRIMITIVE *pPrim, uqm::COUNT Link)
+SetPrimNextLink(PRIMITIVE* pPrim, uqm::COUNT Link)
 {
-	SetPrimLinks (pPrim, END_OF_LIST, Link);
+	SetPrimLinks(pPrim, END_OF_LIST, Link);
 }
 
 
 static inline uqm::COUNT
-GetPrimNextLink (PRIMITIVE *pPrim)
+GetPrimNextLink(PRIMITIVE* pPrim)
 {
-	return GetSuccLink (GetPrimLinks (pPrim));
+	return GetSuccLink(GetPrimLinks(pPrim));
 }
 
 
-#endif  /* PRIM_H */
+#endif /* PRIM_H */

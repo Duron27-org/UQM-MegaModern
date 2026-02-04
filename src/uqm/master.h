@@ -36,36 +36,35 @@ typedef struct
 
 	SHIP_INFO ShipInfo;
 	FLEET_STUFF Fleet;
-			// FLEET_STUFF is only necessary here because avail_race_q
-			// is initialized in part from master_q (kinda hacky)
+	// FLEET_STUFF is only necessary here because avail_race_q
+	// is initialized in part from master_q (kinda hacky)
 } MASTER_SHIP_INFO;
 
 extern QUEUE master_q;
-		/* List of ships available in SuperMelee;
+/* List of ships available in SuperMelee;
 		 * queue element is MASTER_SHIP_INFO */
 
-static inline MASTER_SHIP_INFO *
-LockMasterShip (const QUEUE *pq, HMASTERSHIP h)
+static inline MASTER_SHIP_INFO*
+LockMasterShip(const QUEUE* pq, HMASTERSHIP h)
 {
-	assert (GetLinkSize (pq) == sizeof (MASTER_SHIP_INFO));
-	return (MASTER_SHIP_INFO *) LockLink (pq, h);
+	assert(GetLinkSize(pq) == sizeof(MASTER_SHIP_INFO));
+	return (MASTER_SHIP_INFO*)LockLink(pq, h);
 }
 
-#define UnlockMasterShip(pq, h) UnlockLink (pq, h)
-#define FreeMasterShip(pq, h) FreeLink (pq, h)
+#define UnlockMasterShip(pq, h) UnlockLink(pq, h)
+#define FreeMasterShip(pq, h) FreeLink(pq, h)
 
-extern void LoadMasterShipList (void (* YieldProcessing)(void));
-extern void FreeMasterShipList (void);
-extern void ReloadMasterShipList (void (* YieldProcessing)(void));
-extern HMASTERSHIP FindMasterShip (SPECIES_ID ship_ref);
-extern int FindMasterShipIndex (SPECIES_ID ship_ref);
-uqm::COUNT GetShipCostFromIndex (unsigned Index);
-FRAME GetShipIconsFromIndex (unsigned Index);
-FRAME GetShipMeleeIconsFromIndex (unsigned Index);
+extern void LoadMasterShipList(void (*YieldProcessing)(void));
+extern void FreeMasterShipList(void);
+extern void ReloadMasterShipList(void (*YieldProcessing)(void));
+extern HMASTERSHIP FindMasterShip(SPECIES_ID ship_ref);
+extern int FindMasterShipIndex(SPECIES_ID ship_ref);
+uqm::COUNT GetShipCostFromIndex(unsigned Index);
+FRAME GetShipIconsFromIndex(unsigned Index);
+FRAME GetShipMeleeIconsFromIndex(unsigned Index);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* UQM_MASTER_H_ */
-
+#endif /* UQM_MASTER_H_ */

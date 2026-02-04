@@ -28,122 +28,114 @@
 #include "libs/uio.h"
 #include "libs/log.h"
 
-uio_Stream *
-res_OpenResFile (uio_DirHandle *dir, const char *filename, const char *mode)
+uio_Stream*
+res_OpenResFile(uio_DirHandle* dir, const char* filename, const char* mode)
 {
-	uio_Stream *fp;
+	uio_Stream* fp;
 	struct stat sb;
 
-	if (uio_stat(dir, filename, &sb) == 0 && S_ISDIR(sb.st_mode)) {
+	if (uio_stat(dir, filename, &sb) == 0 && S_ISDIR(sb.st_mode))
+	{
 		// log_add(log_Debug, "res_OpenResFile('%s', '%s') - cannot open dir as file", filename, mode);
-		return ((uio_Stream *)~0);
+		return ((uio_Stream*)~0);
 	}
 
-	fp = uio_fopen (dir, filename, mode);
+	fp = uio_fopen(dir, filename, mode);
 
 	return (fp);
 }
 
-bool
-res_CloseResFile (uio_Stream *fp)
+bool res_CloseResFile(uio_Stream* fp)
 {
 	if (fp)
 	{
-		if (fp != (uio_Stream *)~0)
-			uio_fclose (fp);
+		if (fp != (uio_Stream*)~0)
+			uio_fclose(fp);
 		return (true);
 	}
 
 	return (false);
 }
 
-bool
-DeleteResFile (uio_DirHandle *dir, const char *filename)
+bool DeleteResFile(uio_DirHandle* dir, const char* filename)
 {
-	return (bool)(uio_unlink (dir, filename) == 0);
+	return (bool)(uio_unlink(dir, filename) == 0);
 }
 
 size_t
-ReadResFile (void *lpBuf, size_t size, size_t count, uio_Stream *fp)
+ReadResFile(void* lpBuf, size_t size, size_t count, uio_Stream* fp)
 {
 	int retval;
 
-	retval = uio_fread (lpBuf, size, count, fp);
+	retval = uio_fread(lpBuf, size, count, fp);
 
 	return (retval);
 }
 
 size_t
-WriteResFile (const void *lpBuf, size_t size, size_t count, uio_Stream *fp)
+WriteResFile(const void* lpBuf, size_t size, size_t count, uio_Stream* fp)
 {
 	int retval;
 
-	retval = uio_fwrite (lpBuf, size, count, fp);
+	retval = uio_fwrite(lpBuf, size, count, fp);
 
 	return (retval);
 }
 
-int
-GetResFileChar (uio_Stream *fp)
+int GetResFileChar(uio_Stream* fp)
 {
 	int retval;
 
-	retval = uio_getc (fp);
+	retval = uio_getc(fp);
 
 	return (retval);
 }
 
-int
-PutResFileChar (char ch, uio_Stream *fp)
+int PutResFileChar(char ch, uio_Stream* fp)
 {
 	int retval;
 
-	retval = uio_putc (ch, fp);
+	retval = uio_putc(ch, fp);
 	return (retval);
 }
 
-int
-PutResFileNewline (uio_Stream *fp)
+int PutResFileNewline(uio_Stream* fp)
 {
 	int retval;
 
 #ifdef WIN32
-	PutResFileChar ('\r', fp);
+	PutResFileChar('\r', fp);
 #endif
-	retval = PutResFileChar ('\n', fp);
+	retval = PutResFileChar('\n', fp);
 	return (retval);
 }
 
-long
-SeekResFile (uio_Stream *fp, long offset, int whence)
+long SeekResFile(uio_Stream* fp, long offset, int whence)
 {
 	long retval;
 
-	retval = uio_fseek (fp, offset, whence);
+	retval = uio_fseek(fp, offset, whence);
 
 	return (retval);
 }
 
-long
-TellResFile (uio_Stream *fp)
+long TellResFile(uio_Stream* fp)
 {
 	long retval;
 
-	retval = uio_ftell (fp);
+	retval = uio_ftell(fp);
 
 	return (retval);
 }
 
 size_t
-LengthResFile (uio_Stream *fp)
+LengthResFile(uio_Stream* fp)
 {
 	struct stat sb;
 
-	if (fp == (uio_Stream *)~0)
+	if (fp == (uio_Stream*)~0)
 		return (1);
 	if (uio_fstat(uio_streamHandle(fp), &sb) == -1)
 		return 1;
 	return sb.st_size;
 }
-
-

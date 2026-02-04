@@ -32,38 +32,36 @@ extern "C" {
 
 struct melee_load_state
 {
-	MeleeTeam **preBuiltList;
+	MeleeTeam** preBuiltList;
 	uqm::COUNT preBuiltCount;
-	
+
 	DIRENTRY dirEntries;
-	uqm::COUNT *entryIndices;
+	uqm::COUNT* entryIndices;
 	uqm::COUNT numIndices;
 
-	MeleeTeam *view[LOAD_TEAM_VIEW_SIZE];
+	MeleeTeam* view[LOAD_TEAM_VIEW_SIZE];
 	uqm::COUNT top;
-			// Index of the first entry for the view.
+	// Index of the first entry for the view.
 	uqm::COUNT bot;
-			// Index of the first entry past the end of the view.
+	// Index of the first entry past the end of the view.
 
 	uqm::COUNT cur;
-			// Index of the current position in the view.
+	// Index of the current position in the view.
 	uqm::COUNT viewSize;
-			// Number of entries in the view.
+	// Number of entries in the view.
 };
 
-void InitMeleeLoadState (MELEE_STATE *pMS);
-void UninitMeleeLoadState (MELEE_STATE *pMS);
+void InitMeleeLoadState(MELEE_STATE* pMS);
+void UninitMeleeLoadState(MELEE_STATE* pMS);
 
-bool DoLoadTeam (MELEE_STATE *pMS);
-bool DoSaveTeam (MELEE_STATE *pMS);
-bool ReadTeamImage (MeleeTeam *pTI, uio_Stream *load_fp);
-int WriteTeamImage (const MeleeTeam *pTI, uio_Stream *save_fp);
-void LoadTeamList (MELEE_STATE *pMS);
+bool DoLoadTeam(MELEE_STATE* pMS);
+bool DoSaveTeam(MELEE_STATE* pMS);
+bool ReadTeamImage(MeleeTeam* pTI, uio_Stream* load_fp);
+int WriteTeamImage(const MeleeTeam* pTI, uio_Stream* save_fp);
+void LoadTeamList(MELEE_STATE* pMS);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
 #endif /* UQM_SUPERMELEE_LOADMELE_H_ */
-
-

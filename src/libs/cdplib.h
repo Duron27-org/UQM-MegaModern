@@ -20,7 +20,8 @@
 #define LIBS_CDPLIB_H_
 
 #if defined(__cplusplus)
-extern "C" {
+extern "C"
+{
 #endif
 
 #include "cdp/cdp.h"
@@ -29,4 +30,4 @@ extern "C" {
 }
 #endif
 
-#endif  /* LIBS_CDPLIB_H_ */
+#endif /* LIBS_CDPLIB_H_ */

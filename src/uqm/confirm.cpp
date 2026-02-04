@@ -34,73 +34,72 @@
 #include <stdlib.h>
 
 
-#define CONFIRM_WIN_WIDTH RES_SCALE (84)
-#define CONFIRM_WIN_HEIGHT RES_SCALE (26)
+#define CONFIRM_WIN_WIDTH RES_SCALE(84)
+#define CONFIRM_WIN_HEIGHT RES_SCALE(26)
 
 bool WarpFromMenu = false;
 
 static void
-DrawConfirmationWindow (bool answer, bool confirm)
+DrawConfirmationWindow(bool answer, bool confirm)
 {
-	Color oldfg = SetContextForeGroundColor (SHADOWBOX_DARK_COLOR);
-	FONT  oldfont = SetContextFont (StarConFont);
-	FRAME oldFontEffect = SetContextFontEffect (NULL);
+	Color oldfg = SetContextForeGroundColor(SHADOWBOX_DARK_COLOR);
+	FONT oldfont = SetContextFont(StarConFont);
+	FRAME oldFontEffect = SetContextFontEffect(NULL);
 	RECT r;
 	TEXT t;
 
-	BatchGraphics ();
+	BatchGraphics();
 	r.corner.x = (SCREEN_WIDTH - CONFIRM_WIN_WIDTH) >> 1;
 	r.corner.y = (SCREEN_HEIGHT - CONFIRM_WIN_HEIGHT) >> 1;
 	r.extent.width = CONFIRM_WIN_WIDTH;
 	r.extent.height = CONFIRM_WIN_HEIGHT;
 	if (!IS_HD)
 	{
-		DrawShadowedBox (&r, ALT_SHADOWBOX_BACKGROUND_COLOR,
-				SHADOWBOX_DARK_COLOR, SHADOWBOX_MEDIUM_COLOR);
+		DrawShadowedBox(&r, ALT_SHADOWBOX_BACKGROUND_COLOR,
+						SHADOWBOX_DARK_COLOR, SHADOWBOX_MEDIUM_COLOR);
 	}
 	else
 	{
-		DrawRenderedBox (&r, true, ALT_SHADOWBOX_BACKGROUND_COLOR,
-				THICK_OUTER_BEVEL, false);
+		DrawRenderedBox(&r, true, ALT_SHADOWBOX_BACKGROUND_COLOR,
+						THICK_OUTER_BEVEL, false);
 	}
 
 
 	t.baseline.x = r.corner.x + (r.extent.width >> 1);
-	t.baseline.y = r.corner.y + RES_SCALE (10);
-	t.pStr = GAME_STRING (QUITMENU_STRING_BASE); // "Really Quit?"
+	t.baseline.y = r.corner.y + RES_SCALE(10);
+	t.pStr = GAME_STRING(QUITMENU_STRING_BASE); // "Really Quit?"
 	t.align = ALIGN_CENTER;
 	t.CharCount = (uqm::COUNT)~0;
-	font_DrawText (&t);
-	t.baseline.y += RES_SCALE (10);
+	font_DrawText(&t);
+	t.baseline.y += RES_SCALE(10);
 	t.baseline.x = r.corner.x + (r.extent.width >> 2);
-	t.pStr = GAME_STRING (QUITMENU_STRING_BASE + 1); // "Yes"
-	SetContextForeGroundColor (
-			answer ? (confirm ? WHITE_COLOR : MENU_HIGHLIGHT_COLOR) :
-			BLACK_COLOR);
-	font_DrawText (&t);
+	t.pStr = GAME_STRING(QUITMENU_STRING_BASE + 1); // "Yes"
+	SetContextForeGroundColor(
+		answer ? (confirm ? WHITE_COLOR : MENU_HIGHLIGHT_COLOR) :
+				 BLACK_COLOR);
+	font_DrawText(&t);
 	t.baseline.x += (r.extent.width >> 1);
-	t.pStr = GAME_STRING (QUITMENU_STRING_BASE + 2); // "No"
-	SetContextForeGroundColor (
-			answer ? BLACK_COLOR : MENU_HIGHLIGHT_COLOR);
-	font_DrawText (&t);
+	t.pStr = GAME_STRING(QUITMENU_STRING_BASE + 2); // "No"
+	SetContextForeGroundColor(
+		answer ? BLACK_COLOR : MENU_HIGHLIGHT_COLOR);
+	font_DrawText(&t);
 
-	UnbatchGraphics ();
+	UnbatchGraphics();
 
-	SetContextFontEffect (oldFontEffect);
-	SetContextFont (oldfont);
-	SetContextForeGroundColor (oldfg);
+	SetContextFontEffect(oldFontEffect);
+	SetContextFont(oldfont);
+	SetContextForeGroundColor(oldfg);
 }
 
-bool
-DoConfirmExit (void)
+bool DoConfirmExit(void)
 {
 	bool result;
 	bool FlashPaused;
 
-	if (PlayingTrack ())
-		PauseTrack ();
+	if (PlayingTrack())
+		PauseTrack();
 
-	FlashPaused = PauseFlash ();
+	FlashPaused = PauseFlash();
 
 	{
 		RECT r;
@@ -114,53 +113,53 @@ DoConfirmExit (void)
 		uqm::BYTE oldVolume;
 		TimeCount deltaT;
 
-		deltaT = GetTimeCounter ();
+		deltaT = GetTimeCounter();
 
-		oldContext = SetContext (ScreenContext);
-		GetContextClipRect (&oldRect);
-		SetContextClipRect (NULL);
+		oldContext = SetContext(ScreenContext);
+		GetContextClipRect(&oldRect);
+		SetContextClipRect(NULL);
 
-		GetContextClipRect (&ctxRect);
-		r.extent.width = CONFIRM_WIN_WIDTH + RES_SCALE (4);
-		r.extent.height = CONFIRM_WIN_HEIGHT + RES_SCALE (4);
+		GetContextClipRect(&ctxRect);
+		r.extent.width = CONFIRM_WIN_WIDTH + RES_SCALE(4);
+		r.extent.height = CONFIRM_WIN_HEIGHT + RES_SCALE(4);
 		r.corner.x = (ctxRect.extent.width - r.extent.width) >> 1;
 		r.corner.y = (ctxRect.extent.height - r.extent.height) >> 1;
-		s = SaveContextFrame (&ctxRect);
+		s = SaveContextFrame(&ctxRect);
 
-		mode = MAKE_DRAW_MODE (DRAW_DESATURATE, DESAT_AMOUNT);
-		oldMode = SetContextDrawMode (mode);
-		DrawFilledRectangle (&ctxRect);
-		SetContextDrawMode (oldMode);
-		OldColor = SetContextForeGroundColor 
-				(BUILD_COLOR_RGBA (0x00, 0x00, 0x00, 0x30));
-		DrawFilledRectangle (&ctxRect);
-		SetContextForeGroundColor (OldColor);
+		mode = MAKE_DRAW_MODE(DRAW_DESATURATE, DESAT_AMOUNT);
+		oldMode = SetContextDrawMode(mode);
+		DrawFilledRectangle(&ctxRect);
+		SetContextDrawMode(oldMode);
+		OldColor = SetContextForeGroundColor(BUILD_COLOR_RGBA(0x00, 0x00, 0x00, 0x30));
+		DrawFilledRectangle(&ctxRect);
+		SetContextForeGroundColor(OldColor);
 
 		// There was a SetSystemRect(&r) call which we don't need anymore
 
-		DrawConfirmationWindow (response, false);
-		FlushGraphics ();
+		DrawConfirmationWindow(response, false);
+		FlushGraphics();
 
-		FlushInput ();
+		FlushInput();
 		done = false;
 
 		oldVolume = GetCurrMusicVol();
-		FadeMusic (60, ONE_SECOND / 2);
-		
-		while (!done){
+		FadeMusic(60, ONE_SECOND / 2);
+
+		while (!done)
+		{
 			// Forbid recursive calls or pausing here!
 			ExitRequested = false;
 			GamePaused = false;
-			UpdateInputState ();
-			if (GLOBAL (CurrentActivity) & CHECK_ABORT)
-			{	// something else triggered an exit
+			UpdateInputState();
+			if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+			{ // something else triggered an exit
 				done = true;
 				response = true;
 			}
 			else if (PulsedInputState.menu[KEY_MENU_SELECT])
 			{
 				done = true;
-				PlayMenuSound (MENU_SOUND_SUCCESS);
+				PlayMenuSound(MENU_SOUND_SUCCESS);
 			}
 			else if (PulsedInputState.menu[KEY_MENU_CANCEL])
 			{
@@ -168,49 +167,49 @@ DoConfirmExit (void)
 				response = false;
 			}
 			else if (PulsedInputState.menu[KEY_MENU_LEFT]
-					|| PulsedInputState.menu[KEY_MENU_RIGHT])
+					 || PulsedInputState.menu[KEY_MENU_RIGHT])
 			{
 				response = !response;
-				DrawConfirmationWindow (response, false);
-				PlayMenuSound (MENU_SOUND_MOVE);
+				DrawConfirmationWindow(response, false);
+				PlayMenuSound(MENU_SOUND_MOVE);
 			}
-			SleepThread (ONE_SECOND / 30);
+			SleepThread(ONE_SECOND / 30);
 		};
 
 		// Restore the screen under the confirmation window
 		if (!response)
 		{
-			DrawStamp (&s);
-			DeltaLastTime (GetTimeCounter () - deltaT);
-			FadeMusic (oldVolume, ONE_SECOND / 2);
+			DrawStamp(&s);
+			DeltaLastTime(GetTimeCounter() - deltaT);
+			FadeMusic(oldVolume, ONE_SECOND / 2);
 		}
 		else
 		{
-			DrawConfirmationWindow (true, true);
+			DrawConfirmationWindow(true, true);
 		}
-		DestroyDrawable (ReleaseDrawable (s.frame));
-		ClearSystemRect ();
-		if (response || (GLOBAL (CurrentActivity) & CHECK_ABORT))
+		DestroyDrawable(ReleaseDrawable(s.frame));
+		ClearSystemRect();
+		if (response || (GLOBAL(CurrentActivity) & CHECK_ABORT))
 		{
 			result = true;
-			GLOBAL (CurrentActivity) |= CHECK_ABORT;
-		}		
+			GLOBAL(CurrentActivity) |= CHECK_ABORT;
+		}
 		else
 		{
 			result = false;
 		}
 		ExitRequested = false;
 		GamePaused = false;
-		FlushInput ();
-		SetContextClipRect (&oldRect);
-		SetContext (oldContext);
+		FlushInput();
+		SetContextClipRect(&oldRect);
+		SetContext(oldContext);
 	}
 
 	if (FlashPaused)
-		ContinueFlash ();
+		ContinueFlash();
 
-	if (PlayingTrack () && !result)
-		ResumeTrack ();
+	if (PlayingTrack() && !result)
+		ResumeTrack();
 
 	return (result);
 }
@@ -218,24 +217,21 @@ DoConfirmExit (void)
 typedef struct popup_state
 {
 	// standard state required by DoInput
-	bool (*InputFunc) (struct popup_state *self);
+	bool (*InputFunc)(struct popup_state* self);
 } POPUP_STATE;
 
 static bool
-DoPopup (struct popup_state *self)
+DoPopup(struct popup_state* self)
 {
 	(void)self;
-	SleepThread (ONE_SECOND / 20);
-	return !(PulsedInputState.menu[KEY_MENU_SELECT] ||
-			PulsedInputState.menu[KEY_MENU_CANCEL] ||
-			(GLOBAL (CurrentActivity) & CHECK_ABORT));
+	SleepThread(ONE_SECOND / 20);
+	return !(PulsedInputState.menu[KEY_MENU_SELECT] || PulsedInputState.menu[KEY_MENU_CANCEL] || (GLOBAL(CurrentActivity) & CHECK_ABORT));
 }
 
-void
-DoPopupWindow (const char *msg)
+void DoPopupWindow(const char* msg)
 {
-	stringbank *bank = StringBank_Create ();
-	const char *lines[30];
+	stringbank* bank = StringBank_Create();
+	const char* lines[30];
 	WIDGET_LABEL label;
 	STAMP s;
 	CONTEXT oldContext;
@@ -243,60 +239,59 @@ DoPopupWindow (const char *msg)
 	RECT windowRect;
 	POPUP_STATE state;
 	MENU_SOUND_FLAGS s0, s1;
-	InputFrameCallback *oldCallback;
+	InputFrameCallback* oldCallback;
 	bool FlashPaused;
 
 	if (!bank)
 	{
-		log_add (log_Fatal, "FATAL: Memory exhaustion when preparing popup"
-				" window");
-		exit (EXIT_FAILURE);
+		log_add(log_Fatal, "FATAL: Memory exhaustion when preparing popup"
+						   " window");
+		exit(EXIT_FAILURE);
 	}
 
 	label.tag = WIDGET_TYPE_LABEL;
 	label.parent = NULL;
- 	label.handleEvent = Widget_HandleEventIgnoreAll;
+	label.handleEvent = Widget_HandleEventIgnoreAll;
 	label.receiveFocus = Widget_ReceiveFocusRefuseFocus;
 	label.draw = Widget_DrawLabel;
 	label.height = Widget_HeightLabel;
 	label.width = Widget_WidthFullScreen;
-	label.line_count = SplitString (msg, '\n', 30, lines, bank);
+	label.line_count = SplitString(msg, '\n', 30, lines, bank);
 	label.lines = lines;
 
-	FlashPaused = PauseFlash ();
+	FlashPaused = PauseFlash();
 
-	oldContext = SetContext (ScreenContext);
-	GetContextClipRect (&oldRect);
-	SetContextClipRect (NULL);
+	oldContext = SetContext(ScreenContext);
+	GetContextClipRect(&oldRect);
+	SetContextClipRect(NULL);
 
 	// TODO: Maybe DrawLabelAsWindow() should return a saved STAMP?
 	//   We do not know the dimensions here, and so save the whole context
-	s = SaveContextFrame (NULL);
+	s = SaveContextFrame(NULL);
 
-	Widget_SetFont (StarConFont);
-	Widget_SetWindowColors (SHADOWBOX_BACKGROUND_COLOR,
-			SHADOWBOX_DARK_COLOR, SHADOWBOX_MEDIUM_COLOR);
-	DrawLabelAsWindow (&label, &windowRect);
+	Widget_SetFont(StarConFont);
+	Widget_SetWindowColors(SHADOWBOX_BACKGROUND_COLOR,
+						   SHADOWBOX_DARK_COLOR, SHADOWBOX_MEDIUM_COLOR);
+	DrawLabelAsWindow(&label, &windowRect);
 	// There was a SetSystemRect(&windowRect) call which we don't need anymore
 
-	GetMenuSounds (&s0, &s1);
-	SetMenuSounds (MENU_SOUND_NONE, MENU_SOUND_NONE);
-	oldCallback = SetInputCallback (NULL);
+	GetMenuSounds(&s0, &s1);
+	SetMenuSounds(MENU_SOUND_NONE, MENU_SOUND_NONE);
+	oldCallback = SetInputCallback(NULL);
 
 	state.InputFunc = DoPopup;
-	DoInput (&state, true);
+	DoInput(&state, true);
 
-	SetInputCallback (oldCallback);
-	ClearSystemRect ();
-	DrawStamp (&s);
-	DestroyDrawable (ReleaseDrawable (s.frame));
-	SetContextClipRect (&oldRect);
-	SetContext (oldContext);
+	SetInputCallback(oldCallback);
+	ClearSystemRect();
+	DrawStamp(&s);
+	DestroyDrawable(ReleaseDrawable(s.frame));
+	SetContextClipRect(&oldRect);
+	SetContext(oldContext);
 
 	if (FlashPaused)
-		ContinueFlash ();
+		ContinueFlash();
 
-	SetMenuSounds (s0, s1);
-	StringBank_Free (bank);
+	SetMenuSounds(s0, s1);
+	StringBank_Free(bank);
 }
-

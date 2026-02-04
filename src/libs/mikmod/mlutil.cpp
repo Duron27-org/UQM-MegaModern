@@ -38,46 +38,45 @@
 #include "mikmod_internals.h"
 
 #ifdef SUNOS
-extern int fprintf(FILE *, const char *, ...);
+extern int fprintf(FILE*, const char*, ...);
 #endif
 
 /*========== Shared tracker identifiers */
 
-const CHAR *STM_Signatures[STM_NTRACKERS] = {
+const CHAR* STM_Signatures[STM_NTRACKERS] = {
 	"!Scream!",
 	"BMOD2STM",
-	"WUZAMOD!"
-};
+	"WUZAMOD!"};
 
-const CHAR *STM_Version[STM_NTRACKERS] = {
+const CHAR* STM_Version[STM_NTRACKERS] = {
 	"Screamtracker 2",
 	"Converted by MOD2STM (STM format)",
-	"Wuzamod (STM format)"
-};
+	"Wuzamod (STM format)"};
 
 /*========== Shared loader variables */
 
-SBYTE  remap[UF_MAXCHAN];   /* for removing empty channels */
-UBYTE* poslookup=NULL;      /* lookup table for pattern jumps after blank
+SBYTE remap[UF_MAXCHAN]; /* for removing empty channels */
+UBYTE* poslookup = NULL; /* lookup table for pattern jumps after blank
                                pattern removal */
-UWORD  poslookupcnt;
-UWORD* origpositions=NULL;
+UWORD poslookupcnt;
+UWORD* origpositions = NULL;
 
-BOOL   filters;             /* resonant filters in use */
-UBYTE  activemacro;         /* active midi macro number for Sxx,xx<80h */
-UBYTE  filtermacros[UF_MAXMACRO];    /* midi macro settings */
+BOOL filters;						 /* resonant filters in use */
+UBYTE activemacro;					 /* active midi macro number for Sxx,xx<80h */
+UBYTE filtermacros[UF_MAXMACRO];	 /* midi macro settings */
 FILTER filtersettings[UF_MAXFILTER]; /* computed filter settings */
 
 /*========== Linear periods stuff */
 
-int*   noteindex=NULL;      /* remap value for linear period modules */
-static unsigned noteindexcount=0;
+int* noteindex = NULL; /* remap value for linear period modules */
+static unsigned noteindexcount = 0;
 
-int *AllocLinear(void)
+int* AllocLinear(void)
 {
-	if(of.numsmp>noteindexcount) {
-		noteindexcount=of.numsmp;
-		noteindex=(int*)MikMod_realloc(noteindex,noteindexcount*sizeof(int));
+	if (of.numsmp > noteindexcount)
+	{
+		noteindexcount = of.numsmp;
+		noteindex = (int*)MikMod_realloc(noteindex, noteindexcount * sizeof(int));
 	}
 	return noteindex;
 }
@@ -85,33 +84,36 @@ int *AllocLinear(void)
 void FreeLinear(void)
 {
 	MikMod_free(noteindex);
-	noteindex=NULL;
-	noteindexcount=0;
+	noteindex = NULL;
+	noteindexcount = 0;
 }
 
-int speed_to_finetune(ULONG speed,int sample)
+int speed_to_finetune(ULONG speed, int sample)
 {
-    int ctmp=0,tmp,note=1,ft=0;
+	int ctmp = 0, tmp, note = 1, ft = 0;
 
-    speed>>=1;
-    while((tmp=getfrequency(of.flags,getlinearperiod(note<<1,0)))<speed) {
-        ctmp=tmp;
-        note++;
-    }
+	speed >>= 1;
+	while ((tmp = getfrequency(of.flags, getlinearperiod(note << 1, 0))) < speed)
+	{
+		ctmp = tmp;
+		note++;
+	}
 
-    if(tmp!=speed) {
-        if((tmp-speed)<(speed-ctmp))
-            while(tmp>speed)
-                tmp=getfrequency(of.flags,getlinearperiod(note<<1,--ft));
-        else {
-            note--;
-            while(ctmp<speed)
-                ctmp=getfrequency(of.flags,getlinearperiod(note<<1,++ft));
-        }
-    }
+	if (tmp != speed)
+	{
+		if ((tmp - speed) < (speed - ctmp))
+			while (tmp > speed)
+				tmp = getfrequency(of.flags, getlinearperiod(note << 1, --ft));
+		else
+		{
+			note--;
+			while (ctmp < speed)
+				ctmp = getfrequency(of.flags, getlinearperiod(note << 1, ++ft));
+		}
+	}
 
-    noteindex[sample]=note-4*OCTAVE;
-    return ft;
+	noteindex[sample] = note - 4 * OCTAVE;
+	return ft;
 }
 
 /*========== Order stuff */
@@ -122,17 +124,21 @@ void S3MIT_CreateOrders(BOOL curious)
 	int t;
 
 	of.numpos = 0;
-	memset(of.positions,0,poslookupcnt*sizeof(UWORD));
-	memset(poslookup,-1,256);
-	for(t=0;t<poslookupcnt;t++) {
-		int order=origpositions[t];
-		if(order==255) order=LAST_PATTERN;
-		of.positions[of.numpos]=order;
-		poslookup[t]=of.numpos; /* bug fix for freaky S3Ms / ITs */
-		if(origpositions[t]<254) of.numpos++;
+	memset(of.positions, 0, poslookupcnt * sizeof(UWORD));
+	memset(poslookup, -1, 256);
+	for (t = 0; t < poslookupcnt; t++)
+	{
+		int order = origpositions[t];
+		if (order == 255)
+			order = LAST_PATTERN;
+		of.positions[of.numpos] = order;
+		poslookup[t] = of.numpos; /* bug fix for freaky S3Ms / ITs */
+		if (origpositions[t] < 254)
+			of.numpos++;
 		else
 			/* end of song special order */
-			if((order==LAST_PATTERN)&&(!(curious--))) break;
+			if ((order == LAST_PATTERN) && (!(curious--)))
+				break;
 	}
 }
 
@@ -141,149 +147,160 @@ void S3MIT_CreateOrders(BOOL curious)
 /* handles S3M and IT effects */
 void S3MIT_ProcessCmd(UBYTE cmd, UBYTE inf, unsigned int flags)
 {
-	UBYTE lo = inf&0xF;
+	UBYTE lo = inf & 0xF;
 	/* process S3M / IT specific command structure */
 
-	if(cmd!=255) {
-		switch(cmd) {
+	if (cmd != 255)
+	{
+		switch (cmd)
+		{
 			case 1: /* Axx set speed to xx */
-				UniEffect(UNI_S3MEFFECTA,inf);
+				UniEffect(UNI_S3MEFFECTA, inf);
 				break;
 			case 2: /* Bxx position jump */
-				if (inf<poslookupcnt) {
+				if (inf < poslookupcnt)
+				{
 					/* switch to curious mode if necessary, for example
 					   sympex.it, deep joy.it */
-					if(((SBYTE)poslookup[inf]<0)&&(origpositions[inf]!=255))
+					if (((SBYTE)poslookup[inf] < 0) && (origpositions[inf] != 255))
 						S3MIT_CreateOrders(1);
 
-					if(!((SBYTE)poslookup[inf]<0))
-						UniPTEffect(0xb,poslookup[inf]);
+					if (!((SBYTE)poslookup[inf] < 0))
+						UniPTEffect(0xb, poslookup[inf]);
 				}
 				break;
 			case 3: /* Cxx patternbreak to row xx */
 				if ((flags & S3MIT_OLDSTYLE) && !(flags & S3MIT_IT))
-					UniPTEffect(0xd,(inf>>4)*10+(inf&0xf));
+					UniPTEffect(0xd, (inf >> 4) * 10 + (inf & 0xf));
 				else
-					UniPTEffect(0xd,inf);
+					UniPTEffect(0xd, inf);
 				break;
 			case 4: /* Dxy volumeslide */
-				UniEffect(UNI_S3MEFFECTD,inf);
+				UniEffect(UNI_S3MEFFECTD, inf);
 				break;
 			case 5: /* Exy toneslide down */
-				UniEffect(UNI_S3MEFFECTE,inf);
+				UniEffect(UNI_S3MEFFECTE, inf);
 				break;
 			case 6: /* Fxy toneslide up */
-				UniEffect(UNI_S3MEFFECTF,inf);
+				UniEffect(UNI_S3MEFFECTF, inf);
 				break;
 			case 7: /* Gxx Tone portamento, speed xx */
 				if (flags & S3MIT_OLDSTYLE)
-					UniPTEffect(0x3,inf);
+					UniPTEffect(0x3, inf);
 				else
-					UniEffect(UNI_ITEFFECTG,inf);
+					UniEffect(UNI_ITEFFECTG, inf);
 				break;
 			case 8: /* Hxy vibrato */
 				if (flags & S3MIT_OLDSTYLE)
-					UniPTEffect(0x4,inf);
+					UniPTEffect(0x4, inf);
 				else
-					UniEffect(UNI_ITEFFECTH,inf);
+					UniEffect(UNI_ITEFFECTH, inf);
 				break;
 			case 9: /* Ixy tremor, ontime x, offtime y */
 				if (flags & S3MIT_OLDSTYLE)
-					UniEffect(UNI_S3MEFFECTI,inf);
+					UniEffect(UNI_S3MEFFECTI, inf);
 				else
-					UniEffect(UNI_ITEFFECTI,inf);
+					UniEffect(UNI_ITEFFECTI, inf);
 				break;
 			case 0xa: /* Jxy arpeggio */
-				UniPTEffect(0x0,inf);
+				UniPTEffect(0x0, inf);
 				break;
 			case 0xb: /* Kxy Dual command H00 & Dxy */
 				if (flags & S3MIT_OLDSTYLE)
-					UniPTEffect(0x4,0);
+					UniPTEffect(0x4, 0);
 				else
-					UniEffect(UNI_ITEFFECTH,0);
-				UniEffect(UNI_S3MEFFECTD,inf);
+					UniEffect(UNI_ITEFFECTH, 0);
+				UniEffect(UNI_S3MEFFECTD, inf);
 				break;
 			case 0xc: /* Lxy Dual command G00 & Dxy */
 				if (flags & S3MIT_OLDSTYLE)
-					UniPTEffect(0x3,0);
+					UniPTEffect(0x3, 0);
 				else
-					UniEffect(UNI_ITEFFECTG,0);
-				UniEffect(UNI_S3MEFFECTD,inf);
+					UniEffect(UNI_ITEFFECTG, 0);
+				UniEffect(UNI_S3MEFFECTD, inf);
 				break;
 			case 0xd: /* Mxx Set Channel Volume */
-				UniEffect(UNI_ITEFFECTM,inf);
+				UniEffect(UNI_ITEFFECTM, inf);
 				break;
 			case 0xe: /* Nxy Slide Channel Volume */
-				UniEffect(UNI_ITEFFECTN,inf);
+				UniEffect(UNI_ITEFFECTN, inf);
 				break;
 			case 0xf: /* Oxx set sampleoffset xx00h */
-				UniPTEffect(0x9,inf);
+				UniPTEffect(0x9, inf);
 				break;
 			case 0x10: /* Pxy Slide Panning Commands */
-				UniEffect(UNI_ITEFFECTP,inf);
+				UniEffect(UNI_ITEFFECTP, inf);
 				break;
 			case 0x11: /* Qxy Retrig (+volumeslide) */
 				UniWriteByte(UNI_S3MEFFECTQ);
-				if(inf && !lo && !(flags & S3MIT_OLDSTYLE))
+				if (inf && !lo && !(flags & S3MIT_OLDSTYLE))
 					UniWriteByte(1);
 				else
 					UniWriteByte(inf);
 				break;
 			case 0x12: /* Rxy tremolo speed x, depth y */
-				UniEffect(UNI_S3MEFFECTR,inf);
+				UniEffect(UNI_S3MEFFECTR, inf);
 				break;
 			case 0x13: /* Sxx special commands */
-				if (inf>=0xf0) {
+				if (inf >= 0xf0)
+				{
 					/* change resonant filter settings if necessary */
-					if((filters)&&((inf&0xf)!=activemacro)) {
-						activemacro=inf&0xf;
-						for(inf=0;inf<0x80;inf++)
-							filtersettings[inf].filter=filtermacros[activemacro];
+					if ((filters) && ((inf & 0xf) != activemacro))
+					{
+						activemacro = inf & 0xf;
+						for (inf = 0; inf < 0x80; inf++)
+							filtersettings[inf].filter = filtermacros[activemacro];
 					}
-				} else {
+				}
+				else
+				{
 					/* Scream Tracker does not have samples larger than
 					   64 Kb, thus doesn't need the SAx effect */
 					if ((flags & S3MIT_SCREAM) && ((inf & 0xf0) == 0xa0))
 						break;
 
-					UniEffect(UNI_ITEFFECTS0,inf);
+					UniEffect(UNI_ITEFFECTS0, inf);
 				}
 				break;
 			case 0x14: /* Txx tempo */
-				if(inf>=0x20)
-					UniEffect(UNI_S3MEFFECTT,inf);
-				else {
-					if(!(flags & S3MIT_OLDSTYLE))
+				if (inf >= 0x20)
+					UniEffect(UNI_S3MEFFECTT, inf);
+				else
+				{
+					if (!(flags & S3MIT_OLDSTYLE))
 						/* IT Tempo slide */
-						UniEffect(UNI_ITEFFECTT,inf);
+						UniEffect(UNI_ITEFFECTT, inf);
 				}
 				break;
 			case 0x15: /* Uxy Fine Vibrato speed x, depth y */
-				if(flags & S3MIT_OLDSTYLE)
-					UniEffect(UNI_S3MEFFECTU,inf);
+				if (flags & S3MIT_OLDSTYLE)
+					UniEffect(UNI_S3MEFFECTU, inf);
 				else
-					UniEffect(UNI_ITEFFECTU,inf);
+					UniEffect(UNI_ITEFFECTU, inf);
 				break;
 			case 0x16: /* Vxx Set Global Volume */
-				UniEffect(UNI_XMEFFECTG,inf);
+				UniEffect(UNI_XMEFFECTG, inf);
 				break;
 			case 0x17: /* Wxy Global Volume Slide */
-				UniEffect(UNI_ITEFFECTW,inf);
+				UniEffect(UNI_ITEFFECTW, inf);
 				break;
 			case 0x18: /* Xxx amiga command 8xx */
-				if(flags & S3MIT_OLDSTYLE) {
-					if(inf>128)
-						UniEffect(UNI_ITEFFECTS0,0x91); /* surround */
+				if (flags & S3MIT_OLDSTYLE)
+				{
+					if (inf > 128)
+						UniEffect(UNI_ITEFFECTS0, 0x91); /* surround */
 					else
-						UniPTEffect(0x8,(inf==128)?255:(inf<<1));
-				} else
-					UniPTEffect(0x8,inf);
+						UniPTEffect(0x8, (inf == 128) ? 255 : (inf << 1));
+				}
+				else
+					UniPTEffect(0x8, inf);
 				break;
 			case 0x19: /* Yxy Panbrello  speed x, depth y */
-				UniEffect(UNI_ITEFFECTY,inf);
+				UniEffect(UNI_ITEFFECTY, inf);
 				break;
 			case 0x1a: /* Zxx midi/resonant filters */
-				if(filtersettings[inf].filter) {
+				if (filtersettings[inf].filter)
+				{
 					UniWriteByte(UNI_ITEFFECTZ);
 					UniWriteByte(filtersettings[inf].filter);
 					UniWriteByte(filtersettings[inf].inf);
@@ -296,12 +313,13 @@ void S3MIT_ProcessCmd(UBYTE cmd, UBYTE inf, unsigned int flags)
 /*========== Unitrk stuff */
 
 /* Generic effect writing routine */
-void UniEffect(UWORD eff,UWORD dat)
+void UniEffect(UWORD eff, UWORD dat)
 {
-	if((!eff)||(eff>=UNI_LAST)) return;
+	if ((!eff) || (eff >= UNI_LAST))
+		return;
 
 	UniWriteByte(eff);
-	if(unioperands[eff]==2)
+	if (unioperands[eff] == 2)
 		UniWriteWord(dat);
 	else
 		UniWriteByte(dat);
@@ -311,19 +329,22 @@ void UniEffect(UWORD eff,UWORD dat)
 void UniPTEffect(UBYTE eff, UBYTE dat)
 {
 #ifdef MIKMOD_DEBUG
-	if (eff>=0x10)
-		fprintf(stderr,"UniPTEffect called with incorrect eff value %d\n",eff);
+	if (eff >= 0x10)
+		fprintf(stderr, "UniPTEffect called with incorrect eff value %d\n", eff);
 	else
 #endif
-	if((eff)||(dat)||(of.flags&UF_ARPMEM)) UniEffect(UNI_PTEFFECT0+eff,dat);
+		if ((eff) || (dat) || (of.flags & UF_ARPMEM))
+		UniEffect(UNI_PTEFFECT0 + eff, dat);
 }
 
 /* Appends UNI_VOLEFFECT + effect/dat to unistream. */
-void UniVolEffect(UWORD eff,UBYTE dat)
+void UniVolEffect(UWORD eff, UBYTE dat)
 {
-	if((eff)||(dat)) { /* don't write empty effect */
+	if ((eff) || (dat))
+	{ /* don't write empty effect */
 		UniWriteByte(UNI_VOLEFFECTS);
-		UniWriteByte(eff);UniWriteByte(dat);
+		UniWriteByte(eff);
+		UniWriteByte(dat);
 	}
 }
 

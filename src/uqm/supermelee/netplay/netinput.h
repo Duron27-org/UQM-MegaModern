@@ -20,20 +20,21 @@
 #define UQM_SUPERMELEE_NETPLAY_NETINPUT_H_
 
 #include "../../controls.h"
-		// for BATTLE_INPUT_STATE
+// for BATTLE_INPUT_STATE
 #include "../../init.h"
 
 #if 0 //defined(__cplusplus)
 extern "C" {
 #endif
-		// for NUM_PLAYERS
+// for NUM_PLAYERS
 
-typedef struct BattleInputBuffer {
-	BATTLE_INPUT_STATE *buf;
-			// Cyclic buffer. if 'size' > 0, then 'first' is an index to
-			// the first used entry, 'size' is the number of used
-			// entries in the buffer, and (first + size) % maxSize is the
-			// index to just past the end of the buffer.
+typedef struct BattleInputBuffer
+{
+	BATTLE_INPUT_STATE* buf;
+	// Cyclic buffer. if 'size' > 0, then 'first' is an index to
+	// the first used entry, 'size' is the number of used
+	// entries in the buffer, and (first + size) % maxSize is the
+	// index to just past the end of the buffer.
 	size_t maxSize;
 	size_t first;
 	size_t size;
@@ -43,16 +44,15 @@ void setBattleInputDelay(size_t delay);
 size_t getBattleInputDelay(void);
 void initBattleInputBuffers(void);
 void uninitBattleInputBuffers(void);
-bool BattleInputBuffer_push(BattleInputBuffer *bib,
-		BATTLE_INPUT_STATE input);
-bool BattleInputBuffer_pop(BattleInputBuffer *bib,
-		BATTLE_INPUT_STATE *input);
+bool BattleInputBuffer_push(BattleInputBuffer* bib,
+							BATTLE_INPUT_STATE input);
+bool BattleInputBuffer_pop(BattleInputBuffer* bib,
+						   BATTLE_INPUT_STATE* input);
 
-BattleInputBuffer *getBattleInputBuffer(size_t player);
+BattleInputBuffer* getBattleInputBuffer(size_t player);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* UQM_SUPERMELEE_NETPLAY_NETINPUT_H_ */
-
+#endif /* UQM_SUPERMELEE_NETPLAY_NETINPUT_H_ */

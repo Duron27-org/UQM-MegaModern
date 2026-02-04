@@ -21,11 +21,10 @@
 extern "C" {
 #endif
 
-RACE_DESC *init_androsynth (void);
+RACE_DESC* init_androsynth(void);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* ANDROSYN_H */
-
+#endif /* ANDROSYN_H */

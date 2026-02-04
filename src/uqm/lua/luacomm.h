@@ -25,22 +25,21 @@
 extern "C" {
 #endif
 
-bool luaUqm_comm_init(const luaUqm_custom_Function *customFuncs,
-		RESOURCE scriptRes);
+bool luaUqm_comm_init(const luaUqm_custom_Function* customFuncs,
+					  RESOURCE scriptRes);
 void luaUqm_comm_uninit(void);
 
 void luaUqm_comm_genericInit(void);
 void luaUqm_comm_genericPost(void);
 void luaUqm_comm_genericUninit(void);
 
-bool luaUqm_comm_stringNeedsInterpolate(const char *str);
-char *luaUqm_comm_stringInterpolate(const char *str);
+bool luaUqm_comm_stringNeedsInterpolate(const char* str);
+char* luaUqm_comm_stringInterpolate(const char* str);
 
-extern lua_State *luaUqm_commState;
+extern lua_State* luaUqm_commState;
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* UQM_LUA_LUACOMM_H_ */
-
+#endif /* UQM_LUA_LUACOMM_H_ */

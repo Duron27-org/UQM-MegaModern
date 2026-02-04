@@ -20,7 +20,7 @@
 #include "libs/compiler.h"
 #include "libs/gfxlib.h"
 #include "planets/elemdata.h" // for NUM_ELEMENT_CATEGORIES
-#include "units.h" // for RESOLUTION_FACTOR
+#include "units.h"			  // for RESOLUTION_FACTOR
 
 #if 0 //defined(__cplusplus)
 extern "C" {
@@ -61,11 +61,11 @@ extern "C" {
 enum
 {
 	PLANET_LANDER = 0,
-		/* thruster types */
+	/* thruster types */
 	FUSION_THRUSTER,
-		/* jet types */
+	/* jet types */
 	TURNING_JETS,
-		/* module types */
+	/* module types */
 	CREW_POD,
 	STORAGE_BAY,
 	FUEL_TANK,
@@ -93,59 +93,59 @@ enum
 #define EMPTY_SLOT NUM_MODULES
 #define NUM_BOMB_MODULES 10
 
-#define SAFE_PAD SAFE_NEG (3)
+#define SAFE_PAD SAFE_NEG(3)
 
-#define DRIVE_SIDE_X (RES_SCALE (31) - SAFE_PAD)
-#define DRIVE_SIDE_Y RES_SCALE (56)
-#define DRIVE_TOP_X (RES_SCALE (33) - SAFE_PAD)
-#define DRIVE_TOP_Y (RES_SCALE (86) - DOS_NUM_SCL (21))
+#define DRIVE_SIDE_X (RES_SCALE(31) - SAFE_PAD)
+#define DRIVE_SIDE_Y RES_SCALE(56)
+#define DRIVE_TOP_X (RES_SCALE(33) - SAFE_PAD)
+#define DRIVE_TOP_Y (RES_SCALE(86) - DOS_NUM_SCL(21))
 
-#define JET_SIDE_X (RES_SCALE (71) - SAFE_PAD)
-#define JET_SIDE_Y RES_SCALE (48)
-#define JET_TOP_X (RES_SCALE (70) - SAFE_PAD)
-#define JET_TOP_Y (RES_SCALE (94) - DOS_NUM_SCL (21))
+#define JET_SIDE_X (RES_SCALE(71) - SAFE_PAD)
+#define JET_SIDE_Y RES_SCALE(48)
+#define JET_TOP_X (RES_SCALE(70) - SAFE_PAD)
+#define JET_TOP_Y (RES_SCALE(94) - DOS_NUM_SCL(21))
 
-#define MODULE_SIDE_X (RES_SCALE (17) - SAFE_PAD)
-#define MODULE_SIDE_Y RES_SCALE (14)
-#define MODULE_TOP_X (RES_SCALE (17) - SAFE_PAD)
-#define MODULE_TOP_Y (RES_SCALE (117) - DOS_NUM_SCL (21))
+#define MODULE_SIDE_X (RES_SCALE(17) - SAFE_PAD)
+#define MODULE_SIDE_Y RES_SCALE(14)
+#define MODULE_TOP_X (RES_SCALE(17) - SAFE_PAD)
+#define MODULE_TOP_Y (RES_SCALE(117) - DOS_NUM_SCL(21))
 
-#define SHIP_PIECE_OFFSET RES_SCALE (12)
+#define SHIP_PIECE_OFFSET RES_SCALE(12)
 
 #define MAX_BUILT_SHIPS 12
-		/* Maximum number of ships escorting the SIS */
+/* Maximum number of ships escorting the SIS */
 #define MAX_STOWED_SHIPS 200 // Limited to a byte
-		/* Maximum number of ships banked at the starbase */
+							 /* Maximum number of ships banked at the starbase */
 #define MAX_LANDERS 10
 
-#define SUPPORT_SHIP_PTS \
-	{3 +  0, 30 + (2 * 16)}, \
-	{3 + 42, 30 + (2 * 16)}, \
-	{3 +  0, 30 + (3 * 16)}, \
-	{3 + 42, 30 + (3 * 16)}, \
-	{3 +  0, 30 + (1 * 16)}, \
-	{3 + 42, 30 + (1 * 16)}, \
-	{3 +  0, 30 + (4 * 16)}, \
-	{3 + 42, 30 + (4 * 16)}, \
-	{3 +  0, 30 + (0 * 16)}, \
-	{3 + 42, 30 + (0 * 16)}, \
-	{3 +  0, 30 + (5 * 16)}, \
-	{3 + 42, 30 + (5 * 16)},
+#define SUPPORT_SHIP_PTS         \
+	{3 + 0, 30 + (2 * 16)},      \
+		{3 + 42, 30 + (2 * 16)}, \
+		{3 + 0, 30 + (3 * 16)},  \
+		{3 + 42, 30 + (3 * 16)}, \
+		{3 + 0, 30 + (1 * 16)},  \
+		{3 + 42, 30 + (1 * 16)}, \
+		{3 + 0, 30 + (4 * 16)},  \
+		{3 + 42, 30 + (4 * 16)}, \
+		{3 + 0, 30 + (0 * 16)},  \
+		{3 + 42, 30 + (0 * 16)}, \
+		{3 + 0, 30 + (5 * 16)},  \
+		{3 + 42, 30 + (5 * 16)},
 
 #define LANDER_DOS_X 206
 #define LANDER_DOS_Y 59
 
-#define LANDER_DOS_PTS \
-	{LANDER_DOS_X,      LANDER_DOS_Y     }, \
-	{LANDER_DOS_X + 14, LANDER_DOS_Y -  6}, \
-	{LANDER_DOS_X + 14, LANDER_DOS_Y +  9}, \
-	{LANDER_DOS_X,      LANDER_DOS_Y - 15}, \
-	{LANDER_DOS_X,      LANDER_DOS_Y + 15}, \
-	{LANDER_DOS_X - 14, LANDER_DOS_Y -  9}, \
-	{LANDER_DOS_X - 14, LANDER_DOS_Y +  6}, \
-	{LANDER_DOS_X + 14, LANDER_DOS_Y - 21}, \
-	{LANDER_DOS_X + 14, LANDER_DOS_Y + 24}, \
-	{LANDER_DOS_X - 28, LANDER_DOS_Y -  3},
+#define LANDER_DOS_PTS                          \
+	{LANDER_DOS_X, LANDER_DOS_Y},               \
+		{LANDER_DOS_X + 14, LANDER_DOS_Y - 6},  \
+		{LANDER_DOS_X + 14, LANDER_DOS_Y + 9},  \
+		{LANDER_DOS_X, LANDER_DOS_Y - 15},      \
+		{LANDER_DOS_X, LANDER_DOS_Y + 15},      \
+		{LANDER_DOS_X - 14, LANDER_DOS_Y - 9},  \
+		{LANDER_DOS_X - 14, LANDER_DOS_Y + 6},  \
+		{LANDER_DOS_X + 14, LANDER_DOS_Y - 21}, \
+		{LANDER_DOS_X + 14, LANDER_DOS_Y + 24}, \
+		{LANDER_DOS_X - 28, LANDER_DOS_Y - 3},
 
 #define SIS_NAME_SIZE 32
 #define LEGACY_SIS_NAME_SIZE 16
@@ -162,8 +162,8 @@ typedef struct
 
 	uqm::DWORD FuelOnBoard;
 	uqm::COUNT CrewEnlisted;
-			// Number of crew on board, not counting the captain.
-			// Set to (uqm::COUNT) ~0 to indicate game over.
+	// Number of crew on board, not counting the captain.
+	// Set to (uqm::COUNT) ~0 to indicate game over.
 	uqm::COUNT TotalElementMass, TotalBioMass;
 
 	uqm::BYTE ModuleSlots[NUM_MODULE_SLOTS];
@@ -185,46 +185,46 @@ typedef struct
 #define OVERRIDE_LANDER_FLAGS (1 << 7)
 #define AFTER_BOMB_INSTALLED (1 << 7)
 
-extern void RepairSISBorder (void);
-extern void InitSISContexts (void);
-extern void DrawSISFrame (void);
-extern void ClearSISRect (uqm::BYTE ClearFlags);
-extern void SetFlashRect (const RECT *pRect, bool purple);
-extern void SetAdditionalRect (const RECT *pRect, uqm::COUNT number);
-extern void DumpAdditionalRect (void);
-extern void PreUpdateFlashRect (void);
-extern void PostUpdateFlashRect (void);
-extern bool PauseFlash (void);
-extern void ContinueFlash (void);
+extern void RepairSISBorder(void);
+extern void InitSISContexts(void);
+extern void DrawSISFrame(void);
+extern void ClearSISRect(uqm::BYTE ClearFlags);
+extern void SetFlashRect(const RECT* pRect, bool purple);
+extern void SetAdditionalRect(const RECT* pRect, uqm::COUNT number);
+extern void DumpAdditionalRect(void);
+extern void PreUpdateFlashRect(void);
+extern void PostUpdateFlashRect(void);
+extern bool PauseFlash(void);
+extern void ContinueFlash(void);
 
 #define SFR_MENU_3DO ((RECT*)~0L)
 #define SFR_MENU_ANY ((RECT*)~1L)
 #define SFR_MENU_NON ((RECT*)~2L)
-extern void DrawHyperCoords (POINT puniverse);
-extern void DrawSaveInfo (SIS_STATE SisState);
-extern void DrawSISTitle (uqm::CHAR_T *pStr);
+extern void DrawHyperCoords(POINT puniverse);
+extern void DrawSaveInfo(SIS_STATE SisState);
+extern void DrawSISTitle(uqm::CHAR_T* pStr);
 
 // Flags for DrawSISMessageEx (may be OR'ed):
-#define DSME_NONE     0
-#define DSME_SETFR    (1 << 0)
-		// Set the flash rectangle to the message area.
-#define DSME_CLEARFR  (1 << 1)
-		// Disable the flash rectangle.
+#define DSME_NONE 0
+#define DSME_SETFR (1 << 0)
+// Set the flash rectangle to the message area.
+#define DSME_CLEARFR (1 << 1)
+// Disable the flash rectangle.
 #define DSME_BLOCKCUR (1 << 2)
-		// Use a block cursor instead of an insertion point cursor,
-		// when editing in the message field.
-#define DSME_MYCOLOR  (1 << 3)
-		// Use the current foreground color, instead of the default.
-extern bool DrawSISMessageEx (const uqm::CHAR_T *pStr, uqm::SIZE CurPos,
-		uqm::SIZE ExPos, uqm::COUNT flags);
+// Use a block cursor instead of an insertion point cursor,
+// when editing in the message field.
+#define DSME_MYCOLOR (1 << 3)
+// Use the current foreground color, instead of the default.
+extern bool DrawSISMessageEx(const uqm::CHAR_T* pStr, uqm::SIZE CurPos,
+							 uqm::SIZE ExPos, uqm::COUNT flags);
 
-extern void DrawSISMessage (const uqm::CHAR_T *pStr);
-extern void DateToString (char *buf, size_t bufLen,
-		uqm::BYTE month_index, uqm::BYTE day_index, uqm::COUNT year_index);
+extern void DrawSISMessage(const uqm::CHAR_T* pStr);
+extern void DateToString(char* buf, size_t bufLen,
+						 uqm::BYTE month_index, uqm::BYTE day_index, uqm::COUNT year_index);
 
 // Returned RECT is relative to the StatusContext
-extern void GetStatusMessageRect (RECT *r);
-extern void DrawStatusMessage (const uqm::CHAR_T *pStr);
+extern void GetStatusMessageRect(RECT* r);
+extern void DrawStatusMessage(const uqm::CHAR_T* pStr);
 typedef enum
 {
 	SMM_UNDEFINED = 0,
@@ -237,37 +237,36 @@ typedef enum
 	SMM_DEFAULT = SMM_DATE,
 } StatMsgMode;
 // Sets the new mode and return the previous
-extern StatMsgMode SetStatusMessageMode (StatMsgMode);
+extern StatMsgMode SetStatusMessageMode(StatMsgMode);
 
-extern void DrawLanders (void);
-extern void DrawStorageBays (bool Refresh);
-extern void GetGaugeRect (RECT *pRect, bool IsCrewRect);
-extern void DrawFlagshipStats (void);
-void DrawAutoPilotMessage (bool Reset);
+extern void DrawLanders(void);
+extern void DrawStorageBays(bool Refresh);
+extern void GetGaugeRect(RECT* pRect, bool IsCrewRect);
+extern void DrawFlagshipStats(void);
+void DrawAutoPilotMessage(bool Reset);
 
-extern void DeltaSISGauges (uqm::SIZE crew_delta, uqm::SDWORD fuel_delta, int
-		resunit_delta);
+extern void DeltaSISGauges(uqm::SIZE crew_delta, uqm::SDWORD fuel_delta, int resunit_delta);
 
-extern uqm::COUNT GetCrewCount (void);
-extern uqm::COUNT GetModuleCrewCapacity (uqm::BYTE moduleType);
+extern uqm::COUNT GetCrewCount(void);
+extern uqm::COUNT GetModuleCrewCapacity(uqm::BYTE moduleType);
 
-extern uqm::COUNT GetCrewPodCapacity (void);
-extern uqm::COUNT GetCPodCapacity (POINT *ppt);
+extern uqm::COUNT GetCrewPodCapacity(void);
+extern uqm::COUNT GetCPodCapacity(POINT* ppt);
 
-extern uqm::COUNT GetModuleStorageCapacity (uqm::BYTE moduleType);
-extern uqm::COUNT GetStorageBayCapacity (void);
-extern uqm::COUNT GetSBayCapacity (POINT *ppt);
+extern uqm::COUNT GetModuleStorageCapacity(uqm::BYTE moduleType);
+extern uqm::COUNT GetStorageBayCapacity(void);
+extern uqm::COUNT GetSBayCapacity(POINT* ppt);
 
-extern uqm::DWORD GetModuleFuelCapacity (uqm::BYTE moduleType);
-extern uqm::DWORD GetFuelTankCapacity (void);
+extern uqm::DWORD GetModuleFuelCapacity(uqm::BYTE moduleType);
+extern uqm::DWORD GetFuelTankCapacity(void);
 
-extern uqm::COUNT CountSISPieces (uqm::BYTE piece_type);
+extern uqm::COUNT CountSISPieces(uqm::BYTE piece_type);
 
-extern void DrawFlagshipName (bool InStatusArea, bool NewGame);
-extern void DrawCaptainsName (bool NewGame);
+extern void DrawFlagshipName(bool InStatusArea, bool NewGame);
+extern void DrawCaptainsName(bool NewGame);
 
-extern void DrawFuelInFTanks (bool isOutfit);
-extern FRAME hdFuelFrame;// Frame for HD fuel with smooth gradient
+extern void DrawFuelInFTanks(bool isOutfit);
+extern FRAME hdFuelFrame; // Frame for HD fuel with smooth gradient
 
 typedef enum
 {

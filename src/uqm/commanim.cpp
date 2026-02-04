@@ -30,10 +30,10 @@
 
 static TimeCount LastTime;
 static SEQUENCE Sequences[MAX_ANIMATIONS + 2];
-		// 2 extra for Talk and Transition animations
+// 2 extra for Talk and Transition animations
 static uqm::DWORD ActiveMask;
-		// Bit mask of all animations that are currently active.
-		// Bit 'i' is set if the animation with index 'i' is active.
+// Bit mask of all animations that are currently active.
+// Bit 'i' is set if the animation with index 'i' is active.
 static ANIMATION_DESC TalkDesc;
 static ANIMATION_DESC TransitDesc;
 static SEQUENCE* Talk;
@@ -47,47 +47,45 @@ bool filterEnabled = false;
 FILTER_DESC FilterData;
 
 static inline uqm::SWORD
-getAlphaChannel (uqm::BYTE index)
+getAlphaChannel(uqm::BYTE index)
 {
-	return (uqm::SWORD)GetColorMapColor (COMM_COLORMAP_INDEX, index).r;
+	return (uqm::SWORD)GetColorMapColor(COMM_COLORMAP_INDEX, index).r;
 }
 
 static inline uqm::DWORD
-randomFrameRate (SEQUENCE *pSeq)
+randomFrameRate(SEQUENCE* pSeq)
 {
-	ANIMATION_DESC *ADPtr = pSeq->ADPtr;
+	ANIMATION_DESC* ADPtr = pSeq->ADPtr;
 
-	return ADPtr->BaseFrameRate	+
-			TFB_Random () % (ADPtr->RandomFrameRate + 1);
+	return ADPtr->BaseFrameRate + TFB_Random() % (ADPtr->RandomFrameRate + 1);
 }
 
 static inline uqm::DWORD
-randomRestartRate (SEQUENCE *pSeq)
+randomRestartRate(SEQUENCE* pSeq)
 {
-	ANIMATION_DESC *ADPtr = pSeq->ADPtr;
+	ANIMATION_DESC* ADPtr = pSeq->ADPtr;
 
-	return ADPtr->BaseRestartRate +
-			TFB_Random () % (ADPtr->RandomRestartRate + 1);
+	return ADPtr->BaseRestartRate + TFB_Random() % (ADPtr->RandomRestartRate + 1);
 }
 
 static inline uqm::COUNT
-randomFrameIndex (SEQUENCE *pSeq, uqm::COUNT from)
+randomFrameIndex(SEQUENCE* pSeq, uqm::COUNT from)
 {
-	ANIMATION_DESC *ADPtr = pSeq->ADPtr;
+	ANIMATION_DESC* ADPtr = pSeq->ADPtr;
 
-	return from	+ TFB_Random () % (ADPtr->NumFrames - from);
+	return from + TFB_Random() % (ADPtr->NumFrames - from);
 }
 
 static void
-SetupAmbientSequences (SEQUENCE *pSeq, uqm::COUNT Num)
+SetupAmbientSequences(SEQUENCE* pSeq, uqm::COUNT Num)
 {
 	uqm::COUNT i;
-	
+
 	for (i = 0; i < Num; ++i, ++pSeq)
 	{
-		ANIMATION_DESC *ADPtr = &CommData.AlienAmbientArray[i];
+		ANIMATION_DESC* ADPtr = &CommData.AlienAmbientArray[i];
 
-		memset (pSeq, 0, sizeof (*pSeq));
+		memset(pSeq, 0, sizeof(*pSeq));
 
 		pSeq->ADPtr = ADPtr;
 		if (ADPtr->AnimFlags & COLORXFORM_ANIM)
@@ -98,29 +96,29 @@ SetupAmbientSequences (SEQUENCE *pSeq, uqm::COUNT Num)
 		pSeq->FramesLeft = ADPtr->NumFrames;
 		// Default: first frame is neutral
 		if (ADPtr->AnimFlags & RANDOM_ANIM)
-		{	// Set a random frame/colormap
-			pSeq->NextIndex = TFB_Random () % ADPtr->NumFrames;
+		{ // Set a random frame/colormap
+			pSeq->NextIndex = TFB_Random() % ADPtr->NumFrames;
 		}
 		else if (ADPtr->AnimFlags & YOYO_ANIM)
-		{	// Skip the first frame/colormap (it's neutral)
+		{ // Skip the first frame/colormap (it's neutral)
 			pSeq->NextIndex = 1;
 			--pSeq->FramesLeft;
 		}
 		else if (ADPtr->AnimFlags & CIRCULAR_ANIM)
-		{	// Exception that makes everything more painful:
+		{ // Exception that makes everything more painful:
 			// *Last* frame is neutral
 			pSeq->CurIndex = ADPtr->NumFrames - 1;
 			pSeq->NextIndex = 0;
 		}
 
-		pSeq->Alarm = randomRestartRate (pSeq) + 1;
+		pSeq->Alarm = randomRestartRate(pSeq) + 1;
 	}
 }
 
 static void
-SetupTalkSequence (SEQUENCE *pSeq, ANIMATION_DESC *ADPtr)
+SetupTalkSequence(SEQUENCE* pSeq, ANIMATION_DESC* ADPtr)
 {
-	memset (pSeq, 0, sizeof (*pSeq));
+	memset(pSeq, 0, sizeof(*pSeq));
 	// Initially disabled, and until needed
 	ADPtr->AnimFlags |= ANIM_DISABLED;
 	pSeq->ADPtr = ADPtr;
@@ -128,69 +126,69 @@ SetupTalkSequence (SEQUENCE *pSeq, ANIMATION_DESC *ADPtr)
 }
 
 static inline bool
-animAtNeutralIndex (SEQUENCE *pSeq)
+animAtNeutralIndex(SEQUENCE* pSeq)
 {
-	ANIMATION_DESC *ADPtr = pSeq->ADPtr;
+	ANIMATION_DESC* ADPtr = pSeq->ADPtr;
 
 	if (ADPtr->AnimFlags & CIRCULAR_ANIM)
-	{	// CIRCULAR_ANIM's neutral frame is the last
+	{ // CIRCULAR_ANIM's neutral frame is the last
 		return pSeq->NextIndex == 0;
 	}
 	else
-	{	// All others, neutral frame is the first
+	{ // All others, neutral frame is the first
 		return pSeq->CurIndex == 0;
 	}
 }
 
 static inline bool
-conflictsWithTalkingAnim (SEQUENCE *pSeq)
+conflictsWithTalkingAnim(SEQUENCE* pSeq)
 {
-	ANIMATION_DESC *ADPtr = pSeq->ADPtr;
+	ANIMATION_DESC* ADPtr = pSeq->ADPtr;
 
 	return ADPtr->AnimFlags & CommData.AlienTalkDesc.AnimFlags & WAIT_TALKING;
 }
 
 static void
-ProcessColormapAnims (SEQUENCE *pSeq, uqm::COUNT Num)
+ProcessColormapAnims(SEQUENCE* pSeq, uqm::COUNT Num)
 {
 	uqm::COUNT i;
 
 	for (i = 0; i < Num; ++i, ++pSeq)
 	{
-		ANIMATION_DESC *ADPtr = pSeq->ADPtr;
+		ANIMATION_DESC* ADPtr = pSeq->ADPtr;
 
 		if ((ADPtr->AnimFlags & ANIM_DISABLED)
-				|| pSeq->AnimType != COLOR_ANIM
-				|| !pSeq->Change)
+			|| pSeq->AnimType != COLOR_ANIM
+			|| !pSeq->Change)
 			continue;
 
-		XFormColorMap (GetColorMapAddress (
-				SetAbsColorMapIndex (CommData.AlienColorMap,
-				ADPtr->StartIndex + pSeq->CurIndex)),
-				pSeq->Alarm - 1);
+		XFormColorMap(GetColorMapAddress(
+						  SetAbsColorMapIndex(CommData.AlienColorMap,
+											  ADPtr->StartIndex + pSeq->CurIndex)),
+					  pSeq->Alarm - 1);
 		pSeq->Change = false;
 	}
 }
 
 static bool
-AdvanceAmbientSequence (SEQUENCE *pSeq)
+AdvanceAmbientSequence(SEQUENCE* pSeq)
 {
 	bool active;
-	ANIMATION_DESC *ADPtr = pSeq->ADPtr;
+	ANIMATION_DESC* ADPtr = pSeq->ADPtr;
 
 	--pSeq->FramesLeft;
 	// YOYO_ANIM does not actually end until it comes back
 	// in reverse direction, even if FramesLeft gets to 0 here
 	if (pSeq->FramesLeft
-			|| ((ADPtr->AnimFlags & YOYO_ANIM) && pSeq->NextIndex != 0))
+		|| ((ADPtr->AnimFlags & YOYO_ANIM) && pSeq->NextIndex != 0))
 	{
 		active = true;
-		pSeq->Alarm = randomFrameRate (pSeq) + 1;
+		pSeq->Alarm = randomFrameRate(pSeq) + 1;
 	}
 	else
-	{	// last animation frame
+	{ // last animation frame
 		active = false;
-		pSeq->Alarm = randomRestartRate (pSeq) + 1;
+		pSeq->Alarm = randomRestartRate(pSeq) + 1;
 
 		// RANDOM_ANIM must end on a neutral frame
 		if (ADPtr->AnimFlags & RANDOM_ANIM)
@@ -202,18 +200,18 @@ AdvanceAmbientSequence (SEQUENCE *pSeq)
 	pSeq->Change = true;
 
 	if (pSeq->FramesLeft == 0)
-	{	// Animation ended
+	{ // Animation ended
 		// Set it up for the next round
 		pSeq->FramesLeft = ADPtr->NumFrames;
 
 		if (ADPtr->AnimFlags & YOYO_ANIM)
-		{	// YOYO_ANIM never draws the first frame
+		{ // YOYO_ANIM never draws the first frame
 			// ("first" depends on direction)
 			--pSeq->FramesLeft;
-			pSeq->Direction = (ANIM_DIR) - pSeq->Direction;
+			pSeq->Direction = (ANIM_DIR)-pSeq->Direction;
 		}
 		else if (ADPtr->AnimFlags & CIRCULAR_ANIM)
-		{	// Rewind the CIRCULAR_ANIM
+		{ // Rewind the CIRCULAR_ANIM
 			// NextIndex will be brought to 0 just below
 			pSeq->NextIndex = -1;
 		}
@@ -221,7 +219,7 @@ AdvanceAmbientSequence (SEQUENCE *pSeq)
 	}
 
 	if (ADPtr->AnimFlags & RANDOM_ANIM)
-		pSeq->NextIndex = randomFrameIndex (pSeq, 0);
+		pSeq->NextIndex = randomFrameIndex(pSeq, 0);
 	else
 		pSeq->NextIndex += pSeq->Direction;
 
@@ -229,7 +227,7 @@ AdvanceAmbientSequence (SEQUENCE *pSeq)
 }
 
 static void
-ResetSequence (SEQUENCE *pSeq)
+ResetSequence(SEQUENCE* pSeq)
 {
 	// Reset the animation and cause a redraw of the neutral frame,
 	// assuming it is not ANIM_DISABLED
@@ -240,75 +238,75 @@ ResetSequence (SEQUENCE *pSeq)
 }
 
 static void
-AdvanceTalkingSequence (SEQUENCE *pSeq, uqm::DWORD ElapsedTicks)
+AdvanceTalkingSequence(SEQUENCE* pSeq, uqm::DWORD ElapsedTicks)
 {
 	// We use the actual descriptor for flags processing and
 	// a copied one for drawing. A copied one is updated only
 	// when it is safe to do so.
-	ANIMATION_DESC *ADPtr = pSeq->ADPtr;
-	
+	ANIMATION_DESC* ADPtr = pSeq->ADPtr;
+
 	if (pSeq->Direction == NO_DIR)
-	{	// just starting now
+	{ // just starting now
 		pSeq->Direction = UP_DIR;
 		// It's now safe to pick up new Talk descriptor if changed
 		// (e.g. Zoq and Pik taking turns to talk)
 		if (CommData.AlienTalkDesc.StartIndex != ADPtr->StartIndex)
-		{	// copy the new one
+		{ // copy the new one
 			*ADPtr = CommData.AlienTalkDesc;
 		}
 
-		assert (pSeq->CurIndex == 0);
+		assert(pSeq->CurIndex == 0);
 		pSeq->Alarm = 0; // now!
 		ADPtr->AnimFlags &= ~ANIM_DISABLED;
 	}
 
-	if (pSeq->CurIndex == 0 && signaledFreezeTalkingAnim ())
-	{	// drop routine if we are freezed
+	if (pSeq->CurIndex == 0 && signaledFreezeTalkingAnim())
+	{ // drop routine if we are freezed
 		return;
 	}
 
 	if (pSeq->Alarm > ElapsedTicks)
-	{	// Not time yet
+	{ // Not time yet
 		pSeq->Alarm -= ElapsedTicks;
 		return;
 	}
 
 	// Time to start or advance the animation
-	pSeq->Alarm = randomFrameRate (pSeq);
+	pSeq->Alarm = randomFrameRate(pSeq);
 	pSeq->Change = true;
 	// Talking animation is like RANDOM_ANIM, except that
 	// random frames always alternate with the neutral one
 	// The animation does not stop until we reset it
 	// Kruzen: do not advance sequence if we're freezed
 	// (all other animations still will be blocked)
-	if (pSeq->CurIndex == 0 && !signaledFreezeTalkingAnim ())
-	{	// random frame next if not freezed		
-		pSeq->CurIndex = randomFrameIndex (pSeq, 1);
-		pSeq->Alarm += randomRestartRate (pSeq);
+	if (pSeq->CurIndex == 0 && !signaledFreezeTalkingAnim())
+	{ // random frame next if not freezed
+		pSeq->CurIndex = randomFrameIndex(pSeq, 1);
+		pSeq->Alarm += randomRestartRate(pSeq);
 	}
 	else
-	{	// neutral frame next
+	{ // neutral frame next
 		pSeq->CurIndex = 0;
 	}
 }
 
 static bool
-AdvanceTransitSequence (SEQUENCE *pSeq, uqm::DWORD ElapsedTicks)
+AdvanceTransitSequence(SEQUENCE* pSeq, uqm::DWORD ElapsedTicks)
 {
 	bool done = false;
 	// We use the actual descriptor for flags processing and
 	// a copied one for drawing. A copied one is updated only
 	// when it is safe to do so.
-	ANIMATION_DESC *ADPtr = pSeq->ADPtr;
+	ANIMATION_DESC* ADPtr = pSeq->ADPtr;
 
 	if (pSeq->Direction == NO_DIR)
-	{	// just starting now
+	{					 // just starting now
 		pSeq->Alarm = 0; // now!
 		ADPtr->AnimFlags &= ~ANIM_DISABLED;
 	}
 
 	if (pSeq->Alarm > ElapsedTicks)
-	{	// Not time yet
+	{ // Not time yet
 		pSeq->Alarm -= ElapsedTicks;
 		return false;
 	}
@@ -317,7 +315,7 @@ AdvanceTransitSequence (SEQUENCE *pSeq, uqm::DWORD ElapsedTicks)
 	pSeq->Change = true;
 
 	if (pSeq->Direction == NO_DIR)
-	{	// just starting now
+	{ // just starting now
 		pSeq->FramesLeft = ADPtr->NumFrames;
 		// Both INTRO and DONE may be set at the same time,
 		// when e.g. Zoq and Pik are taking turns to talk
@@ -334,24 +332,24 @@ AdvanceTransitSequence (SEQUENCE *pSeq, uqm::DWORD ElapsedTicks)
 			// It's now safe to pick up new Transition descriptor if changed
 			// (e.g. Zoq and Pik taking turns to talk)
 			if (CommData.AlienTransitionDesc.StartIndex
-					!= ADPtr->StartIndex)
-			{	// copy the new one
+				!= ADPtr->StartIndex)
+			{ // copy the new one
 				*ADPtr = CommData.AlienTransitionDesc;
 			}
-			
+
 			pSeq->CurIndex = 0;
 		}
 	}
 
 	--pSeq->FramesLeft;
 	if (pSeq->FramesLeft == 0)
-	{	// animation is done
+	{ // animation is done
 		if (pSeq->Direction == UP_DIR)
-		{	// done with TALK_INTRO transition
+		{ // done with TALK_INTRO transition
 			CommData.AlienTransitionDesc.AnimFlags &= ~TALK_INTRO;
 		}
 		else if (pSeq->Direction == DOWN_DIR)
-		{	// done with TALK_DONE transition
+		{ // done with TALK_DONE transition
 			CommData.AlienTransitionDesc.AnimFlags &= ~TALK_DONE;
 
 			// Done with all transition frames
@@ -361,16 +359,15 @@ AdvanceTransitSequence (SEQUENCE *pSeq, uqm::DWORD ElapsedTicks)
 		pSeq->Direction = NO_DIR;
 	}
 	else
-	{	// next frame
-		pSeq->Alarm = randomFrameRate (pSeq);
+	{ // next frame
+		pSeq->Alarm = randomFrameRate(pSeq);
 		pSeq->CurIndex += pSeq->Direction;
 	}
 
 	return done;
 }
 
-void
-InitCommAnimations (void)
+void InitCommAnimations(void)
 {
 	ActiveMask = 0;
 
@@ -382,27 +379,26 @@ InitCommAnimations (void)
 	TotalSequences = 0;
 	// Transition animation last
 	Transit = Sequences + TotalSequences;
-	SetupTalkSequence (Transit, &TransitDesc);
+	SetupTalkSequence(Transit, &TransitDesc);
 	++TotalSequences;
 	// Talk animation second last
 	Talk = Sequences + TotalSequences;
-	SetupTalkSequence (Talk, &TalkDesc);
+	SetupTalkSequence(Talk, &TalkDesc);
 	++TotalSequences;
 	FirstAmbient = TotalSequences;
-	SetupAmbientSequences (Sequences + FirstAmbient, CommData.NumAnimations);
+	SetupAmbientSequences(Sequences + FirstAmbient, CommData.NumAnimations);
 	TotalSequences += CommData.NumAnimations;
 
-	LastTime = GetTimeCounter ();
+	LastTime = GetTimeCounter();
 }
 
-bool
-ProcessCommAnimations (bool FullRedraw, bool paused)
+bool ProcessCommAnimations(bool FullRedraw, bool paused)
 {
 	if (paused)
-	{	// Drive colormap xforms and nothing else
+	{ // Drive colormap xforms and nothing else
 		// Triggered only during seeking
-		if (XFormColorMap_step ())
-		{	// Once seeking is done and colors have
+		if (XFormColorMap_step())
+		{ // Once seeking is done and colors have
 			// changed - redraw a full frame
 			doFullRedraw = true;
 		}
@@ -411,64 +407,63 @@ ProcessCommAnimations (bool FullRedraw, bool paused)
 	else
 	{
 		uqm::COUNT i;
-		SEQUENCE *pSeq;
+		SEQUENCE* pSeq;
 		bool Change;
 		bool CanTalk = true;
 		TimeCount CurTime;
 		uqm::DWORD ElapsedTicks;
 		uqm::DWORD NextActiveMask;
 
-		CurTime = GetTimeCounter ();
+		CurTime = GetTimeCounter();
 		ElapsedTicks = CurTime - LastTime;
 		LastTime = CurTime;
 
 		if (doFullRedraw)
-		{	// to make frame colors in sync
+		{ // to make frame colors in sync
 			// mostly for HD
 			FullRedraw = true;
 			doFullRedraw = false;
 		}
-			
+
 		// Process ambient animations
 		NextActiveMask = ActiveMask;
 		pSeq = Sequences + FirstAmbient;
 		for (i = 0; i < CommData.NumAnimations; ++i, ++pSeq)
 		{
-			ANIMATION_DESC *ADPtr = pSeq->ADPtr;
+			ANIMATION_DESC* ADPtr = pSeq->ADPtr;
 			uqm::DWORD ActiveBit = 1L << i;
 
 			if (ADPtr->AnimFlags & ANIM_DISABLED)
 				continue;
 
 			if (pSeq->Direction == NO_DIR)
-			{	// animation is paused
+			{ // animation is paused
 				if (!conflictsWithTalkingAnim(pSeq))
-				{	// start it up
+				{ // start it up
 					pSeq->Direction = UP_DIR;
 				}
 			}
 			else if (pSeq->Alarm > ElapsedTicks)
-			{	// not time yet
+			{ // not time yet
 				pSeq->Alarm -= ElapsedTicks;
 			}
 			else if (ActiveMask & ADPtr->BlockMask)
-			{	// animation is blocked
-				assert(!(ActiveMask & ActiveBit) &&
-					"Check animations' mutual blocking masks");
+			{ // animation is blocked
+				assert(!(ActiveMask & ActiveBit) && "Check animations' mutual blocking masks");
 				assert(animAtNeutralIndex(pSeq));
 				// reschedule
 				pSeq->Alarm = randomRestartRate(pSeq) + 1;
 				continue;
 			}
 			else
-			{	// Time to start or advance the animation
+			{ // Time to start or advance the animation
 				if (AdvanceAmbientSequence(pSeq))
-				{	// Animation is active this frame and the next
+				{ // Animation is active this frame and the next
 					ActiveMask |= ActiveBit;
 					NextActiveMask |= ActiveBit;
 				}
 				else
-				{	// Animation remains active this frame but not the next
+				{ // Animation remains active this frame but not the next
 					// This keeps any conflicting animations (BlockMask)
 					// from activating in the same frame and scribbling over
 					// our last image.
@@ -483,7 +478,7 @@ ProcessCommAnimations (bool FullRedraw, bool paused)
 				// which conflicts with the talking animation
 				// See if it is safe to stop it now.
 				if (animAtNeutralIndex(pSeq))
-				{	// pause the animation
+				{ // pause the animation
 					pSeq->Direction = NO_DIR;
 					NextActiveMask &= ~ActiveBit;
 					// Talk animation is drawn last, so it's not a conflict
@@ -491,7 +486,7 @@ ProcessCommAnimations (bool FullRedraw, bool paused)
 					// over the neutral frame.
 				}
 				else
-				{	// Otherwise, let the animation run until it's safe
+				{ // Otherwise, let the animation run until it's safe
 					CanTalk = false;
 				}
 			}
@@ -503,75 +498,75 @@ ProcessCommAnimations (bool FullRedraw, bool paused)
 		ActiveMask = NextActiveMask;
 
 		// Process the talking and transition animations
-		if (CanTalk	&& haveTalkingAnim () && runningTalkingAnim ())
+		if (CanTalk && haveTalkingAnim() && runningTalkingAnim())
 		{
 			bool done = false;
 
-			if (signaledStopTalkingAnim () && haveTransitionAnim ())
-			{	// Run the transition. We will clear everything
+			if (signaledStopTalkingAnim() && haveTransitionAnim())
+			{ // Run the transition. We will clear everything
 				// when it is done
 				CommData.AlienTransitionDesc.AnimFlags |= TALK_DONE;
 			}
 
 			if (CommData.AlienTransitionDesc.AnimFlags
 					& (TALK_INTRO | TALK_DONE)
-					&& !signaledFreezeTalkingAnim ())
-			{	// Transitioning in or out of talking
+				&& !signaledFreezeTalkingAnim())
+			{ // Transitioning in or out of talking
 				if ((CommData.AlienTransitionDesc.AnimFlags & TALK_DONE)
-						&& Transit->Direction == NO_DIR)
-				{	// This is needed when switching talking anims
-					ResetSequence (Talk);
+					&& Transit->Direction == NO_DIR)
+				{ // This is needed when switching talking anims
+					ResetSequence(Talk);
 				}
-				done = AdvanceTransitSequence (Transit, ElapsedTicks);
+				done = AdvanceTransitSequence(Transit, ElapsedTicks);
 			}
-			else if (!signaledStopTalkingAnim ())
-			{	// Talking, transition is done
-				AdvanceTalkingSequence (Talk, ElapsedTicks);
+			else if (!signaledStopTalkingAnim())
+			{ // Talking, transition is done
+				AdvanceTalkingSequence(Talk, ElapsedTicks);
 			}
 			else
-			{	// Not talking
-				ResetSequence (Talk);
+			{ // Not talking
+				ResetSequence(Talk);
 				done = true;
 			}
 
-			if (signaledStopTalkingAnim () && done)
+			if (signaledStopTalkingAnim() && done)
 			{
-				clearRunTalkingAnim ();
-				clearStopTalkingAnim ();
+				clearRunTalkingAnim();
+				clearStopTalkingAnim();
 			}
 		}
 		else
-		{	// Not talking -- disable talking anim if it is done
+		{ // Not talking -- disable talking anim if it is done
 			if (Talk->Direction == NO_DIR)
 				TalkDesc.AnimFlags |= ANIM_DISABLED;
 		}
 
-		BatchGraphics ();
+		BatchGraphics();
 
 		// Draw all animations
 		{
-			bool ColorChange = XFormColorMap_step ();
+			bool ColorChange = XFormColorMap_step();
 
 			if (ColorChange)
 				FullRedraw = true;
 
 			// Colormap animations are processed separately
 			// from picture anims (see XFormColorMap_step)
-			ProcessColormapAnims (Sequences + FirstAmbient,
-					CommData.NumAnimations);
+			ProcessColormapAnims(Sequences + FirstAmbient,
+								 CommData.NumAnimations);
 
-			Change = DrawAlienFrame (Sequences, TotalSequences, FullRedraw);
+			Change = DrawAlienFrame(Sequences, TotalSequences, FullRedraw);
 			if (FullRedraw)
 				Change = true;
 		}
-		
-		UnbatchGraphics ();
+
+		UnbatchGraphics();
 
 		// Post-process ambient animations
 		pSeq = Sequences + FirstAmbient;
 		for (i = 0; i < CommData.NumAnimations; ++i, ++pSeq)
 		{
-			ANIMATION_DESC *ADPtr = pSeq->ADPtr;
+			ANIMATION_DESC* ADPtr = pSeq->ADPtr;
 			uqm::DWORD ActiveBit = 1L << i;
 
 			if (ADPtr->AnimFlags & ANIM_DISABLED)
@@ -580,20 +575,19 @@ ProcessCommAnimations (bool FullRedraw, bool paused)
 			// We can only disable a one-shot anim here, otherwise the
 			// last frame will not be drawn
 			if ((ADPtr->AnimFlags & ONE_SHOT_ANIM)
-					&& !(NextActiveMask & ActiveBit))
-			{	// One-shot animation, inactive next frame
+				&& !(NextActiveMask & ActiveBit))
+			{ // One-shot animation, inactive next frame
 				ADPtr->AnimFlags |= ANIM_DISABLED;
 
 				if (ADPtr->AnimFlags & RESTART_ALL_AFTER)
-					SwitchSequences (true);
+					SwitchSequences(true);
 
 				if (ADPtr->AnimFlags & STOP_ALL_AFTER)
 				{
-					SwitchSequences (false);
+					SwitchSequences(false);
 					CommData.AlienTalkDesc.AnimFlags |= PAUSE_TALKING;
 					TalkDesc.AnimFlags |= ANIM_DISABLED;
-					CommData.AlienFrame = SetAbsFrameIndex
-						(CommData.AlienFrame, ADPtr->StartIndex);
+					CommData.AlienFrame = SetAbsFrameIndex(CommData.AlienFrame, ADPtr->StartIndex);
 				}
 			}
 		}
@@ -603,7 +597,7 @@ ProcessCommAnimations (bool FullRedraw, bool paused)
 }
 
 static void
-ApplyFilterToStamp (STAMP s)
+ApplyFilterToStamp(STAMP s)
 {
 	uqm::COUNT i;
 
@@ -612,42 +606,41 @@ ApplyFilterToStamp (STAMP s)
 		DrawMode mode, oldMode;
 		Color oldColor, FGColor;
 		uqm::SWORD factor;
-		FILTER *FTPtr = &FilterData.FilterArray[i];
+		FILTER* FTPtr = &FilterData.FilterArray[i];
 
 		if (FTPtr->Flags & FILTER_DISABLED)
 			continue;
 
 		// Get color from colormap
-		FGColor = GetColorMapColor (COMM_COLORMAP_INDEX,
-				FTPtr->ColorIndex);
+		FGColor = GetColorMapColor(COMM_COLORMAP_INDEX,
+								   FTPtr->ColorIndex);
 
 		// Get DRAW_FACTOR from red channel of color from colormap
 		// with set index
-		factor = getAlphaChannel (FTPtr->OpacityIndex);
+		factor = getAlphaChannel(FTPtr->OpacityIndex);
 
 		// Image is transparent anyway
 		if (factor == 0x00 && FTPtr->Kind == DRAW_ALPHA)
 			continue;
 
-		mode = MAKE_DRAW_MODE ((DrawKind)FTPtr->Kind, factor);
-		oldMode = SetContextDrawMode (mode);
-		oldColor = SetContextForeGroundColor (FGColor);
+		mode = MAKE_DRAW_MODE((DrawKind)FTPtr->Kind, factor);
+		oldMode = SetContextDrawMode(mode);
+		oldColor = SetContextForeGroundColor(FGColor);
 
-		DrawFilledStamp (&s);
+		DrawFilledStamp(&s);
 
-		SetContextDrawMode (oldMode);
-		SetContextForeGroundColor (oldColor);
+		SetContextDrawMode(oldMode);
+		SetContextForeGroundColor(oldColor);
 	}
 }
 
-bool
-DrawAlienFrame (SEQUENCE *Sequences, uqm::COUNT Num, bool fullRedraw)
+bool DrawAlienFrame(SEQUENCE* Sequences, uqm::COUNT Num, bool fullRedraw)
 {
 	int i;
 	STAMP s;
 	bool Change = false;
 
-	BatchGraphics ();
+	BatchGraphics();
 
 	s.origin.x = -SAFE_X;
 	s.origin.y = 0;
@@ -656,12 +649,12 @@ DrawAlienFrame (SEQUENCE *Sequences, uqm::COUNT Num, bool fullRedraw)
 	{
 		// Draw the main frame
 		s.frame = CommData.AlienFrame;
-		DrawStamp (&s);
+		DrawStamp(&s);
 
 		// Draw any static frames (has to be in reverse)
 		for (i = CommData.NumAnimations - 1; i >= 0; --i)
 		{
-			ANIMATION_DESC *ADPtr = &CommData.AlienAmbientArray[i];
+			ANIMATION_DESC* ADPtr = &CommData.AlienAmbientArray[i];
 
 			if (ADPtr->AnimFlags & ANIM_MASK)
 				continue;
@@ -669,20 +662,20 @@ DrawAlienFrame (SEQUENCE *Sequences, uqm::COUNT Num, bool fullRedraw)
 			ADPtr->AnimFlags |= ANIM_DISABLED;
 
 			if (!(ADPtr->AnimFlags & COLORXFORM_ANIM))
-			{	// It's a static frame (e.g. Flagship picture at Starbase)
-				s.frame = SetAbsFrameIndex (CommData.AlienFrame,
-						ADPtr->StartIndex);
-				DrawStamp (&s);
+			{ // It's a static frame (e.g. Flagship picture at Starbase)
+				s.frame = SetAbsFrameIndex(CommData.AlienFrame,
+										   ADPtr->StartIndex);
+				DrawStamp(&s);
 			}
 		}
 	}
 
 	if (Sequences)
-	{	// Draw the animation sequences (has to be in reverse)
+	{ // Draw the animation sequences (has to be in reverse)
 		for (i = Num - 1; i >= 0; --i)
 		{
-			SEQUENCE *pSeq = &Sequences[i];
-			ANIMATION_DESC *ADPtr = pSeq->ADPtr;
+			SEQUENCE* pSeq = &Sequences[i];
+			ANIMATION_DESC* ADPtr = pSeq->ADPtr;
 
 			if ((ADPtr->AnimFlags & ANIM_DISABLED)
 				|| pSeq->AnimType != PICTURE_ANIM)
@@ -696,12 +689,12 @@ DrawAlienFrame (SEQUENCE *Sequences, uqm::COUNT Num, bool fullRedraw)
 			if (fullRedraw && ADPtr->BlockMask & ActiveMask)
 				continue;
 
-			s.frame = SetAbsFrameIndex (CommData.AlienFrame,
-				ADPtr->StartIndex + pSeq->CurIndex);
-			
-			DrawStamp (&s);
+			s.frame = SetAbsFrameIndex(CommData.AlienFrame,
+									   ADPtr->StartIndex + pSeq->CurIndex);
+
+			DrawStamp(&s);
 			if (!fullRedraw && filterEnabled)
-				ApplyFilterToStamp (s);
+				ApplyFilterToStamp(s);
 
 			pSeq->Change = false;
 
@@ -709,7 +702,7 @@ DrawAlienFrame (SEQUENCE *Sequences, uqm::COUNT Num, bool fullRedraw)
 		}
 	}
 	if (filterEnabled && fullRedraw)
-	{	// Kruzen: draw any filter if there are any and we need to
+	{ // Kruzen: draw any filter if there are any and we need to
 		// No need to set Change to true since it's already true on
 		// fullRedraw
 		for (i = 0; i < FilterData.NumFilters; i++)
@@ -717,61 +710,61 @@ DrawAlienFrame (SEQUENCE *Sequences, uqm::COUNT Num, bool fullRedraw)
 			DrawMode mode, oldMode;
 			Color oldColor, FGColor;
 			uqm::SWORD factor;
-			FILTER *FTPtr = &FilterData.FilterArray[i];
+			FILTER* FTPtr = &FilterData.FilterArray[i];
 
 			if (FTPtr->Flags & FILTER_DISABLED)
 				continue;
 
 			if (FTPtr->Flags & FRAMED_FILTER)
-			{	// Special case - just draw plain frame
-				factor = getAlphaChannel (FTPtr->ColorIndex);
+			{ // Special case - just draw plain frame
+				factor = getAlphaChannel(FTPtr->ColorIndex);
 
 				// Don't draw if index is outside or no frame is set
 				if (factor > FTPtr->OpacityIndex
-						|| FTPtr->FrameIndex == -1)
+					|| FTPtr->FrameIndex == -1)
 					continue;
 
-				s.frame = SetAbsFrameIndex (CommData.AlienFrame,
-						FTPtr->FrameIndex + factor);
+				s.frame = SetAbsFrameIndex(CommData.AlienFrame,
+										   FTPtr->FrameIndex + factor);
 
-				DrawStamp (&s);
+				DrawStamp(&s);
 			}
 			else
-			{	// Get color from colormap
-				FGColor = GetColorMapColor (COMM_COLORMAP_INDEX,
-						FTPtr->ColorIndex);
+			{ // Get color from colormap
+				FGColor = GetColorMapColor(COMM_COLORMAP_INDEX,
+										   FTPtr->ColorIndex);
 
 				// Get DRAW_FACTOR from red channel of color from colormap
 				// with set index
-				factor = getAlphaChannel (FTPtr->OpacityIndex);
+				factor = getAlphaChannel(FTPtr->OpacityIndex);
 
 				// Image is transparent anyway
 				if (factor == 0x00 && FTPtr->Kind == DRAW_ALPHA)
 					goto postprocess;
 
-				mode = MAKE_DRAW_MODE ((DrawKind)FTPtr->Kind, factor);
-				oldMode = SetContextDrawMode (mode);
-				oldColor = SetContextForeGroundColor (FGColor);
+				mode = MAKE_DRAW_MODE((DrawKind)FTPtr->Kind, factor);
+				oldMode = SetContextDrawMode(mode);
+				oldColor = SetContextForeGroundColor(FGColor);
 
 				if (FTPtr->FrameIndex == -1)
-				{	// Don't have frame - draw rect on top of everything
+				{ // Don't have frame - draw rect on top of everything
 					RECT r;
 
-					GetContextClipRect (&r);
+					GetContextClipRect(&r);
 					r.corner.x = r.corner.y = 0;
 
 					DrawFilledRectangle(&r);
 				}
 				else
-				{	// Draw filled stamp
-					s.frame = SetAbsFrameIndex (CommData.AlienFrame,
-							FTPtr->FrameIndex);
+				{ // Draw filled stamp
+					s.frame = SetAbsFrameIndex(CommData.AlienFrame,
+											   FTPtr->FrameIndex);
 
-					DrawFilledStamp (&s);
+					DrawFilledStamp(&s);
 				}
 
-				SetContextDrawMode (oldMode);
-				SetContextForeGroundColor (oldColor);
+				SetContextDrawMode(oldMode);
+				SetContextForeGroundColor(oldColor);
 			}
 
 			// postprocess stuff
@@ -788,25 +781,24 @@ postprocess:
 
 			if (FTPtr->Flags & SWITCH_OFF_ANIMS && factor == 0xFF)
 			{
-				SwitchSequences (false);
-				EnableTalkingAnim (false);
+				SwitchSequences(false);
+				EnableTalkingAnim(false);
 			}
 			if (FTPtr->Flags & SWITCH_ON_ANIMS && factor != 0xFF)
 			{
-				SwitchSequences (true);
-				EnableTalkingAnim (true);
+				SwitchSequences(true);
+				EnableTalkingAnim(true);
 			}
 		}
 	}
 
-	UnbatchGraphics ();
+	UnbatchGraphics();
 
 	return Change;
 }
 
-void
-ShutYourMouth (void)
-{	// If talk animation is disabled set
+void ShutYourMouth(void)
+{ // If talk animation is disabled set
 	// talk frame to default index (closed mouth)
 	if (Talk->CurIndex != 0)
 	{
@@ -814,9 +806,8 @@ ShutYourMouth (void)
 	}
 }
 
-void
-SwitchSequences (bool enableAll)
-{	// Kruzen: Needed for disabling animations during
+void SwitchSequences(bool enableAll)
+{ // Kruzen: Needed for disabling animations during
 	// HD one-time transitions (i.e. orz frumple)
 	uqm::COUNT i;
 
@@ -836,35 +827,32 @@ SwitchSequences (bool enableAll)
 		else
 		{
 			if (CommData.AlienAmbientArray[i].AnimFlags
-					& IMMUME_TO_RESTART)
+				& IMMUME_TO_RESTART)
 				continue;
 
 			CommData.AlienAmbientArray[i].AnimFlags &= ~ANIM_DISABLED;
 		}
-
 	}
 }
 
-void
-RunOneTimeSequence (uqm::COUNT animIndex, uqm::COUNT flags)
-{	// Kruzen: HD-only
+void RunOneTimeSequence(uqm::COUNT animIndex, uqm::COUNT flags)
+{ // Kruzen: HD-only
 	if (!(CommData.AlienAmbientArray[animIndex].AnimFlags
-			& COLORXFORM_ANIM)
-			&& CommData.AlienAmbientArray[animIndex].AnimFlags
-				& ONE_SHOT_ANIM)
+		  & COLORXFORM_ANIM)
+		&& CommData.AlienAmbientArray[animIndex].AnimFlags
+			   & ONE_SHOT_ANIM)
 	{
 		CommData.AlienAmbientArray[animIndex].AnimFlags &= ~ANIM_DISABLED;
 
 		CommData.AlienAmbientArray[animIndex].AnimFlags |= flags;
 
 		if (!(CommData.AlienAmbientArray[animIndex].AnimFlags
-				& ALPHA_MASK_ANIM))
-			SwitchSequences (false);
+			  & ALPHA_MASK_ANIM))
+			SwitchSequences(false);
 	}
 }
 
-void
-EngageFilters (FILTER_DESC* f_desc)
+void EngageFilters(FILTER_DESC* f_desc)
 {
 	if (!f_desc)
 		return;
@@ -873,14 +861,12 @@ EngageFilters (FILTER_DESC* f_desc)
 	filterEnabled = true;
 }
 
-void
-DisengageFilters (void)
+void DisengageFilters(void)
 {
 	filterEnabled = false;
 }
 
-void
-DeltaLastTime (TimeCount diff)
+void DeltaLastTime(TimeCount diff)
 {
 	LastTime += diff;
 }

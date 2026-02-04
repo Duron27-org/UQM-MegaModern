@@ -38,12 +38,12 @@ extern "C" {
 
 #else
 
-extern void OpenJournal (void);
-extern bool CloseJournal (void);
+extern void OpenJournal(void);
+extern bool CloseJournal(void);
 #if !CREATE_JOURNAL
 #define JournalInput(is)
-#else /* CREATE_JOURNAL */
-extern void JournalInput (INPUT_STATE InputState);
+#else  /* CREATE_JOURNAL */
+extern void JournalInput(INPUT_STATE InputState);
 #endif /* CREATE_JOURNAL */
 
 #endif
@@ -53,4 +53,3 @@ extern void JournalInput (INPUT_STATE InputState);
 #endif
 
 #endif /* UQM_DEMO_H_ */
-

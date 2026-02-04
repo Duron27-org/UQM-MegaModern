@@ -15,7 +15,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
- 
+
 /****************************************************************************
 * FILE: random.h
 * DESC: definitions and externs for random number generators
@@ -34,14 +34,15 @@
 
 /* ----------------------------GLOBALS/EXTERNS---------------------------- */
 
-uqm::DWORD TFB_SeedRandom (uqm::DWORD seed);
-uqm::DWORD TFB_Random (void);
+uqm::DWORD TFB_SeedRandom(uqm::DWORD seed);
+uqm::DWORD TFB_Random(void);
 
 
 typedef struct RandomContext RandomContext;
 
 #ifdef RANDOM2_INTERNAL
-struct RandomContext {
+struct RandomContext
+{
 	uqm::DWORD seed;
 };
 #endif
@@ -52,17 +53,16 @@ struct RandomContext {
 #define MAX_SEED 2147483644
 #define MIN_SEED 3
 #define SANE_SEED(a) (((a) < MIN_SEED || (a) > MAX_SEED) ? false : true)
-#define SeedA (((optSeedType == OPTVAL_PLANET) && \
-		(SANE_SEED (GLOBAL_SIS (Seed)))) ? GLOBAL_SIS (Seed) : PrimeA)
+#define SeedA (((optSeedType == OPTVAL_PLANET) && (SANE_SEED(GLOBAL_SIS(Seed)))) ? GLOBAL_SIS(Seed) : PrimeA)
 // Default SeedA (PrimeA): 16807 - a relatively prime number - also M div Q
 #define SeedM (UINT32_MAX / 2) // 0xFFFFFFFF div 2
 #define SeedQ (SeedM / SeedA)  // Default: 127773L - M div A
-#define SeedR (SeedM % SeedA)  // Default: 2836 - M mod A 
+#define SeedR (SeedM % SeedA)  // Default: 2836 - M mod A
 #define PrimeSeed (optSeedType == OPTVAL_PRIME)
 #define StarSeed (optSeedType > OPTVAL_PLANET)
 
-static inline const uqm::CHAR_T *
-SeedStr (void)
+static inline const uqm::CHAR_T*
+SeedStr(void)
 {
 	switch (optSeedType)
 	{
@@ -79,18 +79,16 @@ SeedStr (void)
 	}
 }
 
-RandomContext *RandomContext_New (void);
-RandomContext *RandomContext_Set(uqm::DWORD Context);
-void RandomContext_Delete (RandomContext *context);
-RandomContext *RandomContext_Copy (const RandomContext *source);
-uqm::DWORD RandomContext_Random (RandomContext *context);
-uqm::DWORD RandomContext_SeedRandom (RandomContext *context, uqm::DWORD new_seed);
-uqm::DWORD RandomContext_GetSeed (RandomContext *context);
-uqm::DWORD RandomContext_FastRandom (uqm::DWORD seed);
-int RangeMinMax (int min, int max, uqm::DWORD rand);
-extern void printBits (size_t const size, void const *const ptr);
+RandomContext* RandomContext_New(void);
+RandomContext* RandomContext_Set(uqm::DWORD Context);
+void RandomContext_Delete(RandomContext* context);
+RandomContext* RandomContext_Copy(const RandomContext* source);
+uqm::DWORD RandomContext_Random(RandomContext* context);
+uqm::DWORD RandomContext_SeedRandom(RandomContext* context, uqm::DWORD new_seed);
+uqm::DWORD RandomContext_GetSeed(RandomContext* context);
+uqm::DWORD RandomContext_FastRandom(uqm::DWORD seed);
+int RangeMinMax(int min, int max, uqm::DWORD rand);
+extern void printBits(size_t const size, void const* const ptr);
 
 
-#endif  /* LIBS_MATH_RANDOM_H_ */
-
-
+#endif /* LIBS_MATH_RANDOM_H_ */

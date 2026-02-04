@@ -21,11 +21,10 @@
 extern "C" {
 #endif
 
-RACE_DESC *init_sis (void);
+RACE_DESC* init_sis(void);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* SIS_SHIP_H */
-
+#endif /* SIS_SHIP_H */

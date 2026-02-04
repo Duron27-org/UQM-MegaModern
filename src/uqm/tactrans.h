@@ -28,32 +28,30 @@
 extern "C" {
 #endif
 
-bool battleEndReadyHuman (HumanInputContext *context);
-bool battleEndReadyComputer (ComputerInputContext *context);
+bool battleEndReadyHuman(HumanInputContext* context);
+bool battleEndReadyComputer(ComputerInputContext* context);
 #ifdef NETPLAY
-bool battleEndReadyNetwork (NetworkInputContext *context);
+bool battleEndReadyNetwork(NetworkInputContext* context);
 #endif
 
-extern void ship_transition (ELEMENT *ElementPtr);
-extern bool OpponentAlive (STARSHIP *TestStarShipPtr);
-extern void new_ship (ELEMENT *ElementPtr);
-extern void ship_death (ELEMENT *ShipPtr);
-extern void spawn_ion_trail (ELEMENT *ElementPtr, uqm::SIZE x, uqm::SIZE y);
-extern void flee_preprocess (ELEMENT *ElementPtr);
+extern void ship_transition(ELEMENT* ElementPtr);
+extern bool OpponentAlive(STARSHIP* TestStarShipPtr);
+extern void new_ship(ELEMENT* ElementPtr);
+extern void ship_death(ELEMENT* ShipPtr);
+extern void spawn_ion_trail(ELEMENT* ElementPtr, uqm::SIZE x, uqm::SIZE y);
+extern void flee_preprocess(ELEMENT* ElementPtr);
 
-extern void StopDitty (void);
-extern void ResetWinnerStarShip (void);
-extern void StopAllBattleMusic (void);
-extern STARSHIP* FindAliveStarShip (ELEMENT *deadShip);
-extern STARSHIP* GetWinnerStarShip (void);
-extern void SetWinnerStarShip (STARSHIP *winner);
-extern void RecordShipDeath (ELEMENT *deadShip);
-extern void StartShipExplosion (ELEMENT *ShipPtr, bool playSound);
+extern void StopDitty(void);
+extern void ResetWinnerStarShip(void);
+extern void StopAllBattleMusic(void);
+extern STARSHIP* FindAliveStarShip(ELEMENT* deadShip);
+extern STARSHIP* GetWinnerStarShip(void);
+extern void SetWinnerStarShip(STARSHIP* winner);
+extern void RecordShipDeath(ELEMENT* deadShip);
+extern void StartShipExplosion(ELEMENT* ShipPtr, bool playSound);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* UQM_TACTRANS_H_ */
-
-
+#endif /* UQM_TACTRANS_H_ */

@@ -26,21 +26,22 @@
  * of which are only callable by the thread that is permitted to touch
  * the screen.  No explicit locks should therefore be required. */
 
-typedef struct {
-	int valid;   // If zero, the next point registered becomes the region
+typedef struct
+{
+	int valid;	 // If zero, the next point registered becomes the region
 	RECT region; // The actual modified rectangle
-	RECT clip;   // Points outside of this rectangle are pushed to
-		     // the closest border point
+	RECT clip;	 // Points outside of this rectangle are pushed to
+				 // the closest border point
 } TFB_BoundingBox;
 
 extern TFB_BoundingBox TFB_BBox;
 
-void TFB_BBox_RegisterPoint (int x, int y);
-void TFB_BBox_RegisterRect (const RECT *r);
-void TFB_BBox_RegisterCanvas (TFB_Canvas c, int x, int y);
+void TFB_BBox_RegisterPoint(int x, int y);
+void TFB_BBox_RegisterRect(const RECT* r);
+void TFB_BBox_RegisterCanvas(TFB_Canvas c, int x, int y);
 
-void TFB_BBox_Init (int width, int height);
-void TFB_BBox_Reset (void);
-void TFB_BBox_SetClipRect (const RECT *r);
+void TFB_BBox_Init(int width, int height);
+void TFB_BBox_Reset(void);
+void TFB_BBox_SetClipRect(const RECT* r);
 
 #endif /* BBOX_H_INCL__ */

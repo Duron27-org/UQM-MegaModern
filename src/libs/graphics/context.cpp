@@ -24,22 +24,22 @@ CONTEXT _pCurContext;
 #ifdef DEBUG
 // We keep track of all contexts
 CONTEXT firstContext;
-		// The first one in the list.
-CONTEXT *contextEnd = &firstContext;
-		// Where to put the next context.
+// The first one in the list.
+CONTEXT* contextEnd = &firstContext;
+// Where to put the next context.
 #endif
 
 PRIMITIVE _locPrim;
 
 FONT _CurFontPtr;
 
-#define DEFAULT_FORE_COLOR  BUILD_COLOR (MAKE_RGB15 (0x1F, 0x1F, 0x1F), 0x0F)
-#define DEFAULT_BACK_COLOR  BUILD_COLOR (MAKE_RGB15 (0x00, 0x00, 0x00), 0x00)
+#define DEFAULT_FORE_COLOR BUILD_COLOR(MAKE_RGB15(0x1F, 0x1F, 0x1F), 0x0F)
+#define DEFAULT_BACK_COLOR BUILD_COLOR(MAKE_RGB15(0x00, 0x00, 0x00), 0x00)
 
-#define DEFAULT_DRAW_MODE   MAKE_DRAW_MODE (DRAW_DEFAULT, 255)
+#define DEFAULT_DRAW_MODE MAKE_DRAW_MODE(DRAW_DEFAULT, 255)
 
 CONTEXT
-SetContext (CONTEXT Context)
+SetContext(CONTEXT Context)
 {
 	CONTEXT LastContext;
 
@@ -48,27 +48,27 @@ SetContext (CONTEXT Context)
 	{
 		if (LastContext)
 		{
-			UnsetContextFlags (
-					MAKE_WORD (0, GRAPHICS_ACTIVE | DRAWABLE_ACTIVE));
-			SetContextFlags (
-					MAKE_WORD (0, _GraphicsStatusFlags
-							& (GRAPHICS_ACTIVE | DRAWABLE_ACTIVE)));
+			UnsetContextFlags(
+				MAKE_WORD(0, GRAPHICS_ACTIVE | DRAWABLE_ACTIVE));
+			SetContextFlags(
+				MAKE_WORD(0, _GraphicsStatusFlags
+								 & (GRAPHICS_ACTIVE | DRAWABLE_ACTIVE)));
 
-			DeactivateContext ();
+			DeactivateContext();
 		}
 
 		_pCurContext = Context;
 		if (_pCurContext)
 		{
-			ActivateContext ();
+			ActivateContext();
 
 			_GraphicsStatusFlags &= ~(GRAPHICS_ACTIVE | DRAWABLE_ACTIVE);
-			_GraphicsStatusFlags |= highByte (_get_context_flags ());
+			_GraphicsStatusFlags |= highByte(_get_context_flags());
 
-			SetPrimColor (&_locPrim, _get_context_fg_color ());
+			SetPrimColor(&_locPrim, _get_context_fg_color());
 
-			_CurFramePtr = _get_context_fg_frame ();
-			_CurFontPtr = _get_context_font ();
+			_CurFramePtr = _get_context_fg_frame();
+			_CurFontPtr = _get_context_font();
 		}
 	}
 
@@ -77,15 +77,15 @@ SetContext (CONTEXT Context)
 
 #ifdef DEBUG
 CONTEXT
-CreateContextAux (const char *name)
+CreateContextAux(const char* name)
 #else  /* if !defined(DEBUG) */
 CONTEXT
-CreateContextAux (void)
-#endif  /* !defined(DEBUG) */
+CreateContextAux(void)
+#endif /* !defined(DEBUG) */
 {
 	CONTEXT NewContext;
 
-	NewContext = (CONTEXT)AllocContext ();
+	NewContext = (CONTEXT)AllocContext();
 	if (NewContext)
 	{
 		/* initialize context */
@@ -94,7 +94,7 @@ CreateContextAux (void)
 		NewContext->next = NULL;
 		*contextEnd = NewContext;
 		contextEnd = &NewContext->next;
-#endif  /* DEBUG */
+#endif /* DEBUG */
 
 		NewContext->Mode = DEFAULT_DRAW_MODE;
 		NewContext->ForeGroundColor = DEFAULT_FORE_COLOR;
@@ -108,297 +108,295 @@ CreateContextAux (void)
 // Loop through the list of context to the pointer which points to the
 // specified context. This is either 'firstContext' or the address of
 // the 'next' field of some other context.
-static CONTEXT *
-FindContextPtr (CONTEXT context) {
-	CONTEXT *ptr;
-	
-	for (ptr = &firstContext; *ptr != NULL; ptr = &(*ptr)->next) {
+static CONTEXT*
+FindContextPtr(CONTEXT context)
+{
+	CONTEXT* ptr;
+
+	for (ptr = &firstContext; *ptr != NULL; ptr = &(*ptr)->next)
+	{
 		if (*ptr == context)
 			break;
 	}
 	return ptr;
 }
-#endif  /* DEBUG */
+#endif /* DEBUG */
 
-bool
-DestroyContext (CONTEXT ContextRef)
+bool DestroyContext(CONTEXT ContextRef)
 {
-	TFB_Image *img;
+	TFB_Image* img;
 
 	if (ContextRef == 0)
 		return (false);
 
 	if (_pCurContext && _pCurContext == ContextRef)
-		SetContext ((CONTEXT)0);
+		SetContext((CONTEXT)0);
 
 #ifdef DEBUG
 	// Unlink the context.
 	{
-		CONTEXT *contextPtr = FindContextPtr (ContextRef);
+		CONTEXT* contextPtr = FindContextPtr(ContextRef);
 		if (contextEnd == &ContextRef->next)
 			contextEnd = contextPtr;
 		*contextPtr = ContextRef->next;
 	}
-#endif  /* DEBUG */
+#endif /* DEBUG */
 
 	img = ContextRef->FontBacking;
 	if (img)
-		TFB_DrawImage_Delete (img);
+		TFB_DrawImage_Delete(img);
 
-	FreeContext (ContextRef);
+	FreeContext(ContextRef);
 	return true;
 }
 
-Color
-SetContextForeGroundColor (Color color)
+Color SetContextForeGroundColor(Color color)
 {
 	Color oldColor;
 
-	if (!ContextActive ())
+	if (!ContextActive())
 		return DEFAULT_FORE_COLOR;
 
-	oldColor = _get_context_fg_color ();
+	oldColor = _get_context_fg_color();
 	if (!sameColor(oldColor, color))
 	{
-		SwitchContextForeGroundColor (color);
+		SwitchContextForeGroundColor(color);
 
-		if (!(_get_context_fbk_flags () & FBK_IMAGE))
+		if (!(_get_context_fbk_flags() & FBK_IMAGE))
 		{
-			SetContextFBkFlags (FBK_DIRTY);
+			SetContextFBkFlags(FBK_DIRTY);
 		}
 	}
-	SetPrimColor (&_locPrim, color);
+	SetPrimColor(&_locPrim, color);
 
 	return (oldColor);
 }
 
-Color
-GetContextForeGroundColor (void)
+Color GetContextForeGroundColor(void)
 {
-	if (!ContextActive ())
+	if (!ContextActive())
 		return DEFAULT_FORE_COLOR;
 
-	return _get_context_fg_color ();
+	return _get_context_fg_color();
 }
 
-Color
-SetContextBackGroundColor (Color color)
+Color SetContextBackGroundColor(Color color)
 {
 	Color oldColor;
 
-	if (!ContextActive ())
+	if (!ContextActive())
 		return DEFAULT_BACK_COLOR;
 
-	oldColor = _get_context_bg_color ();
+	oldColor = _get_context_bg_color();
 	if (!sameColor(oldColor, color))
-		SwitchContextBackGroundColor (color);
+		SwitchContextBackGroundColor(color);
 
 	return oldColor;
 }
 
-Color
-GetContextBackGroundColor (void)
+Color GetContextBackGroundColor(void)
 {
-	if (!ContextActive ())
+	if (!ContextActive())
 		return DEFAULT_BACK_COLOR;
 
-	return _get_context_bg_color ();
+	return _get_context_bg_color();
 }
 
 DrawMode
-SetContextDrawMode (DrawMode mode)
+SetContextDrawMode(DrawMode mode)
 {
 	DrawMode oldMode;
 
-	if (!ContextActive ())
+	if (!ContextActive())
 		return DEFAULT_DRAW_MODE;
 
-	oldMode = _get_context_draw_mode ();
-	SwitchContextDrawMode (mode);
+	oldMode = _get_context_draw_mode();
+	SwitchContextDrawMode(mode);
 
 	return oldMode;
 }
 
 DrawMode
-GetContextDrawMode (void)
+GetContextDrawMode(void)
 {
-	if (!ContextActive ())
+	if (!ContextActive())
 		return DEFAULT_DRAW_MODE;
 
-	return _get_context_draw_mode ();
+	return _get_context_draw_mode();
 }
 
 // Returns a rect based at 0,0 and the size of context foreground frame
 static inline RECT
-_get_context_fg_rect (void)
+_get_context_fg_rect(void)
 {
-	RECT r = { {0, 0}, {0, 0} };
+	RECT r = {
+		{0, 0},
+		{0, 0}
+	  };
 	if (_CurFramePtr)
-		r.extent = GetFrameBounds (_CurFramePtr);
+		r.extent = GetFrameBounds(_CurFramePtr);
 	return r;
 }
 
-bool
-SetContextClipRect (RECT *lpRect)
+bool SetContextClipRect(RECT* lpRect)
 {
-	if (!ContextActive ())
+	if (!ContextActive())
 		return (false);
 
 	if (lpRect)
 	{
-		if (rectsEqual (*lpRect, _get_context_fg_rect ()))
-		{	// Cliprect is undefined to mirror GetContextClipRect()
+		if (rectsEqual(*lpRect, _get_context_fg_rect()))
+		{ // Cliprect is undefined to mirror GetContextClipRect()
 			_pCurContext->ClipRect.extent.width = 0;
 		}
 		else
-		{	// We have a cliprect
+		{ // We have a cliprect
 			_pCurContext->ClipRect = *lpRect;
 		}
 	}
 	else
-	{	// Set cliprect as undefined
+	{ // Set cliprect as undefined
 		_pCurContext->ClipRect.extent.width = 0;
 	}
 
 	return true;
 }
 
-bool
-GetContextClipRect (RECT *lpRect)
+bool GetContextClipRect(RECT* lpRect)
 {
-	if (!ContextActive ())
+	if (!ContextActive())
 		return (false);
 
 	*lpRect = _pCurContext->ClipRect;
 	if (!_pCurContext->ClipRect.extent.width)
-	{	// Though the cliprect is undefined, drawing will be clipped
+	{ // Though the cliprect is undefined, drawing will be clipped
 		// to the extent of the foreground frame
-		*lpRect = _get_context_fg_rect ();
+		*lpRect = _get_context_fg_rect();
 	}
 
 	return (bool)(_pCurContext->ClipRect.extent.width != 0);
 }
 
 POINT
-SetContextOrigin (POINT orgOffset)
+SetContextOrigin(POINT orgOffset)
 {
 	// XXX: This is a hack, kind of. But that's what the original did.
-	return SetFrameHot (_CurFramePtr, orgOffset);
+	return SetFrameHot(_CurFramePtr, orgOffset);
 }
 
 FRAME
-SetContextFontEffect (FRAME EffectFrame)
+SetContextFontEffect(FRAME EffectFrame)
 {
 	FRAME LastEffect;
 
-	if (!ContextActive ())
+	if (!ContextActive())
 		return (NULL);
 
-	LastEffect = _get_context_fonteff ();
+	LastEffect = _get_context_fonteff();
 	if (EffectFrame != LastEffect)
 	{
-		SwitchContextFontEffect (EffectFrame);
+		SwitchContextFontEffect(EffectFrame);
 
 		if (EffectFrame != 0)
 		{
-			SetContextFBkFlags (FBK_IMAGE);
+			SetContextFBkFlags(FBK_IMAGE);
 		}
 		else
 		{
-			UnsetContextFBkFlags (FBK_IMAGE);
+			UnsetContextFBkFlags(FBK_IMAGE);
 		}
 	}
 
 	return LastEffect;
 }
 
-void
-FixContextFontEffect (void)
+void FixContextFontEffect(void)
 {
 	uqm::SIZE w, h;
 	TFB_Image* img;
 
-	if (!ContextActive () || (_get_context_font_backing () != 0
-			&& !(_get_context_fbk_flags () & FBK_DIRTY)))
+	if (!ContextActive() || (_get_context_font_backing() != 0 && !(_get_context_fbk_flags() & FBK_DIRTY)))
 		return;
 
-	if (!GetContextFontDispHeight (&h) || !GetContextFontDispWidth (&w))
+	if (!GetContextFontDispHeight(&h) || !GetContextFontDispWidth(&w))
 		return;
 
 	img = _pCurContext->FontBacking;
 	if (img)
-		TFB_DrawScreen_DeleteImage (img);
+		TFB_DrawScreen_DeleteImage(img);
 
-	img = TFB_DrawImage_CreateForScreen (w, h, true);
-	if (_get_context_fbk_flags () & FBK_IMAGE)
-	{	// image pattern backing
-		FRAME EffectFrame = _get_context_fonteff ();
-		
-		TFB_DrawImage_Image (EffectFrame->image,
-				-EffectFrame->HotSpot.x, -EffectFrame->HotSpot.y,
-				0, 0, NULL, DRAW_REPLACE_MODE, img);
+	img = TFB_DrawImage_CreateForScreen(w, h, true);
+	if (_get_context_fbk_flags() & FBK_IMAGE)
+	{ // image pattern backing
+		FRAME EffectFrame = _get_context_fonteff();
+
+		TFB_DrawImage_Image(EffectFrame->image,
+							-EffectFrame->HotSpot.x, -EffectFrame->HotSpot.y,
+							0, 0, NULL, DRAW_REPLACE_MODE, img);
 	}
 	else
-	{	// solid color backing
-		RECT r = { {0, 0}, {w, h} };
-		Color color = _get_context_fg_color ();
+	{ // solid color backing
+		RECT r = {
+			{0, 0},
+			{w, h}
+		  };
+		Color color = _get_context_fg_color();
 
-		TFB_DrawImage_Rect (&r, color, DRAW_REPLACE_MODE, img);
+		TFB_DrawImage_Rect(&r, color, DRAW_REPLACE_MODE, img);
 	}
-	
+
 	_pCurContext->FontBacking = img;
-	UnsetContextFBkFlags (FBK_DIRTY);
+	UnsetContextFBkFlags(FBK_DIRTY);
 }
 
 // 'area' may be NULL to copy the entire CONTEXT cliprect
 // 'area' is relative to the CONTEXT cliprect
 DRAWABLE
-CopyContextRect (const RECT* area)
+CopyContextRect(const RECT* area)
 {
 	RECT clipRect;
 	RECT fgRect;
 	RECT r;
-	
-	if (!ContextActive () || !_CurFramePtr)
+
+	if (!ContextActive() || !_CurFramePtr)
 		return NULL;
 
-	fgRect = _get_context_fg_rect ();
-	GetContextClipRect (&clipRect);
+	fgRect = _get_context_fg_rect();
+	GetContextClipRect(&clipRect);
 	r = clipRect;
 	if (area)
-	{	// a portion of the context
+	{ // a portion of the context
 		r.corner.x += area->corner.x;
 		r.corner.y += area->corner.y;
 		r.extent = area->extent;
 	}
 	// TODO: Should this take CONTEXT origin into account too?
 	// validate the rect
-	if (!BoxIntersect (&r, &fgRect, &r))
+	if (!BoxIntersect(&r, &fgRect, &r))
 		return NULL;
-	
+
 	if (_CurFramePtr->Type == SCREEN_DRAWABLE)
-		return LoadDisplayPixmap (&r, NULL);
+		return LoadDisplayPixmap(&r, NULL);
 	else
-		return CopyFrameRect (_CurFramePtr, &r);
+		return CopyFrameRect(_CurFramePtr, &r);
 }
 
 #ifdef DEBUG
-const char *
-GetContextName (CONTEXT context)
+const char*
+GetContextName(CONTEXT context)
 {
 	return context->name;
 }
 
 CONTEXT
-GetFirstContext (void)
+GetFirstContext(void)
 {
 	return firstContext;
 }
 
 CONTEXT
-GetNextContext (CONTEXT context)
+GetNextContext(CONTEXT context)
 {
 	return context->next;
 }
-#endif  /* DEBUG */
-
+#endif /* DEBUG */

@@ -19,11 +19,11 @@
 
 #include "port.h"
 #include "types.h"
-		// for uint32
+// for uint32
 #include <sys/types.h>
-		// For size_t
+// For size_t
 #include "compiler.h"
-		// for uqm::CHAR_T
+// for uqm::CHAR_T
 
 #if 0 //defined(__cplusplus)
 extern "C" {
@@ -39,39 +39,39 @@ typedef uint32 UniChar;
 
 UniChar getCharFromString(const unsigned char** ptr);
 UniChar getCharFromStringN(const unsigned char** ptr,
-		const unsigned char* end);
-unsigned char *getLineFromString(const unsigned char* start,
-		const unsigned char **end, const unsigned char** startNext);
-size_t utf8StringCount(const unsigned char*start);
-size_t utf8StringCountN(const unsigned char *start,
-		const unsigned char *end);
-size_t utf8CharCount (const unsigned char *start, UniChar uni_char);
-int utf8StringPos (const unsigned char *pStr, UniChar ch);
-int utf8StringLastPos (const unsigned char *pStr, UniChar ch);
-unsigned char *utf8StringCopy (unsigned char *dst, size_t size,
-		const unsigned char *src);
-int utf8StringCompare (const unsigned char *str1, const unsigned char *str2);
-unsigned char *skipUTF8Chars(const unsigned char *ptr, size_t num);
-size_t getUniCharFromString(UniChar *wstr, size_t maxcount,
-		const unsigned char *start);
-size_t getUniCharFromStringN(UniChar *wstr, size_t maxcount,
-		const unsigned char *start, const unsigned char *end);
-int getStringFromChar(unsigned char *ptr, size_t size, UniChar ch);
-size_t getStringFromWideN(unsigned char *ptr, size_t size,
-		const UniChar *wstr, size_t count);
-size_t getStringFromWide(unsigned char *ptr, size_t size,
-		const UniChar *wstr);
+						   const unsigned char* end);
+unsigned char* getLineFromString(const unsigned char* start,
+								 const unsigned char** end, const unsigned char** startNext);
+size_t utf8StringCount(const unsigned char* start);
+size_t utf8StringCountN(const unsigned char* start,
+						const unsigned char* end);
+size_t utf8CharCount(const unsigned char* start, UniChar uni_char);
+int utf8StringPos(const unsigned char* pStr, UniChar ch);
+int utf8StringLastPos(const unsigned char* pStr, UniChar ch);
+unsigned char* utf8StringCopy(unsigned char* dst, size_t size,
+							  const unsigned char* src);
+int utf8StringCompare(const unsigned char* str1, const unsigned char* str2);
+unsigned char* skipUTF8Chars(const unsigned char* ptr, size_t num);
+size_t getUniCharFromString(UniChar* wstr, size_t maxcount,
+							const unsigned char* start);
+size_t getUniCharFromStringN(UniChar* wstr, size_t maxcount,
+							 const unsigned char* start, const unsigned char* end);
+int getStringFromChar(unsigned char* ptr, size_t size, UniChar ch);
+size_t getStringFromWideN(unsigned char* ptr, size_t size,
+						  const UniChar* wstr, size_t count);
+size_t getStringFromWide(unsigned char* ptr, size_t size,
+						 const UniChar* wstr);
 
 // versions which accept a simple char*
-inline UniChar getCharFromString(const char** ptr) 
-{ 
-	return getCharFromString(reinterpret_cast<const unsigned char**>(ptr)); 
+inline UniChar getCharFromString(const char** ptr)
+{
+	return getCharFromString(reinterpret_cast<const unsigned char**>(ptr));
 }
-inline UniChar getCharFromStringN(const char** ptr, const char* end) 
-{ 
-	return getCharFromStringN(reinterpret_cast<const unsigned char**>(ptr), reinterpret_cast<const unsigned char*>(end)); 
+inline UniChar getCharFromStringN(const char** ptr, const char* end)
+{
+	return getCharFromStringN(reinterpret_cast<const unsigned char**>(ptr), reinterpret_cast<const unsigned char*>(end));
 }
-inline char* getLineFromString(const char* start, const char** end, const char** startNext) 
+inline char* getLineFromString(const char* start, const char** end, const char** startNext)
 {
 	unsigned char* ln = getLineFromString(reinterpret_cast<const unsigned char*>(start), reinterpret_cast<const unsigned char**>(end), reinterpret_cast<const unsigned char**>(startNext));
 	return reinterpret_cast<char*>(ln);
@@ -136,8 +136,8 @@ int UniChar_isPrint(UniChar ch);
 UniChar UniChar_toUpper(UniChar ch);
 UniChar UniChar_toLower(UniChar ch);
 
-uqm::CHAR_T *AlignText (const uqm::CHAR_T *str, sint16 *loc_x);
-uqm::CHAR_T *AddPadd (const uqm::CHAR_T *str, sint16 *padding);
+uqm::CHAR_T* AlignText(const uqm::CHAR_T* str, sint16* loc_x);
+uqm::CHAR_T* AddPadd(const uqm::CHAR_T* str, sint16* padding);
 
 #undef UNICODE_CHAR
 
@@ -146,4 +146,3 @@ uqm::CHAR_T *AddPadd (const uqm::CHAR_T *str, sint16 *padding);
 #endif
 
 //#endif  /* UNICODE_H */
-

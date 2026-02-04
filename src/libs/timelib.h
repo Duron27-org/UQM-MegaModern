@@ -32,19 +32,18 @@ extern "C" {
  * timer and currently runs within the Comm ambient anim paradigm anyway)
  * Thus, the minimum value for ONE_SECOND is 840. */
 #if TIMELIB == SDL
-#	define ONE_SECOND 840
+#define ONE_SECOND 840
 #endif
 
 typedef uqm::DWORD TimeCount;
 typedef uqm::DWORD TimePeriod;
 
-extern void InitTimeSystem (void);
-extern void UnInitTimeSystem (void);
-extern TimeCount GetTimeCounter (void);
+extern void InitTimeSystem(void);
+extern void UnInitTimeSystem(void);
+extern TimeCount GetTimeCounter(void);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* LIBS_TIMELIB_H_ */
-
+#endif /* LIBS_TIMELIB_H_ */

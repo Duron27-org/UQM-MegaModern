@@ -25,7 +25,7 @@
 #include "uqm/setup.h"
 #include "uqm/shipcont.h"
 #include "uqm/sis.h"
-		// for DeltaSISGauges()
+// for DeltaSISGauges()
 #include "libs/graphics/gfx_common.h"
 #include "libs/mathlib.h"
 #include "libs/inplib.h"
@@ -34,148 +34,188 @@
 #include "uqm/controls.h"
 
 
-static void TellMission (RESPONSE_REF R);
-static void SellMinerals (RESPONSE_REF R);
+static void TellMission(RESPONSE_REF R);
+static void SellMinerals(RESPONSE_REF R);
 
 
 static LOCDATA commander_desc =
-{
-	COMMANDER_CONVERSATION, /* AlienConv */
-	NULL, /* init_encounter_func */
-	NULL, /* post_encounter_func */
-	NULL, /* uninit_encounter_func */
-	COMMANDER_PMAP_ANIM, /* AlienFrame */
-	COMMANDER_FONT, /* AlienFont */
-	WHITE_COLOR_INIT, /* AlienTextFColor */
-	BLACK_COLOR_INIT, /* AlienTextBColor */
-	{0, 0}, /* AlienTextBaseline */
-	0, /* SIS_TEXT_WIDTH, */ /* AlienTextWidth */
-	ALIGN_CENTER, /* AlienTextAlign */
-	VALIGN_MIDDLE, /* AlienTextValign */
-	COMMANDER_COLOR_MAP, /* AlienColorMap */
-	COMMANDER_MUSIC, /* AlienSong */
 	{
-		COMMANDER_PMAP_ANIM_RED, /* AlienAltFrame */
-		NULL_RESOURCE, /* AlienAltColorMap */
-		STARBASE_ALT_MUSIC, /* AlienAltSong */
-	},
-	STARBASE_CONVERSATION_PHRASES, /* PlayerPhrases */
-	10, /* NumAnimations */
-	{ /* AlienAmbientArray (ambient animations) */
-		{ /* Blink */
-			1, /* StartIndex */
-			3, /* NumFrames */
-			YOYO_ANIM, /* AnimFlags */
-			ONE_SECOND / 15, 0, /* FrameRate */
-			0, ONE_SECOND * 8, /* RestartRate */
-			0, /* BlockMask */
+		COMMANDER_CONVERSATION, /* AlienConv */
+		NULL, /* init_encounter_func */
+		NULL, /* post_encounter_func */
+		NULL, /* uninit_encounter_func */
+		COMMANDER_PMAP_ANIM, /* AlienFrame */
+		COMMANDER_FONT, /* AlienFont */
+		WHITE_COLOR_INIT, /* AlienTextFColor */
+		BLACK_COLOR_INIT, /* AlienTextBColor */
+		{0, 0}, /* AlienTextBaseline */
+		0,
+ /* SIS_TEXT_WIDTH, */  /* AlienTextWidth */
+		ALIGN_CENTER, /* AlienTextAlign */
+		VALIGN_MIDDLE, /* AlienTextValign */
+		COMMANDER_COLOR_MAP, /* AlienColorMap */
+		COMMANDER_MUSIC, /* AlienSong */
+		{
+								COMMANDER_PMAP_ANIM_RED, /* AlienAltFrame */
+			NULL_RESOURCE,			 /* AlienAltColorMap */
+			STARBASE_ALT_MUSIC,		 /* AlienAltSong */
 		},
-		{ /* Running light */
-			10, /* StartIndex */
-			30, /* NumFrames */
-			CIRCULAR_ANIM, /* AnimFlags */
-			ONE_SECOND / 40, 0, /* FrameRate */
-			ONE_SECOND * 2, 0, /* RestartRate */
-			0, /* BlockMask */
-		},
-		{ /* Arc welder 0 */
-			40, /* StartIndex */
-			7, /* NumFrames */
-			CIRCULAR_ANIM, /* AnimFlags */
-			ONE_SECOND / 40, 0, /* FrameRate */
-			0, ONE_SECOND * 8, /* RestartRate */
-			0, /* BlockMask */
-		},
-		{ /* Arc welder 1 */
-			47, /* StartIndex */
-			8, /* NumFrames */
-			CIRCULAR_ANIM, /* AnimFlags */
-			ONE_SECOND / 40, 0, /* FrameRate */
-			0, ONE_SECOND * 8, /* RestartRate */
-			0, /* BlockMask */
-		},
-		{ /* Arc welder 2 */
-			55, /* StartIndex */
-			6, /* NumFrames */
-			CIRCULAR_ANIM, /* AnimFlags */
-			ONE_SECOND / 40, 0, /* FrameRate */
-			0, ONE_SECOND * 8, /* RestartRate */
-			0, /* BlockMask */
-		},
-		{ /* Arc welder 3 */
-			61, /* StartIndex */
-			6, /* NumFrames */
-			CIRCULAR_ANIM, /* AnimFlags */
-			ONE_SECOND / 40, 0, /* FrameRate */
-			0, ONE_SECOND * 8, /* RestartRate */
-			0, /* BlockMask */
-		},
-		{ /* Arc welder 4 */
-			67, /* StartIndex */
-			7, /* NumFrames */
-			CIRCULAR_ANIM, /* AnimFlags */
-			ONE_SECOND / 40, 0, /* FrameRate */
-			0, ONE_SECOND * 8, /* RestartRate */
-			0, /* BlockMask */
-		},
-		{ /* Arc welder 5 */
-			74, /* StartIndex */
-			11, /* NumFrames */
-			CIRCULAR_ANIM, /* AnimFlags */
-			ONE_SECOND / 40, 0, /* FrameRate */
-			0, ONE_SECOND * 8, /* RestartRate */
-			0, /* BlockMask */
-		},
-		{ /* Arc welder 6 */
-			85, /* StartIndex */
-			10, /* NumFrames */
-			CIRCULAR_ANIM, /* AnimFlags */
-			ONE_SECOND / 40, 0, /* FrameRate */
-			0, ONE_SECOND * 8, /* RestartRate */
-			0, /* BlockMask */
-		},
-		{ /* Flagship picture */
-			95, /* StartIndex */
-			1, /* NumFrames */
+		STARBASE_CONVERSATION_PHRASES, /* PlayerPhrases */
+		10, /* NumAnimations */
+		{
+								/* AlienAmbientArray (ambient animations) */
+			{
+				/* Blink */
+				1,		   /* StartIndex */
+				3,		   /* NumFrames */
+				YOYO_ANIM, /* AnimFlags */
+				ONE_SECOND / 15,
+				0, /* FrameRate */
+				0,
+				ONE_SECOND * 8, /* RestartRate */
+				0,				/* BlockMask */
+			},
+								{
+				/* Running light */
+				10,			   /* StartIndex */
+				30,			   /* NumFrames */
+				CIRCULAR_ANIM, /* AnimFlags */
+				ONE_SECOND / 40,
+				0, /* FrameRate */
+				ONE_SECOND * 2,
+				0, /* RestartRate */
+				0, /* BlockMask */
+			},
+								{
+				/* Arc welder 0 */
+				40,			   /* StartIndex */
+				7,			   /* NumFrames */
+				CIRCULAR_ANIM, /* AnimFlags */
+				ONE_SECOND / 40,
+				0, /* FrameRate */
+				0,
+				ONE_SECOND * 8, /* RestartRate */
+				0,				/* BlockMask */
+			},
+								{
+				/* Arc welder 1 */
+				47,			   /* StartIndex */
+				8,			   /* NumFrames */
+				CIRCULAR_ANIM, /* AnimFlags */
+				ONE_SECOND / 40,
+				0, /* FrameRate */
+				0,
+				ONE_SECOND * 8, /* RestartRate */
+				0,				/* BlockMask */
+			},
+								{
+				/* Arc welder 2 */
+				55,			   /* StartIndex */
+				6,			   /* NumFrames */
+				CIRCULAR_ANIM, /* AnimFlags */
+				ONE_SECOND / 40,
+				0, /* FrameRate */
+				0,
+				ONE_SECOND * 8, /* RestartRate */
+				0,				/* BlockMask */
+			},
+								{
+				/* Arc welder 3 */
+				61,			   /* StartIndex */
+				6,			   /* NumFrames */
+				CIRCULAR_ANIM, /* AnimFlags */
+				ONE_SECOND / 40,
+				0, /* FrameRate */
+				0,
+				ONE_SECOND * 8, /* RestartRate */
+				0,				/* BlockMask */
+			},
+								{
+				/* Arc welder 4 */
+				67,			   /* StartIndex */
+				7,			   /* NumFrames */
+				CIRCULAR_ANIM, /* AnimFlags */
+				ONE_SECOND / 40,
+				0, /* FrameRate */
+				0,
+				ONE_SECOND * 8, /* RestartRate */
+				0,				/* BlockMask */
+			},
+								{
+				/* Arc welder 5 */
+				74,			   /* StartIndex */
+				11,			   /* NumFrames */
+				CIRCULAR_ANIM, /* AnimFlags */
+				ONE_SECOND / 40,
+				0, /* FrameRate */
+				0,
+				ONE_SECOND * 8, /* RestartRate */
+				0,				/* BlockMask */
+			},
+								{
+				/* Arc welder 6 */
+				85,			   /* StartIndex */
+				10,			   /* NumFrames */
+				CIRCULAR_ANIM, /* AnimFlags */
+				ONE_SECOND / 40,
+				0, /* FrameRate */
+				0,
+				ONE_SECOND * 8, /* RestartRate */
+				0,				/* BlockMask */
+			},
+								{
+				/* Flagship picture */
+				95, /* StartIndex */
+				1,	/* NumFrames */
+				0,	/* AnimFlags */
+				0,
+				0, /* FrameRate */
+				0,
+				0, /* RestartRate */
+				0, /* BlockMask */
+			},
+								},
+		{
+								/* AlienTransitionDesc */
+			0, /* StartIndex */
+			0, /* NumFrames */
 			0, /* AnimFlags */
-			0, 0, /* FrameRate */
-			0, 0, /* RestartRate */
+			0,
+								0, /* FrameRate */
+			0,
+								0, /* RestartRate */
 			0, /* BlockMask */
 		},
-	},
-	{ /* AlienTransitionDesc */
-		0, /* StartIndex */
-		0, /* NumFrames */
-		0, /* AnimFlags */
-		0, 0, /* FrameRate */
-		0, 0, /* RestartRate */
-		0, /* BlockMask */
-	},
-	{ /* AlienTalkDesc */
-		4, /* StartIndex */
-		6, /* NumFrames */
-		0, /* AnimFlags */
-		ONE_SECOND / 10, ONE_SECOND / 15, /* FrameRate */
-		ONE_SECOND * 7 / 60, ONE_SECOND / 12, /* RestartRate */
-		0, /* BlockMask */
-	},
-	NULL, /* AlienNumberSpeech - none */
-	/* Filler for loaded resources */
-	NULL, NULL, NULL,
-	NULL,
-	NULL,
+		{
+								/* AlienTalkDesc */
+			4, /* StartIndex */
+			6, /* NumFrames */
+			0, /* AnimFlags */
+			ONE_SECOND / 10,
+								ONE_SECOND / 15, /* FrameRate */
+			ONE_SECOND * 7 / 60,
+								ONE_SECOND / 12, /* RestartRate */
+			0,				 /* BlockMask */
+		},
+		NULL, /* AlienNumberSpeech - none */
+		/* Filler for loaded resources */
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
 };
 
 static uqm::DWORD CurBulletinMask;
 
 static uqm::COUNT
-DoSellMinerals (void)
+DoSellMinerals(void)
 {
 	uqm::COUNT i;
 	uqm::COUNT total = 0;
 	bool Sleepy = true;
 
-	FlushInput ();
+	FlushInput();
 
 	for (i = 0; i < NUM_ELEMENT_CATEGORIES; ++i)
 	{
@@ -184,176 +224,224 @@ DoSellMinerals (void)
 
 		if (i == 0)
 		{
-			DrawCargoStrings ((uqm::BYTE)~0, (uqm::BYTE)~0);
-			TimeIn = GetTimeCounter () + ONE_SECOND / 2;
-			while (GetTimeCounter () <= TimeIn)
+			DrawCargoStrings((uqm::BYTE)~0, (uqm::BYTE)~0);
+			TimeIn = GetTimeCounter() + ONE_SECOND / 2;
+			while (GetTimeCounter() <= TimeIn)
 			{
-				if (AnyButtonPress (true) ||
-					(GLOBAL (CurrentActivity) & CHECK_ABORT))
+				if (AnyButtonPress(true) || (GLOBAL(CurrentActivity) & CHECK_ABORT))
 				{
 					Sleepy = false;
 					break;
 				}
-				UpdateDuty (false);
+				UpdateDuty(false);
 			}
 
 			if (Sleepy)
-				DrawCargoStrings ((uqm::BYTE)0, (uqm::BYTE)0);
+				DrawCargoStrings((uqm::BYTE)0, (uqm::BYTE)0);
 		}
 		else if (Sleepy)
 		{
-			DrawCargoStrings ((uqm::BYTE)(i - 1), (uqm::BYTE)i);
+			DrawCargoStrings((uqm::BYTE)(i - 1), (uqm::BYTE)i);
 		}
 
-		if ((amount = GLOBAL_SIS (ElementAmounts[i])) != 0)
+		if ((amount = GLOBAL_SIS(ElementAmounts[i])) != 0)
 		{
-			total += amount * GLOBAL (ElementWorth[i]);
+			total += amount * GLOBAL(ElementWorth[i]);
 			do
 			{
-				if (!Sleepy || AnyButtonPress (true) ||
-					(GLOBAL (CurrentActivity) & CHECK_ABORT))
+				if (!Sleepy || AnyButtonPress(true) || (GLOBAL(CurrentActivity) & CHECK_ABORT))
 				{
 					Sleepy = false;
-					GLOBAL_SIS (ElementAmounts[i]) = 0;
-					GLOBAL_SIS (TotalElementMass) -= amount;
-					DeltaSISGauges (0, 0,
-							amount * GLOBAL (ElementWorth[i]));
+					GLOBAL_SIS(ElementAmounts[i]) = 0;
+					GLOBAL_SIS(TotalElementMass) -= amount;
+					DeltaSISGauges(0, 0,
+								   amount * GLOBAL(ElementWorth[i]));
 					break;
 				}
 
-				UpdateDuty (false);
+				UpdateDuty(false);
 
-				--GLOBAL_SIS (ElementAmounts[i]);
-				--GLOBAL_SIS (TotalElementMass);
-				TaskSwitch ();
-				DrawCargoStrings ((uqm::BYTE)i, (uqm::BYTE)i);
-				ShowRemainingCapacity ();
-				DeltaSISGauges (0, 0, GLOBAL(ElementWorth[i]));
+				--GLOBAL_SIS(ElementAmounts[i]);
+				--GLOBAL_SIS(TotalElementMass);
+				TaskSwitch();
+				DrawCargoStrings((uqm::BYTE)i, (uqm::BYTE)i);
+				ShowRemainingCapacity();
+				DeltaSISGauges(0, 0, GLOBAL(ElementWorth[i]));
 			} while (--amount);
 		}
 		if (Sleepy)
 		{
-			TimeIn = GetTimeCounter () + (ONE_SECOND / 4);
-			while (GetTimeCounter () <= TimeIn)
+			TimeIn = GetTimeCounter() + (ONE_SECOND / 4);
+			while (GetTimeCounter() <= TimeIn)
 			{
-				if (AnyButtonPress (true) ||
-					(GLOBAL (CurrentActivity) & CHECK_ABORT))
+				if (AnyButtonPress(true) || (GLOBAL(CurrentActivity) & CHECK_ABORT))
 				{
 					Sleepy = false;
 					break;
 				}
-				UpdateDuty (false);
+				UpdateDuty(false);
 			}
 		}
 	}
 
-	SleepThread (ONE_SECOND / 2);
+	SleepThread(ONE_SECOND / 2);
 
-	ClearSISRect (DRAW_SIS_DISPLAY);
+	ClearSISRect(DRAW_SIS_DISPLAY);
 
 	return total;
 }
 
 static RESPONSE_REF
-EveryOnesACritic (uqm::COUNT total)
+EveryOnesACritic(uqm::COUNT total)
 {
 	RESPONSE_REF pStr = LIGHT_LOAD_A;
 
 	if (total < 1000)
 	{
-		total = GET_GAME_STATE (LIGHT_MINERAL_LOAD);
+		total = GET_GAME_STATE(LIGHT_MINERAL_LOAD);
 		switch (total++)
 		{
-		case 0: pStr = LIGHT_LOAD_A; break;
-		case 1: pStr = LIGHT_LOAD_B; break;
-		case 2:
-			// There are two separate sound samples in this case.
-			pStr = LIGHT_LOAD_C0;
-			//pStr2 = LIGHT_LOAD_C1; Kruzen: processed outside this func now
-			break;
-		case 3: pStr = LIGHT_LOAD_D; break;
-		case 4: pStr = LIGHT_LOAD_E; break;
-		case 5: pStr = LIGHT_LOAD_F; break;
-		case 6: --total;
-			pStr = LIGHT_LOAD_G;
-			break;
+			case 0:
+				pStr = LIGHT_LOAD_A;
+				break;
+			case 1:
+				pStr = LIGHT_LOAD_B;
+				break;
+			case 2:
+				// There are two separate sound samples in this case.
+				pStr = LIGHT_LOAD_C0;
+				//pStr2 = LIGHT_LOAD_C1; Kruzen: processed outside this func now
+				break;
+			case 3:
+				pStr = LIGHT_LOAD_D;
+				break;
+			case 4:
+				pStr = LIGHT_LOAD_E;
+				break;
+			case 5:
+				pStr = LIGHT_LOAD_F;
+				break;
+			case 6:
+				--total;
+				pStr = LIGHT_LOAD_G;
+				break;
 		}
-		SET_GAME_STATE (LIGHT_MINERAL_LOAD, total);
+		SET_GAME_STATE(LIGHT_MINERAL_LOAD, total);
 	}
 	else if (total < 2500)
 	{
-		total = GET_GAME_STATE (MEDIUM_MINERAL_LOAD);
+		total = GET_GAME_STATE(MEDIUM_MINERAL_LOAD);
 		switch (total++)
 		{
-		case 0: pStr = MEDIUM_LOAD_A; break;
-		case 1: pStr = MEDIUM_LOAD_B; break;
-		case 2: pStr = MEDIUM_LOAD_C; break;
-		case 3: pStr = MEDIUM_LOAD_D; break;
-		case 4: pStr = MEDIUM_LOAD_E; break;
-		case 5: pStr = MEDIUM_LOAD_F; break;
-		case 6:
-			--total;
-			pStr = MEDIUM_LOAD_G;
-			break;
+			case 0:
+				pStr = MEDIUM_LOAD_A;
+				break;
+			case 1:
+				pStr = MEDIUM_LOAD_B;
+				break;
+			case 2:
+				pStr = MEDIUM_LOAD_C;
+				break;
+			case 3:
+				pStr = MEDIUM_LOAD_D;
+				break;
+			case 4:
+				pStr = MEDIUM_LOAD_E;
+				break;
+			case 5:
+				pStr = MEDIUM_LOAD_F;
+				break;
+			case 6:
+				--total;
+				pStr = MEDIUM_LOAD_G;
+				break;
 		}
-		SET_GAME_STATE (MEDIUM_MINERAL_LOAD, total);
+		SET_GAME_STATE(MEDIUM_MINERAL_LOAD, total);
 	}
 	else
 	{
-		total = GET_GAME_STATE (HEAVY_MINERAL_LOAD);
+		total = GET_GAME_STATE(HEAVY_MINERAL_LOAD);
 		switch (total++)
 		{
-		case 0: pStr = HEAVY_LOAD_A; break;
-		case 1: pStr = HEAVY_LOAD_B; break;
-		case 2: pStr = HEAVY_LOAD_C; break;
-		case 3: pStr = HEAVY_LOAD_D; break;
-		case 4: pStr = HEAVY_LOAD_E; break;
-		case 5: pStr = HEAVY_LOAD_F; break;
-		case 6:
-			--total;
-			pStr = HEAVY_LOAD_G;
-			break;
+			case 0:
+				pStr = HEAVY_LOAD_A;
+				break;
+			case 1:
+				pStr = HEAVY_LOAD_B;
+				break;
+			case 2:
+				pStr = HEAVY_LOAD_C;
+				break;
+			case 3:
+				pStr = HEAVY_LOAD_D;
+				break;
+			case 4:
+				pStr = HEAVY_LOAD_E;
+				break;
+			case 5:
+				pStr = HEAVY_LOAD_F;
+				break;
+			case 6:
+				--total;
+				pStr = HEAVY_LOAD_G;
+				break;
 		}
-		SET_GAME_STATE (HEAVY_MINERAL_LOAD, total);
+		SET_GAME_STATE(HEAVY_MINERAL_LOAD, total);
 	}
 
 	return pStr;
 }
 
 static void
-ByeBye (RESPONSE_REF R)
+ByeBye(RESPONSE_REF R)
 {
-	(void) R;  // ignored
+	(void)R; // ignored
 
-	CurBulletinMask |= GET_GAME_STATE (STARBASE_BULLETS);
-	SET_GAME_STATE (STARBASE_BULLETS, CurBulletinMask);
+	CurBulletinMask |= GET_GAME_STATE(STARBASE_BULLETS);
+	SET_GAME_STATE(STARBASE_BULLETS, CurBulletinMask);
 
 	/* if (R == goodbye_starbase_commander) */
-	if (GET_GAME_STATE (CHMMR_BOMB_STATE) >= 2)
-		NPCPhrase (GOOD_LUCK_AGAIN);
+	if (GET_GAME_STATE(CHMMR_BOMB_STATE) >= 2)
+		NPCPhrase(GOOD_LUCK_AGAIN);
 	else
 	{
 		RESPONSE_REF pStr = 0;
-		
-		switch ((uqm::BYTE)TFB_Random () & 7)
+
+		switch ((uqm::BYTE)TFB_Random() & 7)
 		{
-			case 0: pStr = NORMAL_GOODBYE_A; break;
-			case 1: pStr = NORMAL_GOODBYE_B; break;
-			case 2: pStr = NORMAL_GOODBYE_C; break;
-			case 3: pStr = NORMAL_GOODBYE_D; break;
-			case 4: pStr = NORMAL_GOODBYE_E; break;
-			case 5: pStr = NORMAL_GOODBYE_F; break;
-			case 6: pStr = NORMAL_GOODBYE_G; break;
-			case 7: pStr = NORMAL_GOODBYE_H; break;
+			case 0:
+				pStr = NORMAL_GOODBYE_A;
+				break;
+			case 1:
+				pStr = NORMAL_GOODBYE_B;
+				break;
+			case 2:
+				pStr = NORMAL_GOODBYE_C;
+				break;
+			case 3:
+				pStr = NORMAL_GOODBYE_D;
+				break;
+			case 4:
+				pStr = NORMAL_GOODBYE_E;
+				break;
+			case 5:
+				pStr = NORMAL_GOODBYE_F;
+				break;
+			case 6:
+				pStr = NORMAL_GOODBYE_G;
+				break;
+			case 7:
+				pStr = NORMAL_GOODBYE_H;
+				break;
 		}
 
-		NPCPhrase (pStr);
+		NPCPhrase(pStr);
 	}
 }
 
-static void NeedInfo (RESPONSE_REF R);
-static void TellHistory (RESPONSE_REF R);
-static void AlienRaces (RESPONSE_REF R);
+static void NeedInfo(RESPONSE_REF R);
+static void TellHistory(RESPONSE_REF R);
+static void AlienRaces(RESPONSE_REF R);
 
 static uqm::BYTE stack0;
 static uqm::BYTE stack1;
@@ -361,7 +449,7 @@ static uqm::BYTE stack2;
 static uqm::BYTE stack3;
 
 static void
-AllianceInfo (RESPONSE_REF R)
+AllianceInfo(RESPONSE_REF R)
 {
 #define ALLIANCE_SHOFIXTI (1 << 0)
 #define ALLIANCE_YEHAT (1 << 1)
@@ -371,60 +459,60 @@ AllianceInfo (RESPONSE_REF R)
 #define ALLIANCE_SYREEN (1 << 5)
 	static uqm::BYTE AllianceMask = 0;
 
-	if (PLAYER_SAID (R, what_about_alliance))
+	if (PLAYER_SAID(R, what_about_alliance))
 	{
-		NPCPhrase (WHICH_ALLIANCE);
+		NPCPhrase(WHICH_ALLIANCE);
 		AllianceMask = 0;
 	}
-	else if (PLAYER_SAID (R, shofixti))
+	else if (PLAYER_SAID(R, shofixti))
 	{
-		NPCPhrase (ABOUT_SHOFIXTI);
+		NPCPhrase(ABOUT_SHOFIXTI);
 		AllianceMask |= ALLIANCE_SHOFIXTI;
-		SetHomeworldKnown (SHOFIXTI_HOME);
+		SetHomeworldKnown(SHOFIXTI_HOME);
 	}
-	else if (PLAYER_SAID (R, yehat))
+	else if (PLAYER_SAID(R, yehat))
 	{
-		NPCPhrase (ABOUT_YEHAT);
+		NPCPhrase(ABOUT_YEHAT);
 		AllianceMask |= ALLIANCE_YEHAT;
 	}
-	else if (PLAYER_SAID (R, arilou))
+	else if (PLAYER_SAID(R, arilou))
 	{
-		NPCPhrase (ABOUT_ARILOU);
+		NPCPhrase(ABOUT_ARILOU);
 		AllianceMask |= ALLIANCE_ARILOU;
 	}
-	else if (PLAYER_SAID (R, chenjesu))
+	else if (PLAYER_SAID(R, chenjesu))
 	{
-		NPCPhrase (ABOUT_CHENJESU);
+		NPCPhrase(ABOUT_CHENJESU);
 		AllianceMask |= ALLIANCE_CHENJESU;
 	}
-	else if (PLAYER_SAID (R, mmrnmhrm))
+	else if (PLAYER_SAID(R, mmrnmhrm))
 	{
-		NPCPhrase (ABOUT_MMRNMHRM);
+		NPCPhrase(ABOUT_MMRNMHRM);
 		AllianceMask |= ALLIANCE_MMRNMHRM;
 	}
-	else if (PLAYER_SAID (R, syreen))
+	else if (PLAYER_SAID(R, syreen))
 	{
-		NPCPhrase (ABOUT_SYREEN);
+		NPCPhrase(ABOUT_SYREEN);
 		AllianceMask |= ALLIANCE_SYREEN;
 	}
 
 	if (!(AllianceMask & ALLIANCE_SHOFIXTI))
-		Response (shofixti, AllianceInfo);
+		Response(shofixti, AllianceInfo);
 	if (!(AllianceMask & ALLIANCE_YEHAT))
-		Response (yehat, AllianceInfo);
+		Response(yehat, AllianceInfo);
 	if (!(AllianceMask & ALLIANCE_ARILOU))
-		Response (arilou, AllianceInfo);
+		Response(arilou, AllianceInfo);
 	if (!(AllianceMask & ALLIANCE_CHENJESU))
-		Response (chenjesu, AllianceInfo);
+		Response(chenjesu, AllianceInfo);
 	if (!(AllianceMask & ALLIANCE_MMRNMHRM))
-		Response (mmrnmhrm, AllianceInfo);
+		Response(mmrnmhrm, AllianceInfo);
 	if (!(AllianceMask & ALLIANCE_SYREEN))
-		Response (syreen, AllianceInfo);
-	Response (enough_alliance, AlienRaces);
+		Response(syreen, AllianceInfo);
+	Response(enough_alliance, AlienRaces);
 }
 
 static void
-HierarchyInfo (RESPONSE_REF R)
+HierarchyInfo(RESPONSE_REF R)
 {
 #define HIERARCHY_MYCON (1 << 0)
 #define HIERARCHY_SPATHI (1 << 1)
@@ -435,111 +523,111 @@ HierarchyInfo (RESPONSE_REF R)
 #define HIERARCHY_URQUAN (1 << 6)
 	static uqm::BYTE HierarchyMask = 0;
 
-	if (PLAYER_SAID (R, what_about_hierarchy))
+	if (PLAYER_SAID(R, what_about_hierarchy))
 	{
-		NPCPhrase (WHICH_HIERARCHY);
+		NPCPhrase(WHICH_HIERARCHY);
 		HierarchyMask = 0;
 	}
-	else if (PLAYER_SAID (R, urquan))
+	else if (PLAYER_SAID(R, urquan))
 	{
-		NPCPhrase (ABOUT_URQUAN);
+		NPCPhrase(ABOUT_URQUAN);
 		HierarchyMask |= HIERARCHY_URQUAN;
 	}
-	else if (PLAYER_SAID (R, mycon))
+	else if (PLAYER_SAID(R, mycon))
 	{
-		NPCPhrase (ABOUT_MYCON);
+		NPCPhrase(ABOUT_MYCON);
 		HierarchyMask |= HIERARCHY_MYCON;
 	}
-	else if (PLAYER_SAID (R, spathi))
+	else if (PLAYER_SAID(R, spathi))
 	{
-		NPCPhrase (ABOUT_SPATHI);
+		NPCPhrase(ABOUT_SPATHI);
 		HierarchyMask |= HIERARCHY_SPATHI;
 	}
-	else if (PLAYER_SAID (R, umgah))
+	else if (PLAYER_SAID(R, umgah))
 	{
-		NPCPhrase (ABOUT_UMGAH);
+		NPCPhrase(ABOUT_UMGAH);
 		HierarchyMask |= HIERARCHY_UMGAH;
 	}
-	else if (PLAYER_SAID (R, androsynth))
+	else if (PLAYER_SAID(R, androsynth))
 	{
-		NPCPhrase (ABOUT_ANDROSYNTH);
+		NPCPhrase(ABOUT_ANDROSYNTH);
 		HierarchyMask |= HIERARCHY_ANDROSYNTH;
-		SetHomeworldKnown (ANDROSYNTH_HOME);
+		SetHomeworldKnown(ANDROSYNTH_HOME);
 	}
-	else if (PLAYER_SAID (R, ilwrath))
+	else if (PLAYER_SAID(R, ilwrath))
 	{
-		NPCPhrase (ABOUT_ILWRATH);
+		NPCPhrase(ABOUT_ILWRATH);
 		HierarchyMask |= HIERARCHY_ILWRATH;
 	}
-	else if (PLAYER_SAID (R, vux))
+	else if (PLAYER_SAID(R, vux))
 	{
-		NPCPhrase (ABOUT_VUX);
+		NPCPhrase(ABOUT_VUX);
 		HierarchyMask |= HIERARCHY_VUX;
 	}
 
 	if (!(HierarchyMask & HIERARCHY_URQUAN))
-		Response (urquan, HierarchyInfo);
+		Response(urquan, HierarchyInfo);
 	if (!(HierarchyMask & HIERARCHY_MYCON))
-		Response (mycon, HierarchyInfo);
+		Response(mycon, HierarchyInfo);
 	if (!(HierarchyMask & HIERARCHY_SPATHI))
-		Response (spathi, HierarchyInfo);
+		Response(spathi, HierarchyInfo);
 	if (!(HierarchyMask & HIERARCHY_UMGAH))
-		Response (umgah, HierarchyInfo);
+		Response(umgah, HierarchyInfo);
 	if (!(HierarchyMask & HIERARCHY_ANDROSYNTH))
-		Response (androsynth, HierarchyInfo);
+		Response(androsynth, HierarchyInfo);
 	if (!(HierarchyMask & HIERARCHY_ILWRATH))
-		Response (ilwrath, HierarchyInfo);
+		Response(ilwrath, HierarchyInfo);
 	if (!(HierarchyMask & HIERARCHY_VUX))
-		Response (vux, HierarchyInfo);
-	Response (enough_hierarchy, AlienRaces);
+		Response(vux, HierarchyInfo);
+	Response(enough_hierarchy, AlienRaces);
 }
 
 static void
-AlienRaces (RESPONSE_REF R)
+AlienRaces(RESPONSE_REF R)
 {
 #define RACES_ALLIANCE (1 << 0)
 #define RACES_HIERARCHY (1 << 1)
 #define RACES_OTHER (1 << 2)
 	static uqm::BYTE RacesMask = 0;
 
-	if (PLAYER_SAID (R, alien_races))
+	if (PLAYER_SAID(R, alien_races))
 	{
-		NPCPhrase (WHICH_ALIEN);
+		NPCPhrase(WHICH_ALIEN);
 		RacesMask = 0;
 	}
-	else if (PLAYER_SAID (R, enough_alliance))
+	else if (PLAYER_SAID(R, enough_alliance))
 	{
-		NPCPhrase (OK_ENOUGH_ALLIANCE);
+		NPCPhrase(OK_ENOUGH_ALLIANCE);
 		RacesMask |= RACES_ALLIANCE;
 	}
-	else if (PLAYER_SAID (R, enough_hierarchy))
+	else if (PLAYER_SAID(R, enough_hierarchy))
 	{
-		NPCPhrase (OK_ENOUGH_HIERARCHY);
+		NPCPhrase(OK_ENOUGH_HIERARCHY);
 		RacesMask |= RACES_HIERARCHY;
 	}
-	else if (PLAYER_SAID (R, what_about_other))
+	else if (PLAYER_SAID(R, what_about_other))
 	{
-		NPCPhrase (ABOUT_OTHER);
+		NPCPhrase(ABOUT_OTHER);
 		RacesMask |= RACES_OTHER;
 	}
 
 	if (!(RacesMask & RACES_ALLIANCE))
 	{
-		Response (what_about_alliance, AllianceInfo);
+		Response(what_about_alliance, AllianceInfo);
 	}
 	if (!(RacesMask & RACES_HIERARCHY))
 	{
-		Response (what_about_hierarchy, HierarchyInfo);
+		Response(what_about_hierarchy, HierarchyInfo);
 	}
 	if (!(RacesMask & RACES_OTHER))
 	{
-		Response (what_about_other, AlienRaces);
+		Response(what_about_other, AlienRaces);
 	}
-	Response (enough_aliens, TellHistory);
+	Response(enough_aliens, TellHistory);
 }
 
 static void
-WarInfo (RESPONSE_REF R)
+WarInfo(RESPONSE_REF R)
 {
 #define WAR_STARTED (1 << 0)
 #define WAR_WAS_LIKE (1 << 1)
@@ -547,108 +635,108 @@ WarInfo (RESPONSE_REF R)
 #define WAR_AFTERMATH (1 << 3)
 	static uqm::BYTE WarMask = 0;
 
-	if (PLAYER_SAID (R, the_war))
+	if (PLAYER_SAID(R, the_war))
 	{
-		NPCPhrase (WHICH_WAR);
+		NPCPhrase(WHICH_WAR);
 		WarMask = 0;
 	}
-	else if (PLAYER_SAID (R, what_started_war))
+	else if (PLAYER_SAID(R, what_started_war))
 	{
-		NPCPhrase (URQUAN_STARTED_WAR);
+		NPCPhrase(URQUAN_STARTED_WAR);
 		WarMask |= WAR_STARTED;
 	}
-	else if (PLAYER_SAID (R, what_was_war_like))
+	else if (PLAYER_SAID(R, what_was_war_like))
 	{
-		NPCPhrase (WAR_WAS_LIKE_SO);
+		NPCPhrase(WAR_WAS_LIKE_SO);
 		WarMask |= WAR_WAS_LIKE;
 	}
-	else if (PLAYER_SAID (R, why_lose_war))
+	else if (PLAYER_SAID(R, why_lose_war))
 	{
-		NPCPhrase (LOST_WAR_BECAUSE);
+		NPCPhrase(LOST_WAR_BECAUSE);
 		WarMask |= WAR_LOST;
 	}
-	else if (PLAYER_SAID (R, what_after_war))
+	else if (PLAYER_SAID(R, what_after_war))
 	{
-		NPCPhrase (AFTER_WAR);
+		NPCPhrase(AFTER_WAR);
 		WarMask |= WAR_AFTERMATH;
 	}
 
 	if (!(WarMask & WAR_STARTED))
-		Response (what_started_war, WarInfo);
+		Response(what_started_war, WarInfo);
 	if (!(WarMask & WAR_WAS_LIKE))
-		Response (what_was_war_like, WarInfo);
+		Response(what_was_war_like, WarInfo);
 	if (!(WarMask & WAR_LOST))
-		Response (why_lose_war, WarInfo);
+		Response(why_lose_war, WarInfo);
 	if (!(WarMask & WAR_AFTERMATH))
-		Response (what_after_war, WarInfo);
-	Response (enough_war, TellHistory);
+		Response(what_after_war, WarInfo);
+	Response(enough_war, TellHistory);
 }
 
 static void
-AncientHistory (RESPONSE_REF R)
+AncientHistory(RESPONSE_REF R)
 {
 #define ANCIENT_PRECURSORS (1 << 0)
 #define ANCIENT_RACES (1 << 1)
 #define ANCIENT_EARTH (1 << 2)
 	static uqm::BYTE AncientMask = 0;
 
-	if (PLAYER_SAID (R, ancient_history))
+	if (PLAYER_SAID(R, ancient_history))
 	{
-		NPCPhrase (WHICH_ANCIENT);
+		NPCPhrase(WHICH_ANCIENT);
 		AncientMask = 0;
 	}
-	else if (PLAYER_SAID (R, precursors))
+	else if (PLAYER_SAID(R, precursors))
 	{
-		NPCPhrase (ABOUT_PRECURSORS);
+		NPCPhrase(ABOUT_PRECURSORS);
 		AncientMask |= ANCIENT_PRECURSORS;
 	}
-	else if (PLAYER_SAID (R, old_races))
+	else if (PLAYER_SAID(R, old_races))
 	{
-		NPCPhrase (ABOUT_OLD_RACES);
+		NPCPhrase(ABOUT_OLD_RACES);
 		AncientMask |= ANCIENT_RACES;
 	}
-	else if (PLAYER_SAID (R, aliens_on_earth))
+	else if (PLAYER_SAID(R, aliens_on_earth))
 	{
-		NPCPhrase (ABOUT_ALIENS_ON_EARTH);
+		NPCPhrase(ABOUT_ALIENS_ON_EARTH);
 		AncientMask |= ANCIENT_EARTH;
 	}
 
 	if (!(AncientMask & ANCIENT_PRECURSORS))
-		Response (precursors, AncientHistory);
+		Response(precursors, AncientHistory);
 	if (!(AncientMask & ANCIENT_RACES))
-		Response (old_races, AncientHistory);
+		Response(old_races, AncientHistory);
 	if (!(AncientMask & ANCIENT_EARTH))
-		Response (aliens_on_earth, AncientHistory);
-	Response (enough_ancient, TellHistory);
+		Response(aliens_on_earth, AncientHistory);
+	Response(enough_ancient, TellHistory);
 }
 
 static void
-TellHistory (RESPONSE_REF R)
+TellHistory(RESPONSE_REF R)
 {
 	RESPONSE_REF pstack[3];
 
-	if (PLAYER_SAID (R, history))
+	if (PLAYER_SAID(R, history))
 	{
-		NPCPhrase (WHICH_HISTORY);
+		NPCPhrase(WHICH_HISTORY);
 		stack0 = 0;
 		stack1 = 0;
 		stack2 = 0;
 	}
-	else if (PLAYER_SAID (R, enough_aliens))
+	else if (PLAYER_SAID(R, enough_aliens))
 	{
-		NPCPhrase (OK_ENOUGH_ALIENS);
+		NPCPhrase(OK_ENOUGH_ALIENS);
 
 		stack0 = 1;
 	}
-	else if (PLAYER_SAID (R, enough_war))
+	else if (PLAYER_SAID(R, enough_war))
 	{
-		NPCPhrase (OK_ENOUGH_WAR);
+		NPCPhrase(OK_ENOUGH_WAR);
 
 		stack1 = 1;
 	}
-	else if (PLAYER_SAID (R, enough_ancient))
+	else if (PLAYER_SAID(R, enough_ancient))
 	{
-		NPCPhrase (OK_ENOUGH_ANCIENT);
+		NPCPhrase(OK_ENOUGH_ANCIENT);
 
 		stack2 = 1;
 	}
@@ -683,21 +771,21 @@ TellHistory (RESPONSE_REF R)
 
 	if (pstack[0])
 	{
-		Response (pstack[0], AlienRaces);
+		Response(pstack[0], AlienRaces);
 	}
 	if (pstack[1])
 	{
-		Response (pstack[1], WarInfo);
+		Response(pstack[1], WarInfo);
 	}
 	if (pstack[2])
 	{
-		Response (pstack[2], AncientHistory);
+		Response(pstack[2], AncientHistory);
 	}
-	Response (enough_history, NeedInfo);
+	Response(enough_history, NeedInfo);
 }
 
 static void
-DefeatUrquan (RESPONSE_REF R)
+DefeatUrquan(RESPONSE_REF R)
 {
 #define HOW_FIND_URQUAN (1 << 0)
 #define HOW_FIGHT_URQUAN (1 << 1)
@@ -705,71 +793,71 @@ DefeatUrquan (RESPONSE_REF R)
 #define HOW_STRONG_AGAINST_URQUAN (1 << 3)
 	static uqm::BYTE DefeatMask = 0;
 
-	if (PLAYER_SAID (R, how_defeat))
+	if (PLAYER_SAID(R, how_defeat))
 	{
-		NPCPhrase (DEFEAT_LIKE_SO);
+		NPCPhrase(DEFEAT_LIKE_SO);
 		DefeatMask = 0;
 	}
-	else if (PLAYER_SAID (R, how_find_urquan))
+	else if (PLAYER_SAID(R, how_find_urquan))
 	{
-		NPCPhrase (FIND_URQUAN);
+		NPCPhrase(FIND_URQUAN);
 		DefeatMask |= HOW_FIND_URQUAN;
 	}
-	else if (PLAYER_SAID (R, how_fight_urquan))
+	else if (PLAYER_SAID(R, how_fight_urquan))
 	{
-		NPCPhrase (FIGHT_URQUAN);
+		NPCPhrase(FIGHT_URQUAN);
 		DefeatMask |= HOW_FIGHT_URQUAN;
 	}
-	else if (PLAYER_SAID (R, how_ally))
+	else if (PLAYER_SAID(R, how_ally))
 	{
-		NPCPhrase (ALLY_LIKE_SO);
+		NPCPhrase(ALLY_LIKE_SO);
 		DefeatMask |= HOW_ALLY_AGAINST_URQUAN;
 	}
-	else if (PLAYER_SAID (R, how_get_strong))
+	else if (PLAYER_SAID(R, how_get_strong))
 	{
-		NPCPhrase (STRONG_LIKE_SO);
+		NPCPhrase(STRONG_LIKE_SO);
 		DefeatMask |= HOW_STRONG_AGAINST_URQUAN;
 	}
 
 	if (!(DefeatMask & HOW_FIND_URQUAN))
-		Response (how_find_urquan, DefeatUrquan);
+		Response(how_find_urquan, DefeatUrquan);
 	if (!(DefeatMask & HOW_FIGHT_URQUAN))
-		Response (how_fight_urquan, DefeatUrquan);
+		Response(how_fight_urquan, DefeatUrquan);
 	if (!(DefeatMask & HOW_ALLY_AGAINST_URQUAN))
-		Response (how_ally, DefeatUrquan);
+		Response(how_ally, DefeatUrquan);
 	if (!(DefeatMask & HOW_STRONG_AGAINST_URQUAN))
-		Response (how_get_strong, DefeatUrquan);
-	Response (enough_defeat, TellMission);
+		Response(how_get_strong, DefeatUrquan);
+	Response(enough_defeat, TellMission);
 }
 
 static void
-AnalyzeCondition (void)
+AnalyzeCondition(void)
 {
 	uqm::BYTE i;
 	uqm::BYTE num_thrusters = 0,
-				num_jets = 0,
-				num_guns = 0,
-				num_bays = 0,
-				num_batts = 0,
-				num_track = 0,
-				num_defense = 0;
+			  num_jets = 0,
+			  num_guns = 0,
+			  num_bays = 0,
+			  num_batts = 0,
+			  num_track = 0,
+			  num_defense = 0;
 	bool HasMinimum;
 
 	for (i = 0; i < NUM_DRIVE_SLOTS; ++i)
 	{
-		if (GLOBAL_SIS (DriveSlots[i]) < EMPTY_SLOT)
+		if (GLOBAL_SIS(DriveSlots[i]) < EMPTY_SLOT)
 			++num_thrusters;
 	}
 	for (i = 0; i < NUM_JET_SLOTS; ++i)
 	{
-		if (GLOBAL_SIS (JetSlots[i]) < EMPTY_SLOT)
+		if (GLOBAL_SIS(JetSlots[i]) < EMPTY_SLOT)
 			++num_jets;
 	}
 	for (i = 0; i < NUM_MODULE_SLOTS; ++i)
 	{
 		uqm::BYTE which_piece;
 
-		switch (which_piece = GLOBAL_SIS (ModuleSlots[i]))
+		switch (which_piece = GLOBAL_SIS(ModuleSlots[i]))
 		{
 			case STORAGE_BAY:
 				++num_bays;
@@ -795,35 +883,35 @@ AnalyzeCondition (void)
 		num_guns += 2;
 
 	HasMinimum = (num_thrusters >= 7 && num_jets >= 5
-			&& GLOBAL_SIS (CrewEnlisted) >= CREW_POD_CAPACITY
-			&& GLOBAL_SIS (FuelOnBoard) >= FUEL_TANK_CAPACITY
-			&& num_bays >= 1 && GLOBAL_SIS (NumLanders)
-			&& num_batts >= 1 && num_guns >= 2);
-	NPCPhrase (LETS_SEE);
-	if (!HasMinimum && GET_GAME_STATE (CHMMR_BOMB_STATE) < 2)
+				  && GLOBAL_SIS(CrewEnlisted) >= CREW_POD_CAPACITY
+				  && GLOBAL_SIS(FuelOnBoard) >= FUEL_TANK_CAPACITY
+				  && num_bays >= 1 && GLOBAL_SIS(NumLanders)
+				  && num_batts >= 1 && num_guns >= 2);
+	NPCPhrase(LETS_SEE);
+	if (!HasMinimum && GET_GAME_STATE(CHMMR_BOMB_STATE) < 2)
 	{
-		NPCPhrase (IMPROVE_1);
+		NPCPhrase(IMPROVE_1);
 		if (num_thrusters < 7)
-			NPCPhrase (NEED_THRUSTERS_1);
+			NPCPhrase(NEED_THRUSTERS_1);
 		if (num_jets < 5)
-			NPCPhrase (NEED_TURN_1);
+			NPCPhrase(NEED_TURN_1);
 		if (num_guns < 2)
-			NPCPhrase (NEED_GUNS_1);
-		if (GLOBAL_SIS (CrewEnlisted) < CREW_POD_CAPACITY)
-			NPCPhrase (NEED_CREW_1);
-		if (GLOBAL_SIS (FuelOnBoard) < FUEL_TANK_CAPACITY)
-			NPCPhrase (NEED_FUEL_1);
+			NPCPhrase(NEED_GUNS_1);
+		if (GLOBAL_SIS(CrewEnlisted) < CREW_POD_CAPACITY)
+			NPCPhrase(NEED_CREW_1);
+		if (GLOBAL_SIS(FuelOnBoard) < FUEL_TANK_CAPACITY)
+			NPCPhrase(NEED_FUEL_1);
 		if (num_bays < 1)
-			NPCPhrase (NEED_STORAGE_1);
-		if (GLOBAL_SIS (NumLanders) == 0)
-			NPCPhrase (NEED_LANDERS_2);
+			NPCPhrase(NEED_STORAGE_1);
+		if (GLOBAL_SIS(NumLanders) == 0)
+			NPCPhrase(NEED_LANDERS_2);
 		if (num_batts < 1)
-			NPCPhrase (NEED_DYNAMOS_1);
+			NPCPhrase(NEED_DYNAMOS_1);
 
-		if (GLOBAL_SIS (ResUnits) >= 3000)
-			NPCPhrase (IMPROVE_FLAGSHIP_WITH_RU);
+		if (GLOBAL_SIS(ResUnits) >= 3000)
+			NPCPhrase(IMPROVE_FLAGSHIP_WITH_RU);
 		else
-			NPCPhrase (GO_GET_MINERALS);
+			NPCPhrase(GO_GET_MINERALS);
 	}
 	else
 	{
@@ -831,82 +919,82 @@ AnalyzeCondition (void)
 		uqm::COUNT FleetStrength;
 		bool HasMaximum;
 
-		FleetStrength = CalculateEscortsWorth ();
+		FleetStrength = CalculateEscortsWorth();
 		for (i = 0; i < NUM_AVAILABLE_RACES; ++i)
 		{
-			if (i != HUMAN_SHIP && CheckAlliance ((RACE_ID)i) == GOOD_GUY)
+			if (i != HUMAN_SHIP && CheckAlliance((RACE_ID)i) == GOOD_GUY)
 				++num_aliens;
 		}
 
 		HasMaximum = (num_thrusters == NUM_DRIVE_SLOTS
-				&& num_jets == NUM_JET_SLOTS
-				&& GLOBAL_SIS (CrewEnlisted) >= CREW_POD_CAPACITY * 3
-				&& GLOBAL_SIS (FuelOnBoard) >= FUEL_TANK_CAPACITY * 3
-				&& GLOBAL_SIS (NumLanders) >= 3
-				&& num_batts >= 4 && num_guns >= 7 && num_defense >= 2);
-		if (!HasMaximum && GET_GAME_STATE (CHMMR_BOMB_STATE) < 2)
-			NPCPhrase (GOT_OK_FLAGSHIP);
+					  && num_jets == NUM_JET_SLOTS
+					  && GLOBAL_SIS(CrewEnlisted) >= CREW_POD_CAPACITY * 3
+					  && GLOBAL_SIS(FuelOnBoard) >= FUEL_TANK_CAPACITY * 3
+					  && GLOBAL_SIS(NumLanders) >= 3
+					  && num_batts >= 4 && num_guns >= 7 && num_defense >= 2);
+		if (!HasMaximum && GET_GAME_STATE(CHMMR_BOMB_STATE) < 2)
+			NPCPhrase(GOT_OK_FLAGSHIP);
 		else
-			NPCPhrase (GOT_AWESOME_FLAGSHIP);
+			NPCPhrase(GOT_AWESOME_FLAGSHIP);
 
-		if (GET_GAME_STATE (CHMMR_BOMB_STATE) >= 2)
+		if (GET_GAME_STATE(CHMMR_BOMB_STATE) >= 2)
 		{
-			NPCPhrase (CHMMR_IMPROVED_BOMB);
+			NPCPhrase(CHMMR_IMPROVED_BOMB);
 			if (FleetStrength < 20000)
-				NPCPhrase (MUST_ACQUIRE_AWESOME_FLEET);
+				NPCPhrase(MUST_ACQUIRE_AWESOME_FLEET);
 			else
 			{
-				NPCPhrase (GOT_AWESOME_FLEET);
-				if (!GET_GAME_STATE (TALKING_PET_ON_SHIP))
-					NPCPhrase (MUST_ELIMINATE_URQUAN_GUARDS);
+				NPCPhrase(GOT_AWESOME_FLEET);
+				if (!GET_GAME_STATE(TALKING_PET_ON_SHIP))
+					NPCPhrase(MUST_ELIMINATE_URQUAN_GUARDS);
 				else
-					NPCPhrase (GO_DESTROY_SAMATRA);
+					NPCPhrase(GO_DESTROY_SAMATRA);
 			}
 		}
 		else if (num_aliens < 2)
-			NPCPhrase (GO_ALLY_WITH_ALIENS);
+			NPCPhrase(GO_ALLY_WITH_ALIENS);
 		else
 		{
-			NPCPhrase (MADE_SOME_ALLIES);
+			NPCPhrase(MADE_SOME_ALLIES);
 			if (FleetStrength < 6000)
 			{
-				if (GLOBAL_SIS (ResUnits) >= 3000)
-					NPCPhrase (BUY_COMBAT_SHIPS);
+				if (GLOBAL_SIS(ResUnits) >= 3000)
+					NPCPhrase(BUY_COMBAT_SHIPS);
 				else
-					NPCPhrase (GET_SHIPS_BY_MINING_OR_ALLIANCE);
+					NPCPhrase(GET_SHIPS_BY_MINING_OR_ALLIANCE);
 			}
 			else
 			{
-				NPCPhrase (GOT_OK_FLEET);
+				NPCPhrase(GOT_OK_FLEET);
 				if (!HasMaximum)
 				{
-					NPCPhrase (IMPROVE_2);
+					NPCPhrase(IMPROVE_2);
 					if (num_thrusters < NUM_DRIVE_SLOTS)
-						NPCPhrase (NEED_THRUSTERS_2);
+						NPCPhrase(NEED_THRUSTERS_2);
 					if (num_jets < NUM_JET_SLOTS)
-						NPCPhrase (NEED_TURN_2);
+						NPCPhrase(NEED_TURN_2);
 					if (num_guns < 7)
-						NPCPhrase (NEED_GUNS_2);
-					if (GLOBAL_SIS (CrewEnlisted) < CREW_POD_CAPACITY * 3)
-						NPCPhrase (NEED_CREW_2);
-					if (GLOBAL_SIS (FuelOnBoard) < FUEL_TANK_CAPACITY * 3)
-						NPCPhrase (NEED_FUEL_2);
-					if (GLOBAL_SIS (NumLanders) < 3)
-						NPCPhrase (NEED_LANDERS_1);
+						NPCPhrase(NEED_GUNS_2);
+					if (GLOBAL_SIS(CrewEnlisted) < CREW_POD_CAPACITY * 3)
+						NPCPhrase(NEED_CREW_2);
+					if (GLOBAL_SIS(FuelOnBoard) < FUEL_TANK_CAPACITY * 3)
+						NPCPhrase(NEED_FUEL_2);
+					if (GLOBAL_SIS(NumLanders) < 3)
+						NPCPhrase(NEED_LANDERS_1);
 					if (num_batts < 4)
-						NPCPhrase (NEED_DYNAMOS_2);
+						NPCPhrase(NEED_DYNAMOS_2);
 					if (num_defense < 2)
-						NPCPhrase (NEED_POINT);
+						NPCPhrase(NEED_POINT);
 				}
-				else if (!GET_GAME_STATE (AWARE_OF_SAMATRA))
-					NPCPhrase (GO_LEARN_ABOUT_URQUAN);
+				else if (!GET_GAME_STATE(AWARE_OF_SAMATRA))
+					NPCPhrase(GO_LEARN_ABOUT_URQUAN);
 				else
 				{
-					NPCPhrase (KNOW_ABOUT_SAMATRA);
-					if (!GET_GAME_STATE (UTWIG_BOMB))
-						NPCPhrase (FIND_WAY_TO_DESTROY_SAMATRA);
-					else if (GET_GAME_STATE (UTWIG_BOMB_ON_SHIP))
-						NPCPhrase (MUST_INCREASE_BOMB_STRENGTH);
+					NPCPhrase(KNOW_ABOUT_SAMATRA);
+					if (!GET_GAME_STATE(UTWIG_BOMB))
+						NPCPhrase(FIND_WAY_TO_DESTROY_SAMATRA);
+					else if (GET_GAME_STATE(UTWIG_BOMB_ON_SHIP))
+						NPCPhrase(MUST_INCREASE_BOMB_STRENGTH);
 				}
 			}
 		}
@@ -914,45 +1002,45 @@ AnalyzeCondition (void)
 }
 
 static void
-TellMission (RESPONSE_REF R)
+TellMission(RESPONSE_REF R)
 {
 	RESPONSE_REF pstack[4];
 
-	if (PLAYER_SAID (R, our_mission))
+	if (PLAYER_SAID(R, our_mission))
 	{
-		NPCPhrase (WHICH_MISSION);
+		NPCPhrase(WHICH_MISSION);
 		stack0 = 0;
 		stack1 = 0;
 		stack2 = 0;
 		stack3 = 0;
 	}
-	else if (PLAYER_SAID (R, where_get_minerals))
+	else if (PLAYER_SAID(R, where_get_minerals))
 	{
-		NPCPhrase (GET_MINERALS);
+		NPCPhrase(GET_MINERALS);
 
 		stack0 = 1;
 	}
-	else if (PLAYER_SAID (R, what_about_aliens))
+	else if (PLAYER_SAID(R, what_about_aliens))
 	{
-		NPCPhrase (ABOUT_ALIENS);
+		NPCPhrase(ABOUT_ALIENS);
 
 		stack1 = 1;
 	}
-	else if (PLAYER_SAID (R, what_do_now))
+	else if (PLAYER_SAID(R, what_do_now))
 	{
-		AnalyzeCondition ();
+		AnalyzeCondition();
 
 		stack2 = 1;
 	}
-	else if (PLAYER_SAID (R, what_about_urquan))
+	else if (PLAYER_SAID(R, what_about_urquan))
 	{
-		NPCPhrase (MUST_DEFEAT);
+		NPCPhrase(MUST_DEFEAT);
 
 		stack3 = 1;
 	}
-	else if (PLAYER_SAID (R, enough_defeat))
+	else if (PLAYER_SAID(R, enough_defeat))
 	{
-		NPCPhrase (OK_ENOUGH_DEFEAT);
+		NPCPhrase(OK_ENOUGH_DEFEAT);
 
 		stack3 = 2;
 	}
@@ -998,74 +1086,74 @@ TellMission (RESPONSE_REF R)
 	}
 
 	if (pstack[0])
-		Response (pstack[0], TellMission);
+		Response(pstack[0], TellMission);
 	if (pstack[1])
-		Response (pstack[1], TellMission);
+		Response(pstack[1], TellMission);
 	if (pstack[2])
-		Response (pstack[2], TellMission);
+		Response(pstack[2], TellMission);
 	if (pstack[3])
 	{
 		if (stack3 == 1)
-			Response (pstack[3], DefeatUrquan);
+			Response(pstack[3], DefeatUrquan);
 		else
-			Response (pstack[3], TellMission);
+			Response(pstack[3], TellMission);
 	}
 
-	Response (enough_mission, NeedInfo);
+	Response(enough_mission, NeedInfo);
 }
 
 static void
-TellStarBase (RESPONSE_REF R)
+TellStarBase(RESPONSE_REF R)
 {
 	RESPONSE_REF pstack[4];
 
-	if (PLAYER_SAID (R, starbase_functions))
+	if (PLAYER_SAID(R, starbase_functions))
 	{
-		NPCPhrase (WHICH_FUNCTION);
+		NPCPhrase(WHICH_FUNCTION);
 		stack0 = 0;
 		stack1 = 0;
 		stack2 = 0;
 		stack3 = 0;
 	}
-	else if (PLAYER_SAID (R, tell_me_about_fuel))
+	else if (PLAYER_SAID(R, tell_me_about_fuel))
 	{
-		NPCPhrase (ABOUT_FUEL);
+		NPCPhrase(ABOUT_FUEL);
 
 		stack1 = 1;
 	}
-	else if (PLAYER_SAID (R, tell_me_about_crew))
+	else if (PLAYER_SAID(R, tell_me_about_crew))
 	{
-		NPCPhrase (ABOUT_CREW);
+		NPCPhrase(ABOUT_CREW);
 
 		stack2 = 2;
 	}
-	else if (PLAYER_SAID (R, tell_me_about_modules))
+	else if (PLAYER_SAID(R, tell_me_about_modules))
 	{
-		NPCPhrase (ABOUT_MODULES);
+		NPCPhrase(ABOUT_MODULES);
 
 		stack0 = 1;
 	}
-	else if (PLAYER_SAID (R, tell_me_about_ships))
+	else if (PLAYER_SAID(R, tell_me_about_ships))
 	{
-		NPCPhrase (ABOUT_SHIPS);
+		NPCPhrase(ABOUT_SHIPS);
 
 		stack2 = 1;
 	}
-	else if (PLAYER_SAID (R, tell_me_about_ru))
+	else if (PLAYER_SAID(R, tell_me_about_ru))
 	{
-		NPCPhrase (ABOUT_RU);
+		NPCPhrase(ABOUT_RU);
 
 		stack3 = 1;
 	}
-	else if (PLAYER_SAID (R, tell_me_about_minerals))
+	else if (PLAYER_SAID(R, tell_me_about_minerals))
 	{
-		NPCPhrase (ABOUT_MINERALS);
+		NPCPhrase(ABOUT_MINERALS);
 
 		stack3 = 2;
 	}
-	else if (PLAYER_SAID (R, tell_me_about_life))
+	else if (PLAYER_SAID(R, tell_me_about_life))
 	{
-		NPCPhrase (ABOUT_LIFE);
+		NPCPhrase(ABOUT_LIFE);
 
 		stack3 = 3;
 	}
@@ -1117,45 +1205,45 @@ TellStarBase (RESPONSE_REF R)
 	}
 
 	if (pstack[0])
-		Response (pstack[0], TellStarBase);
+		Response(pstack[0], TellStarBase);
 	if (pstack[1])
-		Response (pstack[1], TellStarBase);
+		Response(pstack[1], TellStarBase);
 	if (pstack[2])
-		Response (pstack[2], TellStarBase);
+		Response(pstack[2], TellStarBase);
 	if (pstack[3])
-		Response (pstack[3], TellStarBase);
+		Response(pstack[3], TellStarBase);
 
-	Response (enough_starbase, NeedInfo);
+	Response(enough_starbase, NeedInfo);
 }
 
-static void NormalStarbase (RESPONSE_REF R);
+static void NormalStarbase(RESPONSE_REF R);
 
 static void
-NeedInfo (RESPONSE_REF R)
+NeedInfo(RESPONSE_REF R)
 {
-	if (PLAYER_SAID (R, need_info))
-		NPCPhrase (WHAT_KIND_OF_INFO);
-	else if (PLAYER_SAID (R, enough_starbase))
-		NPCPhrase (OK_ENOUGH_STARBASE);
-	else if (PLAYER_SAID (R, enough_history))
-		NPCPhrase (OK_ENOUGH_HISTORY);
-	else if (PLAYER_SAID (R, enough_mission))
-		NPCPhrase (OK_ENOUGH_MISSION);
+	if (PLAYER_SAID(R, need_info))
+		NPCPhrase(WHAT_KIND_OF_INFO);
+	else if (PLAYER_SAID(R, enough_starbase))
+		NPCPhrase(OK_ENOUGH_STARBASE);
+	else if (PLAYER_SAID(R, enough_history))
+		NPCPhrase(OK_ENOUGH_HISTORY);
+	else if (PLAYER_SAID(R, enough_mission))
+		NPCPhrase(OK_ENOUGH_MISSION);
 
-	Response (starbase_functions, TellStarBase);
-	Response (history, TellHistory);
-	Response (our_mission, TellMission);
-	Response (no_need_info, NormalStarbase);
+	Response(starbase_functions, TellStarBase);
+	Response(history, TellHistory);
+	Response(our_mission, TellMission);
+	Response(no_need_info, NormalStarbase);
 }
 
 static bool
-DiscussDevices (bool TalkAbout)
+DiscussDevices(bool TalkAbout)
 {
 	uqm::COUNT i, VuxBeastIndex, PhraseIndex;
 	//bool Undiscussed; unused
 
 	if (TalkAbout)
-		NPCPhrase (DEVICE_HEAD);
+		NPCPhrase(DEVICE_HEAD);
 	PhraseIndex = 2;
 
 	VuxBeastIndex = 0;
@@ -1168,227 +1256,227 @@ DiscussDevices (bool TalkAbout)
 		switch (i)
 		{
 			case ROSY_SPHERE_DEVICE:
-				if (GET_GAME_STATE (ROSY_SPHERE_ON_SHIP)
-						&& !GET_GAME_STATE (DISCUSSED_ROSY_SPHERE))
+				if (GET_GAME_STATE(ROSY_SPHERE_ON_SHIP)
+					&& !GET_GAME_STATE(DISCUSSED_ROSY_SPHERE))
 				{
 					pStr = ABOUT_SPHERE;
-					SET_GAME_STATE (DISCUSSED_ROSY_SPHERE, TalkAbout);
+					SET_GAME_STATE(DISCUSSED_ROSY_SPHERE, TalkAbout);
 				}
 				break;
 			case WIMBLIS_TRIDENT_DEVICE:
-				if (GET_GAME_STATE (WIMBLIS_TRIDENT_ON_SHIP)
-						&& !GET_GAME_STATE (DISCUSSED_WIMBLIS_TRIDENT))
+				if (GET_GAME_STATE(WIMBLIS_TRIDENT_ON_SHIP)
+					&& !GET_GAME_STATE(DISCUSSED_WIMBLIS_TRIDENT))
 				{
 					pStr = ABOUT_WIMBLIS_TRIDENT;
-					SET_GAME_STATE (DISCUSSED_WIMBLIS_TRIDENT, TalkAbout);
+					SET_GAME_STATE(DISCUSSED_WIMBLIS_TRIDENT, TalkAbout);
 				}
 				break;
 			case GLOWING_ROD_DEVICE:
-				if (GET_GAME_STATE (GLOWING_ROD_ON_SHIP)
-						&& !GET_GAME_STATE (DISCUSSED_GLOWING_ROD))
+				if (GET_GAME_STATE(GLOWING_ROD_ON_SHIP)
+					&& !GET_GAME_STATE(DISCUSSED_GLOWING_ROD))
 				{
 					pStr = ABOUT_GLOWING_ROD;
-					SET_GAME_STATE (DISCUSSED_GLOWING_ROD, TalkAbout);
+					SET_GAME_STATE(DISCUSSED_GLOWING_ROD, TalkAbout);
 				}
 				break;
 			case SUN_EFFICIENCY_DEVICE:
-				if (GET_GAME_STATE (SUN_DEVICE_ON_SHIP)
-						&& !GET_GAME_STATE (DISCUSSED_SUN_EFFICIENCY))
+				if (GET_GAME_STATE(SUN_DEVICE_ON_SHIP)
+					&& !GET_GAME_STATE(DISCUSSED_SUN_EFFICIENCY))
 				{
 					pStr = ABOUT_SUN;
-					SET_GAME_STATE (DISCUSSED_SUN_EFFICIENCY, TalkAbout);
+					SET_GAME_STATE(DISCUSSED_SUN_EFFICIENCY, TalkAbout);
 				}
 				break;
 			case UTWIG_BOMB_DEVICE:
-				if (GET_GAME_STATE (UTWIG_BOMB_ON_SHIP)
-						&& !GET_GAME_STATE (DISCUSSED_UTWIG_BOMB))
+				if (GET_GAME_STATE(UTWIG_BOMB_ON_SHIP)
+					&& !GET_GAME_STATE(DISCUSSED_UTWIG_BOMB))
 				{
 					pStr = ABOUT_BOMB;
-					SET_GAME_STATE (DISCUSSED_UTWIG_BOMB, TalkAbout);
+					SET_GAME_STATE(DISCUSSED_UTWIG_BOMB, TalkAbout);
 				}
 				break;
 			case ULTRON_0_DEVICE:
-				if (GET_GAME_STATE (ULTRON_CONDITION) == 1
-						&& !GET_GAME_STATE (DISCUSSED_ULTRON))
+				if (GET_GAME_STATE(ULTRON_CONDITION) == 1
+					&& !GET_GAME_STATE(DISCUSSED_ULTRON))
 				{
 					pStr = ABOUT_ULTRON_0;
-					SET_GAME_STATE (DISCUSSED_ULTRON, TalkAbout);
+					SET_GAME_STATE(DISCUSSED_ULTRON, TalkAbout);
 				}
 				break;
 			case ULTRON_1_DEVICE:
-				if (GET_GAME_STATE (ULTRON_CONDITION) == 2
-						&& !GET_GAME_STATE (DISCUSSED_ULTRON))
+				if (GET_GAME_STATE(ULTRON_CONDITION) == 2
+					&& !GET_GAME_STATE(DISCUSSED_ULTRON))
 				{
 					pStr = ABOUT_ULTRON_1;
-					SET_GAME_STATE (DISCUSSED_ULTRON, TalkAbout);
+					SET_GAME_STATE(DISCUSSED_ULTRON, TalkAbout);
 				}
 				break;
 			case ULTRON_2_DEVICE:
-				if (GET_GAME_STATE (ULTRON_CONDITION) == 3
-						&& !GET_GAME_STATE (DISCUSSED_ULTRON))
+				if (GET_GAME_STATE(ULTRON_CONDITION) == 3
+					&& !GET_GAME_STATE(DISCUSSED_ULTRON))
 				{
 					pStr = ABOUT_ULTRON_2;
-					SET_GAME_STATE (DISCUSSED_ULTRON, TalkAbout);
+					SET_GAME_STATE(DISCUSSED_ULTRON, TalkAbout);
 				}
 				break;
 			case ULTRON_3_DEVICE:
-				if (GET_GAME_STATE (ULTRON_CONDITION) == 4
-						&& !GET_GAME_STATE (DISCUSSED_ULTRON))
+				if (GET_GAME_STATE(ULTRON_CONDITION) == 4
+					&& !GET_GAME_STATE(DISCUSSED_ULTRON))
 				{
 					pStr = ABOUT_ULTRON_3;
-					SET_GAME_STATE (DISCUSSED_ULTRON, TalkAbout);
+					SET_GAME_STATE(DISCUSSED_ULTRON, TalkAbout);
 				}
 				break;
 			case MAIDENS_DEVICE:
-				if (GET_GAME_STATE (MAIDENS_ON_SHIP)
-						&& !GET_GAME_STATE (DISCUSSED_MAIDENS))
+				if (GET_GAME_STATE(MAIDENS_ON_SHIP)
+					&& !GET_GAME_STATE(DISCUSSED_MAIDENS))
 				{
 					pStr = ABOUT_MAIDENS;
-					SET_GAME_STATE (DISCUSSED_MAIDENS, TalkAbout);
+					SET_GAME_STATE(DISCUSSED_MAIDENS, TalkAbout);
 				}
 				break;
 			case TALKING_PET_DEVICE:
-				if (GET_GAME_STATE (TALKING_PET_ON_SHIP)
-						&& !GET_GAME_STATE (DISCUSSED_TALKING_PET))
+				if (GET_GAME_STATE(TALKING_PET_ON_SHIP)
+					&& !GET_GAME_STATE(DISCUSSED_TALKING_PET))
 				{
 					pStr = ABOUT_TALKPET;
-					SET_GAME_STATE (DISCUSSED_TALKING_PET, TalkAbout);
+					SET_GAME_STATE(DISCUSSED_TALKING_PET, TalkAbout);
 				}
 				break;
 			case AQUA_HELIX_DEVICE:
-				if (GET_GAME_STATE (AQUA_HELIX_ON_SHIP)
-						&& !GET_GAME_STATE (DISCUSSED_AQUA_HELIX))
+				if (GET_GAME_STATE(AQUA_HELIX_ON_SHIP)
+					&& !GET_GAME_STATE(DISCUSSED_AQUA_HELIX))
 				{
 					pStr = ABOUT_HELIX;
-					SET_GAME_STATE (DISCUSSED_AQUA_HELIX, TalkAbout);
+					SET_GAME_STATE(DISCUSSED_AQUA_HELIX, TalkAbout);
 				}
 				break;
 			case CLEAR_SPINDLE_DEVICE:
-				if (GET_GAME_STATE (CLEAR_SPINDLE_ON_SHIP)
-						&& !GET_GAME_STATE (DISCUSSED_CLEAR_SPINDLE))
+				if (GET_GAME_STATE(CLEAR_SPINDLE_ON_SHIP)
+					&& !GET_GAME_STATE(DISCUSSED_CLEAR_SPINDLE))
 				{
 					pStr = ABOUT_SPINDLE;
-					SET_GAME_STATE (DISCUSSED_CLEAR_SPINDLE, TalkAbout);
+					SET_GAME_STATE(DISCUSSED_CLEAR_SPINDLE, TalkAbout);
 				}
 				break;
 			case UMGAH_HYPERWAVE_DEVICE:
-				if (GET_GAME_STATE (UMGAH_BROADCASTERS_ON_SHIP)
-						&& !GET_GAME_STATE (DISCUSSED_UMGAH_HYPERWAVE))
+				if (GET_GAME_STATE(UMGAH_BROADCASTERS_ON_SHIP)
+					&& !GET_GAME_STATE(DISCUSSED_UMGAH_HYPERWAVE))
 				{
 					pStr = ABOUT_UCASTER;
-					SET_GAME_STATE (DISCUSSED_UMGAH_HYPERWAVE, TalkAbout);
+					SET_GAME_STATE(DISCUSSED_UMGAH_HYPERWAVE, TalkAbout);
 				}
 				break;
 #ifdef NEVER
 			case DATA_PLATE_1_DEVICE:
-				if (GET_GAME_STATE (DATA_PLATE_1_ON_SHIP)
-						&& !GET_GAME_STATE (DISCUSSED_DATA_PLATE_1))
+				if (GET_GAME_STATE(DATA_PLATE_1_ON_SHIP)
+					&& !GET_GAME_STATE(DISCUSSED_DATA_PLATE_1))
 				{
 					pStr = ABOUT_DATAPLATE_1;
-					SET_GAME_STATE (DISCUSSED_DATA_PLATE_1, TalkAbout);
+					SET_GAME_STATE(DISCUSSED_DATA_PLATE_1, TalkAbout);
 				}
 				break;
 			case DATA_PLATE_2_DEVICE:
-				if (GET_GAME_STATE (DATA_PLATE_2_ON_SHIP)
-						&& !GET_GAME_STATE (DISCUSSED_DATA_PLATE_2))
+				if (GET_GAME_STATE(DATA_PLATE_2_ON_SHIP)
+					&& !GET_GAME_STATE(DISCUSSED_DATA_PLATE_2))
 				{
 					pStr = ABOUT_DATAPLATE_2;
-					SET_GAME_STATE (DISCUSSED_DATA_PLATE_2, TalkAbout);
+					SET_GAME_STATE(DISCUSSED_DATA_PLATE_2, TalkAbout);
 				}
 				break;
 			case DATA_PLATE_3_DEVICE:
-				if (GET_GAME_STATE (DATA_PLATE_3_ON_SHIP)
-						&& !GET_GAME_STATE (DISCUSSED_DATA_PLATE_3))
+				if (GET_GAME_STATE(DATA_PLATE_3_ON_SHIP)
+					&& !GET_GAME_STATE(DISCUSSED_DATA_PLATE_3))
 				{
 					pStr = ABOUT_DATAPLATE_3;
-					SET_GAME_STATE (DISCUSSED_DATA_PLATE_3, TalkAbout);
+					SET_GAME_STATE(DISCUSSED_DATA_PLATE_3, TalkAbout);
 				}
 				break;
 #endif /* NEVER */
 			case TAALO_PROTECTOR_DEVICE:
-				if (GET_GAME_STATE (TAALO_PROTECTOR_ON_SHIP)
-						&& !GET_GAME_STATE (DISCUSSED_TAALO_PROTECTOR))
+				if (GET_GAME_STATE(TAALO_PROTECTOR_ON_SHIP)
+					&& !GET_GAME_STATE(DISCUSSED_TAALO_PROTECTOR))
 				{
 					pStr = ABOUT_SHIELD;
-					SET_GAME_STATE (DISCUSSED_TAALO_PROTECTOR, TalkAbout);
+					SET_GAME_STATE(DISCUSSED_TAALO_PROTECTOR, TalkAbout);
 				}
 				break;
 			case EGG_CASING0_DEVICE:
-				if (GET_GAME_STATE (EGG_CASE0_ON_SHIP)
-						&& !GET_GAME_STATE (DISCUSSED_EGG_CASING0))
+				if (GET_GAME_STATE(EGG_CASE0_ON_SHIP)
+					&& !GET_GAME_STATE(DISCUSSED_EGG_CASING0))
 				{
 					pStr = ABOUT_EGGCASE_0;
-					SET_GAME_STATE (DISCUSSED_EGG_CASING0, TalkAbout);
-					SET_GAME_STATE (DISCUSSED_EGG_CASING1, TalkAbout);
-					SET_GAME_STATE (DISCUSSED_EGG_CASING2, TalkAbout);
+					SET_GAME_STATE(DISCUSSED_EGG_CASING0, TalkAbout);
+					SET_GAME_STATE(DISCUSSED_EGG_CASING1, TalkAbout);
+					SET_GAME_STATE(DISCUSSED_EGG_CASING2, TalkAbout);
 				}
 				break;
 			case EGG_CASING1_DEVICE:
-				if (GET_GAME_STATE (EGG_CASE1_ON_SHIP)
-						&& !GET_GAME_STATE (DISCUSSED_EGG_CASING1))
+				if (GET_GAME_STATE(EGG_CASE1_ON_SHIP)
+					&& !GET_GAME_STATE(DISCUSSED_EGG_CASING1))
 				{
 					pStr = ABOUT_EGGCASE_0;
-					SET_GAME_STATE (DISCUSSED_EGG_CASING0, TalkAbout);
-					SET_GAME_STATE (DISCUSSED_EGG_CASING1, TalkAbout);
-					SET_GAME_STATE (DISCUSSED_EGG_CASING2, TalkAbout);
+					SET_GAME_STATE(DISCUSSED_EGG_CASING0, TalkAbout);
+					SET_GAME_STATE(DISCUSSED_EGG_CASING1, TalkAbout);
+					SET_GAME_STATE(DISCUSSED_EGG_CASING2, TalkAbout);
 				}
 				break;
 			case EGG_CASING2_DEVICE:
-				if (GET_GAME_STATE (EGG_CASE2_ON_SHIP)
-						&& !GET_GAME_STATE (DISCUSSED_EGG_CASING2))
+				if (GET_GAME_STATE(EGG_CASE2_ON_SHIP)
+					&& !GET_GAME_STATE(DISCUSSED_EGG_CASING2))
 				{
 					pStr = ABOUT_EGGCASE_0;
-					SET_GAME_STATE (DISCUSSED_EGG_CASING0, TalkAbout);
-					SET_GAME_STATE (DISCUSSED_EGG_CASING1, TalkAbout);
-					SET_GAME_STATE (DISCUSSED_EGG_CASING2, TalkAbout);
+					SET_GAME_STATE(DISCUSSED_EGG_CASING0, TalkAbout);
+					SET_GAME_STATE(DISCUSSED_EGG_CASING1, TalkAbout);
+					SET_GAME_STATE(DISCUSSED_EGG_CASING2, TalkAbout);
 				}
 				break;
 			case SYREEN_SHUTTLE_DEVICE:
-				if (GET_GAME_STATE (SYREEN_SHUTTLE_ON_SHIP)
-						&& !GET_GAME_STATE (DISCUSSED_SYREEN_SHUTTLE))
+				if (GET_GAME_STATE(SYREEN_SHUTTLE_ON_SHIP)
+					&& !GET_GAME_STATE(DISCUSSED_SYREEN_SHUTTLE))
 				{
 					pStr = ABOUT_SHUTTLE;
-					SET_GAME_STATE (DISCUSSED_SYREEN_SHUTTLE, TalkAbout);
+					SET_GAME_STATE(DISCUSSED_SYREEN_SHUTTLE, TalkAbout);
 				}
 				break;
 			case VUX_BEAST_DEVICE:
-				if (GET_GAME_STATE (VUX_BEAST_ON_SHIP)
-						&& !GET_GAME_STATE (DISCUSSED_VUX_BEAST))
+				if (GET_GAME_STATE(VUX_BEAST_ON_SHIP)
+					&& !GET_GAME_STATE(DISCUSSED_VUX_BEAST))
 				{
 					pStr = ABOUT_VUXBEAST0;
-					SET_GAME_STATE (DISCUSSED_VUX_BEAST, TalkAbout);
+					SET_GAME_STATE(DISCUSSED_VUX_BEAST, TalkAbout);
 				}
 				break;
 			case DESTRUCT_CODE_DEVICE:
-				if (GET_GAME_STATE (DESTRUCT_CODE_ON_SHIP)
-						&& !GET_GAME_STATE (DISCUSSED_DESTRUCT_CODE))
+				if (GET_GAME_STATE(DESTRUCT_CODE_ON_SHIP)
+					&& !GET_GAME_STATE(DISCUSSED_DESTRUCT_CODE))
 				{
 					pStr = ABOUT_DESTRUCT;
-					SET_GAME_STATE (DISCUSSED_DESTRUCT_CODE, TalkAbout);
+					SET_GAME_STATE(DISCUSSED_DESTRUCT_CODE, TalkAbout);
 				}
 				break;
 			case PORTAL_SPAWNER_DEVICE:
-				if (GET_GAME_STATE (PORTAL_SPAWNER_ON_SHIP)
-						&& !GET_GAME_STATE (DISCUSSED_PORTAL_SPAWNER))
+				if (GET_GAME_STATE(PORTAL_SPAWNER_ON_SHIP)
+					&& !GET_GAME_STATE(DISCUSSED_PORTAL_SPAWNER))
 				{
 					pStr = ABOUT_PORTAL;
-					SET_GAME_STATE (DISCUSSED_PORTAL_SPAWNER, TalkAbout);
+					SET_GAME_STATE(DISCUSSED_PORTAL_SPAWNER, TalkAbout);
 				}
 				break;
 			case URQUAN_WARP_DEVICE:
-				if (GET_GAME_STATE (PORTAL_KEY_ON_SHIP)
-						&& !GET_GAME_STATE (DISCUSSED_URQUAN_WARP))
+				if (GET_GAME_STATE(PORTAL_KEY_ON_SHIP)
+					&& !GET_GAME_STATE(DISCUSSED_URQUAN_WARP))
 				{
 					pStr = ABOUT_WARPPOD;
-					SET_GAME_STATE (DISCUSSED_URQUAN_WARP, TalkAbout);
+					SET_GAME_STATE(DISCUSSED_URQUAN_WARP, TalkAbout);
 				}
 				break;
 			case BURVIX_HYPERWAVE_DEVICE:
-				if (GET_GAME_STATE (BURV_BROADCASTERS_ON_SHIP)
-						&& !GET_GAME_STATE (DISCUSSED_BURVIX_HYPERWAVE))
+				if (GET_GAME_STATE(BURV_BROADCASTERS_ON_SHIP)
+					&& !GET_GAME_STATE(DISCUSSED_BURVIX_HYPERWAVE))
 				{
 					pStr = ABOUT_BCASTER;
-					SET_GAME_STATE (DISCUSSED_BURVIX_HYPERWAVE, TalkAbout);
+					SET_GAME_STATE(DISCUSSED_BURVIX_HYPERWAVE, TalkAbout);
 				}
 				break;
 		}
@@ -1398,12 +1486,12 @@ DiscussDevices (bool TalkAbout)
 			if (TalkAbout)
 			{
 				if (PhraseIndex > 2)
-					NPCPhrase (BETWEEN_DEVICES);
-				NPCPhrase (pStr);
+					NPCPhrase(BETWEEN_DEVICES);
+				NPCPhrase(pStr);
 				if (pStr == ABOUT_VUXBEAST0)
 				{
 					VuxBeastIndex = ++PhraseIndex;
-					NPCPhrase (ABOUT_VUXBEAST1);
+					NPCPhrase(ABOUT_VUXBEAST1);
 				}
 			}
 			PhraseIndex += 2;
@@ -1412,14 +1500,14 @@ DiscussDevices (bool TalkAbout)
 
 	if (TalkAbout)
 	{
-		NPCPhrase (DEVICE_TAIL);
+		NPCPhrase(DEVICE_TAIL);
 
 		if (VuxBeastIndex)
 		{
 			// Run all tracks upto the Vux Beast scientist's report
 			// Then disable Commander's speech animation and run the report
-			BlockTalkingAnim (VuxBeastIndex - 1, VuxBeastIndex);
-			AlienTalkSegue ((uqm::COUNT)~0);
+			BlockTalkingAnim(VuxBeastIndex - 1, VuxBeastIndex);
+			AlienTalkSegue((uqm::COUNT)~0);
 		}
 	}
 
@@ -1427,18 +1515,29 @@ DiscussDevices (bool TalkAbout)
 }
 
 static bool
-CheckTiming (uqm::COUNT month_index, uqm::COUNT day_index)
+CheckTiming(uqm::COUNT month_index, uqm::COUNT day_index)
 {
 	uqm::COUNT mi, year_index;
 	uqm::BYTE days_in_month[12] =
-	{
-		31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31,
-	};
+		{
+			31,
+			28,
+			31,
+			30,
+			31,
+			30,
+			31,
+			31,
+			30,
+			31,
+			30,
+			31,
+		};
 
-	mi = GET_GAME_STATE (STARBASE_MONTH);
+	mi = GET_GAME_STATE(STARBASE_MONTH);
 	year_index = START_YEAR;
 
-	day_index += GET_GAME_STATE (STARBASE_DAY);
+	day_index += GET_GAME_STATE(STARBASE_DAY);
 	while (day_index > days_in_month[mi - 1])
 	{
 		day_index -= days_in_month[mi - 1];
@@ -1453,15 +1552,15 @@ CheckTiming (uqm::COUNT month_index, uqm::COUNT day_index)
 	year_index += (month_index - 1) / 12;
 	month_index = ((month_index - 1) % 12) + 1;
 
-	return (year_index < GLOBAL (GameClock.year_index)
-			|| (year_index == GLOBAL (GameClock.year_index)
-			&& (month_index < GLOBAL (GameClock.month_index)
-			|| (month_index == GLOBAL (GameClock.month_index)
-			&& day_index < GLOBAL (GameClock.day_index)))));
+	return (year_index < GLOBAL(GameClock.year_index)
+			|| (year_index == GLOBAL(GameClock.year_index)
+				&& (month_index < GLOBAL(GameClock.month_index)
+					|| (month_index == GLOBAL(GameClock.month_index)
+						&& day_index < GLOBAL(GameClock.day_index)))));
 }
 
 static void
-CheckBulletins (bool Repeat)
+CheckBulletins(bool Repeat)
 {
 	RESPONSE_REF pIntro;
 	uqm::BYTE b0;
@@ -1473,7 +1572,7 @@ CheckBulletins (bool Repeat)
 	if (Repeat)
 		BulletinMask = CurBulletinMask ^ 0xFFFFFFFFL;
 	else
-		BulletinMask = GET_GAME_STATE (STARBASE_BULLETS);
+		BulletinMask = GET_GAME_STATE(STARBASE_BULLETS);
 
 	pIntro = 0;
 	for (b0 = 0; b0 < 32; ++b0)
@@ -1486,115 +1585,114 @@ CheckBulletins (bool Repeat)
 			switch (b0)
 			{
 				case 0:
-					if (CheckAlliance (SPATHI_SHIP) == GOOD_GUY)
+					if (CheckAlliance(SPATHI_SHIP) == GOOD_GUY)
 					{
 						pStr = STARBASE_BULLETIN_1;
 					}
 					break;
 				case 1:
-					if (CheckAlliance (ZOQFOTPIK_SHIP) == GOOD_GUY)
+					if (CheckAlliance(ZOQFOTPIK_SHIP) == GOOD_GUY)
 					{
 						pStr = STARBASE_BULLETIN_2;
 					}
 					break;
 				case 2:
-					if (CheckAlliance (SUPOX_SHIP) == GOOD_GUY)
+					if (CheckAlliance(SUPOX_SHIP) == GOOD_GUY)
 					{
 						pStr = STARBASE_BULLETIN_3;
 					}
 					break;
 				case 3:
-					if (CheckAlliance (UTWIG_SHIP) == GOOD_GUY)
+					if (CheckAlliance(UTWIG_SHIP) == GOOD_GUY)
 					{
 						pStr = STARBASE_BULLETIN_4;
 					}
 					break;
 				case 4:
-					if (CheckAlliance (ORZ_SHIP) == GOOD_GUY)
+					if (CheckAlliance(ORZ_SHIP) == GOOD_GUY)
 					{
 						pStr = STARBASE_BULLETIN_5;
 					}
 					break;
 				case 5:
-					if (GET_GAME_STATE (ARILOU_MANNER) == 2)
+					if (GET_GAME_STATE(ARILOU_MANNER) == 2)
 						BulletinMask |= 1L << b0;
-					else if (GET_GAME_STATE (PORTAL_SPAWNER)
-							&& (Repeat || EscortFeasibilityStudy (
-									ARILOU_SHIP)))
+					else if (GET_GAME_STATE(PORTAL_SPAWNER)
+							 && (Repeat || EscortFeasibilityStudy(ARILOU_SHIP)))
 					{
 #define NUM_GIFT_ARILOUS 3
 						pStr = STARBASE_BULLETIN_6;
 						if (!Repeat)
-							AddEscortShips (ARILOU_SHIP, NUM_GIFT_ARILOUS);
+							AddEscortShips(ARILOU_SHIP, NUM_GIFT_ARILOUS);
 					}
 					break;
 				case 6:
-					if (GET_GAME_STATE (ZOQFOT_DISTRESS) == 1)
+					if (GET_GAME_STATE(ZOQFOT_DISTRESS) == 1)
 					{
 						pStr = STARBASE_BULLETIN_7;
 					}
 					break;
 				case 7:
-					if (GET_GAME_STATE (MET_MELNORME))
+					if (GET_GAME_STATE(MET_MELNORME))
 						BulletinMask |= 1L << b0;
-					else if (CheckTiming (IF_EASY(3, 1), 0))
+					else if (CheckTiming(IF_EASY(3, 1), 0))
 					{
 						pStr = STARBASE_BULLETIN_8;
 					}
 					break;
 				case 8:
-					if (GET_GAME_STATE (MET_MELNORME))
+					if (GET_GAME_STATE(MET_MELNORME))
 						BulletinMask |= 1L << b0;
-					else if (CheckTiming (IF_EASY(6, 3), 0))
+					else if (CheckTiming(IF_EASY(6, 3), 0))
 					{
 						pStr = STARBASE_BULLETIN_9;
 					}
 					break;
 				case 9:
-					if (GET_GAME_STATE (FOUND_PLUTO_SPATHI))
+					if (GET_GAME_STATE(FOUND_PLUTO_SPATHI))
 						BulletinMask |= 1L << b0;
-					else if (CheckTiming (0, 7))
+					else if (CheckTiming(0, 7))
 					{
 						pStr = STARBASE_BULLETIN_10;
 					}
 					break;
 				case 10:
-					if (GET_GAME_STATE (SPATHI_SHIELDED_SELVES))
+					if (GET_GAME_STATE(SPATHI_SHIELDED_SELVES))
 					{
 						pStr = STARBASE_BULLETIN_11;
 					}
 					break;
 				case 11:
-					if (GET_GAME_STATE (ZOQFOT_HOME_VISITS)
-							|| GET_GAME_STATE (ZOQFOT_GRPOFFS))
+					if (GET_GAME_STATE(ZOQFOT_HOME_VISITS)
+						|| GET_GAME_STATE(ZOQFOT_GRPOFFS))
 						BulletinMask |= 1L << b0;
-					else if (CheckTiming (0, IF_EASY(42, 21)))
+					else if (CheckTiming(0, IF_EASY(42, 21)))
 					{
 						pStr = STARBASE_BULLETIN_12;
 					}
 					break;
 				case 12:
-					if (CheckAlliance (CHMMR_SHIP) == GOOD_GUY)
+					if (CheckAlliance(CHMMR_SHIP) == GOOD_GUY)
 					{
 						pStr = STARBASE_BULLETIN_13;
 					}
 					break;
 				case 13:
-					if (CheckAlliance (SHOFIXTI_SHIP) == GOOD_GUY)
+					if (CheckAlliance(SHOFIXTI_SHIP) == GOOD_GUY)
 					{
 						pStr = STARBASE_BULLETIN_14;
 					}
 					break;
 				case 14:
-					if (GET_GAME_STATE (PKUNK_MISSION))
+					if (GET_GAME_STATE(PKUNK_MISSION))
 					{
 						pStr = STARBASE_BULLETIN_15;
 					}
 					break;
 				case 15:
-					if (GET_GAME_STATE (DESTRUCT_CODE_ON_SHIP))
+					if (GET_GAME_STATE(DESTRUCT_CODE_ON_SHIP))
 						BulletinMask |= 1L << b0;
-					else if (CheckTiming (7, 0))
+					else if (CheckTiming(7, 0))
 					{
 						pStr = STARBASE_BULLETIN_16;
 					}
@@ -1602,13 +1700,13 @@ CheckBulletins (bool Repeat)
 				case 16:
 					break;
 				case 17:
-					if (GET_GAME_STATE (YEHAT_ABSORBED_PKUNK))
+					if (GET_GAME_STATE(YEHAT_ABSORBED_PKUNK))
 					{
 						pStr = STARBASE_BULLETIN_18;
 					}
 					break;
 				case 18:
-					if (GET_GAME_STATE (CHMMR_BOMB_STATE) == 2)
+					if (GET_GAME_STATE(CHMMR_BOMB_STATE) == 2)
 					{
 						pStr = STARBASE_BULLETIN_19;
 					}
@@ -1618,7 +1716,7 @@ CheckBulletins (bool Repeat)
 				case 20:
 					break;
 				case 21:
-					if (GET_GAME_STATE (ZOQFOT_DISTRESS) == 2)
+					if (GET_GAME_STATE(ZOQFOT_DISTRESS) == 2)
 					{
 						pStr = STARBASE_BULLETIN_22;
 					}
@@ -1632,43 +1730,42 @@ CheckBulletins (bool Repeat)
 				case 25:
 					break;
 				case 26:
-				{
-					uqm::COUNT crew_sold = CrewSold;
-
-					if (crew_sold > MIN_SOLD)
-						BulletinMask |= 1L << b0;
-					else if (crew_sold)
 					{
-						pStr = STARBASE_BULLETIN_27;
+						uqm::COUNT crew_sold = CrewSold;
+
+						if (crew_sold > MIN_SOLD)
+							BulletinMask |= 1L << b0;
+						else if (crew_sold)
+						{
+							pStr = STARBASE_BULLETIN_27;
+						}
+						break;
 					}
-					break;
-				}
 				case 27:
-				{
-					uqm::COUNT crew_sold = CrewSold;
-
-					if (crew_sold > MAX_SOLD)
-						BulletinMask |= 1L << b0;
-					else if (crew_sold > MIN_SOLD)
 					{
-						pStr = STARBASE_BULLETIN_28;
+						uqm::COUNT crew_sold = CrewSold;
+
+						if (crew_sold > MAX_SOLD)
+							BulletinMask |= 1L << b0;
+						else if (crew_sold > MIN_SOLD)
+						{
+							pStr = STARBASE_BULLETIN_28;
+						}
+						break;
 					}
-					break;
-				}
 				case 28:
-				{
-					uqm::COUNT crew_bought;
-
-					crew_bought = MAKE_WORD (
-							GET_GAME_STATE (CREW_PURCHASED0),
-							GET_GAME_STATE (CREW_PURCHASED1)
-							);
-					if (crew_bought >= CREW_EXPENSE_THRESHOLD)
 					{
-						pStr = STARBASE_BULLETIN_29;
+						uqm::COUNT crew_bought;
+
+						crew_bought = MAKE_WORD(
+							GET_GAME_STATE(CREW_PURCHASED0),
+							GET_GAME_STATE(CREW_PURCHASED1));
+						if (crew_bought >= CREW_EXPENSE_THRESHOLD)
+						{
+							pStr = STARBASE_BULLETIN_29;
+						}
+						break;
 					}
-					break;
-				}
 				case 29:
 					if (CrewSold > MAX_SOLD)
 					{
@@ -1684,12 +1781,12 @@ CheckBulletins (bool Repeat)
 			if (pStr)
 			{
 				if (pIntro)
-					NPCPhrase (BETWEEN_BULLETINS);
+					NPCPhrase(BETWEEN_BULLETINS);
 				else if (Repeat)
 					pIntro = BEFORE_WE_GO_ON_1;
 				else
 				{
-					switch ((uqm::BYTE)TFB_Random () % 7)
+					switch ((uqm::BYTE)TFB_Random() % 7)
 					{
 						case 0:
 							pIntro = BEFORE_WE_GO_ON_1;
@@ -1714,96 +1811,113 @@ CheckBulletins (bool Repeat)
 							break;
 					}
 
-					NPCPhrase (pIntro);
+					NPCPhrase(pIntro);
 				}
 
-				NPCPhrase (pStr);
+				NPCPhrase(pStr);
 				CurBulletinMask |= 1L << b0;
 			}
 		}
 	}
 
-	if (pIntro == 0 && GET_GAME_STATE (STARBASE_VISITED))
-		NPCPhrase (RETURN_HELLO);
+	if (pIntro == 0 && GET_GAME_STATE(STARBASE_VISITED))
+		NPCPhrase(RETURN_HELLO);
 	else if (!Repeat)
-		SET_GAME_STATE (STARBASE_BULLETS, BulletinMask);
+		SET_GAME_STATE(STARBASE_BULLETS, BulletinMask);
 }
 
 static void
-NormalStarbase (RESPONSE_REF R)
+NormalStarbase(RESPONSE_REF R)
 {
-	if (PLAYER_SAID (R, no_need_info))
-		NPCPhrase (OK_NO_NEED_INFO);
-	else if (PLAYER_SAID (R, new_devices))
-		DiscussDevices (true);
-	else if (PLAYER_SAID (R, repeat_bulletins))
-		CheckBulletins (true);
+	if (PLAYER_SAID(R, no_need_info))
+		NPCPhrase(OK_NO_NEED_INFO);
+	else if (PLAYER_SAID(R, new_devices))
+		DiscussDevices(true);
+	else if (PLAYER_SAID(R, repeat_bulletins))
+		CheckBulletins(true);
 	else if (R == 0)
 	{
-		if (GET_GAME_STATE (MOONBASE_ON_SHIP))
+		if (GET_GAME_STATE(MOONBASE_ON_SHIP))
 		{
-			NPCPhrase (STARBASE_IS_READY);
-			DeltaSISGauges (0, 0, 2500);
-			if(optInfiniteRU){
+			NPCPhrase(STARBASE_IS_READY);
+			DeltaSISGauges(0, 0, 2500);
+			if (optInfiniteRU)
+			{
 				oldRU = 2500;
 			}
-			SET_GAME_STATE (STARBASE_MONTH,
-					GLOBAL (GameClock.month_index));
-			SET_GAME_STATE (STARBASE_DAY,
-					GLOBAL (GameClock.day_index));
+			SET_GAME_STATE(STARBASE_MONTH,
+						   GLOBAL(GameClock.month_index));
+			SET_GAME_STATE(STARBASE_DAY,
+						   GLOBAL(GameClock.day_index));
 		}
-		else if (GET_GAME_STATE (STARBASE_VISITED))
+		else if (GET_GAME_STATE(STARBASE_VISITED))
 		{
-			CheckBulletins (false);
+			CheckBulletins(false);
 		}
 		else
 		{
 			// XXX TODO: This can be simplified now.
 			RESPONSE_REF pStr = 0;
 
-			switch ((uqm::BYTE)TFB_Random () & 7)
+			switch ((uqm::BYTE)TFB_Random() & 7)
 			{
-				case 0: pStr = NORMAL_HELLO_A; break;
-				case 1: pStr = NORMAL_HELLO_B; break;
-				case 2: pStr = NORMAL_HELLO_C; break;
-				case 3: pStr = NORMAL_HELLO_D; break;
-				case 4: pStr = NORMAL_HELLO_E; break;
-				case 5: pStr = NORMAL_HELLO_F; break;
-				case 6: pStr = NORMAL_HELLO_G; break;
-				case 7: pStr = NORMAL_HELLO_H; break;
+				case 0:
+					pStr = NORMAL_HELLO_A;
+					break;
+				case 1:
+					pStr = NORMAL_HELLO_B;
+					break;
+				case 2:
+					pStr = NORMAL_HELLO_C;
+					break;
+				case 3:
+					pStr = NORMAL_HELLO_D;
+					break;
+				case 4:
+					pStr = NORMAL_HELLO_E;
+					break;
+				case 5:
+					pStr = NORMAL_HELLO_F;
+					break;
+				case 6:
+					pStr = NORMAL_HELLO_G;
+					break;
+				case 7:
+					pStr = NORMAL_HELLO_H;
+					break;
 			}
-			NPCPhrase (pStr);
-			CheckBulletins (false);
+			NPCPhrase(pStr);
+			CheckBulletins(false);
 		}
 
-		SET_GAME_STATE (STARBASE_VISITED, 1);
+		SET_GAME_STATE(STARBASE_VISITED, 1);
 	}
 
-	if (GLOBAL_SIS (TotalElementMass))
-		Response (have_minerals, SellMinerals);
-	if (DiscussDevices (false))
-		Response (new_devices, NormalStarbase);
+	if (GLOBAL_SIS(TotalElementMass))
+		Response(have_minerals, SellMinerals);
+	if (DiscussDevices(false))
+		Response(new_devices, NormalStarbase);
 	if (CurBulletinMask)
-		Response (repeat_bulletins, NormalStarbase);
-	Response (need_info, NeedInfo);
-	Response (goodbye_commander, ByeBye);
+		Response(repeat_bulletins, NormalStarbase);
+	Response(need_info, NeedInfo);
+	Response(goodbye_commander, ByeBye);
 }
 
 static void
-SellMinerals (RESPONSE_REF R)
+SellMinerals(RESPONSE_REF R)
 {
 	uqm::COUNT total = 0;
 	RESPONSE_REF pStr = 0;
 
 	if (optSpeech)
 	{
-		total = DoSellMinerals ();
+		total = DoSellMinerals();
 
-		pStr = EveryOnesACritic (total);
+		pStr = EveryOnesACritic(total);
 
-		NPCPhrase (pStr);
+		NPCPhrase(pStr);
 		if (pStr == LIGHT_LOAD_C0)
-			NPCPhrase (LIGHT_LOAD_C1);
+			NPCPhrase(LIGHT_LOAD_C1);
 	}
 	else
 	{
@@ -1812,99 +1926,99 @@ SellMinerals (RESPONSE_REF R)
 		uqm::COUNT seg = 0;
 		uqm::COUNT count = 0;
 
-		NPCPhrase (CARGO_LIST);
+		NPCPhrase(CARGO_LIST);
 		for (i = 0; i < NUM_ELEMENT_CATEGORIES; ++i)
 		{
-			if ((amount[seg] = GLOBAL_SIS (ElementAmounts[i])) != 0)
+			if ((amount[seg] = GLOBAL_SIS(ElementAmounts[i])) != 0)
 			{
-				Ru[seg] = amount[seg] * GLOBAL (ElementWorth[i]);
+				Ru[seg] = amount[seg] * GLOBAL(ElementWorth[i]);
 				if (count > 0)
-					NPCPhrase (ELLIPSES);
+					NPCPhrase(ELLIPSES);
 				else
-					NPCPhrase (BLANK);
+					NPCPhrase(BLANK);
 				NPCNumber(amount[seg], NULL);
-				NPCPhrase_splice (KILOTONS_OF);
-				NPCPhrase_splice (COMMONR + i);
-				NPCPhrase_splice (FOR);
-				NPCNumber (Ru[seg], NULL);
-				NPCPhrase (RESUNITS);
+				NPCPhrase_splice(KILOTONS_OF);
+				NPCPhrase_splice(COMMONR + i);
+				NPCPhrase_splice(FOR);
+				NPCNumber(Ru[seg], NULL);
+				NPCPhrase(RESUNITS);
 				total += Ru[seg];
 				seg++;
-				GLOBAL_SIS (ElementAmounts[i]) = 0;
+				GLOBAL_SIS(ElementAmounts[i]) = 0;
 				++count;
 			}
 		}
 
-		pStr = EveryOnesACritic (total);
+		pStr = EveryOnesACritic(total);
 
-		NPCPhrase (pStr);
+		NPCPhrase(pStr);
 		if (pStr == LIGHT_LOAD_C0)
-			NPCPhrase (LIGHT_LOAD_C1);
+			NPCPhrase(LIGHT_LOAD_C1);
 
 		for (sseg = 1; sseg < seg + 1; sseg++)
 		{
-			AlienTalkSegue (sseg);
-			GLOBAL_SIS (TotalElementMass) -= amount[sseg - 1];
-			DeltaSISGauges (0, 0, Ru[sseg - 1]);
-			ClearSISRect (DRAW_SIS_DISPLAY);
+			AlienTalkSegue(sseg);
+			GLOBAL_SIS(TotalElementMass) -= amount[sseg - 1];
+			DeltaSISGauges(0, 0, Ru[sseg - 1]);
+			ClearSISRect(DRAW_SIS_DISPLAY);
 		}
 	}
 
-	NormalStarbase (R);
+	NormalStarbase(R);
 }
 
 static void
-Intro (void)
+Intro(void)
 {
-	if (IS_HD)// To smooth out HD blink animation
+	if (IS_HD) // To smooth out HD blink animation
 		CommData.AlienAmbientArray[0].BaseFrameRate = ONE_SECOND / 40;
 
-	NormalStarbase (0);
+	NormalStarbase(0);
 }
 
 static uqm::COUNT
-uninit_starbase (void)
+uninit_starbase(void)
 {
-	luaUqm_comm_uninit ();
+	luaUqm_comm_uninit();
 	return (0);
 }
 
 static void
-post_starbase_enc (void)
+post_starbase_enc(void)
 {
-	SET_GAME_STATE (MOONBASE_ON_SHIP, 0);
-	if (GET_GAME_STATE (CHMMR_BOMB_STATE) == 2)
+	SET_GAME_STATE(MOONBASE_ON_SHIP, 0);
+	if (GET_GAME_STATE(CHMMR_BOMB_STATE) == 2)
 	{
-		SET_GAME_STATE (CHMMR_BOMB_STATE, 3);
+		SET_GAME_STATE(CHMMR_BOMB_STATE, 3);
 	}
 }
 
 LOCDATA*
-init_starbase_comm ()
+init_starbase_comm()
 {
-	LOCDATA *retval;
+	LOCDATA* retval;
 
 	commander_desc.init_encounter_func = Intro;
 	commander_desc.post_encounter_func = post_starbase_enc;
 	commander_desc.uninit_encounter_func = uninit_starbase;
 
-	luaUqm_comm_init (NULL, NULL_RESOURCE);
-			// Initialise Lua for string interpolation. This will be
-			// generalised in the future.
+	luaUqm_comm_init(NULL, NULL_RESOURCE);
+	// Initialise Lua for string interpolation. This will be
+	// generalised in the future.
 
-	commander_desc.AlienTextWidth = RES_SCALE (143);
-	commander_desc.AlienTextBaseline.x = RES_SCALE (164)
-			- (SAFE_NEG (2) * 2);
-	commander_desc.AlienTextBaseline.y = RES_SCALE (20);
+	commander_desc.AlienTextWidth = RES_SCALE(143);
+	commander_desc.AlienTextBaseline.x = RES_SCALE(164)
+									   - (SAFE_NEG(2) * 2);
+	commander_desc.AlienTextBaseline.y = RES_SCALE(20);
 
 	// use alternate Starbase track if available
 	altResFlags |= USE_ALT_SONG;
 
-	if (is3DO (optFlagshipColor))
+	if (is3DO(optFlagshipColor))
 		altResFlags |= USE_ALT_FRAME;
 
 	CurBulletinMask = 0;
-	setSegue (Segue_peace);
+	setSegue(Segue_peace);
 	retval = &commander_desc;
 
 	return (retval);

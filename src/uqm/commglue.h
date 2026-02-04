@@ -31,116 +31,117 @@ extern "C" {
 extern LOCDATA CommData;
 extern uqm::CHAR_T shared_phrase_buf[2048];
 
-#define PLAYER_SAID(r,i) ((r)==(i))
-#define PHRASE_ENABLED(p) \
-		(*(uqm::CHAR_T *)GetStringAddress ( \
-				SetAbsStringTableIndex (CommData.ConversationPhrases, (p)-1) \
-				) != '\0')
-#define DISABLE_PHRASE(p) \
-		(*(uqm::CHAR_T *)GetStringAddress ( \
-				SetAbsStringTableIndex (CommData.ConversationPhrases, (p)-1) \
-				) = '\0')
+#define PLAYER_SAID(r, i) ((r) == (i))
+#define PHRASE_ENABLED(p)                                               \
+	(*(uqm::CHAR_T*)GetStringAddress(                                   \
+		 SetAbsStringTableIndex(CommData.ConversationPhrases, (p) - 1)) \
+	 != '\0')
+#define DISABLE_PHRASE(p)             \
+	(*(uqm::CHAR_T*)GetStringAddress( \
+		 SetAbsStringTableIndex(CommData.ConversationPhrases, (p) - 1)) = '\0')
 
-#define Response(i,a) \
-		DoResponsePhrase(i,(RESPONSE_FUNC)a,0)
+#define Response(i, a) \
+	DoResponsePhrase(i, (RESPONSE_FUNC)a, 0)
 
 typedef uqm::COUNT RESPONSE_REF;
 
-typedef void (*RESPONSE_FUNC) (RESPONSE_REF R);
+typedef void (*RESPONSE_FUNC)(RESPONSE_REF R);
 
-extern void DoResponsePhrase (RESPONSE_REF R, RESPONSE_FUNC
-		response_func, uqm::CHAR_T *ContstructStr);
+extern void DoResponsePhrase(RESPONSE_REF R, RESPONSE_FUNC response_func, uqm::CHAR_T* ContstructStr);
 
 // The CallbackFunction is queued and executes synchronously
 // on the Starcon2Main thread
-extern void NPCPhrase_cb (int index, CallbackFunction cb);
-#define NPCPhrase(index) NPCPhrase_cb ((index), NULL)
-extern void NPCPhrase_splice (int index);
-extern void NPCNumber (int number, const char *fmt);
+extern void NPCPhrase_cb(int index, CallbackFunction cb);
+#define NPCPhrase(index) NPCPhrase_cb((index), NULL)
+extern void NPCPhrase_splice(int index);
+extern void NPCNumber(int number, const char* fmt);
 
-extern void construct_response (uqm::CHAR_T *buf, int R /* promoted from
-		RESPONSE_REF */, ...);
+extern void construct_response(uqm::CHAR_T* buf, int R /* promoted from
+		RESPONSE_REF */
+							   ,
+							   ...);
 
-typedef enum {
+typedef enum
+{
 	Segue_peace,
-			// When initiating a conversation, open comms directly.
-			// When terminating a conversation, depart in peace.
+	// When initiating a conversation, open comms directly.
+	// When terminating a conversation, depart in peace.
 	Segue_hostile,
-			// When initiating a conversation, offer the choice to attack.
-			// When terminating a conversation, go into battle.
+	// When initiating a conversation, offer the choice to attack.
+	// When terminating a conversation, go into battle.
 	Segue_victory,
-			// (when terminating a conversation) instant victory
+	// (when terminating a conversation) instant victory
 	Segue_defeat,
-			// (when terminating a conversation) game over
+	// (when terminating a conversation) game over
 } Segue;
 
-void setSegue (Segue segue);
-Segue getSegue (void);
+void setSegue(Segue segue);
+Segue getSegue(void);
 
-extern RESPONSE_REF phraseIdStrToNum(const char *phraseId);
-extern const char *phraseIdNumToStr (RESPONSE_REF response);
+extern RESPONSE_REF phraseIdStrToNum(const char* phraseId);
+extern const char* phraseIdNumToStr(RESPONSE_REF response);
 
-extern LOCDATA* init_race (CONVERSATION comm_id);
+extern LOCDATA* init_race(CONVERSATION comm_id);
 
-extern LOCDATA* init_arilou_comm (void);
+extern LOCDATA* init_arilou_comm(void);
 
-extern LOCDATA* init_blackurq_comm (void);
+extern LOCDATA* init_blackurq_comm(void);
 
-extern LOCDATA* init_chmmr_comm (void);
+extern LOCDATA* init_chmmr_comm(void);
 
-extern LOCDATA* init_commander_comm (void);
+extern LOCDATA* init_commander_comm(void);
 
-extern LOCDATA* init_druuge_comm (void);
+extern LOCDATA* init_druuge_comm(void);
 
-extern LOCDATA* init_ilwrath_comm (void);
+extern LOCDATA* init_ilwrath_comm(void);
 
-extern LOCDATA* init_melnorme_comm (void);
+extern LOCDATA* init_melnorme_comm(void);
 
-extern LOCDATA* init_mycon_comm (void);
+extern LOCDATA* init_mycon_comm(void);
 
-extern LOCDATA* init_orz_comm (void);
+extern LOCDATA* init_orz_comm(void);
 
-extern LOCDATA* init_pkunk_comm (void);
+extern LOCDATA* init_pkunk_comm(void);
 
-extern LOCDATA* init_rebel_yehat_comm (void);
+extern LOCDATA* init_rebel_yehat_comm(void);
 
-extern LOCDATA* init_shofixti_comm (void);
+extern LOCDATA* init_shofixti_comm(void);
 
-extern LOCDATA* init_slyland_comm (void);
+extern LOCDATA* init_slyland_comm(void);
 
-extern LOCDATA* init_slylandro_comm (void);
+extern LOCDATA* init_slylandro_comm(void);
 
-extern LOCDATA* init_spahome_comm (void);
+extern LOCDATA* init_spahome_comm(void);
 
-extern LOCDATA* init_spathi_comm (void);
+extern LOCDATA* init_spathi_comm(void);
 
-extern LOCDATA* init_starbase_comm (void);
+extern LOCDATA* init_starbase_comm(void);
 
-extern LOCDATA* init_supox_comm (void);
+extern LOCDATA* init_supox_comm(void);
 
-extern LOCDATA* init_syreen_comm (void);
+extern LOCDATA* init_syreen_comm(void);
 
-extern LOCDATA* init_talkpet_comm (void);
+extern LOCDATA* init_talkpet_comm(void);
 
-extern LOCDATA* init_thradd_comm (void);
+extern LOCDATA* init_thradd_comm(void);
 
-extern LOCDATA* init_umgah_comm (void);
+extern LOCDATA* init_umgah_comm(void);
 
-extern LOCDATA* init_urquan_comm (void);
+extern LOCDATA* init_urquan_comm(void);
 
-extern LOCDATA* init_utwig_comm (void);
+extern LOCDATA* init_utwig_comm(void);
 
-extern LOCDATA* init_vux_comm (void);
+extern LOCDATA* init_vux_comm(void);
 
-extern LOCDATA* init_yehat_comm (void);
+extern LOCDATA* init_yehat_comm(void);
 
-extern LOCDATA* init_zoqfot_comm (void);
+extern LOCDATA* init_zoqfot_comm(void);
 
-extern LOCDATA* init_umgah_comm (void);
+extern LOCDATA* init_umgah_comm(void);
 
 #define MAX_INTERPOLATE 8192 // the max length we can robo-interpolate
-#define MAX_CLIPNAME 128 // e.g. "pkunk-004c.ogg"
-#define NUM_ROBO_TRACKS 11 // Need 11 for getPoint (8 digits, 2 points, 1 by)
+#define MAX_CLIPNAME 128	 // e.g. "pkunk-004c.ogg"
+#define NUM_ROBO_TRACKS 11	 // Need 11 for getPoint (8 digits, 2 points, 1 by)
 
 enum
 {
@@ -323,4 +324,3 @@ enum
 #endif
 
 #endif /* UQM_COMMGLUE_H_ */
-

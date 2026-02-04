@@ -21,11 +21,10 @@
 extern "C" {
 #endif
 
-RACE_DESC *init_chenjesu (void);
+RACE_DESC* init_chenjesu(void);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* CHENJESU_H */
-
+#endif /* CHENJESU_H */

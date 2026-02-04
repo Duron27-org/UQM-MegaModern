@@ -53,16 +53,15 @@ enum PlanetMenuItems
 };
 
 CONTEXT PlanetContext;
-		// Context for rotating planet view and lander surface view
+// Context for rotating planet view and lander surface view
 
 bool useDosSpheres = false;
 bool use3DOSpheres = false;
 uqm::BYTE OrbitNum = 0;
 
-void
-DestroyOrbitStruct (PLANET_ORBIT* Orbit, uqm::SIZE height)
+void DestroyOrbitStruct(PLANET_ORBIT* Orbit, uqm::SIZE height)
 {
-	DestroyDrawable (ReleaseDrawable (Orbit->TopoZoomFrame));
+	DestroyDrawable(ReleaseDrawable(Orbit->TopoZoomFrame));
 	Orbit->TopoZoomFrame = 0;
 
 	if (Orbit->lpTopoData)
@@ -71,20 +70,20 @@ DestroyOrbitStruct (PLANET_ORBIT* Orbit, uqm::SIZE height)
 		Orbit->lpTopoData = NULL;
 	}
 
-	DestroyDrawable (ReleaseDrawable (Orbit->SphereFrame));
+	DestroyDrawable(ReleaseDrawable(Orbit->SphereFrame));
 	Orbit->SphereFrame = 0;
 
-	DestroyDrawable (ReleaseDrawable (Orbit->ObjectFrame));
+	DestroyDrawable(ReleaseDrawable(Orbit->ObjectFrame));
 	Orbit->ObjectFrame = 0;
 
-	DestroyDrawable (ReleaseDrawable (Orbit->TintFrame));
+	DestroyDrawable(ReleaseDrawable(Orbit->TintFrame));
 	Orbit->TintFrame = 0;
 
 	Orbit->TintColor = BLACK_COLOR;
 
 	if (Orbit->TopoColors)
 	{
-		HFree (Orbit->TopoColors);
+		HFree(Orbit->TopoColors);
 		Orbit->TopoColors = NULL;
 	}
 
@@ -93,23 +92,23 @@ DestroyOrbitStruct (PLANET_ORBIT* Orbit, uqm::SIZE height)
 		uqm::COUNT i;
 		for (i = 0; i < NUM_SCAN_TYPES; i++)
 		{
-			HFree (Orbit->ScanColors[i]);
+			HFree(Orbit->ScanColors[i]);
 			Orbit->ScanColors[i] = NULL;
 		}
-		HFree (Orbit->ScanColors);
+		HFree(Orbit->ScanColors);
 		Orbit->ScanColors = NULL;
 	}
-	
+
 	if (Orbit->ScratchArray)
 	{
-		HFree (Orbit->ScratchArray);
+		HFree(Orbit->ScratchArray);
 		Orbit->ScratchArray = NULL;
 	}
 
-	DestroyDrawable (ReleaseDrawable (Orbit->WorkFrame));
+	DestroyDrawable(ReleaseDrawable(Orbit->WorkFrame));
 	Orbit->WorkFrame = 0;
 
-	DestroyDrawable (ReleaseDrawable (Orbit->BackFrame));
+	DestroyDrawable(ReleaseDrawable(Orbit->BackFrame));
 	Orbit->BackFrame = 0;
 
 	if (Orbit->light_diff)
@@ -117,10 +116,10 @@ DestroyOrbitStruct (PLANET_ORBIT* Orbit, uqm::SIZE height)
 		uqm::COUNT j;
 		for (j = 0; j < height; j++)
 		{
-			HFree (Orbit->light_diff[j]);
+			HFree(Orbit->light_diff[j]);
 			Orbit->light_diff[j] = NULL;
 		}
-		HFree (Orbit->light_diff);
+		HFree(Orbit->light_diff);
 		Orbit->light_diff = NULL;
 	}
 
@@ -129,84 +128,82 @@ DestroyOrbitStruct (PLANET_ORBIT* Orbit, uqm::SIZE height)
 		uqm::COUNT k;
 		for (k = 0; k < height; k++)
 		{
-			HFree (Orbit->map_rotate[k]);
+			HFree(Orbit->map_rotate[k]);
 			Orbit->map_rotate[k] = NULL;
 		}
-		HFree (Orbit->map_rotate);
+		HFree(Orbit->map_rotate);
 		Orbit->map_rotate = NULL;
 	}
 
-	DestroyDrawable (ReleaseDrawable (Orbit->TopoMask));
+	DestroyDrawable(ReleaseDrawable(Orbit->TopoMask));
 	Orbit->TopoMask = 0;
 
 	if (Orbit->sphereBytes)
 	{
-		HFree (Orbit->sphereBytes);
+		HFree(Orbit->sphereBytes);
 		Orbit->sphereBytes = NULL;
 	}
 
-	DestroyColorMap (ReleaseColorMap (Orbit->sphereMap));
+	DestroyColorMap(ReleaseColorMap(Orbit->sphereMap));
 	Orbit->sphereMap = 0;
 
 	Orbit->scanType = 0;
 
-	DestroyDrawable (ReleaseDrawable (Orbit->Shade));
+	DestroyDrawable(ReleaseDrawable(Orbit->Shade));
 	Orbit->Shade = 0;
 
 	if (Orbit->ShadeColors)
 	{
-		HFree (Orbit->ShadeColors);
+		HFree(Orbit->ShadeColors);
 		Orbit->ShadeColors = NULL;
-	}	
+	}
 }
 
 
-
 static void
-CreatePlanetContext (void)
+CreatePlanetContext(void)
 {
 	CONTEXT oldContext;
 	RECT r;
 
-	assert (PlanetContext == NULL);
+	assert(PlanetContext == NULL);
 
 	// PlanetContext rect is relative to SpaceContext
-	oldContext = SetContext (SpaceContext);
-	GetContextClipRect (&r);
+	oldContext = SetContext(SpaceContext);
+	GetContextClipRect(&r);
 
-	PlanetContext = CreateContext ("PlanetContext");
-	SetContext (PlanetContext);
-	SetContextFGFrame (Screen);
+	PlanetContext = CreateContext("PlanetContext");
+	SetContext(PlanetContext);
+	SetContextFGFrame(Screen);
 	r.extent.height -= MAP_HEIGHT + MAP_BORDER_HEIGHT;
-	SetContextClipRect (&r);
+	SetContextClipRect(&r);
 
-	SetContext (oldContext);
+	SetContext(oldContext);
 }
 
 static void
-DestroyPlanetContext (void)
+DestroyPlanetContext(void)
 {
 	if (PlanetContext)
 	{
-		DestroyContext (PlanetContext);
+		DestroyContext(PlanetContext);
 		PlanetContext = NULL;
 	}
 }
 
-void
-DrawScannedObjects (bool Reversed)
+void DrawScannedObjects(bool Reversed)
 {
 	HELEMENT hElement, hNextElement;
 
-	for (hElement = Reversed ? GetTailElement () : GetHeadElement ();
-			hElement; hElement = hNextElement)
+	for (hElement = Reversed ? GetTailElement() : GetHeadElement();
+		 hElement; hElement = hNextElement)
 	{
-		ELEMENT *ElementPtr;
+		ELEMENT* ElementPtr;
 
-		LockElement (hElement, &ElementPtr);
+		LockElement(hElement, &ElementPtr);
 		hNextElement = Reversed ?
-				GetPredElement (ElementPtr) :
-				GetSuccElement (ElementPtr);
+						   GetPredElement(ElementPtr) :
+						   GetSuccElement(ElementPtr);
 
 		if (ElementPtr->state_flags & APPEARING)
 		{
@@ -214,103 +211,102 @@ DrawScannedObjects (bool Reversed)
 
 			s.origin = ElementPtr->current.location;
 			s.frame = ElementPtr->next.image.frame;
-			DrawStamp (&s);
+			DrawStamp(&s);
 		}
 
-		UnlockElement (hElement);
+		UnlockElement(hElement);
 	}
 }
 
-void
-DrawPlanetSurfaceBorder (void)
+void DrawPlanetSurfaceBorder(void)
 {
 	CONTEXT oldContext;
 	RECT oldClipRect;
 	RECT clipRect;
 	RECT r;
 
-	oldContext = SetContext (SpaceContext);
-	GetContextClipRect (&oldClipRect);
+	oldContext = SetContext(SpaceContext);
+	GetContextClipRect(&oldClipRect);
 
 	// Expand the context clip-rect so that we can tweak the existing border
 	clipRect = oldClipRect;
-	clipRect.corner.x -= RES_SCALE (1);
-	clipRect.extent.width += RES_SCALE (2);
-	clipRect.extent.height += RES_SCALE (1);
-	SetContextClipRect (&clipRect);
+	clipRect.corner.x -= RES_SCALE(1);
+	clipRect.extent.width += RES_SCALE(2);
+	clipRect.extent.height += RES_SCALE(1);
+	SetContextClipRect(&clipRect);
 
-	BatchGraphics ();
+	BatchGraphics();
 
 	// Border bulk
-	SetContextForeGroundColor (
-			BUILD_COLOR (MAKE_RGB15 (0x0A, 0x0A, 0x0A), 0x08));
+	SetContextForeGroundColor(
+		BUILD_COLOR(MAKE_RGB15(0x0A, 0x0A, 0x0A), 0x08));
 	r.corner.x = 0;
 	r.corner.y = clipRect.extent.height - MAP_HEIGHT - MAP_BORDER_HEIGHT;
 	r.extent.width = clipRect.extent.width;
-	r.extent.height = MAP_BORDER_HEIGHT - RES_SCALE (2);
-	DrawFilledRectangle (&r);
+	r.extent.height = MAP_BORDER_HEIGHT - RES_SCALE(2);
+	DrawFilledRectangle(&r);
 
-	SetContextForeGroundColor (SIS_BOTTOM_RIGHT_BORDER_COLOR);
-	
+	SetContextForeGroundColor(SIS_BOTTOM_RIGHT_BORDER_COLOR);
+
 	// Border top shadow line
-	r.extent.width -= RES_SCALE (1);
-	r.extent.height = RES_SCALE (1);
-	r.corner.x = RES_SCALE (1);
-	r.corner.y -= RES_SCALE (1);
-	DrawFilledRectangle (&r);
-	
+	r.extent.width -= RES_SCALE(1);
+	r.extent.height = RES_SCALE(1);
+	r.corner.x = RES_SCALE(1);
+	r.corner.y -= RES_SCALE(1);
+	DrawFilledRectangle(&r);
+
 	// XXX: We will need bulk left and right rects here if MAP_WIDTH changes
 
 	// Right shadow line
-	r.extent.width = RES_SCALE (1);
-	r.extent.height = MAP_HEIGHT + RES_SCALE (2);
-	r.corner.y += MAP_BORDER_HEIGHT - RES_SCALE (1);
-	r.corner.x = clipRect.extent.width - RES_SCALE (1);
-	DrawFilledRectangle (&r);
+	r.extent.width = RES_SCALE(1);
+	r.extent.height = MAP_HEIGHT + RES_SCALE(2);
+	r.corner.y += MAP_BORDER_HEIGHT - RES_SCALE(1);
+	r.corner.x = clipRect.extent.width - RES_SCALE(1);
+	DrawFilledRectangle(&r);
 
-	SetContextForeGroundColor (SIS_LEFT_BORDER_COLOR);
-	
+	SetContextForeGroundColor(SIS_LEFT_BORDER_COLOR);
+
 	// Left shadow line
-	r.corner.x -= MAP_WIDTH + RES_SCALE (1);
-	DrawFilledRectangle (&r);
+	r.corner.x -= MAP_WIDTH + RES_SCALE(1);
+	DrawFilledRectangle(&r);
 
 	// Border bottom shadow line
-	r.extent.width = MAP_WIDTH + RES_SCALE (2);
-	r.extent.height = RES_SCALE (1);
-	DrawFilledRectangle (&r);
+	r.extent.width = MAP_WIDTH + RES_SCALE(2);
+	r.extent.height = RES_SCALE(1);
+	DrawFilledRectangle(&r);
 
-	if (isPC (optSuperPC))
+	if (isPC(optSuperPC))
 	{
-		r.corner.x = RES_SCALE (UQM_MAP_WIDTH - SC2_MAP_WIDTH)
-				- SIS_ORG_X + RES_SCALE (1) + SAFE_POS (1);
-		r.corner.y = clipRect.extent.height - MAP_HEIGHT - RES_SCALE (1);
-		r.extent.width = RES_SCALE (1);
+		r.corner.x = RES_SCALE(UQM_MAP_WIDTH - SC2_MAP_WIDTH)
+				   - SIS_ORG_X + RES_SCALE(1) + SAFE_POS(1);
+		r.corner.y = clipRect.extent.height - MAP_HEIGHT - RES_SCALE(1);
+		r.extent.width = RES_SCALE(1);
 		r.extent.height = MAP_HEIGHT;
-		SetContextForeGroundColor (SIS_BOTTOM_RIGHT_BORDER_COLOR);
-		DrawFilledRectangle (&r);
-		r.corner.x += RES_SCALE (1);
-		r.extent.width = RES_SCALE (4);
-		r.corner.y -= RES_SCALE (1);
-		r.extent.height += RES_SCALE (2);
-		SetContextForeGroundColor (
-				BUILD_COLOR_RGBA (0x52, 0x52, 0x52, 0xFF));
-		DrawFilledRectangle (&r);
-		r.corner.x += RES_SCALE (4);
-		r.extent.width = RES_SCALE (1);
-		r.corner.y += RES_SCALE (1);
-		r.extent.height -= RES_SCALE (2);
-		SetContextForeGroundColor (SIS_LEFT_BORDER_COLOR);
-		DrawFilledRectangle (&r);
+		SetContextForeGroundColor(SIS_BOTTOM_RIGHT_BORDER_COLOR);
+		DrawFilledRectangle(&r);
+		r.corner.x += RES_SCALE(1);
+		r.extent.width = RES_SCALE(4);
+		r.corner.y -= RES_SCALE(1);
+		r.extent.height += RES_SCALE(2);
+		SetContextForeGroundColor(
+			BUILD_COLOR_RGBA(0x52, 0x52, 0x52, 0xFF));
+		DrawFilledRectangle(&r);
+		r.corner.x += RES_SCALE(4);
+		r.extent.width = RES_SCALE(1);
+		r.corner.y += RES_SCALE(1);
+		r.extent.height -= RES_SCALE(2);
+		SetContextForeGroundColor(SIS_LEFT_BORDER_COLOR);
+		DrawFilledRectangle(&r);
 
-		DrawBorder (LANDER_DOS_FRAME);
+		DrawBorder(LANDER_DOS_FRAME);
 	}
 	else
-		DrawBorder (LANDER_3DO_FRAME);
-	
-	UnbatchGraphics ();
+		DrawBorder(LANDER_3DO_FRAME);
 
-	SetContextClipRect (&oldClipRect);
-	SetContext (oldContext);
+	UnbatchGraphics();
+
+	SetContextClipRect(&oldClipRect);
+	SetContext(oldContext);
 }
 
 typedef enum
@@ -323,7 +319,7 @@ typedef enum
 } DRAW_ORBITAL_MODE;
 
 static void
-DrawEnterOrbitText (RECT rect)
+DrawEnterOrbitText(RECT rect)
 {
 	TEXT text;
 	FONT OldFont;
@@ -332,86 +328,86 @@ DrawEnterOrbitText (RECT rect)
 	uqm::CHAR_T buf[256];
 	COORD og_baseline_x;
 
-	OldFont = SetContextFont (MicroFont);
-	OldFontEffect = SetContextFontEffect (
-			SetAbsFrameIndex (FontGradFrame, 12));
+	OldFont = SetContextFont(MicroFont);
+	OldFontEffect = SetContextFontEffect(
+		SetAbsFrameIndex(FontGradFrame, 12));
 
-	GetContextFontLeading (&leading);
+	GetContextFontLeading(&leading);
 
 	text.baseline = rect.corner;
 	text.baseline.x += rect.extent.width >> 1;
-	text.baseline.y += RES_SCALE (4) + leading - RES_SCALE (4);
+	text.baseline.y += RES_SCALE(4) + leading - RES_SCALE(4);
 	text.align = ALIGN_CENTER;
 
 	og_baseline_x = text.baseline.x;
 
-	utf8StringCopy ((char *)buf, sizeof (buf),
-		GAME_STRING (NAVIGATION_STRING_BASE + 8));
+	utf8StringCopy((char*)buf, sizeof(buf),
+				   GAME_STRING(NAVIGATION_STRING_BASE + 8));
 
 	text.align = ALIGN_CENTER;
-	text.pStr = strtok (buf, "\n");
+	text.pStr = strtok(buf, "\n");
 	text.CharCount = (uqm::COUNT)~0;
 
 	while (text.pStr != NULL)
 	{
-		text.pStr = AlignText ((const uqm::CHAR_T *)text.pStr,
-				&text.baseline.x);
+		text.pStr = AlignText((const uqm::CHAR_T*)text.pStr,
+							  &text.baseline.x);
 		text.CharCount = (uqm::COUNT)~0;
 
-		font_DrawText (&text);
+		font_DrawText(&text);
 
-		text.pStr = strtok (NULL, "\n");
+		text.pStr = strtok(NULL, "\n");
 		text.CharCount = (uqm::COUNT)~0;
 		text.baseline.y += leading;
 		text.baseline.x = og_baseline_x;
 	}
 
-	SetContextFont (OldFont);
-	SetContextFontEffect (OldFontEffect);
+	SetContextFont(OldFont);
+	SetContextFontEffect(OldFontEffect);
 }
 
-void
-DrawOrbitMapGraphic (void)
+void DrawOrbitMapGraphic(void)
 {
 	STAMP s;
 
-	SetContext (GetScanContext (NULL));
+	SetContext(GetScanContext(NULL));
 
 	if (optScanSphere != 1)
 	{
 		bool HaveString =
-				strlen (GAME_STRING (NAVIGATION_STRING_BASE + 8)) > 0;
+			strlen(GAME_STRING(NAVIGATION_STRING_BASE + 8)) > 0;
 
-		s.frame = SetAbsFrameIndex (CaptureDrawable (
-				LoadGraphic (ORBENTER_PMAP_ANIM)), HaveString);
+		s.frame = SetAbsFrameIndex(CaptureDrawable(
+									   LoadGraphic(ORBENTER_PMAP_ANIM)),
+								   HaveString);
 
 		s.origin.x = -SAFE_X;
 		s.origin.y = 0;
 
-		if (isPC (optSuperPC))
+		if (isPC(optSuperPC))
 		{
 			s.origin.x -=
-				RES_SCALE (((UQM_MAP_WIDTH - SC2_MAP_WIDTH) / 2)
-					+ SAFE_NUM (5));
+				RES_SCALE(((UQM_MAP_WIDTH - SC2_MAP_WIDTH) / 2)
+						  + SAFE_NUM(5));
 		}
 
-		DrawStamp (&s);
+		DrawStamp(&s);
 
 		if (HaveString)
 		{
 			RECT rect;
 
-			GetFrameRect (s.frame, &rect);
+			GetFrameRect(s.frame, &rect);
 			rect.corner.x += s.origin.x;
-			DrawEnterOrbitText (rect);
+			DrawEnterOrbitText(rect);
 		}
 
-		DestroyDrawable (ReleaseDrawable (s.frame));
+		DestroyDrawable(ReleaseDrawable(s.frame));
 	}
 	else
 	{
-		DrawPlanet (0, BLACK_COLOR);
-		DestroyDrawable (ReleaseDrawable (pSolarSysState->TopoFrame));
+		DrawPlanet(0, BLACK_COLOR);
+		DestroyDrawable(ReleaseDrawable(pSolarSysState->TopoFrame));
 		pSolarSysState->TopoFrame = 0;
 	}
 #if 0
@@ -441,63 +437,63 @@ DrawOrbitMapGraphic (void)
 }
 
 static void
-DrawOrbitalDisplay (DRAW_ORBITAL_MODE Mode)
+DrawOrbitalDisplay(DRAW_ORBITAL_MODE Mode)
 {
 	RECT r;
 
-	SetContext (SpaceContext);
-	GetContextClipRect (&r);
+	SetContext(SpaceContext);
+	GetContextClipRect(&r);
 
-	BatchGraphics ();
-	
+	BatchGraphics();
+
 	if (Mode != DRAW_ORBITAL_UPDATE)
 	{
-		SetTransitionSource (NULL);
-		DrawSISFrame ();
-		DrawSISMessage (NULL);
-		DrawSISTitle (GLOBAL_SIS (PlanetName));
-		DrawStarBackGround ();
-		DrawPlanetSurfaceBorder ();
+		SetTransitionSource(NULL);
+		DrawSISFrame();
+		DrawSISMessage(NULL);
+		DrawSISTitle(GLOBAL_SIS(PlanetName));
+		DrawStarBackGround();
+		DrawPlanetSurfaceBorder();
 	}
 
 	if (Mode == DRAW_ORBITAL_WAIT)
 	{
-		DrawOrbitMapGraphic ();
+		DrawOrbitMapGraphic();
 
-		if (isPC (optSuperPC))
-			InitPCLander (true);
+		if (isPC(optSuperPC))
+			InitPCLander(true);
 	}
 	else if (Mode == DRAW_ORBITAL_FULL)
 	{
-		DrawDefaultPlanetSphere ();
-		DrawMenuStateStrings (PM_SCAN, SCAN);
+		DrawDefaultPlanetSphere();
+		DrawMenuStateStrings(PM_SCAN, SCAN);
 	}
 	else if (Mode == DRAW_ORBITAL_FROM_STARMAP)
 	{
-		DrawDefaultPlanetSphere ();
-		DrawMenuStateStrings (PM_SCAN, STARMAP);
+		DrawDefaultPlanetSphere();
+		DrawMenuStateStrings(PM_SCAN, STARMAP);
 	}
 	else
-		DrawMenuStateStrings (PM_SCAN, SCAN);
+		DrawMenuStateStrings(PM_SCAN, SCAN);
 
 	if (Mode != DRAW_ORBITAL_WAIT)
 	{
-		SetContext (GetScanContext (NULL));
-		DrawPlanet (0, BLACK_COLOR);
-		if (isPC (optSuperPC))
-			InitPCLander (false);
+		SetContext(GetScanContext(NULL));
+		DrawPlanet(0, BLACK_COLOR);
+		if (isPC(optSuperPC))
+			InitPCLander(false);
 	}
 
 	if (Mode != DRAW_ORBITAL_UPDATE)
 	{
-		ScreenTransition (optScrTrans, &r);
+		ScreenTransition(optScrTrans, &r);
 	}
 
-	UnbatchGraphics ();
+	UnbatchGraphics();
 
 	// for later RepairBackRect()
-	
-	LoadIntoExtraScreen (&r);
+
+	LoadIntoExtraScreen(&r);
 }
 
 // Initialise the surface graphics, and start the planet music.
@@ -507,11 +503,10 @@ DrawOrbitalDisplay (DRAW_ORBITAL_MODE Mode)
 // also after in-orbit comm and after defeating planet guards in combat.
 // SurfDefFrame contains surface definition images when a planet comes
 // with its own bitmap (currently only for Earth)
-void
-LoadPlanet (FRAME SurfDefFrame)
+void LoadPlanet(FRAME SurfDefFrame)
 {
 	bool WaitMode = !(LastActivity & CHECK_LOAD);
-	PLANET_DESC *pPlanetDesc;
+	PLANET_DESC* pPlanetDesc;
 	TimeCount sleep;
 
 #ifdef DEBUG
@@ -519,71 +514,70 @@ LoadPlanet (FRAME SurfDefFrame)
 		return;
 #endif
 
-	assert (pSolarSysState->InOrbit && !pSolarSysState->TopoFrame);
+	assert(pSolarSysState->InOrbit && !pSolarSysState->TopoFrame);
 
-	CreatePlanetContext ();
+	CreatePlanetContext();
 
-	StopMusic ();
+	StopMusic();
 
-	sleep = GetTimeCounter () + (ONE_SECOND * 6 / 5);
+	sleep = GetTimeCounter() + (ONE_SECOND * 6 / 5);
 	pPlanetDesc = pSolarSysState->pOrbitalDesc;
 
 	if (WaitMode)
 	{
 		if (optScanSphere == 1)
-			GetPlanetTopography (pPlanetDesc, SurfDefFrame);
-		DrawOrbitalDisplay (DRAW_ORBITAL_WAIT);
+			GetPlanetTopography(pPlanetDesc, SurfDefFrame);
+		DrawOrbitalDisplay(DRAW_ORBITAL_WAIT);
 	}
 
-	GeneratePlanetSurface (pPlanetDesc, SurfDefFrame, 0, 0);
-	OrbitNum = SetPlanetMusic (pPlanetDesc->data_index & ~PLANET_SHIELDED);
-	GeneratePlanetSide ();
-	MaskLanderGraphics ();
+	GeneratePlanetSurface(pPlanetDesc, SurfDefFrame, 0, 0);
+	OrbitNum = SetPlanetMusic(pPlanetDesc->data_index & ~PLANET_SHIELDED);
+	GeneratePlanetSide();
+	MaskLanderGraphics();
 
-	if (isPC (optScrTrans))
-		SleepThreadUntil (sleep);
+	if (isPC(optScrTrans))
+		SleepThreadUntil(sleep);
 
-	if (!PLRPlaying ((MUSIC_REF)~0))
+	if (!PLRPlaying((MUSIC_REF)~0))
 	{
-		PlayMusicResume (LanderMusic, NORMAL_VOLUME);
+		PlayMusicResume(LanderMusic, NORMAL_VOLUME);
 	}
 
 	if (WaitMode)
 	{
-		if (is3DO (optScrTrans) || optScanSphere == 1)
-			ZoomInPlanetSphere ();
-		DrawOrbitalDisplay (DRAW_ORBITAL_UPDATE);
+		if (is3DO(optScrTrans) || optScanSphere == 1)
+			ZoomInPlanetSphere();
+		DrawOrbitalDisplay(DRAW_ORBITAL_UPDATE);
 	}
 	else
 	{
-	 	DrawOrbitalDisplay (DRAW_ORBITAL_FULL);
+		DrawOrbitalDisplay(DRAW_ORBITAL_FULL);
 	}
 }
 
-void
-FreePlanet (void)
+void FreePlanet(void)
 {
 	uqm::COUNT i;
-	PLANET_ORBIT *Orbit = &pSolarSysState->Orbit;
+	PLANET_ORBIT* Orbit = &pSolarSysState->Orbit;
 
-	UninitSphereRotation ();
+	UninitSphereRotation();
 
-	SetMusicPosition ();
+	SetMusicPosition();
 
-	StopMusic ();
+	StopMusic();
 
-	for (i = 0; i < ARRAY_SIZE (pSolarSysState->PlanetSideFrame); ++i)
+	for (i = 0; i < ARRAY_SIZE(pSolarSysState->PlanetSideFrame); ++i)
 	{
-		DestroyDrawable (
-				ReleaseDrawable (pSolarSysState->PlanetSideFrame[i]));
+		DestroyDrawable(
+			ReleaseDrawable(pSolarSysState->PlanetSideFrame[i]));
 		pSolarSysState->PlanetSideFrame[i] = 0;
 	}
 
-//    FreeLanderData ();
+	//    FreeLanderData ();
 
-	DestroyStringTable (ReleaseStringTable (pSolarSysState->XlatRef));
+	DestroyStringTable(ReleaseStringTable(pSolarSysState->XlatRef));
 	pSolarSysState->XlatRef = 0;
-	DestroyDrawable (ReleaseDrawable (pSolarSysState->TopoFrame));
+	DestroyDrawable(ReleaseDrawable(pSolarSysState->TopoFrame));
 	pSolarSysState->TopoFrame = 0;
 
 	if (optScanStyle == OPT_PC)
@@ -592,168 +586,164 @@ FreePlanet (void)
 
 		for (k = 0; k < NUM_SCAN_TYPES; k++)
 		{
-			DestroyDrawable (
-					ReleaseDrawable (pSolarSysState->ScanFrame[k]));
+			DestroyDrawable(
+				ReleaseDrawable(pSolarSysState->ScanFrame[k]));
 			pSolarSysState->ScanFrame[k] = 0;
 		}
 	}
 
-	DestroyColorMap (ReleaseColorMap (pSolarSysState->OrbitalCMap));
+	DestroyColorMap(ReleaseColorMap(pSolarSysState->OrbitalCMap));
 	pSolarSysState->OrbitalCMap = 0;
 
-	DestroyOrbitStruct (Orbit, MAP_HEIGHT);
+	DestroyOrbitStruct(Orbit, MAP_HEIGHT);
 
-	DestroyStringTable (ReleaseStringTable (
-			pSolarSysState->SysInfo.PlanetInfo.DiscoveryString
-			));
+	DestroyStringTable(ReleaseStringTable(
+		pSolarSysState->SysInfo.PlanetInfo.DiscoveryString));
 	pSolarSysState->SysInfo.PlanetInfo.DiscoveryString = 0;
-	FreeLanderFont (&pSolarSysState->SysInfo.PlanetInfo);
+	FreeLanderFont(&pSolarSysState->SysInfo.PlanetInfo);
 
 	// Need to make sure our own CONTEXTs are not active because
 	// we will destroy them now
-	SetContext (SpaceContext);
-	DestroyPlanetContext ();
-	DestroyScanContext ();
-	DestroyPCLanderContext ();
+	SetContext(SpaceContext);
+	DestroyPlanetContext();
+	DestroyScanContext();
+	DestroyPCLanderContext();
 	useDosSpheres = false;
 	use3DOSpheres = false;
 }
 
-void
-LoadStdLanderFont (PLANET_INFO *info)
+void LoadStdLanderFont(PLANET_INFO* info)
 {
-	info->LanderFont = LoadFont (LANDER_FONT);
-	info->LanderFontEff = CaptureDrawable (
-			LoadGraphic (LANDER_FONTEFF_PMAP_ANIM));
+	info->LanderFont = LoadFont(LANDER_FONT);
+	info->LanderFontEff = CaptureDrawable(
+		LoadGraphic(LANDER_FONTEFF_PMAP_ANIM));
 }
 
-void
-FreeLanderFont (PLANET_INFO *info)
+void FreeLanderFont(PLANET_INFO* info)
 {
-	DestroyFont (info->LanderFont);
+	DestroyFont(info->LanderFont);
 	info->LanderFont = NULL;
-	DestroyDrawable (ReleaseDrawable (info->LanderFontEff));
+	DestroyDrawable(ReleaseDrawable(info->LanderFontEff));
 	info->LanderFontEff = NULL;
 }
 
 static bool
-DoPlanetOrbit (MENU_STATE *pMS)
+DoPlanetOrbit(MENU_STATE* pMS)
 {
 	bool select = (bool)PulsedInputState.menu[KEY_MENU_SELECT];
 	bool handled;
 
-	if ((GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
-			|| GLOBAL_SIS (CrewEnlisted) == (uqm::COUNT)~0)
+	if ((GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
+		|| GLOBAL_SIS(CrewEnlisted) == (uqm::COUNT)~0)
 		return false;
 
 	// XXX: pMS actually refers to pSolarSysState->MenuState
-	handled = DoMenuChooser (pMS, PM_SCAN);
+	handled = DoMenuChooser(pMS, PM_SCAN);
 	if (handled)
 		return true;
 
 	if (!select)
 		return true;
 
-	SetFlashRect (NULL, false);
+	SetFlashRect(NULL, false);
 
 	switch (pMS->CurState)
 	{
 		case SCAN:
-			ScanSystem ();
-			if (GLOBAL (CurrentActivity) & START_ENCOUNTER)
-			{	// Found Fwiffo on Pluto
+			ScanSystem();
+			if (GLOBAL(CurrentActivity) & START_ENCOUNTER)
+			{ // Found Fwiffo on Pluto
 				return false;
 			}
 			break;
 		case EQUIP_DEVICE:
-			select = DevicesMenu ();
-			if (GLOBAL (CurrentActivity) & START_ENCOUNTER)
-			{	// Invoked Talking Pet, a Caster or Sun Device over Chmmr,
+			select = DevicesMenu();
+			if (GLOBAL(CurrentActivity) & START_ENCOUNTER)
+			{ // Invoked Talking Pet, a Caster or Sun Device over Chmmr,
 				// or a Caster for Ilwrath
 				// Going into conversation
 				return false;
 			}
 			break;
 		case CARGO:
-			CargoMenu ();
+			CargoMenu();
 			break;
 		case ROSTER:
-			select = RosterMenu ();
+			select = RosterMenu();
 			break;
 		case GAME_MENU:
-			if (!GameOptions ())
+			if (!GameOptions())
 				return false; // abort or load
 			break;
 		case STARMAP:
-		{
-			bool AutoPilotSet;
-			InputFrameCallback *oldCallback;
+			{
+				bool AutoPilotSet;
+				InputFrameCallback* oldCallback;
 
-			// Deactivate planet rotation
-			oldCallback = SetInputCallback (NULL);
+				// Deactivate planet rotation
+				oldCallback = SetInputCallback(NULL);
 
-			RepairSISBorder ();
+				RepairSISBorder();
 
-			AutoPilotSet = StarMap ();
-			if (GLOBAL (CurrentActivity) & CHECK_ABORT)
-				return false;
+				AutoPilotSet = StarMap();
+				if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+					return false;
 
-			// Reactivate planet rotation
-			SetInputCallback (oldCallback);
+				// Reactivate planet rotation
+				SetInputCallback(oldCallback);
 
-			if (!AutoPilotSet)
-			{	// Redraw the orbital display
-				DrawOrbitalDisplay (DRAW_ORBITAL_FROM_STARMAP);//WAS FULL
-				break;
+				if (!AutoPilotSet)
+				{												   // Redraw the orbital display
+					DrawOrbitalDisplay(DRAW_ORBITAL_FROM_STARMAP); //WAS FULL
+					break;
+				}
+				FALLTHROUGH; // Fall through !!!
 			}
-			FALLTHROUGH; // Fall through !!!
-		}
 		case NAVIGATION:
 			return false;
 	}
 
-	if (!(GLOBAL (CurrentActivity) & CHECK_ABORT))
+	if (!(GLOBAL(CurrentActivity) & CHECK_ABORT))
 	{
 		if (select)
-		{	// 3DO menu jumps to NAVIGATE after a successful submenu run
+		{ // 3DO menu jumps to NAVIGATE after a successful submenu run
 			if (optWhichMenu != OPT_PC)
 				pMS->CurState = NAVIGATION;
 			if (pMS->CurState != STARMAP)
-				DrawMenuStateStrings (PM_SCAN, pMS->CurState);
+				DrawMenuStateStrings(PM_SCAN, pMS->CurState);
 		}
-		SetFlashRect (SFR_MENU_3DO, false);
+		SetFlashRect(SFR_MENU_3DO, false);
 	}
 
 	return true;
 }
 
 static void
-on_input_frame (void)
+on_input_frame(void)
 {
 	if (!(GLOBAL(CurrentActivity) & CHECK_ABORT))
-		RotatePlanetSphere (true, NULL);
+		RotatePlanetSphere(true, NULL);
 }
 
-void
-PlanetOrbitMenu (void)
+void PlanetOrbitMenu(void)
 {
 	MENU_STATE MenuState;
-	InputFrameCallback *oldCallback;
+	InputFrameCallback* oldCallback;
 
-	memset (&MenuState, 0, sizeof MenuState);
-	
-	SetFlashRect (SFR_MENU_3DO, false);
+	memset(&MenuState, 0, sizeof MenuState);
+
+	SetFlashRect(SFR_MENU_3DO, false);
 
 	MenuState.CurState = SCAN;
-	SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
-	oldCallback = SetInputCallback (on_input_frame);
+	SetMenuSounds(MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
+	oldCallback = SetInputCallback(on_input_frame);
 
 	MenuState.InputFunc = DoPlanetOrbit;
-	DoInput (&MenuState, true);
+	DoInput(&MenuState, true);
 
-	SetInputCallback (oldCallback);
+	SetInputCallback(oldCallback);
 
-	SetFlashRect (NULL, false);
+	SetFlashRect(NULL, false);
 	if (!(GLOBAL(CurrentActivity) & CHECK_LOAD))
-		DrawMenuStateStrings (PM_STARMAP, -NAVIGATION);
+		DrawMenuStateStrings(PM_STARMAP, -NAVIGATION);
 }

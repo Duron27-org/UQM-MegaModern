@@ -20,11 +20,9 @@
 void luaUqm_debug_init(void);
 void luaUqm_debug_uninit(void);
 void luaUqm_debug_run(void);
-void luaUqm_debug_runLine(const char *exprBuf,
-		void (*outputCallback)(void *extra, const char *format, ...),
-		void (*errorCallback)(void *extra, const char *format, ...),
-		void *extra);
+void luaUqm_debug_runLine(const char* exprBuf,
+						  void (*outputCallback)(void* extra, const char* format, ...),
+						  void (*errorCallback)(void* extra, const char* format, ...),
+						  void* extra);
 
-#endif  /* LUADEBUG_H */
-
-
+#endif /* LUADEBUG_H */

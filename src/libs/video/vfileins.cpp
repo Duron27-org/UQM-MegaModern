@@ -20,9 +20,7 @@
 #include "video.h"
 
 VIDEO_REF
-LoadVideoFile (const char *pStr)
+LoadVideoFile(const char* pStr)
 {
-	return _init_video_file (pStr);
+	return _init_video_file(pStr);
 }
-
-

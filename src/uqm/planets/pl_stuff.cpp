@@ -42,20 +42,19 @@ static int rotPointIndex;
 static int rotwidth;
 static int rotheight;
 
-void
-DrawCurrentPlanetSphere (void)
+void DrawCurrentPlanetSphere(void)
 {
 	STAMP s;
-	PLANET_ORBIT *Orbit = &pSolarSysState->Orbit;
-	CONTEXT oldContext = SetContext (PlanetContext);
+	PLANET_ORBIT* Orbit = &pSolarSysState->Orbit;
+	CONTEXT oldContext = SetContext(PlanetContext);
 
-	s.origin.x = RES_SCALE (ORIG_SIS_SCREEN_WIDTH >> 1);
+	s.origin.x = RES_SCALE(ORIG_SIS_SCREEN_WIDTH >> 1);
 	s.origin.y = PLANET_ORG_Y;
 
-	{	// re-render current frame
+	{ // re-render current frame
 		rotFrameIndex ^= 1;
 
-		rotPointIndex -= rotDirection;// roll back
+		rotPointIndex -= rotDirection; // roll back
 		if (rotPointIndex < 0)
 			rotPointIndex = rotwidth - 1;
 		else if (rotPointIndex >= rotwidth)
@@ -64,94 +63,91 @@ DrawCurrentPlanetSphere (void)
 		if (useDosSpheres)
 		{
 			if (rotFrameIndex)
-				Orbit->SphereFrame = IncFrameIndex (Orbit->SphereFrame);
+				Orbit->SphereFrame = IncFrameIndex(Orbit->SphereFrame);
 
-			RenderDOSPlanetSphere (
-					Orbit, Orbit->SphereFrame, rotPointIndex);
+			RenderDOSPlanetSphere(
+				Orbit, Orbit->SphereFrame, rotPointIndex);
 		}
 		else if (use3DOSpheres)
 		{
-			Orbit->SphereFrame = SetAbsFrameIndex (Orbit->SphereFrame,
-					rotFrameIndex);
+			Orbit->SphereFrame = SetAbsFrameIndex(Orbit->SphereFrame,
+												  rotFrameIndex);
 
-			Render3DOPlanetSphere (
-					Orbit, Orbit->SphereFrame, rotPointIndex, rotwidth,
-						rotheight);
+			Render3DOPlanetSphere(
+				Orbit, Orbit->SphereFrame, rotPointIndex, rotwidth,
+				rotheight);
 		}
 		else
 		{
-			Orbit->SphereFrame = SetAbsFrameIndex (Orbit->SphereFrame,
-					rotFrameIndex);
-			RenderPlanetSphere (Orbit, Orbit->SphereFrame, rotPointIndex,
-					pSolarSysState->pOrbitalDesc->data_index
-						& PLANET_SHIELDED,
-					throbShield, rotwidth, rotheight,
-					(rotheight >> 1) - IF_HD (2));
+			Orbit->SphereFrame = SetAbsFrameIndex(Orbit->SphereFrame,
+												  rotFrameIndex);
+			RenderPlanetSphere(Orbit, Orbit->SphereFrame, rotPointIndex,
+							   pSolarSysState->pOrbitalDesc->data_index
+								   & PLANET_SHIELDED,
+							   throbShield, rotwidth, rotheight,
+							   (rotheight >> 1) - IF_HD(2));
 		}
 	}
-	BatchGraphics ();
+	BatchGraphics();
 	s.frame = Orbit->SphereFrame;
-	DrawStamp (&s);
+	DrawStamp(&s);
 	if (Orbit->ObjectFrame)
 	{
 		s.frame = Orbit->ObjectFrame;
 
 		if (use3DOSpheres)
-			Draw3DOShield (s);
+			Draw3DOShield(s);
 		else
-			DrawStamp (&s);
+			DrawStamp(&s);
 	}
-	UnbatchGraphics ();
-	SetContext (oldContext);
+	UnbatchGraphics();
+	SetContext(oldContext);
 
-	PrepareNextRotationFrame ();
+	PrepareNextRotationFrame();
 }
 
 // Draw the planet sphere and any extra graphic (like a shield) if present
-void
-DrawPlanetSphere (int x, int y, bool back)
+void DrawPlanetSphere(int x, int y, bool back)
 {
 	STAMP s;
-	PLANET_ORBIT *Orbit = &pSolarSysState->Orbit;
+	PLANET_ORBIT* Orbit = &pSolarSysState->Orbit;
 
-	BatchGraphics ();
+	BatchGraphics();
 	// Draw background on static image and not during zoom
 	if (Orbit->BackFrame && back)
 	{
-		s.origin.x = RES_SCALE (ORIG_SIS_SCREEN_WIDTH >> 1);
+		s.origin.x = RES_SCALE(ORIG_SIS_SCREEN_WIDTH >> 1);
 		s.origin.y = PLANET_ORG_Y;
 		s.frame = Orbit->BackFrame;
-		DrawStamp (&s);
+		DrawStamp(&s);
 	}
 
 	s.origin.x = x;
 	s.origin.y = y;
 	s.frame = Orbit->SphereFrame;
-	DrawStamp (&s);
+	DrawStamp(&s);
 	if (Orbit->ObjectFrame)
 	{
 		s.frame = Orbit->ObjectFrame;
 		if (use3DOSpheres)
-			Draw3DOShield (s);
+			Draw3DOShield(s);
 		else
-			DrawStamp (&s);
+			DrawStamp(&s);
 	}
-	UnbatchGraphics ();
+	UnbatchGraphics();
 }
 
-void
-DrawDefaultPlanetSphere (void)
+void DrawDefaultPlanetSphere(void)
 {
 	CONTEXT oldContext;
 
-	oldContext = SetContext (PlanetContext);
-	DrawPlanetSphere (
-			RES_SCALE (ORIG_SIS_SCREEN_WIDTH >> 1), PLANET_ORG_Y, true);
-	SetContext (oldContext);
+	oldContext = SetContext(PlanetContext);
+	DrawPlanetSphere(
+		RES_SCALE(ORIG_SIS_SCREEN_WIDTH >> 1), PLANET_ORG_Y, true);
+	SetContext(oldContext);
 }
 
-void
-RerenderPlanetSphere (void)
+void RerenderPlanetSphere(void)
 {
 	PLANET_ORBIT* Orbit = &pSolarSysState->Orbit;
 
@@ -159,7 +155,7 @@ RerenderPlanetSphere (void)
 		return;
 
 	if (useDosSpheres)
-	{	// palette switch for coloring sphere into scan colors
+	{ // palette switch for coloring sphere into scan colors
 		uqm::COUNT sc;
 		sc = Orbit->scanType;
 		if (sc > 2)
@@ -167,21 +163,20 @@ RerenderPlanetSphere (void)
 		else
 			sc++;
 
-		XFormColorMap (
-				GetColorMapAddress (
-					SetAbsColorMapIndex (Orbit->sphereMap, sc)), 0
-			);
-		XFormColorMap_step ();
+		XFormColorMap(
+			GetColorMapAddress(
+				SetAbsColorMapIndex(Orbit->sphereMap, sc)),
+			0);
+		XFormColorMap_step();
 	}
 
-	DrawCurrentPlanetSphere ();
+	DrawCurrentPlanetSphere();
 }
 
-void
-InitSphereRotation (int direction, bool shielded, uqm::COUNT width,
-		uqm::COUNT height)
+void InitSphereRotation(int direction, bool shielded, uqm::COUNT width,
+						uqm::COUNT height)
 {
-	PLANET_ORBIT *Orbit = &pSolarSysState->Orbit;
+	PLANET_ORBIT* Orbit = &pSolarSysState->Orbit;
 
 	rotwidth = width;
 	rotheight = height;
@@ -189,7 +184,7 @@ InitSphereRotation (int direction, bool shielded, uqm::COUNT width,
 	rotDirection = direction;
 	rotPointIndex = 0;
 	throbShield = shielded && optWhichShield == OPT_3DO
-			&& !(useDosSpheres || use3DOSpheres);
+			   && !(useDosSpheres || use3DOSpheres);
 
 	if (throbShield)
 	{
@@ -197,35 +192,33 @@ InitSphereRotation (int direction, bool shielded, uqm::COUNT width,
 		Orbit->WorkFrame = Orbit->ObjectFrame;
 		// We need a scratch frame so that we can apply throbbing
 		// to the shield, so create one
-		Orbit->ObjectFrame = CaptureDrawable (CreateDrawable (
-				WANT_PIXMAP | WANT_ALPHA,
-				GetFrameWidth (Orbit->ObjectFrame),
-				GetFrameHeight (Orbit->ObjectFrame), 2));
+		Orbit->ObjectFrame = CaptureDrawable(CreateDrawable(
+			WANT_PIXMAP | WANT_ALPHA,
+			GetFrameWidth(Orbit->ObjectFrame),
+			GetFrameHeight(Orbit->ObjectFrame), 2));
 	}
 
 	// Render the first sphere/shield frame
 	// Prepare will set the next one
 	rotFrameIndex = useDosSpheres ? 0 : 1;
-	PrepareNextRotationFrame ();
+	PrepareNextRotationFrame();
 }
 
-void
-UninitSphereRotation (void)
+void UninitSphereRotation(void)
 {
-	PLANET_ORBIT *Orbit = &pSolarSysState->Orbit;
+	PLANET_ORBIT* Orbit = &pSolarSysState->Orbit;
 
 	if (Orbit->WorkFrame)
 	{
-		DestroyDrawable (ReleaseDrawable (Orbit->ObjectFrame));
+		DestroyDrawable(ReleaseDrawable(Orbit->ObjectFrame));
 		Orbit->ObjectFrame = Orbit->WorkFrame;
 		Orbit->WorkFrame = NULL;
 	}
 }
 
-void
-PrepareNextRotationFrame (void)
+void PrepareNextRotationFrame(void)
 {
-	PLANET_ORBIT *Orbit = &pSolarSysState->Orbit;
+	PLANET_ORBIT* Orbit = &pSolarSysState->Orbit;
 
 	// Generate the next rotation frame
 	// We alternate between the frames because we do not call
@@ -244,43 +237,42 @@ PrepareNextRotationFrame (void)
 	if (useDosSpheres)
 	{
 		if (rotFrameIndex)
-			Orbit->SphereFrame = IncFrameIndex (Orbit->SphereFrame);
+			Orbit->SphereFrame = IncFrameIndex(Orbit->SphereFrame);
 		else
-			Orbit->SphereFrame = DecFrameIndex (Orbit->SphereFrame);
+			Orbit->SphereFrame = DecFrameIndex(Orbit->SphereFrame);
 
-		RenderDOSPlanetSphere (Orbit, Orbit->SphereFrame, rotPointIndex);
+		RenderDOSPlanetSphere(Orbit, Orbit->SphereFrame, rotPointIndex);
 	}
 	else if (use3DOSpheres)
 	{
-		Orbit->SphereFrame = SetAbsFrameIndex (Orbit->SphereFrame,
-				rotFrameIndex);
+		Orbit->SphereFrame = SetAbsFrameIndex(Orbit->SphereFrame,
+											  rotFrameIndex);
 
-		Render3DOPlanetSphere (Orbit, Orbit->SphereFrame, rotPointIndex,
-				rotwidth, rotheight);
+		Render3DOPlanetSphere(Orbit, Orbit->SphereFrame, rotPointIndex,
+							  rotwidth, rotheight);
 	}
 	else
 	{
 		Orbit->SphereFrame = SetAbsFrameIndex(Orbit->SphereFrame,
-			rotFrameIndex);
+											  rotFrameIndex);
 		RenderPlanetSphere(Orbit, Orbit->SphereFrame, rotPointIndex,
-			pSolarSysState->pOrbitalDesc->data_index & PLANET_SHIELDED,
-			throbShield, rotwidth, rotheight,
-			(rotheight >> 1) - IF_HD(2));
+						   pSolarSysState->pOrbitalDesc->data_index & PLANET_SHIELDED,
+						   throbShield, rotwidth, rotheight,
+						   (rotheight >> 1) - IF_HD(2));
 	}
-	
+
 	if (throbShield)
-	{	// prepare the next shield throb frame
-		Orbit->ObjectFrame = SetAbsFrameIndex (Orbit->ObjectFrame,
-				rotFrameIndex);
-		SetShieldThrobEffect (Orbit->WorkFrame, rotPointIndex,
-				Orbit->ObjectFrame);
+	{ // prepare the next shield throb frame
+		Orbit->ObjectFrame = SetAbsFrameIndex(Orbit->ObjectFrame,
+											  rotFrameIndex);
+		SetShieldThrobEffect(Orbit->WorkFrame, rotPointIndex,
+							 Orbit->ObjectFrame);
 	}
 }
 
-void
-PrepareNextRotationFrameForIP (PLANET_DESC *pPlanetDesc, uqm::SIZE frameCounter)
+void PrepareNextRotationFrameForIP(PLANET_DESC* pPlanetDesc, uqm::SIZE frameCounter)
 {
-	PLANET_ORBIT *Orbit = &pPlanetDesc->orbit;
+	PLANET_ORBIT* Orbit = &pPlanetDesc->orbit;
 	int oldPointIndex = pPlanetDesc->rotPointIndex;
 	// Go to next point, taking care of wraparounds
 
@@ -296,28 +288,33 @@ PrepareNextRotationFrameForIP (PLANET_DESC *pPlanetDesc, uqm::SIZE frameCounter)
 		// when the landscape has moved 1 pixel approximately
 		switch (pPlanetDesc->size)
 		{
-				case 3: framerate = 15;
-					break;
-				case 4: framerate = 10;
-					break;
-				case 7: framerate = 4;
-					break;
-				case 11: framerate = 2;
-					break;
-				default: framerate = 1;
-					break;
+			case 3:
+				framerate = 15;
+				break;
+			case 4:
+				framerate = 10;
+				break;
+			case 7:
+				framerate = 4;
+				break;
+			case 11:
+				framerate = 2;
+				break;
+			default:
+				framerate = 1;
+				break;
 		}
 		if ((frameCounter % framerate) != 0)
 			return;
 	}
 #endif
 
-	(void) frameCounter;  /* Satisfying compiler */
+	(void)frameCounter; /* Satisfying compiler */
 
 	// BW: account for rotation period
 	pPlanetDesc->rotPointIndex =
-			(int)(fmod (pPlanetDesc->rot_speed * daysElapsed (),
-					pPlanetDesc->rotwidth));
+		(int)(fmod(pPlanetDesc->rot_speed * daysElapsed(),
+				   pPlanetDesc->rotwidth));
 
 	if (pPlanetDesc->rotPointIndex < 0)
 		pPlanetDesc->rotPointIndex += pPlanetDesc->rotwidth;
@@ -333,32 +330,31 @@ PrepareNextRotationFrameForIP (PLANET_DESC *pPlanetDesc, uqm::SIZE frameCounter)
 	pPlanetDesc->rotFrameIndex ^= 1;
 
 	// prepare the next sphere frame
-	Orbit->SphereFrame = SetAbsFrameIndex (Orbit->SphereFrame,
-			pPlanetDesc->rotFrameIndex);
-	RenderPlanetSphere (Orbit, Orbit->SphereFrame,
-			pPlanetDesc->rotPointIndex,
-			pPlanetDesc->data_index & PLANET_SHIELDED,
-			false, pPlanetDesc->rotwidth, pPlanetDesc->rotheight,
-			(pPlanetDesc->rotheight >> 1) - IF_HD (2)); // RADIUS
+	Orbit->SphereFrame = SetAbsFrameIndex(Orbit->SphereFrame,
+										  pPlanetDesc->rotFrameIndex);
+	RenderPlanetSphere(Orbit, Orbit->SphereFrame,
+					   pPlanetDesc->rotPointIndex,
+					   pPlanetDesc->data_index & PLANET_SHIELDED,
+					   false, pPlanetDesc->rotwidth, pPlanetDesc->rotheight,
+					   (pPlanetDesc->rotheight >> 1) - IF_HD(2)); // RADIUS
 	Orbit->SphereFrame->image->dirty = true;
 	// BW: slightly hacky but, in DrawTexturedBody, the call
 	// to DrawStamp won't re-blit the frame unless scale has changed.
 }
 
 #if SDL_MAJOR_VERSION == 1
-#define ZOOM_RATE  chooseIfHd (24, 42)
+#define ZOOM_RATE chooseIfHd(24, 42)
 #else
-#define ZOOM_RATE  RES_SCALE (35)
+#define ZOOM_RATE RES_SCALE(35)
 #endif
-#define ZOOM_TIME  (ONE_SECOND * 6 / 5)
+#define ZOOM_TIME (ONE_SECOND * 6 / 5)
 
 
 // This takes care of zooming the planet sphere into place
 // when entering orbit
-void
-ZoomInPlanetSphere (void)
+void ZoomInPlanetSphere(void)
 {
-	PLANET_ORBIT *Orbit = &pSolarSysState->Orbit;
+	PLANET_ORBIT* Orbit = &pSolarSysState->Orbit;
 	const int base = GSCALE_IDENTITY;
 	int dx, dy;
 	int oldScale;
@@ -373,14 +369,14 @@ ZoomInPlanetSphere (void)
 	frameCount = ZOOM_TIME / (ONE_SECOND / ZOOM_RATE);
 
 	// Planet zoom in from a randomly chosen corner
-	zoomCorner = TFB_Random ();
+	zoomCorner = TFB_Random();
 	dx = 1 - (zoomCorner & 1) * 2;
 	dy = 1 - (zoomCorner & 2);
 
 	if (Orbit->ObjectFrame)
-		GetFrameRect (Orbit->ObjectFrame, &frameRect);
+		GetFrameRect(Orbit->ObjectFrame, &frameRect);
 	else
-		GetFrameRect (Orbit->SphereFrame, &frameRect);
+		GetFrameRect(Orbit->SphereFrame, &frameRect);
 	repairRect = frameRect;
 	RenderNextTime = 0;
 
@@ -389,128 +385,126 @@ ZoomInPlanetSphere (void)
 		double scale;
 		POINT pt;
 
-		Now = GetTimeCounter ();
+		Now = GetTimeCounter();
 		NextTime = Now + (ONE_SECOND / ZOOM_RATE);
 
 		// Use 1 + e^-2 - e^(-2x / frameCount)) function to get a
 		// decelerating zoom like the one 3DO does (supposedly)
 		if (i < frameCount)
-			scale = 1.134 - exp (-2.0 * i / frameCount);
+			scale = 1.134 - exp(-2.0 * i / frameCount);
 		else
 			scale = 1.0; // final frame
 
 		// start from beyond the screen
-		pt.x = RES_SCALE (ORIG_SIS_SCREEN_WIDTH >> 1) 
-				+ (int) (dx * (1.0 - scale)
-				* RES_SCALE (ORIG_SIS_SCREEN_WIDTH * 6 / 10) + 0.5);
-		pt.y = PLANET_ORG_Y + (int) (dy * (1.0 - scale)
-				* (RES_SCALE (SCAN_SCREEN_HEIGHT) * 6 / 10) + 0.5);
+		pt.x = RES_SCALE(ORIG_SIS_SCREEN_WIDTH >> 1)
+			 + (int)(dx * (1.0 - scale)
+						 * RES_SCALE(ORIG_SIS_SCREEN_WIDTH * 6 / 10)
+					 + 0.5);
+		pt.y = PLANET_ORG_Y + (int)(dy * (1.0 - scale) * (RES_SCALE(SCAN_SCREEN_HEIGHT) * 6 / 10) + 0.5);
 
-		SetContext (PlanetContext);
+		SetContext(PlanetContext);
 
-		BatchGraphics ();
+		BatchGraphics();
 		if (i > 0)
-			RepairBackRect (&repairRect);
+			RepairBackRect(&repairRect);
 
-		oldMode = SetGraphicScaleMode (TFB_SCALE_BILINEAR);
-		oldScale = SetGraphicScale ((int)(base * scale + 0.5));
-		DrawPlanetSphere (pt.x, pt.y, false);
-		SetGraphicScale (oldScale);
-		SetGraphicScaleMode (oldMode);
+		oldMode = SetGraphicScaleMode(TFB_SCALE_BILINEAR);
+		oldScale = SetGraphicScale((int)(base * scale + 0.5));
+		DrawPlanetSphere(pt.x, pt.y, false);
+		SetGraphicScale(oldScale);
+		SetGraphicScaleMode(oldMode);
 
-		UnbatchGraphics ();
+		UnbatchGraphics();
 
 		repairRect.corner.x = pt.x + frameRect.corner.x;
 		repairRect.corner.y = pt.y + frameRect.corner.y;
 
 		if (Now >= RenderNextTime)
 		{
-			RenderNextTime = Now + PLANET_ROTATION_RATE (optScanSphere);
-			PrepareNextRotationFrame ();
+			RenderNextTime = Now + PLANET_ROTATION_RATE(optScanSphere);
+			PrepareNextRotationFrame();
 		}
 
-		SleepThreadUntil (NextTime);
+		SleepThreadUntil(NextTime);
 	}
 }
 
 #if SDL_MAJOR_VERSION == 1
-#define PLANET_ROTATION_FPS (ONE_SECOND / chooseIfHd (24, 42))
+#define PLANET_ROTATION_FPS (ONE_SECOND / chooseIfHd(24, 42))
 #else
 #define PLANET_ROTATION_FPS (ONE_SECOND / 60)
 #endif
 
-void
-RotatePlanetSphere (bool keepRate, STAMP *onTop)
+void RotatePlanetSphere(bool keepRate, STAMP* onTop)
 {
 	static TimeCount NextTime, OutNextTime, TimeOutClock;
-	TimeCount Now = GetTimeCounter ();
+	TimeCount Now = GetTimeCounter();
 
 	if (keepRate && Now < NextTime)
 		return; // not time yet
 
 	if (DIF_HARD && Now >= TimeOutClock)
 	{
-		GameClockTick ();
+		GameClockTick();
 		TimeOutClock = Now + CLOCK_FRAME_RATE;
 	}
 
 	if (Now >= NextTime)
 	{
-		NextTime = Now + PLANET_ROTATION_RATE (optScanSphere);
+		NextTime = Now + PLANET_ROTATION_RATE(optScanSphere);
 
 		if (Now >= OutNextTime)
 		{
 			OutNextTime = Now + PLANET_ROTATION_FPS;
 
-			DrawDefaultPlanetSphere ();
+			DrawDefaultPlanetSphere();
 
 			if (onTop)
-				DrawStamp (onTop);
+				DrawStamp(onTop);
 		}
-		PrepareNextRotationFrame ();
+		PrepareNextRotationFrame();
 	}
 }
 
 static void
-renderTintFrame (Color tintColor)
+renderTintFrame(Color tintColor)
 {
-	PLANET_ORBIT *Orbit = &pSolarSysState->Orbit;
+	PLANET_ORBIT* Orbit = &pSolarSysState->Orbit;
 	CONTEXT oldContext;
 	DrawMode mode, oldMode;
 	STAMP s;
 	RECT r;
 	double is_red;
 
-	if (sameColor (BRIGHT_RED_COLOR, tintColor))
+	if (sameColor(BRIGHT_RED_COLOR, tintColor))
 		is_red = 0.75;
 	else
 		is_red = 0.5;
 
-	oldContext = SetContext (OffScreenContext);
-	SetContextFGFrame (Orbit->TintFrame);
-	SetContextClipRect (NULL);
+	oldContext = SetContext(OffScreenContext);
+	SetContextFGFrame(Orbit->TintFrame);
+	SetContextClipRect(NULL);
 	// get the rect of the whole context (or our frame really)
-	GetContextClipRect (&r);
+	GetContextClipRect(&r);
 
 	// copy the topo frame to the tint frame
 	s.origin.x = 0;
 	s.origin.y = 0;
 	s.frame = pSolarSysState->TopoFrame;
-	DrawStamp (&s);
+	DrawStamp(&s);
 
 	// apply the tint
-	mode = MAKE_DRAW_MODE (DRAW_ADDITIVE, DRAW_FACTOR_1 * is_red);
+	mode = MAKE_DRAW_MODE(DRAW_ADDITIVE, DRAW_FACTOR_1 * is_red);
 
-	oldMode = SetContextDrawMode (mode);
-	SetContextForeGroundColor (tintColor);
-	DrawFilledRectangle (&r);
-	SetContextDrawMode (oldMode);
+	oldMode = SetContextDrawMode(mode);
+	SetContextForeGroundColor(tintColor);
+	DrawFilledRectangle(&r);
+	SetContextDrawMode(oldMode);
 
-	SetContext (oldContext);
+	SetContext(oldContext);
 }
 
-void
-DrawPCScanTint (uqm::COUNT scan)
+void DrawPCScanTint(uqm::COUNT scan)
 {
 	STAMP s;
 
@@ -520,69 +514,68 @@ DrawPCScanTint (uqm::COUNT scan)
 	s.frame = pSolarSysState->ScanFrame[scan];
 	//XFormColorMap (GetColorMapAddress (SetAbsColorMapIndex (
 	//		Orbit->sphereMap, scan + 1)), 0);
-	
-	DrawStamp (&s);
+
+	DrawStamp(&s);
 }
 
 // tintColor.a is ignored
-void
-DrawPlanet (int tintY, Color tintColor)
+void DrawPlanet(int tintY, Color tintColor)
 {
 	STAMP s;
-	PLANET_ORBIT *Orbit = &pSolarSysState->Orbit;
+	PLANET_ORBIT* Orbit = &pSolarSysState->Orbit;
 
 	s.origin.x = 0;
 	s.origin.y = 0;
-	
-	BatchGraphics ();
-	if (sameColor (tintColor, BLACK_COLOR))
-	{	// no tint -- just draw the surface
+
+	BatchGraphics();
+	if (sameColor(tintColor, BLACK_COLOR))
+	{ // no tint -- just draw the surface
 		s.frame = pSolarSysState->TopoFrame;
-		DrawStamp (&s);
+		DrawStamp(&s);
 	}
 	else
-	{	// apply different scan type tints
+	{ // apply different scan type tints
 		FRAME tintFrame = Orbit->TintFrame;
-		int height = GetFrameHeight (tintFrame);
+		int height = GetFrameHeight(tintFrame);
 
-		if (!sameColor (tintColor, Orbit->TintColor))
+		if (!sameColor(tintColor, Orbit->TintColor))
 		{
-			renderTintFrame (tintColor);
+			renderTintFrame(tintColor);
 			Orbit->TintColor = tintColor;
 		}
-		
+
 		if (tintY < height - 1)
-		{	// untinted piece showing, draw regular topo
+		{ // untinted piece showing, draw regular topo
 			s.frame = pSolarSysState->TopoFrame;
-			DrawStamp (&s);
+			DrawStamp(&s);
 		}
 
 		if (tintY >= 0)
-		{	// tinted piece showing, draw tinted piece
+		{ // tinted piece showing, draw tinted piece
 			RECT oldClipRect;
 			RECT clipRect;
 			RECT edge;
 			uqm::COUNT i;
 
 			// adjust cliprect to confine the tint
-			GetContextClipRect (&oldClipRect);
+			GetContextClipRect(&oldClipRect);
 			clipRect = oldClipRect;
 			clipRect.extent.height = tintY + 1;
-			SetContextClipRect (&clipRect);
+			SetContextClipRect(&clipRect);
 			s.frame = tintFrame;
-			DrawStamp (&s);
-			SetContextClipRect (&oldClipRect);
+			DrawStamp(&s);
+			SetContextClipRect(&oldClipRect);
 
 			edge.extent.height = 1;
 			edge.extent.width = SCALED_MAP_WIDTH;
 			edge.corner.x = tintFrame->HotSpot.x;
 			edge.corner.y = clipRect.extent.height;
 
-			for (i = 0x90; i > 0; i -= 0x90 / RES_SCALE (3))
+			for (i = 0x90; i > 0; i -= 0x90 / RES_SCALE(3))
 			{
 				tintColor.a = i;
-				SetContextForeGroundColor (tintColor);
-				DrawFilledRectangle (&edge);
+				SetContextForeGroundColor(tintColor);
+				DrawFilledRectangle(&edge);
 				edge.corner.y--;
 			}
 
@@ -592,13 +585,13 @@ DrawPlanet (int tintY, Color tintColor)
 			for (i = 0x40; i > 0; i -= 8)
 			{
 				tintColor.a = i;
-				SetContextForeGroundColor (tintColor);
-				DrawFilledRectangle (&edge);
+				SetContextForeGroundColor(tintColor);
+				DrawFilledRectangle(&edge);
 				if (!IS_HD)
 					break;
 				edge.corner.y++;
 			}
 		}
 	}
-	UnbatchGraphics ();
+	UnbatchGraphics();
 }

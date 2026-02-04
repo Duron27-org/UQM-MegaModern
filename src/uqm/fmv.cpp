@@ -35,95 +35,93 @@
 
 #define MAX_LOAD_ENTRIES 40
 
-void
-DoShipSpin (uqm::COUNT index, MUSIC_REF hMusic)
+void DoShipSpin(uqm::COUNT index, MUSIC_REF hMusic)
 {
 	char vnbuf[24]; // From 32 to 24
 	RECT old_r;
 	CONTEXT OldContext;
 
-	OldContext = SetContext (ScreenContext);
+	OldContext = SetContext(ScreenContext);
 
 	if (optShipSeed)
 	{
-		HMASTERSHIP hMaster = GetStarShipFromIndex (&master_q, index);
-		MASTER_SHIP_INFO *mPtr = LockMasterShip (&master_q, hMaster);
-		index = FindMasterShipIndex (SeedShip (mPtr->SpeciesID, false));
-		UnlockMasterShip (&master_q, hMaster);
+		HMASTERSHIP hMaster = GetStarShipFromIndex(&master_q, index);
+		MASTER_SHIP_INFO* mPtr = LockMasterShip(&master_q, hMaster);
+		index = FindMasterShipIndex(SeedShip(mPtr->SpeciesID, false));
+		UnlockMasterShip(&master_q, hMaster);
 	}
 
-	LoadIntoExtraScreen (NULL);
-	
+	LoadIntoExtraScreen(NULL);
+
 	if (hMusic)
-		StopMusic ();
+		StopMusic();
 
-	FreeHyperData ();
+	FreeHyperData();
 
-	if (isPC (optWhichIntro))
+	if (isPC(optWhichIntro))
 	{
 		if (IS_PAD || OutfitOrShipyard == 3)
 		{
-			SleepThreadUntil (FadeScreen (FadeAllToBlack, ONE_SECOND / 4));
-			FlushColorXForms ();
+			SleepThreadUntil(FadeScreen(FadeAllToBlack, ONE_SECOND / 4));
+			FlushColorXForms();
 		}
 
-		ShowPresentation (ACCESSDATA_STRTAB);
+		ShowPresentation(ACCESSDATA_STRTAB);
 	}
 
 	// TODO: It would be nice to have better resource names for these.
-	sprintf (vnbuf, "slides.spins.%02u", (unsigned)index);
+	sprintf(vnbuf, "slides.spins.%02u", (unsigned)index);
 
-	ShowPresentation (vnbuf);
+	ShowPresentation(vnbuf);
 
-	if (is3DO (optWhichIntro))
-		SleepThreadUntil (FadeScreen (FadeAllToBlack, ONE_SECOND / 4));
-	FlushColorXForms ();
+	if (is3DO(optWhichIntro))
+		SleepThreadUntil(FadeScreen(FadeAllToBlack, ONE_SECOND / 4));
+	FlushColorXForms();
 
-	SetContext (OldContext);
+	SetContext(OldContext);
 
-	GetContextClipRect (&old_r);
-	SetContextClipRect (NULL);
-	DrawFromExtraScreen (NULL);
-	SetContextClipRect (&old_r);
+	GetContextClipRect(&old_r);
+	SetContextClipRect(NULL);
+	DrawFromExtraScreen(NULL);
+	SetContextClipRect(&old_r);
 
 	if (hMusic)
-		PlayMusic (hMusic, true, 1);
+		PlayMusic(hMusic, true, 1);
 
-	if (is3DO (optWhichIntro))
-		SleepThreadUntil (FadeScreen (FadeAllToColor, ONE_SECOND / 4));
-	FlushColorXForms ();
+	if (is3DO(optWhichIntro))
+		SleepThreadUntil(FadeScreen(FadeAllToColor, ONE_SECOND / 4));
+	FlushColorXForms();
 }
 
-void
-SplashScreen (void (* DoProcessing)(uqm::DWORD TimeOut))
+void SplashScreen(void (*DoProcessing)(uqm::DWORD TimeOut))
 {
 	STAMP s;
 	uqm::DWORD TimeOut = 0;
-	TimeCount OverallWait = GetTimeCounter () + (ONE_SECOND * 3);
+	TimeCount OverallWait = GetTimeCounter() + (ONE_SECOND * 3);
 
 	if (!optSkipIntro)
 	{
-		SetContext (ScreenContext);
+		SetContext(ScreenContext);
 		s.origin.x = s.origin.y = 0;
 
-		s.frame = CaptureDrawable (LoadGraphic (TITLE_ANIM));
+		s.frame = CaptureDrawable(LoadGraphic(TITLE_ANIM));
 
 		if (optFlagshipColor == OPT_3DO)
-			s.frame = SetAbsFrameIndex (s.frame, 1);
+			s.frame = SetAbsFrameIndex(s.frame, 1);
 		else
-			s.frame = SetAbsFrameIndex (s.frame, 0);
+			s.frame = SetAbsFrameIndex(s.frame, 0);
 
-		DrawStamp (&s);
-		DestroyDrawable (ReleaseDrawable (s.frame));
+		DrawStamp(&s);
+		DestroyDrawable(ReleaseDrawable(s.frame));
 
-		TimeOut = FadeScreen (FadeAllToColor, ONE_SECOND / 2);
+		TimeOut = FadeScreen(FadeAllToColor, ONE_SECOND / 2);
 	}
-	
+
 	if (DoProcessing)
-		DoProcessing (TimeOut);
-	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
+		DoProcessing(TimeOut);
+	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
 		return;
-	
+
 	/* There was a forcible setting of CHECK_ABORT here.  I cannot
 	 * find any purpose for this that DoRestart doesn't handle
 	 * better (forcing all other threads but this one to quit out,
@@ -132,107 +130,100 @@ SplashScreen (void (* DoProcessing)(uqm::DWORD TimeOut))
 	 * --Michael */
 
 	if (!optSkipIntro)
-		SleepThreadUntil (OverallWait);
-	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
+		SleepThreadUntil(OverallWait);
+	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
 		return;
-	GLOBAL (CurrentActivity) &= ~CHECK_ABORT;
+	GLOBAL(CurrentActivity) &= ~CHECK_ABORT;
 
 	if (!optSkipIntro)
-		SleepThreadUntil (FadeScreen (FadeAllToBlack, ONE_SECOND / 2));
+		SleepThreadUntil(FadeScreen(FadeAllToBlack, ONE_SECOND / 2));
 }
 
-void
-Introduction (void)
+void Introduction(void)
 {
-	ShowPresentation (INTROPRES_STRTAB);
-	SleepThreadUntil (FadeScreen (FadeAllToBlack, ONE_SECOND / 2));
+	ShowPresentation(INTROPRES_STRTAB);
+	SleepThreadUntil(FadeScreen(FadeAllToBlack, ONE_SECOND / 2));
 }
 
-void
-Victory (void)
+void Victory(void)
 {
-	SleepThreadUntil (FadeScreen (FadeAllToBlack, ONE_SECOND / 2));
+	SleepThreadUntil(FadeScreen(FadeAllToBlack, ONE_SECOND / 2));
 
 	/* by default we do 3DO cinematics; or PC slides when 3DO files are
 	 * not present */
-	ShowPresentation (FINALPRES_STRTAB);
-		
-	FadeScreen (FadeAllToBlack, 0);
+	ShowPresentation(FINALPRES_STRTAB);
+
+	FadeScreen(FadeAllToBlack, 0);
 }
 
-void
-GameOver (uqm::BYTE DeathType) 
+void GameOver(uqm::BYTE DeathType)
 {
 	if (DeathType != SUICIDE)
-		SleepThreadUntil (FadeScreen (FadeAllToBlack, ONE_SECOND / 2));
+		SleepThreadUntil(FadeScreen(FadeAllToBlack, ONE_SECOND / 2));
 
 	switch (DeathType)
 	{
 		case DEATH_MARCH:
-			ShowPresentation (DEATHMARCHPRES_STRTAB);
+			ShowPresentation(DEATHMARCHPRES_STRTAB);
 			break;
 		case SUICIDE:
-			SleepThreadUntil (FadeScreen (FadeAllToWhite, ONE_SECOND / 2));
-			ShowPresentation (SUICIDEPRES_STRTAB);
+			SleepThreadUntil(FadeScreen(FadeAllToWhite, ONE_SECOND / 2));
+			ShowPresentation(SUICIDEPRES_STRTAB);
 			break;
 		case SURRENDERED:
-			ShowPresentation (SURRENDEREDPRES_STRTAB);
+			ShowPresentation(SURRENDEREDPRES_STRTAB);
 			break;
 		case DIED_IN_BATTLE:
 		default:
-			ShowPresentation (DEFEATEDPRES_STRTAB);
+			ShowPresentation(DEFEATEDPRES_STRTAB);
 			break;
 	}
-	FadeScreen (FadeAllToBlack, 0);
+	FadeScreen(FadeAllToBlack, 0);
 }
 
-void
-Logo (void)
+void Logo(void)
 {
-	ShowPresentation (LOGOPRES_STRTAB);
-	FadeScreen (FadeAllToBlack, 0);
+	ShowPresentation(LOGOPRES_STRTAB);
+	FadeScreen(FadeAllToBlack, 0);
 }
 
-void
-Drumall (void)
+void Drumall(void)
 {
-	ShowPresentation (DRUMALLPRES_STRTAB);
-	SleepThreadUntil (FadeScreen (FadeAllToBlack, ONE_SECOND / 2));
+	ShowPresentation(DRUMALLPRES_STRTAB);
+	SleepThreadUntil(FadeScreen(FadeAllToBlack, ONE_SECOND / 2));
 }
 
-void
-Reload (void)
+void Reload(void)
 {
-	ShowPresentation (RELOADPRES_STRTAB);
+	ShowPresentation(RELOADPRES_STRTAB);
 
-	ReloadGameContent ();
-	SleepThreadUntil (FadeScreen (FadeAllToBlack, ONE_SECOND / 2));
+	ReloadGameContent();
+	SleepThreadUntil(FadeScreen(FadeAllToBlack, ONE_SECOND / 2));
 }
 
-void
-AdvanceLoadProgress (void)
+void AdvanceLoadProgress(void)
 {
 	if (optRequiresReload)
 	{
 		RECT r;
 		static uqm::COUNT i = 0;
 
-		r.corner.x = RES_SCALE (16);
-		r.corner.y = CanvasHeight - DOS_BOOL_SCL (50, 30);
-		r.extent.height = RES_SCALE (15);
-		r.extent.width = RES_SCALE ((i + 1) * 7);
+		r.corner.x = RES_SCALE(16);
+		r.corner.y = CanvasHeight - DOS_BOOL_SCL(50, 30);
+		r.extent.height = RES_SCALE(15);
+		r.extent.width = RES_SCALE((i + 1) * 7);
 
 		if (i == MAX_LOAD_ENTRIES)
 		{
-			SetContextForeGroundColor (BUILD_COLOR_RGBA (0, 192, 0, 255));
+			SetContextForeGroundColor(BUILD_COLOR_RGBA(0, 192, 0, 255));
 			i = 0;
 		}
 		else
 		{
-			SetContextForeGroundColor (
-					BUILD_COLOR_RGBA (0, 128, 192, 255));
+			SetContextForeGroundColor(
+				BUILD_COLOR_RGBA(0, 128, 192, 255));
 			i++;
 		}
-		DrawFilledRectangle (&r);
+		DrawFilledRectangle(&r);
 	}
 }

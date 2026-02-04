@@ -24,9 +24,7 @@
 
 #include <stdio.h>
 
-void uio_debugInteractive(FILE *in, FILE *out, FILE *err);
+void uio_debugInteractive(FILE* in, FILE* out, FILE* err);
 
 
-#endif  /* LIBS_UIO_DEBUG_H_ */
-
-
+#endif /* LIBS_UIO_DEBUG_H_ */

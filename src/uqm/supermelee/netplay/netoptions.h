@@ -28,21 +28,23 @@ extern "C" {
 #endif
 
 #define NETPLAY_NUM_PLAYERS 2
-		// Not using NUM_PLAYERS because that would mean we'd have
-		// to include init.h, and all that comes with it.
-		// XXX: Don't use a hardcoded limit.
+// Not using NUM_PLAYERS because that would mean we'd have
+// to include init.h, and all that comes with it.
+// XXX: Don't use a hardcoded limit.
 
-typedef struct {
+typedef struct
+{
 	bool isServer;
-	const char *host;
-	const char *port;
-			// May be given as a service name.
+	const char* host;
+	const char* port;
+	// May be given as a service name.
 } NetplayPeerOptions;
 
-typedef struct {
-	const char *metaServer;
-	const char *metaPort;
-			// May be given as a service name.
+typedef struct
+{
+	const char* metaServer;
+	const char* metaPort;
+	// May be given as a service name.
 	NetplayPeerOptions peer[NETPLAY_NUM_PLAYERS];
 	size_t inputDelay;
 } NetplayOptions;
@@ -53,7 +55,4 @@ extern NetplayOptions netplayOptions;
 }
 #endif
 
-#endif  /* UQM_SUPERMELEE_NETPLAY_NETOPTIONS_H_ */
-
-
-
+#endif /* UQM_SUPERMELEE_NETPLAY_NETOPTIONS_H_ */

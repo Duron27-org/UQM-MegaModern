@@ -23,7 +23,7 @@
 #include "options.h"
 #include "nameref.h"
 #ifdef NETPLAY
-#	include "supermelee/netplay/netmelee.h"
+#include "supermelee/netplay/netmelee.h"
 #endif
 #include "init.h"
 #include "intel.h"
@@ -95,314 +95,310 @@ bool SpaceMusicOK;
 bool oldPlanetsPresent;
 bool classicPackPresent;
 
-uio_Repository *repository;
-uio_DirHandle *rootDir;
+uio_Repository* repository;
+uio_DirHandle* rootDir;
 
 bool usingSpeech;
 
 
 static void
-InitPlayerInput (void)
+InitPlayerInput(void)
 {
 }
 
-void
-UninitPlayerInput (void)
+void UninitPlayerInput(void)
 {
 #if DEMO_MODE
-	DestroyInputDevice (ReleaseInputDevice (DemoInput));
+	DestroyInputDevice(ReleaseInputDevice(DemoInput));
 #endif /* DEMO_MODE */
 }
 
-bool
-LoadKernel (int argc, char *argv[])
+bool LoadKernel(int argc, char* argv[])
 {
-	InitSound (argc, argv);
-	InitVideoPlayer (true);
+	InitSound(argc, argv);
+	InitVideoPlayer(true);
 
-	ScreenContext = CreateContext ("ScreenContext");
+	ScreenContext = CreateContext("ScreenContext");
 	if (ScreenContext == NULL)
 		return false;
 
-	Screen = CaptureDrawable (CreateDisplay (WANT_MASK | WANT_PIXMAP,
-				&screen_width, &screen_height));
+	Screen = CaptureDrawable(CreateDisplay(WANT_MASK | WANT_PIXMAP,
+										   &screen_width, &screen_height));
 	if (Screen == NULL)
 		return false;
 
-	SetContext (ScreenContext);
-	SetContextFGFrame (Screen);
-	SetContextOrigin (MAKE_POINT (0, 0));
+	SetContext(ScreenContext);
+	SetContextFGFrame(Screen);
+	SetContextOrigin(MAKE_POINT(0, 0));
 
-	hResIndex = (RESOURCE_INDEX) InitResourceSystem ();
+	hResIndex = (RESOURCE_INDEX)InitResourceSystem();
 	if (hResIndex == 0)
 		return false;
-	
+
 	/* Load base content. */
-	if (loadIndices (contentDir) == 0)
+	if (loadIndices(contentDir) == 0)
 		return false; // Must have at least one index in content dir
 
 	classicPackPresent = false;
 
 	if (!IS_HD)
 	{
-		EndlessSCLoaded = loadAddon ("EndlessSC-SD");
-		solTexturesPresent = loadAddon ("sol-textures-sd");
-		loadAddon ("yellow-fried-sd");
-	} 
-	else if (loadAddon ("mm-hd"))
+		EndlessSCLoaded = loadAddon("EndlessSC-SD");
+		solTexturesPresent = loadAddon("sol-textures-sd");
+		loadAddon("yellow-fried-sd");
+	}
+	else if (loadAddon("mm-hd"))
 	{
 		HDPackPresent = true;
-		solTexturesPresent = loadAddon ("sol-textures-hd");
-		loadAddon ("yellow-fried-hd");
+		solTexturesPresent = loadAddon("sol-textures-hd");
+		loadAddon("yellow-fried-hd");
 		if (optWindowType == 2)
 		{
 			classicPackPresent =
-					optNoClassic ? false : loadAddon ("classic-pack");
+				optNoClassic ? false : loadAddon("classic-pack");
 		}
 	}
 
-	if (IS_PAD && isAddonAvailable (THREEDO_MODE (IS_HD)))
-		loadAddon (THREEDO_MODE (IS_HD));
-	if (IS_DOS && isAddonAvailable (DOS_MODE (IS_HD)))
-		loadAddon (DOS_MODE (IS_HD));
+	if (IS_PAD && isAddonAvailable(THREEDO_MODE(IS_HD)))
+		loadAddon(THREEDO_MODE(IS_HD));
+	if (IS_DOS && isAddonAvailable(DOS_MODE(IS_HD)))
+		loadAddon(DOS_MODE(IS_HD));
 
 	usingSpeech = (bool)optSpeech;
-	if (optSpeech && !loadAddon ("mm-3dovoice"))
+	if (optSpeech && !loadAddon("mm-3dovoice"))
 		usingSpeech = false;
-	
+
 	if (usingSpeech)
 	{
-		loadAddon ("mm-rmx-utwig");
+		loadAddon("mm-rmx-utwig");
 		// Autoload support for Soul Reaver's dialog fixes
-		loadAddon ("mm-MelnormeVoiceFix");
-		loadAddon ("mm-distorted-hayes");
-		SyreenVoiceFix = loadAddon ("mm-SyreenVoiceFix");
+		loadAddon("mm-MelnormeVoiceFix");
+		loadAddon("mm-distorted-hayes");
+		SyreenVoiceFix = loadAddon("mm-SyreenVoiceFix");
 	}
 
 	if (opt3doMusic)
-		loadAddon ("3domusic");
+		loadAddon("3domusic");
 
 	if (optRemixMusic)
-		loadAddon ("remix");
+		loadAddon("remix");
 
 	if (optVolasMusic)
 	{
-		VolasPackPresent = loadAddon ("volasaurus-remix-pack");
+		VolasPackPresent = loadAddon("volasaurus-remix-pack");
 
 		SpaceMusicOK = optSpaceMusic && VolasPackPresent;
 	}
 
 	if (!VolasPackPresent)
-		SpaceMusicOK = optSpaceMusic && loadAddon ("SpaceMusic");
+		SpaceMusicOK = optSpaceMusic && loadAddon("SpaceMusic");
 
 	if (optWhichIntro == OPT_3DO)
-		loadAddon ("3dovideo");
+		loadAddon("3dovideo");
 
-	loadAddon ("ProfanePkunk");
-	loadAddon ("GlaDOS");
+	loadAddon("ProfanePkunk");
+	loadAddon("GlaDOS");
 
 	if (!IS_HD)
 	{
 		// Localization addons
-		loadAddon ("xlat-finnish-sd");
-		loadAddon ("xlat-german-sd");
-		loadAddon ("xlat-japanese-sd");
-		loadAddon ("xlat-russian-sd");
-		
-		loadAddon ("automods-sd");
+		loadAddon("xlat-finnish-sd");
+		loadAddon("xlat-german-sd");
+		loadAddon("xlat-japanese-sd");
+		loadAddon("xlat-russian-sd");
+
+		loadAddon("automods-sd");
 	}
 	else if (HDPackPresent)
 	{
 		// Localization addons
-		loadAddon ("xlat-finnish-hd");
-		loadAddon ("xlat-german-hd");
-		loadAddon ("xlat-japanese-hd");
-		loadAddon ("xlat-russian-hd");
+		loadAddon("xlat-finnish-hd");
+		loadAddon("xlat-german-hd");
+		loadAddon("xlat-japanese-hd");
+		loadAddon("xlat-russian-hd");
 
-		loadAddon ("automods-hd");
+		loadAddon("automods-hd");
 	}
 
 	/* Now load the rest of the addons, in order. */
-	prepareAddons (optAddons);
+	prepareAddons(optAddons);
 
 	{
 		COLORMAP ColorMapTab;
 
-		ColorMapTab = CaptureColorMap (LoadColorMap (STARCON_COLOR_MAP));
+		ColorMapTab = CaptureColorMap(LoadColorMap(STARCON_COLOR_MAP));
 		if (ColorMapTab == NULL)
 			return false; // The most basic resource is missing
-		SetColorMap (GetColorMapAddress (ColorMapTab));
-		DestroyColorMap (ReleaseColorMap (ColorMapTab));
+		SetColorMap(GetColorMapAddress(ColorMapTab));
+		DestroyColorMap(ReleaseColorMap(ColorMapTab));
 	}
 
-	InitPlayerInput ();
-	GLOBAL (CurrentActivity) = (ACTIVITY)~0;
+	InitPlayerInput();
+	GLOBAL(CurrentActivity) = (ACTIVITY)~0;
 
 	return true;
 }
 
-bool
-InitContexts (void)
+bool InitContexts(void)
 {
 	RECT r;
 	CONTEXT oldContext;
-	
-	StatusContext = CreateContext ("StatusContext");
+
+	StatusContext = CreateContext("StatusContext");
 	if (StatusContext == NULL)
 		return false;
-	AdvanceLoadProgress ();
+	AdvanceLoadProgress();
 
-	oldContext = SetContext (StatusContext);
-	SetContextFGFrame (Screen);
+	oldContext = SetContext(StatusContext);
+	SetContextFGFrame(Screen);
 	r.corner.x = SPACE_WIDTH + SAFE_X;
 	r.corner.y = SAFE_Y;
 	r.extent.width = STATUS_WIDTH;
 	r.extent.height = STATUS_HEIGHT;
-	SetContextClipRect (&r);
-	
-	SpaceContext = CreateContext ("SpaceContext");
+	SetContextClipRect(&r);
+
+	SpaceContext = CreateContext("SpaceContext");
 	if (SpaceContext == NULL)
 		return false;
-	SetContext (oldContext);
-	AdvanceLoadProgress ();
-		
-	OffScreenContext = CreateContext ("OffScreenContext");
+	SetContext(oldContext);
+	AdvanceLoadProgress();
+
+	OffScreenContext = CreateContext("OffScreenContext");
 	if (OffScreenContext == NULL)
 		return false;
-	AdvanceLoadProgress ();
+	AdvanceLoadProgress();
 
-	if (!InitQueue (&disp_q, MAX_DISPLAY_ELEMENTS, sizeof (ELEMENT)))
+	if (!InitQueue(&disp_q, MAX_DISPLAY_ELEMENTS, sizeof(ELEMENT)))
 		return false;
-	AdvanceLoadProgress ();
+	AdvanceLoadProgress();
 
 	return true;
 }
 
 static bool
-InitKernel (void)
+InitKernel(void)
 {
 	uqm::COUNT counter;
 
 	for (counter = 0; counter < NUM_PLAYERS; ++counter)
-		InitQueue (&race_q[counter], MAX_SHIPS_PER_SIDE, sizeof (STARSHIP));
+		InitQueue(&race_q[counter], MAX_SHIPS_PER_SIDE, sizeof(STARSHIP));
 
-	StarConFont = LoadFont (STARCON_FONT);
+	StarConFont = LoadFont(STARCON_FONT);
 	if (StarConFont == NULL)
 		return false;
-	AdvanceLoadProgress ();
+	AdvanceLoadProgress();
 
-	TinyFont = LoadFont (TINY_FONT);
+	TinyFont = LoadFont(TINY_FONT);
 	if (TinyFont == NULL)
 		return false;
-	AdvanceLoadProgress ();
+	AdvanceLoadProgress();
 
-	TinyFontBold = LoadFont (TINY_FONT_BOLD);
+	TinyFontBold = LoadFont(TINY_FONT_BOLD);
 	if (TinyFontBold == NULL)
 		return false;
-	AdvanceLoadProgress ();
+	AdvanceLoadProgress();
 
-	TinyFontCond = LoadFont (TINY_FONT_COND);
+	TinyFontCond = LoadFont(TINY_FONT_COND);
 	if (TinyFontCond == NULL)
 		return false;
 
-	PlyrFont = LoadFont (PLAYER_FONT);
+	PlyrFont = LoadFont(PLAYER_FONT);
 	if (PlyrFont == NULL)
 		return false;
-	AdvanceLoadProgress ();
+	AdvanceLoadProgress();
 
-	PlayMenuFont = LoadFont (PLAYMENU_FONT);
+	PlayMenuFont = LoadFont(PLAYMENU_FONT);
 	if (PlayMenuFont == NULL)
 		return false;
 
-	BorderFrame = CaptureDrawable (LoadGraphic (BORDER_MASK_PMAP_ANIM));
+	BorderFrame = CaptureDrawable(LoadGraphic(BORDER_MASK_PMAP_ANIM));
 	if (BorderFrame == NULL)
 		return false;
-	AdvanceLoadProgress ();
+	AdvanceLoadProgress();
 
-	CustBevelFrame = CaptureDrawable (LoadGraphic (CUST_BEVEL_MASK_PMAP_ANIM));
+	CustBevelFrame = CaptureDrawable(LoadGraphic(CUST_BEVEL_MASK_PMAP_ANIM));
 	if (CustBevelFrame == NULL)
 		return false;
 
 	if (HDPackPresent)
 	{
-		HDBorderFrame = CaptureDrawable (LoadGraphic (HD_BORDER_MASK_PMAP_ANIM));
+		HDBorderFrame = CaptureDrawable(LoadGraphic(HD_BORDER_MASK_PMAP_ANIM));
 		if (HDBorderFrame == NULL)
 			return false;
 
-		DefBevelFrame = CaptureDrawable (LoadGraphic (DEF_BEVEL_MASK_PMAP_ANIM));
+		DefBevelFrame = CaptureDrawable(LoadGraphic(DEF_BEVEL_MASK_PMAP_ANIM));
 		if (DefBevelFrame == NULL)
 			return false;
 	}
 
-	ActivityFrame = CaptureDrawable (LoadGraphic (ACTIVITY_ANIM));
+	ActivityFrame = CaptureDrawable(LoadGraphic(ACTIVITY_ANIM));
 	if (ActivityFrame == NULL)
 		return false;
-	AdvanceLoadProgress ();
+	AdvanceLoadProgress();
 
-	StatusFrame = CaptureDrawable (LoadGraphic (STATUS_MASK_PMAP_ANIM));
+	StatusFrame = CaptureDrawable(LoadGraphic(STATUS_MASK_PMAP_ANIM));
 	if (StatusFrame == NULL)
 		return false;
-	AdvanceLoadProgress ();
+	AdvanceLoadProgress();
 
-	SubmenuFrame = CaptureDrawable (LoadGraphic (SUBMENU_MASK_PMAP_ANIM));
+	SubmenuFrame = CaptureDrawable(LoadGraphic(SUBMENU_MASK_PMAP_ANIM));
 	if (SubmenuFrame == NULL)
 		return false;
-	AdvanceLoadProgress ();
+	AdvanceLoadProgress();
 
-	GameStrings = CaptureStringTable (LoadStringTable (STARCON_GAME_STRINGS));
+	GameStrings = CaptureStringTable(LoadStringTable(STARCON_GAME_STRINGS));
 	if (GameStrings == 0)
 		return false;
-	AdvanceLoadProgress ();
+	AdvanceLoadProgress();
 
-	MicroFont = LoadFont (MICRO_FONT);
+	MicroFont = LoadFont(MICRO_FONT);
 	if (MicroFont == NULL)
 		return false;
-	AdvanceLoadProgress ();
+	AdvanceLoadProgress();
 
-	LabelFont = LoadFont (LABEL_FONT);
+	LabelFont = LoadFont(LABEL_FONT);
 	if (LabelFont == NULL)
 		return false;
 
-	SquareFont = LoadFont (SQUARE_FONT);
+	SquareFont = LoadFont(SQUARE_FONT);
 	if (SquareFont == NULL)
 		return false;
 
-	SlabFont = LoadFont (SLAB_FONT);
+	SlabFont = LoadFont(SLAB_FONT);
 	if (SlabFont == NULL)
 		return false;
 
-	MenuSounds = CaptureSound (LoadSound (MENU_SOUNDS));
+	MenuSounds = CaptureSound(LoadSound(MENU_SOUNDS));
 	if (MenuSounds == 0)
 		return false;
-	AdvanceLoadProgress ();
+	AdvanceLoadProgress();
 
-	InitStatusOffsets ();
-	InitSpace ();
-	AdvanceLoadProgress ();
+	InitStatusOffsets();
+	InitSpace();
+	AdvanceLoadProgress();
 
 	return true;
 }
 
-bool
-InitGameKernel (void)
+bool InitGameKernel(void)
 {
 	if (ActivityFrame == 0)
 	{
-		InitKernel ();
-		InitContexts ();
+		InitKernel();
+		InitContexts();
 	}
 	return true;
 }
 
-bool
-SetPlayerInput (uqm::COUNT playerI)
+bool SetPlayerInput(uqm::COUNT playerI)
 {
-	assert (PlayerInput[playerI] == NULL);
+	assert(PlayerInput[playerI] == NULL);
 
-	switch (PlayerControl[playerI] & CONTROL_MASK) {
+	switch (PlayerControl[playerI] & CONTROL_MASK)
+	{
 		case HUMAN_CONTROL:
 			PlayerInput[playerI] =
-					(InputContext *) HumanInputContext_new (playerI);
+				(InputContext*)HumanInputContext_new(playerI);
 			break;
 		case COMPUTER_CONTROL:
 		case CYBORG_CONTROL:
@@ -414,73 +410,69 @@ SetPlayerInput (uqm::COUNT playerI)
 			// cases for ship selection with CYBORG_CONTROL from the
 			// computer handlers.
 			PlayerInput[playerI] =
-					(InputContext *) ComputerInputContext_new (playerI);
+				(InputContext*)ComputerInputContext_new(playerI);
 			break;
 #ifdef NETPLAY
 		case NETWORK_CONTROL:
 			PlayerInput[playerI] =
-					(InputContext *) NetworkInputContext_new (playerI);
+				(InputContext*)NetworkInputContext_new(playerI);
 			break;
 #endif
 		default:
-			log_add (log_Fatal,
+			log_add(log_Fatal,
 					"Invalid control method in SetPlayerInput().");
-			explode ();  /* Does not return */
+			explode(); /* Does not return */
 	}
 
 	return PlayerInput[playerI] != NULL;
 }
 
-bool
-SetPlayerInputAll (void)
+bool SetPlayerInputAll(void)
 {
 	uqm::COUNT playerI;
 	for (playerI = 0; playerI < NUM_PLAYERS; playerI++)
-		if (!SetPlayerInput (playerI))
+		if (!SetPlayerInput(playerI))
 			return false;
 	return true;
 }
 
-void
-ClearPlayerInput (uqm::COUNT playerI)
+void ClearPlayerInput(uqm::COUNT playerI)
 {
-	if (PlayerInput[playerI] == NULL) {
-		log_add (log_Debug, "ClearPlayerInput(): PlayerInput[%d] was NULL.",
+	if (PlayerInput[playerI] == NULL)
+	{
+		log_add(log_Debug, "ClearPlayerInput(): PlayerInput[%d] was NULL.",
 				playerI);
 		return;
 	}
 
-	PlayerInput[playerI]->handlers->deleteContext (PlayerInput[playerI]);
+	PlayerInput[playerI]->handlers->deleteContext(PlayerInput[playerI]);
 	PlayerInput[playerI] = NULL;
 }
 
-void
-ClearPlayerInputAll (void)
+void ClearPlayerInputAll(void)
 {
 	uqm::COUNT playerI;
 	for (playerI = 0; playerI < NUM_PLAYERS; playerI++)
-		ClearPlayerInput (playerI);
+		ClearPlayerInput(playerI);
 }
 
-int
-initIO (void)
+int initIO(void)
 {
-	uio_init ();
-	repository = uio_openRepository (0);
+	uio_init();
+	repository = uio_openRepository(0);
 
-	rootDir = uio_openDir (repository, "/", 0);
+	rootDir = uio_openDir(repository, "/", 0);
 	if (rootDir == NULL)
 	{
-		log_add (log_Fatal, "Could not open '/' dir.");
+		log_add(log_Fatal, "Could not open '/' dir.");
 		return -1;
 	}
 	return 0;
 }
 
-void
-uninitIO (void)
+void uninitIO(void)
 {
-	uio_closeDir (rootDir);
-	uio_closeRepository (repository);
-	uio_unInit ();
+	uio_closeDir(rootDir);
+	uio_closeRepository(repository);
+	uio_unInit();
 }

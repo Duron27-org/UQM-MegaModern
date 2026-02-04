@@ -95,15 +95,16 @@
 extern "C" {
 #endif
 
-typedef enum {
+typedef enum
+{
 	FlashState_fadeIn = 0,
-			// Someway between on and off, going towards on.
+	// Someway between on and off, going towards on.
 	FlashState_on = 1,
-			// The overlay image is visible at 100% opacity.
+	// The overlay image is visible at 100% opacity.
 	FlashState_fadeOut = 2,
-			// Someway between on and off, going towards off.
+	// Someway between on and off, going towards off.
 	FlashState_off = 3,
-			// The overlay image is not visible.
+	// The overlay image is not visible.
 } FlashState;
 
 typedef struct FlashContext FlashContext;
@@ -116,42 +117,46 @@ enum FlashType
 	FlashType_overlay,
 };
 
-struct FlashContext {
+struct FlashContext
+{
 	CONTEXT gfxContext;
-			// The graphics context used for drawing.
+	// The graphics context used for drawing.
 
 	RECT rect;
-			// The rectangle to flash.
-			
+	// The rectangle to flash.
+
 	FRAME original;
-			// The original contents of the flash area.
+	// The original contents of the flash area.
 
 	FlashType type;
-			// The type of flash animation.
+	// The type of flash animation.
 
-	union {
+	union
+	{
 		/*struct {
 		} highlight;*/
-		struct {
+		struct
+		{
 			FRAME first;
-					// The first image from the transition (cross-fade).
-					// (FRAME) 0 means that the original is to be used.
+			// The first image from the transition (cross-fade).
+			// (FRAME) 0 means that the original is to be used.
 			FRAME final;
-					// The last image from the transition.
-					// (FRAME) 0 means that the original is to be used.
+			// The last image from the transition.
+			// (FRAME) 0 means that the original is to be used.
 		} transition;
-		struct {
+		struct
+		{
 			FRAME frame;
 		} overlay;
 	} u;
 
 	int startNumer;
-			// Numerator for the merge factor for the on state.
+	// Numerator for the merge factor for the on state.
 	int endNumer;
-			// Numerator for the merge factor for the off state.
+	// Numerator for the merge factor for the off state.
 	int denom;
-			// Denominator for the merge factor.
-	
+	// Denominator for the merge factor.
+
 	TimeCount fadeInTime;
 	TimeCount onTime;
 	TimeCount fadeOutTime;
@@ -161,69 +166,68 @@ struct FlashContext {
 
 	FlashState state;
 	TimeCount lastStateTime;
-			// Time of the last state change.
+	// Time of the last state change.
 	TimeCount lastFrameTime;
-			// Time of the last frame draw.
+	// Time of the last frame draw.
 
 	bool started;
 	bool paused;
 	bool isPulsing;
 
-	FRAME *cache;
+	FRAME* cache;
 	uqm::COUNT cacheSize;
 
 	uqm::COUNT lastFrameIndex;
-			// Last frame drawn; used to determine whether a frame needs to
-			// be redawn. If a cache is used, this is the index in the cache.
-			// If no cache is used, this is either 0, 1, or 2, for
-			// the respectively first, last, or other frame for the flash
-			// animation.
+	// Last frame drawn; used to determine whether a frame needs to
+	// be redawn. If a cache is used, this is the index in the cache.
+	// If no cache is used, this is either 0, 1, or 2, for
+	// the respectively first, last, or other frame for the flash
+	// animation.
 };
 
-#	define Flash_DEFAULT_FADE_IN_TIME   0
-#	define Flash_DEFAULT_ON_TIME        (ONE_SECOND / 8)
-#	define Flash_DEFAULT_FADE_OUT_TIME  0
-#	define Flash_DEFAULT_OFF_TIME       (ONE_SECOND / 8)
+#define Flash_DEFAULT_FADE_IN_TIME 0
+#define Flash_DEFAULT_ON_TIME (ONE_SECOND / 8)
+#define Flash_DEFAULT_FADE_OUT_TIME 0
+#define Flash_DEFAULT_OFF_TIME (ONE_SECOND / 8)
 
-#	define Flash_DEFAULT_CACHE_SIZE 9
-#endif  /* FLASH_INTERNAL */
+#define Flash_DEFAULT_CACHE_SIZE 9
+#endif /* FLASH_INTERNAL */
 
 
-FlashContext *Flash_createHighlight (CONTEXT gfxContext, const RECT *rect);
-FlashContext *Flash_createTransition (CONTEXT gfxContext,
-		const POINT *origin, FRAME first, FRAME final);
-FlashContext *Flash_createOverlay (CONTEXT gfxContext,
-		const POINT *origin, FRAME overlay);
+FlashContext* Flash_createHighlight(CONTEXT gfxContext, const RECT* rect);
+FlashContext* Flash_createTransition(CONTEXT gfxContext,
+									 const POINT* origin, FRAME first, FRAME final);
+FlashContext* Flash_createOverlay(CONTEXT gfxContext,
+								  const POINT* origin, FRAME overlay);
 
-void Flash_setState (FlashContext *context, FlashState state,
-		TimeCount timeSpentInState);
-void Flash_start (FlashContext *context);
-void Flash_terminate (FlashContext *context);
-void Flash_pause (FlashContext *context);
-void Flash_continue (FlashContext *context);
-void Flash_process (FlashContext *context);
-void Flash_setSpeed (FlashContext *context, TimeCount fadeInTime,
-		TimeCount onTime, TimeCount fadeOutTime, TimeCount offTime);
-void Flash_setMergeFactors(FlashContext *context, int startNumer,
-		int endNumer, int denom);
-void Flash_setFrameTime (FlashContext *context, TimeCount frameTime);
-void Flash_setPulseBox (FlashContext *context, bool isPulsing);
-bool Flash_getPulseBox (FlashContext *context);
-TimeCount Flash_nextTime (FlashContext *context);
-void Flash_setRect (FlashContext *context, const RECT *rect);
-void Flash_getRect (FlashContext *context, RECT *rect);
-void Flash_setOverlay(FlashContext *context, const POINT *origin,
-		FRAME overlay, bool cleanup); 
-void Flash_preUpdate (FlashContext *context);
-void Flash_postUpdate (FlashContext *context);
-void Flash_setCacheSize (FlashContext *context, uqm::COUNT size);
-uqm::COUNT Flash_getCacheSize (const FlashContext *context);
-void Flash_UpdateOriginal (FlashContext *context);
+void Flash_setState(FlashContext* context, FlashState state,
+					TimeCount timeSpentInState);
+void Flash_start(FlashContext* context);
+void Flash_terminate(FlashContext* context);
+void Flash_pause(FlashContext* context);
+void Flash_continue(FlashContext* context);
+void Flash_process(FlashContext* context);
+void Flash_setSpeed(FlashContext* context, TimeCount fadeInTime,
+					TimeCount onTime, TimeCount fadeOutTime, TimeCount offTime);
+void Flash_setMergeFactors(FlashContext* context, int startNumer,
+						   int endNumer, int denom);
+void Flash_setFrameTime(FlashContext* context, TimeCount frameTime);
+void Flash_setPulseBox(FlashContext* context, bool isPulsing);
+bool Flash_getPulseBox(FlashContext* context);
+TimeCount Flash_nextTime(FlashContext* context);
+void Flash_setRect(FlashContext* context, const RECT* rect);
+void Flash_getRect(FlashContext* context, RECT* rect);
+void Flash_setOverlay(FlashContext* context, const POINT* origin,
+					  FRAME overlay, bool cleanup);
+void Flash_preUpdate(FlashContext* context);
+void Flash_postUpdate(FlashContext* context);
+void Flash_setCacheSize(FlashContext* context, uqm::COUNT size);
+uqm::COUNT Flash_getCacheSize(const FlashContext* context);
+void Flash_UpdateOriginal(FlashContext* context);
 
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* UQM_FLASH_H_ */
-
+#endif /* UQM_FLASH_H_ */

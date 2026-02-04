@@ -27,13 +27,13 @@
 
 typedef struct tfb_videoclip
 {
-	TFB_VideoDecoder *decoder; // decoder to read from
-	float length; // total length of clip seconds
+	TFB_VideoDecoder* decoder; // decoder to read from
+	float length;			   // total length of clip seconds
 	uint32 w, h;
 
 	// video player data
-	RECT dst_rect;     // destination screen rect
-	RECT src_rect;     // source rect
+	RECT dst_rect; // destination screen rect
+	RECT src_rect; // source rect
 	MUSIC_REF hAudio;
 	uint32 frame_time; // time when next frame should be rendered
 	TFB_Image* frame;  // frame preped and optimized for rendering
@@ -41,16 +41,16 @@ typedef struct tfb_videoclip
 	bool playing;
 	bool own_audio;
 	uint32 loop_frame; // frame index to loop from
-	uint32 loop_to;    // frame index to loop to
+	uint32 loop_to;	   // frame index to loop to
 
 	Mutex guard;
 	uint32 want_frame; // audio-signaled desired frame index
-	int lag_cnt;       // N of frames video is behind or ahead of audio
+	int lag_cnt;	   // N of frames video is behind or ahead of audio
 
 	void* data; // user-defined data
 
 } TFB_VideoClip;
 
-extern VIDEO_REF _init_video_file(const char *pStr);
+extern VIDEO_REF _init_video_file(const char* pStr);
 
 #endif // LIBS_VIDEO_VIDEO_H_

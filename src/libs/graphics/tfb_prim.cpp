@@ -29,8 +29,7 @@
 #include "libs/log.h"
 #include "uqm/units.h"
 
-void
-TFB_Prim_Point (POINT *p, Color color, DrawMode mode, POINT ctxOrigin, bool scaled)
+void TFB_Prim_Point(POINT* p, Color color, DrawMode mode, POINT ctxOrigin, bool scaled)
 {
 	RECT r;
 
@@ -40,13 +39,12 @@ TFB_Prim_Point (POINT *p, Color color, DrawMode mode, POINT ctxOrigin, bool scal
 	r.extent.width = r.extent.height = !scaled ? 1 : 3;
 
 	if (_CurFramePtr->Type == SCREEN_DRAWABLE)
-		TFB_DrawScreen_Rect (&r, color, mode, TFB_SCREEN_MAIN);
+		TFB_DrawScreen_Rect(&r, color, mode, TFB_SCREEN_MAIN);
 	else
-		TFB_DrawImage_Rect (&r, color, mode, _CurFramePtr->image);
+		TFB_DrawImage_Rect(&r, color, mode, _CurFramePtr->image);
 }
 
-void
-TFB_Prim_Rect (RECT *r, Color color, DrawMode mode, POINT ctxOrigin, bool scaled)
+void TFB_Prim_Rect(RECT* r, Color color, DrawMode mode, POINT ctxOrigin, bool scaled)
 {
 	RECT arm;
 	int gscale;
@@ -55,28 +53,29 @@ TFB_Prim_Rect (RECT *r, Color color, DrawMode mode, POINT ctxOrigin, bool scaled
 	// XXX: Rect prim scaling is currently unused
 	//   We scale the rect size just to be consistent with stamp prim,
 	//   which does same. The caller must scale the origin!
-	gscale = GetGraphicScale ();
+	gscale = GetGraphicScale();
 	arm = *r;
 	arm.extent.width = r->extent.width;
 	arm.extent.height = scale;
-	TFB_Prim_FillRect (&arm, color, mode, ctxOrigin);
+	TFB_Prim_FillRect(&arm, color, mode, ctxOrigin);
 	arm.extent.height = r->extent.height;
 	arm.extent.width = scale;
-	TFB_Prim_FillRect (&arm, color, mode, ctxOrigin);
+	TFB_Prim_FillRect(&arm, color, mode, ctxOrigin);
 	// rounding error correction here
 	arm.corner.x += ((r->extent.width * gscale + (GSCALE_IDENTITY >> 1))
-			/ GSCALE_IDENTITY) - scale;
-	TFB_Prim_FillRect (&arm, color, mode, ctxOrigin);
+					 / GSCALE_IDENTITY)
+				  - scale;
+	TFB_Prim_FillRect(&arm, color, mode, ctxOrigin);
 	arm.corner.x = r->corner.x;
 	arm.corner.y += ((r->extent.height * gscale + (GSCALE_IDENTITY >> 1))
-			/ GSCALE_IDENTITY) - scale;
+					 / GSCALE_IDENTITY)
+				  - scale;
 	arm.extent.width = r->extent.width;
 	arm.extent.height = scale;
-	TFB_Prim_FillRect (&arm, color, mode, ctxOrigin);
+	TFB_Prim_FillRect(&arm, color, mode, ctxOrigin);
 }
 
-void
-TFB_Prim_FillRect (RECT *r, Color color, DrawMode mode, POINT ctxOrigin)
+void TFB_Prim_FillRect(RECT* r, Color color, DrawMode mode, POINT ctxOrigin)
 {
 	RECT rect;
 	int gscale;
@@ -89,64 +88,65 @@ TFB_Prim_FillRect (RECT *r, Color color, DrawMode mode, POINT ctxOrigin)
 	// XXX: Rect prim scaling is currently unused
 	//   We scale the rect size just to be consistent with stamp prim,
 	//   which does same. The caller must scale the origin!
-	gscale = GetGraphicScale ();
+	gscale = GetGraphicScale();
 	if (gscale != GSCALE_IDENTITY)
-	{	// rounding error correction here
+	{ // rounding error correction here
 		rect.extent.width = (rect.extent.width * gscale
-				+ (GSCALE_IDENTITY >> 1)) / GSCALE_IDENTITY;
+							 + (GSCALE_IDENTITY >> 1))
+						  / GSCALE_IDENTITY;
 		rect.extent.height = (rect.extent.height * gscale
-				+ (GSCALE_IDENTITY >> 1)) / GSCALE_IDENTITY;
+							  + (GSCALE_IDENTITY >> 1))
+						   / GSCALE_IDENTITY;
 	}
 
 	if (_CurFramePtr->Type == SCREEN_DRAWABLE)
-		TFB_DrawScreen_Rect (&rect, color, mode, TFB_SCREEN_MAIN);
+		TFB_DrawScreen_Rect(&rect, color, mode, TFB_SCREEN_MAIN);
 	else
-		TFB_DrawImage_Rect (&rect, color, mode, _CurFramePtr->image);
+		TFB_DrawImage_Rect(&rect, color, mode, _CurFramePtr->image);
 }
 
-void
-TFB_Prim_Line (LINE *line, Color color, DrawMode mode, POINT ctxOrigin,
-		uqm::BYTE thickness)
+void TFB_Prim_Line(LINE* line, Color color, DrawMode mode, POINT ctxOrigin,
+				   uqm::BYTE thickness)
 {
 	int x1, y1, x2, y2;
 
 	// The caller must scale the origins!
-	x1=line->first.x + ctxOrigin.x;
-	y1=line->first.y + ctxOrigin.y;
-	x2=line->second.x + ctxOrigin.x;
-	y2=line->second.y + ctxOrigin.y;
+	x1 = line->first.x + ctxOrigin.x;
+	y1 = line->first.y + ctxOrigin.y;
+	x2 = line->second.x + ctxOrigin.x;
+	y2 = line->second.y + ctxOrigin.y;
 
 	if (_CurFramePtr->Type == SCREEN_DRAWABLE)
-		TFB_DrawScreen_Line (x1, y1, x2, y2, color, mode, TFB_SCREEN_MAIN, thickness);
+		TFB_DrawScreen_Line(x1, y1, x2, y2, color, mode, TFB_SCREEN_MAIN, thickness);
 	else
-		TFB_DrawImage_Line (x1, y1, x2, y2, color, mode, _CurFramePtr->image, thickness);
+		TFB_DrawImage_Line(x1, y1, x2, y2, color, mode, _CurFramePtr->image, thickness);
 }
 
-void
-TFB_Prim_Stamp (STAMP *stmp, DrawMode mode, POINT ctxOrigin, bool unscaled)
+void TFB_Prim_Stamp(STAMP* stmp, DrawMode mode, POINT ctxOrigin, bool unscaled)
 {
 	int x, y;
 	FRAME SrcFramePtr;
-	TFB_Image *img;
-	TFB_ColorMap *cmap = NULL;
+	TFB_Image* img;
+	TFB_ColorMap* cmap = NULL;
 	int scaleMode;
 
 	SrcFramePtr = stmp->frame;
 	if (!SrcFramePtr)
 	{
-		log_add (log_Warning, "TFB_Prim_Stamp: Tried to draw a NULL frame"
-				" (Stamp address = %p)", (void *) stmp);
+		log_add(log_Warning, "TFB_Prim_Stamp: Tried to draw a NULL frame"
+							 " (Stamp address = %p)",
+				(void*)stmp);
 		return;
 	}
 	img = SrcFramePtr->image;
-	
+
 	if (!img)
 	{
-		log_add (log_Warning, "Non-existent image to TFB_Prim_Stamp()");
+		log_add(log_Warning, "Non-existent image to TFB_Prim_Stamp()");
 		return;
 	}
 
-	LockMutex (img->mutex);
+	LockMutex(img->mutex);
 
 	img->NormalHs = SrcFramePtr->HotSpot;
 	// We scale the image size here, but the caller must scale the origin!
@@ -156,80 +156,79 @@ TFB_Prim_Stamp (STAMP *stmp, DrawMode mode, POINT ctxOrigin, bool unscaled)
 	if (TFB_DrawCanvas_IsPaletted(img->NormalImg) && img->colormap_index != -1)
 	{
 		// returned cmap is addrefed, must release later
-		cmap = TFB_GetColorMap (img->colormap_index);
+		cmap = TFB_GetColorMap(img->colormap_index);
 	}
 
-	UnlockMutex (img->mutex);
+	UnlockMutex(img->mutex);
 
 	if (unscaled)
 		scaleMode = GSCALE_IDENTITY;
 	else
-		scaleMode = GetGraphicScale ();
+		scaleMode = GetGraphicScale();
 
 	if (_CurFramePtr->Type == SCREEN_DRAWABLE)
 	{
-		TFB_DrawScreen_Image (img, x, y, scaleMode,
-				GetGraphicScaleMode (), cmap, mode, TFB_SCREEN_MAIN);
+		TFB_DrawScreen_Image(img, x, y, scaleMode,
+							 GetGraphicScaleMode(), cmap, mode, TFB_SCREEN_MAIN);
 	}
 	else
 	{
-		TFB_DrawImage_Image (img, x, y, scaleMode,
-				GetGraphicScaleMode (), cmap, mode, _CurFramePtr->image);
+		TFB_DrawImage_Image(img, x, y, scaleMode,
+							GetGraphicScaleMode(), cmap, mode, _CurFramePtr->image);
 	}
 }
 
-void
-TFB_Prim_StampFill (STAMP *stmp, Color color, DrawMode mode, POINT ctxOrigin, bool unscaled)
+void TFB_Prim_StampFill(STAMP* stmp, Color color, DrawMode mode, POINT ctxOrigin, bool unscaled)
 {
 	int x, y;
 	FRAME SrcFramePtr;
-	TFB_Image *img;
+	TFB_Image* img;
 	int scaleMode;
 
 	SrcFramePtr = stmp->frame;
 	if (!SrcFramePtr)
 	{
-		log_add (log_Warning, "TFB_Prim_StampFill: Tried to draw a NULL frame"
-				" (Stamp address = %p)", (void *) stmp);
+		log_add(log_Warning, "TFB_Prim_StampFill: Tried to draw a NULL frame"
+							 " (Stamp address = %p)",
+				(void*)stmp);
 		return;
 	}
 	img = SrcFramePtr->image;
 
 	if (!img)
 	{
-		log_add (log_Warning, "Non-existent image to TFB_Prim_StampFill()");
+		log_add(log_Warning, "Non-existent image to TFB_Prim_StampFill()");
 		return;
 	}
 
-	LockMutex (img->mutex);
+	LockMutex(img->mutex);
 
 	img->NormalHs = SrcFramePtr->HotSpot;
 	// We scale the image size here, but the caller must scale the origin!
 	x = stmp->origin.x + ctxOrigin.x;
 	y = stmp->origin.y + ctxOrigin.y;
 
-	UnlockMutex (img->mutex);
+	UnlockMutex(img->mutex);
 
 	if (unscaled)
 		scaleMode = GSCALE_IDENTITY;
 	else
-		scaleMode = GetGraphicScale ();
+		scaleMode = GetGraphicScale();
 
 	if (_CurFramePtr->Type == SCREEN_DRAWABLE)
 	{
-		TFB_DrawScreen_FilledImage (img, x, y, scaleMode,
-				GetGraphicScaleMode (), color, mode, TFB_SCREEN_MAIN);
+		TFB_DrawScreen_FilledImage(img, x, y, scaleMode,
+								   GetGraphicScaleMode(), color, mode, TFB_SCREEN_MAIN);
 	}
 	else
 	{
-		TFB_DrawImage_FilledImage (img, x, y, scaleMode,
-				GetGraphicScaleMode (), color, mode, _CurFramePtr->image);
+		TFB_DrawImage_FilledImage(img, x, y, scaleMode,
+								  GetGraphicScaleMode(), color, mode, _CurFramePtr->image);
 	}
 }
 
-void
-TFB_Prim_FontChar (POINT charOrigin, TFB_Char *fontChar, TFB_Image *backing,
-		DrawMode mode, POINT ctxOrigin)
+void TFB_Prim_FontChar(POINT charOrigin, TFB_Char* fontChar, TFB_Image* backing,
+					   DrawMode mode, POINT ctxOrigin)
 {
 	int x, y;
 
@@ -239,27 +238,26 @@ TFB_Prim_FontChar (POINT charOrigin, TFB_Char *fontChar, TFB_Image *backing,
 
 	if (_CurFramePtr->Type == SCREEN_DRAWABLE)
 	{
-		TFB_DrawScreen_FontChar (fontChar, backing, x, y, mode,
-				TFB_SCREEN_MAIN);
+		TFB_DrawScreen_FontChar(fontChar, backing, x, y, mode,
+								TFB_SCREEN_MAIN);
 	}
 	else
 	{
-		TFB_DrawImage_FontChar (fontChar, backing, x, y, mode,
-				_CurFramePtr->image);
+		TFB_DrawImage_FontChar(fontChar, backing, x, y, mode,
+							   _CurFramePtr->image);
 	}
 }
 
 // Text rendering is in font.c, under the name _text_blt
 
-void
-TFB_Prim_MaskFrame (FRAME layer, FRAME base, DrawMode mode, Color *fill)
+void TFB_Prim_MaskFrame(FRAME layer, FRAME base, DrawMode mode, Color* fill)
 {
-	TFB_Image *img;
-	TFB_Image *bas;
+	TFB_Image* img;
+	TFB_Image* bas;
 
 	if (!base)
 	{
-		log_add (log_Warning, "TFB_Prim_MaskFrame: NULL frame passed");
+		log_add(log_Warning, "TFB_Prim_MaskFrame: NULL frame passed");
 		return;
 	}
 
@@ -270,11 +268,11 @@ TFB_Prim_MaskFrame (FRAME layer, FRAME base, DrawMode mode, Color *fill)
 		img = layer->image;
 		if (!img)
 		{
-			log_add (log_Warning, "Non-existent layer image to TFB_Prim_MaskFrame()");
+			log_add(log_Warning, "Non-existent layer image to TFB_Prim_MaskFrame()");
 			return;
 		}
 	}
-	
+
 	bas = base->image;
 
 	if (!bas)
@@ -283,5 +281,5 @@ TFB_Prim_MaskFrame (FRAME layer, FRAME base, DrawMode mode, Color *fill)
 		return;
 	}
 
-	TFB_DrawImage_MaskImage (img, mode, bas, fill);
+	TFB_DrawImage_MaskImage(img, mode, bas, fill);
 }

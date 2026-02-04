@@ -46,79 +46,78 @@
 // Retropropulsion
 #define SPECIAL_ENERGY_COST 1
 #define SPECIAL_WAIT 2
-#define JUMP_DIST DISPLAY_TO_WORLD (RES_SCALE (40))
+#define JUMP_DIST DISPLAY_TO_WORLD(RES_SCALE(40))
 
 static RACE_DESC umgah_desc =
-{
-	{ /* SHIP_INFO */
-		"drone",
-		FIRES_FORE | IMMEDIATE_WEAPON,
-		7, /* Super Melee cost */
-		MAX_CREW, MAX_CREW,
-		MAX_ENERGY, MAX_ENERGY,
-		UMGAH_RACE_STRINGS,
-		UMGAH_ICON_MASK_PMAP_ANIM,
-		UMGAH_MICON_MASK_PMAP_ANIM,
-		NULL, NULL, NULL
-	},
-	{ /* FLEET_STUFF */
-		833 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
-		{ /* Known location (center of SoI) */
-			1798, 6000,
-		},
-	},
 	{
-		MAX_THRUST,
-		THRUST_INCREMENT,
-		ENERGY_REGENERATION,
-		WEAPON_ENERGY_COST,
-		SPECIAL_ENERGY_COST,
-		ENERGY_WAIT,
-		TURN_WAIT,
-		THRUST_WAIT,
-		WEAPON_WAIT,
-		SPECIAL_WAIT,
-		SHIP_MASS,
-	},
-	{
+		{/* SHIP_INFO */
+		 "drone",
+		 FIRES_FORE | IMMEDIATE_WEAPON,
+		 7, /* Super Melee cost */
+		 MAX_CREW, MAX_CREW,
+		 MAX_ENERGY, MAX_ENERGY,
+		 UMGAH_RACE_STRINGS,
+		 UMGAH_ICON_MASK_PMAP_ANIM,
+		 UMGAH_MICON_MASK_PMAP_ANIM,
+		 NULL, NULL, NULL},
 		{
-			UMGAH_BIG_MASK_PMAP_ANIM,
-			UMGAH_MED_MASK_PMAP_ANIM,
-			UMGAH_SML_MASK_PMAP_ANIM,
-		},
+			/* FLEET_STUFF */
+			833 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
+			{
+				/* Known location (center of SoI) */
+				1798,
+				6000,
+			},
+		 },
 		{
-			SPRITZ_MASK_PMAP_ANIM,
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-		},
+			MAX_THRUST,
+			THRUST_INCREMENT,
+			ENERGY_REGENERATION,
+			WEAPON_ENERGY_COST,
+			SPECIAL_ENERGY_COST,
+			ENERGY_WAIT,
+			TURN_WAIT,
+			THRUST_WAIT,
+			WEAPON_WAIT,
+			SPECIAL_WAIT,
+			SHIP_MASS,
+		 },
+		{{
+			 UMGAH_BIG_MASK_PMAP_ANIM,
+			 UMGAH_MED_MASK_PMAP_ANIM,
+			 UMGAH_SML_MASK_PMAP_ANIM,
+		 },
+		 {
+			 SPRITZ_MASK_PMAP_ANIM,
+			 NULL_RESOURCE,
+			 NULL_RESOURCE,
+		 },
+		 {
+			 CONE_BIG_MASK_ANIM,
+			 CONE_MED_MASK_ANIM,
+			 CONE_SML_MASK_ANIM,
+		 },
+		 {UMGAH_CAPTAIN_MASK_PMAP_ANIM,
+		  NULL, NULL, NULL, NULL, NULL,
+		  0, 0, 0, 0, 0},
+		 UMGAH_VICTORY_SONG,
+		 UMGAH_SHIP_SOUNDS,
+		 {NULL, NULL, NULL},
+		 {NULL, NULL, NULL},
+		 {NULL, NULL, NULL},
+		 NULL,
+		 NULL},
 		{
-			CONE_BIG_MASK_ANIM,
-			CONE_MED_MASK_ANIM,
-			CONE_SML_MASK_ANIM,
-		},
-		{
-			UMGAH_CAPTAIN_MASK_PMAP_ANIM,
-			NULL, NULL, NULL, NULL, NULL,
-			0, 0, 0, 0, 0
-		},
-		UMGAH_VICTORY_SONG,
-		UMGAH_SHIP_SOUNDS,
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		NULL, NULL
-	},
-	{
+			0,
+			(LONG_RANGE_WEAPON << 2),
+			NULL,
+		 },
+		(UNINIT_FUNC*)NULL,
+		(PREPROCESS_FUNC*)NULL,
+		(POSTPROCESS_FUNC*)NULL,
+		(INIT_WEAPON_FUNC*)NULL,
 		0,
-		(LONG_RANGE_WEAPON << 2),
-		NULL,
-	},
-	(UNINIT_FUNC *) NULL,
-	(PREPROCESS_FUNC *) NULL,
-	(POSTPROCESS_FUNC *) NULL,
-	(INIT_WEAPON_FUNC *) NULL,
-	0,
-	0, /* CodeRef */
+		0, /* CodeRef */
 };
 
 
@@ -132,8 +131,8 @@ typedef struct
 typedef UMGAH_DATA CustomShipData_t;
 
 // Retrieve race-specific ship data from a race desc
-static CustomShipData_t *
-GetCustomShipData (RACE_DESC *pRaceDesc)
+static CustomShipData_t*
+GetCustomShipData(RACE_DESC* pRaceDesc)
 {
 	return (CustomShipData_t*)pRaceDesc->data;
 }
@@ -141,20 +140,20 @@ GetCustomShipData (RACE_DESC *pRaceDesc)
 // Set the race-specific data in a race desc
 // (Re)Allocates its own storage for the data.
 static void
-SetCustomShipData (RACE_DESC *pRaceDesc, const CustomShipData_t *data)
+SetCustomShipData(RACE_DESC* pRaceDesc, const CustomShipData_t* data)
 {
-	if (pRaceDesc->data == data) 
-		return;  // no-op
+	if (pRaceDesc->data == data)
+		return; // no-op
 
 	if (pRaceDesc->data) // Out with the old
 	{
-		HFree (pRaceDesc->data);
+		HFree(pRaceDesc->data);
 		pRaceDesc->data = NULL;
 	}
 
 	if (data) // In with the new
 	{
-		CustomShipData_t* newData = (CustomShipData_t*)HMalloc (sizeof (*data));
+		CustomShipData_t* newData = (CustomShipData_t*)HMalloc(sizeof(*data));
 		*newData = *data;
 		pRaceDesc->data = newData;
 	}
@@ -162,51 +161,51 @@ SetCustomShipData (RACE_DESC *pRaceDesc, const CustomShipData_t *data)
 
 
 static void
-cone_preprocess (ELEMENT *ElementPtr)
+cone_preprocess(ELEMENT* ElementPtr)
 {
-	STARSHIP *StarShipPtr;
+	STARSHIP* StarShipPtr;
 
-	GetElementStarShip (ElementPtr, &StarShipPtr);
+	GetElementStarShip(ElementPtr, &StarShipPtr);
 	StarShipPtr->RaceDescPtr->ship_data.special[0] =
-			SetRelFrameIndex (StarShipPtr->RaceDescPtr->ship_data.special[0],
-			ANGLE_TO_FACING (FULL_CIRCLE));
+		SetRelFrameIndex(StarShipPtr->RaceDescPtr->ship_data.special[0],
+						 ANGLE_TO_FACING(FULL_CIRCLE));
 
 	ElementPtr->state_flags |= APPEARING;
 }
 
 static void
-cone_collision (ELEMENT *ElementPtr0, POINT *pPt0,
-		ELEMENT *ElementPtr1, POINT *pPt1)
+cone_collision(ELEMENT* ElementPtr0, POINT* pPt0,
+			   ELEMENT* ElementPtr1, POINT* pPt1)
 {
 	HELEMENT hBlastElement;
 
-	hBlastElement = weapon_collision (ElementPtr0, pPt0, ElementPtr1, pPt1);
+	hBlastElement = weapon_collision(ElementPtr0, pPt0, ElementPtr1, pPt1);
 	if (hBlastElement)
 	{
-		RemoveElement (hBlastElement);
-		FreeElement (hBlastElement);
+		RemoveElement(hBlastElement);
+		FreeElement(hBlastElement);
 
 		ElementPtr0->state_flags &= ~DISAPPEARING;
 	}
 }
 
 static void
-umgah_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
-		uqm::COUNT ConcernCounter)
+umgah_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
+				   uqm::COUNT ConcernCounter)
 {
-	EVALUATE_DESC *lpEvalDesc;
-	STARSHIP *StarShipPtr;
-	STARSHIP *EnemyStarShipPtr;
+	EVALUATE_DESC* lpEvalDesc;
+	STARSHIP* StarShipPtr;
+	STARSHIP* EnemyStarShipPtr;
 
-	GetElementStarShip (ShipPtr, &StarShipPtr);
+	GetElementStarShip(ShipPtr, &StarShipPtr);
 	lpEvalDesc = &ObjectsOfConcern[ENEMY_WEAPON_INDEX];
 	if (lpEvalDesc->ObjectPtr && lpEvalDesc->MoveState == ENTICE)
 	{
 		if (lpEvalDesc->which_turn > 3
-				|| (StarShipPtr->old_status_flags & SPECIAL))
+			|| (StarShipPtr->old_status_flags & SPECIAL))
 			lpEvalDesc->ObjectPtr = 0;
 		else if ((lpEvalDesc->ObjectPtr->state_flags & FINITE_LIFE)
-				&& !(lpEvalDesc->ObjectPtr->state_flags & CREW_OBJECT))
+				 && !(lpEvalDesc->ObjectPtr->state_flags & CREW_OBJECT))
 			lpEvalDesc->MoveState = AVOID;
 		else
 			lpEvalDesc->MoveState = PURSUE;
@@ -214,11 +213,11 @@ umgah_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 
 	lpEvalDesc = &ObjectsOfConcern[ENEMY_SHIP_INDEX];
 	if (StarShipPtr->special_counter
-			|| ObjectsOfConcern[GRAVITY_MASS_INDEX].ObjectPtr
-			|| lpEvalDesc->ObjectPtr == 0)
+		|| ObjectsOfConcern[GRAVITY_MASS_INDEX].ObjectPtr
+		|| lpEvalDesc->ObjectPtr == 0)
 	{
 		StarShipPtr->RaceDescPtr->cyborg_control.WeaponRange = CLOSE_RANGE_WEAPON;
-		ship_intelligence (ShipPtr, ObjectsOfConcern, ConcernCounter);
+		ship_intelligence(ShipPtr, ObjectsOfConcern, ConcernCounter);
 
 		if (lpEvalDesc->which_turn < 16)
 			StarShipPtr->ship_input_state |= WEAPON;
@@ -235,34 +234,33 @@ umgah_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 		else
 			this_turn = (uqm::BYTE)lpEvalDesc->which_turn;
 
-		EnoughJuice = (bool)((WORLD_TO_TURN (RES_DESCALE (
-				JUMP_DIST * StarShipPtr->RaceDescPtr->ship_info.energy_level
-				/ SPECIAL_ENERGY_COST
-				))) > this_turn); 
-		delta_x = lpEvalDesc->ObjectPtr->next.location.x -
-				ShipPtr->next.location.x;
-		delta_y = lpEvalDesc->ObjectPtr->next.location.y -
-				ShipPtr->next.location.y;
-		EnemyBehind = (bool)(NORMALIZE_ANGLE (
-				ARCTAN (delta_x, delta_y)
-				- (FACING_TO_ANGLE (StarShipPtr->ShipFacing)
-				+ HALF_CIRCLE) + (OCTANT + (OCTANT >> 2))
-				) <= ((OCTANT + (OCTANT >> 2)) << 1));
-		
-		GetElementStarShip (lpEvalDesc->ObjectPtr, &EnemyStarShipPtr);
+		EnoughJuice = (bool)((WORLD_TO_TURN(RES_DESCALE(
+								 JUMP_DIST * StarShipPtr->RaceDescPtr->ship_info.energy_level
+								 / SPECIAL_ENERGY_COST)))
+							 > this_turn);
+		delta_x = lpEvalDesc->ObjectPtr->next.location.x - ShipPtr->next.location.x;
+		delta_y = lpEvalDesc->ObjectPtr->next.location.y - ShipPtr->next.location.y;
+		EnemyBehind = (bool)(NORMALIZE_ANGLE(
+								 ARCTAN(delta_x, delta_y)
+								 - (FACING_TO_ANGLE(StarShipPtr->ShipFacing)
+									+ HALF_CIRCLE)
+								 + (OCTANT + (OCTANT >> 2)))
+							 <= ((OCTANT + (OCTANT >> 2)) << 1));
+
+		GetElementStarShip(lpEvalDesc->ObjectPtr, &EnemyStarShipPtr);
 		if (EnoughJuice
-				&& ((StarShipPtr->old_status_flags & SPECIAL)
+			&& ((StarShipPtr->old_status_flags & SPECIAL)
 				|| EnemyBehind
 				|| (this_turn > 6
-				&& MANEUVERABILITY (
-				&EnemyStarShipPtr->RaceDescPtr->cyborg_control
-				) <= RESOLUTION_COMPENSATED(SLOW_SHIP)) 
+					&& MANEUVERABILITY(
+						   &EnemyStarShipPtr->RaceDescPtr->cyborg_control)
+						   <= RESOLUTION_COMPENSATED(SLOW_SHIP))
 				|| (this_turn >= 16 && this_turn <= 24)))
 			StarShipPtr->RaceDescPtr->cyborg_control.WeaponRange = (LONG_RANGE_WEAPON << 3);
 		else
 			StarShipPtr->RaceDescPtr->cyborg_control.WeaponRange = CLOSE_RANGE_WEAPON;
 
-		ship_intelligence (ShipPtr, ObjectsOfConcern, ConcernCounter);
+		ship_intelligence(ShipPtr, ObjectsOfConcern, ConcernCounter);
 
 		if (StarShipPtr->RaceDescPtr->cyborg_control.WeaponRange == CLOSE_RANGE_WEAPON)
 			StarShipPtr->ship_input_state &= ~SPECIAL;
@@ -272,10 +270,10 @@ umgah_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 
 			StarShipPtr->ship_input_state &= ~THRUST;
 			LinedUp = (bool)(ShipPtr->turn_wait == 0
-					&& !(StarShipPtr->old_status_flags & (LEFT | RIGHT)));
+							 && !(StarShipPtr->old_status_flags & (LEFT | RIGHT)));
 			if (((StarShipPtr->old_status_flags & SPECIAL)
-					&& this_turn <= StarShipPtr->RaceDescPtr->characteristics.special_wait)
-					|| (!(StarShipPtr->old_status_flags & SPECIAL)
+				 && this_turn <= StarShipPtr->RaceDescPtr->characteristics.special_wait)
+				|| (!(StarShipPtr->old_status_flags & SPECIAL)
 					&& EnemyBehind && (LinedUp || this_turn < 16)))
 			{
 				StarShipPtr->ship_input_state |= SPECIAL;
@@ -284,7 +282,7 @@ umgah_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 				/* don't want him backing straight into ship */
 				if (this_turn <= 8 && LinedUp)
 				{
-					if (TFB_Random () & 1)
+					if (TFB_Random() & 1)
 						StarShipPtr->ship_input_state |= LEFT;
 					else
 						StarShipPtr->ship_input_state |= RIGHT;
@@ -306,13 +304,13 @@ umgah_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 }
 
 static uqm::COUNT
-initialize_cone (ELEMENT *ShipPtr, HELEMENT ConeArray[])
+initialize_cone(ELEMENT* ShipPtr, HELEMENT ConeArray[])
 {
-	STARSHIP *StarShipPtr;
+	STARSHIP* StarShipPtr;
 	UMGAH_DATA* UmgahData;
 	MISSILE_BLOCK MissileBlock;
 
-	GetElementStarShip (ShipPtr, &StarShipPtr);
+	GetElementStarShip(ShipPtr, &StarShipPtr);
 	MissileBlock.cx = ShipPtr->next.location.x;
 	MissileBlock.cy = ShipPtr->next.location.y;
 	MissileBlock.farray = StarShipPtr->RaceDescPtr->ship_data.special;
@@ -329,83 +327,84 @@ initialize_cone (ELEMENT *ShipPtr, HELEMENT ConeArray[])
 
 	// This func is called every frame while the player is holding down WEAPON
 	// Don't reset the cone FRAME to the first image every time
-	UmgahData = GetCustomShipData (StarShipPtr->RaceDescPtr);
+	UmgahData = GetCustomShipData(StarShipPtr->RaceDescPtr);
 	if (!UmgahData || StarShipPtr->ShipFacing != UmgahData->prevFacing)
 	{
 		const UMGAH_DATA shipData = {StarShipPtr->ShipFacing};
 
-		SetCustomShipData (StarShipPtr->RaceDescPtr, &shipData);
+		SetCustomShipData(StarShipPtr->RaceDescPtr, &shipData);
 
 		StarShipPtr->RaceDescPtr->ship_data.special[0] =
-				SetAbsFrameIndex (
+			SetAbsFrameIndex(
 				StarShipPtr->RaceDescPtr->ship_data.special[0],
 				StarShipPtr->ShipFacing);
 	}
-	
-	MissileBlock.index = GetFrameIndex (StarShipPtr->RaceDescPtr->ship_data.special[0]);
-	ConeArray[0] = initialize_missile (&MissileBlock);
+
+	MissileBlock.index = GetFrameIndex(StarShipPtr->RaceDescPtr->ship_data.special[0]);
+	ConeArray[0] = initialize_missile(&MissileBlock);
 
 	if (ConeArray[0])
 	{
-		ELEMENT *ConePtr;
+		ELEMENT* ConePtr;
 
-		LockElement (ConeArray[0], &ConePtr);
+		LockElement(ConeArray[0], &ConePtr);
 		ConePtr->collision_func = cone_collision;
 		ConePtr->state_flags &= ~APPEARING;
 		ConePtr->next = ConePtr->current;
-		InitIntersectStartPoint (ConePtr);
-		InitIntersectEndPoint (ConePtr);
+		InitIntersectStartPoint(ConePtr);
+		InitIntersectEndPoint(ConePtr);
 		ConePtr->IntersectControl.IntersectStamp.frame =
-				StarShipPtr->RaceDescPtr->ship_data.special[0];
-		UnlockElement (ConeArray[0]);
+			StarShipPtr->RaceDescPtr->ship_data.special[0];
+		UnlockElement(ConeArray[0]);
 	}
 
 	return (1);
 }
 
 static void
-umgah_postprocess (ELEMENT *ElementPtr)
+umgah_postprocess(ELEMENT* ElementPtr)
 {
-	STARSHIP *StarShipPtr;
+	STARSHIP* StarShipPtr;
 
-	GetElementStarShip (ElementPtr, &StarShipPtr);
+	GetElementStarShip(ElementPtr, &StarShipPtr);
 	if (StarShipPtr->special_counter > 0)
 	{
 		StarShipPtr->special_counter = 0;
 
-		ZeroVelocityComponents (&ElementPtr->velocity);
+		ZeroVelocityComponents(&ElementPtr->velocity);
 	}
 }
 
 static void
-umgah_preprocess (ELEMENT *ElementPtr)
+umgah_preprocess(ELEMENT* ElementPtr)
 {
-	STARSHIP *StarShipPtr;
+	STARSHIP* StarShipPtr;
 
-	GetElementStarShip (ElementPtr, &StarShipPtr);
-	
+	GetElementStarShip(ElementPtr, &StarShipPtr);
+
 	if (ElementPtr->state_flags & APPEARING)
 	{
 		// Reset the value just in case
-		SetCustomShipData (StarShipPtr->RaceDescPtr, NULL);
+		SetCustomShipData(StarShipPtr->RaceDescPtr, NULL);
 	}
 	else
 	{
 		if (ElementPtr->thrust_wait == 0
-				&& (StarShipPtr->cur_status_flags & SPECIAL)
-				&& DeltaEnergy (ElementPtr, -SPECIAL_ENERGY_COST))
+			&& (StarShipPtr->cur_status_flags & SPECIAL)
+			&& DeltaEnergy(ElementPtr, -SPECIAL_ENERGY_COST))
 		{
 			uqm::COUNT facing;
 
-			ProcessSound (SetAbsSoundIndex (
-							/* ZIP_BACKWARDS */
-					StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 1), ElementPtr);
-			facing = FACING_TO_ANGLE (StarShipPtr->ShipFacing) + HALF_CIRCLE;
-			DeltaVelocityComponents (&ElementPtr->velocity,
-					COSINE (facing, WORLD_TO_VELOCITY (JUMP_DIST)),
-					SINE (facing, WORLD_TO_VELOCITY (JUMP_DIST)));
+			ProcessSound(SetAbsSoundIndex(
+							 /* ZIP_BACKWARDS */
+							 StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 1),
+						 ElementPtr);
+			facing = FACING_TO_ANGLE(StarShipPtr->ShipFacing) + HALF_CIRCLE;
+			DeltaVelocityComponents(&ElementPtr->velocity,
+									COSINE(facing, WORLD_TO_VELOCITY(JUMP_DIST)),
+									SINE(facing, WORLD_TO_VELOCITY(JUMP_DIST)));
 			StarShipPtr->cur_status_flags &=
-					~(SHIP_AT_MAX_SPEED | SHIP_BEYOND_MAX_SPEED);
+				~(SHIP_AT_MAX_SPEED | SHIP_BEYOND_MAX_SPEED);
 
 			StarShipPtr->special_counter = SPECIAL_WAIT;
 		}
@@ -413,19 +412,20 @@ umgah_preprocess (ELEMENT *ElementPtr)
 }
 
 static void
-uninit_umgah (RACE_DESC *pRaceDesc)
+uninit_umgah(RACE_DESC* pRaceDesc)
 {
-	SetCustomShipData (pRaceDesc, NULL);
+	SetCustomShipData(pRaceDesc, NULL);
 }
 
 RACE_DESC*
-init_umgah (void)
+init_umgah(void)
 {
-	RACE_DESC *RaceDescPtr;
+	RACE_DESC* RaceDescPtr;
 
-	if (IS_HD) {
-		umgah_desc.characteristics.max_thrust = RES_SCALE (MAX_THRUST);
-		umgah_desc.characteristics.thrust_increment = RES_SCALE (THRUST_INCREMENT);
+	if (IS_HD)
+	{
+		umgah_desc.characteristics.max_thrust = RES_SCALE(MAX_THRUST);
+		umgah_desc.characteristics.thrust_increment = RES_SCALE(THRUST_INCREMENT);
 		umgah_desc.cyborg_control.WeaponRange = (LONG_RANGE_WEAPON_HD << 2);
 	}
 	else
@@ -445,4 +445,3 @@ init_umgah (void)
 
 	return (RaceDescPtr);
 }
-

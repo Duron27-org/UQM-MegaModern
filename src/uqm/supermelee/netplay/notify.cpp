@@ -29,90 +29,85 @@
 // Convert a local player number to a side indication relative to this
 // party.
 static inline NetplaySide
-netSide(NetConnection *conn, int side) {
+netSide(NetConnection* conn, int side)
+{
 	if (side == conn->player)
 		return NetplaySide_remote;
 
 	return NetplaySide_local;
 }
 
-void
-Netplay_Notify_shipSelected(NetConnection *conn, FleetShipIndex index) {
+void Netplay_Notify_shipSelected(NetConnection* conn, FleetShipIndex index)
+{
 	assert(NetConnection_getState(conn) == NetState_selectShip);
 
 	sendSelectShip(conn, index);
 }
 
-void
-Netplay_Notify_battleInput(NetConnection *conn, BATTLE_INPUT_STATE input) {
-	assert(NetConnection_getState(conn) == NetState_inBattle ||
-			NetConnection_getState(conn) == NetState_endingBattle ||
-			NetConnection_getState(conn) == NetState_endingBattle2);
+void Netplay_Notify_battleInput(NetConnection* conn, BATTLE_INPUT_STATE input)
+{
+	assert(NetConnection_getState(conn) == NetState_inBattle || NetConnection_getState(conn) == NetState_endingBattle || NetConnection_getState(conn) == NetState_endingBattle2);
 
 	sendBattleInput(conn, input);
 }
 
-void
-Netplay_Notify_setTeamName(NetConnection *conn, int player,
-		const char *name, size_t len) {
+void Netplay_Notify_setTeamName(NetConnection* conn, int player,
+								const char* name, size_t len)
+{
 	assert(NetConnection_getState(conn) == NetState_inSetup);
 	assert(!conn->stateFlags.handshake.localOk);
-	
+
 	sendTeamName(conn, netSide(conn, player), name, len);
 }
 
 // On initialisation, or load.
-void
-Netplay_Notify_setFleet(NetConnection *conn, int player,
-		const MeleeShip *fleet, size_t fleetSize) {
+void Netplay_Notify_setFleet(NetConnection* conn, int player,
+							 const MeleeShip* fleet, size_t fleetSize)
+{
 	assert(NetConnection_getState(conn) == NetState_inSetup);
 	assert(!conn->stateFlags.handshake.localOk);
 
 	sendFleet(conn, netSide(conn, player), fleet, fleetSize);
 }
 
-void
-Netplay_Notify_setShip(NetConnection *conn, int player,
-		FleetShipIndex index, MeleeShip ship) {
+void Netplay_Notify_setShip(NetConnection* conn, int player,
+							FleetShipIndex index, MeleeShip ship)
+{
 	assert(NetConnection_getState(conn) == NetState_inSetup);
 	assert(!conn->stateFlags.handshake.localOk);
 
 	sendFleetShip(conn, netSide(conn, player), index, ship);
 }
 
-void
-Netplay_Notify_seedRandom(NetConnection *conn, uint32 seed) {
+void Netplay_Notify_seedRandom(NetConnection* conn, uint32 seed)
+{
 	assert(NetConnection_getState(conn) == NetState_preBattle);
 
 	sendSeedRandom(conn, seed);
 	conn->stateFlags.agreement.randomSeed = true;
 }
 
-void
-Netplay_Notify_inputDelay(NetConnection *conn, uint32 delay) {
+void Netplay_Notify_inputDelay(NetConnection* conn, uint32 delay)
+{
 	assert(NetConnection_getState(conn) == NetState_preBattle);
 
 	sendInputDelay(conn, delay);
 }
 
-void
-Netplay_Notify_frameCount(NetConnection *conn,
-		BattleFrameCounter frameCount) {
+void Netplay_Notify_frameCount(NetConnection* conn,
+							   BattleFrameCounter frameCount)
+{
 	assert(NetConnection_getState(conn) == NetState_endingBattle);
 
 	sendFrameCount(conn, frameCount);
 }
 
 #ifdef NETPLAY_CHECKSUM
-void
-Netplay_Notify_checksum(NetConnection *conn, BattleFrameCounter frameNr,
-		Checksum checksum) {
+void Netplay_Notify_checksum(NetConnection* conn, BattleFrameCounter frameNr,
+							 Checksum checksum)
+{
 	assert(NetState_battleActive(NetConnection_getState(conn)));
 
 	sendChecksum(conn, frameNr, checksum);
 }
-#endif  /* NETPLAY_CHECKSUM */
-
-
-
-
+#endif /* NETPLAY_CHECKSUM */

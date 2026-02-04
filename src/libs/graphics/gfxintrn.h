@@ -29,4 +29,3 @@
 #include "font.h"
 
 #endif /* LIBS_GRAPHICS_GFXINTRN_H_ */
-

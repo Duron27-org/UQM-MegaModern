@@ -20,31 +20,33 @@
 #include "stringhashtable.h"
 #include "types.h"
 #include "libs/misc.h"
-		// For unconst()
+// For unconst()
 #include "libs/uio/uioport.h"
 
 static inline uio_uint32 StringHashTable_hash(
-		StringHashTable_HashTable *hashTable, const char *string);
+	StringHashTable_HashTable* hashTable, const char* string);
 static inline uio_bool StringHashTable_equal(
-		StringHashTable_HashTable *hashTable,
-		const char *key1, const char *key2);
-static inline char *StringHashTable_copy(
-		StringHashTable_HashTable *hashTable, const char *key);
+	StringHashTable_HashTable* hashTable,
+	const char* key1, const char* key2);
+static inline char* StringHashTable_copy(
+	StringHashTable_HashTable* hashTable, const char* key);
 
 #include "libs/uio/hashtable.cpp"
 
 
 static inline uio_uint32
-StringHashTable_hash(StringHashTable_HashTable *hashTable, const char *key) {
+StringHashTable_hash(StringHashTable_HashTable* hashTable, const char* key)
+{
 	uio_uint32 hash;
 
-	(void) hashTable;
+	(void)hashTable;
 	// Rotating hash, variation of something on the web which
 	// wasn't original itself.
 	hash = 0;
-			// Hash was on that web page initialised as the length,
-			// but that isn't known at this time.
-	while (*key != '\0') {
+	// Hash was on that web page initialised as the length,
+	// but that isn't known at this time.
+	while (*key != '\0')
+	{
 		hash = (hash << 4) ^ (hash >> 28) ^ *key;
 		key++;
 	}
@@ -52,16 +54,17 @@ StringHashTable_hash(StringHashTable_HashTable *hashTable, const char *key) {
 }
 
 static inline uio_bool
-StringHashTable_equal(StringHashTable_HashTable *hashTable,
-		const char *key1, const char *key2) {
-	(void) hashTable;
+StringHashTable_equal(StringHashTable_HashTable* hashTable,
+					  const char* key1, const char* key2)
+{
+	(void)hashTable;
 	return strcmp(key1, key2) == 0;
 }
 
-static inline char *
-StringHashTable_copy(StringHashTable_HashTable *hashTable,
-		const char *key) {
-	(void) hashTable;
+static inline char*
+StringHashTable_copy(StringHashTable_HashTable* hashTable,
+					 const char* key)
+{
+	(void)hashTable;
 	return (char*)unconst(key);
 }
-

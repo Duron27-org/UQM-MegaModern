@@ -21,11 +21,10 @@
 extern "C" {
 #endif
 
-RACE_DESC *init_human (void);
+RACE_DESC* init_human(void);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* HUMAN_H */
-
+#endif /* HUMAN_H */

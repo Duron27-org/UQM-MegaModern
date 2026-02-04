@@ -25,14 +25,13 @@
 extern "C" {
 #endif
 
-extern void InitialIntersect (void);
+extern void InitialIntersect(void);
 
-extern void LoadIPData (void);
-extern void FreeIPData (void);
+extern void LoadIPData(void);
+extern void FreeIPData(void);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
 #endif /* SOLARSYS_H */
-

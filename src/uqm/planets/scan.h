@@ -40,36 +40,35 @@ struct scan_desc
 
 struct scan_block
 {
-	POINT *line_base;
+	POINT* line_base;
 	uqm::COUNT num_scans;
 	uqm::COUNT num_same_scans;
-	SCAN_DESC *scan_base;
+	SCAN_DESC* scan_base;
 };
 
-extern void ScanSystem (void);
+extern void ScanSystem(void);
 
-extern void RepairBackRect (RECT *pRect);
-extern void GeneratePlanetSide (void);
-extern uqm::COUNT callGenerateForScanType (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, uqm::COUNT node, uqm::BYTE scanType, NODE_INFO *);
+extern void RepairBackRect(RECT* pRect);
+extern void GeneratePlanetSide(void);
+extern uqm::COUNT callGenerateForScanType(const SOLARSYS_STATE*,
+										  const PLANET_DESC* world, uqm::COUNT node, uqm::BYTE scanType, NODE_INFO*);
 // Returns true if the node should be removed from the surface
-extern bool callPickupForScanType (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, uqm::COUNT node, uqm::BYTE scanType);
+extern bool callPickupForScanType(SOLARSYS_STATE* solarSys,
+								  PLANET_DESC* world, uqm::COUNT node, uqm::BYTE scanType);
 
-extern void RedrawSurfaceScan (const POINT *newLoc);
-extern CONTEXT GetScanContext (bool *owner);
-extern void DestroyScanContext (void);
+extern void RedrawSurfaceScan(const POINT* newLoc);
+extern CONTEXT GetScanContext(bool* owner);
+extern void DestroyScanContext(void);
 
-bool isNodeRetrieved (PLANET_INFO *planetInfo, uqm::BYTE scanType, uqm::BYTE nodeNr);
-uqm::COUNT countNodesRetrieved (PLANET_INFO *planetInfo, uqm::BYTE scanType);
-void setNodeRetrieved (PLANET_INFO *planetInfo, uqm::BYTE scanType, uqm::BYTE nodeNr);
-void setNodeNotRetrieved (PLANET_INFO *planetInfo, uqm::BYTE scanType, uqm::BYTE nodeNr);
+bool isNodeRetrieved(PLANET_INFO* planetInfo, uqm::BYTE scanType, uqm::BYTE nodeNr);
+uqm::COUNT countNodesRetrieved(PLANET_INFO* planetInfo, uqm::BYTE scanType);
+void setNodeRetrieved(PLANET_INFO* planetInfo, uqm::BYTE scanType, uqm::BYTE nodeNr);
+void setNodeNotRetrieved(PLANET_INFO* planetInfo, uqm::BYTE scanType, uqm::BYTE nodeNr);
 
-void GetPlanetTitle (uqm::CHAR_T* buf, uqm::COUNT bufsize);
+void GetPlanetTitle(uqm::CHAR_T* buf, uqm::COUNT bufsize);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
 #endif /* UQM_PLANETS_SCAN_H_ */
-

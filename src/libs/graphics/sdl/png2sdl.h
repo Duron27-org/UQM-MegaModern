@@ -21,16 +21,16 @@
 #include "SDL_video.h"
 
 
-SDL_Surface *TFB_png_to_sdl (SDL_RWops *src);
+SDL_Surface* TFB_png_to_sdl(SDL_RWops* src);
 
 #if 0 //defined(__cplusplus)
 extern "C" {
 #endif
 
 #define SDL_SavePNG(surface, file) \
-		TFB_sdl_to_png (surface, SDL_RWFromFile (file, "wb"), 1)
-extern int TFB_sdl_to_png (SDL_Surface *surface, SDL_RWops *rw, int freedst);
-extern SDL_Surface *SDL_PNGFormatAlpha (SDL_Surface *src);
+	TFB_sdl_to_png(surface, SDL_RWFromFile(file, "wb"), 1)
+extern int TFB_sdl_to_png(SDL_Surface* surface, SDL_RWops* rw, int freedst);
+extern SDL_Surface* SDL_PNGFormatAlpha(SDL_Surface* src);
 
 #if 0 //defined(__cplusplus)
 }
@@ -60,16 +60,16 @@ extern SDL_Surface *SDL_PNGFormatAlpha (SDL_Surface *src);
 #include "SDL_video.h"
 
 
-SDL_Surface *TFB_png_to_sdl (SDL_RWops *src);
+SDL_Surface* TFB_png_to_sdl(SDL_RWops* src);
 
 #if 0 //defined(__cplusplus)
 extern "C" {
 #endif
 
 #define SDL_SavePNG(surface, file) \
-		TFB_sdl_to_png (surface, SDL_RWFromFile (file, "wb"), 1)
-extern int TFB_sdl_to_png (SDL_Surface *surface, SDL_RWops *rw, int freedst);
-extern SDL_Surface *SDL_PNGFormatAlpha (SDL_Surface *src);
+	TFB_sdl_to_png(surface, SDL_RWFromFile(file, "wb"), 1)
+extern int TFB_sdl_to_png(SDL_Surface* surface, SDL_RWops* rw, int freedst);
+extern SDL_Surface* SDL_PNGFormatAlpha(SDL_Surface* src);
 
 #if 0 //defined(__cplusplus)
 }

@@ -32,20 +32,19 @@ extern FRAME stars_in_space;
 extern FRAME stars_misc[NUM_VIEWS];
 extern FRAME scenery;
 
-extern bool InitSpace (void);
-extern void UninitSpace (void);
+extern bool InitSpace(void);
+extern void UninitSpace(void);
 
-extern uqm::SIZE InitShips (void);
-extern void UninitShips (void);
-extern void ReloadGameContent (void);
+extern uqm::SIZE InitShips(void);
+extern void UninitShips(void);
+extern void ReloadGameContent(void);
 
-extern bool load_animation (FRAME *pixarray, RESOURCE big_res,
-		RESOURCE med_res, RESOURCE sml_res);
-extern bool free_image (FRAME *pixarray);
+extern bool load_animation(FRAME* pixarray, RESOURCE big_res,
+						   RESOURCE med_res, RESOURCE sml_res);
+extern bool free_image(FRAME* pixarray);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* UQM_INIT_H_ */
-
+#endif /* UQM_INIT_H_ */

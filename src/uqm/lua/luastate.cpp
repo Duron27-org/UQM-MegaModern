@@ -27,23 +27,24 @@
 
 // We store the game state in the global Lua context, in the Lua registry.
 
-static void luaUqm_initStatePropertyTable(lua_State *luaState);
-static void luaUqm_initEventTable(lua_State *luaState);
+static void luaUqm_initStatePropertyTable(lua_State* luaState);
+static void luaUqm_initEventTable(lua_State* luaState);
 
-lua_State *luaUqm_globalState = NULL;
+lua_State* luaUqm_globalState = NULL;
 static const char statePropRegistryKey[] =
-		"uqm_state_prop_registryKey";
+	"uqm_state_prop_registryKey";
 static const char eventRegistryKey[] =
-		"uqm_event_registryKey";
+	"uqm_event_registryKey";
 
 DELTA_TYPES luaUqm_delta;
 
 // Init the global Lua state. Called at the start of the main loop.
-void
-luaUqm_initState(void) {
-	if (luaUqm_globalState != NULL) {
+void luaUqm_initState(void)
+{
+	if (luaUqm_globalState != NULL)
+	{
 		log_add(log_Warning, "Lua state multiply uninitialized");
-		luaUqm_uninitState ();
+		luaUqm_uninitState();
 	}
 	luaUqm_globalState = luaL_newstate();
 	luaUqm_initStatePropertyTable(luaUqm_globalState);
@@ -56,12 +57,15 @@ luaUqm_initState(void) {
 }
 
 // Uninit the global Lua state.
-void
-luaUqm_uninitState(void) {
-	if (luaUqm_globalState != NULL) {
+void luaUqm_uninitState(void)
+{
+	if (luaUqm_globalState != NULL)
+	{
 		lua_close(luaUqm_globalState);
 		luaUqm_globalState = NULL;
-	} else {
+	}
+	else
+	{
 		log_add(log_Warning, "Lua state multiply uninitialized");
 	}
 }
@@ -71,14 +75,17 @@ luaUqm_uninitState(void) {
 // old data to dispose of. Called at the start of a new game, or when a
 // game is loaded.
 
-void
-luaUqm_reinitState(void) {
-	if (luaUqm_globalState == NULL) {
+void luaUqm_reinitState(void)
+{
+	if (luaUqm_globalState == NULL)
+	{
 		log_add(log_Warning, "Lua state reinitialized while NULL");
-	} else {
-		luaUqm_uninitState ();
 	}
-	luaUqm_initState ();
+	else
+	{
+		luaUqm_uninitState();
+	}
+	luaUqm_initState();
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -86,7 +93,7 @@ luaUqm_reinitState(void) {
 /////////////////////////////////////////////////////////////////////////////
 
 static void
-luaUqm_initStatePropertyTable(lua_State *luaState)
+luaUqm_initStatePropertyTable(lua_State* luaState)
 {
 	lua_pushstring(luaState, statePropRegistryKey);
 	lua_newtable(luaState);
@@ -94,21 +101,24 @@ luaUqm_initStatePropertyTable(lua_State *luaState)
 }
 
 // Check whether a lua value has a type acceptable as a property value.
-int
-luaUqm_checkPropValueType(lua_State *luaState, const char *funName,
-		int nameIndex) {
+int luaUqm_checkPropValueType(lua_State* luaState, const char* funName,
+							  int nameIndex)
+{
 	int type = lua_type(luaState, nameIndex);
-	switch (type) {
+	switch (type)
+	{
 		case LUA_TNUMBER:
 		case LUA_TBOOLEAN:
 		case LUA_TSTRING:
 			// Ok
 			return 0;
-		default: {
-			const char *typeName = lua_typename(luaState, nameIndex);
-			return luaL_error(luaState, "Property value has an invalid "
-					"type, in parameter to %s() (%s)", funName, typeName);
-		}
+		default:
+			{
+				const char* typeName = lua_typename(luaState, nameIndex);
+				return luaL_error(luaState, "Property value has an invalid "
+											"type, in parameter to %s() (%s)",
+								  funName, typeName);
+			}
 	}
 }
 
@@ -116,8 +126,8 @@ luaUqm_checkPropValueType(lua_State *luaState, const char *funName,
 // 'nameIndex' to the value on the stack with index 'valueIndex'.
 // Pre: nameIndex points to a string, and valueIndex points to a valid
 // value.
-void
-luaUqm_setProp(lua_State *luaState, int nameIndex, int valueIndex) {
+void luaUqm_setProp(lua_State* luaState, int nameIndex, int valueIndex)
+{
 	nameIndex = lua_absindex(luaState, nameIndex);
 	valueIndex = lua_absindex(luaState, valueIndex);
 
@@ -136,8 +146,8 @@ luaUqm_setProp(lua_State *luaState, int nameIndex, int valueIndex) {
 // 'nameIndex'.
 // Pushes the property value on the stack.
 // Pre: nameIndex points to a string.
-void
-luaUqm_getProp(lua_State *luaState, int nameIndex) {
+void luaUqm_getProp(lua_State* luaState, int nameIndex)
+{
 	nameIndex = lua_absindex(luaState, nameIndex);
 
 	lua_getfield(luaState, LUA_REGISTRYINDEX, statePropRegistryKey);
@@ -152,8 +162,7 @@ luaUqm_getProp(lua_State *luaState, int nameIndex) {
 	// [-1] -> registry[statePropRegistrykey][name]
 }
 
-void
-setGameStateUint(const char *name, uqm::DWORD val)
+void setGameStateUint(const char* name, uqm::DWORD val)
 {
 	lua_pushstring(luaUqm_globalState, name);
 	lua_pushinteger(luaUqm_globalState, val);
@@ -166,7 +175,7 @@ setGameStateUint(const char *name, uqm::DWORD val)
 }
 
 uqm::DWORD
-getGameStateUint(const char *name)
+getGameStateUint(const char* name)
 {
 	uqm::DWORD result;
 	int resultType;
@@ -177,7 +186,8 @@ getGameStateUint(const char *name)
 	// [-1] -> propValue
 
 	resultType = lua_type(luaUqm_globalState, -1);
-	switch (resultType) {
+	switch (resultType)
+	{
 		case LUA_TNIL:
 			// Unitialised properties are 0.
 			lua_pop(luaUqm_globalState, 2);
@@ -187,13 +197,14 @@ getGameStateUint(const char *name)
 			break;
 		default:
 			log_add(log_Error, "Warning: getGameState(): property '%s' has "
-					"a non-number value (%s).", name,
+							   "a non-number value (%s).",
+					name,
 					lua_typename(luaUqm_globalState, -1));
 			lua_pop(luaUqm_globalState, 2);
 			return 0;
 	}
 
-	result = (uqm::DWORD) lua_tointeger(luaUqm_globalState, -1);
+	result = (uqm::DWORD)lua_tointeger(luaUqm_globalState, -1);
 	lua_pop(luaUqm_globalState, 2);
 	return result;
 }
@@ -203,16 +214,14 @@ getGameStateUint(const char *name)
 /////////////////////////////////////////////////////////////////////////////
 
 static void
-luaUqm_initEventTable(lua_State *luaState)
+luaUqm_initEventTable(lua_State* luaState)
 {
 	lua_pushstring(luaState, eventRegistryKey);
 	lua_newtable(luaState);
 	lua_settable(luaState, LUA_REGISTRYINDEX);
 }
 
-void
-luaUqm_getEventTable(lua_State *luaState)
+void luaUqm_getEventTable(lua_State* luaState)
 {
 	lua_getfield(luaState, LUA_REGISTRYINDEX, eventRegistryKey);
 }
-

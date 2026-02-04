@@ -20,7 +20,7 @@
 #include "lzh.h"
 
 static void
-reconst (void)
+reconst(void)
 {
 	uqm::COUNT i, j;
 
@@ -47,11 +47,11 @@ reconst (void)
 			;
 		k++;
 		l = (j - k);
-		
-		memmove (_lpCurCodeDesc->freq + k + 1, _lpCurCodeDesc->freq + k,
+
+		memmove(_lpCurCodeDesc->freq + k + 1, _lpCurCodeDesc->freq + k,
 				sizeof(_lpCurCodeDesc->freq[0]) * l);
 		_lpCurCodeDesc->freq[k] = f;
-		memmove (_lpCurCodeDesc->son + k + 1, _lpCurCodeDesc->son + k,
+		memmove(_lpCurCodeDesc->son + k + 1, _lpCurCodeDesc->son + k,
 				sizeof(_lpCurCodeDesc->son[0]) * l);
 		_lpCurCodeDesc->son[k] = i;
 	}
@@ -68,13 +68,12 @@ reconst (void)
 
 /* update freq tree */
 
-void
-_update (uqm::COUNT c)
+void _update(uqm::COUNT c)
 {
 	PLZHCODE_DESC lpCD;
 
 	if ((lpCD = _lpCurCodeDesc)->freq[R] == MAX_FREQ)
-		reconst ();
+		reconst();
 
 	c = lpCD->prnt[c];
 	do
@@ -111,5 +110,3 @@ _update (uqm::COUNT c)
 		}
 	} while ((c = lpCD->prnt[c]) != 0); /* do it until reaching the root */
 }
-
-

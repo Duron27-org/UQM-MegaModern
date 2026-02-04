@@ -21,12 +21,12 @@
 #include "libs/graphics/drawcmd.h"
 #include "libs/timelib.h"
 #include "libs/misc.h"
-		// for TFB_DEBUG_HALT
+// for TFB_DEBUG_HALT
 #include "options.h"
 #include "SDL.h"
 
-int fs_height = 0; 
-int fs_width  = 0;
+int fs_height = 0;
+int fs_width = 0;
 
 // Actual canvas size we're plotting our graphics to
 int CanvasWidth;
@@ -54,43 +54,37 @@ volatile int TransitionAmount = 255;
 static int gscale = GSCALE_IDENTITY;
 static int gscale_mode = TFB_SCALE_NEAREST;
 
-void
-DrawFromExtraScreen (RECT *r)
+void DrawFromExtraScreen(RECT* r)
 {
 	TFB_DrawScreen_Copy(r, TFB_SCREEN_EXTRA, TFB_SCREEN_MAIN);
 }
 
-void
-LoadIntoExtraScreen (RECT *r)
+void LoadIntoExtraScreen(RECT* r)
 {
 	TFB_DrawScreen_Copy(r, TFB_SCREEN_MAIN, TFB_SCREEN_EXTRA);
 }
 
-int
-SetGraphicScale (int scale)
+int SetGraphicScale(int scale)
 {
 	int old_scale = gscale;
 	gscale = (scale ? scale : GSCALE_IDENTITY);
 	return old_scale;
 }
 
-int
-GetGraphicScale (void)
+int GetGraphicScale(void)
 {
 	return gscale;
 }
 
-int
-SetGraphicScaleMode (int mode)
+int SetGraphicScaleMode(int mode)
 {
 	int old_mode = gscale_mode;
-	assert (mode >= TFB_SCALE_NEAREST && mode <= TFB_SCALE_TRILINEAR);
+	assert(mode >= TFB_SCALE_NEAREST && mode <= TFB_SCALE_TRILINEAR);
 	gscale_mode = mode;
 	return old_mode;
 }
 
-int
-GetGraphicScaleMode (void)
+int GetGraphicScaleMode(void)
 {
 	return gscale_mode;
 }
@@ -99,30 +93,27 @@ GetGraphicScaleMode (void)
    DrawCommands that will never be flipped to the screen half-rendered.
    BatchGraphics and UnbatchGraphics function vaguely like a non-blocking
    recursive lock to do this respect. */
-void
-BatchGraphics (void)
+void BatchGraphics(void)
 {
-	TFB_BatchGraphics ();
+	TFB_BatchGraphics();
 }
 
-void
-UnbatchGraphics (void)
+void UnbatchGraphics(void)
 {
-	TFB_UnbatchGraphics ();
+	TFB_UnbatchGraphics();
 }
 
 /* Sleeps this thread until all Draw Commands queued by that thread have
    been processed. */
 
-void
-FlushGraphics (void)
+void FlushGraphics(void)
 {
-	TFB_DrawScreen_WaitForSignal ();
+	TFB_DrawScreen_WaitForSignal();
 }
 
 #if SDL_MAJOR_VERSION == 1
 static void
-ExpandRect (RECT *rect, int expansion)
+ExpandRect(RECT* rect, int expansion)
 {
 	if (rect->corner.x - expansion >= 0)
 	{
@@ -158,28 +149,26 @@ ExpandRect (RECT *rect, int expansion)
 }
 #endif // SDL_MAJOR_VERSION
 
-void
-SetTransitionSource (const RECT *pRect)
+void SetTransitionSource(const RECT* pRect)
 {
 #if SDL_MAJOR_VERSION == 1
 	RECT ActualRect;
 
 	if (pRect)
-	{	/* expand the rect to accomodate scalers in OpenGL mode */
+	{ /* expand the rect to accomodate scalers in OpenGL mode */
 		ActualRect = *pRect;
 		pRect = &ActualRect;
-		ExpandRect (&ActualRect, 2);
+		ExpandRect(&ActualRect, 2);
 	}
-	TFB_DrawScreen_Copy (pRect, TFB_SCREEN_MAIN, TFB_SCREEN_TRANSITION);
-#else	/* If we want custom resolutions, we have to make all transitions full screen*/
-	TFB_DrawScreen_Copy (NULL, TFB_SCREEN_MAIN, TFB_SCREEN_TRANSITION);
+	TFB_DrawScreen_Copy(pRect, TFB_SCREEN_MAIN, TFB_SCREEN_TRANSITION);
+#else /* If we want custom resolutions, we have to make all transitions full screen*/
+	TFB_DrawScreen_Copy(NULL, TFB_SCREEN_MAIN, TFB_SCREEN_TRANSITION);
 	(void)pRect; /* Satisfying compiler (unused parameter) */
 #endif
 }
 
 // ScreenTransition() is synchronous (does not return until transition done)
-void
-ScreenTransition (int TransType, const RECT *pRect)
+void ScreenTransition(int TransType, const RECT* pRect)
 {
 	const TimePeriod DURATION = ONE_SECOND * 31 / 60;
 	TimeCount startTime;
@@ -187,19 +176,19 @@ ScreenTransition (int TransType, const RECT *pRect)
 	if (TransType == OPT_PC)
 		return;
 
-	TFB_UploadTransitionScreen ((RECT *)pRect);
-	
+	TFB_UploadTransitionScreen((RECT*)pRect);
+
 	TransitionAmount = 0;
-	FlushGraphics ();
-	startTime = GetTimeCounter ();
+	FlushGraphics();
+	startTime = GetTimeCounter();
 	while (TransitionAmount < 255)
 	{
 		TimePeriod deltaT;
 		int newAmount;
 
-		SleepThread (ONE_SECOND / 100);
+		SleepThread(ONE_SECOND / 100);
 
-		deltaT = GetTimeCounter () - startTime;
+		deltaT = GetTimeCounter() - startTime;
 		newAmount = deltaT * 255 / DURATION;
 		if (newAmount > 255)
 			newAmount = 255;

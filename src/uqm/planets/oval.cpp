@@ -30,10 +30,10 @@
 
 
 #ifndef MIN
-#define MIN(a,b) (((a)<(b)) ? (a) : (b))
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
 #endif
 #ifndef MAX
-#define MAX(a,b) (((a) > (b)) ? (a) : (b))
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
 #endif
 
 #define NUM_QUADS 4
@@ -47,7 +47,7 @@
 #define ALL_QUAD (FIRST_QUAD | SECOND_QUAD | THIRD_QUAD | FOURTH_QUAD)
 
 static bool
-PointOnScreen (uqm::SDWORD x, uqm::SDWORD y)
+PointOnScreen(uqm::SDWORD x, uqm::SDWORD y)
 {
 	uqm::SDWORD extend = 0;
 
@@ -59,19 +59,31 @@ PointOnScreen (uqm::SDWORD x, uqm::SDWORD y)
 }
 
 static bool
-DPointOnScreen (DPOINT *p)
+DPointOnScreen(DPOINT* p)
 {
 	return (p->x >= 0 && p->x <= SIS_SCREEN_WIDTH
 			&& p->y >= 0 && p->y <= SIS_SCREEN_HEIGHT);
 }
 
 static void
-TruncateDPoint (DPOINT *p)
+TruncateDPoint(DPOINT* p)
 {
-	if (p->x > 32767) { p->x = SIS_SCREEN_WIDTH; }
-	if (p->x < -32768) { p->x = 0; }
-	if (p->y > 32767) { p->y = SIS_SCREEN_HEIGHT; }
-	if (p->y < -32768) { p->y = 0; }
+	if (p->x > 32767)
+	{
+		p->x = SIS_SCREEN_WIDTH;
+	}
+	if (p->x < -32768)
+	{
+		p->x = 0;
+	}
+	if (p->y > 32767)
+	{
+		p->y = SIS_SCREEN_HEIGHT;
+	}
+	if (p->y < -32768)
+	{
+		p->y = 0;
+	}
 }
 
 // Kruzen: This function checks how much of an oval is on screen (by me).
@@ -84,19 +96,19 @@ TruncateDPoint (DPOINT *p)
 // Step 5: Check if atleast one of curve edges of corresponding quad is on screen;
 // Step 6: Check the opposite corners of the screen. Corners should form a diagonal that potentially can cross the curve. Run their coordinates
 // through ellipse equation. If radius > 1 - point is outside of the ellipse, and if < 1 - inside. In case if one point is inside and the other is
-// outside - then the diagonal crosses the curve somewhere on the screen, therefore the curve is visible. Otherwise, if both points are 
+// outside - then the diagonal crosses the curve somewhere on the screen, therefore the curve is visible. Otherwise, if both points are
 // inside/outside, then the curve is not on screen.
 static uqm::BYTE
-CheckOvalCollision (DPOINT *p0, DPOINT *p1)
+CheckOvalCollision(DPOINT* p0, DPOINT* p1)
 {
-	DPOINT mp;// Middle point
+	DPOINT mp; // Middle point
 	uqm::BYTE quad_visible = 0;
 	uqm::SDWORD x0, x1, y0, y1; // Coords of top left and bottom right corners of inner rect
 	double asquared, bsquared;
 	double a, b, x, y, r0, r1;
 
 	// Step 1
-	if (DPointOnScreen (p0) && DPointOnScreen (p1))
+	if (DPointOnScreen(p0) && DPointOnScreen(p1))
 	{
 		quad_visible = ALL_QUAD | FULL_VISIBILITY;
 		return quad_visible;
@@ -109,8 +121,7 @@ CheckOvalCollision (DPOINT *p0, DPOINT *p1)
 	y1 = y0 + ((y0 - p0->y) << 1);
 
 	// Step 2
-	if (x0 < 0 && y0 < 0 && x1 > SIS_SCREEN_WIDTH &&
-			y1 > SIS_SCREEN_HEIGHT)
+	if (x0 < 0 && y0 < 0 && x1 > SIS_SCREEN_WIDTH && y1 > SIS_SCREEN_HEIGHT)
 		return quad_visible;
 
 	// Step 3
@@ -130,12 +141,10 @@ CheckOvalCollision (DPOINT *p0, DPOINT *p1)
 	bsquared = b * b;
 
 	// Step 4
-	if (!(mp.x > SIS_SCREEN_WIDTH || p1->x < 0 ||
-		p0->y > SIS_SCREEN_HEIGHT || mp.y < 0 ||
-		(x1 > SIS_SCREEN_WIDTH && y0 < 0)))
+	if (!(mp.x > SIS_SCREEN_WIDTH || p1->x < 0 || p0->y > SIS_SCREEN_HEIGHT || mp.y < 0 || (x1 > SIS_SCREEN_WIDTH && y0 < 0)))
 	{
 		// Step 5
-		if (PointOnScreen (mp.x, p0->y) || PointOnScreen (p1->x, mp.y))
+		if (PointOnScreen(mp.x, p0->y) || PointOnScreen(p1->x, mp.y))
 			quad_visible |= FIRST_QUAD;
 		else
 		{
@@ -143,9 +152,9 @@ CheckOvalCollision (DPOINT *p0, DPOINT *p1)
 			x = (double)(SIS_SCREEN_WIDTH - mp.x);
 			y = (double)(0 - mp.y);
 			r0 = ((x * x) / asquared) + ((y * y) / bsquared);
-			
-			x = (double)(MAX (0, mp.x) - mp.x);
-			y = (double)(MIN (SIS_SCREEN_HEIGHT, mp.y) - mp.y);
+
+			x = (double)(MAX(0, mp.x) - mp.x);
+			y = (double)(MIN(SIS_SCREEN_HEIGHT, mp.y) - mp.y);
 			r1 = ((x * x) / asquared) + ((y * y) / bsquared);
 
 			if (r0 >= 1.0f && r1 <= 1.0f)
@@ -154,12 +163,10 @@ CheckOvalCollision (DPOINT *p0, DPOINT *p1)
 	}
 
 	// Step 4
-	if (!(p0->x > SIS_SCREEN_WIDTH || mp.x < 0 ||
-		p0->y > SIS_SCREEN_HEIGHT || mp.y < 0 ||
-		(x0 < 0 && y0 < 0)))
+	if (!(p0->x > SIS_SCREEN_WIDTH || mp.x < 0 || p0->y > SIS_SCREEN_HEIGHT || mp.y < 0 || (x0 < 0 && y0 < 0)))
 	{
 		// Step 5
-		if (PointOnScreen (p0->x, mp.y) || PointOnScreen (mp.x, p0->y))
+		if (PointOnScreen(p0->x, mp.y) || PointOnScreen(mp.x, p0->y))
 			quad_visible |= SECOND_QUAD;
 		else
 		{
@@ -168,8 +175,8 @@ CheckOvalCollision (DPOINT *p0, DPOINT *p1)
 			y = (double)(0 - mp.y);
 			r0 = ((x * x) / asquared) + ((y * y) / bsquared);
 
-			x = (double)(MIN (SIS_SCREEN_WIDTH, mp.x) - mp.x);
-			y = (double)(MIN (SIS_SCREEN_HEIGHT, mp.y) - mp.y);
+			x = (double)(MIN(SIS_SCREEN_WIDTH, mp.x) - mp.x);
+			y = (double)(MIN(SIS_SCREEN_HEIGHT, mp.y) - mp.y);
 			r1 = ((x * x) / asquared) + ((y * y) / bsquared);
 
 			if (r0 >= 1.0f && r1 <= 1.0f)
@@ -178,12 +185,10 @@ CheckOvalCollision (DPOINT *p0, DPOINT *p1)
 	}
 
 	// Step 4
-	if (!(p0->x > SIS_SCREEN_WIDTH || mp.x < 0 ||
-		mp.y > SIS_SCREEN_HEIGHT || p1->y < 0 ||
-		(x0 < 0 && y1 > SIS_SCREEN_HEIGHT)))
+	if (!(p0->x > SIS_SCREEN_WIDTH || mp.x < 0 || mp.y > SIS_SCREEN_HEIGHT || p1->y < 0 || (x0 < 0 && y1 > SIS_SCREEN_HEIGHT)))
 	{
 		// Step 5
-		if (PointOnScreen (p0->x, mp.y) || PointOnScreen (mp.x, p1->y))
+		if (PointOnScreen(p0->x, mp.y) || PointOnScreen(mp.x, p1->y))
 			quad_visible |= THIRD_QUAD;
 		else
 		{
@@ -192,8 +197,8 @@ CheckOvalCollision (DPOINT *p0, DPOINT *p1)
 			y = (double)(SIS_SCREEN_HEIGHT - mp.y);
 			r0 = ((x * x) / asquared) + ((y * y) / bsquared);
 
-			x = (double)(MIN (SIS_SCREEN_WIDTH, mp.x) - mp.x);
-			y = (double)(MAX (0, mp.y) - mp.y);
+			x = (double)(MIN(SIS_SCREEN_WIDTH, mp.x) - mp.x);
+			y = (double)(MAX(0, mp.y) - mp.y);
 			r1 = ((x * x) / asquared) + ((y * y) / bsquared);
 
 			if (r0 >= 1.0f && r1 <= 1.0f)
@@ -202,12 +207,10 @@ CheckOvalCollision (DPOINT *p0, DPOINT *p1)
 	}
 
 	// Step 4
-	if (!(mp.x > SIS_SCREEN_WIDTH || p1->x < 0 ||
-		mp.y > SIS_SCREEN_HEIGHT || p1->y < 0 ||
-		(x1 > SIS_SCREEN_WIDTH && y1 > SIS_SCREEN_HEIGHT)))
+	if (!(mp.x > SIS_SCREEN_WIDTH || p1->x < 0 || mp.y > SIS_SCREEN_HEIGHT || p1->y < 0 || (x1 > SIS_SCREEN_WIDTH && y1 > SIS_SCREEN_HEIGHT)))
 	{
 		// Step 5
-		if (PointOnScreen (mp.x, p1->y) || PointOnScreen (p1->x, mp.y))
+		if (PointOnScreen(mp.x, p1->y) || PointOnScreen(p1->x, mp.y))
 			quad_visible |= FOURTH_QUAD;
 		else
 		{
@@ -216,8 +219,8 @@ CheckOvalCollision (DPOINT *p0, DPOINT *p1)
 			y = (double)(SIS_SCREEN_HEIGHT - mp.y);
 			r0 = ((x * x) / asquared) + ((y * y) / bsquared);
 
-			x = (double)(MAX (0, mp.x) - mp.x);
-			y = (double)(MAX (0, mp.y) - mp.y);
+			x = (double)(MAX(0, mp.x) - mp.x);
+			y = (double)(MAX(0, mp.y) - mp.y);
 			r1 = ((x * x) / asquared) + ((y * y) / bsquared);
 
 			if (r0 >= 1.0f && r1 <= 1.0f)
@@ -298,14 +301,13 @@ CheckOvalCollision (DPOINT *p0, DPOINT *p1)
 //	return quad_visible;
 //}
 
-void
-DrawOval (DRECT *pRect, uqm::BYTE num_off_pixels, bool scaled)
+void DrawOval(DRECT* pRect, uqm::BYTE num_off_pixels, bool scaled)
 {
 	uqm::COUNT off;
 	COORD x, y;
 	uqm::SIZE A, B;
 	uqm::SQWORD Asquared, TwoAsquared,
-			Bsquared, TwoBsquared;
+		Bsquared, TwoBsquared;
 	uqm::SQWORD d, dx, dy;
 	uqm::BYTE quad_visible;
 	PRIMITIVE prim[NUM_QUADS];
@@ -313,7 +315,7 @@ DrawOval (DRECT *pRect, uqm::BYTE num_off_pixels, bool scaled)
 	DPOINT p0, p1;
 	bool use_pointprim = (!scaled && num_off_pixels <= 1);
 	uqm::BYTE render;
-	
+
 	p0.x = pRect->corner.x;
 	p0.y = pRect->corner.y;
 	p1.x = p0.x + pRect->extent.width - 1;
@@ -328,8 +330,8 @@ DrawOval (DRECT *pRect, uqm::BYTE num_off_pixels, bool scaled)
 		if (p1.y < p0.y)
 			p1.y = p0.y;
 
-		TruncateDPoint (&p0);
-		TruncateDPoint (&p1);
+		TruncateDPoint(&p0);
+		TruncateDPoint(&p1);
 
 		corners.first.x = (COORD)p0.x;
 		corners.first.y = (COORD)p0.y;
@@ -337,11 +339,11 @@ DrawOval (DRECT *pRect, uqm::BYTE num_off_pixels, bool scaled)
 		corners.second.x = (COORD)p1.x;
 		corners.second.y = (COORD)p1.y;
 
-		DrawLine (&corners, 1);
+		DrawLine(&corners, 1);
 		return;
 	}
 
-	quad_visible = CheckOvalCollision (&p0, &p1);
+	quad_visible = CheckOvalCollision(&p0, &p1);
 
 	if (!quad_visible)
 		return;
@@ -351,16 +353,16 @@ DrawOval (DRECT *pRect, uqm::BYTE num_off_pixels, bool scaled)
 	{
 		if (quad_visible & (1 << x))
 		{
-			SetPrimNextLink (&prim[x], StartPrim);
-			SetPrimType (&prim[x], use_pointprim ? POINT_PRIM : STAMPFILL_PRIM);
+			SetPrimNextLink(&prim[x], StartPrim);
+			SetPrimType(&prim[x], use_pointprim ? POINT_PRIM : STAMPFILL_PRIM);
 			prim[x].Object.Stamp.frame =
-						DecFrameIndex (stars_in_space);
-			SetPrimColor (&prim[x], _get_context_fg_color ());
-			SetPrimFlags (&prim[x], 0);
+				DecFrameIndex(stars_in_space);
+			SetPrimColor(&prim[x], _get_context_fg_color());
+			SetPrimFlags(&prim[x], 0);
 			StartPrim = x;
 		}
-		else// Kruzen: just to be sure so DrawBatch() skip it
-			SetPrimType (&prim[x], OFFSCREEN_PRIM);
+		else // Kruzen: just to be sure so DrawBatch() skip it
+			SetPrimType(&prim[x], OFFSCREEN_PRIM);
 	}
 
 	A = pRect->extent.width >> 1;
@@ -402,56 +404,56 @@ DrawOval (DRECT *pRect, uqm::BYTE num_off_pixels, bool scaled)
 
 				if (quad_visible & FULL_VISIBILITY)
 				{
-					DrawBatch (prim, StartPrim, 0);
+					DrawBatch(prim, StartPrim, 0);
 				}
 				else
 				{
 					if (quad_visible & FIRST_QUAD)
 					{
-						if (PointOnScreen (A + x, B - y))
+						if (PointOnScreen(A + x, B - y))
 						{
-							SetPrimType (&prim[0], POINT_PRIM);
+							SetPrimType(&prim[0], POINT_PRIM);
 							render++;
 						}
 						else
-							SetPrimType (&prim[0], OFFSCREEN_PRIM);
+							SetPrimType(&prim[0], OFFSCREEN_PRIM);
 					}
 
 					if (quad_visible & SECOND_QUAD)
 					{
-						if (PointOnScreen (A - x, B - y))
+						if (PointOnScreen(A - x, B - y))
 						{
-							SetPrimType (&prim[1], POINT_PRIM);
+							SetPrimType(&prim[1], POINT_PRIM);
 							render++;
 						}
 						else
-							SetPrimType (&prim[1], OFFSCREEN_PRIM);
+							SetPrimType(&prim[1], OFFSCREEN_PRIM);
 					}
 
 					if (quad_visible & THIRD_QUAD)
 					{
-						if (PointOnScreen (A - x, B + y))
+						if (PointOnScreen(A - x, B + y))
 						{
-							SetPrimType (&prim[2], POINT_PRIM);
+							SetPrimType(&prim[2], POINT_PRIM);
 							render++;
 						}
 						else
-							SetPrimType (&prim[2], OFFSCREEN_PRIM);
+							SetPrimType(&prim[2], OFFSCREEN_PRIM);
 					}
 
 					if (quad_visible & FOURTH_QUAD)
 					{
-						if (PointOnScreen (A + x, B + y))
+						if (PointOnScreen(A + x, B + y))
 						{
-							SetPrimType (&prim[3], POINT_PRIM);
+							SetPrimType(&prim[3], POINT_PRIM);
 							render++;
 						}
 						else
-							SetPrimType (&prim[3], OFFSCREEN_PRIM);
-					}				
+							SetPrimType(&prim[3], OFFSCREEN_PRIM);
+					}
 
 					if (render > 0)
-						DrawBatch (prim, StartPrim, 0);
+						DrawBatch(prim, StartPrim, 0);
 				}
 				off = num_off_pixels;
 			}
@@ -473,7 +475,7 @@ DrawOval (DRECT *pRect, uqm::BYTE num_off_pixels, bool scaled)
 		while (dx < dy)
 		{
 			if (off-- == 0)
-			{// Kruzen: Use correct struct for these. I have no idea how that worked before
+			{ // Kruzen: Use correct struct for these. I have no idea how that worked before
 				render = 0;
 				prim[0].Object.Stamp.origin.x = prim[3].Object.Stamp.origin.x = A + x;
 				prim[0].Object.Stamp.origin.y = prim[1].Object.Stamp.origin.y = B - y;
@@ -482,56 +484,56 @@ DrawOval (DRECT *pRect, uqm::BYTE num_off_pixels, bool scaled)
 
 				if (quad_visible & FULL_VISIBILITY)
 				{
-					DrawBatch (prim, StartPrim, 0);
+					DrawBatch(prim, StartPrim, 0);
 				}
 				else
 				{
 					if (quad_visible & FIRST_QUAD)
 					{
-						if (PointOnScreen (A + x, B - y))
+						if (PointOnScreen(A + x, B - y))
 						{
-							SetPrimType (&prim[0], STAMPFILL_PRIM);
+							SetPrimType(&prim[0], STAMPFILL_PRIM);
 							render++;
 						}
 						else
-							SetPrimType (&prim[0], OFFSCREEN_PRIM);
+							SetPrimType(&prim[0], OFFSCREEN_PRIM);
 					}
 
 					if (quad_visible & SECOND_QUAD)
 					{
-						if (PointOnScreen (A - x, B - y))
+						if (PointOnScreen(A - x, B - y))
 						{
-							SetPrimType (&prim[1], STAMPFILL_PRIM);
+							SetPrimType(&prim[1], STAMPFILL_PRIM);
 							render++;
 						}
 						else
-							SetPrimType (&prim[1], OFFSCREEN_PRIM);
+							SetPrimType(&prim[1], OFFSCREEN_PRIM);
 					}
 
 					if (quad_visible & THIRD_QUAD)
 					{
-						if (PointOnScreen (A - x, B + y))
+						if (PointOnScreen(A - x, B + y))
 						{
-							SetPrimType (&prim[2], STAMPFILL_PRIM);
+							SetPrimType(&prim[2], STAMPFILL_PRIM);
 							render++;
 						}
 						else
-							SetPrimType (&prim[2], OFFSCREEN_PRIM);
+							SetPrimType(&prim[2], OFFSCREEN_PRIM);
 					}
 
 					if (quad_visible & FOURTH_QUAD)
 					{
-						if (PointOnScreen (A + x, B + y))
+						if (PointOnScreen(A + x, B + y))
 						{
-							SetPrimType (&prim[3], STAMPFILL_PRIM);
+							SetPrimType(&prim[3], STAMPFILL_PRIM);
 							render++;
 						}
 						else
-							SetPrimType (&prim[3], OFFSCREEN_PRIM);
-					}				
+							SetPrimType(&prim[3], OFFSCREEN_PRIM);
+					}
 
 					if (render > 0)
-						DrawBatch (prim, StartPrim, 0);
+						DrawBatch(prim, StartPrim, 0);
 				}
 				off = num_off_pixels;
 			}
@@ -565,56 +567,56 @@ DrawOval (DRECT *pRect, uqm::BYTE num_off_pixels, bool scaled)
 
 				if (quad_visible & FULL_VISIBILITY)
 				{
-					DrawBatch (prim, StartPrim, 0);
+					DrawBatch(prim, StartPrim, 0);
 				}
 				else
 				{
 					if (quad_visible & FIRST_QUAD)
 					{
-						if (PointOnScreen (A + x, B - y))
+						if (PointOnScreen(A + x, B - y))
 						{
-							SetPrimType (&prim[0], POINT_PRIM);
+							SetPrimType(&prim[0], POINT_PRIM);
 							render++;
 						}
 						else
-							SetPrimType (&prim[0], OFFSCREEN_PRIM);
+							SetPrimType(&prim[0], OFFSCREEN_PRIM);
 					}
 
 					if (quad_visible & SECOND_QUAD)
 					{
-						if (PointOnScreen (A - x, B - y))
+						if (PointOnScreen(A - x, B - y))
 						{
-							SetPrimType (&prim[1], POINT_PRIM);
+							SetPrimType(&prim[1], POINT_PRIM);
 							render++;
 						}
 						else
-							SetPrimType (&prim[1], OFFSCREEN_PRIM);
+							SetPrimType(&prim[1], OFFSCREEN_PRIM);
 					}
 
 					if (quad_visible & THIRD_QUAD)
 					{
-						if (PointOnScreen (A - x, B + y))
+						if (PointOnScreen(A - x, B + y))
 						{
-							SetPrimType (&prim[2], POINT_PRIM);
+							SetPrimType(&prim[2], POINT_PRIM);
 							render++;
 						}
 						else
-							SetPrimType (&prim[2], OFFSCREEN_PRIM);
+							SetPrimType(&prim[2], OFFSCREEN_PRIM);
 					}
 
 					if (quad_visible & FOURTH_QUAD)
 					{
-						if (PointOnScreen (A + x, B + y))
+						if (PointOnScreen(A + x, B + y))
 						{
-							SetPrimType (&prim[3], POINT_PRIM);
+							SetPrimType(&prim[3], POINT_PRIM);
 							render++;
 						}
 						else
-							SetPrimType (&prim[3], OFFSCREEN_PRIM);
-					}				
+							SetPrimType(&prim[3], OFFSCREEN_PRIM);
+					}
 
 					if (render > 0)
-						DrawBatch (prim, StartPrim, 0);
+						DrawBatch(prim, StartPrim, 0);
 				}
 				off = num_off_pixels;
 			}
@@ -645,56 +647,56 @@ DrawOval (DRECT *pRect, uqm::BYTE num_off_pixels, bool scaled)
 
 				if (quad_visible & FULL_VISIBILITY)
 				{
-					DrawBatch (prim, StartPrim, 0);
+					DrawBatch(prim, StartPrim, 0);
 				}
 				else
 				{
 					if (quad_visible & FIRST_QUAD)
 					{
-						if (PointOnScreen (A + x, B - y))
+						if (PointOnScreen(A + x, B - y))
 						{
-							SetPrimType (&prim[0], STAMPFILL_PRIM);
+							SetPrimType(&prim[0], STAMPFILL_PRIM);
 							render++;
 						}
 						else
-							SetPrimType (&prim[0], OFFSCREEN_PRIM);
+							SetPrimType(&prim[0], OFFSCREEN_PRIM);
 					}
 
 					if (quad_visible & SECOND_QUAD)
 					{
-						if (PointOnScreen (A - x, B - y))
+						if (PointOnScreen(A - x, B - y))
 						{
-							SetPrimType (&prim[1], STAMPFILL_PRIM);
+							SetPrimType(&prim[1], STAMPFILL_PRIM);
 							render++;
 						}
 						else
-							SetPrimType (&prim[1], OFFSCREEN_PRIM);
+							SetPrimType(&prim[1], OFFSCREEN_PRIM);
 					}
 
 					if (quad_visible & THIRD_QUAD)
 					{
-						if (PointOnScreen (A - x, B + y))
+						if (PointOnScreen(A - x, B + y))
 						{
-							SetPrimType (&prim[2], STAMPFILL_PRIM);
+							SetPrimType(&prim[2], STAMPFILL_PRIM);
 							render++;
 						}
 						else
-							SetPrimType (&prim[2], OFFSCREEN_PRIM);
+							SetPrimType(&prim[2], OFFSCREEN_PRIM);
 					}
 
 					if (quad_visible & FOURTH_QUAD)
 					{
-						if (PointOnScreen (A + x, B + y))
+						if (PointOnScreen(A + x, B + y))
 						{
-							SetPrimType (&prim[3], STAMPFILL_PRIM);
+							SetPrimType(&prim[3], STAMPFILL_PRIM);
 							render++;
 						}
 						else
-							SetPrimType (&prim[3], OFFSCREEN_PRIM);
-					}				
+							SetPrimType(&prim[3], OFFSCREEN_PRIM);
+					}
 
 					if (render > 0)
-						DrawBatch (prim, StartPrim, 0);
+						DrawBatch(prim, StartPrim, 0);
 				}
 				off = num_off_pixels;
 			}
@@ -713,14 +715,13 @@ DrawOval (DRECT *pRect, uqm::BYTE num_off_pixels, bool scaled)
 	}
 }
 
-void
-DrawFilledOval (DRECT *pRect)
-{// Kruzen: originally there was standard rect, but drawing fuel circle in HD on max zoom causes overflow (Width ~65k)
- // So unless we want to expand standard rect to support 4 bytes per dimension - use this
+void DrawFilledOval(DRECT* pRect)
+{ // Kruzen: originally there was standard rect, but drawing fuel circle in HD on max zoom causes overflow (Width ~65k)
+	// So unless we want to expand standard rect to support 4 bytes per dimension - use this
 	COORD x, y;
 	uqm::SIZE A, B;
 	uqm::SQWORD Asquared, TwoAsquared,
-			Bsquared, TwoBsquared;
+		Bsquared, TwoBsquared;
 	uqm::SQWORD d, dx, dy;
 	PRIMITIVE prim[NUM_QUADS >> 1];
 	uqm::COUNT StartPrim;
@@ -742,8 +743,8 @@ DrawFilledOval (DRECT *pRect)
 		if (p1.y < p0.y)
 			p1.y = p0.y;
 
-		TruncateDPoint (&p0);
-		TruncateDPoint (&p1);
+		TruncateDPoint(&p0);
+		TruncateDPoint(&p1);
 
 		corners.first.x = (COORD)p0.x;
 		corners.first.y = (COORD)p0.y;
@@ -751,16 +752,16 @@ DrawFilledOval (DRECT *pRect)
 		corners.second.x = (COORD)p1.x;
 		corners.second.y = (COORD)p1.y;
 
-		DrawLine (&corners, 1);
+		DrawLine(&corners, 1);
 		return;
 	}
 
 	StartPrim = END_OF_LIST;
 	for (x = 0; x < (NUM_QUADS >> 1); ++x)
 	{
-		SetPrimNextLink (&prim[x], StartPrim);
-		SetPrimType (&prim[x], LINE_PRIM);
-		SetPrimColor (&prim[x], _get_context_fg_color ());
+		SetPrimNextLink(&prim[x], StartPrim);
+		SetPrimType(&prim[x], LINE_PRIM);
+		SetPrimColor(&prim[x], _get_context_fg_color());
 
 		StartPrim = x;
 	}
@@ -790,36 +791,36 @@ DrawFilledOval (DRECT *pRect)
 	while (dx < dy)
 	{
 		if (d > 0)
-		{// Kruzen: originally PrimType was FILLRECT with height of 1
-		 // Changed to line and added a skip if offscreen
+		{ // Kruzen: originally PrimType was FILLRECT with height of 1
+			// Changed to line and added a skip if offscreen
 			lines_r = 0;
 
-			first.x = MAX (A - x, 0);
-			second.x = MIN (A - x + (x << 1) + 1, SIS_SCREEN_WIDTH);
+			first.x = MAX(A - x, 0);
+			second.x = MIN(A - x + (x << 1) + 1, SIS_SCREEN_WIDTH);
 			first.y = second.y = B - y;
 			if (((B - y) >= 0 && (B - y) <= SIS_SCREEN_HEIGHT))
 			{
-				SetPrimType (&prim[0], LINE_PRIM);
+				SetPrimType(&prim[0], LINE_PRIM);
 				prim[0].Object.Line.first = first;
 				prim[0].Object.Line.second = second;
 				lines_r++;
 			}
 			else
-				SetPrimType (&prim[0], OFFSCREEN_PRIM);
+				SetPrimType(&prim[0], OFFSCREEN_PRIM);
 
 			first.y = second.y = B + y;
 			if (((B + y) >= 0 && (B + y) <= SIS_SCREEN_HEIGHT))
 			{
-				SetPrimType (&prim[1], LINE_PRIM);
+				SetPrimType(&prim[1], LINE_PRIM);
 				prim[1].Object.Line.first = first;
 				prim[1].Object.Line.second = second;
 				lines_r++;
 			}
 			else
-				SetPrimType (&prim[1], OFFSCREEN_PRIM);
+				SetPrimType(&prim[1], OFFSCREEN_PRIM);
 
 			if (lines_r > 0)
-				DrawBatch (prim, StartPrim, 0);
+				DrawBatch(prim, StartPrim, 0);
 
 			--y;
 			dy -= TwoAsquared;
@@ -834,35 +835,35 @@ DrawFilledOval (DRECT *pRect)
 	d += ((((Asquared - Bsquared) * 3) >> 1) - (dx + dy)) >> 1;
 
 	while (y >= 0)
-	{// Kruzen: originally PrimType was FILLRECT with height of 1
-	 // Changed to line and added a skip if offscreen
+	{ // Kruzen: originally PrimType was FILLRECT with height of 1
+		// Changed to line and added a skip if offscreen
 		lines_r = 0;
-		first.x = MAX (A - x, 0);
-		second.x = MIN (A - x + (x << 1) + 1, SIS_SCREEN_WIDTH);
+		first.x = MAX(A - x, 0);
+		second.x = MIN(A - x + (x << 1) + 1, SIS_SCREEN_WIDTH);
 		first.y = second.y = B - y;
 		if (((B - y) >= 0 && (B - y) <= SIS_SCREEN_HEIGHT))
 		{
-			SetPrimType (&prim[0], LINE_PRIM);
+			SetPrimType(&prim[0], LINE_PRIM);
 			prim[0].Object.Line.first = first;
 			prim[0].Object.Line.second = second;
 			lines_r++;
 		}
 		else
-			SetPrimType (&prim[0], OFFSCREEN_PRIM);
+			SetPrimType(&prim[0], OFFSCREEN_PRIM);
 
 		first.y = second.y = B + y;
 		if (((B + y) >= 0 && (B + y) <= SIS_SCREEN_HEIGHT))
 		{
-			SetPrimType (&prim[1], LINE_PRIM);
+			SetPrimType(&prim[1], LINE_PRIM);
 			prim[1].Object.Line.first = first;
 			prim[1].Object.Line.second = second;
 			lines_r++;
 		}
 		else
-			SetPrimType (&prim[1], OFFSCREEN_PRIM);
+			SetPrimType(&prim[1], OFFSCREEN_PRIM);
 
 		if (lines_r > 0)
-			DrawBatch (prim, StartPrim, 0);
+			DrawBatch(prim, StartPrim, 0);
 
 		if (d < 0)
 		{
@@ -877,8 +878,7 @@ DrawFilledOval (DRECT *pRect)
 	}
 }
 
-void
-DrawEllipseQuadrants (int cx, int cy, int x, int y, int shear, int filled)
+void DrawEllipseQuadrants(int cx, int cy, int x, int y, int shear, int filled)
 {
 	POINT p;
 	LINE l;
@@ -888,37 +888,36 @@ DrawEllipseQuadrants (int cx, int cy, int x, int y, int shear, int filled)
 		l.first.x = l.second.x = cx - x;
 		l.first.y = cy - shear - y;
 		l.second.y = cy - shear + y;
-		DrawLine (&l, 1);
+		DrawLine(&l, 1);
 
 		if (x != 0)
 		{
 			l.first.x = l.second.x = cx + x;
 			l.first.y = cy + shear - y;
 			l.second.y = cy + shear + y;
-			DrawLine (&l, 1);
+			DrawLine(&l, 1);
 		}
 	}
 	else
 	{
 		p.x = cx - x;
 		p.y = cy - shear - y;
-		DrawPoint (&p);
+		DrawPoint(&p);
 		p.y = cy - shear + y;
-		DrawPoint (&p);
+		DrawPoint(&p);
 
 		if (x != 0)
 		{
 			p.x = cx + x;
 			p.y = cy + shear - y;
-			DrawPoint (&p);
+			DrawPoint(&p);
 			p.y = cy + shear + y;
-			DrawPoint (&p);
+			DrawPoint(&p);
 		}
 	}
 }
 
-void
-DrawEllipse (int cx, int cy, int rx, int ry, int shear, int filled, int dotted)
+void DrawEllipse(int cx, int cy, int rx, int ry, int shear, int filled, int dotted)
 {
 	// adapted from https://zingl.github.io/Bresenham.pdf section 2.1
 	int x = rx;
@@ -944,7 +943,7 @@ DrawEllipse (int cx, int cy, int rx, int ry, int shear, int filled, int dotted)
 		l.first.y = cy - ry - shear;
 		l.second.x = cx + rx;
 		l.second.y = cy + ry + shear;
-		DrawLine (&l, 1);
+		DrawLine(&l, 1);
 		return;
 	}
 
@@ -954,7 +953,7 @@ DrawEllipse (int cx, int cy, int rx, int ry, int shear, int filled, int dotted)
 		{
 			d = dotted;
 			s = (int)(((uqm::SQWORD)x * shear + sRound) / rx);
-			DrawEllipseQuadrants (cx, cy, x, y, -s, 0);
+			DrawEllipseQuadrants(cx, cy, x, y, -s, 0);
 		}
 
 		e2 = e * 2;
@@ -963,7 +962,7 @@ DrawEllipse (int cx, int cy, int rx, int ry, int shear, int filled, int dotted)
 			if (filled)
 			{
 				s = (int)(((uqm::SQWORD)x * shear + sRound) / rx);
-				DrawEllipseQuadrants (cx, cy, x, y, -s, 1);
+				DrawEllipseQuadrants(cx, cy, x, y, -s, 1);
 			}
 			x--;
 			ex += dex;
@@ -978,23 +977,22 @@ DrawEllipse (int cx, int cy, int rx, int ry, int shear, int filled, int dotted)
 	} while (x > 0);
 
 	// when x=0, y must be ry and s must be 0
-	DrawEllipseQuadrants (cx, cy, 0, ry, 0, filled);
+	DrawEllipseQuadrants(cx, cy, 0, ry, 0, filled);
 }
 
-void
-DrawRotatedEllipse (int cx, int cy, int rx, int ry, int angle_deg, int filled, int dotted)
+void DrawRotatedEllipse(int cx, int cy, int rx, int ry, int angle_deg, int filled, int dotted)
 {
 	// based on https://zingl.github.io/Bresenham.pdf section 4.3
 	double rx2 = (double)rx * rx;
 	double ry2 = (double)ry * ry;
 	double theta = (angle_deg % 90) * M_PI / 180.0;
-	double st = sin (theta);
-	double ct = cos (theta);
+	double st = sin(theta);
+	double ct = cos(theta);
 	double xd2 = rx2 * ct * ct + ry2 * st * st;
-	double xd = sqrt (xd2);
+	double xd = sqrt(xd2);
 	int shear = (int)(((rx2 - ry2) * st * ct) / xd + 0.5);
 
 	rx = (int)(xd + 0.5);
-	ry = (int)(sqrt ((rx2 * ry2) / xd2) + 0.5);
-	DrawEllipse (cx, cy, rx, ry, shear, filled, dotted);
+	ry = (int)(sqrt((rx2 * ry2) / xd2) + 0.5);
+	DrawEllipse(cx, cy, rx, ry, shear, filled, dotted);
 }

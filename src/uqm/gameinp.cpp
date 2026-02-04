@@ -21,9 +21,9 @@
 #include "battlecontrols.h"
 #include "init.h"
 #include "intel.h"
-		// For computer_intelligence
+// For computer_intelligence
 #ifdef NETPLAY
-#	include "supermelee/netplay/netmelee.h"
+#include "supermelee/netplay/netmelee.h"
 #endif
 #include "settings.h"
 #include "sounds.h"
@@ -43,15 +43,15 @@
 
 typedef struct
 {
-	bool (*InputFunc) (void *pInputState);
+	bool (*InputFunc)(void* pInputState);
 } INPUT_STATE_DESC;
 
 // These static variables are the values that are set by the controllers.
 
 typedef struct
 {
-	uqm::DWORD key [NUM_TEMPLATES][NUM_KEYS];
-	uqm::DWORD menu [NUM_MENU_KEYS];
+	uqm::DWORD key[NUM_TEMPLATES][NUM_KEYS];
+	uqm::DWORD menu[NUM_MENU_KEYS];
 } MENU_ANNOTATIONS;
 
 
@@ -72,10 +72,10 @@ volatile bool ExitRequested;
 volatile bool GamePaused;
 volatile bool OnScreenKeyboardLocked;
 
-static InputFrameCallback *inputCallback;
+static InputFrameCallback* inputCallback;
 
 static void
-_clear_menu_state (void)
+_clear_menu_state(void)
 {
 	int i, j;
 	for (i = 0; i < NUM_TEMPLATES; i++)
@@ -90,14 +90,13 @@ _clear_menu_state (void)
 	{
 		PulsedInputState.menu[i] = 0;
 		CachedInputState.menu[i] = 0;
-	}		
+	}
 	CachedGestalt = false;
 }
 
-void
-ResetKeyRepeat (void)
+void ResetKeyRepeat(void)
 {
-	uqm::DWORD initTime = GetTimeCounter ();
+	uqm::DWORD initTime = GetTimeCounter();
 	int i, j;
 	for (i = 0; i < NUM_TEMPLATES; i++)
 	{
@@ -117,8 +116,8 @@ ResetKeyRepeat (void)
 }
 
 static void
-_check_for_pulse (int *current, int *cached, int *old, uqm::DWORD *accel,
-		uqm::DWORD *newtime, uqm::DWORD *oldtime)
+_check_for_pulse(int* current, int* cached, int* old, uqm::DWORD* accel,
+				 uqm::DWORD* newtime, uqm::DWORD* oldtime)
 {
 	if (*cached && *old)
 	{
@@ -149,7 +148,7 @@ _check_for_pulse (int *current, int *cached, int *old, uqm::DWORD *accel,
  * *yet*, but it will be once the user gets to define control
  * templates on his own --McM */
 static void
-_check_gestalt (uqm::DWORD NewTime)
+_check_gestalt(uqm::DWORD NewTime)
 {
 	bool CurrentGestalt;
 	int i, j;
@@ -225,8 +224,7 @@ _check_gestalt (uqm::DWORD NewTime)
 	}
 }
 
-void
-UpdateInputState (void)
+void UpdateInputState(void)
 {
 	uqm::DWORD NewTime;
 	/* First, if the game is, in fact, paused, we stall until
@@ -237,22 +235,22 @@ UpdateInputState (void)
 	// Automatically pause and enter low-activity state while inactive,
 	// for example, window minimized.
 	if (!GameActive)
-		SleepGame ();
+		SleepGame();
 
 	if (GamePaused)
-		PauseGame ();
+		PauseGame();
 
 	if (ExitRequested)
-		ConfirmExit ();
+		ConfirmExit();
 
 	CurrentInputState = ImmediateInputState;
 	OldInputState = CachedInputState;
 	CachedInputState = ImmediateInputState;
-	BeginInputFrame ();
-	NewTime = GetTimeCounter ();
+	BeginInputFrame();
+	NewTime = GetTimeCounter();
 	if (_gestalt_keys)
 	{
-		_check_gestalt (NewTime);
+		_check_gestalt(NewTime);
 	}
 	else
 	{
@@ -261,17 +259,17 @@ UpdateInputState (void)
 		{
 			for (j = 0; j < NUM_KEYS; j++)
 			{
-				_check_for_pulse (&PulsedInputState.key[i][j],
-						&CachedInputState.key[i][j],
-						&OldInputState.key[i][j], &RepeatDelays.key[i][j],
-						&NewTime, &Times.key[i][j]);
+				_check_for_pulse(&PulsedInputState.key[i][j],
+								 &CachedInputState.key[i][j],
+								 &OldInputState.key[i][j], &RepeatDelays.key[i][j],
+								 &NewTime, &Times.key[i][j]);
 			}
 		}
 		for (i = 0; i < NUM_MENU_KEYS; i++)
 		{
-			_check_for_pulse (&PulsedInputState.menu[i],
-					&CachedInputState.menu[i], &OldInputState.menu[i],
-					&RepeatDelays.menu[i], &NewTime, &Times.menu[i]);
+			_check_for_pulse(&PulsedInputState.menu[i],
+							 &CachedInputState.menu[i], &OldInputState.menu[i],
+							 &RepeatDelays.menu[i], &NewTime, &Times.menu[i]);
 		}
 	}
 
@@ -283,60 +281,57 @@ UpdateInputState (void)
 
 #if defined(DEBUG) || defined(USE_DEBUG_KEY)
 	if (PulsedInputState.menu[KEY_DEBUG])
-		debugKeyPressedSynchronous ();
+		debugKeyPressedSynchronous();
 	if (PulsedInputState.menu[KEY_DEBUG_2])
-		debugKey2PressedSynchronous ();
+		debugKey2PressedSynchronous();
 	if (PulsedInputState.menu[KEY_DEBUG_3])
-		debugKey3PressedSynchronous ();
+		debugKey3PressedSynchronous();
 	if (PulsedInputState.menu[KEY_DEBUG_4])
-		debugKey4PressedSynchronous ();
+		debugKey4PressedSynchronous();
 #endif
 }
 
-InputFrameCallback *
-SetInputCallback (InputFrameCallback *callback)
+InputFrameCallback*
+SetInputCallback(InputFrameCallback* callback)
 {
-	InputFrameCallback *old = inputCallback;
-	
+	InputFrameCallback* old = inputCallback;
+
 	// Replacing an existing callback with another is not a problem,
 	// but currently this should never happen, which is why the assert.
-	assert (!old || !callback);
+	assert(!old || !callback);
 	inputCallback = callback;
 
 	return old;
 }
 
-void
-SetMenuRepeatDelay (uqm::DWORD min, uqm::DWORD max, uqm::DWORD step, bool gestalt)
+void SetMenuRepeatDelay(uqm::DWORD min, uqm::DWORD max, uqm::DWORD step, bool gestalt)
 {
 	_min_accel = min;
 	_max_accel = max;
 	_step_accel = step;
 	_gestalt_keys = gestalt;
 	//_clear_menu_state ();
-	ResetKeyRepeat ();
+	ResetKeyRepeat();
 }
 
-void
-SetDefaultMenuRepeatDelay (void)
+void SetDefaultMenuRepeatDelay(void)
 {
 	_min_accel = ACCELERATION_INCREMENT;
 	_max_accel = MENU_REPEAT_DELAY;
 	_step_accel = ACCELERATION_INCREMENT;
 	_gestalt_keys = false;
 	//_clear_menu_state ();
-	ResetKeyRepeat ();
+	ResetKeyRepeat();
 }
 
-void
-FlushInput (void)
+void FlushInput(void)
 {
-	TFB_ResetControls ();
-	_clear_menu_state ();
+	TFB_ResetControls();
+	_clear_menu_state();
 }
 
 static MENU_SOUND_FLAGS
-MenuKeysToSoundFlags (const CONTROLLER_INPUT_STATE *state)
+MenuKeysToSoundFlags(const CONTROLLER_INPUT_STATE* state)
 {
 	MENU_SOUND_FLAGS soundFlags;
 
@@ -363,71 +358,68 @@ MenuKeysToSoundFlags (const CONTROLLER_INPUT_STATE *state)
 		soundFlags |= MENU_SOUND_DELETE;
 	if (state->menu[KEY_MENU_BACKSPACE])
 		soundFlags |= MENU_SOUND_DELETE;
-	
+
 	return soundFlags;
 }
 
-void
-DoInput (void *pInputState, bool resetInput)
+void DoInput(void* pInputState, bool resetInput)
 {
 	if (resetInput)
-		FlushInput ();
+		FlushInput();
 
 	do
 	{
 		MENU_SOUND_FLAGS soundFlags;
-		Async_process ();
-		TaskSwitch ();
+		Async_process();
+		TaskSwitch();
 
-		UpdateInputState ();
+		UpdateInputState();
 
 #if DEMO_MODE || CREATE_JOURNAL
 		if (ArrowInput != DemoInput)
 #endif
 		{
 #if CREATE_JOURNAL
-			JournalInput (InputState);
+			JournalInput(InputState);
 #endif /* CREATE_JOURNAL */
 		}
 
-		soundFlags = MenuKeysToSoundFlags (&PulsedInputState);
-			
+		soundFlags = MenuKeysToSoundFlags(&PulsedInputState);
+
 		if (MenuSounds && (soundFlags & (sound_0 | sound_1)))
 		{
 			SOUND S;
 
 			S = MenuSounds;
 			if (soundFlags & sound_1)
-				S = SetAbsSoundIndex (S, MENU_SOUND_SUCCESS);
+				S = SetAbsSoundIndex(S, MENU_SOUND_SUCCESS);
 
-			PlaySoundEffect (S, 0, NotPositional (), NULL, 0);
+			PlaySoundEffect(S, 0, NotPositional(), NULL, 0);
 		}
 
 		if (inputCallback)
-			inputCallback ();
+			inputCallback();
 
-	} while (((INPUT_STATE_DESC*)pInputState)->InputFunc (pInputState));
+	} while (((INPUT_STATE_DESC*)pInputState)->InputFunc(pInputState));
 
 	if (resetInput)
-		FlushInput ();
+		FlushInput();
 }
 
-void
-SetMenuSounds (MENU_SOUND_FLAGS s0, MENU_SOUND_FLAGS s1)
+void SetMenuSounds(MENU_SOUND_FLAGS s0, MENU_SOUND_FLAGS s1)
 {
 	sound_0 = s0;
 	sound_1 = s1;
 }
 
-void
-GetMenuSounds (MENU_SOUND_FLAGS *s0, MENU_SOUND_FLAGS *s1)
+void GetMenuSounds(MENU_SOUND_FLAGS* s0, MENU_SOUND_FLAGS* s1)
 {
 	*s0 = sound_0;
 	*s1 = sound_1;
 }
 
 static BATTLE_INPUT_STATE
-ControlInputToBattleInput (const int *keyState)
+ControlInputToBattleInput(const int* keyState)
 {
 	BATTLE_INPUT_STATE InputState = 0;
 
@@ -452,25 +444,24 @@ ControlInputToBattleInput (const int *keyState)
 }
 
 BATTLE_INPUT_STATE
-CurrentInputToBattleInput (uqm::COUNT player)
+CurrentInputToBattleInput(uqm::COUNT player)
 {
 	return ControlInputToBattleInput(
-			CurrentInputState.key[PlayerControls[player]]);
+		CurrentInputState.key[PlayerControls[player]]);
 }
 
 BATTLE_INPUT_STATE
-PulsedInputToBattleInput (uqm::COUNT player)
+PulsedInputToBattleInput(uqm::COUNT player)
 {
 	return ControlInputToBattleInput(
-			PulsedInputState.key[PlayerControls[player]]);
+		PulsedInputState.key[PlayerControls[player]]);
 }
 
-bool
-AnyButtonPress (bool CheckSpecial)
+bool AnyButtonPress(bool CheckSpecial)
 {
 	int i, j;
-	(void) CheckSpecial;   // Ignored
-	UpdateInputState ();
+	(void)CheckSpecial; // Ignored
+	UpdateInputState();
 	for (i = 0; i < NUM_TEMPLATES; i++)
 	{
 		for (j = 0; j < NUM_KEYS; j++)
@@ -487,34 +478,21 @@ AnyButtonPress (bool CheckSpecial)
 	return false;
 }
 
-bool
-DirKeysPress (void)
+bool DirKeysPress(void)
 {
 	return (
-		CurrentInputState.menu[KEY_MENU_LEFT] ||
-		CurrentInputState.menu[KEY_MENU_RIGHT] ||
-		CurrentInputState.menu[KEY_MENU_UP] ||
-		CurrentInputState.menu[KEY_MENU_DOWN]
-	);
+		CurrentInputState.menu[KEY_MENU_LEFT] || CurrentInputState.menu[KEY_MENU_RIGHT] || CurrentInputState.menu[KEY_MENU_UP] || CurrentInputState.menu[KEY_MENU_DOWN]);
 }
 
-bool
-ActKeysPress (void)
+bool ActKeysPress(void)
 {
-	UpdateInputState ();
+	UpdateInputState();
 
 	return (
-		CurrentInputState.key[PlayerControls[0]][KEY_WEAPON] ||
-		CurrentInputState.key[PlayerControls[0]][KEY_SPECIAL] ||
-		CurrentInputState.key[PlayerControls[0]][KEY_ESCAPE] ||
-		CurrentInputState.menu[KEY_MENU_SELECT] ||
-		CurrentInputState.menu[KEY_MENU_CANCEL] ||
-		CurrentInputState.menu[KEY_MENU_SPECIAL]
-	);
+		CurrentInputState.key[PlayerControls[0]][KEY_WEAPON] || CurrentInputState.key[PlayerControls[0]][KEY_SPECIAL] || CurrentInputState.key[PlayerControls[0]][KEY_ESCAPE] || CurrentInputState.menu[KEY_MENU_SELECT] || CurrentInputState.menu[KEY_MENU_CANCEL] || CurrentInputState.menu[KEY_MENU_SPECIAL]);
 }
 
-bool
-ConfirmExit (void)
+bool ConfirmExit(void)
 {
 	uqm::DWORD old_max_accel, old_min_accel, old_step_accel;
 	bool old_gestalt_keys, result;
@@ -523,18 +501,17 @@ ConfirmExit (void)
 	old_min_accel = _min_accel;
 	old_step_accel = _step_accel;
 	old_gestalt_keys = _gestalt_keys;
-		
-	SetDefaultMenuRepeatDelay ();
-		
-	result = DoConfirmExit ();
-	
-	SetMenuRepeatDelay (old_min_accel, old_max_accel, old_step_accel,
-			old_gestalt_keys);
+
+	SetDefaultMenuRepeatDelay();
+
+	result = DoConfirmExit();
+
+	SetMenuRepeatDelay(old_min_accel, old_max_accel, old_step_accel,
+					   old_gestalt_keys);
 	return result;
 }
 
-void
-TestSpeechSound (STRING snd)
+void TestSpeechSound(STRING snd)
 {
-	PlaySpeechEffect ((SOUND)snd, NotPositional (), NULL, 0);
+	PlaySpeechEffect((SOUND)snd, NotPositional(), NULL, 0);
 }

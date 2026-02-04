@@ -30,25 +30,28 @@ typedef struct CallbackLink CallbackLink;
 #define CALLBACK_INTERNAL
 #include "callback.h"
 
-struct CallbackLink {
-	CallbackLink *next;
+struct CallbackLink
+{
+	CallbackLink* next;
 	CallbackFunction callback;
 	CallbackArg arg;
 };
 
-static CallbackLink *callbacks;
-static CallbackLink **callbacksEnd;
-static CallbackLink *const *callbacksProcessEnd;
+static CallbackLink* callbacks;
+static CallbackLink** callbacksEnd;
+static CallbackLink* const* callbacksProcessEnd;
 
 static Mutex callbackListLock;
 
 static inline void
-CallbackList_lock(void) {
+CallbackList_lock(void)
+{
 	LockMutex(callbackListLock);
 }
 
 static inline void
-CallbackList_unlock(void) {
+CallbackList_unlock(void)
+{
 	UnlockMutex(callbackListLock);
 }
 
@@ -59,64 +62,69 @@ CallbackList_isLocked(void) {
 }
 #endif
 
-void
-Callback_init(void) {
+void Callback_init(void)
+{
 	callbacks = NULL;
 	callbacksEnd = &callbacks;
 	callbacksProcessEnd = &callbacks;
 	callbackListLock = CreateMutex("Callback List Lock", SYNC_CLASS_TOPLEVEL);
 }
 
-void
-Callback_uninit(void) {
+void Callback_uninit(void)
+{
 	// TODO: cleanup the queue?
-	DestroyMutex (callbackListLock);
+	DestroyMutex(callbackListLock);
 	callbackListLock = 0;
 }
 
 // Callbacks are guaranteed to be called in the order that they are queued.
 CallbackID
-Callback_add(CallbackFunction callback, CallbackArg arg) {
-	CallbackLink *link = (CallbackLink*)(malloc(sizeof (CallbackLink)));
+Callback_add(CallbackFunction callback, CallbackArg arg)
+{
+	CallbackLink* link = (CallbackLink*)(malloc(sizeof(CallbackLink)));
 	link->callback = callback;
 	link->arg = arg;
 	link->next = NULL;
-		
+
 	CallbackList_lock();
 	*callbacksEnd = link;
 	callbacksEnd = &link->next;
 	CallbackList_unlock();
-	return (CallbackID) link;
+	return (CallbackID)link;
 }
 
 
 static void
-CallbackLink_delete(CallbackLink *link) {
+CallbackLink_delete(CallbackLink* link)
+{
 	free(link);
 }
 
 // Pre: CallbackList is locked.
-static CallbackLink **
-CallbackLink_find(CallbackLink *link) {
-	CallbackLink **ptr;
+static CallbackLink**
+CallbackLink_find(CallbackLink* link)
+{
+	CallbackLink** ptr;
 
 	//assert(CallbackList_isLocked());
-	for (ptr = &callbacks; *ptr != NULL; ptr = &(*ptr)->next) {
+	for (ptr = &callbacks; *ptr != NULL; ptr = &(*ptr)->next)
+	{
 		if (*ptr == link)
 			return ptr;
 	}
 	return NULL;
 }
 
-bool
-Callback_remove(CallbackID id) {
-	CallbackLink *link = (CallbackLink *) id;
-	CallbackLink **linkPtr;
+bool Callback_remove(CallbackID id)
+{
+	CallbackLink* link = (CallbackLink*)id;
+	CallbackLink** linkPtr;
 
 	CallbackList_lock();
 
 	linkPtr = CallbackLink_find(link);
-	if (linkPtr == NULL) {
+	if (linkPtr == NULL)
+	{
 		CallbackList_unlock();
 		return false;
 	}
@@ -134,7 +142,8 @@ Callback_remove(CallbackID id) {
 }
 
 static inline void
-CallbackLink_doCallback(CallbackLink *link) {
+CallbackLink_doCallback(CallbackLink* link)
+{
 	(link->callback)(link->arg);
 }
 
@@ -147,9 +156,9 @@ CallbackLink_doCallback(CallbackLink *link) {
 //     callbacks are called in the order in which they were queued.
 //     It is however allowed to call Callback_process() from inside the
 //     callback function called by Callback_process() itself.
-void
-Callback_process(void) {
-	CallbackLink *link;
+void Callback_process(void)
+{
+	CallbackLink* link;
 
 	// We set 'callbacksProcessEnd' to callbacksEnd. Callbacks added
 	// from inside a callback function will be placed after
@@ -159,14 +168,16 @@ Callback_process(void) {
 	callbacksProcessEnd = callbacksEnd;
 	CallbackList_unlock();
 
-	for (;;) {
+	for (;;)
+	{
 		CallbackList_lock();
-		if (callbacksProcessEnd == &callbacks) {
+		if (callbacksProcessEnd == &callbacks)
+		{
 			CallbackList_unlock();
 			break;
 		}
 		assert(callbacks != NULL);
-				// If callbacks == NULL, then callbacksProcessEnd == &callbacks
+		// If callbacks == NULL, then callbacksProcessEnd == &callbacks
 		link = callbacks;
 		callbacks = link->next;
 		if (callbacksEnd == &link->next)
@@ -180,8 +191,8 @@ Callback_process(void) {
 	}
 }
 
-bool
-Callback_haveMore(void) {
+bool Callback_haveMore(void)
+{
 	bool result;
 
 	CallbackList_lock();
@@ -190,4 +201,3 @@ Callback_haveMore(void) {
 
 	return result;
 }
-

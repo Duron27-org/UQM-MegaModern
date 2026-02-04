@@ -48,5 +48,4 @@
 #include "ships/sis_ship/sis_ship.h"
 #include "ships/probe/probe.h"
 
-#endif  /* DUMMY_H */
-
+#endif /* DUMMY_H */

@@ -15,7 +15,7 @@
 
 #include <math.h>
 #ifndef M_PI
-#define M_PI	3.141592654
+#define M_PI 3.141592654
 #endif
 
 #include "port.h"
@@ -24,19 +24,21 @@
 
 /* ---- Defines */
 
-#define SMOOTHING_OFF		0
-#define SMOOTHING_ON		1
+#define SMOOTHING_OFF 0
+#define SMOOTHING_ON 1
 
 /* ---- Structures */
 
-typedef struct tColorRGBA {
+typedef struct tColorRGBA
+{
 	Uint8 r;
 	Uint8 g;
 	Uint8 b;
 	Uint8 a;
 } tColorRGBA;
 
-typedef struct tColorY {
+typedef struct tColorY
+{
 	Uint8 y;
 } tColorY;
 
@@ -50,7 +52,7 @@ typedef struct tColorY {
  by the dimensions of src and dst
 
 */
-int zoomSurfaceRGBA(SDL_Surface * src, SDL_Surface * dst, int smooth);
+int zoomSurfaceRGBA(SDL_Surface* src, SDL_Surface* dst, int smooth);
 
 /* 
  
@@ -63,16 +65,16 @@ int zoomSurfaceRGBA(SDL_Surface * src, SDL_Surface * dst, int smooth);
 
 */
 
-SDL_Surface *rotozoomSurface(SDL_Surface * src, double angle, double zoom,
+SDL_Surface* rotozoomSurface(SDL_Surface* src, double angle, double zoom,
 							 int smooth);
 
-int rotateSurface(SDL_Surface * src, SDL_Surface * dst, double angle,
+int rotateSurface(SDL_Surface* src, SDL_Surface* dst, double angle,
 				  int smooth);
 
 /* Returns the size of the target surface for a rotozoomSurface() call */
 
 void rotozoomSurfaceSize(int width, int height, double angle, double zoom,
-						 int *dstwidth, int *dstheight);
+						 int* dstwidth, int* dstheight);
 
 /* 
  
@@ -85,12 +87,12 @@ void rotozoomSurfaceSize(int width, int height, double angle, double zoom,
 
 */
 
-SDL_Surface *zoomSurface(SDL_Surface * src, double zoomx, double zoomy,
+SDL_Surface* zoomSurface(SDL_Surface* src, double zoomx, double zoomy,
 						 int smooth);
 
 /* Returns the size of the target surface for a zoomSurface() call */
 
 void zoomSurfaceSize(int width, int height, double zoomx, double zoomy,
-					 int *dstwidth, int *dstheight);
+					 int* dstwidth, int* dstheight);
 
 #endif

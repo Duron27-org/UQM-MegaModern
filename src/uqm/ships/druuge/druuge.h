@@ -21,11 +21,10 @@
 extern "C" {
 #endif
 
-RACE_DESC *init_druuge (void);
+RACE_DESC* init_druuge(void);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* DRUUGE_H */
-
+#endif /* DRUUGE_H */

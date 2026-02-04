@@ -36,14 +36,14 @@ typedef HLINK HELEMENT;
 // Bits for ELEMENT_FLAGS:
 // bits 0 and 1 are now available
 #define PLAYER_SHIP (1 << 2)
-		// The ELEMENT is a player controlable ship, and not some bullet,
-		// crew, asteroid, fighter, etc. This does not mean that the ship
-		// is actually controlled by a human; it may be a computer.
+// The ELEMENT is a player controlable ship, and not some bullet,
+// crew, asteroid, fighter, etc. This does not mean that the ship
+// is actually controlled by a human; it may be a computer.
 
 #define APPEARING (1 << 3)
 #define DISAPPEARING (1 << 4)
 #define CHANGING (1 << 5)
-		// The element's graphical representation has changed.
+// The element's graphical representation has changed.
 
 #define NONSOLID (1 << 6)
 #define COLLISION (1 << 7)
@@ -53,17 +53,17 @@ typedef HLINK HELEMENT;
 #define FINITE_LIFE (1 << 10)
 
 #define PRE_PROCESS (1 << 11)
-		// PreProcess() is to be called for the ELEMENT.
+// PreProcess() is to be called for the ELEMENT.
 #define POST_PROCESS (1 << 12)
 
 #define IGNORE_VELOCITY (1 << 13)
 #define CREW_OBJECT (1 << 14)
 #define BACKGROUND_OBJECT (1 << 15)
-		// The BACKGROUND_OBJECT flag existed originally but wasn't used.
-		// It can now be used for objects that never influence the state
-		// of other elements; elements that have this flag set are not
-		// included in the checksum used for netplay games.
-		// It can be used for graphical mods that don't impede netplay.
+// The BACKGROUND_OBJECT flag existed originally but wasn't used.
+// It can now be used for objects that never influence the state
+// of other elements; elements that have this flag set are not
+// included in the checksum used for netplay games.
+// It can be used for graphical mods that don't impede netplay.
 
 
 #define HYPERJUMP_LIFE 15
@@ -89,16 +89,16 @@ typedef struct state
 	struct
 	{
 		FRAME frame;
-		FRAME *farray;
+		FRAME* farray;
 	} image;
 } STATE;
 
 
 typedef struct element ELEMENT;
 
-typedef void (ElementProcessFunc) (ELEMENT *ElementPtr);
-typedef void (ElementCollisionFunc) (ELEMENT *ElementPtr0, POINT *pPt0,
-			ELEMENT *ElementPtr1, POINT *pPt1);
+typedef void(ElementProcessFunc)(ELEMENT* ElementPtr);
+typedef void(ElementCollisionFunc)(ELEMENT* ElementPtr0, POINT* pPt0,
+								   ELEMENT* ElementPtr1, POINT* pPt1);
 
 // Any physical object in the simulation.
 struct element
@@ -106,10 +106,10 @@ struct element
 	// LINK elements; must be first
 	HELEMENT pred, succ;
 
-	ElementProcessFunc *preprocess_func;
-	ElementProcessFunc *postprocess_func;
-	ElementCollisionFunc *collision_func;
-	ElementProcessFunc *death_func;
+	ElementProcessFunc* preprocess_func;
+	ElementProcessFunc* postprocess_func;
+	ElementCollisionFunc* collision_func;
+	ElementProcessFunc* death_func;
 
 	// Player this element belongs to
 	// -1: neutral (planets, asteroids, crew, etc.)
@@ -129,12 +129,12 @@ struct element
 		uqm::COUNT hit_points;
 		uqm::COUNT facing; /* Planetside: lava-spot direction of travel */
 		uqm::COUNT cycle;
-				/* Planetside: lightning cycle length */
+		/* Planetside: lightning cycle length */
 	};
 	union
 	{
 		uqm::BYTE mass_points;
-				/* Planetside:
+		/* Planetside:
 				 * - for living bio: Index in CreatureData, possibly OR'ed
 				 *   with CREATURE_AWARE
 				 * - for canned bio: value of creature
@@ -154,23 +154,23 @@ struct element
 		uqm::BYTE next_turn; /* Battle: animation interframe for some elements */
 	};
 	uqm::BYTE colorCycleIndex;
-			// Melee: used to cycle ion trails and warp shadows, and
-			//        to cycle the ship color when fleeing.
+	// Melee: used to cycle ion trails and warp shadows, and
+	//        to cycle the ship color when fleeing.
 
 	VELOCITY_DESC velocity;
 	INTERSECT_CONTROL IntersectControl;
 	uqm::COUNT PrimIndex;
 	STATE current, next;
 
-	void *pParent;
-			// The ship this element belongs to.
+	void* pParent;
+	// The ship this element belongs to.
 	HELEMENT hTarget;
 };
 
-#define NEUTRAL_PLAYER_NUM  -1
+#define NEUTRAL_PLAYER_NUM -1
 
 static inline bool
-elementsOfSamePlayer (ELEMENT *ElementPtr0, ELEMENT *ElementPtr1)
+elementsOfSamePlayer(ELEMENT* ElementPtr0, ELEMENT* ElementPtr1)
 {
 	return (bool)(ElementPtr0->playerNr == ElementPtr1->playerNr);
 }
@@ -184,56 +184,66 @@ extern QUEUE disp_q;
 extern uqm::COUNT DisplayFreeList;
 extern PRIMITIVE DisplayArray[MAX_DISPLAY_PRIMS];
 
-#define AllocDisplayPrim() DisplayFreeList; \
-								DisplayFreeList = GetSuccLink (GetPrimLinks (&DisplayArray[DisplayFreeList]))
-#define FreeDisplayPrim(p) SetPrimLinks (&DisplayArray[p], END_OF_LIST, DisplayFreeList); \
-								DisplayFreeList = (p)
+#define AllocDisplayPrim() \
+	DisplayFreeList;       \
+	DisplayFreeList = GetSuccLink(GetPrimLinks(&DisplayArray[DisplayFreeList]))
+#define FreeDisplayPrim(p)                                        \
+	SetPrimLinks(&DisplayArray[p], END_OF_LIST, DisplayFreeList); \
+	DisplayFreeList = (p)
 
-#define GetElementStarShip(e,ppsd) do { *(ppsd) = (STARSHIP*)(e)->pParent; } while (0)
-#define SetElementStarShip(e,psd)  do { (e)->pParent = (STARSHIP*)psd; } while (0)
+#define GetElementStarShip(e, ppsd)        \
+	do                                     \
+	{                                      \
+		*(ppsd) = (STARSHIP*)(e)->pParent; \
+	} while (0)
+#define SetElementStarShip(e, psd)     \
+	do                                 \
+	{                                  \
+		(e)->pParent = (STARSHIP*)psd; \
+	} while (0)
 
 #define MAX_CREW_SIZE 42
 #define MAX_ENERGY_SIZE 42
 #define MAX_SHIP_MASS 10
 #define GRAVITY_MASS(m) ((m) > MAX_SHIP_MASS * 10)
-#define GRAVITY_THRESHOLD (uqm::COUNT)RES_SCALE (255) 
+#define GRAVITY_THRESHOLD (uqm::COUNT) RES_SCALE(255)
 
-#define OBJECT_CLOAKED(eptr) \
-		(GetPrimType (&GLOBAL (DisplayArray[(eptr)->PrimIndex])) >= NUM_PRIMS \
-		|| (GetPrimType (&GLOBAL (DisplayArray[(eptr)->PrimIndex])) == STAMPFILL_PRIM \
-		&& sameColor (GetPrimColor (&GLOBAL (DisplayArray[(eptr)->PrimIndex])), BLACK_COLOR)))
+#define OBJECT_CLOAKED(eptr)                                                     \
+	(GetPrimType(&GLOBAL(DisplayArray[(eptr)->PrimIndex])) >= NUM_PRIMS          \
+	 || (GetPrimType(&GLOBAL(DisplayArray[(eptr)->PrimIndex])) == STAMPFILL_PRIM \
+		 && sameColor(GetPrimColor(&GLOBAL(DisplayArray[(eptr)->PrimIndex])), BLACK_COLOR)))
 #define UNDEFINED_LEVEL 0
 
-extern HELEMENT AllocElement (void);
-extern void FreeElement (HELEMENT hElement);
-#define PutElement(h) PutQueue (&disp_q, h)
-#define InsertElement(h,i) InsertQueue (&disp_q, h, i)
-#define GetHeadElement() GetHeadLink (&disp_q)
-#define GetTailElement() GetTailLink (&disp_q)
-#define LockElement(h,ppe) (*(ppe) = (ELEMENT*)LockLink (&disp_q, h))
-#define UnlockElement(h) UnlockLink (&disp_q, h)
-#define GetPredElement(l) _GetPredLink (l)
-#define GetSuccElement(l) _GetSuccLink (l)
-extern void RemoveElement (HLINK hLink);
+extern HELEMENT AllocElement(void);
+extern void FreeElement(HELEMENT hElement);
+#define PutElement(h) PutQueue(&disp_q, h)
+#define InsertElement(h, i) InsertQueue(&disp_q, h, i)
+#define GetHeadElement() GetHeadLink(&disp_q)
+#define GetTailElement() GetTailLink(&disp_q)
+#define LockElement(h, ppe) (*(ppe) = (ELEMENT*)LockLink(&disp_q, h))
+#define UnlockElement(h) UnlockLink(&disp_q, h)
+#define GetPredElement(l) _GetPredLink(l)
+#define GetSuccElement(l) _GetSuccLink(l)
+extern void RemoveElement(HLINK hLink);
 
 // XXX: The following functions should not really be here
-extern void spawn_planet (void);
-extern void spawn_asteroid (ELEMENT *ElementPtr);
-extern void do_damage (ELEMENT *ElementPtr, uqm::SIZE damage);
-extern void crew_preprocess (ELEMENT *ElementPtr);
-extern void crew_collision (ELEMENT *ElementPtr0, POINT *pPt0,
-		ELEMENT *ElementPtr1, POINT *pPt1);
-extern void AbandonShip (ELEMENT *ShipPtr, ELEMENT *TargetPtr,
-		uqm::COUNT crew_loss);
-extern bool TimeSpaceMatterConflict (ELEMENT *ElementPtr);
-extern uqm::COUNT PlotIntercept (ELEMENT *ElementPtr0,
-		ELEMENT *ElementPtr1, uqm::COUNT max_turns, uqm::COUNT margin_of_error);
+extern void spawn_planet(void);
+extern void spawn_asteroid(ELEMENT* ElementPtr);
+extern void do_damage(ELEMENT* ElementPtr, uqm::SIZE damage);
+extern void crew_preprocess(ELEMENT* ElementPtr);
+extern void crew_collision(ELEMENT* ElementPtr0, POINT* pPt0,
+						   ELEMENT* ElementPtr1, POINT* pPt1);
+extern void AbandonShip(ELEMENT* ShipPtr, ELEMENT* TargetPtr,
+						uqm::COUNT crew_loss);
+extern bool TimeSpaceMatterConflict(ELEMENT* ElementPtr);
+extern uqm::COUNT PlotIntercept(ELEMENT* ElementPtr0,
+								ELEMENT* ElementPtr1, uqm::COUNT max_turns, uqm::COUNT margin_of_error);
 
-extern void InitGalaxy (void);
-extern void SetStarPoint (POINT pt, uqm::COUNT i);
-extern void MoveGalaxy (VIEW_STATE view_state, uqm::SDWORD dx, uqm::SDWORD dy);
+extern void InitGalaxy(void);
+extern void SetStarPoint(POINT pt, uqm::COUNT i);
+extern void MoveGalaxy(VIEW_STATE view_state, uqm::SDWORD dx, uqm::SDWORD dy);
 
-extern bool CalculateGravity (ELEMENT *ElementPtr);
+extern bool CalculateGravity(ELEMENT* ElementPtr);
 
 
 #if 0 //defined(__cplusplus)
@@ -241,4 +251,3 @@ extern bool CalculateGravity (ELEMENT *ElementPtr);
 #endif
 
 #endif /* UQM_ELEMENT_H_ */
-

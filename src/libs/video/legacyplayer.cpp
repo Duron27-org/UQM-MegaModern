@@ -21,7 +21,7 @@
 #include "uqm/util.h"
 
 LEGACY_VIDEO_REF
-PlayLegacyVideo (LEGACY_VIDEO vid)
+PlayLegacyVideo(LEGACY_VIDEO vid)
 {
 	const char *name, *audname, *speechname;
 	uint32 loopframe;
@@ -30,7 +30,7 @@ PlayLegacyVideo (LEGACY_VIDEO vid)
 
 	if (!vid)
 		return NULL;
-	ref = (LEGACY_VIDEO_REF)HCalloc (sizeof (*ref));
+	ref = (LEGACY_VIDEO_REF)HCalloc(sizeof(*ref));
 	if (!ref)
 		return NULL;
 	name = vid->video;
@@ -38,47 +38,45 @@ PlayLegacyVideo (LEGACY_VIDEO vid)
 	speechname = vid->speech;
 	loopframe = vid->loop;
 
-	ref->vidref = LoadVideoFile (name);
+	ref->vidref = LoadVideoFile(name);
 	if (!ref->vidref)
 		return NULL;
 
-	DrawBorderPadding (ref->vidref->w);
+	DrawBorderPadding(ref->vidref->w);
 
 	if (audname)
-		ref->audref = LoadMusicFile (audname);
+		ref->audref = LoadMusicFile(audname);
 	if (speechname)
-		ref->speechref = LoadMusicFile (speechname);
+		ref->speechref = LoadMusicFile(speechname);
 
-	type = VidPlayEx (ref->vidref, ref->audref, ref->speechref, loopframe);
+	type = VidPlayEx(ref->vidref, ref->audref, ref->speechref, loopframe);
 	if (type == NO_FMV)
-	{	// Video failed to start
-		StopLegacyVideo (ref);
+	{ // Video failed to start
+		StopLegacyVideo(ref);
 		return NULL;
 	}
-	
+
 	return ref;
 }
 
-void
-StopLegacyVideo (LEGACY_VIDEO_REF ref)
+void StopLegacyVideo(LEGACY_VIDEO_REF ref)
 {
 	if (!ref)
 		return;
-	VidStop ();
+	VidStop();
 
-	DestroyVideo (ref->vidref);
+	DestroyVideo(ref->vidref);
 	if (ref->speechref)
-		DestroyMusic (ref->speechref);
+		DestroyMusic(ref->speechref);
 	if (ref->audref)
-		DestroyMusic (ref->audref);
+		DestroyMusic(ref->audref);
 
-	HFree (ref);
+	HFree(ref);
 }
 
-bool
-PlayingLegacyVideo (LEGACY_VIDEO_REF ref)
+bool PlayingLegacyVideo(LEGACY_VIDEO_REF ref)
 {
 	if (!ref)
 		return false;
-	return (bool)TFB_VideoPlaying (ref->vidref);
+	return (bool)TFB_VideoPlaying(ref->vidref);
 }

@@ -39,9 +39,9 @@ extern PRIM_LINKS DisplayLinks;
 #define BIG_STAR_COUNT 30
 #define MED_STAR_COUNT 60
 #define SML_STAR_COUNT 90
-#define NUM_STARS (BIG_STAR_COUNT \
-			+ MED_STAR_COUNT \
-			+ SML_STAR_COUNT)
+#define NUM_STARS (BIG_STAR_COUNT   \
+				   + MED_STAR_COUNT \
+				   + SML_STAR_COUNT)
 
 DPOINT SpaceOrg;
 static DPOINT log_star_array[NUM_STARS];
@@ -53,32 +53,38 @@ typedef struct
 {
 	uqm::COUNT min_star_index;
 	uqm::COUNT num_stars;
-	DPOINT *star_array;
-	DPOINT *pmin_star;
-	DPOINT *plast_star;
+	DPOINT* star_array;
+	DPOINT* pmin_star;
+	DPOINT* plast_star;
 } STAR_BLOCK;
 
 STAR_BLOCK StarBlock[NUM_STAR_PLANES] =
-{
 	{
-		0, BIG_STAR_COUNT,
-		&log_star_array[0],
-		NULL, NULL,
-	},
-	{
-		0, MED_STAR_COUNT,
-		&log_star_array[BIG_STAR_COUNT],
-		NULL, NULL,
-	},
-	{
-		0, SML_STAR_COUNT,
-		&log_star_array[BIG_STAR_COUNT + MED_STAR_COUNT],
-		NULL, NULL,
-	},
+		{
+			0,
+			BIG_STAR_COUNT,
+			&log_star_array[0],
+			NULL,
+			NULL,
+		 },
+		{
+			0,
+			MED_STAR_COUNT,
+			&log_star_array[BIG_STAR_COUNT],
+			NULL,
+			NULL,
+		 },
+		{
+			0,
+			SML_STAR_COUNT,
+			&log_star_array[BIG_STAR_COUNT + MED_STAR_COUNT],
+			NULL,
+			NULL,
+		 },
 };
 
 static void
-SortStarBlock (STAR_BLOCK *pStarBlock)
+SortStarBlock(STAR_BLOCK* pStarBlock)
 {
 	uqm::COUNT i;
 
@@ -102,17 +108,17 @@ SortStarBlock (STAR_BLOCK *pStarBlock)
 	pStarBlock->min_star_index = 0;
 	pStarBlock->pmin_star = &pStarBlock->star_array[0];
 	pStarBlock->plast_star =
-			&pStarBlock->star_array[pStarBlock->num_stars - 1];
+		&pStarBlock->star_array[pStarBlock->num_stars - 1];
 }
 
 static void
-WrapStarBlock (uqm::SIZE plane, uqm::SDWORD dx, uqm::SDWORD dy)
+WrapStarBlock(uqm::SIZE plane, uqm::SDWORD dx, uqm::SDWORD dy)
 {
 	uqm::COUNT i;
-	DPOINT *ppt;
+	DPOINT* ppt;
 	uqm::SDWORD offs_y;
 	uqm::COUNT num_stars;
-	STAR_BLOCK *pStarBlock;
+	STAR_BLOCK* pStarBlock;
 
 	pStarBlock = &StarBlock[plane];
 
@@ -236,44 +242,43 @@ WrapStarBlock (uqm::SIZE plane, uqm::SDWORD dx, uqm::SDWORD dy)
 	}
 }
 
-void
-InitGalaxy (void)
+void InitGalaxy(void)
 {
 	uqm::COUNT i, factor;
-	DPOINT *ppt;
+	DPOINT* ppt;
 	PRIM_LINKS Links;
-	bool useScenery = (EXTENDED && GET_GAME_STATE (URQUAN_PROTECTING_SAMATRA)
-							&& lowByte (GLOBAL (CurrentActivity)) != IN_HYPERSPACE
-							&& lowByte (GLOBAL (CurrentActivity)) != IN_LAST_BATTLE);
+	bool useScenery = (EXTENDED && GET_GAME_STATE(URQUAN_PROTECTING_SAMATRA)
+					   && lowByte(GLOBAL(CurrentActivity)) != IN_HYPERSPACE
+					   && lowByte(GLOBAL(CurrentActivity)) != IN_LAST_BATTLE);
 
-	log_add (log_Debug, "InitGalaxy(): transition_width = %d, "
-			"transition_height = %d",
+	log_add(log_Debug, "InitGalaxy(): transition_width = %d, "
+					   "transition_height = %d",
 			TRANSITION_WIDTH, TRANSITION_HEIGHT);
 
-	Links = MakeLinks (END_OF_LIST, END_OF_LIST);
+	Links = MakeLinks(END_OF_LIST, END_OF_LIST);
 	factor = ONE_SHIFT + MAX_REDUCTION + (BACKGROUND_SHIFT - 3);
 	num_sceneries = 0;
 	for (i = 0, ppt = log_star_array; i < NUM_STARS; ++i, ++ppt)
 	{
 		uqm::COUNT p;
 
-		p = AllocDisplayPrim ();
-		SetPrimFlags (&DisplayArray[p], 0);
+		p = AllocDisplayPrim();
+		SetPrimFlags(&DisplayArray[p], 0);
 
 		if (i == BIG_STAR_COUNT || i == BIG_STAR_COUNT + MED_STAR_COUNT)
 			++factor;
 
-		ppt->x = (uqm::SDWORD)((uqm::UWORD)TFB_Random () % SPACE_WIDTH) << factor;
-		ppt->y = (uqm::SDWORD)((uqm::UWORD)TFB_Random () % SPACE_HEIGHT) << factor;
+		ppt->x = (uqm::SDWORD)((uqm::UWORD)TFB_Random() % SPACE_WIDTH) << factor;
+		ppt->y = (uqm::SDWORD)((uqm::UWORD)TFB_Random() % SPACE_HEIGHT) << factor;
 
 		if (i < BIG_STAR_COUNT + MED_STAR_COUNT)
 		{
-			SetPrimType (&DisplayArray[p], STAMP_PRIM);
-			SetPrimColor (&DisplayArray[p],
-					BUILD_COLOR (MAKE_RGB15 (0x0B, 0x0B, 0x1F), 0x09));
+			SetPrimType(&DisplayArray[p], STAMP_PRIM);
+			SetPrimColor(&DisplayArray[p],
+						 BUILD_COLOR(MAKE_RGB15(0x0B, 0x0B, 0x1F), 0x09));
 
 			if (useScenery && i == (BIG_STAR_COUNT + MED_STAR_COUNT - 1))
-			{	//Set SA-MATRA as background image on the second Star layer
+			{ //Set SA-MATRA as background image on the second Star layer
 				SetPrimType(&DisplayArray[p], STAMP_PRIM);
 				DisplayArray[p].Object.Stamp.frame = scenery;
 				num_sceneries = 1;
@@ -284,54 +289,51 @@ InitGalaxy (void)
 		else
 		{
 			if (IS_HD)
-			{	// In HD the smallest stars are images
-				SetPrimType (&DisplayArray[p], STAMP_PRIM);
-				if (lowByte (GLOBAL(CurrentActivity)) != IN_HYPERSPACE)
+			{ // In HD the smallest stars are images
+				SetPrimType(&DisplayArray[p], STAMP_PRIM);
+				if (lowByte(GLOBAL(CurrentActivity)) != IN_HYPERSPACE)
 				{
-					SetPrimFlags (&DisplayArray[p], UNSCALED_STAMP);
+					SetPrimFlags(&DisplayArray[p], UNSCALED_STAMP);
 					DisplayArray[p].Object.Stamp.frame =
-							SetAbsFrameIndex (stars_in_space, 3);
+						SetAbsFrameIndex(stars_in_space, 3);
 				}
 				else
 				{
 					DisplayArray[p].Object.Stamp.frame =
-						SetAbsFrameIndex (stars_in_space, 96);
-					if (inQuasiSpace ())
-						SetPrimFlags (&DisplayArray[p], HYPER_TO_QUASI_COLOR);
+						SetAbsFrameIndex(stars_in_space, 96);
+					if (inQuasiSpace())
+						SetPrimFlags(&DisplayArray[p], HYPER_TO_QUASI_COLOR);
 				}
 			}
 			else
-			{	// Pixel starpoints in original res
-				SetPrimType (&DisplayArray[p], POINT_PRIM);
-				if (lowByte (GLOBAL (CurrentActivity)) != IN_HYPERSPACE)
-					SetPrimColor (&DisplayArray[p],
-							BUILD_COLOR (
-								MAKE_RGB15 (0x15, 0x15, 0x15), 0x07)
-							);
-				else if (GET_GAME_STATE (ARILOU_SPACE_SIDE) <= 1)
-					SetPrimColor (&DisplayArray[p],
-							BUILD_COLOR (
-								MAKE_RGB15 (0x14, 0x00, 0x00), 0x8C)
-							);
+			{ // Pixel starpoints in original res
+				SetPrimType(&DisplayArray[p], POINT_PRIM);
+				if (lowByte(GLOBAL(CurrentActivity)) != IN_HYPERSPACE)
+					SetPrimColor(&DisplayArray[p],
+								 BUILD_COLOR(
+									 MAKE_RGB15(0x15, 0x15, 0x15), 0x07));
+				else if (GET_GAME_STATE(ARILOU_SPACE_SIDE) <= 1)
+					SetPrimColor(&DisplayArray[p],
+								 BUILD_COLOR(
+									 MAKE_RGB15(0x14, 0x00, 0x00), 0x8C));
 				else
-					SetPrimColor (&DisplayArray[p],
-							BUILD_COLOR (
-								MAKE_RGB15 (0x00, 0x0E, 0x00), 0x8C)
-							);
+					SetPrimColor(&DisplayArray[p],
+								 BUILD_COLOR(
+									 MAKE_RGB15(0x00, 0x0E, 0x00), 0x8C));
 			}
 		}
 
-		InsertPrim (&Links, p, GetPredLink (Links));
+		InsertPrim(&Links, p, GetPredLink(Links));
 	}
 
-	SortStarBlock (&StarBlock[0]);
-	SortStarBlock (&StarBlock[1]);
-	SortStarBlock (&StarBlock[2]);
+	SortStarBlock(&StarBlock[0]);
+	SortStarBlock(&StarBlock[1]);
+	SortStarBlock(&StarBlock[2]);
 }
 
 static bool
-CmpMovePoints (const POINT *pt1, const DPOINT *pt2, uqm::SDWORD dx, uqm::SDWORD dy,
-			   uqm::SIZE reduction)
+CmpMovePoints(const POINT* pt1, const DPOINT* pt2, uqm::SDWORD dx, uqm::SDWORD dy,
+			  uqm::SIZE reduction)
 {
 	if (optMeleeScale == TFB_SCALE_STEP)
 	{
@@ -345,22 +347,20 @@ CmpMovePoints (const POINT *pt1, const DPOINT *pt2, uqm::SDWORD dx, uqm::SDWORD 
 	}
 }
 
-void
-MoveGalaxy (VIEW_STATE view_state, uqm::SDWORD dx, uqm::SDWORD dy)
+void MoveGalaxy(VIEW_STATE view_state, uqm::SDWORD dx, uqm::SDWORD dy)
 {
-	PRIMITIVE *pprim;
+	PRIMITIVE* pprim;
 	static const uqm::COUNT star_counts[] =
-	{
-		BIG_STAR_COUNT,
-		MED_STAR_COUNT,
-		SML_STAR_COUNT
-	};
-	static const uqm::COUNT star_frame_ofs[] = { 32 + 26, 26, 0 };
+		{
+			BIG_STAR_COUNT,
+			MED_STAR_COUNT,
+			SML_STAR_COUNT};
+	static const uqm::COUNT star_frame_ofs[] = {32 + 26, 26, 0};
 
 	if (view_state != VIEW_STABLE)
 	{
 		uqm::COUNT reduction, i = 0, iss, scale = 0;
-		DPOINT *ppt;
+		DPOINT* ppt;
 		int wrap_around;
 
 		reduction = zoom_out;
@@ -376,10 +376,10 @@ MoveGalaxy (VIEW_STATE view_state, uqm::SDWORD dx, uqm::SDWORD dy)
 						pprim->Object.Stamp.frame = SetAbsFrameIndex(
 							stars_in_space,
 							(uqm::COUNT)(TFB_Random() & 31)
-							+ star_frame_ofs[iss]);
+								+ star_frame_ofs[iss]);
 
-						if (IS_HD && inQuasiSpace ())
-							SetPrimFlags (pprim, HYPER_TO_QUASI_COLOR);
+						if (IS_HD && inQuasiSpace())
+							SetPrimFlags(pprim, HYPER_TO_QUASI_COLOR);
 					}
 				}
 			}
@@ -394,8 +394,7 @@ MoveGalaxy (VIEW_STATE view_state, uqm::SDWORD dx, uqm::SDWORD dy)
 				{
 					if (reduction == (1 << (ZOOM_SHIFT + 2)))
 						scale = 2;
-					else if (reduction < (1 << (ZOOM_SHIFT + 2)) &&
-						reduction >= (1 << (ZOOM_SHIFT + 1)))
+					else if (reduction < (1 << (ZOOM_SHIFT + 2)) && reduction >= (1 << (ZOOM_SHIFT + 1)))
 						scale = 1;
 					else
 						scale = 0;
@@ -403,11 +402,11 @@ MoveGalaxy (VIEW_STATE view_state, uqm::SDWORD dx, uqm::SDWORD dy)
 
 				if (!IS_HD)
 				{
-					star_frame[0] = IncFrameIndex (stars_in_space);
+					star_frame[0] = IncFrameIndex(stars_in_space);
 					star_frame[1] = stars_in_space;
 
 					if (optMeleeScale == TFB_SCALE_STEP)
-					{	/* on PC, the closest stars are images when zoomed out */
+					{ /* on PC, the closest stars are images when zoomed out */
 						star_object[0] = STAMP_PRIM;
 						if (reduction > 0)
 						{
@@ -420,7 +419,7 @@ MoveGalaxy (VIEW_STATE view_state, uqm::SDWORD dx, uqm::SDWORD dy)
 						}
 					}
 					else
-					{	/* on 3DO, the closest stars are pixels when zoomed out */
+					{ /* on 3DO, the closest stars are pixels when zoomed out */
 						star_object[1] = POINT_PRIM;
 						if (reduction > (1 << ZOOM_SHIFT))
 						{
@@ -434,9 +433,9 @@ MoveGalaxy (VIEW_STATE view_state, uqm::SDWORD dx, uqm::SDWORD dy)
 				}
 				else
 				{
-					star_frame[0] = stars_in_space;// large blue
-					star_frame[1] = IncFrameIndex (stars_in_space);// mid blue
-					star_frame[2] = SetAbsFrameIndex (stars_in_space, 2);// small blue
+					star_frame[0] = stars_in_space;						 // large blue
+					star_frame[1] = IncFrameIndex(stars_in_space);		 // mid blue
+					star_frame[2] = SetAbsFrameIndex(stars_in_space, 2); // small blue
 
 					star_object[0] = star_object[1] = STAMP_PRIM;
 
@@ -462,40 +461,40 @@ MoveGalaxy (VIEW_STATE view_state, uqm::SDWORD dx, uqm::SDWORD dy)
 				{
 					for (i = star_counts[iss]; i > (num_sceneries & iss); --i, ++pprim)
 					{
-						SetPrimType (pprim, star_object[iss] & 15);
-						SetPrimFlags (pprim, star_object[iss] >> 7);
+						SetPrimType(pprim, star_object[iss] & 15);
+						SetPrimFlags(pprim, star_object[iss] >> 7);
 						pprim->Object.Stamp.frame = star_frame[iss];
 					}
 				}
 				if (i > 0)
 				{
-					pprim->Object.Stamp.frame = SetAbsFrameIndex (scenery, scale);
+					pprim->Object.Stamp.frame = SetAbsFrameIndex(scenery, scale);
 				}
 			}
 		}
 
-		if (inHQSpace ())
+		if (inHQSpace())
 		{
 			for (i = BIG_STAR_COUNT + MED_STAR_COUNT, pprim = DisplayArray;
-					i > 0; --i, ++pprim)
+				 i > 0; --i, ++pprim)
 			{
 				uqm::COUNT base_index;
 
-				base_index = GetFrameIndex (pprim->Object.Stamp.frame) - 26;
+				base_index = GetFrameIndex(pprim->Object.Stamp.frame) - 26;
 				pprim->Object.Stamp.frame =
-						SetAbsFrameIndex (pprim->Object.Stamp.frame,
-						((base_index & ~31) + ((base_index + 1) & 31)) + 26);
+					SetAbsFrameIndex(pprim->Object.Stamp.frame,
+									 ((base_index & ~31) + ((base_index + 1) & 31)) + 26);
 			}
 
 			dx <<= 3;
 			dy <<= 3;
 		}
 
-		WrapStarBlock (2, dx, dy);
-		WrapStarBlock (1, dx, dy);
-		WrapStarBlock (0, dx, dy);
+		WrapStarBlock(2, dx, dy);
+		WrapStarBlock(1, dx, dy);
+		WrapStarBlock(0, dx, dy);
 
-		if (!inHQSpace ())
+		if (!inHQSpace())
 		{
 			dx = SpaceOrg.x;
 			dy = SpaceOrg.y;
@@ -507,11 +506,11 @@ MoveGalaxy (VIEW_STATE view_state, uqm::SDWORD dx, uqm::SDWORD dy)
 		else
 		{
 			dx = (COORD)(LOG_SPACE_WIDTH >> 1)
-					- (LOG_SPACE_WIDTH >> ((MAX_REDUCTION + 1)
-					- MAX_VIS_REDUCTION));
+			   - (LOG_SPACE_WIDTH >> ((MAX_REDUCTION + 1)
+									  - MAX_VIS_REDUCTION));
 			dy = (COORD)(LOG_SPACE_HEIGHT >> 1)
-					- (LOG_SPACE_HEIGHT >> ((MAX_REDUCTION + 1)
-					- MAX_VIS_REDUCTION));
+			   - (LOG_SPACE_HEIGHT >> ((MAX_REDUCTION + 1)
+									   - MAX_VIS_REDUCTION));
 			if (optMeleeScale == TFB_SCALE_STEP)
 				reduction = MAX_VIS_REDUCTION + ONE_SHIFT;
 			else
@@ -520,15 +519,13 @@ MoveGalaxy (VIEW_STATE view_state, uqm::SDWORD dx, uqm::SDWORD dy)
 
 		ppt = log_star_array;
 		for (iss = 0, pprim = DisplayArray, wrap_around = LOG_SPACE_WIDTH;
-				iss < 3 && 
-				(view_state == VIEW_CHANGE || CmpMovePoints (
-					&pprim->Object.Point, ppt, dx, dy, reduction));
-				++iss, wrap_around <<= 1, dx <<= 1, dy <<= 1)
+			 iss < 3 && (view_state == VIEW_CHANGE || CmpMovePoints(&pprim->Object.Point, ppt, dx, dy, reduction));
+			 ++iss, wrap_around <<= 1, dx <<= 1, dy <<= 1)
 		{
 			for (i = star_counts[iss]; i > 0; --i, ++pprim, ++ppt)
 			{
 				// ppt->x &= (LOG_SPACE_WIDTH - 1);
-				ppt->x = WRAP_VAL (ppt->x, wrap_around);
+				ppt->x = WRAP_VAL(ppt->x, wrap_around);
 				if (optMeleeScale == TFB_SCALE_STEP)
 				{
 					pprim->Object.Point.x = (ppt->x - dx) >> reduction;
@@ -537,9 +534,9 @@ MoveGalaxy (VIEW_STATE view_state, uqm::SDWORD dx, uqm::SDWORD dy)
 				else
 				{
 					pprim->Object.Point.x = ((ppt->x - dx) << ZOOM_SHIFT)
-							/ reduction;
+										  / reduction;
 					pprim->Object.Point.y = ((ppt->y - dy) << ZOOM_SHIFT)
-							/ reduction;
+										  / reduction;
 				}
 			}
 			if (optMeleeScale == TFB_SCALE_STEP)
@@ -549,11 +546,10 @@ MoveGalaxy (VIEW_STATE view_state, uqm::SDWORD dx, uqm::SDWORD dy)
 		}
 	}
 
-	DisplayLinks = MakeLinks (NUM_STARS - 1, 0);
+	DisplayLinks = MakeLinks(NUM_STARS - 1, 0);
 }
 
-void
-SetStarPoint (POINT pt, uqm::COUNT i)
+void SetStarPoint(POINT pt, uqm::COUNT i)
 {
 	log_star_array[i].x = pt.x;
 	log_star_array[i].y = pt.y;

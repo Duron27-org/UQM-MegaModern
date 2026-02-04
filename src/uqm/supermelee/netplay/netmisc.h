@@ -26,47 +26,44 @@ typedef struct BattleStateData BattleStateData;
 #include "types.h"
 
 #include "../../battle.h"
-		// for BattleFrameCounter, BATTLE_FRAME_RATE
+// for BattleFrameCounter, BATTLE_FRAME_RATE
 
 #if 0 //defined(__cplusplus)
 extern "C" {
 #endif
 
-struct BattleStateData {
+struct BattleStateData
+{
 	NETCONNECTION_STATE_DATA_COMMON
 
-	struct melee_state *meleeState;
-	struct battlestate_struct *battleState;
-	struct getmelee_struct *getMeleeState;
+	struct melee_state* meleeState;
+	struct battlestate_struct* battleState;
+	struct getmelee_struct* getMeleeState;
 	BattleFrameCounter endFrameCount;
 };
 
 
-void NetMelee_connectCallback(NetConnection *conn);
-void NetMelee_closeCallback(NetConnection *conn);
-void NetMelee_errorCallback(NetConnection *conn,
-		const NetConnectionError *error);
+void NetMelee_connectCallback(NetConnection* conn);
+void NetMelee_closeCallback(NetConnection* conn);
+void NetMelee_errorCallback(NetConnection* conn,
+							const NetConnectionError* error);
 
-void NetMelee_reenterState_inSetup(NetConnection *conn);
+void NetMelee_reenterState_inSetup(NetConnection* conn);
 
 
 // Returns true iff the connection is in a state where the confirmation
 // handshake is meaningful. Right now this is only when we're in the
 // pre-game setup menu.
 static inline bool
-handshakeMeaningful(NetState state) {
+handshakeMeaningful(NetState state)
+{
 	return state == NetState_inSetup;
 }
 
 static inline bool
-readyFlagsMeaningful(NetState state) {
-	return state == NetState_init ||
-			state == NetState_preBattle ||
-			state == NetState_selectShip ||
-			state == NetState_interBattle ||
-			state == NetState_inBattle ||
-			state == NetState_endingBattle ||
-			state == NetState_endingBattle2;
+readyFlagsMeaningful(NetState state)
+{
+	return state == NetState_init || state == NetState_preBattle || state == NetState_selectShip || state == NetState_interBattle || state == NetState_inBattle || state == NetState_endingBattle || state == NetState_endingBattle2;
 }
 
 
@@ -74,6 +71,4 @@ readyFlagsMeaningful(NetState state) {
 }
 #endif
 
-#endif  /* UQM_SUPERMELEE_NETPLAY_NETMISC_H_ */
-
-
+#endif /* UQM_SUPERMELEE_NETPLAY_NETMISC_H_ */

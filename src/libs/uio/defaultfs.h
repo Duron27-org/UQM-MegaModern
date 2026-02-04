@@ -27,15 +27,15 @@ typedef struct uio_DefaultFileSystemSetup uio_DefaultFileSystemSetup;
 #include "uioport.h"
 #include "fstypes.h"
 
-struct uio_DefaultFileSystemSetup {
+struct uio_DefaultFileSystemSetup
+{
 	uio_FileSystemID id;
-	const char *name;
-	uio_FileSystemHandler *handler;
+	const char* name;
+	uio_FileSystemHandler* handler;
 };
 
 extern const uio_DefaultFileSystemSetup defaultFileSystems[];
 
 int uio_numDefaultFileSystems(void);
 
-#endif  /* uio_DEFAULTFS_H */
-
+#endif /* uio_DEFAULTFS_H */

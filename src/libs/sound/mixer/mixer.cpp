@@ -48,7 +48,7 @@ static RecursiveMutex buf_mutex;
 static RecursiveMutex act_mutex;
 
 #define MAX_SOURCES 8
-mixer_Source *active_sources[MAX_SOURCES];
+mixer_Source* active_sources[MAX_SOURCES];
 
 
 /*************************************************
@@ -56,7 +56,7 @@ mixer_Source *active_sources[MAX_SOURCES];
  */
 
 static void
-mixer_SetError (uint32 error)
+mixer_SetError(uint32 error)
 {
 	last_error = error;
 }
@@ -67,7 +67,7 @@ mixer_SetError (uint32 error)
  */
 
 uint32
-mixer_GetError (void)
+mixer_GetError(void)
 {
 	uint32 error = last_error;
 	last_error = MIX_NO_ERROR;
@@ -75,24 +75,23 @@ mixer_GetError (void)
 }
 
 /* Initialize the mixer with a certain audio format */
-bool
-mixer_Init (uint32 frequency, uint32 format, mixer_Quality quality,
-		mixer_Flags flags)
+bool mixer_Init(uint32 frequency, uint32 format, mixer_Quality quality,
+				mixer_Flags flags)
 {
 	if (mixer_initialized)
-		mixer_Uninit ();
+		mixer_Uninit();
 
 	last_error = MIX_NO_ERROR;
-	memset (active_sources, 0, sizeof(mixer_Source*) * MAX_SOURCES);
-	
-	mixer_chansize = MIX_FORMAT_BPC (format);
-	mixer_channels = MIX_FORMAT_CHANS (format);
-	mixer_sampsize = MIX_FORMAT_SAMPSIZE (format);
+	memset(active_sources, 0, sizeof(mixer_Source*) * MAX_SOURCES);
+
+	mixer_chansize = MIX_FORMAT_BPC(format);
+	mixer_channels = MIX_FORMAT_CHANS(format);
+	mixer_sampsize = MIX_FORMAT_SAMPSIZE(format);
 	mixer_freq = frequency;
 	mixer_quality = quality;
 	mixer_format = format;
 	mixer_flags = flags;
-	
+
 	mixer_resampling.None = mixer_ResampleNone;
 	mixer_resampling.Downsample = mixer_ResampleNearest;
 	if (mixer_quality == MIX_QUALITY_DEFAULT)
@@ -112,14 +111,13 @@ mixer_Init (uint32 frequency, uint32 format, mixer_Quality quality,
 }
 
 /* Uninitialize the mixer */
-void
-mixer_Uninit (void)
+void mixer_Uninit(void)
 {
 	if (mixer_initialized)
 	{
-		DestroyRecursiveMutex (src_mutex);
-		DestroyRecursiveMutex (buf_mutex);
-		DestroyRecursiveMutex (act_mutex);
+		DestroyRecursiveMutex(src_mutex);
+		DestroyRecursiveMutex(buf_mutex);
+		DestroyRecursiveMutex(act_mutex);
 		mixer_initialized = 0;
 	}
 }
@@ -130,33 +128,29 @@ mixer_Uninit (void)
  *
  */
 
-void
-mixer_MixChannels (void *userdata, uint8 *stream, sint32 len)
+void mixer_MixChannels(void* userdata, uint8* stream, sint32 len)
 {
-	uint8 *end_stream = stream + len;
+	uint8* end_stream = stream + len;
 	bool left = true;
 
 	/* keep this order or die */
-	LockRecursiveMutex (src_mutex);
-	LockRecursiveMutex (buf_mutex);
-	LockRecursiveMutex (act_mutex);
+	LockRecursiveMutex(src_mutex);
+	LockRecursiveMutex(buf_mutex);
+	LockRecursiveMutex(act_mutex);
 
 	for (; stream < end_stream; stream += mixer_chansize)
 	{
 		uint32 i;
 		float fullsamp = 0;
-		
+
 		for (i = 0; i < MAX_SOURCES; i++)
 		{
-			mixer_Source *src;
+			mixer_Source* src;
 			float samp = 0;
-			
+
 			/* find next source */
-			for (; i < MAX_SOURCES && (
-					(src = active_sources[i]) == 0
-					|| src->state != MIX_PLAYING
-					|| !mixer_SourceGetNextSample (src, &samp, left));
-					i++)
+			for (; i < MAX_SOURCES && ((src = active_sources[i]) == 0 || src->state != MIX_PLAYING || !mixer_SourceGetNextSample(src, &samp, left));
+				 i++)
 				;
 
 			if (i < MAX_SOURCES)
@@ -184,30 +178,29 @@ mixer_MixChannels (void *userdata, uint8 *stream, sint32 len)
 				fullsamp = SINT8_MIN;
 		}
 
-		mixer_PutSampleExt (stream, mixer_chansize, (sint32)fullsamp);
+		mixer_PutSampleExt(stream, mixer_chansize, (sint32)fullsamp);
 		if (mixer_channels == 2)
 			left = !left;
 	}
 
 	/* keep this order or die */
-	UnlockRecursiveMutex (act_mutex);
-	UnlockRecursiveMutex (buf_mutex);
-	UnlockRecursiveMutex (src_mutex);
+	UnlockRecursiveMutex(act_mutex);
+	UnlockRecursiveMutex(buf_mutex);
+	UnlockRecursiveMutex(src_mutex);
 
-	(void) userdata; // satisfying compiler - unused arg
+	(void)userdata; // satisfying compiler - unused arg
 }
 
 /* fake mixer -- only process buffer and source states */
-void
-mixer_MixFake (void *userdata, uint8 *stream, sint32 len)
+void mixer_MixFake(void* userdata, uint8* stream, sint32 len)
 {
-	uint8 *end_stream = stream + len;
+	uint8* end_stream = stream + len;
 	bool left = true;
 
 	/* keep this order or die */
-	LockRecursiveMutex (src_mutex);
-	LockRecursiveMutex (buf_mutex);
-	LockRecursiveMutex (act_mutex);
+	LockRecursiveMutex(src_mutex);
+	LockRecursiveMutex(buf_mutex);
+	LockRecursiveMutex(act_mutex);
 
 	for (; stream < end_stream; stream += mixer_chansize)
 	{
@@ -215,15 +208,12 @@ mixer_MixFake (void *userdata, uint8 *stream, sint32 len)
 
 		for (i = 0; i < MAX_SOURCES; i++)
 		{
-			mixer_Source *src;
+			mixer_Source* src;
 			float samp;
-			
+
 			/* find next source */
-			for (; i < MAX_SOURCES && (
-					(src = active_sources[i]) == 0
-					|| src->state != MIX_PLAYING
-					|| !mixer_SourceGetFakeSample (src, &samp, left));
-					i++)
+			for (; i < MAX_SOURCES && ((src = active_sources[i]) == 0 || src->state != MIX_PLAYING || !mixer_SourceGetFakeSample(src, &samp, left));
+				 i++)
 				;
 		}
 		if (mixer_channels == 2)
@@ -231,11 +221,11 @@ mixer_MixFake (void *userdata, uint8 *stream, sint32 len)
 	}
 
 	/* keep this order or die */
-	UnlockRecursiveMutex (act_mutex);
-	UnlockRecursiveMutex (buf_mutex);
-	UnlockRecursiveMutex (src_mutex);
+	UnlockRecursiveMutex(act_mutex);
+	UnlockRecursiveMutex(buf_mutex);
+	UnlockRecursiveMutex(src_mutex);
 
-	(void) userdata; // satisfying compiler - unused arg
+	(void)userdata; // satisfying compiler - unused arg
 }
 
 
@@ -244,23 +234,22 @@ mixer_MixFake (void *userdata, uint8 *stream, sint32 len)
  */
 
 /* generate n sources */
-void
-mixer_GenSources (uint32 n, mixer_Object *psrcobj)
+void mixer_GenSources(uint32 n, mixer_Object* psrcobj)
 {
 	if (n == 0)
 		return; /* do nothing per OpenAL */
 
 	if (!psrcobj)
 	{
-		mixer_SetError (MIX_INVALID_NAME);
-		log_add (log_Debug, "mixer_GenSources() called with null ptr");
+		mixer_SetError(MIX_INVALID_NAME);
+		log_add(log_Debug, "mixer_GenSources() called with null ptr");
 		return;
 	}
 	for (; n; n--, psrcobj++)
 	{
-		mixer_Source *src;
+		mixer_Source* src;
 
-		src = (mixer_Source *) HMalloc (sizeof (mixer_Source));
+		src = (mixer_Source*)HMalloc(sizeof(mixer_Source));
 		src->magic = mixer_srcMagic;
 		src->locked = false;
 		src->state = MIX_INITIAL;
@@ -277,33 +266,32 @@ mixer_GenSources (uint32 n, mixer_Object *psrcobj)
 		src->pos = 0;
 		src->count = 0;
 
-		*psrcobj = (mixer_Object) src;
+		*psrcobj = (mixer_Object)src;
 	}
 }
 
 /* delete n sources */
-void
-mixer_DeleteSources (uint32 n, mixer_Object *psrcobj)
+void mixer_DeleteSources(uint32 n, mixer_Object* psrcobj)
 {
 	uint32 i;
-	mixer_Object *pcurobj;
+	mixer_Object* pcurobj;
 
 	if (n == 0)
 		return; /* do nothing per OpenAL */
 
 	if (!psrcobj)
 	{
-		mixer_SetError (MIX_INVALID_NAME);
-		log_add (log_Debug, "mixer_DeleteSources() called with null ptr");
+		mixer_SetError(MIX_INVALID_NAME);
+		log_add(log_Debug, "mixer_DeleteSources() called with null ptr");
 		return;
 	}
 
-	LockRecursiveMutex (src_mutex);
+	LockRecursiveMutex(src_mutex);
 
 	/* check to make sure we can delete all sources */
 	for (i = n, pcurobj = psrcobj; i && pcurobj; i--, pcurobj++)
 	{
-		mixer_Source *src = (mixer_Source *) *pcurobj;
+		mixer_Source* src = (mixer_Source*)*pcurobj;
 
 		if (!src)
 			continue;
@@ -313,15 +301,15 @@ mixer_DeleteSources (uint32 n, mixer_Object *psrcobj)
 	}
 
 	if (i)
-	{	/* some source failed */
-		mixer_SetError (MIX_INVALID_NAME);
-		log_add (log_Debug, "mixer_DeleteSources(): not a source");
+	{ /* some source failed */
+		mixer_SetError(MIX_INVALID_NAME);
+		log_add(log_Debug, "mixer_DeleteSources(): not a source");
 	}
 	else
-	{	/* all sources checked out */
+	{ /* all sources checked out */
 		for (; n; n--, psrcobj++)
 		{
-			mixer_Source *src = (mixer_Source *) *psrcobj;
+			mixer_Source* src = (mixer_Source*)*psrcobj;
 
 			if (!src)
 				continue;
@@ -330,449 +318,443 @@ mixer_DeleteSources (uint32 n, mixer_Object *psrcobj)
 			 * under ideal circumstances
 			 */
 			if (src->state != MIX_INITIAL)
-				mixer_SourceStop_internal (src);
+				mixer_SourceStop_internal(src);
 
 			/* unqueueing should not be necessary
 			 * under ideal circumstances
 			 */
-			mixer_SourceUnqueueAll (src);
-			HFree (src);
+			mixer_SourceUnqueueAll(src);
+			HFree(src);
 			*psrcobj = 0;
 		}
 	}
 
-	UnlockRecursiveMutex (src_mutex);
+	UnlockRecursiveMutex(src_mutex);
 }
 
 /* check if really is a source */
-bool
-mixer_IsSource (mixer_Object srcobj)
+bool mixer_IsSource(mixer_Object srcobj)
 {
-	mixer_Source *src = (mixer_Source *) srcobj;
+	mixer_Source* src = (mixer_Source*)srcobj;
 	bool ret;
 
 	if (!src)
 		return false;
 
-	LockRecursiveMutex (src_mutex);
+	LockRecursiveMutex(src_mutex);
 	ret = src->magic == mixer_srcMagic;
-	UnlockRecursiveMutex (src_mutex);
+	UnlockRecursiveMutex(src_mutex);
 
 	return ret;
 }
 
 /* set source integer property */
-void
-mixer_Sourcei (mixer_Object srcobj, mixer_SourceProp pname,
-		mixer_IntVal value)
+void mixer_Sourcei(mixer_Object srcobj, mixer_SourceProp pname,
+				   mixer_IntVal value)
 {
-	mixer_Source *src = (mixer_Source *) srcobj;
+	mixer_Source* src = (mixer_Source*)srcobj;
 
 	if (!src)
 	{
-		mixer_SetError (MIX_INVALID_NAME);
-		log_add (log_Debug, "mixer_Sourcei() called with null source");
+		mixer_SetError(MIX_INVALID_NAME);
+		log_add(log_Debug, "mixer_Sourcei() called with null source");
 		return;
 	}
 
-	LockRecursiveMutex (src_mutex);
+	LockRecursiveMutex(src_mutex);
 
 	if (src->magic != mixer_srcMagic)
 	{
-		mixer_SetError (MIX_INVALID_NAME);
-		log_add (log_Debug, "mixer_Sourcei(): not a source");
+		mixer_SetError(MIX_INVALID_NAME);
+		log_add(log_Debug, "mixer_Sourcei(): not a source");
 	}
 	else
 	{
 		switch (pname)
 		{
-		case MIX_LOOPING:
-			src->looping = value;
-			break;
-		case MIX_BUFFER:
-			{
-				mixer_Buffer *buf = (mixer_Buffer *) value;
+			case MIX_LOOPING:
+				src->looping = value;
+				break;
+			case MIX_BUFFER:
+				{
+					mixer_Buffer* buf = (mixer_Buffer*)value;
 
-				if (src->cqueued > 0)
-					mixer_SourceUnqueueAll (src);
-				
-				if (buf && !mixer_CheckBufferState (buf, "mixer_Sourcei"))
-					break;
+					if (src->cqueued > 0)
+						mixer_SourceUnqueueAll(src);
 
-				src->firstqueued = buf;
-				src->nextqueued = src->firstqueued;
-				src->prevqueued = 0;
-				src->lastqueued = src->nextqueued;
-				if (src->lastqueued)
-					src->lastqueued->next = 0;
-				src->cqueued = 1;
-			}
-			break;
-		case MIX_SOURCE_STATE:
-			if (value == MIX_INITIAL)
-			{
-				mixer_SourceRewind_internal (src);
-			}
-			else
-			{
-				log_add (log_Debug, "mixer_Sourcei(MIX_SOURCE_STATE): "
-						"unsupported state, call ignored");
-			}
-			break;
-		default:
-			mixer_SetError (MIX_INVALID_ENUM);
-			log_add (log_Debug, "mixer_Sourcei() called "
-					"with unsupported property %u", pname);
+					if (buf && !mixer_CheckBufferState(buf, "mixer_Sourcei"))
+						break;
+
+					src->firstqueued = buf;
+					src->nextqueued = src->firstqueued;
+					src->prevqueued = 0;
+					src->lastqueued = src->nextqueued;
+					if (src->lastqueued)
+						src->lastqueued->next = 0;
+					src->cqueued = 1;
+				}
+				break;
+			case MIX_SOURCE_STATE:
+				if (value == MIX_INITIAL)
+				{
+					mixer_SourceRewind_internal(src);
+				}
+				else
+				{
+					log_add(log_Debug, "mixer_Sourcei(MIX_SOURCE_STATE): "
+									   "unsupported state, call ignored");
+				}
+				break;
+			default:
+				mixer_SetError(MIX_INVALID_ENUM);
+				log_add(log_Debug, "mixer_Sourcei() called "
+								   "with unsupported property %u",
+						pname);
 		}
 	}
 
-	UnlockRecursiveMutex (src_mutex);
+	UnlockRecursiveMutex(src_mutex);
 }
 
 /* set source float property */
-void
-mixer_Sourcef (mixer_Object srcobj, mixer_SourceProp pname, float value)
+void mixer_Sourcef(mixer_Object srcobj, mixer_SourceProp pname, float value)
 {
-	mixer_Source *src = (mixer_Source *) srcobj;
-	
+	mixer_Source* src = (mixer_Source*)srcobj;
+
 	if (!src)
 	{
-		mixer_SetError (MIX_INVALID_NAME);
-		log_add (log_Debug, "mixer_Sourcef() called with null source");
+		mixer_SetError(MIX_INVALID_NAME);
+		log_add(log_Debug, "mixer_Sourcef() called with null source");
 		return;
 	}
 
-	LockRecursiveMutex (src_mutex);
+	LockRecursiveMutex(src_mutex);
 
 	if (src->magic != mixer_srcMagic)
 	{
-		mixer_SetError (MIX_INVALID_NAME);
-		log_add (log_Debug, "mixer_Sourcef(): not a source");
+		mixer_SetError(MIX_INVALID_NAME);
+		log_add(log_Debug, "mixer_Sourcef(): not a source");
 	}
 	else
 	{
 		switch (pname)
 		{
-		case MIX_GAIN:
-			src->gain = value * MIX_GAIN_ADJ;
-			break;
-		default:
-			log_add (log_Debug, "mixer_Sourcei() called "
-				"with unsupported property %u", pname);
+			case MIX_GAIN:
+				src->gain = value * MIX_GAIN_ADJ;
+				break;
+			default:
+				log_add(log_Debug, "mixer_Sourcei() called "
+								   "with unsupported property %u",
+						pname);
 		}
 	}
 
-	UnlockRecursiveMutex (src_mutex);
+	UnlockRecursiveMutex(src_mutex);
 }
 
-#if !defined (_MSC_VER)
-#define max(a,b) (((a) > (b)) ? (a) : (b))
-#define min(a,b) (((a) < (b)) ? (a) : (b))
+#if !defined(_MSC_VER)
+#define max(a, b) (((a) > (b)) ? (a) : (b))
+#define min(a, b) (((a) < (b)) ? (a) : (b))
 #endif
 
 /* set source float array property */
-void mixer_Sourcefv (mixer_Object srcobj, mixer_SourceProp pname, float *value)
+void mixer_Sourcefv(mixer_Object srcobj, mixer_SourceProp pname, float* value)
 {
-	mixer_Source *src = (mixer_Source *) srcobj;
+	mixer_Source* src = (mixer_Source*)srcobj;
 
 	if (!src)
 	{
-		mixer_SetError (MIX_INVALID_NAME);
-		log_add (log_Debug, "mixer_Sourcefv() called with null source");
+		mixer_SetError(MIX_INVALID_NAME);
+		log_add(log_Debug, "mixer_Sourcefv() called with null source");
 		return;
 	}
 
-	LockRecursiveMutex (src_mutex);
+	LockRecursiveMutex(src_mutex);
 
 	if (src->magic != mixer_srcMagic)
 	{
-		mixer_SetError (MIX_INVALID_NAME);
-		log_add (log_Debug, "mixer_Sourcefv(): not a source");
+		mixer_SetError(MIX_INVALID_NAME);
+		log_add(log_Debug, "mixer_Sourcefv(): not a source");
 	}
 	else
 	{
 		switch (pname)
 		{
-		case MIX_POSITION:
-		{
-			float dist = sqrt (value[0] * value[0] + value[2] * value[2]);
-			float invDist = 1.f / std::max(0.01f, dist);
-			float pan;
-			if (dist == 0 || mixer_channels == 1)
-				pan = 0;
-			else
-				pan = value[0] / dist;
-			src->leftGain = (1 - pan) * invDist;
-			src->rightGain = (1 + pan) * invDist;
-			break;
-		}
-		default:
-			log_add (log_Debug, "mixer_Sourcefv() called "
-					"with unsupported property %u", pname);
+			case MIX_POSITION:
+				{
+					float dist = sqrt(value[0] * value[0] + value[2] * value[2]);
+					float invDist = 1.f / std::max(0.01f, dist);
+					float pan;
+					if (dist == 0 || mixer_channels == 1)
+						pan = 0;
+					else
+						pan = value[0] / dist;
+					src->leftGain = (1 - pan) * invDist;
+					src->rightGain = (1 + pan) * invDist;
+					break;
+				}
+			default:
+				log_add(log_Debug, "mixer_Sourcefv() called "
+								   "with unsupported property %u",
+						pname);
 		}
 	}
 
-	UnlockRecursiveMutex (src_mutex);
+	UnlockRecursiveMutex(src_mutex);
 }
 
 
 /* get source integer property */
-void
-mixer_GetSourcei (mixer_Object srcobj, mixer_SourceProp pname,
-		mixer_IntVal *value)
+void mixer_GetSourcei(mixer_Object srcobj, mixer_SourceProp pname,
+					  mixer_IntVal* value)
 {
-	mixer_Source *src = (mixer_Source *) srcobj;
+	mixer_Source* src = (mixer_Source*)srcobj;
 
 	if (!src || !value)
 	{
-		mixer_SetError (src ? MIX_INVALID_VALUE : MIX_INVALID_NAME);
-		log_add (log_Debug, "mixer_GetSourcei() called with null param");
+		mixer_SetError(src ? MIX_INVALID_VALUE : MIX_INVALID_NAME);
+		log_add(log_Debug, "mixer_GetSourcei() called with null param");
 		return;
 	}
 
-	LockRecursiveMutex (src_mutex);
+	LockRecursiveMutex(src_mutex);
 
 	if (src->magic != mixer_srcMagic)
 	{
-		mixer_SetError (MIX_INVALID_NAME);
-		log_add (log_Debug, "mixer_GetSourcei(): not a source");
+		mixer_SetError(MIX_INVALID_NAME);
+		log_add(log_Debug, "mixer_GetSourcei(): not a source");
 	}
 	else
 	{
 		switch (pname)
 		{
-		case MIX_LOOPING:
-			*value = src->looping;
-			break;
-		case MIX_BUFFER:
-			*value = (mixer_IntVal) src->firstqueued;
-			break;
-		case MIX_SOURCE_STATE:
-			*value = src->state;
-			break;
-		case MIX_BUFFERS_QUEUED:
-			*value = src->cqueued;
-			break;
-		case MIX_BUFFERS_PROCESSED:
-			*value = src->cprocessed;
-			break;
-		default:
-			mixer_SetError (MIX_INVALID_ENUM);
-			log_add (log_Debug, "mixer_GetSourcei() called "
-					"with unsupported property %u", pname);
+			case MIX_LOOPING:
+				*value = src->looping;
+				break;
+			case MIX_BUFFER:
+				*value = (mixer_IntVal)src->firstqueued;
+				break;
+			case MIX_SOURCE_STATE:
+				*value = src->state;
+				break;
+			case MIX_BUFFERS_QUEUED:
+				*value = src->cqueued;
+				break;
+			case MIX_BUFFERS_PROCESSED:
+				*value = src->cprocessed;
+				break;
+			default:
+				mixer_SetError(MIX_INVALID_ENUM);
+				log_add(log_Debug, "mixer_GetSourcei() called "
+								   "with unsupported property %u",
+						pname);
 		}
 	}
 
-	UnlockRecursiveMutex (src_mutex);
+	UnlockRecursiveMutex(src_mutex);
 }
 
 /* get source float property */
-void
-mixer_GetSourcef (mixer_Object srcobj, mixer_SourceProp pname,
-		float *value)
+void mixer_GetSourcef(mixer_Object srcobj, mixer_SourceProp pname,
+					  float* value)
 {
-	mixer_Source *src = (mixer_Source *) srcobj;
+	mixer_Source* src = (mixer_Source*)srcobj;
 
 	if (!src || !value)
 	{
-		mixer_SetError (src ? MIX_INVALID_VALUE : MIX_INVALID_NAME);
-		log_add (log_Debug, "mixer_GetSourcef() called with null param");
+		mixer_SetError(src ? MIX_INVALID_VALUE : MIX_INVALID_NAME);
+		log_add(log_Debug, "mixer_GetSourcef() called with null param");
 		return;
 	}
 
-	LockRecursiveMutex (src_mutex);
+	LockRecursiveMutex(src_mutex);
 
 	if (src->magic != mixer_srcMagic)
 	{
-		mixer_SetError (MIX_INVALID_NAME);
-		log_add (log_Debug, "mixer_GetSourcef(): not a source");
+		mixer_SetError(MIX_INVALID_NAME);
+		log_add(log_Debug, "mixer_GetSourcef(): not a source");
 	}
 	else
 	{
 		switch (pname)
 		{
-		case MIX_GAIN:
-			*value = src->gain / MIX_GAIN_ADJ;
-			break;
-		default:
-			log_add (log_Debug, "mixer_GetSourcef() called "
-					"with unsupported property %u", pname);
+			case MIX_GAIN:
+				*value = src->gain / MIX_GAIN_ADJ;
+				break;
+			default:
+				log_add(log_Debug, "mixer_GetSourcef() called "
+								   "with unsupported property %u",
+						pname);
 		}
 	}
 
-	UnlockRecursiveMutex (src_mutex);
+	UnlockRecursiveMutex(src_mutex);
 }
 
 /* start the source; add it to active array */
-void
-mixer_SourcePlay (mixer_Object srcobj)
+void mixer_SourcePlay(mixer_Object srcobj)
 {
-	mixer_Source *src = (mixer_Source *) srcobj;
+	mixer_Source* src = (mixer_Source*)srcobj;
 
 	if (!src)
 	{
-		mixer_SetError (MIX_INVALID_NAME);
-		log_add (log_Debug, "mixer_SourcePlay() called with null source");
+		mixer_SetError(MIX_INVALID_NAME);
+		log_add(log_Debug, "mixer_SourcePlay() called with null source");
 		return;
 	}
 
-	LockRecursiveMutex (src_mutex);
+	LockRecursiveMutex(src_mutex);
 
 	if (src->magic != mixer_srcMagic)
 	{
-		mixer_SetError (MIX_INVALID_NAME);
-		log_add (log_Debug, "mixer_SourcePlay(): not a source");
+		mixer_SetError(MIX_INVALID_NAME);
+		log_add(log_Debug, "mixer_SourcePlay(): not a source");
 	}
 	else /* should make the source active */
 	{
 		if (src->state < MIX_PLAYING)
 		{
 			if (src->firstqueued && !src->nextqueued)
-				mixer_SourceRewind_internal (src);
-			mixer_SourceActivate (src);
+				mixer_SourceRewind_internal(src);
+			mixer_SourceActivate(src);
 		}
 		src->state = MIX_PLAYING;
 	}
 
-	UnlockRecursiveMutex (src_mutex);
+	UnlockRecursiveMutex(src_mutex);
 }
 
 /* stop the source; remove it from active array and requeue buffers */
-void
-mixer_SourceRewind (mixer_Object srcobj)
+void mixer_SourceRewind(mixer_Object srcobj)
 {
-	mixer_Source *src = (mixer_Source *) srcobj;
+	mixer_Source* src = (mixer_Source*)srcobj;
 
 	if (!src)
 	{
-		mixer_SetError (MIX_INVALID_NAME);
-		log_add (log_Debug, "mixer_SourceRewind() called with null source");
+		mixer_SetError(MIX_INVALID_NAME);
+		log_add(log_Debug, "mixer_SourceRewind() called with null source");
 		return;
 	}
 
-	LockRecursiveMutex (src_mutex);
+	LockRecursiveMutex(src_mutex);
 
 	if (src->magic != mixer_srcMagic)
 	{
-		mixer_SetError (MIX_INVALID_NAME);
-		log_add (log_Debug, "mixer_SourcePlay(): not a source");
+		mixer_SetError(MIX_INVALID_NAME);
+		log_add(log_Debug, "mixer_SourcePlay(): not a source");
 	}
 	else
 	{
-		mixer_SourceRewind_internal (src);
+		mixer_SourceRewind_internal(src);
 	}
 
-	UnlockRecursiveMutex (src_mutex);
+	UnlockRecursiveMutex(src_mutex);
 }
 
 /* pause the source; keep in active array */
-void
-mixer_SourcePause (mixer_Object srcobj)
+void mixer_SourcePause(mixer_Object srcobj)
 {
-	mixer_Source *src = (mixer_Source *) srcobj;
+	mixer_Source* src = (mixer_Source*)srcobj;
 
 	if (!src)
 	{
-		mixer_SetError (MIX_INVALID_NAME);
-		log_add (log_Debug, "mixer_SourcePause() called with null source");
+		mixer_SetError(MIX_INVALID_NAME);
+		log_add(log_Debug, "mixer_SourcePause() called with null source");
 		return;
 	}
 
-	LockRecursiveMutex (src_mutex);
+	LockRecursiveMutex(src_mutex);
 
 	if (src->magic != mixer_srcMagic)
 	{
-		mixer_SetError (MIX_INVALID_NAME);
-		log_add (log_Debug, "mixer_SourcePause(): not a source");
+		mixer_SetError(MIX_INVALID_NAME);
+		log_add(log_Debug, "mixer_SourcePause(): not a source");
 	}
 	else /* should keep all buffers and offsets */
 	{
 		if (src->state < MIX_PLAYING)
-			mixer_SourceActivate (src);
+			mixer_SourceActivate(src);
 		src->state = MIX_PAUSED;
 	}
 
-	UnlockRecursiveMutex (src_mutex);
+	UnlockRecursiveMutex(src_mutex);
 }
 
 /* stop the source; remove it from active array
  * and unqueue 'queued' buffers
  */
-void
-mixer_SourceStop (mixer_Object srcobj)
+void mixer_SourceStop(mixer_Object srcobj)
 {
-	mixer_Source *src = (mixer_Source *) srcobj;
+	mixer_Source* src = (mixer_Source*)srcobj;
 
 	if (!src)
 	{
-		mixer_SetError (MIX_INVALID_NAME);
-		log_add (log_Debug, "mixer_SourceStop() called with null source");
+		mixer_SetError(MIX_INVALID_NAME);
+		log_add(log_Debug, "mixer_SourceStop() called with null source");
 		return;
 	}
 
-	LockRecursiveMutex (src_mutex);
+	LockRecursiveMutex(src_mutex);
 
 	if (src->magic != mixer_srcMagic)
 	{
-		mixer_SetError (MIX_INVALID_NAME);
-		log_add (log_Debug, "mixer_SourceStop(): not a source");
+		mixer_SetError(MIX_INVALID_NAME);
+		log_add(log_Debug, "mixer_SourceStop(): not a source");
 	}
 	else /* should remove queued buffers */
 	{
 		if (src->state >= MIX_PLAYING)
-			mixer_SourceDeactivate (src);
-		mixer_SourceStop_internal (src);
+			mixer_SourceDeactivate(src);
+		mixer_SourceStop_internal(src);
 		src->state = MIX_STOPPED;
 	}
 
-	UnlockRecursiveMutex (src_mutex);
+	UnlockRecursiveMutex(src_mutex);
 }
 
 /* queue buffers on the source */
-void
-mixer_SourceQueueBuffers (mixer_Object srcobj, uint32 n,
-		mixer_Object* pbufobj)
+void mixer_SourceQueueBuffers(mixer_Object srcobj, uint32 n,
+							  mixer_Object* pbufobj)
 {
 	uint32 i;
 	mixer_Object* pobj;
-	mixer_Source *src = (mixer_Source *) srcobj;
+	mixer_Source* src = (mixer_Source*)srcobj;
 
 	if (!src || !pbufobj)
 	{
-		mixer_SetError (MIX_INVALID_NAME);
-		log_add (log_Debug, "mixer_SourceQueueBuffers() called "
-				"with null param");
+		mixer_SetError(MIX_INVALID_NAME);
+		log_add(log_Debug, "mixer_SourceQueueBuffers() called "
+						   "with null param");
 		return;
 	}
 
-	LockRecursiveMutex (buf_mutex);
+	LockRecursiveMutex(buf_mutex);
 	/* check to make sure we can safely queue all buffers */
 	for (i = n, pobj = pbufobj; i; i--, pobj++)
 	{
-		mixer_Buffer *buf = (mixer_Buffer *) *pobj;
-		if (!buf || !mixer_CheckBufferState (buf,
-				"mixer_SourceQueueBuffers"))
+		mixer_Buffer* buf = (mixer_Buffer*)*pobj;
+		if (!buf || !mixer_CheckBufferState(buf, "mixer_SourceQueueBuffers"))
 		{
 			break;
 		}
 	}
-	UnlockRecursiveMutex (buf_mutex);
+	UnlockRecursiveMutex(buf_mutex);
 
 	if (i == 0)
-	{	/* all buffers checked out */
-		LockRecursiveMutex (src_mutex);
-		LockRecursiveMutex (buf_mutex);
+	{ /* all buffers checked out */
+		LockRecursiveMutex(src_mutex);
+		LockRecursiveMutex(buf_mutex);
 
 		if (src->magic != mixer_srcMagic)
 		{
-			mixer_SetError (MIX_INVALID_NAME);
-			log_add (log_Debug, "mixer_SourceQueueBuffers(): not a source");
+			mixer_SetError(MIX_INVALID_NAME);
+			log_add(log_Debug, "mixer_SourceQueueBuffers(): not a source");
 		}
 		else
 		{
 			for (i = n, pobj = pbufobj; i; i--, pobj++)
 			{
-				mixer_Buffer *buf = (mixer_Buffer *) *pobj;
+				mixer_Buffer* buf = (mixer_Buffer*)*pobj;
 
 				/* add buffer to the chain */
 				if (src->lastqueued)
@@ -790,60 +772,59 @@ mixer_SourceQueueBuffers (mixer_Object srcobj, uint32 n,
 			}
 		}
 
-		UnlockRecursiveMutex (buf_mutex);
-		UnlockRecursiveMutex (src_mutex);
+		UnlockRecursiveMutex(buf_mutex);
+		UnlockRecursiveMutex(src_mutex);
 	}
 }
 
 /* unqueue buffers from the source */
-void
-mixer_SourceUnqueueBuffers (mixer_Object srcobj, uint32 n,
-		mixer_Object* pbufobj)
+void mixer_SourceUnqueueBuffers(mixer_Object srcobj, uint32 n,
+								mixer_Object* pbufobj)
 {
 	uint32 i;
-	mixer_Source *src = (mixer_Source *) srcobj;
-	mixer_Buffer *curbuf = 0;
+	mixer_Source* src = (mixer_Source*)srcobj;
+	mixer_Buffer* curbuf = 0;
 
 	if (!src || !pbufobj)
 	{
-		mixer_SetError (MIX_INVALID_NAME);
-		log_add (log_Debug, "mixer_SourceUnqueueBuffers() called "
-				"with null source");
+		mixer_SetError(MIX_INVALID_NAME);
+		log_add(log_Debug, "mixer_SourceUnqueueBuffers() called "
+						   "with null source");
 		return;
 	}
 
-	LockRecursiveMutex (src_mutex);
+	LockRecursiveMutex(src_mutex);
 
 	if (src->magic != mixer_srcMagic)
 	{
-		mixer_SetError (MIX_INVALID_NAME);
-		log_add (log_Debug, "mixer_SourceUnqueueBuffers(): not a source");
+		mixer_SetError(MIX_INVALID_NAME);
+		log_add(log_Debug, "mixer_SourceUnqueueBuffers(): not a source");
 	}
 	else if (n > src->cqueued)
 	{
-		mixer_SetError (MIX_INVALID_OPERATION);
+		mixer_SetError(MIX_INVALID_OPERATION);
 	}
 	else
 	{
-		LockRecursiveMutex (buf_mutex);
+		LockRecursiveMutex(buf_mutex);
 
 		/* check to make sure we can unqueue all buffers */
 		for (i = n, curbuf = src->firstqueued;
-				i && curbuf && curbuf->state != MIX_BUF_PLAYING;
-				i--, curbuf = curbuf->next)
+			 i && curbuf && curbuf->state != MIX_BUF_PLAYING;
+			 i--, curbuf = curbuf->next)
 			;
 
 		if (i)
 		{
-			mixer_SetError (MIX_INVALID_OPERATION);
-			log_add (log_Debug, "mixer_SourceUnqueueBuffers(): "
-					"active buffer attempted");
+			mixer_SetError(MIX_INVALID_OPERATION);
+			log_add(log_Debug, "mixer_SourceUnqueueBuffers(): "
+							   "active buffer attempted");
 		}
 		else
-		{	/* all buffers checked out */
+		{ /* all buffers checked out */
 			for (i = n; i; i--, pbufobj++)
 			{
-				mixer_Buffer *buf = src->firstqueued;
+				mixer_Buffer* buf = src->firstqueued;
 
 				/* remove buffer from the chain */
 				if (src->nextqueued == buf)
@@ -857,17 +838,17 @@ mixer_SourceUnqueueBuffers (mixer_Object srcobj, uint32 n,
 
 				if (buf->state == MIX_BUF_PROCESSED)
 					src->cprocessed--;
-				
+
 				buf->state = MIX_BUF_FILLED;
 				buf->next = 0;
-				*pbufobj = (mixer_Object) buf;
+				*pbufobj = (mixer_Object)buf;
 			}
 		}
 
-		UnlockRecursiveMutex (buf_mutex);
+		UnlockRecursiveMutex(buf_mutex);
 	}
 
-	UnlockRecursiveMutex (src_mutex);
+	UnlockRecursiveMutex(src_mutex);
 }
 
 /*************************************************
@@ -875,33 +856,33 @@ mixer_SourceUnqueueBuffers (mixer_Object srcobj, uint32 n,
  */
 
 static void
-mixer_SourceUnqueueAll (mixer_Source *src)
+mixer_SourceUnqueueAll(mixer_Source* src)
 {
-	mixer_Buffer *buf;
-	mixer_Buffer *nextbuf;
+	mixer_Buffer* buf;
+	mixer_Buffer* nextbuf;
 
 	if (!src)
 	{
-		log_add (log_Debug, "mixer_SourceUnqueueAll() called "
-				"with null source");
+		log_add(log_Debug, "mixer_SourceUnqueueAll() called "
+						   "with null source");
 		return;
 	}
 
-	LockRecursiveMutex (buf_mutex);
+	LockRecursiveMutex(buf_mutex);
 
 	for (buf = src->firstqueued; buf; buf = nextbuf)
 	{
 		if (buf->state == MIX_BUF_PLAYING)
 		{
-			log_add (log_Debug, "mixer_SourceUnqueueAll(): "
-					"attempted on active buffer");
+			log_add(log_Debug, "mixer_SourceUnqueueAll(): "
+							   "attempted on active buffer");
 		}
 		nextbuf = buf->next;
 		buf->state = MIX_BUF_FILLED;
 		buf->next = 0;
 	}
 
-	UnlockRecursiveMutex (buf_mutex);
+	UnlockRecursiveMutex(buf_mutex);
 
 	src->firstqueued = 0;
 	src->nextqueued = 0;
@@ -915,20 +896,21 @@ mixer_SourceUnqueueAll (mixer_Source *src)
 
 /* add the source to the active array */
 static void
-mixer_SourceActivate (mixer_Source* src)
+mixer_SourceActivate(mixer_Source* src)
 {
 	uint32 i;
 
-	LockRecursiveMutex (act_mutex);
+	LockRecursiveMutex(act_mutex);
 
 	/* check active sources, see if this source is there already */
 	for (i = 0; i < MAX_SOURCES && active_sources[i] != src; i++)
 		;
 	if (i < MAX_SOURCES)
-	{	/* source found */
-		log_add (log_Debug, "mixer_SourceActivate(): "
-				"source already active in slot %u", i);
-		UnlockRecursiveMutex (act_mutex);
+	{ /* source found */
+		log_add(log_Debug, "mixer_SourceActivate(): "
+						   "source already active in slot %u",
+				i);
+		UnlockRecursiveMutex(act_mutex);
 		return;
 	}
 
@@ -936,66 +918,67 @@ mixer_SourceActivate (mixer_Source* src)
 	for (i = 0; i < MAX_SOURCES && active_sources[i] != 0; i++)
 		;
 	if (i < MAX_SOURCES)
-	{	/* slot found */
+	{ /* slot found */
 		active_sources[i] = src;
 	}
 	else
 	{
-		log_add (log_Debug, "mixer_SourceActivate(): "
-				"no more slots available (max=%d)", MAX_SOURCES);
+		log_add(log_Debug, "mixer_SourceActivate(): "
+						   "no more slots available (max=%d)",
+				MAX_SOURCES);
 	}
 
-	UnlockRecursiveMutex (act_mutex);
+	UnlockRecursiveMutex(act_mutex);
 }
 
 /* remove the source from the active array */
 static void
-mixer_SourceDeactivate (mixer_Source* src)
+mixer_SourceDeactivate(mixer_Source* src)
 {
 	uint32 i;
 
-	LockRecursiveMutex (act_mutex);
+	LockRecursiveMutex(act_mutex);
 
 	/* check active sources, see if this source is there */
 	for (i = 0; i < MAX_SOURCES && active_sources[i] != src; i++)
 		;
 	if (i < MAX_SOURCES)
-	{	/* source found */
+	{ /* source found */
 		active_sources[i] = 0;
 	}
 	else
-	{	/* source not found */
-		log_add (log_Debug, "mixer_SourceDeactivate(): source not active");
+	{ /* source not found */
+		log_add(log_Debug, "mixer_SourceDeactivate(): source not active");
 	}
 
-	UnlockRecursiveMutex (act_mutex);
+	UnlockRecursiveMutex(act_mutex);
 }
 
 static void
-mixer_SourceStop_internal (mixer_Source *src)
+mixer_SourceStop_internal(mixer_Source* src)
 {
-	mixer_Buffer *buf;
-	mixer_Buffer *nextbuf;
+	mixer_Buffer* buf;
+	mixer_Buffer* nextbuf;
 
 	if (!src->firstqueued)
 		return;
 
 	/* assert the source buffers state */
 	if (!src->lastqueued)
-	{	
-		log_add (log_Debug, "mixer_SourceStop_internal(): "
-				"desynced source state");
+	{
+		log_add(log_Debug, "mixer_SourceStop_internal(): "
+						   "desynced source state");
 #ifdef DEBUG
-		explode ();
+		explode();
 #endif
 	}
 
-	LockRecursiveMutex (buf_mutex);
+	LockRecursiveMutex(buf_mutex);
 
 	/* find last 'processed' buffer */
 	for (buf = src->firstqueued;
-			buf && buf->next && buf->next != src->nextqueued;
-			buf = buf->next)
+		 buf && buf->next && buf->next != src->nextqueued;
+		 buf = buf->next)
 		;
 	src->lastqueued = buf;
 	if (buf)
@@ -1011,7 +994,7 @@ mixer_SourceStop_internal (mixer_Source *src)
 	}
 
 	if (src->cqueued == 0)
-	{	/* all buffers were removed */
+	{ /* all buffers were removed */
 		src->firstqueued = 0;
 		src->lastqueued = 0;
 	}
@@ -1020,28 +1003,28 @@ mixer_SourceStop_internal (mixer_Source *src)
 	src->pos = 0;
 	src->count = 0;
 
-	UnlockRecursiveMutex (buf_mutex);
+	UnlockRecursiveMutex(buf_mutex);
 }
 
 static void
-mixer_SourceRewind_internal (mixer_Source *src)
+mixer_SourceRewind_internal(mixer_Source* src)
 {
 	/* should change the processed buffers to queued */
-	mixer_Buffer *buf;
+	mixer_Buffer* buf;
 
 	if (src->state >= MIX_PLAYING)
-		mixer_SourceDeactivate (src);
+		mixer_SourceDeactivate(src);
 
-	LockRecursiveMutex (buf_mutex);
+	LockRecursiveMutex(buf_mutex);
 
 	for (buf = src->firstqueued;
-			buf && buf->state != MIX_BUF_QUEUED;
-			buf = buf->next)
+		 buf && buf->state != MIX_BUF_QUEUED;
+		 buf = buf->next)
 	{
 		buf->state = MIX_BUF_QUEUED;
 	}
 
-	UnlockRecursiveMutex (buf_mutex);
+	UnlockRecursiveMutex(buf_mutex);
 
 	src->pos = 0;
 	src->count = 0;
@@ -1053,16 +1036,16 @@ mixer_SourceRewind_internal (mixer_Source *src)
 
 /* get the sample next in queue in internal format */
 static inline bool
-mixer_SourceGetNextSample (mixer_Source *src, float *psamp, bool left)
+mixer_SourceGetNextSample(mixer_Source* src, float* psamp, bool left)
 {
 	/* fake the data if requested */
 	if (mixer_flags & MIX_FAKE_DATA)
-		return mixer_SourceGetFakeSample (src, psamp, left);
+		return mixer_SourceGetFakeSample(src, psamp, left);
 
 	while (src->nextqueued)
 	{
-		mixer_Buffer *buf = src->nextqueued;
-		
+		mixer_Buffer* buf = src->nextqueued;
+
 		if (!buf->data || buf->size < mixer_sampsize)
 		{
 			/* buffer invalid, go next */
@@ -1084,8 +1067,7 @@ mixer_SourceGetNextSample (mixer_Source *src, float *psamp, bool left)
 		}
 		*psamp *= left ? src->leftGain : src->rightGain;
 
-		if (src->pos < buf->size ||
-				(left && buf->sampsize != mixer_sampsize))
+		if (src->pos < buf->size || (left && buf->sampsize != mixer_sampsize))
 		{
 			buf->state = MIX_BUF_PLAYING;
 		}
@@ -1098,13 +1080,13 @@ mixer_SourceGetNextSample (mixer_Source *src, float *psamp, bool left)
 			src->nextqueued = src->nextqueued->next;
 			src->cprocessed++;
 		}
-		
+
 		return true;
 	}
-	
+
 	/* no more playable buffers */
 	if (src->state >= MIX_PLAYING)
-		mixer_SourceDeactivate (src);
+		mixer_SourceDeactivate(src);
 
 	src->state = MIX_STOPPED;
 
@@ -1113,11 +1095,11 @@ mixer_SourceGetNextSample (mixer_Source *src, float *psamp, bool left)
 
 /* fake the next sample, but process buffers and states */
 static inline bool
-mixer_SourceGetFakeSample (mixer_Source *src, float *psamp, bool left)
-{	
+mixer_SourceGetFakeSample(mixer_Source* src, float* psamp, bool left)
+{
 	while (src->nextqueued)
 	{
-		mixer_Buffer *buf = src->nextqueued;
+		mixer_Buffer* buf = src->nextqueued;
 
 		if (left || buf->orgchannels != 1)
 		{
@@ -1127,9 +1109,8 @@ mixer_SourceGetFakeSample (mixer_Source *src, float *psamp, bool left)
 				mixer_SourceAdvance(src, left);
 		}
 		*psamp = 0;
-		
-		if (src->pos < buf->size ||
-				(left && buf->sampsize != mixer_sampsize))
+
+		if (src->pos < buf->size || (left && buf->sampsize != mixer_sampsize))
 		{
 			buf->state = MIX_BUF_PLAYING;
 		}
@@ -1142,13 +1123,13 @@ mixer_SourceGetFakeSample (mixer_Source *src, float *psamp, bool left)
 			src->nextqueued = src->nextqueued->next;
 			src->cprocessed++;
 		}
-		
+
 		return true;
 	}
-	
+
 	/* no more playable buffers */
 	if (src->state >= MIX_PLAYING)
-		mixer_SourceDeactivate (src);
+		mixer_SourceDeactivate(src);
 
 	src->state = MIX_STOPPED;
 
@@ -1157,9 +1138,9 @@ mixer_SourceGetFakeSample (mixer_Source *src, float *psamp, bool left)
 
 /* advance position in currently queued buffer */
 static inline uint32
-mixer_SourceAdvance (mixer_Source *src, bool left)
+mixer_SourceAdvance(mixer_Source* src, bool left)
 {
-	mixer_Buffer *curr = src->nextqueued;
+	mixer_Buffer* curr = src->nextqueued;
 	if (curr->orgchannels == 2 && mixer_channels == 2)
 	{
 		if (!left)
@@ -1193,23 +1174,22 @@ mixer_SourceAdvance (mixer_Source *src, bool left)
  */
 
 /* generate n buffer objects */
-void
-mixer_GenBuffers (uint32 n, mixer_Object *pbufobj)
+void mixer_GenBuffers(uint32 n, mixer_Object* pbufobj)
 {
 	if (n == 0)
 		return; /* do nothing per OpenAL */
 
 	if (!pbufobj)
 	{
-		mixer_SetError (MIX_INVALID_VALUE);
-		log_add (log_Debug, "mixer_GenBuffers() called with null ptr");
+		mixer_SetError(MIX_INVALID_VALUE);
+		log_add(log_Debug, "mixer_GenBuffers() called with null ptr");
 		return;
 	}
 	for (; n; n--, pbufobj++)
 	{
-		mixer_Buffer *buf;
+		mixer_Buffer* buf;
 
-		buf = (mixer_Buffer *) HMalloc (sizeof (mixer_Buffer));
+		buf = (mixer_Buffer*)HMalloc(sizeof(mixer_Buffer));
 		buf->magic = mixer_bufMagic;
 		buf->locked = false;
 		buf->state = MIX_BUF_INITIAL;
@@ -1222,54 +1202,53 @@ mixer_GenBuffers (uint32 n, mixer_Object *pbufobj)
 		buf->orgchannels = 0;
 		buf->orgchansize = 0;
 
-		*pbufobj = (mixer_Object) buf;
+		*pbufobj = (mixer_Object)buf;
 	}
 }
 
 /* delete n buffer objects */
-void
-mixer_DeleteBuffers (uint32 n, mixer_Object *pbufobj)
+void mixer_DeleteBuffers(uint32 n, mixer_Object* pbufobj)
 {
 	uint32 i;
-	mixer_Object *pcurobj;
+	mixer_Object* pcurobj;
 
 	if (n == 0)
 		return; /* do nothing per OpenAL */
 
 	if (!pbufobj)
 	{
-		mixer_SetError (MIX_INVALID_NAME);
-		log_add (log_Debug, "mixer_DeleteBuffers() called with null ptr");
+		mixer_SetError(MIX_INVALID_NAME);
+		log_add(log_Debug, "mixer_DeleteBuffers() called with null ptr");
 		return;
 	}
-	
-	LockRecursiveMutex (buf_mutex);
+
+	LockRecursiveMutex(buf_mutex);
 
 	/* check to make sure we can delete all buffers */
 	for (i = n, pcurobj = pbufobj; i && pcurobj; i--, pcurobj++)
 	{
-		mixer_Buffer *buf = (mixer_Buffer *) *pcurobj;
+		mixer_Buffer* buf = (mixer_Buffer*)*pcurobj;
 
 		if (!buf)
 			continue;
 
 		if (buf->magic != mixer_bufMagic)
 		{
-			mixer_SetError (MIX_INVALID_NAME);
-			log_add (log_Debug, "mixer_DeleteBuffers(): not a buffer");
+			mixer_SetError(MIX_INVALID_NAME);
+			log_add(log_Debug, "mixer_DeleteBuffers(): not a buffer");
 			break;
 		}
 		else if (buf->locked)
 		{
-			mixer_SetError (MIX_INVALID_OPERATION);
-			log_add (log_Debug, "mixer_DeleteBuffers(): locked buffer");
+			mixer_SetError(MIX_INVALID_OPERATION);
+			log_add(log_Debug, "mixer_DeleteBuffers(): locked buffer");
 			break;
 		}
 		else if (buf->state >= MIX_BUF_QUEUED)
 		{
-			mixer_SetError (MIX_INVALID_OPERATION);
-			log_add (log_Debug, "mixer_DeleteBuffers(): "
-					"attempted on queued/active buffer");
+			mixer_SetError(MIX_INVALID_OPERATION);
+			log_add(log_Debug, "mixer_DeleteBuffers(): "
+							   "attempted on queued/active buffer");
 			break;
 		}
 	}
@@ -1279,66 +1258,64 @@ mixer_DeleteBuffers (uint32 n, mixer_Object *pbufobj)
 		/* all buffers check out */
 		for (; n; n--, pbufobj++)
 		{
-			mixer_Buffer *buf = (mixer_Buffer *) *pbufobj;
+			mixer_Buffer* buf = (mixer_Buffer*)*pbufobj;
 
 			if (!buf)
 				continue;
 
 			if (buf->data)
-				HFree (buf->data);
-			HFree (buf);
+				HFree(buf->data);
+			HFree(buf);
 
 			*pbufobj = 0;
 		}
 	}
-	UnlockRecursiveMutex (buf_mutex);
+	UnlockRecursiveMutex(buf_mutex);
 }
 
 /* check if really a buffer object */
-bool
-mixer_IsBuffer (mixer_Object bufobj)
+bool mixer_IsBuffer(mixer_Object bufobj)
 {
-	mixer_Buffer *buf = (mixer_Buffer *) bufobj;
+	mixer_Buffer* buf = (mixer_Buffer*)bufobj;
 	bool ret;
 
 	if (!buf)
 		return false;
 
-	LockRecursiveMutex (buf_mutex);
+	LockRecursiveMutex(buf_mutex);
 	ret = buf->magic == mixer_bufMagic;
-	UnlockRecursiveMutex (buf_mutex);
+	UnlockRecursiveMutex(buf_mutex);
 
 	return ret;
 }
 
 /* get buffer property */
-void
-mixer_GetBufferi (mixer_Object bufobj, mixer_BufferProp pname,
-		mixer_IntVal *value)
+void mixer_GetBufferi(mixer_Object bufobj, mixer_BufferProp pname,
+					  mixer_IntVal* value)
 {
-	mixer_Buffer *buf = (mixer_Buffer *) bufobj;
+	mixer_Buffer* buf = (mixer_Buffer*)bufobj;
 
 	if (!buf || !value)
 	{
-		mixer_SetError (buf ? MIX_INVALID_VALUE : MIX_INVALID_NAME);
-		log_add (log_Debug, "mixer_GetBufferi() called with null param");
+		mixer_SetError(buf ? MIX_INVALID_VALUE : MIX_INVALID_NAME);
+		log_add(log_Debug, "mixer_GetBufferi() called with null param");
 		return;
 	}
 
-	LockRecursiveMutex (buf_mutex);
-	
+	LockRecursiveMutex(buf_mutex);
+
 	if (buf->locked)
 	{
-		UnlockRecursiveMutex (buf_mutex);
-		mixer_SetError (MIX_INVALID_OPERATION);
-		log_add (log_Debug, "mixer_GetBufferi() called with locked buffer");
+		UnlockRecursiveMutex(buf_mutex);
+		mixer_SetError(MIX_INVALID_OPERATION);
+		log_add(log_Debug, "mixer_GetBufferi() called with locked buffer");
 		return;
 	}
 
 	if (buf->magic != mixer_bufMagic)
 	{
-		mixer_SetError (MIX_INVALID_NAME);
-		log_add (log_Debug, "mixer_GetBufferi(): not a buffer");
+		mixer_SetError(MIX_INVALID_NAME);
+		log_add(log_Debug, "mixer_GetBufferi(): not a buffer");
 	}
 	else
 	{
@@ -1346,73 +1323,73 @@ mixer_GetBufferi (mixer_Object bufobj, mixer_BufferProp pname,
 		 */
 		switch (pname)
 		{
-		case MIX_FREQUENCY:
-			*value = buf->orgfreq;
-			break;
-		case MIX_BITS:
-			*value = buf->orgchansize << 3;
-			break;
-		case MIX_CHANNELS:
-			*value = buf->orgchannels;
-			break;
-		case MIX_SIZE:
-			*value = buf->orgsize;
-			break;
-		case MIX_DATA:
-			*value = (mixer_IntVal) buf->orgdata;
-			break;
-		default:
-			mixer_SetError (MIX_INVALID_ENUM);
-			log_add (log_Debug, "mixer_GetBufferi() called "
-					"with invalid property %u", pname);
+			case MIX_FREQUENCY:
+				*value = buf->orgfreq;
+				break;
+			case MIX_BITS:
+				*value = buf->orgchansize << 3;
+				break;
+			case MIX_CHANNELS:
+				*value = buf->orgchannels;
+				break;
+			case MIX_SIZE:
+				*value = buf->orgsize;
+				break;
+			case MIX_DATA:
+				*value = (mixer_IntVal)buf->orgdata;
+				break;
+			default:
+				mixer_SetError(MIX_INVALID_ENUM);
+				log_add(log_Debug, "mixer_GetBufferi() called "
+								   "with invalid property %u",
+						pname);
 		}
 	}
 
-	UnlockRecursiveMutex (buf_mutex);
+	UnlockRecursiveMutex(buf_mutex);
 }
 
 /* fill buffer with external data */
-void
-mixer_BufferData (mixer_Object bufobj, uint32 format, void* data,
-		uint32 size, uint32 freq)
+void mixer_BufferData(mixer_Object bufobj, uint32 format, void* data,
+					  uint32 size, uint32 freq)
 {
-	mixer_Buffer *buf = (mixer_Buffer *) bufobj;
+	mixer_Buffer* buf = (mixer_Buffer*)bufobj;
 	mixer_Convertion conv;
 	uint32 dstsize;
 
 	if (!buf || !data || !size)
 	{
-		mixer_SetError (buf ? MIX_INVALID_VALUE : MIX_INVALID_NAME);
-		log_add (log_Debug, "mixer_BufferData() called with bad param");
+		mixer_SetError(buf ? MIX_INVALID_VALUE : MIX_INVALID_NAME);
+		log_add(log_Debug, "mixer_BufferData() called with bad param");
 		return;
 	}
 
-	LockRecursiveMutex (buf_mutex);
-	
+	LockRecursiveMutex(buf_mutex);
+
 	if (buf->locked)
 	{
-		UnlockRecursiveMutex (buf_mutex);
-		mixer_SetError (MIX_INVALID_OPERATION);
-		log_add (log_Debug, "mixer_BufferData() called "
-				"with locked buffer");
+		UnlockRecursiveMutex(buf_mutex);
+		mixer_SetError(MIX_INVALID_OPERATION);
+		log_add(log_Debug, "mixer_BufferData() called "
+						   "with locked buffer");
 		return;
 	}
 
 	if (buf->magic != mixer_bufMagic)
 	{
-		mixer_SetError (MIX_INVALID_NAME);
-		log_add (log_Debug, "mixer_BufferData(): not a buffer");
+		mixer_SetError(MIX_INVALID_NAME);
+		log_add(log_Debug, "mixer_BufferData(): not a buffer");
 	}
 	else if (buf->state > MIX_BUF_FILLED)
 	{
-		mixer_SetError (MIX_INVALID_OPERATION);
-		log_add (log_Debug, "mixer_BufferData() attempted "
-				"on in-use buffer");
+		mixer_SetError(MIX_INVALID_OPERATION);
+		log_add(log_Debug, "mixer_BufferData() attempted "
+						   "on in-use buffer");
 	}
 	else
 	{
 		if (buf->data)
-			HFree (buf->data);
+			HFree(buf->data);
 		buf->data = 0;
 		buf->size = 0;
 
@@ -1420,40 +1397,37 @@ mixer_BufferData (mixer_Object bufobj, uint32 format, void* data,
 		buf->orgdata = data;
 		buf->orgfreq = freq;
 		buf->orgsize = size;
-		buf->orgchannels = MIX_FORMAT_CHANS (format);
-		buf->orgchansize = MIX_FORMAT_BPC (format);
+		buf->orgchannels = MIX_FORMAT_CHANS(format);
+		buf->orgchansize = MIX_FORMAT_BPC(format);
 
 		conv.srcsamples = conv.dstsamples =
-			size / MIX_FORMAT_SAMPSIZE (format);
-				
-		if (conv.dstsamples >
-				UINT32_MAX / MIX_FORMAT_SAMPSIZE (format))
+			size / MIX_FORMAT_SAMPSIZE(format);
+
+		if (conv.dstsamples > UINT32_MAX / MIX_FORMAT_SAMPSIZE(format))
 		{
-			mixer_SetError (MIX_INVALID_VALUE);
+			mixer_SetError(MIX_INVALID_VALUE);
 		}
 		else
 		{
-			if (MIX_FORMAT_CHANS (format) < MIX_FORMAT_CHANS (mixer_format))
-				buf->sampsize = MIX_FORMAT_BPC (mixer_format) *
-						MIX_FORMAT_CHANS (format);
+			if (MIX_FORMAT_CHANS(format) < MIX_FORMAT_CHANS(mixer_format))
+				buf->sampsize = MIX_FORMAT_BPC(mixer_format) * MIX_FORMAT_CHANS(format);
 			else
-				buf->sampsize = MIX_FORMAT_SAMPSIZE (mixer_format);
+				buf->sampsize = MIX_FORMAT_SAMPSIZE(mixer_format);
 			buf->size = dstsize = conv.dstsamples * buf->sampsize;
-			
+
 			/* only copy/convert the data if not faking */
-			if (! (mixer_flags & MIX_FAKE_DATA))
+			if (!(mixer_flags & MIX_FAKE_DATA))
 			{
-				buf->data = (uint8*)HMalloc (dstsize);
-			
-				if (MIX_FORMAT_BPC (format) == MIX_FORMAT_BPC (mixer_format) &&
-					MIX_FORMAT_CHANS (format) <= MIX_FORMAT_CHANS (mixer_format))
+				buf->data = (uint8*)HMalloc(dstsize);
+
+				if (MIX_FORMAT_BPC(format) == MIX_FORMAT_BPC(mixer_format) && MIX_FORMAT_CHANS(format) <= MIX_FORMAT_CHANS(mixer_format))
 				{
 					/* format is compatible with internal */
 					buf->locked = true;
-					UnlockRecursiveMutex (buf_mutex);
+					UnlockRecursiveMutex(buf_mutex);
 
-					memcpy (buf->data, data, size);
-					if (MIX_FORMAT_BPC (format) == 1)
+					memcpy(buf->data, data, size);
+					if (MIX_FORMAT_BPC(format) == 1)
 					{
 						/* convert buffer to S8 format internally */
 						uint8* dst;
@@ -1461,30 +1435,30 @@ mixer_BufferData (mixer_Object bufobj, uint32 format, void* data,
 							*dst ^= 0x80;
 					}
 
-					LockRecursiveMutex (buf_mutex);
+					LockRecursiveMutex(buf_mutex);
 					buf->locked = false;
 				}
-				else 
+				else
 				{
 					/* needs convertion */
 					conv.srcfmt = format;
 					conv.srcdata = data;
 					conv.srcsize = size;
-					
-					if (MIX_FORMAT_CHANS (format) < MIX_FORMAT_CHANS (mixer_format))
-						conv.dstfmt = MIX_FORMAT_MAKE (mixer_chansize,
-								MIX_FORMAT_CHANS (format));
+
+					if (MIX_FORMAT_CHANS(format) < MIX_FORMAT_CHANS(mixer_format))
+						conv.dstfmt = MIX_FORMAT_MAKE(mixer_chansize,
+													  MIX_FORMAT_CHANS(format));
 					else
 						conv.dstfmt = mixer_format;
 					conv.dstdata = buf->data;
 					conv.dstsize = dstsize;
 
 					buf->locked = true;
-					UnlockRecursiveMutex (buf_mutex);
+					UnlockRecursiveMutex(buf_mutex);
 
-					mixer_ConvertBuffer_internal (&conv);
-					
-					LockRecursiveMutex (buf_mutex);
+					mixer_ConvertBuffer_internal(&conv);
+
+					LockRecursiveMutex(buf_mutex);
 					buf->locked = false;
 				}
 			}
@@ -1501,7 +1475,7 @@ mixer_BufferData (mixer_Object bufobj, uint32 format, void* data,
 		}
 	}
 
-	UnlockRecursiveMutex (buf_mutex);
+	UnlockRecursiveMutex(buf_mutex);
 }
 
 
@@ -1510,41 +1484,41 @@ mixer_BufferData (mixer_Object bufobj, uint32 format, void* data,
  */
 
 static inline bool
-mixer_CheckBufferState (mixer_Buffer *buf, const char* FuncName)
+mixer_CheckBufferState(mixer_Buffer* buf, const char* FuncName)
 {
 	if (!buf)
 		return false;
 
 	if (buf->magic != mixer_bufMagic)
 	{
-		mixer_SetError (MIX_INVALID_NAME);
-		log_add (log_Debug, "%s(): not a buffer", FuncName);
+		mixer_SetError(MIX_INVALID_NAME);
+		log_add(log_Debug, "%s(): not a buffer", FuncName);
 		return false;
 	}
 
 	if (buf->locked)
 	{
-		mixer_SetError (MIX_INVALID_OPERATION);
-		log_add (log_Debug, "%s(): locked buffer attempted", FuncName);
+		mixer_SetError(MIX_INVALID_OPERATION);
+		log_add(log_Debug, "%s(): locked buffer attempted", FuncName);
 		return false;
 	}
 
 	if (buf->state != MIX_BUF_FILLED)
 	{
-		mixer_SetError (MIX_INVALID_OPERATION);
-		log_add (log_Debug, "%s: invalid buffer attempted", FuncName);
+		mixer_SetError(MIX_INVALID_OPERATION);
+		log_add(log_Debug, "%s: invalid buffer attempted", FuncName);
 		return false;
 	}
 	return true;
 }
 
 static void
-mixer_ConvertBuffer_internal (mixer_Convertion *conv)
+mixer_ConvertBuffer_internal(mixer_Convertion* conv)
 {
-	conv->srcbpc = MIX_FORMAT_BPC (conv->srcfmt);
-	conv->srcchans = MIX_FORMAT_CHANS (conv->srcfmt);
-	conv->dstbpc = MIX_FORMAT_BPC (conv->dstfmt);
-	conv->dstchans = MIX_FORMAT_CHANS (conv->dstfmt);
+	conv->srcbpc = MIX_FORMAT_BPC(conv->srcfmt);
+	conv->srcchans = MIX_FORMAT_CHANS(conv->srcfmt);
+	conv->dstbpc = MIX_FORMAT_BPC(conv->dstfmt);
+	conv->dstchans = MIX_FORMAT_CHANS(conv->dstfmt);
 
 	conv->flags = mixConvNone;
 	if (conv->srcbpc > conv->dstbpc)
@@ -1556,7 +1530,7 @@ mixer_ConvertBuffer_internal (mixer_Convertion *conv)
 	else if (conv->srcchans < conv->dstchans)
 		conv->flags |= mixConvStereoUp;
 
-	mixer_ResampleFlat (conv);
+	mixer_ResampleFlat(conv);
 }
 
 /*************************************************
@@ -1567,79 +1541,79 @@ mixer_ConvertBuffer_internal (mixer_Convertion *conv)
  * in internal format
  */
 static inline sint32
-mixer_GetSampleExt (void *src, uint32 bpc)
+mixer_GetSampleExt(void* src, uint32 bpc)
 {
 	if (bpc == 2)
-		return *(sint16 *)src;
+		return *(sint16*)src;
 	else
-		return (*(uint8 *)src) - 128;
+		return (*(uint8*)src) - 128;
 }
 
 /* get a sample from internal buffer */
 static inline sint32
-mixer_GetSampleInt (void *src, uint32 bpc)
+mixer_GetSampleInt(void* src, uint32 bpc)
 {
 	if (bpc == 2)
-		return *(sint16 *)src;
+		return *(sint16*)src;
 	else
-		return *(sint8 *)src;
+		return *(sint8*)src;
 }
 
 /* put a sample into an external buffer
  * from internal format
  */
 static inline void
-mixer_PutSampleExt (void *dst, uint32 bpc, sint32 samp)
+mixer_PutSampleExt(void* dst, uint32 bpc, sint32 samp)
 {
 	if (bpc == 2)
-		*(sint16 *)dst = samp;
+		*(sint16*)dst = samp;
 	else
-		*(uint8 *)dst = samp ^ 0x80;
+		*(uint8*)dst = samp ^ 0x80;
 }
 
 /* put a sample into an internal buffer
  * in internal format
  */
 static inline void
-mixer_PutSampleInt (void *dst, uint32 bpc, sint32 samp)
+mixer_PutSampleInt(void* dst, uint32 bpc, sint32 samp)
 {
 	if (bpc == 2)
-		*(sint16 *)dst = samp;
+		*(sint16*)dst = samp;
 	else
-		*(sint8 *)dst = samp;
+		*(sint8*)dst = samp;
 }
 
 /* get a sample from source */
 static float
-mixer_ResampleNone (mixer_Source *src, bool left)
+mixer_ResampleNone(mixer_Source* src, bool left)
 {
-	uint8 *d0 = src->nextqueued->data + src->pos;
+	uint8* d0 = src->nextqueued->data + src->pos;
 	src->pos += mixer_chansize;
-	(void) left; // satisfying compiler - unused arg
-	return mixer_GetSampleInt (d0, mixer_chansize);
+	(void)left; // satisfying compiler - unused arg
+	return mixer_GetSampleInt(d0, mixer_chansize);
 }
 
 /* get a resampled (up/down) sample from source (nearest neighbor) */
 static float
-mixer_ResampleNearest (mixer_Source *src, bool left)
+mixer_ResampleNearest(mixer_Source* src, bool left)
 {
-	uint8 *d0 = src->nextqueued->data + src->pos;
-	d0 += mixer_SourceAdvance (src, left);
-	return mixer_GetSampleInt (d0, mixer_chansize);
+	uint8* d0 = src->nextqueued->data + src->pos;
+	d0 += mixer_SourceAdvance(src, left);
+	return mixer_GetSampleInt(d0, mixer_chansize);
 }
 
 /* get an upsampled sample from source (linear interpolation) */
 static float
-mixer_UpsampleLinear (mixer_Source *src, bool left)
+mixer_UpsampleLinear(mixer_Source* src, bool left)
 {
-	mixer_Buffer *curr = src->nextqueued;
-	mixer_Buffer *next = src->nextqueued->next;
+	mixer_Buffer* curr = src->nextqueued;
+	mixer_Buffer* next = src->nextqueued->next;
 	uint8 *d0, *d1;
 	float s0, s1, t;
-	
+
 	t = src->count / 65536.0f;
 	d0 = curr->data + src->pos;
-	d0 += mixer_SourceAdvance (src, left);
+	d0 += mixer_SourceAdvance(src, left);
 
 	if (d0 + curr->sampsize >= curr->data + curr->size)
 	{
@@ -1655,25 +1629,25 @@ mixer_UpsampleLinear (mixer_Source *src, bool left)
 	else
 		d1 = d0 + curr->sampsize;
 
-	s0 = mixer_GetSampleInt (d0, mixer_chansize);
-	s1 = mixer_GetSampleInt (d1, mixer_chansize);
+	s0 = mixer_GetSampleInt(d0, mixer_chansize);
+	s1 = mixer_GetSampleInt(d1, mixer_chansize);
 	return s0 + t * (s1 - s0);
 }
 
 /* get an upsampled sample from source (cubic interpolation) */
 static float
-mixer_UpsampleCubic (mixer_Source *src, bool left)
+mixer_UpsampleCubic(mixer_Source* src, bool left)
 {
-	mixer_Buffer *prev = src->prevqueued;
-	mixer_Buffer *curr = src->nextqueued;
-	mixer_Buffer *next = src->nextqueued->next;
+	mixer_Buffer* prev = src->prevqueued;
+	mixer_Buffer* curr = src->nextqueued;
+	mixer_Buffer* next = src->nextqueued->next;
 	uint8 *d0, *d1, *d2, *d3; /* prev, curr, next, next + 1 */
 	float t, t2, a, b, c, s0, s1, s2, s3;
 
 	t = src->count / 65536.0f;
 	t2 = t * t;
-	d1 = curr->data + src->pos;	
-	d1 += mixer_SourceAdvance (src, left);
+	d1 = curr->data + src->pos;
+	d1 += mixer_SourceAdvance(src, left);
 
 	if (d1 - curr->sampsize < curr->data)
 	{
@@ -1719,15 +1693,15 @@ mixer_UpsampleCubic (mixer_Source *src, bool left)
 			d3 = d2 + curr->sampsize;
 	}
 
-	s0 = mixer_GetSampleInt (d0, mixer_chansize);
-	s1 = mixer_GetSampleInt (d1, mixer_chansize);
-	s2 = mixer_GetSampleInt (d2, mixer_chansize);
-	s3 = mixer_GetSampleInt (d3, mixer_chansize);
+	s0 = mixer_GetSampleInt(d0, mixer_chansize);
+	s1 = mixer_GetSampleInt(d1, mixer_chansize);
+	s2 = mixer_GetSampleInt(d2, mixer_chansize);
+	s3 = mixer_GetSampleInt(d3, mixer_chansize);
 
 	a = (3.0f * (s1 - s2) - s0 + s3) * 0.5f;
 	b = 2.0f * s2 + s0 - ((5.0f * s1 + s3) * 0.5f);
 	c = (s2 - s0) * 0.5f;
-	
+
 	return a * t2 * t + b * t2 + c * t + s1;
 }
 
@@ -1736,16 +1710,16 @@ mixer_UpsampleCubic (mixer_Source *src, bool left)
  * convertion if necessary
  */
 static inline sint32
-mixer_GetConvSample (uint8 **psrc, uint32 bpc, uint32 flags)
+mixer_GetConvSample(uint8** psrc, uint32 bpc, uint32 flags)
 {
 	sint32 samp;
-	
-	samp = mixer_GetSampleExt (*psrc, bpc);
+
+	samp = mixer_GetSampleExt(*psrc, bpc);
 	*psrc += bpc;
 	if (flags & mixConvStereoDown)
 	{
 		/* downmix to mono - average up channels */
-		samp = (samp + mixer_GetSampleExt (*psrc, bpc)) / 2;
+		samp = (samp + mixer_GetSampleExt(*psrc, bpc)) / 2;
 		*psrc += bpc;
 	}
 
@@ -1771,37 +1745,37 @@ mixer_GetConvSample (uint8 **psrc, uint32 bpc, uint32 flags)
  * convertion if necessary
  */
 static inline void
-mixer_PutConvSample (uint8 **pdst, uint32 bpc, uint32 flags, sint32 samp)
+mixer_PutConvSample(uint8** pdst, uint32 bpc, uint32 flags, sint32 samp)
 {
-	mixer_PutSampleInt (*pdst, bpc, samp);
+	mixer_PutSampleInt(*pdst, bpc, samp);
 	*pdst += bpc;
 	if (flags & mixConvStereoUp)
 	{
-		mixer_PutSampleInt (*pdst, bpc, samp);
+		mixer_PutSampleInt(*pdst, bpc, samp);
 		*pdst += bpc;
 	}
 }
 
 /* resampling with respect to sample size only */
 static void
-mixer_ResampleFlat (mixer_Convertion *conv)
+mixer_ResampleFlat(mixer_Convertion* conv)
 {
 	mixer_ConvFlags flags = conv->flags;
-	uint8 *src = (uint8*)conv->srcdata;
-	uint8 *dst = (uint8*)conv->dstdata;
+	uint8* src = (uint8*)conv->srcdata;
+	uint8* dst = (uint8*)conv->dstdata;
 	uint32 srcbpc = conv->srcbpc;
 	uint32 dstbpc = conv->dstbpc;
 	uint32 samples;
 
 	samples = conv->srcsamples;
-	if ( !(conv->flags & (mixConvStereoUp | mixConvStereoDown)))
+	if (!(conv->flags & (mixConvStereoUp | mixConvStereoDown)))
 		samples *= conv->srcchans;
 
 	for (; samples; samples--)
 	{
 		sint32 samp;
 
-		samp = mixer_GetConvSample (&src, srcbpc, flags);
-		mixer_PutConvSample (&dst, dstbpc, flags, samp);
+		samp = mixer_GetConvSample(&src, srcbpc, flags);
+		mixer_PutConvSample(&dst, dstbpc, flags, samp);
 	}
 }

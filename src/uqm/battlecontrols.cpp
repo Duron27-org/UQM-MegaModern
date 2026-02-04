@@ -17,84 +17,80 @@
 #include "battlecontrols.h"
 
 #include "intel.h"
-		// For computer_intelligence()
+// For computer_intelligence()
 #include "tactrans.h"
-		// For battleEndReady*
+// For battleEndReady*
 #include "init.h"
-		// For NUM_PLAYERS
+// For NUM_PLAYERS
 #include "libs/memlib.h"
-		// For HMalloc(), HFree()
+// For HMalloc(), HFree()
 #ifdef NETPLAY
-#	include "supermelee/netplay/netmelee.h"
-#endif  /* NETPLAY */
+#include "supermelee/netplay/netmelee.h"
+#endif /* NETPLAY */
 
-InputContext *PlayerInput[NUM_PLAYERS];
+InputContext* PlayerInput[NUM_PLAYERS];
 
 BattleInputHandlers ComputerInputHandlers = {
-	/* .frameInput     = */ (BattleFrameInputFunction) computer_intelligence,
-	/* .selectShip     = */ (SelectShipFunction) selectShipComputer,
-	/* .battleEndReady = */ (BattleEndReadyFunction) battleEndReadyComputer,
+	/* .frameInput     = */ (BattleFrameInputFunction)computer_intelligence,
+	/* .selectShip     = */ (SelectShipFunction)selectShipComputer,
+	/* .battleEndReady = */ (BattleEndReadyFunction)battleEndReadyComputer,
 	/* .deleteContext  = */ InputContext_delete,
 };
 
 BattleInputHandlers HumanInputHandlers = {
-	/* .frameInput     = */ (BattleFrameInputFunction) frameInputHuman,
-	/* .selectShip     = */ (SelectShipFunction) selectShipHuman,
-	/* .battleEndReady = */ (BattleEndReadyFunction) battleEndReadyHuman,
+	/* .frameInput     = */ (BattleFrameInputFunction)frameInputHuman,
+	/* .selectShip     = */ (SelectShipFunction)selectShipHuman,
+	/* .battleEndReady = */ (BattleEndReadyFunction)battleEndReadyHuman,
 	/* .deleteContext  = */ InputContext_delete,
 };
 
 #ifdef NETPLAY
 BattleInputHandlers NetworkInputHandlers = {
-	/* .frameInput     = */ (BattleFrameInputFunction) networkBattleInput,
-	/* .selectShip     = */ (SelectShipFunction) selectShipNetwork,
-	/* .battleEndReady = */ (BattleEndReadyFunction) battleEndReadyNetwork,
+	/* .frameInput     = */ (BattleFrameInputFunction)networkBattleInput,
+	/* .selectShip     = */ (SelectShipFunction)selectShipNetwork,
+	/* .battleEndReady = */ (BattleEndReadyFunction)battleEndReadyNetwork,
 	/* .deleteContext  = */ InputContext_delete,
 };
 #endif
 
 
-void
-InputContext_init (InputContext *context, BattleInputHandlers *handlers,
-		uqm::COUNT playerNr)
+void InputContext_init(InputContext* context, BattleInputHandlers* handlers,
+					   uqm::COUNT playerNr)
 {
 	context->handlers = handlers;
 	context->playerNr = playerNr;
 }
 
-void
-InputContext_delete (InputContext *context)
+void InputContext_delete(InputContext* context)
 {
-	HFree (context);
+	HFree(context);
 }
 
-ComputerInputContext *
-ComputerInputContext_new (uqm::COUNT playerNr)
+ComputerInputContext*
+ComputerInputContext_new(uqm::COUNT playerNr)
 {
-	ComputerInputContext *result = (ComputerInputContext *)HMalloc (sizeof (ComputerInputContext));
-	InputContext_init ((InputContext *) result,
-			&ComputerInputHandlers, playerNr);
+	ComputerInputContext* result = (ComputerInputContext*)HMalloc(sizeof(ComputerInputContext));
+	InputContext_init((InputContext*)result,
+					  &ComputerInputHandlers, playerNr);
 	return result;
 }
 
-HumanInputContext *
-HumanInputContext_new (uqm::COUNT playerNr)
+HumanInputContext*
+HumanInputContext_new(uqm::COUNT playerNr)
 {
-	HumanInputContext *result = (HumanInputContext*)HMalloc (sizeof (HumanInputContext));
-	InputContext_init ((InputContext *) result,
-			&HumanInputHandlers, playerNr);
+	HumanInputContext* result = (HumanInputContext*)HMalloc(sizeof(HumanInputContext));
+	InputContext_init((InputContext*)result,
+					  &HumanInputHandlers, playerNr);
 	return result;
 }
 
 #ifdef NETPLAY
-NetworkInputContext *
-NetworkInputContext_new (uqm::COUNT playerNr)
+NetworkInputContext*
+NetworkInputContext_new(uqm::COUNT playerNr)
 {
-	NetworkInputContext *result = (NetworkInputContext*)HMalloc (sizeof (NetworkInputContext));
-	InputContext_init ((InputContext *) result,
-			&NetworkInputHandlers, playerNr);
+	NetworkInputContext* result = (NetworkInputContext*)HMalloc(sizeof(NetworkInputContext));
+	InputContext_init((InputContext*)result,
+					  &NetworkInputHandlers, playerNr);
 	return result;
 }
 #endif
-
-

@@ -24,15 +24,15 @@
 // Scaler function lookup table
 //
 const Scale_FuncDef_t
-Scale_C_Functions[] =
-{
-	{TFB_GFXFLAGS_SCALE_BILINEAR,   Scale_BilinearFilter},
-	{TFB_GFXFLAGS_SCALE_BIADAPT,    Scale_BiAdaptFilter},
-	{TFB_GFXFLAGS_SCALE_BIADAPTADV, Scale_BiAdaptAdvFilter},
-	{TFB_GFXFLAGS_SCALE_TRISCAN,    Scale_TriScanFilter},
-	{TFB_GFXFLAGS_SCALE_HQXX,       Scale_HqFilter},
-	// Default
-	{0,                             Scale_Nearest}
+	Scale_C_Functions[] =
+		{
+			{TFB_GFXFLAGS_SCALE_BILINEAR,	  Scale_BilinearFilter  },
+			{TFB_GFXFLAGS_SCALE_BIADAPT,	 Scale_BiAdaptFilter	},
+			{TFB_GFXFLAGS_SCALE_BIADAPTADV, Scale_BiAdaptAdvFilter},
+			{TFB_GFXFLAGS_SCALE_TRISCAN,	 Scale_TriScanFilter	},
+			{TFB_GFXFLAGS_SCALE_HQXX,		  Scale_HqFilter		},
+			// Default
+			{0,							 Scale_Nearest		 }
 };
 
 // See
@@ -42,28 +42,27 @@ Scale_C_Functions[] =
 //	triscan2x.c  -- Triscan scaling
 
 // Biadapt scaling to 2x
-void
-SCALE_(BiAdaptFilter) (SDL_Surface *src, SDL_Surface *dst, SDL_Rect *r)
+void SCALE_(BiAdaptFilter)(SDL_Surface* src, SDL_Surface* dst, SDL_Rect* r)
 {
 	int x, y;
 	const int w = src->w, h = src->h;
 	int xend, yend;
 	int dsrc, ddst;
-	SDL_Rect *region = r;
+	SDL_Rect* region = r;
 	SDL_Rect limits;
-	SDL_PixelFormat *fmt = dst->format;
+	SDL_PixelFormat* fmt = dst->format;
 	const int sp = src->pitch, dp = dst->pitch;
 	const int bpp = fmt->BytesPerPixel;
 	const int slen = sp / bpp, dlen = dp / bpp;
-	Uint32 *src_p = (Uint32 *)src->pixels;
-	Uint32 *dst_p = (Uint32 *)dst->pixels;
+	Uint32* src_p = (Uint32*)src->pixels;
+	Uint32* dst_p = (Uint32*)dst->pixels;
 	Uint32 pixval_tl, pixval_tr, pixval_bl, pixval_br;
 
-	// these macros are for clarity; they make the current pixel (0,0)
-	// and allow to access pixels in all directions
-	#define SRC(x, y)   (src_p + (x) + ((y) * slen))
+// these macros are for clarity; they make the current pixel (0,0)
+// and allow to access pixels in all directions
+#define SRC(x, y) (src_p + (x) + ((y) * slen))
 
-	SCALE_(PlatInit) ();
+	SCALE_(PlatInit)();
 
 	// expand updated region if necessary
 	// pixels neighbooring the updated region may
@@ -72,7 +71,7 @@ SCALE_(BiAdaptFilter) (SDL_Surface *src, SDL_Surface *dst, SDL_Rect *r)
 	limits.y = 0;
 	limits.w = src->w;
 	limits.h = src->h;
-	Scale_ExpandRect (region, 2, &limits);
+	Scale_ExpandRect(region, 2, &limits);
 
 	xend = region->x + region->w;
 	yend = region->y + region->h;
@@ -87,26 +86,25 @@ SCALE_(BiAdaptFilter) (SDL_Surface *src, SDL_Surface *dst, SDL_Rect *r)
 	{
 		for (x = region->x; x < xend; ++x, ++src_p, ++dst_p)
 		{
-			pixval_tl = SCALE_GETPIX (SRC (0, 0));
-			
-			SCALE_SETPIX (dst_p, pixval_tl);
-			
+			pixval_tl = SCALE_GETPIX(SRC(0, 0));
+
+			SCALE_SETPIX(dst_p, pixval_tl);
+
 			if (y + 1 < h)
 			{
 				// check pixel below the current one
-				pixval_bl = SCALE_GETPIX (SRC (0, 1));
+				pixval_bl = SCALE_GETPIX(SRC(0, 1));
 
 				if (pixval_tl == pixval_bl)
-					SCALE_SETPIX (dst_p + dlen, pixval_tl);
+					SCALE_SETPIX(dst_p + dlen, pixval_tl);
 				else
-					SCALE_SETPIX (dst_p + dlen, Scale_Blend_11 (
-							pixval_tl, pixval_bl)
-							);
+					SCALE_SETPIX(dst_p + dlen, Scale_Blend_11(
+												   pixval_tl, pixval_bl));
 			}
 			else
 			{
 				// last pixel in column - propagate
-				SCALE_SETPIX (dst_p + dlen, pixval_tl);
+				SCALE_SETPIX(dst_p + dlen, pixval_tl);
 				pixval_bl = pixval_tl;
 			}
 			++dst_p;
@@ -114,36 +112,34 @@ SCALE_(BiAdaptFilter) (SDL_Surface *src, SDL_Surface *dst, SDL_Rect *r)
 			if (x + 1 >= w)
 			{
 				// last pixel in row - propagate
-				SCALE_SETPIX (dst_p, pixval_tl);
+				SCALE_SETPIX(dst_p, pixval_tl);
 
 				if (pixval_tl == pixval_bl)
-					SCALE_SETPIX (dst_p + dlen, pixval_tl);
+					SCALE_SETPIX(dst_p + dlen, pixval_tl);
 				else
-					SCALE_SETPIX (dst_p + dlen, Scale_Blend_11 (
-							pixval_tl, pixval_bl)
-							);
+					SCALE_SETPIX(dst_p + dlen, Scale_Blend_11(
+												   pixval_tl, pixval_bl));
 				continue;
 			}
-			
+
 			// check pixel to the right from the current one
-			pixval_tr = SCALE_GETPIX (SRC (1, 0));
+			pixval_tr = SCALE_GETPIX(SRC(1, 0));
 
 			if (pixval_tl == pixval_tr)
-				SCALE_SETPIX (dst_p, pixval_tr);
+				SCALE_SETPIX(dst_p, pixval_tr);
 			else
-				SCALE_SETPIX (dst_p, Scale_Blend_11 (
-						pixval_tl, pixval_tr)
-						);
+				SCALE_SETPIX(dst_p, Scale_Blend_11(
+										pixval_tl, pixval_tr));
 
 			if (y + 1 >= h)
 			{
 				// last pixel in column - propagate
-				SCALE_SETPIX (dst_p + dlen, pixval_tl);
+				SCALE_SETPIX(dst_p + dlen, pixval_tl);
 				continue;
 			}
-			
+
 			// check pixel to the bottom-right
-			pixval_br = SCALE_GETPIX (SRC (1, 1));
+			pixval_br = SCALE_GETPIX(SRC(1, 1));
 
 			if (pixval_tl == pixval_br && pixval_tr == pixval_bl)
 			{
@@ -153,7 +149,7 @@ SCALE_(BiAdaptFilter) (SDL_Surface *src, SDL_Surface *dst, SDL_Rect *r)
 				if (pixval_tl == pixval_tr)
 				{
 					// all 4 are equal - propagate
-					SCALE_SETPIX (dst_p + dlen, pixval_tl);
+					SCALE_SETPIX(dst_p + dlen, pixval_tl);
 					continue;
 				}
 
@@ -166,13 +162,13 @@ SCALE_(BiAdaptFilter) (SDL_Surface *src, SDL_Surface *dst, SDL_Rect *r)
 
 				if (x > 0)
 				{
-					clr = SCALE_GETPIX (SRC (-1, 0));
+					clr = SCALE_GETPIX(SRC(-1, 0));
 					if (clr == pixval_tl)
 						cl++;
 					else if (clr == pixval_tr)
 						cr++;
 
-					clr = SCALE_GETPIX (SRC (-1, 1));
+					clr = SCALE_GETPIX(SRC(-1, 1));
 					if (clr == pixval_tl)
 						cl++;
 					else if (clr == pixval_tr)
@@ -181,13 +177,13 @@ SCALE_(BiAdaptFilter) (SDL_Surface *src, SDL_Surface *dst, SDL_Rect *r)
 
 				if (y > 0)
 				{
-					clr = SCALE_GETPIX (SRC (0, -1));
+					clr = SCALE_GETPIX(SRC(0, -1));
 					if (clr == pixval_tl)
 						cl++;
 					else if (clr == pixval_tr)
 						cr++;
 
-					clr = SCALE_GETPIX (SRC (1, -1));
+					clr = SCALE_GETPIX(SRC(1, -1));
 					if (clr == pixval_tl)
 						cl++;
 					else if (clr == pixval_tr)
@@ -196,13 +192,13 @@ SCALE_(BiAdaptFilter) (SDL_Surface *src, SDL_Surface *dst, SDL_Rect *r)
 
 				if (x + 2 < w)
 				{
-					clr = SCALE_GETPIX (SRC (2, 0));
+					clr = SCALE_GETPIX(SRC(2, 0));
 					if (clr == pixval_tl)
 						cl++;
 					else if (clr == pixval_tr)
 						cr++;
 
-					clr = SCALE_GETPIX (SRC (2, 1));
+					clr = SCALE_GETPIX(SRC(2, 1));
 					if (clr == pixval_tl)
 						cl++;
 					else if (clr == pixval_tr)
@@ -211,50 +207,48 @@ SCALE_(BiAdaptFilter) (SDL_Surface *src, SDL_Surface *dst, SDL_Rect *r)
 
 				if (y + 2 < h)
 				{
-					clr = SCALE_GETPIX (SRC (0, 2));
+					clr = SCALE_GETPIX(SRC(0, 2));
 					if (clr == pixval_tl)
 						cl++;
 					else if (clr == pixval_tr)
 						cr++;
 
-					clr = SCALE_GETPIX (SRC (1, 2));
+					clr = SCALE_GETPIX(SRC(1, 2));
 					if (clr == pixval_tl)
 						cl++;
 					else if (clr == pixval_tr)
 						cr++;
 				}
-				
+
 				// least count wins
 				if (cl > cr)
-					SCALE_SETPIX (dst_p + dlen, pixval_tr);
+					SCALE_SETPIX(dst_p + dlen, pixval_tr);
 				else if (cr > cl)
-					SCALE_SETPIX (dst_p + dlen, pixval_tl);
+					SCALE_SETPIX(dst_p + dlen, pixval_tl);
 				else
-					SCALE_SETPIX (dst_p + dlen,
-							Scale_Blend_11 (pixval_tl, pixval_tr));
+					SCALE_SETPIX(dst_p + dlen,
+								 Scale_Blend_11(pixval_tl, pixval_tr));
 			}
 			else if (pixval_tl == pixval_br)
 			{
 				// main diagonal is same color
 				// use its value
-				SCALE_SETPIX (dst_p + dlen, pixval_tl);
+				SCALE_SETPIX(dst_p + dlen, pixval_tl);
 			}
 			else if (pixval_tr == pixval_bl)
 			{
 				// 2nd diagonal is same color
 				// use its value
-				SCALE_SETPIX (dst_p + dlen, pixval_tr);
+				SCALE_SETPIX(dst_p + dlen, pixval_tr);
 			}
 			else
 			{
 				// blend all 4
-				SCALE_SETPIX (dst_p + dlen, Scale_Blend_1111 (
-						pixval_tl, pixval_bl, pixval_tr, pixval_br
-						));
+				SCALE_SETPIX(dst_p + dlen, Scale_Blend_1111(
+											   pixval_tl, pixval_bl, pixval_tr, pixval_br));
 			}
 		}
 	}
 
-	SCALE_(PlatDone) ();
+	SCALE_(PlatDone)();
 }
-

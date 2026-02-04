@@ -26,19 +26,21 @@ typedef void* uio_GPFileExtra;
 
 #ifdef WIN32
 #include <io.h>
-struct stdio_EntriesIterator {
+struct stdio_EntriesIterator
+{
 	long dirHandle;
 	struct _finddata_t findData;
 	int status;
 };
 #else
-struct stdio_EntriesIterator {
+struct stdio_EntriesIterator
+{
 	DIR* dirHandle;
 	struct dirent* entry;
 	struct dirent* direntBuffer;
 	int status;
 };
-#endif	
+#endif
 
 using uio_NativeEntriesContext = stdio_EntriesIterator*;
 
@@ -52,11 +54,12 @@ using uio_NativeEntriesContext = stdio_EntriesIterator*;
 
 #include <sys/stat.h>
 #ifndef WIN32
-#	include <dirent.h>
+#include <dirent.h>
 #endif
 
 
-struct stdio_GPDirData {
+struct stdio_GPDirData
+{
 	// The reason that names are stored is that in the system filesystem
 	// you need names to refer to files and directories.
 	// (you could keep a file descriptor to each one, but that would
@@ -65,48 +68,46 @@ struct stdio_GPDirData {
 	// This is not needed for all filesystems; therefor this info is not
 	// in uio_GPDir itself.
 	// The reasons for including upDir here are similar.
-	char *name;
-	char *cachedPath;
-	uio_GPDir *upDir;
+	char* name;
+	char* cachedPath;
+	uio_GPDir* upDir;
 };
 
-struct stdio_Handle {
+struct stdio_Handle
+{
 	int fd;
 };
 
 
+uio_PRoot* stdio_mount(uio_Handle* handle, int flags);
+int stdio_umount(uio_PRoot*);
+uio_PDirHandle* stdio_mkdir(uio_PDirHandle* pDirHandle, const char* name,
+							mode_t mode);
+uio_Handle* stdio_open(uio_PDirHandle* pDirHandle, const char* file, int flags,
+					   mode_t mode);
+void stdio_close(uio_Handle* handle);
+int zip_access(uio_PDirHandle* pDirHandle, const char* name, int mode);
+int stdio_access(uio_PDirHandle* pDirHandle, const char* name, int mode);
+int stdio_fstat(uio_Handle* handle, struct stat* statBuf);
+int stdio_stat(uio_PDirHandle* pDirHandle, const char* name,
+			   struct stat* statBuf);
+ssize_t stdio_read(uio_Handle* handle, void* buf, size_t count);
+int stdio_rename(uio_PDirHandle* oldPDirHandle, const char* oldName,
+				 uio_PDirHandle* newPDirHandle, const char* newName);
+int stdio_rmdir(uio_PDirHandle* pDirHandle, const char* name);
+off_t stdio_seek(uio_Handle* handle, off_t offset, int whence);
+ssize_t stdio_write(uio_Handle* handle, const void* buf, size_t count);
+int stdio_unlink(uio_PDirHandle* pDirHandle, const char* name);
 
-
-uio_PRoot *stdio_mount(uio_Handle *handle, int flags);
-int stdio_umount(uio_PRoot *);
-uio_PDirHandle *stdio_mkdir(uio_PDirHandle *pDirHandle, const char *name,
-		mode_t mode);
-uio_Handle *stdio_open(uio_PDirHandle *pDirHandle, const char *file, int flags,
-		mode_t mode);
-void stdio_close(uio_Handle *handle);
-int zip_access(uio_PDirHandle *pDirHandle, const char *name, int mode);
-int stdio_access(uio_PDirHandle *pDirHandle, const char *name, int mode);
-int stdio_fstat(uio_Handle *handle, struct stat *statBuf);
-int stdio_stat(uio_PDirHandle *pDirHandle, const char *name,
-		struct stat *statBuf);
-ssize_t stdio_read(uio_Handle *handle, void *buf, size_t count);
-int stdio_rename(uio_PDirHandle *oldPDirHandle, const char *oldName,
-		uio_PDirHandle *newPDirHandle, const char *newName);
-int stdio_rmdir(uio_PDirHandle *pDirHandle, const char *name);
-off_t stdio_seek(uio_Handle *handle, off_t offset, int whence);
-ssize_t stdio_write(uio_Handle *handle, const void *buf, size_t count);
-int stdio_unlink(uio_PDirHandle *pDirHandle, const char *name);
-
-stdio_EntriesIterator *stdio_openEntries(uio_PDirHandle *pDirHandle);
-int stdio_readEntries(stdio_EntriesIterator **iterator,
-		char *buf, size_t len);
-void stdio_closeEntries(stdio_EntriesIterator *iterator);
+stdio_EntriesIterator* stdio_openEntries(uio_PDirHandle* pDirHandle);
+int stdio_readEntries(stdio_EntriesIterator** iterator,
+					  char* buf, size_t len);
+void stdio_closeEntries(stdio_EntriesIterator* iterator);
 #ifdef WIN32
-stdio_EntriesIterator *stdio_EntriesIterator_new(long dirHandle);
+stdio_EntriesIterator* stdio_EntriesIterator_new(long dirHandle);
 #else
-stdio_EntriesIterator *stdio_EntriesIterator_new(DIR *dirHandle);
+stdio_EntriesIterator* stdio_EntriesIterator_new(DIR* dirHandle);
 #endif
-void stdio_EntriesIterator_delete(stdio_EntriesIterator *iterator);
-uio_PDirEntryHandle *stdio_getPDirEntryHandle(
-		const uio_PDirHandle *pDirHandle, const char *name);
-
+void stdio_EntriesIterator_delete(stdio_EntriesIterator* iterator);
+uio_PDirEntryHandle* stdio_getPDirEntryHandle(
+	const uio_PDirHandle* pDirHandle, const char* name);

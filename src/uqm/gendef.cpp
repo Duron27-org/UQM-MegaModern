@@ -21,10 +21,8 @@
 #include "planets/generate/genall.h"
 
 
-
-
-const GenerateFunctions *
-getGenerateFunctions (uqm::BYTE Index)
+const GenerateFunctions*
+getGenerateFunctions(uqm::BYTE Index)
 {
 	switch (Index)
 	{
@@ -97,7 +95,7 @@ getGenerateFunctions (uqm::BYTE Index)
 		case KOHRAH2_DEFINED:
 		case DESTROYED_STARBASE_DEFINED:
 		case SAMATRA_DEFINED:
-			return &generateSaMatraFunctions; 
+			return &generateSaMatraFunctions;
 		case ZOQFOT_DEFINED:
 		case ZOQ_COLONY0_DEFINED:
 		case ZOQ_COLONY1_DEFINED:
@@ -129,4 +127,3 @@ getGenerateFunctions (uqm::BYTE Index)
 			return &generateDefaultFunctions;
 	}
 }
-

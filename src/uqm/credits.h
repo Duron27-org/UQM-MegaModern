@@ -23,11 +23,10 @@
 extern "C" {
 #endif
 
-extern void Credits (bool WithOuttakes);
+extern void Credits(bool WithOuttakes);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* UQM_CREDITS_H_ */
-
+#endif /* UQM_CREDITS_H_ */

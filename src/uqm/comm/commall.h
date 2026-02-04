@@ -22,5 +22,4 @@
 #include "uqm/commglue.h"
 #include "libs/reslib.h"
 
-#endif  /* UQM_COMM_COMMALL_H_ */
-
+#endif /* UQM_COMM_COMMALL_H_ */

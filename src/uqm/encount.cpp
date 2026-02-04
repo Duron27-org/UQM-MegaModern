@@ -31,7 +31,7 @@
 #include "gendef.h"
 #include "globdata.h"
 #include "sis.h"
-		// for DrawStatusMessage(), SetStatusMessageMode()
+// for DrawStatusMessage(), SetStatusMessageMode()
 #include "init.h"
 #include "pickship.h"
 #include "intel.h"
@@ -50,15 +50,15 @@
 #include "starbase.h"
 
 
-static void DrawFadeText (const uqm::CHAR_T *str1, const uqm::CHAR_T *str2,
-		bool fade_in, RECT *pRect);
+static void DrawFadeText(const uqm::CHAR_T* str1, const uqm::CHAR_T* str2,
+						 bool fade_in, RECT* pRect);
 
 
 static bool
-DoSelectAction (MENU_STATE *pMS)
+DoSelectAction(MENU_STATE* pMS)
 {
-	SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
-	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
+	SetMenuSounds(MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
+	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
 	{
 		pMS->CurState = ATTACK + 1;
 		return (false);
@@ -74,44 +74,42 @@ DoSelectAction (MENU_STATE *pMS)
 		{
 			case HAIL:
 			case ATTACK:
-				DrawMenuStateStrings (PM_CONVERSE, pMS->CurState);
-				if (lowByte (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE)
+				DrawMenuStateStrings(PM_CONVERSE, pMS->CurState);
+				if (lowByte(GLOBAL(CurrentActivity)) == IN_LAST_BATTLE)
 					pMS->CurState = HAIL;
 				return (false);
 			case ATTACK + 1:
 				// Clearing FlashRect is not necessary
-				if (!GameOptions ())
+				if (!GameOptions())
 					return false;
-				DrawMenuStateStrings (PM_CONVERSE, pMS->CurState);
-				SetFlashRect (SFR_MENU_3DO, false);
+				DrawMenuStateStrings(PM_CONVERSE, pMS->CurState);
+				SetFlashRect(SFR_MENU_3DO, false);
 				break;
 			default:
-				printf ("Unknown option: %d\n", pMS->CurState);
+				printf("Unknown option: %d\n", pMS->CurState);
 		}
 	}
-	DoMenuChooser (pMS, PM_CONVERSE);
+	DoMenuChooser(pMS, PM_CONVERSE);
 	return (true);
 }
 
-static QUEUE *
-GetShipFragQueueForPlayer (uqm::COUNT playerNr)
+static QUEUE*
+GetShipFragQueueForPlayer(uqm::COUNT playerNr)
 {
 	if (playerNr == RPG_PLAYER_NUM)
-		return &GLOBAL (built_ship_q);
+		return &GLOBAL(built_ship_q);
 	else
-		return &GLOBAL (npc_built_ship_q);
+		return &GLOBAL(npc_built_ship_q);
 }
 
-void
-SetBattlePlanet (void)
+void SetBattlePlanet(void)
 {
 	uqm::BYTE selector;
 
-	selector = (uqm::BYTE)((uqm::COUNT)TFB_Random () % NUMBER_OF_PLANET_TYPES);
+	selector = (uqm::BYTE)((uqm::COUNT)TFB_Random() % NUMBER_OF_PLANET_TYPES);
 
-	if (EXTENDED && (selector == RAINBOW_WORLD
-		|| selector == SHATTERED_WORLD))
-	{	// No rainbow or shattered worlds in hyperspace
+	if (EXTENDED && (selector == RAINBOW_WORLD || selector == SHATTERED_WORLD))
+	{ // No rainbow or shattered worlds in hyperspace
 		if (selector == RAINBOW_WORLD)
 			selector--;
 		if (selector == SHATTERED_WORLD)
@@ -119,96 +117,96 @@ SetBattlePlanet (void)
 	}
 
 	// Set BATTLE_PLANET state so it can be serialized if game is saved
-	SET_GAME_STATE (BATTLE_PLANET, selector);
+	SET_GAME_STATE(BATTLE_PLANET, selector);
 }
 
 // Called by comm code to intialize battle fleets during encounter
-void
-BuildBattle (uqm::COUNT which_player)
+void BuildBattle(uqm::COUNT which_player)
 {
-	QUEUE *pQueue;
+	QUEUE* pQueue;
 	HSHIPFRAG hStarShip, hNextShip;
 	HSTARSHIP hBuiltShip;
-	STARSHIP *BuiltShipPtr;
+	STARSHIP* BuiltShipPtr;
 
 	EncounterRace = -1;
 
-	if (GetHeadLink (&GLOBAL (npc_built_ship_q)) == 0)
+	if (GetHeadLink(&GLOBAL(npc_built_ship_q)) == 0)
 	{
-		SET_GAME_STATE (BATTLE_SEGUE, 0);
+		SET_GAME_STATE(BATTLE_SEGUE, 0);
 		return;
 	}
 
 	if (which_player != RPG_PLAYER_NUM)
-	{	// This function is called first for the NPC character
+	{ // This function is called first for the NPC character
 		// and this is when a centerpiece is loaded
-		switch (lowByte (GLOBAL (CurrentActivity)))
+		switch (lowByte(GLOBAL(CurrentActivity)))
 		{
 			case IN_LAST_BATTLE:
-				load_gravity_well (SA_MATRA);
+				load_gravity_well(SA_MATRA);
 				break;
 			case IN_HYPERSPACE:
-			{	// If somehow BATTLE_PLANET is invalid (maybe Core game load missalign)
-				if (GET_GAME_STATE (BATTLE_PLANET) > NUMBER_OF_PLANET_TYPES)
-					SetBattlePlanet ();
+				{ // If somehow BATTLE_PLANET is invalid (maybe Core game load missalign)
+					if (GET_GAME_STATE(BATTLE_PLANET) > NUMBER_OF_PLANET_TYPES)
+						SetBattlePlanet();
 
-				load_gravity_well (GET_GAME_STATE (BATTLE_PLANET));
-				break;
-			}
+					load_gravity_well(GET_GAME_STATE(BATTLE_PLANET));
+					break;
+				}
 			default:
-			{
-				SET_GAME_STATE (ESCAPE_COUNTER, 110);
-
-				if (EXTENDED && pSolarSysState && worldIsMoon (
-						pSolarSysState,	pSolarSysState->pOrbitalDesc))
-				{// Set gravity well to moon if encounter takes
-				 // place there (Spathiwa moon, Taalo HW,
-				 // Utwig Bomb Loc)
-				 // Only if encounter starts with moon collision
-				 // colliding with IP group in inner system still
-				 // uses main planet for gravity well
-
-					uqm::BYTE selector = pSolarSysState->MoonDesc[moonIndex (
-						pSolarSysState,	pSolarSysState->pOrbitalDesc)].data_index;
-
-					if (selector == SA_MATRA)
-					{
-						utf8StringCopy (GLOBAL_SIS (PlanetName),
-							sizeof (GLOBAL_SIS (PlanetName)),
-							GAME_STRING (PLANET_NUMBER_BASE + 32));
-						DrawSISTitle (
-							GAME_STRING (PLANET_NUMBER_BASE + 32));
-					}
-
-					load_gravity_well (selector);
-					break;
-				}
-				else
 				{
-					load_gravity_well (GET_GAME_STATE (BATTLE_PLANET));
-					break;
+					SET_GAME_STATE(ESCAPE_COUNTER, 110);
+
+					if (EXTENDED && pSolarSysState && worldIsMoon(pSolarSysState, pSolarSysState->pOrbitalDesc))
+					{ // Set gravity well to moon if encounter takes
+						// place there (Spathiwa moon, Taalo HW,
+						// Utwig Bomb Loc)
+						// Only if encounter starts with moon collision
+						// colliding with IP group in inner system still
+						// uses main planet for gravity well
+
+						uqm::BYTE selector = pSolarSysState->MoonDesc[moonIndex(
+																		  pSolarSysState, pSolarSysState->pOrbitalDesc)]
+												 .data_index;
+
+						if (selector == SA_MATRA)
+						{
+							utf8StringCopy(GLOBAL_SIS(PlanetName),
+										   sizeof(GLOBAL_SIS(PlanetName)),
+										   GAME_STRING(PLANET_NUMBER_BASE + 32));
+							DrawSISTitle(
+								GAME_STRING(PLANET_NUMBER_BASE + 32));
+						}
+
+						load_gravity_well(selector);
+						break;
+					}
+					else
+					{
+						load_gravity_well(GET_GAME_STATE(BATTLE_PLANET));
+						break;
+					}
 				}
-			}
 		}
 	}
 
-	pQueue = GetShipFragQueueForPlayer (which_player);
+	pQueue = GetShipFragQueueForPlayer(which_player);
 
-	ReinitQueue (&race_q[which_player]);
-	for (hStarShip = GetHeadLink (pQueue);
-			hStarShip != 0; hStarShip = hNextShip)
+	ReinitQueue(&race_q[which_player]);
+	for (hStarShip = GetHeadLink(pQueue);
+		 hStarShip != 0; hStarShip = hNextShip)
 	{
-		SHIP_FRAGMENT *FragPtr;
+		SHIP_FRAGMENT* FragPtr;
 
-		FragPtr = LockShipFrag (pQueue, hStarShip);
-		hNextShip = _GetSuccLink (FragPtr);
+		FragPtr = LockShipFrag(pQueue, hStarShip);
+		hNextShip = _GetSuccLink(FragPtr);
 
-		hBuiltShip = Build (&race_q[which_player],
-				FragPtr->race_id == SAMATRA_SHIP ?
-					SA_MATRA_ID : FragPtr->SpeciesID);
+		hBuiltShip = Build(&race_q[which_player],
+						   FragPtr->race_id == SAMATRA_SHIP ?
+							   SA_MATRA_ID :
+							   FragPtr->SpeciesID);
 		if (hBuiltShip)
 		{
-			BuiltShipPtr = LockStarShip (&race_q[which_player], hBuiltShip);
+			BuiltShipPtr = LockStarShip(&race_q[which_player], hBuiltShip);
 			BuiltShipPtr->captains_name_index = FragPtr->captains_name_index;
 			BuiltShipPtr->playerNr = which_player;
 			if (FragPtr->crew_level != INFINITE_FLEET)
@@ -222,93 +220,91 @@ BuildBattle (uqm::COUNT which_player)
 			BuiltShipPtr->ship_cost = 0;
 			BuiltShipPtr->RaceDescPtr = 0;
 
-			UnlockStarShip (&race_q[which_player], hBuiltShip);
+			UnlockStarShip(&race_q[which_player], hBuiltShip);
 		}
 
-		UnlockShipFrag (pQueue, hStarShip);
+		UnlockShipFrag(pQueue, hStarShip);
 	}
 
 	if (which_player == RPG_PLAYER_NUM
-			&& (hBuiltShip = Build (&race_q[0], SIS_SHIP_ID)))
+		&& (hBuiltShip = Build(&race_q[0], SIS_SHIP_ID)))
 	{
-		BuiltShipPtr = LockStarShip (&race_q[0], hBuiltShip);
+		BuiltShipPtr = LockStarShip(&race_q[0], hBuiltShip);
 		BuiltShipPtr->captains_name_index = 0;
 		BuiltShipPtr->playerNr = RPG_PLAYER_NUM;
 		BuiltShipPtr->crew_level = 0;
 		BuiltShipPtr->max_crew = 0;
-				// Crew will be copied directly from
-				// GLOBAL_SIS (CrewEnlisted) later.
+		// Crew will be copied directly from
+		// GLOBAL_SIS (CrewEnlisted) later.
 		BuiltShipPtr->race_strings = 0;
 		BuiltShipPtr->icons = 0;
 		BuiltShipPtr->index = -1;
 		BuiltShipPtr->ship_cost = 0;
 		BuiltShipPtr->energy_counter = MAX_ENERGY_SIZE;
 		BuiltShipPtr->RaceDescPtr = 0;
-		UnlockStarShip (&race_q[0], hBuiltShip);
+		UnlockStarShip(&race_q[0], hBuiltShip);
 	}
 }
 
-bool
-FleetIsInfinite (uqm::COUNT playerNr)
+bool FleetIsInfinite(uqm::COUNT playerNr)
 {
-	QUEUE *pQueue;
+	QUEUE* pQueue;
 	HSHIPFRAG hShipFrag;
-	SHIP_FRAGMENT *FragPtr;
+	SHIP_FRAGMENT* FragPtr;
 	bool ret;
 
-	pQueue = GetShipFragQueueForPlayer (playerNr);
-	hShipFrag = GetHeadLink (pQueue);
+	pQueue = GetShipFragQueueForPlayer(playerNr);
+	hShipFrag = GetHeadLink(pQueue);
 	if (!hShipFrag)
-	{	// Ship queue is empty in SuperMelee or for RPG player w/o escorts
+	{ // Ship queue is empty in SuperMelee or for RPG player w/o escorts
 		return false;
 	}
 
-	FragPtr = LockShipFrag (pQueue, hShipFrag);
+	FragPtr = LockShipFrag(pQueue, hShipFrag);
 	ret = (FragPtr->crew_level == INFINITE_FLEET);
-	UnlockShipFrag (pQueue, hShipFrag);
+	UnlockShipFrag(pQueue, hShipFrag);
 
 	return ret;
 }
 
-void
-UpdateShipFragCrew (STARSHIP *StarShipPtr)
+void UpdateShipFragCrew(STARSHIP* StarShipPtr)
 {
-	QUEUE *frag_q;
+	QUEUE* frag_q;
 	HSHIPFRAG hShipFrag, hNextFrag;
-	SHIP_FRAGMENT *frag;
-	QUEUE *ship_q;
+	SHIP_FRAGMENT* frag;
+	QUEUE* ship_q;
 	HSTARSHIP hStarShip, hNextShip;
-	STARSHIP *ship;
+	STARSHIP* ship;
 
-	frag_q = GetShipFragQueueForPlayer (StarShipPtr->playerNr);
+	frag_q = GetShipFragQueueForPlayer(StarShipPtr->playerNr);
 	ship_q = &race_q[StarShipPtr->playerNr];
 
 	// Find a SHIP_FRAGMENT that corresponds to the given STARSHIP
 	// The ships and fragments are in the same order in two queues
 	// XXX: It would probably be simpler to keep HSHIPFRAG in STARSHIP struct
-	for (hShipFrag = GetHeadLink (frag_q), hStarShip = GetHeadLink (ship_q);
-			hShipFrag != 0 && hStarShip != 0;
-			hShipFrag = hNextFrag, hStarShip = hNextShip)
+	for (hShipFrag = GetHeadLink(frag_q), hStarShip = GetHeadLink(ship_q);
+		 hShipFrag != 0 && hStarShip != 0;
+		 hShipFrag = hNextFrag, hStarShip = hNextShip)
 	{
-		ship = LockStarShip (ship_q, hStarShip);
-		hNextShip = _GetSuccLink (ship);
-		frag = LockShipFrag (frag_q, hShipFrag);
-		hNextFrag = _GetSuccLink (frag);
-		
+		ship = LockStarShip(ship_q, hStarShip);
+		hNextShip = _GetSuccLink(ship);
+		frag = LockShipFrag(frag_q, hShipFrag);
+		hNextFrag = _GetSuccLink(frag);
+
 		if (ship == StarShipPtr)
 		{
-			assert (frag->crew_level != INFINITE_FLEET);
-			
+			assert(frag->crew_level != INFINITE_FLEET);
+
 			// Record crew left after the battle */
 			frag->crew_level = ship->crew_level;
-			
-			UnlockShipFrag (frag_q, hShipFrag);
-			UnlockStarShip (ship_q, hStarShip);
+
+			UnlockShipFrag(frag_q, hShipFrag);
+			UnlockStarShip(ship_q, hStarShip);
 			break;
 		}
-		
-		UnlockShipFrag (frag_q, hShipFrag);
-		UnlockStarShip (ship_q, hStarShip);
+
+		UnlockShipFrag(frag_q, hShipFrag);
+		UnlockStarShip(ship_q, hStarShip);
 	}
 }
 
@@ -319,7 +315,7 @@ UpdateShipFragCrew (STARSHIP *StarShipPtr)
  * Returns either HAIL or ATTACK.
  */
 uqm::COUNT
-InitEncounter (void)
+InitEncounter(void)
 {
 	uqm::COUNT i;
 	FRAME SegueFrame;
@@ -329,96 +325,96 @@ InitEncounter (void)
 	MUSIC_REF MR;
 
 
-	SetContext (SpaceContext);
-	SetContextFont (MicroFont);
+	SetContext(SpaceContext);
+	SetContextFont(MicroFont);
 
-	MR = LoadMusic (REDALERT_MUSIC);
-	PlayMusic (MR, false, 1);
-	SegueFrame = GetStarBackGround (true);
-	WaitForSoundEnd (TFBSOUND_WAIT_ALL);
-	StopMusic ();
-	DestroyMusic (MR);
+	MR = LoadMusic(REDALERT_MUSIC);
+	PlayMusic(MR, false, 1);
+	SegueFrame = GetStarBackGround(true);
+	WaitForSoundEnd(TFBSOUND_WAIT_ALL);
+	StopMusic();
+	DestroyMusic(MR);
 	s.origin.x = s.origin.y = 0;
 
-	SetTransitionSource (NULL);
-	BatchGraphics ();
-	
-	SetContextBackGroundColor (BLACK_COLOR);
-	ClearDrawable ();
-	s.frame = SegueFrame;
-	DrawStamp (&s);
+	SetTransitionSource(NULL);
+	BatchGraphics();
 
-//    t.baseline.x = SIS_SCREEN_WIDTH >> 1;
-	t.baseline.x = RES_SCALE (ORIG_SIS_SCREEN_WIDTH >> 1);
-	t.baseline.y = RES_SCALE (10);
+	SetContextBackGroundColor(BLACK_COLOR);
+	ClearDrawable();
+	s.frame = SegueFrame;
+	DrawStamp(&s);
+
+	//    t.baseline.x = SIS_SCREEN_WIDTH >> 1;
+	t.baseline.x = RES_SCALE(ORIG_SIS_SCREEN_WIDTH >> 1);
+	t.baseline.y = RES_SCALE(10);
 	t.align = ALIGN_CENTER;
 
-	SetContextForeGroundColor (
-			BUILD_COLOR (MAKE_RGB15 (0x00, 0x00, 0x14), 0x01));
-	if (inHQSpace ())
+	SetContextForeGroundColor(
+		BUILD_COLOR(MAKE_RGB15(0x00, 0x00, 0x14), 0x01));
+	if (inHQSpace())
 	{
-		t.pStr = GAME_STRING (ENCOUNTER_STRING_BASE + 0);
-				// "ENCOUNTER IN"
+		t.pStr = GAME_STRING(ENCOUNTER_STRING_BASE + 0);
+		// "ENCOUNTER IN"
 		t.CharCount = (uqm::COUNT)~0;
-		font_DrawText (&t);
-		t.baseline.y += RES_SCALE (12); 
-		t.pStr = GAME_STRING (ENCOUNTER_STRING_BASE + 1);
-				// "DEEP SPACE"
+		font_DrawText(&t);
+		t.baseline.y += RES_SCALE(12);
+		t.pStr = GAME_STRING(ENCOUNTER_STRING_BASE + 1);
+		// "DEEP SPACE"
 		t.CharCount = (uqm::COUNT)~0;
-		font_DrawText (&t);
+		font_DrawText(&t);
 	}
 	else
 	{
 		uqm::CHAR_T buf[256];
 
-		t.pStr = GAME_STRING (ENCOUNTER_STRING_BASE + 2);
-				// "ENCOUNTER AT"
+		t.pStr = GAME_STRING(ENCOUNTER_STRING_BASE + 2);
+		// "ENCOUNTER AT"
 		t.CharCount = (uqm::COUNT)~0;
-		font_DrawText (&t);
-		t.baseline.y += RES_SCALE (12); 
-		GetClusterName (CurStarDescPtr, buf);
+		font_DrawText(&t);
+		t.baseline.y += RES_SCALE(12);
+		GetClusterName(CurStarDescPtr, buf);
 		t.pStr = buf;
 		t.CharCount = (uqm::COUNT)~0;
-		font_DrawText (&t);
-		t.baseline.y += RES_SCALE (12); 
-		t.pStr = GLOBAL_SIS (PlanetName);
+		font_DrawText(&t);
+		t.baseline.y += RES_SCALE(12);
+		t.pStr = GLOBAL_SIS(PlanetName);
 		t.CharCount = (uqm::COUNT)~0;
-		font_DrawText (&t);
+		font_DrawText(&t);
 	}
-	DrawSISMessage (NULL);
+	DrawSISMessage(NULL);
 
-	s.origin.x = RES_SCALE (ORIG_SIS_SCREEN_WIDTH >> 1);
+	s.origin.x = RES_SCALE(ORIG_SIS_SCREEN_WIDTH >> 1);
 	s.origin.y = SIS_SCREEN_HEIGHT >> 1;
 	s.frame = planet[0];
-	DrawStamp (&s);
+	DrawStamp(&s);
 
-	if (lowByte (GLOBAL (CurrentActivity)) != IN_LAST_BATTLE)
+	if (lowByte(GLOBAL(CurrentActivity)) != IN_LAST_BATTLE)
 	{
-#define NUM_DISPLAY_PTS (ARRAY_SIZE (display_pt))
+#define NUM_DISPLAY_PTS (ARRAY_SIZE(display_pt))
 		HSHIPFRAG hStarShip, hNextShip;
 		POINT display_pt[] =
-		{
-			{ 10,  51},
-			{-10,  51},
-			{ 33,  40},
-			{-33,  40},
-			{ 49,  18},
-			{-49,  18},
-			{ 52,  -6},
-			{-52,  -6},
-			{ 44, -27},
-			{-44, -27},
+			{
+				{10,	 51 },
+				{-10, 51 },
+				{33,	 40 },
+				{-33, 40 },
+				{49,	 18 },
+				{-49, 18 },
+				{52,	 -6 },
+				{-52, -6 },
+				{44,	 -27},
+				{-44, -27},
 		};
 
-		for (hStarShip = GetHeadLink (&GLOBAL (npc_built_ship_q)), i = 0;
-				hStarShip && i < 60; hStarShip = hNextShip, ++i)
+		for (hStarShip = GetHeadLink(&GLOBAL(npc_built_ship_q)), i = 0;
+			 hStarShip && i < 60; hStarShip = hNextShip, ++i)
 		{
 			RECT r;
-			SHIP_FRAGMENT *FragPtr;
+			SHIP_FRAGMENT* FragPtr;
 
-			FragPtr = LockShipFrag (&GLOBAL (npc_built_ship_q), hStarShip);
+			FragPtr = LockShipFrag(&GLOBAL(npc_built_ship_q), hStarShip);
 			if (FragPtr->crew_level != INFINITE_FLEET)
-				hNextShip = _GetSuccLink (FragPtr);
+				hNextShip = _GetSuccLink(FragPtr);
 			else /* if infinite ships */
 				hNextShip = hStarShip;
 
@@ -427,35 +423,35 @@ InitEncounter (void)
 			{
 				uqm::COUNT angle, radius;
 
-				radius = square_root ((long)s.origin.x * s.origin.x
-						+ (long)s.origin.y * s.origin.y)
-						+ ((i / NUM_DISPLAY_PTS) * 18);
+				radius = square_root((long)s.origin.x * s.origin.x
+									 + (long)s.origin.y * s.origin.y)
+					   + ((i / NUM_DISPLAY_PTS) * 18);
 
-				radius <<= RESOLUTION_FACTOR; 
+				radius <<= RESOLUTION_FACTOR;
 
-				angle = ARCTAN (s.origin.x, s.origin.y);
-				s.origin.x = (COSINE (angle, radius));
-				s.origin.y = (SINE (angle, radius));
+				angle = ARCTAN(s.origin.x, s.origin.y);
+				s.origin.x = (COSINE(angle, radius));
+				s.origin.y = (SINE(angle, radius));
 			}
 			else
-			{	
-				s.origin.x <<= RESOLUTION_FACTOR; 
+			{
+				s.origin.x <<= RESOLUTION_FACTOR;
 				s.origin.y <<= RESOLUTION_FACTOR;
 			}
-			s.frame = SetAbsFrameIndex (FragPtr->icons, 0);
-			GetFrameRect (s.frame, &r);
-			s.origin.x += RES_SCALE (ORIG_SIS_SCREEN_WIDTH >> 1) - (r.extent.width >> 1);
-			s.origin.y += RES_SCALE (ORIG_SIS_SCREEN_HEIGHT >> 1) - (r.extent.height >> 1);
-			DrawStamp (&s);
+			s.frame = SetAbsFrameIndex(FragPtr->icons, 0);
+			GetFrameRect(s.frame, &r);
+			s.origin.x += RES_SCALE(ORIG_SIS_SCREEN_WIDTH >> 1) - (r.extent.width >> 1);
+			s.origin.y += RES_SCALE(ORIG_SIS_SCREEN_HEIGHT >> 1) - (r.extent.height >> 1);
+			DrawStamp(&s);
 
-			UnlockShipFrag (&GLOBAL (npc_built_ship_q), hStarShip);
+			UnlockShipFrag(&GLOBAL(npc_built_ship_q), hStarShip);
 		}
 	}
 
-	UnbatchGraphics ();
-	DestroyDrawable (ReleaseDrawable (SegueFrame));
-	ScreenTransition (optScrTrans, NULL);
-	
+	UnbatchGraphics();
+	DestroyDrawable(ReleaseDrawable(SegueFrame));
+	ScreenTransition(optScrTrans, NULL);
+
 
 	{
 		MENU_STATE MenuState;
@@ -463,12 +459,12 @@ InitEncounter (void)
 		MenuState.InputFunc = DoSelectAction;
 		MenuState.Initialized = false;
 
-		DrawMenuStateStrings (PM_CONVERSE, MenuState.CurState = HAIL);
-		SetFlashRect (SFR_MENU_3DO, false);
+		DrawMenuStateStrings(PM_CONVERSE, MenuState.CurState = HAIL);
+		SetFlashRect(SFR_MENU_3DO, false);
 
-		DoInput (&MenuState, true);
+		DoInput(&MenuState, true);
 
-		SetFlashRect (NULL, false);
+		SetFlashRect(NULL, false);
 
 		return (MenuState.CurState);
 	}
@@ -509,93 +505,93 @@ InitEncounter (void)
 //}
 
 static void
-DrawFadeText (const uqm::CHAR_T *str1, const uqm::CHAR_T *str2, bool fade_in,
-		RECT *pRect)
+DrawFadeText(const uqm::CHAR_T* str1, const uqm::CHAR_T* str2, bool fade_in,
+			 RECT* pRect)
 {
 	uqm::SIZE i;
 	uqm::DWORD TimeIn;
 	TEXT t1, t2;
 	RECT r1, r2;
 	static const Color fade_cycle[] = SCAVENGE_TEXT_COLOR_TABLE;
-#define NUM_FADES (ARRAY_SIZE (fade_cycle))
+#define NUM_FADES (ARRAY_SIZE(fade_cycle))
 
-	t1.baseline.x = pRect->corner.x + RES_SCALE (100);
-	t1.baseline.y = pRect->corner.y + RES_SCALE (45);
+	t1.baseline.x = pRect->corner.x + RES_SCALE(100);
+	t1.baseline.y = pRect->corner.y + RES_SCALE(45);
 	t1.align = ALIGN_CENTER;
 	t1.pStr = str1;
 	t1.CharCount = (uqm::COUNT)~0;
 	t2 = t1;
-	t2.baseline.y += RES_SCALE (11);
+	t2.baseline.y += RES_SCALE(11);
 	t2.pStr = str2;
 
-	TextRect (&t1, &r1, NULL);
-	TextRect (&t2, &r2, NULL);
-	 
-	FlushInput ();
-	TimeIn = GetTimeCounter ();
+	TextRect(&t1, &r1, NULL);
+	TextRect(&t2, &r2, NULL);
+
+	FlushInput();
+	TimeIn = GetTimeCounter();
 
 	for (i = 0; i < (uqm::SIZE)NUM_FADES; ++i)
 	{
-		if (AnyButtonPress (true))
+		if (AnyButtonPress(true))
 			i = NUM_FADES - 1;
 
 		if (IS_HD)
 		{
-			RepairPickFrame (&r1, 1);
-			RepairPickFrame (&r2, 1);
+			RepairPickFrame(&r1, 1);
+			RepairPickFrame(&r2, 1);
 		}
 
-		SetContextForeGroundColor (
-				fade_cycle[fade_in ? i : (uqm::SIZE)(NUM_FADES - i - 1)]);
-		font_DrawText (&t1);
-		font_DrawText (&t2);
-		SleepThreadUntil (TimeIn + (ONE_SECOND / 20));
+		SetContextForeGroundColor(
+			fade_cycle[fade_in ? i : (uqm::SIZE)(NUM_FADES - i - 1)]);
+		font_DrawText(&t1);
+		font_DrawText(&t2);
+		SleepThreadUntil(TimeIn + (ONE_SECOND / 20));
 		TimeIn = GetTimeCounter();
 	}
 	if (!fade_in)
-	{// Clear the remaining text
+	{ // Clear the remaining text
 		if (IS_HD)
 		{
-			RepairPickFrame (&r1, 1);
-			RepairPickFrame (&r2, 1);
+			RepairPickFrame(&r1, 1);
+			RepairPickFrame(&r2, 1);
 		}
 		else
 		{
-			SetContextForeGroundColor (BUILD_SHADE_RGBA (0x50));
-			DrawFilledRectangle (&r1);
-			DrawFilledRectangle (&r2);
+			SetContextForeGroundColor(BUILD_SHADE_RGBA(0x50));
+			DrawFilledRectangle(&r1);
+			DrawFilledRectangle(&r2);
 		}
 	}
 }
 
 static void
-ClearRectBack (RECT *pRect)
+ClearRectBack(RECT* pRect)
 {
 	if (IS_HD)
-		RepairPickFrame (pRect, 1);
+		RepairPickFrame(pRect, 1);
 	else
-		DrawFilledRectangle (pRect);
+		DrawFilledRectangle(pRect);
 }
 
 uqm::COUNT
-UninitEncounter (void)
+UninitEncounter(void)
 {
 	uqm::COUNT ships_killed;
 
 	ships_killed = 0;
 
-	free_gravity_well ();
+	free_gravity_well();
 
-	if ((GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
-			|| GLOBAL_SIS (CrewEnlisted) == (uqm::COUNT)~0
-			|| lowByte (GLOBAL (CurrentActivity)) == IN_LAST_BATTLE
-			|| lowByte (GLOBAL (CurrentActivity)) == WON_LAST_BATTLE)
+	if ((GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
+		|| GLOBAL_SIS(CrewEnlisted) == (uqm::COUNT)~0
+		|| lowByte(GLOBAL(CurrentActivity)) == IN_LAST_BATTLE
+		|| lowByte(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE)
 		goto ExitUninitEncounter;
 
-	if (GET_GAME_STATE (BATTLE_SEGUE) == 0)
+	if (GET_GAME_STATE(BATTLE_SEGUE) == 0)
 	{
-		ReinitQueue (&race_q[0]);
-		ReinitQueue (&race_q[1]);
+		ReinitQueue(&race_q[0]);
+		ReinitQueue(&race_q[1]);
 	}
 	else
 	{
@@ -603,85 +599,88 @@ UninitEncounter (void)
 		uqm::SIZE VictoryState, i;
 		uqm::COUNT RecycleAmount = 0;
 		RECT r;
-		RECT scavenge_r = {{0, 0}, {0, 0}};
+		RECT scavenge_r = {
+			{0, 0},
+			{0, 0}
+		  };
 		TEXT t;
 		STAMP ship_s;
-		const uqm::CHAR_T *str1 = NULL;
-		const uqm::CHAR_T *str2 = NULL;
+		const uqm::CHAR_T* str1 = NULL;
+		const uqm::CHAR_T* str2 = NULL;
 		StatMsgMode prevMsgMode = SMM_UNDEFINED;
 		uqm::CHAR_T buf[80];
 		HSHIPFRAG hStarShip;
-		SHIP_FRAGMENT *FragPtr;
+		SHIP_FRAGMENT* FragPtr;
 		static const Color fade_ship_cycle[] = SCAVENGE_SCREEN_COLOR_TABLE;
-#define NUM_SHIP_FADES (ARRAY_SIZE (fade_ship_cycle))
+#define NUM_SHIP_FADES (ARRAY_SIZE(fade_ship_cycle))
 
-		SET_GAME_STATE (BATTLE_SEGUE, 0);
-		SET_GAME_STATE (BOMB_CARRIER, 0);
+		SET_GAME_STATE(BATTLE_SEGUE, 0);
+		SET_GAME_STATE(BOMB_CARRIER, 0);
 
-		VictoryState = (
-				battle_counter[1] || !battle_counter[0]
-				|| GET_GAME_STATE (URQUAN_PROTECTING_SAMATRA)
-				) ? 0 : 1;
+		VictoryState = (battle_counter[1] || !battle_counter[0]
+						|| GET_GAME_STATE(URQUAN_PROTECTING_SAMATRA)) ?
+						   0 :
+						   1;
 
-		hStarShip = GetHeadLink (&GLOBAL (npc_built_ship_q));
-		FragPtr = LockShipFrag (&GLOBAL (npc_built_ship_q), hStarShip);
+		hStarShip = GetHeadLink(&GLOBAL(npc_built_ship_q));
+		FragPtr = LockShipFrag(&GLOBAL(npc_built_ship_q), hStarShip);
 		EncounterRace = FragPtr->race_id;
-		if (GetStarShipFromIndex (&GLOBAL (avail_race_q), EncounterRace) == 0)
+		if (GetStarShipFromIndex(&GLOBAL(avail_race_q), EncounterRace) == 0)
 		{
 			/* Suppress the final tally and salvage info */
 			VictoryState = -1;
-			InitSISContexts ();
+			InitSISContexts();
 		}
-		UnlockShipFrag (&GLOBAL (npc_built_ship_q), hStarShip);
+		UnlockShipFrag(&GLOBAL(npc_built_ship_q), hStarShip);
 
 		if (VictoryState > 0) // Set RU only when we get them
-			prevMsgMode = SetStatusMessageMode (SMM_RES_UNITS);
+			prevMsgMode = SetStatusMessageMode(SMM_RES_UNITS);
 
 		ship_s.origin.x = 0;
 		ship_s.origin.y = 0;
 		Sleepy = true;
 		for (i = 0; i < NUM_SIDES; ++i)
 		{
-			QUEUE *pQueue;
+			QUEUE* pQueue;
 			HSHIPFRAG hNextShip;
 
 			if (i == 0)
-				pQueue = &GLOBAL (built_ship_q);
+				pQueue = &GLOBAL(built_ship_q);
 			else
 			{
 				if (VictoryState < 0)
 					VictoryState = 0;
 				else
 				{
-					DrawSISFrame ();
-					DrawSISMessage (NULL);
-					if (inHQSpace ())
-						DrawHyperCoords (GLOBAL (ShipStamp.origin));
-					else if (GLOBAL (ip_planet) == 0)
-						DrawHyperCoords (CurStarDescPtr->star_pt);
+					DrawSISFrame();
+					DrawSISMessage(NULL);
+					if (inHQSpace())
+						DrawHyperCoords(GLOBAL(ShipStamp.origin));
+					else if (GLOBAL(ip_planet) == 0)
+						DrawHyperCoords(CurStarDescPtr->star_pt);
 					else
-						DrawSISTitle (GLOBAL_SIS (PlanetName));
+						DrawSISTitle(GLOBAL_SIS(PlanetName));
 
-					SetContext (SpaceContext);
+					SetContext(SpaceContext);
 					if (VictoryState)
 					{
-						InitPickFrame ();
-						DrawArmadaPickShip (true, &scavenge_r);
+						InitPickFrame();
+						DrawArmadaPickShip(true, &scavenge_r);
 					}
 				}
-				pQueue = &GLOBAL (npc_built_ship_q);
+				pQueue = &GLOBAL(npc_built_ship_q);
 			}
 
-			ReinitQueue (&race_q[(NUM_SIDES - 1) - i]);
+			ReinitQueue(&race_q[(NUM_SIDES - 1) - i]);
 
-			for (hStarShip = GetHeadLink (pQueue); hStarShip;
-					hStarShip = hNextShip)
+			for (hStarShip = GetHeadLink(pQueue); hStarShip;
+				 hStarShip = hNextShip)
 			{
-				FragPtr = LockShipFrag (pQueue, hStarShip);
-				hNextShip = _GetSuccLink (FragPtr);
+				FragPtr = LockShipFrag(pQueue, hStarShip);
+				hNextShip = _GetSuccLink(FragPtr);
 
 				if (FragPtr->crew_level == 0
-						|| (VictoryState && i == NUM_SIDES - 1))
+					|| (VictoryState && i == NUM_SIDES - 1))
 				{
 					if (i == NUM_SIDES - 1)
 					{
@@ -695,25 +694,25 @@ UninitEncounter (void)
 							{
 								RecycleAmount = 0;
 
-								DrawStatusMessage (NULL);
-								
-								ship_s.origin.x = scavenge_r.corner.x + RES_SCALE (32);
-								ship_s.origin.y = scavenge_r.corner.y + RES_SCALE (56);
-								ship_s.frame = IncFrameIndex (FragPtr->icons);
-								DrawStamp (&ship_s);
-								SetContextForeGroundColor (MDKGRAY_COLOR);
+								DrawStatusMessage(NULL);
 
-								SetContextFont (isPC (optWhichFonts) ? TinyFont : TinyFontBold);
+								ship_s.origin.x = scavenge_r.corner.x + RES_SCALE(32);
+								ship_s.origin.y = scavenge_r.corner.y + RES_SCALE(56);
+								ship_s.frame = IncFrameIndex(FragPtr->icons);
+								DrawStamp(&ship_s);
+								SetContextForeGroundColor(MDKGRAY_COLOR);
 
-								utf8StringCopy (buf, sizeof buf,
-										GetStringAddress (FragPtr->race_strings));
+								SetContextFont(isPC(optWhichFonts) ? TinyFont : TinyFontBold);
+
+								utf8StringCopy(buf, sizeof buf,
+											   GetStringAddress(FragPtr->race_strings));
 								// XXX: this will not work with UTF-8 strings
-								_strupr (buf);
+								_strupr(buf);
 
-								{	// JMS: Handling the a-umlaut and o-umlaut characters
-									unsigned char *ptr;
+								{ // JMS: Handling the a-umlaut and o-umlaut characters
+									unsigned char* ptr;
 									ptr = (unsigned char*)buf;
-									
+
 									while (*ptr)
 									{
 										if (*ptr == 0xc3)
@@ -726,210 +725,206 @@ UninitEncounter (void)
 									}
 								}
 
-								t.baseline.x = scavenge_r.corner.x + RES_SCALE (100);
-								t.baseline.y = scavenge_r.corner.y + RES_SCALE (68);
+								t.baseline.x = scavenge_r.corner.x + RES_SCALE(100);
+								t.baseline.y = scavenge_r.corner.y + RES_SCALE(68);
 								t.align = ALIGN_CENTER;
 								t.pStr = buf;
 								t.CharCount = (uqm::COUNT)~0;
-								font_DrawText (&t);
-								t.baseline.y += RES_SCALE (6);
-								t.pStr = GAME_STRING (
-										ENCOUNTER_STRING_BASE + 3);
-										// "BATTLE GROUP"
+								font_DrawText(&t);
+								t.baseline.y += RES_SCALE(6);
+								t.pStr = GAME_STRING(
+									ENCOUNTER_STRING_BASE + 3);
+								// "BATTLE GROUP"
 								t.CharCount = (uqm::COUNT)~0;
-								font_DrawText (&t);
+								font_DrawText(&t);
 
 								ship_s.frame = FragPtr->icons;
 
-								SetContextFont (MicroFont);
+								SetContextFont(MicroFont);
 
-								str1 = GAME_STRING (
-										ENCOUNTER_STRING_BASE + 4);
-										// "Enemy Ships"
-								str2 = GAME_STRING (
-										ENCOUNTER_STRING_BASE + 5);
-										// "Destroyed"
+								str1 = GAME_STRING(
+									ENCOUNTER_STRING_BASE + 4);
+								// "Enemy Ships"
+								str2 = GAME_STRING(
+									ENCOUNTER_STRING_BASE + 5);
+								// "Destroyed"
 
-								DrawFadeText (str1, str2, true, &scavenge_r);
+								DrawFadeText(str1, str2, true, &scavenge_r);
 							}
 
-							r.corner.y = scavenge_r.corner.y + RES_SCALE (9);
-							r.extent.height = RES_SCALE (22);
+							r.corner.y = scavenge_r.corner.y + RES_SCALE(9);
+							r.extent.height = RES_SCALE(22);
 
-							SetContextForeGroundColor (BLACK_COLOR);
+							SetContextForeGroundColor(BLACK_COLOR);
 
-							r.extent.width = RES_SCALE (34);
-							r.corner.x = scavenge_r.corner.x +
-								scavenge_r.extent.width
-								- (RES_SCALE (10) + r.extent.width);
-							BatchGraphics (); // to avoid blinking text
+							r.extent.width = RES_SCALE(34);
+							r.corner.x = scavenge_r.corner.x + scavenge_r.extent.width
+									   - (RES_SCALE(10) + r.extent.width);
+							BatchGraphics(); // to avoid blinking text
 
 							// Back of the RU counter
-							ClearRectBack (&r);
+							ClearRectBack(&r);
 
 							/* collect bounty ResUnits */
-							j = ShipCost (EncounterRace) >> 3;
+							j = ShipCost(EncounterRace) >> 3;
 							if (EncounterRace == SLYLANDRO_SHIP)
 								j = 550;
 							if (EncounterRace == MELNORME_SHIP)
 								j = j * 2;
 
 							RecycleAmount += j;
-							sprintf (buf, "%u", RecycleAmount);
+							sprintf(buf, "%u", RecycleAmount);
 							t.baseline.x =
-									r.corner.x + r.extent.width
-									- RES_SCALE (1);
-							t.baseline.y = r.corner.y + RES_SCALE (14);
+								r.corner.x + r.extent.width
+								- RES_SCALE(1);
+							t.baseline.y = r.corner.y + RES_SCALE(14);
 							t.align = ALIGN_RIGHT;
 							t.pStr = buf;
 							t.CharCount = (uqm::COUNT)~0;
-							SetContextForeGroundColor (
-									BUILD_COLOR (
-										MAKE_RGB15 (0x00, 0x00, 0x18), 0x50
-									));
-							font_DrawText (&t);
-							UnbatchGraphics ();
-							DeltaSISGauges (0, 0, j);
+							SetContextForeGroundColor(
+								BUILD_COLOR(
+									MAKE_RGB15(0x00, 0x00, 0x18), 0x50));
+							font_DrawText(&t);
+							UnbatchGraphics();
+							DeltaSISGauges(0, 0, j);
 
 							if ((VictoryState++ - 1) % MAX_DEAD_DISPLAYED)
-								ship_s.origin.x += RES_SCALE (17);
+								ship_s.origin.x += RES_SCALE(17);
 							else
 							{
-								RECT textRect = font_GetTextRect (&t);
-								SetContextForeGroundColor (BLACK_COLOR);
+								RECT textRect = font_GetTextRect(&t);
+								SetContextForeGroundColor(BLACK_COLOR);
 
 								r.corner.x =
-										scavenge_r.corner.x
-										+ RES_SCALE (10);
+									scavenge_r.corner.x
+									+ RES_SCALE(10);
 								r.extent.width =
-										RES_SCALE (132)
-										- (textRect.extent.width
-										+ RES_SCALE (1));
+									RES_SCALE(132)
+									- (textRect.extent.width
+									   + RES_SCALE(1));
 
 								// Pause between erasing
 								if (Sleepy)
-									SleepThread (ONE_SECOND / 15);
+									SleepThread(ONE_SECOND / 15);
 
 								// MAX_DEAD_DISPLAYED reached - erase
-								ClearRectBack (&r);
+								ClearRectBack(&r);
 
 								ship_s.origin.x =
-										r.corner.x + RES_SCALE (2);
+									r.corner.x + RES_SCALE(2);
 								ship_s.origin.y =
-										scavenge_r.corner.y
-										+ RES_SCALE (12);
+									scavenge_r.corner.y
+									+ RES_SCALE(12);
 							}
 
 							if (Sleepy)
 							{
-								TimeCount Time = GetTimeCounter ();
+								TimeCount Time = GetTimeCounter();
 								for (j = 0; j < NUM_SHIP_FADES; ++j)
 								{
-									Sleepy = (bool)!AnyButtonPress (true) &&
-											!(GLOBAL (CurrentActivity) & CHECK_ABORT);
+									Sleepy = (bool)!AnyButtonPress(true) && !(GLOBAL(CurrentActivity) & CHECK_ABORT);
 
 									if (IS_HD)
-									{// Back of the current ship
+									{ // Back of the current ship
 										POINT p;
 										RECT ship_r;
 
-										GetFrameRect (ship_s.frame, &ship_r);
-										p = GetFrameHot (ship_s.frame);
+										GetFrameRect(ship_s.frame, &ship_r);
+										p = GetFrameHot(ship_s.frame);
 
 										ship_r.corner = ship_s.origin;
 										ship_r.corner.x -= p.x;
 										ship_r.corner.y -= p.y;
-										RepairPickFrame (&ship_r, 1);
+										RepairPickFrame(&ship_r, 1);
 									}
 
 									if (!Sleepy)
 										break;
 
-									SetContextForeGroundColor (fade_ship_cycle[j]);
-									DrawFilledStamp (&ship_s);
+									SetContextForeGroundColor(fade_ship_cycle[j]);
+									DrawFilledStamp(&ship_s);
 
-									SleepThreadUntil (Time + (ONE_SECOND / 15));
-									Time = GetTimeCounter ();
+									SleepThreadUntil(Time + (ONE_SECOND / 15));
+									Time = GetTimeCounter();
 								}
 							}
-							
-							DrawStamp (&ship_s);
+
+							DrawStamp(&ship_s);
 						}
 					}
 
-					UnlockShipFrag (pQueue, hStarShip);
-					RemoveQueue (pQueue, hStarShip);
-					FreeShipFrag (pQueue, hStarShip);
+					UnlockShipFrag(pQueue, hStarShip);
+					RemoveQueue(pQueue, hStarShip);
+					FreeShipFrag(pQueue, hStarShip);
 
 					continue;
 				}
 
-				UnlockShipFrag (pQueue, hStarShip);
+				UnlockShipFrag(pQueue, hStarShip);
 			}
 		}
 		if (prevMsgMode) // Set Status back only when we get RU
-			SetStatusMessageMode (prevMsgMode);
+			SetStatusMessageMode(prevMsgMode);
 
 		if (VictoryState)
 		{
 #ifdef NEVER
-			DestroyDrawable (ReleaseDrawable (s.frame));
+			DestroyDrawable(ReleaseDrawable(s.frame));
 #endif /* NEVER */
 
-			WaitForAnyButton (true, ONE_SECOND * 3, false);
+			WaitForAnyButton(true, ONE_SECOND * 3, false);
 			if (!CurrentInputState.key[PlayerControls[0]][KEY_ESCAPE])
 			{
-				DrawFadeText (str1, str2, false, &scavenge_r);
+				DrawFadeText(str1, str2, false, &scavenge_r);
 				if (!CurrentInputState.key[PlayerControls[0]][KEY_ESCAPE])
 				{
-					SetContextForeGroundColor (BLACK_COLOR);
+					SetContextForeGroundColor(BLACK_COLOR);
 					r.corner.x = scavenge_r.corner.x + RES_SCALE(10);
 					r.extent.width = RES_SCALE(132);
 
 					// The whole stat stripe
-					ClearRectBack (&r);
+					ClearRectBack(&r);
 
-					sprintf (buf, "%u %s", RecycleAmount,
-							GAME_STRING (STATUS_STRING_BASE + 1)); // "RU"
+					sprintf(buf, "%u %s", RecycleAmount,
+							GAME_STRING(STATUS_STRING_BASE + 1)); // "RU"
 					t.baseline.x = r.corner.x + (r.extent.width >> 1);
-					t.baseline.y = r.corner.y + RES_SCALE (14);
+					t.baseline.y = r.corner.y + RES_SCALE(14);
 					t.align = ALIGN_CENTER;
 					t.pStr = buf;
 					t.CharCount = (uqm::COUNT)~0;
-					SetContextForeGroundColor (
-							BUILD_COLOR (MAKE_RGB15 (0x00, 0x00, 0x18), 0x50));
-					font_DrawText (&t);
+					SetContextForeGroundColor(
+						BUILD_COLOR(MAKE_RGB15(0x00, 0x00, 0x18), 0x50));
+					font_DrawText(&t);
 
 
-					str1 = GAME_STRING (ENCOUNTER_STRING_BASE + 6);
-							// "Debris"
-					str2 = GAME_STRING (ENCOUNTER_STRING_BASE + 7);
-							// "Scavenged"
+					str1 = GAME_STRING(ENCOUNTER_STRING_BASE + 6);
+					// "Debris"
+					str2 = GAME_STRING(ENCOUNTER_STRING_BASE + 7);
+					// "Scavenged"
 
-					DrawFadeText (str1, str2, true, &scavenge_r);
-					WaitForAnyButton (true, ONE_SECOND * 2, false);
+					DrawFadeText(str1, str2, true, &scavenge_r);
+					WaitForAnyButton(true, ONE_SECOND * 2, false);
 					if (!CurrentInputState.key[PlayerControls[0]][KEY_ESCAPE])
-						DrawFadeText (str1, str2, false, &scavenge_r);
+						DrawFadeText(str1, str2, false, &scavenge_r);
 				}
 			}
-			DrawStatusMessage (NULL);
-			DestroyPickFrame ();
+			DrawStatusMessage(NULL);
+			DestroyPickFrame();
 		}
 
 		if (ships_killed && EncounterRace == THRADDASH_SHIP
-				&& !GET_GAME_STATE (THRADD_MANNER))
+			&& !GET_GAME_STATE(THRADD_MANNER))
 		{
-			if ((ships_killed += GET_GAME_STATE (THRADDASH_BODY_COUNT)) >
-					THRADDASH_BODY_THRESHOLD)
+			if ((ships_killed += GET_GAME_STATE(THRADDASH_BODY_COUNT)) > THRADDASH_BODY_THRESHOLD)
 				ships_killed = THRADDASH_BODY_THRESHOLD;
-			SET_GAME_STATE (THRADDASH_BODY_COUNT, ships_killed);
+			SET_GAME_STATE(THRADDASH_BODY_COUNT, ships_killed);
 		}
 
-		if (optSlaughterMode && CheckSphereTracking ((RACE_ID)EncounterRace)
-				&& ships_killed)
+		if (optSlaughterMode && CheckSphereTracking((RACE_ID)EncounterRace)
+			&& ships_killed)
 		{
 			HFLEETINFO hEncounter;
-			FLEET_INFO *EncounterPtr;
+			FLEET_INFO* EncounterPtr;
 			bool isBanned = false;
 			uqm::BYTE j;
 			const uqm::BYTE bannedShip[7] =
@@ -940,10 +935,9 @@ UninitEncounter (void)
 					YEHAT_SHIP,
 					MELNORME_SHIP,
 					ILWRATH_SHIP,
-					SLYLANDRO_SHIP
-				};
+					SLYLANDRO_SHIP};
 
-			for (j = 0; j < ARRAY_SIZE (bannedShip); j++)
+			for (j = 0; j < ARRAY_SIZE(bannedShip); j++)
 			{
 				if (bannedShip[j] == EncounterRace)
 				{
@@ -954,10 +948,10 @@ UninitEncounter (void)
 
 			if (!isBanned)
 			{
-				hEncounter = GetStarShipFromIndex (&GLOBAL (avail_race_q),
-						EncounterRace);
+				hEncounter = GetStarShipFromIndex(&GLOBAL(avail_race_q),
+												  EncounterRace);
 				EncounterPtr =
-						LockFleetInfo (&GLOBAL (avail_race_q), hEncounter);
+					LockFleetInfo(&GLOBAL(avail_race_q), hEncounter);
 
 				if (EncounterPtr->actual_strength > 0)
 				{
@@ -974,7 +968,7 @@ UninitEncounter (void)
 						EncounterPtr->actual_strength = actualStrength;
 				}
 
-				UnlockFleetInfo (&GLOBAL (avail_race_q), hEncounter);
+				UnlockFleetInfo(&GLOBAL(avail_race_q), hEncounter);
 			}
 		}
 	}
@@ -983,79 +977,77 @@ ExitUninitEncounter:
 	return (ships_killed);
 }
 
-void
-EncounterBattle (void)
+void EncounterBattle(void)
 {
 	ACTIVITY OldActivity;
 	extern uqm::UWORD nth_frame;
-	InputContext *savedPlayerInput = NULL;
+	InputContext* savedPlayerInput = NULL;
 
 
-	SET_GAME_STATE (BATTLE_SEGUE, 1);
+	SET_GAME_STATE(BATTLE_SEGUE, 1);
 
-	OldActivity = GLOBAL (CurrentActivity);
-	if (lowByte (OldActivity) == IN_LAST_BATTLE)
-		GLOBAL (CurrentActivity) = MAKE_WORD (IN_LAST_BATTLE, 0);
+	OldActivity = GLOBAL(CurrentActivity);
+	if (lowByte(OldActivity) == IN_LAST_BATTLE)
+		GLOBAL(CurrentActivity) = MAKE_WORD(IN_LAST_BATTLE, 0);
 	else
-		GLOBAL (CurrentActivity) = MAKE_WORD (IN_ENCOUNTER, 0);
+		GLOBAL(CurrentActivity) = MAKE_WORD(IN_ENCOUNTER, 0);
 
-//    FreeSC2Data ();
-//    DestroyFont (ReleaseFont (MicroFont));
-	WaitForSoundEnd (TFBSOUND_WAIT_ALL);
-//    DestroySound (ReleaseSound (MenuSounds));
+	//    FreeSC2Data ();
+	//    DestroyFont (ReleaseFont (MicroFont));
+	WaitForSoundEnd(TFBSOUND_WAIT_ALL);
+	//    DestroySound (ReleaseSound (MenuSounds));
 
-	if (GLOBAL (glob_flags) & CYBORG_ENABLED)
+	if (GLOBAL(glob_flags) & CYBORG_ENABLED)
 	{
 		uqm::BYTE cur_speed;
 
-		cur_speed = (uqm::BYTE)(GLOBAL (glob_flags) & COMBAT_SPEED_MASK)
-				>> COMBAT_SPEED_SHIFT;
+		cur_speed = (uqm::BYTE)(GLOBAL(glob_flags) & COMBAT_SPEED_MASK)
+				 >> COMBAT_SPEED_SHIFT;
 		if (cur_speed == 1)
 			cur_speed = 0; /* normal speed */
 		else if (cur_speed == 2)
-			++cur_speed;   /* 4x speed, 3 of 4 frames skipped */
-		else /* if (cur_speed == 3) */
+			++cur_speed;			   /* 4x speed, 3 of 4 frames skipped */
+		else						   /* if (cur_speed == 3) */
 			cur_speed = (uqm::BYTE)~0; /* maximum speed - no rendering */
-		nth_frame = MAKE_WORD (1, cur_speed);
+		nth_frame = MAKE_WORD(1, cur_speed);
 		PlayerControl[0] = CYBORG_CONTROL | AWESOME_RATING;
 		savedPlayerInput = PlayerInput[0];
 		PlayerInput[0] = NULL;
-		if (!SetPlayerInput (0)) {
-			log_add (log_Fatal, "Could not set cyborg player input.");
-			explode ();  // Does not return;
+		if (!SetPlayerInput(0))
+		{
+			log_add(log_Fatal, "Could not set cyborg player input.");
+			explode(); // Does not return;
 		}
 	}
 
-	if(DIF_EASY)
+	if (DIF_EASY)
 		PlayerControl[1] = CYBORG_CONTROL | STANDARD_RATING;
 
 	// PlayerControl[1] = HUMAN_CONTROL | STANDARD_RATING; // Yes, you can make Adventure mode 2-player
 
-	GameSounds = CaptureSound (LoadSound (GAME_SOUNDS));
+	GameSounds = CaptureSound(LoadSound(GAME_SOUNDS));
 
-	Battle (NULL);
+	Battle(NULL);
 
-	DestroySound (ReleaseSound (GameSounds));
+	DestroySound(ReleaseSound(GameSounds));
 	GameSounds = 0;
 
-	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
-		GLOBAL_SIS (CrewEnlisted) = (uqm::COUNT)~0;
+	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
+		GLOBAL_SIS(CrewEnlisted) = (uqm::COUNT)~0;
 
-	if (GLOBAL (glob_flags) & CYBORG_ENABLED)
+	if (GLOBAL(glob_flags) & CYBORG_ENABLED)
 	{
-		nth_frame = MAKE_WORD (0, 0);
+		nth_frame = MAKE_WORD(0, 0);
 		PlayerControl[0] = HUMAN_CONTROL | STANDARD_RATING;
-		ClearPlayerInput (0);
+		ClearPlayerInput(0);
 		PlayerInput[0] = savedPlayerInput;
 	}
 
-//    MicroFont = CaptureFont (
-// LoadFont (MICRO_FONT)
-// );
-//    MenuSounds = CaptureSound (LoadSound (MENU_SOUNDS));
-//    LoadSC2Data ();
+	//    MicroFont = CaptureFont (
+	// LoadFont (MICRO_FONT)
+	// );
+	//    MenuSounds = CaptureSound (LoadSound (MENU_SOUNDS));
+	//    LoadSC2Data ();
 
-	GLOBAL (CurrentActivity) = OldActivity;
-
+	GLOBAL(CurrentActivity) = OldActivity;
 }
-

@@ -26,1019 +26,1056 @@
 
 
 static LOCDATA spahome_desc =
-{
-	SPATHI_CONVERSATION, /* AlienConv */
-	NULL, /* init_encounter_func */
-	NULL, /* post_encounter_func */
-	NULL, /* uninit_encounter_func */
-	SPATHI_HOME_PMAP_ANIM, /* AlienFrame */
-	SPATHI_FONT, /* AlienFont */
-	WHITE_COLOR_INIT, /* AlienTextFColor */
-	BLACK_COLOR_INIT, /* AlienTextBColor */
-	{0, 0}, /* AlienTextBaseline */
-	0, /* SIS_TEXT_WIDTH - 16, */ /* AlienTextWidth */
-	ALIGN_CENTER, /* AlienTextAlign */
-	VALIGN_TOP, /* AlienTextValign */
-	SPATHI_HOME_COLOR_MAP, /* AlienColorMap */
-	SPATHI_MUSIC, /* AlienSong */
 	{
-		NULL_RESOURCE, /* AlienAltFrame */
-		NULL_RESOURCE, /* AlienAltColorMap */
-		SPAHOME_MUSIC, /* AlienAltSong */
-	},
-	SPATHI_HOME_CONVERSATION_PHRASES, /* PlayerPhrases */
-	14, /* NumAnimations */
-	{ /* AlienAmbientArray (ambient animations) */
+		SPATHI_CONVERSATION, /* AlienConv */
+		NULL, /* init_encounter_func */
+		NULL, /* post_encounter_func */
+		NULL, /* uninit_encounter_func */
+		SPATHI_HOME_PMAP_ANIM, /* AlienFrame */
+		SPATHI_FONT, /* AlienFont */
+		WHITE_COLOR_INIT, /* AlienTextFColor */
+		BLACK_COLOR_INIT, /* AlienTextBColor */
+		{0, 0}, /* AlienTextBaseline */
+		0,
+ /* SIS_TEXT_WIDTH - 16, */  /* AlienTextWidth */
+		ALIGN_CENTER, /* AlienTextAlign */
+		VALIGN_TOP, /* AlienTextValign */
+		SPATHI_HOME_COLOR_MAP, /* AlienColorMap */
+		SPATHI_MUSIC, /* AlienSong */
 		{
-			1, /* StartIndex */
-			3, /* NumFrames */
-			CIRCULAR_ANIM, /* AnimFlags */
-			ONE_SECOND / 20, 0, /* FrameRate */
-			ONE_SECOND, ONE_SECOND * 3, /* RestartRate */
+								NULL_RESOURCE, /* AlienAltFrame */
+			NULL_RESOURCE, /* AlienAltColorMap */
+			SPAHOME_MUSIC, /* AlienAltSong */
+		},
+		SPATHI_HOME_CONVERSATION_PHRASES, /* PlayerPhrases */
+		14, /* NumAnimations */
+		{
+								/* AlienAmbientArray (ambient animations) */
+			{
+				1,			   /* StartIndex */
+				3,			   /* NumFrames */
+				CIRCULAR_ANIM, /* AnimFlags */
+				ONE_SECOND / 20,
+				0, /* FrameRate */
+				ONE_SECOND,
+				ONE_SECOND * 3, /* RestartRate */
+				0,				/* BlockMask */
+			},
+								{
+				4,			   /* StartIndex */
+				5,			   /* NumFrames */
+				CIRCULAR_ANIM, /* AnimFlags */
+				ONE_SECOND / 20,
+				0, /* FrameRate */
+				ONE_SECOND,
+				ONE_SECOND * 3, /* RestartRate */
+				0,				/* BlockMask */
+			},
+								{
+				9,			   /* StartIndex */
+				4,			   /* NumFrames */
+				CIRCULAR_ANIM, /* AnimFlags */
+				ONE_SECOND / 20,
+				0, /* FrameRate */
+				ONE_SECOND,
+				ONE_SECOND * 3,		   /* RestartRate */
+				(1 << 10) | (1 << 11), /* BlockMask */
+			},
+								{
+				13,					/* StartIndex */
+				6,					/* NumFrames */
+				CIRCULAR_ANIM,		/* AnimFlags */
+				ONE_SECOND / 20, 0, /* FrameRate */
+				ONE_SECOND / 20, 0, /* RestartRate */
+				(1 << 4) | (1 << 5) /* BlockMask */
+			},
+								{
+				19,		   /* StartIndex */
+				3,		   /* NumFrames */
+				YOYO_ANIM, /* AnimFlags */
+				ONE_SECOND / 20,
+				0, /* FrameRate */
+				ONE_SECOND,
+				ONE_SECOND * 3,		 /* RestartRate */
+				(1 << 3) | (1 << 5), /* BlockMask */
+			},
+								{
+				22,		   /* StartIndex */
+				4,		   /* NumFrames */
+				YOYO_ANIM, /* AnimFlags */
+				ONE_SECOND / 10,
+				ONE_SECOND / 30, /* FrameRate */
+				ONE_SECOND / 10,
+				ONE_SECOND / 30, /* RestartRate */
+				(1 << 3) | (1 << 4)
+					| (1 << 10), /* BlockMask */
+			},
+								{
+				26,		   /* StartIndex */
+				3,		   /* NumFrames */
+				YOYO_ANIM, /* AnimFlags */
+				ONE_SECOND / 10,
+				ONE_SECOND / 30, /* FrameRate */
+				ONE_SECOND * 10,
+				ONE_SECOND * 3, /* RestartRate */
+				(1 << 10),		/* BlockMask */
+			},
+								{
+				29,		   /* StartIndex */
+				3,		   /* NumFrames */
+				YOYO_ANIM, /* AnimFlags */
+				ONE_SECOND / 10,
+				ONE_SECOND / 30, /* FrameRate */
+				ONE_SECOND * 10,
+				ONE_SECOND * 3, /* RestartRate */
+				0,				/* BlockMask */
+			},
+								{
+				32,			   /* StartIndex */
+				7,			   /* NumFrames */
+				CIRCULAR_ANIM, /* AnimFlags */
+				ONE_SECOND / 20,
+				0, /* FrameRate */
+				ONE_SECOND / 20,
+				0,					  /* RestartRate */
+				(1 << 9) | (1 << 10), /* BlockMask */
+			},
+								{
+				39,		   /* StartIndex */
+				3,		   /* NumFrames */
+				YOYO_ANIM, /* AnimFlags */
+				ONE_SECOND / 20,
+				0, /* FrameRate */
+				ONE_SECOND,
+				ONE_SECOND * 3,		  /* RestartRate */
+				(1 << 8) | (1 << 10), /* BlockMask */
+			},
+								{
+				42,		   /* StartIndex */
+				4,		   /* NumFrames */
+				YOYO_ANIM, /* AnimFlags */
+				ONE_SECOND / 10,
+				ONE_SECOND / 30, /* FrameRate */
+				ONE_SECOND / 30,
+				0, /* RestartRate */
+				(1 << 8) | (1 << 9)
+					| (1 << 6) | (1 << 2)
+					| (1 << 11) | (1 << 5), /* BlockMask */
+			},
+								{
+				46,		   /* StartIndex */
+				4,		   /* NumFrames */
+				YOYO_ANIM, /* AnimFlags */
+				ONE_SECOND / 10,
+				ONE_SECOND / 30, /* FrameRate */
+				ONE_SECOND / 10,
+				ONE_SECOND / 30,	  /* RestartRate */
+				(1 << 2) | (1 << 10), /* BlockMask */
+			},
+								{
+				50,			   /* StartIndex */
+				6,			   /* NumFrames */
+				CIRCULAR_ANIM, /* AnimFlags */
+				ONE_SECOND / 20,
+				0, /* FrameRate */
+				ONE_SECOND / 20,
+				0,		   /* RestartRate */
+				(1 << 13), /* BlockMask */
+			},
+								{
+				56,		   /* StartIndex */
+				3,		   /* NumFrames */
+				YOYO_ANIM, /* AnimFlags */
+				ONE_SECOND / 20,
+				0, /* FrameRate */
+				ONE_SECOND,
+				ONE_SECOND * 3, /* RestartRate */
+				(1 << 12),		/* BlockMask */
+			},
+								},
+		{
+								/* AlienTransitionDesc - empty */
+			0, /* StartIndex */
+			0, /* NumFrames */
+			0, /* AnimFlags */
+			0,
+								0, /* FrameRate */
+			0,
+								0, /* RestartRate */
 			0, /* BlockMask */
 		},
 		{
-			4, /* StartIndex */
-			5, /* NumFrames */
-			CIRCULAR_ANIM, /* AnimFlags */
-			ONE_SECOND / 20, 0, /* FrameRate */
-			ONE_SECOND, ONE_SECOND * 3, /* RestartRate */
+								/* AlienTalkDesc - empty */
+			0, /* StartIndex */
+			0, /* NumFrames */
+			0, /* AnimFlags */
+			0,
+								0, /* FrameRate */
+			0,
+								0, /* RestartRate */
 			0, /* BlockMask */
 		},
-		{
-			9, /* StartIndex */
-			4, /* NumFrames */
-			CIRCULAR_ANIM, /* AnimFlags */
-			ONE_SECOND / 20, 0, /* FrameRate */
-			ONE_SECOND, ONE_SECOND * 3, /* RestartRate */
-			(1 << 10) | (1 << 11), /* BlockMask */
-		},
-		{
-			13, /* StartIndex */
-			6, /* NumFrames */
-			CIRCULAR_ANIM, /* AnimFlags */
-			ONE_SECOND / 20, 0, /* FrameRate */
-			ONE_SECOND / 20, 0, /* RestartRate */
-			(1 << 4) | (1 << 5) /* BlockMask */
-		},
-		{
-			19, /* StartIndex */
-			3, /* NumFrames */
-			YOYO_ANIM, /* AnimFlags */
-			ONE_SECOND / 20, 0, /* FrameRate */
-			ONE_SECOND, ONE_SECOND * 3, /* RestartRate */
-			(1 << 3) | (1 << 5), /* BlockMask */
-		},
-		{
-			22, /* StartIndex */
-			4, /* NumFrames */
-			YOYO_ANIM, /* AnimFlags */
-			ONE_SECOND / 10, ONE_SECOND / 30, /* FrameRate */
-			ONE_SECOND / 10, ONE_SECOND / 30, /* RestartRate */
-			(1 << 3) | (1 << 4)
-			| (1 << 10), /* BlockMask */
-		},
-		{
-			26, /* StartIndex */
-			3, /* NumFrames */
-			YOYO_ANIM, /* AnimFlags */
-			ONE_SECOND / 10, ONE_SECOND / 30, /* FrameRate */
-			ONE_SECOND * 10, ONE_SECOND * 3, /* RestartRate */
-			(1 << 10), /* BlockMask */
-		},
-		{
-			29, /* StartIndex */
-			3, /* NumFrames */
-			YOYO_ANIM, /* AnimFlags */
-			ONE_SECOND / 10, ONE_SECOND / 30, /* FrameRate */
-			ONE_SECOND * 10, ONE_SECOND * 3, /* RestartRate */
-			0, /* BlockMask */
-		},
-		{
-			32, /* StartIndex */
-			7, /* NumFrames */
-			CIRCULAR_ANIM, /* AnimFlags */
-			ONE_SECOND / 20, 0, /* FrameRate */
-			ONE_SECOND / 20, 0, /* RestartRate */
-			(1 << 9) | (1 << 10), /* BlockMask */
-		},
-		{
-			39, /* StartIndex */
-			3, /* NumFrames */
-			YOYO_ANIM, /* AnimFlags */
-			ONE_SECOND / 20, 0, /* FrameRate */
-			ONE_SECOND, ONE_SECOND * 3, /* RestartRate */
-			(1 << 8) | (1 << 10), /* BlockMask */
-		},
-		{
-			42, /* StartIndex */
-			4, /* NumFrames */
-			YOYO_ANIM, /* AnimFlags */
-			ONE_SECOND / 10, ONE_SECOND / 30, /* FrameRate */
-			ONE_SECOND / 30, 0, /* RestartRate */
-			(1 << 8) | (1 << 9)
-			| (1 << 6) | (1 << 2)
-			| (1 << 11) | (1 << 5), /* BlockMask */
-		},
-		{
-			46, /* StartIndex */
-			4, /* NumFrames */
-			YOYO_ANIM, /* AnimFlags */
-			ONE_SECOND / 10, ONE_SECOND / 30, /* FrameRate */
-			ONE_SECOND / 10, ONE_SECOND / 30, /* RestartRate */
-			(1 << 2) | (1 << 10), /* BlockMask */
-		},
-		{
-			50, /* StartIndex */
-			6, /* NumFrames */
-			CIRCULAR_ANIM, /* AnimFlags */
-			ONE_SECOND / 20, 0, /* FrameRate */
-			ONE_SECOND / 20, 0, /* RestartRate */
-			(1 << 13), /* BlockMask */
-		},
-		{
-			56, /* StartIndex */
-			3, /* NumFrames */
-			YOYO_ANIM, /* AnimFlags */
-			ONE_SECOND / 20, 0, /* FrameRate */
-			ONE_SECOND, ONE_SECOND * 3, /* RestartRate */
-			(1 << 12), /* BlockMask */
-		},
-	},
-	{ /* AlienTransitionDesc - empty */
-		0, /* StartIndex */
-		0, /* NumFrames */
-		0, /* AnimFlags */
-		0, 0, /* FrameRate */
-		0, 0, /* RestartRate */
-		0, /* BlockMask */
-	},
-	{ /* AlienTalkDesc - empty */
-		0, /* StartIndex */
-		0, /* NumFrames */
-		0, /* AnimFlags */
-		0, 0, /* FrameRate */
-		0, 0, /* RestartRate */
-		0, /* BlockMask */
-	},
-	NULL, /* AlienNumberSpeech - none */
-	/* Filler for loaded resources */
-	NULL, NULL, NULL,
-	NULL,
-	NULL,
+		NULL, /* AlienNumberSpeech - none */
+		/* Filler for loaded resources */
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
 };
 
 static FILTER_DESC spahome_filters =
-{
-	1, /* Number of filters */
-	{ /* Filter array */
+	{
+		1, /* Number of filters */
 		{
-			0, /* Color index */
-			1, /* Opacity index */
-			-1, /* Frame index */
-			DRAW_ALPHA, /* DrawKind*/
-			SWITCH_ON_ANIMS | TURN_OFF_OFT, /* Flags */
-		},
-	}
+								  /* Filter array */
+			{
+				0,								/* Color index */
+				1,								/* Opacity index */
+				-1,								/* Frame index */
+				DRAW_ALPHA,						/* DrawKind*/
+				SWITCH_ON_ANIMS | TURN_OFF_OFT, /* Flags */
+			},
+								  }
 };
 
 static void
-ExitConversation (RESPONSE_REF R)
+ExitConversation(RESPONSE_REF R)
 {
-	setSegue (Segue_peace);
-	if (PLAYER_SAID (R, we_attack_again))
+	setSegue(Segue_peace);
+	if (PLAYER_SAID(R, we_attack_again))
 	{
-		NPCPhrase (WE_FIGHT_AGAIN);
+		NPCPhrase(WE_FIGHT_AGAIN);
 
-		setSegue (Segue_hostile);
+		setSegue(Segue_hostile);
 	}
-	else if (PLAYER_SAID (R, surrender_or_die))
+	else if (PLAYER_SAID(R, surrender_or_die))
 	{
-		NPCPhrase (DEFEND_OURSELVES);
+		NPCPhrase(DEFEND_OURSELVES);
 
-		setSegue (Segue_hostile);
+		setSegue(Segue_hostile);
 	}
-	else if (PLAYER_SAID (R, we_are_vindicator))
+	else if (PLAYER_SAID(R, we_are_vindicator))
 	{
-		NPCPhrase (NO_PASSWORD);
+		NPCPhrase(NO_PASSWORD);
 
-		setSegue (Segue_hostile);
+		setSegue(Segue_hostile);
 	}
-	else if (PLAYER_SAID (R, gort_merenga)
-			|| PLAYER_SAID (R, guph_florp)
-			|| PLAYER_SAID (R, wagngl_fthagn)
-			|| PLAYER_SAID (R, pleeese))
+	else if (PLAYER_SAID(R, gort_merenga)
+			 || PLAYER_SAID(R, guph_florp)
+			 || PLAYER_SAID(R, wagngl_fthagn)
+			 || PLAYER_SAID(R, pleeese))
 	{
-		NPCPhrase (WRONG_PASSWORD);
+		NPCPhrase(WRONG_PASSWORD);
 
-		setSegue (Segue_hostile);
+		setSegue(Segue_hostile);
 	}
-	else if (PLAYER_SAID (R, screw_password))
+	else if (PLAYER_SAID(R, screw_password))
 	{
-		NPCPhrase (NO_PASSWORD);
+		NPCPhrase(NO_PASSWORD);
 
-		setSegue (Segue_hostile);
+		setSegue(Segue_hostile);
 	}
-	else if (PLAYER_SAID (R, bye_no_ally_offer))
-		NPCPhrase (GOODBYE_NO_ALLY_OFFER);
-	else if (PLAYER_SAID (R, bye_angry_spathi))
-		NPCPhrase (GOODBYE_ANGRY_SPATHI);
-	else if (PLAYER_SAID (R, bye_ally))
-		NPCPhrase (GOODBYE_ALLY);
-	else if (PLAYER_SAID (R, already_got_them))
+	else if (PLAYER_SAID(R, bye_no_ally_offer))
+		NPCPhrase(GOODBYE_NO_ALLY_OFFER);
+	else if (PLAYER_SAID(R, bye_angry_spathi))
+		NPCPhrase(GOODBYE_ANGRY_SPATHI);
+	else if (PLAYER_SAID(R, bye_ally))
+		NPCPhrase(GOODBYE_ALLY);
+	else if (PLAYER_SAID(R, already_got_them))
 	{
-		NPCPhrase (EARLY_BIRD_CHECK);
+		NPCPhrase(EARLY_BIRD_CHECK);
 
-		SET_GAME_STATE (SPATHI_HOME_VISITS, 0);
-		SET_GAME_STATE (SPATHI_VISITS, 0);
-		SET_GAME_STATE (SPATHI_PARTY, 1);
-		SET_GAME_STATE (SPATHI_MANNER, 3);
+		SET_GAME_STATE(SPATHI_HOME_VISITS, 0);
+		SET_GAME_STATE(SPATHI_VISITS, 0);
+		SET_GAME_STATE(SPATHI_PARTY, 1);
+		SET_GAME_STATE(SPATHI_MANNER, 3);
 	}
-	else if (PLAYER_SAID (R, too_dangerous))
-		NPCPhrase (WE_AGREE);
-	else if (PLAYER_SAID (R, think_more))
-		NPCPhrase (COWARD);
-	else if (PLAYER_SAID (R, i_accept))
+	else if (PLAYER_SAID(R, too_dangerous))
+		NPCPhrase(WE_AGREE);
+	else if (PLAYER_SAID(R, think_more))
+		NPCPhrase(COWARD);
+	else if (PLAYER_SAID(R, i_accept))
 	{
-		NPCPhrase (AWAIT_RETURN);
+		NPCPhrase(AWAIT_RETURN);
 
-		SET_GAME_STATE (SPATHI_QUEST, 1);
-		SET_GAME_STATE (SPATHI_MANNER, 3);
-		SET_GAME_STATE (SPATHI_VISITS, 0);
+		SET_GAME_STATE(SPATHI_QUEST, 1);
+		SET_GAME_STATE(SPATHI_MANNER, 3);
+		SET_GAME_STATE(SPATHI_VISITS, 0);
 	}
-	else if (PLAYER_SAID (R, do_as_we_say))
+	else if (PLAYER_SAID(R, do_as_we_say))
 	{
-		NPCPhrase (DEPART_FOR_EARTH);
+		NPCPhrase(DEPART_FOR_EARTH);
 
-		SetRaceAllied (SPATHI_SHIP, true);
-		AddEvent (RELATIVE_EVENT, 6, 0, 0, SPATHI_SHIELD_EVENT);
-		SET_GAME_STATE (SPATHI_HOME_VISITS, 0);
-		SET_GAME_STATE (SPATHI_VISITS, 0);
+		SetRaceAllied(SPATHI_SHIP, true);
+		AddEvent(RELATIVE_EVENT, 6, 0, 0, SPATHI_SHIELD_EVENT);
+		SET_GAME_STATE(SPATHI_HOME_VISITS, 0);
+		SET_GAME_STATE(SPATHI_VISITS, 0);
 	}
-	else if (PLAYER_SAID (R, killed_them_all_1))
+	else if (PLAYER_SAID(R, killed_them_all_1))
 	{
-		NPCPhrase (WILL_CHECK_1);
+		NPCPhrase(WILL_CHECK_1);
 
-		if (!GET_GAME_STATE (SPATHI_CREATURES_ELIMINATED))
+		if (!GET_GAME_STATE(SPATHI_CREATURES_ELIMINATED))
 		{
-			SET_GAME_STATE (LIED_ABOUT_CREATURES, 1);
+			SET_GAME_STATE(LIED_ABOUT_CREATURES, 1);
 		}
 		else
 		{
-			SET_GAME_STATE (SPATHI_HOME_VISITS, 0);
-			SET_GAME_STATE (SPATHI_VISITS, 0);
-			SET_GAME_STATE (SPATHI_PARTY, 1);
-			SET_GAME_STATE (SPATHI_MANNER, 3);
+			SET_GAME_STATE(SPATHI_HOME_VISITS, 0);
+			SET_GAME_STATE(SPATHI_VISITS, 0);
+			SET_GAME_STATE(SPATHI_PARTY, 1);
+			SET_GAME_STATE(SPATHI_MANNER, 3);
 		}
 	}
-	else if (PLAYER_SAID (R, killed_them_all_2))
+	else if (PLAYER_SAID(R, killed_them_all_2))
 	{
-		NPCPhrase (WILL_CHECK_2);
+		NPCPhrase(WILL_CHECK_2);
 
-		if (!GET_GAME_STATE (SPATHI_CREATURES_ELIMINATED))
+		if (!GET_GAME_STATE(SPATHI_CREATURES_ELIMINATED))
 		{
-			SET_GAME_STATE (LIED_ABOUT_CREATURES, 2);
+			SET_GAME_STATE(LIED_ABOUT_CREATURES, 2);
 		}
 		else
 		{
-			SET_GAME_STATE (SPATHI_HOME_VISITS, 0);
-			SET_GAME_STATE (SPATHI_VISITS, 0);
-			SET_GAME_STATE (SPATHI_PARTY, 1);
-			SET_GAME_STATE (SPATHI_MANNER, 3);
+			SET_GAME_STATE(SPATHI_HOME_VISITS, 0);
+			SET_GAME_STATE(SPATHI_VISITS, 0);
+			SET_GAME_STATE(SPATHI_PARTY, 1);
+			SET_GAME_STATE(SPATHI_MANNER, 3);
 		}
 	}
-	else if (PLAYER_SAID (R, bye_before_party))
+	else if (PLAYER_SAID(R, bye_before_party))
 	{
-		NPCPhrase (GOODBYE_BEFORE_PARTY);
+		NPCPhrase(GOODBYE_BEFORE_PARTY);
 	}
-	else if (PLAYER_SAID (R, bye_from_party_1)
-		   || PLAYER_SAID (R, bye_from_party_2)
-		   || PLAYER_SAID (R, bye_from_party_3))
+	else if (PLAYER_SAID(R, bye_from_party_1)
+			 || PLAYER_SAID(R, bye_from_party_2)
+			 || PLAYER_SAID(R, bye_from_party_3))
 	{
-		NPCPhrase (GOODBYE_FROM_PARTY);
+		NPCPhrase(GOODBYE_FROM_PARTY);
 	}
 }
 
-static void SpathiAllies (RESPONSE_REF R);
+static void SpathiAllies(RESPONSE_REF R);
 
 static void
-SpathiInfo (RESPONSE_REF R)
+SpathiInfo(RESPONSE_REF R)
 {
 	uqm::BYTE InfoLeft;
-	
+
 	InfoLeft = false;
-	if (PLAYER_SAID (R, like_some_info))
-		NPCPhrase (WHAT_ABOUT);
-	else if (PLAYER_SAID (R, what_about_hierarchy))
+	if (PLAYER_SAID(R, like_some_info))
+		NPCPhrase(WHAT_ABOUT);
+	else if (PLAYER_SAID(R, what_about_hierarchy))
 	{
-		NPCPhrase (ABOUT_HIERARCHY);
+		NPCPhrase(ABOUT_HIERARCHY);
 
-		DISABLE_PHRASE (what_about_hierarchy);
+		DISABLE_PHRASE(what_about_hierarchy);
 	}
-	else if (PLAYER_SAID (R, what_about_history))
+	else if (PLAYER_SAID(R, what_about_history))
 	{
-		NPCPhrase (ABOUT_HISTORY);
+		NPCPhrase(ABOUT_HISTORY);
 
-		DISABLE_PHRASE (what_about_history);
+		DISABLE_PHRASE(what_about_history);
 	}
-	else if (PLAYER_SAID (R, what_about_alliance))
+	else if (PLAYER_SAID(R, what_about_alliance))
 	{
-		NPCPhrase (ABOUT_ALLIANCE);
+		NPCPhrase(ABOUT_ALLIANCE);
 
-		DISABLE_PHRASE (what_about_alliance);
+		DISABLE_PHRASE(what_about_alliance);
 	}
-	else if (PLAYER_SAID (R, what_about_other))
+	else if (PLAYER_SAID(R, what_about_other))
 	{
-		NPCPhrase (ABOUT_OTHER);
+		NPCPhrase(ABOUT_OTHER);
 
-		DISABLE_PHRASE (what_about_other);
+		DISABLE_PHRASE(what_about_other);
 	}
-	else if (PLAYER_SAID (R, what_about_precursors))
+	else if (PLAYER_SAID(R, what_about_precursors))
 	{
-		NPCPhrase (ABOUT_PRECURSORS);
+		NPCPhrase(ABOUT_PRECURSORS);
 
-		DISABLE_PHRASE (what_about_precursors);
+		DISABLE_PHRASE(what_about_precursors);
 	}
 
-	if (PHRASE_ENABLED (what_about_hierarchy))
+	if (PHRASE_ENABLED(what_about_hierarchy))
 	{
 		InfoLeft = true;
-		Response (what_about_hierarchy, SpathiInfo);
+		Response(what_about_hierarchy, SpathiInfo);
 	}
-	if (PHRASE_ENABLED (what_about_history))
+	if (PHRASE_ENABLED(what_about_history))
 	{
 		InfoLeft = true;
-		Response (what_about_history, SpathiInfo);
+		Response(what_about_history, SpathiInfo);
 	}
-	if (PHRASE_ENABLED (what_about_alliance))
+	if (PHRASE_ENABLED(what_about_alliance))
 	{
 		InfoLeft = true;
-		Response (what_about_alliance, SpathiInfo);
+		Response(what_about_alliance, SpathiInfo);
 	}
-	if (PHRASE_ENABLED (what_about_other))
+	if (PHRASE_ENABLED(what_about_other))
 	{
 		InfoLeft = true;
-		Response (what_about_other, SpathiInfo);
+		Response(what_about_other, SpathiInfo);
 	}
-	if (PHRASE_ENABLED (what_about_precursors))
+	if (PHRASE_ENABLED(what_about_precursors))
 	{
 		InfoLeft = true;
-		Response (what_about_precursors, SpathiInfo);
+		Response(what_about_precursors, SpathiInfo);
 	}
-	Response (enough_info, SpathiAllies);
+	Response(enough_info, SpathiAllies);
 
 	if (!InfoLeft)
 	{
-		DISABLE_PHRASE (like_some_info);
+		DISABLE_PHRASE(like_some_info);
 	}
 }
 
 static void
-SpathiAllies (RESPONSE_REF R)
+SpathiAllies(RESPONSE_REF R)
 {
 	uqm::BYTE NumVisits;
 
 	if (R == 0)
 	{
-		NumVisits = GET_GAME_STATE (SPATHI_HOME_VISITS);
+		NumVisits = GET_GAME_STATE(SPATHI_HOME_VISITS);
 		switch (NumVisits++)
 		{
 			case 0:
-				NPCPhrase (HELLO_ALLIES_1);
+				NPCPhrase(HELLO_ALLIES_1);
 				break;
 			case 1:
-				NPCPhrase (HELLO_ALLIES_2);
+				NPCPhrase(HELLO_ALLIES_2);
 				break;
 			case 2:
-				NPCPhrase (HELLO_ALLIES_3);
+				NPCPhrase(HELLO_ALLIES_3);
 				--NumVisits;
 				break;
 		}
-		SET_GAME_STATE (SPATHI_HOME_VISITS, NumVisits);
+		SET_GAME_STATE(SPATHI_HOME_VISITS, NumVisits);
 	}
-	else if (PLAYER_SAID (R, whats_up))
+	else if (PLAYER_SAID(R, whats_up))
 	{
-		NumVisits = GET_GAME_STATE (SPATHI_INFO);
+		NumVisits = GET_GAME_STATE(SPATHI_INFO);
 		switch (NumVisits++)
 		{
 			case 0:
-				NPCPhrase (GENERAL_INFO_1);
+				NPCPhrase(GENERAL_INFO_1);
 				break;
 			case 1:
-				NPCPhrase (GENERAL_INFO_2);
+				NPCPhrase(GENERAL_INFO_2);
 				break;
 			case 2:
-				NPCPhrase (GENERAL_INFO_3);
-				SET_GAME_STATE (KNOW_URQUAN_STORY, 1);
-				SET_GAME_STATE (KNOW_KOHR_AH_STORY, 1);
+				NPCPhrase(GENERAL_INFO_3);
+				SET_GAME_STATE(KNOW_URQUAN_STORY, 1);
+				SET_GAME_STATE(KNOW_KOHR_AH_STORY, 1);
 				break;
 			case 3:
-				NPCPhrase (GENERAL_INFO_4);
+				NPCPhrase(GENERAL_INFO_4);
 				break;
 			case 4:
-				NPCPhrase (GENERAL_INFO_5);
+				NPCPhrase(GENERAL_INFO_5);
 				--NumVisits;
 				break;
 			case 5:
-				NPCPhrase (GENERAL_INFO_5);
+				NPCPhrase(GENERAL_INFO_5);
 				--NumVisits;
 				break;
 		}
-		SET_GAME_STATE (SPATHI_INFO, NumVisits);
+		SET_GAME_STATE(SPATHI_INFO, NumVisits);
 
-		DISABLE_PHRASE (whats_up);
+		DISABLE_PHRASE(whats_up);
 	}
-	else if (PLAYER_SAID (R, resources_please))
+	else if (PLAYER_SAID(R, resources_please))
 	{
-		NPCPhrase (SORRY_NO_RESOURCES);
+		NPCPhrase(SORRY_NO_RESOURCES);
 
-		DISABLE_PHRASE (resources_please);
+		DISABLE_PHRASE(resources_please);
 	}
-	else if (PLAYER_SAID (R, something_fishy))
+	else if (PLAYER_SAID(R, something_fishy))
 	{
-		NPCPhrase (NOTHING_FISHY);
+		NPCPhrase(NOTHING_FISHY);
 
-		SET_GAME_STATE (SPATHI_INFO, 5);
+		SET_GAME_STATE(SPATHI_INFO, 5);
 	}
-	else if (PLAYER_SAID (R, enough_info))
-		NPCPhrase (OK_ENOUGH_INFO);
+	else if (PLAYER_SAID(R, enough_info))
+		NPCPhrase(OK_ENOUGH_INFO);
 
-	if (GET_GAME_STATE (SPATHI_INFO) == 4)
-		Response (something_fishy, SpathiAllies);
-	if (PHRASE_ENABLED (whats_up))
-		Response (whats_up, SpathiAllies);
-	if (PHRASE_ENABLED (resources_please))
-		Response (resources_please, SpathiAllies);
-	if (PHRASE_ENABLED (like_some_info))
-		Response (like_some_info, SpathiInfo);
-	Response (bye_ally, ExitConversation);
+	if (GET_GAME_STATE(SPATHI_INFO) == 4)
+		Response(something_fishy, SpathiAllies);
+	if (PHRASE_ENABLED(whats_up))
+		Response(whats_up, SpathiAllies);
+	if (PHRASE_ENABLED(resources_please))
+		Response(resources_please, SpathiAllies);
+	if (PHRASE_ENABLED(like_some_info))
+		Response(like_some_info, SpathiInfo);
+	Response(bye_ally, ExitConversation);
 }
 
 static void
-SpathiQuest (RESPONSE_REF R)
+SpathiQuest(RESPONSE_REF R)
 {
 	if (R == 0)
 	{
-		if (!GET_GAME_STATE (LIED_ABOUT_CREATURES))
-			NPCPhrase (HOW_GO_EFFORTS);
+		if (!GET_GAME_STATE(LIED_ABOUT_CREATURES))
+			NPCPhrase(HOW_GO_EFFORTS);
 		else
-			NPCPhrase (YOU_LIED_1);
+			NPCPhrase(YOU_LIED_1);
 	}
-	else if (PLAYER_SAID (R, little_mistake))
+	else if (PLAYER_SAID(R, little_mistake))
 	{
-		NPCPhrase (BIG_MISTAKE);
+		NPCPhrase(BIG_MISTAKE);
 
-		DISABLE_PHRASE (little_mistake);
+		DISABLE_PHRASE(little_mistake);
 	}
-	else if (PLAYER_SAID (R, talk_test))
+	else if (PLAYER_SAID(R, talk_test))
 	{
-		NPCPhrase (TEST_AGAIN);
+		NPCPhrase(TEST_AGAIN);
 
-		DISABLE_PHRASE (talk_test);
+		DISABLE_PHRASE(talk_test);
 	}
-	else if (PLAYER_SAID (R, zapped_a_few))
+	else if (PLAYER_SAID(R, zapped_a_few))
 	{
-		NPCPhrase (YOU_FORTUNATE);
+		NPCPhrase(YOU_FORTUNATE);
 
-		DISABLE_PHRASE (zapped_a_few);
+		DISABLE_PHRASE(zapped_a_few);
 	}
 
-	if (!GET_GAME_STATE (LIED_ABOUT_CREATURES))
-		Response (killed_them_all_1, ExitConversation);
+	if (!GET_GAME_STATE(LIED_ABOUT_CREATURES))
+		Response(killed_them_all_1, ExitConversation);
 	else
 	{
-		if (PHRASE_ENABLED (little_mistake))
+		if (PHRASE_ENABLED(little_mistake))
 		{
-			Response (little_mistake, SpathiQuest);
+			Response(little_mistake, SpathiQuest);
 		}
-		Response (killed_them_all_2, ExitConversation);
+		Response(killed_them_all_2, ExitConversation);
 	}
-	if (!GET_GAME_STATE (SPATHI_CREATURES_ELIMINATED))
+	if (!GET_GAME_STATE(SPATHI_CREATURES_ELIMINATED))
 	{
-		if (PHRASE_ENABLED (talk_test))
+		if (PHRASE_ENABLED(talk_test))
 		{
-			Response (talk_test, SpathiQuest);
+			Response(talk_test, SpathiQuest);
 		}
-		if (PHRASE_ENABLED (zapped_a_few)
-				&& GET_GAME_STATE (SPATHI_CREATURES_EXAMINED))
+		if (PHRASE_ENABLED(zapped_a_few)
+			&& GET_GAME_STATE(SPATHI_CREATURES_EXAMINED))
 		{
-			Response (zapped_a_few, SpathiQuest);
+			Response(zapped_a_few, SpathiQuest);
 		}
-		Response (bye_before_party, ExitConversation);
+		Response(bye_before_party, ExitConversation);
 	}
 }
 
 static void
-LearnQuest (RESPONSE_REF R)
+LearnQuest(RESPONSE_REF R)
 {
 	if (R == 0)
 	{
-		NPCPhrase (QUEST_AGAIN);
+		NPCPhrase(QUEST_AGAIN);
 
-		DISABLE_PHRASE (what_test);
-		if (GET_GAME_STATE (KNOW_SPATHI_EVIL))
+		DISABLE_PHRASE(what_test);
+		if (GET_GAME_STATE(KNOW_SPATHI_EVIL))
 		{
-			DISABLE_PHRASE (tell_evil);
+			DISABLE_PHRASE(tell_evil);
 		}
 	}
-	else if (PLAYER_SAID (R, how_prove))
-		NPCPhrase (BETTER_IDEA);
-	else if (PLAYER_SAID (R, what_test))
+	else if (PLAYER_SAID(R, how_prove))
+		NPCPhrase(BETTER_IDEA);
+	else if (PLAYER_SAID(R, what_test))
 	{
-		NPCPhrase (WIPE_EVIL);
+		NPCPhrase(WIPE_EVIL);
 
-		SET_GAME_STATE (KNOW_SPATHI_QUEST, 1);
-		DISABLE_PHRASE (what_test);
+		SET_GAME_STATE(KNOW_SPATHI_QUEST, 1);
+		DISABLE_PHRASE(what_test);
 	}
-	else if (PLAYER_SAID (R, tell_evil))
+	else if (PLAYER_SAID(R, tell_evil))
 	{
-		NPCPhrase (BEFORE_ACCEPT);
+		NPCPhrase(BEFORE_ACCEPT);
 
-		SET_GAME_STATE (KNOW_SPATHI_EVIL, 1);
-		DISABLE_PHRASE (tell_evil);
-		DISABLE_PHRASE (prove_strength);
+		SET_GAME_STATE(KNOW_SPATHI_EVIL, 1);
+		DISABLE_PHRASE(tell_evil);
+		DISABLE_PHRASE(prove_strength);
 	}
-	else if (PLAYER_SAID (R, prove_strength))
+	else if (PLAYER_SAID(R, prove_strength))
 	{
-		NPCPhrase (YOUR_BEHAVIOR);
+		NPCPhrase(YOUR_BEHAVIOR);
 
-		DISABLE_PHRASE (prove_strength);
+		DISABLE_PHRASE(prove_strength);
 	}
-	else if (PLAYER_SAID (R, why_dont_you_do_it))
+	else if (PLAYER_SAID(R, why_dont_you_do_it))
 	{
-		NPCPhrase (WE_WONT_BECAUSE);
+		NPCPhrase(WE_WONT_BECAUSE);
 
-		DISABLE_PHRASE (why_dont_you_do_it);
+		DISABLE_PHRASE(why_dont_you_do_it);
 	}
 
-	if (PHRASE_ENABLED (what_test))
-		Response (what_test, LearnQuest);
-	else if (GET_GAME_STATE (SPATHI_CREATURES_ELIMINATED))
+	if (PHRASE_ENABLED(what_test))
+		Response(what_test, LearnQuest);
+	else if (GET_GAME_STATE(SPATHI_CREATURES_ELIMINATED))
 	{
-		Response (already_got_them, ExitConversation);
+		Response(already_got_them, ExitConversation);
 	}
-	else if (PHRASE_ENABLED (tell_evil))
+	else if (PHRASE_ENABLED(tell_evil))
 	{
-		Response (too_dangerous, ExitConversation);
-		Response (tell_evil, LearnQuest);
+		Response(too_dangerous, ExitConversation);
+		Response(tell_evil, LearnQuest);
 	}
 	else
 	{
-		Response (too_dangerous, ExitConversation);
-		Response (think_more, ExitConversation);
-		Response (i_accept, ExitConversation);
+		Response(too_dangerous, ExitConversation);
+		Response(think_more, ExitConversation);
+		Response(i_accept, ExitConversation);
 	}
-	if (PHRASE_ENABLED (prove_strength) && !GET_GAME_STATE (KNOW_SPATHI_QUEST))
-		Response (prove_strength, LearnQuest);
-	if (PHRASE_ENABLED (why_dont_you_do_it))
-		Response (why_dont_you_do_it, LearnQuest);
+	if (PHRASE_ENABLED(prove_strength) && !GET_GAME_STATE(KNOW_SPATHI_QUEST))
+		Response(prove_strength, LearnQuest);
+	if (PHRASE_ENABLED(why_dont_you_do_it))
+		Response(why_dont_you_do_it, LearnQuest);
 }
 
 static void
-AllianceOffer (RESPONSE_REF R)
+AllianceOffer(RESPONSE_REF R)
 {
-	if (PLAYER_SAID (R, misunderstanding))
+	if (PLAYER_SAID(R, misunderstanding))
 	{
-		NPCPhrase (JUST_MISUNDERSTANDING);
+		NPCPhrase(JUST_MISUNDERSTANDING);
 
-		XFormColorMap (GetColorMapAddress (
-				SetAbsColorMapIndex (CommData.AlienColorMap, 1)
-					), ONE_SECOND / 4);
+		XFormColorMap(GetColorMapAddress(
+						  SetAbsColorMapIndex(CommData.AlienColorMap, 1)),
+					  ONE_SECOND / 4);
 
-		SET_GAME_STATE (SPATHI_MANNER, 3);
-		SET_GAME_STATE (SPATHI_VISITS, 0);
+		SET_GAME_STATE(SPATHI_MANNER, 3);
+		SET_GAME_STATE(SPATHI_VISITS, 0);
 	}
-	else if (PLAYER_SAID (R, we_come_in_peace))
-		NPCPhrase (OF_COURSE);
-	else if (PLAYER_SAID (R, hand_in_friendship))
+	else if (PLAYER_SAID(R, we_come_in_peace))
+		NPCPhrase(OF_COURSE);
+	else if (PLAYER_SAID(R, hand_in_friendship))
 	{
-		NPCPhrase (TOO_AFRAID);
+		NPCPhrase(TOO_AFRAID);
 
-		DISABLE_PHRASE (hand_in_friendship);
+		DISABLE_PHRASE(hand_in_friendship);
 	}
-	else if (PLAYER_SAID (R, stronger))
+	else if (PLAYER_SAID(R, stronger))
 	{
-		NPCPhrase (YOURE_NOT);
+		NPCPhrase(YOURE_NOT);
 
-		DISABLE_PHRASE (stronger);
+		DISABLE_PHRASE(stronger);
 	}
-	else if (PLAYER_SAID (R, yes_we_are))
+	else if (PLAYER_SAID(R, yes_we_are))
 	{
-		NPCPhrase (NO_YOURE_NOT);
+		NPCPhrase(NO_YOURE_NOT);
 
-		DISABLE_PHRASE (yes_we_are);
+		DISABLE_PHRASE(yes_we_are);
 	}
-	else if (PLAYER_SAID (R, share_info))
+	else if (PLAYER_SAID(R, share_info))
 	{
-		NPCPhrase (NO_INFO);
+		NPCPhrase(NO_INFO);
 
-		DISABLE_PHRASE (share_info);
+		DISABLE_PHRASE(share_info);
 	}
-	else if (PLAYER_SAID (R, give_us_resources))
+	else if (PLAYER_SAID(R, give_us_resources))
 	{
-		NPCPhrase (NO_RESOURCES);
+		NPCPhrase(NO_RESOURCES);
 
-		DISABLE_PHRASE (give_us_resources);
+		DISABLE_PHRASE(give_us_resources);
 	}
 
-	if (PHRASE_ENABLED (hand_in_friendship))
-		Response (hand_in_friendship, AllianceOffer);
-	else if (PHRASE_ENABLED (stronger))
-		Response (stronger, AllianceOffer);
-	else if (PHRASE_ENABLED (yes_we_are))
-		Response (yes_we_are, AllianceOffer);
+	if (PHRASE_ENABLED(hand_in_friendship))
+		Response(hand_in_friendship, AllianceOffer);
+	else if (PHRASE_ENABLED(stronger))
+		Response(stronger, AllianceOffer);
+	else if (PHRASE_ENABLED(yes_we_are))
+		Response(yes_we_are, AllianceOffer);
 	else
 	{
-		Response (how_prove, LearnQuest);
+		Response(how_prove, LearnQuest);
 	}
-	if (PHRASE_ENABLED (share_info))
-		Response (share_info, AllianceOffer);
-	if (PHRASE_ENABLED (give_us_resources))
-		Response (give_us_resources, AllianceOffer);
+	if (PHRASE_ENABLED(share_info))
+		Response(share_info, AllianceOffer);
+	if (PHRASE_ENABLED(give_us_resources))
+		Response(give_us_resources, AllianceOffer);
 }
 
 static void
-SpathiAngry (RESPONSE_REF R)
+SpathiAngry(RESPONSE_REF R)
 {
 	if (R == 0)
 	{
-		NPCPhrase (MEAN_GUYS_RETURN);
+		NPCPhrase(MEAN_GUYS_RETURN);
 
-		Response (we_apologize, SpathiAngry);
+		Response(we_apologize, SpathiAngry);
 	}
 	else /* if (R == we_apologize) */
 	{
-		NPCPhrase (DONT_BELIEVE);
+		NPCPhrase(DONT_BELIEVE);
 
-		Response (misunderstanding, AllianceOffer);
+		Response(misunderstanding, AllianceOffer);
 	}
 
-	Response (we_attack_again, ExitConversation);
-	Response (bye_angry_spathi, ExitConversation);
+	Response(we_attack_again, ExitConversation);
+	Response(bye_angry_spathi, ExitConversation);
 }
 
 static void
-SpathiParty (RESPONSE_REF R)
+SpathiParty(RESPONSE_REF R)
 {
 	if (R == 0)
 	{
 		uqm::BYTE NumVisits;
 
-		NumVisits = GET_GAME_STATE (SPATHI_HOME_VISITS);
+		NumVisits = GET_GAME_STATE(SPATHI_HOME_VISITS);
 		switch (NumVisits++)
 		{
 			case 0:
-				NPCPhrase (MUST_PARTY_1);
+				NPCPhrase(MUST_PARTY_1);
 				break;
 			case 1:
-				NPCPhrase (MUST_PARTY_2);
+				NPCPhrase(MUST_PARTY_2);
 				break;
 			case 2:
-				NPCPhrase (MUST_PARTY_3);
+				NPCPhrase(MUST_PARTY_3);
 				--NumVisits;
 				break;
 		}
-		SET_GAME_STATE (SPATHI_HOME_VISITS, NumVisits);
+		SET_GAME_STATE(SPATHI_HOME_VISITS, NumVisits);
 	}
-	else if (PLAYER_SAID (R, deals_a_deal))
+	else if (PLAYER_SAID(R, deals_a_deal))
 	{
-		NPCPhrase (WAIT_A_WHILE);
+		NPCPhrase(WAIT_A_WHILE);
 
-		DISABLE_PHRASE (deals_a_deal);
+		DISABLE_PHRASE(deals_a_deal);
 	}
-	else if (PLAYER_SAID (R, how_long))
+	else if (PLAYER_SAID(R, how_long))
 	{
-		NPCPhrase (TEN_YEARS);
+		NPCPhrase(TEN_YEARS);
 
-		DISABLE_PHRASE (how_long);
+		DISABLE_PHRASE(how_long);
 	}
-	else if (PLAYER_SAID (R, reneging))
+	else if (PLAYER_SAID(R, reneging))
 	{
-		NPCPhrase (ADULT_VIEW);
+		NPCPhrase(ADULT_VIEW);
 
-		DISABLE_PHRASE (reneging);
+		DISABLE_PHRASE(reneging);
 	}
-	else if (PLAYER_SAID (R, return_beasts))
+	else if (PLAYER_SAID(R, return_beasts))
 	{
-		NPCPhrase (WHAT_RELATIONSHIP);
+		NPCPhrase(WHAT_RELATIONSHIP);
 
-		DISABLE_PHRASE (return_beasts);
+		DISABLE_PHRASE(return_beasts);
 	}
-	else if (PLAYER_SAID (R, minds_and_might))
+	else if (PLAYER_SAID(R, minds_and_might))
 	{
-		NPCPhrase (HUH);
+		NPCPhrase(HUH);
 
-		DISABLE_PHRASE (minds_and_might);
+		DISABLE_PHRASE(minds_and_might);
 	}
-	else if (PLAYER_SAID (R, fellowship))
+	else if (PLAYER_SAID(R, fellowship))
 	{
-		NPCPhrase (WHAT);
+		NPCPhrase(WHAT);
 
-		DISABLE_PHRASE (fellowship);
+		DISABLE_PHRASE(fellowship);
 	}
 
-	if (PHRASE_ENABLED (deals_a_deal))
-		Response (deals_a_deal, SpathiParty);
-	else if (PHRASE_ENABLED (how_long))
-		Response (how_long, SpathiParty);
-	else if (PHRASE_ENABLED (reneging))
-		Response (reneging, SpathiParty);
-	else if (PHRASE_ENABLED (return_beasts))
-		Response (return_beasts, SpathiParty);
+	if (PHRASE_ENABLED(deals_a_deal))
+		Response(deals_a_deal, SpathiParty);
+	else if (PHRASE_ENABLED(how_long))
+		Response(how_long, SpathiParty);
+	else if (PHRASE_ENABLED(reneging))
+		Response(reneging, SpathiParty);
+	else if (PHRASE_ENABLED(return_beasts))
+		Response(return_beasts, SpathiParty);
 	else
 	{
-		if (PHRASE_ENABLED (minds_and_might))
-			Response (minds_and_might, SpathiParty);
-		if (PHRASE_ENABLED (fellowship))
-			Response (fellowship, SpathiParty);
-		Response (do_as_we_say, ExitConversation);
+		if (PHRASE_ENABLED(minds_and_might))
+			Response(minds_and_might, SpathiParty);
+		if (PHRASE_ENABLED(fellowship))
+			Response(fellowship, SpathiParty);
+		Response(do_as_we_say, ExitConversation);
 
 		return;
 	}
-	switch (GET_GAME_STATE (SPATHI_HOME_VISITS) - 1)
+	switch (GET_GAME_STATE(SPATHI_HOME_VISITS) - 1)
 	{
 		case 0:
-			Response (bye_from_party_1, ExitConversation);
+			Response(bye_from_party_1, ExitConversation);
 			break;
 		case 1:
-			Response (bye_from_party_2, ExitConversation);
+			Response(bye_from_party_2, ExitConversation);
 			break;
 		default:
-			Response (bye_from_party_3, ExitConversation);
+			Response(bye_from_party_3, ExitConversation);
 			break;
 	}
 }
 
 static void
-SpathiCouncil (RESPONSE_REF R)
+SpathiCouncil(RESPONSE_REF R)
 {
 	if (R == 0)
-		NPCPhrase (HELLO_AGAIN);
-	else if (PLAYER_SAID (R, good_password))
+		NPCPhrase(HELLO_AGAIN);
+	else if (PLAYER_SAID(R, good_password))
 	{
-		NPCPhrase (YES_GOOD_PASSWORD);
+		NPCPhrase(YES_GOOD_PASSWORD);
 
-		XFormColorMap (GetColorMapAddress (
-				SetAbsColorMapIndex (CommData.AlienColorMap, 1)
-					), ONE_SECOND / 4);
+		XFormColorMap(GetColorMapAddress(
+						  SetAbsColorMapIndex(CommData.AlienColorMap, 1)),
+					  ONE_SECOND / 4);
 
-		SET_GAME_STATE (KNOW_SPATHI_PASSWORD, 1);
-		SET_GAME_STATE (SPATHI_HOME_VISITS, 0);
+		SET_GAME_STATE(KNOW_SPATHI_PASSWORD, 1);
+		SET_GAME_STATE(SPATHI_HOME_VISITS, 0);
 	}
-	else if (PLAYER_SAID (R, we_come_in_peace))
+	else if (PLAYER_SAID(R, we_come_in_peace))
 	{
-		NPCPhrase (KILLED_SPATHI);
+		NPCPhrase(KILLED_SPATHI);
 
-		DISABLE_PHRASE (we_come_in_peace);
+		DISABLE_PHRASE(we_come_in_peace);
 	}
-	else if (PLAYER_SAID (R, spathi_on_pluto))
+	else if (PLAYER_SAID(R, spathi_on_pluto))
 	{
-		NPCPhrase (WHERE_SPATHI);
+		NPCPhrase(WHERE_SPATHI);
 
-		DISABLE_PHRASE (spathi_on_pluto);
+		DISABLE_PHRASE(spathi_on_pluto);
 	}
-	else if (PLAYER_SAID (R, hostage))
+	else if (PLAYER_SAID(R, hostage))
 	{
-		NPCPhrase (GUN_TO_HEAD);
+		NPCPhrase(GUN_TO_HEAD);
 
-		SET_GAME_STATE (FOUND_PLUTO_SPATHI, 3);
-		DISABLE_PHRASE (hostage);
+		SET_GAME_STATE(FOUND_PLUTO_SPATHI, 3);
+		DISABLE_PHRASE(hostage);
 	}
-	else if (PLAYER_SAID (R, killed_fwiffo))
+	else if (PLAYER_SAID(R, killed_fwiffo))
 	{
-		NPCPhrase (POOR_FWIFFO);
+		NPCPhrase(POOR_FWIFFO);
 
-		SET_GAME_STATE (FOUND_PLUTO_SPATHI, 3);
-		DISABLE_PHRASE (killed_fwiffo);
+		SET_GAME_STATE(FOUND_PLUTO_SPATHI, 3);
+		DISABLE_PHRASE(killed_fwiffo);
 	}
-	else if (PLAYER_SAID (R, fwiffo_fine))
+	else if (PLAYER_SAID(R, fwiffo_fine))
 	{
-		NPCPhrase (NOT_LIKELY);
+		NPCPhrase(NOT_LIKELY);
 
 		R = killed_fwiffo;
-		DISABLE_PHRASE (fwiffo_fine);
+		DISABLE_PHRASE(fwiffo_fine);
 	}
-	else if (PLAYER_SAID (R, surrender))
+	else if (PLAYER_SAID(R, surrender))
 	{
-		NPCPhrase (NO_SURRENDER);
+		NPCPhrase(NO_SURRENDER);
 
-		DISABLE_PHRASE (surrender);
+		DISABLE_PHRASE(surrender);
 	}
 
-	if (GET_GAME_STATE (SPATHI_MANNER) == 0)
+	if (GET_GAME_STATE(SPATHI_MANNER) == 0)
 	{
-		Response (we_come_in_peace, AllianceOffer);
+		Response(we_come_in_peace, AllianceOffer);
 	}
-	else if (PHRASE_ENABLED (we_come_in_peace))
+	else if (PHRASE_ENABLED(we_come_in_peace))
 	{
-		Response (we_come_in_peace, SpathiCouncil);
+		Response(we_come_in_peace, SpathiCouncil);
 	}
 	else
 	{
-		Response (misunderstanding, AllianceOffer);
+		Response(misunderstanding, AllianceOffer);
 	}
-	if (GET_GAME_STATE (FOUND_PLUTO_SPATHI)
-			&& GET_GAME_STATE (FOUND_PLUTO_SPATHI) < 3)
+	if (GET_GAME_STATE(FOUND_PLUTO_SPATHI)
+		&& GET_GAME_STATE(FOUND_PLUTO_SPATHI) < 3)
 	{
-		if (PHRASE_ENABLED (spathi_on_pluto))
-			Response (spathi_on_pluto, SpathiCouncil);
-		else if (HaveEscortShip (SPATHI_SHIP))
+		if (PHRASE_ENABLED(spathi_on_pluto))
+			Response(spathi_on_pluto, SpathiCouncil);
+		else if (HaveEscortShip(SPATHI_SHIP))
 		{
-			if (PHRASE_ENABLED (hostage))
-				Response (hostage, SpathiCouncil);
+			if (PHRASE_ENABLED(hostage))
+				Response(hostage, SpathiCouncil);
 		}
-		else if (PHRASE_ENABLED (killed_fwiffo))
+		else if (PHRASE_ENABLED(killed_fwiffo))
 		{
-			Response (killed_fwiffo, SpathiCouncil);
-			if (PHRASE_ENABLED (fwiffo_fine))
-				Response (fwiffo_fine, SpathiCouncil);
+			Response(killed_fwiffo, SpathiCouncil);
+			if (PHRASE_ENABLED(fwiffo_fine))
+				Response(fwiffo_fine, SpathiCouncil);
 		}
 	}
-	if (PHRASE_ENABLED (surrender))
-		Response (surrender, SpathiCouncil);
+	if (PHRASE_ENABLED(surrender))
+		Response(surrender, SpathiCouncil);
 	else
 	{
-		Response (surrender_or_die, ExitConversation);
+		Response(surrender_or_die, ExitConversation);
 	}
-	Response (bye_no_ally_offer, ExitConversation);
+	Response(bye_no_ally_offer, ExitConversation);
 }
 
 static void
-SpathiPassword (RESPONSE_REF R)
+SpathiPassword(RESPONSE_REF R)
 {
 	if (R == 0)
 	{
 		uqm::BYTE NumVisits;
 
-		NumVisits = GET_GAME_STATE (SPATHI_HOME_VISITS);
+		NumVisits = GET_GAME_STATE(SPATHI_HOME_VISITS);
 		switch (NumVisits++)
 		{
 			default:
-				NPCPhrase (WHAT_IS_PASSWORD);
+				NPCPhrase(WHAT_IS_PASSWORD);
 				NumVisits = 1;
 				break;
 			case 1:
-				NPCPhrase (WHAT_IS_PASSWORD_AGAIN);
+				NPCPhrase(WHAT_IS_PASSWORD_AGAIN);
 				--NumVisits;
 				break;
 		}
-		SET_GAME_STATE (SPATHI_HOME_VISITS, NumVisits);
+		SET_GAME_STATE(SPATHI_HOME_VISITS, NumVisits);
 	}
-	else if (PLAYER_SAID (R, what_do_i_get))
+	else if (PLAYER_SAID(R, what_do_i_get))
 	{
-		NPCPhrase (YOU_GET_TO_LIVE);
+		NPCPhrase(YOU_GET_TO_LIVE);
 
-		DISABLE_PHRASE (what_do_i_get);
+		DISABLE_PHRASE(what_do_i_get);
 	}
 
-	if (GET_GAME_STATE (FOUND_PLUTO_SPATHI)
-			|| GET_GAME_STATE (KNOW_SPATHI_PASSWORD))
+	if (GET_GAME_STATE(FOUND_PLUTO_SPATHI)
+		|| GET_GAME_STATE(KNOW_SPATHI_PASSWORD))
 	{
-		Response (good_password, SpathiCouncil);
-		if (PHRASE_ENABLED (what_do_i_get))
+		Response(good_password, SpathiCouncil);
+		if (PHRASE_ENABLED(what_do_i_get))
 		{
-			Response (what_do_i_get, SpathiPassword);
+			Response(what_do_i_get, SpathiPassword);
 		}
 	}
 	else
 	{
-		Response (we_are_vindicator, ExitConversation);
-		Response (gort_merenga, ExitConversation);
-		Response (guph_florp, ExitConversation);
-		Response (wagngl_fthagn, ExitConversation);
-		Response (pleeese, ExitConversation);
-		Response (screw_password, ExitConversation);
+		Response(we_are_vindicator, ExitConversation);
+		Response(gort_merenga, ExitConversation);
+		Response(guph_florp, ExitConversation);
+		Response(wagngl_fthagn, ExitConversation);
+		Response(pleeese, ExitConversation);
+		Response(screw_password, ExitConversation);
 	}
 }
 
 static void
-Intro (void)
+Intro(void)
 {
 	uqm::BYTE Manner;
 
 	if (IS_HD)
 	{
-		SwitchSequences (false);
-		EngageFilters (&spahome_filters);
+		SwitchSequences(false);
+		EngageFilters(&spahome_filters);
 	}
 
-	Manner = GET_GAME_STATE (SPATHI_MANNER);
+	Manner = GET_GAME_STATE(SPATHI_MANNER);
 	if (Manner == 2)
 	{
-		NPCPhrase (HATE_YOU_FOREVER);
-		setSegue (Segue_hostile);
+		NPCPhrase(HATE_YOU_FOREVER);
+		setSegue(Segue_hostile);
 	}
 	else if (Manner == 1
-			&& GET_GAME_STATE (KNOW_SPATHI_PASSWORD)
-			&& (GET_GAME_STATE (FOUND_PLUTO_SPATHI)
-			|| GET_GAME_STATE (SPATHI_HOME_VISITS) != 7))
+			 && GET_GAME_STATE(KNOW_SPATHI_PASSWORD)
+			 && (GET_GAME_STATE(FOUND_PLUTO_SPATHI)
+				 || GET_GAME_STATE(SPATHI_HOME_VISITS) != 7))
 	{
-		SpathiAngry ((RESPONSE_REF)0);
+		SpathiAngry((RESPONSE_REF)0);
 	}
-	else if (CheckAlliance (SPATHI_SHIP) == GOOD_GUY)
+	else if (CheckAlliance(SPATHI_SHIP) == GOOD_GUY)
 	{
 		CommData.AlienColorMap =
-				SetAbsColorMapIndex (CommData.AlienColorMap, 1);
+			SetAbsColorMapIndex(CommData.AlienColorMap, 1);
 
-		SpathiAllies ((RESPONSE_REF)0);
+		SpathiAllies((RESPONSE_REF)0);
 	}
-	else if (GET_GAME_STATE (SPATHI_PARTY))
+	else if (GET_GAME_STATE(SPATHI_PARTY))
 	{
 		CommData.AlienColorMap =
-				SetAbsColorMapIndex (CommData.AlienColorMap, 1);
+			SetAbsColorMapIndex(CommData.AlienColorMap, 1);
 
-		SpathiParty ((RESPONSE_REF)0);
+		SpathiParty((RESPONSE_REF)0);
 	}
-	else if (GET_GAME_STATE (SPATHI_QUEST))
+	else if (GET_GAME_STATE(SPATHI_QUEST))
 	{
-		if (GET_GAME_STATE (LIED_ABOUT_CREATURES) < 2)
+		if (GET_GAME_STATE(LIED_ABOUT_CREATURES) < 2)
 		{
 			CommData.AlienColorMap =
-					SetAbsColorMapIndex (CommData.AlienColorMap, 1);
+				SetAbsColorMapIndex(CommData.AlienColorMap, 1);
 
-			SpathiQuest ((RESPONSE_REF)0);
+			SpathiQuest((RESPONSE_REF)0);
 		}
 		else
 		{
-			NPCPhrase (YOU_LIED_2);
+			NPCPhrase(YOU_LIED_2);
 
-			SET_GAME_STATE (SPATHI_MANNER, 2);
-			setSegue (Segue_hostile);
+			SET_GAME_STATE(SPATHI_MANNER, 2);
+			setSegue(Segue_hostile);
 		}
 	}
-	else if (GET_GAME_STATE (KNOW_SPATHI_QUEST))
+	else if (GET_GAME_STATE(KNOW_SPATHI_QUEST))
 	{
 		CommData.AlienColorMap =
-				SetAbsColorMapIndex (CommData.AlienColorMap, 1);
+			SetAbsColorMapIndex(CommData.AlienColorMap, 1);
 
-		LearnQuest ((RESPONSE_REF)0);
+		LearnQuest((RESPONSE_REF)0);
 	}
-	else if (GET_GAME_STATE (KNOW_SPATHI_PASSWORD)
-			&& (GET_GAME_STATE (FOUND_PLUTO_SPATHI)
-			|| GET_GAME_STATE (SPATHI_HOME_VISITS) != 7))
+	else if (GET_GAME_STATE(KNOW_SPATHI_PASSWORD)
+			 && (GET_GAME_STATE(FOUND_PLUTO_SPATHI)
+				 || GET_GAME_STATE(SPATHI_HOME_VISITS) != 7))
 	{
 		CommData.AlienColorMap =
-				SetAbsColorMapIndex (CommData.AlienColorMap, 1);
+			SetAbsColorMapIndex(CommData.AlienColorMap, 1);
 
-		SpathiCouncil ((RESPONSE_REF)0);
+		SpathiCouncil((RESPONSE_REF)0);
 	}
 	else
 	{
-		SpathiPassword ((RESPONSE_REF)0);
+		SpathiPassword((RESPONSE_REF)0);
 	}
 }
 
 static uqm::COUNT
-uninit_spahome (void)
+uninit_spahome(void)
 {
-	luaUqm_comm_uninit ();
+	luaUqm_comm_uninit();
 	return (0);
 }
 
 static void
-post_spahome_enc (void)
+post_spahome_enc(void)
 {
 	uqm::BYTE Manner;
 
-	if (getSegue () == Segue_hostile
-			&& (Manner = GET_GAME_STATE (SPATHI_MANNER)) != 2)
+	if (getSegue() == Segue_hostile
+		&& (Manner = GET_GAME_STATE(SPATHI_MANNER)) != 2)
 	{
-		SET_GAME_STATE (SPATHI_MANNER, 1);
+		SET_GAME_STATE(SPATHI_MANNER, 1);
 		if (Manner != 1)
 		{
-			SET_GAME_STATE (SPATHI_VISITS, 0);
-			SET_GAME_STATE (SPATHI_HOME_VISITS, 0);
+			SET_GAME_STATE(SPATHI_VISITS, 0);
+			SET_GAME_STATE(SPATHI_HOME_VISITS, 0);
 		}
 	}
 }
 
 LOCDATA*
-init_spahome_comm ()
+init_spahome_comm()
 {
- 	LOCDATA *retval;
+	LOCDATA* retval;
 
 	spahome_desc.init_encounter_func = Intro;
 	spahome_desc.post_encounter_func = post_spahome_enc;
 	spahome_desc.uninit_encounter_func = uninit_spahome;
 
-	luaUqm_comm_init (NULL, NULL_RESOURCE);
-			// Initialise Lua for string interpolation. This will be
-			// generalised in the future.
+	luaUqm_comm_init(NULL, NULL_RESOURCE);
+	// Initialise Lua for string interpolation. This will be
+	// generalised in the future.
 
 	spahome_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH >> 1);
 	spahome_desc.AlienTextBaseline.y = 0;
-	spahome_desc.AlienTextWidth = SIS_TEXT_WIDTH - RES_SCALE (16);
+	spahome_desc.AlienTextWidth = SIS_TEXT_WIDTH - RES_SCALE(16);
 
 	// use alternate "Safe Ones" track if available
 	altResFlags |= USE_ALT_SONG;
 
-	if (GET_GAME_STATE (SPATHI_MANNER) == 3)
+	if (GET_GAME_STATE(SPATHI_MANNER) == 3)
 	{
-		setSegue (Segue_peace);
+		setSegue(Segue_peace);
 	}
 	else
 	{
-		setSegue (Segue_hostile);
+		setSegue(Segue_hostile);
 	}
 
 	retval = &spahome_desc;

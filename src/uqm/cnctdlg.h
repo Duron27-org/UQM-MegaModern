@@ -27,7 +27,7 @@
 extern "C" {
 #endif
 
-bool MeleeConnectDialog (int side);
+bool MeleeConnectDialog(int side);
 
 #if 0 //defined(__cplusplus)
 }

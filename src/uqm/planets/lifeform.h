@@ -77,4 +77,3 @@ extern LIFEFORM_DESC CreatureData[];
 #endif
 
 #endif /* UQM_PLANETS_LIFEFORM_H_ */
-

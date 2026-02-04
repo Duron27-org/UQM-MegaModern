@@ -29,9 +29,9 @@
 #include "cdp_ivid.h"
 
 #ifdef WIN32
-#	define CDPEXT ".dll"
+#define CDPEXT ".dll"
 #else
-#	define CDPEXT ".so"
+#define CDPEXT ".so"
 #endif
 
 extern cdp_Itf_HostVtbl_v1 cdp_host_itf_v1;
@@ -39,10 +39,10 @@ extern cdp_Itf_MemoryVtbl_v1 cdp_memory_itf_v1;
 extern cdp_Itf_IoVtbl_v1 cdp_io_itf_v1;
 extern cdp_Itf_SoundVtbl_v1 cdp_sound_itf_v1;
 
-bool cdp_InitApi (void);
-void cdp_UninitApi (void);
-cdp_Error cdp_GetApiError (void);
-cdp_Itf* cdp_GetInterface (const char* name, cdp_ApiVersion);
-cdp_ItfReg* cdp_GetInterfaceReg (const char* name, cdp_ApiVersion);
+bool cdp_InitApi(void);
+void cdp_UninitApi(void);
+cdp_Error cdp_GetApiError(void);
+cdp_Itf* cdp_GetInterface(const char* name, cdp_ApiVersion);
+cdp_ItfReg* cdp_GetInterfaceReg(const char* name, cdp_ApiVersion);
 
-#endif  /* _CDPISND_H */
+#endif /* _CDPISND_H */

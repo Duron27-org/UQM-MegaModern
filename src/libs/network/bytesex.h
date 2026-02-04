@@ -26,71 +26,80 @@
 #define LIBS_NETWORK_BYTESEX_H_
 
 #include "port.h"
-		// for inline
+// for inline
 #include "endian_uqm.h"
-		// for WORDS_BIGENDIAN
+// for WORDS_BIGENDIAN
 #include "types.h"
 
 static inline uint16
-swapBytes16(uint16 x) {
+swapBytes16(uint16 x)
+{
 	return (x << 8) | (x >> 8);
 }
 
 static inline uint32
-swapBytes32(uint32 x) {
+swapBytes32(uint32 x)
+{
 	return (x << 24)
-			| ((x & 0x0000ff00) << 8)
-			| ((x & 0x00ff0000) >> 8)
-			| (x >> 24);
+		 | ((x & 0x0000ff00) << 8)
+		 | ((x & 0x00ff0000) >> 8)
+		 | (x >> 24);
 }
 
 #ifdef WORDS_BIGENDIAN
 // Already in network order.
 
 static inline uint16
-hton16(uint16 x) {
+hton16(uint16 x)
+{
 	return x;
 }
 
 static inline uint32
-hton32(uint32 x) {
+hton32(uint32 x)
+{
 	return x;
 }
 
 static inline uint16
-ntoh16(uint16 x) {
+ntoh16(uint16 x)
+{
 	return x;
 }
 
 static inline uint32
-ntoh32(uint32 x) {
+ntoh32(uint32 x)
+{
 	return x;
 }
 
-#else  /* !defined(WORDS_BIGENDIAN) */
+#else /* !defined(WORDS_BIGENDIAN) */
 // Need to swap bytes
 
 static inline uint16
-hton16(uint16 x) {
+hton16(uint16 x)
+{
 	return swapBytes16(x);
 }
 
 static inline uint32
-hton32(uint32 x) {
+hton32(uint32 x)
+{
 	return swapBytes32(x);
 }
 
 static inline uint16
-ntoh16(uint16 x) {
+ntoh16(uint16 x)
+{
 	return swapBytes16(x);
 }
 
 static inline uint32
-ntoh32(uint32 x) {
+ntoh32(uint32 x)
+{
 	return swapBytes32(x);
 }
 
-#endif  /* defined(WORDS_BIGENDIAN) */
+#endif /* defined(WORDS_BIGENDIAN) */
 
-#endif  /* LIBS_NETWORK_BYTESEX_H_ */
-
+#endif /* LIBS_NETWORK_BYTESEX_H_ */

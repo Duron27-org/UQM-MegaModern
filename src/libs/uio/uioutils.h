@@ -26,17 +26,17 @@
 #include "types.h"
 #include "uioport.h"
 
-char *strcata(const char *first, const char *second);
-void *insertArray(const void *array, size_t oldNumElements, int insertPos,
-		const void *element, size_t elementSize);
-void **insertArrayPointer(const void **array, size_t oldNumElements,
-		int insertPos, const void *element);
-void *excludeArray(const void *array, size_t oldNumElements, int startPos,
-		int numExclude, size_t elementSize);
-void **excludeArrayPointer(const void **array, size_t oldNumElements,
-		int startPos, int numExclude);
+char* strcata(const char* first, const char* second);
+void* insertArray(const void* array, size_t oldNumElements, int insertPos,
+				  const void* element, size_t elementSize);
+void** insertArrayPointer(const void** array, size_t oldNumElements,
+						  int insertPos, const void* element);
+void* excludeArray(const void* array, size_t oldNumElements, int startPos,
+				   int numExclude, size_t elementSize);
+void** excludeArrayPointer(const void** array, size_t oldNumElements,
+						   int startPos, int numExclude);
 time_t dosToUnixTime(uio_uint16 date, uio_uint16 tm);
-char *dosToUnixPath(const char *path);
+char* dosToUnixPath(const char* path);
 
 /* Sometimes you just have to remove a 'const'.
  * (for instance, when implementing a function like strchr)
@@ -56,40 +56,46 @@ inline T* unconst(const T* arg) { return const_cast<T*>(arg); }
 
 // byte1 is the lowest byte, byte4 the highest
 static inline uio_uint32
-makeUInt32(uio_uint8 byte1, uio_uint8 byte2, uio_uint8 byte3, uio_uint8 byte4) {
+makeUInt32(uio_uint8 byte1, uio_uint8 byte2, uio_uint8 byte3, uio_uint8 byte4)
+{
 	return byte1 | (byte2 << 8) | (byte3 << 16) | (byte4 << 24);
 }
 
 static inline uio_uint16
-makeUInt16(uio_uint8 byte1, uio_uint8 byte2) {
+makeUInt16(uio_uint8 byte1, uio_uint8 byte2)
+{
 	return byte1 | (byte2 << 8);
 }
 
 static inline uio_sint32
-makeSInt32(uio_uint8 byte1, uio_uint8 byte2, uio_uint8 byte3, uio_uint8 byte4) {
+makeSInt32(uio_uint8 byte1, uio_uint8 byte2, uio_uint8 byte3, uio_uint8 byte4)
+{
 	return byte1 | (byte2 << 8) | (byte3 << 16) | (byte4 << 24);
 }
 
 static inline uio_sint16
-makeSInt16(uio_uint8 byte1, uio_uint8 byte2) {
+makeSInt16(uio_uint8 byte1, uio_uint8 byte2)
+{
 	return byte1 | (byte2 << 8);
 }
 
 static inline uio_bool
-isBitSet(uio_uint32 bitField, int bit) {
+isBitSet(uio_uint32 bitField, int bit)
+{
 	return ((bitField >> bit) & 1) == 1;
 }
 
 static inline int
-mins(int i1, int i2) {
+mins(int i1, int i2)
+{
 	return i1 <= i2 ? i1 : i2;
 }
 
 static inline unsigned int
-minu(unsigned int i1, unsigned int i2) {
+minu(unsigned int i1, unsigned int i2)
+{
 	return i1 <= i2 ? i1 : i2;
 }
 
 
-#endif  /* LIBS_UIO_UIOUTILS_H_ */
-
+#endif /* LIBS_UIO_UIOUTILS_H_ */

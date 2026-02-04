@@ -25,24 +25,29 @@
 // We use a wrapper, so that we can call the custom function with the
 // arguments of our choice (i.e. no arguments).
 static int
-luaFunctionWrapper(lua_State *luaState) {
+luaFunctionWrapper(lua_State* luaState)
+{
 	int arg;
 	int result;
 	int isNum;
-	int (*fun)(int) = (int (__cdecl*)(int))lua_topointer(luaState, lua_upvalueindex(1));
+	int (*fun)(int) = (int(__cdecl*)(int))lua_topointer(luaState, lua_upvalueindex(1));
 
-	if (lua_gettop(luaState) == 0) {
+	if (lua_gettop(luaState) == 0)
+	{
 		arg = 0;
-	} else {
-		arg = lua_tointegerx (luaState, -1, &isNum);
-		if (!isNum) {
+	}
+	else
+	{
+		arg = lua_tointegerx(luaState, -1, &isNum);
+		if (!isNum)
+		{
 			log_add(log_Error, "[script] Warning: luaFunctionWrapper(): "
-					"Invalid type of argument to custom function (%s).",
+							   "Invalid type of argument to custom function (%s).",
 					lua_typename(luaState, lua_type(luaState, -1)));
 			// arg will be 0
 		}
 	}
-	
+
 	result = (*fun)(arg);
 	lua_pushinteger(luaState, result);
 	return 1;
@@ -51,9 +56,10 @@ luaFunctionWrapper(lua_State *luaState) {
 // [-1]  -> table t
 // We keep the actual pointer as an upvalue in the closure.
 static int
-luaUqm_custom_addFunction(lua_State *luaState,
-		const luaUqm_custom_Function *fun) {
-	lua_pushlightuserdata (luaState, (void *) fun->fun);
+luaUqm_custom_addFunction(lua_State* luaState,
+						  const luaUqm_custom_Function* fun)
+{
+	lua_pushlightuserdata(luaState, (void*)fun->fun);
 	lua_pushcclosure(luaState, luaFunctionWrapper, 1);
 	// [-2] -> table t
 	// [-1] -> function fun
@@ -62,12 +68,12 @@ luaUqm_custom_addFunction(lua_State *luaState,
 }
 
 // Returns with the new table on the stack.
-int
-luaUqm_custom_init(lua_State *luaState,
-		const luaUqm_custom_Function *funs) {
+int luaUqm_custom_init(lua_State* luaState,
+					   const luaUqm_custom_Function* funs)
+{
 	// Count the number of functions.
 	size_t funCount = 0;
-	const luaUqm_custom_Function *ptr;
+	const luaUqm_custom_Function* ptr;
 
 	for (ptr = funs; ptr->name != NULL; ptr++)
 		funCount++;
@@ -85,8 +91,7 @@ luaUqm_custom_init(lua_State *luaState,
 	// [-2] -> table globalTable
 	// [-1] -> table custom
 	lua_setfield(luaState, -2, "custom");
-	
+
 	// [-1] -> table custom
 	return 0;
 }
-

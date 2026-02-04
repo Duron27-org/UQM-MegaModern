@@ -26,50 +26,51 @@
 
 #include "libs/memlib.h"
 
-RandomContext *
-RandomContext_New (void)
+RandomContext*
+RandomContext_New(void)
 {
-	RandomContext *result = (RandomContext *) HMalloc (sizeof (RandomContext));
+	RandomContext* result = (RandomContext*)HMalloc(sizeof(RandomContext));
 	result->seed = 12345;
 	return result;
 }
 
-RandomContext *
+RandomContext*
 RandomContext_Set(uqm::DWORD Context)
 {
-	RandomContext *result = (RandomContext *) HMalloc (sizeof (RandomContext));
+	RandomContext* result = (RandomContext*)HMalloc(sizeof(RandomContext));
 	result->seed = Context;
 	return result;
 }
 
-void
-RandomContext_Delete (RandomContext *context)
+void RandomContext_Delete(RandomContext* context)
 {
-	HFree ((void *) context);
+	HFree((void*)context);
 }
 
-RandomContext *
-RandomContext_Copy (const RandomContext *source)
+RandomContext*
+RandomContext_Copy(const RandomContext* source)
 {
-	RandomContext *result = (RandomContext *) HMalloc (sizeof (RandomContext));
+	RandomContext* result = (RandomContext*)HMalloc(sizeof(RandomContext));
 	*result = *source;
 	return result;
 }
 
 uqm::DWORD
-RandomContext_Random (RandomContext *context)
+RandomContext_Random(RandomContext* context)
 {
 	context->seed = SeedA * (context->seed % SeedQ) - SeedR * (context->seed / SeedQ);
-	if (context->seed > SeedM) {
+	if (context->seed > SeedM)
+	{
 		context->seed -= SeedM;
-	} else if (context->seed == 0)
+	}
+	else if (context->seed == 0)
 		context->seed = 1;
 
 	return context->seed;
 }
 
 uqm::DWORD
-RandomContext_SeedRandom (RandomContext *context, uqm::DWORD new_seed)
+RandomContext_SeedRandom(RandomContext* context, uqm::DWORD new_seed)
 {
 	uqm::DWORD old_seed;
 
@@ -85,25 +86,26 @@ RandomContext_SeedRandom (RandomContext *context, uqm::DWORD new_seed)
 }
 
 uqm::DWORD
-RandomContext_GetSeed (RandomContext *context)
+RandomContext_GetSeed(RandomContext* context)
 {
 	return context->seed;
 }
 
 uqm::DWORD
-RandomContext_FastRandom (uqm::DWORD seed)
+RandomContext_FastRandom(uqm::DWORD seed)
 {
 	uqm::DWORD res = SeedA * (seed % SeedQ) - SeedR * (seed / SeedQ);
-	if (res > SeedM) {
+	if (res > SeedM)
+	{
 		res -= SeedM;
-	} else if (res == 0)
+	}
+	else if (res == 0)
 		res = 1;
 
 	return res;
 }
 
-int
-RangeMinMax (int min, int max, uqm::DWORD rand)
+int RangeMinMax(int min, int max, uqm::DWORD rand)
 {
 	if (min > max)
 		return max;

@@ -33,61 +33,65 @@
 #include <assert.h>
 #include <errno.h>
 #ifdef USE_WINSOCK
-#	include <winsock2.h>
-#	include <ws2tcpip.h>
-#	include "../wspiapiwrap.h"
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#include "../wspiapiwrap.h"
 #else
-#	include <netdb.h>
+#include <netdb.h>
 #endif
 #include <stdlib.h>
 #include <string.h>
 
 #define DEBUG_LISTEN_REF
 #ifdef DEBUG_LISTEN_REF
-#	include "types.h"
+#include "types.h"
 #endif
 
 
-static void acceptCallback(NetDescriptor *nd);
-static void doListenErrorCallback(ListenState *listenState,
-		const ListenError *error);
+static void acceptCallback(NetDescriptor* nd);
+static void doListenErrorCallback(ListenState* listenState,
+								  const ListenError* error);
 
 
-static ListenState *
-ListenState_alloc(void) {
-	return (ListenState *) malloc(sizeof (ListenState));
+static ListenState*
+ListenState_alloc(void)
+{
+	return (ListenState*)malloc(sizeof(ListenState));
 }
 
 static void
-ListenState_free(ListenState *listenState) {
+ListenState_free(ListenState* listenState)
+{
 	free(listenState);
 }
 
 static void
-ListenState_delete(ListenState *listenState) {
+ListenState_delete(ListenState* listenState)
+{
 	assert(listenState->nds == NULL);
 	ListenState_free(listenState);
 }
 
-void
-ListenState_incRef(ListenState *listenState) {
+void ListenState_incRef(ListenState* listenState)
+{
 	assert(listenState->refCount < REFCOUNT_MAX);
 	listenState->refCount++;
 #ifdef DEBUG_LISTEN_REF
 	log_add(log_Debug, "ListenState %08" PRIxPTR ": ref++ (%d)",
-			(uintptr_t) listenState, listenState->refCount);
+			(uintptr_t)listenState, listenState->refCount);
 #endif
 }
 
-bool
-ListenState_decRef(ListenState *listenState) {
+bool ListenState_decRef(ListenState* listenState)
+{
 	assert(listenState->refCount > 0);
 	listenState->refCount--;
 #ifdef DEBUG_LISTEN_REF
 	log_add(log_Debug, "ListenState %08" PRIxPTR ": ref-- (%d)",
-			(uintptr_t) listenState, listenState->refCount);
+			(uintptr_t)listenState, listenState->refCount);
 #endif
-	if (listenState->refCount == 0) {
+	if (listenState->refCount == 0)
+	{
 		ListenState_delete(listenState);
 		return true;
 	}
@@ -95,14 +99,17 @@ ListenState_decRef(ListenState *listenState) {
 }
 
 // Decrements ref count byh 1
-void
-ListenState_close(ListenState *listenState) {
-	if (listenState->resolveState != NULL) {
+void ListenState_close(ListenState* listenState)
+{
+	if (listenState->resolveState != NULL)
+	{
 		Resolve_close(listenState->resolveState);
 		listenState->resolveState = NULL;
 	}
-	if (listenState->nds != NULL) {
-		while (listenState->numNd > 0) {
+	if (listenState->nds != NULL)
+	{
+		while (listenState->numNd > 0)
+		{
 			listenState->numNd--;
 			NetDescriptor_close(listenState->nds[listenState->numNd]);
 		}
@@ -113,50 +120,56 @@ ListenState_close(ListenState *listenState) {
 	ListenState_decRef(listenState);
 }
 
-void
-ListenState_setExtra(ListenState *listenState, void *extra) {
+void ListenState_setExtra(ListenState* listenState, void* extra)
+{
 	listenState->extra = extra;
 }
 
-void *
-ListenState_getExtra(ListenState *listenState) {
+void* ListenState_getExtra(ListenState* listenState)
+{
 	return listenState->extra;
 }
 
-static NetDescriptor *
-listenPortSingle(struct ListenState *listenState, struct addrinfo *info) {
-	Socket *sock;
+static NetDescriptor*
+listenPortSingle(struct ListenState* listenState, struct addrinfo* info)
+{
+	Socket* sock;
 	int bindResult;
 	int listenResult;
-	NetDescriptor *nd;
+	NetDescriptor* nd;
 
 	sock = Socket_openNative(info->ai_family, info->ai_socktype,
-			info->ai_protocol);
-	if (sock == Socket_noSocket) {
+							 info->ai_protocol);
+	if (sock == Socket_noSocket)
+	{
 		int savedErrno = errno;
 		log_add(log_Error, "socket() failed: %s.", strerror(errno));
 		errno = savedErrno;
 		return NULL;
 	}
 
-	(void) Socket_setReuseAddr(sock);
-			// Ignore errors; it's not a big deal.
-	if (Socket_setNonBlocking(sock) == -1) {
+	(void)Socket_setReuseAddr(sock);
+	// Ignore errors; it's not a big deal.
+	if (Socket_setNonBlocking(sock) == -1)
+	{
 		int savedErrno = errno;
 		// Error message is already printed.
 		Socket_close(sock);
 		errno = savedErrno;
 		return NULL;
 	}
-	
+
 	bindResult = Socket_bind(sock, info->ai_addr, info->ai_addrlen);
-	if (bindResult == -1) {
+	if (bindResult == -1)
+	{
 		int savedErrno = errno;
-		if (errno == EADDRINUSE) {
+		if (errno == EADDRINUSE)
+		{
 #ifdef DEBUG
 			log_add(log_Warning, "bind() failed: %s.", strerror(errno));
 #endif
-		} else
+		}
+		else
 			log_add(log_Error, "bind() failed: %s.", strerror(errno));
 		Socket_close(sock);
 		errno = savedErrno;
@@ -164,7 +177,8 @@ listenPortSingle(struct ListenState *listenState, struct addrinfo *info) {
 	}
 
 	listenResult = Socket_listen(sock, listenState->flags.backlog);
-	if (listenResult == -1) {
+	if (listenResult == -1)
+	{
 		int savedErrno = errno;
 		log_add(log_Error, "listen() failed: %s.", strerror(errno));
 		Socket_close(sock);
@@ -172,8 +186,9 @@ listenPortSingle(struct ListenState *listenState, struct addrinfo *info) {
 		return NULL;
 	}
 
-	nd = NetDescriptor_new(sock, (void *) listenState);
-	if (nd == NULL) {
+	nd = NetDescriptor_new(sock, (void*)listenState);
+	if (nd == NULL)
+	{
 		int savedErrno = errno;
 		log_add(log_Error, "NetDescriptor_new() failed: %s.",
 				strerror(errno));
@@ -181,18 +196,19 @@ listenPortSingle(struct ListenState *listenState, struct addrinfo *info) {
 		errno = savedErrno;
 		return NULL;
 	}
-		
+
 	NetDescriptor_setReadCallback(nd, acceptCallback);
 
 	return nd;
 }
 
 static void
-listenPortMulti(struct ListenState *listenState, struct addrinfo *info) {
-	struct addrinfo *addrPtr;
+listenPortMulti(struct ListenState* listenState, struct addrinfo* info)
+{
+	struct addrinfo* addrPtr;
 	size_t addrCount;
 	size_t addrOkCount;
-	NetDescriptor **nds;
+	NetDescriptor** nds;
 
 	// Count how many addresses we've got.
 	addrCount = 0;
@@ -205,10 +221,12 @@ listenPortMulti(struct ListenState *listenState, struct addrinfo *info) {
 
 	// Bind to each address.
 	addrOkCount = 0;
-	for (addrPtr = info; addrPtr != NULL; addrPtr = addrPtr->ai_next) {
-		NetDescriptor *nd;
+	for (addrPtr = info; addrPtr != NULL; addrPtr = addrPtr->ai_next)
+	{
+		NetDescriptor* nd;
 		nd = listenPortSingle(listenState, addrPtr);
-		if (nd == NULL) {
+		if (nd == NULL)
+		{
 			// Failed. On to the next.
 			// An error message is already printed for serious errors.
 			// If the address is already in use, we here also print
@@ -224,13 +242,15 @@ listenPortMulti(struct ListenState *listenState, struct addrinfo *info) {
 			// accept v6 connections.
 			// In practice, on Linux, I haven't seen it happen, but
 			// it's a real possibility.
-			if (errno == EADDRINUSE && addrOkCount == 0) {
+			if (errno == EADDRINUSE && addrOkCount == 0)
+			{
 				log_add(log_Error, "Error while preparing a network socket "
-						"for incoming connections: %s", strerror(errno));
+								   "for incoming connections: %s",
+						strerror(errno));
 			}
 			continue;
 		}
-		
+
 		nds[addrOkCount] = nd;
 		addrOkCount++;
 	}
@@ -238,25 +258,27 @@ listenPortMulti(struct ListenState *listenState, struct addrinfo *info) {
 	freeaddrinfo(info);
 
 	listenState->nds =
-			(NetDescriptor**)realloc(nds, addrOkCount * sizeof listenState->nds[0]);
+		(NetDescriptor**)realloc(nds, addrOkCount * sizeof listenState->nds[0]);
 	listenState->numNd = addrOkCount;
 
-	if (addrOkCount == 0) {
+	if (addrOkCount == 0)
+	{
 		// Could not listen on any port.
 		ListenError error;
 		error.state = Listen_listening;
 		error.err = EIO;
-				// Nothing better to offer.
+		// Nothing better to offer.
 		doListenErrorCallback(listenState, &error);
 		return;
 	}
 }
 
 static void
-listenPortResolveCallback(ResolveState *resolveState,
-		struct addrinfo *result) {
-	ListenState *listenState =
-			(ListenState *) ResolveState_getExtra(resolveState);
+listenPortResolveCallback(ResolveState* resolveState,
+						  struct addrinfo* result)
+{
+	ListenState* listenState =
+		(ListenState*)ResolveState_getExtra(resolveState);
 	Resolve_close(listenState->resolveState);
 	listenState->resolveState = NULL;
 	listenState->state = Listen_listening;
@@ -264,10 +286,11 @@ listenPortResolveCallback(ResolveState *resolveState,
 }
 
 static void
-listenPortResolveErrorCallback(ResolveState *resolveState,
-		const ResolveError *resolveError) {
-	ListenState *listenState =
-			(ListenState *) ResolveState_getExtra(resolveState);
+listenPortResolveErrorCallback(ResolveState* resolveState,
+							   const ResolveError* resolveError)
+{
+	ListenState* listenState =
+		(ListenState*)ResolveState_getExtra(resolveState);
 	ListenError listenError;
 
 	assert(resolveError->gaiRes != 0);
@@ -279,21 +302,18 @@ listenPortResolveErrorCallback(ResolveState *resolveState,
 }
 
 // 'proto' is one of IPProto_tcp or IPProto_udp.
-ListenState *
-listenPort(const char *service, Protocol proto, const ListenFlags *flags,
-		ListenConnectCallback connectCallback,
-		ListenErrorCallback errorCallback, void *extra) {
-	struct addrinfo	hints;
-	ListenState *listenState;
+ListenState*
+listenPort(const char* service, Protocol proto, const ListenFlags* flags,
+		   ListenConnectCallback connectCallback,
+		   ListenErrorCallback errorCallback, void* extra)
+{
+	struct addrinfo hints;
+	ListenState* listenState;
 	ResolveFlags resolveFlags;
-			// Structure is empty (for now).
+	// Structure is empty (for now).
 
-	assert(flags->familyDemand == PF_inet ||
-			flags->familyDemand == PF_inet6 ||
-			flags->familyDemand == PF_unspec);
-	assert(flags->familyPrefer == PF_inet ||
-			flags->familyPrefer == PF_inet6 ||
-			flags->familyPrefer == PF_unspec);
+	assert(flags->familyDemand == PF_inet || flags->familyDemand == PF_inet6 || flags->familyDemand == PF_unspec);
+	assert(flags->familyPrefer == PF_inet || flags->familyPrefer == PF_inet6 || flags->familyPrefer == PF_unspec);
 	assert(proto == IPProto_tcp || proto == IPProto_udp);
 
 	// Acquire a list of addresses to bind to.
@@ -301,9 +321,12 @@ listenPort(const char *service, Protocol proto, const ListenFlags *flags,
 	hints.ai_family = protocolFamilyTranslation[flags->familyDemand];
 	hints.ai_protocol = protocolTranslation[proto];
 
-	if (proto == IPProto_tcp) {
+	if (proto == IPProto_tcp)
+	{
 		hints.ai_socktype = SOCK_STREAM;
-	} else {
+	}
+	else
+	{
 		assert(proto == IPProto_udp);
 		hints.ai_socktype = SOCK_DGRAM;
 	}
@@ -313,7 +336,7 @@ listenPort(const char *service, Protocol proto, const ListenFlags *flags,
 	listenState->refCount = 1;
 #ifdef DEBUG_LISTEN_REF
 	log_add(log_Debug, "ListenState %08" PRIxPTR ": ref=1 (%d)",
-			(uintptr_t) listenState, listenState->refCount);
+			(uintptr_t)listenState, listenState->refCount);
 #endif
 	listenState->state = Listen_resolving;
 	listenState->flags = *flags;
@@ -324,18 +347,19 @@ listenPort(const char *service, Protocol proto, const ListenFlags *flags,
 	listenState->numNd = 0;
 
 	listenState->resolveState = getaddrinfoAsync(NULL, service, &hints,
-			&resolveFlags, listenPortResolveCallback,
-			listenPortResolveErrorCallback,
-			(ResolveCallbackArg) listenState);
+												 &resolveFlags, listenPortResolveCallback,
+												 listenPortResolveErrorCallback,
+												 (ResolveCallbackArg)listenState);
 
 	return listenState;
 }
 
 // NB: The callback function becomes the owner of newNd.
 static void
-doListenConnectCallback(ListenState *listenState, NetDescriptor *listenNd,
-		NetDescriptor *newNd,
-		const struct sockaddr *addr, SOCKLEN_T addrLen) {
+doListenConnectCallback(ListenState* listenState, NetDescriptor* listenNd,
+						NetDescriptor* newNd,
+						const struct sockaddr* addr, SOCKLEN_T addrLen)
+{
 	assert(listenState->connectCallback != NULL);
 
 	ListenState_incRef(listenState);
@@ -343,12 +367,13 @@ doListenConnectCallback(ListenState *listenState, NetDescriptor *listenNd,
 	// reference from listenState. And no need to increment newNd,
 	// as the callback function takes over ownership.
 	(*listenState->connectCallback)(listenState, listenNd, newNd,
-			addr, (socklen_t) addrLen);
+									addr, (socklen_t)addrLen);
 	ListenState_decRef(listenState);
 }
 
 static void
-doListenErrorCallback(ListenState *listenState, const ListenError *error) {
+doListenErrorCallback(ListenState* listenState, const ListenError* error)
+{
 	assert(listenState->errorCallback != NULL);
 
 	ListenState_incRef(listenState);
@@ -357,18 +382,21 @@ doListenErrorCallback(ListenState *listenState, const ListenError *error) {
 }
 
 static void
-acceptSingleConnection(ListenState *listenState, NetDescriptor *nd) {
-	Socket *sock;
-	Socket *acceptResult;
+acceptSingleConnection(ListenState* listenState, NetDescriptor* nd)
+{
+	Socket* sock;
+	Socket* acceptResult;
 	struct sockaddr_storage addr;
 	socklen_t addrLen;
-	NetDescriptor *newNd;
+	NetDescriptor* newNd;
 
 	sock = NetDescriptor_getSocket(nd);
-	addrLen = sizeof (addr);
-	acceptResult = Socket_accept(sock, (struct sockaddr *) &addr, &addrLen);
-	if (acceptResult == Socket_noSocket) {
-		switch (errno) {
+	addrLen = sizeof(addr);
+	acceptResult = Socket_accept(sock, (struct sockaddr*)&addr, &addrLen);
+	if (acceptResult == Socket_noSocket)
+	{
+		switch (errno)
+		{
 			case EWOULDBLOCK:
 			case ECONNABORTED:
 				// Nothing serious. Keep listening.
@@ -388,14 +416,16 @@ acceptSingleConnection(ListenState *listenState, NetDescriptor *nd) {
 			default:
 				// Should not happen.
 				log_add(log_Fatal, "Internal error: accept() reported "
-						"'%s'", strerror(errno));
+								   "'%s'",
+						strerror(errno));
 				explode();
 		}
 	}
 
-	(void) Socket_setReuseAddr(acceptResult);
-			// Ignore errors; it's not a big deal.
-	if (Socket_setNonBlocking(acceptResult) == -1) {
+	(void)Socket_setReuseAddr(acceptResult);
+	// Ignore errors; it's not a big deal.
+	if (Socket_setNonBlocking(acceptResult) == -1)
+	{
 		int savedErrno = errno;
 		log_add(log_Error, "Could not make socket non-blocking: %s.",
 				strerror(errno));
@@ -403,33 +433,37 @@ acceptSingleConnection(ListenState *listenState, NetDescriptor *nd) {
 		errno = savedErrno;
 		return;
 	}
-	(void) Socket_setInlineOOB(acceptResult);
-			// Ignore errors; it's not a big deal as the other
-			// party is not not supposed to send any OOB data.
-	(void) Socket_setKeepAlive(sock);
-			// Ignore errors; it's not a big deal.
+	(void)Socket_setInlineOOB(acceptResult);
+	// Ignore errors; it's not a big deal as the other
+	// party is not not supposed to send any OOB data.
+	(void)Socket_setKeepAlive(sock);
+	// Ignore errors; it's not a big deal.
 
 #ifdef DEBUG
 	{
 		char hostname[NI_MAXHOST];
 		int gniRes;
 
-		gniRes = getnameinfo((struct sockaddr *) &addr, addrLen,
-				hostname, sizeof hostname, NULL, 0, 0);
-		if (gniRes != 0) {
+		gniRes = getnameinfo((struct sockaddr*)&addr, addrLen,
+							 hostname, sizeof hostname, NULL, 0, 0);
+		if (gniRes != 0)
+		{
 			log_add(log_Error, "Error while performing hostname "
-					"lookup for incoming connection: %s",
+							   "lookup for incoming connection: %s",
 					(gniRes == EAI_SYSTEM) ? strerror(errno) :
-					gai_strerror(gniRes));
-		} else {
+											 gai_strerror(gniRes));
+		}
+		else
+		{
 			log_add(log_Debug, "Accepted incoming connection from '%s'.",
 					hostname);
 		}
 	}
 #endif
-	
+
 	newNd = NetDescriptor_new(acceptResult, NULL);
-	if (newNd == NULL) {
+	if (newNd == NULL)
+	{
 		int savedErrno = errno;
 		log_add(log_Error, "NetDescriptor_new() failed: %s.",
 				strerror(errno));
@@ -439,7 +473,7 @@ acceptSingleConnection(ListenState *listenState, NetDescriptor *nd) {
 	}
 
 	doListenConnectCallback(listenState, nd, newNd,
-			(struct sockaddr *) &addr, addrLen);
+							(struct sockaddr*)&addr, addrLen);
 	// NB: newNd is now handed over to the callback function, and should
 	//     no longer be referenced from here.
 }
@@ -447,10 +481,9 @@ acceptSingleConnection(ListenState *listenState, NetDescriptor *nd) {
 // Called when select() has indicated readability on a listening socket,
 // i.e. when a connection is in the queue.
 static void
-acceptCallback(NetDescriptor *nd) {
-	ListenState *listenState = (ListenState *) NetDescriptor_getExtra(nd);
+acceptCallback(NetDescriptor* nd)
+{
+	ListenState* listenState = (ListenState*)NetDescriptor_getExtra(nd);
 
 	acceptSingleConnection(listenState, nd);
 }
-
-

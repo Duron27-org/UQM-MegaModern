@@ -26,14 +26,14 @@
 #include "libs/mathlib.h"
 
 
-static bool GenerateColony_initNpcs (SOLARSYS_STATE *solarSys);
-static bool GenerateColony_generatePlanets (SOLARSYS_STATE *solarSys);
-static bool GenerateColony_generateMoons (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *planet);
-static bool GenerateColony_generateName (const SOLARSYS_STATE *,
-	const PLANET_DESC *world);
-static bool GenerateColony_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world);
+static bool GenerateColony_initNpcs(SOLARSYS_STATE* solarSys);
+static bool GenerateColony_generatePlanets(SOLARSYS_STATE* solarSys);
+static bool GenerateColony_generateMoons(SOLARSYS_STATE* solarSys,
+										 PLANET_DESC* planet);
+static bool GenerateColony_generateName(const SOLARSYS_STATE*,
+										const PLANET_DESC* world);
+static bool GenerateColony_generateOrbital(SOLARSYS_STATE* solarSys,
+										   PLANET_DESC* world);
 
 
 const GenerateFunctions generateColonyFunctions = {
@@ -54,75 +54,75 @@ const GenerateFunctions generateColonyFunctions = {
 
 
 static bool
-GenerateColony_initNpcs (SOLARSYS_STATE *solarSys)
+GenerateColony_initNpcs(SOLARSYS_STATE* solarSys)
 {
 	HIPGROUP hGroup;
 
-	GLOBAL (BattleGroupRef) = GET_GAME_STATE (COLONY_GRPOFFS);
-	if (GLOBAL (BattleGroupRef) == 0)
+	GLOBAL(BattleGroupRef) = GET_GAME_STATE(COLONY_GRPOFFS);
+	if (GLOBAL(BattleGroupRef) == 0)
 	{
-		CloneShipFragment (URQUAN_SHIP,
-				&GLOBAL (npc_built_ship_q), 0);
-		GLOBAL (BattleGroupRef) = PutGroupInfo (GROUPS_ADD_NEW, 1);
-		ReinitQueue (&GLOBAL (npc_built_ship_q));
-		SET_GAME_STATE (COLONY_GRPOFFS, GLOBAL (BattleGroupRef));
+		CloneShipFragment(URQUAN_SHIP,
+						  &GLOBAL(npc_built_ship_q), 0);
+		GLOBAL(BattleGroupRef) = PutGroupInfo(GROUPS_ADD_NEW, 1);
+		ReinitQueue(&GLOBAL(npc_built_ship_q));
+		SET_GAME_STATE(COLONY_GRPOFFS, GLOBAL(BattleGroupRef));
 	}
 
-	GenerateDefault_initNpcs (solarSys);
+	GenerateDefault_initNpcs(solarSys);
 
-	if (GLOBAL (BattleGroupRef)
-			&& (hGroup = GetHeadLink (&GLOBAL (ip_group_q))))
+	if (GLOBAL(BattleGroupRef)
+		&& (hGroup = GetHeadLink(&GLOBAL(ip_group_q))))
 	{
-		IP_GROUP *GroupPtr;
+		IP_GROUP* GroupPtr;
 		uqm::BYTE PlanetByte = solarSys->SunDesc[0].PlanetByte + 1;
 
-		GroupPtr = LockIpGroup (&GLOBAL (ip_group_q), hGroup);
+		GroupPtr = LockIpGroup(&GLOBAL(ip_group_q), hGroup);
 		GroupPtr->task = IN_ORBIT;
-		GroupPtr->sys_loc = PlanetByte; /* orbitting colony */
+		GroupPtr->sys_loc = PlanetByte;	 /* orbitting colony */
 		GroupPtr->dest_loc = PlanetByte; /* orbitting colony */
 		GroupPtr->loc.x = 0;
 		GroupPtr->loc.y = 0;
 		GroupPtr->group_counter = 0;
-		UnlockIpGroup (&GLOBAL (ip_group_q), hGroup);
+		UnlockIpGroup(&GLOBAL(ip_group_q), hGroup);
 	}
 
 	return true;
 }
 
 static bool
-GenerateColony_generatePlanets (SOLARSYS_STATE *solarSys)
+GenerateColony_generatePlanets(SOLARSYS_STATE* solarSys)
 {
-	PLANET_DESC *pPlanet;
-	PLANET_DESC *pSunDesc = &solarSys->SunDesc[0];
+	PLANET_DESC* pPlanet;
+	PLANET_DESC* pSunDesc = &solarSys->SunDesc[0];
 
 	pSunDesc->PlanetByte = 0;
 	pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
 
-	FillOrbits (solarSys, (uqm::BYTE)~0, pPlanet, false);
+	FillOrbits(solarSys, (uqm::BYTE)~0, pPlanet, false);
 
 	if (PrimeSeed)
 	{
 		uqm::COUNT angle;
 
 		pPlanet->radius = EARTH_RADIUS * 115L / 100;
-		angle = ARCTAN (pPlanet->location.x, pPlanet->location.y);
-		pPlanet->location.x = COSINE (angle, pPlanet->radius);
-		pPlanet->location.y = SINE (angle, pPlanet->radius);
+		angle = ARCTAN(pPlanet->location.x, pPlanet->location.y);
+		pPlanet->location.x = COSINE(angle, pPlanet->radius);
+		pPlanet->location.y = SINE(angle, pPlanet->radius);
 		pPlanet->data_index = WATER_WORLD | PLANET_SHIELDED;
-		ComputeSpeed (pPlanet, false, 1);
+		ComputeSpeed(pPlanet, false, 1);
 		if (EXTENDED)
 			pPlanet->NumPlanets = 1;
 	}
 	else
 	{
-		uqm::DWORD rand_val = RandomContext_Random (SysGenRNG);
+		uqm::DWORD rand_val = RandomContext_Random(SysGenRNG);
 
-		pSunDesc->PlanetByte = PickClosestHabitable (solarSys);
+		pSunDesc->PlanetByte = PickClosestHabitable(solarSys);
 		pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
 
-		pPlanet->data_index = GenerateHabitableWorld () | PLANET_SHIELDED;
+		pPlanet->data_index = GenerateHabitableWorld() | PLANET_SHIELDED;
 
-		GeneratePlanets (solarSys);
+		GeneratePlanets(solarSys);
 
 		pPlanet->NumPlanets = (rand_val % 5 == 0 ? 2 : 1);
 	}
@@ -131,16 +131,16 @@ GenerateColony_generatePlanets (SOLARSYS_STATE *solarSys)
 }
 
 static bool
-GenerateColony_generateMoons (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *planet)
+GenerateColony_generateMoons(SOLARSYS_STATE* solarSys,
+							 PLANET_DESC* planet)
 {
-	GenerateDefault_generateMoons (solarSys, planet);
+	GenerateDefault_generateMoons(solarSys, planet);
 
 	if (!PrimeSeed)
 		return true;
 
 	if (EXTENDED
-			&& matchWorld (solarSys, planet, MATCH_PBYTE, MATCH_PLANET))
+		&& matchWorld(solarSys, planet, MATCH_PBYTE, MATCH_PLANET))
 	{
 		solarSys->MoonDesc[0].data_index = SELENIC_WORLD;
 	}
@@ -149,46 +149,46 @@ GenerateColony_generateMoons (SOLARSYS_STATE *solarSys,
 }
 
 static bool
-GenerateColony_generateName (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world)
+GenerateColony_generateName(const SOLARSYS_STATE* solarSys,
+							const PLANET_DESC* world)
 {
-	GenerateDefault_generateName (solarSys, world);
+	GenerateDefault_generateName(solarSys, world);
 
-	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET)) 
+	if (matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{
 		uqm::BYTE PlanetByte = solarSys->SunDesc[0].PlanetByte;
 		PLANET_DESC pPlanetDesc = solarSys->PlanetDesc[PlanetByte];
 
-		utf8StringCopy (GLOBAL_SIS (PlanetName),
-				sizeof (GLOBAL_SIS (PlanetName)),
-				GAME_STRING (PLANET_NUMBER_BASE + 33));
+		utf8StringCopy(GLOBAL_SIS(PlanetName),
+					   sizeof(GLOBAL_SIS(PlanetName)),
+					   GAME_STRING(PLANET_NUMBER_BASE + 33));
 
-		SET_GAME_STATE (BATTLE_PLANET, pPlanetDesc.data_index);
+		SET_GAME_STATE(BATTLE_PLANET, pPlanetDesc.data_index);
 	}
 
 	return true;
 }
 
 static bool
-GenerateColony_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world)
+GenerateColony_generateOrbital(SOLARSYS_STATE* solarSys,
+							   PLANET_DESC* world)
 {
-	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
+	if (matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{
-		DoPlanetaryAnalysis (&solarSys->SysInfo, world);
+		DoPlanetaryAnalysis(&solarSys->SysInfo, world);
 
 		solarSys->SysInfo.PlanetInfo.AtmoDensity =
-				EARTH_ATMOSPHERE * 98 / 100;
+			EARTH_ATMOSPHERE * 98 / 100;
 		solarSys->SysInfo.PlanetInfo.Weather = 0;
 		solarSys->SysInfo.PlanetInfo.Tectonics = 0;
 		solarSys->SysInfo.PlanetInfo.SurfaceTemperature = 28;
 
-		LoadPlanet (NULL);
+		LoadPlanet(NULL);
 
 		return true;
 	}
 
-	GenerateDefault_generateOrbital (solarSys, world);
+	GenerateDefault_generateOrbital(solarSys, world);
 
 	return true;
 }

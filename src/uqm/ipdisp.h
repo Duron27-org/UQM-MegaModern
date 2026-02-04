@@ -23,16 +23,16 @@
 extern "C" {
 #endif
 
-extern void NotifyOthers (uqm::COUNT which_race, uqm::BYTE target_loc);
+extern void NotifyOthers(uqm::COUNT which_race, uqm::BYTE target_loc);
 // Special target locations for NotifyOthers()
-#define IPNL_INTERCEPT_PLAYER   0
-#define IPNL_FLEE               1
-#define IPNL_ALL_CLEAR          ((uqm::BYTE)-1)
+#define IPNL_INTERCEPT_PLAYER 0
+#define IPNL_FLEE 1
+#define IPNL_ALL_CLEAR ((uqm::BYTE) - 1)
 
-extern void DoMissions (void);
+extern void DoMissions(void);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* UQM_IPDISP_H_INCL_ */
+#endif /* UQM_IPDISP_H_INCL_ */

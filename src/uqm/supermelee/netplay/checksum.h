@@ -39,28 +39,33 @@ extern "C" {
 
 
 static inline void
-crc_processELEMENT_FLAGS(crc_State *state, ELEMENT_FLAGS val) {
-	crc_processUint16(state, (uint16) val);
+crc_processELEMENT_FLAGS(crc_State* state, ELEMENT_FLAGS val)
+{
+	crc_processUint16(state, (uint16)val);
 }
 
 static inline void
-crc_processCOUNT(crc_State *state, uqm::COUNT val) {
-	crc_processUint16(state, (uint16) val);
+crc_processCOUNT(crc_State* state, uqm::COUNT val)
+{
+	crc_processUint16(state, (uint16)val);
 }
 
 static inline void
-crc_processBYTE(crc_State *state, uqm::BYTE val) {
-	crc_processUint8(state, (uint8) val);
+crc_processBYTE(crc_State* state, uqm::BYTE val)
+{
+	crc_processUint8(state, (uint8)val);
 }
 
 static inline void
-crc_processDWORD(crc_State *state, uqm::DWORD val) {
-	crc_processUint32(state, (uint32) val);
+crc_processDWORD(crc_State* state, uqm::DWORD val)
+{
+	crc_processUint32(state, (uint32)val);
 }
 
 static inline void
-crc_processCOORD(crc_State *state, COORD val) {
-	crc_processUint16(state, (uint16) val);
+crc_processCOORD(crc_State* state, COORD val)
+{
+	crc_processUint16(state, (uint16)val);
 }
 
 #if 0
@@ -70,32 +75,30 @@ crc_processTIME_VALUE(crc_State *state, const TIME_VALUE val) {
 }
 #endif
 
-void crc_processEXTENT(crc_State *state, const EXTENT *val);
-void crc_processVELOCITY_DESC(crc_State *state, const VELOCITY_DESC *val);
-void crc_processPOINT(crc_State *state, const POINT *val);
+void crc_processEXTENT(crc_State* state, const EXTENT* val);
+void crc_processVELOCITY_DESC(crc_State* state, const VELOCITY_DESC* val);
+void crc_processPOINT(crc_State* state, const POINT* val);
 #if 0
 void crc_processSTAMP(crc_State *state, const STAMP *val);
 void crc_processINTERSECT_CONTROL(crc_State *state,
 		const INTERSECT_CONTROL *val);
 #endif
-void crc_processSTATE(crc_State *state, const STATE *val);
-void crc_processELEMENT(crc_State *state, const ELEMENT *val);
-void crc_processDispQueue(crc_State *state);
-void crc_processRNG(crc_State *state);
-void crc_processState(crc_State *state);
+void crc_processSTATE(crc_State* state, const STATE* val);
+void crc_processELEMENT(crc_State* state, const ELEMENT* val);
+void crc_processDispQueue(crc_State* state);
+void crc_processRNG(crc_State* state);
+void crc_processState(crc_State* state);
 
 
 void initChecksumBuffers(void);
 void uninitChecksumBuffers(void);
 void addLocalChecksum(BattleFrameCounter frameNr, Checksum checksum);
-void addRemoteChecksum(NetConnection *conn, BattleFrameCounter frameNr,
-		Checksum checksum);
+void addRemoteChecksum(NetConnection* conn, BattleFrameCounter frameNr,
+					   Checksum checksum);
 bool verifyChecksums(BattleFrameCounter frameNr);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* UQM_SUPERMELEE_NETPLAY_CHECKSUM_H_ */
-
-
+#endif /* UQM_SUPERMELEE_NETPLAY_CHECKSUM_H_ */

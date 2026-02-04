@@ -25,12 +25,11 @@
 extern "C" {
 #endif
 
-int sendPacket(NetConnection *conn, Packet *packet);
+int sendPacket(NetConnection* conn, Packet* packet);
 
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* UQM_SUPERMELEE_NETPLAY_NETSEND_H_ */
-
+#endif /* UQM_SUPERMELEE_NETPLAY_NETSEND_H_ */

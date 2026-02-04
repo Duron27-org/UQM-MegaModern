@@ -27,17 +27,16 @@
 extern "C" {
 #endif
 
-bool luaUqm_event_init(const luaUqm_custom_Function *customFuncs,
-		RESOURCE scriptRes);
+bool luaUqm_event_init(const luaUqm_custom_Function* customFuncs,
+					   RESOURCE scriptRes);
 void luaUqm_event_uninit(void);
 
-void luaUqm_event_callEvent(const char *eventIdStr);
+void luaUqm_event_callEvent(const char* eventIdStr);
 
-extern lua_State *luaUqm_commState;
+extern lua_State* luaUqm_commState;
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* UQM_LUA_LUAEVENT_H_ */
-
+#endif /* UQM_LUA_LUAEVENT_H_ */

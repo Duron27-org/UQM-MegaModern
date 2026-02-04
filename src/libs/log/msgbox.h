@@ -17,7 +17,7 @@
 #ifndef UQM_MSGBOX_H_INCL__
 #define UQM_MSGBOX_H_INCL__
 
-extern void log_displayBox (const /*UTF-8*/char *title, int isError,
-		const /*UTF-8*/char *msg);
+extern void log_displayBox(const /*UTF-8*/ char* title, int isError,
+						   const /*UTF-8*/ char* msg);
 
 #endif /* UQM_MSGBOX_H_INCL__ */

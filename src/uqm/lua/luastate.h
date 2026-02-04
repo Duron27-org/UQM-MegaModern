@@ -24,13 +24,13 @@
 extern "C" {
 #endif
 
-extern lua_State *luaUqm_globalState;
+extern lua_State* luaUqm_globalState;
 
 typedef struct delta_types
 {
 	int _int;
 	bool _bool;
-	uqm::CHAR_T *_str;
+	uqm::CHAR_T* _str;
 	char _char;
 } DELTA_TYPES;
 
@@ -39,19 +39,18 @@ extern DELTA_TYPES luaUqm_delta;
 void luaUqm_initState(void);
 void luaUqm_uninitState(void);
 void luaUqm_reinitState(void);
-void luaUqm_getProp(lua_State *luaState, int nameIndex);
-void luaUqm_setProp(lua_State *luaState, int nameIndex, int valueIndex);
-int luaUqm_checkPropValueType (lua_State *luaState, const char *funName,
-		int nameIndex);
+void luaUqm_getProp(lua_State* luaState, int nameIndex);
+void luaUqm_setProp(lua_State* luaState, int nameIndex, int valueIndex);
+int luaUqm_checkPropValueType(lua_State* luaState, const char* funName,
+							  int nameIndex);
 
-void setGameStateUint (const char *name, uqm::DWORD val);
-uqm::DWORD getGameStateUint (const char *name);
+void setGameStateUint(const char* name, uqm::DWORD val);
+uqm::DWORD getGameStateUint(const char* name);
 
-void luaUqm_getEventTable (lua_State *luaState);
+void luaUqm_getEventTable(lua_State* luaState);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* UQM_LUA_LUASTATE_H_ */
-
+#endif /* UQM_LUA_LUASTATE_H_ */

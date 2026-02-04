@@ -30,58 +30,59 @@ extern "C" {
 #endif
 
 typedef struct resource_index_desc RESOURCE_INDEX_DESC;
-typedef RESOURCE_INDEX_DESC *RESOURCE_INDEX;
+typedef RESOURCE_INDEX_DESC* RESOURCE_INDEX;
 
-typedef const char *RESOURCE;
+typedef const char* RESOURCE;
 
-typedef union {
+typedef union
+{
 	uqm::DWORD num;
-	void *ptr;
-	const char *str;
+	void* ptr;
+	const char* str;
 } RESOURCE_DATA;
 
 #define NULL_RESOURCE NULL
 
-extern const char *_cur_resfile_name;
+extern const char* _cur_resfile_name;
 
-typedef void (ResourceLoadFun) (const char *pathname, RESOURCE_DATA *resdata);
-typedef bool (ResourceFreeFun) (void *handle);
-typedef void (ResourceStringFun) (RESOURCE_DATA *handle, char *buf, unsigned int size);
-				  
-typedef void *(ResourceLoadFileFun) (uio_Stream *fp, uqm::DWORD len);
+typedef void(ResourceLoadFun)(const char* pathname, RESOURCE_DATA* resdata);
+typedef bool(ResourceFreeFun)(void* handle);
+typedef void(ResourceStringFun)(RESOURCE_DATA* handle, char* buf, unsigned int size);
 
-void *LoadResourceFromPath(const char *pathname, ResourceLoadFileFun fn);
+typedef void*(ResourceLoadFileFun)(uio_Stream * fp, uqm::DWORD len);
 
-uio_Stream *res_OpenResFile (uio_DirHandle *dir, const char *filename, const char *mode);
-size_t ReadResFile (void *lpBuf, size_t size, size_t count, uio_Stream *fp);
-size_t WriteResFile (const void *lpBuf, size_t size, size_t count, uio_Stream *fp);
-int GetResFileChar (uio_Stream *fp);
-int PutResFileChar (char ch, uio_Stream *fp);
-int PutResFileNewline (uio_Stream *fp);
-long SeekResFile (uio_Stream *fp, long offset, int whence);
-long TellResFile (uio_Stream *fp);
-size_t LengthResFile (uio_Stream *fp);
-bool res_CloseResFile (uio_Stream *fp);
-bool DeleteResFile (uio_DirHandle *dir, const char *filename);
+void* LoadResourceFromPath(const char* pathname, ResourceLoadFileFun fn);
 
-RESOURCE_INDEX InitResourceSystem (void);
-void UninitResourceSystem (void);
-bool InstallResTypeVectors (const char *res_type, ResourceLoadFun *loadFun, ResourceFreeFun *freeFun, ResourceStringFun *stringFun);
-void *res_GetResource (RESOURCE res);
-void *res_DetachResource (RESOURCE res);
-void res_FreeResource (RESOURCE res);
-uqm::COUNT CountResourceTypes (void);
-uqm::DWORD res_GetIntResource (RESOURCE res);
-bool res_GetBooleanResource (RESOURCE res);
-const char *res_GetResourceType (RESOURCE res);
+uio_Stream* res_OpenResFile(uio_DirHandle* dir, const char* filename, const char* mode);
+size_t ReadResFile(void* lpBuf, size_t size, size_t count, uio_Stream* fp);
+size_t WriteResFile(const void* lpBuf, size_t size, size_t count, uio_Stream* fp);
+int GetResFileChar(uio_Stream* fp);
+int PutResFileChar(char ch, uio_Stream* fp);
+int PutResFileNewline(uio_Stream* fp);
+long SeekResFile(uio_Stream* fp, long offset, int whence);
+long TellResFile(uio_Stream* fp);
+size_t LengthResFile(uio_Stream* fp);
+bool res_CloseResFile(uio_Stream* fp);
+bool DeleteResFile(uio_DirHandle* dir, const char* filename);
 
-void LoadResourceIndex (uio_DirHandle *dir, const char *filename, const char *prefix);
-void SaveResourceIndex (uio_DirHandle *dir, const char *rmpfile, const char *root, bool strip_root);
+RESOURCE_INDEX InitResourceSystem(void);
+void UninitResourceSystem(void);
+bool InstallResTypeVectors(const char* res_type, ResourceLoadFun* loadFun, ResourceFreeFun* freeFun, ResourceStringFun* stringFun);
+void* res_GetResource(RESOURCE res);
+void* res_DetachResource(RESOURCE res);
+void res_FreeResource(RESOURCE res);
+uqm::COUNT CountResourceTypes(void);
+uqm::DWORD res_GetIntResource(RESOURCE res);
+bool res_GetBooleanResource(RESOURCE res);
+const char* res_GetResourceType(RESOURCE res);
 
-void *GetResourceData (uio_Stream *fp, uqm::DWORD length);
+void LoadResourceIndex(uio_DirHandle* dir, const char* filename, const char* prefix);
+void SaveResourceIndex(uio_DirHandle* dir, const char* rmpfile, const char* root, bool strip_root);
+
+void* GetResourceData(uio_Stream* fp, uqm::DWORD length);
 
 #define AllocResourceData HMalloc
-bool FreeResourceData (void *);
+bool FreeResourceData(void*);
 
 #if 0 //defined(__cplusplus)
 }
@@ -93,13 +94,13 @@ bool FreeResourceData (void *);
 #if 0 //defined(__cplusplus)
 extern "C" {
 #endif
-		// For Color
+// For Color
 
 typedef STRING_TABLE DIRENTRY_REF;
 typedef STRING DIRENTRY;
 
-extern DIRENTRY_REF LoadDirEntryTable (uio_DirHandle *dirHandle,
-		const char *path, const char *pattern, match_MatchType matchType);
+extern DIRENTRY_REF LoadDirEntryTable(uio_DirHandle* dirHandle,
+									  const char* path, const char* pattern, match_MatchType matchType);
 #define CaptureDirEntryTable CaptureStringTable
 #define ReleaseDirEntryTable ReleaseStringTable
 #define DestroyDirEntryTable DestroyStringTable
@@ -113,25 +114,25 @@ extern DIRENTRY_REF LoadDirEntryTable (uio_DirHandle *dirHandle,
 
 /* Key-Value resources */
 
-bool res_HasKey (const char *key);
+bool res_HasKey(const char* key);
 
-bool res_IsString (const char *key);
-const char *res_GetString (const char *key);
-void res_PutString (const char *key, const char *value);
+bool res_IsString(const char* key);
+const char* res_GetString(const char* key);
+void res_PutString(const char* key, const char* value);
 
-bool res_IsInteger (const char *key);
-int res_GetInteger (const char *key);
-void res_PutInteger (const char *key, int value);
+bool res_IsInteger(const char* key);
+int res_GetInteger(const char* key);
+void res_PutInteger(const char* key, int value);
 
-bool res_IsBoolean (const char *key);
-bool res_GetBoolean (const char *key);
-void res_PutBoolean (const char *key, bool value);
+bool res_IsBoolean(const char* key);
+bool res_GetBoolean(const char* key);
+void res_PutBoolean(const char* key, bool value);
 
-bool res_IsColor (const char *key);
-Color res_GetColor (const char *key);
-void res_PutColor (const char *key, Color value);
+bool res_IsColor(const char* key);
+Color res_GetColor(const char* key);
+void res_PutColor(const char* key, Color value);
 
-bool res_Remove (const char *key);
+bool res_Remove(const char* key);
 
 #if 0 //defined(__cplusplus)
 }

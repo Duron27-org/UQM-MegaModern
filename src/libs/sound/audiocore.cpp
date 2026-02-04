@@ -35,10 +35,10 @@ volatile bool audio_inited = false;
  */
 
 #ifdef HAVE_OPENAL
-sint32 openAL_Init (audio_Driver *driver, sint32 flags);
+sint32 openAL_Init(audio_Driver* driver, sint32 flags);
 #endif
-sint32 mixSDL_Init (audio_Driver *driver, sint32 flags);
-sint32 noSound_Init (audio_Driver *driver, sint32 flags);
+sint32 mixSDL_Init(audio_Driver* driver, sint32 flags);
+sint32 noSound_Init(audio_Driver* driver, sint32 flags);
 
 
 /*
@@ -46,55 +46,54 @@ sint32 noSound_Init (audio_Driver *driver, sint32 flags);
  */
 
 sint32
-initAudio (sint32 driver, sint32 flags)
+initAudio(sint32 driver, sint32 flags)
 {
 	sint32 ret;
 
 #ifdef HAVE_OPENAL
 	if (driver == audio_DRIVER_MIXSDL)
-		ret = mixSDL_Init (&audiodrv, flags);
+		ret = mixSDL_Init(&audiodrv, flags);
 	else if (driver == audio_DRIVER_OPENAL)
-		ret = openAL_Init (&audiodrv, flags);
+		ret = openAL_Init(&audiodrv, flags);
 	else
-		ret = noSound_Init (&audiodrv, flags);
+		ret = noSound_Init(&audiodrv, flags);
 #else
 	if (driver == audio_DRIVER_OPENAL)
 	{
-		log_add (log_Warning, "OpenAL driver not compiled in, so using MixSDL");
+		log_add(log_Warning, "OpenAL driver not compiled in, so using MixSDL");
 		driver = audio_DRIVER_MIXSDL;
 	}
 	if (driver == audio_DRIVER_MIXSDL)
-		ret = mixSDL_Init (&audiodrv, flags);
+		ret = mixSDL_Init(&audiodrv, flags);
 	else
-		ret = noSound_Init (&audiodrv, flags);
+		ret = noSound_Init(&audiodrv, flags);
 #endif
 
 	if (ret != 0)
 	{
-		log_add (log_Fatal, "Sound driver initialization failed.\n"
-				"This may happen when a soundcard is "
-				"not present or not available.\n"
-				"NOTICE: Try running UQM with '--sound=none' option");
-		exit (EXIT_FAILURE);
+		log_add(log_Fatal, "Sound driver initialization failed.\n"
+						   "This may happen when a soundcard is "
+						   "not present or not available.\n"
+						   "NOTICE: Try running UQM with '--sound=none' option");
+		exit(EXIT_FAILURE);
 	}
 
-	SetSFXVolume (sfxVolumeScale);
-	SetSpeechVolume (speechVolumeScale);
-	SetMusicVolume (musicVolume);
-	
+	SetSFXVolume(sfxVolumeScale);
+	SetSpeechVolume(speechVolumeScale);
+	SetMusicVolume(musicVolume);
+
 	audio_inited = true;
-	
+
 	return ret;
 }
 
-void
-unInitAudio (void)
+void unInitAudio(void)
 {
 	if (!audio_inited)
 		return;
 
 	audio_inited = false;
-	audiodrv.Uninitialize ();
+	audiodrv.Uninitialize();
 }
 
 
@@ -103,9 +102,9 @@ unInitAudio (void)
  */
 
 sint32
-audio_GetError (void)
+audio_GetError(void)
 {
-	return audiodrv.GetError ();
+	return audiodrv.GetError();
 }
 
 
@@ -113,96 +112,82 @@ audio_GetError (void)
  * Sources
  */
 
-void
-audio_GenSources (uint32 n, audio_Object *psrcobj)
+void audio_GenSources(uint32 n, audio_Object* psrcobj)
 {
-	audiodrv.GenSources (n, psrcobj);
+	audiodrv.GenSources(n, psrcobj);
 }
 
-void
-audio_DeleteSources (uint32 n, audio_Object *psrcobj)
+void audio_DeleteSources(uint32 n, audio_Object* psrcobj)
 {
-	audiodrv.DeleteSources (n, psrcobj);
+	audiodrv.DeleteSources(n, psrcobj);
 }
 
-bool
-audio_IsSource (audio_Object srcobj)
+bool audio_IsSource(audio_Object srcobj)
 {
-	return audiodrv.IsSource (srcobj);
+	return audiodrv.IsSource(srcobj);
 }
 
-void
-audio_Sourcei (audio_Object srcobj, audio_SourceProp pname,
-		audio_IntVal value)
+void audio_Sourcei(audio_Object srcobj, audio_SourceProp pname,
+				   audio_IntVal value)
 
 {
-	audiodrv.Sourcei (srcobj, audiodrv.EnumLookup[pname], value);
+	audiodrv.Sourcei(srcobj, audiodrv.EnumLookup[pname], value);
 }
 
-void
-audio_Sourcef (audio_Object srcobj, audio_SourceProp pname,
-		float value)
+void audio_Sourcef(audio_Object srcobj, audio_SourceProp pname,
+				   float value)
 {
-	audiodrv.Sourcef (srcobj, audiodrv.EnumLookup[pname], value);
+	audiodrv.Sourcef(srcobj, audiodrv.EnumLookup[pname], value);
 }
 
-void
-audio_Sourcefv (audio_Object srcobj, audio_SourceProp pname,
-		float *value)
+void audio_Sourcefv(audio_Object srcobj, audio_SourceProp pname,
+					float* value)
 {
-	audiodrv.Sourcefv (srcobj, audiodrv.EnumLookup[pname], value);
+	audiodrv.Sourcefv(srcobj, audiodrv.EnumLookup[pname], value);
 }
 
-void
-audio_GetSourcei (audio_Object srcobj, audio_SourceProp pname,
-		audio_IntVal *value)
+void audio_GetSourcei(audio_Object srcobj, audio_SourceProp pname,
+					  audio_IntVal* value)
 {
-	audiodrv.GetSourcei (srcobj, audiodrv.EnumLookup[pname], value);
+	audiodrv.GetSourcei(srcobj, audiodrv.EnumLookup[pname], value);
 }
 
-void
-audio_GetSourcef (audio_Object srcobj, audio_SourceProp pname,
-		float *value)
+void audio_GetSourcef(audio_Object srcobj, audio_SourceProp pname,
+					  float* value)
 {
-	audiodrv.GetSourcef (srcobj, audiodrv.EnumLookup[pname], value);
+	audiodrv.GetSourcef(srcobj, audiodrv.EnumLookup[pname], value);
 }
 
-void
-audio_SourceRewind (audio_Object srcobj)
+void audio_SourceRewind(audio_Object srcobj)
 {
-	audiodrv.SourceRewind (srcobj);
+	audiodrv.SourceRewind(srcobj);
 }
 
-void
-audio_SourcePlay (audio_Object srcobj)
+void audio_SourcePlay(audio_Object srcobj)
 {
-	audiodrv.SourcePlay (srcobj);
+	audiodrv.SourcePlay(srcobj);
 }
 
-void
-audio_SourcePause (audio_Object srcobj)
+void audio_SourcePause(audio_Object srcobj)
 {
-	audiodrv.SourcePause (srcobj);
+	audiodrv.SourcePause(srcobj);
 }
 
-void
-audio_SourceStop (audio_Object srcobj)
+void audio_SourceStop(audio_Object srcobj)
 {
-	audiodrv.SourceStop (srcobj);
+	audiodrv.SourceStop(srcobj);
 }
 
-void
-audio_SourceQueueBuffers (audio_Object srcobj, uint32 n,
-		audio_Object* pbufobj)
+void audio_SourceQueueBuffers(audio_Object srcobj, uint32 n,
+							  audio_Object* pbufobj)
 {
-	audiodrv.SourceQueueBuffers (srcobj, n, pbufobj);
+	audiodrv.SourceQueueBuffers(srcobj, n, pbufobj);
 }
 
-void
-audio_SourceUnqueueBuffers (audio_Object srcobj, uint32 n,
-		audio_Object* pbufobj)
+void audio_SourceUnqueueBuffers(audio_Object srcobj, uint32 n,
+								audio_Object* pbufobj)
 {
-	audiodrv.SourceUnqueueBuffers (srcobj, n, pbufobj);
+	audiodrv.SourceUnqueueBuffers(srcobj, n, pbufobj);
 }
 
 
@@ -210,63 +195,57 @@ audio_SourceUnqueueBuffers (audio_Object srcobj, uint32 n,
  * Buffers
  */
 
-void
-audio_GenBuffers (uint32 n, audio_Object *pbufobj)
+void audio_GenBuffers(uint32 n, audio_Object* pbufobj)
 {
-	audiodrv.GenBuffers (n, pbufobj);
+	audiodrv.GenBuffers(n, pbufobj);
 }
 
-void
-audio_DeleteBuffers (uint32 n, audio_Object *pbufobj)
+void audio_DeleteBuffers(uint32 n, audio_Object* pbufobj)
 {
-	audiodrv.DeleteBuffers (n, pbufobj);
+	audiodrv.DeleteBuffers(n, pbufobj);
 }
 
-bool
-audio_IsBuffer (audio_Object bufobj)
+bool audio_IsBuffer(audio_Object bufobj)
 {
-	return audiodrv.IsBuffer (bufobj);
+	return audiodrv.IsBuffer(bufobj);
 }
 
-void
-audio_GetBufferi (audio_Object bufobj, audio_BufferProp pname,
-		audio_IntVal *value)
+void audio_GetBufferi(audio_Object bufobj, audio_BufferProp pname,
+					  audio_IntVal* value)
 {
-	audiodrv.GetBufferi (bufobj, audiodrv.EnumLookup[pname], value);
+	audiodrv.GetBufferi(bufobj, audiodrv.EnumLookup[pname], value);
 }
 
-void
-audio_BufferData (audio_Object bufobj, uint32 format, void* data,
-		uint32 size, uint32 freq)
+void audio_BufferData(audio_Object bufobj, uint32 format, void* data,
+					  uint32 size, uint32 freq)
 {
-	audiodrv.BufferData (bufobj, audiodrv.EnumLookup[format], data, size,
-			freq);
+	audiodrv.BufferData(bufobj, audiodrv.EnumLookup[format], data, size,
+						freq);
 }
 
-bool
-audio_GetFormatInfo (uint32 format, int *channels, int *sample_size)
+bool audio_GetFormatInfo(uint32 format, int* channels, int* sample_size)
 {
 	switch (format)
 	{
-	case audio_FORMAT_MONO8:
-		*channels = 1;
-		*sample_size = sizeof (uint8);
-		return true;
+		case audio_FORMAT_MONO8:
+			*channels = 1;
+			*sample_size = sizeof(uint8);
+			return true;
 
-	case audio_FORMAT_STEREO8:
-		*channels = 2;
-		*sample_size = sizeof (uint8);
-		return true;
-	
-	case audio_FORMAT_MONO16:
-		*channels = 1;
-		*sample_size = sizeof (sint16);
-		return true;
+		case audio_FORMAT_STEREO8:
+			*channels = 2;
+			*sample_size = sizeof(uint8);
+			return true;
 
-	case audio_FORMAT_STEREO16:
-		*channels = 2;
-		*sample_size = sizeof (sint16);
-		return true;
+		case audio_FORMAT_MONO16:
+			*channels = 1;
+			*sample_size = sizeof(sint16);
+			return true;
+
+		case audio_FORMAT_STEREO16:
+			*channels = 2;
+			*sample_size = sizeof(sint16);
+			return true;
 	}
 	return false;
 }

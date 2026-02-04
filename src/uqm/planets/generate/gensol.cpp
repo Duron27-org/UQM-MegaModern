@@ -33,26 +33,26 @@
 #include "../../setup.h"
 #include <math.h>
 
-static bool GenerateSol_initNpcs (SOLARSYS_STATE *solarSys);
-static bool GenerateSol_reinitNpcs (SOLARSYS_STATE *solarSys);
-static bool GenerateSol_generatePlanets (SOLARSYS_STATE *solarSys);
-static bool GenerateSol_generateMoons (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *planet);
-static bool GenerateSol_generateName (const SOLARSYS_STATE *,
-		const PLANET_DESC *world);
-static bool GenerateSol_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world);
-static uqm::COUNT GenerateSol_generateMinerals (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
-static uqm::COUNT GenerateSol_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
-static uqm::COUNT GenerateSol_generateLife (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
-static bool GenerateSol_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, uqm::COUNT whichNode);
+static bool GenerateSol_initNpcs(SOLARSYS_STATE* solarSys);
+static bool GenerateSol_reinitNpcs(SOLARSYS_STATE* solarSys);
+static bool GenerateSol_generatePlanets(SOLARSYS_STATE* solarSys);
+static bool GenerateSol_generateMoons(SOLARSYS_STATE* solarSys,
+									  PLANET_DESC* planet);
+static bool GenerateSol_generateName(const SOLARSYS_STATE*,
+									 const PLANET_DESC* world);
+static bool GenerateSol_generateOrbital(SOLARSYS_STATE* solarSys,
+										PLANET_DESC* world);
+static uqm::COUNT GenerateSol_generateMinerals(const SOLARSYS_STATE* solarSys,
+											   const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO*);
+static uqm::COUNT GenerateSol_generateEnergy(const SOLARSYS_STATE*,
+											 const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO*);
+static uqm::COUNT GenerateSol_generateLife(const SOLARSYS_STATE*,
+										   const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO*);
+static bool GenerateSol_pickupEnergy(SOLARSYS_STATE* solarSys,
+									 PLANET_DESC* world, uqm::COUNT whichNode);
 
-static int init_probe (void);
-static void check_probe (void);
+static int init_probe(void);
+static void check_probe(void);
 
 
 const GenerateFunctions generateSolFunctions = {
@@ -73,23 +73,22 @@ const GenerateFunctions generateSolFunctions = {
 
 
 static bool
-GenerateSol_initNpcs (SOLARSYS_STATE *solarSys)
+GenerateSol_initNpcs(SOLARSYS_STATE* solarSys)
 {
 	if (optHeadStart)
-		SET_GAME_STATE (PROBE_MESSAGE_DELIVERED, 1);
-	GLOBAL (BattleGroupRef) = GET_GAME_STATE (URQUAN_PROBE_GRPOFFS);
-	if (GLOBAL (BattleGroupRef) == 0 &&
-			!GET_GAME_STATE (PROBE_MESSAGE_DELIVERED))
+		SET_GAME_STATE(PROBE_MESSAGE_DELIVERED, 1);
+	GLOBAL(BattleGroupRef) = GET_GAME_STATE(URQUAN_PROBE_GRPOFFS);
+	if (GLOBAL(BattleGroupRef) == 0 && !GET_GAME_STATE(PROBE_MESSAGE_DELIVERED))
 	{
-		CloneShipFragment (URQUAN_DRONE_SHIP,
-				&GLOBAL (npc_built_ship_q), 0);
-		GLOBAL (BattleGroupRef) = PutGroupInfo (GROUPS_ADD_NEW, 1);
-		ReinitQueue (&GLOBAL (npc_built_ship_q));
-		SET_GAME_STATE (URQUAN_PROBE_GRPOFFS, GLOBAL (BattleGroupRef));
+		CloneShipFragment(URQUAN_DRONE_SHIP,
+						  &GLOBAL(npc_built_ship_q), 0);
+		GLOBAL(BattleGroupRef) = PutGroupInfo(GROUPS_ADD_NEW, 1);
+		ReinitQueue(&GLOBAL(npc_built_ship_q));
+		SET_GAME_STATE(URQUAN_PROBE_GRPOFFS, GLOBAL(BattleGroupRef));
 	}
 
-	if (!init_probe ())
-		GenerateDefault_initNpcs (solarSys);
+	if (!init_probe())
+		GenerateDefault_initNpcs(solarSys);
 	else if (SpaceMusicOK)
 		findRaceSOI();
 
@@ -97,42 +96,41 @@ GenerateSol_initNpcs (SOLARSYS_STATE *solarSys)
 }
 
 static bool
-GenerateSol_reinitNpcs (SOLARSYS_STATE *solarSys)
+GenerateSol_reinitNpcs(SOLARSYS_STATE* solarSys)
 {
-	if (GET_GAME_STATE (CHMMR_BOMB_STATE) != 3)
+	if (GET_GAME_STATE(CHMMR_BOMB_STATE) != 3)
 	{
-		GenerateDefault_reinitNpcs (solarSys);
-		check_probe ();
+		GenerateDefault_reinitNpcs(solarSys);
+		check_probe();
 	}
 	else
 	{
-		GLOBAL (BattleGroupRef) = 0;
-		ReinitQueue (&GLOBAL (ip_group_q));
-		assert (CountLinks (&GLOBAL (npc_built_ship_q)) == 0);
+		GLOBAL(BattleGroupRef) = 0;
+		ReinitQueue(&GLOBAL(ip_group_q));
+		assert(CountLinks(&GLOBAL(npc_built_ship_q)) == 0);
 	}
 	return true;
 }
 
 static bool
-GenerateSol_generatePlanets (SOLARSYS_STATE *solarSys)
+GenerateSol_generatePlanets(SOLARSYS_STATE* solarSys)
 {
 	uqm::COUNT planetI;
 
 #define SOL_SEED 334241042L
-	RandomContext_SeedRandom (SysGenRNG, SOL_SEED +
-			(StarSeed ? optCustomSeed : 0));
+	RandomContext_SeedRandom(SysGenRNG, SOL_SEED + (StarSeed ? optCustomSeed : 0));
 
 	solarSys->SunDesc[0].NumPlanets = 9;
 	for (planetI = 0; planetI < 9; ++planetI)
 	{
 		uqm::DWORD rand_val;
 		uqm::UWORD word_val;
-		PLANET_DESC *pCurDesc = &solarSys->PlanetDesc[planetI];
+		PLANET_DESC* pCurDesc = &solarSys->PlanetDesc[planetI];
 
-		pCurDesc->rand_seed = RandomContext_Random (SysGenRNG);
+		pCurDesc->rand_seed = RandomContext_Random(SysGenRNG);
 		rand_val = pCurDesc->rand_seed;
-		word_val = LOWORD (rand_val);
-		pCurDesc->angle = NORMALIZE_ANGLE ((uqm::COUNT)highByte (word_val));
+		word_val = LOWORD(rand_val);
+		pCurDesc->angle = NORMALIZE_ANGLE((uqm::COUNT)highByte(word_val));
 
 		switch (planetI)
 		{
@@ -146,7 +144,7 @@ GenerateSol_generatePlanets (SOLARSYS_STATE *solarSys)
 				pCurDesc->radius = EARTH_RADIUS * 72L / 100;
 				pCurDesc->NumPlanets = 0;
 				pCurDesc->angle =
-						NORMALIZE_ANGLE (FULL_CIRCLE - pCurDesc->angle);
+					NORMALIZE_ANGLE(FULL_CIRCLE - pCurDesc->angle);
 				break;
 			case 2: /* EARTH */
 				pCurDesc->data_index = WATER_WORLD | PLANET_SHIELDED;
@@ -186,83 +184,82 @@ GenerateSol_generatePlanets (SOLARSYS_STATE *solarSys)
 					pCurDesc->angle = FULL_CIRCLE - OCTANT;
 				break;
 		}
-		pCurDesc->orb_speed = FULL_CIRCLE / (365.25 *
-				pow((float)pCurDesc->radius / EARTH_RADIUS, 1.5));
-		pCurDesc->location.x = COSINE (pCurDesc->angle, pCurDesc->radius);
-		pCurDesc->location.y = SINE (pCurDesc->angle, pCurDesc->radius);
+		pCurDesc->orb_speed = FULL_CIRCLE / (365.25 * pow((float)pCurDesc->radius / EARTH_RADIUS, 1.5));
+		pCurDesc->location.x = COSINE(pCurDesc->angle, pCurDesc->radius);
+		pCurDesc->location.y = SINE(pCurDesc->angle, pCurDesc->radius);
 	}
 
 	return true;
 }
 
 static bool
-GenerateSol_generateMoons (SOLARSYS_STATE *solarSys, PLANET_DESC *planet)
+GenerateSol_generateMoons(SOLARSYS_STATE* solarSys, PLANET_DESC* planet)
 {
 	uqm::COUNT planetNr;
 	uqm::DWORD rand_val;
 
-	GenerateDefault_generateMoons (solarSys, planet);
+	GenerateDefault_generateMoons(solarSys, planet);
 
-	planetNr = planetIndex (solarSys, planet);
+	planetNr = planetIndex(solarSys, planet);
 	switch (planetNr)
 	{
 		case 2: /* moons of EARTH */
-		{
-			uqm::COUNT angle;
+			{
+				uqm::COUNT angle;
 
-			/* Starbase: */
-			solarSys->MoonDesc[0].data_index = HIERARCHY_STARBASE;
-			solarSys->MoonDesc[0].radius = MIN_MOON_RADIUS;
-			angle = HALF_CIRCLE + QUADRANT;
-			solarSys->MoonDesc[0].location.x =
-					COSINE (angle, solarSys->MoonDesc[0].radius);
-			solarSys->MoonDesc[0].location.y =
-					SINE (angle, solarSys->MoonDesc[0].radius);
-			solarSys->MoonDesc[0].orb_speed = FULL_CIRCLE / 11.46;
+				/* Starbase: */
+				solarSys->MoonDesc[0].data_index = HIERARCHY_STARBASE;
+				solarSys->MoonDesc[0].radius = MIN_MOON_RADIUS;
+				angle = HALF_CIRCLE + QUADRANT;
+				solarSys->MoonDesc[0].location.x =
+					COSINE(angle, solarSys->MoonDesc[0].radius);
+				solarSys->MoonDesc[0].location.y =
+					SINE(angle, solarSys->MoonDesc[0].radius);
+				solarSys->MoonDesc[0].orb_speed = FULL_CIRCLE / 11.46;
 
-			/* Luna: */
-			solarSys->MoonDesc[1].data_index = SELENIC_WORLD;
-			solarSys->MoonDesc[1].radius = MIN_MOON_RADIUS
-					+ (4 - 1) * MOON_DELTA;
-			rand_val = RandomContext_Random (SysGenRNG);
-			angle = NORMALIZE_ANGLE (LOWORD (rand_val));
-			solarSys->MoonDesc[1].location.x =
-					COSINE (angle, solarSys->MoonDesc[1].radius);
-			solarSys->MoonDesc[1].location.y =
-					SINE (angle, solarSys->MoonDesc[1].radius);
-			solarSys->MoonDesc[1].orb_speed = FULL_CIRCLE / 27.32;
-			break;
-		}
+				/* Luna: */
+				solarSys->MoonDesc[1].data_index = SELENIC_WORLD;
+				solarSys->MoonDesc[1].radius = MIN_MOON_RADIUS
+											 + (4 - 1) * MOON_DELTA;
+				rand_val = RandomContext_Random(SysGenRNG);
+				angle = NORMALIZE_ANGLE(LOWORD(rand_val));
+				solarSys->MoonDesc[1].location.x =
+					COSINE(angle, solarSys->MoonDesc[1].radius);
+				solarSys->MoonDesc[1].location.y =
+					SINE(angle, solarSys->MoonDesc[1].radius);
+				solarSys->MoonDesc[1].orb_speed = FULL_CIRCLE / 27.32;
+				break;
+			}
 		case 4: /* moons of JUPITER */
 			solarSys->MoonDesc[0].data_index = RADIOACTIVE_WORLD;
 			solarSys->MoonDesc[0].orb_speed = FULL_CIRCLE / 1.75;
-					/* Io */
+			/* Io */
 			solarSys->MoonDesc[1].data_index = HALIDE_WORLD;
 			solarSys->MoonDesc[1].orb_speed = FULL_CIRCLE / 3.5;
-					/* Europa */
+			/* Europa */
 			solarSys->MoonDesc[2].data_index = CYANIC_WORLD;
 			solarSys->MoonDesc[2].orb_speed = FULL_CIRCLE / 7.16;
-					/* Ganymede */
+			/* Ganymede */
 			solarSys->MoonDesc[3].data_index = PELLUCID_WORLD;
 			solarSys->MoonDesc[3].orb_speed = FULL_CIRCLE / 16.7;
-					/* Callisto */
+			/* Callisto */
 			break;
 		case 5: /* moons of SATURN */
 			solarSys->MoonDesc[0].data_index = ALKALI_WORLD;
 			/*solarSys->MoonDesc[0].radius = MIN_MOON_RADIUS
 					+ (MAX_GEN_MOONS - 1) * MOON_DELTA;*/
 			solarSys->MoonDesc[0].orb_speed = FULL_CIRCLE / 15.22;
-					/* Titan */
+			/* Titan */
 			break;
 		case 7: /* moons of NEPTUNE */
 			solarSys->MoonDesc[0].data_index = VINYLOGOUS_WORLD;
 			solarSys->MoonDesc[0].orb_speed = FULL_CIRCLE / -5.87;
-					/* Triton */
+			/* Triton */
 			break;
 		case 8: /* moons of Pluto */
 			solarSys->MoonDesc[0].data_index = SELENIC_WORLD;
 			solarSys->MoonDesc[0].orb_speed = FULL_CIRCLE / 6.38;
-					/* Charon */
+			/* Charon */
 			break;
 	}
 
@@ -270,69 +267,69 @@ GenerateSol_generateMoons (SOLARSYS_STATE *solarSys, PLANET_DESC *planet)
 }
 
 static bool
-GenerateSol_generateName (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world)
+GenerateSol_generateName(const SOLARSYS_STATE* solarSys,
+						 const PLANET_DESC* world)
 {
-	uqm::COUNT planetNr = planetIndex (solarSys, world);
+	uqm::COUNT planetNr = planetIndex(solarSys, world);
 
-	utf8StringCopy (GLOBAL_SIS (PlanetName),
-			sizeof (GLOBAL_SIS (PlanetName)),
-			GAME_STRING (PLANET_NUMBER_BASE + planetNr));
-	SET_GAME_STATE (BATTLE_PLANET,
-			solarSys->PlanetDesc[planetNr].data_index);
+	utf8StringCopy(GLOBAL_SIS(PlanetName),
+				   sizeof(GLOBAL_SIS(PlanetName)),
+				   GAME_STRING(PLANET_NUMBER_BASE + planetNr));
+	SET_GAME_STATE(BATTLE_PLANET,
+				   solarSys->PlanetDesc[planetNr].data_index);
 
 	return true;
 }
 
 static bool
-GenerateSol_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
+GenerateSol_generateOrbital(SOLARSYS_STATE* solarSys, PLANET_DESC* world)
 {
 	uqm::DWORD rand_val;
 	uqm::COUNT planetNr;
 
-	if (matchWorld (solarSys, world, 2, 0))
+	if (matchWorld(solarSys, world, 2, 0))
 	{
 		if (!NOMAD)
 		{
 			/* Starbase */
-			PutGroupInfo (GROUPS_RANDOM, GROUP_SAVE_IP);
-			ReinitQueue (&GLOBAL (ip_group_q));
-			assert (CountLinks (&GLOBAL (npc_built_ship_q)) == 0);
+			PutGroupInfo(GROUPS_RANDOM, GROUP_SAVE_IP);
+			ReinitQueue(&GLOBAL(ip_group_q));
+			assert(CountLinks(&GLOBAL(npc_built_ship_q)) == 0);
 
 			EncounterGroup = 0;
-			GLOBAL (CurrentActivity) |= START_ENCOUNTER;
-			SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, (uqm::BYTE)~0);
+			GLOBAL(CurrentActivity) |= START_ENCOUNTER;
+			SET_GAME_STATE(GLOBAL_FLAGS_AND_DATA, (uqm::BYTE)~0);
 
 			return true;
 		}
 		else
 		{
-			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
+			LoadStdLanderFont(&solarSys->SysInfo.PlanetInfo);
 
 			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-				CaptureStringTable (
-					LoadStringTable (NOMAD_BASE_STRTAB));
+				CaptureStringTable(
+					LoadStringTable(NOMAD_BASE_STRTAB));
 
-			DoDiscoveryReport (MenuSounds);
+			DoDiscoveryReport(MenuSounds);
 
-			DestroyStringTable (ReleaseStringTable (
+			DestroyStringTable(ReleaseStringTable(
 				solarSys->SysInfo.PlanetInfo.DiscoveryString));
 			solarSys->SysInfo.PlanetInfo.DiscoveryString = 0;
-			FreeLanderFont (&solarSys->SysInfo.PlanetInfo);
+			FreeLanderFont(&solarSys->SysInfo.PlanetInfo);
 
 			return true;
 		}
 	}
 
-	DoPlanetaryAnalysis (&solarSys->SysInfo, world);
-	rand_val = RandomContext_GetSeed (SysGenRNG);
+	DoPlanetaryAnalysis(&solarSys->SysInfo, world);
+	rand_val = RandomContext_GetSeed(SysGenRNG);
 
 	solarSys->SysInfo.PlanetInfo.ScanSeed[MINERAL_SCAN] = rand_val;
-	GenerateMineralDeposits (&solarSys->SysInfo, GENERATE_ALL, NULL);
-	rand_val = RandomContext_GetSeed (SysGenRNG);
+	GenerateMineralDeposits(&solarSys->SysInfo, GENERATE_ALL, NULL);
+	rand_val = RandomContext_GetSeed(SysGenRNG);
 
-	planetNr = planetIndex (solarSys, world);
-	if (worldIsPlanet (solarSys, world))
+	planetNr = planetIndex(solarSys, world);
+	if (worldIsPlanet(solarSys, world))
 	{
 		switch (planetNr)
 		{
@@ -347,8 +344,7 @@ GenerateSol_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 				solarSys->SysInfo.PlanetInfo.SurfaceTemperature = 165;
 				break;
 			case 1: /* VENUS */
-				solarSys->SysInfo.PlanetInfo.AtmoDensity = 90 *
-						EARTH_ATMOSPHERE;
+				solarSys->SysInfo.PlanetInfo.AtmoDensity = 90 * EARTH_ATMOSPHERE;
 				solarSys->SysInfo.PlanetInfo.PlanetDensity = 95;
 				solarSys->SysInfo.PlanetInfo.PlanetRadius = 95;
 				solarSys->SysInfo.PlanetInfo.AxialTilt = 177;
@@ -359,7 +355,7 @@ GenerateSol_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 				break;
 			case 2: /* EARTH */
 				solarSys->SysInfo.PlanetInfo.AtmoDensity =
-						EARTH_ATMOSPHERE;
+					EARTH_ATMOSPHERE;
 				solarSys->SysInfo.PlanetInfo.PlanetDensity = 100;
 				solarSys->SysInfo.PlanetInfo.PlanetRadius = 100;
 				solarSys->SysInfo.PlanetInfo.AxialTilt = 23;
@@ -381,7 +377,7 @@ GenerateSol_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 				break;
 			case 4: /* JUPITER */
 				solarSys->SysInfo.PlanetInfo.AtmoDensity =
-						GAS_GIANT_ATMOSPHERE;
+					GAS_GIANT_ATMOSPHERE;
 				solarSys->SysInfo.PlanetInfo.PlanetDensity = 24;
 				solarSys->SysInfo.PlanetInfo.PlanetRadius = 1120;
 				solarSys->SysInfo.PlanetInfo.AxialTilt = 3;
@@ -390,11 +386,11 @@ GenerateSol_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 				solarSys->SysInfo.PlanetInfo.RotationPeriod = 98;
 				solarSys->SysInfo.PlanetInfo.SurfaceTemperature = -143;
 				solarSys->SysInfo.PlanetInfo.PlanetToSunDist =
-						EARTH_RADIUS * 520L / 100;
+					EARTH_RADIUS * 520L / 100;
 				break;
 			case 5: /* SATURN */
 				solarSys->SysInfo.PlanetInfo.AtmoDensity =
-						GAS_GIANT_ATMOSPHERE;
+					GAS_GIANT_ATMOSPHERE;
 				solarSys->SysInfo.PlanetInfo.PlanetDensity = 13;
 				solarSys->SysInfo.PlanetInfo.PlanetRadius = 945;
 				solarSys->SysInfo.PlanetInfo.AxialTilt = 27;
@@ -403,11 +399,11 @@ GenerateSol_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 				solarSys->SysInfo.PlanetInfo.RotationPeriod = 102;
 				solarSys->SysInfo.PlanetInfo.SurfaceTemperature = -197;
 				solarSys->SysInfo.PlanetInfo.PlanetToSunDist =
-						EARTH_RADIUS * 952L / 100;
+					EARTH_RADIUS * 952L / 100;
 				break;
 			case 6: /* URANUS */
 				solarSys->SysInfo.PlanetInfo.AtmoDensity =
-						GAS_GIANT_ATMOSPHERE;
+					GAS_GIANT_ATMOSPHERE;
 				solarSys->SysInfo.PlanetInfo.PlanetDensity = 21;
 				solarSys->SysInfo.PlanetInfo.PlanetRadius = 411;
 				solarSys->SysInfo.PlanetInfo.AxialTilt = 98;
@@ -416,11 +412,11 @@ GenerateSol_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 				solarSys->SysInfo.PlanetInfo.RotationPeriod = 172;
 				solarSys->SysInfo.PlanetInfo.SurfaceTemperature = -217;
 				solarSys->SysInfo.PlanetInfo.PlanetToSunDist =
-						EARTH_RADIUS * 1916L / 100;
+					EARTH_RADIUS * 1916L / 100;
 				break;
 			case 7: /* NEPTUNE */
 				solarSys->SysInfo.PlanetInfo.AtmoDensity =
-						GAS_GIANT_ATMOSPHERE;
+					GAS_GIANT_ATMOSPHERE;
 				solarSys->SysInfo.PlanetInfo.PlanetDensity = 28;
 				solarSys->SysInfo.PlanetInfo.PlanetRadius = 396;
 				solarSys->SysInfo.PlanetInfo.AxialTilt = 30;
@@ -429,18 +425,18 @@ GenerateSol_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 				solarSys->SysInfo.PlanetInfo.RotationPeriod = 182;
 				solarSys->SysInfo.PlanetInfo.SurfaceTemperature = -229;
 				solarSys->SysInfo.PlanetInfo.PlanetToSunDist =
-						EARTH_RADIUS * 2999L / 100;
+					EARTH_RADIUS * 2999L / 100;
 				break;
 			case 8: /* PLUTO */
-				if (!GET_GAME_STATE (FOUND_PLUTO_SPATHI))
+				if (!GET_GAME_STATE(FOUND_PLUTO_SPATHI))
 				{
-					LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
+					LoadStdLanderFont(&solarSys->SysInfo.PlanetInfo);
 					solarSys->PlanetSideFrame[1] =
-							CaptureDrawable (
-							LoadGraphic (SPAPLUTO_MASK_PMAP_ANIM));
+						CaptureDrawable(
+							LoadGraphic(SPAPLUTO_MASK_PMAP_ANIM));
 					solarSys->SysInfo.PlanetInfo.DiscoveryString =
-							CaptureStringTable (
-							LoadStringTable (SPAPLUTO_STRTAB));
+						CaptureStringTable(
+							LoadStringTable(SPAPLUTO_STRTAB));
 				}
 
 				solarSys->SysInfo.PlanetInfo.AtmoDensity = 0;
@@ -452,14 +448,14 @@ GenerateSol_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 				solarSys->SysInfo.PlanetInfo.RotationPeriod = 1533;
 				solarSys->SysInfo.PlanetInfo.SurfaceTemperature = -235;
 				solarSys->SysInfo.PlanetInfo.PlanetToSunDist =
-						EARTH_RADIUS * 3937L / 100;
+					EARTH_RADIUS * 3937L / 100;
 				break;
 		}
 
 		solarSys->SysInfo.PlanetInfo.SurfaceGravity =
-				CalcGravity (&solarSys->SysInfo.PlanetInfo);
+			CalcGravity(&solarSys->SysInfo.PlanetInfo);
 
-		{	// For Sol Textures
+		{ // For Sol Textures
 			RESOURCE maskAnim = NULL;
 
 			if (optScanSphere)
@@ -498,13 +494,13 @@ GenerateSol_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 			else if (planetNr == 2)
 				maskAnim = EARTH_MASK_ANIM;
 
-			LoadPlanet (CaptureDrawable (LoadGraphic (maskAnim)));
+			LoadPlanet(CaptureDrawable(LoadGraphic(maskAnim)));
 		}
 	}
 	else
 	{
 		// World is a moon.
-		uqm::COUNT moonNr = moonIndex (solarSys, world);
+		uqm::COUNT moonNr = moonIndex(solarSys, world);
 
 		solarSys->SysInfo.PlanetInfo.AxialTilt = 0;
 		solarSys->SysInfo.PlanetInfo.AtmoDensity = 0;
@@ -517,17 +513,17 @@ GenerateSol_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 				//   the tractors, but since they are mobile, they will be
 				//   moved to different locations not governed by this seed.
 				solarSys->SysInfo.PlanetInfo.ScanSeed[BIOLOGICAL_SCAN] =
-						rand_val;
+					rand_val;
 
-				if (!GET_GAME_STATE (MOONBASE_DESTROYED))
+				if (!GET_GAME_STATE(MOONBASE_DESTROYED))
 				{
-					LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
+					LoadStdLanderFont(&solarSys->SysInfo.PlanetInfo);
 					solarSys->PlanetSideFrame[1] =
-							CaptureDrawable (
-							LoadGraphic (MOONBASE_MASK_PMAP_ANIM));
+						CaptureDrawable(
+							LoadGraphic(MOONBASE_MASK_PMAP_ANIM));
 					solarSys->SysInfo.PlanetInfo.DiscoveryString =
-							CaptureStringTable (
-							LoadStringTable (MOONBASE_STRTAB));
+						CaptureStringTable(
+							LoadStringTable(MOONBASE_STRTAB));
 				}
 
 				solarSys->SysInfo.PlanetInfo.PlanetDensity = 60;
@@ -540,7 +536,7 @@ GenerateSol_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 
 			case 4: /* moons of JUPITER */
 				solarSys->SysInfo.PlanetInfo.PlanetToSunDist =
-						EARTH_RADIUS * 520L / 100;
+					EARTH_RADIUS * 520L / 100;
 				switch (moonNr)
 				{
 					case 0: /* Io */
@@ -576,7 +572,7 @@ GenerateSol_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 
 			case 5: /* moon of SATURN: Titan */
 				solarSys->SysInfo.PlanetInfo.PlanetToSunDist =
-						EARTH_RADIUS * 952L / 100;
+					EARTH_RADIUS * 952L / 100;
 				solarSys->SysInfo.PlanetInfo.AtmoDensity = 160;
 				solarSys->SysInfo.PlanetInfo.Weather = 2;
 				solarSys->SysInfo.PlanetInfo.PlanetDensity = 34;
@@ -588,7 +584,7 @@ GenerateSol_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 
 			case 7: /* moon of NEPTUNE: Triton */
 				solarSys->SysInfo.PlanetInfo.PlanetToSunDist =
-						EARTH_RADIUS * 2999L / 100;
+					EARTH_RADIUS * 2999L / 100;
 				solarSys->SysInfo.PlanetInfo.AtmoDensity = 10;
 				solarSys->SysInfo.PlanetInfo.Weather = 1;
 				solarSys->SysInfo.PlanetInfo.PlanetDensity = 95;
@@ -612,9 +608,9 @@ GenerateSol_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 		}
 
 		solarSys->SysInfo.PlanetInfo.SurfaceGravity =
-				CalcGravity (&solarSys->SysInfo.PlanetInfo);
+			CalcGravity(&solarSys->SysInfo.PlanetInfo);
 
-		{	// For Sol Textures
+		{ // For Sol Textures
 			RESOURCE maskAnim = NULL;
 
 			if (optScanSphere)
@@ -653,7 +649,7 @@ GenerateSol_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 						break;
 				}
 			}
-			LoadPlanet (CaptureDrawable (LoadGraphic (maskAnim)));
+			LoadPlanet(CaptureDrawable(LoadGraphic(maskAnim)));
 		}
 	}
 
@@ -661,57 +657,57 @@ GenerateSol_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 }
 
 static uqm::COUNT
-GenerateSol_generateMinerals (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *info)
+GenerateSol_generateMinerals(const SOLARSYS_STATE* solarSys,
+							 const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO* info)
 {
-	if (EXTENDED && matchWorld (solarSys, world, 8, 0))
+	if (EXTENDED && matchWorld(solarSys, world, 8, 0))
 	{
 		/* Pluto's Moon, Charon */
-		return CustomMineralDeposits (&solarSys->SysInfo, whichNode, info,
-				5, CHARON_DUST, LIGHT);
+		return CustomMineralDeposits(&solarSys->SysInfo, whichNode, info,
+									 5, CHARON_DUST, LIGHT);
 	}
-	else if (!PrimeSeed && matchWorld (solarSys, world, 0, MATCH_PLANET))
+	else if (!PrimeSeed && matchWorld(solarSys, world, 0, MATCH_PLANET))
 	{
 		/* Mercury */
-		return CustomMineralDeposits (&solarSys->SysInfo, whichNode, info,
-				5, RADIOACTIVE_COMPOUNDS, LIGHT);
+		return CustomMineralDeposits(&solarSys->SysInfo, whichNode, info,
+									 5, RADIOACTIVE_COMPOUNDS, LIGHT);
 	}
 	else
-		return GenerateMineralDeposits (&solarSys->SysInfo, whichNode, info);
+		return GenerateMineralDeposits(&solarSys->SysInfo, whichNode, info);
 }
 
 
 static uqm::COUNT
-GenerateSol_generateEnergy (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *info)
+GenerateSol_generateEnergy(const SOLARSYS_STATE* solarSys,
+						   const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO* info)
 {
-	if (matchWorld (solarSys, world, 8, MATCH_PLANET))
+	if (matchWorld(solarSys, world, 8, MATCH_PLANET))
 	{
 		/* Pluto */
 		// This check is needed because the retrieval bit is not set for
 		// this node to keep it on the surface while the lander is taking
 		// off
-		if (GET_GAME_STATE (FOUND_PLUTO_SPATHI))
-		{	// already picked up
+		if (GET_GAME_STATE(FOUND_PLUTO_SPATHI))
+		{ // already picked up
 			return 0;
 		}
 
 		if (info)
 		{
-			info->loc_pt.x = RES_SCALE (20);
-			info->loc_pt.y = MAP_HEIGHT - RES_SCALE (8);
+			info->loc_pt.x = RES_SCALE(20);
+			info->loc_pt.y = MAP_HEIGHT - RES_SCALE(8);
 		}
 
 		return 1; // only matters when count is requested
 	}
 
-	if (matchWorld (solarSys, world, 2, 1))
+	if (matchWorld(solarSys, world, 2, 1))
 	{
 		/* Earth Moon */
 		// This check is redundant since the retrieval bit will keep the
 		// node from showing up again
-		if (GET_GAME_STATE (MOONBASE_DESTROYED))
-		{	// already picked up
+		if (GET_GAME_STATE(MOONBASE_DESTROYED))
+		{ // already picked up
 			return 0;
 		}
 
@@ -724,27 +720,27 @@ GenerateSol_generateEnergy (const SOLARSYS_STATE *solarSys,
 		return 1; // only matters when count is requested
 	}
 
-	(void) whichNode;
+	(void)whichNode;
 	return 0;
 }
 
 static bool
-GenerateSol_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		uqm::COUNT whichNode)
+GenerateSol_pickupEnergy(SOLARSYS_STATE* solarSys, PLANET_DESC* world,
+						 uqm::COUNT whichNode)
 {
-	if (matchWorld (solarSys, world, 8, MATCH_PLANET))
-	{	// Pluto
-		assert (!GET_GAME_STATE (FOUND_PLUTO_SPATHI) && whichNode == 0);
+	if (matchWorld(solarSys, world, 8, MATCH_PLANET))
+	{ // Pluto
+		assert(!GET_GAME_STATE(FOUND_PLUTO_SPATHI) && whichNode == 0);
 
-		// Ran into Fwiffo on Pluto
-		#define FWIFFO_FRAGS  8
-		if (!KillLanderCrewSeq (FWIFFO_FRAGS, ONE_SECOND / 20))
+// Ran into Fwiffo on Pluto
+#define FWIFFO_FRAGS 8
+		if (!KillLanderCrewSeq(FWIFFO_FRAGS, ONE_SECOND / 20))
 			return false; // lander probably died
 
-		SET_GAME_STATE (FOUND_PLUTO_SPATHI, 1);
+		SET_GAME_STATE(FOUND_PLUTO_SPATHI, 1);
 
-		GenerateDefault_landerReport (solarSys);
-		SetLanderTakeoff ();
+		GenerateDefault_landerReport(solarSys);
+		SetLanderTakeoff();
 
 		// Do not remove the node from the surface while the lander is
 		// taking off. FOUND_PLUTO_SPATHI bit will keep the node from
@@ -752,18 +748,18 @@ GenerateSol_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 		return false;
 	}
 
-	if (matchWorld (solarSys, world, 2, 1))
-	{	// Earth Moon
-		assert (!GET_GAME_STATE (MOONBASE_DESTROYED) && whichNode == 0);
+	if (matchWorld(solarSys, world, 2, 1))
+	{ // Earth Moon
+		assert(!GET_GAME_STATE(MOONBASE_DESTROYED) && whichNode == 0);
 
-		GenerateDefault_landerReport (solarSys);
+		GenerateDefault_landerReport(solarSys);
 
 		if (!NOMAD)
 		{
-			SetLanderTakeoff ();
+			SetLanderTakeoff();
 
-			SET_GAME_STATE (MOONBASE_DESTROYED, 1);
-			SET_GAME_STATE (MOONBASE_ON_SHIP, 1);
+			SET_GAME_STATE(MOONBASE_DESTROYED, 1);
+			SET_GAME_STATE(MOONBASE_ON_SHIP, 1);
 
 			return true; // picked up
 		}
@@ -771,19 +767,19 @@ GenerateSol_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 			return false;
 	}
 
-	(void) whichNode;
+	(void)whichNode;
 	return false;
 }
 
 static uqm::COUNT
-GenerateSol_generateLife (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *info)
+GenerateSol_generateLife(const SOLARSYS_STATE* solarSys,
+						 const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO* info)
 {
-	if (matchWorld (solarSys, world, 2, 1))
+	if (matchWorld(solarSys, world, 2, 1))
 	{
 		/* Earth Moon */
-		return GenerateRandomNodes (&solarSys->SysInfo, BIOLOGICAL_SCAN,
-				10, BRAINBOX_BULLDOZER, whichNode, info);
+		return GenerateRandomNodes(&solarSys->SysInfo, BIOLOGICAL_SCAN,
+								   10, BRAINBOX_BULLDOZER, whichNode, info);
 	}
 
 	return 0;
@@ -791,24 +787,24 @@ GenerateSol_generateLife (const SOLARSYS_STATE *solarSys,
 
 
 static int
-init_probe (void)
+init_probe(void)
 {
 	HIPGROUP hGroup;
 
-	if (!GET_GAME_STATE (PROBE_MESSAGE_DELIVERED)
-			&& GetGroupInfo (GLOBAL (BattleGroupRef), GROUP_INIT_IP)
-			&& (hGroup = GetHeadLink (&GLOBAL (ip_group_q))))
+	if (!GET_GAME_STATE(PROBE_MESSAGE_DELIVERED)
+		&& GetGroupInfo(GLOBAL(BattleGroupRef), GROUP_INIT_IP)
+		&& (hGroup = GetHeadLink(&GLOBAL(ip_group_q))))
 	{
-		IP_GROUP *GroupPtr;
+		IP_GROUP* GroupPtr;
 
-		GroupPtr = LockIpGroup (&GLOBAL (ip_group_q), hGroup);
+		GroupPtr = LockIpGroup(&GLOBAL(ip_group_q), hGroup);
 		GroupPtr->task = IN_ORBIT;
-		GroupPtr->sys_loc = 2 + 1; /* orbitting earth */
+		GroupPtr->sys_loc = 2 + 1;	/* orbitting earth */
 		GroupPtr->dest_loc = 2 + 1; /* orbitting earth */
 		GroupPtr->loc.x = 0;
 		GroupPtr->loc.y = 0;
 		GroupPtr->group_counter = 0;
-		UnlockIpGroup (&GLOBAL (ip_group_q), hGroup);
+		UnlockIpGroup(&GLOBAL(ip_group_q), hGroup);
 
 		return 1;
 	}
@@ -817,28 +813,28 @@ init_probe (void)
 }
 
 static void
-check_probe (void)
+check_probe(void)
 {
 	HIPGROUP hGroup;
-	IP_GROUP *GroupPtr;
+	IP_GROUP* GroupPtr;
 
-	if (!GLOBAL (BattleGroupRef))
+	if (!GLOBAL(BattleGroupRef))
 		return; // nothing to check
 
-	hGroup = GetHeadLink (&GLOBAL (ip_group_q));
+	hGroup = GetHeadLink(&GLOBAL(ip_group_q));
 	if (!hGroup)
 		return; // still nothing to check
 
-	GroupPtr = LockIpGroup (&GLOBAL (ip_group_q), hGroup);
+	GroupPtr = LockIpGroup(&GLOBAL(ip_group_q), hGroup);
 	// REFORM_GROUP was set in ipdisp.c:ip_group_collision()
 	// during a collision with the flagship.
 	if (GroupPtr->race_id == URQUAN_DRONE_SHIP
-			&& (GroupPtr->task & REFORM_GROUP))
+		&& (GroupPtr->task & REFORM_GROUP))
 	{
 		// We just want the probe to take off as fast as possible,
 		// so clear out REFORM_GROUP
 		GroupPtr->task = FLEE | IGNORE_FLAGSHIP;
 		GroupPtr->dest_loc = 0;
 	}
-	UnlockIpGroup (&GLOBAL (ip_group_q), hGroup);
+	UnlockIpGroup(&GLOBAL(ip_group_q), hGroup);
 }

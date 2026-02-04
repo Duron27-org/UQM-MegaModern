@@ -21,60 +21,60 @@
 
 #include "libs/gfxlib.h"
 
-#define MAX_COLORMAPS           250
+#define MAX_COLORMAPS 250
 
 // These are pertinent to colortable file format
 // We load colormaps as binary and parse them when needed
-#define PLUTVAL_BYTE_SIZE       3
+#define PLUTVAL_BYTE_SIZE 3
 // Channel order in colormap tables
-#define PLUTVAL_RED             0
-#define PLUTVAL_GREEN           1
-#define PLUTVAL_BLUE            2
+#define PLUTVAL_RED 0
+#define PLUTVAL_GREEN 1
+#define PLUTVAL_BLUE 2
 
-#define NUMBER_OF_PLUTVALS      256
+#define NUMBER_OF_PLUTVALS 256
 // Size of the colormap in a colortable file
-#define PLUT_BYTE_SIZE          (PLUTVAL_BYTE_SIZE * NUMBER_OF_PLUTVALS)
+#define PLUT_BYTE_SIZE (PLUTVAL_BYTE_SIZE * NUMBER_OF_PLUTVALS)
 
-#define FADE_NO_INTENSITY      0
-#define FADE_NORMAL_INTENSITY  255
-#define FADE_FULL_INTENSITY    510
+#define FADE_NO_INTENSITY 0
+#define FADE_NORMAL_INTENSITY 255
+#define FADE_FULL_INTENSITY 510
 
 typedef struct NativePalette NativePalette;
 
 typedef struct tfb_colormap
 {
 	int index;
-			// Colormap index as the game sees it
+	// Colormap index as the game sees it
 	int version;
-			// Version goes up every time the colormap changes. This may
-			// be due to SetColorMap() or at every transformation step
-			// of XFormColorMap(). Paletted TFB_Images track the last
-			// colormap version they were drawn with for optimization.
+	// Version goes up every time the colormap changes. This may
+	// be due to SetColorMap() or at every transformation step
+	// of XFormColorMap(). Paletted TFB_Images track the last
+	// colormap version they were drawn with for optimization.
 	int refcount;
-	struct tfb_colormap *next;
-			// for spares linking
-	NativePalette *palette;
+	struct tfb_colormap* next;
+	// for spares linking
+	NativePalette* palette;
 } TFB_ColorMap;
 
-extern int GetFadeAmount (void);
+extern int GetFadeAmount(void);
 
-extern void InitColorMaps (void);
-extern void UninitColorMaps (void);
+extern void InitColorMaps(void);
+extern void UninitColorMaps(void);
 
-extern void GetColorMapColors (Color *colors, TFB_ColorMap *);
+extern void GetColorMapColors(Color* colors, TFB_ColorMap*);
 
-extern TFB_ColorMap * TFB_GetColorMap (int index);
-extern void TFB_ReturnColorMap (TFB_ColorMap *map);
+extern TFB_ColorMap* TFB_GetColorMap(int index);
+extern void TFB_ReturnColorMap(TFB_ColorMap* map);
 
-extern bool XFormColorMap_step (void);
-extern void SetColorMapColors (Color* colors, COLORMAPPTR ColorMapPtr,
-		uqm::COUNT from, uqm::COUNT to);
-extern Color GetColorMapColor (uqm::COUNT ColorMapIndex, uqm::COUNT ColorIndex);
+extern bool XFormColorMap_step(void);
+extern void SetColorMapColors(Color* colors, COLORMAPPTR ColorMapPtr,
+							  uqm::COUNT from, uqm::COUNT to);
+extern Color GetColorMapColor(uqm::COUNT ColorMapIndex, uqm::COUNT ColorIndex);
 
 // Native
-NativePalette* AllocNativePalette (void);
-void FreeNativePalette (NativePalette *);
-void SetNativePaletteColor (NativePalette *, int index, Color);
-Color GetNativePaletteColor (NativePalette *, int index);
+NativePalette* AllocNativePalette(void);
+void FreeNativePalette(NativePalette*);
+void SetNativePaletteColor(NativePalette*, int index, Color);
+Color GetNativePaletteColor(NativePalette*, int index);
 
 #endif /* CMAP_H */

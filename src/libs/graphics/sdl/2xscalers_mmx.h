@@ -18,37 +18,37 @@
 #define LIBS_GRAPHICS_SDL_2XSCALERS_MMX_H_
 
 // MMX versions
-void Scale_MMX_PrepPlatform (const SDL_PixelFormat* fmt);
+void Scale_MMX_PrepPlatform(const SDL_PixelFormat* fmt);
 
-void Scale_MMX_Nearest (SDL_Surface *src, SDL_Surface *dst, SDL_Rect *r);
-void Scale_MMX_BilinearFilter (SDL_Surface *src, SDL_Surface *dst, SDL_Rect *r);
-void Scale_MMX_BiAdaptAdvFilter (SDL_Surface *src, SDL_Surface *dst, SDL_Rect *r);
-void Scale_MMX_TriScanFilter (SDL_Surface *src, SDL_Surface *dst, SDL_Rect *r);
-void Scale_MMX_HqFilter (SDL_Surface *src, SDL_Surface *dst, SDL_Rect *r);
+void Scale_MMX_Nearest(SDL_Surface* src, SDL_Surface* dst, SDL_Rect* r);
+void Scale_MMX_BilinearFilter(SDL_Surface* src, SDL_Surface* dst, SDL_Rect* r);
+void Scale_MMX_BiAdaptAdvFilter(SDL_Surface* src, SDL_Surface* dst, SDL_Rect* r);
+void Scale_MMX_TriScanFilter(SDL_Surface* src, SDL_Surface* dst, SDL_Rect* r);
+void Scale_MMX_HqFilter(SDL_Surface* src, SDL_Surface* dst, SDL_Rect* r);
 
 extern const Scale_FuncDef_t Scale_MMX_Functions[];
 
 
 // SSE (Intel)/MMX Ext (Athlon) versions
-void Scale_SSE_PrepPlatform (const SDL_PixelFormat* fmt);
+void Scale_SSE_PrepPlatform(const SDL_PixelFormat* fmt);
 
-void Scale_SSE_Nearest (SDL_Surface *src, SDL_Surface *dst, SDL_Rect *r);
-void Scale_SSE_BilinearFilter (SDL_Surface *src, SDL_Surface *dst, SDL_Rect *r);
-void Scale_SSE_BiAdaptAdvFilter (SDL_Surface *src, SDL_Surface *dst, SDL_Rect *r);
-void Scale_SSE_TriScanFilter (SDL_Surface *src, SDL_Surface *dst, SDL_Rect *r);
-void Scale_SSE_HqFilter (SDL_Surface *src, SDL_Surface *dst, SDL_Rect *r);
+void Scale_SSE_Nearest(SDL_Surface* src, SDL_Surface* dst, SDL_Rect* r);
+void Scale_SSE_BilinearFilter(SDL_Surface* src, SDL_Surface* dst, SDL_Rect* r);
+void Scale_SSE_BiAdaptAdvFilter(SDL_Surface* src, SDL_Surface* dst, SDL_Rect* r);
+void Scale_SSE_TriScanFilter(SDL_Surface* src, SDL_Surface* dst, SDL_Rect* r);
+void Scale_SSE_HqFilter(SDL_Surface* src, SDL_Surface* dst, SDL_Rect* r);
 
 extern const Scale_FuncDef_t Scale_SSE_Functions[];
 
 
 // 3DNow (AMD K6/Athlon) versions
-void Scale_3DNow_PrepPlatform (const SDL_PixelFormat* fmt);
+void Scale_3DNow_PrepPlatform(const SDL_PixelFormat* fmt);
 
-void Scale_3DNow_Nearest (SDL_Surface *src, SDL_Surface *dst, SDL_Rect *r);
-void Scale_3DNow_BilinearFilter (SDL_Surface *src, SDL_Surface *dst, SDL_Rect *r);
-void Scale_3DNow_BiAdaptAdvFilter (SDL_Surface *src, SDL_Surface *dst, SDL_Rect *r);
-void Scale_3DNow_TriScanFilter (SDL_Surface *src, SDL_Surface *dst, SDL_Rect *r);
-void Scale_3DNow_HqFilter (SDL_Surface *src, SDL_Surface *dst, SDL_Rect *r);
+void Scale_3DNow_Nearest(SDL_Surface* src, SDL_Surface* dst, SDL_Rect* r);
+void Scale_3DNow_BilinearFilter(SDL_Surface* src, SDL_Surface* dst, SDL_Rect* r);
+void Scale_3DNow_BiAdaptAdvFilter(SDL_Surface* src, SDL_Surface* dst, SDL_Rect* r);
+void Scale_3DNow_TriScanFilter(SDL_Surface* src, SDL_Surface* dst, SDL_Rect* r);
+void Scale_3DNow_HqFilter(SDL_Surface* src, SDL_Surface* dst, SDL_Rect* r);
 
 extern const Scale_FuncDef_t Scale_3DNow_Functions[];
 

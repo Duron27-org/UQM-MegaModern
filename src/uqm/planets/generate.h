@@ -48,55 +48,56 @@ extern "C" {
 
 // Any of these functions returning true means that the action has been
 // handled, and that the default function should not be called.
-typedef bool (*InitNpcsFunction)(SOLARSYS_STATE *solarSys);
-typedef bool (*ReinitNpcsFunction)(SOLARSYS_STATE *solarSys);
-typedef bool (*UninitNpcsFunction)(SOLARSYS_STATE *solarSys);
-typedef bool (*GeneratePlanetsFunction)(SOLARSYS_STATE *solarSys);
-typedef bool (*GenerateMoonsFunction)(SOLARSYS_STATE *solarSys,
-		PLANET_DESC *planet);
-typedef bool (*GenerateOrbitalFunction)(SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world);
-typedef bool (*GenerateNameFunction)(const SOLARSYS_STATE *,
-		const PLANET_DESC *world);
+typedef bool (*InitNpcsFunction)(SOLARSYS_STATE* solarSys);
+typedef bool (*ReinitNpcsFunction)(SOLARSYS_STATE* solarSys);
+typedef bool (*UninitNpcsFunction)(SOLARSYS_STATE* solarSys);
+typedef bool (*GeneratePlanetsFunction)(SOLARSYS_STATE* solarSys);
+typedef bool (*GenerateMoonsFunction)(SOLARSYS_STATE* solarSys,
+									  PLANET_DESC* planet);
+typedef bool (*GenerateOrbitalFunction)(SOLARSYS_STATE* solarSys,
+										PLANET_DESC* world);
+typedef bool (*GenerateNameFunction)(const SOLARSYS_STATE*,
+									 const PLANET_DESC* world);
 // The following functions return the number of objects being generated
 // (or the index of the current object in some cases)
-typedef uqm::COUNT (*GenerateMineralsFunction)(const SOLARSYS_STATE *,
-		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
-typedef uqm::COUNT (*GenerateEnergyFunction)(const SOLARSYS_STATE *,
-		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
-typedef uqm::COUNT (*GenerateLifeFunction)(const SOLARSYS_STATE *,
-		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
+typedef uqm::COUNT (*GenerateMineralsFunction)(const SOLARSYS_STATE*,
+											   const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO*);
+typedef uqm::COUNT (*GenerateEnergyFunction)(const SOLARSYS_STATE*,
+											 const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO*);
+typedef uqm::COUNT (*GenerateLifeFunction)(const SOLARSYS_STATE*,
+										   const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO*);
 // The following functions return true if the node should be removed
 // from the surface, i.e. picked up.
-typedef bool (*PickupMineralsFunction)(SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, uqm::COUNT whichNode);
-typedef bool (*PickupEnergyFunction)(SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, uqm::COUNT whichNode);
-typedef bool (*PickupLifeFunction)(SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, uqm::COUNT whichNode);
+typedef bool (*PickupMineralsFunction)(SOLARSYS_STATE* solarSys,
+									   PLANET_DESC* world, uqm::COUNT whichNode);
+typedef bool (*PickupEnergyFunction)(SOLARSYS_STATE* solarSys,
+									 PLANET_DESC* world, uqm::COUNT whichNode);
+typedef bool (*PickupLifeFunction)(SOLARSYS_STATE* solarSys,
+								   PLANET_DESC* world, uqm::COUNT whichNode);
 
 
-struct GenerateFunctions {
+struct GenerateFunctions
+{
 	InitNpcsFunction initNpcs;
-			// Ships in the solar system, the first time it is accessed.
+	// Ships in the solar system, the first time it is accessed.
 	ReinitNpcsFunction reinitNpcs;
-			// Ships in the solar system, every next time it is accessed.
+	// Ships in the solar system, every next time it is accessed.
 	UninitNpcsFunction uninitNpcs;
-			// When leaving the solar system.
+	// When leaving the solar system.
 	GeneratePlanetsFunction generatePlanets;
-			// Layout of planets within a solar system.
+	// Layout of planets within a solar system.
 	GenerateMoonsFunction generateMoons;
-			// Layout of moons around a planet.
+	// Layout of moons around a planet.
 	GenerateNameFunction generateName;
-			// Name of a planet.
+	// Name of a planet.
 	GenerateOrbitalFunction generateOrbital;
-			// Characteristics of words (planets and moons).
+	// Characteristics of words (planets and moons).
 	GenerateMineralsFunction generateMinerals;
-			// Minerals on the planet surface.
+	// Minerals on the planet surface.
 	GenerateEnergyFunction generateEnergy;
-			// Energy sources on the planet surface.
+	// Energy sources on the planet surface.
 	GenerateLifeFunction generateLife;
-			// Bio on the planet surface.
+	// Bio on the planet surface.
 	PickupMineralsFunction pickupMinerals;
 	PickupEnergyFunction pickupEnergy;
 	PickupLifeFunction pickupLife;
@@ -104,10 +105,9 @@ struct GenerateFunctions {
 
 // JSD - GenerateFunctions moved from gendef.h due to dependency issues caused by needing
 // to #include planets/generate.h only for this one declaration.  Anyway, it belongs here.
-const GenerateFunctions *getGenerateFunctions (uqm::BYTE Index);
+const GenerateFunctions* getGenerateFunctions(uqm::BYTE Index);
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* GENERATE_H */
-
+#endif /* GENERATE_H */

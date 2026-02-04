@@ -28,22 +28,22 @@ typedef struct getmelee_struct GETMELEE_STATE;
 extern "C" {
 #endif
 
-void MeleeShipDeath (STARSHIP *);
-void BuildPickMeleeFrame (void);
-void DestroyPickMeleeFrame (void);
-void FillPickMeleeFrame (MeleeSetup *setup);
-void MeleeGameOver (void);
-bool GetInitialMeleeStarShips (HSTARSHIP *result);
-bool GetNextMeleeStarShip (uqm::COUNT which_player, HSTARSHIP *result);
+void MeleeShipDeath(STARSHIP*);
+void BuildPickMeleeFrame(void);
+void DestroyPickMeleeFrame(void);
+void FillPickMeleeFrame(MeleeSetup* setup);
+void MeleeGameOver(void);
+bool GetInitialMeleeStarShips(HSTARSHIP* result);
+bool GetNextMeleeStarShip(uqm::COUNT which_player, HSTARSHIP* result);
 
-bool updateMeleeSelection (GETMELEE_STATE *gms, uqm::COUNT player, uqm::COUNT ship);
+bool updateMeleeSelection(GETMELEE_STATE* gms, uqm::COUNT player, uqm::COUNT ship);
 
-bool selectShipHuman (HumanInputContext *context, GETMELEE_STATE *gms);
-bool selectShipComputer (ComputerInputContext *context,
-		GETMELEE_STATE *gms);
+bool selectShipHuman(HumanInputContext* context, GETMELEE_STATE* gms);
+bool selectShipComputer(ComputerInputContext* context,
+						GETMELEE_STATE* gms);
 #ifdef NETPLAY
-bool selectShipNetwork (NetworkInputContext *context, GETMELEE_STATE *gms);
-#endif  /* NETPLAY */
+bool selectShipNetwork(NetworkInputContext* context, GETMELEE_STATE* gms);
+#endif /* NETPLAY */
 
 #if 0 //defined(__cplusplus)
 }
@@ -59,44 +59,45 @@ bool selectShipNetwork (NetworkInputContext *context, GETMELEE_STATE *gms);
 extern "C" {
 #endif
 
-struct getmelee_struct {
-	bool (*InputFunc) (struct getmelee_struct *pInputState);
+struct getmelee_struct
+{
+	bool (*InputFunc)(struct getmelee_struct* pInputState);
 
 	bool Initialized;
-	
-	struct {
+
+	struct
+	{
 		TimeCount timeIn;
 		HSTARSHIP hBattleShip;
-				// Chosen ship.
+		// Chosen ship.
 		uqm::COUNT choice;
-				// Index of chosen ship, or (uqm::COUNT) ~0 for random choice.
+		// Index of chosen ship, or (uqm::COUNT) ~0 for random choice.
 
 		uqm::COUNT row;
 		uqm::COUNT col;
 		uqm::COUNT ships_left;
-				// Number of ships still available.
+		// Number of ships still available.
 		uqm::COUNT randomIndex;
-				// Pre-generated random number.
+		// Pre-generated random number.
 		bool selecting;
-				// Is this player selecting a ship?
+		// Is this player selecting a ship?
 		bool done;
-				// Has a selection been made for this player?
-		FlashContext *flashContext;
-				// Context for controlling the flash rectangle.
+		// Has a selection been made for this player?
+		FlashContext* flashContext;
+		// Context for controlling the flash rectangle.
 #ifdef NETPLAY
 		bool remoteSelected;
 #endif
 	} player[NUM_PLAYERS];
 };
 
-bool setShipSelected(GETMELEE_STATE *gms, uqm::COUNT playerI, uqm::COUNT choice,
-		bool reportNetwork);
+bool setShipSelected(GETMELEE_STATE* gms, uqm::COUNT playerI, uqm::COUNT choice,
+					 bool reportNetwork);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* PICKMELE_INTERNAL */
+#endif /* PICKMELE_INTERNAL */
 
-#endif  /* UQM_SUPERMELEE_PICKMELE_H_ */
-
+#endif /* UQM_SUPERMELEE_PICKMELE_H_ */

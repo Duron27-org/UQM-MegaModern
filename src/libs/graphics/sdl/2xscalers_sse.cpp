@@ -28,11 +28,11 @@
 
 // SSE name for all functions
 #undef SCALE_
-#define SCALE_(name) Scale ## _SSE_ ## name
+#define SCALE_(name) Scale##_SSE_##name
 
 // Tell them which opcodes we want to support
 #define USE_MOVNTQ
-#define USE_PREFETCH  INTEL_PREFETCH
+#define USE_PREFETCH INTEL_PREFETCH
 #define USE_PSADBW
 // Bring in inline asm functions
 #include "scalemmx.h"
@@ -41,22 +41,21 @@
 // Scaler function lookup table
 //
 const Scale_FuncDef_t
-Scale_SSE_Functions[] =
-{
-	{TFB_GFXFLAGS_SCALE_BILINEAR,   Scale_SSE_BilinearFilter},
-	{TFB_GFXFLAGS_SCALE_BIADAPT,    Scale_BiAdaptFilter},
-	{TFB_GFXFLAGS_SCALE_BIADAPTADV, Scale_SSE_BiAdaptAdvFilter},
-	{TFB_GFXFLAGS_SCALE_TRISCAN,    Scale_SSE_TriScanFilter},
-	{TFB_GFXFLAGS_SCALE_HQXX,       Scale_MMX_HqFilter},
-	// Default
-	{0,                             Scale_SSE_Nearest}
+	Scale_SSE_Functions[] =
+		{
+			{TFB_GFXFLAGS_SCALE_BILINEAR,	  Scale_SSE_BilinearFilter  },
+			{TFB_GFXFLAGS_SCALE_BIADAPT,	 Scale_BiAdaptFilter		},
+			{TFB_GFXFLAGS_SCALE_BIADAPTADV, Scale_SSE_BiAdaptAdvFilter},
+			{TFB_GFXFLAGS_SCALE_TRISCAN,	 Scale_SSE_TriScanFilter	},
+			{TFB_GFXFLAGS_SCALE_HQXX,		  Scale_MMX_HqFilter		},
+			// Default
+			{0,							 Scale_SSE_Nearest		 }
 };
 
 
-void
-Scale_SSE_PrepPlatform (const SDL_PixelFormat* fmt)
+void Scale_SSE_PrepPlatform(const SDL_PixelFormat* fmt)
 {
-	Scale_MMX_PrepPlatform (fmt);
+	Scale_MMX_PrepPlatform(fmt);
 }
 
 // Nearest Neighbor scaling to 2x
@@ -97,4 +96,3 @@ Scale_SSE_PrepPlatform (const SDL_PixelFormat* fmt)
 #endif
 
 #endif /* MMX_ASM */
-

@@ -22,10 +22,10 @@
 #include "socket.h"
 
 #ifdef USE_WINSOCK
-#	include <winsock2.h>
+#include <winsock2.h>
 #else
-#	include <sys/socket.h>
-#	include <netinet/in.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
 #endif
 
 
@@ -49,13 +49,12 @@ const int socketTypeTranslation[] = {
 };
 
 
-Socket *
-Socket_open(ProtocolFamily domain, SocketType type, Protocol protocol) {
+Socket*
+Socket_open(ProtocolFamily domain, SocketType type, Protocol protocol)
+{
 	return Socket_openNative(protocolFamilyTranslation[domain],
-			socketTypeTranslation[type], protocolTranslation[protocol]);
+							 socketTypeTranslation[type], protocolTranslation[protocol]);
 }
 
 
 ////////////////////////////////////////////////////////////////////////////
-
-

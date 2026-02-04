@@ -31,80 +31,76 @@
 #include "libs/vidlib.h"
 
 
-void
-FreeKernel (void)
+void FreeKernel(void)
 {
-	UninitPlayerInput ();
+	UninitPlayerInput();
 
-	UninitResourceSystem ();
+	UninitResourceSystem();
 
-	DestroyDrawable (ReleaseDrawable (Screen));
+	DestroyDrawable(ReleaseDrawable(Screen));
 	Screen = 0;
-	DestroyContext (ScreenContext);
+	DestroyContext(ScreenContext);
 	ScreenContext = 0;
 
-	UninitVideoPlayer ();
-	UninitSound ();
+	UninitVideoPlayer();
+	UninitSound();
 }
 
 static void
-UninitContexts (void)
+UninitContexts(void)
 {
-	UninitQueue (&disp_q);
+	UninitQueue(&disp_q);
 
-	DestroyContext (OffScreenContext);
-	DestroyContext (SpaceContext);
-	DestroyContext (StatusContext);
+	DestroyContext(OffScreenContext);
+	DestroyContext(SpaceContext);
+	DestroyContext(StatusContext);
 }
 
 static void
-UninitKernel (void)
+UninitKernel(void)
 {
-	UninitSpace ();
+	UninitSpace();
 
-	DestroySound (ReleaseSound (MenuSounds));
-	DestroyFont (MicroFont);
-	DestroyStringTable (ReleaseStringTable (GameStrings));
-	DestroyDrawable (ReleaseDrawable (BorderFrame));
-	DestroyDrawable (ReleaseDrawable (HDBorderFrame));
-	DestroyDrawable (ReleaseDrawable (CustBevelFrame));
-	DestroyDrawable (ReleaseDrawable (DefBevelFrame));
-	DestroyDrawable (ReleaseDrawable (StatusFrame));
-	DestroyDrawable (ReleaseDrawable (SubmenuFrame));
-	DestroyDrawable (ReleaseDrawable (ActivityFrame));
-	DestroyFont (TinyFont);
-	DestroyFont (TinyFontBold);
-	DestroyFont (StarConFont);
-	DestroyFont (PlyrFont);
-	DestroyFont (LabelFont);
-	DestroyFont (SlabFont);
-	DestroyFont (SquareFont);
-	DestroyFont (PlayMenuFont);
+	DestroySound(ReleaseSound(MenuSounds));
+	DestroyFont(MicroFont);
+	DestroyStringTable(ReleaseStringTable(GameStrings));
+	DestroyDrawable(ReleaseDrawable(BorderFrame));
+	DestroyDrawable(ReleaseDrawable(HDBorderFrame));
+	DestroyDrawable(ReleaseDrawable(CustBevelFrame));
+	DestroyDrawable(ReleaseDrawable(DefBevelFrame));
+	DestroyDrawable(ReleaseDrawable(StatusFrame));
+	DestroyDrawable(ReleaseDrawable(SubmenuFrame));
+	DestroyDrawable(ReleaseDrawable(ActivityFrame));
+	DestroyFont(TinyFont);
+	DestroyFont(TinyFontBold);
+	DestroyFont(StarConFont);
+	DestroyFont(PlyrFont);
+	DestroyFont(LabelFont);
+	DestroyFont(SlabFont);
+	DestroyFont(SquareFont);
+	DestroyFont(PlayMenuFont);
 
-	UninitQueue (&race_q[0]);
-	UninitQueue (&race_q[1]);
+	UninitQueue(&race_q[0]);
+	UninitQueue(&race_q[1]);
 
 	ActivityFrame = 0;
 }
 
-void
-FreeGameData (void)
+void FreeGameData(void)
 {
-	FreeSC2Data ();
-	FreeLanderData ();
-	FreeIPData ();
-	FreeHyperData ();
+	FreeSC2Data();
+	FreeLanderData();
+	FreeIPData();
+	FreeHyperData();
 }
 
-void
-UninitGameKernel (void)
+void UninitGameKernel(void)
 {
 	if (ActivityFrame)
 	{
-		FreeGameData ();
+		FreeGameData();
 
-		UninitKernel ();
-		UninitContexts ();
+		UninitKernel();
+		UninitContexts();
 	}
 }
-

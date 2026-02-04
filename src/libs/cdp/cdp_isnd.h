@@ -29,15 +29,15 @@
 // CDP Sound Interface entry points
 typedef struct
 {
-	TFB_RegSoundDecoder* (* RegisterDecoder) (const char* fileext,
-			TFB_SoundDecoderFuncs*);
-	void (* UnregisterDecoder) (TFB_RegSoundDecoder*);
-	const TFB_SoundDecoderFuncs* (* LookupDecoder) (const char* fileext);
+	TFB_RegSoundDecoder* (*RegisterDecoder)(const char* fileext,
+											TFB_SoundDecoderFuncs*);
+	void (*UnregisterDecoder)(TFB_RegSoundDecoder*);
+	const TFB_SoundDecoderFuncs* (*LookupDecoder)(const char* fileext);
 
 } cdp_Itf_SoundVtbl_v1;
 
 // the following are for the sake of module writers
 typedef cdp_Itf_SoundVtbl_v1 cdp_Itf_SoundVtbl;
-typedef cdp_Itf_SoundVtbl    cdp_Itf_Sound;
+typedef cdp_Itf_SoundVtbl cdp_Itf_Sound;
 
-#endif  /* LIBS_CDP_CDP_ISND_H_ */
+#endif /* LIBS_CDP_CDP_ISND_H_ */

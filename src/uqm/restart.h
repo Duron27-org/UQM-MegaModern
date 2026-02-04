@@ -24,11 +24,10 @@ extern "C" {
 #endif
 
 
-extern bool StartGame (void);
+extern bool StartGame(void);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* UQM_RESTART_H_ */
-
+#endif /* UQM_RESTART_H_ */

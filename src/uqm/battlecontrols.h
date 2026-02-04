@@ -23,7 +23,7 @@ typedef struct ComputerInputContext ComputerInputContext;
 typedef struct HumanInputContext HumanInputContext;
 #ifdef NETPLAY
 typedef struct NetworkInputContext NetworkInputContext;
-#endif  /* NETPLAY */
+#endif /* NETPLAY */
 
 #include "controls.h"
 #include "supermelee/pickmele.h"
@@ -34,68 +34,71 @@ typedef struct NetworkInputContext NetworkInputContext;
 extern "C" {
 #endif
 
-typedef BATTLE_INPUT_STATE (*BattleFrameInputFunction) (
-		InputContext *context, STARSHIP *StarShipPtr);
-typedef bool (*SelectShipFunction) (InputContext *context,
-		GETMELEE_STATE *gms);
-typedef bool (*BattleEndReadyFunction) (InputContext *context);
-typedef void (*DeleteInputContextFunction) (InputContext *context);
+typedef BATTLE_INPUT_STATE (*BattleFrameInputFunction)(
+	InputContext* context, STARSHIP* StarShipPtr);
+typedef bool (*SelectShipFunction)(InputContext* context,
+								   GETMELEE_STATE* gms);
+typedef bool (*BattleEndReadyFunction)(InputContext* context);
+typedef void (*DeleteInputContextFunction)(InputContext* context);
 
 
-struct BattleInputHandlers {
+struct BattleInputHandlers
+{
 	BattleFrameInputFunction frameInput;
 	SelectShipFunction selectShip;
 	BattleEndReadyFunction battleEndReady;
 	DeleteInputContextFunction deleteContext;
 };
 
-#define INPUT_CONTEXT_COMMON \
-		BattleInputHandlers *handlers; \
-		uqm::COUNT playerNr;
+#define INPUT_CONTEXT_COMMON       \
+	BattleInputHandlers* handlers; \
+	uqm::COUNT playerNr;
 
 // Base "class" for all ...InputContext structures
-struct InputContext {
+struct InputContext
+{
 	INPUT_CONTEXT_COMMON
 };
 
-struct ComputerInputContext {
+struct ComputerInputContext
+{
 	INPUT_CONTEXT_COMMON
 	// TODO: Put RNG Context used for the AI here.
 };
 
-struct HumanInputContext {
+struct HumanInputContext
+{
 	INPUT_CONTEXT_COMMON
 };
 
 #ifdef NETPLAY
-struct NetworkInputContext {
+struct NetworkInputContext
+{
 	INPUT_CONTEXT_COMMON
 	// TODO: put NetworkConnection for this player here.
 };
-#endif  /* NETPLAY */
+#endif /* NETPLAY */
 
-ComputerInputContext *ComputerInputContext_new (uqm::COUNT playerNr);
-HumanInputContext *HumanInputContext_new (uqm::COUNT playerNr);
+ComputerInputContext* ComputerInputContext_new(uqm::COUNT playerNr);
+HumanInputContext* HumanInputContext_new(uqm::COUNT playerNr);
 #ifdef NETPLAY
-NetworkInputContext *NetworkInputContext_new (uqm::COUNT playerNr);
-#endif  /* NETPLAY */
+NetworkInputContext* NetworkInputContext_new(uqm::COUNT playerNr);
+#endif /* NETPLAY */
 
-extern InputContext *PlayerInput[];
+extern InputContext* PlayerInput[];
 
 
-BATTLE_INPUT_STATE frameInputHuman (HumanInputContext *context,
-		STARSHIP *StarShipPtr);
-void InputContext_init(InputContext *context, BattleInputHandlers *handlers,
-		uqm::COUNT playerNr);
-void InputContext_delete (InputContext *context);
-		// Do not call directly, only from the FreeInputContextFunction.
-		// Call InputContext->handlers->freeContext() to release an
-		// InputContext.
+BATTLE_INPUT_STATE frameInputHuman(HumanInputContext* context,
+								   STARSHIP* StarShipPtr);
+void InputContext_init(InputContext* context, BattleInputHandlers* handlers,
+					   uqm::COUNT playerNr);
+void InputContext_delete(InputContext* context);
+// Do not call directly, only from the FreeInputContextFunction.
+// Call InputContext->handlers->freeContext() to release an
+// InputContext.
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* UQM_BATTLECONTROLS_H_ */
-
-
+#endif /* UQM_BATTLECONTROLS_H_ */

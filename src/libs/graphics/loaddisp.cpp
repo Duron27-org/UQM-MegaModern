@@ -23,16 +23,16 @@
 
 // Reads a piece of screen into a passed FRAME or a newly created one
 DRAWABLE
-LoadDisplayPixmap (const RECT *area, FRAME frame)
+LoadDisplayPixmap(const RECT* area, FRAME frame)
 {
 	// TODO: This should just return a FRAME instead of DRAWABLE
-	DRAWABLE buffer = GetFrameParentDrawable (frame);
+	DRAWABLE buffer = GetFrameParentDrawable(frame);
 	uqm::COUNT index;
 
 	if (!buffer)
-	{	// asked to create a new DRAWABLE instead
-		buffer = CreateDrawable (WANT_PIXMAP | MAPPED_TO_DISPLAY,
-				area->extent.width, area->extent.height, 1);
+	{ // asked to create a new DRAWABLE instead
+		buffer = CreateDrawable(WANT_PIXMAP | MAPPED_TO_DISPLAY,
+								area->extent.width, area->extent.height, 1);
 		if (!buffer)
 			return NULL;
 
@@ -40,26 +40,25 @@ LoadDisplayPixmap (const RECT *area, FRAME frame)
 	}
 	else
 	{
-		index = GetFrameIndex (frame);
+		index = GetFrameIndex(frame);
 	}
 
-	frame = SetAbsFrameIndex (CaptureDrawable (buffer), index);
+	frame = SetAbsFrameIndex(CaptureDrawable(buffer), index);
 
 	if (_CurFramePtr->Type != SCREEN_DRAWABLE
-			|| frame->Type == SCREEN_DRAWABLE
-			|| !(GetFrameParentDrawable (frame)->Flags & MAPPED_TO_DISPLAY))
+		|| frame->Type == SCREEN_DRAWABLE
+		|| !(GetFrameParentDrawable(frame)->Flags & MAPPED_TO_DISPLAY))
 	{
-		log_add (log_Warning, "Unimplemented function activated: "
-				"LoadDisplayPixmap()");
+		log_add(log_Warning, "Unimplemented function activated: "
+							 "LoadDisplayPixmap()");
 	}
 	else
 	{
-		TFB_Image *img = frame->image;
-		TFB_DrawScreen_CopyToImage (img, area, TFB_SCREEN_MAIN);
+		TFB_Image* img = frame->image;
+		TFB_DrawScreen_CopyToImage(img, area, TFB_SCREEN_MAIN);
 	}
 
-	ReleaseDrawable (frame);
+	ReleaseDrawable(frame);
 
 	return buffer;
 }
-

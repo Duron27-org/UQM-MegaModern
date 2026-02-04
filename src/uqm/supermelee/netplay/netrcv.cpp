@@ -36,36 +36,42 @@
 // Returns 0 if the packet was successfully processed, or
 // -1 on an error, in which case the state is unchanged.
 static ssize_t
-dataReceivedSingle(NetConnection *conn, const uint8 *data,
-		size_t dataLen) {
+dataReceivedSingle(NetConnection* conn, const uint8* data,
+				   size_t dataLen)
+{
 	uint32 packetLen;
 	PacketType type;
 	int result;
-	
-	if (dataLen < sizeof (PacketHeader)) {
+
+	if (dataLen < sizeof(PacketHeader))
+	{
 		// Incomplete packet. We'll have to wait for the rest.
 		return 0;
 	}
-	
-	packetLen = packetLength((const Packet *) data);
-	type = packetType((const Packet *) data);
 
-	if (!validPacketType(type)) {
+	packetLen = packetLength((const Packet*)data);
+	type = packetType((const Packet*)data);
+
+	if (!validPacketType(type))
+	{
 		log_add(log_Warning, "Packet with invalid type %d received.\n", type);
 		errno = EBADMSG;
 		return -1;
 	}
 
-	if (packetLen < packetTypeData[type].len) {
+	if (packetLen < packetTypeData[type].len)
+	{
 		// Bad len field of packet.
 		log_add(log_Warning, "Packet with bad length field received (type="
-				"%s, lenfield=%d.\n", packetTypeData[type].name,
+							 "%s, lenfield=%d.\n",
+				packetTypeData[type].name,
 				packetLen);
 		errno = EBADMSG;
 		return -1;
 	}
 
-	if (dataLen < packetLen) {
+	if (dataLen < packetLen)
+	{
 		// Incomplete packet. We'll have to wait for the rest.
 		return 0;
 	}
@@ -76,23 +82,26 @@ dataReceivedSingle(NetConnection *conn, const uint8 *data,
 #endif
 
 #ifdef NETPLAY_DEBUG
-	if (type != PACKET_BATTLEINPUT && type != PACKET_CHECKSUM) {
+	if (type != PACKET_BATTLEINPUT && type != PACKET_CHECKSUM)
+	{
 		// Reporting BattleInput and Checksum would get so spammy that it
 		// would slow down the battle.
 		log_add(log_Debug, "NETPLAY: [%d] <== Received packet of type %s.\n",
 				NetConnection_getPlayerNr(conn), packetTypeData[type].name);
 	}
 #ifdef NETPLAY_DEBUG_FILE
-	if (conn->debugFile != NULL) {
+	if (conn->debugFile != NULL)
+	{
 		uio_fprintf(conn->debugFile,
-				"NETPLAY: [%d] <== Received packet of type %s.\n",
-				NetConnection_getPlayerNr(conn), packetTypeData[type].name);
+					"NETPLAY: [%d] <== Received packet of type %s.\n",
+					NetConnection_getPlayerNr(conn), packetTypeData[type].name);
 	}
-#endif  /* NETPLAY_DEBUG_FILE */
-#endif  /* NETPLAY_DEBUG */
-	
+#endif /* NETPLAY_DEBUG_FILE */
+#endif /* NETPLAY_DEBUG */
+
 	result = packetTypeData[type].handler(conn, data);
-	if (result == -1) {
+	if (result == -1)
+	{
 		// An error occured. errno is set by the handler.
 		return -1;
 	}
@@ -103,18 +112,22 @@ dataReceivedSingle(NetConnection *conn, const uint8 *data,
 // Try to get all the packets from a stream of data.
 // Returns the number of bytes processed.
 static ssize_t
-dataReceivedMulti(NetConnection *conn, const uint8 *data, size_t len) {
+dataReceivedMulti(NetConnection* conn, const uint8* data, size_t len)
+{
 	size_t processed;
-	
+
 	processed = 0;
-	while (len > 0) {
+	while (len > 0)
+	{
 		ssize_t packetLen = dataReceivedSingle(conn, data, len);
-		if (packetLen == -1) {
+		if (packetLen == -1)
+		{
 			// Bad packet. Errno is set.
 			return -1;
 		}
 
-		if (packetLen == 0) {
+		if (packetLen == 0)
+		{
 			// No packet was processed. This means that no complete
 			// packet arrived.
 			break;
@@ -128,35 +141,38 @@ dataReceivedMulti(NetConnection *conn, const uint8 *data, size_t len) {
 	return processed;
 }
 
-void
-dataReadyCallback(NetDescriptor *nd) {
-	NetConnection *conn = (NetConnection *) NetDescriptor_getExtra(nd);
-	Socket *socket = NetDescriptor_getSocket(nd);
+void dataReadyCallback(NetDescriptor* nd)
+{
+	NetConnection* conn = (NetConnection*)NetDescriptor_getExtra(nd);
+	Socket* socket = NetDescriptor_getSocket(nd);
 
-	for (;;) {
+	for (;;)
+	{
 		ssize_t numRead;
 		ssize_t numProcessed;
 
 		numRead = Socket_recv(socket, conn->readEnd,
-				NETPLAY_READBUFSIZE - (conn->readEnd - conn->readBuf), 0);
-		if (numRead == 0) {
+							  NETPLAY_READBUFSIZE - (conn->readEnd - conn->readBuf), 0);
+		if (numRead == 0)
+		{
 			// Other side closed the connection.
 			NetDescriptor_close(nd);
 			return;
 		}
 
-		if (numRead == -1) {
+		if (numRead == -1)
+		{
 			if (errno == EWOULDBLOCK || errno == EAGAIN)
-				return;  // No more data for now.
+				return; // No more data for now.
 			else if (errno == EINTR)
-				continue;  // System call was interrupted. Retry.
+				continue; // System call was interrupted. Retry.
 			else
 			{
 				int savedErrno = errno;
-				log_add (log_Error, "recv() failed: %s.\n",
-					strerror (errno));
-				NetConnection_doErrorCallback (conn, savedErrno);
-				NetDescriptor_close (nd);
+				log_add(log_Error, "recv() failed: %s.\n",
+						strerror(errno));
+				NetConnection_doErrorCallback(conn, savedErrno);
+				NetDescriptor_close(nd);
 				return;
 			}
 		}
@@ -164,20 +180,22 @@ dataReadyCallback(NetDescriptor *nd) {
 		conn->readEnd += numRead;
 
 		numProcessed = dataReceivedMulti(conn, conn->readBuf,
-				conn->readEnd - conn->readBuf);
-		if (numProcessed == -1) {
+										 conn->readEnd - conn->readBuf);
+		if (numProcessed == -1)
+		{
 			// An error occured during processing.
 			// errno is set.
 			NetConnection_doErrorCallback(conn, errno);
 			NetDescriptor_close(nd);
 			return;
 		}
-		if (numProcessed == 0) {
+		if (numProcessed == 0)
+		{
 			// No packets could be processed. This means we need to receive
 			// more data first.
 			return;
 		}
-		
+
 		// Some packets have been processed.
 		// We more any rest to the front of the buffer, to make room
 		// for more data.
@@ -188,6 +206,3 @@ dataReadyCallback(NetDescriptor *nd) {
 		conn->readEnd -= numProcessed;
 	}
 }
-
-
-

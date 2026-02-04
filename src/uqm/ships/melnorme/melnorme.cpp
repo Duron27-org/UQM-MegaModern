@@ -40,10 +40,10 @@
 // Blaster Pulse
 #define WEAPON_ENERGY_COST 5
 #define WEAPON_WAIT 1
-#define MELNORME_OFFSET RES_SCALE (24)
+#define MELNORME_OFFSET RES_SCALE(24)
 #define LEVEL_COUNTER 72
 #define MAX_PUMP 4
-#define PUMPUP_SPEED DISPLAY_TO_WORLD (45)
+#define PUMPUP_SPEED DISPLAY_TO_WORLD(45)
 #define PUMPUP_LIFE 10
 #define PUMPUP_DAMAGE 2
 #define MIN_PUMPITUDE_ANIMS 3
@@ -53,99 +53,98 @@
 // Confusion Pulse
 #define SPECIAL_ENERGY_COST 20
 #define SPECIAL_WAIT 20
-#define CMISSILE_SPEED DISPLAY_TO_WORLD (RES_SCALE (30))
+#define CMISSILE_SPEED DISPLAY_TO_WORLD(RES_SCALE(30))
 #define CMISSILE_LIFE 20
 #define CMISSILE_HITS 200
 #define CMISSILE_DAMAGE 0
-#define CMISSILE_OFFSET RES_SCALE (4)
+#define CMISSILE_OFFSET RES_SCALE(4)
 
 // HD
-#define PUMPUP_SPEED_HD RES_SCALE (PUMPUP_SPEED)
+#define PUMPUP_SPEED_HD RES_SCALE(PUMPUP_SPEED)
 
 static RACE_DESC melnorme_desc =
-{
-	{ /* SHIP_INFO */
-		"trader",
-		FIRES_FORE,
-		18, /* Super Melee cost */
-		MAX_CREW, MAX_CREW,
-		MAX_ENERGY, MAX_ENERGY,
-		MELNORME_RACE_STRINGS,
-		MELNORME_ICON_MASK_PMAP_ANIM,
-		MELNORME_MICON_MASK_PMAP_ANIM,
-		NULL, NULL, NULL
-	},
-	{ /* FLEET_STUFF */
-		INFINITE_RADIUS, /* Initial sphere of influence radius */
-		{ /* Known location (center of SoI) */
-			MAX_X_UNIVERSE >> 1, MAX_Y_UNIVERSE >> 1,
-		},
-	},
 	{
-		MAX_THRUST,
-		THRUST_INCREMENT,
-		ENERGY_REGENERATION,
-		WEAPON_ENERGY_COST,
-		SPECIAL_ENERGY_COST,
-		ENERGY_WAIT,
-		TURN_WAIT,
-		THRUST_WAIT,
-		WEAPON_WAIT,
-		SPECIAL_WAIT,
-		SHIP_MASS,
-	},
-	{
+		{/* SHIP_INFO */
+		 "trader",
+		 FIRES_FORE,
+		 18, /* Super Melee cost */
+		 MAX_CREW, MAX_CREW,
+		 MAX_ENERGY, MAX_ENERGY,
+		 MELNORME_RACE_STRINGS,
+		 MELNORME_ICON_MASK_PMAP_ANIM,
+		 MELNORME_MICON_MASK_PMAP_ANIM,
+		 NULL, NULL, NULL},
 		{
-			MELNORME_BIG_MASK_PMAP_ANIM,
-			MELNORME_MED_MASK_PMAP_ANIM,
-			MELNORME_SML_MASK_PMAP_ANIM,
-		},
+			/* FLEET_STUFF */
+			INFINITE_RADIUS, /* Initial sphere of influence radius */
+			{
+				/* Known location (center of SoI) */
+				MAX_X_UNIVERSE >> 1,
+				MAX_Y_UNIVERSE >> 1,
+			},
+		 },
 		{
-			PUMPUP_BIG_MASK_PMAP_ANIM,
-			PUMPUP_MED_MASK_PMAP_ANIM,
-			PUMPUP_SML_MASK_PMAP_ANIM,
-		},
+			MAX_THRUST,
+			THRUST_INCREMENT,
+			ENERGY_REGENERATION,
+			WEAPON_ENERGY_COST,
+			SPECIAL_ENERGY_COST,
+			ENERGY_WAIT,
+			TURN_WAIT,
+			THRUST_WAIT,
+			WEAPON_WAIT,
+			SPECIAL_WAIT,
+			SHIP_MASS,
+		 },
+		{{
+			 MELNORME_BIG_MASK_PMAP_ANIM,
+			 MELNORME_MED_MASK_PMAP_ANIM,
+			 MELNORME_SML_MASK_PMAP_ANIM,
+		 },
+		 {
+			 PUMPUP_BIG_MASK_PMAP_ANIM,
+			 PUMPUP_MED_MASK_PMAP_ANIM,
+			 PUMPUP_SML_MASK_PMAP_ANIM,
+		 },
+		 {
+			 CONFUSE_BIG_MASK_PMAP_ANIM,
+			 CONFUSE_MED_MASK_PMAP_ANIM,
+			 CONFUSE_SML_MASK_PMAP_ANIM,
+		 },
+		 {MELNORME_CAPTAIN_MASK_PMAP_ANIM,
+		  NULL, NULL, NULL, NULL, NULL,
+		  0, 0, 0, 0, 0},
+		 MELNORME_VICTORY_SONG,
+		 MELNORME_SHIP_SOUNDS,
+		 {NULL, NULL, NULL},
+		 {NULL, NULL, NULL},
+		 {NULL, NULL, NULL},
+		 NULL,
+		 NULL},
 		{
-			CONFUSE_BIG_MASK_PMAP_ANIM,
-			CONFUSE_MED_MASK_PMAP_ANIM,
-			CONFUSE_SML_MASK_PMAP_ANIM,
-		},
-		{
-			MELNORME_CAPTAIN_MASK_PMAP_ANIM,
-			NULL, NULL, NULL, NULL, NULL,
-			0, 0, 0, 0, 0
-		},
-		MELNORME_VICTORY_SONG,
-		MELNORME_SHIP_SOUNDS,
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		NULL, NULL
-	},
-	{
+			0,
+			PUMPUP_SPEED* PUMPUP_LIFE,
+			NULL,
+		 },
+		(UNINIT_FUNC*)NULL,
+		(PREPROCESS_FUNC*)NULL,
+		(POSTPROCESS_FUNC*)NULL,
+		(INIT_WEAPON_FUNC*)NULL,
 		0,
-		PUMPUP_SPEED * PUMPUP_LIFE,
-		NULL,
-	},
-	(UNINIT_FUNC *) NULL,
-	(PREPROCESS_FUNC *) NULL,
-	(POSTPROCESS_FUNC *) NULL,
-	(INIT_WEAPON_FUNC *) NULL,
-	0,
-	0, /* CodeRef */
+		0, /* CodeRef */
 };
 
 static void
-pump_up_preprocess (ELEMENT *ElementPtr)
+pump_up_preprocess(ELEMENT* ElementPtr)
 {
 	if (--ElementPtr->thrust_wait & 1)
 	{
 		uqm::COUNT frame_index;
 
-		frame_index = GetFrameIndex (ElementPtr->current.image.frame);
+		frame_index = GetFrameIndex(ElementPtr->current.image.frame);
 		if (((ElementPtr->turn_wait & REVERSE_DIR)
-				&& (frame_index % NUM_PUMP_ANIMS) != 0)
-				|| (!(ElementPtr->turn_wait & REVERSE_DIR)
+			 && (frame_index % NUM_PUMP_ANIMS) != 0)
+			|| (!(ElementPtr->turn_wait & REVERSE_DIR)
 				&& ((frame_index + 1) % NUM_PUMP_ANIMS) == 0))
 		{
 			--frame_index;
@@ -157,36 +156,36 @@ pump_up_preprocess (ELEMENT *ElementPtr)
 			ElementPtr->turn_wait &= ~REVERSE_DIR;
 		}
 
-		ElementPtr->next.image.frame = SetAbsFrameIndex (
-				ElementPtr->current.image.frame, frame_index);
+		ElementPtr->next.image.frame = SetAbsFrameIndex(
+			ElementPtr->current.image.frame, frame_index);
 
 		ElementPtr->state_flags |= CHANGING;
 	}
 }
 
-static uqm::COUNT initialize_pump_up (ELEMENT *ShipPtr, HELEMENT PumpUpArray[]);
+static uqm::COUNT initialize_pump_up(ELEMENT* ShipPtr, HELEMENT PumpUpArray[]);
 
 static void
-pump_up_postprocess (ELEMENT *ElementPtr)
+pump_up_postprocess(ELEMENT* ElementPtr)
 {
 	if (ElementPtr->state_flags & APPEARING)
 	{
-		ZeroVelocityComponents (&ElementPtr->velocity);
+		ZeroVelocityComponents(&ElementPtr->velocity);
 	}
 	else
 	{
 		HELEMENT hPumpUp;
-		ELEMENT *EPtr;
-		ELEMENT *ShipPtr;
-		STARSHIP *StarShipPtr;
+		ELEMENT* EPtr;
+		ELEMENT* ShipPtr;
+		STARSHIP* StarShipPtr;
 
-		GetElementStarShip (ElementPtr, &StarShipPtr);
-		LockElement (StarShipPtr->hShip, &ShipPtr);
-		initialize_pump_up (ShipPtr, &hPumpUp);
-		DeltaEnergy (ShipPtr, 0);
-		UnlockElement (StarShipPtr->hShip);
+		GetElementStarShip(ElementPtr, &StarShipPtr);
+		LockElement(StarShipPtr->hShip, &ShipPtr);
+		initialize_pump_up(ShipPtr, &hPumpUp);
+		DeltaEnergy(ShipPtr, 0);
+		UnlockElement(StarShipPtr->hShip);
 
-		LockElement (hPumpUp, &EPtr);
+		LockElement(hPumpUp, &EPtr);
 
 		EPtr->current.image.frame = ElementPtr->current.image.frame;
 		EPtr->turn_wait = ElementPtr->turn_wait;
@@ -196,33 +195,35 @@ pump_up_postprocess (ELEMENT *ElementPtr)
 			if ((EPtr->turn_wait & ~REVERSE_DIR) < MAX_PUMP - 1)
 			{
 				++EPtr->turn_wait;
-				EPtr->current.image.frame = SetRelFrameIndex (
-						EPtr->current.image.frame, NUM_PUMP_ANIMS);
-				ProcessSound (SetAbsSoundIndex (
-						StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 0),
-						EPtr);
+				EPtr->current.image.frame = SetRelFrameIndex(
+					EPtr->current.image.frame, NUM_PUMP_ANIMS);
+				ProcessSound(SetAbsSoundIndex(
+								 StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 0),
+							 EPtr);
 			}
-			if (antiCheat (ElementPtr, false, OPTVAL_INF_HEALTH)
-					|| antiCheat (ElementPtr, false, OPTVAL_FULL_GOD))
+			if (antiCheat(ElementPtr, false, OPTVAL_INF_HEALTH)
+				|| antiCheat(ElementPtr, false, OPTVAL_FULL_GOD))
 			{
 				EPtr->thrust_wait = 5;
-			} else {
+			}
+			else
+			{
 				EPtr->thrust_wait = LEVEL_COUNTER;
 			}
 		}
 
 		EPtr->mass_points = EPtr->hit_points =
-				(PUMPUP_DAMAGE << (ElementPtr->turn_wait & ~REVERSE_DIR));
-		SetElementStarShip (EPtr, StarShipPtr);
+			(PUMPUP_DAMAGE << (ElementPtr->turn_wait & ~REVERSE_DIR));
+		SetElementStarShip(EPtr, StarShipPtr);
 
 		if (EPtr->thrust_wait & 1)
 		{
 			uqm::COUNT frame_index;
 
-			frame_index = GetFrameIndex (EPtr->current.image.frame);
+			frame_index = GetFrameIndex(EPtr->current.image.frame);
 			if (((EPtr->turn_wait & REVERSE_DIR)
-					&& (frame_index % NUM_PUMP_ANIMS) != 0)
-					|| (!(EPtr->turn_wait & REVERSE_DIR)
+				 && (frame_index % NUM_PUMP_ANIMS) != 0)
+				|| (!(EPtr->turn_wait & REVERSE_DIR)
 					&& ((frame_index + 1) % NUM_PUMP_ANIMS) == 0))
 			{
 				--frame_index;
@@ -234,12 +235,12 @@ pump_up_postprocess (ELEMENT *ElementPtr)
 				EPtr->turn_wait &= ~REVERSE_DIR;
 			}
 
-			EPtr->current.image.frame = SetAbsFrameIndex (
-					EPtr->current.image.frame, frame_index);
+			EPtr->current.image.frame = SetAbsFrameIndex(
+				EPtr->current.image.frame, frame_index);
 		}
 
 		if (StarShipPtr->cur_status_flags & StarShipPtr->old_status_flags
-				& WEAPON)
+			& WEAPON)
 		{
 			StarShipPtr->weapon_counter = WEAPON_WAIT;
 		}
@@ -251,33 +252,34 @@ pump_up_postprocess (ELEMENT *ElementPtr)
 			EPtr->preprocess_func = pump_up_preprocess;
 			EPtr->postprocess_func = 0;
 
-			angle = FACING_TO_ANGLE (StarShipPtr->ShipFacing);
-			SetVelocityComponents (&EPtr->velocity,
-					COSINE (angle, WORLD_TO_VELOCITY (PUMPUP_SPEED_HD)),
-					SINE (angle, WORLD_TO_VELOCITY (PUMPUP_SPEED_HD)));
+			angle = FACING_TO_ANGLE(StarShipPtr->ShipFacing);
+			SetVelocityComponents(&EPtr->velocity,
+								  COSINE(angle, WORLD_TO_VELOCITY(PUMPUP_SPEED_HD)),
+								  SINE(angle, WORLD_TO_VELOCITY(PUMPUP_SPEED_HD)));
 
-			ProcessSound (SetAbsSoundIndex (
-					StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 1), EPtr);
+			ProcessSound(SetAbsSoundIndex(
+							 StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 1),
+						 EPtr);
 		}
 
-		UnlockElement (hPumpUp);
-		PutElement (hPumpUp);
+		UnlockElement(hPumpUp);
+		PutElement(hPumpUp);
 
-		SetPrimType (&(GLOBAL (DisplayArray))[ElementPtr->PrimIndex],
-				NO_PRIM);
+		SetPrimType(&(GLOBAL(DisplayArray))[ElementPtr->PrimIndex],
+					NO_PRIM);
 		ElementPtr->state_flags |= NONSOLID;
 	}
 }
 
 static void
-animate (ELEMENT *ElementPtr)
+animate(ELEMENT* ElementPtr)
 {
 	if (ElementPtr->turn_wait > 0)
 		--ElementPtr->turn_wait;
 	else
 	{
 		ElementPtr->next.image.frame =
-				IncFrameIndex (ElementPtr->current.image.frame);
+			IncFrameIndex(ElementPtr->current.image.frame);
 		ElementPtr->state_flags |= CHANGING;
 
 		ElementPtr->turn_wait = ElementPtr->next_turn;
@@ -285,29 +287,29 @@ animate (ELEMENT *ElementPtr)
 }
 
 static void
-pump_up_collision (ELEMENT *ElementPtr0, POINT *pPt0,
-		ELEMENT *ElementPtr1, POINT *pPt1)
+pump_up_collision(ELEMENT* ElementPtr0, POINT* pPt0,
+				  ELEMENT* ElementPtr1, POINT* pPt1)
 {
 	RECT r;
 	uqm::BYTE old_thrust_wait;
 	HELEMENT hBlastElement;
 
-	GetFrameRect (ElementPtr0->next.image.frame, &r);
+	GetFrameRect(ElementPtr0->next.image.frame, &r);
 
 	old_thrust_wait = ElementPtr0->thrust_wait;
 	ElementPtr0->blast_offset = r.extent.width >> 1;
-	hBlastElement = weapon_collision (ElementPtr0, pPt0, ElementPtr1, pPt1);
+	hBlastElement = weapon_collision(ElementPtr0, pPt0, ElementPtr1, pPt1);
 	ElementPtr0->thrust_wait = old_thrust_wait;
 
 	if (hBlastElement)
 	{
-		ELEMENT *BlastElementPtr;
+		ELEMENT* BlastElementPtr;
 
-		LockElement (hBlastElement, &BlastElementPtr);
+		LockElement(hBlastElement, &BlastElementPtr);
 
 		BlastElementPtr->life_span =
-				MIN_PUMPITUDE_ANIMS
-				+ (ElementPtr0->turn_wait & ~REVERSE_DIR);
+			MIN_PUMPITUDE_ANIMS
+			+ (ElementPtr0->turn_wait & ~REVERSE_DIR);
 		BlastElementPtr->turn_wait = BlastElementPtr->next_turn = 0;
 		{
 			BlastElementPtr->preprocess_func = animate;
@@ -315,20 +317,20 @@ pump_up_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 
 		BlastElementPtr->current.image.farray = ElementPtr0->next.image.farray;
 		BlastElementPtr->current.image.frame =
-				SetAbsFrameIndex (BlastElementPtr->current.image.farray[0],
-				MAX_PUMP * NUM_PUMP_ANIMS);
+			SetAbsFrameIndex(BlastElementPtr->current.image.farray[0],
+							 MAX_PUMP * NUM_PUMP_ANIMS);
 
-		UnlockElement (hBlastElement);
+		UnlockElement(hBlastElement);
 	}
 }
 
 static uqm::COUNT
-initialize_pump_up (ELEMENT *ShipPtr, HELEMENT PumpUpArray[])
+initialize_pump_up(ELEMENT* ShipPtr, HELEMENT PumpUpArray[])
 {
-	STARSHIP *StarShipPtr;
+	STARSHIP* StarShipPtr;
 	MISSILE_BLOCK MissileBlock;
 
-	GetElementStarShip (ShipPtr, &StarShipPtr);
+	GetElementStarShip(ShipPtr, &StarShipPtr);
 	MissileBlock.cx = ShipPtr->next.location.x;
 	MissileBlock.cy = ShipPtr->next.location.y;
 	MissileBlock.farray = StarShipPtr->RaceDescPtr->ship_data.weapon;
@@ -337,56 +339,57 @@ initialize_pump_up (ELEMENT *ShipPtr, HELEMENT PumpUpArray[])
 	MissileBlock.sender = ShipPtr->playerNr;
 	MissileBlock.flags = IGNORE_SIMILAR;
 	MissileBlock.pixoffs = MELNORME_OFFSET;
-	MissileBlock.speed = DISPLAY_TO_WORLD (MELNORME_OFFSET);
+	MissileBlock.speed = DISPLAY_TO_WORLD(MELNORME_OFFSET);
 	MissileBlock.hit_points = PUMPUP_DAMAGE;
 	MissileBlock.damage = PUMPUP_DAMAGE;
 	MissileBlock.life = 2;
 	MissileBlock.preprocess_func = 0;
 	MissileBlock.blast_offs = 0;
-	PumpUpArray[0] = initialize_missile (&MissileBlock);
+	PumpUpArray[0] = initialize_missile(&MissileBlock);
 
 	if (PumpUpArray[0])
 	{
-		ELEMENT *PumpUpPtr;
+		ELEMENT* PumpUpPtr;
 
-		LockElement (PumpUpArray[0], &PumpUpPtr);
+		LockElement(PumpUpArray[0], &PumpUpPtr);
 		PumpUpPtr->postprocess_func = pump_up_postprocess;
 		PumpUpPtr->collision_func = pump_up_collision;
 
-		if (antiCheat (ShipPtr, false, OPTVAL_INF_HEALTH)
-				|| antiCheat (ShipPtr, false, OPTVAL_FULL_GOD))
+		if (antiCheat(ShipPtr, false, OPTVAL_INF_HEALTH)
+			|| antiCheat(ShipPtr, false, OPTVAL_FULL_GOD))
 		{
 			PumpUpPtr->thrust_wait = 5;
-		} else
+		}
+		else
 			PumpUpPtr->thrust_wait = LEVEL_COUNTER;
 
-		UnlockElement (PumpUpArray[0]);
+		UnlockElement(PumpUpArray[0]);
 	}
 
 	return (1);
 }
 
 static void
-confuse_preprocess_april (ELEMENT *ElementPtr)
+confuse_preprocess_april(ELEMENT* ElementPtr)
 {
 	static const Color colorTable[] =
-	{
-		BUILD_COLOR(MAKE_RGB15_INIT(0x1F, 0x00, 0x00), 0x7a),
-		BUILD_COLOR(MAKE_RGB15_INIT(0x1F, 0x15, 0x00), 0x7a),
-		BUILD_COLOR(MAKE_RGB15_INIT(0x1F, 0x1F, 0x00), 0x7a),
-		BUILD_COLOR(MAKE_RGB15_INIT(0x00, 0x1F, 0x00), 0x7a),
-		BUILD_COLOR(MAKE_RGB15_INIT(0x00, 0x1F, 0x15), 0x7a),
-		BUILD_COLOR(MAKE_RGB15_INIT(0x00, 0x15, 0x1F), 0x7a),
-		BUILD_COLOR(MAKE_RGB15_INIT(0x00, 0x00, 0x1F), 0x7a),
-		BUILD_COLOR(MAKE_RGB15_INIT(0x15, 0x00, 0x1F), 0x7a),
-	};
+		{
+			BUILD_COLOR(MAKE_RGB15_INIT(0x1F, 0x00, 0x00), 0x7a),
+			BUILD_COLOR(MAKE_RGB15_INIT(0x1F, 0x15, 0x00), 0x7a),
+			BUILD_COLOR(MAKE_RGB15_INIT(0x1F, 0x1F, 0x00), 0x7a),
+			BUILD_COLOR(MAKE_RGB15_INIT(0x00, 0x1F, 0x00), 0x7a),
+			BUILD_COLOR(MAKE_RGB15_INIT(0x00, 0x1F, 0x15), 0x7a),
+			BUILD_COLOR(MAKE_RGB15_INIT(0x00, 0x15, 0x1F), 0x7a),
+			BUILD_COLOR(MAKE_RGB15_INIT(0x00, 0x00, 0x1F), 0x7a),
+			BUILD_COLOR(MAKE_RGB15_INIT(0x15, 0x00, 0x1F), 0x7a),
+		};
 	const size_t colorTabCount = ARRAY_SIZE(colorTable);
 
 	if (!(ElementPtr->state_flags & NONSOLID))
 	{
-		ElementPtr->next.image.frame = SetAbsFrameIndex (
-				ElementPtr->current.image.frame,
-				(GetFrameIndex (ElementPtr->current.image.frame) + 1) & 7);
+		ElementPtr->next.image.frame = SetAbsFrameIndex(
+			ElementPtr->current.image.frame,
+			(GetFrameIndex(ElementPtr->current.image.frame) + 1) & 7);
 		ElementPtr->state_flags |= CHANGING;
 	}
 	else if (ElementPtr->hTarget == 0)
@@ -396,34 +399,35 @@ confuse_preprocess_april (ELEMENT *ElementPtr)
 	}
 	else
 	{
-		ELEMENT *eptr;
+		ELEMENT* eptr;
 
-		LockElement (ElementPtr->hTarget, &eptr);
+		LockElement(ElementPtr->hTarget, &eptr);
 
 		ElementPtr->next.location = eptr->next.location;
 
 		if (ElementPtr->turn_wait)
 		{
 			HELEMENT hEffect;
-			STARSHIP *StarShipPtr;
+			STARSHIP* StarShipPtr;
 
-			if (GetFrameIndex (ElementPtr->next.image.frame =
-					IncFrameIndex (ElementPtr->current.image.frame)) == 0)
+			if (GetFrameIndex(ElementPtr->next.image.frame =
+								  IncFrameIndex(ElementPtr->current.image.frame))
+				== 0)
 				ElementPtr->next.image.frame =
-						SetRelFrameIndex (ElementPtr->next.image.frame, -8);
+					SetRelFrameIndex(ElementPtr->next.image.frame, -8);
 
-			GetElementStarShip (eptr, &StarShipPtr);
+			GetElementStarShip(eptr, &StarShipPtr);
 			StarShipPtr->ship_input_state =
-					(StarShipPtr->ship_input_state
-					& ~(LEFT | RIGHT | SPECIAL))
-					| ElementPtr->turn_wait;
+				(StarShipPtr->ship_input_state
+				 & ~(LEFT | RIGHT | SPECIAL))
+				| ElementPtr->turn_wait;
 
 			if (ElementPtr->life_span > 1)
 			{
 				SetPrimType(&(GLOBAL(DisplayArray))[eptr->PrimIndex],
-					STAMPFILL_PRIM);
+							STAMPFILL_PRIM);
 				SetPrimColor(&(GLOBAL(DisplayArray))[eptr->PrimIndex],
-					colorTable[ElementPtr->colorCycleIndex]);
+							 colorTable[ElementPtr->colorCycleIndex]);
 				ElementPtr->colorCycleIndex++;
 
 				if (ElementPtr->colorCycleIndex == colorTabCount)
@@ -432,41 +436,41 @@ confuse_preprocess_april (ELEMENT *ElementPtr)
 			else
 			{
 				SetPrimType(&(GLOBAL(DisplayArray))[eptr->PrimIndex],
-					STAMP_PRIM);
-				BattleSong (true);
+							STAMP_PRIM);
+				BattleSong(true);
 			}
 
-			hEffect = AllocElement ();
+			hEffect = AllocElement();
 			if (hEffect)
 			{
-				LockElement (hEffect, &eptr);
+				LockElement(hEffect, &eptr);
 				eptr->playerNr = ElementPtr->playerNr;
 				eptr->state_flags = FINITE_LIFE | NONSOLID | CHANGING;
 				eptr->life_span = 1;
 				eptr->current = eptr->next = ElementPtr->next;
 				eptr->preprocess_func = confuse_preprocess_april;
 
-				GetElementStarShip (ElementPtr, &StarShipPtr);
-				SetElementStarShip (eptr, StarShipPtr);
+				GetElementStarShip(ElementPtr, &StarShipPtr);
+				SetElementStarShip(eptr, StarShipPtr);
 				eptr->hTarget = ElementPtr->hTarget;
-				
-				UnlockElement (hEffect);
-				PutElement (hEffect);
-			}
-		}			
 
-		UnlockElement (ElementPtr->hTarget);
+				UnlockElement(hEffect);
+				PutElement(hEffect);
+			}
+		}
+
+		UnlockElement(ElementPtr->hTarget);
 	}
 }
 
 static void
-confuse_preprocess (ELEMENT* ElementPtr)
+confuse_preprocess(ELEMENT* ElementPtr)
 {
 	if (!(ElementPtr->state_flags & NONSOLID))
 	{
-		ElementPtr->next.image.frame = SetAbsFrameIndex (
-				ElementPtr->current.image.frame,
-				(GetFrameIndex (ElementPtr->current.image.frame) + 1) & 7);
+		ElementPtr->next.image.frame = SetAbsFrameIndex(
+			ElementPtr->current.image.frame,
+			(GetFrameIndex(ElementPtr->current.image.frame) + 1) & 7);
 		ElementPtr->state_flags |= CHANGING;
 	}
 	else if (ElementPtr->hTarget == 0)
@@ -476,100 +480,98 @@ confuse_preprocess (ELEMENT* ElementPtr)
 	}
 	else
 	{
-		ELEMENT *eptr;
+		ELEMENT* eptr;
 
-		LockElement (ElementPtr->hTarget, &eptr);
+		LockElement(ElementPtr->hTarget, &eptr);
 
 		ElementPtr->next.location = eptr->next.location;
 
 		if (ElementPtr->turn_wait)
 		{
 			HELEMENT hEffect;
-			STARSHIP *StarShipPtr;
+			STARSHIP* StarShipPtr;
 
-			if (GetFrameIndex (ElementPtr->next.image.frame =
-					IncFrameIndex (ElementPtr->current.image.frame)) == 0)
+			if (GetFrameIndex(ElementPtr->next.image.frame =
+								  IncFrameIndex(ElementPtr->current.image.frame))
+				== 0)
 				ElementPtr->next.image.frame =
-						SetRelFrameIndex (ElementPtr->next.image.frame, -8);
+					SetRelFrameIndex(ElementPtr->next.image.frame, -8);
 
-			GetElementStarShip (eptr, &StarShipPtr);
+			GetElementStarShip(eptr, &StarShipPtr);
 			StarShipPtr->ship_input_state =
-					(StarShipPtr->ship_input_state
-					& ~(LEFT | RIGHT | SPECIAL))
-					| ElementPtr->turn_wait;
+				(StarShipPtr->ship_input_state
+				 & ~(LEFT | RIGHT | SPECIAL))
+				| ElementPtr->turn_wait;
 
-			hEffect = AllocElement ();
+			hEffect = AllocElement();
 			if (hEffect)
 			{
-				LockElement (hEffect, &eptr);
+				LockElement(hEffect, &eptr);
 				eptr->playerNr = ElementPtr->playerNr;
 				eptr->state_flags = FINITE_LIFE | NONSOLID | CHANGING;
 				eptr->life_span = 1;
 				eptr->current = eptr->next = ElementPtr->next;
 				eptr->preprocess_func = confuse_preprocess;
-				SetPrimType (&(GLOBAL (DisplayArray))[eptr->PrimIndex],
-						STAMP_PRIM);
+				SetPrimType(&(GLOBAL(DisplayArray))[eptr->PrimIndex],
+							STAMP_PRIM);
 
-				GetElementStarShip (ElementPtr, &StarShipPtr);
-				SetElementStarShip (eptr, StarShipPtr);
+				GetElementStarShip(ElementPtr, &StarShipPtr);
+				SetElementStarShip(eptr, StarShipPtr);
 				eptr->hTarget = ElementPtr->hTarget;
 
-				UnlockElement (hEffect);
-				PutElement (hEffect);
+				UnlockElement(hEffect);
+				PutElement(hEffect);
 			}
 		}
 
-		UnlockElement (ElementPtr->hTarget);
+		UnlockElement(ElementPtr->hTarget);
 	}
 }
 
 static void
-confusion_collision (ELEMENT *ElementPtr0, POINT *pPt0,
-		ELEMENT *ElementPtr1, POINT *pPt1)
+confusion_collision(ELEMENT* ElementPtr0, POINT* pPt0,
+					ELEMENT* ElementPtr1, POINT* pPt1)
 {
 	if (ElementPtr1->state_flags & PLAYER_SHIP)
 	{
 		HELEMENT hConfusionElement, hNextElement;
-		ELEMENT *ConfusionPtr;
-		STARSHIP *StarShipPtr;
+		ELEMENT* ConfusionPtr;
+		STARSHIP* StarShipPtr;
 
-		GetElementStarShip (ElementPtr0, &StarShipPtr);
-		for (hConfusionElement = GetHeadElement ();
-				hConfusionElement; hConfusionElement = hNextElement)
+		GetElementStarShip(ElementPtr0, &StarShipPtr);
+		for (hConfusionElement = GetHeadElement();
+			 hConfusionElement; hConfusionElement = hNextElement)
 		{
-			LockElement (hConfusionElement, &ConfusionPtr);
-			if (elementsOfSamePlayer (ConfusionPtr, ElementPtr0)
-					&& ConfusionPtr->current.image.farray ==
-					StarShipPtr->RaceDescPtr->ship_data.special
-					&& (ConfusionPtr->state_flags & NONSOLID))
+			LockElement(hConfusionElement, &ConfusionPtr);
+			if (elementsOfSamePlayer(ConfusionPtr, ElementPtr0)
+				&& ConfusionPtr->current.image.farray == StarShipPtr->RaceDescPtr->ship_data.special
+				&& (ConfusionPtr->state_flags & NONSOLID))
 			{
-				UnlockElement (hConfusionElement);
+				UnlockElement(hConfusionElement);
 				break;
 			}
-			hNextElement = GetSuccElement (ConfusionPtr);
-			UnlockElement (hConfusionElement);
+			hNextElement = GetSuccElement(ConfusionPtr);
+			UnlockElement(hConfusionElement);
 		}
 
-		if (hConfusionElement || (hConfusionElement = AllocElement ()))
+		if (hConfusionElement || (hConfusionElement = AllocElement()))
 		{
-			LockElement (hConfusionElement, &ConfusionPtr);
+			LockElement(hConfusionElement, &ConfusionPtr);
 
 			if (ConfusionPtr->state_flags == 0) /* not allocated before */
 			{
-				InsertElement (hConfusionElement, GetHeadElement ());
+				InsertElement(hConfusionElement, GetHeadElement());
 
 				ConfusionPtr->current = ElementPtr0->next;
-				ConfusionPtr->current.image.frame = SetAbsFrameIndex (
-						ConfusionPtr->current.image.frame, 8
-						);
+				ConfusionPtr->current.image.frame = SetAbsFrameIndex(
+					ConfusionPtr->current.image.frame, 8);
 				ConfusionPtr->next = ConfusionPtr->current;
 				ConfusionPtr->playerNr = ElementPtr0->playerNr;
 				ConfusionPtr->state_flags = FINITE_LIFE | NONSOLID | CHANGING;
 				ConfusionPtr->preprocess_func = confuse_preprocess;
-				SetPrimType (
-						&(GLOBAL (DisplayArray))[ConfusionPtr->PrimIndex],
-						NO_PRIM
-						);
+				SetPrimType(
+					&(GLOBAL(DisplayArray))[ConfusionPtr->PrimIndex],
+					NO_PRIM);
 
 				/*if (AprilFools)
 				{
@@ -580,37 +582,37 @@ confusion_collision (ELEMENT *ElementPtr0, POINT *pPt0,
 						StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 2), ElementPtr0);
 				}*/
 
-				SetElementStarShip (ConfusionPtr, StarShipPtr);
-				GetElementStarShip (ElementPtr1, &StarShipPtr);
+				SetElementStarShip(ConfusionPtr, StarShipPtr);
+				GetElementStarShip(ElementPtr1, &StarShipPtr);
 				ConfusionPtr->hTarget = StarShipPtr->hShip;
 			}
 
-			if (!(antiCheat (ElementPtr1, false, OPTVAL_INF_HEALTH)
-					|| antiCheat (ElementPtr1, false, OPTVAL_FULL_GOD)))
+			if (!(antiCheat(ElementPtr1, false, OPTVAL_INF_HEALTH)
+				  || antiCheat(ElementPtr1, false, OPTVAL_FULL_GOD)))
 			{
 				ConfusionPtr->life_span = 400;
 			}
 			ConfusionPtr->turn_wait =
-					(uqm::BYTE)(1 << ((uqm::BYTE)TFB_Random () & 1)); /* LEFT or RIGHT */
+				(uqm::BYTE)(1 << ((uqm::BYTE)TFB_Random() & 1)); /* LEFT or RIGHT */
 
-			UnlockElement (hConfusionElement);
+			UnlockElement(hConfusionElement);
 		}
 
 		ElementPtr0->hit_points = 0;
 		ElementPtr0->life_span = 0;
 		ElementPtr0->state_flags |= DISAPPEARING | COLLISION | NONSOLID;
 	}
-	(void) pPt0;  /* Satisfying compiler (unused parameter) */
-	(void) pPt1;  /* Satisfying compiler (unused parameter) */
+	(void)pPt0; /* Satisfying compiler (unused parameter) */
+	(void)pPt1; /* Satisfying compiler (unused parameter) */
 }
 
 static uqm::COUNT
-initialize_confusion (ELEMENT *ShipPtr, HELEMENT ConfusionArray[])
+initialize_confusion(ELEMENT* ShipPtr, HELEMENT ConfusionArray[])
 {
-	STARSHIP *StarShipPtr;
+	STARSHIP* StarShipPtr;
 	MISSILE_BLOCK ConfusionBlock;
 
-	GetElementStarShip (ShipPtr, &StarShipPtr);
+	GetElementStarShip(ShipPtr, &StarShipPtr);
 	ConfusionBlock.cx = ShipPtr->next.location.x;
 	ConfusionBlock.cy = ShipPtr->next.location.y;
 	ConfusionBlock.farray = StarShipPtr->RaceDescPtr->ship_data.special;
@@ -625,28 +627,28 @@ initialize_confusion (ELEMENT *ShipPtr, HELEMENT ConfusionArray[])
 	ConfusionBlock.life = CMISSILE_LIFE;
 	ConfusionBlock.preprocess_func = confuse_preprocess;
 	ConfusionBlock.blast_offs = CMISSILE_OFFSET;
-	ConfusionArray[0] = initialize_missile (&ConfusionBlock);
+	ConfusionArray[0] = initialize_missile(&ConfusionBlock);
 
 	if (ConfusionArray[0])
 	{
-		ELEMENT *CMissilePtr;
+		ELEMENT* CMissilePtr;
 
-		LockElement (ConfusionArray[0], &CMissilePtr);
+		LockElement(ConfusionArray[0], &CMissilePtr);
 		CMissilePtr->collision_func = confusion_collision;
-		SetElementStarShip (CMissilePtr, StarShipPtr);
-		UnlockElement (ConfusionArray[0]);
+		SetElementStarShip(CMissilePtr, StarShipPtr);
+		UnlockElement(ConfusionArray[0]);
 	}
 	return (1);
 }
 
 static uqm::COUNT
-initialize_test_pump_up (ELEMENT *ShipPtr, HELEMENT PumpUpArray[])
+initialize_test_pump_up(ELEMENT* ShipPtr, HELEMENT PumpUpArray[])
 {
-	STARSHIP *StarShipPtr;
+	STARSHIP* StarShipPtr;
 	MISSILE_BLOCK MissileBlock;
 	//ELEMENT *PumpUpPtr;
 
-	GetElementStarShip (ShipPtr, &StarShipPtr);
+	GetElementStarShip(ShipPtr, &StarShipPtr);
 	MissileBlock.cx = ShipPtr->next.location.x;
 	MissileBlock.cy = ShipPtr->next.location.y;
 	MissileBlock.farray = StarShipPtr->RaceDescPtr->ship_data.weapon;
@@ -661,20 +663,20 @@ initialize_test_pump_up (ELEMENT *ShipPtr, HELEMENT PumpUpArray[])
 	MissileBlock.life = PUMPUP_LIFE;
 	MissileBlock.preprocess_func = 0;
 	MissileBlock.blast_offs = 0;
-	PumpUpArray[0] = initialize_missile (&MissileBlock);
+	PumpUpArray[0] = initialize_missile(&MissileBlock);
 
 	return (1);
 }
 
 static void
-melnorme_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
-		uqm::COUNT ConcernCounter)
+melnorme_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
+					  uqm::COUNT ConcernCounter)
 {
 	uqm::BYTE old_count;
-	STARSHIP *StarShipPtr;
-	EVALUATE_DESC *lpEvalDesc;
+	STARSHIP* StarShipPtr;
+	EVALUATE_DESC* lpEvalDesc;
 
-	GetElementStarShip (ShipPtr, &StarShipPtr);
+	GetElementStarShip(ShipPtr, &StarShipPtr);
 
 	StarShipPtr->RaceDescPtr->init_weapon_func = initialize_test_pump_up;
 	old_count = StarShipPtr->weapon_counter;
@@ -686,32 +688,32 @@ melnorme_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 	if (lpEvalDesc->ObjectPtr)
 	{
 		if (StarShipPtr->RaceDescPtr->ship_info.energy_level < SPECIAL_ENERGY_COST
-				+ WEAPON_ENERGY_COST
-				&& !(StarShipPtr->old_status_flags & WEAPON))
+																   + WEAPON_ENERGY_COST
+			&& !(StarShipPtr->old_status_flags & WEAPON))
 			lpEvalDesc->MoveState = ENTICE;
 		else
 		{
-			STARSHIP *EnemyStarShipPtr;
+			STARSHIP* EnemyStarShipPtr;
 
-			GetElementStarShip (lpEvalDesc->ObjectPtr, &EnemyStarShipPtr);
+			GetElementStarShip(lpEvalDesc->ObjectPtr, &EnemyStarShipPtr);
 			if (!(EnemyStarShipPtr->RaceDescPtr->ship_info.ship_flags
-					& IMMEDIATE_WEAPON))
+				  & IMMEDIATE_WEAPON))
 				lpEvalDesc->MoveState = PURSUE;
 		}
 	}
-	ship_intelligence (ShipPtr, ObjectsOfConcern, ConcernCounter);
+	ship_intelligence(ShipPtr, ObjectsOfConcern, ConcernCounter);
 
 	if (StarShipPtr->weapon_counter == 0
-			&& (old_count != 0
+		&& (old_count != 0
 			|| ((StarShipPtr->special_counter
-			|| StarShipPtr->RaceDescPtr->ship_info.energy_level >= SPECIAL_ENERGY_COST
-			+ WEAPON_ENERGY_COST)
-			&& !(StarShipPtr->ship_input_state & WEAPON))))
+				 || StarShipPtr->RaceDescPtr->ship_info.energy_level >= SPECIAL_ENERGY_COST
+																			+ WEAPON_ENERGY_COST)
+				&& !(StarShipPtr->ship_input_state & WEAPON))))
 		StarShipPtr->ship_input_state ^= WEAPON;
 
 	StarShipPtr->ship_input_state &= ~SPECIAL;
 	if (StarShipPtr->special_counter == 0
-			&& StarShipPtr->RaceDescPtr->ship_info.energy_level >= SPECIAL_ENERGY_COST)
+		&& StarShipPtr->RaceDescPtr->ship_info.energy_level >= SPECIAL_ENERGY_COST)
 	{
 		uqm::BYTE old_input_state;
 
@@ -721,7 +723,7 @@ melnorme_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 
 		++ShipPtr->turn_wait;
 		++ShipPtr->thrust_wait;
-		ship_intelligence (ShipPtr, ObjectsOfConcern, ENEMY_SHIP_INDEX + 1);
+		ship_intelligence(ShipPtr, ObjectsOfConcern, ENEMY_SHIP_INDEX + 1);
 		--ShipPtr->thrust_wait;
 		--ShipPtr->turn_wait;
 
@@ -732,7 +734,7 @@ melnorme_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 		}
 
 		StarShipPtr->ship_input_state = (unsigned char)(old_input_state
-				| (StarShipPtr->ship_input_state & SPECIAL));
+														| (StarShipPtr->ship_input_state & SPECIAL));
 	}
 
 	StarShipPtr->weapon_counter = old_count;
@@ -741,42 +743,44 @@ melnorme_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 }
 
 static void
-melnorme_postprocess (ELEMENT *ElementPtr)
+melnorme_postprocess(ELEMENT* ElementPtr)
 {
-	STARSHIP *StarShipPtr;
+	STARSHIP* StarShipPtr;
 
-	GetElementStarShip (ElementPtr, &StarShipPtr);
+	GetElementStarShip(ElementPtr, &StarShipPtr);
 	if ((StarShipPtr->cur_status_flags & SPECIAL)
-			&& StarShipPtr->special_counter == 0
-			&& DeltaEnergy (ElementPtr, -SPECIAL_ENERGY_COST))
+		&& StarShipPtr->special_counter == 0
+		&& DeltaEnergy(ElementPtr, -SPECIAL_ENERGY_COST))
 	{
 		HELEMENT Confusion;
 
-		initialize_confusion (ElementPtr, &Confusion);
+		initialize_confusion(ElementPtr, &Confusion);
 		if (Confusion)
 		{
-			ELEMENT *CMissilePtr;
-			LockElement (Confusion, &CMissilePtr);
-			
-			ProcessSound (SetAbsSoundIndex (
-					StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 1), CMissilePtr);
-			
-			UnlockElement (Confusion);
-			PutElement (Confusion);
+			ELEMENT* CMissilePtr;
+			LockElement(Confusion, &CMissilePtr);
+
+			ProcessSound(SetAbsSoundIndex(
+							 StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 1),
+						 CMissilePtr);
+
+			UnlockElement(Confusion);
+			PutElement(Confusion);
 			StarShipPtr->special_counter =
-					StarShipPtr->RaceDescPtr->characteristics.special_wait;
+				StarShipPtr->RaceDescPtr->characteristics.special_wait;
 		}
 	}
 }
 
 RACE_DESC*
-init_melnorme (void)
+init_melnorme(void)
 {
-	RACE_DESC *RaceDescPtr;
+	RACE_DESC* RaceDescPtr;
 
-	if (IS_HD) {
-		melnorme_desc.characteristics.max_thrust = RES_SCALE (MAX_THRUST);
-		melnorme_desc.characteristics.thrust_increment = RES_SCALE (THRUST_INCREMENT);
+	if (IS_HD)
+	{
+		melnorme_desc.characteristics.max_thrust = RES_SCALE(MAX_THRUST);
+		melnorme_desc.characteristics.thrust_increment = RES_SCALE(THRUST_INCREMENT);
 		melnorme_desc.cyborg_control.WeaponRange = PUMPUP_SPEED_HD * PUMPUP_LIFE;
 	}
 	else
@@ -784,7 +788,7 @@ init_melnorme (void)
 		melnorme_desc.characteristics.max_thrust = MAX_THRUST;
 		melnorme_desc.characteristics.thrust_increment = THRUST_INCREMENT;
 		melnorme_desc.cyborg_control.WeaponRange =
-				PUMPUP_SPEED * PUMPUP_LIFE;
+			PUMPUP_SPEED * PUMPUP_LIFE;
 	}
 
 	melnorme_desc.postprocess_func = melnorme_postprocess;
@@ -795,4 +799,3 @@ init_melnorme (void)
 
 	return (RaceDescPtr);
 }
-

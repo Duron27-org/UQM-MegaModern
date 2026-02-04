@@ -23,8 +23,7 @@
 
 #if TIMELIB == SDL
 #include "sdl/sdltime.h"
-#endif  /* TIMELIB == SDL */
+#endif /* TIMELIB == SDL */
 
 
-#endif  /* LIBS_TIME_TIMECOMMON_H_ */
-
+#endif /* LIBS_TIME_TIMECOMMON_H_ */

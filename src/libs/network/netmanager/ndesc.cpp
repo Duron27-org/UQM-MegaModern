@@ -28,31 +28,34 @@
 
 #undef DEBUG_NETDESCRIPTOR_REF
 #ifdef DEBUG_NETDESCRIPTOR_REF
-#	include "libs/log.h"
-#	include <inttypes.h>
+#include "libs/log.h"
+#include <inttypes.h>
 #endif
 
 
-static NetDescriptor *
-NetDescriptor_alloc(void) {
-	return (NetDescriptor*)malloc(sizeof (NetDescriptor));
+static NetDescriptor*
+NetDescriptor_alloc(void)
+{
+	return (NetDescriptor*)malloc(sizeof(NetDescriptor));
 }
 
 static void
-NetDescriptor_free(NetDescriptor *nd) {
+NetDescriptor_free(NetDescriptor* nd)
+{
 	free(nd);
 }
 
 // Sets the ref count to 1.
-NetDescriptor *
-NetDescriptor_new(Socket *socket, void *extra) {
-	NetDescriptor *nd;
+NetDescriptor*
+NetDescriptor_new(Socket* socket, void* extra)
+{
+	NetDescriptor* nd;
 
 	nd = NetDescriptor_alloc();
 	nd->refCount = 1;
 #ifdef DEBUG_NETDESCRIPTOR_REF
 	log_add(log_Debug, "NetDescriptor %08" PRIxPTR ": ref=1 (%d)",
-			(uintptr_t) nd, nd->refCount);
+			(uintptr_t)nd, nd->refCount);
 #endif
 
 	nd->flags.closed = false;
@@ -64,7 +67,8 @@ NetDescriptor_new(Socket *socket, void *extra) {
 	nd->smd = NULL;
 	nd->extra = extra;
 
-	if (NetManager_addDesc(nd) == -1) {
+	if (NetManager_addDesc(nd) == -1)
+	{
 		int savedErrno = errno;
 		NetDescriptor_free(nd);
 		errno = savedErrno;
@@ -75,7 +79,8 @@ NetDescriptor_new(Socket *socket, void *extra) {
 }
 
 static void
-NetDescriptor_delete(NetDescriptor *nd) {
+NetDescriptor_delete(NetDescriptor* nd)
+{
 	assert(nd->socket == Socket_noSocket);
 	assert(nd->smd == NULL);
 
@@ -84,8 +89,10 @@ NetDescriptor_delete(NetDescriptor *nd) {
 
 // Called from the callback handler.
 static void
-NetDescriptor_closeCallback(NetDescriptor *nd) {
-	if (nd->closeCallback != NULL) {
+NetDescriptor_closeCallback(NetDescriptor* nd)
+{
+	if (nd->closeCallback != NULL)
+	{
 		// The check is necessary because the close callback may have
 		// been removed before it is triggered.
 		(*nd->closeCallback)(nd);
@@ -93,45 +100,48 @@ NetDescriptor_closeCallback(NetDescriptor *nd) {
 	NetDescriptor_decRef(nd);
 }
 
-void
-NetDescriptor_close(NetDescriptor *nd) {
+void NetDescriptor_close(NetDescriptor* nd)
+{
 	assert(!nd->flags.closed);
 	assert(nd->socket != Socket_noSocket);
 
 	NetManager_removeDesc(nd);
-	(void) Socket_close(nd->socket);
+	(void)Socket_close(nd->socket);
 	nd->socket = Socket_noSocket;
 	nd->flags.closed = true;
-	if (nd->closeCallback != NULL) {
+	if (nd->closeCallback != NULL)
+	{
 		// Keep one reference around until the close callback has been
 		// called.
-		(void) Callback_add(
-				(CallbackFunction) NetDescriptor_closeCallback,
-				(CallbackArg) nd);
-	} else
+		(void)Callback_add(
+			(CallbackFunction)NetDescriptor_closeCallback,
+			(CallbackArg)nd);
+	}
+	else
 		NetDescriptor_decRef(nd);
 }
 
-void
-NetDescriptor_incRef(NetDescriptor *nd) {
+void NetDescriptor_incRef(NetDescriptor* nd)
+{
 	assert(nd->refCount < REFCOUNT_MAX);
 	nd->refCount++;
 #ifdef DEBUG_NETDESCRIPTOR_REF
 	log_add(log_Debug, "NetDescriptor %08" PRIxPTR ": ref++ (%d)",
-			(uintptr_t) nd, nd->refCount);
+			(uintptr_t)nd, nd->refCount);
 #endif
 }
 
 // returns true iff the ref counter has reached 0.
-bool
-NetDescriptor_decRef(NetDescriptor *nd) {
+bool NetDescriptor_decRef(NetDescriptor* nd)
+{
 	assert(nd->refCount > 0);
 	nd->refCount--;
 #ifdef DEBUG_NETDESCRIPTOR_REF
 	log_add(log_Debug, "NetDescriptor %08" PRIxPTR ": ref-- (%d)",
-			(uintptr_t) nd, nd->refCount);
+			(uintptr_t)nd, nd->refCount);
 #endif
-	if (nd->refCount == 0) {
+	if (nd->refCount == 0)
+	{
 		NetDescriptor_delete(nd);
 		return true;
 	}
@@ -139,61 +149,71 @@ NetDescriptor_decRef(NetDescriptor *nd) {
 }
 
 // The socket will no longer be managed by the NetManager.
-void
-NetDescriptor_detach(NetDescriptor *nd) {
+void NetDescriptor_detach(NetDescriptor* nd)
+{
 	NetManager_removeDesc(nd);
 	nd->socket = Socket_noSocket;
 	nd->flags.closed = true;
 	NetDescriptor_decRef(nd);
 }
 
-Socket *
-NetDescriptor_getSocket(NetDescriptor *nd) {
+Socket*
+NetDescriptor_getSocket(NetDescriptor* nd)
+{
 	return nd->socket;
 }
 
-void
-NetDescriptor_setExtra(NetDescriptor *nd, void *extra) {
+void NetDescriptor_setExtra(NetDescriptor* nd, void* extra)
+{
 	nd->extra = extra;
 }
 
-void *
-NetDescriptor_getExtra(const NetDescriptor *nd) {
+void* NetDescriptor_getExtra(const NetDescriptor* nd)
+{
 	return nd->extra;
 }
 
-void
-NetDescriptor_setReadCallback(NetDescriptor *nd,
-		NetDescriptor_ReadCallback callback) {
+void NetDescriptor_setReadCallback(NetDescriptor* nd,
+								   NetDescriptor_ReadCallback callback)
+{
 	nd->readCallback = callback;
-	if (!nd->flags.closed) {
-		if (nd->readCallback != NULL) {
+	if (!nd->flags.closed)
+	{
+		if (nd->readCallback != NULL)
+		{
 			NetManager_activateReadCallback(nd);
-		} else
+		}
+		else
 			NetManager_deactivateReadCallback(nd);
 	}
 }
 
-void
-NetDescriptor_setWriteCallback(NetDescriptor *nd,
-		NetDescriptor_WriteCallback callback) {
+void NetDescriptor_setWriteCallback(NetDescriptor* nd,
+									NetDescriptor_WriteCallback callback)
+{
 	nd->writeCallback = callback;
-	if (!nd->flags.closed) {
-		if (nd->writeCallback != NULL) {
+	if (!nd->flags.closed)
+	{
+		if (nd->writeCallback != NULL)
+		{
 			NetManager_activateWriteCallback(nd);
-		} else
+		}
+		else
 			NetManager_deactivateWriteCallback(nd);
 	}
 }
 
-void
-NetDescriptor_setExceptionCallback(NetDescriptor *nd,
-		NetDescriptor_ExceptionCallback callback) {
+void NetDescriptor_setExceptionCallback(NetDescriptor* nd,
+										NetDescriptor_ExceptionCallback callback)
+{
 	nd->exceptionCallback = callback;
-	if (!nd->flags.closed) {
-		if (nd->exceptionCallback != NULL) {
+	if (!nd->flags.closed)
+	{
+		if (nd->exceptionCallback != NULL)
+		{
 			NetManager_activateExceptionCallback(nd);
-		} else
+		}
+		else
 			NetManager_deactivateExceptionCallback(nd);
 	}
 }
@@ -202,10 +222,8 @@ NetDescriptor_setExceptionCallback(NetDescriptor *nd,
 // because of a local command or a remote disconnect.
 // The close callback will only be scheduled when this happens. The
 // callback will not be called until the Callback_process() is called.
-void
-NetDescriptor_setCloseCallback(NetDescriptor *nd,
-		NetDescriptor_CloseCallback callback) {
+void NetDescriptor_setCloseCallback(NetDescriptor* nd,
+									NetDescriptor_CloseCallback callback)
+{
 	nd->closeCallback = callback;
 }
-
-

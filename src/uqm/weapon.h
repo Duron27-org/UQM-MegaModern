@@ -43,27 +43,26 @@ typedef struct
 	uqm::SIZE sender; // player number
 	uqm::SIZE pixoffs, speed, hit_points, damage;
 	uqm::COUNT face, index, life;
-	FRAME *farray;
-	void (*preprocess_func) (ELEMENT *ElementPtr);
+	FRAME* farray;
+	void (*preprocess_func)(ELEMENT* ElementPtr);
 	uqm::SIZE blast_offs;
 } MISSILE_BLOCK;
 
-extern HELEMENT initialize_laser (LASER_BLOCK *pLaserBlock);
-extern HELEMENT initialize_missile (MISSILE_BLOCK *pMissileBlock);
-extern HELEMENT weapon_collision (ELEMENT *ElementPtr0, POINT *pPt0,
-		ELEMENT *ElementPtr1, POINT *pPt1);
-extern uqm::SIZE TrackShip (ELEMENT *Tracker, uqm::COUNT *pfacing);
-extern void Untarget (ELEMENT *ElementPtr);
+extern HELEMENT initialize_laser(LASER_BLOCK* pLaserBlock);
+extern HELEMENT initialize_missile(MISSILE_BLOCK* pMissileBlock);
+extern HELEMENT weapon_collision(ELEMENT* ElementPtr0, POINT* pPt0,
+								 ELEMENT* ElementPtr1, POINT* pPt1);
+extern uqm::SIZE TrackShip(ELEMENT* Tracker, uqm::COUNT* pfacing);
+extern void Untarget(ELEMENT* ElementPtr);
 
 #define MODIFY_IMAGE (1 << 0)
 #define MODIFY_SWAP (1 << 1)
 
-extern FRAME ModifySilhouette (ELEMENT *ElementPtr, STAMP *modify_stamp,
-		uqm::BYTE modify_flags);
+extern FRAME ModifySilhouette(ELEMENT* ElementPtr, STAMP* modify_stamp,
+							  uqm::BYTE modify_flags);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
 #endif /* UQM_WEAPON_H_ */
-

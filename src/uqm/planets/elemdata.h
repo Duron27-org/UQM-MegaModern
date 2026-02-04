@@ -96,7 +96,7 @@ enum
 	CADMIUM,
 	INDIUM,
 	TIN,
-	ANTIMONY, // Unused - Base Metal
+	ANTIMONY,  // Unused - Base Metal
 	TELLURIUM, // Unused - Base Metal
 	IODINE,
 	XENON,
@@ -157,21 +157,21 @@ enum
 	CYANOACETYLENE,
 	METHANOL,
 	ETHANOL,
-	SILICON_MONOXIDE, // Unused - Common
-	TITANIUM_OXIDE, // Unused - Common
-	ZIRCONIUM_OXIDE, // Unused - Common
-	WATER, // Unused - Common
+	SILICON_MONOXIDE,  // Unused - Common
+	TITANIUM_OXIDE,	   // Unused - Common
+	ZIRCONIUM_OXIDE,   // Unused - Common
+	WATER,			   // Unused - Common
 	SILICON_COMPOUNDS, // Unused - Common
-	METAL_OXIDES, // Unused - Common
-	QUANTUM_BH, // Unused - Exotic
+	METAL_OXIDES,	   // Unused - Common
+	QUANTUM_BH,		   // Unused - Exotic
 	NEUTRONIUM,
 	MAGNETIC_MONOPOLES,
 	DEGENERATE_MATTER,
 	RT_SUPER_FLUID,
 	AGUUTI_NODULES,
-	IRON_COMPOUNDS, // Unused - Common
-	ALUMINUM_COMPOUNDS, // Unused - Common
-	NITROUS_OXIDE, // Unused - Common
+	IRON_COMPOUNDS,		   // Unused - Common
+	ALUMINUM_COMPOUNDS,	   // Unused - Common
+	NITROUS_OXIDE,		   // Unused - Common
 	RADIOACTIVE_COMPOUNDS, // Unused - Radioactive
 	HYDROCARBONS,
 	CARBON_COMPOUNDS, // Unused - Common
@@ -200,17 +200,16 @@ enum
 };
 #define NOTHING (uqm::BYTE)(~0)
 
-#define MINERAL_DEPOSIT(qn,ql) MAKE_BYTE (qn, ql)
-#define DEPOSIT_QUANTITY(md) LONIBBLE (md)
-#define DEPOSIT_QUALITY(md) HINIBBLE (md)
+#define MINERAL_DEPOSIT(qn, ql) MAKE_BYTE(qn, ql)
+#define DEPOSIT_QUANTITY(md) LONIBBLE(md)
+#define DEPOSIT_QUALITY(md) HINIBBLE(md)
 
 #define MAX_ELEMENT_UNITS 0xF
 
-extern const uqm::BYTE *Elements;
+extern const uqm::BYTE* Elements;
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
 #endif /* UQM_PLANETS_ELEMDATA_H_ */
-

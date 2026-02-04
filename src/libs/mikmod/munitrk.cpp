@@ -35,7 +35,7 @@
 #include <string.h>
 
 /* Unibuffer chunk size */
-#define BUFPAGE  128
+#define BUFPAGE 128
 
 const UWORD unioperands[UNI_LAST] = {
 	0, /* not used */
@@ -131,32 +131,33 @@ the 'unioperands' table.
 
 /*========== Reading routines */
 
-static	UBYTE *rowstart; /* startadress of a row */
-static	UBYTE *rowend;   /* endaddress of a row (exclusive) */
-static	UBYTE *rowpc;    /* current unimod(tm) programcounter */
+static UBYTE* rowstart; /* startadress of a row */
+static UBYTE* rowend;	/* endaddress of a row (exclusive) */
+static UBYTE* rowpc;	/* current unimod(tm) programcounter */
 
-static	UBYTE lastbyte;  /* for UniSkipOpcode() */
+static UBYTE lastbyte; /* for UniSkipOpcode() */
 
 void UniSetRow(UBYTE* t)
 {
 	rowstart = t;
-	rowpc    = rowstart;
-	rowend   = t?rowstart+(*(rowpc++)&0x1f):t;
+	rowpc = rowstart;
+	rowend = t ? rowstart + (*(rowpc++) & 0x1f) : t;
 }
 
 UBYTE UniGetByte(void)
 {
-	return lastbyte = (rowpc<rowend)?*(rowpc++):0;
+	return lastbyte = (rowpc < rowend) ? *(rowpc++) : 0;
 }
 
 UWORD UniGetWord(void)
 {
-	return ((UWORD)UniGetByte()<<8)|UniGetByte();
+	return ((UWORD)UniGetByte() << 8) | UniGetByte();
 }
 
 void UniSkipOpcode(void)
 {
-	if (lastbyte < UNI_LAST) {
+	if (lastbyte < UNI_LAST)
+	{
 		UWORD t = unioperands[lastbyte];
 
 		while (t--)
@@ -166,55 +167,61 @@ void UniSkipOpcode(void)
 
 /* Finds the address of row number 'row' in the UniMod(tm) stream 't' returns
    NULL if the row can't be found. */
-UBYTE *UniFindRow(UBYTE* t,UWORD row)
+UBYTE* UniFindRow(UBYTE* t, UWORD row)
 {
-	UBYTE c,l;
+	UBYTE c, l;
 
-	if(t)
-		while(1) {
-			c = *t;             /* get rep/len byte */
-			if(!c) return NULL; /* zero ? -> end of track.. */
-			l = (c>>5)+1;       /* extract repeat value */
-			if(l>row) break;    /* reached wanted row? -> return pointer */
-			row -= l;           /* haven't reached row yet.. update row */
-			t += c&0x1f;        /* point t to the next row */
+	if (t)
+		while (1)
+		{
+			c = *t; /* get rep/len byte */
+			if (!c)
+				return NULL;  /* zero ? -> end of track.. */
+			l = (c >> 5) + 1; /* extract repeat value */
+			if (l > row)
+				break;	   /* reached wanted row? -> return pointer */
+			row -= l;	   /* haven't reached row yet.. update row */
+			t += c & 0x1f; /* point t to the next row */
 		}
 	return t;
 }
 
 /*========== Writing routines */
 
-static	UBYTE *unibuf; /* pointer to the temporary unitrk buffer */
-static	UWORD unimax;  /* buffer size */
+static UBYTE* unibuf; /* pointer to the temporary unitrk buffer */
+static UWORD unimax;  /* buffer size */
 
-static	UWORD unipc;   /* buffer cursor */
-static	UWORD unitt;   /* current row index */
-static	UWORD lastp;   /* previous row index */
+static UWORD unipc; /* buffer cursor */
+static UWORD unitt; /* current row index */
+static UWORD lastp; /* previous row index */
 
 /* Resets index-pointers to create a new track. */
 void UniReset(void)
 {
-	unitt     = 0;   /* reset index to rep/len byte */
-	unipc     = 1;   /* first opcode will be written to index 1 */
-	lastp     = 0;   /* no previous row yet */
-	unibuf[0] = 0;   /* clear rep/len byte */
+	unitt = 0;	   /* reset index to rep/len byte */
+	unipc = 1;	   /* first opcode will be written to index 1 */
+	lastp = 0;	   /* no previous row yet */
+	unibuf[0] = 0; /* clear rep/len byte */
 }
 
 /* Expands the buffer */
 static BOOL UniExpand(int wanted)
 {
-	if ((unipc+wanted)>=unimax) {
-		UBYTE *newbuf;
+	if ((unipc + wanted) >= unimax)
+	{
+		UBYTE* newbuf;
 
 		/* Expand the buffer by BUFPAGE bytes */
-		newbuf=(UBYTE*)MikMod_realloc(unibuf,(unimax+BUFPAGE)*sizeof(UBYTE));
+		newbuf = (UBYTE*)MikMod_realloc(unibuf, (unimax + BUFPAGE) * sizeof(UBYTE));
 
 		/* Check if MikMod_realloc succeeded */
-		if(newbuf) {
+		if (newbuf)
+		{
 			unibuf = newbuf;
-			unimax+=BUFPAGE;
+			unimax += BUFPAGE;
 			return 1;
-		} else
+		}
+		else
 			return 0;
 	}
 	return 1;
@@ -225,23 +232,25 @@ void UniWriteByte(UBYTE data)
 {
 	if (UniExpand(1))
 		/* write byte to current position and update */
-		unibuf[unipc++]=data;
+		unibuf[unipc++] = data;
 }
 
 void UniWriteWord(UWORD data)
 {
-	if (UniExpand(2)) {
-		unibuf[unipc++]=data>>8;
-		unibuf[unipc++]=data&0xff;
+	if (UniExpand(2))
+	{
+		unibuf[unipc++] = data >> 8;
+		unibuf[unipc++] = data & 0xff;
 	}
 }
 
-static BOOL MyCmp(const UBYTE* a,const UBYTE* b,UWORD l)
+static BOOL MyCmp(const UBYTE* a, const UBYTE* b, UWORD l)
 {
 	UWORD t;
 
-	for(t=0;t<l;t++)
-		if(*(a++)!=*(b++)) return 0;
+	for (t = 0; t < l; t++)
+		if (*(a++) != *(b++))
+			return 0;
 	return 1;
 }
 
@@ -249,20 +258,24 @@ static BOOL MyCmp(const UBYTE* a,const UBYTE* b,UWORD l)
    pointers to start a new row. */
 void UniNewline(void)
 {
-	UWORD n,l,len;
+	UWORD n, l, len;
 
-	n = (unibuf[lastp]>>5)+1;     /* repeat of previous row */
-	l = (unibuf[lastp]&0x1f);     /* length of previous row */
+	n = (unibuf[lastp] >> 5) + 1; /* repeat of previous row */
+	l = (unibuf[lastp] & 0x1f);	  /* length of previous row */
 
-	len = unipc-unitt;            /* length of current row */
+	len = unipc - unitt; /* length of current row */
 
 	/* Now, check if the previous and the current row are identical.. when they
 	   are, just increase the repeat field of the previous row */
-	if(n<8 && len==l && MyCmp(&unibuf[lastp+1],&unibuf[unitt+1],len-1)) {
-		unibuf[lastp]+=0x20;
-		unipc = unitt+1;
-	} else {
-		if (UniExpand(unitt-unipc)) {
+	if (n < 8 && len == l && MyCmp(&unibuf[lastp + 1], &unibuf[unitt + 1], len - 1))
+	{
+		unibuf[lastp] += 0x20;
+		unipc = unitt + 1;
+	}
+	else
+	{
+		if (UniExpand(unitt - unipc))
+		{
 			/* current and previous row aren't equal... update the pointers */
 			unibuf[unitt] = len;
 			lastp = unitt;
@@ -275,22 +288,25 @@ void UniNewline(void)
    stream. */
 UBYTE* UniDup(void)
 {
-	void *d;
+	void* d;
 
-	if (!UniExpand(unipc-unitt)) return NULL;
+	if (!UniExpand(unipc - unitt))
+		return NULL;
 	unibuf[unitt] = 0;
 
-	if(!(d=MikMod_malloc(unipc))) return NULL;
-	memcpy(d,unibuf,unipc);
+	if (!(d = MikMod_malloc(unipc)))
+		return NULL;
+	memcpy(d, unibuf, unipc);
 
-	return (UBYTE *)d;
+	return (UBYTE*)d;
 }
 
 BOOL UniInit(void)
 {
 	unimax = BUFPAGE;
 
-	if(!(unibuf=(UBYTE*)MikMod_malloc(unimax*sizeof(UBYTE)))) return 0;
+	if (!(unibuf = (UBYTE*)MikMod_malloc(unimax * sizeof(UBYTE))))
+		return 0;
 	return 1;
 }
 

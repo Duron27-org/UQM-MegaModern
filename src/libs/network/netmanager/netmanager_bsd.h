@@ -22,5 +22,4 @@
 typedef struct SocketManagementDataBsd SocketManagementDataBsd;
 typedef SocketManagementDataBsd SocketManagementData;
 
-#endif  /* LIBS_NETWORK_NETMANAGER_NETMANAGER_BSD_H_ */
-
+#endif /* LIBS_NETWORK_NETMANAGER_NETMANAGER_BSD_H_ */

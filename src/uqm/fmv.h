@@ -33,24 +33,23 @@ typedef enum
 	SURRENDERED
 } ENDGAME_SCENARIOS;
 
-extern void SplashScreen (void (* DoProcessing)(uqm::DWORD TimeOut));
-extern void Introduction (void);
-extern void Victory (void);
-extern void GameOver (uqm::BYTE DeathType);
-extern void DoShipSpin (uqm::COUNT index, MUSIC_REF hMusic);
-extern void Logo (void);
-extern void Drumall (void);
-extern void Reload (void);
-extern void AdvanceLoadProgress (void);
+extern void SplashScreen(void (*DoProcessing)(uqm::DWORD TimeOut));
+extern void Introduction(void);
+extern void Victory(void);
+extern void GameOver(uqm::BYTE DeathType);
+extern void DoShipSpin(uqm::COUNT index, MUSIC_REF hMusic);
+extern void Logo(void);
+extern void Drumall(void);
+extern void Reload(void);
+extern void AdvanceLoadProgress(void);
 
-extern void InitMenuMusic (void);
-extern void UninitMenuMusic (void);
+extern void InitMenuMusic(void);
+extern void UninitMenuMusic(void);
 
-extern bool ShowPresentation (RESOURCE presentation);
+extern bool ShowPresentation(RESOURCE presentation);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* UQM_FMV_H_ */
-
+#endif /* UQM_FMV_H_ */

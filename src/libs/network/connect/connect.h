@@ -24,7 +24,8 @@ typedef struct ConnectFlags ConnectFlags;
 typedef struct ConnectError ConnectError;
 typedef struct ConnectState ConnectState;
 
-typedef enum {
+typedef enum
+{
 	Connect_closed,
 	Connect_resolving,
 	Connect_connecting
@@ -37,44 +38,47 @@ typedef enum {
 
 
 // For connectHost()
-struct ConnectFlags {
+struct ConnectFlags
+{
 	ProtocolFamily familyDemand;
-			// Only accept a protocol family of this type.
-			// One of PF_inet, PF_inet6, or PF_unspec.
+	// Only accept a protocol family of this type.
+	// One of PF_inet, PF_inet6, or PF_unspec.
 	ProtocolFamily familyPrefer;
-			// Prefer a protocol family of this type.
-			// One of PF_inet, PF_inet6, or PF_unspec.
+	// Prefer a protocol family of this type.
+	// One of PF_inet, PF_inet6, or PF_unspec.
 	int timeout;
-			/* Number of milliseconds before timing out a connection attempt.
+	/* Number of milliseconds before timing out a connection attempt.
 			 * Note that if a host has multiple addresses, a connect to that
 			 * host will have this timeout *per address*. */
 	int retryDelayMs;
-			/* Retry connecting this many ms after connecting to the last
+	/* Retry connecting this many ms after connecting to the last
 			 * address for the specified host fails. Set to Connect_noRetry
 			 * to give up after one try. */
 #define Connect_noRetry -1
 };
 
-struct ConnectError {
+struct ConnectError
+{
 	ConnectStateState state;
-			// State where the error occured.
+	// State where the error occured.
 	int err;
-			// errno value. Not relevant if state == resolving unless
-			// gaiRes == EAI_SYSTEM.
-	const ResolveError *resolveError;
-			// Only relevant if state == resolving.
+	// errno value. Not relevant if state == resolving unless
+	// gaiRes == EAI_SYSTEM.
+	const ResolveError* resolveError;
+	// Only relevant if state == resolving.
 };
 
-typedef void (*ConnectConnectCallback)(ConnectState *connectState,
-		NetDescriptor *nd, const struct sockaddr *addr, socklen_t addrLen);
-typedef void (*ConnectErrorCallback)(ConnectState *connectState,
-		const ConnectError *error);
+typedef void (*ConnectConnectCallback)(ConnectState* connectState,
+									   NetDescriptor* nd, const struct sockaddr* addr, socklen_t addrLen);
+typedef void (*ConnectErrorCallback)(ConnectState* connectState,
+									 const ConnectError* error);
 
 #ifdef CONNECT_INTERNAL
 
 #include "libs/alarm.h"
 
-struct ConnectState {
+struct ConnectState
+{
 	RefCount refCount;
 
 	ConnectStateState state;
@@ -82,30 +86,28 @@ struct ConnectState {
 
 	ConnectConnectCallback connectCallback;
 	ConnectErrorCallback errorCallback;
-	void *extra;
+	void* extra;
 
-	struct addrinfo *info;
-	struct addrinfo *infoPtr;
+	struct addrinfo* info;
+	struct addrinfo* infoPtr;
 
-	ResolveState *resolveState;
+	ResolveState* resolveState;
 
-	NetDescriptor *nd;
-	Alarm *alarm;
-			// Used for both the timeout for a connection attempt
-			// and to retry after all addresses have been tried.
+	NetDescriptor* nd;
+	Alarm* alarm;
+	// Used for both the timeout for a connection attempt
+	// and to retry after all addresses have been tried.
 };
-#endif  /* CONNECT_INTERNAL */
+#endif /* CONNECT_INTERNAL */
 
-ConnectState *connectHostByName(const char *host, const char *service,
-		Protocol proto, const ConnectFlags *flags,
-		ConnectConnectCallback connectCallback,
-		ConnectErrorCallback errorCallback, void *extra);
-void ConnectState_incRef(ConnectState *connectState);
-bool ConnectState_decRef(ConnectState *connectState);
-void ConnectState_close(ConnectState *connectState);
-void ConnectState_setExtra(ConnectState *connectState, void *extra);
-void *ConnectState_getExtra(ConnectState *connectState);
+ConnectState* connectHostByName(const char* host, const char* service,
+								Protocol proto, const ConnectFlags* flags,
+								ConnectConnectCallback connectCallback,
+								ConnectErrorCallback errorCallback, void* extra);
+void ConnectState_incRef(ConnectState* connectState);
+bool ConnectState_decRef(ConnectState* connectState);
+void ConnectState_close(ConnectState* connectState);
+void ConnectState_setExtra(ConnectState* connectState, void* extra);
+void* ConnectState_getExtra(ConnectState* connectState);
 
-#endif  /* LIBS_NETWORK_CONNECT_CONNECT_H_ */
-
-
+#endif /* LIBS_NETWORK_CONNECT_CONNECT_H_ */

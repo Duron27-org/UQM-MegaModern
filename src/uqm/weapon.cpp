@@ -34,106 +34,106 @@
 // A wrapper function for weapon_collision that discards the return value.
 // This makes its signature match ElementCollisionFunc.
 static void
-weapon_collision_cb (ELEMENT *WeaponElementPtr, POINT *pWPt,
-		ELEMENT *HitElementPtr, POINT *pHPt)
+weapon_collision_cb(ELEMENT* WeaponElementPtr, POINT* pWPt,
+					ELEMENT* HitElementPtr, POINT* pHPt)
 {
-	weapon_collision (WeaponElementPtr, pWPt, HitElementPtr, pHPt);
+	weapon_collision(WeaponElementPtr, pWPt, HitElementPtr, pHPt);
 }
 
 
 HELEMENT
-initialize_laser (LASER_BLOCK *pLaserBlock)
+initialize_laser(LASER_BLOCK* pLaserBlock)
 {
 	HELEMENT hLaserElement;
 
-	hLaserElement = AllocElement ();
+	hLaserElement = AllocElement();
 	if (hLaserElement)
 	{
 #define LASER_LIFE 1
-		ELEMENT *LaserElementPtr;
+		ELEMENT* LaserElementPtr;
 
-		LockElement (hLaserElement, &LaserElementPtr);
+		LockElement(hLaserElement, &LaserElementPtr);
 		LaserElementPtr->playerNr = pLaserBlock->sender;
 		LaserElementPtr->hit_points = 1;
 		LaserElementPtr->mass_points = 1;
 		LaserElementPtr->state_flags = APPEARING | FINITE_LIFE
-				| pLaserBlock->flags;
+									 | pLaserBlock->flags;
 		LaserElementPtr->life_span = LASER_LIFE;
 		LaserElementPtr->collision_func = weapon_collision_cb;
 		LaserElementPtr->blast_offset = 1;
 
 		LaserElementPtr->current.location.x = pLaserBlock->cx
-				+ COSINE (FACING_TO_ANGLE (pLaserBlock->face),
-				DISPLAY_TO_WORLD (pLaserBlock->pixoffs));
+											+ COSINE(FACING_TO_ANGLE(pLaserBlock->face),
+													 DISPLAY_TO_WORLD(pLaserBlock->pixoffs));
 		LaserElementPtr->current.location.y = pLaserBlock->cy
-				+ SINE (FACING_TO_ANGLE (pLaserBlock->face),
-				DISPLAY_TO_WORLD (pLaserBlock->pixoffs));
-		SetPrimType (&DisplayArray[LaserElementPtr->PrimIndex], LINE_PRIM);
-		SetPrimColor (&DisplayArray[LaserElementPtr->PrimIndex],
-				pLaserBlock->color);
-		LaserElementPtr->current.image.frame = DecFrameIndex (stars_in_space);
+											+ SINE(FACING_TO_ANGLE(pLaserBlock->face),
+												   DISPLAY_TO_WORLD(pLaserBlock->pixoffs));
+		SetPrimType(&DisplayArray[LaserElementPtr->PrimIndex], LINE_PRIM);
+		SetPrimColor(&DisplayArray[LaserElementPtr->PrimIndex],
+					 pLaserBlock->color);
+		LaserElementPtr->current.image.frame = DecFrameIndex(stars_in_space);
 		LaserElementPtr->current.image.farray = &stars_in_space;
-		SetVelocityComponents (&LaserElementPtr->velocity,
-				WORLD_TO_VELOCITY ((pLaserBlock->cx + pLaserBlock->ex)
-				- LaserElementPtr->current.location.x),
-				WORLD_TO_VELOCITY ((pLaserBlock->cy + pLaserBlock->ey)
-				- LaserElementPtr->current.location.y));
-		UnlockElement (hLaserElement);
+		SetVelocityComponents(&LaserElementPtr->velocity,
+							  WORLD_TO_VELOCITY((pLaserBlock->cx + pLaserBlock->ex)
+												- LaserElementPtr->current.location.x),
+							  WORLD_TO_VELOCITY((pLaserBlock->cy + pLaserBlock->ey)
+												- LaserElementPtr->current.location.y));
+		UnlockElement(hLaserElement);
 	}
 
 	return (hLaserElement);
 }
 
 HELEMENT
-initialize_missile (MISSILE_BLOCK *pMissileBlock)
+initialize_missile(MISSILE_BLOCK* pMissileBlock)
 {
 	HELEMENT hMissileElement;
 
-	hMissileElement = AllocElement ();
+	hMissileElement = AllocElement();
 	if (hMissileElement)
 	{
 		uqm::SIZE delta_x, delta_y;
 		uqm::COUNT angle;
-		ELEMENT *MissileElementPtr;
+		ELEMENT* MissileElementPtr;
 
-		LockElement (hMissileElement, &MissileElementPtr);
+		LockElement(hMissileElement, &MissileElementPtr);
 		MissileElementPtr->hit_points = (uqm::BYTE)pMissileBlock->hit_points;
 		MissileElementPtr->mass_points = (uqm::BYTE)pMissileBlock->damage;
 		MissileElementPtr->playerNr = pMissileBlock->sender;
 		MissileElementPtr->state_flags = APPEARING | FINITE_LIFE
-				| pMissileBlock->flags;
+									   | pMissileBlock->flags;
 		MissileElementPtr->life_span = pMissileBlock->life;
-		SetPrimType (&DisplayArray[MissileElementPtr->PrimIndex], STAMP_PRIM);
+		SetPrimType(&DisplayArray[MissileElementPtr->PrimIndex], STAMP_PRIM);
 		MissileElementPtr->current.image.farray = pMissileBlock->farray;
 		MissileElementPtr->current.image.frame =
-				SetAbsFrameIndex (pMissileBlock->farray[0],
-				pMissileBlock->index);
+			SetAbsFrameIndex(pMissileBlock->farray[0],
+							 pMissileBlock->index);
 		MissileElementPtr->preprocess_func = pMissileBlock->preprocess_func;
 		MissileElementPtr->collision_func = weapon_collision_cb;
 		MissileElementPtr->blast_offset = (uqm::BYTE)pMissileBlock->blast_offs;
 
-		angle = FACING_TO_ANGLE (pMissileBlock->face);
+		angle = FACING_TO_ANGLE(pMissileBlock->face);
 		MissileElementPtr->current.location.x = pMissileBlock->cx
-				+ COSINE (angle, DISPLAY_TO_WORLD (pMissileBlock->pixoffs));
+											  + COSINE(angle, DISPLAY_TO_WORLD(pMissileBlock->pixoffs));
 		MissileElementPtr->current.location.y = pMissileBlock->cy
-				+ SINE (angle, DISPLAY_TO_WORLD (pMissileBlock->pixoffs));
+											  + SINE(angle, DISPLAY_TO_WORLD(pMissileBlock->pixoffs));
 
-		delta_x = COSINE (angle, WORLD_TO_VELOCITY (pMissileBlock->speed));
-		delta_y = SINE (angle, WORLD_TO_VELOCITY (pMissileBlock->speed));
-		SetVelocityComponents (&MissileElementPtr->velocity,
-				delta_x, delta_y);
+		delta_x = COSINE(angle, WORLD_TO_VELOCITY(pMissileBlock->speed));
+		delta_y = SINE(angle, WORLD_TO_VELOCITY(pMissileBlock->speed));
+		SetVelocityComponents(&MissileElementPtr->velocity,
+							  delta_x, delta_y);
 
-		MissileElementPtr->current.location.x -= VELOCITY_TO_WORLD (delta_x);
-		MissileElementPtr->current.location.y -= VELOCITY_TO_WORLD (delta_y);
-		UnlockElement (hMissileElement);
+		MissileElementPtr->current.location.x -= VELOCITY_TO_WORLD(delta_x);
+		MissileElementPtr->current.location.y -= VELOCITY_TO_WORLD(delta_y);
+		UnlockElement(hMissileElement);
 	}
 
 	return (hMissileElement);
 }
 
 HELEMENT
-weapon_collision (ELEMENT *WeaponElementPtr, POINT *pWPt,
-		ELEMENT *HitElementPtr, POINT *pHPt)
+weapon_collision(ELEMENT* WeaponElementPtr, POINT* pWPt,
+				 ELEMENT* HitElementPtr, POINT* pHPt)
 {
 	uqm::SIZE damage;
 	HELEMENT hBlastElement;
@@ -143,7 +143,7 @@ weapon_collision (ELEMENT *WeaponElementPtr, POINT *pWPt,
 
 	damage = (uqm::SIZE)WeaponElementPtr->mass_points;
 	if (damage
-			&& ((HitElementPtr->state_flags & FINITE_LIFE)
+		&& ((HitElementPtr->state_flags & FINITE_LIFE)
 			|| HitElementPtr->life_span == NORMAL_LIFE))
 #ifdef NEVER
 			&&
@@ -152,15 +152,17 @@ weapon_collision (ELEMENT *WeaponElementPtr, POINT *pWPt,
 			|| GetPrimType (&DisplayArray[WeaponElementPtr->PrimIndex]) != LINE_PRIM
 			|| !elementsOfSamePlayer (HitElementPtr, WeaponElementPtr)))
 #endif /* NEVER */
-	{
-		do_damage (HitElementPtr, damage);
-		if (HitElementPtr->hit_points)
-			WeaponElementPtr->state_flags |= COLLISION;
-	}
+			{
+				do_damage(HitElementPtr, damage);
+				if (HitElementPtr->hit_points)
+					WeaponElementPtr->state_flags |= COLLISION;
+			}
 
 	if (!(HitElementPtr->state_flags & FINITE_LIFE)
-			|| (!(/* WeaponElementPtr->state_flags
-			& */ HitElementPtr->state_flags & COLLISION)
+		|| (!(/* WeaponElementPtr->state_flags
+			& */
+			  HitElementPtr->state_flags
+			  & COLLISION)
 			&& WeaponElementPtr->hit_points <= HitElementPtr->mass_points))
 	{
 		if (damage)
@@ -168,142 +170,141 @@ weapon_collision (ELEMENT *WeaponElementPtr, POINT *pWPt,
 			damage = TARGET_DAMAGED_FOR_1_PT + (damage >> 1);
 			if (damage > TARGET_DAMAGED_FOR_6_PLUS_PT)
 				damage = TARGET_DAMAGED_FOR_6_PLUS_PT;
-			ProcessSound (SetAbsSoundIndex (GameSounds, damage),
-					HitElementPtr);
+			ProcessSound(SetAbsSoundIndex(GameSounds, damage),
+						 HitElementPtr);
 		}
 
-		if (GetPrimType (&DisplayArray[WeaponElementPtr->PrimIndex])
-				!= LINE_PRIM)
+		if (GetPrimType(&DisplayArray[WeaponElementPtr->PrimIndex])
+			!= LINE_PRIM)
 			WeaponElementPtr->state_flags |= DISAPPEARING;
 
 		WeaponElementPtr->hit_points = 0;
 		WeaponElementPtr->life_span = 0;
 		WeaponElementPtr->state_flags |= COLLISION | NONSOLID;
 
-		hBlastElement = AllocElement ();
+		hBlastElement = AllocElement();
 		if (hBlastElement)
 		{
 			uqm::COUNT blast_index;
 			uqm::SIZE blast_offs;
 			uqm::COUNT angle, num_blast_frames;
-			ELEMENT *BlastElementPtr;
+			ELEMENT* BlastElementPtr;
 			extern FRAME blast[];
 
-			PutElement (hBlastElement);
-			LockElement (hBlastElement, &BlastElementPtr);
+			PutElement(hBlastElement);
+			LockElement(hBlastElement, &BlastElementPtr);
 			BlastElementPtr->playerNr = WeaponElementPtr->playerNr;
 			BlastElementPtr->state_flags = APPEARING | FINITE_LIFE | NONSOLID;
-			SetPrimType (&DisplayArray[BlastElementPtr->PrimIndex], STAMP_PRIM);
+			SetPrimType(&DisplayArray[BlastElementPtr->PrimIndex], STAMP_PRIM);
 
-			BlastElementPtr->current.location.x = DISPLAY_TO_WORLD (pWPt->x);
-			BlastElementPtr->current.location.y = DISPLAY_TO_WORLD (pWPt->y);
+			BlastElementPtr->current.location.x = DISPLAY_TO_WORLD(pWPt->x);
+			BlastElementPtr->current.location.y = DISPLAY_TO_WORLD(pWPt->y);
 
-			angle = GetVelocityTravelAngle (&WeaponElementPtr->velocity);
+			angle = GetVelocityTravelAngle(&WeaponElementPtr->velocity);
 			if ((blast_offs = WeaponElementPtr->blast_offset) > 0)
 			{
 				BlastElementPtr->current.location.x +=
-						COSINE (angle, DISPLAY_TO_WORLD (blast_offs));
+					COSINE(angle, DISPLAY_TO_WORLD(blast_offs));
 				BlastElementPtr->current.location.y +=
-						SINE (angle, DISPLAY_TO_WORLD (blast_offs));
+					SINE(angle, DISPLAY_TO_WORLD(blast_offs));
 			}
 
 			blast_index =
-					NORMALIZE_FACING (ANGLE_TO_FACING (angle + HALF_CIRCLE));
-			blast_index = ((blast_index >> 2) << 1) +
-					(blast_index & 0x3 ? 1 : 0);
+				NORMALIZE_FACING(ANGLE_TO_FACING(angle + HALF_CIRCLE));
+			blast_index = ((blast_index >> 2) << 1) + (blast_index & 0x3 ? 1 : 0);
 
 			num_blast_frames =
-					GetFrameCount (WeaponElementPtr->next.image.frame);
-			if (num_blast_frames <= ANGLE_TO_FACING (FULL_CIRCLE))
+				GetFrameCount(WeaponElementPtr->next.image.frame);
+			if (num_blast_frames <= ANGLE_TO_FACING(FULL_CIRCLE))
 			{
 				BlastElementPtr->life_span = 2;
 				BlastElementPtr->current.image.farray = blast;
 				BlastElementPtr->current.image.frame =
-						SetAbsFrameIndex (blast[0], blast_index);
+					SetAbsFrameIndex(blast[0], blast_index);
 			}
 			else
 			{
 				BlastElementPtr->life_span = num_blast_frames
-						- ANGLE_TO_FACING (FULL_CIRCLE);
+										   - ANGLE_TO_FACING(FULL_CIRCLE);
 				BlastElementPtr->turn_wait = BlastElementPtr->next_turn = 0;
 				BlastElementPtr->preprocess_func = animation_preprocess;
 				BlastElementPtr->current.image.farray =
-						WeaponElementPtr->next.image.farray;
+					WeaponElementPtr->next.image.farray;
 				BlastElementPtr->current.image.frame =
-						SetAbsFrameIndex (
+					SetAbsFrameIndex(
 						BlastElementPtr->current.image.farray[0],
-						ANGLE_TO_FACING (FULL_CIRCLE));
+						ANGLE_TO_FACING(FULL_CIRCLE));
 			}
 
-			UnlockElement (hBlastElement);
+			UnlockElement(hBlastElement);
 
 			return (hBlastElement);
 		}
 	}
 
-	(void) pHPt;  /* Satisfying compiler (unused parameter) */
+	(void)pHPt; /* Satisfying compiler (unused parameter) */
 	return ((HELEMENT)0);
 }
 
 FRAME
-ModifySilhouette (ELEMENT *ElementPtr, STAMP *modify_stamp,
-		uqm::BYTE modify_flags)
+ModifySilhouette(ELEMENT* ElementPtr, STAMP* modify_stamp,
+				 uqm::BYTE modify_flags)
 {
 	FRAME f;
-	RECT r{};
-	RECT originalRect{};
+	RECT r {};
+	RECT originalRect {};
 	INTERSECT_CONTROL ShipIntersect, ObjectIntersect;
-	STARSHIP *StarShipPtr;
+	STARSHIP* StarShipPtr;
 	CONTEXT OldContext;
 
 	f = 0;
 	ObjectIntersect.IntersectStamp = *modify_stamp;
-	GetFrameRect (ObjectIntersect.IntersectStamp.frame, &originalRect);
+	GetFrameRect(ObjectIntersect.IntersectStamp.frame, &originalRect);
 
-	GetElementStarShip (ElementPtr, &StarShipPtr);
+	GetElementStarShip(ElementPtr, &StarShipPtr);
 	if (modify_flags & MODIFY_IMAGE)
 	{
-		ShipIntersect.IntersectStamp.frame = SetAbsFrameIndex (
-				StarShipPtr->RaceDescPtr->ship_info.icons, 1);
+		ShipIntersect.IntersectStamp.frame = SetAbsFrameIndex(
+			StarShipPtr->RaceDescPtr->ship_info.icons, 1);
 		if (ShipIntersect.IntersectStamp.frame == 0)
 			return (0);
 
-		GetFrameRect (ShipIntersect.IntersectStamp.frame, &r);
+		GetFrameRect(ShipIntersect.IntersectStamp.frame, &r);
 
 		ShipIntersect.IntersectStamp.origin.x = 0;
 		ShipIntersect.IntersectStamp.origin.y = 0;
 		ShipIntersect.EndPoint = ShipIntersect.IntersectStamp.origin;
 		do
 		{
-			ObjectIntersect.IntersectStamp.origin.x = ((uqm::COUNT)TFB_Random ()
-					% (r.extent.width - originalRect.extent.width))
-					+ ((originalRect.extent.width - r.extent.width) >> 1);
-			ObjectIntersect.IntersectStamp.origin.y = ((uqm::COUNT)TFB_Random ()
-					% (r.extent.height - originalRect.extent.height))
-					+ ((originalRect.extent.height - r.extent.height) >> 1);
+			ObjectIntersect.IntersectStamp.origin.x = ((uqm::COUNT)TFB_Random()
+													   % (r.extent.width - originalRect.extent.width))
+													+ ((originalRect.extent.width - r.extent.width) >> 1);
+			ObjectIntersect.IntersectStamp.origin.y = ((uqm::COUNT)TFB_Random()
+													   % (r.extent.height - originalRect.extent.height))
+													+ ((originalRect.extent.height - r.extent.height) >> 1);
 			ObjectIntersect.EndPoint = ObjectIntersect.IntersectStamp.origin;
-		} while (!DrawablesIntersect (&ObjectIntersect,
-				&ShipIntersect, MAX_TIME_VALUE));
+		} while (!DrawablesIntersect(&ObjectIntersect,
+									 &ShipIntersect, MAX_TIME_VALUE));
 
 		ObjectIntersect.IntersectStamp.origin.x += STATUS_WIDTH >> 1;
-		ObjectIntersect.IntersectStamp.origin.y += RES_SCALE (31); 
+		ObjectIntersect.IntersectStamp.origin.y += RES_SCALE(31);
 	}
 
 	ObjectIntersect.IntersectStamp.origin.y +=
-			status_y_offsets[ElementPtr->playerNr];
+		status_y_offsets[ElementPtr->playerNr];
 
 	if (modify_flags & MODIFY_SWAP)
 	{
 		originalRect.corner.x += ObjectIntersect.IntersectStamp.origin.x;
 		originalRect.corner.y += ObjectIntersect.IntersectStamp.origin.y;
-		InitShipStatus (&StarShipPtr->RaceDescPtr->ship_info,
-				StarShipPtr, &originalRect, false);
+		InitShipStatus(&StarShipPtr->RaceDescPtr->ship_info,
+					   StarShipPtr, &originalRect, false);
 	}
 	else
 	{
-		OldContext = SetContext (StatusContext);
-		DrawStamp (&ObjectIntersect.IntersectStamp);
-		SetContext (OldContext);
+		OldContext = SetContext(StatusContext);
+		DrawStamp(&ObjectIntersect.IntersectStamp);
+		SetContext(OldContext);
 	}
 
 	return (f);
@@ -317,11 +318,11 @@ ModifySilhouette (ELEMENT *ElementPtr, STAMP *modify_stamp,
 // Cloaked ships won't be detected, except when the APPEARING flag is
 // set for the Tracker.
 uqm::SIZE
-TrackShip (ELEMENT *Tracker, uqm::COUNT *pfacing)
+TrackShip(ELEMENT* Tracker, uqm::COUNT* pfacing)
 {
 	uqm::SIZE best_delta_facing, best_delta;
 	HELEMENT hShip, hNextShip;
-	ELEMENT *Trackee;
+	ELEMENT* Trackee;
 
 	best_delta = 0;
 	best_delta_facing = -1;
@@ -329,29 +330,28 @@ TrackShip (ELEMENT *Tracker, uqm::COUNT *pfacing)
 	hShip = Tracker->hTarget;
 	if (hShip)
 	{
-		LockElement (hShip, &Trackee);
+		LockElement(hShip, &Trackee);
 		Tracker->hTarget = hNextShip = 0;
 
 		goto CheckTracking;
 	}
 
-	for (hShip = GetHeadElement (); hShip != 0; hShip = hNextShip)
+	for (hShip = GetHeadElement(); hShip != 0; hShip = hNextShip)
 	{
-		LockElement (hShip, &Trackee);
-		hNextShip = GetSuccElement (Trackee);
+		LockElement(hShip, &Trackee);
+		hNextShip = GetSuccElement(Trackee);
 		if ((Trackee->state_flags & PLAYER_SHIP)
-				&& !elementsOfSamePlayer (Trackee, Tracker)
-				&& (!OBJECT_CLOAKED (Trackee)
+			&& !elementsOfSamePlayer(Trackee, Tracker)
+			&& (!OBJECT_CLOAKED(Trackee)
 				|| ((Tracker->state_flags & PLAYER_SHIP)
-				&& (Tracker->state_flags & APPEARING))
-				))
+					&& (Tracker->state_flags & APPEARING))))
 		{
-			STARSHIP *StarShipPtr;
+			STARSHIP* StarShipPtr;
 
 CheckTracking:
-			GetElementStarShip (Trackee, &StarShipPtr);
+			GetElementStarShip(Trackee, &StarShipPtr);
 			if (Trackee->life_span
-					&& StarShipPtr->RaceDescPtr->ship_info.crew_level)
+				&& StarShipPtr->RaceDescPtr->ship_info.crew_level)
 			{
 				uqm::SIZE delta_x, delta_y, delta_facing;
 
@@ -370,20 +370,19 @@ CheckTracking:
 							- Tracker->current.location.y;
 				}
 
-				delta_x = WRAP_DELTA_X (delta_x);
-				delta_y = WRAP_DELTA_Y (delta_y);
-				delta_facing = NORMALIZE_FACING (
-						ANGLE_TO_FACING (ARCTAN (delta_x, delta_y)) - *pfacing
-						);
+				delta_x = WRAP_DELTA_X(delta_x);
+				delta_y = WRAP_DELTA_Y(delta_y);
+				delta_facing = NORMALIZE_FACING(
+					ANGLE_TO_FACING(ARCTAN(delta_x, delta_y)) - *pfacing);
 
 				if (delta_x < 0)
 					delta_x = -delta_x;
 				if (delta_y < 0)
 					delta_y = -delta_y;
 				delta_x += delta_y;
-						// 'delta_x + delta_y' is used as an approximation
-						// of the actual distance 'sqrt(sqr(delta_x) +
-						// sqr(delta_y))'.
+				// 'delta_x + delta_y' is used as an approximation
+				// of the actual distance 'sqrt(sqr(delta_x) +
+				// sqr(delta_y))'.
 
 				if (best_delta == 0 || delta_x < best_delta)
 				{
@@ -393,7 +392,7 @@ CheckTracking:
 				}
 			}
 		}
-		UnlockElement (hShip);
+		UnlockElement(hShip);
 	}
 
 	if (best_delta_facing > 0)
@@ -401,15 +400,14 @@ CheckTracking:
 		uqm::COUNT facing;
 
 		facing = *pfacing;
-		if (best_delta_facing == ANGLE_TO_FACING (HALF_CIRCLE))
-			facing += (((uqm::BYTE)TFB_Random () & 1) << 1) - 1;
-		else if (best_delta_facing < ANGLE_TO_FACING (HALF_CIRCLE))
+		if (best_delta_facing == ANGLE_TO_FACING(HALF_CIRCLE))
+			facing += (((uqm::BYTE)TFB_Random() & 1) << 1) - 1;
+		else if (best_delta_facing < ANGLE_TO_FACING(HALF_CIRCLE))
 			++facing;
 		else
 			--facing;
-		*pfacing = NORMALIZE_FACING (facing);
+		*pfacing = NORMALIZE_FACING(facing);
 	}
 
 	return (best_delta_facing);
 }
-

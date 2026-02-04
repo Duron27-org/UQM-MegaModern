@@ -26,33 +26,33 @@
 
 typedef struct FontPage
 {
-	struct FontPage *next;
+	struct FontPage* next;
 	UniChar pageStart;
 #define CHARACTER_PAGE_MASK 0xfffff800
 	UniChar firstChar;
 	size_t numChars;
-	TFB_Char *charDesc;
+	TFB_Char* charDesc;
 } FONT_PAGE;
 
-static inline FONT_PAGE *
-AllocFontPage (int numChars)
+static inline FONT_PAGE*
+AllocFontPage(int numChars)
 {
-	FONT_PAGE *result = (FONT_PAGE*)HMalloc (sizeof (FONT_PAGE));
-	result->charDesc = (TFB_Char*)HCalloc (numChars * sizeof *result->charDesc);
+	FONT_PAGE* result = (FONT_PAGE*)HMalloc(sizeof(FONT_PAGE));
+	result->charDesc = (TFB_Char*)HCalloc(numChars * sizeof *result->charDesc);
 	return result;
 }
 
 static inline void
-FreeFontPage (FONT_PAGE *page)
+FreeFontPage(FONT_PAGE* page)
 {
-	HFree (page->charDesc);
-	HFree (page);
+	HFree(page->charDesc);
+	HFree(page);
 }
 
 struct font_desc
 {
 	uqm::BYTE Leading;
-	FONT_PAGE *fontPages;
+	FONT_PAGE* fontPages;
 	EXTENT disp;
 	char filename[PATH_MAX];
 	uqm::BYTE CharSpace;
@@ -66,16 +66,15 @@ struct font_desc
 
 #define FONT_PRIORITY DEFAULT_MEM_PRIORITY
 
-#define AllocFont(size) (FONT)HCalloc (sizeof (FONT_DESC) + (size))
+#define AllocFont(size) (FONT) HCalloc(sizeof(FONT_DESC) + (size))
 #define FreeFont _ReleaseFontData
 
 extern FONT _CurFontPtr;
 
-extern void *_GetFontData (uio_Stream *fp, uqm::DWORD length);
-extern bool _ReleaseFontData (void *handle);
-extern TFB_Char *GetFrameForFPS (UniChar ch);
-extern void GetFontDims (uqm::SIZE* w, uqm::SIZE* h);
-extern bool GoodToGoFPS (void);
+extern void* _GetFontData(uio_Stream* fp, uqm::DWORD length);
+extern bool _ReleaseFontData(void* handle);
+extern TFB_Char* GetFrameForFPS(UniChar ch);
+extern void GetFontDims(uqm::SIZE* w, uqm::SIZE* h);
+extern bool GoodToGoFPS(void);
 
 #endif /* LIBS_GRAPHICS_FONT_H_ */
-

@@ -21,21 +21,18 @@
 #include "libs/timelib.h"
 #include "timecommon.h"
 
-void
-InitTimeSystem (void)
+void InitTimeSystem(void)
 {
-	NativeInitTimeSystem ();
+	NativeInitTimeSystem();
 }
 
-void
-UnInitTimeSystem (void)
+void UnInitTimeSystem(void)
 {
-	NativeUnInitTimeSystem ();
+	NativeUnInitTimeSystem();
 }
 
 TimeCount
-GetTimeCounter (void)
+GetTimeCounter(void)
 {
-	return NativeGetTimeCounter ();
+	return NativeGetTimeCounter();
 }
-

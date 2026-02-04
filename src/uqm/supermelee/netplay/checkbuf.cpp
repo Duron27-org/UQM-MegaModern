@@ -24,21 +24,21 @@
 #include "libs/log.h"
 
 #include "../../battle.h"
-		// for battleFrameCount
+// for battleFrameCount
 
 
 #include <errno.h>
 #include <stdlib.h>
 
 
-
 static inline BattleFrameCounter
-ChecksumBuffer_getCurrentFrameNr(void) {
+ChecksumBuffer_getCurrentFrameNr(void)
+{
 	return battleFrameCount;
 }
 
-void
-ChecksumBuffer_init(ChecksumBuffer *cb, size_t delay, size_t interval) {
+void ChecksumBuffer_init(ChecksumBuffer* cb, size_t delay, size_t interval)
+{
 	// The input buffer lags BattleInput_inputDelay frames behind,
 	// but only every interval frames will there be a checksum to be
 	// checked.
@@ -68,22 +68,24 @@ ChecksumBuffer_init(ChecksumBuffer *cb, size_t delay, size_t interval) {
 		size_t i;
 #endif
 
-		cb->checksums = (ChecksumEntry*) malloc(bufSize * sizeof (ChecksumEntry));
+		cb->checksums = (ChecksumEntry*)malloc(bufSize * sizeof(ChecksumEntry));
 		cb->maxSize = bufSize;
 		cb->interval = interval;
 
 #ifdef NETPLAY_DEBUG
-		for (i = 0; i < bufSize; i++) {
+		for (i = 0; i < bufSize; i++)
+		{
 			cb->checksums[i].checksum = 0;
-			cb->checksums[i].frameNr = (BattleFrameCounter) -1;
+			cb->checksums[i].frameNr = (BattleFrameCounter)-1;
 		}
 #endif
 	}
 }
 
-void
-ChecksumBuffer_uninit(ChecksumBuffer *cb) {
-	if (cb->checksums != NULL) {
+void ChecksumBuffer_uninit(ChecksumBuffer* cb)
+{
+	if (cb->checksums != NULL)
+	{
 		free(cb->checksums);
 		cb->checksums = NULL;
 	}
@@ -91,14 +93,15 @@ ChecksumBuffer_uninit(ChecksumBuffer *cb) {
 
 // Returns the entry that would be used for the checksum for the specified
 // frame. Whether the entry is actually valid is not checked.
-static ChecksumEntry *
-ChecksumBuffer_getChecksumEntry(ChecksumBuffer *cb,
-		BattleFrameCounter frameNr) {
+static ChecksumEntry*
+ChecksumBuffer_getChecksumEntry(ChecksumBuffer* cb,
+								BattleFrameCounter frameNr)
+{
 	size_t index;
-	ChecksumEntry *entry;
+	ChecksumEntry* entry;
 
 	assert(frameNr % cb->interval == 0);
-			// We only record checksums exactly every 'interval' frames.
+	// We only record checksums exactly every 'interval' frames.
 
 	index = (frameNr / cb->interval) % cb->maxSize;
 	entry = &cb->checksums[index];
@@ -106,11 +109,11 @@ ChecksumBuffer_getChecksumEntry(ChecksumBuffer *cb,
 	return entry;
 }
 
-bool
-ChecksumBuffer_addChecksum(ChecksumBuffer *cb, BattleFrameCounter frameNr,
-		Checksum checksum) {
-	ChecksumEntry *entry;
-	
+bool ChecksumBuffer_addChecksum(ChecksumBuffer* cb, BattleFrameCounter frameNr,
+								Checksum checksum)
+{
+	ChecksumEntry* entry;
+
 	assert(frameNr % cb->interval == 0);
 
 	entry = ChecksumBuffer_getChecksumEntry(cb, frameNr);
@@ -123,17 +126,18 @@ ChecksumBuffer_addChecksum(ChecksumBuffer *cb, BattleFrameCounter frameNr,
 }
 
 // Pre: frameNr is within the range of the checksums stored in cb.
-bool
-ChecksumBuffer_getChecksum(ChecksumBuffer *cb, BattleFrameCounter frameNr,
-		Checksum *result) {
-	ChecksumEntry *entry;
+bool ChecksumBuffer_getChecksum(ChecksumBuffer* cb, BattleFrameCounter frameNr,
+								Checksum* result)
+{
+	ChecksumEntry* entry;
 
 	entry = ChecksumBuffer_getChecksumEntry(cb, frameNr);
-	
+
 #ifdef NETPLAY_DEBUG
-	if (frameNr != entry->frameNr) {
+	if (frameNr != entry->frameNr)
+	{
 		log_add(log_Error, "Checksum buffer entry for requested frame %u "
-				"(still?) contains a checksum for frame %u.\n",
+						   "(still?) contains a checksum for frame %u.\n",
 				frameNr, entry->frameNr);
 		return false;
 	}
@@ -142,4 +146,3 @@ ChecksumBuffer_getChecksum(ChecksumBuffer *cb, BattleFrameCounter frameNr,
 	*result = entry->checksum;
 	return true;
 }
-

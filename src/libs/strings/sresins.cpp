@@ -19,49 +19,47 @@
 #include "strintrn.h"
 
 static void
-GetStringTableFileData (const char *pathname, RESOURCE_DATA *resdata)
+GetStringTableFileData(const char* pathname, RESOURCE_DATA* resdata)
 {
-	resdata->ptr = LoadResourceFromPath (pathname, _GetStringData);
+	resdata->ptr = LoadResourceFromPath(pathname, _GetStringData);
 }
 
 static void
-GetBinaryTableFileData (const char *pathname, RESOURCE_DATA *resdata)
+GetBinaryTableFileData(const char* pathname, RESOURCE_DATA* resdata)
 {
-	resdata->ptr = LoadResourceFromPath (pathname, _GetBinaryTableData);
+	resdata->ptr = LoadResourceFromPath(pathname, _GetBinaryTableData);
 }
 
-bool
-InstallStringTableResType (void)
+bool InstallStringTableResType(void)
 {
-	InstallResTypeVectors ("STRTAB", GetStringTableFileData, FreeResourceData, NULL);
-	InstallResTypeVectors ("BINTAB", GetBinaryTableFileData, FreeResourceData, NULL);
-	InstallResTypeVectors ("CONVERSATION", _GetConversationData, FreeResourceData, NULL);
+	InstallResTypeVectors("STRTAB", GetStringTableFileData, FreeResourceData, NULL);
+	InstallResTypeVectors("BINTAB", GetBinaryTableFileData, FreeResourceData, NULL);
+	InstallResTypeVectors("CONVERSATION", _GetConversationData, FreeResourceData, NULL);
 	return true;
 }
 
 STRING_TABLE
-LoadStringTableInstance (RESOURCE res)
+LoadStringTableInstance(RESOURCE res)
 {
-	void *data;
+	void* data;
 
-	data = res_GetResource (res);
+	data = res_GetResource(res);
 	if (data)
 	{
-		res_DetachResource (res);
+		res_DetachResource(res);
 	}
 
 	return (STRING_TABLE)data;
 }
 
-const char *
-LoadStringInstance (RESOURCE res)
+const char*
+LoadStringInstance(RESOURCE res)
 {
-	const char *data;
+	const char* data;
 
-	data = (const char*)res_GetResource (res);
+	data = (const char*)res_GetResource(res);
 	if (data)
-		res_DetachResource (res);
+		res_DetachResource(res);
 
 	return data;
 }
-

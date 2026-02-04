@@ -43,35 +43,34 @@ typedef struct
 	PLANET_INFO PlanetInfo;
 } SYSTEM_INFO;
 
-#define GENERATE_ALL  ((uqm::COUNT)~0)
-		
-extern uqm::COUNT GenerateMineralDeposits (const SYSTEM_INFO *, uqm::COUNT whichDeposit,
-		NODE_INFO *info);
-extern uqm::COUNT GenerateLifeForms (const SYSTEM_INFO *, uqm::COUNT whichLife,
-		NODE_INFO *info);
-extern void GenerateRandomLocation (POINT *loc);
-extern uqm::COUNT GenerateRandomNodes (const SYSTEM_INFO *, uqm::COUNT scan, uqm::COUNT numNodes,
-		uqm::COUNT type, uqm::COUNT whichNode, NODE_INFO *info);
-extern uqm::COUNT CustomMineralDeposits (const SYSTEM_INFO *SysInfoPtr, uqm::COUNT which_deposit,
-		NODE_INFO *info, uqm::COUNT numNodes, uqm::COUNT type, uqm::BYTE quality);
-extern uqm::COUNT CustomMineralDeposit (NODE_INFO *info, uqm::COUNT type, uqm::BYTE quality,
-		POINT location);
-// Generate lifeforms from a preset lifeTypes[] array
-extern uqm::COUNT GeneratePresetLife (const SYSTEM_INFO *,
-		const uqm::SBYTE *lifeTypes, uqm::COUNT whichLife, NODE_INFO *info);
+#define GENERATE_ALL ((uqm::COUNT)~0)
 
-#define DWARF_ELEMENT_DENSITY  1
+extern uqm::COUNT GenerateMineralDeposits(const SYSTEM_INFO*, uqm::COUNT whichDeposit,
+										  NODE_INFO* info);
+extern uqm::COUNT GenerateLifeForms(const SYSTEM_INFO*, uqm::COUNT whichLife,
+									NODE_INFO* info);
+extern void GenerateRandomLocation(POINT* loc);
+extern uqm::COUNT GenerateRandomNodes(const SYSTEM_INFO*, uqm::COUNT scan, uqm::COUNT numNodes,
+									  uqm::COUNT type, uqm::COUNT whichNode, NODE_INFO* info);
+extern uqm::COUNT CustomMineralDeposits(const SYSTEM_INFO* SysInfoPtr, uqm::COUNT which_deposit,
+										NODE_INFO* info, uqm::COUNT numNodes, uqm::COUNT type, uqm::BYTE quality);
+extern uqm::COUNT CustomMineralDeposit(NODE_INFO* info, uqm::COUNT type, uqm::BYTE quality,
+									   POINT location);
+// Generate lifeforms from a preset lifeTypes[] array
+extern uqm::COUNT GeneratePresetLife(const SYSTEM_INFO*,
+									 const uqm::SBYTE* lifeTypes, uqm::COUNT whichLife, NODE_INFO* info);
+
+#define DWARF_ELEMENT_DENSITY 1
 #define GIANT_ELEMENT_DENSITY 3
 #define SUPERGIANT_ELEMENT_DENSITY 8
 
 #define MAX_ELEMENT_DENSITY ((MAX_ELEMENT_UNITS * SUPERGIANT_ELEMENT_DENSITY) << 1)
 
-extern void DoPlanetaryAnalysis (SYSTEM_INFO *SysInfoPtr,
-		PLANET_DESC *pPlanetDesc);
+extern void DoPlanetaryAnalysis(SYSTEM_INFO* SysInfoPtr,
+								PLANET_DESC* pPlanetDesc);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
 #endif /* UQM_PLANETS_SUNDATA_H_ */
-

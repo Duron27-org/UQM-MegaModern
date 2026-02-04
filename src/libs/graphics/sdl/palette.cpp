@@ -20,28 +20,25 @@
 #include "libs/memlib.h"
 #include "libs/log.h"
 
-NativePalette *
-AllocNativePalette (void)
+NativePalette*
+AllocNativePalette(void)
 {
-	return (NativePalette*)HCalloc (sizeof (NativePalette));
+	return (NativePalette*)HCalloc(sizeof(NativePalette));
 }
 
-void
-FreeNativePalette (NativePalette *palette)
+void FreeNativePalette(NativePalette* palette)
 {
-	HFree (palette);
+	HFree(palette);
 }
 
-void
-SetNativePaletteColor (NativePalette *palette, int index, Color color)
+void SetNativePaletteColor(NativePalette* palette, int index, Color color)
 {
-	assert (index < NUMBER_OF_PLUTVALS);
-	palette->colors[index] = ColorToNative (color);
+	assert(index < NUMBER_OF_PLUTVALS);
+	palette->colors[index] = ColorToNative(color);
 }
 
-Color
-GetNativePaletteColor (NativePalette *palette, int index)
+Color GetNativePaletteColor(NativePalette* palette, int index)
 {
-	assert (index < NUMBER_OF_PLUTVALS);
-	return NativeToColor (palette->colors[index]);
+	assert(index < NUMBER_OF_PLUTVALS);
+	return NativeToColor(palette->colors[index]);
 }

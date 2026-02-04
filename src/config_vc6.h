@@ -42,7 +42,7 @@
 
 /* Defined if your system has strcasecmp of its own */
 #undef HAVE_STRCASECMP_UQM
-		// Not using "HAVE_STRCASECMP" as that conflicts with SDL.
+// Not using "HAVE_STRCASECMP" as that conflicts with SDL.
 
 /* Defined if your system has stricmp of its own */
 #define HAVE_STRICMP
@@ -60,4 +60,3 @@
 #define HAVE_WINT_T
 
 #endif /* CONFIG_VC6_H_ */
-

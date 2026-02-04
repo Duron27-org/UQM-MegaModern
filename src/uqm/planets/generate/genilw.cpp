@@ -27,13 +27,13 @@
 #include "libs/mathlib.h"
 
 
-static bool GenerateIlwrath_generatePlanets (SOLARSYS_STATE *solarSys);
-static bool GenerateIlwrath_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world);
-static uqm::COUNT GenerateIlwrath_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *);
-static bool GenerateIlwrath_pickupEnergy (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world, uqm::COUNT whichNode);
+static bool GenerateIlwrath_generatePlanets(SOLARSYS_STATE* solarSys);
+static bool GenerateIlwrath_generateOrbital(SOLARSYS_STATE* solarSys,
+											PLANET_DESC* world);
+static uqm::COUNT GenerateIlwrath_generateEnergy(const SOLARSYS_STATE*,
+												 const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO*);
+static bool GenerateIlwrath_pickupEnergy(SOLARSYS_STATE* solarSys,
+										 PLANET_DESC* world, uqm::COUNT whichNode);
 
 
 const GenerateFunctions generateIlwrathFunctions = {
@@ -54,12 +54,12 @@ const GenerateFunctions generateIlwrathFunctions = {
 
 
 static bool
-GenerateIlwrath_generatePlanets (SOLARSYS_STATE *solarSys)
+GenerateIlwrath_generatePlanets(SOLARSYS_STATE* solarSys)
 {
-	PLANET_DESC *pPlanet;
-	PLANET_DESC *pSunDesc = &solarSys->SunDesc[0];
+	PLANET_DESC* pPlanet;
+	PLANET_DESC* pSunDesc = &solarSys->SunDesc[0];
 
-	GenerateDefault_generatePlanets (solarSys);
+	GenerateDefault_generatePlanets(solarSys);
 
 	if (PrimeSeed)
 	{
@@ -70,65 +70,65 @@ GenerateIlwrath_generatePlanets (SOLARSYS_STATE *solarSys)
 
 		pPlanet->data_index = PRIMORDIAL_WORLD;
 		pPlanet->radius = EARTH_RADIUS * 204L / 100;
-		angle = ARCTAN (pPlanet->location.x, pPlanet->location.y);
-		pPlanet->location.x = COSINE (angle, pPlanet->radius);
-		pPlanet->location.y = SINE (angle, pPlanet->radius);
-		ComputeSpeed (pPlanet, false, 1);
+		angle = ARCTAN(pPlanet->location.x, pPlanet->location.y);
+		pPlanet->location.x = COSINE(angle, pPlanet->radius);
+		pPlanet->location.y = SINE(angle, pPlanet->radius);
+		ComputeSpeed(pPlanet, false, 1);
 	}
 	else
 	{
-		pSunDesc->PlanetByte = PickClosestHabitable (solarSys);
+		pSunDesc->PlanetByte = PickClosestHabitable(solarSys);
 		pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
 
-		pPlanet->data_index = GenerateHabitableWorld ();
+		pPlanet->data_index = GenerateHabitableWorld();
 	}
 
 	return true;
 }
 
 static bool
-GenerateIlwrath_generateOrbital (SOLARSYS_STATE *solarSys,
-		PLANET_DESC *world)
+GenerateIlwrath_generateOrbital(SOLARSYS_STATE* solarSys,
+								PLANET_DESC* world)
 {
-	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
+	if (matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{
-		if (StartSphereTracking (ILWRATH_SHIP))
+		if (StartSphereTracking(ILWRATH_SHIP))
 		{
-			NotifyOthers (ILWRATH_SHIP, IPNL_ALL_CLEAR);
-			PutGroupInfo (GROUPS_RANDOM, GROUP_SAVE_IP);
-			ReinitQueue (&GLOBAL (ip_group_q));
-			assert (CountLinks (&GLOBAL (npc_built_ship_q)) == 0);
+			NotifyOthers(ILWRATH_SHIP, IPNL_ALL_CLEAR);
+			PutGroupInfo(GROUPS_RANDOM, GROUP_SAVE_IP);
+			ReinitQueue(&GLOBAL(ip_group_q));
+			assert(CountLinks(&GLOBAL(npc_built_ship_q)) == 0);
 
-			CloneShipFragment (ILWRATH_SHIP,
-					&GLOBAL (npc_built_ship_q), INFINITE_FLEET);
+			CloneShipFragment(ILWRATH_SHIP,
+							  &GLOBAL(npc_built_ship_q), INFINITE_FLEET);
 
-			GLOBAL (CurrentActivity) |= START_INTERPLANETARY;
-			SET_GAME_STATE (GLOBAL_FLAGS_AND_DATA, 1 << 7);
-			InitCommunication (ILWRATH_CONVERSATION);
+			GLOBAL(CurrentActivity) |= START_INTERPLANETARY;
+			SET_GAME_STATE(GLOBAL_FLAGS_AND_DATA, 1 << 7);
+			InitCommunication(ILWRATH_CONVERSATION);
 
-			if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
+			if (!(GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
 			{
-				GLOBAL (CurrentActivity) &= ~START_INTERPLANETARY;
-				ReinitQueue (&GLOBAL (npc_built_ship_q));
-				GetGroupInfo (GROUPS_RANDOM, GROUP_LOAD_IP);
+				GLOBAL(CurrentActivity) &= ~START_INTERPLANETARY;
+				ReinitQueue(&GLOBAL(npc_built_ship_q));
+				GetGroupInfo(GROUPS_RANDOM, GROUP_LOAD_IP);
 			}
 			return true;
 		}
 		else
 		{
-			LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
+			LoadStdLanderFont(&solarSys->SysInfo.PlanetInfo);
 			solarSys->PlanetSideFrame[1] =
-					CaptureDrawable (
-					LoadGraphic (RUINS_MASK_PMAP_ANIM));
+				CaptureDrawable(
+					LoadGraphic(RUINS_MASK_PMAP_ANIM));
 			solarSys->SysInfo.PlanetInfo.DiscoveryString =
-					CaptureStringTable (LoadStringTable (RUINS_STRTAB));
+				CaptureStringTable(LoadStringTable(RUINS_STRTAB));
 		}
 	}
 
-	GenerateDefault_generateOrbital (solarSys, world);
+	GenerateDefault_generateOrbital(solarSys, world);
 
-	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET)
-			&& !DIF_HARD)
+	if (matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET)
+		&& !DIF_HARD)
 	{
 		solarSys->SysInfo.PlanetInfo.Weather = 2;
 		solarSys->SysInfo.PlanetInfo.Tectonics = 3;
@@ -138,28 +138,28 @@ GenerateIlwrath_generateOrbital (SOLARSYS_STATE *solarSys,
 }
 
 static uqm::COUNT
-GenerateIlwrath_generateEnergy (const SOLARSYS_STATE *solarSys,
-		const PLANET_DESC *world, uqm::COUNT whichNode, NODE_INFO *info)
+GenerateIlwrath_generateEnergy(const SOLARSYS_STATE* solarSys,
+							   const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO* info)
 {
-	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
+	if (matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{
-		return GenerateDefault_generateRuins (solarSys, whichNode, info);
+		return GenerateDefault_generateRuins(solarSys, whichNode, info);
 	}
 
 	return 0;
 }
 
 static bool
-GenerateIlwrath_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
-		uqm::COUNT whichNode)
+GenerateIlwrath_pickupEnergy(SOLARSYS_STATE* solarSys, PLANET_DESC* world,
+							 uqm::COUNT whichNode)
 {
-	if (matchWorld (solarSys, world, MATCH_PBYTE, MATCH_PLANET))
+	if (matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{
 		// Standard ruins report
-		GenerateDefault_landerReportCycle (solarSys);
+		GenerateDefault_landerReportCycle(solarSys);
 		return false;
 	}
 
-	(void) whichNode;
+	(void)whichNode;
 	return false;
 }

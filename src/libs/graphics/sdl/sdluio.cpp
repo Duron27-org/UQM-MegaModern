@@ -27,7 +27,7 @@
 #include <string.h>
 
 
-static SDL_RWops *sdluio_makeRWops (uio_Stream *stream);
+static SDL_RWops* sdluio_makeRWops(uio_Stream* stream);
 
 #if 0
 // For use for initialisation, using structure assignment.
@@ -40,103 +40,102 @@ static SDL_RWops sdluio_templateRWops =
 };
 #endif
 
-SDL_Surface *
-sdluio_loadImage (uio_DirHandle *dir, const char *fileName) {
-	uio_Stream *stream;
-	SDL_RWops *rwops;
-	SDL_Surface *result = NULL;
+SDL_Surface*
+sdluio_loadImage(uio_DirHandle* dir, const char* fileName)
+{
+	uio_Stream* stream;
+	SDL_RWops* rwops;
+	SDL_Surface* result = NULL;
 
-	stream = uio_fopen (dir, fileName, "rb");
+	stream = uio_fopen(dir, fileName, "rb");
 	if (stream == NULL)
 	{
-		SDL_SetError ("Couldn't open '%s': %s", fileName,
-				strerror(errno));
+		SDL_SetError("Couldn't open '%s': %s", fileName,
+					 strerror(errno));
 		return NULL;
 	}
-	rwops = sdluio_makeRWops (stream);
-	if (rwops) {
-		result = TFB_png_to_sdl (rwops);
-		SDL_RWclose (rwops);
+	rwops = sdluio_makeRWops(stream);
+	if (rwops)
+	{
+		result = TFB_png_to_sdl(rwops);
+		SDL_RWclose(rwops);
 	}
 	return result;
 }
-	
+
 #if SDL_MAJOR_VERSION == 1
-int
-sdluio_seek (SDL_RWops *context, int offset, int whence)
+int sdluio_seek(SDL_RWops* context, int offset, int whence)
 #else
 Sint64
-sdluio_seek (SDL_RWops *context, Sint64 offset, int whence)
+sdluio_seek(SDL_RWops* context, Sint64 offset, int whence)
 #endif
 {
-	if (uio_fseek ((uio_Stream *) context->hidden.unknown.data1, offset,
-				whence) == -1)
+	if (uio_fseek((uio_Stream*)context->hidden.unknown.data1, offset,
+				  whence)
+		== -1)
 	{
-		SDL_SetError ("Error seeking in uio_Stream: %s",
-				strerror(errno));
+		SDL_SetError("Error seeking in uio_Stream: %s",
+					 strerror(errno));
 		return -1;
 	}
-	return uio_ftell ((uio_Stream *) context->hidden.unknown.data1);
+	return uio_ftell((uio_Stream*)context->hidden.unknown.data1);
 }
 
 #if SDL_MAJOR_VERSION == 1
-int
-sdluio_read (SDL_RWops *context, void *ptr, int size, int maxnum)
+int sdluio_read(SDL_RWops* context, void* ptr, int size, int maxnum)
 #else
 size_t
-sdluio_read (SDL_RWops *context, void *ptr, size_t size, size_t maxnum)
+sdluio_read(SDL_RWops* context, void* ptr, size_t size, size_t maxnum)
 #endif
 {
 	size_t numRead;
-	
-	numRead = uio_fread (ptr, (size_t) size, (size_t) maxnum,
-			(uio_Stream *) context->hidden.unknown.data1);
-	if (numRead == 0 && uio_ferror ((uio_Stream *)
-				context->hidden.unknown.data1))
+
+	numRead = uio_fread(ptr, (size_t)size, (size_t)maxnum,
+						(uio_Stream*)context->hidden.unknown.data1);
+	if (numRead == 0 && uio_ferror((uio_Stream*)context->hidden.unknown.data1))
 	{
-		SDL_SetError ("Error reading from uio_Stream: %s",
-				strerror(errno));
+		SDL_SetError("Error reading from uio_Stream: %s",
+					 strerror(errno));
 		return 0;
 	}
-	return (int) numRead;
+	return (int)numRead;
 }
 
 #if SDL_MAJOR_VERSION == 1
-int
-sdluio_write (SDL_RWops *context, const void *ptr, int size, int num)
+int sdluio_write(SDL_RWops* context, const void* ptr, int size, int num)
 #else
 size_t
-sdluio_write (SDL_RWops *context, const void *ptr, size_t size, size_t num)
+sdluio_write(SDL_RWops* context, const void* ptr, size_t size, size_t num)
 #endif
 {
 	size_t numWritten;
 
-	numWritten = uio_fwrite (ptr, (size_t) size, (size_t) num,
-			(uio_Stream *) context->hidden.unknown.data1);
-	if (numWritten == 0 && uio_ferror ((uio_Stream *)
-				context->hidden.unknown.data1))
+	numWritten = uio_fwrite(ptr, (size_t)size, (size_t)num,
+							(uio_Stream*)context->hidden.unknown.data1);
+	if (numWritten == 0 && uio_ferror((uio_Stream*)context->hidden.unknown.data1))
 	{
-		SDL_SetError ("Error writing to uio_Stream: %s",
-				strerror(errno));
+		SDL_SetError("Error writing to uio_Stream: %s",
+					 strerror(errno));
 		return 0;
 	}
-	return (size_t) numWritten;
+	return (size_t)numWritten;
 }
 
-int
-sdluio_close (SDL_RWops *context) {
+int sdluio_close(SDL_RWops* context)
+{
 	int result;
-	
-	result = uio_fclose ((uio_Stream *) context->hidden.unknown.data1);
-	HFree (context);
+
+	result = uio_fclose((uio_Stream*)context->hidden.unknown.data1);
+	HFree(context);
 	return result;
 }
 
-static SDL_RWops *
-sdluio_makeRWops (uio_Stream *stream) {
-	SDL_RWops *result;
-	
-	result = (SDL_RWops*)HMalloc (sizeof (SDL_RWops));
+static SDL_RWops*
+sdluio_makeRWops(uio_Stream* stream)
+{
+	SDL_RWops* result;
+
+	result = (SDL_RWops*)HMalloc(sizeof(SDL_RWops));
 #if 0
 	*(struct SDL_RWops *) result = sdluio_templateRWops;
 			// structure assignment
@@ -148,6 +147,3 @@ sdluio_makeRWops (uio_Stream *stream) {
 	result->hidden.unknown.data1 = stream;
 	return result;
 }
-
-
-

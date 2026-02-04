@@ -27,20 +27,21 @@ static inline size_t nextPower2(size_t x);
 
 
 static void
-Heap_resize(Heap *heap, size_t size) {
-	heap->entries = (HeapValue**)realloc(heap->entries, size * sizeof (HeapValue *));
+Heap_resize(Heap* heap, size_t size)
+{
+	heap->entries = (HeapValue**)realloc(heap->entries, size * sizeof(HeapValue*));
 	heap->size = size;
 }
 
 // Heap inv: comparator(parent, child) <= 0 for every child of every parent.
-Heap *
-Heap_new(HeapValue_Comparator comparator, size_t initialSize, size_t minSize,
-		double minFillQuotient) {
-	Heap *heap;
+Heap* Heap_new(HeapValue_Comparator comparator, size_t initialSize, size_t minSize,
+			   double minFillQuotient)
+{
+	Heap* heap;
 
 	assert(minFillQuotient >= 0.0);
 
-	heap = (Heap*)malloc(sizeof (Heap));
+	heap = (Heap*)malloc(sizeof(Heap));
 
 	if (initialSize < minSize)
 		initialSize = minSize;
@@ -49,22 +50,22 @@ Heap_new(HeapValue_Comparator comparator, size_t initialSize, size_t minSize,
 	heap->minSize = minSize;
 	heap->minFillQuotient = minFillQuotient;
 	heap->size = nextPower2(initialSize);
-	heap->minFill = ceil(((double) (heap->size >> 1))
-			* heap->minFillQuotient);
-	heap->entries = (HeapValue**)malloc(heap->size * sizeof (HeapValue *));
+	heap->minFill = ceil(((double)(heap->size >> 1))
+						 * heap->minFillQuotient);
+	heap->entries = (HeapValue**)malloc(heap->size * sizeof(HeapValue*));
 	heap->numEntries = 0;
 
 	return heap;
 }
 
-void
-Heap_delete(Heap *heap) {
+void Heap_delete(Heap* heap)
+{
 	free(heap->entries);
 	free(heap);
 }
 
-void
-Heap_add(Heap *heap, HeapValue *value) {
+void Heap_add(Heap* heap, HeapValue* value)
+{
 	size_t i;
 
 	if (heap->numEntries >= heap->size)
@@ -73,7 +74,8 @@ Heap_add(Heap *heap, HeapValue *value) {
 	i = heap->numEntries;
 	heap->numEntries++;
 
-	while (i > 0) {
+	while (i > 0)
+	{
 		size_t parentI = (i - 1) / 2;
 		if (heap->comparator(heap->entries[parentI], value) <= 0)
 			break;
@@ -86,46 +88,57 @@ Heap_add(Heap *heap, HeapValue *value) {
 	heap->entries[i]->index = i;
 }
 
-HeapValue *
-Heap_first(const Heap *heap) {
+HeapValue*
+Heap_first(const Heap* heap)
+{
 	assert(heap->numEntries > 0);
 
 	return heap->entries[0];
 }
 
 static void
-Heap_removeByIndex(Heap *heap, size_t i) {
+Heap_removeByIndex(Heap* heap, size_t i)
+{
 	assert(heap->numEntries > i);
 
 	heap->numEntries--;
 
-	if (heap->numEntries != 0) {
+	if (heap->numEntries != 0)
+	{
 		// Restore the heap invariant. We're shifting entries into the
 		// gap that was created until we find the place where we can
 		// insert the last entry.
-		HeapValue *lastEntry = heap->entries[heap->numEntries];
+		HeapValue* lastEntry = heap->entries[heap->numEntries];
 
-		for (;;) {
+		for (;;)
+		{
 			size_t childI = i * 2 + 1;
 			// The two children are childI and 'childI + 1'.
 
-			if (childI + 1 >= heap->numEntries) {
+			if (childI + 1 >= heap->numEntries)
+			{
 				// There is no right child.
 
-				if (childI >= heap->numEntries) {
+				if (childI >= heap->numEntries)
+				{
 					// There is no left child either.
 					break;
 				}
-			} else {
+			}
+			else
+			{
 				if (heap->comparator(heap->entries[childI + 1],
-						heap->entries[childI]) < 0) {
+									 heap->entries[childI])
+					< 0)
+				{
 					// The right child is the child with the lowest value.
 					childI++;
 				}
 			}
 			// childI is now the child with the lowest value.
 
-			if (heap->comparator(lastEntry, heap->entries[childI]) <= 0) {
+			if (heap->comparator(lastEntry, heap->entries[childI]) <= 0)
+			{
 				// The last entry goes here.
 				break;
 			}
@@ -144,14 +157,14 @@ Heap_removeByIndex(Heap *heap, size_t i) {
 	}
 
 	// Resize if necessary:
-	if (heap->numEntries < heap->minFill &&
-			heap->numEntries > heap->minSize)
+	if (heap->numEntries < heap->minFill && heap->numEntries > heap->minSize)
 		Heap_resize(heap, heap->size / 2);
 }
 
-HeapValue *
-Heap_pop(Heap *heap) {
-	HeapValue *result;
+HeapValue*
+Heap_pop(Heap* heap)
+{
+	HeapValue* result;
 
 	assert(heap->numEntries > 0);
 
@@ -162,36 +175,36 @@ Heap_pop(Heap *heap) {
 }
 
 size_t
-Heap_count(const Heap *heap) {
+Heap_count(const Heap* heap)
+{
 	return heap->numEntries;
 }
 
-bool
-Heap_hasMore(const Heap *heap) {
+bool Heap_hasMore(const Heap* heap)
+{
 	return heap->numEntries > 0;
 }
 
-void
-Heap_remove(Heap *heap, HeapValue *value) {
+void Heap_remove(Heap* heap, HeapValue* value)
+{
 	Heap_removeByIndex(heap, value->index);
 }
 
 // Adapted from "Hackers Delight"
 // Returns the smallest power of two greater or equal to x.
 static inline size_t
-nextPower2(size_t x) {
+nextPower2(size_t x)
+{
 	x--;
 	x |= x >> 1;
 	x |= x >> 2;
 	x |= x >> 4;
 	x |= x >> 8;
-#	if (SIZE_MAX > 0xffff)
-		x |= x >> 16;
-#		if (SIZE_MAX > 0xffffffff)
-			x |= x >> 32;
-#		endif
-#	endif
+#if (SIZE_MAX > 0xffff)
+	x |= x >> 16;
+#if (SIZE_MAX > 0xffffffff)
+	x |= x >> 32;
+#endif
+#endif
 	return x + 1;
 }
-
-

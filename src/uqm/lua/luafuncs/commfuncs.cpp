@@ -33,7 +33,7 @@
 #include "uqm/lua/luacomm.h"
 #include "uqm/commglue.h"
 #include "uqm/battle.h"
-		// For instantVictory
+// For instantVictory
 #include "uqm/comm.h"
 #include "uqm/starmap.h" // for plot map, etc.
 #include "uqm/gamestr.h" // for GAME_STRING
@@ -42,69 +42,69 @@
 
 extern uqm::COUNT RoboTrack[];
 static const char npcPhraseCallbackRegistryKey[] =
-		"uqm_comm_npcPhraseCallback";
-		// Key in the registry storing the callback function for
-		// after an NPC phrase is complete.
+	"uqm_comm_npcPhraseCallback";
+// Key in the registry storing the callback function for
+// after an NPC phrase is complete.
 static const char responseCallbackRegistryKey[] =
-		"uqm_comm_responseCallback";
-		// Key in the registry storing a table callback function for
-		// after an NPC phrase is complete.
+	"uqm_comm_responseCallback";
+// Key in the registry storing a table callback function for
+// after an NPC phrase is complete.
 
 
-static int luaUqm_comm_isPhraseEnabled(lua_State *luaState);
-static int luaUqm_comm_disablePhrase(lua_State *luaState);
-static int luaUqm_comm_doNpcPhrase(lua_State *luaState);
-static int luaUqm_comm_addResponse(lua_State *luaState);
-static int luaUqm_comm_getPhrase(lua_State *luaState);
-static int luaUqm_comm_getSegue(lua_State *luaState);
-static int luaUqm_comm_setSegue(lua_State *luaState);
-static int luaUqm_comm_isInOuttakes(lua_State *luaState);
-static int luaUqm_comm_setCustomBaseline (lua_State *luaState);
-static int luaUqm_comm_getPoint (lua_State *luaState);
-static int luaUqm_comm_getStarName (lua_State *luaState);
-static int luaUqm_comm_getConstellation (lua_State *luaState);
-static int luaUqm_comm_getColor (lua_State *luaState);
-static int luaUqm_comm_swapIfSeeded (lua_State *luaState);
+static int luaUqm_comm_isPhraseEnabled(lua_State* luaState);
+static int luaUqm_comm_disablePhrase(lua_State* luaState);
+static int luaUqm_comm_doNpcPhrase(lua_State* luaState);
+static int luaUqm_comm_addResponse(lua_State* luaState);
+static int luaUqm_comm_getPhrase(lua_State* luaState);
+static int luaUqm_comm_getSegue(lua_State* luaState);
+static int luaUqm_comm_setSegue(lua_State* luaState);
+static int luaUqm_comm_isInOuttakes(lua_State* luaState);
+static int luaUqm_comm_setCustomBaseline(lua_State* luaState);
+static int luaUqm_comm_getPoint(lua_State* luaState);
+static int luaUqm_comm_getStarName(lua_State* luaState);
+static int luaUqm_comm_getConstellation(lua_State* luaState);
+static int luaUqm_comm_getColor(lua_State* luaState);
+static int luaUqm_comm_swapIfSeeded(lua_State* luaState);
 
 static const luaL_Reg commFuncs[] = {
-	{ "addResponse",       luaUqm_comm_addResponse },
-	{ "disablePhrase",     luaUqm_comm_disablePhrase },
-	{ "doNpcPhrase",       luaUqm_comm_doNpcPhrase },
-	{ "getPhrase",         luaUqm_comm_getPhrase },
-	{ "getSegue",          luaUqm_comm_getSegue },
-	{ "isInOuttakes",      luaUqm_comm_isInOuttakes },
-	{ "isPhraseEnabled",   luaUqm_comm_isPhraseEnabled },
-	{ "setSegue",          luaUqm_comm_setSegue },
-	{ "setCustomBaseline", luaUqm_comm_setCustomBaseline },
-	{ "getPoint",          luaUqm_comm_getPoint },
-	{ "getStarName",       luaUqm_comm_getStarName },
-	{ "getConstellation",  luaUqm_comm_getConstellation },
-	{ "getColor",          luaUqm_comm_getColor },
-	{ "swapIfSeeded",      luaUqm_comm_swapIfSeeded },
-	{ NULL,              NULL },
+	{"addResponse",		luaUqm_comm_addResponse	   },
+	{"disablePhrase",	  luaUqm_comm_disablePhrase	   },
+	{"doNpcPhrase",		luaUqm_comm_doNpcPhrase	   },
+	{"getPhrase",		  luaUqm_comm_getPhrase		   },
+	{"getSegue",			 luaUqm_comm_getSegue		 },
+	{"isInOuttakes",		 luaUqm_comm_isInOuttakes	 },
+	{"isPhraseEnabled",	luaUqm_comm_isPhraseEnabled  },
+	{"setSegue",			 luaUqm_comm_setSegue		 },
+	{"setCustomBaseline", luaUqm_comm_setCustomBaseline},
+	{"getPoint",			 luaUqm_comm_getPoint		 },
+	{"getStarName",		luaUqm_comm_getStarName	   },
+	{"getConstellation",	 luaUqm_comm_getConstellation },
+	{"getColor",			 luaUqm_comm_getColor		 },
+	{"swapIfSeeded",		 luaUqm_comm_swapIfSeeded	 },
+	{NULL,				NULL						 },
 };
 
 static const luaUqm_EnumValue segueEnum[] = {
-	{ /* .name = */ "peace",   /* .value = */ Segue_peace   },
-	{ /* .name = */ "hostile", /* .value = */ Segue_hostile },
-	{ /* .name = */ "victory", /* .value = */ Segue_victory },
-	{ /* .name = */ "defeat",  /* .value = */ Segue_defeat  },
-	{ /* .name = */ NULL,      /* .value = */ 0             },
+	{/* .name = */ "peace",	/* .value = */ Segue_peace  },
+	{/* .name = */ "hostile", /* .value = */ Segue_hostile},
+	{/* .name = */ "victory", /* .value = */ Segue_victory},
+	{/* .name = */ "defeat",	 /* .value = */ Segue_defeat },
+	{/* .name = */ NULL,		 /* .value = */ 0			 },
 };
 
-int
-luaUqm_comm_open(lua_State *luaState) {
+int luaUqm_comm_open(lua_State* luaState)
+{
 	luaL_newlib(luaState, commFuncs);
 
 	luaUqm_makeEnum(luaState, segueEnum);
 	// [-2] -> table commTable
 	// [-1] -> table segueEnum
 	lua_setfield(luaState, -2, "segue");
-			// comm.segue = segueEnum
-	
+	// comm.segue = segueEnum
+
 	// Prepare a table to store the callback functions for each response in.
 	lua_newtable(luaState);
-    lua_setfield(luaState, LUA_REGISTRYINDEX, responseCallbackRegistryKey);
+	lua_setfield(luaState, LUA_REGISTRYINDEX, responseCallbackRegistryKey);
 
 	return 1;
 }
@@ -116,26 +116,33 @@ luaUqm_comm_open(lua_State *luaState) {
 // If it does not exist, -1 is returned and a warning is printed.
 // [1] -> string phraseIdStr
 static int
-testPhraseId(lua_State *luaState, int argn) {
-	const char *phraseIdStr = luaL_checkstring(luaState, argn);
+testPhraseId(lua_State* luaState, int argn)
+{
+	const char* phraseIdStr = luaL_checkstring(luaState, argn);
 	RESPONSE_REF phraseId = phraseIdStrToNum(phraseIdStr);
-	if (phraseId == (RESPONSE_REF) -1) {
+	if (phraseId == (RESPONSE_REF)-1)
+	{
 		// TODO: print script file name.
 		log_add(log_Error, "[script] Warning: testPhraseId(): No phrase "
-				"exists with id '%s'.", phraseIdStr);
+						   "exists with id '%s'.",
+				phraseIdStr);
 		return -1;
 	}
 
-	return (int) phraseId;
+	return (int)phraseId;
 }
 
 // Pushes the string, or nil if the string is not known.
 static void
-pushPhraseId(lua_State *luaState, RESPONSE_REF response) {
-	const char *phraseIdStr = phraseIdNumToStr(response);
-	if (phraseIdStr != NULL) {
+pushPhraseId(lua_State* luaState, RESPONSE_REF response)
+{
+	const char* phraseIdStr = phraseIdNumToStr(response);
+	if (phraseIdStr != NULL)
+	{
 		lua_pushstring(luaState, phraseIdStr);
-	} else {
+	}
+	else
+	{
 		lua_pushnil(luaState);
 	}
 }
@@ -144,28 +151,32 @@ pushPhraseId(lua_State *luaState, RESPONSE_REF response) {
 // which is used as a callback for NPCPhrase_cb().
 // [n] -> function callback
 static void
-setNpcPhraseCallback(lua_State *luaState, int argn) {
+setNpcPhraseCallback(lua_State* luaState, int argn)
+{
 	lua_pushvalue(luaState, argn);
-    lua_setfield(luaState, LUA_REGISTRYINDEX, npcPhraseCallbackRegistryKey);
+	lua_setfield(luaState, LUA_REGISTRYINDEX, npcPhraseCallbackRegistryKey);
 }
 
 // The callback function is pushed on the stack.
 static void
-pushNpcPhraseCallback(lua_State *luaState) {
-    lua_getfield(luaState, LUA_REGISTRYINDEX, npcPhraseCallbackRegistryKey);
+pushNpcPhraseCallback(lua_State* luaState)
+{
+	lua_getfield(luaState, LUA_REGISTRYINDEX, npcPhraseCallbackRegistryKey);
 }
 
 static void
-pushResponseCallbackRegistry(lua_State *luaState) {
-    lua_getfield(luaState, LUA_REGISTRYINDEX, responseCallbackRegistryKey);
+pushResponseCallbackRegistry(lua_State* luaState)
+{
+	lua_getfield(luaState, LUA_REGISTRYINDEX, responseCallbackRegistryKey);
 }
 
 // [n] -> function callback
 // Store a Lua callback function to be called from responseCallback(),
 // which is used as a callback for Response().
 static void
-setResponseCallback(lua_State *luaState, int responseArgN,
-		int callbackArgN) {
+setResponseCallback(lua_State* luaState, int responseArgN,
+					int callbackArgN)
+{
 	pushResponseCallbackRegistry(luaState);
 	// [-1] -> table responseCallbackRegistry
 
@@ -174,15 +185,16 @@ setResponseCallback(lua_State *luaState, int responseArgN,
 	// [-3] -> table responseCallbackRegistry
 	// [-2] -> string response
 	// [-1] -> function callback
-    lua_settable(luaState, -3);
-	
+	lua_settable(luaState, -3);
+
 	// [-3] -> table responseCallbackRegistry
 	lua_pop(luaState, 1);
 }
 
 // The callback function is pushed on the stack.
 static void
-pushResponseCallback(lua_State *luaState, RESPONSE_REF response) {
+pushResponseCallback(lua_State* luaState, RESPONSE_REF response)
+{
 	pushResponseCallbackRegistry(luaState);
 	pushPhraseId(luaState, response);
 	// [-2] -> table responseCallbackRegistry
@@ -198,28 +210,32 @@ pushResponseCallback(lua_State *luaState, RESPONSE_REF response) {
 // Used as a callback function for NPCPhrase_cb().
 // It in turn calls the registered Lua callback function.
 static void
-npcPhraseCallback(CallbackArg extra) {
+npcPhraseCallback(CallbackArg extra)
+{
 	pushNpcPhraseCallback(luaUqm_commState);
-	if (lua_pcall(luaUqm_commState, 0, 0, 0) != 0) {
+	if (lua_pcall(luaUqm_commState, 0, 0, 0) != 0)
+	{
 		// An error occurred. We continue nonetheless.
 		log_add(log_Error, "[script] An error occurred during a "
-				"doNpcPhrase() callback: %s",
+						   "doNpcPhrase() callback: %s",
 				lua_tostring(luaUqm_commState, -1));
 		lua_pop(luaUqm_commState, 1);
 	}
-	(void) extra;
+	(void)extra;
 }
 
 // Used as a callback function for Response().
 // It in turn calls the registered Lua callback function.
 static void
-responseCallback(RESPONSE_REF response) {
+responseCallback(RESPONSE_REF response)
+{
 	pushResponseCallback(luaUqm_commState, response);
 	pushPhraseId(luaUqm_commState, response);
-	if (lua_pcall(luaUqm_commState, 1, 0, 0) != 0) {
+	if (lua_pcall(luaUqm_commState, 1, 0, 0) != 0)
+	{
 		// An error occurred. We continue nonetheless.
 		log_add(log_Error, "[script] An error occurred during an "
-				"addResponse() callback: %s",
+						   "addResponse() callback: %s",
 				lua_tostring(luaUqm_commState, -1));
 		lua_pop(luaUqm_commState, 1);
 	}
@@ -229,9 +245,11 @@ responseCallback(RESPONSE_REF response) {
 
 // [1] -> string phraseIdStr
 static int
-luaUqm_comm_isPhraseEnabled(lua_State *luaState) {
+luaUqm_comm_isPhraseEnabled(lua_State* luaState)
+{
 	int phraseId = testPhraseId(luaState, 1);
-	if (phraseId == -1) {
+	if (phraseId == -1)
+	{
 		lua_pushboolean(luaState, false);
 		return 1;
 	}
@@ -242,7 +260,8 @@ luaUqm_comm_isPhraseEnabled(lua_State *luaState) {
 
 // [1] -> string phraseIdStr
 static int
-luaUqm_comm_disablePhrase(lua_State *luaState) {
+luaUqm_comm_disablePhrase(lua_State* luaState)
+{
 	int phraseId = testPhraseId(luaState, 1);
 	if (phraseId == -1)
 		return 0;
@@ -253,17 +272,21 @@ luaUqm_comm_disablePhrase(lua_State *luaState) {
 
 // [1] -> string phraseIdStr
 static int
-luaUqm_comm_doNpcPhrase(lua_State *luaState) {
+luaUqm_comm_doNpcPhrase(lua_State* luaState)
+{
 	CallbackFunction callback;
 	int phraseId = testPhraseId(luaState, 1);
 	if (phraseId == -1)
 		return 0;
 
-	if (lua_gettop(luaState) >= 2) {
+	if (lua_gettop(luaState) >= 2)
+	{
 		// Callback function specified in second argument.
 		setNpcPhraseCallback(luaState, 2);
 		callback = npcPhraseCallback;
-	} else {
+	}
+	else
+	{
 		callback = NULL;
 	}
 
@@ -274,7 +297,8 @@ luaUqm_comm_doNpcPhrase(lua_State *luaState) {
 // [1] -> string phraseIdStr
 // [2] -> function callback
 static int
-luaUqm_comm_addResponse(lua_State *luaState) {
+luaUqm_comm_addResponse(lua_State* luaState)
+{
 	int phraseId = testPhraseId(luaState, 1);
 	if (phraseId == -1)
 		return 0;
@@ -288,13 +312,15 @@ luaUqm_comm_addResponse(lua_State *luaState) {
 
 // [1] -> string phraseIdStr
 static int
-luaUqm_comm_getPhrase(lua_State *luaState) {
+luaUqm_comm_getPhrase(lua_State* luaState)
+{
 	int phraseId;
 	STRING str;
-	const char *strBuf;
+	const char* strBuf;
 
 	phraseId = testPhraseId(luaState, 1);
-	if (phraseId == -1) {
+	if (phraseId == -1)
+	{
 		// A warning is already printed in testPhraseId().
 		lua_pushnil(luaState);
 		return 1;
@@ -302,13 +328,13 @@ luaUqm_comm_getPhrase(lua_State *luaState) {
 
 	// Find the string.
 	str = SetAbsStringTableIndex(CommData.ConversationPhrases,
-			phraseId - 1);
+								 phraseId - 1);
 	strBuf = GetStringAddress(str);
 
 	if (luaUqm_comm_stringNeedsInterpolate(strBuf))
 	{
-		char *interpolated = luaUqm_comm_stringInterpolate(strBuf);
-		lua_pushstring(luaState, interpolated);  // This makes a copy.
+		char* interpolated = luaUqm_comm_stringInterpolate(strBuf);
+		lua_pushstring(luaState, interpolated); // This makes a copy.
 		HFree(interpolated);
 	}
 	else
@@ -322,7 +348,8 @@ luaUqm_comm_getPhrase(lua_State *luaState) {
 }
 
 static int
-luaUqm_comm_getSegue(lua_State *luaState) {
+luaUqm_comm_getSegue(lua_State* luaState)
+{
 	int result = getSegue();
 	lua_pushinteger(luaState, result);
 	return 1;
@@ -330,9 +357,11 @@ luaUqm_comm_getSegue(lua_State *luaState) {
 
 // [1] -> string phraseIdStr
 static int
-luaUqm_comm_setSegue(lua_State *luaState) {
+luaUqm_comm_setSegue(lua_State* luaState)
+{
 	int what = luaL_checkint(luaState, 1);
-	switch ((Segue) what) {
+	switch ((Segue)what)
+	{
 		case Segue_peace:
 		case Segue_hostile:
 		case Segue_victory:
@@ -340,16 +369,18 @@ luaUqm_comm_setSegue(lua_State *luaState) {
 			break;
 		default:
 			log_add(log_Error, "[script] Warning: setSegue(): Invalid "
-					"parameter value (%d).", what);
+							   "parameter value (%d).",
+					what);
 			break;
 	};
-	setSegue((Segue) what);
+	setSegue((Segue)what);
 
 	return 0;
 }
 
 static int
-luaUqm_comm_isInOuttakes(lua_State *luaState) {
+luaUqm_comm_isInOuttakes(lua_State* luaState)
+{
 	bool result = (lowByte(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE);
 	lua_pushboolean(luaState, result);
 	return 1;
@@ -360,20 +391,20 @@ luaUqm_comm_isInOuttakes(lua_State *luaState) {
 // [3] -> int baseLineY
 // [4] -> string alignment
 static int
-luaUqm_comm_setCustomBaseline (lua_State *luaState)
+luaUqm_comm_setCustomBaseline(lua_State* luaState)
 {
-	static const char *const textAlign[] =
-			{ "ALIGN_LEFT", "ALIGN_CENTER", "ALIGN_RIGHT", NULL };
-	uqm::COUNT lineNumber = luaL_checkint (luaState, 1);
-	COORD baselineX = luaL_checkint (luaState, 2);
-	COORD baselineY = luaL_checkint (luaState, 3);
+	static const char* const textAlign[] =
+		{"ALIGN_LEFT", "ALIGN_CENTER", "ALIGN_RIGHT", NULL};
+	uqm::COUNT lineNumber = luaL_checkint(luaState, 1);
+	COORD baselineX = luaL_checkint(luaState, 2);
+	COORD baselineY = luaL_checkint(luaState, 3);
 	int alignment =
-			luaL_checkoption (luaState, 4, "ALIGN_LEFT", textAlign);
+		luaL_checkoption(luaState, 4, "ALIGN_LEFT", textAlign);
 
-	SetCustomBaseLine (lineNumber, POINT{ baselineX, baselineY },
-			(TEXT_ALIGN)alignment);
+	SetCustomBaseLine(lineNumber, POINT {baselineX, baselineY},
+					  (TEXT_ALIGN)alignment);
 
-	lua_pushstring (luaState, "");
+	lua_pushstring(luaState, "");
 
 	return 1;
 }
@@ -382,32 +413,32 @@ luaUqm_comm_setCustomBaseline (lua_State *luaState)
 // [1] -> string default text
 // [2] -> int plot_id (from plandata)
 static int
-luaUqm_comm_getPoint (lua_State *luaState)
+luaUqm_comm_getPoint(lua_State* luaState)
 {
-	const char *prime_text = luaL_checkstring(luaState, 1);
+	const char* prime_text = luaL_checkstring(luaState, 1);
 	if (!StarSeed)
 	{
-		lua_pushstring (luaState, prime_text);
+		lua_pushstring(luaState, prime_text);
 		return 1;
 	}
-	const char *plot_name = luaL_checkstring(luaState, 2);
-	uqm::COUNT plot_id = PlotIdStrToIndex (plot_name);
+	const char* plot_name = luaL_checkstring(luaState, 2);
+	uqm::COUNT plot_id = PlotIdStrToIndex(plot_name);
 #ifdef DEBUG_STARSEED
-	fprintf (stderr, "get Point called (%s %s) plot ID %d\n", prime_text,
+	fprintf(stderr, "get Point called (%s %s) plot ID %d\n", prime_text,
 			plot_name, plot_id);
 #endif
 	if (plot_id >= NUM_PLOTS)
 	{
-		fprintf (stderr, "Plot not found for Point (%s %s).\n", prime_text,
+		fprintf(stderr, "Plot not found for Point (%s %s).\n", prime_text,
 				plot_name);
-		lua_pushstring (luaState, prime_text);
+		lua_pushstring(luaState, prime_text);
 		return 1;
 	}
 	char dialog[256];
-	snprintf (dialog, sizeof (dialog), "%05.1f : %05.1f",
-			(float) plot_map[plot_id].star_pt.x / 10,
-			(float) plot_map[plot_id].star_pt.y / 10);
-	lua_pushstring (luaState, dialog);
+	snprintf(dialog, sizeof(dialog), "%05.1f : %05.1f",
+			 (float)plot_map[plot_id].star_pt.x / 10,
+			 (float)plot_map[plot_id].star_pt.y / 10);
+	lua_pushstring(luaState, dialog);
 	RoboTrack[0] = ROBOT_DIGIT_0 + plot_map[plot_id].star_pt.x / 1000;
 	RoboTrack[1] = ROBOT_DIGIT_0 + plot_map[plot_id].star_pt.x / 100 % 10;
 	RoboTrack[2] = ROBOT_DIGIT_0 + plot_map[plot_id].star_pt.x / 10 % 10;
@@ -425,49 +456,48 @@ luaUqm_comm_getPoint (lua_State *luaState)
 // A helper function to upper case dialog if key is upper case.
 // If the first two characters of key are upper case, upper the whole dialog.
 // If the first character of key is upper, upper the first char of dialog.
-void
-CheckCase (const char *key, char *dialog)
+void CheckCase(const char* key, char* dialog)
 {
 	uqm::COUNT i = 0;
-	if (isupper (key[0]) && isupper (key[1]))
+	if (isupper(key[0]) && isupper(key[1]))
 		while (dialog[i] != '\0')
 		{
-			dialog[i] = toupper (dialog[i]);
+			dialog[i] = toupper(dialog[i]);
 			i++;
 		}
-	else if (isupper (key[0]) && islower (dialog[0]))
-		dialog[0] = toupper (dialog[0]);
+	else if (isupper(key[0]) && islower(dialog[0]))
+		dialog[0] = toupper(dialog[0]);
 }
 
 // Prints out the fully qualified star name, e.g. "Alpha Pavonis"
 // [1] -> the default text for prime seed
 // [2] -> the string name of the plot ID for seeding
 static int
-luaUqm_comm_getStarName (lua_State *luaState)
+luaUqm_comm_getStarName(lua_State* luaState)
 {
-	const char *prime_text = luaL_checkstring(luaState, 1);
+	const char* prime_text = luaL_checkstring(luaState, 1);
 	if (!StarSeed)
 	{
-		lua_pushstring (luaState, prime_text);
+		lua_pushstring(luaState, prime_text);
 		return 1;
 	}
-	const char *plot_name = luaL_checkstring(luaState, 2);
-	uqm::COUNT plot_id = PlotIdStrToIndex (plot_name);
+	const char* plot_name = luaL_checkstring(luaState, 2);
+	uqm::COUNT plot_id = PlotIdStrToIndex(plot_name);
 #ifdef DEBUG_STARSEED
-	fprintf (stderr, "get Star Name called (%s %s) plot ID %d\n",
+	fprintf(stderr, "get Star Name called (%s %s) plot ID %d\n",
 			prime_text, plot_name, plot_id);
 #endif
 	if (plot_id >= NUM_PLOTS)
 	{
-		fprintf (stderr, "Plot not found for Star Name (%s %s).\n",
+		fprintf(stderr, "Plot not found for Star Name (%s %s).\n",
 				prime_text, plot_name);
-		lua_pushstring (luaState, prime_text);
+		lua_pushstring(luaState, prime_text);
 		return 1;
 	}
 	char dialog[256];
-	GetClusterName (plot_map[plot_id].star, dialog);
-	CheckCase (prime_text, dialog);
-	lua_pushstring (luaState, dialog);
+	GetClusterName(plot_map[plot_id].star, dialog);
+	CheckCase(prime_text, dialog);
+	lua_pushstring(luaState, dialog);
 	if (plot_map[plot_id].star->Prefix > 0)
 	{
 		RoboTrack[0] = ROBOT_PREFIX_0 + plot_map[plot_id].star->Prefix;
@@ -482,34 +512,33 @@ luaUqm_comm_getStarName (lua_State *luaState)
 // [1] -> the default text for prime seed
 // [2] -> the string name of the plot ID for seeding
 static int
-luaUqm_comm_getConstellation (lua_State *luaState)
+luaUqm_comm_getConstellation(lua_State* luaState)
 {
-	const char *prime_text = luaL_checkstring(luaState, 1);
+	const char* prime_text = luaL_checkstring(luaState, 1);
 	if (!StarSeed)
 	{
-		lua_pushstring (luaState, prime_text);
+		lua_pushstring(luaState, prime_text);
 		return 1;
 	}
-	const char *plot_name = luaL_checkstring(luaState, 2);
-	uqm::COUNT plot_id = PlotIdStrToIndex (plot_name);
+	const char* plot_name = luaL_checkstring(luaState, 2);
+	uqm::COUNT plot_id = PlotIdStrToIndex(plot_name);
 #ifdef DEBUG_STARSEED
-	fprintf (stderr, "get Constellation called (%s %s) plot ID %d\n",
+	fprintf(stderr, "get Constellation called (%s %s) plot ID %d\n",
 			prime_text, plot_name, plot_id);
 #endif
 	if (plot_id >= NUM_PLOTS)
 	{
-		fprintf (stderr, "Plot not found for Constellation (%s %s).\n",
+		fprintf(stderr, "Plot not found for Constellation (%s %s).\n",
 				prime_text, plot_name);
-		lua_pushstring (luaState, prime_text);
+		lua_pushstring(luaState, prime_text);
 		return 1;
 	}
 	char dialog[256];
-	STAR_DESC *SDPtr = FindNearestConstellation
-			(star_array, plot_map[plot_id].star_pt);
-	snprintf (dialog, sizeof (dialog), "%s",
-			GAME_STRING (SDPtr->Postfix));
-	CheckCase (prime_text, dialog);
-	lua_pushstring (luaState, dialog);
+	STAR_DESC* SDPtr = FindNearestConstellation(star_array, plot_map[plot_id].star_pt);
+	snprintf(dialog, sizeof(dialog), "%s",
+			 GAME_STRING(SDPtr->Postfix));
+	CheckCase(prime_text, dialog);
+	lua_pushstring(luaState, dialog);
 	RoboTrack[0] = ROBOT_POSTFIX_0 + SDPtr->Postfix;
 	return 1;
 }
@@ -518,66 +547,72 @@ luaUqm_comm_getConstellation (lua_State *luaState)
 // [1] -> the default text for prime seed
 // [2] -> the string name of the plot ID for seeding
 static int
-luaUqm_comm_getColor (lua_State *luaState)
+luaUqm_comm_getColor(lua_State* luaState)
 {
-	const char *prime_text = luaL_checkstring(luaState, 1);
+	const char* prime_text = luaL_checkstring(luaState, 1);
 	if (!StarSeed)
 	{
-		lua_pushstring (luaState, prime_text);
+		lua_pushstring(luaState, prime_text);
 		return 1;
 	}
-	const char *plot_name = luaL_checkstring(luaState, 2);
-	uqm::COUNT plot_id = PlotIdStrToIndex (plot_name);
+	const char* plot_name = luaL_checkstring(luaState, 2);
+	uqm::COUNT plot_id = PlotIdStrToIndex(plot_name);
 #ifdef DEBUG_STARSEED
-	fprintf (stderr, "get Color called (%s %s)\n", prime_text, plot_name);
+	fprintf(stderr, "get Color called (%s %s)\n", prime_text, plot_name);
 #endif
 	if (plot_id >= NUM_PLOTS)
 	{
-		fprintf (stderr, "Plot not found for getColor (%s %s).\n",
+		fprintf(stderr, "Plot not found for getColor (%s %s).\n",
 				prime_text, plot_name);
-		lua_pushstring (luaState, prime_text);
+		lua_pushstring(luaState, prime_text);
 		return 1;
 	}
 	char dialog[256];
 	switch (STAR_COLOR(plot_map[plot_id].star->Type))
 	{
 		case RED_BODY:
-			snprintf (dialog, sizeof (dialog), "%s", "red");
+			snprintf(dialog, sizeof(dialog), "%s", "red");
 			RoboTrack[0] = (plot_id == ILWRATH_DEFINED) ?
-					ILWRATH_COLOR_RED : ROBOT_COLOR_RED;
+							   ILWRATH_COLOR_RED :
+							   ROBOT_COLOR_RED;
 			break;
 		case ORANGE_BODY:
-			snprintf (dialog, sizeof (dialog), "%s", "orange");
+			snprintf(dialog, sizeof(dialog), "%s", "orange");
 			RoboTrack[0] = (plot_id == ILWRATH_DEFINED) ?
-					ILWRATH_COLOR_ORANGE : ROBOT_COLOR_ORANGE;
+							   ILWRATH_COLOR_ORANGE :
+							   ROBOT_COLOR_ORANGE;
 			break;
 		case YELLOW_BODY:
-			snprintf (dialog, sizeof (dialog), "%s", "yellow");
+			snprintf(dialog, sizeof(dialog), "%s", "yellow");
 			RoboTrack[0] = (plot_id == ILWRATH_DEFINED) ?
-					ILWRATH_COLOR_YELLOW : ROBOT_COLOR_YELLOW;
+							   ILWRATH_COLOR_YELLOW :
+							   ROBOT_COLOR_YELLOW;
 			break;
 		case GREEN_BODY:
-			snprintf (dialog, sizeof (dialog), "%s", "green");
+			snprintf(dialog, sizeof(dialog), "%s", "green");
 			RoboTrack[0] = (plot_id == ILWRATH_DEFINED) ?
-					ILWRATH_COLOR_GREEN : ROBOT_COLOR_GREEN;
+							   ILWRATH_COLOR_GREEN :
+							   ROBOT_COLOR_GREEN;
 			break;
 		case BLUE_BODY:
-			snprintf (dialog, sizeof (dialog), "%s", "blue");
+			snprintf(dialog, sizeof(dialog), "%s", "blue");
 			RoboTrack[0] = (plot_id == ILWRATH_DEFINED) ?
-					ILWRATH_COLOR_BLUE : ROBOT_COLOR_BLUE;
+							   ILWRATH_COLOR_BLUE :
+							   ROBOT_COLOR_BLUE;
 			break;
 		case WHITE_BODY:
-			snprintf (dialog, sizeof (dialog), "%s", "white");
+			snprintf(dialog, sizeof(dialog), "%s", "white");
 			RoboTrack[0] = (plot_id == ILWRATH_DEFINED) ?
-					ILWRATH_COLOR_WHITE : ROBOT_COLOR_WHITE;
+							   ILWRATH_COLOR_WHITE :
+							   ROBOT_COLOR_WHITE;
 			break;
 		default:
-			snprintf (dialog, sizeof (dialog), "%s", "unknown");
+			snprintf(dialog, sizeof(dialog), "%s", "unknown");
 			RoboTrack[0] = ROBOT_NULL_PHRASE;
 			break;
 	}
-	CheckCase (prime_text, dialog);
-	lua_pushstring (luaState, dialog);
+	CheckCase(prime_text, dialog);
+	lua_pushstring(luaState, dialog);
 	return 1;
 }
 
@@ -586,19 +621,19 @@ luaUqm_comm_getColor (lua_State *luaState)
 // [1] -> the default text for prime seed
 // [2] -> the replacement text for starseed
 static int
-luaUqm_comm_swapIfSeeded (lua_State *luaState)
+luaUqm_comm_swapIfSeeded(lua_State* luaState)
 {
-	const char *prime_text = luaL_checkstring(luaState, 1);
+	const char* prime_text = luaL_checkstring(luaState, 1);
 	if (!StarSeed)
 	{
-		lua_pushstring (luaState, prime_text);
+		lua_pushstring(luaState, prime_text);
 		return 1;
 	}
-	const char *seed_text = luaL_checkstring(luaState, 2);
+	const char* seed_text = luaL_checkstring(luaState, 2);
 #ifdef DEBUG_STARSEED
-	fprintf (stderr, "Swap If Seeded called (%s %s)\n", prime_text, seed_text);
+	fprintf(stderr, "Swap If Seeded called (%s %s)\n", prime_text, seed_text);
 #endif
-	lua_pushstring (luaState, seed_text);
-	RoboTrack[0] = (uqm::COUNT) ~0;
+	lua_pushstring(luaState, seed_text);
+	RoboTrack[0] = (uqm::COUNT)~0;
 	return 1;
 }

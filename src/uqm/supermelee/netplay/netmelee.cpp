@@ -33,13 +33,13 @@
 #include "proto/reset.h"
 
 #include "../../battlecontrols.h"
-		// for NetworkInputContext
+// for NetworkInputContext
 #include "../../controls.h"
-		// for BATTLE_INPUT_STATE
+// for BATTLE_INPUT_STATE
 #include "../../init.h"
-		// for NUM_PLAYERS
+// for NUM_PLAYERS
 #include "../../globdata.h"
-		// for GLOBAL
+// for GLOBAL
 
 #include <errno.h>
 #include <stdlib.h>
@@ -48,36 +48,37 @@
 ////////////////////////////////////////////////////////////////////////////
 
 
-NetConnection *netConnections[NUM_PLAYERS];
+NetConnection* netConnections[NUM_PLAYERS];
 size_t numNetConnections;
 
-void
-addNetConnection(NetConnection *conn, int playerNr) {
+void addNetConnection(NetConnection* conn, int playerNr)
+{
 	netConnections[playerNr] = conn;
 	numNetConnections++;
 }
 
-void
-removeNetConnection(int playerNr) {
+void removeNetConnection(int playerNr)
+{
 	netConnections[playerNr] = NULL;
 	numNetConnections--;
 }
 
 size_t
-getNumNetConnections(void) {
+getNumNetConnections(void)
+{
 	return numNetConnections;
 }
 
 // If the callback function returns 'false', the function will immediately
 // return with 'false'. Otherwise it will return 'true' after calling
 // the callback function for each connected player.
-bool
-forEachConnectedPlayer(ForEachConnectionCallback callback, void *arg) {
+bool forEachConnectedPlayer(ForEachConnectionCallback callback, void* arg)
+{
 	uqm::COUNT player;
-	
+
 	for (player = 0; player < NUM_PLAYERS; player++)
 	{
-		NetConnection *conn = netConnections[player];
+		NetConnection* conn = netConnections[player];
 		if (conn == NULL)
 			continue;
 
@@ -90,26 +91,26 @@ forEachConnectedPlayer(ForEachConnectionCallback callback, void *arg) {
 	return true;
 }
 
-void
-closeAllConnections(void) {
+void closeAllConnections(void)
+{
 	uqm::COUNT player;
 
 	for (player = 0; player < NUM_PLAYERS; player++)
 	{
-		NetConnection *conn = netConnections[player];
+		NetConnection* conn = netConnections[player];
 
 		if (conn != NULL)
 			closePlayerNetworkConnection(player);
 	}
 }
 
-void
-closeDisconnectedConnections(void) {
+void closeDisconnectedConnections(void)
+{
 	uqm::COUNT player;
 
 	for (player = 0; player < NUM_PLAYERS; player++)
 	{
-		NetConnection *conn = netConnections[player];
+		NetConnection* conn = netConnections[player];
 
 		if (conn != NULL && !NetConnection_isConnected(conn))
 			closePlayerNetworkConnection(player);
@@ -119,24 +120,32 @@ closeDisconnectedConnections(void) {
 ////////////////////////////////////////////////////////////////////////////
 
 
-struct melee_state *
-NetMelee_getMeleeState(NetConnection *conn) {
-	if (NetConnection_getState(conn) > NetState_connecting) {
-		BattleStateData *battleStateData =
-				(BattleStateData *) NetConnection_getStateData(conn);
+struct melee_state*
+NetMelee_getMeleeState(NetConnection* conn)
+{
+	if (NetConnection_getState(conn) > NetState_connecting)
+	{
+		BattleStateData* battleStateData =
+			(BattleStateData*)NetConnection_getStateData(conn);
 		return battleStateData->meleeState;
-	} else {
-		return (struct melee_state *) NetConnection_getExtra(conn);
+	}
+	else
+	{
+		return (struct melee_state*)NetConnection_getExtra(conn);
 	}
 }
 
-struct battlestate_struct *
-NetMelee_getBattleState(NetConnection *conn) {
-	if (NetConnection_getState(conn) > NetState_connecting) {
-		BattleStateData *battleStateData =
-				(BattleStateData *) NetConnection_getStateData(conn);
+struct battlestate_struct*
+NetMelee_getBattleState(NetConnection* conn)
+{
+	if (NetConnection_getState(conn) > NetState_connecting)
+	{
+		BattleStateData* battleStateData =
+			(BattleStateData*)NetConnection_getStateData(conn);
 		return battleStateData->battleState;
-	} else {
+	}
+	else
+	{
 		return NULL;
 	}
 }
@@ -144,31 +153,32 @@ NetMelee_getBattleState(NetConnection *conn) {
 ////////////////////////////////////////////////////////////////////////////
 
 static inline void
-netInputAux(uint32 timeoutMs) {
+netInputAux(uint32 timeoutMs)
+{
 	NetManager_process(&timeoutMs);
-			// This may cause more packets to be queued, hence the
-			// flushPacketQueues().
+	// This may cause more packets to be queued, hence the
+	// flushPacketQueues().
 	Async_process();
 	flushPacketQueues();
-			// During the flush, a disconnect may be noticed, which triggers
-			// another callback. It must be handled immediately, before
-			// another flushPacketQueue() can occur, which would not know
-			// that the socket is no longer valid.
-			// TODO: modify the close handling so this order isn't
-			//       necessary.
+	// During the flush, a disconnect may be noticed, which triggers
+	// another callback. It must be handled immediately, before
+	// another flushPacketQueue() can occur, which would not know
+	// that the socket is no longer valid.
+	// TODO: modify the close handling so this order isn't
+	//       necessary.
 	Callback_process();
 }
 
 // Check the network connections for input.
-void
-netInput(void) {
+void netInput(void)
+{
 	netInputAux(0);
 }
 
-void
-netInputBlocking(uint32 timeoutMs) {
+void netInputBlocking(uint32 timeoutMs)
+{
 	uint32 nextAsyncMs;
-		
+
 	nextAsyncMs = Async_timeBeforeNextMs();
 	if (nextAsyncMs < timeoutMs)
 		timeoutMs = nextAsyncMs;
@@ -181,13 +191,13 @@ netInputBlocking(uint32 timeoutMs) {
 
 
 // Send along all pending network packets.
-void
-flushPacketQueues(void) {
+void flushPacketQueues(void)
+{
 	uqm::COUNT player;
 
 	for (player = 0; player < NUM_PLAYERS; player++)
 	{
-		NetConnection *conn;
+		NetConnection* conn;
 		int flushStatus;
 
 		conn = netConnections[player];
@@ -203,13 +213,13 @@ flushPacketQueues(void) {
 	}
 }
 
-void
-confirmConnections(void) {
+void confirmConnections(void)
+{
 	uqm::COUNT player;
 
 	for (player = 0; player < NUM_PLAYERS; player++)
 	{
-		NetConnection *conn = netConnections[player];
+		NetConnection* conn = netConnections[player];
 		if (conn == NULL)
 			continue;
 
@@ -220,13 +230,13 @@ confirmConnections(void) {
 	}
 }
 
-void
-cancelConfirmations(void) {
+void cancelConfirmations(void)
+{
 	uqm::COUNT player;
 
 	for (player = 0; player < NUM_PLAYERS; player++)
 	{
-		NetConnection *conn = netConnections[player];
+		NetConnection* conn = netConnections[player];
 		if (conn == NULL)
 			continue;
 
@@ -237,13 +247,13 @@ cancelConfirmations(void) {
 	}
 }
 
-void
-connectionsLocalReady(NetConnection_ReadyCallback callback, void *arg) {
+void connectionsLocalReady(NetConnection_ReadyCallback callback, void* arg)
+{
 	uqm::COUNT player;
 
 	for (player = 0; player < NUM_PLAYERS; player++)
 	{
-		NetConnection *conn = netConnections[player];
+		NetConnection* conn = netConnections[player];
 		if (conn == NULL)
 			continue;
 
@@ -254,13 +264,13 @@ connectionsLocalReady(NetConnection_ReadyCallback callback, void *arg) {
 	}
 }
 
-bool
-allConnected(void) {
+bool allConnected(void)
+{
 	uqm::COUNT player;
 
 	for (player = 0; player < NUM_PLAYERS; player++)
 	{
-		NetConnection *conn = netConnections[player];
+		NetConnection* conn = netConnections[player];
 		if (conn == NULL)
 			continue;
 
@@ -270,48 +280,50 @@ allConnected(void) {
 	return true;
 }
 
-void
-initBattleStateDataConnections(void) {
+void initBattleStateDataConnections(void)
+{
 	uqm::COUNT player;
 
 	for (player = 0; player < NUM_PLAYERS; player++)
 	{
-		BattleStateData *battleStateData;
-		NetConnection *conn = netConnections[player];
+		BattleStateData* battleStateData;
+		NetConnection* conn = netConnections[player];
 		if (conn == NULL)
 			continue;
 
 		battleStateData =
-				(BattleStateData *) NetConnection_getStateData(conn);
+			(BattleStateData*)NetConnection_getStateData(conn);
 		battleStateData->endFrameCount = 0;
 	}
 }
 
-void
-setBattleStateConnections(struct battlestate_struct *bs) {
+void setBattleStateConnections(struct battlestate_struct* bs)
+{
 	uqm::COUNT player;
 
 	for (player = 0; player < NUM_PLAYERS; player++)
 	{
-		BattleStateData *battleStateData;
-		NetConnection *conn = netConnections[player];
+		BattleStateData* battleStateData;
+		NetConnection* conn = netConnections[player];
 		if (conn == NULL)
 			continue;
 
 		battleStateData =
-				(BattleStateData *) NetConnection_getStateData(conn);
+			(BattleStateData*)NetConnection_getStateData(conn);
 		battleStateData->battleState = bs;
 	}
 }
 
 BATTLE_INPUT_STATE
-networkBattleInput(NetworkInputContext *context, STARSHIP *StarShipPtr) {
-	BattleInputBuffer *bib = getBattleInputBuffer(context->playerNr);
+networkBattleInput(NetworkInputContext* context, STARSHIP* StarShipPtr)
+{
+	BattleInputBuffer* bib = getBattleInputBuffer(context->playerNr);
 	BATTLE_INPUT_STATE result;
-	
-	for (;;) {
+
+	for (;;)
+	{
 		bool ok;
-		
+
 #if 0
 		// This is a useful debugging trick. By enabling this #if
 		// block, this side will always lag the maximum number of frames
@@ -325,14 +337,14 @@ networkBattleInput(NetworkInputContext *context, STARSHIP *StarShipPtr) {
 			ok = false;
 		} else
 #endif
-			ok = BattleInputBuffer_pop(bib, &result);
-					// Get the input from the front of the
-					// buffer.
+		ok = BattleInputBuffer_pop(bib, &result);
+		// Get the input from the front of the
+		// buffer.
 		if (ok)
 			break;
-			
+
 		{
-			NetConnection *conn = netConnections[context->playerNr];
+			NetConnection* conn = netConnections[context->playerNr];
 
 			// First try whether there is incoming data, without blocking.
 			// If there isn't any, only then give a warning, and then
@@ -342,11 +354,11 @@ networkBattleInput(NetworkInputContext *context, STARSHIP *StarShipPtr) {
 			{
 				// Connection aborted.
 				GLOBAL(CurrentActivity) |= CHECK_ABORT;
-				return (BATTLE_INPUT_STATE) 0;
+				return (BATTLE_INPUT_STATE)0;
 			}
-		
+
 			if (GLOBAL(CurrentActivity) & CHECK_ABORT)
-				return (BATTLE_INPUT_STATE) 0;
+				return (BATTLE_INPUT_STATE)0;
 
 #if 0
 			log_add(log_Warning, "NETPLAY: [%d] stalling for "
@@ -359,52 +371,54 @@ networkBattleInput(NetworkInputContext *context, STARSHIP *StarShipPtr) {
 			{
 				// Connection aborted.
 				GLOBAL(CurrentActivity) |= CHECK_ABORT;
-				return (BATTLE_INPUT_STATE) 0;
+				return (BATTLE_INPUT_STATE)0;
 			}
 		}
 	}
 
-	(void) StarShipPtr;
+	(void)StarShipPtr;
 	return result;
 }
 
 static void
-deleteConnectionCallback(NetConnection *conn) {
+deleteConnectionCallback(NetConnection* conn)
+{
 	removeNetConnection(NetConnection_getPlayerNr(conn));
 }
 
-NetConnection *
-openPlayerNetworkConnection(uqm::COUNT player, void *extra) {
-	NetConnection *conn;
+NetConnection*
+openPlayerNetworkConnection(uqm::COUNT player, void* extra)
+{
+	NetConnection* conn;
 
 	assert(netConnections[player] == NULL);
 
 	conn = NetConnection_open(player,
-			&netplayOptions.peer[player], NetMelee_connectCallback,
-			NetMelee_closeCallback, NetMelee_errorCallback,
-			deleteConnectionCallback, extra);
+							  &netplayOptions.peer[player], NetMelee_connectCallback,
+							  NetMelee_closeCallback, NetMelee_errorCallback,
+							  deleteConnectionCallback, extra);
 
 	addNetConnection(conn, player);
 	return conn;
 }
 
-void
-closePlayerNetworkConnection(uqm::COUNT player) {
+void closePlayerNetworkConnection(uqm::COUNT player)
+{
 	assert(netConnections[player] != NULL);
 
 	NetConnection_close(netConnections[player]);
 }
 
-bool
-setupInputDelay(size_t localInputDelay) {
+bool setupInputDelay(size_t localInputDelay)
+{
 	uqm::COUNT player;
 	bool haveNetworkPlayer = false;
-			// We have at least one network controlled player.
+	// We have at least one network controlled player.
 	size_t inputDelay = 0;
-	
+
 	for (player = 0; player < NUM_PLAYERS; player++)
 	{
-		NetConnection *conn = netConnections[player];
+		NetConnection* conn = netConnections[player];
 		if (conn == NULL)
 			continue;
 
@@ -424,60 +438,65 @@ setupInputDelay(size_t localInputDelay) {
 }
 
 static bool
-setStateConnection(NetConnection *conn, void *arg) {
-	const NetState *state = (NetState *) arg;
+setStateConnection(NetConnection* conn, void* arg)
+{
+	const NetState* state = (NetState*)arg;
 	NetConnection_setState(conn, *state);
 	return true;
 }
 
-bool
-setStateConnections(NetState state) {
+bool setStateConnections(NetState state)
+{
 	return forEachConnectedPlayer(setStateConnection, &state);
 }
 
 static bool
-sendAbortConnection(NetConnection *conn, void *arg) {
-	const NetplayAbortReason *reason = (NetplayAbortReason *) arg;
+sendAbortConnection(NetConnection* conn, void* arg)
+{
+	const NetplayAbortReason* reason = (NetplayAbortReason*)arg;
 	sendAbort(conn, *reason);
 	return true;
 }
 
-bool
-sendAbortConnections(NetplayAbortReason reason) {
+bool sendAbortConnections(NetplayAbortReason reason)
+{
 	return forEachConnectedPlayer(sendAbortConnection, &reason);
 }
 
 static bool
-resetConnection(NetConnection *conn, void *arg) {
-	const NetplayResetReason *reason = (NetplayResetReason *) arg;
+resetConnection(NetConnection* conn, void* arg)
+{
+	const NetplayResetReason* reason = (NetplayResetReason*)arg;
 	Netplay_localReset(conn, *reason);
 	return true;
 }
 
-bool
-resetConnections(NetplayResetReason reason) {
+bool resetConnections(NetplayResetReason reason)
+{
 	return forEachConnectedPlayer(resetConnection, &reason);
 }
 
 /////////////////////////////////////////////////////////////////////////////
 
-typedef struct {
+typedef struct
+{
 	NetConnection_ReadyCallback readyCallback;
-	void *readyCallbackArg;
+	void* readyCallbackArg;
 	bool notifyRemote;
 } LocalReadyConnectionArg;
 
 static bool
-localReadyConnection(NetConnection *conn, void *arg) {
-	LocalReadyConnectionArg *readyArg = (LocalReadyConnectionArg *) arg;
+localReadyConnection(NetConnection* conn, void* arg)
+{
+	LocalReadyConnectionArg* readyArg = (LocalReadyConnectionArg*)arg;
 	Netplay_localReady(conn, readyArg->readyCallback,
-			readyArg->readyCallbackArg, readyArg->notifyRemote);
+					   readyArg->readyCallbackArg, readyArg->notifyRemote);
 	return true;
 }
 
-bool
-localReadyConnections(NetConnection_ReadyCallback readyCallback,
-		void *readyArg, bool notifyRemote) {
+bool localReadyConnections(NetConnection_ReadyCallback readyCallback,
+						   void* readyArg, bool notifyRemote)
+{
 	LocalReadyConnectionArg arg;
 	arg.readyCallback = readyCallback;
 	arg.readyCallbackArg = readyArg;
@@ -492,24 +511,26 @@ localReadyConnections(NetConnection_ReadyCallback readyCallback,
 #define NETWORK_POLL_DELAY (ONE_SECOND / 24)
 
 typedef struct NegotiateReadyState NegotiateReadyState;
-struct NegotiateReadyState {
+struct NegotiateReadyState
+{
 	// Common fields of INPUT_STATE_DESC, from which this structure
 	// "inherits".
-	bool(*InputFunc)(void *pInputState);
+	bool (*InputFunc)(void* pInputState);
 
-	NetConnection *conn;
+	NetConnection* conn;
 	NetState nextState;
 	bool done;
 };
 
 static bool
-negotiateReadyInputFunc(NegotiateReadyState *state) {
+negotiateReadyInputFunc(NegotiateReadyState* state)
+{
 	netInputBlocking(NETWORK_POLL_DELAY);
 	// The timing out is necessary so that immediate key presses get
 	// handled while we wait. If we could do without the timeout,
 	// we wouldn't even need negotiateReadyInputFunc() and the
 	// DoInput() call.
-	
+
 	// No need to call flushPacketQueues(); nothing needs to be sent
 	// right now.
 
@@ -521,29 +542,30 @@ negotiateReadyInputFunc(NegotiateReadyState *state) {
 
 // Called when both sides are ready
 static void
-negotiateReadyBothReadyCallback(NetConnection *conn, void *arg) {
-	NegotiateReadyState *state =(NegotiateReadyState *) arg;
+negotiateReadyBothReadyCallback(NetConnection* conn, void* arg)
+{
+	NegotiateReadyState* state = (NegotiateReadyState*)arg;
 
 	NetConnection_setState(conn, state->nextState);
-			// This has to be done immediately, as more packets in the
-			// receive queue may be handled by the netInput() call that
-			// triggered this callback.
-			// This is the reason for the nextState argument to
-			// negotiateReady(); setting the state after the call to
-			// negotiateReady() would be too late.
+	// This has to be done immediately, as more packets in the
+	// receive queue may be handled by the netInput() call that
+	// triggered this callback.
+	// This is the reason for the nextState argument to
+	// negotiateReady(); setting the state after the call to
+	// negotiateReady() would be too late.
 	state->done = true;
 }
 
-bool
-negotiateReady(NetConnection *conn, bool notifyRemote, NetState nextState) {
+bool negotiateReady(NetConnection* conn, bool notifyRemote, NetState nextState)
+{
 	NegotiateReadyState state;
-	state.InputFunc = (bool(*)(void *)) negotiateReadyInputFunc;
+	state.InputFunc = (bool (*)(void*))negotiateReadyInputFunc;
 	state.conn = conn;
 	state.nextState = nextState;
 	state.done = false;
 
 	Netplay_localReady(conn, negotiateReadyBothReadyCallback,
-			(void *) &state, notifyRemote);
+					   (void*)&state, notifyRemote);
 	flushPacketQueue(conn);
 	if (!state.done)
 		DoInput(&state, false);
@@ -556,18 +578,19 @@ negotiateReady(NetConnection *conn, bool notifyRemote, NetState nextState) {
 //      at once would be faster but would require more work, which is
 //      not worth it as the time is minimal and this function is not
 //      time critical.
-bool
-negotiateReadyConnections(bool notifyRemote, NetState nextState) {
+bool negotiateReadyConnections(bool notifyRemote, NetState nextState)
+{
 	uqm::COUNT player;
 	size_t numDisconnected = 0;
 
 	for (player = 0; player < NUM_PLAYERS; player++)
 	{
-		NetConnection *conn = netConnections[player];
+		NetConnection* conn = netConnections[player];
 		if (conn == NULL)
 			continue;
 
-		if (!NetConnection_isConnected(conn)) {
+		if (!NetConnection_isConnected(conn))
+		{
 			numDisconnected++;
 			continue;
 		}
@@ -579,20 +602,22 @@ negotiateReadyConnections(bool notifyRemote, NetState nextState) {
 }
 
 typedef struct WaitReadyState WaitReadyState;
-struct WaitReadyState {
+struct WaitReadyState
+{
 	// Common fields of INPUT_STATE_DESC, from which this structure
 	// "inherits".
-	bool (*InputFunc)(void *pInputState);
+	bool (*InputFunc)(void* pInputState);
 
-	NetConnection *conn;
+	NetConnection* conn;
 	NetConnection_ReadyCallback readyCallback;
-	void *readyCallbackArg;
+	void* readyCallbackArg;
 	bool done;
 };
 
 static void
-waitReadyCallback(NetConnection *conn, void *arg) {
-	WaitReadyState *state =(WaitReadyState *) arg;
+waitReadyCallback(NetConnection* conn, void* arg)
+{
+	WaitReadyState* state = (WaitReadyState*)arg;
 	state->done = true;
 
 	// Call the original callback.
@@ -600,13 +625,14 @@ waitReadyCallback(NetConnection *conn, void *arg) {
 }
 
 static bool
-waitReadyInputFunc(WaitReadyState *state) {
+waitReadyInputFunc(WaitReadyState* state)
+{
 	netInputBlocking(NETWORK_POLL_DELAY);
 	// The timing out is necessary so that immediate key presses get
 	// handled while we wait. If we could do without the timeout,
 	// we wouldn't even need negotiateReadyInputFunc() and the
 	// DoInput() call.
-	
+
 	// No need to call flushPacketQueues(); nothing needs to be sent
 	// right now.
 
@@ -616,16 +642,16 @@ waitReadyInputFunc(WaitReadyState *state) {
 	return !state->done;
 }
 
-bool
-waitReady(NetConnection *conn) {
+bool waitReady(NetConnection* conn)
+{
 	WaitReadyState state;
-	state.InputFunc =(bool(*)(void *)) waitReadyInputFunc;
+	state.InputFunc = (bool (*)(void*))waitReadyInputFunc;
 	state.conn = conn;
 	state.readyCallback = NetConnection_getReadyCallback(conn);
 	state.readyCallbackArg = NetConnection_getReadyCallbackArg(conn);
 	state.done = false;
 
-	NetConnection_setReadyCallback(conn, waitReadyCallback, (void *) &state);
+	NetConnection_setReadyCallback(conn, waitReadyCallback, (void*)&state);
 
 	DoInput(&state, false);
 
@@ -636,24 +662,26 @@ waitReady(NetConnection *conn) {
 ////////////////////////////////////////////////////////////////////////////
 
 typedef struct WaitResetState WaitResetState;
-struct WaitResetState {
+struct WaitResetState
+{
 	// Common fields of INPUT_STATE_DESC, from which this structure
 	// "inherits".
-	bool(*InputFunc)(void *pInputState);
+	bool (*InputFunc)(void* pInputState);
 
-	NetConnection *conn;
+	NetConnection* conn;
 	NetState nextState;
 	bool done;
 };
 
 static bool
-waitResetInputFunc(WaitResetState *state) {
+waitResetInputFunc(WaitResetState* state)
+{
 	netInputBlocking(NETWORK_POLL_DELAY);
 	// The timing out is necessary so that immediate key presses get
 	// handled while we wait. If we could do without the timeout,
 	// we wouldn't even need waitResetInputFunc() and the
 	// DoInput() call.
-	
+
 	// No need to call flushPacketQueues(); nothing needs to be sent
 	// right now.
 
@@ -665,10 +693,12 @@ waitResetInputFunc(WaitResetState *state) {
 
 // Called when both sides are reset.
 static void
-waitResetBothResetCallback(NetConnection *conn, void *arg) {
-	WaitResetState *state = (WaitResetState *) arg;
+waitResetBothResetCallback(NetConnection* conn, void* arg)
+{
+	WaitResetState* state = (WaitResetState*)arg;
 
-	if (state->nextState != (NetState) -1) {
+	if (state->nextState != (NetState)-1)
+	{
 		NetConnection_setState(conn, state->nextState);
 		// This has to be done immediately, as more packets in the
 		// receive queue may be handled by the netInput() call that
@@ -680,21 +710,22 @@ waitResetBothResetCallback(NetConnection *conn, void *arg) {
 	state->done = true;
 }
 
-bool
-waitReset(NetConnection *conn, NetState nextState) {
+bool waitReset(NetConnection* conn, NetState nextState)
+{
 	WaitResetState state;
-	state.InputFunc = (bool(*)(void *)) waitResetInputFunc;
+	state.InputFunc = (bool (*)(void*))waitResetInputFunc;
 	state.conn = conn;
 	state.nextState = nextState;
 	state.done = false;
 
 	Netplay_setResetCallback(conn, waitResetBothResetCallback,
-			(void *) &state);
+							 (void*)&state);
 	if (state.done)
 		goto out;
-		
 
-	if (!Netplay_isLocalReset(conn)) {
+
+	if (!Netplay_isLocalReset(conn))
+	{
 		Netplay_localReset(conn, ResetReason_manualReset);
 		flushPacketQueue(conn);
 	}
@@ -714,18 +745,19 @@ out:
 //      not worth it as the time is minimal and this function is not
 //      time critical.
 // Use '(NetState) -1' for nextState to keep the current state.
-bool
-waitResetConnections(NetState nextState) {
+bool waitResetConnections(NetState nextState)
+{
 	uqm::COUNT player;
 	size_t numDisconnected = 0;
 
 	for (player = 0; player < NUM_PLAYERS; player++)
 	{
-		NetConnection *conn = netConnections[player];
+		NetConnection* conn = netConnections[player];
 		if (conn == NULL)
 			continue;
 
-		if (!NetConnection_isConnected(conn)) {
+		if (!NetConnection_isConnected(conn))
+		{
 			numDisconnected++;
 			continue;
 		}
@@ -737,4 +769,3 @@ waitResetConnections(NetState nextState) {
 }
 
 ////////////////////////////////////////////////////////////////////////////
-

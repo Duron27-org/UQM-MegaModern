@@ -21,7 +21,7 @@
 #include "libs/compiler.h"
 #include "displist.h"
 #include "libs/gfxlib.h"
-		// for POINT
+// for POINT
 #include <assert.h>
 
 #if 0 //defined(__cplusplus)
@@ -49,22 +49,22 @@ typedef struct
 	uqm::UWORD group_counter;
 	uqm::BYTE race_id;
 	uqm::BYTE sys_loc;
-	uqm::BYTE task;  // AKA mission
+	uqm::BYTE task; // AKA mission
 	uqm::BYTE in_system;
-			// a simple != 0 flag
-			// In older savegames this will be >1, because
-			//   CloneShipFragment was used to spawn groups,
-			//   and it set this to crew_level values
-	
+	// a simple != 0 flag
+	// In older savegames this will be >1, because
+	//   CloneShipFragment was used to spawn groups,
+	//   and it set this to crew_level values
+
 	uqm::BYTE dest_loc;
 	uqm::BYTE orbit_pos;
-			/* Also: saved prev dest_loc before intercept call,
+	/* Also: saved prev dest_loc before intercept call,
 			 *   restored to dest_loc on all-clear */
 	uqm::BYTE group_id;
 	POINT loc;
 
 	FRAME melee_icon;
-	
+
 	IP_FLAGS flags;
 } IP_GROUP;
 
@@ -83,17 +83,17 @@ enum
 #define STATION_RADIUS 1600
 #define ORBIT_RADIUS 2400
 
-static inline IP_GROUP *
-LockIpGroup (const QUEUE *pq, HIPGROUP h)
+static inline IP_GROUP*
+LockIpGroup(const QUEUE* pq, HIPGROUP h)
 {
-	assert (GetLinkSize (pq) == sizeof (IP_GROUP));
-	return (IP_GROUP *) LockLink (pq, h);
+	assert(GetLinkSize(pq) == sizeof(IP_GROUP));
+	return (IP_GROUP*)LockLink(pq, h);
 }
 
-#define UnlockIpGroup(pq, h)  UnlockLink (pq, h)
-#define FreeIpGroup(pq, h)    FreeLink (pq, h)
+#define UnlockIpGroup(pq, h) UnlockLink(pq, h)
+#define FreeIpGroup(pq, h) FreeLink(pq, h)
 
-extern HIPGROUP BuildGroup (QUEUE *pDstQueue, uqm::BYTE race_id);
+extern HIPGROUP BuildGroup(QUEUE* pDstQueue, uqm::BYTE race_id);
 
 #if 0 //defined(__cplusplus)
 }

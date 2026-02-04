@@ -21,8 +21,7 @@ TFB_BoundingBox TFB_BBox;
 int maxWidth;
 int maxHeight;
 
-void
-TFB_BBox_Init (int width, int height)
+void TFB_BBox_Init(int width, int height)
 {
 	maxWidth = width;
 	maxHeight = height;
@@ -30,17 +29,15 @@ TFB_BBox_Init (int width, int height)
 	TFB_BBox.clip.extent.height = height;
 }
 
-void
-TFB_BBox_Reset (void)
+void TFB_BBox_Reset(void)
 {
 	TFB_BBox.valid = 0;
 }
 
-void
-TFB_BBox_SetClipRect (const RECT *r)
+void TFB_BBox_SetClipRect(const RECT* r)
 {
 	if (!r)
-	{	/* No clipping -- full rect */
+	{ /* No clipping -- full rect */
 		TFB_BBox.clip.corner.x = 0;
 		TFB_BBox.clip.corner.y = 0;
 		TFB_BBox.clip.extent.width = maxWidth;
@@ -59,24 +56,27 @@ TFB_BBox_SetClipRect (const RECT *r)
 
 	if (TFB_BBox.clip.corner.x + TFB_BBox.clip.extent.width > maxWidth)
 		TFB_BBox.clip.extent.width = maxWidth - TFB_BBox.clip.corner.x;
-	
+
 	if (TFB_BBox.clip.corner.y + TFB_BBox.clip.extent.height > maxHeight)
 		TFB_BBox.clip.extent.height = maxHeight - TFB_BBox.clip.corner.y;
 }
 
-void
-TFB_BBox_RegisterPoint (int x, int y) 
+void TFB_BBox_RegisterPoint(int x, int y)
 {
-	int x1 = TFB_BBox.clip.corner.x; 
+	int x1 = TFB_BBox.clip.corner.x;
 	int y1 = TFB_BBox.clip.corner.y;
 	int x2 = TFB_BBox.clip.corner.x + TFB_BBox.clip.extent.width - 1;
 	int y2 = TFB_BBox.clip.corner.y + TFB_BBox.clip.extent.height - 1;
 
 	/* Constrain coordinates */
-	if (x < x1) x = x1;
-	if (x >= x2) x = x2;
-	if (y < y1) y = y1;
-	if (y >= y2) y = y2;
+	if (x < x1)
+		x = x1;
+	if (x >= x2)
+		x = x2;
+	if (y < y1)
+		y = y1;
+	if (y >= y2)
+		y = y2;
 
 	/* Is this the first point?  If so, set a pixel-region and return. */
 	if (!TFB_BBox.valid)
@@ -90,44 +90,46 @@ TFB_BBox_RegisterPoint (int x, int y)
 	}
 
 	/* Otherwise expand the rectangle if necessary. */
-	x1 = TFB_BBox.region.corner.x; 
+	x1 = TFB_BBox.region.corner.x;
 	y1 = TFB_BBox.region.corner.y;
 	x2 = TFB_BBox.region.corner.x + TFB_BBox.region.extent.width - 1;
 	y2 = TFB_BBox.region.corner.y + TFB_BBox.region.extent.height - 1;
 
-	if (x < x1) {
+	if (x < x1)
+	{
 		TFB_BBox.region.corner.x = x;
 		TFB_BBox.region.extent.width += x1 - x;
 	}
-	if (y < y1) {
+	if (y < y1)
+	{
 		TFB_BBox.region.corner.y = y;
 		TFB_BBox.region.extent.height += y1 - y;
 	}
-	if (x > x2) {
+	if (x > x2)
+	{
 		TFB_BBox.region.extent.width += x - x2;
 	}
-	if (y > y2) {
+	if (y > y2)
+	{
 		TFB_BBox.region.extent.height += y - y2;
 	}
 }
 
-void
-TFB_BBox_RegisterRect (const RECT *r)
+void TFB_BBox_RegisterRect(const RECT* r)
 {
 	/* RECT will still register as a corner point of the cliprect even
 	 * if it does not intersect with the cliprect at all. This is not
 	 * a problem, as more is not less. */
-	TFB_BBox_RegisterPoint (r->corner.x, r->corner.y);
-	TFB_BBox_RegisterPoint (r->corner.x + r->extent.width - 1,
-			r->corner.y + r->extent.height - 1);
+	TFB_BBox_RegisterPoint(r->corner.x, r->corner.y);
+	TFB_BBox_RegisterPoint(r->corner.x + r->extent.width - 1,
+						   r->corner.y + r->extent.height - 1);
 }
 
-void
-TFB_BBox_RegisterCanvas (TFB_Canvas c, int x, int y)
+void TFB_BBox_RegisterCanvas(TFB_Canvas c, int x, int y)
 {
 	RECT r;
 	r.corner.x = x;
 	r.corner.y = y;
-	TFB_DrawCanvas_GetExtent (c, &r.extent);
-	TFB_BBox_RegisterRect (&r);
+	TFB_DrawCanvas_GetExtent(c, &r.extent);
+	TFB_BBox_RegisterRect(&r);
 }

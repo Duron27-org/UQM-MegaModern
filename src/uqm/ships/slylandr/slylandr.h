@@ -21,11 +21,10 @@
 extern "C" {
 #endif
 
-RACE_DESC *init_slylandro (void);
+RACE_DESC* init_slylandro(void);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* SLYLANDR_H */
-
+#endif /* SLYLANDR_H */

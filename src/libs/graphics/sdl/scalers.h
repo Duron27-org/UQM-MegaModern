@@ -17,11 +17,11 @@
 #ifndef SCALERS_H_
 #define SCALERS_H_
 
-void Scale_Init (void);
+void Scale_Init(void);
 
-typedef void (* TFB_ScaleFunc) (SDL_Surface *src, SDL_Surface *dst,
-				SDL_Rect *r);
+typedef void (*TFB_ScaleFunc)(SDL_Surface* src, SDL_Surface* dst,
+							  SDL_Rect* r);
 
-TFB_ScaleFunc Scale_PrepPlatform (int flags, const SDL_PixelFormat* fmt);
+TFB_ScaleFunc Scale_PrepPlatform(int flags, const SDL_PixelFormat* fmt);
 
 #endif /* SCALERS_H_ */

@@ -15,7 +15,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-	
+
 // See doc/devel/netplay/protocol
 
 #define NETCONNECTION_INTERNAL
@@ -25,7 +25,7 @@
 #include "types.h"
 #include "../packetsenders.h"
 #include "../../melee.h"
-		// For resetFeedback.
+// For resetFeedback.
 
 #include <assert.h>
 
@@ -68,9 +68,11 @@
 
 // This function is called when one side initiates a reset.
 static void
-Netplay_connectionReset(NetConnection *conn, NetplayResetReason reason,
-		bool byRemote) {
-	switch (NetConnection_getState(conn)) {
+Netplay_connectionReset(NetConnection* conn, NetplayResetReason reason,
+						bool byRemote)
+{
+	switch (NetConnection_getState(conn))
+	{
 		case NetState_unconnected:
 		case NetState_connecting:
 		case NetState_init:
@@ -88,27 +90,28 @@ Netplay_connectionReset(NetConnection *conn, NetplayResetReason reason,
 }
 
 static void
-Netplay_doConnectionResetCallback(NetConnection *conn) {
+Netplay_doConnectionResetCallback(NetConnection* conn)
+{
 	NetConnection_ResetCallback callback;
-	void *resetArg;
+	void* resetArg;
 
 	callback = conn->resetCallback;
 	resetArg = conn->resetCallbackArg;
 
 	NetConnection_setResetCallback(conn, NULL, NULL);
-			// Clear the resetCallback field before performing the callback,
-			// so that it can be set again from inside the callback
-			// function.
+	// Clear the resetCallback field before performing the callback,
+	// so that it can be set again from inside the callback
+	// function.
 	callback(conn, resetArg);
 }
 
 static void
-Netplay_resetConditionTriggered(NetConnection *conn) {
+Netplay_resetConditionTriggered(NetConnection* conn)
+{
 	if (conn->resetCallback == NULL)
 		return;
-	
-	if (!conn->stateFlags.reset.localReset ||
-			!conn->stateFlags.reset.remoteReset)
+
+	if (!conn->stateFlags.reset.localReset || !conn->stateFlags.reset.remoteReset)
 		return;
 
 	conn->stateFlags.reset.localReset = false;
@@ -117,35 +120,39 @@ Netplay_resetConditionTriggered(NetConnection *conn) {
 	Netplay_doConnectionResetCallback(conn);
 }
 
-void
-Netplay_setResetCallback(NetConnection *conn,
-		NetConnection_ResetCallback callback, void *resetArg) {
+void Netplay_setResetCallback(NetConnection* conn,
+							  NetConnection_ResetCallback callback, void* resetArg)
+{
 	NetConnection_setResetCallback(conn, callback, resetArg);
 
 	Netplay_resetConditionTriggered(conn);
 }
 
-void
-Netplay_localReset(NetConnection *conn, NetplayResetReason reason) {
+void Netplay_localReset(NetConnection* conn, NetplayResetReason reason)
+{
 	assert(!conn->stateFlags.reset.localReset);
 
 	conn->stateFlags.reset.localReset = true;
-	if (conn->stateFlags.reset.remoteReset) {
+	if (conn->stateFlags.reset.remoteReset)
+	{
 		// Both sides have initiated/confirmed the reset.
 		Netplay_resetConditionTriggered(conn);
-	} else {
+	}
+	else
+	{
 		sendReset(conn, reason);
 		Netplay_connectionReset(conn, reason, false);
 	}
 }
 
-void
-Netplay_remoteReset(NetConnection *conn, NetplayResetReason reason) {
+void Netplay_remoteReset(NetConnection* conn, NetplayResetReason reason)
+{
 	assert(!conn->stateFlags.reset.remoteReset);
-			// Should already be checked when the packet arrives.
+	// Should already be checked when the packet arrives.
 
 	conn->stateFlags.reset.remoteReset = true;
-	if (!conn->stateFlags.reset.localReset) {
+	if (!conn->stateFlags.reset.localReset)
+	{
 		sendReset(conn, reason);
 		conn->stateFlags.reset.localReset = true;
 		Netplay_connectionReset(conn, reason, true);
@@ -154,13 +161,12 @@ Netplay_remoteReset(NetConnection *conn, NetplayResetReason reason) {
 	Netplay_resetConditionTriggered(conn);
 }
 
-bool
-Netplay_isLocalReset(const NetConnection *conn) {
+bool Netplay_isLocalReset(const NetConnection* conn)
+{
 	return conn->stateFlags.reset.localReset;
 }
 
-bool
-Netplay_isRemoteReset(const NetConnection *conn) {
+bool Netplay_isRemoteReset(const NetConnection* conn)
+{
 	return conn->stateFlags.reset.remoteReset;
 }
-

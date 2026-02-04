@@ -44,7 +44,7 @@
 
 #define ZEROLEN 32768
 
-static	SBYTE *zerobuf=NULL;
+static SBYTE* zerobuf = NULL;
 
 static BOOL NS_IsThere(void)
 {
@@ -53,7 +53,7 @@ static BOOL NS_IsThere(void)
 
 static int NS_Init(void)
 {
-	zerobuf=(SBYTE*)MikMod_malloc(ZEROLEN);
+	zerobuf = (SBYTE*)MikMod_malloc(ZEROLEN);
 	return VC_Init();
 }
 
@@ -61,20 +61,20 @@ static void NS_Exit(void)
 {
 	VC_Exit();
 	MikMod_free(zerobuf);
-	zerobuf=NULL;
+	zerobuf = NULL;
 }
 
 static void NS_Update(void)
 {
 	if (zerobuf)
-		VC_WriteBytes(zerobuf,ZEROLEN);
+		VC_WriteBytes(zerobuf, ZEROLEN);
 }
 
-MIKMODAPI MDRIVER drv_nos={
+MIKMODAPI MDRIVER drv_nos = {
 	NULL,
 	"No Sound",
 	"Nosound Driver v3.0",
-	255,255,
+	255, 255,
 	"nosound",
 	NULL,
 	NULL,
@@ -101,7 +101,6 @@ MIKMODAPI MDRIVER drv_nos={
 	VC_VoiceStop,
 	VC_VoiceStopped,
 	VC_VoiceGetPosition,
-	VC_VoiceRealVolume
-};
+	VC_VoiceRealVolume};
 
 /* ex:set ts=4: */

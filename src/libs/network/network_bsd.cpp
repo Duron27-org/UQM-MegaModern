@@ -18,13 +18,12 @@
 
 #include "network.h"
 
-void
-Network_init(void) {
+void Network_init(void)
+{
 	// Nothing to do.
 }
 
-void
-Network_uninit(void) {
+void Network_uninit(void)
+{
 	// Nothing to do.
 }
-

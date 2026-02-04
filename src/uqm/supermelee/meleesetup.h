@@ -21,8 +21,8 @@ typedef struct MeleeTeam MeleeTeam;
 typedef struct MeleeSetup MeleeSetup;
 
 #ifdef MELEESETUP_INTERNAL
-#	define MELEETEAM_INTERNAL
-#endif  /* MELEESETUP_INTERNAL */
+#define MELEETEAM_INTERNAL
+#endif /* MELEESETUP_INTERNAL */
 
 #include "libs/compiler.h"
 
@@ -41,13 +41,13 @@ struct MeleeTeam
 {
 	MeleeShip ships[MELEE_FLEET_SIZE];
 	char name[MAX_TEAM_CHARS + 1 + 24];
-			/* The +1 is for the terminating \0; the +24 is in case some
+	/* The +1 is for the terminating \0; the +24 is in case some
 			 * default name in starcon.txt is unknowingly mangled. */
-			// XXX: SvdB: Why would it be mangled? Why don't we just reject
-			//            it if it is? Is this so that we have some space
-			//            for multibyte UTF-8 chars?
+	// XXX: SvdB: Why would it be mangled? Why don't we just reject
+	//            it if it is? Is this so that we have some space
+	//            for multibyte UTF-8 chars?
 };
-#endif  /* MELEETEAM_INTERNAL */
+#endif /* MELEETEAM_INTERNAL */
 
 #ifdef MELEESETUP_INTERNAL
 struct MeleeSetup
@@ -56,88 +56,87 @@ struct MeleeSetup
 	uqm::COUNT fleetValue[NUM_SIDES];
 #ifdef NETPLAY
 	MeleeTeam sentTeams[NUM_SIDES];
-			// The last sent (parts of) teams.
-			// Used in the Update protocol. See doc/devel/netplay/protocol
-			// XXX: this may actually be deallocated when the battle starts.
+	// The last sent (parts of) teams.
+	// Used in the Update protocol. See doc/devel/netplay/protocol
+	// XXX: this may actually be deallocated when the battle starts.
 	bool haveSentTeamName[NUM_SIDES];
-			// Whether we have sent a team name this 'turn'.
-			// Used in the Update protocol. See doc/devel/netplay/protocol
-			// (also for the term 'turn').
+	// Whether we have sent a team name this 'turn'.
+	// Used in the Update protocol. See doc/devel/netplay/protocol
+	// (also for the term 'turn').
 #endif
 };
 
-#endif  /* MELEESETUP_INTERNAL */
+#endif /* MELEESETUP_INTERNAL */
 
 extern const size_t MeleeTeam_serialSize;
 
-void MeleeTeam_init (MeleeTeam *team);
-void MeleeTeam_uninit (MeleeTeam *team);
-MeleeTeam *MeleeTeam_new (void);
-void MeleeTeam_delete (MeleeTeam *team);
+void MeleeTeam_init(MeleeTeam* team);
+void MeleeTeam_uninit(MeleeTeam* team);
+MeleeTeam* MeleeTeam_new(void);
+void MeleeTeam_delete(MeleeTeam* team);
 #ifdef NETPLAY
-void MeleeSetup_resetSentTeams (MeleeSetup *setup);
-#endif  /* NETPLAY */
-int MeleeTeam_serialize (const MeleeTeam *team, uio_Stream *stream);
-int MeleeTeam_deserialize (MeleeTeam *team, uio_Stream *stream);
-uqm::COUNT MeleeTeam_getValue (const MeleeTeam *team);
-MeleeShip MeleeTeam_getShip (const MeleeTeam *team, FleetShipIndex slotNr);
-void MeleeTeam_setShip (MeleeTeam *team, FleetShipIndex slotNr,
-		MeleeShip ship);
-const MeleeShip *MeleeTeam_getFleet (const MeleeTeam *team);
-const char *MeleeTeam_getTeamName (const MeleeTeam *team);
-void MeleeTeam_setName (MeleeTeam *team, const char *name);
-void MeleeTeam_copy (MeleeTeam *copy, const MeleeTeam *original);
+void MeleeSetup_resetSentTeams(MeleeSetup* setup);
+#endif /* NETPLAY */
+int MeleeTeam_serialize(const MeleeTeam* team, uio_Stream* stream);
+int MeleeTeam_deserialize(MeleeTeam* team, uio_Stream* stream);
+uqm::COUNT MeleeTeam_getValue(const MeleeTeam* team);
+MeleeShip MeleeTeam_getShip(const MeleeTeam* team, FleetShipIndex slotNr);
+void MeleeTeam_setShip(MeleeTeam* team, FleetShipIndex slotNr,
+					   MeleeShip ship);
+const MeleeShip* MeleeTeam_getFleet(const MeleeTeam* team);
+const char* MeleeTeam_getTeamName(const MeleeTeam* team);
+void MeleeTeam_setName(MeleeTeam* team, const char* name);
+void MeleeTeam_copy(MeleeTeam* copy, const MeleeTeam* original);
 #if 0
 bool MeleeTeam_isEqual (const MeleeTeam *team1, const MeleeTeam *team2);
 #endif
 
 #ifdef NETPLAY
-MeleeShip MeleeSetup_getSentShip (const MeleeSetup *setup, size_t teamNr,
-		FleetShipIndex slotNr);
-const char *MeleeSetup_getSentTeamName (const MeleeSetup *setup,
-		size_t teamNr);
-bool MeleeSetup_setSentShip (MeleeSetup *setup, size_t teamNr,
-		FleetShipIndex slotNr, MeleeShip ship);
-bool MeleeSetup_setSentTeamName (MeleeSetup *setup, size_t teamNr,
-		const char *name);
+MeleeShip MeleeSetup_getSentShip(const MeleeSetup* setup, size_t teamNr,
+								 FleetShipIndex slotNr);
+const char* MeleeSetup_getSentTeamName(const MeleeSetup* setup,
+									   size_t teamNr);
+bool MeleeSetup_setSentShip(MeleeSetup* setup, size_t teamNr,
+							FleetShipIndex slotNr, MeleeShip ship);
+bool MeleeSetup_setSentTeamName(MeleeSetup* setup, size_t teamNr,
+								const char* name);
 #if 0
 bool MeleeSetup_isTeamSent (MeleeSetup *setup, size_t teamNr);
 #endif
-#endif  /* NETPLAY */
+#endif /* NETPLAY */
 
-MeleeSetup *MeleeSetup_new (void);
-void MeleeSetup_delete (MeleeSetup *setup);
+MeleeSetup* MeleeSetup_new(void);
+void MeleeSetup_delete(MeleeSetup* setup);
 
-bool MeleeSetup_setShip (MeleeSetup *setup, size_t teamNr,
-		FleetShipIndex slotNr, MeleeShip ship);
-MeleeShip MeleeSetup_getShip (const MeleeSetup *setup, size_t teamNr,
-		FleetShipIndex slotNr);
-bool MeleeSetup_setFleet (MeleeSetup *setup, size_t teamNr,
-		const MeleeShip *fleet);
-const MeleeShip *MeleeSetup_getFleet (const MeleeSetup *setup, size_t teamNr);
-bool MeleeSetup_setTeamName (MeleeSetup *setup, size_t teamNr,
-		const char *name);
-const char *MeleeSetup_getTeamName (const MeleeSetup *setup,
-		size_t teamNr);
-uqm::COUNT MeleeSetup_getFleetValue (const MeleeSetup *setup, size_t teamNr);
-int MeleeSetup_deserializeTeam (MeleeSetup *setup, size_t teamNr,
-		uio_Stream *stream);
-int MeleeSetup_serializeTeam (const MeleeSetup *setup, size_t teamNr,
-		uio_Stream *stream);
+bool MeleeSetup_setShip(MeleeSetup* setup, size_t teamNr,
+						FleetShipIndex slotNr, MeleeShip ship);
+MeleeShip MeleeSetup_getShip(const MeleeSetup* setup, size_t teamNr,
+							 FleetShipIndex slotNr);
+bool MeleeSetup_setFleet(MeleeSetup* setup, size_t teamNr,
+						 const MeleeShip* fleet);
+const MeleeShip* MeleeSetup_getFleet(const MeleeSetup* setup, size_t teamNr);
+bool MeleeSetup_setTeamName(MeleeSetup* setup, size_t teamNr,
+							const char* name);
+const char* MeleeSetup_getTeamName(const MeleeSetup* setup,
+								   size_t teamNr);
+uqm::COUNT MeleeSetup_getFleetValue(const MeleeSetup* setup, size_t teamNr);
+int MeleeSetup_deserializeTeam(MeleeSetup* setup, size_t teamNr,
+							   uio_Stream* stream);
+int MeleeSetup_serializeTeam(const MeleeSetup* setup, size_t teamNr,
+							 uio_Stream* stream);
 
 
-void MeleeState_setShip (MELEE_STATE *pMS, size_t teamNr,
-		FleetShipIndex slotNr, MeleeShip ship);
-void MeleeState_setFleet (MELEE_STATE *pMS, size_t teamNr,
-		const MeleeShip *fleet);
-void MeleeState_setTeamName (MELEE_STATE *pMS, size_t teamNr,
-		const char *name);
-void MeleeState_setTeam (MELEE_STATE *pMS, size_t teamNr,
-		const MeleeTeam *team);
+void MeleeState_setShip(MELEE_STATE* pMS, size_t teamNr,
+						FleetShipIndex slotNr, MeleeShip ship);
+void MeleeState_setFleet(MELEE_STATE* pMS, size_t teamNr,
+						 const MeleeShip* fleet);
+void MeleeState_setTeamName(MELEE_STATE* pMS, size_t teamNr,
+							const char* name);
+void MeleeState_setTeam(MELEE_STATE* pMS, size_t teamNr,
+						const MeleeTeam* team);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* MELEESETUP_H */
-
+#endif /* MELEESETUP_H */

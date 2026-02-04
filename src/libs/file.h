@@ -39,57 +39,53 @@ extern uio_DirHandle *tempDir;
 
 
 // from dirs.h
-int mkdirhier (const char *path);
-const char *getHomeDir (void);
-int createDirectory (const char *dir, int mode);
+int mkdirhier(const char* path);
+const char* getHomeDir(void);
+int createDirectory(const char* dir, int mode);
 
-int expandPath (char *dest, size_t len, const char *src, int what);
+int expandPath(char* dest, size_t len, const char* src, int what);
 // values for 'what':
-#define EP_HOME      1
-		// Expand '~' for home dirs.
-#define EP_ABSOLUTE  2
-		// Make paths absolute
-#define EP_ENVVARS   4
-		// Expand environment variables.
-#define EP_DOTS      8
-		// Process ".." and "."
-#define EP_SLASHES   16
-		// Consider backslashes as path component separators.
-		// They will be replaced by slashes. Windows UNC paths will always
-		// start with "\\server\share", with backslashes.
+#define EP_HOME 1
+// Expand '~' for home dirs.
+#define EP_ABSOLUTE 2
+// Make paths absolute
+#define EP_ENVVARS 4
+// Expand environment variables.
+#define EP_DOTS 8
+// Process ".." and "."
+#define EP_SLASHES 16
+// Consider backslashes as path component separators.
+// They will be replaced by slashes. Windows UNC paths will always
+// start with "\\server\share", with backslashes.
 #define EP_SINGLESEP 32
-		// Replace multiple consecutive path separators by a single one.
-#define EP_ALL (EP_HOME | EP_ENVVARS | EP_ABSOLUTE | EP_DOTS | EP_SLASHES \
-		EP_SINGLESEP)
-		// Everything
+// Replace multiple consecutive path separators by a single one.
+#define EP_ALL (EP_HOME | EP_ENVVARS | EP_ABSOLUTE | EP_DOTS | EP_SLASHES EP_SINGLESEP)
+// Everything
 // Everything except Windows style backslashes on Unix Systems:
 #ifdef WIN32
-#	define EP_ALL_SYSTEM (EP_HOME | EP_ENVVARS | EP_ABSOLUTE | EP_DOTS | \
-		EP_SLASHES | EP_SINGLESEP)
+#define EP_ALL_SYSTEM (EP_HOME | EP_ENVVARS | EP_ABSOLUTE | EP_DOTS | EP_SLASHES | EP_SINGLESEP)
 #else
-#	define EP_ALL_SYSTEM (EP_HOME | EP_ENVVARS | EP_ABSOLUTE | EP_DOTS | \
-		EP_SINGLESEP)
+#define EP_ALL_SYSTEM (EP_HOME | EP_ENVVARS | EP_ABSOLUTE | EP_DOTS | EP_SINGLESEP)
 #endif
 
 // from files.h
-int copyFile (uio_DirHandle *srcDir, const char *srcName,
-		uio_DirHandle *dstDir, const char *newName);
-bool fileExists (const char *name);
-bool fileExists2(uio_DirHandle *dir, const char *fileName);
+int copyFile(uio_DirHandle* srcDir, const char* srcName,
+			 uio_DirHandle* dstDir, const char* newName);
+bool fileExists(const char* name);
+bool fileExists2(uio_DirHandle* dir, const char* fileName);
 #ifdef HAVE_UNC_PATHS
-size_t skipUNCServerShare(const char *inPath);
-#endif  /* HAVE_UNC_PATHS */
+size_t skipUNCServerShare(const char* inPath);
+#endif /* HAVE_UNC_PATHS */
 
 #ifdef HAVE_DRIVE_LETTERS
 static inline int isDriveLetter(int c)
 {
 	return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
 }
-#endif  /* HAVE_DRIVE_LETTERS */
+#endif /* HAVE_DRIVE_LETTERS */
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* LIBS_FILE_H_ */
-
+#endif /* LIBS_FILE_H_ */

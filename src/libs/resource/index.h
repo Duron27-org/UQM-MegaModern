@@ -28,17 +28,17 @@ typedef struct resource_desc ResourceDesc;
 
 struct resource_handlers
 {
-	const char *resType;
-	ResourceLoadFun *loadFun;
-	ResourceFreeFun *freeFun;
-	ResourceStringFun *toString;
+	const char* resType;
+	ResourceLoadFun* loadFun;
+	ResourceFreeFun* freeFun;
+	ResourceStringFun* toString;
 };
 
 struct resource_desc
 {
 	RESOURCE res_id;
-	char *fname;
-	ResourceHandlers *vtable;
+	char* fname;
+	ResourceHandlers* vtable;
 	RESOURCE_DATA resdata;
 	// refcount is rudimentary as nothing really frees the descriptors
 	unsigned refcount;
@@ -46,9 +46,8 @@ struct resource_desc
 
 struct resource_index_desc
 {
-	CharHashTable_HashTable *map;
+	CharHashTable_HashTable* map;
 	size_t numRes;
 };
 
 #endif /* LIBS_RESOURCE_INDEX_H_ */
-

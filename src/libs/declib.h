@@ -41,14 +41,14 @@ enum
 };
 typedef uqm::BYTE STREAM_MODE;
 
-extern DECODE_REF copen (void *InStream, STREAM_TYPE SType,
-		STREAM_MODE SMode);
-extern uqm::DWORD cclose (DECODE_REF DecodeRef);
-extern void cfilelength (DECODE_REF DecodeRef, uqm::DWORD *pfilelen);
-extern uqm::COUNT cread (void *pStr, uqm::COUNT size, uqm::COUNT count,
-		DECODE_REF DecodeRef);
-extern uqm::COUNT cwrite (const void *pStr, uqm::COUNT size, uqm::COUNT count,
-		DECODE_REF DecodeRef);
+extern DECODE_REF copen(void* InStream, STREAM_TYPE SType,
+						STREAM_MODE SMode);
+extern uqm::DWORD cclose(DECODE_REF DecodeRef);
+extern void cfilelength(DECODE_REF DecodeRef, uqm::DWORD* pfilelen);
+extern uqm::COUNT cread(void* pStr, uqm::COUNT size, uqm::COUNT count,
+						DECODE_REF DecodeRef);
+extern uqm::COUNT cwrite(const void* pStr, uqm::COUNT size, uqm::COUNT count,
+						 DECODE_REF DecodeRef);
 
 #if 0 //defined(__cplusplus)
 }

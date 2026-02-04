@@ -22,16 +22,16 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-extern void log_init (int max_lines);
-extern void log_initThreads (void);
-extern int log_exit (int code);
+extern void log_init(int max_lines);
+extern void log_initThreads(void);
+extern int log_exit(int code);
 
-extern FILE * log_setOutput (FILE *out);
-		// sets the new output stream and returns the previous one
-extern void log_setLevel (int level);
-extern void log_showBox (bool show, bool err);
-extern void log_captureLines (int num);
-#define LOG_CAPTURE_ALL 1000000  // unreasonably big number
+extern FILE* log_setOutput(FILE* out);
+// sets the new output stream and returns the previous one
+extern void log_setLevel(int level);
+extern void log_showBox(bool show, bool err);
+extern void log_captureLines(int num);
+#define LOG_CAPTURE_ALL 1000000 // unreasonably big number
 
 typedef enum
 {
@@ -46,14 +46,14 @@ typedef enum
 
 } log_Level;
 
-extern void log_add (log_Level, const char *fmt, ...)
-		PRINTF_FUNCTION(2, 3);
-extern void log_addV (log_Level, const char *fmt, va_list)
-		VPRINTF_FUNCTION(2);
-extern void log_add_nothread (log_Level, const char *fmt, ...)
-		PRINTF_FUNCTION(2, 3);
-extern void log_add_nothreadV (log_Level, const char *fmt, va_list)
-		VPRINTF_FUNCTION(2);
+extern void log_add(log_Level, const char* fmt, ...)
+	PRINTF_FUNCTION(2, 3);
+extern void log_addV(log_Level, const char* fmt, va_list)
+	VPRINTF_FUNCTION(2);
+extern void log_add_nothread(log_Level, const char* fmt, ...)
+	PRINTF_FUNCTION(2, 3);
+extern void log_add_nothreadV(log_Level, const char* fmt, va_list)
+	VPRINTF_FUNCTION(2);
 
 
 #endif /* UQMLOG_H_INCL__ */

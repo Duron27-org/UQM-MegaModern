@@ -24,11 +24,11 @@
 static DECODE_REF journal_fh;
 static char journal_buf[1024
 #if CREATE_JOURNAL
-								* 8
+						* 8
 #else /* DEMO_MODE */
-								* 2
+						* 2
 #endif
-								];
+];
 INPUT_REF DemoInput;
 #endif
 
@@ -37,20 +37,18 @@ INPUT_REF DemoInput;
 static INPUT_REF OldArrowInput;
 
 INPUT_STATE
-demo_input (INPUT_REF InputRef, INPUT_STATE InputState)
+demo_input(INPUT_REF InputRef, INPUT_STATE InputState)
 {
-	if (InputState || AnyButtonPress () || cread (
-			&InputState, sizeof (InputState), 1, journal_fh
-			) == 0)
+	if (InputState || AnyButtonPress() || cread(&InputState, sizeof(InputState), 1, journal_fh) == 0)
 	{
-		cclose (journal_fh);
+		cclose(journal_fh);
 		journal_fh = 0;
 
-		StopMusic ();
-		StopSound ();
+		StopMusic();
+		StopSound();
 
-		FreeKernel ();
-		exit (1);
+		FreeKernel();
+		exit(1);
 	}
 
 	return (InputState);
@@ -60,64 +58,61 @@ demo_input (INPUT_REF InputRef, INPUT_STATE InputState)
 
 #if CREATE_JOURNAL
 
-void
-JournalInput (INPUT_STATE InputState)
+void JournalInput(INPUT_STATE InputState)
 {
 	if (ArrowInput != DemoInput && journal_fh)
-		cwrite (&InputState, sizeof (InputState), 1, journal_fh);
+		cwrite(&InputState, sizeof(InputState), 1, journal_fh);
 }
 
 #endif /* CREATE_JOURNAL */
 
 #if DEMO_MODE || CREATE_JOURNAL
 
-void
-OpenJournal (void)
+void OpenJournal(void)
 {
 	uqm::DWORD start_seed;
 
 #if CREATE_JOURNAL
 	if (create_journal)
 	{
-		if (journal_fh = copen (journal_buf, MEMORY_STREAM, STREAM_WRITE))
+		if (journal_fh = copen(journal_buf, MEMORY_STREAM, STREAM_WRITE))
 		{
-			start_seed = SeedRandomNumbers ();
-			cwrite (&start_seed, sizeof (start_seed), 1, journal_fh);
+			start_seed = SeedRandomNumbers();
+			cwrite(&start_seed, sizeof(start_seed), 1, journal_fh);
 		}
 	}
 	else
 #endif /* CREATE_JOURNAL */
 	{
-		uio_Stream *fp;
+		uio_Stream* fp;
 
-		if (fp = res_OpenResFile ("starcon.jnl", "rb"))
+		if (fp = res_OpenResFile("starcon.jnl", "rb"))
 		{
-			ReadResFile (journal_buf, 1, sizeof (journal_buf), fp);
-			res_CloseResFile (fp);
+			ReadResFile(journal_buf, 1, sizeof(journal_buf), fp);
+			res_CloseResFile(fp);
 
-			if (journal_fh = copen (journal_buf, MEMORY_STREAM, STREAM_READ))
+			if (journal_fh = copen(journal_buf, MEMORY_STREAM, STREAM_READ))
 			{
 				OldArrowInput = ArrowInput;
 				ArrowInput = DemoInput;
 				PlayerInput[0] = PlayerInput[1] = DemoInput;
 
-				FlushInput ();
+				FlushInput();
 
-				cread (&start_seed, sizeof (start_seed), 1, journal_fh);
-				TFB_SeedRandom (start_seed);
+				cread(&start_seed, sizeof(start_seed), 1, journal_fh);
+				TFB_SeedRandom(start_seed);
 			}
 		}
 	}
 }
 
-bool
-CloseJournal (void)
+bool CloseJournal(void)
 {
 	if (journal_fh)
 	{
-		uio_Stream *fp;
+		uio_Stream* fp;
 
-		cclose (journal_fh);
+		cclose(journal_fh);
 		journal_fh = 0;
 
 		if (ArrowInput == DemoInput)
@@ -126,10 +121,10 @@ CloseJournal (void)
 			return (false);
 		}
 #if CREATE_JOURNAL
-		else if (fp = res_OpenResFile ("starcon.jnl", "wb"))
+		else if (fp = res_OpenResFile("starcon.jnl", "wb"))
 		{
-			WriteResFile (journal_buf, 1, sizeof (journal_buf), fp);
-			res_CloseResFile (fp);
+			WriteResFile(journal_buf, 1, sizeof(journal_buf), fp);
+			res_CloseResFile(fp);
 		}
 #endif /* CREATE_JOURNAL */
 	}
@@ -138,4 +133,3 @@ CloseJournal (void)
 }
 
 #endif
-

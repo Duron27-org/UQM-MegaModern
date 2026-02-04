@@ -30,7 +30,7 @@ extern "C" {
 typedef struct menu_state
 {
 	// Standard field required by DoInput()
-	bool (*InputFunc) (struct menu_state *pMS);
+	bool (*InputFunc)(struct menu_state* pMS);
 
 	uqm::SIZE Initialized;
 
@@ -43,13 +43,13 @@ typedef struct menu_state
 	FRAME ModuleFrame;
 	RECT flash_rect0, flash_rect1, flash_rect2;
 	FRAME flash_frame0, flash_frame1;
-	FlashContext *flashContext;
+	FlashContext* flashContext;
 
 	MUSIC_REF hMusic;
 
 	// For private use by various menus
 	// Usually, a menu associates its internal data struct using this
-	void *privData;
+	void* privData;
 
 } MENU_STATE;
 
@@ -63,7 +63,7 @@ enum
 	PM_ROSTER,
 	PM_GAME_MENU,
 	PM_NAVIGATE,
-	
+
 	PM_MIN_SCAN,
 	PM_ENE_SCAN,
 	PM_BIO_SCAN,
@@ -80,16 +80,16 @@ enum
 	PM_CONVERSE,
 	PM_ATTACK,
 	PM_ENCOUNTER_GAME_MENU,
-	
+
 	PM_FUEL,
 	PM_MODULE,
 	PM_OUTFIT_GAME_MENU,
 	PM_EXIT_OUTFIT,
-	
+
 	PM_CREW,
 	PM_SHIPYARD_GAME_MENU,
 	PM_EXIT_SHIPYARD,
-	
+
 	PM_SOUND_ON,
 	PM_SOUND_OFF,
 	PM_MUSIC_ON,
@@ -147,10 +147,10 @@ enum
 	GAMESTR_CHANGE_SIS,
 };
 
-extern bool DoMenuChooser (MENU_STATE *pMS, uqm::BYTE BaseState);
-extern void DrawMenuStateStrings (uqm::BYTE beg_index, uqm::SWORD NewState);
-extern void DrawMineralHelpers (void);
-extern void DrawBorder (uqm::BYTE Visible);
+extern bool DoMenuChooser(MENU_STATE* pMS, uqm::BYTE BaseState);
+extern void DrawMenuStateStrings(uqm::BYTE beg_index, uqm::SWORD NewState);
+extern void DrawMineralHelpers(void);
+extern void DrawBorder(uqm::BYTE Visible);
 
 #if 0 //defined(__cplusplus)
 }

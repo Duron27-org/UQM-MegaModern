@@ -31,24 +31,26 @@ extern "C" {
 #endif
 
 typedef struct PacketQueueLink PacketQueueLink;
-struct PacketQueueLink {
-	PacketQueueLink *next;
-	Packet *packet;
+struct PacketQueueLink
+{
+	PacketQueueLink* next;
+	Packet* packet;
 };
 
-struct PacketQueue {
+struct PacketQueue
+{
 	size_t size;
-	PacketQueueLink *first;
-	PacketQueueLink **end;
+	PacketQueueLink* first;
+	PacketQueueLink** end;
 
 	// first points to the first entry in the queue
 	// end points to the location where the next message should be inserted.
 };
 
-void PacketQueue_init(PacketQueue *queue);
-void PacketQueue_uninit(PacketQueue *queue);
-void queuePacket(NetConnection *conn, Packet *packet);
-int flushPacketQueue(NetConnection *conn);
+void PacketQueue_init(PacketQueue* queue);
+void PacketQueue_uninit(PacketQueue* queue);
+void queuePacket(NetConnection* conn, Packet* packet);
+int flushPacketQueue(NetConnection* conn);
 
 
 #if 0 //defined(__cplusplus)
@@ -56,4 +58,3 @@ int flushPacketQueue(NetConnection *conn);
 #endif
 
 #endif
-

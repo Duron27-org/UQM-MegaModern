@@ -27,41 +27,41 @@
 extern "C" {
 #endif
 
-extern void InitPlanetInfo (void);
-extern void UninitPlanetInfo (void);
-extern void GetPlanetInfo (void);
-extern void PutPlanetInfo (void);
+extern void InitPlanetInfo(void);
+extern void UninitPlanetInfo(void);
+extern void GetPlanetInfo(void);
+extern void PutPlanetInfo(void);
 
-extern void InitGroupInfo (bool FirstTime);
-extern void UninitGroupInfo (void);
-extern bool GetGroupInfo (uqm::DWORD offset, uqm::BYTE which_group);
-extern uqm::DWORD PutGroupInfo (uqm::DWORD offset, uqm::BYTE which_group);
-#define GROUPS_RANDOM  ((uqm::DWORD)(0L))
+extern void InitGroupInfo(bool FirstTime);
+extern void UninitGroupInfo(void);
+extern bool GetGroupInfo(uqm::DWORD offset, uqm::BYTE which_group);
+extern uqm::DWORD PutGroupInfo(uqm::DWORD offset, uqm::BYTE which_group);
+#define GROUPS_RANDOM ((uqm::DWORD)(0L))
 #define GROUPS_ADD_NEW ((uqm::DWORD)(~0L))
-#define GROUP_LIST     ((uqm::BYTE)0)
-#define GROUP_INIT_IP  ((uqm::BYTE)~0)
-		// Initialize IP group list (ip_group_q) from the actual groups
-		// (not GROUP_LIST) in one of the state files
-#define GROUP_LOAD_IP  GROUP_LIST
-		// Read IP group list into ip_group_q from the list entry
-		// (GROUP_LIST) in one of the state files
-#define GROUP_SAVE_IP  ((uqm::BYTE)~0)
-		// Write IP group list from ip_group_q to the list entry
-		// (GROUP_LIST) in one of the state files
-extern void BuildGroups (void);
+#define GROUP_LIST ((uqm::BYTE)0)
+#define GROUP_INIT_IP ((uqm::BYTE)~0)
+// Initialize IP group list (ip_group_q) from the actual groups
+// (not GROUP_LIST) in one of the state files
+#define GROUP_LOAD_IP GROUP_LIST
+// Read IP group list into ip_group_q from the list entry
+// (GROUP_LIST) in one of the state files
+#define GROUP_SAVE_IP ((uqm::BYTE)~0)
+// Write IP group list from ip_group_q to the list entry
+// (GROUP_LIST) in one of the state files
+extern void BuildGroups(void);
 extern void findRaceSOI(void);
 
 typedef struct GAME_STATE_FILE GAME_STATE_FILE;
 
 #define STARINFO_FILE 0
-	//"starinfo.dat"
-#define STAR_BUFSIZE (NUM_SOLAR_SYSTEMS * sizeof (uqm::DWORD) \
-		+ 3800 * (3 * sizeof (uqm::DWORD)))
+//"starinfo.dat"
+#define STAR_BUFSIZE (NUM_SOLAR_SYSTEMS * sizeof(uqm::DWORD) \
+					  + 3800 * (3 * sizeof(uqm::DWORD)))
 #define RANDGRPINFO_FILE 1
-	//"randgrp.dat"
+//"randgrp.dat"
 #define RAND_BUFSIZE (4 * 1024)
 #define DEFGRPINFO_FILE 2
-	//"defgrp.dat"
+//"defgrp.dat"
 #define DEF_BUFSIZE (10 * 1024)
 
 typedef enum
@@ -71,38 +71,38 @@ typedef enum
 	DEFGRPINFO
 } INFO_TYPE;
 
-GAME_STATE_FILE* OpenStateFile (int stateFile, const char *mode);
-void CloseStateFile (GAME_STATE_FILE *fp);
-void DeleteStateFile (int stateFile);
-uqm::DWORD LengthStateFile (GAME_STATE_FILE *fp);
-int ReadStateFile (void *lpBuf, uqm::COUNT size, uqm::COUNT count, GAME_STATE_FILE *fp);
-int WriteStateFile (const void *lpBuf, uqm::COUNT size, uqm::COUNT count, GAME_STATE_FILE *fp);
-int SeekStateFile (GAME_STATE_FILE *fp, long offset, int whence);
+GAME_STATE_FILE* OpenStateFile(int stateFile, const char* mode);
+void CloseStateFile(GAME_STATE_FILE* fp);
+void DeleteStateFile(int stateFile);
+uqm::DWORD LengthStateFile(GAME_STATE_FILE* fp);
+int ReadStateFile(void* lpBuf, uqm::COUNT size, uqm::COUNT count, GAME_STATE_FILE* fp);
+int WriteStateFile(const void* lpBuf, uqm::COUNT size, uqm::COUNT count, GAME_STATE_FILE* fp);
+int SeekStateFile(GAME_STATE_FILE* fp, long offset, int whence);
 
 static inline uqm::COUNT
-sread_8 (GAME_STATE_FILE *fp, uqm::BYTE *v)
+sread_8(GAME_STATE_FILE* fp, uqm::BYTE* v)
 {
 	uqm::BYTE t;
 	if (!v) /* read value ignored */
 		v = &t;
-	return ReadStateFile (v, 1, 1, fp);
+	return ReadStateFile(v, 1, 1, fp);
 }
 
 static inline uqm::COUNT
-sread_16 (GAME_STATE_FILE *fp, uqm::UWORD *v)
+sread_16(GAME_STATE_FILE* fp, uqm::UWORD* v)
 {
 	uqm::UWORD t;
 	if (!v) /* read value ignored */
 		v = &t;
-	return ReadStateFile (v, 2, 1, fp);
+	return ReadStateFile(v, 2, 1, fp);
 }
 
 static inline uqm::COUNT
-sread_16s (GAME_STATE_FILE *fp, uqm::SWORD *v)
+sread_16s(GAME_STATE_FILE* fp, uqm::SWORD* v)
 {
 	uqm::UWORD t;
 	uqm::COUNT ret;
-	ret = sread_16 (fp, &t);
+	ret = sread_16(fp, &t);
 	// unsigned to signed conversion
 	if (v)
 		*v = t;
@@ -110,51 +110,51 @@ sread_16s (GAME_STATE_FILE *fp, uqm::SWORD *v)
 }
 
 static inline uqm::COUNT
-sread_32 (GAME_STATE_FILE *fp, uqm::DWORD *v)
+sread_32(GAME_STATE_FILE* fp, uqm::DWORD* v)
 {
 	uqm::DWORD t;
 	if (!v) /* read value ignored */
 		v = &t;
-	return ReadStateFile (v, 4, 1, fp);
+	return ReadStateFile(v, 4, 1, fp);
 }
 
 static inline uqm::COUNT
-sread_a32 (GAME_STATE_FILE *fp, uqm::DWORD *ar, uqm::COUNT count)
+sread_a32(GAME_STATE_FILE* fp, uqm::DWORD* ar, uqm::COUNT count)
 {
-	assert (ar != NULL);
+	assert(ar != NULL);
 
-	for ( ; count > 0; --count, ++ar)
+	for (; count > 0; --count, ++ar)
 	{
-		if (sread_32 (fp, ar) != 1)
+		if (sread_32(fp, ar) != 1)
 			return 0;
 	}
 	return 1;
 }
 
 static inline uqm::COUNT
-swrite_8 (GAME_STATE_FILE *fp, uqm::BYTE v)
+swrite_8(GAME_STATE_FILE* fp, uqm::BYTE v)
 {
-	return WriteStateFile (&v, 1, 1, fp);
+	return WriteStateFile(&v, 1, 1, fp);
 }
 
 static inline uqm::COUNT
-swrite_16 (GAME_STATE_FILE *fp, uqm::UWORD v)
+swrite_16(GAME_STATE_FILE* fp, uqm::UWORD v)
 {
-	return WriteStateFile (&v, 2, 1, fp);
+	return WriteStateFile(&v, 2, 1, fp);
 }
 
 static inline uqm::COUNT
-swrite_32 (GAME_STATE_FILE *fp, uqm::DWORD v)
+swrite_32(GAME_STATE_FILE* fp, uqm::DWORD v)
 {
-	return WriteStateFile (&v, 4, 1, fp);
+	return WriteStateFile(&v, 4, 1, fp);
 }
 
 static inline uqm::COUNT
-swrite_a32 (GAME_STATE_FILE *fp, const uqm::DWORD *ar, uqm::COUNT count)
+swrite_a32(GAME_STATE_FILE* fp, const uqm::DWORD* ar, uqm::COUNT count)
 {
-	for ( ; count > 0; --count, ++ar)
+	for (; count > 0; --count, ++ar)
 	{
-		if (swrite_32 (fp, *ar) != 1)
+		if (swrite_32(fp, *ar) != 1)
 			return 0;
 	}
 	return 1;
@@ -165,4 +165,3 @@ swrite_a32 (GAME_STATE_FILE *fp, const uqm::DWORD *ar, uqm::COUNT count)
 #endif
 
 #endif /* UQM_STATE_H_ */
-

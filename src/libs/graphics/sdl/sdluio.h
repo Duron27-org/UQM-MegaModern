@@ -22,18 +22,17 @@
 #include <SDL.h>
 #include <SDL_rwops.h>
 
-SDL_Surface *sdluio_loadImage (uio_DirHandle *dir, const char *fileName);
+SDL_Surface* sdluio_loadImage(uio_DirHandle* dir, const char* fileName);
 #if SDL_MAJOR_VERSION == 1
-int sdluio_seek (SDL_RWops *context, int offset, int whence);
-int sdluio_read (SDL_RWops *context, void *ptr, int size, int maxnum);
-int sdluio_write (SDL_RWops *context, const void *ptr, int size, int num);
+int sdluio_seek(SDL_RWops* context, int offset, int whence);
+int sdluio_read(SDL_RWops* context, void* ptr, int size, int maxnum);
+int sdluio_write(SDL_RWops* context, const void* ptr, int size, int num);
 #else
-Sint64 sdlui_seek (SDL_RWops *context, Sint64 offset, int whence);
-size_t sdlui_read (SDL_RWops *context, void *ptr, size_t size, size_t maxnum);
-size_t sdlui_write (SDL_RWops *contex, const void *ptr, size_t size, size_t num);
+Sint64 sdlui_seek(SDL_RWops* context, Sint64 offset, int whence);
+size_t sdlui_read(SDL_RWops* context, void* ptr, size_t size, size_t maxnum);
+size_t sdlui_write(SDL_RWops* contex, const void* ptr, size_t size, size_t num);
 #endif
-int sdluio_close (SDL_RWops *context);
+int sdluio_close(SDL_RWops* context);
 
 
-#endif  /* LIBS_GRAPHICS_SDL_SDLUIO_H_ */
-
+#endif /* LIBS_GRAPHICS_SDL_SDLUIO_H_ */

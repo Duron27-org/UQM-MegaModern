@@ -24,14 +24,14 @@
 
 #include "types.h"
 
-extern void *dlopen (const char *filename, int flag);
-extern void *dlsym (void *handle, const char *symbol);
-extern int dlclose (void *handle);
-extern char *dlerror (void);
+extern void* dlopen(const char* filename, int flag);
+extern void* dlsym(void* handle, const char* symbol);
+extern int dlclose(void* handle);
+extern char* dlerror(void);
 
 /* these dlopen() flags are meaningless on win32 */
-#define RTLD_LAZY	1	/* lazy function call binding */
-#define RTLD_NOW	2	/* immediate function call binding */
-#define RTLD_GLOBAL	4	/* symbols in this dlopen'ed obj are visible to other dlopen'ed objs */
+#define RTLD_LAZY 1	  /* lazy function call binding */
+#define RTLD_NOW 2	  /* immediate function call binding */
+#define RTLD_GLOBAL 4 /* symbols in this dlopen'ed obj are visible to other dlopen'ed objs */
 
-#endif  /* LIBS_CDP_WINDL_H_ */
+#endif /* LIBS_CDP_WINDL_H_ */

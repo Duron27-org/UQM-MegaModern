@@ -35,11 +35,11 @@
  */
 
 #ifdef WORDS_BIGENDIAN
-#	define MIX_IS_BIG_ENDIAN   true
-#	define MIX_WANT_BIG_ENDIAN true
+#define MIX_IS_BIG_ENDIAN true
+#define MIX_WANT_BIG_ENDIAN true
 #else
-#	define MIX_IS_BIG_ENDIAN   false
-#	define MIX_WANT_BIG_ENDIAN false
+#define MIX_IS_BIG_ENDIAN false
+#define MIX_WANT_BIG_ENDIAN false
 #endif
 
 /**
@@ -116,23 +116,23 @@ typedef enum
  * bits 08..15: channels
  * bits 15..31: meaningless
  */
-#define MIX_FORMAT_DUMMYID     0x00170000
-#define MIX_FORMAT_BPC(f)      ((f) & 0xff)
-#define MIX_FORMAT_CHANS(f)    (((f) >> 8) & 0xff)
-#define MIX_FORMAT_BPC_MAX     2
-#define MIX_FORMAT_CHANS_MAX   2
+#define MIX_FORMAT_DUMMYID 0x00170000
+#define MIX_FORMAT_BPC(f) ((f) & 0xff)
+#define MIX_FORMAT_CHANS(f) (((f) >> 8) & 0xff)
+#define MIX_FORMAT_BPC_MAX 2
+#define MIX_FORMAT_CHANS_MAX 2
 #define MIX_FORMAT_MAKE(b, c) \
-		( MIX_FORMAT_DUMMYID | ((b) & 0xff) | (((c) & 0xff) << 8) )
+	(MIX_FORMAT_DUMMYID | ((b) & 0xff) | (((c) & 0xff) << 8))
 
 #define MIX_FORMAT_SAMPSIZE(f) \
-		( MIX_FORMAT_BPC(f) * MIX_FORMAT_CHANS(f) )
+	(MIX_FORMAT_BPC(f) * MIX_FORMAT_CHANS(f))
 
 typedef enum
 {
-	MIX_FORMAT_MONO8 = MIX_FORMAT_MAKE (1, 1),
-	MIX_FORMAT_STEREO8 = MIX_FORMAT_MAKE (1, 2),
-	MIX_FORMAT_MONO16 = MIX_FORMAT_MAKE (2, 1),
-	MIX_FORMAT_STEREO16 = MIX_FORMAT_MAKE (2, 2)
+	MIX_FORMAT_MONO8 = MIX_FORMAT_MAKE(1, 1),
+	MIX_FORMAT_STEREO8 = MIX_FORMAT_MAKE(1, 2),
+	MIX_FORMAT_MONO16 = MIX_FORMAT_MAKE(2, 1),
+	MIX_FORMAT_STEREO16 = MIX_FORMAT_MAKE(2, 2)
 
 } mixer_Format;
 
@@ -166,12 +166,12 @@ typedef struct _mixer_Buffer
 	uint32 magic;
 	bool locked;
 	mixer_BufferState state;
-	uint8 *data;
+	uint8* data;
 	uint32 size;
 	uint32 sampsize;
 	uint32 high;
 	uint32 low;
-	float (* Resample) (mixer_Source *src, bool left);
+	float (*Resample)(mixer_Source* src, bool left);
 	/* original buffer values for OpenAL compat */
 	void* orgdata;
 	uint32 orgfreq;
@@ -179,7 +179,7 @@ typedef struct _mixer_Buffer
 	uint32 orgchannels;
 	uint32 orgchansize;
 	/* next buffer in chain */
-	struct _mixer_Buffer *next;
+	struct _mixer_Buffer* next;
 
 } mixer_Buffer;
 
@@ -196,15 +196,14 @@ struct _mixer_Source
 	float rightGain;
 	uint32 cqueued;
 	uint32 cprocessed;
-	mixer_Buffer *firstqueued; /* first buf in the queue */
-	mixer_Buffer *nextqueued;  /* next to play, or 0 */
-	mixer_Buffer *prevqueued;  /* previously played */
-	mixer_Buffer *lastqueued;  /* last in queue */
-	uint32 pos; /* position in current buffer */
-	uint32 count; /* fractional part of pos */
+	mixer_Buffer* firstqueued; /* first buf in the queue */
+	mixer_Buffer* nextqueued;  /* next to play, or 0 */
+	mixer_Buffer* prevqueued;  /* previously played */
+	mixer_Buffer* lastqueued;  /* last in queue */
+	uint32 pos;				   /* position in current buffer */
+	uint32 count;			   /* fractional part of pos */
 
 	float samplecache;
-
 };
 
 #define mixer_srcMagic 0x5358494DU /* MIXS in LSB */
@@ -212,49 +211,49 @@ struct _mixer_Source
 /*************************************************
  *  General interface
  */
-uint32 mixer_GetError (void);
+uint32 mixer_GetError(void);
 
-bool mixer_Init (uint32 frequency, uint32 format, mixer_Quality quality,
-		mixer_Flags flags);
-void mixer_Uninit (void);
-void mixer_MixChannels (void *userdata, uint8 *stream, sint32 len);
-void mixer_MixFake (void *userdata, uint8 *stream, sint32 len);
+bool mixer_Init(uint32 frequency, uint32 format, mixer_Quality quality,
+				mixer_Flags flags);
+void mixer_Uninit(void);
+void mixer_MixChannels(void* userdata, uint8* stream, sint32 len);
+void mixer_MixFake(void* userdata, uint8* stream, sint32 len);
 
 /*************************************************
  *  Sources
  */
-void mixer_GenSources (uint32 n, mixer_Object *psrcobj);
-void mixer_DeleteSources (uint32 n, mixer_Object *psrcobj);
-bool mixer_IsSource (mixer_Object srcobj);
-void mixer_Sourcei (mixer_Object srcobj, mixer_SourceProp pname,
-		mixer_IntVal value);
-void mixer_Sourcef (mixer_Object srcobj, mixer_SourceProp pname,
-		float value);
-void mixer_Sourcefv (mixer_Object srcobj, mixer_SourceProp pname,
-		float *value);
-void mixer_GetSourcei (mixer_Object srcobj, mixer_SourceProp pname,
-		mixer_IntVal *value);
-void mixer_GetSourcef (mixer_Object srcobj, mixer_SourceProp pname,
-		float *value);
-void mixer_SourceRewind (mixer_Object srcobj);
-void mixer_SourcePlay (mixer_Object srcobj);
-void mixer_SourcePause (mixer_Object srcobj);
-void mixer_SourceStop (mixer_Object srcobj);
-void mixer_SourceQueueBuffers (mixer_Object srcobj, uint32 n,
-		mixer_Object* pbufobj);
-void mixer_SourceUnqueueBuffers (mixer_Object srcobj, uint32 n,
-		mixer_Object* pbufobj);
+void mixer_GenSources(uint32 n, mixer_Object* psrcobj);
+void mixer_DeleteSources(uint32 n, mixer_Object* psrcobj);
+bool mixer_IsSource(mixer_Object srcobj);
+void mixer_Sourcei(mixer_Object srcobj, mixer_SourceProp pname,
+				   mixer_IntVal value);
+void mixer_Sourcef(mixer_Object srcobj, mixer_SourceProp pname,
+				   float value);
+void mixer_Sourcefv(mixer_Object srcobj, mixer_SourceProp pname,
+					float* value);
+void mixer_GetSourcei(mixer_Object srcobj, mixer_SourceProp pname,
+					  mixer_IntVal* value);
+void mixer_GetSourcef(mixer_Object srcobj, mixer_SourceProp pname,
+					  float* value);
+void mixer_SourceRewind(mixer_Object srcobj);
+void mixer_SourcePlay(mixer_Object srcobj);
+void mixer_SourcePause(mixer_Object srcobj);
+void mixer_SourceStop(mixer_Object srcobj);
+void mixer_SourceQueueBuffers(mixer_Object srcobj, uint32 n,
+							  mixer_Object* pbufobj);
+void mixer_SourceUnqueueBuffers(mixer_Object srcobj, uint32 n,
+								mixer_Object* pbufobj);
 
 /*************************************************
  *  Buffers
  */
-void mixer_GenBuffers (uint32 n, mixer_Object *pbufobj);
-void mixer_DeleteBuffers (uint32 n, mixer_Object *pbufobj);
-bool mixer_IsBuffer (mixer_Object bufobj);
-void mixer_GetBufferi (mixer_Object bufobj, mixer_BufferProp pname,
-		mixer_IntVal *value);
-void mixer_BufferData (mixer_Object bufobj, uint32 format, void* data,
-		uint32 size, uint32 freq);
+void mixer_GenBuffers(uint32 n, mixer_Object* pbufobj);
+void mixer_DeleteBuffers(uint32 n, mixer_Object* pbufobj);
+bool mixer_IsBuffer(mixer_Object bufobj);
+void mixer_GetBufferi(mixer_Object bufobj, mixer_BufferProp pname,
+					  mixer_IntVal* value);
+void mixer_BufferData(mixer_Object bufobj, uint32 format, void* data,
+					  uint32 size, uint32 freq);
 
 
 /* Make sure the prop-value type is of suitable size
@@ -264,12 +263,12 @@ void mixer_BufferData (mixer_Object bufobj, uint32 format, void* data,
  * error during compile, if the actual size of a type is wrong
  */
 #define MIX_COMPILE_TIME_ASSERT(name, x) \
-	typedef int mixer_dummy_##name [(x) * 2 - 1]
+	typedef int mixer_dummy_##name[(x) * 2 - 1]
 
-MIX_COMPILE_TIME_ASSERT (mixer_Object,
-		sizeof(mixer_Object) >= sizeof(void*));
-MIX_COMPILE_TIME_ASSERT (mixer_IntVal,
-		sizeof(mixer_IntVal) >= sizeof(mixer_Object));
+MIX_COMPILE_TIME_ASSERT(mixer_Object,
+						sizeof(mixer_Object) >= sizeof(void*));
+MIX_COMPILE_TIME_ASSERT(mixer_IntVal,
+						sizeof(mixer_IntVal) >= sizeof(mixer_Object));
 
 #undef MIX_COMPILE_TIME_ASSERT
 

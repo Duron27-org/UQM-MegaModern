@@ -19,12 +19,12 @@
 #include "options.h"
 #include "libs/compiler.h"
 
-#if defined (NETPLAY)
+#if defined(NETPLAY)
 typedef uqm::DWORD BattleFrameCounter;
 #endif
 
 #include "init.h"
-		// For NUM_SIDES
+// For NUM_SIDES
 
 #if 0 //defined(__cplusplus)
 extern "C" {
@@ -32,36 +32,37 @@ extern "C" {
 
 // The callback function is called on every battle frame
 // just before the display queue is drawn
-typedef void (BattleFrameCallback) (void);
+typedef void(BattleFrameCallback)(void);
 
-typedef struct battlestate_struct {
-	bool (*InputFunc) (struct battlestate_struct *pInputState);
+typedef struct battlestate_struct
+{
+	bool (*InputFunc)(struct battlestate_struct* pInputState);
 	bool first_time;
 	uqm::DWORD NextTime;
-	BattleFrameCallback *frame_cb;
+	BattleFrameCallback* frame_cb;
 } BATTLE_STATE;
 
 extern uqm::BYTE battle_counter[NUM_SIDES];
 extern bool instantVictory;
-#if defined (NETPLAY)
+#if defined(NETPLAY)
 extern BattleFrameCounter battleFrameCount;
 #endif
 #ifdef NETPLAY
-uqm::COUNT GetPlayerOrder (uqm::COUNT i);
+uqm::COUNT GetPlayerOrder(uqm::COUNT i);
 #else
-#	define GetPlayerOrder(i) (i)
+#define GetPlayerOrder(i) (i)
 #endif
 
-bool Battle (BattleFrameCallback *);
+bool Battle(BattleFrameCallback*);
 
 #define BATTLE_FRAME_RATE (ONE_SECOND / 24)
 
-extern void BattleSong (bool DoPlay);
-extern void FreeBattleSong (void);
-extern bool RunAwayAllowed (void);
+extern void BattleSong(bool DoPlay);
+extern void FreeBattleSong(void);
+extern bool RunAwayAllowed(void);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* UQM_BATTLE_H_ */
+#endif /* UQM_BATTLE_H_ */

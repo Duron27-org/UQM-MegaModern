@@ -42,185 +42,206 @@
 #endif
 
 #ifdef SUNOS
-extern int fprintf(FILE *, const char *, ...);
+extern int fprintf(FILE*, const char*, ...);
 #endif
 
 /* UQM mod: include the UQM file that manages stricmp vs strcasecmp. */
 #include "port.h"
 
-extern	MODULE *pf; /* modfile being played */
+extern MODULE* pf; /* modfile being played */
 
 /* EXPORTED GLOBALS */
-MIKMODAPI MDRIVER *md_driver	= NULL;
+MIKMODAPI MDRIVER* md_driver = NULL;
 
 /* Initial global settings */
-MIKMODAPI UWORD md_device	= 0;	/* autodetect */
-MIKMODAPI UWORD md_mixfreq	= 44100;
-MIKMODAPI UWORD md_mode		= DMODE_STEREO | DMODE_16BITS |
-				  DMODE_SURROUND |
-				  DMODE_SOFT_MUSIC | DMODE_SOFT_SNDFX;
-MIKMODAPI UBYTE md_pansep	= 128;	/* 128 == 100% (full left/right) */
-MIKMODAPI UBYTE md_reverb	= 0;	/* no reverb */
-MIKMODAPI UBYTE md_volume	= 128;	/* global sound volume (0-128) */
-MIKMODAPI UBYTE md_musicvolume	= 128;	/* volume of song */
-MIKMODAPI UBYTE md_sndfxvolume	= 128;	/* volume of sound effects */
+MIKMODAPI UWORD md_device = 0; /* autodetect */
+MIKMODAPI UWORD md_mixfreq = 44100;
+MIKMODAPI UWORD md_mode = DMODE_STEREO | DMODE_16BITS | DMODE_SURROUND | DMODE_SOFT_MUSIC | DMODE_SOFT_SNDFX;
+MIKMODAPI UBYTE md_pansep = 128;	  /* 128 == 100% (full left/right) */
+MIKMODAPI UBYTE md_reverb = 0;		  /* no reverb */
+MIKMODAPI UBYTE md_volume = 128;	  /* global sound volume (0-128) */
+MIKMODAPI UBYTE md_musicvolume = 128; /* volume of song */
+MIKMODAPI UBYTE md_sndfxvolume = 128; /* volume of sound effects */
 
 /* INTERNAL GLOBALS */
-UWORD md_bpm = 125;	/* tempo */
+UWORD md_bpm = 125; /* tempo */
 
 /* Do not modify the numchn variables yourself!  use MikMod_SetNumVoices() */
-UBYTE md_numchn  = 0, md_sngchn = 0, md_sfxchn = 0;
-UBYTE md_hardchn = 0, md_softchn= 0;
+UBYTE md_numchn = 0, md_sngchn = 0, md_sfxchn = 0;
+UBYTE md_hardchn = 0, md_softchn = 0;
 
 void (*md_player)(void) = Player_HandleTick;
 
 MikMod_callback_t vc_callback = NULL;
 
 /* PRIVATE VARS */
-static MDRIVER *firstdriver = NULL;
+static MDRIVER* firstdriver = NULL;
 
 static volatile BOOL isplaying = 0, initialized = 0;
 
-static UBYTE *sfxinfo;
+static UBYTE* sfxinfo;
 static int sfxpool;
 
-static SAMPLE **md_sample = NULL;
+static SAMPLE** md_sample = NULL;
 
 /* Previous driver in use */
 static SWORD olddevice = -1;
 
 /* Limits the number of hardware voices to the specified amount.
    This function should only be used by the low-level drivers. */
-static	void LimitHardVoices(int limit)
+static void LimitHardVoices(int limit)
 {
-	int t=0;
+	int t = 0;
 
-	if (!(md_mode & DMODE_SOFT_SNDFX) && (md_sfxchn>limit)) md_sfxchn=limit;
-	if (!(md_mode & DMODE_SOFT_MUSIC) && (md_sngchn>limit)) md_sngchn=limit;
+	if (!(md_mode & DMODE_SOFT_SNDFX) && (md_sfxchn > limit))
+		md_sfxchn = limit;
+	if (!(md_mode & DMODE_SOFT_MUSIC) && (md_sngchn > limit))
+		md_sngchn = limit;
 
 	if (!(md_mode & DMODE_SOFT_SNDFX))
-		md_hardchn=md_sfxchn;
+		md_hardchn = md_sfxchn;
 	else
-		md_hardchn=0;
+		md_hardchn = 0;
 
-	if (!(md_mode & DMODE_SOFT_MUSIC)) md_hardchn += md_sngchn;
+	if (!(md_mode & DMODE_SOFT_MUSIC))
+		md_hardchn += md_sngchn;
 
-	while (md_hardchn>limit) {
-		if (++t & 1) {
-			if (!(md_mode & DMODE_SOFT_SNDFX) && (md_sfxchn>4)) md_sfxchn--;
-		} else {
-			if (!(md_mode & DMODE_SOFT_MUSIC) && (md_sngchn>8)) md_sngchn--;
+	while (md_hardchn > limit)
+	{
+		if (++t & 1)
+		{
+			if (!(md_mode & DMODE_SOFT_SNDFX) && (md_sfxchn > 4))
+				md_sfxchn--;
+		}
+		else
+		{
+			if (!(md_mode & DMODE_SOFT_MUSIC) && (md_sngchn > 8))
+				md_sngchn--;
 		}
 
 		if (!(md_mode & DMODE_SOFT_SNDFX))
-			md_hardchn=md_sfxchn;
+			md_hardchn = md_sfxchn;
 		else
-			md_hardchn=0;
+			md_hardchn = 0;
 
 		if (!(md_mode & DMODE_SOFT_MUSIC))
-			md_hardchn+=md_sngchn;
+			md_hardchn += md_sngchn;
 	}
-	md_numchn=md_hardchn+md_softchn;
+	md_numchn = md_hardchn + md_softchn;
 }
 
 /* Limits the number of hardware voices to the specified amount.
    This function should only be used by the low-level drivers. */
-static	void LimitSoftVoices(int limit)
+static void LimitSoftVoices(int limit)
 {
-	int t=0;
+	int t = 0;
 
-	if ((md_mode & DMODE_SOFT_SNDFX) && (md_sfxchn>limit)) md_sfxchn=limit;
-	if ((md_mode & DMODE_SOFT_MUSIC) && (md_sngchn>limit)) md_sngchn=limit;
+	if ((md_mode & DMODE_SOFT_SNDFX) && (md_sfxchn > limit))
+		md_sfxchn = limit;
+	if ((md_mode & DMODE_SOFT_MUSIC) && (md_sngchn > limit))
+		md_sngchn = limit;
 
 	if (md_mode & DMODE_SOFT_SNDFX)
-		md_softchn=md_sfxchn;
+		md_softchn = md_sfxchn;
 	else
-		md_softchn=0;
+		md_softchn = 0;
 
-	if (md_mode & DMODE_SOFT_MUSIC) md_softchn+=md_sngchn;
+	if (md_mode & DMODE_SOFT_MUSIC)
+		md_softchn += md_sngchn;
 
-	while (md_softchn>limit) {
-		if (++t & 1) {
-			if ((md_mode & DMODE_SOFT_SNDFX) && (md_sfxchn>4)) md_sfxchn--;
-		} else {
-			if ((md_mode & DMODE_SOFT_MUSIC) && (md_sngchn>8)) md_sngchn--;
+	while (md_softchn > limit)
+	{
+		if (++t & 1)
+		{
+			if ((md_mode & DMODE_SOFT_SNDFX) && (md_sfxchn > 4))
+				md_sfxchn--;
+		}
+		else
+		{
+			if ((md_mode & DMODE_SOFT_MUSIC) && (md_sngchn > 8))
+				md_sngchn--;
 		}
 
 		if (!(md_mode & DMODE_SOFT_SNDFX))
-			md_softchn=md_sfxchn;
+			md_softchn = md_sfxchn;
 		else
-			md_softchn=0;
+			md_softchn = 0;
 
 		if (!(md_mode & DMODE_SOFT_MUSIC))
-			md_softchn+=md_sngchn;
+			md_softchn += md_sngchn;
 	}
-	md_numchn=md_hardchn+md_softchn;
+	md_numchn = md_hardchn + md_softchn;
 }
 
 /* Note: 'type' indicates whether the returned value should be for music or for
    sound effects. */
 ULONG MD_SampleSpace(int type)
 {
-	if(type==MD_MUSIC)
-		type=(md_mode & DMODE_SOFT_MUSIC)?MD_SOFTWARE:MD_HARDWARE;
-	else if(type==MD_SNDFX)
-		type=(md_mode & DMODE_SOFT_SNDFX)?MD_SOFTWARE:MD_HARDWARE;
+	if (type == MD_MUSIC)
+		type = (md_mode & DMODE_SOFT_MUSIC) ? MD_SOFTWARE : MD_HARDWARE;
+	else if (type == MD_SNDFX)
+		type = (md_mode & DMODE_SOFT_SNDFX) ? MD_SOFTWARE : MD_HARDWARE;
 
 	return md_driver->FreeSampleSpace(type);
 }
 
-ULONG MD_SampleLength(int type,SAMPLE* s)
+ULONG MD_SampleLength(int type, SAMPLE* s)
 {
-	if(type==MD_MUSIC)
-		type=(md_mode & DMODE_SOFT_MUSIC)?MD_SOFTWARE:MD_HARDWARE;
-	else
-	  if(type==MD_SNDFX)
-		type=(md_mode & DMODE_SOFT_SNDFX)?MD_SOFTWARE:MD_HARDWARE;
+	if (type == MD_MUSIC)
+		type = (md_mode & DMODE_SOFT_MUSIC) ? MD_SOFTWARE : MD_HARDWARE;
+	else if (type == MD_SNDFX)
+		type = (md_mode & DMODE_SOFT_SNDFX) ? MD_SOFTWARE : MD_HARDWARE;
 
-	return md_driver->RealSampleLength(type,s);
+	return md_driver->RealSampleLength(type, s);
 }
 
 MIKMODAPI CHAR* MikMod_InfoDriver(void)
 {
 	int t;
-	size_t len=0;
-	MDRIVER *l;
-	CHAR *list=NULL;
+	size_t len = 0;
+	MDRIVER* l;
+	CHAR* list = NULL;
 
 	MUTEX_LOCK(lists);
 	/* compute size of buffer */
-	for(l = firstdriver; l; l = l->next)
+	for (l = firstdriver; l; l = l->next)
 		len += 4 + (l->next ? 1 : 0) + strlen(l->Version);
 
-	if(len)
-	  if((list=(CHAR*)MikMod_malloc(len*sizeof(CHAR))) != NULL) {
-		CHAR *list_end = list;
-		list[0] = 0;
-		/* list all registered device drivers : */
-		for(t = 1, l = firstdriver; l; l = l->next, t++) {
-		    list_end += sprintf(list_end, "%2d %s%s", t, l->Version, (l->next)? "\n" : "");
+	if (len)
+		if ((list = (CHAR*)MikMod_malloc(len * sizeof(CHAR))) != NULL)
+		{
+			CHAR* list_end = list;
+			list[0] = 0;
+			/* list all registered device drivers : */
+			for (t = 1, l = firstdriver; l; l = l->next, t++)
+			{
+				list_end += sprintf(list_end, "%2d %s%s", t, l->Version, (l->next) ? "\n" : "");
+			}
 		}
-	}
 	MUTEX_UNLOCK(lists);
 	return list;
 }
 
 void _mm_registerdriver(struct MDRIVER* drv)
 {
-	MDRIVER *cruise = firstdriver;
+	MDRIVER* cruise = firstdriver;
 
 	/* don't register a MISSING() driver */
-	if ((drv->Name) && (drv->Version)) {
-		if (cruise) {
-			if ( cruise == drv )
+	if ((drv->Name) && (drv->Version))
+	{
+		if (cruise)
+		{
+			if (cruise == drv)
 				return;
-			while(cruise->next) {
+			while (cruise->next)
+			{
 				cruise = cruise->next;
-				if ( cruise == drv )
+				if (cruise == drv)
 					return;
 			}
 			cruise->next = drv;
-		} else
+		}
+		else
 			firstdriver = drv;
 	}
 }
@@ -229,7 +250,7 @@ MIKMODAPI void MikMod_RegisterDriver(struct MDRIVER* drv)
 {
 	/* if we try to register an invalid driver, or an already registered driver,
 	   ignore this attempt */
-	if ((!drv)||(drv->next)||(!drv->Name))
+	if ((!drv) || (drv->next) || (!drv->Name))
 		return;
 
 	MUTEX_LOCK(lists);
@@ -237,32 +258,37 @@ MIKMODAPI void MikMod_RegisterDriver(struct MDRIVER* drv)
 	MUTEX_UNLOCK(lists);
 }
 
-MIKMODAPI int MikMod_DriverFromAlias(const CHAR *alias)
+MIKMODAPI int MikMod_DriverFromAlias(const CHAR* alias)
 {
-	int rank=1;
-	MDRIVER *cruise;
+	int rank = 1;
+	MDRIVER* cruise;
 
 	MUTEX_LOCK(lists);
-	cruise=firstdriver;
-	while(cruise) {
-		if (cruise->Alias) {
-			if (!(strcasecmp(alias,cruise->Alias))) break;
+	cruise = firstdriver;
+	while (cruise)
+	{
+		if (cruise->Alias)
+		{
+			if (!(strcasecmp(alias, cruise->Alias)))
+				break;
 			rank++;
 		}
-		cruise=cruise->next;
+		cruise = cruise->next;
 	}
-	if(!cruise) rank=0;
+	if (!cruise)
+		rank = 0;
 	MUTEX_UNLOCK(lists);
 
 	return rank;
 }
 
-MIKMODAPI MDRIVER *MikMod_DriverByOrdinal(int ordinal)
+MIKMODAPI MDRIVER* MikMod_DriverByOrdinal(int ordinal)
 {
-	MDRIVER *cruise;
+	MDRIVER* cruise;
 
 	/* Allow only driver ordinals > 0 */
-	if (!ordinal) return NULL;
+	if (!ordinal)
+		return NULL;
 
 	MUTEX_LOCK(lists);
 	cruise = firstdriver;
@@ -276,13 +302,13 @@ SWORD MD_SampleLoad(SAMPLOAD* s, int type)
 {
 	SWORD result;
 
-	if(type==MD_MUSIC)
-		type=(md_mode & DMODE_SOFT_MUSIC)?MD_SOFTWARE:MD_HARDWARE;
-	else if(type==MD_SNDFX)
-		type=(md_mode & DMODE_SOFT_SNDFX)?MD_SOFTWARE:MD_HARDWARE;
+	if (type == MD_MUSIC)
+		type = (md_mode & DMODE_SOFT_MUSIC) ? MD_SOFTWARE : MD_HARDWARE;
+	else if (type == MD_SNDFX)
+		type = (md_mode & DMODE_SOFT_SNDFX) ? MD_SOFTWARE : MD_HARDWARE;
 
 	SL_Init(s);
-	result=md_driver->SampleLoad(s,type);
+	result = md_driver->SampleLoad(s, type);
 	SL_Exit(s);
 
 	return result;
@@ -298,8 +324,8 @@ MIKMODAPI MikMod_player_t MikMod_RegisterPlayer(MikMod_player_t player)
 	MikMod_player_t result;
 
 	MUTEX_LOCK(vars);
-	result=md_player;
-	md_player=player;
+	result = md_player;
+	md_player = player;
 	MUTEX_UNLOCK(vars);
 
 	return result;
@@ -308,10 +334,12 @@ MIKMODAPI MikMod_player_t MikMod_RegisterPlayer(MikMod_player_t player)
 MIKMODAPI void MikMod_Update(void)
 {
 	MUTEX_LOCK(vars);
-	if(isplaying) {
-		if((!pf)||(!pf->forbid))
+	if (isplaying)
+	{
+		if ((!pf) || (!pf->forbid))
 			md_driver->Update();
-		else {
+		else
+		{
 			if (md_driver->Pause)
 				md_driver->Pause();
 		}
@@ -319,134 +347,146 @@ MIKMODAPI void MikMod_Update(void)
 	MUTEX_UNLOCK(vars);
 }
 
-void Voice_SetVolume_internal(SBYTE voice,UWORD vol)
+void Voice_SetVolume_internal(SBYTE voice, UWORD vol)
 {
-	ULONG  tmp;
+	ULONG tmp;
 
-	if((voice<0)||(voice>=md_numchn)) return;
+	if ((voice < 0) || (voice >= md_numchn))
+		return;
 
 	/* range checks */
-	if(md_musicvolume>128) md_musicvolume=128;
-	if(md_sndfxvolume>128) md_sndfxvolume=128;
-	if(md_volume>128) md_volume=128;
+	if (md_musicvolume > 128)
+		md_musicvolume = 128;
+	if (md_sndfxvolume > 128)
+		md_sndfxvolume = 128;
+	if (md_volume > 128)
+		md_volume = 128;
 
-	tmp=(ULONG)vol*(ULONG)md_volume*
-	     ((voice<md_sngchn)?(ULONG)md_musicvolume:(ULONG)md_sndfxvolume);
-	md_driver->VoiceSetVolume(voice,tmp/16384UL);
+	tmp = (ULONG)vol * (ULONG)md_volume * ((voice < md_sngchn) ? (ULONG)md_musicvolume : (ULONG)md_sndfxvolume);
+	md_driver->VoiceSetVolume(voice, tmp / 16384UL);
 }
 
-MIKMODAPI void Voice_SetVolume(SBYTE voice,UWORD vol)
+MIKMODAPI void Voice_SetVolume(SBYTE voice, UWORD vol)
 {
 	MUTEX_LOCK(vars);
-	Voice_SetVolume_internal(voice,vol);
+	Voice_SetVolume_internal(voice, vol);
 	MUTEX_UNLOCK(vars);
 }
 
 MIKMODAPI UWORD Voice_GetVolume(SBYTE voice)
 {
-	UWORD result=0;
+	UWORD result = 0;
 
 	MUTEX_LOCK(vars);
-	if((voice>=0)&&(voice<md_numchn))
-		result=md_driver->VoiceGetVolume(voice);
+	if ((voice >= 0) && (voice < md_numchn))
+		result = md_driver->VoiceGetVolume(voice);
 	MUTEX_UNLOCK(vars);
 
 	return result;
 }
 
-void Voice_SetFrequency_internal(SBYTE voice,ULONG frq)
+void Voice_SetFrequency_internal(SBYTE voice, ULONG frq)
 {
-	if((voice<0)||(voice>=md_numchn)) return;
-	if((md_sample[voice])&&(md_sample[voice]->divfactor))
-		frq/=md_sample[voice]->divfactor;
-	md_driver->VoiceSetFrequency(voice,frq);
+	if ((voice < 0) || (voice >= md_numchn))
+		return;
+	if ((md_sample[voice]) && (md_sample[voice]->divfactor))
+		frq /= md_sample[voice]->divfactor;
+	md_driver->VoiceSetFrequency(voice, frq);
 }
 
-MIKMODAPI void Voice_SetFrequency(SBYTE voice,ULONG frq)
+MIKMODAPI void Voice_SetFrequency(SBYTE voice, ULONG frq)
 {
 	MUTEX_LOCK(vars);
-	Voice_SetFrequency_internal(voice,frq);
+	Voice_SetFrequency_internal(voice, frq);
 	MUTEX_UNLOCK(vars);
 }
 
 MIKMODAPI ULONG Voice_GetFrequency(SBYTE voice)
 {
-	ULONG result=0;
+	ULONG result = 0;
 
 	MUTEX_LOCK(vars);
-	if((voice>=0)&&(voice<md_numchn))
-		result=md_driver->VoiceGetFrequency(voice);
+	if ((voice >= 0) && (voice < md_numchn))
+		result = md_driver->VoiceGetFrequency(voice);
 	MUTEX_UNLOCK(vars);
 
 	return result;
 }
 
-void Voice_SetPanning_internal(SBYTE voice,ULONG pan)
+void Voice_SetPanning_internal(SBYTE voice, ULONG pan)
 {
-	if((voice<0)||(voice>=md_numchn)) return;
-	if(pan!=PAN_SURROUND) {
-		if(md_pansep>128) md_pansep=128;
-		if(md_mode & DMODE_REVERSE) pan=255-pan;
-		pan = (((SWORD)(pan-128)*md_pansep)/128)+128;
+	if ((voice < 0) || (voice >= md_numchn))
+		return;
+	if (pan != PAN_SURROUND)
+	{
+		if (md_pansep > 128)
+			md_pansep = 128;
+		if (md_mode & DMODE_REVERSE)
+			pan = 255 - pan;
+		pan = (((SWORD)(pan - 128) * md_pansep) / 128) + 128;
 	}
 	md_driver->VoiceSetPanning(voice, pan);
 }
 
-MIKMODAPI void Voice_SetPanning(SBYTE voice,ULONG pan)
+MIKMODAPI void Voice_SetPanning(SBYTE voice, ULONG pan)
 {
 #ifdef MIKMOD_DEBUG
-	if((pan!=PAN_SURROUND)&&((pan<0)||(pan>255)))
-		fprintf(stderr,"\rVoice_SetPanning called with pan=%ld\n",(long)pan);
+	if ((pan != PAN_SURROUND) && ((pan < 0) || (pan > 255)))
+		fprintf(stderr, "\rVoice_SetPanning called with pan=%ld\n", (long)pan);
 #endif
 
 	MUTEX_LOCK(vars);
-	Voice_SetPanning_internal(voice,pan);
+	Voice_SetPanning_internal(voice, pan);
 	MUTEX_UNLOCK(vars);
 }
 
 MIKMODAPI ULONG Voice_GetPanning(SBYTE voice)
 {
-	ULONG result=PAN_CENTER;
+	ULONG result = PAN_CENTER;
 
 	MUTEX_LOCK(vars);
-	if((voice>=0)&&(voice<md_numchn))
-		result=md_driver->VoiceGetPanning(voice);
+	if ((voice >= 0) && (voice < md_numchn))
+		result = md_driver->VoiceGetPanning(voice);
 	MUTEX_UNLOCK(vars);
 
 	return result;
 }
 
-void Voice_Play_internal(SBYTE voice,SAMPLE* s,ULONG start)
+void Voice_Play_internal(SBYTE voice, SAMPLE* s, ULONG start)
 {
-	ULONG  repend;
+	ULONG repend;
 
-	if((voice<0)||(voice>=md_numchn)) return;
+	if ((voice < 0) || (voice >= md_numchn))
+		return;
 
-	md_sample[voice]=s;
-	repend=s->loopend;
+	md_sample[voice] = s;
+	repend = s->loopend;
 
-	if(s->flags&SF_LOOP)
+	if (s->flags & SF_LOOP)
 		/* repend can't be bigger than size */
-		if(repend>s->length) repend=s->length;
+		if (repend > s->length)
+			repend = s->length;
 
-	md_driver->VoicePlay(voice,s->handle,start,s->length,s->loopstart,repend,s->flags);
+	md_driver->VoicePlay(voice, s->handle, start, s->length, s->loopstart, repend, s->flags);
 }
 
-MIKMODAPI void Voice_Play(SBYTE voice,SAMPLE* s,ULONG start)
+MIKMODAPI void Voice_Play(SBYTE voice, SAMPLE* s, ULONG start)
 {
-	if(start>s->length) return;
+	if (start > s->length)
+		return;
 
 	MUTEX_LOCK(vars);
-	Voice_Play_internal(voice,s,start);
+	Voice_Play_internal(voice, s, start);
 	MUTEX_UNLOCK(vars);
 }
 
 void Voice_Stop_internal(SBYTE voice)
 {
-	if((voice<0)||(voice>=md_numchn)) return;
-	if(voice>=md_sngchn)
+	if ((voice < 0) || (voice >= md_numchn))
+		return;
+	if (voice >= md_sngchn)
 		/* It is a sound effects channel, so flag the voice as non-critical! */
-		sfxinfo[voice-md_sngchn]=0;
+		sfxinfo[voice - md_sngchn] = 0;
 	md_driver->VoiceStop(voice);
 }
 
@@ -459,8 +499,9 @@ MIKMODAPI void Voice_Stop(SBYTE voice)
 
 BOOL Voice_Stopped_internal(SBYTE voice)
 {
-	if((voice<0)||(voice>=md_numchn)) return 0;
-	return(md_driver->VoiceStopped(voice));
+	if ((voice < 0) || (voice >= md_numchn))
+		return 0;
+	return (md_driver->VoiceStopped(voice));
 }
 
 MIKMODAPI BOOL Voice_Stopped(SBYTE voice)
@@ -468,7 +509,7 @@ MIKMODAPI BOOL Voice_Stopped(SBYTE voice)
 	BOOL result;
 
 	MUTEX_LOCK(vars);
-	result=Voice_Stopped_internal(voice);
+	result = Voice_Stopped_internal(voice);
 	MUTEX_UNLOCK(vars);
 
 	return result;
@@ -476,14 +517,15 @@ MIKMODAPI BOOL Voice_Stopped(SBYTE voice)
 
 MIKMODAPI SLONG Voice_GetPosition(SBYTE voice)
 {
-	SLONG result=0;
+	SLONG result = 0;
 
 	MUTEX_LOCK(vars);
-	if((voice>=0)&&(voice<md_numchn)) {
+	if ((voice >= 0) && (voice < md_numchn))
+	{
 		if (md_driver->VoiceGetPosition)
-			result=(md_driver->VoiceGetPosition(voice));
+			result = (md_driver->VoiceGetPosition(voice));
 		else
-			result=-1;
+			result = -1;
 	}
 	MUTEX_UNLOCK(vars);
 
@@ -492,11 +534,11 @@ MIKMODAPI SLONG Voice_GetPosition(SBYTE voice)
 
 MIKMODAPI ULONG Voice_RealVolume(SBYTE voice)
 {
-	ULONG result=0;
+	ULONG result = 0;
 
 	MUTEX_LOCK(vars);
-	if((voice>=0)&&(voice<md_numchn)&& md_driver->VoiceRealVolume)
-		result=(md_driver->VoiceRealVolume(voice));
+	if ((voice >= 0) && (voice < md_numchn) && md_driver->VoiceRealVolume)
+		result = (md_driver->VoiceRealVolume(voice));
 	MUTEX_UNLOCK(vars);
 
 	return result;
@@ -507,71 +549,83 @@ MIKMODAPI void VC_SetCallback(MikMod_callback_t callback)
 	vc_callback = callback;
 }
 
-static int _mm_init(const CHAR *cmdline)
+static int _mm_init(const CHAR* cmdline)
 {
 	UWORD t;
 
 	_mm_critical = 1;
 
 	/* if md_device==0, try to find a device number */
-	if(!md_device) {
-		cmdline=NULL;
+	if (!md_device)
+	{
+		cmdline = NULL;
 
-		for(t=1,md_driver=firstdriver;md_driver;md_driver=md_driver->next,t++)
-			if(md_driver->IsPresent()) break;
+		for (t = 1, md_driver = firstdriver; md_driver; md_driver = md_driver->next, t++)
+			if (md_driver->IsPresent())
+				break;
 
-		if(!md_driver) {
+		if (!md_driver)
+		{
 			_mm_errno = MMERR_DETECTING_DEVICE;
-			if(_mm_errorhandler) _mm_errorhandler();
+			if (_mm_errorhandler)
+				_mm_errorhandler();
 			md_driver = &drv_nos;
 			return 1;
 		}
 
 		md_device = t;
-	} else {
+	}
+	else
+	{
 		/* if n>0, use that driver */
-		for(t=1,md_driver=firstdriver;(md_driver)&&(t!=md_device);md_driver=md_driver->next)
+		for (t = 1, md_driver = firstdriver; (md_driver) && (t != md_device); md_driver = md_driver->next)
 			t++;
 
-		if(!md_driver) {
+		if (!md_driver)
+		{
 			_mm_errno = MMERR_INVALID_DEVICE;
-			if(_mm_errorhandler) _mm_errorhandler();
+			if (_mm_errorhandler)
+				_mm_errorhandler();
 			md_driver = &drv_nos;
 			return 1;
 		}
 
 		/* arguments here might be necessary for the presence check to succeed */
-		if(cmdline&&(md_driver->CommandLine))
+		if (cmdline && (md_driver->CommandLine))
 			md_driver->CommandLine(cmdline);
 
-		if(!md_driver->IsPresent()) {
+		if (!md_driver->IsPresent())
+		{
 			_mm_errno = MMERR_DETECTING_DEVICE;
-			if(_mm_errorhandler) _mm_errorhandler();
+			if (_mm_errorhandler)
+				_mm_errorhandler();
 			md_driver = &drv_nos;
 			return 1;
 		}
 	}
 
 	olddevice = md_device;
-	if(md_driver->Init()) {
+	if (md_driver->Init())
+	{
 		MikMod_Exit_internal();
-		if(_mm_errorhandler) _mm_errorhandler();
+		if (_mm_errorhandler)
+			_mm_errorhandler();
 		return 1;
 	}
 
-	initialized=1;
-	_mm_critical=0;
+	initialized = 1;
+	_mm_critical = 0;
 
 	return 0;
 }
 
-MIKMODAPI int MikMod_Init(const CHAR *cmdline)
+MIKMODAPI int MikMod_Init(const CHAR* cmdline)
 {
 	int result;
 
 	MUTEX_LOCK(vars);
 	MUTEX_LOCK(lists);
-	result=_mm_init(cmdline);
+	result = _mm_init(cmdline);
 	MUTEX_UNLOCK(lists);
 	MUTEX_UNLOCK(vars);
 
@@ -587,8 +641,8 @@ void MikMod_Exit_internal(void)
 
 	MikMod_free(sfxinfo);
 	MikMod_free(md_sample);
-	md_sample  = NULL;
-	sfxinfo    = NULL;
+	md_sample = NULL;
+	sfxinfo = NULL;
 
 	initialized = 0;
 }
@@ -604,47 +658,57 @@ MIKMODAPI void MikMod_Exit(void)
 
 /* Reset the driver using the new global variable settings.
    If the driver has not been initialized, it will be now. */
-static int _mm_reset(const CHAR *cmdline)
+static int _mm_reset(const CHAR* cmdline)
 {
 	BOOL wasplaying = 0;
 
-	if(!initialized) return _mm_init(cmdline);
+	if (!initialized)
+		return _mm_init(cmdline);
 
-	if (isplaying) {
+	if (isplaying)
+	{
 		wasplaying = 1;
 		md_driver->PlayStop();
 	}
 
-	if((!md_driver->Reset)||(md_device != olddevice)) {
+	if ((!md_driver->Reset) || (md_device != olddevice))
+	{
 		/* md_driver->Reset was NULL, or md_device was changed, so do a full
 		   reset of the driver. */
 		md_driver->Exit();
-		if(_mm_init(cmdline)) {
+		if (_mm_init(cmdline))
+		{
 			MikMod_Exit_internal();
-			if(_mm_errno)
-				if(_mm_errorhandler) _mm_errorhandler();
+			if (_mm_errno)
+				if (_mm_errorhandler)
+					_mm_errorhandler();
 			return 1;
 		}
-	} else {
-		if(md_driver->Reset()) {
+	}
+	else
+	{
+		if (md_driver->Reset())
+		{
 			MikMod_Exit_internal();
-			if(_mm_errno)
-				if(_mm_errorhandler) _mm_errorhandler();
+			if (_mm_errno)
+				if (_mm_errorhandler)
+					_mm_errorhandler();
 			return 1;
 		}
 	}
 
-	if (wasplaying) return md_driver->PlayStart();
+	if (wasplaying)
+		return md_driver->PlayStart();
 	return 0;
 }
 
-MIKMODAPI int MikMod_Reset(const CHAR *cmdline)
+MIKMODAPI int MikMod_Reset(const CHAR* cmdline)
 {
 	int result;
 
 	MUTEX_LOCK(vars);
 	MUTEX_LOCK(lists);
-	result=_mm_reset(cmdline);
+	result = _mm_reset(cmdline);
 	MUTEX_UNLOCK(lists);
 	MUTEX_UNLOCK(vars);
 
@@ -657,9 +721,11 @@ int MikMod_SetNumVoices_internal(int music, int sfx)
 	BOOL resume = 0;
 	int t, oldchn = 0;
 
-	if((!music)&&(!sfx)) return 1;
+	if ((!music) && (!sfx))
+		return 1;
 	_mm_critical = 1;
-	if(isplaying) {
+	if (isplaying)
+	{
 		MikMod_DisableOutput_internal();
 		oldchn = md_numchn;
 		resume = 1;
@@ -667,34 +733,40 @@ int MikMod_SetNumVoices_internal(int music, int sfx)
 
 	MikMod_free(sfxinfo);
 	MikMod_free(md_sample);
-	md_sample  = NULL;
-	sfxinfo    = NULL;
+	md_sample = NULL;
+	sfxinfo = NULL;
 
-	if(music!=-1) md_sngchn = music;
-	if(sfx!=-1)   md_sfxchn = sfx;
+	if (music != -1)
+		md_sngchn = music;
+	if (sfx != -1)
+		md_sfxchn = sfx;
 	md_numchn = md_sngchn + md_sfxchn;
 
 	LimitHardVoices(md_driver->HardVoiceLimit);
 	LimitSoftVoices(md_driver->SoftVoiceLimit);
 
-	if(md_driver->SetNumVoices()) {
+	if (md_driver->SetNumVoices())
+	{
 		MikMod_Exit_internal();
-		if(_mm_errno)
-			if(_mm_errorhandler!=NULL) _mm_errorhandler();
+		if (_mm_errno)
+			if (_mm_errorhandler != NULL)
+				_mm_errorhandler();
 		md_numchn = md_softchn = md_hardchn = md_sfxchn = md_sngchn = 0;
 		return 1;
 	}
 
-	if(md_sngchn+md_sfxchn)
-		md_sample=(SAMPLE**)MikMod_calloc(md_sngchn+md_sfxchn,sizeof(SAMPLE*));
-	if(md_sfxchn)
-		sfxinfo = (UBYTE *)MikMod_calloc(md_sfxchn,sizeof(UBYTE));
+	if (md_sngchn + md_sfxchn)
+		md_sample = (SAMPLE**)MikMod_calloc(md_sngchn + md_sfxchn, sizeof(SAMPLE*));
+	if (md_sfxchn)
+		sfxinfo = (UBYTE*)MikMod_calloc(md_sfxchn, sizeof(UBYTE));
 
 	/* make sure the player doesn't start with garbage */
-	for(t=oldchn;t<md_numchn;t++)  Voice_Stop_internal(t);
+	for (t = oldchn; t < md_numchn; t++)
+		Voice_Stop_internal(t);
 
 	sfxpool = 0;
-	if(resume) MikMod_EnableOutput_internal();
+	if (resume)
+		MikMod_EnableOutput_internal();
 	_mm_critical = 0;
 
 	return 0;
@@ -705,7 +777,7 @@ MIKMODAPI int MikMod_SetNumVoices(int music, int sfx)
 	int result;
 
 	MUTEX_LOCK(vars);
-	result=MikMod_SetNumVoices_internal(music,sfx);
+	result = MikMod_SetNumVoices_internal(music, sfx);
 	MUTEX_UNLOCK(vars);
 
 	return result;
@@ -714,8 +786,10 @@ MIKMODAPI int MikMod_SetNumVoices(int music, int sfx)
 int MikMod_EnableOutput_internal(void)
 {
 	_mm_critical = 1;
-	if(!isplaying) {
-		if(md_driver->PlayStart()) return 1;
+	if (!isplaying)
+	{
+		if (md_driver->PlayStart())
+			return 1;
 		isplaying = 1;
 	}
 	_mm_critical = 0;
@@ -727,7 +801,7 @@ MIKMODAPI int MikMod_EnableOutput(void)
 	int result;
 
 	MUTEX_LOCK(vars);
-	result=MikMod_EnableOutput_internal();
+	result = MikMod_EnableOutput_internal();
 	MUTEX_UNLOCK(vars);
 
 	return result;
@@ -735,7 +809,8 @@ MIKMODAPI int MikMod_EnableOutput(void)
 
 void MikMod_DisableOutput_internal(void)
 {
-	if(isplaying && md_driver) {
+	if (isplaying && md_driver)
+	{
 		isplaying = 0;
 		md_driver->PlayStop();
 	}
@@ -758,7 +833,7 @@ MIKMODAPI BOOL MikMod_Active(void)
 	BOOL result;
 
 	MUTEX_LOCK(vars);
-	result=MikMod_Active_internal();
+	result = MikMod_Active_internal();
 	MUTEX_UNLOCK(vars);
 
 	return result;
@@ -769,51 +844,61 @@ MIKMODAPI BOOL MikMod_Active(void)
    criticals).
 
    Returns the voice that the sound is being played on. */
-static SBYTE Sample_Play_internal(SAMPLE *s,ULONG start,UBYTE flags)
+static SBYTE Sample_Play_internal(SAMPLE* s, ULONG start, UBYTE flags)
 {
-	int orig=sfxpool;/* for cases where all channels are critical */
+	int orig = sfxpool; /* for cases where all channels are critical */
 	int c;
 
-	if(!md_sfxchn) return -1;
-	if(s->volume>64) s->volume = 64;
+	if (!md_sfxchn)
+		return -1;
+	if (s->volume > 64)
+		s->volume = 64;
 
 	/* check the first location after sfxpool */
-	do {
-		if(sfxinfo[sfxpool]&SFX_CRITICAL) {
-			if(md_driver->VoiceStopped(c=sfxpool+md_sngchn)) {
-				sfxinfo[sfxpool]=flags;
-				Voice_Play_internal(c,s,start);
-				md_driver->VoiceSetVolume(c,s->volume<<2);
-				Voice_SetPanning_internal(c,s->panning);
-				md_driver->VoiceSetFrequency(c,s->speed);
+	do
+	{
+		if (sfxinfo[sfxpool] & SFX_CRITICAL)
+		{
+			if (md_driver->VoiceStopped(c = sfxpool + md_sngchn))
+			{
+				sfxinfo[sfxpool] = flags;
+				Voice_Play_internal(c, s, start);
+				md_driver->VoiceSetVolume(c, s->volume << 2);
+				Voice_SetPanning_internal(c, s->panning);
+				md_driver->VoiceSetFrequency(c, s->speed);
 				sfxpool++;
-				if(sfxpool>=md_sfxchn) sfxpool=0;
+				if (sfxpool >= md_sfxchn)
+					sfxpool = 0;
 				return c;
 			}
-		} else {
-			sfxinfo[sfxpool]=flags;
-			Voice_Play_internal(c=sfxpool+md_sngchn,s,start);
-			md_driver->VoiceSetVolume(c,s->volume<<2);
-			Voice_SetPanning_internal(c,s->panning);
-			md_driver->VoiceSetFrequency(c,s->speed);
+		}
+		else
+		{
+			sfxinfo[sfxpool] = flags;
+			Voice_Play_internal(c = sfxpool + md_sngchn, s, start);
+			md_driver->VoiceSetVolume(c, s->volume << 2);
+			Voice_SetPanning_internal(c, s->panning);
+			md_driver->VoiceSetFrequency(c, s->speed);
 			sfxpool++;
-			if(sfxpool>=md_sfxchn) sfxpool=0;
+			if (sfxpool >= md_sfxchn)
+				sfxpool = 0;
 			return c;
 		}
 
 		sfxpool++;
-		if(sfxpool>=md_sfxchn) sfxpool = 0;
-	} while(sfxpool!=orig);
+		if (sfxpool >= md_sfxchn)
+			sfxpool = 0;
+	} while (sfxpool != orig);
 
 	return -1;
 }
 
-MIKMODAPI SBYTE Sample_Play(SAMPLE *s,ULONG start,UBYTE flags)
+MIKMODAPI SBYTE Sample_Play(SAMPLE* s, ULONG start, UBYTE flags)
 {
 	SBYTE result;
 
 	MUTEX_LOCK(vars);
-	result=Sample_Play_internal(s,start,flags);
+	result = Sample_Play_internal(s, start, flags);
 	MUTEX_UNLOCK(vars);
 
 	return result;
@@ -828,9 +913,9 @@ MIKMODAPI long MikMod_GetVersion(void)
 
 #ifdef HAVE_PTHREAD
 #define INIT_MUTEX(name) \
-	pthread_mutex_t _mm_mutex_##name=PTHREAD_MUTEX_INITIALIZER
+	pthread_mutex_t _mm_mutex_##name = PTHREAD_MUTEX_INITIALIZER
 
-#elif defined(__OS2__)||defined(__EMX__)
+#elif defined(__OS2__) || defined(__EMX__)
 #define INIT_MUTEX(name) \
 	HMTX _mm_mutex_##name
 
@@ -840,7 +925,7 @@ MIKMODAPI long MikMod_GetVersion(void)
 
 #else
 #define INIT_MUTEX(name) \
-	void *_mm_mutex_##name = NULL
+	void* _mm_mutex_##name = NULL
 #endif
 
 INIT_MUTEX(vars);
@@ -848,26 +933,27 @@ INIT_MUTEX(lists);
 
 MIKMODAPI BOOL MikMod_InitThreads(void)
 {
-	static int firstcall=1;
+	static int firstcall = 1;
 	static BOOL result = 0;
 
-	if (firstcall) {
-		firstcall=0;
+	if (firstcall)
+	{
+		firstcall = 0;
 #ifdef HAVE_PTHREAD
-		result=1;
-#elif defined(__OS2__)||defined(__EMX__)
-		if(DosCreateMutexSem((PSZ)NULL,&_mm_mutex_lists,0,0) ||
-		   DosCreateMutexSem((PSZ)NULL,&_mm_mutex_vars,0,0)) {
-			_mm_mutex_lists=_mm_mutex_vars=(HMTX)NULL;
-			result=0;
-		} else
-			result=1;
-#elif defined(_WIN32)
-		if((!(_mm_mutex_lists=CreateMutex(NULL,false,TEXT("libmikmod(lists)"))))||
-		   (!(_mm_mutex_vars=CreateMutex(NULL,false,TEXT("libmikmod(vars)")))))
-			result=0;
+		result = 1;
+#elif defined(__OS2__) || defined(__EMX__)
+		if (DosCreateMutexSem((PSZ)NULL, &_mm_mutex_lists, 0, 0) || DosCreateMutexSem((PSZ)NULL, &_mm_mutex_vars, 0, 0))
+		{
+			_mm_mutex_lists = _mm_mutex_vars = (HMTX)NULL;
+			result = 0;
+		}
 		else
-			result=1;
+			result = 1;
+#elif defined(_WIN32)
+		if ((!(_mm_mutex_lists = CreateMutex(NULL, false, TEXT("libmikmod(lists)")))) || (!(_mm_mutex_vars = CreateMutex(NULL, false, TEXT("libmikmod(vars)")))))
+			result = 0;
+		else
+			result = 1;
 #endif
 	}
 	return result;
@@ -887,26 +973,33 @@ MIKMODAPI void MikMod_Lock(void)
 
 /*========== Parameter extraction helper */
 
-CHAR *MD_GetAtom(const CHAR *atomname, const CHAR *cmdline, BOOL implicit)
+CHAR* MD_GetAtom(const CHAR* atomname, const CHAR* cmdline, BOOL implicit)
 {
-	CHAR *ret=NULL;
+	CHAR* ret = NULL;
 
-	if(cmdline) {
-		const CHAR *buf=strstr(cmdline,atomname);
+	if (cmdline)
+	{
+		const CHAR* buf = strstr(cmdline, atomname);
 
-		if((buf)&&((buf==cmdline)||(*(buf-1)==','))) {
-			const CHAR *ptr=buf+strlen(atomname);
+		if ((buf) && ((buf == cmdline) || (*(buf - 1) == ',')))
+		{
+			const CHAR* ptr = buf + strlen(atomname);
 
-			if(*ptr=='=') {
-				for(buf=++ptr;(*ptr)&&((*ptr)!=',');ptr++);
-				ret=(CHAR *)MikMod_malloc((1+ptr-buf)*sizeof(CHAR));
-				if(ret)
-					strncpy(ret,buf,ptr-buf);
-			} else if((*ptr==',')||(!*ptr)) {
-				if(implicit) {
-					ret=(CHAR *)MikMod_malloc((1+ptr-buf)*sizeof(CHAR));
-					if(ret)
-						strncpy(ret,buf,ptr-buf);
+			if (*ptr == '=')
+			{
+				for (buf = ++ptr; (*ptr) && ((*ptr) != ','); ptr++)
+					;
+				ret = (CHAR*)MikMod_malloc((1 + ptr - buf) * sizeof(CHAR));
+				if (ret)
+					strncpy(ret, buf, ptr - buf);
+			}
+			else if ((*ptr == ',') || (!*ptr))
+			{
+				if (implicit)
+				{
+					ret = (CHAR*)MikMod_malloc((1 + ptr - buf) * sizeof(CHAR));
+					if (ret)
+						strncpy(ret, buf, ptr - buf);
 				}
 			}
 		}
@@ -923,22 +1016,31 @@ CHAR *MD_GetAtom(const CHAR *atomname, const CHAR *cmdline, BOOL implicit)
    reasonable. Returns 1 if it is safe to rewrite the file, 0 otherwise.
    The goal is to prevent a setuid root libmikmod application from overriding
    files like /etc/passwd with digital sound... */
-BOOL MD_Access(const CHAR * filename)
+BOOL MD_Access(const CHAR* filename)
 {
 	struct stat buf;
 
-	if(!stat(filename,&buf)) {
+	if (!stat(filename, &buf))
+	{
 		/* not a regular file ? */
-		if(!S_ISREG(buf.st_mode)) return 0;
+		if (!S_ISREG(buf.st_mode))
+			return 0;
 		/* more than one hard link to the file ? */
-		if(buf.st_nlink>1) return 0;
+		if (buf.st_nlink > 1)
+			return 0;
 		/* check access rights with the real user and group id */
-		if(getuid()==buf.st_uid) {
-			if(!(buf.st_mode&S_IWUSR)) return 0;
-		} else if(getgid()==buf.st_gid) {
-			if(!(buf.st_mode&S_IWGRP)) return 0;
-		} else
-			if(!(buf.st_mode&S_IWOTH)) return 0;
+		if (getuid() == buf.st_uid)
+		{
+			if (!(buf.st_mode & S_IWUSR))
+				return 0;
+		}
+		else if (getgid() == buf.st_gid)
+		{
+			if (!(buf.st_mode & S_IWGRP))
+				return 0;
+		}
+		else if (!(buf.st_mode & S_IWOTH))
+			return 0;
 	}
 
 	return 1;
@@ -947,20 +1049,27 @@ BOOL MD_Access(const CHAR * filename)
 /* Drop all root privileges we might have */
 int MD_DropPrivileges(void)
 {
-	if(!geteuid()) {
-		if(getuid()) {
+	if (!geteuid())
+	{
+		if (getuid())
+		{
 			/* we are setuid root -> drop setuid to become the real user */
-			if(setuid(getuid())) return 1;
-		} else {
+			if (setuid(getuid()))
+				return 1;
+		}
+		else
+		{
 			/* we are run as root -> drop all and become user 'nobody' */
-			struct passwd *nobody;
+			struct passwd* nobody;
 			int uid;
 
-			if(!(nobody=getpwnam("nobody"))) return 1; /* no such user ? */
-			uid=nobody->pw_uid;
+			if (!(nobody = getpwnam("nobody")))
+				return 1; /* no such user ? */
+			uid = nobody->pw_uid;
 			if (!uid) /* user 'nobody' has root privileges ? weird... */
 				return 1;
-			if (setuid(uid)) return 1;
+			if (setuid(uid))
+				return 1;
 		}
 	}
 	return 0;

@@ -21,11 +21,10 @@
 extern "C" {
 #endif
 
-RACE_DESC *init_chmmr (void);
+RACE_DESC* init_chmmr(void);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* CHMMR_H */
-
+#endif /* CHMMR_H */

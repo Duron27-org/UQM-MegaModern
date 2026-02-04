@@ -2096,21 +2096,21 @@ static const unsigned char ulaw_comp_table[16384] = {
 	0x6f, 0x6f, 0x70, 0x70, 0x71, 0x71, 0x72, 0x72,
 	0x73, 0x73, 0x74, 0x74, 0x75, 0x75, 0x76, 0x76,
 	0x77, 0x77, 0x78, 0x78, 0x79, 0x79, 0x7a, 0x7a,
-	0x7b, 0x7b, 0x7c, 0x7c, 0x7d, 0x7d, 0x7e, 0x7e
-};
+	0x7b, 0x7b, 0x7c, 0x7c, 0x7d, 0x7d, 0x7e, 0x7e};
 
 #define st_linear_to_ulaw(x) ulaw_comp_table[(x / 4) & 0x3fff]
 
 /* convert unsigned linear data from Mixer_WriteBytes() to ulaw */
-void unsignedtoulaw(char *buf, int nsamp)
+void unsignedtoulaw(char* buf, int nsamp)
 {
-	while (nsamp--) {
-		register long datum = (long)*((unsigned char *)buf);
+	while (nsamp--)
+	{
+		register long datum = (long)*((unsigned char*)buf);
 
-		datum ^= 128;			/* convert to signed */
+		datum ^= 128; /* convert to signed */
 		datum <<= 8;
 		/* round up to 12 bits of data */
-		datum += 0x8;			/* + 0b1000 */
+		datum += 0x8; /* + 0b1000 */
 		datum = st_linear_to_ulaw(datum);
 		*buf++ = (char)datum;
 	}

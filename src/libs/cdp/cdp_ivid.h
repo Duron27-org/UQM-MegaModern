@@ -29,15 +29,15 @@
 // CDP Video Interface entry points
 typedef struct
 {
-	TFB_RegVideoDecoder* (* RegisterDecoder) (const char* fileext,
-			TFB_VideoDecoderFuncs*);
-	void (* UnregisterDecoder) (TFB_RegVideoDecoder*);
-	const TFB_VideoDecoderFuncs* (* LookupDecoder) (const char* fileext);
+	TFB_RegVideoDecoder* (*RegisterDecoder)(const char* fileext,
+											TFB_VideoDecoderFuncs*);
+	void (*UnregisterDecoder)(TFB_RegVideoDecoder*);
+	const TFB_VideoDecoderFuncs* (*LookupDecoder)(const char* fileext);
 
 } cdp_Itf_VideoVtbl_v1;
 
 // the following are for the sake of module writers
 typedef cdp_Itf_VideoVtbl_v1 cdp_Itf_VideoVtbl;
-typedef cdp_Itf_VideoVtbl    cdp_Itf_Video;
+typedef cdp_Itf_VideoVtbl cdp_Itf_Video;
 
-#endif  /* LIBS_CDP_CDP_IVID_H_ */
+#endif /* LIBS_CDP_CDP_IVID_H_ */

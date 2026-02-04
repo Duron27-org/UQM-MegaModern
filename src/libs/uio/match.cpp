@@ -20,7 +20,7 @@
 
 #include <string.h>
 #ifdef DEBUG
-#	include <stdio.h>
+#include <stdio.h>
 #endif
 
 #define match_INTERNAL
@@ -31,64 +31,68 @@
 
 
 #ifdef HAVE_GLOB
-#	include <fnmatch.h>
+#include <fnmatch.h>
 #endif
 
 
-static inline match_MatchContext *match_allocMatchContext(void);
-static inline void match_freeMatchContext(match_MatchContext *context);
+static inline match_MatchContext* match_allocMatchContext(void);
+static inline void match_freeMatchContext(match_MatchContext* context);
 
-static inline match_LiteralContext *match_newLiteralContext(char *pattern);
-static inline match_LiteralContext *match_allocLiteralContext(void);
-static inline void match_freeLiteralContext(match_LiteralContext *context);
-static inline match_PrefixContext *match_newPrefixContext(char *pattern);
-static inline match_PrefixContext *match_allocPrefixContext(void);
-static inline void match_freePrefixContext(match_PrefixContext *context);
-static inline match_SuffixContext *match_newSuffixContext(
-		char *pattern, size_t len);
-static inline match_SuffixContext *match_allocSuffixContext(void);
-static inline void match_freeSuffixContext(match_SuffixContext *context);
-static inline match_SubStringContext *match_newSubStringContext(
-		char *pattern);
-static inline match_SubStringContext *match_allocSubStringContext(void);
-static inline void match_freeSubStringContext(match_SubStringContext *context);
+static inline match_LiteralContext* match_newLiteralContext(char* pattern);
+static inline match_LiteralContext* match_allocLiteralContext(void);
+static inline void match_freeLiteralContext(match_LiteralContext* context);
+static inline match_PrefixContext* match_newPrefixContext(char* pattern);
+static inline match_PrefixContext* match_allocPrefixContext(void);
+static inline void match_freePrefixContext(match_PrefixContext* context);
+static inline match_SuffixContext* match_newSuffixContext(
+	char* pattern, size_t len);
+static inline match_SuffixContext* match_allocSuffixContext(void);
+static inline void match_freeSuffixContext(match_SuffixContext* context);
+static inline match_SubStringContext* match_newSubStringContext(
+	char* pattern);
+static inline match_SubStringContext* match_allocSubStringContext(void);
+static inline void match_freeSubStringContext(match_SubStringContext* context);
 #ifdef HAVE_GLOB
-static inline match_GlobContext *match_newGlobContext(char *pattern);
-static inline match_GlobContext *match_allocGlobContext(void);
-static inline void match_freeGlobContext(match_GlobContext *context);
-#endif  /* HAVE_GLOB */
+static inline match_GlobContext* match_newGlobContext(char* pattern);
+static inline match_GlobContext* match_allocGlobContext(void);
+static inline void match_freeGlobContext(match_GlobContext* context);
+#endif /* HAVE_GLOB */
 #ifdef HAVE_REGEX
-static inline match_RegexContext *match_newRegexContext(void);
-static inline match_RegexContext *match_allocRegexContext(void);
-static inline void match_freeRegexContext(match_RegexContext *context);
-#endif  /* HAVE_REGEX */
+static inline match_RegexContext* match_newRegexContext(void);
+static inline match_RegexContext* match_allocRegexContext(void);
+static inline void match_freeRegexContext(match_RegexContext* context);
+#endif /* HAVE_REGEX */
 
 
 // *** General part ***
 
-static inline match_MatchContext *
-match_allocMatchContext(void) {
-	return (match_MatchContext*)uio_malloc(sizeof (match_MatchContext));
+static inline match_MatchContext*
+match_allocMatchContext(void)
+{
+	return (match_MatchContext*)uio_malloc(sizeof(match_MatchContext));
 }
 
 static inline void
-match_freeMatchContext(match_MatchContext *context) {
+match_freeMatchContext(match_MatchContext* context)
+{
 	uio_free(context);
 }
 
 // NB: Even if this function fails, *contextPtr contains a context
 //     which needs to be freed.
 match_Result
-match_prepareContext(const char *pattern, match_MatchContext **contextPtr,
-		match_MatchType type) {
+match_prepareContext(const char* pattern, match_MatchContext** contextPtr,
+					 match_MatchType type)
+{
 	match_Result result;
 
 	*contextPtr = match_allocMatchContext();
 	(*contextPtr)->type = type;
-	switch (type) {
+	switch (type)
+	{
 		case match_MATCH_LITERAL:
 			result = match_prepareLiteral(pattern,
-					&(*contextPtr)->u.literal);
+										  &(*contextPtr)->u.literal);
 			break;
 		case match_MATCH_PREFIX:
 			result = match_preparePrefix(pattern, &(*contextPtr)->u.prefix);
@@ -98,7 +102,7 @@ match_prepareContext(const char *pattern, match_MatchContext **contextPtr,
 			break;
 		case match_MATCH_SUBSTRING:
 			result = match_prepareSubString(pattern,
-					&(*contextPtr)->u.subString);
+											&(*contextPtr)->u.subString);
 			break;
 #ifdef HAVE_GLOB
 		case match_MATCH_GLOB:
@@ -113,7 +117,8 @@ match_prepareContext(const char *pattern, match_MatchContext **contextPtr,
 		default:
 #ifdef DEBUG
 			fprintf(stderr, "match_prepareContext called with unsupported "
-					"type %d matching.\n", type);
+							"type %d matching.\n",
+					type);
 #endif
 			return match_ENOSYS;
 	}
@@ -121,8 +126,10 @@ match_prepareContext(const char *pattern, match_MatchContext **contextPtr,
 }
 
 match_Result
-match_matchPattern(match_MatchContext *context, const char *string) {
-	switch (context->type) {
+match_matchPattern(match_MatchContext* context, const char* string)
+{
+	switch (context->type)
+	{
 		case match_MATCH_LITERAL:
 			return match_matchLiteral(context->u.literal, string);
 		case match_MATCH_PREFIX:
@@ -145,12 +152,14 @@ match_matchPattern(match_MatchContext *context, const char *string) {
 }
 
 // context may be NULL
-const char *
-match_errorString(match_MatchContext *context, match_Result result) {
-	switch (result) {
+const char*
+match_errorString(match_MatchContext* context, match_Result result)
+{
+	switch (result)
+	{
 		case match_OK:
 		case match_MATCH:
-//		case match_NOMATCH:  // same value as match_OK
+			//		case match_NOMATCH:  // same value as match_OK
 			return "Success";
 		case match_ENOSYS:
 			return "Not implemented";
@@ -162,12 +171,13 @@ match_errorString(match_MatchContext *context, match_Result result) {
 		default:
 			return "Unknown error";
 	}
-			
+
 	if (context == NULL)
 		return "Unknown match-type specific error.";
-				// We can't be any more specific if no 'context' is supplied.
+	// We can't be any more specific if no 'context' is supplied.
 
-	switch (context->type) {
+	switch (context->type)
+	{
 #if 0
 		case match_MATCH_LITERAL:
 			return match_errorStringLiteral(context->u.literal, result);
@@ -191,9 +201,10 @@ match_errorString(match_MatchContext *context, match_Result result) {
 	}
 }
 
-void
-match_freeContext(match_MatchContext *context) {
-	switch (context->type) {
+void match_freeContext(match_MatchContext* context)
+{
+	switch (context->type)
+	{
 		case match_MATCH_LITERAL:
 			match_freeLiteral(context->u.literal);
 			break;
@@ -223,9 +234,10 @@ match_freeContext(match_MatchContext *context) {
 }
 
 match_Result
-match_matchPatternOnce(const char *pattern, match_MatchType type,
-		const char *string) {
-	match_MatchContext *context;
+match_matchPatternOnce(const char* pattern, match_MatchType type,
+					   const char* string)
+{
+	match_MatchContext* context;
 	match_Result result;
 
 	result = match_prepareContext(pattern, &context, type);
@@ -243,40 +255,46 @@ out:
 // *** Literal part ***
 
 match_Result
-match_prepareLiteral(const char *pattern,
-		match_LiteralContext **contextPtr) {
+match_prepareLiteral(const char* pattern,
+					 match_LiteralContext** contextPtr)
+{
 	*contextPtr = match_newLiteralContext(uio_strdup(pattern));
 	return match_OK;
 }
 
 match_Result
-match_matchLiteral(match_LiteralContext *context, const char *string) {
+match_matchLiteral(match_LiteralContext* context, const char* string)
+{
 	return (strcmp(context->pattern, string) == 0) ?
-			match_MATCH : match_NOMATCH;
+			   match_MATCH :
+			   match_NOMATCH;
 }
 
-void
-match_freeLiteral(match_LiteralContext *context) {
+void match_freeLiteral(match_LiteralContext* context)
+{
 	uio_free(context->pattern);
 	match_freeLiteralContext(context);
 }
 
-static inline match_LiteralContext *
-match_newLiteralContext(char *pattern) {
-	match_LiteralContext *result;
+static inline match_LiteralContext*
+match_newLiteralContext(char* pattern)
+{
+	match_LiteralContext* result;
 
 	result = match_allocLiteralContext();
 	result->pattern = pattern;
 	return result;
 }
 
-static inline match_LiteralContext *
-match_allocLiteralContext(void) {
-	return (match_LiteralContext*)uio_malloc(sizeof (match_LiteralContext));
+static inline match_LiteralContext*
+match_allocLiteralContext(void)
+{
+	return (match_LiteralContext*)uio_malloc(sizeof(match_LiteralContext));
 }
 
 static inline void
-match_freeLiteralContext(match_LiteralContext *context) {
+match_freeLiteralContext(match_LiteralContext* context)
+{
 	uio_free(context);
 }
 
@@ -284,23 +302,28 @@ match_freeLiteralContext(match_LiteralContext *context) {
 // *** Prefix part ***
 
 match_Result
-match_preparePrefix(const char *pattern,
-		match_PrefixContext **contextPtr) {
+match_preparePrefix(const char* pattern,
+					match_PrefixContext** contextPtr)
+{
 	*contextPtr = match_newPrefixContext(uio_strdup(pattern));
 	return match_OK;
 }
 
 match_Result
-match_matchPrefix(match_PrefixContext *context, const char *string) {
-	char *patPtr;
+match_matchPrefix(match_PrefixContext* context, const char* string)
+{
+	char* patPtr;
 
 	patPtr = context->pattern;
-	while (1) {
-		if (*patPtr == '\0') {
+	while (1)
+	{
+		if (*patPtr == '\0')
+		{
 			// prefix has completely matched
 			return match_MATCH;
 		}
-		if (*string == '\0') {
+		if (*string == '\0')
+		{
 			// no more string left, and still prefix to match
 			return match_NOMATCH;
 		}
@@ -311,28 +334,31 @@ match_matchPrefix(match_PrefixContext *context, const char *string) {
 	}
 }
 
-void
-match_freePrefix(match_PrefixContext *context) {
+void match_freePrefix(match_PrefixContext* context)
+{
 	uio_free(context->pattern);
 	match_freePrefixContext(context);
 }
 
-static inline match_PrefixContext *
-match_newPrefixContext(char *pattern) {
-	match_PrefixContext *result;
+static inline match_PrefixContext*
+match_newPrefixContext(char* pattern)
+{
+	match_PrefixContext* result;
 
 	result = match_allocPrefixContext();
 	result->pattern = pattern;
 	return result;
 }
 
-static inline match_PrefixContext *
-match_allocPrefixContext(void) {
-	return (match_PrefixContext*)uio_malloc(sizeof (match_PrefixContext));
+static inline match_PrefixContext*
+match_allocPrefixContext(void)
+{
+	return (match_PrefixContext*)uio_malloc(sizeof(match_PrefixContext));
 }
 
 static inline void
-match_freePrefixContext(match_PrefixContext *context) {
+match_freePrefixContext(match_PrefixContext* context)
+{
 	uio_free(context);
 }
 
@@ -340,36 +366,43 @@ match_freePrefixContext(match_PrefixContext *context) {
 // *** Suffix part ***
 
 match_Result
-match_prepareSuffix(const char *pattern,
-		match_SuffixContext **contextPtr) {
+match_prepareSuffix(const char* pattern,
+					match_SuffixContext** contextPtr)
+{
 	*contextPtr = match_newSuffixContext(
-			uio_strdup(pattern), strlen(pattern));
+		uio_strdup(pattern), strlen(pattern));
 	return match_OK;
 }
 
 match_Result
-match_matchSuffix(match_SuffixContext *context, const char *string) {
+match_matchSuffix(match_SuffixContext* context, const char* string)
+{
 	size_t stringLen;
 
 	stringLen = strlen(string);
-	if (stringLen < context->len) {
+	if (stringLen < context->len)
+	{
 		// Supplied suffix is larger than string
 		return match_NOMATCH;
 	}
 
 	return memcmp(string + stringLen - context->len, context->pattern,
-			context->len) == 0 ? match_MATCH : match_NOMATCH;
+				  context->len)
+				== 0 ?
+			   match_MATCH :
+			   match_NOMATCH;
 }
 
-void
-match_freeSuffix(match_SuffixContext *context) {
+void match_freeSuffix(match_SuffixContext* context)
+{
 	uio_free(context->pattern);
 	match_freeSuffixContext(context);
 }
 
-static inline match_SuffixContext *
-match_newSuffixContext(char *pattern, size_t len) {
-	match_SuffixContext *result;
+static inline match_SuffixContext*
+match_newSuffixContext(char* pattern, size_t len)
+{
+	match_SuffixContext* result;
 
 	result = match_allocSuffixContext();
 	result->pattern = pattern;
@@ -377,13 +410,15 @@ match_newSuffixContext(char *pattern, size_t len) {
 	return result;
 }
 
-static inline match_SuffixContext *
-match_allocSuffixContext(void) {
-	return (match_SuffixContext*)uio_malloc(sizeof (match_SuffixContext));
+static inline match_SuffixContext*
+match_allocSuffixContext(void)
+{
+	return (match_SuffixContext*)uio_malloc(sizeof(match_SuffixContext));
 }
 
 static inline void
-match_freeSuffixContext(match_SuffixContext *context) {
+match_freeSuffixContext(match_SuffixContext* context)
+{
 	uio_free(context);
 }
 
@@ -391,39 +426,44 @@ match_freeSuffixContext(match_SuffixContext *context) {
 // *** SubString part ***
 
 match_Result
-match_prepareSubString(const char *pattern,
-		match_SubStringContext **contextPtr) {
+match_prepareSubString(const char* pattern,
+					   match_SubStringContext** contextPtr)
+{
 	*contextPtr = match_newSubStringContext(uio_strdup(pattern));
 	return match_OK;
 }
 
 match_Result
-match_matchSubString(match_SubStringContext *context, const char *string) {
+match_matchSubString(match_SubStringContext* context, const char* string)
+{
 	return strstr(string, context->pattern) != NULL;
 }
 
-void
-match_freeSubString(match_SubStringContext *context) {
+void match_freeSubString(match_SubStringContext* context)
+{
 	uio_free(context->pattern);
 	match_freeSubStringContext(context);
 }
 
-static inline match_SubStringContext *
-match_newSubStringContext(char *pattern) {
-	match_SubStringContext *result;
+static inline match_SubStringContext*
+match_newSubStringContext(char* pattern)
+{
+	match_SubStringContext* result;
 
 	result = match_allocSubStringContext();
 	result->pattern = pattern;
 	return result;
 }
 
-static inline match_SubStringContext *
-match_allocSubStringContext(void) {
-	return (match_SubStringContext*)uio_malloc(sizeof (match_SubStringContext));
+static inline match_SubStringContext*
+match_allocSubStringContext(void)
+{
+	return (match_SubStringContext*)uio_malloc(sizeof(match_SubStringContext));
 }
 
 static inline void
-match_freeSubStringContext(match_SubStringContext *context) {
+match_freeSubStringContext(match_SubStringContext* context)
+{
 	uio_free(context);
 }
 
@@ -432,17 +472,20 @@ match_freeSubStringContext(match_SubStringContext *context) {
 
 #ifdef HAVE_GLOB
 match_Result
-match_prepareGlob(const char *pattern, match_GlobContext **contextPtr) {
+match_prepareGlob(const char* pattern, match_GlobContext** contextPtr)
+{
 	*contextPtr = match_newGlobContext(uio_strdup(pattern));
 	return match_OK;
 }
 
 match_Result
-match_matchGlob(match_GlobContext *context, const char *string) {
+match_matchGlob(match_GlobContext* context, const char* string)
+{
 	int retval;
 
 	retval = fnmatch(context->pattern, string, 0);
-	switch (retval) {
+	switch (retval)
+	{
 		case 0:
 			return match_MATCH;
 		case FNM_NOMATCH:
@@ -456,43 +499,48 @@ match_matchGlob(match_GlobContext *context, const char *string) {
 	}
 }
 
-void
-match_freeGlob(match_GlobContext *context) {
+void match_freeGlob(match_GlobContext* context)
+{
 	uio_free(context->pattern);
 	match_freeGlobContext(context);
 }
 
-static inline match_GlobContext *
-match_newGlobContext(char *pattern) {
-	match_GlobContext *result;
+static inline match_GlobContext*
+match_newGlobContext(char* pattern)
+{
+	match_GlobContext* result;
 
 	result = match_allocGlobContext();
 	result->pattern = pattern;
 	return result;
 }
 
-static inline match_GlobContext *
-match_allocGlobContext(void) {
-	return uio_malloc(sizeof (match_GlobContext));
+static inline match_GlobContext*
+match_allocGlobContext(void)
+{
+	return uio_malloc(sizeof(match_GlobContext));
 }
 
 static inline void
-match_freeGlobContext(match_GlobContext *context) {
+match_freeGlobContext(match_GlobContext* context)
+{
 	uio_free(context);
 }
-#endif  /* HAVE_GLOB */
+#endif /* HAVE_GLOB */
 
 
 // *** Regex part ***
 
 #ifdef HAVE_REGEX
 match_Result
-match_prepareRegex(const char *pattern, match_RegexContext **contextPtr) {
+match_prepareRegex(const char* pattern, match_RegexContext** contextPtr)
+{
 	*contextPtr = match_newRegexContext();
 	(*contextPtr)->native = std::regex(pattern);
 	(*contextPtr)->errorCode = 0;
 	//(*contextPtr)->errorCode = regcomp(&(*contextPtr)->native, pattern, REG_EXTENDED | REG_NOSUB);
-	if ((*contextPtr)->errorCode == 0) {
+	if ((*contextPtr)->errorCode == 0)
+	{
 		(*contextPtr)->flags = match_REGEX_INITIALISED;
 		return match_OK;
 	}
@@ -500,29 +548,32 @@ match_prepareRegex(const char *pattern, match_RegexContext **contextPtr) {
 }
 
 match_Result
-match_matchRegex(match_RegexContext *context, const char *string) {
+match_matchRegex(match_RegexContext* context, const char* string)
+{
 	int retval;
-	
-	if ((context->flags & match_REGEX_INITIALISED) != 
-			match_REGEX_INITIALISED) {
+
+	if ((context->flags & match_REGEX_INITIALISED) != match_REGEX_INITIALISED)
+	{
 		return match_ENOTINIT;
 	}
-	if (context->errorString) {
+	if (context->errorString)
+	{
 		uio_free(context->errorString);
 		context->errorString = NULL;
 	}
 
 	if (std::regex_search(string, context->native))
 		return match_MATCH;
-	
+
 	return match_NOMATCH;
 }
 
-const char *
-match_errorStringRegex(match_RegexContext *context, int errorCode) {
-	constexpr const char err[]{ "Unknown regex error or match failure." };
-	constexpr size_t errorStringLength{ sizeof(err) };
-	
+const char*
+match_errorStringRegex(match_RegexContext* context, int errorCode)
+{
+	constexpr const char err[] {"Unknown regex error or match failure."};
+	constexpr size_t errorStringLength {sizeof(err)};
+
 	if (context->errorString != NULL)
 		uio_free(context->errorString);
 
@@ -533,16 +584,17 @@ match_errorStringRegex(match_RegexContext *context, int errorCode) {
 	return context->errorString;
 }
 
-void
-match_freeRegex(match_RegexContext *context) {
+void match_freeRegex(match_RegexContext* context)
+{
 
 	if (context->errorString)
 		uio_free(context->errorString);
 	match_freeRegexContext(context);
 }
 
-static inline match_RegexContext *
-match_newRegexContext(void) {
+static inline match_RegexContext*
+match_newRegexContext(void)
+{
 	match_RegexContext* result;
 	result = match_allocRegexContext();
 	result->errorString = NULL;
@@ -551,14 +603,15 @@ match_newRegexContext(void) {
 	return result;
 }
 
-static inline match_RegexContext *
-match_allocRegexContext(void) {
-	return new match_RegexContext{};
+static inline match_RegexContext*
+match_allocRegexContext(void)
+{
+	return new match_RegexContext {};
 }
 
 static inline void
-match_freeRegexContext(match_RegexContext *context) {
+match_freeRegexContext(match_RegexContext* context)
+{
 	delete context;
 }
-#endif  /* HAVE_REGEX */
-
+#endif /* HAVE_REGEX */

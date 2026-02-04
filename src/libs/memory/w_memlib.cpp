@@ -25,60 +25,53 @@
 #include "libs/misc.h"
 
 
-bool
-mem_init (void)
-{	// This is a stub
+bool mem_init(void)
+{ // This is a stub
 	return true;
 }
 
-bool
-mem_uninit (void)
-{	// This is a stub
+bool mem_uninit(void)
+{ // This is a stub
 	return true;
 }
 
-void *
-HMalloc (size_t size)
+void* HMalloc(size_t size)
 {
-	void *p = malloc (size);
+	void* p = malloc(size);
 	if (p == NULL && size > 0)
 	{
-		log_add (log_Fatal, "HMalloc() FATAL: out of memory.");
-		fflush (stderr);
-		explode ();
+		log_add(log_Fatal, "HMalloc() FATAL: out of memory.");
+		fflush(stderr);
+		explode();
 	}
 
 	return p;
 }
 
-void
-HFree (void *p)
+void HFree(void* p)
 {
-	free (p);
+	free(p);
 }
 
-void *
-HCalloc (size_t size)
+void* HCalloc(size_t size)
 {
-	void *p;
+	void* p;
 
-	p = HMalloc (size);
-	memset (p, 0, size);
+	p = HMalloc(size);
+	memset(p, 0, size);
 
 	return p;
 }
 
-void *
-HRealloc (void *p, size_t size)
+void* HRealloc(void* p, size_t size)
 {
-	p = realloc (p, size);
+	p = realloc(p, size);
 	if (p == NULL && size > 0)
 	{
-		log_add (log_Fatal, "HRealloc() FATAL: out of memory.");
-		fflush (stderr);
-		explode ();
+		log_add(log_Fatal, "HRealloc() FATAL: out of memory.");
+		fflush(stderr);
+		explode();
 	}
 
 	return p;
 }
-

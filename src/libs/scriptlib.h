@@ -19,5 +19,4 @@
 
 #include "luauqm/luauqm.h"
 
-#endif  /* LIBS_SCRIPTLIB_H_ */
-
+#endif /* LIBS_SCRIPTLIB_H_ */

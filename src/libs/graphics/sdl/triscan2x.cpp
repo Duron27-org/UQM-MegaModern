@@ -33,37 +33,36 @@
 //		Scale_TriScanFilter (for plain C) or
 //		Scale_MMX_TriScanFilter (for MMX)
 //		[others when platforms are added]
-void
-SCALE_(TriScanFilter) (SDL_Surface *src, SDL_Surface *dst, SDL_Rect *r)
+void SCALE_(TriScanFilter)(SDL_Surface* src, SDL_Surface* dst, SDL_Rect* r)
 {
 	int x, y;
 	const int w = src->w, h = src->h;
 	int xend, yend;
 	int dsrc, ddst;
-	SDL_Rect *region = r;
+	SDL_Rect* region = r;
 	SDL_Rect limits;
-	SDL_PixelFormat *fmt = dst->format;
+	SDL_PixelFormat* fmt = dst->format;
 	const int sp = src->pitch, dp = dst->pitch;
 	const int bpp = fmt->BytesPerPixel;
 	const int slen = sp / bpp, dlen = dp / bpp;
 	// for clarity purposes, the 'pixels' array here is transposed
 	Uint32 pixels[3][3];
-	Uint32 *src_p = (Uint32 *)src->pixels;
-	Uint32 *dst_p = (Uint32 *)dst->pixels;
+	Uint32* src_p = (Uint32*)src->pixels;
+	Uint32* dst_p = (Uint32*)dst->pixels;
 
 	int prevline, nextline;
 
-	// these macros are for clarity; they make the current pixel (0,0)
-	// and allow to access pixels in all directions
-	#define PIX(x, y)   (pixels[1 + (x)][1 + (y)])
+// these macros are for clarity; they make the current pixel (0,0)
+// and allow to access pixels in all directions
+#define PIX(x, y) (pixels[1 + (x)][1 + (y)])
 
-	#define TRISCAN_YUV_MED     100
-	// medium tolerance pixel comparison
-	#define TRISCAN_CMPYUV(p1, p2) \
-			(PIX p1 == PIX p2 || SCALE_CMPYUV (PIX p1, PIX p2, TRISCAN_YUV_MED))
+#define TRISCAN_YUV_MED 100
+// medium tolerance pixel comparison
+#define TRISCAN_CMPYUV(p1, p2) \
+	(PIX p1 == PIX p2 || SCALE_CMPYUV(PIX p1, PIX p2, TRISCAN_YUV_MED))
 
 
-	SCALE_(PlatInit) ();
+	SCALE_(PlatInit)();
 
 	// expand updated region if necessary
 	// pixels neighbooring the updated region may
@@ -72,7 +71,7 @@ SCALE_(TriScanFilter) (SDL_Surface *src, SDL_Surface *dst, SDL_Rect *r)
 	limits.y = 0;
 	limits.w = src->w;
 	limits.h = src->h;
-	Scale_ExpandRect (region, 1, &limits);
+	Scale_ExpandRect(region, 1, &limits);
 
 	xend = region->x + region->w;
 	yend = region->y + region->h;
@@ -94,62 +93,60 @@ SCALE_(TriScanFilter) (SDL_Surface *src, SDL_Surface *dst, SDL_Rect *r)
 			nextline = slen;
 		else
 			nextline = 0;
-	
+
 		// prime the (tiny) sliding-window pixel arrays
-		PIX( 1,  0) = src_p[0];
+		PIX(1, 0) = src_p[0];
 
 		if (region->x > 0)
-			PIX( 0,  0) = src_p[-1];
+			PIX(0, 0) = src_p[-1];
 		else
-			PIX( 0,  0) = PIX( 1,  0);
+			PIX(0, 0) = PIX(1, 0);
 
 		for (x = region->x; x < xend; ++x, ++src_p, dst_p += 2)
 		{
 			// slide the window
-			PIX(-1,  0) = PIX( 0,  0);
+			PIX(-1, 0) = PIX(0, 0);
 
-			PIX( 0, -1) = src_p[prevline];
-			PIX( 0,  0) = PIX( 1,  0);
-			PIX( 0,  1) = src_p[nextline];
+			PIX(0, -1) = src_p[prevline];
+			PIX(0, 0) = PIX(1, 0);
+			PIX(0, 1) = src_p[nextline];
 
 			if (x < w - 1)
-				PIX( 1,  0) = src_p[1];
+				PIX(1, 0) = src_p[1];
 			else
-				PIX( 1,  0) = PIX( 0,  0);
-			
-			if (!TRISCAN_CMPYUV (( 0, -1), ( 0,  1)) &&
-				!TRISCAN_CMPYUV ((-1,  0), ( 1,  0)))
+				PIX(1, 0) = PIX(0, 0);
+
+			if (!TRISCAN_CMPYUV((0, -1), (0, 1)) && !TRISCAN_CMPYUV((-1, 0), (1, 0)))
 			{
-				if (TRISCAN_CMPYUV ((-1,  0), ( 0, -1)))
-					dst_p[0] = Scale_Blend_11 (PIX(-1, 0), PIX(0, -1));
+				if (TRISCAN_CMPYUV((-1, 0), (0, -1)))
+					dst_p[0] = Scale_Blend_11(PIX(-1, 0), PIX(0, -1));
 				else
 					dst_p[0] = PIX(0, 0);
 
-				if (TRISCAN_CMPYUV (( 1,  0), ( 0, -1)))
-					dst_p[1] = Scale_Blend_11 (PIX(1, 0), PIX(0, -1));
+				if (TRISCAN_CMPYUV((1, 0), (0, -1)))
+					dst_p[1] = Scale_Blend_11(PIX(1, 0), PIX(0, -1));
 				else
 					dst_p[1] = PIX(0, 0);
 
-				if (TRISCAN_CMPYUV ((-1,  0), ( 0,  1)))
-					dst_p[dlen] = Scale_Blend_11 (PIX(-1, 0), PIX(0, 1));
+				if (TRISCAN_CMPYUV((-1, 0), (0, 1)))
+					dst_p[dlen] = Scale_Blend_11(PIX(-1, 0), PIX(0, 1));
 				else
 					dst_p[dlen] = PIX(0, 0);
 
-				if (TRISCAN_CMPYUV (( 1,  0), ( 0,  1)))
-					dst_p[dlen+1] = Scale_Blend_11 (PIX(1, 0), PIX(0, 1));
+				if (TRISCAN_CMPYUV((1, 0), (0, 1)))
+					dst_p[dlen + 1] = Scale_Blend_11(PIX(1, 0), PIX(0, 1));
 				else
-					dst_p[dlen+1] = PIX(0, 0);
+					dst_p[dlen + 1] = PIX(0, 0);
 			}
 			else
 			{
-				dst_p[0]      = PIX(0, 0);
-				dst_p[1]      = PIX(0, 0);
-				dst_p[dlen]   = PIX(0, 0);
-				dst_p[dlen+1] = PIX(0, 0);
+				dst_p[0] = PIX(0, 0);
+				dst_p[1] = PIX(0, 0);
+				dst_p[dlen] = PIX(0, 0);
+				dst_p[dlen + 1] = PIX(0, 0);
 			}
 		}
 	}
 
-	SCALE_(PlatDone) ();
+	SCALE_(PlatDone)();
 }
-

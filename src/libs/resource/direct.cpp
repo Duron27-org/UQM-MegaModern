@@ -23,20 +23,20 @@
 #include <sys/stat.h>
 
 DIRENTRY_REF
-LoadDirEntryTable (uio_DirHandle *dirHandle, const char *path,
-		const char *pattern, match_MatchType matchType)
+LoadDirEntryTable(uio_DirHandle* dirHandle, const char* path,
+				  const char* pattern, match_MatchType matchType)
 {
-	uio_DirList *dirList;
+	uio_DirList* dirList;
 	uqm::COUNT num_entries;
 	uqm::COUNT i;
-	uio_DirHandle *dir;
+	uio_DirHandle* dir;
 	STRING_TABLE StringTable;
-	STRING_TABLE_DESC *lpST;
+	STRING_TABLE_DESC* lpST;
 	STRING lpLastString;
 
-	dir = uio_openDirRelative (dirHandle, path, 0);
+	dir = uio_openDirRelative(dirHandle, path, 0);
 	assert(dir != NULL);
-	dirList = uio_getDirList (dir, "", pattern, matchType);
+	dirList = uio_getDirList(dir, "", pattern, matchType);
 	assert(dirList != NULL);
 	num_entries = 0;
 
@@ -50,32 +50,33 @@ LoadDirEntryTable (uio_DirHandle *dirHandle, const char *path,
 			dirList->names[i] = NULL;
 			continue;
 		}
-		if (uio_stat (dir, dirList->names[i], &sb) == -1)
+		if (uio_stat(dir, dirList->names[i], &sb) == -1)
 		{
 			dirList->names[i] = NULL;
 			continue;
 		}
-		if (!S_ISREG (sb.st_mode))
+		if (!S_ISREG(sb.st_mode))
 		{
 			dirList->names[i] = NULL;
 			continue;
 		}
 		num_entries++;
 	}
-	uio_closeDir (dir);
+	uio_closeDir(dir);
 
-	if (num_entries == 0) {
+	if (num_entries == 0)
+	{
 		uio_DirList_free(dirList);
-		return ((DIRENTRY_REF) 0);
+		return ((DIRENTRY_REF)0);
 	}
 
-	StringTable = AllocStringTable (num_entries, 0);
+	StringTable = AllocStringTable(num_entries, 0);
 	lpST = StringTable;
 	if (lpST == 0)
 	{
-		FreeStringTable (StringTable);
+		FreeStringTable(StringTable);
 		uio_DirList_free(dirList);
-		return ((DIRENTRY_REF) 0);
+		return ((DIRENTRY_REF)0);
 	}
 	lpST->size = num_entries;
 	lpLastString = lpST->strings;
@@ -86,16 +87,14 @@ LoadDirEntryTable (uio_DirHandle *dirHandle, const char *path,
 		STRINGPTR target;
 		if (dirList->names[i] == NULL)
 			continue;
-		size = strlen (dirList->names[i]) + 1;
-		target = (STRINGPTR)HMalloc (size);
-		memcpy (target, dirList->names[i], size);
+		size = strlen(dirList->names[i]) + 1;
+		target = (STRINGPTR)HMalloc(size);
+		memcpy(target, dirList->names[i], size);
 		lpLastString->data = target;
 		lpLastString->length = size;
 		lpLastString++;
 	}
-	
+
 	uio_DirList_free(dirList);
 	return StringTable;
-}	
-
-
+}

@@ -22,7 +22,8 @@
 
 typedef struct ResolveFlags ResolveFlags;
 typedef struct ResolveError ResolveError;
-typedef enum {
+typedef enum
+{
 	Resolve_closed,
 	Resolve_resolving
 } ResolveStateState;
@@ -37,43 +38,46 @@ typedef struct ResolveState ResolveState;
 // including this file.
 struct addrinfo;
 #else
-#	include <netdb.h>
+#include <netdb.h>
 #endif
 
 #include "libs/callback.h"
 #include "../netmanager/netmanager.h"
 
 
-struct ResolveFlags {
+struct ResolveFlags
+{
 	// Nothing yet.
 
-	int dummy;  // empty struct declarations are not allowed by C'99.
+	int dummy; // empty struct declarations are not allowed by C'99.
 };
 
-struct ResolveError {
+struct ResolveError
+{
 	int gaiRes;
 	int err;
-			// errno value. Only relevant if gaiRes == EAI_SYSTEM.
+	// errno value. Only relevant if gaiRes == EAI_SYSTEM.
 };
 
-typedef void *ResolveCallbackArg;
-typedef void (*ResolveCallback)(ResolveState *resolveState,
-		struct addrinfo *result);
-		// The receiver of the callback is owner of 'result' and
-		// should call freeaddrinfo().
-typedef void (*ResolveErrorCallback)(ResolveState *resolveState,
-		const ResolveError *error);
+typedef void* ResolveCallbackArg;
+typedef void (*ResolveCallback)(ResolveState* resolveState,
+								struct addrinfo* result);
+// The receiver of the callback is owner of 'result' and
+// should call freeaddrinfo().
+typedef void (*ResolveErrorCallback)(ResolveState* resolveState,
+									 const ResolveError* error);
 
 #ifdef RESOLVE_INTERNAL
 #ifdef USE_WINSOCK
-#	include <winsock2.h>
-#	include <ws2tcpip.h>
-#	include "../wspiapiwrap.h"
-#else  /* !defined(USE_WINSOCK) */
-#	include <netdb.h>
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#include "../wspiapiwrap.h"
+#else /* !defined(USE_WINSOCK) */
+#include <netdb.h>
 #endif /* !defined(USE_WINSOCK) */
 
-struct ResolveState {
+struct ResolveState
+{
 	RefCount refCount;
 
 	ResolveStateState state;
@@ -81,29 +85,28 @@ struct ResolveState {
 
 	ResolveCallback callback;
 	ResolveErrorCallback errorCallback;
-	void *extra;
+	void* extra;
 
 	CallbackID callbackID;
 	ResolveError error;
-	struct addrinfo *result;
+	struct addrinfo* result;
 };
-#endif  /* RESOLVE_INTERNAL */
+#endif /* RESOLVE_INTERNAL */
 
 
-void ResolveState_incRef(ResolveState *resolveState);
-bool ResolveState_decRef(ResolveState *resolveState);
-void ResolveState_setExtra(ResolveState *resolveState, void *extra);
-void *ResolveState_getExtra(ResolveState *resolveState);
-ResolveState *getaddrinfoAsync(const char *node, const char *service,
-		const struct addrinfo *hints, ResolveFlags *flags,
-		ResolveCallback callback, ResolveErrorCallback errorCallback,
-		ResolveCallbackArg extra);
-void Resolve_close(ResolveState *resolveState);
+void ResolveState_incRef(ResolveState* resolveState);
+bool ResolveState_decRef(ResolveState* resolveState);
+void ResolveState_setExtra(ResolveState* resolveState, void* extra);
+void* ResolveState_getExtra(ResolveState* resolveState);
+ResolveState* getaddrinfoAsync(const char* node, const char* service,
+							   const struct addrinfo* hints, ResolveFlags* flags,
+							   ResolveCallback callback, ResolveErrorCallback errorCallback,
+							   ResolveCallbackArg extra);
+void Resolve_close(ResolveState* resolveState);
 
-void splitAddrInfoOnFamily(struct addrinfo *info, int family,
-		struct addrinfo **selected, struct addrinfo ***selectedEnd,
-		struct addrinfo **rest, struct addrinfo ***restEnd);
+void splitAddrInfoOnFamily(struct addrinfo* info, int family,
+						   struct addrinfo** selected, struct addrinfo*** selectedEnd,
+						   struct addrinfo** rest, struct addrinfo*** restEnd);
 
 
-#endif  /* LIBS_NETWORK_CONNECT_RESOLVE_H_ */
-
+#endif /* LIBS_NETWORK_CONNECT_RESOLVE_H_ */

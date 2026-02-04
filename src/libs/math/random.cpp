@@ -15,8 +15,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
- 
- /****************************************************************************
+
+/****************************************************************************
 * FILE: random.c
 * DESC: a library of random number generators for general purpose use.
 *
@@ -59,7 +59,7 @@ static uqm::DWORD seed = 12345L; /* random number seed */
 *****************************************************************************/
 
 uqm::DWORD
-TFB_Random (void)
+TFB_Random(void)
 {
 	seed = A * (seed % Q) - R * (seed / Q);
 	if (seed > M)
@@ -84,7 +84,7 @@ TFB_Random (void)
 *****************************************************************************/
 
 uqm::DWORD
-TFB_SeedRandom (uqm::DWORD new_seed)
+TFB_SeedRandom(uqm::DWORD new_seed)
 {
 	uqm::DWORD old_seed;
 
@@ -100,10 +100,9 @@ TFB_SeedRandom (uqm::DWORD new_seed)
 }
 
 // Assumes little endian
-void
-printBits (size_t const size, void const *const ptr)
+void printBits(size_t const size, void const* const ptr)
 {
-	unsigned char *b = (unsigned char *)ptr;
+	unsigned char* b = (unsigned char*)ptr;
 	unsigned char byte;
 	int i, j;
 
@@ -112,8 +111,8 @@ printBits (size_t const size, void const *const ptr)
 		for (j = 7; j >= 0; j--)
 		{
 			byte = (b[i] >> j) & 1;
-			printf ("%u", byte);
+			printf("%u", byte);
 		}
 	}
-	puts ("");
+	puts("");
 }

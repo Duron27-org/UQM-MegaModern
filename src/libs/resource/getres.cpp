@@ -24,186 +24,181 @@
 #include "libs/log.h"
 #include "libs/uio/charhashtable.h"
 
-const char *_cur_resfile_name;
+const char* _cur_resfile_name;
 // When a file is being loaded, _cur_resfile_name is set to its name.
 // At other times, it is NULL.
 
-ResourceDesc *
-lookupResourceDesc (RESOURCE_INDEX idx, RESOURCE res)
+ResourceDesc*
+lookupResourceDesc(RESOURCE_INDEX idx, RESOURCE res)
 {
-	return (ResourceDesc *) CharHashTable_find (idx->map, res);
+	return (ResourceDesc*)CharHashTable_find(idx->map, res);
 }
 
-void
-loadResourceDesc (ResourceDesc *desc)
+void loadResourceDesc(ResourceDesc* desc)
 {
-	desc->vtable->loadFun (desc->fname, &desc->resdata);
+	desc->vtable->loadFun(desc->fname, &desc->resdata);
 }
 
-void *
-LoadResourceFromPath (const char *path, ResourceLoadFileFun *loadFun)
+void* LoadResourceFromPath(const char* path, ResourceLoadFileFun* loadFun)
 {
-	auto pathLen{ strlen(path) };
+	auto pathLen {strlen(path)};
 
 	//std::string_view sv{ path };
 
-	uio_Stream *stream;
+	uio_Stream* stream;
 	unsigned long dataLen;
-	void *resdata;
+	void* resdata;
 
-	stream = res_OpenResFile (contentDir, path, "rb");
+	stream = res_OpenResFile(contentDir, path, "rb");
 	if (stream == NULL)
 	{
-		log_add (log_Warning, "Warning: Can't open '%s'", path);
+		log_add(log_Warning, "Warning: Can't open '%s'", path);
 		return NULL;
 	}
 
-	dataLen = LengthResFile (stream);
-	log_add (log_Info, "\t'%s' -- %lu bytes", path, dataLen);
-	
+	dataLen = LengthResFile(stream);
+	log_add(log_Info, "\t'%s' -- %lu bytes", path, dataLen);
+
 	if (dataLen == 0)
 	{
-		log_add (log_Warning, "Warning: Trying to load empty file '%s'.", path);
+		log_add(log_Warning, "Warning: Trying to load empty file '%s'.", path);
 		goto err;
 	}
 
 	_cur_resfile_name = path;
-	resdata = (*loadFun) (stream, dataLen);
+	resdata = (*loadFun)(stream, dataLen);
 	_cur_resfile_name = NULL;
-	res_CloseResFile (stream);
+	res_CloseResFile(stream);
 
 	return resdata;
 
 err:
-	res_CloseResFile (stream);
+	res_CloseResFile(stream);
 	return NULL;
 }
 
-const char *
-res_GetResourceType (RESOURCE res)
+const char*
+res_GetResourceType(RESOURCE res)
 {
 	RESOURCE_INDEX resourceIndex;
-	ResourceDesc *desc;
-	
+	ResourceDesc* desc;
+
 	if (res == NULL_RESOURCE)
 	{
-		log_add (log_Warning, "Trying to get type of null resource");
+		log_add(log_Warning, "Trying to get type of null resource");
 		return NULL;
 	}
-	
-	resourceIndex = _get_current_index_header ();
-	desc = lookupResourceDesc (resourceIndex, res);
+
+	resourceIndex = _get_current_index_header();
+	desc = lookupResourceDesc(resourceIndex, res);
 	if (desc == NULL)
 	{
-		log_add (log_Warning, "Trying to get type of undefined resource '%s'",
+		log_add(log_Warning, "Trying to get type of undefined resource '%s'",
 				res);
 		return NULL;
 	}
-	
+
 	return desc->vtable->resType;
 }
-	
+
 
 // Get a resource by its resource ID.
-void *
-res_GetResource (RESOURCE res)
+void* res_GetResource(RESOURCE res)
 {
 	RESOURCE_INDEX resourceIndex;
-	ResourceDesc *desc;
-	
+	ResourceDesc* desc;
+
 	if (res == NULL_RESOURCE)
 	{
-		log_add (log_Warning, "Trying to get null resource");
+		log_add(log_Warning, "Trying to get null resource");
 		return NULL;
 	}
-	
-	resourceIndex = _get_current_index_header ();
 
-	desc = lookupResourceDesc (resourceIndex, res);
+	resourceIndex = _get_current_index_header();
+
+	desc = lookupResourceDesc(resourceIndex, res);
 	if (desc == NULL)
 	{
-		log_add (log_Warning, "Trying to get undefined resource '%s'",
-				 res);
+		log_add(log_Warning, "Trying to get undefined resource '%s'",
+				res);
 		return NULL;
 	}
 
 	if (desc->resdata.ptr == NULL)
-		loadResourceDesc (desc);
+		loadResourceDesc(desc);
 	if (desc->resdata.ptr != NULL)
 		++desc->refcount;
 
 	return desc->resdata.ptr;
-			// May still be NULL, if the load failed.
+	// May still be NULL, if the load failed.
 }
 
 uqm::DWORD
-res_GetIntResource (RESOURCE res)
+res_GetIntResource(RESOURCE res)
 {
 	RESOURCE_INDEX resourceIndex;
-	ResourceDesc *desc;
-	
+	ResourceDesc* desc;
+
 	if (res == NULL_RESOURCE)
 	{
-		log_add (log_Warning, "Trying to get null resource");
+		log_add(log_Warning, "Trying to get null resource");
 		return 0;
 	}
-	
-	resourceIndex = _get_current_index_header ();
 
-	desc = lookupResourceDesc (resourceIndex, res);
+	resourceIndex = _get_current_index_header();
+
+	desc = lookupResourceDesc(resourceIndex, res);
 	if (desc == NULL)
 	{
-		log_add (log_Warning, "Trying to get undefined resource '%s'",
-				 res);
+		log_add(log_Warning, "Trying to get undefined resource '%s'",
+				res);
 		return 0;
 	}
 
 	return desc->resdata.num;
 }
 
-bool
-res_GetBooleanResource (RESOURCE res)
+bool res_GetBooleanResource(RESOURCE res)
 {
-	return (bool)(res_GetIntResource (res) != 0);
+	return (bool)(res_GetIntResource(res) != 0);
 }
 
 // NB: this function appears to be never called!
-void
-res_FreeResource (RESOURCE res)
+void res_FreeResource(RESOURCE res)
 {
-	ResourceDesc *desc;
-	ResourceFreeFun *freeFun;
+	ResourceDesc* desc;
+	ResourceFreeFun* freeFun;
 
-	desc = lookupResourceDesc (_get_current_index_header(), res);
+	desc = lookupResourceDesc(_get_current_index_header(), res);
 	if (desc == NULL)
 	{
-		log_add (log_Debug, "Warning: trying to free an unrecognised "
-				"resource.");
+		log_add(log_Debug, "Warning: trying to free an unrecognised "
+						   "resource.");
 		return;
 	}
 
 	if (desc->refcount > 0)
 		--desc->refcount;
 	else
-		log_add (log_Debug, "Warning: freeing an unreferenced resource.");
+		log_add(log_Debug, "Warning: freeing an unreferenced resource.");
 	if (desc->refcount > 0)
 		return; // Still references left
 
 	freeFun = desc->vtable->freeFun;
 	if (freeFun == NULL)
 	{
-		log_add (log_Debug, "Warning: trying to free a non-heap resource.");
-		return;
-	}
-	
-	if (desc->resdata.ptr == NULL)
-	{
-		log_add (log_Debug, "Warning: trying to free not loaded "
-				"resource.");
+		log_add(log_Debug, "Warning: trying to free a non-heap resource.");
 		return;
 	}
 
-	(*freeFun) (desc->resdata.ptr);
+	if (desc->resdata.ptr == NULL)
+	{
+		log_add(log_Debug, "Warning: trying to free not loaded "
+						   "resource.");
+		return;
+	}
+
+	(*freeFun)(desc->resdata.ptr);
 	desc->resdata.ptr = NULL;
 }
 
@@ -211,39 +206,39 @@ res_FreeResource (RESOURCE res)
 // the resource. If res_GetResource() get called again for this
 // resource, a NEW copy will be loaded, regardless of whether a detached
 // copy still exists.
-void *
-res_DetachResource (RESOURCE res)
+void* res_DetachResource(RESOURCE res)
 {
-	ResourceDesc *desc;
-	ResourceFreeFun *freeFun;
-	void *result;
+	ResourceDesc* desc;
+	ResourceFreeFun* freeFun;
+	void* result;
 
-	desc = lookupResourceDesc (_get_current_index_header(), res);
+	desc = lookupResourceDesc(_get_current_index_header(), res);
 	if (desc == NULL)
 	{
-		log_add (log_Debug, "Warning: trying to detach from an unrecognised "
-				"resource.");
+		log_add(log_Debug, "Warning: trying to detach from an unrecognised "
+						   "resource.");
 		return NULL;
 	}
-	
+
 	freeFun = desc->vtable->freeFun;
 	if (freeFun == NULL)
 	{
-		log_add (log_Debug, "Warning: trying to detach from a non-heap resource.");
+		log_add(log_Debug, "Warning: trying to detach from a non-heap resource.");
 		return NULL;
 	}
-	
+
 	if (desc->resdata.ptr == NULL)
 	{
-		log_add (log_Debug, "Warning: trying to detach from a not loaded "
-				"resource.");
+		log_add(log_Debug, "Warning: trying to detach from a not loaded "
+						   "resource.");
 		return NULL;
 	}
 
 	if (desc->refcount > 1)
 	{
-		log_add (log_Debug, "Warning: trying to detach a resource referenced "
-				"%u times", desc->refcount);
+		log_add(log_Debug, "Warning: trying to detach a resource referenced "
+						   "%u times",
+				desc->refcount);
 		return NULL;
 	}
 
@@ -254,9 +249,8 @@ res_DetachResource (RESOURCE res)
 	return result;
 }
 
-bool
-FreeResourceData (void *data)
+bool FreeResourceData(void* data)
 {
-	HFree (data);
+	HFree(data);
 	return true;
 }

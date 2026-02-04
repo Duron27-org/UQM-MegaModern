@@ -22,7 +22,7 @@
 #include "uqm/units.h"
 #include "uqm/setup.h"
 #include "uqm/sis.h"
-		// for DeltaSISGauges(), DrawLanders()
+// for DeltaSISGauges(), DrawLanders()
 #include "libs/graphics/gfx_common.h"
 #include "uqm/lua/luacomm.h"
 #include "uqm/settings.h"
@@ -30,120 +30,143 @@
 #include "libs/math/random.h"
 
 static LOCDATA commander_desc =
-{
-	COMMANDER_CONVERSATION, /* AlienConv */
-	NULL, /* init_encounter_func */
-	NULL, /* post_encounter_func */
-	NULL, /* uninit_encounter_func */
-	COMMANDER_PMAP_ANIM, /* AlienFrame */
-	COMMANDER_FONT, /* AlienFont */
-	WHITE_COLOR_INIT, /* AlienTextFColor */
-	BLACK_COLOR_INIT, /* AlienTextBColor */
-	{0, 0}, /* AlienTextBaseline */
-	0, /* SIS_TEXT_WIDTH, */ /* AlienTextWidth */
-	ALIGN_CENTER, /* AlienTextAlign */
-	VALIGN_MIDDLE, /* AlienTextValign */
-	COMMANDER_COLOR_MAP, /* AlienColorMap */
-	COMMANDER_MUSIC, /* AlienSong */
 	{
-		COMMANDER_INIT_PMAP_ANIM, /* AlienAltFrame */
-		NULL_RESOURCE, /* AlienAltColorMap */
-		COMMANDER_LOWPOW_MUSIC, /* AlienAltSong */
-	},
-	COMMANDER_CONVERSATION_PHRASES, /* PlayerPhrases */
-	4, /* NumAnimations */
-	{ /* AlienAmbientArray (ambient animations) */
-		{ /* Blink */
-			1, /* StartIndex */
-			3, /* NumFrames */
-			YOYO_ANIM, /* AnimFlags */
-			ONE_SECOND / 15, 0, /* FrameRate */
-			0, ONE_SECOND * 8, /* RestartRate */
+		COMMANDER_CONVERSATION, /* AlienConv */
+		NULL, /* init_encounter_func */
+		NULL, /* post_encounter_func */
+		NULL, /* uninit_encounter_func */
+		COMMANDER_PMAP_ANIM, /* AlienFrame */
+		COMMANDER_FONT, /* AlienFont */
+		WHITE_COLOR_INIT, /* AlienTextFColor */
+		BLACK_COLOR_INIT, /* AlienTextBColor */
+		{0, 0}, /* AlienTextBaseline */
+		0,
+ /* SIS_TEXT_WIDTH, */  /* AlienTextWidth */
+		ALIGN_CENTER, /* AlienTextAlign */
+		VALIGN_MIDDLE, /* AlienTextValign */
+		COMMANDER_COLOR_MAP, /* AlienColorMap */
+		COMMANDER_MUSIC, /* AlienSong */
+		{
+								COMMANDER_INIT_PMAP_ANIM, /* AlienAltFrame */
+			NULL_RESOURCE,			  /* AlienAltColorMap */
+			COMMANDER_LOWPOW_MUSIC,	  /* AlienAltSong */
+		},
+		COMMANDER_CONVERSATION_PHRASES, /* PlayerPhrases */
+		4, /* NumAnimations */
+		{
+								/* AlienAmbientArray (ambient animations) */
+			{
+				/* Blink */
+				1,		   /* StartIndex */
+				3,		   /* NumFrames */
+				YOYO_ANIM, /* AnimFlags */
+				ONE_SECOND / 15,
+				0, /* FrameRate */
+				0,
+				ONE_SECOND * 8, /* RestartRate */
+				0,				/* BlockMask */
+			},
+								{
+				/* Running light */
+				10,			   /* StartIndex */
+				30,			   /* NumFrames */
+				CIRCULAR_ANIM, /* AnimFlags */
+				ONE_SECOND / 40,
+				0, /* FrameRate */
+				ONE_SECOND * 2,
+				0, /* RestartRate */
+				0, /* BlockMask */
+			},
+								{
+				/* SD "rave party" */
+				1, /* StartIndex */
+				3, /* NumFrames */
+				RANDOM_ANIM | COLORXFORM_ANIM
+					| ANIM_DISABLED, /* AnimFlags */
+				0,
+				ONE_SECOND / 30, /* FrameRate */
+				0,
+				ONE_SECOND / 15, /* RestartRate */
+				0,				 /* BlockMask */
+			},
+								{
+				/* HD static distortion */
+				40, /* StartIndex */
+				16, /* NumFrames */
+				RANDOM_ANIM | ANIM_DISABLED
+					| IMMUME_TO_RESTART, /* AnimFlags */
+				0,
+				ONE_SECOND / 5, /* FrameRate */
+				0,
+				ONE_SECOND / 4, /* RestartRate */
+				0,				/* BlockMask */
+			},
+								},
+		{
+								/* AlienTransitionDesc */
+			0, /* StartIndex */
+			0, /* NumFrames */
+			0, /* AnimFlags */
+			0,
+								0, /* FrameRate */
+			0,
+								0, /* RestartRate */
 			0, /* BlockMask */
 		},
-		{ /* Running light */
-			10, /* StartIndex */
-			30, /* NumFrames */
-			CIRCULAR_ANIM, /* AnimFlags */
-			ONE_SECOND / 40, 0, /* FrameRate */
-			ONE_SECOND * 2, 0, /* RestartRate */
-			0, /* BlockMask */
+		{
+								/* AlienTalkDesc */
+			4, /* StartIndex */
+			6, /* NumFrames */
+			0, /* AnimFlags */
+			ONE_SECOND / 10,
+								ONE_SECOND / 15, /* FrameRate */
+			ONE_SECOND * 7 / 60,
+								ONE_SECOND / 12, /* RestartRate */
+			0,				 /* BlockMask */
 		},
-		{ /* SD "rave party" */
-			1, /* StartIndex */
-			3, /* NumFrames */
-			RANDOM_ANIM | COLORXFORM_ANIM
-			| ANIM_DISABLED,/* AnimFlags */
-			0, ONE_SECOND / 30, /* FrameRate */
-			0, ONE_SECOND / 15, /* RestartRate */
-			0, /* BlockMask */
-		},
-		{ /* HD static distortion */
-			40, /* StartIndex */
-			16, /* NumFrames */
-			RANDOM_ANIM | ANIM_DISABLED
-			| IMMUME_TO_RESTART, /* AnimFlags */
-			0, ONE_SECOND / 5, /* FrameRate */
-			0, ONE_SECOND / 4, /* RestartRate */
-			0, /* BlockMask */
-		},
-	},
-	{ /* AlienTransitionDesc */
-		0, /* StartIndex */
-		0, /* NumFrames */
-		0, /* AnimFlags */
-		0, 0, /* FrameRate */
-		0, 0, /* RestartRate */
-		0, /* BlockMask */
-	},
-	{ /* AlienTalkDesc */
-		4, /* StartIndex */
-		6, /* NumFrames */
-		0, /* AnimFlags */
-		ONE_SECOND / 10, ONE_SECOND / 15, /* FrameRate */
-		ONE_SECOND * 7 / 60, ONE_SECOND / 12, /* RestartRate */
-		0, /* BlockMask */
-	},
-	NULL, /* AlienNumberSpeech - none */
-	/* Filler for loaded resources */
-	NULL, NULL, NULL,
-	NULL,
-	NULL,
+		NULL, /* AlienNumberSpeech - none */
+		/* Filler for loaded resources */
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
 };
 
 static FILTER_DESC commander_filters =
-{
-	2, /* Number of filters */
-	{ /* Filter array */
+	{
+		2, /* Number of filters */
 		{
-			0, /* Color index */
-			1, /* Opacity index */
-			56, /* Frame index */
-			DRAW_MULTIPLY, /* DrawKind*/
-			FILTER_DISABLED, /* Flags */
-		},
-		{
-			2, /* Color index */
-			3, /* Opacity index */
-			56, /* Frame index */
-			DRAW_OVERLAY, /* DrawKind*/
-			TURN_OFF_OFT, /* Flags */
-		},
-	}
+								  /* Filter array */
+			{
+				0,				 /* Color index */
+				1,				 /* Opacity index */
+				56,				 /* Frame index */
+				DRAW_MULTIPLY,	 /* DrawKind*/
+				FILTER_DISABLED, /* Flags */
+			},
+								  {
+				2,			  /* Color index */
+				3,			  /* Opacity index */
+				56,			  /* Frame index */
+				DRAW_OVERLAY, /* DrawKind*/
+				TURN_OFF_OFT, /* Flags */
+			},
+								  }
 };
 
 static void
-RaveParty (void)
+RaveParty(void)
 {
-	CommData.AlienColorMap = SetAbsColorMapIndex (CommData.AlienColorMap,
-			(TFB_Random () % 3) + 1);
+	CommData.AlienColorMap = SetAbsColorMapIndex(CommData.AlienColorMap,
+												 (TFB_Random() % 3) + 1);
 
 	if (IS_HD && EXTENDED)
 	{
-		CommData.AlienFrame = SetAbsFrameIndex (CommData.AlienFrame,
-				(TFB_Random () % 15) + 40);
-		SwitchSequences (false);
-		EnableTalkingAnim (false);
+		CommData.AlienFrame = SetAbsFrameIndex(CommData.AlienFrame,
+											   (TFB_Random() % 15) + 40);
+		SwitchSequences(false);
+		EnableTalkingAnim(false);
 		CommData.AlienAmbientArray[3].AnimFlags &= ~ANIM_DISABLED;
 	}
 	else
@@ -151,482 +174,479 @@ RaveParty (void)
 		CommData.AlienAmbientArray[2].AnimFlags &= ~ANIM_DISABLED;
 
 		if (IS_HD)
-			EngageFilters (&commander_filters);
+			EngageFilters(&commander_filters);
 	}
 }
 
 static void
-ByeBye (RESPONSE_REF R)
+ByeBye(RESPONSE_REF R)
 {
-	if (PLAYER_SAID (R, ok_i_will_get_radios))
-		NPCPhrase (THANKS_FOR_HELPING);
-	else if (PLAYER_SAID (R, well_go_get_them_now))
-		NPCPhrase (GLAD_WHEN_YOU_COME_BACK);
-	else if (PLAYER_SAID (R, we_will_take_care_of_base))
+	if (PLAYER_SAID(R, ok_i_will_get_radios))
+		NPCPhrase(THANKS_FOR_HELPING);
+	else if (PLAYER_SAID(R, well_go_get_them_now))
+		NPCPhrase(GLAD_WHEN_YOU_COME_BACK);
+	else if (PLAYER_SAID(R, we_will_take_care_of_base))
 	{
-		NPCPhrase (GOOD_LUCK_WITH_BASE);
+		NPCPhrase(GOOD_LUCK_WITH_BASE);
 
-		SET_GAME_STATE (WILL_DESTROY_BASE, 1);
+		SET_GAME_STATE(WILL_DESTROY_BASE, 1);
 	}
-	else if (PLAYER_SAID (R, take_care_of_base_again))
-		NPCPhrase (GOOD_LUCK_AGAIN);
-	else if (PLAYER_SAID (R, base_was_abandoned)
-			|| PLAYER_SAID (R, i_lied_it_was_abandoned))
+	else if (PLAYER_SAID(R, take_care_of_base_again))
+		NPCPhrase(GOOD_LUCK_AGAIN);
+	else if (PLAYER_SAID(R, base_was_abandoned)
+			 || PLAYER_SAID(R, i_lied_it_was_abandoned))
 	{
-		NPCPhrase (IT_WAS_ABANDONED);
-		NPCPhrase (HERE_COMES_ILWRATH);
+		NPCPhrase(IT_WAS_ABANDONED);
+		NPCPhrase(HERE_COMES_ILWRATH);
 
-		SET_GAME_STATE (PROBE_ILWRATH_ENCOUNTER, 1);
+		SET_GAME_STATE(PROBE_ILWRATH_ENCOUNTER, 1);
 	}
-	else if (PLAYER_SAID (R, oh_yes_big_fight))
+	else if (PLAYER_SAID(R, oh_yes_big_fight))
 	{
-		NPCPhrase (IM_GLAD_YOU_WON);
-		NPCPhrase (HERE_COMES_ILWRATH);
+		NPCPhrase(IM_GLAD_YOU_WON);
+		NPCPhrase(HERE_COMES_ILWRATH);
 
-		SET_GAME_STATE (PROBE_ILWRATH_ENCOUNTER, 1);
+		SET_GAME_STATE(PROBE_ILWRATH_ENCOUNTER, 1);
 	}
-	else if (PLAYER_SAID (R, i_cant_talk_about_it))
+	else if (PLAYER_SAID(R, i_cant_talk_about_it))
 	{
-		NPCPhrase (IM_SURE_IT_WAS_DIFFICULT);
-		NPCPhrase (HERE_COMES_ILWRATH);
+		NPCPhrase(IM_SURE_IT_WAS_DIFFICULT);
+		NPCPhrase(HERE_COMES_ILWRATH);
 
-		SET_GAME_STATE (PROBE_ILWRATH_ENCOUNTER, 1);
+		SET_GAME_STATE(PROBE_ILWRATH_ENCOUNTER, 1);
 	}
-	else if (PLAYER_SAID (R, cook_their_butts)
-			|| PLAYER_SAID (R, overthrow_evil_aliens)
-			|| PLAYER_SAID (R, annihilate_those_monsters))
+	else if (PLAYER_SAID(R, cook_their_butts)
+			 || PLAYER_SAID(R, overthrow_evil_aliens)
+			 || PLAYER_SAID(R, annihilate_those_monsters))
 	{
-		SET_GAME_STATE (PROBE_ILWRATH_ENCOUNTER, 0);
+		SET_GAME_STATE(PROBE_ILWRATH_ENCOUNTER, 0);
 
-		if (PLAYER_SAID (R, cook_their_butts))
-			NPCPhrase (COOK_BUTTS);
-		else if (PLAYER_SAID (R, overthrow_evil_aliens))
-			NPCPhrase (OVERTHROW_ALIENS);
+		if (PLAYER_SAID(R, cook_their_butts))
+			NPCPhrase(COOK_BUTTS);
+		else if (PLAYER_SAID(R, overthrow_evil_aliens))
+			NPCPhrase(OVERTHROW_ALIENS);
 		else /* if (R == annihilate_those_monsters) */
-			NPCPhrase (KILL_MONSTERS);
+			NPCPhrase(KILL_MONSTERS);
 
-		NPCPhrase (THIS_MAY_SEEM_SILLY);
+		NPCPhrase(THIS_MAY_SEEM_SILLY);
 
-		Response (name_1, ByeBye);
-		Response (name_2, ByeBye);
-		Response (name_3, ByeBye);
-		Response (name_4, ByeBye);
+		Response(name_1, ByeBye);
+		Response(name_2, ByeBye);
+		Response(name_3, ByeBye);
+		Response(name_4, ByeBye);
 
-		SET_GAME_STATE (STARBASE_AVAILABLE, 1);
+		SET_GAME_STATE(STARBASE_AVAILABLE, 1);
 	}
 	else
 	{
-		if (PLAYER_SAID (R, name_1))
+		if (PLAYER_SAID(R, name_1))
 		{
-			NPCPhrase (OK_THE_NAFS);
+			NPCPhrase(OK_THE_NAFS);
 
-			SET_GAME_STATE (NEW_ALLIANCE_NAME, 0);
+			SET_GAME_STATE(NEW_ALLIANCE_NAME, 0);
 		}
-		else if (PLAYER_SAID (R, name_2))
+		else if (PLAYER_SAID(R, name_2))
 		{
-			NPCPhrase (OK_THE_CAN);
+			NPCPhrase(OK_THE_CAN);
 
-			SET_GAME_STATE (NEW_ALLIANCE_NAME, 1);
+			SET_GAME_STATE(NEW_ALLIANCE_NAME, 1);
 		}
-		else if (PLAYER_SAID (R, name_3))
+		else if (PLAYER_SAID(R, name_3))
 		{
-			NPCPhrase (OK_THE_UFW);
+			NPCPhrase(OK_THE_UFW);
 
-			SET_GAME_STATE (NEW_ALLIANCE_NAME, 2);
+			SET_GAME_STATE(NEW_ALLIANCE_NAME, 2);
 		}
 		else /* if (PLAYER_SAID (R, name_4)) */
 		{
-			NPCPhrase (OK_THE_NAME_IS_EMPIRE);
+			NPCPhrase(OK_THE_NAME_IS_EMPIRE);
 
-			SET_GAME_STATE (NEW_ALLIANCE_NAME, 3);
+			SET_GAME_STATE(NEW_ALLIANCE_NAME, 3);
 		}
 
-		NPCPhrase (STARBASE_WILL_BE_READY);
+		NPCPhrase(STARBASE_WILL_BE_READY);
 	}
 }
 
-static void GiveRadios (RESPONSE_REF R);
+static void GiveRadios(RESPONSE_REF R);
 
 static void
-NoRadioactives (RESPONSE_REF R)
+NoRadioactives(RESPONSE_REF R)
 {
-	if (PLAYER_SAID (R, yes_this_is_supply_ship))
+	if (PLAYER_SAID(R, yes_this_is_supply_ship))
 	{
-		NPCPhrase (ABOUT_TIME);
+		NPCPhrase(ABOUT_TIME);
 
-		if (GLOBAL_SIS (ElementAmounts[RADIOACTIVE]))
-			GiveRadios (0);
+		if (GLOBAL_SIS(ElementAmounts[RADIOACTIVE]))
+			GiveRadios(0);
 		else
 		{
-			Response (i_lied, NoRadioactives);
-			Response (plumb_out, NoRadioactives);
+			Response(i_lied, NoRadioactives);
+			Response(plumb_out, NoRadioactives);
 		}
 	}
 	else
 	{
-		if (PLAYER_SAID (R, where_can_i_get_radios))
+		if (PLAYER_SAID(R, where_can_i_get_radios))
 		{
-			NPCPhrase (RADIOS_ON_MERCURY);
+			NPCPhrase(RADIOS_ON_MERCURY);
 
-			DISABLE_PHRASE (where_can_i_get_radios);
+			DISABLE_PHRASE(where_can_i_get_radios);
 		}
-		else if (PLAYER_SAID (R, no_but_well_help))
-			NPCPhrase (THE_WHAT_FROM_WHERE);
-		else if (PLAYER_SAID (R, what_slave_planet)
-				|| PLAYER_SAID (R, i_lied))
-			NPCPhrase (DONT_KNOW_WHO_YOU_ARE);
-		else if (PLAYER_SAID (R, plumb_out))
-			NPCPhrase (WHAT_KIND_OF_IDIOT);
-		else if (PLAYER_SAID (R, i_lost_my_lander))
+		else if (PLAYER_SAID(R, no_but_well_help))
+			NPCPhrase(THE_WHAT_FROM_WHERE);
+		else if (PLAYER_SAID(R, what_slave_planet)
+				 || PLAYER_SAID(R, i_lied))
+			NPCPhrase(DONT_KNOW_WHO_YOU_ARE);
+		else if (PLAYER_SAID(R, plumb_out))
+			NPCPhrase(WHAT_KIND_OF_IDIOT);
+		else if (PLAYER_SAID(R, i_lost_my_lander))
 		{
-			NPCPhrase (HERE_IS_A_NEW_LANDER);
-			++GLOBAL_SIS (NumLanders);
-			DrawLanders ();
-			DeltaSISGauges (4, 0, 0);
+			NPCPhrase(HERE_IS_A_NEW_LANDER);
+			++GLOBAL_SIS(NumLanders);
+			DrawLanders();
+			DeltaSISGauges(4, 0, 0);
 
-			SET_GAME_STATE (LANDERS_LOST, 1);
+			SET_GAME_STATE(LANDERS_LOST, 1);
 		}
-		else if (PLAYER_SAID (R, i_lost_another_lander))
+		else if (PLAYER_SAID(R, i_lost_another_lander))
 		{
-			NPCPhrase (HERE_IS_ANOTHER_LANDER);
-			++GLOBAL_SIS (NumLanders);
-			DrawLanders ();
-			DeltaSISGauges (4, 0, 0);
+			NPCPhrase(HERE_IS_ANOTHER_LANDER);
+			++GLOBAL_SIS(NumLanders);
+			DrawLanders();
+			DeltaSISGauges(4, 0, 0);
 		}
-		else if (PLAYER_SAID (R, need_fuel_mercury) ||
-				PLAYER_SAID (R, need_fuel_luna))
+		else if (PLAYER_SAID(R, need_fuel_mercury) || PLAYER_SAID(R, need_fuel_luna))
 		{
-			NPCPhrase (GIVE_FUEL);
-			DeltaSISGauges (0, 5 * FUEL_TANK_SCALE, 0);
+			NPCPhrase(GIVE_FUEL);
+			DeltaSISGauges(0, 5 * FUEL_TANK_SCALE, 0);
 
-			SET_GAME_STATE (GIVEN_FUEL_BEFORE, 1);
+			SET_GAME_STATE(GIVEN_FUEL_BEFORE, 1);
 		}
-		else if (PLAYER_SAID (R, need_fuel_again))
+		else if (PLAYER_SAID(R, need_fuel_again))
 		{
-			NPCPhrase (GIVE_FUEL_AGAIN);
-			DeltaSISGauges (0, 5 * FUEL_TANK_SCALE, 0);
+			NPCPhrase(GIVE_FUEL_AGAIN);
+			DeltaSISGauges(0, 5 * FUEL_TANK_SCALE, 0);
 		}
 
-		if (GLOBAL_SIS (ElementAmounts[RADIOACTIVE]))
-			GiveRadios (0);
+		if (GLOBAL_SIS(ElementAmounts[RADIOACTIVE]))
+			GiveRadios(0);
 		else
 		{
-			if (GLOBAL_SIS (NumLanders) == 0
-					&& GET_GAME_STATE (CHMMR_BOMB_STATE) < 2)
+			if (GLOBAL_SIS(NumLanders) == 0
+				&& GET_GAME_STATE(CHMMR_BOMB_STATE) < 2)
 			{
-				if (GET_GAME_STATE (LANDERS_LOST))
-					Response (i_lost_another_lander, NoRadioactives);
+				if (GET_GAME_STATE(LANDERS_LOST))
+					Response(i_lost_another_lander, NoRadioactives);
 				else
-					Response (i_lost_my_lander, NoRadioactives);
+					Response(i_lost_my_lander, NoRadioactives);
 			}
-			if (GLOBAL_SIS (FuelOnBoard) < 2 * FUEL_TANK_SCALE)
+			if (GLOBAL_SIS(FuelOnBoard) < 2 * FUEL_TANK_SCALE)
 			{
-				if (GET_GAME_STATE (GIVEN_FUEL_BEFORE))
-					Response (need_fuel_again, NoRadioactives);
+				if (GET_GAME_STATE(GIVEN_FUEL_BEFORE))
+					Response(need_fuel_again, NoRadioactives);
 				else
-					Response (need_fuel_mercury, NoRadioactives);
+					Response(need_fuel_mercury, NoRadioactives);
 			}
-	
-			Response (ok_i_will_get_radios, ByeBye);
-			if (PHRASE_ENABLED (where_can_i_get_radios))
+
+			Response(ok_i_will_get_radios, ByeBye);
+			if (PHRASE_ENABLED(where_can_i_get_radios))
 			{
-				Response (where_can_i_get_radios, NoRadioactives);
+				Response(where_can_i_get_radios, NoRadioactives);
 			}
 		}
 	}
 }
 
 static void
-AskAfterRadios (RESPONSE_REF R)
+AskAfterRadios(RESPONSE_REF R)
 {
-	if (PLAYER_SAID (R, i_lost_my_lander))
+	if (PLAYER_SAID(R, i_lost_my_lander))
 	{
-		NPCPhrase (HERE_IS_A_NEW_LANDER);
-		++GLOBAL_SIS (NumLanders);
-		DrawLanders ();
-		DeltaSISGauges (4, 0, 0);
+		NPCPhrase(HERE_IS_A_NEW_LANDER);
+		++GLOBAL_SIS(NumLanders);
+		DrawLanders();
+		DeltaSISGauges(4, 0, 0);
 
-		SET_GAME_STATE (LANDERS_LOST, 1);
+		SET_GAME_STATE(LANDERS_LOST, 1);
 	}
-	else if (PLAYER_SAID (R, i_lost_another_lander))
+	else if (PLAYER_SAID(R, i_lost_another_lander))
 	{
-		NPCPhrase (HERE_IS_ANOTHER_LANDER);
-		++GLOBAL_SIS (NumLanders);
-		DrawLanders ();
-		DeltaSISGauges (4, 0, 0);
+		NPCPhrase(HERE_IS_ANOTHER_LANDER);
+		++GLOBAL_SIS(NumLanders);
+		DrawLanders();
+		DeltaSISGauges(4, 0, 0);
 	}
-	else if (PLAYER_SAID (R, need_fuel_mercury) ||
-			PLAYER_SAID (R, need_fuel_luna))
+	else if (PLAYER_SAID(R, need_fuel_mercury) || PLAYER_SAID(R, need_fuel_luna))
 	{
-		NPCPhrase (GIVE_FUEL);
-		DeltaSISGauges (0, 5 * FUEL_TANK_SCALE, 0);
+		NPCPhrase(GIVE_FUEL);
+		DeltaSISGauges(0, 5 * FUEL_TANK_SCALE, 0);
 
-		SET_GAME_STATE (GIVEN_FUEL_BEFORE, 1);
+		SET_GAME_STATE(GIVEN_FUEL_BEFORE, 1);
 	}
-	else if (PLAYER_SAID (R, need_fuel_again))
+	else if (PLAYER_SAID(R, need_fuel_again))
 	{
-		NPCPhrase (GIVE_FUEL_AGAIN);
-		DeltaSISGauges (0, 5 * FUEL_TANK_SCALE, 0);
+		NPCPhrase(GIVE_FUEL_AGAIN);
+		DeltaSISGauges(0, 5 * FUEL_TANK_SCALE, 0);
 	}
-	else if (PLAYER_SAID (R, where_get_radios))
+	else if (PLAYER_SAID(R, where_get_radios))
 	{
-		NPCPhrase (RADIOS_ON_MERCURY);
+		NPCPhrase(RADIOS_ON_MERCURY);
 
-		DISABLE_PHRASE (where_get_radios);
+		DISABLE_PHRASE(where_get_radios);
 	}
 
 	{
-		if (GLOBAL_SIS (NumLanders) == 0
-				&& GET_GAME_STATE (CHMMR_BOMB_STATE) < 2)
+		if (GLOBAL_SIS(NumLanders) == 0
+			&& GET_GAME_STATE(CHMMR_BOMB_STATE) < 2)
 		{
-			if (GET_GAME_STATE (LANDERS_LOST))
-				Response (i_lost_another_lander, AskAfterRadios);
+			if (GET_GAME_STATE(LANDERS_LOST))
+				Response(i_lost_another_lander, AskAfterRadios);
 			else
-				Response (i_lost_my_lander, AskAfterRadios);
+				Response(i_lost_my_lander, AskAfterRadios);
 		}
-		if (GLOBAL_SIS (FuelOnBoard) < 2 * FUEL_TANK_SCALE)
+		if (GLOBAL_SIS(FuelOnBoard) < 2 * FUEL_TANK_SCALE)
 		{
-			if (GET_GAME_STATE (GIVEN_FUEL_BEFORE))
-				Response (need_fuel_again, AskAfterRadios);
+			if (GET_GAME_STATE(GIVEN_FUEL_BEFORE))
+				Response(need_fuel_again, AskAfterRadios);
 			else
-				Response (need_fuel_mercury, AskAfterRadios);
+				Response(need_fuel_mercury, AskAfterRadios);
 		}
-		Response (well_go_get_them_now, ByeBye);
-		if (PHRASE_ENABLED (where_get_radios))
+		Response(well_go_get_them_now, ByeBye);
+		if (PHRASE_ENABLED(where_get_radios))
 		{
-			Response (where_get_radios, AskAfterRadios);
+			Response(where_get_radios, AskAfterRadios);
 		}
 	}
 }
 
 static void
-BaseDestroyed (RESPONSE_REF R)
+BaseDestroyed(RESPONSE_REF R)
 {
-	if (PLAYER_SAID (R, we_fought_them))
+	if (PLAYER_SAID(R, we_fought_them))
 	{
-		NPCPhrase (YOU_REALLY_FOUGHT_BASE);
+		NPCPhrase(YOU_REALLY_FOUGHT_BASE);
 
-		Response (oh_yes_big_fight, ByeBye);
-		Response (i_lied_it_was_abandoned, ByeBye);
-		Response (i_cant_talk_about_it, ByeBye);
+		Response(oh_yes_big_fight, ByeBye);
+		Response(i_lied_it_was_abandoned, ByeBye);
+		Response(i_cant_talk_about_it, ByeBye);
 	}
 	else
 	{
-		if (PLAYER_SAID (R, we_are_here_to_help))
+		if (PLAYER_SAID(R, we_are_here_to_help))
 		{
-			NPCPhrase (BASE_ON_MOON);
+			NPCPhrase(BASE_ON_MOON);
 		}
 		else
 		{
-			NPCPhrase (DEALT_WITH_BASE_YET);
+			NPCPhrase(DEALT_WITH_BASE_YET);
 		}
 
-		Response (base_was_abandoned, ByeBye);
-		Response (we_fought_them, BaseDestroyed);
+		Response(base_was_abandoned, ByeBye);
+		Response(we_fought_them, BaseDestroyed);
 	}
 }
 
 static void
-TellMoonBase (RESPONSE_REF R)
+TellMoonBase(RESPONSE_REF R)
 {
 	if (R == 0)
 	{
-		NPCPhrase (DEALT_WITH_BASE_YET);
+		NPCPhrase(DEALT_WITH_BASE_YET);
 	}
-	else if (PLAYER_SAID (R, i_lost_my_lander))
+	else if (PLAYER_SAID(R, i_lost_my_lander))
 	{
-		NPCPhrase (HERE_IS_A_NEW_LANDER);
-		++GLOBAL_SIS (NumLanders);
-		DrawLanders ();
-		DeltaSISGauges (4, 0, 0);
+		NPCPhrase(HERE_IS_A_NEW_LANDER);
+		++GLOBAL_SIS(NumLanders);
+		DrawLanders();
+		DeltaSISGauges(4, 0, 0);
 
-		SET_GAME_STATE (LANDERS_LOST, 1);
+		SET_GAME_STATE(LANDERS_LOST, 1);
 	}
-	else if (PLAYER_SAID (R, i_lost_another_lander))
+	else if (PLAYER_SAID(R, i_lost_another_lander))
 	{
-		NPCPhrase (HERE_IS_ANOTHER_LANDER);
-		++GLOBAL_SIS (NumLanders);
-		DrawLanders ();
-		DeltaSISGauges (4, 0, 0);
+		NPCPhrase(HERE_IS_ANOTHER_LANDER);
+		++GLOBAL_SIS(NumLanders);
+		DrawLanders();
+		DeltaSISGauges(4, 0, 0);
 	}
-	else if (PLAYER_SAID (R, need_fuel_mercury) ||
-			PLAYER_SAID (R, need_fuel_luna))
+	else if (PLAYER_SAID(R, need_fuel_mercury) || PLAYER_SAID(R, need_fuel_luna))
 	{
-		NPCPhrase (GIVE_FUEL);
-		DeltaSISGauges (0, 5 * FUEL_TANK_SCALE, 0);
+		NPCPhrase(GIVE_FUEL);
+		DeltaSISGauges(0, 5 * FUEL_TANK_SCALE, 0);
 
-		SET_GAME_STATE (GIVEN_FUEL_BEFORE, 1);
+		SET_GAME_STATE(GIVEN_FUEL_BEFORE, 1);
 	}
-	else if (PLAYER_SAID (R, need_fuel_again))
+	else if (PLAYER_SAID(R, need_fuel_again))
 	{
-		NPCPhrase (GIVE_FUEL_AGAIN);
-		DeltaSISGauges (0, 5 * FUEL_TANK_SCALE, 0);
+		NPCPhrase(GIVE_FUEL_AGAIN);
+		DeltaSISGauges(0, 5 * FUEL_TANK_SCALE, 0);
 	}
-	else if (PLAYER_SAID (R, we_are_here_to_help))
+	else if (PLAYER_SAID(R, we_are_here_to_help))
 	{
-		NPCPhrase (BASE_ON_MOON);
+		NPCPhrase(BASE_ON_MOON);
 	}
-	else if (GET_GAME_STATE (STARBASE_YACK_STACK1) == 0)
+	else if (GET_GAME_STATE(STARBASE_YACK_STACK1) == 0)
 	{
-		NPCPhrase (ABOUT_BASE);
+		NPCPhrase(ABOUT_BASE);
 
-		SET_GAME_STATE (STARBASE_YACK_STACK1, 1);
+		SET_GAME_STATE(STARBASE_YACK_STACK1, 1);
 	}
 	else
 	{
-		NPCPhrase (ABOUT_BASE_AGAIN);
+		NPCPhrase(ABOUT_BASE_AGAIN);
 	}
 
-	if (GLOBAL_SIS (NumLanders) == 0
-			&& GET_GAME_STATE (CHMMR_BOMB_STATE) < 2)
+	if (GLOBAL_SIS(NumLanders) == 0
+		&& GET_GAME_STATE(CHMMR_BOMB_STATE) < 2)
 	{
-		if (GET_GAME_STATE (LANDERS_LOST))
-			Response (i_lost_another_lander, TellMoonBase);
+		if (GET_GAME_STATE(LANDERS_LOST))
+			Response(i_lost_another_lander, TellMoonBase);
 		else
-			Response (i_lost_my_lander, TellMoonBase);
+			Response(i_lost_my_lander, TellMoonBase);
 	}
-	if (GLOBAL_SIS (FuelOnBoard) < 2 * FUEL_TANK_SCALE)
+	if (GLOBAL_SIS(FuelOnBoard) < 2 * FUEL_TANK_SCALE)
 	{
-		if (GET_GAME_STATE (GIVEN_FUEL_BEFORE))
-			Response (need_fuel_again, TellMoonBase);
+		if (GET_GAME_STATE(GIVEN_FUEL_BEFORE))
+			Response(need_fuel_again, TellMoonBase);
 		else
-			Response (need_fuel_luna, TellMoonBase);
+			Response(need_fuel_luna, TellMoonBase);
 	}
-	if (GET_GAME_STATE (WILL_DESTROY_BASE) == 0)
-		Response (we_will_take_care_of_base, ByeBye);
+	if (GET_GAME_STATE(WILL_DESTROY_BASE) == 0)
+		Response(we_will_take_care_of_base, ByeBye);
 	else
-		Response (take_care_of_base_again, ByeBye);
-	if (GET_GAME_STATE (STARBASE_YACK_STACK1) == 0)
-		Response (tell_me_about_base, TellMoonBase);
+		Response(take_care_of_base_again, ByeBye);
+	if (GET_GAME_STATE(STARBASE_YACK_STACK1) == 0)
+		Response(tell_me_about_base, TellMoonBase);
 	else
-		Response (tell_me_again, TellMoonBase);
+		Response(tell_me_again, TellMoonBase);
 }
 
-static void RevealSelf (RESPONSE_REF R);
+static void RevealSelf(RESPONSE_REF R);
 
 static void
-TellProbe (RESPONSE_REF R)
+TellProbe(RESPONSE_REF R)
 {
-	(void) R;  // ignored
-	NPCPhrase (THAT_WAS_PROBE);
-	DISABLE_PHRASE (what_was_red_thing);
+	(void)R; // ignored
+	NPCPhrase(THAT_WAS_PROBE);
+	DISABLE_PHRASE(what_was_red_thing);
 
-	Response (it_went_away, RevealSelf);
-	Response (we_destroyed_it, RevealSelf);
-	Response (what_probe, RevealSelf);
+	Response(it_went_away, RevealSelf);
+	Response(we_destroyed_it, RevealSelf);
+	Response(what_probe, RevealSelf);
 }
 
 static void
-RevealSelf (RESPONSE_REF R)
+RevealSelf(RESPONSE_REF R)
 {
 	uqm::BYTE i, stack;
 
 	stack = 0;
-	if (PLAYER_SAID (R, we_are_vindicator))
+	if (PLAYER_SAID(R, we_are_vindicator))
 	{
-		NPCPhrase (THATS_IMPOSSIBLE);
+		NPCPhrase(THATS_IMPOSSIBLE);
 
-		DISABLE_PHRASE (we_are_vindicator);
+		DISABLE_PHRASE(we_are_vindicator);
 	}
-	else if (PLAYER_SAID (R, our_mission_was_secret))
+	else if (PLAYER_SAID(R, our_mission_was_secret))
 	{
-		NPCPhrase (ACKNOWLEDGE_SECRET);
+		NPCPhrase(ACKNOWLEDGE_SECRET);
 
-		DISABLE_PHRASE (our_mission_was_secret);
+		DISABLE_PHRASE(our_mission_was_secret);
 	}
-	else if (PLAYER_SAID (R, first_give_info))
+	else if (PLAYER_SAID(R, first_give_info))
 	{
-		NPCPhrase (ASK_AWAY);
-
-		stack = 1;
-		DISABLE_PHRASE (first_give_info);
-	}
-	else if (PLAYER_SAID (R, whats_this_starbase))
-	{
-		NPCPhrase (STARBASE_IS);
+		NPCPhrase(ASK_AWAY);
 
 		stack = 1;
-		DISABLE_PHRASE (whats_this_starbase);
+		DISABLE_PHRASE(first_give_info);
 	}
-	else if (PLAYER_SAID (R, what_about_earth))
+	else if (PLAYER_SAID(R, whats_this_starbase))
 	{
-		NPCPhrase (HAPPENED_TO_EARTH);
+		NPCPhrase(STARBASE_IS);
 
 		stack = 1;
-		DISABLE_PHRASE (what_about_earth);
+		DISABLE_PHRASE(whats_this_starbase);
 	}
-	else if (PLAYER_SAID (R, where_are_urquan))
+	else if (PLAYER_SAID(R, what_about_earth))
 	{
-		NPCPhrase (URQUAN_LEFT);
+		NPCPhrase(HAPPENED_TO_EARTH);
 
 		stack = 1;
-		DISABLE_PHRASE (where_are_urquan);
+		DISABLE_PHRASE(what_about_earth);
 	}
-	else if (PLAYER_SAID (R, it_went_away))
-		NPCPhrase (DEEP_TROUBLE);
-	else if (PLAYER_SAID (R, we_destroyed_it))
-		NPCPhrase (GOOD_NEWS);
-	else if (PLAYER_SAID (R, what_probe))
-		NPCPhrase (SURE_HOPE);
+	else if (PLAYER_SAID(R, where_are_urquan))
+	{
+		NPCPhrase(URQUAN_LEFT);
+
+		stack = 1;
+		DISABLE_PHRASE(where_are_urquan);
+	}
+	else if (PLAYER_SAID(R, it_went_away))
+		NPCPhrase(DEEP_TROUBLE);
+	else if (PLAYER_SAID(R, we_destroyed_it))
+		NPCPhrase(GOOD_NEWS);
+	else if (PLAYER_SAID(R, what_probe))
+		NPCPhrase(SURE_HOPE);
 
 	for (i = 0; i < 2; ++i, stack ^= 1)
 	{
 		if (stack == 1)
 		{
-			if (PHRASE_ENABLED (first_give_info))
-				Response (first_give_info, RevealSelf);
-			else if (PHRASE_ENABLED (whats_this_starbase))
-				Response (whats_this_starbase, RevealSelf);
-			else if (PHRASE_ENABLED (what_about_earth))
-				Response (what_about_earth, RevealSelf);
-			else if (PHRASE_ENABLED (where_are_urquan))
-				Response (where_are_urquan, RevealSelf);
-			else if (PHRASE_ENABLED (what_was_red_thing))
+			if (PHRASE_ENABLED(first_give_info))
+				Response(first_give_info, RevealSelf);
+			else if (PHRASE_ENABLED(whats_this_starbase))
+				Response(whats_this_starbase, RevealSelf);
+			else if (PHRASE_ENABLED(what_about_earth))
+				Response(what_about_earth, RevealSelf);
+			else if (PHRASE_ENABLED(where_are_urquan))
+				Response(where_are_urquan, RevealSelf);
+			else if (PHRASE_ENABLED(what_was_red_thing))
 			{
-				Response (what_was_red_thing, TellProbe);
+				Response(what_was_red_thing, TellProbe);
 			}
 		}
 		else
 		{
-			if (PHRASE_ENABLED (we_are_vindicator))
-				Response (we_are_vindicator, RevealSelf);
-			else if (PHRASE_ENABLED (our_mission_was_secret))
-				Response (our_mission_was_secret, RevealSelf);
+			if (PHRASE_ENABLED(we_are_vindicator))
+				Response(we_are_vindicator, RevealSelf);
+			else if (PHRASE_ENABLED(our_mission_was_secret))
+				Response(our_mission_was_secret, RevealSelf);
 			else
 			{
-				if (GET_GAME_STATE (MOONBASE_DESTROYED) == 0)
-					Response (we_are_here_to_help, TellMoonBase);
+				if (GET_GAME_STATE(MOONBASE_DESTROYED) == 0)
+					Response(we_are_here_to_help, TellMoonBase);
 				else
-					Response (we_are_here_to_help, BaseDestroyed);
+					Response(we_are_here_to_help, BaseDestroyed);
 			}
 		}
 	}
 }
 
 static void
-GiveRadios (RESPONSE_REF R)
+GiveRadios(RESPONSE_REF R)
 {
-	if (PLAYER_SAID (R, we_will_transfer_now))
+	if (PLAYER_SAID(R, we_will_transfer_now))
 	{
-		SET_GAME_STATE (RADIOACTIVES_PROVIDED, 1);
+		SET_GAME_STATE(RADIOACTIVES_PROVIDED, 1);
 
-		NPCPhrase (FUEL_UP0);
-		NPCPhrase (FUEL_UP1);
-		AlienTalkSegue (1);
-		
+		NPCPhrase(FUEL_UP0);
+		NPCPhrase(FUEL_UP1);
+		AlienTalkSegue(1);
+
 		CommData.AlienAmbientArray[2].AnimFlags |= ANIM_DISABLED;
 
 		if (IS_HD && EXTENDED)
-		{	// Disable noisy static animation in hi-res.
+		{ // Disable noisy static animation in hi-res.
 			CommData.AlienFrame =
-					SetAbsFrameIndex (CommData.AlienFrame, 0);
+				SetAbsFrameIndex(CommData.AlienFrame, 0);
 
 			CommData.AlienAmbientArray[0].AnimFlags &= ~ANIM_DISABLED;
 			CommData.AlienAmbientArray[1].AnimFlags &= ~ANIM_DISABLED;
 			CommData.AlienAmbientArray[3].AnimFlags |= ANIM_DISABLED;
-			EnableTalkingAnim (true);
+			EnableTalkingAnim(true);
 
-			EngageFilters (&commander_filters);
+			EngageFilters(&commander_filters);
 			FilterData.FilterArray[0].Flags = TURN_OFF_OFT;
 			FilterData.FilterArray[1].Flags |= FILTER_DISABLED;
 		}
@@ -637,132 +657,132 @@ GiveRadios (RESPONSE_REF R)
 			FilterData.FilterArray[1].Flags = FILTER_DISABLED;
 		}
 
-		XFormColorMap (GetColorMapAddress (
-				SetAbsColorMapIndex (CommData.AlienColorMap, 0)
-					), ONE_SECOND / 2);
+		XFormColorMap(GetColorMapAddress(
+						  SetAbsColorMapIndex(CommData.AlienColorMap, 0)),
+					  ONE_SECOND / 2);
 
 		if (altResFlags & USE_ALT_SONG)
 		{
-			uqm::DWORD MusicPos = PLRGetPos ();
-			StopMusic ();
-			CommData.AlienSong = LoadMusic (CommData.AlienSongRes);
+			uqm::DWORD MusicPos = PLRGetPos();
+			StopMusic();
+			CommData.AlienSong = LoadMusic(CommData.AlienSongRes);
 
-			SetMusicVolume (MUTE_VOLUME);
-			PlayMusic (CommData.AlienSong, true, 1);
-			SeekMusic (MusicPos);
-			FadeMusic (NORMAL_VOLUME, ONE_SECOND);
+			SetMusicVolume(MUTE_VOLUME);
+			PlayMusic(CommData.AlienSong, true, 1);
+			SeekMusic(MusicPos);
+			FadeMusic(NORMAL_VOLUME, ONE_SECOND);
 
 			altResFlags &= ~USE_ALT_SONG;
 		}
 
-		AlienTalkSegue ((uqm::COUNT)~0);
+		AlienTalkSegue((uqm::COUNT)~0);
 
-		RevealSelf (0);
+		RevealSelf(0);
 	}
 	else
 	{
-		if (PLAYER_SAID (R, what_will_you_give_us))
-			NPCPhrase (MESSAGE_GARBLED_1);
-		else if (PLAYER_SAID (R, before_radios_we_need_info))
-			NPCPhrase (MESSAGE_GARBLED_2);
+		if (PLAYER_SAID(R, what_will_you_give_us))
+			NPCPhrase(MESSAGE_GARBLED_1);
+		else if (PLAYER_SAID(R, before_radios_we_need_info))
+			NPCPhrase(MESSAGE_GARBLED_2);
 
-		Response (we_will_transfer_now, GiveRadios);
-		Response (what_will_you_give_us, GiveRadios);
-		Response (before_radios_we_need_info, GiveRadios);
+		Response(we_will_transfer_now, GiveRadios);
+		Response(what_will_you_give_us, GiveRadios);
+		Response(before_radios_we_need_info, GiveRadios);
 	}
 }
 
 static void
-Intro (void)
+Intro(void)
 {
-	if (IS_HD)// To smooth out HD blink animation
+	if (IS_HD) // To smooth out HD blink animation
 		CommData.AlienAmbientArray[0].BaseFrameRate = ONE_SECOND / 40;
 
-	if (GET_GAME_STATE (PROBE_ILWRATH_ENCOUNTER))
+	if (GET_GAME_STATE(PROBE_ILWRATH_ENCOUNTER))
 	{
-		NPCPhrase (VERY_IMPRESSIVE);
+		NPCPhrase(VERY_IMPRESSIVE);
 
-		Response (cook_their_butts, ByeBye);
-		Response (overthrow_evil_aliens, ByeBye);
-		Response (annihilate_those_monsters, ByeBye);
+		Response(cook_their_butts, ByeBye);
+		Response(overthrow_evil_aliens, ByeBye);
+		Response(annihilate_those_monsters, ByeBye);
 	}
-	else if (GET_GAME_STATE (STARBASE_VISITED))
+	else if (GET_GAME_STATE(STARBASE_VISITED))
 	{
-		if (GET_GAME_STATE (RADIOACTIVES_PROVIDED))
+		if (GET_GAME_STATE(RADIOACTIVES_PROVIDED))
 		{
-			if (GET_GAME_STATE (MOONBASE_DESTROYED) == 0)
+			if (GET_GAME_STATE(MOONBASE_DESTROYED) == 0)
 			{
-				TellMoonBase (0);
+				TellMoonBase(0);
 			}
 			else
 			{
-				BaseDestroyed (0);
+				BaseDestroyed(0);
 			}
 		}
 		else
 		{
-			RaveParty ();
+			RaveParty();
 
-			NPCPhrase (DO_YOU_HAVE_RADIO_THIS_TIME);
+			NPCPhrase(DO_YOU_HAVE_RADIO_THIS_TIME);
 
-			if (GLOBAL_SIS (ElementAmounts[RADIOACTIVE]))
-				GiveRadios (0);
+			if (GLOBAL_SIS(ElementAmounts[RADIOACTIVE]))
+				GiveRadios(0);
 			else
-				AskAfterRadios (0);
+				AskAfterRadios(0);
 		}
 	}
 	else /* first visit */
 	{
-		RaveParty ();
+		RaveParty();
 
-		SET_GAME_STATE (STARBASE_VISITED, 1);
+		SET_GAME_STATE(STARBASE_VISITED, 1);
 
-		NPCPhrase (ARE_YOU_SUPPLY_SHIP);
-		Response (no_but_well_help, NoRadioactives);
-		Response (yes_this_is_supply_ship, NoRadioactives);
-		Response (what_slave_planet, NoRadioactives);
+		NPCPhrase(ARE_YOU_SUPPLY_SHIP);
+		Response(no_but_well_help, NoRadioactives);
+		Response(yes_this_is_supply_ship, NoRadioactives);
+		Response(what_slave_planet, NoRadioactives);
 	}
 }
 
 static uqm::COUNT
-uninit_commander (void)
+uninit_commander(void)
 {
 	luaUqm_comm_uninit();
 	return (0);
 }
 
 static void
-post_commander_enc (void)
+post_commander_enc(void)
 {
 	// nothing defined so far
 }
 
 LOCDATA*
-init_commander_comm ()
+init_commander_comm()
 {
-	LOCDATA *retval;
+	LOCDATA* retval;
 
 	commander_desc.init_encounter_func = Intro;
 	commander_desc.post_encounter_func = post_commander_enc;
 	commander_desc.uninit_encounter_func = uninit_commander;
 
-	luaUqm_comm_init (NULL, NULL_RESOURCE);
-			// Initialise Lua for string interpolation. This will be
-			// generalised in the future.
+	luaUqm_comm_init(NULL, NULL_RESOURCE);
+	// Initialise Lua for string interpolation. This will be
+	// generalised in the future.
 
-	if (!GET_GAME_STATE (RADIOACTIVES_PROVIDED))
+	if (!GET_GAME_STATE(RADIOACTIVES_PROVIDED))
 		altResFlags |= USE_ALT_SONG;
-	
+
 	if (IS_HD)
 		altResFlags |= USE_ALT_FRAME;
 
-	
-	commander_desc.AlienTextWidth = RES_SCALE (143);
-	commander_desc.AlienTextBaseline.x = RES_SCALE (164)
-			- (SAFE_NEG (2) * 2);
-	commander_desc.AlienTextBaseline.y = RES_SCALE (20);
 
-	setSegue (Segue_peace);
+	commander_desc.AlienTextWidth = RES_SCALE(143);
+	commander_desc.AlienTextBaseline.x = RES_SCALE(164)
+									   - (SAFE_NEG(2) * 2);
+	commander_desc.AlienTextBaseline.y = RES_SCALE(20);
+
+	setSegue(Segue_peace);
 	retval = &commander_desc;
 
 	return (retval);

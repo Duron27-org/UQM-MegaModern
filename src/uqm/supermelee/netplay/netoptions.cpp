@@ -22,18 +22,17 @@ NetplayOptions netplayOptions = {
 	/* .metaServer = */ "uqm.stack.nl",
 	/* .metaPort   = */ "21836",
 	/* .peer       = */ {
-		/* [0] Player 1 (bottom) */ {
+						 /* [0] Player 1 (bottom) */ {
 			/* .isServer = */ true,
 			/* .host     = */ "localhost",
 			/* .port     = */ "21837" /* 0x554d - "UM" */,
 		},
-		/* [1] Player 2 (top) */ {
+						 /* [1] Player 2 (top) */ {
 			/* .isServer = */ true,
 			/* .host     = */ "localhost",
-			/* .port     = */ "21837"  /* 0x554d - "UM" */,
+			/* .port     = */ "21837" /* 0x554d - "UM" */,
 		},
-	},
-	/* .inputDelay = */ 2,
+						 },
+	/* .inputDelay = */
+		2,
 };
-
-

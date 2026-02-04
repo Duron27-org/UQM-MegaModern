@@ -28,15 +28,15 @@
 // CDP Memory Interface entry points
 typedef struct
 {
-	void* (* malloc) (int size);
-	void (* free) (void *p);
-	void* (* calloc) (int size);
-	void* (* realloc) (void *p, int size);
+	void* (*malloc)(int size);
+	void (*free)(void* p);
+	void* (*calloc)(int size);
+	void* (*realloc)(void* p, int size);
 
 } cdp_Itf_MemoryVtbl_v1;
 
 // the following are for the sake of module writers
 typedef cdp_Itf_MemoryVtbl_v1 cdp_Itf_MemoryVtbl;
-typedef cdp_Itf_MemoryVtbl    cdp_Itf_Memory;
+typedef cdp_Itf_MemoryVtbl cdp_Itf_Memory;
 
-#endif  /* LIBS_CDP_CDP_IMEM_H_ */
+#endif /* LIBS_CDP_CDP_IMEM_H_ */

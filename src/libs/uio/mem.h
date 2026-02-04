@@ -33,9 +33,10 @@
 #ifdef uio_MEM_DEBUG
 // When uio_strdup is defined to the libc strdup, there's no opportunity
 // to intercept the alloc. Hence this function here.
-static inline char *
-uio_strdup(const char *s) {
-	char *result;
+static inline char*
+uio_strdup(const char* s)
+{
+	char* result;
 	size_t size;
 
 	size = strlen(s) + 1;
@@ -44,18 +45,17 @@ uio_strdup(const char *s) {
 	return result;
 }
 #else
-#	define uio_strdup _strdup
+#define uio_strdup _strdup
 #endif
 
 // Allocates new memory, copies 'len' characters from 'src', and adds a '\0'.
-static inline char *
-uio_memdup0(const char *src, size_t len) {
-	char *dst = (char*)uio_malloc(len + 1);
+static inline char*
+uio_memdup0(const char* src, size_t len)
+{
+	char* dst = (char*)uio_malloc(len + 1);
 	memcpy(dst, src, len);
 	dst[len] = '\0';
 	return dst;
 }
 
 #endif
-
-

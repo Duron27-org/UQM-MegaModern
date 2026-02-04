@@ -32,26 +32,26 @@
 
 
 #define KBDBUFSIZE (1 << 8)
-static int kbdhead=0, kbdtail=0;
+static int kbdhead = 0, kbdtail = 0;
 static UniChar kbdbuf[KBDBUFSIZE];
 static UniChar lastchar;
 
 #if SDL_MAJOR_VERSION == 1
 static int num_keys = 0;
-static int *kbdstate = NULL;
-		// Holds all SDL keys +1 for holding invalid values
-#else // Later versions of SDL use the text input API instead
+static int* kbdstate = NULL;
+// Holds all SDL keys +1 for holding invalid values
+#else  // Later versions of SDL use the text input API instead
 static bool set_character_mode = false;
-		// Records whether the UI thread has caught up with game thread
-		// on this setting
+// Records whether the UI thread has caught up with game thread
+// on this setting
 #endif // SDL_MAJOR_VERSION
 
-static volatile int *menu_vec;
+static volatile int* menu_vec;
 static int num_menu;
 // The last vector element is the character repeat "key"
 // This is only used in SDL1 input but it's mostly harmless everywhere else
-#define KEY_MENU_ANY  (num_menu - 1)
-static volatile int *flight_vec;
+#define KEY_MENU_ANY (num_menu - 1)
+static volatile int* flight_vec;
 static int num_templ;
 static int num_flight;
 
@@ -59,7 +59,7 @@ static bool InputInitialized = false;
 
 static bool in_character_mode = false;
 
-static const char *menu_res_names[] = {
+static const char* menu_res_names[] = {
 	"pause",
 	"exit",
 	"abort",
@@ -88,10 +88,9 @@ static const char *menu_res_names[] = {
 	"debug_2",
 	"debug_3",
 	"debug_4",
-	NULL
-};
+	NULL};
 
-static const char *flight_res_names[] = {
+static const char* flight_res_names[] = {
 	"up",
 	"down",
 	"left",
@@ -100,37 +99,36 @@ static const char *flight_res_names[] = {
 	"special",
 	"escape",
 	"thrust",
-	NULL
-};
+	NULL};
 
 static void
-register_menu_controls (int index)
+register_menu_controls(int index)
 {
 	int i;
 	char buf[40];
 	buf[39] = '\0';
-	
+
 	i = 1;
 	while (true)
 	{
 		VCONTROL_GESTURE g;
 
-		snprintf (buf, 39, "menu.%s.%d", menu_res_names[index], i);
+		snprintf(buf, 39, "menu.%s.%d", menu_res_names[index], i);
 
-		if (!res_IsString (buf))
+		if (!res_IsString(buf))
 			break;
-		VControl_ParseGesture (&g, res_GetString (buf));
-		VControl_AddGestureBinding (&g, (int *)&menu_vec[index]);
+		VControl_ParseGesture(&g, res_GetString(buf));
+		VControl_AddGestureBinding(&g, (int*)&menu_vec[index]);
 		i++;
 	}
 }
 
-static VCONTROL_GESTURE *controls;
+static VCONTROL_GESTURE* controls;
 #define CONTROL_PTR(i, j, k) \
-		(controls + ((i) * num_flight + (j)) * MAX_FLIGHT_ALTERNATES + (k))
+	(controls + ((i) * num_flight + (j)) * MAX_FLIGHT_ALTERNATES + (k))
 
 static void
-register_flight_controls (void)
+register_flight_controls(void)
 {
 	int i, j, k;
 	char buf[40];
@@ -140,10 +138,10 @@ register_flight_controls (void)
 	for (i = 0; i < num_templ; i++)
 	{
 		/* Copy in name */
-		snprintf (buf, 39, "keys.%d.name", i+1);
-		if (res_IsString (buf))
+		snprintf(buf, 39, "keys.%d.name", i + 1);
+		if (res_IsString(buf))
 		{
-			strncpy (input_templates[i].name, res_GetString (buf), 29);
+			strncpy(input_templates[i].name, res_GetString(buf), 29);
 			input_templates[i].name[29] = '\0';
 		}
 		else
@@ -154,78 +152,77 @@ register_flight_controls (void)
 		{
 			for (k = 0; k < MAX_FLIGHT_ALTERNATES; k++)
 			{
-				VCONTROL_GESTURE *g = CONTROL_PTR(i, j, k);
-				snprintf (buf, 39, "keys.%d.%s.%d", i+1,
-						flight_res_names[j], k+1);
-				if (!res_IsString (buf))
+				VCONTROL_GESTURE* g = CONTROL_PTR(i, j, k);
+				snprintf(buf, 39, "keys.%d.%s.%d", i + 1,
+						 flight_res_names[j], k + 1);
+				if (!res_IsString(buf))
 				{
 					g->type = VCONTROL_NONE;
 					continue;
 				}
-				VControl_ParseGesture (g, res_GetString (buf));
-				VControl_AddGestureBinding (g,
-						(int *)(flight_vec + i * num_flight + j));
+				VControl_ParseGesture(g, res_GetString(buf));
+				VControl_AddGestureBinding(g,
+										   (int*)(flight_vec + i * num_flight + j));
 			}
 		}
 	}
 }
 
 static void
-initKeyConfig (void)
+initKeyConfig(void)
 {
 	int i;
 
 	if (!menu_vec || !flight_vec)
 	{
-		log_add (log_Fatal, "initKeyConfig(): invalid input vectors");
-		exit (EXIT_FAILURE);
+		log_add(log_Fatal, "initKeyConfig(): invalid input vectors");
+		exit(EXIT_FAILURE);
 	}
 
-	controls = (VCONTROL_GESTURE*)HCalloc (sizeof (*controls) * num_templ * num_flight
-			* MAX_FLIGHT_ALTERNATES);
+	controls = (VCONTROL_GESTURE*)HCalloc(sizeof(*controls) * num_templ * num_flight
+										  * MAX_FLIGHT_ALTERNATES);
 
 	/* First, load in the menu keys */
-	LoadResourceIndex (contentDir, "menu.key", "menu.");
-	LoadResourceIndex (configDir, "override.cfg", "menu.");
+	LoadResourceIndex(contentDir, "menu.key", "menu.");
+	LoadResourceIndex(configDir, "override.cfg", "menu.");
 	for (i = 0; i < num_menu; i++)
 	{
 		if (!menu_res_names[i])
 			break;
-		register_menu_controls (i);
+		register_menu_controls(i);
 	}
-	
-	LoadResourceIndex (configDir, "flight.cfg", "keys.");
-	if (!res_HasKey ("keys.1.name"))
+
+	LoadResourceIndex(configDir, "flight.cfg", "keys.");
+	if (!res_HasKey("keys.1.name"))
 	{
 		/* Either flight.cfg doesn't exist, or we're using an old version
 		   of flight.cfg, and thus we wound up loading untyped values into
 		   'keys.keys.1.name' and such.  Load the defaults from the content
 		   directory. */
-		LoadResourceIndex (contentDir, "uqm.key", "keys.");
+		LoadResourceIndex(contentDir, "uqm.key", "keys.");
 	}
 
-	register_flight_controls ();
+	register_flight_controls();
 
 	return;
 }
 
 static void
-resetKeyboardState (void)
+resetKeyboardState(void)
 {
 #if SDL_MAJOR_VERSION == 1
-	memset (kbdstate, 0, sizeof (int) * num_keys);
+	memset(kbdstate, 0, sizeof(int) * num_keys);
 	menu_vec[KEY_MENU_ANY] = 0;
 #endif // SDL_MAJOR_VERSION
 }
 
-void
-TFB_SetInputVectors (volatile int menu[], int num_menu_,
-		volatile int flight[], int num_templ_, int num_flight_)
+void TFB_SetInputVectors(volatile int menu[], int num_menu_,
+						 volatile int flight[], int num_templ_, int num_flight_)
 {
 	if (num_menu_ < 0 || num_templ_ < 0 || num_flight_ < 0)
 	{
-		log_add (log_Fatal, "TFB_SetInputVectors(): invalid vector size");
-		exit (EXIT_FAILURE);
+		log_add(log_Fatal, "TFB_SetInputVectors(): invalid vector size");
+		exit(EXIT_FAILURE);
 	}
 	menu_vec = menu;
 	num_menu = num_menu_;
@@ -237,32 +234,32 @@ TFB_SetInputVectors (volatile int menu[], int num_menu_,
 #ifdef HAVE_JOYSTICK
 
 static void
-initJoystick (void)
+initJoystick(void)
 {
 	int nJoysticks;
 
 #if SDL_MAJOR_VERSION > 1
-	char *mapping_db;
+	char* mapping_db;
 	int len;
 	size_t base_len;
-	const char *slash;
+	const char* slash;
 #endif
 
 #if SDL_MAJOR_VERSION > 1
-	if ((SDL_InitSubSystem (SDL_INIT_GAMECONTROLLER)) == -1)
+	if ((SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER)) == -1)
 #else
-	if ((SDL_InitSubSystem (SDL_INIT_JOYSTICK)) == -1)
+	if ((SDL_InitSubSystem(SDL_INIT_JOYSTICK)) == -1)
 #endif
 	{
-		log_add (log_Fatal, "Couldn't initialize joystick subsystem: %s",
-			SDL_GetError ());
-		exit (EXIT_FAILURE);
+		log_add(log_Fatal, "Couldn't initialize joystick subsystem: %s",
+				SDL_GetError());
+		exit(EXIT_FAILURE);
 	}
 
 #if SDL_MAJOR_VERSION > 1
-	SDL_GameControllerEventState (SDL_ENABLE);
+	SDL_GameControllerEventState(SDL_ENABLE);
 
-	base_len = strlen (baseContentPath);
+	base_len = strlen(baseContentPath);
 	if (base_len > 0)
 	{
 		char last_char = baseContentPath[base_len - 1];
@@ -271,117 +268,114 @@ initJoystick (void)
 	else
 		slash = "/";
 
-	len = snprintf (NULL, 0, "%s%sgamecontrollerdb.txt",
-			baseContentPath, slash);
+	len = snprintf(NULL, 0, "%s%sgamecontrollerdb.txt",
+				   baseContentPath, slash);
 
-	mapping_db = (char*)HMalloc (len + 1);
+	mapping_db = (char*)HMalloc(len + 1);
 
-	snprintf (mapping_db, len + 1, "%s%sgamecontrollerdb.txt",
-		baseContentPath, slash);
+	snprintf(mapping_db, len + 1, "%s%sgamecontrollerdb.txt",
+			 baseContentPath, slash);
 
-	if (SDL_GameControllerAddMappingsFromFile (mapping_db) == -1)
+	if (SDL_GameControllerAddMappingsFromFile(mapping_db) == -1)
 	{
-		log_add (log_Warning, "Could not load controller mappings "
-				"from %s: %s", mapping_db, SDL_GetError ());
+		log_add(log_Warning, "Could not load controller mappings "
+							 "from %s: %s",
+				mapping_db, SDL_GetError());
 	}
 	else
 	{
-		log_add (log_Debug, "Loaded controller mappings from %s",
+		log_add(log_Debug, "Loaded controller mappings from %s",
 				mapping_db);
 	}
 
-	HFree (mapping_db);
+	HFree(mapping_db);
 #endif
-	nJoysticks = SDL_NumJoysticks ();
-	log_add (log_Info, "%i joysticks were found.", nJoysticks);
+	nJoysticks = SDL_NumJoysticks();
+	log_add(log_Info, "%i joysticks were found.", nJoysticks);
 
 	if (nJoysticks > 0)
 	{
 		int i;
-		log_add (log_Info, "The names of the joysticks are:");
+		log_add(log_Info, "The names of the joysticks are:");
 		for (i = 0; i < nJoysticks; i++)
 		{
 #if SDL_MAJOR_VERSION > 1
-			if (SDL_IsGameController (i))
+			if (SDL_IsGameController(i))
 			{
-				log_add (log_Info, "    %s (controller)",
-					SDL_GameControllerNameForIndex (i));
+				log_add(log_Info, "    %s (controller)",
+						SDL_GameControllerNameForIndex(i));
 			}
 			else
 			{
-				log_add (log_Info, "    %s (joystick)",
-					SDL_JoystickNameForIndex (i));
+				log_add(log_Info, "    %s (joystick)",
+						SDL_JoystickNameForIndex(i));
 			}
 #else
-			log_add (log_Info, "    %s", SDL_JoystickName (i));
+			log_add(log_Info, "    %s", SDL_JoystickName(i));
 #endif
 		}
 #if SDL_MAJOR_VERSION == 1
-		SDL_JoystickEventState (SDL_ENABLE);
+		SDL_JoystickEventState(SDL_ENABLE);
 #else
 		for (int i = 0; i < nJoysticks; i++)
-			create_joystick (i);
+			create_joystick(i);
 #endif
 	}
 }
 
 #endif /* HAVE_JOYSTICK */
 
-int
-TFB_InitInput (int driver, int flags)
+int TFB_InitInput(int driver, int flags)
 {
 	(void)driver;
 	(void)flags;
 
 #if SDL_MAJOR_VERSION == 1
 	int signed_num_keys;
-	SDL_EnableUNICODE (1);
-	(void)SDL_GetKeyState (&signed_num_keys);
-	(void)SDL_GetKeyState (&num_keys);
-	kbdstate = (int *)HMalloc (sizeof (int) * (num_keys + 1));
+	SDL_EnableUNICODE(1);
+	(void)SDL_GetKeyState(&signed_num_keys);
+	(void)SDL_GetKeyState(&num_keys);
+	kbdstate = (int*)HMalloc(sizeof(int) * (num_keys + 1));
 #endif
 
 #ifdef HAVE_JOYSTICK
-	initJoystick ();
+	initJoystick();
 #endif
 
 	in_character_mode = false;
-	resetKeyboardState ();
+	resetKeyboardState();
 
 	/* Prepare the Virtual Controller system. */
-	VControl_Init ();
+	VControl_Init();
 
-	initKeyConfig ();
+	initKeyConfig();
 
-	VControl_ResetInput ();
+	VControl_ResetInput();
 	InputInitialized = true;
 
 	return 0;
 }
 
-void
-TFB_UninitInput (void)
+void TFB_UninitInput(void)
 {
-	VControl_Uninit ();
-	HFree (controls);
+	VControl_Uninit();
+	HFree(controls);
 #if SDL_MAJOR_VERSION == 1
-	HFree (kbdstate);
+	HFree(kbdstate);
 #else
-	SDL_QuitSubSystem (SDL_INIT_GAMECONTROLLER);
+	SDL_QuitSubSystem(SDL_INIT_GAMECONTROLLER);
 #endif
 }
 
-void
-EnterCharacterMode (void)
+void EnterCharacterMode(void)
 {
 	kbdhead = kbdtail = 0;
 	lastchar = 0;
 	in_character_mode = true;
-	VControl_ResetInput ();
+	VControl_ResetInput();
 }
 
-void
-ExitCharacterMode (void)
+void ExitCharacterMode(void)
 {
 	kbdhead = kbdtail = 0;
 	lastchar = 0;
@@ -390,7 +384,7 @@ ExitCharacterMode (void)
 }
 
 UniChar
-GetNextCharacter (void)
+GetNextCharacter(void)
 {
 	UniChar result;
 	if (kbdhead == kbdtail)
@@ -398,13 +392,13 @@ GetNextCharacter (void)
 	result = kbdbuf[kbdhead];
 	kbdhead = (kbdhead + 1) & (KBDBUFSIZE - 1);
 	return result;
-}	
+}
 
 UniChar
-GetLastCharacter (void)
+GetLastCharacter(void)
 {
 	return lastchar;
-}	
+}
 
 volatile int MouseButtonDown = 0;
 
@@ -429,30 +423,27 @@ ProcessMouseEvent (const SDL_Event *e)
 #if SDL_MAJOR_VERSION == 1
 
 static inline int
-is_numpad_char_event (const SDL_Event *Event)
+is_numpad_char_event(const SDL_Event* Event)
 {
-	return in_character_mode &&
-			(Event->type == SDL_KEYDOWN || Event->type == SDL_KEYUP) &&
-			Event->key.keysym.unicode > 0 &&       /* Printable char */
-			Event->key.keysym.sym >= SDLK_KP0 &&   /* Keypad key */
-			Event->key.keysym.sym <= SDLK_KP_PERIOD;
+	return in_character_mode && (Event->type == SDL_KEYDOWN || Event->type == SDL_KEYUP) && Event->key.keysym.unicode > 0 && /* Printable char */
+		   Event->key.keysym.sym >= SDLK_KP0 &&																				 /* Keypad key */
+		   Event->key.keysym.sym <= SDLK_KP_PERIOD;
 }
 
-void
-ProcessInputEvent (const SDL_Event *Event)
+void ProcessInputEvent(const SDL_Event* Event)
 {
 	if (!InputInitialized)
 		return;
-	
+
 	// ProcessMouseEvent (Event);
 
 	// In character mode with NumLock on, numpad chars bypass VControl
 	// so that menu arrow events are not produced
-	if (!is_numpad_char_event (Event))
-		VControl_HandleEvent (Event);
+	if (!is_numpad_char_event(Event))
+		VControl_HandleEvent(Event);
 
 	if (Event->type == SDL_KEYDOWN || Event->type == SDL_KEYUP)
-	{	// process character input event, if any
+	{ // process character input event, if any
 		// keysym.sym is an SDLKey type which is an enum and can be signed
 		// or unsigned on different platforms; we'll use a guaranteed type
 		int k = Event->key.keysym.sym;
@@ -470,7 +461,7 @@ ProcessInputEvent (const SDL_Event *Event)
 				return;
 
 			kbdstate[k]++;
-			
+
 			newtail = (kbdtail + 1) & (KBDBUFSIZE - 1);
 			// ignore the char if the buffer is full
 			if (newtail != kbdhead)
@@ -484,7 +475,7 @@ ProcessInputEvent (const SDL_Event *Event)
 		else if (Event->type == SDL_KEYUP)
 		{
 			if (kbdstate[k] == 0)
-			{	// something is fishy -- better to reset the
+			{ // something is fishy -- better to reset the
 				// repeatable state to avoid big problems
 				menu_vec[KEY_MENU_ANY] = 0;
 			}
@@ -501,18 +492,15 @@ ProcessInputEvent (const SDL_Event *Event)
 #else
 
 static inline int
-is_numpad_char_event (const SDL_Event * Event)
+is_numpad_char_event(const SDL_Event* Event)
 {
-	return in_character_mode &&
-			(Event->type == SDL_KEYDOWN || Event->type == SDL_KEYUP) &&
-			(Event->key.keysym.mod & KMOD_NUM) &&  /* Numlock on */
-			Event->key.keysym.sym >= SDLK_KP_1 &&  /* Keypad key */
-			Event->key.keysym.sym <= SDLK_KP_PERIOD;
+	return in_character_mode && (Event->type == SDL_KEYDOWN || Event->type == SDL_KEYUP) && (Event->key.keysym.mod & KMOD_NUM) && /* Numlock on */
+		   Event->key.keysym.sym >= SDLK_KP_1 &&																				  /* Keypad key */
+		   Event->key.keysym.sym <= SDLK_KP_PERIOD;
 	// Note that in the SDL2 enumeration 0 comes after 9 and before period
 }
 
-void
-ProcessInputEvent (const SDL_Event *Event)
+void ProcessInputEvent(const SDL_Event* Event)
 {
 	if (!InputInitialized)
 		return;
@@ -520,19 +508,19 @@ ProcessInputEvent (const SDL_Event *Event)
 	if (in_character_mode && !set_character_mode)
 	{
 		set_character_mode = true;
-		SDL_StartTextInput ();
+		SDL_StartTextInput();
 	}
 
 	if (!in_character_mode && set_character_mode)
 	{
 		set_character_mode = false;
-		SDL_StopTextInput ();
+		SDL_StopTextInput();
 	}
 
 	/* "Block" numpad input when NUM_LOCK is on */
-	if (!is_numpad_char_event (Event))
+	if (!is_numpad_char_event(Event))
 	{
-		VControl_HandleEvent (Event);
+		VControl_HandleEvent(Event);
 	}
 
 	if (Event->type == SDL_TEXTINPUT)
@@ -593,54 +581,48 @@ ProcessInputEvent (const SDL_Event *Event)
 
 #endif // SDL_MAJOR_VERSION
 
-void
-TFB_ResetControls (void)
+void TFB_ResetControls(void)
 {
-	VControl_ResetInput ();
-	resetKeyboardState ();
+	VControl_ResetInput();
+	resetKeyboardState();
 	// flush character buffer
 	kbdhead = kbdtail = 0;
 	lastchar = 0;
 }
 
-void
-InterrogateInputState (int templat, int control, int index, char *buffer,
-	int maxlen)
+void InterrogateInputState(int templat, int control, int index, char* buffer,
+						   int maxlen)
 {
-	VCONTROL_GESTURE *g = CONTROL_PTR (templat, control, index);
+	VCONTROL_GESTURE* g = CONTROL_PTR(templat, control, index);
 
 #if SDL_MAJOR_VERSION > 1
 	const char xbx_buttons[SDL_CONTROLLER_BUTTON_MAX][16] =
-	{
-		"A", "B", "X", "Y", "Back", "Guide", "Start",
-		"LStick", "RStick", "LShoulder", "RShoulder",
-		"DUp", "DDown", "DLeft", "DRight", "Misc"
-	};
+		{
+			"A", "B", "X", "Y", "Back", "Guide", "Start",
+			"LStick", "RStick", "LShoulder", "RShoulder",
+			"DUp", "DDown", "DLeft", "DRight", "Misc"};
 
 	const char ds4_buttons[SDL_CONTROLLER_BUTTON_MAX][16] =
-	{
-		STR_CROSS, STR_CIRCLE, STR_SQUARE, STR_TRIANGLE,
-		"Share", "PS", "Options", "L3", "R3", "L1", "R1",
-		"DUp", "DDown", "DLeft", "DRight", "TouchPad"
-	};
+		{
+			STR_CROSS, STR_CIRCLE, STR_SQUARE, STR_TRIANGLE,
+			"Share", "PS", "Options", "L3", "R3", "L1", "R1",
+			"DUp", "DDown", "DLeft", "DRight", "TouchPad"};
 
 	const char xbx_axes[SDL_CONTROLLER_AXIS_MAX][16] =
-	{
-		"LStick H", "LStick V", "RStick H", "RStick V",
-		"LTrigger", "RTrigger"
-	};
+		{
+			"LStick H", "LStick V", "RStick H", "RStick V",
+			"LTrigger", "RTrigger"};
 
 	const char ds4_axes[SDL_CONTROLLER_AXIS_MAX][16] =
-	{
-		"LStick H", "LStick V", "RStick H", "RStick V",
-		"L2", "R2"
-	};
+		{
+			"LStick H", "LStick V", "RStick H", "RStick V",
+			"L2", "R2"};
 #endif
 
 	if (templat >= num_templ || control >= num_flight
 		|| index >= MAX_FLIGHT_ALTERNATES)
 	{
-		log_add (log_Warning,
+		log_add(log_Warning,
 				"InterrogateInputState(): invalid control index");
 		buffer[0] = 0;
 		return;
@@ -649,30 +631,30 @@ InterrogateInputState (int templat, int control, int index, char *buffer,
 	switch (g->type)
 	{
 		case VCONTROL_KEY:
-			snprintf (buffer, maxlen, "%s",
-					VControl_code2name (g->gesture.key));
+			snprintf(buffer, maxlen, "%s",
+					 VControl_code2name(g->gesture.key));
 			buffer[maxlen - 1] = 0;
 			break;
 		case VCONTROL_JOYBUTTON:
 #if SDL_MAJOR_VERSION > 1
 			if (optControllerType == 1)
 			{
-				snprintf (buffer, maxlen, "[J%d %s]",
-						g->gesture.button.port,
-						xbx_buttons[g->gesture.button.index]);
+				snprintf(buffer, maxlen, "[J%d %s]",
+						 g->gesture.button.port,
+						 xbx_buttons[g->gesture.button.index]);
 			}
 			else if (optControllerType == 2)
 			{
-				snprintf (buffer, maxlen, "[J%d %s]",
-						g->gesture.button.port,
-						ds4_buttons[g->gesture.button.index]);
+				snprintf(buffer, maxlen, "[J%d %s]",
+						 g->gesture.button.port,
+						 ds4_buttons[g->gesture.button.index]);
 			}
 			else
 #endif
 			{
-				snprintf (buffer, maxlen, "[J%d B%d]",
-						g->gesture.button.port,
-						g->gesture.button.index);
+				snprintf(buffer, maxlen, "[J%d B%d]",
+						 g->gesture.button.port,
+						 g->gesture.button.index);
 			}
 			buffer[maxlen - 1] = 0;
 			break;
@@ -680,32 +662,32 @@ InterrogateInputState (int templat, int control, int index, char *buffer,
 #if SDL_MAJOR_VERSION > 1
 			if (optControllerType == 1)
 			{
-				snprintf (buffer, maxlen, "[J%d %s%c]",
-						g->gesture.axis.port,
-						xbx_axes[g->gesture.axis.index],
-						g->gesture.axis.polarity > 0 ? '+' : '-');
+				snprintf(buffer, maxlen, "[J%d %s%c]",
+						 g->gesture.axis.port,
+						 xbx_axes[g->gesture.axis.index],
+						 g->gesture.axis.polarity > 0 ? '+' : '-');
 			}
 			else if (optControllerType == 2)
 			{
-				snprintf (buffer, maxlen, "[J%d %s%c]",
-						g->gesture.axis.port,
-						ds4_axes[g->gesture.axis.index],
-						g->gesture.axis.polarity > 0 ? '+' : '-');
+				snprintf(buffer, maxlen, "[J%d %s%c]",
+						 g->gesture.axis.port,
+						 ds4_axes[g->gesture.axis.index],
+						 g->gesture.axis.polarity > 0 ? '+' : '-');
 			}
 			else
 #endif
 			{
-				snprintf (buffer, maxlen, "[J%d A%d %c]",
-						g->gesture.axis.port,
-						g->gesture.axis.index,
-						g->gesture.axis.polarity > 0 ? '+' : '-');
+				snprintf(buffer, maxlen, "[J%d A%d %c]",
+						 g->gesture.axis.port,
+						 g->gesture.axis.index,
+						 g->gesture.axis.polarity > 0 ? '+' : '-');
 			}
 			buffer[maxlen - 1] = 0;
 			break;
 #if SDL_MAJOR_VERSION == 1
 		case VCONTROL_JOYHAT:
-			snprintf (buffer, maxlen, "[J%d H%d %d]", g->gesture.hat.port,
-					g->gesture.hat.index, g->gesture.hat.dir);
+			snprintf(buffer, maxlen, "[J%d H%d %d]", g->gesture.hat.port,
+					 g->gesture.hat.index, g->gesture.hat.dir);
 			break;
 #endif
 		default:
@@ -716,73 +698,69 @@ InterrogateInputState (int templat, int control, int index, char *buffer,
 	return;
 }
 
-void
-RemoveInputState (int templat, int control, int index)
+void RemoveInputState(int templat, int control, int index)
 {
-	VCONTROL_GESTURE *g = CONTROL_PTR(templat, control, index);
+	VCONTROL_GESTURE* g = CONTROL_PTR(templat, control, index);
 	char keybuf[40];
 	keybuf[39] = '\0';
 
 	if (templat >= num_templ || control >= num_flight
-			|| index >= MAX_FLIGHT_ALTERNATES)
+		|| index >= MAX_FLIGHT_ALTERNATES)
 	{
-		log_add (log_Warning, "RemoveInputState(): invalid control index");
+		log_add(log_Warning, "RemoveInputState(): invalid control index");
 		return;
 	}
 
-	VControl_RemoveGestureBinding (g,
-			(int *)(flight_vec + templat * num_flight + control));
+	VControl_RemoveGestureBinding(g,
+								  (int*)(flight_vec + templat * num_flight + control));
 	g->type = VCONTROL_NONE;
 
-	snprintf (keybuf, 39, "keys.%d.%s.%d", templat+1,
-			flight_res_names[control], index+1);
-	res_Remove (keybuf);
+	snprintf(keybuf, 39, "keys.%d.%s.%d", templat + 1,
+			 flight_res_names[control], index + 1);
+	res_Remove(keybuf);
 
 	return;
 }
 
-void
-RebindInputState (int templat, int control, int index)
+void RebindInputState(int templat, int control, int index)
 {
 	VCONTROL_GESTURE g;
 	char keybuf[40], valbuf[40];
 	keybuf[39] = valbuf[39] = '\0';
 
 	if (templat >= num_templ || control >= num_flight
-			|| index >= MAX_FLIGHT_ALTERNATES)
+		|| index >= MAX_FLIGHT_ALTERNATES)
 	{
-		log_add (log_Warning, "RebindInputState(): invalid control index");
+		log_add(log_Warning, "RebindInputState(): invalid control index");
 		return;
 	}
 
 	/* Remove the old binding on this spot */
-	RemoveInputState (templat, control, index);
+	RemoveInputState(templat, control, index);
 
 	/* Wait for the next interesting bit of user input */
-	VControl_ClearGesture ();
-	while (!VControl_GetLastGesture (&g))
+	VControl_ClearGesture();
+	while (!VControl_GetLastGesture(&g))
 	{
-		TaskSwitch ();
+		TaskSwitch();
 	}
 
 	/* And now, add the new binding. */
-	VControl_AddGestureBinding (&g,
-			(int *)(flight_vec + templat * num_flight + control));
+	VControl_AddGestureBinding(&g,
+							   (int*)(flight_vec + templat * num_flight + control));
 	*CONTROL_PTR(templat, control, index) = g;
-	snprintf (keybuf, 39, "keys.%d.%s.%d", templat+1,
-			flight_res_names[control], index+1);
-	VControl_DumpGesture (valbuf, 39, &g);
-	res_PutString (keybuf, valbuf);
+	snprintf(keybuf, 39, "keys.%d.%s.%d", templat + 1,
+			 flight_res_names[control], index + 1);
+	VControl_DumpGesture(valbuf, 39, &g);
+	res_PutString(keybuf, valbuf);
 }
 
-void
-SaveKeyConfiguration (uio_DirHandle *path, const char *fname)
+void SaveKeyConfiguration(uio_DirHandle* path, const char* fname)
 {
-	SaveResourceIndex (path, fname, "keys.", true);
+	SaveResourceIndex(path, fname, "keys.", true);
 }
 
-void
-BeginInputFrame (void)
+void BeginInputFrame(void)
 {
-	VControl_BeginFrame ();
+	VControl_BeginFrame();
 }

@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include "mount.h"
 
-void uio_printMounts(FILE *outStream, const uio_Repository *repository);
+void uio_printMounts(FILE* outStream, const uio_Repository* repository);
 
 /* *** Internal definitions follow *** */
 #ifdef uio_INTERNAL
@@ -52,61 +52,64 @@ typedef struct uio_MountInfo uio_MountInfo;
  * root of the tree) by the 'up' field.
  */
 
-struct uio_MountTreeItem {
-	struct uio_MountInfo *mountInfo;
+struct uio_MountTreeItem
+{
+	struct uio_MountInfo* mountInfo;
 	int depth;
-			// 'mountInfo->pDirHandle' and 'depth' together point to a
-			// location in a physical tree. An uio_pDirHandle alone can't be
-			// used as the directory might not exist.
-			// So pDirHandle points to the top dir that was mounted, and
-			// 'depth' indicates how many directory names of the path to
-			// this point in the Mount Tree need to be followed.
-			// Example:
-			// This MountTreeItem is somewhere in a tree /foo/bar/bla
-			// and depth = 1. Then this MountTreeItem points to
-			// /bla in the specified root.
-	struct uio_MountTreeItem *next;
-			// The next MountTreeItem in a MountTree
+	// 'mountInfo->pDirHandle' and 'depth' together point to a
+	// location in a physical tree. An uio_pDirHandle alone can't be
+	// used as the directory might not exist.
+	// So pDirHandle points to the top dir that was mounted, and
+	// 'depth' indicates how many directory names of the path to
+	// this point in the Mount Tree need to be followed.
+	// Example:
+	// This MountTreeItem is somewhere in a tree /foo/bar/bla
+	// and depth = 1. Then this MountTreeItem points to
+	// /bla in the specified root.
+	struct uio_MountTreeItem* next;
+	// The next MountTreeItem in a MountTree
 };
 
-struct uio_MountTree {
-	struct uio_MountTree *subTrees;
-			// Trees for subdirs in this MountTree
-	struct uio_MountTreeItem *pLocs;
-			// The physical locations that have effect in this MountTree.
-	struct uio_MountTree *upTree;
-			// the MountTree that pointed to this MountTree
-	struct uio_PathComp *comps;
-			// the names of the path components that lead to the tree.
-			// Not necessary every PathComp is connected to a MountTree.
-			// If you have /foo and /foo/bar/zut mounted, then
-			// there are MountTrees for /,  /foo and /foo/bar/zut,
-			// but there are PathComps for 'foo', 'bar' and 'zut'.
-	struct uio_PathComp *lastComp;
-			// The last PathComp of comps that pointed to this MountTree.
-			// This can be used to trace the path back to the top.
-	struct uio_MountTree *next;
-			// If this tree is a subTree of a tree, 'next' points to the
-			// next subTree of that tree.
+struct uio_MountTree
+{
+	struct uio_MountTree* subTrees;
+	// Trees for subdirs in this MountTree
+	struct uio_MountTreeItem* pLocs;
+	// The physical locations that have effect in this MountTree.
+	struct uio_MountTree* upTree;
+	// the MountTree that pointed to this MountTree
+	struct uio_PathComp* comps;
+	// the names of the path components that lead to the tree.
+	// Not necessary every PathComp is connected to a MountTree.
+	// If you have /foo and /foo/bar/zut mounted, then
+	// there are MountTrees for /,  /foo and /foo/bar/zut,
+	// but there are PathComps for 'foo', 'bar' and 'zut'.
+	struct uio_PathComp* lastComp;
+	// The last PathComp of comps that pointed to this MountTree.
+	// This can be used to trace the path back to the top.
+	struct uio_MountTree* next;
+	// If this tree is a subTree of a tree, 'next' points to the
+	// next subTree of that tree.
 };
 
 /*
  * A MountInfo structure describes how a physical structure was mounted.
  * A physical structure can be used by several MountInfo structures.
  */
-struct uio_MountInfo {
+struct uio_MountInfo
+{
 	int flags;
-			/* Mount flags */
-#	define uio_MOUNTINFO_RDONLY uio_MOUNT_RDONLY
+	/* Mount flags */
+#define uio_MOUNTINFO_RDONLY uio_MOUNT_RDONLY
 	uio_FileSystemID fsID;
-	char *dirName;
-			/* The path inside the mounted fs leading to pDirHandle */
-	uio_PDirHandle *pDirHandle;
-			/* The pDirHandle belonging to this mount */
-	uio_MountTree *mountTree;
-			/* The MountTree node for the mountpoint */
-	uio_AutoMount **autoMount;
-	uio_MountHandle *mountHandle;
+	char* dirName;
+	/* The path inside the mounted fs leading to pDirHandle */
+	uio_PDirHandle* pDirHandle;
+	/* The pDirHandle belonging to this mount */
+	uio_MountTree* mountTree;
+	/* The MountTree node for the mountpoint */
+	uio_AutoMount** autoMount;
+	uio_MountHandle* mountHandle;
 };
 
 
@@ -169,36 +172,36 @@ struct uio_MountInfo {
  *  (apart from the pDirHandle).
  */
 
-uio_MountTree *uio_makeRootMountTree(void);
-void uio_MountTree_delete(uio_MountTree *tree);
-uio_MountTree *uio_mountTreeAddMountInfo(uio_Repository *repository,
-		uio_MountTree *mountTree, uio_MountInfo *mountInfo, const char *path,
-		uio_MountLocation location, const uio_MountInfo *relative);
-void uio_mountTreeRemoveMountInfo(uio_Repository *repository,
-		uio_MountTree *mountTree, uio_MountInfo *mountInfo);
-void uio_findMountTree(uio_MountTree *top, const char *path,
-		uio_MountTree **resTree, const char **pPath);
-char *uio_mountTreeItemRestPath(const uio_MountTreeItem *item,
-		uio_PathComp *endComp, const char *path);
-int uio_mountTreeCountPLocs(const uio_MountTree *tree);
-uio_MountInfo *uio_MountInfo_new(uio_FileSystemID fsID,
-		uio_MountTree *mountTree, uio_PDirHandle *pDirHandle,
-		char *dirName, uio_AutoMount **autoMount,
-		uio_MountHandle *mountHandle, int flags);
-void uio_MountInfo_delete(uio_MountInfo *mountInfo);
-void uio_printMountTree(FILE *outStream, const uio_MountTree *tree,
-		int indent);
-void uio_printMountTreeItem(FILE *outStream, const uio_MountTreeItem *item);
-void uio_printMountTreeItems(FILE *outStream, const uio_MountTreeItem *item);
-void uio_printPathToMountTree(FILE *outStream, const uio_MountTree *tree);
-void uio_printMountInfo(FILE *outStream, const uio_MountInfo *mountInfo);
+uio_MountTree* uio_makeRootMountTree(void);
+void uio_MountTree_delete(uio_MountTree* tree);
+uio_MountTree* uio_mountTreeAddMountInfo(uio_Repository* repository,
+										 uio_MountTree* mountTree, uio_MountInfo* mountInfo, const char* path,
+										 uio_MountLocation location, const uio_MountInfo* relative);
+void uio_mountTreeRemoveMountInfo(uio_Repository* repository,
+								  uio_MountTree* mountTree, uio_MountInfo* mountInfo);
+void uio_findMountTree(uio_MountTree* top, const char* path,
+					   uio_MountTree** resTree, const char** pPath);
+char* uio_mountTreeItemRestPath(const uio_MountTreeItem* item,
+								uio_PathComp* endComp, const char* path);
+int uio_mountTreeCountPLocs(const uio_MountTree* tree);
+uio_MountInfo* uio_MountInfo_new(uio_FileSystemID fsID,
+								 uio_MountTree* mountTree, uio_PDirHandle* pDirHandle,
+								 char* dirName, uio_AutoMount** autoMount,
+								 uio_MountHandle* mountHandle, int flags);
+void uio_MountInfo_delete(uio_MountInfo* mountInfo);
+void uio_printMountTree(FILE* outStream, const uio_MountTree* tree,
+						int indent);
+void uio_printMountTreeItem(FILE* outStream, const uio_MountTreeItem* item);
+void uio_printMountTreeItems(FILE* outStream, const uio_MountTreeItem* item);
+void uio_printPathToMountTree(FILE* outStream, const uio_MountTree* tree);
+void uio_printMountInfo(FILE* outStream, const uio_MountInfo* mountInfo);
 
 static inline uio_bool
-uio_mountInfoIsReadOnly(uio_MountInfo *mountInfo) {
+uio_mountInfoIsReadOnly(uio_MountInfo* mountInfo)
+{
 	return (mountInfo->flags & uio_MOUNTINFO_RDONLY) != 0;
 }
 
-#endif  /* uio_INTERNAL */
+#endif /* uio_INTERNAL */
 
-#endif  /* LIBS_UIO_MOUNTTREE_H_ */
-
+#endif /* LIBS_UIO_MOUNTTREE_H_ */

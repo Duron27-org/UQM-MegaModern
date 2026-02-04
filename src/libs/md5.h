@@ -29,5 +29,4 @@ extern "C" {
 }
 #endif
 
-#endif  /* LIBS_MD5_H_ */
-
+#endif /* LIBS_MD5_H_ */

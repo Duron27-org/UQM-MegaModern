@@ -17,12 +17,12 @@
  */
 
 #include "netplay.h"
-		// For DUMP_CRC_OPS
+// For DUMP_CRC_OPS
 
 #include "crc.h"
 
 #ifdef DUMP_CRC_OPS
-#	include "libs/log.h"
+#include "libs/log.h"
 #endif
 
 
@@ -70,17 +70,16 @@ uint32 crcTable[256] = {
 	0x40df0b66, 0x37d83bf0, 0xa9bcae53, 0xdebb9ec5, 0x47b2cf7f, 0x30b5ffe9,
 	0xbdbdf21c, 0xcabac28a, 0x53b39330, 0x24b4a3a6, 0xbad03605, 0xcdd70693,
 	0x54de5729, 0x23d967bf, 0xb3667a2e, 0xc4614ab8, 0x5d681b02, 0x2a6f2b94,
-	0xb40bbe37, 0xc30c8ea1, 0x5a05df1b, 0x2d02ef8d
-};
+	0xb40bbe37, 0xc30c8ea1, 0x5a05df1b, 0x2d02ef8d};
 
-void
-crc_init(crc_State *state) {
+void crc_init(crc_State* state)
+{
 	state->crc = 0xffffffff;
 }
 
-void
-crc_processBytes(crc_State *state, uint8 *buf, size_t bufLen) {
-	uint8 *end = buf + bufLen;
+void crc_processBytes(crc_State* state, uint8* buf, size_t bufLen)
+{
+	uint8* end = buf + bufLen;
 	uint32 newCrc = state->crc;
 
 	while (buf < end)
@@ -93,50 +92,49 @@ crc_processBytes(crc_State *state, uint8 *buf, size_t bufLen) {
 	state->crc = newCrc;
 }
 
-void
-crc_processUint8(crc_State *state, uint8 val) {
+void crc_processUint8(crc_State* state, uint8 val)
+{
 	uint32 newCrc = state->crc;
 
 	newCrc = (newCrc >> 8) ^ crcTable[(newCrc ^ val) & 0xff];
 #ifdef DUMP_CRC_OPS
 	crc_log("crc_processUint8(%08x, %02x) --> %08x.",
-			state->crc, (int) val, newCrc);
+			state->crc, (int)val, newCrc);
 #endif
 	state->crc = newCrc;
 }
 
-void
-crc_processUint16(crc_State *state, uint16 val) {
+void crc_processUint16(crc_State* state, uint16 val)
+{
 	uint32 newCrc = state->crc;
 
 	newCrc = (newCrc >> 8) ^ crcTable[(newCrc ^ (val & 0xff)) & 0xff];
-	newCrc = (newCrc >> 8) ^ crcTable[(newCrc ^ (val >> 8)  ) & 0xff];
+	newCrc = (newCrc >> 8) ^ crcTable[(newCrc ^ (val >> 8)) & 0xff];
 #ifdef DUMP_CRC_OPS
 	crc_log("crc_processUint16(%08x, %04x) --> %08x.",
-			state->crc, (int) val, newCrc);
+			state->crc, (int)val, newCrc);
 #endif
 	state->crc = newCrc;
 }
 
-void
-crc_processUint32(crc_State *state, uint32 val) {
+void crc_processUint32(crc_State* state, uint32 val)
+{
 	uint32 newCrc = state->crc;
 
-	newCrc = (newCrc >> 8) ^ crcTable[(newCrc ^ (val         & 0xff)) & 0xff];
-	newCrc = (newCrc >> 8) ^ crcTable[(newCrc ^ ((val >>  8) & 0xff)) & 0xff];
+	newCrc = (newCrc >> 8) ^ crcTable[(newCrc ^ (val & 0xff)) & 0xff];
+	newCrc = (newCrc >> 8) ^ crcTable[(newCrc ^ ((val >> 8) & 0xff)) & 0xff];
 	newCrc = (newCrc >> 8) ^ crcTable[(newCrc ^ ((val >> 16) & 0xff)) & 0xff];
-	newCrc = (newCrc >> 8) ^ crcTable[(newCrc ^ ((val >> 24)       )) & 0xff];
+	newCrc = (newCrc >> 8) ^ crcTable[(newCrc ^ ((val >> 24))) & 0xff];
 
 #ifdef DUMP_CRC_OPS
 	crc_log("crc_processUint32(%08x, %08x) --> %08x.",
-			state->crc, (int) val, newCrc);
+			state->crc, (int)val, newCrc);
 #endif
 	state->crc = newCrc;
 }
 
 uint32
-crc_finish(const crc_State *state) {
+crc_finish(const crc_State* state)
+{
 	return ~state->crc;
 }
-
-

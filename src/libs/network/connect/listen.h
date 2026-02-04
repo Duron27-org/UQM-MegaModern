@@ -20,7 +20,8 @@
 #define LIBS_NETWORK_CONNECT_LISTEN_H_
 
 typedef struct ListenFlags ListenFlags;
-typedef enum {
+typedef enum
+{
 	Listen_closed,
 	Listen_resolving,
 	Listen_listening
@@ -35,11 +36,11 @@ typedef struct ListenState ListenState;
 // code that includes this file.
 // Note that listen.c itself includes winsock2.h; SOCKLEN_T is used there
 // only where necessary to keep the API consistent.
-#	define SOCKLEN_T size_t
+#define SOCKLEN_T size_t
 struct sockaddr;
 #else
-#	include <netinet/in.h>
-#	define SOCKLEN_T socklen_t
+#include <netinet/in.h>
+#define SOCKLEN_T socklen_t
 #endif
 
 #include "resolve.h"
@@ -48,35 +49,38 @@ struct sockaddr;
 #include "../netmanager/netmanager.h"
 
 // For listenPort()
-struct ListenFlags {
+struct ListenFlags
+{
 	ProtocolFamily familyDemand;
-			// Only accept a protocol family of this type.
-			// One of PF_inet, PF_inet6, or PF_unspec.
+	// Only accept a protocol family of this type.
+	// One of PF_inet, PF_inet6, or PF_unspec.
 	ProtocolFamily familyPrefer;
-			// Prefer a protocol family of this type.
-			// One of PF_inet, PF_inet6, or PF_unspec.
+	// Prefer a protocol family of this type.
+	// One of PF_inet, PF_inet6, or PF_unspec.
 	int backlog;
-			// As the 2rd parameter to listen();
+	// As the 2rd parameter to listen();
 };
 
-struct ListenError {
+struct ListenError
+{
 	ListenStateState state;
-			// State where the error occured.
+	// State where the error occured.
 	int err;
-			// errno value. Not relevant if state == resolving unless
-			// gaiRes == EAI_SYSTEM.
-	const ResolveError *resolveError;
-			// Only relevant if state == resolving.
+	// errno value. Not relevant if state == resolving unless
+	// gaiRes == EAI_SYSTEM.
+	const ResolveError* resolveError;
+	// Only relevant if state == resolving.
 };
 
-typedef void (*ListenConnectCallback)(ListenState *listenState,
-		NetDescriptor *listenNd, NetDescriptor *newNd,
-		const struct sockaddr *addr, SOCKLEN_T addrLen);
-typedef void (*ListenErrorCallback)(ListenState *listenState,
-		const ListenError *error);
+typedef void (*ListenConnectCallback)(ListenState* listenState,
+									  NetDescriptor* listenNd, NetDescriptor* newNd,
+									  const struct sockaddr* addr, SOCKLEN_T addrLen);
+typedef void (*ListenErrorCallback)(ListenState* listenState,
+									const ListenError* error);
 
 #ifdef LISTEN_INTERNAL
-struct ListenState {
+struct ListenState
+{
 	RefCount refCount;
 
 	ListenStateState state;
@@ -84,23 +88,22 @@ struct ListenState {
 
 	ListenConnectCallback connectCallback;
 	ListenErrorCallback errorCallback;
-	void *extra;
+	void* extra;
 
-	ResolveState *resolveState;
-	NetDescriptor **nds;
+	ResolveState* resolveState;
+	NetDescriptor** nds;
 	size_t numNd;
 	// INV: (numNd == NULL) == (nds == NULL)
 };
-#endif  /* defined(LISTEN_INTERNAL) */
+#endif /* defined(LISTEN_INTERNAL) */
 
-ListenState *listenPort(const char *service, Protocol proto,
-		const ListenFlags *flags, ListenConnectCallback connectCallback,
-		ListenErrorCallback errorCallback, void *extra);
-void ListenState_close(ListenState *listenState);
-void ListenState_incRef(ListenState *listenState);
-bool ListenState_decRef(ListenState *listenState);
-void ListenState_setExtra(ListenState *listenState, void *extra);
-void *ListenState_getExtra(ListenState *listenState);
+ListenState* listenPort(const char* service, Protocol proto,
+						const ListenFlags* flags, ListenConnectCallback connectCallback,
+						ListenErrorCallback errorCallback, void* extra);
+void ListenState_close(ListenState* listenState);
+void ListenState_incRef(ListenState* listenState);
+bool ListenState_decRef(ListenState* listenState);
+void ListenState_setExtra(ListenState* listenState, void* extra);
+void* ListenState_getExtra(ListenState* listenState);
 
-#endif  /* LIBS_NETWORK_CONNECT_LISTEN_H_ */
-
+#endif /* LIBS_NETWORK_CONNECT_LISTEN_H_ */

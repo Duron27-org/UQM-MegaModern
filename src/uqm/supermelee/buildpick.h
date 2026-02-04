@@ -9,20 +9,19 @@
 extern "C" {
 #endif
 
-void BuildBuildPickFrame (void);
-void DestroyBuildPickFrame (void);
-bool BuildPickShip (MELEE_STATE *pMS);
-void GetBuildPickFrameRect (RECT *r);
-void GetToolTipFrameRect (RECT *r);
+void BuildBuildPickFrame(void);
+void DestroyBuildPickFrame(void);
+bool BuildPickShip(MELEE_STATE* pMS);
+void GetBuildPickFrameRect(RECT* r);
+void GetToolTipFrameRect(RECT* r);
 
-void DrawPickFrame (MELEE_STATE *pMS);
-void DrawPickIcon (MeleeShip ship, bool DrawErase);
+void DrawPickFrame(MELEE_STATE* pMS);
+void DrawPickIcon(MeleeShip ship, bool DrawErase);
 
-void DrawTooltip (SHIP_INFO *SIPtr);
+void DrawTooltip(SHIP_INFO* SIPtr);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* BUILDPICK_H */
-
+#endif /* BUILDPICK_H */

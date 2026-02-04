@@ -31,5 +31,4 @@ extern "C" {
 }
 #endif
 
-#endif  /* LIBS_UIO_H_ */
-
+#endif /* LIBS_UIO_H_ */

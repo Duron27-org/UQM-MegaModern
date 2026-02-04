@@ -25,39 +25,39 @@
 /* LZSS Parameters */
 
 #define N 4096 /* Size of string buffer */
-#define F 16 /* Size of look-ahead buffer */
+#define F 16   /* Size of look-ahead buffer */
 //#define F 60 /* Size of look-ahead buffer */
 #define THRESHOLD 2
 #define NIL N /* End of tree's node  */
 
 /* Huffman coding parameters */
 
-#define N_CHAR   (256 - THRESHOLD + F)
-								/* character code (= 0..N_CHAR-1) */
-#define T  (N_CHAR * 2 - 1) /* Size of table */
-#define R  (T - 1) /* root position */
+#define N_CHAR (256 - THRESHOLD + F)
+/* character code (= 0..N_CHAR-1) */
+#define T (N_CHAR * 2 - 1) /* Size of table */
+#define R (T - 1)		   /* root position */
 #define MAX_FREQ 0x8000
-										/* update when cumulative frequency */
+/* update when cumulative frequency */
 
 struct _LZHCODE_DESC
 {
 	uqm::COUNT buf_index, restart_index, bytes_left;
 	uqm::BYTE text_buf[N + F - 1];
-		/* reconstruct freq tree */
+	/* reconstruct freq tree */
 	uqm::COUNT freq[T + 1]; /* cumulative freq table */
-		/*
+							/*
 		 * pointing parent nodes.
 		 * area [T..(T + N_CHAR - 1)] are pointers for leaves
 		 */
 	uqm::COUNT prnt[T + N_CHAR];
-		/* pointing children nodes (son[], son[] + 1)*/
+	/* pointing children nodes (son[], son[] + 1)*/
 	uqm::COUNT son[T];
 	uqm::UWORD workbuf;
 	uqm::BYTE workbuflen;
 
 	STREAM_TYPE StreamType;
 
-	void *Stream;
+	void* Stream;
 	uqm::DWORD StreamIndex, StreamLength;
 
 	STREAM_MODE StreamMode;
@@ -65,27 +65,26 @@ struct _LZHCODE_DESC
 };
 
 typedef struct _LZHCODE_DESC LZHCODE_DESC;
-typedef LZHCODE_DESC *PLZHCODE_DESC;
+typedef LZHCODE_DESC* PLZHCODE_DESC;
 
-#define InChar() (_StreamType == FILE_STREAM ? \
-								GetResFileChar ((uio_Stream *)_Stream) : \
-								(int)*_Stream++)
-#define OutChar(c) (_StreamType == FILE_STREAM ? \
-								PutResFileChar ((c), (uio_Stream *)_Stream) : \
-								(*_Stream++ = (uqm::BYTE)(c)))
+#define InChar() (_StreamType == FILE_STREAM ?               \
+					  GetResFileChar((uio_Stream*)_Stream) : \
+					  (int)*_Stream++)
+#define OutChar(c) (_StreamType == FILE_STREAM ?                    \
+						PutResFileChar((c), (uio_Stream*)_Stream) : \
+						(*_Stream++ = (uqm::BYTE)(c)))
 
 
-#define AllocCodeDesc() HCalloc (sizeof (LZHCODE_DESC))
+#define AllocCodeDesc() HCalloc(sizeof(LZHCODE_DESC))
 #define FreeCodeDesc HFree
 
-extern void _update (uqm::COUNT c);
-extern void StartHuff (void);
+extern void _update(uqm::COUNT c);
+extern void StartHuff(void);
 
-extern PLZHCODE_DESC  _lpCurCodeDesc;
-extern STREAM_TYPE    _StreamType;
-extern uqm::BYTE*          _Stream;
-extern uqm::UWORD          _workbuf;
-extern uqm::BYTE           _workbuflen;
+extern PLZHCODE_DESC _lpCurCodeDesc;
+extern STREAM_TYPE _StreamType;
+extern uqm::BYTE* _Stream;
+extern uqm::UWORD _workbuf;
+extern uqm::BYTE _workbuflen;
 
 #endif /* LIBS_DECOMP_LZH_H_ */
-

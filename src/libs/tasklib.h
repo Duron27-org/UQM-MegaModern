@@ -31,32 +31,32 @@ extern "C" {
 #endif
 
 /* Bitmasks for setting task state. */
-#define TASK_INUSE       1
-#define TASK_EXIT        2
+#define TASK_INUSE 1
+#define TASK_EXIT 2
 
-struct taskstruct {
+struct taskstruct
+{
 	Mutex state_mutex;
-	volatile uqm::DWORD state;   // Protected by state_mutex
-	const char *name;
+	volatile uqm::DWORD state; // Protected by state_mutex
+	const char* name;
 	volatile Thread thread;
 };
 
-typedef struct taskstruct *Task;
+typedef struct taskstruct* Task;
 
-extern void  InitTaskSystem (void);
-extern void  CleanupTaskSystem (void);
+extern void InitTaskSystem(void);
+extern void CleanupTaskSystem(void);
 
-extern Task  AssignTask (ThreadFunction task_func, uqm::SDWORD Stacksize, const char *name);
-extern uqm::DWORD Task_SetState (Task task, uqm::DWORD state_mask);
-extern uqm::DWORD Task_ClearState (Task task, uqm::DWORD state_mask);
-extern uqm::DWORD Task_ToggleState (Task task, uqm::DWORD state_mask);
-extern uqm::DWORD Task_ReadState (Task task, uqm::DWORD state_mask);
-extern void  FinishTask (Task task);
-extern void  ConcludeTask (Task task);
+extern Task AssignTask(ThreadFunction task_func, uqm::SDWORD Stacksize, const char* name);
+extern uqm::DWORD Task_SetState(Task task, uqm::DWORD state_mask);
+extern uqm::DWORD Task_ClearState(Task task, uqm::DWORD state_mask);
+extern uqm::DWORD Task_ToggleState(Task task, uqm::DWORD state_mask);
+extern uqm::DWORD Task_ReadState(Task task, uqm::DWORD state_mask);
+extern void FinishTask(Task task);
+extern void ConcludeTask(Task task);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
 #endif
-

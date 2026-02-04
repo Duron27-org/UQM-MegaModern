@@ -36,103 +36,102 @@
 // Gob launcher
 #define WEAPON_ENERGY_COST 1
 #define WEAPON_WAIT 2
-#define SUPOX_OFFSET RES_SCALE (23)
+#define SUPOX_OFFSET RES_SCALE(23)
 #define MISSILE_OFFSET 2
-#define MISSILE_SPEED DISPLAY_TO_WORLD (30)
+#define MISSILE_SPEED DISPLAY_TO_WORLD(30)
 #define MISSILE_LIFE 10
 #define MISSILE_HITS 1
 #define MISSILE_DAMAGE 1
 
 // Lateral/reverse thrust
 #define SPECIAL_ENERGY_COST 1
-		/* Unused - uncomment below to enable. */
+/* Unused - uncomment below to enable. */
 #define SPECIAL_WAIT 0
-		/* Unused except to initialize supox_desc.special_wait */
+/* Unused except to initialize supox_desc.special_wait */
 
 // HD
-#define MISSILE_SPEED_HD RES_SCALE (MISSILE_SPEED)
+#define MISSILE_SPEED_HD RES_SCALE(MISSILE_SPEED)
 
 static RACE_DESC supox_desc =
-{
-	{ /* SHIP_INFO */
-		"blade",
-		FIRES_FORE,
-		16, /* Super Melee cost */
-		MAX_CREW, MAX_CREW,
-		MAX_ENERGY, MAX_ENERGY,
-		SUPOX_RACE_STRINGS,
-		SUPOX_ICON_MASK_PMAP_ANIM,
-		SUPOX_MICON_MASK_PMAP_ANIM,
-		NULL, NULL, NULL
-	},
-	{ /* FLEET_STUFF */
-		333 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
-		{ /* Known location (center of SoI) */
-			7468, 9246,
-		},
-	},
 	{
-		MAX_THRUST,
-		THRUST_INCREMENT,
-		ENERGY_REGENERATION,
-		WEAPON_ENERGY_COST,
-		SPECIAL_ENERGY_COST,
-		ENERGY_WAIT,
-		TURN_WAIT,
-		THRUST_WAIT,
-		WEAPON_WAIT,
-		SPECIAL_WAIT,
-		SHIP_MASS,
-	},
-	{
+		{/* SHIP_INFO */
+		 "blade",
+		 FIRES_FORE,
+		 16, /* Super Melee cost */
+		 MAX_CREW, MAX_CREW,
+		 MAX_ENERGY, MAX_ENERGY,
+		 SUPOX_RACE_STRINGS,
+		 SUPOX_ICON_MASK_PMAP_ANIM,
+		 SUPOX_MICON_MASK_PMAP_ANIM,
+		 NULL, NULL, NULL},
 		{
-			SUPOX_BIG_MASK_PMAP_ANIM,
-			SUPOX_MED_MASK_PMAP_ANIM,
-			SUPOX_SML_MASK_PMAP_ANIM,
-		},
+			/* FLEET_STUFF */
+			333 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
+			{
+				/* Known location (center of SoI) */
+				7468,
+				9246,
+			},
+		 },
 		{
-			GOB_BIG_MASK_PMAP_ANIM,
-			GOB_MED_MASK_PMAP_ANIM,
-			GOB_SML_MASK_PMAP_ANIM,
-		},
+			MAX_THRUST,
+			THRUST_INCREMENT,
+			ENERGY_REGENERATION,
+			WEAPON_ENERGY_COST,
+			SPECIAL_ENERGY_COST,
+			ENERGY_WAIT,
+			TURN_WAIT,
+			THRUST_WAIT,
+			WEAPON_WAIT,
+			SPECIAL_WAIT,
+			SHIP_MASS,
+		 },
+		{{
+			 SUPOX_BIG_MASK_PMAP_ANIM,
+			 SUPOX_MED_MASK_PMAP_ANIM,
+			 SUPOX_SML_MASK_PMAP_ANIM,
+		 },
+		 {
+			 GOB_BIG_MASK_PMAP_ANIM,
+			 GOB_MED_MASK_PMAP_ANIM,
+			 GOB_SML_MASK_PMAP_ANIM,
+		 },
+		 {
+			 NULL_RESOURCE,
+			 NULL_RESOURCE,
+			 NULL_RESOURCE,
+		 },
+		 {SUPOX_CAPTAIN_MASK_PMAP_ANIM,
+		  NULL, NULL, NULL, NULL, NULL,
+		  0, 0, 0, 0, 0},
+		 SUPOX_VICTORY_SONG,
+		 SUPOX_SHIP_SOUNDS,
+		 {NULL, NULL, NULL},
+		 {NULL, NULL, NULL},
+		 {NULL, NULL, NULL},
+		 NULL,
+		 NULL},
 		{
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-			NULL_RESOURCE,
-		},
-		{
-			SUPOX_CAPTAIN_MASK_PMAP_ANIM,
-			NULL, NULL, NULL, NULL, NULL,
-			0, 0, 0, 0, 0
-		},
-		SUPOX_VICTORY_SONG,
-		SUPOX_SHIP_SOUNDS,
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		{ NULL, NULL, NULL },
-		NULL, NULL
-	},
-	{
+			0,
+			(MISSILE_SPEED * MISSILE_LIFE) >> 1,
+			NULL,
+		 },
+		(UNINIT_FUNC*)NULL,
+		(PREPROCESS_FUNC*)NULL,
+		(POSTPROCESS_FUNC*)NULL,
+		(INIT_WEAPON_FUNC*)NULL,
 		0,
-		(MISSILE_SPEED * MISSILE_LIFE) >> 1,
-		NULL,
-	},
-	(UNINIT_FUNC *) NULL,
-	(PREPROCESS_FUNC *) NULL,
-	(POSTPROCESS_FUNC *) NULL,
-	(INIT_WEAPON_FUNC *) NULL,
-	0,
-	0, /* CodeRef */
+		0, /* CodeRef */
 };
 
 static void
-supox_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
-		uqm::COUNT ConcernCounter)
+supox_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
+				   uqm::COUNT ConcernCounter)
 {
-	STARSHIP *StarShipPtr;
-	EVALUATE_DESC *lpEvalDesc;
+	STARSHIP* StarShipPtr;
+	EVALUATE_DESC* lpEvalDesc;
 
-	GetElementStarShip (ShipPtr, &StarShipPtr);
+	GetElementStarShip(ShipPtr, &StarShipPtr);
 
 	lpEvalDesc = &ObjectsOfConcern[ENEMY_SHIP_INDEX];
 	if (StarShipPtr->special_counter || lpEvalDesc->ObjectPtr == 0)
@@ -147,19 +146,21 @@ supox_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 				- ShipPtr->next.location.x;
 		delta_y = lpEvalDesc->ObjectPtr->next.location.y
 				- ShipPtr->next.location.y;
-		direction_angle = ARCTAN (delta_x, delta_y);
+		direction_angle = ARCTAN(delta_x, delta_y);
 
-		LinedUp = (bool)(NORMALIZE_ANGLE (NORMALIZE_ANGLE (direction_angle
-				- FACING_TO_ANGLE (StarShipPtr->ShipFacing))
-				+ QUADRANT) <= HALF_CIRCLE);
+		LinedUp = (bool)(NORMALIZE_ANGLE(NORMALIZE_ANGLE(direction_angle
+														 - FACING_TO_ANGLE(StarShipPtr->ShipFacing))
+										 + QUADRANT)
+						 <= HALF_CIRCLE);
 
 		if (!LinedUp
-				|| lpEvalDesc->which_turn > 20
-				|| NORMALIZE_ANGLE (
-				lpEvalDesc->facing
-				- (FACING_TO_ANGLE (StarShipPtr->ShipFacing)
-				+ HALF_CIRCLE) + OCTANT
-				) > QUADRANT)
+			|| lpEvalDesc->which_turn > 20
+			|| NORMALIZE_ANGLE(
+				   lpEvalDesc->facing
+				   - (FACING_TO_ANGLE(StarShipPtr->ShipFacing)
+					  + HALF_CIRCLE)
+				   + OCTANT)
+				   > QUADRANT)
 			StarShipPtr->ship_input_state &= ~SPECIAL;
 		else if (LinedUp && lpEvalDesc->which_turn <= 12)
 			StarShipPtr->ship_input_state |= SPECIAL;
@@ -168,35 +169,35 @@ supox_intelligence (ELEMENT *ShipPtr, EVALUATE_DESC *ObjectsOfConcern,
 			lpEvalDesc->MoveState = PURSUE;
 	}
 
-	ship_intelligence (ShipPtr,
-			ObjectsOfConcern, ConcernCounter);
+	ship_intelligence(ShipPtr,
+					  ObjectsOfConcern, ConcernCounter);
 
 	if (StarShipPtr->ship_input_state & SPECIAL)
 		StarShipPtr->ship_input_state |= THRUST | WEAPON;
 
 	lpEvalDesc = &ObjectsOfConcern[ENEMY_WEAPON_INDEX];
 	if (StarShipPtr->special_counter == 0
-			&& lpEvalDesc->ObjectPtr
-			&& lpEvalDesc->MoveState == AVOID
-			&& ShipPtr->turn_wait == 0)
+		&& lpEvalDesc->ObjectPtr
+		&& lpEvalDesc->MoveState == AVOID
+		&& ShipPtr->turn_wait == 0)
 	{
 		StarShipPtr->ship_input_state &= ~THRUST;
 		StarShipPtr->ship_input_state |= SPECIAL;
 		if (!(StarShipPtr->cur_status_flags & (LEFT | RIGHT)))
-			StarShipPtr->ship_input_state |= 1 << ((uqm::BYTE)TFB_Random () & 1);
+			StarShipPtr->ship_input_state |= 1 << ((uqm::BYTE)TFB_Random() & 1);
 		else
 			StarShipPtr->ship_input_state |=
-					StarShipPtr->cur_status_flags & (LEFT | RIGHT);
+				StarShipPtr->cur_status_flags & (LEFT | RIGHT);
 	}
 }
 
 static uqm::COUNT
-initialize_horn (ELEMENT *ShipPtr, HELEMENT HornArray[])
+initialize_horn(ELEMENT* ShipPtr, HELEMENT HornArray[])
 {
-	STARSHIP *StarShipPtr;
+	STARSHIP* StarShipPtr;
 	MISSILE_BLOCK MissileBlock;
 
-	GetElementStarShip (ShipPtr, &StarShipPtr);
+	GetElementStarShip(ShipPtr, &StarShipPtr);
 	MissileBlock.cx = ShipPtr->next.location.x;
 	MissileBlock.cy = ShipPtr->next.location.y;
 	MissileBlock.farray = StarShipPtr->RaceDescPtr->ship_data.weapon;
@@ -210,21 +211,21 @@ initialize_horn (ELEMENT *ShipPtr, HELEMENT HornArray[])
 	MissileBlock.life = MISSILE_LIFE;
 	MissileBlock.preprocess_func = NULL;
 	MissileBlock.blast_offs = MISSILE_OFFSET;
-	HornArray[0] = initialize_missile (&MissileBlock);
+	HornArray[0] = initialize_missile(&MissileBlock);
 	return (1);
 }
 
 static void
-supox_preprocess (ELEMENT *ElementPtr)
+supox_preprocess(ELEMENT* ElementPtr)
 {
-	STARSHIP *StarShipPtr;
+	STARSHIP* StarShipPtr;
 
-	GetElementStarShip (ElementPtr, &StarShipPtr);
+	GetElementStarShip(ElementPtr, &StarShipPtr);
 	if ((StarShipPtr->cur_status_flags & SPECIAL)
-/*
+		/*
 			&& DeltaEnergy (ElementPtr, -SPECIAL_ENERGY_COST)
 */
-			)
+	)
 	{
 		uqm::SIZE add_facing;
 
@@ -234,7 +235,7 @@ supox_preprocess (ELEMENT *ElementPtr)
 			if (ElementPtr->thrust_wait == 0)
 				++ElementPtr->thrust_wait;
 
-			add_facing = ANGLE_TO_FACING (HALF_CIRCLE);
+			add_facing = ANGLE_TO_FACING(HALF_CIRCLE);
 		}
 		if (StarShipPtr->cur_status_flags & LEFT)
 		{
@@ -242,9 +243,9 @@ supox_preprocess (ELEMENT *ElementPtr)
 				++ElementPtr->turn_wait;
 
 			if (add_facing)
-				add_facing += ANGLE_TO_FACING (OCTANT);
+				add_facing += ANGLE_TO_FACING(OCTANT);
 			else
-				add_facing = -ANGLE_TO_FACING (QUADRANT);
+				add_facing = -ANGLE_TO_FACING(QUADRANT);
 		}
 		else if (StarShipPtr->cur_status_flags & RIGHT)
 		{
@@ -252,9 +253,9 @@ supox_preprocess (ELEMENT *ElementPtr)
 				++ElementPtr->turn_wait;
 
 			if (add_facing)
-				add_facing -= ANGLE_TO_FACING (OCTANT);
+				add_facing -= ANGLE_TO_FACING(OCTANT);
 			else
-				add_facing = ANGLE_TO_FACING (QUADRANT);
+				add_facing = ANGLE_TO_FACING(QUADRANT);
 		}
 
 		if (add_facing)
@@ -263,14 +264,13 @@ supox_preprocess (ELEMENT *ElementPtr)
 			STATUS_FLAGS thrust_status;
 
 			facing = StarShipPtr->ShipFacing;
-			StarShipPtr->ShipFacing = NORMALIZE_FACING (
-					facing + add_facing
-					);
-			thrust_status = inertial_thrust (ElementPtr);
+			StarShipPtr->ShipFacing = NORMALIZE_FACING(
+				facing + add_facing);
+			thrust_status = inertial_thrust(ElementPtr);
 			StarShipPtr->cur_status_flags &=
-					~(SHIP_AT_MAX_SPEED
-					| SHIP_BEYOND_MAX_SPEED
-					| SHIP_IN_GRAVITY_WELL);
+				~(SHIP_AT_MAX_SPEED
+				  | SHIP_BEYOND_MAX_SPEED
+				  | SHIP_IN_GRAVITY_WELL);
 			StarShipPtr->cur_status_flags |= thrust_status;
 			StarShipPtr->ShipFacing = facing;
 		}
@@ -278,13 +278,14 @@ supox_preprocess (ELEMENT *ElementPtr)
 }
 
 RACE_DESC*
-init_supox (void)
+init_supox(void)
 {
-	RACE_DESC *RaceDescPtr;
+	RACE_DESC* RaceDescPtr;
 
-	if (IS_HD) {
-		supox_desc.characteristics.max_thrust = RES_SCALE (MAX_THRUST);
-		supox_desc.characteristics.thrust_increment = RES_SCALE (THRUST_INCREMENT);
+	if (IS_HD)
+	{
+		supox_desc.characteristics.max_thrust = RES_SCALE(MAX_THRUST);
+		supox_desc.characteristics.thrust_increment = RES_SCALE(THRUST_INCREMENT);
 		supox_desc.cyborg_control.WeaponRange = (MISSILE_SPEED_HD * MISSILE_LIFE) >> 1;
 	}
 	else
@@ -292,7 +293,7 @@ init_supox (void)
 		supox_desc.characteristics.max_thrust = MAX_THRUST;
 		supox_desc.characteristics.thrust_increment = THRUST_INCREMENT;
 		supox_desc.cyborg_control.WeaponRange =
-				(MISSILE_SPEED * MISSILE_LIFE) >> 1;
+			(MISSILE_SPEED * MISSILE_LIFE) >> 1;
 	}
 
 	supox_desc.preprocess_func = supox_preprocess;
@@ -303,4 +304,3 @@ init_supox (void)
 
 	return (RaceDescPtr);
 }
-

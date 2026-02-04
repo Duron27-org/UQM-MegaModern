@@ -42,8 +42,8 @@ static fd_set writeSet;
 static fd_set exceptionSet;
 
 
-void
-NetManager_init(void) {
+void NetManager_init(void)
+{
 	NDIndex_init();
 
 	FD_ZERO(&readSet);
@@ -51,19 +51,20 @@ NetManager_init(void) {
 	FD_ZERO(&exceptionSet);
 }
 
-void
-NetManager_uninit(void) {
+void NetManager_uninit(void)
+{
 	NDIndex_uninit();
 }
 
 // Register the NetDescriptor with the NetManager.
-int
-NetManager_addDesc(NetDescriptor *nd) {
+int NetManager_addDesc(NetDescriptor* nd)
+{
 	int fd;
 	assert(nd->socket != Socket_noSocket);
 	assert(!NDIndex_socketRegistered(nd->socket));
 
-	if (NDIndex_registerNDWithSocket(nd->socket, nd) == -1) {
+	if (NDIndex_registerNDWithSocket(nd->socket, nd) == -1)
+	{
 		// errno is set
 		return -1;
 	}
@@ -78,10 +79,10 @@ NetManager_addDesc(NetDescriptor *nd) {
 	return 0;
 }
 
-void
-NetManager_removeDesc(NetDescriptor *nd) {
+void NetManager_removeDesc(NetDescriptor* nd)
+{
 	int fd;
-	
+
 	assert(nd->socket != Socket_noSocket);
 	assert(NDIndex_getNDForSocket(nd->socket) == nd);
 
@@ -93,33 +94,33 @@ NetManager_removeDesc(NetDescriptor *nd) {
 	NDIndex_unregisterNDForSocket(nd->socket);
 }
 
-void
-NetManager_activateReadCallback(NetDescriptor *nd) {
+void NetManager_activateReadCallback(NetDescriptor* nd)
+{
 	FD_SET(nd->socket->fd, &readSet);
 }
 
-void
-NetManager_deactivateReadCallback(NetDescriptor *nd) {
+void NetManager_deactivateReadCallback(NetDescriptor* nd)
+{
 	FD_CLR(nd->socket->fd, &readSet);
 }
 
-void
-NetManager_activateWriteCallback(NetDescriptor *nd) {
+void NetManager_activateWriteCallback(NetDescriptor* nd)
+{
 	FD_SET(nd->socket->fd, &writeSet);
 }
 
-void
-NetManager_deactivateWriteCallback(NetDescriptor *nd) {
+void NetManager_deactivateWriteCallback(NetDescriptor* nd)
+{
 	FD_CLR(nd->socket->fd, &writeSet);
 }
 
-void
-NetManager_activateExceptionCallback(NetDescriptor *nd) {
+void NetManager_activateExceptionCallback(NetDescriptor* nd)
+{
 	FD_SET(nd->socket->fd, &exceptionSet);
 }
 
-void
-NetManager_deactivateExceptionCallback(NetDescriptor *nd) {
+void NetManager_deactivateExceptionCallback(NetDescriptor* nd)
+{
 	FD_CLR(nd->socket->fd, &exceptionSet);
 }
 
@@ -127,8 +128,8 @@ NetManager_deactivateExceptionCallback(NetDescriptor *nd) {
 // triggered by this function. BUG: This may result in callbacks being
 // called multiple times.
 // This function should however not be called from multiple threads at once.
-int
-NetManager_process(uint32 *timeoutMs) {
+int NetManager_process(uint32* timeoutMs)
+{
 	struct timeval timeout;
 	size_t i;
 	int selectResult;
@@ -145,27 +146,31 @@ NetManager_process(uint32 *timeoutMs) {
 	newWriteSet = writeSet;
 	newExceptionSet = exceptionSet;
 
-	do {
+	do
+	{
 		selectResult = select(NDIndex_getSelectNumND(),
-				&newReadSet, &newWriteSet, &newExceptionSet, &timeout);
+							  &newReadSet, &newWriteSet, &newExceptionSet, &timeout);
 		// BUG: If select() is restarted because of EINTR, the timeout
 		//      may start over. (Linux changes 'timeout' to the time left,
 		//      but most other platforms don't.)
 	} while (selectResult == -1 && errno == EINTR);
-	if (selectResult == -1) {
+	if (selectResult == -1)
+	{
 		int savedErrno = errno;
 		log_add(log_Error, "select() failed: %s.", strerror(errno));
 		errno = savedErrno;
 		*timeoutMs = (timeout.tv_sec * 1000) + (timeout.tv_usec / 1000);
-				// XXX: rounding microseconds down. Is that the correct
-				// thing to do?
+		// XXX: rounding microseconds down. Is that the correct
+		// thing to do?
 		return -1;
 	}
 
-	for (i = 0; i < maxND; i++) {
-		NetDescriptor *nd;
-	
-		if (selectResult == 0) {
+	for (i = 0; i < maxND; i++)
+	{
+		NetDescriptor* nd;
+
+		if (selectResult == 0)
+		{
 			// No more bits set in the fd_sets
 			break;
 		}
@@ -175,8 +180,8 @@ NetManager_process(uint32 *timeoutMs) {
 			continue;
 
 		bitSet = false;
-				// Is one of the bits in the fd_sets set?
-		
+		// Is one of the bits in the fd_sets set?
+
 		// A callback may cause a NetDescriptor to be closed. The deletion
 		// of the structure will be scheduled, but will still be
 		// available at least until this function returns.
@@ -184,7 +189,7 @@ NetManager_process(uint32 *timeoutMs) {
 		if (FD_ISSET(i, &newExceptionSet))
 		{
 			bool closed;
-			bitSet = true;			
+			bitSet = true;
 			closed = NetManager_doExceptionCallback(nd);
 			if (closed)
 				goto next;
@@ -193,7 +198,7 @@ NetManager_process(uint32 *timeoutMs) {
 		if (FD_ISSET(i, &newWriteSet))
 		{
 			bool closed;
-			bitSet = true;			
+			bitSet = true;
 			closed = NetManager_doWriteCallback(nd);
 			if (closed)
 				goto next;
@@ -202,7 +207,7 @@ NetManager_process(uint32 *timeoutMs) {
 		if (FD_ISSET(i, &newReadSet))
 		{
 			bool closed;
-			bitSet = true;			
+			bitSet = true;
 			closed = NetManager_doReadCallback(nd);
 			if (closed)
 				goto next;
@@ -214,10 +219,7 @@ next:
 	}
 
 	*timeoutMs = (timeout.tv_sec * 1000) + (timeout.tv_usec / 1000);
-			// XXX: rounding microseconds down. Is that the correct
-			// thing to do?
+	// XXX: rounding microseconds down. Is that the correct
+	// thing to do?
 	return 0;
 }
-
-
-

@@ -75,25 +75,26 @@ enum
 };
 
 #define STAR_OWNER_SHIFT 0
-#define STAR_TYPE_SHIFT 3 /* STAR_OWNER_SHIFT + 3 */
+#define STAR_TYPE_SHIFT 3  /* STAR_OWNER_SHIFT + 3 */
 #define STAR_COLOR_SHIFT 5 /* STAR_TYPE_SHIFT + 2 */
 #define STAR_COLOR_MASK (uqm::BYTE)(0xFF << STAR_COLOR_SHIFT)
 #define STAR_TYPE_MASK (uqm::BYTE)((0xFF << STAR_TYPE_SHIFT) \
-		& ~STAR_COLOR_MASK)
+								   & ~STAR_COLOR_MASK)
 #define STAR_OWNER_MASK (uqm::BYTE)((0xFF << STAR_OWNER_SHIFT) \
-		& ~(STAR_COLOR_MASK \
-		| STAR_TYPE_MASK))
+									& ~(STAR_COLOR_MASK        \
+										| STAR_TYPE_MASK))
 #define STAR_UNKNOWN_MASK (STAR_OWNER_MASK & ~OWNER_PLAYER)
 
-#define MAKE_STAR(t,c,o) \
-		(uqm::BYTE)((((uqm::BYTE)(t) << STAR_TYPE_SHIFT) & STAR_TYPE_MASK) \
-		| (((uqm::BYTE)(c) << STAR_COLOR_SHIFT) & STAR_COLOR_MASK) \
-		| (((uqm::BYTE)(o) << STAR_OWNER_SHIFT) & STAR_OWNER_MASK))
+#define MAKE_STAR(t, c, o)                                                 \
+	(uqm::BYTE)((((uqm::BYTE)(t) << STAR_TYPE_SHIFT) & STAR_TYPE_MASK)     \
+				| (((uqm::BYTE)(c) << STAR_COLOR_SHIFT) & STAR_COLOR_MASK) \
+				| (((uqm::BYTE)(o) << STAR_OWNER_SHIFT) & STAR_OWNER_MASK))
 #define STAR_TYPE(f) (uqm::BYTE)(((f) & STAR_TYPE_MASK) >> STAR_TYPE_SHIFT)
 #define STAR_COLOR(f) (uqm::BYTE)(((f) & STAR_COLOR_MASK) >> STAR_COLOR_SHIFT)
 #define STAR_OWNER(f) (uqm::BYTE)(((f) & STAR_OWNER_MASK) >> STAR_OWNER_SHIFT)
-#define STAR_UNKNOWN(f) (bool)((STAR_OWNER(f) \
-		& STAR_UNKNOWN_MASK) == STAR_UNKNOWN_MASK)
+#define STAR_UNKNOWN(f) (bool)((STAR_OWNER(f)        \
+								& STAR_UNKNOWN_MASK) \
+							   == STAR_UNKNOWN_MASK)
 
 #define PLAN_SIZE_MASK 0x03
 
@@ -102,9 +103,9 @@ enum
 #define GAS_GIANT_ALGO (2 << 2)
 #define PLAN_ALGO_MASK 0x0C
 
-#define PLANSIZE(type)  ((uqm::BYTE)((type) & PLAN_SIZE_MASK))
-#define PLANALGO(type)  ((uqm::BYTE)((type) & PLAN_ALGO_MASK))
-#define PLANCOLOR(type) HINIBBLE (type)
+#define PLANSIZE(type) ((uqm::BYTE)((type) & PLAN_SIZE_MASK))
+#define PLANALGO(type) ((uqm::BYTE)((type) & PLAN_ALGO_MASK))
+#define PLANCOLOR(type) HINIBBLE(type)
 
 #define THIN_ATMOSPHERE 10
 #define NORMAL_ATMOSPHERE 75
@@ -189,10 +190,10 @@ enum
 	NUMBER_OF_PLANET_TYPES,
 
 	WORLD_TYPE_SPECIAL = 0x80,
-	PLANET_SHIELDED    = WORLD_TYPE_SPECIAL,
+	PLANET_SHIELDED = WORLD_TYPE_SPECIAL,
 
 	HIERARCHY_STARBASE = 127 | WORLD_TYPE_SPECIAL,
-	SA_MATRA           = 126 | WORLD_TYPE_SPECIAL,
+	SA_MATRA = 126 | WORLD_TYPE_SPECIAL,
 	DESTROYED_STARBASE = 125 | WORLD_TYPE_SPECIAL,
 	PRECURSOR_STARBASE = 124 | WORLD_TYPE_SPECIAL,
 };
@@ -209,14 +210,14 @@ struct XLAT_DESC
 {
 	const uqm::SIZE level_tab[3];
 	const uqm::BYTE xlat_tab[256];
-} ;
+};
 
 struct ELEMENT_ENTRY
 {
 	uqm::BYTE ElementType;
-			/* Index of this element in element_array */
+	/* Index of this element in element_array */
 	uqm::BYTE Density;
-			/* bits 0-3: quantity of the deposits (maximum number of
+	/* bits 0-3: quantity of the deposits (maximum number of
 			 *           deposits), one of FEW, MODERATE, or NUMEROUS
 			 * bits 4-7: quality of the deposit, one of LOW, MEDIUM, or HEAVY
 			 */
@@ -227,7 +228,7 @@ struct ELEMENT_ENTRY
 struct PlanetFrame
 {
 	uqm::BYTE Type;
-			/* bits 0-1: size, one of SMALL_ROCKY_WORLD, LARGE_ROCKY_WORLD, or
+	/* bits 0-1: size, one of SMALL_ROCKY_WORLD, LARGE_ROCKY_WORLD, or
 			 *           GAS_GIANT
 			 * bits 2-3: map creation algoritm, one of TOPO_ALGO,
 			 *           CRATERED_ALGO, or GAS_GIANT_ALGO
@@ -237,13 +238,13 @@ struct PlanetFrame
 			 *           VIOLET_BODY)
              */
 	uqm::BYTE BaseTectonics;
-			/* Base constant for calculation of tectonic activity,
+	/* Base constant for calculation of tectonic activity,
 			 * relative to Earth at 100.
 			 * One of: NO_TECTONICS, LOW_TECTONICS, MED_TECTONICS,
 			 *         HIGH_TECTONICS, or SUPER_TECTONICS
 			 */
 	uqm::BYTE AtmoAndDensity;
-			/* bits 0-3: planet density, one of GAS_DENSITY, LIGHT_DENSITY,
+	/* bits 0-3: planet density, one of GAS_DENSITY, LIGHT_DENSITY,
 			 *           LOW_DENSITY, NORMAL_DENSITY, HIGH_DENSITY,
 			 *           SUPER_DENSITY
 			 * bits 4-7: atmosphere, one of LIGHT, MEDIUM, HEAVY, or
@@ -251,13 +252,13 @@ struct PlanetFrame
 			 */
 #define NUM_USEFUL_ELEMENTS 8
 	ELEMENT_ENTRY UsefulElements[NUM_USEFUL_ELEMENTS];
-			/* Minerals on the planet */
+	/* Minerals on the planet */
 
 	RESOURCE CMapInstance;
-			/* Color map */
+	/* Color map */
 	RESOURCE XlatTabInstance;
-			/* Color translation map */
-	
+	/* Color translation map */
+
 	// Parameters for map-generation algoritms:
 	uqm::COUNT num_faults;
 	uqm::SIZE fault_depth;
@@ -279,7 +280,7 @@ struct PLANET_INFO
 	uqm::SIZE LifeChance;
 	uqm::DWORD PlanetToSunDist;
 
-	const PlanetFrame *PlanDataPtr;
+	const PlanetFrame* PlanDataPtr;
 
 	uqm::DWORD ScanSeed[NUM_SCAN_TYPES];
 	uqm::DWORD ScanRetrieveMask[NUM_SCAN_TYPES];
@@ -292,12 +293,12 @@ struct PLANET_INFO
 	// There can be max uqm::DWORD = 32 mineral deposits on the planet, thus the 32.
 	//
 	// This can be later made to support also partially scavenged biodata.
-	uqm::BYTE  PartiallyScavengedList[NUM_SCAN_TYPES][32];
+	uqm::BYTE PartiallyScavengedList[NUM_SCAN_TYPES][32];
 
 	STRING DiscoveryString;
 	FONT LanderFont;
 	FRAME LanderFontEff;
-} ;
+};
 
 enum
 {
@@ -309,7 +310,7 @@ enum
 	SUPER_DENSITY
 };
 
-extern uqm::UWORD CalcGravity (const PLANET_INFO*);
+extern uqm::UWORD CalcGravity(const PLANET_INFO*);
 
 #define EARTH_ATMOSPHERE 50
 
@@ -324,7 +325,7 @@ extern uqm::UWORD CalcGravity (const PLANET_INFO*);
 #define HIGH_TECTONICS 140
 #define SUPER_TECTONICS 200
 
-extern const PlanetFrame *PlanData;
+extern const PlanetFrame* PlanData;
 
 #if 0 //defined(__cplusplus)
 }

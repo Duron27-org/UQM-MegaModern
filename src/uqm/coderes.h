@@ -25,11 +25,11 @@
 extern "C" {
 #endif
 
-extern bool InstallCodeResType (void);
-extern void *LoadCodeResInstance (RESOURCE res);
-extern void *CaptureCodeRes (void *hCode, void *pData, void **ppLocData);
-extern void *ReleaseCodeRes (void *CodeRef);
-extern bool DestroyCodeRes (void *hCode);
+extern bool InstallCodeResType(void);
+extern void* LoadCodeResInstance(RESOURCE res);
+extern void* CaptureCodeRes(void* hCode, void* pData, void** ppLocData);
+extern void* ReleaseCodeRes(void* CodeRef);
+extern bool DestroyCodeRes(void* hCode);
 
 typedef struct
 {
@@ -41,4 +41,3 @@ typedef struct
 #endif
 
 #endif /* UQM_CODERES_H_ */
-

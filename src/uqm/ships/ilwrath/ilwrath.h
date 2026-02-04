@@ -21,11 +21,10 @@
 extern "C" {
 #endif
 
-RACE_DESC *init_ilwrath (void);
+RACE_DESC* init_ilwrath(void);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* ILWRATH_H */
-
+#endif /* ILWRATH_H */

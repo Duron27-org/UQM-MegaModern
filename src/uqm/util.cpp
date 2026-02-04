@@ -35,124 +35,122 @@
 // JSD added to reference plot_map for SOL.
 #include "starmap.h"
 
-void
-DrawStarConBox (RECT *pRect, uqm::SIZE BorderWidth, Color TopLeftColor,
-		Color BottomRightColor, bool FillInterior, Color InteriorColor,
-		bool CreateCorners, Color CornerColor)
+void DrawStarConBox(RECT* pRect, uqm::SIZE BorderWidth, Color TopLeftColor,
+					Color BottomRightColor, bool FillInterior, Color InteriorColor,
+					bool CreateCorners, Color CornerColor)
 {
 	RECT locRect;
 	Color oldcolor;
 
-	BatchGraphics ();
+	BatchGraphics();
 
 	if (FillInterior)
 	{
-		oldcolor = SetContextForeGroundColor (InteriorColor);
-		DrawFilledRectangle (pRect);
-		SetContextForeGroundColor (TopLeftColor);
+		oldcolor = SetContextForeGroundColor(InteriorColor);
+		DrawFilledRectangle(pRect);
+		SetContextForeGroundColor(TopLeftColor);
 	}
 	else
-		oldcolor = SetContextForeGroundColor (TopLeftColor);
+		oldcolor = SetContextForeGroundColor(TopLeftColor);
 
 	if (BorderWidth == 0)
-		BorderWidth = RES_SCALE (2);
+		BorderWidth = RES_SCALE(2);
 
 	locRect.corner = pRect->corner;
 	locRect.extent.width = pRect->extent.width;
-	locRect.extent.height = RES_SCALE (1);
-	DrawFilledRectangle (&locRect);
+	locRect.extent.height = RES_SCALE(1);
+	DrawFilledRectangle(&locRect);
 
-	if (BorderWidth == RES_SCALE (2))
+	if (BorderWidth == RES_SCALE(2))
 	{
-		locRect.corner.x += RES_SCALE (1);
-		locRect.corner.y += RES_SCALE (1);
-		locRect.extent.width -= RES_SCALE (2);
-		DrawFilledRectangle (&locRect);
+		locRect.corner.x += RES_SCALE(1);
+		locRect.corner.y += RES_SCALE(1);
+		locRect.extent.width -= RES_SCALE(2);
+		DrawFilledRectangle(&locRect);
 	}
 
 	locRect.corner = pRect->corner;
-	locRect.extent.width = RES_SCALE (1);
+	locRect.extent.width = RES_SCALE(1);
 	locRect.extent.height = pRect->extent.height;
-	DrawFilledRectangle (&locRect);
+	DrawFilledRectangle(&locRect);
 
-	if (BorderWidth == RES_SCALE (2))
+	if (BorderWidth == RES_SCALE(2))
 	{
-		locRect.corner.x += RES_SCALE (1);
-		locRect.corner.y += RES_SCALE (1);
-		locRect.extent.height -= RES_SCALE (2);
-		DrawFilledRectangle (&locRect);
+		locRect.corner.x += RES_SCALE(1);
+		locRect.corner.y += RES_SCALE(1);
+		locRect.extent.height -= RES_SCALE(2);
+		DrawFilledRectangle(&locRect);
 	}
 
-	SetContextForeGroundColor (BottomRightColor);
-	locRect.corner.x = pRect->corner.x + pRect->extent.width - RES_SCALE (1);
-	locRect.corner.y = pRect->corner.y + RES_SCALE (1);
-	locRect.extent.height = pRect->extent.height - RES_SCALE (1);
-	DrawFilledRectangle (&locRect);
+	SetContextForeGroundColor(BottomRightColor);
+	locRect.corner.x = pRect->corner.x + pRect->extent.width - RES_SCALE(1);
+	locRect.corner.y = pRect->corner.y + RES_SCALE(1);
+	locRect.extent.height = pRect->extent.height - RES_SCALE(1);
+	DrawFilledRectangle(&locRect);
 
-	if (BorderWidth == RES_SCALE (2))
+	if (BorderWidth == RES_SCALE(2))
 	{
-		locRect.corner.x -= RES_SCALE (1);
-		locRect.corner.y += RES_SCALE (1);
-		locRect.extent.height -= RES_SCALE (2);
-		DrawFilledRectangle (&locRect);
+		locRect.corner.x -= RES_SCALE(1);
+		locRect.corner.y += RES_SCALE(1);
+		locRect.extent.height -= RES_SCALE(2);
+		DrawFilledRectangle(&locRect);
 	}
 
 	locRect.corner.x = pRect->corner.x;
 	locRect.extent.width = pRect->extent.width;
-	locRect.corner.y = pRect->corner.y + pRect->extent.height - RES_SCALE (1);
-	locRect.extent.height = RES_SCALE (1);
-	DrawFilledRectangle (&locRect);
+	locRect.corner.y = pRect->corner.y + pRect->extent.height - RES_SCALE(1);
+	locRect.extent.height = RES_SCALE(1);
+	DrawFilledRectangle(&locRect);
 
-	if (BorderWidth == RES_SCALE (2))
+	if (BorderWidth == RES_SCALE(2))
 	{
-		locRect.corner.x += RES_SCALE (1);
-		locRect.corner.y -= RES_SCALE (1);
-		locRect.extent.width -= RES_SCALE (2);
-		DrawFilledRectangle (&locRect);
+		locRect.corner.x += RES_SCALE(1);
+		locRect.corner.y -= RES_SCALE(1);
+		locRect.extent.width -= RES_SCALE(2);
+		DrawFilledRectangle(&locRect);
 	}
 
 	if (CreateCorners)
 	{
-		if (sameColor (TRANSPARENT, CornerColor)
-				&& AreTheyShades (TopLeftColor, BottomRightColor))
+		if (sameColor(TRANSPARENT, CornerColor)
+			&& AreTheyShades(TopLeftColor, BottomRightColor))
 		{
-			SetContextForeGroundColor (
-					CreateAvgShade (TopLeftColor, BottomRightColor));
+			SetContextForeGroundColor(
+				CreateAvgShade(TopLeftColor, BottomRightColor));
 		}
 		else
-			SetContextForeGroundColor (CornerColor);
+			SetContextForeGroundColor(CornerColor);
 
 		locRect.corner.x = pRect->corner.x;
 		locRect.corner.y = pRect->corner.y + pRect->extent.height
-			- RES_SCALE (1);
-		locRect.extent.width = RES_SCALE (1);
-		locRect.extent.height = RES_SCALE (1);
-		DrawFilledRectangle (&locRect);
+						 - RES_SCALE(1);
+		locRect.extent.width = RES_SCALE(1);
+		locRect.extent.height = RES_SCALE(1);
+		DrawFilledRectangle(&locRect);
 		locRect.corner.x = pRect->corner.x + pRect->extent.width
-			- RES_SCALE (1);
+						 - RES_SCALE(1);
 		locRect.corner.y = pRect->corner.y;
-		DrawFilledRectangle (&locRect);
+		DrawFilledRectangle(&locRect);
 
-		if (BorderWidth == RES_SCALE (2))
+		if (BorderWidth == RES_SCALE(2))
 		{
-			locRect.corner.x -= RES_SCALE (1);
-			locRect.corner.y += RES_SCALE (1);
-			DrawFilledRectangle (&locRect);
-			locRect.corner.x = pRect->corner.x + RES_SCALE (1);
+			locRect.corner.x -= RES_SCALE(1);
+			locRect.corner.y += RES_SCALE(1);
+			DrawFilledRectangle(&locRect);
+			locRect.corner.x = pRect->corner.x + RES_SCALE(1);
 			locRect.corner.y = pRect->corner.y + pRect->extent.height
-				- RES_SCALE (2);
-			DrawFilledRectangle (&locRect);
+							 - RES_SCALE(2);
+			DrawFilledRectangle(&locRect);
 		}
 	}
 
-	SetContextForeGroundColor (oldcolor);
+	SetContextForeGroundColor(oldcolor);
 
-	UnbatchGraphics ();
+	UnbatchGraphics();
 }
 
-void
-DrawRenderedBox (RECT *r, bool filled, Color fill_color, int type,
-		int custom)
+void DrawRenderedBox(RECT* r, bool filled, Color fill_color, int type,
+					 int custom)
 {
 	int i;
 	STAMP stamp;
@@ -162,132 +160,130 @@ DrawRenderedBox (RECT *r, bool filled, Color fill_color, int type,
 	if (!r->extent.width || !r->extent.height)
 		return;
 
-	BatchGraphics ();
+	BatchGraphics();
 
 	if (filled)
 	{
-		Color OldColor = SetContextForeGroundColor (fill_color);
+		Color OldColor = SetContextForeGroundColor(fill_color);
 
 		if (type == SPECIAL_BEVEL)
 		{
-			r->corner.x += RES_SCALE (4);
-			r->corner.y += RES_SCALE (4);
-			r->extent.width -= RES_SCALE (8);
-			r->extent.height -= RES_SCALE (8);
+			r->corner.x += RES_SCALE(4);
+			r->corner.y += RES_SCALE(4);
+			r->extent.width -= RES_SCALE(8);
+			r->extent.height -= RES_SCALE(8);
 		}
 
-		DrawFilledRectangle (r);
+		DrawFilledRectangle(r);
 
 		if (type == SPECIAL_BEVEL)
 		{
-			r->corner.x -= RES_SCALE (4);
-			r->corner.y -= RES_SCALE (4);
-			r->extent.width += RES_SCALE (8);
-			r->extent.height += RES_SCALE (8);
+			r->corner.x -= RES_SCALE(4);
+			r->corner.y -= RES_SCALE(4);
+			r->extent.width += RES_SCALE(8);
+			r->extent.height += RES_SCALE(8);
 		}
 
-		SetContextForeGroundColor (OldColor);
+		SetContextForeGroundColor(OldColor);
 	}
 
 	stamp.frame = custom ? CustBevelFrame : DefBevelFrame;
 
 	if (type == SPECIAL_BEVEL)
 	{
-		columns -= RES_SCALE (8);
-		rows -= RES_SCALE (8);
+		columns -= RES_SCALE(8);
+		rows -= RES_SCALE(8);
 	}
 
 	for (i = 0; i < columns; i++)
-	{	// Draw top and bottom borders
-		stamp.frame = SetAbsFrameIndex (stamp.frame, type + 4);
+	{ // Draw top and bottom borders
+		stamp.frame = SetAbsFrameIndex(stamp.frame, type + 4);
 		stamp.origin.x = r->corner.x + i;
 		stamp.origin.y = r->corner.y;
-		DrawStamp (&stamp);
-		stamp.frame = SetAbsFrameIndex (stamp.frame, type + 6);
+		DrawStamp(&stamp);
+		stamp.frame = SetAbsFrameIndex(stamp.frame, type + 6);
 		stamp.origin.y = r->corner.y + r->extent.height;
-		DrawStamp (&stamp);
+		DrawStamp(&stamp);
 	}
 
 	for (i = 0; i < rows; i++)
-	{	// Draw right and left borders
-		stamp.frame = SetAbsFrameIndex (stamp.frame, type + 5);
+	{ // Draw right and left borders
+		stamp.frame = SetAbsFrameIndex(stamp.frame, type + 5);
 		stamp.origin.x = r->corner.x + r->extent.width;
 		stamp.origin.y = r->corner.y + i;
-		DrawStamp (&stamp);
-		stamp.frame = SetAbsFrameIndex (stamp.frame, type + 7);
+		DrawStamp(&stamp);
+		stamp.frame = SetAbsFrameIndex(stamp.frame, type + 7);
 		stamp.origin.x = r->corner.x;
-		DrawStamp (&stamp);
+		DrawStamp(&stamp);
 	}
 
 	// Draw corners clockwise from the top-left
-	stamp.frame = SetAbsFrameIndex (stamp.frame, type);
+	stamp.frame = SetAbsFrameIndex(stamp.frame, type);
 	stamp.origin.x = r->corner.x;
 	stamp.origin.y = r->corner.y;
-	DrawStamp (&stamp);
+	DrawStamp(&stamp);
 
-	stamp.frame = SetAbsFrameIndex (stamp.frame, type + 1);
+	stamp.frame = SetAbsFrameIndex(stamp.frame, type + 1);
 	stamp.origin.x = r->corner.x + r->extent.width;
-	DrawStamp (&stamp);
+	DrawStamp(&stamp);
 
-	stamp.frame = SetAbsFrameIndex (stamp.frame, type + 2);
+	stamp.frame = SetAbsFrameIndex(stamp.frame, type + 2);
 	stamp.origin.y = r->corner.y + r->extent.height;
-	DrawStamp (&stamp);
+	DrawStamp(&stamp);
 
-	stamp.frame = SetAbsFrameIndex (stamp.frame, type + 3);
+	stamp.frame = SetAbsFrameIndex(stamp.frame, type + 3);
 	stamp.origin.x = r->corner.x;
-	DrawStamp (&stamp);
+	DrawStamp(&stamp);
 
-	UnbatchGraphics ();
+	UnbatchGraphics();
 }
 
-void
-DrawBorderPadding (uqm::DWORD videoWidth)
+void DrawBorderPadding(uqm::DWORD videoWidth)
 {
 	RECT r;
 	CONTEXT OldContext;
 	uqm::UWORD safe_x =
-			(videoWidth && videoWidth < 280 ? SAFE_NEG (4) * 2 : SAFE_X);
+		(videoWidth && videoWidth < 280 ? SAFE_NEG(4) * 2 : SAFE_X);
 
 	if (!safe_x)
 		return;
 
-	OldContext = SetContext (ScreenContext);
+	OldContext = SetContext(ScreenContext);
 
 	if (videoWidth)
-		SetContextForeGroundColor (BUILD_SHADE_RGBA (0x0C));
+		SetContextForeGroundColor(BUILD_SHADE_RGBA(0x0C));
 	else
-		SetContextForeGroundColor (BLACK_COLOR);
+		SetContextForeGroundColor(BLACK_COLOR);
 
 	// Top bar
-	r.corner = MAKE_POINT (0, 0);
+	r.corner = MAKE_POINT(0, 0);
 	r.extent.width = CanvasWidth;
 	r.extent.height = SAFE_Y;
-	DrawFilledRectangle (&r);
+	DrawFilledRectangle(&r);
 
 	// Right bar
 	r.corner.x = r.extent.width - safe_x;
 	r.extent.width = safe_x;
 	r.extent.height = CanvasHeight;
-	DrawFilledRectangle (&r);
+	DrawFilledRectangle(&r);
 
 	// Bottom bar
 	r.corner.x = 0;
 	r.corner.y = CanvasHeight - SAFE_Y;
 	r.extent.width = CanvasWidth;
 	r.extent.height = SAFE_Y;
-	DrawFilledRectangle (&r);
+	DrawFilledRectangle(&r);
 
 	// Left bar
-	r.corner = MAKE_POINT (0, 0);
+	r.corner = MAKE_POINT(0, 0);
 	r.extent.width = safe_x;
 	r.extent.height = CanvasHeight;
-	DrawFilledRectangle (&r);
+	DrawFilledRectangle(&r);
 
-	SetContext (OldContext);
+	SetContext(OldContext);
 }
 
-void
-DrawRadarBorder (void)
+void DrawRadarBorder(void)
 {
 	RECT r;
 	CONTEXT OldContext;
@@ -295,102 +291,101 @@ DrawRadarBorder (void)
 	if (IS_PAD)
 		return;
 
-	OldContext = SetContext (StatusContext);
+	OldContext = SetContext(StatusContext);
 
-	r.corner.x = RES_SCALE (4) - RES_SCALE (1);
-	r.corner.y = RADAR_Y - RES_SCALE (1);
-	r.extent.width = RADAR_WIDTH + RES_SCALE (2);
-	r.extent.height = RADAR_HEIGHT + RES_SCALE (2);
+	r.corner.x = RES_SCALE(4) - RES_SCALE(1);
+	r.corner.y = RADAR_Y - RES_SCALE(1);
+	r.extent.width = RADAR_WIDTH + RES_SCALE(2);
+	r.extent.height = RADAR_HEIGHT + RES_SCALE(2);
 
 	if (IS_HD || optCustomBorder)
 	{
-		DrawRenderedBox (&r, false, NULL_COLOR, THIN_INNER_BEVEL,
-				optCustomBorder);
+		DrawRenderedBox(&r, false, NULL_COLOR, THIN_INNER_BEVEL,
+						optCustomBorder);
 	}
 	else
 	{
-		DrawStarConBox (&r, RES_SCALE (1), ALT_SHADOWBOX_TOP_LEFT,
-				ALT_SHADOWBOX_BOTTOM_RIGHT, false, TRANSPARENT, false,
-				TRANSPARENT);
+		DrawStarConBox(&r, RES_SCALE(1), ALT_SHADOWBOX_TOP_LEFT,
+					   ALT_SHADOWBOX_BOTTOM_RIGHT, false, TRANSPARENT, false,
+					   TRANSPARENT);
 	}
 
-	SetContext (OldContext);
+	SetContext(OldContext);
 }
 
 uqm::DWORD
-SeedRandomNumbers (void)
+SeedRandomNumbers(void)
 {
 	uqm::DWORD cur_time;
 
-	cur_time = GetTimeCounter ();
-	TFB_SeedRandom (cur_time);
+	cur_time = GetTimeCounter();
+	TFB_SeedRandom(cur_time);
 
 	return (cur_time);
 }
 
 STAMP
-SaveContextFrame (const RECT *saveRect)
+SaveContextFrame(const RECT* saveRect)
 {
 	STAMP s;
 
 	if (saveRect)
-	{	// a portion of the context
+	{ // a portion of the context
 		s.origin = saveRect->corner;
 	}
 	else
-	{	// the entire context
+	{ // the entire context
 		s.origin.x = 0;
 		s.origin.y = 0;
 	}
 
-	s.frame = CaptureDrawable (CopyContextRect (saveRect));
+	s.frame = CaptureDrawable(CopyContextRect(saveRect));
 
 	return s;
 }
 
 static void
-DrawPauseText (RECT *rect)
+DrawPauseText(RECT* rect)
 {
 	TEXT text;
 	FONT OldFont;
 	Color OldColor;
 	RECT block;
 
-	if (!strlen (GAME_STRING (QUITMENU_STRING_BASE + 4)))
+	if (!strlen(GAME_STRING(QUITMENU_STRING_BASE + 4)))
 		return;
 
-	OldFont = SetContextFont (DOS_BOOL (LabelFont, StarConFont));
-	OldColor = SetContextForeGroundColor (
-			BUILD_SHADE_RGBA (DOS_BOOL (0x74, 0x6B)));
+	OldFont = SetContextFont(DOS_BOOL(LabelFont, StarConFont));
+	OldColor = SetContextForeGroundColor(
+		BUILD_SHADE_RGBA(DOS_BOOL(0x74, 0x6B)));
 
 	// Blank out the text
 	block = *rect;
-	block.extent.width -= RES_SCALE (4);
-	block.extent.height -= RES_SCALE (4);
-	block.corner.x += RES_SCALE (2);
-	block.corner.y += RES_SCALE (2);
-	DrawFilledRectangle (&block);
+	block.extent.width -= RES_SCALE(4);
+	block.extent.height -= RES_SCALE(4);
+	block.corner.x += RES_SCALE(2);
+	block.corner.y += RES_SCALE(2);
+	DrawFilledRectangle(&block);
 
-	SetContextForeGroundColor (
-			DOS_BOOL (SHADOWBOX_DARK_COLOR, WHITE_COLOR));
+	SetContextForeGroundColor(
+		DOS_BOOL(SHADOWBOX_DARK_COLOR, WHITE_COLOR));
 
 	text.baseline = rect->corner;
 	text.baseline.x += rect->extent.width >> 1;
-	text.baseline.y += RES_SCALE (10);
+	text.baseline.y += RES_SCALE(10);
 	text.align = ALIGN_CENTER;
-	text.pStr = AlignText (
-			(const uqm::CHAR_T *)GAME_STRING (QUITMENU_STRING_BASE + 4),
-			&text.baseline.x);
+	text.pStr = AlignText(
+		(const uqm::CHAR_T*)GAME_STRING(QUITMENU_STRING_BASE + 4),
+		&text.baseline.x);
 	text.CharCount = (uqm::COUNT)~0;
 
-	font_DrawText (&text);
+	font_DrawText(&text);
 
-	SetContextFont (OldFont);
-	SetContextForeGroundColor (OldColor);
+	SetContextFont(OldFont);
+	SetContextForeGroundColor(OldColor);
 }
 
-bool
-PauseGame (void)
+bool PauseGame(void)
 {
 	RECT r;
 	STAMP s;
@@ -405,115 +400,114 @@ PauseGame (void)
 	TimeCount deltaT;
 
 	if (ActivityFrame == 0
-			|| (GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_PAUSE))
-			|| (LastActivity & (CHECK_LOAD | CHECK_RESTART)))
+		|| (GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_PAUSE))
+		|| (LastActivity & (CHECK_LOAD | CHECK_RESTART)))
 		return (false);
-		
-	GLOBAL (CurrentActivity) |= CHECK_PAUSE;
 
-	if (PlayingTrack ())
-		PauseTrack ();
+	GLOBAL(CurrentActivity) |= CHECK_PAUSE;
 
-	deltaT = GetTimeCounter ();
+	if (PlayingTrack())
+		PauseTrack();
 
-	OldContext = SetContext (ScreenContext);
-	OldOrigin = SetContextOrigin (MAKE_POINT (0, 0));
-	GetContextClipRect (&OldRect);
-	SetContextClipRect (NULL);
+	deltaT = GetTimeCounter();
 
-	GetContextClipRect (&ctxRect);
-	GetFrameRect (ActivityFrame, &r);
+	OldContext = SetContext(ScreenContext);
+	OldOrigin = SetContextOrigin(MAKE_POINT(0, 0));
+	GetContextClipRect(&OldRect);
+	SetContextClipRect(NULL);
+
+	GetContextClipRect(&ctxRect);
+	GetFrameRect(ActivityFrame, &r);
 	r.corner.x = (ctxRect.extent.width - r.extent.width) >> 1;
 	r.corner.y = (ctxRect.extent.height - r.extent.height) >> 1;
-	saveStamp = SaveContextFrame (&ctxRect);
+	saveStamp = SaveContextFrame(&ctxRect);
 
-	mode = MAKE_DRAW_MODE (DRAW_DESATURATE, DESAT_AMOUNT);
-	oldMode = SetContextDrawMode (mode);
-	DrawFilledRectangle (&ctxRect);
-	SetContextDrawMode (oldMode);
-	OldColor = SetContextForeGroundColor (
-			BUILD_COLOR_RGBA (0x00, 0x00, 0x00, 0x30));
-	DrawFilledRectangle (&ctxRect);
-	SetContextForeGroundColor (OldColor);
+	mode = MAKE_DRAW_MODE(DRAW_DESATURATE, DESAT_AMOUNT);
+	oldMode = SetContextDrawMode(mode);
+	DrawFilledRectangle(&ctxRect);
+	SetContextDrawMode(oldMode);
+	OldColor = SetContextForeGroundColor(
+		BUILD_COLOR_RGBA(0x00, 0x00, 0x00, 0x30));
+	DrawFilledRectangle(&ctxRect);
+	SetContextForeGroundColor(OldColor);
 
 	s.origin = r.corner;
 	s.frame = ActivityFrame;
 	// There was a SetSystemRect(&r) call which we don't need anymore
-	DrawStamp (&s);
-	DrawPauseText (&r);
+	DrawStamp(&s);
+	DrawPauseText(&r);
 
 	oldVolume = GetCurrMusicVol();
-	FadeMusic (60, ONE_SECOND / 2);
+	FadeMusic(60, ONE_SECOND / 2);
 
-	FlushGraphics ();
+	FlushGraphics();
 
 	while (ImmediateInputState.menu[KEY_PAUSE] && GamePaused)
 	{
-		BeginInputFrame ();
-		TaskSwitch ();
+		BeginInputFrame();
+		TaskSwitch();
 	}
 
 	while (!ImmediateInputState.menu[KEY_PAUSE] && GamePaused)
 	{
-		BeginInputFrame ();
-		TaskSwitch ();
+		BeginInputFrame();
+		TaskSwitch();
 	}
 
 	while (ImmediateInputState.menu[KEY_PAUSE] && GamePaused)
 	{
-		BeginInputFrame ();
-		TaskSwitch ();
+		BeginInputFrame();
+		TaskSwitch();
 	}
 
 	GamePaused = false;
 
-	DrawStamp (&saveStamp);
-	DestroyDrawable (ReleaseDrawable (saveStamp.frame));
-	ClearSystemRect ();
+	DrawStamp(&saveStamp);
+	DestroyDrawable(ReleaseDrawable(saveStamp.frame));
+	ClearSystemRect();
 
-	FadeMusic (oldVolume, ONE_SECOND / 2);
+	FadeMusic(oldVolume, ONE_SECOND / 2);
 
-	SetContextClipRect (&OldRect);
-	SetContextOrigin (OldOrigin);
-	SetContext (OldContext);
+	SetContextClipRect(&OldRect);
+	SetContextOrigin(OldOrigin);
+	SetContext(OldContext);
 
-	WaitForNoInput (ONE_SECOND / 4, true);
+	WaitForNoInput(ONE_SECOND / 4, true);
 
-	DeltaLastTime (GetTimeCounter () - deltaT);
+	DeltaLastTime(GetTimeCounter() - deltaT);
 
-	if (PlayingTrack ())
-		ResumeTrack ();
+	if (PlayingTrack())
+		ResumeTrack();
 
 
-	TaskSwitch ();
-	GLOBAL (CurrentActivity) &= ~CHECK_PAUSE;
+	TaskSwitch();
+	GLOBAL(CurrentActivity) &= ~CHECK_PAUSE;
 	return (true);
 }
 
 // Waits for a button to be pressed
 // Returns true if the wait succeeded (found input)
 //    false if timed out or game aborted
-bool
-WaitForAnyButtonUntil (bool newButton, TimeCount timeOut,
-		bool resetInput)
+bool WaitForAnyButtonUntil(bool newButton, TimeCount timeOut,
+						   bool resetInput)
 {
 	bool buttonPressed;
 
-	if (newButton && !WaitForNoInputUntil (timeOut, false))
+	if (newButton && !WaitForNoInputUntil(timeOut, false))
 		return false;
 
-	buttonPressed = AnyButtonPress (true);
+	buttonPressed = AnyButtonPress(true);
 	while (!buttonPressed
-			&& (timeOut == WAIT_INFINITE || GetTimeCounter () < timeOut)
-			&& !(GLOBAL (CurrentActivity) & CHECK_ABORT)
-			&& !QuitPosted)
+		   && (timeOut == WAIT_INFINITE || GetTimeCounter() < timeOut)
+		   && !(GLOBAL(CurrentActivity) & CHECK_ABORT)
+		   && !QuitPosted)
 	{
-		SleepThread (ONE_SECOND / 40);
-		buttonPressed = AnyButtonPress (true);
-	} 
+		SleepThread(ONE_SECOND / 40);
+		buttonPressed = AnyButtonPress(true);
+	}
 
 	if (resetInput)
-		FlushInput ();
+		FlushInput();
 
 	return buttonPressed;
 }
@@ -521,124 +515,118 @@ WaitForAnyButtonUntil (bool newButton, TimeCount timeOut,
 // Waits for action button to be pressed
 // Returns true if the wait succeeded (found input)
 //    false if timed out or game aborted
-bool
-WaitForActButtonUntil (bool newButton, TimeCount timeOut,
-		bool resetInput)
+bool WaitForActButtonUntil(bool newButton, TimeCount timeOut,
+						   bool resetInput)
 {
 	bool buttonPressed;
 
-	if (newButton && !WaitForNoInputUntil (timeOut, false))
+	if (newButton && !WaitForNoInputUntil(timeOut, false))
 		return false;
 
-	buttonPressed = ActKeysPress ();
+	buttonPressed = ActKeysPress();
 	while (!buttonPressed
-			&& (timeOut == WAIT_INFINITE || GetTimeCounter () < timeOut)
-			&& !(GLOBAL (CurrentActivity) & CHECK_ABORT)
-			&& !QuitPosted)
+		   && (timeOut == WAIT_INFINITE || GetTimeCounter() < timeOut)
+		   && !(GLOBAL(CurrentActivity) & CHECK_ABORT)
+		   && !QuitPosted)
 	{
-		SleepThread (ONE_SECOND / 40);
-		buttonPressed = ActKeysPress ();
-	} 
+		SleepThread(ONE_SECOND / 40);
+		buttonPressed = ActKeysPress();
+	}
 
 	if (resetInput)
-		FlushInput ();
+		FlushInput();
 
 	return buttonPressed;
 }
 
-bool
-WaitForAnyButton (bool newButton, TimePeriod duration, bool resetInput)
+bool WaitForAnyButton(bool newButton, TimePeriod duration, bool resetInput)
 {
 	TimeCount timeOut = duration;
 	if (duration != WAIT_INFINITE)
-		timeOut += GetTimeCounter ();
-	return WaitForAnyButtonUntil (newButton, timeOut, resetInput);
+		timeOut += GetTimeCounter();
+	return WaitForAnyButtonUntil(newButton, timeOut, resetInput);
 }
 
-bool
-WaitForActButton (bool newButton, TimePeriod duration, bool resetInput)
+bool WaitForActButton(bool newButton, TimePeriod duration, bool resetInput)
 {
 	TimeCount timeOut = duration;
 	if (duration != WAIT_INFINITE)
-		timeOut += GetTimeCounter ();
-	return WaitForActButtonUntil (newButton, timeOut, resetInput);
+		timeOut += GetTimeCounter();
+	return WaitForActButtonUntil(newButton, timeOut, resetInput);
 }
 
 // Returns true if the wait succeeded (found no input)
 //    false if timed out or game aborted
-bool
-WaitForNoInputUntil (TimeCount timeOut, bool resetInput)
+bool WaitForNoInputUntil(TimeCount timeOut, bool resetInput)
 {
 	bool buttonPressed;
 
-	buttonPressed = AnyButtonPress (true);
+	buttonPressed = AnyButtonPress(true);
 	while (buttonPressed
-			&& (timeOut == WAIT_INFINITE || GetTimeCounter () < timeOut)
-			&& !(GLOBAL (CurrentActivity) & CHECK_ABORT)
-			&& !QuitPosted)
+		   && (timeOut == WAIT_INFINITE || GetTimeCounter() < timeOut)
+		   && !(GLOBAL(CurrentActivity) & CHECK_ABORT)
+		   && !QuitPosted)
 	{
-		SleepThread (ONE_SECOND / 40);
-		buttonPressed = AnyButtonPress (true);
-	} 
+		SleepThread(ONE_SECOND / 40);
+		buttonPressed = AnyButtonPress(true);
+	}
 
 	if (resetInput)
-		FlushInput ();
+		FlushInput();
 
 	return !buttonPressed;
 }
 
-bool
-WaitForNoInput (TimePeriod duration, bool resetInput)
+bool WaitForNoInput(TimePeriod duration, bool resetInput)
 {
 	TimeCount timeOut = duration;
 	if (duration != WAIT_INFINITE)
-		timeOut += GetTimeCounter ();
-	return WaitForNoInputUntil (timeOut, resetInput);
+		timeOut += GetTimeCounter();
+	return WaitForNoInputUntil(timeOut, resetInput);
 }
 
 // Stops game clock and music thread and minimizes interrupts/cycles
 //  based on value of global GameActive variable
 // See similar sleep state for main thread in uqm.c:main()
-void
-SleepGame (void)
+void SleepGame(void)
 {
 	if (QuitPosted)
 		return; // Do not sleep the game when already asked to quit
 
-	log_add (log_Debug, "Game is going to sleep");
+	log_add(log_Debug, "Game is going to sleep");
 
-	if (PlayingTrack ())
-		PauseTrack ();
-	PauseMusic ();
+	if (PlayingTrack())
+		PauseTrack();
+	PauseMusic();
 
 
 	while (!GameActive && !QuitPosted)
-		SleepThread (ONE_SECOND / 2);
+		SleepThread(ONE_SECOND / 2);
 
-	log_add (log_Debug, "Game is waking up");
+	log_add(log_Debug, "Game is waking up");
 
-	WaitForNoInput (ONE_SECOND / 10, true);
+	WaitForNoInput(ONE_SECOND / 10, true);
 
-	ResumeMusic ();
+	ResumeMusic();
 
-	if (PlayingTrack ())
-		ResumeTrack ();
+	if (PlayingTrack())
+		ResumeTrack();
 
 
-	TaskSwitch ();
+	TaskSwitch();
 }
 
 /* Returns the fuel requirement to get to Sol (in fuel units * 100)
  */
 uqm::DWORD
-get_fuel_to_sol (void)
+get_fuel_to_sol(void)
 {
 	POINT pt;
 	uqm::DWORD f;
 
-	pt.x = LOGX_TO_UNIVERSE (GLOBAL_SIS (log_x));
-	pt.y = LOGY_TO_UNIVERSE (GLOBAL_SIS (log_y));
-	
+	pt.x = LOGX_TO_UNIVERSE(GLOBAL_SIS(log_x));
+	pt.y = LOGY_TO_UNIVERSE(GLOBAL_SIS(log_y));
+
 	// JSD Replace old hard coded SOL with plot based SOL
 	//pt.x -= SOL_X;
 	//pt.y -= SOL_Y;
@@ -646,62 +634,61 @@ get_fuel_to_sol (void)
 	pt.y -= plot_map[SOL_DEFINED].star_pt.y;
 
 	f = (uqm::DWORD)((long)pt.x * pt.x + (long)pt.y * pt.y);
-	if (f == 0 || GET_GAME_STATE (ARILOU_SPACE_SIDE) > 1)
+	if (f == 0 || GET_GAME_STATE(ARILOU_SPACE_SIDE) > 1)
 		return 0;
 	else
-		return (square_root (f) + (FUEL_TANK_SCALE / 20));
+		return (square_root(f) + (FUEL_TANK_SCALE / 20));
 }
 
-void
-DrawFlagStatDisplay (const uqm::CHAR_T *str)
+void DrawFlagStatDisplay(const uqm::CHAR_T* str)
 {
 	TEXT t;
 	RECT r;
 
-	r.corner.x = RES_SCALE (2);
-	r.corner.y = RES_SCALE (20);
-	r.extent.width = FIELD_WIDTH + RES_SCALE (1);
-	r.extent.height = (RES_SCALE (129) - r.corner.y);
+	r.corner.x = RES_SCALE(2);
+	r.corner.y = RES_SCALE(20);
+	r.extent.width = FIELD_WIDTH + RES_SCALE(1);
+	r.extent.height = (RES_SCALE(129) - r.corner.y);
 
 	if (!optCustomBorder && !IS_HD)
 	{
-		DrawStarConBox (&r, RES_SCALE (1),
-			SHADOWBOX_MEDIUM_COLOR, SHADOWBOX_DARK_COLOR,
-			true, MODULE_BACK_COLOR, false, TRANSPARENT);
+		DrawStarConBox(&r, RES_SCALE(1),
+					   SHADOWBOX_MEDIUM_COLOR, SHADOWBOX_DARK_COLOR,
+					   true, MODULE_BACK_COLOR, false, TRANSPARENT);
 	}
 	else
-		DrawBorder (DEVICE_CARGO_FRAME);
+		DrawBorder(DEVICE_CARGO_FRAME);
 
 	// print the "str" title
-	SetContextFont (StarConFont);
-	t.baseline.x = (STATUS_WIDTH >> 1) - RES_SCALE (1);
-	t.baseline.y = r.corner.y + RES_SCALE (7);
+	SetContextFont(StarConFont);
+	t.baseline.x = (STATUS_WIDTH >> 1) - RES_SCALE(1);
+	t.baseline.y = r.corner.y + RES_SCALE(7);
 	t.align = ALIGN_CENTER;
 	t.pStr = str;
 	t.CharCount = (uqm::COUNT)~0;
-	SetContextForeGroundColor (MODULE_SELECTED_COLOR);
-	font_DrawText (&t);
+	SetContextForeGroundColor(MODULE_SELECTED_COLOR);
+	font_DrawText(&t);
 }
 
-uqm::CHAR_T *
-WholeFuelValue (void)
+uqm::CHAR_T*
+WholeFuelValue(void)
 {
 	static uqm::CHAR_T buf[7];
-	uqm::DWORD CoarseFuel = GLOBAL_SIS (FuelOnBoard);
+	uqm::DWORD CoarseFuel = GLOBAL_SIS(FuelOnBoard);
 
 	double dblFuelOnBoard = (double)CoarseFuel / FUEL_TANK_SCALE;
 
 	if (!optInfiniteFuel)
 	{
 		if (!optWholeFuel)
-			snprintf (buf, sizeof buf, "%u", CoarseFuel);
+			snprintf(buf, sizeof buf, "%u", CoarseFuel);
 		else if (dblFuelOnBoard > 999.99)
-			snprintf (buf, sizeof buf, "%.1f", dblFuelOnBoard);
+			snprintf(buf, sizeof buf, "%.1f", dblFuelOnBoard);
 		else
-			snprintf (buf, sizeof buf, "%.2f", dblFuelOnBoard);
+			snprintf(buf, sizeof buf, "%.2f", dblFuelOnBoard);
 	}
 	else
-		snprintf (buf, sizeof buf, "%s", STR_INFINITY_SIGN);
+		snprintf(buf, sizeof buf, "%s", STR_INFINITY_SIGN);
 
 	return buf;
 }

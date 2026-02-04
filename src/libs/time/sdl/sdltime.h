@@ -26,10 +26,9 @@
 
 #define NativeInitTimeSystem()
 #define NativeUnInitTimeSystem()
-extern Uint32 SDLWrapper_GetTimeCounter (void);
+extern Uint32 SDLWrapper_GetTimeCounter(void);
 #define NativeGetTimeCounter() \
-		SDLWrapper_GetTimeCounter ()
+	SDLWrapper_GetTimeCounter()
 
 
-#endif  /* LIBS_TIME_SDL_SDLTIME_H_ */
-
+#endif /* LIBS_TIME_SDL_SDLTIME_H_ */

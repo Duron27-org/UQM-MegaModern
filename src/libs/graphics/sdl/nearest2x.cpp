@@ -31,24 +31,23 @@
 //		Scale_MMX_Nearest (for MMX)
 //		Scale_SSE_Nearest (for SSE)
 //		[others when platforms are added]
-void
-SCALE_(Nearest) (SDL_Surface *src, SDL_Surface *dst, SDL_Rect *r)
+void SCALE_(Nearest)(SDL_Surface* src, SDL_Surface* dst, SDL_Rect* r)
 {
 	int y;
 	const int rw = r->w, rh = r->h;
 	const int sp = src->pitch, dp = dst->pitch;
 	const int bpp = dst->format->BytesPerPixel;
 	const int slen = sp / bpp, dlen = dp / bpp;
-	const int dsrc = slen-rw, ddst = (dlen-rw) * 2;
+	const int dsrc = slen - rw, ddst = (dlen - rw) * 2;
 
-	Uint32 *src_p = (Uint32 *)src->pixels;
-	Uint32 *dst_p = (Uint32 *)dst->pixels;
+	Uint32* src_p = (Uint32*)src->pixels;
+	Uint32* dst_p = (Uint32*)dst->pixels;
 
 	// guard asm code against such atrocities
 	if (rw == 0 || rh == 0)
 		return;
 
-	SCALE_(PlatInit) ();
+	SCALE_(PlatInit)();
 
 	// move ptrs to the first updated pixel
 	src_p += slen * r->y + r->x;
@@ -61,8 +60,8 @@ SCALE_(Nearest) (SDL_Surface *src, SDL_Surface *dst, SDL_Rect *r)
 
 	y = rh;
 	__asm
-	{
-		// setup vars
+		{
+			// setup vars
 		mov       esi, src_p
 		mov       edi, dst_p
 
@@ -81,28 +80,28 @@ SCALE_(Nearest) (SDL_Surface *src, SDL_Surface *dst, SDL_Rect *r)
 	loop_y:
 		test       ecx, 1
 		jz         even_x
-	
-		// one-pixel transfer
+
+								   // one-pixel transfer
 		movd       mm1, [esi]
-		punpckldq  mm1, mm1    // pix1 | pix1 -> mm1
+		punpckldq  mm1, mm1 // pix1 | pix1 -> mm1
 		add        esi, 4
 		MOVNTQ     (edi, mm1)
 		add        edi, 8
 		MOVNTQ     (edi - 8 + edx, mm1)
 
 	even_x:
-		shr        ecx, 1      // x = rw / 2
-		jz         end_x       // rw was 1
+		shr        ecx, 1 // x = rw / 2
+		jz         end_x // rw was 1
 
 	loop_x:
-		// two-pixel transfer
+			// two-pixel transfer
 		movq       mm1, [esi]
 		movq       mm2, mm1
 		PREFETCH   (esi + 0x100)
-		punpckldq  mm1, mm1    // pix1 | pix1 -> mm1
+		punpckldq  mm1, mm1 // pix1 | pix1 -> mm1
 		add        esi, 8
 		MOVNTQ     (edi, mm1)
-		punpckhdq  mm2, mm2    // pix2 | pix2 -> mm2
+		punpckhdq  mm2, mm2							  // pix2 | pix2 -> mm2
 		MOVNTQ     (edi + edx, mm1)
 		add        edi, 16
 		MOVNTQ     (edi - 8, mm2)
@@ -112,7 +111,7 @@ SCALE_(Nearest) (SDL_Surface *src, SDL_Surface *dst, SDL_Rect *r)
 		jnz        loop_x
 	
 	end_x:
-		// try to prefetch as early as possible to have it on time
+										  // try to prefetch as early as possible to have it on time
 		PREFETCH  (esi + eax)
 
 		mov       ecx, rw
@@ -126,29 +125,26 @@ SCALE_(Nearest) (SDL_Surface *src, SDL_Surface *dst, SDL_Rect *r)
 
 		dec       y
 		jnz       loop_y
-	}
+		}
 
 #elif defined(MMX_ASM) && defined(GCC_ASM)
 
-	SCALE_(Prefetch) (src_p + 16);
-	SCALE_(Prefetch) (src_p + 32);
-	SCALE_(Prefetch) (src_p + 48);
+	SCALE_(Prefetch)(src_p + 16);
+	SCALE_(Prefetch)(src_p + 32);
+	SCALE_(Prefetch)(src_p + 48);
 
 	for (y = rh; y; --y)
 	{
 		int x = rw;
 
 		if (x & 1)
-		{	// one-pixel transfer
-			__asm__ (
+		{ // one-pixel transfer
+			__asm__(
 				"movd       (%0), %%mm1      \n\t"
-				"punpckldq  %%mm1, %%mm1     \n\t"
-				 MOVNTQ     (%%mm1, (%1))   "\n\t"
-				 MOVNTQ     (%%mm1, (%1,%2)) "\n\t"
+				"punpckldq  %%mm1, %%mm1     \n\t" MOVNTQ(% % mm1, (% 1)) "\n\t" MOVNTQ(% % mm1, (% 1, % 2)) "\n\t"
 
-			: /* nothing */
-			: /*0*/"r" (src_p), /*1*/"r" (dst_p), /*2*/"r" (dlen*sizeof(Uint32))
-			);
+				: /* nothing */
+				: /*0*/ "r"(src_p), /*1*/ "r"(dst_p), /*2*/ "r"(dlen * sizeof(Uint32)));
 
 			++src_p;
 			dst_p += 2;
@@ -156,32 +152,26 @@ SCALE_(Nearest) (SDL_Surface *src, SDL_Surface *dst, SDL_Rect *r)
 		}
 
 		for (x >>= 1; x; --x, src_p += 2, dst_p += 4)
-		{	// two-pixel transfer
-			__asm__ (
+		{ // two-pixel transfer
+			__asm__(
 				"movq       (%0), %%mm1       \n\t"
-				"movq       %%mm1, %%mm2      \n\t"
-				 PREFETCH   (0x100(%0))      "\n\t"
-				"punpckldq  %%mm1, %%mm1      \n\t"
-				 MOVNTQ     (%%mm1, (%1))    "\n\t"
-				 MOVNTQ     (%%mm1, (%1,%2)) "\n\t"
-				"punpckhdq  %%mm2, %%mm2      \n\t"
-				 MOVNTQ     (%%mm2, 8(%1))    "\n\t"
-				 MOVNTQ     (%%mm2, 8(%1,%2)) "\n\t"
+				"movq       %%mm1, %%mm2      \n\t" PREFETCH(0x100(% 0)) "\n\t"
+																		 "punpckldq  %%mm1, %%mm1      \n\t" MOVNTQ(% % mm1, (% 1)) "\n\t" MOVNTQ(% % mm1, (% 1, % 2)) "\n\t"
+																																									   "punpckhdq  %%mm2, %%mm2      \n\t" MOVNTQ(% % mm2, 8(% 1)) "\n\t" MOVNTQ(% % mm2, 8(% 1, % 2)) "\n\t"
 
-			: /* nothing */
-			: /*0*/"r" (src_p), /*1*/"r" (dst_p), /*2*/"r" (dlen*sizeof(Uint32))
-			);
+				: /* nothing */
+				: /*0*/ "r"(src_p), /*1*/ "r"(dst_p), /*2*/ "r"(dlen * sizeof(Uint32)));
 		}
 
 		src_p += dsrc;
 		// try to prefetch as early as possible to have it on time
-		SCALE_(Prefetch) (src_p);
+		SCALE_(Prefetch)(src_p);
 
 		dst_p += ddst;
 
-		SCALE_(Prefetch) (src_p + 16);
-		SCALE_(Prefetch) (src_p + 32);
-		SCALE_(Prefetch) (src_p + 48);
+		SCALE_(Prefetch)(src_p + 16);
+		SCALE_(Prefetch)(src_p + 32);
+		SCALE_(Prefetch)(src_p + 48);
 	}
 
 #else
@@ -202,6 +192,5 @@ SCALE_(Nearest) (SDL_Surface *src, SDL_Surface *dst, SDL_Rect *r)
 	}
 #endif
 
-	SCALE_(PlatDone) ();
+	SCALE_(PlatDone)();
 }
-

@@ -26,13 +26,11 @@
 extern "C" {
 #endif
 
-int Netplay_confirm(NetConnection *conn);
-int Netplay_cancelConfirmation(NetConnection *conn);
+int Netplay_confirm(NetConnection* conn);
+int Netplay_cancelConfirmation(NetConnection* conn);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* UQM_SUPERMELEE_NETPLAY_PROTO_NPCONFIRM_H_ */
-
-
+#endif /* UQM_SUPERMELEE_NETPLAY_PROTO_NPCONFIRM_H_ */

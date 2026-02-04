@@ -21,11 +21,10 @@
 extern "C" {
 #endif
 
-RACE_DESC *init_umgah (void);
+RACE_DESC* init_umgah(void);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* UMGAH_H */
-
+#endif /* UMGAH_H */

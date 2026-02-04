@@ -26,472 +26,509 @@
 
 
 static LOCDATA slylandro_desc =
-{
-	SLYLANDRO_HOME_CONVERSATION, /* AlienConv */
-	NULL, /* init_encounter_func */
-	NULL, /* post_encounter_func */
-	NULL, /* uninit_encounter_func */
-	SLYLANDRO_PMAP_ANIM, /* AlienFrame */
-	SLYLANDRO_FONT, /* AlienFont */
-	WHITE_COLOR_INIT, /* AlienTextFColor */
-	BLACK_COLOR_INIT, /* AlienTextBColor */
-	{0, 0}, /* AlienTextBaseline */
-	0, /* SIS_TEXT_WIDTH, */ /* AlienTextWidth */
-	ALIGN_CENTER, /* AlienTextAlign */
-	VALIGN_TOP, /* AlienTextValign */
-	SLYLANDRO_COLOR_MAP, /* AlienColorMap */
-	SLYLANDRO_MUSIC, /* AlienSong */
 	{
-		NULL_RESOURCE, /* AlienAltFrame */
-		NULL_RESOURCE, /* AlienAltColorMap */
-		NULL_RESOURCE, /* AlienAltSong */
-	},
-	SLYLANDRO_CONVERSATION_PHRASES, /* PlayerPhrases */
-	13, /* NumAnimations */
-	{ /* AlienAmbientArray (ambient animations) */
+		SLYLANDRO_HOME_CONVERSATION, /* AlienConv */
+		NULL, /* init_encounter_func */
+		NULL, /* post_encounter_func */
+		NULL, /* uninit_encounter_func */
+		SLYLANDRO_PMAP_ANIM, /* AlienFrame */
+		SLYLANDRO_FONT, /* AlienFont */
+		WHITE_COLOR_INIT, /* AlienTextFColor */
+		BLACK_COLOR_INIT, /* AlienTextBColor */
+		{0, 0}, /* AlienTextBaseline */
+		0,
+ /* SIS_TEXT_WIDTH, */  /* AlienTextWidth */
+		ALIGN_CENTER, /* AlienTextAlign */
+		VALIGN_TOP, /* AlienTextValign */
+		SLYLANDRO_COLOR_MAP, /* AlienColorMap */
+		SLYLANDRO_MUSIC, /* AlienSong */
 		{
+								NULL_RESOURCE, /* AlienAltFrame */
+			NULL_RESOURCE, /* AlienAltColorMap */
+			NULL_RESOURCE, /* AlienAltSong */
+		},
+		SLYLANDRO_CONVERSATION_PHRASES, /* PlayerPhrases */
+		13, /* NumAnimations */
+		{
+								/* AlienAmbientArray (ambient animations) */
+			{
+				0,											   /* StartIndex */
+				5,											   /* NumFrames */
+				RANDOM_ANIM | COLORXFORM_ANIM | ANIM_DISABLED, /* AnimFlags */
+				ONE_SECOND / 8,
+				ONE_SECOND * 5 / 8, /* FrameRate */
+				ONE_SECOND / 8,
+				ONE_SECOND * 5 / 8, /* RestartRate */
+				0,					/* BlockMask */
+			},
+								{
+				1,		   /* StartIndex */
+				5,		   /* NumFrames */
+				YOYO_ANIM, /* AnimFlags */
+				ONE_SECOND / 15,
+				ONE_SECOND / 15, /* FrameRate */
+				ONE_SECOND,
+				ONE_SECOND * 3, /* RestartRate */
+				0,				/* BlockMask */
+			},
+								{
+				6,		   /* StartIndex */
+				5,		   /* NumFrames */
+				YOYO_ANIM, /* AnimFlags */
+				ONE_SECOND / 15,
+				ONE_SECOND / 15, /* FrameRate */
+				ONE_SECOND,
+				ONE_SECOND * 3, /* RestartRate */
+				0,				/* BlockMask */
+			},
+								{
+				11,		   /* StartIndex */
+				5,		   /* NumFrames */
+				YOYO_ANIM, /* AnimFlags */
+				ONE_SECOND / 15,
+				ONE_SECOND / 15, /* FrameRate */
+				ONE_SECOND,
+				ONE_SECOND * 3, /* RestartRate */
+				0,				/* BlockMask */
+			},
+								{
+				16,		   /* StartIndex */
+				6,		   /* NumFrames */
+				YOYO_ANIM, /* AnimFlags */
+				ONE_SECOND / 15,
+				ONE_SECOND / 15, /* FrameRate */
+				ONE_SECOND,
+				ONE_SECOND * 3, /* RestartRate */
+				0,				/* BlockMask */
+			},
+								{
+				22,			   /* StartIndex */
+				8,			   /* NumFrames */
+				CIRCULAR_ANIM, /* AnimFlags */
+				ONE_SECOND / 15,
+				0, /* FrameRate */
+				ONE_SECOND / 15,
+				0, /* RestartRate */
+				0, /* BlockMask */
+			},
+								{
+				30,			   /* StartIndex */
+				9,			   /* NumFrames */
+				CIRCULAR_ANIM, /* AnimFlags */
+				ONE_SECOND / 15,
+				ONE_SECOND / 15, /* FrameRate */
+				ONE_SECOND,
+				ONE_SECOND * 3,		 /* RestartRate */
+				(1 << 8) | (1 << 9), /* BlockMask */
+			},
+								{
+				39,			   /* StartIndex */
+				4,			   /* NumFrames */
+				CIRCULAR_ANIM, /* AnimFlags */
+				ONE_SECOND / 15,
+				0, /* FrameRate */
+				ONE_SECOND,
+				ONE_SECOND * 3, /* RestartRate */
+				0,				/* BlockMask */
+			},
+								{
+				43,			   /* StartIndex */
+				5,			   /* NumFrames */
+				CIRCULAR_ANIM, /* AnimFlags */
+				ONE_SECOND / 15,
+				0, /* FrameRate */
+				ONE_SECOND,
+				ONE_SECOND * 3, /* RestartRate */
+				(1 << 6),		/* BlockMask */
+			},
+								{
+				48,			   /* StartIndex */
+				6,			   /* NumFrames */
+				CIRCULAR_ANIM, /* AnimFlags */
+				ONE_SECOND / 15,
+				0, /* FrameRate */
+				ONE_SECOND,
+				ONE_SECOND * 3, /* RestartRate */
+				(1 << 6),		/* BlockMask */
+			},
+								{
+				54,			   /* StartIndex */
+				6,			   /* NumFrames */
+				CIRCULAR_ANIM, /* AnimFlags */
+				ONE_SECOND / 15,
+				0, /* FrameRate */
+				ONE_SECOND,
+				ONE_SECOND * 3, /* RestartRate */
+				(1 << 12),		/* BlockMask */
+			},
+								{
+				60,			   /* StartIndex */
+				7,			   /* NumFrames */
+				CIRCULAR_ANIM, /* AnimFlags */
+				ONE_SECOND / 15,
+				0, /* FrameRate */
+				ONE_SECOND,
+				ONE_SECOND * 3, /* RestartRate */
+				(1 << 12),		/* BlockMask */
+			},
+								{
+				67,			   /* StartIndex */
+				8,			   /* NumFrames */
+				CIRCULAR_ANIM, /* AnimFlags */
+				ONE_SECOND / 15,
+				0, /* FrameRate */
+				ONE_SECOND,
+				ONE_SECOND * 3,		   /* RestartRate */
+				(1 << 10) | (1 << 11), /* BlockMask */
+			},
+								},
+		{
+								/* AlienTransitionDesc - empty */
 			0, /* StartIndex */
-			5, /* NumFrames */
-			RANDOM_ANIM | COLORXFORM_ANIM | ANIM_DISABLED, /* AnimFlags */
-			ONE_SECOND / 8, ONE_SECOND * 5 / 8, /* FrameRate */
-			ONE_SECOND / 8, ONE_SECOND * 5 / 8, /* RestartRate */
+			0, /* NumFrames */
+			0, /* AnimFlags */
+			0,
+								0, /* FrameRate */
+			0,
+								0, /* RestartRate */
 			0, /* BlockMask */
 		},
 		{
-			1, /* StartIndex */
-			5, /* NumFrames */
-			YOYO_ANIM, /* AnimFlags */
-			ONE_SECOND / 15, ONE_SECOND / 15, /* FrameRate */
-			ONE_SECOND, ONE_SECOND * 3, /* RestartRate */
+								/* AlienTalkDesc - empty */
+			0, /* StartIndex */
+			0, /* NumFrames */
+			0, /* AnimFlags */
+			0,
+								0, /* FrameRate */
+			0,
+								0, /* RestartRate */
 			0, /* BlockMask */
 		},
-		{
-			6, /* StartIndex */
-			5, /* NumFrames */
-			YOYO_ANIM, /* AnimFlags */
-			ONE_SECOND / 15, ONE_SECOND / 15, /* FrameRate */
-			ONE_SECOND, ONE_SECOND * 3, /* RestartRate */
-			0, /* BlockMask */
-		},
-		{
-			11, /* StartIndex */
-			5, /* NumFrames */
-			YOYO_ANIM, /* AnimFlags */
-			ONE_SECOND / 15, ONE_SECOND / 15, /* FrameRate */
-			ONE_SECOND, ONE_SECOND * 3, /* RestartRate */
-			0, /* BlockMask */
-		},
-		{
-			16, /* StartIndex */
-			6, /* NumFrames */
-			YOYO_ANIM, /* AnimFlags */
-			ONE_SECOND / 15, ONE_SECOND / 15, /* FrameRate */
-			ONE_SECOND, ONE_SECOND * 3, /* RestartRate */
-			0, /* BlockMask */
-		},
-		{
-			22, /* StartIndex */
-			8, /* NumFrames */
-			CIRCULAR_ANIM, /* AnimFlags */
-			ONE_SECOND / 15, 0, /* FrameRate */
-			ONE_SECOND / 15, 0, /* RestartRate */
-			0, /* BlockMask */
-		},
-		{
-			30, /* StartIndex */
-			9, /* NumFrames */
-			CIRCULAR_ANIM, /* AnimFlags */
-			ONE_SECOND / 15, ONE_SECOND / 15, /* FrameRate */
-			ONE_SECOND, ONE_SECOND * 3, /* RestartRate */
-			(1 << 8) | (1 << 9), /* BlockMask */
-		},
-		{
-			39, /* StartIndex */
-			4, /* NumFrames */
-			CIRCULAR_ANIM, /* AnimFlags */
-			ONE_SECOND / 15, 0, /* FrameRate */
-			ONE_SECOND, ONE_SECOND * 3, /* RestartRate */
-			0, /* BlockMask */
-		},
-		{
-			43, /* StartIndex */
-			5, /* NumFrames */
-			CIRCULAR_ANIM, /* AnimFlags */
-			ONE_SECOND / 15, 0, /* FrameRate */
-			ONE_SECOND, ONE_SECOND * 3, /* RestartRate */
-			(1 << 6), /* BlockMask */
-		},
-		{
-			48, /* StartIndex */
-			6, /* NumFrames */
-			CIRCULAR_ANIM, /* AnimFlags */
-			ONE_SECOND / 15, 0, /* FrameRate */
-			ONE_SECOND, ONE_SECOND * 3, /* RestartRate */
-			(1 << 6), /* BlockMask */
-		},
-		{
-			54, /* StartIndex */
-			6, /* NumFrames */
-			CIRCULAR_ANIM, /* AnimFlags */
-			ONE_SECOND / 15, 0, /* FrameRate */
-			ONE_SECOND, ONE_SECOND * 3, /* RestartRate */
-			(1 << 12), /* BlockMask */
-		},
-		{
-			60, /* StartIndex */
-			7, /* NumFrames */
-			CIRCULAR_ANIM, /* AnimFlags */
-			ONE_SECOND / 15, 0, /* FrameRate */
-			ONE_SECOND, ONE_SECOND * 3, /* RestartRate */
-			(1 << 12), /* BlockMask */
-		},
-		{
-			67, /* StartIndex */
-			8, /* NumFrames */
-			CIRCULAR_ANIM, /* AnimFlags */
-			ONE_SECOND / 15, 0, /* FrameRate */
-			ONE_SECOND, ONE_SECOND * 3, /* RestartRate */
-			(1 << 10) | (1 << 11), /* BlockMask */
-		},
-	},
-	{ /* AlienTransitionDesc - empty */
-		0, /* StartIndex */
-		0, /* NumFrames */
-		0, /* AnimFlags */
-		0, 0, /* FrameRate */
-		0, 0, /* RestartRate */
-		0, /* BlockMask */
-	},
-	{ /* AlienTalkDesc - empty */
-		0, /* StartIndex */
-		0, /* NumFrames */
-		0, /* AnimFlags */
-		0, 0, /* FrameRate */
-		0, 0, /* RestartRate */
-		0, /* BlockMask */
-	},
-	NULL, /* AlienNumberSpeech - none */
-	/* Filler for loaded resources */
-	NULL, NULL, NULL,
-	NULL,
-	NULL,
+		NULL, /* AlienNumberSpeech - none */
+		/* Filler for loaded resources */
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
 };
 
 static FILTER_DESC slyhome_filters =
-{
-	1, /* Number of filters */
-	{ /* Filter array */
+	{
+		1, /* Number of filters */
 		{
-			0, /* Color index */
-			1, /* Opacity index */
-			-1, /* Frame index */
-			DRAW_OVERLAY, /* DrawKind*/
-			0, /* Flags */
-		},
-	}
+								  /* Filter array */
+			{
+				0,			  /* Color index */
+				1,			  /* Opacity index */
+				-1,			  /* Frame index */
+				DRAW_OVERLAY, /* DrawKind*/
+				0,			  /* Flags */
+			},
+								  }
 };
 
 static void
-ExitConversation (RESPONSE_REF R)
+ExitConversation(RESPONSE_REF R)
 {
-	(void) R;  // ignored
-	setSegue (Segue_peace);
+	(void)R; // ignored
+	setSegue(Segue_peace);
 
-	switch (GET_GAME_STATE (SLYLANDRO_HOME_VISITS))
+	switch (GET_GAME_STATE(SLYLANDRO_HOME_VISITS))
 	{
 		case 1:
-			NPCPhrase (GOODBYE_1);
+			NPCPhrase(GOODBYE_1);
 			break;
 		default:
-			NPCPhrase (GOODBYE_2);
+			NPCPhrase(GOODBYE_2);
 			break;
 	}
 }
 
-static void HomeWorld (RESPONSE_REF R);
+static void HomeWorld(RESPONSE_REF R);
 
 static void
-HumanInfo (RESPONSE_REF R)
+HumanInfo(RESPONSE_REF R)
 {
 	uqm::BYTE InfoLeft;
 
-	if (PLAYER_SAID (R, happy_to_tell_more))
+	if (PLAYER_SAID(R, happy_to_tell_more))
 	{
-		NPCPhrase (TELL_MORE);
+		NPCPhrase(TELL_MORE);
 
-		SET_GAME_STATE (SLYLANDRO_STACK4, 1);
+		SET_GAME_STATE(SLYLANDRO_STACK4, 1);
 	}
-	else if (PLAYER_SAID (R, would_you_like_to_know_more))
+	else if (PLAYER_SAID(R, would_you_like_to_know_more))
 	{
-		NPCPhrase (YES_TELL_MORE);
+		NPCPhrase(YES_TELL_MORE);
 	}
-	else if (PLAYER_SAID (R, we_come_from_earth))
+	else if (PLAYER_SAID(R, we_come_from_earth))
 	{
-		NPCPhrase (OK_EARTH);
+		NPCPhrase(OK_EARTH);
 
-		SET_GAME_STATE (SLYLANDRO_KNOW_EARTH, 1);
+		SET_GAME_STATE(SLYLANDRO_KNOW_EARTH, 1);
 	}
-	else if (PLAYER_SAID (R, we_explore))
+	else if (PLAYER_SAID(R, we_explore))
 	{
-		NPCPhrase (OK_EXPLORE);
+		NPCPhrase(OK_EXPLORE);
 
-		SET_GAME_STATE (SLYLANDRO_KNOW_EXPLORE, 1);
+		SET_GAME_STATE(SLYLANDRO_KNOW_EXPLORE, 1);
 	}
-	else if (PLAYER_SAID (R, we_fight_urquan))
+	else if (PLAYER_SAID(R, we_fight_urquan))
 	{
-		NPCPhrase (URQUAN_NICE_GUYS);
+		NPCPhrase(URQUAN_NICE_GUYS);
 
-		SET_GAME_STATE (SLYLANDRO_KNOW_URQUAN, 1);
+		SET_GAME_STATE(SLYLANDRO_KNOW_URQUAN, 1);
 	}
-	else if (PLAYER_SAID (R, not_same_urquan))
+	else if (PLAYER_SAID(R, not_same_urquan))
 	{
-		NPCPhrase (PERSONALITY_CHANGE);
+		NPCPhrase(PERSONALITY_CHANGE);
 
-		SET_GAME_STATE (SLYLANDRO_KNOW_URQUAN, 2);
+		SET_GAME_STATE(SLYLANDRO_KNOW_URQUAN, 2);
 	}
-	else if (PLAYER_SAID (R, we_gather))
+	else if (PLAYER_SAID(R, we_gather))
 	{
-		NPCPhrase (MAYBE_INTERESTED);
+		NPCPhrase(MAYBE_INTERESTED);
 
-		SET_GAME_STATE (SLYLANDRO_KNOW_GATHER, 1);
+		SET_GAME_STATE(SLYLANDRO_KNOW_GATHER, 1);
 	}
 
 	InfoLeft = false;
-	if (GET_GAME_STATE (SLYLANDRO_KNOW_URQUAN) == 1)
+	if (GET_GAME_STATE(SLYLANDRO_KNOW_URQUAN) == 1)
 	{
 		InfoLeft = true;
-		Response (not_same_urquan, HumanInfo);
+		Response(not_same_urquan, HumanInfo);
 	}
-	if (!GET_GAME_STATE (SLYLANDRO_KNOW_EARTH))
+	if (!GET_GAME_STATE(SLYLANDRO_KNOW_EARTH))
 	{
 		InfoLeft = true;
-		Response (we_come_from_earth, HumanInfo);
+		Response(we_come_from_earth, HumanInfo);
 	}
-	if (!GET_GAME_STATE (SLYLANDRO_KNOW_EXPLORE))
+	if (!GET_GAME_STATE(SLYLANDRO_KNOW_EXPLORE))
 	{
 		InfoLeft = true;
-		Response (we_explore, HumanInfo);
+		Response(we_explore, HumanInfo);
 	}
-	if (!GET_GAME_STATE (SLYLANDRO_KNOW_URQUAN))
+	if (!GET_GAME_STATE(SLYLANDRO_KNOW_URQUAN))
 	{
 		InfoLeft = true;
-		Response (we_fight_urquan, HumanInfo);
+		Response(we_fight_urquan, HumanInfo);
 	}
-	if (!GET_GAME_STATE (SLYLANDRO_KNOW_GATHER))
+	if (!GET_GAME_STATE(SLYLANDRO_KNOW_GATHER))
 	{
 		InfoLeft = true;
-		Response (we_gather, HumanInfo);
+		Response(we_gather, HumanInfo);
 	}
 
-	Response (enough_about_me, HomeWorld);
+	Response(enough_about_me, HomeWorld);
 	if (!InfoLeft)
 	{
-		SET_GAME_STATE (SLYLANDRO_STACK4, 2);
+		SET_GAME_STATE(SLYLANDRO_STACK4, 2);
 	}
 }
 
 static void
-SlylandroInfo (RESPONSE_REF R)
+SlylandroInfo(RESPONSE_REF R)
 {
 	uqm::BYTE InfoLeft;
 
-	if (PLAYER_SAID (R, like_more_about_you))
+	if (PLAYER_SAID(R, like_more_about_you))
 	{
-		NPCPhrase (SURE_KNOW_WHAT);
+		NPCPhrase(SURE_KNOW_WHAT);
 	}
-	else if (PLAYER_SAID (R, what_about_home))
+	else if (PLAYER_SAID(R, what_about_home))
 	{
-		NPCPhrase (ABOUT_HOME);
+		NPCPhrase(ABOUT_HOME);
 
-		DISABLE_PHRASE (what_about_home);
+		DISABLE_PHRASE(what_about_home);
 	}
-	else if (PLAYER_SAID (R, what_about_culture))
+	else if (PLAYER_SAID(R, what_about_culture))
 	{
-		NPCPhrase (ABOUT_CULTURE);
+		NPCPhrase(ABOUT_CULTURE);
 
-		DISABLE_PHRASE (what_about_culture);
+		DISABLE_PHRASE(what_about_culture);
 	}
-	else if (PLAYER_SAID (R, what_about_history))
+	else if (PLAYER_SAID(R, what_about_history))
 	{
-		NPCPhrase (ABOUT_HISTORY);
+		NPCPhrase(ABOUT_HISTORY);
 
-		DISABLE_PHRASE (what_about_history);
+		DISABLE_PHRASE(what_about_history);
 	}
-	else if (PLAYER_SAID (R, what_about_biology))
+	else if (PLAYER_SAID(R, what_about_biology))
 	{
-		NPCPhrase (ABOUT_BIOLOGY);
+		NPCPhrase(ABOUT_BIOLOGY);
 
-		DISABLE_PHRASE (what_about_biology);
+		DISABLE_PHRASE(what_about_biology);
 	}
 
 	InfoLeft = false;
-	if (PHRASE_ENABLED (what_about_home))
+	if (PHRASE_ENABLED(what_about_home))
 	{
 		InfoLeft = true;
-		Response (what_about_home, SlylandroInfo);
+		Response(what_about_home, SlylandroInfo);
 	}
-	if (PHRASE_ENABLED (what_about_culture))
+	if (PHRASE_ENABLED(what_about_culture))
 	{
 		InfoLeft = true;
-		Response (what_about_culture, SlylandroInfo);
+		Response(what_about_culture, SlylandroInfo);
 	}
-	if (PHRASE_ENABLED (what_about_history))
+	if (PHRASE_ENABLED(what_about_history))
 	{
 		InfoLeft = true;
-		Response (what_about_history, SlylandroInfo);
+		Response(what_about_history, SlylandroInfo);
 	}
-	if (PHRASE_ENABLED (what_about_biology))
+	if (PHRASE_ENABLED(what_about_biology))
 	{
 		InfoLeft = true;
-		Response (what_about_biology, SlylandroInfo);
+		Response(what_about_biology, SlylandroInfo);
 	}
 
-	Response (enough_info, HomeWorld);
+	Response(enough_info, HomeWorld);
 	if (!InfoLeft)
 	{
-		DISABLE_PHRASE (like_more_about_you);
+		DISABLE_PHRASE(like_more_about_you);
 	}
 }
 
 static void
-FixBug (RESPONSE_REF R)
+FixBug(RESPONSE_REF R)
 {
-	if (PLAYER_SAID (R, think_about_rep_priorities))
-		NPCPhrase (UH_OH);
-	else if (PLAYER_SAID (R, hunt_them_down))
+	if (PLAYER_SAID(R, think_about_rep_priorities))
+		NPCPhrase(UH_OH);
+	else if (PLAYER_SAID(R, hunt_them_down))
 	{
-		NPCPhrase (GROW_TOO_FAST);
+		NPCPhrase(GROW_TOO_FAST);
 
-		DISABLE_PHRASE (hunt_them_down);
+		DISABLE_PHRASE(hunt_them_down);
 	}
-	else if (PLAYER_SAID (R, sue_melnorme))
+	else if (PLAYER_SAID(R, sue_melnorme))
 	{
-		NPCPhrase (SIGNED_WAIVER);
+		NPCPhrase(SIGNED_WAIVER);
 
-		DISABLE_PHRASE (sue_melnorme);
+		DISABLE_PHRASE(sue_melnorme);
 	}
-	else if (PLAYER_SAID (R, recall_signal))
+	else if (PLAYER_SAID(R, recall_signal))
 	{
-		NPCPhrase (NOT_THIS_MODEL);
+		NPCPhrase(NOT_THIS_MODEL);
 
-		DISABLE_PHRASE (recall_signal);
+		DISABLE_PHRASE(recall_signal);
 	}
 
-	if (PHRASE_ENABLED (hunt_them_down))
-		Response (hunt_them_down, FixBug);
-	if (PHRASE_ENABLED (sue_melnorme))
-		Response (sue_melnorme, FixBug);
-	if (PHRASE_ENABLED (recall_signal))
-		Response (recall_signal, FixBug);
-	Response (mega_self_destruct, HomeWorld);
+	if (PHRASE_ENABLED(hunt_them_down))
+		Response(hunt_them_down, FixBug);
+	if (PHRASE_ENABLED(sue_melnorme))
+		Response(sue_melnorme, FixBug);
+	if (PHRASE_ENABLED(recall_signal))
+		Response(recall_signal, FixBug);
+	Response(mega_self_destruct, HomeWorld);
 }
 
 static void
-ProbeBug (RESPONSE_REF R)
+ProbeBug(RESPONSE_REF R)
 {
-	if (PLAYER_SAID (R, probe_has_bug))
-		NPCPhrase (NO_IT_DOESNT);
-	else if (PLAYER_SAID (R, tell_me_about_rep_2))
+	if (PLAYER_SAID(R, probe_has_bug))
+		NPCPhrase(NO_IT_DOESNT);
+	else if (PLAYER_SAID(R, tell_me_about_rep_2))
 	{
-		NPCPhrase (REP_NO_PROBLEM);
+		NPCPhrase(REP_NO_PROBLEM);
 
-		DISABLE_PHRASE (tell_me_about_rep_2);
+		DISABLE_PHRASE(tell_me_about_rep_2);
 	}
-	else if (PLAYER_SAID (R, what_about_rep_priorities))
+	else if (PLAYER_SAID(R, what_about_rep_priorities))
 	{
-		NPCPhrase (MAXIMUM_SO_WHAT);
+		NPCPhrase(MAXIMUM_SO_WHAT);
 
-		DISABLE_PHRASE (what_about_rep_priorities);
+		DISABLE_PHRASE(what_about_rep_priorities);
 	}
-	else if (PLAYER_SAID (R, tell_me_about_attack))
+	else if (PLAYER_SAID(R, tell_me_about_attack))
 	{
-		NPCPhrase (ATTACK_NO_PROBLEM);
+		NPCPhrase(ATTACK_NO_PROBLEM);
 
-		DISABLE_PHRASE (tell_me_about_attack);
+		DISABLE_PHRASE(tell_me_about_attack);
 	}
 
-	if (PHRASE_ENABLED (tell_me_about_rep_2))
-		Response (tell_me_about_rep_2, ProbeBug);
-	else if (PHRASE_ENABLED (what_about_rep_priorities))
-		Response (what_about_rep_priorities, ProbeBug);
+	if (PHRASE_ENABLED(tell_me_about_rep_2))
+		Response(tell_me_about_rep_2, ProbeBug);
+	else if (PHRASE_ENABLED(what_about_rep_priorities))
+		Response(what_about_rep_priorities, ProbeBug);
 	else
 	{
-		Response (think_about_rep_priorities, FixBug);
+		Response(think_about_rep_priorities, FixBug);
 	}
-	if (PHRASE_ENABLED (tell_me_about_attack))
-		Response (tell_me_about_attack, ProbeBug);
+	if (PHRASE_ENABLED(tell_me_about_attack))
+		Response(tell_me_about_attack, ProbeBug);
 }
 
-static void ProbeInfo (RESPONSE_REF R);
+static void ProbeInfo(RESPONSE_REF R);
 
 static void
-ProbeFunction (RESPONSE_REF R)
+ProbeFunction(RESPONSE_REF R)
 {
 	uqm::BYTE LastStack;
 	RESPONSE_REF pStr[2];
 
 	LastStack = 0;
 	pStr[0] = pStr[1] = 0;
-	if (PLAYER_SAID (R, talk_more_probe_attack))
+	if (PLAYER_SAID(R, talk_more_probe_attack))
 	{
-		NPCPhrase (NO_PROBLEM_BUT_SURE);
+		NPCPhrase(NO_PROBLEM_BUT_SURE);
 	}
-	else if (PLAYER_SAID (R, tell_me_about_basics))
+	else if (PLAYER_SAID(R, tell_me_about_basics))
 	{
-		NPCPhrase (BASIC_COMMANDS);
+		NPCPhrase(BASIC_COMMANDS);
 
-		SET_GAME_STATE (PLAYER_KNOWS_PROGRAM, 1);
-		DISABLE_PHRASE (tell_basics_again);
+		SET_GAME_STATE(PLAYER_KNOWS_PROGRAM, 1);
+		DISABLE_PHRASE(tell_basics_again);
 	}
-	else if (PLAYER_SAID (R, tell_basics_again))
+	else if (PLAYER_SAID(R, tell_basics_again))
 	{
-		NPCPhrase (OK_BASICS_AGAIN);
+		NPCPhrase(OK_BASICS_AGAIN);
 
-		DISABLE_PHRASE (tell_basics_again);
+		DISABLE_PHRASE(tell_basics_again);
 	}
-	else if (PLAYER_SAID (R, what_effect))
+	else if (PLAYER_SAID(R, what_effect))
 	{
-		NPCPhrase (AFFECTS_BEHAVIOR);
+		NPCPhrase(AFFECTS_BEHAVIOR);
 
-		SET_GAME_STATE (PLAYER_KNOWS_EFFECTS, 1);
-		DISABLE_PHRASE (what_effect);
+		SET_GAME_STATE(PLAYER_KNOWS_EFFECTS, 1);
+		DISABLE_PHRASE(what_effect);
 	}
-	else if (PLAYER_SAID (R, tell_me_about_rep_1))
+	else if (PLAYER_SAID(R, tell_me_about_rep_1))
 	{
-		NPCPhrase (ABOUT_REP);
+		NPCPhrase(ABOUT_REP);
 
 		LastStack = 2;
-		SET_GAME_STATE (SLYLANDRO_STACK8, 3);
+		SET_GAME_STATE(SLYLANDRO_STACK8, 3);
 	}
-	else if (PLAYER_SAID (R, what_set_priority))
+	else if (PLAYER_SAID(R, what_set_priority))
 	{
-		NPCPhrase (MAXIMUM);
+		NPCPhrase(MAXIMUM);
 
-		SET_GAME_STATE (PLAYER_KNOWS_PRIORITY, 1);
-		DISABLE_PHRASE (what_set_priority);
+		SET_GAME_STATE(PLAYER_KNOWS_PRIORITY, 1);
+		DISABLE_PHRASE(what_set_priority);
 	}
-	else if (PLAYER_SAID (R, how_does_probe_defend))
+	else if (PLAYER_SAID(R, how_does_probe_defend))
 	{
-		NPCPhrase (ONLY_SELF_DEFENSE);
+		NPCPhrase(ONLY_SELF_DEFENSE);
 
 		LastStack = 1;
-		SET_GAME_STATE (SLYLANDRO_STACK9, 1);
+		SET_GAME_STATE(SLYLANDRO_STACK9, 1);
 	}
-	else if (PLAYER_SAID (R, combat_behavior))
+	else if (PLAYER_SAID(R, combat_behavior))
 	{
-		NPCPhrase (MISSILE_BATTERIES);
+		NPCPhrase(MISSILE_BATTERIES);
 
 		LastStack = 1;
-		SET_GAME_STATE (SLYLANDRO_STACK9, 2);
+		SET_GAME_STATE(SLYLANDRO_STACK9, 2);
 	}
-	else if (PLAYER_SAID (R, what_missile_batteries))
+	else if (PLAYER_SAID(R, what_missile_batteries))
 	{
-		NPCPhrase (LIGHTNING_ONLY_FOR_HARVESTING);
+		NPCPhrase(LIGHTNING_ONLY_FOR_HARVESTING);
 
-		SET_GAME_STATE (SLYLANDRO_STACK9, 3);
+		SET_GAME_STATE(SLYLANDRO_STACK9, 3);
 	}
 
-	switch (GET_GAME_STATE (SLYLANDRO_STACK9))
+	switch (GET_GAME_STATE(SLYLANDRO_STACK9))
 	{
 		case 0:
 			pStr[0] = how_does_probe_defend;
@@ -503,120 +540,120 @@ ProbeFunction (RESPONSE_REF R)
 			pStr[0] = what_missile_batteries;
 			break;
 	}
-	switch (GET_GAME_STATE (SLYLANDRO_STACK8))
+	switch (GET_GAME_STATE(SLYLANDRO_STACK8))
 	{
 		case 2:
 			pStr[1] = tell_me_about_rep_1;
 			break;
 		case 3:
-			if (PHRASE_ENABLED (what_set_priority))
+			if (PHRASE_ENABLED(what_set_priority))
 				pStr[1] = what_set_priority;
 			break;
 	}
 
 	if (LastStack && pStr[LastStack - 1])
-		Response (pStr[LastStack - 1], ProbeFunction);
-	if (!GET_GAME_STATE (PLAYER_KNOWS_PROGRAM))
-		Response (tell_me_about_basics, ProbeFunction);
+		Response(pStr[LastStack - 1], ProbeFunction);
+	if (!GET_GAME_STATE(PLAYER_KNOWS_PROGRAM))
+		Response(tell_me_about_basics, ProbeFunction);
 	else
 	{
-		if (GET_GAME_STATE (PLAYER_KNOWS_PRIORITY))
+		if (GET_GAME_STATE(PLAYER_KNOWS_PRIORITY))
 		{
-			if (GET_GAME_STATE (PLAYER_KNOWS_EFFECTS))
+			if (GET_GAME_STATE(PLAYER_KNOWS_EFFECTS))
 			{
-				Response (probe_has_bug, ProbeBug);
+				Response(probe_has_bug, ProbeBug);
 			}
-			if (PHRASE_ENABLED (what_effect))
-				Response (what_effect, ProbeFunction);
+			if (PHRASE_ENABLED(what_effect))
+				Response(what_effect, ProbeFunction);
 		}
-		if (PHRASE_ENABLED (tell_basics_again))
-			Response (tell_basics_again, ProbeFunction);
+		if (PHRASE_ENABLED(tell_basics_again))
+			Response(tell_basics_again, ProbeFunction);
 	}
 	if (LastStack == 0)
 	{
 		do
 		{
 			if (pStr[LastStack])
-				Response (pStr[LastStack], ProbeFunction);
+				Response(pStr[LastStack], ProbeFunction);
 		} while (++LastStack < 2);
 	}
 	else
 	{
 		LastStack = (LastStack - 1) ^ 1;
 		if (pStr[LastStack])
-			Response (pStr[LastStack], ProbeFunction);
+			Response(pStr[LastStack], ProbeFunction);
 	}
 
-	Response (enough_problem, ProbeInfo);
+	Response(enough_problem, ProbeInfo);
 }
 
 static void
-ProbeInfo (RESPONSE_REF R)
+ProbeInfo(RESPONSE_REF R)
 {
 	uqm::BYTE i, LastStack, InfoLeft;
 	RESPONSE_REF pStr[3];
 
 	LastStack = 0;
 	pStr[0] = pStr[1] = pStr[2] = 0;
-	if (PLAYER_SAID (R, what_are_probes))
+	if (PLAYER_SAID(R, what_are_probes))
 	{
-		NPCPhrase (PROBES_ARE);
+		NPCPhrase(PROBES_ARE);
 
-		SET_GAME_STATE (SLYLANDRO_STACK5, 1);
+		SET_GAME_STATE(SLYLANDRO_STACK5, 1);
 	}
-	else if (PLAYER_SAID (R, know_more_probe))
-		NPCPhrase (OK_WHAT_MORE_PROBE);
-	else if (PLAYER_SAID (R, why_probe_always_attack))
+	else if (PLAYER_SAID(R, know_more_probe))
+		NPCPhrase(OK_WHAT_MORE_PROBE);
+	else if (PLAYER_SAID(R, why_probe_always_attack))
 	{
-		NPCPhrase (ONLY_DEFEND);
+		NPCPhrase(ONLY_DEFEND);
 
-		SET_GAME_STATE (SLYLANDRO_STACK6, 1);
+		SET_GAME_STATE(SLYLANDRO_STACK6, 1);
 	}
-	else if (PLAYER_SAID (R, talk_more_probe_attack))
+	else if (PLAYER_SAID(R, talk_more_probe_attack))
 	{
-		ProbeFunction (R);
+		ProbeFunction(R);
 		return;
 	}
-	else if (PLAYER_SAID (R, where_probes_from))
+	else if (PLAYER_SAID(R, where_probes_from))
 	{
-		NPCPhrase (PROBES_FROM_MELNORME);
+		NPCPhrase(PROBES_FROM_MELNORME);
 
 		LastStack = 1;
-		SET_GAME_STATE (SLYLANDRO_STACK7, 1);
+		SET_GAME_STATE(SLYLANDRO_STACK7, 1);
 	}
-	else if (PLAYER_SAID (R, why_sell))
+	else if (PLAYER_SAID(R, why_sell))
 	{
-		NPCPhrase (SELL_FOR_INFO);
+		NPCPhrase(SELL_FOR_INFO);
 
 		LastStack = 1;
-		SET_GAME_STATE (SLYLANDRO_STACK7, 2);
+		SET_GAME_STATE(SLYLANDRO_STACK7, 2);
 	}
-	else if (PLAYER_SAID (R, how_long_ago))
+	else if (PLAYER_SAID(R, how_long_ago))
 	{
-		NPCPhrase (FIFTY_THOUSAND_ROTATIONS);
+		NPCPhrase(FIFTY_THOUSAND_ROTATIONS);
 
-		SET_GAME_STATE (SLYLANDRO_STACK7, 3);
+		SET_GAME_STATE(SLYLANDRO_STACK7, 3);
 	}
-	else if (PLAYER_SAID (R, whats_probes_mission))
+	else if (PLAYER_SAID(R, whats_probes_mission))
 	{
-		NPCPhrase (SEEK_OUT_NEW_LIFE);
+		NPCPhrase(SEEK_OUT_NEW_LIFE);
 
 		LastStack = 2;
-		SET_GAME_STATE (SLYLANDRO_STACK8, 1);
+		SET_GAME_STATE(SLYLANDRO_STACK8, 1);
 	}
-	else if (PLAYER_SAID (R, if_only_one))
+	else if (PLAYER_SAID(R, if_only_one))
 	{
-		NPCPhrase (THEY_REPLICATE);
+		NPCPhrase(THEY_REPLICATE);
 
-		SET_GAME_STATE (SLYLANDRO_STACK8, 2);
+		SET_GAME_STATE(SLYLANDRO_STACK8, 2);
 	}
-	else if (PLAYER_SAID (R, enough_problem))
-		NPCPhrase (OK_ENOUGH_PROBLEM);
+	else if (PLAYER_SAID(R, enough_problem))
+		NPCPhrase(OK_ENOUGH_PROBLEM);
 
-	if (!GET_GAME_STATE (SLYLANDRO_KNOW_BROKEN)
-			&& GET_GAME_STATE (PROBE_EXHIBITED_BUG))
+	if (!GET_GAME_STATE(SLYLANDRO_KNOW_BROKEN)
+		&& GET_GAME_STATE(PROBE_EXHIBITED_BUG))
 	{
-		switch (GET_GAME_STATE (SLYLANDRO_STACK6))
+		switch (GET_GAME_STATE(SLYLANDRO_STACK6))
 		{
 			case 0:
 				pStr[0] = why_probe_always_attack;
@@ -626,7 +663,7 @@ ProbeInfo (RESPONSE_REF R)
 				break;
 		}
 	}
-	switch (GET_GAME_STATE (SLYLANDRO_STACK7))
+	switch (GET_GAME_STATE(SLYLANDRO_STACK7))
 	{
 		case 0:
 			pStr[1] = where_probes_from;
@@ -638,7 +675,7 @@ ProbeInfo (RESPONSE_REF R)
 			pStr[1] = how_long_ago;
 			break;
 	}
-	switch (GET_GAME_STATE (SLYLANDRO_STACK8))
+	switch (GET_GAME_STATE(SLYLANDRO_STACK8))
 	{
 		case 0:
 			pStr[2] = whats_probes_mission;
@@ -652,127 +689,127 @@ ProbeInfo (RESPONSE_REF R)
 	if (pStr[LastStack])
 	{
 		InfoLeft = true;
-		Response (pStr[LastStack], ProbeInfo);
+		Response(pStr[LastStack], ProbeInfo);
 	}
 	for (i = 0; i < 3; ++i)
 	{
 		if (i != LastStack && pStr[i])
 		{
 			InfoLeft = true;
-			Response (pStr[i], ProbeInfo);
+			Response(pStr[i], ProbeInfo);
 		}
 	}
 
-	Response (enough_probe, HomeWorld);
+	Response(enough_probe, HomeWorld);
 	if (!InfoLeft)
 	{
-		DISABLE_PHRASE (know_more_probe);
+		DISABLE_PHRASE(know_more_probe);
 	}
 }
 
 static void
-HomeWorld (RESPONSE_REF R)
+HomeWorld(RESPONSE_REF R)
 {
 	uqm::BYTE i, LastStack;
 	RESPONSE_REF pStr[3];
 
 	LastStack = 0;
 	pStr[0] = pStr[1] = pStr[2] = 0;
-	if (PLAYER_SAID (R, we_are_us))
+	if (PLAYER_SAID(R, we_are_us))
 	{
-		NPCPhrase (TERRIBLY_EXCITING);
+		NPCPhrase(TERRIBLY_EXCITING);
 
-		SET_GAME_STATE (SLYLANDRO_STACK1, 1);
-		DISABLE_PHRASE (we_are_us);
+		SET_GAME_STATE(SLYLANDRO_STACK1, 1);
+		DISABLE_PHRASE(we_are_us);
 	}
-	else if (PLAYER_SAID (R, what_other_visitors))
+	else if (PLAYER_SAID(R, what_other_visitors))
 	{
-		NPCPhrase (VISITORS);
+		NPCPhrase(VISITORS);
 
-		SET_GAME_STATE (PLAYER_KNOWS_PROBE, 1);
-		SET_GAME_STATE (SLYLANDRO_STACK1, 2);
+		SET_GAME_STATE(PLAYER_KNOWS_PROBE, 1);
+		SET_GAME_STATE(SLYLANDRO_STACK1, 2);
 	}
-	else if (PLAYER_SAID (R, any_other_visitors))
+	else if (PLAYER_SAID(R, any_other_visitors))
 	{
-		NPCPhrase (LONG_AGO);
+		NPCPhrase(LONG_AGO);
 
-		SET_GAME_STATE (SLYLANDRO_STACK1, 3);
+		SET_GAME_STATE(SLYLANDRO_STACK1, 3);
 	}
-	else if (PLAYER_SAID (R, what_about_sentient_milieu))
+	else if (PLAYER_SAID(R, what_about_sentient_milieu))
 	{
-		NPCPhrase (MET_TAALO_THEY_ARE_FROM);
+		NPCPhrase(MET_TAALO_THEY_ARE_FROM);
 
-		SET_GAME_STATE (SLYLANDRO_STACK1, 4);
+		SET_GAME_STATE(SLYLANDRO_STACK1, 4);
 	}
-	else if (PLAYER_SAID (R, who_else))
+	else if (PLAYER_SAID(R, who_else))
 	{
-		NPCPhrase (PRECURSORS);
+		NPCPhrase(PRECURSORS);
 
-		SET_GAME_STATE (SLYLANDRO_STACK1, 5);
+		SET_GAME_STATE(SLYLANDRO_STACK1, 5);
 	}
-	else if (PLAYER_SAID (R, precursors_yow))
+	else if (PLAYER_SAID(R, precursors_yow))
 	{
-		NPCPhrase (ABOUT_PRECURSORS);
+		NPCPhrase(ABOUT_PRECURSORS);
 
-		SET_GAME_STATE (SLYLANDRO_STACK1, 6);
+		SET_GAME_STATE(SLYLANDRO_STACK1, 6);
 	}
-	else if (PLAYER_SAID (R, must_know_more))
+	else if (PLAYER_SAID(R, must_know_more))
 	{
-		NPCPhrase (ALL_WE_KNOW);
+		NPCPhrase(ALL_WE_KNOW);
 
-		SET_GAME_STATE (SLYLANDRO_STACK1, 7);
+		SET_GAME_STATE(SLYLANDRO_STACK1, 7);
 	}
-	else if (PLAYER_SAID (R, who_are_you))
+	else if (PLAYER_SAID(R, who_are_you))
 	{
-		NPCPhrase (WE_ARE_SLY);
+		NPCPhrase(WE_ARE_SLY);
 
 		LastStack = 1;
-		SET_GAME_STATE (SLYLANDRO_STACK2, 1);
+		SET_GAME_STATE(SLYLANDRO_STACK2, 1);
 	}
-	else if (PLAYER_SAID (R, where_are_you))
+	else if (PLAYER_SAID(R, where_are_you))
 	{
-		NPCPhrase (DOWN_HERE);
+		NPCPhrase(DOWN_HERE);
 
 		LastStack = 2;
-		SET_GAME_STATE (SLYLANDRO_STACK3, 1);
+		SET_GAME_STATE(SLYLANDRO_STACK3, 1);
 	}
-	else if (PLAYER_SAID (R, thats_impossible_1))
+	else if (PLAYER_SAID(R, thats_impossible_1))
 	{
-		NPCPhrase (NO_ITS_NOT_1);
+		NPCPhrase(NO_ITS_NOT_1);
 
 		LastStack = 2;
-		SET_GAME_STATE (SLYLANDRO_STACK3, 2);
+		SET_GAME_STATE(SLYLANDRO_STACK3, 2);
 	}
-	else if (PLAYER_SAID (R, thats_impossible_2))
+	else if (PLAYER_SAID(R, thats_impossible_2))
 	{
-		NPCPhrase (NO_ITS_NOT_2);
+		NPCPhrase(NO_ITS_NOT_2);
 
 		LastStack = 2;
-		SET_GAME_STATE (SLYLANDRO_STACK3, 3);
+		SET_GAME_STATE(SLYLANDRO_STACK3, 3);
 	}
-	else if (PLAYER_SAID (R, like_more_about_you))
+	else if (PLAYER_SAID(R, like_more_about_you))
 	{
-		SlylandroInfo (R);
+		SlylandroInfo(R);
 		return;
 	}
-	else if (PLAYER_SAID (R, enough_about_me))
-		NPCPhrase (OK_ENOUGH_YOU);
-	else if (PLAYER_SAID (R, enough_info))
-		NPCPhrase (OK_ENOUGH_INFO);
-	else if (PLAYER_SAID (R, enough_probe))
-		NPCPhrase (OK_ENOUGH_PROBE);
-	else if (PLAYER_SAID (R, mega_self_destruct))
+	else if (PLAYER_SAID(R, enough_about_me))
+		NPCPhrase(OK_ENOUGH_YOU);
+	else if (PLAYER_SAID(R, enough_info))
+		NPCPhrase(OK_ENOUGH_INFO);
+	else if (PLAYER_SAID(R, enough_probe))
+		NPCPhrase(OK_ENOUGH_PROBE);
+	else if (PLAYER_SAID(R, mega_self_destruct))
 	{
-		NPCPhrase (WHY_YES_THERE_IS);
+		NPCPhrase(WHY_YES_THERE_IS);
 
-		SET_GAME_STATE (SLYLANDRO_KNOW_BROKEN, 1);
-		SET_GAME_STATE (DESTRUCT_CODE_ON_SHIP, 1);
-		i = GET_GAME_STATE (SLYLANDRO_MULTIPLIER) + 1;
-		SET_GAME_STATE (SLYLANDRO_MULTIPLIER, i);
-		AddEvent (RELATIVE_EVENT, 0, 0, 0, SLYLANDRO_RAMP_DOWN);
+		SET_GAME_STATE(SLYLANDRO_KNOW_BROKEN, 1);
+		SET_GAME_STATE(DESTRUCT_CODE_ON_SHIP, 1);
+		i = GET_GAME_STATE(SLYLANDRO_MULTIPLIER) + 1;
+		SET_GAME_STATE(SLYLANDRO_MULTIPLIER, i);
+		AddEvent(RELATIVE_EVENT, 0, 0, 0, SLYLANDRO_RAMP_DOWN);
 	}
 
-	switch (GET_GAME_STATE (SLYLANDRO_STACK1))
+	switch (GET_GAME_STATE(SLYLANDRO_STACK1))
 	{
 		case 0:
 			pStr[0] = we_are_us;
@@ -796,17 +833,17 @@ HomeWorld (RESPONSE_REF R)
 			pStr[0] = must_know_more;
 			break;
 	}
-	switch (GET_GAME_STATE (SLYLANDRO_STACK2))
+	switch (GET_GAME_STATE(SLYLANDRO_STACK2))
 	{
 		case 0:
 			pStr[1] = who_are_you;
 			break;
 		case 1:
-			if (PHRASE_ENABLED (like_more_about_you))
+			if (PHRASE_ENABLED(like_more_about_you))
 				pStr[1] = like_more_about_you;
 			break;
 	}
-	switch (GET_GAME_STATE (SLYLANDRO_STACK3))
+	switch (GET_GAME_STATE(SLYLANDRO_STACK3))
 	{
 		case 0:
 			pStr[2] = where_are_you;
@@ -820,118 +857,118 @@ HomeWorld (RESPONSE_REF R)
 	}
 
 	if (pStr[LastStack])
-		Response (pStr[LastStack], HomeWorld);
+		Response(pStr[LastStack], HomeWorld);
 	for (i = 0; i < 3; ++i)
 	{
 		if (i != LastStack && pStr[i])
-			Response (pStr[i], HomeWorld);
+			Response(pStr[i], HomeWorld);
 	}
-	if (GET_GAME_STATE (SLYLANDRO_STACK1))
+	if (GET_GAME_STATE(SLYLANDRO_STACK1))
 	{
-		switch (GET_GAME_STATE (SLYLANDRO_STACK4))
+		switch (GET_GAME_STATE(SLYLANDRO_STACK4))
 		{
 			case 0:
-				Response (happy_to_tell_more, HumanInfo);
+				Response(happy_to_tell_more, HumanInfo);
 				break;
 			case 1:
-				Response (would_you_like_to_know_more, HumanInfo);
+				Response(would_you_like_to_know_more, HumanInfo);
 				break;
 		}
 	}
-	if (GET_GAME_STATE (PLAYER_KNOWS_PROBE)
-			&& !GET_GAME_STATE (SLYLANDRO_KNOW_BROKEN))
+	if (GET_GAME_STATE(PLAYER_KNOWS_PROBE)
+		&& !GET_GAME_STATE(SLYLANDRO_KNOW_BROKEN))
 	{
-		switch (GET_GAME_STATE (SLYLANDRO_STACK5))
+		switch (GET_GAME_STATE(SLYLANDRO_STACK5))
 		{
 			case 0:
-				Response (what_are_probes, ProbeInfo);
+				Response(what_are_probes, ProbeInfo);
 				break;
 			case 1:
-				if (PHRASE_ENABLED (know_more_probe))
-					Response (know_more_probe, ProbeInfo);
+				if (PHRASE_ENABLED(know_more_probe))
+					Response(know_more_probe, ProbeInfo);
 				break;
 		}
 	}
-	Response (bye, ExitConversation);
+	Response(bye, ExitConversation);
 }
 
 static void
-Intro (void)
+Intro(void)
 {
 	uqm::BYTE NumVisits;
 
 
 	if (IS_HD)
-		EngageFilters (&slyhome_filters);
+		EngageFilters(&slyhome_filters);
 
 	CommData.AlienAmbientArray[0].AnimFlags &= ~ANIM_DISABLED;
 
-	if (GET_GAME_STATE (SLYLANDRO_KNOW_BROKEN)
-			&& (NumVisits = GET_GAME_STATE (RECALL_VISITS)) == 0)
+	if (GET_GAME_STATE(SLYLANDRO_KNOW_BROKEN)
+		&& (NumVisits = GET_GAME_STATE(RECALL_VISITS)) == 0)
 	{
-		NPCPhrase (RECALL_PROGRAM_1);
+		NPCPhrase(RECALL_PROGRAM_1);
 		++NumVisits;
-		SET_GAME_STATE (RECALL_VISITS, NumVisits);
+		SET_GAME_STATE(RECALL_VISITS, NumVisits);
 	}
 	else
 	{
-		NumVisits = GET_GAME_STATE (SLYLANDRO_HOME_VISITS);
+		NumVisits = GET_GAME_STATE(SLYLANDRO_HOME_VISITS);
 		switch (NumVisits++)
 		{
 			case 0:
-				NPCPhrase (HELLO_1);
+				NPCPhrase(HELLO_1);
 				break;
 			case 1:
-				NPCPhrase (HELLO_2);
+				NPCPhrase(HELLO_2);
 				break;
 			case 2:
-				NPCPhrase (HELLO_3);
+				NPCPhrase(HELLO_3);
 				break;
 			case 3:
-				NPCPhrase (HELLO_4);
+				NPCPhrase(HELLO_4);
 				--NumVisits;
 				break;
 		}
-		SET_GAME_STATE (SLYLANDRO_HOME_VISITS, NumVisits);
+		SET_GAME_STATE(SLYLANDRO_HOME_VISITS, NumVisits);
 
-		SetHomeworldKnown (SLYLANDRO_HOME);
+		SetHomeworldKnown(SLYLANDRO_HOME);
 	}
 
-	HomeWorld ((RESPONSE_REF)0);
+	HomeWorld((RESPONSE_REF)0);
 }
 
 static uqm::COUNT
-uninit_slylandro (void)
+uninit_slylandro(void)
 {
-	luaUqm_comm_uninit ();
+	luaUqm_comm_uninit();
 	return (0);
 }
 
 static void
-post_slylandro_enc (void)
+post_slylandro_enc(void)
 {
 	// nothing defined so far
 }
 
 LOCDATA*
-init_slylandro_comm (void)
+init_slylandro_comm(void)
 {
-	LOCDATA *retval;
+	LOCDATA* retval;
 
 	slylandro_desc.init_encounter_func = Intro;
 	slylandro_desc.post_encounter_func = post_slylandro_enc;
 	slylandro_desc.uninit_encounter_func = uninit_slylandro;
 
-	luaUqm_comm_init (NULL, NULL_RESOURCE);
-			// Initialise Lua for string interpolation. This will be
-			// generalised in the future.
+	luaUqm_comm_init(NULL, NULL_RESOURCE);
+	// Initialise Lua for string interpolation. This will be
+	// generalised in the future.
 
 	slylandro_desc.AlienTextBaseline.x =
-			TEXT_X_OFFS + (SIS_TEXT_WIDTH >> 1);
+		TEXT_X_OFFS + (SIS_TEXT_WIDTH >> 1);
 	slylandro_desc.AlienTextBaseline.y = 0;
 	slylandro_desc.AlienTextWidth = SIS_TEXT_WIDTH;
 
-	setSegue (Segue_peace);
+	setSegue(Segue_peace);
 	retval = &slylandro_desc;
 
 	return (retval);

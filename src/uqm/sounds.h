@@ -55,40 +55,38 @@ extern SOUND GameSounds;
 
 /* Constants for DoInput */
 typedef uqm::UWORD MENU_SOUND_FLAGS;
-#define MENU_SOUND_UP       ((MENU_SOUND_FLAGS)(1 << 0))
-#define MENU_SOUND_DOWN     ((MENU_SOUND_FLAGS)(1 << 1))
-#define MENU_SOUND_LEFT     ((MENU_SOUND_FLAGS)(1 << 2))
-#define MENU_SOUND_RIGHT    ((MENU_SOUND_FLAGS)(1 << 3))
-#define MENU_SOUND_SELECT   ((MENU_SOUND_FLAGS)(1 << 4))
-#define MENU_SOUND_CANCEL   ((MENU_SOUND_FLAGS)(1 << 5))
-#define MENU_SOUND_SPECIAL  ((MENU_SOUND_FLAGS)(1 << 6))
-#define MENU_SOUND_PAGEUP   ((MENU_SOUND_FLAGS)(1 << 7))
+#define MENU_SOUND_UP ((MENU_SOUND_FLAGS)(1 << 0))
+#define MENU_SOUND_DOWN ((MENU_SOUND_FLAGS)(1 << 1))
+#define MENU_SOUND_LEFT ((MENU_SOUND_FLAGS)(1 << 2))
+#define MENU_SOUND_RIGHT ((MENU_SOUND_FLAGS)(1 << 3))
+#define MENU_SOUND_SELECT ((MENU_SOUND_FLAGS)(1 << 4))
+#define MENU_SOUND_CANCEL ((MENU_SOUND_FLAGS)(1 << 5))
+#define MENU_SOUND_SPECIAL ((MENU_SOUND_FLAGS)(1 << 6))
+#define MENU_SOUND_PAGEUP ((MENU_SOUND_FLAGS)(1 << 7))
 #define MENU_SOUND_PAGEDOWN ((MENU_SOUND_FLAGS)(1 << 8))
-#define MENU_SOUND_DELETE   ((MENU_SOUND_FLAGS)(1 << 9))
-#define MENU_SOUND_ARROWS   (MENU_SOUND_UP | MENU_SOUND_DOWN | MENU_SOUND_LEFT | MENU_SOUND_RIGHT)
-#define MENU_SOUND_PAGE     (MENU_SOUND_PAGEUP | MENU_SOUND_PAGEDOWN)
-#define MENU_SOUND_ACTION   (MENU_SOUND_SELECT | MENU_SOUND_CANCEL)
-#define MENU_SOUND_NONE     ((MENU_SOUND_FLAGS)0)
+#define MENU_SOUND_DELETE ((MENU_SOUND_FLAGS)(1 << 9))
+#define MENU_SOUND_ARROWS (MENU_SOUND_UP | MENU_SOUND_DOWN | MENU_SOUND_LEFT | MENU_SOUND_RIGHT)
+#define MENU_SOUND_PAGE (MENU_SOUND_PAGEUP | MENU_SOUND_PAGEDOWN)
+#define MENU_SOUND_ACTION (MENU_SOUND_SELECT | MENU_SOUND_CANCEL)
+#define MENU_SOUND_NONE ((MENU_SOUND_FLAGS)0)
 
-extern void SetMenuSounds (MENU_SOUND_FLAGS sound_0,
-		MENU_SOUND_FLAGS sound_1);
-extern void GetMenuSounds (MENU_SOUND_FLAGS *sound_0,
-		MENU_SOUND_FLAGS *sound_1);
+extern void SetMenuSounds(MENU_SOUND_FLAGS sound_0,
+						  MENU_SOUND_FLAGS sound_1);
+extern void GetMenuSounds(MENU_SOUND_FLAGS* sound_0,
+						  MENU_SOUND_FLAGS* sound_1);
 
-extern void PlaySound (SOUND S, SoundPosition Pos,
-		ELEMENT *PositionalObject, uqm::BYTE Priority);
-extern void PlayMenuSound (MENU_SOUND_EFFECT S);
-extern void ProcessSound (SOUND Sound, ELEMENT *PositionalObject);
-extern SoundPosition CalcSoundPosition (ELEMENT *ElementPtr);
-extern SoundPosition NotPositional (void);
-extern void UpdateSoundPositions (void);
-extern void FlushSounds (void);
-extern void RemoveSoundsForObject (ELEMENT *PosObj);
+extern void PlaySound(SOUND S, SoundPosition Pos,
+					  ELEMENT* PositionalObject, uqm::BYTE Priority);
+extern void PlayMenuSound(MENU_SOUND_EFFECT S);
+extern void ProcessSound(SOUND Sound, ELEMENT* PositionalObject);
+extern SoundPosition CalcSoundPosition(ELEMENT* ElementPtr);
+extern SoundPosition NotPositional(void);
+extern void UpdateSoundPositions(void);
+extern void FlushSounds(void);
+extern void RemoveSoundsForObject(ELEMENT* PosObj);
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
 #endif /* UQM_SOUNDS_H_ */
-
-

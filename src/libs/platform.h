@@ -22,15 +22,15 @@ extern "C" {
 #endif
 
 #if defined(USE_PLATFORM_ACCEL)
-#	if defined(__GNUC__) && (defined(i386) || defined(__x86_64__))
-#		define MMX_ASM
-#		define GCC_ASM
-#	elif (_MSC_VER >= 1100) && defined(_M_IX86)
+#if defined(__GNUC__) && (defined(i386) || defined(__x86_64__))
+#define MMX_ASM
+#define GCC_ASM
+#elif (_MSC_VER >= 1100) && defined(_M_IX86)
 //	All 32bit AMD chips are IX86 equivalents
 //	We do not enable MSVC/MMX_ASM for _M_AMD64 as of now
-#		define MMX_ASM
-#		define MSVC_ASM
-#	endif
+#define MMX_ASM
+#define MSVC_ASM
+#endif
 //	other realistic possibilities for MSVC compiler are
 //		_M_AMD64 (AMD x86-64), _M_IA64 (Intel Arch 64)
 #endif

@@ -44,9 +44,9 @@ extern FRAME CustBevelFrame;
 extern FRAME DefBevelFrame;
 
 extern CONTEXT OffScreenContext;
-		// OffScreenContext can often refer to a deleted ForeGroundFrame
-		// Always call SetContextFGFrame() before drawing anything to it
-		// Neither is the state of its ClipRect guaranteed.
+// OffScreenContext can often refer to a deleted ForeGroundFrame
+// Always call SetContextFGFrame() before drawing anything to it
+// Neither is the state of its ClipRect guaranteed.
 extern CONTEXT ScreenContext;
 extern CONTEXT SpaceContext;
 extern CONTEXT StatusContext;
@@ -67,7 +67,7 @@ extern FONT PlayMenuFont;
 extern CondVar RenderingCond;
 
 extern QUEUE race_q[];
-		/* Array of lists of ships involved in a battle, one queue per side;
+/* Array of lists of ships involved in a battle, one queue per side;
 		 * queue element is STARSHIP */
 
 
@@ -88,30 +88,28 @@ extern ACTIVITY LastActivity;
 extern uqm::BYTE PlayerControl[];
 
 extern bool usingSpeech;
-		// Actual speech presence indicator which decouples reality from
-		// the user option, thus the user option remains as pure intent
+// Actual speech presence indicator which decouples reality from
+// the user option, thus the user option remains as pure intent
 
-bool InitContexts (void);
-void UninitPlayerInput (void);
-bool InitGameKernel (void);
-void UninitGameKernel (void);
+bool InitContexts(void);
+void UninitPlayerInput(void);
+bool InitGameKernel(void);
+void UninitGameKernel(void);
 
-extern bool LoadKernel (int argc, char *argv[]);
-extern void FreeKernel (void);
+extern bool LoadKernel(int argc, char* argv[]);
+extern void FreeKernel(void);
 
-int initIO (void);
-void uninitIO (void);
+int initIO(void);
+void uninitIO(void);
 
-bool SetPlayerInput (uqm::COUNT playerI);
-bool SetPlayerInputAll (void);
-void ClearPlayerInput (uqm::COUNT playerI);
-void ClearPlayerInputAll (void);
+bool SetPlayerInput(uqm::COUNT playerI);
+bool SetPlayerInputAll(void);
+void ClearPlayerInput(uqm::COUNT playerI);
+void ClearPlayerInputAll(void);
 
 
 #if 0 //defined(__cplusplus)
 }
 #endif
 
-#endif  /* UQM_SETUP_H_ */
-
-
+#endif /* UQM_SETUP_H_ */

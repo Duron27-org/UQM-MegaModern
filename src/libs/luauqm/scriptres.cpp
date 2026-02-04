@@ -19,42 +19,38 @@
 #include <string.h>
 
 
-bool
-ReleaseScriptResData (void *data)
+bool ReleaseScriptResData(void* data)
 {
-	HFree (data);
+	HFree(data);
 	return true;
 }
 
 static void
-GetScriptResData (const char *pathName, RESOURCE_DATA *resdata)
+GetScriptResData(const char* pathName, RESOURCE_DATA* resdata)
 {
 	// We don't actually load the data here. We determine the file name, and
 	// load the data when we need it, directly onto the Lua stack.
-	size_t pathNameLen = strlen (pathName);
-	resdata->ptr = HMalloc (pathNameLen + 1);
+	size_t pathNameLen = strlen(pathName);
+	resdata->ptr = HMalloc(pathNameLen + 1);
 	if (resdata->ptr == NULL)
 		return;
 
-	memcpy (resdata->ptr, pathName, pathNameLen + 1);
+	memcpy(resdata->ptr, pathName, pathNameLen + 1);
 }
 
-bool
-InstallScriptResType (void)
+bool InstallScriptResType(void)
 {
-	InstallResTypeVectors ("SCRIPT", GetScriptResData, ReleaseScriptResData,
-			NULL);
+	InstallResTypeVectors("SCRIPT", GetScriptResData, ReleaseScriptResData,
+						  NULL);
 	return true;
 }
 
 // Actually just returns the file name of the script.
-char *
-LoadScriptInstance (RESOURCE res)
+char* LoadScriptInstance(RESOURCE res)
 {
-	void *data = res_GetResource (res);
+	void* data = res_GetResource(res);
 	if (data)
-		res_DetachResource (res);
+		res_DetachResource(res);
 
-	return (char *) data;
+	return (char*)data;
 }
-
