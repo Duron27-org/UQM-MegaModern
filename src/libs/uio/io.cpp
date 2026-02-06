@@ -1442,10 +1442,7 @@ uio_getDirList(uio_DirHandle* dirHandle, const char* path, const char* pattern,
 	int numPDirHandles;
 	uio_PDirHandle** pDirHandles;
 	uio_DirList* result;
-
-	if (uio_getPathPhysicalDirs(dirHandle, path, strlen(path),
-								&pDirHandles, &numPDirHandles, NULL)
-		== -1)
+	if (uio_getPathPhysicalDirs(dirHandle, path, strlen(path), &pDirHandles, &numPDirHandles, NULL)	== -1)
 	{
 		// errno is set
 		return NULL;
@@ -1994,7 +1991,7 @@ void uio_Handle_delete(uio_Handle* handle)
 static inline uio_Handle*
 uio_Handle_alloc(void)
 {
-	uio_Handle* result = (uio_Handle*)uio_malloc(sizeof(uio_Handle));
+	uio_Handle* result = new uio_Handle {};
 #ifdef uio_MEM_DEBUG
 	uio_MemDebug_debugAlloc(uio_Handle, (void*)result);
 #endif
@@ -2007,7 +2004,7 @@ uio_Handle_free(uio_Handle* handle)
 #ifdef uio_MEM_DEBUG
 	uio_MemDebug_debugFree(uio_Handle, (void*)handle);
 #endif
-	uio_free(handle);
+	delete handle;
 }
 
 // ref count set to 1

@@ -745,11 +745,12 @@ int uio_getPathPhysicalDirs(uio_DirHandle* dirHandle, const char* path,
 	pDirI = 0;
 	for (item = tree->pLocs; item != NULL; item = item->next)
 	{
-		uio_PDirHandle* pDirHandle;
+		uio_PDirHandle* pDirHandle {};
 
 		pRootPath = uio_mountTreeItemRestPath(item, tree->lastComp, fullPath);
-		switch (uio_walkPhysicalPath(item->mountInfo->pDirHandle, pRootPath,
-									 strlen(pRootPath), &pDirHandle, &rest))
+		const auto pathRes = uio_walkPhysicalPath(item->mountInfo->pDirHandle, pRootPath,
+												  strlen(pRootPath), &pDirHandle, &rest);
+		switch (pathRes)
 		{
 			case 0:
 				// complete path was matched

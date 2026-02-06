@@ -784,13 +784,13 @@ void stdio_EntriesIterator_delete(stdio_EntriesIterator* iterator)
 static inline stdio_EntriesIterator*
 stdio_EntriesIterator_alloc(void)
 {
-	return (stdio_EntriesIterator*)uio_malloc(sizeof(stdio_EntriesIterator));
+	return new stdio_EntriesIterator {};
 }
 
 static inline void
 stdio_EntriesIterator_free(stdio_EntriesIterator* iterator)
 {
-	uio_free(iterator);
+	delete iterator;
 }
 
 static inline uio_GPFile*
@@ -917,9 +917,8 @@ stdio_GPDirData_delete(void* arg)
 static inline stdio_GPDirData*
 stdio_GPDirData_alloc(void)
 {
-	stdio_GPDirData* result;
+	stdio_GPDirData* result {new stdio_GPDirData()};
 
-	result = (stdio_GPDirData*)uio_malloc(sizeof(stdio_GPDirData));
 #ifdef uio_MEM_DEBUG
 	uio_MemDebug_debugAlloc(stdio_GPDirData, (void*)result);
 #endif
@@ -932,10 +931,6 @@ stdio_GPDirData_free(stdio_GPDirData* gPDirData)
 #ifdef uio_MEM_DEBUG
 	uio_MemDebug_debugFree(stdio_GPDirData, (void*)gPDirData);
 #endif
-	uio_free(gPDirData->name);
-	if (gPDirData->cachedPath != NULL)
-	{
-		uio_free(gPDirData->cachedPath);
-	}
-	uio_free(gPDirData);
+	
+	delete gPDirData;
 }

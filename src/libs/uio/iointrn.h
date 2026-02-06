@@ -43,10 +43,10 @@ typedef void* uio_PFileHandleExtra;
 
 struct uio_Handle
 {
-	int ref;
-	struct uio_PRoot* root;
-	uio_NativeHandle native;
-	int openFlags;
+	int ref {};
+	struct uio_PRoot* root {};
+	uio_NativeHandle native {};
+	int openFlags {};
 	// need to know whether the handle is a RO or RW handle.
 };
 

@@ -34,11 +34,11 @@ static int uio_copyError(uio_Handle* srcHandle, uio_Handle* dstHandle,
 
 struct uio_StdioAccessHandle
 {
-	uio_DirHandle* tempRoot;
-	char* tempDirName;
-	uio_DirHandle* tempDir;
-	char* fileName;
-	char* stdioPath;
+	uio_DirHandle* tempRoot {};
+	char* tempDirName {};
+	uio_DirHandle* tempDir {};
+	char* fileName {};
+	char* stdioPath {};
 };
 
 static inline uio_StdioAccessHandle* uio_StdioAccessHandle_new(
@@ -424,13 +424,13 @@ uio_StdioAccessHandle_delete(uio_StdioAccessHandle* handle)
 static inline uio_StdioAccessHandle*
 uio_StdioAccessHandle_alloc(void)
 {
-	return (uio_StdioAccessHandle*)uio_malloc(sizeof(uio_StdioAccessHandle));
+	return new uio_StdioAccessHandle {};
 }
 
 static inline void
 uio_StdioAccessHandle_free(uio_StdioAccessHandle* handle)
 {
-	uio_free(handle);
+	delete handle;
 }
 
 #ifdef _MSC_VER
