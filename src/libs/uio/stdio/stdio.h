@@ -28,17 +28,17 @@ typedef void* uio_GPFileExtra;
 #include <io.h>
 struct stdio_EntriesIterator
 {
-	long dirHandle;
-	struct _finddata_t findData;
-	int status;
+	intptr_t dirHandle {};
+	struct _finddata_t findData {};
+	int status {};
 };
 #else
 struct stdio_EntriesIterator
 {
-	DIR* dirHandle;
-	struct dirent* entry;
-	struct dirent* direntBuffer;
-	int status;
+	DIR* dirHandle {};
+	struct dirent* entry {};
+	struct dirent* direntBuffer {};
+	int status {};
 };
 #endif
 
@@ -68,9 +68,16 @@ struct stdio_GPDirData
 	// This is not needed for all filesystems; therefor this info is not
 	// in uio_GPDir itself.
 	// The reasons for including upDir here are similar.
-	char* name;
-	char* cachedPath;
-	uio_GPDir* upDir;
+	char* name {};
+	char* cachedPath {};
+	uio_GPDir* upDir {};
+
+	stdio_GPDirData() = default;
+	~stdio_GPDirData()
+	{
+		delete[] name;
+		delete[] cachedPath;
+	}
 };
 
 struct stdio_Handle
