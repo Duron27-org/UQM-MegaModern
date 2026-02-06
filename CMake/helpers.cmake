@@ -350,3 +350,50 @@ function(copy_runtime_dll target dll_target)
             $<TARGET_FILE_DIR:${target}>
     )
 endfunction()
+
+function(explicitly_link_clang_asan_on_windows target)
+	execute_process(
+        COMMAND "${CMAKE_CXX_COMPILER}" -print-resource-dir
+        OUTPUT_VARIABLE _clang_resource_dir
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+
+    # Normalize path (VERY important on Windows)
+    file(REAL_PATH "${_clang_resource_dir}" _clang_resource_dir)
+
+    set(_asan_lib_dir "${_clang_resource_dir}/lib/windows")
+	message (STATUS "asan lb dir=${_asan_lib_dir}")
+
+    if(NOT EXISTS "${_asan_lib_dir}")
+        message(FATAL_ERROR "ASan runtime not found at: ${_asan_lib_dir}")
+    endif()
+
+ 	set(_asan_lib "${_asan_lib_dir}/clang_rt.asan_dynamic-x86_64.lib")
+	set(_asan_thunk "${_asan_lib_dir}/clang_rt.asan_static_runtime_thunk-x86_64.lib")
+    set(_asan_dll "${_asan_lib_dir}/clang_rt.asan_dynamic-x86_64.dll")
+
+    #target_link_directories(${target} PRIVATE "${_asan_lib_dir}")
+
+	if(NOT EXISTS "${_asan_lib}") 
+        message(FATAL_ERROR "ASan import library not found: ${_asan_lib}")
+    endif()
+	if(NOT EXISTS "${_asan_thunk}") 
+        message(FATAL_ERROR "ASan thunk import library not found: ${_asan_thunk}")
+    endif()
+	if(NOT EXISTS "${_asan_dll}")
+        message(FATAL_ERROR "ASan runtime dll not found at: ${_asan_dll}")
+    endif()
+
+    target_link_libraries(${target} 
+		PRIVATE
+			${_asan_lib}
+			${_asan_thunk}
+    )
+
+
+    add_custom_command(TARGET ${target} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${_asan_dll}"
+            "$<TARGET_FILE_DIR:${target}>"
+    )
+endfunction()

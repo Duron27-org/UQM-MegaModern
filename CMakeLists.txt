@@ -13,8 +13,8 @@ if (WIN32)
         message(STATUS "Using clang-cl")
         set(CMAKE_C_COMPILER   ${CLANG_CL} CACHE STRING "" FORCE)
         set(CMAKE_CXX_COMPILER ${CLANG_CL} CACHE STRING "" FORCE)
-        set(CMAKE_C_CLANG_TIDY clang-tidy)
-        set(CMAKE_CXX_CLANG_TIDY clang-tidy)
+        #set(CMAKE_C_CLANG_TIDY clang-tidy)
+        #set(CMAKE_CXX_CLANG_TIDY clang-tidy)
     endif()
     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
 endif()
@@ -1712,6 +1712,51 @@ target_compile_definitions(${APP_TARGET} PRIVATE
     "__PRFCHWINTRIN_H" 
 )
 
+option(ENABLE_ASAN "Enable AddressSanitizer" OFF)
+#add_compile_options(/fsanitize=address /Zi /BLAH)
+if (ENABLE_ASAN)
+    # ASan is only sane in Debug builds
+    if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+        message(FATAL_ERROR "ENABLE_ASAN requires a Debug build")
+    endif()
+
+    # clang-cl (Ninja or VS toolset)
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        message(STATUS "Enabling ASAN for Clang")
+        if (WIN32)
+            target_compile_options(${APP_TARGET} PRIVATE
+                -fsanitize=address
+                -fsanitize-address-use-after-scope
+                -Xclang -fno-optimize-sibling-calls
+                /Oy-
+                -O1
+            )
+            #lld-link does not understand -sanitize=address So we must manually link the library
+            # Find local Asan runtime
+            explicitly_link_clang_asan_on_windows(${APP_TARGET})
+            
+        else()
+            target_compile_options(${APP_TARGET} PRIVATE
+                -fsanitize=address
+                -fsanitize-address-use-after-scope
+                -fno-optimize-sibling-calls
+                -fno-omit-frame-pointer
+                -O1
+            )
+        target_link_options(${APP_TARGET} PRIVATE
+            -fsanitize=address
+            )
+        endif()
+    # MSVC (Visual Studio cl.exe)
+    elseif (MSVC)
+        message(STATUS "Enabling ASAN for MSVC")
+        target_compile_options(${APP_TARGET} PRIVATE /fsanitize=address /Zi)
+        target_link_options(${APP_TARGET} PRIVATE /fsanitize=address)
+    else()
+        message(FATAL_ERROR "AddressSanitizer not supported with this compiler on Windows")
+    endif()
+endif()
+
 ################################################################################
 # Compile and link options
 ################################################################################
@@ -1783,6 +1828,7 @@ target_compile_definitions(${APP_TARGET} PRIVATE
 # Dependencies
 ################################################################################
 target_link_libraries(${APP_TARGET}
+    PRIVATE
         SDL2::SDL2main 
         PNG::PNG 
         ZLIB::ZLIB 
@@ -1801,7 +1847,7 @@ add_custom_command(TARGET ${APP_TARGET} POST_BUILD
     COMMAND_EXPAND_LISTS
 )
 #include(CMakePrintHelpers)
-#cmake_print_properties(TARGETS OpenAL::OpenAL PROPERTIES LOCATION INCLUDE_DIRECTORIES INTERFACE_INCLUDE_DIRECTORIES BINARY_DIR LOCATION LINK_LIBRARIES)
+#cmake_print_properties(TARGETS SDL2::SDL2main PROPERTIES LOCATION INCLUDE_DIRECTORIES INTERFACE_INCLUDE_DIRECTORIES BINARY_DIR LOCATION LINK_LIBRARIES)
 # cmake_print_properties(TARGETS OpenAL::OpenAL PROPERTIES
 #         ALIASED_TARGET
 #         ARCHIVE_OUTPUT_DIRECTORY
