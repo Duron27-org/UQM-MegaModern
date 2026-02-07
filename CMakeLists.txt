@@ -1,8 +1,12 @@
+#TODO: CLEAN THIS UP! IT'S A MESS!
+
 cmake_minimum_required(VERSION 3.16.0 FATAL_ERROR)
 project(UrQuanMastersMegaModern CXX)
 
 include(CMake/helpers.cmake)
 #set(CMAKE_SYSTEM_VERSION 10.0 CACHE STRING "" FORCE)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 if (WIN32)
     if (NOT CMAKE_GENERATOR MATCHES "Visual Studio")
@@ -19,7 +23,14 @@ if (WIN32)
     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
 endif()
 
-
+option(ENABLE_LINTER "Enable Linter" OFF)
+if (ENABLE_LINTER)
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        message(STATUS  "Enabling clang-tidy")
+        set(CMAKE_C_CLANG_TIDY clang-tidy)
+        set(CMAKE_CXX_CLANG_TIDY clang-tidy)
+    endif()
+endif()
 
 # set (CMAKE_CXX_STANDARD 17)
 # set (CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -1715,13 +1726,11 @@ target_compile_definitions(${APP_TARGET} PRIVATE
 option(ENABLE_ASAN "Enable AddressSanitizer" OFF)
 #add_compile_options(/fsanitize=address /Zi /BLAH)
 if (ENABLE_ASAN)
-    # ASan is only sane in Debug builds
-    if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-        message(FATAL_ERROR "ENABLE_ASAN requires a Debug build")
-    endif()
-
-    # clang-cl (Ninja or VS toolset)
     if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        if (NOT "$<CONFIG>" STREQUAL "Release")
+            message (FATAL_ERROR "ASAN requires a release build in clang (RelWithDbgInfo does not count!)")
+        endif()
+
         message(STATUS "Enabling ASAN for Clang")
         if (WIN32)
             target_compile_options(${APP_TARGET} PRIVATE
@@ -1743,8 +1752,8 @@ if (ENABLE_ASAN)
                 -fno-omit-frame-pointer
                 -O1
             )
-        target_link_options(${APP_TARGET} PRIVATE
-            -fsanitize=address
+            target_link_options(${APP_TARGET} PRIVATE
+                -fsanitize=address
             )
         endif()
     # MSVC (Visual Studio cl.exe)
@@ -1756,6 +1765,10 @@ if (ENABLE_ASAN)
         message(FATAL_ERROR "AddressSanitizer not supported with this compiler on Windows")
     endif()
 endif()
+
+
+
+
 
 ################################################################################
 # Compile and link options
@@ -1846,8 +1859,8 @@ add_custom_command(TARGET ${APP_TARGET} POST_BUILD
         $<TARGET_FILE_DIR:${APP_TARGET}>
     COMMAND_EXPAND_LISTS
 )
-#include(CMakePrintHelpers)
-#cmake_print_properties(TARGETS SDL2::SDL2main PROPERTIES LOCATION INCLUDE_DIRECTORIES INTERFACE_INCLUDE_DIRECTORIES BINARY_DIR LOCATION LINK_LIBRARIES)
+include(CMakePrintHelpers)
+cmake_print_properties(TARGETS SDL2::SDL2main PROPERTIES LOCATION INCLUDE_DIRECTORIES INTERFACE_INCLUDE_DIRECTORIES BINARY_DIR LOCATION LINK_LIBRARIES)
 # cmake_print_properties(TARGETS OpenAL::OpenAL PROPERTIES
 #         ALIASED_TARGET
 #         ARCHIVE_OUTPUT_DIRECTORY
@@ -1956,6 +1969,6 @@ add_custom_command(TARGET ${APP_TARGET} POST_BUILD
 ########################
     set_target_properties(${APP_TARGET} PROPERTIES 
         VS_DEBUGGER_COMMAND_ARGUMENTS 
-        "--n ../content"
+        "-n ${CMAKE_CURRENT_LIST_DIR}/content"
     )
 

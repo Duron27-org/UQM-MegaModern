@@ -7,6 +7,7 @@ class UrQuanMastersConan(ConanFile):
 
     options = {
         'enable_asan': [True, False],
+        'enable_linter': [True, False],
     }
 
     def configure(self):
@@ -29,6 +30,7 @@ class UrQuanMastersConan(ConanFile):
 
     default_options = {
         'enable_asan': False,
+        'enable_linter': False,
         'openal-soft/*:shared': True,
     }
 
@@ -38,4 +40,5 @@ class UrQuanMastersConan(ConanFile):
     def generate(self):
         tc = CMakeToolchain(self)
         tc.variables['ENABLE_ASAN'] = bool(self.options.enable_asan)
+        tc.variables['ENABLE_LINTER'] = bool(self.options.enable_linter)
         tc.generate()
