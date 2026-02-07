@@ -1580,6 +1580,11 @@ find_package(Ogg REQUIRED)
 find_package(Vorbis REQUIRED)
 find_package(OpenAL REQUIRED)
 
+find_package(GTest QUIET)
+if (GTest_FOUND)
+    add_subdirectory(test)
+endif()
+
 # set (UQM_PACKAGE_TARGETS 
 #     SDL2::SDL2
 #     SDL2::SDL2main

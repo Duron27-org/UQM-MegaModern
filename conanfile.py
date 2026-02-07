@@ -22,6 +22,7 @@ class UrQuanMastersConan(ConanFile):
         'ogg/1.3.5',
         'vorbis/1.3.7',
         'openal-soft/1.23.1',
+        'gtest/1.17.0',
     )
 
     generators = (
