@@ -4,7 +4,7 @@
 // #include "foo/foo.h"
 
 // Basic test fixture (empty for now)
-class FooTest : public ::testing::Test
+class LibsCallbackTest : public ::testing::Test
 {
 protected:
     void SetUp() override
@@ -19,7 +19,7 @@ protected:
 };
 
 // Stub test case
-TEST_F(FooTest, BasicBehavior)
+TEST_F(LibsCallbackTest, Stub)
 {
     // Arrange
     // TODO: initialize objects / state

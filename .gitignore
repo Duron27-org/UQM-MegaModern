@@ -36,7 +36,8 @@ bld/
 CMakeUserPresets.json
 
 # Conan
-bld 
+bld
+build
 cbld
 conanbuild
 vsbuild

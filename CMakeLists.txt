@@ -47,7 +47,9 @@ source_group("Doc" FILES ${Doc_files})
 set(uqm_project_files_master ${Doc_files})
 
 include("doc/doc.cmake")
+list(APPEND uqm_project_files_master ${uqm_doc_master_files})
 include("src/src.cmake")
+list(APPEND uqm_project_files_master ${uqm_src_master_files})
 
 set(ALL_FILES
     ${Doc_files}

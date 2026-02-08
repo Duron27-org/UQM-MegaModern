@@ -5,9 +5,13 @@ cmake_minimum_required(VERSION 3.21)
 
 # ---- Test sources ----------------------------------------------------------
 
+set(uqm_test_sources_all "main.cpp")
+
+include("tests/tests.cmake")
+list(APPEND uqm_test_sources_all ${tst_tests_master_files})
+
 set(UQM_TEST_SOURCES
-    main.cpp
-    tests/test_foo.cpp
+    ${uqm_test_sources_all}
 )
 
 # ---- Test executable -------------------------------------------------------
