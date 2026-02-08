@@ -20,7 +20,7 @@
 #include "ndesc.h"
 
 #include "netmanager.h"
-#include "libs/callback.h"
+#include "libs/callback/callback.h"
 
 #include <assert.h>
 #include <errno.h>

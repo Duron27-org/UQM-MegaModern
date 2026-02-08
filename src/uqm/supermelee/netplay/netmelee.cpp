@@ -20,7 +20,7 @@
 #include "port.h"
 #include "netmelee.h"
 #include "libs/async.h"
-#include "libs/callback.h"
+#include "libs/callback/callback.h"
 #include "libs/log.h"
 #include "libs/net.h"
 #include "netinput.h"

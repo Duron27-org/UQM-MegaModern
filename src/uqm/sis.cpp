@@ -34,7 +34,7 @@
 #include "flash.h"
 #include "libs/graphics/gfx_common.h"
 #include "libs/tasklib.h"
-#include "libs/alarm.h"
+#include "libs/callback/alarm.h"
 #include "libs/log.h"
 #include "hyper.h"
 #include "gameopt.h"

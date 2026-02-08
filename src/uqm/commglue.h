@@ -22,7 +22,7 @@
 #include "globdata.h"
 #include "resinst.h"
 #include "libs/sound/trackplayer.h"
-#include "libs/callback.h"
+#include "libs/callback/callback.h"
 
 #if 0 //defined(__cplusplus)
 extern "C" {

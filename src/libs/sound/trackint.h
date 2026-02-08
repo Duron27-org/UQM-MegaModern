@@ -17,7 +17,7 @@
 #ifndef TRACKINT_H
 #define TRACKINT_H
 
-#include "libs/callback.h"
+#include "libs/callback/callback.h"
 
 struct tfb_soundchunk
 {

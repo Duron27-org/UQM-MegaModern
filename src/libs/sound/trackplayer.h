@@ -20,7 +20,7 @@
 #define TRACKPLAYER_H
 
 #include "libs/compiler.h"
-#include "libs/callback.h"
+#include "libs/callback/callback.h"
 
 #define ACCEL_SCROLL_SPEED 300
 

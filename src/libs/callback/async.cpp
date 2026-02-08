@@ -18,8 +18,8 @@
 
 #include "async.h"
 
-#include "libs/alarm.h"
-#include "libs/callback.h"
+#include "libs/callback/alarm.h"
+#include "libs/callback/callback.h"
 
 
 // Process all alarms and callbacks.

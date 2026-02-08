@@ -45,10 +45,8 @@ struct Alarm
 
 void Alarm_init(void);
 void Alarm_uninit(void);
-Alarm* Alarm_addAbsoluteMs(uint32 ms, AlarmCallback callback,
-						   AlarmCallbackArg arg);
-Alarm* Alarm_addRelativeMs(uint32 ms, AlarmCallback callback,
-						   AlarmCallbackArg arg);
+Alarm* Alarm_addAbsoluteMs(uint32 ms, AlarmCallback callback, AlarmCallbackArg arg);
+Alarm* Alarm_addRelativeMs(uint32 ms, AlarmCallback callback, AlarmCallbackArg arg);
 void Alarm_remove(Alarm* alarm);
 bool Alarm_processOne(void);
 void Alarm_processAll(void);

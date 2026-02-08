@@ -48,8 +48,8 @@
 #include "uqmversion.h"
 #include "uqm/comm.h"
 #ifdef NETPLAY
-#include "libs/callback.h"
-#include "libs/alarm.h"
+#include "libs/callback/callback.h"
+#include "libs/callback/alarm.h"
 #include "libs/net.h"
 #include "uqm/supermelee/netplay/netoptions.h"
 #include "uqm/supermelee/netplay/netplay.h"

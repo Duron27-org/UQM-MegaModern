@@ -75,7 +75,7 @@ typedef void (*ConnectErrorCallback)(ConnectState* connectState,
 
 #ifdef CONNECT_INTERNAL
 
-#include "libs/alarm.h"
+#include "libs/callback/alarm.h"
 
 struct ConnectState
 {
