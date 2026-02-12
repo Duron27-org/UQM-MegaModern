@@ -154,7 +154,7 @@ FeedbackSetting(uqm::BYTE which_setting)
 		case CYBORG_NORMAL_SETTING:
 		case CYBORG_DOUBLE_SETTING:
 		case CYBORG_SUPER_SETTING:
-			if (optWhichMenu == EmulationMode::PC && which_setting > CYBORG_NORMAL_SETTING)
+			if (optWhichMenu == uqm::EmulationMode::PC && which_setting > CYBORG_NORMAL_SETTING)
 			{
 				if (which_setting == CYBORG_DOUBLE_SETTING)
 				{
@@ -737,7 +737,7 @@ DoSettings(MENU_STATE* pMS)
 			default:
 				DrawMenuStateStrings(PM_SOUND_ON, pMS->CurState);
 		}
-		if (optWhichMenu == EmulationMode::PC)
+		if (optWhichMenu == uqm::EmulationMode::PC)
 		{
 			DrawMenuStateStrings(PM_SOUND_ON, pMS->CurState);
 		}
@@ -1939,7 +1939,7 @@ PickGame(bool saving, bool fromMainMenu)
 		RECT ctxRect;
 
 		GetContextClipRect(&ctxRect);
-		ScreenTransition(EmulationMode::PC | EmulationMode::Console3DO, &ctxRect);
+		ScreenTransition(uqm::EmulationMode::PC | uqm::EmulationMode::Console3DO, &ctxRect);
 		UnbatchGraphics();
 	}
 
@@ -2058,7 +2058,7 @@ PickGame(bool saving, bool fromMainMenu)
 		// Redraws fuel, crew, and status message (green box)
 		DeltaSISGauges(UNDEFINED_DELTA, UNDEFINED_DELTA, UNDEFINED_DELTA);
 
-		ScreenTransition(EmulationMode::PC | EmulationMode::Console3DO, &DlgRect);
+		ScreenTransition(uqm::EmulationMode::PC | uqm::EmulationMode::Console3DO, &DlgRect);
 		UnbatchGraphics();
 	}
 

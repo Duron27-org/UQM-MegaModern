@@ -35,11 +35,11 @@
 
 
 extern int optWhichCoarseScan;
-extern EmulationMode optWhichMenu;
-extern EmulationMode optWhichFonts;
-extern EmulationMode optWhichIntro;
-extern EmulationMode optWhichShield;
-extern EmulationMode optSmoothScroll;
+extern uqm::EmulationMode optWhichMenu;
+extern uqm::EmulationMode optWhichFonts;
+extern uqm::EmulationMode optWhichIntro;
+extern uqm::EmulationMode optWhichShield;
+extern uqm::EmulationMode optSmoothScroll;
 extern int optMeleeScale;
 extern unsigned int loresBlowupScale;
 extern unsigned int resolutionFactor;
@@ -80,8 +80,8 @@ extern int optSpaceMusic;
 extern OPT_ENABLABLE optVolasMusic;
 extern OPT_ENABLABLE optWholeFuel;
 extern OPT_ENABLABLE optDirectionalJoystick;
-extern EmulationMode optLanderHold;
-extern EmulationMode optScrTrans;
+extern uqm::EmulationMode optLanderHold;
+extern uqm::EmulationMode optScrTrans;
 extern int optDifficulty;
 extern int optDiffChooser;
 extern int optFuelRange;
@@ -93,16 +93,16 @@ extern OPT_ENABLABLE optHazardColors;
 extern OPT_ENABLABLE optOrzCompFont;
 extern int optControllerType;
 extern OPT_ENABLABLE optSmartAutoPilot;
-extern EmulationMode optTintPlanSphere;
-extern EmulationMode optPlanetStyle;
+extern uqm::EmulationMode optTintPlanSphere;
+extern uqm::EmulationMode optPlanetStyle;
 extern int optStarBackground;
-extern EmulationMode optScanStyle;
+extern uqm::EmulationMode optScanStyle;
 extern OPT_ENABLABLE optNonStopOscill;
-extern EmulationMode optScopeStyle;
-extern EmulationMode optSuperPC;
+extern uqm::EmulationMode optScopeStyle;
+extern uqm::EmulationMode optSuperPC;
 extern OPT_ENABLABLE optHyperStars;
 extern OPT_ENABLABLE optPlanetTexture;
-extern EmulationMode optFlagshipColor;
+extern uqm::EmulationMode optFlagshipColor;
 extern OPT_ENABLABLE optNoHQEncounters;
 extern OPT_ENABLABLE optDeCleansing;
 extern OPT_ENABLABLE optMeleeObstacles;
@@ -165,6 +165,9 @@ extern uqstl::vector<uqm::DWORD> g_addonList;
 
 #define BASE_CONTENT_NAME "mm-" UQM_MAJOR_VERSION_S "." UQM_MINOR_VERSION_S "." UQM_PATCH_VERSION_S "-content.uqm"
 
+namespace uqm
+{
+
 /* These get edited by TEXTENTRY widgets, so they should have room to
  * hold as much as one of them allows by default. */
 typedef struct _input_template
@@ -193,9 +196,6 @@ int loadIndices(uio_DirHandle* baseDir);
 [[nodiscard]] bool isAddonAvailable(uqgsl::czstring addon_name);
 
 bool setGammaCorrection(float gamma);
-
-#if 0 //defined(__cplusplus)
-}
-#endif
+} // namespace uqm
 
 #endif

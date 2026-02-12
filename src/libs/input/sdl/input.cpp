@@ -143,12 +143,12 @@ register_flight_controls(void)
 		snprintf(buf, 39, "keys.%d.name", i + 1);
 		if (res_IsString(buf))
 		{
-			strncpy(input_templates[i].name, res_GetString(buf), 29);
-			input_templates[i].name[29] = '\0';
+			strncpy(uqm::input_templates[i].name, res_GetString(buf), 29);
+			uqm::input_templates[i].name[29] = '\0';
 		}
 		else
 		{
-			input_templates[i].name[0] = '\0';
+			uqm::input_templates[i].name[0] = '\0';
 		}
 		for (j = 0; j < num_flight; j++)
 		{

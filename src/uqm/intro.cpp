@@ -1224,7 +1224,7 @@ DoPresentation(void* pIS)
 				DrawTextEffect(pPIS->TextLines + i, pPIS->TextColor,
 							   pPIS->TextBackColor, pPIS->TextEffect);
 			}
-			ScreenTransition(EmulationMode::PC | EmulationMode::Console3DO, &pPIS->tfade_r);
+			ScreenTransition(uqm::EmulationMode::PC | uqm::EmulationMode::Console3DO, &pPIS->tfade_r);
 			UnbatchGraphics();
 		}
 		else if (strcmp(Opcode, "TFO") == 0)
@@ -1241,7 +1241,7 @@ DoPresentation(void* pIS)
 				DrawTextEffect(pPIS->TextLines + i, pPIS->TextFadeColor,
 							   pPIS->TextFadeColor, pPIS->TextEffect);
 			}
-			ScreenTransition(EmulationMode::PC | EmulationMode::Console3DO, &pPIS->tfade_r);
+			ScreenTransition(uqm::EmulationMode::PC | uqm::EmulationMode::Console3DO, &pPIS->tfade_r);
 			UnbatchGraphics();
 		}
 		else if (strcmp(Opcode, "SAVEBG") == 0)

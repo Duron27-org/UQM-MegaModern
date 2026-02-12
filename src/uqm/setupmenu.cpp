@@ -85,20 +85,20 @@ int whichPlatformRef(OPT_CONSOLETYPE opt)
 	switch (opt)
 	{
 		case OPT_CONSOLETYPE::OPTVAL_PC:
-			return static_cast<int>(EmulationMode::PC);
+			return static_cast<int>(uqm::EmulationMode::PC);
 		case OPT_CONSOLETYPE::OPTVAL_3DO:
-			return static_cast<int>(EmulationMode::Console3DO);
+			return static_cast<int>(uqm::EmulationMode::Console3DO);
 	}
 	return 0;
 }
 
-OPT_CONSOLETYPE whichPlatformOpt(EmulationMode platform)
+OPT_CONSOLETYPE whichPlatformOpt(uqm::EmulationMode platform)
 {
 	switch (platform)
 	{
-		case EmulationMode::Console3DO:
+		case uqm::EmulationMode::Console3DO:
 			return OPT_CONSOLETYPE::OPTVAL_3DO;
-		case EmulationMode::PC:
+		case uqm::EmulationMode::PC:
 			return OPT_CONSOLETYPE::OPTVAL_PC;
 	}
 	return OPT_CONSOLETYPE::OPTVAL_PC;
@@ -135,7 +135,7 @@ bool putOpt(GlobT& glob, const SetT set, uqgsl::czstring key, const bool reload)
 }
 
 template <>
-bool putOpt<EmulationMode, OPT_CONSOLETYPE>(EmulationMode& glob, const OPT_CONSOLETYPE set, uqgsl::czstring key, const bool reload)
+bool putOpt<uqm::EmulationMode, OPT_CONSOLETYPE>(uqm::EmulationMode& glob, const OPT_CONSOLETYPE set, uqgsl::czstring key, const bool reload)
 {
 	const int emuMode {whichPlatformRef(set)};
 	return putOpt<int, int>(reinterpret_cast<int&>(glob), emuMode, key, reload);
@@ -704,7 +704,7 @@ populate_editkeys(int templat)
 {
 	int i, j;
 
-	strncpy(textentries[TEXT_LOUTNAME].value, input_templates[templat].name,
+	strncpy(textentries[TEXT_LOUTNAME].value, uqm::input_templates[templat].name,
 			textentries[TEXT_LOUTNAME].maxlen);
 	textentries[TEXT_LOUTNAME].value[textentries[TEXT_LOUTNAME].maxlen - 1] = 0;
 
@@ -759,7 +759,7 @@ check_for_hd(WIDGET_CHOICE* self, int oldval)
 		return;
 	}
 
-	if (!isAddonAvailable(HD_MODE))
+	if (!uqm::isAddonAvailable(HD_MODE))
 	{
 		oldval = OPTVAL_320_240;
 		addon_unavailable(self, OPTVAL_320_240);
@@ -777,7 +777,7 @@ check_dos_3do_modes(WIDGET_CHOICE* self, int oldval)
 	switch (self->selected)
 	{
 		case OPTVAL_PC_WINDOW:
-			if (!isAddonAvailable(DOS_MODE(shmagoigle)))
+			if (!uqm::isAddonAvailable(DOS_MODE(shmagoigle)))
 			{
 				oldval = OPTVAL_UQM_WINDOW;
 				addon_unavailable(self, oldval);
@@ -785,7 +785,7 @@ check_dos_3do_modes(WIDGET_CHOICE* self, int oldval)
 			}
 			break;
 		case OPTVAL_3DO_WINDOW:
-			if (!isAddonAvailable(THREEDO_MODE(shmagoigle)))
+			if (!uqm::isAddonAvailable(THREEDO_MODE(shmagoigle)))
 			{
 				oldval = OPTVAL_UQM_WINDOW;
 				addon_unavailable(self, OPTVAL_UQM_WINDOW);
@@ -806,16 +806,16 @@ check_remixes(WIDGET_CHOICE* self, int oldval)
 	switch (self->choice_num)
 	{
 		case CHOICE_REMIXES1:
-			addon_available = isAddonAvailable(THREEDO_MUSIC);
+			addon_available = uqm::isAddonAvailable(THREEDO_MUSIC);
 			break;
 		case CHOICE_REMIXES2:
-			addon_available = isAddonAvailable(REMIX_MUSIC);
+			addon_available = uqm::isAddonAvailable(REMIX_MUSIC);
 			break;
 		case CHOICE_REMIXES3:
-			addon_available = isAddonAvailable(VOL_RMX_MUSIC);
+			addon_available = uqm::isAddonAvailable(VOL_RMX_MUSIC);
 			break;
 		case CHOICE_IPMUSIC:
-			addon_available = isAddonAvailable(VOL_RMX_MUSIC) || isAddonAvailable(REGION_MUSIC);
+			addon_available = uqm::isAddonAvailable(VOL_RMX_MUSIC) || uqm::isAddonAvailable(REGION_MUSIC);
 			break;
 		default:
 			log_add(log_Error, "invalid choice_num in check_remixes()");
@@ -860,8 +860,8 @@ rename_template(WIDGET_TEXTENTRY* self)
 	   to track this symbolically or ensure that self->value's
 	   buffer is always at least this big; this will require some
 	   reworking of widgets */
-	strncpy(input_templates[choices[CHOICE_KBLAYOUT].selected].name, self->value, 30);
-	input_templates[choices[CHOICE_KBLAYOUT].selected].name[29] = 0;
+	strncpy(uqm::input_templates[choices[CHOICE_KBLAYOUT].selected].name, self->value, 30);
+	uqm::input_templates[choices[CHOICE_KBLAYOUT].selected].name[29] = 0;
 }
 
 static void
@@ -1482,7 +1482,7 @@ DoSetupMenu(SETUP_MENU_STATE* pInputState)
 
 	if (current != next)
 	{
-		ScreenTransition(EmulationMode::PC | EmulationMode::Console3DO, nullptr);
+		ScreenTransition(uqm::EmulationMode::PC | uqm::EmulationMode::Console3DO, nullptr);
 		current = next;
 	}
 
@@ -1936,9 +1936,9 @@ init_widgets(void)
 	// configurations
 	for (i = 0; i < 6; i++)
 	{
-		choices[CHOICE_BTMPLAYER].options[i].optname = input_templates[i].name;
-		choices[CHOICE_TOPPLAYER].options[i].optname = input_templates[i].name;
-		choices[CHOICE_KBLAYOUT].options[i].optname = input_templates[i].name;
+		choices[CHOICE_BTMPLAYER].options[i].optname = uqm::input_templates[i].name;
+		choices[CHOICE_TOPPLAYER].options[i].optname = uqm::input_templates[i].name;
+		choices[CHOICE_KBLAYOUT].options[i].optname = uqm::input_templates[i].name;
 	}
 
 	/* Choice 20 has a special onChange handler, too. */
@@ -2431,13 +2431,13 @@ void GetGlobalOptions(GLOBALOPTS* opts)
 	switch (opts->windowType)
 	{
 		case OPTVAL_PC_WINDOW:
-			if (!isAddonAvailable(DOS_MODE(IS_HD)))
+			if (!uqm::isAddonAvailable(DOS_MODE(IS_HD)))
 			{
 				opts->windowType = OPTVAL_UQM_WINDOW;
 			}
 			break;
 		case OPTVAL_3DO_WINDOW:
-			if (!isAddonAvailable(THREEDO_MODE(IS_HD)))
+			if (!uqm::isAddonAvailable(THREEDO_MODE(IS_HD)))
 			{
 				opts->windowType = OPTVAL_UQM_WINDOW;
 			}
@@ -2510,7 +2510,7 @@ void GetGlobalOptions(GLOBALOPTS* opts)
 	optMScale = opts->meleezoom = optMeleeScale;
 #else
 	optMScale = opts->meleezoom =
-		(OPT_MELEEZOOM)(optMeleeScale == TFB_SCALE_STEP ? EmulationMode::PC : EmulationMode::Console3DO);
+		(OPT_MELEEZOOM)(optMeleeScale == TFB_SCALE_STEP ? uqm::EmulationMode::PC : uqm::EmulationMode::Console3DO);
 #endif
 	opts->controllerType = (OPT_CONTROLLER)optControllerType;
 	opts->directionalJoystick = optDirectionalJoystick; // For Android
@@ -2629,13 +2629,13 @@ void SetGlobalOptions(GLOBALOPTS* opts)
 		switch (opts->windowType)
 		{
 			case OPTVAL_PC_WINDOW:
-				if (!isAddonAvailable(DOS_MODE(resolutionFactor)))
+				if (!uqm::isAddonAvailable(DOS_MODE(resolutionFactor)))
 				{
 					opts->windowType = OPTVAL_UQM_WINDOW;
 				}
 				break;
 			case OPTVAL_3DO_WINDOW:
-				if (!isAddonAvailable(THREEDO_MODE(resolutionFactor)))
+				if (!uqm::isAddonAvailable(THREEDO_MODE(resolutionFactor)))
 				{
 					opts->windowType = OPTVAL_UQM_WINDOW;
 				}
@@ -2656,7 +2656,7 @@ void SetGlobalOptions(GLOBALOPTS* opts)
 	if (optGamma != 1.0f || sliderToGamma(opts->gamma) != 1.0f)
 	{
 		optGamma = sliderToGamma(opts->gamma);
-		setGammaCorrection(optGamma);
+		uqm::setGammaCorrection(optGamma);
 		res_PutInteger("config.gamma", (int)(optGamma * GAMMA_SCALE + 0.5));
 	}
 
@@ -2775,8 +2775,8 @@ void SetGlobalOptions(GLOBALOPTS* opts)
 		}
 		res_PutInteger("config.smoothmelee", opts->meleezoom);
 #else
-		optMeleeScale = ((EmulationMode)opts->meleezoom == EmulationMode::Console3DO) ? TFB_SCALE_TRILINEAR : TFB_SCALE_STEP;
-		res_PutBoolean("config.smoothmelee", (EmulationMode)opts->meleezoom == EmulationMode::Console3DO);
+		optMeleeScale = ((uqm::EmulationMode)opts->meleezoom == uqm::EmulationMode::Console3DO) ? TFB_SCALE_TRILINEAR : TFB_SCALE_STEP;
+		res_PutBoolean("config.smoothmelee", (uqm::EmulationMode)opts->meleezoom == uqm::EmulationMode::Console3DO);
 #endif
 	}
 #if SDL_MAJOR_VERSION == 1 // Refined joypad controls aren't supported on SDL1
@@ -2827,7 +2827,7 @@ void SetGlobalOptions(GLOBALOPTS* opts)
 	{
 		putOpt(g_seedType, (int)(opts->seedType), "mm.seedType", false);
 		int customSeed = atoi(textentries[TEXT_GAMESEED].value);
-		if (!SANE_SEED(customSeed) || g_seedType == SeedType::Prime)
+		if (!SANE_SEED(customSeed) || g_seedType == uqm::SeedType::Prime)
 		{
 			customSeed = PrimeA;
 		}
@@ -2863,12 +2863,12 @@ void SetGlobalOptions(GLOBALOPTS* opts)
 	res_PutInteger("config.player1control", opts->player1);
 	res_PutInteger("config.player2control", opts->player2);
 
-	res_PutString("keys.1.name", input_templates[0].name);
-	res_PutString("keys.2.name", input_templates[1].name);
-	res_PutString("keys.3.name", input_templates[2].name);
-	res_PutString("keys.4.name", input_templates[3].name);
-	res_PutString("keys.5.name", input_templates[4].name);
-	res_PutString("keys.6.name", input_templates[5].name);
+	res_PutString("keys.1.name", uqm::input_templates[0].name);
+	res_PutString("keys.2.name", uqm::input_templates[1].name);
+	res_PutString("keys.3.name", uqm::input_templates[2].name);
+	res_PutString("keys.4.name", uqm::input_templates[3].name);
+	res_PutString("keys.5.name", uqm::input_templates[4].name);
+	res_PutString("keys.6.name", uqm::input_templates[5].name);
 
 
 	/*

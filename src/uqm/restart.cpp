@@ -585,7 +585,7 @@ DoRestart(MENU_STATE* pMS)
 				SetTransitionSource(nullptr);
 				BatchGraphics();
 				DrawRestartMenuGraphic(pMS);
-				ScreenTransition(EmulationMode::PC | EmulationMode::Console3DO, nullptr);
+				ScreenTransition(uqm::EmulationMode::PC | uqm::EmulationMode::Console3DO, nullptr);
 				Flash_UpdateOriginal(pMS->flashContext);
 				DrawRestartMenu(pMS, pMS->CurState, nullptr);
 				Flash_continue(pMS->flashContext);
@@ -866,7 +866,7 @@ bool StartGame(void)
 				else
 				{
 					SplashScreen(0);
-					if (optWhichIntro == EmulationMode::Console3DO)
+					if (optWhichIntro == uqm::EmulationMode::Console3DO)
 					{
 						Drumall();
 					}

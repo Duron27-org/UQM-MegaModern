@@ -746,7 +746,7 @@ bool DevicesMenu(void)
 	SetMenuSounds(MENU_SOUND_ARROWS | MENU_SOUND_PAGE,
 				  MENU_SOUND_SELECT);
 
-	if (optWhichMenu == EmulationMode::PC)
+	if (optWhichMenu == uqm::EmulationMode::PC)
 	{
 		DrawMenuStateStrings(PM_ALT_CARGO, 1);
 	}

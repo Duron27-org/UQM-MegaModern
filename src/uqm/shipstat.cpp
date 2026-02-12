@@ -33,7 +33,7 @@ void DrawCrewFuelString(COORD y, uqm::SIZE state)
 	if (state == 0)
 	{
 		Stamp.origin.x = CREW_XOFFS + RES_SCALE(RES_DESCALE(STAT_WIDTH) >> 1) + RES_SCALE(5);
-		if (optWhichMenu == EmulationMode::PC)
+		if (optWhichMenu == uqm::EmulationMode::PC)
 		{
 			Stamp.frame = SetAbsFrameIndex(StatusFrame, 4);
 		}
@@ -45,7 +45,7 @@ void DrawCrewFuelString(COORD y, uqm::SIZE state)
 	}
 
 	Stamp.origin.x = ENERGY_XOFFS + RES_SCALE(RES_DESCALE(STAT_WIDTH) >> 1) - RES_SCALE(4);
-	if (optWhichMenu == EmulationMode::PC)
+	if (optWhichMenu == uqm::EmulationMode::PC)
 	{
 		Stamp.frame = SetAbsFrameIndex(StatusFrame, 5);
 	}

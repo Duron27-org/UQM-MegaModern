@@ -176,12 +176,12 @@ void SetTransitionSource(const RECT* pRect)
 }
 
 // ScreenTransition() is synchronous (does not return until transition done)
-void ScreenTransition(EmulationMode transType, const RECT* pRect)
+void ScreenTransition(uqm::EmulationMode transType, const RECT* pRect)
 {
 	const TimePeriod DURATION = ONE_SECOND * 31 / 60;
 	TimeCount startTime;
 
-	if (transType == EmulationMode::PC)
+	if (transType == uqm::EmulationMode::PC)
 	{
 		return;
 	}

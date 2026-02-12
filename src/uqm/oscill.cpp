@@ -107,7 +107,7 @@ void DrawOscilloscopeLines(STAMP* s, uint8* scope_data, bool nonStop, bool toSca
 	DrawStamp(s);
 
 	// Set oscilloscope line color
-	scopeColor = optScopeStyle != EmulationMode::PC ?
+	scopeColor = optScopeStyle != uqm::EmulationMode::PC ?
 					 SCOPE_COLOR_3DO :
 					 SCOPE_COLOR_PC;
 
@@ -251,7 +251,7 @@ void DrawSlider(void)
 	int offs;
 	static int last_offs = -1;
 
-	if (sliderDisabled || (!usingSpeech && optSmoothScroll == EmulationMode::PC))
+	if (sliderDisabled || (!usingSpeech && optSmoothScroll == uqm::EmulationMode::PC))
 	{
 		return;
 	}

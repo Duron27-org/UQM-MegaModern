@@ -1134,8 +1134,8 @@ bool inSuperMelee(void);
 bool inHQSpace(void);
 bool inHyperSpace(void);
 bool inQuasiSpace(void);
-inline bool isPC(EmulationMode optWhich) { return optWhich == EmulationMode::PC; }
-inline bool is3DO(EmulationMode optWhich) { return optWhich == EmulationMode::Console3DO; }
+inline bool isPC(uqm::EmulationMode optWhich) { return optWhich == uqm::EmulationMode::PC; }
+inline bool is3DO(uqm::EmulationMode optWhich) { return optWhich == uqm::EmulationMode::Console3DO; }
 extern int replaceChar(char* pStr, const char find, const char replace);
 
 extern void LoadFleetInfo(void);

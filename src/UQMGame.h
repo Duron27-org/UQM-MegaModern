@@ -19,6 +19,9 @@
 #include "core/stl/stl.h"
 #include "options/options.h"
 
+namespace uqm
+{
+
 class UQMGame
 {
 public:
@@ -30,5 +33,6 @@ public:
 
 private:
 	OptionsStruct m_options {};
-
 };
+
+} // namespace uqm

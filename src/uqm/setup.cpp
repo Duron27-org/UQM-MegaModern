@@ -142,7 +142,7 @@ bool LoadKernel(int argc, char* argv[])
 	}
 
 	/* Load base content. */
-	if (loadIndices(contentDir) == 0)
+	if (uqm::loadIndices(contentDir) == 0)
 	{
 		return false; // Must have at least one index in content dir
 	}
@@ -151,99 +151,99 @@ bool LoadKernel(int argc, char* argv[])
 
 	if (!IS_HD)
 	{
-		EndlessSCLoaded = loadAddon("EndlessSC-SD");
-		solTexturesPresent = loadAddon("sol-textures-sd");
-		loadAddon("yellow-fried-sd");
+		EndlessSCLoaded = uqm::loadAddon("EndlessSC-SD");
+		solTexturesPresent = uqm::loadAddon("sol-textures-sd");
+		uqm::loadAddon("yellow-fried-sd");
 	}
-	else if (loadAddon("mm-hd"))
+	else if (uqm::loadAddon("mm-hd"))
 	{
 		HDPackPresent = true;
-		solTexturesPresent = loadAddon("sol-textures-hd");
-		loadAddon("yellow-fried-hd");
+		solTexturesPresent = uqm::loadAddon("sol-textures-hd");
+		uqm::loadAddon("yellow-fried-hd");
 		if (optWindowType == 2)
 		{
 			classicPackPresent =
-				optNoClassic ? false : loadAddon("classic-pack");
+				optNoClassic ? false : uqm::loadAddon("classic-pack");
 		}
 	}
 
-	if (IS_PAD && isAddonAvailable(THREEDO_MODE(IS_HD)))
+	if (IS_PAD && uqm::isAddonAvailable(THREEDO_MODE(IS_HD)))
 	{
-		loadAddon(THREEDO_MODE(IS_HD));
+		uqm::loadAddon(THREEDO_MODE(IS_HD));
 	}
-	if (IS_DOS && isAddonAvailable(DOS_MODE(IS_HD)))
+	if (IS_DOS && uqm::isAddonAvailable(DOS_MODE(IS_HD)))
 	{
-		loadAddon(DOS_MODE(IS_HD));
+		uqm::loadAddon(DOS_MODE(IS_HD));
 	}
 
 	usingSpeech = (bool)optSpeech;
-	if (optSpeech && !loadAddon("mm-3dovoice"))
+	if (optSpeech && !uqm::loadAddon("mm-3dovoice"))
 	{
 		usingSpeech = false;
 	}
 
 	if (usingSpeech)
 	{
-		loadAddon("mm-rmx-utwig");
+		uqm::loadAddon("mm-rmx-utwig");
 		// Autoload support for Soul Reaver's dialog fixes
-		loadAddon("mm-MelnormeVoiceFix");
-		loadAddon("mm-distorted-hayes");
-		SyreenVoiceFix = loadAddon("mm-SyreenVoiceFix");
+		uqm::loadAddon("mm-MelnormeVoiceFix");
+		uqm::loadAddon("mm-distorted-hayes");
+		SyreenVoiceFix = uqm::loadAddon("mm-SyreenVoiceFix");
 	}
 
 	if (opt3doMusic)
 	{
-		loadAddon("3domusic");
+		uqm::loadAddon("3domusic");
 	}
 
 	if (optRemixMusic)
 	{
-		loadAddon("remix");
+		uqm::loadAddon("remix");
 	}
 
 	if (optVolasMusic)
 	{
-		VolasPackPresent = loadAddon("volasaurus-remix-pack");
+		VolasPackPresent = uqm::loadAddon("volasaurus-remix-pack");
 
 		SpaceMusicOK = optSpaceMusic && VolasPackPresent;
 	}
 
 	if (!VolasPackPresent)
 	{
-		SpaceMusicOK = optSpaceMusic && loadAddon("SpaceMusic");
+		SpaceMusicOK = optSpaceMusic && uqm::loadAddon("SpaceMusic");
 	}
 
-	if (optWhichIntro == EmulationMode::Console3DO)
+	if (optWhichIntro == uqm::EmulationMode::Console3DO)
 	{
-		loadAddon("3dovideo");
+		uqm::loadAddon("3dovideo");
 	}
 
-	loadAddon("ProfanePkunk");
-	loadAddon("GlaDOS");
+	uqm::loadAddon("ProfanePkunk");
+	uqm::loadAddon("GlaDOS");
 
 	if (!IS_HD)
 	{
 		// Localization addons
-		loadAddon("xlat-finnish-sd");
-		loadAddon("xlat-german-sd");
-		loadAddon("xlat-japanese-sd");
-		loadAddon("xlat-russian-sd");
+		uqm::loadAddon("xlat-finnish-sd");
+		uqm::loadAddon("xlat-german-sd");
+		uqm::loadAddon("xlat-japanese-sd");
+		uqm::loadAddon("xlat-russian-sd");
 
-		loadAddon("automods-sd");
+		uqm::loadAddon("automods-sd");
 	}
 	else if (HDPackPresent)
 	{
 		// Localization addons
-		loadAddon("xlat-finnish-hd");
-		loadAddon("xlat-german-hd");
-		loadAddon("xlat-japanese-hd");
-		loadAddon("xlat-russian-hd");
+		uqm::loadAddon("xlat-finnish-hd");
+		uqm::loadAddon("xlat-german-hd");
+		uqm::loadAddon("xlat-japanese-hd");
+		uqm::loadAddon("xlat-russian-hd");
 
-		loadAddon("automods-hd");
+		uqm::loadAddon("automods-hd");
 	}
 
 	/* Now load the rest of the addons, in order. */
-	prepareAddons(optAddons);
+	uqm::prepareAddons(optAddons);
 
 	{
 		COLORMAP ColorMapTab;

@@ -91,7 +91,7 @@ int GetGraphicScale(void);
 int SetGraphicScaleMode(int mode /* enum SCALE */);
 int GetGraphicScaleMode(void);
 void SetTransitionSource(const RECT* pRect);
-void ScreenTransition(EmulationMode transition, const RECT* pRect);
+void ScreenTransition(uqm::EmulationMode transition, const RECT* pRect);
 
 // TODO: there should be accessor functions for these
 extern volatile int TransitionAmount;

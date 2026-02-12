@@ -22,7 +22,7 @@
 
 int main(int argc, char* argv[])
 {
-	UQMGame game {};
+	uqm::UQMGame game {};
 
 	if (const int setupResult {game.setup({argv, static_cast<size_t>(argc)})}; setupResult != EXIT_SUCCESS)
 	{

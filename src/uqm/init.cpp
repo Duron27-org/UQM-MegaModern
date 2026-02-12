@@ -421,7 +421,7 @@ void ReloadGameContent(void)
 	FreeMasterShipList();
 	//TFB_UninitInput ();
 
-	prepareContentDir(contentDirPath, addonDirPath, 0);
+	uqm::prepareContentDir(contentDirPath, addonDirPath, 0);
 
 	if (LoadKernel(0, 0))
 	{

@@ -7,7 +7,8 @@
 #include "libs/graphics/gfx_common.h"
 #include "libs/platform.h"
 
-
+namespace uqm
+{
 
 static inline constexpr uqstl::array<OptionListValueT<int>, 7> ScalerList {
 	{
@@ -43,10 +44,10 @@ static inline constexpr uqstl::array<OptionListValueT<int>, 3> AudioQualityList 
 	 {"high", audio_QUALITY_HIGH}}
 };
 
-static inline constexpr uqstl::array<OptionListValueT<EmulationMode>, 3> EmulationChoiceList {
+static inline constexpr uqstl::array<OptionListValueT<uqm::EmulationMode>, 3> EmulationChoiceList {
 
-	{{"pc", EmulationMode::PC},
-	 {"3do", EmulationMode::Console3DO}}
+	{{"pc", uqm::EmulationMode::PC},
+	 {"3do", uqm::EmulationMode::Console3DO}}
 };
 
 static inline constexpr uqstl::array<OptionListValueT<int>, 5> AccelList {
@@ -57,5 +58,5 @@ static inline constexpr uqstl::array<OptionListValueT<int>, 5> AccelList {
 	 {"detect", PLATFORM_NULL}}
 };
 
-
+} // namespace uqm
 #endif /* UQM_OPTIONS_OPTIONCONSTANTS_H_ */

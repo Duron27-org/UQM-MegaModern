@@ -8,6 +8,8 @@
 #include "libs/math/random.h" // TODO: only used for the PrimeA constant and SeedType. Find a better way to share that perhaps?
 #include "libs/platform.h"
 
+namespace uqm
+{
 
 struct OptionsStruct
 {
@@ -38,11 +40,11 @@ struct OptionsStruct
 	BoolOption useRemixMusic {false};
 	BoolOption useSpeech {true};
 	IntOption whichCoarseScan {0};
-	EmulationOption whichMenu {EmulationMode::PC};
-	EmulationOption whichFonts {EmulationMode::PC};
-	EmulationOption whichIntro {EmulationMode::PC};
-	EmulationOption whichShield {EmulationMode::PC};
-	EmulationOption smoothScroll {EmulationMode::PC};
+	EmulationOption whichMenu {uqm::EmulationMode::PC};
+	EmulationOption whichFonts {uqm::EmulationMode::PC};
+	EmulationOption whichIntro {uqm::EmulationMode::PC};
+	EmulationOption whichShield {uqm::EmulationMode::PC};
+	EmulationOption smoothScroll {uqm::EmulationMode::PC};
 	IntOption meleeScale {TFB_SCALE_TRILINEAR};
 	BoolOption subtitles {true};
 	BoolOption stereoSFX {false};
@@ -80,8 +82,8 @@ struct OptionsStruct
 	BoolOption volasMusic {false};
 	BoolOption wholeFuel {false};
 	BoolOption directionalJoystick {false};
-	EmulationOption landerHold {EmulationMode::Console3DO};
-	EmulationOption scrTrans {EmulationMode::Console3DO};
+	EmulationOption landerHold {uqm::EmulationMode::Console3DO};
+	EmulationOption scrTrans {uqm::EmulationMode::Console3DO};
 	IntOption optDifficulty {0};
 	IntOption optDiffChooser {3};
 	IntOption optFuelRange {0};
@@ -93,16 +95,16 @@ struct OptionsStruct
 	BoolOption orzCompFont {false};
 	IntOption optControllerType {0};
 	BoolOption smartAutoPilot {false};
-	EmulationOption tintPlanSphere {EmulationMode::Console3DO};
-	EmulationOption planetStyle {EmulationMode::Console3DO};
+	EmulationOption tintPlanSphere {uqm::EmulationMode::Console3DO};
+	EmulationOption planetStyle {uqm::EmulationMode::Console3DO};
 	IntOption starBackground {0};
-	EmulationOption scanStyle {EmulationMode::Console3DO};
+	EmulationOption scanStyle {uqm::EmulationMode::Console3DO};
 	BoolOption nonStopOscill {false};
-	EmulationOption scopeStyle {EmulationMode::Console3DO};
+	EmulationOption scopeStyle {uqm::EmulationMode::Console3DO};
 	BoolOption hyperStars {false};
-	EmulationOption landerStyle {EmulationMode::Console3DO};
+	EmulationOption landerStyle {uqm::EmulationMode::Console3DO};
 	BoolOption planetTexture {true};
-	EmulationOption flagshipColor {EmulationMode::PC};
+	EmulationOption flagshipColor {uqm::EmulationMode::PC};
 	BoolOption noHQEncounters {false};
 	BoolOption deCleansing {false};
 	BoolOption meleeObstacles {false};
@@ -199,4 +201,6 @@ template <typename InT>
 	}
 
 	return inVol / static_cast<float>(max);
+}
+
 }

@@ -4,6 +4,9 @@
 #include "Configuration.h" // TODO: Figure out why this has to go here for OptionsStruct to be recognized by the header.
 #include "libs/log/uqmlog.h"
 
+namespace uqm
+{
+
 static void getBoolConfigValue(BoolOption& option, const char* config_val)
 {
 	if (option.set || !res_IsBoolean(config_val))
@@ -117,15 +120,15 @@ void getUserConfigOptions(OptionsStruct& options)
 
 	getBoolConfigValue(options.subtitles, "config.subtitles");
 
-	getBoolConfigValueXlat(options.whichMenu, "config.textmenu", EmulationMode::Console3DO, EmulationMode::PC);
-	getBoolConfigValueXlat(options.whichFonts, "config.textgradients", EmulationMode::Console3DO, EmulationMode::PC);
+	getBoolConfigValueXlat(options.whichMenu, "config.textmenu", uqm::EmulationMode::Console3DO, uqm::EmulationMode::PC);
+	getBoolConfigValueXlat(options.whichFonts, "config.textgradients", uqm::EmulationMode::Console3DO, uqm::EmulationMode::PC);
 	if (res_IsInteger("config.iconicscan") && !options.whichCoarseScan.set)
 	{
 		options.whichCoarseScan.value = res_GetInteger("config.iconicscan");
 	}
-	getBoolConfigValueXlat(options.smoothScroll, "config.smoothscroll", EmulationMode::Console3DO, EmulationMode::PC);
-	getBoolConfigValueXlat(options.whichShield, "config.pulseshield", EmulationMode::Console3DO, EmulationMode::PC);
-	getBoolConfigValueXlat(options.whichIntro, "config.3domovies", EmulationMode::Console3DO, EmulationMode::PC);
+	getBoolConfigValueXlat(options.smoothScroll, "config.smoothscroll", uqm::EmulationMode::Console3DO, uqm::EmulationMode::PC);
+	getBoolConfigValueXlat(options.whichShield, "config.pulseshield", uqm::EmulationMode::Console3DO, uqm::EmulationMode::PC);
+	getBoolConfigValueXlat(options.whichIntro, "config.3domovies", uqm::EmulationMode::Console3DO, uqm::EmulationMode::PC);
 
 	getBoolConfigValue(options.use3doMusic, "config.3domusic");
 	getBoolConfigValue(options.useRemixMusic, "config.remixmusic");
@@ -230,8 +233,8 @@ void getUserConfigOptions(OptionsStruct& options)
 					   "mm.directionalJoystick"); // For Android
 #endif
 
-	getBoolConfigValueXlat(options.landerHold, "mm.landerHold", EmulationMode::Console3DO, EmulationMode::PC);
-	getBoolConfigValueXlat(options.scrTrans, "mm.scrTransition", EmulationMode::Console3DO, EmulationMode::PC);
+	getBoolConfigValueXlat(options.landerHold, "mm.landerHold", uqm::EmulationMode::Console3DO, uqm::EmulationMode::PC);
+	getBoolConfigValueXlat(options.scrTrans, "mm.scrTransition", uqm::EmulationMode::Console3DO, uqm::EmulationMode::PC);
 	if (res_IsInteger("mm.difficulty") && !options.optDifficulty.set)
 	{
 		options.optDifficulty.value = res_GetInteger("mm.difficulty");
@@ -267,8 +270,8 @@ void getUserConfigOptions(OptionsStruct& options)
 	}
 
 	getBoolConfigValue(options.smartAutoPilot, "mm.smartAutoPilot");
-	getBoolConfigValueXlat(options.tintPlanSphere, "mm.tintPlanSphere", EmulationMode::Console3DO, EmulationMode::PC);
-	getBoolConfigValueXlat(options.planetStyle, "mm.planetStyle", EmulationMode::Console3DO, EmulationMode::PC);
+	getBoolConfigValueXlat(options.tintPlanSphere, "mm.tintPlanSphere", uqm::EmulationMode::Console3DO, uqm::EmulationMode::PC);
+	getBoolConfigValueXlat(options.planetStyle, "mm.planetStyle", uqm::EmulationMode::Console3DO, uqm::EmulationMode::PC);
 
 	if (res_IsInteger("mm.starBackground")
 		&& !options.starBackground.set)
@@ -277,18 +280,18 @@ void getUserConfigOptions(OptionsStruct& options)
 			res_GetInteger("mm.starBackground");
 	}
 
-	getBoolConfigValueXlat(options.scanStyle, "mm.scanStyle", EmulationMode::Console3DO, EmulationMode::PC);
+	getBoolConfigValueXlat(options.scanStyle, "mm.scanStyle", uqm::EmulationMode::Console3DO, uqm::EmulationMode::PC);
 
 	getBoolConfigValue(options.nonStopOscill, "mm.nonStopOscill");
-	getBoolConfigValueXlat(options.scopeStyle, "mm.scopeStyle", EmulationMode::Console3DO, EmulationMode::PC);
+	getBoolConfigValueXlat(options.scopeStyle, "mm.scopeStyle", uqm::EmulationMode::Console3DO, uqm::EmulationMode::PC);
 
 	getBoolConfigValue(options.hyperStars, "mm.hyperStars");
 
-	getBoolConfigValueXlat(options.landerStyle, "mm.landerStyle", EmulationMode::Console3DO, EmulationMode::PC);
+	getBoolConfigValueXlat(options.landerStyle, "mm.landerStyle", uqm::EmulationMode::Console3DO, uqm::EmulationMode::PC);
 
 	getBoolConfigValue(options.planetTexture, "mm.planetTexture");
 
-	getBoolConfigValueXlat(options.flagshipColor, "mm.flagshipColor", EmulationMode::Console3DO, EmulationMode::PC);
+	getBoolConfigValueXlat(options.flagshipColor, "mm.flagshipColor", uqm::EmulationMode::Console3DO, uqm::EmulationMode::PC);
 
 	getBoolConfigValue(options.noHQEncounters, "cheat.noHQEncounters");
 
@@ -372,3 +375,5 @@ void getUserConfigOptions(OptionsStruct& options)
 		}
 	}
 }
+
+} // namespace uqm

@@ -49,11 +49,11 @@
 
 
 int optWhichCoarseScan;
-EmulationMode optWhichMenu;
-EmulationMode optWhichFonts;
-EmulationMode optWhichIntro;
-EmulationMode optWhichShield;
-EmulationMode optSmoothScroll;
+uqm::EmulationMode optWhichMenu;
+uqm::EmulationMode optWhichFonts;
+uqm::EmulationMode optWhichIntro;
+uqm::EmulationMode optWhichShield;
+uqm::EmulationMode optSmoothScroll;
 int optMeleeScale;
 uqstl::span<const uqstl::string> optAddons;
 
@@ -88,7 +88,7 @@ OPT_ENABLABLE optInfiniteCredits;
 bool optSuperMelee;
 bool optLoadGame;
 OPT_ENABLABLE optCustomBorder;
-SeedType optSeedType;
+uqm::SeedType optSeedType;
 int optCustomSeed;
 OPT_ENABLABLE optShipSeed;
 int optSphereColors;
@@ -97,8 +97,8 @@ int optSpaceMusic;
 OPT_ENABLABLE optVolasMusic;
 OPT_ENABLABLE optWholeFuel;
 OPT_ENABLABLE optDirectionalJoystick;
-EmulationMode optLanderHold;
-EmulationMode optScrTrans;
+uqm::EmulationMode optLanderHold;
+uqm::EmulationMode optScrTrans;
 int optDifficulty;
 int optDiffChooser;
 int optFuelRange;
@@ -110,16 +110,16 @@ OPT_ENABLABLE optHazardColors;
 OPT_ENABLABLE optOrzCompFont;
 int optControllerType;
 OPT_ENABLABLE optSmartAutoPilot;
-EmulationMode optTintPlanSphere;
-EmulationMode optPlanetStyle;
+uqm::EmulationMode optTintPlanSphere;
+uqm::EmulationMode optPlanetStyle;
 int optStarBackground;
-EmulationMode optScanStyle;
+uqm::EmulationMode optScanStyle;
 OPT_ENABLABLE optNonStopOscill;
-EmulationMode optScopeStyle;
-EmulationMode optSuperPC;
+uqm::EmulationMode optScopeStyle;
+uqm::EmulationMode optSuperPC;
 OPT_ENABLABLE optHyperStars;
 OPT_ENABLABLE optPlanetTexture;
-EmulationMode optFlagshipColor;
+uqm::EmulationMode optFlagshipColor;
 OPT_ENABLABLE optNoHQEncounters;
 OPT_ENABLABLE optDeCleansing;
 OPT_ENABLABLE optMeleeObstacles;
@@ -168,7 +168,10 @@ uqstl::vector<uqm::DWORD> g_addonList {};
 extern uio_Repository* repository;
 extern uio_DirHandle* rootDir;
 
+namespace uqm
+{
 INPUT_TEMPLATE input_templates[6];
+
 
 static const char* findFileInDirs(const char* locs[], int numLocs,
 								  const char* file);
@@ -188,8 +191,7 @@ static void mountBaseZip(uio_DirHandle* dirHandle, const char* mountPoint,
 // errno will be set to 'ENOENT'.
 // Entries from 'locs' that together with 'file' are longer than
 // PATH_MAX will be ignored, except for a warning given to stderr.
-static const char*
-findFileInDirs(const char* locs[], int numLocs, const char* file)
+static const char* findFileInDirs(const char* locs[], int numLocs, const char* file)
 {
 	int locI;
 	char path[PATH_MAX];
@@ -642,7 +644,7 @@ bool isAddonAvailable(uqgsl::czstring addon_name)
 	{
 		return false;
 	}
-	
+
 	return uqstl::find(g_addonList.begin(), g_addonList.end(), crc32b(addon_name)) != g_addonList.end();
 }
 
@@ -901,3 +903,4 @@ bool setGammaCorrection(float gamma)
 	}
 	return set;
 }
+} // namespace uqm

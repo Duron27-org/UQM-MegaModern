@@ -595,7 +595,7 @@ DrawSISComWindow(void)
 		}
 		DrawFilledRectangle(&r);
 
-		if (!usingSpeech && optSmoothScroll == EmulationMode::PC && !IsDarkMode)
+		if (!usingSpeech && optSmoothScroll == uqm::EmulationMode::PC && !IsDarkMode)
 		{
 			DrawCommBorder(r);
 		}
@@ -748,7 +748,7 @@ FeedbackPlayerPhrase(uqm::CHAR_T* pStr)
 static void
 InitSpeechGraphics(void)
 {
-	if (optScopeStyle != EmulationMode::PC)
+	if (optScopeStyle != uqm::EmulationMode::PC)
 	{
 		InitOscilloscope(SetAbsFrameIndex(ActivityFrame, 9));
 	}
@@ -967,7 +967,7 @@ DoTalkSegue(TALKING_STATE* pTS)
 		return false;
 	}
 
-	if (optSpeech || optSmoothScroll == EmulationMode::Console3DO || (lowByte(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE))
+	if (optSpeech || optSmoothScroll == uqm::EmulationMode::Console3DO || (lowByte(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE))
 	{
 		if (PulsedInputState.menu[KEY_MENU_CANCEL])
 		{
@@ -976,12 +976,12 @@ DoTalkSegue(TALKING_STATE* pTS)
 			return false;
 		}
 
-		if (optSmoothScroll == EmulationMode::PC || !optSpeech)
+		if (optSmoothScroll == uqm::EmulationMode::PC || !optSpeech)
 		{
 			left = PulsedInputState.menu[KEY_MENU_LEFT] != 0;
 			right = PulsedInputState.menu[KEY_MENU_RIGHT] != 0;
 		}
-		else if (optSmoothScroll == EmulationMode::Console3DO)
+		else if (optSmoothScroll == uqm::EmulationMode::Console3DO)
 		{
 			left = CurrentInputState.menu[KEY_MENU_LEFT] != 0;
 			right = CurrentInputState.menu[KEY_MENU_RIGHT] != 0;
@@ -996,11 +996,11 @@ DoTalkSegue(TALKING_STATE* pTS)
 		if (right)
 		{
 			SetSliderImage(SetAbsFrameIndex(ActivityFrame, 3));
-			if (optSmoothScroll == EmulationMode::PC || !optSpeech)
+			if (optSmoothScroll == uqm::EmulationMode::PC || !optSpeech)
 			{
 				FastForward_Page();
 			}
-			else if (optSmoothScroll == EmulationMode::Console3DO)
+			else if (optSmoothScroll == uqm::EmulationMode::Console3DO)
 			{
 				FastForward_Smooth();
 			}
@@ -1010,11 +1010,11 @@ DoTalkSegue(TALKING_STATE* pTS)
 		{
 			pTS->rewind = false;
 			SetSliderImage(SetAbsFrameIndex(ActivityFrame, 4));
-			if (optSmoothScroll == EmulationMode::PC || !optSpeech)
+			if (optSmoothScroll == uqm::EmulationMode::PC || !optSpeech)
 			{
 				FastReverse_Page();
 			}
-			else if (optSmoothScroll == EmulationMode::Console3DO)
+			else if (optSmoothScroll == uqm::EmulationMode::Console3DO)
 			{
 				FastReverse_Smooth();
 			}
@@ -1276,7 +1276,7 @@ void AlienTalkSegue(uqm::COUNT wait_track)
 
 		InitCommAnimations();
 
-		if (optScrTrans != EmulationMode::None && !optSpeech)
+		if (optScrTrans != uqm::EmulationMode::None && !optSpeech)
 		{ // short pause to compensate instant fading (conditions to be adjusted)
 			// I think it is for optIPScaler
 			TimeCount timeout = GetTimeCounter() + ONE_SECOND / 4;
@@ -1508,7 +1508,7 @@ SelectResponse(ENCOUNTER_STATE* pES)
 	utf8StringCopy(pES->phrase_buf, sizeof pES->phrase_buf,
 				   response_text->pStr);
 
-	if (!optSpeech && optSmoothScroll == EmulationMode::PC)
+	if (!optSpeech && optSmoothScroll == uqm::EmulationMode::PC)
 	{ // short pause after choosing response to mimic PC behaviour
 		TimeCount timeout = GetTimeCounter() + ONE_SECOND / 2;
 		RefreshResponsesSpecial(pES);
@@ -1593,7 +1593,7 @@ PlayerResponseInput(ENCOUNTER_STATE* pES)
 	else
 	{
 		response = pES->cur_response;
-		if (PulsedInputState.menu[KEY_MENU_LEFT] && (optSpeech || optSmoothScroll == EmulationMode::Console3DO))
+		if (PulsedInputState.menu[KEY_MENU_LEFT] && (optSpeech || optSmoothScroll == uqm::EmulationMode::Console3DO))
 		{
 			SelectReplay(pES);
 

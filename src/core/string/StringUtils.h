@@ -10,18 +10,68 @@
 #include <fmt/format.h>
 #include "core/stl/stl.h"
 
-template <typename T, typename uqstl::enable_if_t<std::is_arithmetic_v<T>, bool> = true>
-[[nodiscard]] inline const char* toString(T value)
+namespace uqm
 {
-	if constexpr (uqstl::is_same_v<uqstl::remove_cv_t<T>, bool>)
+static constexpr const char* TrueText {"true"};
+static constexpr const char* FalseText {"false"};
+
+[[nodiscard]] constexpr size_t strlenConstexpr(uqgsl::czstring str) noexcept
+{
+	if (str == nullptr || *str == '\0') [[unlikely]]
 	{
-		return value ? "true" : "false";
+		return 0;
+	}
+	return uqstl::string_view {str}.size();
+}
+
+[[nodiscard]] inline const char* toString(bool value)
+{
+	return value ? TrueText : FalseText;
+}
+
+template <typename T, typename uqstl::enable_if_t<std::is_arithmetic_v<T>, bool> = true>
+inline const char* toString(const T value, uqstl::span<char> buffer)
+{
+	if (buffer.size() == 0) [[unlikely]]
+	{
+		buffer[0] = '\0';
+		return buffer.data();
 	}
 
-	static thread_local char buf[64];
-	const auto [_, len] {fmt::format_to_n(buf, 63, "{}", value)};
-	buf[len] = '\0';
-	return buf;
+	if constexpr (uqstl::is_same_v<bool, uqstl::remove_cv_t<T>>)
+	{
+		static constexpr size_t TrueLen {strlenConstexpr(TrueText)};
+		static constexpr size_t FalseLen {strlenConstexpr(FalseText)};
+		if (value)
+		{
+			if (buffer.size() > TrueLen)
+			{
+				uqstl::memcpy(buffer.data(), TrueText, TrueLen);
+				buffer[TrueLen] = '\0';
+			}
+			else
+			{
+				buffer[0] = '\0';
+			}
+		}
+		else
+		{
+			if (buffer.size() > FalseLen)
+			{
+				uqstl::memcpy(buffer.data(), FalseText, FalseLen);
+				buffer[FalseLen] = '\0';
+			}
+			else
+			{
+				buffer[0] = '\0';
+			}
+		}
+		return buffer.data();
+	}
+
+	const auto [_, len] {fmt::format_to_n(buffer.data(), buffer.size() - 1, "{}", value)};
+	buffer[len] = '\0';
+	return buffer.data();
 }
 
 
@@ -34,7 +84,7 @@ template <typename T, typename uqstl::enable_if_t<std::is_arithmetic_v<T>, bool>
 {
 	return std::ranges::equal(lhs, rhs, [](const char a, const char b) {
 		return uqstl::tolower(static_cast<const unsigned char>(a)) == uqstl::tolower(static_cast<const unsigned char>(b));
-		});
+	});
 }
 
 
@@ -83,8 +133,6 @@ inline uqstl::errc parseStr(uqstl::string_view str, T& out)
 // template specialization for bool. Impl in cpp.
 template <>
 uqstl::errc parseStr(uqstl::string_view str, bool& out);
-//uqstl::errc parseStr(uqgsl::czstring str, int& out);
-//uqstl::errc parseStr(uqgsl::czstring str, float& out);
 
 template <typename T, typename uqstl::enable_if_t<std::is_enum_v<T>, bool> = true>
 inline uqstl::errc parseStr(uqstl::string_view str, T& out)
@@ -93,11 +141,11 @@ inline uqstl::errc parseStr(uqstl::string_view str, T& out)
 
 	UnderlyingT intermediate {};
 	const auto ec {parseStr(str, intermediate)};
-	if (ec == std::errc {})
+	if (ec == std::errc {}) [[likely]]
 	{
 		out = static_cast<T>(intermediate);
 	}
 	return ec;
 }
-
+} // namespace uqm
 #endif /* UQM_CORE_STRING_STRINGUTILS_H_ */

@@ -1039,11 +1039,11 @@ bool LoadGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, uio_Stream* in_fp, b
 	// Reset Debug Key
 	DebugKeyPressed = false;
 	// Set the SeedType flag and then start Starseed
-	g_seedType = (SeedType)GET_GAME_STATE(SEED_TYPE);
+	g_seedType = (uqm::SeedType)GET_GAME_STATE(SEED_TYPE);
 	// Assuming load from older version, optSeedType should be 0 (none)
 	// If the seed is also 0 it's a really old save file and prime seed
 	// Otherwise if the seed isn't prime, optSeedType goes to 1 (planet)
-	if (g_seedType == SeedType::Prime)
+	if (g_seedType == uqm::SeedType::Prime)
 	{
 		if (optCustomSeed == 0)
 		{
@@ -1051,7 +1051,7 @@ bool LoadGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, uio_Stream* in_fp, b
 		}
 		else if (optCustomSeed != PrimeA)
 		{
-			SET_GAME_STATE(SEED_TYPE, g_seedType = SeedType::Planet);
+			SET_GAME_STATE(SEED_TYPE, g_seedType = uqm::SeedType::Planet);
 		}
 	}
 #ifdef DEBUG_STARSEED

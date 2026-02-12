@@ -5,6 +5,9 @@
 #include "core/stl/stl.h"
 #include "core/types/enum.h"
 
+namespace uqm
+{
+
 enum class SeedType
 {
 	None = 0,
@@ -118,7 +121,7 @@ static inline constexpr const char* OptionFalseText {"off"};
 template <typename T>
 inline const char* OptionT<T>::toString() const
 {
-	return ::toString(value);
+	return ::uqm::toString(value);
 }
 
 template <>
@@ -141,5 +144,6 @@ enum class RunMode
 };
 
 
+} // namespace uqm
 
 #endif /* UQM_OPTIONS_OPTIONTYPES_H_ */

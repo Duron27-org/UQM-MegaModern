@@ -1,8 +1,9 @@
 #include "StringUtils.h"
 
+namespace uqm
+{
 
-
-template<>
+template <>
 uqstl::errc parseStr(uqstl::string_view str, bool& out)
 {
 	uqstl::string asLower {str};
@@ -20,7 +21,8 @@ uqstl::errc parseStr(uqstl::string_view str, bool& out)
 		out = false;
 		return uqstl::errc {};
 	}
-	
+
 	return std::errc::invalid_argument;
 }
 
+} // namespace uqm

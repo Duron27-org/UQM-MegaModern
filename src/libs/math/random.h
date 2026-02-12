@@ -42,7 +42,7 @@ uqm::DWORD TFB_Random(void);
 typedef struct RandomContext RandomContext;
 
 
-extern SeedType g_seedType;
+extern uqm::SeedType g_seedType;
 
 
 
@@ -59,13 +59,13 @@ struct RandomContext
 #define MAX_SEED 2147483644
 #define MIN_SEED 3
 #define SANE_SEED(a) (((a) < MIN_SEED || (a) > MAX_SEED) ? false : true)
-#define SeedA (((g_seedType == SeedType::Planet) && (SANE_SEED(GLOBAL_SIS(Seed)))) ? GLOBAL_SIS(Seed) : PrimeA)
+#define SeedA (((g_seedType == uqm::SeedType::Planet) && (SANE_SEED(GLOBAL_SIS(Seed)))) ? GLOBAL_SIS(Seed) : PrimeA)
 // Default SeedA (PrimeA): 16807 - a relatively prime number - also M div Q
 #define SeedM (UINT32_MAX / 2) // 0xFFFFFFFF div 2
 #define SeedQ (SeedM / SeedA)  // Default: 127773L - M div A
 #define SeedR (SeedM % SeedA)  // Default: 2836 - M mod A
-#define PrimeSeed (g_seedType == SeedType::Prime)
-#define StarSeed (g_seedType > SeedType::Planet)
+#define PrimeSeed (g_seedType == uqm::SeedType::Prime)
+#define StarSeed (g_seedType > uqm::SeedType::Planet)
 
 RandomContext* RandomContext_New(void);
 RandomContext* RandomContext_Set(uqm::DWORD Context);

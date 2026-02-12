@@ -44,7 +44,7 @@
 
 /* ----------------------------STATIC DATA-------------------------------- */
 
-static SeedType g_seedType {};
+static uqm::SeedType g_seedType {};
 static uqm::DWORD seed = 12345L; /* random number seed */
 
 /* ----------------------------CODE--------------------------------------- */

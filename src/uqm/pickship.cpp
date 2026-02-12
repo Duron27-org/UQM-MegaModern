@@ -329,7 +329,7 @@ ChangeSelection:
 			}
 
 			SetFlashRect(nullptr, false);
-			SetFlashRect(&pMS->flash_rect0, optWhichMenu == EmulationMode::PC);
+			SetFlashRect(&pMS->flash_rect0, optWhichMenu == uqm::EmulationMode::PC);
 		}
 	}
 

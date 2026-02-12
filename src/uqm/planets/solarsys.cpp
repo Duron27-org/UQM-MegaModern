@@ -3264,7 +3264,7 @@ DoSolarSysMenu(MENU_STATE* pMS)
 
 			TransitionSystemIn();
 
-			if (optWhichMenu != EmulationMode::PC)
+			if (optWhichMenu != uqm::EmulationMode::PC)
 			{
 				DrawMenuStateStrings(PM_STARMAP, NAVIGATION);
 			}
@@ -3277,7 +3277,7 @@ DoSolarSysMenu(MENU_STATE* pMS)
 	{
 		if (select)
 		{ // 3DO menu jumps to NAVIGATE after a successful submenu run
-			if (optWhichMenu != EmulationMode::PC)
+			if (optWhichMenu != uqm::EmulationMode::PC)
 			{
 				pMS->CurState = NAVIGATION;
 			}

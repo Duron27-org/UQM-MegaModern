@@ -76,26 +76,8 @@ bool restartGame;
 #endif
 
 
-// Looks up the given string value in the given list and passes
-// the associated int value back. returns true if value was found.
-//// The list is terminated by a nullptr 'str' value.
-//static bool lookupOptionValue(const struct option_list_value* list,
-//							  const char* strval, int* ret);
-//
-//
-//static int parseOptions(int argc, char* argv[],
-//						struct options_struct* options);
-//static void getUserConfigOptions(struct options_struct* options);
-//static void usage(FILE* out, const struct options_struct* defaultOptions);
-//static int parseIntOption(const char* str, int* result,
-//						  const char* optName);
-//static int parseFloatOption(const char* str, float* f,
-//							const char* optName);
-//static void parseIntVolume(int intVol, float* vol);
-//static int InvalidArgument(const char* supplied, const char* opt_name);
-//static const char* choiceOptString(const struct int_option* option);
-//static const char* boolOptString(const struct bool_option* option);
-//static const char* boolNotOptString(const struct bool_option* option);
+namespace uqm
+{
 
 [[nodiscard]] int legacyinit(uqstl::span<const char* const> args, OptionsStruct& options)
 {
@@ -333,7 +315,7 @@ bool restartGame;
 	optCaptainNames = (OPT_ENABLABLE)options.captainNames.value;
 	optDosMenus = (OPT_ENABLABLE)options.dosMenus.value;
 
-	#pragma clang optimize off
+#pragma clang optimize off
 	prepareContentDir(c_str(options.contentDir), c_str(options.addonDir), c_str(args.front()));
 
 	resolutionFactor = isAddonAvailable(HD_MODE) ?
@@ -353,7 +335,7 @@ bool restartGame;
 	}
 	options.windowType.value = optWindowType;
 	options.windowType.set = true;
-	#pragma clang optimize on
+#pragma clang optimize on
 
 	{
 		int w = 320;
@@ -536,72 +518,6 @@ void legacyTeardown()
 	}
 }
 
-//static bool lookupOptionValue(const OptionListValue& list, const char* strval, int* ret)
-//{
-//	if (!list)
-//	{
-//		return false;
-//	}
-//
-//	// The list is terminated by a nullptr 'str' value.
-//	while (list->str && strcmp(strval, list->str) != 0)
-//	{
-//		++list;
-//	}
-//	if (!list->str)
-//	{
-//		return false;
-//	}
-//
-//	*ret = list->value;
-//	return true;
-//}
-
-
-//static int parseIntOption(const char* str, int* result, const char* optName)
-//{
-//	char* endPtr;
-//	int temp;
-//
-//	if (str == nullptr || str[0] == '\0')
-//	{
-//		saveError("Error: Invalid value for '%s'.", optName);
-//		return -1;
-//	}
-//	temp = (int)strtol(str, &endPtr, 10);
-//	if (*endPtr != '\0')
-//	{
-//		saveError("Error: Junk characters in argument '%s'.", optName);
-//		return -1;
-//	}
-//
-//	*result = temp;
-//	return 0;
-//}
-
-//static int
-//parseFloatOption(const char* str, float* f, const char* optName)
-//{
-//	char* endPtr;
-//	float temp;
-//
-//	if (str[0] == '\0')
-//	{
-//		saveError("Error: Invalid value for '%s'.", optName);
-//		return -1;
-//	}
-//	temp = (float)strtod(str, &endPtr);
-//	if (*endPtr != '\0')
-//	{
-//		saveError("Error: Junk characters in argument '%s'.", optName);
-//		return -1;
-//	}
-//
-//	*f = temp;
-//	return 0;
-//}
-
-
 ///////////////////////////////////////////////////
 // new stuff
 
@@ -623,3 +539,5 @@ void UQMGame::teardown()
 {
 	legacyTeardown();
 }
+
+} // namespace uqm

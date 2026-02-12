@@ -165,7 +165,7 @@ void RerenderPlanetSphere(void)
 {
 	PLANET_ORBIT* Orbit = &pSolarSysState->Orbit;
 
-	if (optTintPlanSphere != EmulationMode::PC)
+	if (optTintPlanSphere != uqm::EmulationMode::PC)
 	{
 		return;
 	}
@@ -203,7 +203,7 @@ void InitSphereRotation(int direction, bool shielded, uqm::COUNT width,
 
 	rotDirection = direction;
 	rotPointIndex = 0;
-	throbShield = shielded && optWhichShield == EmulationMode::Console3DO
+	throbShield = shielded && optWhichShield == uqm::EmulationMode::Console3DO
 			   && !(useDosSpheres || use3DOSpheres);
 
 	if (throbShield)
