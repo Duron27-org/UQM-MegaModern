@@ -8,11 +8,13 @@ cmake_minimum_required(VERSION 3.21)
 set(uqm_test_sources_all "main.cpp")
 
 include("tests/tests.cmake")
-list(APPEND uqm_test_sources_all ${tst_tests_master_files})
+list(APPEND uqm_test_sources_all ${uqm_tests_master_files})
 
 set(UQM_TEST_SOURCES
     ${uqm_test_sources_all}
 )
+message(STATUS "Test sources: ${UQM_TEST_SOURCES}")
+message(STATUS "CMake source dir: ${CMAKE_SOURCE_DIR}")
 
 # ---- Test executable -------------------------------------------------------
 
@@ -30,11 +32,17 @@ target_include_directories(UQM_Tests
 
 # ---- Link libraries --------------------------------------------------------
 
+find_package(fmt REQUIRED)
+find_package(gsl-lite REQUIRED)
+find_package(GTest REQUIRED)
+
 # GTest::gtest and GTest::gtest_main are the modern imported targets
 target_link_libraries(UQM_Tests
     PRIVATE
         GTest::gtest
         GTest::gtest_main
+        fmt::fmt
+        gsl-lite::gsl-lite
 )
 
 # ---- Compiler options (inherit from main project if needed) ---------------
