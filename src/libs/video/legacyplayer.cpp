@@ -30,12 +30,12 @@ PlayLegacyVideo(LEGACY_VIDEO vid)
 
 	if (!vid)
 	{
-		return NULL;
+		return nullptr;
 	}
 	ref = (LEGACY_VIDEO_REF)HCalloc(sizeof(*ref));
 	if (!ref)
 	{
-		return NULL;
+		return nullptr;
 	}
 	name = vid->video;
 	audname = vid->audio;
@@ -45,7 +45,7 @@ PlayLegacyVideo(LEGACY_VIDEO vid)
 	ref->vidref = LoadVideoFile(name);
 	if (!ref->vidref)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	DrawBorderPadding(ref->vidref->w);
@@ -63,7 +63,7 @@ PlayLegacyVideo(LEGACY_VIDEO vid)
 	if (type == NO_FMV)
 	{ // Video failed to start
 		StopLegacyVideo(ref);
-		return NULL;
+		return nullptr;
 	}
 
 	return ref;

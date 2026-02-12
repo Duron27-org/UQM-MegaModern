@@ -446,7 +446,7 @@ void DoInput(void* pInputState, bool resetInput)
 				S = SetAbsSoundIndex(S, MENU_SOUND_SUCCESS);
 			}
 
-			PlaySoundEffect(S, 0, NotPositional(), NULL, 0);
+			PlaySoundEffect(S, 0, NotPositional(), nullptr, 0);
 		}
 
 		if (inputCallback)
@@ -589,5 +589,5 @@ bool ConfirmExit(void)
 
 void TestSpeechSound(STRING snd)
 {
-	PlaySpeechEffect((SOUND)snd, NotPositional(), NULL, 0);
+	PlaySpeechEffect((SOUND)snd, NotPositional(), nullptr, 0);
 }

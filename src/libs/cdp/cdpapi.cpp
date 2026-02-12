@@ -127,7 +127,7 @@ struct cdp_ItfReg
 
 #define CDP_DECLARE_ITF(kind, vf, vt, vtbl) \
 	{true, true, CDPITF_KIND_##kind,        \
-	 CDPAPI_VERSION_##vf, CDPAPI_VERSION_##vt, vtbl, NULL}
+	 CDPAPI_VERSION_##vf, CDPAPI_VERSION_##vt, vtbl, nullptr}
 
 // Built-in interfaces + space for loadable
 cdp_ItfReg cdp_itfs[MAX_REG_ITFS + 1] =
@@ -139,7 +139,7 @@ cdp_ItfReg cdp_itfs[MAX_REG_ITFS + 1] =
 		CDP_DECLARE_ITF(VIDEO, 1, 1, &cdp_video_itf_v1),
 		// TODO: put newly defined built-in interfaces here
 
-		{false, false, "", 0, 0, NULL}  // term
+		{false, false, "", 0, 0, nullptr}  // term
 };
 
 // event bind descriptor
@@ -164,7 +164,7 @@ struct cdp_EventReg
 };
 
 #define CDP_DECLARE_EVENT(name) \
-	{true, true, "UQM." #name, NULL, 0, NULL}
+	{true, true, "UQM." #name, nullptr, 0, nullptr}
 
 // Built-in events + space for loadable
 // a cdp_Event handle is an index into this array
@@ -175,7 +175,7 @@ cdp_EventReg cdp_evts[MAX_REG_EVENTS + 1] =
 		CDP_DECLARE_EVENT(PlanetSide.LiftOff),
 		// TODO: put newly defined built-in events here
 
-		{false, false, "", NULL, 0, NULL}  // term
+		{false, false, "", nullptr, 0, nullptr}  // term
 };
 
 cdp_Error
@@ -192,7 +192,7 @@ bool cdp_InitApi(void)
 	cdp_Module* kernel;
 
 	// preprocess built-in itfs
-	kernel = cdp_LoadModule(NULL);
+	kernel = cdp_LoadModule(nullptr);
 
 	for (i = 0; cdp_itfs[i].builtin; ++i)
 	{
@@ -206,7 +206,7 @@ bool cdp_InitApi(void)
 	{
 		cdp_evts[i].module = kernel;
 		cdp_evts[i].bindslots = 0;
-		cdp_evts[i].binds = NULL;
+		cdp_evts[i].binds = nullptr;
 	}
 
 	return true;
@@ -226,9 +226,9 @@ void cdp_UninitApi(void)
 			{
 				HFree(itf->name);
 			}
-			itf->name = NULL;
-			itf->itfvtbl = NULL;
-			itf->module = NULL;
+			itf->name = nullptr;
+			itf->itfvtbl = nullptr;
+			itf->module = nullptr;
 		}
 	}
 }
@@ -281,7 +281,7 @@ cdp_GetInterfaceReg(const char* name, cdp_ApiVersion api_ver)
 	if (!itf->name)
 	{
 		cdp_api_error = CDPERR_NO_ITF;
-		return NULL;
+		return nullptr;
 	}
 
 	return itf;
@@ -293,7 +293,7 @@ cdp_GetInterface(const char* name, cdp_ApiVersion api_ver)
 	cdp_ItfReg* reg;
 
 	reg = cdp_GetInterfaceReg(name, api_ver);
-	return reg ? reg->itfvtbl : NULL;
+	return reg ? reg->itfvtbl : nullptr;
 }
 
 static cdp_Itf*
@@ -312,7 +312,7 @@ cdp_Host_GetItfs(cdp_ItfDef* defs)
 	for (def = defs; def->name; ++def)
 	{
 		// registration handle is not returned
-		def->reg = NULL;
+		def->reg = nullptr;
 
 		reg = cdp_GetInterfaceReg(def->name, CDPAPI_VERSION_1);
 		if (reg)
@@ -325,8 +325,8 @@ cdp_Host_GetItfs(cdp_ItfDef* defs)
 		}
 		else
 		{
-			def->itf = NULL;
-			def->module = NULL;
+			def->itf = nullptr;
+			def->module = nullptr;
 			def->ver_from = 0;
 			def->ver_to = 0;
 			++errors;
@@ -342,7 +342,7 @@ cdp_Host_RegisterItf(const char* name, cdp_ApiVersion ver_from,
 					 cdp_Module* owner)
 {
 	cdp_ItfReg* itfreg;
-	cdp_ItfReg* newslot = NULL;
+	cdp_ItfReg* newslot = nullptr;
 	char* id_name;
 	const char* ctx;
 
@@ -350,14 +350,14 @@ cdp_Host_RegisterItf(const char* name, cdp_ApiVersion ver_from,
 	{
 		fprintf(stderr, "cdp_Host_RegisterItf(): "
 						"No owner info supplied\n");
-		//return NULL;
+		//return nullptr;
 	}
 	if (!name || !*name || !itfvtbl)
 	{
 		fprintf(stderr, "cdp_Host_RegisterItf(): "
 						"Null or invalid interface (from %s)\n",
 				cdp_GetModuleName(owner, true));
-		return NULL;
+		return nullptr;
 	}
 	ctx = cdp_GetModuleContext(owner, false);
 	if (!ctx)
@@ -365,7 +365,7 @@ cdp_Host_RegisterItf(const char* name, cdp_ApiVersion ver_from,
 		fprintf(stderr, "cdp_Host_RegisterItf(): "
 						"Null or invalid context (from %s)\n",
 				cdp_GetModuleName(owner, true));
-		return NULL;
+		return nullptr;
 	}
 
 	// TODO: review version policy (below)
@@ -382,7 +382,7 @@ cdp_Host_RegisterItf(const char* name, cdp_ApiVersion ver_from,
 		fprintf(stderr, "cdp_Host_RegisterItf(): "
 						"Obsolete interface %s (from %s)\n",
 				name, cdp_GetModuleName(owner, true));
-		return NULL;
+		return nullptr;
 	}
 
 	id_name = cdp_MakeContextName(ctx, name);
@@ -403,7 +403,7 @@ cdp_Host_RegisterItf(const char* name, cdp_ApiVersion ver_from,
 		fprintf(stderr, "cdp_Host_RegisterItf(): "
 						"Interfaces limit reached\n");
 		HFree(id_name);
-		return NULL;
+		return nullptr;
 	}
 	else if (itfreg->name)
 	{
@@ -412,7 +412,7 @@ cdp_Host_RegisterItf(const char* name, cdp_ApiVersion ver_from,
 						"%s denied\n",
 				name, cdp_GetModuleName(owner, true));
 		HFree(id_name);
-		return NULL;
+		return nullptr;
 	}
 
 	if (!newslot)
@@ -422,8 +422,8 @@ cdp_Host_RegisterItf(const char* name, cdp_ApiVersion ver_from,
 		// make next one a term
 		itfreg[1].builtin = false;
 		itfreg[1].used = false;
-		itfreg[1].name = NULL;
-		itfreg[1].itfvtbl = NULL;
+		itfreg[1].name = nullptr;
+		itfreg[1].itfvtbl = nullptr;
 	}
 
 	newslot->name = id_name;
@@ -449,9 +449,9 @@ cdp_Host_UnregisterItf(cdp_ItfReg* itfreg)
 	{
 		HFree(itfreg->name);
 	}
-	itfreg->module = NULL;
-	itfreg->name = NULL;
-	itfreg->itfvtbl = NULL;
+	itfreg->module = nullptr;
+	itfreg->name = nullptr;
+	itfreg->itfvtbl = nullptr;
 }
 
 static bool
@@ -470,7 +470,7 @@ cdp_Host_RegisterItfs(cdp_ItfDef* defs, cdp_Module* owner)
 		}
 		else
 		{
-			def->module = NULL;
+			def->module = nullptr;
 			++errors;
 		}
 	}
@@ -507,7 +507,7 @@ cdp_GetEventReg(const char* name)
 	if (!evt->name)
 	{
 		cdp_api_error = CDPERR_NO_EVENT;
-		return NULL;
+		return nullptr;
 	}
 
 	return evt;
@@ -577,7 +577,7 @@ cdp_Host_GetEvents(cdp_EventDef* defs)
 	for (def = defs; def->name; ++def)
 	{
 		// registration handle is not returned
-		def->reg = NULL;
+		def->reg = nullptr;
 
 		reg = cdp_GetEventReg(def->name);
 		if (reg)
@@ -589,7 +589,7 @@ cdp_Host_GetEvents(cdp_EventDef* defs)
 		else
 		{
 			def->event = CDP_EVENT_INVALID;
-			def->module = NULL;
+			def->module = nullptr;
 			++errors;
 		}
 	}
@@ -601,7 +601,7 @@ static cdp_EventReg*
 cdp_Host_RegisterEvent(const char* name, cdp_Module* owner)
 {
 	cdp_EventReg* evtreg;
-	cdp_EventReg* newslot = NULL;
+	cdp_EventReg* newslot = nullptr;
 	char* id_name;
 	const char* ctx;
 
@@ -609,14 +609,14 @@ cdp_Host_RegisterEvent(const char* name, cdp_Module* owner)
 	{
 		fprintf(stderr, "cdp_Host_RegisterEvent(): "
 						"No owner info supplied\n");
-		//return NULL;
+		//return nullptr;
 	}
 	if (!name || !*name)
 	{
 		fprintf(stderr, "cdp_Host_RegisterEvent(): "
 						"Null or invalid event (from %s)\n",
 				cdp_GetModuleName(owner, true));
-		return NULL;
+		return nullptr;
 	}
 	ctx = cdp_GetModuleContext(owner, false);
 	if (!ctx)
@@ -624,7 +624,7 @@ cdp_Host_RegisterEvent(const char* name, cdp_Module* owner)
 		fprintf(stderr, "cdp_Host_RegisterEvent(): "
 						"Null or invalid context (from %s)\n",
 				cdp_GetModuleName(owner, true));
-		return NULL;
+		return nullptr;
 	}
 
 	id_name = cdp_MakeContextName(ctx, name);
@@ -645,7 +645,7 @@ cdp_Host_RegisterEvent(const char* name, cdp_Module* owner)
 		fprintf(stderr, "cdp_Host_RegisterEvent(): "
 						"Event limit reached\n");
 		HFree(id_name);
-		return NULL;
+		return nullptr;
 	}
 	else if (evtreg->name)
 	{
@@ -654,7 +654,7 @@ cdp_Host_RegisterEvent(const char* name, cdp_Module* owner)
 						"%s denied\n",
 				name, cdp_GetModuleName(owner, true));
 		HFree(id_name);
-		return NULL;
+		return nullptr;
 	}
 
 	if (!newslot)
@@ -664,12 +664,12 @@ cdp_Host_RegisterEvent(const char* name, cdp_Module* owner)
 		// make next one a term
 		evtreg[1].builtin = false;
 		evtreg[1].used = false;
-		evtreg[1].name = NULL;
+		evtreg[1].name = nullptr;
 	}
 
 	newslot->name = id_name;
 	newslot->module = owner;
-	newslot->binds = NULL;
+	newslot->binds = nullptr;
 	newslot->bindslots = 0;
 
 	return newslot;
@@ -689,13 +689,13 @@ cdp_Host_UnregisterEvent(cdp_EventReg* evtreg)
 	{
 		HFree(evtreg->name);
 	}
-	evtreg->module = NULL;
-	evtreg->name = NULL;
+	evtreg->module = nullptr;
+	evtreg->name = nullptr;
 	if (evtreg->binds)
 	{
 		HFree(evtreg->binds);
 	}
-	evtreg->binds = NULL;
+	evtreg->binds = nullptr;
 	evtreg->bindslots = 0;
 }
 
@@ -714,7 +714,7 @@ cdp_Host_RegisterEvents(cdp_EventDef* defs, cdp_Module* owner)
 		}
 		else
 		{
-			def->module = NULL;
+			def->module = nullptr;
 			++errors;
 		}
 	}
@@ -740,7 +740,7 @@ static bool
 cdp_Host_SubscribeEvent(cdp_Event event, cdp_EventProc proc, cdp_Module* module)
 {
 	cdp_EventReg* reg = cdp_RegFromEvent(event);
-	cdp_EventBind* bind = NULL;
+	cdp_EventBind* bind = nullptr;
 	uint32 i;
 
 	if (reg < cdp_evts || reg >= cdp_evts + MAX_REG_EVENTS || !reg->name)
@@ -770,7 +770,7 @@ cdp_Host_SubscribeEvent(cdp_Event event, cdp_EventProc proc, cdp_Module* module)
 	}
 	else
 	{
-		reg->binds = cdp_AllocEventBinds(NULL, 0, EVENT_BIND_GROW);
+		reg->binds = cdp_AllocEventBinds(nullptr, 0, EVENT_BIND_GROW);
 		reg->bindslots = EVENT_BIND_GROW;
 		bind = reg->binds;
 	}
@@ -785,7 +785,7 @@ static void
 cdp_Host_UnsubscribeEvent(cdp_Event event, cdp_EventProc proc)
 {
 	cdp_EventReg* reg = cdp_RegFromEvent(event);
-	cdp_EventBind* bind = NULL;
+	cdp_EventBind* bind = nullptr;
 	uint32 i;
 
 	if (reg < cdp_evts || reg >= cdp_evts + MAX_REG_EVENTS || !reg->name)
@@ -807,8 +807,8 @@ cdp_Host_UnsubscribeEvent(cdp_Event event, cdp_EventProc proc)
 		return; // binding not found
 	}
 
-	bind->proc = NULL;
-	bind->module = NULL;
+	bind->proc = nullptr;
+	bind->module = nullptr;
 }
 
 static bool

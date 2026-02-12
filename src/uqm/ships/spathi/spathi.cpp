@@ -69,7 +69,7 @@ static RACE_DESC spathi_desc =
 		 SPATHI_RACE_STRINGS,
 		 SPATHI_ICON_MASK_PMAP_ANIM,
 		 SPATHI_MICON_MASK_PMAP_ANIM,
-		 NULL, NULL, NULL},
+		 nullptr, nullptr, nullptr},
 		{
 			/* FLEET_STUFF */
 			1000 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
@@ -108,24 +108,24 @@ static RACE_DESC spathi_desc =
 			 DISCRIM_SML_MASK_PMAP_ANIM,
 		 },
 		 {SPATHI_CAPTAIN_MASK_PMAP_ANIM,
-		  NULL, NULL, NULL, NULL, NULL,
+		  nullptr, nullptr, nullptr, nullptr, nullptr,
 		  0, 0, 0, 0, 0},
 		 SPATHI_VICTORY_SONG,
 		 SPATHI_SHIP_SOUNDS,
-		 {NULL, NULL, NULL},
-		 {NULL, NULL, NULL},
-		 {NULL, NULL, NULL},
-		 NULL,
-		 NULL},
+		 {nullptr, nullptr, nullptr},
+		 {nullptr, nullptr, nullptr},
+		 {nullptr, nullptr, nullptr},
+		 nullptr,
+		 nullptr},
 		{
 			0,
 			MISSILE_RANGE,
-			NULL,
+			nullptr,
 		 },
-		(UNINIT_FUNC*)NULL,
-		(PREPROCESS_FUNC*)NULL,
-		(POSTPROCESS_FUNC*)NULL,
-		(INIT_WEAPON_FUNC*)NULL,
+		(UNINIT_FUNC*)nullptr,
+		(PREPROCESS_FUNC*)nullptr,
+		(POSTPROCESS_FUNC*)nullptr,
+		(INIT_WEAPON_FUNC*)nullptr,
 		0,
 		0, /* CodeRef */
 };
@@ -268,7 +268,7 @@ initialize_standard_missile(ELEMENT* ShipPtr, HELEMENT MissileArray[])
 	MissileBlock.hit_points = MISSILE_HITS;
 	MissileBlock.damage = MISSILE_DAMAGE;
 	MissileBlock.life = MISSILE_LIFE;
-	MissileBlock.preprocess_func = NULL;
+	MissileBlock.preprocess_func = nullptr;
 	MissileBlock.blast_offs = MISSILE_OFFSET;
 	MissileArray[0] = initialize_missile(&MissileBlock);
 

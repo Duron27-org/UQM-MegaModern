@@ -101,11 +101,11 @@ typedef struct VINFO
 } VINFO;
 
 static SWORD** Samples;
-static VINFO *vinf = NULL, *vnf;
+static VINFO *vinf = nullptr, *vnf;
 static long tickleft, samplesthatfit, vc_memory = 0;
 static int vc_softchn;
 static SLONGLONG idxsize, idxlpos, idxlend;
-static SLONG* vc_tickbuf = NULL;
+static SLONG* vc_tickbuf = nullptr;
 static UWORD vc_mode;
 
 /* Reverb control variables */
@@ -114,12 +114,12 @@ static int RVc1, RVc2, RVc3, RVc4, RVc5, RVc6, RVc7, RVc8;
 static ULONG RVRindex;
 
 /* For Mono or Left Channel */
-static SLONG *RVbufL1 = NULL, *RVbufL2 = NULL, *RVbufL3 = NULL, *RVbufL4 = NULL,
-			 *RVbufL5 = NULL, *RVbufL6 = NULL, *RVbufL7 = NULL, *RVbufL8 = NULL;
+static SLONG *RVbufL1 = nullptr, *RVbufL2 = nullptr, *RVbufL3 = nullptr, *RVbufL4 = nullptr,
+			 *RVbufL5 = nullptr, *RVbufL6 = nullptr, *RVbufL7 = nullptr, *RVbufL8 = nullptr;
 
 /* For Stereo only (Right Channel) */
-static SLONG *RVbufR1 = NULL, *RVbufR2 = NULL, *RVbufR3 = NULL, *RVbufR4 = NULL,
-			 *RVbufR5 = NULL, *RVbufR6 = NULL, *RVbufR7 = NULL, *RVbufR8 = NULL;
+static SLONG *RVbufR1 = nullptr, *RVbufR2 = nullptr, *RVbufR3 = nullptr, *RVbufR4 = nullptr,
+			 *RVbufR5 = nullptr, *RVbufR6 = nullptr, *RVbufR7 = nullptr, *RVbufR8 = nullptr;
 
 #ifdef NATIVE_64BIT_INT
 #define NATIVE SLONGLONG
@@ -1613,7 +1613,7 @@ void VC1_PlayStop(void)
 	MikMod_free(RVbufL6);
 	MikMod_free(RVbufL7);
 	MikMod_free(RVbufL8);
-	RVbufL1 = RVbufL2 = RVbufL3 = RVbufL4 = RVbufL5 = RVbufL6 = RVbufL7 = RVbufL8 = NULL;
+	RVbufL1 = RVbufL2 = RVbufL3 = RVbufL4 = RVbufL5 = RVbufL6 = RVbufL7 = RVbufL8 = nullptr;
 	MikMod_free(RVbufR1);
 	MikMod_free(RVbufR2);
 	MikMod_free(RVbufR3);
@@ -1622,7 +1622,7 @@ void VC1_PlayStop(void)
 	MikMod_free(RVbufR6);
 	MikMod_free(RVbufR7);
 	MikMod_free(RVbufR8);
-	RVbufR1 = RVbufR2 = RVbufR3 = RVbufR4 = RVbufR5 = RVbufR6 = RVbufR7 = RVbufR8 = NULL;
+	RVbufR1 = RVbufR2 = RVbufR3 = RVbufR4 = RVbufR5 = RVbufR6 = RVbufR7 = RVbufR8 = nullptr;
 }
 
 int VC1_SetNumVoices(void)

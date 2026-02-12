@@ -35,7 +35,7 @@ static RESOURCE_INDEX
 allocResourceIndex(void)
 {
 	RESOURCE_INDEX ndx = (RESOURCE_INDEX)HMalloc(sizeof(RESOURCE_INDEX_DESC));
-	ndx->map = CharHashTable_newHashTable(NULL, NULL, NULL, NULL, NULL,
+	ndx->map = CharHashTable_newHashTable(nullptr, nullptr, nullptr, nullptr, nullptr,
 										  0, 0.85, 0.9);
 	return ndx;
 }
@@ -43,7 +43,7 @@ allocResourceIndex(void)
 static void
 freeResourceIndex(RESOURCE_INDEX h)
 {
-	if (h != NULL)
+	if (h != nullptr)
 	{
 		/* TODO: This leaks the contents of h->map */
 		CharHashTable_deleteHashTable(h->map);
@@ -64,7 +64,7 @@ newResourceDesc(const char* res_id, const char* resval)
 	char typestr[TYPESIZ];
 
 	path = strchr(resval, ':');
-	if (path == NULL)
+	if (path == nullptr)
 	{
 		log_add(log_Warning, "Could not find type information for resource '%s'", res_id);
 		strncpy(typestr, "sys.UNKNOWNRES", TYPESIZ);
@@ -86,7 +86,7 @@ newResourceDesc(const char* res_id, const char* resval)
 	pathlen = strlen(path);
 
 	handlerdesc = lookupResourceDesc(idx, typestr);
-	if (handlerdesc == NULL)
+	if (handlerdesc == nullptr)
 	{
 		path = resval;
 		log_add(log_Warning, "Illegal type '%s' for resource '%s'; treating as UNKNOWNRES", typestr, res_id);
@@ -95,18 +95,18 @@ newResourceDesc(const char* res_id, const char* resval)
 
 	vtable = (ResourceHandlers*)handlerdesc->resdata.ptr;
 
-	if (vtable->loadFun == NULL)
+	if (vtable->loadFun == nullptr)
 	{
 		log_add(log_Warning, "Warning: Unable to load '%s'; no handler "
 							 "for type %s defined.",
 				res_id, typestr);
-		return NULL;
+		return nullptr;
 	}
 
 	result = (ResourceDesc*)HMalloc(sizeof(ResourceDesc));
-	if (result == NULL)
+	if (result == nullptr)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	result->fname = (char*)HMalloc(pathlen + 1);
@@ -115,14 +115,14 @@ newResourceDesc(const char* res_id, const char* resval)
 	result->vtable = vtable;
 	result->refcount = 0;
 
-	if (vtable->freeFun == NULL)
+	if (vtable->freeFun == nullptr)
 	{
 		/* Non-heap resources are raw values. Work those out at load time. */
 		vtable->loadFun(result->fname, &result->resdata);
 	}
 	else
 	{
-		result->resdata.ptr = NULL;
+		result->resdata.ptr = nullptr;
 	}
 	return result;
 }
@@ -132,7 +132,7 @@ process_resource_desc(const char* key, const char* value)
 {
 	CharHashTable_HashTable* map = _get_current_index_header()->map;
 	ResourceDesc* newDesc = newResourceDesc(key, value);
-	if (newDesc != NULL)
+	if (newDesc != nullptr)
 	{
 		if (!CharHashTable_add(map, key, newDesc))
 		{
@@ -356,12 +356,12 @@ InitResourceSystem(void)
 
 	_set_current_index_header(ndx);
 
-	InstallResTypeVectors("UNKNOWNRES", UseDescriptorAsRes, NULL, NULL);
-	InstallResTypeVectors("STRING", UseDescriptorAsRes, NULL, RawDescriptor);
-	InstallResTypeVectors("INT32", DescriptorToInt, NULL, IntToString);
-	InstallResTypeVectors("bool", DescriptorToBoolean, NULL,
+	InstallResTypeVectors("UNKNOWNRES", UseDescriptorAsRes, nullptr, nullptr);
+	InstallResTypeVectors("STRING", UseDescriptorAsRes, nullptr, RawDescriptor);
+	InstallResTypeVectors("INT32", DescriptorToInt, nullptr, IntToString);
+	InstallResTypeVectors("bool", DescriptorToBoolean, nullptr,
 						  BooleanToString);
-	InstallResTypeVectors("COLOR", DescriptorToColor, NULL, ColorToString);
+	InstallResTypeVectors("COLOR", DescriptorToColor, nullptr, ColorToString);
 	InstallGraphicResTypes();
 	InstallStringTableResType();
 	InstallAudioResTypes();
@@ -476,7 +476,7 @@ void SaveResourceIndex(uio_DirHandle* dir, const char* rmpfile, const char* root
 void UninitResourceSystem(void)
 {
 	freeResourceIndex(_get_current_index_header());
-	_set_current_index_header(NULL);
+	_set_current_index_header(nullptr);
 }
 
 bool InstallResTypeVectors(const char* resType, ResourceLoadFun* loadFun,
@@ -493,7 +493,7 @@ bool InstallResTypeVectors(const char* resType, ResourceLoadFun* loadFun,
 	typelen = strlen(resType);
 
 	handlers = (ResourceHandlers*)HMalloc(sizeof(ResourceHandlers));
-	if (handlers == NULL)
+	if (handlers == nullptr)
 	{
 		return false;
 	}
@@ -503,7 +503,7 @@ bool InstallResTypeVectors(const char* resType, ResourceLoadFun* loadFun,
 	handlers->resType = resType;
 
 	result = (ResourceDesc*)HMalloc(sizeof(ResourceDesc));
-	if (result == NULL)
+	if (result == nullptr)
 	{
 		return false;
 	}
@@ -511,7 +511,7 @@ bool InstallResTypeVectors(const char* resType, ResourceLoadFun* loadFun,
 	result->fname = (char*)HMalloc(strlen(resType) + 1);
 	strncpy(result->fname, resType, typelen);
 	result->fname[typelen] = '\0';
-	result->vtable = NULL;
+	result->vtable = nullptr;
 	result->resdata.ptr = handlers;
 
 	map = _get_current_index_header()->map;
@@ -675,16 +675,16 @@ void res_PutColor(const char* key, Color value)
 bool res_HasKey(const char* key)
 {
 	RESOURCE_INDEX idx = _get_current_index_header();
-	return (bool)(lookupResourceDesc(idx, key) != NULL);
+	return (bool)(lookupResourceDesc(idx, key) != nullptr);
 }
 
 bool res_Remove(const char* key)
 {
 	CharHashTable_HashTable* map = _get_current_index_header()->map;
 	ResourceDesc* oldDesc = (ResourceDesc*)CharHashTable_find(map, key);
-	if (oldDesc != NULL)
+	if (oldDesc != nullptr)
 	{
-		if (oldDesc->resdata.ptr != NULL)
+		if (oldDesc->resdata.ptr != nullptr)
 		{
 			if (oldDesc->refcount > 0)
 			{

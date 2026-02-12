@@ -45,14 +45,14 @@ sdluio_loadImage(uio_DirHandle* dir, const char* fileName)
 {
 	uio_Stream* stream;
 	SDL_RWops* rwops;
-	SDL_Surface* result = NULL;
+	SDL_Surface* result = nullptr;
 
 	stream = uio_fopen(dir, fileName, "rb");
-	if (stream == NULL)
+	if (stream == nullptr)
 	{
 		SDL_SetError("Couldn't open '%s': %s", fileName,
 					 strerror(errno));
-		return NULL;
+		return nullptr;
 	}
 	rwops = sdluio_makeRWops(stream);
 	if (rwops)

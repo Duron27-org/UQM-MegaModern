@@ -166,7 +166,7 @@ typedef struct tfb_wavesounddecoder
 
 } TFB_AiffSoundDecoder;
 
-static const TFB_DecoderFormats* aifa_formats = NULL;
+static const TFB_DecoderFormats* aifa_formats = nullptr;
 
 static int aifa_DecodePCM(TFB_AiffSoundDecoder*, void* buf, sint32 bufsize);
 static int aifa_DecodeSDX2(TFB_AiffSoundDecoder*, void* buf, sint32 bufsize);
@@ -543,7 +543,7 @@ aifa_Close(THIS_PTR)
 	if (aifa->fp)
 	{
 		uio_fclose(aifa->fp);
-		aifa->fp = NULL;
+		aifa->fp = nullptr;
 	}
 }
 

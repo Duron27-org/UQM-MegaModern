@@ -151,7 +151,7 @@ match_matchPattern(match_MatchContext* context, const char* string)
 	}
 }
 
-// context may be NULL
+// context may be nullptr
 const char*
 match_errorString(match_MatchContext* context, match_Result result)
 {
@@ -172,7 +172,7 @@ match_errorString(match_MatchContext* context, match_Result result)
 			return "Unknown error";
 	}
 
-	if (context == NULL)
+	if (context == nullptr)
 	{
 		return "Unknown match-type specific error.";
 	}
@@ -442,7 +442,7 @@ match_prepareSubString(const char* pattern,
 match_Result
 match_matchSubString(match_SubStringContext* context, const char* string)
 {
-	return strstr(string, context->pattern) != NULL;
+	return strstr(string, context->pattern) != nullptr;
 }
 
 void match_freeSubString(match_SubStringContext* context)
@@ -565,7 +565,7 @@ match_matchRegex(match_RegexContext* context, const char* string)
 	if (context->errorString)
 	{
 		uio_free(context->errorString);
-		context->errorString = NULL;
+		context->errorString = nullptr;
 	}
 
 	if (std::regex_search(string, context->native))
@@ -582,7 +582,7 @@ match_errorStringRegex(match_RegexContext* context, int errorCode)
 	constexpr const char err[] {"Unknown regex error or match failure."};
 	constexpr size_t errorStringLength {sizeof(err)};
 
-	if (context->errorString != NULL)
+	if (context->errorString != nullptr)
 	{
 		uio_free(context->errorString);
 	}
@@ -609,7 +609,7 @@ match_newRegexContext(void)
 {
 	match_RegexContext* result;
 	result = match_allocRegexContext();
-	result->errorString = NULL;
+	result->errorString = nullptr;
 	result->errorCode = 0;
 	result->flags = 0;
 	return result;

@@ -41,9 +41,9 @@ static void SellMinerals(RESPONSE_REF R);
 static LOCDATA commander_desc =
 	{
 		COMMANDER_CONVERSATION, /* AlienConv */
-		NULL, /* init_encounter_func */
-		NULL, /* post_encounter_func */
-		NULL, /* uninit_encounter_func */
+		nullptr, /* init_encounter_func */
+		nullptr, /* post_encounter_func */
+		nullptr, /* uninit_encounter_func */
 		COMMANDER_PMAP_ANIM, /* AlienFrame */
 		COMMANDER_FONT, /* AlienFont */
 		WHITE_COLOR_INIT, /* AlienTextFColor */
@@ -197,13 +197,13 @@ static LOCDATA commander_desc =
 								ONE_SECOND / 12, /* RestartRate */
 			0,				 /* BlockMask */
 		},
-		NULL, /* AlienNumberSpeech - none */
+		nullptr, /* AlienNumberSpeech - none */
 		/* Filler for loaded resources */
-		NULL,
-		NULL,
-		NULL,
-		NULL,
-		NULL,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
 };
 
 static uqm::DWORD CurBulletinMask;
@@ -2132,11 +2132,11 @@ SellMinerals(RESPONSE_REF R)
 				{
 					NPCPhrase(BLANK);
 				}
-				NPCNumber(amount[seg], NULL);
+				NPCNumber(amount[seg], nullptr);
 				NPCPhrase_splice(KILOTONS_OF);
 				NPCPhrase_splice(COMMONR + i);
 				NPCPhrase_splice(FOR);
-				NPCNumber(Ru[seg], NULL);
+				NPCNumber(Ru[seg], nullptr);
 				NPCPhrase(RESUNITS);
 				total += Ru[seg];
 				seg++;
@@ -2202,7 +2202,7 @@ init_starbase_comm()
 	commander_desc.post_encounter_func = post_starbase_enc;
 	commander_desc.uninit_encounter_func = uninit_starbase;
 
-	luaUqm_comm_init(NULL, NULL_RESOURCE);
+	luaUqm_comm_init(nullptr, NULL_RESOURCE);
 	// Initialise Lua for string interpolation. This will be
 	// generalised in the future.
 

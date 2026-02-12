@@ -29,7 +29,7 @@ add_chunk(stringbank* bank)
 {
 	stringbank* n = (stringbank*)malloc(sizeof(stringbank));
 	n->len = 0;
-	n->next = NULL;
+	n->next = nullptr;
 	if (bank)
 	{
 		while (bank->next)
@@ -44,7 +44,7 @@ add_chunk(stringbank* bank)
 stringbank*
 StringBank_Create(void)
 {
-	return add_chunk(NULL);
+	return add_chunk(nullptr);
 }
 
 void StringBank_Free(stringbank* bank)
@@ -63,7 +63,7 @@ StringBank_AddString(stringbank* bank, const char* str)
 	stringbank* x = bank;
 	if (len > STRBANK_CHUNK_SIZE)
 	{
-		return NULL;
+		return nullptr;
 	}
 	while (x)
 	{
@@ -91,7 +91,7 @@ StringBank_AddOrFindString(stringbank* bank, const char* str)
 	stringbank* x = bank;
 	if (len > STRBANK_CHUNK_SIZE)
 	{
-		return NULL;
+		return nullptr;
 	}
 	while (x)
 	{
@@ -126,7 +126,7 @@ StringBank_AddSubstring(stringbank* bank, const char* str, unsigned int n)
 	}
 	if (n >= STRBANK_CHUNK_SIZE)
 	{
-		return NULL;
+		return nullptr;
 	}
 	strncpy(buffer, str, n);
 	buffer[n] = '\0';
@@ -143,7 +143,7 @@ StringBank_AddOrFindSubstring(stringbank* bank, const char* str, unsigned int n)
 	}
 	if (n >= STRBANK_CHUNK_SIZE)
 	{
-		return NULL;
+		return nullptr;
 	}
 	strncpy(buffer, str, n);
 	buffer[n] = '\0';

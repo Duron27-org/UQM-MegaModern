@@ -52,7 +52,7 @@ tryTempDir(char* buf, size_t buflen, const char* dir)
 	size_t len;
 	int haveSlash;
 
-	if (dir == NULL)
+	if (dir == nullptr)
 	{
 		return EINVAL;
 	}
@@ -120,14 +120,14 @@ getTempDir(char* buf, size_t buflen)
 static int
 mountTempDir(const char* name)
 {
-	static uio_AutoMount* autoMount[] = {NULL};
+	static uio_AutoMount* autoMount[] = {nullptr};
 	uio_MountHandle* tempHandle;
 	extern uio_Repository* repository;
 
 	tempHandle = uio_mountDir(repository, "/tmp/",
-							  uio_FSTYPE_STDIO, NULL, NULL, name, autoMount,
-							  uio_MOUNT_TOP, NULL);
-	if (tempHandle == NULL)
+							  uio_FSTYPE_STDIO, nullptr, nullptr, name, autoMount,
+							  uio_MOUNT_TOP, nullptr);
+	if (tempHandle == nullptr)
 	{
 		int saveErrno = errno;
 		log_add(log_Fatal, "Fatal error: Couldn't mount temp dir '%s': "
@@ -138,7 +138,7 @@ mountTempDir(const char* name)
 	}
 
 	tempDir = uio_openDir(repository, "/tmp", 0);
-	if (tempDir == NULL)
+	if (tempDir == nullptr)
 	{
 		int saveErrno = errno;
 		log_add(log_Fatal, "Fatal error: Could not open temp dir: %s",
@@ -165,7 +165,7 @@ void initTempDir(void)
 	// reserve 8 chars for dirname, 1 for slash, and 12 for filename
 	len = strlen(tempDirName);
 
-	num = ((uqm::DWORD)time(NULL));
+	num = ((uqm::DWORD)time(nullptr));
 	//	num = GetTimeCounter () % 0xffffffff;
 	tempPtr = tempDirName + len;
 	for (i = 0; i < NUM_TEMP_RETRIES; i++)

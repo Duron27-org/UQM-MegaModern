@@ -51,7 +51,7 @@ void DoShipSpin(uqm::COUNT index, MUSIC_REF hMusic)
 		UnlockMasterShip(&master_q, hMaster);
 	}
 
-	LoadIntoExtraScreen(NULL);
+	LoadIntoExtraScreen(nullptr);
 
 	if (hMusic)
 	{
@@ -85,8 +85,8 @@ void DoShipSpin(uqm::COUNT index, MUSIC_REF hMusic)
 	SetContext(OldContext);
 
 	GetContextClipRect(&old_r);
-	SetContextClipRect(NULL);
-	DrawFromExtraScreen(NULL);
+	SetContextClipRect(nullptr);
+	DrawFromExtraScreen(nullptr);
 	SetContextClipRect(&old_r);
 
 	if (hMusic)

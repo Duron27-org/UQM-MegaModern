@@ -288,7 +288,7 @@ void TFB_DrawCanvas_Image(TFB_Image* img, int x, int y, int scale,
 	else
 	{
 		surf = (SDL_Surface*)img->NormalImg;
-		pSrcRect = NULL;
+		pSrcRect = nullptr;
 
 		targetRect.x = x - img->NormalHs.x;
 		targetRect.y = y - img->NormalHs.y;
@@ -509,7 +509,7 @@ void TFB_DrawCanvas_FilledImage(TFB_Image* img, int x, int y, int scale,
 		}
 
 		surf = (SDL_Surface*)img->NormalImg;
-		pSrcRect = NULL;
+		pSrcRect = nullptr;
 
 		targetRect.x = x - img->NormalHs.x;
 		targetRect.y = y - img->NormalHs.y;
@@ -544,7 +544,7 @@ void TFB_DrawCanvas_FilledImage(TFB_Image* img, int x, int y, int scale,
 		if (newfill && (newfill->w < surf->w || newfill->h < surf->h))
 		{
 			TFB_DrawCanvas_Delete(newfill);
-			newfill = NULL;
+			newfill = nullptr;
 		}
 
 		// prepare the filled image
@@ -811,7 +811,7 @@ void TFB_DrawCanvas_MaskImage(TFB_Image* img, DrawMode mode, TFB_Canvas target, 
 
 		if (surf->format->palette)
 		{
-			TFB_ColorMap* cmap = NULL;
+			TFB_ColorMap* cmap = nullptr;
 			cmap = TFB_GetColorMap(img->colormap_index);
 			TFB_SetColors((SDL_Surface*)img->NormalImg, cmap->palette->colors, 0, 256);
 			TFB_ReturnColorMap(cmap);
@@ -887,7 +887,7 @@ TFB_DrawCanvas_New_Paletted(int w, int h, Color palette[256],
 				SDL_GetError());
 		exit(EXIT_FAILURE);
 	}
-	if (palette != NULL)
+	if (palette != nullptr)
 	{
 		TFB_DrawCanvas_SetPalette(new_surf, palette);
 	}
@@ -907,7 +907,7 @@ TFB_DrawCanvas_New_ScaleTarget(TFB_Canvas canvas, TFB_Canvas oldcanvas, int type
 {
 	SDL_Surface* src = (SDL_Surface*)canvas;
 	SDL_Surface* old = (SDL_Surface*)oldcanvas;
-	SDL_Surface* newsurf = NULL;
+	SDL_Surface* newsurf = nullptr;
 
 	// For the purposes of this function, bilinear == trilinear
 	if (type == TFB_SCALE_TRILINEAR)
@@ -922,7 +922,7 @@ TFB_DrawCanvas_New_ScaleTarget(TFB_Canvas canvas, TFB_Canvas oldcanvas, int type
 	if (old && type != last_type)
 	{
 		TFB_DrawCanvas_Delete(old);
-		old = NULL;
+		old = nullptr;
 	}
 	if (old)
 	{
@@ -991,14 +991,14 @@ TFB_DrawCanvas_LoadFromFile(void* dir, const char* fileName)
 	SDL_Surface* surf = sdluio_loadImage((uio_DirHandle*)dir, fileName);
 	if (!surf)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	if (surf->format->BitsPerPixel < 8)
 	{
 		SDL_SetError("unsupported image format (min 8bpp)");
 		SDL_FreeSurface(surf);
-		surf = NULL;
+		surf = nullptr;
 	}
 
 	return surf;
@@ -1009,7 +1009,7 @@ void TFB_DrawCanvas_Delete(TFB_Canvas canvas)
 	if (!canvas)
 	{
 		log_add(log_Warning, "INTERNAL PANIC: Attempted"
-							 " to delete a NULL canvas!");
+							 " to delete a nullptr canvas!");
 		/* Should we actually die here? */
 	}
 	else
@@ -1074,7 +1074,7 @@ TFB_DrawCanvas_ExtractPalette(TFB_Canvas canvas)
 
 	if (!palette)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	// There may be less colors in the surface than 256. Init to 0 first.
@@ -1092,7 +1092,7 @@ TFB_Canvas
 TFB_DrawCanvas_ToScreenFormat(TFB_Canvas canvas)
 {
 	SDL_Surface* result = TFB_DisplayFormatAlpha((SDL_Surface*)canvas);
-	if (result == NULL)
+	if (result == nullptr)
 	{
 		log_add(log_Debug, "WARNING: Could not convert"
 						   " sprite-canvas to display format.");
@@ -1113,7 +1113,7 @@ TFB_DrawCanvas_ToScreenFormat(TFB_Canvas canvas)
 
 bool TFB_DrawCanvas_IsPaletted(TFB_Canvas canvas)
 {
-	return (bool)(((SDL_Surface*)canvas)->format->palette != NULL);
+	return (bool)(((SDL_Surface*)canvas)->format->palette != nullptr);
 }
 
 void TFB_DrawCanvas_SetPalette(TFB_Canvas target, Color palette[256])
@@ -1302,7 +1302,7 @@ void TFB_DrawCanvas_Rescale_Nearest(TFB_Canvas src_canvas, TFB_Canvas dst_canvas
 
 	if (scale > 0)
 	{
-		TFB_DrawCanvas_GetScaledExtent(src, src_hs, NULL, NULL, scale,
+		TFB_DrawCanvas_GetScaledExtent(src, src_hs, nullptr, nullptr, scale,
 									   TFB_SCALE_NEAREST, size, dst_hs);
 
 		w = size->width;
@@ -1865,7 +1865,7 @@ void TFB_DrawCanvas_Rescale_Bilinear(TFB_Canvas src_canvas, TFB_Canvas dst_canva
 	if (scale > 0)
 	{
 		// Use (scale / GSCALE_IDENTITY) sizing factor
-		TFB_DrawCanvas_GetScaledExtent(src, src_hs, NULL, NULL, scale,
+		TFB_DrawCanvas_GetScaledExtent(src, src_hs, nullptr, nullptr, scale,
 									   TFB_SCALE_BILINEAR, size, dst_hs);
 
 		w = size->width;
@@ -2119,7 +2119,7 @@ void TFB_DrawCanvas_Rotate(TFB_Canvas src_canvas, TFB_Canvas dst_canvas,
 	{
 		TFB_DrawCanvas_SetTransparentColor(dst, color, false);
 		/* fill destination with transparent color before rotating */
-		SDL_FillRect(dst, NULL, SDL_MapRGBA(dst->format, color.r, color.g, color.b, 0));
+		SDL_FillRect(dst, nullptr, SDL_MapRGBA(dst->format, color.r, color.g, color.b, 0));
 	}
 
 	ret = rotateSurface(src, dst, angle, 0);
@@ -2178,7 +2178,7 @@ void TFB_DrawCanvas_SetClipRect(TFB_Canvas canvas, const RECT* clipRect)
 
 	if (!clipRect)
 	{ // clipping disabled
-		SDL_SetClipRect((SDL_Surface*)canvas, NULL);
+		SDL_SetClipRect((SDL_Surface*)canvas, nullptr);
 	}
 	else
 	{

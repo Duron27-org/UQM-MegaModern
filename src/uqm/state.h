@@ -129,7 +129,7 @@ sread_32(GAME_STATE_FILE* fp, uqm::DWORD* v)
 static inline uqm::COUNT
 sread_a32(GAME_STATE_FILE* fp, uqm::DWORD* ar, uqm::COUNT count)
 {
-	assert(ar != NULL);
+	assert(ar != nullptr);
 
 	for (; count > 0; --count, ++ar)
 	{

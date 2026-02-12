@@ -46,7 +46,7 @@ static const luaL_Reg safeLibs[] = {
 	//{ LUA_LUA_LOADLIBNAME, luaopen_package },
 	{LUA_STRLIBNAME,	 luaopen_string},
 	{LUA_TABLIBNAME,	 luaopen_table },
-	{NULL,			NULL		   }
+	{nullptr,			nullptr		   }
 };
 
 void luaUqm_loadLib(lua_State* luaState, const luaL_Reg* lib)
@@ -65,7 +65,7 @@ void luaUqm_loadLib(lua_State* luaState, const luaL_Reg* lib)
 
 void luaUqm_loadLibs(lua_State* luaState, const luaL_Reg* libs)
 {
-	while (libs->func != NULL)
+	while (libs->func != nullptr)
 	{
 		luaUqm_loadLib(luaState, libs);
 		libs++;
@@ -108,7 +108,7 @@ luaUqm_reader(lua_State* luaState, void* data, size_t* size)
 						   "script file '%s'.",
 				readerState->fileName);
 		*size = 0;
-		return NULL;
+		return nullptr;
 	}
 
 	(void)luaState;
@@ -130,14 +130,14 @@ void luaUqm_prepareEnvironment(lua_State* luaState)
 bool luaUqm_loadScript(lua_State* luaState, uio_DirHandle* dir,
 					   const char* fileName)
 {
-	uio_Stream* in = NULL;
-	char* buf = NULL;
+	uio_Stream* in = nullptr;
+	char* buf = nullptr;
 	luaUqm_ReaderState readerState;
 
 	log_add(log_Debug, "Loading script '%s'.", fileName);
 
 	in = uio_fopen(dir, fileName, "rt");
-	if (in == NULL)
+	if (in == nullptr)
 	{
 		log_add(log_Error, "luaUqm_loadScript(): Unable to open script file "
 						   "'%s' for reading.",
@@ -146,7 +146,7 @@ bool luaUqm_loadScript(lua_State* luaState, uio_DirHandle* dir,
 	}
 
 	buf = (char*)malloc(LOADSCRIPT_BUFSIZE);
-	if (buf == NULL)
+	if (buf == nullptr)
 	{
 		goto err;
 	}
@@ -155,7 +155,7 @@ bool luaUqm_loadScript(lua_State* luaState, uio_DirHandle* dir,
 	readerState.in = in;
 	readerState.buf = buf;
 
-	if (lua_load(luaState, luaUqm_reader, (void*)&readerState, NULL, NULL)
+	if (lua_load(luaState, luaUqm_reader, (void*)&readerState, nullptr, nullptr)
 		!= LUA_OK)
 	{
 		log_add(log_Error, "luaUqm_loadScript(): lua_load() failed: %s",
@@ -169,12 +169,12 @@ bool luaUqm_loadScript(lua_State* luaState, uio_DirHandle* dir,
 	return true;
 
 err:
-	if (buf != NULL)
+	if (buf != nullptr)
 	{
 		free(buf);
 	}
 
-	if (in != NULL)
+	if (in != nullptr)
 	{
 		uio_fclose(in);
 	}
@@ -201,12 +201,12 @@ bool luaUqm_runScript(lua_State* luaState, uio_DirHandle* dir,
 void luaUqm_runLuaDir(lua_State* luaState, uio_DirHandle* dirHandle,
 					  const char* luaDirName)
 {
-	uio_DirHandle* luaDir = NULL;
-	uio_DirList* luaFiles = NULL;
+	uio_DirHandle* luaDir = nullptr;
+	uio_DirList* luaFiles = nullptr;
 	int fileI;
 
 	luaDir = uio_openDirRelative(dirHandle, luaDirName, 0);
-	if (luaDir == NULL)
+	if (luaDir == nullptr)
 	{
 		log_add(log_Warning, "Warning: Could not open Lua script directory "
 							 "'%s'.",
@@ -215,7 +215,7 @@ void luaUqm_runLuaDir(lua_State* luaState, uio_DirHandle* dirHandle,
 	}
 
 	luaFiles = uio_getDirList(luaDir, "", ".lua", match_MATCH_SUFFIX);
-	if (luaFiles == NULL)
+	if (luaFiles == nullptr)
 	{
 		log_add(log_Warning, "Warning: Could not read Lua script directory "
 							 "'%s'.",
@@ -236,11 +236,11 @@ void luaUqm_runLuaDir(lua_State* luaState, uio_DirHandle* dirHandle,
 	return;
 
 err:
-	if (luaFiles != NULL)
+	if (luaFiles != nullptr)
 	{
 		uio_DirList_free(luaFiles);
 	}
-	if (luaDir != NULL)
+	if (luaDir != nullptr)
 	{
 		uio_closeDir(luaDir);
 	}
@@ -287,13 +287,13 @@ void luaUqm_makeEnum(lua_State* luaState, const luaUqm_EnumValue* enumVals)
 	size_t enumCount = 0;
 
 	// Count the number of enum values.
-	for (enumPtr = enumVals; enumPtr->name != NULL; enumPtr++)
+	for (enumPtr = enumVals; enumPtr->name != nullptr; enumPtr++)
 	{
 		enumCount++;
 	}
 
 	lua_createtable(luaState, 0, enumCount);
-	for (enumPtr = enumVals; enumPtr->name != NULL; enumPtr++)
+	for (enumPtr = enumVals; enumPtr->name != nullptr; enumPtr++)
 	{
 		lua_pushinteger(luaState, enumPtr->value);
 

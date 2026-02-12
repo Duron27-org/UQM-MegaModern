@@ -215,7 +215,7 @@ err:
 // A line is terminated with either CRLF (DOS/Windows),
 // LF (Unix, MacOS X), or CR (old MacOS).
 // The end of the string is reached when **startNext == '\0'.
-// NULL is returned if the string is not valid UTF8. In this case
+// nullptr is returned if the string is not valid UTF8. In this case
 // *end points to the first invalid character (or the character before if
 // it was a LF), and *startNext to the start of the next (possibly invalid
 // too) character.
@@ -243,7 +243,7 @@ getLineFromString(const unsigned char* start, const unsigned char** end,
 			// Bad string
 			*end = lastPtr;
 			*startNext = ptr;
-			return NULL;
+			return nullptr;
 		}
 		if (ch == '\n')
 		{
@@ -258,7 +258,7 @@ getLineFromString(const unsigned char* start, const unsigned char** end,
 			if (ch == '\0')
 			{
 				// Bad string
-				return NULL;
+				return nullptr;
 			}
 			if (ch == '\r')
 			{
@@ -389,7 +389,7 @@ int utf8StringLastPos(const unsigned char* pStr, UniChar ch)
 
 // Safe version of strcpy(), somewhat analogous to strncpy()
 // except it guarantees a 0-term when size > 0
-// when size == 0, returns NULL
+// when size == 0, returns nullptr
 // BUG: this may result in the last character being only partially in the
 // buffer
 unsigned char*
@@ -698,7 +698,7 @@ AlignText(const uqm::CHAR_T* str, sint16* loc_x)
 	int last_pos = utf8StringLastPos((unsigned char*)str, UNICHAR_PIPE);
 
 	if (utf8CharCount((unsigned char*)str, UNICHAR_PIPE) != 2
-		|| str == NULL || first_pos != 0 || last_pos == -1
+		|| str == nullptr || first_pos != 0 || last_pos == -1
 		|| last_pos == 0)
 	{
 		return (uqm::CHAR_T*)str;
@@ -729,7 +729,7 @@ AddPadd(const uqm::CHAR_T* str, sint16* padding)
 	int last_pos = utf8StringLastPos((unsigned char*)str, UNICHAR_COLON);
 
 	if (utf8CharCount((unsigned char*)str, UNICHAR_COLON) != 2
-		|| str == NULL || first_pos != 0 || last_pos == -1
+		|| str == nullptr || first_pos != 0 || last_pos == -1
 		|| last_pos == 0)
 	{
 		return (uqm::CHAR_T*)str;

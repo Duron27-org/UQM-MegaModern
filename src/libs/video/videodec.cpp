@@ -38,7 +38,7 @@ struct TFB_RegVideoDecoder
 static TFB_RegVideoDecoder vd_decoders[MAX_REG_DECODERS + 1] =
 	{
 		{true,  true,	 "duk", &dukv_DecoderVtbl},
-		{false, false, NULL,	 NULL			 }, // null term
+		{false, false, nullptr,	 nullptr			 }, // null term
 };
 
 static void vd_computeMasks(uint32 mask, uqm::DWORD* shift, uqm::DWORD* loss);
@@ -120,7 +120,7 @@ void VideoDecoder_Uninit(void)
 		if (!info->builtin)
 		{
 			info->used = false;
-			info->ext = NULL;
+			info->ext = nullptr;
 		}
 	}
 
@@ -131,18 +131,18 @@ TFB_RegVideoDecoder*
 VideoDecoder_Register(const char* fileext, TFB_VideoDecoderFuncs* decvtbl)
 {
 	TFB_RegVideoDecoder* info;
-	TFB_RegVideoDecoder* newslot = NULL;
+	TFB_RegVideoDecoder* newslot = nullptr;
 
 	if (!decvtbl)
 	{
 		log_add(log_Warning, "VideoDecoder_Register(): Null decoder table");
-		return NULL;
+		return nullptr;
 	}
 	if (!fileext)
 	{
 		log_add(log_Warning, "VideoDecoder_Register(): Bad file type for %s",
 				decvtbl->GetName());
-		return NULL;
+		return nullptr;
 	}
 
 	// check if extension already registered
@@ -159,21 +159,21 @@ VideoDecoder_Register(const char* fileext, TFB_VideoDecoderFuncs* decvtbl)
 	if (info >= vd_decoders + MAX_REG_DECODERS)
 	{
 		log_add(log_Warning, "VideoDecoder_Register(): Decoders limit reached");
-		return NULL;
+		return nullptr;
 	}
 	else if (info->ext)
 	{
 		log_add(log_Warning, "VideoDecoder_Register(): "
 							 "'%s' decoder already registered (%s denied)",
 				fileext, decvtbl->GetName());
-		return NULL;
+		return nullptr;
 	}
 
 	if (!decvtbl->InitModule(vd_flags))
 	{
 		log_add(log_Warning, "VideoDecoder_Register(): %s decoder init failed",
 				decvtbl->GetName());
-		return NULL;
+		return nullptr;
 	}
 
 	if (!newslot)
@@ -183,7 +183,7 @@ VideoDecoder_Register(const char* fileext, TFB_VideoDecoderFuncs* decvtbl)
 		// make next one a term
 		info[1].builtin = false;
 		info[1].used = false;
-		info[1].ext = NULL;
+		info[1].ext = nullptr;
 	}
 
 	newslot->ext = fileext;
@@ -202,8 +202,8 @@ void VideoDecoder_Unregister(TFB_RegVideoDecoder* regdec)
 	}
 
 	regdec->funcs->TermModule();
-	regdec->ext = NULL;
-	regdec->funcs = NULL;
+	regdec->ext = nullptr;
+	regdec->funcs = nullptr;
 }
 
 const TFB_VideoDecoderFuncs*
@@ -214,7 +214,7 @@ VideoDecoder_Lookup(const char* fileext)
 	for (info = vd_decoders; info->used && (!info->ext || strcmp(info->ext, fileext) != 0);
 		 ++info)
 		;
-	return info->ext ? info->funcs : NULL;
+	return info->ext ? info->funcs : nullptr;
 }
 
 TFB_VideoDecoder*
@@ -227,14 +227,14 @@ VideoDecoder_Load(uio_DirHandle* dir, const char* filename)
 
 	if (!vd_inited)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	pext = strrchr(filename, '.');
 	if (!pext)
 	{
 		log_add(log_Warning, "VideoDecoder_Load: Unknown file type");
-		return NULL;
+		return nullptr;
 	}
 	++pext;
 
@@ -244,7 +244,7 @@ VideoDecoder_Load(uio_DirHandle* dir, const char* filename)
 	if (!info->ext)
 	{
 		log_add(log_Warning, "VideoDecoder_Load: Unsupported file type");
-		return NULL;
+		return nullptr;
 	}
 
 	decoder = (TFB_VideoDecoder*)HCalloc(info->funcs->GetStructSize());
@@ -256,7 +256,7 @@ VideoDecoder_Load(uio_DirHandle* dir, const char* filename)
 				decoder->funcs->GetName(),
 				decoder->funcs->GetError(decoder));
 		HFree(decoder);
-		return NULL;
+		return nullptr;
 	}
 
 	decoder->dir = dir;
@@ -272,7 +272,7 @@ VideoDecoder_Load(uio_DirHandle* dir, const char* filename)
 				decoder->funcs->GetError(decoder));
 
 		VideoDecoder_Free(decoder);
-		return NULL;
+		return nullptr;
 	}
 
 	decoder->w = RES_SCALE(decoder->w);

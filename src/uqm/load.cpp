@@ -112,7 +112,7 @@ read_32s(void* fp, uqm::SDWORD* v)
 static inline size_t
 read_a8(void* fp, uqm::BYTE* ar, uqm::COUNT count)
 {
-	assert(ar != NULL);
+	assert(ar != nullptr);
 	return ReadResFile(ar, 1, count, (uio_Stream*)fp) == count;
 }
 
@@ -128,7 +128,7 @@ skip_8(void* fp, uqm::COUNT count)
 	int i;
 	for (i = 0; i < count; ++i)
 	{
-		if (read_8(fp, NULL) != 1)
+		if (read_8(fp, nullptr) != 1)
 		{
 			return 0;
 		}
@@ -146,7 +146,7 @@ read_str(void* fp, char* str, uqm::COUNT count)
 static inline size_t
 read_a16(void* fp, uqm::UWORD* ar, uqm::COUNT count)
 {
-	assert(ar != NULL);
+	assert(ar != nullptr);
 
 	for (; count > 0; --count, ++ar)
 	{
@@ -418,7 +418,7 @@ LoadGameState(GAME_STATE* GSPtr, void* fh, bool try_core)
 				rev, gameStateBitMapRevTag[rev]);
 
 		buf = (uqm::BYTE*)HMalloc(gameStateByteCount);
-		if (buf == NULL)
+		if (buf == nullptr)
 		{
 			log_add(log_Error, "Warning: Cannot allocate enough bytes for "
 							   "the saved game state (%lu bytes).",
@@ -872,7 +872,7 @@ bool LoadGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, uio_Stream* in_fp, b
 
 	optCustomSeed = GLOBAL_SIS(Seed);
 	optShipSeed = (GLOBAL_SIS(ShipSeed) != 0 ? OPTVAL_ENABLED : OPTVAL_DISABLED);
-	ReloadMasterShipList(NULL);
+	ReloadMasterShipList(nullptr);
 	LoadFleetInfo();
 
 	ReinitQueue(&GLOBAL(GameClock.event_q));
@@ -1029,7 +1029,7 @@ bool LoadGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, uio_Stream* in_fp, b
 
 	ReinitQueue(&race_q[0]);
 	ReinitQueue(&race_q[1]);
-	CurStarDescPtr = FindStar(NULL, &SD.star_pt, 0, 0);
+	CurStarDescPtr = FindStar(nullptr, &SD.star_pt, 0, 0);
 	if (!(NextActivity & START_ENCOUNTER)
 		&& lowByte(NextActivity) == IN_INTERPLANETARY)
 	{

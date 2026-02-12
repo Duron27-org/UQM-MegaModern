@@ -22,11 +22,11 @@
 DRAWABLE
 GetFrameParentDrawable(FRAME f)
 {
-	if (f != NULL)
+	if (f != nullptr)
 	{
 		return f->parent;
 	}
-	return NULL;
+	return nullptr;
 }
 
 FRAME
@@ -37,7 +37,7 @@ CaptureDrawable(DRAWABLE DrawablePtr)
 		return &DrawablePtr->Frame[0];
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 DRAWABLE
@@ -52,7 +52,7 @@ ReleaseDrawable(FRAME FramePtr)
 		return (Drawable);
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 uqm::COUNT

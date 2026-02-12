@@ -291,7 +291,7 @@ MIKMODAPI const char* MikMod_strerror(int code)
 }
 
 /* User installed error callback */
-MikMod_handler_t _mm_errorhandler = NULL;
+MikMod_handler_t _mm_errorhandler = nullptr;
 MIKMODAPI int _mm_errno = 0;
 MIKMODAPI BOOL _mm_critical = 0;
 

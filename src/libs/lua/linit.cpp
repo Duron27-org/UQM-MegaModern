@@ -37,7 +37,7 @@ static const luaL_Reg loadedlibs[] = {
 	{LUA_BITLIBNAME,	 luaopen_bit32	  },
 	{LUA_MATHLIBNAME, luaopen_math	  },
 	{LUA_DBLIBNAME,	luaopen_debug	 },
-	{NULL,			NULL			   }
+	{nullptr,			nullptr			   }
 };
 
 
@@ -45,7 +45,7 @@ static const luaL_Reg loadedlibs[] = {
 ** these libs are preloaded and must be required before used
 */
 static const luaL_Reg preloadedlibs[] = {
-	{NULL, NULL}
+	{nullptr, nullptr}
 };
 
 

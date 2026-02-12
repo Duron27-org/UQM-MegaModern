@@ -44,7 +44,7 @@ DrawConfirmationWindow(bool answer, bool confirm)
 {
 	Color oldfg = SetContextForeGroundColor(SHADOWBOX_DARK_COLOR);
 	FONT oldfont = SetContextFont(StarConFont);
-	FRAME oldFontEffect = SetContextFontEffect(NULL);
+	FRAME oldFontEffect = SetContextFontEffect(nullptr);
 	RECT r;
 	TEXT t;
 
@@ -119,7 +119,7 @@ bool DoConfirmExit(void)
 
 		oldContext = SetContext(ScreenContext);
 		GetContextClipRect(&oldRect);
-		SetContextClipRect(NULL);
+		SetContextClipRect(nullptr);
 
 		GetContextClipRect(&ctxRect);
 		r.extent.width = CONFIRM_WIN_WIDTH + RES_SCALE(4);
@@ -256,7 +256,7 @@ void DoPopupWindow(const char* msg)
 	}
 
 	label.tag = WIDGET_TYPE_LABEL;
-	label.parent = NULL;
+	label.parent = nullptr;
 	label.handleEvent = Widget_HandleEventIgnoreAll;
 	label.receiveFocus = Widget_ReceiveFocusRefuseFocus;
 	label.draw = Widget_DrawLabel;
@@ -269,11 +269,11 @@ void DoPopupWindow(const char* msg)
 
 	oldContext = SetContext(ScreenContext);
 	GetContextClipRect(&oldRect);
-	SetContextClipRect(NULL);
+	SetContextClipRect(nullptr);
 
 	// TODO: Maybe DrawLabelAsWindow() should return a saved STAMP?
 	//   We do not know the dimensions here, and so save the whole context
-	s = SaveContextFrame(NULL);
+	s = SaveContextFrame(nullptr);
 
 	Widget_SetFont(StarConFont);
 	Widget_SetWindowColors(SHADOWBOX_BACKGROUND_COLOR,
@@ -283,7 +283,7 @@ void DoPopupWindow(const char* msg)
 
 	GetMenuSounds(&s0, &s1);
 	SetMenuSounds(MENU_SOUND_NONE, MENU_SOUND_NONE);
-	oldCallback = SetInputCallback(NULL);
+	oldCallback = SetInputCallback(nullptr);
 
 	state.InputFunc = DoPopup;
 	DoInput(&state, true);

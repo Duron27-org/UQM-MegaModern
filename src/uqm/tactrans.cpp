@@ -106,7 +106,7 @@ DittyPlaying(void)
 
 void ResetWinnerStarShip(void)
 {
-	winnerStarShip = NULL;
+	winnerStarShip = nullptr;
 }
 
 #ifdef NETPLAY
@@ -151,7 +151,7 @@ readyToEndCallback(NetConnection* conn, void* arg)
 	fprintf(stderr, "NETPLAY: [%d] ==> Sent battleFrameCount %d.\n",
 			NetConnection_getPlayerNr(conn), battleFrameCount + 1);
 #endif
-	Netplay_localReady(conn, readyToEnd2Callback, NULL, false);
+	Netplay_localReady(conn, readyToEnd2Callback, nullptr, false);
 	(void)arg;
 }
 
@@ -195,7 +195,7 @@ readyForBattleEndPlayer(NetConnection* conn)
 		}
 
 		// We haven't yet told the other side we're ready. We do so now.
-		Netplay_localReady(conn, readyToEndCallback, NULL, true);
+		Netplay_localReady(conn, readyToEndCallback, nullptr, true);
 		// This may set the state to endingBattle.
 
 		if (NetConnection_getState(conn) == NetState_inBattle)
@@ -293,7 +293,7 @@ readyForBattleEnd(void)
 static void
 preprocess_dead_ship(ELEMENT* DeadShipPtr)
 {
-	ProcessSound((SOUND)~0, NULL);
+	ProcessSound((SOUND)~0, nullptr);
 	(void)DeadShipPtr; // unused argument
 }
 
@@ -301,7 +301,7 @@ void cleanup_dead_ship(ELEMENT* DeadShipPtr)
 {
 	STARSHIP* DeadStarShipPtr;
 
-	ProcessSound((SOUND)~0, NULL);
+	ProcessSound((SOUND)~0, nullptr);
 
 	GetElementStarShip(DeadShipPtr, &DeadStarShipPtr);
 	{
@@ -417,14 +417,14 @@ checkOtherShipLifeSpan(ELEMENT* deadShip)
 
 	GetElementStarShip(deadShip, &deadStarShip);
 
-	if (winnerStarShip != NULL && deadStarShip != winnerStarShip
+	if (winnerStarShip != nullptr && deadStarShip != winnerStarShip
 		&& winnerStarShip->RaceDescPtr->ship_info.crew_level == 0)
 	{ // The opponent ship also died but won anyway (e.g. Glory device)
 		// We need to keep the opponent ship alive longer so that the
 		// winning player picks last.
 		setMinStarShipLifeSpan(winnerStarShip, deadShip->life_span + 1);
 	}
-	else if (winnerStarShip == NULL)
+	else if (winnerStarShip == nullptr)
 	{ // Both died at the same time, or the loser has already expired
 		HELEMENT hElement, hNextElement;
 
@@ -439,7 +439,7 @@ checkOtherShipLifeSpan(ELEMENT* deadShip)
 			hNextElement = GetSuccElement(element);
 			GetElementStarShip(element, &starShip);
 
-			if (starShip != NULL && element != deadShip
+			if (starShip != nullptr && element != deadShip
 				&& starShip->RaceDescPtr->ship_info.crew_level == 0)
 			{ // This is another dead ship
 				setMinShipLifeSpan(element, deadShip->life_span);
@@ -474,7 +474,7 @@ void new_ship(ELEMENT* DeadShipPtr)
 	}
 
 	// Once a ship is being picked, we do not care about the winner anymore
-	winnerStarShip = NULL;
+	winnerStarShip = nullptr;
 
 	{
 		bool RestartMusic;
@@ -563,7 +563,7 @@ explosion_preprocess(ELEMENT* ShipPtr)
 	switch (i)
 	{
 		case 25:
-			ShipPtr->preprocess_func = NULL;
+			ShipPtr->preprocess_func = nullptr;
 			FALLTHROUGH;
 		case 0:
 		case 1:
@@ -643,7 +643,7 @@ void StopAllBattleMusic(void)
 STARSHIP*
 FindAliveStarShip(ELEMENT* deadShip)
 {
-	STARSHIP* aliveShip = NULL;
+	STARSHIP* aliveShip = nullptr;
 	HELEMENT hElement, hNextElement;
 
 	// Find the remaining ship, if any, and see if it is still alive.
@@ -658,12 +658,12 @@ FindAliveStarShip(ELEMENT* deadShip)
 			&& ElementPtr->mass_points <= MAX_SHIP_MASS + 1)
 		{
 			GetElementStarShip(ElementPtr, &aliveShip);
-			assert(aliveShip != NULL);
+			assert(aliveShip != nullptr);
 			if (aliveShip->RaceDescPtr->ship_info.crew_level == 0
 				/* reincarnating Pkunk is not actually dead */
 				&& ElementPtr->mass_points != MAX_SHIP_MASS + 1)
 			{
-				aliveShip = NULL;
+				aliveShip = nullptr;
 			}
 
 			UnlockElement(hElement);
@@ -684,7 +684,7 @@ GetWinnerStarShip(void)
 
 void SetWinnerStarShip(STARSHIP* winner)
 {
-	if (winner == NULL)
+	if (winner == nullptr)
 	{
 		return; // nothing to do
 	}
@@ -694,7 +694,7 @@ void SetWinnerStarShip(STARSHIP* winner)
 	// The winner is set once per battle. If both ships die, this function is
 	// called twice, once for each ship. We need to preserve the winner
 	// determined on the first call.
-	if (winnerStarShip == NULL)
+	if (winnerStarShip == nullptr)
 	{
 		winnerStarShip = winner;
 	}
@@ -705,7 +705,7 @@ void RecordShipDeath(ELEMENT* deadShip)
 	STARSHIP* deadStarShip;
 
 	GetElementStarShip(deadShip, &deadStarShip);
-	assert(deadStarShip != NULL);
+	assert(deadStarShip != nullptr);
 
 	if (deadShip->mass_points <= MAX_SHIP_MASS)
 	{ // Not running away.
@@ -893,7 +893,7 @@ void ship_transition(ELEMENT* ElementPtr)
 		{
 			ElementPtr->life_span = HYPERJUMP_LIFE;
 			ElementPtr->preprocess_func = ship_transition;
-			ElementPtr->postprocess_func = NULL;
+			ElementPtr->postprocess_func = nullptr;
 			SetPrimType(&DisplayArray[ElementPtr->PrimIndex], NO_PRIM);
 			ElementPtr->state_flags |= NONSOLID | FINITE_LIFE | CHANGING;
 		}
@@ -933,7 +933,7 @@ void ship_transition(ELEMENT* ElementPtr)
 
 		if (!(ShipImagePtr->state_flags & NONSOLID))
 		{
-			ElementPtr->preprocess_func = NULL;
+			ElementPtr->preprocess_func = nullptr;
 		}
 		else if ((hShipImage = AllocElement()))
 		{
@@ -966,7 +966,7 @@ void ship_transition(ELEMENT* ElementPtr)
 					COSINE(angle, TRANSITION_SPEED);
 				ShipImagePtr->current.location.y +=
 					SINE(angle, TRANSITION_SPEED);
-				ElementPtr->preprocess_func = NULL;
+				ElementPtr->preprocess_func = nullptr;
 			}
 			else if (ElementPtr->crew_level)
 			{
@@ -1051,7 +1051,7 @@ void flee_preprocess(ELEMENT* ElementPtr)
 
 			ElementPtr->life_span = HYPERJUMP_LIFE + 1;
 			ElementPtr->preprocess_func = ship_transition;
-			ElementPtr->postprocess_func = NULL;
+			ElementPtr->postprocess_func = nullptr;
 			SetPrimType(&DisplayArray[ElementPtr->PrimIndex], NO_PRIM);
 			ElementPtr->state_flags |= NONSOLID | FINITE_LIFE | CHANGING;
 		}

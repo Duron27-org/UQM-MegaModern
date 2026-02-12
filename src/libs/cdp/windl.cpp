@@ -35,9 +35,9 @@ void* dlopen(const char* filename, int flag)
 {
 	HMODULE hlib;
 
-	if (filename == NULL)
+	if (filename == nullptr)
 	{
-		hlib = GetModuleHandleA(NULL);
+		hlib = GetModuleHandleA(nullptr);
 	}
 	else
 	{
@@ -77,6 +77,6 @@ char* dlerror(void)
 	}
 	else
 	{
-		return NULL;
+		return nullptr;
 	}
 }

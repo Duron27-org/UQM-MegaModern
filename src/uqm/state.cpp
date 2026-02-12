@@ -56,7 +56,7 @@ OpenStateFile(int stateFile, const char* mode)
 
 	if (stateFile < 0 || stateFile >= NUM_STATE_FILES)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	fp = &state_files[stateFile];
@@ -73,7 +73,7 @@ OpenStateFile(int stateFile, const char* mode)
 		fp->data = (uqm::BYTE*)HMalloc(fp->size_hint);
 		if (!fp->data)
 		{
-			return NULL;
+			return nullptr;
 		}
 		fp->size = fp->size_hint;
 	}

@@ -118,7 +118,7 @@ void uio_closeRepository(uio_Repository* repository)
  *                		be taken relative.
  *                sourcePath - a path relative to sourceDir, which contains
  *                		the file/directory to be mounted.
- *                		If sourceDir and sourcePath are NULL, the file
+ *                		If sourceDir and sourcePath are nullptr, the file
  *                		system of the operating system will be used.
  *                inPath - the location relative to the root of the newly
  *                		mounted fileSystem, pointing to the directory
@@ -136,9 +136,9 @@ void uio_closeRepository(uio_Repository* repository)
  *                relative - If 'flags' includes uio_MOUNT_BELOW or
  *                           uio_MOUNT_ABOVE, this is the mount handle
  *                           where the new mount is relative to.
- *                           Otherwise, it should be NULL.
+ *                           Otherwise, it should be nullptr.
  * Returns:       a handle suitable for uio_unmountDir()
- *                NULL if an error occured. In this case 'errno' is set.
+ *                nullptr if an error occured. In this case 'errno' is set.
  */
 uio_MountHandle*
 uio_mountDir(uio_Repository* destRep, const char* mountPoint,
@@ -156,19 +156,19 @@ uio_mountDir(uio_Repository* destRep, const char* mountPoint,
 	{
 		case uio_MOUNT_TOP:
 		case uio_MOUNT_BOTTOM:
-			if (relative != NULL)
+			if (relative != nullptr)
 			{
 				errno = EINVAL;
-				return NULL;
+				return nullptr;
 			}
-			relativeInfo = NULL;
+			relativeInfo = nullptr;
 			break;
 		case uio_MOUNT_BELOW:
 		case uio_MOUNT_ABOVE:
-			if (relative == NULL)
+			if (relative == nullptr)
 			{
 				errno = EINVAL;
-				return NULL;
+				return nullptr;
 			}
 			relativeInfo = relative->mountInfo;
 			break;
@@ -183,29 +183,29 @@ uio_mountDir(uio_Repository* destRep, const char* mountPoint,
 	if (!validPathName(mountPoint, strlen(mountPoint)))
 	{
 		errno = EINVAL;
-		return NULL;
+		return nullptr;
 	}
 
 	// TODO: check if the filesystem is already mounted, and if so, reuse it.
 	// A RO filedescriptor will need to be replaced though if the
 	// filesystem needs to be remounted RW now.
-	if (sourceDir == NULL)
+	if (sourceDir == nullptr)
 	{
-		if (sourcePath != NULL)
+		if (sourcePath != nullptr)
 		{
-			// bad: sourceDir is NULL, but sourcePath isn't
+			// bad: sourceDir is nullptr, but sourcePath isn't
 			errno = EINVAL;
-			return NULL;
+			return nullptr;
 		}
-		handle = NULL;
+		handle = nullptr;
 	}
 	else
 	{
-		if (sourcePath == NULL)
+		if (sourcePath == nullptr)
 		{
-			// bad: sourcePath is NULL, but sourceDir isn't
+			// bad: sourcePath is nullptr, but sourceDir isn't
 			errno = EINVAL;
-			return NULL;
+			return nullptr;
 		}
 		log_add(log_Info, "uio_open %s", sourcePath);
 		handle = uio_open(sourceDir, sourcePath,
@@ -217,29 +217,29 @@ uio_mountDir(uio_Repository* destRep, const char* mountPoint,
 #endif
 						  ,
 						  0);
-		if (handle == NULL)
+		if (handle == nullptr)
 		{
 			log_add(log_Info, "uio_open failed for %s", sourcePath);
 			// errno is set
-			return NULL;
+			return nullptr;
 		}
 	}
 
 	handler = uio_getFileSystemHandler(fsType);
 	log_add(log_Info, "uio_getFileSystemHandler %p", handler);
-	if (handler == NULL)
+	if (handler == nullptr)
 	{
 		if (handle)
 		{
 			uio_close(handle);
 		}
 		errno = ENODEV;
-		return NULL;
+		return nullptr;
 	}
 
-	assert(handler->mount != NULL);
+	assert(handler->mount != nullptr);
 	pRoot = (handler->mount)(handle, flags);
-	if (pRoot == NULL)
+	if (pRoot == nullptr)
 	{
 		int savedErrno;
 
@@ -249,7 +249,7 @@ uio_mountDir(uio_Repository* destRep, const char* mountPoint,
 			uio_close(handle);
 		}
 		errno = savedErrno;
-		return NULL;
+		return nullptr;
 	}
 
 	if (handle)
@@ -292,7 +292,7 @@ uio_mountDir(uio_Repository* destRep, const char* mountPoint,
 			uio_PDirHandle_unref(endDirHandle);
 			uio_PRoot_unrefMount(pRoot);
 			errno = ENOENT;
-			return NULL;
+			return nullptr;
 		}
 
 		dirName = (char*)uio_malloc(endInPath - inPath + 1);
@@ -302,8 +302,8 @@ uio_mountDir(uio_Repository* destRep, const char* mountPoint,
 		// InPath is a copy with the paths fixed.
 		uio_free(unixPath);
 #endif /* BACKSLASH_IS_PATH_SEPARATOR */
-		mountInfo = uio_MountInfo_new(fsType, NULL, endDirHandle, dirName,
-									  autoMount, NULL, flags);
+		mountInfo = uio_MountInfo_new(fsType, nullptr, endDirHandle, dirName,
+									  autoMount, nullptr, flags);
 		uio_repositoryAddMount(destRep, mountInfo,
 							   (uio_MountLocation)(flags & uio_MOUNT_LOCATION_MASK), relativeInfo);
 		mountTree = uio_mountTreeAddMountInfo(destRep, destRep->mountTree,
@@ -328,32 +328,32 @@ uio_transplantDir(const char* mountPoint, uio_DirHandle* sourceDir, int flags,
 	uio_PDirHandle** pDirHandles;
 	uio_MountTreeItem** treeItems;
 	int i;
-	uio_MountHandle* handle = NULL;
+	uio_MountHandle* handle = nullptr;
 
 	if ((flags & uio_MOUNT_RDONLY) != uio_MOUNT_RDONLY)
 	{
 		// Only read-only transplants supported atm
 		errno = ENOSYS;
-		return NULL;
+		return nullptr;
 	}
 
 	switch (flags & uio_MOUNT_LOCATION_MASK)
 	{
 		case uio_MOUNT_TOP:
 		case uio_MOUNT_BOTTOM:
-			if (relative != NULL)
+			if (relative != nullptr)
 			{
 				errno = EINVAL;
-				return NULL;
+				return nullptr;
 			}
-			relativeInfo = NULL;
+			relativeInfo = nullptr;
 			break;
 		case uio_MOUNT_BELOW:
 		case uio_MOUNT_ABOVE:
-			if (relative == NULL)
+			if (relative == nullptr)
 			{
 				errno = EINVAL;
-				return NULL;
+				return nullptr;
 			}
 			relativeInfo = relative->mountInfo;
 			break;
@@ -368,7 +368,7 @@ uio_transplantDir(const char* mountPoint, uio_DirHandle* sourceDir, int flags,
 	if (!validPathName(mountPoint, strlen(mountPoint)))
 	{
 		errno = EINVAL;
-		return NULL;
+		return nullptr;
 	}
 
 	if (uio_getPathPhysicalDirs(sourceDir, "", 0,
@@ -376,12 +376,12 @@ uio_transplantDir(const char* mountPoint, uio_DirHandle* sourceDir, int flags,
 		== -1)
 	{
 		// errno is set
-		return NULL;
+		return nullptr;
 	}
 	if (numPDirHandles == 0)
 	{
 		errno = ENOENT;
-		return NULL;
+		return nullptr;
 	}
 
 	// TODO: We only transplant the first read-only physical dir that we find
@@ -401,8 +401,8 @@ uio_transplantDir(const char* mountPoint, uio_DirHandle* sourceDir, int flags,
 			continue;
 		}
 
-		mountInfo = uio_MountInfo_new(oldMountInfo->fsID, NULL, pDirHandle,
-									  uio_strdup(""), oldMountInfo->autoMount, NULL, flags);
+		mountInfo = uio_MountInfo_new(oldMountInfo->fsID, nullptr, pDirHandle,
+									  uio_strdup(""), oldMountInfo->autoMount, nullptr, flags);
 		// New mount references the same handles
 		uio_PDirHandle_ref(pDirHandle);
 		uio_PRoot_refMount(pDirHandle->pRoot);
@@ -421,7 +421,7 @@ uio_transplantDir(const char* mountPoint, uio_DirHandle* sourceDir, int flags,
 	uio_PDirHandles_delete(pDirHandles, numPDirHandles);
 	uio_free(treeItems);
 
-	if (handle == NULL)
+	if (handle == nullptr)
 	{
 		errno = ENOENT;
 	}
@@ -496,8 +496,8 @@ int uio_rename(uio_DirHandle* oldDir, const char* oldPath,
 	int retVal;
 
 	if (uio_getPhysicalAccess(oldDir, oldPath, O_RDONLY, 0,
-							  &oldReadMountInfo, &oldPReadDir, NULL,
-							  NULL, NULL, NULL, &oldName)
+							  &oldReadMountInfo, &oldPReadDir, nullptr,
+							  nullptr, nullptr, nullptr, &oldName)
 		== -1)
 	{
 		// errno is set
@@ -505,8 +505,8 @@ int uio_rename(uio_DirHandle* oldDir, const char* oldPath,
 	}
 
 	if (uio_getPhysicalAccess(newDir, newPath, O_WRONLY | O_CREAT | O_EXCL,
-							  uio_GPA_NOWRITE, &newReadMountInfo, &newPReadDir, NULL,
-							  &newWriteMountInfo, &newPWriteDir, NULL, &newName)
+							  uio_GPA_NOWRITE, &newReadMountInfo, &newPReadDir, nullptr,
+							  &newWriteMountInfo, &newPWriteDir, nullptr, &newName)
 		== -1)
 	{
 		int savedErrno = errno;
@@ -540,7 +540,7 @@ int uio_rename(uio_DirHandle* oldDir, const char* oldPath,
 		return -1;
 	}
 
-	if (oldReadMountInfo->pDirHandle->pRoot->handler->rename == NULL)
+	if (oldReadMountInfo->pDirHandle->pRoot->handler->rename == nullptr)
 	{
 		uio_PDirHandle_unref(oldPReadDir);
 		uio_PDirHandle_unref(newPReadDir);
@@ -587,8 +587,8 @@ int uio_access(uio_DirHandle* dir, const char* path, int mode)
 	int result;
 
 	if (uio_getPhysicalAccess(dir, path, O_RDONLY, 0,
-			&readMountInfo, &pReadDir, NULL,
-			NULL, NULL, NULL, &name) == -1) {
+			&readMountInfo, &pReadDir, nullptr,
+			nullptr, nullptr, nullptr, &name) == -1) {
 		// XXX: I copied this part from uio_stat(). Is this what I need?
 		if (uio_accessDir(dir, path, statBuf) == -1) {
 			// errno is set
@@ -597,7 +597,7 @@ int uio_access(uio_DirHandle* dir, const char* path, int mode)
 		return 0;
 	}
 
-	if (pReadDir->pRoot->handler->access == NULL) {
+	if (pReadDir->pRoot->handler->access == nullptr) {
 		uio_PDirHandle_unref(pReadDir);
 		uio_free(name);
 		errno = ENOSYS;
@@ -632,7 +632,7 @@ uio_accessDir(uio_DirHandle *dirHandle, const char *path, int mode) {
 	}
 
 	if (uio_getPathPhysicalDirs(dirHandle, path, strlen(path),
-				&pDirHandles, &numPDirHandles, NULL) == -1) {
+				&pDirHandles, &numPDirHandles, nullptr) == -1) {
 		// errno is set
 		return -1;
 	}
@@ -702,7 +702,7 @@ uio_accessDir(uio_DirHandle *dirHandle, const char *path, int mode) {
 
 int uio_fstat(uio_Handle* handle, struct stat* statBuf)
 {
-	if (handle->root->handler->fstat == NULL)
+	if (handle->root->handler->fstat == nullptr)
 	{
 		errno = ENOSYS;
 		return -1;
@@ -718,8 +718,8 @@ int uio_stat(uio_DirHandle* dir, const char* path, struct stat* statBuf)
 	int result;
 
 	if (uio_getPhysicalAccess(dir, path, O_RDONLY, 0,
-							  &readMountInfo, &pReadDir, NULL,
-							  NULL, NULL, NULL, &name)
+							  &readMountInfo, &pReadDir, nullptr,
+							  nullptr, nullptr, nullptr, &name)
 		== -1)
 	{
 		if (uio_statDir(dir, path, statBuf) == -1)
@@ -730,7 +730,7 @@ int uio_stat(uio_DirHandle* dir, const char* path, struct stat* statBuf)
 		return 0;
 	}
 
-	if (pReadDir->pRoot->handler->stat == NULL)
+	if (pReadDir->pRoot->handler->stat == nullptr)
 	{
 		uio_PDirHandle_unref(pReadDir);
 		uio_free(name);
@@ -762,7 +762,7 @@ uio_statDir(uio_DirHandle* dirHandle, const char* path,
 	uio_PDirHandle** pDirHandles;
 
 	if (uio_getPathPhysicalDirs(dirHandle, path, strlen(path),
-								&pDirHandles, &numPDirHandles, NULL)
+								&pDirHandles, &numPDirHandles, nullptr)
 		== -1)
 	{
 		// errno is set
@@ -811,7 +811,7 @@ uio_statDir(uio_DirHandle* dirHandle, const char* path,
 static int
 uio_statOneDir(uio_PDirHandle* pDirHandle, struct stat* statBuf)
 {
-	if (pDirHandle->pRoot->handler->stat == NULL)
+	if (pDirHandle->pRoot->handler->stat == nullptr)
 	{
 		errno = ENOSYS;
 		return -1;
@@ -828,8 +828,8 @@ int uio_mkdir(uio_DirHandle* dir, const char* path, mode_t mode)
 	uio_PDirHandle* newDirHandle;
 
 	if (uio_getPhysicalAccess(dir, path, O_WRONLY | O_CREAT | O_EXCL, 0,
-							  &readMountInfo, &pReadDir, NULL,
-							  &writeMountInfo, &pWriteDir, NULL, &name)
+							  &readMountInfo, &pReadDir, nullptr,
+							  &writeMountInfo, &pWriteDir, nullptr, &name)
 		== -1)
 	{
 		// errno is set
@@ -841,7 +841,7 @@ int uio_mkdir(uio_DirHandle* dir, const char* path, mode_t mode)
 	}
 	uio_PDirHandle_unref(pReadDir);
 
-	if (pWriteDir->pRoot->handler->mkdir == NULL)
+	if (pWriteDir->pRoot->handler->mkdir == nullptr)
 	{
 		uio_free(name);
 		uio_PDirHandle_unref(pWriteDir);
@@ -850,7 +850,7 @@ int uio_mkdir(uio_DirHandle* dir, const char* path, mode_t mode)
 	}
 
 	newDirHandle = (pWriteDir->pRoot->handler->mkdir)(pWriteDir, name, mode);
-	if (newDirHandle == NULL)
+	if (newDirHandle == nullptr)
 	{
 		int savedErrno = errno;
 		uio_free(name);
@@ -874,13 +874,13 @@ uio_open(uio_DirHandle* dir, const char* path, int flags, mode_t mode)
 	uio_Handle* handle;
 
 	if (uio_getPhysicalAccess(dir, path, flags, 0,
-							  &readMountInfo, &readPDirHandle, NULL,
-							  &writeMountInfo, &writePDirHandle, NULL, &name)
+							  &readMountInfo, &readPDirHandle, nullptr,
+							  &writeMountInfo, &writePDirHandle, nullptr, &name)
 		== -1)
 	{
 		// errno is set
 		// log_add(log_Info, "uio_open: uio_getPhysicalAccess failed for '%s'", path);
-		return NULL;
+		return nullptr;
 	}
 
 	if ((flags & O_ACCMODE) == O_RDONLY)
@@ -902,7 +902,7 @@ uio_open(uio_DirHandle* dir, const char* path, int flags, mode_t mode)
 		uio_PDirEntryHandle* entry;
 
 		entry = uio_getPDirEntryHandle(readPDirHandle, name);
-		if (entry != NULL)
+		if (entry != nullptr)
 		{
 			// file already exists
 			uio_PDirEntryHandle_unref(entry);
@@ -913,7 +913,7 @@ uio_open(uio_DirHandle* dir, const char* path, int flags, mode_t mode)
 				uio_PDirHandle_unref(writePDirHandle);
 				errno = EEXIST;
 				log_add(log_Info, "uio_open: O_CREAT | O_EXCL: file already exists '%s'", name);
-				return NULL;
+				return nullptr;
 			}
 			if ((flags & O_TRUNC) == O_TRUNC)
 			{
@@ -935,7 +935,7 @@ uio_open(uio_DirHandle* dir, const char* path, int flags, mode_t mode)
 					uio_PDirHandle_unref(writePDirHandle);
 					errno = savedErrno;
 					log_add(log_Info, "uio_open: uio_copyFilePhysical failed '%s'", name);
-					return NULL;
+					return nullptr;
 				}
 			}
 		}
@@ -948,7 +948,7 @@ uio_open(uio_DirHandle* dir, const char* path, int flags, mode_t mode)
 				uio_PDirHandle_unref(readPDirHandle);
 				uio_PDirHandle_unref(writePDirHandle);
 				errno = ENOENT;
-				return NULL;
+				return nullptr;
 			}
 		}
 		uio_PDirHandle_unref(readPDirHandle);
@@ -957,14 +957,14 @@ uio_open(uio_DirHandle* dir, const char* path, int flags, mode_t mode)
 
 	handle = (pDirHandle->pRoot->handler->open)(pDirHandle, name, flags, mode);
 	// Also adds a new entry to the physical dir if appropriate.
-	if (handle == NULL)
+	if (handle == nullptr)
 	{
 		int savedErrno = errno;
 		log_add(log_Info, "uio_open: open file failed '%s'", name);
 		uio_free(name);
 		uio_PDirHandle_unref(pDirHandle);
 		errno = savedErrno;
-		return NULL;
+		return nullptr;
 	}
 
 	uio_free(name);
@@ -987,7 +987,7 @@ uio_openDir(uio_Repository* repository, const char* path, int flags)
 		int savedErrno = errno;
 		uio_DirHandle_free(dirHandle);
 		errno = savedErrno;
-		return NULL;
+		return nullptr;
 	}
 	// dirHandle->path is no longer equal to 'path' at this point.
 	// TODO: increase ref in repository?
@@ -1008,7 +1008,7 @@ uio_openDirRelative(uio_DirHandle* base, const char* path, int flags)
 	if (uio_verifyPath(base, path, &newPath) == -1)
 	{
 		// errno is set
-		return NULL;
+		return nullptr;
 	}
 	if (flags & uio_OD_ROOT)
 	{
@@ -1048,7 +1048,7 @@ int uio_rmdir(uio_DirHandle* dirHandle, const char* path)
 	int numDeleted;
 
 	pathEnd = strrchr(path, '/');
-	if (pathEnd == NULL)
+	if (pathEnd == nullptr)
 	{
 		pathEnd = path;
 		name = path;
@@ -1066,7 +1066,7 @@ int uio_rmdir(uio_DirHandle* dirHandle, const char* path)
 		return -1;
 	}
 
-	entry = NULL;
+	entry = nullptr;
 	// Should be set before a possible goto.
 
 	if (name[0] == '\0')
@@ -1084,7 +1084,7 @@ int uio_rmdir(uio_DirHandle* dirHandle, const char* path)
 		pDirHandle = pDirHandles[i];
 		entry = uio_getPDirEntryHandle(pDirHandle, name);
 
-		if (entry == NULL)
+		if (entry == nullptr)
 		{
 			continue;
 		}
@@ -1101,7 +1101,7 @@ int uio_rmdir(uio_DirHandle* dirHandle, const char* path)
 			goto err;
 		}
 
-		if (pDirHandle->pRoot->handler->rmdir == NULL)
+		if (pDirHandle->pRoot->handler->rmdir == nullptr)
 		{
 			errno = ENOSYS;
 			goto err;
@@ -1115,7 +1115,7 @@ int uio_rmdir(uio_DirHandle* dirHandle, const char* path)
 		numDeleted++;
 		uio_PDirEntryHandle_unref(entry);
 	}
-	entry = NULL;
+	entry = nullptr;
 
 	if (numDeleted == 0)
 	{
@@ -1132,7 +1132,7 @@ err:
 		int savedErrno = errno;
 		uio_PDirHandles_delete(pDirHandles, numPDirHandles);
 		uio_free(items);
-		if (entry != NULL)
+		if (entry != nullptr)
 		{
 			uio_PDirEntryHandle_unref(entry);
 		}
@@ -1153,7 +1153,7 @@ uio_PDirHandles_delete(uio_PDirHandle* pDirHandles[], int numPDirHandles)
 
 int uio_lseek(uio_Handle* handle, off_t offset, int whence)
 {
-	if (handle->root->handler->seek == NULL)
+	if (handle->root->handler->seek == nullptr)
 	{
 		errno = ENOSYS;
 		return -1;
@@ -1164,7 +1164,7 @@ int uio_lseek(uio_Handle* handle, off_t offset, int whence)
 ssize_t
 uio_write(uio_Handle* handle, const void* buf, size_t count)
 {
-	if (handle->root->handler->write == NULL)
+	if (handle->root->handler->write == nullptr)
 	{
 		errno = ENOSYS;
 		return -1;
@@ -1183,7 +1183,7 @@ int uio_unlink(uio_DirHandle* dirHandle, const char* path)
 	int numDeleted;
 
 	pathEnd = strrchr(path, '/');
-	if (pathEnd == NULL)
+	if (pathEnd == nullptr)
 	{
 		pathEnd = path;
 		name = path;
@@ -1201,7 +1201,7 @@ int uio_unlink(uio_DirHandle* dirHandle, const char* path)
 		return -1;
 	}
 
-	entry = NULL;
+	entry = nullptr;
 	// Should be set before a possible goto.
 
 	if (name[0] == '\0')
@@ -1217,7 +1217,7 @@ int uio_unlink(uio_DirHandle* dirHandle, const char* path)
 		pDirHandle = pDirHandles[i];
 		entry = uio_getPDirEntryHandle(pDirHandle, name);
 
-		if (entry == NULL)
+		if (entry == nullptr)
 		{
 			continue;
 		}
@@ -1234,7 +1234,7 @@ int uio_unlink(uio_DirHandle* dirHandle, const char* path)
 			goto err;
 		}
 
-		if (pDirHandle->pRoot->handler->unlink == NULL)
+		if (pDirHandle->pRoot->handler->unlink == nullptr)
 		{
 			errno = ENOSYS;
 			goto err;
@@ -1248,7 +1248,7 @@ int uio_unlink(uio_DirHandle* dirHandle, const char* path)
 		numDeleted++;
 		uio_PDirEntryHandle_unref(entry);
 	}
-	entry = NULL;
+	entry = nullptr;
 
 	if (numDeleted == 0)
 	{
@@ -1265,7 +1265,7 @@ err:
 		int savedErrno = errno;
 		uio_PDirHandles_delete(pDirHandles, numPDirHandles);
 		uio_free(items);
-		if (entry != NULL)
+		if (entry != nullptr)
 		{
 			uio_PDirEntryHandle_unref(entry);
 		}
@@ -1319,7 +1319,7 @@ int uio_getFileLocation(uio_DirHandle* dir, const char* inPath,
 		uio_PDirEntryHandle* entry;
 
 		entry = uio_getPDirEntryHandle(readPDirHandle, name);
-		if (entry != NULL)
+		if (entry != nullptr)
 		{
 			// file already exists
 			uio_PDirEntryHandle_unref(entry);
@@ -1442,17 +1442,17 @@ uio_getDirList(uio_DirHandle* dirHandle, const char* path, const char* pattern,
 	int numPDirHandles;
 	uio_PDirHandle** pDirHandles;
 	uio_DirList* result;
-	if (uio_getPathPhysicalDirs(dirHandle, path, strlen(path), &pDirHandles, &numPDirHandles, NULL)	== -1)
+	if (uio_getPathPhysicalDirs(dirHandle, path, strlen(path), &pDirHandles, &numPDirHandles, nullptr)	== -1)
 	{
 		// errno is set
-		return NULL;
+		return nullptr;
 	}
 
 	if (numPDirHandles == 0)
 	{
-		assert(pDirHandles == NULL);
+		assert(pDirHandles == nullptr);
 		// nothing to free
-		return uio_DirList_new(NULL, 0, NULL);
+		return uio_DirList_new(nullptr, 0, nullptr);
 	}
 
 	result = uio_getDirListMulti(pDirHandles, numPDirHandles, pattern,
@@ -1529,7 +1529,7 @@ uio_getDirListMulti(uio_PDirHandle** pDirHandles,
 		errno = EIO;
 		// I actually want to signal an internal error.
 		// EIO comes closes
-		return NULL;
+		return nullptr;
 	}
 
 	// first get the directory listings for all seperate relevant dirs.
@@ -1551,7 +1551,7 @@ uio_getDirListMulti(uio_PDirHandle** pDirHandles,
 	totalNumNames = 0;
 	for (pDirI = 0; pDirI < numPDirHandles; pDirI++)
 	{
-		for (linkPtr = links[pDirI]; linkPtr != NULL;
+		for (linkPtr = links[pDirI]; linkPtr != nullptr;
 			 linkPtr = linkPtr->next)
 		{
 			int numNewNames;
@@ -1601,7 +1601,7 @@ uio_getDirListMulti(uio_PDirHandle** pDirHandles,
 
 // 'buffer' and 'names' may be the same dir
 // 'names' contains an array of 'numNames' pointers.
-// 'newNames', if non-NULL, will be used as the array of new pointers
+// 'newNames', if non-nullptr, will be used as the array of new pointers
 // (to a copy of the strings) in the DirList.
 static uio_DirList*
 uio_makeDirList(const char** newNames, const char* const* names,
@@ -1612,7 +1612,7 @@ uio_makeDirList(const char** newNames, const char* const* names,
 	char* bufPtr;
 	uio_DirList* result;
 
-	if (newNames == NULL)
+	if (newNames == nullptr)
 	{
 		newNames = (const char**)uio_malloc(numNames * sizeof(char*));
 	}
@@ -1650,13 +1650,13 @@ uio_collectDirEntries(uio_PDirHandle* pDirHandle, uio_DirBufferLink** linkPtr,
 
 	entriesContext = uio_openEntriesPhysical(pDirHandle);
 	auto UNUSED = entriesContext->native->status;
-	if (entriesContext == NULL)
+	if (entriesContext == nullptr)
 	{
 #ifdef DEBUG
 		fprintf(stderr, "Error: uio_openEntriesPhysical() failed: %s\n",
 				strerror(errno));
 #endif
-		*linkPtr = NULL;
+		*linkPtr = nullptr;
 		*numEntries = 0;
 		return;
 	}
@@ -1678,9 +1678,9 @@ uio_collectDirEntries(uio_PDirHandle* pDirHandle, uio_DirBufferLink** linkPtr,
 		}
 		totalEntries += numRead;
 		(*linkEndPtr)->numEntries = numRead;
-		if (((char**)buffer)[numRead - 1] == NULL)
+		if (((char**)buffer)[numRead - 1] == nullptr)
 		{
-			// The entry being NULL means this is the last buffer
+			// The entry being nullptr means this is the last buffer
 			// Decrement the amount of queries to get the real number.
 			(*linkEndPtr)->numEntries--;
 			totalEntries--;
@@ -1689,7 +1689,7 @@ uio_collectDirEntries(uio_PDirHandle* pDirHandle, uio_DirBufferLink** linkPtr,
 		}
 		linkEndPtr = &(*linkEndPtr)->next;
 	}
-	*linkEndPtr = NULL;
+	*linkEndPtr = nullptr;
 	uio_closeEntriesPhysical(entriesContext);
 	*numEntries = totalEntries;
 }
@@ -1738,11 +1738,11 @@ uio_openEntriesPhysical(uio_PDirHandle* dirHandle)
 
 	pRoot = dirHandle->pRoot;
 
-	assert(pRoot->handler->openEntries != NULL);
+	assert(pRoot->handler->openEntries != nullptr);
 	native = pRoot->handler->openEntries(dirHandle);
-	if (native == NULL)
+	if (native == nullptr)
 	{
-		return NULL;
+		return nullptr;
 	}
 	uio_PRoot_refHandle(pRoot);
 	return uio_EntriesContext_new(pRoot, native);
@@ -1751,14 +1751,14 @@ uio_openEntriesPhysical(uio_PDirHandle* dirHandle)
 static int
 uio_readEntriesPhysical(uio_EntriesContext* iterator, char* buf, size_t len)
 {
-	assert(iterator->pRoot->handler->readEntries != NULL);
+	assert(iterator->pRoot->handler->readEntries != nullptr);
 	return iterator->pRoot->handler->readEntries(&iterator->native, buf, len);
 }
 
 static void
 uio_closeEntriesPhysical(uio_EntriesContext* iterator)
 {
-	assert(iterator->pRoot->handler->closeEntries != NULL);
+	assert(iterator->pRoot->handler->closeEntries != nullptr);
 	iterator->pRoot->handler->closeEntries(iterator->native);
 	uio_PRoot_unrefHandle(iterator->pRoot);
 	uio_EntriesContext_delete(iterator);
@@ -1804,7 +1804,7 @@ uio_DirBufferChain_free(uio_DirBufferLink* dirBufferLink)
 {
 	uio_DirBufferLink* next;
 
-	while (dirBufferLink != NULL)
+	while (dirBufferLink != nullptr)
 	{
 		next = dirBufferLink->next;
 		uio_DirBufferLink_free(dirBufferLink);
@@ -1852,27 +1852,27 @@ uio_PDirEntryHandle*
 uio_getPDirEntryHandle(const uio_PDirHandle* dirHandle,
 					   const char* name)
 {
-	assert(dirHandle->pRoot->handler != NULL);
+	assert(dirHandle->pRoot->handler != nullptr);
 	return dirHandle->pRoot->handler->getPDirEntryHandle(dirHandle, name);
 }
 
 void uio_PDirHandle_deletePDirHandleExtra(uio_PDirHandle* pDirHandle)
 {
-	if (pDirHandle->extra == NULL)
+	if (pDirHandle->extra == nullptr)
 	{
 		return;
 	}
-	assert(pDirHandle->pRoot->handler->deletePDirHandleExtra != NULL);
+	assert(pDirHandle->pRoot->handler->deletePDirHandleExtra != nullptr);
 	pDirHandle->pRoot->handler->deletePDirHandleExtra(pDirHandle->extra);
 }
 
 void uio_PFileHandle_deletePFileHandleExtra(uio_PFileHandle* pFileHandle)
 {
-	if (pFileHandle->extra == NULL)
+	if (pFileHandle->extra == nullptr)
 	{
 		return;
 	}
-	assert(pFileHandle->pRoot->handler->deletePFileHandleExtra != NULL);
+	assert(pFileHandle->pRoot->handler->deletePFileHandleExtra != nullptr);
 	pFileHandle->pRoot->handler->deletePFileHandleExtra(pFileHandle->extra);
 }
 
@@ -2095,7 +2095,7 @@ Get_Basename(const char* path)
 	const char* last_slash = strrchr(path, '/');
 	const char* last_backslash = strrchr(path, '\\');
 
-	const char* last_separator = NULL;
+	const char* last_separator = nullptr;
 	if (last_slash && last_backslash)
 	{
 		last_separator = (last_slash > last_backslash) ? last_slash : last_backslash;
@@ -2109,7 +2109,7 @@ Get_Basename(const char* path)
 		last_separator = last_backslash;
 	}
 
-	if (last_separator != NULL)
+	if (last_separator != nullptr)
 	{
 		return last_separator + 1;
 	}

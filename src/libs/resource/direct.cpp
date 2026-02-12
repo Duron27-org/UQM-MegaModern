@@ -35,9 +35,9 @@ LoadDirEntryTable(uio_DirHandle* dirHandle, const char* path,
 	STRING lpLastString;
 
 	dir = uio_openDirRelative(dirHandle, path, 0);
-	assert(dir != NULL);
+	assert(dir != nullptr);
 	dirList = uio_getDirList(dir, "", pattern, matchType);
-	assert(dirList != NULL);
+	assert(dirList != nullptr);
 	num_entries = 0;
 
 	// First, count the amount of space needed
@@ -47,17 +47,17 @@ LoadDirEntryTable(uio_DirHandle* dirHandle, const char* path,
 
 		if (dirList->names[i][0] == '.')
 		{
-			dirList->names[i] = NULL;
+			dirList->names[i] = nullptr;
 			continue;
 		}
 		if (uio_stat(dir, dirList->names[i], &sb) == -1)
 		{
-			dirList->names[i] = NULL;
+			dirList->names[i] = nullptr;
 			continue;
 		}
 		if (!S_ISREG(sb.st_mode))
 		{
-			dirList->names[i] = NULL;
+			dirList->names[i] = nullptr;
 			continue;
 		}
 		num_entries++;
@@ -85,7 +85,7 @@ LoadDirEntryTable(uio_DirHandle* dirHandle, const char* path,
 	{
 		int size;
 		STRINGPTR target;
-		if (dirList->names[i] == NULL)
+		if (dirList->names[i] == nullptr)
 		{
 			continue;
 		}

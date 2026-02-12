@@ -62,7 +62,7 @@ struct uio_FileBlock
 };
 // INV: The FileBlock represents 'fileData[offset..(offset + blockSize - 1)]'
 // where 'fileData' is the contents of the file.
-// INV: If buf != NULL then:
+// INV: If buf != nullptr then:
 //     bufFill <= bufSize
 //     bufFill <= blockSize
 //     buffer[0..bufFill - 1] == fileData[

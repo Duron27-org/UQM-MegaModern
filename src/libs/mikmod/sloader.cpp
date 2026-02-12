@@ -39,8 +39,8 @@
 
 static int sl_rlength;
 static SWORD sl_old;
-static SWORD* sl_buffer = NULL;
-static SAMPLOAD *musiclist = NULL, *sndfxlist = NULL;
+static SWORD* sl_buffer = nullptr;
+static SAMPLOAD *musiclist = nullptr, *sndfxlist = nullptr;
 
 /* size of the loader buffer in words */
 #define SLBUFSIZE 2048
@@ -82,7 +82,7 @@ void SL_Exit(SAMPLOAD* s)
 	}
 
 	MikMod_free(sl_buffer);
-	sl_buffer = NULL;
+	sl_buffer = nullptr;
 }
 
 /* unpack a 8bit IT packed sample */
@@ -477,13 +477,13 @@ SAMPLOAD* SL_RegisterSample(SAMPLE* s, int type, MREADER* reader)
 	}
 	else
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	/* Allocate and add structure to the END of the list */
 	if (!(news = (SAMPLOAD*)MikMod_malloc(sizeof(SAMPLOAD))))
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	if (cruise)
@@ -545,7 +545,7 @@ static ULONG RealSpeed(SAMPLOAD* s)
 
 static int DitherSamples(SAMPLOAD* samplist, int type)
 {
-	SAMPLOAD* c2smp = NULL;
+	SAMPLOAD* c2smp = nullptr;
 	ULONG maxsize, speed;
 	SAMPLOAD* s;
 
@@ -637,7 +637,7 @@ int SL_LoadSamples(void)
 		return 0;
 	}
 	rc = DitherSamples(musiclist, MD_MUSIC) || DitherSamples(sndfxlist, MD_SNDFX);
-	musiclist = sndfxlist = NULL;
+	musiclist = sndfxlist = nullptr;
 
 	return rc;
 }

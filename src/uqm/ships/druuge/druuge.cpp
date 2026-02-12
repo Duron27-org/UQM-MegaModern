@@ -63,7 +63,7 @@ static RACE_DESC druuge_desc =
 		 DRUUGE_RACE_STRINGS,
 		 DRUUGE_ICON_MASK_PMAP_ANIM,
 		 DRUUGE_MICON_MASK_PMAP_ANIM,
-		 NULL, NULL, NULL},
+		 nullptr, nullptr, nullptr},
 		{
 			/* FLEET_STUFF */
 			1400 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
@@ -102,24 +102,24 @@ static RACE_DESC druuge_desc =
 			 NULL_RESOURCE,
 		 },
 		 {DRUUGE_CAPT_MASK_PMAP_ANIM,
-		  NULL, NULL, NULL, NULL, NULL,
+		  nullptr, nullptr, nullptr, nullptr, nullptr,
 		  0, 0, 0, 0, 0},
 		 DRUUGE_VICTORY_SONG,
 		 DRUUGE_SHIP_SOUNDS,
-		 {NULL, NULL, NULL},
-		 {NULL, NULL, NULL},
-		 {NULL, NULL, NULL},
-		 NULL,
-		 NULL},
+		 {nullptr, nullptr, nullptr},
+		 {nullptr, nullptr, nullptr},
+		 {nullptr, nullptr, nullptr},
+		 nullptr,
+		 nullptr},
 		{
 			0,
 			MISSILE_RANGE,
-			NULL,
+			nullptr,
 		 },
-		(UNINIT_FUNC*)NULL,
-		(PREPROCESS_FUNC*)NULL,
-		(POSTPROCESS_FUNC*)NULL,
-		(INIT_WEAPON_FUNC*)NULL,
+		(UNINIT_FUNC*)nullptr,
+		(PREPROCESS_FUNC*)nullptr,
+		(POSTPROCESS_FUNC*)nullptr,
+		(INIT_WEAPON_FUNC*)nullptr,
 		0,
 		0, /* CodeRef */
 };
@@ -180,7 +180,7 @@ initialize_cannon(ELEMENT* ShipPtr, HELEMENT CannonArray[])
 	MissileBlock.hit_points = MISSILE_HITS;
 	MissileBlock.damage = MISSILE_DAMAGE;
 	MissileBlock.life = MISSILE_LIFE;
-	MissileBlock.preprocess_func = NULL;
+	MissileBlock.preprocess_func = nullptr;
 	MissileBlock.blast_offs = MISSILE_OFFSET;
 	CannonArray[0] = initialize_missile(&MissileBlock);
 
@@ -202,7 +202,7 @@ druuge_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 {
 	uqm::UWORD ship_flags = 0;
 	STARSHIP* StarShipPtr;
-	STARSHIP* EnemyStarShipPtr = NULL;
+	STARSHIP* EnemyStarShipPtr = nullptr;
 	EVALUATE_DESC* lpEvalDesc;
 
 	GetElementStarShip(ShipPtr, &StarShipPtr);

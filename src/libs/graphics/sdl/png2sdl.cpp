@@ -63,21 +63,21 @@ TFB_png_to_sdl(SDL_RWops* src)
 	if (!src)
 	{
 		/* The error message has been set in SDL_RWFromFile */
-		return NULL;
+		return nullptr;
 	}
 	start = SDL_RWtell(src);
 
 	/* Initialize the data we will clean up when we're done */
-	error = NULL;
-	png_ptr = NULL;
-	info_ptr = NULL;
-	row_pointers = NULL;
-	surface = NULL;
+	error = nullptr;
+	png_ptr = nullptr;
+	info_ptr = nullptr;
+	row_pointers = nullptr;
+	surface = nullptr;
 
 	/* Create the PNG loading context structure */
 	png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING,
-									 NULL, NULL, NULL);
-	if (png_ptr == NULL)
+									 nullptr, nullptr, nullptr);
+	if (png_ptr == nullptr)
 	{
 		error = "Couldn't allocate memory for PNG file";
 		goto done;
@@ -85,7 +85,7 @@ TFB_png_to_sdl(SDL_RWops* src)
 
 	/* Allocate/initialize the memory for image information */
 	info_ptr = png_create_info_struct(png_ptr);
-	if (info_ptr == NULL)
+	if (info_ptr == nullptr)
 	{
 		error = "Couldn't create image information for PNG file";
 		goto done;
@@ -104,7 +104,7 @@ TFB_png_to_sdl(SDL_RWops* src)
 	/* Read PNG header info */
 	png_read_info(png_ptr, info_ptr);
 	png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth,
-				 &color_type, &interlace_type, NULL, NULL);
+				 &color_type, &interlace_type, nullptr, nullptr);
 
 
 	/* Configure the decode based on what we know of the image
@@ -170,7 +170,7 @@ TFB_png_to_sdl(SDL_RWops* src)
 	 * our ancillary data about the image */
 	png_read_update_info(png_ptr, info_ptr);
 	png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth,
-				 &color_type, &interlace_type, NULL, NULL);
+				 &color_type, &interlace_type, nullptr, nullptr);
 
 	/* Allocate the SDL surface to hold the image */
 	Rmask = Gmask = Bmask = Amask = 0;
@@ -193,7 +193,7 @@ TFB_png_to_sdl(SDL_RWops* src)
 	surface = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height,
 								   bit_depth * num_channels,
 								   Rmask, Gmask, Bmask, Amask);
-	if (surface == NULL)
+	if (surface == nullptr)
 	{
 		error = SDL_GetError();
 		goto done;
@@ -291,7 +291,7 @@ done: /* Clean up and return */
 		if (surface)
 		{
 			SDL_FreeSurface(surface);
-			surface = NULL;
+			surface = nullptr;
 		}
 		fprintf(stderr, "%s", error);
 	}
@@ -357,27 +357,27 @@ int TFB_sdl_to_png(SDL_Surface* surface, SDL_RWops* dst, int freedst)
 	const char* error;
 
 	/* Initialize the data we will clean up when we're done */
-	error = NULL;
-	png_ptr = NULL;
-	info_ptr = NULL;
-	row_pointers = NULL;
+	error = nullptr;
+	png_ptr = nullptr;
+	info_ptr = nullptr;
+	row_pointers = nullptr;
 
 	/* Initialize and do basic error checking */
 	if (!dst)
 	{
-		error = "Argument 2 to TFB_sdl_to_png can't be NULL\n";
+		error = "Argument 2 to TFB_sdl_to_png can't be nullptr\n";
 		goto done;
 	}
 	if (!surface)
 	{
-		error = "Argument 1 to TFB_sdl_to_png can't be NULL\n";
+		error = "Argument 1 to TFB_sdl_to_png can't be nullptr\n";
 		goto done;
 	}
 
 	/* Create the PNG writing context structure */
 	png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING,
-									  NULL, NULL, NULL);
-	if (png_ptr == NULL)
+									  nullptr, nullptr, nullptr);
+	if (png_ptr == nullptr)
 	{
 		error = "Couldn't allocate memory for PNG file";
 		goto done;
@@ -385,7 +385,7 @@ int TFB_sdl_to_png(SDL_Surface* surface, SDL_RWops* dst, int freedst)
 
 	/* Allocate/initialize the memory for image information */
 	info_ptr = png_create_info_struct(png_ptr);
-	if (info_ptr == NULL)
+	if (info_ptr == nullptr)
 	{
 		error = "Couldn't create image information for PNG file";
 		goto done;
@@ -399,7 +399,7 @@ int TFB_sdl_to_png(SDL_Surface* surface, SDL_RWops* dst, int freedst)
 	}
 
 	/* Set up the output control */
-	png_set_write_fn(png_ptr, dst, png_write_data, NULL);
+	png_set_write_fn(png_ptr, dst, png_write_data, nullptr);
 
 	/* Prepare chunks */
 	colortype = PNG_COLOR_MASK_COLOR;
@@ -476,7 +476,7 @@ done: /* Clean up and return */
 		if (surface)
 		{
 			SDL_FreeSurface(surface);
-			surface = NULL;
+			surface = nullptr;
 		}
 		fprintf(stderr, "%s", error);
 		return (-1);

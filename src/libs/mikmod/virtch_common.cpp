@@ -314,9 +314,9 @@ void VC1_Exit(void)
 	MikMod_afree(vc_tickbuf);
 	MikMod_afree(Samples);
 
-	vc_tickbuf = NULL;
-	vinf = NULL;
-	Samples = NULL;
+	vc_tickbuf = nullptr;
+	vinf = nullptr;
+	Samples = nullptr;
 
 	VC_SetupPointers();
 }
@@ -394,7 +394,7 @@ void VC1_SampleUnload(SWORD handle)
 	if (Samples && (handle < MAXSAMPLEHANDLES))
 	{
 		MikMod_afree(Samples[handle]);
-		Samples[handle] = NULL;
+		Samples[handle] = nullptr;
 	}
 }
 
@@ -457,7 +457,7 @@ SWORD VC1_SampleLoad(struct SAMPLOAD* sload, int type)
 	if (SL_Load(Samples[handle], sload, length))
 	{
 		MikMod_afree(Samples[handle]);
-		Samples[handle] = NULL;
+		Samples[handle] = nullptr;
 		return -1;
 	}
 

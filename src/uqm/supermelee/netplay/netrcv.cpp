@@ -90,7 +90,7 @@ dataReceivedSingle(NetConnection* conn, const uint8* data,
 				NetConnection_getPlayerNr(conn), packetTypeData[type].name);
 	}
 #ifdef NETPLAY_DEBUG_FILE
-	if (conn->debugFile != NULL)
+	if (conn->debugFile != nullptr)
 	{
 		uio_fprintf(conn->debugFile,
 					"NETPLAY: [%d] <== Received packet of type %s.\n",

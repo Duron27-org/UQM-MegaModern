@@ -65,9 +65,9 @@ static inline void stdio_EntriesIterator_free(
 	stdio_EntriesIterator* iterator);
 
 uio_FileSystemHandler stdio_fileSystemHandler = {
-	/* .init    = */ NULL,
-	/* .unInit  = */ NULL,
-	/* .cleanup = */ NULL,
+	/* .init    = */ nullptr,
+	/* .unInit  = */ nullptr,
+	/* .cleanup = */ nullptr,
 
 	/* .mount  = */ stdio_mount,
 	/* .umount = */ uio_GPRoot_umount,
@@ -96,10 +96,10 @@ uio_FileSystemHandler stdio_fileSystemHandler = {
 };
 
 uio_GPRoot_Operations stdio_GPRootOperations = {
-	/* .fillGPDir         = */ NULL,
-	/* .deleteGPRootExtra = */ NULL,
+	/* .fillGPDir         = */ nullptr,
+	/* .deleteGPRootExtra = */ nullptr,
 	/* .deleteGPDirExtra  = */ stdio_GPDirData_delete,
-	/* .deleteGPFileExtra = */ NULL,
+	/* .deleteGPFileExtra = */ nullptr,
 };
 
 
@@ -134,7 +134,7 @@ int stdio_access(uio_PDirHandle* pDirHandle, const char* name, int mode)
 	int result;
 
 	path = joinPaths(stdio_getPath(pDirHandle->extra), name);
-	if (path == NULL)
+	if (path == nullptr)
 	{
 		// errno is set
 		return -1;
@@ -167,7 +167,7 @@ int stdio_stat(uio_PDirHandle* pDirHandle, const char* name,
 	int result;
 
 	path = joinPaths(stdio_getPath(pDirHandle->extra), name);
-	if (path == NULL)
+	if (path == nullptr)
 	{
 		// errno is set
 		return -1;
@@ -193,10 +193,10 @@ stdio_mkdir(uio_PDirHandle* pDirHandle, const char* name, mode_t mode)
 	uio_GPDir* newGPDir;
 
 	path = joinPaths(stdio_getPath(pDirHandle->extra), name);
-	if (path == NULL)
+	if (path == nullptr)
 	{
 		// errno is set
-		return NULL;
+		return nullptr;
 	}
 
 	if (MKDIR(path, mode) == -1)
@@ -204,7 +204,7 @@ stdio_mkdir(uio_PDirHandle* pDirHandle, const char* name, mode_t mode)
 		int savedErrno = errno;
 		uio_free(path);
 		errno = savedErrno;
-		return NULL;
+		return nullptr;
 	}
 	uio_free(path);
 
@@ -232,10 +232,10 @@ stdio_open(uio_PDirHandle* pDirHandle, const char* file, int flags,
 	int fd;
 
 	path = joinPaths(stdio_getPath(pDirHandle->extra), file);
-	if (path == NULL)
+	if (path == nullptr)
 	{
 		// errno is set
-		return NULL;
+		return nullptr;
 	}
 
 	fd = open(path, flags, mode);
@@ -246,13 +246,13 @@ stdio_open(uio_PDirHandle* pDirHandle, const char* file, int flags,
 		save_errno = errno;
 		uio_free(path);
 		errno = save_errno;
-		return NULL;
+		return nullptr;
 	}
 	uio_free(path);
 
 #if 0
 	if (flags & O_CREAT) {
-		if (uio_GPDir_getGPDirEntry(pDirHandle->extra, file) == NULL)
+		if (uio_GPDir_getGPDirEntry(pDirHandle->extra, file) == nullptr)
 			stdio_addFile(pDirHandle->extra, file);
 	}
 #endif
@@ -277,14 +277,14 @@ int stdio_rename(uio_PDirHandle* oldPDirHandle, const char* oldName,
 	int result;
 
 	oldPath = joinPaths(stdio_getPath(oldPDirHandle->extra), oldName);
-	if (oldPath == NULL)
+	if (oldPath == nullptr)
 	{
 		// errno is set
 		return -1;
 	}
 
 	newPath = joinPaths(stdio_getPath(newPDirHandle->extra), newName);
-	if (newPath == NULL)
+	if (newPath == nullptr)
 	{
 		// errno is set
 		uio_free(oldPath);
@@ -310,7 +310,7 @@ int stdio_rename(uio_PDirHandle* oldPDirHandle, const char* oldName,
 
 		// TODO: add locking
 		entry = uio_GPDir_getGPDirEntry(oldPDirHandle->extra, oldName);
-		if (entry != NULL)
+		if (entry != nullptr)
 		{
 			uio_GPDirEntries_remove(oldPDirHandle->extra->entries, oldName);
 			uio_GPDirEntries_add(newPDirHandle->extra->entries, newName,
@@ -327,7 +327,7 @@ int stdio_rmdir(uio_PDirHandle* pDirHandle, const char* name)
 	int result;
 
 	path = joinPaths(stdio_getPath(pDirHandle->extra), name);
-	if (path == NULL)
+	if (path == nullptr)
 	{
 		// errno is set
 		return -1;
@@ -368,7 +368,7 @@ int stdio_unlink(uio_PDirHandle* pDirHandle, const char* name)
 	int result;
 
 	path = joinPaths(stdio_getPath(pDirHandle->extra), name);
-	if (path == NULL)
+	if (path == nullptr)
 	{
 		// errno is set
 		return -1;
@@ -403,7 +403,7 @@ stdio_getPDirEntryHandle(const uio_PDirHandle* pDirHandle, const char* name)
 	auto xtra = (stdio_GPDirData*)(pDirHandle->extra->extra);
 
 #if defined(HAVE_DRIVE_LETTERS) || defined(HAVE_UNC_PATHS)
-	if (xtra->upDir == NULL)
+	if (xtra->upDir == nullptr)
 	{
 		// Top dir. Contains only drive letters and UNC \\server\share
 		// parts.
@@ -426,7 +426,7 @@ stdio_getPDirEntryHandle(const uio_PDirHandle* pDirHandle, const char* name)
 			{
 				// 'name' contains neither a drive letter, nor the
 				// first part of a UNC path.
-				return NULL;
+				return nullptr;
 			}
 		}
 #else  /* !defined(HAVE_UNC_PATHS) */
@@ -439,13 +439,13 @@ stdio_getPDirEntryHandle(const uio_PDirHandle* pDirHandle, const char* name)
 #endif /* defined(HAVE_DRIVE_LETTERS) || defined(HAVE_UNC_PATHS) */
 
 	result = uio_GPDir_getPDirEntryHandle(pDirHandle, name);
-	if (result != NULL)
+	if (result != nullptr)
 	{
 		return result;
 	}
 
 #if defined(HAVE_DRIVE_LETTERS) || defined(HAVE_UNC_PATHS)
-	if (xtra->upDir == NULL)
+	if (xtra->upDir == nullptr)
 	{
 		// Need to create a 'directory' for the drive letter or UNC
 		// "\\server\share" part.
@@ -461,16 +461,16 @@ stdio_getPDirEntryHandle(const uio_PDirHandle* pDirHandle, const char* name)
 #endif /* defined(HAVE_DRIVE_LETTERS) || defined(HAVE_UNC_PATHS) */
 
 	pathUpTo = stdio_getPath(pDirHandle->extra);
-	if (pathUpTo == NULL)
+	if (pathUpTo == nullptr)
 	{
 		// errno is set
-		return NULL;
+		return nullptr;
 	}
 	path = joinPaths(pathUpTo, name);
-	if (path == NULL)
+	if (path == nullptr)
 	{
 		// errno is set
-		return NULL;
+		return nullptr;
 	}
 
 	if (stat(path, &statBuf) == -1)
@@ -494,7 +494,7 @@ stdio_getPDirEntryHandle(const uio_PDirHandle* pDirHandle, const char* name)
 			int savedErrno = errno;
 			uio_free(path);
 			errno = savedErrno;
-			return NULL;
+			return nullptr;
 		}
 	}
 	uio_free(path);
@@ -525,7 +525,7 @@ stdio_getPDirEntryHandle(const uio_PDirHandle* pDirHandle, const char* name)
 				name,
 				pathUpTo);
 #endif
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -535,7 +535,7 @@ stdio_mount(uio_Handle* handle, int flags)
 	uio_PRoot* result;
 	stdio_GPDirData* extra;
 
-	assert(handle == NULL);
+	assert(handle == nullptr);
 	extra = stdio_GPDirData_new(
 		uio_strdup("") /* name */,
 #if defined(HAVE_DRIVE_LETTERS) || defined(HAVE_UNC_PATHS)
@@ -544,11 +544,11 @@ stdio_mount(uio_Handle* handle, int flags)
 #else
 		uio_strdup("/") /* cached path */,
 #endif /* HAVE_DRIVE_LETTERS */
-		NULL /* parent dir */);
+		nullptr /* parent dir */);
 
 	result = uio_GPRoot_makePRoot(
 		uio_getFileSystemHandler(uio_FSTYPE_STDIO), flags,
-		&stdio_GPRootOperations, NULL, uio_GPRoot_PERSISTENT,
+		&stdio_GPRootOperations, nullptr, uio_GPRoot_PERSISTENT,
 		handle, extra, 0);
 
 	uio_GPDir_setComplete(result->rootDir->extra, true);
@@ -569,10 +569,10 @@ stdio_openEntries(uio_PDirHandle* pDirHandle)
 	//	uio_GPDir_access(pDirHandle->extra);
 
 	dirPath = stdio_getPath(pDirHandle->extra);
-	if (dirPath == NULL)
+	if (dirPath == nullptr)
 	{
 		// errno is set
-		return NULL;
+		return nullptr;
 	}
 
 	dirPathLen = strlen(dirPath);
@@ -580,7 +580,7 @@ stdio_openEntries(uio_PDirHandle* pDirHandle)
 	{
 		// dirPath ++ '/' ++ '*' ++ '\0'
 		errno = ENAMETOOLONG;
-		return NULL;
+		return nullptr;
 	}
 	memcpy(path, dirPath, dirPathLen);
 	pathEnd = path + dirPathLen;
@@ -594,7 +594,7 @@ stdio_openEntries(uio_PDirHandle* pDirHandle)
 		if (errno != ENOENT)
 		{
 			stdio_EntriesIterator_delete(iterator);
-			return NULL;
+			return nullptr;
 		}
 		iterator->status = 1;
 	}
@@ -617,17 +617,17 @@ stdio_openEntries(uio_PDirHandle* pDirHandle)
 	//	uio_GPDir_access(pDirHandle->extra);
 
 	dirPath = stdio_getPath(pDirHandle->extra);
-	if (dirPath == NULL)
+	if (dirPath == nullptr)
 	{
 		// errno is set
-		return NULL;
+		return nullptr;
 	}
 
 	dirHandle = opendir(dirPath);
-	if (dirHandle == NULL)
+	if (dirHandle == nullptr)
 	{
 		// errno is set;
-		return NULL;
+		return nullptr;
 	}
 
 	result = stdio_EntriesIterator_new(dirHandle);
@@ -649,7 +649,7 @@ stdio_openEntries(uio_PDirHandle* pDirHandle)
 // the start of 'buf' will be filled with pointers to strings
 // those strings are stored elsewhere in buf.
 // The function returns the number of strings passed along, or -1 for error.
-// If there are no more entries, the last pointer will be NULL.
+// If there are no more entries, the last pointer will be nullptr.
 // (this pointer counts towards the return value)
 int stdio_readEntries(stdio_EntriesIterator** iteratorPtr,
 					  char* buf, size_t len)
@@ -674,7 +674,7 @@ int stdio_readEntries(stdio_EntriesIterator** iteratorPtr,
 		 iterator->status = _findnext(iterator->dirHandle,
 									  &iterator->findData))
 #else
-	for (; iterator->status == 0 && iterator->entry != NULL;
+	for (; iterator->status == 0 && iterator->entry != nullptr;
 		 iterator->status = readdir_r(iterator->dirHandle,
 									  iterator->direntBuffer, &iterator->entry))
 #endif
@@ -716,11 +716,11 @@ int stdio_readEntries(stdio_EntriesIterator** iteratorPtr,
 #endif
 	if (sizeof(char*) > (size_t)(end - (char*)start))
 	{
-		// not enough room to fit the NULL pointer.
+		// not enough room to fit the nullptr pointer.
 		// It will have to be reported seperately the next time.
 		return num;
 	}
-	*start = NULL;
+	*start = nullptr;
 	num++;
 	return num;
 }
@@ -798,7 +798,7 @@ stdio_addFile(uio_GPDir* gPDir, const char* fileName)
 {
 	uio_GPFile* file;
 
-	file = uio_GPFile_new(gPDir->pRoot, NULL,
+	file = uio_GPFile_new(gPDir->pRoot, nullptr,
 						  uio_gPFileFlagsFromPRootFlags(gPDir->pRoot->flags));
 	uio_GPDir_addFile(gPDir, fileName, file);
 	return file;
@@ -811,12 +811,12 @@ stdio_addDir(uio_GPDir* gPDir, const char* dirName)
 	uio_GPDir* subDir;
 
 	subDir = uio_GPDir_prepareSubDir(gPDir, dirName);
-	if (subDir->extra == NULL)
+	if (subDir->extra == nullptr)
 	{
 		// It's a new dir, we'll need to add our own data.
 		uio_GPDir_ref(gPDir);
 		subDir->extra = stdio_GPDirData_new(uio_strdup(dirName),
-											NULL, gPDir);
+											nullptr, gPDir);
 		uio_GPDir_setComplete(subDir, true);
 		// fillPDir should not be called.
 	}
@@ -831,12 +831,12 @@ static char*
 stdio_getPath(uio_GPDir* gPDir)
 {
 	auto xtra = (stdio_GPDirData*)(gPDir->extra);
-	if (xtra->cachedPath == NULL)
+	if (xtra->cachedPath == nullptr)
 	{
 		char* upPath;
 		size_t upPathLen, nameLen;
 
-		if (xtra->upDir == NULL)
+		if (xtra->upDir == nullptr)
 		{
 #if defined(HAVE_DRIVE_LETTERS) || defined(HAVE_UNC_PATHS)
 			// Drive letter or UNC \\server\share still needs to follow.
@@ -851,10 +851,10 @@ stdio_getPath(uio_GPDir* gPDir)
 		}
 
 		upPath = stdio_getPath(xtra->upDir);
-		if (upPath == NULL)
+		if (upPath == nullptr)
 		{
 			// errno is set
-			return NULL;
+			return nullptr;
 		}
 
 #if defined(HAVE_DRIVE_LETTERS) || defined(HAVE_UNC_PATHS)
@@ -879,7 +879,7 @@ stdio_getPath(uio_GPDir* gPDir)
 		if (upPathLen + nameLen + 1 >= PATH_MAX)
 		{
 			errno = ENAMETOOLONG;
-			return NULL;
+			return nullptr;
 		}
 		xtra->cachedPath = (char*)uio_malloc(upPathLen + nameLen + 2);
 		memcpy(xtra->cachedPath, upPath, upPathLen);
@@ -907,7 +907,7 @@ static void
 stdio_GPDirData_delete(void* arg)
 {
 	stdio_GPDirData* gPDirData = (stdio_GPDirData*)arg;
-	if (gPDirData->upDir != NULL)
+	if (gPDirData->upDir != nullptr)
 	{
 		uio_GPDir_unref(gPDirData->upDir);
 	}

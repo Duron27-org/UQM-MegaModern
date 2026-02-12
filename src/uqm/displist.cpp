@@ -20,7 +20,7 @@
 #include "libs/log.h"
 
 #ifdef QUEUE_TABLE
-#define NULL_HANDLE NULL
+#define NULL_HANDLE nullptr
 #endif
 
 /*
@@ -43,7 +43,7 @@ bool InitQueue(QUEUE* pq, uqm::COUNT num_elements, OBJ_SIZE size)
 	log_add (log_Debug, "InitQueue(): num_elements = %d (%d)",
 			num_elements, (uqm::BYTE)num_elements);
 #endif
-	if (AllocQueueTab(pq, num_elements) != NULL)
+	if (AllocQueueTab(pq, num_elements) != nullptr)
 	{
 		do
 		{

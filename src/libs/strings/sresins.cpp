@@ -32,9 +32,9 @@ GetBinaryTableFileData(const char* pathname, RESOURCE_DATA* resdata)
 
 bool InstallStringTableResType(void)
 {
-	InstallResTypeVectors("STRTAB", GetStringTableFileData, FreeResourceData, NULL);
-	InstallResTypeVectors("BINTAB", GetBinaryTableFileData, FreeResourceData, NULL);
-	InstallResTypeVectors("CONVERSATION", _GetConversationData, FreeResourceData, NULL);
+	InstallResTypeVectors("STRTAB", GetStringTableFileData, FreeResourceData, nullptr);
+	InstallResTypeVectors("BINTAB", GetBinaryTableFileData, FreeResourceData, nullptr);
+	InstallResTypeVectors("CONVERSATION", _GetConversationData, FreeResourceData, nullptr);
 	return true;
 }
 

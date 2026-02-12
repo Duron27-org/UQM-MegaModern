@@ -78,7 +78,7 @@ bool restartGame;
 
 // Looks up the given string value in the given list and passes
 // the associated int value back. returns true if value was found.
-//// The list is terminated by a NULL 'str' value.
+//// The list is terminated by a nullptr 'str' value.
 //static bool lookupOptionValue(const struct option_list_value* list,
 //							  const char* strval, int* ret);
 //
@@ -120,7 +120,7 @@ bool restartGame;
 			return EXIT_FAILURE;
 		}
 #ifdef UNBUFFERED_LOGFILE
-		setbuf(stderr, NULL);
+		setbuf(stderr, nullptr);
 #endif
 		for (i = 0; i < args.size(); ++i)
 		{
@@ -474,7 +474,7 @@ bool restartGame;
 
 int legacyRun()
 {
-	StartThread(Starcon2Main, NULL, 1024, "Starcon2Main");
+	StartThread(Starcon2Main, nullptr, 1024, "Starcon2Main");
 
 	for (int i = 0; i < 2000 && !MainExited;)
 	{
@@ -543,7 +543,7 @@ void legacyTeardown()
 //		return false;
 //	}
 //
-//	// The list is terminated by a NULL 'str' value.
+//	// The list is terminated by a nullptr 'str' value.
 //	while (list->str && strcmp(strval, list->str) != 0)
 //	{
 //		++list;
@@ -563,7 +563,7 @@ void legacyTeardown()
 //	char* endPtr;
 //	int temp;
 //
-//	if (str == NULL || str[0] == '\0')
+//	if (str == nullptr || str[0] == '\0')
 //	{
 //		saveError("Error: Invalid value for '%s'.", optName);
 //		return -1;

@@ -66,7 +66,7 @@ static RACE_DESC chmmr_desc =
 		 CHMMR_RACE_STRINGS,
 		 CHMMR_ICON_MASK_PMAP_ANIM,
 		 CHMMR_MICON_MASK_PMAP_ANIM,
-		 NULL, NULL, NULL},
+		 nullptr, nullptr, nullptr},
 		{
 			/* FLEET_STUFF */
 			0, /* Initial sphere of influence radius */
@@ -105,24 +105,24 @@ static RACE_DESC chmmr_desc =
 			 SATELLITE_SML_MASK_PMAP_ANIM,
 		 },
 		 {CHMMR_CAPTAIN_MASK_PMAP_ANIM,
-		  NULL, NULL, NULL, NULL, NULL,
+		  nullptr, nullptr, nullptr, nullptr, nullptr,
 		  0, 0, 0, 0, 0},
 		 CHMMR_VICTORY_SONG,
 		 CHMMR_SHIP_SOUNDS,
-		 {NULL, NULL, NULL},
-		 {NULL, NULL, NULL},
-		 {NULL, NULL, NULL},
-		 NULL,
-		 NULL},
+		 {nullptr, nullptr, nullptr},
+		 {nullptr, nullptr, nullptr},
+		 {nullptr, nullptr, nullptr},
+		 nullptr,
+		 nullptr},
 		{
 			0,
 			CLOSE_RANGE_WEAPON,
-			NULL,
+			nullptr,
 		 },
-		(UNINIT_FUNC*)NULL,
-		(PREPROCESS_FUNC*)NULL,
-		(POSTPROCESS_FUNC*)NULL,
-		(INIT_WEAPON_FUNC*)NULL,
+		(UNINIT_FUNC*)nullptr,
+		(PREPROCESS_FUNC*)nullptr,
+		(POSTPROCESS_FUNC*)nullptr,
+		(INIT_WEAPON_FUNC*)nullptr,
 		0,
 		0, /* CodeRef */
 };
@@ -670,9 +670,9 @@ satellite_death(ELEMENT* ElementPtr)
 		SetAbsFrameIndex(ElementPtr->current.image.frame, 8);
 
 	ElementPtr->preprocess_func = animate;
-	ElementPtr->death_func = NULL;
-	ElementPtr->postprocess_func = NULL;
-	ElementPtr->collision_func = NULL;
+	ElementPtr->death_func = nullptr;
+	ElementPtr->postprocess_func = nullptr;
+	ElementPtr->collision_func = nullptr;
 }
 
 static void

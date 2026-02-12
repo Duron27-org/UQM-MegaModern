@@ -46,7 +46,7 @@ typedef struct _thread
 	struct _thread* next;
 }* TrueThread;
 
-static volatile TrueThread threadQueue = NULL;
+static volatile TrueThread threadQueue = nullptr;
 static SDL_mutex* threadQueueMutex;
 
 struct ThreadStartInfo
@@ -101,14 +101,14 @@ void PrintThreadsStats_SDL(void)
 	now = GetTimeCounter();
 	SDL_mutexP(threadQueueMutex);
 	fprintf(stderr, "--- Active threads ---\n");
-	for (ptr = threadQueue; ptr != NULL; ptr = ptr->next)
+	for (ptr = threadQueue; ptr != nullptr; ptr = ptr->next)
 	{
 		fprintf(stderr, "Thread named '%s'.\n", ptr->name);
 		fprintf(stderr, "Started %d.%d minutes ago.\n",
 				(now - ptr->startTime) / 60000,
 				((now - ptr->startTime) / 1000) % 60);
 		LocalStats(ptr->native);
-		if (ptr->next != NULL)
+		if (ptr->next != nullptr)
 		{
 			fprintf(stderr, "\n");
 		}
@@ -154,7 +154,7 @@ UnQueueThread(TrueThread thread)
 	while (*ptr != thread)
 	{
 #ifdef DEBUG_THREADS
-		if (*ptr == NULL)
+		if (*ptr == nullptr)
 		{
 			// Should not happen.
 			log_add(log_Debug, "Error: Trying to remove non-present thread "
@@ -186,7 +186,7 @@ FindThreadInfo(SDL_threadID threadID)
 		ptr = ptr->next;
 	}
 	SDL_mutexV(threadQueueMutex);
-	return NULL;
+	return nullptr;
 }
 
 #ifdef NAMED_SYNCHRO
@@ -279,7 +279,7 @@ CreateThread_SDL(ThreadFunction func, void* data, uqm::SDWORD stackSize
 		DestroyThreadLocal(thread->localData);
 		HFree(startInfo);
 		HFree(thread);
-		return NULL;
+		return nullptr;
 	}
 	// The responsibility to free 'startInfo' and 'thread' is now by the new
 	// thread.
@@ -335,7 +335,7 @@ ThreadLocal*
 GetMyThreadLocal_SDL(void)
 {
 	TrueThread t = FindThreadInfo(SDL_ThreadID());
-	return t ? t->localData : NULL;
+	return t ? t->localData : nullptr;
 }
 
 /* These are the SDL implementations of the UQM synchronization objects. */
@@ -365,7 +365,7 @@ CreateMutex_SDL(void)
 #endif
 {
 	Mut* mutex = (Mut*)malloc(sizeof(Mut));
-	if (mutex != NULL)
+	if (mutex != nullptr)
 	{
 		mutex->mutex = SDL_CreateMutex();
 #ifdef TRACK_CONTENTION
@@ -377,7 +377,7 @@ CreateMutex_SDL(void)
 #endif
 	}
 
-	if ((mutex == NULL) || (mutex->mutex == NULL))
+	if ((mutex == nullptr) || (mutex->mutex == nullptr))
 	{
 #ifdef NAMED_SYNCHRO
 		/* logging depends on Mutexes, so we have to use the
@@ -468,7 +468,7 @@ CreateSemaphore_SDL(uqm::DWORD initial
 	sem->syncClass = syncClass;
 #endif
 	sem->sem = SDL_CreateSemaphore(initial);
-	if (sem->sem == NULL)
+	if (sem->sem == nullptr)
 	{
 #ifdef NAMED_SYNCHRO
 		log_add(log_Fatal, "Could not initialize semaphore '%s':"
@@ -549,7 +549,7 @@ CreateRecursiveMutex_SDL(void)
 
 	mtx->thread_id = 0;
 	mtx->mutex = SDL_CreateMutex();
-	if (mtx->mutex == NULL)
+	if (mtx->mutex == nullptr)
 	{
 #ifdef NAMED_SYNCHRO
 		log_add(log_Fatal, "Could not initialize recursive "
@@ -647,7 +647,7 @@ CreateCondVar_SDL(void)
 	cvar* cv = (cvar*)HMalloc(sizeof(cvar));
 	cv->cond = SDL_CreateCond();
 	cv->mutex = SDL_CreateMutex();
-	if ((cv->cond == NULL) || (cv->mutex == NULL))
+	if ((cv->cond == nullptr) || (cv->mutex == nullptr))
 	{
 #ifdef NAMED_SYNCHRO
 		log_add(log_Fatal, "Could not initialize condition variable '%s':"

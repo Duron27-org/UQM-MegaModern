@@ -64,7 +64,7 @@ CallbackList_isLocked(void) {
 
 void Callback_init(void)
 {
-	callbacks = NULL;
+	callbacks = nullptr;
 	callbacksEnd = &callbacks;
 	callbacksProcessEnd = &callbacks;
 	callbackListLock = CreateMutex("Callback List Lock", SYNC_CLASS_TOPLEVEL);
@@ -84,7 +84,7 @@ Callback_add(CallbackFunction callback, CallbackArg arg)
 	CallbackLink* link = (CallbackLink*)(malloc(sizeof(CallbackLink)));
 	link->callback = callback;
 	link->arg = arg;
-	link->next = NULL;
+	link->next = nullptr;
 
 	CallbackList_lock();
 	*callbacksEnd = link;
@@ -107,14 +107,14 @@ CallbackLink_find(CallbackLink* link)
 	CallbackLink** ptr;
 
 	//assert(CallbackList_isLocked());
-	for (ptr = &callbacks; *ptr != NULL; ptr = &(*ptr)->next)
+	for (ptr = &callbacks; *ptr != nullptr; ptr = &(*ptr)->next)
 	{
 		if (*ptr == link)
 		{
 			return ptr;
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 bool Callback_remove(CallbackID id)
@@ -125,7 +125,7 @@ bool Callback_remove(CallbackID id)
 	CallbackList_lock();
 
 	linkPtr = CallbackLink_find(link);
-	if (linkPtr == NULL)
+	if (linkPtr == nullptr)
 	{
 		CallbackList_unlock();
 		return false;
@@ -182,8 +182,8 @@ void Callback_process(void)
 			CallbackList_unlock();
 			break;
 		}
-		assert(callbacks != NULL);
-		// If callbacks == NULL, then callbacksProcessEnd == &callbacks
+		assert(callbacks != nullptr);
+		// If callbacks == nullptr, then callbacksProcessEnd == &callbacks
 		link = callbacks;
 		callbacks = link->next;
 		if (callbacksEnd == &link->next)
@@ -206,7 +206,7 @@ bool Callback_haveMore(void)
 	bool result;
 
 	CallbackList_lock();
-	result = (callbacks != NULL);
+	result = (callbacks != nullptr);
 	CallbackList_unlock();
 
 	return result;

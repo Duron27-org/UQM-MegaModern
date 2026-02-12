@@ -694,7 +694,7 @@ extern int MD_DropPrivileges(void);
 
 /* Macro to define a missing driver, yet allowing binaries to dynamically link
    with the library without missing symbol errors */
-#define MISSING(a) MDRIVER a = {NULL, NULL, NULL, 0, 0}
+#define MISSING(a) MDRIVER a = {nullptr, nullptr, nullptr, 0, 0}
 
 /*========== Prototypes for non-MT safe versions of some public functions */
 
@@ -869,7 +869,7 @@ static __inline __m128i mm_hiqq(const __m128i a)
 extern "C" {
 #endif
 void* MikMod_amalloc(size_t);
-void MikMod_afree(void*); /* frees if ptr != NULL */
+void MikMod_afree(void*); /* frees if ptr != nullptr */
 #if 0					  //defined(__cplusplus)
 }
 #endif

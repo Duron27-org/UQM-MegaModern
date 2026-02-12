@@ -90,7 +90,7 @@ nextClockDay(void)
 	}
 
 	// update the date on screen
-	DrawStatusMessage(NULL);
+	DrawStatusMessage(nullptr);
 }
 
 // Computes how many days have passed since the game has begun
@@ -174,7 +174,7 @@ bool InitGameClock(void)
 bool UninitGameClock(void)
 {
 	DestroyMutex(clock_mutex);
-	clock_mutex = NULL;
+	clock_mutex = nullptr;
 
 	UninitQueue(&GLOBAL(GameClock.event_q));
 

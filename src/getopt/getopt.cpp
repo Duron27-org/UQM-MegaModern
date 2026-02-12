@@ -323,7 +323,7 @@ exchange(char** argv)
 		/* We must extend the array.  The user plays games with us and
 	 presents new arguments.  */
 		char* new_str = HMalloc(top + 1);
-		if (new_str == NULL)
+		if (new_str == nullptr)
 		{
 			nonoption_flags_len = nonoption_flags_max_len = 0;
 		}
@@ -396,7 +396,7 @@ _getopt_initialize(int argc, const char* const* argv, const char* optstring)
 
 	first_nonopt = last_nonopt = optind;
 
-	nextchar = NULL;
+	nextchar = nullptr;
 
 	posixly_correct = getenv("POSIXLY_CORRECT");
 
@@ -412,7 +412,7 @@ _getopt_initialize(int argc, const char* const* argv, const char* optstring)
 		ordering = REQUIRE_ORDER;
 		++optstring;
 	}
-	else if (posixly_correct != NULL)
+	else if (posixly_correct != nullptr)
 	{
 		ordering = REQUIRE_ORDER;
 	}
@@ -422,12 +422,12 @@ _getopt_initialize(int argc, const char* const* argv, const char* optstring)
 	}
 
 #if defined _LIBC && defined USE_NONOPTION_FLAGS
-	if (posixly_correct == NULL
+	if (posixly_correct == nullptr
 		&& argc == __libc_argc && argv == __libc_argv)
 	{
 		if (nonoption_flags_max_len == 0)
 		{
-			if (__getopt_nonoption_flags == NULL
+			if (__getopt_nonoption_flags == nullptr
 				|| __getopt_nonoption_flags[0] == '\0')
 			{
 				nonoption_flags_max_len = -1;
@@ -442,7 +442,7 @@ _getopt_initialize(int argc, const char* const* argv, const char* optstring)
 				}
 				__getopt_nonoption_flags =
 					(char*)HMalloc(nonoption_flags_max_len);
-				if (__getopt_nonoption_flags == NULL)
+				if (__getopt_nonoption_flags == nullptr)
 				{
 					nonoption_flags_max_len = -1;
 				}
@@ -533,7 +533,7 @@ int _getopt_internal(int argc, const char* const* argv, const char* optstring, c
 		return -1;
 	}
 
-	optarg = NULL;
+	optarg = nullptr;
 
 	if (optind == 0 || !__getopt_initialized)
 	{
@@ -557,7 +557,7 @@ int _getopt_internal(int argc, const char* const* argv, const char* optstring, c
 #define NONOPTION_P (argv[optind][0] != '-' || argv[optind][1] == '\0')
 #endif
 
-	if (nextchar == NULL || *nextchar == '\0')
+	if (nextchar == nullptr || *nextchar == '\0')
 	{
 		/* Advance to the next ARGV-element.  */
 
@@ -649,7 +649,7 @@ int _getopt_internal(int argc, const char* const* argv, const char* optstring, c
 	 Skip the initial punctuation.  */
 
 		nextchar = (argv[optind] + 1
-					+ (longopts != NULL && argv[optind][1] == '-'));
+					+ (longopts != nullptr && argv[optind][1] == '-'));
 	}
 
 	/* Decode the current option-ARGV-element.  */
@@ -667,13 +667,13 @@ int _getopt_internal(int argc, const char* const* argv, const char* optstring, c
 
      This distinction seems to be the most useful approach.  */
 
-	if (longopts != NULL
+	if (longopts != nullptr
 		&& (argv[optind][1] == '-'
 			|| (long_only && (argv[optind][2] || !my_index(optstring, argv[optind][1])))))
 	{
 		const char* nameend;
 		const struct option* p;
-		const struct option* pfound = NULL;
+		const struct option* pfound = nullptr;
 		int exact = 0;
 		int ambig = 0;
 		int indfound = -1;
@@ -697,7 +697,7 @@ int _getopt_internal(int argc, const char* const* argv, const char* optstring, c
 					exact = 1;
 					break;
 				}
-				else if (pfound == NULL)
+				else if (pfound == nullptr)
 				{
 					/* First nonexact match found.  */
 					pfound = p;
@@ -727,7 +727,7 @@ int _getopt_internal(int argc, const char* const* argv, const char* optstring, c
 			return '?';
 		}
 
-		if (pfound != NULL)
+		if (pfound != nullptr)
 		{
 			option_index = indfound;
 			optind++;
@@ -785,7 +785,7 @@ int _getopt_internal(int argc, const char* const* argv, const char* optstring, c
 				}
 			}
 			nextchar += strlen(nextchar);
-			if (longind != NULL)
+			if (longind != nullptr)
 			{
 				*longind = option_index;
 			}
@@ -802,7 +802,7 @@ int _getopt_internal(int argc, const char* const* argv, const char* optstring, c
 	 option, then it's an error.
 	 Otherwise interpret it as a short option.  */
 		if (!long_only || argv[optind][1] == '-'
-			|| my_index(optstring, *nextchar) == NULL)
+			|| my_index(optstring, *nextchar) == nullptr)
 		{
 			if (print_errors)
 			{
@@ -838,7 +838,7 @@ int _getopt_internal(int argc, const char* const* argv, const char* optstring, c
 			++optind;
 		}
 
-		if (temp == NULL || c == ':')
+		if (temp == nullptr || c == ':')
 		{
 			if (print_errors)
 			{
@@ -862,7 +862,7 @@ int _getopt_internal(int argc, const char* const* argv, const char* optstring, c
 		{
 			const char* nameend;
 			const struct option* p;
-			const struct option* pfound = NULL;
+			const struct option* pfound = nullptr;
 			int exact = 0;
 			int ambig = 0;
 			int indfound = 0;
@@ -922,7 +922,7 @@ int _getopt_internal(int argc, const char* const* argv, const char* optstring, c
 						exact = 1;
 						break;
 					}
-					else if (pfound == NULL)
+					else if (pfound == nullptr)
 					{
 						/* First nonexact match found.  */
 						pfound = p;
@@ -946,7 +946,7 @@ int _getopt_internal(int argc, const char* const* argv, const char* optstring, c
 				optind++;
 				return '?';
 			}
-			if (pfound != NULL)
+			if (pfound != nullptr)
 			{
 				option_index = indfound;
 				if (*nameend)
@@ -989,7 +989,7 @@ int _getopt_internal(int argc, const char* const* argv, const char* optstring, c
 					}
 				}
 				nextchar += strlen(nextchar);
-				if (longind != NULL)
+				if (longind != nullptr)
 				{
 					*longind = option_index;
 				}
@@ -1000,7 +1000,7 @@ int _getopt_internal(int argc, const char* const* argv, const char* optstring, c
 				}
 				return pfound->val;
 			}
-			nextchar = NULL;
+			nextchar = nullptr;
 			return 'W'; /* Let the application handle it.   */
 		}
 		if (temp[1] == ':')
@@ -1015,9 +1015,9 @@ int _getopt_internal(int argc, const char* const* argv, const char* optstring, c
 				}
 				else
 				{
-					optarg = NULL;
+					optarg = nullptr;
 				}
-				nextchar = NULL;
+				nextchar = nullptr;
 			}
 			else
 			{
@@ -1054,7 +1054,7 @@ int _getopt_internal(int argc, const char* const* argv, const char* optstring, c
 		 increment it again when taking next ARGV-elt as argument.  */
 					optarg = argv[optind++];
 				}
-				nextchar = NULL;
+				nextchar = nullptr;
 			}
 		}
 		return c;

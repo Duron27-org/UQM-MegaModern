@@ -26,7 +26,7 @@
 
 const char* _cur_resfile_name;
 // When a file is being loaded, _cur_resfile_name is set to its name.
-// At other times, it is NULL.
+// At other times, it is nullptr.
 
 ResourceDesc*
 lookupResourceDesc(RESOURCE_INDEX idx, RESOURCE res)
@@ -50,10 +50,10 @@ void* LoadResourceFromPath(const char* path, ResourceLoadFileFun* loadFun)
 	void* resdata;
 
 	stream = res_OpenResFile(contentDir, path, "rb");
-	if (stream == NULL)
+	if (stream == nullptr)
 	{
 		log_add(log_Warning, "Warning: Can't open '%s'", path);
-		return NULL;
+		return nullptr;
 	}
 
 	dataLen = LengthResFile(stream);
@@ -67,14 +67,14 @@ void* LoadResourceFromPath(const char* path, ResourceLoadFileFun* loadFun)
 
 	_cur_resfile_name = path;
 	resdata = (*loadFun)(stream, dataLen);
-	_cur_resfile_name = NULL;
+	_cur_resfile_name = nullptr;
 	res_CloseResFile(stream);
 
 	return resdata;
 
 err:
 	res_CloseResFile(stream);
-	return NULL;
+	return nullptr;
 }
 
 const char*
@@ -86,16 +86,16 @@ res_GetResourceType(RESOURCE res)
 	if (res == NULL_RESOURCE)
 	{
 		log_add(log_Warning, "Trying to get type of null resource");
-		return NULL;
+		return nullptr;
 	}
 
 	resourceIndex = _get_current_index_header();
 	desc = lookupResourceDesc(resourceIndex, res);
-	if (desc == NULL)
+	if (desc == nullptr)
 	{
 		log_add(log_Warning, "Trying to get type of undefined resource '%s'",
 				res);
-		return NULL;
+		return nullptr;
 	}
 
 	return desc->vtable->resType;
@@ -111,30 +111,30 @@ void* res_GetResource(RESOURCE res)
 	if (res == NULL_RESOURCE)
 	{
 		log_add(log_Warning, "Trying to get null resource");
-		return NULL;
+		return nullptr;
 	}
 
 	resourceIndex = _get_current_index_header();
 
 	desc = lookupResourceDesc(resourceIndex, res);
-	if (desc == NULL)
+	if (desc == nullptr)
 	{
 		log_add(log_Warning, "Trying to get undefined resource '%s'",
 				res);
-		return NULL;
+		return nullptr;
 	}
 
-	if (desc->resdata.ptr == NULL)
+	if (desc->resdata.ptr == nullptr)
 	{
 		loadResourceDesc(desc);
 	}
-	if (desc->resdata.ptr != NULL)
+	if (desc->resdata.ptr != nullptr)
 	{
 		++desc->refcount;
 	}
 
 	return desc->resdata.ptr;
-	// May still be NULL, if the load failed.
+	// May still be nullptr, if the load failed.
 }
 
 uqm::DWORD
@@ -152,7 +152,7 @@ res_GetIntResource(RESOURCE res)
 	resourceIndex = _get_current_index_header();
 
 	desc = lookupResourceDesc(resourceIndex, res);
-	if (desc == NULL)
+	if (desc == nullptr)
 	{
 		log_add(log_Warning, "Trying to get undefined resource '%s'",
 				res);
@@ -174,7 +174,7 @@ void res_FreeResource(RESOURCE res)
 	ResourceFreeFun* freeFun;
 
 	desc = lookupResourceDesc(_get_current_index_header(), res);
-	if (desc == NULL)
+	if (desc == nullptr)
 	{
 		log_add(log_Debug, "Warning: trying to free an unrecognised "
 						   "resource.");
@@ -195,13 +195,13 @@ void res_FreeResource(RESOURCE res)
 	}
 
 	freeFun = desc->vtable->freeFun;
-	if (freeFun == NULL)
+	if (freeFun == nullptr)
 	{
 		log_add(log_Debug, "Warning: trying to free a non-heap resource.");
 		return;
 	}
 
-	if (desc->resdata.ptr == NULL)
+	if (desc->resdata.ptr == nullptr)
 	{
 		log_add(log_Debug, "Warning: trying to free not loaded "
 						   "resource.");
@@ -209,7 +209,7 @@ void res_FreeResource(RESOURCE res)
 	}
 
 	(*freeFun)(desc->resdata.ptr);
-	desc->resdata.ptr = NULL;
+	desc->resdata.ptr = nullptr;
 }
 
 // By calling this function the caller will be responsible of unloading
@@ -223,25 +223,25 @@ void* res_DetachResource(RESOURCE res)
 	void* result;
 
 	desc = lookupResourceDesc(_get_current_index_header(), res);
-	if (desc == NULL)
+	if (desc == nullptr)
 	{
 		log_add(log_Debug, "Warning: trying to detach from an unrecognised "
 						   "resource.");
-		return NULL;
+		return nullptr;
 	}
 
 	freeFun = desc->vtable->freeFun;
-	if (freeFun == NULL)
+	if (freeFun == nullptr)
 	{
 		log_add(log_Debug, "Warning: trying to detach from a non-heap resource.");
-		return NULL;
+		return nullptr;
 	}
 
-	if (desc->resdata.ptr == NULL)
+	if (desc->resdata.ptr == nullptr)
 	{
 		log_add(log_Debug, "Warning: trying to detach from a not loaded "
 						   "resource.");
-		return NULL;
+		return nullptr;
 	}
 
 	if (desc->refcount > 1)
@@ -249,11 +249,11 @@ void* res_DetachResource(RESOURCE res)
 		log_add(log_Debug, "Warning: trying to detach a resource referenced "
 						   "%u times",
 				desc->refcount);
-		return NULL;
+		return nullptr;
 	}
 
 	result = desc->resdata.ptr;
-	desc->resdata.ptr = NULL;
+	desc->resdata.ptr = nullptr;
 	desc->refcount = 0;
 
 	return result;

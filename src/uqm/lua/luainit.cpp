@@ -37,7 +37,7 @@ static const luaL_Reg initLibs[] = {
 	{"event", luaUqm_event_open},
 	{"log",	luaUqm_log_open  },
 	{"state", luaUqm_state_open},
-	{NULL,	   NULL			   }
+	{nullptr,	   nullptr			   }
 };
 
 void luaUqm_runInitScripts(void)
@@ -51,7 +51,7 @@ void luaUqm_runInitScripts(void)
 	luaUqm_loadLibs(luaUqm_globalState, initLibs);
 
 	scriptDir = res_GetString(SCRIPT_DIR_INITGAME);
-	if (scriptDir == NULL)
+	if (scriptDir == nullptr)
 	{
 		log_add(log_Warning, "Location of game initialisation scripts ('%s')"
 							 " was not specified.",

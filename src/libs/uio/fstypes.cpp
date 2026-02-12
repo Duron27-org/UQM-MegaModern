@@ -42,7 +42,7 @@ static inline void uio_FileSystemInfo_free(
 	uio_FileSystemInfo* fileSystemInfo);
 
 
-uio_FileSystemInfo* uio_fileSystems = NULL;
+uio_FileSystemInfo* uio_fileSystems = nullptr;
 // list sorted by id
 
 
@@ -114,7 +114,7 @@ uio_registerFileSystem(uio_FileSystemID wantedID, const char* name,
 		// Search for the first free id >= uio_FIRST_CUSTOM_ID
 		// it is put in wantedID
 
-		for (ptr = &uio_fileSystems; *ptr != NULL; ptr = &(*ptr)->next)
+		for (ptr = &uio_fileSystems; *ptr != nullptr; ptr = &(*ptr)->next)
 		{
 			if ((*ptr)->id >= uio_FS_FIRST_CUSTOM_ID)
 			{
@@ -123,7 +123,7 @@ uio_registerFileSystem(uio_FileSystemID wantedID, const char* name,
 		}
 
 		wantedID = uio_FS_FIRST_CUSTOM_ID;
-		while (*ptr != NULL)
+		while (*ptr != nullptr)
 		{
 			if ((*ptr)->id != wantedID)
 			{
@@ -139,7 +139,7 @@ uio_registerFileSystem(uio_FileSystemID wantedID, const char* name,
 	{
 		// search for the place in the list where to insert the wanted
 		// id, keeping the list sorted
-		for (ptr = &uio_fileSystems; *ptr != NULL; ptr = &(*ptr)->next)
+		for (ptr = &uio_fileSystems; *ptr != nullptr; ptr = &(*ptr)->next)
 		{
 			if ((*ptr)->id <= wantedID)
 			{
@@ -153,7 +153,7 @@ uio_registerFileSystem(uio_FileSystemID wantedID, const char* name,
 	}
 	// ptr points to the place where the new link can inserted
 
-	if (handler->init != NULL && handler->init() == -1)
+	if (handler->init != nullptr && handler->init() == -1)
 	{
 		// errno is set
 		return -1;
@@ -175,7 +175,7 @@ int uio_unRegisterFileSystem(uio_FileSystemID id)
 	uio_FileSystemInfo* temp;
 
 	ptr = uio_getFileSystemInfoPtr(id);
-	if (ptr == NULL)
+	if (ptr == nullptr)
 	{
 		errno = EINVAL;
 		return -1;
@@ -186,7 +186,7 @@ int uio_unRegisterFileSystem(uio_FileSystemID id)
 		return -1;
 	}
 
-	if ((*ptr)->handler->unInit != NULL && ((*ptr)->handler->unInit() == -1))
+	if ((*ptr)->handler->unInit != nullptr && ((*ptr)->handler->unInit() == -1))
 	{
 		// errno is set
 		return -1;
@@ -206,7 +206,7 @@ static uio_bool
 uio_validFileSystemHandler(uio_FileSystemHandler* handler)
 {
 	// Check for the essentials
-	if (handler->mount == NULL || handler->umount == NULL || handler->open == NULL || handler->close == NULL || handler->read == NULL || handler->openEntries == NULL || handler->readEntries == NULL || handler->closeEntries == NULL)
+	if (handler->mount == nullptr || handler->umount == nullptr || handler->open == nullptr || handler->close == nullptr || handler->read == nullptr || handler->openEntries == nullptr || handler->readEntries == nullptr || handler->closeEntries == nullptr)
 	{
 #ifdef DEBUG
 		fprintf(stderr, "Invalid file system handler.\n");
@@ -221,14 +221,14 @@ uio_getFileSystemHandler(uio_FileSystemID id)
 {
 	uio_FileSystemInfo* ptr;
 
-	for (ptr = uio_fileSystems; ptr != NULL; ptr = ptr->next)
+	for (ptr = uio_fileSystems; ptr != nullptr; ptr = ptr->next)
 	{
 		if (ptr->id == id)
 		{
 			return ptr->handler;
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 uio_FileSystemInfo*
@@ -236,14 +236,14 @@ uio_getFileSystemInfo(uio_FileSystemID id)
 {
 	uio_FileSystemInfo* ptr;
 
-	for (ptr = uio_fileSystems; ptr != NULL; ptr = ptr->next)
+	for (ptr = uio_fileSystems; ptr != nullptr; ptr = ptr->next)
 	{
 		if (ptr->id == id)
 		{
 			return ptr;
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 static uio_FileSystemInfo**
@@ -251,14 +251,14 @@ uio_getFileSystemInfoPtr(uio_FileSystemID id)
 {
 	uio_FileSystemInfo** ptr;
 
-	for (ptr = &uio_fileSystems; *ptr != NULL; ptr = &(*ptr)->next)
+	for (ptr = &uio_fileSystems; *ptr != nullptr; ptr = &(*ptr)->next)
 	{
 		if ((*ptr)->id == id)
 		{
 			return ptr;
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 // sets ref to 1

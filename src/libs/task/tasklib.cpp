@@ -42,7 +42,7 @@ Task AssignTask(ThreadFunction task_func, uqm::SDWORD stackSize, const char* nam
 		}
 	}
 	log_add(log_Error, "Task error!  Task array exhausted.  Check for thread leaks.");
-	return NULL;
+	return nullptr;
 }
 
 void FinishTask(Task task)

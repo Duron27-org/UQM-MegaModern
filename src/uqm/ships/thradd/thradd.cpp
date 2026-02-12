@@ -74,7 +74,7 @@ static RACE_DESC thraddash_desc =
 		 THRADDASH_RACE_STRINGS,
 		 THRADDASH_ICON_MASK_PMAP_ANIM,
 		 THRADDASH_MICON_MASK_PMAP_ANIM,
-		 NULL, NULL, NULL},
+		 nullptr, nullptr, nullptr},
 		{
 			/* FLEET_STUFF */
 			833 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
@@ -113,24 +113,24 @@ static RACE_DESC thraddash_desc =
 			 NAPALM_SML_MASK_PMAP_ANIM,
 		 },
 		 {THRADDASH_CAPTAIN_MASK_PMAP_ANIM,
-		  NULL, NULL, NULL, NULL, NULL,
+		  nullptr, nullptr, nullptr, nullptr, nullptr,
 		  0, 0, 0, 0, 0},
 		 THRADDASH_VICTORY_SONG,
 		 THRADDASH_SHIP_SOUNDS,
-		 {NULL, NULL, NULL},
-		 {NULL, NULL, NULL},
-		 {NULL, NULL, NULL},
-		 NULL,
-		 NULL},
+		 {nullptr, nullptr, nullptr},
+		 {nullptr, nullptr, nullptr},
+		 {nullptr, nullptr, nullptr},
+		 nullptr,
+		 nullptr},
 		{
 			0,
 			(MISSILE_SPEED * MISSILE_LIFE) >> 1,
-			NULL,
+			nullptr,
 		 },
-		(UNINIT_FUNC*)NULL,
-		(PREPROCESS_FUNC*)NULL,
-		(POSTPROCESS_FUNC*)NULL,
-		(INIT_WEAPON_FUNC*)NULL,
+		(UNINIT_FUNC*)nullptr,
+		(PREPROCESS_FUNC*)nullptr,
+		(POSTPROCESS_FUNC*)nullptr,
+		(INIT_WEAPON_FUNC*)nullptr,
 		0,
 		0, /* CodeRef */
 };
@@ -299,7 +299,7 @@ initialize_horn(ELEMENT* ShipPtr, HELEMENT HornArray[])
 	MissileBlock.hit_points = MISSILE_HITS;
 	MissileBlock.damage = MISSILE_DAMAGE;
 	MissileBlock.life = MISSILE_LIFE;
-	MissileBlock.preprocess_func = NULL;
+	MissileBlock.preprocess_func = nullptr;
 	MissileBlock.blast_offs = MISSILE_OFFSET;
 	HornArray[0] = initialize_missile(&MissileBlock);
 

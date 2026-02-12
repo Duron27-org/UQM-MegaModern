@@ -93,7 +93,7 @@ UnlockLink(const QUEUE* pq, HLINK h)
 	((pq)->pq_tab = (uqm::BYTE*)HMalloc(((uqm::COUNT)(pq)->object_size * (uqm::COUNT)((pq)->num_objects = (uqm::BYTE)(n)))))
 #define FreeQueueTab(pq) \
 	HFree((pq)->pq_tab); \
-	(pq)->pq_tab = NULL
+	(pq)->pq_tab = nullptr
 #define SizeQueueTab(pq) (uqm::COUNT)((pq)->num_objects)
 #define GetLinkAddr(pq, i) (HLINK)((pq)->pq_tab + ((pq)->object_size * ((i) - 1)))
 #else /* !QUEUE_TABLE */

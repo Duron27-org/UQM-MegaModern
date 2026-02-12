@@ -139,7 +139,7 @@ static TFB_RegSoundDecoder sd_decoders[MAX_REG_DECODERS + 1] =
 #endif  /* OVCODEC_NONE */
 		{true,  true,	 "duk", &duka_DecoderVtbl},
 		{true,  true,	 "aif", &aifa_DecoderVtbl},
-		{false, false, NULL,	 NULL			 }, // null term
+		{false, false, nullptr,	 nullptr			 }, // null term
 };
 
 static TFB_DecoderFormats decoder_formats;
@@ -223,7 +223,7 @@ void SoundDecoder_Uninit(void)
 		if (!info->builtin)
 		{
 			info->used = false;
-			info->ext = NULL;
+			info->ext = nullptr;
 		}
 	}
 }
@@ -232,18 +232,18 @@ TFB_RegSoundDecoder*
 SoundDecoder_Register(const char* fileext, TFB_SoundDecoderFuncs* decvtbl)
 {
 	TFB_RegSoundDecoder* info;
-	TFB_RegSoundDecoder* newslot = NULL;
+	TFB_RegSoundDecoder* newslot = nullptr;
 
 	if (!decvtbl)
 	{
 		log_add(log_Warning, "SoundDecoder_Register(): Null decoder table");
-		return NULL;
+		return nullptr;
 	}
 	if (!fileext)
 	{
 		log_add(log_Warning, "SoundDecoder_Register(): Bad file type for %s",
 				decvtbl->GetName());
-		return NULL;
+		return nullptr;
 	}
 
 	// check if extension already registered
@@ -260,21 +260,21 @@ SoundDecoder_Register(const char* fileext, TFB_SoundDecoderFuncs* decvtbl)
 	if (info >= sd_decoders + MAX_REG_DECODERS)
 	{
 		log_add(log_Warning, "SoundDecoder_Register(): Decoders limit reached");
-		return NULL;
+		return nullptr;
 	}
 	else if (info->ext)
 	{
 		log_add(log_Warning, "SoundDecoder_Register(): "
 							 "'%s' decoder already registered (%s denied)",
 				fileext, decvtbl->GetName());
-		return NULL;
+		return nullptr;
 	}
 
 	if (!decvtbl->InitModule(sd_flags, &decoder_formats))
 	{
 		log_add(log_Warning, "SoundDecoder_Register(): %s decoder init failed",
 				decvtbl->GetName());
-		return NULL;
+		return nullptr;
 	}
 
 	if (!newslot)
@@ -284,7 +284,7 @@ SoundDecoder_Register(const char* fileext, TFB_SoundDecoderFuncs* decvtbl)
 		// make next one a term
 		info[1].builtin = false;
 		info[1].used = false;
-		info[1].ext = NULL;
+		info[1].ext = nullptr;
 	}
 
 	newslot->ext = fileext;
@@ -303,8 +303,8 @@ void SoundDecoder_Unregister(TFB_RegSoundDecoder* regdec)
 	}
 
 	regdec->funcs->TermModule();
-	regdec->ext = NULL;
-	regdec->funcs = NULL;
+	regdec->ext = nullptr;
+	regdec->funcs = nullptr;
 }
 
 const TFB_SoundDecoderFuncs*
@@ -315,7 +315,7 @@ SoundDecoder_Lookup(const char* fileext)
 	for (info = sd_decoders; info->used && (!info->ext || strcmp(info->ext, fileext) != 0);
 		 ++info)
 		;
-	return info->ext ? info->funcs : NULL;
+	return info->ext ? info->funcs : nullptr;
 }
 
 TFB_SoundDecoder*
@@ -334,7 +334,7 @@ SoundDecoder_Load(uio_DirHandle* dir, char* filename,
 	{
 		log_add(log_Warning, "SoundDecoder_Load(): Unknown file type (%s)",
 				filename);
-		return NULL;
+		return nullptr;
 	}
 	++pext;
 
@@ -354,7 +354,7 @@ SoundDecoder_Load(uio_DirHandle* dir, char* filename,
 		}
 		else
 		{
-			return NULL;
+			return nullptr;
 		}
 	}
 	else
@@ -374,7 +374,7 @@ SoundDecoder_Load(uio_DirHandle* dir, char* filename,
 		{
 			log_add(log_Warning, "SoundDecoder_Load(): %s does not exist",
 					filename);
-			return NULL;
+			return nullptr;
 		}
 	}
 
@@ -392,7 +392,7 @@ SoundDecoder_Load(uio_DirHandle* dir, char* filename,
 							 "%s decoder instance failed init",
 				decoder->funcs->GetName());
 		HFree(decoder);
-		return NULL;
+		return nullptr;
 	}
 
 	if (!decoder->funcs->Open(decoder, dir, filename))
@@ -402,7 +402,7 @@ SoundDecoder_Load(uio_DirHandle* dir, char* filename,
 				decoder->funcs->GetName(), filename);
 		decoder->funcs->Term(decoder);
 		HFree(decoder);
-		return NULL;
+		return nullptr;
 	}
 
 	decoder->buffer = HMalloc(buffer_size);
@@ -803,7 +803,7 @@ bufa_Close(THIS_PTR)
 	if (bufa->data)
 	{
 		This->buffer = bufa->data;
-		bufa->data = NULL;
+		bufa->data = nullptr;
 	}
 	bufa->cur_pcm = 0;
 }

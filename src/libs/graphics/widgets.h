@@ -176,7 +176,7 @@ typedef struct _widget_textentry
 	int (*handleEventSelect)(struct _widget_textentry* self);
 	// handleEventSelect is an overridable callback event
 	// called by the default handleEvent implementation
-	// can be NULL, in which case SELECT is ignored
+	// can be nullptr, in which case SELECT is ignored
 	void (*onChange)(struct _widget_textentry* self);
 	const char* category;
 	char value[WIDGET_TEXTENTRY_WIDTH];

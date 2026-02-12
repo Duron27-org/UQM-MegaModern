@@ -66,14 +66,14 @@ cdp_ModuleInfo cdp_kernel_info =
 		"http://sc2.sf.net",		 // CDP mod URL
 		"Eternal doctrine executor", // CDP mod comment
 		CDP_MODINFO_RESERVED2,
-		NULL, NULL // no entrypoints defined/needed
+		nullptr, nullptr // no entrypoints defined/needed
 };
 
 static cdp_Module cdp_modules[MAX_CDPS + 1] =
 	{
-		{true,  true,	 NULL, 1, &cdp_kernel_info},
+		{true,  true,	 nullptr, 1, &cdp_kernel_info},
 
-		{false, false, NULL, 0, NULL			}  // term
+		{false, false, nullptr, 0, nullptr			}  // term
 };
 
 extern uio_DirHandle* cdpDir;
@@ -102,7 +102,7 @@ bool cdp_Init(void)
 	}
 
 	// preprocess built-in modules
-	hkernel = dlopen(NULL, RTLD_LAZY);
+	hkernel = dlopen(nullptr, RTLD_LAZY);
 
 	for (i = 0; cdp_modules[i].builtin; ++i)
 	{
@@ -135,7 +135,7 @@ void cdp_Uninit(void)
 
 cdp_Module*
 cdp_LoadModule(const char* modname)
-// special value for modname: NULL - refers to kernel (UQM exe)
+// special value for modname: nullptr - refers to kernel (UQM exe)
 {
 	void* mod;
 	char modpath[PATH_MAX];
@@ -146,7 +146,7 @@ cdp_LoadModule(const char* modname)
 	cdp_Module* newslot = 0;
 	cdp_Itf* ihost;
 
-	if (modname == NULL)
+	if (modname == nullptr)
 	{
 		return cdp_modules;
 	}
@@ -163,7 +163,7 @@ cdp_LoadModule(const char* modname)
 	if (!mod)
 	{
 		cdp_last_error = CDPERR_NOT_FOUND;
-		return NULL;
+		return nullptr;
 	}
 
 	// look it up in already loaded
@@ -183,7 +183,7 @@ cdp_LoadModule(const char* modname)
 				modname);
 		dlclose(mod);
 		cdp_last_error = CDPERR_TOO_MANY;
-		return NULL;
+		return nullptr;
 	}
 
 	if (cdp->hmodule)
@@ -198,7 +198,7 @@ cdp_LoadModule(const char* modname)
 	{
 		dlclose(mod);
 		cdp_last_error = CDPERR_BAD_MODULE;
-		return NULL;
+		return nullptr;
 	}
 
 	if (info->size < CDP_MODINFO_MIN_SIZE || info->api_ver > CDPAPI_VERSION)
@@ -208,7 +208,7 @@ cdp_LoadModule(const char* modname)
 				modname);
 		dlclose(mod);
 		cdp_last_error = CDPERR_UNKNOWN_VER;
-		return NULL;
+		return nullptr;
 	}
 
 	ihost = cdp_GetInterface(CDPITF_KIND_HOST, info->api_ver);
@@ -219,7 +219,7 @@ cdp_LoadModule(const char* modname)
 				modname, info->api_ver);
 		dlclose(mod);
 		cdp_last_error = CDPERR_UNKNOWN_VER;
-		return NULL;
+		return nullptr;
 	}
 
 	if (!newslot)
@@ -229,7 +229,7 @@ cdp_LoadModule(const char* modname)
 		// make next one a term
 		cdp[1].builtin = false;
 		cdp[1].used = false;
-		cdp[1].hmodule = NULL;
+		cdp[1].hmodule = nullptr;
 		cdp[1].refcount = 0;
 	}
 	newslot->hmodule = mod;
@@ -242,11 +242,11 @@ cdp_LoadModule(const char* modname)
 						"CDP %s failed to init\n",
 				modname);
 		dlclose(mod);
-		newslot->hmodule = NULL;
-		newslot->info = NULL;
+		newslot->hmodule = nullptr;
+		newslot->info = nullptr;
 		newslot->refcount = 0;
 		cdp_last_error = CDPERR_INIT_FAILED;
-		return NULL;
+		return nullptr;
 	}
 
 
@@ -258,7 +258,7 @@ cdp_CheckModule(cdp_Module* module)
 {
 	if (module < cdp_modules || module >= cdp_modules + MAX_CDPS || !module->hmodule || !module->info)
 	{
-		return NULL;
+		return nullptr;
 	}
 	else
 	{
@@ -285,8 +285,8 @@ void cdp_FreeModule(cdp_Module* module)
 
 	if (modslot->refcount == 0)
 	{
-		modslot->hmodule = NULL;
-		modslot->info = NULL;
+		modslot->hmodule = nullptr;
+		modslot->info = nullptr;
 	}
 }
 
@@ -307,7 +307,7 @@ cdp_GetModuleContext(cdp_Module* module, bool bMetaString)
 	}
 	else if (!modslot)
 	{
-		return NULL;
+		return nullptr;
 	}
 	return modslot->info->context_name;
 }
@@ -329,7 +329,7 @@ cdp_GetModuleName(cdp_Module* module, bool bMetaString)
 	}
 	else if (!modslot)
 	{
-		return NULL;
+		return nullptr;
 	}
 	return modslot->info->name;
 }
@@ -362,7 +362,7 @@ cdp_GetModuleVersionString(cdp_Module* module, bool bMetaString)
 	}
 	else if (!modslot)
 	{
-		return NULL;
+		return nullptr;
 	}
 	return modslot->info->ver_string;
 }
@@ -384,7 +384,7 @@ cdp_GetModuleComment(cdp_Module* module, bool bMetaString)
 	}
 	else if (!modslot)
 	{
-		return NULL;
+		return nullptr;
 	}
 	return modslot->info->comments;
 }

@@ -64,22 +64,22 @@ STAR_BLOCK StarBlock[NUM_STAR_PLANES] =
 			0,
 			BIG_STAR_COUNT,
 			&log_star_array[0],
-			NULL,
-			NULL,
+			nullptr,
+			nullptr,
 		 },
 		{
 			0,
 			MED_STAR_COUNT,
 			&log_star_array[BIG_STAR_COUNT],
-			NULL,
-			NULL,
+			nullptr,
+			nullptr,
 		 },
 		{
 			0,
 			SML_STAR_COUNT,
 			&log_star_array[BIG_STAR_COUNT + MED_STAR_COUNT],
-			NULL,
-			NULL,
+			nullptr,
+			nullptr,
 		 },
 };
 

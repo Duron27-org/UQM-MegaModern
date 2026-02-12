@@ -24,12 +24,12 @@
 
 #if SDL_MAJOR_VERSION == 1
 
-static SDL_Surface* SDL_Video = NULL;
-static SDL_Surface* fade_color_surface = NULL;
-static SDL_Surface* fade_temp = NULL;
-static SDL_Surface* scaled_display = NULL;
+static SDL_Surface* SDL_Video = nullptr;
+static SDL_Surface* fade_color_surface = nullptr;
+static SDL_Surface* fade_temp = nullptr;
+static SDL_Surface* scaled_display = nullptr;
 
-static TFB_ScaleFunc scaler = NULL;
+static TFB_ScaleFunc scaler = nullptr;
 
 static Uint32 fade_color;
 
@@ -192,7 +192,7 @@ int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
 	SDL_Video = SDL_SetVideoMode(ScreenWidthActual, ScreenHeightActual,
 								 BPP, videomode_flags);
 
-	if (SDL_Video == NULL)
+	if (SDL_Video == nullptr)
 	{
 		log_add(log_Error, "Couldn't set %ix%i video mode: %s",
 				ScreenWidthActual, ScreenHeightActual,
@@ -232,7 +232,7 @@ int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
 	if (format_conv_surf)
 	{
 		SDL_FreeSurface(format_conv_surf);
-		format_conv_surf = NULL;
+		format_conv_surf = nullptr;
 	}
 	CalcAlphaFormat(SDL_Video->format, &conv_fmt);
 	format_conv_surf = SDL_CreateRGBSurface(SDL_SWSURFACE, 0, 0,
@@ -267,7 +267,7 @@ int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
 		return -1;
 	}
 	fade_color = SDL_MapRGB(fade_color_surface->format, 0, 0, 0);
-	SDL_FillRect(fade_color_surface, NULL, fade_color);
+	SDL_FillRect(fade_color_surface, nullptr, fade_color);
 
 	if (0 != ReInit_Screen(&fade_temp, format_conv_surf, ScreenWidth, ScreenHeight))
 	{
@@ -285,7 +285,7 @@ int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
 	}
 	else
 	{ // no need to scale
-		scaler = NULL;
+		scaler = nullptr;
 	}
 
 	return 0;
@@ -361,7 +361,7 @@ ScanLines(SDL_Surface* dst, SDL_Rect* r)
 	}
 }
 
-static SDL_Surface *backbuffer = NULL, *scalebuffer = NULL;
+static SDL_Surface *backbuffer = nullptr, *scalebuffer = nullptr;
 static SDL_Rect updated;
 
 static void
@@ -491,7 +491,7 @@ TFB_Pure_ColorLayer(Uint8 r, Uint8 g, Uint8 b, Uint8 a, SDL_Rect* rect)
 	if (col != fade_color)
 	{
 		fade_color = col;
-		SDL_FillRect(fade_color_surface, NULL, fade_color);
+		SDL_FillRect(fade_color_surface, nullptr, fade_color);
 	}
 	SDL_SetAlpha(fade_color_surface, SDL_SRCALPHA, a);
 	SDL_BlitSurface(fade_color_surface, rect, backbuffer, rect);

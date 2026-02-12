@@ -89,8 +89,8 @@ typedef struct STMNOTE
 
 /*========== Loader variables */
 
-static STMNOTE* stmbuf = NULL;
-static STMHEADER* mh = NULL;
+static STMNOTE* stmbuf = nullptr;
+static STMHEADER* mh = nullptr;
 
 /* tracker identifiers */
 static const CHAR* STM_Version[STM_NTRACKERS] = {
@@ -147,8 +147,8 @@ static void STM_Cleanup(void)
 {
 	MikMod_free(mh);
 	MikMod_free(stmbuf);
-	mh = NULL;
-	stmbuf = NULL;
+	mh = nullptr;
+	stmbuf = nullptr;
 }
 
 static void STM_ConvertNote(STMNOTE* n)
@@ -441,7 +441,7 @@ static CHAR* STM_LoadTitle(void)
 	_mm_fseek(modreader, 0, SEEK_SET);
 	if (!_mm_read_UBYTES(s, 20, modreader))
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	return (DupStr(s, 20, 1));
@@ -450,7 +450,7 @@ static CHAR* STM_LoadTitle(void)
 /*========== Loader information */
 
 MIKMODAPI MLOADER load_stm = {
-	NULL,
+	nullptr,
 	"STM",
 	"STM (Scream Tracker)",
 	STM_Init,

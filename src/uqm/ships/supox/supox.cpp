@@ -63,7 +63,7 @@ static RACE_DESC supox_desc =
 		 SUPOX_RACE_STRINGS,
 		 SUPOX_ICON_MASK_PMAP_ANIM,
 		 SUPOX_MICON_MASK_PMAP_ANIM,
-		 NULL, NULL, NULL},
+		 nullptr, nullptr, nullptr},
 		{
 			/* FLEET_STUFF */
 			333 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
@@ -102,24 +102,24 @@ static RACE_DESC supox_desc =
 			 NULL_RESOURCE,
 		 },
 		 {SUPOX_CAPTAIN_MASK_PMAP_ANIM,
-		  NULL, NULL, NULL, NULL, NULL,
+		  nullptr, nullptr, nullptr, nullptr, nullptr,
 		  0, 0, 0, 0, 0},
 		 SUPOX_VICTORY_SONG,
 		 SUPOX_SHIP_SOUNDS,
-		 {NULL, NULL, NULL},
-		 {NULL, NULL, NULL},
-		 {NULL, NULL, NULL},
-		 NULL,
-		 NULL},
+		 {nullptr, nullptr, nullptr},
+		 {nullptr, nullptr, nullptr},
+		 {nullptr, nullptr, nullptr},
+		 nullptr,
+		 nullptr},
 		{
 			0,
 			(MISSILE_SPEED * MISSILE_LIFE) >> 1,
-			NULL,
+			nullptr,
 		 },
-		(UNINIT_FUNC*)NULL,
-		(PREPROCESS_FUNC*)NULL,
-		(POSTPROCESS_FUNC*)NULL,
-		(INIT_WEAPON_FUNC*)NULL,
+		(UNINIT_FUNC*)nullptr,
+		(PREPROCESS_FUNC*)nullptr,
+		(POSTPROCESS_FUNC*)nullptr,
+		(INIT_WEAPON_FUNC*)nullptr,
 		0,
 		0, /* CodeRef */
 };
@@ -223,7 +223,7 @@ initialize_horn(ELEMENT* ShipPtr, HELEMENT HornArray[])
 	MissileBlock.hit_points = MISSILE_HITS;
 	MissileBlock.damage = MISSILE_DAMAGE;
 	MissileBlock.life = MISSILE_LIFE;
-	MissileBlock.preprocess_func = NULL;
+	MissileBlock.preprocess_func = nullptr;
 	MissileBlock.blast_offs = MISSILE_OFFSET;
 	HornArray[0] = initialize_missile(&MissileBlock);
 	return (1);

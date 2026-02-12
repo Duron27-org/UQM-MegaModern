@@ -274,7 +274,7 @@ bool matchWorld(const SOLARSYS_STATE* solarSys, const PLANET_DESC* world,
 
 bool playerInSolarSystem(void)
 {
-	return pSolarSysState != NULL;
+	return pSolarSysState != nullptr;
 }
 
 bool playerInPlanetOrbit(void)
@@ -302,7 +302,7 @@ GenerateTexturedMoons(SOLARSYS_STATE* system, PLANET_DESC* planet)
 	for (i = 0, pMoonDesc = &system->MoonDesc[0];
 		 i < planet->NumPlanets; ++i, ++pMoonDesc)
 	{
-		RESOURCE maskAnim = NULL;
+		RESOURCE maskAnim = nullptr;
 
 		// BW : precompute the generated texture to display it in IP
 		if (!(pMoonDesc->data_index & WORLD_TYPE_SPECIAL))
@@ -434,7 +434,7 @@ LoadNebulaeFrame(POINT location)
 	// at Sol with MegaMod nebulas
 	if (!optNebulae || !(LastActivity != CHECK_LOAD || NextActivity) || (pointsEqual(location, solPoint) && !classicPackPresent && !inHyperSpace()))
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	if (!PrimeSeed)
@@ -463,7 +463,7 @@ LoadNebulaeFrame(POINT location)
 	if ((neb_seed.y % (nebulaCount + 6)) > nebulaCount
 		&& !classicPackPresent && !inHyperSpace())
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	return CaptureDrawable(LoadGraphicFile(path));
@@ -522,7 +522,7 @@ void FreeIPData(void)
 	SpaceMusic = 0;
 
 	RandomContext_Delete(SysGenRNG);
-	SysGenRNG = NULL;
+	SysGenRNG = nullptr;
 }
 
 void LoadIPData(void)
@@ -672,7 +672,7 @@ GenerateTexturedPlanets(void)
 	for (i = 0, pCurDesc = pSolarSysState->PlanetDesc;
 		 i < pSolarSysState->SunDesc[0].NumPlanets; ++i, ++pCurDesc)
 	{
-		RESOURCE maskanim = NULL;
+		RESOURCE maskanim = nullptr;
 
 		DoPlanetaryAnalysis(&pSolarSysState->SysInfo, pCurDesc);
 
@@ -755,7 +755,7 @@ static PLANET_DESC*
 LoadSolarSys(void)
 {
 	uqm::COUNT i;
-	PLANET_DESC* orbital = NULL;
+	PLANET_DESC* orbital = nullptr;
 	PLANET_DESC* pCurDesc;
 #define NUM_TEMP_RANGES 5
 	Color temp_color_array[NUM_TEMP_RANGES] =
@@ -831,7 +831,7 @@ LoadSolarSys(void)
 	if (!GLOBAL(ip_planet))
 	{ // Outer system
 		pSolarSysState->pBaseDesc = pSolarSysState->PlanetDesc;
-		pSolarSysState->pOrbitalDesc = NULL;
+		pSolarSysState->pOrbitalDesc = nullptr;
 	}
 	else
 	{ // Inner system
@@ -916,7 +916,7 @@ FreeSolarSys(void)
 	}
 
 	DestroyDrawable(ReleaseDrawable(SolarSysFrame));
-	SolarSysFrame = NULL;
+	SolarSysFrame = nullptr;
 
 	StopMusic();
 
@@ -1153,7 +1153,7 @@ CheckIntersect(void)
 		pSolarSysState->WaitIntersect = NewWaitPlanet;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 static void
@@ -1671,7 +1671,7 @@ leaveInnerSystem(PLANET_DESC* planet)
 	PLANET_DESC* pMoonDesc;
 
 	pSolarSysState->pBaseDesc = pSolarSysState->PlanetDesc;
-	pSolarSysState->pOrbitalDesc = NULL;
+	pSolarSysState->pOrbitalDesc = nullptr;
 
 	outerPlanetWait = MAKE_WORD(
 		planet - pSolarSysState->PlanetDesc + 1, 0);
@@ -1817,7 +1817,7 @@ CheckShipLocation(uqm::SIZE* newRadius)
 static void
 DrawSystemTransition(bool inner)
 {
-	SetTransitionSource(NULL);
+	SetTransitionSource(nullptr);
 	BatchGraphics();
 	if (inner)
 	{
@@ -1828,7 +1828,7 @@ DrawSystemTransition(bool inner)
 		DrawOuterSystem();
 	}
 	RedrawQueue(false);
-	ScreenTransition(optScrTrans, NULL);
+	ScreenTransition(optScrTrans, nullptr);
 	UnbatchGraphics();
 }
 
@@ -2390,11 +2390,11 @@ InitSolarSys(void)
 		// fade/transition
 		SetContext(SpaceContext);
 
-		SetTransitionSource(NULL);
+		SetTransitionSource(nullptr);
 		BatchGraphics();
 
 		DrawSISFrame();
-		DrawSISMessage(NULL);
+		DrawSISMessage(nullptr);
 
 		ResetSolarSys();
 
@@ -2410,7 +2410,7 @@ InitSolarSys(void)
 
 		// JMS: This is to prevent flashing the 3do "navigate"
 		// unnecessarily whilst starting a new game.
-		// SetFlashRect (NULL);
+		// SetFlashRect (nullptr);
 
 		if (LastActivity == (CHECK_LOAD | CHECK_RESTART))
 		{ // Starting a new game, NOT from load!
@@ -2444,7 +2444,7 @@ InitSolarSys(void)
 				DrawOuterSystem();
 			}
 			RedrawQueue(false);
-			ScreenTransition(optScrTrans, NULL);
+			ScreenTransition(optScrTrans, nullptr);
 			UnbatchGraphics();
 
 			LastActivity &= ~CHECK_LOAD;
@@ -2473,9 +2473,9 @@ closestPlanetInterPlanetary(const POINT* point)
 	uqm::BYTE i;
 	uqm::BYTE numPlanets;
 	uqm::DWORD bestDistSquared;
-	PLANET_DESC* bestPlanet = NULL;
+	PLANET_DESC* bestPlanet = nullptr;
 
-	assert(pSolarSysState != NULL);
+	assert(pSolarSysState != nullptr);
 
 	numPlanets = pSolarSysState->SunDesc[0].NumPlanets;
 
@@ -2508,7 +2508,7 @@ UninitSolarSys(void)
 	FreeIPData(); // JMS This IS necessary.
 
 	DestroyDrawable(ReleaseDrawable(StarsFrame));
-	StarsFrame = NULL;
+	StarsFrame = nullptr;
 
 	if (GLOBAL(CurrentActivity) & END_INTERPLANETARY)
 	{
@@ -2703,7 +2703,7 @@ DrawSystem(uqm::SIZE radius, bool IsInnerSystem)
 
 	oldContext = SetContext(OffScreenContext);
 	SetContextFGFrame(SolarSysFrame);
-	SetContextClipRect(NULL);
+	SetContextClipRect(nullptr);
 
 	DrawStarBackGround();
 
@@ -2770,7 +2770,7 @@ GetStarBackFround(void)
 	}
 	else
 	{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -2840,7 +2840,7 @@ CreateStarBackGround(RandomContext* SysRNG, FRAME nebula, FRAME junk)
 										   clipRect.extent.width, clipRect.extent.height, 1));
 	SetContext(OffScreenContext);
 	SetContextFGFrame(frame);
-	SetContextClipRect(NULL);
+	SetContextClipRect(nullptr);
 	SetContextBackGroundColor(BLACK_COLOR);
 
 	ClearDrawable();
@@ -2983,10 +2983,10 @@ GetNamedPlanetaryBody(void)
 	if (!CurStarDescPtr || !playerInSolarSystem()
 		|| !playerInInnerSystem())
 	{
-		return NULL; // Not inside an inner system, so no name
+		return nullptr; // Not inside an inner system, so no name
 	}
 
-	assert(pSolarSysState->pOrbitalDesc != NULL);
+	assert(pSolarSysState->pOrbitalDesc != nullptr);
 
 	if (CurStarDescPtr->Index == SOL_DEFINED)
 	{ // Planets and moons in Sol
@@ -3108,10 +3108,10 @@ GetNamedPlanetaryBody(void)
 				}
 				break;
 			default:
-				return NULL;
+				return nullptr;
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 void GetPlanetOrMoonName(uqm::CHAR_T* buf, uqm::COUNT bufsize)
@@ -3231,7 +3231,7 @@ DoSolarSysMenu(MENU_STATE* pMS)
 		return true;
 	}
 
-	SetFlashRect(NULL, false);
+	SetFlashRect(nullptr, false);
 
 	switch (pMS->CurState)
 	{
@@ -3306,7 +3306,7 @@ SolarSysMenu(void)
 		MenuState.CurState = STARMAP;
 	}
 
-	DrawStatusMessage(NULL);
+	DrawStatusMessage(nullptr);
 	SetFlashRect(SFR_MENU_3DO, false);
 
 	SetMenuSounds(MENU_SOUND_ARROWS, MENU_SOUND_SELECT);

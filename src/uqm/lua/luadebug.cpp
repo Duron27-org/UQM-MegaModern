@@ -51,7 +51,7 @@ static void luaUqm_debug_errorCallback(void* extra,
 									   const char* format, ...);
 
 
-lua_State* luaUqm_debugState = NULL;
+lua_State* luaUqm_debugState = nullptr;
 
 static const luaL_Reg debugLibs[] = {
 	{"comm",	 luaUqm_comm_open },
@@ -59,16 +59,16 @@ static const luaL_Reg debugLibs[] = {
 	{"log",	luaUqm_log_open  },
 	//{ "package", luaUqm_package_open },
 	{"state", luaUqm_state_open},
-	{NULL,	   NULL			   }
+	{nullptr,	   nullptr			   }
 };
 
 // Not reentrant.
-// If 'customFuncs' is NULL, no 'custom' table is added to the Lua environment.
+// If 'customFuncs' is nullptr, no 'custom' table is added to the Lua environment.
 // If 'scriptRes' is NULL_RESOURCE, then no script is loaded. Lua is only
 // available for string interpolation in this case.
 void luaUqm_debug_init(void)
 {
-	assert(luaUqm_debugState == NULL);
+	assert(luaUqm_debugState == nullptr);
 
 	luaUqm_debugState = luaUqm_globalState;
 
@@ -79,8 +79,8 @@ void luaUqm_debug_init(void)
 
 void luaUqm_debug_uninit(void)
 {
-	assert(luaUqm_debugState != NULL);
-	luaUqm_debugState = NULL;
+	assert(luaUqm_debugState != nullptr);
+	luaUqm_debugState = nullptr;
 }
 
 void luaUqm_debug_run(void)
@@ -108,7 +108,7 @@ luaUqm_debug_interactive(FILE* in, FILE* out, FILE* err)
 	{
 		fprintf(out, "> ");
 
-		if (fgets(lineBuf, LINEBUFLEN, in) == NULL)
+		if (fgets(lineBuf, LINEBUFLEN, in) == nullptr)
 		{
 			if (feof(in))
 			{
@@ -176,9 +176,9 @@ void luaUqm_debug_runLine(const char* exprBuf,
 	// Convert the result to a string.
 	resultType = lua_type(luaUqm_debugState, -1);
 	resultTypeStr = lua_typename(luaUqm_debugState, resultType);
-	resultStr = lua_tolstring(luaUqm_debugState, -1, NULL);
+	resultStr = lua_tolstring(luaUqm_debugState, -1, nullptr);
 	// Memory for 'resultStr' lasts until the lua_pop().
-	if (resultStr == NULL)
+	if (resultStr == nullptr)
 	{
 		// Not a string and not convertable to a string.
 		// The command was executed ok though, and we treat this as such.

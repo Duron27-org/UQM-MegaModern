@@ -75,7 +75,7 @@ HASHTABLE_(add)(HASHTABLE_(HashTable) * hashTable,
 
 	hash = HASHTABLE_(HASH)(hashTable, key);
 	entry = hashTable->entries[hash & hashTable->hashMask];
-	while (entry != NULL)
+	while (entry != nullptr)
 	{
 		if (HASHTABLE_(EQUAL)(hashTable, key, entry->key))
 		{
@@ -86,7 +86,7 @@ HASHTABLE_(add)(HASHTABLE_(HashTable) * hashTable,
 	}
 
 #ifdef HashTable_PROFILE
-	if (hashTable->entries[hash & hashTable->hashMask] != NULL)
+	if (hashTable->entries[hash & hashTable->hashMask] != nullptr)
 	{
 		hashTable->numCollisions++;
 	}
@@ -117,7 +117,7 @@ HASHTABLE_(remove)(HASHTABLE_(HashTable) * hashTable,
 	entry = &hashTable->entries[hash & hashTable->hashMask];
 	while (1)
 	{
-		if (*entry == NULL)
+		if (*entry == nullptr)
 		{
 			return false;
 		}
@@ -151,7 +151,7 @@ HASHTABLE_(Value) * HASHTABLE_(find)(HASHTABLE_(HashTable) * hashTable, const HA
 
 	hash = HASHTABLE_(HASH)(hashTable, key);
 	entry = hashTable->entries[hash & hashTable->hashMask];
-	while (entry != NULL)
+	while (entry != nullptr)
 	{
 		if (HASHTABLE_(EQUAL)(hashTable, key, entry->key))
 		{
@@ -160,7 +160,7 @@ HASHTABLE_(Value) * HASHTABLE_(find)(HASHTABLE_(HashTable) * hashTable, const HA
 		}
 		entry = entry->next;
 	}
-	return NULL;
+	return nullptr;
 }
 
 // Returns the number of entries in the HashTable.
@@ -212,12 +212,12 @@ HASHTABLE_(resize)(HASHTABLE_(HashTable) * hashTable)
 	while (oldNumEntries > 0)
 	{
 		entry = oldEntries[i];
-		while (entry != NULL)
+		while (entry != nullptr)
 		{
 			next = entry->next;
 			newLocation = &hashTable->entries[entry->hash & hashTable->hashMask];
 #ifdef HashTable_PROFILE
-			if (*newLocation != NULL)
+			if (*newLocation != nullptr)
 			{
 				hashTable->numCollisions++;
 			}
@@ -263,7 +263,7 @@ HASHTABLE_(Iterator) * HASHTABLE_(getIterator)(const HASHTABLE_(HashTable) * has
 	// Look for the first used bucket.
 	for (i = 0; i < iterator->hashTable->size; i++)
 	{
-		if (iterator->hashTable->entries[i] != NULL)
+		if (iterator->hashTable->entries[i] != nullptr)
 		{
 			// Found a used bucket.
 			iterator->bucketNr = i;
@@ -274,7 +274,7 @@ HASHTABLE_(Iterator) * HASHTABLE_(getIterator)(const HASHTABLE_(HashTable) * has
 
 	// No entries were found.
 	iterator->bucketNr = i;
-	iterator->entry = NULL;
+	iterator->entry = nullptr;
 	return iterator;
 }
 
@@ -305,7 +305,7 @@ HASHTABLE_(Iterator) * HASHTABLE_(iteratorNext)(HASHTABLE_(Iterator) * iterator)
 
 	// If there's another entry in this bucket, use that.
 	iterator->entry = iterator->entry->next;
-	if (iterator->entry != NULL)
+	if (iterator->entry != nullptr)
 	{
 		return iterator;
 	}
@@ -313,7 +313,7 @@ HASHTABLE_(Iterator) * HASHTABLE_(iteratorNext)(HASHTABLE_(Iterator) * iterator)
 	// Look for the next used bucket.
 	for (i = iterator->bucketNr + 1; i < iterator->hashTable->size; i++)
 	{
-		if (iterator->hashTable->entries[i] != NULL)
+		if (iterator->hashTable->entries[i] != nullptr)
 		{
 			// Found another used bucket.
 			iterator->bucketNr = i;
@@ -324,7 +324,7 @@ HASHTABLE_(Iterator) * HASHTABLE_(iteratorNext)(HASHTABLE_(Iterator) * iterator)
 
 	// No more entries were found.
 	iterator->bucketNr = i;
-	iterator->entry = NULL;
+	iterator->entry = nullptr;
 	return iterator;
 }
 
@@ -371,7 +371,7 @@ void HASHTABLE_(deleteHashTable)(HASHTABLE_(HashTable) * hashTable)
 	while (i > 0)
 	{
 		entry = *bucketPtr;
-		while (entry != NULL)
+		while (entry != nullptr)
 		{
 			next = entry->next;
 			HASHTABLE_(FREEKEY)(hashTable, entry->key);

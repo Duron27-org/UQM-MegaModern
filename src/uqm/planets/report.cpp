@@ -260,7 +260,7 @@ MakeReport(SOUND ReadOutSounds, uqm::CHAR_T* pStr, uqm::COUNT StrLen)
 							scale = 2;
 						}
 
-						PlaySound(ReadOutSounds, NotPositional(), NULL,
+						PlaySound(ReadOutSounds, NotPositional(), nullptr,
 								  GAME_SOUND_PRIORITY);
 
 						switch (c)
@@ -374,7 +374,7 @@ void DoDiscoveryReport(SOUND ReadOutSounds)
 
 	context = GetScanContext(&ownContext);
 	OldContext = SetContext(context);
-	saveStamp = SaveContextFrame(NULL);
+	saveStamp = SaveContextFrame(nullptr);
 	{
 		FONT OldFont;
 		FRAME OldFontEffect;
@@ -388,10 +388,10 @@ void DoDiscoveryReport(SOUND ReadOutSounds)
 		}
 		else
 		{
-			OldFontEffect = SetContextFontEffect(NULL);
+			OldFontEffect = SetContextFontEffect(nullptr);
 		}
 
-		luaUqm_comm_init(NULL, NULL_RESOURCE);
+		luaUqm_comm_init(nullptr, NULL_RESOURCE);
 		bool allocated = false;
 		char* StrPtr = (uqm::CHAR_T*)GetStringAddress(pSolarSysState->SysInfo.PlanetInfo.DiscoveryString);
 		if (luaUqm_comm_stringNeedsInterpolate(StrPtr))

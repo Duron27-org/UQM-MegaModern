@@ -103,7 +103,7 @@ typedef struct
 	uint16 indices[2]; // initial indices for channels
 } DukAud_AudSubframe;
 
-static const TFB_DecoderFormats* duka_formats = NULL;
+static const TFB_DecoderFormats* duka_formats = nullptr;
 
 static sint32
 duka_readAudFrameHeader(TFB_DuckSoundDecoder* duka, uint32 iframe,
@@ -492,17 +492,17 @@ duka_Close(THIS_PTR)
 	if (duka->data)
 	{
 		HFree(duka->data);
-		duka->data = NULL;
+		duka->data = nullptr;
 	}
 	if (duka->frames)
 	{
 		HFree(duka->frames);
-		duka->frames = NULL;
+		duka->frames = nullptr;
 	}
 	if (duka->duk)
 	{
 		uio_fclose(duka->duk);
-		duka->duk = NULL;
+		duka->duk = nullptr;
 	}
 	duka->last_error = 0;
 }

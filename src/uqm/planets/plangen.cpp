@@ -306,7 +306,7 @@ GetAltColorMap(PLANET_DESC* pPlanetDesc)
 		case VINYLOGOUS_WORLD: /* TRITON */
 			return TRITON_COLOR_TAB;
 		default:
-			return NULL;
+			return nullptr;
 	}
 }
 
@@ -404,7 +404,7 @@ RenderLevelMasks(FRAME mask, uqm::SBYTE* pTopoData, bool SurfDef)
 	OldFrame = SetContextFGFrame(mask);
 	oldOrigin = SetContextOrigin(MAKE_POINT(0, 0));
 	GetContextClipRect(&ClipRect);
-	SetContextClipRect(NULL);
+	SetContextClipRect(nullptr);
 
 	w = mask->Bounds.width;
 	h = mask->Bounds.height;
@@ -536,7 +536,7 @@ RenderTopography(FRAME DstFrame, uqm::SBYTE* pTopoData, int w, int h,
 	xlatDesc = (const XLAT_DESC*)pSolarSysState->XlatPtr;
 	xlat_tab = (const uqm::BYTE*)xlatDesc->xlat_tab;
 
-	if (scanTable == NULL)
+	if (scanTable == nullptr)
 	{
 		cbase = (uqm::BYTE*)GetColorMapAddress(pSolarSysState->OrbitalCMap);
 	}
@@ -1156,7 +1156,7 @@ ApplyShieldTint(void)
 
 	// TopoFrame will be permanently changed
 	oldFrame = SetContextFGFrame(pSolarSysState->TopoFrame);
-	SetContextClipRect(NULL);
+	SetContextClipRect(nullptr);
 	GetContextClipRect(&r);
 
 	tint = BUILD_COLOR_RGBA(0xff, 0x00, 0x00, 0xff);
@@ -1443,7 +1443,7 @@ void RenderDOSPlanetSphere(PLANET_ORBIT* Orbit, FRAME MaskFrame, int offset)
 			// Draw everything in offscreen context
 			oldContext = SetContext(OffScreenContext);
 			SetContextFGFrame(baseframe);
-			SetContextClipRect(NULL);
+			SetContextClipRect(nullptr);
 
 			oldMode = SetContextDrawMode(DRAW_REPLACE_MODE);
 
@@ -2087,8 +2087,8 @@ planet_orbit_init(uqm::COUNT width, uqm::COUNT height, bool forOrbit)
 
 		Orbit->TintColor = BLACK_COLOR;
 
-		Orbit->TopoColors = NULL;
-		Orbit->ScanColors = NULL;
+		Orbit->TopoColors = nullptr;
+		Orbit->ScanColors = nullptr;
 
 		Orbit->ScratchArray = (Color*)HMalloc(sizeof(Orbit->ScratchArray[0])
 											  * (shielddiam) * (shielddiam));
@@ -2096,16 +2096,16 @@ planet_orbit_init(uqm::COUNT width, uqm::COUNT height, bool forOrbit)
 		Orbit->WorkFrame = 0;
 		Orbit->BackFrame = 0;
 
-		Orbit->light_diff = NULL;
-		Orbit->map_rotate = NULL;
+		Orbit->light_diff = nullptr;
+		Orbit->map_rotate = nullptr;
 
 		Orbit->TopoMask = 0;
-		Orbit->sphereBytes = NULL;
+		Orbit->sphereBytes = nullptr;
 		Orbit->sphereMap = 0;
 		Orbit->scanType = NUM_SCAN_TYPES;
 
 		Orbit->Shade = 0;
-		Orbit->ShadeColors = NULL;
+		Orbit->ShadeColors = nullptr;
 	}
 
 	if (!forOrbit || optScanSphere)
@@ -2118,7 +2118,7 @@ planet_orbit_init(uqm::COUNT width, uqm::COUNT height, bool forOrbit)
 
 		if (forOrbit && isPC(optScanStyle) && isPC(optTintPlanSphere)
 			&& !use3DOSpheres)
-		{ // generate only on that conditions and then use if not NULL
+		{ // generate only on that conditions and then use if not nullptr
 			Orbit->ScanColors =
 				(Color**)HMalloc(sizeof(Color*) * NUM_SCAN_TYPES);
 			for (i = 0; i < NUM_SCAN_TYPES; i++)
@@ -2656,7 +2656,7 @@ void load_color_resources(PLANET_DESC* pPlanetDesc,
 	{ // JMS: Planets with special colormaps
 		pSolarSysState->OrbitalCMap = CaptureColorMap(
 			LoadColorMap(GetAltColorMap(pPlanetDesc)));
-		if (pSolarSysState->OrbitalCMap != NULL)
+		if (pSolarSysState->OrbitalCMap != nullptr)
 		{ // Load successful - grab XLAT and return
 			pSolarSysState->XlatRef = CaptureStringTable(
 				LoadStringTable(SPECIAL_CMAP_XLAT_TAB));
@@ -2782,7 +2782,7 @@ void generate_surface_frame(uqm::COUNT width, uqm::COUNT height, PLANET_ORBIT* O
 					   (uqm::SIZE)height, 1));
 
 	RenderTopography(pSolarSysState->TopoFrame,
-					 Orbit->lpTopoData, width, height, false, NULL);
+					 Orbit->lpTopoData, width, height, false, nullptr);
 }
 
 void GetPlanetTopography(PLANET_DESC* pPlanetDesc, FRAME SurfDefFrame)
@@ -2977,7 +2977,7 @@ void GeneratePlanetSurface(PLANET_DESC* pPlanetDesc, FRAME SurfDefFrame,
 	{
 		RenderLevelMasks(Orbit->TopoMask, Orbit->lpTopoData, SurfDef);
 		SetPlanetColors(GetColorMapAddress(Orbit->sphereMap));
-		if (Orbit->TopoMask != NULL)
+		if (Orbit->TopoMask != nullptr)
 		{
 			ExpandLevelMasks(Orbit);
 		}
@@ -3070,7 +3070,7 @@ void GeneratePlanetSurface(PLANET_DESC* pPlanetDesc, FRAME SurfDefFrame,
 				TopoScale4x(pScaledTopo, Orbit->lpTopoData,
 							PlanDataPtr->num_faults, PlanDataPtr->fault_depth * (PLANALGO(PlanDataPtr->Type) == CRATERED_ALGO ? 2 : 1));
 				RenderTopography(Orbit->TopoZoomFrame, pScaledTopo,
-								 SCALED_MAP_WIDTH * 4, MAP_HEIGHT * 4, SurfDef, NULL);
+								 SCALED_MAP_WIDTH * 4, MAP_HEIGHT * 4, SurfDef, nullptr);
 
 				HFree(pScaledTopo);
 			}

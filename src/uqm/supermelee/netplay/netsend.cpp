@@ -49,7 +49,7 @@ int sendPacket(NetConnection* conn, Packet* packet)
 	//			conn->player, packetTypeData[packetType(packet)].name);
 	//}
 #ifdef NETPLAY_DEBUG_FILE
-	if (conn->debugFile != NULL)
+	if (conn->debugFile != nullptr)
 	{
 		uio_fprintf(conn->debugFile,
 					"NETPLAY: [%d] ==> Sending packet of type %s.\n",

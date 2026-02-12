@@ -291,7 +291,7 @@ dukv_OpenStream(TFB_DuckVideoDecoder* dukv)
 
 	return (dukv->stream =
 				uio_fopen(dukv->basedir, filename, "rb"))
-		!= NULL;
+		!= nullptr;
 }
 
 static bool
@@ -695,27 +695,27 @@ dukv_Close(THIS_PTR)
 	if (dukv->basename)
 	{
 		HFree(dukv->basename);
-		dukv->basename = NULL;
+		dukv->basename = nullptr;
 	}
 	if (dukv->frames)
 	{
 		HFree(dukv->frames);
-		dukv->frames = NULL;
+		dukv->frames = nullptr;
 	}
 	if (dukv->stream)
 	{
 		uio_fclose(dukv->stream);
-		dukv->stream = NULL;
+		dukv->stream = nullptr;
 	}
 	if (dukv->inbuf)
 	{
 		HFree(dukv->inbuf);
-		dukv->inbuf = NULL;
+		dukv->inbuf = nullptr;
 	}
 	if (dukv->decbuf)
 	{
 		HFree(dukv->decbuf);
-		dukv->decbuf = NULL;
+		dukv->decbuf = nullptr;
 	}
 }
 

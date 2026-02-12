@@ -36,31 +36,31 @@
 #include "luafuncs/statefuncs.h"
 #include "libs/log.h"
 
-lua_State* luaUqm_commState = NULL;
+lua_State* luaUqm_commState = nullptr;
 
 static const luaL_Reg commLibs[] = {
 	{"comm",	 luaUqm_comm_open },
 	{"event", luaUqm_event_open},
 	{"log",	luaUqm_log_open  },
 	{"state", luaUqm_state_open},
-	{NULL,	   NULL			   }
+	{nullptr,	   nullptr			   }
 };
 
 // Not reentrant.
-// If 'customFuncs' is NULL, no 'custom' table is added to the Lua environment.
+// If 'customFuncs' is nullptr, no 'custom' table is added to the Lua environment.
 // If 'scriptRes' is NULL_RESOURCE, then no script is loaded. Lua is only
 // available for string interpolation in this case.
 bool luaUqm_comm_init(const luaUqm_custom_Function* customFuncs,
 					  RESOURCE scriptRes)
 {
-	assert(luaUqm_commState == NULL);
+	assert(luaUqm_commState == nullptr);
 
 	luaUqm_commState = luaUqm_globalState;
 
 	// Prepare the global environment.
 	luaUqm_prepareEnvironment(luaUqm_commState);
 	luaUqm_loadLibs(luaUqm_commState, commLibs);
-	if (customFuncs != NULL)
+	if (customFuncs != nullptr)
 	{
 		luaUqm_custom_init(luaUqm_commState, customFuncs);
 		lua_pop(luaUqm_commState, 1);
@@ -74,7 +74,7 @@ bool luaUqm_comm_init(const luaUqm_custom_Function* customFuncs,
 
 		// Get the name of the script.
 		scriptFileName = LoadScriptInstance(scriptRes);
-		if (scriptFileName == NULL)
+		if (scriptFileName == nullptr)
 		{
 			return false;
 		}
@@ -97,28 +97,28 @@ bool luaUqm_comm_init(const luaUqm_custom_Function* customFuncs,
 
 void luaUqm_comm_uninit(void)
 {
-	assert(luaUqm_commState != NULL);
-	luaUqm_commState = NULL;
+	assert(luaUqm_commState != nullptr);
+	luaUqm_commState = nullptr;
 }
 
 // Use as LOCDATA.init_encounter_func
 void luaUqm_comm_genericInit(void)
 {
-	assert(luaUqm_commState != NULL);
+	assert(luaUqm_commState != nullptr);
 	luaUqm_callFunction(luaUqm_commState, "init");
 }
 
 // Use as LOCDATA.post_encounter_func
 void luaUqm_comm_genericPost(void)
 {
-	assert(luaUqm_commState != NULL);
+	assert(luaUqm_commState != nullptr);
 	luaUqm_callFunction(luaUqm_commState, "post");
 }
 
 // Use as LOCDATA.uninit_encounter_func
 void luaUqm_comm_genericUninit(void)
 {
-	assert(luaUqm_commState != NULL);
+	assert(luaUqm_commState != nullptr);
 	luaUqm_callFunction(luaUqm_commState, "uninit");
 
 	luaUqm_comm_uninit();
@@ -126,7 +126,7 @@ void luaUqm_comm_genericUninit(void)
 
 bool luaUqm_comm_stringNeedsInterpolate(const char* str)
 {
-	return strstr(str, "<%") != NULL;
+	return strstr(str, "<%") != nullptr;
 }
 
 // Resizes *buf if necessary. Makes sure that there is always enough
@@ -147,7 +147,7 @@ luaUqm_comm_addToBuffer(char** buf, size_t* bufLen, char** bufPtr,
 	if (newLen != *bufLen)
 	{
 		char* newBuf = (char*)HRealloc(*buf, newLen);
-		if (newBuf == NULL)
+		if (newBuf == nullptr)
 		{
 			log_add(log_Error, "Error: luaUqm_addToBuffer(): could not "
 							   "allocate memory.\n");
@@ -178,13 +178,13 @@ char* luaUqm_comm_stringInterpolate(const char* str)
 	const char* part;
 	size_t partLen;
 
-	assert(luaUqm_commState != NULL);
+	assert(luaUqm_commState != nullptr);
 
 	bufLen = 2048;
 	buf = (char*)HMalloc(bufLen);
-	if (buf == NULL)
+	if (buf == nullptr)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	strPtr = str;
@@ -198,7 +198,7 @@ char* luaUqm_comm_stringInterpolate(const char* str)
 		const char* luaStart;
 
 		startTag = strstr(strPtr, "<%");
-		if (startTag == NULL)
+		if (startTag == nullptr)
 		{
 			break;
 		}
@@ -209,7 +209,7 @@ char* luaUqm_comm_stringInterpolate(const char* str)
 								strPtr, startTag - strPtr);
 
 		endTag = strstr(startTag + 2, "%>");
-		if (endTag == NULL)
+		if (endTag == nullptr)
 		{
 			log_add(log_Error, "luaUqm_stringInterpolate(): Unterminated "
 							   "'<%% .. %%>' sequence in string '%s'.",
@@ -261,7 +261,7 @@ char* luaUqm_comm_stringInterpolate(const char* str)
 
 		// Convert the result to a string, and get the length.
 		part = lua_tolstring(luaUqm_commState, -1, &partLen);
-		if (part == NULL)
+		if (part == nullptr)
 		{
 			// Not a string and not convertable to a string.
 			log_add(log_Error, "[script] luaUqm_stringInterpolate(): Value "
@@ -290,7 +290,7 @@ out:
 
 	{
 		char* newBuf = (char*)HRealloc(buf, bufPtr - buf + 1);
-		if (newBuf == NULL)
+		if (newBuf == nullptr)
 		{
 			// If we can't shorten 'newBuf', we'll just keep using the
 			// unnecessarilly long 'buf', and let the next allocating

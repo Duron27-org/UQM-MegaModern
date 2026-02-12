@@ -32,7 +32,7 @@ static int luaB_print(lua_State* L)
 		lua_pushvalue(L, i);  /* value to print */
 		lua_call(L, 1, 1);
 		s = lua_tolstring(L, -1, &l); /* get result */
-		if (s == NULL)
+		if (s == nullptr)
 		{
 			return luaL_error(L,
 							  LUA_QL("tostring") " must return a string to " LUA_QL("print"));
@@ -194,7 +194,7 @@ static int luaB_collectgarbage(lua_State* L)
 {
 	static const char* const opts[] = {"stop", "restart", "collect",
 									   "count", "step", "setpause", "setstepmul",
-									   "setmajorinc", "isrunning", "generational", "incremental", NULL};
+									   "setmajorinc", "isrunning", "generational", "incremental", nullptr};
 	static const int optsnum[] = {LUA_GCSTOP, LUA_GCRESTART, LUA_GCCOLLECT,
 								  LUA_GCCOUNT, LUA_GCSTEP, LUA_GCSETPAUSE, LUA_GCSETSTEPMUL,
 								  LUA_GCSETMAJORINC, LUA_GCISRUNNING, LUA_GCGEN, LUA_GCINC};
@@ -323,8 +323,8 @@ static int load_aux(lua_State* L, int status, int envidx)
 
 static int luaB_loadfile(lua_State* L)
 {
-	const char* fname = luaL_optstring(L, 1, NULL);
-	const char* mode = luaL_optstring(L, 2, NULL);
+	const char* fname = luaL_optstring(L, 1, nullptr);
+	const char* mode = luaL_optstring(L, 2, nullptr);
 	int env = (!lua_isnone(L, 3) ? 3 : 0); /* 'env' index or 0 if no 'env' */
 	int status = luaL_loadfilex(L, fname, mode);
 	return load_aux(L, status, env);
@@ -362,7 +362,7 @@ static const char* generic_reader(lua_State* L, void* ud, size_t* size)
 	{
 		lua_pop(L, 1); /* pop result */
 		*size = 0;
-		return NULL;
+		return nullptr;
 	}
 	else if (!lua_isstring(L, -1))
 	{
@@ -380,7 +380,7 @@ static int luaB_load(lua_State* L)
 	const char* s = lua_tolstring(L, 1, &l);
 	const char* mode = luaL_optstring(L, 3, "bt");
 	int env = (!lua_isnone(L, 4) ? 4 : 0); /* 'env' index or 0 if no 'env' */
-	if (s != NULL)
+	if (s != nullptr)
 	{ /* loading a string? */
 		const char* chunkname = luaL_optstring(L, 2, s);
 		status = luaL_loadbufferx(L, s, l, chunkname, mode);
@@ -390,7 +390,7 @@ static int luaB_load(lua_State* L)
 		const char* chunkname = luaL_optstring(L, 2, "=(load)");
 		luaL_checktype(L, 1, LUA_TFUNCTION);
 		lua_settop(L, RESERVEDSLOT); /* create reserved slot */
-		status = lua_load(L, generic_reader, NULL, chunkname, mode);
+		status = lua_load(L, generic_reader, nullptr, chunkname, mode);
 	}
 	return load_aux(L, status, env);
 }
@@ -406,7 +406,7 @@ static int dofilecont(lua_State* L)
 
 static int luaB_dofile(lua_State* L)
 {
-	const char* fname = luaL_optstring(L, 1, NULL);
+	const char* fname = luaL_optstring(L, 1, nullptr);
 	lua_settop(L, 1);
 	if (luaL_loadfile(L, fname) != LUA_OK)
 	{
@@ -469,7 +469,7 @@ static int finishpcall(lua_State* L, int status)
 
 static int pcallcont(lua_State* L)
 {
-	int status = lua_getctx(L, NULL);
+	int status = lua_getctx(L, nullptr);
 	return finishpcall(L, (status == LUA_YIELD));
 }
 
@@ -501,7 +501,7 @@ static int luaB_xpcall(lua_State* L)
 static int luaB_tostring(lua_State* L)
 {
 	luaL_checkany(L, 1);
-	luaL_tolstring(L, 1, NULL);
+	luaL_tolstring(L, 1, nullptr);
 	return 1;
 }
 
@@ -532,7 +532,7 @@ static const luaL_Reg base_funcs[] = {
 	{"tostring",		 luaB_tostring	  },
 	{"type",			 luaB_type		  },
 	{"xpcall",		   luaB_xpcall		  },
-	{NULL,			 NULL			   }
+	{nullptr,			 nullptr			   }
 };
 
 

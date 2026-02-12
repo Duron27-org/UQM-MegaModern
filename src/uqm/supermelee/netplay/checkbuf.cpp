@@ -84,10 +84,10 @@ void ChecksumBuffer_init(ChecksumBuffer* cb, size_t delay, size_t interval)
 
 void ChecksumBuffer_uninit(ChecksumBuffer* cb)
 {
-	if (cb->checksums != NULL)
+	if (cb->checksums != nullptr)
 	{
 		free(cb->checksums);
-		cb->checksums = NULL;
+		cb->checksums = nullptr;
 	}
 }
 

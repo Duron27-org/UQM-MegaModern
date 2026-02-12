@@ -114,7 +114,7 @@ int TFB_ReInitGraphics(int driver, int flags, int width, int height,
 			UQM_MAJOR_VERSION, UQM_MINOR_VERSION,
 			UQM_PATCH_VERSION,
 			(*resFactor ? "HD " UQM_EXTRA_VERSION : UQM_EXTRA_VERSION));
-	SDL_WM_SetCaption(caption, NULL);
+	SDL_WM_SetCaption(caption, nullptr);
 
 	if (flags & TFB_GFXFLAGS_FULLSCREEN
 		|| flags & TFB_GFXFLAGS_EX_FULLSCREEN)

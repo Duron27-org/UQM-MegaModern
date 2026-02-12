@@ -87,7 +87,7 @@ void* MikMod_amalloc(size_t size)
 	{
 		_mm_errorhandler();
 	}
-	return NULL;
+	return nullptr;
 }
 
 void MikMod_afree(void* data)
@@ -135,7 +135,7 @@ void* MikMod_calloc(size_t nitems, size_t size)
 	{
 		_mm_errorhandler();
 	}
-	return NULL;
+	return nullptr;
 }
 
 void MikMod_free(void* data)
@@ -154,7 +154,7 @@ CHAR* MikMod_strdup(const CHAR* s)
 
 	if (!s)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	l = strlen(s) + 1;

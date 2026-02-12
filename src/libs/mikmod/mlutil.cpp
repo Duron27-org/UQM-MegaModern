@@ -56,10 +56,10 @@ const CHAR* STM_Version[STM_NTRACKERS] = {
 /*========== Shared loader variables */
 
 SBYTE remap[UF_MAXCHAN]; /* for removing empty channels */
-UBYTE* poslookup = NULL; /* lookup table for pattern jumps after blank
+UBYTE* poslookup = nullptr; /* lookup table for pattern jumps after blank
                                pattern removal */
 UWORD poslookupcnt;
-UWORD* origpositions = NULL;
+UWORD* origpositions = nullptr;
 
 BOOL filters;						 /* resonant filters in use */
 UBYTE activemacro;					 /* active midi macro number for Sxx,xx<80h */
@@ -68,7 +68,7 @@ FILTER filtersettings[UF_MAXFILTER]; /* computed filter settings */
 
 /*========== Linear periods stuff */
 
-int* noteindex = NULL; /* remap value for linear period modules */
+int* noteindex = nullptr; /* remap value for linear period modules */
 static unsigned noteindexcount = 0;
 
 int* AllocLinear(void)
@@ -84,7 +84,7 @@ int* AllocLinear(void)
 void FreeLinear(void)
 {
 	MikMod_free(noteindex);
-	noteindex = NULL;
+	noteindex = nullptr;
 	noteindexcount = 0;
 }
 

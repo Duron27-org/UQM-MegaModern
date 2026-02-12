@@ -32,25 +32,25 @@ void* GetResourceData(uio_Stream* fp, uqm::DWORD length)
 	// Currently, .ct and .xlt files still carry a ~0 length prefix.
 	if (ReadResFile(&compLen, sizeof(compLen), 1, fp) != 1)
 	{
-		return NULL;
+		return nullptr;
 	}
 	if (compLen != ~(uqm::DWORD)0)
 	{
 		log_add(log_Warning, "LZ-compressed binary data not supported");
-		return NULL;
+		return nullptr;
 	}
 	length -= sizeof(uqm::DWORD);
 
 	result = AllocResourceData(length);
 	if (!result)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	if (ReadResFile(result, 1, length, fp) != length)
 	{
 		FreeResourceData(result);
-		result = NULL;
+		result = nullptr;
 	}
 
 	return result;

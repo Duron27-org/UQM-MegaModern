@@ -168,7 +168,7 @@ void UniSkipOpcode(void)
 }
 
 /* Finds the address of row number 'row' in the UniMod(tm) stream 't' returns
-   NULL if the row can't be found. */
+   nullptr if the row can't be found. */
 UBYTE* UniFindRow(UBYTE* t, UWORD row)
 {
 	UBYTE c, l;
@@ -180,7 +180,7 @@ UBYTE* UniFindRow(UBYTE* t, UWORD row)
 			c = *t; /* get rep/len byte */
 			if (!c)
 			{
-				return NULL; /* zero ? -> end of track.. */
+				return nullptr; /* zero ? -> end of track.. */
 			}
 			l = (c >> 5) + 1; /* extract repeat value */
 			if (l > row)
@@ -308,13 +308,13 @@ UBYTE* UniDup(void)
 
 	if (!UniExpand(unipc - unitt))
 	{
-		return NULL;
+		return nullptr;
 	}
 	unibuf[unitt] = 0;
 
 	if (!(d = MikMod_malloc(unipc)))
 	{
-		return NULL;
+		return nullptr;
 	}
 	memcpy(d, unibuf, unipc);
 
@@ -335,7 +335,7 @@ BOOL UniInit(void)
 void UniCleanup(void)
 {
 	MikMod_free(unibuf);
-	unibuf = NULL;
+	unibuf = nullptr;
 }
 
 /* ex:set ts=4: */

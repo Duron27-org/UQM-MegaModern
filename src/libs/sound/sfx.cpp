@@ -210,7 +210,7 @@ void* _GetSoundBankData(uio_Stream* fp, uqm::DWORD length)
 		}
 
 		// SFX samples don't have decoders, everything is pre-decoded below
-		sample = TFB_CreateSoundSample(NULL, 1, NULL);
+		sample = TFB_CreateSoundSample(nullptr, 1, nullptr);
 
 		// Decode everything and stash it in 1 buffer
 		decoded_bytes = SoundDecoder_DecodeAll(decoder);
@@ -230,7 +230,7 @@ void* _GetSoundBankData(uio_Stream* fp, uqm::DWORD length)
 
 	if (!snd_ct)
 	{
-		return NULL; // no sounds decoded
+		return nullptr; // no sounds decoded
 	}
 
 	Snd = AllocStringTable(snd_ct, 0);
@@ -241,7 +241,7 @@ void* _GetSoundBankData(uio_Stream* fp, uqm::DWORD length)
 			TFB_DestroySoundSample(sndfx[snd_ct]);
 		}
 
-		return NULL;
+		return nullptr;
 	}
 
 	// Populate the STRING_TABLE with ptrs to sample
@@ -278,7 +278,7 @@ bool _ReleaseSoundBankData(void* Snd)
 			if (soundSource[i].sample == sample)
 			{ // Playing this sample. Have to stop it.
 				StopSource(i);
-				soundSource[i].sample = NULL;
+				soundSource[i].sample = nullptr;
 			}
 		}
 
@@ -286,7 +286,7 @@ bool _ReleaseSoundBankData(void* Snd)
 		{
 			SoundDecoder_Free(sample->decoder);
 		}
-		sample->decoder = NULL;
+		sample->decoder = nullptr;
 		TFB_DestroySoundSample(sample);
 		// sptr will be deleted by FreeStringTable() below
 	}

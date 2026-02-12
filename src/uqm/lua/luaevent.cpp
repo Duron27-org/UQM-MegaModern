@@ -35,13 +35,13 @@
 #include "luafuncs/statefuncs.h"
 #include "libs/log.h"
 
-lua_State* luaUqm_eventState = NULL;
+lua_State* luaUqm_eventState = nullptr;
 
 static const luaL_Reg eventLibs[] = {
 	{"event", luaUqm_event_open},
 	{"log",	luaUqm_log_open  },
 	{"state", luaUqm_state_open},
-	{NULL,	   NULL			   }
+	{nullptr,	   nullptr			   }
 };
 
 // Not reentrant.
@@ -51,7 +51,7 @@ bool luaUqm_event_init(const luaUqm_custom_Function* customFuncs,
 	char* scriptFileName;
 	bool loadOk;
 
-	assert(luaUqm_eventState == NULL);
+	assert(luaUqm_eventState == nullptr);
 
 #ifdef EVENT_DEBUG
 	log_add(log_Debug, "[script] Calling luaUqm_event_init()");
@@ -67,7 +67,7 @@ bool luaUqm_event_init(const luaUqm_custom_Function* customFuncs,
 
 	// Get the name of the script.
 	scriptFileName = LoadScriptInstance(scriptRes);
-	if (scriptFileName == NULL)
+	if (scriptFileName == nullptr)
 	{
 		return false;
 	}
@@ -87,18 +87,18 @@ bool luaUqm_event_init(const luaUqm_custom_Function* customFuncs,
 
 void luaUqm_event_uninit(void)
 {
-	assert(luaUqm_eventState != NULL);
+	assert(luaUqm_eventState != nullptr);
 
 #ifdef EVENT_DEBUG
 	log_add(log_Debug, "[script] Calling luaUqm_event_uninit()");
 #endif
 
-	luaUqm_eventState = NULL;
+	luaUqm_eventState = nullptr;
 }
 
 void luaUqm_event_callEvent(const char* eventIdStr)
 {
-	assert(luaUqm_eventState != NULL);
+	assert(luaUqm_eventState != nullptr);
 
 #ifdef EVENT_DEBUG
 	log_add(log_Debug, "[script] Calling luaUqm_event_callEvent(\"%s\")",

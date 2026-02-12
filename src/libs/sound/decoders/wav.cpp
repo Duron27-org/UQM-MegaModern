@@ -106,7 +106,7 @@ typedef struct tfb_wavesounddecoder
 
 } TFB_WaveSoundDecoder;
 
-static const TFB_DecoderFormats* wava_formats = NULL;
+static const TFB_DecoderFormats* wava_formats = nullptr;
 
 
 static const char*
@@ -339,7 +339,7 @@ wava_Close(THIS_PTR)
 	if (wava->fp)
 	{
 		uio_fclose(wava->fp);
-		wava->fp = NULL;
+		wava->fp = nullptr;
 	}
 }
 

@@ -106,7 +106,7 @@ getSupportShipIcon(ROSTER_STATE* rosterState)
 	HSHIPFRAG hShipFrag;
 	SHIP_FRAGMENT* ShipFragPtr;
 
-	rosterState->curShipFrame = NULL;
+	rosterState->curShipFrame = nullptr;
 	ShipFragPtr = LockSupportShip(rosterState, &hShipFrag);
 	if (!ShipFragPtr)
 	{
@@ -181,7 +181,7 @@ LockSupportShip(ROSTER_STATE* rosterState, HSHIPFRAG* phFrag)
 		UnlockShipFrag(&GLOBAL(built_ship_q), hStarShip);
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 static void
@@ -299,7 +299,7 @@ DoModifyRoster(MENU_STATE* pMS)
 		rosterState->modifyingCrew ^= true;
 		if (!rosterState->modifyingCrew)
 		{
-			SetFlashRect(NULL, false);
+			SetFlashRect(nullptr, false);
 			SetMenuSounds(MENU_SOUND_ARROWS | MENU_SOUND_PAGE, MENU_SOUND_SELECT);
 		}
 		else
@@ -544,7 +544,7 @@ bool RosterMenu(void)
 		drawSupportShip(&RosterState, false, false);
 	}
 
-	DrawStatusMessage(NULL);
+	DrawStatusMessage(nullptr);
 
 	return true;
 }

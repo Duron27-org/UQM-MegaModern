@@ -35,7 +35,7 @@ LoadDisplayPixmap(const RECT* area, FRAME frame)
 								area->extent.width, area->extent.height, 1);
 		if (!buffer)
 		{
-			return NULL;
+			return nullptr;
 		}
 
 		index = 0;

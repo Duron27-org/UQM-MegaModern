@@ -81,7 +81,7 @@ static const luaL_Reg commFuncs[] = {
 	{"getConstellation",	 luaUqm_comm_getConstellation },
 	{"getColor",			 luaUqm_comm_getColor		 },
 	{"swapIfSeeded",		 luaUqm_comm_swapIfSeeded	 },
-	{NULL,				NULL						 },
+	{nullptr,				nullptr						 },
 };
 
 static const luaUqm_EnumValue segueEnum[] = {
@@ -89,7 +89,7 @@ static const luaUqm_EnumValue segueEnum[] = {
 	{/* .name = */ "hostile", /* .value = */ Segue_hostile},
 	{/* .name = */ "victory", /* .value = */ Segue_victory},
 	{/* .name = */ "defeat",	 /* .value = */ Segue_defeat },
-	{/* .name = */ NULL,		 /* .value = */ 0			 },
+	{/* .name = */ nullptr,		 /* .value = */ 0			 },
 };
 
 int luaUqm_comm_open(lua_State* luaState)
@@ -137,7 +137,7 @@ static void
 pushPhraseId(lua_State* luaState, RESPONSE_REF response)
 {
 	const char* phraseIdStr = phraseIdNumToStr(response);
-	if (phraseIdStr != NULL)
+	if (phraseIdStr != nullptr)
 	{
 		lua_pushstring(luaState, phraseIdStr);
 	}
@@ -291,7 +291,7 @@ luaUqm_comm_doNpcPhrase(lua_State* luaState)
 	}
 	else
 	{
-		callback = NULL;
+		callback = nullptr;
 	}
 
 	NPCPhrase_cb(phraseId, callback);
@@ -400,7 +400,7 @@ static int
 luaUqm_comm_setCustomBaseline(lua_State* luaState)
 {
 	static const char* const textAlign[] =
-		{"ALIGN_LEFT", "ALIGN_CENTER", "ALIGN_RIGHT", NULL};
+		{"ALIGN_LEFT", "ALIGN_CENTER", "ALIGN_RIGHT", nullptr};
 	uqm::COUNT lineNumber = luaL_checkint(luaState, 1);
 	COORD baselineX = luaL_checkint(luaState, 2);
 	COORD baselineY = luaL_checkint(luaState, 3);

@@ -50,8 +50,8 @@
 #include <stdlib.h>
 #endif
 
-#ifndef NULL
-#define NULL 0
+#ifndef nullptr
+#define nullptr 0
 #endif
 
 int getopt_long(int argc, const char* const* argv, const char* options, const struct option* long_options, int* opt_index)

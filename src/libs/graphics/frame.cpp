@@ -50,7 +50,7 @@ typedef struct
 } INTERNAL_PRIMITIVE;
 
 
-// pValidRect or origin may be NULL
+// pValidRect or origin may be nullptr
 bool GetContextValidRect(RECT* pValidRect, POINT* origin)
 {
 	RECT tempRect;
@@ -182,7 +182,7 @@ void DrawBatch(PRIMITIVE* lpBasePrim, PRIM_LINKS PrimLinks,
 								  mode, origin, chooseIfHd(1, 3));
 					break;
 				case TEXT_PRIM:
-					if (!TextRect(&lpWorkPrim->Object.Text, &ClipRect, NULL))
+					if (!TextRect(&lpWorkPrim->Object.Text, &ClipRect, nullptr))
 					{
 						continue;
 					}
@@ -215,7 +215,7 @@ void ClearDrawable(void)
 {
 	RECT ValidRect;
 
-	if (GraphicsSystemActive() && GetContextValidRect(&ValidRect, NULL))
+	if (GraphicsSystemActive() && GetContextValidRect(&ValidRect, nullptr))
 	{
 		ClearBackGround(&ValidRect);
 	}
@@ -241,7 +241,7 @@ void DrawPoint(POINT* lpPoint)
 {
 	POINT origin;
 
-	if (GraphicsSystemActive() && GetContextValidRect(NULL, &origin))
+	if (GraphicsSystemActive() && GetContextValidRect(nullptr, &origin))
 	{
 		Color color = GetPrimColor(&_locPrim);
 		DrawMode mode = _get_context_draw_mode();
@@ -259,7 +259,7 @@ void DrawRectangle(RECT* lpRect, bool scaled)
 {
 	POINT origin;
 
-	if (GraphicsSystemActive() && GetContextValidRect(NULL, &origin))
+	if (GraphicsSystemActive() && GetContextValidRect(nullptr, &origin))
 	{
 		Color color = GetPrimColor(&_locPrim);
 		DrawMode mode = _get_context_draw_mode();
@@ -280,7 +280,7 @@ void DrawFilledRectangle(RECT* lpRect)
 {
 	POINT origin;
 
-	if (GraphicsSystemActive() && GetContextValidRect(NULL, &origin))
+	if (GraphicsSystemActive() && GetContextValidRect(nullptr, &origin))
 	{
 		Color color = GetPrimColor(&_locPrim);
 		DrawMode mode = _get_context_draw_mode();
@@ -301,7 +301,7 @@ void DrawLine(LINE* lpLine, uqm::BYTE thickness)
 {
 	POINT origin;
 
-	if (GraphicsSystemActive() && GetContextValidRect(NULL, &origin))
+	if (GraphicsSystemActive() && GetContextValidRect(nullptr, &origin))
 	{
 		Color color = GetPrimColor(&_locPrim);
 		DrawMode mode = _get_context_draw_mode();
@@ -322,7 +322,7 @@ void DrawStamp(STAMP* stmp)
 {
 	POINT origin;
 
-	if (GraphicsSystemActive() && GetContextValidRect(NULL, &origin))
+	if (GraphicsSystemActive() && GetContextValidRect(nullptr, &origin))
 	{
 		DrawMode mode = _get_context_draw_mode();
 		TFB_Prim_Stamp(stmp, mode, origin, false);
@@ -333,7 +333,7 @@ void DrawFilledStamp(STAMP* stmp)
 {
 	POINT origin;
 
-	if (GraphicsSystemActive() && GetContextValidRect(NULL, &origin))
+	if (GraphicsSystemActive() && GetContextValidRect(nullptr, &origin))
 	{
 		Color color = GetPrimColor(&_locPrim);
 		DrawMode mode = _get_context_draw_mode();
@@ -345,13 +345,13 @@ void DrawFilledStamp(STAMP* stmp)
 // until base frame is unloaded from memory.
 // Layer frame should be the same size or larger that base frame.
 // Works with paletted but only with REPLACE mode (doesn't alter the palette).
-// If layer frame is NULL and color pointer is not NULL - blend will be
+// If layer frame is nullptr and color pointer is not nullptr - blend will be
 // applied to every pixel equally with alpha = 255
 void ApplyMask(FRAME layer, FRAME base, DrawMode mode, Color* fill)
 {
 	POINT origin;
 
-	if (GraphicsSystemActive() && GetContextValidRect(NULL, &origin))
+	if (GraphicsSystemActive() && GetContextValidRect(nullptr, &origin))
 	{
 		TFB_Prim_MaskFrame(layer, base, mode, fill);
 	}

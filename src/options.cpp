@@ -184,7 +184,7 @@ static void mountBaseZip(uio_DirHandle* dirHandle, const char* mountPoint,
 
 // Looks for a file 'file' in all 'numLocs' locations from 'locs'.
 // returns the first element from locs where 'file' is found.
-// If there is no matching location, NULL will be returned and
+// If there is no matching location, nullptr will be returned and
 // errno will be set to 'ENOENT'.
 // Entries from 'locs' that together with 'file' are longer than
 // PATH_MAX will be ignored, except for a warning given to stderr.
@@ -225,11 +225,11 @@ findFileInDirs(const char* locs[], int numLocs, const char* file)
 
 	// No matching location was found.
 	errno = ENOENT;
-	return NULL;
+	return nullptr;
 }
 
 // contentDirName is an explicitely specified location for the content,
-// or NULL if none was explicitely specified.
+// or nullptr if none was explicitely specified.
 // execFile is the path to the uqm executable, as acquired through
 // main()'s argv[0].
 void prepareContentDir(uqgsl::czstring contentDirName, uqgsl::czstring addonDirName, uqgsl::czstring execFile)
@@ -261,7 +261,7 @@ void prepareContentDir(uqgsl::czstring contentDirName, uqgsl::czstring addonDirN
 		/* On OSX, if the content can't be found in any of the static
 		 * locations, attempt to look inside the application bundle,
 		 * by looking relative to the location of the uqm executable. */
-		if (loc == NULL)
+		if (loc == nullptr)
 		{
 			char* tempDir = (char*)HMalloc(PATH_MAX);
 			char* execFileDup;
@@ -283,7 +283,7 @@ void prepareContentDir(uqgsl::czstring contentDirName, uqgsl::czstring addonDirN
 		// Only use the explicitely supplied content dir.
 		loc = findFileInDirs(&contentDirName, 1, testFile);
 	}
-	if (loc == NULL)
+	if (loc == nullptr)
 	{
 		log_add(log_Fatal, "Fatal error: Could not find content.");
 		exit(EXIT_FAILURE);
@@ -326,14 +326,14 @@ void prepareContentDir(uqgsl::czstring contentDirName, uqgsl::czstring addonDirN
 void prepareConfigDir(const char* configDirName)
 {
 	char buf[PATH_MAX];
-	static uio_AutoMount* autoMount[] = {NULL};
+	static uio_AutoMount* autoMount[] = {nullptr};
 	uio_MountHandle* contentHandle;
 
-	if (configDirName == NULL)
+	if (configDirName == nullptr)
 	{
 		configDirName = getenv("UQM_CONFIG_DIR");
 
-		if (configDirName == NULL)
+		if (configDirName == nullptr)
 		{
 			configDirName = CONFIGDIR;
 		}
@@ -362,9 +362,9 @@ void prepareConfigDir(const char* configDirName)
 	}
 
 	contentHandle = uio_mountDir(repository, "/",
-								 uio_FSTYPE_STDIO, NULL, NULL, configDirName, autoMount,
-								 uio_MOUNT_TOP, NULL);
-	if (contentHandle == NULL)
+								 uio_FSTYPE_STDIO, nullptr, nullptr, configDirName, autoMount,
+								 uio_MOUNT_TOP, nullptr);
+	if (contentHandle == nullptr)
 	{
 		log_add(log_Fatal, "Fatal error: Could not mount config dir: %s",
 				strerror(errno));
@@ -372,7 +372,7 @@ void prepareConfigDir(const char* configDirName)
 	}
 
 	configDir = uio_openDir(repository, "/", 0);
-	if (configDir == NULL)
+	if (configDir == nullptr)
 	{
 		log_add(log_Fatal, "Fatal error: Could not open config dir: %s",
 				strerror(errno));
@@ -386,7 +386,7 @@ void prepareSaveDir(void)
 	const char* saveDirName;
 
 	saveDirName = getenv("UQM_SAVE_DIR");
-	if (saveDirName == NULL)
+	if (saveDirName == nullptr)
 	{
 		saveDirName = SAVEDIR;
 	}
@@ -413,7 +413,7 @@ void prepareSaveDir(void)
 	saveDir = uio_openDirRelative(configDir, "save", 0);
 	// TODO: this doesn't work if the save dir is not
 	//       "save" in the config dir.
-	if (saveDir == NULL)
+	if (saveDir == nullptr)
 	{
 		log_add(log_Fatal, "Fatal error: Could not open save dir: %s",
 				strerror(errno));
@@ -427,7 +427,7 @@ void prepareMeleeDir(void)
 	const char* meleeDirName;
 
 	meleeDirName = getenv("UQM_MELEE_DIR");
-	if (meleeDirName == NULL)
+	if (meleeDirName == nullptr)
 	{
 		meleeDirName = MELEEDIR;
 	}
@@ -452,7 +452,7 @@ void prepareMeleeDir(void)
 	meleeDir = uio_openDirRelative(configDir, "teams", 0);
 	// TODO: this doesn't work if the save dir is not
 	//       "teams" in the config dir.
-	if (meleeDir == NULL)
+	if (meleeDir == nullptr)
 	{
 		log_add(log_Fatal, "Fatal error: Could not open melee teams dir: %s",
 				strerror(errno));
@@ -466,7 +466,7 @@ void prepareScrShotDir(void)
 	const char* shotDirName;
 
 	shotDirName = getenv("UQM_SCR_SHOT_DIR");
-	if (shotDirName == NULL)
+	if (shotDirName == nullptr)
 	{
 		shotDirName = SCRSHOTDIR;
 	}
@@ -491,7 +491,7 @@ void prepareScrShotDir(void)
 	scrShotDir = uio_openDirRelative(configDir, "screenshots", 0);
 	// TODO: this doesn't work if the save dir is not
 	//       "screenshots" in the SCRSHOTDIR macro.
-	if (scrShotDir == NULL)
+	if (scrShotDir == nullptr)
 	{
 		log_add(log_Fatal, "Fatal error: Could not open screenshot dir: %s",
 				strerror(errno));
@@ -503,13 +503,13 @@ static uio_MountHandle*
 mountContentDir(uio_Repository* repository, const char* contentPath)
 {
 	uio_DirHandle* packagesDir;
-	static uio_AutoMount* autoMount[] = {NULL};
+	static uio_AutoMount* autoMount[] = {nullptr};
 	uio_MountHandle* contentMountHandle;
 
 	contentMountHandle = uio_mountDir(repository, "/",
-									  uio_FSTYPE_STDIO, NULL, NULL, contentPath, autoMount,
-									  uio_MOUNT_TOP | uio_MOUNT_RDONLY, NULL);
-	if (contentMountHandle == NULL)
+									  uio_FSTYPE_STDIO, nullptr, nullptr, contentPath, autoMount,
+									  uio_MOUNT_TOP | uio_MOUNT_RDONLY, nullptr);
+	if (contentMountHandle == nullptr)
 	{
 		log_add(log_Fatal, "Fatal error: Could not mount content dir: %s",
 				strerror(errno));
@@ -517,7 +517,7 @@ mountContentDir(uio_Repository* repository, const char* contentPath)
 	}
 
 	contentDir = uio_openDir(repository, "/", 0);
-	if (contentDir == NULL)
+	if (contentDir == nullptr)
 	{
 		log_add(log_Fatal, "Fatal error: Could not open content dir: %s",
 				strerror(errno));
@@ -525,7 +525,7 @@ mountContentDir(uio_Repository* repository, const char* contentPath)
 	}
 
 	packagesDir = uio_openDir(repository, "/packages", 0);
-	if (packagesDir != NULL)
+	if (packagesDir != nullptr)
 	{
 		mountBaseZip(packagesDir, "/", uio_MOUNT_BELOW,
 					 contentMountHandle);
@@ -538,16 +538,16 @@ mountContentDir(uio_Repository* repository, const char* contentPath)
 void mountAddonDir(uio_Repository* repository, uio_MountHandle* contentMountHandle, uqgsl::czstring addonDirName)
 {
 	uio_DirHandle* addonsDir;
-	static uio_AutoMount* autoMount[] = {NULL};
+	static uio_AutoMount* autoMount[] = {nullptr};
 	uio_MountHandle* mountHandle;
 	uio_DirList* availableAddons;
 
 	if (!isEmpty(addonDirName))
 	{
 		mountHandle = uio_mountDir(repository, "addons",
-								   uio_FSTYPE_STDIO, NULL, NULL, addonDirName, autoMount,
-								   uio_MOUNT_TOP | uio_MOUNT_RDONLY, NULL);
-		if (mountHandle == NULL)
+								   uio_FSTYPE_STDIO, nullptr, nullptr, addonDirName, autoMount,
+								   uio_MOUNT_TOP | uio_MOUNT_RDONLY, nullptr);
+		if (mountHandle == nullptr)
 		{
 			log_add(log_Warning, "Warning: Could not mount addon directory: %s"
 								 ";\n\t'--addon' options are ignored.",
@@ -564,7 +564,7 @@ void mountAddonDir(uio_Repository* repository, uio_MountHandle* contentMountHand
 	//     the former is the dir 'addons', the latter a directory
 	//     in that dir.
 	addonsDir = uio_openDirRelative(contentDir, "addons", 0);
-	if (addonsDir == NULL)
+	if (addonsDir == nullptr)
 	{ // No addon dir found.
 		log_add(log_Warning, "Warning: There's no 'addons' "
 							 "directory in the 'content' directory;\n\t'--addon' "
@@ -575,7 +575,7 @@ void mountAddonDir(uio_Repository* repository, uio_MountHandle* contentMountHand
 	mountDirZips(addonsDir, "addons", uio_MOUNT_BELOW, mountHandle);
 
 	availableAddons = uio_getDirList(addonsDir, "", "", match_MATCH_PREFIX);
-	if (availableAddons != NULL)
+	if (availableAddons != nullptr)
 	{
 		int i, count;
 
@@ -588,7 +588,7 @@ void mountAddonDir(uio_Repository* repository, uio_MountHandle* contentMountHand
 			if (availableAddons->names[i][0] == '.' || uio_stat(addonsDir, availableAddons->names[i], &sb) == -1
 				|| !S_ISDIR(sb.st_mode))
 			{ // this dir entry ignored
-				availableAddons->names[i] = NULL;
+				availableAddons->names[i] = nullptr;
 				continue;
 			}
 			++count;
@@ -616,7 +616,7 @@ void mountAddonDir(uio_Repository* repository, uio_MountHandle* contentMountHand
 			snprintf(mountname, sizeof mountname, "addons/%s", addon);
 
 			addonDir = uio_openDirRelative(addonsDir, addon, 0);
-			if (addonDir == NULL)
+			if (addonDir == nullptr)
 			{
 				log_add(log_Warning, "Warning: directory 'addons/%s' "
 									 "not found; addon skipped.",
@@ -650,12 +650,12 @@ static void
 mountDirZips(uio_DirHandle* dirHandle, const char* mountPoint,
 			 int relativeFlags, uio_MountHandle* relativeHandle)
 {
-	static uio_AutoMount* autoMount[] = {NULL};
+	static uio_AutoMount* autoMount[] = {nullptr};
 	uio_DirList* dirList;
 	const char* pattern = "\\.([zZ][iI][pP]|[uU][qQ][mM])$";
 
 	dirList = uio_getDirList(dirHandle, "", pattern, match_MATCH_REGEX);
-	if (dirList != NULL)
+	if (dirList != nullptr)
 	{
 		int i;
 
@@ -665,7 +665,7 @@ mountDirZips(uio_DirHandle* dirHandle, const char* mountPoint,
 							 dirHandle, dirList->names[i], "/", autoMount,
 							 relativeFlags | uio_MOUNT_RDONLY,
 							 relativeHandle)
-				== NULL)
+				== nullptr)
 			{
 				log_add(log_Warning, "Warning: Could not mount '%s': %s.",
 						dirList->names[i], strerror(errno));
@@ -679,13 +679,13 @@ static void
 mountBaseZip(uio_DirHandle* dirHandle, const char* mountPoint,
 			 int relativeFlags, uio_MountHandle* relativeHandle)
 {
-	static uio_AutoMount* autoMount[] = {NULL};
+	static uio_AutoMount* autoMount[] = {nullptr};
 	uio_DirList* dirList;
 	const char* pattern = "\\.([zZ][iI][pP]|[uU][qQ][mM])$";
 	const uqm::DWORD name_hash = crc32b(BASE_CONTENT_NAME);
 
 	dirList = uio_getDirList(dirHandle, "", pattern, match_MATCH_REGEX);
-	if (dirList != NULL)
+	if (dirList != nullptr)
 	{
 		uqm::DWORD names_hash = 0;
 		int i;
@@ -719,7 +719,7 @@ mountBaseZip(uio_DirHandle* dirHandle, const char* mountPoint,
 						 dirHandle, dirList->names[i], "/", autoMount,
 						 relativeFlags | uio_MOUNT_RDONLY,
 						 relativeHandle)
-			== NULL)
+			== nullptr)
 		{
 			log_add(log_Warning, "Warning: Could not mount '%s': %s.",
 					dirList->names[i], strerror(errno));
@@ -736,7 +736,7 @@ int loadIndices(uio_DirHandle* dir)
 	indices = uio_getDirList(dir, "", "\\.[rR][mM][pP]$",
 							 match_MATCH_REGEX);
 
-	if (indices != NULL)
+	if (indices != nullptr)
 	{
 		int i;
 
@@ -744,7 +744,7 @@ int loadIndices(uio_DirHandle* dir)
 		{
 			log_add(log_Debug, "Loading resource index '%s'",
 					indices->names[i]);
-			LoadResourceIndex(dir, indices->names[i], NULL);
+			LoadResourceIndex(dir, indices->names[i], nullptr);
 			numLoaded++;
 		}
 	}
@@ -765,7 +765,7 @@ bool loadAddon(uqgsl::czstring addon)
 	int numLoaded;
 
 	addonsDir = uio_openDirRelative(contentDir, "addons", 0);
-	if (addonsDir == NULL)
+	if (addonsDir == nullptr)
 	{
 		// No addon dir found.
 		log_add(log_Warning, "Warning: There's no 'addons' "
@@ -774,7 +774,7 @@ bool loadAddon(uqgsl::czstring addon)
 		return false;
 	}
 	addonDir = uio_openDirRelative(addonsDir, addon, 0);
-	if (addonDir == NULL)
+	if (addonDir == nullptr)
 	{
 		log_add(log_Warning, "Warning: Addon '%s' not found", c_str(addon));
 		uio_closeDir(addonsDir);
@@ -801,7 +801,7 @@ void prepareShadowAddons(uqstl::span<const std::string> addons)
 	addonsDir = uio_openDirRelative(contentDir, "addons", 0);
 	// If anything fails here, it will fail again later, so
 	// we'll just keep quiet about it for now
-	if (addonsDir == NULL)
+	if (addonsDir == nullptr)
 	{
 		return;
 	}
@@ -817,7 +817,7 @@ void prepareShadowAddons(uqstl::span<const std::string> addons)
 		uio_DirHandle* shadowDir;
 
 		addonDir = uio_openDirRelative(addonsDir, c_str(addon), 0);
-		if (addonDir == NULL)
+		if (addonDir == nullptr)
 		{
 			continue;
 		}
@@ -829,7 +829,7 @@ void prepareShadowAddons(uqstl::span<const std::string> addons)
 			log_add(log_Debug, "Mounting shadow content of '%s' addon", c_str(addon));
 			mountDirZips(shadowDir, "/", uio_MOUNT_ABOVE, contentMountHandle);
 			// Mount non-zipped shadow content
-			if (uio_transplantDir("/", shadowDir, uio_MOUNT_RDONLY | uio_MOUNT_ABOVE, contentMountHandle) == NULL)
+			if (uio_transplantDir("/", shadowDir, uio_MOUNT_RDONLY | uio_MOUNT_ABOVE, contentMountHandle) == nullptr)
 			{
 				log_add(log_Warning, "Warning: Could not mount shadow content"
 									 " of '%s': %s.",

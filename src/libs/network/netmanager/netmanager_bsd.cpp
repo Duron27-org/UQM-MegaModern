@@ -70,15 +70,15 @@ int NetManager_addDesc(NetDescriptor* nd)
 	}
 
 	fd = nd->socket->fd;
-	if (nd->readCallback != NULL)
+	if (nd->readCallback != nullptr)
 	{
 		FD_SET(fd, &readSet);
 	}
-	if (nd->writeCallback != NULL)
+	if (nd->writeCallback != nullptr)
 	{
 		FD_SET(fd, &writeSet);
 	}
-	if (nd->exceptionCallback != NULL)
+	if (nd->exceptionCallback != nullptr)
 	{
 		FD_SET(fd, &exceptionSet);
 	}
@@ -182,7 +182,7 @@ int NetManager_process(uint32* timeoutMs)
 		}
 
 		nd = NDIndex_getNDForSocketFd(i);
-		if (nd == NULL)
+		if (nd == nullptr)
 		{
 			continue;
 		}

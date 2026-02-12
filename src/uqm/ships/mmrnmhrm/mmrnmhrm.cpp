@@ -77,7 +77,7 @@ static RACE_DESC mmrnmhrm_desc =
 		 MMRNMHRM_RACE_STRINGS,
 		 MMRNMHRM_ICON_MASK_PMAP_ANIM,
 		 MMRNMHRM_MICON_MASK_PMAP_ANIM,
-		 NULL, NULL, NULL},
+		 nullptr, nullptr, nullptr},
 		{
 			/* FLEET_STUFF */
 			0, /* Initial sphere of influence radius */
@@ -116,24 +116,24 @@ static RACE_DESC mmrnmhrm_desc =
 			 YWING_SML_MASK_PMAP_ANIM,
 		 },
 		 {MMRNMHRM_CAPTAIN_MASK_PMAP_ANIM,
-		  NULL, NULL, NULL, NULL, NULL,
+		  nullptr, nullptr, nullptr, nullptr, nullptr,
 		  0, 0, 0, 0, 0},
 		 MMRNMHRM_VICTORY_SONG,
 		 MMRNMHRM_SHIP_SOUNDS,
-		 {NULL, NULL, NULL},
-		 {NULL, NULL, NULL},
-		 {NULL, NULL, NULL},
-		 NULL,
-		 NULL},
+		 {nullptr, nullptr, nullptr},
+		 {nullptr, nullptr, nullptr},
+		 {nullptr, nullptr, nullptr},
+		 nullptr,
+		 nullptr},
 		{
 			0,
 			CLOSE_RANGE_WEAPON,
-			NULL,
+			nullptr,
 		 },
-		(UNINIT_FUNC*)NULL,
-		(PREPROCESS_FUNC*)NULL,
-		(POSTPROCESS_FUNC*)NULL,
-		(INIT_WEAPON_FUNC*)NULL,
+		(UNINIT_FUNC*)nullptr,
+		(PREPROCESS_FUNC*)nullptr,
+		(POSTPROCESS_FUNC*)nullptr,
+		(INIT_WEAPON_FUNC*)nullptr,
 		0,
 		0, /* CodeRef */
 };
@@ -164,7 +164,7 @@ SetCustomShipData(RACE_DESC* pRaceDesc, const CustomShipData_t* data)
 	if (pRaceDesc->data) // Out with the old
 	{
 		HFree(pRaceDesc->data);
-		pRaceDesc->data = NULL;
+		pRaceDesc->data = nullptr;
 	}
 
 	if (data) // In with the new
@@ -209,7 +209,7 @@ mmrnmhrm_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 	bool CanTransform;
 	EVALUATE_DESC* lpEvalDesc;
 	STARSHIP* StarShipPtr;
-	STARSHIP* EnemyStarShipPtr = NULL;
+	STARSHIP* EnemyStarShipPtr = nullptr;
 
 	GetElementStarShip(ShipPtr, &StarShipPtr);
 	CanTransform = (bool)(StarShipPtr->special_counter == 0
@@ -513,7 +513,7 @@ mmrnmhrm_preprocess(ELEMENT* ElementPtr)
 static void
 uninit_mmrnmhrm(RACE_DESC* pRaceDesc)
 {
-	SetCustomShipData(pRaceDesc, NULL);
+	SetCustomShipData(pRaceDesc, nullptr);
 }
 
 RACE_DESC*

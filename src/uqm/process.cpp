@@ -1168,7 +1168,7 @@ void RedrawQueue(bool clear)
 	}
 	else
 	{ // sfx queue needs to be flushed when aborting
-		ProcessSound((SOUND)~0, NULL);
+		ProcessSound((SOUND)~0, nullptr);
 		FlushSounds();
 	}
 
@@ -1213,7 +1213,7 @@ void RemoveElement(HLINK hLink)
 		ELEMENT* ElementPtr;
 
 		LockElement(hLink, &ElementPtr);
-		if (ElementPtr != NULL)
+		if (ElementPtr != nullptr)
 		{
 			RemoveSoundsForObject(ElementPtr);
 		}

@@ -144,7 +144,7 @@ Credits_RenderTextFrame(CONTEXT TempContext, int* istr, int dir,
 	CONTEXT OldContext;
 	FRAME OldFrame;
 	TEXT TextLines[MAX_TEXT_LINES];
-	char* pStr = NULL;
+	char* pStr = nullptr;
 	int size;
 	char salign[32];
 	char* scol;
@@ -260,12 +260,12 @@ Credits_RenderTextFrame(CONTEXT TempContext, int* istr, int dir,
 	SetContextFont(fdef->font);
 	GetContextFontLeading(&leading);
 	// get left/right margin
-	TextRect(&t, &r, NULL);
+	TextRect(&t, &r, nullptr);
 
 	// parse text column alignment
 	for (i = 0, scol = strtok(salign, ",");
 		 scol && i < MAX_TEXT_COLS;
-		 ++i, scol = strtok(NULL, ","))
+		 ++i, scol = strtok(nullptr, ","))
 	{
 		char c;
 		int x;
@@ -437,20 +437,20 @@ static void
 freeCreditTextFrame(CreditTextFrame* tf)
 {
 	DestroyDrawable(ReleaseDrawable(tf->frame));
-	tf->frame = NULL;
+	tf->frame = nullptr;
 }
 
 static void
 UninitCredits(void)
 {
 	DestroyContext(DrawContext);
-	DrawContext = NULL;
+	DrawContext = nullptr;
 	DestroyContext(LocalContext);
-	LocalContext = NULL;
+	LocalContext = nullptr;
 
 	// free remaining frames
 	DestroyDrawable(ReleaseDrawable(CreditsFrame));
-	CreditsFrame = NULL;
+	CreditsFrame = nullptr;
 	for (; firstFrame != lastFrame; firstFrame = frameIndex(firstFrame + 1))
 	{
 		freeCreditTextFrame(&textFrames[firstFrame]);
@@ -665,16 +665,16 @@ FreeCredits(void)
 	FONT_SIZE_DEF* fdef;
 
 	DestroyStringTable(ReleaseStringTable(CreditsTab));
-	CreditsTab = NULL;
+	CreditsTab = nullptr;
 
 	DestroyDrawable(ReleaseDrawable(CreditsBack));
-	CreditsBack = NULL;
+	CreditsBack = nullptr;
 
 	// free fonts
 	for (fdef = CreditsFont; fdef->size; ++fdef)
 	{
 		DestroyFont(fdef->font);
-		fdef->font = NULL;
+		fdef->font = nullptr;
 	}
 }
 
@@ -819,7 +819,7 @@ void Credits(bool WithOuttakes)
 	hMusic = LoadMusic(CREDITS_MUSIC);
 
 	SetContext(ScreenContext);
-	SetContextClipRect(NULL);
+	SetContextClipRect(nullptr);
 	GetContextClipRect(&screenRect);
 	SetContextBackGroundColor(BLACK_COLOR);
 	ClearDrawable();
@@ -868,7 +868,7 @@ void Credits(bool WithOuttakes)
 		DoInput(&cis, true);
 	}
 
-	SetInputCallback(NULL);
+	SetInputCallback(nullptr);
 	FadeMusic(0, ONE_SECOND / 2);
 	UninitCredits();
 

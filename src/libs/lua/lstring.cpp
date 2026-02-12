@@ -76,14 +76,14 @@ void luaS_resize(lua_State* L, int newsize)
 		luaM_reallocvector(L, tb->hash, tb->size, newsize, GCObject*);
 		for (i = tb->size; i < newsize; i++)
 		{
-			tb->hash[i] = NULL;
+			tb->hash[i] = nullptr;
 		}
 	}
 	/* rehash */
 	for (i = 0; i < tb->size; i++)
 	{
 		GCObject* p = tb->hash[i];
-		tb->hash[i] = NULL;
+		tb->hash[i] = nullptr;
 		while (p)
 		{													 /* for each node in the list */
 			GCObject* next = gch(p)->next;					 /* save next */
@@ -97,7 +97,7 @@ void luaS_resize(lua_State* L, int newsize)
 	if (newsize < tb->size)
 	{
 		/* shrinking slice must be empty */
-		lua_assert(tb->hash[newsize] == NULL && tb->hash[tb->size - 1] == NULL);
+		lua_assert(tb->hash[newsize] == nullptr && tb->hash[tb->size - 1] == nullptr);
 		luaM_reallocvector(L, tb->hash, tb->size, newsize, GCObject*);
 	}
 	tb->size = newsize;
@@ -152,7 +152,7 @@ static TString* internshrstr(lua_State* L, const char* str, size_t l)
 	global_State* g = G(L);
 	unsigned int h = luaS_hash(str, l, g->seed);
 	for (o = g->strt.hash[lmod(h, g->strt.size)];
-		 o != NULL;
+		 o != nullptr;
 		 o = gch(o)->next)
 	{
 		TString* ts = rawgco2ts(o);
@@ -184,7 +184,7 @@ TString* luaS_newlstr(lua_State* L, const char* str, size_t l)
 		{
 			luaM_toobig(L);
 		}
-		return createstrobj(L, str, l, LUA_TLNGSTR, G(L)->seed, NULL);
+		return createstrobj(L, str, l, LUA_TLNGSTR, G(L)->seed, nullptr);
 	}
 }
 
@@ -205,9 +205,9 @@ Udata* luaS_newudata(lua_State* L, size_t s, Table* e)
 	{
 		luaM_toobig(L);
 	}
-	u = &luaC_newobj(L, LUA_TUSERDATA, sizeof(Udata) + s, NULL, 0)->u;
+	u = &luaC_newobj(L, LUA_TUSERDATA, sizeof(Udata) + s, nullptr, 0)->u;
 	u->uv.len = s;
-	u->uv.metatable = NULL;
+	u->uv.metatable = nullptr;
 	u->uv.env = e;
 	return u;
 }

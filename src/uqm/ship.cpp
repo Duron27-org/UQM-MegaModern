@@ -212,7 +212,7 @@ void ship_preprocess(ELEMENT* ElementPtr)
 		{
 			CONTEXT OldContext;
 
-			InitShipStatus(&RDPtr->ship_info, StarShipPtr, NULL, false);
+			InitShipStatus(&RDPtr->ship_info, StarShipPtr, nullptr, false);
 			OldContext = SetContext(StatusContext);
 			DrawCaptainsWindow(StarShipPtr);
 
@@ -563,7 +563,7 @@ spawn_ship(STARSHIP* StarShipPtr)
 
 					for (i = 0; i < numFrames; i++)
 					{
-						ApplyMask(NULL, SetAbsFrameIndex(RDPtr->ship_data.ship[0], i), mode, &c);
+						ApplyMask(nullptr, SetAbsFrameIndex(RDPtr->ship_data.ship[0], i), mode, &c);
 					}
 				}
 			}
@@ -668,7 +668,7 @@ bool GetInitialStarShips(void)
 
 		for (i = NUM_PLAYERS; i > 0; --i)
 		{
-			if (!GetNextStarShip(NULL, i - 1))
+			if (!GetNextStarShip(nullptr, i - 1))
 			{
 				return false;
 			}

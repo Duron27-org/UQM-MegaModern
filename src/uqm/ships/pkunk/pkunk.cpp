@@ -69,7 +69,7 @@ static RACE_DESC pkunk_desc =
 		 PKUNK_RACE_STRINGS,
 		 PKUNK_ICON_MASK_PMAP_ANIM,
 		 PKUNK_MICON_MASK_PMAP_ANIM,
-		 NULL, NULL, NULL},
+		 nullptr, nullptr, nullptr},
 		{
 			/* FLEET_STUFF */
 			666 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
@@ -108,24 +108,24 @@ static RACE_DESC pkunk_desc =
 			 NULL_RESOURCE,
 		 },
 		 {PKUNK_CAPTAIN_MASK_PMAP_ANIM,
-		  NULL, NULL, NULL, NULL, NULL,
+		  nullptr, nullptr, nullptr, nullptr, nullptr,
 		  0, 0, 0, 0, 0},
 		 PKUNK_VICTORY_SONG,
 		 PKUNK_SHIP_SOUNDS,
-		 {NULL, NULL, NULL},
-		 {NULL, NULL, NULL},
-		 {NULL, NULL, NULL},
-		 NULL,
-		 NULL},
+		 {nullptr, nullptr, nullptr},
+		 {nullptr, nullptr, nullptr},
+		 {nullptr, nullptr, nullptr},
+		 nullptr,
+		 nullptr},
 		{
 			0,
 			CLOSE_RANGE_WEAPON + 1,
-			NULL,
+			nullptr,
 		 },
-		(UNINIT_FUNC*)NULL,
-		(PREPROCESS_FUNC*)NULL,
-		(POSTPROCESS_FUNC*)NULL,
-		(INIT_WEAPON_FUNC*)NULL,
+		(UNINIT_FUNC*)nullptr,
+		(PREPROCESS_FUNC*)nullptr,
+		(POSTPROCESS_FUNC*)nullptr,
+		(INIT_WEAPON_FUNC*)nullptr,
 		0,
 		0, /* CodeRef */
 };
@@ -163,7 +163,7 @@ SetCustomShipData(RACE_DESC* pRaceDesc, const CustomShipData_t* data)
 	if (pRaceDesc->data) // Out with the old
 	{
 		HFree(pRaceDesc->data);
-		pRaceDesc->data = NULL;
+		pRaceDesc->data = nullptr;
 	}
 
 	if (data) // In with the new
@@ -210,7 +210,7 @@ initialize_bug_missile(ELEMENT* ShipPtr, HELEMENT MissileArray[])
 	MissileBlock.hit_points = MISSILE_HITS;
 	MissileBlock.damage = MISSILE_DAMAGE;
 	MissileBlock.life = MISSILE_LIFE;
-	MissileBlock.preprocess_func = NULL;
+	MissileBlock.preprocess_func = nullptr;
 	MissileBlock.blast_offs = MISSILE_OFFSET;
 
 	for (i = 0; i < 3; ++i)
@@ -432,7 +432,7 @@ phoenix_transition(ELEMENT* ElementPtr)
 
 	if (!(ShipImagePtr->state_flags & NONSOLID))
 	{
-		ElementPtr->preprocess_func = NULL;
+		ElementPtr->preprocess_func = nullptr;
 	}
 	else if ((hShipImage = AllocElement()))
 	{
@@ -460,7 +460,7 @@ phoenix_transition(ELEMENT* ElementPtr)
 				COSINE(angle, TRANSITION_SPEED);
 			ShipImagePtr->current.location.y +=
 				SINE(angle, TRANSITION_SPEED);
-			ElementPtr->preprocess_func = NULL;
+			ElementPtr->preprocess_func = nullptr;
 		}
 		else
 		{
@@ -637,7 +637,7 @@ pkunk_postprocess(ELEMENT* ElementPtr)
 static void
 uninit_pkunk(RACE_DESC* pRaceDesc)
 {
-	SetCustomShipData(pRaceDesc, NULL);
+	SetCustomShipData(pRaceDesc, nullptr);
 	if (FwiffoSounds)
 	{
 		DestroySound(ReleaseSound(FwiffoSounds));

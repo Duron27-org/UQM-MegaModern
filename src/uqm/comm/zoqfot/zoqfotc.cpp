@@ -44,9 +44,9 @@
 static LOCDATA zoqfot_desc =
 	{
 		ZOQFOTPIK_CONVERSATION, /* AlienConv */
-		NULL, /* init_encounter_func */
-		NULL, /* post_encounter_func */
-		NULL, /* uninit_encounter_func */
+		nullptr, /* init_encounter_func */
+		nullptr, /* post_encounter_func */
+		nullptr, /* uninit_encounter_func */
 		ZOQFOTPIK_PMAP_ANIM, /* AlienFrame */
 		ZOQFOTPIK_FONT, /* AlienFont */
 		UNDEFINED_COLOR_INIT, /* AlienTextFColor */
@@ -123,13 +123,13 @@ static LOCDATA zoqfot_desc =
 								0, /* RestartRate */
 			0, /* BlockMask */
 		},
-		NULL, /* AlienNumberSpeech - none */
+		nullptr, /* AlienNumberSpeech - none */
 		/* Filler for loaded resources */
-		NULL,
-		NULL,
-		NULL,
-		NULL,
-		NULL,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
 };
 
 enum
@@ -999,7 +999,7 @@ init_zoqfot_comm(void)
 	zoqfot_desc.post_encounter_func = post_zoqfot_enc;
 	zoqfot_desc.uninit_encounter_func = uninit_zoqfot;
 
-	luaUqm_comm_init(NULL, NULL_RESOURCE);
+	luaUqm_comm_init(nullptr, NULL_RESOURCE);
 	// Initialise Lua for string interpolation. This will be
 	// generalised in the future.
 

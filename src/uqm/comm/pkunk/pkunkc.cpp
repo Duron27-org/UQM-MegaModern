@@ -27,9 +27,9 @@
 static LOCDATA pkunk_desc =
 	{
 		PKUNK_CONVERSATION, /* AlienConv */
-		NULL, /* init_encounter_func */
-		NULL, /* post_encounter_func */
-		NULL, /* uninit_encounter_func */
+		nullptr, /* init_encounter_func */
+		nullptr, /* post_encounter_func */
+		nullptr, /* uninit_encounter_func */
 		PKUNK_PMAP_ANIM, /* AlienFrame */
 		PKUNK_FONT, /* AlienFont */
 		WHITE_COLOR_INIT, /* AlienTextFColor */
@@ -106,13 +106,13 @@ static LOCDATA pkunk_desc =
 								ONE_SECOND / 2, /* RestartRate */
 			0,				/* BlockMask */
 		},
-		NULL, /* AlienNumberSpeech - none */
+		nullptr, /* AlienNumberSpeech - none */
 		/* Filler for loaded resources */
-		NULL,
-		NULL,
-		NULL,
-		NULL,
-		NULL,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
 };
 
 #define GOOD_REASON_1 (1 << 0)
@@ -1193,7 +1193,7 @@ init_pkunk_comm(void)
 	pkunk_desc.post_encounter_func = post_pkunk_enc;
 	pkunk_desc.uninit_encounter_func = uninit_pkunk;
 
-	luaUqm_comm_init(NULL, NULL_RESOURCE);
+	luaUqm_comm_init(nullptr, NULL_RESOURCE);
 	// Initialise Lua for string interpolation. This will be
 	// generalised in the future.
 

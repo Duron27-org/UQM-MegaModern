@@ -82,7 +82,7 @@ static TString* LoadString(LoadState* S)
 	LoadVar(S, size);
 	if (size == 0)
 	{
-		return NULL;
+		return nullptr;
 	}
 	else
 	{
@@ -139,7 +139,7 @@ static void LoadConstants(LoadState* S, Proto* f)
 	f->sizep = n;
 	for (i = 0; i < n; i++)
 	{
-		f->p[i] = NULL;
+		f->p[i] = nullptr;
 	}
 	for (i = 0; i < n; i++)
 	{
@@ -156,7 +156,7 @@ static void LoadUpvalues(LoadState* S, Proto* f)
 	f->sizeupvalues = n;
 	for (i = 0; i < n; i++)
 	{
-		f->upvalues[i].name = NULL;
+		f->upvalues[i].name = nullptr;
 	}
 	for (i = 0; i < n; i++)
 	{
@@ -178,7 +178,7 @@ static void LoadDebug(LoadState* S, Proto* f)
 	f->sizelocvars = n;
 	for (i = 0; i < n; i++)
 	{
-		f->locvars[i].varname = NULL;
+		f->locvars[i].varname = nullptr;
 	}
 	for (i = 0; i < n; i++)
 	{

@@ -38,7 +38,7 @@
 #include <stdlib.h>
 #include "uqmdebug.h"
 
-#include <time.h> //required to use 'srand(time(NULL))'
+#include <time.h> //required to use 'srand(time(nullptr))'
 
 #define OOPS_ALL 0 // Set a plot ID to stamp it to all empty starsystems
 static void CreateRadar(void);
@@ -82,7 +82,7 @@ totalBitsForGameState(const GameStateBitMap* bm, int rev)
 
 	for (bmPtr = bm; bmPtr; bmPtr++)
 	{
-		if (bmPtr->name != NULL)
+		if (bmPtr->name != nullptr)
 		{
 			totalBits += bmPtr->numBits;
 		}
@@ -109,7 +109,7 @@ int getGameStateRevByBytes(const GameStateBitMap* bm, int bytes)
 
 	for (bmPtr = bm; bmPtr; bmPtr++)
 	{
-		if (bmPtr->name != NULL)
+		if (bmPtr->name != nullptr)
 		{
 			totalBits += bmPtr->numBits;
 		}
@@ -191,7 +191,7 @@ bool serialiseGameState(const GameStateBitMap* bm, uqm::BYTE** buf,
 
 	// Allocate memory for the serialised data.
 	result = (uqm::BYTE*)HMalloc(totalBytes);
-	if (result == NULL)
+	if (result == nullptr)
 	{
 		return false;
 	}
@@ -199,7 +199,7 @@ bool serialiseGameState(const GameStateBitMap* bm, uqm::BYTE** buf,
 	bufPtr = result;
 	for (bmPtr = bm; bmPtr; bmPtr++)
 	{
-		if (bmPtr->name != NULL)
+		if (bmPtr->name != nullptr)
 		{
 			uqm::DWORD value = getGameStateUint(bmPtr->name);
 			uqm::BYTE numBits = bmPtr->numBits;
@@ -321,7 +321,7 @@ bool deserialiseGameState(const GameStateBitMap* bm,
 
 	for (bmPtr = bm; bmPtr; bmPtr++)
 	{
-		if (bmPtr->name != NULL)
+		if (bmPtr->name != nullptr)
 		{
 			uqm::DWORD value = 0;
 			uqm::BYTE numBits = bmPtr->numBits;
@@ -394,21 +394,21 @@ bool LoadSC2Data(void)
 	{
 		FlagStatFrame = CaptureDrawable(
 			LoadGraphic(FLAGSTAT_MASK_PMAP_ANIM));
-		if (FlagStatFrame == NULL)
+		if (FlagStatFrame == nullptr)
 		{
 			return false;
 		}
 
 		MiscDataFrame = CaptureDrawable(
 			LoadGraphic(MISCDATA_MASK_PMAP_ANIM));
-		if (MiscDataFrame == NULL)
+		if (MiscDataFrame == nullptr)
 		{
 			return false;
 		}
 
 		visitedStarsFrame = CaptureDrawable(
 			LoadGraphic(VISITED_STARS_ANIM));
-		if (visitedStarsFrame == NULL)
+		if (visitedStarsFrame == nullptr)
 		{
 			return false;
 		}
@@ -584,7 +584,7 @@ bool InitGameStructures(void)
 	}
 	if (DIF_HARD && !PrimeSeed && !StarSeed)
 	{
-		srand(time(NULL));
+		srand(time(nullptr));
 		optCustomSeed = (rand() % ((MAX_SEED - MIN_SEED) + MIN_SEED));
 	}
 	GLOBAL_SIS(Seed) = optCustomSeed;
@@ -612,7 +612,7 @@ bool InitGameStructures(void)
 	PlayFrame = CaptureDrawable(LoadGraphic(PLAYMENU_ANIM));
 
 	// Load ships based on current seed settings
-	ReloadMasterShipList(NULL);
+	ReloadMasterShipList(nullptr);
 	LoadFleetInfo();
 
 	InitSISContexts();
@@ -897,7 +897,7 @@ void SeedDEBUG()
 	if (StarGenRNG && myRNG)
 	{
 		RandomContext_Delete(StarGenRNG);
-		StarGenRNG = NULL;
+		StarGenRNG = nullptr;
 	}
 }
 
@@ -936,7 +936,7 @@ bool InitStarseed(bool newgame)
 		{
 			RandomContext_Delete(StarGenRNG);
 		}
-		StarGenRNG = NULL;
+		StarGenRNG = nullptr;
 		return true;
 	}
 	if (g_seedType == SeedType::MRQ)
@@ -969,7 +969,7 @@ bool InitStarseed(bool newgame)
 			{
 				RandomContext_Delete(StarGenRNG);
 			}
-			StarGenRNG = NULL;
+			StarGenRNG = nullptr;
 			return false;
 		}
 		if (!SeedQuasispace(portal_map, plot_map, star_array))
@@ -979,7 +979,7 @@ bool InitStarseed(bool newgame)
 			{
 				RandomContext_Delete(StarGenRNG);
 			}
-			StarGenRNG = NULL;
+			StarGenRNG = nullptr;
 			return false;
 		}
 	}
@@ -1004,7 +1004,7 @@ bool InitStarseed(bool newgame)
 			{
 				RandomContext_Delete(StarGenRNG);
 			}
-			StarGenRNG = NULL;
+			StarGenRNG = nullptr;
 			return false;
 		}
 		if (!SeedQuasispace(portal_map, plot_map, star_array))
@@ -1014,7 +1014,7 @@ bool InitStarseed(bool newgame)
 			{
 				RandomContext_Delete(StarGenRNG);
 			}
-			StarGenRNG = NULL;
+			StarGenRNG = nullptr;
 			return false;
 		}
 	}
@@ -1038,7 +1038,7 @@ bool InitStarseed(bool newgame)
 	{
 		RandomContext_Delete(StarGenRNG);
 	}
-	StarGenRNG = NULL;
+	StarGenRNG = nullptr;
 	return (true);
 }
 
@@ -1070,7 +1070,7 @@ bool
 inInterPlanetary (void)
 {
 	assert (inFullGame ());
-	return (pSolarSysState != NULL);
+	return (pSolarSysState != nullptr);
 }
 
 // Pre: inFullGame()
@@ -1086,8 +1086,8 @@ bool
 inOrbit (void)
 {
 	assert (inFullGame ());
-	return (pSolarSysState != NULL) &&
-			(pSolarSysState->pOrbitalDesc != NULL);
+	return (pSolarSysState != nullptr) &&
+			(pSolarSysState->pOrbitalDesc != nullptr);
 }
 #endif
 
@@ -1141,7 +1141,7 @@ bool inQuasiSpace(void)
 // Basic function for replacing all instances of character "find"
 // with character "replace"
 // Returns the number of replaced characters on success
-// -1 if any input is NULL, and 0 if 'find' isn't found
+// -1 if any input is nullptr, and 0 if 'find' isn't found
 int replaceChar(char* pStr, const char find, const char replace)
 {
 	int count = 0;
@@ -1150,7 +1150,7 @@ int replaceChar(char* pStr, const char find, const char replace)
 
 	if (!pStr || !find || !replace)
 	{
-		return -1; // pStr, find, or replace is NULL
+		return -1; // pStr, find, or replace is nullptr
 	}
 
 	if (utf8StringPos(pStr, find) == -1)

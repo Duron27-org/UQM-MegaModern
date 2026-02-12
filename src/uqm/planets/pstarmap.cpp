@@ -410,7 +410,7 @@ GetSphereRect(FLEET_INFO* FleetPtr, RECT* pRect, RECT* pRepairRect)
 		locString = SetAbsStringTableIndex(FleetPtr->race_strings, 1);
 		t.CharCount = GetStringLength(locString);
 		t.pStr = (uqm::CHAR_T*)GetStringAddress(locString);
-		TextRect(&t, pRepairRect, NULL);
+		TextRect(&t, pRepairRect, nullptr);
 
 		if (pRepairRect->corner.x <= 0)
 		{
@@ -1227,7 +1227,7 @@ DrawStarMap(uqm::COUNT race_update, RECT* pClipRect)
 
 	if (transition_pending)
 	{
-		SetTransitionSource(NULL);
+		SetTransitionSource(nullptr);
 	}
 	BatchGraphics();
 
@@ -1424,7 +1424,7 @@ DrawStarMap(uqm::COUNT race_update, RECT* pClipRect)
 						t.pStr = (uqm::CHAR_T*)GetStringAddress(locString);
 					}
 
-					TextRect(&t, &r, NULL);
+					TextRect(&t, &r, nullptr);
 
 					if (index == race_index && race_update & IGNORE_MOVING_SOI)
 					{
@@ -1457,7 +1457,7 @@ DrawStarMap(uqm::COUNT race_update, RECT* pClipRect)
 							 - RES_SCALE(1);
 				t.align = ALIGN_CENTER;
 
-				TextRect(&t, &r, NULL);
+				TextRect(&t, &r, nullptr);
 
 				nameplate[currMax].rect = r;
 				nameplate[currMax].text = t;
@@ -1795,7 +1795,7 @@ DrawStarMap(uqm::COUNT race_update, RECT* pClipRect)
 		LoadIntoExtraScreen(&r);
 		DrawCursor(UNIVERSE_TO_DISPX(cursorLoc.x),
 				   UNIVERSE_TO_DISPY(cursorLoc.y));
-		flashCurrentLocation(NULL, true);
+		flashCurrentLocation(nullptr, true);
 	}
 
 	UnbatchGraphics();
@@ -1847,7 +1847,7 @@ ZoomStarMap(uqm::SIZE dir)
 			++zoomLevel;
 			mapOrigin = cursorLoc;
 
-			DrawStarMap(0, NULL);
+			DrawStarMap(0, nullptr);
 			SleepThread(ONE_SECOND / 8);
 		}
 	}
@@ -1866,7 +1866,7 @@ ZoomStarMap(uqm::SIZE dir)
 			}
 			--zoomLevel;
 
-			DrawStarMap(0, NULL);
+			DrawStarMap(0, nullptr);
 			SleepThread(ONE_SECOND / 8);
 		}
 	}
@@ -1942,7 +1942,7 @@ UpdateCursorLocation(int sx, int sy, const POINT* newpt)
 		|| s.origin.y >= ORIG_SIS_SCREEN_HEIGHT)
 	{
 		mapOrigin = cursorLoc;
-		DrawStarMap(0, NULL);
+		DrawStarMap(0, nullptr);
 
 		s.origin.x = ORIG_UNIVERSE_TO_DISPX(cursorLoc.x);
 		s.origin.y = ORIG_UNIVERSE_TO_DISPY(cursorLoc.y);
@@ -1952,7 +1952,7 @@ UpdateCursorLocation(int sx, int sy, const POINT* newpt)
 		BatchGraphics();
 		EraseCursor(RES_SCALE(pt.x), RES_SCALE(pt.y));
 		DrawCursor(RES_SCALE(s.origin.x), RES_SCALE(s.origin.y));
-		flashCurrentLocation(NULL, true);
+		flashCurrentLocation(nullptr, true);
 		UnbatchGraphics();
 	}
 }
@@ -2256,7 +2256,7 @@ SplitStarName(STAR_SEARCH_STATE* pSS)
 {
 	uqm::CHAR_T* buf = pSS->Buffer;
 	uqm::CHAR_T* next;
-	uqm::CHAR_T* sep = NULL;
+	uqm::CHAR_T* sep = nullptr;
 
 	pSS->Prefix = 0;
 	pSS->PrefixLen = 0;
@@ -2579,7 +2579,7 @@ OnStarNameFrame(TEXTENTRY_STATE* pTES)
 		UpdateFuelRequirement();
 	}
 
-	flashCurrentLocation(NULL, false);
+	flashCurrentLocation(nullptr, false);
 
 	SleepThread(ONE_SECOND / 30);
 
@@ -2659,7 +2659,7 @@ DoStarSearch(MENU_STATE* pMS)
 		POINT coord;
 
 		coord.x = (COORD)(atof(strtok(tes.BaseStr, ":")) * 10);
-		coord.y = (COORD)(atof(strtok(NULL, ":")) * 10);
+		coord.y = (COORD)(atof(strtok(nullptr, ":")) * 10);
 
 		if (coord.x > MAX_X_UNIVERSE || coord.y > MAX_Y_UNIVERSE
 			|| coord.x < 0 || coord.y < 0)
@@ -2858,7 +2858,7 @@ DoMoveCursor(MENU_STATE* pMS)
 			{
 				GLOBAL(autopilot) = cursorLoc;
 			}
-			DrawStarMap(0, NULL);
+			DrawStarMap(0, nullptr);
 		}
 	}
 	else if (PulsedInputState.menu[KEY_MENU_SEARCH]
@@ -2915,7 +2915,7 @@ DoMoveCursor(MENU_STATE* pMS)
 
 			PlayMenuSound(MENU_SOUND_MOVE);
 
-			DrawStarMap(0, NULL);
+			DrawStarMap(0, nullptr);
 			last_buf[0] = '\0';
 			UpdateCursorInfo(last_buf);
 		}
@@ -2932,7 +2932,7 @@ DoMoveCursor(MENU_STATE* pMS)
 		{
 			setStarMarked(starIndex(cursorLoc), "PLYR_MARKER");
 
-			DrawStarMap(0, NULL);
+			DrawStarMap(0, nullptr);
 		}
 		else
 		{
@@ -2952,7 +2952,7 @@ DoMoveCursor(MENU_STATE* pMS)
 				if (isStarMarked(i, "PLYR_MARKER"))
 				{
 					setStarMarked(i, "PLYR_MARKER");
-					DrawStarMap(0, NULL);
+					DrawStarMap(0, nullptr);
 					SleepThread(ONE_SECOND / 8);
 				}
 			}
@@ -3006,7 +3006,7 @@ DoMoveCursor(MENU_STATE* pMS)
 
 		if (sx != 0 || sy != 0)
 		{
-			UpdateCursorLocation(sx, sy, NULL);
+			UpdateCursorLocation(sx, sy, nullptr);
 			UpdateCursorInfo(last_buf);
 			UpdateFuelRequirement();
 			isMove = true;
@@ -3024,7 +3024,7 @@ DoMoveCursor(MENU_STATE* pMS)
 		moveRepeats = 0;
 	}
 
-	flashCurrentLocation(NULL, false);
+	flashCurrentLocation(nullptr, false);
 
 	return !(GLOBAL(CurrentActivity) & CHECK_ABORT);
 }
@@ -3172,7 +3172,7 @@ UpdateMap(void)
 
 				if (!MapDrawn)
 				{
-					DrawStarMap((uqm::COUNT)~0, NULL);
+					DrawStarMap((uqm::COUNT)~0, nullptr);
 					MapDrawn = true;
 				}
 
@@ -3237,7 +3237,7 @@ DoneSphereMove:
 			{
 				if (!MapDrawn)
 				{
-					DrawStarMap((uqm::COUNT)~0, NULL);
+					DrawStarMap((uqm::COUNT)~0, nullptr);
 					MapDrawn = true;
 				}
 
@@ -3551,9 +3551,9 @@ bool StarMap(void)
 	}
 	else
 	{
-		DrawSISMessage(NULL);
+		DrawSISMessage(nullptr);
 	}
-	DrawStatusMessage(NULL);
+	DrawStatusMessage(nullptr);
 
 	if (optSubmenu)
 	{

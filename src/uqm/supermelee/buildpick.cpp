@@ -220,13 +220,13 @@ void DrawTooltip(SHIP_INFO* SIPtr)
 
 	Text.baseline.y += RES_SCALE(2);
 
-	while (ptr != NULL)
+	while (ptr != nullptr)
 	{
 		Text.pStr = ptr;
 		Text.CharCount = (uqm::COUNT)utf8StringCount(ptr);
 		Text.baseline.y += RES_SCALE(9);
 		font_DrawText(&Text);
-		ptr = strtok(NULL, delim);
+		ptr = strtok(nullptr, delim);
 	}
 
 	SetContextForeGroundColor(oldColor);

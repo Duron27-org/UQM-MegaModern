@@ -84,7 +84,7 @@ static inline void uio_MountInfo_free(uio_MountInfo* mountInfo);
 uio_MountTree*
 uio_makeRootMountTree(void)
 {
-	return uio_MountTree_new(NULL, NULL, NULL, NULL, NULL, NULL);
+	return uio_MountTree_new(nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
 }
 
 // Add a MountInfo structure to a MountTree in the place pointed
@@ -99,7 +99,7 @@ uio_mountTreeAddMountInfo(uio_Repository* repository, uio_MountTree* mountTree,
 
 	getFirstPath0Component(path, &start, &end);
 	return uio_mountTreeAddMountInfoRecTree(repository, mountTree, mountInfo,
-											start, end, NULL, location, relative);
+											start, end, nullptr, location, relative);
 }
 
 // recursive helper for uio_mountTreeAddMountInfo
@@ -122,13 +122,13 @@ uio_mountTreeAddMountInfoRecTree(uio_Repository* repository, uio_MountTree* tree
 	}
 
 	// Check if sub trees match the path.
-	for (sub = &tree->subTrees; *sub != NULL; sub = &(*sub)->next)
+	for (sub = &tree->subTrees; *sub != nullptr; sub = &(*sub)->next)
 	{
 		uio_MountTree* resTree;
 
 		resTree = uio_mountTreeAddMountInfoRecTreeSub(repository, sub,
 													  mountInfo, start, end, location, relative);
-		if (resTree != NULL)
+		if (resTree != nullptr)
 		{
 			// handled
 			return resTree;
@@ -144,7 +144,7 @@ uio_mountTreeAddMountInfoRecTree(uio_Repository* repository, uio_MountTree* tree
 // recursive helper for uio_mountTreeAddMountInfo
 // Pre: *start != '\0'
 // returns the MountTree for the location at the end of the path, if
-// that falls within this tree. If not, returns NULL.
+// that falls within this tree. If not, returns nullptr.
 static inline uio_MountTree*
 uio_mountTreeAddMountInfoRecTreeSub(uio_Repository* repository,
 									uio_MountTree** tree, uio_MountInfo* mountInfo,
@@ -158,7 +158,7 @@ uio_mountTreeAddMountInfoRecTreeSub(uio_Repository* repository,
 	if (strncmp(comp->name, start, end - start) != 0 || comp->name[end - start] != '\0')
 	{
 		// first component does not match; this is not the correct subTree
-		return NULL;
+		return nullptr;
 	}
 
 	depth = 1;
@@ -169,7 +169,7 @@ uio_mountTreeAddMountInfoRecTreeSub(uio_Repository* repository,
 		lastComp = comp;
 		comp = comp->next;
 
-		if (comp == NULL)
+		if (comp == nullptr)
 		{
 			break;
 		}
@@ -223,11 +223,11 @@ uio_mountTreeAddMountInfoLocAll(uio_Repository* repository, uio_MountTree* tree,
 	int compCount;
 
 	// Add a new PLoc to this mountTree
-	newPLoc = uio_MountTree_newItem(mountInfo, depth, NULL);
+	newPLoc = uio_MountTree_newItem(mountInfo, depth, nullptr);
 	uio_addMountTreeItem(repository, &tree->pLocs, newPLoc, location, relative);
 
 	// Recurse for subtrees
-	for (subTree = tree->subTrees; subTree != NULL;
+	for (subTree = tree->subTrees; subTree != nullptr;
 		 subTree = subTree->next)
 	{
 		compCount = uio_countPathComps(subTree->comps);
@@ -252,11 +252,11 @@ uio_addMountTreeItem(uio_Repository* repository, uio_MountTreeItem** pLocs,
 			*pLocs = item;
 			break;
 		case uio_MOUNT_BOTTOM:
-			while (*pLocs != NULL)
+			while (*pLocs != nullptr)
 			{
 				pLocs = &(*pLocs)->next;
 			}
-			item->next = NULL;
+			item->next = nullptr;
 			*pLocs = item;
 			break;
 		case uio_MOUNT_ABOVE:
@@ -265,7 +265,7 @@ uio_addMountTreeItem(uio_Repository* repository, uio_MountTreeItem** pLocs,
 				mountInfo = repository->mounts;
 				while (*mountInfo != relative)
 				{
-					assert(*mountInfo != NULL);
+					assert(*mountInfo != nullptr);
 					if ((*pLocs)->mountInfo == *mountInfo)
 					{
 						pLocs = &(*pLocs)->next;
@@ -282,7 +282,7 @@ uio_addMountTreeItem(uio_Repository* repository, uio_MountTreeItem** pLocs,
 				mountInfo = repository->mounts;
 				while (*mountInfo != relative)
 				{
-					assert(*mountInfo != NULL);
+					assert(*mountInfo != nullptr);
 					if ((*pLocs)->mountInfo == *mountInfo)
 					{
 						pLocs = &(*pLocs)->next;
@@ -306,15 +306,15 @@ uio_copyMountTreeItems(uio_MountTreeItem* item, int extraDepth)
 	uio_MountTreeItem* newItem;
 
 	resPtr = &result;
-	while (item != NULL)
+	while (item != nullptr)
 	{
 		newItem = uio_MountTree_newItem(
-			item->mountInfo, item->depth + extraDepth, NULL);
+			item->mountInfo, item->depth + extraDepth, nullptr);
 		*resPtr = newItem;
 		resPtr = &newItem->next;
 		item = item->next;
 	}
-	*resPtr = NULL;
+	*resPtr = nullptr;
 	return result;
 }
 
@@ -335,18 +335,18 @@ uio_mountTreeAddNewSubTree(uio_Repository* repository, uio_MountTree* tree,
 	compList = uio_makePathComps(path, upComp);
 	compCount = uio_countPathComps(compList);
 	lastComp = uio_lastPathComp(compList);
-	item = uio_MountTree_newItem(mountInfo, 0, NULL);
-	item->next = NULL;
+	item = uio_MountTree_newItem(mountInfo, 0, nullptr);
+	item->next = nullptr;
 	items = uio_copyMountTreeItems(tree->pLocs, compCount);
 	uio_addMountTreeItem(repository, &items, item, location,
 						 relative);
 	newTree = uio_MountTree_new(
-		NULL /* subTrees */,
+		nullptr /* subTrees */,
 		items /* pLocs */,
 		tree /* upTree */,
 		compList /* comps */,
 		lastComp /* lastComp */,
-		NULL /* next */);
+		nullptr /* next */);
 	uio_mountTreeAddSub(tree, newTree);
 	return newTree;
 }
@@ -357,7 +357,7 @@ uio_mountTreeAddSub(uio_MountTree* tree, uio_MountTree* sub)
 {
 	uio_MountTree** subPtr;
 
-	for (subPtr = &tree->subTrees; *subPtr != NULL;
+	for (subPtr = &tree->subTrees; *subPtr != nullptr;
 		 subPtr = &(*subPtr)->next)
 	{
 		// Nothing to do here.
@@ -383,10 +383,10 @@ uio_splitMountTree(uio_MountTree** tree, uio_PathComp* lastComp, int depth)
 		(*tree)->upTree /* upTree */,
 		(*tree)->comps /* comps */,
 		lastComp /* lastComp */,
-		NULL /* next */);
+		nullptr /* next */);
 	(*tree)->upTree = newTree;
 	(*tree)->comps = lastComp->next;
-	lastComp->next = NULL;
+	lastComp->next = nullptr;
 	*tree = newTree;
 	return newTree;
 }
@@ -404,7 +404,7 @@ void uio_mountTreeRemoveMountInfo(uio_Repository* repository,
 	// Note that if the upTree has exactly one item less than the tree
 	// itself, these items must be the same, plus mountInfo for the
 	// tree itself, as each tree has at least the items of its upTree.
-	if (mountTree->upTree == NULL || mountTree->subTrees != NULL || uio_mountTreeCountPLocs(mountTree) != uio_mountTreeCountPLocs(mountTree->upTree) + 1)
+	if (mountTree->upTree == nullptr || mountTree->subTrees != nullptr || uio_mountTreeCountPLocs(mountTree) != uio_mountTreeCountPLocs(mountTree->upTree) + 1)
 	{
 		// We can't remove the tree itself.
 		// We need to remove the mountInfo from the tree, and all subTrees.
@@ -418,7 +418,7 @@ void uio_mountTreeRemoveMountInfo(uio_Repository* repository,
 	subTreePtr = &mountTree->upTree->subTrees;
 	while (1)
 	{
-		assert(*subTreePtr != NULL);
+		assert(*subTreePtr != nullptr);
 		if (*subTreePtr == mountTree)
 		{
 			break;
@@ -437,7 +437,7 @@ void uio_mountTreeRemoveMountInfo(uio_Repository* repository,
 	// This is the case when upTree now only has one subTree, and upTree
 	// and the subTree have the same items.
 	// Again, same item count implies same items.
-	if (upTree->subTrees == NULL || upTree->subTrees->next != NULL || uio_mountTreeCountPLocs(upTree) != uio_mountTreeCountPLocs(upTree->subTrees))
+	if (upTree->subTrees == nullptr || upTree->subTrees->next != nullptr || uio_mountTreeCountPLocs(upTree) != uio_mountTreeCountPLocs(upTree->subTrees))
 	{
 		// upTree is still necessary. We're done.
 		return;
@@ -447,17 +447,17 @@ void uio_mountTreeRemoveMountInfo(uio_Repository* repository,
 	// It would be easiest to keep upTree, and throw upTree->subTrees away,
 	// but that's not possible as external links point to upTree->subTrees.
 	// First merge the path components:
-	assert(upTree->subTrees->lastComp != NULL);
+	assert(upTree->subTrees->lastComp != nullptr);
 	upTree->subTrees->lastComp->next = upTree->subTrees->comps;
 	upTree->subTrees->lastComp = upTree->lastComp;
 	upTree->subTrees->comps = upTree->comps;
 	// Now let the pointer that pointed to upTree, point to upTree->subTrees.
 	// Change upTree->next accordingly.
-	if (upTree->upTree == NULL)
+	if (upTree->upTree == nullptr)
 	{
 		assert(repository->mountTree == upTree);
 		repository->mountTree = upTree->subTrees;
-		// upTree->subTrees->next is already NULL
+		// upTree->subTrees->next is already nullptr
 	}
 	else
 	{
@@ -465,7 +465,7 @@ void uio_mountTreeRemoveMountInfo(uio_Repository* repository,
 		subTreePtr = &upTree->upTree->subTrees;
 		while (1)
 		{
-			assert(*subTreePtr != NULL);
+			assert(*subTreePtr != nullptr);
 			if (*subTreePtr == upTree)
 			{
 				break;
@@ -478,8 +478,8 @@ void uio_mountTreeRemoveMountInfo(uio_Repository* repository,
 	}
 
 	// Now delete the tree itself
-	upTree->subTrees = NULL;
-	upTree->comps = NULL;
+	upTree->subTrees = nullptr;
+	upTree->comps = nullptr;
 	uio_MountTree_delete(upTree);
 }
 
@@ -493,7 +493,7 @@ uio_mountTreeRemoveMountInfoRec(uio_MountTree* mountTree,
 	uio_MountTreeItem **itemPtr, *item;
 
 	// recurse for all subTrees
-	for (subTree = mountTree->subTrees; subTree != NULL;
+	for (subTree = mountTree->subTrees; subTree != nullptr;
 		 subTree = subTree->next)
 	{
 		uio_mountTreeRemoveMountInfoRec(subTree, mountInfo);
@@ -503,7 +503,7 @@ uio_mountTreeRemoveMountInfoRec(uio_MountTree* mountTree,
 	itemPtr = &mountTree->pLocs;
 	while (1)
 	{
-		assert(*itemPtr != NULL);
+		assert(*itemPtr != nullptr);
 		// We know an item with the specified mountInfo
 		// must be here somewhere.
 		if ((*itemPtr)->mountInfo == mountInfo)
@@ -526,7 +526,7 @@ int uio_mountTreeCountPLocs(const uio_MountTree* tree)
 	uio_MountTreeItem* item;
 
 	count = 0;
-	for (item = tree->pLocs; item != NULL; item = item->next)
+	for (item = tree->pLocs; item != nullptr; item = item->next)
 	{
 		count++;
 	}
@@ -557,7 +557,7 @@ void uio_findMountTree(uio_MountTree* top, const char* path,
 		sub = tree->subTrees;
 		while (1)
 		{
-			if (sub == NULL)
+			if (sub == nullptr)
 			{
 				// No matching sub Dirs found. So we report back the current
 				// dir.
@@ -578,7 +578,7 @@ void uio_findMountTree(uio_MountTree* top, const char* path,
 		{
 			getNextPath0Component(&start, &end);
 			comp = comp->next;
-			if (comp == NULL)
+			if (comp == nullptr)
 			{
 				break;
 			}
@@ -614,13 +614,13 @@ char* uio_mountTreeItemRestPath(const uio_MountTreeItem* item,
 	}
 
 	pathPtr = path;
-	if (endComp != NULL)
+	if (endComp != nullptr)
 	{
 		while (1)
 		{
 			pathPtr += endComp->nameLen;
 			endComp = endComp->up;
-			if (endComp == NULL)
+			if (endComp == nullptr)
 			{
 				break;
 			}
@@ -653,13 +653,13 @@ void uio_printMountTree(FILE* outStream, const uio_MountTree* tree, int indent)
 	fprintf(outStream, "(");
 	uio_printMountTreeItems(outStream, tree->pLocs);
 	fprintf(outStream, ")\n");
-	for (sub = tree->subTrees; sub != NULL; sub = sub->next)
+	for (sub = tree->subTrees; sub != nullptr; sub = sub->next)
 	{
 		int newIndent;
 
 		newIndent = indent;
 		fprintf(outStream, "%*s", indent, "");
-		for (comp = sub->comps; comp != NULL; comp = comp->next)
+		for (comp = sub->comps; comp != nullptr; comp = comp->next)
 		{
 			fprintf(outStream, "/%s", comp->name);
 			newIndent += 1 + comp->nameLen;
@@ -686,7 +686,7 @@ void uio_printMountTreeItems(FILE* outStream, const uio_MountTreeItem* item)
 	{
 		uio_printMountTreeItem(outStream, item);
 		item = item->next;
-		if (item == NULL)
+		if (item == nullptr)
 		{
 			break;
 		}
@@ -696,7 +696,7 @@ void uio_printMountTreeItems(FILE* outStream, const uio_MountTreeItem* item)
 
 void uio_printPathToMountTree(FILE* outStream, const uio_MountTree* tree)
 {
-	if (tree->upTree == NULL)
+	if (tree->upTree == nullptr)
 	{
 		fprintf(outStream, "/");
 	}
@@ -770,7 +770,7 @@ void uio_MountTree_delete(uio_MountTree* tree)
 	uio_MountTreeItem *item, *nextItem;
 
 	subTree = tree->subTrees;
-	while (subTree != NULL)
+	while (subTree != nullptr)
 	{
 		nextTree = subTree->next;
 		uio_MountTree_delete(subTree);
@@ -778,14 +778,14 @@ void uio_MountTree_delete(uio_MountTree* tree)
 	}
 
 	item = tree->pLocs;
-	while (item != NULL)
+	while (item != nullptr)
 	{
 		nextItem = item->next;
 		uio_MountTreeItem_delete(item);
 		item = nextItem;
 	}
 
-	if (tree->comps != NULL)
+	if (tree->comps != nullptr)
 	{
 		uio_PathComp_delete(tree->comps);
 	}

@@ -93,9 +93,9 @@ static off_t zip_seekStored(uio_Handle* handle, off_t offset);
 static off_t zip_seekDeflated(uio_Handle* handle, off_t offset);
 
 uio_FileSystemHandler zip_fileSystemHandler = {
-	/* .init    = */ NULL,
-	/* .unInit  = */ NULL,
-	/* .cleanup = */ NULL,
+	/* .init    = */ nullptr,
+	/* .unInit  = */ nullptr,
+	/* .cleanup = */ nullptr,
 
 	/* .mount  = */ zip_mount,
 	/* .umount = */ uio_GPRoot_umount,
@@ -104,14 +104,14 @@ uio_FileSystemHandler zip_fileSystemHandler = {
 	/* .close  = */ zip_close,
 	/* .fstat  = */ zip_fstat,
 	/* .stat   = */ zip_stat,
-	/* .mkdir  = */ NULL,
+	/* .mkdir  = */ nullptr,
 	/* .open   = */ zip_open,
 	/* .read   = */ zip_read,
-	/* .rename = */ NULL,
-	/* .rmdir  = */ NULL,
+	/* .rename = */ nullptr,
+	/* .rmdir  = */ nullptr,
 	/* .seek   = */ zip_seek,
-	/* .write  = */ NULL,
-	/* .unlink = */ NULL,
+	/* .write  = */ nullptr,
+	/* .unlink = */ nullptr,
 
 	/* .openEntries  = */ uio_GPDir_openEntries,
 	/* .readEntries  = */ uio_GPDir_readEntries,
@@ -124,8 +124,8 @@ uio_FileSystemHandler zip_fileSystemHandler = {
 };
 
 uio_GPRoot_Operations zip_GPRootOperations = {
-	/* .fillGPDir         = */ NULL,
-	/* .deleteGPRootExtra = */ NULL,
+	/* .fillGPDir         = */ nullptr,
+	/* .deleteGPRootExtra = */ nullptr,
 	/* .deleteGPDirExtra  = */ zip_GPDirData_delete,
 	/* .deleteGPFileExtra = */ zip_GPFileData_delete,
 };
@@ -153,12 +153,12 @@ static const uio_bool
 typedef ssize_t (*zip_readFunctionType)(uio_Handle* handle,
 										void* buf, size_t count);
 zip_readFunctionType zip_readMethods[NUM_COMPRESSION_METHODS] = {
-	zip_readStored, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-	zip_readDeflated, NULL, NULL};
+	zip_readStored, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+	zip_readDeflated, nullptr, nullptr};
 typedef off_t (*zip_seekFunctionType)(uio_Handle* handle, off_t offset);
 zip_seekFunctionType zip_seekMethods[NUM_COMPRESSION_METHODS] = {
-	zip_seekStored, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-	zip_seekDeflated, NULL, NULL};
+	zip_seekStored, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+	zip_seekDeflated, nullptr, nullptr};
 
 
 typedef enum
@@ -236,7 +236,7 @@ int zip_access(uio_PDirHandle* pDirHandle, const char* name, int mode)
 		entry = (uio_GPDirEntry *) pDirHandle->extra;
 	} else {
 		entry = uio_GPDir_getGPDirEntry(pDirHandle->extra, name);
-		if (entry == NULL) {
+		if (entry == nullptr) {
 			errno = ENOENT;
 			return -1;
 		}
@@ -300,14 +300,14 @@ int zip_stat(uio_PDirHandle* pDirHandle, const char* name, struct stat* statBuf)
 	else
 	{
 		entry = uio_GPDir_getGPDirEntry(pDirHandle->extra, name);
-		if (entry == NULL)
+		if (entry == nullptr)
 		{
 			errno = ENOENT;
 			return -1;
 		}
 	}
 
-	if (uio_GPDirEntry_isDir(entry) && entry->extra == NULL)
+	if (uio_GPDirEntry_isDir(entry) && entry->extra == nullptr)
 	{
 		// No information about this directory was stored.
 		// We'll have to make something up.
@@ -363,14 +363,14 @@ zip_open(uio_PDirHandle* pDirHandle, const char* name, int flags,
 	if ((flags & O_ACCMODE) != O_RDONLY)
 	{
 		errno = EACCES;
-		return NULL;
+		return nullptr;
 	}
 
 	gPFile = (uio_GPFile*)uio_GPDir_getGPDirEntry(pDirHandle->extra, name);
-	if (gPFile == NULL)
+	if (gPFile == nullptr)
 	{
 		errno = ENOENT;
-		return NULL;
+		return nullptr;
 	}
 
 	auto xtra = (zip_GPFileData*)(gPFile->extra);
@@ -382,7 +382,7 @@ zip_open(uio_PDirHandle* pDirHandle, const char* name, int flags,
 			if (zip_updateFileDataFromLocalHeader(pDirHandle->pRoot->handle, xtra) == -1)
 			{
 				// errno is set
-				return NULL;
+				return nullptr;
 			}
 		}
 	}
@@ -392,17 +392,17 @@ zip_open(uio_PDirHandle* pDirHandle, const char* name, int flags,
 	uio_GPFile_ref(gPFile);
 	handle->file = gPFile;
 	handle->fileBlock = uio_openFileBlock2(pDirHandle->pRoot->handle, xtra->fileOffset, xtra->compressedSize);
-	if (handle->fileBlock == NULL)
+	if (handle->fileBlock == nullptr)
 	{
 		// errno is set
-		return NULL;
+		return nullptr;
 	}
 
 	if (zip_initZipStream(&handle->zipStream) == -1)
 	{
 		uio_GPFile_unref(gPFile);
 		uio_closeFileBlock(handle->fileBlock);
-		return NULL;
+		return nullptr;
 	}
 	handle->compressedOffset = 0;
 	handle->uncompressedOffset = 0;
@@ -541,7 +541,7 @@ zip_readDeflated(uio_Handle* handle, void* buf, size_t count)
 					fprintf(stderr, "Fatal: unknown error from inflate().\n");
 					abort();
 			}
-			if (zipHandle->zipStream.msg != NULL)
+			if (zipHandle->zipStream.msg != nullptr)
 			{
 				fprintf(stderr, "ZLib reports: %s\n",
 						zipHandle->zipStream.msg);
@@ -674,14 +674,14 @@ zip_mount(uio_Handle* handle, int flags)
 	if ((flags & uio_MOUNT_RDONLY) != uio_MOUNT_RDONLY)
 	{
 		errno = EACCES;
-		return NULL;
+		return nullptr;
 	}
 
 	uio_Handle_ref(handle);
 	result = uio_GPRoot_makePRoot(
 		uio_getFileSystemHandler(uio_FSTYPE_ZIP), flags,
-		&zip_GPRootOperations, NULL, uio_GPRoot_PERSISTENT,
-		handle, NULL, uio_GPDir_COMPLETE);
+		&zip_GPRootOperations, nullptr, uio_GPRoot_PERSISTENT,
+		handle, nullptr, uio_GPDir_COMPLETE);
 
 	rootDirHandle = uio_PRoot_getRootDirHandle(result);
 	if (zip_fillDirStructure(rootDirHandle->extra, handle) == -1)
@@ -694,7 +694,7 @@ zip_mount(uio_Handle* handle, int flags)
 #endif
 		uio_GPRoot_umount(result);
 		errno = savedErrno;
-		return NULL;
+		return nullptr;
 	}
 
 	return result;
@@ -726,7 +726,7 @@ zip_fillDirStructureCentral(uio_GPDir* top, uio_Handle* handle)
 	off_t startCentralDir;
 
 	fileBlock = uio_openFileBlock(handle);
-	if (fileBlock == NULL)
+	if (fileBlock == nullptr)
 	{
 		// errno is set
 		goto err;
@@ -784,7 +784,7 @@ err:
 	{
 		int savedErrno = errno;
 
-		if (fileBlock != NULL)
+		if (fileBlock != nullptr)
 		{
 			uio_closeFileBlock(fileBlock);
 		}
@@ -816,7 +816,7 @@ zip_fillDirStructureCentralProcessEntry(uio_GPDir* topGPDir,
 	numBytes = uio_accessFileBlock(fileBlock, *pos, 46, &buf);
 	if (numBytes != 46)
 	{
-		return zip_badFile(NULL, NULL);
+		return zip_badFile(nullptr, nullptr);
 	}
 
 	signature = makeUInt32(buf[0], buf[1], buf[2], buf[3]);
@@ -859,7 +859,7 @@ zip_fillDirStructureCentralProcessEntry(uio_GPDir* topGPDir,
 	numBytes = uio_accessFileBlock(fileBlock, *pos, fileNameLength, &buf);
 	if (numBytes != fileNameLength)
 	{
-		return zip_badFile(gPFileData, NULL);
+		return zip_badFile(gPFileData, nullptr);
 	}
 	fileName = (char*)uio_malloc(fileNameLength + 1);
 	memcpy(fileName, buf, fileNameLength);
@@ -1152,7 +1152,7 @@ zip_fillDirStructureLocal(uio_GPDir* top, uio_Handle* handle)
 	// We read all the files from the beginning of the zip file to the end.
 	// (the directory record at the end of the file is ignored)
 	fileBlock = uio_openFileBlock(handle);
-	if (fileBlock == NULL)
+	if (fileBlock == nullptr)
 	{
 		// errno  is set
 		return -1;
@@ -1218,7 +1218,7 @@ zip_fillDirStructureLocalProcessEntry(uio_GPDir* topGPDir,
 	numBytes = uio_accessFileBlock(fileBlock, *pos, 26, &buf);
 	if (numBytes != 26)
 	{
-		return zip_badFile(NULL, NULL);
+		return zip_badFile(nullptr, nullptr);
 	}
 
 	gPFileData = zip_GPFileData_new();
@@ -1282,7 +1282,7 @@ zip_fillDirStructureLocalProcessEntry(uio_GPDir* topGPDir,
 	numBytes = uio_accessFileBlock(fileBlock, *pos, fileNameLength, &buf);
 	if (numBytes != fileNameLength)
 	{
-		return zip_badFile(gPFileData, NULL);
+		return zip_badFile(gPFileData, nullptr);
 	}
 	*pos += fileNameLength;
 	if (buf[fileNameLength - 1] == '/')
@@ -1413,7 +1413,7 @@ int zip_updateFileDataFromLocalHeader(uio_Handle* handle,
 	uio_FileBlock* fileBlock;
 
 	fileBlock = uio_openFileBlock(handle);
-	if (fileBlock == NULL)
+	if (fileBlock == nullptr)
 	{
 		// errno is set
 		return -1;
@@ -1573,11 +1573,11 @@ static int
 zip_badFile(zip_GPFileData* gPFileData, char* fileName)
 {
 	fprintf(stderr, "Error: Bad file format for .zip file.\n");
-	if (gPFileData != NULL)
+	if (gPFileData != nullptr)
 	{
 		zip_GPFileData_delete(gPFileData);
 	}
-	if (fileName != NULL)
+	if (fileName != nullptr)
 	{
 		uio_free(fileName);
 	}
@@ -1690,7 +1690,7 @@ zip_foundDir(uio_GPDir* gPDir, const char* path, zip_GPDirData* gPDirData)
 	{
 		case 0:
 			// The dir already exists. Only need to add gPDirData
-			if (gPDir->extra != NULL)
+			if (gPDir->extra != nullptr)
 			{
 				fprintf(stderr, "Warning: '%s' is present more than once "
 								"in the zip file. The last entry will be used.\n",
@@ -1750,7 +1750,7 @@ zip_initZipStream(z_stream* zipStream)
 	zipStream->avail_in = 0;
 	zipStream->zalloc = zip_alloc;
 	zipStream->zfree = zip_free;
-	zipStream->opaque = NULL;
+	zipStream->opaque = nullptr;
 	retVal = inflateInit2(zipStream, -MAX_WBITS);
 	// Negative window size means that no zlib header is present.
 	// This feature is undocumented in zlib, but it's used
@@ -1772,7 +1772,7 @@ zip_initZipStream(z_stream* zipStream)
 				fprintf(stderr, "Fatal: unknown error from inflateInit().\n");
 				abort();
 		}
-		if (zipStream->msg != NULL)
+		if (zipStream->msg != nullptr)
 		{
 			fprintf(stderr, "ZLib reports: %s\n", zipStream->msg);
 		}
@@ -1803,7 +1803,7 @@ zip_unInitZipStream(z_stream* zipStream)
 				fprintf(stderr, "Fatal: unknown error from inflateEnd().\n");
 				abort();
 		}
-		if (zipStream->msg != NULL)
+		if (zipStream->msg != nullptr)
 		{
 			fprintf(stderr, "ZLib reports: %s\n", zipStream->msg);
 		}
@@ -1836,7 +1836,7 @@ zip_reInitZipStream(z_stream* zipStream)
 				fprintf(stderr, "Fatal: unknown error from inflateInit().\n");
 				abort();
 		}
-		if (zipStream->msg != NULL)
+		if (zipStream->msg != nullptr)
 		{
 			fprintf(stderr, "ZLib reports: %s\n", zipStream->msg);
 		}

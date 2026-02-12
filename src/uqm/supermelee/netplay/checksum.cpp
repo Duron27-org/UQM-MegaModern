@@ -210,7 +210,7 @@ void initChecksumBuffers(void)
 		ChecksumBuffer* cb;
 
 		conn = netConnections[player];
-		if (conn == NULL)
+		if (conn == nullptr)
 		{
 			continue;
 		}
@@ -234,7 +234,7 @@ void uninitChecksumBuffers(void)
 		ChecksumBuffer* cb;
 
 		conn = netConnections[player];
-		if (conn == NULL)
+		if (conn == nullptr)
 		{
 			continue;
 		}
@@ -287,7 +287,7 @@ bool verifyChecksums(BattleFrameCounter frameNr)
 		Checksum remoteChecksum;
 
 		conn = netConnections[player];
-		if (conn == NULL)
+		if (conn == nullptr)
 		{
 			continue;
 		}

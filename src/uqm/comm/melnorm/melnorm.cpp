@@ -84,8 +84,8 @@ static const NUMBER_SPEECH_DESC melnorme_numbers_english =
 				/* 1000-999999 */
 				1000,			   /* Divider */
 				0,				   /* Subtrahend */
-				NULL,			   /* StrDigits - recurse */
-				NULL,			   /* Names - not used */
+				nullptr,			   /* StrDigits - recurse */
+				nullptr,			   /* Names - not used */
 				ENUMERATE_THOUSAND /* CommonIndex */
 			},
 						  {
@@ -93,7 +93,7 @@ static const NUMBER_SPEECH_DESC melnorme_numbers_english =
 				100,				  /* Divider */
 				0,					  /* Subtrahend */
 				melnorme_digit_names, /* StrDigits */
-				NULL,				  /* Names - not used */
+				nullptr,				  /* Names - not used */
 				ENUMERATE_HUNDRED	  /* CommonIndex */
 			},
 						  {
@@ -101,7 +101,7 @@ static const NUMBER_SPEECH_DESC melnorme_numbers_english =
 				10,					 /* Divider */
 				0,					 /* Subtrahend */
 				melnorme_tens_names, /* StrDigits */
-				NULL,				 /* Names - not used */
+				nullptr,				 /* Names - not used */
 				0					 /* CommonIndex - not used */
 			},
 						  {
@@ -109,7 +109,7 @@ static const NUMBER_SPEECH_DESC melnorme_numbers_english =
 				1,					 /* Divider */
 				10,					 /* Subtrahend */
 				melnorme_teen_names, /* StrDigits */
-				NULL,				 /* Names - not used */
+				nullptr,				 /* Names - not used */
 				0					 /* CommonIndex - not used */
 			},
 						  {
@@ -117,16 +117,16 @@ static const NUMBER_SPEECH_DESC melnorme_numbers_english =
 				1,					  /* Divider */
 				0,					  /* Subtrahend */
 				melnorme_digit_names, /* StrDigits */
-				NULL,				  /* Names - not used */
+				nullptr,				  /* Names - not used */
 				0					  /* CommonIndex - not used */
 			}}
 };
 static LOCDATA melnorme_desc =
 	{
 		MELNORME_CONVERSATION, /* AlienConv */
-		NULL, /* init_encounter_func */
-		NULL, /* post_encounter_func */
-		NULL, /* uninit_encounter_func */
+		nullptr, /* init_encounter_func */
+		nullptr, /* post_encounter_func */
+		nullptr, /* uninit_encounter_func */
 		MELNORME_PMAP_ANIM, /* AlienFrame */
 		MELNORME_FONT, /* AlienFont */
 		WHITE_COLOR_INIT, /* AlienTextFColor */
@@ -223,11 +223,11 @@ static LOCDATA melnorme_desc =
 		},
 		&melnorme_numbers_english, /* AlienNumberSpeech - default */
 		/* Filler for loaded resources */
-		NULL,
-		NULL,
-		NULL,
-		NULL,
-		NULL,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
 };
 
 
@@ -311,7 +311,7 @@ GetTechData(TechId_t techId)
 			return &tech_data_table[i];
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 
@@ -528,7 +528,7 @@ TechSaleData tech_sale_catalog[] =
 const size_t NUM_TECH_ITEMS = ARRAY_SIZE(tech_sale_catalog);
 
 // Return the next tech for sale that the player doesn't already have.
-// Returns NULL if the player has all the techs.
+// Returns nullptr if the player has all the techs.
 static TechSaleData*
 GetNextTechForSale(void)
 {
@@ -590,7 +590,7 @@ GetNextTechForSale(void)
 	}
 	else if (DIF_HARD && !CurStarDescPtr)
 	{
-		return NULL;
+		return nullptr;
 	}
 	else
 	{
@@ -602,7 +602,7 @@ GetNextTechForSale(void)
 			}
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 ///////////End Melnorme Sales Section//////////////////
@@ -1072,13 +1072,13 @@ DeltaCredit(uqm::SIZE delta_credit)
 	{
 		Credit += delta_credit;
 		SetAvailableCredits(Credit);
-		DrawStatusMessage(NULL);
+		DrawStatusMessage(nullptr);
 		return true;
 	}
 
 	// Fail
 	NPCPhrase(NEED_MORE_CREDIT0);
-	NPCNumber(-delta_credit - Credit, NULL);
+	NPCNumber(-delta_credit - Credit, nullptr);
 	NPCPhrase(NEED_MORE_CREDIT1);
 
 	return false;
@@ -1358,7 +1358,7 @@ TryFuelAgain:
 		{
 			nextTech->price = TECHPRICE + countTech() * 50;
 			NPCPhrase(NEED_MORE_CREDIT0);
-			NPCNumber(nextTech->price - TECHPRICE, NULL);
+			NPCNumber(nextTech->price - TECHPRICE, nullptr);
 			NPCPhrase(NEED_MORE_CREDIT1);
 		}
 
@@ -1499,9 +1499,9 @@ DoSell(RESPONSE_REF R)
 			added_credit = GLOBAL_SIS(TotalBioMass) * BioCreditValue + beast_value;
 
 			NPCPhrase(SOLD_LIFE_DATA1);
-			NPCNumber(GLOBAL_SIS(TotalBioMass), NULL);
+			NPCNumber(GLOBAL_SIS(TotalBioMass), nullptr);
 			NPCPhrase(SOLD_LIFE_DATA2);
-			NPCNumber(added_credit, NULL);
+			NPCNumber(added_credit, nullptr);
 			NPCPhrase(SOLD_LIFE_DATA3);
 			// queue WHAT_TO_SELL before talk-segue
 			if (num_new_rainbows)
@@ -1568,9 +1568,9 @@ DoSell(RESPONSE_REF R)
 			added_credit = num_new_rainbows * (diffCase * BioCreditValue);
 
 			NPCPhrase(SOLD_RAINBOW_LOCATIONS1);
-			NPCNumber(num_new_rainbows, NULL);
+			NPCNumber(num_new_rainbows, nullptr);
 			NPCPhrase(SOLD_RAINBOW_LOCATIONS2);
-			NPCNumber(added_credit, NULL);
+			NPCNumber(added_credit, nullptr);
 			NPCPhrase(SOLD_RAINBOW_LOCATIONS3);
 
 			planets = num_new_rainbows;
@@ -2244,7 +2244,7 @@ post_melnorme_enc(void)
 	{
 		SetStatusMessageMode(prevMsgMode);
 	}
-	DrawStatusMessage(NULL);
+	DrawStatusMessage(nullptr);
 }
 
 LOCDATA*
@@ -2256,7 +2256,7 @@ init_melnorme_comm(void)
 	melnorme_desc.post_encounter_func = post_melnorme_enc;
 	melnorme_desc.uninit_encounter_func = uninit_melnorme;
 
-	luaUqm_comm_init(NULL, NULL_RESOURCE);
+	luaUqm_comm_init(nullptr, NULL_RESOURCE);
 	// Initialise Lua for string interpolation. This will be
 	// generalised in the future.
 

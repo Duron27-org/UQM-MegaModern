@@ -43,7 +43,7 @@ struct uio_Repository
 	int numMounts;
 	struct uio_MountInfo** mounts;
 	// first in the list is considered the top
-	// last entry is NULL
+	// last entry is nullptr
 	struct uio_MountTree* mountTree;
 };
 

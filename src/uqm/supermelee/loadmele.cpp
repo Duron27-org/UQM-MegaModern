@@ -62,7 +62,7 @@ LoadTeamImage(DIRENTRY DirEntry, MeleeTeam* team)
 	fileName = GetDirEntryAddress(DirEntry);
 
 	stream = uio_fopen(meleeDir, fileName, "rb");
-	if (stream == NULL)
+	if (stream == nullptr)
 	{
 		return false;
 	}
@@ -503,7 +503,7 @@ void LoadTeamList(MELEE_STATE* pMS)
 	pMS->load.dirEntries = CaptureDirEntryTable(
 		LoadDirEntryTable(meleeDir, "", ".mle", match_MATCH_SUFFIX));
 
-	if (pMS->load.entryIndices != NULL)
+	if (pMS->load.entryIndices != nullptr)
 	{
 		HFree(pMS->load.entryIndices);
 	}
@@ -531,7 +531,7 @@ bool DoSaveTeam(MELEE_STATE* pMS)
 	// Show the "Saving . . ." message.
 
 	stream = uio_fopen(meleeDir, file, "wb");
-	if (stream != NULL)
+	if (stream != nullptr)
 	{
 		saveOk = (MeleeTeam_serialize(&pMS->meleeSetup->teams[pMS->side],
 									  stream)
@@ -873,7 +873,7 @@ UninitLoadView(MELEE_STATE* pMS)
 
 void InitMeleeLoadState(MELEE_STATE* pMS)
 {
-	pMS->load.entryIndices = NULL;
+	pMS->load.entryIndices = nullptr;
 	InitPreBuilt(pMS);
 	InitLoadView(pMS);
 }
@@ -882,7 +882,7 @@ void UninitMeleeLoadState(MELEE_STATE* pMS)
 {
 	UninitLoadView(pMS);
 	UninitPreBuilt(pMS);
-	if (pMS->load.entryIndices != NULL)
+	if (pMS->load.entryIndices != nullptr)
 	{
 		HFree(pMS->load.entryIndices);
 	}

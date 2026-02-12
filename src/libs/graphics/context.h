@@ -138,7 +138,7 @@ extern GRAPHICS_STATUS _GraphicsStatusFlags;
 #define GraphicsStatus() \
 	(_GraphicsStatusFlags & (GRAPHICS_STATUS)(GRAPHICS_ACTIVE | GRAPHICS_VISIBLE))
 
-// pValidRect or origin may be NULL
+// pValidRect or origin may be nullptr
 bool GetContextValidRect(RECT* pValidRect, POINT* origin);
 extern void FixContextFontEffect(void);
 

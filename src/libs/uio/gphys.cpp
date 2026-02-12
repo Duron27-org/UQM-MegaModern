@@ -62,7 +62,7 @@ uio_GPDir_prepareSubDir(uio_GPDir* gPDir, const char* dirName)
 	uio_GPDirEntry* entry;
 
 	entry = uio_GPDirEntries_find(gPDir->entries, dirName);
-	if (entry != NULL)
+	if (entry != nullptr)
 	{
 		if (uio_GPDirEntry_isDir(entry))
 		{
@@ -81,7 +81,7 @@ uio_GPDir_prepareSubDir(uio_GPDir* gPDir, const char* dirName)
 	}
 
 	// return new subdir
-	subDir = uio_GPDir_new(gPDir->pRoot, NULL, uio_GPDir_DETACHED);
+	subDir = uio_GPDir_new(gPDir->pRoot, nullptr, uio_GPDir_DETACHED);
 	// subDir->ref is initialised at 1
 	return subDir;
 }
@@ -127,7 +127,7 @@ void uio_GPDir_removeFile(uio_GPDir* gPDir, const char* fileName)
 	uio_bool retVal;
 
 	entry = uio_GPDirEntries_find(gPDir->entries, fileName);
-	if (entry == NULL)
+	if (entry == nullptr)
 	{
 		// This means the file has no associated GPFile.
 		// This can happen when the GPFile structure is only used for caching.
@@ -149,7 +149,7 @@ void uio_GPDir_removeSubDir(uio_GPDir* gPDir, const char* dirName)
 	uio_bool retVal;
 
 	entry = uio_GPDirEntries_find(gPDir->entries, dirName);
-	if (entry == NULL)
+	if (entry == nullptr)
 	{
 		// This means the directory has no associated GPDir.
 		// This can happen when the GPDir structure is only used for caching.
@@ -209,9 +209,9 @@ uio_GPDir_getPDirEntryHandle(const uio_PDirHandle* pDirHandle,
 	uio_GPDirEntry* gPDirEntry;
 
 	gPDirEntry = uio_GPDir_getGPDirEntry(pDirHandle->extra, name);
-	if (gPDirEntry == NULL)
+	if (gPDirEntry == nullptr)
 	{
-		return NULL;
+		return nullptr;
 	}
 	uio_GPDirEntry_ref(gPDirEntry);
 	if (uio_GPDirEntry_isDir(gPDirEntry))
@@ -265,7 +265,7 @@ int uio_walkGPPath(uio_GPDir* startGPDir, const char* path,
 		tempBuf[partEnd - partStart] = '\0';
 
 		entry = uio_GPDir_getGPDirEntry(gPDir, tempBuf);
-		if (entry == NULL)
+		if (entry == nullptr)
 		{
 			retVal = ENOENT;
 			break;
@@ -295,7 +295,7 @@ uio_GPDir_openEntries(uio_PDirHandle* pDirHandle)
 // the start of 'buf' will be filled with pointers to strings
 // those strings are stored elsewhere in buf.
 // The function returns the number of strings passed along, or -1 for error.
-// If there are no more entries, the last pointer will be NULL.
+// If there are no more entries, the last pointer will be nullptr.
 // (this pointer counts towards the return value)
 int uio_GPDir_readEntries(uio_GPDirEntries_Iterator** iterator,
 						  char* buf, size_t len)
@@ -335,11 +335,11 @@ int uio_GPDir_readEntries(uio_GPDirEntries_Iterator** iterator,
 	}
 	if (sizeof(char*) > (size_t)(end - (char*)start))
 	{
-		// not enough room to fit the NULL pointer.
+		// not enough room to fit the nullptr pointer.
 		// It will have to be reported seperately the next time.
 		return num;
 	}
-	*start = NULL;
+	*start = nullptr;
 	num++;
 	return num;
 }
@@ -356,40 +356,40 @@ void uio_GPDir_fill(uio_GPDir* gPDir)
 		return;
 	}
 	auto xtra = (uio_GPRoot*)gPDir->pRoot->extra;
-	assert(xtra->ops->fillGPDir != NULL);
+	assert(xtra->ops->fillGPDir != nullptr);
 	xtra->ops->fillGPDir(gPDir);
 }
 
 void uio_GPRoot_deleteGPRootExtra(uio_GPRoot* gPRoot)
 {
-	if (gPRoot->extra == NULL)
+	if (gPRoot->extra == nullptr)
 	{
 		return;
 	}
-	assert(gPRoot->ops->deleteGPRootExtra != NULL);
+	assert(gPRoot->ops->deleteGPRootExtra != nullptr);
 	gPRoot->ops->deleteGPRootExtra(gPRoot->extra);
 }
 
 void uio_GPDir_deleteGPDirExtra(uio_GPDir* gPDir)
 {
-	if (gPDir->extra == NULL)
+	if (gPDir->extra == nullptr)
 	{
 		return;
 	}
 	auto xtra = (uio_GPRoot*)gPDir->pRoot->extra;
-	assert(xtra->ops->deleteGPDirExtra != NULL);
+	assert(xtra->ops->deleteGPDirExtra != nullptr);
 	xtra->ops->deleteGPDirExtra(gPDir->extra);
 }
 
 void uio_GPFile_deleteGPFileExtra(uio_GPFile* gPFile)
 {
-	if (gPFile->extra == NULL)
+	if (gPFile->extra == nullptr)
 	{
 		return;
 	}
 
 	auto xtra = (uio_GPRoot*)gPFile->pRoot->extra;
-	assert(xtra->ops->deleteGPFileExtra != NULL);
+	assert(xtra->ops->deleteGPFileExtra != nullptr);
 	xtra->ops->deleteGPFileExtra(gPFile->extra);
 }
 
@@ -599,7 +599,7 @@ uio_GPRoot_makePRoot(uio_FileSystemHandler* handler, int pRootFlags,
 	uio_GPRoot* gPRoot;
 
 	gPRoot = uio_GPRoot_new(ops, gPRootExtra, gPRootFlags);
-	result = uio_PRoot_new(NULL, handler, handle, gPRoot, pRootFlags);
+	result = uio_PRoot_new(nullptr, handler, handle, gPRoot, pRootFlags);
 
 	gPTopDir = uio_GPDir_new(result, gPDirExtra, gPDirFlags);
 	if (gPRoot->flags & uio_GPRoot_PERSISTENT)

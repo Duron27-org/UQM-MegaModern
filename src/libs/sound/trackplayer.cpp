@@ -71,7 +71,7 @@ static TFB_SoundCallbacks trackCBs =
 		OnChunkEnd,
 		OnStreamEnd,
 		OnBufferTag,
-		NULL};
+		nullptr};
 
 static inline sint32
 chunk_end_time(TFB_SoundChunk* chunk)
@@ -186,23 +186,23 @@ void StopTrack(void)
 	StopStream(SPEECH_SOURCE);
 	track_count = 0;
 	tracks_length = 0;
-	cur_chunk = NULL;
-	cur_sub_chunk = NULL;
+	cur_chunk = nullptr;
+	cur_sub_chunk = nullptr;
 	UnlockMutex(soundSource[SPEECH_SOURCE].stream_mutex);
 
 	if (chunks_head)
 	{
-		chunks_tail = NULL;
+		chunks_tail = nullptr;
 		destroy_SoundChunk_list(chunks_head);
-		chunks_head = NULL;
-		last_sub = NULL;
+		chunks_head = nullptr;
+		last_sub = nullptr;
 	}
 	if (sound_sample)
 	{
 		// We delete the decoders ourselves
-		sound_sample->decoder = NULL;
+		sound_sample->decoder = nullptr;
 		TFB_DestroySoundSample(sound_sample);
-		sound_sample = NULL;
+		sound_sample = nullptr;
 	}
 }
 
@@ -290,8 +290,8 @@ OnStreamEnd(TFB_SoundSample* sample)
 		return; // Huh? Why did we get called on this?
 	}
 
-	cur_chunk = NULL;
-	cur_sub_chunk = NULL;
+	cur_chunk = nullptr;
+	cur_sub_chunk = nullptr;
 }
 
 // This func is called by StreamDecoderTaskFunc() when a tagged buffer
@@ -329,7 +329,7 @@ GetTimeStamps(uqm::CHAR_T* TimeStamps, sint32* time_stamps)
 
 		memcpy(valStr, TimeStamps, pos);
 		valStr[pos] = '\0';
-		val = strtoul(valStr, NULL, 10);
+		val = strtoul(valStr, nullptr, 10);
 		if (val)
 		{
 			*time_stamps = val;
@@ -401,7 +401,7 @@ SplitSubPages(uqm::CHAR_T* text, uqm::CHAR_T* pages[], sint32 timestamp[], int s
 }
 
 // decodes several tracks into one and adds it to queue
-// track list is NULL-terminated
+// track list is nullptr-terminated
 // May only be called after at least one SpliceTrack(). This is a limitation
 // for the sake of timestamps, but it does not have to be so.
 void SpliceMultiTrack(uqm::CHAR_T* TrackNames[], uqm::CHAR_T* TrackText)
@@ -496,7 +496,7 @@ void SpliceTrack(uqm::CHAR_T* TrackName, uqm::CHAR_T* TrackText, uqm::CHAR_T* Ti
 		if (!last_sub || !last_sub->text)
 		{
 			log_add(log_Warning, "SpliceTrack(): Tried to append a subtitle"
-								 " to a NULL string");
+								 " to a nullptr string");
 			return;
 		}
 
@@ -543,7 +543,7 @@ void SpliceTrack(uqm::CHAR_T* TrackName, uqm::CHAR_T* TrackText, uqm::CHAR_T* Ti
 				chunks_tail->text = pages[page];
 				chunks_tail->callback = cb;
 				// TODO: We may have to tag only one page with a callback
-				//cb = NULL;
+				//cb = nullptr;
 				last_sub = chunks_tail;
 				sound_sample->length += decoder->length;
 			}
@@ -615,7 +615,7 @@ void SpliceTrack(uqm::CHAR_T* TrackName, uqm::CHAR_T* TrackText, uqm::CHAR_T* Ti
 
 			if (!sound_sample)
 			{
-				sound_sample = TFB_CreateSoundSample(NULL, 8, &trackCBs);
+				sound_sample = TFB_CreateSoundSample(nullptr, 8, &trackCBs);
 				chunks_head = create_SoundChunk(decoder, 0.0);
 				chunks_tail = chunks_head;
 			}
@@ -642,7 +642,7 @@ void SpliceTrack(uqm::CHAR_T* TrackName, uqm::CHAR_T* TrackText, uqm::CHAR_T* Ti
 				}
 				chunks_tail->callback = cb;
 				// TODO: We may have to tag only one page with a callback
-				//cb = NULL;
+				//cb = nullptr;
 			}
 			no_page_break = 0;
 		}
@@ -660,7 +660,7 @@ static void
 seek_track(sint32 offset)
 {
 	TFB_SoundChunk* cur;
-	TFB_SoundChunk* last_tag = NULL;
+	TFB_SoundChunk* last_tag = nullptr;
 
 	if (!sound_sample)
 	{
@@ -714,8 +714,8 @@ seek_track(sint32 offset)
 	else
 	{ // The offset is beyond the length of all tracks
 		StopStream(SPEECH_SOURCE);
-		cur_chunk = NULL;
-		cur_sub_chunk = NULL;
+		cur_chunk = nullptr;
+		cur_sub_chunk = nullptr;
 	}
 }
 
@@ -856,7 +856,7 @@ create_SoundChunk(TFB_SoundDecoder* decoder, float start_time)
 
 void destroy_SoundChunk_list(TFB_SoundChunk* chunk)
 {
-	TFB_SoundChunk* next = NULL;
+	TFB_SoundChunk* next = nullptr;
 	for (; chunk; chunk = next)
 	{
 		next = chunk->next;
@@ -875,7 +875,7 @@ find_next_page(TFB_SoundChunk* cur)
 {
 	if (!cur)
 	{
-		return NULL;
+		return nullptr;
 	}
 	for (cur = cur->next; cur && !cur->tag_me; cur = cur->next)
 		;
@@ -919,7 +919,7 @@ GetNextTrackSubtitle(SUBTITLE_REF LastRef)
 {
 	if (!LastRef)
 	{
-		return NULL; // enumeration already ended
+		return nullptr; // enumeration already ended
 	}
 
 	return find_next_page(LastRef);
@@ -931,22 +931,22 @@ GetTrackSubtitleText(SUBTITLE_REF SubRef)
 {
 	if (!SubRef)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	return SubRef->text;
 }
 
 // External access to currently active subtitle text
-// Returns NULL is none is active
+// Returns nullptr is none is active
 const uqm::CHAR_T*
 GetTrackSubtitle(void)
 {
-	const uqm::CHAR_T* cur_sub = NULL;
+	const uqm::CHAR_T* cur_sub = nullptr;
 
 	if (!sound_sample)
 	{
-		return NULL; // not playing anything
+		return nullptr; // not playing anything
 	}
 
 	LockMutex(soundSource[SPEECH_SOURCE].stream_mutex);
@@ -965,19 +965,19 @@ GetSubtitleNumber(const uqm::CHAR_T* sub)
 	uqm::COUNT i = 0;
 	TFB_SoundChunk* now;
 
-	if (sub == NULL) // If no sub - get current one
+	if (sub == nullptr) // If no sub - get current one
 	{
 		sub = GetTrackSubtitle();
 	}
 
-	if (sub == NULL) // Nothing playing - no subs
+	if (sub == nullptr) // Nothing playing - no subs
 	{
 		return -1;
 	}
 
 	now = chunks_head;
 
-	while (now->text != sub && now->next != NULL)
+	while (now->text != sub && now->next != nullptr)
 	{
 		now = now->next;
 		i++;
@@ -992,14 +992,14 @@ GetSubtitleNumberByTrack(uqm::COUNT track)
 	uqm::COUNT i = 0;
 	TFB_SoundChunk* now;
 
-	if (chunks_head == NULL) // Fool-proof
+	if (chunks_head == nullptr) // Fool-proof
 	{
 		return i;
 	}
 
 	now = chunks_head;
 
-	while (now->next != NULL && now->track_num != track)
+	while (now->next != nullptr && now->track_num != track)
 	{
 		now = now->next;
 		i++;
@@ -1007,7 +1007,7 @@ GetSubtitleNumberByTrack(uqm::COUNT track)
 
 	// A trick if we need to lock the last track in responce
 	// Never used in game, kept for future
-	if (now->next == NULL && now->track_num != track)
+	if (now->next == nullptr && now->track_num != track)
 	{
 		i++;
 	}

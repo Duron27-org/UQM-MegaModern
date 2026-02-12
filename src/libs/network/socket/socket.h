@@ -20,7 +20,7 @@
 #define LIBS_NETWORK_SOCKET_SOCKET_H_
 
 typedef struct Socket Socket;
-#define Socket_noSocket ((Socket*)NULL)
+#define Socket_noSocket ((Socket*)nullptr)
 
 #include "port.h"
 

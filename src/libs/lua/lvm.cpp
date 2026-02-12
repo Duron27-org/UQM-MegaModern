@@ -45,7 +45,7 @@ const TValue* luaV_tonumber(const TValue* obj, TValue* n)
 	}
 	else
 	{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -144,7 +144,7 @@ void luaV_gettable(lua_State* L, const TValue* t, TValue* key, StkId val)
 			Table* h = hvalue(t);
 			const TValue* res = luaH_get(h, key); /* do a primitive get */
 			if (!ttisnil(res) ||				  /* result is not nil? */
-				(tm = fasttm(L, h->metatable, TM_INDEX)) == NULL)
+				(tm = fasttm(L, h->metatable, TM_INDEX)) == nullptr)
 			{ /* or no TM? */
 				setobj2s(L, val, res);
 				return;
@@ -180,7 +180,7 @@ void luaV_settable(lua_State* L, const TValue* t, TValue* key, StkId val)
          in the table; moreover, a metamethod has no relevance */
 			if (!ttisnil(oldval) ||
 				/* previous value is nil; must check the metamethod */
-				((tm = fasttm(L, h->metatable, TM_NEWINDEX)) == NULL &&
+				((tm = fasttm(L, h->metatable, TM_NEWINDEX)) == nullptr &&
 				 /* no metamethod; is there a previous entry in the table? */
 				 (oldval != luaO_nilobject ||
 				  /* no previous entry; must create one. (The next test is
@@ -234,24 +234,24 @@ static const TValue* get_equalTM(lua_State* L, Table* mt1, Table* mt2,
 {
 	const TValue* tm1 = fasttm(L, mt1, event);
 	const TValue* tm2;
-	if (tm1 == NULL)
+	if (tm1 == nullptr)
 	{
-		return NULL; /* no metamethod */
+		return nullptr; /* no metamethod */
 	}
 	if (mt1 == mt2)
 	{
 		return tm1; /* same metatables => same metamethods */
 	}
 	tm2 = fasttm(L, mt2, event);
-	if (tm2 == NULL)
+	if (tm2 == nullptr)
 	{
-		return NULL; /* no metamethod */
+		return nullptr; /* no metamethod */
 	}
 	if (luaV_rawequalobj(tm1, tm2)) /* same metamethods? */
 	{
 		return tm1;
 	}
-	return NULL;
+	return nullptr;
 }
 
 
@@ -347,7 +347,7 @@ int luaV_lessequal(lua_State* L, const TValue* l, const TValue* r)
 
 
 /*
-** equality of Lua values. L == NULL means raw equality (no metamethods)
+** equality of Lua values. L == nullptr means raw equality (no metamethods)
 */
 int luaV_equalobj_(lua_State* L, const TValue* t1, const TValue* t2)
 {
@@ -375,7 +375,7 @@ int luaV_equalobj_(lua_State* L, const TValue* t1, const TValue* t2)
 				{
 					return 1;
 				}
-				else if (L == NULL)
+				else if (L == nullptr)
 				{
 					return 0;
 				}
@@ -388,7 +388,7 @@ int luaV_equalobj_(lua_State* L, const TValue* t1, const TValue* t2)
 				{
 					return 1;
 				}
-				else if (L == NULL)
+				else if (L == nullptr)
 				{
 					return 0;
 				}
@@ -399,7 +399,7 @@ int luaV_equalobj_(lua_State* L, const TValue* t1, const TValue* t2)
 			lua_assert(iscollectable(t1));
 			return gcvalue(t1) == gcvalue(t2);
 	}
-	if (tm == NULL)
+	if (tm == nullptr)
 	{
 		return 0; /* no TM? */
 	}
@@ -503,7 +503,7 @@ void luaV_arith(lua_State* L, StkId ra, const TValue* rb,
 {
 	TValue tempb, tempc;
 	const TValue *b, *c;
-	if ((b = luaV_tonumber(rb, &tempb)) != NULL && (c = luaV_tonumber(rc, &tempc)) != NULL)
+	if ((b = luaV_tonumber(rb, &tempb)) != nullptr && (c = luaV_tonumber(rc, &tempc)) != nullptr)
 	{
 		lua_Number res = luaO_arith(op - TM_ADD + LUA_OPADD, nvalue(b), nvalue(c));
 		setnvalue(ra, res);
@@ -523,7 +523,7 @@ void luaV_arith(lua_State* L, StkId ra, const TValue* rb,
 static Closure* getcached(Proto* p, UpVal** encup, StkId base)
 {
 	Closure* c = p->cache;
-	if (c != NULL)
+	if (c != nullptr)
 	{ /* is there a cached closure? */
 		int nup = p->sizeupvalues;
 		Upvaldesc* uv = p->upvalues;
@@ -533,11 +533,11 @@ static Closure* getcached(Proto* p, UpVal** encup, StkId base)
 			TValue* v = uv[i].instack ? base + uv[i].idx : encup[uv[i].idx]->v;
 			if (c->l.upvals[i]->v != v)
 			{
-				return NULL; /* wrong upvalue; cannot reuse closure */
+				return nullptr; /* wrong upvalue; cannot reuse closure */
 			}
 		}
 	}
-	return c; /* return cached closure (or NULL if no cached closure) */
+	return c; /* return cached closure (or nullptr if no cached closure) */
 }
 
 
@@ -852,7 +852,7 @@ newframe: /* reentry point when frame changes (call/return) */
           luaH_setint(L, h, last--, val);
           luaC_barrierback(L, obj2gco(h), val); } L->top = ci->top;																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														  /* correct top (in case of previous open call) */
 									  ) vmcase(OP_CLOSURE, Proto* p = cl->p->p[GETARG_Bx(i)]; Closure* ncl = getcached(p, cl->upvals, base);																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														  /* cached closure */
-											   if (ncl == NULL)																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																		  /* no match? */
+											   if (ncl == nullptr)																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																		  /* no match? */
 											   pushclosure(L, p, cl->upvals, base, ra);																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																												  /* create a new one */
 											   else setclLvalue(L, ra, ncl);																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																														  /* push cashed closure */
 											   checkGC(L, ra + 1);) vmcase(OP_VARARG, int b = GETARG_B(i) - 1; int j; int n = cast_int(base - ci->func) - cl->p->numparams - 1; if (b < 0) {																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																		  /* B == 0? */

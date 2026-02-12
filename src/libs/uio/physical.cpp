@@ -42,11 +42,11 @@ uio_PRoot_getRootDirHandle(uio_PRoot* pRoot)
 
 void uio_PRoot_deletePRootExtra(uio_PRoot* pRoot)
 {
-	if (pRoot->extra == NULL)
+	if (pRoot->extra == nullptr)
 	{
 		return;
 	}
-	assert(pRoot->handler->deletePRootExtra != NULL);
+	assert(pRoot->handler->deletePRootExtra != nullptr);
 	pRoot->handler->deletePRootExtra(pRoot->extra);
 }
 
@@ -69,7 +69,7 @@ uio_PRoot_new(uio_PDirHandle* topDirHandle,
 	pRoot->flags = flags;
 #ifdef uio_PROOT_HAVE_CLOSE_HANDLERS
 	pRoot->numCloseHandlers = 0;
-	pRoot->closeHandlers = NULL;
+	pRoot->closeHandlers = nullptr;
 #endif
 
 	return pRoot;
@@ -107,11 +107,11 @@ void uio_PRoot_callCloseHandlers(uio_PRoot* pRoot)
 void uio_PRoot_removeCloseHandlers(uio_PRoot* pRoot)
 {
 	pRoot->numCloseHandlers = 0;
-	if (pRoot->closeHandlers != NULL)
+	if (pRoot->closeHandlers != nullptr)
 	{
 		uio_free(pRoot->closeHandlers);
 	}
-	pRoot->closeHandlers = NULL;
+	pRoot->closeHandlers = nullptr;
 }
 #endif
 
@@ -122,7 +122,7 @@ uio_PRoot_delete(uio_PRoot* pRoot)
 	uio_PRoot_callCloseHandlers(pRoot);
 	uio_PRoot_removeCloseHandlers(pRoot);
 #endif
-	assert(pRoot->handler->umount != NULL);
+	assert(pRoot->handler->umount != nullptr);
 	pRoot->handler->umount(pRoot);
 	if (pRoot->handle)
 	{

@@ -38,7 +38,7 @@ bool mem_uninit(void)
 void* HMalloc(size_t size)
 {
 	void* p = malloc(size);
-	if (p == NULL && size > 0)
+	if (p == nullptr && size > 0)
 	{
 		log_add(log_Fatal, "HMalloc() FATAL: out of memory.");
 		fflush(stderr);
@@ -66,7 +66,7 @@ void* HCalloc(size_t size)
 void* HRealloc(void* p, size_t size)
 {
 	p = realloc(p, size);
-	if (p == NULL && size > 0)
+	if (p == nullptr && size > 0)
 	{
 		log_add(log_Fatal, "HRealloc() FATAL: out of memory.");
 		fflush(stderr);

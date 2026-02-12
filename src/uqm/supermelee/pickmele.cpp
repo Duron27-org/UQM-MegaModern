@@ -383,7 +383,7 @@ DoGetMelee(GETMELEE_STATE* gms)
 			if (gms->player[playerI].done)
 			{
 				Flash_terminate(gms->player[playerI].flashContext);
-				gms->player[playerI].flashContext = NULL;
+				gms->player[playerI].flashContext = nullptr;
 			}
 			else
 			{
@@ -762,7 +762,7 @@ GetMeleeStarShips(uqm::COUNT playerMask, HSTARSHIP* ships)
 
 		// XXX: This does not have to be done per connection.
 		conn = netConnections[playerI];
-		if (conn != NULL)
+		if (conn != nullptr)
 		{
 			BattleStateData* battleStateData;
 			battleStateData =
@@ -805,7 +805,7 @@ GetMeleeStarShips(uqm::COUNT playerMask, HSTARSHIP* ships)
 #endif
 
 		gmstate.player[playerI].flashContext =
-			Flash_createHighlight(ScreenContext, NULL);
+			Flash_createHighlight(ScreenContext, nullptr);
 		Flash_setMergeFactors(gmstate.player[playerI].flashContext,
 							  2, 3, 2);
 		Flash_setFrameTime(gmstate.player[playerI].flashContext,
@@ -866,7 +866,7 @@ GetMeleeStarShips(uqm::COUNT playerMask, HSTARSHIP* ships)
 		else
 		{
 			Flash_terminate(gmstate.player[playerI].flashContext);
-			gmstate.player[playerI].flashContext = NULL;
+			gmstate.player[playerI].flashContext = nullptr;
 			ok = false;
 		}
 	}
@@ -903,12 +903,12 @@ GetMeleeStarShips(uqm::COUNT playerMask, HSTARSHIP* ships)
 
 		// XXX: This does not have to be done per connection.
 		conn = netConnections[playerI];
-		if (conn != NULL && NetConnection_isConnected(conn))
+		if (conn != nullptr && NetConnection_isConnected(conn))
 		{
 			BattleStateData* battleStateData;
 			battleStateData =
 				(BattleStateData*)NetConnection_getStateData(conn);
-			battleStateData->getMeleeState = NULL;
+			battleStateData->getMeleeState = nullptr;
 		}
 	}
 #endif
@@ -966,7 +966,7 @@ bool GetNextMeleeStarShip(uqm::COUNT which_player, HSTARSHIP* result)
 // Called when a ship selection has arrived from a remote player.
 bool updateMeleeSelection(GETMELEE_STATE* gms, uqm::COUNT playerI, uqm::COUNT ship)
 {
-	if (gms == NULL || !gms->player[playerI].selecting || gms->player[playerI].done)
+	if (gms == nullptr || !gms->player[playerI].selecting || gms->player[playerI].done)
 	{
 		// This happens when we get an update message from a connection
 		// for who we are not selecting a ship.
@@ -994,7 +994,7 @@ reportShipSelected(GETMELEE_STATE* gms, uqm::COUNT index)
 	{
 		NetConnection* conn = netConnections[playerI];
 
-		if (conn == NULL)
+		if (conn == nullptr)
 		{
 			continue;
 		}

@@ -848,7 +848,7 @@ spawn_ip_group(IP_GROUP* GroupPtr)
 		}
 		if (optShipSeed)
 		{
-			FLEET_INFO* TemplatePtr = NULL;
+			FLEET_INFO* TemplatePtr = nullptr;
 			HFLEETINFO hFleet;
 			hFleet = GetStarShipFromIndex(&GLOBAL(avail_race_q), GroupPtr->race_id);
 			if (hFleet)

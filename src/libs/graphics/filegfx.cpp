@@ -34,7 +34,7 @@ LoadGraphicFile(const char* pStr)
 	}
 
 	fp = res_OpenResFile(contentDir, pStr, "rb");
-	if (fp != NULL)
+	if (fp != nullptr)
 	{
 		DRAWABLE hData;
 
@@ -45,7 +45,7 @@ LoadGraphicFile(const char* pStr)
 		return hData;
 	}
 
-	return (NULL);
+	return (nullptr);
 }
 
 FONT LoadFontFile(const char* pStr)
@@ -60,7 +60,7 @@ FONT LoadFontFile(const char* pStr)
 	}
 
 	fp = res_OpenResFile(contentDir, pStr, "rb");
-	if (fp != NULL)
+	if (fp != nullptr)
 	{
 		FONT hData;
 

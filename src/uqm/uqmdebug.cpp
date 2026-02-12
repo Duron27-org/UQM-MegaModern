@@ -43,7 +43,7 @@
 #include <stdio.h>
 #include <errno.h>
 
-void (*volatile debugHook)(void) = NULL;
+void (*volatile debugHook)(void) = nullptr;
 bool DebugKeyPressed;
 
 // Move the Flagship to the destination of the autopilot.
@@ -114,7 +114,7 @@ findPlayerShip(uqm::SIZE playerNr)
 
 		UnlockElement(hElement);
 	}
-	return NULL;
+	return nullptr;
 }
 
 ////////////////////////////////////////////////////////////////////////////
@@ -140,10 +140,10 @@ void resetEnergyBattle(void)
 	}
 	else
 	{
-		StarShipPtr = NULL;
+		StarShipPtr = nullptr;
 	}
 
-	if (StarShipPtr == NULL || StarShipPtr->RaceDescPtr == NULL)
+	if (StarShipPtr == nullptr || StarShipPtr->RaceDescPtr == nullptr)
 	{
 		return;
 	}
@@ -178,10 +178,10 @@ scuttleOpponent(void)
 	}
 	else
 	{
-		StarShipPtr = NULL;
+		StarShipPtr = nullptr;
 	}
 
-	if (StarShipPtr == NULL || StarShipPtr->RaceDescPtr == NULL)
+	if (StarShipPtr == nullptr || StarShipPtr->RaceDescPtr == nullptr)
 	{
 		return;
 	}
@@ -214,7 +214,7 @@ HaltShips(void)
 	{
 		StarShipPtr = findPlayerShip(i);
 
-		if (StarShipPtr == NULL || StarShipPtr->RaceDescPtr == NULL)
+		if (StarShipPtr == nullptr || StarShipPtr->RaceDescPtr == nullptr)
 		{
 			return;
 		}
@@ -643,7 +643,7 @@ void equipShip(void)
 	}
 
 	// Update the maximum speed and turning rate when in interplanetary.
-	if (pSolarSysState != NULL)
+	if (pSolarSysState != nullptr)
 	{
 		// Thrusters:
 		pSolarSysState->max_ship_speed = 5 * IP_SHIP_THRUST_INCREMENT;
@@ -779,7 +779,7 @@ void showSpheres(bool Animated)
 		HFLEETINFO hStarShip, hNextShip;
 
 		for (hStarShip = GetHeadLink(&GLOBAL(avail_race_q));
-			 hStarShip != NULL; hStarShip = hNextShip)
+			 hStarShip != nullptr; hStarShip = hNextShip)
 		{
 			FLEET_INFO* FleetPtr;
 
@@ -827,14 +827,14 @@ void activateAllShips(void)
 	HFLEETINFO hStarShip, hNextShip;
 
 	for (hStarShip = GetHeadLink(&GLOBAL(avail_race_q));
-		 hStarShip != NULL; hStarShip = hNextShip)
+		 hStarShip != nullptr; hStarShip = hNextShip)
 	{
 		FLEET_INFO* FleetPtr;
 
 		FleetPtr = LockFleetInfo(&GLOBAL(avail_race_q), hStarShip);
 		hNextShip = _GetSuccLink(FleetPtr);
 
-		if (FleetPtr->icons != NULL)
+		if (FleetPtr->icons != nullptr)
 		// Skip the Ur-Quan probe.
 		{
 			FleetPtr->allied_state = GOOD_GUY;
@@ -892,11 +892,11 @@ void UniverseRecurse(UniverseRecurseArg* universeRecurseArg)
 {
 	ACTIVITY savedActivity;
 
-	if (universeRecurseArg->systemFuncPre == NULL
-		&& universeRecurseArg->systemFuncPost == NULL
-		&& universeRecurseArg->planetFuncPre == NULL
-		&& universeRecurseArg->planetFuncPost == NULL
-		&& universeRecurseArg->moonFunc == NULL)
+	if (universeRecurseArg->systemFuncPre == nullptr
+		&& universeRecurseArg->systemFuncPost == nullptr
+		&& universeRecurseArg->planetFuncPre == nullptr
+		&& universeRecurseArg->planetFuncPost == nullptr
+		&& universeRecurseArg->moonFunc == nullptr)
 	{
 		return;
 	}
@@ -937,21 +937,21 @@ starRecurse(STAR_DESC* star, void* arg)
 	pSolarSysState = &SolarSysState;
 	(*SolarSysState.genFuncs->generatePlanets)(&SolarSysState);
 
-	if (universeRecurseArg->systemFuncPre != NULL)
+	if (universeRecurseArg->systemFuncPre != nullptr)
 	{
 		(*universeRecurseArg->systemFuncPre)(
 			star, &SolarSysState, universeRecurseArg->arg);
 	}
 
-	if (universeRecurseArg->planetFuncPre != NULL
-		|| universeRecurseArg->planetFuncPost != NULL
-		|| universeRecurseArg->moonFunc != NULL)
+	if (universeRecurseArg->planetFuncPre != nullptr
+		|| universeRecurseArg->planetFuncPost != nullptr
+		|| universeRecurseArg->moonFunc != nullptr)
 	{
 		forAllPlanets(star, &SolarSysState, planetRecurse,
 					  (void*)universeRecurseArg);
 	}
 
-	if (universeRecurseArg->systemFuncPost != NULL)
+	if (universeRecurseArg->systemFuncPost != nullptr)
 	{
 		(*universeRecurseArg->systemFuncPost)(
 			star, &SolarSysState, universeRecurseArg->arg);
@@ -972,7 +972,7 @@ planetRecurse(STAR_DESC* star, SOLARSYS_STATE* system, PLANET_DESC* planet,
 
 	planet->pPrevDesc = &system->SunDesc[0];
 
-	if (universeRecurseArg->planetFuncPre != NULL)
+	if (universeRecurseArg->planetFuncPre != nullptr)
 	{
 		system->pOrbitalDesc = planet;
 		DoPlanetaryAnalysis(&system->SysInfo, planet);
@@ -984,7 +984,7 @@ planetRecurse(STAR_DESC* star, SOLARSYS_STATE* system, PLANET_DESC* planet,
 			planet, universeRecurseArg->arg);
 	}
 
-	if (universeRecurseArg->moonFunc != NULL)
+	if (universeRecurseArg->moonFunc != nullptr)
 	{
 		RandomContext_SeedRandom(SysGenRNGDebug, planet->rand_seed);
 
@@ -994,7 +994,7 @@ planetRecurse(STAR_DESC* star, SOLARSYS_STATE* system, PLANET_DESC* planet,
 					(void*)universeRecurseArg);
 	}
 
-	if (universeRecurseArg->planetFuncPost != NULL)
+	if (universeRecurseArg->planetFuncPost != nullptr)
 	{
 		system->pOrbitalDesc = planet;
 		DoPlanetaryAnalysis(&system->SysInfo, planet);
@@ -1018,7 +1018,7 @@ moonRecurse(STAR_DESC* star, SOLARSYS_STATE* system, PLANET_DESC* planet,
 
 	moon->pPrevDesc = planet;
 
-	if (universeRecurseArg->moonFunc != NULL)
+	if (universeRecurseArg->moonFunc != nullptr)
 	{
 		system->pOrbitalDesc = moon;
 		if (moon->data_index != HIERARCHY_STARBASE
@@ -1053,9 +1053,9 @@ void dumpUniverse(FILE* out)
 	dumpUniverseArg.out = out;
 
 	universeRecurseArg.systemFuncPre = dumpSystemCallback;
-	universeRecurseArg.systemFuncPost = NULL;
+	universeRecurseArg.systemFuncPost = nullptr;
 	universeRecurseArg.planetFuncPre = dumpPlanetCallback;
-	universeRecurseArg.planetFuncPost = NULL;
+	universeRecurseArg.planetFuncPost = nullptr;
 	universeRecurseArg.moonFunc = dumpMoonCallback;
 	universeRecurseArg.arg = (void*)&dumpUniverseArg;
 
@@ -1069,7 +1069,7 @@ void dumpUniverseToFile(void)
 
 #define UNIVERSE_DUMP_FILE "PlanetInfo"
 	out = fopen(UNIVERSE_DUMP_FILE, "w");
-	if (out == NULL)
+	if (out == nullptr)
 	{
 		fprintf(stderr, "Error: Could not open file '%s' for "
 						"writing: %s\n",
@@ -1464,7 +1464,7 @@ calculateBioValue(const SOLARSYS_STATE* system, const PLANET_DESC* world)
 	assert(system->pOrbitalDesc == world);
 
 	numBio = callGenerateForScanType(system, world, GENERATE_ALL,
-									 BIOLOGICAL_SCAN, NULL);
+									 BIOLOGICAL_SCAN, nullptr);
 
 	result = 0;
 	for (i = 0; i < numBio; i++)
@@ -1485,7 +1485,7 @@ void generateBioIndex(const SOLARSYS_STATE* system, const PLANET_DESC* world,
 	assert(system->pOrbitalDesc == world);
 
 	numBio = callGenerateForScanType(system, world, GENERATE_ALL,
-									 BIOLOGICAL_SCAN, NULL);
+									 BIOLOGICAL_SCAN, nullptr);
 
 	for (i = 0; i < NUM_CREATURE_TYPES + NUM_SPECIAL_CREATURE_TYPES; i++)
 	{
@@ -1510,7 +1510,7 @@ calculateMineralValue(const SOLARSYS_STATE* system, const PLANET_DESC* world)
 	assert(system->pOrbitalDesc == world);
 
 	numDeposits = callGenerateForScanType(system, world, GENERATE_ALL,
-										  MINERAL_SCAN, NULL);
+										  MINERAL_SCAN, nullptr);
 
 	result = 0;
 	for (i = 0; i < numDeposits; i++)
@@ -1531,7 +1531,7 @@ void generateMineralIndex(const SOLARSYS_STATE* system, const PLANET_DESC* world
 	assert(system->pOrbitalDesc == world);
 
 	numDeposits = callGenerateForScanType(system, world, GENERATE_ALL,
-										  MINERAL_SCAN, NULL);
+										  MINERAL_SCAN, nullptr);
 
 	for (i = 0; i < NUM_ELEMENT_CATEGORIES; i++)
 	{
@@ -1566,7 +1566,7 @@ void tallyResources(FILE* out)
 	universeRecurseArg.systemFuncPre = tallySystemPreCallback;
 	universeRecurseArg.systemFuncPost = tallySystemPostCallback;
 	universeRecurseArg.planetFuncPre = tallyPlanetCallback;
-	universeRecurseArg.planetFuncPost = NULL;
+	universeRecurseArg.planetFuncPost = nullptr;
 	universeRecurseArg.moonFunc = tallyMoonCallback;
 	universeRecurseArg.arg = (void*)&tallyResourcesArg;
 
@@ -1580,7 +1580,7 @@ void tallyResourcesToFile(void)
 
 #define RESOURCE_TALLY_FILE "ResourceTally"
 	out = fopen(RESOURCE_TALLY_FILE, "w");
-	if (out == NULL)
+	if (out == nullptr)
 	{
 		fprintf(stderr, "Error: Could not open file '%s' for "
 						"writing: %s\n",
@@ -1890,7 +1890,7 @@ void resetCrewBattle(void)
 	}
 
 	StarShipPtr = findPlayerShip(RPG_PLAYER_NUM);
-	if (StarShipPtr == NULL || StarShipPtr->RaceDescPtr == NULL)
+	if (StarShipPtr == nullptr || StarShipPtr->RaceDescPtr == nullptr)
 	{
 		return;
 	}
@@ -2053,7 +2053,7 @@ countVisibleContexts(void)
 	CONTEXT context;
 
 	contextCount = 0;
-	for (context = GetFirstContext(); context != NULL;
+	for (context = GetFirstContext(); context != nullptr;
 		 context = GetNextContext(context))
 	{
 		if (!isContextVisible(context))
@@ -2266,7 +2266,7 @@ void debugContexts(void)
 	hueIncrement = 360.0 / contextCount;
 
 	visibleContextI = 0;
-	for (context = GetFirstContext(); context != NULL;
+	for (context = GetFirstContext(); context != nullptr;
 		 context = GetNextContext(context))
 	{
 		if (context == debugDrawContext)

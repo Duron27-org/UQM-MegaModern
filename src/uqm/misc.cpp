@@ -58,8 +58,8 @@ void spawn_planet(void)
 				WRAP_X(DISPLAY_ALIGN_X(TFB_Random()));
 			PlanetElementPtr->current.location.y =
 				WRAP_Y(DISPLAY_ALIGN_Y(TFB_Random()));
-			PlanetElementPtr->collision_func = NULL;
-			PlanetElementPtr->postprocess_func = NULL;
+			PlanetElementPtr->collision_func = nullptr;
+			PlanetElementPtr->postprocess_func = nullptr;
 			ZeroVelocityComponents(&PlanetElementPtr->velocity);
 		}
 		else

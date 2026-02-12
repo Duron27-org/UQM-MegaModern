@@ -138,10 +138,10 @@ copen(void* InStream, STREAM_TYPE SType, STREAM_MODE SMode)
 	}
 
 	if (StreamLength == 0xFFFFFFFF
-		|| (_lpCurCodeDesc = (PLZHCODE_DESC)AllocCodeDesc()) == NULL)
+		|| (_lpCurCodeDesc = (PLZHCODE_DESC)AllocCodeDesc()) == nullptr)
 	{
 		FreeCodeDesc(_lpCurCodeDesc);
-		_lpCurCodeDesc = NULL;
+		_lpCurCodeDesc = nullptr;
 	}
 	else
 	{
@@ -173,7 +173,7 @@ cclose(PLZHCODE_DESC lpCodeDesc)
 
 		StreamIndex = lpCodeDesc->StreamIndex;
 		FreeCodeDesc(lpCodeDesc);
-		_lpCurCodeDesc = NULL;
+		_lpCurCodeDesc = nullptr;
 
 		return (StreamIndex);
 	}

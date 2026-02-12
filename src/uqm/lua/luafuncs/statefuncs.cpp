@@ -54,7 +54,7 @@ static int luaUqm_state_misc_alignText(lua_State* luaState);
 
 static const luaL_Reg stateClockFuncs[] = {
 	{"getDate", luaUqm_state_clock_getDate},
-	{NULL,	   NULL					  },
+	{nullptr,	   nullptr					  },
 };
 
 static const luaL_Reg stateEscortFuncs[] = {
@@ -63,13 +63,13 @@ static const luaL_Reg stateEscortFuncs[] = {
 	{"removeShips", luaUqm_state_escort_removeShips},
 	{"shipCount",	  luaUqm_state_escort_shipCount  },
 	{"totalValue",  luaUqm_state_escort_totalValue },
-	{NULL,		   NULL						   },
+	{nullptr,		   nullptr						   },
 };
 
 static const luaL_Reg statePropFuncs[] = {
 	{"get", luaUqm_state_prop_get},
 	{"set", luaUqm_state_prop_set},
-	{NULL,  NULL				 },
+	{nullptr,  nullptr				 },
 };
 
 static const luaL_Reg stateRaceFuncs[] = {
@@ -79,7 +79,7 @@ static const luaL_Reg stateRaceFuncs[] = {
 	{"setAlive",	 luaUqm_state_race_setAlive },
 	{"setAllied", luaUqm_state_race_setAllied},
 	{"setKnown",	 luaUqm_state_race_setKnown },
-	{NULL,		   NULL					   },
+	{nullptr,		   nullptr					   },
 };
 
 static const luaL_Reg stateSisFuncs[] = {
@@ -93,12 +93,12 @@ static const luaL_Reg stateSisFuncs[] = {
 	{"getLanders",	   luaUqm_state_sis_getLanders	  },
 	{"getResUnits",	luaUqm_state_sis_getResUnits	},
 	{"getShipName",	luaUqm_state_sis_getShipName	},
-	{NULL,			 NULL						   },
+	{nullptr,			 nullptr						   },
 };
 
 static const luaL_Reg stateMiscFuncs[] = {
 	{"alignText", luaUqm_state_misc_alignText},
-	{NULL,		   NULL					   },
+	{nullptr,		   nullptr					   },
 };
 
 int luaUqm_state_open(lua_State* luaState)
@@ -176,7 +176,7 @@ testShipId(lua_State* luaState, int argn)
 static void
 pushRaceId(lua_State *luaState, uqm::COUNT raceId) {
 	const char *raceIdStr = raceIdNumToStr(raceId);
-	if (raceIdStr != NULL) {
+	if (raceIdStr != nullptr) {
 		lua_pushstring(luaState, raceIdStr);
 	} else {
 		lua_pushnil(luaState);

@@ -212,7 +212,7 @@ char* dosToUnixPath(const char* path)
 		memcpy(dstPtr, srcPtr, skip);
 
 		slash = (char*)memchr(srcPtr + 2, '/', skip - 2);
-		if (slash != NULL)
+		if (slash != nullptr)
 		{
 			*slash = '\\';
 		}

@@ -333,7 +333,7 @@ DrawControlText(STAMP stamp, uqm::COUNT which_icon, bool HiLite)
 	t.baseline.x = r.corner.x + (r.extent.width >> 1);
 	t.baseline.y = r.corner.y + leading + RES_SCALE(4);
 
-	while (t.pStr != NULL)
+	while (t.pStr != nullptr)
 	{
 		t.pStr = AlignText((const uqm::CHAR_T*)t.pStr, &t.baseline.x);
 		t.CharCount = (uqm::COUNT)~0;
@@ -342,7 +342,7 @@ DrawControlText(STAMP stamp, uqm::COUNT which_icon, bool HiLite)
 							HiLite ? CONTROL_TEXT_HL_COLOR : CONTROL_TEXT_COLOR,
 							HiLite ? CONTROL_TEXT_TRACE_HL_COLOR : CONTROL_TEXT_TRACE_COLOR);
 
-		t.pStr = strtok(NULL, " ");
+		t.pStr = strtok(nullptr, " ");
 		t.CharCount = (uqm::COUNT)~0;
 		t.baseline.y += leading;
 	}
@@ -884,7 +884,7 @@ DrawTeams(void)
 			DrawShipBox(side, index, ship, false);
 		}
 
-		DrawTeamString(pMeleeState, side, DTSHS_NORMAL, NULL);
+		DrawTeamString(pMeleeState, side, DTSHS_NORMAL, nullptr);
 		DrawFleetValue(pMeleeState, side, DTSHS_NORMAL);
 	}
 }
@@ -1092,7 +1092,7 @@ DrawFleetValue(MELEE_STATE* pMS, uqm::COUNT side, uqm::COUNT HiLiteState)
 	font_DrawText(&rtText);
 }
 
-// If teamName == NULL, the team name is taken from pMS->meleeSetup
+// If teamName == nullptr, the team name is taken from pMS->meleeSetup
 static bool
 DrawTeamString(MELEE_STATE* pMS, uqm::COUNT side, uqm::COUNT HiLiteState,
 			   const char* teamName)
@@ -1109,7 +1109,7 @@ DrawTeamString(MELEE_STATE* pMS, uqm::COUNT side, uqm::COUNT HiLiteState,
 
 	SetContextFont(MicroFont);
 
-	lfText.pStr = (teamName != NULL) ? teamName :
+	lfText.pStr = (teamName != nullptr) ? teamName :
 									   MeleeSetup_getTeamName(pMS->meleeSetup, side);
 	lfText.baseline.y = r.corner.y + r.extent.height - RES_SCALE(3);
 	lfText.baseline.x = r.corner.x + RES_SCALE(1);
@@ -1310,7 +1310,7 @@ UpdateMeleeStatusMessage(ssize_t player)
 	}
 
 	conn = netConnections[player];
-	if (conn == NULL)
+	if (conn == nullptr)
 	{
 		DrawMeleeStatusMessage(GAME_STRING(NETMELEE_STRING_BASE + 0));
 		// "Unconnected. Press LEFT to connect."
@@ -1416,7 +1416,7 @@ Deselect(uqm::BYTE opt)
 					}
 
 					DrawTeamString(pMeleeState, pMeleeState->side,
-								   DTSHS_NORMAL, NULL);
+								   DTSHS_NORMAL, nullptr);
 					DrawFleetValue(pMeleeState, pMeleeState->side,
 								   DTSHS_NORMAL);
 				}
@@ -1493,7 +1493,7 @@ Select(uqm::BYTE opt)
 					}
 
 					DrawTeamString(pMeleeState, pMeleeState->side,
-								   DTSHS_SELECTED, NULL);
+								   DTSHS_SELECTED, nullptr);
 					DrawFleetValue(pMeleeState, pMeleeState->side,
 								   DTSHS_SELECTED);
 				}
@@ -1540,7 +1540,7 @@ InitMelee(MELEE_STATE* pMS)
 
 	SetContext(SpaceContext);
 	SetContextFGFrame(Screen);
-	SetContextClipRect(NULL);
+	SetContextClipRect(nullptr);
 	SetContextBackGroundColor(BLACK_COLOR);
 	ClearDrawable();
 	r.corner.x = SAFE_X;
@@ -1614,7 +1614,7 @@ void DrawMeleeShipStrings(MELEE_STATE* pMS, MeleeShip NewStarShip)
 		hMasterShip = GetStarShipFromIndex(&master_q, NewStarShip);
 		MasterPtr = LockMasterShip(&master_q, hMasterShip);
 
-		InitShipStatus(&MasterPtr->ShipInfo, NULL, NULL, true);
+		InitShipStatus(&MasterPtr->ShipInfo, nullptr, nullptr, true);
 
 		if (optMeleeToolTips && pMS->MeleeOption == BUILD_PICK)
 		{
@@ -1863,7 +1863,7 @@ DoEdit(MELEE_STATE* pMS)
 
 				// going to enter text
 				pMS->CurIndex = 0;
-				DrawTeamString(pMS, pMS->side, DTSHS_EDIT, NULL);
+				DrawTeamString(pMS, pMS->side, DTSHS_EDIT, nullptr);
 
 				strncpy(buf, MeleeSetup_getTeamName(pMS->meleeSetup, pMS->side), MAX_TEAM_CHARS);
 				buf[MAX_TEAM_CHARS] = '\0';
@@ -1983,7 +1983,7 @@ numPlayersReady(void)
 
 			conn = netConnections[player];
 
-			if (conn == NULL || !NetConnection_isConnected(conn))
+			if (conn == nullptr || !NetConnection_isConnected(conn))
 			{
 				return -1;
 			}
@@ -2088,7 +2088,7 @@ DoConfirmSettings(MELEE_STATE* pMS)
 			}
 
 			conn = netConnections[player];
-			assert(conn != NULL);
+			assert(conn != nullptr);
 
 			if (!NetConnection_isConnected(conn))
 			{
@@ -2223,7 +2223,7 @@ StartMelee(MELEE_STATE* pMS)
 		WaitForSoundEnd(TFBSOUND_WAIT_ALL);
 
 		load_gravity_well((uqm::BYTE)((uqm::COUNT)TFB_Random() % NUMBER_OF_PLANET_TYPES));
-		Battle(NULL);
+		Battle(nullptr);
 		free_gravity_well();
 		ClearPlayerInputAll();
 
@@ -2285,7 +2285,7 @@ StartMeleeButtonPressed(MELEE_STATE* pMS)
 			}
 
 			conn = netConnections[player];
-			if (conn == NULL || !NetConnection_isConnected(conn))
+			if (conn == nullptr || !NetConnection_isConnected(conn))
 			{
 				// Connection for player not established.
 				netReady = false;
@@ -2367,7 +2367,7 @@ DoConnectingDialog(MELEE_STATE* pMS)
 		TEXT t;
 
 		// Build a network connection.
-		if (netConnections[which_side] != NULL)
+		if (netConnections[which_side] != nullptr)
 		{
 			closePlayerNetworkConnection(which_side);
 		}
@@ -2419,7 +2419,7 @@ DoConnectingDialog(MELEE_STATE* pMS)
 	if (PulsedInputState.menu[KEY_MENU_CANCEL])
 	{
 		// Terminate a network connection.
-		if (netConnections[which_side] != NULL)
+		if (netConnections[which_side] != nullptr)
 		{
 			closePlayerNetworkConnection(which_side);
 			UpdateMeleeStatusMessage(which_side);
@@ -2434,7 +2434,7 @@ DoConnectingDialog(MELEE_STATE* pMS)
 	}
 
 	conn = netConnections[which_side];
-	if (conn != NULL)
+	if (conn != nullptr)
 	{
 		NetState status = NetConnection_getState(conn);
 		if ((status == NetState_init) || (status == NetState_inSetup))
@@ -2476,7 +2476,7 @@ check_for_disconnects(MELEE_STATE* pMS)
 		}
 
 		conn = netConnections[player];
-		if (conn == NULL || !NetConnection_isConnected(conn))
+		if (conn == nullptr || !NetConnection_isConnected(conn))
 		{
 			PlayerControl[player] = HUMAN_CONTROL | STANDARD_RATING;
 			DrawControls(player, false);
@@ -2511,7 +2511,7 @@ nextControlType(uqm::COUNT which_side)
 
 #ifdef NETPLAY
 		case NETWORK_CONTROL | STANDARD_RATING:
-			if (netConnections[which_side] != NULL)
+			if (netConnections[which_side] != nullptr)
 			{
 				closePlayerNetworkConnection(which_side);
 			}
@@ -2755,7 +2755,7 @@ LoadMeleeConfig(MELEE_STATE* pMS)
 	uqm::COUNT side;
 
 	stream = uio_fopen(configDir, "melee.cfg", "rb");
-	if (stream == NULL)
+	if (stream == nullptr)
 	{
 		goto err;
 	}
@@ -2813,7 +2813,7 @@ WriteMeleeConfig(MELEE_STATE* pMS)
 	uqm::COUNT side;
 
 	stream = res_OpenResFile(configDir, "melee.cfg", "wb");
-	if (stream == NULL)
+	if (stream == nullptr)
 	{
 		goto err;
 	}
@@ -2872,7 +2872,7 @@ void Melee(void)
 			uqm::COUNT player;
 			for (player = 0; player < NUM_PLAYERS; player++)
 			{
-				netConnections[player] = NULL;
+				netConnections[player] = nullptr;
 			}
 		}
 #endif
@@ -2950,9 +2950,9 @@ connectionFeedback(NetConnection* conn, const char* str, bool forcePopup)
 {
 	struct battlestate_struct* bs = NetMelee_getBattleState(conn);
 
-	if (bs == NULL && !forcePopup)
+	if (bs == nullptr && !forcePopup)
 	{
-		// bs == NULL means the game has not started yet.
+		// bs == nullptr means the game has not started yet.
 		DrawMeleeStatusMessage(str);
 	}
 	else
@@ -3000,7 +3000,7 @@ abortReasonString(NetplayAbortReason reason)
 			// "error."
 	}
 
-	return NULL;
+	return nullptr;
 	// Should not happen.
 }
 
@@ -3009,7 +3009,7 @@ void abortFeedback(NetConnection* conn, NetplayAbortReason reason)
 	const char* msg;
 
 	msg = abortReasonString(reason);
-	if (msg != NULL)
+	if (msg != nullptr)
 	{
 		connectionFeedback(conn, msg, true);
 	}
@@ -3031,7 +3031,7 @@ resetReasonString(NetplayResetReason reason)
 			// "Game aborted by the remote player."
 	}
 
-	return NULL;
+	return nullptr;
 	// Should not happen.
 }
 
@@ -3054,7 +3054,7 @@ void resetFeedback(NetConnection* conn, NetplayResetReason reason,
 	}
 
 	msg = resetReasonString(reason);
-	if (msg != NULL)
+	if (msg != nullptr)
 	{
 		connectionFeedback(conn, msg, false);
 	}
@@ -3146,7 +3146,7 @@ Melee_UpdateView_teamName(MELEE_STATE* pMS, uqm::COUNT side)
 		return;
 	}
 
-	DrawTeamString(pMS, side, DTSHS_REPAIR, NULL);
+	DrawTeamString(pMS, side, DTSHS_REPAIR, nullptr);
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -3251,7 +3251,7 @@ bool Melee_LocalChange_teamName(MELEE_STATE* pMS, uqm::COUNT side, const char* n
 		MeleeSetup* setup = pMS->meleeSetup;
 
 		const char* sentName = MeleeSetup_getSentTeamName(setup, side);
-		if (sentName == NULL)
+		if (sentName == nullptr)
 		{
 			// State 1.
 			// Notify network connections of the change.
@@ -3411,7 +3411,7 @@ void Melee_RemoteChange_teamName(MELEE_STATE* pMS, NetConnection* conn,
 	const char* sentName = MeleeSetup_getSentTeamName(setup, side);
 	const char* currentName;
 
-	if (sentName == NULL)
+	if (sentName == nullptr)
 	{
 		// State 1
 
@@ -3441,7 +3441,7 @@ void Melee_RemoteChange_teamName(MELEE_STATE* pMS, NetConnection* conn,
 			// Rule 2c- or 3d-.
 			// We lose the tie-breaker. We adopt the remote value.
 			Melee_Change_teamName(pMS, side, newName);
-			MeleeSetup_setSentTeamName(setup, side, NULL);
+			MeleeSetup_setSentTeamName(setup, side, nullptr);
 			return;
 		}
 	}
@@ -3474,7 +3474,7 @@ void Melee_RemoteChange_teamName(MELEE_STATE* pMS, NetConnection* conn,
 	else
 	{
 		// A packet has been sent and received. End of turn.
-		MeleeSetup_setSentTeamName(setup, side, NULL);
+		MeleeSetup_setSentTeamName(setup, side, nullptr);
 	}
 }
 

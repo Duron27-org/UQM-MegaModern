@@ -86,7 +86,7 @@ int uio_walkPhysicalPath(uio_PDirHandle* startPDirHandle, const char* path,
 		tempBuf[partEnd - partStart] = '\0';
 
 		entry = uio_getPDirEntryHandle(pDirHandle, tempBuf);
-		if (entry == NULL)
+		if (entry == nullptr)
 		{
 			retVal = ENOENT;
 			break;
@@ -118,7 +118,7 @@ int uio_walkPhysicalPath(uio_PDirHandle* startPDirHandle, const char* path,
  * @param[in]  pathLen    The string length of 'path'.
  * @param[in]  mode       The access mode for the newly created directories.
  *
- * @returns the new (physical) directory, or NULL if an error occurs, in
+ * @returns the new (physical) directory, or nullptr if an error occurs, in
  * 		which case #errno will be set.
  */
 uio_PDirHandle*
@@ -132,10 +132,10 @@ uio_makePath(uio_PDirHandle* pDirHandle, const char* path, size_t pathLen,
 	uio_PDirHandle* newPDirHandle;
 
 	mkdirFun = pDirHandle->pRoot->handler->mkdir;
-	if (mkdirFun == NULL)
+	if (mkdirFun == nullptr)
 	{
 		errno = ENOSYS;
-		return NULL;
+		return nullptr;
 	}
 
 	pathEnd = path + pathLen;
@@ -158,13 +158,13 @@ uio_makePath(uio_PDirHandle* pDirHandle, const char* path, size_t pathLen,
 		buf[end - start] = '\0';
 
 		newPDirHandle = mkdirFun(pDirHandle, buf, mode);
-		if (newPDirHandle == NULL)
+		if (newPDirHandle == nullptr)
 		{
 			int savedErrno = errno;
 			uio_PDirHandle_unref(pDirHandle);
 			errno = savedErrno;
 			uio_free(buf);
-			return NULL;
+			return nullptr;
 		}
 		uio_PDirHandle_unref(pDirHandle);
 		pDirHandle = newPDirHandle;
@@ -205,14 +205,14 @@ int uio_copyFilePhysical(uio_PDirHandle* fromDir, const char* fromName,
 
 	fromHandler = fromDir->pRoot->handler;
 	toHandler = toDir->pRoot->handler;
-	if (toHandler->write == NULL || fromHandler->fstat == NULL || toHandler->unlink == NULL)
+	if (toHandler->write == nullptr || fromHandler->fstat == nullptr || toHandler->unlink == nullptr)
 	{
 		errno = ENOSYS;
 		return -1;
 	}
 
 	fromHandle = (fromHandler->open)(fromDir, fromName, O_RDONLY, 0);
-	if (fromHandle == NULL)
+	if (fromHandle == nullptr)
 	{
 		// errno is set
 		return -1;
@@ -221,15 +221,15 @@ int uio_copyFilePhysical(uio_PDirHandle* fromDir, const char* fromName,
 	if ((fromHandler->fstat)(fromHandle, &statBuf) == -1)
 	{
 		return copyError(errno, fromHandler, fromHandle,
-						 toHandler, NULL, NULL, NULL, NULL);
+						 toHandler, nullptr, nullptr, nullptr, nullptr);
 	}
 
 	toHandle = (toHandler->open)(toDir, toName, O_WRONLY | O_CREAT | O_EXCL,
 								 statBuf.st_mode & (S_IRWXU | S_IRWXG | S_IRWXO));
-	if (toHandle == NULL)
+	if (toHandle == nullptr)
 	{
 		return copyError(errno, fromHandler, fromHandle,
-						 toHandler, NULL, NULL, NULL, NULL);
+						 toHandler, nullptr, nullptr, nullptr, nullptr);
 	}
 
 	buf = (char*)uio_malloc(BUFSIZE);
@@ -279,8 +279,8 @@ int uio_copyFilePhysical(uio_PDirHandle* fromDir, const char* fromName,
 /*
  * Closes fromHandle if it's not -1.
  * Closes fromHandle if it's not -1.
- * Removes 'toName' from 'toDir' if it's not NULL.
- * Frees 'buf' if not NULL.
+ * Removes 'toName' from 'toDir' if it's not nullptr.
+ * Frees 'buf' if not nullptr.
  * Always returns -1, setting errno to 'error'.
  */
 static int
@@ -293,22 +293,22 @@ copyError(int error,
 	fprintf(stderr, "Error while copying: %s\n", strerror(error));
 #endif
 
-	if (fromHandle != NULL)
+	if (fromHandle != nullptr)
 	{
 		(fromHandler->close)(fromHandle);
 	}
 
-	if (toHandle != NULL)
+	if (toHandle != nullptr)
 	{
 		(toHandler->close)(toHandle);
 	}
 
-	if (toName != NULL)
+	if (toName != nullptr)
 	{
 		(toHandler->unlink)(toDir, toName);
 	}
 
-	if (buf != NULL)
+	if (buf != nullptr)
 	{
 		uio_free(buf);
 	}
@@ -347,13 +347,13 @@ copyError(int error,
  *              		to the physical path to the reading location 
  *              		is to be stored.
  *              		The caller is responsible for freeing this.
- *              		Ignored if NULL.
+ *              		Ignored if nullptr.
  *              mountInfoWritePtr - pointer to location where the pointer
  *              		to the MountInfo structure for the writing location
  *              		should be stored.
  *              writePDirHandlePtr - pointer to the location where the pointer
  *              		to the PDirHandle used for writing should be stored.
- *              		NULL if O_RDONLY was specified.
+ *              		nullptr if O_RDONLY was specified.
  *              		If this is the same dir as the one refered
  *              		to by readPDirHandlePtr, the handles will be the
  *              		same too.
@@ -361,12 +361,12 @@ copyError(int error,
  *              		to the physical path to the writing location 
  *              		is to be stored.
  *              		The caller is responsible for freeing this.
- *              		Ignored if NULL.
+ *              		Ignored if nullptr.
  *              restPtr - pointer to the location where a newly created
  *              		string with as contents the last component of 'path'
  *              		is to be stored.
  *              		The caller is responsible for freeing this.
- *              		Ignored if NULL.
+ *              		Ignored if nullptr.
  * Returns:     0 - success
  *              -1 - failure (errno set)
  * NB:          This is the function that would most benefit from
@@ -411,17 +411,17 @@ int uio_getPhysicalAccess(uio_DirHandle* dirHandle, const char* path,
 	uio_findMountTree(dirHandle->repository->mountTree, fullPath,
 					  &tree, &rest);
 
-	readItem = NULL;
-	readPDirHandle = NULL;
-	readPRootPath = NULL;
-	writeItem = NULL;
-	writePDirHandle = NULL;
-	writePRootPath = NULL;
-	readRest = NULL;
+	readItem = nullptr;
+	readPDirHandle = nullptr;
+	readPRootPath = nullptr;
+	writeItem = nullptr;
+	writePDirHandle = nullptr;
+	writePRootPath = nullptr;
+	readRest = nullptr;
 	// Satisfy compiler.
 	entryExists = false;
 	// try all the MountInfo structures in effect for this MountTree
-	for (item = tree->pLocs; item != NULL; item = item->next)
+	for (item = tree->pLocs; item != nullptr; item = item->next)
 	{
 		pRootPath = uio_mountTreeItemRestPath(item, tree->lastComp, fullPath);
 		retVal = uio_walkPhysicalPath(item->mountInfo->pDirHandle, pRootPath,
@@ -433,7 +433,7 @@ int uio_getPhysicalAccess(uio_DirHandle* dirHandle, const char* path,
 			// As the last component did exist, we don't go on.
 			uio_free(fullPath);
 			uio_PDirHandle_unref(pDirHandle);
-			if (readPDirHandle != NULL)
+			if (readPDirHandle != nullptr)
 			{
 				uio_PDirHandle_unref(readPDirHandle);
 			}
@@ -441,11 +441,11 @@ int uio_getPhysicalAccess(uio_DirHandle* dirHandle, const char* path,
 			return -1;
 		}
 		// check if this MountTreeItem is suitable for writing
-		if (writeItem == NULL && !uio_mountInfoIsReadOnly(item->mountInfo))
+		if (writeItem == nullptr && !uio_mountInfoIsReadOnly(item->mountInfo))
 		{
 			writeItem = item;
 		}
-		if (strchr(rest, '/') == NULL)
+		if (strchr(rest, '/') == nullptr)
 		{
 			// There's only one dir component that was not matched.
 			uio_PDirEntryHandle* entry;
@@ -453,13 +453,13 @@ int uio_getPhysicalAccess(uio_DirHandle* dirHandle, const char* path,
 			// This MountInfo will do for reading, if the file from the last
 			// component is present in this dir.
 			entry = uio_getPDirEntryHandle(pDirHandle, rest);
-			if (entry != NULL)
+			if (entry != nullptr)
 			{
 				// 'rest' exists, and it is not a dir, as otherwise
 				// uio_getPDirEntryHandle wouldn't have stopped where it did.
 				uio_PDirEntryHandle_unref(entry);
 				readItem = item;
-				if (readPDirHandle != NULL)
+				if (readPDirHandle != nullptr)
 				{
 					uio_PDirHandle_unref(readPDirHandle);
 				}
@@ -473,11 +473,11 @@ int uio_getPhysicalAccess(uio_DirHandle* dirHandle, const char* path,
 			{
 				// 'rest' doesn't exist
 				// We're only interested in this dir if we want to write too.
-				if (((flags & O_ACCMODE) != O_RDONLY) && readItem == NULL)
+				if (((flags & O_ACCMODE) != O_RDONLY) && readItem == nullptr)
 				{
 					// Keep the first one.
 					readItem = item;
-					assert(readPDirHandle == NULL);
+					assert(readPDirHandle == nullptr);
 					readPDirHandle = pDirHandle;
 					readPRootPath = pRootPath;
 					readRest = rest;
@@ -494,7 +494,7 @@ int uio_getPhysicalAccess(uio_DirHandle* dirHandle, const char* path,
 			{
 				uio_free(fullPath);
 				uio_PDirHandle_unref(pDirHandle);
-				if (readPDirHandle != NULL)
+				if (readPDirHandle != nullptr)
 				{
 					uio_PDirHandle_unref(readPDirHandle);
 				}
@@ -508,9 +508,9 @@ int uio_getPhysicalAccess(uio_DirHandle* dirHandle, const char* path,
 	// exists (including the final component). If there's no such readItem,
 	// it is set to the first path for which the path exists, but without
 	// the final component (entryExists is false in this case). If there's
-	// no such path either, it's set to NULL.
+	// no such path either, it's set to nullptr.
 
-	if (readItem == NULL)
+	if (readItem == nullptr)
 	{
 		uio_free(fullPath);
 		errno = ENOENT;
@@ -521,13 +521,13 @@ int uio_getPhysicalAccess(uio_DirHandle* dirHandle, const char* path,
 		// write access is not needed
 		*mountInfoReadPtr = readItem->mountInfo;
 		*readPDirHandlePtr = readPDirHandle;
-		if (readPRootPathPtr != NULL)
+		if (readPRootPathPtr != nullptr)
 		{
 			*readPRootPathPtr = joinPathsAbsolute(
 				readItem->mountInfo->dirName, readPRootPath);
 		}
 		// Don't touch mountInfoWritePtr and writePDirHandlePtr.
-		// they'd be NULL.
+		// they'd be nullptr.
 		*restPtr = uio_strdup(readRest);
 		uio_free(fullPath);
 		return 0;
@@ -572,7 +572,7 @@ int uio_getPhysicalAccess(uio_DirHandle* dirHandle, const char* path,
 		// The read directory is usable as write directory too.
 		*mountInfoReadPtr = readItem->mountInfo;
 		*readPDirHandlePtr = readPDirHandle;
-		if (readPRootPathPtr != NULL)
+		if (readPRootPathPtr != nullptr)
 		{
 			*readPRootPathPtr = joinPathsAbsolute(
 				readItem->mountInfo->dirName, readPRootPath);
@@ -583,24 +583,24 @@ int uio_getPhysicalAccess(uio_DirHandle* dirHandle, const char* path,
 		*writePDirHandlePtr = readPDirHandle;
 		// No copy&paste error, the read PDirHandle is the write
 		// pDirHandle too.
-		if (writePRootPathPtr != NULL)
+		if (writePRootPathPtr != nullptr)
 		{
 			*writePRootPathPtr = joinPathsAbsolute(
 				writeItem->mountInfo->dirName, writePRootPath);
 		}
-		if (restPtr != NULL)
+		if (restPtr != nullptr)
 		{
 			*restPtr = uio_strdup(readRest);
 		}
 		uio_free(fullPath);
 		return 0;
 	}
-	if (writeItem == NULL)
+	if (writeItem == nullptr)
 	{
 		uio_free(fullPath);
 		uio_PDirHandle_unref(readPDirHandle);
 		errno = EPERM;
-		// readItem is not NULL, so ENOENT would not be correct here.
+		// readItem is not nullptr, so ENOENT would not be correct here.
 		return -1;
 	}
 
@@ -612,7 +612,7 @@ int uio_getPhysicalAccess(uio_DirHandle* dirHandle, const char* path,
 
 	rest = strrchr(pRootPath, '/');
 	// rest points inside fullPath
-	if (rest == NULL)
+	if (rest == nullptr)
 	{
 		rest = pRootPath;
 		uio_PDirHandle_ref(writeItem->mountInfo->pDirHandle);
@@ -634,7 +634,7 @@ int uio_getPhysicalAccess(uio_DirHandle* dirHandle, const char* path,
 
 		writePDirHandle = uio_makePath(writeItem->mountInfo->pDirHandle,
 									   pRootPath, rest - pRootPath, 0777);
-		if (writePDirHandle == NULL)
+		if (writePDirHandle == nullptr)
 		{
 			int savedErrno;
 			if (errno == ENOSYS)
@@ -667,19 +667,19 @@ int uio_getPhysicalAccess(uio_DirHandle* dirHandle, const char* path,
 
 	*mountInfoReadPtr = readItem->mountInfo;
 	*readPDirHandlePtr = readPDirHandle;
-	if (readPRootPathPtr != NULL)
+	if (readPRootPathPtr != nullptr)
 	{
 		*readPRootPathPtr = joinPathsAbsolute(
 			readItem->mountInfo->dirName, readPRootPath);
 	}
 	*mountInfoWritePtr = writeItem->mountInfo;
 	*writePDirHandlePtr = writePDirHandle;
-	if (writePRootPathPtr != NULL)
+	if (writePRootPathPtr != nullptr)
 	{
 		*writePRootPathPtr = joinPathsAbsolute(
 			writeItem->mountInfo->dirName, writePRootPath);
 	}
-	if (restPtr != NULL)
+	if (restPtr != nullptr)
 	{
 		*restPtr = uio_strdup(rest);
 	}
@@ -699,10 +699,10 @@ int uio_getPhysicalAccess(uio_DirHandle* dirHandle, const char* path,
  * @param[in]  pathLen    The string length of 'path'.
  * @param[out] resPDirHandles *resPDirHandles is set to the handles to the
  * 		(existing) physical dirs that are effective in 'path' (relative to
- * 		pDirHandle), or NULL if there are none.
+ * 		pDirHandle), or nullptr if there are none.
  * @param[out] resNumPDirHandles The number of PDirHandles found.
- * @param[out] resItems If 'resItems' != NULL, *resItems is set to the
- * 		MountTreeItems belonging to $pDirHandles, or NULL if none were found.
+ * @param[out] resItems If 'resItems' != nullptr, *resItems is set to the
+ * 		MountTreeItems belonging to $pDirHandles, or nullptr if none were found.
  *
  * @retval 0   if everything went ok.
  * @retval -1  if an error occurred; #errno is set.
@@ -734,16 +734,16 @@ int uio_getPathPhysicalDirs(uio_DirHandle* dirHandle, const char* path,
 	// fill pDirHandles with all the PDirHandles for the path
 	numPDirHandles = uio_mountTreeCountPLocs(tree);
 	pDirHandles = (uio_PDirHandle**)uio_malloc(numPDirHandles * sizeof(uio_PDirHandle*));
-	if (resItems != NULL)
+	if (resItems != nullptr)
 	{
 		items = (uio_MountTreeItem**)uio_malloc(numPDirHandles * sizeof(uio_MountTreeItem*));
 	}
 	else
 	{
-		items = NULL; // satisfy compiler
+		items = nullptr; // satisfy compiler
 	}
 	pDirI = 0;
-	for (item = tree->pLocs; item != NULL; item = item->next)
+	for (item = tree->pLocs; item != nullptr; item = item->next)
 	{
 		uio_PDirHandle* pDirHandle {};
 
@@ -755,7 +755,7 @@ int uio_getPathPhysicalDirs(uio_DirHandle* dirHandle, const char* path,
 			case 0:
 				// complete path was matched
 				pDirHandles[pDirI] = pDirHandle;
-				if (resItems != NULL)
+				if (resItems != nullptr)
 				{
 					items[pDirI] = item;
 				}
@@ -783,7 +783,7 @@ int uio_getPathPhysicalDirs(uio_DirHandle* dirHandle, const char* path,
 
 	*resPDirHandles = (uio_PDirHandle**)uio_realloc(pDirHandles,
 													numPDirHandles * sizeof(uio_PDirHandle*));
-	if (resItems != NULL)
+	if (resItems != nullptr)
 	{
 		*resItems = (uio_MountTreeItem**)uio_realloc(items,
 													 numPDirHandles * sizeof(uio_MountTreeItem*));
@@ -831,7 +831,7 @@ int uio_verifyPath(uio_DirHandle* dirHandle, const char* path,
 	}
 
 	// Try all the MountInfo structures in effect for this MountTree.
-	for (item = tree->pLocs; item != NULL; item = item->next)
+	for (item = tree->pLocs; item != nullptr; item = item->next)
 	{
 		const char* pRootPath;
 		uio_PDirHandle* pDirHandle;

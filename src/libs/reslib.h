@@ -41,7 +41,7 @@ typedef union
 	const char* str;
 } RESOURCE_DATA;
 
-#define NULL_RESOURCE NULL
+#define NULL_RESOURCE nullptr
 
 extern const char* _cur_resfile_name;
 

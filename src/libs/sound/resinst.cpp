@@ -33,8 +33,8 @@ GetMusicFileData(const char* pathname, RESOURCE_DATA* resdata)
 
 bool InstallAudioResTypes(void)
 {
-	InstallResTypeVectors("SNDRES", GetSoundBankFileData, _ReleaseSoundBankData, NULL);
-	InstallResTypeVectors("MUSICRES", GetMusicFileData, _ReleaseMusicData, NULL);
+	InstallResTypeVectors("SNDRES", GetSoundBankFileData, _ReleaseSoundBankData, nullptr);
+	InstallResTypeVectors("MUSICRES", GetMusicFileData, _ReleaseMusicData, nullptr);
 	return (true);
 }
 

@@ -188,9 +188,9 @@ void uio_MemDebug_logAllocation(uio_MemDebug_LogType type, void* ptr)
 {
 	uio_MemDebug_PointerInfo* pointerInfo;
 
-	if (ptr == NULL)
+	if (ptr == nullptr)
 	{
-		fprintf(stderr, "Fatal: Allocated pointer is (%s *) NULL.\n",
+		fprintf(stderr, "Fatal: Allocated pointer is (%s *) nullptr.\n",
 				uio_MemDebug_logTypeInfo[(int)type].name);
 		abort();
 	}
@@ -208,9 +208,9 @@ void uio_MemDebug_logDeallocation(uio_MemDebug_LogType type, void* ptr)
 {
 	uio_MemDebug_PointerInfo* pointerInfo;
 
-	if (ptr == NULL)
+	if (ptr == nullptr)
 	{
-		fprintf(stderr, "Fatal: Attempt to free (%s *) NULL pointer.\n",
+		fprintf(stderr, "Fatal: Attempt to free (%s *) nullptr pointer.\n",
 				uio_MemDebug_logTypeInfo[(int)type].name);
 		abort();
 	}
@@ -221,7 +221,7 @@ void uio_MemDebug_logDeallocation(uio_MemDebug_LogType type, void* ptr)
 		fprintf(stderr, "\n");
 	}
 	pointerInfo = (uio_MemDebug_PointerInfo*)HashTable_find(uio_MemDebug_logs[type], ptr);
-	if (pointerInfo == NULL)
+	if (pointerInfo == nullptr)
 	{
 		fprintf(stderr, "Fatal: Attempt to free unallocated pointer "
 						"(%s *) %p.\n",
@@ -244,15 +244,15 @@ void uio_MemDebug_logRef(uio_MemDebug_LogType type, void* ptr)
 {
 	uio_MemDebug_PointerInfo* pointerInfo;
 
-	if (ptr == NULL)
+	if (ptr == nullptr)
 	{
 		fprintf(stderr, "Fatal: Attempt to increment reference to a "
-						"(%s *) NULL pointer.\n",
+						"(%s *) nullptr pointer.\n",
 				uio_MemDebug_logTypeInfo[(int)type].name);
 		abort();
 	}
 	pointerInfo = (uio_MemDebug_PointerInfo*)HashTable_find(uio_MemDebug_logs[type], ptr);
-	if (pointerInfo == NULL)
+	if (pointerInfo == nullptr)
 	{
 		fprintf(stderr, "Fatal: Attempt to increment reference to "
 						"unallocated pointer (%s *) %p.\n",
@@ -272,15 +272,15 @@ void uio_MemDebug_logUnref(uio_MemDebug_LogType type, void* ptr)
 {
 	uio_MemDebug_PointerInfo* pointerInfo;
 
-	if (ptr == NULL)
+	if (ptr == nullptr)
 	{
 		fprintf(stderr, "Fatal: Attempt to decrement reference to a "
-						"(%s *) NULL pointer.\n",
+						"(%s *) nullptr pointer.\n",
 				uio_MemDebug_logTypeInfo[(int)type].name);
 		abort();
 	}
 	pointerInfo = (uio_MemDebug_PointerInfo*)HashTable_find(uio_MemDebug_logs[type], ptr);
-	if (pointerInfo == NULL)
+	if (pointerInfo == nullptr)
 	{
 		fprintf(stderr, "Fatal: Attempt to decrement reference to "
 						"unallocated pointer (%s *) %p.\n",

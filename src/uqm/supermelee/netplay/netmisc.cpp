@@ -84,15 +84,15 @@ void NetMelee_connectCallback(NetConnection* conn)
 	struct melee_state* meleeState;
 
 	meleeState = (struct melee_state*)NetConnection_getExtra(conn);
-	battleStateData = BattleStateData_new(meleeState, NULL, NULL);
+	battleStateData = BattleStateData_new(meleeState, nullptr, nullptr);
 	NetConnection_setStateData(conn, (NetConnectionStateData*)battleStateData);
-	NetConnection_setExtra(conn, NULL);
+	NetConnection_setExtra(conn, nullptr);
 
 	// We have sent no teams yet. Initialize the state accordingly.
 	MeleeSetup_resetSentTeams(meleeState->meleeSetup);
 
 	sendInit(conn);
-	Netplay_localReady(conn, NetMelee_enterState_inSetup, NULL, false);
+	Netplay_localReady(conn, NetMelee_enterState_inSetup, nullptr, false);
 }
 
 // Called when a connection is closed.

@@ -60,7 +60,7 @@ int setenv(const char* name, const char* value, int overwrite)
 		char* old;
 
 		old = getenv(name);
-		if (old != NULL)
+		if (old != nullptr)
 		{
 			return 0;
 		}
@@ -103,9 +103,9 @@ int readdir_r(DIR* dirp, struct dirent* entry, struct dirent** result)
 	struct dirent* readdir_entry;
 
 	readdir_entry = readdir(dirp);
-	if (readdir_entry == NULL)
+	if (readdir_entry == nullptr)
 	{
-		*result = NULL;
+		*result = nullptr;
 		return errno;
 	}
 
@@ -127,7 +127,7 @@ int snprintf(char* str, size_t size, const char* format, ...)
 
 	va_start(args, format);
 	result = _vsnprintf(str, size, format, args);
-	if (str != NULL && size != 0)
+	if (str != nullptr && size != 0)
 	{
 		str[size - 1] = '\0';
 	}
@@ -139,7 +139,7 @@ int snprintf(char* str, size_t size, const char* format, ...)
 int vsnprintf(char* str, size_t size, const char* format, va_list args)
 {
 	int result = _vsnprintf(str, size, format, args);
-	if (str != NULL && size != 0)
+	if (str != nullptr && size != 0)
 	{
 		str[size - 1] = '\0';
 	}

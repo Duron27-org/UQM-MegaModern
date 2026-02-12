@@ -738,7 +738,7 @@ on_input_frame(void)
 	oldContext = SetContext(SpaceContext);
 	if (!DoShipSpins)
 	{
-		animatePowerLines(NULL);
+		animatePowerLines(nullptr);
 	}
 	SetContext(oldContext);
 }
@@ -1379,7 +1379,7 @@ ShowCombatShip(MENU_STATE* pMS, uqm::COUNT which_window,
 
 			SetContextClipRect(&OldClipRect);
 #ifndef USE_3DO_HANGAR
-			animatePowerLines(NULL);
+			animatePowerLines(nullptr);
 #endif
 			UnbatchGraphics();
 			SetContext(OldContext);
@@ -1615,7 +1615,7 @@ DMS_SpinShip(MENU_STATE* pMS, HSHIPFRAG hStarShip)
 		UnlockShipFrag(&GLOBAL(built_ship_q), hStarShip);
 	}
 
-	SetFlashRect(NULL, false);
+	SetFlashRect(nullptr, false);
 
 	OldContext = SetContext(ScreenContext);
 	GetContextClipRect(&OldClipRect);
@@ -1849,7 +1849,7 @@ static void
 DMS_ModifyCrew(MENU_STATE* pMS, HSHIPFRAG hStarShip, uqm::SBYTE dy)
 {
 	uqm::SIZE crew_delta = 0;
-	SHIP_FRAGMENT* StarShipPtr = NULL;
+	SHIP_FRAGMENT* StarShipPtr = nullptr;
 	uqm::COUNT loop;
 	uqm::COUNT DoLoop = 1;
 	RECT r;
@@ -1905,7 +1905,7 @@ DMS_ModifyCrew(MENU_STATE* pMS, HSHIPFRAG hStarShip, uqm::SBYTE dy)
 			}
 
 			CrewTransaction(crew_delta);
-			animatePowerLines(NULL);
+			animatePowerLines(nullptr);
 		}
 	}
 	else
@@ -1947,7 +1947,7 @@ DMS_ModifyCrew(MENU_STATE* pMS, HSHIPFRAG hStarShip, uqm::SBYTE dy)
 			if (!DIF_HARD || ((dy > 0 && StarShipPtr->crew_level >= 1) || (dy < 0 && StarShipPtr->crew_level != 1)))
 			{
 				CrewTransaction(crew_delta);
-				animatePowerLines(NULL);
+				animatePowerLines(nullptr);
 			}
 		}
 	}
@@ -1982,7 +1982,7 @@ DMS_TryAddEscortShip(MENU_STATE* pMS)
 	if (CanBuyPoints(hFleet) && GLOBAL_SIS(ResUnits) >= (uqm::DWORD)shipCost
 		&& CloneShipFragment((RACE_ID)Index, &GLOBAL(built_ship_q), 1))
 	{
-		ShowCombatShip(pMS, pMS->CurState, NULL);
+		ShowCombatShip(pMS, pMS->CurState, nullptr);
 		// Reset flash rectangle
 		DrawMenuStateStrings(PM_CREW, SHIPYARD_CREW);
 		DrawMenuStateStrings(PM_CREW, SHIPYARD_CREW);
@@ -2026,7 +2026,7 @@ DMS_TryUnstowEscortShip(MENU_STATE* pMS)
 		RemoveQueue(&GLOBAL(stowed_ship_q), hStowShip);
 		FreeShipFrag(&GLOBAL(stowed_ship_q), hStowShip);
 
-		ShowCombatShip(pMS, pMS->CurState, NULL);
+		ShowCombatShip(pMS, pMS->CurState, nullptr);
 		// Reset flash rectangle
 		DrawMenuStateStrings(PM_CREW, SHIPYARD_CREW);
 		DrawMenuStateStrings(PM_CREW, SHIPYARD_CREW);
@@ -2072,7 +2072,7 @@ DMS_AddEscortShip(MENU_STATE* pMS, bool special, bool select,
 	if (special)
 	{ // JSD: I don't think we can use delta_item, but SpinShip should be ok
 		//if (DMS_SpinShip (pMS, GetEscortByStarShipIndex (pMS->delta_item)))
-		if (DMS_SpinShip(pMS, NULL))
+		if (DMS_SpinShip(pMS, nullptr))
 		{
 			DMS_SetMode(pMS, DMS_Mode_addEscort);
 		}
@@ -2083,7 +2083,7 @@ DMS_AddEscortShip(MENU_STATE* pMS, bool special, bool select,
 	{
 		// Cancel selecting an escort ship.
 		pMS->delta_item &= ~MODIFY_CREW_FLAG;
-		SetFlashRect(NULL, false);
+		SetFlashRect(nullptr, false);
 
 		DrawMenuStateStrings(PM_CREW, SHIPYARD_CREW);
 		DrawMenuStateStrings(PM_CREW, SHIPYARD_CREW);
@@ -2176,7 +2176,7 @@ DMS_ScrapEscortShip(MENU_STATE* pMS, HSHIPFRAG hStarShip)
 	SHIP_FRAGMENT* StarShipPtr =
 		LockShipFrag(&GLOBAL(built_ship_q), hStarShip);
 
-	SetFlashRect(NULL, false);
+	SetFlashRect(nullptr, false);
 	ShowCombatShip(pMS, pMS->CurState, StarShipPtr);
 
 	UnlockShipFrag(&GLOBAL(built_ship_q), hStarShip);
@@ -2201,7 +2201,7 @@ DMS_StowEscortShip(MENU_STATE* pMS, HSHIPFRAG hStarShip)
 	SHIP_FRAGMENT* StarShipPtr =
 		LockShipFrag(&GLOBAL(built_ship_q), hStarShip);
 
-	SetFlashRect(NULL, false);
+	SetFlashRect(nullptr, false);
 	ShowCombatShip(pMS, pMS->CurState, StarShipPtr);
 
 	uqm::COUNT Index = StarShipPtr->race_id;
@@ -2712,7 +2712,7 @@ bool DoShipyard(MENU_STATE* pMS)
 
 			pMS->hMusic = LoadMusic(SHIPYARD_MUSIC);
 
-			SetTransitionSource(NULL);
+			SetTransitionSource(nullptr);
 			BatchGraphics();
 			DrawSISFrame();
 			DrawSISMessage(GAME_STRING(STARBASE_STRING_BASE + 3));
@@ -2770,12 +2770,12 @@ bool DoShipyard(MENU_STATE* pMS)
 				SetContextFont(TinyFontBold);
 			}
 
-			ScreenTransition(optScrTrans, NULL);
+			ScreenTransition(optScrTrans, nullptr);
 			UnbatchGraphics();
 
 			PlayMusicResume(pMS->hMusic, NORMAL_VOLUME);
 
-			ShowCombatShip(pMS, (uqm::COUNT)~0, NULL);
+			ShowCombatShip(pMS, (uqm::COUNT)~0, nullptr);
 
 			SetInputCallback(on_input_frame);
 
@@ -2787,7 +2787,7 @@ bool DoShipyard(MENU_STATE* pMS)
 	else if (cancel || (select && pMS->CurState == SHIPYARD_EXIT))
 	{
 ExitShipyard:
-		SetInputCallback(NULL);
+		SetInputCallback(nullptr);
 
 
 		if (pMS->CurState < SHIPYARD_EXIT)

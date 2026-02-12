@@ -119,7 +119,7 @@ RaceHyperSpeed(RACE_ID Index)
 decorate_vortex (ELEMENT *ElementPtr)
 {
 	HENCOUNTER hEncounter, hNextEncounter;
-	FRAME f = NULL;
+	FRAME f = nullptr;
 	static FRAME vortex_ships[NUM_AVAILABLE_RACES];
 
 	// The element is still spawning, nothing to do yet
@@ -569,7 +569,7 @@ bool LoadHyperspace(void)
 	}
 	if (!(GLOBAL(autopilot.x) != ~0 && GLOBAL(autopilot.y) != ~0))
 	{
-		DrawSISMessage(NULL);
+		DrawSISMessage(nullptr);
 	}
 
 	SetContext(RadarContext);
@@ -697,13 +697,13 @@ InterplanetaryTransition(ELEMENT* ElementPtr)
 		GLOBAL(autopilot.y) = ~0;
 
 		ElementToUniverse(ElementPtr, &pt);
-		CurStarDescPtr = FindStar(NULL, &pt, 5, 5);
+		CurStarDescPtr = FindStar(nullptr, &pt, 5, 5);
 
 		// JMS: Debugging helpers
 		/*{
 			STAR_DESC *SDPtr, *SDPtr2;
 			SDPtr = CurStarDescPtr;
-			SDPtr2 = FindStar (NULL, &pt, 500, 500);
+			SDPtr2 = FindStar (nullptr, &pt, 500, 500);
 			log_add(log_Debug, "SDPtr.x %d, SDPtr.y %d SDPtr2.x %d, "
 					"SDPtr2.y %d, pt.x %d pt.y %d", 
 					SDPtr->star_pt.x, SDPtr->star_pt.y, SDPtr2->star_pt.x,
@@ -882,7 +882,7 @@ init_transition(ELEMENT* ElementPtr0, ELEMENT* ElementPtr1,
 
 	ElementPtr1->state_flags |= NONSOLID;
 	ElementPtr1->preprocess_func = unhyper_transition;
-	ElementPtr1->postprocess_func = NULL;
+	ElementPtr1->postprocess_func = nullptr;
 	ElementPtr1->turn_wait = (uqm::BYTE)which_transition;
 
 	GetElementStarShip(ElementPtr1, &StarShipPtr);
@@ -953,7 +953,7 @@ bool hyper_transition(ELEMENT* ElementPtr)
 		{
 			ElementPtr->preprocess_func =
 				(void (*)(struct element* ElementPtr))hyper_transition;
-			ElementPtr->postprocess_func = NULL;
+			ElementPtr->postprocess_func = nullptr;
 			ElementPtr->state_flags |= NONSOLID;
 			ElementPtr->next.image.frame =
 				SetAbsFrameIndex(ElementPtr->current.image.frame,
@@ -1044,7 +1044,7 @@ hyper_collision(ELEMENT* ElementPtr0, POINT* pPt0,
 
 		ElementToUniverse(ElementPtr0, &pt);
 
-		SDPtr = FindStar(NULL, &pt, 5, 5);
+		SDPtr = FindStar(nullptr, &pt, 5, 5);
 
 		GetElementStarShip(ElementPtr1, &StarShipPtr);
 		GetCurrentVelocityComponents(&ElementPtr1->velocity, &dx, &dy);
@@ -1289,7 +1289,7 @@ encounter_transition(ELEMENT* ElementPtr)
 				{
 					ElementPtr->preprocess_func = encounter_animation;
 				}
-				ElementPtr->death_func = NULL;
+				ElementPtr->death_func = nullptr;
 			}
 		}
 
@@ -1307,7 +1307,7 @@ getSisElement(void)
 	hSis = GetHeadLink(&race_q[RPG_PLAYER_NUM]);
 	if (!hSis)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	StarShipPtr = LockStarShip(&race_q[RPG_PLAYER_NUM], hSis);
@@ -1505,7 +1505,7 @@ AddEncounterElement(ENCOUNTER* EncounterPtr, POINT* puniverse)
 			ElementPtr->current.image.frame = SetRelFrameIndex(
 				ElementPtr->current.image.farray[0], -i);
 			ElementPtr->death_func = encounter_transition;
-			ElementPtr->preprocess_func = NULL;
+			ElementPtr->preprocess_func = nullptr;
 		}
 		else
 		{
@@ -1519,12 +1519,12 @@ AddEncounterElement(ENCOUNTER* EncounterPtr, POINT* puniverse)
 			{
 				ElementPtr->current.image.frame = DecFrameIndex(
 					ElementPtr->current.image.farray[0]);
-				ElementPtr->preprocess_func = NULL;
+				ElementPtr->preprocess_func = nullptr;
 			}
 		}
 
 		ElementPtr->turn_wait = VORTEX_WAIT;
-		ElementPtr->postprocess_func = NULL; // decorate_vortex;
+		ElementPtr->postprocess_func = nullptr; // decorate_vortex;
 		ElementPtr->collision_func = encounter_collision;
 
 		SetUpElement(ElementPtr);
@@ -1642,7 +1642,7 @@ ProcessEncounter(ENCOUNTER* EncounterPtr, POINT* puniverse,
 			}
 			else if (EncounterPtr->transition_state == -NUM_VORTEX_TRANSITIONS)
 			{
-				ElementPtr->death_func = NULL;
+				ElementPtr->death_func = nullptr;
 				UnlockElement(EncounterPtr->hElement);
 				return false;
 			}
@@ -1743,14 +1743,14 @@ ProcessEncounter(ENCOUNTER* EncounterPtr, POINT* puniverse,
 
 				if (ANIMATED_HYPERSPACE)
 				{
-					ElementPtr->preprocess_func = NULL;
+					ElementPtr->preprocess_func = nullptr;
 					ElementPtr->current.image.frame =
 						ElementPtr->current.image.farray[0];
 				}
 			}
 			else
 			{
-				ElementPtr->death_func = NULL;
+				ElementPtr->death_func = nullptr;
 				UnlockElement(EncounterPtr->hElement);
 				return false;
 			}
@@ -1790,7 +1790,7 @@ ProcessEncounter(ENCOUNTER* EncounterPtr, POINT* puniverse,
 			|| ey - puniverse->y < -YOFFS || ey - puniverse->y > YOFFS)
 		{
 			ElementPtr->life_span = 0;
-			ElementPtr->death_func = NULL;
+			ElementPtr->death_func = nullptr;
 			UnlockElement(EncounterPtr->hElement);
 			return false;
 		}
@@ -2069,8 +2069,8 @@ void SeedUniverse(void)
 						SD[i].Index);
 			}
 
-			HyperSpaceElementPtr->preprocess_func = NULL;
-			HyperSpaceElementPtr->postprocess_func = NULL;
+			HyperSpaceElementPtr->preprocess_func = nullptr;
+			HyperSpaceElementPtr->postprocess_func = nullptr;
 			HyperSpaceElementPtr->collision_func = arilou_space_collision;
 
 			SetUpElement(HyperSpaceElementPtr);
@@ -2081,7 +2081,7 @@ void SeedUniverse(void)
 			}
 			else
 			{
-				HyperSpaceElementPtr->death_func = NULL;
+				HyperSpaceElementPtr->death_func = nullptr;
 				HyperSpaceElementPtr->IntersectControl.IntersectStamp.frame =
 					DecFrameIndex(stars_in_space);
 			}
@@ -2123,7 +2123,7 @@ void SeedUniverse(void)
 						+ star_color);
 			}
 
-			if (star_frame == NULL)
+			if (star_frame == nullptr)
 			{
 				continue;
 			}
@@ -2179,8 +2179,8 @@ void SeedUniverse(void)
 			}
 
 			HyperSpaceElementPtr->current.image.frame = star_frame;
-			HyperSpaceElementPtr->preprocess_func = NULL;
-			HyperSpaceElementPtr->postprocess_func = NULL;
+			HyperSpaceElementPtr->preprocess_func = nullptr;
+			HyperSpaceElementPtr->postprocess_func = nullptr;
 			HyperSpaceElementPtr->collision_func = hyper_collision;
 
 			SetUpElement(HyperSpaceElementPtr);
@@ -2192,7 +2192,7 @@ void SeedUniverse(void)
 			}
 			else
 			{
-				HyperSpaceElementPtr->death_func = NULL;
+				HyperSpaceElementPtr->death_func = nullptr;
 				HyperSpaceElementPtr->IntersectControl.IntersectStamp.frame =
 					DecFrameIndex(stars_in_space);
 			}
@@ -2252,7 +2252,7 @@ DoHyperspaceMenu(MENU_STATE* pMS)
 		return true;
 	}
 
-	SetFlashRect(NULL, false);
+	SetFlashRect(nullptr, false);
 
 	switch (pMS->CurState)
 	{
@@ -2325,7 +2325,7 @@ void HyperspaceMenu(void)
 	SetMenuSounds(MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
 	DoInput(&MenuState, true);
 
-	SetFlashRect(NULL, false);
+	SetFlashRect(nullptr, false);
 
 	SetContext(SpaceContext);
 

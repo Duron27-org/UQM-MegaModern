@@ -28,9 +28,9 @@
 static LOCDATA syreen_desc =
 	{
 		SYREEN_CONVERSATION, /* AlienConv */
-		NULL, /* init_encounter_func */
-		NULL, /* post_encounter_func */
-		NULL, /* uninit_encounter_func */
+		nullptr, /* init_encounter_func */
+		nullptr, /* post_encounter_func */
+		nullptr, /* uninit_encounter_func */
 		SYREEN_PMAP_ANIM, /* AlienFrame */
 		SYREEN_FONT, /* AlienFont */
 		WHITE_COLOR_INIT, /* AlienTextFColor */
@@ -226,13 +226,13 @@ static LOCDATA syreen_desc =
 								0, /* RestartRate */
 			0, /* BlockMask */
 		},
-		NULL, /* AlienNumberSpeech - none */
+		nullptr, /* AlienNumberSpeech - none */
 		/* Filler for loaded resources */
-		NULL,
-		NULL,
-		NULL,
-		NULL,
-		NULL,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
 };
 
 static FILTER_DESC syreen_filters =
@@ -311,7 +311,7 @@ FriendlyExit(RESPONSE_REF R)
 		FadeScreen(FadeAllToBlack, 0);
 
 		DrawSISFrame();
-		DrawSISMessage(NULL);
+		DrawSISMessage(nullptr);
 		DrawSISTitle(GLOBAL_SIS(PlanetName));
 		SetCommDarkMode(false);
 		RedrawSISComWindow();
@@ -1089,7 +1089,7 @@ init_syreen_comm(void)
 	syreen_desc.post_encounter_func = post_syreen_enc;
 	syreen_desc.uninit_encounter_func = uninit_syreen;
 
-	luaUqm_comm_init(NULL, NULL_RESOURCE);
+	luaUqm_comm_init(nullptr, NULL_RESOURCE);
 	// Initialise Lua for string interpolation. This will be
 	// generalised in the future.
 

@@ -600,8 +600,8 @@ void TFB_FlushGraphics(void)
 
 			case TFB_DRAWCOMMANDTYPE_SCISSORDISABLE:
 				TFB_DrawCanvas_SetClipRect(
-					TFB_GetScreenCanvas(TFB_SCREEN_MAIN), NULL);
-				TFB_BBox_SetClipRect(NULL);
+					TFB_GetScreenCanvas(TFB_SCREEN_MAIN), nullptr);
+				TFB_BBox_SetClipRect(nullptr);
 				break;
 
 			case TFB_DRAWCOMMANDTYPE_COPYTOIMAGE:

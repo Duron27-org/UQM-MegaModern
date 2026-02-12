@@ -136,10 +136,10 @@ alloc_colormap(void)
 		if (!map->palette)
 		{
 			HFree(map);
-			return NULL;
+			return nullptr;
 		}
 	}
-	map->next = NULL;
+	map->next = nullptr;
 	map->index = -1;
 	map->refcount = 1;
 	map->version = 0;
@@ -185,7 +185,7 @@ free_colormap(TFB_ColorMap* map)
 {
 	if (!map)
 	{
-		log_add(log_Warning, "free_colormap(): tried to free a NULL map");
+		log_add(log_Warning, "free_colormap(): tried to free a nullptr map");
 		return;
 	}
 
@@ -518,7 +518,7 @@ bool XFormColorMap_step(void)
 		if (TicksLeft > 0)
 		{
 #define XFORM_SCALE 0x10000
-			TFB_ColorMap* newmap = NULL;
+			TFB_ColorMap* newmap = nullptr;
 			uqm::UBYTE* newClr;
 			Color* oldClr;
 			int frac;
@@ -708,7 +708,7 @@ DoTransformColorMap(Color* colors, COLORMAPPTR ColorMapPtr, uqm::COUNT from,
 	}
 
 	{
-		TFB_ColorMap* newmap = NULL;
+		TFB_ColorMap* newmap = nullptr;
 		uqm::UBYTE* newPtr = (uqm::UBYTE*)ColorMapPtr + 2;
 		Color* c;
 		int i;

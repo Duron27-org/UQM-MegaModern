@@ -51,7 +51,7 @@ extern int fprintf(FILE*, const char*, ...);
 extern MODULE* pf; /* modfile being played */
 
 /* EXPORTED GLOBALS */
-MIKMODAPI MDRIVER* md_driver = NULL;
+MIKMODAPI MDRIVER* md_driver = nullptr;
 
 /* Initial global settings */
 MIKMODAPI UWORD md_device = 0; /* autodetect */
@@ -72,17 +72,17 @@ UBYTE md_hardchn = 0, md_softchn = 0;
 
 void (*md_player)(void) = Player_HandleTick;
 
-MikMod_callback_t vc_callback = NULL;
+MikMod_callback_t vc_callback = nullptr;
 
 /* PRIVATE VARS */
-static MDRIVER* firstdriver = NULL;
+static MDRIVER* firstdriver = nullptr;
 
 static volatile BOOL isplaying = 0, initialized = 0;
 
 static UBYTE* sfxinfo;
 static int sfxpool;
 
-static SAMPLE** md_sample = NULL;
+static SAMPLE** md_sample = nullptr;
 
 /* Previous driver in use */
 static SWORD olddevice = -1;
@@ -248,7 +248,7 @@ MIKMODAPI CHAR* MikMod_InfoDriver(void)
 	int t;
 	size_t len = 0;
 	MDRIVER* l;
-	CHAR* list = NULL;
+	CHAR* list = nullptr;
 
 	MUTEX_LOCK(lists);
 	/* compute size of buffer */
@@ -259,7 +259,7 @@ MIKMODAPI CHAR* MikMod_InfoDriver(void)
 
 	if (len)
 	{
-		if ((list = (CHAR*)MikMod_malloc(len * sizeof(CHAR))) != NULL)
+		if ((list = (CHAR*)MikMod_malloc(len * sizeof(CHAR))) != nullptr)
 		{
 			CHAR* list_end = list;
 			list[0] = 0;
@@ -353,7 +353,7 @@ MIKMODAPI MDRIVER* MikMod_DriverByOrdinal(int ordinal)
 	/* Allow only driver ordinals > 0 */
 	if (!ordinal)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	MUTEX_LOCK(lists);
@@ -680,7 +680,7 @@ static int _mm_init(const CHAR* cmdline)
 	/* if md_device==0, try to find a device number */
 	if (!md_device)
 	{
-		cmdline = NULL;
+		cmdline = nullptr;
 
 		for (t = 1, md_driver = firstdriver; md_driver; md_driver = md_driver->next, t++)
 		{
@@ -779,8 +779,8 @@ void MikMod_Exit_internal(void)
 
 	MikMod_free(sfxinfo);
 	MikMod_free(md_sample);
-	md_sample = NULL;
-	sfxinfo = NULL;
+	md_sample = nullptr;
+	sfxinfo = nullptr;
 
 	initialized = 0;
 }
@@ -813,7 +813,7 @@ static int _mm_reset(const CHAR* cmdline)
 
 	if ((!md_driver->Reset) || (md_device != olddevice))
 	{
-		/* md_driver->Reset was NULL, or md_device was changed, so do a full
+		/* md_driver->Reset was nullptr, or md_device was changed, so do a full
 		   reset of the driver. */
 		md_driver->Exit();
 		if (_mm_init(cmdline))
@@ -885,8 +885,8 @@ int MikMod_SetNumVoices_internal(int music, int sfx)
 
 	MikMod_free(sfxinfo);
 	MikMod_free(md_sample);
-	md_sample = NULL;
-	sfxinfo = NULL;
+	md_sample = nullptr;
+	sfxinfo = nullptr;
 
 	if (music != -1)
 	{
@@ -906,7 +906,7 @@ int MikMod_SetNumVoices_internal(int music, int sfx)
 		MikMod_Exit_internal();
 		if (_mm_errno)
 		{
-			if (_mm_errorhandler != NULL)
+			if (_mm_errorhandler != nullptr)
 			{
 				_mm_errorhandler();
 			}
@@ -1105,7 +1105,7 @@ MIKMODAPI long MikMod_GetVersion(void)
 
 #else
 #define INIT_MUTEX(name) \
-	void* _mm_mutex_##name = NULL
+	void* _mm_mutex_##name = nullptr
 #endif
 
 INIT_MUTEX(vars);
@@ -1122,9 +1122,9 @@ MIKMODAPI BOOL MikMod_InitThreads(void)
 #ifdef HAVE_PTHREAD
 		result = 1;
 #elif defined(__OS2__) || defined(__EMX__)
-		if (DosCreateMutexSem((PSZ)NULL, &_mm_mutex_lists, 0, 0) || DosCreateMutexSem((PSZ)NULL, &_mm_mutex_vars, 0, 0))
+		if (DosCreateMutexSem((PSZ)nullptr, &_mm_mutex_lists, 0, 0) || DosCreateMutexSem((PSZ)nullptr, &_mm_mutex_vars, 0, 0))
 		{
-			_mm_mutex_lists = _mm_mutex_vars = (HMTX)NULL;
+			_mm_mutex_lists = _mm_mutex_vars = (HMTX)nullptr;
 			result = 0;
 		}
 		else
@@ -1132,7 +1132,7 @@ MIKMODAPI BOOL MikMod_InitThreads(void)
 			result = 1;
 		}
 #elif defined(_WIN32)
-		if ((!(_mm_mutex_lists = CreateMutex(NULL, false, TEXT("libmikmod(lists)")))) || (!(_mm_mutex_vars = CreateMutex(NULL, false, TEXT("libmikmod(vars)")))))
+		if ((!(_mm_mutex_lists = CreateMutex(nullptr, false, TEXT("libmikmod(lists)")))) || (!(_mm_mutex_vars = CreateMutex(nullptr, false, TEXT("libmikmod(vars)")))))
 		{
 			result = 0;
 		}
@@ -1161,7 +1161,7 @@ MIKMODAPI void MikMod_Lock(void)
 
 CHAR* MD_GetAtom(const CHAR* atomname, const CHAR* cmdline, BOOL implicit)
 {
-	CHAR* ret = NULL;
+	CHAR* ret = nullptr;
 
 	if (cmdline)
 	{

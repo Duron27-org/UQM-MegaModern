@@ -35,7 +35,7 @@ extern uqm::DWORD SeedRandomNumbers(void);
 extern void DrawRenderedBox(RECT* r, bool filled, Color fill_color,
 							int type, int custom);
 
-// saveRect can be NULL to save the entire context frame
+// saveRect can be nullptr to save the entire context frame
 extern STAMP SaveContextFrame(const RECT* saveRect);
 
 extern uqm::DWORD get_fuel_to_sol(void);

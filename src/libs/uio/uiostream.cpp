@@ -71,7 +71,7 @@ uio_fopen(uio_DirHandle* dir, const char* path, const char* mode)
 		default:
 			errno = EINVAL;
 			fprintf(stderr, "Invalid mode string in call to uio_fopen().\n");
-			return NULL;
+			return nullptr;
 	}
 	mode++;
 
@@ -106,10 +106,10 @@ uio_fopen(uio_DirHandle* dir, const char* path, const char* mode)
 	// Any characters in the mode string that might follow are ignored.
 
 	handle = uio_open(dir, path, openFlags, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
-	if (handle == NULL)
+	if (handle == nullptr)
 	{
 		// errno is set
-		return NULL;
+		return nullptr;
 	}
 
 	stream = uio_Stream_new(handle, openFlags);
@@ -212,7 +212,7 @@ char* uio_fgets(char* s, int size, uio_Stream* stream)
 			{
 				// errno is set
 				stream->status = uio_Stream_STATUS_ERROR;
-				return NULL;
+				return nullptr;
 			}
 			if (stream->dataStart == stream->dataEnd)
 			{
@@ -222,7 +222,7 @@ char* uio_fgets(char* s, int size, uio_Stream* stream)
 				if (size == orgSize)
 				{
 					// Nothing was read.
-					return NULL;
+					return nullptr;
 				}
 				break;
 			}
@@ -231,7 +231,7 @@ char* uio_fgets(char* s, int size, uio_Stream* stream)
 		// Search in buffer
 		maxRead = minu(stream->dataEnd - stream->dataStart, size);
 		newLinePos = (const char*)memchr(stream->dataStart, '\n', maxRead);
-		if (newLinePos != NULL)
+		if (newLinePos != nullptr)
 		{
 			// Newline found.
 			maxRead = newLinePos + 1 - stream->dataStart;
@@ -315,7 +315,7 @@ int uio_vfprintf(uio_Stream* stream, const char* format, va_list args)
 	int savedErrno;
 
 	buf = uio_vasprintf(format, args);
-	if (buf == NULL)
+	if (buf == nullptr)
 	{
 		// errno may or may not be set
 		return -1;
@@ -497,11 +497,11 @@ uio_fwrite(const void* buf, size_t size, size_t nmemb, uio_Stream* stream)
 	return (size_t)bytesWritten / size;
 }
 
-// NB: stdio fflush() accepts NULL to flush all streams. uio_flush() does
+// NB: stdio fflush() accepts nullptr to flush all streams. uio_flush() does
 // not.
 int uio_fflush(uio_Stream* stream)
 {
-	assert(stream != NULL);
+	assert(stream != nullptr);
 
 	if (stream->operation == uio_StreamOperation_write)
 	{

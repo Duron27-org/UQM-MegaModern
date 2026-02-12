@@ -93,7 +93,7 @@ struct ListenState
 	ResolveState* resolveState;
 	NetDescriptor** nds;
 	size_t numNd;
-	// INV: (numNd == NULL) == (nds == NULL)
+	// INV: (numNd == nullptr) == (nds == nullptr)
 };
 #endif /* defined(LISTEN_INTERNAL) */
 

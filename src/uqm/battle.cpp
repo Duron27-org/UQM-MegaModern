@@ -432,7 +432,7 @@ selectAllShips(uqm::SIZE num_ships)
 	if (num_ships == 1)
 	{
 		// HyperSpace in full game.
-		return GetNextStarShip(NULL, 0);
+		return GetNextStarShip(nullptr, 0);
 	}
 
 #ifdef NETPLAY
@@ -561,7 +561,7 @@ AbortBattle:
 #ifdef NETPLAY_CHECKSUM
 		uninitChecksumBuffers();
 #endif /* NETPLAY_CHECKSUM */
-		setBattleStateConnections(NULL);
+		setBattleStateConnections(nullptr);
 #endif /* NETPLAY */
 
 		SetMusicPosition();

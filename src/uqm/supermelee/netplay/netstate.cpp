@@ -42,6 +42,6 @@ NetStateData netStateData[] = {
 
 void NetConnectionStateData_release(NetConnectionStateData* stateData)
 {
-	assert(stateData->releaseFunction != NULL);
+	assert(stateData->releaseFunction != nullptr);
 	stateData->releaseFunction(stateData);
 }

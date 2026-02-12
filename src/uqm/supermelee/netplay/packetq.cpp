@@ -47,14 +47,14 @@ PacketQueueLink_delete(PacketQueueLink* link)
 void PacketQueue_init(PacketQueue* queue)
 {
 	queue->size = 0;
-	queue->first = NULL;
+	queue->first = nullptr;
 	queue->end = &queue->first;
 }
 
 static void
 PacketQueue_deleteLinks(PacketQueueLink* link)
 {
-	while (link != NULL)
+	while (link != nullptr)
 	{
 		PacketQueueLink* next = link->next;
 		Packet_delete(link->packet);
@@ -79,7 +79,7 @@ void queuePacket(NetConnection* conn, Packet* packet)
 
 	link = PacketQueueLink_alloc();
 	link->packet = packet;
-	link->next = NULL;
+	link->next = nullptr;
 	*queue->end = link;
 	queue->end = &link->next;
 
@@ -96,7 +96,7 @@ void queuePacket(NetConnection* conn, Packet* packet)
 				packetTypeData[packetType(packet)].name);
 	}
 #ifdef NETPLAY_DEBUG_FILE
-	if (conn->debugFile != NULL)
+	if (conn->debugFile != nullptr)
 	{
 		uio_fprintf(conn->debugFile,
 					"NETPLAY: [%d] ==> Queueing packet of type %s.\n",
@@ -118,7 +118,7 @@ flushPacketQueueLinks(NetConnection* conn, PacketQueueLink** first)
 	PacketQueueLink* next;
 	PacketQueue* queue = &conn->queue;
 
-	for (link = *first; link != NULL; link = next)
+	for (link = *first; link != nullptr; link = next)
 	{
 		if (sendPacket(conn, link->packet) == -1)
 		{
@@ -145,7 +145,7 @@ int flushPacketQueue(NetConnection* conn)
 	assert(NetConnection_isConnected(conn));
 
 	flushResult = flushPacketQueueLinks(conn, &queue->first);
-	if (queue->first == NULL)
+	if (queue->first == nullptr)
 	{
 		queue->end = &queue->first;
 	}

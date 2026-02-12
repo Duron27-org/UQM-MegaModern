@@ -154,7 +154,7 @@ int mkdirhier(const char* path)
 	while (1)
 	{
 		pathend = strchr(pathstart, '/');
-		if (pathend == NULL)
+		if (pathend == nullptr)
 		{
 			pathend = path + len;
 		}
@@ -235,7 +235,7 @@ int mkdirhier(const char* path)
 		}
 
 		pathend = strchr(pathstart, '/');
-		if (pathend == NULL)
+		if (pathend == nullptr)
 		{
 			pathend = path + len;
 		}
@@ -270,15 +270,15 @@ getHomeDir(void)
 	struct passwd* pw;
 
 	home = getenv("HOME");
-	if (home != NULL)
+	if (home != nullptr)
 	{
 		return home;
 	}
 
 	pw = getpwuid(getuid());
-	if (pw == NULL)
+	if (pw == nullptr)
 	{
-		return NULL;
+		return nullptr;
 	}
 	// NB: pw points to a static buffer.
 
@@ -306,7 +306,7 @@ getHomeDir(void)
 int expandPath(char* dest, size_t len, const char* src, int what)
 {
 	char *destptr, *destend;
-	char* buf = NULL;
+	char* buf = nullptr;
 	char *bufptr, *bufend;
 	const char* srcend;
 
@@ -342,7 +342,7 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 
 						src++;
 						end = strchr(src, '%');
-						if (end == NULL)
+						if (end == nullptr)
 						{
 							errno = EINVAL;
 							goto err;
@@ -355,7 +355,7 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 						envVar = getenv(envName);
 						HFree(envName);
 
-						if (envVar == NULL)
+						if (envVar == nullptr)
 						{
 #ifdef APPDATA_FALLBACK
 							if (strncmp(src, "APPDATA", envNameLen) != 0)
@@ -372,7 +372,7 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 												 "Falling back to \"%%USERPROFILE%%\\Application "
 												 "Data\"");
 							envVar = getenv("USERPROFILE");
-							if (envVar != NULL)
+							if (envVar != nullptr)
 							{
 #define APPDATA_STRING "\\Application Data"
 								envVarLen = strlen(envVar);
@@ -427,7 +427,7 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 						{
 							src++;
 							end = strchr(src, '}');
-							if (end == NULL)
+							if (end == nullptr)
 							{
 								errno = EINVAL;
 								goto err;
@@ -451,7 +451,7 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 						envVar = getenv(envName);
 						HFree(envName);
 
-						if (envVar != NULL)
+						if (envVar != nullptr)
 						{
 							envVarLen = strlen(envVar);
 							CHECKLEN(buf, envVarLen);
@@ -492,7 +492,7 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 			}
 
 			home = getHomeDir();
-			if (home == NULL)
+			if (home == nullptr)
 			{
 				errno = ENOENT;
 				goto err;
@@ -504,7 +504,7 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 				size_t skip;
 				destptr = expandPathAbsolute(dest, destend - dest,
 											 home, &skip, what);
-				if (destptr == NULL)
+				if (destptr == nullptr)
 				{
 					// errno is set
 					goto err;
@@ -527,7 +527,7 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 		size_t skip;
 		destptr = expandPathAbsolute(destptr, destend - destptr, src,
 									 &skip, what);
-		if (destptr == NULL)
+		if (destptr == nullptr)
 		{
 			// errno is set
 			goto err;
@@ -611,7 +611,7 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 		for (;;)
 		{
 			endPart = strchr(startPart, '/');
-			if (endPart == NULL)
+			if (endPart == nullptr)
 			{
 				endPart = startPart + strlen(startPart);
 			}
@@ -626,7 +626,7 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 				// component, and ignore this one.
 				char* lastSlash;
 				lastSlash = strrchr2(pathStart, '/', destptr - 1);
-				if (lastSlash == NULL)
+				if (lastSlash == nullptr)
 				{
 					if (destptr == pathStart)
 					{
@@ -690,7 +690,7 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 	return 0;
 
 err:
-	if (buf != NULL)
+	if (buf != nullptr)
 	{
 		int savedErrno = errno;
 		HFree(buf);
@@ -748,7 +748,7 @@ expandPathAbsolute(char* dest, size_t destLen, const char* src,
 #ifdef REJECT_DRIVE_PATH_WITHOUT_SLASH
 		// We reject paths of the form "d:foo/bar".
 		errno = EINVAL;
-		return NULL;
+		return nullptr;
 #elif defined(HAVE_CWD_PER_DRIVE)
 		// Paths of the form "d:foo/bar" are treated as "foo/bar" relative
 		// to the working directory of d:.
@@ -762,14 +762,14 @@ expandPathAbsolute(char* dest, size_t destLen, const char* src,
 		if (!driveLetterExists(letter))
 		{
 			errno = ENOENT;
-			return NULL;
+			return nullptr;
 		}
 
 		// Get the working directory for a specific drive.
-		if (_getdcwd(letter + 1, dest, destLen) == NULL)
+		if (_getdcwd(letter + 1, dest, destLen) == nullptr)
 		{
 			// errno is set
-			return NULL;
+			return nullptr;
 		}
 
 		src += 2;
@@ -778,7 +778,7 @@ expandPathAbsolute(char* dest, size_t destLen, const char* src,
 		if (destLen < 3)
 		{
 			errno = ERANGE;
-			return NULL;
+			return nullptr;
 		}
 		dest[0] = src[0];
 		dest[1] = ':';
@@ -792,10 +792,10 @@ expandPathAbsolute(char* dest, size_t destLen, const char* src,
 #endif /* HAVE_DRIVE_LETTERS */
 	{
 		// Relative dir
-		if (getcwd(dest, destLen) == NULL)
+		if (getcwd(dest, destLen) == nullptr)
 		{
 			// errno is set
-			return NULL;
+			return nullptr;
 		}
 	}
 
@@ -806,7 +806,7 @@ expandPathAbsolute(char* dest, size_t destLen, const char* src,
 		{
 			// getcwd() or _getdcwd() returned a 0-length string.
 			errno = ENOENT;
-			return NULL;
+			return nullptr;
 		}
 		dest += tempLen;
 		destLen -= tempLen;
@@ -838,7 +838,7 @@ strrchr2(const char* start, int c, const char* end)
 		end--;
 		if (end < start)
 		{
-			return (char*)NULL;
+			return (char*)nullptr;
 		}
 		if (*end == c)
 		{

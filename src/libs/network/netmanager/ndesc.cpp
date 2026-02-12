@@ -59,12 +59,12 @@ NetDescriptor_new(Socket* socket, void* extra)
 #endif
 
 	nd->flags.closed = false;
-	nd->readCallback = NULL;
-	nd->writeCallback = NULL;
-	nd->exceptionCallback = NULL;
-	nd->closeCallback = NULL;
+	nd->readCallback = nullptr;
+	nd->writeCallback = nullptr;
+	nd->exceptionCallback = nullptr;
+	nd->closeCallback = nullptr;
 	nd->socket = socket;
-	nd->smd = NULL;
+	nd->smd = nullptr;
 	nd->extra = extra;
 
 	if (NetManager_addDesc(nd) == -1)
@@ -72,7 +72,7 @@ NetDescriptor_new(Socket* socket, void* extra)
 		int savedErrno = errno;
 		NetDescriptor_free(nd);
 		errno = savedErrno;
-		return NULL;
+		return nullptr;
 	}
 
 	return nd;
@@ -82,7 +82,7 @@ static void
 NetDescriptor_delete(NetDescriptor* nd)
 {
 	assert(nd->socket == Socket_noSocket);
-	assert(nd->smd == NULL);
+	assert(nd->smd == nullptr);
 
 	NetDescriptor_free(nd);
 }
@@ -91,7 +91,7 @@ NetDescriptor_delete(NetDescriptor* nd)
 static void
 NetDescriptor_closeCallback(NetDescriptor* nd)
 {
-	if (nd->closeCallback != NULL)
+	if (nd->closeCallback != nullptr)
 	{
 		// The check is necessary because the close callback may have
 		// been removed before it is triggered.
@@ -109,7 +109,7 @@ void NetDescriptor_close(NetDescriptor* nd)
 	(void)Socket_close(nd->socket);
 	nd->socket = Socket_noSocket;
 	nd->flags.closed = true;
-	if (nd->closeCallback != NULL)
+	if (nd->closeCallback != nullptr)
 	{
 		// Keep one reference around until the close callback has been
 		// called.
@@ -181,7 +181,7 @@ void NetDescriptor_setReadCallback(NetDescriptor* nd,
 	nd->readCallback = callback;
 	if (!nd->flags.closed)
 	{
-		if (nd->readCallback != NULL)
+		if (nd->readCallback != nullptr)
 		{
 			NetManager_activateReadCallback(nd);
 		}
@@ -198,7 +198,7 @@ void NetDescriptor_setWriteCallback(NetDescriptor* nd,
 	nd->writeCallback = callback;
 	if (!nd->flags.closed)
 	{
-		if (nd->writeCallback != NULL)
+		if (nd->writeCallback != nullptr)
 		{
 			NetManager_activateWriteCallback(nd);
 		}
@@ -215,7 +215,7 @@ void NetDescriptor_setExceptionCallback(NetDescriptor* nd,
 	nd->exceptionCallback = callback;
 	if (!nd->flags.closed)
 	{
-		if (nd->exceptionCallback != NULL)
+		if (nd->exceptionCallback != nullptr)
 		{
 			NetManager_activateExceptionCallback(nd);
 		}

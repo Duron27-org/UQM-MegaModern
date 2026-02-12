@@ -199,7 +199,7 @@ static WIDGET* main_widgets[] = {
 
 	(WIDGET*)(&labels[LABEL_SPACER]),	// Spacer
 	(WIDGET*)(&buttons[BTN_QUITSETUP]), // Quit Setup Menu
-	NULL};
+	nullptr};
 
 static WIDGET* graphics_widgets[] = {
 	(WIDGET*)(&choices[CHOICE_GRAPHICS]),	// Graphics
@@ -222,7 +222,7 @@ static WIDGET* graphics_widgets[] = {
 
 	(WIDGET*)(&labels[LABEL_SPACER]),	  // Spacer
 	(WIDGET*)(&buttons[BTN_QUITSUBMENU]), // Exit to Menu
-	NULL};
+	nullptr};
 
 static WIDGET* engine_widgets[] = {
 	(WIDGET*)(&labels[LABEL_UI]),			// UI Label
@@ -264,7 +264,7 @@ static WIDGET* engine_widgets[] = {
 	(WIDGET*)(&choices[CHOICE_SCANTINT]),	 // Scanned Sphere Tint
 	(WIDGET*)(&choices[CHOICE_LANDERSTYLE]), // Lander Style
 	(WIDGET*)(&buttons[BTN_QUITSUBMENU]),	 // Exit to Menu
-	NULL};
+	nullptr};
 
 static WIDGET* audio_widgets[] = {
 	(WIDGET*)(&sliders[SLIDER_MUSVOLUME]),	// Music Volume
@@ -278,7 +278,7 @@ static WIDGET* audio_widgets[] = {
 
 	(WIDGET*)(&labels[LABEL_SPACER]),	  // Spacer
 	(WIDGET*)(&buttons[BTN_QUITSUBMENU]), // Exit to Menu
-	NULL};
+	nullptr};
 
 static WIDGET* music_widgets[] = {
 	(WIDGET*)(&choices[CHOICE_REMIXES1]), // 3DO Remixes
@@ -292,7 +292,7 @@ static WIDGET* music_widgets[] = {
 
 	(WIDGET*)(&labels[LABEL_SPACER]),	  // Spacer
 	(WIDGET*)(&buttons[BTN_QUITSUBMENU]), // Exit to Menu
-	NULL};
+	nullptr};
 
 static WIDGET* cheat_widgets[] = {
 	(WIDGET*)(&buttons[BTN_DEVMENU]),		  // Devices Menu
@@ -311,7 +311,7 @@ static WIDGET* cheat_widgets[] = {
 	(WIDGET*)(&choices[CHOICE_CHCLEANHYPER]), // No HyperSpace Encounters
 	(WIDGET*)(&choices[CHOICE_CHNOPLANET]),	  // No Planets in melee
 	(WIDGET*)(&buttons[BTN_QUITSUBMENU]),	  // Exit to Menu
-	NULL};
+	nullptr};
 
 static WIDGET* keyconfig_widgets[] = {
 
@@ -332,7 +332,7 @@ static WIDGET* keyconfig_widgets[] = {
 
 	(WIDGET*)(&labels[LABEL_SPACER]),	  // Spacer
 	(WIDGET*)(&buttons[BTN_QUITSUBMENU]), // Exit to Menu
-	NULL};
+	nullptr};
 
 static WIDGET* advanced_widgets[] = {
 	(WIDGET*)(&choices[CHOICE_SKILLLVL]),	// Difficulty
@@ -348,7 +348,7 @@ static WIDGET* advanced_widgets[] = {
 
 	(WIDGET*)(&labels[LABEL_SPACER]),	  // Spacer
 	(WIDGET*)(&buttons[BTN_QUITSUBMENU]), // Exit to Menu
-	NULL};
+	nullptr};
 
 static WIDGET* visual_widgets[] = {
 	(WIDGET*)(&labels[LABEL_UI]),			// UI Label
@@ -381,7 +381,7 @@ static WIDGET* visual_widgets[] = {
 	(WIDGET*)(&choices[CHOICE_PLNTEXTURE]),	   // Planet Texture
 	(WIDGET*)(&choices[CHOICE_LANDERUPGMASK]), // Show Lander Upgrades
 	(WIDGET*)(&buttons[BTN_QUITSUBMENU]),	   // Exit to Menu
-	NULL};
+	nullptr};
 
 static WIDGET* qol_widgets[] = {
 	(WIDGET*)(&choices[CHOICE_SKIPINTRO]),	  // Skip Intro
@@ -396,7 +396,7 @@ static WIDGET* qol_widgets[] = {
 
 	(WIDGET*)(&labels[LABEL_SPACER]),	  // Spacer
 	(WIDGET*)(&buttons[BTN_QUITSUBMENU]), // Exit to Menu
-	NULL};
+	nullptr};
 
 static WIDGET* editkeys_widgets[] = {
 	(WIDGET*)(&choices[CHOICE_KBLAYOUT]),	  // Current layout
@@ -411,7 +411,7 @@ static WIDGET* editkeys_widgets[] = {
 	(WIDGET*)(&controlentries[CONTROL_ESC]),  // Escape
 	(WIDGET*)(&controlentries[CONTROL_THRU]), // Thrust
 	(WIDGET*)(&buttons[BTN_PREVMENU]),		  // Previous menu
-	NULL};
+	nullptr};
 
 static WIDGET* devices_widgets[] = {
 	(WIDGET*)(&choices[CHOICE_DEVSPAWNER]), // Portal Spawner
@@ -442,7 +442,7 @@ static WIDGET* devices_widgets[] = {
 
 	(WIDGET*)(&labels[LABEL_SPACER]), // Spacer
 	(WIDGET*)(&buttons[BTN_CHTPREV]), // Back to Cheats
-	NULL};
+	nullptr};
 
 static WIDGET* upgrades_widgets[] = {
 	(WIDGET*)(&choices[CHOICE_UPGLANDERSPD]), // Lander Speed
@@ -461,7 +461,7 @@ static WIDGET* upgrades_widgets[] = {
 
 	(WIDGET*)(&labels[LABEL_SPACER]), // Spacer
 	(WIDGET*)(&buttons[BTN_CHTPREV]), // Back to Cheats
-	NULL};
+	nullptr};
 
 static const struct
 {
@@ -482,7 +482,7 @@ static const struct
 		{qol_widgets,		  10},
 		{devices_widgets,	  11},
 		{upgrades_widgets,  12},
-		{NULL,			   0 }
+		{nullptr,			   0 }
 };
 
 // Start with reasonable gamma bounds. These will get updated
@@ -515,7 +515,7 @@ quit_main_menu(WIDGET* self, int event)
 {
 	if (event == WIDGET_EVENT_SELECT)
 	{
-		next = NULL;
+		next = nullptr;
 		return true;
 	}
 	(void)self;
@@ -1466,7 +1466,7 @@ DoSetupMenu(SETUP_MENU_STATE* pInputState)
 		Widget_SetWindowColors(SHADOWBOX_BACKGROUND_COLOR,
 							   SHADOWBOX_DARK_COLOR, SHADOWBOX_MEDIUM_COLOR);
 
-		current = NULL;
+		current = nullptr;
 		next = (WIDGET*)(&menus[0]);
 		(*next->receiveFocus)(next, WIDGET_EVENT_DOWN);
 
@@ -1474,7 +1474,7 @@ DoSetupMenu(SETUP_MENU_STATE* pInputState)
 	}
 	if (current != next)
 	{
-		SetTransitionSource(NULL);
+		SetTransitionSource(nullptr);
 	}
 
 	BatchGraphics();
@@ -1482,7 +1482,7 @@ DoSetupMenu(SETUP_MENU_STATE* pInputState)
 
 	if (current != next)
 	{
-		ScreenTransition(EmulationMode::PC | EmulationMode::Console3DO, NULL);
+		ScreenTransition(EmulationMode::PC | EmulationMode::Console3DO, nullptr);
 		current = next;
 	}
 
@@ -1519,7 +1519,7 @@ DoSetupMenu(SETUP_MENU_STATE* pInputState)
 
 	SleepThreadUntil(pInputState->NextTime + MENU_FRAME_RATE);
 	pInputState->NextTime = GetTimeCounter();
-	return !((GLOBAL(CurrentActivity) & CHECK_ABORT) || (next == NULL));
+	return !((GLOBAL(CurrentActivity) & CHECK_ABORT) || (next == nullptr));
 }
 
 static void
@@ -1746,7 +1746,7 @@ rebind_control(WIDGET_CONTROLENTRY* widget)
 	int index = widget->highlighted;
 
 	FlushInput();
-	DrawLabelAsWindow(&labels[LABEL_PRESSTOEDIT], NULL);
+	DrawLabelAsWindow(&labels[LABEL_PRESSTOEDIT], nullptr);
 	RebindInputState(templat, control, index);
 	populate_editkeys(templat);
 	FlushInput();
@@ -1768,13 +1768,13 @@ count_widgets(WIDGET** widgets)
 {
 	int count;
 
-	for (count = 0; *widgets != NULL; ++widgets, ++count)
+	for (count = 0; *widgets != nullptr; ++widgets, ++count)
 		;
 	return count;
 }
 
-static stringbank* bank = NULL;
-static FRAME setup_frame = NULL;
+static stringbank* bank = nullptr;
+static FRAME setup_frame = nullptr;
 
 #define MAX_BUFF (MENU_COUNT + CHOICE_COUNT + SLIDER_COUNT + BUTTON_COUNT + LABEL_COUNT + TEXTENTRY_COUNT + CONTROLENTRY_COUNT)
 
@@ -1784,12 +1784,12 @@ init_widgets(void)
 	const char *buffer[MAX_BUFF], *str, *title;
 	int count, i, index;
 
-	if (bank == NULL)
+	if (bank == nullptr)
 	{
 		bank = StringBank_Create();
 	}
 
-	if (setup_frame == NULL || optRequiresReload)
+	if (setup_frame == nullptr || optRequiresReload)
 	{
 		// Load the different menus depending on the resolution factor.
 		setup_frame = CaptureDrawable(LoadGraphic(MENUBKG_PMAP_ANIM));
@@ -1821,7 +1821,7 @@ init_widgets(void)
 	for (i = 0; i < MENU_COUNT; i++)
 	{
 		menus[i].tag = WIDGET_TYPE_MENU_SCREEN;
-		menus[i].parent = NULL;
+		menus[i].parent = nullptr;
 		menus[i].handleEvent = Widget_HandleEventMenuScreen;
 		menus[i].receiveFocus = Widget_ReceiveFocusMenuScreen;
 		menus[i].draw = Widget_DrawMenuScreen;
@@ -1837,7 +1837,7 @@ init_widgets(void)
 		menus[i].child = menu_defs[i].widgets;
 		menus[i].highlighted = 0;
 	}
-	if (menu_defs[i].widgets != NULL)
+	if (menu_defs[i].widgets != nullptr)
 	{
 		log_add(log_Error, "Menu definition array has more items!");
 	}
@@ -1860,7 +1860,7 @@ init_widgets(void)
 	for (i = 0; i < CHOICE_COUNT; i++)
 	{
 		choices[i].tag = WIDGET_TYPE_CHOICE;
-		choices[i].parent = NULL;
+		choices[i].parent = nullptr;
 		choices[i].handleEvent = Widget_HandleEventChoice;
 		choices[i].receiveFocus = Widget_ReceiveFocusChoice;
 		choices[i].draw = Widget_DrawChoice;
@@ -1868,10 +1868,10 @@ init_widgets(void)
 		choices[i].width = Widget_WidthFullScreen;
 		choices[i].category = buffer[i];
 		choices[i].numopts = 0;
-		choices[i].options = NULL;
+		choices[i].options = nullptr;
 		choices[i].selected = 0;
 		choices[i].highlighted = 0;
-		choices[i].onChange = NULL;
+		choices[i].onChange = nullptr;
 	}
 
 	/* Fill in the options now */
@@ -1983,7 +1983,7 @@ init_widgets(void)
 	for (i = 0; i < SLIDER_COUNT; i++)
 	{
 		sliders[i].tag = WIDGET_TYPE_SLIDER;
-		sliders[i].parent = NULL;
+		sliders[i].parent = nullptr;
 		sliders[i].handleEvent = Widget_HandleEventSlider;
 		sliders[i].receiveFocus = Widget_ReceiveFocusSimple;
 		sliders[i].draw = Widget_DrawSlider;
@@ -1998,7 +1998,7 @@ init_widgets(void)
 		sliders[i].tooltip[0] = "";
 		sliders[i].tooltip[1] = "";
 		sliders[i].tooltip[2] = "";
-		sliders[i].onChange = NULL;
+		sliders[i].onChange = nullptr;
 	}
 	sliders[SLIDER_MUSVOLUME].onChange = adjustMusic;
 	sliders[SLIDER_SFXVOLUME].onChange = adjustSFX;
@@ -2057,7 +2057,7 @@ init_widgets(void)
 	for (i = 0; i < BUTTON_COUNT; i++)
 	{
 		buttons[i].tag = WIDGET_TYPE_BUTTON;
-		buttons[i].parent = NULL;
+		buttons[i].parent = nullptr;
 		buttons[i].handleEvent = button_handlers[i];
 		buttons[i].receiveFocus = Widget_ReceiveFocusSimple;
 		buttons[i].draw = Widget_DrawButton;
@@ -2113,14 +2113,14 @@ init_widgets(void)
 	for (i = 0; i < LABEL_COUNT; i++)
 	{
 		labels[i].tag = WIDGET_TYPE_LABEL;
-		labels[i].parent = NULL;
+		labels[i].parent = nullptr;
 		labels[i].handleEvent = Widget_HandleEventIgnoreAll;
 		labels[i].receiveFocus = Widget_ReceiveFocusRefuseFocus;
 		labels[i].draw = Widget_DrawLabel;
 		labels[i].height = Widget_HeightLabel;
 		labels[i].width = Widget_WidthFullScreen;
 		labels[i].line_count = 0;
-		labels[i].lines = NULL;
+		labels[i].lines = nullptr;
 	}
 
 	for (i = 0; i < LABEL_COUNT; i++)
@@ -2164,7 +2164,7 @@ init_widgets(void)
 	for (i = 0; i < TEXTENTRY_COUNT; i++)
 	{
 		textentries[i].tag = WIDGET_TYPE_TEXTENTRY;
-		textentries[i].parent = NULL;
+		textentries[i].parent = nullptr;
 		textentries[i].handleEvent = Widget_HandleEventTextEntry;
 		textentries[i].receiveFocus = Widget_ReceiveFocusSimple;
 		textentries[i].draw = Widget_DrawTextEntry;
@@ -2237,7 +2237,7 @@ init_widgets(void)
 	for (i = 0; i < CONTROLENTRY_COUNT; i++)
 	{
 		controlentries[i].tag = WIDGET_TYPE_CONTROLENTRY;
-		controlentries[i].parent = NULL;
+		controlentries[i].parent = nullptr;
 		controlentries[i].handleEvent = Widget_HandleEventControlEntry;
 		controlentries[i].receiveFocus = Widget_ReceiveFocusControlEntry;
 		controlentries[i].draw = Widget_DrawControlEntry;
@@ -2294,12 +2294,12 @@ clean_up_widgets(void)
 	if (bank)
 	{
 		StringBank_Free(bank);
-		bank = NULL;
+		bank = nullptr;
 	}
 	if (setup_frame)
 	{
 		DestroyDrawable(ReleaseDrawable(setup_frame));
-		setup_frame = NULL;
+		setup_frame = nullptr;
 		ReleaseArrows();
 	}
 

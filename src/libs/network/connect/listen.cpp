@@ -68,7 +68,7 @@ ListenState_free(ListenState* listenState)
 static void
 ListenState_delete(ListenState* listenState)
 {
-	assert(listenState->nds == NULL);
+	assert(listenState->nds == nullptr);
 	ListenState_free(listenState);
 }
 
@@ -101,12 +101,12 @@ bool ListenState_decRef(ListenState* listenState)
 // Decrements ref count byh 1
 void ListenState_close(ListenState* listenState)
 {
-	if (listenState->resolveState != NULL)
+	if (listenState->resolveState != nullptr)
 	{
 		Resolve_close(listenState->resolveState);
-		listenState->resolveState = NULL;
+		listenState->resolveState = nullptr;
 	}
-	if (listenState->nds != NULL)
+	if (listenState->nds != nullptr)
 	{
 		while (listenState->numNd > 0)
 		{
@@ -114,7 +114,7 @@ void ListenState_close(ListenState* listenState)
 			NetDescriptor_close(listenState->nds[listenState->numNd]);
 		}
 		free(listenState->nds);
-		listenState->nds = NULL;
+		listenState->nds = nullptr;
 	}
 	listenState->state = Listen_closed;
 	ListenState_decRef(listenState);
@@ -145,7 +145,7 @@ listenPortSingle(struct ListenState* listenState, struct addrinfo* info)
 		int savedErrno = errno;
 		log_add(log_Error, "socket() failed: %s.", strerror(errno));
 		errno = savedErrno;
-		return NULL;
+		return nullptr;
 	}
 
 	(void)Socket_setReuseAddr(sock);
@@ -156,7 +156,7 @@ listenPortSingle(struct ListenState* listenState, struct addrinfo* info)
 		// Error message is already printed.
 		Socket_close(sock);
 		errno = savedErrno;
-		return NULL;
+		return nullptr;
 	}
 
 	bindResult = Socket_bind(sock, info->ai_addr, info->ai_addrlen);
@@ -175,7 +175,7 @@ listenPortSingle(struct ListenState* listenState, struct addrinfo* info)
 		}
 		Socket_close(sock);
 		errno = savedErrno;
-		return NULL;
+		return nullptr;
 	}
 
 	listenResult = Socket_listen(sock, listenState->flags.backlog);
@@ -185,18 +185,18 @@ listenPortSingle(struct ListenState* listenState, struct addrinfo* info)
 		log_add(log_Error, "listen() failed: %s.", strerror(errno));
 		Socket_close(sock);
 		errno = savedErrno;
-		return NULL;
+		return nullptr;
 	}
 
 	nd = NetDescriptor_new(sock, (void*)listenState);
-	if (nd == NULL)
+	if (nd == nullptr)
 	{
 		int savedErrno = errno;
 		log_add(log_Error, "NetDescriptor_new() failed: %s.",
 				strerror(errno));
 		Socket_close(sock);
 		errno = savedErrno;
-		return NULL;
+		return nullptr;
 	}
 
 	NetDescriptor_setReadCallback(nd, acceptCallback);
@@ -214,7 +214,7 @@ listenPortMulti(struct ListenState* listenState, struct addrinfo* info)
 
 	// Count how many addresses we've got.
 	addrCount = 0;
-	for (addrPtr = info; addrPtr != NULL; addrPtr = addrPtr->ai_next)
+	for (addrPtr = info; addrPtr != nullptr; addrPtr = addrPtr->ai_next)
 	{
 		addrCount++;
 	}
@@ -225,11 +225,11 @@ listenPortMulti(struct ListenState* listenState, struct addrinfo* info)
 
 	// Bind to each address.
 	addrOkCount = 0;
-	for (addrPtr = info; addrPtr != NULL; addrPtr = addrPtr->ai_next)
+	for (addrPtr = info; addrPtr != nullptr; addrPtr = addrPtr->ai_next)
 	{
 		NetDescriptor* nd;
 		nd = listenPortSingle(listenState, addrPtr);
-		if (nd == NULL)
+		if (nd == nullptr)
 		{
 			// Failed. On to the next.
 			// An error message is already printed for serious errors.
@@ -284,7 +284,7 @@ listenPortResolveCallback(ResolveState* resolveState,
 	ListenState* listenState =
 		(ListenState*)ResolveState_getExtra(resolveState);
 	Resolve_close(listenState->resolveState);
-	listenState->resolveState = NULL;
+	listenState->resolveState = nullptr;
 	listenState->state = Listen_listening;
 	listenPortMulti(listenState, result);
 }
@@ -347,10 +347,10 @@ listenPort(const char* service, Protocol proto, const ListenFlags* flags,
 	listenState->connectCallback = connectCallback;
 	listenState->errorCallback = errorCallback;
 	listenState->extra = extra;
-	listenState->nds = NULL;
+	listenState->nds = nullptr;
 	listenState->numNd = 0;
 
-	listenState->resolveState = getaddrinfoAsync(NULL, service, &hints,
+	listenState->resolveState = getaddrinfoAsync(nullptr, service, &hints,
 												 &resolveFlags, listenPortResolveCallback,
 												 listenPortResolveErrorCallback,
 												 (ResolveCallbackArg)listenState);
@@ -364,7 +364,7 @@ doListenConnectCallback(ListenState* listenState, NetDescriptor* listenNd,
 						NetDescriptor* newNd,
 						const struct sockaddr* addr, SOCKLEN_T addrLen)
 {
-	assert(listenState->connectCallback != NULL);
+	assert(listenState->connectCallback != nullptr);
 
 	ListenState_incRef(listenState);
 	// No need to increment listenNd, as there's guaranteed to be one
@@ -378,7 +378,7 @@ doListenConnectCallback(ListenState* listenState, NetDescriptor* listenNd,
 static void
 doListenErrorCallback(ListenState* listenState, const ListenError* error)
 {
-	assert(listenState->errorCallback != NULL);
+	assert(listenState->errorCallback != nullptr);
 
 	ListenState_incRef(listenState);
 	(*listenState->errorCallback)(listenState, error);
@@ -449,7 +449,7 @@ acceptSingleConnection(ListenState* listenState, NetDescriptor* nd)
 		int gniRes;
 
 		gniRes = getnameinfo((struct sockaddr*)&addr, addrLen,
-							 hostname, sizeof hostname, NULL, 0, 0);
+							 hostname, sizeof hostname, nullptr, 0, 0);
 		if (gniRes != 0)
 		{
 			log_add(log_Error, "Error while performing hostname "
@@ -465,8 +465,8 @@ acceptSingleConnection(ListenState* listenState, NetDescriptor* nd)
 	}
 #endif
 
-	newNd = NetDescriptor_new(acceptResult, NULL);
-	if (newNd == NULL)
+	newNd = NetDescriptor_new(acceptResult, nullptr);
+	if (newNd == nullptr)
 	{
 		int savedErrno = errno;
 		log_add(log_Error, "NetDescriptor_new() failed: %s.",

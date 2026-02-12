@@ -61,7 +61,7 @@ static void DumpVector(const void* b, int n, size_t size, DumpState* D)
 
 static void DumpString(const TString* s, DumpState* D)
 {
-	if (s == NULL)
+	if (s == nullptr)
 	{
 		size_t size = 0;
 		DumpVar(size, D);
@@ -125,7 +125,7 @@ static void DumpUpvalues(const Proto* f, DumpState* D)
 static void DumpDebug(const Proto* f, DumpState* D)
 {
 	int i, n;
-	DumpString((D->strip) ? NULL : f->source, D);
+	DumpString((D->strip) ? nullptr : f->source, D);
 	n = (D->strip) ? 0 : f->sizelineinfo;
 	DumpVector(f->lineinfo, n, sizeof(int), D);
 	n = (D->strip) ? 0 : f->sizelocvars;

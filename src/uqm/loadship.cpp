@@ -135,7 +135,7 @@ static inline void SeedShipMap(SPECIES_ID* map, int seed)
 	if (ShipGenRNG)
 	{
 		RandomContext_Delete(ShipGenRNG);
-		ShipGenRNG = NULL;
+		ShipGenRNG = nullptr;
 	}
 	g_seedType = saveSeedType;
 }
@@ -219,7 +219,7 @@ load_ship(SPECIES_ID SpeciesID, bool LoadBattleData)
 
 	if (SpeciesID >= NUM_SPECIES_ID)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 #ifdef DEBUG_SHIPSEED
@@ -367,7 +367,7 @@ BadLoad:
 void free_ship(RACE_DESC* raceDescPtr, bool FreeIconData,
 			   bool FreeBattleData)
 {
-	if (raceDescPtr->uninit_func != NULL)
+	if (raceDescPtr->uninit_func != nullptr)
 	{
 		(*raceDescPtr->uninit_func)(raceDescPtr);
 	}

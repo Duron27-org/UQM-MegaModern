@@ -29,9 +29,9 @@
 static LOCDATA mycon_desc =
 	{
 		MYCON_CONVERSATION, /* AlienConv */
-		NULL, /* init_encounter_func */
-		NULL, /* post_encounter_func */
-		NULL, /* uninit_encounter_func */
+		nullptr, /* init_encounter_func */
+		nullptr, /* post_encounter_func */
+		nullptr, /* uninit_encounter_func */
 		MYCON_PMAP_ANIM, /* AlienFrame */
 		MYCON_FONT, /* AlienFont */
 		WHITE_COLOR_INIT, /* AlienTextFColor */
@@ -128,13 +128,13 @@ static LOCDATA mycon_desc =
 								0, /* RestartRate */
 			0, /* BlockMask */
 		},
-		NULL, /* AlienNumberSpeech - none */
+		nullptr, /* AlienNumberSpeech - none */
 		/* Filler for loaded resources */
-		NULL,
-		NULL,
-		NULL,
-		NULL,
-		NULL,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
 };
 
 static uqm::BYTE MadeChoice;
@@ -701,7 +701,7 @@ init_mycon_comm(void)
 	mycon_desc.post_encounter_func = post_mycon_enc;
 	mycon_desc.uninit_encounter_func = uninit_mycon;
 
-	luaUqm_comm_init(NULL, NULL_RESOURCE);
+	luaUqm_comm_init(nullptr, NULL_RESOURCE);
 
 	mycon_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH >> 1);
 	mycon_desc.AlienTextBaseline.y = 0;

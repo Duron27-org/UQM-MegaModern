@@ -71,7 +71,7 @@ static RACE_DESC shofixti_desc =
 		 SHOFIXTI_RACE_STRINGS,
 		 SHOFIXTI_ICON_MASK_PMAP_ANIM,
 		 SHOFIXTI_MICON_MASK_PMAP_ANIM,
-		 NULL, NULL, NULL},
+		 nullptr, nullptr, nullptr},
 		{
 			/* FLEET_STUFF */
 			0, /* Initial sphere of influence radius */
@@ -110,24 +110,24 @@ static RACE_DESC shofixti_desc =
 			 DESTRUCT_SML_MASK_ANIM,
 		 },
 		 {SHOFIXTI_CAPTAIN_MASK_PMAP_ANIM,
-		  NULL, NULL, NULL, NULL, NULL,
+		  nullptr, nullptr, nullptr, nullptr, nullptr,
 		  0, 0, 0, 0, 0},
 		 SHOFIXTI_VICTORY_SONG,
 		 SHOFIXTI_SHIP_SOUNDS,
-		 {NULL, NULL, NULL},
-		 {NULL, NULL, NULL},
-		 {NULL, NULL, NULL},
-		 NULL,
-		 NULL},
+		 {nullptr, nullptr, nullptr},
+		 {nullptr, nullptr, nullptr},
+		 {nullptr, nullptr, nullptr},
+		 nullptr,
+		 nullptr},
 		{
 			0,
 			MISSILE_SPEED* MISSILE_LIFE,
-			NULL,
+			nullptr,
 		 },
-		(UNINIT_FUNC*)NULL,
-		(PREPROCESS_FUNC*)NULL,
-		(POSTPROCESS_FUNC*)NULL,
-		(INIT_WEAPON_FUNC*)NULL,
+		(UNINIT_FUNC*)nullptr,
+		(PREPROCESS_FUNC*)nullptr,
+		(POSTPROCESS_FUNC*)nullptr,
+		(INIT_WEAPON_FUNC*)nullptr,
 		0,
 		0, /* CodeRef */
 };
@@ -151,7 +151,7 @@ initialize_standard_missile(ELEMENT* ShipPtr, HELEMENT MissileArray[])
 	MissileBlock.hit_points = MISSILE_HITS;
 	MissileBlock.damage = MISSILE_DAMAGE;
 	MissileBlock.life = MISSILE_LIFE;
-	MissileBlock.preprocess_func = NULL;
+	MissileBlock.preprocess_func = nullptr;
 	MissileBlock.blast_offs = MISSILE_OFFSET;
 	MissileArray[0] = initialize_missile(&MissileBlock);
 
@@ -224,7 +224,7 @@ destruct_preprocess(ELEMENT* ElementPtr)
 		SetPrimType(lpPrim, NO_PRIM);
 		// The ship's own element will not be drawn anymore but will remain
 		// alive all through the glory explosion.
-		ElementPtr->preprocess_func = NULL;
+		ElementPtr->preprocess_func = nullptr;
 
 		// Spawn a separate glory explosion element.
 		// XXX: Why? Why not keep using the ship's element?
@@ -257,8 +257,8 @@ destruct_preprocess(ELEMENT* ElementPtr)
 				DestructPtr->current.image.frame);
 			DestructPtr->current.location = ElementPtr->current.location;
 			DestructPtr->preprocess_func = destruct_preprocess;
-			DestructPtr->postprocess_func = NULL;
-			DestructPtr->death_func = NULL;
+			DestructPtr->postprocess_func = nullptr;
+			DestructPtr->death_func = nullptr;
 			ZeroVelocityComponents(&DestructPtr->velocity);
 			UnlockElement(hDestruct);
 		}
@@ -362,10 +362,10 @@ shofixti_destruct_death(ELEMENT* ShipPtr)
 			  CalcSoundPosition(ShipPtr), ShipPtr, GAME_SOUND_PRIORITY + 1);
 
 	winner = GetWinnerStarShip();
-	if (winner == NULL)
+	if (winner == nullptr)
 	{ // No winner determined yet
 		winner = FindAliveStarShip(ShipPtr);
-		if (winner == NULL)
+		if (winner == nullptr)
 		{ // No ships left alive after the Glory Device thus Shofixti wins
 			winner = StarShip;
 		}
@@ -451,9 +451,9 @@ shofixti_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 		lpShipEvalDesc = &ObjectsOfConcern[ENEMY_SHIP_INDEX];
 		if (StarShipPtr->RaceDescPtr->ship_data.special[0]
 			&& (StarShipPtr->RaceDescPtr->ship_data.captain_control.special_offset < 4
-				|| (lpShipEvalDesc->ObjectPtr != NULL
+				|| (lpShipEvalDesc->ObjectPtr != nullptr
 					&& lpShipEvalDesc->which_turn <= 4)
-				|| (lpWeaponEvalDesc->ObjectPtr != NULL
+				|| (lpWeaponEvalDesc->ObjectPtr != nullptr
 					/* means IMMEDIATE WEAPON */
 					&& (((lpWeaponEvalDesc->ObjectPtr->state_flags & PLAYER_SHIP)
 						 && ShipPtr->crew_level == 1)

@@ -30,7 +30,7 @@ void removeSubstr(char* str, const char* toRemove)
 	char* copyEnd;
 	char* copyFrom;
 
-	if (NULL == (str = strstr(str, toRemove)))
+	if (nullptr == (str = strstr(str, toRemove)))
 	{
 		// no match.
 		//printf("No match in %s\n", str);
@@ -40,7 +40,7 @@ void removeSubstr(char* str, const char* toRemove)
 	// str points to toRemove in str now.
 	copyFrom = str + remLen;
 
-	while (NULL != (copyEnd = strstr(copyFrom, toRemove)))
+	while (nullptr != (copyEnd = strstr(copyFrom, toRemove)))
 	{
 		//printf ("match at %3ld in %s\n", copyEnd - str, str);
 		memmove(str, copyFrom, copyEnd - copyFrom);

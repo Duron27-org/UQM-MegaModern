@@ -65,10 +65,10 @@ typedef struct
 	// index is string table ptr when > 0
 	//       is invalid (should not happen) or
 	//       is a a 'skip digit' indicator when == 0
-	// StrDigits can be NULL, in which case
+	// StrDigits can be nullptr, in which case
 	// the value is interpreted recursively
 	uqm::COUNT* StrDigits;
-	// digit Names, can be NULL, in which case
+	// digit Names, can be nullptr, in which case
 	// CommonNameIndex is used
 	SPEECH_DIGITNAME* Names;
 	// common digit name string table index

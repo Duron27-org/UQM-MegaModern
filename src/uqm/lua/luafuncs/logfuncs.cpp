@@ -31,7 +31,7 @@ static const luaL_Reg logFuncs[] = {
 	{"fatal", luaUqm_log_fatal},
 	{"info",	 luaUqm_log_info },
 	{"warn",	 luaUqm_log_warn },
-	{NULL,	   NULL			   },
+	{nullptr,	   nullptr			   },
 };
 
 int luaUqm_log_open(lua_State* luaState)

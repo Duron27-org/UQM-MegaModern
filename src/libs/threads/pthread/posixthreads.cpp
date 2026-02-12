@@ -35,7 +35,7 @@ typedef struct _thread
 	struct _thread* next;
 }* TrueThread;
 
-static volatile TrueThread threadQueue = NULL;
+static volatile TrueThread threadQueue = nullptr;
 static pthread_mutex_t threadQueueMutex;
 
 struct ThreadStartInfo
@@ -48,7 +48,7 @@ struct ThreadStartInfo
 
 void InitThreadSystem_PT(void)
 {
-	pthread_mutex_init(&threadQueueMutex, NULL);
+	pthread_mutex_init(&threadQueueMutex, nullptr);
 }
 
 void UnInitThreadSystem_PT(void)
@@ -75,7 +75,7 @@ UnQueueThread(TrueThread thread)
 	while (*ptr != thread)
 	{
 #ifdef DEBUG_THREADS
-		if (*ptr == NULL)
+		if (*ptr == nullptr)
 		{
 			// Should not happen.
 			log_add(log_Debug, "Error: Trying to remove non-present thread "
@@ -107,7 +107,7 @@ FindThreadInfo(pthread_t threadID)
 		ptr = ptr->next;
 	}
 	pthread_mutex_unlock(&threadQueueMutex);
-	return NULL;
+	return nullptr;
 }
 
 #ifdef NAMED_SYNCHRO
@@ -212,7 +212,7 @@ CreateThread_PT(ThreadFunction func, void* data, uqm::SDWORD stackSize
 		DestroyThreadLocal(thread->localData);
 		HFree(startInfo);
 		HFree(thread);
-		return NULL;
+		return nullptr;
 	}
 	// The responsibility to free 'startInfo' and 'thread' is now by the new
 	// thread.
@@ -267,7 +267,7 @@ void WaitThread_PT(Thread thread, int* status)
 {
 	//log_add(log_Debug, "WaitThread_PT '%s', status %x", ((TrueThread)thread)->name, status);
 	//pthread_join(((TrueThread)thread)->native, status);
-	pthread_join(((TrueThread)thread)->native, NULL);
+	pthread_join(((TrueThread)thread)->native, nullptr);
 	//log_add(log_Debug, "WaitThread_PT '%s' complete", ((TrueThread)thread)->name);
 }
 
@@ -275,7 +275,7 @@ ThreadLocal*
 GetMyThreadLocal_PT(void)
 {
 	TrueThread t = FindThreadInfo(pthread_self());
-	return t ? t->localData : NULL;
+	return t ? t->localData : nullptr;
 }
 
 /* These are the pthread implementations of the UQM synchronization objects. */
@@ -306,7 +306,7 @@ CreateMutex_PT(void)
 {
 	Mut* mutex = malloc(sizeof(Mut));
 
-	if (mutex != NULL)
+	if (mutex != nullptr)
 	{
 		pthread_mutexattr_t attr;
 		pthread_mutexattr_init(&attr);
@@ -510,7 +510,7 @@ CreateRecursiveMutex_PT(void)
 	RecM* mtx = (RecM*)HMalloc(sizeof(struct _recm));
 
 	mtx->thread_id = 0;
-	if (pthread_mutex_init(&mtx->mutex, NULL))
+	if (pthread_mutex_init(&mtx->mutex, nullptr))
 	{
 #ifdef NAMED_SYNCHRO
 		log_add(log_Fatal, "Could not initialize recursive "
@@ -607,8 +607,8 @@ CreateCondVar_PT(void)
 {
 	int err1, err2;
 	cvar* cv = (cvar*)HMalloc(sizeof(cvar));
-	err1 = pthread_cond_init(&cv->cond, NULL);
-	err2 = pthread_mutex_init(&cv->mutex, NULL);
+	err1 = pthread_cond_init(&cv->cond, nullptr);
+	err2 = pthread_mutex_init(&cv->mutex, nullptr);
 	if (err1 || err2)
 	{
 #ifdef NAMED_SYNCHRO

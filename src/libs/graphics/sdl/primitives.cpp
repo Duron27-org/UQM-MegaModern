@@ -130,7 +130,7 @@ getpixel_for(SDL_Surface* surface)
 		case 4:
 			return &getpixel_32;
 	}
-	return NULL;
+	return nullptr;
 }
 
 PutPixelFn
@@ -155,7 +155,7 @@ putpixel_for(SDL_Surface* surface)
 		case 4:
 			return &putpixel_32;
 	}
-	return NULL;
+	return nullptr;
 }
 
 static void
@@ -506,13 +506,13 @@ renderpixel_for(SDL_Surface* surface, RenderKind kind, bool forMask)
 	// The only supported rendering is to 32bpp surfaces
 	if (fmt->BytesPerPixel != 4 && !forMask)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	// Rendering other than REPLACE is not supported on RGBA surfaces
 	if (fmt->Amask != 0 && kind != renderReplace && !forMask)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	switch (kind)
@@ -539,7 +539,7 @@ renderpixel_for(SDL_Surface* surface, RenderKind kind, bool forMask)
 			return &renderpixel_desaturate;
 	}
 	// should not ever get here
-	return NULL;
+	return nullptr;
 }
 
 /* Line drawing routine

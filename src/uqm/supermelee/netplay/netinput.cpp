@@ -59,10 +59,10 @@ BattleInputBuffer_init(BattleInputBuffer* bib, size_t bufSize)
 static void
 BattleInputBuffer_uninit(BattleInputBuffer* bib)
 {
-	if (bib->buf != NULL)
+	if (bib->buf != nullptr)
 	{
 		free(bib->buf);
-		bib->buf = NULL;
+		bib->buf = nullptr;
 	}
 	bib->maxSize = 0;
 	bib->first = 0;

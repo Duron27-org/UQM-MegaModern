@@ -25,15 +25,15 @@
 ** void * frealloc (void *ud, void *ptr, size_t osize, size_t nsize);
 ** (`osize' is the old size, `nsize' is the new size)
 **
-** * frealloc(ud, NULL, x, s) creates a new block of size `s' (no
+** * frealloc(ud, nullptr, x, s) creates a new block of size `s' (no
 ** matter 'x').
 **
 ** * frealloc(ud, p, x, 0) frees the block `p'
-** (in this specific case, frealloc must return NULL);
-** particularly, frealloc(ud, NULL, 0, 0) does nothing
-** (which is equivalent to free(NULL) in ANSI C)
+** (in this specific case, frealloc must return nullptr);
+** particularly, frealloc(ud, nullptr, 0, 0) does nothing
+** (which is equivalent to free(nullptr) in ANSI C)
 **
-** frealloc returns NULL if it cannot create or reallocate the area
+** frealloc returns nullptr if it cannot create or reallocate the area
 ** (any reallocation to an equal or smaller size cannot fail!)
 */
 
@@ -82,7 +82,7 @@ void* luaM_realloc_(lua_State* L, void* block, size_t osize, size_t nsize)
 	void* newblock;
 	global_State* g = G(L);
 	size_t realosize = (block) ? osize : 0;
-	lua_assert((realosize == 0) == (block == NULL));
+	lua_assert((realosize == 0) == (block == nullptr));
 #if defined(HARDMEMTESTS)
 	if (nsize > realosize && g->gcrunning)
 	{
@@ -90,7 +90,7 @@ void* luaM_realloc_(lua_State* L, void* block, size_t osize, size_t nsize)
 	}
 #endif
 	newblock = (*g->frealloc)(g->ud, block, osize, nsize);
-	if (newblock == NULL && nsize > 0)
+	if (newblock == nullptr && nsize > 0)
 	{
 		api_check(L, nsize > realosize,
 				  "realloc cannot fail when shrinking a block");
@@ -99,12 +99,12 @@ void* luaM_realloc_(lua_State* L, void* block, size_t osize, size_t nsize)
 			luaC_fullgc(L, 1);									   /* try to free some memory... */
 			newblock = (*g->frealloc)(g->ud, block, osize, nsize); /* try again */
 		}
-		if (newblock == NULL)
+		if (newblock == nullptr)
 		{
 			luaD_throw(L, LUA_ERRMEM);
 		}
 	}
-	lua_assert((nsize == 0) == (newblock == NULL));
+	lua_assert((nsize == 0) == (newblock == nullptr));
 	g->GCdebt = (g->GCdebt + nsize) - realosize;
 	return newblock;
 }

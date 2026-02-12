@@ -49,7 +49,7 @@ static void vp_QueueBuffer(TFB_SoundSample* sample, audio_Object buffer);
 static const TFB_SoundCallbacks vp_AudioCBs =
 	{
 		vp_AudioStart,
-		NULL,
+		nullptr,
 		vp_AudioEnd,
 		vp_BufferTag,
 		vp_QueueBuffer};
@@ -145,10 +145,10 @@ processAudioSyncedFrame(VIDEO_REF vid)
 
 	// draw the frame
 	// We have the cliprect precalculated and don't need the rest
-	oldContext = SetContext(NULL);
+	oldContext = SetContext(nullptr);
 	TFB_DrawScreen_Image(vid->frame,
 						 vid->dst_rect.corner.x, vid->dst_rect.corner.y, 0, 0,
-						 NULL, DRAW_REPLACE_MODE, TFB_SCREEN_MAIN);
+						 nullptr, DRAW_REPLACE_MODE, TFB_SCREEN_MAIN);
 	SetContext(oldContext);
 	FlushGraphics(); // needed to prevent half-frame updates
 
@@ -197,10 +197,10 @@ processMuteFrame(VIDEO_REF vid)
 		vid->cur_frame = vid->decoder->cur_frame;
 
 		// We have the cliprect precalculated and don't need the rest
-		oldContext = SetContext(NULL);
+		oldContext = SetContext(nullptr);
 		TFB_DrawScreen_Image(vid->frame,
 							 vid->dst_rect.corner.x, vid->dst_rect.corner.y, 0, 0,
-							 NULL, DRAW_REPLACE_MODE, TFB_SCREEN_MAIN);
+							 nullptr, DRAW_REPLACE_MODE, TFB_SCREEN_MAIN);
 		SetContext(oldContext);
 		FlushGraphics(); // needed to prevent half-frame updates
 
@@ -346,7 +346,7 @@ void TFB_StopVideo(VIDEO_REF vid)
 	if (vid->frame)
 	{
 		TFB_DrawScreen_DeleteImage(vid->frame);
-		vid->frame = NULL;
+		vid->frame = nullptr;
 	}
 }
 
@@ -445,7 +445,7 @@ vp_GetCanvasLine(TFB_VideoDecoder* decoder, uint32 line)
 
 	if (!vid)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	return TFB_DrawCanvas_GetLine(vid->frame->NormalImg, line);
@@ -482,7 +482,7 @@ vp_AudioStart(TFB_SoundSample* sample)
 	TFB_SoundDecoder* decoder;
 
 	assert(sizeof(intptr_t) >= sizeof(vid));
-	assert(vid != NULL);
+	assert(vid != nullptr);
 
 	decoder = TFB_GetSoundSampleDecoder(sample);
 
@@ -498,7 +498,7 @@ vp_AudioEnd(TFB_SoundSample* sample)
 {
 	TFB_VideoClip* vid = (TFB_VideoClip*)TFB_GetSoundSampleData(sample);
 
-	assert(vid != NULL);
+	assert(vid != nullptr);
 
 	LockMutex(vid->guard);
 	vid->want_frame = vid->decoder->frame_count; // end it
@@ -512,7 +512,7 @@ vp_BufferTag(TFB_SoundSample* sample, TFB_SoundTag* tag)
 	uint32 frame = (uint32)tag->data;
 
 	assert(sizeof(tag->data) >= sizeof(frame));
-	assert(vid != NULL);
+	assert(vid != nullptr);
 
 	LockMutex(vid->guard);
 	vid->want_frame = frame; // let it go!

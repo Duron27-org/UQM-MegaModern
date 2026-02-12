@@ -67,7 +67,7 @@ RACE_DESC human_desc =
 		 HUMAN_RACE_STRINGS,
 		 HUMAN_ICON_MASK_PMAP_ANIM,
 		 HUMAN_MICON_MASK_PMAP_ANIM,
-		 NULL, NULL, NULL},
+		 nullptr, nullptr, nullptr},
 		{
 			/* FLEET_STUFF */
 			0, /* Initial sphere of influence radius */
@@ -106,24 +106,24 @@ RACE_DESC human_desc =
 			 NULL_RESOURCE,
 		 },
 		 {HUMAN_CAPTAIN_MASK_PMAP_ANIM,
-		  NULL, NULL, NULL, NULL, NULL,
+		  nullptr, nullptr, nullptr, nullptr, nullptr,
 		  0, 0, 0, 0, 0},
 		 HUMAN_VICTORY_SONG,
 		 HUMAN_SHIP_SOUNDS,
-		 {NULL, NULL, NULL},
-		 {NULL, NULL, NULL},
-		 {NULL, NULL, NULL},
-		 NULL,
-		 NULL},
+		 {nullptr, nullptr, nullptr},
+		 {nullptr, nullptr, nullptr},
+		 {nullptr, nullptr, nullptr},
+		 nullptr,
+		 nullptr},
 		{
 			0,
 			LONG_RANGE_WEAPON,
-			NULL,
+			nullptr,
 		 },
-		(UNINIT_FUNC*)NULL,
-		(PREPROCESS_FUNC*)NULL,
-		(POSTPROCESS_FUNC*)NULL,
-		(INIT_WEAPON_FUNC*)NULL,
+		(UNINIT_FUNC*)nullptr,
+		(PREPROCESS_FUNC*)nullptr,
+		(POSTPROCESS_FUNC*)nullptr,
+		(INIT_WEAPON_FUNC*)nullptr,
 		0,
 		0, /* CodeRef */
 };
@@ -315,9 +315,9 @@ human_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 
 	GetElementStarShip(ShipPtr, &StarShipPtr);
 	if (StarShipPtr->special_counter == 0
-		&& ((ObjectsOfConcern[ENEMY_WEAPON_INDEX].ObjectPtr != NULL
+		&& ((ObjectsOfConcern[ENEMY_WEAPON_INDEX].ObjectPtr != nullptr
 			 && ObjectsOfConcern[ENEMY_WEAPON_INDEX].which_turn <= 2)
-			|| (ObjectsOfConcern[ENEMY_SHIP_INDEX].ObjectPtr != NULL
+			|| (ObjectsOfConcern[ENEMY_SHIP_INDEX].ObjectPtr != nullptr
 				&& ObjectsOfConcern[ENEMY_SHIP_INDEX].which_turn <= 4)))
 	{
 		StarShipPtr->ship_input_state |= SPECIAL;
@@ -326,7 +326,7 @@ human_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 	{
 		StarShipPtr->ship_input_state &= ~SPECIAL;
 	}
-	ObjectsOfConcern[ENEMY_WEAPON_INDEX].ObjectPtr = NULL;
+	ObjectsOfConcern[ENEMY_WEAPON_INDEX].ObjectPtr = nullptr;
 
 	ship_intelligence(ShipPtr,
 					  ObjectsOfConcern, ConcernCounter);

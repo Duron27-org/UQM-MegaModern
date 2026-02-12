@@ -137,14 +137,14 @@ bool GenerateDefault_generateOrbital(SOLARSYS_STATE* solarSys, PLANET_DESC* worl
 	rand_val = RandomContext_GetSeed(SysGenRNG);
 
 	sysInfo->PlanetInfo.ScanSeed[BIOLOGICAL_SCAN] = rand_val;
-	GenerateLifeForms(sysInfo, GENERATE_ALL, NULL);
+	GenerateLifeForms(sysInfo, GENERATE_ALL, nullptr);
 	rand_val = RandomContext_GetSeed(SysGenRNG);
 
 	sysInfo->PlanetInfo.ScanSeed[MINERAL_SCAN] = rand_val;
-	GenerateMineralDeposits(sysInfo, GENERATE_ALL, NULL);
+	GenerateMineralDeposits(sysInfo, GENERATE_ALL, nullptr);
 
 	sysInfo->PlanetInfo.ScanSeed[ENERGY_SCAN] = rand_val;
-	LoadPlanet(NULL);
+	LoadPlanet(nullptr);
 
 	return true;
 }

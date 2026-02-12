@@ -81,7 +81,7 @@ GenerateSpathi_generatePlanets(SOLARSYS_STATE* solarSys)
 		pSunDesc->MoonByte = 0;
 		pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
 
-		FillOrbits(solarSys, NUMPLANETS_PDESC, NULL, false);
+		FillOrbits(solarSys, NUMPLANETS_PDESC, nullptr, false);
 
 		pPlanet->NumPlanets = 1;
 
@@ -233,12 +233,12 @@ GenerateSpathi_generateOrbital(SOLARSYS_STATE* solarSys,
 
 			solarSys->SysInfo.PlanetInfo.ScanSeed[BIOLOGICAL_SCAN] =
 				rand_val;
-			GenerateLifeForms(&solarSys->SysInfo, GENERATE_ALL, NULL);
+			GenerateLifeForms(&solarSys->SysInfo, GENERATE_ALL, nullptr);
 			rand_val = RandomContext_GetSeed(SysGenRNG);
 
 			solarSys->SysInfo.PlanetInfo.ScanSeed[MINERAL_SCAN] = rand_val;
 			GenerateMineralDeposits(
-				&solarSys->SysInfo, GENERATE_ALL, NULL);
+				&solarSys->SysInfo, GENERATE_ALL, nullptr);
 
 			solarSys->SysInfo.PlanetInfo.ScanSeed[ENERGY_SCAN] = rand_val;
 
@@ -270,7 +270,7 @@ GenerateSpathi_generateOrbital(SOLARSYS_STATE* solarSys,
 				}
 			}
 
-			LoadPlanet(NULL);
+			LoadPlanet(nullptr);
 			return true;
 		}
 		else if (matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET))
@@ -281,7 +281,7 @@ GenerateSpathi_generateOrbital(SOLARSYS_STATE* solarSys,
 
 			solarSys->SysInfo.PlanetInfo.ScanSeed[MINERAL_SCAN] = rand_val;
 			GenerateMineralDeposits(
-				&solarSys->SysInfo, GENERATE_ALL, NULL);
+				&solarSys->SysInfo, GENERATE_ALL, nullptr);
 			rand_val = RandomContext_GetSeed(SysGenRNG);
 
 			solarSys->SysInfo.PlanetInfo.ScanSeed[BIOLOGICAL_SCAN] =
@@ -311,7 +311,7 @@ GenerateSpathi_generateOrbital(SOLARSYS_STATE* solarSys,
 				solarSys->SysInfo.PlanetInfo.SurfaceTemperature = 31;
 			}
 
-			LoadPlanet(NULL);
+			LoadPlanet(nullptr);
 
 			return true;
 		}

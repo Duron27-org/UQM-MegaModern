@@ -100,9 +100,9 @@ typedef struct S3MNOTE
 
 /*========== Loader variables */
 
-static S3MNOTE* s3mbuf = NULL; /* pointer to a complete S3M pattern */
-static S3MHEADER* mh = NULL;
-static UWORD* paraptr = NULL; /* parapointer array (see S3M docs) */
+static S3MNOTE* s3mbuf = nullptr; /* pointer to a complete S3M pattern */
+static S3MHEADER* mh = nullptr;
+static UWORD* paraptr = nullptr; /* parapointer array (see S3M docs) */
 static unsigned int tracker;  /* tracker id */
 
 /* tracker identifiers */
@@ -161,11 +161,11 @@ static void S3M_Cleanup(void)
 	MikMod_free(poslookup);
 	MikMod_free(mh);
 	MikMod_free(origpositions);
-	s3mbuf = NULL;
-	paraptr = NULL;
-	poslookup = NULL;
-	mh = NULL;
-	origpositions = NULL;
+	s3mbuf = nullptr;
+	paraptr = nullptr;
+	poslookup = nullptr;
+	mh = nullptr;
+	origpositions = nullptr;
 }
 
 /* Because so many s3m files have 16 channels as the set number used, but really
@@ -612,7 +612,7 @@ static CHAR* S3M_LoadTitle(void)
 	_mm_fseek(modreader, 0, SEEK_SET);
 	if (!_mm_read_UBYTES(s, 28, modreader))
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	return (DupStr(s, 28, 0));
@@ -621,7 +621,7 @@ static CHAR* S3M_LoadTitle(void)
 /*========== Loader information */
 
 MIKMODAPI MLOADER load_s3m = {
-	NULL,
+	nullptr,
 	"S3M",
 	"S3M (Scream Tracker 3)",
 	S3M_Init,

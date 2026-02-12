@@ -53,7 +53,7 @@ FreeLegacyVideoData(void* data)
 static void
 GetLegacyVideoData(const char* path, RESOURCE_DATA* resdata)
 {
-	void* result = NULL;
+	void* result = nullptr;
 	char paths[1024], *audio_path, *speech_path, *loop_str;
 	uint32 LoopFrame = VID_NO_LOOP;
 
@@ -61,10 +61,10 @@ GetLegacyVideoData(const char* path, RESOURCE_DATA* resdata)
 	strncpy(paths, path, 1023);
 	paths[1023] = '\0';
 	audio_path = strchr(paths, ':');
-	if (audio_path == NULL)
+	if (audio_path == nullptr)
 	{
-		speech_path = NULL;
-		loop_str = NULL;
+		speech_path = nullptr;
+		loop_str = nullptr;
 	}
 	else
 	{
@@ -72,9 +72,9 @@ GetLegacyVideoData(const char* path, RESOURCE_DATA* resdata)
 		audio_path++;
 
 		speech_path = strchr(audio_path, ':');
-		if (speech_path == NULL)
+		if (speech_path == nullptr)
 		{
-			loop_str = NULL;
+			loop_str = nullptr;
 		}
 		else
 		{
@@ -82,7 +82,7 @@ GetLegacyVideoData(const char* path, RESOURCE_DATA* resdata)
 			speech_path++;
 
 			loop_str = strchr(speech_path, ':');
-			if (loop_str != NULL)
+			if (loop_str != nullptr)
 			{
 				*loop_str = '\0';
 				loop_str++;
@@ -129,9 +129,9 @@ GetLegacyVideoData(const char* path, RESOURCE_DATA* resdata)
 	{
 		LEGACY_VIDEO pLV = (LEGACY_VIDEO)result;
 		int len;
-		pLV->video = NULL;
-		pLV->audio = NULL;
-		pLV->speech = NULL;
+		pLV->video = nullptr;
+		pLV->audio = nullptr;
+		pLV->speech = nullptr;
 		pLV->loop = LoopFrame;
 
 		len = strlen(paths) + 1;
@@ -176,13 +176,13 @@ err:
 		FreeLegacyVideoData((LEGACY_VIDEO)result);
 	}
 
-	resdata->ptr = NULL;
+	resdata->ptr = nullptr;
 	return;
 }
 
 bool InstallVideoResType(void)
 {
-	InstallResTypeVectors("3DOVID", GetLegacyVideoData, FreeLegacyVideoData, NULL);
+	InstallResTypeVectors("3DOVID", GetLegacyVideoData, FreeLegacyVideoData, nullptr);
 	return true;
 }
 

@@ -30,7 +30,7 @@
 static void luaUqm_initStatePropertyTable(lua_State* luaState);
 static void luaUqm_initEventTable(lua_State* luaState);
 
-lua_State* luaUqm_globalState = NULL;
+lua_State* luaUqm_globalState = nullptr;
 static const char statePropRegistryKey[] =
 	"uqm_state_prop_registryKey";
 static const char eventRegistryKey[] =
@@ -41,7 +41,7 @@ DELTA_TYPES luaUqm_delta;
 // Init the global Lua state. Called at the start of the main loop.
 void luaUqm_initState(void)
 {
-	if (luaUqm_globalState != NULL)
+	if (luaUqm_globalState != nullptr)
 	{
 		log_add(log_Warning, "Lua state multiply uninitialized");
 		luaUqm_uninitState();
@@ -59,10 +59,10 @@ void luaUqm_initState(void)
 // Uninit the global Lua state.
 void luaUqm_uninitState(void)
 {
-	if (luaUqm_globalState != NULL)
+	if (luaUqm_globalState != nullptr)
 	{
 		lua_close(luaUqm_globalState);
-		luaUqm_globalState = NULL;
+		luaUqm_globalState = nullptr;
 	}
 	else
 	{
@@ -77,9 +77,9 @@ void luaUqm_uninitState(void)
 
 void luaUqm_reinitState(void)
 {
-	if (luaUqm_globalState == NULL)
+	if (luaUqm_globalState == nullptr)
 	{
-		log_add(log_Warning, "Lua state reinitialized while NULL");
+		log_add(log_Warning, "Lua state reinitialized while nullptr");
 	}
 	else
 	{

@@ -32,7 +32,7 @@ GetScriptResData(const char* pathName, RESOURCE_DATA* resdata)
 	// load the data when we need it, directly onto the Lua stack.
 	size_t pathNameLen = strlen(pathName);
 	resdata->ptr = HMalloc(pathNameLen + 1);
-	if (resdata->ptr == NULL)
+	if (resdata->ptr == nullptr)
 	{
 		return;
 	}
@@ -43,7 +43,7 @@ GetScriptResData(const char* pathName, RESOURCE_DATA* resdata)
 bool InstallScriptResType(void)
 {
 	InstallResTypeVectors("SCRIPT", GetScriptResData, ReleaseScriptResData,
-						  NULL);
+						  nullptr);
 	return true;
 }
 

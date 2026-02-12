@@ -138,7 +138,7 @@ uio_Repository_new(int flags)
 	result->flags = flags;
 	result->numMounts = 0;
 	result->mounts = (uio_MountInfo**)uio_malloc(1 * sizeof(uio_MountInfo*));
-	result->mounts[0] = NULL;
+	result->mounts[0] = nullptr;
 	result->mountTree = uio_makeRootMountTree();
 	return result;
 }

@@ -93,8 +93,8 @@ static CHAR oktalyzer[] = "Oktalyzer";
 static CHAR taketracker[] = "TakeTracker";
 static CHAR orpheus[] = "Imago Orpheus (MOD format)";
 
-static MODULEHEADER* mh = NULL;
-static MODNOTE* patbuf = NULL;
+static MODULEHEADER* mh = nullptr;
+static MODNOTE* patbuf = nullptr;
 static int modtype, trekker;
 
 /*========== Loader code */
@@ -212,8 +212,8 @@ static void MOD_Cleanup(void)
 {
 	MikMod_free(mh);
 	MikMod_free(patbuf);
-	mh = NULL;
-	patbuf = NULL;
+	mh = nullptr;
+	patbuf = nullptr;
 }
 
 /*
@@ -620,7 +620,7 @@ static CHAR* MOD_LoadTitle(void)
 	_mm_fseek(modreader, 0, SEEK_SET);
 	if (!_mm_read_UBYTES(s, 20, modreader))
 	{
-		return NULL;
+		return nullptr;
 	}
 	s[20] = 0; /* just in case */
 
@@ -630,7 +630,7 @@ static CHAR* MOD_LoadTitle(void)
 /*========== Loader information */
 
 MIKMODAPI MLOADER load_mod = {
-	NULL,
+	nullptr,
 	"Standard module",
 	"MOD (31 instruments)",
 	MOD_Init,

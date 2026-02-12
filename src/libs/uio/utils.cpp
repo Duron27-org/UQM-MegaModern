@@ -76,14 +76,14 @@ int uio_copyFile(uio_DirHandle* srcDir, const char* srcName,
 #endif
 				   ,
 				   0);
-	if (src == NULL)
+	if (src == nullptr)
 	{
 		return -1;
 	}
 
 	if (uio_fstat(src, &sb) == -1)
 	{
-		return uio_copyError(src, NULL, NULL, NULL, NULL);
+		return uio_copyError(src, nullptr, nullptr, nullptr, nullptr);
 	}
 
 	dst = uio_open(dstDir, newName, O_WRONLY | O_CREAT | O_EXCL
@@ -92,9 +92,9 @@ int uio_copyFile(uio_DirHandle* srcDir, const char* srcName,
 #endif
 				   ,
 				   sb.st_mode & (S_IRWXU | S_IRWXG | S_IRWXO));
-	if (dst == NULL)
+	if (dst == nullptr)
 	{
-		return uio_copyError(src, NULL, NULL, NULL, NULL);
+		return uio_copyError(src, nullptr, nullptr, nullptr, nullptr);
 	}
 
 	buf = (uio_uint8*)uio_malloc(BUFSIZE);
@@ -144,8 +144,8 @@ int uio_copyFile(uio_DirHandle* srcDir, const char* srcName,
 /*
  * Closes srcHandle if it's not -1.
  * Closes dstHandle if it's not -1.
- * Removes unlinkpath from the unlinkHandle dir if it's not NULL.
- * Frees 'buf' if not NULL.
+ * Removes unlinkpath from the unlinkHandle dir if it's not nullptr.
+ * Frees 'buf' if not nullptr.
  * Always returns -1.
  * errno is what was before the call.
  */
@@ -161,22 +161,22 @@ uio_copyError(uio_Handle* srcHandle, uio_Handle* dstHandle,
 	fprintf(stderr, "Error while copying: %s\n", strerror(errno));
 #endif
 
-	if (srcHandle != NULL)
+	if (srcHandle != nullptr)
 	{
 		uio_close(srcHandle);
 	}
 
-	if (dstHandle != NULL)
+	if (dstHandle != nullptr)
 	{
 		uio_close(dstHandle);
 	}
 
-	if (unlinkPath != NULL)
+	if (unlinkPath != nullptr)
 	{
 		uio_unlink(unlinkHandle, unlinkPath);
 	}
 
-	if (buf != NULL)
+	if (buf != nullptr)
 	{
 		uio_free(buf);
 	}
@@ -205,14 +205,14 @@ uio_getStdioAccess(uio_DirHandle* dir, const char* path, int flags,
 	if (res == -1)
 	{
 		// errno is set
-		return NULL;
+		return nullptr;
 	}
 
 	fsID = uio_getMountFileSystemType(mountHandle);
 	if (fsID == uio_FSTYPE_STDIO)
 	{
 		// Current location is usable.
-		return uio_StdioAccessHandle_new(NULL, NULL, NULL, NULL, newPath);
+		return uio_StdioAccessHandle_new(nullptr, nullptr, nullptr, nullptr, newPath);
 	}
 	uio_free(newPath);
 
@@ -223,7 +223,7 @@ uio_getStdioAccess(uio_DirHandle* dir, const char* path, int flags,
 		// Current location is not usable. Create a directory with a
 		// generated name, as a temporary location to store a copy of
 		// the file.
-		dirNum = (uio_uint32)time(NULL);
+		dirNum = (uio_uint32)time(nullptr);
 		tempDirName = (char*)uio_malloc(sizeof "01234567");
 		for (i = 0;; i++)
 		{
@@ -234,7 +234,7 @@ uio_getStdioAccess(uio_DirHandle* dir, const char* path, int flags,
 				// temporary dir, getting EEXIST.
 				uio_free(tempDirName);
 				errno = ENOSPC;
-				return NULL;
+				return nullptr;
 			}
 #endif
 
@@ -255,13 +255,13 @@ uio_getStdioAccess(uio_DirHandle* dir, const char* path, int flags,
 #endif
 				uio_free(tempDirName);
 				errno = savedErrno;
-				return NULL;
+				return nullptr;
 			}
 			break;
 		}
 
 		newDir = uio_openDirRelative(tempDir, tempDirName, 0);
-		if (newDir == NULL)
+		if (newDir == nullptr)
 		{
 #ifdef DEBUG
 			fprintf(stderr, "Error: Could not open temporary dir: %s\n",
@@ -278,13 +278,13 @@ uio_getStdioAccess(uio_DirHandle* dir, const char* path, int flags,
 #endif
 			uio_free(tempDirName);
 			errno = EIO;
-			return NULL;
+			return nullptr;
 		}
 
 		// Get the last component of path. This should be the file to
 		// access.
 		name = strrchr(path, '/');
-		if (name == NULL)
+		if (name == nullptr)
 		{
 			name = path;
 		}
@@ -302,7 +302,7 @@ uio_getStdioAccess(uio_DirHandle* dir, const char* path, int flags,
 			uio_closeDir(newDir);
 			uio_free(tempDirName);
 			errno = savedErrno;
-			return NULL;
+			return nullptr;
 		}
 	}
 
@@ -316,7 +316,7 @@ uio_getStdioAccess(uio_DirHandle* dir, const char* path, int flags,
 		uio_closeDir(newDir);
 		uio_free(tempDirName);
 		errno = savedErrno;
-		return NULL;
+		return nullptr;
 	}
 
 	fsID = uio_getMountFileSystemType(mountHandle);
@@ -330,7 +330,7 @@ uio_getStdioAccess(uio_DirHandle* dir, const char* path, int flags,
 		uio_free(newPath);
 		//		errno = EXDEV;
 		errno = EINVAL;
-		return NULL;
+		return nullptr;
 	}
 
 	uio_DirHandle_ref(tempDir);
@@ -341,7 +341,7 @@ uio_getStdioAccess(uio_DirHandle* dir, const char* path, int flags,
 void uio_releaseStdioAccess(uio_StdioAccessHandlePtr handlePtr)
 {
 	auto* handle {(uio_StdioAccessHandle*)handlePtr};
-	if (handle->tempDir != NULL)
+	if (handle->tempDir != nullptr)
 	{
 		if (uio_unlink(handle->tempDir, handle->fileName) == -1)
 		{
@@ -355,7 +355,7 @@ void uio_releaseStdioAccess(uio_StdioAccessHandlePtr handlePtr)
 		// Need to free this handle in advance. There should be no handles
 		// to a dir left when removing it.
 		uio_DirHandle_unref(handle->tempDir);
-		handle->tempDir = NULL;
+		handle->tempDir = nullptr;
 
 		if (uio_rmdir(handle->tempRoot, handle->tempDirName) == -1)
 		{
@@ -401,19 +401,19 @@ uio_StdioAccessHandle_new(
 static inline void
 uio_StdioAccessHandle_delete(uio_StdioAccessHandle* handle)
 {
-	if (handle->tempDir != NULL)
+	if (handle->tempDir != nullptr)
 	{
 		uio_DirHandle_unref(handle->tempDir);
 	}
-	if (handle->fileName != NULL)
+	if (handle->fileName != nullptr)
 	{
 		uio_free(handle->fileName);
 	}
-	if (handle->tempRoot != NULL)
+	if (handle->tempRoot != nullptr)
 	{
 		uio_DirHandle_unref(handle->tempRoot);
 	}
-	if (handle->tempDirName != NULL)
+	if (handle->tempDirName != nullptr)
 	{
 		uio_free(handle->tempDirName);
 	}
@@ -446,7 +446,7 @@ snprintf(char *str, size_t size, const char *format, ...)
 	
 	va_start (args, format);
 	result = _vsnprintf (str, size, format, args);
-	if (str != NULL && size != 0)
+	if (str != nullptr && size != 0)
 		str[size - 1] = '\0';
 	va_end (args);
 
@@ -462,7 +462,7 @@ static inline int
 vsnprintf(char* str, size_t size, const char* format, va_list args)
 {
 	int result = _vsnprintf(str, size, format, args);
-	if (str != NULL && size != 0)
+	if (str != nullptr && size != 0)
 	{
 		str[size - 1] = '\0';
 	}
@@ -490,10 +490,10 @@ char* uio_vasprintf(const char* format, va_list args)
 	// which might give faster result with allocations.
 
 	buf = (char*)uio_malloc(bufSize);
-	if (buf == NULL)
+	if (buf == nullptr)
 	{
 		// errno is set.
-		return NULL;
+		return nullptr;
 	}
 
 	for (;;)
@@ -522,7 +522,7 @@ char* uio_vasprintf(const char* format, va_list args)
 				// Shorten the resulting buffer to the size that was
 				// actually needed.
 				char* newBuf = (char*)uio_realloc(buf, printResult + 1);
-				if (newBuf == NULL)
+				if (newBuf == nullptr)
 				{
 					// We could have returned the (overly large) original
 					// buffer, but the unused memory might not be
@@ -531,7 +531,7 @@ char* uio_vasprintf(const char* format, va_list args)
 					int savedErrno = errno;
 					uio_free(buf);
 					errno = savedErrno;
-					return NULL;
+					return nullptr;
 				}
 				return newBuf;
 			}
@@ -541,12 +541,12 @@ char* uio_vasprintf(const char* format, va_list args)
 
 		{
 			char* newBuf = (char*)uio_realloc(buf, bufSize);
-			if (newBuf == NULL)
+			if (newBuf == nullptr)
 			{
 				int savedErrno = errno;
 				uio_free(buf);
 				errno = savedErrno;
-				return NULL;
+				return nullptr;
 			}
 			buf = newBuf;
 		}

@@ -185,7 +185,7 @@ void luaC_barrierback_(lua_State* L, GCObject* o)
 
 /*
 ** barrier for prototypes. When creating first closure (cache is
-** NULL), use a forward barrier; this may be the only closure of the
+** nullptr), use a forward barrier; this may be the only closure of the
 ** prototype (if it is a "regular" function, with a single instance)
 ** and the prototype may be big, so it is better to avoid traversing
 ** it again. Otherwise, use a backward barrier, to avoid marking all
@@ -195,7 +195,7 @@ LUAI_FUNC void luaC_barrierproto_(lua_State* L, Proto* p, Closure* c)
 {
 	global_State* g = G(L);
 	lua_assert(isblack(obj2gco(p)));
-	if (p->cache == NULL)
+	if (p->cache == nullptr)
 	{ /* first time? */
 		luaC_objbarrier(L, p, c);
 	}
@@ -244,7 +244,7 @@ GCObject* luaC_newobj(lua_State* L, int tt, size_t sz, GCObject** list,
 	global_State* g = G(L);
 	char* raw = cast(char*, luaM_newobject(L, novariant(tt), sz));
 	GCObject* o = obj2gco(raw + offset);
-	if (list == NULL)
+	if (list == nullptr)
 	{
 		list = &g->allgc; /* standard list for collectable objects */
 	}
@@ -359,7 +359,7 @@ static void markmt(global_State* g)
 static void markbeingfnz(global_State* g)
 {
 	GCObject* o;
-	for (o = g->tobefnz; o != NULL; o = gch(o)->next)
+	for (o = g->tobefnz; o != nullptr; o = gch(o)->next)
 	{
 		makewhite(g, o);
 		reallymarkobject(g, o);
@@ -390,8 +390,8 @@ static void remarkupvals(global_State* g)
 */
 static void restartcollection(global_State* g)
 {
-	g->gray = g->grayagain = NULL;
-	g->weak = g->allweak = g->ephemeron = NULL;
+	g->gray = g->grayagain = nullptr;
+	g->weak = g->allweak = g->ephemeron = nullptr;
 	markobject(g, g->mainthread);
 	markvalue(g, &g->l_registry);
 	markmt(g);
@@ -557,7 +557,7 @@ static int traverseproto(global_State* g, Proto* f)
 	int i;
 	if (f->cache && iswhite(obj2gco(f->cache)))
 	{
-		f->cache = NULL; /* allow cache to be collected */
+		f->cache = nullptr; /* allow cache to be collected */
 	}
 	markobject(g, f->source);
 	for (i = 0; i < f->sizek; i++) /* mark literals */
@@ -605,7 +605,7 @@ static lu_mem traverseLclosure(global_State* g, LClosure* cl)
 static lu_mem traversestack(global_State* g, lua_State* th)
 {
 	StkId o = th->stack;
-	if (o == NULL)
+	if (o == nullptr)
 	{
 		return 1; /* stack not completely built yet */
 	}
@@ -694,7 +694,7 @@ static void propagateall(global_State* g)
 
 static void propagatelist(global_State* g, GCObject* l)
 {
-	lua_assert(g->gray == NULL); /* no grays left */
+	lua_assert(g->gray == nullptr); /* no grays left */
 	g->gray = l;
 	propagateall(g); /* traverse all elements from 'l' */
 }
@@ -709,7 +709,7 @@ static void retraversegrays(global_State* g)
 	GCObject* weak = g->weak; /* save original lists */
 	GCObject* grayagain = g->grayagain;
 	GCObject* ephemeron = g->ephemeron;
-	g->weak = g->grayagain = g->ephemeron = NULL;
+	g->weak = g->grayagain = g->ephemeron = nullptr;
 	propagateall(g); /* traverse main gray list */
 	propagatelist(g, grayagain);
 	propagatelist(g, weak);
@@ -724,9 +724,9 @@ static void convergeephemerons(global_State* g)
 	{
 		GCObject* w;
 		GCObject* next = g->ephemeron; /* get ephemeron list */
-		g->ephemeron = NULL;		   /* tables will return to this list when traversed */
+		g->ephemeron = nullptr;		   /* tables will return to this list when traversed */
 		changed = 0;
-		while ((w = next) != NULL)
+		while ((w = next) != nullptr)
 		{
 			next = gco2t(w)->gclist;
 			if (traverseephemeron(g, gco2t(w)))
@@ -854,7 +854,7 @@ static GCObject** sweeplist(lua_State* L, GCObject** p, lu_mem count);
 */
 static void sweepthread(lua_State* L, lua_State* L1)
 {
-	if (L1->stack == NULL)
+	if (L1->stack == nullptr)
 	{
 		return; /* stack not completely built yet */
 	}
@@ -897,7 +897,7 @@ static GCObject** sweeplist(lua_State* L, GCObject** p, lu_mem count)
 		toset = luaC_white(g); /* make object white */
 		tostop = 0;			   /* do not stop */
 	}
-	while (*p != NULL && count-- > 0)
+	while (*p != nullptr && count-- > 0)
 	{
 		GCObject* curr = *p;
 		int marked = gch(curr)->marked;
@@ -910,7 +910,7 @@ static GCObject** sweeplist(lua_State* L, GCObject** p, lu_mem count)
 		{
 			if (testbits(marked, tostop))
 			{
-				return NULL; /* stop sweeping this list */
+				return nullptr; /* stop sweeping this list */
 			}
 			if (gch(curr)->tt == LUA_TTHREAD)
 			{
@@ -921,7 +921,7 @@ static GCObject** sweeplist(lua_State* L, GCObject** p, lu_mem count)
 			p = &gch(curr)->next; /* go to next element */
 		}
 	}
-	return (*p == NULL) ? NULL : p;
+	return (*p == nullptr) ? nullptr : p;
 }
 
 
@@ -999,7 +999,7 @@ static void GCTM(lua_State* L, int propagateerrors)
 	TValue v;
 	setgcovalue(L, &v, udata2finalize(g));
 	tm = luaT_gettmbyobj(L, &v, TM_GC);
-	if (tm != NULL && ttisfunction(tm))
+	if (tm != nullptr && ttisfunction(tm))
 	{ /* is there a finalizer? */
 		int status;
 		lu_byte oldah = L->allowhook;
@@ -1009,7 +1009,7 @@ static void GCTM(lua_State* L, int propagateerrors)
 		setobj2s(L, L->top, tm);	 /* push finalizer... */
 		setobj2s(L, L->top + 1, &v); /* ... and its argument */
 		L->top += 2;				 /* and (next line) call the finalizer */
-		status = luaD_pcall(L, dothecall, NULL, savestack(L, L->top - 2), 0);
+		status = luaD_pcall(L, dothecall, nullptr, savestack(L, L->top - 2), 0);
 		L->allowhook = oldah;	/* restore hooks */
 		g->gcrunning = running; /* restore state */
 		if (status != LUA_OK && propagateerrors)
@@ -1037,11 +1037,11 @@ static void separatetobefnz(lua_State* L, int all)
 	GCObject* curr;
 	GCObject** lastnext = &g->tobefnz;
 	/* find last 'next' field in 'tobefnz' list (to add elements in its end) */
-	while (*lastnext != NULL)
+	while (*lastnext != nullptr)
 	{
 		lastnext = &gch(*lastnext)->next;
 	}
-	while ((curr = *p) != NULL)
+	while ((curr = *p) != nullptr)
 	{ /* traverse all finalizable objects */
 		lua_assert(!isfinalized(curr));
 		lua_assert(testbit(gch(curr)->marked, SEPARATED));
@@ -1070,7 +1070,7 @@ void luaC_checkfinalizer(lua_State* L, GCObject* o, Table* mt)
 	global_State* g = G(L);
 	if (testbit(gch(o)->marked, SEPARATED) || /* obj. is already separated... */
 		isfinalized(o) ||					  /* ... or is finalized... */
-		gfasttm(g, mt, TM_GC) == NULL)		  /* or has no finalizer? */
+		gfasttm(g, mt, TM_GC) == nullptr)		  /* or has no finalizer? */
 	{
 		return; /* nothing to be done */
 	}
@@ -1081,7 +1081,7 @@ void luaC_checkfinalizer(lua_State* L, GCObject* o, Table* mt)
 		if (g->sweepgc == &ho->next)
 		{ /* avoid removing current sweep object */
 			lua_assert(issweepphase(g));
-			g->sweepgc = sweeptolive(L, g->sweepgc, NULL);
+			g->sweepgc = sweeptolive(L, g->sweepgc, nullptr);
 		}
 		/* search for pointer pointing to 'o' */
 		for (p = &g->allgc; *p != o; p = &gch(*p)->next)
@@ -1147,7 +1147,7 @@ static int entersweep(lua_State* L)
 	global_State* g = G(L);
 	int n = 0;
 	g->gcstate = GCSsweepstring;
-	lua_assert(g->sweepgc == NULL && g->sweepfin == NULL);
+	lua_assert(g->sweepgc == nullptr && g->sweepfin == nullptr);
 	/* prepare to sweep strings, finalizable objects, and regular objects */
 	g->sweepstrgc = 0;
 	g->sweepfin = sweeptolive(L, &g->finobj, &n);
@@ -1203,7 +1203,7 @@ void luaC_freeallobjects(lua_State* L)
 	global_State* g = G(L);
 	int i;
 	separatetobefnz(L, 1); /* separate all objects with finalizers */
-	lua_assert(g->finobj == NULL);
+	lua_assert(g->finobj == nullptr);
 	callallpendingfinalizers(L, 0);
 	g->currentwhite = WHITEBITS; /* this "white" makes all objects look dead */
 	g->gckind = KGC_NORMAL;
@@ -1237,8 +1237,8 @@ static l_mem atomic(lua_State* L)
 	convergeephemerons(g);
 	/* at this point, all strongly accessible objects are marked. */
 	/* clear values from weak tables, before checking finalizers */
-	clearvalues(g, g->weak, NULL);
-	clearvalues(g, g->allweak, NULL);
+	clearvalues(g, g->weak, nullptr);
+	clearvalues(g, g->allweak, nullptr);
 	origweak = g->weak;
 	origall = g->allweak;
 	work += g->GCmemtrav;  /* stop counting (objects being finalized) */
@@ -1249,8 +1249,8 @@ static l_mem atomic(lua_State* L)
 	convergeephemerons(g);
 	/* at this point, all resurrected objects are marked. */
 	/* remove dead objects from weak tables */
-	clearkeys(g, g->ephemeron, NULL); /* clear keys from all ephemeron tables */
-	clearkeys(g, g->allweak, NULL);	  /* clear keys from all allweak tables */
+	clearkeys(g, g->ephemeron, nullptr); /* clear keys from all ephemeron tables */
+	clearkeys(g, g->allweak, nullptr);	  /* clear keys from all allweak tables */
 	/* clear values from resurrected weak tables */
 	clearvalues(g, g->weak, origweak);
 	clearvalues(g, g->allweak, origall);

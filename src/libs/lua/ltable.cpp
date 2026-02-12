@@ -70,7 +70,7 @@
 
 static const Node dummynode_ = {
 	{NILCONSTANT},		  /* value */
-	{{NILCONSTANT, NULL}} /* key */
+	{{NILCONSTANT, nullptr}} /* key */
 };
 
 
@@ -180,7 +180,7 @@ static int findindex(lua_State* L, Table* t, StkId key)
 			{
 				n = gnext(n);
 			}
-			if (n == NULL)
+			if (n == nullptr)
 			{
 				luaG_runerror(L, "invalid key to " LUA_QL("next")); /* key not found */
 			}
@@ -350,7 +350,7 @@ static void setnodevector(lua_State* L, Table* t, int size)
 		for (i = 0; i < size; i++)
 		{
 			Node* n = gnode(t, i);
-			gnext(n) = NULL;
+			gnext(n) = nullptr;
 			setnilvalue(gkey(n));
 			setnilvalue(gval(n));
 		}
@@ -441,10 +441,10 @@ static void rehash(lua_State* L, Table* t, const TValue* ek)
 
 Table* luaH_new(lua_State* L)
 {
-	Table* t = &luaC_newobj(L, LUA_TTABLE, sizeof(Table), NULL, 0)->h;
-	t->metatable = NULL;
+	Table* t = &luaC_newobj(L, LUA_TTABLE, sizeof(Table), nullptr, 0)->h;
+	t->metatable = nullptr;
 	t->flags = cast_byte(~0);
-	t->array = NULL;
+	t->array = nullptr;
 	t->sizearray = 0;
 	setnodevector(L, t, 0);
 	return t;
@@ -472,7 +472,7 @@ static Node* getfreepos(Table* t)
 			return t->lastfree;
 		}
 	}
-	return NULL; /* could not find a free place */
+	return nullptr; /* could not find a free place */
 }
 
 
@@ -499,7 +499,7 @@ TValue* luaH_newkey(lua_State* L, Table* t, const TValue* key)
 	{ /* main position is taken? */
 		Node* othern;
 		Node* n = getfreepos(t); /* get a free place */
-		if (n == NULL)
+		if (n == nullptr)
 		{					   /* cannot find a free place? */
 			rehash(L, t, key); /* grow table */
 			/* whatever called 'newkey' take care of TM cache and GC barrier */
@@ -516,7 +516,7 @@ TValue* luaH_newkey(lua_State* L, Table* t, const TValue* key)
 			}
 			gnext(othern) = n; /* redo the chain with `n' in place of `mp' */
 			*n = *mp;		   /* copy colliding node into free pos. (mp->next also goes) */
-			gnext(mp) = NULL;  /* now `mp' is free */
+			gnext(mp) = nullptr;  /* now `mp' is free */
 			setnilvalue(gval(mp));
 		}
 		else

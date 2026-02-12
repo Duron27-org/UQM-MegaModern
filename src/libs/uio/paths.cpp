@@ -45,7 +45,7 @@ void getFirstPathComponent(const char* dir, const char* dirEnd,
 		return;
 	}
 	*endComp = (char*)memchr(*startComp, '/', dirEnd - *startComp);
-	if (*endComp == NULL)
+	if (*endComp == nullptr)
 	{
 		*endComp = dirEnd;
 	}
@@ -65,7 +65,7 @@ void getFirstPath0Component(const char* dir,
 		return;
 	}
 	*endComp = strchr(*startComp, '/');
-	if (*endComp == NULL)
+	if (*endComp == nullptr)
 	{
 		*endComp = *startComp + strlen(*startComp);
 	}
@@ -89,7 +89,7 @@ void getNextPathComponent(const char* dirEnd,
 	assert(**endComp == '/');
 	*startComp = *endComp + 1;
 	*endComp = (char*)memchr(*startComp, '/', dirEnd - *startComp);
-	if (*endComp == NULL)
+	if (*endComp == nullptr)
 	{
 		*endComp = dirEnd;
 	}
@@ -111,7 +111,7 @@ void getNextPath0Component(const char** startComp, const char** endComp)
 	assert(**endComp == '/');
 	*startComp = *endComp + 1;
 	*endComp = strchr(*startComp, '/');
-	if (*endComp == NULL)
+	if (*endComp == nullptr)
 	{
 		*endComp = *startComp + strlen(*startComp);
 	}
@@ -315,9 +315,9 @@ uio_skipUNCServerShare(const char* inPath)
  * @param[in]  inPath   The path to parse.
  * @param[out] outPath  Will contain a newly allocated string (to be
  * 		freed using uio_free(), containing the server and share part
- * 		of inPath, separated by a backslash, or NULL if 'inPath' was
+ * 		of inPath, separated by a backslash, or nullptr if 'inPath' was
  * 		not a valid UNC path.
- * @param[out] outLen   If not NULL on entry, it will contain the string
+ * @param[out] outLen   If not nullptr on entry, it will contain the string
  * 		length of '*outPath', or 0 if 'inPath' was not a valid UNC path.
  *
  * @returns The number of characters to add to 'inPath' to get to the first
@@ -394,15 +394,15 @@ uio_getUNCServerShare(const char* inPath, char** outPath, size_t* outLen)
 	*nameEnd = '\0';
 
 	*outPath = name;
-	if (outLen != NULL)
+	if (outLen != nullptr)
 	{
 		*outLen = nameLen;
 	}
 	return (size_t)(ptr - inPath);
 
 noMatch:
-	*outPath = NULL;
-	if (outLen != NULL)
+	*outPath = nullptr;
+	if (outLen != nullptr)
 	{
 		*outLen = 0;
 	}
@@ -410,7 +410,7 @@ noMatch:
 }
 
 // Decomposes a path into its components.
-// If isAbsolute is not NULL, *isAbsolute will be set to true
+// If isAbsolute is not nullptr, *isAbsolute will be set to true
 // iff the path is absolute.
 // As POSIX considers multiple consecutive slashes to be equivalent to
 // a single slash, so will uio (but not in the "\\MACHINE\share" part
@@ -433,10 +433,10 @@ int decomposePath(const char* path, uio_PathComp** pathComp,
 		return -1;
 	}
 
-	last = NULL;
+	last = nullptr;
 #ifdef HAVE_UNC_PATHS
 	path += uio_getUNCServerShare(path, &name, &nameLen);
-	if (name != NULL)
+	if (name != nullptr)
 	{
 		// UNC path
 		*endResult = uio_PathComp_new(name, nameLen, last);
@@ -494,9 +494,9 @@ int decomposePath(const char* path, uio_PathComp** pathComp,
 		}
 	}
 
-	*endResult = NULL;
+	*endResult = nullptr;
 	*pathComp = result;
-	if (isAbsolute != NULL)
+	if (isAbsolute != nullptr)
 	{
 		*isAbsolute = absolute;
 	}
@@ -512,7 +512,7 @@ void composePath(const uio_PathComp* pathComp, uio_bool absolute,
 	char* result;
 	char* pathPtr;
 
-	assert(pathComp != NULL);
+	assert(pathComp != nullptr);
 
 	// First determine how much space is required.
 	len = 0;
@@ -521,7 +521,7 @@ void composePath(const uio_PathComp* pathComp, uio_bool absolute,
 		len++;
 	}
 	ptr = pathComp;
-	while (ptr != NULL)
+	while (ptr != nullptr)
 	{
 		len += ptr->nameLen;
 		ptr = ptr->next;
@@ -563,7 +563,7 @@ void composePath(const uio_PathComp* pathComp, uio_bool absolute,
 		pathPtr += ptr->nameLen;
 
 		ptr = ptr->next;
-		if (ptr == NULL)
+		if (ptr == nullptr)
 		{
 			break;
 		}
@@ -616,7 +616,7 @@ void uio_PathComp_delete(uio_PathComp* pathComp)
 {
 	uio_PathComp* next;
 
-	while (pathComp != NULL)
+	while (pathComp != nullptr)
 	{
 		next = pathComp->next;
 		uio_free(pathComp->name);
@@ -631,7 +631,7 @@ int uio_countPathComps(const uio_PathComp* comp)
 	int count;
 
 	count = 0;
-	for (; comp != NULL; comp = comp->next)
+	for (; comp != nullptr; comp = comp->next)
 	{
 		count++;
 	}
@@ -641,12 +641,12 @@ int uio_countPathComps(const uio_PathComp* comp)
 uio_PathComp*
 uio_lastPathComp(uio_PathComp* comp)
 {
-	if (comp == NULL)
+	if (comp == nullptr)
 	{
-		return NULL;
+		return nullptr;
 	}
 
-	while (comp->next != NULL)
+	while (comp->next != nullptr)
 	{
 		comp = comp->next;
 	}
@@ -675,7 +675,7 @@ uio_makePathComps(const char* path, uio_PathComp* upComp)
 		compPtr = &(*compPtr)->next;
 		getNextPath0Component(&start, &end);
 	}
-	*compPtr = NULL;
+	*compPtr = nullptr;
 	return result;
 }
 
@@ -686,7 +686,7 @@ void uio_printPathComp(FILE* outStream, const uio_PathComp* comp)
 
 void uio_printPathToComp(FILE* outStream, const uio_PathComp* comp)
 {
-	if (comp == NULL)
+	if (comp == nullptr)
 	{
 		return;
 	}

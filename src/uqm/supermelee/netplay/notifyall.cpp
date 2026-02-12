@@ -32,7 +32,7 @@ void Netplay_NotifyAll_setTeamName(MELEE_STATE* pMS, size_t playerNr)
 	{
 		NetConnection* conn = netConnections[playerI];
 
-		if (conn == NULL)
+		if (conn == nullptr)
 		{
 			continue;
 		}
@@ -62,7 +62,7 @@ void Netplay_NotifyAll_setFleet(MELEE_STATE* pMS, size_t playerNr)
 	{
 		NetConnection* conn = netConnections[playerI];
 
-		if (conn == NULL)
+		if (conn == nullptr)
 		{
 			continue;
 		}
@@ -93,7 +93,7 @@ void Netplay_NotifyAll_setShip(MELEE_STATE* pMS, size_t playerNr, size_t index)
 	{
 		NetConnection* conn = netConnections[playerI];
 
-		if (conn == NULL)
+		if (conn == nullptr)
 		{
 			continue;
 		}
@@ -135,7 +135,7 @@ void Netplay_NotifyAll_checksum(BattleFrameCounter frameNr, Checksum checksum)
 	for (player = 0; player < NUM_PLAYERS; player++)
 	{
 		NetConnection* conn = netConnections[player];
-		if (conn == NULL)
+		if (conn == nullptr)
 		{
 			continue;
 		}
@@ -157,7 +157,7 @@ void Netplay_NotifyAll_battleInput(BATTLE_INPUT_STATE input)
 	for (player = 0; player < NUM_PLAYERS; player++)
 	{
 		NetConnection* conn = netConnections[player];
-		if (conn == NULL)
+		if (conn == nullptr)
 		{
 			continue;
 		}

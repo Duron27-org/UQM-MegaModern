@@ -282,9 +282,9 @@ TFB_DrawImage_New(TFB_Canvas canvas)
 {
 	TFB_Image* img = (TFB_Image*)HMalloc(sizeof(TFB_Image));
 	img->mutex = CreateMutex("image lock", SYNC_CLASS_VIDEO);
-	img->ScaledImg = NULL;
-	img->MipmapImg = NULL;
-	img->FilledImg = NULL;
+	img->ScaledImg = nullptr;
+	img->MipmapImg = nullptr;
+	img->FilledImg = nullptr;
 	img->colormap_index = -1;
 	img->colormap_version = 0;
 	img->NormalHs = NullHs;
@@ -312,9 +312,9 @@ TFB_DrawImage_CreateForScreen(int w, int h, bool withalpha)
 {
 	TFB_Image* img = (TFB_Image*)HMalloc(sizeof(TFB_Image));
 	img->mutex = CreateMutex("image lock", SYNC_CLASS_VIDEO);
-	img->ScaledImg = NULL;
-	img->MipmapImg = NULL;
-	img->FilledImg = NULL;
+	img->ScaledImg = nullptr;
+	img->MipmapImg = nullptr;
+	img->FilledImg = nullptr;
 	img->colormap_index = -1;
 	img->colormap_version = 0;
 	img->NormalHs = NullHs;
@@ -341,8 +341,8 @@ TFB_DrawImage_New_Rotated(TFB_Image* img, int angle)
 	if (!img->NormalImg)
 	{
 		log_add(log_Warning, "TFB_DrawImage_New_Rotated: "
-							 "source canvas is NULL! Failing.");
-		return NULL;
+							 "source canvas is nullptr! Failing.");
+		return nullptr;
 	}
 
 	TFB_DrawCanvas_GetRotatedExtent(img->NormalImg, angle, &size);
@@ -351,7 +351,7 @@ TFB_DrawImage_New_Rotated(TFB_Image* img, int angle)
 	{
 		log_add(log_Warning, "TFB_DrawImage_New_Rotated: "
 							 "rotation target canvas not created! Failing.");
-		return NULL;
+		return nullptr;
 	}
 	TFB_DrawCanvas_Rotate(img->NormalImg, dst, angle, size);
 
@@ -386,7 +386,7 @@ void TFB_DrawImage_SetMipmap(TFB_Image* img, TFB_Image* mmimg, int hotx, int hot
 	}
 	else
 	{
-		img->MipmapImg = NULL;
+		img->MipmapImg = nullptr;
 	}
 
 	UnlockMutex(mmimg->mutex);

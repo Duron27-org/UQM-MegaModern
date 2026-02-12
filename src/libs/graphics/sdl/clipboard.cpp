@@ -34,7 +34,7 @@ sdl_surface_to_bitmap(SDL_Surface* surface)
 #if SDL_MAJOR_VERSION > 1
 	format.format = SDL_PIXELFORMAT_BGRA32;
 #endif /* SDL_MAJOR_VERSION > 1 */
-	format.palette = NULL;
+	format.palette = nullptr;
 	format.BitsPerPixel = 32;
 	format.BytesPerPixel = 4;
 	format.Rmask = 0x00FF0000;
@@ -45,7 +45,7 @@ sdl_surface_to_bitmap(SDL_Surface* surface)
 	convPtr = SDL_ConvertSurface(surface, &format, 0);
 	if (!convPtr)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	// Create DIB header
@@ -57,11 +57,11 @@ sdl_surface_to_bitmap(SDL_Surface* surface)
 	BIH.biCompression = BI_RGB;
 
 	// Create DIB section
-	hdc = GetDC(NULL);
+	hdc = GetDC(nullptr);
 	hbitmap = CreateDIBitmap(hdc, &BIH, CBM_INIT, convPtr->pixels,
 							 (BITMAPINFO*)&BIH, DIB_RGB_COLORS);
 
-	ReleaseDC(NULL, hdc);
+	ReleaseDC(nullptr, hdc);
 	SDL_FreeSurface(convPtr);
 
 	return hbitmap;
@@ -85,7 +85,7 @@ CopySurfaceToClipboard_Win32(SDL_Surface* surface)
 	}
 
 	// Clipboard operations
-	if (!OpenClipboard(NULL))
+	if (!OpenClipboard(nullptr))
 	{
 		DeleteObject(hbitmap);
 		return -1;

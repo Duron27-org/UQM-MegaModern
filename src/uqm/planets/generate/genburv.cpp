@@ -140,11 +140,11 @@ GenerateBurvixese_generateOrbital(SOLARSYS_STATE* solarSys,
 	rand_val = RandomContext_GetSeed(SysGenRNG);
 
 	solarSys->SysInfo.PlanetInfo.ScanSeed[BIOLOGICAL_SCAN] = rand_val;
-	GenerateLifeForms(&solarSys->SysInfo, GENERATE_ALL, NULL);
+	GenerateLifeForms(&solarSys->SysInfo, GENERATE_ALL, nullptr);
 	rand_val = RandomContext_GetSeed(SysGenRNG);
 
 	solarSys->SysInfo.PlanetInfo.ScanSeed[MINERAL_SCAN] = rand_val;
-	GenerateMineralDeposits(&solarSys->SysInfo, GENERATE_ALL, NULL);
+	GenerateMineralDeposits(&solarSys->SysInfo, GENERATE_ALL, nullptr);
 
 	solarSys->SysInfo.PlanetInfo.ScanSeed[ENERGY_SCAN] = rand_val;
 
@@ -180,7 +180,7 @@ GenerateBurvixese_generateOrbital(SOLARSYS_STATE* solarSys,
 		}
 	}
 
-	LoadPlanet(NULL);
+	LoadPlanet(nullptr);
 
 	return true;
 }

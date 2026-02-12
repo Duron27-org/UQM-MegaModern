@@ -79,10 +79,10 @@ uio_openFileBlock(uio_Handle* handle)
 	if (uio_fstat(handle, &statBuf) == -1)
 	{
 		// errno is set
-		return NULL;
+		return nullptr;
 	}
 	uio_Handle_ref(handle);
-	return uio_FileBlock_new(handle, 0, 0, statBuf.st_size, NULL, 0, 0, 0, 0);
+	return uio_FileBlock_new(handle, 0, 0, statBuf.st_size, nullptr, 0, 0, 0, 0);
 }
 
 uio_FileBlock*
@@ -95,7 +95,7 @@ uio_openFileBlock2(uio_Handle* handle, off_t offset, size_t size)
 #if 0
 	if (uio_stat(handle, &statBuf) == -1) {
 		// errno is set
-		return NULL;
+		return nullptr;
 	}
 	if (statBuf.st_size > offset || (statBuf.st_size - offset > size)) {
 		// NOT: 'if (statBuf.st_size > offset + size)', to protect
@@ -104,7 +104,7 @@ uio_openFileBlock2(uio_Handle* handle, off_t offset, size_t size)
 	}
 #endif
 	uio_Handle_ref(handle);
-	return uio_FileBlock_new(handle, 0, offset, size, NULL, 0, 0, 0, 0);
+	return uio_FileBlock_new(handle, 0, offset, size, nullptr, 0, 0, 0, 0);
 }
 
 static inline ssize_t
@@ -142,7 +142,7 @@ uio_accessFileBlockNoMmap(uio_FileBlock* block, off_t offset, size_t length,
 		length = block->blockSize - offset;
 	}
 
-	if (block->buffer != NULL)
+	if (block->buffer != nullptr)
 	{
 		// Check whether the requested data is already in the buffer.
 		if (offset >= block->bufOffset && (offset - block->bufOffset) + length < block->bufFill)
@@ -200,14 +200,14 @@ uio_accessFileBlockNoMmap(uio_FileBlock* block, off_t offset, size_t length,
 
 	oldBuffer = block->buffer;
 	//oldBufSize = block->bufSize;
-	if (block->buffer != NULL || block->bufSize != bufSize)
+	if (block->buffer != nullptr || block->bufSize != bufSize)
 	{
 		// We don't have a buffer, or we have one, but of the wrong size.
 		block->buffer = (char*)uio_malloc(bufSize);
 		block->bufSize = bufSize;
 	}
 
-	if (oldBuffer != NULL)
+	if (oldBuffer != nullptr)
 	{
 		// TODO: If we have part of the data still in the old buffer, we
 		// can keep that.
@@ -298,7 +298,7 @@ int uio_copyFileBlock(uio_FileBlock* block, off_t offset, char* buffer,
 
 		// Check whether (part of) the requested data is already in our
 		// own buffer.
-		if (block->buffer != NULL && offset >= block->bufOffset
+		if (block->buffer != nullptr && offset >= block->bufOffset
 			&& offset < block->bufOffset + (off_t)block->bufFill)
 		{
 			size_t toCopy = block->bufFill - offset;
@@ -343,13 +343,13 @@ int uio_closeFileBlock(uio_FileBlock* block)
 	if (block->flags & uio_FB_USE_MMAP)
 	{
 #if 0
-		if (block->buffer != NULL)
+		if (block->buffer != nullptr)
 			uio_mmunmap(block->buffer);
 #endif
 	}
 	else
 	{
-		if (block->buffer != NULL)
+		if (block->buffer != nullptr)
 		{
 			uio_free(block->buffer);
 		}
@@ -373,9 +373,9 @@ void uio_setFileBlockUsageHint(uio_FileBlock* block, int usage,
 // call uio_closeFileBlock() instead.
 void uio_clearFileBlockBuffers(uio_FileBlock* block)
 {
-	if (block->buffer != NULL)
+	if (block->buffer != nullptr)
 	{
 		uio_free(block->buffer);
-		block->buffer = NULL;
+		block->buffer = nullptr;
 	}
 }

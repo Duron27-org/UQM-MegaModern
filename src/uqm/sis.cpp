@@ -174,7 +174,7 @@ void DrawSISTitle(uqm::CHAR_T* pStr)
 
 	UnbatchGraphics();
 
-	SetContextClipRect(NULL);
+	SetContextClipRect(nullptr);
 
 	SetContext(OldContext);
 }
@@ -343,7 +343,7 @@ bool DrawSISMessageEx(const uqm::CHAR_T* pStr, uqm::SIZE CurPos, uqm::SIZE ExPos
 
 	if (flags & DSME_CLEARFR)
 	{
-		SetFlashRect(NULL, false);
+		SetFlashRect(nullptr, false);
 	}
 
 	if (CurPos < 0 && ExPos < 0)
@@ -374,7 +374,7 @@ bool DrawSISMessageEx(const uqm::CHAR_T* pStr, uqm::SIZE CurPos, uqm::SIZE ExPos
 			// will not fit when displayed later
 			// disallow the change
 			UnbatchGraphics ();
-			SetContextClipRect (NULL);
+			SetContextClipRect (nullptr);
 			SetContext (OldContext);
 			return (false);
 		}
@@ -486,7 +486,7 @@ bool DrawSISMessageEx(const uqm::CHAR_T* pStr, uqm::SIZE CurPos, uqm::SIZE ExPos
 
 	UnbatchGraphics();
 
-	SetContextClipRect(NULL);
+	SetContextClipRect(nullptr);
 	SetContext(OldContext);
 
 	return (true);
@@ -638,7 +638,7 @@ void DrawStatusMessage(const uqm::CHAR_T* pStr)
 	font_DrawText(&t);
 	UnbatchGraphics();
 
-	SetContextClipRect(NULL);
+	SetContextClipRect(nullptr);
 
 	SetContext(OldContext);
 }
@@ -705,7 +705,7 @@ void DrawFlagshipName(bool InStatusArea, bool NewGame)
 	FRAME OldFontEffect;
 	uqm::CHAR_T buf[250];
 
-	OldFontEffect = SetContextFontEffect(NULL);
+	OldFontEffect = SetContextFontEffect(nullptr);
 	OldColor = SetContextForeGroundColor(FLAGSHIP_NAME_BACKGROUND_COLOR);
 
 	if (InStatusArea)
@@ -875,7 +875,7 @@ void DrawFlagshipStats(void)
 
 	OldContext = SetContext(SpaceContext);
 	OldFont = SetContextFont(StarConFont);
-	OldFontEffect = SetContextFontEffect(NULL);
+	OldFontEffect = SetContextFontEffect(nullptr);
 	GetContextFontLeading(&leading);
 
 	r.corner.x = 0;
@@ -1154,7 +1154,7 @@ void GetGaugeRect(RECT* pRect, bool IsCrewRect)
 //	SetContextFontEffect (SetAbsFrameIndex (FontGradFrame, 2));
 //	t.pStr = GAME_STRING (STATUS_STRING_BASE + 4); // "CREW"
 //	font_DrawText (&t);
-//	SetContextFontEffect (NULL);
+//	SetContextFontEffect (nullptr);
 //
 //	// Background of text "CAPTAIN".
 //	r.corner.x = RES_SCALE (2 + 1);
@@ -1207,7 +1207,7 @@ Draw_SIS(void)
 	SetContextFontEffect(SetAbsFrameIndex(FontGradFrame, flat ? 11 : 2));
 	t.pStr = GAME_STRING(STATUS_STRING_BASE + (flat ? 18 : 4)); // "CREW"
 	font_DrawText(&t);
-	SetContextFontEffect(NULL);
+	SetContextFontEffect(nullptr);
 
 	// Background of text "CAPTAIN".
 	r.corner.x = RES_SCALE(2 + 1);
@@ -1478,7 +1478,7 @@ DeltaSISGauges_resunitDelta(uqm::SIZE resunit_delta)
 {
 	if (resunit_delta == 0)
 	{
-		DrawStatusMessage(NULL);
+		DrawStatusMessage(nullptr);
 		return;
 	}
 
@@ -1506,7 +1506,7 @@ DeltaSISGauges_resunitDelta(uqm::SIZE resunit_delta)
 		DrawFilledRectangle(&r);
 	}
 
-	DrawStatusMessage(NULL);
+	DrawStatusMessage(nullptr);
 }
 
 static bool
@@ -2009,11 +2009,11 @@ AutoPilotTextLogic(void)
 	current_position.y = LOGY_TO_UNIVERSE(GLOBAL_SIS(log_y));
 	destination = GLOBAL(autopilot);
 	target_distance = ptDistance(current_position, destination) / 10;
-	StarPointer = FindStar(NULL, &destination, 1, 1);
+	StarPointer = FindStar(nullptr, &destination, 1, 1);
 
 	if (inQuasiSpace() && (!pointsEqual(destination, Falayalaralfali) || (pointsEqual(destination, Falayalaralfali) && !(GET_GAME_STATE(KNOW_QS_PORTAL) & (1 << 15)))))
 	{
-		StarPointer = NULL;
+		StarPointer = nullptr;
 	}
 
 	if (!StarPointer)
@@ -2104,7 +2104,7 @@ void DrawAutoPilotMessage(bool Reset)
 	{
 		if (!OnAutoPilot)
 		{ // AutoPilot aborted -- clear the AUTO-PILOT message
-			DrawSISMessage(NULL);
+			DrawSISMessage(nullptr);
 			cycle_index = 0;
 
 			if (EXTENDED)
@@ -2228,9 +2228,9 @@ void DrawFuelInFTanks(bool isOutfit)
 #define NUM_RECTS 1
 
 static FlashContext* flashContext[MAX_NUM_RECTS] =
-	{NULL, NULL, NULL, NULL, NULL};
+	{nullptr, nullptr, nullptr, nullptr, nullptr};
 static RECT flash_rect[MAX_NUM_RECTS];
-static Alarm* flashAlarm = NULL;
+static Alarm* flashAlarm = nullptr;
 static bool flashPaused = false;
 static uqm::BYTE count_r = NUM_RECTS;
 
@@ -2241,7 +2241,7 @@ updateFlashRect(void* arg)
 {
 	uqm::COUNT i;
 
-	if (flashContext[0] == NULL)
+	if (flashContext[0] == nullptr)
 	{
 		return;
 	}
@@ -2260,13 +2260,13 @@ scheduleFlashAlarm(void)
 	TimeCount nextTime = Flash_nextTime(flashContext[0]);
 	uqm::DWORD nextTimeMs = (nextTime / ONE_SECOND) * 1000 + ((nextTime % ONE_SECOND) * 1000 / ONE_SECOND);
 	// Overflow-safe conversion.
-	flashAlarm = Alarm_addAbsoluteMs(nextTimeMs, updateFlashRect, NULL);
+	flashAlarm = Alarm_addAbsoluteMs(nextTimeMs, updateFlashRect, nullptr);
 }
 
 void SetAdditionalRect(const RECT* pRect, uqm::COUNT number)
 { // Add new flashing rect (Max 5)
 	// Must be called one by one and in incremental order
-	if (pRect != NULL && count_r != MAX_NUM_RECTS)
+	if (pRect != nullptr && count_r != MAX_NUM_RECTS)
 	{
 		RECT clip_r = {
 			{0, 0},
@@ -2291,10 +2291,10 @@ void DumpAdditionalRect(void)
 
 	for (i = count_r; i > 0; i--)
 	{
-		if (flashContext[i] != NULL)
+		if (flashContext[i] != nullptr)
 		{
 			Flash_terminate(flashContext[i]);
-			flashContext[i] = NULL;
+			flashContext[i] = nullptr;
 		}
 	}
 	count_r = NUM_RECTS;
@@ -2311,7 +2311,7 @@ void SetFlashRect(const RECT* pRect, bool pcRect)
 
 	if (pRect != SFR_MENU_3DO && pRect != SFR_MENU_ANY
 		&& pRect != SFR_MENU_NON)
-	{ // The caller specified their own flash area, or NULL (stop flashing).
+	{ // The caller specified their own flash area, or nullptr (stop flashing).
 		GetContextClipRect(&clip_r);
 	}
 	else
@@ -2352,7 +2352,7 @@ void SetFlashRect(const RECT* pRect, bool pcRect)
 		// Create a new flash context(s).
 		for (i = 0; i < count_r; i++)
 		{
-			if (flashContext[i] == NULL)
+			if (flashContext[i] == nullptr)
 			{
 				flashContext[i] = Flash_createHighlight(ScreenContext, &flash_rect[i]);
 				Flash_setMergeFactors(flashContext[i], 3, 2, 2);
@@ -2375,7 +2375,7 @@ void SetFlashRect(const RECT* pRect, bool pcRect)
 	else
 	{
 		// Flash rectangle is empty. Stop flashing.
-		if (flashContext[0] != NULL)
+		if (flashContext[0] != nullptr)
 		{
 			Alarm_remove(flashAlarm);
 			flashAlarm = 0;
@@ -2383,7 +2383,7 @@ void SetFlashRect(const RECT* pRect, bool pcRect)
 			for (i = 0; i < count_r; i++)
 			{
 				Flash_terminate(flashContext[i]);
-				flashContext[i] = NULL;
+				flashContext[i] = nullptr;
 			}
 			count_r = NUM_RECTS;
 		}
@@ -2437,7 +2437,7 @@ bool PauseFlash(void)
 {
 	uqm::BYTE i;
 
-	if (flashContext[0] != NULL)
+	if (flashContext[0] != nullptr)
 	{
 		if (flashPaused)
 		{
@@ -2450,7 +2450,7 @@ bool PauseFlash(void)
 	}
 	for (i = 0; i < count_r; i++)
 	{
-		if (flashContext[i] != NULL && Flash_getPulseBox(flashContext[i]))
+		if (flashContext[i] != nullptr && Flash_getPulseBox(flashContext[i]))
 		{
 			Flash_pause(flashContext[i]);
 		}
@@ -2468,7 +2468,7 @@ void ContinueFlash(void)
 	{
 		for (i = 0; i < count_r; i++) // need to do before setting clock
 		{
-			if (flashContext[i] != NULL && Flash_getPulseBox(flashContext[i]))
+			if (flashContext[i] != nullptr && Flash_getPulseBox(flashContext[i]))
 			{
 				Flash_continue(flashContext[i]);
 			}

@@ -77,7 +77,7 @@ typedef struct tfb_oggsounddecoder
 
 } TFB_OggSoundDecoder;
 
-static const TFB_DecoderFormats* ova_formats = NULL;
+static const TFB_DecoderFormats* ova_formats = nullptr;
 
 static size_t
 ogg_read(void* ptr, size_t size, size_t nmemb, void* datasource)
@@ -172,13 +172,13 @@ ova_Open(THIS_PTR, uio_DirHandle* dir, const char* filename)
 	vorbis_info* vinfo;
 
 	fp = uio_fopen(dir, filename, "rb");
-	if (fp == NULL)
+	if (fp == nullptr)
 	{
 		log_add(log_Warning, "ova_Open(): could not open %s", filename);
 		return false;
 	}
 
-	rc = ov_open_callbacks(fp, &ova->vf, NULL, 0, ogg_callbacks);
+	rc = ov_open_callbacks(fp, &ova->vf, nullptr, 0, ogg_callbacks);
 	if (rc != 0)
 	{
 		log_add(log_Warning, "ova_Open(): "

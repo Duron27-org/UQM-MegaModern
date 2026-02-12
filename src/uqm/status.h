@@ -60,7 +60,7 @@ extern void DrawCrewFuelString(COORD y, uqm::SIZE state);
 extern void ClearShipStatus(COORD y);
 extern void OutlineShipStatus(COORD y);
 extern void InitShipStatus(SHIP_INFO* ShipInfoPtr, STARSHIP* StarShipPtr, RECT* pClipRect, bool inMeleeMenu);
-// StarShipPtr or pClipRect can be NULL
+// StarShipPtr or pClipRect can be nullptr
 extern void DeltaStatistics(SHIP_INFO* ShipInfoPtr, COORD y_offs,
 							uqm::SIZE crew_delta, uqm::SIZE energy_delta);
 extern void DrawBattleCrewAmount(SHIP_INFO* ShipInfoPtr, COORD y_offs);

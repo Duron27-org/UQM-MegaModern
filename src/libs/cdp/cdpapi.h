@@ -57,7 +57,7 @@ typedef void cdp_Itf;
 typedef struct cdp_ItfReg cdp_ItfReg;
 
 // Interface KINDs - for convinience and uniformity
-#define CDPITF_KIND_INVALID NULL
+#define CDPITF_KIND_INVALID nullptr
 #define CDPITF_KIND_HOST "UQM.Host"
 #define CDPITF_KIND_MEMORY "UQM.Memory"
 #define CDPITF_KIND_IO "UQM.IO"
@@ -78,7 +78,7 @@ typedef struct
 {
 	// fill in the first 4 members for batch registration
 	// fill in the 1st member for batch lookup
-	// terminate an array of these defs with name == NULL
+	// terminate an array of these defs with name == nullptr
 	const char* name;		 // interface ID
 	cdp_Itf* itf;			 // interface pointer
 	cdp_ApiVersion ver_from; // lowest supported version
@@ -105,9 +105,9 @@ typedef struct
 {
 	// fill in the 1st member for batch lookup or registration
 	// also fill in the 2nd member for batch subscription
-	// terminate an array of these defs with name == NULL
+	// terminate an array of these defs with name == nullptr
 	const char* name;	// event ID
-	cdp_EventProc proc; // event proc, set to NULL for no bind
+	cdp_EventProc proc; // event proc, set to nullptr for no bind
 
 	cdp_Event event;	// subscribable event handle
 	cdp_Module* module; // owner module

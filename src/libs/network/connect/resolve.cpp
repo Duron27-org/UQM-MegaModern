@@ -148,7 +148,7 @@ getaddrinfoAsync(const char* node, const char* service,
 	resolveState->callback = callback;
 	resolveState->errorCallback = errorCallback;
 	resolveState->extra = extra;
-	resolveState->result = NULL;
+	resolveState->result = nullptr;
 
 	resolveState->error.gaiRes =
 		getaddrinfo(node, service, hints, &resolveState->result);
@@ -200,7 +200,7 @@ void splitAddrInfoOnFamily(struct addrinfo* info, int family,
 
 	selectedNext = &selectedFirst;
 	restNext = &restFirst;
-	while (info != NULL)
+	while (info != nullptr)
 	{
 		if (info->ai_family == family)
 		{
@@ -214,8 +214,8 @@ void splitAddrInfoOnFamily(struct addrinfo* info, int family,
 		}
 		info = info->ai_next;
 	}
-	*selectedNext = NULL;
-	*restNext = NULL;
+	*selectedNext = nullptr;
+	*restNext = nullptr;
 
 	// Fill in the result parameters.
 	*selected = selectedFirst;

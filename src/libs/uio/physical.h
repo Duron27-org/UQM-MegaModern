@@ -55,7 +55,7 @@ struct uio_PRoot
 #define uio_PRoot_NOCACHE 0x0002
 	struct uio_Handle* handle;
 	/* The handle through which this PRoot is opened,
-			 * this is NULL for the top PRoot */
+			 * this is nullptr for the top PRoot */
 	// TODO: move this to extra?
 #ifdef uio_PROOT_HAVE_CLOSE_HANDLERS
 	int numCloseHandlers;

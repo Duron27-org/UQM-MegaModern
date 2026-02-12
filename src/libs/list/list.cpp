@@ -43,12 +43,12 @@ LIST_(List) * LIST_(newList)(void)
 	LIST_(List) * list;
 
 	list = LIST_(allocList)();
-	if (list == NULL)
+	if (list == nullptr)
 	{
-		return NULL;
+		return nullptr;
 	}
 
-	list->first = NULL;
+	list->first = nullptr;
 	list->end = &list->first;
 	return list;
 }
@@ -58,7 +58,7 @@ void LIST_(deleteList)(LIST_(List) * list)
 	LIST_(Link) * link;
 	LIST_(Link) * next;
 
-	for (link = list->first; link != NULL; link = next)
+	for (link = list->first; link != nullptr; link = next)
 	{
 		next = link->next;
 		LIST_(freeLink)(link);
@@ -73,7 +73,7 @@ void LIST_(add)(LIST_(List) * list, LIST_(Entry) entry)
 
 	link = LIST_(allocLink)();
 	link->entry = entry;
-	link->next = NULL;
+	link->next = nullptr;
 	*list->end = link;
 	list->end = &link->next;
 }
@@ -82,7 +82,7 @@ static inline LIST_(Link) * *LIST_(findLink)(LIST_(List) * list, LIST_(Entry) en
 {
 	LIST_(Link) * *linkPtr;
 
-	for (linkPtr = &list->first; *linkPtr != NULL;
+	for (linkPtr = &list->first; *linkPtr != nullptr;
 		 linkPtr = &(*linkPtr)->next)
 	{
 		if ((*linkPtr)->entry == entry)
@@ -90,7 +90,7 @@ static inline LIST_(Link) * *LIST_(findLink)(LIST_(List) * list, LIST_(Entry) en
 			return linkPtr;
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 static inline void
@@ -111,7 +111,7 @@ void LIST_(remove)(LIST_(List) * list, LIST_(Entry) entry)
 	LIST_(Link) * *linkPtr;
 
 	linkPtr = LIST_(findLink)(list, entry);
-	assert(linkPtr != NULL);
+	assert(linkPtr != nullptr);
 	LIST_(removeLink)(list, linkPtr);
 }
 

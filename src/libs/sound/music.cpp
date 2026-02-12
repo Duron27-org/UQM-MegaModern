@@ -275,7 +275,7 @@ void* _GetMusicData(uio_Stream* fp, uqm::DWORD length)
 
 	if (!_cur_resfile_name)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	strncpy(filename, _cur_resfile_name, sizeof(filename) - 1);
@@ -287,17 +287,17 @@ void* _GetMusicData(uio_Stream* fp, uqm::DWORD length)
 	if (!decoder)
 	{
 		log_add(log_Warning, "_GetMusicData(): couldn't load %s", filename);
-		return NULL;
+		return nullptr;
 	}
 
 	h = (MUSIC_REF)AllocMusicData(sizeof(void*));
 	if (!h)
 	{
 		SoundDecoder_Free(decoder);
-		return NULL;
+		return nullptr;
 	}
 
-	sample = TFB_CreateSoundSample(decoder, 64, NULL);
+	sample = TFB_CreateSoundSample(decoder, 64, nullptr);
 	*h = sample;
 
 	log_add(log_Info, "    decoder: %s, rate %d format %x",
@@ -314,7 +314,7 @@ bool _ReleaseMusicData(void* data)
 	TFB_SoundSample** pmus = (TFB_SoundSample**)data;
 	TFB_SoundSample* sample;
 
-	if (pmus == NULL)
+	if (pmus == nullptr)
 	{
 		return (false);
 	}
@@ -331,7 +331,7 @@ bool _ReleaseMusicData(void* data)
 		}
 		UnlockMutex(soundSource[MUSIC_SOURCE].stream_mutex);
 
-		sample->decoder = NULL;
+		sample->decoder = nullptr;
 		SoundDecoder_Free(decoder);
 	}
 	TFB_DestroySoundSample(sample);

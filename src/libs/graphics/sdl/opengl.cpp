@@ -39,7 +39,7 @@ static TFB_GL_SCREENINFO GL_Screens[TFB_GFX_NUMSCREENS];
 
 static int ScreenFilterMode;
 
-static TFB_ScaleFunc scaler = NULL;
+static TFB_ScaleFunc scaler = nullptr;
 static bool first_init = true;
 
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
@@ -161,7 +161,7 @@ AttemptColorDepth(int flags, int width, int height, int bpp, int resFactor)
 
 	SDL_Video = SDL_SetVideoMode(ScreenWidthActual, ScreenHeightActual,
 								 bpp, videomode_flags);
-	if (SDL_Video == NULL)
+	if (SDL_Video == nullptr)
 	{
 		log_add(log_Error, "Couldn't set OpenGL %ix%ix%i video mode: %s",
 				ScreenWidthActual, ScreenHeightActual, bpp,
@@ -174,7 +174,7 @@ AttemptColorDepth(int flags, int width, int height, int bpp, int resFactor)
 			log_add(log_Error, "Falling back to windowed mode!!");
 			SDL_Video = SDL_SetVideoMode(ScreenWidthActual, ScreenHeightActual, bpp, videomode_flags);
 
-			if (SDL_Video != NULL)
+			if (SDL_Video != nullptr)
 			{
 				goto successful_change;
 			}
@@ -222,7 +222,7 @@ int TFB_GL_ConfigureVideo(int driver, int flags, int width, int height,
 		}
 		format_conv_surf = SDL_CreateRGBSurface(SDL_SWSURFACE, 0, 0, 32,
 												R_MASK, G_MASK, B_MASK, A_MASK);
-		if (format_conv_surf == NULL)
+		if (format_conv_surf == nullptr)
 		{
 			log_add(log_Error, "Couldn't create format_conv_surf: %s",
 					SDL_GetError());
@@ -244,7 +244,7 @@ int TFB_GL_ConfigureVideo(int driver, int flags, int width, int height,
 		{
 			for (i = 0; i < TFB_GFX_NUMSCREENS; i++)
 			{
-				GL_Screens[i].scaled = NULL;
+				GL_Screens[i].scaled = nullptr;
 				GL_Screens[i].dirty = true;
 				GL_Screens[i].active = true;
 			}
@@ -282,7 +282,7 @@ int TFB_GL_ConfigureVideo(int driver, int flags, int width, int height,
 		texture_height = 256 << resFactor;
 		graphics_backend = &opengl_unscaled_backend;
 
-		scaler = NULL;
+		scaler = nullptr;
 	}
 
 
@@ -421,7 +421,7 @@ TFB_GL_DrawQuad(SDL_Rect* r, uqm::BYTE ResFactor)
 			y1 = (ScreenHeightActual - height) / 2;
 			y2 = ScreenHeightActual - y1;
 
-			if (r != NULL)
+			if (r != nullptr)
 			{
 				sx_multiplier = ScreenWidthActual / (float)ScreenWidth;
 				sy_multiplier = height / (float)ScreenHeight;
@@ -436,7 +436,7 @@ TFB_GL_DrawQuad(SDL_Rect* r, uqm::BYTE ResFactor)
 			x1 = (ScreenWidthActual - width) / 2;
 			x2 = ScreenWidthActual - x1;
 
-			if (r != NULL)
+			if (r != nullptr)
 			{
 				sx_multiplier = width / (float)ScreenWidth;
 				sy_multiplier = ScreenHeightActual / (float)ScreenHeight;
@@ -451,7 +451,7 @@ TFB_GL_DrawQuad(SDL_Rect* r, uqm::BYTE ResFactor)
 		}
 	}
 
-	if (r != NULL)
+	if (r != nullptr)
 	{
 		if (!keep_aspect_ratio)
 		{
@@ -477,7 +477,7 @@ TFB_GL_DrawQuad(SDL_Rect* r, uqm::BYTE ResFactor)
 	glTexCoord2f(0, ScreenHeight / tex2);
 	glVertex2i(x1, y2);
 	glEnd();
-	if (r != NULL)
+	if (r != nullptr)
 	{
 		glDisable(GL_SCISSOR_TEST);
 	}

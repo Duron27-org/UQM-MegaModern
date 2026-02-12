@@ -119,14 +119,14 @@ bool LoadKernel(int argc, char* argv[])
 	InitVideoPlayer(true);
 
 	ScreenContext = CreateContext("ScreenContext");
-	if (ScreenContext == NULL)
+	if (ScreenContext == nullptr)
 	{
 		return false;
 	}
 
 	Screen = CaptureDrawable(CreateDisplay(WANT_MASK | WANT_PIXMAP,
 										   &screen_width, &screen_height));
-	if (Screen == NULL)
+	if (Screen == nullptr)
 	{
 		return false;
 	}
@@ -249,7 +249,7 @@ bool LoadKernel(int argc, char* argv[])
 		COLORMAP ColorMapTab;
 
 		ColorMapTab = CaptureColorMap(LoadColorMap(STARCON_COLOR_MAP));
-		if (ColorMapTab == NULL)
+		if (ColorMapTab == nullptr)
 		{
 			return false; // The most basic resource is missing
 		}
@@ -269,7 +269,7 @@ bool InitContexts(void)
 	CONTEXT oldContext;
 
 	StatusContext = CreateContext("StatusContext");
-	if (StatusContext == NULL)
+	if (StatusContext == nullptr)
 	{
 		return false;
 	}
@@ -284,7 +284,7 @@ bool InitContexts(void)
 	SetContextClipRect(&r);
 
 	SpaceContext = CreateContext("SpaceContext");
-	if (SpaceContext == NULL)
+	if (SpaceContext == nullptr)
 	{
 		return false;
 	}
@@ -292,7 +292,7 @@ bool InitContexts(void)
 	AdvanceLoadProgress();
 
 	OffScreenContext = CreateContext("OffScreenContext");
-	if (OffScreenContext == NULL)
+	if (OffScreenContext == nullptr)
 	{
 		return false;
 	}
@@ -318,54 +318,54 @@ InitKernel(void)
 	}
 
 	StarConFont = LoadFont(STARCON_FONT);
-	if (StarConFont == NULL)
+	if (StarConFont == nullptr)
 	{
 		return false;
 	}
 	AdvanceLoadProgress();
 
 	TinyFont = LoadFont(TINY_FONT);
-	if (TinyFont == NULL)
+	if (TinyFont == nullptr)
 	{
 		return false;
 	}
 	AdvanceLoadProgress();
 
 	TinyFontBold = LoadFont(TINY_FONT_BOLD);
-	if (TinyFontBold == NULL)
+	if (TinyFontBold == nullptr)
 	{
 		return false;
 	}
 	AdvanceLoadProgress();
 
 	TinyFontCond = LoadFont(TINY_FONT_COND);
-	if (TinyFontCond == NULL)
+	if (TinyFontCond == nullptr)
 	{
 		return false;
 	}
 
 	PlyrFont = LoadFont(PLAYER_FONT);
-	if (PlyrFont == NULL)
+	if (PlyrFont == nullptr)
 	{
 		return false;
 	}
 	AdvanceLoadProgress();
 
 	PlayMenuFont = LoadFont(PLAYMENU_FONT);
-	if (PlayMenuFont == NULL)
+	if (PlayMenuFont == nullptr)
 	{
 		return false;
 	}
 
 	BorderFrame = CaptureDrawable(LoadGraphic(BORDER_MASK_PMAP_ANIM));
-	if (BorderFrame == NULL)
+	if (BorderFrame == nullptr)
 	{
 		return false;
 	}
 	AdvanceLoadProgress();
 
 	CustBevelFrame = CaptureDrawable(LoadGraphic(CUST_BEVEL_MASK_PMAP_ANIM));
-	if (CustBevelFrame == NULL)
+	if (CustBevelFrame == nullptr)
 	{
 		return false;
 	}
@@ -373,34 +373,34 @@ InitKernel(void)
 	if (HDPackPresent)
 	{
 		HDBorderFrame = CaptureDrawable(LoadGraphic(HD_BORDER_MASK_PMAP_ANIM));
-		if (HDBorderFrame == NULL)
+		if (HDBorderFrame == nullptr)
 		{
 			return false;
 		}
 
 		DefBevelFrame = CaptureDrawable(LoadGraphic(DEF_BEVEL_MASK_PMAP_ANIM));
-		if (DefBevelFrame == NULL)
+		if (DefBevelFrame == nullptr)
 		{
 			return false;
 		}
 	}
 
 	ActivityFrame = CaptureDrawable(LoadGraphic(ACTIVITY_ANIM));
-	if (ActivityFrame == NULL)
+	if (ActivityFrame == nullptr)
 	{
 		return false;
 	}
 	AdvanceLoadProgress();
 
 	StatusFrame = CaptureDrawable(LoadGraphic(STATUS_MASK_PMAP_ANIM));
-	if (StatusFrame == NULL)
+	if (StatusFrame == nullptr)
 	{
 		return false;
 	}
 	AdvanceLoadProgress();
 
 	SubmenuFrame = CaptureDrawable(LoadGraphic(SUBMENU_MASK_PMAP_ANIM));
-	if (SubmenuFrame == NULL)
+	if (SubmenuFrame == nullptr)
 	{
 		return false;
 	}
@@ -414,26 +414,26 @@ InitKernel(void)
 	AdvanceLoadProgress();
 
 	MicroFont = LoadFont(MICRO_FONT);
-	if (MicroFont == NULL)
+	if (MicroFont == nullptr)
 	{
 		return false;
 	}
 	AdvanceLoadProgress();
 
 	LabelFont = LoadFont(LABEL_FONT);
-	if (LabelFont == NULL)
+	if (LabelFont == nullptr)
 	{
 		return false;
 	}
 
 	SquareFont = LoadFont(SQUARE_FONT);
-	if (SquareFont == NULL)
+	if (SquareFont == nullptr)
 	{
 		return false;
 	}
 
 	SlabFont = LoadFont(SLAB_FONT);
-	if (SlabFont == NULL)
+	if (SlabFont == nullptr)
 	{
 		return false;
 	}
@@ -464,7 +464,7 @@ bool InitGameKernel(void)
 
 bool SetPlayerInput(uqm::COUNT playerI)
 {
-	assert(PlayerInput[playerI] == NULL);
+	assert(PlayerInput[playerI] == nullptr);
 
 	switch (PlayerControl[playerI] & CONTROL_MASK)
 	{
@@ -496,7 +496,7 @@ bool SetPlayerInput(uqm::COUNT playerI)
 			explode(); /* Does not return */
 	}
 
-	return PlayerInput[playerI] != NULL;
+	return PlayerInput[playerI] != nullptr;
 }
 
 bool SetPlayerInputAll(void)
@@ -514,15 +514,15 @@ bool SetPlayerInputAll(void)
 
 void ClearPlayerInput(uqm::COUNT playerI)
 {
-	if (PlayerInput[playerI] == NULL)
+	if (PlayerInput[playerI] == nullptr)
 	{
-		log_add(log_Debug, "ClearPlayerInput(): PlayerInput[%d] was NULL.",
+		log_add(log_Debug, "ClearPlayerInput(): PlayerInput[%d] was nullptr.",
 				playerI);
 		return;
 	}
 
 	PlayerInput[playerI]->handlers->deleteContext(PlayerInput[playerI]);
-	PlayerInput[playerI] = NULL;
+	PlayerInput[playerI] = nullptr;
 }
 
 void ClearPlayerInputAll(void)
@@ -540,7 +540,7 @@ int initIO(void)
 	repository = uio_openRepository(0);
 
 	rootDir = uio_openDir(repository, "/", 0);
-	if (rootDir == NULL)
+	if (rootDir == nullptr)
 	{
 		log_add(log_Fatal, "Could not open '/' dir.");
 		return -1;

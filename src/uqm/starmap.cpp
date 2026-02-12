@@ -47,7 +47,7 @@ const POINT* constel_array;
 RandomContext* StarGenRNG;
 PORTAL_LOCATION portal_map[NUM_HYPER_VORTICES + 1] {};
 //PORTAL_LOCATION portal_map[NUM_HYPER_VORTICES+1] =
-//		{[0 ... (NUM_HYPER_VORTICES)] = {{0, 0}, {0, 0}, NULL}};
+//		{[0 ... (NUM_HYPER_VORTICES)] = {{0, 0}, {0, 0}, nullptr}};
 
 
 STAR_DESC*
@@ -70,7 +70,7 @@ FindStar(STAR_DESC* LastSDPtr, POINT* puniverse, uqm::SIZE xbounds,
 		hi = (NUM_HYPER_VORTICES + 1) - 1;
 	}
 
-	if (LastSDPtr == NULL)
+	if (LastSDPtr == nullptr)
 	{
 		lo = 0;
 	}
@@ -171,7 +171,7 @@ FindNearest(STAR_DESC* starmap, POINT p, bool constellation)
 {
 	if (!starmap || p.x == ~0 || p.y == ~0)
 	{
-		return NULL;
+		return nullptr;
 	}
 	uqm::COUNT index, star_id = 0;
 	uqm::DWORD dist, min_dist = MAX_X_UNIVERSE * MAX_Y_UNIVERSE;
@@ -191,14 +191,14 @@ FindNearest(STAR_DESC* starmap, POINT p, bool constellation)
 STAR_DESC*
 FindNearestStar(STAR_DESC* starmap, POINT p)
 {
-	return (starmap ? FindNearest(starmap, p, false) : NULL);
+	return (starmap ? FindNearest(starmap, p, false) : nullptr);
 }
 
 // Returns a pointer to the closest constellation to point p on the starmap
 STAR_DESC*
 FindNearestConstellation(STAR_DESC* starmap, POINT p)
 {
-	return (starmap ? FindNearest(starmap, p, true) : NULL);
+	return (starmap ? FindNearest(starmap, p, true) : nullptr);
 }
 
 // plot_map is a global item (like star_map) that keeps track of the location
@@ -218,7 +218,7 @@ FindNearestConstellation(STAR_DESC* starmap, POINT p)
 // Plot ID 0 (ARILOU_DEFINED) is ARILOU_HYPERSPACE_PORTAL location.
 PLOT_LOCATION plot_map[NUM_PLOTS] = {};
 //PLOT_LOCATION plot_map[NUM_PLOTS] = {[0 ... (NUM_PLOTS - 1)] =
-//		{{~0, ~0}, NULL, {[0 ... (NUM_PLOTS - 1)] = 0}}};
+//		{{~0, ~0}, nullptr, {[0 ... (NUM_PLOTS - 1)] = 0}}};
 
 #define VORTEX_SCALE 20		// From the starmap; scales vortex distances
 #define MIN_PORTAL 2000		// The min distance between portals (exits)
@@ -236,52 +236,52 @@ PORTAL_LOCATION portalmap_array[NUM_HYPER_VORTICES + 1] =
 	{
 		{{4091, 7748},
 		 {(-12 * VORTEX_SCALE) + 5000, (-21 * VORTEX_SCALE) + 5000},
-		 NULL},
+		 nullptr},
 		{{3184, 4906},
 		 {(1 * VORTEX_SCALE) + 5000, (-20 * VORTEX_SCALE) + 5000},
-		 NULL},
+		 nullptr},
 		{{9211, 6104},
 		 {(-16 * VORTEX_SCALE) + 5000, (-18 * VORTEX_SCALE) + 5000},
-		 NULL},
+		 nullptr},
 		{{5673, 1207},
 		 {(8 * VORTEX_SCALE) + 5000, (-17 * VORTEX_SCALE) + 5000},
-		 NULL},
+		 nullptr},
 		{{1910, 926},
 		 {(3 * VORTEX_SCALE) + 5000, (-13 * VORTEX_SCALE) + 5000},
-		 NULL},
+		 nullptr},
 		{{8607, 151},
 		 {(-21 * VORTEX_SCALE) + 5000, (-4 * VORTEX_SCALE) + 5000},
-		 NULL},
+		 nullptr},
 		{{50, 1647},
 		 {(-4 * VORTEX_SCALE) + 5000, (-4 * VORTEX_SCALE) + 5000},
-		 NULL},
+		 nullptr},
 		{{6117, 4131},
 		 {(-12 * VORTEX_SCALE) + 5000, (-2 * VORTEX_SCALE) + 5000},
-		 NULL},
+		 nullptr},
 		{{5658, 9712},
 		 {(-26 * VORTEX_SCALE) + 5000, (2 * VORTEX_SCALE) + 5000},
-		 NULL},
+		 nullptr},
 		{{2302, 3988},
 		 {(-17 * VORTEX_SCALE) + 5000, (7 * VORTEX_SCALE) + 5000},
-		 NULL},
+		 nullptr},
 		{{112, 9409},
 		 {(10 * VORTEX_SCALE) + 5000, (7 * VORTEX_SCALE) + 5000},
-		 NULL},
+		 nullptr},
 		{{7752, 8906},
 		 {(15 * VORTEX_SCALE) + 5000, (14 * VORTEX_SCALE) + 5000},
-		 NULL},
+		 nullptr},
 		{{368, 6332},
 		 {(22 * VORTEX_SCALE) + 5000, (16 * VORTEX_SCALE) + 5000},
-		 NULL},
+		 nullptr},
 		{{9735, 3153},
 		 {(-6 * VORTEX_SCALE) + 5000, (19 * VORTEX_SCALE) + 5000},
-		 NULL},
+		 nullptr},
 		{{5850, 6213},
 		 {(10 * VORTEX_SCALE) + 5000, (20 * VORTEX_SCALE) + 5000},
-		 NULL},
+		 nullptr},
 		{{0, 0},
 		 {ARILOU_HOME_X, ARILOU_HOME_Y},
-		 NULL}
+		 nullptr}
 };
 
 // Reset the given starmap to the default static starmap array
@@ -289,7 +289,7 @@ void DefaultStarmap(STAR_DESC* starmap)
 {
 	if (!starmap)
 	{
-		fprintf(stderr, "DefaaultStarmap called with NULL starmap PTR.\n");
+		fprintf(stderr, "DefaaultStarmap called with nullptr starmap PTR.\n");
 		return;
 	}
 #ifdef DEBUG_STARSEED
@@ -313,7 +313,7 @@ void SeedStarmap(STAR_DESC* starmap)
 {
 	if (!starmap)
 	{
-		fprintf(stderr, "SeedStarmap called with NULL starmap PTR.\n");
+		fprintf(stderr, "SeedStarmap called with nullptr starmap PTR.\n");
 		return;
 	}
 	uqm::COUNT i;
@@ -590,7 +590,7 @@ void ResetPlot(PLOT_LOCATION* plot)
 			plot[i].dist_sq[j] = 0;
 		}
 		plot[i].star_pt = POINT {~0, ~0};
-		plot[i].star = NULL;
+		plot[i].star = nullptr;
 	}
 }
 
@@ -840,7 +840,7 @@ void InitMelnormeRainbow(PLOT_LOCATION* plotmap)
 	// seeding algorithm slows way down.
 	for (i = RAINBOW0_DEFINED; i <= RAINBOW9_DEFINED; i++)
 	{
-		plotmap[i].star = NULL;
+		plotmap[i].star = nullptr;
 		plotmap[i].star_pt = POINT {~0, ~0};
 		for (j = RAINBOW0_DEFINED; j <= RAINBOW9_DEFINED; j++)
 		{
@@ -852,7 +852,7 @@ void InitMelnormeRainbow(PLOT_LOCATION* plotmap)
 	}
 	for (i = MELNORME0_DEFINED; i <= MELNORME8_DEFINED; i++)
 	{
-		plotmap[i].star = NULL;
+		plotmap[i].star = nullptr;
 		plotmap[i].star_pt = POINT {~0, ~0};
 		for (j = MELNORME0_DEFINED; j <= MELNORME8_DEFINED; j++)
 		{
@@ -901,7 +901,7 @@ bool CheckValid(PLOT_LOCATION* plot, uqm::COUNT plot_id)
 	if (!plot || plot_id >= NUM_PLOTS)
 	{
 		fprintf(stderr, "CheckValid (plotmap, plot_id) called %d.\n"
-						"with bad data or NULL: PTR",
+						"with bad data or nullptr: PTR",
 				plot_id);
 		return false;
 	}
@@ -988,7 +988,7 @@ void Plotify(STAR_DESC* starmap, STAR_DESC* star)
 {
 	if (!starmap || !star)
 	{
-		fprintf(stderr, "Plotify (starmap, star) called with NULL PTR.\n");
+		fprintf(stderr, "Plotify (starmap, star) called with nullptr PTR.\n");
 		return;
 	}
 	uqm::COUNT i = 0;
@@ -1279,7 +1279,7 @@ SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap)
 	static clock_t timer;
 	if (!plotmap || !starmap)
 	{
-		fprintf(stderr, "SeedPlot (plotmap, starmap) called with NULL PTR.\n");
+		fprintf(stderr, "SeedPlot (plotmap, starmap) called with nullptr PTR.\n");
 		return 0;
 	}
 	// The clock.  The first time this is called the clock is not running.
@@ -1323,11 +1323,11 @@ SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap)
 		my_clock = true;
 		timer = clock();
 		RandomContext_SeedRandom(StarGenRNG, optCustomSeed);
-		// NULL out all the plot pointers so that it "places" pregens
+		// nullptr out all the plot pointers so that it "places" pregens
 		// in order to properly Plotify () the pregens.  ARILOU don't need.
 		for (i = 1; i < NUM_PLOTS; i++)
 		{
-			plotmap[i].star = NULL;
+			plotmap[i].star = nullptr;
 		}
 		// Just in case hard coded ARILOU doesn't have a pointer
 		// use Arilou homeworld pointer so we can just skip it
@@ -1480,7 +1480,7 @@ SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap)
 		}
 		// Either we ran out of time or downstream seeding failed, pop layer
 		plotmap[plot_id].star->Index = 0;
-		plotmap[plot_id].star = NULL;
+		plotmap[plot_id].star = nullptr;
 		if (my_clock)
 		{
 			fprintf(stderr, "Complete failure, stopping clock.\n");
@@ -1571,7 +1571,7 @@ SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap)
 					starmap[star_id].Index = 0;
 				}
 				plotmap[plot_id].star_pt = POINT {~0, ~0};
-				plotmap[plot_id].star = NULL;
+				plotmap[plot_id].star = nullptr;
 				if (my_clock)
 				{
 					fprintf(stderr, "Complete failure, stopping clock.\n");
@@ -1593,7 +1593,7 @@ SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap)
 			starmap[star_id].Index = 0;
 		}
 		plotmap[plot_id].star_pt = POINT {~0, ~0};
-		plotmap[plot_id].star = NULL;
+		plotmap[plot_id].star = nullptr;
 	}
 #ifdef DEBUG_STARSEED_TRACE_Z
 	fprintf(stderr, "RAN OUT OF PERMUTATIONS.\n");
@@ -1614,7 +1614,7 @@ void DefaultQuasispace(PORTAL_LOCATION* portalmap)
 	if (!portalmap)
 	{
 		fprintf(stderr, "DefaultQuasispace (portalmap) called"
-						"with NULL PTR.\n");
+						"with nullptr PTR.\n");
 		return;
 	}
 
@@ -1649,7 +1649,7 @@ bool SeedQuasispace(PORTAL_LOCATION* portalmap, PLOT_LOCATION* plotmap,
 	bool valid;
 	if (!portalmap || !plotmap || !starmap)
 	{
-		fprintf(stderr, "Seed Quasispace called with NULL pointer(s).\n");
+		fprintf(stderr, "Seed Quasispace called with nullptr pointer(s).\n");
 		return false;
 	}
 	if (!StarGenRNG)
@@ -1896,7 +1896,7 @@ PlotIdStrToIndex(const char* plotIdStr)
 	PlotIdMap key = {/* .idStr = */ plotIdStr, /* .id = */ std::numeric_limits<uqm::COUNT>::max()};
 	PlotIdMap* found = (PlotIdMap*)bsearch(&key, plotIdMap, ARRAY_SIZE(plotIdMap),
 										   sizeof plotIdMap[0], PlotIdCompare);
-	if (found == NULL)
+	if (found == nullptr)
 	{
 		return NUM_PLOTS + 1;
 	}

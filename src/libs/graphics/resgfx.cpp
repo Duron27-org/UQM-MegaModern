@@ -33,8 +33,8 @@ GetFontFileData(const char* pathname, RESOURCE_DATA* resdata)
 
 bool InstallGraphicResTypes(void)
 {
-	InstallResTypeVectors("GFXRES", GetCelFileData, _ReleaseCelData, NULL);
-	InstallResTypeVectors("FONTRES", GetFontFileData, _ReleaseFontData, NULL);
+	InstallResTypeVectors("GFXRES", GetCelFileData, _ReleaseCelData, nullptr);
+	InstallResTypeVectors("FONTRES", GetFontFileData, _ReleaseFontData, nullptr);
 	return (true);
 }
 

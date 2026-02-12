@@ -655,7 +655,7 @@ IndexToText(int Index)
 
 	if (i == -1 || !strlen(GAME_STRING(PLAYMENU_STRING_BASE + i)))
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	return GAME_STRING(PLAYMENU_STRING_BASE + i);
@@ -670,7 +670,7 @@ Draw3DOMenuText(RECT* r, int Index)
 	FONT OldFont;
 	Color OldColor;
 
-	if (IndexToText(Index) == NULL)
+	if (IndexToText(Index) == nullptr)
 	{
 		return;
 	}

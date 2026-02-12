@@ -79,7 +79,7 @@ void ConfirmSaveLoad(STAMP* MsgStamp)
 		t.pStr = GAME_STRING(SAVEGAME_STRING_BASE + 1);
 	}
 	// "Loading . . ."
-	TextRect(&t, &r, NULL);
+	TextRect(&t, &r, nullptr);
 	r.corner.x -= RES_SCALE(4);
 	r.corner.y -= RES_SCALE(4);
 	r.extent.width += RES_SCALE(8);
@@ -415,7 +415,7 @@ NameCaptainOrShip(bool nameCaptain, bool gamestart)
 
 	// If the Captain and/or Flagship text entries are blank
 	// at New Game, fill them in with the default names.
-	if (gamestart && (Setting != NULL) && (Setting[0] == '\0'))
+	if (gamestart && (Setting != nullptr) && (Setting[0] == '\0'))
 	{
 		strcpy(Setting, GAME_STRING // Zelnick & Vindicator
 			   (NAMING_STRING_BASE + 2 + nameCaptain));
@@ -612,7 +612,7 @@ NameSaveGame(uqm::COUNT gameIndex, uqm::CHAR_T* buf)
 		buf[0] = 0;
 	}
 
-	SetFlashRect(NULL, false);
+	SetFlashRect(nullptr, false);
 
 	DrawSaveNameString(buf, CursPos, DDSHS_NORMAL, gameIndex);
 
@@ -625,7 +625,7 @@ NameSaveGame(uqm::COUNT gameIndex, uqm::CHAR_T* buf)
 
 	HFree(gIndex);
 
-	SetFlashRect(NULL, false);
+	SetFlashRect(nullptr, false);
 
 	if (tes.Success)
 	{
@@ -690,7 +690,7 @@ DoSettings(MENU_STATE* pMS)
 				break;
 			case CHANGE_CAPTAIN_SETTING:
 			case CHANGE_SHIP_SETTING:
-				SetFlashRect(NULL, false);
+				SetFlashRect(nullptr, false);
 				DrawMenuStateStrings(PM_SOUND_ON, pMS->CurState);
 				NameCaptainOrShip(pMS->CurState == CHANGE_CAPTAIN_SETTING,
 								  NewGameInit);
@@ -789,7 +789,7 @@ void SettingsMenu(bool NameFlagship)
 	MenuState.InputFunc = DoSettings;
 	DoInput(&MenuState, false);
 
-	DrawStatusMessage(NULL);
+	DrawStatusMessage(nullptr);
 }
 
 typedef struct
@@ -1217,11 +1217,11 @@ DrawBombPodText(STAMP* s)
 	t.CharCount = (uqm::COUNT)~0;
 	SetContextForeGroundColor(BOMB_POD_TEXT_COLOR);
 
-	while (t.pStr != NULL)
+	while (t.pStr != nullptr)
 	{
 		t.pStr = AlignText((const uqm::CHAR_T*)t.pStr, &t.baseline.x);
 		font_DrawText(&t);
-		t.pStr = strtok(NULL, " ");
+		t.pStr = strtok(nullptr, " ");
 		t.CharCount = (uqm::COUNT)~0;
 		t.baseline.y += leading;
 	}
@@ -1241,11 +1241,11 @@ DrawBombPodText(STAMP* s)
 	t.CharCount = (uqm::COUNT)~0;
 	SetContextForeGroundColor(BOMB_POD_TEXT_COLOR);
 
-	while (t.pStr != NULL)
+	while (t.pStr != nullptr)
 	{
 		t.pStr = AlignText((const uqm::CHAR_T*)t.pStr, &t.baseline.x);
 		font_DrawText(&t);
-		t.pStr = strtok(NULL, " ");
+		t.pStr = strtok(nullptr, " ");
 		t.CharCount = (uqm::COUNT)~0;
 		t.baseline.y += leading;
 	}
@@ -1483,7 +1483,7 @@ DrawSavegameSummary(PICK_GAME_STATE* pickState, uqm::COUNT gameIndex)
 
 					QuasiState = GET_GAME_STATE(ARILOU_SPACE_SIDE);
 					SET_GAME_STATE(ARILOU_SPACE_SIDE, 0);
-					SDPtr = FindStar(NULL, &starPt, 1, 1);
+					SDPtr = FindStar(nullptr, &starPt, 1, 1);
 					SET_GAME_STATE(ARILOU_SPACE_SIDE, QuasiState);
 					if (SDPtr)
 					{
@@ -1559,7 +1559,7 @@ DrawSavegameSummary(PICK_GAME_STATE* pickState, uqm::COUNT gameIndex)
 		GlobData.SIS_state = SaveSS;
 		if (optCustomBorder)
 		{
-			DrawStatusMessage(NULL);
+			DrawStatusMessage(nullptr);
 		}
 	}
 
@@ -1703,7 +1703,7 @@ LoadGameDescriptions(SUMMARY_DESC* pSD)
 
 	for (i = 0; i < MAX_SAVED_GAMES; ++i, ++pSD)
 	{
-		if (!LoadGame(i, pSD, NULL, false))
+		if (!LoadGame(i, pSD, nullptr, false))
 		{
 			pSD->year_index = 0;
 		}
@@ -1842,7 +1842,7 @@ SaveLoadGame(PICK_GAME_STATE* pickState, uqm::COUNT gameIndex, bool* canceled_by
 
 	GetContextClipRect(&r);
 
-	saveStamp.frame = NULL;
+	saveStamp.frame = nullptr;
 
 	if (pickState->saving)
 	{
@@ -1855,7 +1855,7 @@ SaveLoadGame(PICK_GAME_STATE* pickState, uqm::COUNT gameIndex, bool* canceled_by
 		if (NameSaveGame(gameIndex, nameBuf))
 		{
 			PlayMenuSound(MENU_SOUND_SUCCESS);
-			ConfirmSaveLoad(pickState->saving ? &saveStamp : NULL);
+			ConfirmSaveLoad(pickState->saving ? &saveStamp : nullptr);
 			success = SaveGame(gameIndex, desc, nameBuf);
 		}
 		else
@@ -1866,8 +1866,8 @@ SaveLoadGame(PICK_GAME_STATE* pickState, uqm::COUNT gameIndex, bool* canceled_by
 	}
 	else
 	{
-		ConfirmSaveLoad(pickState->saving ? &saveStamp : NULL);
-		success = LoadGame(gameIndex, NULL, NULL, false);
+		ConfirmSaveLoad(pickState->saving ? &saveStamp : nullptr);
+		success = LoadGame(gameIndex, nullptr, nullptr, false);
 	}
 
 	// TODO: the same should be done for both save and load if we also
@@ -1905,13 +1905,13 @@ PickGame(bool saving, bool fromMainMenu)
 	TimeOut = FadeMusic(0, ONE_SECOND / 2);
 
 	// Deactivate any background drawing, like planet rotation
-	oldCallback = SetInputCallback(NULL);
+	oldCallback = SetInputCallback(nullptr);
 
 	LoadGameDescriptions(pickState.summary);
 
 	OldContext = SetContext(SpaceContext);
 	// Save the current state of the screen for later restoration
-	DlgStamp = SaveContextFrame(NULL);
+	DlgStamp = SaveContextFrame(nullptr);
 	GetContextClipRect(&DlgRect);
 
 	DrawMenuStateStrings(PM_SAVE_GAME, !saving);
@@ -1922,7 +1922,7 @@ PickGame(bool saving, bool fromMainMenu)
 	FadeMusic(NORMAL_VOLUME, 0);
 
 	// draw the current savegame and fade in
-	SetTransitionSource(NULL);
+	SetTransitionSource(nullptr);
 	BatchGraphics();
 
 	SetContextBackGroundColor(BLACK_COLOR);
@@ -2032,7 +2032,7 @@ PickGame(bool saving, bool fromMainMenu)
 		}
 		else
 		{
-			DrawSISMessage(NULL);
+			DrawSISMessage(nullptr);
 		}
 
 		OutfitOrShipyard = 0;
@@ -2094,7 +2094,7 @@ DoGameOptions(MENU_STATE* pMS)
 		{
 			case SAVE_GAME:
 			case LOAD_GAME:
-				SetFlashRect(NULL, false);
+				SetFlashRect(nullptr, false);
 				if (PickGame(pMS->CurState == SAVE_GAME, false))
 				{
 					return false;
@@ -2155,7 +2155,7 @@ bool GameOptions(void)
 	SetMenuSounds(MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
 	MenuState.InputFunc = DoGameOptions;
 	DoInput(&MenuState, true);
-	SetFlashRect(NULL, false);
+	SetFlashRect(nullptr, false);
 
 	return !(GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD));
 }

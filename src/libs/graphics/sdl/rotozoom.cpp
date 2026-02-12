@@ -59,20 +59,20 @@ int zoomSurfaceRGBA(SDL_Surface* src, SDL_Surface* dst, int smooth)
      */
 
 #ifndef __SYMBIAN32__
-	if ((sax = (int*)alloca((dst->w + 1) * sizeof(Uint32))) == NULL)
+	if ((sax = (int*)alloca((dst->w + 1) * sizeof(Uint32))) == nullptr)
 	{
 		return (-1);
 	}
-	if ((say = (int*)alloca((dst->h + 1) * sizeof(Uint32))) == NULL)
+	if ((say = (int*)alloca((dst->h + 1) * sizeof(Uint32))) == nullptr)
 	{
 		return (-1);
 	}
 #else
-	if ((sax = (int*)HMalloc((dst->w + 1) * sizeof(Uint32))) == NULL)
+	if ((sax = (int*)HMalloc((dst->w + 1) * sizeof(Uint32))) == nullptr)
 	{
 		return (-1);
 	}
-	if ((say = (int*)HMalloc((dst->h + 1) * sizeof(Uint32))) == NULL)
+	if ((say = (int*)HMalloc((dst->h + 1) * sizeof(Uint32))) == nullptr)
 	{
 		HFree(sax);
 		return (-1);
@@ -255,20 +255,20 @@ static int zoomSurfaceY(SDL_Surface* src, SDL_Surface* dst)
      * Allocate memory for row increments 
      */
 #ifndef __SYMBIAN32__
-	if ((sax = (Uint32*)alloca(dst->w * sizeof(Uint32))) == NULL)
+	if ((sax = (Uint32*)alloca(dst->w * sizeof(Uint32))) == nullptr)
 	{
 		return (-1);
 	}
-	if ((say = (Uint32*)alloca(dst->h * sizeof(Uint32))) == NULL)
+	if ((say = (Uint32*)alloca(dst->h * sizeof(Uint32))) == nullptr)
 	{
 		return (-1);
 	}
 #else
-	if ((sax = (Uint32*)HMalloc(dst->w * sizeof(Uint32))) == NULL)
+	if ((sax = (Uint32*)HMalloc(dst->w * sizeof(Uint32))) == nullptr)
 	{
 		return (-1);
 	}
-	if ((say = (Uint32*)HMalloc(dst->h * sizeof(Uint32))) == NULL)
+	if ((say = (Uint32*)HMalloc(dst->h * sizeof(Uint32))) == nullptr)
 	{
 		HFree(sax);
 		return (-1);
@@ -669,9 +669,9 @@ SDL_Surface* rotozoomSurface(SDL_Surface* src, double angle, double zoom, int sm
 	/*
      * Sanity check 
      */
-	if (src == NULL)
+	if (src == nullptr)
 	{
-		return (NULL);
+		return (nullptr);
 	}
 
 	/*
@@ -693,7 +693,7 @@ SDL_Surface* rotozoomSurface(SDL_Surface* src, double angle, double zoom, int sm
 	 */
 		rz_src =
 			SDL_CreateRGBSurface(SDL_SWSURFACE, src->w, src->h, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
-		SDL_BlitSurface(src, NULL, rz_src, NULL);
+		SDL_BlitSurface(src, nullptr, rz_src, nullptr);
 		src_converted = 1;
 		is32bit = 1;
 	}
@@ -738,7 +738,7 @@ SDL_Surface* rotozoomSurface(SDL_Surface* src, double angle, double zoom, int sm
 		/*
 	 * Alloc space to completely contain the rotated surface 
 	 */
-		rz_dst = NULL;
+		rz_dst = nullptr;
 		if (is32bit)
 		{
 			/*
@@ -818,7 +818,7 @@ SDL_Surface* rotozoomSurface(SDL_Surface* src, double angle, double zoom, int sm
 		/*
 	 * Alloc space to completely contain the zoomed surface 
 	 */
-		rz_dst = NULL;
+		rz_dst = nullptr;
 		if (is32bit)
 		{
 			/*
@@ -921,7 +921,7 @@ int rotateSurface(SDL_Surface* src, SDL_Surface* dst, double angle, int smooth)
 	/* Check if we have to rotate anything */
 	if (fabs(angle) <= VALUE_LIMIT)
 	{
-		SDL_BlitSurface(src, NULL, dst, NULL);
+		SDL_BlitSurface(src, nullptr, dst, nullptr);
 		return 0;
 	}
 
@@ -1027,9 +1027,9 @@ SDL_Surface* zoomSurface(SDL_Surface* src, double zoomx, double zoomy, int smoot
 	/*
      * Sanity check 
      */
-	if (src == NULL)
+	if (src == nullptr)
 	{
-		return (NULL);
+		return (nullptr);
 	}
 
 	/*
@@ -1051,7 +1051,7 @@ SDL_Surface* zoomSurface(SDL_Surface* src, double zoomx, double zoomy, int smoot
 	 */
 		rz_src =
 			SDL_CreateRGBSurface(SDL_SWSURFACE, src->w, src->h, 32, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
-		SDL_BlitSurface(src, NULL, rz_src, NULL);
+		SDL_BlitSurface(src, nullptr, rz_src, nullptr);
 		src_converted = 1;
 		is32bit = 1;
 	}
@@ -1062,7 +1062,7 @@ SDL_Surface* zoomSurface(SDL_Surface* src, double zoomx, double zoomy, int smoot
 	/*
      * Alloc space to completely contain the zoomed surface 
      */
-	rz_dst = NULL;
+	rz_dst = nullptr;
 	if (is32bit)
 	{
 		/*

@@ -90,19 +90,19 @@ lua_Number luaO_arith(int op, lua_Number v1, lua_Number v2)
 	switch (op)
 	{
 		case LUA_OPADD:
-			return luai_numadd(NULL, v1, v2);
+			return luai_numadd(nullptr, v1, v2);
 		case LUA_OPSUB:
-			return luai_numsub(NULL, v1, v2);
+			return luai_numsub(nullptr, v1, v2);
 		case LUA_OPMUL:
-			return luai_nummul(NULL, v1, v2);
+			return luai_nummul(nullptr, v1, v2);
 		case LUA_OPDIV:
-			return luai_numdiv(NULL, v1, v2);
+			return luai_numdiv(nullptr, v1, v2);
 		case LUA_OPMOD:
-			return luai_nummod(NULL, v1, v2);
+			return luai_nummod(nullptr, v1, v2);
 		case LUA_OPPOW:
-			return luai_numpow(NULL, v1, v2);
+			return luai_numpow(nullptr, v1, v2);
 		case LUA_OPUNM:
-			return luai_numunm(NULL, v1);
+			return luai_numunm(nullptr, v1);
 		default:
 			lua_assert(0);
 			return 0;
@@ -258,7 +258,7 @@ const char* luaO_pushvfstring(lua_State* L, const char* fmt, va_list argp)
 	for (;;)
 	{
 		const char* e = strchr(fmt, '%');
-		if (e == NULL)
+		if (e == nullptr)
 		{
 			break;
 		}
@@ -269,7 +269,7 @@ const char* luaO_pushvfstring(lua_State* L, const char* fmt, va_list argp)
 			case 's':
 				{
 					const char* s = va_arg(argp, char*);
-					if (s == NULL)
+					if (s == nullptr)
 					{
 						s = "(null)";
 					}
@@ -378,13 +378,13 @@ void luaO_chunkid(char* out, const char* source, size_t bufflen)
 		const char* nl = strchr(source, '\n'); /* find first new line (if any) */
 		addstr(out, PRE, LL(PRE));			   /* add prefix */
 		bufflen -= LL(PRE RETS POS) + 1;	   /* save space for prefix+suffix+'\0' */
-		if (l < bufflen && nl == NULL)
+		if (l < bufflen && nl == nullptr)
 		{							/* small one-line source? */
 			addstr(out, source, l); /* keep it */
 		}
 		else
 		{
-			if (nl != NULL)
+			if (nl != nullptr)
 			{
 				l = nl - source; /* stop at first newline */
 			}

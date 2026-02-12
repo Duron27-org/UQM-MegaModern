@@ -328,7 +328,7 @@ ChangeSelection:
 				font_DrawText(&t);
 			}
 
-			SetFlashRect(NULL, false);
+			SetFlashRect(nullptr, false);
 			SetFlashRect(&pMS->flash_rect0, optWhichMenu == EmulationMode::PC);
 		}
 	}
@@ -369,7 +369,7 @@ GetArmadaStarShip(void)
 		SetMenuSounds(MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
 		DoInput(&MenuState, false);
 
-		SetFlashRect(NULL, false);
+		SetFlashRect(nullptr, false);
 
 		hBattleShip = (HSTARSHIP)MenuState.CurFrame;
 	}
@@ -533,7 +533,7 @@ void DrawArmadaPickShip(bool draw_salvage_frame, RECT* pPickRect)
 	s.origin = pick_r.corner;
 	DrawStamp(&s);
 
-	OldFontEffect = SetContextFontEffect(NULL);
+	OldFontEffect = SetContextFontEffect(nullptr);
 
 	t.baseline.x = pick_r.corner.x + (pick_r.extent.width >> 1);
 	t.baseline.y = pick_r.corner.y + pick_r.extent.height - RES_SCALE(5);

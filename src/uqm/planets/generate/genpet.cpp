@@ -285,7 +285,7 @@ ZapToUrquanEncounter(void)
 			   - (uqm::SIZE)GLOBAL_SIS(FuelOnBoard);
 			DeltaSISGauges(0, dx, 0);
 		}
-		DrawSISMessage(NULL);
+		DrawSISMessage(nullptr);
 		// DrawHyperCoords (EncounterPtr->loc_pt);
 		GLOBAL(ShipStamp.origin) = EncounterPtr->loc_pt;
 		GLOBAL(ShipFacing) = 6;

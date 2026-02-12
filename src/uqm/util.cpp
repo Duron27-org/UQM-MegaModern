@@ -436,7 +436,7 @@ bool PauseGame(void)
 	OldContext = SetContext(ScreenContext);
 	OldOrigin = SetContextOrigin(MAKE_POINT(0, 0));
 	GetContextClipRect(&OldRect);
-	SetContextClipRect(NULL);
+	SetContextClipRect(nullptr);
 
 	GetContextClipRect(&ctxRect);
 	GetFrameRect(ActivityFrame, &r);

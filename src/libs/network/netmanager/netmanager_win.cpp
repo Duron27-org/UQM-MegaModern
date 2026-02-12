@@ -116,17 +116,17 @@ int NetManager_addDesc(NetDescriptor* nd)
 		return -1;
 	}
 
-	if (nd->readCallback != NULL)
+	if (nd->readCallback != nullptr)
 	{
 		eventMask |= FD_READ | FD_ACCEPT;
 	}
 
-	if (nd->writeCallback != NULL)
+	if (nd->writeCallback != nullptr)
 	{
 		eventMask |= FD_WRITE /* | FD_CONNECT */;
 	}
 
-	if (nd->exceptionCallback != NULL)
+	if (nd->exceptionCallback != nullptr)
 	{
 		eventMask |= FD_OOB;
 	}
@@ -190,7 +190,7 @@ int NetManager_addDesc(NetDescriptor* nd)
 
 void NetManager_removeDesc(NetDescriptor* nd)
 {
-	assert(nd->smd != NULL);
+	assert(nd->smd != nullptr);
 	assert(nd->smd->index < numSockets);
 	assert(nd == netDescriptors[nd->smd->index]);
 
@@ -217,7 +217,7 @@ void NetManager_removeDesc(NetDescriptor* nd)
 	}
 
 	SocketManagementData_free(nd->smd);
-	nd->smd = NULL;
+	nd->smd = nullptr;
 
 	numSockets--;
 }

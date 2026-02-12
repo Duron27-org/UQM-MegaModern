@@ -705,7 +705,7 @@ const GameStateBitMap gameStateBitMap[] = {
 	{"SAMATRA_GRPOFFS",				32},
 
 	/* end rev 0, Core UQM v0.8.0 */
-	{NULL,						  1 },
+	{nullptr,						  1 },
 	/* begin rev 1, MegaMod v0.8.0.85 */
 
 	{"AUTOPILOT_OK",				 1 },
@@ -713,7 +713,7 @@ const GameStateBitMap gameStateBitMap[] = {
 	{"KNOW_QS_PORTAL",			   16},
 
 	/* end rev 1, MegaMod v0.8.0.85 */
-	{NULL,						  2 },
+	{nullptr,						  2 },
 	/* begin rev 2, MegaMod v0.8.1 */
 
 	{"SYS_VISITED_00",			   32},
@@ -740,7 +740,7 @@ const GameStateBitMap gameStateBitMap[] = {
 	{"RESERVED",					32},
 
 	/* end rev 2, MegaMod v0.8.1 */
-	{NULL,						  3 },
+	{nullptr,						  3 },
 	/* begin rev 3, MegaMod v0.8.2 */
 
 	{"SYS_PLYR_MARKER_00",		   32},
@@ -764,7 +764,7 @@ const GameStateBitMap gameStateBitMap[] = {
 	{"LAST_LOCATION_Y",				16},
 
 	/* end rev 3, MegaMod v0.8.2 */
-	{NULL,						  4 },
+	{nullptr,						  4 },
 	/* begin rev 4, MegaMod v0.8.3 */
 
 	{"ADV_AUTOPILOT_SAVE_X",		 16},
@@ -774,7 +774,7 @@ const GameStateBitMap gameStateBitMap[] = {
 	{"ADV_AUTOPILOT_QUASI_Y",		  16},
 
 	/* end rev 4, MegaMod v0.8.3 */
-	{NULL,						  5 },
+	{nullptr,						  5 },
 	/* begin rev 5, MegaMod v0.8.4 */
 
 	{"SEED_TYPE",				   2 },
@@ -787,7 +787,7 @@ const GameStateBitMap gameStateBitMap[] = {
 	{"REV_5_PAD",				   1 },
 
 	/* end rev 5, MegaMod v0.8.4 */
-	{NULL,						  0 },
+	{nullptr,						  0 },
 };
 
 // This describes the release version corresponding to each game state
@@ -1147,7 +1147,7 @@ SaveGameState(const GAME_STATE* GSPtr, uio_Stream* fh)
 	 * the rest will be overwritten by the BtGp chunks. */
 	write_32(fh, GAME_STATE_TAG);
 	{
-		uint8* buf = NULL;
+		uint8* buf = nullptr;
 		size_t bufSize;
 		if (serialiseGameState(gameStateBitMap, &buf, &bufSize))
 		{
@@ -1331,7 +1331,7 @@ SaveProblemMessage(STAMP* MsgStamp)
 			break;
 		}
 		t.CharCount = (uqm::COUNT)~0;
-		TextRect(&t, &tr, NULL);
+		TextRect(&t, &tr, nullptr);
 		if (i == 0)
 		{
 			r = tr;
@@ -1448,7 +1448,7 @@ SaveBattleGroup(GAME_STATE_FILE* fp, uqm::DWORD encounter_id, uqm::DWORD grpoffs
 	{
 		uqm::BYTE NumShips;
 		SeekStateFile(fp, h.GroupOffset[i], SEEK_SET);
-		sread_8(fp, NULL);
+		sread_8(fp, nullptr);
 		sread_8(fp, &NumShips);
 		size += 2 + 10 * NumShips;
 	}

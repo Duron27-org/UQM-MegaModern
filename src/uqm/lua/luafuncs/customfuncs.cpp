@@ -75,7 +75,7 @@ int luaUqm_custom_init(lua_State* luaState,
 	size_t funCount = 0;
 	const luaUqm_custom_Function* ptr;
 
-	for (ptr = funs; ptr->name != NULL; ptr++)
+	for (ptr = funs; ptr->name != nullptr; ptr++)
 	{
 		funCount++;
 	}
@@ -86,7 +86,7 @@ int luaUqm_custom_init(lua_State* luaState,
 	lua_createtable(luaState, 0, funCount);
 
 	// Fill the 'custom' table.
-	for (ptr = funs; ptr->name != NULL; ptr++)
+	for (ptr = funs; ptr->name != nullptr; ptr++)
 	{
 		luaUqm_custom_addFunction(luaState, ptr);
 	}

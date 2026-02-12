@@ -354,7 +354,7 @@ InitEncounter(void)
 	DestroyMusic(MR);
 	s.origin.x = s.origin.y = 0;
 
-	SetTransitionSource(NULL);
+	SetTransitionSource(nullptr);
 	BatchGraphics();
 
 	SetContextBackGroundColor(BLACK_COLOR);
@@ -399,7 +399,7 @@ InitEncounter(void)
 		t.CharCount = (uqm::COUNT)~0;
 		font_DrawText(&t);
 	}
-	DrawSISMessage(NULL);
+	DrawSISMessage(nullptr);
 
 	s.origin.x = RES_SCALE(ORIG_SIS_SCREEN_WIDTH >> 1);
 	s.origin.y = SIS_SCREEN_HEIGHT >> 1;
@@ -472,7 +472,7 @@ InitEncounter(void)
 
 	UnbatchGraphics();
 	DestroyDrawable(ReleaseDrawable(SegueFrame));
-	ScreenTransition(optScrTrans, NULL);
+	ScreenTransition(optScrTrans, nullptr);
 
 
 	{
@@ -486,7 +486,7 @@ InitEncounter(void)
 
 		DoInput(&MenuState, true);
 
-		SetFlashRect(NULL, false);
+		SetFlashRect(nullptr, false);
 
 		return (MenuState.CurState);
 	}
@@ -508,8 +508,8 @@ InitEncounter(void)
 //	t2.baseline.y += RES_SCALE(11);
 //	t2.pStr = str2;
 //
-//	TextRect (&t1, &r1, NULL);
-//	TextRect (&t2, &r2, NULL);
+//	TextRect (&t1, &r1, nullptr);
+//	TextRect (&t2, &r2, nullptr);
 //
 //	// Take the closest X to the origin point.
 //	res.corner.x = (r1.corner.x < r2.corner.x ? r1.corner.x : r2.corner.x);
@@ -546,8 +546,8 @@ DrawFadeText(const uqm::CHAR_T* str1, const uqm::CHAR_T* str2, bool fade_in,
 	t2.baseline.y += RES_SCALE(11);
 	t2.pStr = str2;
 
-	TextRect(&t1, &r1, NULL);
-	TextRect(&t2, &r2, NULL);
+	TextRect(&t1, &r1, nullptr);
+	TextRect(&t2, &r2, nullptr);
 
 	FlushInput();
 	TimeIn = GetTimeCounter();
@@ -635,8 +635,8 @@ UninitEncounter(void)
 		  };
 		TEXT t;
 		STAMP ship_s;
-		const uqm::CHAR_T* str1 = NULL;
-		const uqm::CHAR_T* str2 = NULL;
+		const uqm::CHAR_T* str1 = nullptr;
+		const uqm::CHAR_T* str2 = nullptr;
 		StatMsgMode prevMsgMode = SMM_UNDEFINED;
 		uqm::CHAR_T buf[80];
 		HSHIPFRAG hStarShip;
@@ -689,7 +689,7 @@ UninitEncounter(void)
 				else
 				{
 					DrawSISFrame();
-					DrawSISMessage(NULL);
+					DrawSISMessage(nullptr);
 					if (inHQSpace())
 					{
 						DrawHyperCoords(GLOBAL(ShipStamp.origin));
@@ -736,7 +736,7 @@ UninitEncounter(void)
 							{
 								RecycleAmount = 0;
 
-								DrawStatusMessage(NULL);
+								DrawStatusMessage(nullptr);
 
 								ship_s.origin.x = scavenge_r.corner.x + RES_SCALE(32);
 								ship_s.origin.y = scavenge_r.corner.y + RES_SCALE(56);
@@ -966,7 +966,7 @@ UninitEncounter(void)
 					}
 				}
 			}
-			DrawStatusMessage(NULL);
+			DrawStatusMessage(nullptr);
 			DestroyPickFrame();
 		}
 
@@ -1043,7 +1043,7 @@ void EncounterBattle(void)
 {
 	ACTIVITY OldActivity;
 	extern uqm::UWORD nth_frame;
-	InputContext* savedPlayerInput = NULL;
+	InputContext* savedPlayerInput = nullptr;
 
 
 	SET_GAME_STATE(BATTLE_SEGUE, 1);
@@ -1084,7 +1084,7 @@ void EncounterBattle(void)
 		nth_frame = MAKE_WORD(1, cur_speed);
 		PlayerControl[0] = CYBORG_CONTROL | AWESOME_RATING;
 		savedPlayerInput = PlayerInput[0];
-		PlayerInput[0] = NULL;
+		PlayerInput[0] = nullptr;
 		if (!SetPlayerInput(0))
 		{
 			log_add(log_Fatal, "Could not set cyborg player input.");
@@ -1101,7 +1101,7 @@ void EncounterBattle(void)
 
 	GameSounds = CaptureSound(LoadSound(GAME_SOUNDS));
 
-	Battle(NULL);
+	Battle(nullptr);
 
 	DestroySound(ReleaseSound(GameSounds));
 	GameSounds = 0;

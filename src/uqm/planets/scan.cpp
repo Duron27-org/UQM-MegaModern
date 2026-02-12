@@ -126,7 +126,7 @@ PrintScanTitlePC(TEXT* t, uqm::CHAR_T* buf, COORD xpos)
 
 	PrintScanTitleText(t);
 
-	TextRect(t, &r, NULL);
+	TextRect(t, &r, nullptr);
 	t->baseline.x += r.extent.width;
 }
 
@@ -801,7 +801,7 @@ DispatchLander(void)
 	EraseCoarseScan();
 
 	// Deactivate planet rotation callback
-	oldCallback = SetInputCallback(NULL);
+	oldCallback = SetInputCallback(nullptr);
 
 	if (!optInfiniteFuel)
 	{
@@ -1002,7 +1002,7 @@ drawLandingFuelUsage(uqm::COUNT fuel)
 static void
 eraseLandingFuelUsage(void)
 {
-	DrawStatusMessage(NULL);
+	DrawStatusMessage(nullptr);
 }
 
 static bool
@@ -1200,7 +1200,7 @@ DrawPCScannedStuff(uqm::COUNT scan)
 						DrawStamp(&s);
 						growth++;
 					}
-					RotatePlanetSphere(true, NULL);
+					RotatePlanetSphere(true, nullptr);
 				}
 				if (growth < NUM_FLASH_COLORS)
 				{ // didn't finish - draw
@@ -1213,7 +1213,7 @@ DrawPCScannedStuff(uqm::COUNT scan)
 				hElement = hNextElement;
 			}
 		}
-		RotatePlanetSphere(true, NULL);
+		RotatePlanetSphere(true, nullptr);
 	}
 	if (hElement)
 	{ // scan aborted - make everything scanned, workaround for singular
@@ -1397,7 +1397,7 @@ ScanPlanet(uqm::COUNT scanType)
 						UnbatchGraphics();
 					}
 				}
-				RotatePlanetSphere(true, NULL);
+				RotatePlanetSphere(true, nullptr);
 			}
 		}
 		else
@@ -1416,14 +1416,14 @@ ScanPlanet(uqm::COUNT scanType)
 				while (GetTimeCounter() < TimeOut
 					   && !AnyButtonPress(true))
 				{
-					RotatePlanetSphere(true, NULL);
+					RotatePlanetSphere(true, nullptr);
 				}
 			}
 			else
 			{ // endless state - mimics PC "Exit Scan"
 				while (!AnyButtonPress(true))
 				{
-					RotatePlanetSphere(true, NULL);
+					RotatePlanetSphere(true, nullptr);
 				}
 			}
 		}
@@ -1498,7 +1498,7 @@ DoScan(MENU_STATE* pMS)
 				return true;
 			}
 
-			SetFlashRect(NULL, false);
+			SetFlashRect(nullptr, false);
 			DrawMenuStateStrings(PM_MIN_SCAN, pMS->CurState);
 
 			if (!PickPlanetSide())
@@ -1599,7 +1599,7 @@ void DestroyScanContext(void)
 	if (ScanContext)
 	{
 		DestroyContext(ScanContext);
-		ScanContext = NULL;
+		ScanContext = nullptr;
 	}
 }
 
@@ -1611,7 +1611,7 @@ void ScanSystem(void)
 
 	// fprintfWorld (pSolarSysState->pOrbitalDesc);
 
-	GetScanContext(NULL);
+	GetScanContext(nullptr);
 
 	if (optWhichMenu == EmulationMode::Console3DO && ((pSolarSysState->pOrbitalDesc->data_index & PLANET_SHIELDED) || pSolarSysState->SysInfo.PlanetInfo.AtmoDensity == GAS_GIANT_ATMOSPHERE))
 	{
@@ -1647,7 +1647,7 @@ void ScanSystem(void)
 
 	DoInput(&MenuState, false);
 
-	SetFlashRect(NULL, false);
+	SetFlashRect(nullptr, false);
 
 	// cleanup scan graphics
 	if (!(GLOBAL(CurrentActivity) & CHECK_ABORT))
@@ -1661,7 +1661,7 @@ void ScanSystem(void)
 	}
 
 	DestroyDrawable(ReleaseDrawable(eraseFrame));
-	eraseFrame = NULL;
+	eraseFrame = nullptr;
 }
 
 static void
@@ -1755,7 +1755,7 @@ void GeneratePlanetSide(void)
 							 NUM_SCANDOT_TRANSITIONS * (scan - ENERGY_SCAN));
 
 		num_nodes = callGenerateForScanType(pSolarSysState,
-											pSolarSysState->pOrbitalDesc, GENERATE_ALL, scan, NULL);
+											pSolarSysState->pOrbitalDesc, GENERATE_ALL, scan, nullptr);
 
 		while (num_nodes--)
 		{

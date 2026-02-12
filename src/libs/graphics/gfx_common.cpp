@@ -170,7 +170,7 @@ void SetTransitionSource(const RECT* pRect)
 	}
 	TFB_DrawScreen_Copy(pRect, TFB_SCREEN_MAIN, TFB_SCREEN_TRANSITION);
 #else /* If we want custom resolutions, we have to make all transitions full screen*/
-	TFB_DrawScreen_Copy(NULL, TFB_SCREEN_MAIN, TFB_SCREEN_TRANSITION);
+	TFB_DrawScreen_Copy(nullptr, TFB_SCREEN_MAIN, TFB_SCREEN_TRANSITION);
 	(void)pRect; /* Satisfying compiler (unused parameter) */
 #endif
 }

@@ -108,7 +108,7 @@ GetFleetFromSpecies(SPECIES_ID id)
 HFLEETINFO
 GetSeededFleetFromIndex(uqm::COUNT Index)
 {
-	FLEET_INFO* TemplatePtr = NULL;
+	FLEET_INFO* TemplatePtr = nullptr;
 	HFLEETINFO hFleet;
 	SPECIES_ID ship;
 	bool loadWindow = ((optShipSeed && GLOBAL_SIS(ShipSeed) == 0) || (!optShipSeed && GLOBAL_SIS(ShipSeed) != 0) || (optCustomSeed != GLOBAL_SIS(Seed)));
@@ -121,7 +121,7 @@ GetSeededFleetFromIndex(uqm::COUNT Index)
 	TemplatePtr = LockFleetInfo(&GLOBAL(avail_race_q), hFleet);
 	if (!TemplatePtr)
 	{
-		return NULL;
+		return nullptr;
 	}
 	ship = SeedShip(TemplatePtr->SpeciesID, loadWindow);
 	UnlockFleetInfo(&GLOBAL(avail_race_q), hFleet);
@@ -236,7 +236,7 @@ RaceIdStrToIndex(const char* raceIdStr)
 										   ARRAY_SIZE(raceIdMap),
 										   sizeof raceIdMap[0], RaceIdCompare);
 
-	if (found == NULL)
+	if (found == nullptr)
 	{
 		return (RACE_ID)-1;
 	}
@@ -1481,7 +1481,7 @@ void SeedFleet(FLEET_INFO* FleetPtr, PLOT_LOCATION* plotmap)
 	}
 	if (!FleetPtr || !plotmap)
 	{
-		fprintf(stderr, "SeedFleet called with NULL PTR(s).\n");
+		fprintf(stderr, "SeedFleet called with nullptr PTR(s).\n");
 		return;
 	}
 	FleetPtr->known_loc = SeedFleetLocation(FleetPtr, plotmap,
@@ -1538,7 +1538,7 @@ SeedFleetLocation(FLEET_INFO* FleetPtr, PLOT_LOCATION* plotmap, uqm::COUNT visit
 
 	if (!FleetPtr || !plotmap)
 	{
-		fprintf(stderr, "SeedFleetLocation called with NULL PTR(s).\n");
+		fprintf(stderr, "SeedFleetLocation called with nullptr PTR(s).\n");
 		return POINT {~0, ~0};
 	}
 
@@ -1561,13 +1561,13 @@ SeedFleetLocation(FLEET_INFO* FleetPtr, PLOT_LOCATION* plotmap, uqm::COUNT visit
 	}
 	if (visit < NUM_PLOTS && !plotmap[visit].star)
 	{
-		fprintf(stderr, "%s %d has a NULL star pointer.\n",
+		fprintf(stderr, "%s %d has a nullptr star pointer.\n",
 				"SeedFleet called, but away plot ID", visit);
 		return POINT {~0, ~0};
 	}
 	if (!plotmap[home].star)
 	{
-		fprintf(stderr, "%s %d has a NULL star pointer.\n",
+		fprintf(stderr, "%s %d has a nullptr star pointer.\n",
 				"SeedFleet called, but home plot ID", home);
 		return POINT {~0, ~0};
 	}
@@ -1852,7 +1852,7 @@ SeedFleetLocation(FLEET_INFO* FleetPtr, PLOT_LOCATION* plotmap, uqm::COUNT visit
 	if (StarGenRNG && myRNG)
 	{
 		RandomContext_Delete(StarGenRNG);
-		StarGenRNG = NULL;
+		StarGenRNG = nullptr;
 	}
 	return (location);
 }

@@ -69,10 +69,10 @@ ConnectState_free(ConnectState* connectState)
 static void
 ConnectState_delete(ConnectState* connectState)
 {
-	assert(connectState->nd == NULL);
-	assert(connectState->alarm == NULL);
-	assert(connectState->info == NULL);
-	assert(connectState->infoPtr == NULL);
+	assert(connectState->nd == nullptr);
+	assert(connectState->alarm == nullptr);
+	assert(connectState->info == nullptr);
+	assert(connectState->infoPtr == nullptr);
 	ConnectState_free(connectState);
 }
 
@@ -105,26 +105,26 @@ bool ConnectState_decRef(ConnectState* connectState)
 // decrements ref count by 1
 void ConnectState_close(ConnectState* connectState)
 {
-	if (connectState->resolveState != NULL)
+	if (connectState->resolveState != nullptr)
 	{
 		Resolve_close(connectState->resolveState);
-		connectState->resolveState = NULL;
+		connectState->resolveState = nullptr;
 	}
-	if (connectState->alarm != NULL)
+	if (connectState->alarm != nullptr)
 	{
 		Alarm_remove(connectState->alarm);
-		connectState->alarm = NULL;
+		connectState->alarm = nullptr;
 	}
-	if (connectState->nd != NULL)
+	if (connectState->nd != nullptr)
 	{
 		NetDescriptor_close(connectState->nd);
-		connectState->nd = NULL;
+		connectState->nd = nullptr;
 	}
-	if (connectState->info != NULL)
+	if (connectState->info != nullptr)
 	{
 		freeaddrinfo(connectState->info);
-		connectState->info = NULL;
-		connectState->infoPtr = NULL;
+		connectState->info = nullptr;
+		connectState->infoPtr = nullptr;
 	}
 	connectState->state = Connect_closed;
 	ConnectState_decRef(connectState);
@@ -148,10 +148,10 @@ connectCallback(NetDescriptor* nd)
 		(ConnectState*)NetDescriptor_getExtra(nd);
 	int err;
 
-	if (connectState->alarm != NULL)
+	if (connectState->alarm != nullptr)
 	{
 		Alarm_remove(connectState->alarm);
-		connectState->alarm = NULL;
+		connectState->alarm = nullptr;
 	}
 
 	if (connectState->state == Connect_closed)
@@ -176,7 +176,7 @@ connectCallback(NetDescriptor* nd)
 		log_add(log_Debug, "connect() failed: %s.", strerror(err));
 #endif
 		NetDescriptor_close(nd);
-		connectState->nd = NULL;
+		connectState->nd = nullptr;
 		connectState->infoPtr = connectState->infoPtr->ai_next;
 		connectHostNext(connectState);
 		return;
@@ -187,10 +187,10 @@ connectCallback(NetDescriptor* nd)
 #endif
 
 	// Notify the higher layer.
-	connectState->nd = NULL;
+	connectState->nd = nullptr;
 	// The callback function takes over ownership of the
 	// NetDescriptor.
-	NetDescriptor_setWriteCallback(nd, NULL);
+	NetDescriptor_setWriteCallback(nd, nullptr);
 	// Note that connectState->info and connectState->infoPtr are cleaned up
 	// when ConnectState_close() is called by the callback function.
 
@@ -209,10 +209,10 @@ connectCallback(NetDescriptor* nd)
 static void
 connectTimeoutCallback(ConnectState* connectState)
 {
-	connectState->alarm = NULL;
+	connectState->alarm = nullptr;
 
 	NetDescriptor_close(connectState->nd);
-	connectState->nd = NULL;
+	connectState->nd = nullptr;
 
 	connectState->infoPtr = connectState->infoPtr->ai_next;
 	connectHostNext(connectState);
@@ -221,7 +221,7 @@ connectTimeoutCallback(ConnectState* connectState)
 static void
 setConnectTimeout(ConnectState* connectState)
 {
-	assert(connectState->alarm == NULL);
+	assert(connectState->alarm == nullptr);
 
 	connectState->alarm =
 		Alarm_addRelativeMs(connectState->flags.timeout,
@@ -236,7 +236,7 @@ tryConnectHostNext(ConnectState* connectState)
 	Socket* sock;
 	int connectResult;
 
-	assert(connectState->nd == NULL);
+	assert(connectState->nd == nullptr);
 
 	info = connectState->infoPtr;
 
@@ -304,7 +304,7 @@ tryConnectHostNext(ConnectState* connectState)
 static void
 connectRetryCallback(ConnectState* connectState)
 {
-	connectState->alarm = NULL;
+	connectState->alarm = nullptr;
 
 	connectState->infoPtr = connectState->info;
 	connectHostNext(connectState);
@@ -313,7 +313,7 @@ connectRetryCallback(ConnectState* connectState)
 static void
 setConnectRetryAlarm(ConnectState* connectState)
 {
-	assert(connectState->alarm == NULL);
+	assert(connectState->alarm == nullptr);
 	assert(connectState->flags.retryDelayMs != Connect_noRetry);
 
 	connectState->alarm =
@@ -327,8 +327,8 @@ connectHostReportAllFailed(ConnectState* connectState)
 	// Could not connect to any host.
 	ConnectError error;
 	freeaddrinfo(connectState->info);
-	connectState->info = NULL;
-	connectState->infoPtr = NULL;
+	connectState->info = nullptr;
+	connectState->infoPtr = nullptr;
 	connectState->state = Connect_closed;
 	error.state = Connect_connecting;
 	error.err = ETIMEDOUT;
@@ -345,7 +345,7 @@ connectHostNext(ConnectState* connectState)
 {
 	Socket* sock;
 
-	while (connectState->infoPtr != NULL)
+	while (connectState->infoPtr != nullptr)
 	{
 		sock = tryConnectHostNext(connectState);
 
@@ -354,7 +354,7 @@ connectHostNext(ConnectState* connectState)
 			// Connection succeeded or connection in progress
 			connectState->nd =
 				NetDescriptor_new(sock, (void*)connectState);
-			if (connectState->nd == NULL)
+			if (connectState->nd == nullptr)
 			{
 				ConnectError error;
 				int savedErrno = errno;
@@ -363,8 +363,8 @@ connectHostNext(ConnectState* connectState)
 						strerror(errno));
 				Socket_close(sock);
 				freeaddrinfo(connectState->info);
-				connectState->info = NULL;
-				connectState->infoPtr = NULL;
+				connectState->info = nullptr;
+				connectState->infoPtr = nullptr;
 				connectState->state = Connect_closed;
 				error.state = Connect_connecting;
 				error.err = savedErrno;
@@ -401,7 +401,7 @@ connectHostResolveCallback(ResolveState* resolveState,
 	connectState->state = Connect_connecting;
 
 	Resolve_close(resolveState);
-	connectState->resolveState = NULL;
+	connectState->resolveState = nullptr;
 
 	if (connectState->flags.familyPrefer != PF_UNSPEC)
 	{
@@ -434,7 +434,7 @@ connectHostResolveErrorCallback(ResolveState* resolveState,
 	assert(resolveError->gaiRes != 0);
 
 	Resolve_close(resolveState);
-	connectState->resolveState = NULL;
+	connectState->resolveState = nullptr;
 
 	connectError.state = Connect_resolving;
 	connectError.resolveError = resolveError;
@@ -482,10 +482,10 @@ connectHostByName(const char* host, const char* service, Protocol proto,
 	connectState->connectCallback = connectCallback;
 	connectState->errorCallback = errorCallback;
 	connectState->extra = extra;
-	connectState->info = NULL;
-	connectState->infoPtr = NULL;
-	connectState->nd = NULL;
-	connectState->alarm = NULL;
+	connectState->info = nullptr;
+	connectState->infoPtr = nullptr;
+	connectState->nd = nullptr;
+	connectState->alarm = nullptr;
 
 	connectState->resolveState = getaddrinfoAsync(
 		host, service, &hints, &resolveFlags,
@@ -501,7 +501,7 @@ static void
 doConnectCallback(ConnectState* connectState, NetDescriptor* nd,
 				  const struct sockaddr* addr, socklen_t addrLen)
 {
-	assert(connectState->connectCallback != NULL);
+	assert(connectState->connectCallback != nullptr);
 
 	ConnectState_incRef(connectState);
 	// No need to increment nd as the callback function takes over ownership.
@@ -513,7 +513,7 @@ static void
 doConnectErrorCallback(ConnectState* connectState,
 					   const ConnectError* error)
 {
-	assert(connectState->errorCallback != NULL);
+	assert(connectState->errorCallback != nullptr);
 
 	ConnectState_incRef(connectState);
 	(*connectState->errorCallback)(connectState, error);

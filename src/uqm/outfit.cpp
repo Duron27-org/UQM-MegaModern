@@ -319,7 +319,7 @@ DrawModuleMenuText(RECT* r, int Index)
 	text.pStr = strtok(buf, " ");
 	text.CharCount = (uqm::COUNT)~0;
 
-	while (text.pStr != NULL)
+	while (text.pStr != nullptr)
 	{
 		text.pStr = AlignText((const uqm::CHAR_T*)text.pStr,
 							  &text.baseline.x);
@@ -328,7 +328,7 @@ DrawModuleMenuText(RECT* r, int Index)
 		font_DrawShadowedText(&text, WEST_SHADOW, MDL_TEXT_COLOR,
 							  MDL_SHADOW_COLOR);
 
-		text.pStr = strtok(NULL, " ");
+		text.pStr = strtok(nullptr, " ");
 		text.CharCount = (uqm::COUNT)~0;
 		text.baseline.y += leading;
 		text.baseline.x = og_baseline_x;
@@ -518,7 +518,7 @@ DrawEscapePodText(RECT rect)
 
 	SetContextForeGroundColor(LANDER_POD_TEXT_COLOR);
 
-	while (text.pStr != NULL)
+	while (text.pStr != nullptr)
 	{
 		text.pStr = AlignText((const uqm::CHAR_T*)text.pStr,
 							  &text.baseline.x);
@@ -526,7 +526,7 @@ DrawEscapePodText(RECT rect)
 
 		font_DrawText(&text);
 
-		text.pStr = strtok(NULL, " ");
+		text.pStr = strtok(nullptr, " ");
 		text.CharCount = (uqm::COUNT)~0;
 		text.baseline.y += leading;
 		text.baseline.x = og_baseline_x;
@@ -705,7 +705,7 @@ DoInstallModule(MENU_STATE* pMS)
 
 		SetContext(SpaceContext);
 		ClearSISRect(CLEAR_SIS_RADAR);
-		SetFlashRect(NULL, false);
+		SetFlashRect(nullptr, false);
 		goto InitFlash;
 	}
 	else if (select || cancel)
@@ -779,7 +779,7 @@ DoInstallModule(MENU_STATE* pMS)
 
 		SetContext(SpaceContext);
 
-		SetFlashRect(NULL, false);
+		SetFlashRect(nullptr, false);
 
 		if (select)
 		{
@@ -1307,7 +1307,7 @@ bool DoOutfit(MENU_STATE* pMS)
 				s.frame = SetAbsFrameIndex(s.frame, 0);
 			}
 
-			SetTransitionSource(NULL);
+			SetTransitionSource(nullptr);
 			BatchGraphics();
 			DrawSISFrame();
 			DrawSISMessage(GAME_STRING(STARBASE_STRING_BASE + 2));
@@ -1390,7 +1390,7 @@ bool DoOutfit(MENU_STATE* pMS)
 
 			DrawFlagshipStats();
 
-			ScreenTransition(optScrTrans, NULL);
+			ScreenTransition(optScrTrans, nullptr);
 
 			PlayMusicResume(pMS->hMusic, NORMAL_VOLUME);
 
@@ -1437,7 +1437,7 @@ ExitOutfit:
 
 			SetMusicPosition();
 
-			SetNamingCallback(NULL);
+			SetNamingCallback(nullptr);
 
 			return (false);
 		}

@@ -660,7 +660,7 @@ extern bool GetContextClipRect(RECT* pRect);
 extern POINT SetContextOrigin(POINT orgOffset);
 extern DrawMode SetContextDrawMode(DrawMode);
 extern DrawMode GetContextDrawMode(void);
-// 'area' may be NULL to copy the entire CONTEXT cliprect
+// 'area' may be nullptr to copy the entire CONTEXT cliprect
 // 'area' is relative to the CONTEXT cliprect
 extern DRAWABLE CopyContextRect(const RECT* area);
 

@@ -188,7 +188,7 @@ add_text(int status, TEXT* pTextIn)
 	int num_lines = 0;
 	static COORD last_baseline;
 	bool eol;
-	CONTEXT OldContext = NULL;
+	CONTEXT OldContext = nullptr;
 	RECT arrow;
 
 	BatchGraphics();
@@ -396,15 +396,15 @@ add_text(int status, TEXT* pTextIn)
 
 void GetCustomBaseline(uqm::COUNT i)
 {
-	if (head_node == NULL)
+	if (head_node == nullptr)
 	{
 		return;
 	}
 	else
 	{ // Set cur_node if current sentence number equals to one of list
-		// indices. MUST be NULL otherwise
+		// indices. MUST be nullptr otherwise
 		cur_node = head_node;
-		while (cur_node != NULL && cur_node->index != i)
+		while (cur_node != nullptr && cur_node->index != i)
 		{
 			cur_node = cur_node->next;
 		}
@@ -516,7 +516,7 @@ bool getLineWithinWidth(TEXT* pText, const char** startNext,
 
 		oldCount = pText->CharCount;
 		pText->CharCount = charCount;
-		TextRect(pText, &rect, NULL);
+		TextRect(pText, &rect, nullptr);
 
 		if (rect.extent.width >= maxWidth)
 		{
@@ -1216,7 +1216,7 @@ CommIntroTransition(void)
 {
 	if (curIntroMode == CIM_CROSSFADE_SCREEN)
 	{
-		ScreenTransition(optScrTrans, NULL);
+		ScreenTransition(optScrTrans, nullptr);
 		UnbatchGraphics();
 	}
 	else if (curIntroMode == CIM_CROSSFADE_SPACE)
@@ -1266,7 +1266,7 @@ void AlienTalkSegue(uqm::COUNT wait_track)
 		InitSpeechGraphics();
 		SetColorMap(GetColorMapAddress(CommData.AlienColorMap));
 		SetContext(AnimContext);
-		DrawAlienFrame(NULL, 0, true);
+		DrawAlienFrame(nullptr, 0, true);
 		UpdateSpeechGraphics();
 		CommIntroTransition();
 
@@ -1335,7 +1335,7 @@ DoConvSummary(SUMMARY_STATE* pSS)
 	{
 		pSS->PrintNext = true;
 		pSS->NextSub = GetFirstTrackSubtitle();
-		pSS->LeftOver = NULL;
+		pSS->LeftOver = nullptr;
 		pSS->InputFunc = DoConvSummary;
 		pSS->Initialized = true;
 		DoInput(pSS, false);
@@ -1384,12 +1384,12 @@ DoConvSummary(SUMMARY_STATE* pSS)
 		for (row = 0; row < MAX_SUMM_ROWS && pSS->NextSub;
 			 ++row, pSS->NextSub = GetNextTrackSubtitle(pSS->NextSub))
 		{
-			const char* next = NULL;
+			const char* next = nullptr;
 
 			if (pSS->LeftOver)
 			{ // some text left from last subtitle
 				t.pStr = pSS->LeftOver;
-				pSS->LeftOver = NULL;
+				pSS->LeftOver = nullptr;
 			}
 			else
 			{
@@ -1491,10 +1491,10 @@ ClearResponses(ENCOUNTER_STATE* pES)
 	for (responseI = 0; responseI < MAX_RESPONSES; responseI++)
 	{
 		RESPONSE_ENTRY* response = &pES->response_list[responseI];
-		if (response->allocedResponse != NULL)
+		if (response->allocedResponse != nullptr)
 		{
 			HFree(response->allocedResponse);
-			response->allocedResponse = NULL;
+			response->allocedResponse = nullptr;
 		}
 	}
 }
@@ -1674,12 +1674,12 @@ DoLastReplay(LAST_REPLAY_STATE* pLRS)
 	if (PulsedInputState.menu[KEY_MENU_CANCEL] && lowByte(GLOBAL(CurrentActivity)) != WON_LAST_BATTLE)
 	{
 		FadeMusic(BACKGROUND_VOL, ONE_SECOND);
-		SelectConversationSummary(NULL);
+		SelectConversationSummary(nullptr);
 		pLRS->TimeOut = FadeMusic(0, ONE_SECOND * 2) + ONE_SECOND / 60;
 	}
 	else if (PulsedInputState.menu[KEY_MENU_LEFT])
 	{
-		SelectReplay(NULL);
+		SelectReplay(nullptr);
 		pLRS->TimeOut = FadeMusic(0, ONE_SECOND * 2) + ONE_SECOND / 60;
 	}
 
@@ -1731,7 +1731,7 @@ DoCommunication(ENCOUNTER_STATE* pES)
 
 	SetContext(SpaceContext);
 	DestroyContext(AnimContext);
-	AnimContext = NULL;
+	AnimContext = nullptr;
 
 	FlushColorXForms();
 	ClearSubtitles();
@@ -1889,7 +1889,7 @@ HailAlien(void)
 	{
 		ComputerFont = LoadFont(COMPUTER_FONT);
 
-		if (ComputerFont == NULL)
+		if (ComputerFont == nullptr)
 		{
 			log_add(log_Warning,
 					"ComputerFont didn't load properly. "
@@ -1943,7 +1943,7 @@ HailAlien(void)
 		CommWndRect.corner.y = SIS_ORG_Y; // changed init of CommWndRect in the beginning of comm.c
 		CommWndRect.extent = r.extent;
 
-		SetTransitionSource(NULL);
+		SetTransitionSource(nullptr);
 		BatchGraphics();
 		if (lowByte(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE)
 		{
@@ -1976,7 +1976,7 @@ HailAlien(void)
 			}
 			else
 			{ // Default titles: star name + planet name
-				DrawSISMessage(NULL);
+				DrawSISMessage(nullptr);
 				// DrawSISTitle (GLOBAL_SIS (PlanetName));
 
 				if (inHQSpace())
@@ -2077,7 +2077,7 @@ InitCommunication(CONVERSATION which_comm)
 				ClearSISRect(DRAW_SIS_DISPLAY);
 				RepairSISBorder();
 			}
-			DrawSISMessage(NULL);
+			DrawSISMessage(nullptr);
 			if (inHQSpace())
 			{
 				DrawHyperCoords(GLOBAL(ShipStamp.origin));
@@ -2389,7 +2389,7 @@ RedrawSubtitles(void)
 	{
 		t = SubtitleText;
 
-		if (cur_node != NULL)
+		if (cur_node != nullptr)
 		{ // If cur_node exist - use custom baseline
 			t.baseline = cur_node->baseline;
 			t.align = cur_node->align;
@@ -2403,8 +2403,8 @@ static void
 ClearSubtitles(void)
 {
 	clear_subtitles = true;
-	last_subtitle = NULL;
-	SubtitleText.pStr = NULL;
+	last_subtitle = nullptr;
+	SubtitleText.pStr = nullptr;
 	SubtitleText.CharCount = 0;
 }
 
@@ -2416,7 +2416,7 @@ PauseSubtitles(bool force)
 
 	pStr = GetTrackSubtitle();
 
-	if (GetSubtitleNumber(pStr) == 0 || SubtitleText.pStr == NULL)
+	if (GetSubtitleNumber(pStr) == 0 || SubtitleText.pStr == nullptr)
 	{
 		num = GetSubtitleNumber(pStr);
 		return false;
@@ -2520,14 +2520,14 @@ void SetCustomBaseLine(uqm::COUNT sentence, POINT bl, TEXT_ALIGN align)
 	cur->baseline.y = RES_SCALE(bl.y);
 	cur->align = align;
 
-	if (head_node == NULL)
+	if (head_node == nullptr)
 	{
 		head_node = cur;
 	}
 	else
 	{
 		sPtr = head_node;
-		while (sPtr->next != NULL)
+		while (sPtr->next != nullptr)
 		{
 			sPtr = sPtr->next;
 		}
@@ -2539,18 +2539,18 @@ void FlushCustomBaseLine(void)
 { // Free List, called at SelectResponce and Race uninit func (syreen.c for now)
 	CUSTOM_BASELINE *cur, *next;
 
-	if (head_node == NULL)
+	if (head_node == nullptr)
 	{
 		return;
 	}
 
 	cur = head_node;
-	while (cur != NULL)
+	while (cur != nullptr)
 	{
 		next = cur->next;
 		HFree(cur);
 		cur = next;
 	}
-	head_node = NULL;
-	cur_node = NULL;
+	head_node = nullptr;
+	cur_node = nullptr;
 }

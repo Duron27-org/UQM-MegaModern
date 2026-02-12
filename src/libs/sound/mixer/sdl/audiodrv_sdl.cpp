@@ -195,7 +195,7 @@ mixSDL_Init(audio_Driver* driver, sint32 flags)
 
 	log_add(log_Info, "Opening SDL audio device.");
 #if SDL_MAJOR_VERSION > 1
-	dev = SDL_OpenAudioDevice(NULL, 0, &desired, &obtained,
+	dev = SDL_OpenAudioDevice(nullptr, 0, &desired, &obtained,
 							  SDL_AUDIO_ALLOW_FREQUENCY_CHANGE | SDL_AUDIO_ALLOW_CHANNELS_CHANGE
 #ifdef SDL_AUDIO_ALLOW_SAMPLES_CHANGE
 								  | SDL_AUDIO_ALLOW_SAMPLES_CHANGE
@@ -205,7 +205,7 @@ mixSDL_Init(audio_Driver* driver, sint32 flags)
 	{
 		// try again without SDL_AUDIO_ALLOW_CHANNELS_CHANGE
 		// in case the device only supports >2 channels for some reason
-		dev = SDL_OpenAudioDevice(NULL, 0, &desired, &obtained,
+		dev = SDL_OpenAudioDevice(nullptr, 0, &desired, &obtained,
 								  SDL_AUDIO_ALLOW_FREQUENCY_CHANGE
 #ifdef SDL_AUDIO_ALLOW_SAMPLES_CHANGE
 									  | SDL_AUDIO_ALLOW_SAMPLES_CHANGE
@@ -325,7 +325,7 @@ void mixSDL_Uninit(void)
 		if (soundSource[i].sbuffer)
 		{
 			void* sbuffer = soundSource[i].sbuffer;
-			soundSource[i].sbuffer = NULL;
+			soundSource[i].sbuffer = nullptr;
 			HFree(sbuffer);
 		}
 		DestroyMutex(soundSource[i].stream_mutex);

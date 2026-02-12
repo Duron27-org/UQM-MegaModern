@@ -77,7 +77,7 @@ static RACE_DESC chenjesu_desc =
 		 CHENJESU_RACE_STRINGS,
 		 CHENJESU_ICON_MASK_PMAP_ANIM,
 		 CHENJESU_MICON_MASK_PMAP_ANIM,
-		 NULL, NULL, NULL},
+		 nullptr, nullptr, nullptr},
 		{
 			/* FLEET_STUFF */
 			0, /* Initial sphere of influence radius */
@@ -116,24 +116,24 @@ static RACE_DESC chenjesu_desc =
 			 DOGGY_SML_MASK_PMAP_ANIM,
 		 },
 		 {CHENJESU_CAPTAIN_MASK_PMAP_ANIM,
-		  NULL, NULL, NULL, NULL, NULL,
+		  nullptr, nullptr, nullptr, nullptr, nullptr,
 		  0, 0, 0, 0, 0},
 		 CHENJESU_VICTORY_SONG,
 		 CHENJESU_SHIP_SOUNDS,
-		 {NULL, NULL, NULL},
-		 {NULL, NULL, NULL},
-		 {NULL, NULL, NULL},
-		 NULL,
-		 NULL},
+		 {nullptr, nullptr, nullptr},
+		 {nullptr, nullptr, nullptr},
+		 {nullptr, nullptr, nullptr},
+		 nullptr,
+		 nullptr},
 		{
 			0,
 			LONG_RANGE_WEAPON,
-			NULL,
+			nullptr,
 		 },
-		(UNINIT_FUNC*)NULL,
-		(PREPROCESS_FUNC*)NULL,
-		(POSTPROCESS_FUNC*)NULL,
-		(INIT_WEAPON_FUNC*)NULL,
+		(UNINIT_FUNC*)nullptr,
+		(PREPROCESS_FUNC*)nullptr,
+		(POSTPROCESS_FUNC*)nullptr,
+		(INIT_WEAPON_FUNC*)nullptr,
 		0,
 		0, /* CodeRef */
 };
@@ -156,7 +156,7 @@ crystal_postprocess(ELEMENT* ElementPtr)
 	MissileBlock.hit_points = FRAGMENT_HITS;
 	MissileBlock.damage = FRAGMENT_DAMAGE;
 	MissileBlock.life = FRAGMENT_LIFE;
-	MissileBlock.preprocess_func = NULL;
+	MissileBlock.preprocess_func = nullptr;
 	MissileBlock.blast_offs = FRAGMENT_OFFSET;
 
 	for (MissileBlock.face = 0;
@@ -323,8 +323,8 @@ doggy_death(ELEMENT* ElementPtr)
 	{
 		ElementPtr->preprocess_func = animate;
 	}
-	ElementPtr->death_func = NULL;
-	ElementPtr->collision_func = NULL;
+	ElementPtr->death_func = nullptr;
+	ElementPtr->collision_func = nullptr;
 	ZeroVelocityComponents(&ElementPtr->velocity);
 
 	ElementPtr->turn_wait = ElementPtr->next_turn = 0;
@@ -386,7 +386,7 @@ spawn_doggy(ELEMENT* ElementPtr)
 					STAMP_PRIM);
 		{
 			DoggyElementPtr->preprocess_func = doggy_preprocess;
-			DoggyElementPtr->postprocess_func = NULL;
+			DoggyElementPtr->postprocess_func = nullptr;
 			DoggyElementPtr->collision_func = doggy_collision;
 			DoggyElementPtr->death_func = doggy_death;
 		}

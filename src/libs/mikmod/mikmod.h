@@ -305,7 +305,7 @@ MIKMODAPI extern void* MikMod_malloc(size_t);
 MIKMODAPI extern void* MikMod_calloc(size_t, size_t);
 MIKMODAPI extern void* MikMod_realloc(void*, size_t);
 MIKMODAPI extern CHAR* MikMod_strdup(const CHAR*);
-MIKMODAPI extern void MikMod_free(void*); /* frees if ptr != NULL */
+MIKMODAPI extern void MikMod_free(void*); /* frees if ptr != nullptr */
 
 /*
  *  ========== Reader, Writer
@@ -398,7 +398,7 @@ typedef struct SAMPLE
 	UBYTE divfactor;		   /* for sample scaling, maintains proper period slides */
 	ULONG seekpos;			   /* seek position in file */
 	SWORD handle;			   /* sample handle used by individual drivers */
-	void (*onfree)(void* ctx); /* called from Sample_Free if not NULL */
+	void (*onfree)(void* ctx); /* called from Sample_Free if not nullptr */
 	void* ctx;				   /* context passed to previous function*/
 } SAMPLE;
 

@@ -65,7 +65,7 @@ static RACE_DESC syreen_desc =
 		 SYREEN_RACE_STRINGS,
 		 SYREEN_ICON_MASK_PMAP_ANIM,
 		 SYREEN_MICON_MASK_PMAP_ANIM,
-		 NULL, NULL, NULL},
+		 nullptr, nullptr, nullptr},
 		{
 			/* FLEET_STUFF */
 			0, /* Initial sphere of influence radius */
@@ -104,24 +104,24 @@ static RACE_DESC syreen_desc =
 			 NULL_RESOURCE,
 		 },
 		 {SYREEN_CAPTAIN_MASK_PMAP_ANIM,
-		  NULL, NULL, NULL, NULL, NULL,
+		  nullptr, nullptr, nullptr, nullptr, nullptr,
 		  0, 0, 0, 0, 0},
 		 SYREEN_VICTORY_SONG,
 		 SYREEN_SHIP_SOUNDS,
-		 {NULL, NULL, NULL},
-		 {NULL, NULL, NULL},
-		 {NULL, NULL, NULL},
-		 NULL,
-		 NULL},
+		 {nullptr, nullptr, nullptr},
+		 {nullptr, nullptr, nullptr},
+		 {nullptr, nullptr, nullptr},
+		 nullptr,
+		 nullptr},
 		{
 			0,
 			(MISSILE_SPEED * MISSILE_LIFE * 2 / 3),
-			NULL,
+			nullptr,
 		 },
-		(UNINIT_FUNC*)NULL,
-		(PREPROCESS_FUNC*)NULL,
-		(POSTPROCESS_FUNC*)NULL,
-		(INIT_WEAPON_FUNC*)NULL,
+		(UNINIT_FUNC*)nullptr,
+		(PREPROCESS_FUNC*)nullptr,
+		(POSTPROCESS_FUNC*)nullptr,
+		(INIT_WEAPON_FUNC*)nullptr,
 		0,
 		0, /* CodeRef */
 };
@@ -144,7 +144,7 @@ initialize_dagger(ELEMENT* ShipPtr, HELEMENT DaggerArray[])
 	MissileBlock.hit_points = MISSILE_HITS;
 	MissileBlock.damage = MISSILE_DAMAGE;
 	MissileBlock.life = MISSILE_LIFE;
-	MissileBlock.preprocess_func = NULL;
+	MissileBlock.preprocess_func = nullptr;
 	MissileBlock.blast_offs = MISSILE_OFFSET;
 	DaggerArray[0] = initialize_missile(&MissileBlock);
 
@@ -250,7 +250,7 @@ syreen_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 					  ObjectsOfConcern, ConcernCounter);
 
 	lpEvalDesc = &ObjectsOfConcern[ENEMY_SHIP_INDEX];
-	if (lpEvalDesc->ObjectPtr != NULL)
+	if (lpEvalDesc->ObjectPtr != nullptr)
 	{
 		STARSHIP* StarShipPtr;
 		STARSHIP* EnemyStarShipPtr;

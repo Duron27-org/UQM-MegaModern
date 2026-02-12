@@ -35,7 +35,7 @@ static const luaL_Reg eventFuncs[] = {
 	{"addRelative", luaUqm_event_addRelative},
 	{"register",	 luaUqm_event_register	  },
 	{"unregister",  luaUqm_event_unregister },
-	{NULL,		   NULL					},
+	{nullptr,		   nullptr					},
 };
 
 int luaUqm_event_open(lua_State* luaState)
@@ -114,7 +114,7 @@ addEvent(lua_State* luaState, EVENT_TYPE type)
 	}
 
 	event = AddEvent(type, month, day, year, eventNum);
-	lua_pushinteger(luaState, (event == NULL) ? -1 : 0);
+	lua_pushinteger(luaState, (event == nullptr) ? -1 : 0);
 	return 1;
 }
 

@@ -140,7 +140,7 @@ static char MDRIVER_alias[] = "membuf";
 
 static MDRIVER moda_mmout_drv =
 	{
-		NULL,
+		nullptr,
 		//xxx libmikmod does not declare these fields const; it probably should.
 		MDRIVER_name,	 // Name
 		MDRIVER_version, // Version
@@ -149,10 +149,10 @@ static MDRIVER moda_mmout_drv =
 
 // The minimum mikmod version we support is 3.1.8
 #if (LIBMIKMOD_VERSION_MAJOR > 3) || ((LIBMIKMOD_VERSION_MAJOR == 3) && (LIBMIKMOD_VERSION_MINOR >= 2))
-		NULL, // Cmdline help
+		nullptr, // Cmdline help
 #endif
 
-		NULL,
+		nullptr,
 		moda_mmout_IsThere,
 		VC_SampleLoad,
 		VC_SampleUnload,
@@ -165,7 +165,7 @@ static MDRIVER moda_mmout_drv =
 		VC_PlayStart,
 		VC_PlayStop,
 		moda_mmout_Update,
-		NULL, /* FIXME: Pause */
+		nullptr, /* FIXME: Pause */
 		VC_VoiceSetVolume,
 		VC_VoiceGetVolume,
 		VC_VoiceSetFrequency,
@@ -179,7 +179,7 @@ static MDRIVER moda_mmout_drv =
 		VC_VoiceRealVolume};
 
 
-static const TFB_DecoderFormats* moda_formats = NULL;
+static const TFB_DecoderFormats* moda_formats = nullptr;
 
 // MikMod READER interface
 //  we provide our own so that we can do loading via uio
@@ -284,7 +284,7 @@ moda_InitModule(int flags, const TFB_DecoderFormats* fmts)
 
 	md_pansep = 64;
 
-	if (MikMod_Init(NULL))
+	if (MikMod_Init(nullptr))
 	{
 		log_add(log_Error, "MikMod_Init() failed, %s",
 				MikMod_strerror(MikMod_errno));
@@ -392,7 +392,7 @@ moda_Close(THIS_PTR)
 	if (moda->module)
 	{
 		Player_Free(moda->module);
-		moda->module = NULL;
+		moda->module = nullptr;
 	}
 }
 

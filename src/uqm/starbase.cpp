@@ -145,7 +145,7 @@ void DrawShipPiece(FRAME ModuleFrame, uqm::COUNT which_piece, uqm::COUNT which_s
 	}
 
 	Side.origin.x += which_slot * SHIP_PIECE_OFFSET;
-	Side.frame = NULL;
+	Side.frame = nullptr;
 	if (RepairSlot < 0)
 	{
 		Side.frame = SetAbsFrameIndex(ModuleFrame,
@@ -352,7 +352,7 @@ bool DoStarBase(MENU_STATE* pMS)
 		LastActivity &= ~CHECK_LOAD;
 		pMS->InputFunc = DoStarBase;
 
-		SetFlashRect(NULL, false);
+		SetFlashRect(nullptr, false);
 
 		if (pMS->hMusic)
 		{
@@ -367,13 +367,13 @@ bool DoStarBase(MENU_STATE* pMS)
 		pMS->hMusic = LoadMusic(STARBASE_MUSIC);
 
 		SetContext(ScreenContext);
-		SetTransitionSource(NULL);
+		SetTransitionSource(nullptr);
 		BatchGraphics();
 		SetContextBackGroundColor(BLACK_COLOR);
 		ClearDrawable();
 		rotateStarbase(pMS, pMS->CurFrame);
 		DrawBaseStateStrings((STARBASE_STATE)~0, pMS->CurState);
-		ScreenTransition(optScrTrans, NULL);
+		ScreenTransition(optScrTrans, nullptr);
 
 		PlayMusicResume(pMS->hMusic, NORMAL_VOLUME);
 
@@ -477,7 +477,7 @@ ExitStarBase:
 			pMS->CurState = NewState;
 		}
 
-		rotateStarbase(pMS, NULL);
+		rotateStarbase(pMS, nullptr);
 
 		DrawBorderPadding(0);
 
@@ -525,7 +525,7 @@ void VisitStarBase(void)
 	if (GET_GAME_STATE(CHMMR_BOMB_STATE) == 2)
 	{ // We were just transported by Chmmr to the Starbase
 		// Force a reload of the SolarSys
-		CurStarDescPtr = NULL;
+		CurStarDescPtr = nullptr;
 		// This marks that we are in Starbase.
 		SET_GAME_STATE(GLOBAL_FLAGS_AND_DATA, (uqm::BYTE)~0);
 	}
@@ -631,7 +631,7 @@ void InstallBombAtEarth(void)
 	GLOBAL(ShipStamp.origin.y) = RES_SCALE(ORIG_SIS_SCREEN_HEIGHT >> 1);
 
 	SetContext(ScreenContext);
-	SetTransitionSource(NULL);
+	SetTransitionSource(nullptr);
 	SetContextBackGroundColor(BLACK_COLOR);
 	ClearDrawable();
 
@@ -666,7 +666,7 @@ WrapText(const uqm::CHAR_T* pStr, uqm::COUNT len, TEXT* tarray, uqm::SIZE field_
 			while (*++pStr != ' ' && (uqm::COUNT)(pStr - tarray->pStr) < len)
 				;
 			tarray->CharCount = pStr - tarray->pStr;
-			TextRect(tarray, &r, NULL);
+			TextRect(tarray, &r, nullptr);
 		} while (tarray->CharCount < len && r.extent.width < field_width);
 
 		if (r.extent.width >= field_width)
@@ -676,7 +676,7 @@ WrapText(const uqm::CHAR_T* pStr, uqm::COUNT len, TEXT* tarray, uqm::SIZE field_
 				do
 				{
 					++tarray->CharCount;
-					TextRect(tarray, &r, NULL);
+					TextRect(tarray, &r, nullptr);
 				} while (r.extent.width < field_width);
 				--tarray->CharCount;
 			}

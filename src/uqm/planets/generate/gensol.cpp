@@ -333,7 +333,7 @@ GenerateSol_generateOrbital(SOLARSYS_STATE* solarSys, PLANET_DESC* world)
 	rand_val = RandomContext_GetSeed(SysGenRNG);
 
 	solarSys->SysInfo.PlanetInfo.ScanSeed[MINERAL_SCAN] = rand_val;
-	GenerateMineralDeposits(&solarSys->SysInfo, GENERATE_ALL, NULL);
+	GenerateMineralDeposits(&solarSys->SysInfo, GENERATE_ALL, nullptr);
 	rand_val = RandomContext_GetSeed(SysGenRNG);
 
 	planetNr = planetIndex(solarSys, world);
@@ -464,7 +464,7 @@ GenerateSol_generateOrbital(SOLARSYS_STATE* solarSys, PLANET_DESC* world)
 			CalcGravity(&solarSys->SysInfo.PlanetInfo);
 
 		{ // For Sol Textures
-			RESOURCE maskAnim = NULL;
+			RESOURCE maskAnim = nullptr;
 
 			if (optScanSphere)
 			{
@@ -621,7 +621,7 @@ GenerateSol_generateOrbital(SOLARSYS_STATE* solarSys, PLANET_DESC* world)
 			CalcGravity(&solarSys->SysInfo.PlanetInfo);
 
 		{ // For Sol Textures
-			RESOURCE maskAnim = NULL;
+			RESOURCE maskAnim = nullptr;
 
 			if (optScanSphere)
 			{

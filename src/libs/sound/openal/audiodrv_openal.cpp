@@ -27,8 +27,8 @@
 #include <stdlib.h>
 
 
-ALCcontext* alcContext = NULL;
-ALCdevice* alcDevice = NULL;
+ALCcontext* alcContext = nullptr;
+ALCdevice* alcDevice = nullptr;
 ALfloat defaultPos[] = {0.0f, 0.0f, -1.0f};
 ALfloat listenerPos[] = {0.0f, 0.0f, 0.0f};
 ALfloat listenerVel[] = {0.0f, 0.0f, 0.0f};
@@ -154,24 +154,24 @@ openAL_Init(audio_Driver* driver, sint32 flags)
 			audio_FORMAT_MONO16, audio_FORMAT_STEREO16};
 
 	log_add(log_Info, "Initializing OpenAL.");
-	alcDevice = alcOpenDevice(NULL);
+	alcDevice = alcOpenDevice(nullptr);
 
 	if (!alcDevice)
 	{
 		log_add(log_Error, "Couldn't initialize OpenAL: %d",
-				alcGetError(NULL));
+				alcGetError(nullptr));
 		return -1;
 	}
 
 	*driver = openAL_Driver;
 
-	alcContext = alcCreateContext(alcDevice, NULL);
+	alcContext = alcCreateContext(alcDevice, nullptr);
 	if (!alcContext)
 	{
 		log_add(log_Error, "Couldn't create OpenAL context: %d",
 				alcGetError(alcDevice));
 		alcCloseDevice(alcDevice);
-		alcDevice = NULL;
+		alcDevice = nullptr;
 		return -1;
 	}
 
@@ -191,11 +191,11 @@ openAL_Init(audio_Driver* driver, sint32 flags)
 	if (SoundDecoder_Init(flags, &formats))
 	{
 		log_add(log_Error, "Sound decoders initialization failed.");
-		alcMakeContextCurrent(NULL);
+		alcMakeContextCurrent(nullptr);
 		alcDestroyContext(alcContext);
-		alcContext = NULL;
+		alcContext = nullptr;
 		alcCloseDevice(alcDevice);
-		alcDevice = NULL;
+		alcDevice = nullptr;
 		return -1;
 	}
 	log_add(log_Error, "Sound decoders initialized.");
@@ -222,11 +222,11 @@ openAL_Init(audio_Driver* driver, sint32 flags)
 		log_add(log_Error, "Stream decoder initialization failed.");
 		// TODO: cleanup source mutexes [or is it "muti"? :) ]
 		SoundDecoder_Uninit();
-		alcMakeContextCurrent(NULL);
+		alcMakeContextCurrent(nullptr);
 		alcDestroyContext(alcContext);
-		alcContext = NULL;
+		alcContext = nullptr;
 		alcCloseDevice(alcDevice);
-		alcDevice = NULL;
+		alcDevice = nullptr;
 		return -1;
 	}
 
@@ -252,17 +252,17 @@ void openAL_Uninit(void)
 		if (soundSource[i].sbuffer)
 		{
 			void* sbuffer = soundSource[i].sbuffer;
-			soundSource[i].sbuffer = NULL;
+			soundSource[i].sbuffer = nullptr;
 			HFree(sbuffer);
 		}
 		DestroyMutex(soundSource[i].stream_mutex);
 	}
 
-	alcMakeContextCurrent(NULL);
+	alcMakeContextCurrent(nullptr);
 	alcDestroyContext(alcContext);
-	alcContext = NULL;
+	alcContext = nullptr;
 	alcCloseDevice(alcDevice);
-	alcDevice = NULL;
+	alcDevice = nullptr;
 
 	SoundDecoder_Uninit();
 }

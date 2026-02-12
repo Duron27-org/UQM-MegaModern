@@ -39,7 +39,7 @@ GetFrameForFPS(UniChar ch)
 	}
 	else
 	{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -71,14 +71,14 @@ FONT SetContextFont(FONT Font)
 
 bool DestroyFont(FONT FontRef)
 {
-	if (FontRef == NULL)
+	if (FontRef == nullptr)
 	{
 		return (false);
 	}
 
 	if (_CurFontPtr && _CurFontPtr == FontRef)
 	{
-		SetContextFont((FONT)NULL);
+		SetContextFont((FONT)nullptr);
 	}
 
 	return (FreeFont(FontRef));
@@ -94,14 +94,14 @@ RECT font_GetTextRect(TEXT* lpText)
 	memset(&ClipRect, 0, sizeof(RECT));
 
 	FixContextFontEffect();
-	if (!GraphicsSystemActive() || !GetContextValidRect(NULL, &origin))
+	if (!GraphicsSystemActive() || !GetContextValidRect(nullptr, &origin))
 	{
 		return ClipRect;
 	}
 
 	// TextRect() clobbers TEXT.CharCount so we have to make a copy
 	text = *lpText;
-	if (!TextRect(&text, &ClipRect, NULL))
+	if (!TextRect(&text, &ClipRect, nullptr))
 	{
 		return ClipRect;
 	}
@@ -117,14 +117,14 @@ void font_DrawText(TEXT* lpText)
 	TEXT text;
 
 	FixContextFontEffect();
-	if (!GraphicsSystemActive() || !GetContextValidRect(NULL, &origin))
+	if (!GraphicsSystemActive() || !GetContextValidRect(nullptr, &origin))
 	{
 		return;
 	}
 
 	// TextRect() clobbers TEXT.CharCount so we have to make a copy
 	text = *lpText;
-	if (!TextRect(&text, &ClipRect, NULL))
+	if (!TextRect(&text, &ClipRect, nullptr))
 	{
 		return;
 	}
@@ -138,14 +138,14 @@ void font_DrawText_Fade(TEXT* lpText, FRAME repair, bool* skip)
 	POINT origin;
 	TEXT text;
 
-	if (!GraphicsSystemActive() || !GetContextValidRect(NULL, &origin))
+	if (!GraphicsSystemActive() || !GetContextValidRect(nullptr, &origin))
 	{
 		return;
 	}
 
 	// TextRect() clobbers TEXT.CharCount so we have to make a copy
 	text = *lpText;
-	if (!TextRect(&text, &ClipRect, NULL))
+	if (!TextRect(&text, &ClipRect, nullptr))
 	{
 		return;
 	}
@@ -195,14 +195,14 @@ font_DrawTextAlt(TEXT* lpText, uqm::BYTE swap, FONT AltFontPtr, UniChar key)
 	TEXT text;
 
 	FixContextFontEffect();
-	if (!GraphicsSystemActive() || !GetContextValidRect(NULL, &origin))
+	if (!GraphicsSystemActive() || !GetContextValidRect(nullptr, &origin))
 	{
 		return 0;
 	}
 
 	// TextRect() clobbers TEXT.CharCount so we have to make a copy
 	text = *lpText;
-	if (!TextRectAlt(&text, &ClipRect, NULL, swap, key, AltFontPtr))
+	if (!TextRectAlt(&text, &ClipRect, nullptr, swap, key, AltFontPtr))
 	{
 		return 0;
 	}
@@ -390,7 +390,7 @@ bool TextRect(TEXT* lpText, RECT* pRect, uqm::BYTE* pdelta)
 			}
 
 			charFrame = getCharFrame(FontPtr, ch);
-			if (charFrame != NULL && charFrame->disp.width)
+			if (charFrame != nullptr && charFrame->disp.width)
 			{
 				COORD y;
 
@@ -472,7 +472,7 @@ void _text_blt(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin)
 	DrawMode mode = _get_context_draw_mode();
 
 	FontPtr = _CurFontPtr;
-	if (FontPtr == NULL)
+	if (FontPtr == nullptr)
 	{
 		return;
 	}
@@ -513,7 +513,7 @@ void _text_blt(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin)
 		}
 
 		fontChar = getCharFrame(FontPtr, ch);
-		if (fontChar != NULL && fontChar->disp.width)
+		if (fontChar != nullptr && fontChar->disp.width)
 		{
 			RECT r;
 
@@ -555,7 +555,7 @@ void _text_blt_fade(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin, FRAME repai
 	DrawMode mode = _get_context_draw_mode();
 
 	FontPtr = _CurFontPtr;
-	if (FontPtr != NULL)
+	if (FontPtr != nullptr)
 	{
 		RECT r;
 		uqm::SIZE w, h;
@@ -620,7 +620,7 @@ void _text_blt_fade(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin, FRAME repai
 		}
 
 		fontChar = getCharFrame(FontPtr, ch);
-		if (fontChar != NULL && fontChar->disp.width)
+		if (fontChar != nullptr && fontChar->disp.width)
 		{
 			RECT r;
 
@@ -642,7 +642,7 @@ void _text_blt_fade(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin, FRAME repai
 				if (repair && !*skip)
 				{
 					TFB_DrawImage_Image(repair->image, -r.corner.x, -r.corner.y,
-										0, 0, NULL, DRAW_REPLACE_MODE, b_clear);
+										0, 0, nullptr, DRAW_REPLACE_MODE, b_clear);
 					TFB_Prim_FontChar(origin, fontChar, b_clear, MAKE_DRAW_MODE(DRAW_GRAYSCALE, 0xff),
 									  ctxOrigin);
 				}
@@ -768,7 +768,7 @@ bool TextRectAlt(TEXT* lpText, RECT* pRect, uqm::BYTE* pdelta, uqm::BYTE swap,
 				charFrame = getCharFrame(FontPtr, ch);
 			}
 
-			if (charFrame != NULL && charFrame->disp.width)
+			if (charFrame != nullptr && charFrame->disp.width)
 			{
 				COORD y;
 
@@ -857,7 +857,7 @@ _text_blt_alt(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin, uqm::BYTE swap,
 	uqm::BYTE leading_step;
 
 	FontPtr = _CurFontPtr;
-	if (FontPtr == NULL)
+	if (FontPtr == nullptr)
 	{
 		return 0;
 	}
@@ -867,7 +867,7 @@ _text_blt_alt(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin, uqm::BYTE swap,
 		return 0;
 	}
 
-	if (AltFontPtr != NULL)
+	if (AltFontPtr != nullptr)
 	{ // Local backing needed for alt font
 		// Create one
 		uqm::SIZE w, h;
@@ -940,7 +940,7 @@ _text_blt_alt(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin, uqm::BYTE swap,
 			origin.y = TextPtr->baseline.y + (swap ? leading_step : 0);
 		}
 
-		if (fontChar != NULL && fontChar->disp.width)
+		if (fontChar != nullptr && fontChar->disp.width)
 		{
 			RECT r;
 
@@ -986,9 +986,9 @@ getCharFrame(FONT_DESC* fontPtr, UniChar ch)
 	FONT_PAGE* page = fontPtr->fontPages;
 	for (;;)
 	{
-		if (page == NULL)
+		if (page == nullptr)
 		{
-			return NULL;
+			return nullptr;
 		}
 
 		if (page->pageStart == pageStart)
@@ -1008,6 +1008,6 @@ getCharFrame(FONT_DESC* fontPtr, UniChar ch)
 	else
 	{
 		//log_add (log_Debug, "Character %u not present", (unsigned int) ch);
-		return NULL;
+		return nullptr;
 	}
 }

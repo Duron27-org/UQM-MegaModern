@@ -55,7 +55,7 @@
 #include "nameref.h"
 #include "settings.h"
 #include "cons_res.h"
-#include <time.h> //required to use 'srand(time(NULL))'
+#include <time.h> //required to use 'srand(time(nullptr))'
 #include "sounds.h"
 
 volatile int MainExited = false;
@@ -204,7 +204,7 @@ void ProcessUtilityKeys(void)
 static void
 SetRandomMenuMusic(void)
 {
-	time_t t = time(NULL);
+	time_t t = time(nullptr);
 	struct tm tm = *localtime(&t);
 
 	srand(t);
@@ -343,11 +343,11 @@ int Starcon2Main(void* threadArg)
 
 		do
 		{
-			if (debugHook != NULL)
+			if (debugHook != nullptr)
 			{
 				void (*saveDebugHook)(void);
 				saveDebugHook = debugHook;
-				debugHook = NULL;
+				debugHook = nullptr;
 				// No further debugHook calls unless the called
 				// function resets debugHook.
 				(*saveDebugHook)();
@@ -413,7 +413,7 @@ int Starcon2Main(void* threadArg)
 				Battle(&on_battle_frame);
 			}
 
-			SetFlashRect(NULL, false);
+			SetFlashRect(nullptr, false);
 
 			LastActivity = GLOBAL(CurrentActivity);
 

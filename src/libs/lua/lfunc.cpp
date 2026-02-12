@@ -21,7 +21,7 @@
 
 Closure* luaF_newCclosure(lua_State* L, int n)
 {
-	Closure* c = &luaC_newobj(L, LUA_TCCL, sizeCclosure(n), NULL, 0)->cl;
+	Closure* c = &luaC_newobj(L, LUA_TCCL, sizeCclosure(n), nullptr, 0)->cl;
 	c->c.nupvalues = cast_byte(n);
 	return c;
 }
@@ -29,12 +29,12 @@ Closure* luaF_newCclosure(lua_State* L, int n)
 
 Closure* luaF_newLclosure(lua_State* L, int n)
 {
-	Closure* c = &luaC_newobj(L, LUA_TLCL, sizeLclosure(n), NULL, 0)->cl;
-	c->l.p = NULL;
+	Closure* c = &luaC_newobj(L, LUA_TLCL, sizeLclosure(n), nullptr, 0)->cl;
+	c->l.p = nullptr;
 	c->l.nupvalues = cast_byte(n);
 	while (n--)
 	{
-		c->l.upvals[n] = NULL;
+		c->l.upvals[n] = nullptr;
 	}
 	return c;
 }
@@ -42,7 +42,7 @@ Closure* luaF_newLclosure(lua_State* L, int n)
 
 UpVal* luaF_newupval(lua_State* L)
 {
-	UpVal* uv = &luaC_newobj(L, LUA_TUPVAL, sizeof(UpVal), NULL, 0)->uv;
+	UpVal* uv = &luaC_newobj(L, LUA_TUPVAL, sizeof(UpVal), nullptr, 0)->uv;
 	uv->v = &uv->u.value;
 	setnilvalue(uv->v);
 	return uv;
@@ -55,7 +55,7 @@ UpVal* luaF_findupval(lua_State* L, StkId level)
 	GCObject** pp = &L->openupval;
 	UpVal* p;
 	UpVal* uv;
-	while (*pp != NULL && (p = gco2uv(*pp))->v >= level)
+	while (*pp != nullptr && (p = gco2uv(*pp))->v >= level)
 	{
 		GCObject* o = obj2gco(p);
 		lua_assert(p->v != &p->u.value);
@@ -104,7 +104,7 @@ void luaF_close(lua_State* L, StkId level)
 {
 	UpVal* uv;
 	global_State* g = G(L);
-	while (L->openupval != NULL && (uv = gco2uv(L->openupval))->v >= level)
+	while (L->openupval != nullptr && (uv = gco2uv(L->openupval))->v >= level)
 	{
 		GCObject* o = obj2gco(uv);
 		lua_assert(!isblack(o) && uv->v != &uv->u.value);
@@ -128,26 +128,26 @@ void luaF_close(lua_State* L, StkId level)
 
 Proto* luaF_newproto(lua_State* L)
 {
-	Proto* f = &luaC_newobj(L, LUA_TPROTO, sizeof(Proto), NULL, 0)->p;
-	f->k = NULL;
+	Proto* f = &luaC_newobj(L, LUA_TPROTO, sizeof(Proto), nullptr, 0)->p;
+	f->k = nullptr;
 	f->sizek = 0;
-	f->p = NULL;
+	f->p = nullptr;
 	f->sizep = 0;
-	f->code = NULL;
-	f->cache = NULL;
+	f->code = nullptr;
+	f->cache = nullptr;
 	f->sizecode = 0;
-	f->lineinfo = NULL;
+	f->lineinfo = nullptr;
 	f->sizelineinfo = 0;
-	f->upvalues = NULL;
+	f->upvalues = nullptr;
 	f->sizeupvalues = 0;
 	f->numparams = 0;
 	f->is_vararg = 0;
 	f->maxstacksize = 0;
-	f->locvars = NULL;
+	f->locvars = nullptr;
 	f->sizelocvars = 0;
 	f->linedefined = 0;
 	f->lastlinedefined = 0;
-	f->source = NULL;
+	f->source = nullptr;
 	return f;
 }
 
@@ -166,7 +166,7 @@ void luaF_freeproto(lua_State* L, Proto* f)
 
 /*
 ** Look for n-th local variable at line `line' in function `func'.
-** Returns NULL if not found.
+** Returns nullptr if not found.
 */
 const char* luaF_getlocalname(const Proto* f, int local_number, int pc)
 {
@@ -182,5 +182,5 @@ const char* luaF_getlocalname(const Proto* f, int local_number, int pc)
 			}
 		}
 	}
-	return NULL; /* not found */
+	return nullptr; /* not found */
 }

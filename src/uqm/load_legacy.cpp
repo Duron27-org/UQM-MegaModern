@@ -447,7 +447,7 @@ static const GameStateBitMap legacyGameStateBitMap[] = {
 	{"ORZ_STACK1",				   1 },
 
 	/* end rev 0 */
-	{NULL,						  1 },
+	{nullptr,						  1 },
 	/* begin rev 1, was legacyGameStateBitMapHD */
 
 	{"AUTOPILOT_OK",				 1 },
@@ -455,7 +455,7 @@ static const GameStateBitMap legacyGameStateBitMap[] = {
 	{"KNOW_QS_PORTAL",			   16},
 
 	/* end rev 1, was legacyGameStateBitMapHD */
-	{NULL,						  0 },
+	{nullptr,						  0 },
 };
 
 // XXX: these should handle endian conversions later
@@ -532,7 +532,7 @@ cread_ptr(DECODE_REF fh)
 static inline uqm::COUNT
 cread_a8(DECODE_REF fh, uqm::BYTE* ar, uqm::COUNT count)
 {
-	assert(ar != NULL);
+	assert(ar != nullptr);
 	return cread(ar, 1, count, fh) == count;
 }
 
@@ -594,7 +594,7 @@ read_ptr(void* fp)
 static inline size_t
 read_a8(void* fp, uqm::BYTE* ar, uqm::COUNT count)
 {
-	assert(ar != NULL);
+	assert(ar != nullptr);
 	return ReadResFile(ar, 1, count, (uio_Stream*)fp) == count;
 }
 
@@ -608,7 +608,7 @@ read_str(void* fp, char* str, uqm::COUNT count)
 static inline size_t
 read_a16(void* fp, uqm::UWORD* ar, uqm::COUNT count)
 {
-	assert(ar != NULL);
+	assert(ar != nullptr);
 
 	for (; count > 0; --count, ++ar)
 	{
@@ -655,10 +655,10 @@ LoadShipQueue(DECODE_REF fh, QUEUE* pQueue)
 		FragPtr = LockShipFrag(pQueue, hStarShip);
 
 		// Read SHIP_FRAGMENT elements
-		cread_16(fh, NULL); /* unused: was which_side */
+		cread_16(fh, nullptr); /* unused: was which_side */
 		cread_8(fh, &FragPtr->captains_name_index);
-		cread_8(fh, NULL);	/* padding */
-		cread_16(fh, NULL); /* unused: was ship_flags */
+		cread_8(fh, nullptr);	/* padding */
+		cread_16(fh, nullptr); /* unused: was ship_flags */
 		cread_8(fh, &FragPtr->race_id);
 		cread_8(fh, &FragPtr->index);
 		// XXX: reading crew as uqm::BYTE to maintain savegame compatibility
@@ -668,8 +668,8 @@ LoadShipQueue(DECODE_REF fh, QUEUE* pQueue)
 		FragPtr->max_crew = tmpb;
 		cread_8(fh, &FragPtr->energy_level);
 		cread_8(fh, &FragPtr->max_energy);
-		cread_16(fh, NULL); /* unused; was loc.x */
-		cread_16(fh, NULL); /* unused; was loc.y */
+		cread_16(fh, nullptr); /* unused; was loc.x */
+		cread_16(fh, nullptr); /* unused; was loc.y */
 
 		UnlockShipFrag(pQueue, hStarShip);
 	}
@@ -715,7 +715,7 @@ LoadRaceQueue(DECODE_REF fh, QUEUE* pQueue)
 		cread_8(fh, &FleetPtr->func_index);
 		cread_16s(fh, &FleetPtr->dest_loc.x);
 		cread_16s(fh, &FleetPtr->dest_loc.y);
-		cread_16(fh, NULL); /* alignment padding */
+		cread_16(fh, nullptr); /* alignment padding */
 
 		UnlockFleetInfo(pQueue, hStarShip);
 	}
@@ -734,21 +734,21 @@ LoadGroupQueue(DECODE_REF fh, QUEUE* pQueue)
 		IP_GROUP* GroupPtr;
 		uqm::BYTE tmpb;
 
-		cread_16(fh, NULL); /* unused; was race_id */
+		cread_16(fh, nullptr); /* unused; was race_id */
 
 		hGroup = BuildGroup(pQueue, 0);
 		GroupPtr = LockIpGroup(pQueue, hGroup);
 
-		cread_16(fh, NULL); /* unused; was which_side */
-		cread_8(fh, NULL);	/* unused; was captains_name_index */
-		cread_8(fh, NULL);	/* padding; for savegame compat */
+		cread_16(fh, nullptr); /* unused; was which_side */
+		cread_8(fh, nullptr);	/* unused; was captains_name_index */
+		cread_8(fh, nullptr);	/* padding; for savegame compat */
 		cread_16(fh, &GroupPtr->group_counter);
 		cread_8(fh, &GroupPtr->race_id);
 		cread_8(fh, &tmpb); /* was var2 */
 		GroupPtr->sys_loc = LONIBBLE(tmpb);
 		GroupPtr->task = HINIBBLE(tmpb);
 		cread_8(fh, &GroupPtr->in_system); /* was crew_level */
-		cread_8(fh, NULL);				   /* unused; was max_crew */
+		cread_8(fh, nullptr);				   /* unused; was max_crew */
 		cread_8(fh, &tmpb);				   /* was energy_level */
 		GroupPtr->dest_loc = LONIBBLE(tmpb);
 		GroupPtr->orbit_pos = HINIBBLE(tmpb);
@@ -783,26 +783,26 @@ LoadEncounter(ENCOUNTER* EncounterPtr, DECODE_REF fh, bool try_vanilla)
 	cread_8(fh, &tmpb);
 	EncounterPtr->num_ships = tmpb & ENCOUNTER_SHIPS_MASK;
 	EncounterPtr->flags = tmpb & ENCOUNTER_FLAGS_MASK;
-	cread_16(fh, NULL); /* alignment padding */
+	cread_16(fh, nullptr); /* alignment padding */
 
 	// Load each entry in the BRIEF_SHIP_INFO array
 	for (i = 0; i < MAX_HYPER_SHIPS; i++)
 	{
 		BRIEF_SHIP_INFO* ShipInfo = &EncounterPtr->ShipList[i];
 
-		cread_16(fh, NULL); /* useless; was SHIP_INFO.ship_flags */
+		cread_16(fh, nullptr); /* useless; was SHIP_INFO.ship_flags */
 		cread_8(fh, &ShipInfo->race_id);
-		cread_8(fh, NULL); /* useless; was SHIP_INFO.var2 */
+		cread_8(fh, nullptr); /* useless; was SHIP_INFO.var2 */
 		// XXX: reading crew as uqm::BYTE to maintain savegame compatibility
 		cread_8(fh, &tmpb);
 		ShipInfo->crew_level = tmpb;
 		cread_8(fh, &tmpb);
 		ShipInfo->max_crew = tmpb;
-		cread_8(fh, NULL); /* useless; was SHIP_INFO.energy_level */
+		cread_8(fh, nullptr); /* useless; was SHIP_INFO.energy_level */
 		cread_8(fh, &ShipInfo->max_energy);
-		cread_16(fh, NULL); /* useless; was SHIP_INFO.loc.x */
-		cread_16(fh, NULL); /* useless; was SHIP_INFO.loc.y */
-		cread_32(fh, NULL); /* useless val; STRING race_strings */
+		cread_16(fh, nullptr); /* useless; was SHIP_INFO.loc.x */
+		cread_16(fh, nullptr); /* useless; was SHIP_INFO.loc.y */
+		cread_32(fh, nullptr); /* useless val; STRING race_strings */
 		cread_ptr(fh);		/* useless ptr; FRAME icons */
 		cread_ptr(fh);		/* useless ptr; FRAME melee_icon */
 	}
@@ -834,8 +834,8 @@ LoadEvent(EVENT* EventPtr, DECODE_REF fh)
 	cread_8(fh, &EventPtr->month_index);
 	cread_16(fh, &EventPtr->year_index);
 	cread_8(fh, &EventPtr->func_index);
-	cread_8(fh, NULL);	/* padding */
-	cread_16(fh, NULL); /* padding */
+	cread_8(fh, nullptr);	/* padding */
+	cread_16(fh, nullptr); /* padding */
 }
 
 static void
@@ -851,12 +851,12 @@ DummyLoadQueue(QUEUE* QueuePtr, DECODE_REF fh)
 	cread_ptr(fh);		/* HLINK tail */
 	cread_ptr(fh);		/* uqm::BYTE* pq_tab */
 	cread_ptr(fh);		/* HLINK free_list */
-	cread_16(fh, NULL); /* MEM_HANDLE hq_tab */
-	cread_16(fh, NULL); /* uqm::COUNT object_size */
-	cread_8(fh, NULL);	/* uqm::BYTE num_objects */
+	cread_16(fh, nullptr); /* MEM_HANDLE hq_tab */
+	cread_16(fh, nullptr); /* uqm::COUNT object_size */
+	cread_8(fh, nullptr);	/* uqm::BYTE num_objects */
 
-	cread_8(fh, NULL);	/* padding */
-	cread_16(fh, NULL); /* padding */
+	cread_8(fh, nullptr);	/* padding */
+	cread_16(fh, nullptr); /* padding */
 }
 
 static void
@@ -869,7 +869,7 @@ LoadClockState(CLOCK_STATE* ClockPtr, DECODE_REF fh)
 	cread_16s(fh, &ClockPtr->day_in_ticks);
 	cread_ptr(fh);		/* not loading ptr; Semaphore clock_sem */
 	cread_ptr(fh);		/* not loading ptr; Task clock_task */
-	cread_32(fh, NULL); /* not loading; uqm::DWORD TimeCounter */
+	cread_32(fh, nullptr); /* not loading; uqm::DWORD TimeCounter */
 
 	DummyLoadQueue(&ClockPtr->event_q, fh);
 }
@@ -904,7 +904,7 @@ LoadGameState(GAME_STATE* GSPtr, DECODE_REF fh, bool vanilla)
 	cread_ptr(fh); /* not loading ptr; PRIMITIVE *DisplayArray */
 	cread_16(fh, &GSPtr->CurrentActivity);
 
-	cread_16(fh, NULL); /* CLOCK_STATE alignment padding */
+	cread_16(fh, nullptr); /* CLOCK_STATE alignment padding */
 	LoadClockState(&GSPtr->GameClock, fh);
 
 	cread_16s(fh, &GSPtr->autopilot.x);
@@ -932,7 +932,7 @@ LoadGameState(GAME_STATE* GSPtr, DECODE_REF fh, bool vanilla)
 	cread_16s(fh, &GSPtr->velocity.error.height);
 	cread_16s(fh, &GSPtr->velocity.incr.width);
 	cread_16s(fh, &GSPtr->velocity.incr.height);
-	cread_16(fh, NULL); /* VELOCITY_DESC padding */
+	cread_16(fh, nullptr); /* VELOCITY_DESC padding */
 
 	// JMS: Let's make savegames work even between different resolution modes.
 	if (lowByte(GSPtr->CurrentActivity) != IN_INTERPLANETARY)
@@ -964,7 +964,7 @@ LoadGameState(GAME_STATE* GSPtr, DECODE_REF fh, bool vanilla)
 						   + 7)
 					   >> 3;
 		uqm::BYTE* buf = (uqm::BYTE*)HMalloc(numBytes);
-		if (buf != NULL)
+		if (buf != nullptr)
 		{
 			cread_a8(fh, buf, (uqm::COUNT)numBytes);
 			deserialiseGameState(
@@ -981,7 +981,7 @@ LoadGameState(GAME_STATE* GSPtr, DECODE_REF fh, bool vanilla)
 	ZeroAdvancedAutoPilot();
 	ZeroAdvancedQuasiPilot();
 
-	cread_8(fh, NULL); /* GAME_STATE alignment padding */
+	cread_8(fh, nullptr); /* GAME_STATE alignment padding */
 
 	return true;
 }
@@ -994,7 +994,7 @@ LoadSisState(SIS_STATE* SSPtr, void* fp)
 
 		read_str(fp, SSPtr->ShipName, LEGACY_SIS_NAME_SIZE) != 1 || read_str(fp, SSPtr->CommanderName, LEGACY_SIS_NAME_SIZE) != 1 || read_str(fp, SSPtr->PlanetName, LEGACY_SIS_NAME_SIZE) != 1 ||
 
-		read_16(fp, NULL) != 1 /* padding */
+		read_16(fp, nullptr) != 1 /* padding */
 	)
 	{
 		return false;
@@ -1095,7 +1095,7 @@ LoadSummary(SUMMARY_DESC* SummPtr, void* fp, bool try_vanilla)
 	if (
 		read_8(fp, &SummPtr->Activity) != 1 || read_8(fp, &SummPtr->Flags) != 1 || read_8(fp, &SummPtr->day_index) != 1 || read_8(fp, &SummPtr->month_index) != 1 || read_16(fp, &SummPtr->year_index) != 1 || read_8(fp, &SummPtr->MCreditLo) != 1 || read_8(fp, &SummPtr->MCreditHi) != 1 || read_8(fp, &SummPtr->NumShips) != 1 || read_8(fp, &SummPtr->NumDevices) != 1 || read_a8(fp, SummPtr->ShipList, MAX_BUILT_SHIPS) != 1 || read_a8(fp, SummPtr->DeviceList, MAX_EXCLUSIVE_DEVICES) != 1 || read_8(fp, &SummPtr->res_factor) != 1 || // JMS: This'll help making saves between different resolutions compatible.
 
-		read_8(fp, NULL) != 1 /* padding */
+		read_8(fp, nullptr) != 1 /* padding */
 	)
 	{
 		LegacyResFactor = !try_vanilla ? SummPtr->res_factor : 0;
@@ -1107,7 +1107,7 @@ LoadSummary(SUMMARY_DESC* SummPtr, void* fp, bool try_vanilla)
 		// added res_factor in SummPtr.
 		if (!try_vanilla)
 		{
-			read_8(fp, NULL); /* padding */
+			read_8(fp, nullptr); /* padding */
 		}
 
 		return true;
@@ -1206,7 +1206,7 @@ bool LoadLegacyGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, bool try_vanil
 
 		if (!try_vanilla)
 		{
-			LoadLegacyGame(which_game, NULL, true);
+			LoadLegacyGame(which_game, nullptr, true);
 			return true;
 		}
 		else
@@ -1382,7 +1382,7 @@ bool LoadLegacyGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, bool try_vanil
 
 	ReinitQueue(&race_q[0]);
 	ReinitQueue(&race_q[1]);
-	CurStarDescPtr = FindStar(NULL, &SD.star_pt, 0, 0);
+	CurStarDescPtr = FindStar(nullptr, &SD.star_pt, 0, 0);
 
 	legacySave = true;
 

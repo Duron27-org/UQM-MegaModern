@@ -54,7 +54,7 @@
 // called and the localReset and remoteReset flags are cleared.
 // - conn->stateFlags.reset.localReset is set
 // - conn->stateFlags.reset.remoteReset is set
-// - the reset callback is non-NULL.
+// - the reset callback is non-nullptr.
 //
 // Elsewhere in the UQM source:
 // When the local side causes a reset, it calls Netplay_localReset().
@@ -98,7 +98,7 @@ Netplay_doConnectionResetCallback(NetConnection* conn)
 	callback = conn->resetCallback;
 	resetArg = conn->resetCallbackArg;
 
-	NetConnection_setResetCallback(conn, NULL, NULL);
+	NetConnection_setResetCallback(conn, nullptr, nullptr);
 	// Clear the resetCallback field before performing the callback,
 	// so that it can be set again from inside the callback
 	// function.
@@ -108,7 +108,7 @@ Netplay_doConnectionResetCallback(NetConnection* conn)
 static void
 Netplay_resetConditionTriggered(NetConnection* conn)
 {
-	if (conn->resetCallback == NULL)
+	if (conn->resetCallback == nullptr)
 	{
 		return;
 	}

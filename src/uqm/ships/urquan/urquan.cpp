@@ -76,7 +76,7 @@ static RACE_DESC urquan_desc =
 		 URQUAN_RACE_STRINGS,
 		 URQUAN_ICON_MASK_PMAP_ANIM,
 		 URQUAN_MICON_MASK_PMAP_ANIM,
-		 NULL, NULL, NULL},
+		 nullptr, nullptr, nullptr},
 		{
 			/* FLEET_STUFF */
 			2666 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
@@ -115,24 +115,24 @@ static RACE_DESC urquan_desc =
 			 FIGHTER_SML_MASK_PMAP_ANIM,
 		 },
 		 {URQUAN_CAPTAIN_MASK_PMAP_ANIM,
-		  NULL, NULL, NULL, NULL, NULL,
+		  nullptr, nullptr, nullptr, nullptr, nullptr,
 		  0, 0, 0, 0, 0},
 		 URQUAN_VICTORY_SONG,
 		 URQUAN_SHIP_SOUNDS,
-		 {NULL, NULL, NULL},
-		 {NULL, NULL, NULL},
-		 {NULL, NULL, NULL},
-		 NULL,
-		 NULL},
+		 {nullptr, nullptr, nullptr},
+		 {nullptr, nullptr, nullptr},
+		 {nullptr, nullptr, nullptr},
+		 nullptr,
+		 nullptr},
 		{
 			0,
 			MISSILE_SPEED* MISSILE_LIFE,
-			NULL,
+			nullptr,
 		 },
-		(UNINIT_FUNC*)NULL,
-		(PREPROCESS_FUNC*)NULL,
-		(POSTPROCESS_FUNC*)NULL,
-		(INIT_WEAPON_FUNC*)NULL,
+		(UNINIT_FUNC*)nullptr,
+		(PREPROCESS_FUNC*)nullptr,
+		(POSTPROCESS_FUNC*)nullptr,
+		(INIT_WEAPON_FUNC*)nullptr,
 		0,
 		0, /* CodeRef */
 };
@@ -155,7 +155,7 @@ initialize_fusion(ELEMENT* ShipPtr, HELEMENT FusionArray[])
 	MissileBlock.hit_points = MISSILE_HITS;
 	MissileBlock.damage = MISSILE_DAMAGE;
 	MissileBlock.life = MISSILE_LIFE;
-	MissileBlock.preprocess_func = NULL;
+	MissileBlock.preprocess_func = nullptr;
 	MissileBlock.blast_offs = MISSILE_OFFSET;
 	FusionArray[0] = initialize_missile(&MissileBlock);
 
@@ -522,7 +522,7 @@ spawn_fighters(ELEMENT* ElementPtr)
 			FighterElementPtr->preprocess_func = fighter_preprocess;
 			FighterElementPtr->postprocess_func = 0;
 			FighterElementPtr->collision_func = fighter_collision;
-			FighterElementPtr->death_func = NULL;
+			FighterElementPtr->death_func = nullptr;
 		}
 
 		FighterElementPtr->current.location = ElementPtr->next.location;
@@ -585,7 +585,7 @@ urquan_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 
 	lpEvalDesc = &ObjectsOfConcern[ENEMY_SHIP_INDEX];
 	{
-		STARSHIP* EnemyStarShipPtr = NULL;
+		STARSHIP* EnemyStarShipPtr = nullptr;
 
 		if (lpEvalDesc->ObjectPtr)
 		{

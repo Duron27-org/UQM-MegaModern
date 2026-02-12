@@ -82,7 +82,7 @@ void PlaySound(SOUND S, SoundPosition Pos, ELEMENT* PositionalObject,
 void PlayMenuSound(MENU_SOUND_EFFECT S)
 {
 	PlaySoundEffect(SetAbsSoundIndex(MenuSounds, S),
-					0, NotPositional(), NULL,
+					0, NotPositional(), nullptr,
 					GAME_SOUND_PRIORITY);
 }
 
@@ -106,7 +106,7 @@ CalcSoundPosition(ELEMENT* ElementPtr)
 {
 	SoundPosition pos;
 
-	if (ElementPtr == NULL)
+	if (ElementPtr == nullptr)
 	{
 		pos.x = pos.y = 0;
 		pos.positional = false;
@@ -140,7 +140,7 @@ CalcSoundPosition(ELEMENT* ElementPtr)
 SoundPosition
 NotPositional(void)
 {
-	return CalcSoundPosition(NULL);
+	return CalcSoundPosition(nullptr);
 }
 
 /* Updates positional sound effects */
@@ -157,7 +157,7 @@ void UpdateSoundPositions(void)
 		}
 
 		posobj = (ELEMENT*)GetPositionalObject(i);
-		if (posobj != NULL)
+		if (posobj != nullptr)
 		{
 			SoundPosition pos;
 			pos = CalcSoundPosition(posobj);
@@ -195,7 +195,7 @@ void RemoveSoundsForObject(ELEMENT* PosObj)
 	{
 		if (GetPositionalObject(i) == PosObj)
 		{
-			SetPositionalObject(i, NULL);
+			SetPositionalObject(i, nullptr);
 		}
 	}
 
@@ -203,7 +203,7 @@ void RemoveSoundsForObject(ELEMENT* PosObj)
 	{
 		if (sound_posobj[i] == PosObj)
 		{
-			sound_posobj[i] = NULL;
+			sound_posobj[i] = nullptr;
 		}
 	}
 }

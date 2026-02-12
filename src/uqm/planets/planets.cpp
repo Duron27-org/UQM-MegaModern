@@ -67,7 +67,7 @@ void DestroyOrbitStruct(PLANET_ORBIT* Orbit, uqm::SIZE height)
 	if (Orbit->lpTopoData)
 	{
 		HFree(Orbit->lpTopoData);
-		Orbit->lpTopoData = NULL;
+		Orbit->lpTopoData = nullptr;
 	}
 
 	DestroyDrawable(ReleaseDrawable(Orbit->SphereFrame));
@@ -84,7 +84,7 @@ void DestroyOrbitStruct(PLANET_ORBIT* Orbit, uqm::SIZE height)
 	if (Orbit->TopoColors)
 	{
 		HFree(Orbit->TopoColors);
-		Orbit->TopoColors = NULL;
+		Orbit->TopoColors = nullptr;
 	}
 
 	if (Orbit->ScanColors)
@@ -93,16 +93,16 @@ void DestroyOrbitStruct(PLANET_ORBIT* Orbit, uqm::SIZE height)
 		for (i = 0; i < NUM_SCAN_TYPES; i++)
 		{
 			HFree(Orbit->ScanColors[i]);
-			Orbit->ScanColors[i] = NULL;
+			Orbit->ScanColors[i] = nullptr;
 		}
 		HFree(Orbit->ScanColors);
-		Orbit->ScanColors = NULL;
+		Orbit->ScanColors = nullptr;
 	}
 
 	if (Orbit->ScratchArray)
 	{
 		HFree(Orbit->ScratchArray);
-		Orbit->ScratchArray = NULL;
+		Orbit->ScratchArray = nullptr;
 	}
 
 	DestroyDrawable(ReleaseDrawable(Orbit->WorkFrame));
@@ -117,10 +117,10 @@ void DestroyOrbitStruct(PLANET_ORBIT* Orbit, uqm::SIZE height)
 		for (j = 0; j < height; j++)
 		{
 			HFree(Orbit->light_diff[j]);
-			Orbit->light_diff[j] = NULL;
+			Orbit->light_diff[j] = nullptr;
 		}
 		HFree(Orbit->light_diff);
-		Orbit->light_diff = NULL;
+		Orbit->light_diff = nullptr;
 	}
 
 	if (Orbit->map_rotate)
@@ -129,10 +129,10 @@ void DestroyOrbitStruct(PLANET_ORBIT* Orbit, uqm::SIZE height)
 		for (k = 0; k < height; k++)
 		{
 			HFree(Orbit->map_rotate[k]);
-			Orbit->map_rotate[k] = NULL;
+			Orbit->map_rotate[k] = nullptr;
 		}
 		HFree(Orbit->map_rotate);
-		Orbit->map_rotate = NULL;
+		Orbit->map_rotate = nullptr;
 	}
 
 	DestroyDrawable(ReleaseDrawable(Orbit->TopoMask));
@@ -141,7 +141,7 @@ void DestroyOrbitStruct(PLANET_ORBIT* Orbit, uqm::SIZE height)
 	if (Orbit->sphereBytes)
 	{
 		HFree(Orbit->sphereBytes);
-		Orbit->sphereBytes = NULL;
+		Orbit->sphereBytes = nullptr;
 	}
 
 	DestroyColorMap(ReleaseColorMap(Orbit->sphereMap));
@@ -155,7 +155,7 @@ void DestroyOrbitStruct(PLANET_ORBIT* Orbit, uqm::SIZE height)
 	if (Orbit->ShadeColors)
 	{
 		HFree(Orbit->ShadeColors);
-		Orbit->ShadeColors = NULL;
+		Orbit->ShadeColors = nullptr;
 	}
 }
 
@@ -166,7 +166,7 @@ CreatePlanetContext(void)
 	CONTEXT oldContext;
 	RECT r;
 
-	assert(PlanetContext == NULL);
+	assert(PlanetContext == nullptr);
 
 	// PlanetContext rect is relative to SpaceContext
 	oldContext = SetContext(SpaceContext);
@@ -187,7 +187,7 @@ DestroyPlanetContext(void)
 	if (PlanetContext)
 	{
 		DestroyContext(PlanetContext);
-		PlanetContext = NULL;
+		PlanetContext = nullptr;
 	}
 }
 
@@ -350,7 +350,7 @@ DrawEnterOrbitText(RECT rect)
 	text.pStr = strtok(buf, "\n");
 	text.CharCount = (uqm::COUNT)~0;
 
-	while (text.pStr != NULL)
+	while (text.pStr != nullptr)
 	{
 		text.pStr = AlignText((const uqm::CHAR_T*)text.pStr,
 							  &text.baseline.x);
@@ -358,7 +358,7 @@ DrawEnterOrbitText(RECT rect)
 
 		font_DrawText(&text);
 
-		text.pStr = strtok(NULL, "\n");
+		text.pStr = strtok(nullptr, "\n");
 		text.CharCount = (uqm::COUNT)~0;
 		text.baseline.y += leading;
 		text.baseline.x = og_baseline_x;
@@ -372,7 +372,7 @@ void DrawOrbitMapGraphic(void)
 {
 	STAMP s;
 
-	SetContext(GetScanContext(NULL));
+	SetContext(GetScanContext(nullptr));
 
 	if (optScanSphere != 1)
 	{
@@ -423,7 +423,7 @@ void DrawOrbitMapGraphic(void)
 
 		pPlanetDesc = pSolarSysState->pOrbitalDesc;
 		GeneratePlanetSurface (
-			pPlanetDesc, NULL, PlanetScale, PlanetScale);
+			pPlanetDesc, nullptr, PlanetScale, PlanetScale);
 		ss.origin.x = RES_SCALE (ORIG_SIS_SCREEN_WIDTH >> 1);
 		ss.origin.y = RES_SCALE (191);
 
@@ -450,9 +450,9 @@ DrawOrbitalDisplay(DRAW_ORBITAL_MODE Mode)
 
 	if (Mode != DRAW_ORBITAL_UPDATE)
 	{
-		SetTransitionSource(NULL);
+		SetTransitionSource(nullptr);
 		DrawSISFrame();
-		DrawSISMessage(NULL);
+		DrawSISMessage(nullptr);
 		DrawSISTitle(GLOBAL_SIS(PlanetName));
 		DrawStarBackGround();
 		DrawPlanetSurfaceBorder();
@@ -484,7 +484,7 @@ DrawOrbitalDisplay(DRAW_ORBITAL_MODE Mode)
 
 	if (Mode != DRAW_ORBITAL_WAIT)
 	{
-		SetContext(GetScanContext(NULL));
+		SetContext(GetScanContext(nullptr));
 		DrawPlanet(0, BLACK_COLOR);
 		if (isPC(optSuperPC))
 		{
@@ -638,9 +638,9 @@ void LoadStdLanderFont(PLANET_INFO* info)
 void FreeLanderFont(PLANET_INFO* info)
 {
 	DestroyFont(info->LanderFont);
-	info->LanderFont = NULL;
+	info->LanderFont = nullptr;
 	DestroyDrawable(ReleaseDrawable(info->LanderFontEff));
-	info->LanderFontEff = NULL;
+	info->LanderFontEff = nullptr;
 }
 
 static bool
@@ -667,7 +667,7 @@ DoPlanetOrbit(MENU_STATE* pMS)
 		return true;
 	}
 
-	SetFlashRect(NULL, false);
+	SetFlashRect(nullptr, false);
 
 	switch (pMS->CurState)
 	{
@@ -705,7 +705,7 @@ DoPlanetOrbit(MENU_STATE* pMS)
 				InputFrameCallback* oldCallback;
 
 				// Deactivate planet rotation
-				oldCallback = SetInputCallback(NULL);
+				oldCallback = SetInputCallback(nullptr);
 
 				RepairSISBorder();
 
@@ -753,7 +753,7 @@ on_input_frame(void)
 {
 	if (!(GLOBAL(CurrentActivity) & CHECK_ABORT))
 	{
-		RotatePlanetSphere(true, NULL);
+		RotatePlanetSphere(true, nullptr);
 	}
 }
 
@@ -775,7 +775,7 @@ void PlanetOrbitMenu(void)
 
 	SetInputCallback(oldCallback);
 
-	SetFlashRect(NULL, false);
+	SetFlashRect(nullptr, false);
 	if (!(GLOBAL(CurrentActivity) & CHECK_LOAD))
 	{
 		DrawMenuStateStrings(PM_STARMAP, -NAVIGATION);

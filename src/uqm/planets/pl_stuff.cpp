@@ -232,7 +232,7 @@ void UninitSphereRotation(void)
 	{
 		DestroyDrawable(ReleaseDrawable(Orbit->ObjectFrame));
 		Orbit->ObjectFrame = Orbit->WorkFrame;
-		Orbit->WorkFrame = NULL;
+		Orbit->WorkFrame = nullptr;
 	}
 }
 
@@ -537,7 +537,7 @@ renderTintFrame(Color tintColor)
 
 	oldContext = SetContext(OffScreenContext);
 	SetContextFGFrame(Orbit->TintFrame);
-	SetContextClipRect(NULL);
+	SetContextClipRect(nullptr);
 	// get the rect of the whole context (or our frame really)
 	GetContextClipRect(&r);
 

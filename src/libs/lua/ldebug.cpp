@@ -29,7 +29,7 @@
 #include "lvm.h"
 
 
-#define noLuaClosure(f) ((f) == NULL || (f)->c.tt == LUA_TCCL)
+#define noLuaClosure(f) ((f) == nullptr || (f)->c.tt == LUA_TCCL)
 
 
 static const char* getfuncname(lua_State* L, CallInfo* ci, const char** name);
@@ -53,10 +53,10 @@ static int currentline(CallInfo* ci)
 */
 LUA_API int lua_sethook(lua_State* L, lua_Hook func, int mask, int count)
 {
-	if (func == NULL || mask == 0)
+	if (func == nullptr || mask == 0)
 	{ /* turn off hooks? */
 		mask = 0;
-		func = NULL;
+		func = nullptr;
 	}
 	if (isLua(L->ci))
 	{
@@ -118,7 +118,7 @@ LUA_API int lua_getstack(lua_State* L, int level, lua_Debug* ar)
 static const char* upvalname(Proto* p, int uv)
 {
 	TString* s = check_exp(uv < p->sizeupvalues, p->upvalues[uv].name);
-	if (s == NULL)
+	if (s == nullptr)
 	{
 		return "?";
 	}
@@ -134,7 +134,7 @@ static const char* findvararg(CallInfo* ci, int n, StkId* pos)
 	int nparams = clLvalue(ci->func)->p->numparams;
 	if (n >= ci->u.l.base - ci->func - nparams)
 	{
-		return NULL; /* no such vararg */
+		return nullptr; /* no such vararg */
 	}
 	else
 	{
@@ -147,7 +147,7 @@ static const char* findvararg(CallInfo* ci, int n, StkId* pos)
 static const char* findlocal(lua_State* L, CallInfo* ci, int n,
 							 StkId* pos)
 {
-	const char* name = NULL;
+	const char* name = nullptr;
 	StkId base;
 	if (isLua(ci))
 	{
@@ -165,7 +165,7 @@ static const char* findlocal(lua_State* L, CallInfo* ci, int n,
 	{
 		base = ci->func + 1;
 	}
-	if (name == NULL)
+	if (name == nullptr)
 	{ /* no 'standard' name? */
 		StkId limit = (ci == L->ci) ? L->top : ci->next->func;
 		if (limit - base >= n && n > 0) /* is 'n' inside 'ci' stack? */
@@ -174,7 +174,7 @@ static const char* findlocal(lua_State* L, CallInfo* ci, int n,
 		}
 		else
 		{
-			return NULL; /* no name */
+			return nullptr; /* no name */
 		}
 	}
 	*pos = base + (n - 1);
@@ -186,11 +186,11 @@ LUA_API const char* lua_getlocal(lua_State* L, const lua_Debug* ar, int n)
 {
 	const char* name;
 	lua_lock(L);
-	if (ar == NULL)
+	if (ar == nullptr)
 	{								  /* information about non-active function? */
 		if (!isLfunction(L->top - 1)) /* not a Lua function? */
 		{
-			name = NULL;
+			name = nullptr;
 		}
 		else /* consider live variables at function start (parameters) */
 		{
@@ -292,7 +292,7 @@ static int auxgetinfo(lua_State* L, const char* what, lua_Debug* ar,
 				}
 			case 'u':
 				{
-					ar->nups = (f == NULL) ? 0 : f->c.nupvalues;
+					ar->nups = (f == nullptr) ? 0 : f->c.nupvalues;
 					if (noLuaClosure(f))
 					{
 						ar->isvararg = 1;
@@ -319,12 +319,12 @@ static int auxgetinfo(lua_State* L, const char* what, lua_Debug* ar,
 					}
 					else
 					{
-						ar->namewhat = NULL;
+						ar->namewhat = nullptr;
 					}
-					if (ar->namewhat == NULL)
+					if (ar->namewhat == nullptr)
 					{
 						ar->namewhat = ""; /* not found */
-						ar->name = NULL;
+						ar->name = nullptr;
 					}
 					break;
 				}
@@ -348,7 +348,7 @@ LUA_API int lua_getinfo(lua_State* L, const char* what, lua_Debug* ar)
 	lua_lock(L);
 	if (*what == '>')
 	{
-		ci = NULL;
+		ci = nullptr;
 		func = L->top - 1;
 		api_check(L, ttisfunction(func), "function expected");
 		what++;	  /* skip the '>' */
@@ -360,7 +360,7 @@ LUA_API int lua_getinfo(lua_State* L, const char* what, lua_Debug* ar)
 		func = ci->func;
 		lua_assert(ttisfunction(ci->func));
 	}
-	cl = ttisclosure(func) ? clvalue(func) : NULL;
+	cl = ttisclosure(func) ? clvalue(func) : nullptr;
 	status = auxgetinfo(L, what, ar, cl, ci);
 	if (strchr(what, 'f'))
 	{
@@ -546,10 +546,10 @@ static const char* getobjname(Proto* p, int lastpc, int reg,
 					return "method";
 				}
 			default:
-				break; /* go through to return NULL */
+				break; /* go through to return nullptr */
 		}
 	}
-	return NULL; /* could not find reasonable name */
+	return nullptr; /* could not find reasonable name */
 }
 
 
@@ -616,7 +616,7 @@ static const char* getfuncname(lua_State* L, CallInfo* ci, const char** name)
 			tm = TM_CONCAT;
 			break;
 		default:
-			return NULL; /* else no useful name can be found */
+			return nullptr; /* else no useful name can be found */
 	}
 	*name = getstr(G(L)->tmname[tm]);
 	return "metamethod";
@@ -656,16 +656,16 @@ static const char* getupvalname(CallInfo* ci, const TValue* o,
 			return "upvalue";
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 
 l_noret luaG_typeerror(lua_State* L, const TValue* o, const char* op)
 {
 	CallInfo* ci = L->ci;
-	const char* name = NULL;
+	const char* name = nullptr;
 	const char* t = objtypename(o);
-	const char* kind = NULL;
+	const char* kind = nullptr;
 	if (isLua(ci))
 	{
 		kind = getupvalname(ci, o, &name); /* check whether 'o' is an upvalue */
@@ -701,7 +701,7 @@ l_noret luaG_concaterror(lua_State* L, StkId p1, StkId p2)
 l_noret luaG_aritherror(lua_State* L, const TValue* p1, const TValue* p2)
 {
 	TValue temp;
-	if (luaV_tonumber(p1, &temp) == NULL)
+	if (luaV_tonumber(p1, &temp) == nullptr)
 	{
 		p2 = p1; /* first operand is wrong */
 	}

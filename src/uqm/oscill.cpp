@@ -58,7 +58,7 @@ void InitOscilloscope(FRAME scopeBg)
 void UninitOscilloscope(void)
 {
 	DestroyDrawable(ReleaseDrawable(scopeWork));
-	scopeWork = NULL;
+	scopeWork = nullptr;
 	scope_init = 0;
 }
 
@@ -97,7 +97,7 @@ void DrawOscilloscopeLines(STAMP* s, uint8* scope_data, bool nonStop, bool toSca
 
 	oldContext = SetContext(OffScreenContext);
 	SetContextFGFrame(scopeWork);
-	SetContextClipRect(NULL);
+	SetContextClipRect(nullptr);
 
 	// draw the background image
 	s->origin.x = 0;
@@ -183,7 +183,7 @@ void DrawOscilloscope(void)
 	}
 	else
 	{
-		DrawOscilloscopeLines(&s, NULL, false, false);
+		DrawOscilloscopeLines(&s, nullptr, false, false);
 	}
 
 	// draw the final scope image to screen
@@ -201,7 +201,7 @@ void FlattenOscilloscope(void)
 
 	OldContext = SetContext(RadarContext);
 
-	DrawOscilloscopeLines(&s, NULL, false, false);
+	DrawOscilloscopeLines(&s, nullptr, false, false);
 	s.origin = MAKE_POINT(0, 0);
 	DrawStamp(&s);
 	SetContext(OldContext);

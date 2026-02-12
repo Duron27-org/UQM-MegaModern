@@ -162,11 +162,11 @@ typedef struct ITNOTE
 
 /*========== Loader data */
 
-static ULONG* paraptr = NULL; /* parapointer array (see IT docs) */
-static ITHEADER* mh = NULL;
-static ITNOTE* itpat = NULL; /* allocate to space for one full pattern */
-static UBYTE* mask = NULL;	 /* arrays allocated to 64 elements and used for */
-static ITNOTE* last = NULL;	 /* uncompressing IT's pattern information */
+static ULONG* paraptr = nullptr; /* parapointer array (see IT docs) */
+static ITHEADER* mh = nullptr;
+static ITNOTE* itpat = nullptr; /* allocate to space for one full pattern */
+static UBYTE* mask = nullptr;	 /* arrays allocated to 64 elements and used for */
+static ITNOTE* last = nullptr;	 /* uncompressing IT's pattern information */
 static int numtrk = 0;
 static unsigned int old_effect; /* if set, use S3M old-effects stuffs */
 
@@ -236,13 +236,13 @@ static void IT_Cleanup(void)
 	MikMod_free(last);
 	MikMod_free(paraptr);
 	MikMod_free(origpositions);
-	mh = NULL;
-	poslookup = NULL;
-	itpat = NULL;
-	mask = NULL;
-	last = NULL;
-	paraptr = NULL;
-	origpositions = NULL;
+	mh = nullptr;
+	poslookup = nullptr;
+	itpat = nullptr;
+	mask = nullptr;
+	last = nullptr;
+	paraptr = nullptr;
+	origpositions = nullptr;
 }
 
 /* Because so many IT files have 64 channels as the set number used, but really
@@ -342,7 +342,7 @@ static UBYTE* IT_ConvertTrack(ITNOTE* tr, UWORD numrows)
 		else if (ins != 255)
 		{ /* crap */
 			_mm_errno = MMERR_LOADING_PATTERN;
-			return NULL;
+			return nullptr;
 		}
 
 		/* process volume / panning column
@@ -387,7 +387,7 @@ static UBYTE* IT_ConvertTrack(ITNOTE* tr, UWORD numrows)
 		else if (volpan <= 127)
 		{ /* crap */
 			_mm_errno = MMERR_LOADING_PATTERN;
-			return NULL;
+			return nullptr;
 		}
 		else if (volpan <= 192)
 		{
@@ -404,7 +404,7 @@ static UBYTE* IT_ConvertTrack(ITNOTE* tr, UWORD numrows)
 		else if ((volpan != 239) && (volpan != 255))
 		{ /* crap */
 			_mm_errno = MMERR_LOADING_PATTERN;
-			return NULL;
+			return nullptr;
 		}
 
 		S3MIT_ProcessCmd(tr[t * of.numchn].cmd, tr[t * of.numchn].inf,
@@ -791,7 +791,7 @@ static BOOL IT_Load(BOOL curious)
 		}
 		else
 		{
-			IT_LoadMidiConfiguration(NULL);
+			IT_LoadMidiConfiguration(nullptr);
 		}
 		filters = 1;
 	}
@@ -1341,7 +1341,7 @@ static CHAR* IT_LoadTitle(void)
 	_mm_fseek(modreader, 4, SEEK_SET);
 	if (!_mm_read_UBYTES(s, 26, modreader))
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	return (DupStr(s, 26, 0));
@@ -1350,7 +1350,7 @@ static CHAR* IT_LoadTitle(void)
 /*========== Loader information */
 
 MIKMODAPI MLOADER load_it = {
-	NULL,
+	nullptr,
 	"IT",
 	"IT (Impulse Tracker)",
 	IT_Init,

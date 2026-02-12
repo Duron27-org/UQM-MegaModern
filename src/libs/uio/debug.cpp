@@ -137,7 +137,7 @@ debugMountOne(uio_Repository* destRep, const char* mountPoint,
 
 	mountHandle = uio_mountDir(destRep, mountPoint, fsType, sourceDir,
 							   sourcePath, inPath, autoMount, flags, relative);
-	if (mountHandle == NULL)
+	if (mountHandle == nullptr)
 	{
 		int savedErrno = errno;
 		fprintf(stderr, "Could not mount '%s' and graft '%s' from that "
@@ -157,7 +157,7 @@ void initRepository(void)
 		.mountFlags = uio_MOUNT_BELOW | uio_MOUNT_RDONLY};
 	static uio_AutoMount* autoMount[] = {
 		&autoMountZip,
-		NULL};
+		nullptr};
 
 	uio_init();
 	repository = uio_openRepository(0);
@@ -165,32 +165,32 @@ void initRepository(void)
 	memset(&mountHandles, '\0', sizeof mountHandles);
 #if 1
 	mountHandles[0] = debugMountOne(repository, "/", uio_FSTYPE_STDIO,
-									NULL, NULL, "/home/svdb/cvs/sc2/content", autoMount,
-									uio_MOUNT_TOP | uio_MOUNT_RDONLY, NULL);
+									nullptr, nullptr, "/home/svdb/cvs/sc2/content", autoMount,
+									uio_MOUNT_TOP | uio_MOUNT_RDONLY, nullptr);
 #endif
 #if 1
 	mountHandles[1] = debugMountOne(repository, "/", uio_FSTYPE_STDIO,
-									NULL, NULL, "/home/svdb/cvs/sc2/src/sc2code/ships",
-									autoMount, uio_MOUNT_TOP | uio_MOUNT_RDONLY, NULL);
+									nullptr, nullptr, "/home/svdb/cvs/sc2/src/sc2code/ships",
+									autoMount, uio_MOUNT_TOP | uio_MOUNT_RDONLY, nullptr);
 #endif
 #if 1
 	mountHandles[2] = debugMountOne(repository, "/", uio_FSTYPE_STDIO,
-									NULL, NULL, "/tmp/vfstest", autoMount, uio_MOUNT_TOP, NULL);
+									nullptr, nullptr, "/tmp/vfstest", autoMount, uio_MOUNT_TOP, nullptr);
 #endif
 #if 1
 	mountHandles[3] = debugMountOne(repository, "/", uio_FSTYPE_STDIO,
-									NULL, NULL, "/tmp/vfstest2", autoMount, uio_MOUNT_TOP, NULL);
+									nullptr, nullptr, "/tmp/vfstest2", autoMount, uio_MOUNT_TOP, nullptr);
 #endif
 
 	// TODO: should work too:
 #if 0
-	mountHandle[4] = debugMountOne(repository, "/zip/", uio_FSTYPE_ZIP, NULL,
-			NULL, "/ziptest/foo.zip", autoMount, uio_MOUNT_TOP, NULL);
+	mountHandle[4] = debugMountOne(repository, "/zip/", uio_FSTYPE_ZIP, nullptr,
+			nullptr, "/ziptest/foo.zip", autoMount, uio_MOUNT_TOP, nullptr);
 #endif
 	{
 		uio_DirHandle* rootDir;
 		rootDir = uio_openDir(repository, "/", 0);
-		if (rootDir == NULL)
+		if (rootDir == nullptr)
 		{
 			fprintf(stderr, "Could not open '/' dir.\n");
 		}
@@ -199,34 +199,34 @@ void initRepository(void)
 #if 1
 			mountHandles[4] = debugMountOne(repository, "/example/",
 											uio_FSTYPE_ZIP, rootDir, "/example2.zip", "/", autoMount,
-											uio_MOUNT_TOP | uio_MOUNT_RDONLY, NULL);
+											uio_MOUNT_TOP | uio_MOUNT_RDONLY, nullptr);
 #endif
 #if 1
 			mountHandles[5] = debugMountOne(repository, "/example/",
 											uio_FSTYPE_ZIP, rootDir, "/example/example.zip", "/",
-											autoMount, uio_MOUNT_TOP | uio_MOUNT_RDONLY, NULL);
+											autoMount, uio_MOUNT_TOP | uio_MOUNT_RDONLY, nullptr);
 #endif
 #if 1
 			mountHandles[6] = debugMountOne(repository, "/zip/",
 											uio_FSTYPE_ZIP, rootDir, "/voice.zip", "/", autoMount,
-											uio_MOUNT_TOP | uio_MOUNT_RDONLY, NULL);
+											uio_MOUNT_TOP | uio_MOUNT_RDONLY, nullptr);
 #endif
 #if 1
 			mountHandles[7] = debugMountOne(repository, "/foo/",
 											uio_FSTYPE_ZIP, rootDir, "/foo2.zip", "/", autoMount,
-											uio_MOUNT_TOP | uio_MOUNT_RDONLY, NULL);
+											uio_MOUNT_TOP | uio_MOUNT_RDONLY, nullptr);
 #endif
 			uio_closeDir(rootDir);
 		}
 	}
 	mountHandles[8] = debugMountOne(repository, "/tmp/",
-									uio_FSTYPE_STDIO, NULL, NULL, "/tmp/", autoMount,
-									uio_MOUNT_TOP, NULL);
+									uio_FSTYPE_STDIO, nullptr, nullptr, "/tmp/", autoMount,
+									uio_MOUNT_TOP, nullptr);
 
 #if 1
 	mountHandles[8] = debugMountOne(repository, "/root/root/",
-									uio_FSTYPE_STDIO, NULL, NULL, "/", autoMount,
-									uio_MOUNT_TOP | uio_MOUNT_RDONLY, NULL);
+									uio_FSTYPE_STDIO, nullptr, nullptr, "/", autoMount,
+									uio_MOUNT_TOP | uio_MOUNT_RDONLY, nullptr);
 #endif
 }
 
@@ -238,7 +238,7 @@ void unInitRepository(void)
 	//	fprintf(stderr, "\n");
 	for (i = 7; i >= 0; i--)
 	{
-		if (mountHandles[i] != NULL)
+		if (mountHandles[i] != nullptr)
 		{
 			uio_unmountDir(mountHandles[i]);
 		}
@@ -267,7 +267,7 @@ void uio_debugInteractive(FILE* in, FILE* out, FILE* err)
 	debugContext.out = out;
 	debugContext.err = err;
 	debugContext.cwd = uio_openDir(repository, "/", 0);
-	if (debugContext.cwd == NULL)
+	if (debugContext.cwd == nullptr)
 	{
 		fprintf(err, "Fatal: Could not open working dir.\n");
 		abort();
@@ -280,7 +280,7 @@ void uio_debugInteractive(FILE* in, FILE* out, FILE* err)
 		{
 			fprintf(out, "> ");
 		}
-		if (fgets(lineBuf, LINEBUFLEN, in) == NULL)
+		if (fgets(lineBuf, LINEBUFLEN, in) == nullptr)
 		{
 			if (feof(in))
 			{
@@ -366,7 +366,7 @@ makeArgs(char* lineBuf, int* argc, char*** argv)
 		*ptr = '\0';
 		ptr++;
 	}
-	args[numArg] = NULL;
+	args[numArg] = nullptr;
 	*argv = args;
 	*argc = numArg;
 }
@@ -418,7 +418,7 @@ debugCmdCat(DebugContext* debugContext, int argc, char* argv[])
 #endif
 					  ,
 					  0);
-	if (handle == NULL)
+	if (handle == nullptr)
 	{
 		fprintf(debugContext->err, "Could not open file: %s\n",
 				strerror(errno));
@@ -480,7 +480,7 @@ debugCmdCd(DebugContext* debugContext, int argc, char* argv[])
 		return 1;
 	}
 	newWd = uio_openDirRelative(debugContext->cwd, argv[1], 0);
-	if (newWd == NULL)
+	if (newWd == nullptr)
 	{
 		fprintf(debugContext->err, "Could not access new dir: %s\n",
 				strerror(errno));
@@ -517,7 +517,7 @@ debugCmdExec(DebugContext* debugContext, int argc, char* argv[])
 	newArgs = (const char**)uio_malloc(argc * sizeof(char*));
 	newArgs[0] = argv[1];
 	handles = (uio_StdioAccessHandlePtr*)uio_malloc(argc * sizeof(uio_StdioAccessHandlePtr));
-	handles[0] = NULL;
+	handles[0] = nullptr;
 
 	for (i = 2; i < argc; i++)
 	{
@@ -530,7 +530,7 @@ debugCmdExec(DebugContext* debugContext, int argc, char* argv[])
 #endif
 		handles[i - 1] = uio_getStdioAccess(debugContext->cwd, argv[i],
 											O_RDONLY, tempDir);
-		if (handles[i - 1] == NULL)
+		if (handles[i - 1] == nullptr)
 		{
 			if (errno == ENOENT)
 			{
@@ -550,7 +550,7 @@ debugCmdExec(DebugContext* debugContext, int argc, char* argv[])
 
 		newArgs[i - 1] = uio_StdioAccessHandle_getPath(handles[i - 1]);
 	}
-	newArgs[argc - 1] = NULL;
+	newArgs[argc - 1] = nullptr;
 
 	fprintf(debugContext->err, "Executing: %s", newArgs[0]);
 	for (i = 1; i < argc - 1; i++)
@@ -629,7 +629,7 @@ debugCmdExec(DebugContext* debugContext, int argc, char* argv[])
 err:
 	for (i = 1; i < argc - 1; i++)
 	{
-		if (handles[i] != NULL)
+		if (handles[i] != nullptr)
 		{
 			uio_releaseStdioAccess(handles[i]);
 		}
@@ -663,7 +663,7 @@ debugCmdFwriteTest(DebugContext* debugContext, int argc, char* argv[])
 	}
 
 	stream = uio_fopen(debugContext->cwd, argv[1], "w+b");
-	if (stream == NULL)
+	if (stream == nullptr)
 	{
 		fprintf(debugContext->err, "Could not open file: %s\n",
 				strerror(errno));
@@ -708,7 +708,7 @@ debugCmdFwriteTest(DebugContext* debugContext, int argc, char* argv[])
 		while (1)
 		{
 			ptr = uio_fgets(buf, sizeof buf, stream);
-			if (ptr == NULL)
+			if (ptr == nullptr)
 			{
 				break;
 			}
@@ -765,7 +765,7 @@ listOneDir(DebugContext* debugContext, const char* arg)
 	int i;
 	const char* pattern;
 	const char* cpath;
-	char* buf = NULL;
+	char* buf = nullptr;
 
 	if (arg[0] == '\0')
 	{
@@ -775,7 +775,7 @@ listOneDir(DebugContext* debugContext, const char* arg)
 	else
 	{
 		pattern = strrchr(arg, '/');
-		if (pattern == NULL)
+		if (pattern == nullptr)
 		{
 			// No directory component in 'arg'.
 			cpath = "";
@@ -818,11 +818,11 @@ listOneDir(DebugContext* debugContext, const char* arg)
 								 match_MATCH_LITERAL);
 	}
 #endif
-	if (dirList == NULL)
+	if (dirList == nullptr)
 	{
 		fprintf(debugContext->out, "Error in uio_getDirList(): %s.\n",
 				strerror(errno));
-		if (buf != NULL)
+		if (buf != nullptr)
 		{
 			uio_free(buf);
 		}
@@ -833,7 +833,7 @@ listOneDir(DebugContext* debugContext, const char* arg)
 		fprintf(debugContext->out, "%s\n", dirList->names[i]);
 	}
 	uio_DirList_free(dirList);
-	if (buf != NULL)
+	if (buf != nullptr)
 	{
 		uio_free(buf);
 	}
@@ -1041,7 +1041,7 @@ debugCmdWriteTest(DebugContext* debugContext, int argc, char* argv[])
 #endif
 					  ,
 					  0644);
-	if (handle == NULL)
+	if (handle == nullptr)
 	{
 		fprintf(debugContext->err, "Could not open file: %s\n",
 				strerror(errno));

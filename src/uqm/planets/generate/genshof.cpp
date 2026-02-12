@@ -183,7 +183,7 @@ GenerateShofixti_generatePlanets(SOLARSYS_STATE* solarSys)
 			pSunDesc->NumPlanets = 9;
 		}
 
-		FillOrbits(solarSys, NUMPLANETS_PDESC, NULL, false);
+		FillOrbits(solarSys, NUMPLANETS_PDESC, nullptr, false);
 
 		if (StarSeed)
 		{

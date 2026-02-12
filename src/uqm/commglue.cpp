@@ -106,7 +106,7 @@ InterpolateChunk(uqm::CHAR_T buffer[], uqm::CHAR_T* start)
 			if (buffsize > MAX_INTERPOLATE)
 			{
 				fprintf(stderr, "String too long to interpolate.\n");
-				return NULL;
+				return nullptr;
 			}
 			strncpy(buffer, start, end - start);
 			buffer = &buffer[end - start];
@@ -132,17 +132,17 @@ InterpolateChunk(uqm::CHAR_T buffer[], uqm::CHAR_T* start)
 		if (!pStr)
 		{
 			fprintf(stderr, "Interpolation failure (null return).\n");
-			return NULL;
+			return nullptr;
 		}
 		buffsize += (uqm::COUNT)strlen(pStr);
 		if (buffsize > MAX_INTERPOLATE)
 		{
 			fprintf(stderr, "String too long to interpolate.\n");
-			return NULL;
+			return nullptr;
 		}
 		strncpy(buffer, pStr, strlen(pStr));
 		HFree(pStr);
-		pStr = NULL;
+		pStr = nullptr;
 		buffer = &buffer[end - start];
 		start = end;
 	}
@@ -157,10 +157,10 @@ InterpolateChunk(uqm::CHAR_T buffer[], uqm::CHAR_T* start)
 	if (buffsize > MAX_INTERPOLATE)
 	{
 		fprintf(stderr, "String too long to interpolate.\n");
-		return NULL;
+		return nullptr;
 	}
 	strcpy(buffer, start);
-	return NULL;
+	return nullptr;
 }
 
 // Creates the file name of subclip # clip_number, and prints it to buffer.
@@ -220,7 +220,7 @@ void NPCPhrase_cb(int index, CallbackFunction cb)
 	}
 
 	// From here on, we are doing StarSeed robo-interpolation.
-	static STRING RoboPhrases = NULL;
+	static STRING RoboPhrases = nullptr;
 	if (!RoboPhrases)
 	{
 		RoboPhrases = CaptureStringTable(
@@ -271,7 +271,7 @@ void NPCPhrase_cb(int index, CallbackFunction cb)
 				clip_buf[i] = '\0';
 #endif
 		// InterpolateChunk returns a pointer to the start of the next
-		// chunk, or NULL if done.  Writes the interpolation to str_buf.
+		// chunk, or nullptr if done.  Writes the interpolation to str_buf.
 		pStr = InterpolateChunk(str_buf, pStr);
 #ifdef DEBUG_STARSEED
 		fprintf(stderr, "Chunk\n<<%s>>\n", str_buf);
@@ -303,7 +303,7 @@ void NPCPhrase_cb(int index, CallbackFunction cb)
 					}
 					else
 					{
-						pTimeStamp = NULL;
+						pTimeStamp = nullptr;
 					}
 				}
 				clip_number++;
@@ -314,8 +314,8 @@ void NPCPhrase_cb(int index, CallbackFunction cb)
 			// This requires one or more robo-tracks or swap-if subclips
 			// which we will MultiSplice into the main track.
 			//uqm::CHAR_T *tracks[NUM_ROBO_TRACKS + 1] =
-			//{ [0 ... NUM_ROBO_TRACKS] = NULL };
-			uqm::CHAR_T* tracks[NUM_ROBO_TRACKS + 1] = {NULL};
+			//{ [0 ... NUM_ROBO_TRACKS] = nullptr };
+			uqm::CHAR_T* tracks[NUM_ROBO_TRACKS + 1] = {nullptr};
 			for (i = 0; i < NUM_ROBO_TRACKS && RoboTrack[i]; i++)
 			{
 				if (RoboTrack[i] == (uqm::COUNT)~0)
@@ -344,7 +344,7 @@ void NPCPhrase_cb(int index, CallbackFunction cb)
 				}
 				else
 				{
-					tracks[i] = NULL;
+					tracks[i] = nullptr;
 				}
 			}
 #ifdef DEBUG_STARSEED
@@ -360,7 +360,7 @@ void NPCPhrase_cb(int index, CallbackFunction cb)
 #endif
 					HFree(tracks[i]);
 				}
-				tracks[i] = NULL;
+				tracks[i] = nullptr;
 				RoboTrack[i] = 0;
 			}
 		}
@@ -386,11 +386,11 @@ void NPCPhrase_splice(int index)
 
 	if (!pClip)
 	{ // Just appending some text
-		SpliceTrack(NULL, pStr, NULL, NULL);
+		SpliceTrack(nullptr, pStr, nullptr, nullptr);
 	}
 	else
 	{ // Splicing in some voice
-		uqm::CHAR_T* tracks[] = {NULL, NULL};
+		uqm::CHAR_T* tracks[] = {nullptr, nullptr};
 
 		tracks[0] = (uqm::CHAR_T*)pClip;
 		SpliceMultiTrack(tracks, pStr);
@@ -408,13 +408,13 @@ void NPCNumber(int number, const char* fmt)
 
 	if (CommData.AlienNumberSpeech)
 	{
-		NPCNumberPhrase(number, fmt, NULL);
+		NPCNumberPhrase(number, fmt, nullptr);
 		return;
 	}
 
 	// just splice in the subtitle text
 	snprintf(buf, sizeof buf, fmt, number);
-	SpliceTrack(NULL, buf, NULL, NULL);
+	SpliceTrack(nullptr, buf, nullptr, nullptr);
 }
 
 static int
@@ -427,7 +427,7 @@ NPCNumberPhrase(int number, const char* fmt, uqm::CHAR_T** ptrack)
 	int toplevel = 0;
 	uqm::CHAR_T* TrackNames[MAX_NUMBER_TRACKS];
 	uqm::CHAR_T numbuf[60];
-	const SPEECH_DIGIT* dig = NULL;
+	const SPEECH_DIGIT* dig = nullptr;
 
 	if (!speech)
 	{
@@ -480,7 +480,7 @@ NPCNumberPhrase(int number, const char* fmt, uqm::CHAR_T** ptrack)
 		}
 		else
 		{
-			int ctracks = NPCNumberPhrase(quot, NULL, ptrack);
+			int ctracks = NPCNumberPhrase(quot, nullptr, ptrack);
 			ptrack += ctracks;
 			queued += ctracks;
 		}
@@ -519,7 +519,7 @@ NPCNumberPhrase(int number, const char* fmt, uqm::CHAR_T** ptrack)
 			*ptrack++ = GetStringSoundClip(SetAbsStringTableIndex(
 				CommData.ConversationPhrases, dig->StrDigits[number] - 1));
 		}
-		*ptrack++ = NULL; // term
+		*ptrack++ = nullptr; // term
 
 		SpliceMultiTrack(TrackNames, numbuf);
 	}
@@ -710,7 +710,7 @@ phraseIdStrToNum(const char* phraseIdStr)
 	STRING phrase = GetStringByName(GetStringTable(
 										CommData.ConversationPhrases),
 									phraseIdStr);
-	if (phrase == NULL)
+	if (phrase == nullptr)
 	{
 		return (RESPONSE_REF)-1;
 	}
@@ -725,9 +725,9 @@ phraseIdNumToStr(RESPONSE_REF response)
 	STRING phrase = SetAbsStringTableIndex(
 		CommData.ConversationPhrases, response - 1);
 	// Index 0 is for NULL_PHRASE, hence the '- 1'.
-	if (phrase == NULL)
+	if (phrase == nullptr)
 	{
-		return NULL;
+		return nullptr;
 	}
 	return GetStringName(phrase);
 }

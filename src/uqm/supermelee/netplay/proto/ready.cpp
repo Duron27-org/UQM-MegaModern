@@ -32,12 +32,12 @@ Netplay_bothReady(NetConnection* conn)
 	NetConnection_ReadyCallback callback;
 	void* readyArg;
 
-	assert(conn->readyCallback != NULL);
+	assert(conn->readyCallback != nullptr);
 
 	callback = conn->readyCallback;
 	readyArg = conn->readyCallbackArg;
 
-	NetConnection_setReadyCallback(conn, NULL, NULL);
+	NetConnection_setReadyCallback(conn, nullptr, nullptr);
 	// Clear the readyCallback field before performing the callback,
 	// so that it can be set again from inside the callback
 	// function.
@@ -54,7 +54,7 @@ bool Netplay_localReady(NetConnection* conn, NetConnection_ReadyCallback callbac
 {
 	assert(readyFlagsMeaningful(NetConnection_getState(conn)));
 	assert(!conn->stateFlags.ready.localReady);
-	assert(callback != NULL);
+	assert(callback != nullptr);
 
 	NetConnection_setReadyCallback(conn, callback, readyArg);
 

@@ -49,7 +49,7 @@ LoadSoundFile(const char* pStr)
 		return hData;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 MUSIC_REF

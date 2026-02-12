@@ -92,7 +92,7 @@ bool free_image(FRAME* pixarray)
 	retval = true;
 	for (i = 0; i < NUM_VIEWS; ++i)
 	{
-		if (pixarray[i] != NULL)
+		if (pixarray[i] != nullptr)
 		{
 			bool ok = true;
 			for (j = 0; j < i; j++)
@@ -111,7 +111,7 @@ bool free_image(FRAME* pixarray)
 				}
 			}
 			already_freed[i] = pixarray[i];
-			pixarray[i] = NULL;
+			pixarray[i] = nullptr;
 		}
 	}
 
@@ -128,14 +128,14 @@ bool InitSpace(void)
 	{
 		stars_in_space = CaptureDrawable(
 			LoadGraphic(STAR_MASK_PMAP_ANIM));
-		if (stars_in_space == NULL)
+		if (stars_in_space == nullptr)
 		{
 			return false;
 		}
 
 		scenery = CaptureDrawable(
 			LoadGraphic(SCENERY_MASK_PMAP_ANIM));
-		if (scenery == NULL)
+		if (scenery == nullptr)
 		{
 			return false;
 		}
@@ -277,7 +277,7 @@ InitShips(void)
 #define NUM_ASTEROIDS 5
 			for (i = 0; i < NUM_ASTEROIDS; ++i)
 			{
-				spawn_asteroid(NULL);
+				spawn_asteroid(nullptr);
 			}
 #define NUM_PLANETS 1
 			for (i = 0; i < NUM_PLANETS; ++i)

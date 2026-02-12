@@ -148,12 +148,12 @@ void StopStream(uint32 source)
 	StopSource(source);
 
 	soundSource[source].stream_should_be_playing = false;
-	soundSource[source].sample = NULL;
+	soundSource[source].sample = nullptr;
 
 	if (soundSource[source].sbuffer)
 	{
 		void* sbuffer = soundSource[source].sbuffer;
-		soundSource[source].sbuffer = NULL;
+		soundSource[source].sbuffer = nullptr;
 		HFree(sbuffer);
 	}
 	soundSource[source].sbuf_size = 0;
@@ -196,7 +196,7 @@ void SeekStream(uint32 source, uint32 pos)
 		return;
 	}
 	looping = sample->decoder->looping;
-	scope = soundSource[source].sbuffer != NULL;
+	scope = soundSource[source].sbuffer != nullptr;
 
 	StopSource(source);
 	SoundDecoder_Seek(sample->decoder, pos);
@@ -277,7 +277,7 @@ bool PlayingStream(uint32 source)
 
 TFB_SoundSample*
 TFB_CreateSoundSample(TFB_SoundDecoder* decoder, uint32 num_buffers,
-					  const TFB_SoundCallbacks* pcbs /* can be NULL */)
+					  const TFB_SoundCallbacks* pcbs /* can be nullptr */)
 {
 	TFB_SoundSample* sample;
 
@@ -317,7 +317,7 @@ void* TFB_GetSoundSampleData(TFB_SoundSample* sample)
 }
 
 void TFB_SetSoundSampleCallbacks(TFB_SoundSample* sample,
-								 const TFB_SoundCallbacks* pcbs /* can be NULL */)
+								 const TFB_SoundCallbacks* pcbs /* can be nullptr */)
 {
 	if (pcbs)
 	{
@@ -342,7 +342,7 @@ TFB_FindTaggedBuffer(TFB_SoundSample* sample, audio_Object buffer)
 
 	if (!sample->buffer_tag)
 	{
-		return NULL; // do not have any tags
+		return nullptr; // do not have any tags
 	}
 
 	for (buf_num = 0;
@@ -352,7 +352,7 @@ TFB_FindTaggedBuffer(TFB_SoundSample* sample, audio_Object buffer)
 
 	return buf_num < sample->num_buffers ?
 			 &sample->buffer_tag[buf_num] :
-			 NULL;
+			 nullptr;
 }
 
 bool TFB_TagBuffer(TFB_SoundSample* sample, audio_Object buffer, intptr_t data)
@@ -940,12 +940,12 @@ void UninitStreamDecoder(void)
 	if (decoderTask)
 	{
 		ConcludeTask(decoderTask);
-		decoderTask = NULL;
+		decoderTask = nullptr;
 	}
 
 	if (fade_mutex)
 	{
 		DestroyMutex(fade_mutex);
-		fade_mutex = NULL;
+		fade_mutex = nullptr;
 	}
 }

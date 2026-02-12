@@ -28,9 +28,9 @@
 static LOCDATA shofixti_desc =
 	{
 		SHOFIXTI_CONVERSATION, /* AlienConv */
-		NULL, /* init_encounter_func */
-		NULL, /* post_encounter_func */
-		NULL, /* uninit_encounter_func */
+		nullptr, /* init_encounter_func */
+		nullptr, /* post_encounter_func */
+		nullptr, /* uninit_encounter_func */
 		SHOFIXTI_PMAP_ANIM, /* AlienFrame */
 		SHOFIXTI_FONT, /* AlienFont */
 		WHITE_COLOR_INIT, /* AlienTextFColor */
@@ -185,13 +185,13 @@ static LOCDATA shofixti_desc =
 								0, /* RestartRate */
 			0, /* BlockMask */
 		},
-		NULL, /* AlienNumberSpeech - none */
+		nullptr, /* AlienNumberSpeech - none */
 		/* Filler for loaded resources */
-		NULL,
-		NULL,
-		NULL,
-		NULL,
-		NULL,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
 };
 
 static RESPONSE_REF shofixti_name;
@@ -444,7 +444,7 @@ Hostile(RESPONSE_REF R)
 					shofixti_name,
 					"",
 					look1,
-					(uqm::CHAR_T*)NULL);
+					(uqm::CHAR_T*)nullptr);
 				DoResponsePhrase(look0, ExitConversation, shared_phrase_buf);
 				break;
 			}
@@ -521,7 +521,7 @@ Friendly(RESPONSE_REF R)
 			shofixti_name,
 			"",
 			report1,
-			(uqm::CHAR_T*)NULL);
+			(uqm::CHAR_T*)nullptr);
 		Resp[0].pStr = report0;
 		Resp[0].c_buf = buf0;
 	}
@@ -536,7 +536,7 @@ Friendly(RESPONSE_REF R)
 				shofixti_name,
 				"",
 				why_here1,
-				(uqm::CHAR_T*)NULL);
+				(uqm::CHAR_T*)nullptr);
 			Resp[1].pStr = why_here0;
 			Resp[1].c_buf = buf1;
 			break;
@@ -581,7 +581,7 @@ Friendly(RESPONSE_REF R)
 		shofixti_name,
 		"",
 		bye1,
-		(uqm::CHAR_T*)NULL);
+		(uqm::CHAR_T*)nullptr);
 	DoResponsePhrase(bye0, ExitConversation, shared_phrase_buf);
 }
 
@@ -687,7 +687,7 @@ init_shofixti_comm(void)
 	shofixti_desc.post_encounter_func = post_shofixti_enc;
 	shofixti_desc.uninit_encounter_func = uninit_shofixti;
 
-	luaUqm_comm_init(NULL, NULL_RESOURCE);
+	luaUqm_comm_init(nullptr, NULL_RESOURCE);
 	// Initialise Lua for string interpolation. This will be
 	// generalised in the future.
 	if (EXTENDED)

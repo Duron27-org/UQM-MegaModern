@@ -35,11 +35,11 @@ typedef struct tfb_sdl2_screeninfo_s
 
 static TFB_SDL2_SCREENINFO SDL2_Screens[TFB_GFX_NUMSCREENS];
 
-static SDL_Window* window = NULL;
-static SDL_Renderer* renderer = NULL;
-static const char* rendererBackend = NULL;
+static SDL_Window* window = nullptr;
+static SDL_Renderer* renderer = nullptr;
+static const char* rendererBackend = nullptr;
 
-static TFB_ScaleFunc scaler = NULL;
+static TFB_ScaleFunc scaler = nullptr;
 
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
 #define A_MASK 0xff000000
@@ -169,7 +169,7 @@ int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
 			 UQM_MAJOR_VERSION, UQM_MINOR_VERSION, UQM_PATCH_VERSION,
 			 (resFactor ? "HD " UQM_EXTRA_VERSION : UQM_EXTRA_VERSION));
 
-	if (window == NULL)
+	if (window == nullptr)
 	{
 		SDL_RendererInfo info;
 
@@ -206,8 +206,8 @@ int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
 		SDL_RenderSetLogicalSize(renderer, width, height);
 		for (i = 0; i < TFB_GFX_NUMSCREENS; i++)
 		{
-			SDL2_Screens[i].scaled = NULL;
-			SDL2_Screens[i].texture = NULL;
+			SDL2_Screens[i].scaled = nullptr;
+			SDL2_Screens[i].texture = nullptr;
 			SDL2_Screens[i].dirty = true;
 			SDL2_Screens[i].active = true;
 			if (0 != ReInit_Screen(&SDL_Screens[i], CanvasWidth, CanvasHeight))
@@ -310,13 +310,13 @@ int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
 			if (SDL2_Screens[i].texture)
 			{
 				SDL_DestroyTexture(SDL2_Screens[i].texture);
-				SDL2_Screens[i].texture = NULL;
+				SDL2_Screens[i].texture = nullptr;
 			}
 			SDL2_Screens[i].texture = SDL_CreateTexture(renderer,
 														SDL_PIXELFORMAT_RGBX8888, SDL_TEXTUREACCESS_STREAMING,
 														CanvasWidth * 2, CanvasHeight * 2);
 			SDL_LockSurface(SDL2_Screens[i].scaled);
-			SDL_UpdateTexture(SDL2_Screens[i].texture, NULL,
+			SDL_UpdateTexture(SDL2_Screens[i].texture, nullptr,
 							  SDL2_Screens[i].scaled->pixels,
 							  SDL2_Screens[i].scaled->pitch);
 			SDL_UnlockSurface(SDL2_Screens[i].scaled);
@@ -342,22 +342,22 @@ int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
 			if (SDL2_Screens[i].scaled)
 			{
 				SDL_FreeSurface(SDL2_Screens[i].scaled);
-				SDL2_Screens[i].scaled = NULL;
+				SDL2_Screens[i].scaled = nullptr;
 			}
 			if (SDL2_Screens[i].texture)
 			{
 				SDL_DestroyTexture(SDL2_Screens[i].texture);
-				SDL2_Screens[i].texture = NULL;
+				SDL2_Screens[i].texture = nullptr;
 			}
 			SDL2_Screens[i].texture = SDL_CreateTexture(renderer,
 														SDL_PIXELFORMAT_RGBX8888, SDL_TEXTUREACCESS_STREAMING,
 														CanvasWidth, CanvasHeight);
 			SDL_LockSurface(SDL_Screens[i]);
-			SDL_UpdateTexture(SDL2_Screens[i].texture, NULL,
+			SDL_UpdateTexture(SDL2_Screens[i].texture, nullptr,
 							  SDL_Screens[i]->pixels, SDL_Screens[i]->pitch);
 			SDL_UnlockSurface(SDL_Screens[i]);
 		}
-		scaler = NULL;
+		scaler = nullptr;
 		graphics_backend = &sdl2_unscaled_backend;
 	}
 
@@ -475,7 +475,7 @@ TFB_SDL2_FPS(void)
 	SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
 	SDL_RenderCopy(renderer, texture, &r, &t);
 	SDL_DestroyTexture(texture);
-	texture = NULL;
+	texture = nullptr;
 }
 
 static void
@@ -535,7 +535,7 @@ static void
 TFB_SDL2_Scaled_ScreenLayer(SCREEN screen, Uint8 a, SDL_Rect* rect)
 {
 	SDL_Texture* texture = SDL2_Screens[screen].texture;
-	SDL_Rect srcRect, *pSrcRect = NULL;
+	SDL_Rect srcRect, *pSrcRect = nullptr;
 	if (SDL2_Screens[screen].dirty)
 	{
 		SDL_Surface* src = SDL2_Screens[screen].scaled;
@@ -665,7 +665,7 @@ bool TFB_SDL_ScreenShot(const char* path)
 										 SDL_PIXELFORMAT_RGBA32);
 
 	SDL_LockSurface(tmp);
-	SDL_RenderReadPixels(renderer, NULL, tmp->format->format,
+	SDL_RenderReadPixels(renderer, nullptr, tmp->format->format,
 						 tmp->pixels, tmp->pitch);
 	if (TFB_sdl_to_png(tmp, SDL_RWFromFile(path, "wb"), 1) == 0)
 	{

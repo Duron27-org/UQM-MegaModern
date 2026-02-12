@@ -77,7 +77,7 @@ request_drawable(uqm::COUNT NumFrames, DRAWABLE_TYPE DrawableType,
 	Drawable = AllocDrawable(NumFrames);
 	if (!Drawable)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	Drawable->Flags = flags;
@@ -111,7 +111,7 @@ request_indexed_drawable(Color* palette, uqm::SIZE width, uqm::SIZE height)
 	Drawable = AllocDrawable(1);
 	if (!Drawable)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	Drawable->Flags = WANT_PIXMAP;
@@ -128,7 +128,7 @@ request_indexed_drawable(Color* palette, uqm::SIZE width, uqm::SIZE height)
 		}
 		else
 		{
-			return NULL;
+			return nullptr;
 		}
 
 		FramePtr->Type = RAM_DRAWABLE;
@@ -181,10 +181,10 @@ AllocDrawable(uqm::COUNT n)
 	{
 		int i;
 		Drawable->Frame = (FRAME)HMalloc(sizeof(FRAME_DESC) * n);
-		if (Drawable->Frame == NULL)
+		if (Drawable->Frame == nullptr)
 		{
 			HFree(Drawable);
-			return NULL;
+			return nullptr;
 		}
 
 		/* Zero out the newly allocated frames, since HMalloc doesn't have
@@ -258,7 +258,7 @@ bool DestroyDrawable(DRAWABLE Drawable)
 {
 	if (_CurFramePtr && (Drawable == _CurFramePtr->parent))
 	{
-		SetContextFGFrame((FRAME)NULL);
+		SetContextFGFrame((FRAME)nullptr);
 	}
 
 	if (Drawable)
@@ -323,7 +323,7 @@ RotateFrame(FRAME Frame, int angle_deg)
 
 	if (!Frame)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	assert(Frame->Type != SCREEN_DRAWABLE);
@@ -420,13 +420,13 @@ makeMatchingFrame(FRAME frame, int width, int height)
 	drawable = CreateDrawable(flags, width, height, 1);
 	if (!drawable)
 	{
-		return NULL;
+		return nullptr;
 	}
 	newFrame = CaptureDrawable(drawable);
 	if (!newFrame)
 	{
 		FreeDrawable(drawable);
-		return NULL;
+		return nullptr;
 	}
 
 	return newFrame;
@@ -446,13 +446,13 @@ makeMatchingIndexedFrame(FRAME frame, int width, int height)
 			width, height);
 	if (!drawable)
 	{
-		return NULL;
+		return nullptr;
 	}
 	newFrame = CaptureDrawable(drawable);
 	if (!newFrame)
 	{
 		FreeDrawable(drawable);
-		return NULL;
+		return nullptr;
 	}
 
 	return newFrame;
@@ -468,7 +468,7 @@ CopyFrameRect(FRAME frame, const RECT* area)
 
 	if (!frame)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	assert(frame->Type != SCREEN_DRAWABLE);
@@ -477,7 +477,7 @@ CopyFrameRect(FRAME frame, const RECT* area)
 								 area->extent.height);
 	if (!newFrame)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	TFB_DrawImage_CopyRect(frame->image, area, newFrame->image, nullPt);
@@ -495,7 +495,7 @@ CloneFrame(FRAME frame)
 
 	if (!frame)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	assert(frame->Type != SCREEN_DRAWABLE);
@@ -507,7 +507,7 @@ CloneFrame(FRAME frame)
 	newFrame = CaptureDrawable(CopyFrameRect(frame, &r));
 	if (!newFrame)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	// copy the hot-spot
@@ -527,7 +527,7 @@ RescaleFrame(FRAME frame, int width, int height)
 
 	if (!frame)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	assert(frame->Type != SCREEN_DRAWABLE);
@@ -543,7 +543,7 @@ RescaleFrame(FRAME frame, int width, int height)
 
 	if (!newFrame)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	// scale the hot-spot
@@ -557,7 +557,7 @@ RescaleFrame(FRAME frame, int width, int height)
 	src = img->NormalImg;
 	dst = newFrame->image->NormalImg;
 
-	TFB_DrawCanvas_Rescale_Nearest(src, dst, -1, NULL, NULL, NULL);
+	TFB_DrawCanvas_Rescale_Nearest(src, dst, -1, nullptr, nullptr, nullptr);
 
 	UnlockMutex(img->mutex);
 
@@ -575,7 +575,7 @@ RescalePercentage(FRAME frame, float percentage)
 
 	if (!frame || (frame->Bounds.height == 1 && frame->Bounds.width == 1))
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	assert(frame->Type != SCREEN_DRAWABLE);
@@ -588,7 +588,7 @@ RescalePercentage(FRAME frame, float percentage)
 
 	if (!newFrame)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	// scale the hot-spot
@@ -602,7 +602,7 @@ RescalePercentage(FRAME frame, float percentage)
 	src = img->NormalImg;
 	dst = newFrame->image->NormalImg;
 
-	TFB_DrawCanvas_Rescale_Bilinear(src, dst, -1, NULL, NULL, NULL);
+	TFB_DrawCanvas_Rescale_Bilinear(src, dst, -1, nullptr, nullptr, nullptr);
 
 	UnlockMutex(img->mutex);
 

@@ -91,7 +91,7 @@ CreateContextAux(void)
 		/* initialize context */
 #ifdef DEBUG
 		NewContext->name = name;
-		NewContext->next = NULL;
+		NewContext->next = nullptr;
 		*contextEnd = NewContext;
 		contextEnd = &NewContext->next;
 #endif /* DEBUG */
@@ -113,7 +113,7 @@ FindContextPtr(CONTEXT context)
 {
 	CONTEXT* ptr;
 
-	for (ptr = &firstContext; *ptr != NULL; ptr = &(*ptr)->next)
+	for (ptr = &firstContext; *ptr != nullptr; ptr = &(*ptr)->next)
 	{
 		if (*ptr == context)
 		{
@@ -321,7 +321,7 @@ SetContextFontEffect(FRAME EffectFrame)
 
 	if (!ContextActive())
 	{
-		return (NULL);
+		return (nullptr);
 	}
 
 	LastEffect = _get_context_fonteff();
@@ -370,7 +370,7 @@ void FixContextFontEffect(void)
 
 		TFB_DrawImage_Image(EffectFrame->image,
 							-EffectFrame->HotSpot.x, -EffectFrame->HotSpot.y,
-							0, 0, NULL, DRAW_REPLACE_MODE, img);
+							0, 0, nullptr, DRAW_REPLACE_MODE, img);
 	}
 	else
 	{ // solid color backing
@@ -387,7 +387,7 @@ void FixContextFontEffect(void)
 	UnsetContextFBkFlags(FBK_DIRTY);
 }
 
-// 'area' may be NULL to copy the entire CONTEXT cliprect
+// 'area' may be nullptr to copy the entire CONTEXT cliprect
 // 'area' is relative to the CONTEXT cliprect
 DRAWABLE
 CopyContextRect(const RECT* area)
@@ -398,7 +398,7 @@ CopyContextRect(const RECT* area)
 
 	if (!ContextActive() || !_CurFramePtr)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	fgRect = _get_context_fg_rect();
@@ -414,12 +414,12 @@ CopyContextRect(const RECT* area)
 	// validate the rect
 	if (!BoxIntersect(&r, &fgRect, &r))
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	if (_CurFramePtr->Type == SCREEN_DRAWABLE)
 	{
-		return LoadDisplayPixmap(&r, NULL);
+		return LoadDisplayPixmap(&r, nullptr);
 	}
 	else
 	{

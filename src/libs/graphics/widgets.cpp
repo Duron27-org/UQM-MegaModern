@@ -27,7 +27,7 @@
 #include "uqm/units.h"
 #include "uqm/util.h"
 
-WIDGET* widget_focus = NULL;
+WIDGET* widget_focus = nullptr;
 
 /* Some basic color defines */
 #define WIDGET_ACTIVE_COLOR \
@@ -76,7 +76,7 @@ static FONT cur_font;
 
 static uqm::COUNT offset_t = 0;	 // Top widget offset
 static uqm::COUNT offset_b;		 // = ONSCREEN; // Bottom widget offset
-static FRAME arrow_frame = NULL; // Frames for additional graphics
+static FRAME arrow_frame = nullptr; // Frames for additional graphics
 
 void ResetOffset(void)
 { // To reset offsets while traversing different moves
@@ -86,7 +86,7 @@ void ResetOffset(void)
 
 void LoadArrows(void)
 {
-	if (arrow_frame == NULL || optRequiresReload)
+	if (arrow_frame == nullptr || optRequiresReload)
 	{
 		// Load the different arrows depending on the resolution factor.
 		arrow_frame = CaptureDrawable(LoadGraphic(MENUARR_PMAP_ANIM));
@@ -98,7 +98,7 @@ void ReleaseArrows(void)
 	if (arrow_frame)
 	{
 		DestroyDrawable(ReleaseDrawable(arrow_frame));
-		arrow_frame = NULL;
+		arrow_frame = nullptr;
 	}
 }
 
@@ -108,13 +108,13 @@ void DrawShadowedBox(RECT* r, Color bg, Color dark, Color medium)
 				   TRANSPARENT);
 }
 
-// windowRect, if not NULL, will be filled with the dimensions of the
+// windowRect, if not nullptr, will be filled with the dimensions of the
 // window drawn.
 void DrawLabelAsWindow(WIDGET_LABEL* label, RECT* windowRect)
 {
 	Color oldfg = SetContextForeGroundColor(WIDGET_DIALOG_TEXT_COLOR);
 	FONT oldfont = 0;
-	FRAME oldFontEffect = SetContextFontEffect(NULL);
+	FRAME oldFontEffect = SetContextFontEffect(nullptr);
 	RECT r;
 	TEXT t;
 	int i, win_w, win_h;
@@ -170,7 +170,7 @@ void DrawLabelAsWindow(WIDGET_LABEL* label, RECT* windowRect)
 	}
 	SetContextForeGroundColor(oldfg);
 
-	if (windowRect != NULL)
+	if (windowRect != nullptr)
 	{ // Add the outer border added by DrawShadowedBox.
 		// XXX: It may be nicer to add a border size parameter to
 		// DrawShadowedBox, instead of assuming 2 here.
@@ -202,7 +202,7 @@ Widget_DrawToolTips(int numlines, const char** tips)
 	// which explains what the current option does.
 	RECT r;
 	FONT oldfont = 0;
-	FRAME oldFontEffect = SetContextFontEffect(NULL);
+	FRAME oldFontEffect = SetContextFontEffect(nullptr);
 	Color oldtext = SetContextForeGroundColor(WIDGET_TOOLTIP_COLOR);
 	TEXT t;
 	int i;
@@ -260,7 +260,7 @@ void Widget_DrawMenuScreen(WIDGET* _self, int x, int y)
 	RECT r;
 	Color title, oldtext;
 	FONT oldfont = 0;
-	FRAME oldFontEffect = SetContextFontEffect(NULL);
+	FRAME oldFontEffect = SetContextFontEffect(nullptr);
 	TEXT t;
 	int widget_index, height, widget_y, on_screen;
 
@@ -414,7 +414,7 @@ void Widget_DrawChoice(WIDGET* _self, int x, int y)
 	Color oldtext;
 	Color default_color, selected, enabled, disabled, canbe;
 	FONT oldfont = 0;
-	FRAME oldFontEffect = SetContextFontEffect(NULL);
+	FRAME oldFontEffect = SetContextFontEffect(nullptr);
 	TEXT t;
 	int i;
 
@@ -532,7 +532,7 @@ void Widget_DrawButton(WIDGET* _self, int x, int y)
 	Color oldtext;
 	Color inactive, selected;
 	FONT oldfont = 0;
-	FRAME oldFontEffect = SetContextFontEffect(NULL);
+	FRAME oldFontEffect = SetContextFontEffect(nullptr);
 	TEXT t;
 
 	if (cur_font)
@@ -571,7 +571,7 @@ void Widget_DrawLabel(WIDGET* _self, int x, int y)
 	WIDGET_LABEL* self = (WIDGET_LABEL*)_self;
 	Color oldtext = SetContextForeGroundColor(WIDGET_LABEL_COLOR);
 	FONT oldfont = 0;
-	FRAME oldFontEffect = SetContextFontEffect(NULL);
+	FRAME oldFontEffect = SetContextFontEffect(nullptr);
 	TEXT t;
 	int i;
 	RECT r;
@@ -641,7 +641,7 @@ void Widget_DrawSlider(WIDGET* _self, int x, int y)
 	Color oldtext;
 	Color default_color, selected;
 	FONT oldfont = 0;
-	FRAME oldFontEffect = SetContextFontEffect(NULL);
+	FRAME oldFontEffect = SetContextFontEffect(nullptr);
 	TEXT t;
 	RECT r;
 	int tick = (CanvasWidth - x) / 8;
@@ -719,7 +719,7 @@ void Widget_DrawTextEntry(WIDGET* _self, int x, int y)
 	Color oldtext;
 	Color inactive, default_color, selected, editing;
 	FONT oldfont = 0;
-	FRAME oldFontEffect = SetContextFontEffect(NULL);
+	FRAME oldFontEffect = SetContextFontEffect(nullptr);
 	TEXT t;
 
 	if (cur_font)
@@ -880,7 +880,7 @@ void Widget_DrawControlEntry(WIDGET* _self, int x, int y)
 	Color oldtext;
 	Color default_color, selected;
 	FONT oldfont = 0;
-	FRAME oldFontEffect = SetContextFontEffect(NULL);
+	FRAME oldFontEffect = SetContextFontEffect(nullptr);
 	TEXT t;
 	int i, home_x, home_y;
 
@@ -1206,7 +1206,7 @@ int Widget_HandleEventControlEntry(WIDGET* _self, int event)
 int Widget_Event(int event)
 {
 	WIDGET* widget = widget_focus;
-	while (widget != NULL)
+	while (widget != nullptr)
 	{
 		if ((*widget->handleEvent)(widget, event))
 		{

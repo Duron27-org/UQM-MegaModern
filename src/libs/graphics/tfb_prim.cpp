@@ -139,13 +139,13 @@ void TFB_Prim_Stamp(STAMP* stmp, DrawMode mode, POINT ctxOrigin, bool unscaled)
 	int x, y;
 	FRAME SrcFramePtr;
 	TFB_Image* img;
-	TFB_ColorMap* cmap = NULL;
+	TFB_ColorMap* cmap = nullptr;
 	int scaleMode;
 
 	SrcFramePtr = stmp->frame;
 	if (!SrcFramePtr)
 	{
-		log_add(log_Warning, "TFB_Prim_Stamp: Tried to draw a NULL frame"
+		log_add(log_Warning, "TFB_Prim_Stamp: Tried to draw a nullptr frame"
 							 " (Stamp address = %p)",
 				(void*)stmp);
 		return;
@@ -204,7 +204,7 @@ void TFB_Prim_StampFill(STAMP* stmp, Color color, DrawMode mode, POINT ctxOrigin
 	SrcFramePtr = stmp->frame;
 	if (!SrcFramePtr)
 	{
-		log_add(log_Warning, "TFB_Prim_StampFill: Tried to draw a NULL frame"
+		log_add(log_Warning, "TFB_Prim_StampFill: Tried to draw a nullptr frame"
 							 " (Stamp address = %p)",
 				(void*)stmp);
 		return;
@@ -277,13 +277,13 @@ void TFB_Prim_MaskFrame(FRAME layer, FRAME base, DrawMode mode, Color* fill)
 
 	if (!base)
 	{
-		log_add(log_Warning, "TFB_Prim_MaskFrame: NULL frame passed");
+		log_add(log_Warning, "TFB_Prim_MaskFrame: nullptr frame passed");
 		return;
 	}
 
 	if (!layer)
 	{
-		img = NULL;
+		img = nullptr;
 	}
 	else
 	{

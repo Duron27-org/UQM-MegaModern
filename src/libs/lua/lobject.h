@@ -111,7 +111,7 @@ typedef struct lua_TValue TValue;
 
 
 /* macro defining a nil value */
-#define NILCONSTANT {NULL}, LUA_TNIL
+#define NILCONSTANT {nullptr}, LUA_TNIL
 
 
 #define val_(o) ((o)->value_)
@@ -358,7 +358,7 @@ typedef struct lua_TValue TValue;
 #define NILCONSTANT                  \
 	{                                \
 		{                            \
-			{NULL}, tag2tt(LUA_TNIL) \
+			{nullptr}, tag2tt(LUA_TNIL) \
 		}                            \
 	}
 /* field-access macros */
@@ -382,7 +382,7 @@ typedef struct lua_TValue TValue;
 #define NILCONSTANT                    \
 	{                                  \
 		{                              \
-			tag2tt(LUA_TNIL), { NULL } \
+			tag2tt(LUA_TNIL), { nullptr } \
 		}                              \
 	}
 /* field-access macros */

@@ -222,7 +222,7 @@ Present_GenerateSIS(PRESENTATION_INPUT_STATE* pPIS)
 	SisFrame = CaptureDrawable(CreateDrawable(
 		WANT_PIXMAP | WANT_ALPHA, r.extent.width, r.extent.height, 1));
 	SetContextFGFrame(SisFrame);
-	SetContextClipRect(NULL);
+	SetContextClipRect(nullptr);
 	SisBack = BUILD_COLOR_RGBA(0, 0, 0, 0);
 	SetContextBackGroundColor(SisBack);
 	ClearDrawable();
@@ -1309,7 +1309,7 @@ DoPresentation(void* pIS)
 			x <<= RESOLUTION_FACTOR;
 			y <<= RESOLUTION_FACTOR;
 
-			s.frame = NULL;
+			s.frame = nullptr;
 			if (draw_what == PRES_DRAW_INDEX)
 			{ /* draw stamp by index */
 				s.frame = SetAbsFrameIndex(pPIS->Frame, (uqm::COUNT)index);
@@ -1606,7 +1606,7 @@ ShowSlidePresentation(STRING PresStr)
 
 	OldContext = SetContext(ScreenContext);
 	GetContextClipRect(&OldRect);
-	OldFont = SetContextFont(NULL);
+	OldFont = SetContextFont(nullptr);
 	SetContextBackGroundColor(BLACK_COLOR);
 
 	SetMenuSounds(MENU_SOUND_NONE, MENU_SOUND_NONE);

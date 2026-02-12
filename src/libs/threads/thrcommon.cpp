@@ -48,8 +48,8 @@ void InitThreadSystem(void)
 	NativeInitThreadSystem();
 	for (i = 0; i < LIFECYCLE_SIZE; i++)
 	{
-		pendingBirth[i] = NULL;
-		pendingDeath[i] = NULL;
+		pendingBirth[i] = nullptr;
+		pendingDeath[i] = nullptr;
 	}
 	lifecycleMutex = CreateMutex("Thread Lifecycle Mutex", SYNC_CLASS_RESOURCE);
 }
@@ -67,7 +67,7 @@ FlagStartThread(SpawnRequest s)
 	LockMutex(lifecycleMutex);
 	for (i = 0; i < LIFECYCLE_SIZE; i++)
 	{
-		if (pendingBirth[i] == NULL)
+		if (pendingBirth[i] == nullptr)
 		{
 			pendingBirth[i] = s;
 			UnlockMutex(lifecycleMutex);
@@ -80,7 +80,7 @@ FlagStartThread(SpawnRequest s)
 				HFree(s);
 				return result;
 			}
-			return NULL;
+			return nullptr;
 		}
 	}
 	log_add(log_Fatal, "Thread Lifecycle array filled.  This is a fatal error!  Make LIFECYCLE_SIZE something larger than %d.", LIFECYCLE_SIZE);
@@ -93,7 +93,7 @@ void FinishThread(Thread thread)
 	LockMutex(lifecycleMutex);
 	for (i = 0; i < LIFECYCLE_SIZE; i++)
 	{
-		if (pendingDeath[i] == NULL)
+		if (pendingDeath[i] == nullptr)
 		{
 			pendingDeath[i] = thread;
 			UnlockMutex(lifecycleMutex);
@@ -112,7 +112,7 @@ void ProcessThreadLifecycles(void)
 	for (i = 0; i < LIFECYCLE_SIZE; i++)
 	{
 		SpawnRequest s = pendingBirth[i];
-		if (s != NULL)
+		if (s != nullptr)
 		{
 #ifdef NAMED_SYNCHRO
 			s->value = NativeCreateThread(s->func, s->data, s->stackSize, s->name);
@@ -130,17 +130,17 @@ void ProcessThreadLifecycles(void)
 				   clean up s ourself. */
 				HFree(s);
 			}
-			pendingBirth[i] = NULL;
+			pendingBirth[i] = nullptr;
 		}
 	}
 
 	for (i = 0; i < LIFECYCLE_SIZE; i++)
 	{
 		Thread t = pendingDeath[i];
-		if (t != NULL)
+		if (t != nullptr)
 		{
-			WaitThread(t, NULL);
-			pendingDeath[i] = NULL;
+			WaitThread(t, nullptr);
+			pendingDeath[i] = nullptr;
 			DestroyThread(t);
 		}
 	}
@@ -171,7 +171,7 @@ void StartThread_Core(ThreadFunction func, void* data, uqm::SDWORD stackSize, co
 	s->data = data;
 	s->stackSize = stackSize;
 	s->name = name;
-	s->sem = NULL;
+	s->sem = nullptr;
 	FlagStartThread(s);
 }
 
@@ -217,7 +217,7 @@ void StartThread_Core(ThreadFunction func, void* data, uqm::SDWORD stackSize)
 	s->func = func;
 	s->data = data;
 	s->stackSize = stackSize;
-	s->sem = NULL;
+	s->sem = nullptr;
 	FlagStartThread(s);
 }
 

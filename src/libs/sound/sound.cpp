@@ -45,7 +45,7 @@ void CleanSource(int iSource)
 #define MAX_STACK_BUFFERS 64
 	audio_IntVal processed;
 
-	soundSource[iSource].positional_object = NULL;
+	soundSource[iSource].positional_object = nullptr;
 	audio_GetSourcei(soundSource[iSource].handle,
 					 audio_BUFFERS_PROCESSED, &processed);
 	if (processed != 0)

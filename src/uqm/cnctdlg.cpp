@@ -97,7 +97,7 @@ MCD_DrawButton(WIDGET* _self, int x, int y)
 	Color oldtext;
 	Color inactive, selected;
 	FONT oldfont = SetContextFont(StarConFont);
-	FRAME oldFontEffect = SetContextFontEffect(NULL);
+	FRAME oldFontEffect = SetContextFontEffect(nullptr);
 	TEXT t;
 
 	selected = MENU_HIGHLIGHT_COLOR;
@@ -130,7 +130,7 @@ MCD_DrawSlider(WIDGET* _self, int x, int y)
 	Color oldtext;
 	Color default_color, selected;
 	FONT oldfont = SetContextFont(PlayerFont);
-	FRAME oldFontEffect = SetContextFontEffect(NULL);
+	FRAME oldFontEffect = SetContextFontEffect(nullptr);
 	TEXT t;
 	RECT r;
 	int tick = RES_SCALE(RES_DESCALE(MCD_WIDTH) / 8);
@@ -180,7 +180,7 @@ MCD_DrawTextEntry(WIDGET* _self, int x, int y)
 	Color oldtext;
 	Color inactive, default_color, selected;
 	FONT oldfont = SetContextFont(PlayerFont);
-	FRAME oldFontEffect = SetContextFontEffect(NULL);
+	FRAME oldFontEffect = SetContextFontEffect(nullptr);
 	TEXT t;
 
 	default_color = MENU_TEXT_COLOR;
@@ -462,7 +462,7 @@ CreateWidgets(void)
 	for (i = 0; i < 3; i++)
 	{
 		buttons[i].tag = WIDGET_TYPE_BUTTON;
-		buttons[i].parent = NULL;
+		buttons[i].parent = nullptr;
 		buttons[i].receiveFocus = Widget_ReceiveFocusSimple;
 		buttons[i].draw = MCD_DrawButton;
 		buttons[i].height = Widget_HeightOneLine;
@@ -480,7 +480,7 @@ CreateWidgets(void)
 	buttons[2].handleEvent = do_cancel;
 
 	menu.tag = WIDGET_TYPE_MENU_SCREEN;
-	menu.parent = NULL;
+	menu.parent = nullptr;
 	menu.receiveFocus = Widget_ReceiveFocusMenuScreen;
 	menu.draw = MCD_DrawMenuScreen;
 	menu.height = Widget_HeightFullScreen;
@@ -490,7 +490,7 @@ CreateWidgets(void)
 	menu.handleEvent = Widget_HandleEventMenuScreen;
 
 	slider.tag = WIDGET_TYPE_SLIDER;
-	slider.parent = NULL;
+	slider.parent = nullptr;
 	slider.handleEvent = Widget_HandleEventSlider;
 	slider.receiveFocus = Widget_ReceiveFocusSimple;
 	slider.draw = MCD_DrawSlider;
@@ -507,7 +507,7 @@ CreateWidgets(void)
 	for (i = 0; i < 2; i++)
 	{
 		texts[i].tag = WIDGET_TYPE_TEXTENTRY;
-		texts[i].parent = NULL;
+		texts[i].parent = nullptr;
 		texts[i].handleEvent = Widget_HandleEventTextEntry;
 		texts[i].receiveFocus = Widget_ReceiveFocusSimple;
 		texts[i].draw = MCD_DrawTextEntry;
@@ -639,7 +639,7 @@ bool MeleeConnectDialog(int side)
 
 	DoInput(&state, true);
 
-	current_state = NULL;
+	current_state = nullptr;
 
 	DestroyFont(PlayerFont);
 

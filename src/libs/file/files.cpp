@@ -42,7 +42,7 @@ bool fileExists2(uio_DirHandle* dir, const char* fileName)
 	uio_Stream* stream;
 
 	stream = uio_fopen(dir, fileName, "rb");
-	if (stream == NULL)
+	if (stream == nullptr)
 	{
 		return 0;
 	}
@@ -77,14 +77,14 @@ int copyFile(uio_DirHandle* srcDir, const char* srcName,
 #endif
 				   ,
 				   0);
-	if (src == NULL)
+	if (src == nullptr)
 	{
 		return -1;
 	}
 
 	if (uio_fstat(src, &sb) == -1)
 	{
-		return copyError(src, NULL, NULL, NULL, NULL);
+		return copyError(src, nullptr, nullptr, nullptr, nullptr);
 	}
 
 	dst = uio_open(dstDir, newName, O_WRONLY | O_CREAT | O_EXCL
@@ -93,9 +93,9 @@ int copyFile(uio_DirHandle* srcDir, const char* srcName,
 #endif
 				   ,
 				   sb.st_mode & (S_IRWXU | S_IRWXG | S_IRWXO));
-	if (dst == NULL)
+	if (dst == nullptr)
 	{
-		return copyError(src, NULL, NULL, NULL, NULL);
+		return copyError(src, nullptr, nullptr, nullptr, nullptr);
 	}
 
 	buf = (uint8*)HMalloc(BUFSIZE);
@@ -145,8 +145,8 @@ int copyFile(uio_DirHandle* srcDir, const char* srcName,
 /*
  * Closes srcHandle if it's not -1.
  * Closes dstHandle if it's not -1.
- * Removes unlinkpath from the unlinkHandle dir if it's not NULL.
- * Frees 'buf' if not NULL.
+ * Removes unlinkpath from the unlinkHandle dir if it's not nullptr.
+ * Frees 'buf' if not nullptr.
  * Always returns -1.
  * errno is what was before the call.
  */
@@ -160,22 +160,22 @@ copyError(uio_Handle* srcHandle, uio_Handle* dstHandle,
 
 	log_add(log_Debug, "Error while copying: %s", strerror(errno));
 
-	if (srcHandle != NULL)
+	if (srcHandle != nullptr)
 	{
 		uio_close(srcHandle);
 	}
 
-	if (dstHandle != NULL)
+	if (dstHandle != nullptr)
 	{
 		uio_close(dstHandle);
 	}
 
-	if (unlinkPath != NULL)
+	if (unlinkPath != nullptr)
 	{
 		uio_unlink(unlinkHandle, unlinkPath);
 	}
 
-	if (buf != NULL)
+	if (buf != nullptr)
 	{
 		HFree(buf);
 	}

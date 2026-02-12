@@ -44,9 +44,9 @@ SDL_Surface* TransitionScreen;
 SDL_Surface* SDL_Screens[TFB_GFX_NUMSCREENS];
 SDL_Surface* SDL_Screen_fps;
 
-SDL_Surface* format_conv_surf = NULL;
+SDL_Surface* format_conv_surf = nullptr;
 
-SDL_Rect* pTransitionClipRect = NULL;
+SDL_Rect* pTransitionClipRect = nullptr;
 
 #if SDL_MAJOR_VERSION == 1
 static SDL_Rect TransitionClipRect;
@@ -57,7 +57,7 @@ static volatile bool abortFlag = false;
 
 int GfxFlags = 0;
 
-TFB_GRAPHICS_BACKEND* graphics_backend = NULL;
+TFB_GRAPHICS_BACKEND* graphics_backend = nullptr;
 
 volatile int QuitPosted = 0;
 volatile int GameActive = 1; // Track the SDL_ACTIVEEVENT state SDL_APPACTIVE
@@ -78,7 +78,7 @@ int TFB_InitGraphics(int driver, int flags, const char* renderer,
 	/* Null out screen pointers the first time */
 	for (i = 0; i < TFB_GFX_NUMSCREENS; i++)
 	{
-		SDL_Screens[i] = NULL;
+		SDL_Screens[i] = nullptr;
 	}
 
 	GfxFlags = flags;
@@ -148,7 +148,7 @@ int TFB_InitGraphics(int driver, int flags, const char* renderer,
 			UQM_MAJOR_VERSION, UQM_MINOR_VERSION,
 			UQM_PATCH_VERSION,
 			(*resFactor ? "HD " UQM_EXTRA_VERSION : UQM_EXTRA_VERSION));
-	SDL_WM_SetCaption(caption, NULL);
+	SDL_WM_SetCaption(caption, nullptr);
 #else
 	(void)caption; /* satisfy compiler (unused parameter) */
 #endif
@@ -278,7 +278,7 @@ void TFB_SwapBuffers(int force_full_redraw)
 
 	graphics_backend->preprocess(force_full_redraw, transition_amount,
 								 fade_amount);
-	graphics_backend->screen(TFB_SCREEN_MAIN, 255, NULL);
+	graphics_backend->screen(TFB_SCREEN_MAIN, 255, nullptr);
 
 	if (transition_amount != 255)
 	{
@@ -291,22 +291,22 @@ void TFB_SwapBuffers(int force_full_redraw)
 #if SDL_MAJOR_VERSION == 1
 		if (fade_amount < 255)
 		{
-			graphics_backend->color(0, 0, 0, 255 - fade_amount, NULL);
+			graphics_backend->color(0, 0, 0, 255 - fade_amount, nullptr);
 		}
 		else
 		{
 			graphics_backend->color(255, 255, 255,
-									fade_amount - 255, NULL);
+									fade_amount - 255, nullptr);
 		}
 #elif defined(__APPLE__)
 		if (fade_amount < 255)
 		{
-			graphics_backend->color(0, 0, 0, 255 - fade_amount, NULL);
+			graphics_backend->color(0, 0, 0, 255 - fade_amount, nullptr);
 		}
 		else
 		{
 			graphics_backend->color(255, 255, 255,
-									fade_amount - 255, NULL);
+									fade_amount - 255, nullptr);
 		}
 #else
 		if (isPC(optScrTrans))
@@ -314,24 +314,24 @@ void TFB_SwapBuffers(int force_full_redraw)
 			if (fade_amount < 255)
 			{
 				graphics_backend->color(SDL_BLENDOPERATION_REV_SUBTRACT,
-										sfx, 0, 255 - fade_amount, NULL);
+										sfx, 0, 255 - fade_amount, nullptr);
 			}
 			else
 			{
 				graphics_backend->color(SDL_BLENDOPERATION_ADD, 0, 0,
-										fade_amount - 255, NULL);
+										fade_amount - 255, nullptr);
 			}
 		}
 		else
 		{
 			if (fade_amount < 255)
 			{
-				graphics_backend->color(0, 0, 0, 255 - fade_amount, NULL);
+				graphics_backend->color(0, 0, 0, 255 - fade_amount, nullptr);
 			}
 			else
 			{
 				graphics_backend->color(255, 255, 255,
-										fade_amount - 255, NULL);
+										fade_amount - 255, nullptr);
 			}
 		}
 #endif
@@ -418,8 +418,8 @@ void TFB_BlitSurface(SDL_Surface* src, SDL_Rect* srcrect, SDL_Surface* dst,
 
 	// NOTE: following clipping code is copied from SDL-1.2.4 sources
 
-	// If the destination rectangle is NULL, use the entire dest surface
-	if (dstrect == NULL)
+	// If the destination rectangle is nullptr, use the entire dest surface
+	if (dstrect == nullptr)
 	{
 		fulldst.x = fulldst.y = 0;
 		dstrect = &fulldst;
@@ -674,13 +674,13 @@ void TFB_BlitSurface(SDL_Surface* src, SDL_Rect* srcrect, SDL_Surface* dst,
 
 void UnInit_Screen(SDL_Surface** screen)
 {
-	if (*screen == NULL)
+	if (*screen == nullptr)
 	{
 		return;
 	}
 
 	SDL_FreeSurface(*screen);
-	*screen = NULL;
+	*screen = nullptr;
 }
 
 void TFB_UploadTransitionScreen(RECT* pRect)
@@ -698,7 +698,7 @@ void TFB_UploadTransitionScreen(RECT* pRect)
 	}
 	else
 	{
-		pTransitionClipRect = NULL;
+		pTransitionClipRect = nullptr;
 	}
 #else
 	(void)pRect; /*satisfy compiler (unused parameter)*/
@@ -715,7 +715,7 @@ void TFB_ScreenShot(void)
 {
 	char curTime[64];
 	char* fullPath;
-	time_t t = time(NULL);
+	time_t t = time(nullptr);
 	struct tm* tm = localtime(&t);
 	const char* shotDirName = getenv("UQM_SCR_SHOT_DIR");
 	struct stat sb;
@@ -724,7 +724,7 @@ void TFB_ScreenShot(void)
 	strftime(curTime, sizeof(curTime),
 			 "%Y-%m-%d_%H-%M-%S", tm);
 
-	len = snprintf(NULL, 0,
+	len = snprintf(nullptr, 0,
 				   "%s%s v%d.%d.%d %s.png", shotDirName, curTime,
 				   UQM_MAJOR_VERSION, UQM_MINOR_VERSION, UQM_PATCH_VERSION,
 				   chooseIfHd<const char*>(UQM_EXTRA_VERSION, "HD " UQM_EXTRA_VERSION));
@@ -762,7 +762,7 @@ void TFB_ScreenShot(void)
 
 void TFB_ClearFPSCanvas(void)
 {
-	SDL_FillRect(SDL_Screen_fps, NULL, 0x00000000);
+	SDL_FillRect(SDL_Screen_fps, nullptr, 0x00000000);
 }
 
 void TFB_GetScreenSize(uqm::SIZE* width, uqm::SIZE* height)

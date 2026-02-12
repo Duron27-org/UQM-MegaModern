@@ -139,7 +139,7 @@ CodeResToInitFunc(ShipCodeRes res)
 		default:
 			{
 				log_add(log_Warning, "Unknown SHIP identifier '%d'", res);
-				return NULL;
+				return nullptr;
 			}
 	}
 }
@@ -155,7 +155,7 @@ GetCodeResData(const char* ship_id, RESOURCE_DATA* resdata)
 	if (hData)
 	{
 		RaceDescInitFunc initFunc = CodeResToInitFunc((ShipCodeRes)which_res);
-		RACE_DESC* RDPtr = (initFunc == NULL) ? NULL : (*initFunc)();
+		RACE_DESC* RDPtr = (initFunc == nullptr) ? nullptr : (*initFunc)();
 		if (RDPtr == 0)
 		{
 			HFree(hData);
@@ -182,7 +182,7 @@ _ReleaseCodeResData(void* data)
 bool InstallCodeResType()
 {
 	return (InstallResTypeVectors("SHIP",
-								  GetCodeResData, _ReleaseCodeResData, NULL));
+								  GetCodeResData, _ReleaseCodeResData, nullptr));
 }
 
 
@@ -211,10 +211,10 @@ void* CaptureCodeRes(void* hCode, void* pData, void** ppLocData)
 {
 	CODERES_STRUCT* cs;
 
-	if (hCode == NULL)
+	if (hCode == nullptr)
 	{
-		log_add(log_Fatal, "dummy.c::CaptureCodeRes() hCode==NULL! FATAL!");
-		return (NULL);
+		log_add(log_Fatal, "dummy.c::CaptureCodeRes() hCode==nullptr! FATAL!");
+		return (nullptr);
 	}
 
 	cs = (CODERES_STRUCT*)hCode;

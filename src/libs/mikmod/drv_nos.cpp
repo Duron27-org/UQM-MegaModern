@@ -44,7 +44,7 @@
 
 #define ZEROLEN 32768
 
-static SBYTE* zerobuf = NULL;
+static SBYTE* zerobuf = nullptr;
 
 static BOOL NS_IsThere(void)
 {
@@ -61,7 +61,7 @@ static void NS_Exit(void)
 {
 	VC_Exit();
 	MikMod_free(zerobuf);
-	zerobuf = NULL;
+	zerobuf = nullptr;
 }
 
 static void NS_Update(void)
@@ -73,13 +73,13 @@ static void NS_Update(void)
 }
 
 MIKMODAPI MDRIVER drv_nos = {
-	NULL,
+	nullptr,
 	"No Sound",
 	"Nosound Driver v3.0",
 	255, 255,
 	"nosound",
-	NULL,
-	NULL,
+	nullptr,
+	nullptr,
 	NS_IsThere,
 	VC_SampleLoad,
 	VC_SampleUnload,
@@ -87,12 +87,12 @@ MIKMODAPI MDRIVER drv_nos = {
 	VC_SampleLength,
 	NS_Init,
 	NS_Exit,
-	NULL,
+	nullptr,
 	VC_SetNumVoices,
 	VC_PlayStart,
 	VC_PlayStop,
 	NS_Update,
-	NULL,
+	nullptr,
 	VC_VoiceSetVolume,
 	VC_VoiceGetVolume,
 	VC_VoiceSetFrequency,

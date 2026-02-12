@@ -38,7 +38,7 @@ static UniChar lastchar;
 
 #if SDL_MAJOR_VERSION == 1
 static int num_keys = 0;
-static int* kbdstate = NULL;
+static int* kbdstate = nullptr;
 // Holds all SDL keys +1 for holding invalid values
 #else  // Later versions of SDL use the text input API instead
 static bool set_character_mode = false;
@@ -88,7 +88,7 @@ static const char* menu_res_names[] = {
 	"debug_2",
 	"debug_3",
 	"debug_4",
-	NULL};
+	nullptr};
 
 static const char* flight_res_names[] = {
 	"up",
@@ -99,7 +99,7 @@ static const char* flight_res_names[] = {
 	"special",
 	"escape",
 	"thrust",
-	NULL};
+	nullptr};
 
 static void
 register_menu_controls(int index)
@@ -274,7 +274,7 @@ initJoystick(void)
 		slash = "/";
 	}
 
-	len = snprintf(NULL, 0, "%s%sgamecontrollerdb.txt",
+	len = snprintf(nullptr, 0, "%s%sgamecontrollerdb.txt",
 				   baseContentPath, slash);
 
 	mapping_db = (char*)HMalloc(len + 1);

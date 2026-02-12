@@ -465,7 +465,7 @@ static const char* matchbalance(MatchState* ms, const char* s,
 	}
 	if (*s != *p)
 	{
-		return NULL;
+		return nullptr;
 	}
 	else
 	{
@@ -487,7 +487,7 @@ static const char* matchbalance(MatchState* ms, const char* s,
 			}
 		}
 	}
-	return NULL; /* string ends out of balance */
+	return nullptr; /* string ends out of balance */
 }
 
 
@@ -509,7 +509,7 @@ static const char* max_expand(MatchState* ms, const char* s,
 		}
 		i--; /* else didn't match; reduce 1 repetition to try again */
 	}
-	return NULL;
+	return nullptr;
 }
 
 
@@ -519,7 +519,7 @@ static const char* min_expand(MatchState* ms, const char* s,
 	for (;;)
 	{
 		const char* res = match(ms, s, ep + 1);
-		if (res != NULL)
+		if (res != nullptr)
 		{
 			return res;
 		}
@@ -529,7 +529,7 @@ static const char* min_expand(MatchState* ms, const char* s,
 		}
 		else
 		{
-			return NULL;
+			return nullptr;
 		}
 	}
 }
@@ -547,7 +547,7 @@ static const char* start_capture(MatchState* ms, const char* s,
 	ms->capture[level].init = s;
 	ms->capture[level].len = what;
 	ms->level = level + 1;
-	if ((res = match(ms, s, p)) == NULL) /* match failed? */
+	if ((res = match(ms, s, p)) == nullptr) /* match failed? */
 	{
 		ms->level--; /* undo capture */
 	}
@@ -561,7 +561,7 @@ static const char* end_capture(MatchState* ms, const char* s,
 	int l = capture_to_close(ms);
 	const char* res;
 	ms->capture[l].len = s - ms->capture[l].init; /* close capture */
-	if ((res = match(ms, s, p)) == NULL)		  /* match failed? */
+	if ((res = match(ms, s, p)) == nullptr)		  /* match failed? */
 	{
 		ms->capture[l].len = CAP_UNFINISHED; /* undo capture */
 	}
@@ -580,7 +580,7 @@ static const char* match_capture(MatchState* ms, const char* s, int l)
 	}
 	else
 	{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -619,7 +619,7 @@ init: /* using goto's to optimize tail recursion */
 					{
 						goto dflt; /* no; go to default */
 					}
-					s = (s == ms->src_end) ? s : NULL; /* check end of string */
+					s = (s == ms->src_end) ? s : nullptr; /* check end of string */
 					break;
 				}
 			case L_ESC:
@@ -629,11 +629,11 @@ init: /* using goto's to optimize tail recursion */
 						case 'b':
 							{ /* balanced string? */
 								s = matchbalance(ms, s, p + 2);
-								if (s != NULL)
+								if (s != nullptr)
 								{
 									p += 4;
 									goto init; /* return match(ms, s, p + 4); */
-								} /* else fail (s == NULL) */
+								} /* else fail (s == nullptr) */
 								break;
 							}
 						case 'f':
@@ -652,7 +652,7 @@ init: /* using goto's to optimize tail recursion */
 									p = ep;
 									goto init; /* return match(ms, s, ep); */
 								}
-								s = NULL; /* match failed */
+								s = nullptr; /* match failed */
 								break;
 							}
 						case '0':
@@ -667,7 +667,7 @@ init: /* using goto's to optimize tail recursion */
 						case '9':
 							{ /* capture results (%0-%9)? */
 								s = match_capture(ms, s, uchar(*(p + 1)));
-								if (s != NULL)
+								if (s != nullptr)
 								{
 									p += 2;
 									goto init; /* return match(ms, s, p + 2) */
@@ -693,7 +693,7 @@ dflt:
 						}
 						else /* '+' or no suffix */
 						{
-							s = NULL; /* fail */
+							s = nullptr; /* fail */
 						}
 					}
 					else
@@ -703,7 +703,7 @@ dflt:
 							case '?':
 								{ /* optional */
 									const char* res;
-									if ((res = match(ms, s + 1, ep + 1)) != NULL)
+									if ((res = match(ms, s + 1, ep + 1)) != nullptr)
 									{
 										s = res;
 									}
@@ -747,14 +747,14 @@ static const char* lmemfind(const char* s1, size_t l1,
 	}
 	else if (l2 > l1)
 	{
-		return NULL; /* avoids a negative `l1' */
+		return nullptr; /* avoids a negative `l1' */
 	}
 	else
 	{
 		const char* init; /* to search for a `*s2' inside `s1' */
 		l2--;			  /* 1st char will be checked by `memchr' */
 		l1 = l1 - l2;	  /* `s2' cannot be found after that */
-		while (l1 > 0 && (init = (const char*)memchr(s1, *s2, l1)) != NULL)
+		while (l1 > 0 && (init = (const char*)memchr(s1, *s2, l1)) != nullptr)
 		{
 			init++; /* 1st char is already checked */
 			if (memcmp(init, s2 + 1, l2) == 0)
@@ -767,7 +767,7 @@ static const char* lmemfind(const char* s1, size_t l1,
 				s1 = init;
 			}
 		}
-		return NULL; /* not found */
+		return nullptr; /* not found */
 	}
 }
 
@@ -881,13 +881,13 @@ static int str_find_aux(lua_State* L, int find)
 			const char* res;
 			ms.level = 0;
 			lua_assert(ms.matchdepth == MAXCCALLS);
-			if ((res = match(&ms, s1, p)) != NULL)
+			if ((res = match(&ms, s1, p)) != nullptr)
 			{
 				if (find)
 				{
 					lua_pushinteger(L, s1 - s + 1); /* start */
 					lua_pushinteger(L, res - s);	/* end */
-					return push_captures(&ms, NULL, 0) + 2;
+					return push_captures(&ms, nullptr, 0) + 2;
 				}
 				else
 				{
@@ -932,7 +932,7 @@ static int gmatch_aux(lua_State* L)
 		const char* e;
 		ms.level = 0;
 		lua_assert(ms.matchdepth == MAXCCALLS);
-		if ((e = match(&ms, src, p)) != NULL)
+		if ((e = match(&ms, src, p)) != nullptr)
 		{
 			lua_Integer newstart = e - s;
 			if (e == src)
@@ -1182,7 +1182,7 @@ static void addquoted(lua_State* L, luaL_Buffer* b, int arg)
 static const char* scanformat(lua_State* L, const char* strfrmt, char* form)
 {
 	const char* p = strfrmt;
-	while (*p != '\0' && strchr(FLAGS, *p) != NULL)
+	while (*p != '\0' && strchr(FLAGS, *p) != nullptr)
 	{
 		p++; /* skip flags */
 	}
@@ -1365,7 +1365,7 @@ static const luaL_Reg strlib[] = {
 	{"reverse", str_reverse},
 	{"sub",		str_sub	   },
 	{"upper",	  str_upper  },
-	{NULL,	   NULL	   }
+	{nullptr,	   nullptr	   }
 };
 
 

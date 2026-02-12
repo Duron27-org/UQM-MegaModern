@@ -118,7 +118,7 @@ Flash_createHighlight(CONTEXT gfxContext, const RECT* rect)
 {
 	FlashContext* context = Flash_create(gfxContext);
 
-	if (rect == NULL)
+	if (rect == nullptr)
 	{
 		// No rectangle specified. It should be specified later with
 		// Flash_setRect(), before calling Flash_start().
@@ -159,11 +159,11 @@ Flash_createOverlay(CONTEXT gfxContext, const POINT* origin, FRAME overlay)
 
 	context->type = FlashType_overlay;
 
-	if (origin == NULL || overlay == NULL)
+	if (origin == nullptr || overlay == nullptr)
 	{
 		// No overlay specified. It should be specified later with
 		// Flash_setOverlay(), before calling Flash_start().
-		context->u.overlay.frame = NULL;
+		context->u.overlay.frame = nullptr;
 		context->rect.corner.x = 0;
 		context->rect.corner.y = 0;
 		context->rect.extent.width = 0;
@@ -554,11 +554,11 @@ void Flash_setCacheSize(FlashContext* context, uqm::COUNT size)
 {
 	assert(size == 0 || size >= 2);
 
-	if (context->cache != NULL)
+	if (context->cache != nullptr)
 	{
 		Flash_clearCache(context);
 		HFree(context->cache);
-		context->cache = NULL;
+		context->cache = nullptr;
 	}
 
 	context->cacheSize = size;

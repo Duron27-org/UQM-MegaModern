@@ -187,7 +187,7 @@ GenerateColony_generateOrbital(SOLARSYS_STATE* solarSys,
 		solarSys->SysInfo.PlanetInfo.Tectonics = 0;
 		solarSys->SysInfo.PlanetInfo.SurfaceTemperature = 28;
 
-		LoadPlanet(NULL);
+		LoadPlanet(nullptr);
 
 		return true;
 	}

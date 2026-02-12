@@ -418,7 +418,7 @@ int luaK_numberK(FuncState* fs, lua_Number r)
 	lua_State* L = fs->ls->L;
 	TValue o;
 	setnvalue(&o, r);
-	if (r == 0 || luai_numisnan(NULL, r))
+	if (r == 0 || luai_numisnan(nullptr, r))
 	{ /* handle -0 and NaN */
 		/* use raw representation as key to avoid numeric problems */
 		setsvalue(L, L->top++, luaS_newlstr(L, (char*)&r, sizeof(r)));
@@ -983,7 +983,7 @@ void luaK_prefix(FuncState* fs, UnOpr op, expdesc* e, int line)
 			{
 				if (isnumeral(e)) /* minus constant? */
 				{
-					e->u.nval = luai_numunm(NULL, e->u.nval); /* fold it */
+					e->u.nval = luai_numunm(nullptr, e->u.nval); /* fold it */
 				}
 				else
 				{

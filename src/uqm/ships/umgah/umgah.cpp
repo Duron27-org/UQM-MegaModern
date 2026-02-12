@@ -59,7 +59,7 @@ static RACE_DESC umgah_desc =
 		 UMGAH_RACE_STRINGS,
 		 UMGAH_ICON_MASK_PMAP_ANIM,
 		 UMGAH_MICON_MASK_PMAP_ANIM,
-		 NULL, NULL, NULL},
+		 nullptr, nullptr, nullptr},
 		{
 			/* FLEET_STUFF */
 			833 / SPHERE_RADIUS_INCREMENT * 2, /* Initial SoI radius */
@@ -98,24 +98,24 @@ static RACE_DESC umgah_desc =
 			 CONE_SML_MASK_ANIM,
 		 },
 		 {UMGAH_CAPTAIN_MASK_PMAP_ANIM,
-		  NULL, NULL, NULL, NULL, NULL,
+		  nullptr, nullptr, nullptr, nullptr, nullptr,
 		  0, 0, 0, 0, 0},
 		 UMGAH_VICTORY_SONG,
 		 UMGAH_SHIP_SOUNDS,
-		 {NULL, NULL, NULL},
-		 {NULL, NULL, NULL},
-		 {NULL, NULL, NULL},
-		 NULL,
-		 NULL},
+		 {nullptr, nullptr, nullptr},
+		 {nullptr, nullptr, nullptr},
+		 {nullptr, nullptr, nullptr},
+		 nullptr,
+		 nullptr},
 		{
 			0,
 			(LONG_RANGE_WEAPON << 2),
-			NULL,
+			nullptr,
 		 },
-		(UNINIT_FUNC*)NULL,
-		(PREPROCESS_FUNC*)NULL,
-		(POSTPROCESS_FUNC*)NULL,
-		(INIT_WEAPON_FUNC*)NULL,
+		(UNINIT_FUNC*)nullptr,
+		(PREPROCESS_FUNC*)nullptr,
+		(POSTPROCESS_FUNC*)nullptr,
+		(INIT_WEAPON_FUNC*)nullptr,
 		0,
 		0, /* CodeRef */
 };
@@ -150,7 +150,7 @@ SetCustomShipData(RACE_DESC* pRaceDesc, const CustomShipData_t* data)
 	if (pRaceDesc->data) // Out with the old
 	{
 		HFree(pRaceDesc->data);
-		pRaceDesc->data = NULL;
+		pRaceDesc->data = nullptr;
 	}
 
 	if (data) // In with the new
@@ -413,7 +413,7 @@ umgah_preprocess(ELEMENT* ElementPtr)
 	if (ElementPtr->state_flags & APPEARING)
 	{
 		// Reset the value just in case
-		SetCustomShipData(StarShipPtr->RaceDescPtr, NULL);
+		SetCustomShipData(StarShipPtr->RaceDescPtr, nullptr);
 	}
 	else
 	{
@@ -442,7 +442,7 @@ umgah_preprocess(ELEMENT* ElementPtr)
 static void
 uninit_umgah(RACE_DESC* pRaceDesc)
 {
-	SetCustomShipData(pRaceDesc, NULL);
+	SetCustomShipData(pRaceDesc, nullptr);
 }
 
 RACE_DESC*

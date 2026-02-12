@@ -40,7 +40,7 @@ void ReadGroupHeader(GAME_STATE_FILE* fp, GROUP_HEADER* pGH)
 	sread_8(fp, &pGH->NumGroups);
 	sread_8(fp, &pGH->day_index);
 	sread_8(fp, &pGH->month_index);
-	sread_8(fp, NULL); /* padding */
+	sread_8(fp, nullptr); /* padding */
 	sread_16(fp, &pGH->star_index);
 	sread_16(fp, &pGH->year_index);
 	sread_a32(fp, pGH->GroupOffset, NUM_SAVED_BATTLE_GROUPS + 1);
@@ -61,10 +61,10 @@ void ReadShipFragment(GAME_STATE_FILE* fp, SHIP_FRAGMENT* FragPtr)
 {
 	uqm::BYTE tmpb;
 
-	sread_16(fp, NULL); /* unused: was which_side */
+	sread_16(fp, nullptr); /* unused: was which_side */
 	sread_8(fp, &FragPtr->captains_name_index);
-	sread_8(fp, NULL);	/* padding; for savegame compat */
-	sread_16(fp, NULL); /* unused: was ship_flags */
+	sread_8(fp, nullptr);	/* padding; for savegame compat */
+	sread_16(fp, nullptr); /* unused: was ship_flags */
 	sread_8(fp, &FragPtr->race_id);
 	sread_8(fp, &FragPtr->index);
 	// XXX: reading crew as uqm::BYTE to maintain savegame compatibility
@@ -74,8 +74,8 @@ void ReadShipFragment(GAME_STATE_FILE* fp, SHIP_FRAGMENT* FragPtr)
 	FragPtr->max_crew = tmpb;
 	sread_8(fp, &FragPtr->energy_level);
 	sread_8(fp, &FragPtr->max_energy);
-	sread_16(fp, NULL); /* unused; was loc.x */
-	sread_16(fp, NULL); /* unused; was loc.y */
+	sread_16(fp, nullptr); /* unused; was loc.x */
+	sread_16(fp, nullptr); /* unused; was loc.y */
 }
 
 void WriteShipFragment(GAME_STATE_FILE* fp, const SHIP_FRAGMENT* FragPtr)
@@ -99,16 +99,16 @@ void ReadIpGroup(GAME_STATE_FILE* fp, IP_GROUP* GroupPtr)
 {
 	uqm::BYTE tmpb;
 
-	sread_16(fp, NULL); /* unused; was which_side */
-	sread_8(fp, NULL);	/* unused; was captains_name_index */
-	sread_8(fp, NULL);	/* padding; for savegame compat */
+	sread_16(fp, nullptr); /* unused; was which_side */
+	sread_8(fp, nullptr);	/* unused; was captains_name_index */
+	sread_8(fp, nullptr);	/* padding; for savegame compat */
 	sread_16(fp, &GroupPtr->group_counter);
 	sread_8(fp, &GroupPtr->race_id);
 	sread_8(fp, &tmpb); /* was var2 */
 	GroupPtr->sys_loc = LONIBBLE(tmpb);
 	GroupPtr->task = HINIBBLE(tmpb);
 	sread_8(fp, &GroupPtr->in_system); /* was crew_level */
-	sread_8(fp, NULL);				   /* unused; was max_crew */
+	sread_8(fp, nullptr);				   /* unused; was max_crew */
 	sread_8(fp, &tmpb);				   /* was energy_level */
 	GroupPtr->dest_loc = LONIBBLE(tmpb);
 	GroupPtr->orbit_pos = HINIBBLE(tmpb);

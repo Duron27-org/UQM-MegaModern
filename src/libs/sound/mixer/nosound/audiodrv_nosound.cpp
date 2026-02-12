@@ -205,7 +205,7 @@ void noSound_Uninit(void)
 		if (soundSource[i].sbuffer)
 		{
 			void* sbuffer = soundSource[i].sbuffer;
-			soundSource[i].sbuffer = NULL;
+			soundSource[i].sbuffer = nullptr;
 			HFree(sbuffer);
 		}
 		DestroyMutex(soundSource[i].stream_mutex);
@@ -242,7 +242,7 @@ int PlaybackTaskFunc(void* data)
 	while (!Task_ReadState(task, TASK_EXIT))
 	{
 		entryTime = GetTimeCounter();
-		mixer_MixFake(NULL, stream, len);
+		mixer_MixFake(nullptr, stream, len);
 		delay = period - (GetTimeCounter() - entryTime);
 		if (delay > 0)
 		{

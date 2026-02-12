@@ -109,7 +109,7 @@ static RACE_DESC sis_desc =
 		 NULL_RESOURCE,
 		 SIS_ICON_MASK_PMAP_ANIM,
 		 NULL_RESOURCE,
-		 NULL, NULL, NULL},
+		 nullptr, nullptr, nullptr},
 		{
 			/* FLEET_STUFF */
 			0, /* Initial sphere of influence radius */
@@ -148,24 +148,24 @@ static RACE_DESC sis_desc =
 			 NULL_RESOURCE,
 		 },
 		 {SIS_CAPTAIN_MASK_PMAP_ANIM,
-		  NULL, NULL, NULL, NULL, NULL,
+		  nullptr, nullptr, nullptr, nullptr, nullptr,
 		  0, 0, 0, 0, 0},
 		 SIS_VICTORY_SONG,
 		 SIS_SHIP_SOUNDS,
-		 {NULL, NULL, NULL},
-		 {NULL, NULL, NULL},
-		 {NULL, NULL, NULL},
-		 NULL,
-		 NULL},
+		 {nullptr, nullptr, nullptr},
+		 {nullptr, nullptr, nullptr},
+		 {nullptr, nullptr, nullptr},
+		 nullptr,
+		 nullptr},
 		{
 			0,
 			BLASTER_SPEED* BLASTER_LIFE,
-			NULL,
+			nullptr,
 		 },
-		(UNINIT_FUNC*)NULL,
-		(PREPROCESS_FUNC*)NULL,
-		(POSTPROCESS_FUNC*)NULL,
-		(INIT_WEAPON_FUNC*)NULL,
+		(UNINIT_FUNC*)nullptr,
+		(PREPROCESS_FUNC*)nullptr,
+		(POSTPROCESS_FUNC*)nullptr,
+		(INIT_WEAPON_FUNC*)nullptr,
 		0,
 		0, /* CodeRef */
 };
@@ -213,7 +213,7 @@ SetCustomShipData(RACE_DESC* pRaceDesc, const CustomShipData_t* data)
 	if (pRaceDesc->data) // Out with the old
 	{
 		HFree(pRaceDesc->data);
-		pRaceDesc->data = NULL;
+		pRaceDesc->data = nullptr;
 	}
 
 	if (data) // In with the new
@@ -605,7 +605,7 @@ blaster_collision(ELEMENT* ElementPtr0, POINT* pPt0,
 				BlastElementPtr->life_span = 2;
 				BlastElementPtr->current.image.frame =
 					SetAbsFrameIndex(ElementPtr0->current.image.frame, 0);
-				BlastElementPtr->preprocess_func = NULL;
+				BlastElementPtr->preprocess_func = nullptr;
 				break;
 			case BLASTER_DAMAGE * 2:
 				BlastElementPtr->life_span = 6;
@@ -729,7 +729,7 @@ sis_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 			if (StarShipPtr->special_counter == 0
 				&& ((lpEvalDesc->ObjectPtr
 					 && lpEvalDesc->which_turn <= 2)
-					|| (ObjectsOfConcern[ENEMY_SHIP_INDEX].ObjectPtr != NULL
+					|| (ObjectsOfConcern[ENEMY_SHIP_INDEX].ObjectPtr != nullptr
 						&& ObjectsOfConcern[ENEMY_SHIP_INDEX].which_turn <= 4)))
 			{
 				StarShipPtr->ship_input_state |= SPECIAL;
@@ -738,7 +738,7 @@ sis_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 			{
 				StarShipPtr->ship_input_state &= ~SPECIAL;
 			}
-			lpEvalDesc->ObjectPtr = NULL;
+			lpEvalDesc->ObjectPtr = nullptr;
 		}
 		else if (MANEUVERABILITY(&StarShipPtr->RaceDescPtr->cyborg_control)
 					 < RESOLUTION_COMPENSATED(MEDIUM_SHIP)
@@ -1090,5 +1090,5 @@ uninit_sis(RACE_DESC* pRaceDesc)
 		}
 	}
 
-	SetCustomShipData(pRaceDesc, NULL);
+	SetCustomShipData(pRaceDesc, nullptr);
 }

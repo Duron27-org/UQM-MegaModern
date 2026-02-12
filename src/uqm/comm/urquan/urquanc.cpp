@@ -24,9 +24,9 @@
 static LOCDATA urquan_desc =
 	{
 		URQUAN_CONVERSATION, /* AlienConv */
-		NULL, /* init_encounter_func */
-		NULL, /* post_encounter_func */
-		NULL, /* uninit_encounter_func */
+		nullptr, /* init_encounter_func */
+		nullptr, /* post_encounter_func */
+		nullptr, /* uninit_encounter_func */
 		URQUAN_PMAP_ANIM, /* AlienFrame */
 		URQUAN_FONT, /* AlienFont */
 		WHITE_COLOR_INIT, /* AlienTextFColor */
@@ -160,13 +160,13 @@ static LOCDATA urquan_desc =
 								0, /* RestartRate */
 			0, /* BlockMask */
 		},
-		NULL, /* AlienNumberSpeech - none */
+		nullptr, /* AlienNumberSpeech - none */
 		/* Filler for loaded resources */
-		NULL,
-		NULL,
-		NULL,
-		NULL,
-		NULL,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
 };
 
 static void
@@ -624,7 +624,7 @@ init_urquan_comm(void)
 	urquan_desc.post_encounter_func = post_urquan_enc;
 	urquan_desc.uninit_encounter_func = uninit_urquan;
 
-	luaUqm_comm_init(NULL, NULL_RESOURCE);
+	luaUqm_comm_init(nullptr, NULL_RESOURCE);
 
 	urquan_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH >> 1);
 	urquan_desc.AlienTextBaseline.y = 0;

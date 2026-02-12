@@ -231,9 +231,9 @@ MeleeSetup_new(void)
 {
 	size_t teamI;
 	MeleeSetup* result = (MeleeSetup*)HMalloc(sizeof(MeleeSetup));
-	if (result == NULL)
+	if (result == nullptr)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	for (teamI = 0; teamI < NUM_SIDES; teamI++)
@@ -361,7 +361,7 @@ MeleeSetup_getSentShip(const MeleeSetup* setup, size_t teamNr,
 	return MeleeTeam_getShip(&setup->sentTeams[teamNr], slotNr);
 }
 
-// Returns NULL if there is no team name set. This is not the same
+// Returns nullptr if there is no team name set. This is not the same
 // as when an empty (zero-length) team name is set.
 // NB. This function returns a pointer to a static buffer, which is
 // overwritten by calls to MeleeSetup_setSentTeamName().
@@ -370,7 +370,7 @@ MeleeSetup_getSentTeamName(const MeleeSetup* setup, size_t teamNr)
 {
 	if (!setup->haveSentTeamName[teamNr])
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	return MeleeTeam_getTeamName(&setup->sentTeams[teamNr]);
@@ -393,14 +393,14 @@ bool MeleeSetup_setSentShip(MeleeSetup* setup, size_t teamNr,
 }
 
 // Returns true iff the state has actually changed.
-// 'name' can be NULL to indicate that no team name set. This is not the same
+// 'name' can be nullptr to indicate that no team name set. This is not the same
 // as when an empty (zero-length) team name is set.
 bool MeleeSetup_setSentTeamName(MeleeSetup* setup, size_t teamNr,
 								const char* name)
 {
 	bool haveSentName = setup->haveSentTeamName[teamNr];
 
-	if (name == NULL)
+	if (name == nullptr)
 	{
 		if (!haveSentName)
 		{
@@ -436,7 +436,7 @@ bool MeleeSetup_setSentTeamName(MeleeSetup* setup, size_t teamNr,
 		MeleeTeam_setName(team, name);
 	}
 
-	setup->haveSentTeamName[teamNr] = (name != NULL);
+	setup->haveSentTeamName[teamNr] = (name != nullptr);
 
 	return true;
 }

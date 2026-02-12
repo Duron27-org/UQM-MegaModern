@@ -48,7 +48,7 @@ extern long int random(void);
 #endif
 
 /* The currently playing module */
-MODULE* pf = NULL;
+MODULE* pf = nullptr;
 
 #define NUMVOICES(mod) (md_sngchn < (mod)->numvoices ? md_sngchn : (mod)->numvoices)
 
@@ -1984,7 +1984,7 @@ static int DoXMEffectL(UWORD tick, UWORD flags, MP_CONTROL* a, MODULE* mod, SWOR
 		INSTRUMENT* i = a->main.i;
 		MP_VOICE* aout;
 
-		if ((aout = a->slave) != NULL)
+		if ((aout = a->slave) != nullptr)
 		{
 			if (aout->venv.env)
 			{
@@ -2923,7 +2923,7 @@ static void DoNNAEffects(MODULE* mod, MP_CONTROL* a, UBYTE dat)
 	MP_VOICE* aout;
 
 	dat &= 0xf;
-	aout = (a->slave) ? a->slave : NULL;
+	aout = (a->slave) ? a->slave : nullptr;
 
 	switch (dat)
 	{
@@ -3331,7 +3331,7 @@ static void pt_Notes(MODULE* mod)
 			mod->numrow = mod->pattrows[mod->positions[mod->sngpos]];
 		}
 
-		a->row = (tr < mod->numtrk) ? UniFindRow(mod->tracks[tr], mod->patpos) : NULL;
+		a->row = (tr < mod->numtrk) ? UniFindRow(mod->tracks[tr], mod->patpos) : nullptr;
 		a->newsamp = 0;
 		if (!mod->vbtick)
 		{
@@ -3377,7 +3377,7 @@ static void pt_Notes(MODULE* mod)
 						break; /* safety valve */
 					}
 					funky |= 2;
-					a->main.i = (mod->flags & UF_INST) ? &mod->instruments[inst] : NULL;
+					a->main.i = (mod->flags & UF_INST) ? &mod->instruments[inst] : nullptr;
 					a->retrig = 0;
 					a->s3mtremor = 0;
 					a->ultoffset = 0;
@@ -3394,7 +3394,7 @@ static void pt_Notes(MODULE* mod)
 			INSTRUMENT* i;
 			SAMPLE* s;
 
-			if ((i = a->main.i) != NULL)
+			if ((i = a->main.i) != nullptr)
 			{
 				if (i->samplenumber[a->anote] >= mod->numsmp)
 				{
@@ -3512,7 +3512,7 @@ static void pt_EffectsPass1(MODULE* mod)
 	{
 		a = &mod->control[channel];
 
-		if ((aout = a->slave) != NULL)
+		if ((aout = a->slave) != nullptr)
 		{
 			a->main.fadevol = aout->main.fadevol;
 			a->main.period = aout->main.period;
@@ -3599,7 +3599,7 @@ static void pt_NNA(MODULE* mod)
 				{
 					/* Make sure the old MP_VOICE channel knows it has no
 					   master now ! */
-					a->slave = NULL;
+					a->slave = nullptr;
 					/* assume the channel is taken by NNA */
 					aout->mflag = 0;
 
@@ -3711,11 +3711,11 @@ static void pt_SetupVoices(MODULE* mod)
 			}
 
 			/* assign parts of MP_VOICE only done for a KICK_NOTE */
-			if ((aout = a->slave) != NULL)
+			if ((aout = a->slave) != nullptr)
 			{
 				if (aout->mflag && aout->master)
 				{
-					aout->master->slave = NULL;
+					aout->master->slave = nullptr;
 				}
 				aout->master = a;
 				a->slave = aout;
@@ -3979,13 +3979,13 @@ void Player_Exit_internal(MODULE* mod)
 	if (mod == pf)
 	{
 		Player_Stop_internal();
-		pf = NULL;
+		pf = nullptr;
 	}
 
 	MikMod_free(mod->control);
 	MikMod_free(mod->voice);
-	mod->control = NULL;
-	mod->voice = NULL;
+	mod->control = nullptr;
+	mod->voice = nullptr;
 }
 
 void Player_Exit(MODULE* mod)
@@ -4061,7 +4061,7 @@ void Player_Stop_internal(void)
 	{
 		pf->forbid = 1;
 	}
-	pf = NULL;
+	pf = nullptr;
 }
 
 MIKMODAPI void Player_Stop(void)
@@ -4100,13 +4100,13 @@ MIKMODAPI void Player_NextPosition(void)
 		for (t = 0; t < NUMVOICES(pf); t++)
 		{
 			Voice_Stop_internal(t);
-			pf->voice[t].main.i = NULL;
-			pf->voice[t].main.s = NULL;
+			pf->voice[t].main.i = nullptr;
+			pf->voice[t].main.s = nullptr;
 		}
 		for (t = 0; t < pf->numchn; t++)
 		{
-			pf->control[t].main.i = NULL;
-			pf->control[t].main.s = NULL;
+			pf->control[t].main.i = nullptr;
+			pf->control[t].main.s = nullptr;
 		}
 		pf->forbid = 0;
 	}
@@ -4128,13 +4128,13 @@ MIKMODAPI void Player_PrevPosition(void)
 		for (t = 0; t < NUMVOICES(pf); t++)
 		{
 			Voice_Stop_internal(t);
-			pf->voice[t].main.i = NULL;
-			pf->voice[t].main.s = NULL;
+			pf->voice[t].main.i = nullptr;
+			pf->voice[t].main.s = nullptr;
 		}
 		for (t = 0; t < pf->numchn; t++)
 		{
-			pf->control[t].main.i = NULL;
-			pf->control[t].main.s = NULL;
+			pf->control[t].main.i = nullptr;
+			pf->control[t].main.s = nullptr;
 		}
 		pf->forbid = 0;
 	}
@@ -4161,13 +4161,13 @@ MIKMODAPI void Player_SetPosition(UWORD pos)
 		for (t = 0; t < NUMVOICES(pf); t++)
 		{
 			Voice_Stop_internal(t);
-			pf->voice[t].main.i = NULL;
-			pf->voice[t].main.s = NULL;
+			pf->voice[t].main.i = nullptr;
+			pf->voice[t].main.s = nullptr;
 		}
 		for (t = 0; t < pf->numchn; t++)
 		{
-			pf->control[t].main.i = NULL;
-			pf->control[t].main.s = NULL;
+			pf->control[t].main.i = nullptr;
+			pf->control[t].main.s = nullptr;
 		}
 		pf->forbid = 0;
 

@@ -33,7 +33,7 @@ cdp_Error cdp_GetError(void);
 cdp_Module* cdp_LoadModule(const char* modname);
 void cdp_FreeModule(cdp_Module* module);
 // in the following calls when bMetaString is set
-// function will never return a NULL, instead it will
+// function will never return a nullptr, instead it will
 // return a valid string -- error meta-string
 const char* cdp_GetModuleContext(cdp_Module* module, bool bMetaString);
 const char* cdp_GetModuleName(cdp_Module* module, bool bMetaString);

@@ -50,7 +50,7 @@ uint32 crc_finish(const crc_State* state);
 // for netplayDebugFile
 //#define crc_log(...)  log_add (logDebug, __VA_ARGS__)
 #define crc_log(...)                                \
-	if (netplayDebugFile != NULL)                   \
+	if (netplayDebugFile != nullptr)                   \
 	{                                               \
 		uio_fprintf(netplayDebugFile, __VA_ARGS__); \
 		uio_putc('\n', netplayDebugFile);           \

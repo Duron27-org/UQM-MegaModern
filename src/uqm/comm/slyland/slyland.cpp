@@ -77,8 +77,8 @@ static const NUMBER_SPEECH_DESC probe_numbers_english =
 				/* 1000-999999 */
 				1000,			   /* Divider */
 				0,				   /* Subtrahend */
-				NULL,			   /* StrDigits - recurse */
-				NULL,			   /* Names - not used */
+				nullptr,			   /* StrDigits - recurse */
+				nullptr,			   /* Names - not used */
 				ENUMERATE_THOUSAND /* CommonIndex */
 			},
 						  {
@@ -86,7 +86,7 @@ static const NUMBER_SPEECH_DESC probe_numbers_english =
 				100,			   /* Divider */
 				0,				   /* Subtrahend */
 				probe_digit_names, /* StrDigits */
-				NULL,			   /* Names - not used */
+				nullptr,			   /* Names - not used */
 				ENUMERATE_HUNDRED  /* CommonIndex */
 			},
 						  {
@@ -94,7 +94,7 @@ static const NUMBER_SPEECH_DESC probe_numbers_english =
 				10,				  /* Divider */
 				0,				  /* Subtrahend */
 				probe_tens_names, /* StrDigits */
-				NULL,			  /* Names - not used */
+				nullptr,			  /* Names - not used */
 				0				  /* CommonIndex - not used */
 			},
 						  {
@@ -102,7 +102,7 @@ static const NUMBER_SPEECH_DESC probe_numbers_english =
 				1,				  /* Divider */
 				10,				  /* Subtrahend */
 				probe_teen_names, /* StrDigits */
-				NULL,			  /* Names - not used */
+				nullptr,			  /* Names - not used */
 				0				  /* CommonIndex - not used */
 			},
 						  {
@@ -110,7 +110,7 @@ static const NUMBER_SPEECH_DESC probe_numbers_english =
 				1,				   /* Divider */
 				0,				   /* Subtrahend */
 				probe_digit_names, /* StrDigits */
-				NULL,			   /* Names - not used */
+				nullptr,			   /* Names - not used */
 				0				   /* CommonIndex - not used */
 			}}
 };
@@ -118,9 +118,9 @@ static const NUMBER_SPEECH_DESC probe_numbers_english =
 static LOCDATA slylandro_desc =
 	{
 		SLYLANDRO_CONVERSATION, /* AlienConv */
-		NULL, /* init_encounter_func */
-		NULL, /* post_encounter_func */
-		NULL, /* uninit_encounter_func */
+		nullptr, /* init_encounter_func */
+		nullptr, /* post_encounter_func */
+		nullptr, /* uninit_encounter_func */
 		SLYLAND_PMAP_ANIM, /* AlienFrame */
 		SLYLAND_FONT, /* AlienFont */
 		WHITE_COLOR_INIT, /* AlienTextFColor */
@@ -214,11 +214,11 @@ static LOCDATA slylandro_desc =
 		},
 		&probe_numbers_english, /* AlienNumberSpeech - default */
 		/* Filler for loaded resources */
-		NULL,
-		NULL,
-		NULL,
-		NULL,
-		NULL,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
 };
 
 
@@ -259,7 +259,7 @@ sayCoord(int coord)
 	NPCPhrase_splice(coord < 0 ? COORD_MINUS : COORD_PLUS);
 	NPCNumber(ac / 10, "%03d");
 	NPCPhrase_splice(COORD_POINT);
-	NPCNumber(ac % 10, NULL);
+	NPCNumber(ac % 10, nullptr);
 }
 
 static void

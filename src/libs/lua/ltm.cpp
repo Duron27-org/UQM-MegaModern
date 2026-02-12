@@ -57,7 +57,7 @@ const TValue* luaT_gettm(Table* events, TMS event, TString* ename)
 	if (ttisnil(tm))
 	{											 /* no tag method? */
 		events->flags |= cast_byte(1u << event); /* cache this fact */
-		return NULL;
+		return nullptr;
 	}
 	else
 	{

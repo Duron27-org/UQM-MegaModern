@@ -92,7 +92,7 @@ typedef struct vcontrol_controller_list
 	SDL_JoystickID instance_id;
 } controller_list;
 
-static controller_list* controller_list_head = NULL;
+static controller_list* controller_list_head = nullptr;
 static int controller_assignments[2] = {-1, -1};
 static int active_controller_count = 0;
 
@@ -106,7 +106,7 @@ typedef struct
 	int logical_port;
 } default_binding;
 
-static default_binding* default_bindings = NULL;
+static default_binding* default_bindings = nullptr;
 static int default_binding_count = 0;
 static int default_binding_capacity = 0;
 
@@ -129,12 +129,12 @@ allocate_key_chunk(void)
 	{
 		int i;
 		x->remaining = POOL_CHUNK_SIZE;
-		x->next = NULL;
+		x->next = nullptr;
 		for (i = 0; i < POOL_CHUNK_SIZE; i++)
 		{
-			x->pool[i].target = NULL;
+			x->pool[i].target = nullptr;
 			x->pool[i].keycode = SDLK_UNKNOWN;
-			x->pool[i].next = NULL;
+			x->pool[i].next = nullptr;
 			x->pool[i].parent = x;
 		}
 	}
@@ -278,12 +278,12 @@ void create_joystick(int device_index)
 
 	for (int j = 0; j < x->numaxes; j++)
 	{
-		x->axes[j].neg = x->axes[j].pos = NULL;
+		x->axes[j].neg = x->axes[j].pos = nullptr;
 		x->axes[j].polarity = 0;
 	}
 	for (int j = 0; j < x->numbuttons; j++)
 	{
-		x->buttons[j] = NULL;
+		x->buttons[j] = nullptr;
 	}
 	x->stick = gamecontroller;
 	x->threshold = 10000;
@@ -354,7 +354,7 @@ destroy_joystick(SDL_JoystickID instance_id)
 			if (x->stick)
 			{
 				SDL_GameControllerClose(x->stick);
-				x->stick = NULL;
+				x->stick = nullptr;
 			}
 
 			HFree(x->axes);
@@ -415,17 +415,17 @@ void create_joystick(int index)
 		x->hats = HMalloc(sizeof(hat_type) * hats);
 		for (j = 0; j < axes; j++)
 		{
-			x->axes[j].neg = x->axes[j].pos = NULL;
+			x->axes[j].neg = x->axes[j].pos = nullptr;
 		}
 		for (j = 0; j < hats; j++)
 		{
-			x->hats[j].left = x->hats[j].right = NULL;
-			x->hats[j].up = x->hats[j].down = NULL;
+			x->hats[j].left = x->hats[j].right = nullptr;
+			x->hats[j].up = x->hats[j].down = nullptr;
 			x->hats[j].last = SDL_HAT_CENTERED;
 		}
 		for (j = 0; j < buttons; j++)
 		{
-			x->buttons[j] = NULL;
+			x->buttons[j] = nullptr;
 		}
 		x->stick = stick;
 	}
@@ -443,14 +443,14 @@ destroy_joystick(int index)
 	if (stick)
 	{
 		SDL_JoystickClose(stick);
-		joysticks[index].stick = NULL;
+		joysticks[index].stick = nullptr;
 		HFree(joysticks[index].axes);
 		HFree(joysticks[index].buttons);
 		HFree(joysticks[index].hats);
 		joysticks[index].numaxes = joysticks[index].numbuttons = 0;
-		joysticks[index].axes = NULL;
-		joysticks[index].buttons = NULL;
-		joysticks[index].hats = NULL;
+		joysticks[index].axes = nullptr;
+		joysticks[index].buttons = nullptr;
+		joysticks[index].hats = nullptr;
 	}
 }
 
@@ -464,7 +464,7 @@ key_init(void)
 	pool = allocate_key_chunk();
 	for (i = 0; i < KEYBOARD_INPUT_BUCKETS; i++)
 	{
-		bindings[i] = NULL;
+		bindings[i] = nullptr;
 	}
 
 #ifdef HAVE_JOYSTICK
@@ -474,8 +474,8 @@ key_init(void)
 		controller_assignments[i] = -1;
 	}
 	active_controller_count = 0;
-	controller_list_head = NULL;
-	default_bindings = NULL;
+	controller_list_head = nullptr;
+	default_bindings = nullptr;
 	default_binding_count = 0;
 	default_binding_capacity = 0;
 #else
@@ -488,16 +488,16 @@ key_init(void)
 		joysticks = HMalloc(sizeof(joystick) * joycount);
 		for (i = 0; i < joycount; i++)
 		{
-			joysticks[i].stick = NULL;
+			joysticks[i].stick = nullptr;
 			joysticks[i].numaxes = joysticks[i].numbuttons = 0;
-			joysticks[i].axes = NULL;
-			joysticks[i].buttons = NULL;
+			joysticks[i].axes = nullptr;
+			joysticks[i].buttons = nullptr;
 			joysticks[i].threshold = 10000;
 		}
 	}
 	else
 	{
-		joysticks = NULL;
+		joysticks = nullptr;
 	}
 #endif // SDL_MAJOR_VERSION
 #else
@@ -516,9 +516,9 @@ key_uninit(void)
 	free_key_pool(pool);
 	for (i = 0; i < KEYBOARD_INPUT_BUCKETS; i++)
 	{
-		bindings[i] = NULL;
+		bindings[i] = nullptr;
 	}
-	pool = NULL;
+	pool = nullptr;
 
 #ifdef HAVE_JOYSTICK
 #if SDL_MAJOR_VERSION > 1
@@ -531,12 +531,12 @@ key_uninit(void)
 		destroy_joystick(current->instance_id);
 		current = next;
 	}
-	controller_list_head = NULL;
+	controller_list_head = nullptr;
 	active_controller_count = 0;
 
 	// Free binding tracking
 	HFree(default_bindings);
-	default_bindings = NULL;
+	default_bindings = nullptr;
 	default_binding_count = 0;
 	default_binding_capacity = 0;
 #else
@@ -607,7 +607,7 @@ add_binding(keybinding** newptr, int* target, sdl_key_t keycode)
 	/* Acquire a pointer to the keybinding * that we'll be
 	 * overwriting.  Along the way, ensure we haven't already
 	 * bound this symbol to this target.  If we have, return.*/
-	while (*newptr != NULL)
+	while (*newptr != nullptr)
 	{
 		if (((*newptr)->target == target)
 			&& ((*newptr)->keycode == keycode))
@@ -625,7 +625,7 @@ add_binding(keybinding** newptr, int* target, sdl_key_t keycode)
 	while (searchbase->remaining == 0)
 	{
 		/* If we're completely full, allocate a new chunk */
-		if (searchbase->next == NULL)
+		if (searchbase->next == nullptr)
 		{
 			searchbase->next = allocate_key_chunk();
 		}
@@ -634,10 +634,10 @@ add_binding(keybinding** newptr, int* target, sdl_key_t keycode)
 
 	/* Now find a free binding within it */
 
-	newbinding = NULL;
+	newbinding = nullptr;
 	for (i = 0; i < POOL_CHUNK_SIZE; i++)
 	{
-		if (searchbase->pool[i].target == NULL)
+		if (searchbase->pool[i].target == nullptr)
 		{
 			newbinding = &searchbase->pool[i];
 			break;
@@ -654,7 +654,7 @@ add_binding(keybinding** newptr, int* target, sdl_key_t keycode)
 
 	newbinding->target = target;
 	newbinding->keycode = keycode;
-	newbinding->next = NULL;
+	newbinding->next = nullptr;
 	*newptr = newbinding;
 	searchbase->remaining--;
 }
@@ -671,23 +671,23 @@ remove_binding(keybinding** ptr, int* target, sdl_key_t keycode)
 	{
 		keybinding* todel = *ptr;
 		*ptr = todel->next;
-		todel->target = NULL;
+		todel->target = nullptr;
 		todel->keycode = SDLK_UNKNOWN;
-		todel->next = NULL;
+		todel->next = nullptr;
 		todel->parent->remaining++;
 	}
 	else
 	{
 		keybinding* prev = *ptr;
-		while (prev && prev->next != NULL)
+		while (prev && prev->next != nullptr)
 		{
 			if (prev->next->target == target)
 			{
 				keybinding* todel = prev->next;
 				prev->next = todel->next;
-				todel->target = NULL;
+				todel->target = nullptr;
 				todel->keycode = SDLK_UNKNOWN;
-				todel->next = NULL;
+				todel->next = nullptr;
 				todel->parent->remaining++;
 			}
 			prev = prev->next;
@@ -698,7 +698,7 @@ remove_binding(keybinding** ptr, int* target, sdl_key_t keycode)
 static void
 activate(keybinding* i, sdl_key_t keycode)
 {
-	while (i != NULL)
+	while (i != nullptr)
 	{
 		if (i->keycode == keycode)
 		{
@@ -711,7 +711,7 @@ activate(keybinding* i, sdl_key_t keycode)
 static void
 deactivate(keybinding* i, sdl_key_t keycode)
 {
-	while (i != NULL)
+	while (i != nullptr)
 	{
 		int v = *(i->target) & VCONTROL_MASK;
 		if ((i->keycode == keycode) && (v > 0))
@@ -1585,7 +1585,7 @@ void VControl_ResetInput(void)
 	 * oh well, no harm done. */
 
 	keypool* base = pool;
-	while (base != NULL)
+	while (base != nullptr)
 	{
 		int i;
 		for (i = 0; i < POOL_CHUNK_SIZE; i++)
@@ -1606,7 +1606,7 @@ void VControl_BeginFrame(void)
 	 * multiple times; oh well, no harm done. */
 
 	keypool* base = pool;
-	while (base != NULL)
+	while (base != nullptr)
 	{
 		int i;
 		for (i = 0; i < POOL_CHUNK_SIZE; i++)
@@ -1711,7 +1711,7 @@ void VControl_ClearGesture(void)
 
 int VControl_GetLastGesture(VCONTROL_GESTURE* g)
 {
-	if (event_ready && g != NULL)
+	if (event_ready && g != nullptr)
 	{
 		event2gesture(&last_interesting, g);
 	}

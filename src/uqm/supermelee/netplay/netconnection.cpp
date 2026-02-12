@@ -72,7 +72,7 @@ NetConnection_open(int player, const NetplayPeerOptions* options,
 		struct tm* nowTm;
 		size_t strftimeResult;
 
-		now = time(NULL);
+		now = time(nullptr);
 		if (now == (time_t)-1)
 		{
 			log_add(log_Fatal, "time() failed: %s.", strerror(errno));
@@ -95,7 +95,7 @@ NetConnection_open(int player, const NetplayPeerOptions* options,
 		// The user needs to create the debug/ dir manually. If there
 		// is no debug/ dir, no log will be created.
 		conn->debugFile = uio_fopen(configDir, dumpFileName, "wt");
-		if (conn->debugFile == NULL)
+		if (conn->debugFile == nullptr)
 		{
 			log_add(log_Debug, "Not creating a netplay debug log for "
 							   "player %d.",
@@ -106,7 +106,7 @@ NetConnection_open(int player, const NetplayPeerOptions* options,
 			log_add(log_Debug, "Creating netplay debug log '%s' for "
 							   "player %d.",
 					dumpFileName, player);
-			if (netplayDebugFile == NULL)
+			if (netplayDebugFile == nullptr)
 			{
 				// Debug info relating to no specific network connection
 				// is sent to the first opened one.
@@ -116,7 +116,7 @@ NetConnection_open(int player, const NetplayPeerOptions* options,
 	}
 #endif
 
-	conn->nd = NULL;
+	conn->nd = nullptr;
 	conn->player = player;
 	conn->state = NetState_unconnected;
 	conn->options = options;
@@ -127,15 +127,15 @@ NetConnection_open(int player, const NetplayPeerOptions* options,
 	conn->closeCallback = closeCallback;
 	conn->errorCallback = errorCallback;
 	conn->deleteCallback = deleteCallback;
-	conn->readyCallback = NULL;
-	conn->readyCallbackArg = NULL;
-	conn->resetCallback = NULL;
-	conn->resetCallbackArg = NULL;
+	conn->readyCallback = nullptr;
+	conn->readyCallbackArg = nullptr;
+	conn->resetCallback = nullptr;
+	conn->resetCallbackArg = nullptr;
 
 	conn->readBuf = (uint8*)malloc(NETPLAY_READBUFSIZE);
 	conn->readEnd = conn->readBuf;
 
-	conn->stateData = NULL;
+	conn->stateData = nullptr;
 	conn->stateFlags.connected = false;
 	conn->stateFlags.disconnected = false;
 	conn->stateFlags.discriminant = false;
@@ -174,7 +174,7 @@ NetConnection_open(int player, const NetplayPeerOptions* options,
 static void
 NetConnection_doDeleteCallback(NetConnection* conn)
 {
-	if (conn->deleteCallback != NULL)
+	if (conn->deleteCallback != nullptr)
 	{
 		//NetConnection_incRef(conn);
 		conn->deleteCallback(conn);
@@ -186,23 +186,23 @@ static void
 NetConnection_delete(NetConnection* conn)
 {
 	NetConnection_doDeleteCallback(conn);
-	if (conn->stateData != NULL)
+	if (conn->stateData != nullptr)
 	{
 		NetConnectionStateData_release(conn->stateData);
-		conn->stateData = NULL;
+		conn->stateData = nullptr;
 	}
 	free(conn->readBuf);
 	PacketQueue_uninit(&conn->queue);
 
 #ifdef NETPLAY_DEBUG_FILE
-	if (conn->debugFile != NULL)
+	if (conn->debugFile != nullptr)
 	{
 		if (netplayDebugFile == conn->debugFile)
 		{
 			// There may be other network connections, with an open
 			// debug file, but we don't know about that.
 			// The debugging person just has to work around that.
-			netplayDebugFile = NULL;
+			netplayDebugFile = nullptr;
 		}
 		uio_fclose(conn->debugFile);
 	}
@@ -214,7 +214,7 @@ NetConnection_delete(NetConnection* conn)
 static void
 Netplay_doCloseCallback(NetConnection* conn)
 {
-	if (conn->closeCallback != NULL)
+	if (conn->closeCallback != nullptr)
 	{
 		//NetConnection_incRef(conn);
 		conn->closeCallback(conn);
@@ -242,25 +242,25 @@ static void
 closeCallback(NetDescriptor* nd)
 {
 	NetConnection* conn = (NetConnection*)NetDescriptor_getExtra(nd);
-	if (conn == NULL)
+	if (conn == nullptr)
 	{
 		return;
 	}
-	conn->nd = NULL;
+	conn->nd = nullptr;
 	NetConnection_doClose(conn);
 }
 
 // Close and release a NetConnection.
 void NetConnection_close(NetConnection* conn)
 {
-	if (conn->nd != NULL)
+	if (conn->nd != nullptr)
 	{
-		NetDescriptor_setCloseCallback(conn->nd, NULL);
+		NetDescriptor_setCloseCallback(conn->nd, nullptr);
 		// We're not interested in the close callback of the
 		// NetDescriptor anymore.
 		NetDescriptor_close(conn->nd);
 		// This would queue the close callback.
-		conn->nd = NULL;
+		conn->nd = nullptr;
 	}
 	if (!conn->stateFlags.disconnected)
 	{
@@ -273,7 +273,7 @@ void NetConnection_doErrorCallback(NetConnection* nd, int err)
 {
 	NetConnectionError error;
 
-	if (nd->errorCallback != NULL)
+	if (nd->errorCallback != nullptr)
 	{
 		error.state = nd->state;
 		error.err = err;

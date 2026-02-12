@@ -62,14 +62,14 @@ Alarm_compare(const Alarm* a1, const Alarm* a2)
 
 void Alarm_init(void)
 {
-	assert(alarmHeap == NULL);
+	assert(alarmHeap == nullptr);
 	alarmHeap = Heap_new((HeapValue_Comparator)Alarm_compare,
 						 4, 4, 0.8);
 }
 
 void Alarm_uninit(void)
 {
-	assert(alarmHeap != NULL);
+	assert(alarmHeap != nullptr);
 
 	while (Heap_hasMore(alarmHeap))
 	{
@@ -77,7 +77,7 @@ void Alarm_uninit(void)
 		Alarm_free(alarm);
 	}
 	Heap_delete(alarmHeap);
-	alarmHeap = NULL;
+	alarmHeap = nullptr;
 }
 
 static inline AlarmTime
@@ -92,7 +92,7 @@ Alarm_addAbsoluteMs(uint32 ms, AlarmCallback callback,
 {
 	Alarm* alarm;
 
-	assert(alarmHeap != NULL);
+	assert(alarmHeap != nullptr);
 
 	alarm = Alarm_alloc();
 	alarm->time = ms;
@@ -110,7 +110,7 @@ Alarm_addRelativeMs(uint32 ms, AlarmCallback callback,
 {
 	Alarm* alarm;
 
-	assert(alarmHeap != NULL);
+	assert(alarmHeap != nullptr);
 
 	alarm = Alarm_alloc();
 	alarm->time = AlarmTime_nowMs() + ms;
@@ -124,7 +124,7 @@ Alarm_addRelativeMs(uint32 ms, AlarmCallback callback,
 
 void Alarm_remove(Alarm* alarm)
 {
-	assert(alarmHeap != NULL);
+	assert(alarmHeap != nullptr);
 	Heap_remove(alarmHeap, (HeapValue*)alarm);
 	Alarm_free(alarm);
 }
@@ -137,7 +137,7 @@ bool Alarm_processOne(void)
 	AlarmTime now;
 	Alarm* alarm;
 
-	assert(alarmHeap != NULL);
+	assert(alarmHeap != nullptr);
 	if (!Heap_hasMore(alarmHeap))
 	{
 		return false;
@@ -163,7 +163,7 @@ void
 Alarm_processAll(void) {
 	AlarmTime now;
 
-	assert(alarmHeap != NULL);
+	assert(alarmHeap != nullptr);
 	
 	now = AlarmTime_nowMs();
 	while (Heap_hasMore(alarmHeap)) {

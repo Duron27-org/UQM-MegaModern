@@ -40,7 +40,7 @@ typedef struct anidata
 } AniData;
 
 extern uio_Repository* repository;
-static uio_AutoMount* autoMount[] = {NULL};
+static uio_AutoMount* autoMount[] = {nullptr};
 
 static void
 process_image(FRAME FramePtr, TFB_Canvas img[], AniData* ani, int cel_ct)
@@ -215,7 +215,7 @@ void* _GetCelData(uio_Stream* fp, uqm::DWORD length)
 			aniMount = uio_mountDir(repository, aniDirName, uio_FSTYPE_ZIP,
 									aniDir, aniFileName, "/", autoMount,
 									uio_MOUNT_RDONLY | uio_MOUNT_TOP,
-									NULL);
+									nullptr);
 			aniFile = uio_fopen(aniDir, aniFileName, "r");
 			opos = 0;
 			n = 0;
@@ -249,7 +249,7 @@ void* _GetCelData(uio_Stream* fp, uqm::DWORD length)
 		}
 		HFree(img);
 		HFree(ani);
-		return NULL;
+		return nullptr;
 	}
 
 	cel_index = 0;
@@ -266,13 +266,13 @@ void* _GetCelData(uio_Stream* fp, uqm::DWORD length)
 		}
 
 		img[cel_index] = TFB_DrawCanvas_LoadFromFile(aniDir, filename);
-		if (img[cel_index] == NULL)
+		if (img[cel_index] == nullptr)
 		{
 			const char* err;
 
 			err = TFB_DrawCanvas_GetError();
 			log_add(log_Warning, "_GetCelData: Unable to load image!");
-			if (err != NULL)
+			if (err != nullptr)
 			{
 				log_add(log_Warning, "Gfx Driver reports: %s", err);
 			}
@@ -288,7 +288,7 @@ void* _GetCelData(uio_Stream* fp, uqm::DWORD length)
 		}
 	}
 
-	Drawable = NULL;
+	Drawable = nullptr;
 	if (cel_index && (Drawable = AllocDrawable(cel_index)))
 	{
 		if (!Drawable)
@@ -299,7 +299,7 @@ void* _GetCelData(uio_Stream* fp, uqm::DWORD length)
 			}
 
 			HFree(Drawable);
-			Drawable = NULL;
+			Drawable = nullptr;
 		}
 		else
 		{
@@ -316,7 +316,7 @@ void* _GetCelData(uio_Stream* fp, uqm::DWORD length)
 		}
 	}
 
-	if (Drawable == NULL)
+	if (Drawable == nullptr)
 	{
 		log_add(log_Warning, "Couldn't get cel data for '%s'",
 				_cur_resfile_name);
@@ -338,7 +338,7 @@ bool _ReleaseCelData(void* handle)
 {
 	DRAWABLE DrawablePtr;
 	int cel_ct;
-	FRAME FramePtr = NULL;
+	FRAME FramePtr = nullptr;
 
 	if ((DrawablePtr = (DRAWABLE)handle) == 0)
 	{
@@ -357,7 +357,7 @@ bool _ReleaseCelData(void* handle)
 			TFB_Image* img = FramePtr[i].image;
 			if (img)
 			{
-				FramePtr[i].image = NULL;
+				FramePtr[i].image = nullptr;
 				TFB_DrawScreen_DeleteImage(img);
 			}
 		}
@@ -385,13 +385,13 @@ compareBCDIndex(const void* arg1, const void* arg2)
 void* _GetFontData(uio_Stream* fp, uqm::DWORD length)
 {
 	uqm::COUNT numDirEntries;
-	DIRENTRY fontDir = NULL;
-	BuildCharDesc* bcds = NULL;
+	DIRENTRY fontDir = nullptr;
+	BuildCharDesc* bcds = nullptr;
 	size_t numBCDs = 0;
 	int dirEntryI;
-	uio_DirHandle* fontDirHandle = NULL;
-	uio_MountHandle* fontMount = NULL;
-	FONT fontPtr = NULL;
+	uio_DirHandle* fontDirHandle = nullptr;
+	uio_MountHandle* fontMount = nullptr;
+	FONT fontPtr = nullptr;
 	uio_Stream* cfgFile = 0;
 	const char* cfg_name = "kerndat.fnt";
 
@@ -431,7 +431,7 @@ void* _GetFontData(uio_Stream* fp, uqm::DWORD length)
 		fontMount = uio_mountDir(repository, _cur_resfile_name, uio_FSTYPE_ZIP,
 								 fontDirHandle, fontZipName, "/", autoMount,
 								 uio_MOUNT_RDONLY | uio_MOUNT_TOP,
-								 NULL);
+								 nullptr);
 		uio_closeDir(fontDirHandle);
 	}
 
@@ -444,13 +444,13 @@ void* _GetFontData(uio_Stream* fp, uqm::DWORD length)
 	numDirEntries = GetDirEntryTableCount(fontDir);
 
 	fontDirHandle = uio_openDirRelative(contentDir, _cur_resfile_name, 0);
-	if (fontDirHandle == NULL)
+	if (fontDirHandle == nullptr)
 	{
 		goto err;
 	}
 
 	bcds = (BuildCharDesc*)HMalloc(numDirEntries * sizeof(BuildCharDesc));
-	if (bcds == NULL)
+	if (bcds == nullptr)
 	{
 		goto err;
 	}
@@ -482,7 +482,7 @@ void* _GetFontData(uio_Stream* fp, uqm::DWORD length)
 		}
 
 		canvas = TFB_DrawCanvas_LoadFromFile(fontDirHandle, char_name);
-		if (canvas == NULL)
+		if (canvas == nullptr)
 		{
 			continue;
 		}
@@ -500,7 +500,7 @@ void* _GetFontData(uio_Stream* fp, uqm::DWORD length)
 	}
 
 	fontPtr = AllocFont(0);
-	if (fontPtr == NULL)
+	if (fontPtr == nullptr)
 	{
 		goto err;
 	}
@@ -633,7 +633,7 @@ void* _GetFontData(uio_Stream* fp, uqm::DWORD length)
 					TFB_Char* destChar =
 						&page->charDesc[bcd->index - page->firstChar];
 
-					if (destChar->data != NULL)
+					if (destChar->data != nullptr)
 					{
 						// There's already an image for this character.
 						log_add(log_Debug, "Duplicate image for character %d "
@@ -660,7 +660,7 @@ void* _GetFontData(uio_Stream* fp, uqm::DWORD length)
 
 			startBCD = endBCD;
 		}
-		*pageEndPtr = NULL;
+		*pageEndPtr = nullptr;
 	}
 
 	if (!fontPtr->HaveFntData)
@@ -681,7 +681,7 @@ err:
 		HFree(fontPtr);
 	}
 
-	if (bcds != NULL)
+	if (bcds != nullptr)
 	{
 		size_t bcdI;
 		for (bcdI = 0; bcdI < numBCDs; bcdI++)
@@ -691,7 +691,7 @@ err:
 		HFree(bcds);
 	}
 
-	if (fontDirHandle != NULL)
+	if (fontDirHandle != nullptr)
 	{
 		uio_closeDir(fontDirHandle);
 	}
@@ -712,7 +712,7 @@ err:
 bool _ReleaseFontData(void* handle)
 {
 	FONT font = (FONT)handle;
-	if (font == NULL)
+	if (font == nullptr)
 	{
 		return false;
 	}
@@ -721,14 +721,14 @@ bool _ReleaseFontData(void* handle)
 		FONT_PAGE* page;
 		FONT_PAGE* nextPage;
 
-		for (page = font->fontPages; page != NULL; page = nextPage)
+		for (page = font->fontPages; page != nullptr; page = nextPage)
 		{
 			size_t charI;
 			for (charI = 0; charI < page->numChars; charI++)
 			{
 				TFB_Char* c = &page->charDesc[charI];
 
-				if (c->data == NULL)
+				if (c->data == nullptr)
 				{
 					continue;
 				}

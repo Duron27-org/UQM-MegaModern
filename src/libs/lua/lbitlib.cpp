@@ -244,7 +244,7 @@ static const luaL_Reg bitlib[] = {
 	{"replace", b_replace},
 	{"rrotate", b_rrot	  },
 	{"rshift",  b_rshift },
-	{NULL,	   NULL	   }
+	{nullptr,	   nullptr	   }
 };
 
 

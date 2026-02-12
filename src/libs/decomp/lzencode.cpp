@@ -43,10 +43,10 @@ static uqm::SWORD* encode_arrays;
 static bool
 InitTree(void)
 {
-	if ((encode_arrays = (uqm::SWORD*)AllocEncodeArrays()) == NULL)
+	if ((encode_arrays = (uqm::SWORD*)AllocEncodeArrays()) == nullptr)
 	{
 		FreeCodeArrays(encode_arrays);
-		encode_arrays = NULL;
+		encode_arrays = nullptr;
 		return (false);
 	}
 	else
@@ -304,10 +304,10 @@ UninitTree(void)
 	}
 
 	FreeCodeArrays(encode_arrays);
-	encode_arrays = NULL;
-	lson = NULL;
-	rson = NULL;
-	dad = NULL;
+	encode_arrays = nullptr;
+	lson = nullptr;
+	rson = nullptr;
+	dad = nullptr;
 }
 
 static void

@@ -50,7 +50,7 @@ set_strtab_entry(STRING_TABLE_DESC* strtab, int index, const char* value,
 	if (str->data)
 	{
 		HFree(str->data);
-		str->data = NULL;
+		str->data = nullptr;
 		str->length = 0;
 	}
 	if (len)
@@ -79,7 +79,7 @@ copy_strings_to_strtab(STRING_TABLE_DESC* strtab, size_t firstIndex,
 
 // Check whether a buffer has a certain minimum size, and enlarge it
 // if necessary.
-// buf: pointer to the pointer to the buffer. May be NULL.
+// buf: pointer to the pointer to the buffer. May be nullptr.
 // curSize: pointer to the current size (multiple of 'increment')
 // minSize: required minimum size
 // increment: size to increment the buffer with if necessary
@@ -102,7 +102,7 @@ ensureBufSize(char** buf, size_t* curSize, size_t minSize, size_t increment)
 	newSize = ((minSize + (increment - 1)) / increment) * increment;
 	// Smallest multiple of 'increment' larger or equal to minSize.
 	newBuf = (char*)HRealloc(*buf, newSize);
-	if (newBuf == NULL)
+	if (newBuf == nullptr)
 	{
 		return false;
 	}
@@ -122,28 +122,28 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 	// int num_data_sets; unused
 	uqm::DWORD opos;
 
-	char* namedata = NULL;
+	char* namedata = nullptr;
 	// Contains the names (indexes) of the dialogs.
 	uqm::DWORD nlen[MAX_STRINGS];
 	// Length of each of the names.
 	uqm::DWORD NameOffs;
 	size_t tot_name_size;
 
-	char* strdata = NULL;
+	char* strdata = nullptr;
 	// Contains the dialog strings.
 	uqm::DWORD slen[MAX_STRINGS];
 	// Length of each of the dialog strings.
 	uqm::DWORD StringOffs;
 	size_t tot_string_size;
 
-	char* clipdata = NULL;
+	char* clipdata = nullptr;
 	// Contains the file names of the speech files.
 	uqm::DWORD clen[MAX_STRINGS];
 	// Length of each of the speech file names.
 	uqm::DWORD ClipOffs;
 	size_t tot_clip_size;
 
-	char* ts_data = NULL;
+	char* ts_data = nullptr;
 	// Contains the timestamp data for synching the text with the
 	// speech.
 	uqm::DWORD tslen[MAX_STRINGS];
@@ -156,9 +156,9 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 	char* clip_path;
 	char* ts_path;
 
-	uio_Stream* fp = NULL;
-	uio_Stream* timestamp_fp = NULL;
-	StringHashTable_HashTable* nameHashTable = NULL;
+	uio_Stream* fp = nullptr;
+	uio_Stream* timestamp_fp = nullptr;
+	StringHashTable_HashTable* nameHashTable = nullptr;
 	// Hash table of string names (such as "GLAD_WHEN_YOU_COME_BACK")
 	// to a STRING.
 
@@ -166,9 +166,9 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 	strncpy(paths, path, 1023);
 	paths[1023] = '\0';
 	clip_path = strchr(paths, ':');
-	if (clip_path == NULL)
+	if (clip_path == nullptr)
 	{
-		ts_path = NULL;
+		ts_path = nullptr;
 	}
 	else
 	{
@@ -176,7 +176,7 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 		clip_path++;
 
 		ts_path = strchr(clip_path, ':');
-		if (ts_path != NULL)
+		if (ts_path != nullptr)
 		{
 			*ts_path = '\0';
 			ts_path++;
@@ -184,10 +184,10 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 	}
 
 	fp = res_OpenResFile(contentDir, paths, "rb");
-	if (fp == NULL)
+	if (fp == nullptr)
 	{
 		log_add(log_Warning, "Warning: Can't open '%s'", paths);
-		resdata->ptr = NULL;
+		resdata->ptr = nullptr;
 		return;
 	}
 
@@ -238,11 +238,11 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 	{
 		goto err;
 	}
-	ts_data = NULL;
+	ts_data = nullptr;
 
 	nameHashTable = StringHashTable_newHashTable(
-		NULL, NULL, NULL, NULL, NULL, 0, 0.85, 0.9);
-	if (nameHashTable == NULL)
+		nullptr, nullptr, nullptr, nullptr, nullptr, 0, 0.85, 0.9);
+	if (nameHashTable == nullptr)
 	{
 		goto err;
 	}
@@ -252,7 +252,7 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 	if (ts_path)
 	{
 		timestamp_fp = uio_fopen(contentDir, ts_path, "rb");
-		if (timestamp_fp != NULL)
+		if (timestamp_fp != nullptr)
 		{
 			tot_ts_size = POOL_SIZE;
 			ts_data = (char*)HMalloc(tot_ts_size);
@@ -273,7 +273,7 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 	{
 		int l;
 
-		if (uio_fgets(CurrentLine, sizeof(CurrentLine), fp) == NULL)
+		if (uio_fgets(CurrentLine, sizeof(CurrentLine), fp) == nullptr)
 		{
 			// EOF or read error.
 			break;
@@ -364,14 +364,14 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 											 "for '%s'.  Disabling timestamps",
 								name);
 						HFree(ts_data);
-						ts_data = NULL;
+						ts_data = nullptr;
 						uio_fclose(timestamp_fp);
-						timestamp_fp = NULL;
+						timestamp_fp = nullptr;
 						TSOffs = 0;
 					}
 				}
 				clen[stringI] = 0;
-				ts = strtok(NULL, " \t\r\n)");
+				ts = strtok(nullptr, " \t\r\n)");
 				if (ts)
 				{
 					l = path_len + strlen(ts) + 1;
@@ -434,7 +434,7 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 		uio_fclose(timestamp_fp);
 	}
 
-	result = NULL;
+	result = nullptr;
 	// num_data_sets = (ClipOffs ? 1 : 0) + (TSOffs ? 1 : 0) + 1; unused
 	if (++stringI)
 	{
@@ -498,11 +498,11 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 		}
 	}
 	HFree(strdata);
-	if (clipdata != NULL)
+	if (clipdata != nullptr)
 	{
 		HFree(clipdata);
 	}
-	if (ts_data != NULL)
+	if (ts_data != nullptr)
 	{
 		HFree(ts_data);
 	}
@@ -511,24 +511,24 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 	return;
 
 err:
-	if (nameHashTable != NULL)
+	if (nameHashTable != nullptr)
 	{
 		StringHashTable_deleteHashTable(nameHashTable);
 	}
-	if (ts_data != NULL)
+	if (ts_data != nullptr)
 	{
 		HFree(ts_data);
 	}
-	if (clipdata != NULL)
+	if (clipdata != nullptr)
 	{
 		HFree(clipdata);
 	}
-	if (strdata != NULL)
+	if (strdata != nullptr)
 	{
 		HFree(strdata);
 	}
 	res_CloseResFile(fp);
-	resdata->ptr = NULL;
+	resdata->ptr = nullptr;
 }
 
 void* _GetStringData(uio_Stream* fp, uqm::DWORD length)
@@ -541,7 +541,7 @@ void* _GetStringData(uio_Stream* fp, uqm::DWORD length)
 	uqm::DWORD StringOffs;
 	size_t tot_string_size;
 	char CurrentLine[1024];
-	char* strdata = NULL;
+	char* strdata = nullptr;
 
 	tot_string_size = POOL_SIZE;
 	strdata = (char*)HMalloc(tot_string_size);
@@ -557,7 +557,7 @@ void* _GetStringData(uio_Stream* fp, uqm::DWORD length)
 	{
 		int l;
 
-		if (uio_fgets(CurrentLine, sizeof(CurrentLine), fp) == NULL)
+		if (uio_fgets(CurrentLine, sizeof(CurrentLine), fp) == nullptr)
 		{
 			// EOF or read error.
 			break;
@@ -629,7 +629,7 @@ void* _GetStringData(uio_Stream* fp, uqm::DWORD length)
 		}
 	}
 
-	result = NULL;
+	result = nullptr;
 	if (++stringI)
 	{
 		int flags = 0;
@@ -647,7 +647,7 @@ void* _GetStringData(uio_Stream* fp, uqm::DWORD length)
 	return result;
 
 err:
-	if (strdata != NULL)
+	if (strdata != nullptr)
 	{
 		HFree(strdata);
 	}

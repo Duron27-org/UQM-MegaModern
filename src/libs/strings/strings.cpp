@@ -43,12 +43,12 @@ AllocStringTable(int num_entries, int flags)
 	strtab->strings = (STRING_TABLE_ENTRY_DESC*)HMalloc(sizeof(STRING_TABLE_ENTRY_DESC) * num_entries);
 	for (i = 0; i < num_entries; i++)
 	{
-		strtab->strings[i].data = NULL;
+		strtab->strings[i].data = nullptr;
 		strtab->strings[i].length = 0;
 		strtab->strings[i].parent = strtab;
 		strtab->strings[i].index = i;
 	}
-	strtab->nameIndex = NULL;
+	strtab->nameIndex = nullptr;
 	return strtab;
 }
 
@@ -56,7 +56,7 @@ void FreeStringTable(STRING_TABLE strtab)
 {
 	int i, multiplier = 1;
 
-	if (strtab == NULL)
+	if (strtab == nullptr)
 	{
 		return;
 	}
@@ -72,7 +72,7 @@ void FreeStringTable(STRING_TABLE strtab)
 
 	for (i = 0; i < strtab->size * multiplier; i++)
 	{
-		if (strtab->strings[i].data != NULL)
+		if (strtab->strings[i].data != nullptr)
 		{
 			HFree(strtab->strings[i].data);
 		}
@@ -96,7 +96,7 @@ CaptureStringTable(STRING_TABLE StringTable)
 		return StringTable->strings;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 STRING_TABLE
@@ -116,7 +116,7 @@ GetStringTable(STRING String)
 	{
 		return String->parent;
 	}
-	return NULL;
+	return nullptr;
 }
 
 uqm::COUNT
@@ -146,14 +146,14 @@ SetAbsStringTableIndex(STRING String, uqm::COUNT StringTableIndex)
 
 	if (!String)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	StringTablePtr = String->parent;
 
-	if (StringTablePtr == NULL)
+	if (StringTablePtr == nullptr)
 	{
-		String = NULL;
+		String = nullptr;
 	}
 	else
 	{
@@ -171,14 +171,14 @@ SetRelStringTableIndex(STRING String, uqm::SIZE StringTableOffs)
 
 	if (!String)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	StringTablePtr = String->parent;
 
-	if (StringTablePtr == NULL)
+	if (StringTablePtr == nullptr)
 	{
-		String = NULL;
+		String = nullptr;
 	}
 	else
 	{
@@ -200,7 +200,7 @@ SetRelStringTableIndex(STRING String, uqm::SIZE StringTableOffs)
 uqm::COUNT
 GetStringLength(STRING String)
 {
-	if (String == NULL)
+	if (String == nullptr)
 	{
 		return 0;
 	}
@@ -211,7 +211,7 @@ GetStringLength(STRING String)
 uqm::COUNT
 GetStringLengthBin(STRING String)
 {
-	if (String == NULL)
+	if (String == nullptr)
 	{
 		return 0;
 	}
@@ -224,29 +224,29 @@ GetStringName(STRING String)
 	STRING_TABLE StringTablePtr;
 	uqm::COUNT StringIndex;
 
-	if (String == NULL)
+	if (String == nullptr)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	StringTablePtr = String->parent;
-	if (StringTablePtr == NULL)
+	if (StringTablePtr == nullptr)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	StringIndex = String->index;
 
 	if (!(StringTablePtr->flags & HAS_NAMEINDEX))
 	{
-		return NULL;
+		return nullptr;
 	}
 	StringIndex += StringTablePtr->size;
 
 	String = &StringTablePtr->strings[StringIndex];
 	if (String->length == 0)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	return String->data;
@@ -258,21 +258,21 @@ GetStringSoundClip(STRING String)
 	STRING_TABLE StringTablePtr;
 	uqm::COUNT StringIndex;
 
-	if (String == NULL)
+	if (String == nullptr)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	StringTablePtr = String->parent;
-	if (StringTablePtr == NULL)
+	if (StringTablePtr == nullptr)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	StringIndex = String->index;
 	if (!(StringTablePtr->flags & HAS_SOUND_CLIPS))
 	{
-		return NULL;
+		return nullptr;
 	}
 	StringIndex += StringTablePtr->size;
 
@@ -284,7 +284,7 @@ GetStringSoundClip(STRING String)
 	String = &StringTablePtr->strings[StringIndex];
 	if (String->length == 0)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	return String->data;
@@ -296,21 +296,21 @@ GetStringTimeStamp(STRING String)
 	STRING_TABLE StringTablePtr;
 	uqm::COUNT StringIndex;
 
-	if (String == NULL)
+	if (String == nullptr)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	StringTablePtr = String->parent;
-	if (StringTablePtr == NULL)
+	if (StringTablePtr == nullptr)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	StringIndex = String->index;
 	if (!(StringTablePtr->flags & HAS_TIMESTAMP))
 	{
-		return NULL;
+		return nullptr;
 	}
 	StringIndex += StringTablePtr->size;
 
@@ -327,7 +327,7 @@ GetStringTimeStamp(STRING String)
 	String = &StringTablePtr->strings[StringIndex];
 	if (String->length == 0)
 	{
-		return NULL;
+		return nullptr;
 	}
 
 	return String->data;
@@ -336,9 +336,9 @@ GetStringTimeStamp(STRING String)
 STRINGPTR
 GetStringAddress(STRING String)
 {
-	if (String == NULL)
+	if (String == nullptr)
 	{
-		return NULL;
+		return nullptr;
 	}
 	return String->data;
 }
@@ -354,7 +354,7 @@ bool CheckResString(RESOURCE res)
 	bool check = false;
 	STRING string = CaptureStringTable(LoadStringTableInstance(res));
 
-	if (string != NULL)
+	if (string != nullptr)
 	{
 		check = true;
 	}

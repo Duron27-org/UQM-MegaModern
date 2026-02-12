@@ -75,7 +75,7 @@ LUALIB_API void(luaL_unref)(lua_State* L, int t, int ref);
 LUALIB_API int(luaL_loadfilex)(lua_State* L, const char* filename,
 							   const char* mode);
 
-#define luaL_loadfile(L, f) luaL_loadfilex(L, f, NULL)
+#define luaL_loadfile(L, f) luaL_loadfilex(L, f, nullptr)
 
 LUALIB_API int(luaL_loadbufferx)(lua_State* L, const char* buff, size_t sz,
 								 const char* name, const char* mode);
@@ -112,8 +112,8 @@ LUALIB_API void(luaL_requiref)(lua_State* L, const char* modname,
 
 #define luaL_argcheck(L, cond, numarg, extramsg) \
 	((void)((cond) || luaL_argerror(L, (numarg), (extramsg))))
-#define luaL_checkstring(L, n) (luaL_checklstring(L, (n), NULL))
-#define luaL_optstring(L, n, d) (luaL_optlstring(L, (n), (d), NULL))
+#define luaL_checkstring(L, n) (luaL_checklstring(L, (n), nullptr))
+#define luaL_optstring(L, n, d) (luaL_optlstring(L, (n), (d), nullptr))
 #define luaL_checkint(L, n) ((int)luaL_checkinteger(L, (n)))
 #define luaL_optint(L, n, d) ((int)luaL_optinteger(L, (n), (d)))
 #define luaL_checklong(L, n) ((long)luaL_checkinteger(L, (n)))
@@ -131,7 +131,7 @@ LUALIB_API void(luaL_requiref)(lua_State* L, const char* modname,
 
 #define luaL_opt(L, f, n, d) (lua_isnoneornil(L, (n)) ? (d) : f(L, (n)))
 
-#define luaL_loadbuffer(L, s, sz, n) luaL_loadbufferx(L, s, sz, n, NULL)
+#define luaL_loadbuffer(L, s, sz, n) luaL_loadbufferx(L, s, sz, n, nullptr)
 
 
 /*
@@ -187,8 +187,8 @@ LUALIB_API char*(luaL_buffinitsize)(lua_State * L, luaL_Buffer* B, size_t sz);
 
 typedef struct luaL_Stream
 {
-	FILE* f;			  /* stream (NULL for incompletely created streams) */
-	lua_CFunction closef; /* to close stream (NULL for closed streams) */
+	FILE* f;			  /* stream (nullptr for incompletely created streams) */
+	lua_CFunction closef; /* to close stream (nullptr for closed streams) */
 } luaL_Stream;
 
 /* }====================================================== */

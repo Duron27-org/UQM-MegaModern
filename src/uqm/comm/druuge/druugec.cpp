@@ -31,9 +31,9 @@
 static LOCDATA druuge_desc =
 	{
 		DRUUGE_CONVERSATION, /* AlienConv */
-		NULL, /* init_encounter_func */
-		NULL, /* post_encounter_func */
-		NULL, /* uninit_encounter_func */
+		nullptr, /* init_encounter_func */
+		nullptr, /* post_encounter_func */
+		nullptr, /* uninit_encounter_func */
 		DRUUGE_PMAP_ANIM, /* AlienFrame */
 		DRUUGE_FONT, /* AlienFont */
 		WHITE_COLOR_INIT, /* AlienTextFColor */
@@ -192,13 +192,13 @@ static LOCDATA druuge_desc =
 								ONE_SECOND / 12, /* RestartRate */
 			0,				 /* BlockMask */
 		},
-		NULL, /* AlienNumberSpeech - none */
+		nullptr, /* AlienNumberSpeech - none */
 		/* Filler for loaded resources */
-		NULL,
-		NULL,
-		NULL,
-		NULL,
-		NULL,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
 };
 
 static uqm::COUNT SlaveryCount = 0;
@@ -566,7 +566,7 @@ DoTransaction(RESPONSE_REF R)
 			DeltaSISGauges(0, capacity, 0);
 
 			NPCPhrase(FUEL0);
-			NPCNumber(f, NULL);
+			NPCNumber(f, nullptr);
 			NPCPhrase(FUEL1);
 
 			if (f >= 250)
@@ -1061,7 +1061,7 @@ init_druuge_comm(void)
 	druuge_desc.post_encounter_func = post_druuge_enc;
 	druuge_desc.uninit_encounter_func = uninit_druuge;
 
-	luaUqm_comm_init(NULL, NULL_RESOURCE);
+	luaUqm_comm_init(nullptr, NULL_RESOURCE);
 
 	druuge_desc.AlienTextBaseline.x = TEXT_X_OFFS + (SIS_TEXT_WIDTH >> 1);
 	druuge_desc.AlienTextBaseline.y = RES_SCALE(64);

@@ -100,7 +100,7 @@ void initEventSystem(void)
 		{"yehat_rebel_event",			  yehat_rebel_event		   },
 		{"slylandro_ramp_up",			  slylandro_ramp_up		   },
 		{"slylandro_ramp_down",			slylandro_ramp_down		   },
-		{NULL,						  NULL					   }
+		{nullptr,						  nullptr					   }
 	};
 
 	luaUqm_event_init(eventFuncs, EVENT_SCRIPT);
@@ -133,7 +133,7 @@ eventIdNumToStr(int eventNum)
 	size_t eventCount = ARRAY_SIZE(eventNames);
 	if (eventNum < 0 || (size_t)eventNum >= eventCount)
 	{
-		return NULL;
+		return nullptr;
 	}
 	return eventNames[eventNum];
 }
@@ -153,7 +153,7 @@ void EventHandler(uqm::BYTE selector)
 	const char* eventIdStr;
 
 	eventIdStr = eventIdNumToStr(selector);
-	if (eventIdStr == NULL)
+	if (eventIdStr == nullptr)
 	{
 		log_add(log_Warning, "Warning: EventHandler(): Event %d is "
 							 "unknown.",

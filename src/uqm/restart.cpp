@@ -205,7 +205,7 @@ DoDiffChooser(MENU_STATE* pMS)
 
 	oldContext = SetContext(ScreenContext);
 	GetContextClipRect(&oldRect);
-	s = SaveContextFrame(NULL);
+	s = SaveContextFrame(nullptr);
 
 	DrawDiffChooser(pMS, a, false);
 
@@ -313,7 +313,7 @@ InitPulseText(void)
 	TEXT t;
 	uqm::COUNT i;
 
-	if (TextCache[0] != NULL)
+	if (TextCache[0] != nullptr)
 	{
 		return;
 	}
@@ -439,11 +439,11 @@ RestartMessage(void)
 		return false;
 	}
 
-	SetFlashRect(NULL, false);
+	SetFlashRect(nullptr, false);
 	DoPopupWindow(GAME_STRING(MAINMENU_STRING_BASE + 35));
 	// Got to restart -message
 	SetMenuSounds(MENU_SOUND_UP | MENU_SOUND_DOWN, MENU_SOUND_SELECT);
-	SetTransitionSource(NULL);
+	SetTransitionSource(nullptr);
 	SleepThreadUntil(FadeScreen(FadeAllToBlack, ONE_SECOND / 2));
 	GLOBAL(CurrentActivity) = CHECK_ABORT;
 	restartGame = true;
@@ -492,7 +492,7 @@ DoRestart(MENU_STATE* pMS)
 		InactTimeOut = (optMainMenuMusic ? 60 : 20) * ONE_SECOND;
 
 		pMS->flashContext = Flash_createOverlay(ScreenContext,
-												NULL, NULL);
+												nullptr, nullptr);
 		Flash_setMergeFactors(pMS->flashContext, -3, 3, 16);
 		Flash_setSpeed(pMS->flashContext, (6 * ONE_SECOND) / 14, 0,
 					   (6 * ONE_SECOND) / 14, 0);
@@ -501,7 +501,7 @@ DoRestart(MENU_STATE* pMS)
 					   (3 * ONE_SECOND) / 16);
 		Flash_setPulseBox(pMS->flashContext, false);
 
-		DrawRestartMenu(pMS, pMS->CurState, NULL);
+		DrawRestartMenu(pMS, pMS->CurState, nullptr);
 		Flash_start(pMS->flashContext);
 
 		LastInputTime = GetTimeCounter();
@@ -522,14 +522,14 @@ DoRestart(MENU_STATE* pMS)
 			case START_NEW_GAME:
 				if (optCustomSeed == 404)
 				{
-					SetFlashRect(NULL, false);
+					SetFlashRect(nullptr, false);
 					DoPopupWindow(
 						GAME_STRING(MAINMENU_STRING_BASE + 65));
 					// Got to restart -message
 					SetMenuSounds(
 						MENU_SOUND_UP | MENU_SOUND_DOWN,
 						MENU_SOUND_SELECT);
-					SetTransitionSource(NULL);
+					SetTransitionSource(nullptr);
 					SleepThreadUntil(
 						FadeScreen(FadeAllToBlack, ONE_SECOND / 2));
 					GLOBAL(CurrentActivity) = CHECK_ABORT;
@@ -563,7 +563,7 @@ DoRestart(MENU_STATE* pMS)
 				break;
 			case PLAY_SUPER_MELEE:
 				optShipSeed = OPTVAL_DISABLED;
-				ReloadMasterShipList(NULL);
+				ReloadMasterShipList(nullptr);
 				GLOBAL(CurrentActivity) = SUPER_MELEE;
 				optSuperMelee = false;
 				break;
@@ -582,12 +582,12 @@ DoRestart(MENU_STATE* pMS)
 				LastInputTime = GetTimeCounter();
 				InactTimeOut = (optMainMenuMusic ? 60 : 20) * ONE_SECOND;
 
-				SetTransitionSource(NULL);
+				SetTransitionSource(nullptr);
 				BatchGraphics();
 				DrawRestartMenuGraphic(pMS);
-				ScreenTransition(EmulationMode::PC | EmulationMode::Console3DO, NULL);
+				ScreenTransition(EmulationMode::PC | EmulationMode::Console3DO, nullptr);
 				Flash_UpdateOriginal(pMS->flashContext);
-				DrawRestartMenu(pMS, pMS->CurState, NULL);
+				DrawRestartMenu(pMS, pMS->CurState, nullptr);
 				Flash_continue(pMS->flashContext);
 				UnbatchGraphics();
 
@@ -635,7 +635,7 @@ DoRestart(MENU_STATE* pMS)
 		if (NewState != pMS->CurState)
 		{
 			BatchGraphics();
-			DrawRestartMenu(pMS, NewState, NULL);
+			DrawRestartMenu(pMS, NewState, nullptr);
 			UnbatchGraphics();
 			pMS->CurState = NewState;
 		}
@@ -653,11 +653,11 @@ DoRestart(MENU_STATE* pMS)
 	//			// Mouse not supported message
 	//	SetMenuSounds (MENU_SOUND_UP | MENU_SOUND_DOWN, MENU_SOUND_SELECT);
 
-	//	SetTransitionSource (NULL);
+	//	SetTransitionSource (nullptr);
 	//	BatchGraphics ();
 	//	DrawRestartMenuGraphic (pMS);
-	//	ScreenTransition (3, NULL);
-	//	DrawRestartMenu (pMS, pMS->CurState, NULL);
+	//	ScreenTransition (3, nullptr);
+	//	DrawRestartMenu (pMS, pMS->CurState, nullptr);
 	//	Flash_continue (pMS->flashContext);
 	//	UnbatchGraphics ();
 
