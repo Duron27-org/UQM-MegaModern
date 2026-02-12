@@ -2290,7 +2290,7 @@ DoHyperspaceMenu(MENU_STATE* pMS)
 	{
 		if (select)
 		{ // 3DO menu jumps to NAVIGATE after a successful submenu run
-			if (optWhichMenu != OPT_PC)
+			if (optWhichMenu != EmulationMode::PC)
 			{
 				pMS->CurState = NAVIGATION;
 			}

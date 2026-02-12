@@ -1367,7 +1367,7 @@ void RenderPlanetSphere(PLANET_ORBIT* Orbit, FRAME MaskFrame, int offset,
 
 			c.a = 0xff;
 
-			if (optScanStyle == OPT_3DO && optTintPlanSphere == OPT_PC
+			if (optScanStyle == EmulationMode::Console3DO && optTintPlanSphere == EmulationMode::PC
 				&& Orbit->scanType < NUM_SCAN_TYPES)
 			{
 				*pix = apply_alpha_pixel(c, Orbit->scanType);
@@ -1530,15 +1530,15 @@ void Render3DOPlanetSphere(PLANET_ORBIT* Orbit, FRAME MaskFrame, int offset,
 				c->g = clip_channel(c->g - shade->g);
 				c->b = clip_channel(c->b - shade->b);
 
-				if (optTintPlanSphere == OPT_PC
+				if (optTintPlanSphere == EmulationMode::PC
 					&& Orbit->scanType < NUM_SCAN_TYPES)
 				{
-					if (optScanStyle == OPT_3DO)
+					if (optScanStyle == EmulationMode::Console3DO)
 					{
 						*c = apply_additive_pixel(
 							*c, Orbit->scanType);
 					}
-					else if (optScanStyle == OPT_PC)
+					else if (optScanStyle == EmulationMode::PC)
 					{
 						TransformColor(c, Orbit->scanType);
 					}
@@ -2075,7 +2075,7 @@ planet_orbit_init(uqm::COUNT width, uqm::COUNT height, bool forOrbit)
 		Orbit->ObjectFrame = 0;
 
 		// tints for 3DO scan
-		if (forOrbit && optScanStyle != OPT_PC)
+		if (forOrbit && optScanStyle != EmulationMode::PC)
 		{
 			Orbit->TintFrame = CaptureDrawable(CreateDrawable(
 				WANT_PIXMAP, width, height, 1));

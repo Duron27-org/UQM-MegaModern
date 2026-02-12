@@ -176,12 +176,12 @@ void SetTransitionSource(const RECT* pRect)
 }
 
 // ScreenTransition() is synchronous (does not return until transition done)
-void ScreenTransition(int TransType, const RECT* pRect)
+void ScreenTransition(EmulationMode transType, const RECT* pRect)
 {
 	const TimePeriod DURATION = ONE_SECOND * 31 / 60;
 	TimeCount startTime;
 
-	if (TransType == OPT_PC)
+	if (transType == EmulationMode::PC)
 	{
 		return;
 	}

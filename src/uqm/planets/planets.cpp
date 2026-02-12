@@ -596,7 +596,7 @@ void FreePlanet(void)
 	DestroyDrawable(ReleaseDrawable(pSolarSysState->TopoFrame));
 	pSolarSysState->TopoFrame = 0;
 
-	if (optScanStyle == OPT_PC)
+	if (optScanStyle == EmulationMode::PC)
 	{
 		uqm::COUNT k;
 
@@ -733,7 +733,7 @@ DoPlanetOrbit(MENU_STATE* pMS)
 	{
 		if (select)
 		{ // 3DO menu jumps to NAVIGATE after a successful submenu run
-			if (optWhichMenu != OPT_PC)
+			if (optWhichMenu != EmulationMode::PC)
 			{
 				pMS->CurState = NAVIGATION;
 			}

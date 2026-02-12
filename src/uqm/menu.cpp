@@ -512,7 +512,7 @@ bool DoMenuChooser(MENU_STATE* pMS, uqm::BYTE BaseState)
 	uqm::BYTE NewState = pMS->CurState;
 	uqm::BYTE OrigBase = BaseState;
 	bool useAltMenu = false;
-	if (optWhichMenu == OPT_PC)
+	if (optWhichMenu == EmulationMode::PC)
 	{
 		useAltMenu = GetAlternateMenu(&BaseState, &NewState);
 	}
@@ -550,7 +550,7 @@ bool DoMenuChooser(MENU_STATE* pMS, uqm::BYTE BaseState)
 		}
 		return false;
 	}
-	else if ((optWhichMenu == OPT_PC) && PulsedInputState.menu[KEY_MENU_CANCEL] && (BaseState == PM_ALT_CARGO))
+	else if ((optWhichMenu == EmulationMode::PC) && PulsedInputState.menu[KEY_MENU_CANCEL] && (BaseState == PM_ALT_CARGO))
 	{
 		if (OrigBase == PM_SCAN)
 		{
@@ -726,7 +726,7 @@ void DrawMenuStateStrings(uqm::BYTE beg_index, uqm::SWORD NewState)
 		hilite = 0;
 	}
 
-	if (optWhichMenu == OPT_PC)
+	if (optWhichMenu == EmulationMode::PC)
 	{
 		uqm::BYTE tmpState = (uqm::BYTE)NewState;
 		GetAlternateMenu(&beg_index, &tmpState);
@@ -751,7 +751,7 @@ void DrawMenuStateStrings(uqm::BYTE beg_index, uqm::SWORD NewState)
 	s.origin.x = RADAR_X - r.corner.x;
 	s.origin.y = RADAR_Y - r.corner.y;
 	r.corner.x = s.origin.x - RES_SCALE(1);
-	if (optWhichMenu == OPT_PC)
+	if (optWhichMenu == EmulationMode::PC)
 	{
 		r.corner.y = s.origin.y - PC_MENU_HEIGHT - IF_HD(2);
 	}
@@ -763,7 +763,7 @@ void DrawMenuStateStrings(uqm::BYTE beg_index, uqm::SWORD NewState)
 	BatchGraphics();
 	SetContextForeGroundColor(
 		BUILD_COLOR(MAKE_RGB15(0x0A, 0x0A, 0x0A), 0x08));
-	if (s.frame && optWhichMenu == OPT_PC)
+	if (s.frame && optWhichMenu == EmulationMode::PC)
 	{
 		if (beg_index == PM_CREW)
 		{
@@ -887,7 +887,7 @@ void DrawMenuStateStrings(uqm::BYTE beg_index, uqm::SWORD NewState)
 				t.CharCount = (uqm::COUNT)~0;
 				t.pStr = buf;
 				snprintf(buf, sizeof buf, "%u", GLOBAL(FuelCost));
-				if (optWhichFonts == OPT_3DO && !optWholeFuel)
+				if (optWhichFonts == EmulationMode::Console3DO && !optWholeFuel)
 				{
 					SetContextFont(TinyFontBold);
 				}

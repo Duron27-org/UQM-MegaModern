@@ -46,7 +46,7 @@ extern "C" {
    Also, when `ordering' is RETURN_IN_ORDER,
    each non-option ARGV-element is returned here.  */
 
-extern char* optarg;
+extern const char* optarg;
 
 /* Index in ARGV of the next element to be scanned.
    This is used for communication to and from the caller
@@ -150,7 +150,7 @@ extern int getopt();
 #endif /* __GNU_LIBRARY__ */
 
 #ifndef __need_getopt
-int getopt_long(int argc, char* const* argv, const char* options, const struct option* long_options, int* opt_index);
+int getopt_long(int argc, const char* const* argv, const char* options, const struct option* long_options, int* opt_index);
 
 //extern int getopt_long (int __argc, char *const *__argv, const char *__shortopts,
 //		        const struct option *__longopts, int *__longind);
@@ -159,7 +159,7 @@ extern int getopt_long_only(int __argc, char* const* __argv,
 							const struct option* __longopts, int* __longind);
 
 /* Internal only.  Users should not call this directly.  */
-extern int _getopt_internal(int __argc, char* const* __argv,
+extern int _getopt_internal(int __argc, const char* const* __argv,
 							const char* __shortopts,
 							const struct option* __longopts, int* __longind,
 							int __long_only);

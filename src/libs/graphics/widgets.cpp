@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "options.h"
 #include "gfx_common.h"
 #include "uqm/nameref.h"
 #include "uqm/igfxres.h"

@@ -19,6 +19,7 @@
 #ifndef UQM_GLOBDATA_H_
 #define UQM_GLOBDATA_H_
 
+#include "options/OptionTypes.h"
 #include "clock.h"
 #include "libs/gfxlib.h"
 #include "libs/reslib.h"
@@ -1106,13 +1107,13 @@ enum
 //#define STATE_DEBUG
 
 #define SET_GAME_STATE(SName, val) \
-	setGameStateUint(#SName, (val))
+	setGameStateUint(#SName, static_cast<uqm::DWORD>(val))
 #define GET_GAME_STATE(SName) \
 	getGameStateUint(#SName)
 
 // For dynamic variable names
 #define D_SET_GAME_STATE(SName, val) \
-	setGameStateUint(SName, (val))
+	setGameStateUint(SName, static_cast<uqm::DWORD>(val))
 #define D_GET_GAME_STATE(SName) \
 	getGameStateUint(SName)
 
@@ -1133,8 +1134,8 @@ bool inSuperMelee(void);
 bool inHQSpace(void);
 bool inHyperSpace(void);
 bool inQuasiSpace(void);
-OPT_CONSOLETYPE isPC(int optWhich);
-OPT_CONSOLETYPE is3DO(int optWhich);
+inline bool isPC(EmulationMode optWhich) { return optWhich == EmulationMode::PC; }
+inline bool is3DO(EmulationMode optWhich) { return optWhich == EmulationMode::Console3DO; }
 extern int replaceChar(char* pStr, const char find, const char replace);
 
 extern void LoadFleetInfo(void);

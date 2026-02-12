@@ -2072,7 +2072,7 @@ DoConfirmSettings(MELEE_STATE* pMS)
 	// All sides have confirmed.
 
 	// Send our own prefered frame delay.
-	Netplay_NotifyAll_inputDelay(netplayOptions.inputDelay);
+	Netplay_NotifyAll_inputDelay(g_netplayOptions.inputDelay);
 
 	// Synchronise the RNGs:
 	{
@@ -2118,7 +2118,7 @@ DoConfirmSettings(MELEE_STATE* pMS)
 
 	// The maximum value for all connections is used.
 	{
-		bool ok = setupInputDelay(netplayOptions.inputDelay);
+		bool ok = setupInputDelay(g_netplayOptions.inputDelay);
 		if (!ok)
 		{
 			return false;

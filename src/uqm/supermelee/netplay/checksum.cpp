@@ -204,7 +204,7 @@ void initChecksumBuffers(void)
 {
 	size_t player;
 
-	for (player = 0; player < NETPLAY_NUM_PLAYERS; player++)
+	for (player = 0; player < NetplayNumPlayers; player++)
 	{
 		NetConnection* conn;
 		ChecksumBuffer* cb;
@@ -228,7 +228,7 @@ void uninitChecksumBuffers(void)
 {
 	size_t player;
 
-	for (player = 0; player < NETPLAY_NUM_PLAYERS; player++)
+	for (player = 0; player < NetplayNumPlayers; player++)
 	{
 		NetConnection* conn;
 		ChecksumBuffer* cb;
@@ -280,7 +280,7 @@ bool verifyChecksums(BattleFrameCounter frameNr)
 		return false;
 	}
 
-	for (player = 0; player < NETPLAY_NUM_PLAYERS; player++)
+	for (player = 0; player < NetplayNumPlayers; player++)
 	{
 		NetConnection* conn;
 		ChecksumBuffer* cb;

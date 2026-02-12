@@ -18,21 +18,39 @@
 
 #include "netoptions.h"
 
-NetplayOptions netplayOptions = {
-	/* .metaServer = */ "uqm.stack.nl",
-	/* .metaPort   = */ "21836",
-	/* .peer       = */ {
-						 /* [0] Player 1 (bottom) */ {
-			/* .isServer = */ true,
-			/* .host     = */ "localhost",
-			/* .port     = */ "21837" /* 0x554d - "UM" */,
-		},
-						 /* [1] Player 2 (top) */ {
-			/* .isServer = */ true,
-			/* .host     = */ "localhost",
-			/* .port     = */ "21837" /* 0x554d - "UM" */,
-		},
-						 },
-	/* .inputDelay = */
-	2,
+NetplayOptions g_netplayOptions {
+	"uqm.stack.nl", //metaserver
+	"21836", //metaPort 0x554c - "UL"
+	2, //inputDelay
+	{{
+		 //[0] Player 1 (bottom)
+		 true,		  // isServer
+		 "localhost", //host
+		 "21837"	  // port 0x554d - "UM" ,
+	 },
+				   {
+		 // [1] Player 2 (top)
+		 true,		  //isServer
+		 "localhost", //host
+		 "21837"	  // port0x554d - "UM" ,
+	 }}
 };
+
+//NetplayOptions g_netplayOptions = {
+//	/* .metaServer = */ "uqm.stack.nl",
+//	/* .metaPort   = */ "21836",
+//	/* .peer       = */ {
+//						 /* [0] Player 1 (bottom) */ {
+//			/* .isServer = */ true,
+//			/* .host     = */ "localhost",
+//			/* .port     = */ "21837" /* 0x554d - "UM" */,
+//		},
+//						 /* [1] Player 2 (top) */ {
+//			/* .isServer = */ true,
+//			/* .host     = */ "localhost",
+//			/* .port     = */ "21837" /* 0x554d - "UM" */,
+//		},
+//						 },
+//	/* .inputDelay = */
+//	2,
+//};

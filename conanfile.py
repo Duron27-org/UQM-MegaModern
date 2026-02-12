@@ -23,6 +23,8 @@ class UrQuanMastersConan(ConanFile):
         'vorbis/1.3.7',
         'openal-soft/1.23.1',
         'gtest/1.17.0',
+        'fmt/12.1.0',
+        'gsl-lite/1.0.1',
     )
 
     generators = (

@@ -28,7 +28,13 @@ doc/users/manual.txt
 doc/users/unixinstall
 src/config.h
 src/config_vc6.h
+src/configuration/Configuration.cpp
+src/configuration/Configuration.h
 src/core/memory/memory.h
+src/core/stl/stl.h
+src/core/string/StringUtils.cpp
+src/core/string/StringUtils.h
+src/core/types/enum.h
 src/endian_uqm.h
 src/getopt/getopt.cpp
 src/getopt/getopt.h
@@ -389,6 +395,11 @@ src/libs/video/vidplayer.cpp
 src/libs/video/vidplayer.h
 src/libs/video/vresins.cpp
 src/libs/vidlib.h
+src/main.cpp
+src/options/options.cpp
+src/options/options.h
+src/options/OptionConstants.h
+src/options/OptionTypes.h
 src/options.cpp
 src/options.h
 src/port.cpp
@@ -401,7 +412,8 @@ src/res/ur-quan-icon-std.ico
 src/res/ur-quan1.ico
 src/res/ur-quan2.ico
 src/types.h
-src/uqm.cpp
+src/UQMGame.cpp
+src/UQMGame.h
 src/uqm/StarmapGlobalData.h
 src/uqm/battle.cpp
 src/uqm/battle.h

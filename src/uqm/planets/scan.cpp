@@ -1354,7 +1354,7 @@ ScanPlanet(uqm::COUNT scanType)
 		SetContext(ScanContext);
 
 		// Draw a virgin surface
-		if (optScanStyle != OPT_PC)
+		if (optScanStyle != EmulationMode::PC)
 		{
 			DrawPlanet(0, BLACK_COLOR);
 		}
@@ -1366,7 +1366,7 @@ ScanPlanet(uqm::COUNT scanType)
 		pSolarSysState->Orbit.scanType = scan;
 		RerenderPlanetSphere();
 
-		if (optScanStyle != OPT_PC)
+		if (optScanStyle != EmulationMode::PC)
 		{
 			while (i < SCAN_LINES)
 			{
@@ -1428,7 +1428,7 @@ ScanPlanet(uqm::COUNT scanType)
 			}
 		}
 
-		if (i < SCAN_LINES && optScanStyle != OPT_PC)
+		if (i < SCAN_LINES && optScanStyle != EmulationMode::PC)
 		{ // not for PC-scan, frame flashes otherwise
 			// Aborted by a keypress; draw in finished state
 			BatchGraphics();
@@ -1444,12 +1444,12 @@ ScanPlanet(uqm::COUNT scanType)
 	SetContext(ScanContext);
 	pSolarSysState->Orbit.scanType = NUM_SCAN_TYPES;
 
-	if (optScanStyle == OPT_PC || useDosSpheres)
+	if (optScanStyle == EmulationMode::PC || useDosSpheres)
 	{
 		RerenderPlanetSphere();
 	}
 
-	if (scanType == AUTO_SCAN || optScanStyle == OPT_PC)
+	if (scanType == AUTO_SCAN || optScanStyle == EmulationMode::PC)
 	{ // clear the last scan
 		DrawPlanet(0, BLACK_COLOR);
 		DrawDefaultPlanetSphere();
@@ -1526,7 +1526,7 @@ DoScan(MENU_STATE* pMS)
 		}
 		DrawMenuStateStrings(PM_MIN_SCAN, pMS->CurState);
 	}
-	else if (optWhichMenu == OPT_PC || (!(pSolarSysState->pOrbitalDesc->data_index & PLANET_SHIELDED) && pSolarSysState->SysInfo.PlanetInfo.AtmoDensity != GAS_GIANT_ATMOSPHERE))
+	else if (optWhichMenu == EmulationMode::PC || (!(pSolarSysState->pOrbitalDesc->data_index & PLANET_SHIELDED) && pSolarSysState->SysInfo.PlanetInfo.AtmoDensity != GAS_GIANT_ATMOSPHERE))
 	{
 		DoMenuChooser(pMS, PM_MIN_SCAN);
 	}
@@ -1613,7 +1613,7 @@ void ScanSystem(void)
 
 	GetScanContext(NULL);
 
-	if (optWhichMenu == OPT_3DO && ((pSolarSysState->pOrbitalDesc->data_index & PLANET_SHIELDED) || pSolarSysState->SysInfo.PlanetInfo.AtmoDensity == GAS_GIANT_ATMOSPHERE))
+	if (optWhichMenu == EmulationMode::Console3DO && ((pSolarSysState->pOrbitalDesc->data_index & PLANET_SHIELDED) || pSolarSysState->SysInfo.PlanetInfo.AtmoDensity == GAS_GIANT_ATMOSPHERE))
 	{
 		MenuState.CurState = EXIT_SCAN;
 	}

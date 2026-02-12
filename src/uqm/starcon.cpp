@@ -287,13 +287,13 @@ int Starcon2Main(void* threadArg)
 	SplashScreen(BackgroundInitKernel);
 
 #ifdef DEBUG
-	printf("Set Seed Type: %s\n", SeedStr());
+	printf("Set Seed Type: %s\n", toString(g_seedType));
 	printf("Set Seed: %d\n", optCustomSeed);
 	printf("Set Difficulty: %s\n", DIF_STR(optDifficulty));
 	printf("Set Extended: %s\n", BOOL_STR(optExtended));
 	printf("Set Nomad: %s\n\n", NOMAD_STR(optNomad));
 #endif
-	log_add(log_Info, "Set Seed Type: %s\n", SeedStr());
+	log_add(log_Info, "Set Seed Type: %s\n", toString(g_seedType));
 	log_add(log_Info, "Set Seed: %d\n", optCustomSeed);
 	log_add(log_Info, "Set Difficulty: %s\n", DIF_STR(optDifficulty));
 	log_add(log_Info, "Set Extended: %s\n", BOOL_STR(optExtended));
@@ -322,7 +322,7 @@ int Starcon2Main(void* threadArg)
 		if (LastActivity == (CHECK_LOAD | CHECK_RESTART))
 		{
 #ifdef DEBUG
-			printf("New Game Seed Type: %s\n", SeedStr());
+			printf("New Game Seed Type: %s\n", toString(g_seedType));
 			printf("New Game Seed: %d\n", GLOBAL_SIS(Seed));
 			printf("New Game Difficulty: %s\n",
 				   DIF_STR(GLOBAL_SIS(Difficulty)));
@@ -331,7 +331,7 @@ int Starcon2Main(void* threadArg)
 			printf("New Game Nomad: %s\n\n",
 				   NOMAD_STR(GLOBAL_SIS(Nomad)));
 #endif
-			log_add(log_Info, "New Game Seed Type: %s\n", SeedStr());
+			log_add(log_Info, "New Game Seed Type: %s\n", toString(g_seedType));
 			log_add(log_Info, "New Game Seed: %d\n", GLOBAL_SIS(Seed));
 			log_add(log_Info, "New Game Difficulty: %s\n",
 					DIF_STR(GLOBAL_SIS(Difficulty)));

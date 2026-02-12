@@ -31,6 +31,7 @@
 
 #include "../../uqm/globdata.h"
 #include "uqm/setupmenu.h"
+#include "options/OptionConstants.h"
 
 /* ----------------------------GLOBALS/EXTERNS---------------------------- */
 
@@ -39,6 +40,11 @@ uqm::DWORD TFB_Random(void);
 
 
 typedef struct RandomContext RandomContext;
+
+
+extern SeedType g_seedType;
+
+
 
 #ifdef RANDOM2_INTERNAL
 struct RandomContext
@@ -53,31 +59,13 @@ struct RandomContext
 #define MAX_SEED 2147483644
 #define MIN_SEED 3
 #define SANE_SEED(a) (((a) < MIN_SEED || (a) > MAX_SEED) ? false : true)
-#define SeedA (((optSeedType == OPTVAL_PLANET) && (SANE_SEED(GLOBAL_SIS(Seed)))) ? GLOBAL_SIS(Seed) : PrimeA)
+#define SeedA (((g_seedType == SeedType::Planet) && (SANE_SEED(GLOBAL_SIS(Seed)))) ? GLOBAL_SIS(Seed) : PrimeA)
 // Default SeedA (PrimeA): 16807 - a relatively prime number - also M div Q
 #define SeedM (UINT32_MAX / 2) // 0xFFFFFFFF div 2
 #define SeedQ (SeedM / SeedA)  // Default: 127773L - M div A
 #define SeedR (SeedM % SeedA)  // Default: 2836 - M mod A
-#define PrimeSeed (optSeedType == OPTVAL_PRIME)
-#define StarSeed (optSeedType > OPTVAL_PLANET)
-
-static inline const uqm::CHAR_T*
-SeedStr(void)
-{
-	switch (optSeedType)
-	{
-		case 0:
-			return "None";
-		case 1:
-			return "Planet";
-		case 2:
-			return "MRQ";
-		case 3:
-			return "StarSeed";
-		default:
-			return "???";
-	}
-}
+#define PrimeSeed (g_seedType == SeedType::Prime)
+#define StarSeed (g_seedType > SeedType::Planet)
 
 RandomContext* RandomContext_New(void);
 RandomContext* RandomContext_Set(uqm::DWORD Context);

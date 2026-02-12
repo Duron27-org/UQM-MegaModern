@@ -19,6 +19,7 @@
 #ifndef UQM_SETUPMENU_H_
 #define UQM_SETUPMENU_H_
 
+#include "options/OptionTypes.h"
 #include "controls.h"
 
 #if 0 //defined(__cplusplus)
@@ -31,11 +32,11 @@ typedef enum
 	OPTVAL_ENABLED
 } OPT_ENABLABLE;
 
-typedef enum
+enum class OPT_CONSOLETYPE : int
 {
 	OPTVAL_PC,
 	OPTVAL_3DO
-} OPT_CONSOLETYPE;
+};
 
 enum OPT_FULLSCREEN
 {

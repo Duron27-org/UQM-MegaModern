@@ -19,6 +19,8 @@
  * for now there's few options which indicate 3do/pc flavors.
  */
 
+#include "core/string/StringUtils.h"
+
 #include "options.h"
 
 #include "port.h"
@@ -47,13 +49,13 @@
 
 
 int optWhichCoarseScan;
-int optWhichMenu;
-int optWhichFonts;
-int optWhichIntro;
-int optWhichShield;
-int optSmoothScroll;
+EmulationMode optWhichMenu;
+EmulationMode optWhichFonts;
+EmulationMode optWhichIntro;
+EmulationMode optWhichShield;
+EmulationMode optSmoothScroll;
 int optMeleeScale;
-const char** optAddons;
+uqstl::span<const uqstl::string> optAddons;
 
 unsigned int loresBlowupScale;
 unsigned int resolutionFactor;
@@ -86,7 +88,7 @@ OPT_ENABLABLE optInfiniteCredits;
 bool optSuperMelee;
 bool optLoadGame;
 OPT_ENABLABLE optCustomBorder;
-int optSeedType;
+SeedType optSeedType;
 int optCustomSeed;
 OPT_ENABLABLE optShipSeed;
 int optSphereColors;
@@ -95,8 +97,8 @@ int optSpaceMusic;
 OPT_ENABLABLE optVolasMusic;
 OPT_ENABLABLE optWholeFuel;
 OPT_ENABLABLE optDirectionalJoystick;
-int optLanderHold;
-int optScrTrans;
+EmulationMode optLanderHold;
+EmulationMode optScrTrans;
 int optDifficulty;
 int optDiffChooser;
 int optFuelRange;
@@ -108,16 +110,16 @@ OPT_ENABLABLE optHazardColors;
 OPT_ENABLABLE optOrzCompFont;
 int optControllerType;
 OPT_ENABLABLE optSmartAutoPilot;
-int optTintPlanSphere;
-int optPlanetStyle;
+EmulationMode optTintPlanSphere;
+EmulationMode optPlanetStyle;
 int optStarBackground;
-int optScanStyle;
+EmulationMode optScanStyle;
 OPT_ENABLABLE optNonStopOscill;
-int optScopeStyle;
-int optSuperPC;
+EmulationMode optScopeStyle;
+EmulationMode optSuperPC;
 OPT_ENABLABLE optHyperStars;
 OPT_ENABLABLE optPlanetTexture;
-int optFlagshipColor;
+EmulationMode optFlagshipColor;
 OPT_ENABLABLE optNoHQEncounters;
 OPT_ENABLABLE optDeCleansing;
 OPT_ENABLABLE optMeleeObstacles;
@@ -155,13 +157,13 @@ uio_DirHandle* meleeDir;
 uio_DirHandle* scrShotDir;
 uio_MountHandle* contentMountHandle;
 
-char* contentDirPath;
-char* addonDirPath;
+uqgsl::czstring contentDirPath;
+uqgsl::czstring addonDirPath;
 
 char baseContentPath[PATH_MAX];
 
 // addon availability
-ADDON_COUNT addonList;
+uqstl::vector<uqm::DWORD> g_addonList {};
 
 extern uio_Repository* repository;
 extern uio_DirHandle* rootDir;
@@ -172,8 +174,7 @@ static const char* findFileInDirs(const char* locs[], int numLocs,
 								  const char* file);
 static uio_MountHandle* mountContentDir(uio_Repository* repository,
 										const char* contentPath);
-static void mountAddonDir(uio_Repository* repository,
-						  uio_MountHandle* contentMountHandle, const char* addonDirName);
+static void mountAddonDir(uio_Repository* repository, uio_MountHandle* contentMountHandle, uqgsl::czstring addonDirName);
 
 static void mountDirZips(uio_DirHandle* dirHandle, const char* mountPoint,
 						 int relativeFlags, uio_MountHandle* relativeHandle);
@@ -231,13 +232,12 @@ findFileInDirs(const char* locs[], int numLocs, const char* file)
 // or NULL if none was explicitely specified.
 // execFile is the path to the uqm executable, as acquired through
 // main()'s argv[0].
-void prepareContentDir(const char* contentDirName, const char* addonDirName,
-					   const char* execFile)
+void prepareContentDir(uqgsl::czstring contentDirName, uqgsl::czstring addonDirName, uqgsl::czstring execFile)
 {
 	const char* testFile = "version";
 	const char* loc;
 
-	if (contentDirName == NULL)
+	if (isEmpty(contentDirName))
 	{
 		char buf[PATH_MAX];
 
@@ -302,19 +302,19 @@ void prepareContentDir(const char* contentDirName, const char* addonDirName,
 	log_add(log_Debug, "Using '%s' as base content dir.", baseContentPath);
 	contentMountHandle = mountContentDir(repository, baseContentPath);
 
-	if (contentDirName && contentDirPath == NULL)
+	if (!isEmpty(contentDirName) && isEmpty(contentDirPath))
 	{
-		contentDirPath = (char*)contentDirName;
+		contentDirPath = contentDirName;
 	}
 
-	if (addonDirName)
+	if (!isEmpty(addonDirName))
 	{
-		if (addonDirPath == NULL)
+		if (isEmpty(addonDirPath))
 		{
-			addonDirPath = (char*)addonDirName;
+			addonDirPath = addonDirName;
 		}
 
-		log_add(log_Debug, "Using '%s' as addon dir.", addonDirName);
+		log_add(log_Debug, "Using '%s' as addon dir.", c_str(addonDirName));
 	}
 	mountAddonDir(repository, contentMountHandle, addonDirName);
 
@@ -535,16 +535,14 @@ mountContentDir(uio_Repository* repository, const char* contentPath)
 	return contentMountHandle;
 }
 
-static void
-mountAddonDir(uio_Repository* repository, uio_MountHandle* contentMountHandle,
-			  const char* addonDirName)
+void mountAddonDir(uio_Repository* repository, uio_MountHandle* contentMountHandle, uqgsl::czstring addonDirName)
 {
 	uio_DirHandle* addonsDir;
 	static uio_AutoMount* autoMount[] = {NULL};
 	uio_MountHandle* mountHandle;
 	uio_DirList* availableAddons;
 
-	if (addonDirName != NULL)
+	if (!isEmpty(addonDirName))
 	{
 		mountHandle = uio_mountDir(repository, "addons",
 								   uio_FSTYPE_STDIO, NULL, NULL, addonDirName, autoMount,
@@ -610,7 +608,7 @@ mountAddonDir(uio_Repository* repository, uio_MountHandle* contentMountHandle,
 				continue;
 			}
 
-			addonList.name_hash[count] = crc32b(addon);
+			g_addonList.push_back(crc32b(addon));
 
 			++count;
 			log_add(log_Info, "    %d. %s", count, addon);
@@ -628,8 +626,6 @@ mountAddonDir(uio_Repository* repository, uio_MountHandle* contentMountHandle,
 			mountDirZips(addonDir, mountname, uio_MOUNT_BELOW, mountHandle);
 			uio_closeDir(addonDir);
 		}
-
-		addonList.amount = count;
 	}
 	else
 	{
@@ -640,25 +636,14 @@ mountAddonDir(uio_Repository* repository, uio_MountHandle* contentMountHandle,
 	uio_closeDir(addonsDir);
 }
 
-bool isAddonAvailable(const char* addon_name)
+bool isAddonAvailable(uqgsl::czstring addon_name)
 {
-	uqm::COUNT i;
-	uqm::DWORD name_hash = crc32b(addon_name);
-
-	if (!name_hash)
+	if (isEmpty(addon_name))
 	{
 		return false;
 	}
-
-	for (i = 0; i < addonList.amount; i++)
-	{
-		if (addonList.name_hash[i] == name_hash)
-		{
-			return true;
-		}
-	}
-
-	return false;
+	
+	return uqstl::find(g_addonList.begin(), g_addonList.end(), crc32b(addon_name)) != g_addonList.end();
 }
 
 static void
@@ -769,8 +754,13 @@ int loadIndices(uio_DirHandle* dir)
 	return numLoaded;
 }
 
-bool loadAddon(const char* addon)
+bool loadAddon(uqgsl::czstring addon)
 {
+	if (isEmpty(addon))
+	{
+		return false;
+	}
+
 	uio_DirHandle *addonsDir, *addonDir;
 	int numLoaded;
 
@@ -786,7 +776,7 @@ bool loadAddon(const char* addon)
 	addonDir = uio_openDirRelative(addonsDir, addon, 0);
 	if (addonDir == NULL)
 	{
-		log_add(log_Warning, "Warning: Addon '%s' not found", addon);
+		log_add(log_Warning, "Warning: Addon '%s' not found", c_str(addon));
 		uio_closeDir(addonsDir);
 		return false;
 	}
@@ -794,8 +784,7 @@ bool loadAddon(const char* addon)
 	numLoaded = loadIndices(addonDir);
 	if (!numLoaded)
 	{
-		log_add(log_Error, "No RMP index files were loaded for addon '%s'",
-				addon);
+		log_add(log_Error, "No RMP index files were loaded for addon '%s'", c_str(addon));
 	}
 
 	uio_closeDir(addonDir);
@@ -804,7 +793,7 @@ bool loadAddon(const char* addon)
 	return (bool)(numLoaded > 0);
 }
 
-void prepareShadowAddons(const char** addons)
+void prepareShadowAddons(uqstl::span<const std::string> addons)
 {
 	uio_DirHandle* addonsDir;
 	const char* shadowDirName = "shadow-content";
@@ -817,13 +806,17 @@ void prepareShadowAddons(const char** addons)
 		return;
 	}
 
-	for (; *addons != NULL; addons++)
+	for (const auto& addon : addons)
 	{
-		const char* addon = *addons;
+		if (isEmpty(addon))
+		{
+			break;
+		}
+
 		uio_DirHandle* addonDir;
 		uio_DirHandle* shadowDir;
 
-		addonDir = uio_openDirRelative(addonsDir, addon, 0);
+		addonDir = uio_openDirRelative(addonsDir, c_str(addon), 0);
 		if (addonDir == NULL)
 		{
 			continue;
@@ -833,14 +826,14 @@ void prepareShadowAddons(const char** addons)
 		shadowDir = uio_openDirRelative(addonDir, shadowDirName, 0);
 		if (shadowDir)
 		{
-			log_add(log_Debug, "Mounting shadow content of '%s' addon", addon);
+			log_add(log_Debug, "Mounting shadow content of '%s' addon", c_str(addon));
 			mountDirZips(shadowDir, "/", uio_MOUNT_ABOVE, contentMountHandle);
 			// Mount non-zipped shadow content
 			if (uio_transplantDir("/", shadowDir, uio_MOUNT_RDONLY | uio_MOUNT_ABOVE, contentMountHandle) == NULL)
 			{
 				log_add(log_Warning, "Warning: Could not mount shadow content"
 									 " of '%s': %s.",
-						addon, strerror(errno));
+						c_str(addon), strerror(errno));
 			}
 
 			uio_closeDir(shadowDir);
@@ -851,12 +844,12 @@ void prepareShadowAddons(const char** addons)
 	uio_closeDir(addonsDir);
 }
 
-void prepareAddons(const char** addons)
+void prepareAddons(uqstl::span<const uqstl::string> addons)
 {
-	for (; *addons != NULL; addons++)
+	for (const auto& addon : addons)
 	{
-		log_add(log_Info, "Loading addon '%s'", *addons);
-		if (!loadAddon(*addons))
+		log_add(log_Info, "Loading addon '%s'", addon.c_str());
+		if (!loadAddon(c_str(addon)))
 		{
 			// TODO: Should we do something like inform the user?
 			//   Why simply refuse to load other addons?

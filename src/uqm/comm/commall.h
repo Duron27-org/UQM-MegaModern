@@ -17,6 +17,7 @@
 #ifndef UQM_COMM_COMMALL_H_
 #define UQM_COMM_COMMALL_H_
 
+#include "options.h"
 #include "uqm/colors.h"
 #include "uqm/comm.h"
 #include "uqm/commglue.h"

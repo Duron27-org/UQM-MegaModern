@@ -111,7 +111,7 @@
    Also, when `ordering' is RETURN_IN_ORDER,
    each non-option ARGV-element is returned here.  */
 
-char* optarg;
+const char* optarg;
 
 /* Index in ARGV of the next element to be scanned.
    This is used for communication to and from the caller
@@ -141,7 +141,7 @@ int __getopt_initialized;
    If this is zero, or a null string, it means resume the scan
    by advancing to the next ARGV-element.  */
 
-static char* nextchar;
+static const char* nextchar;
 
 /* Callers store zero here to inhibit the error message
    for unrecognized options.  */
@@ -385,10 +385,10 @@ exchange(char** argv)
 /* Initialize the internal data when the first call is made.  */
 
 #if defined __STDC__ && __STDC__
-static const char* _getopt_initialize(int, char* const*, const char*);
+static const char* _getopt_initialize(int const, char* const*, const char*);
 #endif
 static const char*
-_getopt_initialize(int argc, char* const* argv, const char* optstring)
+_getopt_initialize(int argc, const char* const* argv, const char* optstring)
 {
 	/* Start processing options with ARGV-element 1 (since ARGV-element 0
      is the program name); the sequence of previously skipped
@@ -520,7 +520,7 @@ _getopt_initialize(int argc, char* const* argv, const char* optstring)
    If LONG_ONLY is nonzero, '-' as well as '--' can introduce
    long-named options.  */
 
-int _getopt_internal(int argc, char* const* argv, const char* optstring, const struct option* longopts, int* longind, int long_only)
+int _getopt_internal(int argc, const char* const* argv, const char* optstring, const struct option* longopts, int* longind, int long_only)
 {
 	int print_errors = opterr;
 	if (optstring[0] == ':')
@@ -671,7 +671,7 @@ int _getopt_internal(int argc, char* const* argv, const char* optstring, const s
 		&& (argv[optind][1] == '-'
 			|| (long_only && (argv[optind][2] || !my_index(optstring, argv[optind][1])))))
 	{
-		char* nameend;
+		const char* nameend;
 		const struct option* p;
 		const struct option* pfound = NULL;
 		int exact = 0;
@@ -860,7 +860,7 @@ int _getopt_internal(int argc, char* const* argv, const char* optstring, const s
 		/* Convenience. Treat POSIX -W foo same as long option --foo */
 		if (temp[0] == 'W' && temp[1] == ';')
 		{
-			char* nameend;
+			const char* nameend;
 			const struct option* p;
 			const struct option* pfound = NULL;
 			int exact = 0;

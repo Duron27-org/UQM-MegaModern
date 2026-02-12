@@ -21,6 +21,7 @@
 
 #include "comm.h"
 #include "element.h"
+#include "options.h"
 #include "setup.h"
 #include "libs/compiler.h"
 #include "libs/graphics/cmap.h"

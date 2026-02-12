@@ -154,7 +154,7 @@ FeedbackSetting(uqm::BYTE which_setting)
 		case CYBORG_NORMAL_SETTING:
 		case CYBORG_DOUBLE_SETTING:
 		case CYBORG_SUPER_SETTING:
-			if (optWhichMenu == OPT_PC && which_setting > CYBORG_NORMAL_SETTING)
+			if (optWhichMenu == EmulationMode::PC && which_setting > CYBORG_NORMAL_SETTING)
 			{
 				if (which_setting == CYBORG_DOUBLE_SETTING)
 				{
@@ -737,7 +737,7 @@ DoSettings(MENU_STATE* pMS)
 			default:
 				DrawMenuStateStrings(PM_SOUND_ON, pMS->CurState);
 		}
-		if (optWhichMenu == OPT_PC)
+		if (optWhichMenu == EmulationMode::PC)
 		{
 			DrawMenuStateStrings(PM_SOUND_ON, pMS->CurState);
 		}
@@ -1939,7 +1939,7 @@ PickGame(bool saving, bool fromMainMenu)
 		RECT ctxRect;
 
 		GetContextClipRect(&ctxRect);
-		ScreenTransition(3, &ctxRect);
+		ScreenTransition(EmulationMode::PC | EmulationMode::Console3DO, &ctxRect);
 		UnbatchGraphics();
 	}
 
@@ -1993,7 +1993,7 @@ PickGame(bool saving, bool fromMainMenu)
 		printf(saving ? "Saving -> " : "Loading -> ");
 		printf("Slot: %d\n", MenuState.CurState);
 		printf("Name: %s\n", pSD->SaveName);
-		printf("Seed Type: %s\n", SeedStr());
+		printf("Seed Type: %s\n", toString(g_seedType));
 		printf("Seed: %d\n", GLOBAL_SIS(Seed));
 		printf("Difficulty: %s\n", DIF_STR(DIFFICULTY));
 		printf("Extended: %s\n", BOOL_STR(EXTENDED));
@@ -2002,7 +2002,7 @@ PickGame(bool saving, bool fromMainMenu)
 		log_add(log_Info, saving ? "Saving > " : "Loading > ");
 		log_add(log_Info, "Name: %s\n", pSD->SaveName);
 		log_add(log_Info, "Slot: %d\n", MenuState.CurState);
-		log_add(log_Info, "Seed Type: %s\n", SeedStr());
+		log_add(log_Info, "Seed Type: %s\n", toString(g_seedType));
 		log_add(log_Info, "Seed: %d\n", GLOBAL_SIS(Seed));
 		log_add(log_Info, "Difficulty: %s\n", DIF_STR(DIFFICULTY));
 		log_add(log_Info, "Extended: %s\n", BOOL_STR(EXTENDED));
@@ -2058,7 +2058,7 @@ PickGame(bool saving, bool fromMainMenu)
 		// Redraws fuel, crew, and status message (green box)
 		DeltaSISGauges(UNDEFINED_DELTA, UNDEFINED_DELTA, UNDEFINED_DELTA);
 
-		ScreenTransition(3, &DlgRect);
+		ScreenTransition(EmulationMode::PC | EmulationMode::Console3DO, &DlgRect);
 		UnbatchGraphics();
 	}
 

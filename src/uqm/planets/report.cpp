@@ -51,7 +51,7 @@ ClearReportArea(COORD startx)
 	RECT r;
 	STAMP s;
 
-	if (optWhichFonts == OPT_PC)
+	if (optWhichFonts == EmulationMode::PC)
 	{
 		s.frame = SetAbsFrameIndex(SpaceJunkFrame, 21);
 	}
@@ -73,7 +73,7 @@ ClearReportArea(COORD startx)
 		s.origin.x = startx;
 		for (x = 0; x < NUM_CELL_COLS; ++x)
 		{
-			if (optWhichFonts == OPT_PC)
+			if (optWhichFonts == EmulationMode::PC)
 			{
 				DrawStamp(&s);
 			}
@@ -381,7 +381,7 @@ void DoDiscoveryReport(SOUND ReadOutSounds)
 
 		OldFont = SetContextFont(
 			pSolarSysState->SysInfo.PlanetInfo.LanderFont);
-		if (optWhichFonts == OPT_PC)
+		if (optWhichFonts == EmulationMode::PC)
 		{
 			OldFontEffect = SetContextFontEffect(
 				pSolarSysState->SysInfo.PlanetInfo.LanderFontEff);

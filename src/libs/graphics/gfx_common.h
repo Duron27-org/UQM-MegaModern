@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "options/OptionTypes.h"
 #include "libs/gfxlib.h"
 
 // driver for TFB_InitGraphics
@@ -90,7 +91,7 @@ int GetGraphicScale(void);
 int SetGraphicScaleMode(int mode /* enum SCALE */);
 int GetGraphicScaleMode(void);
 void SetTransitionSource(const RECT* pRect);
-void ScreenTransition(int transition, const RECT* pRect);
+void ScreenTransition(EmulationMode transition, const RECT* pRect);
 
 // TODO: there should be accessor functions for these
 extern volatile int TransitionAmount;

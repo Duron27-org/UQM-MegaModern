@@ -114,8 +114,9 @@ void SplashScreen(void (*DoProcessing)(uqm::DWORD TimeOut))
 
 		s.frame = CaptureDrawable(LoadGraphic(TITLE_ANIM));
 
-		if (optFlagshipColor == OPT_3DO)
+		if (optFlagshipColor == EmulationMode::Console3DO)
 		{
+
 			s.frame = SetAbsFrameIndex(s.frame, 1);
 		}
 		else

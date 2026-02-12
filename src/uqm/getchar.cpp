@@ -22,6 +22,7 @@
 #include "libs/memlib.h"
 #include "libs/log.h"
 #include "globdata.h"
+#include "options.h"
 #include "sounds.h"
 #include "settings.h"
 #include "resinst.h"

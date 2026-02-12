@@ -3,6 +3,10 @@
 cmake_minimum_required(VERSION 3.16.0 FATAL_ERROR)
 project(UrQuanMastersMegaModern CXX)
 
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF) # Optional, but recommended for standard compliance
+
 include(CMake/helpers.cmake)
 #set(CMAKE_SYSTEM_VERSION 10.0 CACHE STRING "" FORCE)
 
@@ -65,12 +69,14 @@ add_executable(${APP_TARGET} ${ALL_FILES})
 # Dependencies
 ################################################################################
 
+find_package(fmt REQUIRED)
+find_package(gsl-lite REQUIRED)
+find_package(Ogg REQUIRED)
+find_package(OpenAL REQUIRED)
+find_package(PNG REQUIRED)
+find_package(Vorbis REQUIRED)
 find_package(SDL2 REQUIRED)
 find_package(ZLIB REQUIRED)
-find_package(PNG REQUIRED)
-find_package(Ogg REQUIRED)
-find_package(Vorbis REQUIRED)
-find_package(OpenAL REQUIRED)
 
 find_package(GTest QUIET)
 if (GTest_FOUND)
@@ -167,7 +173,7 @@ endif()
 ################################################################################
 # Compile and link options
 ################################################################################
-#target_compile_features(${APP_TARGET} PRIVATE cxx_std_17)
+target_compile_features(${APP_TARGET} PRIVATE cxx_std_20)
 
 # if(MSVC)
 #     target_compile_options(${APP_TARGET} PRIVATE
@@ -217,13 +223,15 @@ endif()
 ################################################################################
 target_link_libraries(${APP_TARGET}
     PRIVATE
-        SDL2::SDL2main 
-        PNG::PNG 
-        ZLIB::ZLIB 
-        vorbis::vorbis 
+        fmt::fmt
+        gsl-lite::gsl-lite
         Ogg::ogg 
         OpenAL::OpenAL
+        PNG::PNG 
+        SDL2::SDL2main 
+        vorbis::vorbis 
         ws2_32
+        ZLIB::ZLIB 
         $<$<CONFIG:Release>:user32>
 )
 

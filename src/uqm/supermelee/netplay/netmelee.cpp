@@ -436,7 +436,7 @@ openPlayerNetworkConnection(uqm::COUNT player, void* extra)
 	assert(netConnections[player] == NULL);
 
 	conn = NetConnection_open(player,
-							  &netplayOptions.peer[player], NetMelee_connectCallback,
+							  &g_netplayOptions.peer[player], NetMelee_connectCallback,
 							  NetMelee_closeCallback, NetMelee_errorCallback,
 							  deleteConnectionCallback, extra);
 

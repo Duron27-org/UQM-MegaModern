@@ -1445,7 +1445,7 @@ DeltaSISGauges_fuelDelta(uqm::SDWORD fuel_delta)
 
 		GetGaugeRect(&r, false);
 
-		if (optWhichFonts == OPT_3DO && !optWholeFuel)
+		if (optWhichFonts == EmulationMode::Console3DO && !optWholeFuel)
 		{
 			SetContextFont(TinyFontBold);
 		}
@@ -1674,7 +1674,7 @@ GetCPodCapacity(POINT* ppt)
 	rowNr = seatNr / CREW_PER_ROW;
 	colNr = seatNr % CREW_PER_ROW;
 
-	if (optWhichFonts == OPT_PC)
+	if (optWhichFonts == EmulationMode::PC)
 	{
 		SetContextForeGroundColor(crewRows[rowNr]);
 	}
@@ -2316,7 +2316,7 @@ void SetFlashRect(const RECT* pRect, bool pcRect)
 	}
 	else
 	{
-		if ((optWhichMenu == OPT_PC && pRect != SFR_MENU_ANY)
+		if ((optWhichMenu == EmulationMode::PC && pRect != SFR_MENU_ANY)
 			|| pRect == SFR_MENU_NON)
 		{
 			// The player wants PC menus and this flash is not used

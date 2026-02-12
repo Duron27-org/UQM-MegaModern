@@ -487,7 +487,7 @@ void CargoMenu(void)
 	DrawCargoStrings((uqm::BYTE)~0, MenuState.CurState);
 	DrawElementDescription(MenuState.CurState);
 
-	if (optWhichMenu == OPT_PC)
+	if (optWhichMenu == EmulationMode::PC)
 	{
 		DrawMenuStateStrings(PM_ALT_CARGO, 0);
 	}

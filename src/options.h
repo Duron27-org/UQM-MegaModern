@@ -22,27 +22,24 @@
 #ifndef OPTIONS_H
 #define OPTIONS_H
 
+#include "core/stl/stl.h"
 #include "port.h"
 #include "libs/compiler.h"
 #include "libs/uio.h"
 #include "uqm/setupmenu.h"
 
+#include "options/OptionTypes.h"
+
 #include "uqmversion.h"
 
-#if 0 //defined(__cplusplus)
-extern "C" {
-#endif
 
-#define OPT_3DO 0x01
-#define OPT_PC 0x02
-#define OPT_ALL 0xFF
 
 extern int optWhichCoarseScan;
-extern int optWhichMenu;
-extern int optWhichFonts;
-extern int optWhichIntro;
-extern int optWhichShield;
-extern int optSmoothScroll;
+extern EmulationMode optWhichMenu;
+extern EmulationMode optWhichFonts;
+extern EmulationMode optWhichIntro;
+extern EmulationMode optWhichShield;
+extern EmulationMode optSmoothScroll;
 extern int optMeleeScale;
 extern unsigned int loresBlowupScale;
 extern unsigned int resolutionFactor;
@@ -75,7 +72,6 @@ extern OPT_ENABLABLE optInfiniteCredits;
 extern bool optSuperMelee;
 extern bool optLoadGame;
 extern OPT_ENABLABLE optCustomBorder;
-extern int optSeedType;
 extern int optCustomSeed;
 extern OPT_ENABLABLE optShipSeed;
 extern int optSphereColors;
@@ -84,8 +80,8 @@ extern int optSpaceMusic;
 extern OPT_ENABLABLE optVolasMusic;
 extern OPT_ENABLABLE optWholeFuel;
 extern OPT_ENABLABLE optDirectionalJoystick;
-extern int optLanderHold;
-extern int optScrTrans;
+extern EmulationMode optLanderHold;
+extern EmulationMode optScrTrans;
 extern int optDifficulty;
 extern int optDiffChooser;
 extern int optFuelRange;
@@ -97,16 +93,16 @@ extern OPT_ENABLABLE optHazardColors;
 extern OPT_ENABLABLE optOrzCompFont;
 extern int optControllerType;
 extern OPT_ENABLABLE optSmartAutoPilot;
-extern int optTintPlanSphere;
-extern int optPlanetStyle;
+extern EmulationMode optTintPlanSphere;
+extern EmulationMode optPlanetStyle;
 extern int optStarBackground;
-extern int optScanStyle;
+extern EmulationMode optScanStyle;
 extern OPT_ENABLABLE optNonStopOscill;
-extern int optScopeStyle;
-extern int optSuperPC;
+extern EmulationMode optScopeStyle;
+extern EmulationMode optSuperPC;
 extern OPT_ENABLABLE optHyperStars;
 extern OPT_ENABLABLE optPlanetTexture;
-extern int optFlagshipColor;
+extern EmulationMode optFlagshipColor;
 extern OPT_ENABLABLE optNoHQEncounters;
 extern OPT_ENABLABLE optDeCleansing;
 extern OPT_ENABLABLE optMeleeObstacles;
@@ -148,19 +144,13 @@ extern uio_DirHandle* meleeDir;
 extern uio_DirHandle* scrShotDir;
 extern char baseContentPath[PATH_MAX];
 
-extern char* contentDirPath;
-extern char* addonDirPath;
+extern uqgsl::czstring contentDirPath;
+extern uqgsl::czstring addonDirPath;
 
-extern const char** optAddons;
+extern uqstl::span<const uqstl::string> optAddons;
 
-// addon availability
-typedef struct
-{
-	uqm::DWORD name_hash[PATH_MAX];
-	uqm::DWORD amount;
-} ADDON_COUNT;
 
-extern ADDON_COUNT addonList;
+extern uqstl::vector<uqm::DWORD> g_addonList;
 
 // addon names to check against
 #define THREEDO_MUSIC "3domusic"
@@ -189,18 +179,18 @@ typedef struct _input_template
 
 extern INPUT_TEMPLATE input_templates[6];
 
-void prepareContentDir(const char* contentDirName, const char* addonDirName, const char* execFile);
+void prepareContentDir(uqgsl::czstring contentDirName, uqgsl::czstring addonDirName, uqgsl::czstring execFile);
 void prepareConfigDir(const char* configDirName);
 void prepareMeleeDir(void);
 void prepareSaveDir(void);
 void prepareScrShotDir(void);
-void prepareAddons(const char** addons);
-void prepareShadowAddons(const char** addons);
+void prepareAddons(uqstl::span<const uqstl::string> addons);
+void prepareShadowAddons(uqstl::span<const uqstl::string> addons);
 void unprepareAllDirs(void);
 
-bool loadAddon(const char* addon);
+bool loadAddon(uqgsl::czstring addon);
 int loadIndices(uio_DirHandle* baseDir);
-bool isAddonAvailable(const char* addon_name);
+[[nodiscard]] bool isAddonAvailable(uqgsl::czstring addon_name);
 
 bool setGammaCorrection(float gamma);
 

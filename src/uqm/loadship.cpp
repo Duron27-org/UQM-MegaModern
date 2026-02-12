@@ -94,11 +94,11 @@ static inline void SeedShipMap(SPECIES_ID* map, int seed)
 	SPECIES_ID* eMap = &(map[NUM_CAPITALS]);
 	SPECIES_ID* sMap = &(map[NUM_CAPITALS + NUM_ESCORTS]);
 	uqm::COUNT x = 0;
-	int saveSeedType = optSeedType;
+	const SeedType saveSeedType = g_seedType;
 	// Planet generation uses a different seeding math
-	if (optSeedType == OPTVAL_PLANET)
+	if (g_seedType == SeedType::Planet)
 	{
-		optSeedType = OPTVAL_MRQ;
+		g_seedType = SeedType::MRQ;
 	}
 	RandomContext_SeedRandom(ShipGenRNG, seed);
 	for (x = 0; x < NUM_SHIPS; x++)
@@ -137,7 +137,7 @@ static inline void SeedShipMap(SPECIES_ID* map, int seed)
 		RandomContext_Delete(ShipGenRNG);
 		ShipGenRNG = NULL;
 	}
-	optSeedType = saveSeedType;
+	g_seedType = saveSeedType;
 }
 
 // Uses a ship map to map species ID to another species ID.

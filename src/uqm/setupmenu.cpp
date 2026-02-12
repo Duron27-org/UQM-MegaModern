@@ -79,20 +79,51 @@ static int SpcVol;
 static int optMScale;
 static SOUND testSounds;
 
-static int
-whichPlatformRef(OPT_CONSOLETYPE opt)
-{ // Returns 1 if OPTVAL_3DO and 2 of OPTVAL_PC (1 and 0 respectively)
-	return (opt ? OPT_3DO : OPT_PC);
+int whichPlatformRef(OPT_CONSOLETYPE opt)
+{
+	// Returns 1 if OPTVAL_3DO and 2 of OPTVAL_PC (1 and 0 respectively)
+	switch (opt)
+	{
+		case OPT_CONSOLETYPE::OPTVAL_PC:
+			return static_cast<int>(EmulationMode::PC);
+		case OPT_CONSOLETYPE::OPTVAL_3DO:
+			return static_cast<int>(EmulationMode::Console3DO);
+	}
+	return 0;
 }
 
-static bool
-PutBoolOpt(OPT_ENABLABLE* glob, OPT_ENABLABLE* set, const char* key,
-		   bool reload)
+OPT_CONSOLETYPE whichPlatformOpt(EmulationMode platform)
 {
-	if (*glob != *set)
+	switch (platform)
 	{
-		*glob = *set;
-		res_PutBoolean(key, (bool)*set);
+		case EmulationMode::Console3DO:
+			return OPT_CONSOLETYPE::OPTVAL_3DO;
+		case EmulationMode::PC:
+			return OPT_CONSOLETYPE::OPTVAL_PC;
+	}
+	return OPT_CONSOLETYPE::OPTVAL_PC;
+}
+
+template <typename GlobT, typename SetT>
+bool putOpt(GlobT& glob, const SetT set, uqgsl::czstring key, const bool reload) 
+{
+	using base_t = uqstl::remove_cv_t<SetT>;
+	if (glob != static_cast<GlobT>(set))
+	{
+		glob = static_cast<GlobT>(set);
+		if constexpr (uqstl::is_same_v<bool, base_t>)
+		{
+			res_PutBoolean(key, set);
+		}
+		else if constexpr (uqstl::is_same_v<int, base_t>)
+		{
+			res_PutInteger(key, set);
+		}
+		else if constexpr (uqstl::is_enum_v<base_t>)
+		{
+			res_PutInteger(key, static_cast<int>(set));
+		}
+
 		if (reload)
 		{
 			optRequiresReload = true;
@@ -103,39 +134,11 @@ PutBoolOpt(OPT_ENABLABLE* glob, OPT_ENABLABLE* set, const char* key,
 	return false;
 }
 
-static bool
-PutIntOpt(int* glob, int* set, const char* key, bool reload)
+template <>
+bool putOpt<EmulationMode, OPT_CONSOLETYPE>(EmulationMode& glob, const OPT_CONSOLETYPE set, uqgsl::czstring key, const bool reload)
 {
-	if (*glob != *set)
-	{
-		*glob = *set;
-		res_PutInteger(key, *set);
-		if (reload)
-		{
-			optRequiresReload = true;
-		}
-		return true;
-	}
-
-	return false;
-}
-
-static bool
-PutConsOpt(int* glob, OPT_CONSOLETYPE* set, const char* key,
-		   bool reload)
-{
-	if (*glob != whichPlatformRef(*set))
-	{
-		*glob = whichPlatformRef(*set);
-		res_PutBoolean(key, (bool)*set);
-		if (reload)
-		{
-			optRequiresReload = true;
-		}
-		return true;
-	}
-
-	return false;
+	const int emuMode {whichPlatformRef(set)};
+	return putOpt<int, int>(reinterpret_cast<int&>(glob), emuMode, key, reload);
 }
 
 static bool DoSetupMenu(SETUP_MENU_STATE* pInputState);
@@ -943,8 +946,7 @@ change_scaling(WIDGET_CHOICE* self, int* NewWidth, int* NewHeight)
 	SavedWidth = inBounds(*NewWidth, 320, 1920);
 	SavedHeight = inBounds(*NewHeight, 200, 1400);
 
-	PutIntOpt((int*)(&loresBlowupScale), (int*)(&self->selected),
-			  "config.loresBlowupScale", false);
+	putOpt((int&)(loresBlowupScale), (int)(self->selected), "config.loresBlowupScale", false);
 	res_PutInteger("config.reswidth", *NewWidth);
 	res_PutInteger("config.resheight", *NewHeight);
 }
@@ -1180,8 +1182,7 @@ change_res(WIDGET_TEXTENTRY* self)
 
 	populate_res();
 
-	PutIntOpt((int*)(&loresBlowupScale), (int*)(&choices[CHOICE_RESOLUTION].selected),
-			  "config.loresBlowupScale", false);
+	putOpt((int&)(loresBlowupScale), (int)(choices[CHOICE_RESOLUTION].selected),  "config.loresBlowupScale", false);
 	res_PutInteger("config.reswidth", SavedWidth);
 	res_PutInteger("config.resheight", SavedHeight);
 }
@@ -1205,14 +1206,14 @@ SetDefaults(void)
 	choices[CHOICE_FRBUFFER].selected = opts.driver;
 	choices[CHOICE_SCALER].selected = opts.scaler;
 	choices[CHOICE_SCANLINE].selected = opts.scanlines;
-	choices[CHOICE_MENUSTYLE].selected = opts.menu;
-	choices[CHOICE_FONTSTYLE].selected = opts.text;
+	choices[CHOICE_MENUSTYLE].selected = static_cast<int>(opts.menu);
+	choices[CHOICE_FONTSTYLE].selected = static_cast<int>(opts.text);
 	choices[CHOICE_SCANMENU].selected = opts.cscan;
-	choices[CHOICE_SCROLLSTYLE].selected = opts.scroll;
+	choices[CHOICE_SCROLLSTYLE].selected = static_cast<int>(opts.scroll);
 	choices[CHOICE_SUBTITLES].selected = opts.subtitles;
 	choices[CHOICE_REMIXES1].selected = opts.music3do;
 	choices[CHOICE_DISPLAY].selected = opts.fullscreen;
-	choices[CHOICE_CUTSCENE].selected = opts.intro;
+	choices[CHOICE_CUTSCENE].selected = static_cast<int>(opts.intro);
 	choices[CHOICE_SHOWFPS].selected = opts.fps;
 
 #ifndef MELEE_ZOOM
@@ -1222,7 +1223,7 @@ SetDefaults(void)
 	choices[CHOICE_POSAUDIO].selected = opts.stereo;
 	choices[CHOICE_SNDDRIVER].selected = opts.adriver;
 	choices[CHOICE_SNDQUALITY].selected = opts.aquality;
-	choices[CHOICE_SLVSHIELD].selected = opts.shield;
+	choices[CHOICE_SLVSHIELD].selected = static_cast<int>(opts.shield);
 	choices[CHOICE_BTMPLAYER].selected = opts.player1;
 	choices[CHOICE_TOPPLAYER].selected = opts.player2;
 	choices[CHOICE_KBLAYOUT].selected = 0;
@@ -1260,8 +1261,8 @@ SetDefaults(void)
 #ifdef MELEE_ZOOM
 	choices[CHOICE_ANDRZOOM].selected = opts.meleezoom;
 #endif
-	choices[CHOICE_LANDERHOLD].selected = opts.landerHold;
-	choices[CHOICE_SCRMELT].selected = opts.scrTrans;
+	choices[CHOICE_LANDERHOLD].selected = static_cast<int>(opts.landerHold);
+	choices[CHOICE_SCRMELT].selected = static_cast<int>(opts.scrTrans);
 	choices[CHOICE_SKILLLVL].selected = opts.difficulty;
 	choices[CHOICE_EXTENDED].selected = opts.extended;
 	choices[CHOICE_NOMAD].selected = opts.nomad;
@@ -1270,16 +1271,16 @@ SetDefaults(void)
 	choices[CHOICE_ORZFONT].selected = opts.orzCompFont;
 	choices[CHOICE_INPDEVICE].selected = opts.controllerType;
 	choices[CHOICE_SMARTAUTO].selected = opts.smartAutoPilot;
-	choices[CHOICE_SCANTINT].selected = opts.tintPlanSphere;
-	choices[CHOICE_IPSTYLE].selected = opts.planetStyle;
+	choices[CHOICE_SCANTINT].selected = static_cast<int>(opts.tintPlanSphere);
+	choices[CHOICE_IPSTYLE].selected = static_cast<int>(opts.planetStyle);
 	choices[CHOICE_IPBACKGROUND].selected = opts.starBackground;
-	choices[CHOICE_SCANSTYLE].selected = opts.scanStyle;
+	choices[CHOICE_SCANSTYLE].selected = static_cast<int>(opts.scanStyle);
 	choices[CHOICE_NOSTOSCILL].selected = opts.nonStopOscill;
-	choices[CHOICE_OSCILLSTYLE].selected = opts.scopeStyle;
+	choices[CHOICE_OSCILLSTYLE].selected = static_cast<int>(opts.scopeStyle);
 	choices[CHOICE_ANIMHYPER].selected = opts.hyperStars;
-	choices[CHOICE_LANDERSTYLE].selected = opts.landerStyle;
+	choices[CHOICE_LANDERSTYLE].selected = static_cast<int>(opts.landerStyle);
 	choices[CHOICE_PLNTEXTURE].selected = opts.planetTexture;
-	choices[CHOICE_FLAGSHIP].selected = opts.flagshipColor;
+	choices[CHOICE_FLAGSHIP].selected = static_cast<int>(opts.flagshipColor);
 	choices[CHOICE_CHCLEANHYPER].selected = opts.noHQEncounters;
 	choices[CHOICE_CHDECLEAN].selected = opts.deCleansing;
 	choices[CHOICE_CHNOPLANET].selected = opts.meleeObstacles;
@@ -1481,7 +1482,7 @@ DoSetupMenu(SETUP_MENU_STATE* pInputState)
 
 	if (current != next)
 	{
-		ScreenTransition(3, NULL);
+		ScreenTransition(EmulationMode::PC | EmulationMode::Console3DO, NULL);
 		current = next;
 	}
 
@@ -2499,25 +2500,23 @@ void GetGlobalOptions(GLOBALOPTS* opts)
  */
 	// Mics
 	opts->subtitles = optSubtitles;
-	opts->menu = is3DO(optWhichMenu);
+	opts->menu = whichPlatformOpt(optWhichMenu);
 	opts->submenu = optSubmenu;
-	opts->text = is3DO(optWhichFonts);
-	opts->scrTrans = is3DO(optScrTrans);
-	opts->intro = is3DO(optWhichIntro);
+	opts->text = whichPlatformOpt(optWhichFonts);
+	opts->scrTrans = whichPlatformOpt(optScrTrans);
+	opts->intro = whichPlatformOpt(optWhichIntro);
 	opts->skipIntro = optSkipIntro;
 #ifdef MELEE_ZOOM
 	optMScale = opts->meleezoom = optMeleeScale;
 #else
 	optMScale = opts->meleezoom =
-		(OPT_MELEEZOOM)(optMeleeScale == TFB_SCALE_STEP ?
-							OPTVAL_PC :
-							OPTVAL_3DO);
+		(OPT_MELEEZOOM)(optMeleeScale == TFB_SCALE_STEP ? EmulationMode::PC : EmulationMode::Console3DO);
 #endif
 	opts->controllerType = (OPT_CONTROLLER)optControllerType;
 	opts->directionalJoystick = optDirectionalJoystick; // For Android
 	opts->dateType = (OPT_DATETYPE)optDateFormat;
 	opts->customBorder = optCustomBorder;
-	opts->flagshipColor = is3DO(optFlagshipColor);
+	opts->flagshipColor = whichPlatformOpt(optFlagshipColor);
 	opts->gameOver = optGameOver;
 	opts->hyperStars = optHyperStars;
 	opts->showVisitedStars = optShowVisitedStars;
@@ -2532,35 +2531,35 @@ void GetGlobalOptions(GLOBALOPTS* opts)
 	opts->nebulaevol = optNebulaeVolume;
 	opts->starBackground = optStarBackground;
 	opts->unscaledStarSystem = optUnscaledStarSystem;
-	opts->planetStyle = is3DO(optPlanetStyle);
+	opts->planetStyle = whichPlatformOpt(optPlanetStyle);
 	opts->orbitingPlanets = optOrbitingPlanets;
 	opts->texturedPlanets = optTexturedPlanets;
 
 	// Orbit
-	opts->landerHold = is3DO(optLanderHold);
+	opts->landerHold = whichPlatformOpt(optLanderHold);
 	opts->partialPickup = optPartialPickup;
 	opts->cscan = optWhichCoarseScan;
 	opts->hazardColors = optHazardColors;
-	opts->scanStyle = is3DO(optScanStyle);
-	opts->landerStyle = is3DO(optSuperPC);
+	opts->scanStyle = whichPlatformOpt(optScanStyle);
+	opts->landerStyle = whichPlatformOpt(optSuperPC);
 	opts->planetTexture = optPlanetTexture;
 	opts->sphereType = (OPT_SPHERETYPE)optScanSphere;
-	opts->tintPlanSphere = is3DO(optTintPlanSphere);
-	opts->shield = is3DO(optWhichShield);
+	opts->tintPlanSphere = whichPlatformOpt(optTintPlanSphere);
+	opts->shield = whichPlatformOpt(optWhichShield);
 
 	// Game modes
 	opts->difficulty = (OPT_DIFFICULTY)optDiffChooser;
 	opts->extended = optExtended;
 	opts->nomad = (OPT_NOMAD)optNomad;
 	opts->slaughterMode = optSlaughterMode;
-	opts->seedType = (OPT_SEED)optSeedType;
+	opts->seedType = (OPT_SEED)g_seedType;
 	opts->shipSeed = optShipSeed;
 	opts->fleetPointSys = optFleetPointSys;
 
 	// Comm screen
-	opts->scroll = is3DO(optSmoothScroll);
+	opts->scroll = whichPlatformOpt(optSmoothScroll);
 	opts->orzCompFont = optOrzCompFont;
-	opts->scopeStyle = is3DO(optScopeStyle);
+	opts->scopeStyle = whichPlatformOpt(optScopeStyle);
 	opts->nonStopOscill = optNonStopOscill;
 
 	// Auto-Pilot
@@ -2620,7 +2619,7 @@ void SetGlobalOptions(GLOBALOPTS* opts)
  */
 
 	newFactor = (int)(opts->screenResolution << 1);
-	PutIntOpt(&resFactor, &newFactor, "config.resolutionfactor", true);
+	putOpt(resFactor, newFactor, "config.resolutionfactor", true);
 
 	if (resFactor != (int)resolutionFactor)
 	{
@@ -2648,8 +2647,7 @@ void SetGlobalOptions(GLOBALOPTS* opts)
 
 	if (optWindowType != opts->windowType)
 	{
-		PutIntOpt((int*)&optWindowType, (int*)&opts->windowType,
-				  "mm.windowType", true);
+		putOpt((int&)optWindowType, (int)opts->windowType, "mm.windowType", true);
 	}
 
 	//PutBoolOpt (&optKeepAspectRatio, &opts->keepaspect, "config.keepaspectratio", false);
@@ -2666,14 +2664,14 @@ void SetGlobalOptions(GLOBALOPTS* opts)
 	/*
  *		Audio options
  */
-	PutBoolOpt(&optStereoSFX, &opts->stereo, "config.positionalsfx", true);
-	PutBoolOpt(&opt3doMusic, &opts->music3do, "config.3domusic", true);
-	PutBoolOpt(&optRemixMusic, &opts->musicremix, "config.remixmusic", true);
-	PutBoolOpt(&optVolasMusic, &opts->volasMusic, "mm.volasMusic", true);
+	putOpt(optStereoSFX, opts->stereo, "config.positionalsfx", true);
+	putOpt(opt3doMusic, opts->music3do, "config.3domusic", true);
+	putOpt(optRemixMusic, opts->musicremix, "config.remixmusic", true);
+	putOpt(optVolasMusic, opts->volasMusic, "mm.volasMusic", true);
 
-	PutIntOpt(&optSpaceMusic, (int*)&opts->spaceMusic, "mm.spaceMusic", true);
+	putOpt(optSpaceMusic, (int)opts->spaceMusic, "mm.spaceMusic", true);
 
-	if (PutBoolOpt(&optMainMenuMusic, &opts->mainMenuMusic, "mm.mainMenuMusic", false))
+	if (putOpt(optMainMenuMusic, opts->mainMenuMusic, "mm.mainMenuMusic", false))
 	{
 		if (optMainMenuMusic)
 		{
@@ -2685,8 +2683,8 @@ void SetGlobalOptions(GLOBALOPTS* opts)
 		}
 	}
 
-	PutIntOpt(&optMusicResume, (int*)&opts->musicResume, "mm.musicResume", false);
-	PutBoolOpt(&optSpeech, &opts->speech, "config.speech", true);
+	putOpt(optMusicResume, (int)opts->musicResume, "mm.musicResume", false);
+	putOpt(optSpeech, opts->speech, "config.speech", true);
 
 	if (audioDriver != opts->adriver)
 	{
@@ -2740,22 +2738,22 @@ void SetGlobalOptions(GLOBALOPTS* opts)
 	}
 
 	// update actual volumes
-	PutIntOpt(&SfxVol, &opts->sfxvol, "config.sfxvol", false);
-	PutIntOpt(&MusVol, &opts->musicvol, "config.musicvol", false);
-	PutIntOpt(&SpcVol, &opts->speechvol, "config.speechvol", false);
+	putOpt(SfxVol, opts->sfxvol, "config.sfxvol", false);
+	putOpt(MusVol, opts->musicvol, "config.musicvol", false);
+	putOpt(SpcVol, opts->speechvol, "config.speechvol", false);
 
 
 	/*
  *		Engine&Visuals options
  */
 	// Mics
-	PutBoolOpt(&optSubtitles, &opts->subtitles, "config.subtitles", false);
-	PutConsOpt(&optWhichMenu, &opts->menu, "config.textmenu", false);
-	PutBoolOpt(&optSubmenu, &opts->submenu, "mm.submenu", false);
-	PutConsOpt(&optWhichFonts, &opts->text, "config.textgradients", false);
-	PutConsOpt(&optScrTrans, &opts->scrTrans, "mm.scrTransition", false);
-	PutConsOpt(&optWhichIntro, &opts->intro, "config.3domovies", true);
-	PutBoolOpt(&optSkipIntro, &opts->skipIntro, "mm.skipIntro", false);
+	putOpt(optSubtitles, opts->subtitles, "config.subtitles", false);
+	putOpt(optWhichMenu, opts->menu, "config.textmenu", false);
+	putOpt(optSubmenu, opts->submenu, "mm.submenu", false);
+	putOpt(optWhichFonts, opts->text, "config.textgradients", false);
+	putOpt(optScrTrans, opts->scrTrans, "mm.scrTransition", false);
+	putOpt(optWhichIntro, opts->intro, "config.3domovies", true);
+	putOpt(optSkipIntro, opts->skipIntro, "mm.skipIntro", false);
 	if (optMScale != (int)opts->meleezoom)
 	{
 #ifdef MELEE_ZOOM
@@ -2777,86 +2775,86 @@ void SetGlobalOptions(GLOBALOPTS* opts)
 		}
 		res_PutInteger("config.smoothmelee", opts->meleezoom);
 #else
-		optMeleeScale = ((int)opts->meleezoom == OPTVAL_3DO) ? TFB_SCALE_TRILINEAR : TFB_SCALE_STEP;
-		res_PutBoolean("config.smoothmelee", (int)opts->meleezoom == OPTVAL_3DO);
+		optMeleeScale = ((EmulationMode)opts->meleezoom == EmulationMode::Console3DO) ? TFB_SCALE_TRILINEAR : TFB_SCALE_STEP;
+		res_PutBoolean("config.smoothmelee", (EmulationMode)opts->meleezoom == EmulationMode::Console3DO);
 #endif
 	}
 #if SDL_MAJOR_VERSION == 1 // Refined joypad controls aren't supported on SDL1
 	opts->controllerType = 0;
 #endif
-	PutIntOpt(&optControllerType, (int*)(&opts->controllerType), "mm.controllerType", false);
+	putOpt(optControllerType, (int)(opts->controllerType), "mm.controllerType", false);
 #ifdef DIRECTIONAL_JOY
-	PutBoolOpt(&optDirectionalJoystick, &opts->directionalJoystick, "mm.directionalJoystick", false);
+	putOpt(optDirectionalJoystick, opts->directionalJoystick, "mm.directionalJoystick", false);
 #endif
-	PutIntOpt(&optDateFormat, (int*)(&opts->dateType), "mm.dateFormat", false);
-	PutBoolOpt(&optCustomBorder, &opts->customBorder, "mm.customBorder", false);
-	PutConsOpt(&optFlagshipColor, &opts->flagshipColor, "mm.flagshipColor", false);
-	PutBoolOpt(&optGameOver, &opts->gameOver, "mm.gameOver", false);
-	PutBoolOpt(&optHyperStars, &opts->hyperStars, "mm.hyperStars", false);
-	PutBoolOpt(&optShowVisitedStars, &opts->showVisitedStars, "mm.showVisitedStars", false);
-	PutIntOpt(&optFuelRange, (int*)(&opts->fuelRange), "mm.fuelRange", false);
-	PutBoolOpt(&optWholeFuel, &opts->wholeFuel, "mm.wholeFuel", false);
-	PutBoolOpt(&optMeleeToolTips, &opts->meleeToolTips, "mm.meleeToolTips", false);
-	PutIntOpt(&optSphereColors, (int*)&opts->sphereColors, "mm.sphereColors", false);
-	PutBoolOpt(&optScatterElements, &opts->scatterElements, "mm.scatterElements", false);
-	PutBoolOpt(&optShipStore, &opts->shipStore, "mm.shipStore", false);
-	PutBoolOpt(&optCaptainNames, &opts->captainNames, "mm.captainNames", false);
-	PutBoolOpt(&optDosMenus, &opts->dosMenus, "mm.dosMenus", false);
+	putOpt(optDateFormat, (int)(opts->dateType), "mm.dateFormat", false);
+	putOpt(optCustomBorder, opts->customBorder, "mm.customBorder", false);
+	putOpt(optFlagshipColor, opts->flagshipColor, "mm.flagshipColor", false);
+	putOpt(optGameOver, opts->gameOver, "mm.gameOver", false);
+	putOpt(optHyperStars, opts->hyperStars, "mm.hyperStars", false);
+	putOpt(optShowVisitedStars, opts->showVisitedStars, "mm.showVisitedStars", false);
+	putOpt(optFuelRange, (int)(opts->fuelRange), "mm.fuelRange", false);
+	putOpt(optWholeFuel, opts->wholeFuel, "mm.wholeFuel", false);
+	putOpt(optMeleeToolTips, opts->meleeToolTips, "mm.meleeToolTips", false);
+	putOpt(optSphereColors, (int)opts->sphereColors, "mm.sphereColors", false);
+	putOpt(optScatterElements, opts->scatterElements, "mm.scatterElements", false);
+	putOpt(optShipStore, opts->shipStore, "mm.shipStore", false);
+	putOpt(optCaptainNames, opts->captainNames, "mm.captainNames", false);
+	putOpt(optDosMenus, opts->dosMenus, "mm.dosMenus", false);
 
 	// Interplanetary
-	PutBoolOpt(&optNebulae, &opts->nebulae, "mm.nebulae", false);
-	PutIntOpt(&optNebulaeVolume, &opts->nebulaevol, "mm.nebulaevol", false);
-	PutIntOpt(&optStarBackground, &opts->starBackground, "mm.starBackground", false);
-	PutBoolOpt(&optUnscaledStarSystem, &opts->unscaledStarSystem, "mm.unscaledStarSystem", false);
-	PutConsOpt(&optPlanetStyle, &opts->planetStyle, "mm.planetStyle", false);
-	PutBoolOpt(&optOrbitingPlanets, &opts->orbitingPlanets, "mm.orbitingPlanets", false);
-	PutBoolOpt(&optTexturedPlanets, &opts->texturedPlanets, "mm.texturedPlanets", false);
+	putOpt(optNebulae, opts->nebulae, "mm.nebulae", false);
+	putOpt(optNebulaeVolume, opts->nebulaevol, "mm.nebulaevol", false);
+	putOpt(optStarBackground, opts->starBackground, "mm.starBackground", false);
+	putOpt(optUnscaledStarSystem, opts->unscaledStarSystem, "mm.unscaledStarSystem", false);
+	putOpt(optPlanetStyle, opts->planetStyle, "mm.planetStyle", false);
+	putOpt(optOrbitingPlanets, opts->orbitingPlanets, "mm.orbitingPlanets", false);
+	putOpt(optTexturedPlanets, opts->texturedPlanets, "mm.texturedPlanets", false);
 
 	// Orbit
-	PutConsOpt(&optLanderHold, &opts->landerHold, "mm.landerHold", false);
-	PutBoolOpt(&optPartialPickup, &opts->partialPickup, "mm.partialPickup", false);
-	PutIntOpt(&optWhichCoarseScan, &opts->cscan, "config.iconicscan", false);
-	PutBoolOpt(&optHazardColors, &opts->hazardColors, "mm.hazardColors", false);
-	PutConsOpt(&optScanStyle, &opts->scanStyle, "mm.scanStyle", false);
-	PutConsOpt(&optSuperPC, &opts->landerStyle, "mm.landerStyle", false);
-	PutBoolOpt(&optPlanetTexture, &opts->planetTexture, "mm.planetTexture", false);
-	PutIntOpt(&optScanSphere, (int*)&opts->sphereType, "mm.sphereType", false);
-	PutConsOpt(&optTintPlanSphere, &opts->tintPlanSphere, "mm.tintPlanSphere", false);
-	PutConsOpt(&optWhichShield, &opts->shield, "config.pulseshield", false);
-	PutBoolOpt(&optShowUpgrades, &opts->showUpgrades, "mm.showUpgrades", false);
+	putOpt(optLanderHold, opts->landerHold, "mm.landerHold", false);
+	putOpt(optPartialPickup, opts->partialPickup, "mm.partialPickup", false);
+	putOpt(optWhichCoarseScan, opts->cscan, "config.iconicscan", false);
+	putOpt(optHazardColors, opts->hazardColors, "mm.hazardColors", false);
+	putOpt(optScanStyle, opts->scanStyle, "mm.scanStyle", false);
+	putOpt(optSuperPC, opts->landerStyle, "mm.landerStyle", false);
+	putOpt(optPlanetTexture, opts->planetTexture, "mm.planetTexture", false);
+	putOpt(optScanSphere, (int)opts->sphereType, "mm.sphereType", false);
+	putOpt(optTintPlanSphere, opts->tintPlanSphere, "mm.tintPlanSphere", false);
+	putOpt(optWhichShield, opts->shield, "config.pulseshield", false);
+	putOpt(optShowUpgrades, opts->showUpgrades, "mm.showUpgrades", false);
 
 	// Game modes
 	{
-		PutIntOpt(&optSeedType, (int*)(&opts->seedType), "mm.seedType", false);
+		putOpt(g_seedType, (int)(opts->seedType), "mm.seedType", false);
 		int customSeed = atoi(textentries[TEXT_GAMESEED].value);
-		if (!SANE_SEED(customSeed) || optSeedType == OPTVAL_PRIME)
+		if (!SANE_SEED(customSeed) || g_seedType == SeedType::Prime)
 		{
 			customSeed = PrimeA;
 		}
-		PutIntOpt(&optCustomSeed, &customSeed, "mm.customSeed", false);
-		PutBoolOpt(&optShipSeed, &opts->shipSeed, "mm.shipSeed", false);
+		putOpt(optCustomSeed, customSeed, "mm.customSeed", false);
+		putOpt(optShipSeed, opts->shipSeed, "mm.shipSeed", false);
 	}
 
-	PutIntOpt(&optDiffChooser, (int*)&opts->difficulty, "mm.difficulty", false);
+	putOpt(optDiffChooser, (int)opts->difficulty, "mm.difficulty", false);
 	if ((optDifficulty = opts->difficulty) == OPTVAL_IMPO)
 	{
 		optDifficulty = OPTVAL_NORM;
 	}
-	PutBoolOpt(&optExtended, &opts->extended, "mm.extended", false);
-	PutIntOpt(&optNomad, (int*)&opts->nomad, "mm.nomad", false);
-	PutBoolOpt(&optSlaughterMode, &opts->slaughterMode, "mm.slaughterMode", false);
-	PutBoolOpt(&optFleetPointSys, &opts->fleetPointSys, "mm.fleetPointSys", false);
+	putOpt(optExtended, opts->extended, "mm.extended", false);
+	putOpt(optNomad, (int)opts->nomad, "mm.nomad", false);
+	putOpt(optSlaughterMode, opts->slaughterMode, "mm.slaughterMode", false);
+	putOpt(optFleetPointSys, opts->fleetPointSys, "mm.fleetPointSys", false);
 
 	// Comm screen
-	PutConsOpt(&optSmoothScroll, &opts->scroll, "config.smoothscroll", false);
-	PutBoolOpt(&optOrzCompFont, &opts->orzCompFont, "mm.orzCompFont", false);
-	PutConsOpt(&optScopeStyle, &opts->scopeStyle, "mm.scopeStyle", false);
-	PutBoolOpt(&optNonStopOscill, &opts->nonStopOscill, "mm.nonStopOscill", false);
+	putOpt(optSmoothScroll, opts->scroll, "config.smoothscroll", false);
+	putOpt(optOrzCompFont, opts->orzCompFont, "mm.orzCompFont", false);
+	putOpt(optScopeStyle, opts->scopeStyle, "mm.scopeStyle", false);
+	putOpt(optNonStopOscill, opts->nonStopOscill, "mm.nonStopOscill", false);
 
 	// Auto-Pilot
-	PutBoolOpt(&optSmartAutoPilot, &opts->smartAutoPilot, "mm.smartAutoPilot", false);
-	PutBoolOpt(&optAdvancedAutoPilot, &opts->advancedAutoPilot, "mm.advancedAutoPilot", false);
-	PutBoolOpt(&optShipDirectionIP, &opts->shipDirectionIP, "mm.shipDirectionIP", false);
+	putOpt(optSmartAutoPilot, opts->smartAutoPilot, "mm.smartAutoPilot", false);
+	putOpt(optAdvancedAutoPilot, opts->advancedAutoPilot, "mm.advancedAutoPilot", false);
+	putOpt(optShipDirectionIP, opts->shipDirectionIP, "mm.shipDirectionIP", false);
 
 	// Controls
 	PlayerControls[0] = opts->player1;
@@ -2876,19 +2874,19 @@ void SetGlobalOptions(GLOBALOPTS* opts)
 	/*
  *		Cheats
  */
-	PutBoolOpt(&optCheatMode, &opts->cheatMode, "cheat.kohrStahp", false);
-	PutIntOpt(&optGodModes, (int*)&opts->godModes, "cheat.godModes", false);
-	PutIntOpt(&timeDilationScale, (int*)&opts->tdType, "cheat.timeDilation", false);
-	PutBoolOpt(&optBubbleWarp, &opts->bubbleWarp, "cheat.bubbleWarp", false);
-	PutBoolOpt(&optUnlockShips, &opts->unlockShips, "cheat.unlockShips", false);
-	PutBoolOpt(&optHeadStart, &opts->headStart, "cheat.headStart", false);
-	//PutBoolOpt (&optUnlockUpgrades, &opts->unlockUpgrades, "cheat.unlockUpgrades", false);
-	PutBoolOpt(&optInfiniteCredits, &opts->infiniteCredits, "cheat.infiniteCredits", false);
-	PutBoolOpt(&optInfiniteRU, &opts->infiniteRU, "cheat.infiniteRU", false);
-	PutBoolOpt(&optInfiniteFuel, &opts->infiniteFuel, "cheat.infiniteFuel", false);
-	PutBoolOpt(&optNoHQEncounters, &opts->noHQEncounters, "cheat.noHQEncounters", false);
-	PutBoolOpt(&optDeCleansing, &opts->deCleansing, "cheat.deCleansing", false);
-	PutBoolOpt(&optMeleeObstacles, &opts->meleeObstacles, "cheat.meleeObstacles", false);
+	putOpt(optCheatMode, opts->cheatMode, "cheat.kohrStahp", false);
+	putOpt(optGodModes, (int)opts->godModes, "cheat.godModes", false);
+	putOpt(timeDilationScale, (int)opts->tdType, "cheat.timeDilation", false);
+	putOpt(optBubbleWarp, opts->bubbleWarp, "cheat.bubbleWarp", false);
+	putOpt(optUnlockShips, opts->unlockShips, "cheat.unlockShips", false);
+	putOpt(optHeadStart, opts->headStart, "cheat.headStart", false);
+	//putOpt(optUnlockUpgrades opts->unlockUpgrades, "cheat.unlockUpgrades", false);
+	putOpt(optInfiniteCredits, opts->infiniteCredits, "cheat.infiniteCredits", false);
+	putOpt(optInfiniteRU, opts->infiniteRU, "cheat.infiniteRU", false);
+	putOpt(optInfiniteFuel, opts->infiniteFuel, "cheat.infiniteFuel", false);
+	putOpt(optNoHQEncounters, opts->noHQEncounters, "cheat.noHQEncounters", false);
+	putOpt(optDeCleansing, opts->deCleansing, "cheat.deCleansing", false);
+	putOpt(optMeleeObstacles, opts->meleeObstacles, "cheat.meleeObstacles", false);
 
 	// Devices
 	for (i = 0; i < NUM_DEVICES; i++)

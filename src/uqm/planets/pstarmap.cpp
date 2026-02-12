@@ -3488,7 +3488,7 @@ bool StarMap(void)
 		cursorLoc = universe;
 	}
 
-	if (optWhichMenu == OPT_PC)
+	if (optWhichMenu == EmulationMode::PC)
 	{
 		if (playerInPlanetOrbit())
 		{

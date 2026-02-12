@@ -17,6 +17,7 @@
 #include "settings.h"
 #include "sounds.h"
 #include "units.h"
+#include "options.h"
 
 SOUND MenuSounds;
 SOUND GameSounds;

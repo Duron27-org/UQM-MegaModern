@@ -376,7 +376,7 @@ SplitSubPages(uqm::CHAR_T* text, uqm::CHAR_T* pages[], sint32 timestamp[], int s
 			strcpy(pages[page] + lead_ellips + pos, "...");
 		}
 
-		if (optSmoothScroll == OPT_PC && !usingSpeech
+		if (optSmoothScroll == EmulationMode::PC && !usingSpeech
 			&& (lowByte(GLOBAL(CurrentActivity)) != WON_LAST_BATTLE))
 		{
 			timestamp[page] =

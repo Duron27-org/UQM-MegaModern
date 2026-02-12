@@ -573,7 +573,7 @@ bool InitGameStructures(void)
 
 	InitGlobData();
 	// Set Seed Type, then check/start StarSeed
-	SET_GAME_STATE(SEED_TYPE, optSeedType);
+	SET_GAME_STATE(SEED_TYPE, g_seedType);
 	GLOBAL_SIS(Difficulty) = optDifficulty;
 	GLOBAL_SIS(Extended) = optExtended;
 	GLOBAL_SIS(Nomad) = optNomad;
@@ -939,7 +939,7 @@ bool InitStarseed(bool newgame)
 		StarGenRNG = NULL;
 		return true;
 	}
-	if (optSeedType == OPTVAL_MRQ)
+	if (g_seedType == SeedType::MRQ)
 	{
 #ifdef DEBUG_STARSEED
 		fprintf(stderr, "Setting MQR shuffle.\n");
@@ -1118,17 +1118,24 @@ bool inQuasiSpace(void)
 	// IN_HYPERSPACE is also set for QuasiSpace
 }
 
-OPT_CONSOLETYPE
-isPC(int optWhich)
-{
-	return optWhich == OPT_PC ? OPTVAL_PC : OPTVAL_3DO;
-}
+//
+//OPT_CONSOLETYPE
+//is3DO(int optWhich)
+//{
+//	return optWhich == EmulationMode::Console3DO ? OPTVAL_3DO : OPTVAL_PC;
+//}
 
-OPT_CONSOLETYPE
-is3DO(int optWhich)
-{
-	return optWhich == OPT_3DO ? OPTVAL_3DO : OPTVAL_PC;
-}
+//EnumerationMode
+//isPC(int optWhich)
+//{
+//	return optWhich == EmulationMode::PC ? OPTVAL_PC : OPTVAL_3DO;
+//}
+//
+//OPT_CONSOLETYPE
+//is3DO(int optWhich)
+//{
+//	return optWhich == EmulationMode::Console3DO ? OPTVAL_3DO : OPTVAL_PC;
+//}
 
 // Does not work with UTF encoding!
 // Basic function for replacing all instances of character "find"

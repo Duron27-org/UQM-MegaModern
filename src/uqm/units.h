@@ -20,7 +20,7 @@
 #define UQM_UNITS_H_
 
 #include "libs/gfxlib.h"
-#include "options.h"
+//#include "options.h"
 
 #if 0 //defined(__cplusplus)
 extern "C" {
@@ -28,6 +28,7 @@ extern "C" {
 
 extern int CanvasWidth;
 extern int CanvasHeight;
+extern unsigned int resolutionFactor;
 
 /* Most basic resolution units. */
 #define HD 2
@@ -37,8 +38,8 @@ extern int CanvasHeight;
 #define IS_HD (RESOLUTION_FACTOR != HD ? false : true)
 #define RES_SCALE(a) ((a) << RESOLUTION_FACTOR)
 #define RES_DESCALE(a) ((a) >> RESOLUTION_FACTOR)
-template <typename T, std::enable_if_t<std::is_fundamental_v<std::remove_reference_t<T>>, bool> = true>
 //#define chooseIfHd(a,b) (!IS_HD ? (a) : (b))
+template <typename T, std::enable_if_t<std::is_fundamental_v<std::remove_reference_t<T>>, bool> = true>
 static inline constexpr auto chooseIfHd(const T a, const T b) -> T
 {
 	return !IS_HD ? a : b;

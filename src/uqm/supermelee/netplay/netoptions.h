@@ -19,40 +19,33 @@
 #ifndef UQM_SUPERMELEE_NETPLAY_NETOPTIONS_H_
 #define UQM_SUPERMELEE_NETPLAY_NETOPTIONS_H_
 
+#include "core/stl/stl.h"
 #include "types.h"
-
 #include <stddef.h>
 
-#if 0 //defined(__cplusplus)
-extern "C" {
-#endif
-
-#define NETPLAY_NUM_PLAYERS 2
+static inline constexpr size_t NetplayNumPlayers {2};
 // Not using NUM_PLAYERS because that would mean we'd have
 // to include init.h, and all that comes with it.
 // XXX: Don't use a hardcoded limit.
 
-typedef struct
+struct NetplayPeerOptions
 {
-	bool isServer;
-	const char* host;
-	const char* port;
+	bool isServer {};
+	const char* host {};
+	const char* port {};
 	// May be given as a service name.
-} NetplayPeerOptions;
+};
 
-typedef struct
+struct NetplayOptions
 {
-	const char* metaServer;
-	const char* metaPort;
+	const char* metaServer {};
+	const char* metaPort {};
+	size_t inputDelay {};
 	// May be given as a service name.
-	NetplayPeerOptions peer[NETPLAY_NUM_PLAYERS];
-	size_t inputDelay;
-} NetplayOptions;
-extern NetplayOptions netplayOptions;
+	NetplayPeerOptions peer[NetplayNumPlayers] {};
+};
 
+extern NetplayOptions g_netplayOptions;
 
-#if 0 //defined(__cplusplus)
-}
-#endif
 
 #endif /* UQM_SUPERMELEE_NETPLAY_NETOPTIONS_H_ */

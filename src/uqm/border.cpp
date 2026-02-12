@@ -25,6 +25,8 @@
 #include "units.h"
 #include "util.h"
 #include "menustat.h"
+#include "options.h"
+
 
 void InitSISContexts(void)
 {

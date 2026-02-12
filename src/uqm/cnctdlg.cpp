@@ -411,11 +411,11 @@ do_connect(WIDGET* self, int event)
 	if (event == WIDGET_EVENT_SELECT)
 	{
 		/* These assignments are safe exactly because texts[] is file-scope) */
-		netplayOptions.peer[current_state->which_side].host = texts[0].value;
-		netplayOptions.peer[current_state->which_side].port = texts[1].value;
-		netplayOptions.peer[current_state->which_side].isServer = false;
+		g_netplayOptions.peer[current_state->which_side].host = texts[0].value;
+		g_netplayOptions.peer[current_state->which_side].port = texts[1].value;
+		g_netplayOptions.peer[current_state->which_side].isServer = false;
 		current_state->confirmed = true;
-		netplayOptions.inputDelay = slider.value;
+		g_netplayOptions.inputDelay = slider.value;
 
 		done = true;
 	}
@@ -429,9 +429,9 @@ do_listen(WIDGET* self, int event)
 	if (event == WIDGET_EVENT_SELECT)
 	{
 		/* These assignments are safe exactly because texts[] is file-scope) */
-		netplayOptions.peer[current_state->which_side].port = texts[1].value;
-		netplayOptions.peer[current_state->which_side].isServer = true;
-		netplayOptions.inputDelay = slider.value;
+		g_netplayOptions.peer[current_state->which_side].port = texts[1].value;
+		g_netplayOptions.peer[current_state->which_side].isServer = true;
+		g_netplayOptions.inputDelay = slider.value;
 		current_state->confirmed = true;
 		done = true;
 	}
@@ -500,7 +500,7 @@ CreateWidgets(void)
 	slider.min = 0;
 	slider.max = 9;
 	slider.step = 1;
-	slider.value = netplayOptions.inputDelay;
+	slider.value = g_netplayOptions.inputDelay;
 	slider.category = GAME_STRING(NETMELEE_STRING_BASE + 24);
 	// "Net Delay"
 
@@ -525,16 +525,16 @@ CreateWidgets(void)
 	// "Port"
 
 	/* We sometimes assign to these internals; cannot strncpy over self! */
-	if (texts[0].value != netplayOptions.peer[current_state->which_side].host)
+	if (texts[0].value != g_netplayOptions.peer[current_state->which_side].host)
 	{
 		strncpy(texts[0].value,
-				netplayOptions.peer[current_state->which_side].host,
+				g_netplayOptions.peer[current_state->which_side].host,
 				texts[0].maxlen);
 	}
-	if (texts[1].value != netplayOptions.peer[current_state->which_side].port)
+	if (texts[1].value != g_netplayOptions.peer[current_state->which_side].port)
 	{
 		strncpy(texts[1].value,
-				netplayOptions.peer[current_state->which_side].port,
+				g_netplayOptions.peer[current_state->which_side].port,
 				texts[1].maxlen);
 	}
 	texts[0].value[texts[0].maxlen] = 0;

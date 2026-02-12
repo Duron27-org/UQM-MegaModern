@@ -337,3 +337,95 @@ displayLog(bool isError)
 
 	log_displayBox("The Ur-Quan Masters", isError, msgBuf);
 }
+
+
+namespace error
+{
+static constexpr size_t ErrorBufferSize {512};
+class ErrorBuilder
+{
+public:
+	const char* c_str() const
+	{
+		return errBuffer;
+	}
+
+	bool empty() const
+	{
+		return end == errBuffer;
+	}
+
+	void clear()
+	{
+		end = errBuffer;
+		nullTerminate();
+	}
+
+	void nullTerminate()
+	{
+		if (end < bufferEnd)
+		{
+			*end = '\0';
+			++end;
+		}
+	}
+
+	void append(const char c)
+	{
+		const auto space {uqstl::distance(end, bufferEnd) - 1};
+		if (space > 0)
+		{
+			*end = c;
+			++end;
+			nullTerminate();
+		}
+	}
+	void append(uqstl::string_view err)
+	{
+		if (end != errBuffer)
+		{
+			// Already something there
+			append('\n');
+		}
+
+		const auto space {uqstl::distance(end, bufferEnd) - 1};
+		if (space > 0)
+		{
+			const size_t toCopy {uqstl::min(err.size(), static_cast<size_t>(space))};
+			memcpy(end, err.data(), toCopy);
+			end += toCopy;
+			nullTerminate();
+		}
+	}
+
+private:
+	char errBuffer[ErrorBufferSize] {};
+	char* end {errBuffer};
+	char* bufferEnd {errBuffer + ErrorBufferSize};
+};
+
+// Error message buffer used for when we cannot use logging facility yet
+ErrorBuilder g_errorBuilder {};
+
+void clear()
+{
+	g_errorBuilder.clear();
+}
+
+void saveError(uqstl::string_view err)
+{
+	g_errorBuilder.append(err);
+}
+
+
+bool haveError()
+{
+	return !g_errorBuilder.empty();
+}
+
+const char* getError()
+{
+	return g_errorBuilder.c_str();
+}
+
+} // namespace error

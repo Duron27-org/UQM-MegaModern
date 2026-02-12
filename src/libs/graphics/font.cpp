@@ -18,6 +18,7 @@
 
 #include <math.h>
 
+#include "options.h"
 #include "gfxintrn.h"
 #include "tfb_prim.h"
 #include "libs/log.h"

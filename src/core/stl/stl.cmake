@@ -1,0 +1,15 @@
+############################################################
+
+
+set(uqm_src_core_stl_master_files "")
+
+
+############################################################
+# Local files
+set(uqm_src_core_stl_files
+	"src/core/stl/stl.cmake"
+	"src/core/stl/stl.h"
+)
+
+source_group("src\\core\\stl" FILES ${uqm_src_core_stl_files})
+list(APPEND uqm_src_core_stl_master_files ${uqm_src_core_stl_files})

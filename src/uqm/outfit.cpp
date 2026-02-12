@@ -1089,7 +1089,7 @@ InitFlash:
 							MODULE_TOP_Y - RES_SCALE(1);
 						pMS->flash_rect0.extent.width =
 							SHIP_PIECE_OFFSET + RES_SCALE(2)
-							+ RES_SCALE(optWhichMenu == OPT_PC);
+							+ RES_SCALE(optWhichMenu == EmulationMode::PC);
 						pMS->flash_rect0.extent.height = RES_SCALE(34);
 
 						pMS->flash_rect1.corner.x =
@@ -1098,7 +1098,7 @@ InitFlash:
 							MODULE_SIDE_Y - RES_SCALE(1);
 						pMS->flash_rect1.extent.width =
 							SHIP_PIECE_OFFSET + RES_SCALE(2)
-							+ RES_SCALE(optWhichMenu == OPT_PC);
+							+ RES_SCALE(optWhichMenu == EmulationMode::PC);
 						pMS->flash_rect1.extent.height = RES_SCALE(25);
 						break;
 				}
@@ -1127,7 +1127,7 @@ InitFlash:
 			}
 			else
 			{
-				if (optWhichMenu == OPT_PC)
+				if (optWhichMenu == EmulationMode::PC)
 				{
 					switch (pMS->CurState)
 					{
@@ -1159,7 +1159,7 @@ InitFlash:
 				}
 				else
 				{
-					SetFlashRect(&pMS->flash_rect0, optWhichMenu == OPT_PC);
+					SetFlashRect(&pMS->flash_rect0, optWhichMenu == EmulationMode::PC);
 				}
 			}
 		}
@@ -1298,7 +1298,7 @@ bool DoOutfit(MENU_STATE* pMS)
 			s.frame = CaptureDrawable(
 				LoadGraphic(OUTFIT_PMAP_ANIM));
 
-			if (optFlagshipColor == OPT_3DO)
+			if (optFlagshipColor == EmulationMode::Console3DO)
 			{
 				s.frame = SetAbsFrameIndex(s.frame, 1);
 			}

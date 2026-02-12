@@ -1475,7 +1475,7 @@ Homeworld(SPECIES_ID SpeciesID)
 // For Prime seed games this just returns, as the fleet does not relocate.
 void SeedFleet(FLEET_INFO* FleetPtr, PLOT_LOCATION* plotmap)
 {
-	if ((!StarSeed) || (optSeedType == OPTVAL_MRQ))
+	if ((!StarSeed) || (g_seedType == SeedType::MRQ))
 	{
 		return;
 	}
@@ -1543,7 +1543,7 @@ SeedFleetLocation(FLEET_INFO* FleetPtr, PLOT_LOCATION* plotmap, uqm::COUNT visit
 	}
 
 	// Firstly, handle hard coded data from prime seed
-	if (!StarSeed || optSeedType == OPTVAL_MRQ)
+	if (!StarSeed || g_seedType == SeedType::MRQ)
 	{
 		return DefaultFleetLocation(FleetPtr->SpeciesID, visit);
 	}

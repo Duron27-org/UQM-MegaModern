@@ -18,6 +18,8 @@
 
 #include "weapon.h"
 
+#include "options/options.h"
+#include "options.h"
 #include "colors.h"
 #include "globdata.h"
 #include "status.h"

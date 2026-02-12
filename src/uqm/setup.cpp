@@ -213,7 +213,7 @@ bool LoadKernel(int argc, char* argv[])
 		SpaceMusicOK = optSpaceMusic && loadAddon("SpaceMusic");
 	}
 
-	if (optWhichIntro == OPT_3DO)
+	if (optWhichIntro == EmulationMode::Console3DO)
 	{
 		loadAddon("3dovideo");
 	}

@@ -13,12 +13,15 @@ FILE_WHITELIST = []
 
 def load_whitelists(whitlelist_path):
 	global PATH_WHITELIST, FILE_WHITELIST
+
 	with open(whitlelist_path,'r') as win_files:
 		for file_line in win_files:
 			file_path = Path(file_line.strip())
 			FILE_WHITELIST.append(file_path)
-			if file_path.parent not in PATH_WHITELIST:
-				PATH_WHITELIST.append(file_path.parent)
+
+			for parent in file_path.parents:
+				if parent not in PATH_WHITELIST:
+					PATH_WHITELIST.append(parent)
 
 		
 def get_directory_cmake_path(path):

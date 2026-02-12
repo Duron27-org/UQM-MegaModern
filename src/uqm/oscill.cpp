@@ -28,6 +28,7 @@
 #include "colors.h"
 #include "menustat.h"
 #include "util.h"
+#include "options.h"
 
 static FRAME scope_frame;
 static int scope_init = 0;
@@ -106,7 +107,7 @@ void DrawOscilloscopeLines(STAMP* s, uint8* scope_data, bool nonStop, bool toSca
 	DrawStamp(s);
 
 	// Set oscilloscope line color
-	scopeColor = optScopeStyle != OPT_PC ?
+	scopeColor = optScopeStyle != EmulationMode::PC ?
 					 SCOPE_COLOR_3DO :
 					 SCOPE_COLOR_PC;
 
@@ -250,7 +251,7 @@ void DrawSlider(void)
 	int offs;
 	static int last_offs = -1;
 
-	if (sliderDisabled || (!usingSpeech && optSmoothScroll == OPT_PC))
+	if (sliderDisabled || (!usingSpeech && optSmoothScroll == EmulationMode::PC))
 	{
 		return;
 	}
