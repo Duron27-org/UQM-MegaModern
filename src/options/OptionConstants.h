@@ -44,10 +44,10 @@ static inline constexpr uqstl::array<OptionListValueT<int>, 3> AudioQualityList 
 	 {"high", audio_QUALITY_HIGH}}
 };
 
-static inline constexpr uqstl::array<OptionListValueT<uqm::EmulationMode>, 3> EmulationChoiceList {
+static inline constexpr uqstl::array<OptionListValueT<EmulationMode>, 2> EmulationChoiceList {
 
-	{{"pc", uqm::EmulationMode::PC},
-	 {"3do", uqm::EmulationMode::Console3DO}}
+	{{"pc", EmulationMode::PC},
+	 {"3do", EmulationMode::Console3DO}}
 };
 
 static inline constexpr uqstl::array<OptionListValueT<int>, 5> AccelList {

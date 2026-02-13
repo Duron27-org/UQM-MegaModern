@@ -31,7 +31,7 @@
 
 #include "../../uqm/globdata.h"
 #include "uqm/setupmenu.h"
-#include "options/OptionConstants.h"
+#include "libs/math/randomdefs.h"
 
 /* ----------------------------GLOBALS/EXTERNS---------------------------- */
 
@@ -41,11 +41,6 @@ uqm::DWORD TFB_Random(void);
 
 typedef struct RandomContext RandomContext;
 
-
-extern uqm::SeedType g_seedType;
-
-
-
 #ifdef RANDOM2_INTERNAL
 struct RandomContext
 {
@@ -53,19 +48,12 @@ struct RandomContext
 };
 #endif
 
-// The Planet Generation seeding code alters SeedA to function.
-// All other modes use proper PrimeA == SeedA == 16807
-#define PrimeA 16807
-#define MAX_SEED 2147483644
-#define MIN_SEED 3
-#define SANE_SEED(a) (((a) < MIN_SEED || (a) > MAX_SEED) ? false : true)
 #define SeedA (((g_seedType == uqm::SeedType::Planet) && (SANE_SEED(GLOBAL_SIS(Seed)))) ? GLOBAL_SIS(Seed) : PrimeA)
 // Default SeedA (PrimeA): 16807 - a relatively prime number - also M div Q
 #define SeedM (UINT32_MAX / 2) // 0xFFFFFFFF div 2
 #define SeedQ (SeedM / SeedA)  // Default: 127773L - M div A
 #define SeedR (SeedM % SeedA)  // Default: 2836 - M mod A
-#define PrimeSeed (g_seedType == uqm::SeedType::Prime)
-#define StarSeed (g_seedType > uqm::SeedType::Planet)
+
 
 RandomContext* RandomContext_New(void);
 RandomContext* RandomContext_Set(uqm::DWORD Context);

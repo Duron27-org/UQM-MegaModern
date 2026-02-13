@@ -5,7 +5,7 @@
 #include "options/OptionConstants.h"
 #include "options/OptionTypes.h"
 
-#include "libs/math/random.h" // TODO: only used for the PrimeA constant and SeedType. Find a better way to share that perhaps?
+#include "libs/math/randomdefs.h" // TODO: only used for the PrimeA constant and SeedType. Find a better way to share that perhaps?
 #include "libs/platform.h"
 
 namespace uqm
@@ -154,7 +154,7 @@ template <typename OptionValueT>
 	}
 	else if (errCode == std::errc::result_out_of_range)
 	{
-		throw std::invalid_argument(fmt::format("The value '{}' held in the option string for {} is too large to be held by the option.", valueStr, optionName));
+		throw std::out_of_range(fmt::format("The value '{}' held in the option string for {} is too large to be held by the option.", valueStr, optionName));
 	}
 	return {};
 }

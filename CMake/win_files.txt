@@ -206,6 +206,7 @@ src/libs/luauqm/scriptres.h
 src/libs/math/mthintrn.h
 src/libs/math/random.cpp
 src/libs/math/random.h
+src/libs/math/randomdefs.h
 src/libs/math/random2.cpp
 src/libs/math/sqrt.cpp
 src/libs/mathlib.h
