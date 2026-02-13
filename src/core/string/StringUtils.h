@@ -15,9 +15,14 @@ namespace uqm
 static constexpr const char* TrueText {"true"};
 static constexpr const char* FalseText {"false"};
 
+[[nodiscard]] inline constexpr bool isEmpty(const char* sz) noexcept
+{
+	return sz == nullptr || sz[0] == '\0';
+}
+
 [[nodiscard]] constexpr size_t strlenConstexpr(uqgsl::czstring str) noexcept
 {
-	if (str == nullptr || *str == '\0') [[unlikely]]
+	if (isEmpty(str)) [[unlikely]]
 	{
 		return 0;
 	}
@@ -88,10 +93,7 @@ inline const char* toString(const T value, uqstl::span<char> buffer)
 }
 
 
-[[nodiscard]] inline constexpr bool isEmpty(const char* sz) noexcept
-{
-	return sz == nullptr || sz[0] == '\0';
-}
+
 
 [[nodiscard]] inline constexpr bool isEmpty(uqstl::string_view str) noexcept
 {
