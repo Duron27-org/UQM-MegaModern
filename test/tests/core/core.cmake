@@ -7,12 +7,14 @@ include("../src/core/string/string.cmake")
 list(APPEND uqm_tests_core_master_files 
 	"../src/core/string/StringUtils.h"
 	"../src/core/string/StringUtils.cpp"
+	"../src/core/stl/ring_buffer.h"
 )
 
 ############################################################
 # Local files
 set(uqm_tests_core_files
-	"tests/core/testStringUtils.cpp"
+	"tests/core/test_StringUtils.cpp"
+	"tests/core/test_ring_buffer.cpp"
 )
 
 source_group("tests\\core" FILES ${uqm_tests_core_files})

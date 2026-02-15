@@ -7,6 +7,7 @@ set(uqm_src_core_stl_master_files "")
 ############################################################
 # Local files
 set(uqm_src_core_stl_files
+	"src/core/stl/ring_buffer.h"
 	"src/core/stl/stl.cmake"
 	"src/core/stl/stl.h"
 )
