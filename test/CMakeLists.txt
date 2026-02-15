@@ -22,6 +22,16 @@ add_executable(UQM_Tests
     ${UQM_TEST_SOURCES}
 )
 
+target_compile_options(UQM_Tests
+    PRIVATE
+        $<$<CONFIG:RelWithDebInfo>:/Zi /Od>
+)
+
+target_link_options(UQM_Tests
+    PRIVATE
+        $<$<CONFIG:RelWithDebInfo>:/DEBUG>
+)
+
 # ---- Include paths ---------------------------------------------------------
 
 # Include the main project's src/ directory
