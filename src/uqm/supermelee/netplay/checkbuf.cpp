@@ -136,8 +136,8 @@ bool ChecksumBuffer_getChecksum(ChecksumBuffer* cb, BattleFrameCounter frameNr,
 #ifdef NETPLAY_DEBUG
 	if (frameNr != entry->frameNr)
 	{
-		uqm::log::error("Checksum buffer entry for requested frame %u "
-						"(still?) contains a checksum for frame %u.\n",
+		uqm::log::error("Checksum buffer entry for requested frame {} "
+						"(still?) contains a checksum for frame {}.\n",
 						frameNr, entry->frameNr);
 		return false;
 	}

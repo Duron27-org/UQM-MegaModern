@@ -83,7 +83,7 @@ FlagStartThread(SpawnRequest s)
 			return nullptr;
 		}
 	}
-	uqm::log::critical("Thread Lifecycle array filled.  This is a fatal error!  Make LIFECYCLE_SIZE something larger than %d.", LIFECYCLE_SIZE);
+	uqm::log::critical("Thread Lifecycle array filled.  This is a fatal error!  Make LIFECYCLE_SIZE something larger than {}.", LIFECYCLE_SIZE);
 	exit(EXIT_FAILURE);
 }
 
@@ -100,7 +100,7 @@ void FinishThread(Thread thread)
 			return;
 		}
 	}
-	uqm::log::critical("Thread Lifecycle array filled.  This is a fatal error!  Make LIFECYCLE_SIZE something larger than %d.", LIFECYCLE_SIZE);
+	uqm::log::critical("Thread Lifecycle array filled.  This is a fatal error!  Make LIFECYCLE_SIZE something larger than {}.", LIFECYCLE_SIZE);
 	exit(EXIT_FAILURE);
 }
 

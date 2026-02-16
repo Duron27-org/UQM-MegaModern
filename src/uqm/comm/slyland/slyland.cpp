@@ -257,7 +257,7 @@ sayCoord(int coord)
 	ac = abs(coord);
 
 	NPCPhrase_splice(coord < 0 ? COORD_MINUS : COORD_PLUS);
-	NPCNumber(ac / 10, "%03d");
+	NPCNumber(ac / 10, "{:03}");
 	NPCPhrase_splice(COORD_POINT);
 	NPCNumber(ac % 10, nullptr);
 }
@@ -499,9 +499,9 @@ Intro(void)
 		NPCPhrase(COORD_POINT);
 		for (i = 0; i < 16; i++)
 		{
-			NPCNumber(random_ramble[i], "%d ");
+			NPCNumber(random_ramble[i], "{} ");
 		}
-		NPCNumber(random_ramble[16], "%d");
+		NPCNumber(random_ramble[16], "{}");
 		NPCPhrase(COORD_POINT);
 
 		NPCPhrase(HOSTILE);

@@ -963,7 +963,7 @@ _text_blt_alt(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin, uqm::BYTE swap,
 			{
 				origin.x -= FontPtr->KernAmount;
 
-				//printf ("%c: %d -- %d :%c\n", ch, FontPtr->KernTab[ch],
+				//printf ("%c: {} -- {} :%c\n", ch, FontPtr->KernTab[ch],
 				//		FontPtr->KernTab[next_ch] >> 2, next_ch);
 			}
 		}
@@ -1007,7 +1007,7 @@ getCharFrame(FONT_DESC* fontPtr, UniChar ch)
 	}
 	else
 	{
-		//log_add (log_Debug, "Character %u not present", (unsigned int) ch);
+		//log_add (log_Debug, "Character {} not present", (unsigned int) ch);
 		return nullptr;
 	}
 }

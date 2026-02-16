@@ -36,9 +36,11 @@
 #include "libs/tasklib.h"
 #include "libs/callback/alarm.h"
 #include "core/log/log.h"
+#include "core/string/StringUtils.h"
 #include "hyper.h"
 #include "gameopt.h"
 #include <math.h>
+#include "uqm/util.h"
 
 #include <stdio.h>
 
@@ -181,13 +183,13 @@ void DrawSISTitle(uqm::CHAR_T* pStr)
 
 void DrawHyperCoords(POINT universe)
 {
-	uqm::CHAR_T buf[100];
+	uqm::CHAR_T buf[100] {};
 	const char* SpaceOrNull = (isPC(optWhichFonts) ? STR_SPACE : "");
 
-	snprintf(buf, sizeof buf, "%03u.%01u%s:%s%03u.%01u",
-			 universe.x / 10, universe.x % 10,
-			 SpaceOrNull, SpaceOrNull,
-			 universe.y / 10, universe.y % 10);
+	fmt::format_to_sz_n(buf, sizeof buf, "{:03}.{:01}{}:{}{:03}.{:01}",
+						universe.x / 10, universe.x % 10,
+						SpaceOrNull, SpaceOrNull,
+						universe.y / 10, universe.y % 10);
 
 	DrawSISTitle(buf);
 }
@@ -215,11 +217,11 @@ void DrawSaveInfo(SIS_STATE SisState)
 	{
 		if (SisState.Nomad)
 		{
-			snprintf(TempNom, sizeof(TempNom), "%s%s",
-					 GAME_STRING(MAINMENU_STRING_BASE + 60),
-					 SisState.Nomad == 2 ? "+" :
-					 SisState.Nomad == 1 ? "-" :
-										   "");
+			fmt::format_to_sz_n(TempNom, sizeof(TempNom), "{}{}",
+								GAME_STRING(MAINMENU_STRING_BASE + 60),
+								SisState.Nomad == 2 ? "+" :
+								SisState.Nomad == 1 ? "-" :
+													  "");
 		}
 
 		if (SisState.Extended)
@@ -232,12 +234,12 @@ void DrawSaveInfo(SIS_STATE SisState)
 					   GAME_STRING(MAINMENU_STRING_BASE + 56
 								   + SisState.Difficulty));
 
-		snprintf(buf, sizeof buf, "%s %s%s%s",
-				 GAME_STRING(MAINMENU_STRING_BASE + 55), // Difficulty:
-				 TempDiff, TempExt, TempNom);
+		fmt::format_to_sz_n(buf, sizeof buf, "{} {}{}{}",
+							GAME_STRING(MAINMENU_STRING_BASE + 55), // Difficulty:
+							TempDiff, TempExt, TempNom);
 		DrawSISMessage(buf);
 
-		snprintf(buf, sizeof buf, "%u", SisState.Seed);
+		fmt::format_to_sz_n(buf, sizeof buf, "{}", SisState.Seed);
 		DrawSISTitle(buf);
 	}
 }
@@ -498,24 +500,23 @@ void DateToString(char* buf, size_t bufLen,
 	switch (optDateFormat)
 	{
 		case 1: /* MM.DD.YYYY */
-			snprintf(buf, bufLen, "%02d%s%02d%s%04d", month_index,
-					 STR_MIDDLE_DOT, day_index, STR_MIDDLE_DOT, year_index);
+			fmt::format_to_sz_n(buf, bufLen, "{:02}" STR_MIDDLE_DOT "{:02}" STR_MIDDLE_DOT "{:04}", month_index,
+								day_index, year_index);
 			break;
 		case 2: /* DD MMM YYYY */
-			snprintf(buf, bufLen, "%02d %s%s%04d", day_index,
-					 GAME_STRING(MONTHS_STRING_BASE + month_index - 1),
-					 STR_MIDDLE_DOT, year_index);
+			fmt::format_to_sz_n(buf, bufLen, "{:02} {} {:04}", day_index,
+								GAME_STRING(MONTHS_STRING_BASE + month_index - 1),
+								year_index);
 			break;
 		case 3: /* DD.MM.YYYY */
-			snprintf(buf, bufLen, "%02d%s%02d%s%04d", day_index,
-					 STR_MIDDLE_DOT, month_index, STR_MIDDLE_DOT,
-					 year_index);
+			fmt::format_to_sz_n(buf, bufLen, "{:02}" STR_MIDDLE_DOT "{:02}" STR_MIDDLE_DOT "{:04}", day_index,
+								month_index, year_index);
 			break;
 		case 0:
 		default: /* MMM DD.YYYY */
-			snprintf(buf, bufLen, "%s %02d%s%04d",
-					 GAME_STRING(MONTHS_STRING_BASE + month_index - 1),
-					 day_index, STR_MIDDLE_DOT, year_index);
+			fmt::format_to_sz_n(buf, bufLen, "{} {:02}" STR_MIDDLE_DOT "{:04}",
+								GAME_STRING(MONTHS_STRING_BASE + month_index - 1),
+								day_index, year_index);
 			break;
 	}
 }
@@ -559,31 +560,31 @@ void DrawStatusMessage(const uqm::CHAR_T* pStr)
 		{
 			if (optInfiniteCredits)
 			{
-				snprintf(buf, sizeof buf, "%s %s",
-						 (isPC(optWhichMenu) && isPC(optWhichFonts)) ?
-							 GAME_STRING(STATUS_STRING_BASE + 2) :
-							 STR_INFINITY_SIGN,				   // "UNLIMITED"
-						 GAME_STRING(STATUS_STRING_BASE + 0)); // "Cr"
+				fmt::format_to_sz_n(buf, sizeof buf, "{} {}",
+									(isPC(optWhichMenu) && isPC(optWhichFonts)) ?
+										GAME_STRING(STATUS_STRING_BASE + 2) :
+										STR_INFINITY_SIGN,				  // "UNLIMITED"
+									GAME_STRING(STATUS_STRING_BASE + 0)); // "Cr"
 			}
 			else
 			{
-				snprintf(buf, sizeof buf, "%u %s", MAKE_WORD(GET_GAME_STATE(MELNORME_CREDIT0), GET_GAME_STATE(MELNORME_CREDIT1)), GAME_STRING(STATUS_STRING_BASE + 0)); // "Cr"
+				fmt::format_to_sz_n(buf, sizeof buf, "{} {}", MAKE_WORD(GET_GAME_STATE(MELNORME_CREDIT0), GET_GAME_STATE(MELNORME_CREDIT1)), GAME_STRING(STATUS_STRING_BASE + 0)); // "Cr"
 			}
 		}
 		else if (curMsgMode == SMM_RES_UNITS)
 		{
 			if (GET_GAME_STATE(CHMMR_BOMB_STATE) >= 2 || optInfiniteRU)
 			{
-				snprintf(buf, sizeof buf, "%s %s",
-						 (isPC(optWhichMenu) && isPC(optWhichFonts)) ?
-							 GAME_STRING(STATUS_STRING_BASE + 2) :
-							 STR_INFINITY_SIGN,				   // "UNLIMITED"
-						 GAME_STRING(STATUS_STRING_BASE + 1)); // "RU"
+				fmt::format_to_sz_n(buf, sizeof buf, "{} {}",
+									(isPC(optWhichMenu) && isPC(optWhichFonts)) ?
+										GAME_STRING(STATUS_STRING_BASE + 2) :
+										STR_INFINITY_SIGN,				  // "UNLIMITED"
+									GAME_STRING(STATUS_STRING_BASE + 1)); // "RU"
 			}
 			else
 			{
-				snprintf(buf, sizeof buf, "%u %s", GLOBAL_SIS(ResUnits),
-						 GAME_STRING(STATUS_STRING_BASE + 1)); // "RU"
+				fmt::format_to_sz_n(buf, sizeof buf, "{} {}", GLOBAL_SIS(ResUnits),
+									GAME_STRING(STATUS_STRING_BASE + 1)); // "RU"
 			}
 		}
 		else
@@ -733,8 +734,8 @@ void DrawFlagshipName(bool InStatusArea, bool NewGame)
 		r.extent.height = SHIP_NAME_HEIGHT;
 
 		t.pStr = buf;
-		snprintf(buf, sizeof buf, "%s %s",
-				 GAME_STRING(NAMING_STRING_BASE + 1), GLOBAL_SIS(ShipName));
+		fmt::format_to_sz_n(buf, sizeof buf, "{} {}",
+							GAME_STRING(NAMING_STRING_BASE + 1), GLOBAL_SIS(ShipName));
 		// XXX: this will not work with UTF-8 strings
 		_strupr(buf);
 
@@ -917,20 +918,20 @@ void DrawFlagshipStats(void)
 	t.align = ALIGN_LEFT;
 	t.pStr = buf;
 
-	snprintf(buf, sizeof buf, "%s",
-			 describeWeapon(GLOBAL_SIS(ModuleSlots[15])));
+	fmt::format_to_sz_n(buf, sizeof buf, "{}",
+						describeWeapon(GLOBAL_SIS(ModuleSlots[15])));
 	font_DrawText(&t);
 	t.baseline.y += leading;
-	snprintf(buf, sizeof buf, "%s",
-			 describeWeapon(GLOBAL_SIS(ModuleSlots[14])));
+	fmt::format_to_sz_n(buf, sizeof buf, "{}",
+						describeWeapon(GLOBAL_SIS(ModuleSlots[14])));
 	font_DrawText(&t);
 	t.baseline.y += leading;
-	snprintf(buf, sizeof buf, "%s",
-			 describeWeapon(GLOBAL_SIS(ModuleSlots[13])));
+	fmt::format_to_sz_n(buf, sizeof buf, "{}",
+						describeWeapon(GLOBAL_SIS(ModuleSlots[13])));
 	font_DrawText(&t);
 	t.baseline.y += leading;
-	snprintf(buf, sizeof buf, "%s",
-			 describeWeapon(GLOBAL_SIS(ModuleSlots[0])));
+	fmt::format_to_sz_n(buf, sizeof buf, "{}",
+						describeWeapon(GLOBAL_SIS(ModuleSlots[0])));
 	font_DrawText(&t);
 
 	t.baseline.x = r.extent.width - RES_SCALE(26);
@@ -955,27 +956,27 @@ void DrawFlagshipStats(void)
 	t.baseline.y = base_y;
 	t.pStr = buf;
 
-	snprintf(buf, sizeof buf, "%4u", max_thrust * 4);
+	fmt::format_to_sz_n(buf, sizeof buf, "{:4}", max_thrust * 4);
 	font_DrawText(&t);
 	t.baseline.y += leading;
-	snprintf(buf, sizeof buf, "%4u", 1 + TURN_WAIT - turn_wait);
+	fmt::format_to_sz_n(buf, sizeof buf, "{:4}", 1 + TURN_WAIT - turn_wait);
 	font_DrawText(&t);
 	t.baseline.y += leading;
 	if (!IS_DOS)
 	{
 		unsigned int energy_per_10_sec =
 			(((100 * ONE_SECOND * energy_regeneration) / ((1 + energy_wait) * BATTLE_FRAME_RATE)) + 5) / 10;
-		snprintf(buf, sizeof buf, "%2u.%1u",
-				 energy_per_10_sec / 10, energy_per_10_sec % 10);
+		fmt::format_to_sz_n(buf, sizeof buf, "{:2}.{:1}",
+							energy_per_10_sec / 10, energy_per_10_sec % 10);
 	}
 	else
 	{
-		snprintf(buf, sizeof buf, "%u",
-				 (num_dynamos * 30) + (num_shivas * 60));
+		fmt::format_to_sz_n(buf, sizeof buf, "{}",
+							(num_dynamos * 30) + (num_shivas * 60));
 	}
 	font_DrawText(&t);
 	t.baseline.y += leading;
-	snprintf(buf, sizeof buf, "%4u", (fuel / FUEL_TANK_SCALE));
+	fmt::format_to_sz_n(buf, sizeof buf, "{:4}", (fuel / FUEL_TANK_SCALE));
 	font_DrawText(&t);
 
 	SetContextFontEffect(OldFontEffect);
@@ -1358,7 +1359,7 @@ DeltaSISGauges_crewDelta(uqm::SIZE crew_delta)
 		uqm::CHAR_T buf[60];
 		RECT r;
 
-		snprintf(buf, sizeof buf, "%u", GLOBAL_SIS(CrewEnlisted));
+		fmt::format_to_sz_n(buf, sizeof buf, "{}", GLOBAL_SIS(CrewEnlisted));
 
 		GetGaugeRect(&r, true);
 
@@ -1417,31 +1418,10 @@ DeltaSISGauges_fuelDelta(uqm::SDWORD fuel_delta)
 		TEXT t;
 		// buf from [60] to [7]: The max fuel anyone can ever get is 1610 (1610.00 in whole value)
 		// I.E. only 4 (7) characters, we don't need that much extra padding.
-		uqm::CHAR_T buf[7];
-		RECT r;
-		// Cast as a double and divided by FUEL_TANK_SCALE to get a decimal
-		double dblFuelOnBoard = (double)NewCoarseFuel / FUEL_TANK_SCALE;
-
-		if (!optInfiniteFuel)
-		{
-			if (!optWholeFuel)
-			{
-				snprintf(buf, sizeof buf, "%u", NewCoarseFuel);
-			}
-			else if (dblFuelOnBoard > 999.99)
-			{
-				snprintf(buf, sizeof buf, "%.1f", dblFuelOnBoard);
-			}
-			else
-			{
-				snprintf(buf, sizeof buf, "%.2f", dblFuelOnBoard);
-			}
-		}
-		else
-		{
-			snprintf(buf, sizeof buf, "%s", STR_INFINITY_SIGN);
-		}
-
+		// PragmaNull: make it 8. Why waste 1 byte in padding? Nothing else will use it..
+		uqm::CHAR_T buf[8];
+		RECT r {};
+		formatFuelValue(NewCoarseFuel, {buf, sizeof(buf)});
 
 		GetGaugeRect(&r, false);
 
@@ -2020,12 +2000,12 @@ AutoPilotTextLogic(void)
 	{ // Show the destination coordinates if the
 		// destination is not a star
 		// AUTO-PILOT to ###.#:###.# - [TargetDistance]
-		snprintf(buf, sizeof buf, "%s %s %03u.%01u:%03u.%01u - %.1f",
-				 GAME_STRING(NAVIGATION_STRING_BASE + 3), // "AUTO-PILOT"
-				 GAME_STRING(NAVIGATION_STRING_BASE + 6), // "to"
-				 destination.x / 10, destination.x % 10,  // X Coordinates
-				 destination.y / 10, destination.y % 10,  // Y Coordinates
-				 target_distance);
+		fmt::format_to_sz_n(buf, sizeof buf, "{} {} {:03}.{:01}:{:03}.{:01} - {:.1}",
+							GAME_STRING(NAVIGATION_STRING_BASE + 3), // "AUTO-PILOT"
+							GAME_STRING(NAVIGATION_STRING_BASE + 6), // "to"
+							destination.x / 10, destination.x % 10,	 // X Coordinates
+							destination.y / 10, destination.y % 10,	 // Y Coordinates
+							target_distance);
 
 		DrawSISMessageEx(buf, -1, -1, DSME_MYCOLOR);
 		return;
@@ -2033,10 +2013,10 @@ AutoPilotTextLogic(void)
 
 	if (pointsEqual(LoadLastLoc(), destination))
 	{
-		snprintf(buf, sizeof buf, "%s %s %s",
-				 GAME_STRING(NAVIGATION_STRING_BASE + 3), // "AUTO-PILOT"
-				 GAME_STRING(NAVIGATION_STRING_BASE + 6), // "to"
-				 GAME_STRING(NAVIGATION_STRING_BASE)	  // "HyperSpace"
+		fmt::format_to_sz_n(buf, sizeof buf, "{} {} {}",
+							GAME_STRING(NAVIGATION_STRING_BASE + 3), // "AUTO-PILOT"
+							GAME_STRING(NAVIGATION_STRING_BASE + 6), // "to"
+							GAME_STRING(NAVIGATION_STRING_BASE)		 // "HyperSpace"
 		);
 
 		DrawSISMessageEx(buf, -1, -1, DSME_MYCOLOR);
@@ -2046,11 +2026,11 @@ AutoPilotTextLogic(void)
 	GetClusterName(StarPointer, star_cluster);
 
 	// AUTO-PILOT to [StarCluster] - [TargetDistance]
-	snprintf(buf, sizeof buf, "%s %s %s - %.1f",
-			 GAME_STRING(NAVIGATION_STRING_BASE + 3), // "AUTO-PILOT"
-			 GAME_STRING(NAVIGATION_STRING_BASE + 6), // "to"
-			 star_cluster,
-			 target_distance);
+	fmt::format_to_sz_n(buf, sizeof buf, "{} {} {} - {:.1}",
+						GAME_STRING(NAVIGATION_STRING_BASE + 3), // "AUTO-PILOT"
+						GAME_STRING(NAVIGATION_STRING_BASE + 6), // "to"
+						star_cluster,
+						target_distance);
 
 	temp.pStr = buf;
 	r = font_GetTextRect(&temp);
@@ -2059,10 +2039,10 @@ AutoPilotTextLogic(void)
 	{ // If the full text is too large then
 		// use "->" instead of "AUTO-PILOT"
 		// -> to [StarCluster] - [TargetDistance]
-		snprintf(buf, sizeof buf, "%s %s - %.1f",
-				 GAME_STRING(NAVIGATION_STRING_BASE + 7), // "->"
-				 star_cluster,
-				 target_distance);
+		fmt::format_to_sz_n(buf, sizeof buf, "{} {} - {:.1}",
+							GAME_STRING(NAVIGATION_STRING_BASE + 7), // "->"
+							star_cluster,
+							target_distance);
 	}
 
 	temp.pStr = buf;
@@ -2071,9 +2051,9 @@ AutoPilotTextLogic(void)
 	if (r.extent.width > SIS_MESSAGE_WIDTH)
 	{ // If shortened text is *still* too
 		// large then just show distance
-		snprintf(buf, sizeof buf, "%s - %.1f",
-				 GAME_STRING(NAVIGATION_STRING_BASE + 3), // "AUTO-PILOT"
-				 target_distance);
+		fmt::format_to_sz_n(buf, sizeof buf, "{} - {:.1}",
+							GAME_STRING(NAVIGATION_STRING_BASE + 3), // "AUTO-PILOT"
+							target_distance);
 	}
 
 	DrawSISMessageEx(buf, -1, -1, DSME_MYCOLOR);

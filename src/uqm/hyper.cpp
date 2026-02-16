@@ -704,8 +704,8 @@ InterplanetaryTransition(ELEMENT* ElementPtr)
 			STAR_DESC *SDPtr, *SDPtr2;
 			SDPtr = CurStarDescPtr;
 			SDPtr2 = FindStar (nullptr, &pt, 500, 500);
-			uqm::log::debug( "SDPtr.x %d, SDPtr.y %d SDPtr2.x %d, "
-					"SDPtr2.y %d, pt.x %d pt.y %d", 
+			uqm::log::debug( "SDPtr.x {}, SDPtr.y {} SDPtr2.x {}, "
+					"SDPtr2.y {}, pt.x {} pt.y {}", 
 					SDPtr->star_pt.x, SDPtr->star_pt.y, SDPtr2->star_pt.x,
 					SDPtr2->star_pt.y, pt.x, pt.y);
 		}*/

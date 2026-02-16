@@ -44,6 +44,7 @@
 #include "../uqmdebug.h"
 #include "../save.h"
 #include "options.h"
+#include "core/string/StringUtils.h"
 #include "libs/graphics/gfx_common.h"
 #include "libs/mathlib.h"
 #include "core/log/log.h"
@@ -424,7 +425,6 @@ GenerateMoons(SOLARSYS_STATE* system, PLANET_DESC* planet)
 FRAME
 LoadNebulaeFrame(POINT location)
 {
-	uqm::CHAR_T path[PATH_MAX];
 	STRING nebulaRes;
 	uqm::COUNT nebulaCount;
 	POINT neb_seed;
@@ -453,11 +453,12 @@ LoadNebulaeFrame(POINT location)
 		neb_seed.y = location.y;
 	}
 
+	uqm::CHAR_T path[PATH_MAX] {};
+
 	nebulaRes = CaptureStringTable(
 		LoadStringTable(NEBULA_RESOURCES));
 	nebulaCount = GetStringTableCount(nebulaRes);
-	sprintf(path, "%s",
-			GET_STRING(nebulaRes, neb_seed.x % nebulaCount));
+	fmt::format_to_n(path, sizeof(path) - 1, "{}", GET_STRING(nebulaRes, neb_seed.x % nebulaCount));
 	DestroyStringTable(ReleaseStringTable(nebulaRes));
 
 	if ((neb_seed.y % (nebulaCount + 6)) > nebulaCount
@@ -644,13 +645,13 @@ uqm::DWORD
 GetRandomSeedForStar(const STAR_DESC* star)
 {
 #ifdef DEBUG_STARSEED
-	fprintf(stderr, "Get Random Seed For Star. %05.1f : %05.1f "
-					"[%d] (seed %d) = %d.  Plot ID %d (%s).\n",
-			(float)star->star_pt.x / 10, (float)star->star_pt.y / 10,
-			MAKE_DWORD(star->star_pt.x, star->star_pt.y), optCustomSeed,
-			MAKE_DWORD(star->star_pt.x, star->star_pt.y)
-				+ (StarSeed ? optCustomSeed : 0),
-			star->Index, starPresenceString(star->Index));
+	fmt::print(stderr, "Get Random Seed For Star. %05.1f : %05.1f "
+					   "[{}] (seed {}) = {}.  Plot ID {} ({}).\n",
+			   (float)star->star_pt.x / 10, (float)star->star_pt.y / 10,
+			   MAKE_DWORD(star->star_pt.x, star->star_pt.y), optCustomSeed,
+			   MAKE_DWORD(star->star_pt.x, star->star_pt.y)
+				   + (StarSeed ? optCustomSeed : 0),
+			   star->Index, starPresenceString(star->Index));
 #endif
 	return MAKE_DWORD(star->star_pt.x, star->star_pt.y) + (StarSeed ? optCustomSeed : 0);
 }
@@ -1059,7 +1060,7 @@ CheckIntersect(void)
 	PlanetIntersect.IntersectStamp.frame = getCollisionFrame(pCurDesc,
 															 MAKE_WORD(PlanetOffset, MoonOffset));
 
-	/*log_add (log_Debug,"Nyt: x:%d, y:%d",
+	/*log_add (log_Debug,"Nyt: x:{}, y:{}",
 			PlanetIntersect.IntersectStamp.origin.x,
 			PlanetIntersect.IntersectStamp.origin.y);*/
 
@@ -1071,7 +1072,7 @@ CheckIntersect(void)
 							  &PlanetIntersect, MAX_TIME_VALUE))
 	{
 #ifdef DEBUG_SOLARSYS
-		uqm::log::debug("0: Planet %d, Moon %d", PlanetOffset,
+		uqm::log::debug("0: Planet {}, Moon {}", PlanetOffset,
 						MoonOffset);
 #endif /* DEBUG_SOLARSYS */
 		NewWaitPlanet = MAKE_WORD(PlanetOffset, MoonOffset);
@@ -1081,7 +1082,7 @@ CheckIntersect(void)
 			pSolarSysState->WaitIntersect = NewWaitPlanet;
 #ifdef DEBUG_SOLARSYS
 			uqm::log::debug(
-				"Star index = %d, Planet index = %d, <%d, %d>",
+				"Star index = {}, Planet index = {}, <{}, {}>",
 				CurStarDescPtr - star_array,
 				pCurDesc - pSolarSysState->PlanetDesc,
 				pSolarSysState->SunDesc[0].location.x,
@@ -1111,7 +1112,7 @@ CheckIntersect(void)
 		PlanetIntersect.IntersectStamp.frame = getCollisionFrame(pCurDesc,
 																 MAKE_WORD(PlanetOffset, MoonOffset));
 
-		/*log_add (log_Debug, "Ship x:%d y:%d. Planet x:%d, y:%d",
+		/*log_add (log_Debug, "Ship x:{} y:{}. Planet x:{}, y:{}",
 				ShipIntersect.IntersectStamp.origin.x,
 				ShipIntersect.IntersectStamp.origin.y,
 				PlanetIntersect.IntersectStamp.origin.x,
@@ -1121,7 +1122,7 @@ CheckIntersect(void)
 							   &PlanetIntersect, MAX_TIME_VALUE))
 		{
 #ifdef DEBUG_SOLARSYS
-			uqm::log::debug("1: Planet %d, Moon %d", PlanetOffset,
+			uqm::log::debug("1: Planet {}, Moon {}", PlanetOffset,
 							MoonOffset);
 #endif /* DEBUG_SOLARSYS */
 			NewWaitPlanet = MAKE_WORD(PlanetOffset, MoonOffset);
@@ -2251,11 +2252,11 @@ EnterPlanetOrbit(void)
 			&& !(pSolarSysState->pOrbitalDesc->data_index
 				 & WORLD_TYPE_SPECIAL))
 		{
-			snprintf(GLOBAL_SIS(PlanetName)
-						 + strlen(GLOBAL_SIS(PlanetName)),
-					 4, "-%c%c",
-					 moonLetter(pSolarSysState, pSolarSysState->pOrbitalDesc),
-					 '\0');
+			fmt::format_to_sz_n(GLOBAL_SIS(PlanetName)
+									+ strlen(GLOBAL_SIS(PlanetName)),
+								4, "-{}{}",
+								moonLetter(pSolarSysState, pSolarSysState->pOrbitalDesc),
+								'\0');
 		}
 	}
 	else
@@ -2958,12 +2959,12 @@ void ExploreSolarSys(void)
 #ifdef DEBUG_STARSEED
 	if (CurStarDescPtr->Index)
 	{
-		fprintf(stderr, "*** Entering %s (%d) System at "
-						"%05.1f : %05.1f ***\n",
-				starPresenceString(CurStarDescPtr->Index),
-				CurStarDescPtr->Index,
-				(float)CurStarDescPtr->star_pt.x / 10,
-				(float)CurStarDescPtr->star_pt.y / 10);
+		fmt::print(stderr, "*** Entering {} ({}) System at "
+						   "%05.1f : %05.1f ***\n",
+				   starPresenceString(CurStarDescPtr->Index),
+				   CurStarDescPtr->Index,
+				   (float)CurStarDescPtr->star_pt.x / 10,
+				   (float)CurStarDescPtr->star_pt.y / 10);
 	}
 #endif
 
@@ -3145,7 +3146,7 @@ void GetPlanetOrMoonName(uqm::CHAR_T* buf, uqm::COUNT bufsize)
 	bufsize -= i;
 	moon = moonIndex(pSolarSysState, pSolarSysState->pOrbitalDesc);
 
-	// log_add (log_Debug,"last %02d, i %d", tempbuf[i-1], i);
+	// log_add (log_Debug,"last %02d, i {}", tempbuf[i-1], i);
 	// JMS: Prevent printing something like 'planet II-A-A' in summary
 	// screen.
 	if (i > 0)
@@ -3159,7 +3160,7 @@ void GetPlanetOrMoonName(uqm::CHAR_T* buf, uqm::COUNT bufsize)
 
 	if (bufsize >= 3 && !name_has_suffix)
 	{
-		snprintf(buf, bufsize, "-%c", 'A' + moon);
+		fmt::format_to_sz_n(buf, bufsize, "-{}", 'A' + moon);
 		buf[bufsize - 1] = '\0';
 	}
 }

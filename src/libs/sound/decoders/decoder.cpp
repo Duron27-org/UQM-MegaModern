@@ -196,7 +196,7 @@ SoundDecoder_Init(int flags, TFB_DecoderFormats* formats)
 		if (!info->funcs->InitModule(flags, &decoder_formats))
 		{
 			uqm::log::error("SoundDecoder_Init(): "
-							"%s audio decoder init failed",
+							"{} audio decoder init failed",
 							info->funcs->GetName());
 			ret = 1;
 		}
@@ -241,7 +241,7 @@ SoundDecoder_Register(const char* fileext, TFB_SoundDecoderFuncs* decvtbl)
 	}
 	if (!fileext)
 	{
-		uqm::log::warn("SoundDecoder_Register(): Bad file type for %s",
+		uqm::log::warn("SoundDecoder_Register(): Bad file type for {}",
 					   decvtbl->GetName());
 		return nullptr;
 	}
@@ -265,14 +265,14 @@ SoundDecoder_Register(const char* fileext, TFB_SoundDecoderFuncs* decvtbl)
 	else if (info->ext)
 	{
 		uqm::log::warn("SoundDecoder_Register(): "
-					   "'%s' decoder already registered (%s denied)",
+					   "'{}' decoder already registered ({} denied)",
 					   fileext, decvtbl->GetName());
 		return nullptr;
 	}
 
 	if (!decvtbl->InitModule(sd_flags, &decoder_formats))
 	{
-		uqm::log::warn("SoundDecoder_Register(): %s decoder init failed",
+		uqm::log::warn("SoundDecoder_Register(): {} decoder init failed",
 					   decvtbl->GetName());
 		return nullptr;
 	}
@@ -332,7 +332,7 @@ SoundDecoder_Load(uio_DirHandle* dir, char* filename,
 	pext = strrchr(filename, '.');
 	if (!pext)
 	{
-		uqm::log::warn("SoundDecoder_Load(): Unknown file type (%s)",
+		uqm::log::warn("SoundDecoder_Load(): Unknown file type ({})",
 					   filename);
 		return nullptr;
 	}
@@ -343,7 +343,7 @@ SoundDecoder_Load(uio_DirHandle* dir, char* filename,
 		;
 	if (!info->ext)
 	{
-		uqm::log::warn("SoundDecoder_Load(): Unsupported file type (%s)",
+		uqm::log::warn("SoundDecoder_Load(): Unsupported file type ({})",
 					   filename);
 
 		if (runTime)
@@ -372,7 +372,7 @@ SoundDecoder_Load(uio_DirHandle* dir, char* filename,
 		}
 		else
 		{
-			uqm::log::warn("SoundDecoder_Load(): %s does not exist",
+			uqm::log::warn("SoundDecoder_Load(): {} does not exist",
 						   filename);
 			return nullptr;
 		}
@@ -389,7 +389,7 @@ SoundDecoder_Load(uio_DirHandle* dir, char* filename,
 	if (!decoder->funcs->Init(decoder))
 	{
 		uqm::log::warn("SoundDecoder_Load(): "
-					   "%s decoder instance failed init",
+					   "{} decoder instance failed init",
 					   decoder->funcs->GetName());
 		HFree(decoder);
 		return nullptr;
@@ -398,7 +398,7 @@ SoundDecoder_Load(uio_DirHandle* dir, char* filename,
 	if (!decoder->funcs->Open(decoder, dir, filename))
 	{
 		uqm::log::warn("SoundDecoder_Load(): "
-					   "%s decoder could not load %s",
+					   "{} decoder could not load {}",
 					   decoder->funcs->GetName(), filename);
 		decoder->funcs->Term(decoder);
 		HFree(decoder);
@@ -496,7 +496,7 @@ SoundDecoder_Decode(TFB_SoundDecoder* decoder)
 		if (rc < 0)
 		{
 			uqm::log::warn("SoundDecoder_Decode(): "
-						   "error decoding %s, code %ld",
+						   "error decoding {}, code %ld",
 						   decoder->filename, rc);
 		}
 		else if (rc == 0)
@@ -507,21 +507,21 @@ SoundDecoder_Decode(TFB_SoundDecoder* decoder)
 				if (decoder->error)
 				{
 					uqm::log::warn("SoundDecoder_Decode(): "
-								   "tried to loop %s but couldn't rewind, "
-								   "error code %d",
+								   "tried to loop {} but couldn't rewind, "
+								   "error code {}",
 								   decoder->filename, decoder->error);
 				}
 				else
 				{
 					uqm::log::info("SoundDecoder_Decode(): "
-								   "looping %s",
+								   "looping {}",
 								   decoder->filename);
 					rc = 1; // prime the loop again
 				}
 			}
 			else
 			{
-				uqm::log::info("SoundDecoder_Decode(): eof for %s",
+				uqm::log::info("SoundDecoder_Decode(): eof for {}",
 							   decoder->filename);
 			}
 		}
@@ -571,7 +571,7 @@ SoundDecoder_DecodeAll(TFB_SoundDecoder* decoder)
 	if (decoder->looping)
 	{
 		uqm::log::warn("SoundDecoder_DecodeAll(): "
-					   "called for %s with looping",
+					   "called for {} with looping",
 					   decoder->filename);
 		return 0;
 	}
@@ -614,7 +614,7 @@ SoundDecoder_DecodeAll(TFB_SoundDecoder* decoder)
 	{
 		decoder->error = SOUNDDECODER_ERROR;
 		uqm::log::warn("SoundDecoder_DecodeAll(): "
-					   "error decoding %s, code %ld",
+					   "error decoding {}, code %ld",
 					   decoder->filename, rc);
 		return decoded_bytes;
 	}

@@ -29,6 +29,7 @@
 #include "commfuncs.h"
 #include "libs/scriptlib.h"
 #include "core/log/log.h"
+#include "core/string/StringUtils.h"
 
 #include "uqm/lua/luacomm.h"
 #include "uqm/commglue.h"
@@ -124,7 +125,7 @@ testPhraseId(lua_State* luaState, int argn)
 	{
 		// TODO: print script file name.
 		uqm::log::error("[script] Warning: testPhraseId(): No phrase "
-						"exists with id '%s'.",
+						"exists with id '{}'.",
 						phraseIdStr);
 		return -1;
 	}
@@ -217,7 +218,7 @@ npcPhraseCallback(CallbackArg extra)
 	{
 		// An error occurred. We continue nonetheless.
 		uqm::log::error("[script] An error occurred during a "
-						"doNpcPhrase() callback: %s",
+						"doNpcPhrase() callback: {}",
 						lua_tostring(luaUqm_commState, -1));
 		lua_pop(luaUqm_commState, 1);
 	}
@@ -235,7 +236,7 @@ responseCallback(RESPONSE_REF response)
 	{
 		// An error occurred. We continue nonetheless.
 		uqm::log::error("[script] An error occurred during an "
-						"addResponse() callback: %s",
+						"addResponse() callback: {}",
 						lua_tostring(luaUqm_commState, -1));
 		lua_pop(luaUqm_commState, 1);
 	}
@@ -375,7 +376,7 @@ luaUqm_comm_setSegue(lua_State* luaState)
 			break;
 		default:
 			uqm::log::error("[script] Warning: setSegue(): Invalid "
-							"parameter value (%d).",
+							"parameter value ({}).",
 							what);
 			break;
 	};
@@ -430,20 +431,20 @@ luaUqm_comm_getPoint(lua_State* luaState)
 	const char* plot_name = luaL_checkstring(luaState, 2);
 	uqm::COUNT plot_id = PlotIdStrToIndex(plot_name);
 #ifdef DEBUG_STARSEED
-	fprintf(stderr, "get Point called (%s %s) plot ID %d\n", prime_text,
-			plot_name, plot_id);
+	fmt::print(stderr, "get Point called ({} {}) plot ID {}\n", prime_text,
+			   plot_name, plot_id);
 #endif
 	if (plot_id >= NUM_PLOTS)
 	{
-		fprintf(stderr, "Plot not found for Point (%s %s).\n", prime_text,
-				plot_name);
+		fmt::print(stderr, "Plot not found for Point ({} {}).\n", prime_text,
+				   plot_name);
 		lua_pushstring(luaState, prime_text);
 		return 1;
 	}
-	char dialog[256];
-	snprintf(dialog, sizeof(dialog), "%05.1f : %05.1f",
-			 (float)plot_map[plot_id].star_pt.x / 10,
-			 (float)plot_map[plot_id].star_pt.y / 10);
+	char dialog[256] {};
+	fmt::format_to_sz_n(dialog, sizeof(dialog), "{:05.1} : {:05.1}",
+						(float)plot_map[plot_id].star_pt.x / 10,
+						(float)plot_map[plot_id].star_pt.y / 10);
 	lua_pushstring(luaState, dialog);
 	RoboTrack[0] = ROBOT_DIGIT_0 + plot_map[plot_id].star_pt.x / 1000;
 	RoboTrack[1] = ROBOT_DIGIT_0 + plot_map[plot_id].star_pt.x / 100 % 10;
@@ -494,13 +495,13 @@ luaUqm_comm_getStarName(lua_State* luaState)
 	const char* plot_name = luaL_checkstring(luaState, 2);
 	uqm::COUNT plot_id = PlotIdStrToIndex(plot_name);
 #ifdef DEBUG_STARSEED
-	fprintf(stderr, "get Star Name called (%s %s) plot ID %d\n",
-			prime_text, plot_name, plot_id);
+	fmt::print(stderr, "get Star Name called ({} {}) plot ID {}\n",
+			   prime_text, plot_name, plot_id);
 #endif
 	if (plot_id >= NUM_PLOTS)
 	{
-		fprintf(stderr, "Plot not found for Star Name (%s %s).\n",
-				prime_text, plot_name);
+		fmt::print(stderr, "Plot not found for Star Name ({} {}).\n",
+				   prime_text, plot_name);
 		lua_pushstring(luaState, prime_text);
 		return 1;
 	}
@@ -535,20 +536,20 @@ luaUqm_comm_getConstellation(lua_State* luaState)
 	const char* plot_name = luaL_checkstring(luaState, 2);
 	uqm::COUNT plot_id = PlotIdStrToIndex(plot_name);
 #ifdef DEBUG_STARSEED
-	fprintf(stderr, "get Constellation called (%s %s) plot ID %d\n",
-			prime_text, plot_name, plot_id);
+	fmt::print(stderr, "get Constellation called ({} {}) plot ID {}\n",
+			   prime_text, plot_name, plot_id);
 #endif
 	if (plot_id >= NUM_PLOTS)
 	{
-		fprintf(stderr, "Plot not found for Constellation (%s %s).\n",
-				prime_text, plot_name);
+		fmt::print(stderr, "Plot not found for Constellation ({} {}).\n",
+				   prime_text, plot_name);
 		lua_pushstring(luaState, prime_text);
 		return 1;
 	}
 	char dialog[256];
 	STAR_DESC* SDPtr = FindNearestConstellation(star_array, plot_map[plot_id].star_pt);
-	snprintf(dialog, sizeof(dialog), "%s",
-			 GAME_STRING(SDPtr->Postfix));
+	fmt::format_to_sz_n(dialog, sizeof(dialog), "{}",
+						GAME_STRING(SDPtr->Postfix));
 	CheckCase(prime_text, dialog);
 	lua_pushstring(luaState, dialog);
 	RoboTrack[0] = ROBOT_POSTFIX_0 + SDPtr->Postfix;
@@ -570,61 +571,62 @@ luaUqm_comm_getColor(lua_State* luaState)
 	const char* plot_name = luaL_checkstring(luaState, 2);
 	uqm::COUNT plot_id = PlotIdStrToIndex(plot_name);
 #ifdef DEBUG_STARSEED
-	fprintf(stderr, "get Color called (%s %s)\n", prime_text, plot_name);
+	fmt::print(stderr, "get Color called ({} {})\n", prime_text, plot_name);
 #endif
 	if (plot_id >= NUM_PLOTS)
 	{
-		fprintf(stderr, "Plot not found for getColor (%s %s).\n",
-				prime_text, plot_name);
+		fmt::print(stderr, "Plot not found for getColor ({} {}).\n",
+				   prime_text, plot_name);
 		lua_pushstring(luaState, prime_text);
 		return 1;
 	}
-	char dialog[256];
+
+	uqstl::string dialog {};
 	switch (STAR_COLOR(plot_map[plot_id].star->Type))
 	{
 		case RED_BODY:
-			snprintf(dialog, sizeof(dialog), "%s", "red");
+			dialog = "red";
 			RoboTrack[0] = (plot_id == ILWRATH_DEFINED) ?
 							   ILWRATH_COLOR_RED :
 							   ROBOT_COLOR_RED;
 			break;
 		case ORANGE_BODY:
-			snprintf(dialog, sizeof(dialog), "%s", "orange");
+			dialog = "orange";
 			RoboTrack[0] = (plot_id == ILWRATH_DEFINED) ?
 							   ILWRATH_COLOR_ORANGE :
 							   ROBOT_COLOR_ORANGE;
 			break;
 		case YELLOW_BODY:
-			snprintf(dialog, sizeof(dialog), "%s", "yellow");
+			dialog = "yellow";
 			RoboTrack[0] = (plot_id == ILWRATH_DEFINED) ?
 							   ILWRATH_COLOR_YELLOW :
 							   ROBOT_COLOR_YELLOW;
 			break;
 		case GREEN_BODY:
-			snprintf(dialog, sizeof(dialog), "%s", "green");
+			dialog = "green";
 			RoboTrack[0] = (plot_id == ILWRATH_DEFINED) ?
 							   ILWRATH_COLOR_GREEN :
 							   ROBOT_COLOR_GREEN;
 			break;
 		case BLUE_BODY:
-			snprintf(dialog, sizeof(dialog), "%s", "blue");
+			dialog = "blue";
 			RoboTrack[0] = (plot_id == ILWRATH_DEFINED) ?
 							   ILWRATH_COLOR_BLUE :
 							   ROBOT_COLOR_BLUE;
 			break;
 		case WHITE_BODY:
-			snprintf(dialog, sizeof(dialog), "%s", "white");
+			dialog = "white";
 			RoboTrack[0] = (plot_id == ILWRATH_DEFINED) ?
 							   ILWRATH_COLOR_WHITE :
 							   ROBOT_COLOR_WHITE;
 			break;
 		default:
-			snprintf(dialog, sizeof(dialog), "%s", "unknown");
+			dialog = "unknown";
 			RoboTrack[0] = ROBOT_NULL_PHRASE;
 			break;
 	}
-	CheckCase(prime_text, dialog);
-	lua_pushstring(luaState, dialog);
+	CheckCase(prime_text, dialog.data());
+	lua_pushstring(luaState, dialog.c_str());
 	return 1;
 }
 
@@ -643,7 +645,7 @@ luaUqm_comm_swapIfSeeded(lua_State* luaState)
 	}
 	const char* seed_text = luaL_checkstring(luaState, 2);
 #ifdef DEBUG_STARSEED
-	fprintf(stderr, "Swap If Seeded called (%s %s)\n", prime_text, seed_text);
+	fmt::print(stderr, "Swap If Seeded called ({} {})\n", prime_text, seed_text);
 #endif
 	lua_pushstring(luaState, seed_text);
 	RoboTrack[0] = (uqm::COUNT)~0;

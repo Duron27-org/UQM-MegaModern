@@ -163,7 +163,7 @@ int NetManager_process(uint32* timeoutMs)
 	if (selectResult == -1)
 	{
 		int savedErrno = errno;
-		uqm::log::error("select() failed: %s.", strerror(errno));
+		uqm::log::error("select() failed: {}.", strerror(errno));
 		errno = savedErrno;
 		*timeoutMs = (timeout.tv_sec * 1000) + (timeout.tv_usec / 1000);
 		// XXX: rounding microseconds down. Is that the correct

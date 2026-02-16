@@ -116,7 +116,7 @@ int luaUqm_checkPropValueType(lua_State* luaState, const char* funName,
 			{
 				const char* typeName = lua_typename(luaState, nameIndex);
 				return luaL_error(luaState, "Property value has an invalid "
-											"type, in parameter to %s() (%s)",
+											"type, in parameter to {}() ({})",
 								  funName, typeName);
 			}
 	}
@@ -170,7 +170,7 @@ void setGameStateUint(const char* name, uqm::DWORD val)
 	lua_pop(luaUqm_globalState, 2);
 
 #ifdef STATE_DEBUG
-	uqm::log::debug("State '%s' set to %u.", name, val);
+	uqm::log::debug("State '{}' set to {}.", name, val);
 #endif
 }
 
@@ -196,8 +196,8 @@ getGameStateUint(const char* name)
 			// Ok.
 			break;
 		default:
-			uqm::log::error("Warning: getGameState(): property '%s' has "
-							"a non-number value (%s).",
+			uqm::log::error("Warning: getGameState(): property '{}' has "
+							"a non-number value ({}).",
 							name,
 							lua_typename(luaUqm_globalState, -1));
 			lua_pop(luaUqm_globalState, 2);

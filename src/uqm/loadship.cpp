@@ -155,10 +155,10 @@ SeedShip(SPECIES_ID SpeciesID, bool loadWindow)
 #ifdef DEBUG_SHIPSEED
 	if (loadWindow)
 	{
-		fprintf(stderr, "Calling SeedShip (load window) species %d, "
-						"Seed %d, ShipSeed %s, SIS (Seed) %d, SIS (ShipSeed) %d\n",
-				SpeciesID, optCustomSeed, optShipSeed ? "on" : "off",
-				GLOBAL_SIS(Seed), GLOBAL_SIS(ShipSeed));
+		fmt::print(stderr, "Calling SeedShip (load window) species {}, "
+						   "Seed {}, ShipSeed {}, SIS (Seed) {}, SIS (ShipSeed) {}\n",
+				   SpeciesID, optCustomSeed, optShipSeed ? "on" : "off",
+				   GLOBAL_SIS(Seed), GLOBAL_SIS(ShipSeed));
 	}
 #endif
 	if (seedStamp != optCustomSeed)
@@ -223,10 +223,10 @@ load_ship(SPECIES_ID SpeciesID, bool LoadBattleData)
 	}
 
 #ifdef DEBUG_SHIPSEED
-	fprintf(stderr, "Calling load_ship species %d, Seed %d, "
-					"ShipSeed %s\n",
-			SpeciesID, optCustomSeed,
-			optShipSeed ? "on" : "off");
+	fmt::print(stderr, "Calling load_ship species {}, Seed {}, "
+					   "ShipSeed {}\n",
+			   SpeciesID, optCustomSeed,
+			   optShipSeed ? "on" : "off");
 #endif
 	CodeRef = CaptureCodeRes(LoadCodeRes(
 								 code_resources[optShipSeed ?

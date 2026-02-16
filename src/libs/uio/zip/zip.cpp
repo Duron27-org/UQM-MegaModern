@@ -32,6 +32,7 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <sys/stat.h>
+#include <fmt/format.h>
 
 #include "zip.h"
 #include "../physical.h"
@@ -199,7 +200,7 @@ void zip_close(uio_Handle* handle)
 	zip_Handle* zip_handle;
 
 #if defined(DEBUG) && DEBUG > 1
-	fprintf(stderr, "zip_close - handle=%p\n", (void*)handle);
+	fmt::print(stderr, "zip_close - handle=%p\n", (void*)handle);
 #endif
 	zip_handle = (zip_Handle*)handle->native;
 	uio_GPFile_unref(zip_handle->file);
@@ -356,8 +357,8 @@ zip_open(uio_PDirHandle* pDirHandle, const char* name, int flags,
 	uio_GPFile* gPFile;
 
 #if defined(DEBUG) && DEBUG > 1
-	fprintf(stderr, "zip_open - pDirHandle=%p name=%s flags=%d mode=0%o\n",
-			(void*)pDirHandle, name, flags, mode);
+	fmt::print(stderr, "zip_open - pDirHandle=%p name={} flags={} mode=0%o\n",
+			   (void*)pDirHandle, name, flags, mode);
 #endif
 
 	if ((flags & O_ACCMODE) != O_RDONLY)
@@ -417,14 +418,14 @@ zip_read(uio_Handle* handle, void* buf, size_t count)
 	ssize_t result;
 
 #if defined(DEBUG) && DEBUG > 1
-	fprintf(stderr, "zip_read - handle=%p buf=%p count=%d: ", (void*)handle,
-			(void*)buf, count);
+	fmt::print(stderr, "zip_read - handle=%p buf=%p count={}: ", (void*)handle,
+			   (void*)buf, count);
 #endif
 	auto nhandle = (zip_Handle*)(handle->native);
 	auto xtra = (zip_GPFileData*)(nhandle->file->extra);
 	result = zip_readMethods[xtra->compressionMethod](handle, buf, count);
 #if defined(DEBUG) && DEBUG > 1
-	fprintf(stderr, "%d\n", result);
+	fmt::print(stderr, "{}\n", result);
 #endif
 	return result;
 }
@@ -502,49 +503,49 @@ zip_readDeflated(uio_Handle* handle, void* buf, size_t count)
 			switch (inflateResult)
 			{
 				case Z_VERSION_ERROR:
-					fprintf(stderr, "Error: Incompatible version problem for "
-									" decompression.\n");
+					fmt::print(stderr, "Error: Incompatible version problem for "
+									   " decompression.\n");
 					break;
 				case Z_NEED_DICT:
-					fprintf(stderr, "Error: Decompressing requires "
-									"preset dictionary.\n");
+					fmt::print(stderr, "Error: Decompressing requires "
+									   "preset dictionary.\n");
 					break;
 				case Z_DATA_ERROR:
-					fprintf(stderr, "Error: Compressed file is corrupted.\n");
+					fmt::print(stderr, "Error: Compressed file is corrupted.\n");
 					break;
 				case Z_STREAM_ERROR:
 					// This means zipHandle->zipStream is bad, which is
 					// most likely an error in the code using zlib.
-					fprintf(stderr, "Fatal: internal error using zlib.\n");
+					fmt::print(stderr, "Fatal: internal error using zlib.\n");
 					abort();
 					break;
 				case Z_MEM_ERROR:
-					fprintf(stderr, "Error: Not enough memory available "
-									"while decompressing.\n");
+					fmt::print(stderr, "Error: Not enough memory available "
+									   "while decompressing.\n");
 					break;
 				case Z_BUF_ERROR:
 					// No progress possible. Probably caused by premature
 					// end of input file.
-					fprintf(stderr, "Error: When decompressing: premature "
-									"end of input file.\n");
+					fmt::print(stderr, "Error: When decompressing: premature "
+									   "end of input file.\n");
 					errno = EIO;
 					return -1;
 #if 0
 					// If this happens, either the input buffer is empty
 					// or the output buffer is full. This should not happen.
-					fprintf(stderr, "Fatal: internal error using zlib: "
+					fmt::print(stderr, "Fatal: internal error using zlib: "
 							" no progress is possible in decompression.\n");
 					abort();
 					break;
 #endif
 				default:
-					fprintf(stderr, "Fatal: unknown error from inflate().\n");
+					fmt::print(stderr, "Fatal: unknown error from inflate().\n");
 					abort();
 			}
 			if (zipHandle->zipStream.msg != nullptr)
 			{
-				fprintf(stderr, "ZLib reports: %s\n",
-						zipHandle->zipStream.msg);
+				fmt::print(stderr, "ZLib reports: {}\n",
+						   zipHandle->zipStream.msg);
 			}
 			errno = EIO;
 			// Using EIO to report an error in the backend.
@@ -559,12 +560,12 @@ off_t zip_seek(uio_Handle* handle, off_t offset, int whence)
 	zip_Handle* zipHandle;
 
 #if defined(DEBUG) && DEBUG > 1
-	fprintf(stderr, "zip_seek - handle=%p offset=%d whence=%s\n",
-			(void*)handle, (int)offset,
-			whence == SEEK_SET ? "SEEK_SET" :
-			whence == SEEK_CUR ? "SEEK_CUR" :
-			whence == SEEK_END ? "SEEK_END" :
-								 "INVALID");
+	fmt::print(stderr, "zip_seek - handle=%p offset={} whence={}\n",
+			   (void*)handle, (int)offset,
+			   whence == SEEK_SET ? "SEEK_SET" :
+			   whence == SEEK_CUR ? "SEEK_CUR" :
+			   whence == SEEK_END ? "SEEK_END" :
+									"INVALID");
 #endif
 	zipHandle = (zip_Handle*)handle->native;
 	auto xtra = (zip_GPFileData*)(zipHandle->file->extra);
@@ -623,9 +624,9 @@ zip_seekDeflated(uio_Handle* handle, off_t offset)
 		{
 			// Need to abort. Handle would get in an inconsistent state.
 			// Should not fail anyhow.
-			fprintf(stderr, "Fatal: Could not reinitialise zip stream: "
-							"%s.\n",
-					strerror(errno));
+			fmt::print(stderr, "Fatal: Could not reinitialise zip stream: "
+							   "{}.\n",
+					   strerror(errno));
 			abort();
 		}
 		zipHandle->compressedOffset = 0;
@@ -653,8 +654,8 @@ zip_seekDeflated(uio_Handle* handle, off_t offset)
 								   zip_SEEK_BUFFER_SIZE);
 			if (numRead == -1)
 			{
-				fprintf(stderr, "Warning: Could not read zipped file: %s\n",
-						strerror(errno));
+				fmt::print(stderr, "Warning: Could not read zipped file: {}\n",
+						   strerror(errno));
 				break;
 				// The current location is returned.
 			}
@@ -688,9 +689,9 @@ zip_mount(uio_Handle* handle, int flags)
 	{
 		int savedErrno = errno;
 #ifdef DEBUG
-		fprintf(stderr, "Error: failed to read the zip directory "
-						"structure - %s.\n",
-				strerror(errno));
+		fmt::print(stderr, "Error: failed to read the zip directory "
+						   "structure - {}.\n",
+				   strerror(errno));
 #endif
 		uio_GPRoot_umount(result);
 		errno = savedErrno;
@@ -755,7 +756,7 @@ zip_fillDirStructureCentral(uio_GPDir* top, uio_Handle* handle)
 	numEntries = makeUInt16(buf[10], buf[11]);
 	if (numEntries == 0xffff)
 	{
-		fprintf(stderr, "Error: Zip64 .zip files are not supported.\n");
+		fmt::print(stderr, "Error: Zip64 .zip files are not supported.\n");
 		errno = ENOSYS;
 		goto err;
 	}
@@ -822,7 +823,7 @@ zip_fillDirStructureCentralProcessEntry(uio_GPDir* topGPDir,
 	signature = makeUInt32(buf[0], buf[1], buf[2], buf[3]);
 	if (signature != 0x02014b50)
 	{
-		fprintf(stderr, "Error: Premature end of central directory.\n");
+		fmt::print(stderr, "Error: Premature end of central directory.\n");
 		errno = EIO;
 		return -1;
 	}
@@ -868,10 +869,10 @@ zip_fillDirStructureCentralProcessEntry(uio_GPDir* topGPDir,
 
 	if (gPFileData->compressionMethod >= NUM_COMPRESSION_METHODS || !zip_compressionMethodSupported[gPFileData->compressionMethod])
 	{
-		fprintf(stderr, "Warning: File '%s' is compressed with "
-						"unsupported method %d - skipped.\n",
-				fileName,
-				gPFileData->compressionMethod);
+		fmt::print(stderr, "Warning: File '{}' is compressed with "
+						   "unsupported method {} - skipped.\n",
+				   fileName,
+				   gPFileData->compressionMethod);
 		*pos = nextEntryOffset;
 		zip_GPFileData_delete(gPFileData);
 		return 0;
@@ -879,7 +880,7 @@ zip_fillDirStructureCentralProcessEntry(uio_GPDir* topGPDir,
 
 	if (gPFileData->compressedSize == (off_t)0xffffffff || gPFileData->uncompressedSize == (off_t)0xffffffff || gPFileData->headerOffset < 0)
 	{
-		fprintf(stderr, "Warning: Skipping Zip64 file '%s'\n", fileName);
+		fmt::print(stderr, "Warning: Skipping Zip64 file '{}'\n", fileName);
 		*pos = nextEntryOffset;
 		zip_GPFileData_delete(gPFileData);
 		return 0;
@@ -887,7 +888,7 @@ zip_fillDirStructureCentralProcessEntry(uio_GPDir* topGPDir,
 
 	if (isBitSet(gPFileData->compressionFlags, 0))
 	{
-		fprintf(stderr, "Warning: Skipping encrypted file '%s'\n", fileName);
+		fmt::print(stderr, "Warning: Skipping encrypted file '{}'\n", fileName);
 		*pos = nextEntryOffset;
 		zip_GPFileData_delete(gPFileData);
 		return 0;
@@ -926,7 +927,7 @@ zip_fillDirStructureCentralProcessEntry(uio_GPDir* topGPDir,
 		}
 
 #if defined(DEBUG) && DEBUG > 1
-		fprintf(stderr, "Debug: Found file '%s'.\n", fileName);
+		fmt::print(stderr, "Debug: Found file '{}'.\n", fileName);
 #endif
 	}
 	else if (S_ISDIR(gPFileData->mode))
@@ -939,9 +940,9 @@ zip_fillDirStructureCentralProcessEntry(uio_GPDir* topGPDir,
 		{
 			if (errno == EISDIR)
 			{
-				fprintf(stderr, "Warning: file '%s' already exists as a dir - "
-								"skipped.\n",
-						fileName);
+				fmt::print(stderr, "Warning: file '{}' already exists as a dir - "
+								   "skipped.\n",
+						   fileName);
 				zip_GPFileData_delete(gPFileData);
 				uio_free(fileName);
 				return 0;
@@ -949,14 +950,14 @@ zip_fillDirStructureCentralProcessEntry(uio_GPDir* topGPDir,
 			return zip_badFile(gPFileData, fileName);
 		}
 #if defined(DEBUG) && DEBUG > 1
-		fprintf(stderr, "Debug: Found dir '%s'.\n", fileName);
+		fmt::print(stderr, "Debug: Found dir '{}'.\n", fileName);
 #endif
 	}
 	else
 	{
-		fprintf(stderr, "Warning: '%s' is not a regular file, nor a "
-						"directory - skipped.\n",
-				fileName);
+		fmt::print(stderr, "Warning: '{}' is not a regular file, nor a "
+						   "directory - skipped.\n",
+				   fileName);
 		zip_GPFileData_delete(gPFileData);
 		uio_free(fileName);
 		return 0;
@@ -993,15 +994,15 @@ zip_findEndOfCentralDirectoryRecord(uio_Handle* handle,
 	if (bufLen == -1)
 	{
 		int savedErrno = errno;
-		fprintf(stderr, "Error: Read error while searching for "
-						"'end-of-central-directory record'.\n");
+		fmt::print(stderr, "Error: Read error while searching for "
+						   "'end-of-central-directory record'.\n");
 		errno = savedErrno;
 		return -1;
 	}
 	if (bufLen != endPos - startPos + 4)
 	{
-		fprintf(stderr, "Error: Read error while searching for "
-						"'end-of-central-directory record'.\n");
+		fmt::print(stderr, "Error: Read error while searching for "
+						   "'end-of-central-directory record'.\n");
 		errno = EIO;
 		return -1;
 	}
@@ -1010,8 +1011,8 @@ zip_findEndOfCentralDirectoryRecord(uio_Handle* handle,
 	{
 		if (bufPtr < buf)
 		{
-			fprintf(stderr, "Error: Zip file corrupt; could not find "
-							"'end-of-central-directory record'.\n");
+			fmt::print(stderr, "Error: Zip file corrupt; could not find "
+							   "'end-of-central-directory record'.\n");
 			errno = EIO;
 			return -1;
 		}
@@ -1065,7 +1066,7 @@ zip_makeFileMode(zip_OSType creatorOS, uio_uint32 modeBytes)
 		case zip_OSType_UNIX:
 			return (mode_t)(modeBytes >> 16);
 		default:
-			fprintf(stderr, "Warning: file created by unknown OS.\n");
+			fmt::print(stderr, "Warning: file created by unknown OS.\n");
 			return S_IFREG | S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
 	}
 }
@@ -1111,9 +1112,9 @@ zip_updatePFileDataFromLocalFileHeader(zip_GPFileData* gPFileData,
 		case 1:
 			// File is not acceptable (but according to the central header
 			// it was)
-			fprintf(stderr, "Warning: according to the central directory "
-							"of a zip file, some file inside is acceptable, "
-							"but according to the local header it isn't.\n");
+			fmt::print(stderr, "Warning: according to the central directory "
+							   "of a zip file, some file inside is acceptable, "
+							   "but according to the local header it isn't.\n");
 			errno = EIO;
 			return -1;
 		case -1:
@@ -1254,10 +1255,10 @@ zip_fillDirStructureLocalProcessEntry(uio_GPDir* topGPDir,
 
 	if (gPFileData->compressionMethod >= NUM_COMPRESSION_METHODS || !zip_compressionMethodSupported[gPFileData->compressionMethod])
 	{
-		fprintf(stderr, "Warning: File '%s' is compressed with "
-						"unsupported method %d - skipped.\n",
-				fileName,
-				gPFileData->compressionMethod);
+		fmt::print(stderr, "Warning: File '{}' is compressed with "
+						   "unsupported method {} - skipped.\n",
+				   fileName,
+				   gPFileData->compressionMethod);
 		*pos = nextEntryOffset;
 		zip_GPFileData_delete(gPFileData);
 		return 0;
@@ -1265,7 +1266,7 @@ zip_fillDirStructureLocalProcessEntry(uio_GPDir* topGPDir,
 
 	if (gPFileData->compressedSize == (off_t)0xffffffff || gPFileData->uncompressedSize == (off_t)0xffffffff)
 	{
-		fprintf(stderr, "Warning: Skipping Zip64 file '%s'\n", fileName);
+		fmt::print(stderr, "Warning: Skipping Zip64 file '{}'\n", fileName);
 		*pos = nextEntryOffset;
 		zip_GPFileData_delete(gPFileData);
 		return 0;
@@ -1273,7 +1274,7 @@ zip_fillDirStructureLocalProcessEntry(uio_GPDir* topGPDir,
 
 	if (isBitSet(gPFileData->compressionFlags, 0))
 	{
-		fprintf(stderr, "Warning: Skipping encrypted file '%s'\n", fileName);
+		fmt::print(stderr, "Warning: Skipping encrypted file '{}'\n", fileName);
 		*pos = nextEntryOffset;
 		zip_GPFileData_delete(gPFileData);
 		return 0;
@@ -1365,7 +1366,7 @@ zip_fillDirStructureLocalProcessEntry(uio_GPDir* topGPDir,
 		}
 
 #if defined(DEBUG) && DEBUG > 1
-		fprintf(stderr, "Debug: Found file '%s'.\n", fileName);
+		fmt::print(stderr, "Debug: Found file '{}'.\n", fileName);
 #endif
 	}
 	else if (S_ISDIR(gPFileData->mode))
@@ -1378,9 +1379,9 @@ zip_fillDirStructureLocalProcessEntry(uio_GPDir* topGPDir,
 		{
 			if (errno == EISDIR)
 			{
-				fprintf(stderr, "Warning: file '%s' already exists as a dir - "
-								"skipped.\n",
-						fileName);
+				fmt::print(stderr, "Warning: file '{}' already exists as a dir - "
+								   "skipped.\n",
+						   fileName);
 				zip_GPFileData_delete(gPFileData);
 				uio_free(fileName);
 				return 0;
@@ -1388,14 +1389,14 @@ zip_fillDirStructureLocalProcessEntry(uio_GPDir* topGPDir,
 			return zip_badFile(gPFileData, fileName);
 		}
 #if defined(DEBUG) && DEBUG > 1
-		fprintf(stderr, "Debug: Found dir '%s'.\n", fileName);
+		fmt::print(stderr, "Debug: Found dir '{}'.\n", fileName);
 #endif
 	}
 	else
 	{
-		fprintf(stderr, "Warning: '%s' is not a regular file, nor a "
-						"directory - skipped.\n",
-				fileName);
+		fmt::print(stderr, "Warning: '{}' is not a regular file, nor a "
+						   "directory - skipped.\n",
+				   fileName);
 		zip_GPFileData_delete(gPFileData);
 		uio_free(fileName);
 		return 0;
@@ -1473,7 +1474,7 @@ zip_fillDirStructureProcessExtraFields(uio_FileBlock* fileBlock,
 		switch (headerID)
 		{
 			case 0x000d: // 'Unix0'
-						 // fallthrough
+				// fallthrough
 			case 0x5855: // 'Unix1'
 				gPFileData->atime = (time_t)makeUInt32(
 					buf[0], buf[1], buf[2], buf[3]);
@@ -1536,9 +1537,9 @@ zip_fillDirStructureProcessExtraFields(uio_FileBlock* fileBlock,
 					mode = (mode_t)makeUInt16(buf[4], buf[5]);
 					if (!S_ISREG(mode) && !S_ISDIR(mode))
 					{
-						fprintf(stderr, "Warning: Skipping '%s'; not a regular "
-										"file, nor a directory.\n",
-								fileName);
+						fmt::print(stderr, "Warning: Skipping '{}'; not a regular "
+										   "file, nor a directory.\n",
+								   fileName);
 						return 1;
 					}
 					gPFileData->uid = (uid_t)makeUInt16(buf[10], buf[11]);
@@ -1553,10 +1554,10 @@ zip_fillDirStructureProcessExtraFields(uio_FileBlock* fileBlock,
 				break;
 			default:
 #ifdef DEBUG
-				fprintf(stderr, "Debug: Extra field 0x%04x unsupported, "
-								"used for file '%s' - ignored.\n",
-						headerID,
-						fileName);
+				fmt::print(stderr, "Debug: Extra field 0x%04x unsupported, "
+								   "used for file '{}' - ignored.\n",
+						   headerID,
+						   fileName);
 #endif
 				break;
 		} // switch
@@ -1572,7 +1573,7 @@ zip_fillDirStructureProcessExtraFields(uio_FileBlock* fileBlock,
 static int
 zip_badFile(zip_GPFileData* gPFileData, char* fileName)
 {
-	fprintf(stderr, "Error: Bad file format for .zip file.\n");
+	fmt::print(stderr, "Error: Bad file format for .zip file.\n");
 	if (gPFileData != nullptr)
 	{
 		zip_GPFileData_delete(gPFileData);
@@ -1602,8 +1603,8 @@ zip_foundFile(uio_GPDir* gPDir, const char* path, zip_GPFileData* gPFileData)
 	pathLen = strlen(path);
 	if (path[pathLen - 1] == '/')
 	{
-		fprintf(stderr, "Warning: '%s' is not a valid file name - skipped.\n",
-				path);
+		fmt::print(stderr, "Warning: '{}' is not a valid file name - skipped.\n",
+				   path);
 		errno = EISDIR;
 		return -1;
 	}
@@ -1614,15 +1615,15 @@ zip_foundFile(uio_GPDir* gPDir, const char* path, zip_GPFileData* gPFileData)
 		case 0:
 			// The entire path was matched. The last part was not supposed
 			// to be a dir.
-			fprintf(stderr, "Warning: '%s' already exists as a dir - "
-							"skipped.\n",
-					path);
+			fmt::print(stderr, "Warning: '{}' already exists as a dir - "
+							   "skipped.\n",
+					   path);
 			errno = EISDIR;
 			return -1;
 		case ENOTDIR:
-			fprintf(stderr, "Warning: A component to '%s' is not a "
-							"directory - file skipped.\n",
-					path);
+			fmt::print(stderr, "Warning: A component to '{}' is not a "
+							   "directory - file skipped.\n",
+					   path);
 			errno = ENOTDIR;
 			return -1;
 		case ENOENT:
@@ -1637,9 +1638,9 @@ zip_foundFile(uio_GPDir* gPDir, const char* path, zip_GPFileData* gPFileData)
 
 		if (end == start || (end - start == 1 && start[0] == '.') || (end - start == 2 && start[0] == '.' && start[1] == '.'))
 		{
-			fprintf(stderr, "Warning: file '%s' has an invalid path - "
-							"skipped.\n",
-					path);
+			fmt::print(stderr, "Warning: file '{}' has an invalid path - "
+							   "skipped.\n",
+					   path);
 			uio_free(buf);
 			errno = EINVAL;
 			return -1;
@@ -1692,17 +1693,17 @@ zip_foundDir(uio_GPDir* gPDir, const char* path, zip_GPDirData* gPDirData)
 			// The dir already exists. Only need to add gPDirData
 			if (gPDir->extra != nullptr)
 			{
-				fprintf(stderr, "Warning: '%s' is present more than once "
-								"in the zip file. The last entry will be used.\n",
-						path);
+				fmt::print(stderr, "Warning: '{}' is present more than once "
+								   "in the zip file. The last entry will be used.\n",
+						   path);
 				zip_GPDirData_delete(gPDir->extra);
 			}
 			gPDir->extra = gPDirData;
 			return 0;
 		case ENOTDIR:
-			fprintf(stderr, "Warning: A component of '%s' is not a "
-							"directory - file skipped.\n",
-					path);
+			fmt::print(stderr, "Warning: A component of '{}' is not a "
+							   "directory - file skipped.\n",
+					   path);
 			errno = ENOTDIR;
 			return -1;
 		case ENOENT:
@@ -1717,9 +1718,9 @@ zip_foundDir(uio_GPDir* gPDir, const char* path, zip_GPDirData* gPDirData)
 
 		if (end == start || (end - start == 1 && start[0] == '.') || (end - start == 2 && start[0] == '.' && start[1] == '.'))
 		{
-			fprintf(stderr, "Warning: directory '%s' has an invalid path - "
-							"skipped.\n",
-					path);
+			fmt::print(stderr, "Warning: directory '{}' has an invalid path - "
+							   "skipped.\n",
+					   path);
 			uio_free(buf);
 			errno = EINVAL;
 			return -1;
@@ -1761,20 +1762,20 @@ zip_initZipStream(z_stream* zipStream)
 		switch (retVal)
 		{
 			case Z_MEM_ERROR:
-				fprintf(stderr, "Error: Not enough memory available for "
-								" decompression.\n");
+				fmt::print(stderr, "Error: Not enough memory available for "
+								   " decompression.\n");
 				break;
 			case Z_VERSION_ERROR:
-				fprintf(stderr, "Error: Incompatible version problem for "
-								" decompression.\n");
+				fmt::print(stderr, "Error: Incompatible version problem for "
+								   " decompression.\n");
 				break;
 			default:
-				fprintf(stderr, "Fatal: unknown error from inflateInit().\n");
+				fmt::print(stderr, "Fatal: unknown error from inflateInit().\n");
 				abort();
 		}
 		if (zipStream->msg != nullptr)
 		{
-			fprintf(stderr, "ZLib reports: %s\n", zipStream->msg);
+			fmt::print(stderr, "ZLib reports: {}\n", zipStream->msg);
 		}
 		errno = EIO;
 		// Using EIO to report an error in the backend.
@@ -1796,16 +1797,16 @@ zip_unInitZipStream(z_stream* zipStream)
 			case Z_STREAM_ERROR:
 				// This means zipStream is bad, which is most likely an
 				// error in the code using zlib.
-				fprintf(stderr, "Fatal: internal error using zlib.\n");
+				fmt::print(stderr, "Fatal: internal error using zlib.\n");
 				abort();
 				break;
 			default:
-				fprintf(stderr, "Fatal: unknown error from inflateEnd().\n");
+				fmt::print(stderr, "Fatal: unknown error from inflateEnd().\n");
 				abort();
 		}
 		if (zipStream->msg != nullptr)
 		{
-			fprintf(stderr, "ZLib reports: %s\n", zipStream->msg);
+			fmt::print(stderr, "ZLib reports: {}\n", zipStream->msg);
 		}
 		errno = EIO;
 		// Using EIO to report an error in the backend.
@@ -1829,16 +1830,16 @@ zip_reInitZipStream(z_stream* zipStream)
 			case Z_STREAM_ERROR:
 				// This means zipStream is bad, which is  most likely an
 				// error in the code using zlib.
-				fprintf(stderr, "Fatal: internal error using zlib.\n");
+				fmt::print(stderr, "Fatal: internal error using zlib.\n");
 				abort();
 				break;
 			default:
-				fprintf(stderr, "Fatal: unknown error from inflateInit().\n");
+				fmt::print(stderr, "Fatal: unknown error from inflateInit().\n");
 				abort();
 		}
 		if (zipStream->msg != nullptr)
 		{
-			fprintf(stderr, "ZLib reports: %s\n", zipStream->msg);
+			fmt::print(stderr, "ZLib reports: {}\n", zipStream->msg);
 		}
 		errno = EIO;
 		// Using EIO to report an error in the backend.

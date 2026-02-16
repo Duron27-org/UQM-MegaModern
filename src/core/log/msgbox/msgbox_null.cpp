@@ -30,7 +30,7 @@ void displayMessageBox(uqgsl::czstring utf8Title, uqgsl::czstring utf8Message, M
 	// So just inform the user of our predicament
 	fmt::print(streamOut, "Do not know how to display {} box. Message follows:\n----------------------\n{}\n{}", isError ? "an error" : "a message", utf8Title, utf8Message);
 #if defined(ANDROID) || defined(__ANDROID__)
-	__android_log_print(isError ? ANDROID_LOG_FATAL : ANDROID_LOG_INFO, "Ur-Quan Masters MegaMod", "%s: %s", title, msg);
+	__android_log_print(isError ? ANDROID_LOG_FATAL : ANDROID_LOG_INFO, "Ur-Quan Masters MegaMod", "{}: {}", title, msg);
 #endif
 
 	// Suppress the compiler warnings in any case.

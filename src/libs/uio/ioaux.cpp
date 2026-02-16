@@ -290,7 +290,7 @@ copyError(int error,
 		  uio_PDirHandle* toDir, const char* toName, char* buf)
 {
 #ifdef DEBUG
-	fprintf(stderr, "Error while copying: %s\n", strerror(error));
+	fmt::print(stderr, "Error while copying: {}\n", strerror(error));
 #endif
 
 	if (fromHandle != nullptr)
@@ -857,9 +857,9 @@ int uio_verifyPath(uio_DirHandle* dirHandle, const char* path,
 			default:
 				// Unknown error. Let's bail out just to be safe.
 #ifdef DEBUG
-				fprintf(stderr, "Warning: Unknown error from "
-								"uio_walkPhysicalPath: %s\n",
-						strerror(retVal));
+				fmt::print(stderr, "Warning: Unknown error from "
+								   "uio_walkPhysicalPath: {}\n",
+						   strerror(retVal));
 #endif
 				uio_free(*resolvedPath);
 				errno = retVal;

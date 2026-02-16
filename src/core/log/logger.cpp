@@ -49,7 +49,7 @@ void Logger::init(uqstl::string_view logfile)
 		spdlog::filename_t logFileName {logfile};
 		spdlog::sink_ptr fileSink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(logFileName, true);
 		fileSink->set_level(spdlog::level::trace);
-		fileSink->set_pattern("[%Y-%b-%d %T.%e] [%l] %v");
+		fileSink->set_pattern("[%Y-%b-{} %T.%e] [%l] %v");
 
 		m_backtraceBufferSink = {std::make_shared<BacktraceCaptureSink>()};
 
@@ -61,7 +61,7 @@ void Logger::init(uqstl::string_view logfile)
 	}
 	catch (const spdlog::spdlog_ex& ex)
 	{
-		fprintf(stderr, "Log initialization failed: %s\n", ex.what());
+		fmt::print(stderr, "Log initialization failed: {}\n", ex.what());
 	}
 }
 

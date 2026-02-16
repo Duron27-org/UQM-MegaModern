@@ -26,9 +26,9 @@ reconst(void)
 
 	/* halven cumulative freq for leaf nodes */
 	j = 0;
-	for (i = 0; i < T; i++)
+	for (i = 0; i < HUF_TableSize; i++)
 	{
-		if (_lpCurCodeDesc->son[i] >= T)
+		if (_lpCurCodeDesc->son[i] >= HUF_TableSize)
 		{
 			_lpCurCodeDesc->freq[j] = (_lpCurCodeDesc->freq[i] + 1) >> 1;
 			_lpCurCodeDesc->son[j] = _lpCurCodeDesc->son[i];
@@ -36,7 +36,7 @@ reconst(void)
 		}
 	}
 	/* make a tree : first, connect children nodes */
-	for (i = 0, j = N_CHAR; j < T; i += 2, j++)
+	for (i = 0, j = HUF_NumChars; j < HUF_TableSize; i += 2, j++)
 	{
 		uqm::SWORD k;
 		uqm::UWORD f, l;
@@ -56,9 +56,9 @@ reconst(void)
 		_lpCurCodeDesc->son[k] = i;
 	}
 	/* connect parent nodes */
-	for (i = 0; i < T; i++)
+	for (i = 0; i < HUF_TableSize; i++)
 	{
-		if ((j = _lpCurCodeDesc->son[i]) >= T)
+		if ((j = _lpCurCodeDesc->son[i]) >= HUF_TableSize)
 		{
 			_lpCurCodeDesc->prnt[j] = i;
 		}
@@ -76,7 +76,7 @@ void _update(uqm::COUNT c)
 {
 	PLZHCODE_DESC lpCD;
 
-	if ((lpCD = _lpCurCodeDesc)->freq[R] == MAX_FREQ)
+	if ((lpCD = _lpCurCodeDesc)->freq[HUF_Root] == HUF_MaxFrequency)
 	{
 		reconst();
 	}
@@ -105,13 +105,13 @@ void _update(uqm::COUNT c)
 			lpCD->son[c] = j;
 
 			lpCD->prnt[i] = l;
-			if (i < T)
+			if (i < HUF_TableSize)
 			{
 				lpCD->prnt[i + 1] = l;
 			}
 
 			lpCD->prnt[j] = c;
-			if (j < T)
+			if (j < HUF_TableSize)
 			{
 				lpCD->prnt[j + 1] = c;
 			}

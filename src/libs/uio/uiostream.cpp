@@ -21,6 +21,7 @@
 #include "uioport.h"
 #include "iointrn.h"
 #include "uiostream.h"
+#include <fmt/format.h>
 
 #include <errno.h>
 #include <stdio.h>
@@ -70,7 +71,7 @@ uio_fopen(uio_DirHandle* dir, const char* path, const char* mode)
 			openFlags = O_WRONLY | O_CREAT | O_APPEND;
 		default:
 			errno = EINVAL;
-			fprintf(stderr, "Invalid mode string in call to uio_fopen().\n");
+			fmt::print(stderr, "Invalid mode string in call to uio_fopen().\n");
 			return nullptr;
 	}
 	mode++;
@@ -552,9 +553,9 @@ uio_assertReadSanity(uio_Stream* stream)
 		// directly followed by output without an intervening call to a file
 		// positioning function, unless the input operation encounters
 		// end-of-file." (POSIX, C)
-		fprintf(stderr, "Error: Reading on a file directly after writing, "
-						"without an intervening call to fflush() or a file "
-						"positioning function.\n");
+		fmt::print(stderr, "Error: Reading on a file directly after writing, "
+						   "without an intervening call to fflush() or a file "
+						   "positioning function.\n");
 		abort();
 	}
 }
@@ -574,9 +575,9 @@ uio_assertWriteSanity(uio_Stream* stream)
 		// directly followed by output without an intervening call to a file
 		// positioning function, unless the input operation encounters
 		// end-of-file." (POSIX, C)
-		fprintf(stderr, "Error: Writing on a file directly after reading, "
-						"without an intervening call to a file positioning "
-						"function.\n");
+		fmt::print(stderr, "Error: Writing on a file directly after reading, "
+						   "without an intervening call to a file positioning "
+						   "function.\n");
 		abort();
 	}
 	assert(stream->dataStart == stream->buf);

@@ -18,6 +18,7 @@
  *
  */
 
+#include <fmt/base.h>
 #include <errno.h>
 #include <time.h>
 #include <stdio.h>
@@ -158,7 +159,7 @@ uio_copyError(uio_Handle* srcHandle, uio_Handle* dstHandle,
 	savedErrno = errno;
 
 #ifdef DEBUG
-	fprintf(stderr, "Error while copying: %s\n", strerror(errno));
+	fmt::print(stderr, "Error while copying: {}\n", strerror(errno));
 #endif
 
 	if (srcHandle != nullptr)
@@ -224,7 +225,8 @@ uio_getStdioAccess(uio_DirHandle* dir, const char* path, int flags,
 		// generated name, as a temporary location to store a copy of
 		// the file.
 		dirNum = (uio_uint32)time(nullptr);
-		tempDirName = (char*)uio_malloc(sizeof "01234567");
+		static constexpr size_t BufSize {sizeof "01234567"};
+		tempDirName = (char*)uio_malloc(BufSize);
 		for (i = 0;; i++)
 		{
 #ifdef NUM_TEMP_RETRIES
@@ -237,8 +239,8 @@ uio_getStdioAccess(uio_DirHandle* dir, const char* path, int flags,
 				return nullptr;
 			}
 #endif
-
-			sprintf(tempDirName, "%08lx", (unsigned long)dirNum + i);
+			memset(tempDirName, '\0', BufSize);
+			fmt::format_to_n(tempDirName, BufSize - 1, "{:08x}", (unsigned long)dirNum + i);
 
 			res = uio_mkdir(tempDir, tempDirName, 0700);
 			if (res == -1)
@@ -250,8 +252,8 @@ uio_getStdioAccess(uio_DirHandle* dir, const char* path, int flags,
 				}
 				savedErrno = errno;
 #ifdef DEBUG
-				fprintf(stderr, "Error: Could not create temporary dir: %s\n",
-						strerror(errno));
+				fmt::print(stderr, "Error: Could not create temporary dir: {}\n",
+						   strerror(errno));
 #endif
 				uio_free(tempDirName);
 				errno = savedErrno;
@@ -264,16 +266,16 @@ uio_getStdioAccess(uio_DirHandle* dir, const char* path, int flags,
 		if (newDir == nullptr)
 		{
 #ifdef DEBUG
-			fprintf(stderr, "Error: Could not open temporary dir: %s\n",
-					strerror(errno));
+			fmt::print(stderr, "Error: Could not open temporary dir: {}\n",
+					   strerror(errno));
 #endif
 			res = uio_rmdir(tempDir, tempDirName);
 #ifdef DEBUG
 			if (res == -1)
 			{
-				fprintf(stderr, "Warning: Could not remove temporary dir: "
-								"%s.\n",
-						strerror(errno));
+				fmt::print(stderr, "Warning: Could not remove temporary dir: "
+								   "{}.\n",
+						   strerror(errno));
 			}
 #endif
 			uio_free(tempDirName);
@@ -295,9 +297,9 @@ uio_getStdioAccess(uio_DirHandle* dir, const char* path, int flags,
 		{
 			int savedErrno = errno;
 #ifdef DEBUG
-			fprintf(stderr, "Error: Could not copy file to temporary dir: "
-							"%s\n",
-					strerror(errno));
+			fmt::print(stderr, "Error: Could not copy file to temporary dir: "
+							   "{}\n",
+					   strerror(errno));
 #endif
 			uio_closeDir(newDir);
 			uio_free(tempDirName);
@@ -310,9 +312,9 @@ uio_getStdioAccess(uio_DirHandle* dir, const char* path, int flags,
 	if (res == -1)
 	{
 		int savedErrno = errno;
-		fprintf(stderr, "Error: uio_getStdioAccess: Could not get location "
-						"of temporary dir: %s.\n",
-				strerror(errno));
+		fmt::print(stderr, "Error: uio_getStdioAccess: Could not get location "
+						   "of temporary dir: {}.\n",
+				   strerror(errno));
 		uio_closeDir(newDir);
 		uio_free(tempDirName);
 		errno = savedErrno;
@@ -323,8 +325,8 @@ uio_getStdioAccess(uio_DirHandle* dir, const char* path, int flags,
 	if (fsID != uio_FSTYPE_STDIO)
 	{
 		// Temp dir isn't on a stdio fs either.
-		fprintf(stderr, "Error: uio_getStdioAccess: Temporary file location "
-						"isn't on a stdio filesystem.\n");
+		fmt::print(stderr, "Error: uio_getStdioAccess: Temporary file location "
+						   "isn't on a stdio filesystem.\n");
 		uio_closeDir(newDir);
 		uio_free(tempDirName);
 		uio_free(newPath);
@@ -346,9 +348,9 @@ void uio_releaseStdioAccess(uio_StdioAccessHandlePtr handlePtr)
 		if (uio_unlink(handle->tempDir, handle->fileName) == -1)
 		{
 #ifdef DEBUG
-			fprintf(stderr, "Error: Could not remove temporary file: "
-							"%s\n",
-					strerror(errno));
+			fmt::print(stderr, "Error: Could not remove temporary file: "
+							   "{}\n",
+					   strerror(errno));
 #endif
 		}
 
@@ -360,9 +362,9 @@ void uio_releaseStdioAccess(uio_StdioAccessHandlePtr handlePtr)
 		if (uio_rmdir(handle->tempRoot, handle->tempDirName) == -1)
 		{
 #ifdef DEBUG
-			fprintf(stderr, "Error: Could not remove temporary directory: "
-							"%s\n",
-					strerror(errno));
+			fmt::print(stderr, "Error: Could not remove temporary directory: "
+							   "{}\n",
+					   strerror(errno));
 #endif
 		}
 	}

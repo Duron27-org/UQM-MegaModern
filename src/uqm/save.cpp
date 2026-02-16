@@ -1595,7 +1595,7 @@ bool SaveGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, const char* name)
 	uio_Stream* out_fp;
 	POINT pt;
 	STAR_DESC SD;
-	char file[PATH_MAX];
+	char file[PATH_MAX] {};
 	if (CurStarDescPtr)
 	{
 		SD = *CurStarDescPtr;
@@ -1616,7 +1616,7 @@ bool SaveGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, const char* name)
 	}
 
 	// Write the memory file to the actual savegame file.
-	sprintf(file, "uqmsave.%02u", which_game);
+	fmt::format_to_n(file, sizeof(file) - 1, "uqmsave.{:02}", which_game);
 	if ((out_fp = res_OpenResFile(saveDir, file, "wb")))
 	{
 		io_ok = true;

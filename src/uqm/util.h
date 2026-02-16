@@ -17,6 +17,7 @@
 #ifndef UQM_UTIL_H_
 #define UQM_UTIL_H_
 
+#include "core/stl/stl.h"
 #include "libs/compiler.h"
 #include "libs/gfxlib.h"
 #include "setupmenu.h"
@@ -41,6 +42,8 @@ extern STAMP SaveContextFrame(const RECT* saveRect);
 extern uqm::DWORD get_fuel_to_sol(void);
 extern void DrawFlagStatDisplay(const uqm::CHAR_T* str);
 extern uqm::CHAR_T* WholeFuelValue(void);
+
+void formatFuelValue(uqm::DWORD coarseFuel, uqstl::span<uqm::CHAR_T> buf);
 
 #if 0 //defined(__cplusplus)
 }

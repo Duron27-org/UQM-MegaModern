@@ -142,7 +142,7 @@ testRaceId(lua_State* luaState, int argn)
 	{
 		// TODO: print script file name.
 		uqm::log::error("[script] Warning: testRaceId(): No race exists "
-						"with id '%s'.",
+						"with id '{}'.",
 						raceIdStr);
 		return (uqm::COUNT)-1;
 	}
@@ -163,7 +163,7 @@ testShipId(lua_State* luaState, int argn)
 	{
 		// TODO: print script file name.
 		uqm::log::error("[script] Warning: testShipId(): No ship exists "
-						"with id '%s'.",
+						"with id '{}'.",
 						shipIdStr);
 		return (uqm::COUNT)-1;
 	}

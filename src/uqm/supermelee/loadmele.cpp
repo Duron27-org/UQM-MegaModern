@@ -32,6 +32,7 @@
 #include "../sounds.h"
 #include "options.h"
 #include "core/log/log.h"
+#include "core/string/StringUtils.h"
 #include "libs/memlib.h"
 
 
@@ -126,7 +127,7 @@ GetFleetByIndex(MELEE_STATE* pMS, uqm::COUNT index, MeleeTeam* result)
 		{
 			const char* fileName;
 			fileName = GetDirEntryAddress(entry);
-			uqm::log::warn("Warning: File '%s' is not a valid "
+			uqm::log::warn("Warning: File '{}' is not a valid "
 						   "SuperMelee team.",
 						   fileName);
 		}
@@ -199,9 +200,9 @@ DrawFileString(const MeleeTeam* team, const POINT* origin,
 	// Print the value of the fleet
 	{
 		TEXT Text;
-		uqm::CHAR_T buf[60];
+		uqm::CHAR_T buf[60] {};
 
-		sprintf(buf, "%u", MeleeTeam_getValue(team));
+		fmt::format_to_n(buf, sizeof(buf) - 1, "{}", MeleeTeam_getValue(team));
 		Text.baseline = *origin;
 		Text.baseline.x += NUM_MELEE_COLUMNS * (LOAD_MELEE_BOX_WIDTH + LOAD_MELEE_BOX_SPACE)
 						 - RES_SCALE(1);
@@ -523,8 +524,8 @@ bool DoSaveTeam(MELEE_STATE* pMS)
 	CONTEXT OldContext;
 	bool saveOk = false;
 
-	snprintf(file, sizeof file, "%s.mle",
-			 MeleeSetup_getTeamName(pMS->meleeSetup, pMS->side));
+	fmt::format_to_sz_n(file, sizeof file, "{}.mle",
+						MeleeSetup_getTeamName(pMS->meleeSetup, pMS->side));
 
 	OldContext = SetContext(ScreenContext);
 	ConfirmSaveLoad(&MsgStamp);

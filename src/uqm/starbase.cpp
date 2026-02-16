@@ -507,7 +507,7 @@ DoTimePassage(void)
 		starbase_coords.x = (COORD)(cos(newAngle) * MIN_MOON_RADIUS);
 		starbase_coords.y = (COORD)(sin(newAngle) * MIN_MOON_RADIUS);
 
-		//log_add (log_Debug, "startangle:%d angle:%f, radius:%d, speed:%f, days:%f X:%d, y:%d", 10, newAngle, MIN_MOON_RADIUS, FULL_CIRCLE / 11.46, daysElapsed(), starbase_coords.x, starbase_coords.y);
+		//log_add (log_Debug, "startangle:{} angle:{}, radius:{}, speed:{}, days:{} X:{}, y:{}", 10, newAngle, MIN_MOON_RADIUS, FULL_CIRCLE / 11.46, daysElapsed(), starbase_coords.x, starbase_coords.y);
 
 		// Translate the coordinates on a circle to an ellipse and update the ship's graphics' coordinates on the screen.
 		GLOBAL(ShipStamp.origin.x) = RES_SCALE(ORIG_SIS_SCREEN_WIDTH >> 1) + starbase_coords.x;

@@ -1067,7 +1067,7 @@ DrawFleetValue(MELEE_STATE* pMS, uqm::COUNT side, uqm::COUNT HiLiteState)
 {
 	RECT r;
 	TEXT rtText;
-	uqm::CHAR_T buf[30];
+	uqm::CHAR_T buf[30] {};
 	uqm::COUNT fleetValue;
 
 	GetFleetValueRect(side, &r);
@@ -1081,7 +1081,7 @@ DrawFleetValue(MELEE_STATE* pMS, uqm::COUNT side, uqm::COUNT HiLiteState)
 	SetContextFont(MicroFont);
 
 	fleetValue = MeleeSetup_getFleetValue(pMS->meleeSetup, side);
-	sprintf(buf, "%u", fleetValue);
+	fmt::format_to_n(buf, sizeof(buf) - 1, "{}", fleetValue);
 	rtText.pStr = buf;
 	rtText.align = ALIGN_RIGHT;
 	rtText.CharCount = (uqm::COUNT)~0;
@@ -2480,7 +2480,7 @@ check_for_disconnects(MELEE_STATE* pMS)
 		{
 			PlayerControl[player] = HUMAN_CONTROL | STANDARD_RATING;
 			DrawControls(player, false);
-			uqm::log::info("Player %d has disconnected; shifting "
+			uqm::log::info("Player {} has disconnected; shifting "
 						   "controls\n",
 						   player);
 		}
@@ -2520,7 +2520,7 @@ nextControlType(uqm::COUNT which_side)
 			break;
 #endif /* NETPLAY */
 		default:
-			uqm::log::error("Error: Bad control type (%d) in "
+			uqm::log::error("Error: Bad control type ({}) in "
 							"nextControlType().\n",
 							PlayerControl[which_side]);
 			PlayerControl[which_side] = HUMAN_CONTROL | STANDARD_RATING;

@@ -35,6 +35,7 @@
 #include "sis.h"
 #include "units.h"
 #include "sounds.h"
+#include "core/string/StringUtils.h"
 #include "libs/graphics/gfx_common.h"
 #include "libs/inplib.h"
 #include "uqmdebug.h"
@@ -211,7 +212,7 @@ DrawShipsStatus(uqm::COUNT index, uqm::COUNT pos, bool selected)
 	{
 		t.baseline.y -= RES_SCALE(3);
 	}
-	snprintf(buf, sizeof(buf), "%u", ShipState.ShipStats[index].ShipCost);
+	fmt::format_to_sz_n(buf, sizeof(buf), "{}", ShipState.ShipStats[index].ShipCost);
 	t.pStr = buf;
 	t.CharCount = (uqm::COUNT)~0;
 	font_DrawText(&t);
@@ -219,9 +220,9 @@ DrawShipsStatus(uqm::COUNT index, uqm::COUNT pos, bool selected)
 	{
 		// print crew totals
 		t.baseline.y += TEXT_SPACING_Y;
-		snprintf(buf, sizeof(buf), "%u/%u",
-				 ShipState.ShipStats[index].CrewLevel,
-				 ShipState.ShipStats[index].MaxCrew);
+		fmt::format_to_sz_n(buf, sizeof(buf), "{}/{}",
+							ShipState.ShipStats[index].CrewLevel,
+							ShipState.ShipStats[index].MaxCrew);
 		t.pStr = buf;
 		t.CharCount = (uqm::COUNT)~0;
 		font_DrawText(&t);
@@ -338,11 +339,11 @@ GetShipStats(SHIP_STATS* ship_stats, SPECIES_ID species_id)
 	HMASTERSHIP hMasterShip = FindMasterShip(species_id);
 	MASTER_SHIP_INFO* ShipPtr = LockMasterShip(&master_q, hMasterShip);
 
-	snprintf(ship_stats->ShipName, sizeof(ship_stats->ShipName), "%s %s",
-			 (uqm::CHAR_T*)GetStringAddress(SetAbsStringTableIndex(
-				 ShipPtr->ShipInfo.race_strings, 2)),
-			 (uqm::CHAR_T*)GetStringAddress(SetAbsStringTableIndex(
-				 ShipPtr->ShipInfo.race_strings, 4)));
+	fmt::format_to_sz_n(ship_stats->ShipName, sizeof(ship_stats->ShipName), "{} {}",
+						(uqm::CHAR_T*)GetStringAddress(SetAbsStringTableIndex(
+							ShipPtr->ShipInfo.race_strings, 2)),
+						(uqm::CHAR_T*)GetStringAddress(SetAbsStringTableIndex(
+							ShipPtr->ShipInfo.race_strings, 4)));
 
 	ship_stats->ShipCost = ShipPtr->ShipInfo.ship_cost * 100;
 
@@ -360,8 +361,8 @@ GetStowedShipStats(SHIP_STATS* ship_stats, HSHIPFRAG hStowShip)
 	ship_stats->ShipCost = ShipPtr->ShipInfo.ship_cost;
 	UnlockMasterShip(&master_q, hMasterShip);
 
-	snprintf(ship_stats->ShipName, sizeof(ship_stats->ShipName), "%s",
-			 (uqm::CHAR_T*)GetStringAddress(SetAbsStringTableIndex(StowShipPtr->race_strings, StowShipPtr->captains_name_index)));
+	fmt::format_to_sz_n(ship_stats->ShipName, sizeof(ship_stats->ShipName), "{}",
+						(uqm::CHAR_T*)GetStringAddress(SetAbsStringTableIndex(StowShipPtr->race_strings, StowShipPtr->captains_name_index)));
 
 	ship_stats->CrewLevel = StowShipPtr->crew_level;
 	ship_stats->MaxCrew = StowShipPtr->max_crew;
@@ -448,7 +449,7 @@ showRemainingCrew(void)
 {
 	RECT r;
 	TEXT t;
-	uqm::CHAR_T buf[30];
+	uqm::CHAR_T buf[30] {};
 	uqm::SIZE remaining_crew;
 #define INITIAL_CREW 2000
 
@@ -495,7 +496,8 @@ showRemainingCrew(void)
 
 	if (CheckAlliance(SHOFIXTI_SHIP) == GOOD_GUY)
 	{
-		sprintf(buf, "%s", STR_INFINITY_SIGN);
+		const auto fmtResult = fmt::format_to_n(buf, sizeof(buf) - 1, "{}", STR_INFINITY_SIGN);
+		*fmtResult.out = '\0';
 	}
 	else if (remaining_crew == 0)
 	{
@@ -505,7 +507,8 @@ showRemainingCrew(void)
 	}
 	else
 	{
-		sprintf(buf, "%u", remaining_crew);
+		const auto fmtResult = fmt::format_to_n(buf, sizeof(buf) - 1, "{}", remaining_crew);
+		*fmtResult.out = '\0';
 	}
 
 	font_DrawText(&t);
@@ -610,7 +613,6 @@ showRemainingPoints(int delta)
 {
 	RECT r;
 	TEXT t;
-	uqm::CHAR_T buf[30];
 	uqm::SBYTE percentage_left;
 	uqm::SIZE FP = REMAINING_FP + delta;
 
@@ -642,8 +644,9 @@ showRemainingPoints(int delta)
 	SetContextFont(TinyFont);
 	t.align = ALIGN_RIGHT;
 	t.CharCount = (uqm::COUNT)~0;
+	uqm::CHAR_T buf[30] {};
+	fmt::format_to_n(buf, sizeof(buf) - 1, "{}", FP);
 	t.pStr = buf;
-	sprintf(buf, "%d", FP);
 
 	r.corner.x = RES_SCALE(((optWindowType == 2 || optWindowType == 0) ?
 								DOS_SIS_SCREEN_WIDTH :
@@ -940,7 +943,6 @@ DrawRaceStrings(uqm::BYTE NewRaceItem)
 		TEXT t;
 		HFLEETINFO hStarShip;
 		FLEET_INFO* FleetPtr;
-		uqm::CHAR_T buf[30];
 		uqm::COUNT shipCost, shipPoints, shipCrew, maxCrew;
 		RECT r;
 		STRING captain;
@@ -1018,11 +1020,12 @@ DrawRaceStrings(uqm::BYTE NewRaceItem)
 					 - DOS_NUM_SCL(2) - SAFE_Y;
 		t.align = ALIGN_RIGHT;
 		t.CharCount = (uqm::COUNT)~0;
+		uqm::CHAR_T buf[30] {};
 		t.pStr = buf;
 		if (!stowed_q)
 		{
 			// Print the ship cost
-			sprintf(buf, "%u", shipCost);
+			fmt::format_to_n(buf, sizeof(buf) - 1, "{}", shipCost);
 
 			if (shipCost <= (GLOBAL_SIS(ResUnits)))
 			{
@@ -1036,7 +1039,7 @@ DrawRaceStrings(uqm::BYTE NewRaceItem)
 		else
 		{
 			// Print the ship's crew
-			sprintf(buf, "%u/%u", shipCrew, maxCrew);
+			fmt::format_to_n(buf, sizeof(buf) - 1, "{}/{}", shipCrew, maxCrew);
 
 			if (shipCrew == maxCrew)
 			{
@@ -1060,7 +1063,8 @@ DrawRaceStrings(uqm::BYTE NewRaceItem)
 		{
 			t.baseline.y = RADAR_Y + RES_SCALE(7)
 						 + DOS_NUM_SCL(2) - SAFE_Y;
-			sprintf(buf, "%u", shipPoints);
+			const auto fmtResult = fmt::format_to_n(buf, sizeof(buf) - 1, "{}", shipPoints);
+			*fmtResult.out = '\0';
 
 			if (shipPoints < REMAINING_FP / 2)
 			{
@@ -1111,7 +1115,6 @@ ShowShipCrew(SHIP_FRAGMENT* StarShipPtr, const RECT* pRect)
 {
 	RECT r;
 	TEXT t;
-	uqm::CHAR_T buf[80];
 	HFLEETINFO hTemplate;
 	FLEET_INFO* TemplatePtr;
 	uqm::COUNT maxCrewLevel;
@@ -1136,13 +1139,14 @@ ShowShipCrew(SHIP_FRAGMENT* StarShipPtr, const RECT* pRect)
 	captain = SetAbsStringTableIndex(StarShipPtr->race_strings,
 									 StarShipPtr->captains_name_index);
 
+	uqm::CHAR_T buf[80] {};
 	if (StarShipPtr->crew_level == maxCrewLevel)
 	{
-		sprintf(buf, "%u", StarShipPtr->crew_level);
+		fmt::format_to_n(buf, sizeof(buf) - 1, "{}", StarShipPtr->crew_level);
 	}
 	else if (StarShipPtr->crew_level > maxCrewLevel)
 	{
-		sprintf(buf, "[%u/%u]", StarShipPtr->crew_level - maxCrewLevel, maxCrewLevel);
+		fmt::format_to_n(buf, sizeof(buf) - 1, "[{}/{}]", StarShipPtr->crew_level - maxCrewLevel, maxCrewLevel);
 	}
 	else if (StarShipPtr->crew_level == 0)
 	{
@@ -1151,7 +1155,7 @@ ShowShipCrew(SHIP_FRAGMENT* StarShipPtr, const RECT* pRect)
 	}
 	else
 	{
-		sprintf(buf, "%u/%u", StarShipPtr->crew_level, maxCrewLevel);
+		fmt::format_to_n(buf, sizeof(buf) - 1, "{}/{}", StarShipPtr->crew_level, maxCrewLevel);
 	}
 
 	r = *pRect;

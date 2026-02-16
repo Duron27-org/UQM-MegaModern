@@ -186,17 +186,17 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 	fp = res_OpenResFile(contentDir, paths, "rb");
 	if (fp == nullptr)
 	{
-		uqm::log::warn("Warning: Can't open '%s'", paths);
+		uqm::log::warn("Warning: Can't open '{}'", paths);
 		resdata->ptr = nullptr;
 		return;
 	}
 
 	dataLen = LengthResFile(fp);
-	uqm::log::info("\t'%s' -- conversation phrases -- %lu bytes", paths,
+	uqm::log::info("\t'{}' -- conversation phrases -- {} bytes", paths,
 				   dataLen);
 	if (clip_path)
 	{
-		uqm::log::info("\t'%s' -- voice clip directory", clip_path);
+		uqm::log::info("\t'{}' -- voice clip directory", clip_path);
 	}
 	else
 	{
@@ -204,7 +204,7 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 	}
 	if (ts_path)
 	{
-		uqm::log::info("\t'%s' -- timestamps", ts_path);
+		uqm::log::info("\t'{}' -- timestamps", ts_path);
 	}
 	else
 	{
@@ -213,7 +213,7 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 
 	if (dataLen == 0)
 	{
-		uqm::log::warn("Warning: Trying to load empty file '%s'.",
+		uqm::log::warn("Warning: Trying to load empty file '{}'.",
 					   path);
 		goto err;
 	}
@@ -361,7 +361,7 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 					{
 						// timestamp data is invalid, remove all of it
 						uqm::log::warn("Invalid timestamp data "
-									   "for '%s'.  Disabling timestamps",
+									   "for '{}'.  Disabling timestamps",
 									   name);
 						HFree(ts_data);
 						ts_data = nullptr;

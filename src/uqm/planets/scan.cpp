@@ -40,6 +40,7 @@
 #include "../starmap.h"
 #include "../gendef.h"
 #include "options.h"
+#include "core/string/StringUtils.h"
 #include "libs/graphics/gfx_common.h"
 #include "libs/graphics/drawable.h"
 #include "libs/inplib.h"
@@ -150,28 +151,32 @@ PrintScanText(TEXT* t)
 }
 
 static void
-MakeScanValue(uqm::CHAR_T* buf, long val, const uqm::CHAR_T* extra)
+MakeScanValue(uqstl::span<uqm::CHAR_T> buf, long val, const uqm::CHAR_T* extra)
 {
 	if (val >= 10 * 100)
 	{ // 1 decimal place
-		sprintf(buf, "%ld.%ld%s", val / 100, (val / 10) % 10, extra);
+		const auto fmtResult = fmt::format_to_n(buf.data(), buf.size() - 1, "{}.{}{}", val / 100, (val / 10) % 10, extra);
+		*fmtResult.out = '\0';
 	}
 	else
 	{ // 2 decimal places
-		sprintf(buf, "%ld.%02ld%s", val / 100, val % 100, extra);
+		const auto fmtResult = fmt::format_to_n(buf.data(), buf.size() - 1, "{}.{:02}{}", val / 100, val % 100, extra);
+		*fmtResult.out = '\0';
 	}
 }
 
 static void
-MakeDayValue(uqm::CHAR_T* buf, long val, const uqm::CHAR_T* extra)
+MakeDayValue(uqstl::span<uqm::CHAR_T> buf, long val, const uqm::CHAR_T* extra)
 {
 	if (pSolarSysState->SysInfo.PlanetInfo.RotationPeriod < 240 * 10)
 	{
-		sprintf(buf, "%ld.%02ld%s", val / 100, val % 100, extra);
+		const auto fmtResult = fmt::format_to_n(buf.data(), buf.size() - 1, "{}.{:02}{}", val / 100, val % 100, extra);
+		*fmtResult.out = '\0';
 	}
 	else
 	{
-		sprintf(buf, "%ld.%ld%s", val / 10, val % 10, extra);
+		const auto fmtResult = fmt::format_to_n(buf.data(), buf.size() - 1, "{}.{:02}{}", val / 10, val % 10, extra);
+		*fmtResult.out = '\0';
 	}
 }
 
@@ -191,14 +196,14 @@ GetRotationalPeriod(void)
 	}
 }
 
-void GetPlanetTitle(uqm::CHAR_T* buf, uqm::COUNT bufsize)
+void GetPlanetTitle(uqstl::span<uqm::CHAR_T> buf)
 {
 	int val;
 	uqm::CHAR_T* named = GetNamedPlanetaryBody();
 
 	if (named)
 	{
-		utf8StringCopy(buf, bufsize, named);
+		utf8StringCopy(buf.data(), buf.size(), named);
 		return;
 	}
 
@@ -208,22 +213,21 @@ void GetPlanetTitle(uqm::CHAR_T* buf, uqm::COUNT bufsize)
 	{
 		if (!EXTENDED)
 		{
-			sprintf(buf, "%s",
-					GAME_STRING(SCAN_STRING_BASE + 4 + 51));
+			const auto fmtResult = fmt::format_to_n(buf.data(), buf.size() - 1, "{}", GAME_STRING(SCAN_STRING_BASE + 4 + 51));
+			*fmtResult.out = '\0';
 			// Gas Giant
 		}
 		else if (val <= NUMBER_OF_PLANET_TYPES)
 		{
-			sprintf(buf, "%s",
-					GAME_STRING(SCAN_STRING_BASE + 4 + 2 + val));
+			const auto fmtResult = fmt::format_to_n(buf.data(), buf.size() - 1, "{}", GAME_STRING(SCAN_STRING_BASE + 4 + 2 + val));
+			*fmtResult.out = '\0';
 			// "Color" Gas Giant
 		}
 	}
 	else
 	{
-		sprintf(buf, "%s %s",
-				GAME_STRING(SCAN_STRING_BASE + 4 + val),
-				GAME_STRING(SCAN_STRING_BASE + 4 + 50));
+		const auto fmtResult = fmt::format_to_n(buf.data(), buf.size() - 1, "{} {}", GAME_STRING(SCAN_STRING_BASE + 4 + val), GAME_STRING(SCAN_STRING_BASE + 4 + 50));
+		*fmtResult.out = '\0';
 		// World
 	}
 }
@@ -270,9 +274,9 @@ PrintCoarseScanPC(void)
 {
 	uqm::SDWORD val;
 	TEXT t;
-	uqm::CHAR_T buf[200];
+	uqm::CHAR_T buf[200] {};
 
-	GetPlanetTitle(buf, sizeof(buf));
+	GetPlanetTitle({buf, sizeof(buf)});
 
 	SetContext(PlanetContext);
 
@@ -337,9 +341,9 @@ PrintCoarseScanPC(void)
 	utf8StringCopy(buf, sizeof(buf), ORBITSCAN_TEXT(6));
 	PrintScanTitlePC(&t, buf, LEFT_SIDE_BASELINE_X_PC); // "Temp: "
 
-	snprintf(buf, sizeof(buf), "%d%s c",
-			 pSolarSysState->SysInfo.PlanetInfo.SurfaceTemperature,
-			 STR_DEGREE_SIGN);
+	fmt::format_to_sz_n(buf, sizeof(buf), "{}{} c",
+						pSolarSysState->SysInfo.PlanetInfo.SurfaceTemperature,
+						STR_DEGREE_SIGN);
 
 	if (optHazardColors) // Planet Temperature
 	{
@@ -358,8 +362,8 @@ PrintCoarseScanPC(void)
 	}
 	else
 	{
-		snprintf(buf, sizeof(buf), "%s %u", ORBITSCAN_TEXT(9), // "Class"
-				 pSolarSysState->SysInfo.PlanetInfo.Weather + 1);
+		fmt::format_to_sz_n(buf, sizeof(buf), "{} {}", ORBITSCAN_TEXT(9), // "Class"
+							pSolarSysState->SysInfo.PlanetInfo.Weather + 1);
 	}
 
 	if (optHazardColors) // Weather
@@ -379,8 +383,8 @@ PrintCoarseScanPC(void)
 	}
 	else
 	{
-		snprintf(buf, sizeof(buf), "%s %u", ORBITSCAN_TEXT(9), // "Class"
-				 pSolarSysState->SysInfo.PlanetInfo.Tectonics + 1);
+		fmt::format_to_sz_n(buf, sizeof(buf), "{} {}", ORBITSCAN_TEXT(9), // "Class"
+							pSolarSysState->SysInfo.PlanetInfo.Tectonics + 1);
 	}
 
 	if (optHazardColors) // Tectonics
@@ -444,7 +448,7 @@ PrintCoarseScanPC(void)
 	{
 		val = -val;
 	}
-	snprintf(buf, sizeof(buf), "%d%s", val, STR_DEGREE_SIGN);
+	fmt::format_to_sz_n(buf, sizeof(buf), "{}{}", val, STR_DEGREE_SIGN);
 	PrintScanText(&t);
 
 	UnbatchGraphics();
@@ -457,7 +461,7 @@ PrintCoarseScan3DO(void)
 	uqm::SDWORD val;
 	TEXT t;
 	STAMP s;
-	uqm::CHAR_T buf[200];
+	uqm::CHAR_T buf[200] {};
 	uqm::COUNT frameIndex = 20;
 
 	if (optWhichCoarseScan == 3)
@@ -467,7 +471,7 @@ PrintCoarseScan3DO(void)
 
 	SetContext(PlanetContext);
 
-	GetPlanetTitle(buf, sizeof(buf));
+	GetPlanetTitle({buf, sizeof(buf)});
 
 	BatchGraphics();
 
@@ -517,9 +521,9 @@ PrintCoarseScan3DO(void)
 	PrintScanText(&t);
 	t.baseline.y += SCAN_LEADING;
 
-	snprintf(buf, sizeof(buf), "%d%s",
-			 pSolarSysState->SysInfo.PlanetInfo.SurfaceTemperature,
-			 STR_DEGREE_SIGN);
+	fmt::format_to_sz_n(buf, sizeof(buf), "{}{}",
+						pSolarSysState->SysInfo.PlanetInfo.SurfaceTemperature,
+						STR_DEGREE_SIGN);
 
 	if (optHazardColors) // Planet Temperature
 	{
@@ -529,8 +533,8 @@ PrintCoarseScan3DO(void)
 	PrintScanText(&t);
 	t.baseline.y += SCAN_LEADING;
 
-	snprintf(buf, sizeof(buf), "<%u>",
-			 pSolarSysState->SysInfo.PlanetInfo.AtmoDensity == 0 ? 0 : (pSolarSysState->SysInfo.PlanetInfo.Weather + 1));
+	fmt::format_to_sz_n(buf, sizeof(buf), "<{}>",
+						pSolarSysState->SysInfo.PlanetInfo.AtmoDensity == 0 ? 0 : (pSolarSysState->SysInfo.PlanetInfo.Weather + 1));
 
 	if (optHazardColors) // Weather
 	{
@@ -540,12 +544,12 @@ PrintCoarseScan3DO(void)
 	PrintScanText(&t);
 	t.baseline.y += SCAN_LEADING;
 
-	snprintf(buf, sizeof(buf), "<%u>",
-			 PLANSIZE(
-				 pSolarSysState->SysInfo.PlanetInfo.PlanDataPtr->Type)
-					 == GAS_GIANT ?
-				 0 :
-				 (pSolarSysState->SysInfo.PlanetInfo.Tectonics + 1));
+	fmt::format_to_sz_n(buf, sizeof(buf), "<{}>",
+						PLANSIZE(
+							pSolarSysState->SysInfo.PlanetInfo.PlanDataPtr->Type)
+								== GAS_GIANT ?
+							0 :
+							(pSolarSysState->SysInfo.PlanetInfo.Tectonics + 1));
 
 	if (optHazardColors) // Tectonics
 	{
@@ -596,7 +600,7 @@ PrintCoarseScan3DO(void)
 	{
 		val = -val;
 	}
-	snprintf(buf, sizeof(buf), "%d%s", val, STR_DEGREE_SIGN);
+	fmt::format_to_sz_n(buf, sizeof(buf), "{}{}", val, STR_DEGREE_SIGN);
 	PrintScanText(&t);
 	t.baseline.y += SCAN_LEADING;
 
@@ -973,7 +977,7 @@ drawLandingFuelUsage(uqm::COUNT fuel)
 	 * and fix it when we're done.
 	 */
 	StatMsgMode old_status_message_mode = SMM_UNDEFINED;
-	uqm::CHAR_T buf[100];
+	uqm::CHAR_T buf[100] {};
 
 	if (((uqm::SDWORD)(GLOBAL_SIS(FuelOnBoard)) - fuel)
 		<= (uqm::SDWORD)(get_fuel_to_sol()))
@@ -988,9 +992,7 @@ drawLandingFuelUsage(uqm::COUNT fuel)
 		old_status_message_mode = SetStatusMessageMode(SMM_WARNING);
 	}
 
-	sprintf(buf, "%s%1.1f",
-			GAME_STRING(NAVIGATION_STRING_BASE + 5),
-			(float)fuel / FUEL_TANK_SCALE);
+	fmt::format_to_n(buf, sizeof(buf) - 1, "{}{:1.1}", GAME_STRING(NAVIGATION_STRING_BASE + 5), (float)fuel / FUEL_TANK_SCALE);
 	DrawStatusMessage(buf);
 
 	if (old_status_message_mode != SMM_UNDEFINED)
@@ -1609,7 +1611,7 @@ void ScanSystem(void)
 
 	memset(&MenuState, 0, sizeof MenuState);
 
-	// fprintfWorld (pSolarSysState->pOrbitalDesc);
+	// fmt::printWorld (pSolarSysState->pOrbitalDesc);
 
 	GetScanContext(nullptr);
 

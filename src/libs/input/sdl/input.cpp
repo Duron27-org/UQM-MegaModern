@@ -29,7 +29,7 @@
 #include "core/log/log.h"
 #include "libs/reslib.h"
 #include "options.h"
-
+#include "core/string/StringUtils.h"
 
 #define KBDBUFSIZE (1 << 8)
 static int kbdhead = 0, kbdtail = 0;
@@ -105,15 +105,14 @@ static void
 register_menu_controls(int index)
 {
 	int i;
-	char buf[40];
-	buf[39] = '\0';
+	char buf[40] {};
 
 	i = 1;
 	while (true)
 	{
 		VCONTROL_GESTURE g;
 
-		snprintf(buf, 39, "menu.%s.%d", menu_res_names[index], i);
+		fmt::format_to_sz_n(buf, sizeof(buf), "menu.{}.{}", menu_res_names[index], i);
 
 		if (!res_IsString(buf))
 		{
@@ -133,14 +132,13 @@ static void
 register_flight_controls(void)
 {
 	int i, j, k;
-	char buf[40];
+	char buf[40] {};
 
-	buf[39] = '\0';
 
 	for (i = 0; i < num_templ; i++)
 	{
 		/* Copy in name */
-		snprintf(buf, 39, "keys.%d.name", i + 1);
+		fmt::format_to_sz_n(buf, sizeof(buf), "keys.{}.name", i + 1);
 		if (res_IsString(buf))
 		{
 			strncpy(uqm::input_templates[i].name, res_GetString(buf), 29);
@@ -155,8 +153,8 @@ register_flight_controls(void)
 			for (k = 0; k < MAX_FLIGHT_ALTERNATES; k++)
 			{
 				VCONTROL_GESTURE* g = CONTROL_PTR(i, j, k);
-				snprintf(buf, 39, "keys.%d.%s.%d", i + 1,
-						 flight_res_names[j], k + 1);
+				fmt::format_to_sz_n(buf, sizeof(buf), "keys.{}.{}.{}", i + 1,
+									flight_res_names[j], k + 1);
 				if (!res_IsString(buf))
 				{
 					g->type = VCONTROL_NONE;
@@ -220,8 +218,7 @@ resetKeyboardState(void)
 #endif // SDL_MAJOR_VERSION
 }
 
-void TFB_SetInputVectors(volatile int menu[], int num_menu_,
-						 volatile int flight[], int num_templ_, int num_flight_)
+void TFB_SetInputVectors(int menu[], int num_menu_, int flight[], int num_flight_, int num_templ_)
 {
 	if (num_menu_ < 0 || num_templ_ < 0 || num_flight_ < 0)
 	{
@@ -255,7 +252,7 @@ initJoystick(void)
 	if ((SDL_InitSubSystem(SDL_INIT_JOYSTICK)) == -1)
 #endif
 	{
-		uqm::log::critical("Couldn't initialize joystick subsystem: %s",
+		uqm::log::critical("Couldn't initialize joystick subsystem: {}",
 						   SDL_GetError());
 		exit(EXIT_FAILURE);
 	}
@@ -274,30 +271,30 @@ initJoystick(void)
 		slash = "/";
 	}
 
-	len = snprintf(nullptr, 0, "%s%sgamecontrollerdb.txt",
-				   baseContentPath, slash);
+	static constexpr const char* DbFilenameFormat {"{}{}gamecontrollerdb.txt"};
+	len = fmt::formatted_size(DbFilenameFormat, baseContentPath, slash);
 
 	mapping_db = (char*)HMalloc(len + 1);
 
-	snprintf(mapping_db, len + 1, "%s%sgamecontrollerdb.txt",
-			 baseContentPath, slash);
+	fmt::format_to_sz_n(mapping_db, len + 1, DbFilenameFormat,
+						baseContentPath, slash);
 
 	if (SDL_GameControllerAddMappingsFromFile(mapping_db) == -1)
 	{
 		uqm::log::warn("Could not load controller mappings "
-					   "from %s: %s",
+					   "from {}: {}",
 					   mapping_db, SDL_GetError());
 	}
 	else
 	{
-		uqm::log::debug("Loaded controller mappings from %s",
+		uqm::log::debug("Loaded controller mappings from {}",
 						mapping_db);
 	}
 
 	HFree(mapping_db);
 #endif
 	nJoysticks = SDL_NumJoysticks();
-	uqm::log::info("%i joysticks were found.", nJoysticks);
+	uqm::log::info("{} joysticks were found.", nJoysticks);
 
 	if (nJoysticks > 0)
 	{
@@ -308,16 +305,16 @@ initJoystick(void)
 #if SDL_MAJOR_VERSION > 1
 			if (SDL_IsGameController(i))
 			{
-				uqm::log::info("    %s (controller)",
+				uqm::log::info("    {} (controller)",
 							   SDL_GameControllerNameForIndex(i));
 			}
 			else
 			{
-				uqm::log::info("    %s (joystick)",
+				uqm::log::info("    {} (joystick)",
 							   SDL_JoystickNameForIndex(i));
 			}
 #else
-			uqm::log::info("    %s", SDL_JoystickName(i));
+			uqm::log::info("    {}", SDL_JoystickName(i));
 #endif
 		}
 #if SDL_MAJOR_VERSION == 1
@@ -646,8 +643,7 @@ void InterrogateInputState(int templat, int control, int index, char* buffer,
 	if (templat >= num_templ || control >= num_flight
 		|| index >= MAX_FLIGHT_ALTERNATES)
 	{
-		uqm::log::warn(
-			"InterrogateInputState(): invalid control index");
+		uqm::log::warn("InterrogateInputState(): invalid control index");
 		buffer[0] = 0;
 		return;
 	}
@@ -655,30 +651,30 @@ void InterrogateInputState(int templat, int control, int index, char* buffer,
 	switch (g->type)
 	{
 		case VCONTROL_KEY:
-			snprintf(buffer, maxlen, "%s",
-					 VControl_code2name(g->gesture.key));
+			fmt::format_to_sz_n(buffer, maxlen, "{}",
+								VControl_code2name(g->gesture.key));
 			buffer[maxlen - 1] = 0;
 			break;
 		case VCONTROL_JOYBUTTON:
 #if SDL_MAJOR_VERSION > 1
 			if (optControllerType == 1)
 			{
-				snprintf(buffer, maxlen, "[J%d %s]",
-						 g->gesture.button.port,
-						 xbx_buttons[g->gesture.button.index]);
+				fmt::format_to_sz_n(buffer, maxlen, "[J{} {}]",
+									g->gesture.button.port,
+									xbx_buttons[g->gesture.button.index]);
 			}
 			else if (optControllerType == 2)
 			{
-				snprintf(buffer, maxlen, "[J%d %s]",
-						 g->gesture.button.port,
-						 ds4_buttons[g->gesture.button.index]);
+				fmt::format_to_sz_n(buffer, maxlen, "[J{} {}]",
+									g->gesture.button.port,
+									ds4_buttons[g->gesture.button.index]);
 			}
 			else
 #endif
 			{
-				snprintf(buffer, maxlen, "[J%d B%d]",
-						 g->gesture.button.port,
-						 g->gesture.button.index);
+				fmt::format_to_sz_n(buffer, maxlen, "[J{} B{}]",
+									g->gesture.button.port,
+									g->gesture.button.index);
 			}
 			buffer[maxlen - 1] = 0;
 			break;
@@ -686,32 +682,32 @@ void InterrogateInputState(int templat, int control, int index, char* buffer,
 #if SDL_MAJOR_VERSION > 1
 			if (optControllerType == 1)
 			{
-				snprintf(buffer, maxlen, "[J%d %s%c]",
-						 g->gesture.axis.port,
-						 xbx_axes[g->gesture.axis.index],
-						 g->gesture.axis.polarity > 0 ? '+' : '-');
+				fmt::format_to_sz_n(buffer, maxlen, "[J{} {}{}]",
+									g->gesture.axis.port,
+									xbx_axes[g->gesture.axis.index],
+									g->gesture.axis.polarity > 0 ? '+' : '-');
 			}
 			else if (optControllerType == 2)
 			{
-				snprintf(buffer, maxlen, "[J%d %s%c]",
-						 g->gesture.axis.port,
-						 ds4_axes[g->gesture.axis.index],
-						 g->gesture.axis.polarity > 0 ? '+' : '-');
+				fmt::format_to_sz_n(buffer, maxlen, "[J{} {}{}]",
+									g->gesture.axis.port,
+									ds4_axes[g->gesture.axis.index],
+									g->gesture.axis.polarity > 0 ? '+' : '-');
 			}
 			else
 #endif
 			{
-				snprintf(buffer, maxlen, "[J%d A%d %c]",
-						 g->gesture.axis.port,
-						 g->gesture.axis.index,
-						 g->gesture.axis.polarity > 0 ? '+' : '-');
+				fmt::format_to_sz_n(buffer, maxlen, "[J{} A{} {}]",
+									g->gesture.axis.port,
+									g->gesture.axis.index,
+									g->gesture.axis.polarity > 0 ? '+' : '-');
 			}
 			buffer[maxlen - 1] = 0;
 			break;
 #if SDL_MAJOR_VERSION == 1
 		case VCONTROL_JOYHAT:
-			snprintf(buffer, maxlen, "[J%d H%d %d]", g->gesture.hat.port,
-					 g->gesture.hat.index, g->gesture.hat.dir);
+			fmt::format_to_sz_n(buffer, maxlen, "[J{} H{} {}]", g->gesture.hat.port,
+								g->gesture.hat.index, g->gesture.hat.dir);
 			break;
 #endif
 		default:
@@ -725,8 +721,7 @@ void InterrogateInputState(int templat, int control, int index, char* buffer,
 void RemoveInputState(int templat, int control, int index)
 {
 	VCONTROL_GESTURE* g = CONTROL_PTR(templat, control, index);
-	char keybuf[40];
-	keybuf[39] = '\0';
+	char keybuf[40] {};
 
 	if (templat >= num_templ || control >= num_flight
 		|| index >= MAX_FLIGHT_ALTERNATES)
@@ -739,8 +734,8 @@ void RemoveInputState(int templat, int control, int index)
 								  (int*)(flight_vec + templat * num_flight + control));
 	g->type = VCONTROL_NONE;
 
-	snprintf(keybuf, 39, "keys.%d.%s.%d", templat + 1,
-			 flight_res_names[control], index + 1);
+	fmt::format_to_sz_n(keybuf, sizeof(keybuf), "keys.{}.{}.{}", templat + 1,
+						flight_res_names[control], index + 1);
 	res_Remove(keybuf);
 
 	return;
@@ -749,8 +744,8 @@ void RemoveInputState(int templat, int control, int index)
 void RebindInputState(int templat, int control, int index)
 {
 	VCONTROL_GESTURE g;
-	char keybuf[40], valbuf[40];
-	keybuf[39] = valbuf[39] = '\0';
+	char keybuf[40] {};
+	char valbuf[40] {};
 
 	if (templat >= num_templ || control >= num_flight
 		|| index >= MAX_FLIGHT_ALTERNATES)
@@ -773,9 +768,9 @@ void RebindInputState(int templat, int control, int index)
 	VControl_AddGestureBinding(&g,
 							   (int*)(flight_vec + templat * num_flight + control));
 	*CONTROL_PTR(templat, control, index) = g;
-	snprintf(keybuf, 39, "keys.%d.%s.%d", templat + 1,
-			 flight_res_names[control], index + 1);
-	VControl_DumpGesture(valbuf, 39, &g);
+	fmt::format_to_sz_n(keybuf, sizeof(keybuf), "keys.{}.{}.{}", templat + 1,
+						flight_res_names[control], index + 1);
+	VControl_DumpGesture({valbuf, sizeof(valbuf)}, &g);
 	res_PutString(keybuf, valbuf);
 }
 

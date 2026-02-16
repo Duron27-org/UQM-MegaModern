@@ -53,7 +53,7 @@ GLOBDATA GlobData;
 // This function is necessary because expressions such as '(1 << bits) - 1'
 // or '~(~0 << bits)' may shift by 32 bits, which is undefined (for 32 bits
 // integers). This is not a hypothetical issue; 'uint8_t numBits = 32;
-// printf("%u\n", (1 << numBits));' will return 1 on x86 when compiled with
+// printf("{}\n", (1 << numBits));' will return 1 on x86 when compiled with
 // gcc (4.4.3).
 static inline uqm::DWORD
 bitmask32(uqm::BYTE bits)
@@ -64,7 +64,7 @@ bitmask32(uqm::BYTE bits)
 // Pre: 0 <= bits <= 32
 // This function is necessary because shifting by 32 bits is undefined (for
 // 32 bits integers). This is not a hypothetical issue; 'uint8_t numBits =
-// 32; printf("%u\n", (1 << numBits));' will return 1 on x86 when compiled
+// 32; printf("{}\n", (1 << numBits));' will return 1 on x86 when compiled
 // with gcc (4.4.3).
 static inline uqm::DWORD
 shl32(uqm::DWORD value, uqm::BYTE shift)
@@ -205,15 +205,15 @@ bool serialiseGameState(const GameStateBitMap* bm, uqm::BYTE** buf,
 			uqm::BYTE numBits = bmPtr->numBits;
 
 #ifdef STATE_DEBUG
-			uqm::log::debug("Saving: GameState[\'%s\'] = %u",
+			uqm::log::debug("Saving: GameState[\'{}\'] = {}",
 							bmPtr->name, value);
 #endif /* STATE_DEBUG */
 
 			if (value > bitmask32(numBits))
 			{
 				uqm::log::error("Warning: serialiseGameState(): the "
-								"value of the property '%s' (%u) does not fit in "
-								"the reserved number of bits (%d).",
+								"value of the property '{}' ({}) does not fit in "
+								"the reserved number of bits ({}).",
 								bmPtr->name, value, numBits);
 			}
 
@@ -345,7 +345,7 @@ bool deserialiseGameState(const GameStateBitMap* bm,
 				}
 
 #ifdef STATE_DEBUG
-				uqm::log::debug("Loading: GameState[\'%s\'] = %u",
+				uqm::log::debug("Loading: GameState[\'{}\'] = {}",
 								bmPtr->name, value);
 #endif /* STATE_DEBUG */
 			}
@@ -590,13 +590,13 @@ bool InitGameStructures(void)
 	GLOBAL_SIS(Seed) = optCustomSeed;
 	GLOBAL_SIS(ShipSeed) = (optShipSeed ? 1 : 0);
 #ifdef DEBUG_STARSEED
-	fprintf(stderr, "Starting a NEW game with seed type %d, %s\n",
-			optSeedType,
-			(optSeedType == 0) ? "Default Game Mode (no seeding)" :
-			(optSeedType == 1) ? "Seed Planets (SysGenRNG only)" :
-			(optSeedType == 2) ? "MRQ (Melnorme, Rainbow, and Quasispace)" :
-			(optSeedType == 3) ? "Seed Plot (Starseed)" :
-								 "UNKNOWN");
+	fmt::print(stderr, "Starting a NEW game with seed type {}, {}\n",
+			   optSeedType,
+			   (optSeedType == 0) ? "Default Game Mode (no seeding)" :
+			   (optSeedType == 1) ? "Seed Planets (SysGenRNG only)" :
+			   (optSeedType == 2) ? "MRQ (Melnorme, Rainbow, and Quasispace)" :
+			   (optSeedType == 3) ? "Seed Plot (Starseed)" :
+									"UNKNOWN");
 #endif
 	// During NEW game we want to time more aggressively and reseed
 	// if it takes too long to create a map with a seed.
@@ -854,7 +854,7 @@ void SeedDEBUG()
 
 	if (!StarGenRNG)
 	{
-		fprintf(stderr, "****Seed Debug Creating a STAR GEN RNG****\n");
+		fmt::print(stderr, "****Seed Debug Creating a STAR GEN RNG****\n");
 		StarGenRNG = RandomContext_New();
 		myRNG = true;
 	}
@@ -863,22 +863,22 @@ void SeedDEBUG()
 		 optCustomSeed++)
 	{
 		start_clock = clock();
-		fprintf(stderr, "\n\n\nStarting seed %d... ", optCustomSeed);
+		fmt::print(stderr, "\n\n\nStarting seed {}... ", optCustomSeed);
 		InitPlot(plot_map);
-		fprintf(stderr, "seeding stars %d... ", optCustomSeed);
+		fmt::print(stderr, "seeding stars {}... ", optCustomSeed);
 		SeedStarmap(star_array);
-		fprintf(stderr, "seeding plots %d... ", optCustomSeed);
+		fmt::print(stderr, "seeding plots {}... ", optCustomSeed);
 		if (SeedPlot(plot_map, star_array) < NUM_PLOTS)
 		{
-			fprintf(stderr, "Failed to seed %d. ", optCustomSeed);
+			fmt::print(stderr, "Failed to seed {}. ", optCustomSeed);
 			decisec = 98;
 		}
 		else
 		{
 			decisec = (double)(clock() - start_clock) / 100000;
 		}
-		fprintf(stderr, "Complete %6.6f seconds.\n",
-				(double)(clock() - start_clock) / 1000000);
+		fmt::print(stderr, "Complete %6.6f seconds.\n",
+				   (double)(clock() - start_clock) / 1000000);
 		if (decisec > 99)
 		{
 			decisec = 99;
@@ -889,9 +889,9 @@ void SeedDEBUG()
 	{
 		if (decisec % 10 == 0)
 		{
-			fprintf(stderr, "\n");
+			fmt::print(stderr, "\n");
 		}
-		fprintf(stderr, "%3d ", histogram[decisec]);
+		fmt::print(stderr, "%3d ", histogram[decisec]);
 	}
 	optCustomSeed = save;
 	if (StarGenRNG && myRNG)
@@ -914,13 +914,13 @@ bool InitStarseed(bool newgame)
 	uqm::COUNT i;
 #ifdef DEBUG_STARSEED_TRACE_V
 	SeedDEBUG();
-	fprintf(stderr, "CurrentActivity %d\n", GLOBAL(CurrentActivity));
+	fmt::print(stderr, "CurrentActivity {}\n", GLOBAL(CurrentActivity));
 #endif
 	DefaultStarmap(star_array);
 	if (!StarGenRNG)
 	{
 #ifdef DEBUG_STARSEED
-		fprintf(stderr, "Init Starseed creating a STAR GEN RNG.\n");
+		fmt::print(stderr, "Init Starseed creating a STAR GEN RNG.\n");
 #endif
 		StarGenRNG = RandomContext_New();
 		RandomContext_SeedRandom(StarGenRNG, optCustomSeed);
@@ -942,7 +942,7 @@ bool InitStarseed(bool newgame)
 	if (g_seedType == uqm::SeedType::MRQ)
 	{
 #ifdef DEBUG_STARSEED
-		fprintf(stderr, "Setting MQR shuffle.\n");
+		fmt::print(stderr, "Setting MQR shuffle.\n");
 #endif
 		DefaultPlot(plot_map, star_array);
 		InitMelnormeRainbow(plot_map);
@@ -950,21 +950,21 @@ bool InitStarseed(bool newgame)
 	else // optSeedType == OPTVAL_STAR
 	{
 #ifdef DEBUG_STARSEED
-		fprintf(stderr, "Setting full plot shuffle.\n");
+		fmt::print(stderr, "Setting full plot shuffle.\n");
 #endif
 		InitPlot(plot_map);
 	}
-	fprintf(stderr, "Starting map generation using seed %d.\n",
-			optCustomSeed);
+	fmt::print(stderr, "Starting map generation using seed {}.\n",
+			   optCustomSeed);
 	SeedStarmap(star_array);
 	if (GLOBAL(CurrentActivity) || !newgame)
 	{
 #ifdef DEBUG_STARSEED
-		fprintf(stderr, "*+*+* LOADING *+*+*\n");
+		fmt::print(stderr, "*+*+* LOADING *+*+*\n");
 #endif
 		if (SeedPlot(plot_map, star_array) != NUM_PLOTS)
 		{
-			fprintf(stderr, "Seed Plot Failed.\n");
+			fmt::print(stderr, "Seed Plot Failed.\n");
 			if (StarGenRNG)
 			{
 				RandomContext_Delete(StarGenRNG);
@@ -974,7 +974,7 @@ bool InitStarseed(bool newgame)
 		}
 		if (!SeedQuasispace(portal_map, plot_map, star_array))
 		{
-			fprintf(stderr, "Seed Quasisapce Failed.\n");
+			fmt::print(stderr, "Seed Quasisapce Failed.\n");
 			if (StarGenRNG)
 			{
 				RandomContext_Delete(StarGenRNG);
@@ -986,7 +986,7 @@ bool InitStarseed(bool newgame)
 	else
 	{
 #ifdef DEBUG_STARSEED
-		fprintf(stderr, "*+*+* NEW GAME *+*+*\n");
+		fmt::print(stderr, "*+*+* NEW GAME *+*+*\n");
 #endif
 		i = 0;
 		// if it fails to seed the plot we need to roll the starmap too
@@ -994,12 +994,12 @@ bool InitStarseed(bool newgame)
 		// seed's stars and this seed's plot.  Boo.
 		while (SeedPlot(plot_map, star_array) != NUM_PLOTS && i < 100)
 		{
-			fprintf(stderr, "Seed %d failed (%d).\n", optCustomSeed++, ++i);
+			fmt::print(stderr, "Seed {} failed ({}).\n", optCustomSeed++, ++i);
 			SeedStarmap(star_array);
 		}
 		if (i >= 100)
 		{
-			fprintf(stderr, "Seed Plot Failed.\n");
+			fmt::print(stderr, "Seed Plot Failed.\n");
 			if (StarGenRNG)
 			{
 				RandomContext_Delete(StarGenRNG);
@@ -1009,7 +1009,7 @@ bool InitStarseed(bool newgame)
 		}
 		if (!SeedQuasispace(portal_map, plot_map, star_array))
 		{
-			fprintf(stderr, "Seed Quasisapce Failed.\n");
+			fmt::print(stderr, "Seed Quasisapce Failed.\n");
 			if (StarGenRNG)
 			{
 				RandomContext_Delete(StarGenRNG);
@@ -1031,7 +1031,7 @@ bool InitStarseed(bool newgame)
 	// In case the seed changed above, reset SIS
 	GLOBAL_SIS(Seed) = optCustomSeed;
 #ifdef DEBUG_STARSEED
-	fprintf(stderr, "Done seeding %d.\n", optCustomSeed);
+	fmt::print(stderr, "Done seeding {}.\n", optCustomSeed);
 #endif
 	// Done with StarGenRNG for now; will create later if moving fleets
 	if (StarGenRNG)

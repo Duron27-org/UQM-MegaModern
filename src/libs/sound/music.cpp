@@ -261,7 +261,7 @@ char* CheckMusicResName(char* fileName)
 {
 	if (!fileExists2(contentDir, fileName))
 	{
-		uqm::log::warn("Requested track '%s' not found.", fileName);
+		uqm::log::warn("Requested track '{}' not found.", fileName);
 	}
 	return fileName;
 }
@@ -282,11 +282,11 @@ void* _GetMusicData(uio_Stream* fp, uqm::DWORD length)
 	filename[sizeof(filename) - 1] = '\0';
 	CheckMusicResName(filename);
 
-	uqm::log::info("_GetMusicData(): loading %s", filename);
+	uqm::log::info("_GetMusicData(): loading {}", filename);
 	decoder = SoundDecoder_Load(contentDir, filename, 4096, 0, 0);
 	if (!decoder)
 	{
-		uqm::log::warn("_GetMusicData(): couldn't load %s", filename);
+		uqm::log::warn("_GetMusicData(): couldn't load {}", filename);
 		return nullptr;
 	}
 
@@ -300,7 +300,7 @@ void* _GetMusicData(uio_Stream* fp, uqm::DWORD length)
 	sample = TFB_CreateSoundSample(decoder, 64, nullptr);
 	*h = sample;
 
-	uqm::log::info("    decoder: %s, rate %d format %x",
+	uqm::log::info("    decoder: {}, rate {} format {:x}",
 				   SoundDecoder_GetName(sample->decoder),
 				   sample->decoder->frequency, sample->decoder->format);
 

@@ -19,6 +19,7 @@
 #ifndef LIBS_SNDLIB_H_
 #define LIBS_SNDLIB_H_
 
+#include <fmt/base.h>
 #include "port.h"
 #include "libs/strlib.h"
 
@@ -117,8 +118,8 @@ extern void ResetMusicResume(void);
 static inline void
 print_mp(const MUSIC_POSITION mp)
 {
-	printf("filename_hash: 0x%X, position: %d, last_played: %d\n",
-		   mp.filename_hash, mp.position, mp.last_played);
+	fmt::print("filename_hash: {:#X}, position: {}, last_played: {}\n",
+			   mp.filename_hash, mp.position, mp.last_played);
 }
 
 static inline void
@@ -127,15 +128,15 @@ print_mp_array(const MUSIC_POSITION mp_array[], const uqm::COUNT num_items)
 	uqm::COUNT i;
 
 	//system ("cls");
-	printf("--------------------\n\n");
+	fmt::print("--------------------\n\n");
 	for (i = num_items; i > 0; --i)
 	{
-		printf("Index %d -> ", i);
+		fmt::print("Index {} -> ", i);
 		print_mp(mp_array[i]);
 	}
-	printf("Index 0 -> ");
+	fmt::print("Index 0 -> ");
 	print_mp(mp_array[0]);
-	printf("\n--------------------\n\n");
+	fmt::print("\n--------------------\n\n");
 }
 
 #if 0 //defined(__cplusplus)

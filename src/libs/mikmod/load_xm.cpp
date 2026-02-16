@@ -25,6 +25,7 @@
   Fasttracker (XM) module loader
 
 ==============================================================================*/
+#include <fmt/base.h>
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -43,7 +44,7 @@
 #include "mikmod_internals.h"
 
 #ifdef SUNOS
-extern int fprintf(FILE*, const char*, ...);
+extern int fmt::print(FILE*, const char*, ...);
 #endif
 
 /*========== Module structure */
@@ -551,16 +552,16 @@ static void FixEnvelope(ENVPT* cur, int pts)
 				old = cur->pos;
 				cur->pos = tmp;
 #ifdef MIKMOD_DEBUG
-				fprintf(stderr, "\rbroken envelope position(%d/%d), %d %d -> %d\n",
-						u, pts, prev->pos, old, cur->pos);
+				fmt::print(stderr, "\rbroken envelope position({}/{}), {} {} -> {}\n",
+						   u, pts, prev->pos, old, cur->pos);
 #endif
 			}
 			else
 			{
 #ifdef MIKMOD_DEBUG
 				/* different brokenness style... fix unknown */
-				fprintf(stderr, "\rbroken envelope position(%d/%d), %d %d\n",
-						u, pts, old, cur->pos);
+				fmt::print(stderr, "\rbroken envelope position({}/{}), {} {}\n",
+						   u, pts, old, cur->pos);
 #endif
 				old = cur->pos;
 			}
@@ -862,7 +863,9 @@ static BOOL XM_Load(BOOL curious)
 	SAMPLE* q;
 	int t, u;
 	BOOL dummypat = 0;
-	char tracker[21], modtype[60];
+	char tracker[21];
+
+	char modtype[60] {};
 
 	/* try to read module header */
 	_mm_read_string(mh->id, 17, modreader);
@@ -922,12 +925,13 @@ static BOOL XM_Load(BOOL curious)
 		strcpy(tracker, "Unknown tracker");
 	}
 
-#ifdef HAVE_SNPRINTF
-	snprintf(modtype, 60, "%s (XM format %d.%02d)",
+
+#ifdef HAVE_SNPRINTF______NEVERWILL
+	snprintf(modtype, sizeof(modtype), "{} (XM format {}.%02d)",
 			 tracker, mh->version >> 8, mh->version & 0xff);
 #else
-	sprintf(modtype, "%s (XM format %d.%02d)",
-			tracker, mh->version >> 8, mh->version & 0xff);
+	fmt::format_to_n(modtype, sizeof(modtype) - 1, "{} (XM format {}.{:02})",
+					 tracker, mh->version >> 8, mh->version & 0xff);
 #endif
 	of.modtype = MikMod_strdup(modtype);
 	of.numchn = mh->numchn;

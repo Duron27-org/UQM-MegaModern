@@ -147,7 +147,7 @@ void crc_processDispQueue(crc_State* state)
 		ELEMENT* elementPtr;
 
 #ifdef DUMP_CRC_OPS
-		crc_log("===== disp_q[%d]:", i);
+		crc_log("===== disp_q[{}]:", i);
 #endif
 		LockElement(element, &elementPtr);
 
@@ -187,7 +187,7 @@ void crc_processState(crc_State* state)
 {
 #ifdef DUMP_CRC_OPS
 	crc_log("--------------------\n"
-			"START crc_processState() (frame %u).",
+			"START crc_processState() (frame {}).",
 			battleFrameCount);
 #endif
 
@@ -195,7 +195,7 @@ void crc_processState(crc_State* state)
 	crc_processDispQueue(state);
 
 #ifdef DUMP_CRC_OPS
-	crc_log("END   crc_processState() (frame %u).",
+	crc_log("END   crc_processState() (frame {}).",
 			battleFrameCount);
 #endif
 }

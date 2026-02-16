@@ -54,7 +54,7 @@ void ResolveState_incRef(ResolveState* resolveState)
 	assert(resolveState->refCount < REFCOUNT_MAX);
 	resolveState->refCount++;
 #ifdef DEBUG_RESOLVE_REF
-	uqm::log::debug("ResolveState %08" PRIxPTR ": ref++ (%d)",
+	uqm::log::debug("ResolveState %08" PRIxPTR ": ref++ ({})",
 					(uintptr_t)resolveState, resolveState->refCount);
 #endif
 }
@@ -64,7 +64,7 @@ bool ResolveState_decRef(ResolveState* resolveState)
 	assert(resolveState->refCount > 0);
 	resolveState->refCount--;
 #ifdef DEBUG_RESOLVE_REF
-	uqm::log::debug("ResolveState %08" PRIxPTR ": ref-- (%d)",
+	uqm::log::debug("ResolveState %08" PRIxPTR ": ref-- ({})",
 					(uintptr_t)resolveState, resolveState->refCount);
 #endif
 	if (resolveState->refCount == 0)
@@ -140,7 +140,7 @@ getaddrinfoAsync(const char* node, const char* service,
 	resolveState = ResolveState_new();
 	resolveState->refCount = 1;
 #ifdef DEBUG_RESOLVE_REF
-	uqm::log::debug("ResolveState %08" PRIxPTR ": ref=1 (%d)",
+	uqm::log::debug("ResolveState %08" PRIxPTR ": ref=1 ({})",
 					(uintptr_t)resolveState, resolveState->refCount);
 #endif
 	resolveState->state = Resolve_resolving;

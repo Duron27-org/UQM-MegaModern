@@ -45,15 +45,15 @@ int sendPacket(NetConnection* conn, Packet* packet)
 	//		packetType(packet) != PACKET_CHECKSUM) {
 	//	// Reporting BattleInput or Checksum would get so spammy that it
 	//	// would slow down the battle.
-	//	uqm::log::debug( "NETPLAY: [%d] ==> Sending packet of type %s.\n",
+	//	uqm::log::debug( "NETPLAY: [{}] ==> Sending packet of type {}.\n",
 	//			conn->player, packetTypeData[packetType(packet)].name);
 	//}
 #ifdef NETPLAY_DEBUG_FILE
 	if (conn->debugFile != nullptr)
 	{
-		uio_fprintf(conn->debugFile,
-					"NETPLAY: [%d] ==> Sending packet of type %s.\n",
-					conn->player, packetTypeData[packetType(packet)].name);
+		uio_fmt::print(conn->debugFile,
+					   "NETPLAY: [{}] ==> Sending packet of type {}.\n",
+					   conn->player, packetTypeData[packetType(packet)].name);
 	}
 #endif /* NETPLAY_DEBUG_FILE */
 #endif /* NETPLAY_DEBUG */
@@ -83,7 +83,7 @@ int sendPacket(NetConnection* conn, Packet* packet)
 				{
 					// Should not happen.
 					int savedErrno = errno;
-					uqm::log::error("send() failed: %s.\n", strerror(errno));
+					uqm::log::error("send() failed: {}.\n", strerror(errno));
 					errno = savedErrno;
 					return -1;
 				}

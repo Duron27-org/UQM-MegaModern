@@ -42,7 +42,7 @@
 #include "mikmod_internals.h"
 
 #ifdef SUNOS
-extern int fprintf(FILE*, const char*, ...);
+extern int fmt::print(FILE*, const char*, ...);
 #endif
 
 static void extract_channel(const char* src, char* dst, int num_chan, int num_samples, int samp_size, int channel);
@@ -130,8 +130,8 @@ static SAMPLE* Sample_LoadGeneric_internal_wav(MREADER* reader)
 			wh.nFormatSpecific = _mm_read_I_UWORD(reader);
 
 #ifdef MIKMOD_DEBUG
-			fprintf(stderr, "\rwavloader : wFormatTag=%04x blockalign=%04x nFormatSpc=%04x\n",
-					wh.wFormatTag, wh.nBlockAlign, wh.nFormatSpecific);
+			fmt::print(stderr, "\rwavloader : wFormatTag=%04x blockalign=%04x nFormatSpc=%04x\n",
+					   wh.wFormatTag, wh.nBlockAlign, wh.nFormatSpecific);
 #endif
 
 			if ((have_fmt) || (wh.nChannels > 1))
@@ -423,8 +423,8 @@ static void extract_channel(const char* src, char* dst, int num_chan, int num_sa
 {
 	int i;
 #ifdef MIKMOD_DEBUG
-	fprintf(stderr, "Extract channel: %p %p, num_chan=%d, num_samples=%d, samp_size=%d, channel=%d\n",
-			src, dst, num_chan, num_samples, samp_size, channel);
+	fmt::print(stderr, "Extract channel: %p %p, num_chan={}, num_samples={}, samp_size={}, channel={}\n",
+			   src, dst, num_chan, num_samples, samp_size, channel);
 #endif
 	src += channel * samp_size;
 

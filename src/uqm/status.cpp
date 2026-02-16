@@ -312,7 +312,7 @@ void DrawBattleCrewAmount(SHIP_INFO* ShipInfoPtr, COORD y_offs)
 #define MAX_CREW_DIGITS 3
 	RECT r;
 	TEXT t;
-	uqm::CHAR_T buf[40];
+	uqm::CHAR_T buf[40] {};
 
 	t.baseline.x = BATTLE_CREW_X + RES_SCALE(MENU_BOOL(2, 4));
 	t.baseline.y = BATTLE_CREW_Y + y_offs;
@@ -324,7 +324,7 @@ void DrawBattleCrewAmount(SHIP_INFO* ShipInfoPtr, COORD y_offs)
 	r.extent.width = RES_SCALE(6 * MAX_CREW_DIGITS + 6);
 	r.extent.height = RES_SCALE(5);
 
-	sprintf(buf, "%u", ShipInfoPtr->crew_level);
+	fmt::format_to_n(buf, sizeof(buf) - 1, "{}", ShipInfoPtr->crew_level);
 	SetContextFont(StarConFont);
 
 	SetContextForeGroundColor(MENU_FOREGROUND_COLOR);

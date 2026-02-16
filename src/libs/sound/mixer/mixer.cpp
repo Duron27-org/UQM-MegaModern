@@ -481,7 +481,7 @@ void mixer_Sourcef(mixer_Object srcobj, mixer_SourceProp pname, float value)
 				src->gain = value * MIX_GAIN_ADJ;
 				break;
 			default:
-				uqm::log::debug("mixer_Sourcei() called with unsupported property %u", static_cast<uint32_t>(pname));
+				uqm::log::debug("mixer_Sourcei() called with unsupported property {}", static_cast<uint32_t>(pname));
 		}
 	}
 
@@ -583,7 +583,7 @@ void mixer_GetSourcei(mixer_Object srcobj, mixer_SourceProp pname,
 				break;
 			default:
 				mixer_SetError(MIX_INVALID_ENUM);
-				uqm::log::debug("mixer_GetSourcei() called with unsupported property %u", static_cast<uint32_t>(pname));
+				uqm::log::debug("mixer_GetSourcei() called with unsupported property {}", static_cast<uint32_t>(pname));
 		}
 	}
 
@@ -958,7 +958,7 @@ mixer_SourceActivate(mixer_Source* src)
 	if (i < MAX_SOURCES)
 	{ /* source found */
 		uqm::log::debug("mixer_SourceActivate(): "
-						"source already active in slot %u",
+						"source already active in slot {}",
 						i);
 		UnlockRecursiveMutex(act_mutex);
 		return;
@@ -974,7 +974,7 @@ mixer_SourceActivate(mixer_Source* src)
 	else
 	{
 		uqm::log::debug("mixer_SourceActivate(): "
-						"no more slots available (max=%d)",
+						"no more slots available (max={})",
 						MAX_SOURCES);
 	}
 
@@ -1588,21 +1588,21 @@ mixer_CheckBufferState(mixer_Buffer* buf, const char* FuncName)
 	if (buf->magic != mixer_bufMagic)
 	{
 		mixer_SetError(MIX_INVALID_NAME);
-		uqm::log::debug("%s(): not a buffer", FuncName);
+		uqm::log::debug("{}(): not a buffer", FuncName);
 		return false;
 	}
 
 	if (buf->locked)
 	{
 		mixer_SetError(MIX_INVALID_OPERATION);
-		uqm::log::debug("%s(): locked buffer attempted", FuncName);
+		uqm::log::debug("{}(): locked buffer attempted", FuncName);
 		return false;
 	}
 
 	if (buf->state != MIX_BUF_FILLED)
 	{
 		mixer_SetError(MIX_INVALID_OPERATION);
-		uqm::log::debug("%s: invalid buffer attempted", FuncName);
+		uqm::log::debug("{}: invalid buffer attempted", FuncName);
 		return false;
 	}
 	return true;

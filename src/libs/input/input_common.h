@@ -33,7 +33,6 @@ extern void TFB_UninitInput(void);
 
 #define MAX_FLIGHT_ALTERNATES 2
 
-extern void TFB_SetInputVectors(volatile int menu[], int num_menu,
-								volatile int flight[], int num_templ, int num_flight);
+extern void TFB_SetInputVectors(int menu[], int num_menu, int flight[], int num_flight, int num_templ);
 
 #endif

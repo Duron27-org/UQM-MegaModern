@@ -22,6 +22,7 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+#include <fmt/format.h>
 
 #include "paths.h"
 #include "uioport.h"
@@ -681,7 +682,7 @@ uio_makePathComps(const char* path, uio_PathComp* upComp)
 
 void uio_printPathComp(FILE* outStream, const uio_PathComp* comp)
 {
-	fprintf(outStream, "%s", comp->name);
+	fmt::print(outStream, "{}", comp->name);
 }
 
 void uio_printPathToComp(FILE* outStream, const uio_PathComp* comp)
@@ -691,6 +692,6 @@ void uio_printPathToComp(FILE* outStream, const uio_PathComp* comp)
 		return;
 	}
 	uio_printPathToComp(outStream, comp->up);
-	fprintf(outStream, "/");
+	fmt::print(outStream, "/");
 	uio_printPathComp(outStream, comp);
 }

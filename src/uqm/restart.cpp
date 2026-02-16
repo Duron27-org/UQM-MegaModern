@@ -38,6 +38,7 @@
 #include "util.h"
 #include "starcon.h"
 #include "uqmversion.h"
+#include "core/string/StringUtils.h"
 #include "libs/graphics/gfx_common.h"
 #include "libs/inplib.h"
 #include "libs/graphics/sdl/pure.h"
@@ -287,8 +288,7 @@ DoDiffChooser(MENU_STATE* pMS)
 
 	if (response)
 	{
-		optDifficulty = (!a ? OPTVAL_EASY :
-							  (a > 1 ? OPTVAL_HARD : OPTVAL_NORMAL));
+		optDifficulty = (!a ? (int)OPTVAL_EASY : (a > 1 ? (int)OPTVAL_HARD : (int)OPTVAL_NORMAL));
 	}
 
 	DestroyDrawable(ReleaseDrawable(s.frame));
@@ -396,9 +396,9 @@ DrawRestartMenuGraphic(MENU_STATE* pMS)
 	// Put the version number in the bottom right corner.
 	SetContextFont(TinyFont);
 	SetContextForeGroundColor(WHITE_COLOR);
-	snprintf(buf, sizeof(buf), "v%d.%d.%d %s",
-			 UQM_MAJOR_VERSION, UQM_MINOR_VERSION, UQM_PATCH_VERSION,
-			 chooseIfHd<const char*>(UQM_EXTRA_VERSION, "HD " UQM_EXTRA_VERSION));
+	fmt::format_to_sz_n(buf, sizeof(buf), "v{}.{}.{} {}",
+						UQM_MAJOR_VERSION, UQM_MINOR_VERSION, UQM_PATCH_VERSION,
+						chooseIfHd<const char*>(UQM_EXTRA_VERSION, "HD " UQM_EXTRA_VERSION));
 	t.pStr = buf;
 	t.baseline.x = SCREEN_WIDTH - RES_SCALE(2);
 	t.baseline.y = SCREEN_HEIGHT - RES_SCALE(2);
@@ -408,9 +408,9 @@ DrawRestartMenuGraphic(MENU_STATE* pMS)
 	// Put the main menu music credit in the bottom left corner.
 	if (optMainMenuMusic)
 	{
-		snprintf(buf, sizeof(buf), "%s %s",
-				 GAME_STRING(MAINMENU_STRING_BASE + 61),
-				 GAME_STRING(MAINMENU_STRING_BASE + 62 + Rando));
+		fmt::format_to_sz_n(buf, sizeof(buf), "{} {}",
+							GAME_STRING(MAINMENU_STRING_BASE + 61),
+							GAME_STRING(MAINMENU_STRING_BASE + 62 + Rando));
 		t.baseline.x = RES_SCALE(2);
 		t.baseline.y = SCREEN_HEIGHT - RES_SCALE(2);
 		t.align = ALIGN_LEFT;
@@ -891,8 +891,8 @@ bool StartGame(void)
 	} while (GLOBAL(CurrentActivity) & CHECK_ABORT);
 
 #ifdef DEBUG_STARSEED
-	fprintf(stderr, "StartGame called for %d mode with seed %d shipseed %s.\n",
-			optSeedType, optCustomSeed, optShipSeed ? "on" : "off");
+	fmt::print(stderr, "StartGame called for {} mode with seed {} shipseed {}.\n",
+			   optSeedType, optCustomSeed, optShipSeed ? "on" : "off");
 #endif
 	{
 		// We no longer make a global pointer to the static starmap,
@@ -909,7 +909,7 @@ bool StartGame(void)
 		// paranoia is its own reward.
 		uqm::COUNT i;
 #ifdef DEBUG_STARSEED
-		fprintf(stderr, "Initializing star_array, just in case...\n");
+		fmt::print(stderr, "Initializing star_array, just in case...\n");
 #endif
 		for (i = 0; i < NUM_SOLAR_SYSTEMS + 1 + NUM_HYPER_VORTICES + 1 + 1; i++)
 		{

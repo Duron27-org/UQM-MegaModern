@@ -96,7 +96,7 @@ int closeWSAEvent(WSAEVENT event)
 		if (error != WSAEINPROGRESS)
 		{
 			uqm::log::error(
-				"WSACloseEvent() failed with error code %d.", error);
+				"WSACloseEvent() failed with error code {}.", error);
 			errno = winsockErrorToErrno(error);
 			return -1;
 		}
@@ -154,7 +154,7 @@ int NetManager_addDesc(NetDescriptor* nd)
 			int closeStatus = closeWSAEvent(event);
 			if (closeStatus == -1)
 			{
-				uqm::log::critical("closeWSAEvent() failed: %s.",
+				uqm::log::critical("closeWSAEvent() failed: {}.",
 								   strerror(errno));
 				explode();
 			}
@@ -253,7 +253,7 @@ NetManager_updateEvent(NetDescriptor* nd)
 		int closeStatus = closeWSAEvent(events[nd->smd->index]);
 		if (closeStatus == -1)
 		{
-			uqm::log::critical("closeWSAEvent() failed: %s.",
+			uqm::log::critical("closeWSAEvent() failed: {}.",
 							   strerror(errno));
 			explode();
 		}
@@ -303,7 +303,7 @@ activateSomeCallback(NetDescriptor* nd, long eventMask)
 		int status = NetManager_updateEvent(nd);
 		if (status == -1)
 		{
-			uqm::log::critical("NetManager_updateEvent() failed: %s.",
+			uqm::log::critical("NetManager_updateEvent() failed: {}.",
 							   strerror(errno));
 			explode();
 			// TODO: better error handling.
@@ -319,7 +319,7 @@ deactivateSomeCallback(NetDescriptor* nd, long eventMask)
 		int status = NetManager_updateEvent(nd);
 		if (status == -1)
 		{
-			uqm::log::critical("NetManager_updateEvent() failed: %s.",
+			uqm::log::critical("NetManager_updateEvent() failed: {}.",
 							   strerror(errno));
 			explode();
 			// TODO: better error handling

@@ -414,14 +414,14 @@ LoadGameState(GAME_STATE* GSPtr, void* fh, bool try_core)
 			return false;
 		}
 
-		uqm::log::debug("Detected save game state rev %d: %s",
+		uqm::log::debug("Detected save game state rev {}: {}",
 						rev, gameStateBitMapRevTag[rev]);
 
 		buf = (uqm::BYTE*)HMalloc(gameStateByteCount);
 		if (buf == nullptr)
 		{
 			uqm::log::error("Warning: Cannot allocate enough bytes for "
-							"the saved game state (%lu bytes).",
+							"the saved game state ({} bytes).",
 							(unsigned long)gameStateByteCount);
 			return false;
 		}
@@ -795,10 +795,10 @@ LoadBattleGroup(uio_Stream* fh, uqm::DWORD chunksize)
 bool LoadCoreGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr)
 {
 	uio_Stream* in_fp;
-	char file[PATH_MAX];
+	char file[PATH_MAX] {};
 	SUMMARY_DESC loc_sd;
 
-	sprintf(file, "uqmsave.%02u", which_game);
+	fmt::format_to_n(file, sizeof(file) - 1, "uqmsave.{:02}", which_game);
 	in_fp = res_OpenResFile(saveDir, file, "rb");
 	if (!in_fp)
 	{
@@ -833,7 +833,7 @@ bool LoadCoreGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr)
 
 bool LoadGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, uio_Stream* in_fp, bool try_core)
 {
-	char file[PATH_MAX];
+	char file[PATH_MAX] {};
 	SUMMARY_DESC loc_sd;
 	uqm::COUNT num_links;
 	STAR_DESC SD;
@@ -843,7 +843,7 @@ bool LoadGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, uio_Stream* in_fp, b
 
 	if (!try_core)
 	{
-		sprintf(file, "uqmsave.%02u", which_game);
+		fmt::format_to_n(file, sizeof(file) - 1, "uqmsave.{:02}", which_game);
 		in_fp = res_OpenResFile(saveDir, file, "rb");
 		if (!in_fp)
 		{
@@ -949,7 +949,7 @@ bool LoadGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, uio_Stream* in_fp, b
 					LoadEvent(EventPtr, in_fp);
 
 #ifdef DEBUG_LOAD
-					uqm::log::debug("\t%u/%u/%u -- %u",
+					uqm::log::debug("\t{}/{}/{} -- {}",
 									EventPtr->month_index,
 									EventPtr->day_index,
 									EventPtr->year_index,
@@ -958,7 +958,7 @@ bool LoadGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, uio_Stream* in_fp, b
 					if (optDeCleansing && EventPtr->func_index == KOHR_AH_VICTORIOUS_EVENT)
 					{
 						UnlockEvent(hEvent);
-						printf("EventPtr->year_index: %d\n", EventPtr->year_index);
+						uqm::log::debug("EventPtr->year_index: {}\n", EventPtr->year_index);
 
 						if (EventPtr->year_index == 2158)
 						{
@@ -1013,7 +1013,7 @@ bool LoadGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, uio_Stream* in_fp, b
 				LoadBattleGroup(in_fp, chunkSize);
 				break;
 			default:
-				uqm::log::debug("Skipping chunk of tag %08X (size %u)", chunk, chunkSize);
+				uqm::log::debug("Skipping chunk of tag %08X (size {})", chunk, chunkSize);
 				if (skip_8(in_fp, chunkSize) != 1)
 				{
 					res_CloseResFile(in_fp);
@@ -1055,13 +1055,13 @@ bool LoadGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, uio_Stream* in_fp, b
 		}
 	}
 #ifdef DEBUG_STARSEED
-	fprintf(stderr, "Loading game with seed type %d, %s\n",
-			optSeedType,
-			(optSeedType == 0) ? "Default Game Mode (no seeding)" :
-			(optSeedType == 1) ? "Seed Planets (SysGenRNG only)" :
-			(optSeedType == 2) ? "MRQ (Melnorme, Rainbow, and Quasispace)" :
-			(optSeedType == 3) ? "Seed Plot (Starseed)" :
-								 "UNKNOWN");
+	fmt::print(stderr, "Loading game with seed type {}, {}\n",
+			   optSeedType,
+			   (optSeedType == 0) ? "Default Game Mode (no seeding)" :
+			   (optSeedType == 1) ? "Seed Planets (SysGenRNG only)" :
+			   (optSeedType == 2) ? "MRQ (Melnorme, Rainbow, and Quasispace)" :
+			   (optSeedType == 3) ? "Seed Plot (Starseed)" :
+									"UNKNOWN");
 #endif
 	// During load game we do not want to bail on a bad seed (the argument).
 	// If it fails to load the seed, it will return false.  Also, we need to

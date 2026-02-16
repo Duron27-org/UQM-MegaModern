@@ -94,7 +94,7 @@ static void
 MakeReport(SOUND ReadOutSounds, uqm::CHAR_T* pStr, uqm::COUNT StrLen)
 {
 	int end_page_len;
-	uqm::CHAR_T end_page_buf[200];
+	uqm::CHAR_T end_page_buf[200] {};
 	UniChar last_c = 0;
 	uqm::COUNT row_cells;
 	bool Sleepy;
@@ -107,8 +107,8 @@ MakeReport(SOUND ReadOutSounds, uqm::CHAR_T* pStr, uqm::COUNT StrLen)
 	uqm::SIZE curr_line = -1;
 	uqm::COUNT first_line_length = 0;
 
-	sprintf(end_page_buf, "%s\n",
-			GAME_STRING(SCAN_STRING_BASE + NUM_SCAN_TYPES));
+	fmt::format_to_n(end_page_buf, sizeof(end_page_buf) - 1, "{}\n",
+					 GAME_STRING(SCAN_STRING_BASE + NUM_SCAN_TYPES));
 	end_page_len = utf8StringCount(end_page_buf);
 
 	GetFrameRect(SetAbsFrameIndex(SpaceJunkFrame, 18), &r);

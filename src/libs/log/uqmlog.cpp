@@ -194,7 +194,7 @@ void log_addV(log_Level level, const char* fmt, va_list list)
 
 	if ((int)level <= maxStreamLevel)
 	{
-		fprintf(streamOut, "%s\n", full_msg);
+		fmt::print(streamOut, "{}\n", full_msg);
 	}
 
 	if ((int)level <= maxLevel)
@@ -228,7 +228,7 @@ void log_add_nothreadV(log_Level level, const char* fmt, va_list list)
 
 	if ((int)level <= maxStreamLevel)
 	{
-		fprintf(streamOut, "%s\n", full_msg);
+		fmt::print(streamOut, "{}\n", full_msg);
 	}
 
 	if ((int)level <= maxLevel)

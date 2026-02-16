@@ -11,7 +11,7 @@
 
 static int InvalidArgument(const char* supplied, const char* opt_name)
 {
-	error::saveError("Invalid argument '%s' to option %s.", supplied, opt_name);
+	error::saveError("Invalid argument '{}' to option {}.", supplied, opt_name);
 	return EXIT_FAILURE;
 }
 
@@ -332,7 +332,7 @@ int parseOptions(uqstl::span<const char* const> args, OptionsStruct& options)
 					int height {};
 					if (sscanf(optarg, "%dx%d", &width, &height) != 2)
 					{
-						error::saveError("Error: invalid argument \"%s\" specified as resolution.", optarg);
+						error::saveError("Error: invalid argument \"{}\" specified as resolution.", optarg);
 						badArg = true;
 						break;
 					}
@@ -347,7 +347,7 @@ int parseOptions(uqstl::span<const char* const> args, OptionsStruct& options)
 					{
 						if (*fsValue < 0 || *fsValue > 2)
 						{
-							error::saveError("\nFullscreen has to be 0, 1, or 2. Not %d\n", *fsValue);
+							error::saveError("\nFullscreen has to be 0, 1, or 2. Not {}\n", *fsValue);
 							badArg = true;
 						}
 						else
@@ -537,7 +537,7 @@ int parseOptions(uqstl::span<const char* const> args, OptionsStruct& options)
 					{
 						if (temp < 0 || temp > 2)
 						{
-							error::saveError("God Mode has to be 0, 1, or 2. Got %d", *godModeVal);
+							error::saveError("God Mode has to be 0, 1, or 2. Got {}", *godModeVal);
 							badArg = true;
 						}
 						else
@@ -1117,13 +1117,13 @@ void printUsage(FILE* out, const OptionsStruct& defaults)
 				   "works only with --opengl)");
 	uqm::log::info("  -f, --fullscreen (default: 0)");
 	uqm::log::info("  -w, --windowed (default: true)");
-	uqm::log::info("  -o, --opengl (default: %s)", defaults.opengl.toString());
-	uqm::log::info("  -x, --nogl (default: %s)", defaults.opengl.value ? OptionFalseText : OptionTrueText);
-	uqm::log::info("  -k, --keepaspectratio (default: %s)", defaults.keepAspectRatio.toString());
+	uqm::log::info("  -o, --opengl (default: {})", defaults.opengl.toString());
+	uqm::log::info("  -x, --nogl (default: {})", defaults.opengl.value ? OptionFalseText : OptionTrueText);
+	uqm::log::info("  -k, --keepaspectratio (default: {})", defaults.keepAspectRatio.toString());
 	uqm::log::info("  -c, --scale=MODE (bilinear, biadapt, biadv, triscan, hq or none (default) )");
 	uqm::log::info("  -b, --meleezoom=MODE (step, aka pc, or smooth, aka 3do; default is 3do)");
-	uqm::log::info("  -s, --scanlines (default: %s)", defaults.scanlines.toString());
-	uqm::log::info("  -p, --fps (default: %s)", defaults.showFps.toString());
+	uqm::log::info("  -s, --scanlines (default: {})", defaults.scanlines.toString());
+	uqm::log::info("  -p, --fps (default: {})", defaults.showFps.toString());
 	uqm::log::info("  -g, --gamma=CORRECTIONVALUE (default: 1.0, which causes no change)");
 	uqm::log::info("  -C, --configdir=CONFIGDIR");
 	uqm::log::info("  -n, --contentdir=CONTENTDIR");
@@ -1145,83 +1145,83 @@ void printUsage(FILE* out, const OptionsStruct& defaults)
 	uqm::log::info("  --netdelay=FRAMES (number of frames to buffer/delay network input for");
 #endif
 	uqm::log::info("The following options can take either '3do' or 'pc' as an option:");
-	uqm::log::info("  -i, --intro : Intro/ending version (default: %s)", defaults.whichIntro.toString());
-	uqm::log::info("  --cscan     : coarse-scan display, pc=text, 3do=hieroglyphs (default: %s)", defaults.whichCoarseScan.toString());
-	uqm::log::info("  --menu      : menu type, pc=text, 3do=graphical (default: %s)", defaults.whichMenu.toString());
-	uqm::log::info("  --font      : font types and colors (default: %s)", defaults.whichFonts.toString());
-	uqm::log::info("  --shield    : slave shield type; pc=static, 3do=throbbing (default: %s)", defaults.whichShield.toString());
-	uqm::log::info("  --scroll    : ff/frev during comm.  pc=per-page, 3do=smooth (default: %s)", defaults.smoothScroll.toString());
+	uqm::log::info("  -i, --intro : Intro/ending version (default: {})", defaults.whichIntro.toString());
+	uqm::log::info("  --cscan     : coarse-scan display, pc=text, 3do=hieroglyphs (default: {})", defaults.whichCoarseScan.toString());
+	uqm::log::info("  --menu      : menu type, pc=text, 3do=graphical (default: {})", defaults.whichMenu.toString());
+	uqm::log::info("  --font      : font types and colors (default: {})", defaults.whichFonts.toString());
+	uqm::log::info("  --shield    : slave shield type; pc=static, 3do=throbbing (default: {})", defaults.whichShield.toString());
+	uqm::log::info("  --scroll    : ff/frev during comm.  pc=per-page, 3do=smooth (default: {})", defaults.smoothScroll.toString());
 
 	uqm::log::info("\nThe following options are MegaMod specific\n");
 
-	uqm::log::info("  --kohrstahp : Stops Kohr-Ah advancing. (default: %s)", defaults.cheatMode.toString());
+	uqm::log::info("  --kohrstahp : Stops Kohr-Ah advancing. (default: {})", defaults.cheatMode.toString());
 	uqm::log::info("  --precursormode : =1 Infinite ship battery. =2 No damage, =3 Infinite ship battery and no damage (default: 0)");
 	uqm::log::info("  --timedilation : =1 Time is slowed down times 6. =2 Time is sped up times 5 (default: 0)");
-	uqm::log::info("  --bubblewarp : Instantaneous travel to any point on the Starmap. (default: %s)", defaults.bubbleWarp.toString());
-	uqm::log::info("  --unlockships : Allows you to purchase ships that you can't normally acquire in the main game. (default: %s)", defaults.unlockShips.toString());
-	uqm::log::info("  --headstart : Gives you an extra storage bay full of minerals, Fwiffo, and the Moonbase during a new game (default: %s)", defaults.headStart.toString());
-	uqm::log::info("  --unlockupgrades : Unlocks every upgrade for your flagship and landers. (default: %s)", defaults.unlockUpgrades.toString());
-	uqm::log::info("  --infiniteru : Gives you infinite R.U. as long as the cheat is on (default: %s)", defaults.infiniteRU.toString());
-	uqm::log::info("  --skipintro : Skips the intro and Logo fmv (default: %s)", defaults.skipIntro.toString());
-	uqm::log::info("  --mainmenumusic : Switches the main menu music on/off (default: %s)", defaults.mainMenuMusic.toString());
-	uqm::log::info("  --nebulae : Enables/Disables nebulae in star systems (default: %s)", defaults.nebulae.toString());
-	uqm::log::info("  --orbitingplanets : Enables/Disables orbiting planets in star systems (default: %s)", defaults.orbitingPlanets.toString());
-	uqm::log::info("  --texturedplanets : Enables/Disables textured planets in star systems (default: %s)", defaults.texturedPlanets.toString());
-	uqm::log::info("  --infinitefuel : Infinite fuel in the main game (default: %s)", defaults.infiniteFuel.toString());
-	uqm::log::info("  --partialpickup : Enables/Disables partial mineral pickup  (default: %s)", defaults.partialPickup.toString());
-	uqm::log::info("  --submenu : Enables/Disables mineral and star map keys submenu  (default: %s)", defaults.submenu.toString());
+	uqm::log::info("  --bubblewarp : Instantaneous travel to any point on the Starmap. (default: {})", defaults.bubbleWarp.toString());
+	uqm::log::info("  --unlockships : Allows you to purchase ships that you can't normally acquire in the main game. (default: {})", defaults.unlockShips.toString());
+	uqm::log::info("  --headstart : Gives you an extra storage bay full of minerals, Fwiffo, and the Moonbase during a new game (default: {})", defaults.headStart.toString());
+	uqm::log::info("  --unlockupgrades : Unlocks every upgrade for your flagship and landers. (default: {})", defaults.unlockUpgrades.toString());
+	uqm::log::info("  --infiniteru : Gives you infinite R.U. as long as the cheat is on (default: {})", defaults.infiniteRU.toString());
+	uqm::log::info("  --skipintro : Skips the intro and Logo fmv (default: {})", defaults.skipIntro.toString());
+	uqm::log::info("  --mainmenumusic : Switches the main menu music on/off (default: {})", defaults.mainMenuMusic.toString());
+	uqm::log::info("  --nebulae : Enables/Disables nebulae in star systems (default: {})", defaults.nebulae.toString());
+	uqm::log::info("  --orbitingplanets : Enables/Disables orbiting planets in star systems (default: {})", defaults.orbitingPlanets.toString());
+	uqm::log::info("  --texturedplanets : Enables/Disables textured planets in star systems (default: {})", defaults.texturedPlanets.toString());
+	uqm::log::info("  --infinitefuel : Infinite fuel in the main game (default: {})", defaults.infiniteFuel.toString());
+	uqm::log::info("  --partialpickup : Enables/Disables partial mineral pickup  (default: {})", defaults.partialPickup.toString());
+	uqm::log::info("  --submenu : Enables/Disables mineral and star map keys submenu  (default: {})", defaults.submenu.toString());
 	uqm::log::info("  --dateformat : 0: MMM DD.YYYY | 1: MM.DD.YYYY | 2: DD MMM.YYYY | 3: DD.MM.YYYY (default: 0)");
-	uqm::log::info("  --infinitecredits: Gives you infinite Melnorme Credits  (default: %s)", defaults.infiniteCredits.toString());
+	uqm::log::info("  --infinitecredits: Gives you infinite Melnorme Credits  (default: {})", defaults.infiniteCredits.toString());
 	uqm::log::info("  --melee : Takes you straight to Super Melee after the splash screen.");
 	uqm::log::info("  --loadgame : Takes you straight to the Load Game sceen after the splash screen.");
-	uqm::log::info("  --customborder : Enables the custom border frame. (default: %s)", defaults.customBorder.toString());
+	uqm::log::info("  --customborder : Enables the custom border frame. (default: {})", defaults.customBorder.toString());
 	uqm::log::info("  --seedtype: 0: Default seed | 1: Seed planets  | 2: Seed Melnorme/Rainbow/Quasispace  | 3: Seed Starmap (default: 0)");
 	uqm::log::info("  --customseed=# : Allows you to customize the internal seed used to generate the solar systems in-game. (default: 16807)");
-	uqm::log::info("  --shipseed: Seed the ships assigned to each race. Uses --customseed value (default %s)", defaults.shipSeed.toString());
+	uqm::log::info("  --shipseed: Seed the ships assigned to each race. Uses --customseed value (default {})", defaults.shipSeed.toString());
 	uqm::log::info("  --spherecolors: 0: Default colors | 1: StarSeed colors (default: 0)");
 	uqm::log::info("  --spacemusic #: Enables localized music for aliens when you are in their sphere of influence\n0: Default (OFF) | 1: No Spoilers | 2: Spoilers");
-	uqm::log::info("  --wholefuel : Enables the display of the whole fuel value in the ship status (default: %s)", defaults.wholeFuel.toString());
-	uqm::log::info("  --dirjoystick : Enables the use of directional joystick controls for Android (default: %s)", defaults.directionalJoystick.toString());
-	uqm::log::info("  --landerhold : Switch between PC/3DO max lander hold, pc=64, 3do=50 (default: %s)", defaults.landerHold.toString());
-	uqm::log::info("  --scrtrans : Screen transitions, pc=instantaneous, 3do=crossfade (default: %s)", defaults.scrTrans.toString());
+	uqm::log::info("  --wholefuel : Enables the display of the whole fuel value in the ship status (default: {})", defaults.wholeFuel.toString());
+	uqm::log::info("  --dirjoystick : Enables the use of directional joystick controls for Android (default: {})", defaults.directionalJoystick.toString());
+	uqm::log::info("  --landerhold : Switch between PC/3DO max lander hold, pc=64, 3do=50 (default: {})", defaults.landerHold.toString());
+	uqm::log::info("  --scrtrans : Screen transitions, pc=instantaneous, 3do=crossfade (default: {})", defaults.scrTrans.toString());
 	uqm::log::info("  --difficulty : 0: Normal | 1: Easy | 2: Hard | 3: Choose at Start (default: 0)");
 	uqm::log::info("  --fuelrange : Enables extra fuel range indicators : 0: No indicators | 1: Fuel range at destination | 2: Remaining fuel range to Sol | 3: Both option 1 and 2  enabled simultaneously (default: 0)");
-	uqm::log::info("  --extended : Enables Extended Edition features (default: %s)", defaults.extended.toString());
+	uqm::log::info("  --extended : Enables Extended Edition features (default: {})", defaults.extended.toString());
 	uqm::log::info("  --nomad : Enables 'Nomad Mode' (No Starbase) : 0: Off | 1: Easy | 2: Normal (default: 0)");
-	uqm::log::info("  --gameover : Enables Game Over cutscenes (default: %s)", defaults.gameOver.toString());
-	uqm::log::info("  --shipdirectionip : Enable NPC ships in IP to face their direction of travel (default: %s)", defaults.shipDirectionIP.toString());
-	uqm::log::info("  --hazardcolors : Enable colored text based on hazard severity when viewing planetary scans (default: %s)", defaults.hazardColors.toString());
-	uqm::log::info("  --orzcompfont : Enable alternate font for untranslatable Orz speech (default: %s)", defaults.orzCompFont.toString());
-	uqm::log::info("  --smartautopilot : Activating Auto-Pilot within Solar System pilots the Flagship out via the shortest route. (default: %s)", defaults.smartAutoPilot.toString());
+	uqm::log::info("  --gameover : Enables Game Over cutscenes (default: {})", defaults.gameOver.toString());
+	uqm::log::info("  --shipdirectionip : Enable NPC ships in IP to face their direction of travel (default: {})", defaults.shipDirectionIP.toString());
+	uqm::log::info("  --hazardcolors : Enable colored text based on hazard severity when viewing planetary scans (default: {})", defaults.hazardColors.toString());
+	uqm::log::info("  --orzcompfont : Enable alternate font for untranslatable Orz speech (default: {})", defaults.orzCompFont.toString());
+	uqm::log::info("  --smartautopilot : Activating Auto-Pilot within Solar System pilots the Flagship out via the shortest route. (default: {})", defaults.smartAutoPilot.toString());
 	uqm::log::info("  --controllertype : 0: Keyboard | 1: Xbox | 2: PlayStation 4 (default: 0)");
-	uqm::log::info("  --tintplansphere : Tint the planet sphere with scan color during scan (default: %s)", defaults.tintPlanSphere.toString());
-	uqm::log::info("  --planetstyle : Choose between PC or 3DO planet color and shading (default: %s)", defaults.planetStyle.toString());
+	uqm::log::info("  --tintplansphere : Tint the planet sphere with scan color during scan (default: {})", defaults.tintPlanSphere.toString());
+	uqm::log::info("  --planetstyle : Choose between PC or 3DO planet color and shading (default: {})", defaults.planetStyle.toString());
 	uqm::log::info("  --starbackground : Set the background stars in solar system between PC, 3DO, UQM, or HD-mod patterns (default: pc)");
-	uqm::log::info("  --scanstyle : Choose between PC or 3DO scanning types (default: %s)", defaults.scanStyle.toString());
-	uqm::log::info("  --nonstoposcill : Oscilloscope uses both voice and music data (default: %s)", defaults.nonStopOscill.toString());
-	uqm::log::info("  --scopestyle : Choose between either the PC or 3DO oscilloscope type (default: %s)", defaults.scopeStyle.toString());
-	uqm::log::info("  --animhyperstars : HD only - Use old HD-mod animated HyperSpace stars (default: %s)", defaults.hyperStars.toString());
-	uqm::log::info("  --landerview : Choose between either the PC or 3DO lander view (default: %s)", defaults.landerStyle.toString());
+	uqm::log::info("  --scanstyle : Choose between PC or 3DO scanning types (default: {})", defaults.scanStyle.toString());
+	uqm::log::info("  --nonstoposcill : Oscilloscope uses both voice and music data (default: {})", defaults.nonStopOscill.toString());
+	uqm::log::info("  --scopestyle : Choose between either the PC or 3DO oscilloscope type (default: {})", defaults.scopeStyle.toString());
+	uqm::log::info("  --animhyperstars : HD only - Use old HD-mod animated HyperSpace stars (default: {})", defaults.hyperStars.toString());
+	uqm::log::info("  --landerview : Choose between either the PC or 3DO lander view (default: {})", defaults.landerStyle.toString());
 	uqm::log::info("  --planettexture : Choose between either 3DO or UQM planet map texture [when not using custom seed] (default: 3do)");
-	uqm::log::info("  --sisenginecolor : Choose between either the PC or 3DO Flagship engine color (default: %s)", defaults.flagshipColor.toString());
-	uqm::log::info("  --nohqencounters : Disables HyperSpace encounters (default: %s)", defaults.noHQEncounters.toString());
-	uqm::log::info("  --decleanse : Moves the Death March 100 years ahead from its actual start date [does not work once the Death March has started] (default: %s)", defaults.deCleansing.toString());
-	uqm::log::info("  --nomeleeobstacles : Removes the planet and asteroids from Super Melee (default: %s)", defaults.meleeObstacles.toString());
-	uqm::log::info("  --showvisitstars : Dim visited stars on the StarMap and encase the star name in parenthesis (default: %s)", defaults.showVisitedStars.toString());
-	uqm::log::info("  --unscaledstarsystem : Show the classic HD-mod Beta Star System view (default: %s)", defaults.unscaledStarSystem.toString());
-	uqm::log::info("  --spheretype : Choose between PC, 3DO, or UQM scan sphere styles (default: %s)", defaults.sphereType.toString());
+	uqm::log::info("  --sisenginecolor : Choose between either the PC or 3DO Flagship engine color (default: {})", defaults.flagshipColor.toString());
+	uqm::log::info("  --nohqencounters : Disables HyperSpace encounters (default: {})", defaults.noHQEncounters.toString());
+	uqm::log::info("  --decleanse : Moves the Death March 100 years ahead from its actual start date [does not work once the Death March has started] (default: {})", defaults.deCleansing.toString());
+	uqm::log::info("  --nomeleeobstacles : Removes the planet and asteroids from Super Melee (default: {})", defaults.meleeObstacles.toString());
+	uqm::log::info("  --showvisitstars : Dim visited stars on the StarMap and encase the star name in parenthesis (default: {})", defaults.showVisitedStars.toString());
+	uqm::log::info("  --unscaledstarsystem : Show the classic HD-mod Beta Star System view (default: {})", defaults.unscaledStarSystem.toString());
+	uqm::log::info("  --spheretype : Choose between PC, 3DO, or UQM scan sphere styles (default: {})", defaults.sphereType.toString());
 	uqm::log::info("  --nebulaevol=VOLUME (0-50, default 11)");
-	uqm::log::info("  --slaughtermode : Affect a race's SOI by destroying their ships in battle (default: %s)", defaults.slaughterMode.toString());
-	uqm::log::info("  --advancedautopilot : Finds the route that uses the least amount of fuel through HyperSpace or QuasiSpace and Auto-Pilots the Flagship on the best route (default: %s)", defaults.advancedAutoPilot.toString());
-	uqm::log::info("  --meleetooltips : Show SC1-style ship description tooltips at the bottom of the Super-Melee screen when picking a ship for your fleet (default: %s)", defaults.meleeToolTips.toString());
+	uqm::log::info("  --slaughtermode : Affect a race's SOI by destroying their ships in battle (default: {})", defaults.slaughterMode.toString());
+	uqm::log::info("  --advancedautopilot : Finds the route that uses the least amount of fuel through HyperSpace or QuasiSpace and Auto-Pilots the Flagship on the best route (default: {})", defaults.advancedAutoPilot.toString());
+	uqm::log::info("  --meleetooltips : Show SC1-style ship description tooltips at the bottom of the Super-Melee screen when picking a ship for your fleet (default: {})", defaults.meleeToolTips.toString());
 	uqm::log::info("  --musicresume : Resumes the music in UQM where it last left off : 0: Off | 1: 5 Minutes | 2: Indefinite (default: 0)");
 	uqm::log::info("  --windowtype : Choose between DOS, 3DO or UQM window types : 0: DOS | 1: 3DO | 2: UQM (default: 0)");
-	uqm::log::info("  --scatterelements : Scatter a percentage of the elements in the lander's cargo hold onto the planet's surface when the lander explodes (default: %s)", defaults.scatterElements.toString());
-	uqm::log::info("  --showupgrades : Show lander upgrade graphics when exploring planets (default: %s)", defaults.showUpgrades.toString());
-	uqm::log::info("  --fleetpointsys : Restrict the amount of ships that can be purchased via their melee points (default: %s)", defaults.fleetPointSys.toString());
-	uqm::log::info("  --shipstore : Enable a storage queue accessed at the shipyard (default: %s)", defaults.shipStore.toString());
-	uqm::log::info("  --captainnames : Display captain names at shipyard (default: %s)", defaults.captainNames.toString());
-	uqm::log::info("  --dosmenus : Display DOS style menu in shipyard in place of SIS window (default: %s)", defaults.dosMenus.toString());
+	uqm::log::info("  --scatterelements : Scatter a percentage of the elements in the lander's cargo hold onto the planet's surface when the lander explodes (default: {})", defaults.scatterElements.toString());
+	uqm::log::info("  --showupgrades : Show lander upgrade graphics when exploring planets (default: {})", defaults.showUpgrades.toString());
+	uqm::log::info("  --fleetpointsys : Restrict the amount of ships that can be purchased via their melee points (default: {})", defaults.fleetPointSys.toString());
+	uqm::log::info("  --shipstore : Enable a storage queue accessed at the shipyard (default: {})", defaults.shipStore.toString());
+	uqm::log::info("  --captainnames : Display captain names at shipyard (default: {})", defaults.captainNames.toString());
+	uqm::log::info("  --dosmenus : Display DOS style menu in shipyard in place of SIS window (default: {})", defaults.dosMenus.toString());
 
 	//log_setOutput(old);
 }

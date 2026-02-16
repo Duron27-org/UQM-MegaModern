@@ -179,7 +179,7 @@ void GetToolTipFrameRect(RECT* r)
 void DrawTooltip(SHIP_INFO* SIPtr)
 {
 	uqm::CHAR_T* ptr;
-	uqm::CHAR_T buf[PATH_MAX];
+	uqm::CHAR_T buf[PATH_MAX] {};
 	TEXT Text;
 	CONTEXT oldContext;
 	FONT oldFont;
@@ -189,9 +189,9 @@ void DrawTooltip(SHIP_INFO* SIPtr)
 
 	GetToolTipFrameRect(&r);
 
-	sprintf(buf, "%s %s",
-			GET_STRING(SIPtr->race_strings, RACE_NAME_OFFSET),
-			GET_STRING(SIPtr->race_strings, RACE_SHIP_OFFSET));
+	fmt::format_to_n(buf, sizeof(buf) - 1, "{} {}",
+					 GET_STRING(SIPtr->race_strings, RACE_NAME_OFFSET),
+					 GET_STRING(SIPtr->race_strings, RACE_SHIP_OFFSET));
 
 	Text.pStr = buf;
 	Text.CharCount = (uqm::COUNT)utf8StringCount(buf);

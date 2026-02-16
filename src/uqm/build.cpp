@@ -22,6 +22,7 @@
 #include "master.h"
 #include "sis.h"
 #include "setup.h"
+#include "core/string/StringUtils.h"
 #include "libs/compiler.h"
 #include "libs/mathlib.h"
 #include "planets/planets.h"
@@ -1203,22 +1204,22 @@ void JitDebug(FLEET_INFO* FleetPtr, uqm::UWORD rand_val_x, uqm::UWORD rand_val_y
 	uqm::COUNT str = (FleetPtr->actual_strength > 0 ?
 						  FleetPtr->actual_strength :
 						  WarEraStrength(FleetPtr->SpeciesID));
-	fprintf(stderr, "%s Fleet %d: Actual Str %d; WarEra Str %d; ",
-			fleet_name[FleetPtr->SpeciesID > 25 ? 0 : FleetPtr->SpeciesID],
-			FleetPtr->SpeciesID,
-			FleetPtr->actual_strength * SPHERE_RADIUS_INCREMENT / 2,
-			WarEraStrength(FleetPtr->SpeciesID) * SPHERE_RADIUS_INCREMENT / 2);
-	fprintf(stderr, "Rand X %d (%d); Rand Y %d (%d)\n",
-			rand_val_x, (255 - (uqm::COUNT)sqrt(rand_val_x)),
-			rand_val_y, (255 - (uqm::COUNT)sqrt(rand_val_y)));
-	fprintf(stderr, "		Jit X %d%% Jit Y %d%%; (Jit X %d Jit Y %d)  ",
-			(255 - (uqm::COUNT)sqrt(rand_val_x)) * 67 / 256,
-			(255 - (uqm::COUNT)sqrt(rand_val_y)) * 67 / 256,
-			Jitter(str, rand_val_x),
-			Jitter(str, rand_val_y));
-	fprintf(stderr, "%05.1f : %05.1f  units.\n",
-			(float)Jitter(str, rand_val_x) / 10,
-			(float)Jitter(str, rand_val_y) / 10);
+	fmt::print(stderr, "{} Fleet {}: Actual Str {}; WarEra Str {}; ",
+			   fleet_name[FleetPtr->SpeciesID > 25 ? 0 : FleetPtr->SpeciesID],
+			   (int)FleetPtr->SpeciesID,
+			   FleetPtr->actual_strength * SPHERE_RADIUS_INCREMENT / 2,
+			   WarEraStrength(FleetPtr->SpeciesID) * SPHERE_RADIUS_INCREMENT / 2);
+	fmt::print(stderr, "Rand X {} ({}); Rand Y {} ({})\n",
+			   rand_val_x, (255 - (uqm::COUNT)sqrt(rand_val_x)),
+			   rand_val_y, (255 - (uqm::COUNT)sqrt(rand_val_y)));
+	fmt::print(stderr, "		Jit X {}% Jit Y {}%; (Jit X {} Jit Y {})  ",
+			   (255 - (uqm::COUNT)sqrt(rand_val_x)) * 67 / 256,
+			   (255 - (uqm::COUNT)sqrt(rand_val_y)) * 67 / 256,
+			   Jitter(str, rand_val_x),
+			   Jitter(str, rand_val_y));
+	fmt::print(stderr, "{:05.1} : {:05.1}  units.\n",
+			   (float)Jitter(str, rand_val_x) / 10,
+			   (float)Jitter(str, rand_val_y) / 10);
 }
 
 // Provide the default fleet movement or war era position for the
@@ -1227,8 +1228,8 @@ POINT
 DefaultFleetLocation(SPECIES_ID SpeciesID, uqm::COUNT visit)
 {
 #ifdef DEBUG_STARSEED
-	fprintf(stderr, "Seeding hard coded location for fleet %d (plot %d).\n",
-			SpeciesID, visit);
+	fmt::print(stderr, "Seeding hard coded location for fleet {} (plot {}).\n",
+			   SpeciesID, visit);
 #endif
 	// We need to return plot specific coordinates here
 	// We also assume we only care about fleet movements and war map,
@@ -1359,9 +1360,9 @@ DefaultFleetLocation(SPECIES_ID SpeciesID, uqm::COUNT visit)
 		case MMRNMHRM_ID:
 			return POINT {672, 2930}; // War era map
 		default:
-			fprintf(stderr, "%s %d / plot %d combo.\n",
-					"DefaultFleetLocation called with bad fleet",
-					SpeciesID, visit);
+			fmt::print(stderr, "{} {} / plot {} combo.\n",
+					   "DefaultFleetLocation called with bad fleet",
+					   (int)SpeciesID, visit);
 			return POINT {0, 0};
 	}
 }
@@ -1463,8 +1464,8 @@ Homeworld(SPECIES_ID SpeciesID)
 		case MMRNMHRM_ID:
 			return MOTHER_ARK_DEFINED;
 		default:
-			fprintf(stderr, "Homeworld %s %d.\n",
-					"(Fleet ID) called with bad fleet ID", SpeciesID);
+			fmt::print(stderr, "Homeworld {} {}.\n",
+					   "(Fleet ID) called with bad fleet ID", (int)SpeciesID);
 			return NUM_PLOTS;
 	}
 }
@@ -1481,7 +1482,7 @@ void SeedFleet(FLEET_INFO* FleetPtr, PLOT_LOCATION* plotmap)
 	}
 	if (!FleetPtr || !plotmap)
 	{
-		fprintf(stderr, "SeedFleet called with nullptr PTR(s).\n");
+		fmt::print(stderr, "SeedFleet called with nullptr PTR(s).\n");
 		return;
 	}
 	FleetPtr->known_loc = SeedFleetLocation(FleetPtr, plotmap,
@@ -1538,7 +1539,7 @@ SeedFleetLocation(FLEET_INFO* FleetPtr, PLOT_LOCATION* plotmap, uqm::COUNT visit
 
 	if (!FleetPtr || !plotmap)
 	{
-		fprintf(stderr, "SeedFleetLocation called with nullptr PTR(s).\n");
+		fmt::print(stderr, "SeedFleetLocation called with nullptr PTR(s).\n");
 		return POINT {~0, ~0};
 	}
 
@@ -1555,27 +1556,27 @@ SeedFleetLocation(FLEET_INFO* FleetPtr, PLOT_LOCATION* plotmap, uqm::COUNT visit
 	}
 	if (visit >= NUM_PLOTS && visit != WAR_ERA && visit != HOME)
 	{
-		fprintf(stderr, "%s %d\n",
-				"SeedFleet called with invalid away plot ID", visit);
+		fmt::print(stderr, "{} {}\n",
+				   "SeedFleet called with invalid away plot ID", visit);
 		return POINT {~0, ~0};
 	}
 	if (visit < NUM_PLOTS && !plotmap[visit].star)
 	{
-		fprintf(stderr, "%s %d has a nullptr star pointer.\n",
-				"SeedFleet called, but away plot ID", visit);
+		fmt::print(stderr, "{} {} has a nullptr star pointer.\n",
+				   "SeedFleet called, but away plot ID", visit);
 		return POINT {~0, ~0};
 	}
 	if (!plotmap[home].star)
 	{
-		fprintf(stderr, "%s %d has a nullptr star pointer.\n",
-				"SeedFleet called, but home plot ID", home);
+		fmt::print(stderr, "{} {} has a nullptr star pointer.\n",
+				   "SeedFleet called, but home plot ID", home);
 		return POINT {~0, ~0};
 	}
 
 	if (!StarGenRNG)
 	{
 #ifdef DEBUG_STARSEED
-		fprintf(stderr, "SeedFleet creating a STAR GEN RNG\n");
+		fmt::print(stderr, "SeedFleet creating a STAR GEN RNG\n");
 #endif
 		StarGenRNG = RandomContext_New();
 		myRNG = true;
@@ -1605,8 +1606,8 @@ SeedFleetLocation(FLEET_INFO* FleetPtr, PLOT_LOCATION* plotmap, uqm::COUNT visit
 			plotmap[visit].star_pt.x + lowByte(rand_val_s) * 2 * AWAY_X(visit),
 			plotmap[visit].star_pt.y + highByte(rand_val_s) * 2 * AWAY_Y(visit)};
 
-		snprintf(buf, sizeof(buf), "'Sa-Matra' center %05.1f : %05.1f\n",
-				 (float)warpoint.x / 10, (float)warpoint.y / 10);
+		fmt::format_to_sz_n(buf, sizeof(buf), "'Sa-Matra' center {:05.1} : {:05.1}\n",
+							(float)warpoint.x / 10, (float)warpoint.y / 10);
 	}
 	else
 	{
@@ -1732,9 +1733,9 @@ SeedFleetLocation(FLEET_INFO* FleetPtr, PLOT_LOCATION* plotmap, uqm::COUNT visit
 				location = POINT {
 					WARPATH_X(warpoint, 500) + TOWARD_X(visit) * Jitter(strength, rand_val_x),
 					WARPATH_Y(warpoint, 500) + TOWARD_Y(visit) * Jitter(strength, rand_val_y)};
-				snprintf(buf, sizeof(buf), "%s %05.1f : %05.1f\n",
-						 "ILWRATH x THRADDASH",
-						 (float)location.x / 10, (float)location.y / 10);
+				fmt::format_to_sz_n(buf, sizeof(buf), "{} {:05.1} : {:05.1}\n",
+									"ILWRATH x THRADDASH",
+									(float)location.x / 10, (float)location.y / 10);
 				break;
 			}
 			if (visit == PKUNK_DEFINED) // default 1270 distance
@@ -1743,9 +1744,9 @@ SeedFleetLocation(FLEET_INFO* FleetPtr, PLOT_LOCATION* plotmap, uqm::COUNT visit
 				location = POINT {
 					WARPATH_X(warpoint, 1400) + TOWARD_X(visit) * Jitter(strength, rand_val_x),
 					WARPATH_Y(warpoint, 1400) + TOWARD_Y(visit) * Jitter(strength, rand_val_y)};
-				snprintf(buf, sizeof(buf), "%s %05.1f : %05.1f\n",
-						 "ILWRATH x PKUNK",
-						 (float)location.x / 10, (float)location.y / 10);
+				fmt::format_to_sz_n(buf, sizeof(buf), "{} {:05.1} : {:05.1}\n",
+									"ILWRATH x PKUNK",
+									(float)location.x / 10, (float)location.y / 10);
 				break;
 			}
 			location = POINT {
@@ -1846,7 +1847,7 @@ SeedFleetLocation(FLEET_INFO* FleetPtr, PLOT_LOCATION* plotmap, uqm::COUNT visit
 	JitDebug(FleetPtr, rand_val_x, rand_val_y);
 	if (buf[0])
 	{
-		fprintf(stderr, "%s", buf);
+		fmt::print(stderr, "{}", buf);
 	}
 #endif
 	if (StarGenRNG && myRNG)

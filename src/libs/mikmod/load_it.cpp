@@ -44,7 +44,7 @@
 #include "mikmod_ctype.h"
 
 #ifdef SUNOS
-extern int fprintf(FILE*, const char*, ...);
+extern int fmt::print(FILE*, const char*, ...);
 #endif
 
 /*========== Module structure */
@@ -657,7 +657,7 @@ static BOOL IT_Load(BOOL curious)
 	{
 		of.numvoices = 1 + mh->songname[25];
 #ifdef MIKMOD_DEBUG
-		fprintf(stderr, "Embedded IT limitation to %d voices\n", of.numvoices);
+		fmt::print(stderr, "Embedded IT limitation to {} voices\n", of.numvoices);
 #endif
 	}
 
@@ -1187,7 +1187,7 @@ static BOOL IT_Load(BOOL curious)
 
 						if (!warn)
 						{
-							fprintf(stderr, "\rFilter envelopes not supported yet\n");
+							fmt::print(stderr, "\rFilter envelopes not supported yet\n");
 						}
 						warn = 1;
 					}

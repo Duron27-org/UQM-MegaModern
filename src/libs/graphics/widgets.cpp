@@ -700,9 +700,9 @@ void Widget_DrawSlider(WIDGET* _self, int x, int y)
 void Widget_Slider_DrawValue(WIDGET_SLIDER* self, int x, int y)
 { // Number from 0 to 100 near slider
 	TEXT t;
-	char buffer[16];
+	char buffer[16] {};
 
-	sprintf(buffer, "%d", self->value);
+	fmt::format_to_n(buffer, sizeof(buffer) - 1, "{}", self->value);
 
 	t.baseline.x = x + RES_SCALE(14);
 	t.baseline.y = y;

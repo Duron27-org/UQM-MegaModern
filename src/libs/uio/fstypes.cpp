@@ -30,6 +30,8 @@
 #include "memdebug.h"
 #endif
 
+#include <fmt/format.h>
+
 
 static uio_bool uio_validFileSystemHandler(uio_FileSystemHandler* handler);
 static uio_FileSystemInfo* uio_FileSystemInfo_new(uio_FileSystemID id,
@@ -62,15 +64,15 @@ void uio_registerDefaultFileSystems(void)
 		switch (registerResult)
 		{
 			case 0:
-				fprintf(stderr, "Warning: Default file system '%s' is "
-								"already registered.\n",
-						defaultFileSystems[i].name);
+				fmt::print(stderr, "Warning: Default file system '{}' is "
+								   "already registered.\n",
+						   defaultFileSystems[i].name);
 				break;
 			case -1:
-				fprintf(stderr, "Error: Could not register '%s' file \n"
-								"system: %s\n",
-						defaultFileSystems[i].name,
-						strerror(errno));
+				fmt::print(stderr, "Error: Could not register '{}' file \n"
+								   "system: {}\n",
+						   defaultFileSystems[i].name,
+						   strerror(errno));
 				break;
 			default:
 				assert(registerResult == defaultFileSystems[i].id);
@@ -89,8 +91,8 @@ void uio_unRegisterDefaultFileSystems(void)
 	{
 		if (uio_unRegisterFileSystem(defaultFileSystems[i].id) == -1)
 		{
-			fprintf(stderr, "Could not unregister '%s' file system: %s\n",
-					defaultFileSystems[i].name, strerror(errno));
+			fmt::print(stderr, "Could not unregister '{}' file system: {}\n",
+					   defaultFileSystems[i].name, strerror(errno));
 		}
 	}
 }
@@ -209,7 +211,7 @@ uio_validFileSystemHandler(uio_FileSystemHandler* handler)
 	if (handler->mount == nullptr || handler->umount == nullptr || handler->open == nullptr || handler->close == nullptr || handler->read == nullptr || handler->openEntries == nullptr || handler->readEntries == nullptr || handler->closeEntries == nullptr)
 	{
 #ifdef DEBUG
-		fprintf(stderr, "Invalid file system handler.\n");
+		fmt::print(stderr, "Invalid file system handler.\n");
 #endif
 		return false;
 	}

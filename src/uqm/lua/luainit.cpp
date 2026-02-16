@@ -53,7 +53,7 @@ void luaUqm_runInitScripts(void)
 	scriptDir = res_GetString(SCRIPT_DIR_INITGAME);
 	if (scriptDir == nullptr)
 	{
-		uqm::log::warn("Location of game initialisation scripts ('%s')"
+		uqm::log::warn("Location of game initialisation scripts ('{}')"
 					   " was not specified.",
 					   SCRIPT_DIR_INITGAME);
 	}

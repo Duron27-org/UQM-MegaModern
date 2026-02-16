@@ -90,7 +90,7 @@ DoSelectAction(MENU_STATE* pMS)
 				SetFlashRect(SFR_MENU_3DO, false);
 				break;
 			default:
-				printf("Unknown option: %d\n", pMS->CurState);
+				fmt::print("Unknown option: {}\n", pMS->CurState);
 		}
 	}
 	DoMenuChooser(pMS, PM_CONVERSE);
@@ -638,7 +638,7 @@ UninitEncounter(void)
 		const uqm::CHAR_T* str1 = nullptr;
 		const uqm::CHAR_T* str2 = nullptr;
 		StatMsgMode prevMsgMode = SMM_UNDEFINED;
-		uqm::CHAR_T buf[80];
+		uqm::CHAR_T buf[80] {};
 		HSHIPFRAG hStarShip;
 		SHIP_FRAGMENT* FragPtr;
 		static const Color fade_ship_cycle[] = SCAVENGE_SCREEN_COLOR_TABLE;
@@ -821,7 +821,7 @@ UninitEncounter(void)
 							}
 
 							RecycleAmount += j;
-							sprintf(buf, "%u", RecycleAmount);
+							fmt::format_to_n(buf, sizeof(buf) - 1, "{}", RecycleAmount);
 							t.baseline.x =
 								r.corner.x + r.extent.width
 								- RES_SCALE(1);
@@ -941,8 +941,8 @@ UninitEncounter(void)
 					// The whole stat stripe
 					ClearRectBack(&r);
 
-					sprintf(buf, "%u %s", RecycleAmount,
-							GAME_STRING(STATUS_STRING_BASE + 1)); // "RU"
+					fmt::format_to_n(buf, sizeof(buf) - 1, "{} {}", RecycleAmount,
+									 GAME_STRING(STATUS_STRING_BASE + 1)); // "RU"
 					t.baseline.x = r.corner.x + (r.extent.width >> 1);
 					t.baseline.y = r.corner.y + RES_SCALE(14);
 					t.align = ALIGN_CENTER;

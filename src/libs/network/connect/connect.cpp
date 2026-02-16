@@ -81,7 +81,7 @@ void ConnectState_incRef(ConnectState* connectState)
 	assert(connectState->refCount < REFCOUNT_MAX);
 	connectState->refCount++;
 #ifdef DEBUG_CONNECT_REF
-	uqm::log::debug("ConnectState %08" PRIxPTR ": ref++ (%d)",
+	uqm::log::debug("ConnectState %08" PRIxPTR ": ref++ ({})",
 					(uintptr_t)connectState, connectState->refCount);
 #endif
 }
@@ -91,7 +91,7 @@ bool ConnectState_decRef(ConnectState* connectState)
 	assert(connectState->refCount > 0);
 	connectState->refCount--;
 #ifdef DEBUG_CONNECT_REF
-	uqm::log::debug("ConnectState %08" PRIxPTR ": ref-- (%d)",
+	uqm::log::debug("ConnectState %08" PRIxPTR ": ref-- ({})",
 					(uintptr_t)connectState, connectState->refCount);
 #endif
 	if (connectState->refCount == 0)
@@ -166,14 +166,14 @@ connectCallback(NetDescriptor* nd)
 
 	if (Socket_getError(NetDescriptor_getSocket(nd), &err) == -1)
 	{
-		uqm::log::critical("Socket_getError() failed: %s.",
+		uqm::log::critical("Socket_getError() failed: {}.",
 						   strerror(errno));
 		explode();
 	}
 	if (err != 0)
 	{
 #ifdef DEBUG
-		uqm::log::debug("connect() failed: %s.", strerror(err));
+		uqm::log::debug("connect() failed: {}.", strerror(err));
 #endif
 		NetDescriptor_close(nd);
 		connectState->nd = nullptr;
@@ -245,7 +245,7 @@ tryConnectHostNext(ConnectState* connectState)
 	if (sock == Socket_noSocket)
 	{
 		int savedErrno = errno;
-		uqm::log::error("socket() failed: %s.", strerror(errno));
+		uqm::log::error("socket() failed: {}.", strerror(errno));
 		errno = savedErrno;
 		return Socket_noSocket;
 	}
@@ -253,7 +253,7 @@ tryConnectHostNext(ConnectState* connectState)
 	if (Socket_setNonBlocking(sock) == -1)
 	{
 		int savedErrno = errno;
-		uqm::log::error("Could not make socket non-blocking: %s.",
+		uqm::log::error("Could not make socket non-blocking: {}.",
 						strerror(errno));
 		errno = savedErrno;
 		return Socket_noSocket;
@@ -292,7 +292,7 @@ tryConnectHostNext(ConnectState* connectState)
 		Socket_close(sock);
 #ifdef DEBUG
 		uqm::log::debug("connect() immediately failed for one address: "
-						"%s.",
+						"{}.",
 						strerror(errno));
 		// TODO: add the address in the status message.
 #endif
@@ -359,7 +359,7 @@ connectHostNext(ConnectState* connectState)
 				ConnectError error;
 				int savedErrno = errno;
 
-				uqm::log::error("NetDescriptor_new() failed: %s.",
+				uqm::log::error("NetDescriptor_new() failed: {}.",
 								strerror(errno));
 				Socket_close(sock);
 				freeaddrinfo(connectState->info);
@@ -474,7 +474,7 @@ connectHostByName(const char* host, const char* service, Protocol proto,
 	connectState = ConnectState_alloc();
 	connectState->refCount = 1;
 #ifdef DEBUG_CONNECT_REF
-	uqm::log::debug("ConnectState %08" PRIxPTR ": ref=1 (%d)",
+	uqm::log::debug("ConnectState %08" PRIxPTR ": ref=1 ({})",
 					(uintptr_t)connectState, connectState->refCount);
 #endif
 	connectState->state = Connect_resolving;

@@ -403,7 +403,7 @@ networkBattleInput(NetworkInputContext* context, STARSHIP* StarShipPtr)
 			}
 
 #if 0
-			uqm::log::warn( "NETPLAY: [%d] stalling for "
+			uqm::log::warn( "NETPLAY: [{}] stalling for "
 					"network input. Increase the input delay if this "
 					"happens a lot.\n", context->playerNr);
 #endif

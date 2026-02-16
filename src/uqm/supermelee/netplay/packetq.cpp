@@ -91,17 +91,17 @@ void queuePacket(NetConnection* conn, Packet* packet)
 	{
 		// Reporting BattleInput or Checksum would get so spammy that it
 		// would slow down the battle.
-		uqm::log::debug("NETPLAY: [%d] ==> Queueing packet of type %s.\n",
+		uqm::log::debug("NETPLAY: [{}] ==> Queueing packet of type {}.\n",
 						NetConnection_getPlayerNr(conn),
 						packetTypeData[packetType(packet)].name);
 	}
 #ifdef NETPLAY_DEBUG_FILE
 	if (conn->debugFile != nullptr)
 	{
-		uio_fprintf(conn->debugFile,
-					"NETPLAY: [%d] ==> Queueing packet of type %s.\n",
-					NetConnection_getPlayerNr(conn),
-					packetTypeData[packetType(packet)].name);
+		uio_fmt::print(conn->debugFile,
+					   "NETPLAY: [{}] ==> Queueing packet of type {}.\n",
+					   NetConnection_getPlayerNr(conn),
+					   packetTypeData[packetType(packet)].name);
 	}
 #endif /* NETPLAY_DEBUG_FILE */
 #endif /* NETPLAY_DEBUG */

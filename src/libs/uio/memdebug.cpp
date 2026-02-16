@@ -20,6 +20,7 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include <fmt/format.h>
 
 #include "memdebug.h"
 #include "hashtable.h"
@@ -190,15 +191,15 @@ void uio_MemDebug_logAllocation(uio_MemDebug_LogType type, void* ptr)
 
 	if (ptr == nullptr)
 	{
-		fprintf(stderr, "Fatal: Allocated pointer is (%s *) nullptr.\n",
-				uio_MemDebug_logTypeInfo[(int)type].name);
+		fmt::print(stderr, "Fatal: Allocated pointer is ({} *) nullptr.\n",
+				   uio_MemDebug_logTypeInfo[(int)type].name);
 		abort();
 	}
 	if (uio_MemDebug_logTypeInfo[(int)type].flags & uio_MemDebug_PRINT_ALLOC)
 	{
-		fprintf(stderr, "Alloc ");
+		fmt::print(stderr, "Alloc ");
 		uio_MemDebug_printPointer(stderr, type, ptr);
-		fprintf(stderr, "\n");
+		fmt::print(stderr, "\n");
 	}
 	pointerInfo = uio_MemDebug_PointerInfo_new(1);
 	HashTable_add(uio_MemDebug_logs[type], ptr, (void*)pointerInfo);
@@ -210,28 +211,28 @@ void uio_MemDebug_logDeallocation(uio_MemDebug_LogType type, void* ptr)
 
 	if (ptr == nullptr)
 	{
-		fprintf(stderr, "Fatal: Attempt to free (%s *) nullptr pointer.\n",
-				uio_MemDebug_logTypeInfo[(int)type].name);
+		fmt::print(stderr, "Fatal: Attempt to free ({} *) nullptr pointer.\n",
+				   uio_MemDebug_logTypeInfo[(int)type].name);
 		abort();
 	}
 	if (uio_MemDebug_logTypeInfo[(int)type].flags & uio_MemDebug_PRINT_FREE)
 	{
-		fprintf(stderr, "Free ");
+		fmt::print(stderr, "Free ");
 		uio_MemDebug_printPointer(stderr, type, ptr);
-		fprintf(stderr, "\n");
+		fmt::print(stderr, "\n");
 	}
 	pointerInfo = (uio_MemDebug_PointerInfo*)HashTable_find(uio_MemDebug_logs[type], ptr);
 	if (pointerInfo == nullptr)
 	{
-		fprintf(stderr, "Fatal: Attempt to free unallocated pointer "
-						"(%s *) %p.\n",
-				uio_MemDebug_logTypeInfo[(int)type].name, ptr);
+		fmt::print(stderr, "Fatal: Attempt to free unallocated pointer "
+						   "({} *) %p.\n",
+				   uio_MemDebug_logTypeInfo[(int)type].name, ptr);
 		abort();
 	}
 #if 0
 	if (pointerInfo->ref != 0) {
-		fprintf(stderr, "Fatal: Attempt to free pointer with references "
-				"left (%s *) %p.\n",
+		fmt::print(stderr, "Fatal: Attempt to free pointer with references "
+				"left ({} *) %p.\n",
 				uio_MemDebug_logTypeInfo[(int) type].name, ptr);
 		abort();
 	}
@@ -246,25 +247,25 @@ void uio_MemDebug_logRef(uio_MemDebug_LogType type, void* ptr)
 
 	if (ptr == nullptr)
 	{
-		fprintf(stderr, "Fatal: Attempt to increment reference to a "
-						"(%s *) nullptr pointer.\n",
-				uio_MemDebug_logTypeInfo[(int)type].name);
+		fmt::print(stderr, "Fatal: Attempt to increment reference to a "
+						   "({} *) nullptr pointer.\n",
+				   uio_MemDebug_logTypeInfo[(int)type].name);
 		abort();
 	}
 	pointerInfo = (uio_MemDebug_PointerInfo*)HashTable_find(uio_MemDebug_logs[type], ptr);
 	if (pointerInfo == nullptr)
 	{
-		fprintf(stderr, "Fatal: Attempt to increment reference to "
-						"unallocated pointer (%s *) %p.\n",
-				uio_MemDebug_logTypeInfo[(int)type].name, ptr);
+		fmt::print(stderr, "Fatal: Attempt to increment reference to "
+						   "unallocated pointer ({} *) %p.\n",
+				   uio_MemDebug_logTypeInfo[(int)type].name, ptr);
 		abort();
 	}
 	pointerInfo->pointerRef++;
 	if (uio_MemDebug_logTypeInfo[(int)type].flags & uio_MemDebug_PRINT_REF)
 	{
-		fprintf(stderr, "Ref++ to %d, ", pointerInfo->pointerRef);
+		fmt::print(stderr, "Ref++ to {}, ", pointerInfo->pointerRef);
 		uio_MemDebug_printPointer(stderr, type, ptr);
-		fprintf(stderr, "\n");
+		fmt::print(stderr, "\n");
 	}
 }
 
@@ -274,41 +275,41 @@ void uio_MemDebug_logUnref(uio_MemDebug_LogType type, void* ptr)
 
 	if (ptr == nullptr)
 	{
-		fprintf(stderr, "Fatal: Attempt to decrement reference to a "
-						"(%s *) nullptr pointer.\n",
-				uio_MemDebug_logTypeInfo[(int)type].name);
+		fmt::print(stderr, "Fatal: Attempt to decrement reference to a "
+						   "({} *) nullptr pointer.\n",
+				   uio_MemDebug_logTypeInfo[(int)type].name);
 		abort();
 	}
 	pointerInfo = (uio_MemDebug_PointerInfo*)HashTable_find(uio_MemDebug_logs[type], ptr);
 	if (pointerInfo == nullptr)
 	{
-		fprintf(stderr, "Fatal: Attempt to decrement reference to "
-						"unallocated pointer (%s *) %p.\n",
-				uio_MemDebug_logTypeInfo[(int)type].name, ptr);
+		fmt::print(stderr, "Fatal: Attempt to decrement reference to "
+						   "unallocated pointer ({} *) %p.\n",
+				   uio_MemDebug_logTypeInfo[(int)type].name, ptr);
 		abort();
 	}
 	if (pointerInfo->pointerRef == 0)
 	{
-		fprintf(stderr, "Fatal: Attempt to decrement reference below 0 for "
-						"pointer (%s *) %p.\n",
-				uio_MemDebug_logTypeInfo[(int)type].name, ptr);
+		fmt::print(stderr, "Fatal: Attempt to decrement reference below 0 for "
+						   "pointer ({} *) %p.\n",
+				   uio_MemDebug_logTypeInfo[(int)type].name, ptr);
 		abort();
 	}
 	pointerInfo->pointerRef--;
 	if (uio_MemDebug_logTypeInfo[(int)type].flags & uio_MemDebug_PRINT_UNREF)
 	{
-		fprintf(stderr, "Ref-- to %d, ", pointerInfo->pointerRef);
+		fmt::print(stderr, "Ref-- to {}, ", pointerInfo->pointerRef);
 		uio_MemDebug_printPointer(stderr, type, ptr);
-		fprintf(stderr, "\n");
+		fmt::print(stderr, "\n");
 	}
 }
 
 void uio_MemDebug_printPointer(FILE* out, uio_MemDebug_LogType type, void* ptr)
 {
-	fprintf(out, "(%s *) %p", uio_MemDebug_logTypeInfo[(int)type].name, ptr);
+	fmt::print(out, "({} *) %p", uio_MemDebug_logTypeInfo[(int)type].name, ptr);
 	if (uio_MemDebug_logTypeInfo[(int)type].havePrintFunction)
 	{
-		fprintf(out, ": ");
+		fmt::print(out, ": ");
 		invokePrintFn(type, out, ptr);
 	}
 }
@@ -322,7 +323,7 @@ void uio_MemDebug_printPointersType(FILE* out, uio_MemDebug_LogType type)
 		 iterator = HashTable_iteratorNext(iterator))
 	{
 		uio_MemDebug_printPointer(out, type, HashTable_iteratorKey(iterator));
-		fprintf(out, "\n");
+		fmt::print(out, "\n");
 	}
 	HashTable_freeIterator(iterator);
 }

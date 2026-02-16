@@ -153,7 +153,7 @@ noSound_Init(audio_Driver* driver, sint32 flags)
 	if (!mixer_Init(nosound_freq, MIX_FORMAT_MAKE(1, 1),
 					MIX_QUALITY_LOW, MIX_FAKE_DATA))
 	{
-		uqm::log::error("Mixer initialization failed: %x",
+		uqm::log::error("Mixer initialization failed: {:x}",
 						mixer_GetError());
 		return -1;
 	}
@@ -279,7 +279,7 @@ noSound_GetError(void)
 		case MIX_OUT_OF_MEMORY:
 			return audio_OUT_OF_MEMORY;
 		default:
-			uqm::log::debug("noSound_GetError: unknown value %x",
+			uqm::log::debug("noSound_GetError: unknown value {:x}",
 							value);
 			return audio_DRIVER_FAILURE;
 			break;

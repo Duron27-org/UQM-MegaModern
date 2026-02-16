@@ -716,7 +716,7 @@ dflt:
 								}
 							case '+': /* 1 or more repetitions */
 								s++;  /* 1 match already done */
-									  /* go through */
+								/* go through */
 							case '*': /* 0 or more repetitions */
 								s = max_expand(ms, s, p, ep);
 								break;

@@ -35,6 +35,7 @@
 #include "setup.h"
 #include "starmap.h"
 #include "state.h"
+#include "core/string/StringUtils.h"
 #include "libs/mathlib.h"
 #include "lua/luadebug.h"
 #include "tactrans.h"
@@ -535,11 +536,11 @@ dumpEventCallback(const EVENT* eventPtr, void* arg)
 
 void dumpEvent(FILE* out, const EVENT* eventPtr)
 {
-	fprintf(out, "%4u/%02u/%02u: %s\n",
-			eventPtr->year_index,
-			eventPtr->month_index,
-			eventPtr->day_index,
-			eventName(eventPtr->func_index));
+	fmt::print(out, "{:4}/{:02}/{:02}: {}\n",
+			   eventPtr->year_index,
+			   eventPtr->month_index,
+			   eventPtr->day_index,
+			   eventName(eventPtr->func_index));
 }
 
 void dumpEvents(FILE* out)
@@ -1071,9 +1072,9 @@ void dumpUniverseToFile(void)
 	out = fopen(UNIVERSE_DUMP_FILE, "w");
 	if (out == nullptr)
 	{
-		fprintf(stderr, "Error: Could not open file '%s' for "
-						"writing: %s\n",
-				UNIVERSE_DUMP_FILE, strerror(errno));
+		fmt::print(stderr, "Error: Could not open file '{}' for "
+						   "writing: {}\n",
+				   UNIVERSE_DUMP_FILE, strerror(errno));
 		return;
 	}
 
@@ -1081,8 +1082,8 @@ void dumpUniverseToFile(void)
 
 	fclose(out);
 
-	fprintf(stdout, "*** Star dump complete. The game may be in an "
-					"undefined state.\n");
+	fmt::print(stdout, "*** Star dump complete. The game may be in an "
+					   "undefined state.\n");
 	// Data generation may have changed the game state,
 	// in particular for special planet generation.
 }
@@ -1101,15 +1102,16 @@ void dumpSystem(FILE* out, const STAR_DESC* star, const SOLARSYS_STATE* system)
 	uqm::CHAR_T buf[40];
 
 	GetClusterName(star, name);
-	snprintf(buf, sizeof buf, "%s %s",
-			 bodyColorString(STAR_COLOR(star->Type)),
-			 starTypeString(STAR_TYPE(star->Type)));
-	fprintf(out, "%-22s  (%3d.%1d, %3d.%1d) %-19s  %s\n",
-			name,
-			star->star_pt.x / 10, star->star_pt.x % 10,
-			star->star_pt.y / 10, star->star_pt.y % 10,
-			buf,
-			starPresenceString(star->Index));
+	fmt::format_to_sz_n(buf, sizeof buf, "{} {}",
+						bodyColorString(STAR_COLOR(star->Type)),
+						starTypeString(STAR_TYPE(star->Type)));
+
+	fmt::print(out, "{:-22}  ({:3}.{:1}, {:3}.{:1}) {:-19}  {}\n",
+			   name,
+			   star->star_pt.x / 10, star->star_pt.x % 10,
+			   star->star_pt.y / 10, star->star_pt.y % 10,
+			   buf,
+			   starPresenceString(star->Index));
 
 	(void)system; /* satisfy compiler */
 }
@@ -1300,8 +1302,8 @@ dumpPlanetCallback(const PLANET_DESC* planet, void* arg)
 void dumpPlanet(FILE* out, const PLANET_DESC* planet)
 {
 	(*pSolarSysState->genFuncs->generateName)(pSolarSysState, planet);
-	fprintf(out, "- %-37s  %s\n", GLOBAL_SIS(PlanetName),
-			planetTypeString(planet->data_index & ~PLANET_SHIELDED));
+	fmt::print(out, "- %-37s  {}\n", GLOBAL_SIS(PlanetName),
+			   planetTypeString(planet->data_index & ~PLANET_SHIELDED));
 	dumpWorld(out, planet);
 }
 
@@ -1336,8 +1338,8 @@ void dumpMoon(FILE* out, const PLANET_DESC* moon)
 	{
 		typeStr = planetTypeString(moon->data_index & ~PLANET_SHIELDED);
 	}
-	fprintf(out, "  - Moon %-30c  %s\n",
-			'a' + (uqm::CHAR_T)(moon - &pSolarSysState->MoonDesc[0]), typeStr);
+	fmt::print(out, "  - Moon %-30c  {}\n",
+			   'a' + (uqm::CHAR_T)(moon - &pSolarSysState->MoonDesc[0]), typeStr);
 
 	dumpWorld(out, moon);
 }
@@ -1368,17 +1370,17 @@ dumpWorld(FILE* out, const PLANET_DESC* world)
 	}
 
 	info = &pSolarSysState->SysInfo.PlanetInfo;
-	fprintf(out, "          AxialTilt:  %d\n", info->AxialTilt);
-	fprintf(out, "          Tectonics:  %d\n", info->Tectonics);
-	fprintf(out, "          Weather:    %d\n", info->Weather);
-	fprintf(out, "          Density:    %d\n", info->PlanetDensity);
-	fprintf(out, "          Radius:     %d\n", info->PlanetRadius);
-	fprintf(out, "          Gravity:    %d\n", info->SurfaceGravity);
-	fprintf(out, "          Temp:       %d\n", info->SurfaceTemperature);
-	fprintf(out, "          Day:        %d\n", info->RotationPeriod);
-	fprintf(out, "          Atmosphere: %d\n", info->AtmoDensity);
-	fprintf(out, "          LifeChance: %d\n", info->LifeChance);
-	fprintf(out, "          DistToSun:  %d\n", info->PlanetToSunDist);
+	fmt::print(out, "          AxialTilt:  {}\n", info->AxialTilt);
+	fmt::print(out, "          Tectonics:  {}\n", info->Tectonics);
+	fmt::print(out, "          Weather:    {}\n", info->Weather);
+	fmt::print(out, "          Density:    {}\n", info->PlanetDensity);
+	fmt::print(out, "          Radius:     {}\n", info->PlanetRadius);
+	fmt::print(out, "          Gravity:    {}\n", info->SurfaceGravity);
+	fmt::print(out, "          Temp:       {}\n", info->SurfaceTemperature);
+	fmt::print(out, "          Day:        {}\n", info->RotationPeriod);
+	fmt::print(out, "          Atmosphere: {}\n", info->AtmoDensity);
+	fmt::print(out, "          LifeChance: {}\n", info->LifeChance);
+	fmt::print(out, "          DistToSun:  {}\n", info->PlanetToSunDist);
 
 	if (world->data_index & PLANET_SHIELDED)
 	{
@@ -1386,15 +1388,15 @@ dumpWorld(FILE* out, const PLANET_DESC* world)
 		return;
 	}
 
-	fprintf(out, "          Bio: %4d    Min: %4d\n",
-			calculateBioValue(pSolarSysState, world),
-			calculateMineralValue(pSolarSysState, world));
+	fmt::print(out, "          Bio: %4d    Min: %4d\n",
+			   calculateBioValue(pSolarSysState, world),
+			   calculateMineralValue(pSolarSysState, world));
 }
 
-void fprintfWorld(const PLANET_DESC* world)
+void fmt::printWorld(const PLANET_DESC* world)
 {
 	PLANET_INFO* info;
-	uqm::CHAR_T buf[200];
+	uqm::CHAR_T buf[200] {};
 	FILE* fp = fopen("planetLog.txt", "a");
 	POINT universe = CurStarDescPtr->star_pt;
 
@@ -1406,50 +1408,50 @@ void fprintfWorld(const PLANET_DESC* world)
 		return;
 	}
 
-	fprintf(fp, "Coords:     %03u.%01u : %03u.%01u\n",
-			universe.x / 10, universe.x % 10,
-			universe.y / 10, universe.y % 10);
+	fmt::print(fp, "Coords:     %03u.%01u : %03u.%01u\n",
+			   universe.x / 10, universe.x % 10,
+			   universe.y / 10, universe.y % 10);
 
 	GetClusterName(CurStarDescPtr, buf);
 
-	fprintf(fp, "Star:       %s\n", buf);
+	fmt::print(fp, "Star:       {}\n", buf);
 
-	GetPlanetTitle(buf, sizeof(buf));
+	GetPlanetTitle({buf, sizeof(buf)});
 
 	if (strcmp(buf, GLOBAL_SIS(PlanetName)) != 0)
 	{
-		fprintf(fp, "Planet:     %s\n", GLOBAL_SIS(PlanetName));
+		fmt::print(fp, "Planet:     {}\n", GLOBAL_SIS(PlanetName));
 	}
 
 	info = &pSolarSysState->SysInfo.PlanetInfo;
-	fprintf(fp, "World:      %s\n\n", buf);
-	fprintf(fp, "DistToSun:  %d\n", info->PlanetToSunDist);
-	fprintf(fp, "Atmosphere: %d\n", info->AtmoDensity);
-	fprintf(fp, "Temp:       %d\n", info->SurfaceTemperature);
-	fprintf(fp, "Weather:    %d\n", info->Weather);
-	fprintf(fp, "Tectonics:  %d\n\n", info->Tectonics);
-	fprintf(fp, "Density:    %d\n", info->PlanetDensity);
-	fprintf(fp, "Radius:     %d\n", info->PlanetRadius);
-	fprintf(fp, "Gravity:    %d\n", info->SurfaceGravity);
-	fprintf(fp, "Day:        %d\n", info->RotationPeriod);
-	fprintf(fp, "AxialTilt:  %d\n\n", info->AxialTilt);
+	fmt::print(fp, "World:      {}\n\n", buf);
+	fmt::print(fp, "DistToSun:  {}\n", info->PlanetToSunDist);
+	fmt::print(fp, "Atmosphere: {}\n", info->AtmoDensity);
+	fmt::print(fp, "Temp:       {}\n", info->SurfaceTemperature);
+	fmt::print(fp, "Weather:    {}\n", info->Weather);
+	fmt::print(fp, "Tectonics:  {}\n\n", info->Tectonics);
+	fmt::print(fp, "Density:    {}\n", info->PlanetDensity);
+	fmt::print(fp, "Radius:     {}\n", info->PlanetRadius);
+	fmt::print(fp, "Gravity:    {}\n", info->SurfaceGravity);
+	fmt::print(fp, "Day:        {}\n", info->RotationPeriod);
+	fmt::print(fp, "AxialTilt:  {}\n\n", info->AxialTilt);
 
 	if (world->data_index & PLANET_SHIELDED)
 	{ // Slave-shielded planet
-		fprintf(fp, "LifeChance: %d\n", info->LifeChance);
-		fprintf(fp, "____________________________________\n\n");
+		fmt::print(fp, "LifeChance: {}\n", info->LifeChance);
+		fmt::print(fp, "____________________________________\n\n");
 		fclose(fp);
 		return;
 	}
 	else
 	{
-		fprintf(fp, "LifeChance: %d\n", info->LifeChance);
+		fmt::print(fp, "LifeChance: {}\n", info->LifeChance);
 	}
 
-	fprintf(fp, "Bio: %4d    Min: %4d\n",
-			calculateBioValue(pSolarSysState, world),
-			calculateMineralValue(pSolarSysState, world));
-	fprintf(fp, "____________________________________\n\n");
+	fmt::print(fp, "Bio: %4d    Min: %4d\n",
+			   calculateBioValue(pSolarSysState, world),
+			   calculateMineralValue(pSolarSysState, world));
+	fmt::print(fp, "____________________________________\n\n");
 
 	fclose(fp);
 }
@@ -1582,9 +1584,9 @@ void tallyResourcesToFile(void)
 	out = fopen(RESOURCE_TALLY_FILE, "w");
 	if (out == nullptr)
 	{
-		fprintf(stderr, "Error: Could not open file '%s' for "
-						"writing: %s\n",
-				RESOURCE_TALLY_FILE, strerror(errno));
+		fmt::print(stderr, "Error: Could not open file '{}' for "
+						   "writing: {}\n",
+				   RESOURCE_TALLY_FILE, strerror(errno));
 		return;
 	}
 
@@ -1592,8 +1594,8 @@ void tallyResourcesToFile(void)
 
 	fclose(out);
 
-	fprintf(stdout, "*** Resource tally complete. The game may be in an "
-					"undefined state.\n");
+	fmt::print(stdout, "*** Resource tally complete. The game may be in an "
+					   "undefined state.\n");
 	// Data generation may have changed the game state,
 	// in particular for special planet generation.
 }
@@ -1619,8 +1621,8 @@ tallySystemPostCallback(const STAR_DESC* star, const SOLARSYS_STATE* system,
 	FILE* out = tallyResourcesArg->out;
 
 	GetClusterName(star, name);
-	fprintf(out, "%s\t%d\t%d\n", name, tallyResourcesArg->mineralCount,
-			tallyResourcesArg->bioCount);
+	fmt::print(out, "{}\t{}\t{}\n", name, tallyResourcesArg->mineralCount,
+			   tallyResourcesArg->bioCount);
 
 	(void)star;	  /* satisfy compiler */
 	(void)system; /* satisfy compiler */
@@ -1702,22 +1704,22 @@ dumpPlanetTypeCallback(int index, const PlanetFrame* planetType, void* arg)
 void dumpPlanetType(FILE* out, int index, const PlanetFrame* planetType)
 {
 	int i;
-	fprintf(out,
-			"%s\n"
-			"\tType: %s\n"
-			"\tColor: %s\n"
-			"\tSurface generation algoritm: %s\n"
-			"\tTectonics: %s\n"
-			"\tAtmosphere: %s\n"
-			"\tDensity: %s\n"
-			"\tElements:\n",
-			planetTypeString(index),
-			worldSizeString(PLANSIZE(planetType->Type)),
-			bodyColorString(PLANCOLOR(planetType->Type)),
-			worldGenAlgoString(PLANALGO(planetType->Type)),
-			tectonicsString(planetType->BaseTectonics),
-			atmosphereString(HINIBBLE(planetType->AtmoAndDensity)),
-			densityString(LONIBBLE(planetType->AtmoAndDensity)));
+	fmt::print(out,
+			   "{}\n"
+			   "\tType: {}\n"
+			   "\tColor: {}\n"
+			   "\tSurface generation algoritm: {}\n"
+			   "\tTectonics: {}\n"
+			   "\tAtmosphere: {}\n"
+			   "\tDensity: {}\n"
+			   "\tElements:\n",
+			   planetTypeString(index),
+			   worldSizeString(PLANSIZE(planetType->Type)),
+			   bodyColorString(PLANCOLOR(planetType->Type)),
+			   worldGenAlgoString(PLANALGO(planetType->Type)),
+			   tectonicsString(planetType->BaseTectonics),
+			   atmosphereString(HINIBBLE(planetType->AtmoAndDensity)),
+			   densityString(LONIBBLE(planetType->AtmoAndDensity)));
 	for (i = 0; i < NUM_USEFUL_ELEMENTS; i++)
 	{
 		const ELEMENT_ENTRY* entry;
@@ -1726,14 +1728,14 @@ void dumpPlanetType(FILE* out, int index, const PlanetFrame* planetType)
 		{
 			continue;
 		}
-		fprintf(out, "\t\t0 to %d %s-quality (+%d) deposits of %s (%s)\n",
-				DEPOSIT_QUANTITY(entry->Density),
-				depositQualityString(DEPOSIT_QUALITY(entry->Density)),
-				DEPOSIT_QUALITY(entry->Density) * 5,
-				GAME_STRING(ELEMENTS_STRING_BASE + entry->ElementType),
-				GAME_STRING(CARGO_STRING_BASE + 2 + ElementCategory(entry->ElementType)));
+		fmt::print(out, "\t\t0 to {} {}-quality (+{}) deposits of {} ({})\n",
+				   DEPOSIT_QUANTITY(entry->Density),
+				   depositQualityString(DEPOSIT_QUALITY(entry->Density)),
+				   DEPOSIT_QUALITY(entry->Density) * 5,
+				   GAME_STRING(ELEMENTS_STRING_BASE + entry->ElementType),
+				   GAME_STRING(CARGO_STRING_BASE + 2 + ElementCategory(entry->ElementType)));
 	}
-	fprintf(out, "\n");
+	fmt::print(out, "\n");
 }
 
 const char*
@@ -1744,15 +1746,15 @@ planetTypeString(int typeIndex)
 	if (typeIndex >= FIRST_GAS_GIANT)
 	{
 		// "Gas Giant"
-		snprintf(typeStr, sizeof typeStr, "%s",
-				 GAME_STRING(SCAN_STRING_BASE + 4 + 51));
+		fmt::format_to_sz_n(typeStr, sizeof typeStr, "{}",
+							GAME_STRING(SCAN_STRING_BASE + 4 + 51));
 	}
 	else
 	{
 		// "<type> World" (eg. "Water World")
-		snprintf(typeStr, sizeof typeStr, "%s %s",
-				 GAME_STRING(SCAN_STRING_BASE + 4 + typeIndex),
-				 GAME_STRING(SCAN_STRING_BASE + 4 + 50));
+		fmt::format_to_sz_n(typeStr, sizeof typeStr, "{} {}",
+							GAME_STRING(SCAN_STRING_BASE + 4 + typeIndex),
+							GAME_STRING(SCAN_STRING_BASE + 4 + 50));
 	}
 	return typeStr;
 }
@@ -1812,7 +1814,7 @@ tectonicsString(uqm::BYTE tectonics)
 		case SUPER_TECTONICS:
 			return "super";
 		default:
-			snprintf(buf, sizeof buf, "%d", tectonics);
+			fmt::format_to_sz_n(buf, sizeof buf, "{}", tectonics);
 			return buf;
 	}
 }
@@ -1958,17 +1960,17 @@ void dumpStrings(FILE* out)
 	{
 		if (categories[categoryI].base + categories[categoryI].count != categories[categoryI + 1].base)
 		{
-			fprintf(stderr, "Error: String category list in dumpStrings() is "
-							"not up to date.\n");
+			fmt::print(stderr, "Error: String category list in dumpStrings() is "
+							   "not up to date.\n");
 			return;
 		}
 	}
 
 	if (GAMESTR_COUNT != numStrings)
 	{
-		fprintf(stderr, "Warning: GAMESTR_COUNT is %i, but GameStrings "
-						"contains %zu strings.\n",
-				GAMESTR_COUNT, numStrings);
+		fmt::print(stderr, "Warning: GAMESTR_COUNT is {}, but GameStrings "
+						   "contains %zu strings.\n",
+				   GAMESTR_COUNT, numStrings);
 	}
 
 	categoryI = 0;
@@ -1978,8 +1980,8 @@ void dumpStrings(FILE* out)
 		{
 			categoryI++;
 		}
-		fprintf(out, "[ %s + %zu ]  %s\n", categories[categoryI].name,
-				stringI - categories[categoryI].base, GAME_STRING((uqm::COUNT)stringI));
+		fmt::print(out, "[ {} + %zu ]  {}\n", categories[categoryI].name,
+				   stringI - categories[categoryI].base, GAME_STRING((uqm::COUNT)stringI));
 	}
 }
 
@@ -2004,7 +2006,7 @@ hsvaToRgba(double hue, double sat, double val, uqm::BYTE alpha)
 	assert(hue >= 0.0 && hue < 360.0);
 	assert(sat >= 0 && sat <= 1.0);
 	assert(val >= 0 && val <= 1.0);
-	/*fprintf(stderr, "hsva = (%.1f, %.2f, %.2f, %.2d)\n",
+	/*fmt::print(stderr, "hsva = (%.1f, %.2f, %.2f, %.2d)\n",
 			hue, sat, val, alpha);*/
 
 	assert(hi < 6);
@@ -2154,13 +2156,13 @@ describeContext(FILE* out, const CONTEXT context)
 	CONTEXT oldContext = SetContext(context);
 
 	GetContextClipRect(&rect);
-	fprintf(out, "Context '%s':\n"
-				 "\tClipRect = (%d, %d)-(%d, %d)  (%d x %d)\n",
-			GetContextName(context),
-			rect.corner.x, rect.corner.y,
-			rect.corner.x + rect.extent.width,
-			rect.corner.y + rect.extent.height,
-			rect.extent.width, rect.extent.height);
+	fmt::print(out, "Context '{}':\n"
+					"\tClipRect = ({}, {})-({}, {})  ({} x {})\n",
+			   GetContextName(context),
+			   rect.corner.x, rect.corner.y,
+			   rect.corner.x + rect.extent.width,
+			   rect.corner.y + rect.extent.height,
+			   rect.extent.width, rect.extent.height);
 
 	SetContext(oldContext);
 }

@@ -229,7 +229,7 @@ int Socket_setNonBlocking(Socket* sock)
 	if (ioctlsocket(sock->sock, FIONBIO, &flag) == SOCKET_ERROR)
 	{
 		int savedErrno = getWinsockErrno();
-		uqm::log::error("Setting non-block mode on socket failed: %s.",
+		uqm::log::error("Setting non-block mode on socket failed: {}.",
 						strerror(errno));
 		errno = savedErrno;
 		return -1;
@@ -246,7 +246,7 @@ int Socket_setReuseAddr(Socket* sock)
 		== SOCKET_ERROR)
 	{
 		int savedErrno = getWinsockErrno();
-		uqm::log::error("Setting socket reuse failed: %s.",
+		uqm::log::error("Setting socket reuse failed: {}.",
 						strerror(errno));
 		errno = savedErrno;
 		return -1;
@@ -266,7 +266,7 @@ int Socket_setNodelay(Socket* sock)
 	{
 #ifdef DEBUG
 		int savedErrno = getWinsockErrno();
-		uqm::log::warn("Disabling Nagle algorithm failed: %s.",
+		uqm::log::warn("Disabling Nagle algorithm failed: {}.",
 					   strerror(errno));
 		errno = savedErrno;
 #endif
@@ -303,7 +303,7 @@ int Socket_setInlineOOB(Socket* sock)
 		== SOCKET_ERROR)
 	{
 		int savedErrno = getWinsockErrno();
-		uqm::log::error("Setting inline OOB on socket failed: %s",
+		uqm::log::error("Setting inline OOB on socket failed: {}",
 						strerror(errno));
 		errno = savedErrno;
 		return -1;
@@ -320,7 +320,7 @@ int Socket_setKeepAlive(Socket* sock)
 		== SOCKET_ERROR)
 	{
 		int savedErrno = getWinsockErrno();
-		uqm::log::error("Setting keep-alive on socket failed: %s",
+		uqm::log::error("Setting keep-alive on socket failed: {}",
 						strerror(errno));
 		errno = savedErrno;
 		return -1;

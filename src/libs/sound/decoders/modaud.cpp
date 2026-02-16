@@ -286,7 +286,7 @@ moda_InitModule(int flags, const TFB_DecoderFormats* fmts)
 
 	if (MikMod_Init(nullptr))
 	{
-		uqm::log::error("MikMod_Init() failed, %s",
+		uqm::log::error("MikMod_Init() failed, {}",
 						MikMod_strerror(MikMod_errno));
 		return false;
 	}
@@ -363,7 +363,7 @@ moda_Open(THIS_PTR, uio_DirHandle* dir, const char* filename)
 	uio_fclose(fp);
 	if (!mod)
 	{
-		uqm::log::warn("moda_Open(): could not load %s", filename);
+		uqm::log::warn("moda_Open(): could not load {}", filename);
 		return false;
 	}
 

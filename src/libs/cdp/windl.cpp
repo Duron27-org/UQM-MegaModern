@@ -71,7 +71,8 @@ char* dlerror(void)
 {
 	if (wdl_last_error)
 	{
-		sprintf(wdl_errstr, "Windows error %u", wdl_last_error);
+		const auto fmtResult = fmt::format_to_n(wdl_errstr, sizeof(wdl_errstr) - 1, "Windows error {}", wdl_last_error);
+		*fmtResult.out = '\0';
 		wdl_last_error = 0;
 		return wdl_errstr;
 	}

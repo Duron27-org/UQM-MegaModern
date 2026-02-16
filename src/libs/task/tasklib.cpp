@@ -33,7 +33,7 @@ Task AssignTask(ThreadFunction task_func, uqm::SDWORD stackSize, const char* nam
 	{
 		if (!Task_SetState(task_array + i, TASK_INUSE))
 		{
-			// log_add (log_Debug, "Assigning Task #%i: %s", i+1, name);
+			// log_add (log_Debug, "Assigning Task #{}: {}", i+1, name);
 			Task_ClearState(task_array + i, ~TASK_INUSE);
 			task_array[i].name = name;
 			task_array[i].thread = CreateThread(task_func, task_array + i,
@@ -47,11 +47,11 @@ Task AssignTask(ThreadFunction task_func, uqm::SDWORD stackSize, const char* nam
 
 void FinishTask(Task task)
 {
-	// log_add (log_Debug, "Releasing Task: %s", task->name);
+	// log_add (log_Debug, "Releasing Task: {}", task->name);
 	task->thread = 0;
 	if (!Task_ClearState(task, TASK_INUSE))
 	{
-		uqm::log::debug("Task error!  Attempted to FinishTask '%s'... "
+		uqm::log::debug("Task error!  Attempted to FinishTask '{}'... "
 						"but it was already done!",
 						task->name);
 	}
@@ -61,7 +61,7 @@ void FinishTask(Task task)
 void ConcludeTask(Task task)
 {
 	Thread old = task->thread;
-	// log_add (log_Debug, "Awaiting conclusion of %s", task->name);
+	// log_add (log_Debug, "Awaiting conclusion of {}", task->name);
 	if (old)
 	{
 		Task_SetState(task, TASK_EXIT);

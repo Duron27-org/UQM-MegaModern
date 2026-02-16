@@ -348,23 +348,23 @@ cdp_Host_RegisterItf(const char* name, cdp_ApiVersion ver_from,
 
 	if (!owner)
 	{
-		fprintf(stderr, "cdp_Host_RegisterItf(): "
-						"No owner info supplied\n");
+		fmt::print(stderr, "cdp_Host_RegisterItf(): "
+						   "No owner info supplied\n");
 		//return nullptr;
 	}
 	if (!name || !*name || !itfvtbl)
 	{
-		fprintf(stderr, "cdp_Host_RegisterItf(): "
-						"Null or invalid interface (from %s)\n",
-				cdp_GetModuleName(owner, true));
+		fmt::print(stderr, "cdp_Host_RegisterItf(): "
+						   "Null or invalid interface (from {})\n",
+				   cdp_GetModuleName(owner, true));
 		return nullptr;
 	}
 	ctx = cdp_GetModuleContext(owner, false);
 	if (!ctx)
 	{
-		fprintf(stderr, "cdp_Host_RegisterItf(): "
-						"Null or invalid context (from %s)\n",
-				cdp_GetModuleName(owner, true));
+		fmt::print(stderr, "cdp_Host_RegisterItf(): "
+						   "Null or invalid context (from {})\n",
+				   cdp_GetModuleName(owner, true));
 		return nullptr;
 	}
 
@@ -379,9 +379,9 @@ cdp_Host_RegisterItf(const char* name, cdp_ApiVersion ver_from,
 	}
 	if (ver_to < CDPAPI_VERSION_MIN)
 	{
-		fprintf(stderr, "cdp_Host_RegisterItf(): "
-						"Obsolete interface %s (from %s)\n",
-				name, cdp_GetModuleName(owner, true));
+		fmt::print(stderr, "cdp_Host_RegisterItf(): "
+						   "Obsolete interface {} (from {})\n",
+				   name, cdp_GetModuleName(owner, true));
 		return nullptr;
 	}
 
@@ -400,17 +400,17 @@ cdp_Host_RegisterItf(const char* name, cdp_ApiVersion ver_from,
 
 	if (itfreg >= cdp_itfs + MAX_REG_ITFS)
 	{
-		fprintf(stderr, "cdp_Host_RegisterItf(): "
-						"Interfaces limit reached\n");
+		fmt::print(stderr, "cdp_Host_RegisterItf(): "
+						   "Interfaces limit reached\n");
 		HFree(id_name);
 		return nullptr;
 	}
 	else if (itfreg->name)
 	{
-		fprintf(stderr, "cdp_Host_RegisterItf(): "
-						"Interface %s already registered for these versions, "
-						"%s denied\n",
-				name, cdp_GetModuleName(owner, true));
+		fmt::print(stderr, "cdp_Host_RegisterItf(): "
+						   "Interface {} already registered for these versions, "
+						   "{} denied\n",
+				   name, cdp_GetModuleName(owner, true));
 		HFree(id_name);
 		return nullptr;
 	}
@@ -440,8 +440,8 @@ cdp_Host_UnregisterItf(cdp_ItfReg* itfreg)
 {
 	if (itfreg < cdp_itfs || itfreg >= cdp_itfs + MAX_REG_ITFS || !itfreg->name || !itfreg->itfvtbl)
 	{
-		fprintf(stderr, "cdp_Host_UnregisterItf(): "
-						"Invalid or expired interface passed\n");
+		fmt::print(stderr, "cdp_Host_UnregisterItf(): "
+						   "Invalid or expired interface passed\n");
 		return;
 	}
 
@@ -607,23 +607,23 @@ cdp_Host_RegisterEvent(const char* name, cdp_Module* owner)
 
 	if (!owner)
 	{
-		fprintf(stderr, "cdp_Host_RegisterEvent(): "
-						"No owner info supplied\n");
+		fmt::print(stderr, "cdp_Host_RegisterEvent(): "
+						   "No owner info supplied\n");
 		//return nullptr;
 	}
 	if (!name || !*name)
 	{
-		fprintf(stderr, "cdp_Host_RegisterEvent(): "
-						"Null or invalid event (from %s)\n",
-				cdp_GetModuleName(owner, true));
+		fmt::print(stderr, "cdp_Host_RegisterEvent(): "
+						   "Null or invalid event (from {})\n",
+				   cdp_GetModuleName(owner, true));
 		return nullptr;
 	}
 	ctx = cdp_GetModuleContext(owner, false);
 	if (!ctx)
 	{
-		fprintf(stderr, "cdp_Host_RegisterEvent(): "
-						"Null or invalid context (from %s)\n",
-				cdp_GetModuleName(owner, true));
+		fmt::print(stderr, "cdp_Host_RegisterEvent(): "
+						   "Null or invalid context (from {})\n",
+				   cdp_GetModuleName(owner, true));
 		return nullptr;
 	}
 
@@ -642,17 +642,17 @@ cdp_Host_RegisterEvent(const char* name, cdp_Module* owner)
 
 	if (evtreg >= cdp_evts + MAX_REG_EVENTS)
 	{
-		fprintf(stderr, "cdp_Host_RegisterEvent(): "
-						"Event limit reached\n");
+		fmt::print(stderr, "cdp_Host_RegisterEvent(): "
+						   "Event limit reached\n");
 		HFree(id_name);
 		return nullptr;
 	}
 	else if (evtreg->name)
 	{
-		fprintf(stderr, "cdp_Host_RegisterEvent(): "
-						"Event %s already registered, "
-						"%s denied\n",
-				name, cdp_GetModuleName(owner, true));
+		fmt::print(stderr, "cdp_Host_RegisterEvent(): "
+						   "Event {} already registered, "
+						   "{} denied\n",
+				   name, cdp_GetModuleName(owner, true));
 		HFree(id_name);
 		return nullptr;
 	}
@@ -680,8 +680,8 @@ cdp_Host_UnregisterEvent(cdp_EventReg* evtreg)
 {
 	if (evtreg < cdp_evts || evtreg >= cdp_evts + MAX_REG_EVENTS || !evtreg->name)
 	{
-		fprintf(stderr, "cdp_Host_UnregisterEvent(): "
-						"Invalid or expired event passed\n");
+		fmt::print(stderr, "cdp_Host_UnregisterEvent(): "
+						   "Invalid or expired event passed\n");
 		return;
 	}
 
@@ -745,8 +745,8 @@ cdp_Host_SubscribeEvent(cdp_Event event, cdp_EventProc proc, cdp_Module* module)
 
 	if (reg < cdp_evts || reg >= cdp_evts + MAX_REG_EVENTS || !reg->name)
 	{
-		fprintf(stderr, "cdp_Host_SubscribeEvent(): "
-						"Invalid or expired event passed\n");
+		fmt::print(stderr, "cdp_Host_SubscribeEvent(): "
+						   "Invalid or expired event passed\n");
 		return false;
 	}
 
@@ -856,7 +856,7 @@ cdp_Host_FireEvent(cdp_EventReg* evtreg, uint32 iparam, void* pparam)
 	if (evtreg < cdp_evts || evtreg >= cdp_evts + MAX_REG_EVENTS || !evtreg->name)
 	{
 #ifdef DEBUG
-		fprintf(stderr, "cdp_Host_FireEvent(): Invalid event\n");
+		fmt::print(stderr, "cdp_Host_FireEvent(): Invalid event\n");
 #endif
 		return 0;
 	}

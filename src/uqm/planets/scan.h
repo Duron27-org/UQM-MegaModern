@@ -25,6 +25,7 @@ typedef struct scan_block SCAN_BLOCK;
 #include "libs/compiler.h"
 #include "libs/gfxlib.h"
 #include "planets.h"
+#include "core/string/StringUtils.h"
 
 #if 0 //defined(__cplusplus)
 extern "C" {
@@ -65,7 +66,7 @@ uqm::COUNT countNodesRetrieved(PLANET_INFO* planetInfo, uqm::BYTE scanType);
 void setNodeRetrieved(PLANET_INFO* planetInfo, uqm::BYTE scanType, uqm::BYTE nodeNr);
 void setNodeNotRetrieved(PLANET_INFO* planetInfo, uqm::BYTE scanType, uqm::BYTE nodeNr);
 
-void GetPlanetTitle(uqm::CHAR_T* buf, uqm::COUNT bufsize);
+void GetPlanetTitle(uqstl::span<uqm::CHAR_T> buf);
 
 #if 0 //defined(__cplusplus)
 }

@@ -63,7 +63,7 @@ bool VideoDecoder_Init(int flags, int depth, uint32 Rmask, uint32 Gmask,
 	if (depth < 15 || depth > 32)
 	{
 		uqm::log::error("VideoDecoder_Init: "
-						"Unsupported video depth %d",
+						"Unsupported video depth {}",
 						depth);
 		return false;
 	}
@@ -93,7 +93,7 @@ bool VideoDecoder_Init(int flags, int depth, uint32 Rmask, uint32 Gmask,
 		if (!info->funcs->InitModule(flags))
 		{
 			uqm::log::error("VideoDecoder_Init(): "
-							"%s video decoder init failed",
+							"{} video decoder init failed",
 							info->funcs->GetName());
 		}
 	}
@@ -140,7 +140,7 @@ VideoDecoder_Register(const char* fileext, TFB_VideoDecoderFuncs* decvtbl)
 	}
 	if (!fileext)
 	{
-		uqm::log::warn("VideoDecoder_Register(): Bad file type for %s",
+		uqm::log::warn("VideoDecoder_Register(): Bad file type for {}",
 					   decvtbl->GetName());
 		return nullptr;
 	}
@@ -164,14 +164,14 @@ VideoDecoder_Register(const char* fileext, TFB_VideoDecoderFuncs* decvtbl)
 	else if (info->ext)
 	{
 		uqm::log::warn("VideoDecoder_Register(): "
-					   "'%s' decoder already registered (%s denied)",
+					   "'{}' decoder already registered ({} denied)",
 					   fileext, decvtbl->GetName());
 		return nullptr;
 	}
 
 	if (!decvtbl->InitModule(vd_flags))
 	{
-		uqm::log::warn("VideoDecoder_Register(): %s decoder init failed",
+		uqm::log::warn("VideoDecoder_Register(): {} decoder init failed",
 					   decvtbl->GetName());
 		return nullptr;
 	}
@@ -252,7 +252,7 @@ VideoDecoder_Load(uio_DirHandle* dir, const char* filename)
 	if (!decoder->funcs->Init(decoder, &vd_vidfmt))
 	{
 		uqm::log::warn("VideoDecoder_Load: "
-					   "Cannot init '%s' decoder, code %d",
+					   "Cannot init '{}' decoder, code {}",
 					   decoder->funcs->GetName(),
 					   decoder->funcs->GetError(decoder));
 		HFree(decoder);
@@ -267,7 +267,7 @@ VideoDecoder_Load(uio_DirHandle* dir, const char* filename)
 	if (!decoder->funcs->Open(decoder, dir, filename))
 	{
 		uqm::log::warn("VideoDecoder_Load: "
-					   "'%s' decoder did not load %s, code %d",
+					   "'{}' decoder did not load {}, code {}",
 					   decoder->funcs->GetName(), filename,
 					   decoder->funcs->GetError(decoder));
 

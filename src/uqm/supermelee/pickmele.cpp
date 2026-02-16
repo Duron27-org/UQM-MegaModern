@@ -475,7 +475,6 @@ UpdatePickMeleeFleetValue(FRAME frame, uqm::COUNT which_player)
 	uqm::COUNT value;
 	RECT r;
 	TEXT t;
-	uqm::CHAR_T buf[40];
 
 	value = GetRaceQueueValue(&race_q[which_player]);
 
@@ -494,7 +493,8 @@ UpdatePickMeleeFleetValue(FRAME frame, uqm::COUNT which_player)
 	DrawFilledRectangle(&r);
 
 	// Draw the new value text.
-	sprintf(buf, "%d", value);
+	uqm::CHAR_T buf[40] {};
+	fmt::format_to_n(buf, sizeof(buf) - 1, "{}", value);
 	t.baseline.y = RES_SCALE(7);
 	t.align = ALIGN_RIGHT;
 	t.pStr = buf;
@@ -560,7 +560,6 @@ void FillPickMeleeFrame(MeleeSetup* setup)
 		RECT r;
 		TEXT t;
 		STAMP s;
-		uqm::CHAR_T buf[30];
 		FleetShipIndex index;
 
 		sideI = GetPlayerOrder(i);
@@ -601,8 +600,9 @@ void FillPickMeleeFrame(MeleeSetup* setup)
 		SetContextForeGroundColor(PICKSHIP_TEAM_NAME_TEXT_COLOR);
 		font_DrawText(&t);
 
+		uqm::CHAR_T buf[30] {};
 		// Total team value of the starting team:
-		sprintf(buf, "%u", MeleeSetup_getFleetValue(setup, sideI));
+		fmt::format_to_n(buf, sizeof(buf) - 1, "{}", MeleeSetup_getFleetValue(setup, sideI));
 		t.baseline.x = RES_SCALE(4);
 		t.baseline.y = RES_SCALE(7);
 		t.align = ALIGN_LEFT;

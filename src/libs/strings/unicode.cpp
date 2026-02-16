@@ -160,7 +160,7 @@ err:
 	{
 		errData &= origPtr[3];
 	}
-	uqm::log::warn("Warning: Invalid UTF8 sequence: result 0x%x last byte 0x%02x str 0x%08x %s", result, (unsigned)(**ptr), errData, (const char*)origPtr);
+	uqm::log::warn("Warning: Invalid UTF8 sequence: result {:#x} last byte {:#02x} str {:#08x} {}", result, (unsigned)(**ptr), errData, (const char*)origPtr);
 
 	// Resynchronise (skip everything starting with 0x10xxxxxx):
 	resyncUTF8(ptr);
@@ -564,7 +564,7 @@ int getStringFromChar(unsigned char* ptr, size_t size, UniChar ch)
 	if (def->mask == 0)
 	{ // invalid or unsupported char
 		uqm::log::warn("Warning: Invalid or unsupported unicode "
-					   "char (%lu)",
+					   "char ({})",
 					   (unsigned long)ch);
 		return 0;
 	}
@@ -708,7 +708,7 @@ AlignText(const uqm::CHAR_T* str, sint16* loc_x)
 	{
 		uqm::log::debug(
 			"\nVariable between delimiters is missing, corrupt, or "
-			"not an integer: %s\n",
+			"not an integer: {}\n",
 			str);
 		return (uqm::CHAR_T*)str;
 	}
@@ -739,7 +739,7 @@ AddPadd(const uqm::CHAR_T* str, sint16* padding)
 	{
 		uqm::log::debug(
 			"\nVariable between delimiters is missing, corrupt, or "
-			"not an integer: %s\n",
+			"not an integer: {}\n",
 			str);
 		return (uqm::CHAR_T*)str;
 	}

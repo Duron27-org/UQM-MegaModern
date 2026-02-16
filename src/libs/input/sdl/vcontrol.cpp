@@ -24,6 +24,7 @@
 #include "keynames.h"
 #include "core/log/log.h"
 #include "libs/reslib.h"
+#include "core/string/StringUtils.h"
 
 /* How many binding slots are allocated at once. */
 #define POOL_CHUNK_SIZE 64
@@ -217,8 +218,8 @@ apply_default_bindings_to_controller(SDL_JoystickID instance_id,
 		}
 	}
 
-	uqm::log::debug("Applied %d bindings for logical port %d "
-					"(instance %d)",
+	uqm::log::debug("Applied {} bindings for logical port {} "
+					"(instance {})",
 					default_binding_count, logical_port,
 					instance_id);
 }
@@ -240,7 +241,7 @@ void create_joystick(int device_index)
 	if (!gamecontroller)
 	{
 		uqm::log::warn("VControl: Could not initialize "
-					   "controller #%d",
+					   "controller #{}",
 					   device_index);
 		return;
 	}
@@ -253,7 +254,7 @@ void create_joystick(int device_index)
 	{
 		if (current->instance_id == instance_id)
 		{
-			uqm::log::warn("Controller instance %d already in list",
+			uqm::log::warn("Controller instance {} already in list",
 						   instance_id);
 			SDL_GameControllerClose(gamecontroller);
 			return;
@@ -315,8 +316,8 @@ void create_joystick(int device_index)
 		return;
 	}
 
-	uqm::log::info("VControl opened controller %d (logical port %d): "
-				   "%s (instance %d)",
+	uqm::log::info("VControl opened controller {} (logical port {}): "
+				   "{} (instance {})",
 				   device_index, logical_port,
 				   SDL_GameControllerName(gamecontroller), instance_id);
 
@@ -362,14 +363,14 @@ destroy_joystick(SDL_JoystickID instance_id)
 			HFree(current);
 
 			uqm::log::info(
-				"Controller instance %d removed", instance_id);
+				"Controller instance {} removed", instance_id);
 			return;
 		}
 		prev = &current->next;
 		current = current->next;
 	}
 
-	uqm::log::warn("Controller instance %d not found for removal",
+	uqm::log::warn("Controller instance {} not found for removal",
 				   instance_id);
 }
 
@@ -396,16 +397,16 @@ void create_joystick(int index)
 		joystick* x = &joysticks[index];
 		int j;
 #if SDL_MAJOR_VERSION == 1
-		uqm::log::info("VControl opened joystick: %s",
+		uqm::log::info("VControl opened joystick: {}",
 					   SDL_JoystickName(index));
 #else
-		uqm::log::info("VControl opened joystick: %s",
+		uqm::log::info("VControl opened joystick: {}",
 					   SDL_JoystickName(stick));
 #endif
 		axes = SDL_JoystickNumAxes(stick);
 		buttons = SDL_JoystickNumButtons(stick);
 		hats = SDL_JoystickNumHats(stick);
-		uqm::log::info("%d axes, %d buttons, %d hats.", axes, buttons,
+		uqm::log::info("{} axes, {} buttons, {} hats.", axes, buttons,
 					   hats);
 		x->numaxes = axes;
 		x->numbuttons = buttons;
@@ -432,7 +433,7 @@ void create_joystick(int index)
 	else
 	{
 		uqm::log::warn(
-			"VControl: Could not initialize joystick #%d", index);
+			"VControl: Could not initialize joystick #{}", index);
 	}
 }
 
@@ -592,7 +593,7 @@ int VControl_SetJoyThreshold(int port, int threshold)
 #endif /* HAVE_JOYSTICK */
 	{
 		// log_add (log_Warning, "VControl_SetJoyThreshold passed "
-		//	"illegal port %d", port);
+		//	"illegal port {}", port);
 		return -1;
 	}
 }
@@ -948,7 +949,7 @@ int VControl_AddJoyAxisBinding(int port, int axis, int polarity, int* target)
 		else
 		{
 			// log_add (log_Debug, "VControl: Attempted to bind to "
-			//	"illegal axis %d", axis);
+			//	"illegal axis {}", axis);
 			return -1;
 		}
 	}
@@ -984,7 +985,7 @@ int VControl_AddJoyAxisBinding(int port, int axis, int polarity, int* target)
 				else
 				{
 					// log_add (log_Debug, "VControl: Attempted to bind to"
-					//	" illegal axis %d", axis);
+					//	" illegal axis {}", axis);
 					return -1;
 				}
 			}
@@ -1001,7 +1002,7 @@ int VControl_AddJoyAxisBinding(int port, int axis, int polarity, int* target)
 #endif /* HAVE_JOYSTICK */
 	{
 		// log_add (log_Debug, "VControl: Attempted to bind to illegal "
-		//	"port %d", port);
+		//	"port {}", port);
 		return -1;
 	}
 	return 0;
@@ -1040,7 +1041,7 @@ void VControl_RemoveJoyAxisBinding(int port, int axis,
 		else
 		{
 			uqm::log::debug("VControl: Attempted to unbind from "
-							"illegal axis %d",
+							"illegal axis {}",
 							axis);
 		}
 	}
@@ -1074,7 +1075,7 @@ void VControl_RemoveJoyAxisBinding(int port, int axis,
 				else
 				{
 					uqm::log::debug("VControl: Attempted to unbind "
-									"from illegal axis %d",
+									"from illegal axis {}",
 									axis);
 				}
 				return;
@@ -1092,7 +1093,7 @@ void VControl_RemoveJoyAxisBinding(int port, int axis,
 #endif /* HAVE_JOYSTICK */
 	{
 		uqm::log::debug("VControl: Attempted to unbind from illegal "
-						"port %d",
+						"port {}",
 						port);
 	}
 }
@@ -1117,7 +1118,7 @@ int VControl_AddJoyButtonBinding(int port, int button, int* target)
 		else
 		{
 			// log_add (log_Debug, "VControl: Attempted to bind to "
-			//	"illegal button %d", button);
+			//	"illegal button {}", button);
 			return -1;
 		}
 	}
@@ -1139,7 +1140,7 @@ int VControl_AddJoyButtonBinding(int port, int button, int* target)
 				else
 				{
 					// log_add (log_Debug, "VControl: Attempted to bind to"
-					//	" illegal button %d", button);
+					//	" illegal button {}", button);
 					return -1;
 				}
 			}
@@ -1156,7 +1157,7 @@ int VControl_AddJoyButtonBinding(int port, int button, int* target)
 #endif /* HAVE_JOYSTICK */
 	{
 		uqm::log::debug("VControl: Attempted to unbind from illegal "
-						"port %d",
+						"port {}",
 						port);
 		return -1;
 	}
@@ -1181,7 +1182,7 @@ void VControl_RemoveJoyButtonBinding(int port, int button, int* target)
 		else
 		{
 			uqm::log::debug("VControl: Attempted to unbind from "
-							"illegal button %d",
+							"illegal button {}",
 							button);
 		}
 	}
@@ -1202,7 +1203,7 @@ void VControl_RemoveJoyButtonBinding(int port, int button, int* target)
 				else
 				{
 					uqm::log::debug("VControl: Attempted to unbind "
-									"from illegal button %d",
+									"from illegal button {}",
 									button);
 				}
 				return;
@@ -1219,7 +1220,7 @@ void VControl_RemoveJoyButtonBinding(int port, int button, int* target)
 #endif /* HAVE_JOYSTICK */
 	{
 		uqm::log::debug("VControl: Attempted to unbind from illegal "
-						"port %d",
+						"port {}",
 						port);
 	}
 }
@@ -1269,7 +1270,7 @@ int VControl_AddJoyHatBinding(int port, int which, Uint8 dir, int* target)
 		else
 		{
 			// log_add (log_Debug, "VControl: Attempted to bind to "
-			//	"illegal hat %d", which);
+			//	"illegal hat {}", which);
 			return -1;
 		}
 	}
@@ -1282,7 +1283,7 @@ int VControl_AddJoyHatBinding(int port, int which, Uint8 dir, int* target)
 #endif /* HAVE_JOYSTICK */
 	{
 		// log_add (log_Debug, "VControl: Attempted to bind to illegal "
-		//	"port %d", port);
+		//	"port {}", port);
 		return -1;
 	}
 }
@@ -1328,7 +1329,7 @@ void VControl_RemoveJoyHatBinding(int port, int which, Uint8 dir, int* target)
 		else
 		{
 			uqm::log::debug("VControl: Attempted to unbind from "
-							"illegal hat %d",
+							"illegal hat {}",
 							which);
 		}
 	}
@@ -1341,7 +1342,7 @@ void VControl_RemoveJoyHatBinding(int port, int which, Uint8 dir, int* target)
 #endif /* HAVE_JOYSTICK */
 	{
 		uqm::log::debug(
-			"VControl: Attempted to unbind from illegal port %d", port);
+			"VControl: Attempted to unbind from illegal port {}", port);
 	}
 }
 
@@ -1801,7 +1802,7 @@ next_token(parse_state* state)
 static void
 expected_error(parse_state* state, const char* expected)
 {
-	uqm::log::warn("VControl: Expected '%s' on config file line %d",
+	uqm::log::warn("VControl: Expected '{}' on config file line {}",
 				   expected, state->linenum);
 	state->error = 1;
 }
@@ -1822,8 +1823,8 @@ consume_keyname(parse_state* state)
 	int keysym = VControl_name2code(state->token);
 	if (!keysym)
 	{
-		uqm::log::warn("VControl: Illegal key name '%s' on config "
-					   "file line %d",
+		uqm::log::warn("VControl: Illegal key name '{}' on config "
+					   "file line {}",
 					   state->token, state->linenum);
 		state->error = 1;
 	}
@@ -1839,7 +1840,7 @@ consume_num(parse_state* state)
 	if (*end != '\0')
 	{
 		uqm::log::warn(
-			"VControl: Expected integer on config line %d",
+			"VControl: Expected integer on config line {}",
 			state->linenum);
 		state->error = 1;
 	}
@@ -1995,32 +1996,36 @@ void VControl_ParseGesture(VCONTROL_GESTURE* g, const char* spec)
 	parse_gesture(&ps, g);
 	if (ps.error)
 	{
-		printf("Error parsing %s\n", spec);
+		uqm::log::error("Error parsing {}\n", spec);
 	}
 }
 
-int VControl_DumpGesture(char* buf, int n, VCONTROL_GESTURE* g)
+size_t VControl_DumpGesture(uqstl::span<char> buf, VCONTROL_GESTURE* g)
 {
 	switch (g->type)
 	{
 		case VCONTROL_KEY:
-			return snprintf(buf, n, "key %s",
-							VControl_code2name(g->gesture.key));
+			return fmt::format_to_sz_n(buf.data(), buf.size(), "key {}",
+									   VControl_code2name(g->gesture.key))
+				.size;
 		case VCONTROL_JOYAXIS:
-			return snprintf(buf, n, "joystick %d axis %d %s",
-							g->gesture.axis.port, g->gesture.axis.index,
-							(g->gesture.axis.polarity > 0) ? "positive" : "negative");
+			return fmt::format_to_sz_n(buf.data(), buf.size(), "joystick {} axis {} {}",
+									   g->gesture.axis.port, g->gesture.axis.index,
+									   (g->gesture.axis.polarity > 0) ? "positive" : "negative")
+				.size;
 		case VCONTROL_JOYBUTTON:
-			return snprintf(buf, n, "joystick %d button %d",
-							g->gesture.button.port, g->gesture.button.index);
+			return fmt::format_to_sz_n(buf.data(), buf.size(), "joystick {} button {}",
+									   g->gesture.button.port, g->gesture.button.index)
+				.size;
 
 #if SDL_MAJOR_VERSION == 1
 		case VCONTROL_JOYHAT:
-			return snprintf(buf, n, "joystick %d hat %d %s",
-							g->gesture.hat.port, g->gesture.hat.index,
-							(g->gesture.hat.dir == SDL_HAT_UP) ? "up" :
-																 ((g->gesture.hat.dir == SDL_HAT_DOWN) ? "down" :
-																										 ((g->gesture.hat.dir == SDL_HAT_LEFT) ? "left" : "right")));
+			return fmt::format_to_sz_n(buf.data(), buf.size(), "joystick {} hat {} {}",
+									   g->gesture.hat.port, g->gesture.hat.index,
+									   (g->gesture.hat.dir == SDL_HAT_UP) ? "up" :
+																			((g->gesture.hat.dir == SDL_HAT_DOWN) ? "down" :
+																													((g->gesture.hat.dir == SDL_HAT_LEFT) ? "left" : "right")))
+				.size;
 #endif // SDL_MAJOR_VERSION
 		default:
 			buf[0] = '\0';

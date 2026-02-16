@@ -29,6 +29,8 @@
 #include "libs/graphics/drawable.h"
 // for GetFrameBounds()
 
+#include "core/string/StringUtils.h"
+
 
 #define ELEMENT_ORG_Y RES_SCALE(35)
 #define FREE_ORG_Y (ELEMENT_ORG_Y + (NUM_ELEMENT_CATEGORIES * ELEMENT_SPACING_Y))
@@ -65,8 +67,8 @@ void ShowRemainingCapacity(void)
 	r.corner.x = RES_SCALE(40);
 	r.corner.y = FREE_ORG_Y;
 
-	snprintf(buf, sizeof buf, "%u",
-			 GetStorageBayCapacity() - GLOBAL_SIS(TotalElementMass));
+	fmt::format_to_sz_n(buf, sizeof buf, "{}",
+						GetStorageBayCapacity() - GLOBAL_SIS(TotalElementMass));
 	t.baseline.x = ELEMENT_COL_2 + RES_SCALE(1);
 	t.baseline.y = r.corner.y + TEXT_BASELINE;
 	t.align = ALIGN_RIGHT;
@@ -120,7 +122,7 @@ DrawElementAmount(uqm::COUNT element, bool selected)
 
 	if (element == NUM_ELEMENT_CATEGORIES)
 	{ // Bio
-		snprintf(buf, sizeof buf, "%u", GLOBAL_SIS(TotalBioMass));
+		fmt::format_to_sz_n(buf, sizeof buf, "{}", GLOBAL_SIS(TotalBioMass));
 	}
 	else
 	{ // Element
@@ -129,11 +131,11 @@ DrawElementAmount(uqm::COUNT element, bool selected)
 									  CARGO_SELECTED_WORTH_COLOR :
 									  CARGO_WORTH_COLOR);
 		t.baseline.x = ELEMENT_COL_1;
-		snprintf(buf, sizeof buf, "%u", GLOBAL(ElementWorth[element]));
+		fmt::format_to_sz_n(buf, sizeof buf, "{}", GLOBAL(ElementWorth[element]));
 		t.CharCount = (uqm::COUNT)~0;
 		font_DrawText(&t);
 
-		snprintf(buf, sizeof buf, "%u", GLOBAL_SIS(ElementAmounts[element]));
+		fmt::format_to_sz_n(buf, sizeof buf, "{}", GLOBAL_SIS(ElementAmounts[element]));
 	}
 
 	// print the element/bio amount
@@ -360,7 +362,7 @@ void DrawRainbowPlanet(uqm::COUNT planet)
 			   + RES_SCALE(3);
 	DrawFilledRectangle(&r);
 	t.pStr = buf;
-	snprintf(buf, sizeof buf, "%u", planet);
+	fmt::format_to_sz_n(buf, sizeof buf, "{}", planet);
 	t.CharCount = (uqm::COUNT)~0;
 	t.baseline.x = (STATUS_WIDTH >> 1);
 	t.baseline.y = r.corner.y + TEXT_BASELINE;

@@ -404,13 +404,13 @@ DrawablesIntersect(INTERSECT_CONTROL* pControl0,
 				++time_x_1;
 
 #ifdef DEBUG_INTERSEC
-				uqm::log::debug("FramePtr0<%d, %d> --> <%d, %d>",
+				uqm::log::debug("FramePtr0<{}, {}> --> <{}, {}>",
 								GetFrameWidth(FramePtr0), GetFrameHeight(FramePtr0),
 								r0.corner.x, r0.corner.y);
-				uqm::log::debug("FramePtr1<%d, %d> --> <%d, %d>",
+				uqm::log::debug("FramePtr1<{}, {}> --> <{}, {}>",
 								GetFrameWidth(FramePtr1), GetFrameHeight(FramePtr1),
 								r1.corner.x, r1.corner.y);
-				uqm::log::debug("time_x(%d, %d)-%d, time_y(%d, %d)-%d",
+				uqm::log::debug("time_x({}, {})-{}, time_y({}, {})-{}",
 								time_x_0, time_x_1, dx, time_y_0, time_y_1, dy);
 #endif /* DEBUG_INTERSEC */
 				if (dx == 0)
@@ -461,7 +461,7 @@ DrawablesIntersect(INTERSECT_CONTROL* pControl0,
 			}
 
 #ifdef DEBUG_INTERSEC
-			uqm::log::debug("start_time = %d, end_time = %d",
+			uqm::log::debug("start_time = {}, end_time = {}",
 							time_y_0, time_y_1);
 #endif /* DEBUG_INTERSEC */
 			if (time_y_0 <= time_y_1

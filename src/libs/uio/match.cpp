@@ -116,9 +116,9 @@ match_prepareContext(const char* pattern, match_MatchContext** contextPtr,
 #endif
 		default:
 #ifdef DEBUG
-			fprintf(stderr, "match_prepareContext called with unsupported "
-							"type %d matching.\n",
-					type);
+			fmt::print(stderr, "match_prepareContext called with unsupported "
+							   "type {} matching.\n",
+					   type);
 #endif
 			return match_ENOSYS;
 	}

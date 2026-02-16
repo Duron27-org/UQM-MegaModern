@@ -24,6 +24,7 @@
 #include "sounds.h"
 #include "colors.h"
 #include "fmv.h"
+#include "core/string/StringUtils.h"
 #include "libs/gfxlib.h"
 #include "libs/graphics/gfx_common.h"
 #include "libs/graphics/widgets.h"
@@ -100,6 +101,9 @@ OPT_CONSOLETYPE whichPlatformOpt(uqm::EmulationMode platform)
 			return OPT_CONSOLETYPE::OPTVAL_3DO;
 		case uqm::EmulationMode::PC:
 			return OPT_CONSOLETYPE::OPTVAL_PC;
+		case uqm::EmulationMode::None:
+		case uqm::EmulationMode::All:
+			break;
 	}
 	return OPT_CONSOLETYPE::OPTVAL_PC;
 }
@@ -539,8 +543,8 @@ quit_sub_menu(WIDGET* self, int event)
 static void
 populate_res(void)
 {
-	sprintf(textentries[TEXT_CUSTMRES].value, "%dx%d",
-			SavedWidth, SavedHeight);
+	fmt::format_to_n(textentries[TEXT_CUSTMRES].value, WIDGET_TEXTENTRY_WIDTH - 1, "{}x{}",
+					 SavedWidth, SavedHeight);
 }
 
 static int
@@ -616,8 +620,8 @@ populate_seed(void)
 	{
 		optCustomSeed = PrimeA;
 	}
-	snprintf(textentries[TEXT_GAMESEED].value,
-			 sizeof(textentries[TEXT_GAMESEED].value), "%d", optCustomSeed);
+	fmt::format_to_sz_n(textentries[TEXT_GAMESEED].value,
+						sizeof(textentries[TEXT_GAMESEED].value), "{}", optCustomSeed);
 }
 
 static int
@@ -870,9 +874,9 @@ change_seedtype(WIDGET_CHOICE* self, int oldval)
 	if (self->selected == OPTVAL_PRIME)
 	{
 		optCustomSeed = PrimeA;
-		snprintf(textentries[TEXT_GAMESEED].value,
-				 sizeof(textentries[TEXT_GAMESEED].value),
-				 "%d", optCustomSeed);
+		fmt::format_to_sz_n(textentries[TEXT_GAMESEED].value,
+							sizeof(textentries[TEXT_GAMESEED].value),
+							"{}", optCustomSeed);
 	}
 
 	(void)oldval; // Satisfy compiler
@@ -885,7 +889,7 @@ change_seed(WIDGET_TEXTENTRY* self)
 	if (choices[CHOICE_GAMESEED].selected == OPTVAL_PRIME || !SANE_SEED(optCustomSeed))
 	{
 		customSeed = PrimeA;
-		snprintf(self->value, sizeof(self->value), "%d", customSeed);
+		fmt::format_to_sz_n(self->value, sizeof(self->value), "{}", customSeed);
 	}
 	optCustomSeed = customSeed;
 }
@@ -1725,9 +1729,9 @@ static void
 gamma_DrawValue(WIDGET_SLIDER* self, int x, int y)
 {
 	TEXT t;
-	char buf[16];
+	char buf[16] {};
 	float gamma = sliderToGamma(self->value);
-	snprintf(buf, sizeof buf, "%.4f", gamma);
+	fmt::format_to_sz_n(buf, sizeof buf, "{:.4}", gamma);
 
 	t.baseline.x = x + RES_SCALE(6);
 	t.baseline.y = y;
@@ -1922,9 +1926,9 @@ init_widgets(void)
 	// Code to swap resolution optnames for correct ones
 	/*for (i = 0; i < choices[CHOICE_RESOLUTION].numopts - 1; i++)
 	{
-		snprintf(choices[CHOICE_RESOLUTION].options[i].optname,
+		fmt::format_to_sz_n(choices[CHOICE_RESOLUTION].options[i].optname,
 			strlen(choices[CHOICE_RESOLUTION].options[i].optname),
-			"%dx%d", RES_DESCALE (CanvasWidth)*(i+1), 
+			"{}x{}", RES_DESCALE (CanvasWidth)*(i+1), 
 			RES_DESCALE (CanvasHeight)* (i + 1));
 	}*/
 
@@ -2251,7 +2255,7 @@ init_widgets(void)
 	/* Check for garbage at the end */
 	if (index < count)
 	{
-		uqm::log::warn("WARNING: Setup strings had %d garbage "
+		uqm::log::warn("WARNING: Setup strings had {} garbage "
 					   "entries at the end.",
 					   count - index);
 	}
@@ -2940,8 +2944,8 @@ void SetGlobalOptions(GLOBALOPTS* opts)
 			}
 		}
 
-		uqm::log::debug("ScreenWidth:%d, ScreenHeight:%d, "
-						"Wactual:%d, Hactual:%d",
+		uqm::log::debug("ScreenWidth:{}, ScreenHeight:{}, "
+						"Wactual:{}, Hactual:{}",
 						CanvasWidth, CanvasHeight,
 						w, h);
 

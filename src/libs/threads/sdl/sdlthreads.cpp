@@ -77,7 +77,7 @@ static void
 LocalStats(SDL_Thread* thread)
 {
 #if defined(WIN32) || !defined(SDL_PTHREADS)
-	fprintf(stderr, "Thread ID %08lx\n", (Uint64)SDL_GetThreadID(thread));
+	fmt::print(stderr, "Thread ID %08lx\n", (Uint64)SDL_GetThreadID(thread));
 #else  /* !defined (WIN32) && defined(SDL_PTHREADS) */
 	// This only works if SDL implements threads as processes
 	pid_t pid;
@@ -85,11 +85,11 @@ LocalStats(SDL_Thread* thread)
 	long seconds;
 
 	pid = (pid_t)SDL_GetThreadID(thread);
-	fprintf(stderr, "Pid %d\n", (int)pid);
+	fmt::print(stderr, "Pid {}\n", (int)pid);
 	getrusage(RUSAGE_SELF, &ru);
 	seconds = ru.ru_utime.tv_sec + ru.ru_utime.tv_sec;
-	fprintf(stderr, "Used %ld.%ld minutes of processor time.\n",
-			seconds / 60, seconds % 60);
+	fmt::print(stderr, "Used %ld.%ld minutes of processor time.\n",
+			   seconds / 60, seconds % 60);
 #endif /* defined (WIN32) && defined(SDL_PTHREADS) */
 }
 
@@ -100,21 +100,21 @@ void PrintThreadsStats_SDL(void)
 
 	now = GetTimeCounter();
 	SDL_mutexP(threadQueueMutex);
-	fprintf(stderr, "--- Active threads ---\n");
+	fmt::print(stderr, "--- Active threads ---\n");
 	for (ptr = threadQueue; ptr != nullptr; ptr = ptr->next)
 	{
-		fprintf(stderr, "Thread named '%s'.\n", ptr->name);
-		fprintf(stderr, "Started %d.%d minutes ago.\n",
-				(now - ptr->startTime) / 60000,
-				((now - ptr->startTime) / 1000) % 60);
+		fmt::print(stderr, "Thread named '{}'.\n", ptr->name);
+		fmt::print(stderr, "Started {}.{} minutes ago.\n",
+				   (now - ptr->startTime) / 60000,
+				   ((now - ptr->startTime) / 1000) % 60);
 		LocalStats(ptr->native);
 		if (ptr->next != nullptr)
 		{
-			fprintf(stderr, "\n");
+			fmt::print(stderr, "\n");
 		}
 	}
 	SDL_mutexV(threadQueueMutex);
-	fprintf(stderr, "----------------------\n");
+	fmt::print(stderr, "----------------------\n");
 	fflush(stderr);
 }
 #endif /* PROFILE_THREADS */
@@ -220,7 +220,7 @@ ThreadHelper(void* startInfo)
 	result = (*func)(data);
 
 #ifdef DEBUG_THREADS
-	uqm::log::debug("Thread '%s' done (returned %d).",
+	uqm::log::debug("Thread '{}' done (returned {}).",
 					thread->name, result);
 	fflush(stderr);
 #endif
@@ -288,7 +288,7 @@ CreateThread_SDL(ThreadFunction func, void* data, uqm::SDWORD stackSize
 
 #ifdef DEBUG_THREADS
 #if 0	
-	log_add (log_Debug, "Thread '%s' created.", ThreadName (thread));
+	log_add (log_Debug, "Thread '{}' created.", ThreadName (thread));
 	fflush (stderr);
 #endif
 #endif
@@ -382,7 +382,7 @@ CreateMutex_SDL(void)
 #ifdef NAMED_SYNCHRO
 		/* logging depends on Mutexes, so we have to use the
 		 * non-threaded version instead */
-		/*log_add_nothread*/ uqm::log::critical("Could not initialize mutex '%s': aborting.", name);
+		/*log_add_nothread*/ uqm::log::critical("Could not initialize mutex '{}': aborting.", name);
 #else
 		/*log_add_nothread*/ uqm::log::critical("Could not initialize mutex: aborting.");
 #endif
@@ -415,7 +415,7 @@ void LockMutex_SDL(Mutex m)
 	if (mutex->owner && (mutex->syncClass & TRACK_CONTENTION_CLASSES))
 	{ /* logging depends on Mutexes, so we have to use the
 		 * non-threaded version instead */
-		/*log_add_nothread*/ uqm::log::debug("Thread '%s' blocking on mutex '%s'", MyThreadName(), mutex->name);
+		/*log_add_nothread*/ uqm::log::debug("Thread '{}' blocking on mutex '{}'", MyThreadName(), mutex->name);
 	}
 #endif
 	while (SDL_mutexP(mutex->mutex) != 0)
@@ -467,7 +467,7 @@ CreateSemaphore_SDL(uqm::DWORD initial
 	if (sem->sem == nullptr)
 	{
 #ifdef NAMED_SYNCHRO
-		uqm::log::critical("Could not initialize semaphore '%s':"
+		uqm::log::critical("Could not initialize semaphore '{}':"
 						   " aborting.",
 						   name);
 #else
@@ -493,7 +493,7 @@ void SetSemaphore_SDL(Semaphore s)
 	bool contention = !(SDL_SemValue(sem->sem));
 	if (contention && (sem->syncClass & TRACK_CONTENTION_CLASSES))
 	{
-		uqm::log::debug("Thread '%s' blocking on semaphore '%s'",
+		uqm::log::debug("Thread '{}' blocking on semaphore '{}'",
 						MyThreadName(), sem->name);
 	}
 #endif
@@ -504,8 +504,8 @@ void SetSemaphore_SDL(Semaphore s)
 #ifdef TRACK_CONTENTION
 	if (contention && (sem->syncClass & TRACK_CONTENTION_CLASSES))
 	{
-		uqm::log::debug("Thread '%s' awakens,"
-						" released from semaphore '%s'",
+		uqm::log::debug("Thread '{}' awakens,"
+						" released from semaphore '{}'",
 						MyThreadName(), sem->name);
 	}
 #endif
@@ -549,7 +549,7 @@ CreateRecursiveMutex_SDL(void)
 	{
 #ifdef NAMED_SYNCHRO
 		uqm::log::critical("Could not initialize recursive "
-						   "mutex '%s': aborting.",
+						   "mutex '{}': aborting.",
 						   name);
 #else
 		uqm::log::critical("Could not initialize recursive "
@@ -581,7 +581,7 @@ void LockRecursiveMutex_SDL(RecursiveMutex val)
 #ifdef TRACK_CONTENTION
 		if (mtx->thread_id && (mtx->syncClass & TRACK_CONTENTION_CLASSES))
 		{
-			uqm::log::debug("Thread '%s' blocking on '%s'",
+			uqm::log::debug("Thread '{}' blocking on '{}'",
 							MyThreadName(), mtx->name);
 		}
 #endif
@@ -601,7 +601,7 @@ void UnlockRecursiveMutex_SDL(RecursiveMutex val)
 	if (!mtx->locks || mtx->thread_id != thread_id)
 	{
 #ifdef NAMED_SYNCHRO
-		uqm::log::debug("'%s' attempted to unlock %s when it "
+		uqm::log::debug("'{}' attempted to unlock {} when it "
 						"didn't hold it",
 						MyThreadName(), mtx->name);
 #endif
@@ -646,7 +646,7 @@ CreateCondVar_SDL(void)
 	if ((cv->cond == nullptr) || (cv->mutex == nullptr))
 	{
 #ifdef NAMED_SYNCHRO
-		uqm::log::critical("Could not initialize condition variable '%s':"
+		uqm::log::critical("Could not initialize condition variable '{}':"
 						   " aborting.",
 						   name);
 #else
@@ -677,7 +677,7 @@ void WaitCondVar_SDL(CondVar c)
 #ifdef TRACK_CONTENTION
 	if (cv->syncClass & TRACK_CONTENTION_CLASSES)
 	{
-		uqm::log::debug("Thread '%s' waiting for signal from '%s'",
+		uqm::log::debug("Thread '{}' waiting for signal from '{}'",
 						MyThreadName(), cv->name);
 	}
 #endif
@@ -688,7 +688,7 @@ void WaitCondVar_SDL(CondVar c)
 #ifdef TRACK_CONTENTION
 	if (cv->syncClass & TRACK_CONTENTION_CLASSES)
 	{
-		uqm::log::debug("Thread '%s' received signal from '%s',"
+		uqm::log::debug("Thread '{}' received signal from '{}',"
 						" awakening.",
 						MyThreadName(), cv->name);
 	}

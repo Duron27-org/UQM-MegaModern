@@ -43,7 +43,7 @@
 #include "mikmod_internals.h"
 
 #ifdef SUNOS
-extern int fprintf(FILE*, const char*, ...);
+extern int fmt::print(FILE*, const char*, ...);
 extern long int random(void);
 #endif
 
@@ -325,7 +325,7 @@ static UWORD getoldperiod(UWORD note, ULONG speed)
 	if (!speed)
 	{
 #ifdef MIKMOD_DEBUG
-		fprintf(stderr, "\rmplayer: getoldperiod() called with note=%d, speed=0 !\n", note);
+		fmt::print(stderr, "\rmplayer: getoldperiod() called with note={}, speed=0 !\n", note);
 #endif
 		return 4242; /* <- prevent divide overflow.. (42 hehe) */
 	}
@@ -2905,7 +2905,7 @@ static int pt_playeffects(MODULE* mod, SWORD channel, MP_CONTROL* a)
 	{
 #if 0 /* this doesn't normally happen unless things go fubar elsewhere */
 		if (c >= UNI_LAST)
-		    fprintf(stderr,"fubar'ed opcode %u\n",c);
+		    fmt::print(stderr,"fubar'ed opcode {}\n",c);
 #endif
 		f = effects[c];
 		if (f != DoNothing)

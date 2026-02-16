@@ -26,6 +26,7 @@
 
 ==============================================================================*/
 
+#include <fmt/format.h>
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -42,7 +43,7 @@
 #include "mikmod_internals.h"
 
 #ifdef SUNOS
-extern int fprintf(FILE*, const char*, ...);
+extern int fmt::print(FILE*, const char*, ...);
 #endif
 
 MREADER* modreader;
@@ -59,7 +60,7 @@ const UWORD finetune[16] = {
 
 MIKMODAPI CHAR* MikMod_InfoLoader(void)
 {
-	int len = 0;
+	size_t len = 0;
 	MLOADER* l;
 	CHAR* list = nullptr;
 
@@ -74,12 +75,16 @@ MIKMODAPI CHAR* MikMod_InfoLoader(void)
 	{
 		if ((list = (CHAR*)MikMod_malloc(len * sizeof(CHAR))) != nullptr)
 		{
+			size_t remainingBuf {len};
 			CHAR* list_end = list;
 			list[0] = 0;
 			/* list all registered module loders */
 			for (l = firstloader; l; l = l->next)
 			{
-				list_end += sprintf(list_end, "%s%s", l->version, (l->next) ? "\n" : "");
+				const auto fmtResult = fmt::format_to_n(list_end, remainingBuf, "{}", l->version);
+				list_end = fmtResult.out;
+				*list_end = (l->next) ? '\n' : '\0';
+				remainingBuf -= (fmtResult.size + 1);
 			}
 		}
 	}

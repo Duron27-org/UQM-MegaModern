@@ -158,7 +158,7 @@ copyError(uio_Handle* srcHandle, uio_Handle* dstHandle,
 
 	savedErrno = errno;
 
-	uqm::log::debug("Error while copying: %s", strerror(errno));
+	uqm::log::debug("Error while copying: {}", strerror(errno));
 
 	if (srcHandle != nullptr)
 	{

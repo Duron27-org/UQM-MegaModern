@@ -134,8 +134,8 @@ SetEquFrameIndex(FRAME DstFramePtr, FRAME SrcFramePtr)
 		DRAWABLE_DESC* DrawablePtr = GetFrameParentDrawable(DstFramePtr);
 		if (Index > DrawablePtr->MaxIndex)
 		{
-			uqm::log::debug("SetEquFrameIndex: source index (%d) beyond "
-							"destination range (%d)",
+			uqm::log::debug("SetEquFrameIndex: source index ({}) beyond "
+							"destination range ({})",
 							(int)Index,
 							(int)DrawablePtr->MaxIndex);
 		}

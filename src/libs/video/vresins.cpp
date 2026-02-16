@@ -90,10 +90,10 @@ GetLegacyVideoData(const char* path, RESOURCE_DATA* resdata)
 		}
 	}
 
-	uqm::log::info("\t'%s' -- video", paths);
+	uqm::log::info("\t'{}' -- video", paths);
 	if (audio_path)
 	{
-		uqm::log::info("\t'%s' -- audio", audio_path);
+		uqm::log::info("\t'{}' -- audio", audio_path);
 	}
 	else
 	{
@@ -101,7 +101,7 @@ GetLegacyVideoData(const char* path, RESOURCE_DATA* resdata)
 	}
 	if (speech_path)
 	{
-		uqm::log::info("\t'%s' -- speech path", speech_path);
+		uqm::log::info("\t'{}' -- speech path", speech_path);
 	}
 	else
 	{
@@ -114,10 +114,10 @@ GetLegacyVideoData(const char* path, RESOURCE_DATA* resdata)
 		// We allow whitespace at the end, but nothing printable.
 		if (*end > 32)
 		{
-			uqm::log::warn("Warning: Unparsable loop frame '%s'. Disabling loop.", loop_str);
+			uqm::log::warn("Warning: Unparsable loop frame '{}'. Disabling loop.", loop_str);
 			LoopFrame = VID_NO_LOOP;
 		}
-		uqm::log::info("\tLoop frame is %u", LoopFrame);
+		uqm::log::info("\tLoop frame is {}", LoopFrame);
 	}
 	else
 	{
@@ -138,7 +138,7 @@ GetLegacyVideoData(const char* path, RESOURCE_DATA* resdata)
 		pLV->video = (char*)HMalloc(len);
 		if (!pLV->video)
 		{
-			uqm::log::warn("Warning: Couldn't allocate space for '%s'", paths);
+			uqm::log::warn("Warning: Couldn't allocate space for '{}'", paths);
 			goto err;
 		}
 		strncpy(pLV->video, paths, len);
@@ -149,7 +149,7 @@ GetLegacyVideoData(const char* path, RESOURCE_DATA* resdata)
 			pLV->audio = (char*)HMalloc(len);
 			if (!pLV->audio)
 			{
-				uqm::log::warn("Warning: Couldn't allocate space for '%s'", audio_path);
+				uqm::log::warn("Warning: Couldn't allocate space for '{}'", audio_path);
 				goto err;
 			}
 			strncpy(pLV->audio, audio_path, len);
@@ -161,7 +161,7 @@ GetLegacyVideoData(const char* path, RESOURCE_DATA* resdata)
 			pLV->speech = (char*)HMalloc(len);
 			if (!pLV->speech)
 			{
-				uqm::log::warn("Warning: Couldn't allocate space for '%s'", speech_path);
+				uqm::log::warn("Warning: Couldn't allocate space for '{}'", speech_path);
 				goto err;
 			}
 			strncpy(pLV->speech, speech_path, len);

@@ -48,7 +48,7 @@ PlotIntercept(ELEMENT* ElementPtr0, ELEMENT* ElementPtr1,
 
 	if ((ElementPtr0->state_flags | ElementPtr1->state_flags) & FINITE_LIFE)
 	{
-		//log_add (log_Debug, "E0:%d, E1:%d, max:%d",ElementPtr0->life_span,ElementPtr1->life_span, max_turns);
+		//log_add (log_Debug, "E0:{}, E1:{}, max:{}",ElementPtr0->life_span,ElementPtr1->life_span, max_turns);
 
 		if (!(ElementPtr0->state_flags & FINITE_LIFE))
 		{
@@ -355,7 +355,7 @@ InitCyborg(STARSHIP* StarShipPtr)
 
 		shipName = GetStringAddress(
 			StarShipPtr->RaceDescPtr->ship_data.race_strings);
-		uqm::log::debug("MI(%s) -- <%u:%u> = %u", shipName,
+		uqm::log::debug("MI({}) -- <{}:{}> = {}", shipName,
 						StarShipPtr->RaceDescPtr->characteristics.max_thrust * StarShipPtr->RaceDescPtr->characteristics.thrust_increment,
 						Divisor, Index);
 	}
@@ -464,7 +464,7 @@ bool ship_weapons(ELEMENT* ShipPtr, ELEMENT* OtherPtr, uqm::COUNT margin_of_erro
 	}
 
 	//if (num_weapons > 0)
-	//	log_add (log_Debug, "dx:%d, dy:%d, currx:%d, curry:%d, nextx:%d, nexty:%d", delta_x, delta_y, Ship.current.location.x, Ship.current.location.y, Ship.next.location.x, Ship.next.location.y);
+	//	log_add (log_Debug, "dx:{}, dy:{}, currx:{}, curry:{}, nextx:{}, nexty:{}", delta_x, delta_y, Ship.current.location.x, Ship.current.location.y, Ship.next.location.x, Ship.next.location.y);
 
 	return (num_weapons > 0);
 }

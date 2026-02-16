@@ -34,9 +34,9 @@ static uqm::SWORD* rson;
 static uqm::SWORD* dad;
 static uqm::SWORD* encode_arrays;
 
-#define AllocEncodeArrays()              \
-	HCalloc(                             \
-		(((N + 1) + (N + 257) + (N + 1)) \
+#define AllocEncodeArrays()                                                        \
+	HCalloc(                                                                       \
+		(((LZSS_BufferSize + 1) + (LZSS_BufferSize + 257) + (LZSS_BufferSize + 1)) \
 		 * sizeof(lson[0])))
 #define FreeCodeArrays HFree
 
@@ -54,16 +54,16 @@ InitTree(void)
 		uqm::SWORD i;
 
 		lson = encode_arrays;
-		rson = lson + (N + 1);
-		dad = rson + (N + 257);
+		rson = lson + (LZSS_BufferSize + 1);
+		dad = rson + (LZSS_BufferSize + 257);
 
-		for (i = N + 1; i <= N + 256; i++)
+		for (i = LZSS_BufferSize + 1; i <= LZSS_BufferSize + 256; i++)
 		{
-			rson[i] = NIL; /* root */
+			rson[i] = LZSS_NIL; /* root */
 		}
-		for (i = 0; i < N; i++)
+		for (i = 0; i < LZSS_BufferSize; i++)
 		{
-			dad[i] = NIL; /* node */
+			dad[i] = LZSS_NIL; /* node */
 		}
 
 		return (true);
@@ -78,8 +78,8 @@ InsertNode(uqm::SWORD r)
 
 	cmp = 1;
 	lpBuf = _lpCurCodeDesc->text_buf;
-	p = N + 1 + lpBuf[r];
-	rson[r] = lson[r] = NIL;
+	p = LZSS_BufferSize + 1 + lpBuf[r];
+	rson[r] = lson[r] = LZSS_NIL;
 	match_length = 0;
 	for (;;)
 	{
@@ -87,7 +87,7 @@ InsertNode(uqm::SWORD r)
 
 		if (cmp >= 0)
 		{
-			if (rson[p] != NIL)
+			if (rson[p] != LZSS_NIL)
 			{
 				p = rson[p];
 			}
@@ -100,7 +100,7 @@ InsertNode(uqm::SWORD r)
 		}
 		else
 		{
-			if (lson[p] != NIL)
+			if (lson[p] != LZSS_NIL)
 			{
 				p = lson[p];
 			}
@@ -112,7 +112,7 @@ InsertNode(uqm::SWORD r)
 			}
 		}
 
-		i = F;
+		i = LZSS_LookAheadBufferSize;
 		{
 			uqm::SWORD _r, _p;
 
@@ -121,19 +121,19 @@ InsertNode(uqm::SWORD r)
 			while (--i && (cmp = lpBuf[++_r] - lpBuf[++_p]) == 0)
 				;
 		}
-		if ((i = F - i) > THRESHOLD)
+		if ((i = LZSS_LookAheadBufferSize - i) > LZSS_Threshold)
 		{
 			if (i > match_length)
 			{
-				match_position = ((r - p) & (N - 1)) - 1;
-				if ((match_length = i) >= F)
+				match_position = ((r - p) & (LZSS_BufferSize - 1)) - 1;
+				if ((match_length = i) >= LZSS_LookAheadBufferSize)
 				{
 					break;
 				}
 			}
 			else if (i == match_length)
 			{
-				if ((i = ((r - p) & (N - 1)) - 1) < match_position)
+				if ((i = ((r - p) & (LZSS_BufferSize - 1)) - 1) < match_position)
 				{
 					match_position = i;
 				}
@@ -153,7 +153,7 @@ InsertNode(uqm::SWORD r)
 	{
 		lson[dad[p]] = r;
 	}
-	dad[p] = NIL; /* remove p */
+	dad[p] = LZSS_NIL; /* remove p */
 }
 
 static void
@@ -161,27 +161,27 @@ DeleteNode(uqm::SWORD p)
 {
 	uqm::SWORD q;
 
-	if (dad[p] == NIL)
+	if (dad[p] == LZSS_NIL)
 	{
 		return; /* unregistered */
 	}
-	if (rson[p] == NIL)
+	if (rson[p] == LZSS_NIL)
 	{
 		q = lson[p];
 	}
-	else if (lson[p] == NIL)
+	else if (lson[p] == LZSS_NIL)
 	{
 		q = rson[p];
 	}
 	else
 	{
 		q = lson[p];
-		if (rson[q] != NIL)
+		if (rson[q] != LZSS_NIL)
 		{
 			do
 			{
 				q = rson[q];
-			} while (rson[q] != NIL);
+			} while (rson[q] != LZSS_NIL);
 			rson[dad[q]] = lson[q];
 			dad[lson[q]] = dad[q];
 			lson[q] = lson[p];
@@ -199,7 +199,7 @@ DeleteNode(uqm::SWORD p)
 	{
 		lson[dad[p]] = q;
 	}
-	dad[p] = NIL;
+	dad[p] = LZSS_NIL;
 }
 
 static void
@@ -233,7 +233,7 @@ EncodeChar(uqm::UWORD c)
 
 	i = 0;
 	j = 0;
-	k = _lpCurCodeDesc->prnt[c + T];
+	k = _lpCurCodeDesc->prnt[c + HUF_TableSize];
 
 	/* search connections from leaf node to the root */
 	do
@@ -250,9 +250,9 @@ EncodeChar(uqm::UWORD c)
 		}
 
 		j++;
-	} while ((k = _lpCurCodeDesc->prnt[k]) != R);
+	} while ((k = _lpCurCodeDesc->prnt[k]) != HUF_Root);
 	Putcode(j, i);
-	_update(c + T);
+	_update(c + HUF_TableSize);
 }
 
 static void
@@ -323,15 +323,15 @@ _encode_cleanup(void)
 	r = _lpCurCodeDesc->buf_index;
 	s = _lpCurCodeDesc->restart_index;
 	last_match_length = _lpCurCodeDesc->bytes_left;
-	if (_lpCurCodeDesc->StreamLength >= F)
+	if (_lpCurCodeDesc->StreamLength >= LZSS_LookAheadBufferSize)
 	{
-		len = F;
+		len = LZSS_LookAheadBufferSize;
 	}
 	else
 	{
 		uqm::UWORD i;
 
-		for (i = 1; i <= F; i++)
+		for (i = 1; i <= LZSS_LookAheadBufferSize; i++)
 		{
 			InsertNode(r - i);
 		}
@@ -377,22 +377,22 @@ _encode_cleanup(void)
 
 				return;
 			}
-			s = (s + 1) & (N - 1);
-			r = (r + 1) & (N - 1);
+			s = (s + 1) & (LZSS_BufferSize - 1);
+			r = (r + 1) & (LZSS_BufferSize - 1);
 			InsertNode(r);
 		}
 		if (match_length > len)
 		{
 			match_length = len;
 		}
-		if (match_length <= THRESHOLD)
+		if (match_length <= LZSS_Threshold)
 		{
 			match_length = 1;
 			EncodeChar(_lpCurCodeDesc->text_buf[r]);
 		}
 		else
 		{
-			EncodeChar(255 - THRESHOLD + match_length);
+			EncodeChar(255 - LZSS_Threshold + match_length);
 			EncodePosition(match_position);
 		}
 		last_match_length = match_length;
@@ -427,7 +427,7 @@ cwrite(const void* buf, uqm::COUNT size, uqm::COUNT count, PLZHCODE_DESC lpCodeD
 		lpCodeDesc->StreamLength += size;
 		goto EncodeRestart;
 	}
-	else if (lpCodeDesc->StreamLength < F)
+	else if (lpCodeDesc->StreamLength < LZSS_LookAheadBufferSize)
 	{
 		uqm::UWORD i;
 
@@ -444,16 +444,16 @@ cwrite(const void* buf, uqm::COUNT size, uqm::COUNT count, PLZHCODE_DESC lpCodeD
 
 		lpCodeDesc->StreamLength += size;
 
-		for (; i < F && size; ++i, --size)
+		for (; i < LZSS_LookAheadBufferSize && size; ++i, --size)
 		{
 			lpBuf[r + i] = *lpStr++;
 		}
-		if (i < F)
+		if (i < LZSS_LookAheadBufferSize)
 		{
 			goto EncodeExit;
 		}
 
-		for (i = 1; i <= F; i++)
+		for (i = 1; i <= LZSS_LookAheadBufferSize; i++)
 		{
 			InsertNode(r - i);
 		}
@@ -470,18 +470,18 @@ cwrite(const void* buf, uqm::COUNT size, uqm::COUNT count, PLZHCODE_DESC lpCodeD
 
 	do
 	{
-		if (match_length > F)
+		if (match_length > LZSS_LookAheadBufferSize)
 		{
-			match_length = F;
+			match_length = LZSS_LookAheadBufferSize;
 		}
-		if (match_length <= THRESHOLD)
+		if (match_length <= LZSS_Threshold)
 		{
 			match_length = 1;
 			EncodeChar(lpBuf[r]);
 		}
 		else
 		{
-			EncodeChar(255 - THRESHOLD + match_length);
+			EncodeChar(255 - LZSS_Threshold + match_length);
 			EncodePosition(match_position);
 		}
 		last_match_length = match_length;
@@ -496,12 +496,12 @@ EncodeRestart:
 			DeleteNode(s);
 			c = *lpStr++;
 			lpBuf[s] = c;
-			if (s < F - 1)
+			if (s < LZSS_LookAheadBufferSize - 1)
 			{
-				lpBuf[s + N] = c;
+				lpBuf[s + LZSS_BufferSize] = c;
 			}
-			s = (s + 1) & (N - 1);
-			r = (r + 1) & (N - 1);
+			s = (s + 1) & (LZSS_BufferSize - 1);
+			r = (r + 1) & (LZSS_BufferSize - 1);
 			InsertNode(r);
 		}
 	} while (last_match_length == 0);

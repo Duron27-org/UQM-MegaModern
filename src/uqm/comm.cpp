@@ -45,6 +45,7 @@
 #include "libs/sound/sound.h"
 #include "libs/sound/trackplayer.h"
 #include "core/log/log.h"
+#include "core/string/StringUtils.h"
 #include "menustat.h"
 // for free_gravity_well() & load_gravity_well()
 #include "cons_res.h"
@@ -1457,9 +1458,9 @@ DoConvSummary(SUMMARY_STATE* pSS)
 			mt.baseline.x = RES_SCALE(ORIG_SIS_SCREEN_WIDTH >> 1);
 			mt.baseline.y = t.baseline.y;
 			mt.align = ALIGN_CENTER;
-			snprintf(buffer, sizeof(buffer), "%s%s%s", // "MORE"
-					 STR_MIDDLE_DOT, GAME_STRING(FEEDBACK_STRING_BASE + 1),
-					 STR_MIDDLE_DOT);
+			fmt::format_to_sz_n(buffer, sizeof(buffer), "{}{}{}", // "MORE"
+								STR_MIDDLE_DOT, GAME_STRING(FEEDBACK_STRING_BASE + 1),
+								STR_MIDDLE_DOT);
 
 			if (CommData.AlienConv == ORZ_CONVERSATION)
 			{ // MB: nasty hack: remove '$'s from conversation for Orz
@@ -2096,8 +2097,8 @@ InitCommunication(CONVERSATION which_comm)
 							&& pSolarSysState->pOrbitalDesc->data_index != DESTROYED_STARBASE
 							&& pSolarSysState->pOrbitalDesc->data_index != PRECURSOR_STARBASE))
 					{
-						snprintf((GLOBAL_SIS(PlanetName)) + strlen(GLOBAL_SIS(PlanetName)),
-								 4, "-%c%c", 'A' + moonIndex(pSolarSysState, pSolarSysState->pOrbitalDesc), '\0');
+						fmt::format_to_sz_n((GLOBAL_SIS(PlanetName)) + strlen(GLOBAL_SIS(PlanetName)),
+											4, "-%c%c", 'A' + moonIndex(pSolarSysState, pSolarSysState->pOrbitalDesc), '\0');
 					}
 				}
 

@@ -77,7 +77,7 @@ void ListenState_incRef(ListenState* listenState)
 	assert(listenState->refCount < REFCOUNT_MAX);
 	listenState->refCount++;
 #ifdef DEBUG_LISTEN_REF
-	uqm::log::debug("ListenState %08" PRIxPTR ": ref++ (%d)",
+	uqm::log::debug("ListenState %08" PRIxPTR ": ref++ ({})",
 					(uintptr_t)listenState, listenState->refCount);
 #endif
 }
@@ -87,7 +87,7 @@ bool ListenState_decRef(ListenState* listenState)
 	assert(listenState->refCount > 0);
 	listenState->refCount--;
 #ifdef DEBUG_LISTEN_REF
-	uqm::log::debug("ListenState %08" PRIxPTR ": ref-- (%d)",
+	uqm::log::debug("ListenState %08" PRIxPTR ": ref-- ({})",
 					(uintptr_t)listenState, listenState->refCount);
 #endif
 	if (listenState->refCount == 0)
@@ -143,7 +143,7 @@ listenPortSingle(struct ListenState* listenState, struct addrinfo* info)
 	if (sock == Socket_noSocket)
 	{
 		int savedErrno = errno;
-		uqm::log::error("socket() failed: %s.", strerror(errno));
+		uqm::log::error("socket() failed: {}.", strerror(errno));
 		errno = savedErrno;
 		return nullptr;
 	}
@@ -166,12 +166,12 @@ listenPortSingle(struct ListenState* listenState, struct addrinfo* info)
 		if (errno == EADDRINUSE)
 		{
 #ifdef DEBUG
-			uqm::log::warn("bind() failed: %s.", strerror(errno));
+			uqm::log::warn("bind() failed: {}.", strerror(errno));
 #endif
 		}
 		else
 		{
-			uqm::log::error("bind() failed: %s.", strerror(errno));
+			uqm::log::error("bind() failed: {}.", strerror(errno));
 		}
 		Socket_close(sock);
 		errno = savedErrno;
@@ -182,7 +182,7 @@ listenPortSingle(struct ListenState* listenState, struct addrinfo* info)
 	if (listenResult == -1)
 	{
 		int savedErrno = errno;
-		uqm::log::error("listen() failed: %s.", strerror(errno));
+		uqm::log::error("listen() failed: {}.", strerror(errno));
 		Socket_close(sock);
 		errno = savedErrno;
 		return nullptr;
@@ -192,7 +192,7 @@ listenPortSingle(struct ListenState* listenState, struct addrinfo* info)
 	if (nd == nullptr)
 	{
 		int savedErrno = errno;
-		uqm::log::error("NetDescriptor_new() failed: %s.",
+		uqm::log::error("NetDescriptor_new() failed: {}.",
 						strerror(errno));
 		Socket_close(sock);
 		errno = savedErrno;
@@ -249,7 +249,7 @@ listenPortMulti(struct ListenState* listenState, struct addrinfo* info)
 			if (errno == EADDRINUSE && addrOkCount == 0)
 			{
 				uqm::log::error("Error while preparing a network socket "
-								"for incoming connections: %s",
+								"for incoming connections: {}",
 								strerror(errno));
 			}
 			continue;
@@ -339,7 +339,7 @@ listenPort(const char* service, Protocol proto, const ListenFlags* flags,
 	listenState = ListenState_alloc();
 	listenState->refCount = 1;
 #ifdef DEBUG_LISTEN_REF
-	uqm::log::debug("ListenState %08" PRIxPTR ": ref=1 (%d)",
+	uqm::log::debug("ListenState %08" PRIxPTR ": ref=1 ({})",
 					(uintptr_t)listenState, listenState->refCount);
 #endif
 	listenState->state = Listen_resolving;
@@ -414,13 +414,13 @@ acceptSingleConnection(ListenState* listenState, NetDescriptor* nd)
 #endif
 				// Serious problems, but future connections may still
 				// be possible.
-				uqm::log::warn("accept() reported '%s'",
+				uqm::log::warn("accept() reported '{}'",
 							   strerror(errno));
 				return;
 			default:
 				// Should not happen.
 				uqm::log::critical("Internal error: accept() reported "
-								   "'%s'",
+								   "'{}'",
 								   strerror(errno));
 				explode();
 		}
@@ -431,7 +431,7 @@ acceptSingleConnection(ListenState* listenState, NetDescriptor* nd)
 	if (Socket_setNonBlocking(acceptResult) == -1)
 	{
 		int savedErrno = errno;
-		uqm::log::error("Could not make socket non-blocking: %s.",
+		uqm::log::error("Could not make socket non-blocking: {}.",
 						strerror(errno));
 		Socket_close(acceptResult);
 		errno = savedErrno;
@@ -453,13 +453,13 @@ acceptSingleConnection(ListenState* listenState, NetDescriptor* nd)
 		if (gniRes != 0)
 		{
 			uqm::log::error("Error while performing hostname "
-							"lookup for incoming connection: %s",
+							"lookup for incoming connection: {}",
 							(gniRes == EAI_SYSTEM) ? strerror(errno) :
 													 gai_strerror(gniRes));
 		}
 		else
 		{
-			uqm::log::debug("Accepted incoming connection from '%s'.",
+			uqm::log::debug("Accepted incoming connection from '{}'.",
 							hostname);
 		}
 	}
@@ -469,7 +469,7 @@ acceptSingleConnection(ListenState* listenState, NetDescriptor* nd)
 	if (newNd == nullptr)
 	{
 		int savedErrno = errno;
-		uqm::log::error("NetDescriptor_new() failed: %s.",
+		uqm::log::error("NetDescriptor_new() failed: {}.",
 						strerror(errno));
 		Socket_close(acceptResult);
 		errno = savedErrno;

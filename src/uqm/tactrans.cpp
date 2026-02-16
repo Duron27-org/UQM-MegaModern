@@ -129,8 +129,8 @@ readyToEndCallback(NetConnection* conn, void* arg)
 	battleStateData = (BattleStateData*)NetConnection_getStateData(conn);
 
 #ifdef NETPLAY_DEBUG
-	fprintf(stderr, "Both sides are ready to end the battle; starting "
-					"end-of-battle synchronisation.\n");
+	fmt::print(stderr, "Both sides are ready to end the battle; starting "
+					   "end-of-battle synchronisation.\n");
 #endif
 	NetConnection_setState(conn, NetState_endingBattle);
 	if (battleFrameCount + 1 > battleStateData->endFrameCount)
@@ -148,8 +148,8 @@ readyToEndCallback(NetConnection* conn, void* arg)
 	// the frame counter one more time.
 	flushPacketQueue(conn);
 #ifdef NETPLAY_DEBUG
-	fprintf(stderr, "NETPLAY: [%d] ==> Sent battleFrameCount %d.\n",
-			NetConnection_getPlayerNr(conn), battleFrameCount + 1);
+	fmt::print(stderr, "NETPLAY: [{}] ==> Sent battleFrameCount {}.\n",
+			   NetConnection_getPlayerNr(conn), battleFrameCount + 1);
 #endif
 	Netplay_localReady(conn, readyToEnd2Callback, nullptr, false);
 	(void)arg;

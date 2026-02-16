@@ -41,13 +41,13 @@ static void TFB_PreQuit(void);
 void TFB_PreInit(void)
 {
 	uqm::log::info("Initializing base SDL functionality.");
-	uqm::log::info("Using SDL version %d.%d.%d (compiled with "
-				   "%d.%d.%d)",
+	uqm::log::info("Using SDL version {}.{}.{} (compiled with "
+				   "{}.{}.{})",
 				   SDL_Linked_Version()->major,
 				   SDL_Linked_Version()->minor, SDL_Linked_Version()->patch,
 				   SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL);
-	printf("Using SDL version %d.%d.%d\nCompiled with "
-		   "%d.%d.%d\n\n",
+	printf("Using SDL version {}.{}.{}\nCompiled with "
+		   "{}.{}.{}\n\n",
 		   SDL_Linked_Version()->major,
 		   SDL_Linked_Version()->minor, SDL_Linked_Version()->patch,
 		   SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL);
@@ -64,7 +64,7 @@ void TFB_PreInit(void)
 
 	if ((SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE) == -1))
 	{
-		uqm::log::critical("Could not initialize SDL: %s.", SDL_GetError());
+		uqm::log::critical("Could not initialize SDL: {}.", SDL_GetError());
 		exit(EXIT_FAILURE);
 	}
 
@@ -82,7 +82,7 @@ int TFB_ReInitGraphics(int driver, int flags, int width, int height,
 {
 	int result;
 	int togglefullscreen = 0;
-	char caption[200];
+
 
 	if ((GfxFlags == (flags ^ TFB_GFXFLAGS_FULLSCREEN) || GfxFlags == (flags ^ TFB_GFXFLAGS_EX_FULLSCREEN)) && driver == GraphicsDriver && width == ScreenWidthActual && height == ScreenHeightActual)
 	{
@@ -110,10 +110,11 @@ int TFB_ReInitGraphics(int driver, int flags, int width, int height,
 										 togglefullscreen, *resFactor, *windowType);
 	}
 
-	sprintf(caption, "The Ur-Quan Masters v%d.%d.%d %s",
-			UQM_MAJOR_VERSION, UQM_MINOR_VERSION,
-			UQM_PATCH_VERSION,
-			(*resFactor ? "HD " UQM_EXTRA_VERSION : UQM_EXTRA_VERSION));
+	char caption[200] {};
+	fmt::format_to_n(caption, sizeof(caption) - 1, "The Ur-Quan Masters v{}.{}.{} {}",
+					 UQM_MAJOR_VERSION, UQM_MINOR_VERSION,
+					 UQM_PATCH_VERSION,
+					 (*resFactor ? "HD " UQM_EXTRA_VERSION : UQM_EXTRA_VERSION));
 	SDL_WM_SetCaption(caption, nullptr);
 
 	if (flags & TFB_GFXFLAGS_FULLSCREEN

@@ -21,6 +21,7 @@
 #include "setup.h"
 #include "units.h"
 #include "settings.h"
+#include "core/string/StringUtils.h"
 #include "libs/inplib.h"
 #include "libs/sound/trackplayer.h"
 #include "libs/mathlib.h"
@@ -724,33 +725,37 @@ void DrawFlagStatDisplay(const uqm::CHAR_T* str)
 	font_DrawText(&t);
 }
 
-uqm::CHAR_T*
-WholeFuelValue(void)
+void formatFuelValue(uqm::DWORD coarseFuel, uqstl::span<uqm::CHAR_T> buf)
 {
-	static uqm::CHAR_T buf[7];
-	uqm::DWORD CoarseFuel = GLOBAL_SIS(FuelOnBoard);
-
-	double dblFuelOnBoard = (double)CoarseFuel / FUEL_TANK_SCALE;
+	double dblFuelOnBoard = (double)coarseFuel / FUEL_TANK_SCALE;
 
 	if (!optInfiniteFuel)
 	{
 		if (!optWholeFuel)
 		{
-			snprintf(buf, sizeof buf, "%u", CoarseFuel);
+			fmt::format_to_sz_n(buf.data(), buf.size(), "{}", coarseFuel);
 		}
 		else if (dblFuelOnBoard > 999.99)
 		{
-			snprintf(buf, sizeof buf, "%.1f", dblFuelOnBoard);
+			fmt::format_to_sz_n(buf.data(), buf.size(), "{:.1}", dblFuelOnBoard);
 		}
 		else
 		{
-			snprintf(buf, sizeof buf, "%.2f", dblFuelOnBoard);
+			fmt::format_to_sz_n(buf.data(), buf.size(), "{:.2}", dblFuelOnBoard);
 		}
 	}
 	else
 	{
-		snprintf(buf, sizeof buf, "%s", STR_INFINITY_SIGN);
+		fmt::format_to_sz_n(buf.data(), buf.size(), "{}", STR_INFINITY_SIGN);
 	}
+}
+
+uqm::CHAR_T* WholeFuelValue(void)
+{
+	static uqm::CHAR_T buf[8] {};
+	const uqm::DWORD CoarseFuel = GLOBAL_SIS(FuelOnBoard);
+
+	formatFuelValue(CoarseFuel, {buf, sizeof(buf)});
 
 	return buf;
 }

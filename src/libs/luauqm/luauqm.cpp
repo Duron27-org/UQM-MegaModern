@@ -105,7 +105,7 @@ luaUqm_reader(lua_State* luaState, void* data, size_t* size)
 	if (numRead == (size_t)-1)
 	{
 		uqm::log::error("luaUqm_loadScript(): Read error readin "
-						"script file '%s'.",
+						"script file '{}'.",
 						readerState->fileName);
 		*size = 0;
 		return nullptr;
@@ -134,13 +134,13 @@ bool luaUqm_loadScript(lua_State* luaState, uio_DirHandle* dir,
 	char* buf = nullptr;
 	luaUqm_ReaderState readerState;
 
-	uqm::log::debug("Loading script '%s'.", fileName);
+	uqm::log::debug("Loading script '{}'.", fileName);
 
 	in = uio_fopen(dir, fileName, "rt");
 	if (in == nullptr)
 	{
 		uqm::log::error("luaUqm_loadScript(): Unable to open script file "
-						"'%s' for reading.",
+						"'{}' for reading.",
 						fileName);
 		goto err;
 	}
@@ -158,7 +158,7 @@ bool luaUqm_loadScript(lua_State* luaState, uio_DirHandle* dir,
 	if (lua_load(luaState, luaUqm_reader, (void*)&readerState, nullptr, nullptr)
 		!= LUA_OK)
 	{
-		uqm::log::error("luaUqm_loadScript(): lua_load() failed: %s",
+		uqm::log::error("luaUqm_loadScript(): lua_load() failed: {}",
 						lua_tostring(luaState, -1));
 		lua_pop(luaState, 1);
 		goto err;
@@ -209,7 +209,7 @@ void luaUqm_runLuaDir(lua_State* luaState, uio_DirHandle* dirHandle,
 	if (luaDir == nullptr)
 	{
 		uqm::log::warn("Warning: Could not open Lua script directory "
-					   "'%s'.",
+					   "'{}'.",
 					   luaDirName);
 		goto err;
 	}
@@ -218,12 +218,12 @@ void luaUqm_runLuaDir(lua_State* luaState, uio_DirHandle* dirHandle,
 	if (luaFiles == nullptr)
 	{
 		uqm::log::warn("Warning: Could not read Lua script directory "
-					   "'%s'.",
+					   "'{}'.",
 					   luaDirName);
 		goto err;
 	}
 
-	uqm::log::debug("Script directory '%s': loading %d file(s).",
+	uqm::log::debug("Script directory '{}': loading {} file(s).",
 					luaDirName, luaFiles->numNames);
 	for (fileI = 0; fileI < luaFiles->numNames; fileI++)
 	{
@@ -255,7 +255,7 @@ bool luaUqm_callStackFunction(lua_State* luaState)
 	if (lua_pcall(luaState, 0, 0, 0) != 0)
 	{
 		uqm::log::error("[script] A script error occurred in "
-						"luaUqm_callStackFunction(): %s",
+						"luaUqm_callStackFunction(): {}",
 						lua_tostring(luaState, -1));
 		lua_pop(luaState, 1);
 		// Pop the error.
@@ -313,7 +313,7 @@ void luaUqm_dumpStack(lua_State* luaState)
 	{
 		int type = lua_type(luaState, stackI);
 		const char* typeName = lua_typename(luaState, type);
-		uqm::log::debug("[%d] (%s)", stackI, typeName);
+		uqm::log::debug("[{}] ({})", stackI, typeName);
 		switch (type)
 		{
 			case LUA_TNONE:
@@ -321,7 +321,7 @@ void luaUqm_dumpStack(lua_State* luaState)
 			case LUA_TNIL:
 				break;
 			case LUA_TBOOLEAN:
-				uqm::log::debug("    %s",
+				uqm::log::debug("    {}",
 								lua_toboolean(luaState, stackI) ? "true" : "false");
 				break;
 			case LUA_TLIGHTUSERDATA:
@@ -330,7 +330,7 @@ void luaUqm_dumpStack(lua_State* luaState)
 				uqm::log::debug("    %g", lua_tonumber(luaState, stackI));
 				break;
 			case LUA_TSTRING:
-				uqm::log::debug("    \"%s\"",
+				uqm::log::debug("    \"{}\"",
 								lua_tostring(luaState, stackI));
 				break;
 			case LUA_TTABLE:

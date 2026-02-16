@@ -554,7 +554,7 @@ void FillOrbits(SOLARSYS_STATE* system, uqm::BYTE NumPlanets,
 
 #ifdef DEBUG_ORBITS
 	GetClusterName(CurStarDescPtr, buf);
-	uqm::log::debug("cluster name = %s  color = %c type = %c", buf,
+	uqm::log::debug("cluster name = {}  color = %c type = %c", buf,
 					scolor[STAR_COLOR(CurStarDescPtr->Type)],
 					stype[STAR_TYPE(CurStarDescPtr->Type)]);
 #endif /* DEBUG_ORBITS */
@@ -918,7 +918,7 @@ bool CheckForHabitable(SOLARSYS_STATE* solarSys)
 		uqm::BYTE numRockySections = radialSection / DWARF_ROCK_DIST;
 		uqm::BYTE numGassySections = radialSection / DWARF_GASG_DIST;
 
-		printf ("radialSection %d, numRockySections %d, numGassySections %d\n", radialSection, numRockySections, numGassySections);
+		printf ("radialSection {}, numRockySections {}, numGassySections {}\n", radialSection, numRockySections, numGassySections);
 
 		for (i = planetByte - 1; i > -1; --i)
 		{

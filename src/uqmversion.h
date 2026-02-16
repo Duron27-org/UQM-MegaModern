@@ -35,7 +35,7 @@
 #define UQM_EXTRA_VERSION "MegaMod"
 #endif
 /* The final version is interpreted as:
- * printf ("%d.%d.%d%s", UQM_MAJOR_VERSION, UQM_MINOR_VERSION,
+ * printf ("{}.{}.{}{}", UQM_MAJOR_VERSION, UQM_MINOR_VERSION,
  * 		UQM_PATCH_VERSION, UQM_EXTRA_VERSION);
  */
 

@@ -289,11 +289,11 @@ void DefaultStarmap(STAR_DESC* starmap)
 {
 	if (!starmap)
 	{
-		fprintf(stderr, "DefaaultStarmap called with nullptr starmap PTR.\n");
+		fmt::print(stderr, "DefaaultStarmap called with nullptr starmap PTR.\n");
 		return;
 	}
 #ifdef DEBUG_STARSEED
-	fprintf(stderr, "DefaultStarmap setting star map to original values.\n");
+	fmt::print(stderr, "DefaultStarmap setting star map to original values.\n");
 #endif
 	uqm::COUNT i;
 	for (i = 0; i < NUM_SOLAR_SYSTEMS + 1 + NUM_HYPER_VORTICES + 1 + 1; i++)
@@ -313,14 +313,14 @@ void SeedStarmap(STAR_DESC* starmap)
 {
 	if (!starmap)
 	{
-		fprintf(stderr, "SeedStarmap called with nullptr starmap PTR.\n");
+		fmt::print(stderr, "SeedStarmap called with nullptr starmap PTR.\n");
 		return;
 	}
 	uqm::COUNT i;
 	uqm::UWORD rand_val;
 	if (!StarGenRNG)
 	{
-		fprintf(stderr, "****SeedStarmap creating a STAR GEN RNG****\n");
+		fmt::print(stderr, "****SeedStarmap creating a STAR GEN RNG****\n");
 		StarGenRNG = RandomContext_New();
 	}
 	RandomContext_SeedRandom(StarGenRNG, optCustomSeed);
@@ -387,7 +387,7 @@ void print_plot_id(uqm::COUNT plot_id)
 		"ZOQ_COLONY0_DEFINED", "ZOQ_COLONY1_DEFINED",
 		"ZOQ_COLONY2_DEFINED", "ZOQ_COLONY3_DEFINED", "ALGOLITES_DEFINED",
 		"SPATHI_MONUMENT_DEFINED", "EXCAVATION_SITE_DEFINED"};
-	fprintf(stderr, "%s (%d)", plot_name[plot_id], plot_id);
+	fmt::print(stderr, "{} ({})", plot_name[plot_id], plot_id);
 }
 
 // The minimum distance you can set a max plot length to; needs to be
@@ -413,9 +413,9 @@ void SetPlotLength(PLOT_LOCATION* plot, uqm::COUNT plotA, uqm::COUNT plotB,
 	// Reject bad data
 	if (!plot || plotA >= NUM_PLOTS || plotB >= NUM_PLOTS || p_min > p_max - 100)
 	{
-		fprintf(stderr, "%s called with bad data (PTR %d %d %d %d)\n",
-				"SetPlotLength (plotmap, plot, plot, min, max)",
-				plotA, plotB, p_min, p_max);
+		fmt::print(stderr, "{} called with bad data (PTR {} {} {} {})\n",
+				   "SetPlotLength (plotmap, plot, plot, min, max)",
+				   plotA, plotB, p_min, p_max);
 		return;
 	}
 	// If you zero out max, it will treat it as MAX_PLOT (any length)
@@ -437,12 +437,12 @@ void SetPlotLength(PLOT_LOCATION* plot, uqm::COUNT plotA, uqm::COUNT plotB,
 	if (PLOT_MIN(plotA, plotB) > 0)
 	{
 #ifdef DEBUG_STARSEED_TRACE
-		fprintf(stderr, "SetPlotLength reducing plot min ");
+		fmt::print(stderr, "SetPlotLength reducing plot min ");
 		print_plot_id(plotA);
-		fprintf(stderr, " (weight %d) to ", PLOT_WEIGHT(plotA));
+		fmt::print(stderr, " (weight {}) to ", PLOT_WEIGHT(plotA));
 		print_plot_id(plotB);
-		fprintf(stderr, " (weight %d), min %d\n", PLOT_WEIGHT(plotB),
-				(uqm::UWORD)sqrt(PLOT_MIN(plotA, plotB)));
+		fmt::print(stderr, " (weight {}), min {}\n", PLOT_WEIGHT(plotB),
+				   (uqm::UWORD)sqrt(PLOT_MIN(plotA, plotB)));
 #endif
 		PLOT_WEIGHT(plotA) -= (uqm::UWORD)sqrt(PLOT_MIN(plotA, plotB));
 		PLOT_WEIGHT(plotB) -= (uqm::UWORD)sqrt(PLOT_MIN(plotA, plotB));
@@ -450,12 +450,12 @@ void SetPlotLength(PLOT_LOCATION* plot, uqm::COUNT plotA, uqm::COUNT plotB,
 	if (PLOT_MAX(plotA, plotB) != 0 && PLOT_MAX(plotA, plotB) < MAX_PLOT * MAX_PLOT)
 	{
 #ifdef DEBUG_STARSEED_TRACE
-		fprintf(stderr, "SetPlotLength reducing plot max ");
+		fmt::print(stderr, "SetPlotLength reducing plot max ");
 		print_plot_id(plotA);
-		fprintf(stderr, " (weight %d) to ", PLOT_WEIGHT(plotA));
+		fmt::print(stderr, " (weight {}) to ", PLOT_WEIGHT(plotA));
 		print_plot_id(plotB);
-		fprintf(stderr, " (weight %d), max %d\n", PLOT_WEIGHT(plotB),
-				MAX_PLOT - (uqm::UWORD)sqrt(PLOT_MAX(plotA, plotB)));
+		fmt::print(stderr, " (weight {}), max {}\n", PLOT_WEIGHT(plotB),
+				   MAX_PLOT - (uqm::UWORD)sqrt(PLOT_MAX(plotA, plotB)));
 #endif
 		PLOT_WEIGHT(plotA) += (uqm::UWORD)sqrt(PLOT_MAX(plotA, plotB)) - MAX_PLOT;
 		PLOT_WEIGHT(plotB) += (uqm::UWORD)sqrt(PLOT_MAX(plotA, plotB)) - MAX_PLOT;
@@ -480,9 +480,9 @@ ConnectedPlot(PLOT_LOCATION* plot, uqm::COUNT plotA, uqm::COUNT plotB)
 	// report bad data
 	if (!(plot && (plotA < NUM_PLOTS) && (plotB < NUM_PLOTS)))
 	{
-		fprintf(stderr, "%s called with bad data PTR %d %d\n",
-				"ConnectedPlot (plotmap, plot_id, plot_id)",
-				plotA, plotB);
+		fmt::print(stderr, "{} called with bad data PTR {} {}\n",
+				   "ConnectedPlot (plotmap, plot_id, plot_id)",
+				   plotA, plotB);
 		return 0;
 	}
 	// Plot MIN (capped at max pweight) + MAX weight - PLOT MAX (if valid)
@@ -511,7 +511,7 @@ GetNextPlot(PLOT_LOCATION* plot)
 	uqm::COUNT i;
 	if (!plot)
 	{
-		fprintf(stderr, "GetNextPlot (plotmap) called with bad data PTR\n");
+		fmt::print(stderr, "GetNextPlot (plotmap) called with bad data PTR\n");
 		return 0;
 	}
 
@@ -567,7 +567,7 @@ GetNextPlot(PLOT_LOCATION* plot)
 	// Now plot_id contains either the first unassigned plot with highest
 	// weight, OR NUM_PLOTS
 #ifdef DEBUG_STARSEED_TRACE_W
-	fprintf(stderr, "Top Weight %d Plot ID %d", top_weight, plot_id);
+	fmt::print(stderr, "Top Weight {} Plot ID {}", top_weight, plot_id);
 #endif
 	return next_plot = plot_id;
 	//return plot_id;
@@ -579,7 +579,7 @@ void ResetPlot(PLOT_LOCATION* plot)
 {
 	if (!plot)
 	{
-		fprintf(stderr, "ResetPlot (plotmap) called with bad data PTR.\n");
+		fmt::print(stderr, "ResetPlot (plotmap) called with bad data PTR.\n");
 		return;
 	}
 	uqm::COUNT i, j;
@@ -603,8 +603,8 @@ void DefaultPlot(PLOT_LOCATION* plot, STAR_DESC* starmap)
 
 	if (!plot || !starmap)
 	{
-		fprintf(stderr, "DefaultPlot (plotmap, starmap) called %s\n",
-				"with bad data PTR.");
+		fmt::print(stderr, "DefaultPlot (plotmap, starmap) called {}\n",
+				   "with bad data PTR.");
 		return;
 	}
 
@@ -633,7 +633,7 @@ void InitPlot(PLOT_LOCATION* plotmap)
 {
 	if (!plotmap)
 	{
-		fprintf(stderr, "InitPlot (plotmap) called with bad data PTR\n");
+		fmt::print(stderr, "InitPlot (plotmap) called with bad data PTR\n");
 		return;
 	}
 	uqm::COUNT i, j;
@@ -900,16 +900,16 @@ bool CheckValid(PLOT_LOCATION* plot, uqm::COUNT plot_id)
 	uqm::DWORD distance_sq;
 	if (!plot || plot_id >= NUM_PLOTS)
 	{
-		fprintf(stderr, "CheckValid (plotmap, plot_id) called %d.\n"
-						"with bad data or nullptr: PTR",
-				plot_id);
+		fmt::print(stderr, "CheckValid (plotmap, plot_id) called {}.\n"
+						   "with bad data or nullptr: PTR",
+				   plot_id);
 		return false;
 	}
 	if (!PLOT_SET(plot_id))
 	{
-		fprintf(stderr, "CheckValid (plotmap, plot_id) called %d.\n"
-						"with un-set plot:",
-				plot_id);
+		fmt::print(stderr, "CheckValid (plotmap, plot_id) called {}.\n"
+						   "with un-set plot:",
+				   plot_id);
 		return false;
 	}
 	for (i = 0; i < NUM_PLOTS; i++)
@@ -928,8 +928,8 @@ bool CheckValid(PLOT_LOCATION* plot, uqm::COUNT plot_id)
 		}
 		distance_sq = ((plot[plot_id].star_pt.x - plot[i].star_pt.x) * (plot[plot_id].star_pt.x - plot[i].star_pt.x) + (plot[plot_id].star_pt.y - plot[i].star_pt.y) * (plot[plot_id].star_pt.y - plot[i].star_pt.y));
 #ifdef DEBUG_STARSEED_TRACE_X
-		fprintf(stderr, "__dsq %d mindsq %d maxdsq %d__", distance_sq,
-				PLOT_MIN(plot_id, i), PLOT_MAX(plot_id, i));
+		fmt::print(stderr, "__dsq {} mindsq {} maxdsq {}__", distance_sq,
+				   PLOT_MIN(plot_id, i), PLOT_MAX(plot_id, i));
 #endif
 		if (distance_sq < PLOT_MIN(plot_id, i) || (distance_sq > PLOT_MAX(plot_id, i) && PLOT_MAX(plot_id, i) > 0))
 		{
@@ -988,7 +988,7 @@ void Plotify(STAR_DESC* starmap, STAR_DESC* star)
 {
 	if (!starmap || !star)
 	{
-		fprintf(stderr, "Plotify (starmap, star) called with nullptr PTR.\n");
+		fmt::print(stderr, "Plotify (starmap, star) called with nullptr PTR.\n");
 		return;
 	}
 	uqm::COUNT i = 0;
@@ -1159,14 +1159,14 @@ void Plotify(STAR_DESC* starmap, STAR_DESC* star)
 			}
 		}
 #ifdef DEBUG_STARSEED
-		fprintf(stderr, "Melnorme %d swapping %d %d at %d.%d : %d.%d for "
-						"%d %d at %d.%d : %d.%d\n",
-				star->Index - MELNORME0_DEFINED, star->Prefix, star->Postfix,
-				star->star_pt.x / 10, star->star_pt.x % 10,
-				star->star_pt.y / 10, star->star_pt.y % 10,
-				starmap[j].Prefix, starmap[j].Postfix,
-				starmap[j].star_pt.x / 10, starmap[j].star_pt.x % 10,
-				starmap[j].star_pt.y / 10, starmap[j].star_pt.y % 10);
+		fmt::print(stderr, "Melnorme {} swapping {} {} at {}.{} : {}.{} for "
+						   "{} {} at {}.{} : {}.{}\n",
+				   star->Index - MELNORME0_DEFINED, star->Prefix, star->Postfix,
+				   star->star_pt.x / 10, star->star_pt.x % 10,
+				   star->star_pt.y / 10, star->star_pt.y % 10,
+				   starmap[j].Prefix, starmap[j].Postfix,
+				   starmap[j].star_pt.x / 10, starmap[j].star_pt.x % 10,
+				   starmap[j].star_pt.y / 10, starmap[j].star_pt.y % 10);
 #endif
 		starmap[j].Prefix = star->Prefix;
 		star->Prefix = 1;
@@ -1251,11 +1251,11 @@ void DebugPlotTicker(uqm::COUNT plot_id)
 {
 	if (last_err == plot_id)
 	{
-		fprintf(stderr, ".");
+		fmt::print(stderr, ".");
 	}
 	else
 	{
-		fprintf(stderr, "\n");
+		fmt::print(stderr, "\n");
 		print_plot_id(plot_id);
 		last_err = plot_id;
 	}
@@ -1279,7 +1279,7 @@ SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap)
 	static clock_t timer;
 	if (!plotmap || !starmap)
 	{
-		fprintf(stderr, "SeedPlot (plotmap, starmap) called with nullptr PTR.\n");
+		fmt::print(stderr, "SeedPlot (plotmap, starmap) called with nullptr PTR.\n");
 		return 0;
 	}
 	// The clock.  The first time this is called the clock is not running.
@@ -1306,16 +1306,16 @@ SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap)
 
 	if (!StarGenRNG)
 	{
-		fprintf(stderr, "****SeedPlot creating a STAR GEN RNG****\n");
+		fmt::print(stderr, "****SeedPlot creating a STAR GEN RNG****\n");
 		StarGenRNG = RandomContext_New();
 	}
 	if (!timer_running)
 	{
 #ifdef DEBUG_STARSEED
-		fprintf(stderr, "Starting a timer; global activity %d | "
-						"optCustomSeed %d | NUM_PLOTS %d.\n",
-				GLOBAL(CurrentActivity),
-				optCustomSeed, NUM_PLOTS);
+		fmt::print(stderr, "Starting a timer; global activity {} | "
+						   "optCustomSeed {} | NUM_PLOTS {}.\n",
+				   GLOBAL(CurrentActivity),
+				   optCustomSeed, NUM_PLOTS);
 #endif
 		// Basically a wrapper around the recursion.
 		timer_running = true;
@@ -1346,7 +1346,7 @@ SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap)
 				//plotmap[i].star = FindNearestStar (starmap, plotmap[i].star_pt);
 #ifdef DEBUG_STARSEED
 				print_plot_id (i);
-				fprintf (stderr, " being placed in pre-generated location "
+				fmt::print (stderr, " being placed in pre-generated location "
 						"%05.1f : %05.1f (given %05.1f : %05.1f)\n",
 						(float) plotmap[i].star->star_pt.x / 10,
 						(float) plotmap[i].star->star_pt.x / 10,
@@ -1356,12 +1356,12 @@ SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap)
 				if (plotmap[i].star->Index)
 				{
 					print_plot_id (i);
-					fprintf (stderr, " cannot be placed in location "
+					fmt::print (stderr, " cannot be placed in location "
 							"%05.1f : %05.1f due to existing plot ",
 							(float) plotmap[i].star->star_pt.x / 10,
 							(float) plotmap[i].star->star_pt.x / 10);
 					print_plot_id (plotmap[i].star->Index);
-					fprintf (stderr, ", aborting...\n");
+					fmt::print (stderr, ", aborting...\n");
 					return i;
 				}
 				plotmap[i].star_pt = plotmap[i].star->star_pt;
@@ -1372,7 +1372,7 @@ SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap)
 	}
 	else if ((clock() - timer) / 100000 > timelimit)
 	{
-		fprintf(stderr, "TIME'S UP!  Giving up on seed %d.\n", optCustomSeed);
+		fmt::print(stderr, "TIME'S UP!  Giving up on seed {}.\n", optCustomSeed);
 		timer_running = false;
 		return NUM_PLOTS + 1;
 	}
@@ -1393,31 +1393,31 @@ SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap)
 			if (!plotmap[i].star || plotmap[i].star != FindNearestStar(starmap, plotmap[i].star_pt))
 			{
 				print_plot_id(i);
-				fprintf(stderr, " star ptr was unassigned, corrected.\n");
+				fmt::print(stderr, " star ptr was unassigned, corrected.\n");
 				plotmap[i].star = FindNearestStar(starmap, plotmap[i].star_pt);
 			}
 			if ((plotmap[i].star_pt.x != plotmap[i].star->star_pt.x) || (plotmap[i].star_pt.y != plotmap[i].star->star_pt.y))
 			{
 				print_plot_id(i);
-				fprintf(stderr, " coords don't match star ptr, corrected.\n");
+				fmt::print(stderr, " coords don't match star ptr, corrected.\n");
 				plotmap[i].star_pt = plotmap[i].star->star_pt;
 			}
 			if (plotmap[i].star->Index > 0 && plotmap[i].star->Index != i)
 			{
 				print_plot_id(i);
-				fprintf(stderr, " plot wants to be at star %05.1f : %05.1f "
-								"but plot ID ",
-						(float)plotmap[i].star_pt.x / 10,
-						(float)plotmap[i].star_pt.y / 10);
+				fmt::print(stderr, " plot wants to be at star %05.1f : %05.1f "
+								   "but plot ID ",
+						   (float)plotmap[i].star_pt.x / 10,
+						   (float)plotmap[i].star_pt.y / 10);
 				print_plot_id(plotmap[i].star->Index);
-				fprintf(stderr, " is there, ABORT!!!!\n");
+				fmt::print(stderr, " is there, ABORT!!!!\n");
 				return i;
 			}
 			if (plotmap[i].star->Index != i)
 			{
 				print_plot_id(i);
-				fprintf(stderr, " plot location was missing from star, "
-								"corrected.\n");
+				fmt::print(stderr, " plot location was missing from star, "
+								   "corrected.\n");
 				plotmap[i].star->Index = i;
 				Plotify(starmap, plotmap[i].star);
 			}
@@ -1426,15 +1426,15 @@ SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap)
 		for (i = 1; i < NUM_PLOTS; i++)
 		{
 			print_plot_id(i);
-			fprintf(stderr, " at %05.1f : %05.1f.\n",
-					(float)plotmap[i].star_pt.x / 10,
-					(float)plotmap[i].star_pt.y / 10);
+			fmt::print(stderr, " at %05.1f : %05.1f.\n",
+					   (float)plotmap[i].star_pt.x / 10,
+					   (float)plotmap[i].star_pt.y / 10);
 		}
 #endif
 		return NUM_PLOTS;
 	}
 #ifdef DEBUG_STARSEED_TRACE
-	fprintf(stderr, "\nSelected ");
+	fmt::print(stderr, "\nSelected ");
 	print_plot_id(plot_id);
 #endif
 
@@ -1446,25 +1446,25 @@ SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap)
 												plotmap[plot_id].star_pt);
 #ifdef DEBUG_STARSEED
 #ifndef DEBUG_STARSEED_TRACE
-		fprintf(stderr, "Selected ");
+		fmt::print(stderr, "Selected ");
 		print_plot_id(plot_id);
 #endif
-		fprintf(stderr, " placing in pre-generated location "
-						"%05.1f : %05.1f (given %05.1f : %05.1f)\n",
-				(float)plotmap[plot_id].star->star_pt.x / 10,
-				(float)plotmap[plot_id].star->star_pt.y / 10,
-				(float)plotmap[plot_id].star_pt.x / 10,
-				(float)plotmap[plot_id].star_pt.y / 10);
+		fmt::print(stderr, " placing in pre-generated location "
+						   "%05.1f : %05.1f (given %05.1f : %05.1f)\n",
+				   (float)plotmap[plot_id].star->star_pt.x / 10,
+				   (float)plotmap[plot_id].star->star_pt.y / 10,
+				   (float)plotmap[plot_id].star_pt.x / 10,
+				   (float)plotmap[plot_id].star_pt.y / 10);
 #endif
 		if (plotmap[plot_id].star->Index && plotmap[plot_id].star->Index != plot_id)
 		{
 			print_plot_id(plot_id);
-			fprintf(stderr, " cannot be placed in location "
-							"%05.1f : %05.1f due to existing plot ",
-					(float)plotmap[plot_id].star->star_pt.x / 10,
-					(float)plotmap[plot_id].star->star_pt.y / 10);
+			fmt::print(stderr, " cannot be placed in location "
+							   "%05.1f : %05.1f due to existing plot ",
+					   (float)plotmap[plot_id].star->star_pt.x / 10,
+					   (float)plotmap[plot_id].star->star_pt.y / 10);
 			print_plot_id(plotmap[plot_id].star->Index);
-			fprintf(stderr, ", aborting...\n");
+			fmt::print(stderr, ", aborting...\n");
 			return plot_id;
 		}
 		plotmap[plot_id].star_pt = plotmap[plot_id].star->star_pt;
@@ -1483,7 +1483,7 @@ SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap)
 		plotmap[plot_id].star = nullptr;
 		if (my_clock)
 		{
-			fprintf(stderr, "Complete failure, stopping clock.\n");
+			fmt::print(stderr, "Complete failure, stopping clock.\n");
 			timer_running = false;
 		}
 		return return_id;
@@ -1539,9 +1539,9 @@ SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap)
 		{
 #ifdef DEBUG_STARSEED_TRACE
 			print_plot_id(plot_id);
-			fprintf(stderr, " trying %05.1f : %05.1f ",
-					(float)plotmap[plot_id].star_pt.x / 10,
-					(float)plotmap[plot_id].star_pt.y / 10);
+			fmt::print(stderr, " trying %05.1f : %05.1f ",
+					   (float)plotmap[plot_id].star_pt.x / 10,
+					   (float)plotmap[plot_id].star_pt.y / 10);
 #endif
 			return_id = SeedPlot(plotmap, starmap);
 			if (return_id == NUM_PLOTS)
@@ -1558,13 +1558,13 @@ SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap)
 			if (return_id > NUM_PLOTS || ConnectedPlot(plotmap, plot_id, return_id) <= 2000000)
 			{
 #ifdef DEBUG_STARSEED_TRACE_Y
-				fprintf(stderr, " [%d] Popping ", return_id);
+				fmt::print(stderr, " [{}] Popping ", return_id);
 				print_plot_id(plot_id);
-				fprintf(stderr, ", from %05.1f : %05.1f [C %d]\n",
-						(float)plotmap[plot_id].star_pt.x / 10,
-						(float)plotmap[plot_id].star_pt.y / 10,
-						(return_id > NUM_PLOTS) ? -1 :
-												  (uqm::DWORD)sqrt(ConnectedPlot(plotmap, plot_id, return_id)));
+				fmt::print(stderr, ", from %05.1f : %05.1f [C {}]\n",
+						   (float)plotmap[plot_id].star_pt.x / 10,
+						   (float)plotmap[plot_id].star_pt.y / 10,
+						   (return_id > NUM_PLOTS) ? -1 :
+													 (uqm::DWORD)sqrt(ConnectedPlot(plotmap, plot_id, return_id)));
 #endif
 				if (plot_id != ARILOU_DEFINED)
 				{
@@ -1574,7 +1574,7 @@ SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap)
 				plotmap[plot_id].star = nullptr;
 				if (my_clock)
 				{
-					fprintf(stderr, "Complete failure, stopping clock.\n");
+					fmt::print(stderr, "Complete failure, stopping clock.\n");
 					timer_running = false;
 				}
 				return return_id;
@@ -1582,11 +1582,11 @@ SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap)
 		}
 		// admit defeat and move on to the next star system
 #ifdef DEBUG_STARSEED_TRACE_Y
-		fprintf(stderr, "Removing ");
+		fmt::print(stderr, "Removing ");
 		print_plot_id(plot_id);
-		fprintf(stderr, ", from %05.1f : %05.1f, ",
-				(float)plotmap[plot_id].star_pt.x / 10,
-				(float)plotmap[plot_id].star_pt.y / 10);
+		fmt::print(stderr, ", from %05.1f : %05.1f, ",
+				   (float)plotmap[plot_id].star_pt.x / 10,
+				   (float)plotmap[plot_id].star_pt.y / 10);
 #endif
 		if (plot_id != ARILOU_DEFINED)
 		{
@@ -1596,13 +1596,13 @@ SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap)
 		plotmap[plot_id].star = nullptr;
 	}
 #ifdef DEBUG_STARSEED_TRACE_Z
-	fprintf(stderr, "RAN OUT OF PERMUTATIONS.\n");
+	fmt::print(stderr, "RAN OUT OF PERMUTATIONS.\n");
 #endif
 	// Ran out of stars to try - this particular branch is impossible
 	// return my own plot ID to pop above
 	if (my_clock)
 	{
-		fprintf(stderr, "Complete failure, stopping clock.\n");
+		fmt::print(stderr, "Complete failure, stopping clock.\n");
 		timer_running = false;
 	}
 	return (plot_id);
@@ -1613,8 +1613,8 @@ void DefaultQuasispace(PORTAL_LOCATION* portalmap)
 {
 	if (!portalmap)
 	{
-		fprintf(stderr, "DefaultQuasispace (portalmap) called"
-						"with nullptr PTR.\n");
+		fmt::print(stderr, "DefaultQuasispace (portalmap) called"
+						   "with nullptr PTR.\n");
 		return;
 	}
 
@@ -1626,10 +1626,10 @@ void DefaultQuasispace(PORTAL_LOCATION* portalmap)
 		portalmap[i].nearest_star = FindNearestConstellation((STAR_DESC*)StarmapArray, portalmap[i].star_pt);
 		if (!portalmap[i].nearest_star)
 		{
-			fprintf(stderr, "BAD Quasi Portal %c at %05.1f : %05.1f, %s",
-					'A' + i, (float)portalmap[i].star_pt.x / 10,
-					(float)portalmap[i].star_pt.y / 10,
-					"but no star found with FindNearestStar.\n");
+			fmt::print(stderr, "BAD Quasi Portal %c at %05.1f : %05.1f, {}",
+					   'A' + i, (float)portalmap[i].star_pt.x / 10,
+					   (float)portalmap[i].star_pt.y / 10,
+					   "but no star found with FindNearestStar.\n");
 		}
 	}
 }
@@ -1649,12 +1649,12 @@ bool SeedQuasispace(PORTAL_LOCATION* portalmap, PLOT_LOCATION* plotmap,
 	bool valid;
 	if (!portalmap || !plotmap || !starmap)
 	{
-		fprintf(stderr, "Seed Quasispace called with nullptr pointer(s).\n");
+		fmt::print(stderr, "Seed Quasispace called with nullptr pointer(s).\n");
 		return false;
 	}
 	if (!StarGenRNG)
 	{
-		fprintf(stderr, "****SeedQuasispace creating a STAR GEN RNG****\n");
+		fmt::print(stderr, "****SeedQuasispace creating a STAR GEN RNG****\n");
 		StarGenRNG = RandomContext_New();
 	}
 	RandomContext_SeedRandom(StarGenRNG, optCustomSeed);
@@ -1714,10 +1714,10 @@ bool SeedQuasispace(PORTAL_LOCATION* portalmap, PLOT_LOCATION* plotmap,
 			}
 			if (portalmap[i].star_pt.x <= 0 || portalmap[i].star_pt.x >= MAX_X_UNIVERSE || portalmap[i].star_pt.y <= 0 || portalmap[i].star_pt.y >= MAX_Y_UNIVERSE)
 			{
-				fprintf(stderr, "BAD Quasi Portal %c at %05.1f : %05.1f, %s",
-						'A' + i, (float)portalmap[i].star_pt.x / 10,
-						(float)portalmap[i].star_pt.y / 10,
-						"but no star found with FindNearestStar.\n");
+				fmt::print(stderr, "BAD Quasi Portal %c at %05.1f : %05.1f, {}",
+						   'A' + i, (float)portalmap[i].star_pt.x / 10,
+						   (float)portalmap[i].star_pt.y / 10,
+						   "but no star found with FindNearestStar.\n");
 				valid = false;
 				continue;
 			}
@@ -1725,23 +1725,23 @@ bool SeedQuasispace(PORTAL_LOCATION* portalmap, PLOT_LOCATION* plotmap,
 			portalmap[i].nearest_star = FindNearestConstellation(star_array, portalmap[i].star_pt);
 			if (!portalmap[i].nearest_star)
 			{
-				fprintf(stderr, "BAD Quasi Portal %c at %05.1f : %05.1f, %s",
-						'A' + i, (float)portalmap[i].star_pt.x / 10,
-						(float)portalmap[i].star_pt.y / 10,
-						"but no star found with FindNearestStar.\n");
+				fmt::print(stderr, "BAD Quasi Portal %c at %05.1f : %05.1f, {}",
+						   'A' + i, (float)portalmap[i].star_pt.x / 10,
+						   (float)portalmap[i].star_pt.y / 10,
+						   "but no star found with FindNearestStar.\n");
 				valid = false;
 				continue;
 			}
 			if ((portalmap[i].nearest_star->star_pt.x - portalmap[i].star_pt.x) * (portalmap[i].nearest_star->star_pt.x - portalmap[i].star_pt.x) + (portalmap[i].nearest_star->star_pt.y - portalmap[i].star_pt.y) * (portalmap[i].nearest_star->star_pt.y - portalmap[i].star_pt.y) < 400)
 			{
 #ifdef DEBUG_STARSEED
-				fprintf(stderr, "Picked Quasi Portal %c at %05.1f : %05.1f, ",
-						'A' + i, (float)portalmap[i].star_pt.x / 10,
-						(float)portalmap[i].star_pt.y / 10);
-				fprintf(stderr, "nearest star found at %05.1f : %05.1f, ",
-						(float)portalmap[i].nearest_star->star_pt.x / 10,
-						(float)portalmap[i].nearest_star->star_pt.y / 10);
-				fprintf(stderr, "portal TOO CLOSE to star.\n");
+				fmt::print(stderr, "Picked Quasi Portal %c at %05.1f : %05.1f, ",
+						   'A' + i, (float)portalmap[i].star_pt.x / 10,
+						   (float)portalmap[i].star_pt.y / 10);
+				fmt::print(stderr, "nearest star found at %05.1f : %05.1f, ",
+						   (float)portalmap[i].nearest_star->star_pt.x / 10,
+						   (float)portalmap[i].nearest_star->star_pt.y / 10);
+				fmt::print(stderr, "portal TOO CLOSE to star.\n");
 #endif
 				valid = false;
 				continue;
@@ -1881,8 +1881,8 @@ static int
 PlotIdCompare(const void* id1, const void* id2)
 {
 #ifdef DEBUG_STARSEED
-	fprintf(stderr, "compare %s and %s.\n",
-			((PlotIdMap*)id1)->idStr, ((PlotIdMap*)id2)->idStr);
+	fmt::print(stderr, "compare {} and {}.\n",
+			   ((PlotIdMap*)id1)->idStr, ((PlotIdMap*)id2)->idStr);
 #endif
 	return strcmp(((PlotIdMap*)id1)->idStr, ((PlotIdMap*)id2)->idStr);
 }
@@ -1891,7 +1891,7 @@ uqm::COUNT
 PlotIdStrToIndex(const char* plotIdStr)
 {
 #ifdef DEBUG_STARSEED
-	fprintf(stderr, "START PlotIdStrToIndex %s.\n", plotIdStr);
+	fmt::print(stderr, "START PlotIdStrToIndex {}.\n", plotIdStr);
 #endif
 	PlotIdMap key = {/* .idStr = */ plotIdStr, /* .id = */ std::numeric_limits<uqm::COUNT>::max()};
 	PlotIdMap* found = (PlotIdMap*)bsearch(&key, plotIdMap, ARRAY_SIZE(plotIdMap),
@@ -1901,7 +1901,7 @@ PlotIdStrToIndex(const char* plotIdStr)
 		return NUM_PLOTS + 1;
 	}
 #ifdef DEBUG_STARSEED
-	fprintf(stderr, "END PlotIdStrToIndex %s %d.\n", plotIdStr, found->id);
+	fmt::print(stderr, "END PlotIdStrToIndex {} {}.\n", plotIdStr, found->id);
 #endif
 	return found->id;
 }

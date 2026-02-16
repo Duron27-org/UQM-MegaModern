@@ -293,14 +293,14 @@ wava_Open(THIS_PTR, uio_DirHandle* dir, const char* filename)
 
 	if (wava->fmtHdr.format != 0x0001)
 	{ // not a PCM format
-		uqm::log::warn("wava_Open(): unsupported format %x",
+		uqm::log::warn("wava_Open(): unsupported format {:x}",
 					   wava->fmtHdr.format);
 		wava_Close(This);
 		return false;
 	}
 	if (wava->fmtHdr.channels != 1 && wava->fmtHdr.channels != 2)
 	{
-		uqm::log::warn("wava_Open(): unsupported number of channels %u",
+		uqm::log::warn("wava_Open(): unsupported number of channels {}",
 					   (unsigned)wava->fmtHdr.channels);
 		wava_Close(This);
 		return false;

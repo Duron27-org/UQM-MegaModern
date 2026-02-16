@@ -516,7 +516,7 @@ void ClearPlayerInput(uqm::COUNT playerI)
 {
 	if (PlayerInput[playerI] == nullptr)
 	{
-		uqm::log::debug("ClearPlayerInput(): PlayerInput[%d] was nullptr.",
+		uqm::log::debug("ClearPlayerInput(): PlayerInput[{}] was nullptr.",
 						playerI);
 		return;
 	}

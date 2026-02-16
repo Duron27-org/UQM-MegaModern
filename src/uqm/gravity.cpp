@@ -66,7 +66,7 @@ bool CalculateGravity(ELEMENT* ElementPtr)
 			if (TestElementPtr->state_flags & PLAYER_SHIP)
 			{
 				uqm::log::debug("CalculateGravity:");
-				uqm::log::debug("\tdx = %d, dy = %d", dx, dy);
+				uqm::log::debug("\tdx = {}, dy = {}", dx, dy);
 			}
 #endif /* DEBUG_GRAVITY */
 			dx = WRAP_DELTA_X(dx);
@@ -74,7 +74,7 @@ bool CalculateGravity(ELEMENT* ElementPtr)
 #ifdef DEBUG_GRAVITY
 			if (TestElementPtr->state_flags & PLAYER_SHIP)
 			{
-				uqm::log::debug("\twrap_dx = %d, wrap_dy = %d", dx, dy);
+				uqm::log::debug("\twrap_dx = {}, wrap_dy = {}", dx, dy);
 			}
 #endif /* DEBUG_GRAVITY */
 			abs_dx = dx >= 0 ? dx : -dx;
@@ -84,7 +84,7 @@ bool CalculateGravity(ELEMENT* ElementPtr)
 #ifdef DEBUG_GRAVITY
 			if (TestElementPtr->state_flags & PLAYER_SHIP)
 			{
-				uqm::log::debug("\tdisplay_dx = %d, display_dy = %d",
+				uqm::log::debug("\tdisplay_dx = {}, display_dy = {}",
 								abs_dx, abs_dy);
 			}
 #endif /* DEBUG_GRAVITY */
@@ -118,13 +118,13 @@ bool CalculateGravity(ELEMENT* ElementPtr)
 					{
 						magnitude = MAX_MAGNITUDE;
 					}
-					uqm::log::debug("magnitude = %u", magnitude);
+					uqm::log::debug("magnitude = {}", magnitude);
 #endif /* NEVER */
 
 #ifdef DEBUG_GRAVITY
 					if (TestElementPtr->state_flags & PLAYER_SHIP)
 					{
-						uqm::log::debug("dist_squared = %lu", dist_squared);
+						uqm::log::debug("dist_squared = {}", dist_squared);
 					}
 #endif /* DEBUG_GRAVITY */
 					if (TestHasGravity)

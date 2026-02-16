@@ -155,7 +155,7 @@ void EventHandler(uqm::BYTE selector)
 	eventIdStr = eventIdNumToStr(selector);
 	if (eventIdStr == nullptr)
 	{
-		uqm::log::warn("Warning: EventHandler(): Event %d is "
+		uqm::log::warn("Warning: EventHandler(): Event {} is "
 					   "unknown.",
 					   selector);
 		return;

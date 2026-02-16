@@ -21,6 +21,7 @@
 #ifndef LIBS_GFXLIB_H_
 #define LIBS_GFXLIB_H_
 
+#include <fmt/base.h>
 #include "port.h"
 #include "libs/compiler.h"
 #include <math.h>
@@ -425,7 +426,7 @@ calcDistance(COORD x1, COORD y1, COORD x2, COORD y2)
 static inline void
 printPt(POINT pt, uqm::CHAR_T* Str)
 {
-	printf("%s = %d x %d\n", Str, pt.x, pt.y);
+	fmt::print("{} = {} x {}\n", Str, pt.x, pt.y);
 }
 #define PRINT_PT(pt) \
 	printPt(pt, #pt)
@@ -433,7 +434,7 @@ printPt(POINT pt, uqm::CHAR_T* Str)
 static inline void
 printDPt(DPOINT dPt, uqm::CHAR_T* Str)
 {
-	printf("%s = %d x %d\n", Str, dPt.x, dPt.y);
+	fmt::print("{} = {} x {}\n", Str, dPt.x, dPt.y);
 }
 #define PRINT_DPT(dpt) \
 	printDPt(dpt, #dpt)
@@ -441,7 +442,7 @@ printDPt(DPOINT dPt, uqm::CHAR_T* Str)
 static inline void
 printExt(EXTENT ext, uqm::CHAR_T* Str)
 {
-	printf("%s = %d x %d\n", Str, ext.width, ext.height);
+	fmt::print("{} = {} x {}\n", Str, ext.width, ext.height);
 }
 #define PRINT_EXT(ext) \
 	printExt(ext, #ext)
@@ -449,7 +450,7 @@ printExt(EXTENT ext, uqm::CHAR_T* Str)
 static inline void
 printDExt(DEXTENT dExt, uqm::CHAR_T* Str)
 {
-	printf("%s = %d x %d\n", Str, dExt.width, dExt.height);
+	fmt::print("{} = {} x {}\n", Str, dExt.width, dExt.height);
 }
 #define PRINT_DEXT(dext) \
 	printDExt(dext, #dext)
@@ -457,8 +458,8 @@ printDExt(DEXTENT dExt, uqm::CHAR_T* Str)
 static inline void
 printRect(RECT r, uqm::CHAR_T* Str)
 {
-	printf("%s.corner = %d x %d\n", Str, r.corner.x, r.corner.y);
-	printf("%s.extent = %d x %d\n", Str, r.extent.width, r.extent.height);
+	fmt::print("{}.corner = {} x {}\n", Str, r.corner.x, r.corner.y);
+	fmt::print("{}.extent = {} x {}\n", Str, r.extent.width, r.extent.height);
 }
 #define PRINT_RECT(rect) \
 	printRect(rect, #rect)
@@ -466,8 +467,8 @@ printRect(RECT r, uqm::CHAR_T* Str)
 static inline void
 printDRect(DRECT r, uqm::CHAR_T* Str)
 {
-	printf("%s.corner = %d x %d\n", Str, r.corner.x, r.corner.y);
-	printf("%s.extent = %d x %d\n", Str, r.extent.width, r.extent.height);
+	fmt::print("{}.corner = {} x {}\n", Str, r.corner.x, r.corner.y);
+	fmt::print("{}.extent = {} x {}\n", Str, r.extent.width, r.extent.height);
 }
 #define PRINT_DRECT(drect) \
 	printDRect(drect, #drect)

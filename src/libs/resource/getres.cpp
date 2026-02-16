@@ -52,16 +52,16 @@ void* LoadResourceFromPath(const char* path, ResourceLoadFileFun* loadFun)
 	stream = res_OpenResFile(contentDir, path, "rb");
 	if (stream == nullptr)
 	{
-		uqm::log::warn("Warning: Can't open '%s'", path);
+		uqm::log::warn("Warning: Can't open '{}'", path);
 		return nullptr;
 	}
 
 	dataLen = LengthResFile(stream);
-	uqm::log::info("\t'%s' -- %lu bytes", path, dataLen);
+	uqm::log::info("\t'{}' -- {} bytes", path, dataLen);
 
 	if (dataLen == 0)
 	{
-		uqm::log::warn("Warning: Trying to load empty file '%s'.", path);
+		uqm::log::warn("Warning: Trying to load empty file '{}'.", path);
 		goto err;
 	}
 
@@ -93,7 +93,7 @@ res_GetResourceType(RESOURCE res)
 	desc = lookupResourceDesc(resourceIndex, res);
 	if (desc == nullptr)
 	{
-		uqm::log::warn("Trying to get type of undefined resource '%s'",
+		uqm::log::warn("Trying to get type of undefined resource '{}'",
 					   res);
 		return nullptr;
 	}
@@ -119,7 +119,7 @@ void* res_GetResource(RESOURCE res)
 	desc = lookupResourceDesc(resourceIndex, res);
 	if (desc == nullptr)
 	{
-		uqm::log::warn("Trying to get undefined resource '%s'",
+		uqm::log::warn("Trying to get undefined resource '{}'",
 					   res);
 		return nullptr;
 	}
@@ -154,7 +154,7 @@ res_GetIntResource(RESOURCE res)
 	desc = lookupResourceDesc(resourceIndex, res);
 	if (desc == nullptr)
 	{
-		uqm::log::warn("Trying to get undefined resource '%s'",
+		uqm::log::warn("Trying to get undefined resource '{}'",
 					   res);
 		return 0;
 	}
@@ -247,7 +247,7 @@ void* res_DetachResource(RESOURCE res)
 	if (desc->refcount > 1)
 	{
 		uqm::log::debug("Warning: trying to detach a resource referenced "
-						"%u times",
+						"{} times",
 						desc->refcount);
 		return nullptr;
 	}

@@ -24,6 +24,7 @@
 #include <stdio.h>
 #endif
 #include <assert.h>
+#include <fmt/format.h>
 
 #include "iointrn.h"
 #include "uioport.h"
@@ -650,21 +651,21 @@ void uio_printMountTree(FILE* outStream, const uio_MountTree* tree, int indent)
 	uio_MountTree* sub;
 	uio_PathComp* comp;
 
-	fprintf(outStream, "(");
+	fmt::print(outStream, "(");
 	uio_printMountTreeItems(outStream, tree->pLocs);
-	fprintf(outStream, ")\n");
+	fmt::print(outStream, ")\n");
 	for (sub = tree->subTrees; sub != nullptr; sub = sub->next)
 	{
 		int newIndent;
 
 		newIndent = indent;
-		fprintf(outStream, "%*s", indent, "");
+		fmt::print(outStream, "%*s", indent, "");
 		for (comp = sub->comps; comp != nullptr; comp = comp->next)
 		{
-			fprintf(outStream, "/%s", comp->name);
+			fmt::print(outStream, "/{}", comp->name);
 			newIndent += 1 + comp->nameLen;
 		}
-		fprintf(outStream, " ");
+		fmt::print(outStream, " ");
 		newIndent += 1;
 		uio_printMountTree(outStream, sub, newIndent);
 	}
@@ -673,7 +674,7 @@ void uio_printMountTree(FILE* outStream, const uio_MountTree* tree, int indent)
 void uio_printMountTreeItem(FILE* outStream, const uio_MountTreeItem* item)
 {
 	uio_printMountInfo(outStream, item->mountInfo);
-	fprintf(outStream, ":%d", item->depth);
+	fmt::print(outStream, ":{}", item->depth);
 }
 
 void uio_printMountTreeItems(FILE* outStream, const uio_MountTreeItem* item)
@@ -690,7 +691,7 @@ void uio_printMountTreeItems(FILE* outStream, const uio_MountTreeItem* item)
 		{
 			break;
 		}
-		fprintf(outStream, ", ");
+		fmt::print(outStream, ", ");
 	}
 }
 
@@ -698,7 +699,7 @@ void uio_printPathToMountTree(FILE* outStream, const uio_MountTree* tree)
 {
 	if (tree->upTree == nullptr)
 	{
-		fprintf(outStream, "/");
+		fmt::print(outStream, "/");
 	}
 	else
 	{
@@ -711,7 +712,7 @@ void uio_printMountInfo(FILE* outStream, const uio_MountInfo* mountInfo)
 	uio_FileSystemInfo* fsInfo;
 
 	fsInfo = uio_getFileSystemInfo(mountInfo->fsID);
-	fprintf(outStream, "%s:/%s", fsInfo->name, mountInfo->dirName);
+	fmt::print(outStream, "{}:/{}", fsInfo->name, mountInfo->dirName);
 }
 
 static void
@@ -720,18 +721,18 @@ uio_printMount(FILE* outStream, const uio_MountInfo* mountInfo)
 	uio_FileSystemInfo* fsInfo;
 
 	fsInfo = uio_getFileSystemInfo(mountInfo->fsID);
-	fprintf(outStream, "???:%s on ", mountInfo->dirName);
+	fmt::print(outStream, "???:{} on ", mountInfo->dirName);
 	uio_printPathToMountTree(outStream, mountInfo->mountTree);
-	fprintf(outStream, " type %s (", fsInfo->name);
+	fmt::print(outStream, " type {} (", fsInfo->name);
 	if (mountInfo->flags & uio_MOUNT_RDONLY)
 	{
-		fprintf(outStream, "ro");
+		fmt::print(outStream, "ro");
 	}
 	else
 	{
-		fprintf(outStream, "rw");
+		fmt::print(outStream, "rw");
 	}
-	fprintf(outStream, ")\n");
+	fmt::print(outStream, ")\n");
 }
 
 void uio_printMounts(FILE* outStream, const uio_Repository* repository)

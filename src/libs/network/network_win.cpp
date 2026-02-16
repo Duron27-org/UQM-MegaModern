@@ -43,18 +43,18 @@ void Network_init(void)
 	}
 
 #ifdef DEBUG
-	uqm::log::debug("Winsock version %d.%d found: \"%s\".",
+	uqm::log::debug("Winsock version {}.{} found: \"{}\".",
 					lowByte(data.wHighVersion), highByte(data.wHighVersion),
 					data.szDescription);
-	uqm::log::debug("Requesting to use Winsock version %d.%d, got "
-					"version %d.%d.",
+	uqm::log::debug("Requesting to use Winsock version {}.{}, got "
+					"version {}.{}.",
 					lowByte(requestVersion), highByte(requestVersion),
 					lowByte(data.wVersion), highByte(data.wVersion));
 #endif
 	if (data.wVersion != requestVersion)
 	{
-		uqm::log::critical("Winsock version %d.%d presented, requested "
-						   "%d.%d.",
+		uqm::log::critical("Winsock version {}.{} presented, requested "
+						   "{}.{}.",
 						   lowByte(data.wVersion), highByte(data.wVersion),
 						   lowByte(requestVersion), highByte(requestVersion));
 		(void)WSACleanup();

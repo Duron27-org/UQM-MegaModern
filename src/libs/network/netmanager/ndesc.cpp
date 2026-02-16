@@ -54,7 +54,7 @@ NetDescriptor_new(Socket* socket, void* extra)
 	nd = NetDescriptor_alloc();
 	nd->refCount = 1;
 #ifdef DEBUG_NETDESCRIPTOR_REF
-	uqm::log::debug("NetDescriptor %08" PRIxPTR ": ref=1 (%d)",
+	uqm::log::debug("NetDescriptor %08" PRIxPTR ": ref=1 ({})",
 					(uintptr_t)nd, nd->refCount);
 #endif
 
@@ -128,7 +128,7 @@ void NetDescriptor_incRef(NetDescriptor* nd)
 	assert(nd->refCount < REFCOUNT_MAX);
 	nd->refCount++;
 #ifdef DEBUG_NETDESCRIPTOR_REF
-	uqm::log::debug("NetDescriptor %08" PRIxPTR ": ref++ (%d)",
+	uqm::log::debug("NetDescriptor %08" PRIxPTR ": ref++ ({})",
 					(uintptr_t)nd, nd->refCount);
 #endif
 }
@@ -139,7 +139,7 @@ bool NetDescriptor_decRef(NetDescriptor* nd)
 	assert(nd->refCount > 0);
 	nd->refCount--;
 #ifdef DEBUG_NETDESCRIPTOR_REF
-	uqm::log::debug("NetDescriptor %08" PRIxPTR ": ref-- (%d)",
+	uqm::log::debug("NetDescriptor %08" PRIxPTR ": ref-- ({})",
 					(uintptr_t)nd, nd->refCount);
 #endif
 	if (nd->refCount == 0)

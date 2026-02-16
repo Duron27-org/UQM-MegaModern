@@ -24,6 +24,7 @@
 
 ==============================================================================*/
 
+#include <fmt/format.h>
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -42,7 +43,7 @@
 #endif
 
 #ifdef SUNOS
-extern int fprintf(FILE*, const char*, ...);
+extern int fmt::print(FILE*, const char*, ...);
 #endif
 
 /* UQM mod: include the UQM file that manages stricmp vs strcasecmp. */
@@ -261,12 +262,16 @@ MIKMODAPI CHAR* MikMod_InfoDriver(void)
 	{
 		if ((list = (CHAR*)MikMod_malloc(len * sizeof(CHAR))) != nullptr)
 		{
+			size_t remainingBufSize {len};
 			CHAR* list_end = list;
 			list[0] = 0;
 			/* list all registered device drivers : */
 			for (t = 1, l = firstdriver; l; l = l->next, t++)
 			{
-				list_end += sprintf(list_end, "%2d %s%s", t, l->Version, (l->next) ? "\n" : "");
+				const auto fmtResult = fmt::format_to_n(list_end, remainingBufSize, "%2d {}", t, l->Version);
+				list_end = fmtResult.out;
+				*list_end = (l->next) ? '\n' : '\0';
+				remainingBufSize -= (fmtResult.size + 1);
 			}
 		}
 	}
@@ -531,7 +536,7 @@ MIKMODAPI void Voice_SetPanning(SBYTE voice, ULONG pan)
 #ifdef MIKMOD_DEBUG
 	if ((pan != PAN_SURROUND) && ((pan < 0) || (pan > 255)))
 	{
-		fprintf(stderr, "\rVoice_SetPanning called with pan=%ld\n", (long)pan);
+		fmt::print(stderr, "\rVoice_SetPanning called with pan=%ld\n", (long)pan);
 	}
 #endif
 

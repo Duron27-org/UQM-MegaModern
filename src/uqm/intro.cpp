@@ -32,6 +32,7 @@
 #include "libs/sound/sound.h"
 #include "libs/vidlib.h"
 #include "core/log/log.h"
+#include "core/string/StringUtils.h"
 #include "libs/inplib.h"
 #include "util.h"
 #include "build.h"
@@ -534,12 +535,12 @@ SeedDitty(char* buf, size_t size, char* str)
 	}
 
 	linespun = false;
-	snprintf(buf, size, "ship.%s.ditty", ship_map[raceID].ditty);
+	fmt::format_to_sz_n(buf, size, "ship.{}.ditty", ship_map[raceID].ditty);
 	return;
 
 SeedDittyPassThru:
 	shipID = raceID = NUM_SHIPS;
-	snprintf(buf, size, "ship.%s.ditty", str);
+	fmt::format_to_sz_n(buf, size, "ship.{}.ditty", str);
 	return;
 }
 
@@ -799,7 +800,7 @@ DoPresentation(void* pIS)
 			pPIS->Buffer[0] = '\0';
 			if (1 > sscanf(pStr, "%d %255[^\n]", &index, pPIS->Buffer) || index < 0 || index >= MAX_FONTS)
 			{
-				uqm::log::warn("Bad FONT command '%s'", pStr);
+				uqm::log::warn("Bad FONT command '{}'", pStr);
 				continue;
 			}
 			pFont = &pPIS->Fonts[index];
@@ -825,7 +826,7 @@ DoPresentation(void* pIS)
 			pPIS->Buffer[0] = '\0';
 			if (1 > sscanf(pStr, "%d %255[^\n]", &index, pPIS->Buffer) || index < 0 || index >= MAX_FONTS)
 			{
-				uqm::log::warn("Bad FONT command '%s'", pStr);
+				uqm::log::warn("Bad FONT command '{}'", pStr);
 				continue;
 			}
 			pFont = &pPIS->Fonts[index];
@@ -850,7 +851,7 @@ DoPresentation(void* pIS)
 			pPIS->Buffer[0] = '\0';
 			if (1 > sscanf(pStr, "%d %255[^\n]", &index, pPIS->Buffer) || index < 0 || index >= MAX_FONTS)
 			{
-				uqm::log::warn("Bad FONT command '%s'", pStr);
+				uqm::log::warn("Bad FONT command '{}'", pStr);
 				continue;
 			}
 			pFont = &pPIS->Fonts[index];
@@ -911,8 +912,8 @@ DoPresentation(void* pIS)
 			}
 			else
 			{
-				snprintf(pPIS->Buffer, sizeof(pPIS->Buffer),
-						 "ship.%s.ditty", pStr);
+				fmt::format_to_sz_n(pPIS->Buffer, sizeof(pPIS->Buffer),
+									"ship.{}.ditty", pStr);
 			}
 
 			if (pPIS->MusicRef)
@@ -1132,7 +1133,7 @@ DoPresentation(void* pIS)
 				if (pPIS->NumSpinStat > 8)
 				{
 					uqm::log::warn("SPINSTAT: Number of SPINSTAT "
-								   "entries exceeds max amount '%s'",
+								   "entries exceeds max amount '{}'",
 								   pStr);
 					return false;
 				}
@@ -1143,10 +1144,10 @@ DoPresentation(void* pIS)
 					TEXT t;
 
 					uqm::log::warn("SPINSTAT: Stats exceed max "
-								   "values '%s'",
+								   "values '{}'",
 								   pStr);
-					snprintf(buf, sizeof(buf), "%s %s", pPIS->Buffer,
-							 "Exceed max!");
+					fmt::format_to_sz_n(buf, sizeof(buf), "{} {}", pPIS->Buffer,
+										"Exceed max!");
 
 					t.align = ALIGN_LEFT;
 					t.pStr = buf;
@@ -1170,7 +1171,7 @@ DoPresentation(void* pIS)
 			}
 			else
 			{
-				uqm::log::warn("Bad SPINSTAT command '%s'", pStr);
+				uqm::log::warn("Bad SPINSTAT command '{}'", pStr);
 			}
 		}
 		else if (strcmp(Opcode, "TFI") == 0)
@@ -1288,7 +1289,7 @@ DoPresentation(void* pIS)
 
 			if (cargs < 1)
 			{
-				uqm::log::warn("Bad DRAW command '%s'", pStr);
+				uqm::log::warn("Bad DRAW command '{}'", pStr);
 				pPIS->HaveFrame = false;
 				continue;
 			}
@@ -1399,7 +1400,7 @@ DoPresentation(void* pIS)
 			}
 			else
 			{
-				uqm::log::warn("Bad LINE command '%s'", pStr);
+				uqm::log::warn("Bad LINE command '{}'", pStr);
 			}
 		}
 		else if (strcmp(Opcode, "LINESPIN") == 0)
@@ -1442,7 +1443,7 @@ DoPresentation(void* pIS)
 			}
 			else
 			{
-				uqm::log::warn("Bad LINESPIN command '%s'", pStr);
+				uqm::log::warn("Bad LINESPIN command '{}'", pStr);
 			}
 		}
 		else if (strcmp(Opcode, "GETRECT") == 0)
@@ -1456,7 +1457,7 @@ DoPresentation(void* pIS)
 			else
 			{
 				uqm::log::warn("Bad GETRECT command, can not use "
-							   "GETRECT without drawing a frame first '%s'",
+							   "GETRECT without drawing a frame first '{}'",
 							   pStr);
 			}
 		}
@@ -1494,7 +1495,7 @@ DoPresentation(void* pIS)
 			}
 			else
 			{
-				uqm::log::warn("Bad STATBOX command '%s'", pStr);
+				uqm::log::warn("Bad STATBOX command '{}'", pStr);
 			}
 		}
 		else if (strcmp(Opcode, "MOVIE") == 0)
@@ -1515,7 +1516,7 @@ DoPresentation(void* pIS)
 			}
 			else
 			{
-				uqm::log::warn("Bad MOVIE command '%s'", pStr);
+				uqm::log::warn("Bad MOVIE command '{}'", pStr);
 			}
 		}
 		else if (strcmp(Opcode, "ANIMATE") == 0)
@@ -1574,7 +1575,7 @@ DoPresentation(void* pIS)
 			}
 			else
 			{
-				uqm::log::warn("Bad ANIMATION command '%s'", pStr);
+				uqm::log::warn("Bad ANIMATION command '{}'", pStr);
 			}
 		}
 		else if (strcmp(Opcode, "NOOP") == 0)
@@ -1749,6 +1750,6 @@ bool ShowPresentation(RESOURCE res)
 		return result;
 	}
 
-	uqm::log::warn("Tried to present '%s', of non-presentable type '%s'", res, resType);
+	uqm::log::warn("Tried to present '{}', of non-presentable type '{}'", res, resType);
 	return false;
 }

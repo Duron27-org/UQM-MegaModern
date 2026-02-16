@@ -212,7 +212,7 @@ char* luaUqm_comm_stringInterpolate(const char* str)
 		if (endTag == nullptr)
 		{
 			uqm::log::error("luaUqm_stringInterpolate(): Unterminated "
-							"'<%% .. %%>' sequence in string '%s'.",
+							"'<%% .. %%>' sequence in string '{}'.",
 							str);
 			// We ignore the rest of the string.
 			goto out;
@@ -237,7 +237,7 @@ char* luaUqm_comm_stringInterpolate(const char* str)
 			if (luaL_loadstring(luaUqm_commState, exprBuf) != LUA_OK)
 			{
 				uqm::log::error("luaUqm_stringInterpolate(): "
-								"lua_loadstring() failed: %s",
+								"lua_loadstring() failed: {}",
 								lua_tostring(luaUqm_commState, -1));
 				lua_pop(luaUqm_commState, 1);
 				// Pop the error.
@@ -249,8 +249,8 @@ char* luaUqm_comm_stringInterpolate(const char* str)
 		if (lua_pcall(luaUqm_commState, 0, 1, 0) != 0)
 		{
 			uqm::log::error("[script] luaUqm_stringInterpolate(): A "
-							"script error occurred in interpolation %d in string "
-							"'%s': %s.",
+							"script error occurred in interpolation {} in string "
+							"'{}': {}.",
 							interI, str,
 							lua_tostring(luaUqm_commState, -1));
 			lua_pop(luaUqm_commState, 1);
@@ -265,9 +265,9 @@ char* luaUqm_comm_stringInterpolate(const char* str)
 		{
 			// Not a string and not convertable to a string.
 			uqm::log::error("[script] luaUqm_stringInterpolate(): Value "
-							"returned by interpolation %d has type %s, which can not "
+							"returned by interpolation {} has type {}, which can not "
 							"be converted to a string, in string "
-							"'%s'.",
+							"'{}'.",
 							interI, lua_typename(luaUqm_commState, lua_type(luaUqm_commState, -1)), str);
 			lua_pop(luaUqm_commState, 1);
 			continue;

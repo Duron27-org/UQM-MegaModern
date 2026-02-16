@@ -251,7 +251,7 @@ bool DoTextEntry(TEXTENTRY_STATE* pTES)
 				pTES->JoyRegLength = lwlen;
 			}
 			uqm::log::warn("Warning: Joystick upper-lower registers"
-						   " size mismatch; using the smallest subset (%d)",
+						   " size mismatch; using the smallest subset ({})",
 						   pTES->JoyRegLength);
 		}
 

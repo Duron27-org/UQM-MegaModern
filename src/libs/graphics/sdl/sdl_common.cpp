@@ -22,6 +22,7 @@
 #include "primitives.h"
 #include "options.h"
 #include "uqmversion.h"
+#include "core/string/StringUtils.h"
 #include "libs/graphics/drawcmd.h"
 #include "libs/graphics/dcqueue.h"
 #include "libs/graphics/cmap.h"
@@ -73,7 +74,7 @@ int TFB_InitGraphics(int driver, int flags, const char* renderer,
 					 unsigned int* windowType)
 {
 	int result, i;
-	char caption[200];
+
 
 	/* Null out screen pointers the first time */
 	for (i = 0; i < TFB_GFX_NUMSCREENS; i++)
@@ -119,7 +120,7 @@ int TFB_InitGraphics(int driver, int flags, const char* renderer,
 			*resFactor = 0;
 		}
 
-		uqm::log::debug("fs_height %u, fs_width %u, current_w %u", fs_height, fs_width, SDL_screen_info->current_w);
+		uqm::log::debug("fs_height {}, fs_width {}, current_w {}", fs_height, fs_width, SDL_screen_info->current_w);
 	}
 #endif
 
@@ -143,14 +144,13 @@ int TFB_InitGraphics(int driver, int flags, const char* renderer,
 	}
 
 #if SDL_MAJOR_VERSION == 1
+	char caption[200] {};
 	/* Other versions do this when setting up the window */
-	sprintf(caption, "The Ur-Quan Masters v%d.%d.%d %s",
-			UQM_MAJOR_VERSION, UQM_MINOR_VERSION,
-			UQM_PATCH_VERSION,
-			(*resFactor ? "HD " UQM_EXTRA_VERSION : UQM_EXTRA_VERSION));
+	fmt::format_to_n(caption, sizeof(caption) - 1, "The Ur-Quan Masters v{}.{}.{} {}",
+					 UQM_MAJOR_VERSION, UQM_MINOR_VERSION,
+					 UQM_PATCH_VERSION,
+					 (*resFactor ? "HD " UQM_EXTRA_VERSION : UQM_EXTRA_VERSION));
 	SDL_WM_SetCaption(caption, nullptr);
-#else
-	(void)caption; /* satisfy compiler (unused parameter) */
 #endif
 
 	if (flags & TFB_GFXFLAGS_FULLSCREEN
@@ -529,8 +529,8 @@ void TFB_BlitSurface(SDL_Surface* src, SDL_Rect* srcrect, SDL_Surface* dst,
 	{
 		// additive blit: dst = src + dst
 #if 0
-		log_add (log_Debug, "additive blit %d %d, src %d %d %d %d dst %d %d,"
-				" srcbpp %d", blend_numer, blend_denom, x1, y1, x2, y2,
+		log_add (log_Debug, "additive blit {} {}, src {} {} {} {} dst {} {},"
+				" srcbpp {}", blend_numer, blend_denom, x1, y1, x2, y2,
 				dstrect->x, dstrect->y, src->format->BitsPerPixel);
 #endif
 		for (y = y1; y < y2; ++y)
@@ -577,8 +577,8 @@ void TFB_BlitSurface(SDL_Surface* src, SDL_Rect* srcrect, SDL_Surface* dst,
 	{
 		// subtractive blit: dst = src - dst
 #if 0
-		log_add (log_Debug, "subtractive blit %d %d, src %d %d %d %d"
-				" dst %d %d, srcbpp %d", blend_numer, blend_denom,
+		log_add (log_Debug, "subtractive blit {} {}, src {} {} {} {}"
+				" dst {} {}, srcbpp {}", blend_numer, blend_denom,
 					x1, y1, x2, y2, dstrect->x, dstrect->y,
 					src->format->BitsPerPixel);
 #endif
@@ -628,8 +628,8 @@ void TFB_BlitSurface(SDL_Surface* src, SDL_Rect* srcrect, SDL_Surface* dst,
 
 		float f = blend_numer / (float)blend_denom;
 #if 0
-		log_add (log_Debug, "modulated blit %d %d, f %f, src %d %d %d %d"
-				" dst %d %d, srcbpp %d\n", blend_numer, blend_denom, f,
+		log_add (log_Debug, "modulated blit {} {}, f {}, src {} {} {} {}"
+				" dst {} {}, srcbpp {}\n", blend_numer, blend_denom, f,
 				x1, y1, x2, y2, dstrect->x, dstrect->y,
 				src->format->BitsPerPixel);
 #endif
@@ -713,21 +713,19 @@ int TFB_HasColorKey(SDL_Surface* surface)
 
 void TFB_ScreenShot(void)
 {
-	char curTime[64];
 	char* fullPath;
 	time_t t = time(nullptr);
 	struct tm* tm = localtime(&t);
 	const char* shotDirName = getenv("UQM_SCR_SHOT_DIR");
 	struct stat sb;
-	int len;
 
+	char curTime[64] {};
 	strftime(curTime, sizeof(curTime),
-			 "%Y-%m-%d_%H-%M-%S", tm);
+			 "%Y-%m-%e_%H-%M-%S", tm);
 
-	len = snprintf(nullptr, 0,
-				   "%s%s v%d.%d.%d %s.png", shotDirName, curTime,
-				   UQM_MAJOR_VERSION, UQM_MINOR_VERSION, UQM_PATCH_VERSION,
-				   chooseIfHd<const char*>(UQM_EXTRA_VERSION, "HD " UQM_EXTRA_VERSION));
+	const size_t len = fmt::formatted_size("{}{} v{}.{}.{} {}.png", shotDirName, curTime,
+										   UQM_MAJOR_VERSION, UQM_MINOR_VERSION, UQM_PATCH_VERSION,
+										   chooseIfHd<const char*>(UQM_EXTRA_VERSION, "HD " UQM_EXTRA_VERSION));
 
 	if (len < 0)
 	{
@@ -740,16 +738,17 @@ void TFB_ScreenShot(void)
 		return;
 	}
 
-	snprintf(fullPath, len + 1,
-			 "%s%s v%d.%d.%d %s.png", shotDirName, curTime,
-			 UQM_MAJOR_VERSION, UQM_MINOR_VERSION, UQM_PATCH_VERSION,
-			 chooseIfHd<const char*>(UQM_EXTRA_VERSION, "HD " UQM_EXTRA_VERSION));
+	fmt::format_to_sz_n(fullPath, len + 1,
+						"{}{} v{}.{}.{} {}.png", shotDirName, curTime,
+						UQM_MAJOR_VERSION, UQM_MINOR_VERSION, UQM_PATCH_VERSION,
+						chooseIfHd<const char*>(UQM_EXTRA_VERSION, "HD " UQM_EXTRA_VERSION));
+
 
 	if (stat(shotDirName, &sb) == 0 && S_ISDIR(sb.st_mode))
 	{
 		if (TFB_SDL_ScreenShot(fullPath))
 		{
-			uqm::log::info("Screenshot saved at path, '%s'", fullPath);
+			uqm::log::info("Screenshot saved at path, '{}'", fullPath);
 		}
 		else
 		{

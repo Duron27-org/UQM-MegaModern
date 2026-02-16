@@ -152,7 +152,7 @@ ThreadHelper(void* startInfo)
 	result = (*func)(data);
 
 #ifdef DEBUG_THREADS
-	uqm::log::debug("Thread '%s' done (returned %d).",
+	uqm::log::debug("Thread '{}' done (returned {}).",
 					thread->name, result);
 	fflush(stderr);
 #endif
@@ -182,7 +182,7 @@ CreateThread_PT(ThreadFunction func, void* data, uqm::SDWORD stackSize
 	pthread_attr_t attr;
 
 
-	//log_add (log_Debug, "CreateThread_PT '%s'", name);
+	//log_add (log_Debug, "CreateThread_PT '{}'", name);
 
 	thread = (struct _thread*)HMalloc(sizeof *thread);
 #ifdef NAMED_SYNCHRO
@@ -221,7 +221,7 @@ CreateThread_PT(ThreadFunction func, void* data, uqm::SDWORD stackSize
 
 #ifdef DEBUG_THREADS
 	//#if 0
-	uqm::log::debug("Thread '%s' created.", thread->name);
+	uqm::log::debug("Thread '{}' created.", thread->name);
 	fflush(stderr);
 //#endif
 #endif
@@ -265,10 +265,10 @@ void TaskSwitch_PT(void)
 
 void WaitThread_PT(Thread thread, int* status)
 {
-	//uqm::log::debug( "WaitThread_PT '%s', status %x", ((TrueThread)thread)->name, status);
+	//uqm::log::debug( "WaitThread_PT '{}', status {:x}", ((TrueThread)thread)->name, status);
 	//pthread_join(((TrueThread)thread)->native, status);
 	pthread_join(((TrueThread)thread)->native, nullptr);
-	//uqm::log::debug( "WaitThread_PT '%s' complete", ((TrueThread)thread)->name);
+	//uqm::log::debug( "WaitThread_PT '{}' complete", ((TrueThread)thread)->name);
 }
 
 ThreadLocal*
@@ -316,7 +316,7 @@ CreateMutex_PT(void)
 #ifdef NAMED_SYNCHRO
 			/* logging depends on Mutexes, so we have to use the
 			 * non-threaded version instead */
-			/* log_add_nothread*/ uqm::log::critical("Could not initialize mutex '%s': aorting.", name);
+			/* log_add_nothread*/ uqm::log::critical("Could not initialize mutex '{}': aorting.", name);
 #else
 			/* log_add_nothread*/ uqm::log::critical("Could not initialize mutex: aborting.");
 #endif
@@ -339,7 +339,7 @@ CreateMutex_PT(void)
 void DestroyMutex_PT(Mutex m)
 {
 	Mut* mutex = (Mut*)m;
-	//log_add_nothread(log_Debug, "Destroying mutex '%s'", mutex->name);
+	//log_add_nothread(log_Debug, "Destroying mutex '{}'", mutex->name);
 	pthread_mutex_destroy(&mutex->mutex);
 	free(mutex);
 }
@@ -360,13 +360,13 @@ void LockMutex_PT(Mutex m)
 	if (mutex->owner && (mutex->syncClass & TRACK_CONTENTION_CLASSES))
 	{ /* logging depends on Mutexes, so we have to use the
 		 * non-threaded version instead */
-		/* log_add_nothread*/ uqm::log::debug("Thread '%s' blocking on mutex '%s'", MyThreadName(), mutex->name);
+		/* log_add_nothread*/ uqm::log::debug("Thread '{}' blocking on mutex '{}'", MyThreadName(), mutex->name);
 	}
 #endif
 
 	while (pthread_mutex_lock(&mutex->mutex) != 0)
 	{
-		//log_add_nothread (log_Debug, "Attempt to acquire mutex '%s' failretry", mutex->name);
+		//log_add_nothread (log_Debug, "Attempt to acquire mutex '{}' failretry", mutex->name);
 		TaskSwitch_PT();
 	}
 #ifdef TRACK_CONTENTION
@@ -411,12 +411,12 @@ CreateSemaphore_PT(uqm::DWORD initial
 	sem->syncClass = syncClass;
 #endif
 
-	//log_add (log_Debug, "Creating semaphore '%s'", sem->name);
+	//log_add (log_Debug, "Creating semaphore '{}'", sem->name);
 
 	if (sem_init(&sem->sem, 0, initial) < 0)
 	{
 #ifdef NAMED_SYNCHRO
-		uqm::log::critical("Could not initialize semaphore '%s':"
+		uqm::log::critical("Could not initialize semaphore '{}':"
 						   " aborting.",
 						   name);
 #else
@@ -425,17 +425,17 @@ CreateSemaphore_PT(uqm::DWORD initial
 #endif
 		exit(EXIT_FAILURE);
 	}
-	//log_add (log_Debug, "Creating semaphore '%s' success", sem->name);
+	//log_add (log_Debug, "Creating semaphore '{}' success", sem->name);
 	return sem;
 }
 
 void DestroySemaphore_PT(Semaphore s)
 {
 	Sem* sem = (Sem*)s;
-	//log_add (log_Debug, "Destroying semaphore '%s'", sem->name);
+	//log_add (log_Debug, "Destroying semaphore '{}'", sem->name);
 	if (sem_destroy(&sem->sem))
 	{
-		uqm::log::debug("Destroying semaphore '%s' failed", sem->name);
+		uqm::log::debug("Destroying semaphore '{}' failed", sem->name);
 	}
 	HFree(sem);
 }
@@ -449,22 +449,22 @@ void SetSemaphore_PT(Semaphore s)
 	contention = !contention;
 	if (contention && (sem->syncClass & TRACK_CONTENTION_CLASSES))
 	{
-		uqm::log::debug("Thread '%s' blocking on semaphore '%s'",
+		uqm::log::debug("Thread '{}' blocking on semaphore '{}'",
 						MyThreadName(), sem->name);
 	}
 #endif
-	//log_add (log_Debug, "Attempt to set semaphore '%s'", sem->name);
+	//log_add (log_Debug, "Attempt to set semaphore '{}'", sem->name);
 	while (sem_wait(&sem->sem) == -1)
 	{
-		//log_add (log_Debug, "Attempt to set semaphore '%s' failretry", sem->name);
+		//log_add (log_Debug, "Attempt to set semaphore '{}' failretry", sem->name);
 		TaskSwitch_PT();
 	}
-	//log_add (log_Debug, "Attempt to set semaphore '%s' success", sem->name);
+	//log_add (log_Debug, "Attempt to set semaphore '{}' success", sem->name);
 #ifdef TRACK_CONTENTION
 	if (contention && (sem->syncClass & TRACK_CONTENTION_CLASSES))
 	{
-		uqm::log::debug("Thread '%s' awakens,"
-						" released from semaphore '%s'",
+		uqm::log::debug("Thread '{}' awakens,"
+						" released from semaphore '{}'",
 						MyThreadName(), sem->name);
 	}
 #endif
@@ -473,13 +473,13 @@ void SetSemaphore_PT(Semaphore s)
 void ClearSemaphore_PT(Semaphore s)
 {
 	Sem* sem = (Sem*)s;
-	//log_add (log_Debug, "Attempt to clear semaphore '%s' %x", sem->name, sem);
+	//log_add (log_Debug, "Attempt to clear semaphore '{}' {:x}", sem->name, sem);
 	while (sem_post(&sem->sem) == -1)
 	{
-		//log_add (log_Debug, "Attempt to clear semaphore %x failretry", sem);
+		//log_add (log_Debug, "Attempt to clear semaphore {:x} failretry", sem);
 		TaskSwitch_PT();
 	}
-	//log_add (log_Debug, "Attempt to clear semaphore %x success", sem);
+	//log_add (log_Debug, "Attempt to clear semaphore {:x} success", sem);
 }
 
 /* Recursive mutexes. Adapted from mixSDL code, which was adapted from
@@ -510,7 +510,7 @@ CreateRecursiveMutex_PT(void)
 	{
 #ifdef NAMED_SYNCHRO
 		uqm::log::critical("Could not initialize recursive "
-						   "mutex '%s': aborting.",
+						   "mutex '{}': aborting.",
 						   name);
 #else
 		uqm::log::critical("Could not initialize recursive "
@@ -542,7 +542,7 @@ void LockRecursiveMutex_PT(RecursiveMutex val)
 #ifdef TRACK_CONTENTION
 		if (mtx->thread_id && (mtx->syncClass & TRACK_CONTENTION_CLASSES))
 		{
-			uqm::log::debug("Thread '%s' blocking on '%s'",
+			uqm::log::debug("Thread '{}' blocking on '{}'",
 							MyThreadName(), mtx->name);
 		}
 #endif
@@ -562,7 +562,7 @@ void UnlockRecursiveMutex_PT(RecursiveMutex val)
 	if (!mtx->locks || mtx->thread_id != thread_id)
 	{
 #ifdef NAMED_SYNCHRO
-		uqm::log::debug("'%s' attempted to unlock %s when it "
+		uqm::log::debug("'{}' attempted to unlock {} when it "
 						"didn't hold it",
 						MyThreadName(), mtx->name);
 #endif
@@ -608,7 +608,7 @@ CreateCondVar_PT(void)
 	if (err1 || err2)
 	{
 #ifdef NAMED_SYNCHRO
-		uqm::log::critical("Could not initialize condition variable '%s':"
+		uqm::log::critical("Could not initialize condition variable '{}':"
 						   " aborting.",
 						   name);
 #else
@@ -639,7 +639,7 @@ void WaitCondVar_PT(CondVar c)
 #ifdef TRACK_CONTENTION
 	if (cv->syncClass & TRACK_CONTENTION_CLASSES)
 	{
-		uqm::log::debug("Thread '%s' waiting for signal from '%s'",
+		uqm::log::debug("Thread '{}' waiting for signal from '{}'",
 						MyThreadName(), cv->name);
 	}
 #endif
@@ -650,7 +650,7 @@ void WaitCondVar_PT(CondVar c)
 #ifdef TRACK_CONTENTION
 	if (cv->syncClass & TRACK_CONTENTION_CLASSES)
 	{
-		uqm::log::debug("Thread '%s' received signal from '%s',"
+		uqm::log::debug("Thread '{}' received signal from '{}',"
 						" awakening.",
 						MyThreadName(), cv->name);
 	}

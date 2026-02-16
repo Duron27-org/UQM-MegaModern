@@ -149,4 +149,20 @@ inline uqstl::errc parseStr(uqstl::string_view str, T& out)
 	return ec;
 }
 } // namespace uqm
+
+namespace fmt
+{
+// same as format_to_n, but zero-terminates the string. "outSize" must be large enough to
+// accomodate the trailing null terminator.
+template <typename OutputIt, typename... T,
+		  FMT_ENABLE_IF(detail::is_output_iterator<OutputIt, char>::value)>
+FMT_INLINE auto format_to_sz_n(OutputIt out, size_t outSize, format_string<T...> fmt,
+							   T&&... args) -> format_to_n_result<OutputIt>
+{
+	const auto result {vformat_to_n(out, outSize - 1, fmt.str, vargs<T...> {{args...}})};
+	*result.out = '\0';
+	return result;
+}
+} // namespace fmt
+
 #endif /* UQM_CORE_STRING_STRINGUTILS_H_ */

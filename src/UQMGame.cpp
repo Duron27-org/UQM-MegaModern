@@ -112,7 +112,7 @@ int UQMGame::setup(uqstl::span<const char* const> args)
 		//		int i;
 		//		if (!freopen(m_options.logFile.c_str(), "w", stderr))
 		//		{
-		//			printf("Error %d calling freopen() on stderr\n", errno);
+		//			fmt::print("Error {} calling freopen() on stderr\n", errno);
 		//			return EXIT_FAILURE;
 		//		}
 		//#ifdef UNBUFFERED_LOGFILE
@@ -120,20 +120,20 @@ int UQMGame::setup(uqstl::span<const char* const> args)
 		//#endif
 		for (size_t i = 0; i < args.size(); ++i)
 		{
-			uqm::log::info("argv[%d] = [%s]", i, args[i]);
+			uqm::log::info("argv[{}] = \"{}\"", i, args[i]);
 		}
 	}
 
 	if (m_options.runMode == RunMode::Version)
 	{
-		printf("%d.%d.%d %s\n", UQM_MAJOR_VERSION, UQM_MINOR_VERSION,
-			   UQM_PATCH_VERSION,
-			   (resolutionFactor ? "HD " UQM_EXTRA_VERSION : UQM_EXTRA_VERSION));
+		uqm::log::info("{}.{}.{} {}\n", UQM_MAJOR_VERSION, UQM_MINOR_VERSION,
+					   UQM_PATCH_VERSION,
+					   (resolutionFactor ? "HD " UQM_EXTRA_VERSION : UQM_EXTRA_VERSION));
 		//log_showBox(false, false);
 		return EXIT_SUCCESS;
 	}
 
-	uqm::log::info("The Ur-Quan Masters v%d.%d.%d %s (compiled %s %s)\n"
+	uqm::log::info("The Ur-Quan Masters v{}.{}.{} {} (compiled {} {})\n"
 				   "This software comes with ABSOLUTELY NO WARRANTY;\n"
 				   "for details see the included 'COPYING' file.\n",
 				   UQM_MAJOR_VERSION, UQM_MINOR_VERSION,
@@ -141,8 +141,8 @@ int UQMGame::setup(uqstl::span<const char* const> args)
 				   (resolutionFactor ? "HD " UQM_EXTRA_VERSION : UQM_EXTRA_VERSION),
 				   __DATE__, __TIME__);
 #ifdef NETPLAY
-	uqm::log::info("Netplay protocol version %d.%d. Netplay opponent "
-				   "must have UQM %d.%d.%d or later.\n",
+	uqm::log::info("Netplay protocol version {}.{}. Netplay opponent "
+				   "must have UQM {}.{}.{} or later.\n",
 				   NETPLAY_PROTOCOL_VERSION_MAJOR, NETPLAY_PROTOCOL_VERSION_MINOR,
 				   NETPLAY_MIN_UQM_VERSION_MAJOR, NETPLAY_MIN_UQM_VERSION_MINOR,
 				   NETPLAY_MIN_UQM_VERSION_PATCH);
@@ -150,39 +150,39 @@ int UQMGame::setup(uqstl::span<const char* const> args)
 
 	// Compiler info to help with future debugging.
 #ifdef _MSC_VER
-	printf("MSC_VER: %d\n", _MSC_VER);
-	printf("MSC_FULL_VER: %d\n", _MSC_FULL_VER);
-	printf("MSC_BUILD: %d\n\n", _MSC_BUILD);
-	uqm::log::info("MSC_VER: %d\n", _MSC_VER);
-	uqm::log::info("MSC_FULL_VER: %d\n", _MSC_FULL_VER);
-	uqm::log::info("MSC_BUILD: %d\n", _MSC_BUILD);
+	fmt::print("MSC_VER: {}\n", _MSC_VER);
+	fmt::print("MSC_FULL_VER: {}\n", _MSC_FULL_VER);
+	fmt::print("MSC_BUILD: {}\n\n", _MSC_BUILD);
+	uqm::log::info("MSC_VER: {}\n", _MSC_VER);
+	uqm::log::info("MSC_FULL_VER: {}\n", _MSC_FULL_VER);
+	uqm::log::info("MSC_BUILD: {}\n", _MSC_BUILD);
 #endif // _MSC_VER
 
 #ifdef __GNUC__
-	printf("GCC_VERSION: %d.%d.%d\n\n", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
-	uqm::log::info("GCC_VERSION: %d.%d.%d\n", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
+	fmt::print("GCC_VERSION: {}.{}.{}\n\n", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
+	uqm::log::info("GCC_VERSION: {}.{}.{}\n", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
 #endif // __GNUC__
 
 #ifdef __clang__
-	printf("CLANG_VERSION: %d.%d.%d\n\n", __clang_major__, __clang_minor__, __clang_patchlevel__);
-	uqm::log::info("CLANG_VERSION: %d.%d.%d\n", __clang_major__, __clang_minor__, __clang_patchlevel__);
+	fmt::print("CLANG_VERSION: {}.{}.{}\n\n", __clang_major__, __clang_minor__, __clang_patchlevel__);
+	uqm::log::info("CLANG_VERSION: {}.{}.{}\n", __clang_major__, __clang_minor__, __clang_patchlevel__);
 #endif // __clang__
 
 #ifdef __MINGW32__
-	printf("MINGW32_VERSION: %d.%d\n\n", __MINGW32_MAJOR_VERSION, __MINGW32_MINOR_VERSION);
-	uqm::log::info("MINGW32_VERSION: %d.%d\n", __MINGW32_MAJOR_VERSION, __MINGW32_MINOR_VERSION);
+	fmt::print("MINGW32_VERSION: {}.{}\n\n", __MINGW32_MAJOR_VERSION, __MINGW32_MINOR_VERSION);
+	uqm::log::info("MINGW32_VERSION: {}.{}\n", __MINGW32_MAJOR_VERSION, __MINGW32_MINOR_VERSION);
 #endif // __MINGW32__
 
 #ifdef __MINGW64__
-	printf("MINGW64_VERSION: %d.%d\n\n", __MINGW32_MAJOR_VERSION, __MINGW32_MINOR_VERSION);
-	uqm::log::info("MINGW64_VERSION: %d.%d\n", __MINGW32_MAJOR_VERSION, __MINGW32_MINOR_VERSION);
+	fmt::print("MINGW64_VERSION: {}.{}\n\n", __MINGW32_MAJOR_VERSION, __MINGW32_MINOR_VERSION);
+	uqm::log::info("MINGW64_VERSION: {}.{}\n", __MINGW32_MAJOR_VERSION, __MINGW32_MINOR_VERSION);
 #endif // __MINGW64__
 
-	printf("Build Time: %s %s\n\n", __DATE__, __TIME__);
+	fmt::print("Build Time: {} {}\n\n", __DATE__, __TIME__);
 
 	//if (error::haveError())
 	//{ // Have some saved error to log
-	//	uqm::log::error( "%s", error::getError());
+	//	uqm::log::error( "{}", error::getError());
 	//	error::clear();
 	//}
 
@@ -223,9 +223,9 @@ int UQMGame::setup(uqstl::span<const char* const> args)
 
 		for (i = 0; i < 6; ++i)
 		{
-			char cfgkey[64];
+			char cfgkey[64] {};
 
-			snprintf(cfgkey, sizeof(cfgkey), "config.keys.%d.name", i + 1);
+			fmt::format_to_sz_n(cfgkey, sizeof(cfgkey), "config.keys.{}.name", i + 1);
 			cfgkey[sizeof(cfgkey) - 1] = '\0';
 
 			res_Remove(cfgkey);
@@ -460,9 +460,9 @@ int UQMGame::setup(uqstl::span<const char* const> args)
 	// initAudio (snddriver, soundflags);
 	// Make sure that the compiler treats multidim arrays the way we expect
 	assert(sizeof(int[ControlTemplate::NUM * NUM_KEYS]) == sizeof(int[static_cast<int>(ControlTemplate::NUM)][NUM_KEYS]));
-	TFB_SetInputVectors(ImmediateInputState.menu, NUM_MENU_KEYS,
-						(volatile int*)ImmediateInputState.key, static_cast<int>(ControlTemplate::NUM),
-						NUM_KEYS);
+	TFB_SetInputVectors((int*)ImmediateInputState.menu, NUM_MENU_KEYS,
+						(int*)ImmediateInputState.key, NUM_KEYS,
+						static_cast<int>(ControlTemplate::NUM));
 	TFB_InitInput(TFB_INPUTDRIVER_SDL, 0);
 
 	return EXIT_SUCCESS;

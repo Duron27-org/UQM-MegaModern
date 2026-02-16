@@ -184,7 +184,7 @@ void StringBank_Dump(stringbank* bank, FILE* s)
 		int i = 0;
 		while (i < x->len)
 		{
-			fprintf(s, "\"%s\"\n", x->data + i);
+			fmt::print(s, "\"{}\"\n", x->data + i);
 			while (x->data[i])
 			{
 				i++;

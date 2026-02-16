@@ -85,7 +85,7 @@ drawSupportShip(ROSTER_STATE* rosterState, bool filled, bool saveFrame)
 
 		savedShipFrame = SaveContextFrame(&savedShipFrame_r);
 
-		uqm::log::debug("Saved x:%u, y:%u", savedShipFrame_r.corner.x, savedShipFrame_r.corner.y);
+		uqm::log::debug("Saved x:{}, y:{}", savedShipFrame_r.corner.x, savedShipFrame_r.corner.y);
 	}
 	else
 	{
@@ -198,7 +198,7 @@ static bool
 DeltaSupportCrew(ROSTER_STATE* rosterState, uqm::SIZE crew_delta)
 {
 	bool ret = false;
-	uqm::CHAR_T buf[40];
+	uqm::CHAR_T buf[40] {};
 	HFLEETINFO hTemplate;
 	HSHIPFRAG hShipFrag;
 	SHIP_FRAGMENT* StarShipPtr;
@@ -228,13 +228,13 @@ DeltaSupportCrew(ROSTER_STATE* rosterState, uqm::SIZE crew_delta)
 	{
 		if (StarShipPtr->crew_level >= TemplatePtr->crew_level)
 		{
-			sprintf(buf, "%u", StarShipPtr->crew_level);
+			fmt::format_to_n(buf, sizeof(buf) - 1, "{}", StarShipPtr->crew_level);
 		}
 		else
 		{
-			sprintf(buf, "%u/%u",
-					StarShipPtr->crew_level,
-					TemplatePtr->crew_level);
+			fmt::format_to_n(buf, sizeof(buf) - 1, "{}/{}",
+							 StarShipPtr->crew_level,
+							 TemplatePtr->crew_level);
 		}
 
 		PreUpdateFlashRect();

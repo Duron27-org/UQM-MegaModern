@@ -1069,7 +1069,7 @@ LoadSummary(SUMMARY_DESC* SummPtr, void* fp, bool try_vanilla)
 		read_str(fp, SummPtr->LegacySaveName, LEGACY_SAVE_NAME_SIZE);
 	}
 
-	//log_add (log_Debug, "fp: %d Check:%s Name:%s", fp, SummPtr->SaveNameChecker, SummPtr->SaveName);
+	//log_add (log_Debug, "fp: {} Check:{} Name:{}", fp, SummPtr->SaveNameChecker, SummPtr->SaveName);
 
 	if (!LoadSisState(&SummPtr->SS, fp))
 	{
@@ -1128,7 +1128,7 @@ LoadStarDesc(STAR_DESC* SDPtr, DECODE_REF fh)
 bool LoadLegacyGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, bool try_vanilla)
 {
 	uio_Stream* in_fp;
-	char file[PATH_MAX];
+	char file[PATH_MAX] {};
 	char buf[256];
 	SUMMARY_DESC loc_sd;
 	GAME_STATE_FILE* fp;
@@ -1137,7 +1137,7 @@ bool LoadLegacyGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, bool try_vanil
 	STAR_DESC SD;
 	ACTIVITY Activity;
 
-	sprintf(file, "starcon2.%02u", which_game);
+	fmt::format_to_n(file, sizeof(file) - 1, "starcon2.{:02}", which_game);
 	in_fp = res_OpenResFile(saveDir, file, "rb");
 	if (!in_fp)
 	{
@@ -1264,7 +1264,7 @@ bool LoadLegacyGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, bool try_vanil
 			LoadEvent(EventPtr, fh);
 
 #ifdef DEBUG_LOAD
-			uqm::log::debug("\t%u/%u/%u -- %u",
+			uqm::log::debug("\t{}/{}/{} -- {}",
 							EventPtr->month_index,
 							EventPtr->day_index,
 							EventPtr->year_index,
@@ -1273,7 +1273,7 @@ bool LoadLegacyGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, bool try_vanil
 			if (optDeCleansing && EventPtr->func_index == KOHR_AH_VICTORIOUS_EVENT)
 			{
 				UnlockEvent(hEvent);
-				printf("EventPtr->year_index: %d\n", EventPtr->year_index);
+				uqm::log::debug("EventPtr->year_index: {}\n", EventPtr->year_index);
 
 				if (EventPtr->year_index == 2158)
 				{

@@ -120,12 +120,12 @@ bool GenerateDefault_generateOrbital(SOLARSYS_STATE* solarSys, PLANET_DESC* worl
 #ifdef DEBUG_SOLARSYS
 	if (worldIsPlanet(solarSys, world))
 	{
-		uqm::log::debug("Planet index = %d",
+		uqm::log::debug("Planet index = {}",
 						planetIndex(solarSys, world));
 	}
 	else
 	{
-		uqm::log::debug("Planet index = %d, Moon index = %d",
+		uqm::log::debug("Planet index = {}, Moon index = {}",
 						planetIndex(solarSys, world),
 						moonIndex(solarSys, world));
 	}

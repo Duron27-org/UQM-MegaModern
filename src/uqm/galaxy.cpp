@@ -259,8 +259,8 @@ void InitGalaxy(void)
 					   && lowByte(GLOBAL(CurrentActivity)) != IN_HYPERSPACE
 					   && lowByte(GLOBAL(CurrentActivity)) != IN_LAST_BATTLE);
 
-	uqm::log::debug("InitGalaxy(): transition_width = %d, "
-					"transition_height = %d",
+	uqm::log::debug("InitGalaxy(): transition_width = {}, "
+					"transition_height = {}",
 					TRANSITION_WIDTH, TRANSITION_HEIGHT);
 
 	Links = MakeLinks(END_OF_LIST, END_OF_LIST);

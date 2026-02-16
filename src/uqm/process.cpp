@@ -461,7 +461,7 @@ ProcessCollisions(HELEMENT hSuccElement, ELEMENT* ElementPtr,
 					   && !((state_flags | test_state_flags) & FINITE_LIFE))
 				{
 #ifdef DEBUG_PROCESS
-					uqm::log::debug("BAD NEWS 0x%x <--> 0x%x", ElementPtr,
+					uqm::log::debug("BAD NEWS {:#x} <--> {:#x}", ElementPtr,
 									TestElementPtr);
 #endif /* DEBUG_PROCESS */
 					if (state_flags & COLLISION)
@@ -597,7 +597,7 @@ ProcessCollisions(HELEMENT hSuccElement, ELEMENT* ElementPtr,
 				POINT SavePt, TestSavePt;
 
 #ifdef DEBUG_PROCESS
-				uqm::log::debug("0x%x <--> 0x%x at %u", ElementPtr,
+				uqm::log::debug("{:#x} <--> {:#x} at {}", ElementPtr,
 								TestElementPtr, time_val);
 #endif /* DEBUG_PROCESS */
 				SavePt = ElementPtr->IntersectControl.EndPoint;
@@ -620,7 +620,7 @@ ProcessCollisions(HELEMENT hSuccElement, ELEMENT* ElementPtr,
 					test_state_flags = TestElementPtr->state_flags;
 
 #ifdef DEBUG_PROCESS
-					uqm::log::debug("PROCESSING 0x%x <--> 0x%x at %u",
+					uqm::log::debug("PROCESSING {:#x} <--> {:#x} at {}",
 									ElementPtr, TestElementPtr, time_val);
 #endif /* DEBUG_PROCESS */
 					if (test_state_flags & PLAYER_SHIP)
@@ -815,7 +815,7 @@ PreProcessQueue(uqm::SDWORD* pscroll_x, uqm::SDWORD* pscroll_y)
 					min_reduction = reduction;
 				}
 			}
-			//			log_add (log_Debug, "dx = %d dy = %d min_red = %d max_red = %d",
+			//			log_add (log_Debug, "dx = {} dy = {} min_red = {} max_red = {}",
 			//					dx, dy, min_reduction, max_reduction);
 		}
 

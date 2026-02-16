@@ -158,7 +158,7 @@ openAL_Init(audio_Driver* driver, sint32 flags)
 
 	if (!alcDevice)
 	{
-		uqm::log::error("Couldn't initialize OpenAL: %d",
+		uqm::log::error("Couldn't initialize OpenAL: {}",
 						alcGetError(nullptr));
 		return -1;
 	}
@@ -168,7 +168,7 @@ openAL_Init(audio_Driver* driver, sint32 flags)
 	alcContext = alcCreateContext(alcDevice, nullptr);
 	if (!alcContext)
 	{
-		uqm::log::error("Couldn't create OpenAL context: %d",
+		uqm::log::error("Couldn't create OpenAL context: {}",
 						alcGetError(alcDevice));
 		alcCloseDevice(alcDevice);
 		alcDevice = nullptr;
@@ -178,14 +178,14 @@ openAL_Init(audio_Driver* driver, sint32 flags)
 	alcMakeContextCurrent(alcContext);
 
 	uqm::log::info("OpenAL initialized.\n"
-				   "    version:     %s\n"
-				   "    vendor:      %s\n"
-				   "    renderer:    %s\n"
-				   "    device:      %s",
+				   "    version:     {}\n"
+				   "    vendor:      {}\n"
+				   "    renderer:    {}\n"
+				   "    device:      {}",
 				   alGetString(AL_VERSION), alGetString(AL_VENDOR),
 				   alGetString(AL_RENDERER),
 				   alcGetString(alcDevice, ALC_DEFAULT_DEVICE_SPECIFIER));
-	//log_add (log_Info, "    extensions:  %s", alGetString (AL_EXTENSIONS));
+	//log_add (log_Info, "    extensions:  {}", alGetString (AL_EXTENSIONS));
 
 	uqm::log::info("Initializing sound decoders.");
 	if (SoundDecoder_Init(flags, &formats))
@@ -291,7 +291,7 @@ openAL_GetError(void)
 		case AL_OUT_OF_MEMORY:
 			return audio_OUT_OF_MEMORY;
 		default:
-			uqm::log::debug("openAL_GetError: unknown value %x", value);
+			uqm::log::debug("openAL_GetError: unknown value {:x}", value);
 			return audio_DRIVER_FAILURE;
 			break;
 	}
@@ -362,7 +362,7 @@ void openAL_GetSourcei(audio_Object srcobj, audio_SourceProp pname,
 				*value = audio_PAUSED;
 				break;
 			default:
-				uqm::log::debug("openAL_GetSourcei(): unknown value %x",
+				uqm::log::debug("openAL_GetSourcei(): unknown value {:x}",
 								*value);
 				*value = audio_DRIVER_FAILURE;
 		}

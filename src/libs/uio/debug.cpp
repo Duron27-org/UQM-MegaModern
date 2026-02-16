@@ -28,6 +28,7 @@
 #if defined(__unix__) && !defined(_WIN32_WCE)
 #include <sys/wait.h>
 #endif
+#include <fmt/format.h>
 
 #include "debug.h"
 #include "uioport.h"
@@ -140,9 +141,9 @@ debugMountOne(uio_Repository* destRep, const char* mountPoint,
 	if (mountHandle == nullptr)
 	{
 		int savedErrno = errno;
-		fprintf(stderr, "Could not mount '%s' and graft '%s' from that "
-						"into the repository at '%s': %s\n",
-				sourcePath, inPath, mountPoint, strerror(errno));
+		fmt::print(stderr, "Could not mount '{}' and graft '{}' from that "
+						   "into the repository at '{}': {}\n",
+				   sourcePath, inPath, mountPoint, strerror(errno));
 		errno = savedErrno;
 	}
 	return mountHandle;
@@ -192,7 +193,7 @@ void initRepository(void)
 		rootDir = uio_openDir(repository, "/", 0);
 		if (rootDir == nullptr)
 		{
-			fprintf(stderr, "Could not open '/' dir.\n");
+			fmt::print(stderr, "Could not open '/' dir.\n");
 		}
 		else
 		{
@@ -235,7 +236,7 @@ void unInitRepository(void)
 #if 1
 	int i;
 	//	uio_printMountTree(stderr, repository->mountTree, 0);
-	//	fprintf(stderr, "\n");
+	//	fmt::print(stderr, "\n");
 	for (i = 7; i >= 0; i--)
 	{
 		if (mountHandles[i] != nullptr)
@@ -244,7 +245,7 @@ void unInitRepository(void)
 		}
 		//		uio_printMountTree(stderr, repository->mountTree, 0);
 		//		uio_printMounts(stderr, repository);
-		//		fprintf(stderr, "\n");
+		//		fmt::print(stderr, "\n");
 	}
 #endif
 	uio_closeRepository(repository);
@@ -269,7 +270,7 @@ void uio_debugInteractive(FILE* in, FILE* out, FILE* err)
 	debugContext.cwd = uio_openDir(repository, "/", 0);
 	if (debugContext.cwd == nullptr)
 	{
-		fprintf(err, "Fatal: Could not open working dir.\n");
+		fmt::print(err, "Fatal: Could not open working dir.\n");
 		abort();
 	}
 
@@ -278,7 +279,7 @@ void uio_debugInteractive(FILE* in, FILE* out, FILE* err)
 	{
 		if (interactive)
 		{
-			fprintf(out, "> ");
+			fmt::print(out, "> ");
 		}
 		if (fgets(lineBuf, LINEBUFLEN, in) == nullptr)
 		{
@@ -294,7 +295,7 @@ void uio_debugInteractive(FILE* in, FILE* out, FILE* err)
 		lineLen = strlen(lineBuf);
 		if (lineBuf[lineLen - 1] != '\n' && lineBuf[lineLen - 1] != '\r')
 		{
-			fprintf(err, "Too long command line.\n");
+			fmt::print(err, "Too long command line.\n");
 			// TODO: read until EOL
 			continue;
 		}
@@ -309,7 +310,7 @@ void uio_debugInteractive(FILE* in, FILE* out, FILE* err)
 	} while (!debugContext.exit);
 	if (interactive)
 	{
-		fprintf(out, "\n");
+		fmt::print(out, "\n");
 	}
 	uio_closeDir(debugContext.cwd);
 }
@@ -384,7 +385,7 @@ debugCallCommand(DebugContext* debugContext, int argc, char* argv[])
 	{
 		if (i == numDebugCommands)
 		{
-			fprintf(debugContext->err, "Invalid command.\n");
+			fmt::print(debugContext->err, "Invalid command.\n");
 			return 1;
 		}
 		if (strcmp(argv[0], debugCommands[i].name) == 0)
@@ -408,7 +409,7 @@ debugCmdCat(DebugContext* debugContext, int argc, char* argv[])
 
 	if (argc != 2)
 	{
-		fprintf(debugContext->err, "Invalid number of arguments.\n");
+		fmt::print(debugContext->err, "Invalid number of arguments.\n");
 		return 1;
 	}
 
@@ -420,8 +421,8 @@ debugCmdCat(DebugContext* debugContext, int argc, char* argv[])
 					  0);
 	if (handle == nullptr)
 	{
-		fprintf(debugContext->err, "Could not open file: %s\n",
-				strerror(errno));
+		fmt::print(debugContext->err, "Could not open file: {}\n",
+				   strerror(errno));
 		return 1;
 	}
 
@@ -435,8 +436,8 @@ debugCmdCat(DebugContext* debugContext, int argc, char* argv[])
 			{
 				continue;
 			}
-			fprintf(debugContext->err, "Could not read from file: %s\n",
-					strerror(errno));
+			fmt::print(debugContext->err, "Could not read from file: {}\n",
+					   strerror(errno));
 			uio_close(handle);
 			return 1;
 		}
@@ -454,8 +455,8 @@ debugCmdCat(DebugContext* debugContext, int argc, char* argv[])
 				{
 					continue;
 				}
-				fprintf(debugContext->err, "Could not read from file: %s\n",
-						strerror(errno));
+				fmt::print(debugContext->err, "Could not read from file: {}\n",
+						   strerror(errno));
 				uio_close(handle);
 			}
 			numInBuf -= numWritten;
@@ -463,7 +464,7 @@ debugCmdCat(DebugContext* debugContext, int argc, char* argv[])
 			totalWritten += numWritten;
 		} while (numInBuf > 0);
 	}
-	fprintf(debugContext->out, "[%u bytes]\n", (unsigned int)totalWritten);
+	fmt::print(debugContext->out, "[{} bytes]\n", (unsigned int)totalWritten);
 
 	uio_close(handle);
 	return 0;
@@ -476,14 +477,14 @@ debugCmdCd(DebugContext* debugContext, int argc, char* argv[])
 
 	if (argc != 2)
 	{
-		fprintf(debugContext->err, "Invalid number of arguments.\n");
+		fmt::print(debugContext->err, "Invalid number of arguments.\n");
 		return 1;
 	}
 	newWd = uio_openDirRelative(debugContext->cwd, argv[1], 0);
 	if (newWd == nullptr)
 	{
-		fprintf(debugContext->err, "Could not access new dir: %s\n",
-				strerror(errno));
+		fmt::print(debugContext->err, "Could not access new dir: {}\n",
+				   strerror(errno));
 		return 1;
 	}
 	uio_closeDir(debugContext->cwd);
@@ -502,15 +503,15 @@ debugCmdExec(DebugContext* debugContext, int argc, char* argv[])
 
 	if (argc < 2)
 	{
-		fprintf(debugContext->err, "Invalid number of arguments.\n");
+		fmt::print(debugContext->err, "Invalid number of arguments.\n");
 		return 1;
 	}
 
 	tempDir = uio_openDirRelative(debugContext->cwd, "/tmp", 0);
 	if (tempDir == 0)
 	{
-		fprintf(debugContext->err, "Could not open temp dir: %s.\n",
-				strerror(errno));
+		fmt::print(debugContext->err, "Could not open temp dir: {}.\n",
+				   strerror(errno));
 		return 1;
 	}
 
@@ -540,9 +541,9 @@ debugCmdExec(DebugContext* debugContext, int argc, char* argv[])
 			}
 
 			// error
-			fprintf(debugContext->err,
-					"Cannot execute: Cannot get stdio access to %s: %s.\n",
-					argv[i], strerror(errno));
+			fmt::print(debugContext->err,
+					   "Cannot execute: Cannot get stdio access to {}: {}.\n",
+					   argv[i], strerror(errno));
 			errCode = 1;
 			argc = i + 1;
 			goto err;
@@ -552,12 +553,12 @@ debugCmdExec(DebugContext* debugContext, int argc, char* argv[])
 	}
 	newArgs[argc - 1] = nullptr;
 
-	fprintf(debugContext->err, "Executing: %s", newArgs[0]);
+	fmt::print(debugContext->err, "Executing: {}", newArgs[0]);
 	for (i = 1; i < argc - 1; i++)
 	{
-		fprintf(debugContext->err, " %s", newArgs[i]);
+		fmt::print(debugContext->err, " {}", newArgs[i]);
 	}
-	fprintf(debugContext->err, "\n");
+	fmt::print(debugContext->err, "\n");
 
 #if defined(__unix__) && !defined(_WIN32_WCE)
 	{
@@ -567,14 +568,14 @@ debugCmdExec(DebugContext* debugContext, int argc, char* argv[])
 		switch (pid)
 		{
 			case -1:
-				fprintf(debugContext->err, "Error: fork() failed: %s.\n",
-						strerror(errno));
+				fmt::print(debugContext->err, "Error: fork() failed: {}.\n",
+						   strerror(errno));
 				break;
 			case 0:
 				// child
 				execvp(newArgs[0], (char* const*)newArgs);
-				fprintf(debugContext->err, "Error: execvp() failed: %s.\n",
-						strerror(errno));
+				fmt::print(debugContext->err, "Error: execvp() failed: {}.\n",
+						   strerror(errno));
 				_exit(EXIT_FAILURE);
 				break;
 			default:
@@ -592,9 +593,9 @@ debugCmdExec(DebugContext* debugContext, int argc, char* argv[])
 						}
 						if (errno != EINTR)
 						{
-							fprintf(debugContext->err, "Error: waitpid() "
-													   "failed: %s\n",
-									strerror(errno));
+							fmt::print(debugContext->err, "Error: waitpid() "
+														  "failed: {}\n",
+									   strerror(errno));
 							break;
 						}
 					}
@@ -605,25 +606,25 @@ debugCmdExec(DebugContext* debugContext, int argc, char* argv[])
 
 					if (WIFEXITED(status))
 					{
-						fprintf(debugContext->err, "Exit status: %d\n",
-								WEXITSTATUS(status));
+						fmt::print(debugContext->err, "Exit status: {}\n",
+								   WEXITSTATUS(status));
 					}
 					else if (WIFSIGNALED(status))
 					{
-						fprintf(debugContext->err, "Terminated on signal %d.\n",
-								WTERMSIG(status));
+						fmt::print(debugContext->err, "Terminated on signal {}.\n",
+								   WTERMSIG(status));
 					}
 					else
 					{
-						fprintf(debugContext->err, "Error: weird exit status.\n");
+						fmt::print(debugContext->err, "Error: weird exit status.\n");
 					}
 					break;
 				}
 		}
 	}
 #else
-	fprintf(debugContext->err, "Cannot execute: not supported on this "
-							   "platform.\n");
+	fmt::print(debugContext->err, "Cannot execute: not supported on this "
+								  "platform.\n");
 #endif
 
 err:
@@ -658,46 +659,46 @@ debugCmdFwriteTest(DebugContext* debugContext, int argc, char* argv[])
 
 	if (argc != 2)
 	{
-		fprintf(debugContext->err, "Invalid number of arguments.\n");
+		fmt::print(debugContext->err, "Invalid number of arguments.\n");
 		return 1;
 	}
 
 	stream = uio_fopen(debugContext->cwd, argv[1], "w+b");
 	if (stream == nullptr)
 	{
-		fprintf(debugContext->err, "Could not open file: %s\n",
-				strerror(errno));
+		fmt::print(debugContext->err, "Could not open file: {}\n",
+				   strerror(errno));
 		goto err;
 	}
 
 	if (uio_fwrite(testString, strlen(testString), 1, stream) != 1)
 	{
-		fprintf(debugContext->err, "uio_fwrite() failed: %s\n",
-				strerror(errno));
+		fmt::print(debugContext->err, "uio_fwrite() failed: {}\n",
+				   strerror(errno));
 		goto err;
 	}
 	if (uio_fputs(testString, stream) == EOF)
 	{
-		fprintf(debugContext->err, "uio_fputs() failed: %s\n",
-				strerror(errno));
+		fmt::print(debugContext->err, "uio_fputs() failed: {}\n",
+				   strerror(errno));
 		goto err;
 	}
 	if (uio_fseek(stream, 15, SEEK_SET) != 0)
 	{
-		fprintf(debugContext->err, "uio_fseek() failed: %s\n",
-				strerror(errno));
+		fmt::print(debugContext->err, "uio_fseek() failed: {}\n",
+				   strerror(errno));
 		goto err;
 	}
 	if (uio_fputc('A', stream) != 'A')
 	{
-		fprintf(debugContext->err, "uio_fputc() failed: %s\n",
-				strerror(errno));
+		fmt::print(debugContext->err, "uio_fputc() failed: {}\n",
+				   strerror(errno));
 		goto err;
 	}
 	if (uio_fseek(stream, 0, SEEK_SET) != 0)
 	{
-		fprintf(debugContext->err, "uio_fseek() failed: %s\n",
-				strerror(errno));
+		fmt::print(debugContext->err, "uio_fseek() failed: {}\n",
+				   strerror(errno));
 		goto err;
 	}
 	{
@@ -712,21 +713,21 @@ debugCmdFwriteTest(DebugContext* debugContext, int argc, char* argv[])
 			{
 				break;
 			}
-			fprintf(debugContext->out, "%d: [%s]\n", i, ptr);
+			fmt::print(debugContext->out, "{}: [{}]\n", i, ptr);
 			i++;
 		}
 		if (uio_ferror(stream))
 		{
-			fprintf(debugContext->err, "uio_fgets() failed: %s\n",
-					strerror(errno));
+			fmt::print(debugContext->err, "uio_fgets() failed: {}\n",
+					   strerror(errno));
 			goto err;
 		}
 		uio_clearerr(stream);
 	}
 	if (uio_fseek(stream, 4, SEEK_END) != 0)
 	{
-		fprintf(debugContext->err, "uio_fseek() failed: %s\n",
-				strerror(errno));
+		fmt::print(debugContext->err, "uio_fseek() failed: {}\n",
+				   strerror(errno));
 		goto err;
 	}
 	{
@@ -734,21 +735,21 @@ debugCmdFwriteTest(DebugContext* debugContext, int argc, char* argv[])
 		memset(buf, 'Q', sizeof buf);
 		if (uio_fwrite(buf, 100, 20, stream) != 20)
 		{
-			fprintf(debugContext->err, "uio_fwrite() failed: %s\n",
-					strerror(errno));
+			fmt::print(debugContext->err, "uio_fwrite() failed: {}\n",
+					   strerror(errno));
 			goto err;
 		}
 	}
 	if (uio_fseek(stream, 5, SEEK_SET) != 0)
 	{
-		fprintf(debugContext->err, "uio_fseek() failed: %s\n",
-				strerror(errno));
+		fmt::print(debugContext->err, "uio_fseek() failed: {}\n",
+				   strerror(errno));
 		goto err;
 	}
 	if (uio_fputc('B', stream) != 'B')
 	{
-		fprintf(debugContext->err, "uio_fputc() failed: %s\n",
-				strerror(errno));
+		fmt::print(debugContext->err, "uio_fputc() failed: {}\n",
+				   strerror(errno));
 		goto err;
 	}
 	uio_fclose(stream);
@@ -820,8 +821,8 @@ listOneDir(DebugContext* debugContext, const char* arg)
 #endif
 	if (dirList == nullptr)
 	{
-		fprintf(debugContext->out, "Error in uio_getDirList(): %s.\n",
-				strerror(errno));
+		fmt::print(debugContext->out, "Error in uio_getDirList(): {}.\n",
+				   strerror(errno));
 		if (buf != nullptr)
 		{
 			uio_free(buf);
@@ -830,7 +831,7 @@ listOneDir(DebugContext* debugContext, const char* arg)
 	}
 	for (i = 0; i < dirList->numNames; i++)
 	{
-		fprintf(debugContext->out, "%s\n", dirList->names[i]);
+		fmt::print(debugContext->out, "{}\n", dirList->names[i]);
 	}
 	uio_DirList_free(dirList);
 	if (buf != nullptr)
@@ -869,7 +870,7 @@ debugCmdMem(DebugContext* debugContext, int argc, char* argv[])
 #ifdef uio_MEM_DEBUG
 	uio_MemDebug_printPointers(debugContext->out);
 #else
-	fprintf(debugContext->out, "Memory debugging not compiled in.\n");
+	fmt::print(debugContext->out, "Memory debugging not compiled in.\n");
 #endif
 	(void)argc;
 	(void)argv;
@@ -883,15 +884,15 @@ debugCmdMkDir(DebugContext* debugContext, int argc, char* argv[])
 
 	if (argc != 2)
 	{
-		fprintf(debugContext->err, "Invalid number of arguments.\n");
+		fmt::print(debugContext->err, "Invalid number of arguments.\n");
 		return 1;
 	}
 
 	retVal = uio_mkdir(debugContext->cwd, argv[1], 0777);
 	if (retVal == -1)
 	{
-		fprintf(debugContext->err, "Could not create directory: %s\n",
-				strerror(errno));
+		fmt::print(debugContext->err, "Could not create directory: {}\n",
+				   strerror(errno));
 		return 1;
 	}
 	return 0;
@@ -916,7 +917,7 @@ debugCmdMv(DebugContext* debugContext, int argc, char* argv[])
 
 	if (argc != 3)
 	{
-		fprintf(debugContext->err, "Invalid number of arguments.\n");
+		fmt::print(debugContext->err, "Invalid number of arguments.\n");
 		return 1;
 	}
 
@@ -924,7 +925,7 @@ debugCmdMv(DebugContext* debugContext, int argc, char* argv[])
 						debugContext->cwd, argv[2]);
 	if (retVal == -1)
 	{
-		fprintf(debugContext->err, "Could not rename: %s\n", strerror(errno));
+		fmt::print(debugContext->err, "Could not rename: {}\n", strerror(errno));
 		return 1;
 	}
 	return 0;
@@ -946,15 +947,15 @@ debugCmdRm(DebugContext* debugContext, int argc, char* argv[])
 
 	if (argc != 2)
 	{
-		fprintf(debugContext->err, "Invalid number of arguments.\n");
+		fmt::print(debugContext->err, "Invalid number of arguments.\n");
 		return 1;
 	}
 
 	retVal = uio_unlink(debugContext->cwd, argv[1]);
 	if (retVal == -1)
 	{
-		fprintf(debugContext->err, "Could not remove file: %s\n",
-				strerror(errno));
+		fmt::print(debugContext->err, "Could not remove file: {}\n",
+				   strerror(errno));
 		return 1;
 	}
 	return 0;
@@ -967,15 +968,15 @@ debugCmdRmDir(DebugContext* debugContext, int argc, char* argv[])
 
 	if (argc != 2)
 	{
-		fprintf(debugContext->err, "Invalid number of arguments.\n");
+		fmt::print(debugContext->err, "Invalid number of arguments.\n");
 		return 1;
 	}
 
 	retVal = uio_rmdir(debugContext->cwd, argv[1]);
 	if (retVal == -1)
 	{
-		fprintf(debugContext->err, "Could not remove directory: %s\n",
-				strerror(errno));
+		fmt::print(debugContext->err, "Could not remove directory: {}\n",
+				   strerror(errno));
 		return 1;
 	}
 	return 0;
@@ -988,7 +989,7 @@ debugCmdStat(DebugContext* debugContext, int argc, char* argv[])
 
 	if (argc != 2)
 	{
-		fprintf(debugContext->err, "Invalid number of arguments.\n");
+		fmt::print(debugContext->err, "Invalid number of arguments.\n");
 		return 1;
 	}
 
@@ -997,27 +998,27 @@ debugCmdStat(DebugContext* debugContext, int argc, char* argv[])
 		// errno is set
 		int savedErrno;
 		savedErrno = errno;
-		fprintf(debugContext->err, "Could not stat file: %s\n",
-				strerror(errno));
+		fmt::print(debugContext->err, "Could not stat file: {}\n",
+				   strerror(errno));
 		errno = savedErrno;
 		return 1;
 	}
 
-	fprintf(debugContext->out,
-			"size %ld bytes\n"
-			"uid %d  gid %d  mode 0%o\n",
-			(unsigned long)statBuf.st_size,
-			(unsigned int)statBuf.st_uid,
-			(unsigned int)statBuf.st_gid,
-			(unsigned int)statBuf.st_mode & (S_IRWXU | S_IRWXG | S_IRWXO | S_ISUID | S_ISGID));
-	// Can't do these next three in one fprintf, as ctime uses a static buffer
+	fmt::print(debugContext->out,
+			   "size %ld bytes\n"
+			   "uid {}  gid {}  mode 0%o\n",
+			   (unsigned long)statBuf.st_size,
+			   (unsigned int)statBuf.st_uid,
+			   (unsigned int)statBuf.st_gid,
+			   (unsigned int)statBuf.st_mode & (S_IRWXU | S_IRWXG | S_IRWXO | S_ISUID | S_ISGID));
+	// Can't do these next three in one fmt::print, as ctime uses a static buffer
 	// that is overwritten with each call.
-	fprintf(debugContext->out,
-			"last access:        %s", ctime(&statBuf.st_atime));
-	fprintf(debugContext->out,
-			"last modification:  %s", ctime(&statBuf.st_mtime));
-	fprintf(debugContext->out,
-			"last status change: %s", ctime(&statBuf.st_ctime));
+	fmt::print(debugContext->out,
+			   "last access:        {}", ctime(&statBuf.st_atime));
+	fmt::print(debugContext->out,
+			   "last modification:  {}", ctime(&statBuf.st_mtime));
+	fmt::print(debugContext->out,
+			   "last status change: {}", ctime(&statBuf.st_ctime));
 
 	return 0;
 }
@@ -1030,7 +1031,7 @@ debugCmdWriteTest(DebugContext* debugContext, int argc, char* argv[])
 
 	if (argc != 2)
 	{
-		fprintf(debugContext->err, "Invalid number of arguments.\n");
+		fmt::print(debugContext->err, "Invalid number of arguments.\n");
 		return 1;
 	}
 
@@ -1043,15 +1044,15 @@ debugCmdWriteTest(DebugContext* debugContext, int argc, char* argv[])
 					  0644);
 	if (handle == nullptr)
 	{
-		fprintf(debugContext->err, "Could not open file: %s\n",
-				strerror(errno));
+		fmt::print(debugContext->err, "Could not open file: {}\n",
+				   strerror(errno));
 		return 1;
 	}
 
 	if (uio_write(handle, testString, sizeof testString) == -1)
 	{
-		fprintf(debugContext->err, "Write failed: %s\n",
-				strerror(errno));
+		fmt::print(debugContext->err, "Write failed: {}\n",
+				   strerror(errno));
 		return 1;
 	}
 

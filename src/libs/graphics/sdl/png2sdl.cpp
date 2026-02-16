@@ -33,6 +33,7 @@
  *    directly editing the format contents
  */
 
+#include <fmt/base.h>
 #include "png2sdl.h"
 #include <png.h>
 
@@ -293,7 +294,7 @@ done: /* Clean up and return */
 			SDL_FreeSurface(surface);
 			surface = nullptr;
 		}
-		fprintf(stderr, "%s", error);
+		fmt::print(stderr, "{}", error);
 	}
 	return surface;
 }
@@ -478,7 +479,7 @@ done: /* Clean up and return */
 			SDL_FreeSurface(surface);
 			surface = nullptr;
 		}
-		fprintf(stderr, "%s", error);
+		fmt::print(stderr, "{}", error);
 		return (-1);
 	}
 	return (0);

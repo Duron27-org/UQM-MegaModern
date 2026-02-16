@@ -21,6 +21,7 @@
 #include "options.h"
 #include "types.h"
 #include "core/log/log.h"
+#include "core/string/StringUtils.h"
 #include "libs/gfxlib.h"
 #include "libs/reslib.h"
 #include "libs/sndlib.h"
@@ -66,7 +67,7 @@ newResourceDesc(const char* res_id, const char* resval)
 	path = strchr(resval, ':');
 	if (path == nullptr)
 	{
-		uqm::log::warn("Could not find type information for resource '%s'", res_id);
+		uqm::log::warn("Could not find type information for resource '{}'", res_id);
 		strncpy(typestr, "sys.UNKNOWNRES", TYPESIZ);
 		path = resval;
 	}
@@ -89,7 +90,7 @@ newResourceDesc(const char* res_id, const char* resval)
 	if (handlerdesc == nullptr)
 	{
 		path = resval;
-		uqm::log::warn("Illegal type '%s' for resource '%s'; treating as UNKNOWNRES", typestr, res_id);
+		uqm::log::warn("Illegal type '{}' for resource '{}'; treating as UNKNOWNRES", typestr, res_id);
 		handlerdesc = lookupResourceDesc(idx, "sys.UNKNOWNRES");
 	}
 
@@ -97,8 +98,8 @@ newResourceDesc(const char* res_id, const char* resval)
 
 	if (vtable->loadFun == nullptr)
 	{
-		uqm::log::warn("Warning: Unable to load '%s'; no handler "
-					   "for type %s defined.",
+		uqm::log::warn("Warning: Unable to load '{}'; no handler "
+					   "for type {} defined.",
 					   res_id, typestr);
 		return nullptr;
 	}
@@ -302,20 +303,20 @@ fail:
 static void
 RawDescriptor(RESOURCE_DATA* resdata, char* buf, unsigned int size)
 {
-	snprintf(buf, size, "%s", resdata->str);
+	fmt::format_to_sz_n(buf, size, "{}", resdata->str);
 }
 
 static void
 IntToString(RESOURCE_DATA* resdata, char* buf, unsigned int size)
 {
-	snprintf(buf, size, "%d", resdata->num);
+	fmt::format_to_sz_n(buf, size, "{}", resdata->num);
 }
 
 
 static void
 BooleanToString(RESOURCE_DATA* resdata, char* buf, unsigned int size)
 {
-	snprintf(buf, size, "%s", resdata->num ? "true" : "false");
+	fmt::format_to_sz_n(buf, size, "{}", resdata->num ? "true" : "false");
 }
 
 static void
@@ -324,16 +325,16 @@ ColorToString(RESOURCE_DATA* resdata, char* buf, unsigned int size)
 	if ((resdata->num & 0xff) == 0xff)
 	{
 		// Opaque color, save as "rgb".
-		snprintf(buf, size, "rgb(0x%02x, 0x%02x, 0x%02x)",
-				 (resdata->num >> 24), (resdata->num >> 16) & 0xff,
-				 (resdata->num >> 8) & 0xff);
+		fmt::format_to_sz_n(buf, size, "rgb({:#02x}, {:#02x}, {:#02x})",
+							(resdata->num >> 24), (resdata->num >> 16) & 0xff,
+							(resdata->num >> 8) & 0xff);
 	}
 	else
 	{
 		// (Partially) transparent color, save as "rgba".
-		snprintf(buf, size, "rgba(0x%02x, 0x%02x, 0x%02x, 0x%02x)",
-				 (resdata->num >> 24), (resdata->num >> 16) & 0xff,
-				 (resdata->num >> 8) & 0xff, resdata->num & 0xff);
+		fmt::format_to_sz_n(buf, size, "rgba({:#02x}, {:#02x}, {:#02x}, {:#02x}x)",
+							(resdata->num >> 24), (resdata->num >> 16) & 0xff,
+							(resdata->num >> 8) & 0xff, resdata->num & 0xff);
 	}
 }
 
@@ -440,11 +441,11 @@ void SaveResourceIndex(uio_DirHandle* dir, const char* rmpfile, const char* root
 		ResourceDesc* value = (ResourceDesc*)CharHashTable_find(_get_current_index_header()->map, key);
 		if (!value)
 		{
-			uqm::log::warn("Resource %s had no value", key);
+			uqm::log::warn("Resource {} had no value", key);
 		}
 		else if (!value->vtable)
 		{
-			uqm::log::warn("Resource %s had no type", key);
+			uqm::log::warn("Resource {} had no type", key);
 		}
 		else if (value->vtable->toString)
 		{
@@ -484,11 +485,11 @@ bool InstallResTypeVectors(const char* resType, ResourceLoadFun* loadFun,
 {
 	ResourceHandlers* handlers;
 	ResourceDesc* result;
-	char key[TYPESIZ];
+	char key[TYPESIZ] {};
 	int typelen;
 	CharHashTable_HashTable* map;
 
-	snprintf(key, TYPESIZ, "sys.%s", resType);
+	fmt::format_to_sz_n(key, TYPESIZ, "sys.{}", resType);
 	key[TYPESIZ - 1] = '\0';
 	typelen = strlen(resType);
 
@@ -558,7 +559,7 @@ void res_PutString(const char* key, const char* value)
 	{
 		char* newValue = (char*)HMalloc(srclen + 1);
 		char* oldValue = desc->fname;
-		uqm::log::warn("Reallocating string space for '%s'", key);
+		uqm::log::warn("Reallocating string space for '{}'", key);
 		strncpy(newValue, value, srclen + 1);
 		desc->resdata.str = newValue;
 		desc->fname = newValue;
@@ -688,7 +689,7 @@ bool res_Remove(const char* key)
 		{
 			if (oldDesc->refcount > 0)
 			{
-				uqm::log::warn("WARNING: Replacing '%s' while it is live", key);
+				uqm::log::warn("WARNING: Replacing '{}' while it is live", key);
 			}
 			if (oldDesc->vtable && oldDesc->vtable->freeFun)
 			{

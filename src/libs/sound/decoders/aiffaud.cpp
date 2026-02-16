@@ -446,14 +446,14 @@ aifa_Open(THIS_PTR, uio_DirHandle* dir, const char* filename)
 	aifa->bits_per_sample = (aifa->fmtHdr.sampleSize + 7) & ~7;
 	if (aifa->bits_per_sample == 0 || aifa->bits_per_sample > 16)
 	{ // XXX: for now we do not support 24 and 32 bps
-		uqm::log::warn("aifa_Open(): unsupported sample size %u",
+		uqm::log::warn("aifa_Open(): unsupported sample size {}",
 					   aifa->bits_per_sample);
 		aifa_Close(This);
 		return false;
 	}
 	if (aifa->fmtHdr.channels != 1 && aifa->fmtHdr.channels != 2)
 	{
-		uqm::log::warn("aifa_Open(): unsupported number of channels %u",
+		uqm::log::warn("aifa_Open(): unsupported number of channels {}",
 					   (unsigned)aifa->fmtHdr.channels);
 		aifa_Close(This);
 		return false;
@@ -508,7 +508,7 @@ aifa_Open(THIS_PTR, uio_DirHandle* dir, const char* filename)
 
 	if (aifa->comp_type == aifc_Sdx2 && aifa->bits_per_sample != 16)
 	{
-		uqm::log::warn("aifa_Open(): unsupported sample size %u for SDX2",
+		uqm::log::warn("aifa_Open(): unsupported sample size {} for SDX2",
 					   (unsigned)aifa->fmtHdr.sampleSize);
 		aifa_Close(This);
 		return false;

@@ -64,7 +64,7 @@ Create_Screen(SDL_Surface* templat, int w, int h)
 												templat->format->Bmask, 0);
 	if (newsurf == 0)
 	{
-		uqm::log::error("Couldn't create screen buffers: %s",
+		uqm::log::error("Couldn't create screen buffers: {}",
 						SDL_GetError());
 	}
 	return newsurf;
@@ -160,7 +160,7 @@ int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
 			// Check the sanity of resolution.
 			if (width > 320 || height > 240)
 			{
-				uqm::log::error("Screen resolution of %dx%d not supported "
+				uqm::log::error("Screen resolution of {}x{} not supported "
 								"under pure SDL, using 320x240",
 								width, height);
 
@@ -194,7 +194,7 @@ int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
 
 	if (SDL_Video == nullptr)
 	{
-		uqm::log::error("Couldn't set %ix%i video mode: %s",
+		uqm::log::error("Couldn't set {}x{} video mode: {}",
 						ScreenWidthActual, ScreenHeightActual,
 						SDL_GetError());
 		return -1;
@@ -205,9 +205,9 @@ int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
 		const SDL_PixelFormat* fmt = video->format;
 
 		ScreenColorDepth = fmt->BitsPerPixel;
-		uqm::log::info("Set the resolution to: %ix%ix%i",
+		uqm::log::info("Set the resolution to: {}x{}x{}",
 					   video->w, video->h, ScreenColorDepth);
-		uqm::log::info("  Video: R %08x, G %08x, B %08x, A %08x",
+		uqm::log::info("  Video: R {:08x}, G {:08x}, B {:08x}, A {:08x}",
 					   fmt->Rmask, fmt->Gmask, fmt->Bmask, fmt->Amask);
 
 		if (togglefullscreen)
@@ -240,14 +240,14 @@ int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
 											conv_fmt.Bmask, conv_fmt.Amask);
 	if (!format_conv_surf)
 	{
-		uqm::log::error("Couldn't create format_conv_surf: %s",
+		uqm::log::error("Couldn't create format_conv_surf: {}",
 						SDL_GetError());
 		return -1;
 	}
 	else
 	{
 		const SDL_PixelFormat* fmt = format_conv_surf->format;
-		uqm::log::info("  Internal: R %08x, G %08x, B %08x, A %08x",
+		uqm::log::info("  Internal: R {:08x}, G {:08x}, B {:08x}, A {:08x}",
 					   fmt->Rmask, fmt->Gmask, fmt->Bmask, fmt->Amask);
 	}
 
@@ -300,7 +300,7 @@ int TFB_Pure_InitGraphics(int driver, int flags, const char* renderer,
 	uqm::log::info("Initializing Pure-SDL graphics.");
 
 	SDL_VideoDriverName(VideoName, sizeof(VideoName));
-	uqm::log::info("SDL driver used: %s", VideoName);
+	uqm::log::info("SDL driver used: {}", VideoName);
 	(void)renderer;
 	// The "renderer" argument is ignored by SDL1. To control how SDL1
 	// gets its pixmap, set the environment variable SDL_VIDEODRIVER.
@@ -534,13 +534,13 @@ void Scale_PerfTest(void)
 		if (i % 100 == 0)
 		{
 			Now = SDL_GetTicks();
-			uqm::log::debug("%03d(%04u) ", 100 * 1000 / (Now - TimeIn),
+			uqm::log::debug("{:03}({:04}) ", 100 * 1000 / (Now - TimeIn),
 							Now - TimeIn);
 			TimeIn = Now;
 		}
 	}
 
-	uqm::log::debug("Full frames scaled: %d; over %u ms; %d fps\n",
+	uqm::log::debug("Full frames scaled: {}; over {} ms; {} fps\n",
 					(i - 1), Now - TimeStart, i * 1000 / (Now - TimeStart));
 
 	SDL_UnlockSurface(scaled_display);

@@ -37,7 +37,6 @@
 
 void DoShipSpin(uqm::COUNT index, MUSIC_REF hMusic)
 {
-	char vnbuf[24]; // From 32 to 24
 	RECT old_r;
 	CONTEXT OldContext;
 
@@ -72,7 +71,8 @@ void DoShipSpin(uqm::COUNT index, MUSIC_REF hMusic)
 	}
 
 	// TODO: It would be nice to have better resource names for these.
-	sprintf(vnbuf, "slides.spins.%02u", (unsigned)index);
+	char vnbuf[24] {}; // From 32 to 24
+	fmt::format_to_n(vnbuf, sizeof(vnbuf) - 1, "slides.spins. {:02}", (unsigned)index);
 
 	ShowPresentation(vnbuf);
 

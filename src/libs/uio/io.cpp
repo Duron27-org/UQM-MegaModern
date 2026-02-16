@@ -208,7 +208,7 @@ uio_mountDir(uio_Repository* destRep, const char* mountPoint,
 			errno = EINVAL;
 			return nullptr;
 		}
-		uqm::log::info("uio_open %s", sourcePath);
+		uqm::log::info("uio_open {}", sourcePath);
 		handle = uio_open(sourceDir, sourcePath,
 						  ((flags & uio_MOUNT_RDONLY) == uio_MOUNT_RDONLY ?
 							   O_RDONLY :
@@ -220,7 +220,7 @@ uio_mountDir(uio_Repository* destRep, const char* mountPoint,
 						  0);
 		if (handle == nullptr)
 		{
-			uqm::log::info("uio_open failed for %s", sourcePath);
+			uqm::log::info("uio_open failed for {}", sourcePath);
 			// errno is set
 			return nullptr;
 		}
@@ -440,9 +440,9 @@ int uio_unmountDir(uio_MountHandle* mountHandle)
 #ifdef DEBUG
 	if (pRoot->mountRef == 1 && pRoot->handleRef > 0)
 	{
-		fprintf(stderr, "Warning: File system to be unmounted still "
-						"has file descriptors open. The file system will not "
-						"be deallocated until these are all closed.\n");
+		fmt::print(stderr, "Warning: File system to be unmounted still "
+						   "has file descriptors open. The file system will not "
+						   "be deallocated until these are all closed.\n");
 	}
 #endif
 
@@ -880,7 +880,7 @@ uio_open(uio_DirHandle* dir, const char* path, int flags, mode_t mode)
 		== -1)
 	{
 		// errno is set
-		// uqm::log::info( "uio_open: uio_getPhysicalAccess failed for '%s'", path);
+		// uqm::log::info( "uio_open: uio_getPhysicalAccess failed for '{}'", path);
 		return nullptr;
 	}
 
@@ -913,7 +913,7 @@ uio_open(uio_DirHandle* dir, const char* path, int flags, mode_t mode)
 				uio_PDirHandle_unref(readPDirHandle);
 				uio_PDirHandle_unref(writePDirHandle);
 				errno = EEXIST;
-				uqm::log::info("uio_open: O_CREAT | O_EXCL: file already exists '%s'", name);
+				uqm::log::info("uio_open: O_CREAT | O_EXCL: file already exists '{}'", name);
 				return nullptr;
 			}
 			if ((flags & O_TRUNC) == O_TRUNC)
@@ -935,7 +935,7 @@ uio_open(uio_DirHandle* dir, const char* path, int flags, mode_t mode)
 					uio_PDirHandle_unref(readPDirHandle);
 					uio_PDirHandle_unref(writePDirHandle);
 					errno = savedErrno;
-					uqm::log::info("uio_open: uio_copyFilePhysical failed '%s'", name);
+					uqm::log::info("uio_open: uio_copyFilePhysical failed '{}'", name);
 					return nullptr;
 				}
 			}
@@ -961,7 +961,7 @@ uio_open(uio_DirHandle* dir, const char* path, int flags, mode_t mode)
 	if (handle == nullptr)
 	{
 		int savedErrno = errno;
-		uqm::log::info("uio_open: open file failed '%s'", name);
+		uqm::log::info("uio_open: open file failed '{}'", name);
 		uio_free(name);
 		uio_PDirHandle_unref(pDirHandle);
 		errno = savedErrno;
@@ -1523,8 +1523,8 @@ uio_getDirListMulti(uio_PDirHandle** pDirHandles,
 	if (matchResult != match_OK)
 	{
 #ifdef DEBUG
-		fprintf(stderr, "Error compiling match function: %s.\n",
-				match_errorString(matchContext, matchResult));
+		fmt::print(stderr, "Error compiling match function: {}.\n",
+				   match_errorString(matchContext, matchResult));
 #endif
 		match_freeContext(matchContext);
 		errno = EIO;
@@ -1654,8 +1654,8 @@ uio_collectDirEntries(uio_PDirHandle* pDirHandle, uio_DirBufferLink** linkPtr,
 	if (entriesContext == nullptr)
 	{
 #ifdef DEBUG
-		fprintf(stderr, "Error: uio_openEntriesPhysical() failed: %s\n",
-				strerror(errno));
+		fmt::print(stderr, "Error: uio_openEntriesPhysical() failed: {}\n",
+				   strerror(errno));
 #endif
 		*linkPtr = nullptr;
 		*numEntries = 0;
@@ -1672,8 +1672,8 @@ uio_collectDirEntries(uio_PDirHandle* pDirHandle, uio_DirBufferLink** linkPtr,
 										  uio_DIR_BUFFER_SIZE);
 		if (numRead == 0)
 		{
-			fprintf(stderr, "Warning: uio_DIR_BUFFER_SIZE is too small to "
-							"hold a certain large entry on its own!\n");
+			fmt::print(stderr, "Warning: uio_DIR_BUFFER_SIZE is too small to "
+							   "hold a certain large entry on its own!\n");
 			uio_DirBufferLink_free(*linkEndPtr);
 			break;
 		}
@@ -1717,8 +1717,8 @@ uio_filterNames(const char* const* names, int numNames,
 		}
 		else if (matchResult != match_NOMATCH)
 		{
-			fprintf(stderr, "Error trying to match pattern: %s.\n",
-					match_errorString(matchContext, matchResult));
+			fmt::print(stderr, "Error trying to match pattern: {}.\n",
+					   match_errorString(matchContext, matchResult));
 		}
 		names++;
 	}
@@ -2049,9 +2049,9 @@ uio_DirHandle_free(uio_DirHandle* dirHandle)
 
 void uio_DirHandle_print(const uio_DirHandle* dirHandle, FILE* out)
 {
-	fprintf(out, "[");
+	fmt::print(out, "[");
 	fwrite(dirHandle->path, dirHandle->path - dirHandle->rootEnd, 1, out);
-	fprintf(out, "]%s", dirHandle->rootEnd);
+	fmt::print(out, "]{}", dirHandle->rootEnd);
 }
 
 static uio_MountHandle*

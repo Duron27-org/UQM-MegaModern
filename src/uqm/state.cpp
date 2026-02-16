@@ -64,7 +64,7 @@ OpenStateFile(int stateFile, const char* mode)
 	if (fp->open_count > 1)
 	{
 		uqm::log::warn("WARNING: "
-					   "State file %s open count is %d after open()",
+					   "State file {} open count is {} after open()",
 					   fp->symname, fp->open_count);
 	}
 
@@ -94,7 +94,7 @@ OpenStateFile(int stateFile, const char* mode)
 	else
 	{
 		uqm::log::warn("WARNING: "
-					   "State file %s opened with unsupported mode '%s'",
+					   "State file {} opened with unsupported mode '{}'",
 					   fp->symname, mode);
 	}
 	fp->ptr = 0;
@@ -109,7 +109,7 @@ void CloseStateFile(GAME_STATE_FILE* fp)
 	if (fp->open_count < 0)
 	{
 		uqm::log::warn("WARNING: "
-					   "State file %s open count is %d after close()",
+					   "State file {} open count is {} after close()",
 					   fp->symname, fp->open_count);
 	}
 	// Erm, Ok, it's closed! Honest!
@@ -128,7 +128,7 @@ void DeleteStateFile(int stateFile)
 	if (fp->open_count != 0)
 	{
 		uqm::log::warn("WARNING: "
-					   "State file %s open count is %d during delete()",
+					   "State file {} open count is {} during delete()",
 					   fp->symname, fp->open_count);
 	}
 

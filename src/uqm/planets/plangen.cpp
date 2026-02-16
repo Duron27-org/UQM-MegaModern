@@ -1198,8 +1198,8 @@ static inline Color
 get_map_pixel(Color* pixels, int x, int y, uqm::COUNT width, uqm::COUNT spherespanx)
 {
 	/* if (y * (width + spherespanx) + x > 463000)
-		log_add (log_Warning,"x:%u, y:%u, width:%u, spherespanx:%u, "
-				"slot:%u. Max:%u", x, y, width, spherespanx,
+		log_add (log_Warning,"x:{}, y:{}, width:{}, spherespanx:{}, "
+				"slot:{}. Max:{}", x, y, width, spherespanx,
 				y * (width + spherespanx) + x,
 				(MAP_HEIGHT + 1) * (MAP_WIDTH + spherespanx)); */
 	return pixels[y * (width + spherespanx) + x];
@@ -1387,7 +1387,7 @@ void RenderPlanetSphere(PLANET_ORBIT* Orbit, FRAME MaskFrame, int offset,
 	t += clock() - t1;
 	if (frames_done == width)
 	{
-		uqm::log::debug("Rotation frames/sec: %d/%ld(msec)=%f",
+		uqm::log::debug("Rotation frames/sec: {}/%ld(msec)={}",
 						frames_done,
 						(long int)(((double)t / CLOCKS_PER_SEC) * 1000.0 + 0.5),
 						frames_done / ((double)t / CLOCKS_PER_SEC + 0.5));

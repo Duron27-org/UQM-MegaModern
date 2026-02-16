@@ -18,6 +18,8 @@
 
 #include <stdio.h>
 
+#include "core/string/StringUtils.h"
+
 #include "cons_res.h"
 #include "resinst.h"
 #include "nameref.h"
@@ -45,7 +47,7 @@ static const char* planet_sizes[] = {
 	"large", "medium", "small"};
 
 FRAME planet[NUM_VIEWS];
-static char buffer[80];
+static char buffer[80] {};
 
 void load_gravity_well(uqm::BYTE selector)
 {
@@ -79,8 +81,7 @@ void load_gravity_well(uqm::BYTE selector)
 
 		for (i = 0; i < NUM_VIEWS; ++i)
 		{
-			snprintf(buffer, 79, "planet.%s.%s", ptype, planet_sizes[i]);
-			buffer[79] = '\0';
+			fmt::format_to_sz_n(buffer, sizeof(buffer), "planet.{}.{}", ptype, planet_sizes[i]);
 			planet[i] = CaptureDrawable(LoadGraphic(buffer));
 		}
 	}
@@ -101,24 +102,21 @@ void free_gravity_well(void)
 FRAME
 load_life_form(uqm::BYTE selector)
 {
-	snprintf(buffer, 79, "graphics.life.%d", selector);
-	buffer[79] = '\0'; /* Shouldn't be necessary, but better safe than sorry */
+	fmt::format_to_sz_n(buffer, sizeof(buffer), "graphics.life.{}", selector);
 	return CaptureDrawable(LoadGraphic(buffer));
 }
 
 MUSIC_REF
 load_orbit_theme(uqm::BYTE selector)
 {
-	snprintf(buffer, 79, "music.orbit%d", selector + 1);
-	buffer[79] = '\0'; /* Shouldn't be necessary, but better safe than sorry */
+	fmt::format_to_sz_n(buffer, sizeof(buffer), "music.orbit{}", selector + 1);
 	return LoadMusic(buffer);
 }
 
 MUSIC_REF
 loadMainMenuMusic(uqm::BYTE selector)
 {
-	snprintf(buffer, 79, "music.mainmenu%d", selector + 1);
-	buffer[79] = '\0'; /* Shouldn't be necessary, but better safe than sorry */
+	fmt::format_to_sz_n(buffer, sizeof(buffer), "music.mainmenu{}", selector + 1);
 	return LoadMusic(buffer);
 }
 

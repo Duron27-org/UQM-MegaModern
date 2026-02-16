@@ -86,15 +86,15 @@ void StartHuff(void)
 {
 	uqm::COUNT i, j;
 
-	for (i = 0; i < N_CHAR; i++)
+	for (i = 0; i < HUF_NumChars; i++)
 	{
 		_lpCurCodeDesc->freq[i] = 1;
-		_lpCurCodeDesc->son[i] = i + T;
-		_lpCurCodeDesc->prnt[i + T] = i;
+		_lpCurCodeDesc->son[i] = i + HUF_TableSize;
+		_lpCurCodeDesc->prnt[i + HUF_TableSize] = i;
 	}
 	i = 0;
-	j = N_CHAR;
-	while (j <= R)
+	j = HUF_NumChars;
+	while (j <= HUF_Root)
 	{
 		_lpCurCodeDesc->freq[j] = _lpCurCodeDesc->freq[i] + _lpCurCodeDesc->freq[i + 1];
 		_lpCurCodeDesc->son[j] = i;
@@ -102,8 +102,8 @@ void StartHuff(void)
 		i += 2;
 		j++;
 	}
-	_lpCurCodeDesc->freq[T] = 0xffff;
-	_lpCurCodeDesc->prnt[R] = 0;
+	_lpCurCodeDesc->freq[HUF_TableSize] = 0xffff;
+	_lpCurCodeDesc->prnt[HUF_Root] = 0;
 }
 
 DECODE_REF
@@ -149,8 +149,8 @@ copen(void* InStream, STREAM_TYPE SType, STREAM_MODE SMode)
 		_lpCurCodeDesc->StreamType = _StreamType;
 		_lpCurCodeDesc->StreamMode = SMode;
 		_lpCurCodeDesc->StreamLength = StreamLength;
-		_lpCurCodeDesc->buf_index = N - F;
-		memset(&_lpCurCodeDesc->text_buf[0], ' ', N - F);
+		_lpCurCodeDesc->buf_index = LZSS_BufferSize - LZSS_LookAheadBufferSize;
+		memset(&_lpCurCodeDesc->text_buf[0], ' ', LZSS_BufferSize - LZSS_LookAheadBufferSize);
 
 		StartHuff();
 	}
@@ -738,12 +738,12 @@ static const uqm::BYTE d_len[256] =
 	 */
 #define DecodeChar(c)                                 \
 	{                                                 \
-		for (*(c) = lpCodeDesc->son[R];               \
-			 *(c) < T;                                \
+		for (*(c) = lpCodeDesc->son[HUF_Root];        \
+			 *(c) < HUF_TableSize;                    \
 			 *(c) = lpCodeDesc->son[*(c) + GetBit()]) \
 			;                                         \
 		_update(*(c));                                \
-		*(c) -= T;                                    \
+		*(c) -= HUF_TableSize;                        \
 	}
 
 uqm::COUNT
@@ -801,7 +801,7 @@ cread(void* buf, uqm::COUNT size, uqm::COUNT count, PLZHCODE_DESC lpCodeDesc)
 		{
 			size--;
 
-			*lpStr++ = lpCodeDesc->text_buf[r++ & (N - 1)] = (uqm::BYTE)c;
+			*lpStr++ = lpCodeDesc->text_buf[r++ & (LZSS_BufferSize - 1)] = (uqm::BYTE)c;
 		}
 		else
 		{
@@ -810,7 +810,7 @@ cread(void* buf, uqm::COUNT size, uqm::COUNT count, PLZHCODE_DESC lpCodeDesc)
 			//i is a uqm::COUNT;
 			DecodePosition(&i);
 			i = r - i - 1;
-			j = c - 255 + THRESHOLD;
+			j = c - 255 + LZSS_Threshold;
 ReenterRun:
 			if (j > size)
 			{
@@ -824,23 +824,23 @@ ReenterRun:
 			{
 				uqm::COUNT loc_size;
 
-				i &= (N - 1);
-				r &= (N - 1);
-				if ((i < r && i + j > r) || (i > r && i + j > r + N))
+				i &= (LZSS_BufferSize - 1);
+				r &= (LZSS_BufferSize - 1);
+				if ((i < r && i + j > r) || (i > r && i + j > r + LZSS_BufferSize))
 				{
-					copy_size = (r - i) & (N - 1);
+					copy_size = (r - i) & (LZSS_BufferSize - 1);
 				}
-				else if ((copy_size = j) > N)
+				else if ((copy_size = j) > LZSS_BufferSize)
 				{
-					copy_size = N;
+					copy_size = LZSS_BufferSize;
 				}
 
 				loc_size = copy_size;
-				if (i + loc_size > N)
+				if (i + loc_size > LZSS_BufferSize)
 				{
 					uqm::COUNT k;
 
-					k = N - i;
+					k = LZSS_BufferSize - i;
 					memcpy(lpStr, &lpCodeDesc->text_buf[i], k);
 					lpStr += k;
 					loc_size -= k;
@@ -854,11 +854,11 @@ ReenterRun:
 				lpStr -= copy_size;
 
 				loc_size = copy_size;
-				if (r + loc_size > N)
+				if (r + loc_size > LZSS_BufferSize)
 				{
 					uqm::COUNT k;
 
-					k = N - r;
+					k = LZSS_BufferSize - r;
 					memcpy(&lpCodeDesc->text_buf[r], lpStr, k);
 					lpStr += k;
 					loc_size -= k;

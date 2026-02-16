@@ -289,21 +289,21 @@ bool SetColorMap(COLORMAPPTR map)
 	if (start > end)
 	{
 		uqm::log::warn("ERROR: SetColorMap(): "
-					   "starting map (%d) not less or eq ending (%d)",
+					   "starting map ({}) not less or eq ending ({})",
 					   start, end);
 		return false;
 	}
 	if (start >= MAX_COLORMAPS)
 	{
 		uqm::log::warn("ERROR: SetColorMap(): "
-					   "starting map (%d) beyond range (0-%d)",
+					   "starting map ({}) beyond range (0-{})",
 					   start, (int)MAX_COLORMAPS - 1);
 		return false;
 	}
 	if (end >= MAX_COLORMAPS)
 	{
 		uqm::log::warn("SetColorMap(): "
-					   "ending map (%d) beyond range (0-%d)\n",
+					   "ending map ({}) beyond range (0-{})\n",
 					   end, (int)MAX_COLORMAPS - 1);
 		end = MAX_COLORMAPS - 1;
 	}

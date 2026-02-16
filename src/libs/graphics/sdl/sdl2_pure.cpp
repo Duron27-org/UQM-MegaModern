@@ -18,6 +18,7 @@
 #include "pure.h"
 #include "libs/graphics/bbox.h"
 #include "core/log/log.h"
+#include "core/string/StringUtils.h"
 #include "scalers.h"
 #include "uqmversion.h"
 #include "png2sdl.h"
@@ -85,7 +86,7 @@ Create_Screen(int w, int h)
 												32, R_MASK, G_MASK, B_MASK, 0);
 	if (newsurf == 0)
 	{
-		uqm::log::error("Couldn't create screen buffers: %s",
+		uqm::log::error("Couldn't create screen buffers: {}",
 						SDL_GetError());
 	}
 	return newsurf;
@@ -114,7 +115,7 @@ ReInit_FPS_Screen(SDL_Surface** screen, int w, int h)
 								   B_MASK, A_MASK);
 	if (*screen == 0)
 	{
-		uqm::log::error("Couldn't create screen buffers: %s",
+		uqm::log::error("Couldn't create screen buffers: {}",
 						SDL_GetError());
 	}
 
@@ -131,7 +132,7 @@ FindBestRenderDriver(void)
 		return -1;
 	}
 	n = SDL_GetNumRenderDrivers();
-	uqm::log::info("Searching for render driver \"%s\".",
+	uqm::log::info("Searching for render driver \"{}\".",
 				   rendererBackend);
 
 	for (i = 0; i < n; i++)
@@ -145,11 +146,11 @@ FindBestRenderDriver(void)
 		{
 			return i;
 		}
-		uqm::log::info("Skipping render driver \"%s\"", info.name);
+		uqm::log::info("Skipping render driver \"{}\"", info.name);
 	}
 	/* We did not find any accelerated drivers that weren't D3D9.
 	 * Return -1 to ask SDL2 to do its best. */
-	uqm::log::info("Render driver \"%s\" not available, using system "
+	uqm::log::info("Render driver \"{}\" not available, using system "
 				   "default",
 				   rendererBackend);
 	return -1;
@@ -160,14 +161,14 @@ int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
 							unsigned int windowType)
 {
 	int i;
-	char caption[50];
+	char caption[50] {};
 	GraphicsDriver = driver;
 	(void)togglefullscreen; /* satisfy compiler (unused parameter) */
 	(void)windowType;		/* satisfy compiler (unused parameter) */
 
-	snprintf(caption, sizeof(caption), "The Ur-Quan Masters v%d.%d.%d %s",
-			 UQM_MAJOR_VERSION, UQM_MINOR_VERSION, UQM_PATCH_VERSION,
-			 (resFactor ? "HD " UQM_EXTRA_VERSION : UQM_EXTRA_VERSION));
+	fmt::format_to_sz_n(caption, sizeof(caption), "The Ur-Quan Masters v{}.{}.{} {}",
+						UQM_MAJOR_VERSION, UQM_MINOR_VERSION, UQM_PATCH_VERSION,
+						(resFactor ? "HD " UQM_EXTRA_VERSION : UQM_EXTRA_VERSION));
 
 	if (window == nullptr)
 	{
@@ -197,7 +198,7 @@ int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
 		}
 		if (SDL_GetRendererInfo(renderer, &info) == 0)
 		{
-			uqm::log::info("SDL2 renderer '%s' selected.\n", info.name);
+			uqm::log::info("SDL2 renderer '{}' selected.\n", info.name);
 		}
 		else
 		{
@@ -383,7 +384,7 @@ int TFB_Pure_InitGraphics(int driver, int flags, const char* renderer,
 	if (TFB_Pure_ConfigureVideo(driver, flags, width, height, 0,
 								resFactor, windowType))
 	{
-		uqm::log::critical("Could not initialize video: %s",
+		uqm::log::critical("Could not initialize video: {}",
 						   SDL_GetError());
 		exit(EXIT_FAILURE);
 	}
@@ -687,7 +688,7 @@ void TFB_SDL2_GetDisplaySize(SDL_Rect* bounds)
 {
 	if (SDL_GetDisplayBounds(0, bounds) != 0)
 	{
-		printf("%s\n", SDL_GetError());
+		fmt::print("{}\n", SDL_GetError());
 	}
 }
 

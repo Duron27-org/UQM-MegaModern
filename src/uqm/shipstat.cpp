@@ -314,7 +314,7 @@ void InitShipStatus(SHIP_INFO* SIPtr, STARSHIP* StarShipPtr, RECT* pClipRect, bo
 			GetStringLength(locString), y);
 
 		{
-			uqm::CHAR_T buf[30];
+			uqm::CHAR_T buf[30] {};
 			TEXT Text;
 			FONT OldFont;
 
@@ -322,7 +322,7 @@ void InitShipStatus(SHIP_INFO* SIPtr, STARSHIP* StarShipPtr, RECT* pClipRect, bo
 
 			if (!StarShipPtr)
 			{ // In Melee menu
-				sprintf(buf, "%d", SIPtr->ship_cost);
+				fmt::format_to_n(buf, sizeof(buf) - 1, "{}", SIPtr->ship_cost);
 				Text.pStr = buf;
 				Text.CharCount = (uqm::COUNT)~0;
 			}

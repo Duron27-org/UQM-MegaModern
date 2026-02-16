@@ -44,19 +44,18 @@ void TFB_PreInit(void)
 	SDL_VERSION(&compiled);
 	SDL_GetVersion(&linked);
 	uqm::log::info("Initializing base SDL functionality.");
-	uqm::log::info("Using SDL version %d.%d.%d (compiled with "
-				   "%d.%d.%d)",
+	uqm::log::info("Using SDL version {}.{}.{} (compiled with "
+				   "{}.{}.{})",
 				   linked.major, linked.minor, linked.patch,
 				   compiled.major, compiled.minor, compiled.patch);
-	printf("Using SDL version %d.%d.%d\nCompiled with "
-		   "%d.%d.%d\n\n",
-		   linked.major, linked.minor, linked.patch,
-		   compiled.major, compiled.minor, compiled.patch);
+	fmt::print("Using SDL version {}.{}.{}\nCompiled with {}.{}.{}\n\n",
+			   linked.major, linked.minor, linked.patch,
+			   compiled.major, compiled.minor, compiled.patch);
 #if 0
 	if (compiled.major != linked.major || compiled.minor != linked.minor ||
 			compiled.patch != linked.patch)
 	{
-		log_add (log_Warning, "The used SDL library is not the same version "
+		uqm::log::warn("The used SDL library is not the same version "
 				"as the one used to compile The Ur-Quan Masters with! "
 				"If you experience any crashes, this would be an excellent "
 				"suspect.");
@@ -65,7 +64,7 @@ void TFB_PreInit(void)
 
 	if ((SDL_Init(SDL_INIT_VIDEO) == -1))
 	{
-		uqm::log::critical("Could not initialize SDL: %s.", SDL_GetError());
+		uqm::log::critical("Could not initialize SDL: {}.", SDL_GetError());
 		exit(EXIT_FAILURE);
 	}
 

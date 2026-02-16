@@ -25,6 +25,8 @@ typedef void* uio_GPRootExtra;
 typedef void* uio_GPDirExtra;
 typedef void* uio_GPFileExtra;
 
+#include <fmt/format.h>
+
 #include <errno.h>
 #include <stdio.h>
 
@@ -74,9 +76,9 @@ uio_GPDir_prepareSubDir(uio_GPDir* gPDir, const char* dirName)
 		{
 			// There already exists a file with the same name.
 			// This should not happen within one file system.
-			fprintf(stderr, "Directory %s shadows file with the same name "
-							"from the same filesystem.\n",
-					dirName);
+			fmt::print(stderr, "Directory {} shadows file with the same name "
+							   "from the same filesystem.\n",
+					   dirName);
 		}
 	}
 

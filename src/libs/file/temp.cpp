@@ -130,8 +130,8 @@ mountTempDir(const char* name)
 	if (tempHandle == nullptr)
 	{
 		int saveErrno = errno;
-		uqm::log::critical("Fatal error: Couldn't mount temp dir '%s': "
-						   "%s",
+		uqm::log::critical("Fatal error: Couldn't mount temp dir '{}': "
+						   "{}",
 						   name, strerror(errno));
 		errno = saveErrno;
 		return -1;
@@ -141,7 +141,7 @@ mountTempDir(const char* name)
 	if (tempDir == nullptr)
 	{
 		int saveErrno = errno;
-		uqm::log::critical("Fatal error: Could not open temp dir: %s",
+		uqm::log::critical("Fatal error: Could not open temp dir: {}",
 						   strerror(errno));
 		errno = saveErrno;
 		return -1;
@@ -170,7 +170,8 @@ void initTempDir(void)
 	tempPtr = tempDirName + len;
 	for (i = 0; i < NUM_TEMP_RETRIES; i++)
 	{
-		sprintf(tempPtr, "%08x", num + i);
+		const auto fmtResult = fmt::format_to_n(tempPtr, PATH_MAX - n - 1, "{:08x}", num + i);
+		*fmtResult.out = '\0';
 		if (createDirectory(tempDirName, 0700) == -1)
 		{
 			continue;
@@ -202,9 +203,9 @@ void unInitTempDir(void)
 // returns a pointer to a static buffer.
 char* tempFilePath(const char* filename)
 {
-	static char file[PATH_MAX];
+	static char file[PATH_MAX] {};
 
-	if (snprintf(file, PATH_MAX, "%s/%s", tempDirName, filename) == -1)
+	if (fmt::format_to_sz_n(file, PATH_MAX, "{}/{}", tempDirName, filename) == -1)
 	{
 		uqm::log::critical("Path to temp file too long.");
 		exit(EXIT_FAILURE);

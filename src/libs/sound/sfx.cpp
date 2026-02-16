@@ -132,7 +132,7 @@ void UpdateSoundPosition(uqm::COUNT channel, SoundPosition pos)
 		}
 
 		audio_Sourcefv(soundSource[channel].handle, audio_POSITION, fpos);
-		//log_add (log_Debug, "UpdateSoundPosition(): channel %d, pos %d %d, posobj %x",
+		//log_add (log_Debug, "UpdateSoundPosition(): channel {}, pos {} {}, posobj {:x}",
 		//		channel, pos.x, pos.y, (unsigned int)soundSource[channel].positional_object);
 	}
 	else
@@ -194,17 +194,17 @@ void* _GetSoundBankData(uio_Stream* fp, uqm::DWORD length)
 
 		if (sscanf(CurrentLine, "%s", &filename[n]) != 1)
 		{
-			uqm::log::warn("_GetSoundBankData: bad line: '%s'",
+			uqm::log::warn("_GetSoundBankData: bad line: '{}'",
 						   CurrentLine);
 			continue;
 		}
 
-		uqm::log::info("_GetSoundBankData(): loading %s", filename);
+		uqm::log::info("_GetSoundBankData(): loading {}", filename);
 
 		decoder = SoundDecoder_Load(contentDir, filename, 4096, 0, 0);
 		if (!decoder)
 		{
-			uqm::log::warn("_GetSoundBankData(): couldn't load %s",
+			uqm::log::warn("_GetSoundBankData(): couldn't load {}",
 						   filename);
 			continue;
 		}
@@ -214,7 +214,7 @@ void* _GetSoundBankData(uio_Stream* fp, uqm::DWORD length)
 
 		// Decode everything and stash it in 1 buffer
 		decoded_bytes = SoundDecoder_DecodeAll(decoder);
-		uqm::log::info("_GetSoundBankData(): decoded bytes %d",
+		uqm::log::info("_GetSoundBankData(): decoded bytes {}",
 					   decoded_bytes);
 
 		audio_BufferData(sample->buffer[0], decoder->format,

@@ -240,7 +240,7 @@ void* _GetCelData(uio_Stream* fp, uqm::DWORD length)
 	ani = (AniData*)HMalloc(sizeof(AniData) * cel_total);
 	if (!img || !ani)
 	{
-		uqm::log::warn("Couldn't allocate space for '%s'", _cur_resfile_name);
+		uqm::log::warn("Couldn't allocate space for '{}'", _cur_resfile_name);
 		if (aniMount)
 		{
 			uio_fclose(aniFile);
@@ -274,7 +274,7 @@ void* _GetCelData(uio_Stream* fp, uqm::DWORD length)
 			uqm::log::warn("_GetCelData: Unable to load image!");
 			if (err != nullptr)
 			{
-				uqm::log::warn("Gfx Driver reports: %s", err);
+				uqm::log::warn("Gfx Driver reports: {}", err);
 			}
 		}
 		else
@@ -318,7 +318,7 @@ void* _GetCelData(uio_Stream* fp, uqm::DWORD length)
 
 	if (Drawable == nullptr)
 	{
-		uqm::log::warn("Couldn't get cel data for '%s'",
+		uqm::log::warn("Couldn't get cel data for '{}'",
 					   _cur_resfile_name);
 	}
 
@@ -636,8 +636,8 @@ void* _GetFontData(uio_Stream* fp, uqm::DWORD length)
 					if (destChar->data != nullptr)
 					{
 						// There's already an image for this character.
-						uqm::log::debug("Duplicate image for character %d "
-										"for font %s.",
+						uqm::log::debug("Duplicate image for character {} "
+										"for font {}.",
 										(int)bcd->index,
 										_cur_resfile_name);
 						TFB_DrawCanvas_Delete(bcd->canvas);

@@ -302,18 +302,18 @@ ChangeSelection:
 
 			if (crew_level)
 			{
-				char buf[80];
+				char buf[80] {};
 
 				t.baseline.x = r.corner.x + (r.extent.width >> 1);
 				t.pStr = buf;
 				t.CharCount = (uqm::COUNT)~0;
 				if (crew_level >= max_crew)
 				{
-					sprintf(buf, "%u", crew_level);
+					fmt::format_to_n(buf, sizeof(buf) - 1, "{}", crew_level);
 				}
 				else
 				{
-					sprintf(buf, "%u/%u", crew_level, max_crew);
+					fmt::format_to_n(buf, sizeof(buf) - 1, "{}/{}", crew_level, max_crew);
 				}
 
 				// Code to make use of the PC version's font gradient

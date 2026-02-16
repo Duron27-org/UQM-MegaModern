@@ -106,7 +106,7 @@ luaUqm_debug_interactive(FILE* in, FILE* out, FILE* err)
 
 	for (;;)
 	{
-		fprintf(out, "> ");
+		fmt::print(out, "> ");
 
 		if (fgets(lineBuf, LINEBUFLEN, in) == nullptr)
 		{
@@ -122,7 +122,7 @@ luaUqm_debug_interactive(FILE* in, FILE* out, FILE* err)
 		lineLen = strlen(lineBuf);
 		if (lineBuf[lineLen - 1] != '\n' && lineBuf[lineLen - 1] != '\r')
 		{
-			fprintf(err, "Error: Too long command line.\n");
+			fmt::print(err, "Error: Too long command line.\n");
 			// TODO: read until EOL
 			continue;
 		}
@@ -153,7 +153,7 @@ void luaUqm_debug_runLine(const char* exprBuf,
 		if (luaL_loadstring(luaUqm_debugState, exprBuf) != LUA_OK)
 		{
 			// An error occurred during parsing.
-			errorCallback(extra, "Syntax error: %s\n",
+			errorCallback(extra, "Syntax error: {}\n",
 						  lua_tostring(luaUqm_debugState, -1));
 			lua_pop(luaUqm_debugState, 1);
 			// Pop the error.
@@ -165,7 +165,7 @@ void luaUqm_debug_runLine(const char* exprBuf,
 	if (lua_pcall(luaUqm_debugState, 0, 1, 0) != 0)
 	{
 		// An error occurred during execution.
-		errorCallback(extra, "Runtime error: %s\n",
+		errorCallback(extra, "Runtime error: {}\n",
 					  lua_tostring(luaUqm_debugState, -1));
 		lua_pop(luaUqm_debugState, 1);
 		// Pop the error.
@@ -182,11 +182,11 @@ void luaUqm_debug_runLine(const char* exprBuf,
 	{
 		// Not a string and not convertable to a string.
 		// The command was executed ok though, and we treat this as such.
-		outputCallback(extra, "(%s)\n", resultTypeStr);
+		outputCallback(extra, "({})\n", resultTypeStr);
 	}
 	else
 	{
-		outputCallback(extra, "(%s) %s\n", resultTypeStr, resultStr);
+		outputCallback(extra, "({}) {}\n", resultTypeStr, resultStr);
 	}
 
 	// Pop the result from the stack.

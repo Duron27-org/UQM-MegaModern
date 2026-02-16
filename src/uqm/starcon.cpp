@@ -258,9 +258,9 @@ int Starcon2Main(void* threadArg)
 						   "content ***\n\nUQM requires at least the base content "
 						   "pack to run properly.");
 		uqm::log::critical("This file is typically called "
-						   "mm-%d.%d.%d-content.uqm.  UQM was expecting",
+						   "mm-{}.{}.{}-content.uqm.  UQM was expecting",
 						   UQM_MAJOR_VERSION, UQM_MINOR_VERSION, UQM_PATCH_VERSION);
-		uqm::log::critical("it in the %s/packages directory.",
+		uqm::log::critical("it in the {}/packages directory.",
 						   baseContentPath);
 		uqm::log::critical("Either your installation did not install the "
 						   "content pack at all, or it\ninstalled it in a different "
@@ -288,17 +288,17 @@ int Starcon2Main(void* threadArg)
 	SplashScreen(BackgroundInitKernel);
 
 #ifdef DEBUG
-	printf("Set Seed Type: %s\n", toString(g_seedType));
-	printf("Set Seed: %d\n", optCustomSeed);
-	printf("Set Difficulty: %s\n", DIF_STR(optDifficulty));
-	printf("Set Extended: %s\n", BOOL_STR(optExtended));
-	printf("Set Nomad: %s\n\n", NOMAD_STR(optNomad));
+	printf("Set Seed Type: {}\n", toString(g_seedType));
+	printf("Set Seed: {}\n", optCustomSeed);
+	printf("Set Difficulty: {}\n", DIF_STR(optDifficulty));
+	printf("Set Extended: {}\n", BOOL_STR(optExtended));
+	printf("Set Nomad: {}\n\n", NOMAD_STR(optNomad));
 #endif
-	uqm::log::info("Set Seed Type: %s\n", toString(g_seedType));
-	uqm::log::info("Set Seed: %d\n", optCustomSeed);
-	uqm::log::info("Set Difficulty: %s\n", DIF_STR(optDifficulty));
-	uqm::log::info("Set Extended: %s\n", BOOL_STR(optExtended));
-	uqm::log::info("Set Nomad: %s\n\n", NOMAD_STR(optNomad));
+	uqm::log::info("Set Seed Type: {}\n", toString(g_seedType));
+	uqm::log::info("Set Seed: {}\n", optCustomSeed);
+	uqm::log::info("Set Difficulty: {}\n", DIF_STR(optDifficulty));
+	uqm::log::info("Set Extended: {}\n", BOOL_STR(optExtended));
+	uqm::log::info("Set Nomad: {}\n\n", NOMAD_STR(optNomad));
 
 	//	OpenJournal ();
 	while (StartGame())
@@ -323,22 +323,22 @@ int Starcon2Main(void* threadArg)
 		if (LastActivity == (CHECK_LOAD | CHECK_RESTART))
 		{
 #ifdef DEBUG
-			printf("New Game Seed Type: %s\n", toString(g_seedType));
-			printf("New Game Seed: %d\n", GLOBAL_SIS(Seed));
-			printf("New Game Difficulty: %s\n",
+			printf("New Game Seed Type: {}\n", toString(g_seedType));
+			printf("New Game Seed: {}\n", GLOBAL_SIS(Seed));
+			printf("New Game Difficulty: {}\n",
 				   DIF_STR(GLOBAL_SIS(Difficulty)));
-			printf("New Game Extended: %s\n",
+			printf("New Game Extended: {}\n",
 				   BOOL_STR(GLOBAL_SIS(Extended)));
-			printf("New Game Nomad: %s\n\n",
+			printf("New Game Nomad: {}\n\n",
 				   NOMAD_STR(GLOBAL_SIS(Nomad)));
 #endif
-			uqm::log::info("New Game Seed Type: %s\n", toString(g_seedType));
-			uqm::log::info("New Game Seed: %d\n", GLOBAL_SIS(Seed));
-			uqm::log::info("New Game Difficulty: %s\n",
+			uqm::log::info("New Game Seed Type: {}\n", toString(g_seedType));
+			uqm::log::info("New Game Seed: {}\n", GLOBAL_SIS(Seed));
+			uqm::log::info("New Game Difficulty: {}\n",
 						   DIF_STR(GLOBAL_SIS(Difficulty)));
-			uqm::log::info("New Game Extended: %s\n",
+			uqm::log::info("New Game Extended: {}\n",
 						   BOOL_STR(GLOBAL_SIS(Extended)));
-			uqm::log::info("New Game Nomad: %s\n\n",
+			uqm::log::info("New Game Nomad: {}\n\n",
 						   NOMAD_STR(GLOBAL_SIS(Nomad)));
 		}
 

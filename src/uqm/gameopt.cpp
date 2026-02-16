@@ -34,6 +34,7 @@
 #include "util.h"
 #include "libs/graphics/gfx_common.h"
 #include "core/log/log.h"
+#include "core/string/StringUtils.h"
 #include "comm.h"
 #include "master.h"
 
@@ -127,28 +128,24 @@ enum
 static void
 FeedbackSetting(uqm::BYTE which_setting)
 {
-	uqm::CHAR_T buf[128];
+	uqm::CHAR_T buf[128] {};
 	const char* tmpstr;
-
-	buf[0] = '\0';
-	// pre-terminate buffer in case snprintf() overflows
-	buf[sizeof(buf) - 1] = '\0';
 
 	switch (which_setting)
 	{
 		case SOUND_ON_SETTING:
 		case SOUND_OFF_SETTING:
-			snprintf(buf, sizeof(buf) - 1, "%s %s",
-					 GAME_STRING(OPTION_STRING_BASE + 0),
-					 GLOBAL(glob_flags) & SOUND_DISABLED ? GAME_STRING(OPTION_STRING_BASE + 3) :
-														   GAME_STRING(OPTION_STRING_BASE + 4));
+			fmt::format_to_sz_n(buf, sizeof(buf), "{} {}",
+								GAME_STRING(OPTION_STRING_BASE + 0),
+								GLOBAL(glob_flags) & SOUND_DISABLED ? GAME_STRING(OPTION_STRING_BASE + 3) :
+																	  GAME_STRING(OPTION_STRING_BASE + 4));
 			break;
 		case MUSIC_ON_SETTING:
 		case MUSIC_OFF_SETTING:
-			snprintf(buf, sizeof(buf) - 1, "%s %s",
-					 GAME_STRING(OPTION_STRING_BASE + 1),
-					 GLOBAL(glob_flags) & MUSIC_DISABLED ? GAME_STRING(OPTION_STRING_BASE + 3) :
-														   GAME_STRING(OPTION_STRING_BASE + 4));
+			fmt::format_to_sz_n(buf, sizeof(buf), "{} {}",
+								GAME_STRING(OPTION_STRING_BASE + 1),
+								GLOBAL(glob_flags) & MUSIC_DISABLED ? GAME_STRING(OPTION_STRING_BASE + 3) :
+																	  GAME_STRING(OPTION_STRING_BASE + 4));
 			break;
 		case CYBORG_OFF_SETTING:
 		case CYBORG_NORMAL_SETTING:
@@ -169,20 +166,20 @@ FeedbackSetting(uqm::BYTE which_setting)
 			{
 				tmpstr = "";
 			}
-			snprintf(buf, sizeof(buf) - 1, "%s %s%s",
-					 GAME_STRING(OPTION_STRING_BASE + 2),
-					 !(GLOBAL(glob_flags) & CYBORG_ENABLED) ? GAME_STRING(OPTION_STRING_BASE + 3) :
-															  GAME_STRING(OPTION_STRING_BASE + 4),
-					 tmpstr);
+			fmt::format_to_sz_n(buf, sizeof(buf), "{} {}{}",
+								GAME_STRING(OPTION_STRING_BASE + 2),
+								!(GLOBAL(glob_flags) & CYBORG_ENABLED) ? GAME_STRING(OPTION_STRING_BASE + 3) :
+																		 GAME_STRING(OPTION_STRING_BASE + 4),
+								tmpstr);
 			break;
 		case READ_VERY_SLOW_SETTING:
 		case READ_SLOW_SETTING:
 		case READ_MODERATE_SETTING:
 		case READ_FAST_SETTING:
 		case READ_VERY_FAST_SETTING:
-			snprintf(buf, sizeof(buf) - 1, "%s",
-					 GAME_STRING(OPTION_STRING_BASE + 5
-								 + (GLOBAL(glob_flags) & READ_SPEED_MASK)));
+			fmt::format_to_sz_n(buf, sizeof(buf), "{}",
+								GAME_STRING(OPTION_STRING_BASE + 5
+											+ (GLOBAL(glob_flags) & READ_SPEED_MASK)));
 			break;
 		case CHANGE_CAPTAIN_SETTING:
 		case CHANGE_SHIP_SETTING:
@@ -455,7 +452,7 @@ DrawSaveNameString(uqm::CHAR_T* Str, uqm::COUNT CursorPos, uqm::COUNT state, uqm
 	DateToString(dateStr, sizeof dateStr, GLOBAL(GameClock.month_index),
 				 GLOBAL(GameClock.day_index), GLOBAL(GameClock.year_index));
 	strncat(dateStr, ": ", sizeof(dateStr) - strlen(dateStr) - 1);
-	snprintf(fullStr, sizeof fullStr, "%s%s", dateStr, Str);
+	fmt::format_to_sz_n(fullStr, sizeof fullStr, "{}{}", dateStr, Str);
 
 	SetContextForeGroundColor(SAVE_SELECTED_COLOR);
 	r.extent.width = RES_SCALE(15);
@@ -1064,7 +1061,7 @@ DrawSavegameCargo(SIS_STATE* sisState)
 		s.origin.y += ELEMENT_SPACING_Y;
 		// print element amount
 		SetContextForeGroundColor(cargo_color[i]);
-		snprintf(buf, sizeof buf, "%u", sisState->ElementAmounts[i]);
+		fmt::format_to_sz_n(buf, sizeof buf, "{}", sisState->ElementAmounts[i]);
 		t.CharCount = (uqm::COUNT)~0;
 		font_DrawText(&t);
 		t.baseline.y += ELEMENT_SPACING_Y;
@@ -1079,7 +1076,7 @@ DrawSavegameCargo(SIS_STATE* sisState)
 	t.baseline.x = RES_SCALE(50) + SUMMARY_X_OFFS;
 	t.baseline.y = s.origin.y + RES_SCALE(3);
 	SetContextForeGroundColor(cargo_color[i]);
-	snprintf(buf, sizeof buf, "%u", sisState->TotalBioMass);
+	fmt::format_to_sz_n(buf, sizeof buf, "{}", sisState->TotalBioMass);
 	t.CharCount = (uqm::COUNT)~0;
 	font_DrawText(&t);
 
@@ -1451,7 +1448,7 @@ DrawSavegameSummary(PICK_GAME_STATE* pickState, uqm::COUNT gameIndex)
 			SetContextClipRect(&OldRect);
 			SetContext(SpaceContext);
 
-			snprintf(buf, sizeof buf, "%u", pSD->SS.ResUnits);
+			fmt::format_to_sz_n(buf, sizeof buf, "{}", pSD->SS.ResUnits);
 			t.baseline.y = RES_SCALE(102);
 			SetContextForeGroundColor(SUMM_VALUE_COLOR);
 			font_DrawText(&t);
@@ -1459,8 +1456,8 @@ DrawSavegameSummary(PICK_GAME_STATE* pickState, uqm::COUNT gameIndex)
 		}
 
 		t.baseline.y = RES_SCALE(126);
-		snprintf(buf, sizeof buf, "%u",
-				 MAKE_WORD(pSD->MCreditLo, pSD->MCreditHi));
+		fmt::format_to_sz_n(buf, sizeof buf, "{}",
+							MAKE_WORD(pSD->MCreditLo, pSD->MCreditHi));
 		SetContextForeGroundColor(SUMM_VALUE_COLOR);
 		font_DrawText(&t);
 
@@ -1541,9 +1538,9 @@ DrawSavegameSummary(PICK_GAME_STATE* pickState, uqm::COUNT gameIndex)
 				utf8StringCopy(buf, sizeof(buf), pSD->SS.PlanetName);
 				break;
 			default:
-				snprintf(buf, sizeof buf, "%03u.%01u : %03u.%01u",
-						 starPt.x / 10, starPt.x % 10,
-						 starPt.y / 10, starPt.y % 10);
+				fmt::format_to_sz_n(buf, sizeof buf, "%03u.%01u : %03u.%01u",
+									starPt.x / 10, starPt.x % 10,
+									starPt.y / 10, starPt.y % 10);
 		}
 		if (is3DO(optWhichFonts))
 		{
@@ -1645,8 +1642,8 @@ DrawGameSelection(PICK_GAME_STATE* pickState, uqm::COUNT selSlot)
 
 		t.baseline.x = r.corner.x + RES_SCALE(3);
 		t.baseline.y = r.corner.y + RES_SCALE(8);
-		snprintf(buf, sizeof buf,
-				 (MAX_SAVED_GAMES > 99) ? "%03u" : "%02u", curSlot);
+		fmt::format_to_sz_n(buf, sizeof buf,
+							(MAX_SAVED_GAMES > 99) ? "%03u" : "%02u", curSlot);
 		font_DrawText(&t);
 
 		r.extent.width = RES_SCALE(204) + (SIS_SCREEN_WIDTH - RES_SCALE(242));
@@ -1676,7 +1673,7 @@ DrawGameSelection(PICK_GAME_STATE* pickState, uqm::COUNT selSlot)
 											   GAME_STRING(SAVEGAME_STRING_BASE + 4);
 			}
 
-			snprintf(buf, sizeof buf, "%s: %s", buf2, SaveName);
+			fmt::format_to_sz_n(buf, sizeof buf, "{}: {}", buf2, SaveName);
 
 			TruncateSaveName(buf, r.extent.width - 7, false);
 		}
@@ -1991,22 +1988,22 @@ PickGame(bool saving, bool fromMainMenu)
 
 #ifdef DEBUG
 		printf(saving ? "Saving -> " : "Loading -> ");
-		printf("Slot: %d\n", MenuState.CurState);
-		printf("Name: %s\n", pSD->SaveName);
-		printf("Seed Type: %s\n", toString(g_seedType));
-		printf("Seed: %d\n", GLOBAL_SIS(Seed));
-		printf("Difficulty: %s\n", DIF_STR(DIFFICULTY));
-		printf("Extended: %s\n", BOOL_STR(EXTENDED));
-		printf("Nomad: %s\n\n", NOMAD_STR(NOMAD));
+		printf("Slot: {}\n", MenuState.CurState);
+		printf("Name: {}\n", pSD->SaveName);
+		printf("Seed Type: {}\n", toString(g_seedType));
+		printf("Seed: {}\n", GLOBAL_SIS(Seed));
+		printf("Difficulty: {}\n", DIF_STR(DIFFICULTY));
+		printf("Extended: {}\n", BOOL_STR(EXTENDED));
+		printf("Nomad: {}\n\n", NOMAD_STR(NOMAD));
 #endif
 		uqm::log::info(saving ? "Saving > " : "Loading > ");
-		uqm::log::info("Name: %s\n", pSD->SaveName);
-		uqm::log::info("Slot: %d\n", MenuState.CurState);
-		uqm::log::info("Seed Type: %s\n", toString(g_seedType));
-		uqm::log::info("Seed: %d\n", GLOBAL_SIS(Seed));
-		uqm::log::info("Difficulty: %s\n", DIF_STR(DIFFICULTY));
-		uqm::log::info("Extended: %s\n", BOOL_STR(EXTENDED));
-		uqm::log::info("Nomad: %s\n\n", toString(NOMAD));
+		uqm::log::info("Name: {}\n", pSD->SaveName);
+		uqm::log::info("Slot: {}\n", MenuState.CurState);
+		uqm::log::info("Seed Type: {}\n", toString(g_seedType));
+		uqm::log::info("Seed: {}\n", GLOBAL_SIS(Seed));
+		uqm::log::info("Difficulty: {}\n", DIF_STR(DIFFICULTY));
+		uqm::log::info("Extended: {}\n", BOOL_STR(EXTENDED));
+		uqm::log::info("Nomad: {}\n\n", toString(NOMAD));
 	}
 
 	if (!(GLOBAL(CurrentActivity) & CHECK_ABORT) && (saving || (!pickState.success && !fromMainMenu)))

@@ -15,6 +15,7 @@
  */
 
 #include "port.h"
+#include "/core/string/StringUtils.h"
 #include "libs/threadlib.h"
 #include "libs/graphics/drawcmd.h"
 #include "libs/graphics/drawable.h"
@@ -50,8 +51,8 @@ static void
 TFB_WaitForSpace(int requested_slots)
 {
 	int old_depth, i;
-	uqm::log::debug("DCQ overload (Size = %d, FullSize = %d, "
-					"Requested = %d).  Sleeping until renderer is done.",
+	uqm::log::debug("DCQ overload (Size = {}, FullSize = {}, "
+					"Requested = {}).  Sleeping until renderer is done.",
 					DrawCommandQueue.Size, DrawCommandQueue.FullSize,
 					requested_slots);
 	// Restore the DCQ locking level.  I *think* this is
@@ -67,7 +68,7 @@ TFB_WaitForSpace(int requested_slots)
 	{
 		LockRecursiveMutex(DCQ_Mutex);
 	}
-	uqm::log::debug("DCQ clear (Size = %d, FullSize = %d).  Continuing.",
+	uqm::log::debug("DCQ clear (Size = {}, FullSize = {}).  Continuing.",
 					DrawCommandQueue.Size, DrawCommandQueue.FullSize);
 }
 
@@ -315,7 +316,7 @@ computeFPS(int* fps)
 	if (fps_counter > FPS_PERIOD)
 	{
 		*fps = (int)((float)ONE_SECOND * RenderedFrames / fps_counter);
-		uqm::log::info("fps %.2f, effective %d",
+		uqm::log::info("fps {:.2}, effective {}",
 					   (float)ONE_SECOND / delta_time, *fps);
 
 		fps_counter = 0;
@@ -334,7 +335,6 @@ RenderFPS(int* fps)
 		int i;
 		int max;
 		int step = 6;
-		uqm::CHAR_T buf[4];
 		TFB_Char* ch;
 		TFB_Image* img;
 
@@ -345,8 +345,10 @@ RenderFPS(int* fps)
 		int x = 14 << resolutionFactor;
 		int y = 7 << resolutionFactor;
 
-		sprintf(buf, "%d", *fps);
-		max = (uqm::COUNT)utf8StringCount(buf);
+		uqm::CHAR_T buf[8] {};
+		const auto fmtResult = fmt::format_to_sz_n(buf, sizeof(buf), "{}", *fps);
+
+		max = fmtResult.size; //(uqm::COUNT) utf8StringCount(buf);
 
 		GetFontDims(&w, &h);
 		img = TFB_DrawImage_CreateForScreen(w, h, true);

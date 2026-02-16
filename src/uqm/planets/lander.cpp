@@ -828,7 +828,8 @@ pickupNode(PLANETSIDE_DESC* pPSD, uqm::COUNT NumRetrieved,
 	}
 
 	pPSD->NumFrames = NUM_TEXT_FRAMES;
-	sprintf(pPSD->AmountBuf, "%u", NumRetrieved);
+	const auto fmtResult = fmt::format_to_n(pPSD->AmountBuf, sizeof(pPSD->AmountBuf) - 1, "{}", NumRetrieved);
+	*fmtResult.out = '\0';
 	pStr = GAME_STRING(EType + Offset);
 
 	pPSD->MineralText[0].baseline.x = (MapSurface.width >> 1)

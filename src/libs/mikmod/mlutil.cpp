@@ -38,7 +38,7 @@
 #include "mikmod_internals.h"
 
 #ifdef SUNOS
-extern int fprintf(FILE*, const char*, ...);
+extern int fmt::print(FILE*, const char*, ...);
 #endif
 
 /*========== Shared tracker identifiers */
@@ -399,7 +399,7 @@ void UniPTEffect(UBYTE eff, UBYTE dat)
 #ifdef MIKMOD_DEBUG
 	if (eff >= 0x10)
 	{
-		fprintf(stderr, "UniPTEffect called with incorrect eff value %d\n", eff);
+		fmt::print(stderr, "UniPTEffect called with incorrect eff value {}\n", eff);
 	}
 	else
 #endif

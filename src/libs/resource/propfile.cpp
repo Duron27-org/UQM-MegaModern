@@ -20,6 +20,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "core/log/log.h"
+#include "core/string/StringUtils.h"
 #include "propfile.h"
 #include "libs/reslib.h"
 #include "options.h"
@@ -33,7 +34,7 @@ void removeSubstr(char* str, const char* toRemove)
 	if (nullptr == (str = strstr(str, toRemove)))
 	{
 		// no match.
-		//printf("No match in %s\n", str);
+		//printf("No match in {}\n", str);
 		return;
 	}
 
@@ -42,7 +43,7 @@ void removeSubstr(char* str, const char* toRemove)
 
 	while (nullptr != (copyEnd = strstr(copyFrom, toRemove)))
 	{
-		//printf ("match at %3ld in %s\n", copyEnd - str, str);
+		//printf ("match at %3ld in {}\n", copyEnd - str, str);
 		memmove(str, copyFrom, copyEnd - copyFrom);
 		str += copyEnd - copyFrom;
 		copyFrom = copyEnd + remLen;
@@ -145,8 +146,8 @@ void PropFile_from_string(char* d, PROPERTY_HANDLER handler, const char* prefix)
 		d[value_end] = '\0';
 		if (prefix)
 		{
-			char buf[256];
-			snprintf(buf, 255, "%s%s", prefix, d + key_start);
+			char buf[256] {};
+			fmt::format_to_sz_n(buf, sizeof(buf), "{}{}", prefix, d + key_start);
 			buf[255] = 0;
 			handler(buf, d + value_start);
 		}

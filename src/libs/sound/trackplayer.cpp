@@ -269,7 +269,7 @@ OnChunkEnd(TFB_SoundSample* sample, audio_Object buffer)
 	sample->decoder = cur_chunk->decoder;
 	SoundDecoder_Rewind(sample->decoder);
 
-	uqm::log::info("Switching to stream %s at pos %d",
+	uqm::log::info("Switching to stream {} at pos {}",
 				   sample->decoder->filename, sample->decoder->start_sample);
 
 	if (cur_chunk->tag_me)
@@ -431,7 +431,7 @@ void SpliceMultiTrack(uqm::CHAR_T* TrackNames[], uqm::CHAR_T* TrackText)
 											   32768, 0, -3 * TEXT_SPEED);
 		if (track_decs[tracks])
 		{
-			uqm::log::info("  track: %s, decoder: %s, rate %d format %x",
+			uqm::log::info("  track: {}, decoder: {}, rate {} format {:x}",
 						   *TrackNames,
 						   SoundDecoder_GetName(track_decs[tracks]),
 						   track_decs[tracks]->frequency,
@@ -445,7 +445,7 @@ void SpliceMultiTrack(uqm::CHAR_T* TrackNames[], uqm::CHAR_T* TrackText)
 		}
 		else
 		{
-			uqm::log::warn("SpliceMultiTrack(): couldn't load %s\n",
+			uqm::log::warn("SpliceMultiTrack(): couldn't load {}\n",
 						   *TrackNames);
 			tracks--;
 		}
@@ -532,7 +532,7 @@ void SpliceTrack(uqm::CHAR_T* TrackName, uqm::CHAR_T* TrackText, uqm::CHAR_T* Ti
 															  last_track_name, 4096, dec_offset, time_stamps[page]);
 				if (!decoder)
 				{
-					uqm::log::warn("SpliceTrack(): couldn't load %s", TrackName);
+					uqm::log::warn("SpliceTrack(): couldn't load {}", TrackName);
 					break;
 				}
 				dec_offset += (unsigned long)(decoder->length * 1000);
@@ -580,7 +580,7 @@ void SpliceTrack(uqm::CHAR_T* TrackName, uqm::CHAR_T* TrackText, uqm::CHAR_T* Ti
 			track_count++;
 		}
 
-		uqm::log::info("SpliceTrack(): loading %s", TrackName);
+		uqm::log::info("SpliceTrack(): loading {}", TrackName);
 
 		if (TimeStamp)
 		{
@@ -609,7 +609,7 @@ void SpliceTrack(uqm::CHAR_T* TrackName, uqm::CHAR_T* TrackText, uqm::CHAR_T* Ti
 														  TrackName, 4096, dec_offset, time_stamps[page]);
 			if (!decoder)
 			{
-				uqm::log::warn("SpliceTrack(): couldn't load %s", TrackName);
+				uqm::log::warn("SpliceTrack(): couldn't load {}", TrackName);
 				break;
 			}
 
@@ -626,7 +626,7 @@ void SpliceTrack(uqm::CHAR_T* TrackName, uqm::CHAR_T* TrackText, uqm::CHAR_T* Ti
 			}
 			dec_offset += (unsigned long)(decoder->length * 1000);
 #if 0
-			log_add (log_Debug, "page (%d of %d): %d ts: %d",
+			log_add (log_Debug, "page ({} of {}): {} ts: {}",
 					page, num_pages,
 					dec_offset, time_stamps[page]);
 #endif

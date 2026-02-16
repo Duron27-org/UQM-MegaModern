@@ -84,7 +84,7 @@ Create_Screen(SDL_Surface* templat, int w, int h)
 												templat->format->Bmask, 0);
 	if (newsurf == 0)
 	{
-		uqm::log::error("Couldn't create screen buffers: %s",
+		uqm::log::error("Couldn't create screen buffers: {}",
 						SDL_GetError());
 	}
 	return newsurf;
@@ -153,7 +153,7 @@ AttemptColorDepth(int flags, int width, int height, int bpp, int resFactor)
 		height = fs_height;
 		width = fs_width;
 
-		uqm::log::debug("X:%d y:%d", width, height);
+		uqm::log::debug("X:{} y:{}", width, height);
 	}
 
 	ScreenWidthActual = width;
@@ -163,7 +163,7 @@ AttemptColorDepth(int flags, int width, int height, int bpp, int resFactor)
 								 bpp, videomode_flags);
 	if (SDL_Video == nullptr)
 	{
-		uqm::log::error("Couldn't set OpenGL %ix%ix%i video mode: %s",
+		uqm::log::error("Couldn't set OpenGL {}x{}x{} video mode: {}",
 						ScreenWidthActual, ScreenHeightActual, bpp,
 						SDL_GetError());
 
@@ -185,13 +185,13 @@ AttemptColorDepth(int flags, int width, int height, int bpp, int resFactor)
 	else
 	{
 successful_change:
-		uqm::log::info("Set the resolution to: %ix%ix%i"
-					   " (surface reports %ix%ix%i) (res_cat %u)",
+		uqm::log::info("Set the resolution to: {}x{}x{}"
+					   " (surface reports {}x{}x{}) (res_cat {})",
 					   width, height, bpp,
 					   SDL_GetVideoSurface()->w, SDL_GetVideoSurface()->h,
 					   SDL_GetVideoSurface()->format->BitsPerPixel, resFactor);
 
-		uqm::log::info("OpenGL renderer: %s version: %s",
+		uqm::log::info("OpenGL renderer: {} version: {}",
 					   glGetString(GL_RENDERER), glGetString(GL_VERSION));
 
 		// JMS: Now, this makes the game center horizontally
@@ -209,7 +209,7 @@ int TFB_GL_ConfigureVideo(int driver, int flags, int width, int height,
 
 	if (AttemptColorDepth(flags, width, height, 32, resFactor) && AttemptColorDepth(flags, width, height, 24, resFactor) && AttemptColorDepth(flags, width, height, 16, resFactor))
 	{
-		uqm::log::error("Couldn't set any OpenGL %ix%i video mode!",
+		uqm::log::error("Couldn't set any OpenGL {}x{} video mode!",
 						width, height);
 		return -1;
 	}
@@ -224,7 +224,7 @@ int TFB_GL_ConfigureVideo(int driver, int flags, int width, int height,
 												R_MASK, G_MASK, B_MASK, A_MASK);
 		if (format_conv_surf == nullptr)
 		{
-			uqm::log::error("Couldn't create format_conv_surf: %s",
+			uqm::log::error("Couldn't create format_conv_surf: {}",
 							SDL_GetError());
 			return -1;
 		}
@@ -329,7 +329,7 @@ int TFB_GL_InitGraphics(int driver, int flags, int width, int height,
 	uqm::log::info("Initializing SDL with OpenGL support.");
 
 	SDL_VideoDriverName(VideoName, sizeof(VideoName));
-	uqm::log::info("SDL driver used: %s", VideoName);
+	uqm::log::info("SDL driver used: {}", VideoName);
 	uqm::log::info("SDL initialized.");
 	uqm::log::info("Initializing Screen.");
 

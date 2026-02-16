@@ -88,7 +88,7 @@ int mkdirhier(const char* path)
 		ptr[1] = '\0';
 		if (stat(buf, &statbuf) == -1)
 		{
-			uqm::log::error("Can't stat \"%s\": %s", buf, strerror(errno));
+			uqm::log::error("Can't stat \"{}\": {}", buf, strerror(errno));
 			goto err;
 		}
 	}
@@ -111,7 +111,7 @@ int mkdirhier(const char* path)
 
 		if (*pathstart == '\0')
 		{
-			uqm::log::error("Incomplete UNC path \"%s\"", pathstart);
+			uqm::log::error("Incomplete UNC path \"{}\"", pathstart);
 			goto err;
 		}
 
@@ -128,7 +128,7 @@ int mkdirhier(const char* path)
 		ptr[1] = '\0';
 		if (stat(buf, &statbuf) == -1)
 		{
-			uqm::log::error("Can't stat \"%s\": %s", buf, strerror(errno));
+			uqm::log::error("Can't stat \"{}\": {}", buf, strerror(errno));
 			goto err;
 		}
 	}
@@ -179,7 +179,7 @@ int mkdirhier(const char* path)
 			if (errno != EACCES)
 #endif
 			{
-				uqm::log::error("Can't stat \"%s\": %s", buf,
+				uqm::log::error("Can't stat \"{}\": {}", buf,
 								strerror(errno));
 				goto err;
 			}
@@ -210,7 +210,7 @@ int mkdirhier(const char* path)
 	{
 		if (createDirectory(buf, 0777) == -1)
 		{
-			uqm::log::error("Error: Can't create %s: %s", buf,
+			uqm::log::error("Error: Can't create {}: {}", buf,
 							strerror(errno));
 			goto err;
 		}
@@ -390,7 +390,7 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 #define APPDATA_FALLBACK_STRING ".\\userdata"
 							uqm::log::warn(
 								"Warning: %%USERPROFILE%% is not set. "
-								"Falling back to \"%s\" for %%APPDATA%%",
+								"Falling back to \"{}\" for %%APPDATA%%",
 								APPDATA_FALLBACK_STRING);
 							CHECKLEN(buf, sizeof(APPDATA_FALLBACK_STRING) - 1);
 							strcpy(bufptr, APPDATA_FALLBACK_STRING);

@@ -19,6 +19,7 @@
 
 #include "port.h"
 #include <SDL.h>
+#include "core/stl/stl.h"
 
 #if SDL_MAJOR_VERSION == 1
 typedef SDLKey sdl_key_t;
@@ -111,7 +112,7 @@ void VControl_ResetInput(void);
 
 /* Translate between gestures and string representations thereof. */
 void VControl_ParseGesture(VCONTROL_GESTURE* g, const char* spec);
-int VControl_DumpGesture(char* buf, int n, VCONTROL_GESTURE* g);
+size_t VControl_DumpGesture(uqstl::span<char> buf, VCONTROL_GESTURE* g);
 
 /* Tracking the "last interesting gesture."  Used to poll to find new
    control keys. */

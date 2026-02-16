@@ -138,7 +138,7 @@ CodeResToInitFunc(ShipCodeRes res)
 			return &init_probe;
 		default:
 			{
-				uqm::log::warn("Unknown SHIP identifier '%d'", (int)res);
+				uqm::log::warn("Unknown SHIP identifier '{}'", (int)res);
 				return nullptr;
 			}
 	}

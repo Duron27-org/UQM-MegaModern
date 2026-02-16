@@ -174,7 +174,7 @@ ova_Open(THIS_PTR, uio_DirHandle* dir, const char* filename)
 	fp = uio_fopen(dir, filename, "rb");
 	if (fp == nullptr)
 	{
-		uqm::log::warn("ova_Open(): could not open %s", filename);
+		uqm::log::warn("ova_Open(): could not open {}", filename);
 		return false;
 	}
 
@@ -182,7 +182,7 @@ ova_Open(THIS_PTR, uio_DirHandle* dir, const char* filename)
 	if (rc != 0)
 	{
 		uqm::log::warn("ova_Open(): "
-					   "ov_open_callbacks failed for %s, error code %d",
+					   "ov_open_callbacks failed for {}, error code {}",
 					   filename, rc);
 		uio_fclose(fp);
 		return false;
@@ -192,7 +192,7 @@ ova_Open(THIS_PTR, uio_DirHandle* dir, const char* filename)
 	if (!vinfo)
 	{
 		uqm::log::warn("ova_Open(): "
-					   "failed to retrieve ogg bitstream info for %s",
+					   "failed to retrieve ogg bitstream info for {}",
 					   filename);
 		ov_clear(&ova->vf);
 		return false;

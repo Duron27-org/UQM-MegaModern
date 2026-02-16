@@ -75,7 +75,7 @@ NetConnection_open(int player, const NetplayPeerOptions* options,
 		now = time(nullptr);
 		if (now == (time_t)-1)
 		{
-			uqm::log::critical("time() failed: %s.", strerror(errno));
+			uqm::log::critical("time() failed: {}.", strerror(errno));
 			abort();
 		}
 
@@ -84,11 +84,10 @@ NetConnection_open(int player, const NetplayPeerOptions* options,
 		// portable (yet), and adding a check for it to the build.sh script
 		// is not worth the effort for a debugging function right now.
 
-		strftimeResult = strftime(dumpFileName, sizeof dumpFileName,
-								  "debug/netlog-%Y%m%d%H%M%S", nowTm);
+		strftimeResult = strftime(dumpFileName, sizeof dumpFileName, "debug/netlog-%Y%m%e%H%M%S", nowTm);
 		if (strftimeResult == 0)
 		{
-			uqm::log::critical("strftime() failed: %s.", strerror(errno));
+			uqm::log::critical("strftime() failed: {}.", strerror(errno));
 			abort();
 		}
 
@@ -98,13 +97,13 @@ NetConnection_open(int player, const NetplayPeerOptions* options,
 		if (conn->debugFile == nullptr)
 		{
 			uqm::log::debug("Not creating a netplay debug log for "
-							"player %d.",
+							"player {}.",
 							player);
 		}
 		else
 		{
-			uqm::log::debug("Creating netplay debug log '%s' for "
-							"player %d.",
+			uqm::log::debug("Creating netplay debug log '{}' for "
+							"player {}.",
 							dumpFileName, player);
 			if (netplayDebugFile == nullptr)
 			{
@@ -342,14 +341,14 @@ void* NetConnection_getResetCallbackArg(const NetConnection* conn)
 void NetConnection_setState(NetConnection* conn, NetState state)
 {
 #ifdef NETPLAY_DEBUG
-	uqm::log::debug("NETPLAY: [%d] +/- Connection state changed to: "
-					"%s.\n",
+	uqm::log::debug("NETPLAY: [{}] +/- Connection state changed to: "
+					"{}.\n",
 					conn->player, netStateData[state].name);
 #endif
 #ifdef DEBUG
 	if (state == conn->state)
 	{
-		uqm::log::warn("NETPLAY: [%d]     Connection state set to %s "
+		uqm::log::warn("NETPLAY: [{}]     Connection state set to {} "
 					   "while already in that state.\n",
 					   conn->player, netStateData[state].name);
 	}

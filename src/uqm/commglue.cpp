@@ -24,6 +24,7 @@
 #include "races.h"
 #include "lua/luacomm.h"
 #include "core/log/log.h"
+#include "core/string/StringUtils.h"
 
 #include <stdarg.h>
 #include <stdlib.h>
@@ -105,7 +106,7 @@ InterpolateChunk(uqm::CHAR_T buffer[], uqm::CHAR_T* start)
 			buffsize += end - start;
 			if (buffsize > MAX_INTERPOLATE)
 			{
-				fprintf(stderr, "String too long to interpolate.\n");
+				fmt::print(stderr, "String too long to interpolate.\n");
 				return nullptr;
 			}
 			strncpy(buffer, start, end - start);
@@ -131,13 +132,13 @@ InterpolateChunk(uqm::CHAR_T buffer[], uqm::CHAR_T* start)
 		pStr = luaUqm_comm_stringInterpolate(str_buf);
 		if (!pStr)
 		{
-			fprintf(stderr, "Interpolation failure (null return).\n");
+			fmt::print(stderr, "Interpolation failure (null return).\n");
 			return nullptr;
 		}
 		buffsize += (uqm::COUNT)strlen(pStr);
 		if (buffsize > MAX_INTERPOLATE)
 		{
-			fprintf(stderr, "String too long to interpolate.\n");
+			fmt::print(stderr, "String too long to interpolate.\n");
 			return nullptr;
 		}
 		strncpy(buffer, pStr, strlen(pStr));
@@ -156,7 +157,7 @@ InterpolateChunk(uqm::CHAR_T buffer[], uqm::CHAR_T* start)
 	buffsize += (uqm::COUNT)strlen(start);
 	if (buffsize > MAX_INTERPOLATE)
 	{
-		fprintf(stderr, "String too long to interpolate.\n");
+		fmt::print(stderr, "String too long to interpolate.\n");
 		return nullptr;
 	}
 	strcpy(buffer, start);
@@ -253,7 +254,7 @@ void NPCPhrase_cb(int index, CallbackFunction cb)
 	}
 
 #ifdef DEBUG_STARSEED
-	fprintf(stderr, "Received string...\n<<\n%s\n>>\n", pStr);
+	fmt::print(stderr, "Received string...\n<<\n{}\n>>\n", pStr);
 #endif
 
 	// Here we will loop through and get the string up to the smallest
@@ -274,14 +275,14 @@ void NPCPhrase_cb(int index, CallbackFunction cb)
 		// chunk, or nullptr if done.  Writes the interpolation to str_buf.
 		pStr = InterpolateChunk(str_buf, pStr);
 #ifdef DEBUG_STARSEED
-		fprintf(stderr, "Chunk\n<<%s>>\n", str_buf);
+		fmt::print(stderr, "Chunk\n<<{}>>\n", str_buf);
 #endif
 		if (!RoboTrack[0])
 		{
 			if (clip_number == 0 && !pStr)
 			{
 #ifdef DEBUG_STARSEED
-				fprintf(stderr, "Regular splicetrack.\n");
+				fmt::print(stderr, "Regular splicetrack.\n");
 #endif
 				// There's no sub-clips here, return regular clip
 				SpliceTrack(pClip, str_buf, pTimeStamp, cb);
@@ -289,7 +290,7 @@ void NPCPhrase_cb(int index, CallbackFunction cb)
 			else
 			{
 #ifdef DEBUG_STARSEED
-				fprintf(stderr, "Subclip splicetrack.\n");
+				fmt::print(stderr, "Subclip splicetrack.\n");
 #endif
 				// This is a subclip of the main dialog
 				GetSubClip(clip_buf, pClip, clip_number);
@@ -323,12 +324,12 @@ void NPCPhrase_cb(int index, CallbackFunction cb)
 					// ~0 is a subclip whose name is based off the primary clip
 					// We need to allocate a temp buffer and clean it up later
 #ifdef DEBUG_STARSEED
-					fprintf(stderr, "Allocating for track %d.\n", i);
+					fmt::print(stderr, "Allocating for track {}.\n", i);
 #endif
 					tracks[i] = (uqm::CHAR_T*)HCalloc(sizeof(char) * MAX_CLIPNAME);
 					GetSubClip(tracks[i], pClip, clip_number);
 #ifdef DEBUG_STARSEED
-					fprintf(stderr, "RoboTrack[%d] = <<%s>>.\n", i, tracks[i]);
+					fmt::print(stderr, "RoboTrack[{}] = <<{}>>.\n", i, tracks[i]);
 #endif
 					clip_number++;
 				}
@@ -339,7 +340,7 @@ void NPCPhrase_cb(int index, CallbackFunction cb)
 						SetAbsStringTableIndex(RoboPhrases,
 											   RoboTrack[i] - 1));
 #ifdef DEBUG_STARSEED
-					fprintf(stderr, "RoboTrack[%d] = <<%s>>.\n", i, tracks[i]);
+					fmt::print(stderr, "RoboTrack[{}] = <<{}>>.\n", i, tracks[i]);
 #endif
 				}
 				else
@@ -348,7 +349,7 @@ void NPCPhrase_cb(int index, CallbackFunction cb)
 				}
 			}
 #ifdef DEBUG_STARSEED
-			fprintf(stderr, "Splice Multitrack string <<%s>>.\n", str_buf);
+			fmt::print(stderr, "Splice Multitrack string <<{}>>.\n", str_buf);
 #endif
 			SpliceMultiTrack(tracks, str_buf);
 			for (i = 0; i < NUM_ROBO_TRACKS && RoboTrack[i]; i++)
@@ -356,7 +357,7 @@ void NPCPhrase_cb(int index, CallbackFunction cb)
 				if (RoboTrack[i] == (uqm::COUNT)~0)
 				{
 #ifdef DEBUG_STARSEED
-					fprintf(stderr, "Freeing track %d.\n", i);
+					fmt::print(stderr, "Freeing track {}.\n", i);
 #endif
 					HFree(tracks[i]);
 				}
@@ -399,11 +400,11 @@ void NPCPhrase_splice(int index)
 
 void NPCNumber(int number, const char* fmt)
 {
-	uqm::CHAR_T buf[32];
+	uqm::CHAR_T buf[32] {};
 
 	if (!fmt)
 	{
-		fmt = "%d";
+		fmt = "{}";
 	}
 
 	if (CommData.AlienNumberSpeech)
@@ -413,7 +414,7 @@ void NPCNumber(int number, const char* fmt)
 	}
 
 	// just splice in the subtitle text
-	snprintf(buf, sizeof buf, fmt, number);
+	fmt::format_to_sz_n(buf, sizeof buf, fmt::runtime(fmt), number);
 	SpliceTrack(nullptr, buf, nullptr, nullptr);
 }
 
@@ -426,7 +427,7 @@ NPCNumberPhrase(int number, const char* fmt, uqm::CHAR_T** ptrack)
 	int queued = 0;
 	int toplevel = 0;
 	uqm::CHAR_T* TrackNames[MAX_NUMBER_TRACKS];
-	uqm::CHAR_T numbuf[60];
+	uqm::CHAR_T numbuf[60] {};
 	const SPEECH_DIGIT* dig = nullptr;
 
 	if (!speech)
@@ -439,9 +440,9 @@ NPCNumberPhrase(int number, const char* fmt, uqm::CHAR_T** ptrack)
 		toplevel = 1;
 		if (!fmt)
 		{
-			fmt = "%d";
+			fmt = "{}";
 		}
-		sprintf(numbuf, fmt, number);
+		fmt::format_to_n(numbuf, sizeof(numbuf) - 1, fmt::runtime(fmt), number);
 		ptrack = TrackNames;
 	}
 

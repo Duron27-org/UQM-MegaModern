@@ -538,8 +538,8 @@ FlushGroupInfo(GROUP_HEADER* pGH, uqm::DWORD offset, uqm::BYTE which_group,
 	WriteGroupHeader(fp, pGH);
 
 #ifdef DEBUG_GROUPS
-	uqm::log::debug("1)FlushGroupInfo(%lu): WG = %u(%lu), NG = %u, "
-					"SI = %u",
+	uqm::log::debug("1)FlushGroupInfo({}): WG = {}({}), NG = {}, "
+					"SI = {}",
 					offset, which_group, pGH->GroupOffset[which_group],
 					pGH->NumGroups, pGH->star_index);
 #endif /* DEBUG_GROUPS */
@@ -565,7 +565,7 @@ FlushGroupInfo(GROUP_HEADER* pGH, uqm::DWORD offset, uqm::BYTE which_group,
 			swrite_8(fp, GroupPtr->race_id);
 
 #ifdef DEBUG_GROUPS
-			uqm::log::debug("F) type %u, loc %u<%d, %d>, task 0x%02x:%u",
+			uqm::log::debug("F) type {}, loc {}<{}, {}>, task 0x%02x:{}",
 							GroupPtr->race_id,
 							GET_GROUP_LOC(GroupPtr),
 							GroupPtr->loc.x,
@@ -638,7 +638,7 @@ bool GetGroupInfo(uqm::DWORD offset, uqm::BYTE which_group)
 	SeekStateFile(fp, offset, SEEK_SET);
 	ReadGroupHeader(fp, &GH);
 #ifdef DEBUG_GROUPS
-	uqm::log::debug("GetGroupInfo(%lu): %u(%lu) out of %u", offset,
+	uqm::log::debug("GetGroupInfo({}): {}({}) out of {}", offset,
 					which_group, GH.GroupOffset[which_group], GH.NumGroups);
 #endif /* DEBUG_GROUPS */
 
@@ -648,7 +648,7 @@ bool GetGroupInfo(uqm::DWORD offset, uqm::BYTE which_group)
 
 		ReinitQueue(&GLOBAL(ip_group_q));
 #ifdef DEBUG_GROUPS
-		uqm::log::debug("%u == %u", GH.star_index,
+		uqm::log::debug("{} == {}", GH.star_index,
 						(uqm::COUNT)(CurStarDescPtr - star_array));
 #endif /* DEBUG_GROUPS */
 
@@ -666,7 +666,7 @@ bool GetGroupInfo(uqm::DWORD offset, uqm::BYTE which_group)
 			if (GH.star_index == CurStarDescPtr - star_array)
 			{
 				uqm::log::debug("GetGroupInfo: battle groups out of "
-								"date %u/%u/%u!",
+								"date {}/{}/{}!",
 								month_index, day_index,
 								year_index);
 			}
@@ -754,8 +754,8 @@ bool GetGroupInfo(uqm::DWORD offset, uqm::BYTE which_group)
 			GroupPtr->sys_loc = group_loc;
 
 #ifdef DEBUG_GROUPS
-			uqm::log::debug("battle group %u(0x%04x) strength "
-							"%u, type %u, loc %u<%d, %d>, task %u",
+			uqm::log::debug("battle group {}(0x%04x) strength "
+							"{}, type {}, loc {}<{}, {}>, task {}",
 							which_group,
 							hGroup,
 							NumShips,
@@ -844,7 +844,7 @@ bool GetGroupInfo(uqm::DWORD offset, uqm::BYTE which_group)
 			group_id = GroupPtr->group_id;
 
 #ifdef DEBUG_GROUPS
-			uqm::log::debug("G) type %u, loc %u<%d, %d>, task 0x%02x:%u",
+			uqm::log::debug("G) type {}, loc {}<{}, {}>, task 0x%02x:{}",
 							RaceType,
 							GroupPtr->sys_loc,
 							GroupPtr->loc.x,
@@ -995,7 +995,7 @@ PutGroupInfo(uqm::DWORD offset, uqm::BYTE which_group)
 	GH.star_index = CurStarDescPtr - star_array;
 
 #ifdef DEBUG_GROUPS
-	uqm::log::debug("PutGroupInfo(%lu): %u out of %u -- %u/%u/%u",
+	uqm::log::debug("PutGroupInfo({}): {} out of {} -- {}/{}/{}",
 					offset, which_group, GH.NumGroups,
 					GH.month_index, GH.day_index, GH.year_index);
 #endif /* DEBUG_GROUPS */

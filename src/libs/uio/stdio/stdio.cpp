@@ -25,6 +25,7 @@
 //			// For the POSIX variant of readdir_r()
 //#endif
 
+#include <fmt/format.h>
 #include "./stdio.h"
 
 #ifdef WIN32
@@ -121,8 +122,8 @@ void stdio_close(uio_Handle* handle)
 		}
 		if (errno != EINTR)
 		{
-			fprintf(stderr, "Warning: Error while closing socket: %s\n",
-					strerror(errno));
+			fmt::print(stderr, "Warning: Error while closing socket: {}\n",
+					   strerror(errno));
 			break;
 		}
 	}
@@ -520,10 +521,10 @@ stdio_getPDirEntryHandle(const uio_PDirHandle* pDirHandle, const char* name)
 	else
 	{
 #ifdef DEBUG
-		fprintf(stderr, "Warning: Attempt to access '%s' from '%s', "
-						"which is not a regular file, nor a directory.\n",
-				name,
-				pathUpTo);
+		fmt::print(stderr, "Warning: Attempt to access '{}' from '{}', "
+						   "which is not a regular file, nor a directory.\n",
+				   name,
+				   pathUpTo);
 #endif
 		return nullptr;
 	}
@@ -637,8 +638,8 @@ stdio_openEntries(uio_PDirHandle* pDirHandle)
 #ifdef DEBUG
 	if (result->status != 0)
 	{
-		fprintf(stderr, "Warning: readdir_r() failed: %s\n",
-				strerror(result->status));
+		fmt::print(stderr, "Warning: readdir_r() failed: {}\n",
+				   strerror(result->status));
 	}
 #endif
 #endif
@@ -709,8 +710,8 @@ int stdio_readEntries(stdio_EntriesIterator** iteratorPtr,
 #ifdef DEBUG
 	if (iterator->status != 0)
 	{
-		fprintf(stderr, "Warning: readdir_r() failed: %s\n",
-				strerror(iterator->status));
+		fmt::print(stderr, "Warning: readdir_r() failed: {}\n",
+				   strerror(iterator->status));
 	}
 #endif
 #endif

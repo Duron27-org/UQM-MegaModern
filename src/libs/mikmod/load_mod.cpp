@@ -44,7 +44,7 @@
 #include "mikmod_ctype.h"
 
 #ifdef SUNOS
-extern int fprintf(FILE*, const char*, ...);
+extern int fmt::print(FILE*, const char*, ...);
 #endif
 
 /*========== Module structure */
@@ -127,7 +127,7 @@ static BOOL MOD_CheckType(UBYTE* id, UBYTE* numchn, CHAR** descr)
 #ifdef MIKMOD_DEBUG
 		else
 		{
-			fprintf(stderr, "\rUnknown FLT%d module type\n", *numchn);
+			fmt::print(stderr, "\rUnknown FLT{} module type\n", *numchn);
 		}
 #endif
 		return 0;

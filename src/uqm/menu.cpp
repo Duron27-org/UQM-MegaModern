@@ -27,6 +27,7 @@
 #include "libs/graphics/gfx_common.h"
 #include "libs/tasklib.h"
 #include "core/log/log.h"
+#include "core/string/StringUtils.h"
 #include "util.h"
 #include "planets/planets.h"
 #include "shipcont.h"
@@ -402,7 +403,7 @@ GetAlternateMenu(uqm::BYTE* BaseState, uqm::BYTE* CurState)
 				*CurState = PM_ALT_EXIT_MANIFEST - PM_ALT_CARGO;
 				return true;
 		}
-		uqm::log::error("Unknown state combination: %d, %d",
+		uqm::log::error("Unknown state combination: {}, {}",
 						*BaseState, *CurState);
 		return false;
 	}
@@ -767,15 +768,15 @@ void DrawMenuStateStrings(uqm::BYTE beg_index, uqm::SWORD NewState)
 	{
 		if (beg_index == PM_CREW)
 		{
-			snprintf(pm_crew_str, sizeof pm_crew_str, "%s(%d)",
-					 GAME_STRING(MAINMENU_STRING_BASE + PM_CREW),
-					 GLOBAL(CrewCost));
+			fmt::format_to_sz_n(pm_crew_str, sizeof pm_crew_str, "{}({})",
+								GAME_STRING(MAINMENU_STRING_BASE + PM_CREW),
+								GLOBAL(CrewCost));
 		}
 		if (beg_index == PM_FUEL)
 		{
-			snprintf(pm_fuel_str, sizeof pm_fuel_str, "%s(%d)",
-					 GAME_STRING(MAINMENU_STRING_BASE + PM_FUEL),
-					 GLOBAL(FuelCost));
+			fmt::format_to_sz_n(pm_fuel_str, sizeof pm_fuel_str, "{}({})",
+								GAME_STRING(MAINMENU_STRING_BASE + PM_FUEL),
+								GLOBAL(FuelCost));
 		}
 		if (beg_index == PM_SOUND_ON)
 		{
@@ -868,7 +869,7 @@ void DrawMenuStateStrings(uqm::BYTE beg_index, uqm::SWORD NewState)
 				t.align = ALIGN_RIGHT;
 				t.CharCount = (uqm::COUNT)~0;
 				t.pStr = buf;
-				snprintf(buf, sizeof buf, "%u", GLOBAL(CrewCost));
+				fmt::format_to_sz_n(buf, sizeof buf, "{}", GLOBAL(CrewCost));
 				if (isPC(optWhichFonts))
 				{
 					SetContextFont(TinyFont);
@@ -886,7 +887,7 @@ void DrawMenuStateStrings(uqm::BYTE beg_index, uqm::SWORD NewState)
 				t.align = ALIGN_RIGHT;
 				t.CharCount = (uqm::COUNT)~0;
 				t.pStr = buf;
-				snprintf(buf, sizeof buf, "%u", GLOBAL(FuelCost));
+				fmt::format_to_sz_n(buf, sizeof buf, "{}", GLOBAL(FuelCost));
 				if (optWhichFonts == uqm::EmulationMode::Console3DO && !optWholeFuel)
 				{
 					SetContextFont(TinyFontBold);
@@ -963,18 +964,18 @@ void DrawMineralHelpers(void)
 
 		// print element worth
 		SetContextForeGroundColor(MODULE_PRICE_COLOR);
-		snprintf(buf, sizeof buf, "%u", GLOBAL(ElementWorth[i]));
+		fmt::format_to_sz_n(buf, sizeof buf, "{}", GLOBAL(ElementWorth[i]));
 		font_DrawText(&t);
 
 		// print x'es
-		snprintf(buf, sizeof buf, "x");
+		fmt::format_to_sz_n(buf, sizeof buf, "x");
 		t.baseline.x -= RES_SCALE(11);
 		font_DrawText(&t);
 
 		// print the element amount
 		SetContextForeGroundColor(MODULE_NAME_COLOR);
 		t.baseline.x = ELEMENT_COL_2;
-		snprintf(buf, sizeof buf, "%u", GLOBAL_SIS(ElementAmounts[i]));
+		fmt::format_to_sz_n(buf, sizeof buf, "{}", GLOBAL_SIS(ElementAmounts[i]));
 		font_DrawText(&t);
 
 		t.baseline.x = ELEMENT_COL_1;
@@ -993,7 +994,7 @@ void DrawMineralHelpers(void)
 	// print the bio amount
 	SetContextForeGroundColor(MODULE_NAME_COLOR);
 	t.baseline.x = ELEMENT_COL_2;
-	snprintf(buf, sizeof buf, "%u", GLOBAL_SIS(TotalBioMass));
+	fmt::format_to_sz_n(buf, sizeof buf, "{}", GLOBAL_SIS(TotalBioMass));
 	font_DrawText(&t);
 	t.baseline.y += ELEMENT_SPACING_Y;
 
@@ -1036,13 +1037,13 @@ void DrawMineralHelpers(void)
 	font_DrawText(&t);
 
 	t.baseline.y += leading;
-	snprintf(buf, sizeof(buf), "%u", GLOBAL_SIS(CrewEnlisted));
+	fmt::format_to_sz_n(buf, sizeof(buf), "{}", GLOBAL_SIS(CrewEnlisted));
 	t.pStr = buf;
 	t.CharCount = (uqm::COUNT)~0;
 	font_DrawText(&t);
 
 	t.baseline.y += leading;
-	snprintf(buf, sizeof(buf), "%u", GLOBAL_SIS(NumLanders));
+	fmt::format_to_sz_n(buf, sizeof(buf), "{}", GLOBAL_SIS(NumLanders));
 	t.pStr = buf;
 	t.CharCount = (uqm::COUNT)~0;
 	font_DrawText(&t);
@@ -1056,20 +1057,20 @@ void DrawMineralHelpers(void)
 
 		if (totalCapacity == 100)
 		{
-			snprintf(buf, sizeof(buf), "%.0f%%", totalCapacity);
+			fmt::format_to_sz_n(buf, sizeof(buf), "{:.0}%", totalCapacity);
 		}
 		else if (totalCapacity > 9)
 		{
-			snprintf(buf, sizeof(buf), "%.1f%%", totalCapacity);
+			fmt::format_to_sz_n(buf, sizeof(buf), "{:.1}%", totalCapacity);
 		}
 		else
 		{
-			snprintf(buf, sizeof(buf), "%.2f%%", totalCapacity);
+			fmt::format_to_sz_n(buf, sizeof(buf), "{:.2}%", totalCapacity);
 		}
 	}
 	else
 	{
-		snprintf(buf, sizeof(buf), "---");
+		fmt::format_to_sz_n(buf, sizeof(buf), "---");
 	}
 
 	t.pStr = buf;

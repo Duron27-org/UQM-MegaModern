@@ -54,7 +54,7 @@ testNetState(bool condition, PacketType type)
 {
 	if (!condition)
 	{
-		uqm::log::error("Packet of type '%s' received from wrong "
+		uqm::log::error("Packet of type '{}' received from wrong "
 						"state.\n",
 						packetTypeData[type].name);
 		errno = EBADMSG;
@@ -117,7 +117,7 @@ int PacketHandler_Init(NetConnection* conn, const Packet_Init* packet)
 	{
 		sendAbort(conn, AbortReason_versionMismatch);
 		abortFeedback(conn, AbortReason_versionMismatch);
-		uqm::log::error("Protocol version %d.%d not supported.\n",
+		uqm::log::error("Protocol version {}.{} not supported.\n",
 						packet->protoVersion.major, packet->protoVersion.minor);
 		errno = ENOSYS;
 		return -1;
@@ -131,7 +131,7 @@ int PacketHandler_Init(NetConnection* conn, const Packet_Init* packet)
 		sendAbort(conn, AbortReason_versionMismatch);
 		abortFeedback(conn, AbortReason_versionMismatch);
 		uqm::log::error("Remote side is running a version of UQM that "
-						"is too old (%d.%d.%d; %d.%d.%d is required).\n",
+						"is too old ({}.{}.{}; {}.{}.{} is required).\n",
 						packet->uqmVersion.major, packet->uqmVersion.minor,
 						packet->uqmVersion.patch, NETPLAY_MIN_UQM_VERSION_MAJOR,
 						NETPLAY_MIN_UQM_VERSION_MINOR, NETPLAY_MIN_UQM_VERSION_PATCH);
@@ -236,8 +236,8 @@ int PacketHandler_Fleet(NetConnection* conn, const Packet_Fleet* packet)
 	{
 		// There is not enough room in the packet to contain all
 		// the ships it says it contains.
-		uqm::log::warn("Invalid fleet size. Specified size is %d, "
-					   "actual size = %d\n",
+		uqm::log::warn("Invalid fleet size. Specified size is {}, "
+					   "actual size = {}\n",
 					   numShips, (int)((len - sizeof packet) / sizeof(packet->ships[0])));
 		errno = EBADMSG;
 		return -1;
@@ -258,15 +258,15 @@ int PacketHandler_Fleet(NetConnection* conn, const Packet_Fleet* packet)
 
 		if (!MeleeShip_valid(ship))
 		{
-			uqm::log::warn("Invalid ship type number %d (max = %d).", static_cast<int>(ship), NUM_MELEE_SHIPS - 1);
+			uqm::log::warn("Invalid ship type number {} (max = {}).", static_cast<int>(ship), NUM_MELEE_SHIPS - 1);
 			errno = EBADMSG;
 			return -1;
 		}
 
 		if (index >= MELEE_FLEET_SIZE)
 		{
-			uqm::log::warn("Invalid ship position number %d "
-						   "(max = %d).\n",
+			uqm::log::warn("Invalid ship position number {} "
+						   "(max = {}).\n",
 						   index, MELEE_FLEET_SIZE - 1);
 			errno = EBADMSG;
 			return -1;
@@ -542,8 +542,8 @@ int PacketHandler_InputDelay(NetConnection* conn,
 	delay = ntoh32(packet->delay);
 	if (delay > BATTLE_FRAME_RATE)
 	{
-		uqm::log::error("NETPLAY: [%d]     Received absurdly large "
-						"input delay value (%d).\n",
+		uqm::log::error("NETPLAY: [{}]     Received absurdly large "
+						"input delay value ({}).\n",
 						conn->player, delay);
 		return -1;
 	}
@@ -641,7 +641,7 @@ int PacketHandler_FrameCount(NetConnection* conn,
 
 	frameCount = (BattleFrameCounter)ntoh32(packet->frameCount);
 #ifdef NETPLAY_DEBUG
-	uqm::log::debug("NETPLAY: [%d] <== Received battleFrameCount %u.\n",
+	uqm::log::debug("NETPLAY: [{}] <== Received battleFrameCount {}.\n",
 					conn->player, (unsigned int)frameCount);
 #endif
 
@@ -687,9 +687,9 @@ int PacketHandler_Checksum(NetConnection* conn, const Packet_Checksum* packet)
 
 	if (frameNr % interval != 0)
 	{
-		uqm::log::warn("NETPLAY: [%d] <== Received checksum "
-					   "for frame %u, while we only expect checksums on frames "
-					   "divisable by %u -- discarding.\n",
+		uqm::log::warn("NETPLAY: [{}] <== Received checksum "
+					   "for frame {}, while we only expect checksums on frames "
+					   "divisable by {} -- discarding.\n",
 					   conn->player,
 					   (unsigned int)frameNr, (unsigned int)interval);
 		return 0;
@@ -704,9 +704,9 @@ int PacketHandler_Checksum(NetConnection* conn, const Packet_Checksum* packet)
 	// receive a checksum.
 	if (frameNr > battleFrameCount + delay + 1)
 	{
-		uqm::log::warn("NETPLAY: [%d] <== Received checksum "
-					   "for a frame too far in the future (frame %u, current "
-					   "is %u, input delay is %u) -- discarding.\n",
+		uqm::log::warn("NETPLAY: [{}] <== Received checksum "
+					   "for a frame too far in the future (frame {}, current "
+					   "is {}, input delay is {}) -- discarding.\n",
 					   conn->player,
 					   (unsigned int)frameNr, (unsigned int)battleFrameCount, (unsigned int)delay);
 		return 0;
@@ -723,9 +723,9 @@ int PacketHandler_Checksum(NetConnection* conn, const Packet_Checksum* packet)
 	// n + delay.
 	if (frameNr + delay < battleFrameCount)
 	{
-		uqm::log::warn("NETPLAY: [%d] <== Received checksum "
-					   "for a frame too far in the past (frame %u, current "
-					   "is %u, input delay is %u) -- discarding.",
+		uqm::log::warn("NETPLAY: [{}] <== Received checksum "
+					   "for a frame too far in the past (frame {}, current "
+					   "is {}, input delay is {}) -- discarding.",
 					   conn->player,
 					   (unsigned int)frameNr, (unsigned int)battleFrameCount, (unsigned int)delay);
 		return 0;

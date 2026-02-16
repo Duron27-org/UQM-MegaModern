@@ -24,34 +24,34 @@
 
 /* LZSS Parameters */
 
-#define N 4096 /* Size of string buffer */
-#define F 16   /* Size of look-ahead buffer */
+static inline constexpr size_t LZSS_BufferSize {4096};		  /* Size of string buffer (was N)*/
+static inline constexpr size_t LZSS_LookAheadBufferSize {16}; /*size of look - ahead buffer (was F) */
 //#define F 60 /* Size of look-ahead buffer */
-#define THRESHOLD 2
-#define NIL N /* End of tree's node  */
+static inline constexpr size_t LZSS_Threshold {2};		   // (Was THRESHOLD)
+static inline constexpr size_t LZSS_NIL {LZSS_BufferSize}; /* End of tree's node (was NIL)  */
 
 /* Huffman coding parameters */
 
-#define N_CHAR (256 - THRESHOLD + F)
-/* character code (= 0..N_CHAR-1) */
-#define T (N_CHAR * 2 - 1) /* Size of table */
-#define R (T - 1)		   /* root position */
-#define MAX_FREQ 0x8000
-/* update when cumulative frequency */
+static inline constexpr size_t HUF_NumChars {256 - LZSS_Threshold + LZSS_LookAheadBufferSize}; // was N_CHAR
+/* character code (= 0..HUF_NumChars-1) */
+static inline constexpr size_t HUF_TableSize {HUF_NumChars * 2 - 1}; /* Size of table (Was T)*/
+static inline constexpr size_t HUF_Root {HUF_TableSize - 1};		 /* root position (Was R)*/
+static inline constexpr size_t HUF_MaxFrequency {0x8000};			 /* update when cumulative frequency (Was MAX_REQ)*/
+
 
 struct _LZHCODE_DESC
 {
 	uqm::COUNT buf_index, restart_index, bytes_left;
-	uqm::BYTE text_buf[N + F - 1];
+	uqm::BYTE text_buf[LZSS_BufferSize + LZSS_LookAheadBufferSize - 1];
 	/* reconstruct freq tree */
-	uqm::COUNT freq[T + 1]; /* cumulative freq table */
-							/*
+	uqm::COUNT freq[HUF_TableSize + 1]; /* cumulative freq table */
+										/*
 		 * pointing parent nodes.
-		 * area [T..(T + N_CHAR - 1)] are pointers for leaves
+		 * area [HUF_TableSize..(HUF_TableSize + HUF_NumChars - 1)] are pointers for leaves
 		 */
-	uqm::COUNT prnt[T + N_CHAR];
+	uqm::COUNT prnt[HUF_TableSize + HUF_NumChars];
 	/* pointing children nodes (son[], son[] + 1)*/
-	uqm::COUNT son[T];
+	uqm::COUNT son[HUF_TableSize];
 	uqm::UWORD workbuf;
 	uqm::BYTE workbuflen;
 

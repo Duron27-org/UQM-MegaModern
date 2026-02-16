@@ -42,7 +42,7 @@ luaFunctionWrapper(lua_State* luaState)
 		if (!isNum)
 		{
 			uqm::log::error("[script] Warning: luaFunctionWrapper(): "
-							"Invalid type of argument to custom function (%s).",
+							"Invalid type of argument to custom function ({}).",
 							lua_typename(luaState, lua_type(luaState, -1)));
 			// arg will be 0
 		}

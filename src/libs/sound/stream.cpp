@@ -96,8 +96,8 @@ void PlayStream(TFB_SoundSample* sample, uint32 source, bool looping, bool scope
 
 		decoded_bytes = SoundDecoder_Decode(decoder);
 #if 0		
-		log_add (log_Debug, "PlayStream(): source:%d filename:%s start:%d "
-				"position:%d bytes:%d\n",
+		log_add (log_Debug, "PlayStream(): source:{} filename:{} start:{} "
+				"position:{} bytes:{}\n",
 				source, decoder->filename, decoder->start_sample,
 				decoder->pos, decoded_bytes);
 #endif
@@ -421,9 +421,9 @@ add_scope_data(TFB_SoundSource* source, uint32 bytes)
 
 	if (wrap_bytes > source->sbuf_tail)
 	{ // we can only wrap around to the current tail
-		uqm::log::warn("add_scope_data: Has wrap_bytes %d "
-					   "greater than source_buffer_tail %d "
-					   "| total bytes %d | source_buffer_size %d",
+		uqm::log::warn("add_scope_data: Has wrap_bytes {} "
+					   "greater than source_buffer_tail {} "
+					   "| total bytes {} | source_buffer_size {}",
 					   wrap_bytes, source->sbuf_tail, bytes, source->sbuf_size);
 		wrap_bytes = source->sbuf_tail;
 	}
@@ -463,7 +463,7 @@ process_stream(TFB_SoundSource* source)
 			if (queued == 0 && decoder->error == SOUNDDECODER_EOF)
 			{ // The stream has reached the end
 				uqm::log::info("StreamDecoderTaskFunc(): "
-							   "finished playing %s",
+							   "finished playing {}",
 							   decoder->filename);
 				source->stream_should_be_playing = false;
 
@@ -475,7 +475,7 @@ process_stream(TFB_SoundSource* source)
 			else
 			{
 				uqm::log::warn("StreamDecoderTaskFunc(): "
-							   "buffer underrun playing %s",
+							   "buffer underrun playing {}",
 							   decoder->filename);
 				audio_SourcePlay(source->handle);
 			}
@@ -497,7 +497,7 @@ process_stream(TFB_SoundSource* source)
 		if (error != audio_NO_ERROR)
 		{
 			uqm::log::warn("StreamDecoderTaskFunc(): "
-						   "error after audio_SourceUnqueueBuffers: %x, file %s",
+						   "error after audio_SourceUnqueueBuffers: {:x}, file {}",
 						   error, decoder->filename);
 			break;
 		}
@@ -544,7 +544,7 @@ process_stream(TFB_SoundSource* source)
 			{ // Decoder returned a real error, keep going
 #if 0
 				log_add (log_Debug, "StreamDecoderTaskFunc(): "
-						"decoder->error is %d for %s", decoder->error,
+						"decoder->error is {} for {}", decoder->error,
 						decoder->filename);
 #endif
 				continue;
@@ -556,7 +556,7 @@ process_stream(TFB_SoundSource* source)
 		if (decoder->error == SOUNDDECODER_ERROR)
 		{
 			uqm::log::warn("StreamDecoderTaskFunc(): "
-						   "SoundDecoder_Decode error %d, file %s",
+						   "SoundDecoder_Decode error {}, file {}",
 						   decoder->error, decoder->filename);
 			source->stream_should_be_playing = false;
 			continue;
@@ -576,7 +576,7 @@ process_stream(TFB_SoundSource* source)
 		if (error != audio_NO_ERROR)
 		{
 			uqm::log::warn("StreamDecoderTaskFunc(): "
-						   "error after audio_BufferData: %x, file %s, decoded %d",
+						   "error after audio_BufferData: {:x}, file {}, decoded {}",
 						   error, decoder->filename, decoded_bytes);
 			continue;
 		}
@@ -587,8 +587,8 @@ process_stream(TFB_SoundSource* source)
 		if (error != audio_NO_ERROR)
 		{
 			uqm::log::warn("StreamDecoderTaskFunc(): "
-						   "error after audio_SourceQueueBuffers: %x, file %s, "
-						   "decoded %d",
+						   "error after audio_SourceQueueBuffers: {:x}, file {}, "
+						   "decoded {}",
 						   error, decoder->filename, decoded_bytes);
 			continue;
 		}
@@ -789,7 +789,7 @@ int GraphForegroundStream(uint8* data, sint32 width, sint32 height,
 	if (!audio_GetFormatInfo(decoder->format, &channels, &sample_size))
 	{
 		UnlockMutex(source->stream_mutex);
-		uqm::log::debug("GraphForegroundStream(): uknown format %u",
+		uqm::log::debug("GraphForegroundStream(): uknown format {}",
 						(unsigned)decoder->format);
 		return 0;
 	}

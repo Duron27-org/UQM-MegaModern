@@ -97,7 +97,7 @@ bool cdp_Init(void)
 
 	if (cdp_inited)
 	{
-		fprintf(stderr, "cdp_Init(): called when already inited\n");
+		fmt::print(stderr, "cdp_Init(): called when already inited\n");
 		return true;
 	}
 
@@ -124,7 +124,7 @@ void cdp_Uninit(void)
 {
 	if (!cdp_inited)
 	{
-		fprintf(stderr, "cdp_Uninit(): called when not inited\n");
+		fmt::print(stderr, "cdp_Uninit(): called when not inited\n");
 		return;
 	}
 
@@ -138,7 +138,6 @@ cdp_LoadModule(const char* modname)
 // special value for modname: nullptr - refers to kernel (UQM exe)
 {
 	void* mod;
-	char modpath[PATH_MAX];
 	const char* errstr;
 	cdp_ModuleInfo* info;
 	int i;
@@ -153,12 +152,13 @@ cdp_LoadModule(const char* modname)
 
 	if (!cdp_inited)
 	{
-		fprintf(stderr, "cdp_LoadModule(): called when not inited\n");
+		fmt::print(stderr, "cdp_LoadModule(): called when not inited\n");
 		return 0;
 	}
 
 	// load dynamic lib
-	sprintf(modpath, "%s/%s%s", CDPDIR, modname, CDPEXT);
+	char modpath[PATH_MAX] {};
+	fmt::format_to_n(modpath, MAX_PATH - 1, "{}/{}{}", CDPDIR, modname, CDPEXT);
 	mod = dlopen(modpath, RTLD_NOW);
 	if (!mod)
 	{
@@ -178,9 +178,9 @@ cdp_LoadModule(const char* modname)
 	}
 	if (i >= MAX_CDPS)
 	{
-		fprintf(stderr, "cdp_LoadModule(): "
-						"CDPs limit reached while loading %s\n",
-				modname);
+		fmt::print(stderr, "cdp_LoadModule(): "
+						   "CDPs limit reached while loading {}\n",
+				   modname);
 		dlclose(mod);
 		cdp_last_error = CDPERR_TOO_MANY;
 		return nullptr;
@@ -203,9 +203,9 @@ cdp_LoadModule(const char* modname)
 
 	if (info->size < CDP_MODINFO_MIN_SIZE || info->api_ver > CDPAPI_VERSION)
 	{
-		fprintf(stderr, "cdp_LoadModule(): "
-						"CDP %s is invalid or newer API version\n",
-				modname);
+		fmt::print(stderr, "cdp_LoadModule(): "
+						   "CDP {} is invalid or newer API version\n",
+				   modname);
 		dlclose(mod);
 		cdp_last_error = CDPERR_UNKNOWN_VER;
 		return nullptr;
@@ -214,9 +214,9 @@ cdp_LoadModule(const char* modname)
 	ihost = cdp_GetInterface(CDPITF_KIND_HOST, info->api_ver);
 	if (!ihost)
 	{
-		fprintf(stderr, "cdp_LoadModule(): "
-						"CDP %s requested unsupported API version 0x%08x\n",
-				modname, info->api_ver);
+		fmt::print(stderr, "cdp_LoadModule(): "
+						   "CDP {} requested unsupported API version 0x%08x\n",
+				   modname, info->api_ver);
 		dlclose(mod);
 		cdp_last_error = CDPERR_UNKNOWN_VER;
 		return nullptr;
@@ -238,9 +238,9 @@ cdp_LoadModule(const char* modname)
 
 	if (!info->module_init(newslot, (cdp_Itf_Host*)ihost))
 	{
-		fprintf(stderr, "cdp_LoadModule(): "
-						"CDP %s failed to init\n",
-				modname);
+		fmt::print(stderr, "cdp_LoadModule(): "
+						   "CDP {} failed to init\n",
+				   modname);
 		dlclose(mod);
 		newslot->hmodule = nullptr;
 		newslot->info = nullptr;
@@ -399,7 +399,7 @@ int cdp_LoadAllModules(void)
 
 	if (!cdp_inited)
 	{
-		fprintf(stderr, "cdp_LoadAllModules(): called when not inited\n");
+		fmt::print(stderr, "cdp_LoadAllModules(): called when not inited\n");
 		return 0;
 	}
 
@@ -408,7 +408,7 @@ int cdp_LoadAllModules(void)
 		return 0;
 	}
 
-	fprintf(stderr, "Loading all CDPs...\n");
+	fmt::print(stderr, "Loading all CDPs...\n");
 
 	dirList = uio_getDirList(cdpDir, "", CDPEXT, match_MATCH_SUFFIX);
 	if (!dirList)
@@ -422,7 +422,7 @@ int cdp_LoadAllModules(void)
 		char* pext;
 		cdp_Module* mod;
 
-		fprintf(stderr, "Loading CDP %s...\n", dirList->names[i]);
+		fmt::print(stderr, "Loading CDP {}...\n", dirList->names[i]);
 		strcpy(modname, dirList->names[i]);
 		pext = strrchr(modname, '.');
 		if (pext) // strip extension
@@ -434,15 +434,15 @@ int cdp_LoadAllModules(void)
 		if (mod)
 		{
 			nummods++;
-			fprintf(stderr, "\tloaded CDP: %s v%s (%s)\n",
-					cdp_GetModuleName(mod, true),
-					cdp_GetModuleVersionString(mod, true),
-					cdp_GetModuleComment(mod, true));
+			fmt::print(stderr, "\tloaded CDP: {} v{} ({})\n",
+					   cdp_GetModuleName(mod, true),
+					   cdp_GetModuleVersionString(mod, true),
+					   cdp_GetModuleComment(mod, true));
 		}
 		else
 		{
-			fprintf(stderr, "\tload failed, error %u\n",
-					cdp_GetError());
+			fmt::print(stderr, "\tload failed, error {}\n",
+					   cdp_GetError());
 		}
 	}
 	uio_freeDirList(dirList);
@@ -456,7 +456,7 @@ void cdp_FreeAllModules(void)
 
 	if (!cdp_inited)
 	{
-		fprintf(stderr, "cdp_FreeAllModules(): called when not inited\n");
+		fmt::print(stderr, "cdp_FreeAllModules(): called when not inited\n");
 		return;
 	}
 

@@ -37,6 +37,8 @@
 #include "util.h"
 #include "shipcont.h"
 
+#include "core/string/StringUtils.h"
+
 // How manyeth .png in the module.ani file is the first lander shield.
 #define SHIELD_LOCATION_IN_MODULE_ANI (23 + 2 * NUM_PURCHASE_MODULES)
 #define DOS_MENU (optDosMenus || IS_DOS) // The DOS Menu window
@@ -146,8 +148,8 @@ DrawModuleStatus(uqm::COUNT index, uqm::COUNT pos, bool selected)
 		t.align = ALIGN_RIGHT;
 		t.baseline.x = MODULE_COL_1 - RES_SCALE(2);
 		t.baseline.y -= RES_SCALE(3);
-		snprintf(buf, sizeof(buf), "%u",
-				 GLOBAL(ModuleCost[index]) * MODULE_COST_SCALE);
+		fmt::format_to_sz_n(buf, sizeof(buf), "{}",
+							GLOBAL(ModuleCost[index]) * MODULE_COST_SCALE);
 		t.pStr = buf;
 		t.CharCount = (uqm::COUNT)~0;
 		font_DrawText(&t);
@@ -410,7 +412,7 @@ DrawModuleStrings(MENU_STATE* pMS, uqm::BYTE NewModule)
 	else if (pMS->CurFrame)
 	{
 		TEXT t;
-		uqm::CHAR_T buf[40];
+		uqm::CHAR_T buf[40] {};
 
 		// Draw the module image.
 		s.frame = SetAbsFrameIndex(pMS->CurFrame, NewModule);
@@ -425,8 +427,8 @@ DrawModuleStrings(MENU_STATE* pMS, uqm::BYTE NewModule)
 		t.align = ALIGN_RIGHT;
 		t.CharCount = (uqm::COUNT)~0;
 		t.pStr = buf;
-		sprintf(buf, "%u",
-				GLOBAL(ModuleCost[NewModule]) * MODULE_COST_SCALE);
+		fmt::format_to_n(buf, sizeof(buf) - 1, "{}",
+						 GLOBAL(ModuleCost[NewModule]) * MODULE_COST_SCALE);
 		if (isPC(optWhichFonts))
 		{
 			SetContextFont(TinyFont);

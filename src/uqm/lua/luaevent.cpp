@@ -101,7 +101,7 @@ void luaUqm_event_callEvent(const char* eventIdStr)
 	assert(luaUqm_eventState != nullptr);
 
 #ifdef EVENT_DEBUG
-	uqm::log::debug("[script] Calling luaUqm_event_callEvent(\"%s\")",
+	uqm::log::debug("[script] Calling luaUqm_event_callEvent(\"{}\")",
 					eventIdStr);
 #endif
 
@@ -116,7 +116,7 @@ void luaUqm_event_callEvent(const char* eventIdStr)
 	if (lua_isnil(luaUqm_eventState, -1))
 	{
 		uqm::log::warn("[script] Warning: luaUqm_event_callEvent(): "
-					   "Event '%s' is not registered.",
+					   "Event '{}' is not registered.",
 					   eventIdStr);
 		lua_pop(luaUqm_eventState, 2);
 		return;

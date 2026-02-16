@@ -61,10 +61,10 @@ void collide(ELEMENT* ElementPtr0, ELEMENT* ElementPtr1)
 	}
 
 #ifdef DEBUG_COLLIDE
-	uqm::log::debug("Centers: <%d, %d> <%d, %d>",
+	uqm::log::debug("Centers: <{}, {}> <{}, {}>",
 					ElementPtr0->next.location.x, ElementPtr0->next.location.y,
 					ElementPtr1->next.location.x, ElementPtr1->next.location.y);
-	uqm::log::debug("RelTravelAngle : %d, ImpactAngles <%d, %d>",
+	uqm::log::debug("RelTravelAngle : {}, ImpactAngles <{}, {}>",
 					RelTravelAngle, ImpactAngle0, ImpactAngle1);
 #endif /* DEBUG_COLLIDE */
 
@@ -84,7 +84,7 @@ void collide(ELEMENT* ElementPtr0, ELEMENT* ElementPtr1)
 		ElementPtr1->state_flags |= (DEFY_PHYSICS | COLLISION);
 #ifdef DEBUG_COLLIDE
 		uqm::log::debug("No movement before collision -- "
-						"<(%d, %d) = %d, (%d, %d) = %d>",
+						"<({}, {}) = {}, ({}, {}) = {}>",
 						dx0, dy0, ImpactAngle0 - OCTANT, dx1, dy1,
 						ImpactAngle1 - OCTANT);
 #endif /* DEBUG_COLLIDE */
@@ -194,7 +194,7 @@ void collide(ELEMENT* ElementPtr0, ELEMENT* ElementPtr1)
 #ifdef DEBUG_COLLIDE
 		GetCurrentVelocityComponents(&ElementPtr0->velocity, &dx0, &dy0);
 		GetCurrentVelocityComponents(&ElementPtr1->velocity, &dx1, &dy1);
-		uqm::log::debug("After: <%d, %d> <%d, %d>\n",
+		uqm::log::debug("After: <{}, {}> <{}, {}>\n",
 						dx0, dy0, dx1, dy1);
 #endif /* DEBUG_COLLIDE */
 	}

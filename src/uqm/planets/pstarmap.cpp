@@ -38,6 +38,7 @@
 #include "../init.h"
 #include "../uqmdebug.h"
 #include "options.h"
+#include "core/string/StringUtils.h"
 #include "libs/inplib.h"
 #include "libs/strlib.h"
 #include "libs/graphics/gfx_common.h"
@@ -1002,8 +1003,8 @@ markerBuf(const int star_index, const char* marker_state)
 	// "SYS_VISITED_##" or "SYS_PLYR_MARKER_##" which is used to
 	// differentiate between which kind of marker we're working with.
 
-	snprintf(buf, sizeof(buf), "SYS_%s_%02u", marker_state,
-			 star_index / 32);
+	fmt::format_to_sz_n(buf, sizeof(buf), "SYS_{}_%02u", marker_state,
+						star_index / 32);
 
 	return buf;
 }
@@ -1761,7 +1762,7 @@ DrawStarMap(uqm::COUNT race_update, RECT* pClipRect)
 			s.origin.y = UNIVERSE_TO_DISPY(QUASI_SPACE_Y);
 		}
 		s.frame = SetRelFrameIndex(star_frame,
-								   GIANT_STAR * NUM_STAR_COLORS + GREEN_BODY);
+								   (int)GIANT_STAR * (int)NUM_STAR_COLORS + (int)GREEN_BODY);
 		DrawStamp(&s);
 	}
 
@@ -2127,7 +2128,8 @@ UpdateCursorInfo(uqm::CHAR_T* prevbuf)
 				utf8StringCopy(visBuf, sizeof(visBuf), buf);
 				// This is how you get rid of compiler warnings over string
 				// length:  %.30s where "30" is a limit.  Enjoy. ~JSD~
-				snprintf(buf, sizeof buf, "%c %.251s %c", '(', visBuf, ')');
+				//snprintf(buf, sizeof buf, "%c %.251s %c", '(', visBuf, ')');
+				fmt::format_to_sz_n(buf, sizeof(buf), "( {:251} )", visBuf);
 			}
 
 			DrawSISMessage(buf);
@@ -2176,13 +2178,13 @@ FuelRequired(void)
 static void
 UpdateFuelRequirement(void)
 {
-	uqm::CHAR_T buf[80];
+	uqm::CHAR_T buf[80] {};
 	uqm::COUNT fuel_required = FuelRequired();
 
-	sprintf(buf, "%s %u.%u",
-			GAME_STRING(NAVIGATION_STRING_BASE + 4),
-			fuel_required / FUEL_TANK_SCALE,
-			(fuel_required % FUEL_TANK_SCALE) / 10);
+	fmt::format_to_n(buf, sizeof(buf) - 1, "{} {}.{}",
+					 GAME_STRING(NAVIGATION_STRING_BASE + 4),
+					 fuel_required / FUEL_TANK_SCALE,
+					 (fuel_required % FUEL_TANK_SCALE) / 10);
 
 	DrawStatusMessage(buf);
 }
@@ -2836,7 +2838,7 @@ DoMoveCursor(MENU_STATE* pMS)
 	}
 	else if (PulsedInputState.menu[KEY_MENU_SELECT])
 	{
-		/*printf ("Fuel Available: %d | Fuel Requirement: %d\n",
+		/*printf ("Fuel Available: {} | Fuel Requirement: {}\n",
 				GLOBAL_SIS (FuelOnBoard), FuelRequired());*/
 
 		FlushInput();
@@ -3259,7 +3261,7 @@ DoneSphereMove:
 				last_r.extent.height = MAX(last_r.extent.height, RES_SCALE(14));
 				VisibleChange = false;
 
-				/*printf("%s: %d\n", raceName (index),
+				/*printf("{}: {}\n", raceName (index),
 						FleetPtr->actual_strength);*/
 
 				str = FleetPtr->known_strength;

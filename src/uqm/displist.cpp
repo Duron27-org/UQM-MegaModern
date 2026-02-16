@@ -40,7 +40,7 @@ bool InitQueue(QUEUE* pq, uqm::COUNT num_elements, OBJ_SIZE size)
 #else /* QUEUE_TABLE */
 	SetFreeList(pq, NULL_HANDLE);
 #if 0	
-	log_add (log_Debug, "InitQueue(): num_elements = %d (%d)",
+	log_add (log_Debug, "InitQueue(): num_elements = {} ({})",
 			num_elements, (uqm::BYTE)num_elements);
 #endif
 	if (AllocQueueTab(pq, num_elements) != nullptr)
