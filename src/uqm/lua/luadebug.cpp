@@ -59,7 +59,7 @@ static const luaL_Reg debugLibs[] = {
 	{"log",	luaUqm_log_open  },
 	//{ "package", luaUqm_package_open },
 	{"state", luaUqm_state_open},
-	{nullptr,	   nullptr			   }
+	{nullptr, nullptr			 }
 };
 
 // Not reentrant.

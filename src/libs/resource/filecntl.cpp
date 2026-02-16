@@ -26,7 +26,7 @@
 #include "port.h"
 #include "resintrn.h"
 #include "libs/uio.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 
 uio_Stream*
 res_OpenResFile(uio_DirHandle* dir, const char* filename, const char* mode)
@@ -36,7 +36,7 @@ res_OpenResFile(uio_DirHandle* dir, const char* filename, const char* mode)
 
 	if (uio_stat(dir, filename, &sb) == 0 && S_ISDIR(sb.st_mode))
 	{
-		// log_add(log_Debug, "res_OpenResFile('%s', '%s') - cannot open dir as file", filename, mode);
+		// uqm::log::debug( "res_OpenResFile('%s', '%s') - cannot open dir as file", filename, mode);
 		return ((uio_Stream*)~0);
 	}
 

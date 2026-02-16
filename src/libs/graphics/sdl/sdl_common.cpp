@@ -30,7 +30,7 @@
 #include "libs/graphics/bbox.h"
 #include "port.h"
 #include "libs/uio.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/memlib.h"
 #include "libs/vidlib.h"
 #include "uqm/units.h"
@@ -119,7 +119,7 @@ int TFB_InitGraphics(int driver, int flags, const char* renderer,
 			*resFactor = 0;
 		}
 
-		log_add(log_Debug, "fs_height %u, fs_width %u, current_w %u", fs_height, fs_width, SDL_screen_info->current_w);
+		uqm::log::debug("fs_height %u, fs_width %u, current_w %u", fs_height, fs_width, SDL_screen_info->current_w);
 	}
 #endif
 
@@ -130,8 +130,8 @@ int TFB_InitGraphics(int driver, int flags, const char* renderer,
 									 *resFactor, *windowType);
 #else
 		driver = TFB_GFXDRIVER_SDL_PURE;
-		log_add(log_Warning, "OpenGL support not compiled in,"
-							 " so using pure SDL driver");
+		uqm::log::warn("OpenGL support not compiled in,"
+					   " so using pure SDL driver");
 		result = TFB_Pure_InitGraphics(driver, flags, renderer, width,
 									   height, *resFactor, *windowType);
 #endif
@@ -749,11 +749,11 @@ void TFB_ScreenShot(void)
 	{
 		if (TFB_SDL_ScreenShot(fullPath))
 		{
-			log_add(log_Info, "Screenshot saved at path, '%s'", fullPath);
+			uqm::log::info("Screenshot saved at path, '%s'", fullPath);
 		}
 		else
 		{
-			log_add(log_Debug, "Screenshot not saved due to an error");
+			uqm::log::debug("Screenshot not saved due to an error");
 		}
 	}
 

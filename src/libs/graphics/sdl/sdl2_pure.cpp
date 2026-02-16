@@ -17,7 +17,7 @@
 
 #include "pure.h"
 #include "libs/graphics/bbox.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "scalers.h"
 #include "uqmversion.h"
 #include "png2sdl.h"
@@ -85,8 +85,8 @@ Create_Screen(int w, int h)
 												32, R_MASK, G_MASK, B_MASK, 0);
 	if (newsurf == 0)
 	{
-		log_add(log_Error, "Couldn't create screen buffers: %s",
-				SDL_GetError());
+		uqm::log::error("Couldn't create screen buffers: %s",
+						SDL_GetError());
 	}
 	return newsurf;
 }
@@ -114,8 +114,8 @@ ReInit_FPS_Screen(SDL_Surface** screen, int w, int h)
 								   B_MASK, A_MASK);
 	if (*screen == 0)
 	{
-		log_add(log_Error, "Couldn't create screen buffers: %s",
-				SDL_GetError());
+		uqm::log::error("Couldn't create screen buffers: %s",
+						SDL_GetError());
 	}
 
 	return *screen == 0 ? -1 : 0;
@@ -131,8 +131,8 @@ FindBestRenderDriver(void)
 		return -1;
 	}
 	n = SDL_GetNumRenderDrivers();
-	log_add(log_Info, "Searching for render driver \"%s\".",
-			rendererBackend);
+	uqm::log::info("Searching for render driver \"%s\".",
+				   rendererBackend);
 
 	for (i = 0; i < n; i++)
 	{
@@ -145,13 +145,13 @@ FindBestRenderDriver(void)
 		{
 			return i;
 		}
-		log_add(log_Info, "Skipping render driver \"%s\"", info.name);
+		uqm::log::info("Skipping render driver \"%s\"", info.name);
 	}
 	/* We did not find any accelerated drivers that weren't D3D9.
 	 * Return -1 to ask SDL2 to do its best. */
-	log_add(log_Info, "Render driver \"%s\" not available, using system "
-					  "default",
-			rendererBackend);
+	uqm::log::info("Render driver \"%s\" not available, using system "
+				   "default",
+				   rendererBackend);
 	return -1;
 }
 
@@ -197,11 +197,11 @@ int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
 		}
 		if (SDL_GetRendererInfo(renderer, &info) == 0)
 		{
-			log_add(log_Info, "SDL2 renderer '%s' selected.\n", info.name);
+			uqm::log::info("SDL2 renderer '%s' selected.\n", info.name);
 		}
 		else
 		{
-			log_add(log_Info, "SDL2 renderer had no name.");
+			uqm::log::info("SDL2 renderer had no name.");
 		}
 		SDL_RenderSetLogicalSize(renderer, width, height);
 		for (i = 0; i < TFB_GFX_NUMSCREENS; i++)
@@ -372,9 +372,9 @@ int TFB_Pure_InitGraphics(int driver, int flags, const char* renderer,
 						  int width, int height, unsigned int resFactor,
 						  unsigned int windowType)
 {
-	log_add(log_Info, "Initializing SDL.");
-	log_add(log_Info, "SDL initialized.");
-	log_add(log_Info, "Initializing Screen.");
+	uqm::log::info("Initializing SDL.");
+	uqm::log::info("SDL initialized.");
+	uqm::log::info("Initializing Screen.");
 
 	(void)windowType;
 
@@ -383,8 +383,8 @@ int TFB_Pure_InitGraphics(int driver, int flags, const char* renderer,
 	if (TFB_Pure_ConfigureVideo(driver, flags, width, height, 0,
 								resFactor, windowType))
 	{
-		log_add(log_Fatal, "Could not initialize video: %s",
-				SDL_GetError());
+		uqm::log::critical("Could not initialize video: %s",
+						   SDL_GetError());
 		exit(EXIT_FAILURE);
 	}
 
@@ -674,7 +674,7 @@ bool TFB_SDL_ScreenShot(const char* path)
 
 	if (successful && CopySurfaceToClipboard(tmp) != 0)
 	{
-		log_add(log_Warning, "Failed to copy PNG to clipboard\n");
+		uqm::log::warn("Failed to copy PNG to clipboard\n");
 	}
 
 	SDL_UnlockSurface(tmp);

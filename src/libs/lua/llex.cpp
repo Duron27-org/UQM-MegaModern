@@ -554,7 +554,7 @@ static int llex(LexState* ls, SemInfo* seminfo)
 						if (sep >= 0)
 						{
 							read_long_string(ls, nullptr, sep); /* skip long comment */
-							luaZ_resetbuffer(ls->buff);		 /* previous call may dirty the buff. */
+							luaZ_resetbuffer(ls->buff);			/* previous call may dirty the buff. */
 							break;
 						}
 					}

@@ -23,7 +23,7 @@
 #include "netsend.h"
 #include "packetsenders.h"
 #ifdef NETPLAY_DEBUG
-#include "libs/log.h"
+#include "core/log/log.h"
 #endif
 
 #include <errno.h>
@@ -91,9 +91,9 @@ void queuePacket(NetConnection* conn, Packet* packet)
 	{
 		// Reporting BattleInput or Checksum would get so spammy that it
 		// would slow down the battle.
-		log_add(log_Debug, "NETPLAY: [%d] ==> Queueing packet of type %s.\n",
-				NetConnection_getPlayerNr(conn),
-				packetTypeData[packetType(packet)].name);
+		uqm::log::debug("NETPLAY: [%d] ==> Queueing packet of type %s.\n",
+						NetConnection_getPlayerNr(conn),
+						packetTypeData[packetType(packet)].name);
 	}
 #ifdef NETPLAY_DEBUG_FILE
 	if (conn->debugFile != nullptr)

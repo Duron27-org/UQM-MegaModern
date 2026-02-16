@@ -41,7 +41,7 @@
 #include "libs/graphics/gfx_common.h"
 #include "libs/inplib.h"
 #include "libs/graphics/sdl/pure.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "options.h"
 #include "cons_res.h"
 #include "build.h"

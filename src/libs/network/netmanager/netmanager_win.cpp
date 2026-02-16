@@ -30,7 +30,7 @@
 #include "types.h"
 #include "libs/compiler.h"
 #include "libs/misc.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 
 #include <assert.h>
 #include <winsock2.h>
@@ -95,8 +95,8 @@ int closeWSAEvent(WSAEVENT event)
 		error = WSAGetLastError();
 		if (error != WSAEINPROGRESS)
 		{
-			log_add(log_Error,
-					"WSACloseEvent() failed with error code %d.", error);
+			uqm::log::error(
+				"WSACloseEvent() failed with error code %d.", error);
 			errno = winsockErrorToErrno(error);
 			return -1;
 		}
@@ -154,8 +154,8 @@ int NetManager_addDesc(NetDescriptor* nd)
 			int closeStatus = closeWSAEvent(event);
 			if (closeStatus == -1)
 			{
-				log_add(log_Fatal, "closeWSAEvent() failed: %s.",
-						strerror(errno));
+				uqm::log::critical("closeWSAEvent() failed: %s.",
+								   strerror(errno));
 				explode();
 			}
 			SocketManagementData_free(nd->smd);
@@ -253,8 +253,8 @@ NetManager_updateEvent(NetDescriptor* nd)
 		int closeStatus = closeWSAEvent(events[nd->smd->index]);
 		if (closeStatus == -1)
 		{
-			log_add(log_Fatal, "closeWSAEvent() failed: %s.",
-					strerror(errno));
+			uqm::log::critical("closeWSAEvent() failed: %s.",
+							   strerror(errno));
 			explode();
 		}
 		errno = savedErrno;
@@ -303,8 +303,8 @@ activateSomeCallback(NetDescriptor* nd, long eventMask)
 		int status = NetManager_updateEvent(nd);
 		if (status == -1)
 		{
-			log_add(log_Fatal, "NetManager_updateEvent() failed: %s.",
-					strerror(errno));
+			uqm::log::critical("NetManager_updateEvent() failed: %s.",
+							   strerror(errno));
 			explode();
 			// TODO: better error handling.
 		}
@@ -319,8 +319,8 @@ deactivateSomeCallback(NetDescriptor* nd, long eventMask)
 		int status = NetManager_updateEvent(nd);
 		if (status == -1)
 		{
-			log_add(log_Fatal, "NetManager_updateEvent() failed: %s.",
-					strerror(errno));
+			uqm::log::critical("NetManager_updateEvent() failed: %s.",
+							   strerror(errno));
 			explode();
 			// TODO: better error handling
 		}

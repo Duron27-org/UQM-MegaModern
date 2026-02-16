@@ -38,7 +38,7 @@ typedef enum
 } TMS;
 
 
-#define gfasttm(g, et, e) ((et) == nullptr				   ? nullptr : \
+#define gfasttm(g, et, e) ((et) == nullptr			   ? nullptr : \
 						   ((et)->flags & (1u << (e))) ? nullptr : \
 														 luaT_gettm(et, e, (g)->tmname[e]))
 

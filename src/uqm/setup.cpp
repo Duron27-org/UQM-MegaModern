@@ -38,7 +38,7 @@
 #include "libs/sound/sound.h"
 #include "libs/threadlib.h"
 #include "libs/vidlib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/misc.h"
 
 #include <assert.h>
@@ -491,8 +491,8 @@ bool SetPlayerInput(uqm::COUNT playerI)
 			break;
 #endif
 		default:
-			log_add(log_Fatal,
-					"Invalid control method in SetPlayerInput().");
+			uqm::log::critical(
+				"Invalid control method in SetPlayerInput().");
 			explode(); /* Does not return */
 	}
 
@@ -516,8 +516,8 @@ void ClearPlayerInput(uqm::COUNT playerI)
 {
 	if (PlayerInput[playerI] == nullptr)
 	{
-		log_add(log_Debug, "ClearPlayerInput(): PlayerInput[%d] was nullptr.",
-				playerI);
+		uqm::log::debug("ClearPlayerInput(): PlayerInput[%d] was nullptr.",
+						playerI);
 		return;
 	}
 
@@ -542,7 +542,7 @@ int initIO(void)
 	rootDir = uio_openDir(repository, "/", 0);
 	if (rootDir == nullptr)
 	{
-		log_add(log_Fatal, "Could not open '/' dir.");
+		uqm::log::critical("Could not open '/' dir.");
 		return -1;
 	}
 	return 0;

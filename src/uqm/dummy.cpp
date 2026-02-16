@@ -28,7 +28,7 @@
 #include "races.h"
 
 #include "libs/compiler.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/memlib.h"
 
 #include <stdlib.h>
@@ -138,7 +138,7 @@ CodeResToInitFunc(ShipCodeRes res)
 			return &init_probe;
 		default:
 			{
-				log_add(log_Warning, "Unknown SHIP identifier '%d'", res);
+				uqm::log::warn("Unknown SHIP identifier '%d'", (int)res);
 				return nullptr;
 			}
 	}
@@ -213,7 +213,7 @@ void* CaptureCodeRes(void* hCode, void* pData, void** ppLocData)
 
 	if (hCode == nullptr)
 	{
-		log_add(log_Fatal, "dummy.c::CaptureCodeRes() hCode==nullptr! FATAL!");
+		uqm::log::critical("dummy.c::CaptureCodeRes() hCode==nullptr! FATAL!");
 		return (nullptr);
 	}
 

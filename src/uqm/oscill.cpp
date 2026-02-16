@@ -24,7 +24,7 @@
 #include "libs/graphics/drawable.h"
 #include "libs/sound/sound.h"
 #include "libs/sound/trackplayer.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "colors.h"
 #include "menustat.h"
 #include "util.h"

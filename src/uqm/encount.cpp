@@ -42,7 +42,7 @@
 #include "sounds.h"
 #include "util.h" // JMS: For SaveContextFrame()
 #include "libs/graphics/gfx_common.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/mathlib.h"
 #include "libs/inplib.h"
 #include "libs/misc.h"
@@ -929,10 +929,10 @@ UninitEncounter(void)
 #endif /* NEVER */
 
 			WaitForAnyButton(true, ONE_SECOND * 3, false);
-			if (!CurrentInputState.key[PlayerControls[0]][KEY_ESCAPE])
+			if (!CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_ESCAPE])
 			{
 				DrawFadeText(str1, str2, false, &scavenge_r);
-				if (!CurrentInputState.key[PlayerControls[0]][KEY_ESCAPE])
+				if (!CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_ESCAPE])
 				{
 					SetContextForeGroundColor(BLACK_COLOR);
 					r.corner.x = scavenge_r.corner.x + RES_SCALE(10);
@@ -960,7 +960,7 @@ UninitEncounter(void)
 
 					DrawFadeText(str1, str2, true, &scavenge_r);
 					WaitForAnyButton(true, ONE_SECOND * 2, false);
-					if (!CurrentInputState.key[PlayerControls[0]][KEY_ESCAPE])
+					if (!CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_ESCAPE])
 					{
 						DrawFadeText(str1, str2, false, &scavenge_r);
 					}
@@ -1087,7 +1087,7 @@ void EncounterBattle(void)
 		PlayerInput[0] = nullptr;
 		if (!SetPlayerInput(0))
 		{
-			log_add(log_Fatal, "Could not set cyborg player input.");
+			uqm::log::critical("Could not set cyborg player input.");
 			explode(); // Does not return;
 		}
 	}

@@ -50,12 +50,12 @@ typedef struct
 
 typedef struct
 {
-	uqm::DWORD key[NUM_TEMPLATES][NUM_KEYS];
+	uqm::DWORD key[static_cast<int>(ControlTemplate::NUM)][NUM_KEYS];
 	uqm::DWORD menu[NUM_MENU_KEYS];
 } MENU_ANNOTATIONS;
 
 
-CONTROL_TEMPLATE PlayerControls[NUM_PLAYERS];
+ControlTemplate PlayerControls[NUM_PLAYERS];
 CONTROLLER_INPUT_STATE CurrentInputState, PulsedInputState;
 static CONTROLLER_INPUT_STATE CachedInputState, OldInputState;
 static MENU_ANNOTATIONS RepeatDelays, Times;
@@ -78,7 +78,7 @@ static void
 _clear_menu_state(void)
 {
 	int i, j;
-	for (i = 0; i < NUM_TEMPLATES; i++)
+	for (i = 0; i < static_cast<int>(ControlTemplate::NUM); i++)
 	{
 		for (j = 0; j < NUM_KEYS; j++)
 		{
@@ -98,7 +98,7 @@ void ResetKeyRepeat(void)
 {
 	uqm::DWORD initTime = GetTimeCounter();
 	int i, j;
-	for (i = 0; i < NUM_TEMPLATES; i++)
+	for (i = 0; i < static_cast<int>(ControlTemplate::NUM); i++)
 	{
 		for (j = 0; j < NUM_KEYS; j++)
 		{
@@ -160,7 +160,7 @@ _check_gestalt(uqm::DWORD NewTime)
 
 	CachedGestalt = 0;
 	CurrentGestalt = 0;
-	for (i = 0; i < NUM_TEMPLATES; i++)
+	for (i = 0; i < static_cast<int>(ControlTemplate::NUM); i++)
 	{
 		for (j = 0; j < NUM_KEYS; j++)
 		{
@@ -178,7 +178,7 @@ _check_gestalt(uqm::DWORD NewTime)
 	{
 		if (NewTime - GestaltTime < GestaltRepeatDelay)
 		{
-			for (i = 0; i < NUM_TEMPLATES; i++)
+			for (i = 0; i < static_cast<int>(ControlTemplate::NUM); i++)
 			{
 				for (j = 0; j < NUM_KEYS; j++)
 				{
@@ -192,7 +192,7 @@ _check_gestalt(uqm::DWORD NewTime)
 		}
 		else
 		{
-			for (i = 0; i < NUM_TEMPLATES; i++)
+			for (i = 0; i < static_cast<int>(ControlTemplate::NUM); i++)
 			{
 				for (j = 0; j < NUM_KEYS; j++)
 				{
@@ -216,7 +216,7 @@ _check_gestalt(uqm::DWORD NewTime)
 	}
 	else
 	{
-		for (i = 0; i < NUM_TEMPLATES; i++)
+		for (i = 0; i < static_cast<int>(ControlTemplate::NUM); i++)
 		{
 			for (j = 0; j < NUM_KEYS; j++)
 			{
@@ -269,7 +269,7 @@ void UpdateInputState(void)
 	else
 	{
 		int i, j;
-		for (i = 0; i < NUM_TEMPLATES; i++)
+		for (i = 0; i < static_cast<int>(ControlTemplate::NUM); i++)
 		{
 			for (j = 0; j < NUM_KEYS; j++)
 			{
@@ -519,14 +519,14 @@ BATTLE_INPUT_STATE
 CurrentInputToBattleInput(uqm::COUNT player)
 {
 	return ControlInputToBattleInput(
-		CurrentInputState.key[PlayerControls[player]]);
+		CurrentInputState.key[static_cast<int>(PlayerControls[player])]);
 }
 
 BATTLE_INPUT_STATE
 PulsedInputToBattleInput(uqm::COUNT player)
 {
 	return ControlInputToBattleInput(
-		PulsedInputState.key[PlayerControls[player]]);
+		PulsedInputState.key[static_cast<int>(PlayerControls[player])]);
 }
 
 bool AnyButtonPress(bool CheckSpecial)
@@ -534,7 +534,7 @@ bool AnyButtonPress(bool CheckSpecial)
 	int i, j;
 	(void)CheckSpecial; // Ignored
 	UpdateInputState();
-	for (i = 0; i < NUM_TEMPLATES; i++)
+	for (i = 0; i < static_cast<int>(ControlTemplate::NUM); i++)
 	{
 		for (j = 0; j < NUM_KEYS; j++)
 		{
@@ -565,7 +565,7 @@ bool ActKeysPress(void)
 	UpdateInputState();
 
 	return (
-		CurrentInputState.key[PlayerControls[0]][KEY_WEAPON] || CurrentInputState.key[PlayerControls[0]][KEY_SPECIAL] || CurrentInputState.key[PlayerControls[0]][KEY_ESCAPE] || CurrentInputState.menu[KEY_MENU_SELECT] || CurrentInputState.menu[KEY_MENU_CANCEL] || CurrentInputState.menu[KEY_MENU_SPECIAL]);
+		CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_WEAPON] || CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_SPECIAL] || CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_ESCAPE] || CurrentInputState.menu[KEY_MENU_SELECT] || CurrentInputState.menu[KEY_MENU_CANCEL] || CurrentInputState.menu[KEY_MENU_SPECIAL]);
 }
 
 bool ConfirmExit(void)

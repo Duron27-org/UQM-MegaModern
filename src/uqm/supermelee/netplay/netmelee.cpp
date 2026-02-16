@@ -21,7 +21,7 @@
 #include "netmelee.h"
 #include "libs/async.h"
 #include "libs/callback/callback.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/net.h"
 #include "netinput.h"
 #include "netmisc.h"
@@ -403,7 +403,7 @@ networkBattleInput(NetworkInputContext* context, STARSHIP* StarShipPtr)
 			}
 
 #if 0
-			log_add(log_Warning, "NETPLAY: [%d] stalling for "
+			uqm::log::warn( "NETPLAY: [%d] stalling for "
 					"network input. Increase the input delay if this "
 					"happens a lot.\n", context->playerNr);
 #endif

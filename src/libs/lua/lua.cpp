@@ -76,7 +76,7 @@
 
 #define lua_readline(L, b, p)                                     \
 	((void)L, fputs(p, stdout), fflush(stdout), /* show prompt */ \
-	 fgets(b, LUA_MAXINPUT, stdin) != nullptr)		/* get line */
+	 fgets(b, LUA_MAXINPUT, stdin) != nullptr)	/* get line */
 #define lua_saveline(L, idx) \
 	{                        \
 		(void)L;             \

@@ -18,7 +18,7 @@
 
 #include "palette.h"
 #include "libs/memlib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 
 NativePalette*
 AllocNativePalette(void)

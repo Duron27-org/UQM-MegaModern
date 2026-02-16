@@ -28,7 +28,7 @@
 #include "../socket/socket.h"
 #include "../netmanager/netmanager.h"
 #include "libs/misc.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 
 #include <assert.h>
 #include <errno.h>
@@ -77,8 +77,8 @@ void ListenState_incRef(ListenState* listenState)
 	assert(listenState->refCount < REFCOUNT_MAX);
 	listenState->refCount++;
 #ifdef DEBUG_LISTEN_REF
-	log_add(log_Debug, "ListenState %08" PRIxPTR ": ref++ (%d)",
-			(uintptr_t)listenState, listenState->refCount);
+	uqm::log::debug("ListenState %08" PRIxPTR ": ref++ (%d)",
+					(uintptr_t)listenState, listenState->refCount);
 #endif
 }
 
@@ -87,8 +87,8 @@ bool ListenState_decRef(ListenState* listenState)
 	assert(listenState->refCount > 0);
 	listenState->refCount--;
 #ifdef DEBUG_LISTEN_REF
-	log_add(log_Debug, "ListenState %08" PRIxPTR ": ref-- (%d)",
-			(uintptr_t)listenState, listenState->refCount);
+	uqm::log::debug("ListenState %08" PRIxPTR ": ref-- (%d)",
+					(uintptr_t)listenState, listenState->refCount);
 #endif
 	if (listenState->refCount == 0)
 	{
@@ -143,7 +143,7 @@ listenPortSingle(struct ListenState* listenState, struct addrinfo* info)
 	if (sock == Socket_noSocket)
 	{
 		int savedErrno = errno;
-		log_add(log_Error, "socket() failed: %s.", strerror(errno));
+		uqm::log::error("socket() failed: %s.", strerror(errno));
 		errno = savedErrno;
 		return nullptr;
 	}
@@ -166,12 +166,12 @@ listenPortSingle(struct ListenState* listenState, struct addrinfo* info)
 		if (errno == EADDRINUSE)
 		{
 #ifdef DEBUG
-			log_add(log_Warning, "bind() failed: %s.", strerror(errno));
+			uqm::log::warn("bind() failed: %s.", strerror(errno));
 #endif
 		}
 		else
 		{
-			log_add(log_Error, "bind() failed: %s.", strerror(errno));
+			uqm::log::error("bind() failed: %s.", strerror(errno));
 		}
 		Socket_close(sock);
 		errno = savedErrno;
@@ -182,7 +182,7 @@ listenPortSingle(struct ListenState* listenState, struct addrinfo* info)
 	if (listenResult == -1)
 	{
 		int savedErrno = errno;
-		log_add(log_Error, "listen() failed: %s.", strerror(errno));
+		uqm::log::error("listen() failed: %s.", strerror(errno));
 		Socket_close(sock);
 		errno = savedErrno;
 		return nullptr;
@@ -192,8 +192,8 @@ listenPortSingle(struct ListenState* listenState, struct addrinfo* info)
 	if (nd == nullptr)
 	{
 		int savedErrno = errno;
-		log_add(log_Error, "NetDescriptor_new() failed: %s.",
-				strerror(errno));
+		uqm::log::error("NetDescriptor_new() failed: %s.",
+						strerror(errno));
 		Socket_close(sock);
 		errno = savedErrno;
 		return nullptr;
@@ -248,9 +248,9 @@ listenPortMulti(struct ListenState* listenState, struct addrinfo* info)
 			// it's a real possibility.
 			if (errno == EADDRINUSE && addrOkCount == 0)
 			{
-				log_add(log_Error, "Error while preparing a network socket "
-								   "for incoming connections: %s",
-						strerror(errno));
+				uqm::log::error("Error while preparing a network socket "
+								"for incoming connections: %s",
+								strerror(errno));
 			}
 			continue;
 		}
@@ -339,8 +339,8 @@ listenPort(const char* service, Protocol proto, const ListenFlags* flags,
 	listenState = ListenState_alloc();
 	listenState->refCount = 1;
 #ifdef DEBUG_LISTEN_REF
-	log_add(log_Debug, "ListenState %08" PRIxPTR ": ref=1 (%d)",
-			(uintptr_t)listenState, listenState->refCount);
+	uqm::log::debug("ListenState %08" PRIxPTR ": ref=1 (%d)",
+					(uintptr_t)listenState, listenState->refCount);
 #endif
 	listenState->state = Listen_resolving;
 	listenState->flags = *flags;
@@ -414,14 +414,14 @@ acceptSingleConnection(ListenState* listenState, NetDescriptor* nd)
 #endif
 				// Serious problems, but future connections may still
 				// be possible.
-				log_add(log_Warning, "accept() reported '%s'",
-						strerror(errno));
+				uqm::log::warn("accept() reported '%s'",
+							   strerror(errno));
 				return;
 			default:
 				// Should not happen.
-				log_add(log_Fatal, "Internal error: accept() reported "
+				uqm::log::critical("Internal error: accept() reported "
 								   "'%s'",
-						strerror(errno));
+								   strerror(errno));
 				explode();
 		}
 	}
@@ -431,8 +431,8 @@ acceptSingleConnection(ListenState* listenState, NetDescriptor* nd)
 	if (Socket_setNonBlocking(acceptResult) == -1)
 	{
 		int savedErrno = errno;
-		log_add(log_Error, "Could not make socket non-blocking: %s.",
-				strerror(errno));
+		uqm::log::error("Could not make socket non-blocking: %s.",
+						strerror(errno));
 		Socket_close(acceptResult);
 		errno = savedErrno;
 		return;
@@ -452,15 +452,15 @@ acceptSingleConnection(ListenState* listenState, NetDescriptor* nd)
 							 hostname, sizeof hostname, nullptr, 0, 0);
 		if (gniRes != 0)
 		{
-			log_add(log_Error, "Error while performing hostname "
-							   "lookup for incoming connection: %s",
-					(gniRes == EAI_SYSTEM) ? strerror(errno) :
-											 gai_strerror(gniRes));
+			uqm::log::error("Error while performing hostname "
+							"lookup for incoming connection: %s",
+							(gniRes == EAI_SYSTEM) ? strerror(errno) :
+													 gai_strerror(gniRes));
 		}
 		else
 		{
-			log_add(log_Debug, "Accepted incoming connection from '%s'.",
-					hostname);
+			uqm::log::debug("Accepted incoming connection from '%s'.",
+							hostname);
 		}
 	}
 #endif
@@ -469,8 +469,8 @@ acceptSingleConnection(ListenState* listenState, NetDescriptor* nd)
 	if (newNd == nullptr)
 	{
 		int savedErrno = errno;
-		log_add(log_Error, "NetDescriptor_new() failed: %s.",
-				strerror(errno));
+		uqm::log::error("NetDescriptor_new() failed: %s.",
+						strerror(errno));
 		Socket_close(acceptResult);
 		errno = savedErrno;
 		return;

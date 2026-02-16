@@ -17,7 +17,21 @@
 #ifndef UQM_MSGBOX_H_INCL__
 #define UQM_MSGBOX_H_INCL__
 
-extern void log_displayBox(const /*UTF-8*/ char* title, int isError,
-						   const /*UTF-8*/ char* msg);
+#include "core/stl/stl.h"
+
+namespace uqm
+{
+
+enum class MessageBoxType
+{
+	Info,
+	Warning,
+	Error,
+
+};
+
+void displayMessageBox(uqgsl::czstring utf8Title, uqgsl::czstring utf8Message, MessageBoxType type);
+
+} // namespace uqm
 
 #endif /* UQM_MSGBOX_H_INCL__ */

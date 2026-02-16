@@ -164,7 +164,7 @@ static LOCDATA spathi_desc =
 			0, /* RestartRate */
 			0, /* BlockMask */
 		},
-#endif  /* NEVER */
+#endif	 /* NEVER */
 		nullptr, /* AlienNumberSpeech - none */
 		/* Filler for loaded resources */
 		nullptr,

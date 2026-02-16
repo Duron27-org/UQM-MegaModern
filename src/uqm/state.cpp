@@ -20,7 +20,7 @@
 
 #include "starmap.h"
 #include "libs/memlib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -63,9 +63,9 @@ OpenStateFile(int stateFile, const char* mode)
 	fp->open_count++;
 	if (fp->open_count > 1)
 	{
-		log_add(log_Warning, "WARNING: "
-							 "State file %s open count is %d after open()",
-				fp->symname, fp->open_count);
+		uqm::log::warn("WARNING: "
+					   "State file %s open count is %d after open()",
+					   fp->symname, fp->open_count);
 	}
 
 	if (!fp->data)
@@ -93,9 +93,9 @@ OpenStateFile(int stateFile, const char* mode)
 	}
 	else
 	{
-		log_add(log_Warning, "WARNING: "
-							 "State file %s opened with unsupported mode '%s'",
-				fp->symname, mode);
+		uqm::log::warn("WARNING: "
+					   "State file %s opened with unsupported mode '%s'",
+					   fp->symname, mode);
 	}
 	fp->ptr = 0;
 
@@ -108,9 +108,9 @@ void CloseStateFile(GAME_STATE_FILE* fp)
 	fp->open_count--;
 	if (fp->open_count < 0)
 	{
-		log_add(log_Warning, "WARNING: "
-							 "State file %s open count is %d after close()",
-				fp->symname, fp->open_count);
+		uqm::log::warn("WARNING: "
+					   "State file %s open count is %d after close()",
+					   fp->symname, fp->open_count);
 	}
 	// Erm, Ok, it's closed! Honest!
 }
@@ -127,9 +127,9 @@ void DeleteStateFile(int stateFile)
 	fp = &state_files[stateFile];
 	if (fp->open_count != 0)
 	{
-		log_add(log_Warning, "WARNING: "
-							 "State file %s open count is %d during delete()",
-				fp->symname, fp->open_count);
+		uqm::log::warn("WARNING: "
+					   "State file %s open count is %d during delete()",
+					   fp->symname, fp->open_count);
 	}
 
 	fp->used = 0;

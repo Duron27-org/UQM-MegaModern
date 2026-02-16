@@ -36,7 +36,7 @@
 #define FLASH_INTERNAL
 #include "flash.h"
 
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/memlib.h"
 #include "libs/threadlib.h"
 
@@ -202,8 +202,8 @@ void Flash_start(FlashContext* context)
 {
 	if (context->started)
 	{
-		log_add(log_Warning, "Flash_start() called on already started "
-							 "FlashContext.\n");
+		uqm::log::warn("Flash_start() called on already started "
+					   "FlashContext.\n");
 		return;
 	}
 

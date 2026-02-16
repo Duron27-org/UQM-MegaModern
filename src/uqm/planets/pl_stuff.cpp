@@ -24,7 +24,7 @@
 #include "libs/mathlib.h"
 #include "scan.h"
 #include "options.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include <math.h>
 
 #include "SDL.h"

@@ -17,7 +17,7 @@
  */
 
 #include "gfxintrn.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 
 DRAWABLE
 GetFrameParentDrawable(FRAME f)
@@ -134,10 +134,10 @@ SetEquFrameIndex(FRAME DstFramePtr, FRAME SrcFramePtr)
 		DRAWABLE_DESC* DrawablePtr = GetFrameParentDrawable(DstFramePtr);
 		if (Index > DrawablePtr->MaxIndex)
 		{
-			log_add(log_Debug, "SetEquFrameIndex: source index (%d) beyond "
-							   "destination range (%d)",
-					(int)Index,
-					(int)DrawablePtr->MaxIndex);
+			uqm::log::debug("SetEquFrameIndex: source index (%d) beyond "
+							"destination range (%d)",
+							(int)Index,
+							(int)DrawablePtr->MaxIndex);
 		}
 	}
 #endif

@@ -33,7 +33,6 @@
 #include "uqmversion.h"
 
 
-
 extern int optWhichCoarseScan;
 extern uqm::EmulationMode optWhichMenu;
 extern uqm::EmulationMode optWhichFonts;

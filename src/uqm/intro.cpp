@@ -31,7 +31,7 @@
 #include "libs/graphics/drawable.h"
 #include "libs/sound/sound.h"
 #include "libs/vidlib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/inplib.h"
 #include "util.h"
 #include "build.h"
@@ -799,7 +799,7 @@ DoPresentation(void* pIS)
 			pPIS->Buffer[0] = '\0';
 			if (1 > sscanf(pStr, "%d %255[^\n]", &index, pPIS->Buffer) || index < 0 || index >= MAX_FONTS)
 			{
-				log_add(log_Warning, "Bad FONT command '%s'", pStr);
+				uqm::log::warn("Bad FONT command '%s'", pStr);
 				continue;
 			}
 			pFont = &pPIS->Fonts[index];
@@ -825,7 +825,7 @@ DoPresentation(void* pIS)
 			pPIS->Buffer[0] = '\0';
 			if (1 > sscanf(pStr, "%d %255[^\n]", &index, pPIS->Buffer) || index < 0 || index >= MAX_FONTS)
 			{
-				log_add(log_Warning, "Bad FONT command '%s'", pStr);
+				uqm::log::warn("Bad FONT command '%s'", pStr);
 				continue;
 			}
 			pFont = &pPIS->Fonts[index];
@@ -850,7 +850,7 @@ DoPresentation(void* pIS)
 			pPIS->Buffer[0] = '\0';
 			if (1 > sscanf(pStr, "%d %255[^\n]", &index, pPIS->Buffer) || index < 0 || index >= MAX_FONTS)
 			{
-				log_add(log_Warning, "Bad FONT command '%s'", pStr);
+				uqm::log::warn("Bad FONT command '%s'", pStr);
 				continue;
 			}
 			pFont = &pPIS->Fonts[index];
@@ -1131,9 +1131,9 @@ DoPresentation(void* pIS)
 
 				if (pPIS->NumSpinStat > 8)
 				{
-					log_add(log_Warning, "SPINSTAT: Number of SPINSTAT "
-										 "entries exceeds max amount '%s'",
-							pStr);
+					uqm::log::warn("SPINSTAT: Number of SPINSTAT "
+								   "entries exceeds max amount '%s'",
+								   pStr);
 					return false;
 				}
 
@@ -1142,9 +1142,9 @@ DoPresentation(void* pIS)
 					char buf[ARRAY_SIZE(pPIS->Buffer) + 12];
 					TEXT t;
 
-					log_add(log_Warning, "SPINSTAT: Stats exceed max "
-										 "values '%s'",
-							pStr);
+					uqm::log::warn("SPINSTAT: Stats exceed max "
+								   "values '%s'",
+								   pStr);
 					snprintf(buf, sizeof(buf), "%s %s", pPIS->Buffer,
 							 "Exceed max!");
 
@@ -1170,7 +1170,7 @@ DoPresentation(void* pIS)
 			}
 			else
 			{
-				log_add(log_Warning, "Bad SPINSTAT command '%s'", pStr);
+				uqm::log::warn("Bad SPINSTAT command '%s'", pStr);
 			}
 		}
 		else if (strcmp(Opcode, "TFI") == 0)
@@ -1288,7 +1288,7 @@ DoPresentation(void* pIS)
 
 			if (cargs < 1)
 			{
-				log_add(log_Warning, "Bad DRAW command '%s'", pStr);
+				uqm::log::warn("Bad DRAW command '%s'", pStr);
 				pPIS->HaveFrame = false;
 				continue;
 			}
@@ -1399,7 +1399,7 @@ DoPresentation(void* pIS)
 			}
 			else
 			{
-				log_add(log_Warning, "Bad LINE command '%s'", pStr);
+				uqm::log::warn("Bad LINE command '%s'", pStr);
 			}
 		}
 		else if (strcmp(Opcode, "LINESPIN") == 0)
@@ -1442,7 +1442,7 @@ DoPresentation(void* pIS)
 			}
 			else
 			{
-				log_add(log_Warning, "Bad LINESPIN command '%s'", pStr);
+				uqm::log::warn("Bad LINESPIN command '%s'", pStr);
 			}
 		}
 		else if (strcmp(Opcode, "GETRECT") == 0)
@@ -1455,9 +1455,9 @@ DoPresentation(void* pIS)
 			}
 			else
 			{
-				log_add(log_Warning, "Bad GETRECT command, can not use "
-									 "GETRECT without drawing a frame first '%s'",
-						pStr);
+				uqm::log::warn("Bad GETRECT command, can not use "
+							   "GETRECT without drawing a frame first '%s'",
+							   pStr);
 			}
 		}
 		else if (strcmp(Opcode, "STATBOX") == 0)
@@ -1494,7 +1494,7 @@ DoPresentation(void* pIS)
 			}
 			else
 			{
-				log_add(log_Warning, "Bad STATBOX command '%s'", pStr);
+				uqm::log::warn("Bad STATBOX command '%s'", pStr);
 			}
 		}
 		else if (strcmp(Opcode, "MOVIE") == 0)
@@ -1515,7 +1515,7 @@ DoPresentation(void* pIS)
 			}
 			else
 			{
-				log_add(log_Warning, "Bad MOVIE command '%s'", pStr);
+				uqm::log::warn("Bad MOVIE command '%s'", pStr);
 			}
 		}
 		else if (strcmp(Opcode, "ANIMATE") == 0)
@@ -1574,7 +1574,7 @@ DoPresentation(void* pIS)
 			}
 			else
 			{
-				log_add(log_Warning, "Bad ANIMATION command '%s'", pStr);
+				uqm::log::warn("Bad ANIMATION command '%s'", pStr);
 			}
 		}
 		else if (strcmp(Opcode, "NOOP") == 0)
@@ -1749,6 +1749,6 @@ bool ShowPresentation(RESOURCE res)
 		return result;
 	}
 
-	log_add(log_Warning, "Tried to present '%s', of non-presentable type '%s'", res, resType);
+	uqm::log::warn("Tried to present '%s', of non-presentable type '%s'", res, resType);
 	return false;
 }

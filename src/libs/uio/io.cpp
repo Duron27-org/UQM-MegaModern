@@ -36,10 +36,11 @@
 #include "mem.h"
 #include "uioutils.h"
 #include "uioport.h"
-#include "../log.h"
+#include "core/log/log.h"
 #ifdef uio_MEM_DEBUG
 #include "memdebug.h"
 #endif
+
 
 #if 0
 static int uio_accessDir(uio_DirHandle *dirHandle, const char *path,
@@ -207,7 +208,7 @@ uio_mountDir(uio_Repository* destRep, const char* mountPoint,
 			errno = EINVAL;
 			return nullptr;
 		}
-		log_add(log_Info, "uio_open %s", sourcePath);
+		uqm::log::info("uio_open %s", sourcePath);
 		handle = uio_open(sourceDir, sourcePath,
 						  ((flags & uio_MOUNT_RDONLY) == uio_MOUNT_RDONLY ?
 							   O_RDONLY :
@@ -219,14 +220,14 @@ uio_mountDir(uio_Repository* destRep, const char* mountPoint,
 						  0);
 		if (handle == nullptr)
 		{
-			log_add(log_Info, "uio_open failed for %s", sourcePath);
+			uqm::log::info("uio_open failed for %s", sourcePath);
 			// errno is set
 			return nullptr;
 		}
 	}
 
 	handler = uio_getFileSystemHandler(fsType);
-	log_add(log_Info, "uio_getFileSystemHandler %p", handler);
+	uqm::log::info("uio_getFileSystemHandler {}", fmt::ptr(handler));
 	if (handler == nullptr)
 	{
 		if (handle)
@@ -879,7 +880,7 @@ uio_open(uio_DirHandle* dir, const char* path, int flags, mode_t mode)
 		== -1)
 	{
 		// errno is set
-		// log_add(log_Info, "uio_open: uio_getPhysicalAccess failed for '%s'", path);
+		// uqm::log::info( "uio_open: uio_getPhysicalAccess failed for '%s'", path);
 		return nullptr;
 	}
 
@@ -912,7 +913,7 @@ uio_open(uio_DirHandle* dir, const char* path, int flags, mode_t mode)
 				uio_PDirHandle_unref(readPDirHandle);
 				uio_PDirHandle_unref(writePDirHandle);
 				errno = EEXIST;
-				log_add(log_Info, "uio_open: O_CREAT | O_EXCL: file already exists '%s'", name);
+				uqm::log::info("uio_open: O_CREAT | O_EXCL: file already exists '%s'", name);
 				return nullptr;
 			}
 			if ((flags & O_TRUNC) == O_TRUNC)
@@ -934,7 +935,7 @@ uio_open(uio_DirHandle* dir, const char* path, int flags, mode_t mode)
 					uio_PDirHandle_unref(readPDirHandle);
 					uio_PDirHandle_unref(writePDirHandle);
 					errno = savedErrno;
-					log_add(log_Info, "uio_open: uio_copyFilePhysical failed '%s'", name);
+					uqm::log::info("uio_open: uio_copyFilePhysical failed '%s'", name);
 					return nullptr;
 				}
 			}
@@ -960,7 +961,7 @@ uio_open(uio_DirHandle* dir, const char* path, int flags, mode_t mode)
 	if (handle == nullptr)
 	{
 		int savedErrno = errno;
-		log_add(log_Info, "uio_open: open file failed '%s'", name);
+		uqm::log::info("uio_open: open file failed '%s'", name);
 		uio_free(name);
 		uio_PDirHandle_unref(pDirHandle);
 		errno = savedErrno;
@@ -1442,7 +1443,7 @@ uio_getDirList(uio_DirHandle* dirHandle, const char* path, const char* pattern,
 	int numPDirHandles;
 	uio_PDirHandle** pDirHandles;
 	uio_DirList* result;
-	if (uio_getPathPhysicalDirs(dirHandle, path, strlen(path), &pDirHandles, &numPDirHandles, nullptr)	== -1)
+	if (uio_getPathPhysicalDirs(dirHandle, path, strlen(path), &pDirHandles, &numPDirHandles, nullptr) == -1)
 	{
 		// errno is set
 		return nullptr;

@@ -19,7 +19,7 @@
 #define LUAUQM_INTERNAL
 #include "statefuncs.h"
 #include "libs/scriptlib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 
 #include "uqm/build.h"
 #include "uqm/globdata.h"
@@ -54,7 +54,7 @@ static int luaUqm_state_misc_alignText(lua_State* luaState);
 
 static const luaL_Reg stateClockFuncs[] = {
 	{"getDate", luaUqm_state_clock_getDate},
-	{nullptr,	   nullptr					  },
+	{nullptr,	  nullptr					 },
 };
 
 static const luaL_Reg stateEscortFuncs[] = {
@@ -63,13 +63,13 @@ static const luaL_Reg stateEscortFuncs[] = {
 	{"removeShips", luaUqm_state_escort_removeShips},
 	{"shipCount",	  luaUqm_state_escort_shipCount  },
 	{"totalValue",  luaUqm_state_escort_totalValue },
-	{nullptr,		   nullptr						   },
+	{nullptr,		  nullptr						},
 };
 
 static const luaL_Reg statePropFuncs[] = {
-	{"get", luaUqm_state_prop_get},
-	{"set", luaUqm_state_prop_set},
-	{nullptr,  nullptr				 },
+	{"get",	luaUqm_state_prop_get},
+	{"set",	luaUqm_state_prop_set},
+	{nullptr, nullptr				 },
 };
 
 static const luaL_Reg stateRaceFuncs[] = {
@@ -79,7 +79,7 @@ static const luaL_Reg stateRaceFuncs[] = {
 	{"setAlive",	 luaUqm_state_race_setAlive },
 	{"setAllied", luaUqm_state_race_setAllied},
 	{"setKnown",	 luaUqm_state_race_setKnown },
-	{nullptr,		   nullptr					   },
+	{nullptr,	  nullptr					 },
 };
 
 static const luaL_Reg stateSisFuncs[] = {
@@ -93,12 +93,12 @@ static const luaL_Reg stateSisFuncs[] = {
 	{"getLanders",	   luaUqm_state_sis_getLanders	  },
 	{"getResUnits",	luaUqm_state_sis_getResUnits	},
 	{"getShipName",	luaUqm_state_sis_getShipName	},
-	{nullptr,			 nullptr						   },
+	{nullptr,		  nullptr						},
 };
 
 static const luaL_Reg stateMiscFuncs[] = {
 	{"alignText", luaUqm_state_misc_alignText},
-	{nullptr,		   nullptr					   },
+	{nullptr,	  nullptr					 },
 };
 
 int luaUqm_state_open(lua_State* luaState)
@@ -141,9 +141,9 @@ testRaceId(lua_State* luaState, int argn)
 	if (raceId == (uqm::COUNT)-1)
 	{
 		// TODO: print script file name.
-		log_add(log_Error, "[script] Warning: testRaceId(): No race exists "
-						   "with id '%s'.",
-				raceIdStr);
+		uqm::log::error("[script] Warning: testRaceId(): No race exists "
+						"with id '%s'.",
+						raceIdStr);
 		return (uqm::COUNT)-1;
 	}
 
@@ -162,9 +162,9 @@ testShipId(lua_State* luaState, int argn)
 	if (shipId == (uqm::COUNT)-1)
 	{
 		// TODO: print script file name.
-		log_add(log_Error, "[script] Warning: testShipId(): No ship exists "
-						   "with id '%s'.",
-				shipIdStr);
+		uqm::log::error("[script] Warning: testShipId(): No ship exists "
+						"with id '%s'.",
+						shipIdStr);
 		return (uqm::COUNT)-1;
 	}
 
@@ -383,8 +383,8 @@ luaUqm_state_race_setAlive(lua_State* luaState)
 	flag = lua_toboolean(luaState, 2);
 	if (flag != 0)
 	{
-		log_add(log_Error, "[script] Warning: luaUqm_state_race_setAlive(): "
-						   "setAlive(true) is not implemented.");
+		uqm::log::error("[script] Warning: luaUqm_state_race_setAlive(): "
+						"setAlive(true) is not implemented.");
 		lua_pushboolean(luaState, false);
 		return 1;
 	}
@@ -436,8 +436,8 @@ luaUqm_state_race_setKnown(lua_State* luaState)
 	flag = lua_toboolean(luaState, 2);
 	if (flag == 0)
 	{
-		log_add(log_Error, "[script] Warning: luaUqm_state_race_setKnown(): "
-						   "setKnown(false) is not implemented.");
+		uqm::log::error("[script] Warning: luaUqm_state_race_setKnown(): "
+						"setKnown(false) is not implemented.");
 		lua_pushboolean(luaState, false);
 		return 1;
 	}

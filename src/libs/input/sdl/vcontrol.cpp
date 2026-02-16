@@ -22,7 +22,7 @@
 #include "vcontrol.h"
 #include "libs/memlib.h"
 #include "keynames.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/reslib.h"
 
 /* How many binding slots are allocated at once. */
@@ -217,10 +217,10 @@ apply_default_bindings_to_controller(SDL_JoystickID instance_id,
 		}
 	}
 
-	log_add(log_Debug, "Applied %d bindings for logical port %d "
-					   "(instance %d)",
-			default_binding_count, logical_port,
-			instance_id);
+	uqm::log::debug("Applied %d bindings for logical port %d "
+					"(instance %d)",
+					default_binding_count, logical_port,
+					instance_id);
 }
 
 void create_joystick(int device_index)
@@ -239,9 +239,9 @@ void create_joystick(int device_index)
 	gamecontroller = SDL_GameControllerOpen(device_index);
 	if (!gamecontroller)
 	{
-		log_add(log_Warning, "VControl: Could not initialize "
-							 "controller #%d",
-				device_index);
+		uqm::log::warn("VControl: Could not initialize "
+					   "controller #%d",
+					   device_index);
 		return;
 	}
 
@@ -253,8 +253,8 @@ void create_joystick(int device_index)
 	{
 		if (current->instance_id == instance_id)
 		{
-			log_add(log_Warning, "Controller instance %d already in list",
-					instance_id);
+			uqm::log::warn("Controller instance %d already in list",
+						   instance_id);
 			SDL_GameControllerClose(gamecontroller);
 			return;
 		}
@@ -264,8 +264,8 @@ void create_joystick(int device_index)
 	new_controller = (controller_list*)HMalloc(sizeof(controller_list));
 	if (!new_controller)
 	{
-		log_add(log_Warning,
-				"Failed to allocate memory for new controller");
+		uqm::log::warn(
+			"Failed to allocate memory for new controller");
 		SDL_GameControllerClose(gamecontroller);
 		return;
 	}
@@ -306,8 +306,8 @@ void create_joystick(int device_index)
 
 	if (logical_port == -1)
 	{
-		log_add(log_Info, "Maximum of 2 controllers already connected, "
-						  "ignoring additional controller");
+		uqm::log::info("Maximum of 2 controllers already connected, "
+					   "ignoring additional controller");
 		SDL_GameControllerClose(gamecontroller);
 		HFree(x->axes);
 		HFree(x->buttons);
@@ -315,10 +315,10 @@ void create_joystick(int device_index)
 		return;
 	}
 
-	log_add(log_Info, "VControl opened controller %d (logical port %d): "
-					  "%s (instance %d)",
-			device_index, logical_port,
-			SDL_GameControllerName(gamecontroller), instance_id);
+	uqm::log::info("VControl opened controller %d (logical port %d): "
+				   "%s (instance %d)",
+				   device_index, logical_port,
+				   SDL_GameControllerName(gamecontroller), instance_id);
 
 	apply_default_bindings_to_controller(instance_id, logical_port);
 }
@@ -361,16 +361,16 @@ destroy_joystick(SDL_JoystickID instance_id)
 			HFree(x->buttons);
 			HFree(current);
 
-			log_add(log_Info,
-					"Controller instance %d removed", instance_id);
+			uqm::log::info(
+				"Controller instance %d removed", instance_id);
 			return;
 		}
 		prev = &current->next;
 		current = current->next;
 	}
 
-	log_add(log_Warning, "Controller instance %d not found for removal",
-			instance_id);
+	uqm::log::warn("Controller instance %d not found for removal",
+				   instance_id);
 }
 
 #else
@@ -381,8 +381,8 @@ void create_joystick(int index)
 	int axes, buttons, hats;
 	if ((unsigned int)index >= joycount)
 	{
-		log_add(log_Warning, "VControl warning: Tried to open a "
-							 "non-existent joystick!");
+		uqm::log::warn("VControl warning: Tried to open a "
+					   "non-existent joystick!");
 		return;
 	}
 	if (joysticks[index].stick)
@@ -396,17 +396,17 @@ void create_joystick(int index)
 		joystick* x = &joysticks[index];
 		int j;
 #if SDL_MAJOR_VERSION == 1
-		log_add(log_Info, "VControl opened joystick: %s",
-				SDL_JoystickName(index));
+		uqm::log::info("VControl opened joystick: %s",
+					   SDL_JoystickName(index));
 #else
-		log_add(log_Info, "VControl opened joystick: %s",
-				SDL_JoystickName(stick));
+		uqm::log::info("VControl opened joystick: %s",
+					   SDL_JoystickName(stick));
 #endif
 		axes = SDL_JoystickNumAxes(stick);
 		buttons = SDL_JoystickNumButtons(stick);
 		hats = SDL_JoystickNumHats(stick);
-		log_add(log_Info, "%d axes, %d buttons, %d hats.", axes, buttons,
-				hats);
+		uqm::log::info("%d axes, %d buttons, %d hats.", axes, buttons,
+					   hats);
 		x->numaxes = axes;
 		x->numbuttons = buttons;
 		x->numhats = hats;
@@ -431,8 +431,8 @@ void create_joystick(int index)
 	}
 	else
 	{
-		log_add(log_Warning,
-				"VControl: Could not initialize joystick #%d", index);
+		uqm::log::warn(
+			"VControl: Could not initialize joystick #%d", index);
 	}
 }
 
@@ -647,8 +647,8 @@ add_binding(keybinding** newptr, int* target, sdl_key_t keycode)
 	/* Sanity check. */
 	if (!newbinding)
 	{
-		log_add(log_Warning,
-				"add_binding failed to find a free binding slot!");
+		uqm::log::warn(
+			"add_binding failed to find a free binding slot!");
 		return;
 	}
 
@@ -845,8 +845,8 @@ int VControl_AddGestureBinding(VCONTROL_GESTURE* g, int* target)
 			break;
 
 		default:
-			log_add(log_Warning, "VControl_AddGestureBinding didn't "
-								 "understand argument gesture");
+			uqm::log::warn("VControl_AddGestureBinding didn't "
+						   "understand argument gesture");
 			result = -1;
 			break;
 	}
@@ -896,8 +896,8 @@ void VControl_RemoveGestureBinding(VCONTROL_GESTURE* g, int* target)
 		case VCONTROL_NONE:
 			break;
 		default:
-			log_add(log_Warning, "VControl_RemoveGestureBinding didn't "
-								 "understand argument gesture");
+			uqm::log::warn("VControl_RemoveGestureBinding didn't "
+						   "understand argument gesture");
 			break;
 	}
 }
@@ -940,8 +940,8 @@ int VControl_AddJoyAxisBinding(int port, int axis, int polarity, int* target)
 			}
 			else
 			{
-				log_add(log_Debug, "VControl: Attempted to bind to "
-								   "polarity zero");
+				uqm::log::debug("VControl: Attempted to bind to "
+								"polarity zero");
 				return -1;
 			}
 		}
@@ -976,8 +976,8 @@ int VControl_AddJoyAxisBinding(int port, int axis, int polarity, int* target)
 					}
 					else
 					{
-						log_add(log_Debug, "VControl: Attempted to bind "
-										   "to polarity zero");
+						uqm::log::debug("VControl: Attempted to bind "
+										"to polarity zero");
 						return -1;
 					}
 				}
@@ -1033,15 +1033,15 @@ void VControl_RemoveJoyAxisBinding(int port, int axis,
 			}
 			else
 			{
-				log_add(log_Debug, "VControl: Attempted to unbind from "
-								   "polarity zero");
+				uqm::log::debug("VControl: Attempted to unbind from "
+								"polarity zero");
 			}
 		}
 		else
 		{
-			log_add(log_Debug, "VControl: Attempted to unbind from "
-							   "illegal axis %d",
-					axis);
+			uqm::log::debug("VControl: Attempted to unbind from "
+							"illegal axis %d",
+							axis);
 		}
 	}
 #else
@@ -1067,15 +1067,15 @@ void VControl_RemoveJoyAxisBinding(int port, int axis,
 					}
 					else
 					{
-						log_add(log_Debug, "VControl: Attempted to "
-										   "unbind from polarity zero");
+						uqm::log::debug("VControl: Attempted to "
+										"unbind from polarity zero");
 					}
 				}
 				else
 				{
-					log_add(log_Debug, "VControl: Attempted to unbind "
-									   "from illegal axis %d",
-							axis);
+					uqm::log::debug("VControl: Attempted to unbind "
+									"from illegal axis %d",
+									axis);
 				}
 				return;
 			}
@@ -1091,9 +1091,9 @@ void VControl_RemoveJoyAxisBinding(int port, int axis,
 	(void)target;
 #endif /* HAVE_JOYSTICK */
 	{
-		log_add(log_Debug, "VControl: Attempted to unbind from illegal "
-						   "port %d",
-				port);
+		uqm::log::debug("VControl: Attempted to unbind from illegal "
+						"port %d",
+						port);
 	}
 }
 
@@ -1155,9 +1155,9 @@ int VControl_AddJoyButtonBinding(int port, int button, int* target)
 	(void)target;
 #endif /* HAVE_JOYSTICK */
 	{
-		log_add(log_Debug, "VControl: Attempted to unbind from illegal "
-						   "port %d",
-				port);
+		uqm::log::debug("VControl: Attempted to unbind from illegal "
+						"port %d",
+						port);
 		return -1;
 	}
 }
@@ -1180,9 +1180,9 @@ void VControl_RemoveJoyButtonBinding(int port, int button, int* target)
 		}
 		else
 		{
-			log_add(log_Debug, "VControl: Attempted to unbind from "
-							   "illegal button %d",
-					button);
+			uqm::log::debug("VControl: Attempted to unbind from "
+							"illegal button %d",
+							button);
 		}
 	}
 #else
@@ -1201,9 +1201,9 @@ void VControl_RemoveJoyButtonBinding(int port, int button, int* target)
 				}
 				else
 				{
-					log_add(log_Debug, "VControl: Attempted to unbind "
-									   "from illegal button %d",
-							button);
+					uqm::log::debug("VControl: Attempted to unbind "
+									"from illegal button %d",
+									button);
 				}
 				return;
 			}
@@ -1218,9 +1218,9 @@ void VControl_RemoveJoyButtonBinding(int port, int button, int* target)
 	(void)target;
 #endif /* HAVE_JOYSTICK */
 	{
-		log_add(log_Debug, "VControl: Attempted to unbind from illegal "
-						   "port %d",
-				port);
+		uqm::log::debug("VControl: Attempted to unbind from illegal "
+						"port %d",
+						port);
 	}
 }
 
@@ -1321,15 +1321,15 @@ void VControl_RemoveJoyHatBinding(int port, int which, Uint8 dir, int* target)
 			}
 			else
 			{
-				log_add(log_Debug, "VControl: Attempted to unbind from "
-								   "illegal direction");
+				uqm::log::debug("VControl: Attempted to unbind from "
+								"illegal direction");
 			}
 		}
 		else
 		{
-			log_add(log_Debug, "VControl: Attempted to unbind from "
-							   "illegal hat %d",
-					which);
+			uqm::log::debug("VControl: Attempted to unbind from "
+							"illegal hat %d",
+							which);
 		}
 	}
 	else
@@ -1340,8 +1340,8 @@ void VControl_RemoveJoyHatBinding(int port, int which, Uint8 dir, int* target)
 	(void)target;
 #endif /* HAVE_JOYSTICK */
 	{
-		log_add(log_Debug,
-				"VControl: Attempted to unbind from illegal port %d", port);
+		uqm::log::debug(
+			"VControl: Attempted to unbind from illegal port %d", port);
 	}
 }
 
@@ -1666,7 +1666,7 @@ void VControl_HandleEvent(const SDL_Event* e)
 			destroy_joystick(e->cdevice.which);
 			break;
 		case SDL_CONTROLLERDEVICEREMAPPED:
-			log_add(log_Info, "Controller mapping updated");
+			uqm::log::info("Controller mapping updated");
 			break;
 #else
 		case SDL_JOYAXISMOTION:
@@ -1801,8 +1801,8 @@ next_token(parse_state* state)
 static void
 expected_error(parse_state* state, const char* expected)
 {
-	log_add(log_Warning, "VControl: Expected '%s' on config file line %d",
-			expected, state->linenum);
+	uqm::log::warn("VControl: Expected '%s' on config file line %d",
+				   expected, state->linenum);
 	state->error = 1;
 }
 
@@ -1822,9 +1822,9 @@ consume_keyname(parse_state* state)
 	int keysym = VControl_name2code(state->token);
 	if (!keysym)
 	{
-		log_add(log_Warning, "VControl: Illegal key name '%s' on config "
-							 "file line %d",
-				state->token, state->linenum);
+		uqm::log::warn("VControl: Illegal key name '%s' on config "
+					   "file line %d",
+					   state->token, state->linenum);
 		state->error = 1;
 	}
 	next_token(state);
@@ -1838,9 +1838,9 @@ consume_num(parse_state* state)
 	int result = strtol(state->token, &end, 10);
 	if (*end != '\0')
 	{
-		log_add(log_Warning,
-				"VControl: Expected integer on config line %d",
-				state->linenum);
+		uqm::log::warn(
+			"VControl: Expected integer on config line %d",
+			state->linenum);
 		state->error = 1;
 	}
 	next_token(state);

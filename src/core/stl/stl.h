@@ -6,8 +6,10 @@
 // balh
 #else
 
+#include <algorithm>
 #include <array>
 #include <memory>
+#include <numeric>
 #include <optional>
 #include <string>
 #include <string_view>

@@ -2,7 +2,7 @@
 #include "options.h"
 #include "options/options.h"
 #include "Configuration.h" // TODO: Figure out why this has to go here for OptionsStruct to be recognized by the header.
-#include "libs/log/uqmlog.h"
+#include "core/log/log.h"
 
 namespace uqm
 {
@@ -351,27 +351,23 @@ void getUserConfigOptions(OptionsStruct& options)
 
 	if (res_IsInteger("config.player1control"))
 	{
-		PlayerControls[0] = (CONTROL_TEMPLATE)res_GetInteger("config.player1control");
+		PlayerControls[0] = (ControlTemplate)res_GetInteger("config.player1control");
 		/* This is an unsigned, so no < 0 check is necessary */
-		if (PlayerControls[0] >= NUM_TEMPLATES)
+		if (PlayerControls[0] >= ControlTemplate::NUM)
 		{
-			log_add(log_Error, "Illegal control template '%d' for Player "
-							   "One.",
-					PlayerControls[0]);
-			PlayerControls[0] = CONTROL_TEMPLATE_KB_1;
+			uqm::log::error("Illegal control template '{}' ({}) for Player One.", static_cast<int>(PlayerControls[0]), toString(PlayerControls[0]));
+			PlayerControls[0] = ControlTemplate::KB_1;
 		}
 	}
 
 	if (res_IsInteger("config.player2control"))
 	{
 		/* This is an unsigned, so no < 0 check is necessary */
-		PlayerControls[1] = (CONTROL_TEMPLATE)res_GetInteger("config.player2control");
-		if (PlayerControls[1] >= NUM_TEMPLATES)
+		PlayerControls[1] = (ControlTemplate)res_GetInteger("config.player2control");
+		if (PlayerControls[1] >= ControlTemplate::NUM)
 		{
-			log_add(log_Error, "Illegal control template '%d' for Player "
-							   "Two.",
-					PlayerControls[1]);
-			PlayerControls[1] = CONTROL_TEMPLATE_JOY_1;
+			uqm::log::error("Illegal control template '{}' ({}) for Player Two.", static_cast<int>(PlayerControls[1]), toString(PlayerControls[1]));
+			PlayerControls[1] = ControlTemplate::JOY_1;
 		}
 	}
 }

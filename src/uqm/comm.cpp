@@ -44,7 +44,7 @@
 #include "libs/inplib.h"
 #include "libs/sound/sound.h"
 #include "libs/sound/trackplayer.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "menustat.h"
 // for free_gravity_well() & load_gravity_well()
 #include "cons_res.h"
@@ -1891,9 +1891,9 @@ HailAlien(void)
 
 		if (ComputerFont == nullptr)
 		{
-			log_add(log_Warning,
-					"ComputerFont didn't load properly. "
-					"Disabling Alternate Orz Font");
+			uqm::log::warn(
+				"ComputerFont didn't load properly. "
+				"Disabling Alternate Orz Font");
 			optOrzCompFont = OPTVAL_DISABLED;
 		}
 	}
@@ -2463,8 +2463,8 @@ CheckSubtitles(bool really)
 		// Make a note in the logs if the update was multiframe
 		if (SubtitleText.pStr == pStr)
 		{
-			log_add(log_Warning,
-					"Dialog text and location changed out of sync");
+			uqm::log::warn(
+				"Dialog text and location changed out of sync");
 		}
 
 		SubtitleText.pStr = pStr;

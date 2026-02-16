@@ -74,8 +74,8 @@ static Color win_dark_clr =
 
 static FONT cur_font;
 
-static uqm::COUNT offset_t = 0;	 // Top widget offset
-static uqm::COUNT offset_b;		 // = ONSCREEN; // Bottom widget offset
+static uqm::COUNT offset_t = 0;		// Top widget offset
+static uqm::COUNT offset_b;			// = ONSCREEN; // Bottom widget offset
 static FRAME arrow_frame = nullptr; // Frames for additional graphics
 
 void ResetOffset(void)

@@ -16,15 +16,17 @@ class UrQuanMastersConan(ConanFile):
         #    raise ConanInvalidConfiguration('ASan requires Debug build')
     
     requires = (
-        'zlib/1.3.1',
-        'sdl/2.32.10',
-        'libpng/1.6.54',
         'ogg/1.3.5',
-        'vorbis/1.3.7',
-        'openal-soft/1.23.1',
-        'gtest/1.17.0',
         'fmt/12.1.0',
         'gsl-lite/1.0.1',
+        'gtest/1.17.0',
+        'libpng/1.6.54',
+        'openal-soft/1.23.1',
+        'sdl/2.32.10',
+        'spdlog/1.17.0',
+        'utfcpp/4.0.8',
+        'vorbis/1.3.7',
+        'zlib/1.3.1',
     )
 
     generators = (

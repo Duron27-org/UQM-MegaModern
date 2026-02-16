@@ -26,7 +26,7 @@
 #define DEBUG_RESOLVE_REF
 #ifdef DEBUG_RESOLVE_REF
 #include "types.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include <string.h>
 #endif
 
@@ -54,8 +54,8 @@ void ResolveState_incRef(ResolveState* resolveState)
 	assert(resolveState->refCount < REFCOUNT_MAX);
 	resolveState->refCount++;
 #ifdef DEBUG_RESOLVE_REF
-	log_add(log_Debug, "ResolveState %08" PRIxPTR ": ref++ (%d)",
-			(uintptr_t)resolveState, resolveState->refCount);
+	uqm::log::debug("ResolveState %08" PRIxPTR ": ref++ (%d)",
+					(uintptr_t)resolveState, resolveState->refCount);
 #endif
 }
 
@@ -64,8 +64,8 @@ bool ResolveState_decRef(ResolveState* resolveState)
 	assert(resolveState->refCount > 0);
 	resolveState->refCount--;
 #ifdef DEBUG_RESOLVE_REF
-	log_add(log_Debug, "ResolveState %08" PRIxPTR ": ref-- (%d)",
-			(uintptr_t)resolveState, resolveState->refCount);
+	uqm::log::debug("ResolveState %08" PRIxPTR ": ref-- (%d)",
+					(uintptr_t)resolveState, resolveState->refCount);
 #endif
 	if (resolveState->refCount == 0)
 	{
@@ -140,8 +140,8 @@ getaddrinfoAsync(const char* node, const char* service,
 	resolveState = ResolveState_new();
 	resolveState->refCount = 1;
 #ifdef DEBUG_RESOLVE_REF
-	log_add(log_Debug, "ResolveState %08" PRIxPTR ": ref=1 (%d)",
-			(uintptr_t)resolveState, resolveState->refCount);
+	uqm::log::debug("ResolveState %08" PRIxPTR ": ref=1 (%d)",
+					(uintptr_t)resolveState, resolveState->refCount);
 #endif
 	resolveState->state = Resolve_resolving;
 	resolveState->flags = *flags;

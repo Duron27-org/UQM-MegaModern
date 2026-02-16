@@ -19,7 +19,7 @@
 #include "../ship.h"
 #include "arilou.h"
 #include "resinst.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/mathlib.h"
 #include "uqm/globdata.h"
 #include <math.h>

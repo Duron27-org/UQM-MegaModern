@@ -74,26 +74,49 @@ enum
 	NUM_MENU_KEYS
 };
 
-typedef enum
+enum class ControlTemplate
 {
-	CONTROL_TEMPLATE_KB_1,
-	CONTROL_TEMPLATE_KB_2,
-	CONTROL_TEMPLATE_KB_3,
-	CONTROL_TEMPLATE_JOY_1,
-	CONTROL_TEMPLATE_JOY_2,
-	CONTROL_TEMPLATE_JOY_3,
-	NUM_TEMPLATES
-} CONTROL_TEMPLATE;
+	KB_1,
+	KB_2,
+	KB_3,
+	JOY_1,
+	JOY_2,
+	JOY_3,
+	NUM
+};
+
+static constexpr const char* toString(ControlTemplate val)
+{
+	switch (val)
+	{
+		case ControlTemplate::KB_1:
+			return "Keyboard 1";
+		case ControlTemplate::KB_2:
+			return "Keyboard 2";
+		case ControlTemplate::KB_3:
+			return "Keyboard 3";
+		case ControlTemplate::JOY_1:
+			return "Joy 1";
+		case ControlTemplate::JOY_2:
+			return "Joy 2";
+		case ControlTemplate::JOY_3:
+			return "Joy 3";
+		case ControlTemplate::NUM:
+		default:
+			return "???";
+	};
+}
+
 
 struct CONTROLLER_INPUT_STATE
 {
-	int key[NUM_TEMPLATES][NUM_KEYS];
+	int key[static_cast<int>(ControlTemplate::NUM)][NUM_KEYS];
 	int menu[NUM_MENU_KEYS];
 
 	// TODO: need to define this because of volatile ImmediateInputState variable!? Figure this out. This is ugly
 	CONTROLLER_INPUT_STATE& operator=(const volatile CONTROLLER_INPUT_STATE& rhs)
 	{
-		for (int t = 0; t < NUM_TEMPLATES; ++t)
+		for (int t = 0; t < static_cast<int>(ControlTemplate::NUM); ++t)
 		{
 			for (int k = 0; k < NUM_KEYS; ++k)
 			{
@@ -126,7 +149,7 @@ BATTLE_INPUT_STATE PulsedInputToBattleInput(uqm::COUNT player);
 extern CONTROLLER_INPUT_STATE CurrentInputState;
 extern CONTROLLER_INPUT_STATE PulsedInputState;
 extern volatile CONTROLLER_INPUT_STATE ImmediateInputState;
-extern CONTROL_TEMPLATE PlayerControls[];
+extern ControlTemplate PlayerControls[];
 extern bool WarpFromMenu;
 
 void UpdateInputState(void);

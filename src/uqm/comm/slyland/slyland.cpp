@@ -77,8 +77,8 @@ static const NUMBER_SPEECH_DESC probe_numbers_english =
 				/* 1000-999999 */
 				1000,			   /* Divider */
 				0,				   /* Subtrahend */
-				nullptr,			   /* StrDigits - recurse */
-				nullptr,			   /* Names - not used */
+				nullptr,		   /* StrDigits - recurse */
+				nullptr,		   /* Names - not used */
 				ENUMERATE_THOUSAND /* CommonIndex */
 			},
 						  {
@@ -86,7 +86,7 @@ static const NUMBER_SPEECH_DESC probe_numbers_english =
 				100,			   /* Divider */
 				0,				   /* Subtrahend */
 				probe_digit_names, /* StrDigits */
-				nullptr,			   /* Names - not used */
+				nullptr,		   /* Names - not used */
 				ENUMERATE_HUNDRED  /* CommonIndex */
 			},
 						  {
@@ -94,7 +94,7 @@ static const NUMBER_SPEECH_DESC probe_numbers_english =
 				10,				  /* Divider */
 				0,				  /* Subtrahend */
 				probe_tens_names, /* StrDigits */
-				nullptr,			  /* Names - not used */
+				nullptr,		  /* Names - not used */
 				0				  /* CommonIndex - not used */
 			},
 						  {
@@ -102,7 +102,7 @@ static const NUMBER_SPEECH_DESC probe_numbers_english =
 				1,				  /* Divider */
 				10,				  /* Subtrahend */
 				probe_teen_names, /* StrDigits */
-				nullptr,			  /* Names - not used */
+				nullptr,		  /* Names - not used */
 				0				  /* CommonIndex - not used */
 			},
 						  {
@@ -110,7 +110,7 @@ static const NUMBER_SPEECH_DESC probe_numbers_english =
 				1,				   /* Divider */
 				0,				   /* Subtrahend */
 				probe_digit_names, /* StrDigits */
-				nullptr,			   /* Names - not used */
+				nullptr,		   /* Names - not used */
 				0				   /* CommonIndex - not used */
 			}}
 };

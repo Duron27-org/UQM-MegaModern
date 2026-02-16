@@ -23,7 +23,7 @@
 #include "libs/tasklib.h"
 #include "libs/timelib.h"
 #include "libs/threadlib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/memlib.h"
 
 
@@ -421,10 +421,10 @@ add_scope_data(TFB_SoundSource* source, uint32 bytes)
 
 	if (wrap_bytes > source->sbuf_tail)
 	{ // we can only wrap around to the current tail
-		log_add(log_Warning, "add_scope_data: Has wrap_bytes %d "
-							 "greater than source_buffer_tail %d "
-							 "| total bytes %d | source_buffer_size %d",
-				wrap_bytes, source->sbuf_tail, bytes, source->sbuf_size);
+		uqm::log::warn("add_scope_data: Has wrap_bytes %d "
+					   "greater than source_buffer_tail %d "
+					   "| total bytes %d | source_buffer_size %d",
+					   wrap_bytes, source->sbuf_tail, bytes, source->sbuf_size);
 		wrap_bytes = source->sbuf_tail;
 	}
 
@@ -462,9 +462,9 @@ process_stream(TFB_SoundSource* source)
 		{
 			if (queued == 0 && decoder->error == SOUNDDECODER_EOF)
 			{ // The stream has reached the end
-				log_add(log_Info, "StreamDecoderTaskFunc(): "
-								  "finished playing %s",
-						decoder->filename);
+				uqm::log::info("StreamDecoderTaskFunc(): "
+							   "finished playing %s",
+							   decoder->filename);
 				source->stream_should_be_playing = false;
 
 				if (sample->callbacks.OnEndStream)
@@ -474,9 +474,9 @@ process_stream(TFB_SoundSource* source)
 			}
 			else
 			{
-				log_add(log_Warning, "StreamDecoderTaskFunc(): "
-									 "buffer underrun playing %s",
-						decoder->filename);
+				uqm::log::warn("StreamDecoderTaskFunc(): "
+							   "buffer underrun playing %s",
+							   decoder->filename);
 				audio_SourcePlay(source->handle);
 			}
 		}
@@ -496,9 +496,9 @@ process_stream(TFB_SoundSource* source)
 		error = audio_GetError();
 		if (error != audio_NO_ERROR)
 		{
-			log_add(log_Warning, "StreamDecoderTaskFunc(): "
-								 "error after audio_SourceUnqueueBuffers: %x, file %s",
-					error, decoder->filename);
+			uqm::log::warn("StreamDecoderTaskFunc(): "
+						   "error after audio_SourceUnqueueBuffers: %x, file %s",
+						   error, decoder->filename);
 			break;
 		}
 
@@ -555,9 +555,9 @@ process_stream(TFB_SoundSource* source)
 		decoded_bytes = SoundDecoder_Decode(decoder);
 		if (decoder->error == SOUNDDECODER_ERROR)
 		{
-			log_add(log_Warning, "StreamDecoderTaskFunc(): "
-								 "SoundDecoder_Decode error %d, file %s",
-					decoder->error, decoder->filename);
+			uqm::log::warn("StreamDecoderTaskFunc(): "
+						   "SoundDecoder_Decode error %d, file %s",
+						   decoder->error, decoder->filename);
 			source->stream_should_be_playing = false;
 			continue;
 		}
@@ -575,9 +575,9 @@ process_stream(TFB_SoundSource* source)
 		error = audio_GetError();
 		if (error != audio_NO_ERROR)
 		{
-			log_add(log_Warning, "StreamDecoderTaskFunc(): "
-								 "error after audio_BufferData: %x, file %s, decoded %d",
-					error, decoder->filename, decoded_bytes);
+			uqm::log::warn("StreamDecoderTaskFunc(): "
+						   "error after audio_BufferData: %x, file %s, decoded %d",
+						   error, decoder->filename, decoded_bytes);
 			continue;
 		}
 
@@ -586,10 +586,10 @@ process_stream(TFB_SoundSource* source)
 		error = audio_GetError();
 		if (error != audio_NO_ERROR)
 		{
-			log_add(log_Warning, "StreamDecoderTaskFunc(): "
-								 "error after audio_SourceQueueBuffers: %x, file %s, "
-								 "decoded %d",
-					error, decoder->filename, decoded_bytes);
+			uqm::log::warn("StreamDecoderTaskFunc(): "
+						   "error after audio_SourceQueueBuffers: %x, file %s, "
+						   "decoded %d",
+						   error, decoder->filename, decoded_bytes);
 			continue;
 		}
 
@@ -789,8 +789,8 @@ int GraphForegroundStream(uint8* data, sint32 width, sint32 height,
 	if (!audio_GetFormatInfo(decoder->format, &channels, &sample_size))
 	{
 		UnlockMutex(source->stream_mutex);
-		log_add(log_Debug, "GraphForegroundStream(): uknown format %u",
-				(unsigned)decoder->format);
+		uqm::log::debug("GraphForegroundStream(): uknown format %u",
+						(unsigned)decoder->format);
 		return 0;
 	}
 	full_sample = channels * sample_size;
@@ -803,9 +803,9 @@ int GraphForegroundStream(uint8* data, sint32 width, sint32 height,
 
 	if (delta < 0)
 	{
-		log_add(log_Debug, "GraphForegroundStream(): something is messed"
-						   " with timing, delta %ld",
-				delta);
+		uqm::log::debug("GraphForegroundStream(): something is messed"
+						" with timing, delta %ld",
+						delta);
 		delta = 0;
 	}
 	else if (delta > (long)source->sbuf_size)

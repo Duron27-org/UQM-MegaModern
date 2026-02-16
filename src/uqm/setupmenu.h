@@ -434,8 +434,8 @@ enum
 
 #define NUM_UPGRADES 13
 
-/* At the moment, CONTROL_TEMPLATE is directly in this structure.  If
- * CONTROL_TEMPLATE and the options available diverge, this will need
+/* At the moment, ControlTemplate is directly in this structure.  If
+ * ControlTemplate and the options available diverge, this will need
  * to change */
 typedef struct globalopts_struct
 {
@@ -476,7 +476,7 @@ typedef struct globalopts_struct
 	OPT_CONSOLETYPE menu, text, scroll, intro, shield, scrTrans,
 		landerHold, tintPlanSphere, planetStyle, scanStyle,
 		scopeStyle, landerStyle, flagshipColor;
-	CONTROL_TEMPLATE player1, player2;
+	ControlTemplate player1, player2;
 	int speechvol, musicvol, sfxvol, nebulaevol, cscan;
 	int gamma, starBackground;
 } GLOBALOPTS;

@@ -19,7 +19,7 @@
 #include "lifeform.h"
 #include "planets.h"
 #include "libs/mathlib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 
 
 //#define DEBUG_SURFACE
@@ -103,9 +103,9 @@ CalcMineralDeposits(const SYSTEM_INFO* SysInfoPtr, uqm::COUNT which_deposit,
 				deposit_quality_gross, deposit_quality_fine / 10 + 1);
 			info->type = eptr->ElementType;
 #ifdef DEBUG_SURFACE
-			log_add(log_Debug, "\t\t%d units of %Fs",
-					info->density,
-					Elements[eptr->ElementType].name);
+			uqm::log::debug("\t\t%d units of %Fs",
+							info->density,
+							Elements[eptr->ElementType].name);
 #endif /* DEBUG_SURFACE */
 			if (num_deposits >= which_deposit
 				|| ++num_deposits == sizeof(uqm::DWORD) * 8)
@@ -182,8 +182,8 @@ CalcLifeForms(const SYSTEM_INFO* SysInfoPtr, uqm::COUNT which_life,
 #ifdef DEBUG_SURFACE
 		else
 		{
-			log_add(log_Debug, "It's dead, Jim! (%d >= %d)", life_var,
-					SysInfoPtr->PlanetInfo.LifeChance);
+			uqm::log::debug("It's dead, Jim! (%d >= %d)", life_var,
+							SysInfoPtr->PlanetInfo.LifeChance);
 		}
 #endif /* DEBUG_SURFACE */
 	}
@@ -431,9 +431,9 @@ CustomMineralDeposits(const SYSTEM_INFO* SysInfoPtr, uqm::COUNT which_deposit,
 			info->density = MAKE_WORD(
 				deposit_quality_gross, deposit_quality_fine / 10 + 1);
 #ifdef DEBUG_SURFACE
-			log_add(log_Debug, "\t\t%d units of %Fs",
-					info->density,
-					Elements[eptr->ElementType].name);
+			uqm::log::debug("\t\t%d units of %Fs",
+							info->density,
+							Elements[eptr->ElementType].name);
 #endif /* DEBUG_SURFACE */
 			if (num_deposits >= which_deposit
 				|| ++num_deposits == sizeof(uqm::DWORD) * 8)

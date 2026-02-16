@@ -203,4 +203,4 @@ template <typename InT>
 	return inVol / static_cast<float>(max);
 }
 
-}
+} // namespace uqm

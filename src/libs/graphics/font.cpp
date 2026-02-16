@@ -21,7 +21,7 @@
 #include "options.h"
 #include "gfxintrn.h"
 #include "tfb_prim.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "uqm/units.h"
 #include "uqm/sounds.h"
 #include "uqm/controls.h"
@@ -78,7 +78,7 @@ bool DestroyFont(FONT FontRef)
 
 	if (_CurFontPtr && _CurFontPtr == FontRef)
 	{
-		SetContextFont((FONT)nullptr);
+		SetContextFont((FONT) nullptr);
 	}
 
 	return (FreeFont(FontRef));

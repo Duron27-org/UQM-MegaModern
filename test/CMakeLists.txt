@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.21)
 # This is a subproject, not a standalone root project
 # Do NOT call project() again unless you want separate languages/toolchains
 
+
+
 # ---- Test sources ----------------------------------------------------------
 
 set(uqm_test_sources_all "main.cpp")
@@ -21,6 +23,7 @@ message(STATUS "CMake source dir: ${CMAKE_SOURCE_DIR}")
 add_executable(UQM_Tests
     ${UQM_TEST_SOURCES}
 )
+target_link_libraries(UQM_Tests PRIVATE uqm_project_features)
 
 target_compile_options(UQM_Tests
     PRIVATE
@@ -45,6 +48,7 @@ target_include_directories(UQM_Tests
 find_package(fmt REQUIRED)
 find_package(gsl-lite REQUIRED)
 find_package(GTest REQUIRED)
+find_package(spdlog REQUIRED)
 
 # GTest::gtest and GTest::gtest_main are the modern imported targets
 target_link_libraries(UQM_Tests
@@ -53,6 +57,8 @@ target_link_libraries(UQM_Tests
         GTest::gtest_main
         fmt::fmt
         gsl-lite::gsl-lite
+        spdlog::spdlog
+
 )
 
 # ---- Compiler options (inherit from main project if needed) ---------------

@@ -31,7 +31,7 @@
 #include "libs/graphics/drawable.h"
 #include "libs/graphics/drawcmd.h"
 #include "libs/graphics/gfx_common.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/misc.h"
 #include "intel.h"
 
@@ -95,7 +95,7 @@ AllocElement(void)
 		ElementPtr->PrimIndex = AllocDisplayPrim();
 		if (ElementPtr->PrimIndex == END_OF_LIST)
 		{
-			log_add(log_Error, "AllocElement: Out of display prims!");
+			uqm::log::error("AllocElement: Out of display prims!");
 			explode();
 		}
 		SetPrimType(&DisplayArray[ElementPtr->PrimIndex], NO_PRIM);
@@ -229,7 +229,7 @@ CalcReduction(uqm::SDWORD dx, uqm::SDWORD dy)
 	uqm::COUNT next_reduction;
 
 #ifdef KDEBUG
-	log_add(log_Debug, "CalcReduction:");
+	uqm::log::debug("CalcReduction:");
 #endif
 
 	if (optMeleeScale == TFB_SCALE_STEP)
@@ -318,7 +318,7 @@ CalcReduction(uqm::SDWORD dx, uqm::SDWORD dy)
 	}
 
 #ifdef KDEBUG
-	log_add(log_Debug, "CalcReduction: exit");
+	uqm::log::debug("CalcReduction: exit");
 #endif
 
 	return (next_reduction);
@@ -332,7 +332,7 @@ CalcView(DPOINT* pNewScrollPt, uqm::SIZE next_reduction,
 	VIEW_STATE view_state;
 
 #ifdef KDEBUG
-	log_add(log_Debug, "CalcView:");
+	uqm::log::debug("CalcView:");
 #endif
 	dx = ((uqm::SDWORD)(LOG_SPACE_WIDTH >> 1) - pNewScrollPt->x);
 	dy = ((uqm::SDWORD)(LOG_SPACE_HEIGHT >> 1) - pNewScrollPt->y);
@@ -409,7 +409,7 @@ CalcView(DPOINT* pNewScrollPt, uqm::SIZE next_reduction,
 	*pdy = dy;
 
 #ifdef KDEBUG
-	log_add(log_Debug, "CalcView: exit");
+	uqm::log::debug("CalcView: exit");
 #endif
 	return (view_state);
 }
@@ -461,8 +461,8 @@ ProcessCollisions(HELEMENT hSuccElement, ELEMENT* ElementPtr,
 					   && !((state_flags | test_state_flags) & FINITE_LIFE))
 				{
 #ifdef DEBUG_PROCESS
-					log_add(log_Debug, "BAD NEWS 0x%x <--> 0x%x", ElementPtr,
-							TestElementPtr);
+					uqm::log::debug("BAD NEWS 0x%x <--> 0x%x", ElementPtr,
+									TestElementPtr);
 #endif /* DEBUG_PROCESS */
 					if (state_flags & COLLISION)
 					{
@@ -597,8 +597,8 @@ ProcessCollisions(HELEMENT hSuccElement, ELEMENT* ElementPtr,
 				POINT SavePt, TestSavePt;
 
 #ifdef DEBUG_PROCESS
-				log_add(log_Debug, "0x%x <--> 0x%x at %u", ElementPtr,
-						TestElementPtr, time_val);
+				uqm::log::debug("0x%x <--> 0x%x at %u", ElementPtr,
+								TestElementPtr, time_val);
 #endif /* DEBUG_PROCESS */
 				SavePt = ElementPtr->IntersectControl.EndPoint;
 				TestSavePt = TestElementPtr->IntersectControl.EndPoint;
@@ -620,8 +620,8 @@ ProcessCollisions(HELEMENT hSuccElement, ELEMENT* ElementPtr,
 					test_state_flags = TestElementPtr->state_flags;
 
 #ifdef DEBUG_PROCESS
-					log_add(log_Debug, "PROCESSING 0x%x <--> 0x%x at %u",
-							ElementPtr, TestElementPtr, time_val);
+					uqm::log::debug("PROCESSING 0x%x <--> 0x%x at %u",
+									ElementPtr, TestElementPtr, time_val);
 #endif /* DEBUG_PROCESS */
 					if (test_state_flags & PLAYER_SHIP)
 					{
@@ -708,7 +708,7 @@ PreProcessQueue(uqm::SDWORD* pscroll_x, uqm::SDWORD* pscroll_y)
 	uqm::COUNT ships_alive;
 
 #ifdef KDEBUG
-	log_add(log_Debug, "PreProcess:");
+	uqm::log::debug("PreProcess:");
 #endif
 	sides_active = (battle_counter[0] ? 1 : 0)
 				 + (battle_counter[1] ? 1 : 0);
@@ -838,7 +838,7 @@ PreProcessQueue(uqm::SDWORD* pscroll_x, uqm::SDWORD* pscroll_y)
 	}
 
 #ifdef KDEBUG
-	log_add(log_Debug, "PreProcess: exit");
+	uqm::log::debug("PreProcess: exit");
 #endif
 	return (CalcView(&Origin, min_reduction, pscroll_x, pscroll_y, ships_alive));
 }
@@ -906,7 +906,7 @@ PostProcessQueue(VIEW_STATE view_state, uqm::SDWORD scroll_x, uqm::SDWORD scroll
 	HELEMENT hElement;
 
 #ifdef KDEBUG
-	log_add(log_Debug, "PostProcess:");
+	uqm::log::debug("PostProcess:");
 #endif
 	if (optMeleeScale == TFB_SCALE_STEP)
 	{
@@ -1089,7 +1089,7 @@ PostProcessQueue(VIEW_STATE view_state, uqm::SDWORD scroll_x, uqm::SDWORD scroll
 		hElement = hNextElement;
 	}
 #ifdef KDEBUG
-	log_add(log_Debug, "PostProcess: exit");
+	uqm::log::debug("PostProcess: exit");
 #endif
 }
 

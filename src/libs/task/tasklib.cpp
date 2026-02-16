@@ -20,7 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "libs/tasklib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 
 #define TASK_MAX 64
 
@@ -41,7 +41,7 @@ Task AssignTask(ThreadFunction task_func, uqm::SDWORD stackSize, const char* nam
 			return task_array + i;
 		}
 	}
-	log_add(log_Error, "Task error!  Task array exhausted.  Check for thread leaks.");
+	uqm::log::error("Task error!  Task array exhausted.  Check for thread leaks.");
 	return nullptr;
 }
 
@@ -51,9 +51,9 @@ void FinishTask(Task task)
 	task->thread = 0;
 	if (!Task_ClearState(task, TASK_INUSE))
 	{
-		log_add(log_Debug, "Task error!  Attempted to FinishTask '%s'... "
-						   "but it was already done!",
-				task->name);
+		uqm::log::debug("Task error!  Attempted to FinishTask '%s'... "
+						"but it was already done!",
+						task->name);
 	}
 }
 

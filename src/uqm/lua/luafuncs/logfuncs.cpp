@@ -16,8 +16,9 @@
 
 #define LUAUQM_INTERNAL
 #include "logfuncs.h"
+#include "libs/lua/lstate.h"
 #include "libs/scriptlib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 
 static int luaUqm_log_debug(lua_State* luaState);
 static int luaUqm_log_error(lua_State* luaState);
@@ -31,7 +32,7 @@ static const luaL_Reg logFuncs[] = {
 	{"fatal", luaUqm_log_fatal},
 	{"info",	 luaUqm_log_info },
 	{"warn",	 luaUqm_log_warn },
-	{nullptr,	   nullptr			   },
+	{nullptr, nullptr		 },
 };
 
 int luaUqm_log_open(lua_State* luaState)
@@ -40,48 +41,51 @@ int luaUqm_log_open(lua_State* luaState)
 	return 1;
 }
 
-// [1] -> string logMessage
-static int
-logHelper(lua_State* luaState, log_Level level)
+template <>
+struct fmt::formatter<lua_State> : fmt::formatter<std::string>
 {
-	//const char *str = luaL_checkstring(luaState, 1);
-	const char* str = lua_tostring(luaState, 1);
-	// TODO: print the file name of the Lua script being executed.
-	log_add(level, "Lua: %s", str);
-	return 0;
-}
+	auto format(lua_State& my, format_context& ctx) const -> decltype(ctx.out())
+	{
+		return fmt::format_to(ctx.out(), "Lua: {}", lua_tostring(&my, 1));
+	}
+};
 
 // [1] -> string logMessage
 static int
 luaUqm_log_debug(lua_State* luaState)
 {
-	return logHelper(luaState, log_Debug);
+	uqm::log::debug("{}", *luaState);
+	return 0;
 }
 
 // [1] -> string logMessage
 static int
 luaUqm_log_error(lua_State* luaState)
 {
-	return logHelper(luaState, log_Error);
+	uqm::log::error("{}", *luaState);
+	return 0;
 }
 
 // [1] -> string logMessage
 static int
 luaUqm_log_fatal(lua_State* luaState)
 {
-	return logHelper(luaState, log_Fatal);
+	uqm::log::critical("{}", *luaState);
+	return 0;
 }
 
 // [1] -> string logMessage
 static int
 luaUqm_log_info(lua_State* luaState)
 {
-	return logHelper(luaState, log_Info);
+	uqm::log::info("{}", *luaState);
+	return 0;
 }
 
 // [1] -> string logMessage
 static int
 luaUqm_log_warn(lua_State* luaState)
 {
-	return logHelper(luaState, log_Warning);
+	uqm::log::warn("{}", *luaState);
+	return 0;
 }

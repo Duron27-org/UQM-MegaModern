@@ -15,7 +15,6 @@
 
 #include "core/misc/bittricks.h"
 
-#pragma optimize clang off
 namespace std
 {
 
@@ -239,6 +238,5 @@ private:
 
 } // namespace std
 
-#pragma optimize clang on
 #endif /* !defined(USING_EASTL) */
 #endif /* UQM_CORE_STL_RINGBUFFER_H_ */

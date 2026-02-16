@@ -31,13 +31,13 @@
 #include "luafuncs/eventfuncs.h"
 #include "luafuncs/logfuncs.h"
 #include "luafuncs/statefuncs.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 
 static const luaL_Reg initLibs[] = {
 	{"event", luaUqm_event_open},
 	{"log",	luaUqm_log_open  },
 	{"state", luaUqm_state_open},
-	{nullptr,	   nullptr			   }
+	{nullptr, nullptr			 }
 };
 
 void luaUqm_runInitScripts(void)
@@ -53,9 +53,9 @@ void luaUqm_runInitScripts(void)
 	scriptDir = res_GetString(SCRIPT_DIR_INITGAME);
 	if (scriptDir == nullptr)
 	{
-		log_add(log_Warning, "Location of game initialisation scripts ('%s')"
-							 " was not specified.",
-				SCRIPT_DIR_INITGAME);
+		uqm::log::warn("Location of game initialisation scripts ('%s')"
+					   " was not specified.",
+					   SCRIPT_DIR_INITGAME);
 	}
 	else
 	{

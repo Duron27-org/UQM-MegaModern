@@ -23,7 +23,7 @@
 #include "libs/graphics/gfx_common.h"
 #include "libs/graphics/tfb_draw.h"
 #include "libs/graphics/cmap.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/memlib.h"
 #include "primitives.h"
 #include "palette.h"
@@ -91,9 +91,9 @@ void TFB_DrawCanvas_Line(int x1, int y1, int x2, int y2, Color color,
 	plotFn = renderpixel_for((SDL_Surface*)target, (RenderKind)mode.kind, false);
 	if (!plotFn)
 	{
-		log_add(log_Warning, "ERROR: TFB_DrawCanvas_Line "
-							 "unsupported draw mode (%d)",
-				(int)mode.kind);
+		uqm::log::warn("ERROR: TFB_DrawCanvas_Line "
+					   "unsupported draw mode (%d)",
+					   (int)mode.kind);
 		return;
 	}
 
@@ -157,9 +157,9 @@ void TFB_DrawCanvas_Rect(RECT* rect, Color color, DrawMode mode, TFB_Canvas targ
 		RenderPixelFn plotFn = renderpixel_for((SDL_Surface*)target, (RenderKind)mode.kind, false);
 		if (!plotFn)
 		{
-			log_add(log_Warning, "ERROR: TFB_DrawCanvas_Rect "
-								 "unsupported draw mode (%d)",
-					(int)mode.kind);
+			uqm::log::warn("ERROR: TFB_DrawCanvas_Rect "
+						   "unsupported draw mode (%d)",
+						   (int)mode.kind);
 			return;
 		}
 
@@ -196,9 +196,9 @@ TFB_DrawCanvas_Blit(SDL_Surface* src, SDL_Rect* src_r,
 		RenderPixelFn plotFn = renderpixel_for(dst, (RenderKind)mode.kind, false);
 		if (!plotFn)
 		{
-			log_add(log_Warning, "ERROR: TFB_DrawCanvas_Blit "
-								 "unsupported draw mode (%d)",
-					(int)mode.kind);
+			uqm::log::warn("ERROR: TFB_DrawCanvas_Blit "
+						   "unsupported draw mode (%d)",
+						   (int)mode.kind);
 			return;
 		}
 
@@ -236,8 +236,8 @@ void TFB_DrawCanvas_Image(TFB_Image* img, int x, int y, int scale,
 
 	if (img == 0)
 	{
-		log_add(log_Warning,
-				"ERROR: TFB_DrawCanvas_Image passed null image ptr");
+		uqm::log::warn(
+			"ERROR: TFB_DrawCanvas_Image passed null image ptr");
 		return;
 	}
 
@@ -366,9 +366,9 @@ TFB_DrawCanvas_Fill(SDL_Surface* src, Uint32 fillcolor, SDL_Surface* dst)
 
 	if (srcfmt->BytesPerPixel != 4 || dstfmt->BytesPerPixel != 4)
 	{
-		log_add(log_Warning, "TFB_DrawCanvas_Fill: Unsupported surface "
-							 "formats: %d bytes/pixel source, %d bytes/pixel destination",
-				(int)srcfmt->BytesPerPixel, (int)dstfmt->BytesPerPixel);
+		uqm::log::warn("TFB_DrawCanvas_Fill: Unsupported surface "
+					   "formats: %d bytes/pixel source, %d bytes/pixel destination",
+					   (int)srcfmt->BytesPerPixel, (int)dstfmt->BytesPerPixel);
 		return;
 	}
 
@@ -465,8 +465,8 @@ void TFB_DrawCanvas_FilledImage(TFB_Image* img, int x, int y, int scale,
 
 	if (img == 0)
 	{
-		log_add(log_Warning,
-				"ERROR: TFB_DrawCanvas_FilledImage passed null image ptr");
+		uqm::log::warn(
+			"ERROR: TFB_DrawCanvas_FilledImage passed null image ptr");
 		return;
 	}
 
@@ -601,14 +601,14 @@ void TFB_DrawCanvas_FontChar(TFB_Char* fontChar, TFB_Image* backing,
 
 	if (fontChar == 0)
 	{
-		log_add(log_Warning, "ERROR: "
-							 "TFB_DrawCanvas_FontChar passed null char ptr");
+		uqm::log::warn("ERROR: "
+					   "TFB_DrawCanvas_FontChar passed null char ptr");
 		return;
 	}
 	if (backing == 0)
 	{
-		log_add(log_Warning, "ERROR: "
-							 "TFB_DrawCanvas_FontChar passed null backing ptr");
+		uqm::log::warn("ERROR: "
+					   "TFB_DrawCanvas_FontChar passed null backing ptr");
 		return;
 	}
 
@@ -617,8 +617,8 @@ void TFB_DrawCanvas_FontChar(TFB_Char* fontChar, TFB_Image* backing,
 
 	if (w < 0 || h < 0)
 	{
-		log_add(log_Warning, "ERROR: "
-							 "TFB_DrawCanvas_FontChar have invalid dimensions");
+		uqm::log::warn("ERROR: "
+					   "TFB_DrawCanvas_FontChar have invalid dimensions");
 		return;
 	}
 
@@ -628,10 +628,10 @@ void TFB_DrawCanvas_FontChar(TFB_Char* fontChar, TFB_Image* backing,
 	if (surf->format->BytesPerPixel != 4
 		|| surf->w < w || surf->h < h)
 	{
-		log_add(log_Warning, "ERROR: "
-							 "TFB_DrawCanvas_FontChar bad backing surface: %dx%dx%d; "
-							 "char: %dx%d",
-				surf->w, surf->h, (int)surf->format->BytesPerPixel, w, h);
+		uqm::log::warn("ERROR: "
+					   "TFB_DrawCanvas_FontChar bad backing surface: %dx%dx%d; "
+					   "char: %dx%d",
+					   surf->w, surf->h, (int)surf->format->BytesPerPixel, w, h);
 		UnlockMutex(backing->mutex);
 		return;
 	}
@@ -722,8 +722,8 @@ TFB_DrawCanvas_FillMask(SDL_Surface* base, DrawMode mode, Color* fill)
 {
 	if (!fill)
 	{ // Layer should be the same size or larger than base
-		log_add(log_Warning, "ERROR: TFB_DrawCanvas_FillMask "
-							 "no color were passed down");
+		uqm::log::warn("ERROR: TFB_DrawCanvas_FillMask "
+					   "no color were passed down");
 		return;
 	}
 	else
@@ -732,9 +732,9 @@ TFB_DrawCanvas_FillMask(SDL_Surface* base, DrawMode mode, Color* fill)
 
 		if (!plotFn)
 		{
-			log_add(log_Warning, "ERROR: TFB_DrawCanvas_Mask "
-								 "unsupported draw mode (%d)",
-					(int)mode.kind);
+			uqm::log::warn("ERROR: TFB_DrawCanvas_Mask "
+						   "unsupported draw mode (%d)",
+						   (int)mode.kind);
 			return;
 		}
 
@@ -754,8 +754,8 @@ TFB_DrawCanvas_Mask(SDL_Surface* layer, SDL_Surface* base, DrawMode mode, Color*
 {
 	if (layer->w < base->w || layer->h < base->h)
 	{ // Layer should be the same size or larger than base
-		log_add(log_Warning, "ERROR: TFB_DrawCanvas_Mask "
-							 "layered surface should be not less than base");
+		uqm::log::warn("ERROR: TFB_DrawCanvas_Mask "
+					   "layered surface should be not less than base");
 		return;
 	}
 	else
@@ -763,9 +763,9 @@ TFB_DrawCanvas_Mask(SDL_Surface* layer, SDL_Surface* base, DrawMode mode, Color*
 		RenderPixelFn plotFn = renderpixel_for(base, (RenderKind)mode.kind, true);
 		if (!plotFn)
 		{
-			log_add(log_Warning, "ERROR: TFB_DrawCanvas_Mask "
-								 "unsupported draw mode (%d)",
-					(int)mode.kind);
+			uqm::log::warn("ERROR: TFB_DrawCanvas_Mask "
+						   "unsupported draw mode (%d)",
+						   (int)mode.kind);
 			return;
 		}
 
@@ -833,8 +833,8 @@ TFB_DrawCanvas_New_TrueColor(int w, int h, bool hasalpha)
 									hasalpha ? fmt->Amask : 0);
 	if (!new_surf)
 	{
-		log_add(log_Fatal, "INTERNAL PANIC: Failed to create TFB_Canvas: %s",
-				SDL_GetError());
+		uqm::log::critical("INTERNAL PANIC: Failed to create TFB_Canvas: %s",
+						   SDL_GetError());
 		exit(EXIT_FAILURE);
 	}
 	return new_surf;
@@ -848,8 +848,8 @@ TFB_DrawCanvas_New_ForScreen(int w, int h, bool withalpha)
 
 	if (fmt->palette)
 	{
-		log_add(log_Warning, "TFB_DrawCanvas_New_ForScreen() WARNING:"
-							 "Paletted display format will be slow");
+		uqm::log::warn("TFB_DrawCanvas_New_ForScreen() WARNING:"
+					   "Paletted display format will be slow");
 
 		new_surf = (SDL_Surface*)TFB_DrawCanvas_New_TrueColor(w, h, withalpha);
 	}
@@ -867,9 +867,9 @@ TFB_DrawCanvas_New_ForScreen(int w, int h, bool withalpha)
 
 	if (!new_surf)
 	{
-		log_add(log_Fatal, "TFB_DrawCanvas_New_ForScreen() INTERNAL PANIC:"
+		uqm::log::critical("TFB_DrawCanvas_New_ForScreen() INTERNAL PANIC:"
 						   "Failed to create TFB_Canvas: %s",
-				SDL_GetError());
+						   SDL_GetError());
 		exit(EXIT_FAILURE);
 	}
 	return new_surf;
@@ -883,8 +883,8 @@ TFB_DrawCanvas_New_Paletted(int w, int h, Color palette[256],
 	new_surf = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 8, 0, 0, 0, 0);
 	if (!new_surf)
 	{
-		log_add(log_Fatal, "INTERNAL PANIC: Failed to create TFB_Canvas: %s",
-				SDL_GetError());
+		uqm::log::critical("INTERNAL PANIC: Failed to create TFB_Canvas: %s",
+						   SDL_GetError());
 		exit(EXIT_FAILURE);
 	}
 	if (palette != nullptr)
@@ -975,9 +975,9 @@ TFB_DrawCanvas_New_RotationTarget(TFB_Canvas src_canvas, int angle)
 								   src->format->Amask);
 	if (!newsurf)
 	{
-		log_add(log_Fatal, "TFB_DrawCanvas_New_RotationTarget()"
+		uqm::log::critical("TFB_DrawCanvas_New_RotationTarget()"
 						   " INTERNAL PANIC: Failed to create TFB_Canvas: %s",
-				SDL_GetError());
+						   SDL_GetError());
 		exit(EXIT_FAILURE);
 	}
 	TFB_DrawCanvas_CopyTransparencyInfo(src, newsurf);
@@ -1008,8 +1008,8 @@ void TFB_DrawCanvas_Delete(TFB_Canvas canvas)
 {
 	if (!canvas)
 	{
-		log_add(log_Warning, "INTERNAL PANIC: Attempted"
-							 " to delete a nullptr canvas!");
+		uqm::log::warn("INTERNAL PANIC: Attempted"
+					   " to delete a nullptr canvas!");
 		/* Should we actually die here? */
 	}
 	else
@@ -1094,8 +1094,8 @@ TFB_DrawCanvas_ToScreenFormat(TFB_Canvas canvas)
 	SDL_Surface* result = TFB_DisplayFormatAlpha((SDL_Surface*)canvas);
 	if (result == nullptr)
 	{
-		log_add(log_Debug, "WARNING: Could not convert"
-						   " sprite-canvas to display format.");
+		uqm::log::debug("WARNING: Could not convert"
+						" sprite-canvas to display format.");
 		return canvas;
 	}
 	else if (result == canvas)
@@ -1317,10 +1317,10 @@ void TFB_DrawCanvas_Rescale_Nearest(TFB_Canvas src_canvas, TFB_Canvas dst_canvas
 
 	if (w > dst->w || h > dst->h)
 	{
-		log_add(log_Warning, "TFB_DrawCanvas_Rescale_Nearest: Tried to scale"
-							 " image to size %d %d when dest_canvas has only"
-							 " dimensions of %d %d! Failing.",
-				w, h, dst->w, dst->h);
+		uqm::log::warn("TFB_DrawCanvas_Rescale_Nearest: Tried to scale"
+					   " image to size %d %d when dest_canvas has only"
+					   " dimensions of %d %d! Failing.",
+					   w, h, dst->w, dst->h);
 		return;
 	}
 
@@ -1398,8 +1398,8 @@ void TFB_DrawCanvas_Rescale_Nearest(TFB_Canvas src_canvas, TFB_Canvas dst_canvas
 	}
 	else
 	{
-		log_add(log_Warning, "Tried to deal with unknown BPP: %d -> %d",
-				src->format->BitsPerPixel, dst->format->BitsPerPixel);
+		uqm::log::warn("Tried to deal with unknown BPP: %d -> %d",
+					   src->format->BitsPerPixel, dst->format->BitsPerPixel);
 	}
 	SDL_UnlockSurface(dst);
 	SDL_UnlockSurface(src);
@@ -1548,8 +1548,8 @@ void TFB_DrawCanvas_Rescale_Trilinear(TFB_Canvas src_canvas, TFB_Canvas src_mipm
 
 	if (mmfmt->palette && !srcpal)
 	{
-		log_add(log_Warning, "TFB_DrawCanvas_Rescale_Trilinear: "
-							 "Mipmap is paletted, but source is not! Failing.");
+		uqm::log::warn("TFB_DrawCanvas_Rescale_Trilinear: "
+					   "Mipmap is paletted, but source is not! Failing.");
 		return;
 	}
 
@@ -1608,19 +1608,19 @@ void TFB_DrawCanvas_Rescale_Trilinear(TFB_Canvas src_canvas, TFB_Canvas src_mipm
 
 	if (w > dst->w || h > dst->h)
 	{
-		log_add(log_Warning, "TFB_DrawCanvas_Rescale_Trilinear: "
-							 "Tried to scale image to size %d %d when dest_canvas"
-							 " has only dimensions of %d %d! Failing.",
-				w, h, dst->w, dst->h);
+		uqm::log::warn("TFB_DrawCanvas_Rescale_Trilinear: "
+					   "Tried to scale image to size %d %d when dest_canvas"
+					   " has only dimensions of %d %d! Failing.",
+					   w, h, dst->w, dst->h);
 		return;
 	}
 
 	if ((srcfmt->BytesPerPixel != 1 && srcfmt->BytesPerPixel != 4) || (mmfmt->BytesPerPixel != 1 && mmfmt->BytesPerPixel != 4) || (dst->format->BytesPerPixel != 4))
 	{
-		log_add(log_Warning, "TFB_DrawCanvas_Rescale_Trilinear: "
-							 "Tried to deal with unknown BPP: %d -> %d, mipmap %d",
-				srcfmt->BitsPerPixel, dst->format->BitsPerPixel,
-				mmfmt->BitsPerPixel);
+		uqm::log::warn("TFB_DrawCanvas_Rescale_Trilinear: "
+					   "Tried to deal with unknown BPP: %d -> %d, mipmap %d",
+					   srcfmt->BitsPerPixel, dst->format->BitsPerPixel,
+					   mmfmt->BitsPerPixel);
 		return;
 	}
 
@@ -1892,18 +1892,18 @@ void TFB_DrawCanvas_Rescale_Bilinear(TFB_Canvas src_canvas, TFB_Canvas dst_canva
 
 	if (w > dst->w || h > dst->h)
 	{
-		log_add(log_Warning, "TFB_DrawCanvas_Rescale_Bilinear: "
-							 "Tried to scale image to size %d %d when dest_canvas"
-							 " has only dimensions of %d %d! Failing.",
-				w, h, dst->w, dst->h);
+		uqm::log::warn("TFB_DrawCanvas_Rescale_Bilinear: "
+					   "Tried to scale image to size %d %d when dest_canvas"
+					   " has only dimensions of %d %d! Failing.",
+					   w, h, dst->w, dst->h);
 		return;
 	}
 
 	if ((srcfmt->BytesPerPixel != 1 && srcfmt->BytesPerPixel != 4) || (dst->format->BytesPerPixel != 4))
 	{
-		log_add(log_Warning, "TFB_DrawCanvas_Rescale_Bilinear: "
-							 "Tried to deal with unknown BPP: %d -> %d",
-				srcfmt->BitsPerPixel, dst->format->BitsPerPixel);
+		uqm::log::warn("TFB_DrawCanvas_Rescale_Bilinear: "
+					   "Tried to deal with unknown BPP: %d -> %d",
+					   srcfmt->BitsPerPixel, dst->format->BitsPerPixel);
 		return;
 	}
 
@@ -2044,8 +2044,8 @@ void TFB_DrawCanvas_GetScreenFormat(TFB_PixelFormat* fmt)
 
 	if (sdl->palette)
 	{
-		log_add(log_Warning, "TFB_DrawCanvas_GetScreenFormat() WARNING:"
-							 "Paletted display format will be slow");
+		uqm::log::warn("TFB_DrawCanvas_GetScreenFormat() WARNING:"
+					   "Paletted display format will be slow");
 
 		fmt->BitsPerPixel = 32;
 		fmt->Rmask = 0x000000ff;
@@ -2108,10 +2108,10 @@ void TFB_DrawCanvas_Rotate(TFB_Canvas src_canvas, TFB_Canvas dst_canvas,
 
 	if (size.width > dst->w || size.height > dst->h)
 	{
-		log_add(log_Warning, "TFB_DrawCanvas_Rotate: Tried to rotate"
-							 " image to size %d %d when dst_canvas has only dimensions"
-							 " of %d %d! Failing.",
-				size.width, size.height, dst->w, dst->h);
+		uqm::log::warn("TFB_DrawCanvas_Rotate: Tried to rotate"
+					   " image to size %d %d when dst_canvas has only dimensions"
+					   " of %d %d! Failing.",
+					   size.width, size.height, dst->w, dst->h);
 		return;
 	}
 
@@ -2125,8 +2125,8 @@ void TFB_DrawCanvas_Rotate(TFB_Canvas src_canvas, TFB_Canvas dst_canvas,
 	ret = rotateSurface(src, dst, angle, 0);
 	if (ret != 0)
 	{
-		log_add(log_Warning, "TFB_DrawCanvas_Rotate: WARNING:"
-							 " actual rotation func returned failure\n");
+		uqm::log::warn("TFB_DrawCanvas_Rotate: WARNING:"
+					   " actual rotation func returned failure\n");
 	}
 }
 
@@ -2147,8 +2147,8 @@ void TFB_DrawCanvas_CopyRect(TFB_Canvas source, const RECT* srcRect,
 
 	if (source == 0 || target == 0)
 	{
-		log_add(log_Warning,
-				"ERROR: TFB_DrawCanvas_CopyRect passed null canvas ptr");
+		uqm::log::warn(
+			"ERROR: TFB_DrawCanvas_CopyRect passed null canvas ptr");
 		return;
 	}
 
@@ -2171,8 +2171,8 @@ void TFB_DrawCanvas_SetClipRect(TFB_Canvas canvas, const RECT* clipRect)
 {
 	if (canvas == 0)
 	{
-		log_add(log_Warning,
-				"ERROR: TFB_DrawCanvas_SetClipRect passed null canvas ptr");
+		uqm::log::warn(
+			"ERROR: TFB_DrawCanvas_SetClipRect passed null canvas ptr");
 		return;
 	}
 
@@ -2279,8 +2279,8 @@ TFB_DrawCanvas_TransferColors(TFB_Canvas canvas, bool write,
 
 	if (canvas == 0)
 	{
-		log_add(log_Warning, "ERROR: TFB_DrawCanvas_TransferColors "
-							 "passed null canvas");
+		uqm::log::warn("ERROR: TFB_DrawCanvas_TransferColors "
+					   "passed null canvas");
 		return false;
 	}
 
@@ -2352,17 +2352,17 @@ TFB_DrawCanvas_TransferIndexes(TFB_Canvas canvas, bool write,
 
 	if (canvas == 0)
 	{
-		log_add(log_Warning, "ERROR: TFB_DrawCanvas_TransferIndexes "
-							 "passed null canvas");
+		uqm::log::warn("ERROR: TFB_DrawCanvas_TransferIndexes "
+					   "passed null canvas");
 		return false;
 	}
 	fmt = surf->format;
 	if (!TFB_DrawCanvas_IsPaletted(canvas) || fmt->BitsPerPixel != 8)
 	{
-		log_add(log_Warning, "ERROR: TFB_DrawCanvas_TransferIndexes "
-							 "unimplemeted function: not an 8bpp indexed canvas"
-							 "Actual bits per pixel = %u",
-				fmt->BitsPerPixel);
+		uqm::log::warn("ERROR: TFB_DrawCanvas_TransferIndexes "
+					   "unimplemeted function: not an 8bpp indexed canvas"
+					   "Actual bits per pixel = %u",
+					   fmt->BitsPerPixel);
 		return false;
 	}
 

@@ -22,7 +22,7 @@
 #include <signal.h>
 #include <unistd.h>
 #endif
-#include "libs/log.h"
+#include "core/log/log.h"
 
 #if defined(PROFILE_THREADS) && !defined(WIN32)
 #include <sys/time.h>
@@ -157,8 +157,8 @@ UnQueueThread(TrueThread thread)
 		if (*ptr == nullptr)
 		{
 			// Should not happen.
-			log_add(log_Debug, "Error: Trying to remove non-present thread "
-							   "from thread queue.");
+			uqm::log::debug("Error: Trying to remove non-present thread "
+							"from thread queue.");
 			fflush(stderr);
 			explode();
 		}
@@ -220,8 +220,8 @@ ThreadHelper(void* startInfo)
 	result = (*func)(data);
 
 #ifdef DEBUG_THREADS
-	log_add(log_Debug, "Thread '%s' done (returned %d).",
-			thread->name, result);
+	uqm::log::debug("Thread '%s' done (returned %d).",
+					thread->name, result);
 	fflush(stderr);
 #endif
 
@@ -382,12 +382,9 @@ CreateMutex_SDL(void)
 #ifdef NAMED_SYNCHRO
 		/* logging depends on Mutexes, so we have to use the
 		 * non-threaded version instead */
-		log_add_nothread(log_Fatal, "Could not initialize mutex '%s':"
-									"aborting.",
-						 name);
+		/*log_add_nothread*/ uqm::log::critical("Could not initialize mutex '%s': aborting.", name);
 #else
-		log_add_nothread(log_Fatal, "Could not initialize mutex:"
-									"aborting.");
+		/*log_add_nothread*/ uqm::log::critical("Could not initialize mutex: aborting.");
 #endif
 		exit(EXIT_FAILURE);
 	}
@@ -418,8 +415,7 @@ void LockMutex_SDL(Mutex m)
 	if (mutex->owner && (mutex->syncClass & TRACK_CONTENTION_CLASSES))
 	{ /* logging depends on Mutexes, so we have to use the
 		 * non-threaded version instead */
-		log_add_nothread(log_Debug, "Thread '%s' blocking on mutex '%s'",
-						 MyThreadName(), mutex->name);
+		/*log_add_nothread*/ uqm::log::debug("Thread '%s' blocking on mutex '%s'", MyThreadName(), mutex->name);
 	}
 #endif
 	while (SDL_mutexP(mutex->mutex) != 0)
@@ -471,11 +467,11 @@ CreateSemaphore_SDL(uqm::DWORD initial
 	if (sem->sem == nullptr)
 	{
 #ifdef NAMED_SYNCHRO
-		log_add(log_Fatal, "Could not initialize semaphore '%s':"
+		uqm::log::critical("Could not initialize semaphore '%s':"
 						   " aborting.",
-				name);
+						   name);
 #else
-		log_add(log_Fatal, "Could not initialize semaphore:"
+		uqm::log::critical("Could not initialize semaphore:"
 						   " aborting.");
 #endif
 		exit(EXIT_FAILURE);
@@ -497,8 +493,8 @@ void SetSemaphore_SDL(Semaphore s)
 	bool contention = !(SDL_SemValue(sem->sem));
 	if (contention && (sem->syncClass & TRACK_CONTENTION_CLASSES))
 	{
-		log_add(log_Debug, "Thread '%s' blocking on semaphore '%s'",
-				MyThreadName(), sem->name);
+		uqm::log::debug("Thread '%s' blocking on semaphore '%s'",
+						MyThreadName(), sem->name);
 	}
 #endif
 	while (SDL_SemWait(sem->sem) == -1)
@@ -508,9 +504,9 @@ void SetSemaphore_SDL(Semaphore s)
 #ifdef TRACK_CONTENTION
 	if (contention && (sem->syncClass & TRACK_CONTENTION_CLASSES))
 	{
-		log_add(log_Debug, "Thread '%s' awakens,"
-						   " released from semaphore '%s'",
-				MyThreadName(), sem->name);
+		uqm::log::debug("Thread '%s' awakens,"
+						" released from semaphore '%s'",
+						MyThreadName(), sem->name);
 	}
 #endif
 }
@@ -552,11 +548,11 @@ CreateRecursiveMutex_SDL(void)
 	if (mtx->mutex == nullptr)
 	{
 #ifdef NAMED_SYNCHRO
-		log_add(log_Fatal, "Could not initialize recursive "
+		uqm::log::critical("Could not initialize recursive "
 						   "mutex '%s': aborting.",
-				name);
+						   name);
 #else
-		log_add(log_Fatal, "Could not initialize recursive "
+		uqm::log::critical("Could not initialize recursive "
 						   "mutex: aborting.");
 #endif
 		exit(EXIT_FAILURE);
@@ -585,8 +581,8 @@ void LockRecursiveMutex_SDL(RecursiveMutex val)
 #ifdef TRACK_CONTENTION
 		if (mtx->thread_id && (mtx->syncClass & TRACK_CONTENTION_CLASSES))
 		{
-			log_add(log_Debug, "Thread '%s' blocking on '%s'",
-					MyThreadName(), mtx->name);
+			uqm::log::debug("Thread '%s' blocking on '%s'",
+							MyThreadName(), mtx->name);
 		}
 #endif
 		while (SDL_mutexP(mtx->mutex))
@@ -605,9 +601,9 @@ void UnlockRecursiveMutex_SDL(RecursiveMutex val)
 	if (!mtx->locks || mtx->thread_id != thread_id)
 	{
 #ifdef NAMED_SYNCHRO
-		log_add(log_Debug, "'%s' attempted to unlock %s when it "
-						   "didn't hold it",
-				MyThreadName(), mtx->name);
+		uqm::log::debug("'%s' attempted to unlock %s when it "
+						"didn't hold it",
+						MyThreadName(), mtx->name);
 #endif
 	}
 	else
@@ -650,11 +646,11 @@ CreateCondVar_SDL(void)
 	if ((cv->cond == nullptr) || (cv->mutex == nullptr))
 	{
 #ifdef NAMED_SYNCHRO
-		log_add(log_Fatal, "Could not initialize condition variable '%s':"
+		uqm::log::critical("Could not initialize condition variable '%s':"
 						   " aborting.",
-				name);
+						   name);
 #else
-		log_add(log_Fatal, "Could not initialize condition variable:"
+		uqm::log::critical("Could not initialize condition variable:"
 						   " aborting.");
 #endif
 		exit(EXIT_FAILURE);
@@ -681,8 +677,8 @@ void WaitCondVar_SDL(CondVar c)
 #ifdef TRACK_CONTENTION
 	if (cv->syncClass & TRACK_CONTENTION_CLASSES)
 	{
-		log_add(log_Debug, "Thread '%s' waiting for signal from '%s'",
-				MyThreadName(), cv->name);
+		uqm::log::debug("Thread '%s' waiting for signal from '%s'",
+						MyThreadName(), cv->name);
 	}
 #endif
 	while (SDL_CondWait(cv->cond, cv->mutex) != 0)
@@ -692,9 +688,9 @@ void WaitCondVar_SDL(CondVar c)
 #ifdef TRACK_CONTENTION
 	if (cv->syncClass & TRACK_CONTENTION_CLASSES)
 	{
-		log_add(log_Debug, "Thread '%s' received signal from '%s',"
-						   " awakening.",
-				MyThreadName(), cv->name);
+		uqm::log::debug("Thread '%s' received signal from '%s',"
+						" awakening.",
+						MyThreadName(), cv->name);
 	}
 #endif
 	SDL_mutexV(cv->mutex);

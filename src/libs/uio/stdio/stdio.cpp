@@ -931,6 +931,6 @@ stdio_GPDirData_free(stdio_GPDirData* gPDirData)
 #ifdef uio_MEM_DEBUG
 	uio_MemDebug_debugFree(stdio_GPDirData, (void*)gPDirData);
 #endif
-	
+
 	delete gPDirData;
 }

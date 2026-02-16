@@ -57,7 +57,7 @@
 #include "libs/mathlib.h"
 // for TFB_Random()
 #include "libs/reslib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/uio.h"
 
 
@@ -1110,7 +1110,7 @@ DrawTeamString(MELEE_STATE* pMS, uqm::COUNT side, uqm::COUNT HiLiteState,
 	SetContextFont(MicroFont);
 
 	lfText.pStr = (teamName != nullptr) ? teamName :
-									   MeleeSetup_getTeamName(pMS->meleeSetup, side);
+										  MeleeSetup_getTeamName(pMS->meleeSetup, side);
 	lfText.baseline.y = r.corner.y + r.extent.height - RES_SCALE(3);
 	lfText.baseline.x = r.corner.x + RES_SCALE(1);
 	lfText.align = ALIGN_LEFT;
@@ -2480,9 +2480,9 @@ check_for_disconnects(MELEE_STATE* pMS)
 		{
 			PlayerControl[player] = HUMAN_CONTROL | STANDARD_RATING;
 			DrawControls(player, false);
-			log_add(log_User, "Player %d has disconnected; shifting "
-							  "controls\n",
-					player);
+			uqm::log::info("Player %d has disconnected; shifting "
+						   "controls\n",
+						   player);
 		}
 	}
 
@@ -2520,9 +2520,9 @@ nextControlType(uqm::COUNT which_side)
 			break;
 #endif /* NETPLAY */
 		default:
-			log_add(log_Error, "Error: Bad control type (%d) in "
-							   "nextControlType().\n",
-					PlayerControl[which_side]);
+			uqm::log::error("Error: Bad control type (%d) in "
+							"nextControlType().\n",
+							PlayerControl[which_side]);
 			PlayerControl[which_side] = HUMAN_CONTROL | STANDARD_RATING;
 			break;
 	}

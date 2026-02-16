@@ -16,7 +16,7 @@
 
 #include "uqmlog.h"
 #include "loginternal.h"
-#include "msgbox.h"
+#include "core/log/msgbox/msgbox.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdarg.h>
@@ -132,25 +132,25 @@ queueNonThreaded(void)
 	memcpy(queue[slot], msgNoThread, sizeof(msgNoThread));
 }
 
-void log_init(int max_lines)
-{
-	int i;
-
-	maxDisp = max_lines;
-	streamOut = stderr;
-
-	// pre-term queue strings
-	for (i = 0; i < MAX_LOG_ENTRIES; ++i)
-	{
-		queue[i][MAX_LOG_ENTRY_SIZE - 1] = '\0';
-	}
-
-	msgBuf[sizeof(msgBuf) - 1] = '\0';
-	msgNoThread[sizeof(msgNoThread) - 1] = '\0';
-
-	// install exit handlers
-	atexit(exitCallback);
-}
+//void log_init(int max_lines)
+//{
+//	int i;
+//
+//	maxDisp = max_lines;
+//	streamOut = stderr;
+//
+//	// pre-term queue strings
+//	for (i = 0; i < MAX_LOG_ENTRIES; ++i)
+//	{
+//		queue[i][MAX_LOG_ENTRY_SIZE - 1] = '\0';
+//	}
+//
+//	msgBuf[sizeof(msgBuf) - 1] = '\0';
+//	msgNoThread[sizeof(msgNoThread) - 1] = '\0';
+//
+//	// install exit handlers
+//	atexit(exitCallback);
+//}
 
 void log_initThreads(void)
 {
@@ -273,71 +273,71 @@ void log_captureLines(int num)
 	unlockQueue();
 }
 
-static void
-exitCallback(void)
-{
-	if (showBox)
-	{
-		displayLog(errorBox);
-	}
-
-	log_exit(0);
-}
-
-static void
-displayLog(bool isError)
-{
-	char* p = msgBuf;
-	int left = sizeof(msgBuf) - 1;
-	int len;
-	int ptr;
-
-	if (isError)
-	{
-		strcpy(p, "The Ur-Quan Masters MegaMod encountered a fatal error.\n\n"
-				  "Part of the log follows:\n\n");
-		len = strlen(p);
-		p += len;
-		left -= len;
-	}
-
-	// Glue the log entries together
-	// Locking is not a good idea at this point and we do not
-	// really need it -- the worst that can happen is we get
-	// an extra or an incomplete message
-	for (ptr = qtail; ptr != qhead && left > 0;
-		 ptr = (ptr + 1) % MAX_LOG_ENTRIES)
-	{
-		len = strlen(queue[ptr]) + 1;
-		if (len > left)
-		{
-			len = left;
-		}
-		memcpy(p, queue[ptr], len);
-		p[len - 1] = '\n';
-		p += len;
-		left -= len;
-	}
-
-	// Glue the non-threaded message if present
-	if (noThreadReady)
-	{
-		noThreadReady = false;
-		len = strlen(msgNoThread);
-		if (len > left)
-		{
-			len = left;
-		}
-		memcpy(p, msgNoThread, len);
-		p += len;
-		left -= len;
-	}
-
-	*p = '\0';
-
-	log_displayBox("The Ur-Quan Masters", isError, msgBuf);
-}
-
+//static void
+//exitCallback(void)
+//{
+//	if (showBox)
+//	{
+//		displayLog(errorBox);
+//	}
+//
+//	log_exit(0);
+//}
+//
+//static void
+//displayLog(bool isError)
+//{
+//	char* p = msgBuf;
+//	int left = sizeof(msgBuf) - 1;
+//	int len;
+//	int ptr;
+//
+//	if (isError)
+//	{
+//		strcpy(p, "The Ur-Quan Masters MegaMod encountered a fatal error.\n\n"
+//				  "Part of the log follows:\n\n");
+//		len = strlen(p);
+//		p += len;
+//		left -= len;
+//	}
+//
+//	// Glue the log entries together
+//	// Locking is not a good idea at this point and we do not
+//	// really need it -- the worst that can happen is we get
+//	// an extra or an incomplete message
+//	for (ptr = qtail; ptr != qhead && left > 0;
+//		 ptr = (ptr + 1) % MAX_LOG_ENTRIES)
+//	{
+//		len = strlen(queue[ptr]) + 1;
+//		if (len > left)
+//		{
+//			len = left;
+//		}
+//		memcpy(p, queue[ptr], len);
+//		p[len - 1] = '\n';
+//		p += len;
+//		left -= len;
+//	}
+//
+//	// Glue the non-threaded message if present
+//	if (noThreadReady)
+//	{
+//		noThreadReady = false;
+//		len = strlen(msgNoThread);
+//		if (len > left)
+//		{
+//			len = left;
+//		}
+//		memcpy(p, msgNoThread, len);
+//		p += len;
+//		left -= len;
+//	}
+//
+//	*p = '\0';
+//
+//	log_displayBox("The Ur-Quan Masters", isError, msgBuf);
+//}
+//
 
 namespace error
 {

@@ -28,7 +28,7 @@
 #include "../sounds.h"
 #include "port.h"
 #include "libs/gfxlib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/tasklib.h"
 
 #include <stdlib.h>
@@ -85,7 +85,7 @@ drawSupportShip(ROSTER_STATE* rosterState, bool filled, bool saveFrame)
 
 		savedShipFrame = SaveContextFrame(&savedShipFrame_r);
 
-		log_add(log_Debug, "Saved x:%u, y:%u", savedShipFrame_r.corner.x, savedShipFrame_r.corner.y);
+		uqm::log::debug("Saved x:%u, y:%u", savedShipFrame_r.corner.x, savedShipFrame_r.corner.y);
 	}
 	else
 	{

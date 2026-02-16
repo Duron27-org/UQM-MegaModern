@@ -18,7 +18,7 @@
 
 #include "resintrn.h"
 #include "libs/memlib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 
 
 void* GetResourceData(uio_Stream* fp, uqm::DWORD length)
@@ -36,7 +36,7 @@ void* GetResourceData(uio_Stream* fp, uqm::DWORD length)
 	}
 	if (compLen != ~(uqm::DWORD)0)
 	{
-		log_add(log_Warning, "LZ-compressed binary data not supported");
+		uqm::log::warn("LZ-compressed binary data not supported");
 		return nullptr;
 	}
 	length -= sizeof(uqm::DWORD);

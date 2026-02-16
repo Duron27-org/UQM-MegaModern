@@ -20,7 +20,7 @@
 #include "controls.h"
 #include "libs/inplib.h"
 #include "libs/memlib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "globdata.h"
 #include "options.h"
 #include "sounds.h"
@@ -250,9 +250,9 @@ bool DoTextEntry(TEXTENTRY_STATE* pTES)
 			{
 				pTES->JoyRegLength = lwlen;
 			}
-			log_add(log_Warning, "Warning: Joystick upper-lower registers"
-								 " size mismatch; using the smallest subset (%d)",
-					pTES->JoyRegLength);
+			uqm::log::warn("Warning: Joystick upper-lower registers"
+						   " size mismatch; using the smallest subset (%d)",
+						   pTES->JoyRegLength);
 		}
 
 		pTES->CacheStr = (uqm::CHAR_T*)HMalloc(pTES->MaxSize * sizeof(*pTES->CacheStr));

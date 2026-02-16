@@ -17,7 +17,7 @@
 #include "gfx_common.h"
 #include "tfb_draw.h"
 #include "drawcmd.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/memlib.h"
 
 
@@ -340,8 +340,8 @@ TFB_DrawImage_New_Rotated(TFB_Image* img, int angle)
 	/* sanity check */
 	if (!img->NormalImg)
 	{
-		log_add(log_Warning, "TFB_DrawImage_New_Rotated: "
-							 "source canvas is nullptr! Failing.");
+		uqm::log::warn("TFB_DrawImage_New_Rotated: "
+					   "source canvas is nullptr! Failing.");
 		return nullptr;
 	}
 
@@ -349,8 +349,8 @@ TFB_DrawImage_New_Rotated(TFB_Image* img, int angle)
 	dst = TFB_DrawCanvas_New_RotationTarget(img->NormalImg, angle);
 	if (!dst)
 	{
-		log_add(log_Warning, "TFB_DrawImage_New_Rotated: "
-							 "rotation target canvas not created! Failing.");
+		uqm::log::warn("TFB_DrawImage_New_Rotated: "
+					   "rotation target canvas not created! Failing.");
 		return nullptr;
 	}
 	TFB_DrawCanvas_Rotate(img->NormalImg, dst, angle, size);
@@ -397,7 +397,7 @@ void TFB_DrawImage_Delete(TFB_Image* image)
 {
 	if (image == 0)
 	{
-		log_add(log_Warning, "INTERNAL ERROR: Tried to delete a null image!");
+		uqm::log::warn("INTERNAL ERROR: Tried to delete a null image!");
 		/* Should we die here? */
 		return;
 	}

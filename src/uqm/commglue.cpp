@@ -23,7 +23,7 @@
 // For instantVictory
 #include "races.h"
 #include "lua/luacomm.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 
 #include <stdarg.h>
 #include <stdlib.h>
@@ -576,7 +576,7 @@ void construct_response(uqm::CHAR_T* buf, int R /* promoted from RESPONSE_REF */
 	//   the buffer size as an argument
 	if ((buf_start == shared_phrase_buf) && (buf > shared_phrase_buf + sizeof(shared_phrase_buf)))
 	{
-		log_add(log_Fatal, "Error: shared_phrase_buf size exceeded,"
+		uqm::log::critical("Error: shared_phrase_buf size exceeded,"
 						   " please increase!\n");
 		exit(EXIT_FAILURE);
 	}

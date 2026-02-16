@@ -35,7 +35,7 @@
 #include "libs/graphics/gfx_common.h"
 #include "libs/graphics/drawable.h"
 #include "libs/mathlib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "options.h"
 #include "uqm/menustat.h"
 #include "../util.h"
@@ -1984,8 +1984,8 @@ LanderFire(uqm::SIZE facing)
 						 /* shot images immediately follow the lander images */
 						 facing + ANGLE_TO_FACING(FULL_CIRCLE));
 
-	if (CurrentInputState.key[PlayerControls[0]][KEY_UP]
-		|| CurrentInputState.key[PlayerControls[0]][KEY_THRUST])
+	if (CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_UP]
+		|| CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_THRUST])
 	{
 		GetCurrentVelocityComponents(&GLOBAL(velocity), &wdx, &wdy);
 	}
@@ -2307,7 +2307,7 @@ DoPlanetSide(LanderInputState* pMS)
 		return true;
 	}
 	else if (crew_left /* alive and taking off */
-			 && ((CurrentInputState.key[PlayerControls[0]][KEY_ESCAPE] || CurrentInputState.key[PlayerControls[0]][KEY_SPECIAL])
+			 && ((CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_ESCAPE] || CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_SPECIAL])
 				 || planetSideDesc->InTransit))
 	{
 		return false;
@@ -2341,8 +2341,7 @@ DoPlanetSide(LanderInputState* pMS)
 			else
 			{ // We could not allocate because the queue was full, but
 				// we will get another chance on the next iteration
-				log_add(log_Warning, "DoPlanetSide(): could not"
-									 " allocate explosion element!");
+				uqm::log::warn("DoPlanetSide(): could not allocate explosion element!");
 			}
 		}
 	}
@@ -2356,12 +2355,12 @@ DoPlanetSide(LanderInputState* pMS)
 			{
 				--turn_wait;
 			}
-			else if (CurrentInputState.key[PlayerControls[0]][KEY_LEFT] || CurrentInputState.key[PlayerControls[0]][KEY_RIGHT])
+			else if (CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_LEFT] || CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_RIGHT])
 			{
 				uqm::COUNT landerSpeedNumer;
 				uqm::COUNT angle;
 
-				if (CurrentInputState.key[PlayerControls[0]][KEY_LEFT])
+				if (CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_LEFT])
 				{
 					--index;
 				}
@@ -2390,8 +2389,8 @@ DoPlanetSide(LanderInputState* pMS)
 
 				turn_wait = SHUTTLE_TURN_WAIT;
 			}
-			if (CurrentInputState.key[PlayerControls[0]][KEY_THRUST]
-				|| CurrentInputState.key[PlayerControls[0]][KEY_UP])
+			if (CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_THRUST]
+				|| CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_UP])
 			{
 				GetNextVelocityComponents(
 					&GLOBAL(velocity), &dx, &dy, 1);
@@ -2405,7 +2404,7 @@ DoPlanetSide(LanderInputState* pMS)
 			{
 				--weapon_wait;
 			}
-			else if (CurrentInputState.key[PlayerControls[0]][KEY_WEAPON])
+			else if (CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_WEAPON])
 			{
 				LanderFire(index);
 

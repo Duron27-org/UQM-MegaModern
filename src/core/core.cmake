@@ -5,6 +5,8 @@ set(uqm_src_core_master_files "")
 
 ############################################################
 # Sub-directories
+include("src/core/log/log.cmake")
+list(APPEND uqm_src_core_master_files ${uqm_src_core_log_master_files})
 include("src/core/memory/memory.cmake")
 list(APPEND uqm_src_core_master_files ${uqm_src_core_memory_master_files})
 include("src/core/misc/misc.cmake")

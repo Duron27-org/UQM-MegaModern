@@ -69,7 +69,7 @@
 #define isdummy(n) ((n) == dummynode)
 
 static const Node dummynode_ = {
-	{NILCONSTANT},		  /* value */
+	{NILCONSTANT},			 /* value */
 	{{NILCONSTANT, nullptr}} /* key */
 };
 
@@ -514,9 +514,9 @@ TValue* luaH_newkey(lua_State* L, Table* t, const TValue* key)
 			{
 				othern = gnext(othern); /* find previous */
 			}
-			gnext(othern) = n; /* redo the chain with `n' in place of `mp' */
-			*n = *mp;		   /* copy colliding node into free pos. (mp->next also goes) */
-			gnext(mp) = nullptr;  /* now `mp' is free */
+			gnext(othern) = n;	 /* redo the chain with `n' in place of `mp' */
+			*n = *mp;			 /* copy colliding node into free pos. (mp->next also goes) */
+			gnext(mp) = nullptr; /* now `mp' is free */
 			setnilvalue(gval(mp));
 		}
 		else

@@ -24,7 +24,7 @@
 #include "libs/inplib.h"
 #include "libs/sound/trackplayer.h"
 #include "libs/mathlib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "hyper.h"
 #include "colors.h"
 #include "sis.h"
@@ -635,7 +635,7 @@ void SleepGame(void)
 		return; // Do not sleep the game when already asked to quit
 	}
 
-	log_add(log_Debug, "Game is going to sleep");
+	uqm::log::debug("Game is going to sleep");
 
 	if (PlayingTrack())
 	{
@@ -649,7 +649,7 @@ void SleepGame(void)
 		SleepThread(ONE_SECOND / 2);
 	}
 
-	log_add(log_Debug, "Game is waking up");
+	uqm::log::debug("Game is waking up");
 
 	WaitForNoInput(ONE_SECOND / 10, true);
 

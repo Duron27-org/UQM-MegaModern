@@ -36,9 +36,9 @@
 ** Change this macro to accept other modes for 'fopen' besides
 ** the standard ones.
 */
-#define lua_checkmode(mode)                                                                                     \
+#define lua_checkmode(mode)                                                                                        \
 	(*mode != '\0' && strchr("rwa", *(mode++)) != nullptr && (*mode != '+' || ++mode) && /* skip if char is '+' */ \
-	 (*mode != 'b' || ++mode) &&													  /* skip if char is 'b' */ \
+	 (*mode != 'b' || ++mode) &&														 /* skip if char is 'b' */ \
 	 (*mode == '\0'))
 
 #endif
@@ -192,7 +192,7 @@ static int aux_close(lua_State* L)
 	LStream* p = tolstream(L);
 	lua_CFunction cf = p->closef;
 	p->closef = nullptr; /* mark stream as closed */
-	return (*cf)(L);  /* close it */
+	return (*cf)(L);	 /* close it */
 }
 
 
@@ -707,7 +707,7 @@ static const luaL_Reg iolib[] = {
 	{"tmpfile", io_tmpfile},
 	{"type",	 io_type	},
 	{"write",	  io_write  },
-	{nullptr,	   nullptr	   }
+	{nullptr,	  nullptr	 }
 };
 
 
@@ -724,7 +724,7 @@ static const luaL_Reg flib[] = {
 	{"write",	  f_write	 },
 	{"__gc",		 f_gc		 },
 	{"__tostring", f_tostring},
-	{nullptr,		   nullptr	   }
+	{nullptr,	  nullptr	 }
 };
 
 

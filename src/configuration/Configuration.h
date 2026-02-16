@@ -8,5 +8,5 @@ struct OptionStruct;
 
 void getUserConfigOptions(uqm::OptionsStruct& options);
 
-}
+} // namespace uqm
 #endif /* UQM_CONFIGURATION_CONFIG_H_ */

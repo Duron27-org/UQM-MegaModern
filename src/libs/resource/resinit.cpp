@@ -20,7 +20,7 @@
 #include "libs/memlib.h"
 #include "options.h"
 #include "types.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/gfxlib.h"
 #include "libs/reslib.h"
 #include "libs/sndlib.h"
@@ -66,7 +66,7 @@ newResourceDesc(const char* res_id, const char* resval)
 	path = strchr(resval, ':');
 	if (path == nullptr)
 	{
-		log_add(log_Warning, "Could not find type information for resource '%s'", res_id);
+		uqm::log::warn("Could not find type information for resource '%s'", res_id);
 		strncpy(typestr, "sys.UNKNOWNRES", TYPESIZ);
 		path = resval;
 	}
@@ -89,7 +89,7 @@ newResourceDesc(const char* res_id, const char* resval)
 	if (handlerdesc == nullptr)
 	{
 		path = resval;
-		log_add(log_Warning, "Illegal type '%s' for resource '%s'; treating as UNKNOWNRES", typestr, res_id);
+		uqm::log::warn("Illegal type '%s' for resource '%s'; treating as UNKNOWNRES", typestr, res_id);
 		handlerdesc = lookupResourceDesc(idx, "sys.UNKNOWNRES");
 	}
 
@@ -97,9 +97,9 @@ newResourceDesc(const char* res_id, const char* resval)
 
 	if (vtable->loadFun == nullptr)
 	{
-		log_add(log_Warning, "Warning: Unable to load '%s'; no handler "
-							 "for type %s defined.",
-				res_id, typestr);
+		uqm::log::warn("Warning: Unable to load '%s'; no handler "
+					   "for type %s defined.",
+					   res_id, typestr);
 		return nullptr;
 	}
 
@@ -260,7 +260,7 @@ DescriptorToColor(const char* descriptor, RESOURCE_DATA* resdata)
 
 	if (descriptor[bytesParsed] != '\0')
 	{
-		log_add(log_Warning, "Junk after color resource string.");
+		uqm::log::warn("Junk after color resource string.");
 	}
 
 	maxComponentValue = (1 << componentBits) - 1;
@@ -271,15 +271,15 @@ DescriptorToColor(const char* descriptor, RESOURCE_DATA* resdata)
 		if (comps[compI] < 0)
 		{
 			comps[compI] = 0;
-			log_add(log_Warning, "Color component value too small; "
-								 "value clipped.");
+			uqm::log::warn("Color component value too small; "
+						   "value clipped.");
 		}
 
 		if (comps[compI] > (long)maxComponentValue)
 		{
 			comps[compI] = maxComponentValue;
-			log_add(log_Warning, "Color component value too large; "
-								 "value clipped.");
+			uqm::log::warn("Color component value too large; "
+						   "value clipped.");
 		}
 	}
 
@@ -295,7 +295,7 @@ DescriptorToColor(const char* descriptor, RESOURCE_DATA* resdata)
 	return;
 
 fail:
-	log_add(log_Error, "Invalid color description string for resource.\n");
+	uqm::log::error("Invalid color description string for resource.\n");
 	resdata->num = 0x00000000;
 }
 
@@ -440,11 +440,11 @@ void SaveResourceIndex(uio_DirHandle* dir, const char* rmpfile, const char* root
 		ResourceDesc* value = (ResourceDesc*)CharHashTable_find(_get_current_index_header()->map, key);
 		if (!value)
 		{
-			log_add(log_Warning, "Resource %s had no value", key);
+			uqm::log::warn("Resource %s had no value", key);
 		}
 		else if (!value->vtable)
 		{
-			log_add(log_Warning, "Resource %s had no type", key);
+			uqm::log::warn("Resource %s had no type", key);
 		}
 		else if (value->vtable->toString)
 		{
@@ -558,7 +558,7 @@ void res_PutString(const char* key, const char* value)
 	{
 		char* newValue = (char*)HMalloc(srclen + 1);
 		char* oldValue = desc->fname;
-		log_add(log_Warning, "Reallocating string space for '%s'", key);
+		uqm::log::warn("Reallocating string space for '%s'", key);
 		strncpy(newValue, value, srclen + 1);
 		desc->resdata.str = newValue;
 		desc->fname = newValue;
@@ -688,7 +688,7 @@ bool res_Remove(const char* key)
 		{
 			if (oldDesc->refcount > 0)
 			{
-				log_add(log_Warning, "WARNING: Replacing '%s' while it is live", key);
+				uqm::log::warn("WARNING: Replacing '%s' while it is live", key);
 			}
 			if (oldDesc->vtable && oldDesc->vtable->freeFun)
 			{

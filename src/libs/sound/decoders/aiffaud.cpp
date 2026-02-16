@@ -35,7 +35,7 @@
 #include "types.h"
 #include "libs/uio.h"
 #include "endian_uqm.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "aiffaud.h"
 
 typedef uint32 aiff_ID;
@@ -382,16 +382,16 @@ aifa_Open(THIS_PTR, uio_DirHandle* dir, const char* filename)
 	}
 	if (fileHdr.chunk.id != aiff_FormID)
 	{
-		log_add(log_Warning, "aifa_Open(): not an aiff file, ID 0x%08x",
-				fileHdr.chunk.id);
+		uqm::log::warn("aifa_Open(): not an aiff file, ID 0x%08x",
+					   fileHdr.chunk.id);
 		aifa_Close(This);
 		return false;
 	}
 	if (fileHdr.type != aiff_FormTypeAIFF && fileHdr.type != aiff_FormTypeAIFC)
 	{
-		log_add(log_Warning, "aifa_Open(): unsupported aiff file"
-							 ", Type 0x%08x",
-				fileHdr.type);
+		uqm::log::warn("aifa_Open(): unsupported aiff file"
+					   ", Type 0x%08x",
+					   fileHdr.type);
 		aifa_Close(This);
 		return false;
 	}
@@ -437,7 +437,7 @@ aifa_Open(THIS_PTR, uio_DirHandle* dir, const char* filename)
 
 	if (aifa->fmtHdr.sampleFrames == 0)
 	{
-		log_add(log_Warning, "aifa_Open(): aiff file has no sound data");
+		uqm::log::warn("aifa_Open(): aiff file has no sound data");
 		aifa_Close(This);
 		return false;
 	}
@@ -446,22 +446,22 @@ aifa_Open(THIS_PTR, uio_DirHandle* dir, const char* filename)
 	aifa->bits_per_sample = (aifa->fmtHdr.sampleSize + 7) & ~7;
 	if (aifa->bits_per_sample == 0 || aifa->bits_per_sample > 16)
 	{ // XXX: for now we do not support 24 and 32 bps
-		log_add(log_Warning, "aifa_Open(): unsupported sample size %u",
-				aifa->bits_per_sample);
+		uqm::log::warn("aifa_Open(): unsupported sample size %u",
+					   aifa->bits_per_sample);
 		aifa_Close(This);
 		return false;
 	}
 	if (aifa->fmtHdr.channels != 1 && aifa->fmtHdr.channels != 2)
 	{
-		log_add(log_Warning, "aifa_Open(): unsupported number of channels %u",
-				(unsigned)aifa->fmtHdr.channels);
+		uqm::log::warn("aifa_Open(): unsupported number of channels %u",
+					   (unsigned)aifa->fmtHdr.channels);
 		aifa_Close(This);
 		return false;
 	}
 	if (aifa->fmtHdr.sampleRate < 300 || aifa->fmtHdr.sampleRate > 128000)
 	{
-		log_add(log_Warning, "aifa_Open(): unsupported sampling rate %ld",
-				(long)aifa->fmtHdr.sampleRate);
+		uqm::log::warn("aifa_Open(): unsupported sampling rate %ld",
+					   (long)aifa->fmtHdr.sampleRate);
 		aifa_Close(This);
 		return false;
 	}
@@ -470,8 +470,8 @@ aifa_Open(THIS_PTR, uio_DirHandle* dir, const char* filename)
 	aifa->file_block = aifa->block_align;
 	if (!aifa->data_ofs)
 	{
-		log_add(log_Warning, "aifa_Open(): bad aiff file,"
-							 " no SSND chunk found");
+		uqm::log::warn("aifa_Open(): bad aiff file,"
+					   " no SSND chunk found");
 		aifa_Close(This);
 		return false;
 	}
@@ -480,8 +480,8 @@ aifa_Open(THIS_PTR, uio_DirHandle* dir, const char* filename)
 	{
 		if (aifa->fmtHdr.extTypeID != 0)
 		{
-			log_add(log_Warning, "aifa_Open(): unsupported extension 0x%08x",
-					aifa->fmtHdr.extTypeID);
+			uqm::log::warn("aifa_Open(): unsupported extension 0x%08x",
+						   aifa->fmtHdr.extTypeID);
 			aifa_Close(This);
 			return false;
 		}
@@ -491,8 +491,8 @@ aifa_Open(THIS_PTR, uio_DirHandle* dir, const char* filename)
 	{
 		if (aifa->fmtHdr.extTypeID != aiff_CompressionTypeSDX2)
 		{
-			log_add(log_Warning, "aifa_Open(): unsupported compression 0x%08x",
-					aifa->fmtHdr.extTypeID);
+			uqm::log::warn("aifa_Open(): unsupported compression 0x%08x",
+						   aifa->fmtHdr.extTypeID);
 			aifa_Close(This);
 			return false;
 		}
@@ -508,8 +508,8 @@ aifa_Open(THIS_PTR, uio_DirHandle* dir, const char* filename)
 
 	if (aifa->comp_type == aifc_Sdx2 && aifa->bits_per_sample != 16)
 	{
-		log_add(log_Warning, "aifa_Open(): unsupported sample size %u for SDX2",
-				(unsigned)aifa->fmtHdr.sampleSize);
+		uqm::log::warn("aifa_Open(): unsupported sample size %u for SDX2",
+					   (unsigned)aifa->fmtHdr.sampleSize);
 		aifa_Close(This);
 		return false;
 	}

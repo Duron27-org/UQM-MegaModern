@@ -28,7 +28,7 @@
 #include "libs/memlib.h"
 #include "libs/uio.h"
 #include "libs/sound/audiocore.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "modaud.h"
 
 #ifdef USE_INTERNAL_MIKMOD
@@ -286,8 +286,8 @@ moda_InitModule(int flags, const TFB_DecoderFormats* fmts)
 
 	if (MikMod_Init(nullptr))
 	{
-		log_add(log_Error, "MikMod_Init() failed, %s",
-				MikMod_strerror(MikMod_errno));
+		uqm::log::error("MikMod_Init() failed, %s",
+						MikMod_strerror(MikMod_errno));
 		return false;
 	}
 
@@ -363,7 +363,7 @@ moda_Open(THIS_PTR, uio_DirHandle* dir, const char* filename)
 	uio_fclose(fp);
 	if (!mod)
 	{
-		log_add(log_Warning, "moda_Open(): could not load %s", filename);
+		uqm::log::warn("moda_Open(): could not load %s", filename);
 		return false;
 	}
 

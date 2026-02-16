@@ -23,7 +23,7 @@
 #include "libs/graphics/gfx_common.h"
 #include "libs/graphics/bbox.h"
 #include "libs/timelib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/misc.h"
 // for TFB_DEBUG_HALT
 #include "options.h"
@@ -50,10 +50,10 @@ static void
 TFB_WaitForSpace(int requested_slots)
 {
 	int old_depth, i;
-	log_add(log_Debug, "DCQ overload (Size = %d, FullSize = %d, "
-					   "Requested = %d).  Sleeping until renderer is done.",
-			DrawCommandQueue.Size, DrawCommandQueue.FullSize,
-			requested_slots);
+	uqm::log::debug("DCQ overload (Size = %d, FullSize = %d, "
+					"Requested = %d).  Sleeping until renderer is done.",
+					DrawCommandQueue.Size, DrawCommandQueue.FullSize,
+					requested_slots);
 	// Restore the DCQ locking level.  I *think* this is
 	// always 1, but...
 	TFB_BatchReset();
@@ -67,8 +67,8 @@ TFB_WaitForSpace(int requested_slots)
 	{
 		LockRecursiveMutex(DCQ_Mutex);
 	}
-	log_add(log_Debug, "DCQ clear (Size = %d, FullSize = %d).  Continuing.",
-			DrawCommandQueue.Size, DrawCommandQueue.FullSize);
+	uqm::log::debug("DCQ clear (Size = %d, FullSize = %d).  Continuing.",
+					DrawCommandQueue.Size, DrawCommandQueue.FullSize);
 }
 
 void Lock_DCQ(int slots)
@@ -194,8 +194,8 @@ int TFB_DrawCommandQueue_Pop(TFB_DrawCommand* target)
 
 	if (DrawCommandQueue.Front == DrawCommandQueue.Back && DrawCommandQueue.Size != DCQ_MAX)
 	{
-		log_add(log_Debug, "Augh!  Assertion failure in DCQ!  "
-						   "Front == Back, Size != DCQ_MAX");
+		uqm::log::debug("Augh!  Assertion failure in DCQ!  "
+						"Front == Back, Size != DCQ_MAX");
 		DrawCommandQueue.Size = 0;
 		Unlock_DCQ();
 		return (0);
@@ -315,8 +315,8 @@ computeFPS(int* fps)
 	if (fps_counter > FPS_PERIOD)
 	{
 		*fps = (int)((float)ONE_SECOND * RenderedFrames / fps_counter);
-		log_add(log_User, "fps %.2f, effective %d",
-				(float)ONE_SECOND / delta_time, *fps);
+		uqm::log::info("fps %.2f, effective %d",
+					   (float)ONE_SECOND / delta_time, *fps);
 
 		fps_counter = 0;
 		RenderedFrames = 0;
@@ -612,8 +612,8 @@ void TFB_FlushGraphics(void)
 
 					if (DC_image == 0)
 					{
-						log_add(log_Debug, "DCQ ERROR: COPYTOIMAGE passed null "
-										   "image ptr");
+						uqm::log::debug("DCQ ERROR: COPYTOIMAGE passed null "
+										"image ptr");
 						break;
 					}
 					LockMutex(DC_image->mutex);
@@ -669,16 +669,16 @@ void TFB_FlushGraphics(void)
 										   cmd->width, cmd->height, &resolutionFactor,
 										   &optWindowType))
 					{
-						log_add(log_Error, "Could not provide requested mode: "
-										   "reverting to last known driver.");
+						uqm::log::error("Could not provide requested mode: "
+										"reverting to last known driver.");
 						// We don't know what exactly failed, so roll it all back
 						if (TFB_ReInitGraphics(oldDriver, oldFlags,
 											   oldWidth, oldHeight, &resolutionFactor,
 											   &optWindowType))
 						{
-							log_add(log_Fatal,
-									"Couldn't reinit at that point either. "
-									"Your video has been somehow tied in knots.");
+							uqm::log::critical(
+								"Couldn't reinit at that point either. "
+								"Your video has been somehow tied in knots.");
 							exit(EXIT_FAILURE);
 						}
 					}

@@ -19,7 +19,7 @@
 
 #include "audiodrv_sdl.h"
 #include "../../sndintrn.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/memlib.h"
 #include <stdlib.h>
 
@@ -156,14 +156,14 @@ mixSDL_Init(audio_Driver* driver, sint32 flags)
 			audio_FORMAT_MONO8, audio_FORMAT_STEREO8,
 			audio_FORMAT_MONO16, audio_FORMAT_STEREO16};
 
-	log_add(log_Info, "Initializing SDL audio subsystem.");
+	uqm::log::info("Initializing SDL audio subsystem.");
 	if ((SDL_InitSubSystem(SDL_INIT_AUDIO)) == -1)
 	{
-		log_add(log_Error, "Couldn't initialize audio subsystem: %s",
-				SDL_GetError());
+		uqm::log::error("Couldn't initialize audio subsystem: %s",
+						SDL_GetError());
 		return -1;
 	}
-	log_add(log_Info, "SDL audio subsystem initialized.");
+	uqm::log::info("SDL audio subsystem initialized.");
 
 	if (flags & audio_QUALITY_HIGH)
 	{
@@ -193,7 +193,7 @@ mixSDL_Init(audio_Driver* driver, sint32 flags)
 	desired.channels = 2;
 	desired.callback = audioCallback;
 
-	log_add(log_Info, "Opening SDL audio device.");
+	uqm::log::info("Opening SDL audio device.");
 #if SDL_MAJOR_VERSION > 1
 	dev = SDL_OpenAudioDevice(nullptr, 0, &desired, &obtained,
 							  SDL_AUDIO_ALLOW_FREQUENCY_CHANGE | SDL_AUDIO_ALLOW_CHANNELS_CHANGE
@@ -217,14 +217,14 @@ mixSDL_Init(audio_Driver* driver, sint32 flags)
 	if (SDL_OpenAudio(&desired, &obtained) < 0)
 #endif
 	{
-		log_add(log_Error, "Unable to open audio device: %s",
-				SDL_GetError());
+		uqm::log::error("Unable to open audio device: %s",
+						SDL_GetError());
 		SDL_QuitSubSystem(SDL_INIT_AUDIO);
 		return -1;
 	}
 	if (obtained.format != desired.format || (obtained.channels != 1 && obtained.channels != 2))
 	{
-		log_add(log_Error, "Unable to obtain desired audio format.");
+		uqm::log::error("Unable to obtain desired audio format.");
 #if SDL_MAJOR_VERSION > 1
 		SDL_CloseAudioDevice(dev);
 #else
@@ -241,19 +241,19 @@ mixSDL_Init(audio_Driver* driver, sint32 flags)
 #else
 		const char* devicename = SDL_GetCurrentAudioDriver();
 #endif
-		log_add(log_Info, "    using %s at %d Hz 16 bit %s, "
-						  "%d samples audio buffer",
-				devicename, obtained.freq,
-				obtained.channels > 1 ? "stereo" : "mono",
-				obtained.samples);
+		uqm::log::info("    using %s at %d Hz 16 bit %s, "
+					   "%d samples audio buffer",
+					   devicename, obtained.freq,
+					   obtained.channels > 1 ? "stereo" : "mono",
+					   obtained.samples);
 	}
 
-	log_add(log_Info, "Initializing mixer.");
+	uqm::log::info("Initializing mixer.");
 	if (!mixer_Init(obtained.freq, MIX_FORMAT_MAKE(2, obtained.channels),
 					quality, MIX_NOFLAGS))
 	{
-		log_add(log_Error, "Mixer initialization failed: %x",
-				mixer_GetError());
+		uqm::log::error("Mixer initialization failed: %x",
+						mixer_GetError());
 #if SDL_MAJOR_VERSION > 1
 		SDL_CloseAudioDevice(dev);
 #else
@@ -262,12 +262,12 @@ mixSDL_Init(audio_Driver* driver, sint32 flags)
 		SDL_QuitSubSystem(SDL_INIT_AUDIO);
 		return -1;
 	}
-	log_add(log_Info, "Mixer initialized.");
+	uqm::log::info("Mixer initialized.");
 
-	log_add(log_Info, "Initializing sound decoders.");
+	uqm::log::info("Initializing sound decoders.");
 	if (SoundDecoder_Init(flags, &formats))
 	{
-		log_add(log_Error, "Sound decoders initialization failed.");
+		uqm::log::error("Sound decoders initialization failed.");
 #if SDL_MAJOR_VERSION > 1
 		SDL_CloseAudioDevice(dev);
 #else
@@ -277,7 +277,7 @@ mixSDL_Init(audio_Driver* driver, sint32 flags)
 		SDL_QuitSubSystem(SDL_INIT_AUDIO);
 		return -1;
 	}
-	log_add(log_Info, "Sound decoders initialized.");
+	uqm::log::info("Sound decoders initialized.");
 
 	*driver = mixSDL_Driver;
 	for (i = 0; i < NUM_SOUNDSOURCES; ++i)
@@ -288,7 +288,7 @@ mixSDL_Init(audio_Driver* driver, sint32 flags)
 
 	if (InitStreamDecoder())
 	{
-		log_add(log_Error, "Stream decoder initialization failed.");
+		uqm::log::error("Stream decoder initialization failed.");
 		// TODO: cleanup source mutexes [or is it "muti"? :) ]
 #if SDL_MAJOR_VERSION > 1
 		SDL_CloseAudioDevice(dev);
@@ -373,7 +373,7 @@ mixSDL_GetError(void)
 		case MIX_OUT_OF_MEMORY:
 			return audio_OUT_OF_MEMORY;
 		default:
-			log_add(log_Debug, "mixSDL_GetError: unknown value %x", value);
+			uqm::log::debug("mixSDL_GetError: unknown value %x", value);
 			return audio_DRIVER_FAILURE;
 			break;
 	}

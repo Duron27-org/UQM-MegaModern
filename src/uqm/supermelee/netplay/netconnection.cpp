@@ -23,7 +23,7 @@
 #include "netrcv.h"
 
 #if defined(DEBUG) || defined(NETPLAY_DEBUG)
-#include "libs/log.h"
+#include "core/log/log.h"
 #endif
 #if defined(NETPLAY_DEBUG) && defined(NETPLAY_DEBUG_FILE)
 #include "options.h"
@@ -75,7 +75,7 @@ NetConnection_open(int player, const NetplayPeerOptions* options,
 		now = time(nullptr);
 		if (now == (time_t)-1)
 		{
-			log_add(log_Fatal, "time() failed: %s.", strerror(errno));
+			uqm::log::critical("time() failed: %s.", strerror(errno));
 			abort();
 		}
 
@@ -88,7 +88,7 @@ NetConnection_open(int player, const NetplayPeerOptions* options,
 								  "debug/netlog-%Y%m%d%H%M%S", nowTm);
 		if (strftimeResult == 0)
 		{
-			log_add(log_Fatal, "strftime() failed: %s.", strerror(errno));
+			uqm::log::critical("strftime() failed: %s.", strerror(errno));
 			abort();
 		}
 
@@ -97,15 +97,15 @@ NetConnection_open(int player, const NetplayPeerOptions* options,
 		conn->debugFile = uio_fopen(configDir, dumpFileName, "wt");
 		if (conn->debugFile == nullptr)
 		{
-			log_add(log_Debug, "Not creating a netplay debug log for "
-							   "player %d.",
-					player);
+			uqm::log::debug("Not creating a netplay debug log for "
+							"player %d.",
+							player);
 		}
 		else
 		{
-			log_add(log_Debug, "Creating netplay debug log '%s' for "
-							   "player %d.",
-					dumpFileName, player);
+			uqm::log::debug("Creating netplay debug log '%s' for "
+							"player %d.",
+							dumpFileName, player);
 			if (netplayDebugFile == nullptr)
 			{
 				// Debug info relating to no specific network connection
@@ -342,16 +342,16 @@ void* NetConnection_getResetCallbackArg(const NetConnection* conn)
 void NetConnection_setState(NetConnection* conn, NetState state)
 {
 #ifdef NETPLAY_DEBUG
-	log_add(log_Debug, "NETPLAY: [%d] +/- Connection state changed to: "
-					   "%s.\n",
-			conn->player, netStateData[state].name);
+	uqm::log::debug("NETPLAY: [%d] +/- Connection state changed to: "
+					"%s.\n",
+					conn->player, netStateData[state].name);
 #endif
 #ifdef DEBUG
 	if (state == conn->state)
 	{
-		log_add(log_Warning, "NETPLAY: [%d]     Connection state set to %s "
-							 "while already in that state.\n",
-				conn->player, netStateData[state].name);
+		uqm::log::warn("NETPLAY: [%d]     Connection state set to %s "
+					   "while already in that state.\n",
+					   conn->player, netStateData[state].name);
 	}
 #endif
 	conn->state = state;

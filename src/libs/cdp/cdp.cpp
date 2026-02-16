@@ -73,7 +73,7 @@ static cdp_Module cdp_modules[MAX_CDPS + 1] =
 	{
 		{true,  true,	 nullptr, 1, &cdp_kernel_info},
 
-		{false, false, nullptr, 0, nullptr			}  // term
+		{false, false, nullptr, 0, nullptr		  }	// term
 };
 
 extern uio_DirHandle* cdpDir;

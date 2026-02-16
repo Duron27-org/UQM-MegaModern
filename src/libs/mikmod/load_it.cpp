@@ -165,8 +165,8 @@ typedef struct ITNOTE
 static ULONG* paraptr = nullptr; /* parapointer array (see IT docs) */
 static ITHEADER* mh = nullptr;
 static ITNOTE* itpat = nullptr; /* allocate to space for one full pattern */
-static UBYTE* mask = nullptr;	 /* arrays allocated to 64 elements and used for */
-static ITNOTE* last = nullptr;	 /* uncompressing IT's pattern information */
+static UBYTE* mask = nullptr;	/* arrays allocated to 64 elements and used for */
+static ITNOTE* last = nullptr;	/* uncompressing IT's pattern information */
 static int numtrk = 0;
 static unsigned int old_effect; /* if set, use S3M old-effects stuffs */
 

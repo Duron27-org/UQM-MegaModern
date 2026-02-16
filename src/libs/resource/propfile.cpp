@@ -19,7 +19,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "propfile.h"
 #include "libs/reslib.h"
 #include "options.h"
@@ -89,13 +89,13 @@ void PropFile_from_string(char* d, PROPERTY_HANDLER handler, const char* prefix)
 		}
 		if (i >= len)
 		{ /* Bare key at EOF */
-			log_add(log_Warning, "Warning: Bare keyword at EOF");
+			uqm::log::warn("Warning: Bare keyword at EOF");
 			break;
 		}
 		/* Comments here mean incomplete line too */
 		if (d[i] != '=')
 		{
-			log_add(log_Warning, "Warning: Key without value");
+			uqm::log::warn("Warning: Key without value");
 			while ((i < len) && (d[i] != '\n'))
 			{
 				i++;

@@ -11,8 +11,8 @@ set(uqm_src_libs_math_files
 	"src/libs/math/mthintrn.h"
 	"src/libs/math/random.cpp"
 	"src/libs/math/random.h"
-	"src/libs/math/randomdefs.h"
 	"src/libs/math/random2.cpp"
+	"src/libs/math/randomdefs.h"
 	"src/libs/math/sqrt.cpp"
 )
 

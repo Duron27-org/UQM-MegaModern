@@ -26,7 +26,7 @@
 #include "gamestr.h"
 #include "libs/graphics/gfx_common.h"
 #include "libs/tasklib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "util.h"
 #include "planets/planets.h"
 #include "shipcont.h"
@@ -112,7 +112,7 @@ DrawPCMenu(uqm::BYTE beg_index, uqm::BYTE end_index, uqm::BYTE NewState, uqm::BY
 
 	if (num_items * PC_MENU_HEIGHT > r->extent.height)
 	{
-		log_add(log_Error, "Warning, no room for all menu items!");
+		uqm::log::error("Warning, no room for all menu items!");
 	}
 	else
 	{
@@ -402,8 +402,8 @@ GetAlternateMenu(uqm::BYTE* BaseState, uqm::BYTE* CurState)
 				*CurState = PM_ALT_EXIT_MANIFEST - PM_ALT_CARGO;
 				return true;
 		}
-		log_add(log_Error, "Unknown state combination: %d, %d",
-				*BaseState, *CurState);
+		uqm::log::error("Unknown state combination: %d, %d",
+						*BaseState, *CurState);
 		return false;
 	}
 	else

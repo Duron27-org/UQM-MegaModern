@@ -18,7 +18,7 @@
 #include "sndintrn.h"
 #include "libs/sound/trackplayer.h"
 #include "trackint.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/memlib.h"
 #include "options.h"
 #include <ctype.h>
@@ -269,8 +269,8 @@ OnChunkEnd(TFB_SoundSample* sample, audio_Object buffer)
 	sample->decoder = cur_chunk->decoder;
 	SoundDecoder_Rewind(sample->decoder);
 
-	log_add(log_Info, "Switching to stream %s at pos %d",
-			sample->decoder->filename, sample->decoder->start_sample);
+	uqm::log::info("Switching to stream %s at pos %d",
+				   sample->decoder->filename, sample->decoder->start_sample);
 
 	if (cur_chunk->tag_me)
 	{ // Tag the last buffer of the chunk with the next chunk
@@ -414,28 +414,28 @@ void SpliceMultiTrack(uqm::CHAR_T* TrackNames[], uqm::CHAR_T* TrackText)
 
 	if (!TrackText)
 	{
-		log_add(log_Debug, "SpliceMultiTrack(): no track text");
+		uqm::log::debug("SpliceMultiTrack(): no track text");
 		return;
 	}
 
 	if (!sound_sample || !chunks_tail)
 	{
-		log_add(log_Warning, "SpliceMultiTrack(): Cannot be called before SpliceTrack()");
+		uqm::log::warn("SpliceMultiTrack(): Cannot be called before SpliceTrack()");
 		return;
 	}
 
-	log_add(log_Info, "SpliceMultiTrack(): loading...");
+	uqm::log::info("SpliceMultiTrack(): loading...");
 	for (tracks = 0; *TrackNames && tracks < MAX_MULTI_TRACKS; TrackNames++, tracks++)
 	{
 		track_decs[tracks] = SoundDecoder_Load(contentDir, *TrackNames,
 											   32768, 0, -3 * TEXT_SPEED);
 		if (track_decs[tracks])
 		{
-			log_add(log_Info, "  track: %s, decoder: %s, rate %d format %x",
-					*TrackNames,
-					SoundDecoder_GetName(track_decs[tracks]),
-					track_decs[tracks]->frequency,
-					track_decs[tracks]->format);
+			uqm::log::info("  track: %s, decoder: %s, rate %d format %x",
+						   *TrackNames,
+						   SoundDecoder_GetName(track_decs[tracks]),
+						   track_decs[tracks]->frequency,
+						   track_decs[tracks]->format);
 			SoundDecoder_DecodeAll(track_decs[tracks]);
 
 			chunks_tail->next = create_SoundChunk(track_decs[tracks], sound_sample->length);
@@ -445,8 +445,8 @@ void SpliceMultiTrack(uqm::CHAR_T* TrackNames[], uqm::CHAR_T* TrackText)
 		}
 		else
 		{
-			log_add(log_Warning, "SpliceMultiTrack(): couldn't load %s\n",
-					*TrackNames);
+			uqm::log::warn("SpliceMultiTrack(): couldn't load %s\n",
+						   *TrackNames);
 			tracks--;
 		}
 	}
@@ -454,7 +454,7 @@ void SpliceMultiTrack(uqm::CHAR_T* TrackNames[], uqm::CHAR_T* TrackText)
 
 	if (tracks == 0)
 	{
-		log_add(log_Warning, "SpliceMultiTrack(): no tracks loaded");
+		uqm::log::warn("SpliceMultiTrack(): no tracks loaded");
 		return;
 	}
 
@@ -488,22 +488,22 @@ void SpliceTrack(uqm::CHAR_T* TrackName, uqm::CHAR_T* TrackText, uqm::CHAR_T* Ti
 
 		if (track_count == 0)
 		{
-			log_add(log_Warning, "SpliceTrack(): Tried to append a subtitle,"
-								 " but no current track");
+			uqm::log::warn("SpliceTrack(): Tried to append a subtitle,"
+						   " but no current track");
 			return;
 		}
 
 		if (!last_sub || !last_sub->text)
 		{
-			log_add(log_Warning, "SpliceTrack(): Tried to append a subtitle"
-								 " to a nullptr string");
+			uqm::log::warn("SpliceTrack(): Tried to append a subtitle"
+						   " to a nullptr string");
 			return;
 		}
 
 		num_pages = SplitSubPages(TrackText, pages, time_stamps, MAX_PAGES);
 		if (num_pages == 0)
 		{
-			log_add(log_Warning, "SpliceTrack(): Failed to parse subtitles");
+			uqm::log::warn("SpliceTrack(): Failed to parse subtitles");
 			return;
 		}
 		// The last page's stamp is a suggested value. The track should
@@ -532,7 +532,7 @@ void SpliceTrack(uqm::CHAR_T* TrackName, uqm::CHAR_T* TrackText, uqm::CHAR_T* Ti
 															  last_track_name, 4096, dec_offset, time_stamps[page]);
 				if (!decoder)
 				{
-					log_add(log_Warning, "SpliceTrack(): couldn't load %s", TrackName);
+					uqm::log::warn("SpliceTrack(): couldn't load %s", TrackName);
 					break;
 				}
 				dec_offset += (unsigned long)(decoder->length * 1000);
@@ -558,7 +558,7 @@ void SpliceTrack(uqm::CHAR_T* TrackName, uqm::CHAR_T* TrackText, uqm::CHAR_T* Ti
 		num_pages = SplitSubPages(TrackText, pages, time_stamps, MAX_PAGES);
 		if (num_pages == 0)
 		{
-			log_add(log_Warning, "SpliceTrack(): Failed to parse sutitles");
+			uqm::log::warn("SpliceTrack(): Failed to parse sutitles");
 			return;
 		}
 		// The last page's stamp is a suggested value. The track should
@@ -580,15 +580,15 @@ void SpliceTrack(uqm::CHAR_T* TrackName, uqm::CHAR_T* TrackText, uqm::CHAR_T* Ti
 			track_count++;
 		}
 
-		log_add(log_Info, "SpliceTrack(): loading %s", TrackName);
+		uqm::log::info("SpliceTrack(): loading %s", TrackName);
 
 		if (TimeStamp)
 		{
 			num_timestamps = GetTimeStamps(TimeStamp, time_stamps) + 1;
 			if (num_timestamps < num_pages)
 			{
-				log_add(log_Warning, "SpliceTrack(): number of timestamps"
-									 " doesn't match number of pages!");
+				uqm::log::warn("SpliceTrack(): number of timestamps"
+							   " doesn't match number of pages!");
 			}
 			else if (num_timestamps > num_pages)
 			{ // We most likely will get more subtitles appended later
@@ -609,7 +609,7 @@ void SpliceTrack(uqm::CHAR_T* TrackName, uqm::CHAR_T* TrackText, uqm::CHAR_T* Ti
 														  TrackName, 4096, dec_offset, time_stamps[page]);
 			if (!decoder)
 			{
-				log_add(log_Warning, "SpliceTrack(): couldn't load %s", TrackName);
+				uqm::log::warn("SpliceTrack(): couldn't load %s", TrackName);
 				break;
 			}
 

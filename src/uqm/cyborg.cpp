@@ -25,7 +25,7 @@
 #include "setup.h"
 #include "units.h"
 #include "libs/mathlib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 
 //#define DEBUG_CYBORG
 
@@ -355,9 +355,9 @@ InitCyborg(STARSHIP* StarShipPtr)
 
 		shipName = GetStringAddress(
 			StarShipPtr->RaceDescPtr->ship_data.race_strings);
-		log_add(log_Debug, "MI(%s) -- <%u:%u> = %u", shipName,
-				StarShipPtr->RaceDescPtr->characteristics.max_thrust * StarShipPtr->RaceDescPtr->characteristics.thrust_increment,
-				Divisor, Index);
+		uqm::log::debug("MI(%s) -- <%u:%u> = %u", shipName,
+						StarShipPtr->RaceDescPtr->characteristics.max_thrust * StarShipPtr->RaceDescPtr->characteristics.thrust_increment,
+						Divisor, Index);
 	}
 #endif /* PRINT_MI */
 	StarShipPtr->RaceDescPtr->cyborg_control.ManeuverabilityIndex = Index;

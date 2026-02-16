@@ -34,7 +34,7 @@
 #include "libs/vidlib.h"
 #include "libs/sound/sound.h"
 #include "libs/resource/stringbank.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/memlib.h"
 #include "resinst.h"
 #include "nameref.h"
@@ -105,7 +105,7 @@ OPT_CONSOLETYPE whichPlatformOpt(uqm::EmulationMode platform)
 }
 
 template <typename GlobT, typename SetT>
-bool putOpt(GlobT& glob, const SetT set, uqgsl::czstring key, const bool reload) 
+bool putOpt(GlobT& glob, const SetT set, uqgsl::czstring key, const bool reload)
 {
 	using base_t = uqstl::remove_cv_t<SetT>;
 	if (glob != static_cast<GlobT>(set))
@@ -482,7 +482,7 @@ static const struct
 		{qol_widgets,		  10},
 		{devices_widgets,	  11},
 		{upgrades_widgets,  12},
-		{nullptr,			   0 }
+		{nullptr,			  0 }
 };
 
 // Start with reasonable gamma bounds. These will get updated
@@ -818,7 +818,7 @@ check_remixes(WIDGET_CHOICE* self, int oldval)
 			addon_available = uqm::isAddonAvailable(VOL_RMX_MUSIC) || uqm::isAddonAvailable(REGION_MUSIC);
 			break;
 		default:
-			log_add(log_Error, "invalid choice_num in check_remixes()");
+			uqm::log::error("invalid choice_num in check_remixes()");
 			break;
 	}
 
@@ -1182,7 +1182,7 @@ change_res(WIDGET_TEXTENTRY* self)
 
 	populate_res();
 
-	putOpt((int&)(loresBlowupScale), (int)(choices[CHOICE_RESOLUTION].selected),  "config.loresBlowupScale", false);
+	putOpt((int&)(loresBlowupScale), (int)(choices[CHOICE_RESOLUTION].selected), "config.loresBlowupScale", false);
 	res_PutInteger("config.reswidth", SavedWidth);
 	res_PutInteger("config.resheight", SavedHeight);
 }
@@ -1224,8 +1224,8 @@ SetDefaults(void)
 	choices[CHOICE_SNDDRIVER].selected = opts.adriver;
 	choices[CHOICE_SNDQUALITY].selected = opts.aquality;
 	choices[CHOICE_SLVSHIELD].selected = static_cast<int>(opts.shield);
-	choices[CHOICE_BTMPLAYER].selected = opts.player1;
-	choices[CHOICE_TOPPLAYER].selected = opts.player2;
+	choices[CHOICE_BTMPLAYER].selected = static_cast<int>(opts.player1);
+	choices[CHOICE_TOPPLAYER].selected = static_cast<int>(opts.player2);
 	choices[CHOICE_KBLAYOUT].selected = 0;
 	choices[CHOICE_REMIXES2].selected = opts.musicremix;
 	choices[CHOICE_SPEECH].selected = opts.speech;
@@ -1352,8 +1352,8 @@ PropagateResults(void)
 	opts.adriver = (OPT_ADRIVERTYPE)choices[CHOICE_SNDDRIVER].selected;
 	opts.aquality = (OPT_AQUALITYTYPE)choices[CHOICE_SNDQUALITY].selected;
 	opts.shield = (OPT_CONSOLETYPE)choices[CHOICE_SLVSHIELD].selected;
-	opts.player1 = (CONTROL_TEMPLATE)choices[CHOICE_BTMPLAYER].selected;
-	opts.player2 = (CONTROL_TEMPLATE)choices[CHOICE_TOPPLAYER].selected;
+	opts.player1 = (ControlTemplate)choices[CHOICE_BTMPLAYER].selected;
+	opts.player2 = (ControlTemplate)choices[CHOICE_TOPPLAYER].selected;
 	opts.musicremix = (OPT_ENABLABLE)choices[CHOICE_REMIXES2].selected;
 	opts.speech = (OPT_ENABLABLE)choices[CHOICE_SPEECH].selected;
 	opts.keepaspect = (OPT_ENABLABLE)choices[CHOICE_ASPRATIO].selected;
@@ -1800,7 +1800,7 @@ init_widgets(void)
 
 	if (count < 3)
 	{
-		log_add(log_Fatal, "PANIC: Setup string table too short to even "
+		uqm::log::critical("PANIC: Setup string table too short to even "
 						   "hold all indices!");
 		exit(EXIT_FAILURE);
 	}
@@ -1814,7 +1814,7 @@ init_widgets(void)
 		!= MENU_COUNT)
 	{
 		/* TODO: Ignore extras instead of dying. */
-		log_add(log_Fatal, "PANIC: Incorrect number of Menu Subtitles");
+		uqm::log::critical("PANIC: Incorrect number of Menu Subtitles");
 		exit(EXIT_FAILURE);
 	}
 
@@ -1839,7 +1839,7 @@ init_widgets(void)
 	}
 	if (menu_defs[i].widgets != nullptr)
 	{
-		log_add(log_Error, "Menu definition array has more items!");
+		uqm::log::error("Menu definition array has more items!");
 	}
 
 	/* Options */
@@ -1848,12 +1848,8 @@ init_widgets(void)
 					'\n', MAX_BUFF, buffer, bank)
 		!= CHOICE_COUNT)
 	{
-		log_add(log_Fatal, "PANIC: Incorrect number of Choice Options: "
-						   "%d. Should be %d",
-				CHOICE_COUNT,
-				SplitString(GetStringAddress(
-								SetAbsStringTableIndex(SetupTab, 2)),
-							'\n', MAX_BUFF, buffer, bank));
+		const int expected {SplitString(GetStringAddress(SetAbsStringTableIndex(SetupTab, 2)), '\n', MAX_BUFF, buffer, bank)};
+		uqm::log::critical("PANIC: Incorrect number of Choice Options: {}. Should be {}", static_cast<uint32_t>(CHOICE_COUNT), expected);
 		exit(EXIT_FAILURE);
 	}
 
@@ -1882,7 +1878,7 @@ init_widgets(void)
 
 		if (index >= count)
 		{
-			log_add(log_Fatal, "PANIC: String table cut short while "
+			uqm::log::critical("PANIC: String table cut short while "
 							   "reading choices");
 			exit(EXIT_FAILURE);
 		}
@@ -1905,7 +1901,7 @@ init_widgets(void)
 
 			if (index >= count)
 			{
-				log_add(log_Fatal, "PANIC: String table cut short while "
+				uqm::log::critical("PANIC: String table cut short while "
 								   "reading choices");
 				exit(EXIT_FAILURE);
 			}
@@ -1965,8 +1961,8 @@ init_widgets(void)
 	/* Sliders */
 	if (index >= count)
 	{
-		log_add(log_Fatal,
-				"PANIC: String table cut short while reading sliders");
+		uqm::log::critical(
+			"PANIC: String table cut short while reading sliders");
 		exit(EXIT_FAILURE);
 	}
 
@@ -1976,7 +1972,7 @@ init_widgets(void)
 		!= SLIDER_COUNT)
 	{
 		/* TODO: Ignore extras instead of dying. */
-		log_add(log_Fatal, "PANIC: Incorrect number of Slider Options");
+		uqm::log::critical("PANIC: Incorrect number of Slider Options");
 		exit(EXIT_FAILURE);
 	}
 
@@ -2019,8 +2015,8 @@ init_widgets(void)
 
 		if (index >= count)
 		{
-			log_add(log_Fatal,
-					"PANIC: String table cut short while reading sliders");
+			uqm::log::critical(
+				"PANIC: String table cut short while reading sliders");
 			exit(EXIT_FAILURE);
 		}
 		str = GetStringAddress(
@@ -2039,8 +2035,8 @@ init_widgets(void)
 	/* Buttons */
 	if (index >= count)
 	{
-		log_add(log_Fatal,
-				"PANIC: String table cut short while reading buttons");
+		uqm::log::critical(
+			"PANIC: String table cut short while reading buttons");
 		exit(EXIT_FAILURE);
 	}
 
@@ -2050,7 +2046,7 @@ init_widgets(void)
 		!= BUTTON_COUNT)
 	{
 		/* TODO: Ignore extras instead of dying. */
-		log_add(log_Fatal, "PANIC: Incorrect number of Button Options");
+		uqm::log::critical("PANIC: Incorrect number of Button Options");
 		exit(EXIT_FAILURE);
 	}
 
@@ -2075,8 +2071,8 @@ init_widgets(void)
 
 		if (index >= count)
 		{
-			log_add(log_Fatal,
-					"PANIC: String table cut short while reading buttons");
+			uqm::log::critical(
+				"PANIC: String table cut short while reading buttons");
 			exit(EXIT_FAILURE);
 		}
 		str = GetStringAddress(
@@ -2095,8 +2091,8 @@ init_widgets(void)
 	/* Labels */
 	if (index >= count)
 	{
-		log_add(log_Fatal,
-				"PANIC: String table cut short while reading labels");
+		uqm::log::critical(
+			"PANIC: String table cut short while reading labels");
 		exit(EXIT_FAILURE);
 	}
 
@@ -2106,7 +2102,7 @@ init_widgets(void)
 		!= LABEL_COUNT)
 	{
 		/* TODO: Ignore extras instead of dying. */
-		log_add(log_Fatal, "PANIC: Incorrect number of Label Options");
+		uqm::log::critical("PANIC: Incorrect number of Label Options");
 		exit(EXIT_FAILURE);
 	}
 
@@ -2129,7 +2125,7 @@ init_widgets(void)
 
 		if (index >= count)
 		{
-			log_add(log_Fatal, "PANIC: String table cut short while "
+			uqm::log::critical("PANIC: String table cut short while "
 							   "reading labels");
 			exit(EXIT_FAILURE);
 		}
@@ -2148,7 +2144,7 @@ init_widgets(void)
 	/* Text Entry boxes */
 	if (index >= count)
 	{
-		log_add(log_Fatal, "PANIC: String table cut short while reading "
+		uqm::log::critical("PANIC: String table cut short while reading "
 						   "text entries");
 		exit(EXIT_FAILURE);
 	}
@@ -2158,7 +2154,7 @@ init_widgets(void)
 					'\n', MAX_BUFF, buffer, bank)
 		!= TEXTENTRY_COUNT)
 	{
-		log_add(log_Fatal, "PANIC: Incorrect number of Text Entries");
+		uqm::log::critical("PANIC: Incorrect number of Text Entries");
 		exit(EXIT_FAILURE);
 	}
 	for (i = 0; i < TEXTENTRY_COUNT; i++)
@@ -2186,7 +2182,7 @@ init_widgets(void)
 		!= TEXTENTRY_COUNT)
 	{
 		/* TODO: Ignore extras instead of dying. */
-		log_add(log_Fatal, "PANIC: Incorrect number of Text Entries");
+		uqm::log::critical("PANIC: Incorrect number of Text Entries");
 		exit(EXIT_FAILURE);
 	}
 	for (i = 0; i < TEXTENTRY_COUNT; i++)
@@ -2198,7 +2194,7 @@ init_widgets(void)
 
 		if (index >= count)
 		{
-			log_add(log_Fatal, "PANIC: String table cut short while "
+			uqm::log::critical("PANIC: String table cut short while "
 							   "reading text entries");
 			exit(EXIT_FAILURE);
 		}
@@ -2221,7 +2217,7 @@ init_widgets(void)
 	/* Control Entry boxes */
 	if (index >= count)
 	{
-		log_add(log_Fatal, "PANIC: String table cut short while reading "
+		uqm::log::critical("PANIC: String table cut short while reading "
 						   "control entries");
 		exit(EXIT_FAILURE);
 	}
@@ -2231,7 +2227,7 @@ init_widgets(void)
 					'\n', MAX_BUFF, buffer, bank)
 		!= CONTROLENTRY_COUNT)
 	{
-		log_add(log_Fatal, "PANIC: Incorrect number of Control Entries");
+		uqm::log::critical("PANIC: Incorrect number of Control Entries");
 		exit(EXIT_FAILURE);
 	}
 	for (i = 0; i < CONTROLENTRY_COUNT; i++)
@@ -2255,9 +2251,9 @@ init_widgets(void)
 	/* Check for garbage at the end */
 	if (index < count)
 	{
-		log_add(log_Warning, "WARNING: Setup strings had %d garbage "
-							 "entries at the end.",
-				count - index);
+		uqm::log::warn("WARNING: Setup strings had %d garbage "
+					   "entries at the end.",
+					   count - index);
 	}
 
 	testSounds = CaptureSound(LoadSound(TEST_SOUNDS));
@@ -2324,8 +2320,8 @@ void SetupMenu(void)
 	}
 	else
 	{
-		log_add(log_Fatal,
-				"PANIC: Could not find strings for the setup menu!");
+		uqm::log::critical(
+			"PANIC: Could not find strings for the setup menu!");
 		exit(EXIT_FAILURE);
 	}
 	done = false;
@@ -2860,8 +2856,8 @@ void SetGlobalOptions(GLOBALOPTS* opts)
 	PlayerControls[0] = opts->player1;
 	PlayerControls[1] = opts->player2;
 
-	res_PutInteger("config.player1control", opts->player1);
-	res_PutInteger("config.player2control", opts->player2);
+	res_PutInteger("config.player1control", static_cast<int>(opts->player1));
+	res_PutInteger("config.player2control", static_cast<int>(opts->player2));
 
 	res_PutString("keys.1.name", uqm::input_templates[0].name);
 	res_PutString("keys.2.name", uqm::input_templates[1].name);
@@ -2944,10 +2940,10 @@ void SetGlobalOptions(GLOBALOPTS* opts)
 			}
 		}
 
-		log_add(log_Debug, "ScreenWidth:%d, ScreenHeight:%d, "
-						   "Wactual:%d, Hactual:%d",
-				CanvasWidth, CanvasHeight,
-				w, h);
+		uqm::log::debug("ScreenWidth:%d, ScreenHeight:%d, "
+						"Wactual:%d, Hactual:%d",
+						CanvasWidth, CanvasHeight,
+						w, h);
 
 		// These solve the context problem that plagued the setupmenu
 		// when changing to higher resolution.

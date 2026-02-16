@@ -24,7 +24,7 @@
 #include "netsend.h"
 #include "netconnection.h"
 #include "packet.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/net.h"
 
 #include <assert.h>
@@ -45,7 +45,7 @@ int sendPacket(NetConnection* conn, Packet* packet)
 	//		packetType(packet) != PACKET_CHECKSUM) {
 	//	// Reporting BattleInput or Checksum would get so spammy that it
 	//	// would slow down the battle.
-	//	log_add(log_Debug, "NETPLAY: [%d] ==> Sending packet of type %s.\n",
+	//	uqm::log::debug( "NETPLAY: [%d] ==> Sending packet of type %s.\n",
 	//			conn->player, packetTypeData[packetType(packet)].name);
 	//}
 #ifdef NETPLAY_DEBUG_FILE
@@ -83,7 +83,7 @@ int sendPacket(NetConnection* conn, Packet* packet)
 				{
 					// Should not happen.
 					int savedErrno = errno;
-					log_add(log_Error, "send() failed: %s.\n", strerror(errno));
+					uqm::log::error("send() failed: %s.\n", strerror(errno));
 					errno = savedErrno;
 					return -1;
 				}

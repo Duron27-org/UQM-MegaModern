@@ -121,7 +121,7 @@ void BoxUnion(RECT* pr1, RECT* pr2, RECT* punion)
 
 
 #if NEVER // FIXME - I think this is broken, but keeping it around for reference
-	// FIXME - just in case.
+		  // FIXME - just in case.
 
 #if 1 /* alter based on 0 widths */
 

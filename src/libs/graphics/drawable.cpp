@@ -26,7 +26,7 @@
 #include "libs/memlib.h"
 #include "tfb_draw.h"
 #include <math.h>
-#include "libs/log.h"
+#include "core/log/log.h"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -258,7 +258,7 @@ bool DestroyDrawable(DRAWABLE Drawable)
 {
 	if (_CurFramePtr && (Drawable == _CurFramePtr->parent))
 	{
-		SetContextFGFrame((FRAME)nullptr);
+		SetContextFGFrame((FRAME) nullptr);
 	}
 
 	if (Drawable)

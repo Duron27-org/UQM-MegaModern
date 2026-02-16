@@ -26,7 +26,7 @@
 #include "libs/input/sdl/keynames.h"
 #include "libs/memlib.h"
 #include "libs/file.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/reslib.h"
 #include "options.h"
 
@@ -177,7 +177,7 @@ initKeyConfig(void)
 
 	if (!menu_vec || !flight_vec)
 	{
-		log_add(log_Fatal, "initKeyConfig(): invalid input vectors");
+		uqm::log::critical("initKeyConfig(): invalid input vectors");
 		exit(EXIT_FAILURE);
 	}
 
@@ -225,7 +225,7 @@ void TFB_SetInputVectors(volatile int menu[], int num_menu_,
 {
 	if (num_menu_ < 0 || num_templ_ < 0 || num_flight_ < 0)
 	{
-		log_add(log_Fatal, "TFB_SetInputVectors(): invalid vector size");
+		uqm::log::critical("TFB_SetInputVectors(): invalid vector size");
 		exit(EXIT_FAILURE);
 	}
 	menu_vec = menu;
@@ -255,8 +255,8 @@ initJoystick(void)
 	if ((SDL_InitSubSystem(SDL_INIT_JOYSTICK)) == -1)
 #endif
 	{
-		log_add(log_Fatal, "Couldn't initialize joystick subsystem: %s",
-				SDL_GetError());
+		uqm::log::critical("Couldn't initialize joystick subsystem: %s",
+						   SDL_GetError());
 		exit(EXIT_FAILURE);
 	}
 
@@ -284,40 +284,40 @@ initJoystick(void)
 
 	if (SDL_GameControllerAddMappingsFromFile(mapping_db) == -1)
 	{
-		log_add(log_Warning, "Could not load controller mappings "
-							 "from %s: %s",
-				mapping_db, SDL_GetError());
+		uqm::log::warn("Could not load controller mappings "
+					   "from %s: %s",
+					   mapping_db, SDL_GetError());
 	}
 	else
 	{
-		log_add(log_Debug, "Loaded controller mappings from %s",
-				mapping_db);
+		uqm::log::debug("Loaded controller mappings from %s",
+						mapping_db);
 	}
 
 	HFree(mapping_db);
 #endif
 	nJoysticks = SDL_NumJoysticks();
-	log_add(log_Info, "%i joysticks were found.", nJoysticks);
+	uqm::log::info("%i joysticks were found.", nJoysticks);
 
 	if (nJoysticks > 0)
 	{
 		int i;
-		log_add(log_Info, "The names of the joysticks are:");
+		uqm::log::info("The names of the joysticks are:");
 		for (i = 0; i < nJoysticks; i++)
 		{
 #if SDL_MAJOR_VERSION > 1
 			if (SDL_IsGameController(i))
 			{
-				log_add(log_Info, "    %s (controller)",
-						SDL_GameControllerNameForIndex(i));
+				uqm::log::info("    %s (controller)",
+							   SDL_GameControllerNameForIndex(i));
 			}
 			else
 			{
-				log_add(log_Info, "    %s (joystick)",
-						SDL_JoystickNameForIndex(i));
+				uqm::log::info("    %s (joystick)",
+							   SDL_JoystickNameForIndex(i));
 			}
 #else
-			log_add(log_Info, "    %s", SDL_JoystickName(i));
+			uqm::log::info("    %s", SDL_JoystickName(i));
 #endif
 		}
 #if SDL_MAJOR_VERSION == 1
@@ -646,8 +646,8 @@ void InterrogateInputState(int templat, int control, int index, char* buffer,
 	if (templat >= num_templ || control >= num_flight
 		|| index >= MAX_FLIGHT_ALTERNATES)
 	{
-		log_add(log_Warning,
-				"InterrogateInputState(): invalid control index");
+		uqm::log::warn(
+			"InterrogateInputState(): invalid control index");
 		buffer[0] = 0;
 		return;
 	}
@@ -731,7 +731,7 @@ void RemoveInputState(int templat, int control, int index)
 	if (templat >= num_templ || control >= num_flight
 		|| index >= MAX_FLIGHT_ALTERNATES)
 	{
-		log_add(log_Warning, "RemoveInputState(): invalid control index");
+		uqm::log::warn("RemoveInputState(): invalid control index");
 		return;
 	}
 
@@ -755,7 +755,7 @@ void RebindInputState(int templat, int control, int index)
 	if (templat >= num_templ || control >= num_flight
 		|| index >= MAX_FLIGHT_ALTERNATES)
 	{
-		log_add(log_Warning, "RebindInputState(): invalid control index");
+		uqm::log::warn("RebindInputState(): invalid control index");
 		return;
 	}
 

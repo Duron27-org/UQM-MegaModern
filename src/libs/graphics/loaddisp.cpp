@@ -18,7 +18,7 @@
 
 #include "libs/gfxlib.h"
 #include "libs/graphics/drawable.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 
 
 // Reads a piece of screen into a passed FRAME or a newly created one
@@ -51,8 +51,8 @@ LoadDisplayPixmap(const RECT* area, FRAME frame)
 		|| frame->Type == SCREEN_DRAWABLE
 		|| !(GetFrameParentDrawable(frame)->Flags & MAPPED_TO_DISPLAY))
 	{
-		log_add(log_Warning, "Unimplemented function activated: "
-							 "LoadDisplayPixmap()");
+		uqm::log::warn("Unimplemented function activated: "
+					   "LoadDisplayPixmap()");
 	}
 	else
 	{

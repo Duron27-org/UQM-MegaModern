@@ -32,7 +32,7 @@
 #include "grpinfo.h"
 #include "gamestr.h"
 #include "libs/scriptlib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "options.h"
 #include <assert.h>
 #include <stdlib.h>
@@ -205,16 +205,16 @@ bool serialiseGameState(const GameStateBitMap* bm, uqm::BYTE** buf,
 			uqm::BYTE numBits = bmPtr->numBits;
 
 #ifdef STATE_DEBUG
-			log_add(log_Debug, "Saving: GameState[\'%s\'] = %u",
-					bmPtr->name, value);
+			uqm::log::debug("Saving: GameState[\'%s\'] = %u",
+							bmPtr->name, value);
 #endif /* STATE_DEBUG */
 
 			if (value > bitmask32(numBits))
 			{
-				log_add(log_Error, "Warning: serialiseGameState(): the "
-								   "value of the property '%s' (%u) does not fit in "
-								   "the reserved number of bits (%d).",
-						bmPtr->name, value, numBits);
+				uqm::log::error("Warning: serialiseGameState(): the "
+								"value of the property '%s' (%u) does not fit in "
+								"the reserved number of bits (%d).",
+								bmPtr->name, value, numBits);
 			}
 
 			// Store multi-byte values with the least significant byte 1st.
@@ -314,8 +314,8 @@ bool deserialiseGameState(const GameStateBitMap* bm,
 	totalBits = totalBitsForGameState(bm, rev);
 	if (numBytes * 8 < totalBits)
 	{
-		log_add(log_Error, "Warning: deserialiseGameState(): Corrupt "
-						   "save game: state: less bytes available than expected.");
+		uqm::log::error("Warning: deserialiseGameState(): Corrupt "
+						"save game: state: less bytes available than expected.");
 		return false;
 	}
 
@@ -345,8 +345,8 @@ bool deserialiseGameState(const GameStateBitMap* bm,
 				}
 
 #ifdef STATE_DEBUG
-				log_add(log_Debug, "Loading: GameState[\'%s\'] = %u",
-						bmPtr->name, value);
+				uqm::log::debug("Loading: GameState[\'%s\'] = %u",
+								bmPtr->name, value);
 #endif /* STATE_DEBUG */
 			}
 

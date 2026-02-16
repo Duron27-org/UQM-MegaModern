@@ -28,7 +28,7 @@
 #include "libs/timelib.h"
 #include "port.h"
 #include "libs/compiler.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/memlib.h"
 
 static char* tempDirName;
@@ -110,7 +110,7 @@ getTempDir(char* buf, size_t buflen)
 #endif
 		tryTempDir(buf, buflen, getcwd(cwd, sizeof cwd)))
 	{
-		log_add(log_Fatal, "Fatal Error: Cannot find a suitable location "
+		uqm::log::critical("Fatal Error: Cannot find a suitable location "
 						   "to store temporary files.");
 		exit(EXIT_FAILURE);
 	}
@@ -130,9 +130,9 @@ mountTempDir(const char* name)
 	if (tempHandle == nullptr)
 	{
 		int saveErrno = errno;
-		log_add(log_Fatal, "Fatal error: Couldn't mount temp dir '%s': "
+		uqm::log::critical("Fatal error: Couldn't mount temp dir '%s': "
 						   "%s",
-				name, strerror(errno));
+						   name, strerror(errno));
 		errno = saveErrno;
 		return -1;
 	}
@@ -141,8 +141,8 @@ mountTempDir(const char* name)
 	if (tempDir == nullptr)
 	{
 		int saveErrno = errno;
-		log_add(log_Fatal, "Fatal error: Could not open temp dir: %s",
-				strerror(errno));
+		uqm::log::critical("Fatal error: Could not open temp dir: %s",
+						   strerror(errno));
 		errno = saveErrno;
 		return -1;
 	}
@@ -187,7 +187,7 @@ void initTempDir(void)
 	}
 
 	// Failure, could not make a temporary directory.
-	log_add(log_Fatal, "Fatal error: Cannot get a name for a temporary "
+	uqm::log::critical("Fatal error: Cannot get a name for a temporary "
 					   "directory.");
 	exit(EXIT_FAILURE);
 }
@@ -206,7 +206,7 @@ char* tempFilePath(const char* filename)
 
 	if (snprintf(file, PATH_MAX, "%s/%s", tempDirName, filename) == -1)
 	{
-		log_add(log_Fatal, "Path to temp file too long.");
+		uqm::log::critical("Path to temp file too long.");
 		exit(EXIT_FAILURE);
 	}
 	return file;

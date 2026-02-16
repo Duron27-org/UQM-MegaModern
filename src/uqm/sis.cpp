@@ -35,7 +35,7 @@
 #include "libs/graphics/gfx_common.h"
 #include "libs/tasklib.h"
 #include "libs/callback/alarm.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "hyper.h"
 #include "gameopt.h"
 #include <math.h>

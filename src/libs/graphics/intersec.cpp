@@ -19,7 +19,7 @@
 #include "libs/graphics/context.h"
 #include "libs/graphics/drawable.h"
 #include "libs/graphics/tfb_draw.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "uqm/units.h"
 
 //#define DEBUG_INTERSEC
@@ -404,14 +404,14 @@ DrawablesIntersect(INTERSECT_CONTROL* pControl0,
 				++time_x_1;
 
 #ifdef DEBUG_INTERSEC
-				log_add(log_Debug, "FramePtr0<%d, %d> --> <%d, %d>",
-						GetFrameWidth(FramePtr0), GetFrameHeight(FramePtr0),
-						r0.corner.x, r0.corner.y);
-				log_add(log_Debug, "FramePtr1<%d, %d> --> <%d, %d>",
-						GetFrameWidth(FramePtr1), GetFrameHeight(FramePtr1),
-						r1.corner.x, r1.corner.y);
-				log_add(log_Debug, "time_x(%d, %d)-%d, time_y(%d, %d)-%d",
-						time_x_0, time_x_1, dx, time_y_0, time_y_1, dy);
+				uqm::log::debug("FramePtr0<%d, %d> --> <%d, %d>",
+								GetFrameWidth(FramePtr0), GetFrameHeight(FramePtr0),
+								r0.corner.x, r0.corner.y);
+				uqm::log::debug("FramePtr1<%d, %d> --> <%d, %d>",
+								GetFrameWidth(FramePtr1), GetFrameHeight(FramePtr1),
+								r1.corner.x, r1.corner.y);
+				uqm::log::debug("time_x(%d, %d)-%d, time_y(%d, %d)-%d",
+								time_x_0, time_x_1, dx, time_y_0, time_y_1, dy);
 #endif /* DEBUG_INTERSEC */
 				if (dx == 0)
 				{
@@ -461,8 +461,8 @@ DrawablesIntersect(INTERSECT_CONTROL* pControl0,
 			}
 
 #ifdef DEBUG_INTERSEC
-			log_add(log_Debug, "start_time = %d, end_time = %d",
-					time_y_0, time_y_1);
+			uqm::log::debug("start_time = %d, end_time = %d",
+							time_y_0, time_y_1);
 #endif /* DEBUG_INTERSEC */
 			if (time_y_0 <= time_y_1
 				&& (intersect_time = frame_intersect(

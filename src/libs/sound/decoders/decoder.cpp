@@ -23,7 +23,7 @@
 #include "port.h"
 #include "libs/memlib.h"
 #include "libs/file.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "decoder.h"
 #include "wav.h"
 #include "dukaud.h"
@@ -132,14 +132,14 @@ struct TFB_RegSoundDecoder
 };
 static TFB_RegSoundDecoder sd_decoders[MAX_REG_DECODERS + 1] =
 	{
-		{true,  true,	 "wav", &wava_DecoderVtbl},
-		{true,  true,	 "mod", &moda_DecoderVtbl},
+		{true,  true,	 "wav",	&wava_DecoderVtbl},
+		{true,  true,	 "mod",	&moda_DecoderVtbl},
 #ifndef OVCODEC_NONE
-		{true,  true,	 "ogg", &ova_DecoderVtbl },
+		{true,  true,	 "ogg",	&ova_DecoderVtbl },
 #endif  /* OVCODEC_NONE */
-		{true,  true,	 "duk", &duka_DecoderVtbl},
-		{true,  true,	 "aif", &aifa_DecoderVtbl},
-		{false, false, nullptr,	 nullptr			 }, // null term
+		{true,  true,	 "duk",	&duka_DecoderVtbl},
+		{true,  true,	 "aif",	&aifa_DecoderVtbl},
+		{false, false, nullptr, nullptr		   }, // null term
 };
 
 static TFB_DecoderFormats decoder_formats;
@@ -185,7 +185,7 @@ SoundDecoder_Init(int flags, TFB_DecoderFormats* formats)
 
 	if (!formats)
 	{
-		log_add(log_Error, "SoundDecoder_Init(): missing decoder formats");
+		uqm::log::error("SoundDecoder_Init(): missing decoder formats");
 		return 1;
 	}
 	decoder_formats = *formats;
@@ -195,9 +195,9 @@ SoundDecoder_Init(int flags, TFB_DecoderFormats* formats)
 	{
 		if (!info->funcs->InitModule(flags, &decoder_formats))
 		{
-			log_add(log_Error, "SoundDecoder_Init(): "
-							   "%s audio decoder init failed",
-					info->funcs->GetName());
+			uqm::log::error("SoundDecoder_Init(): "
+							"%s audio decoder init failed",
+							info->funcs->GetName());
 			ret = 1;
 		}
 	}
@@ -236,13 +236,13 @@ SoundDecoder_Register(const char* fileext, TFB_SoundDecoderFuncs* decvtbl)
 
 	if (!decvtbl)
 	{
-		log_add(log_Warning, "SoundDecoder_Register(): Null decoder table");
+		uqm::log::warn("SoundDecoder_Register(): Null decoder table");
 		return nullptr;
 	}
 	if (!fileext)
 	{
-		log_add(log_Warning, "SoundDecoder_Register(): Bad file type for %s",
-				decvtbl->GetName());
+		uqm::log::warn("SoundDecoder_Register(): Bad file type for %s",
+					   decvtbl->GetName());
 		return nullptr;
 	}
 
@@ -259,21 +259,21 @@ SoundDecoder_Register(const char* fileext, TFB_SoundDecoderFuncs* decvtbl)
 
 	if (info >= sd_decoders + MAX_REG_DECODERS)
 	{
-		log_add(log_Warning, "SoundDecoder_Register(): Decoders limit reached");
+		uqm::log::warn("SoundDecoder_Register(): Decoders limit reached");
 		return nullptr;
 	}
 	else if (info->ext)
 	{
-		log_add(log_Warning, "SoundDecoder_Register(): "
-							 "'%s' decoder already registered (%s denied)",
-				fileext, decvtbl->GetName());
+		uqm::log::warn("SoundDecoder_Register(): "
+					   "'%s' decoder already registered (%s denied)",
+					   fileext, decvtbl->GetName());
 		return nullptr;
 	}
 
 	if (!decvtbl->InitModule(sd_flags, &decoder_formats))
 	{
-		log_add(log_Warning, "SoundDecoder_Register(): %s decoder init failed",
-				decvtbl->GetName());
+		uqm::log::warn("SoundDecoder_Register(): %s decoder init failed",
+					   decvtbl->GetName());
 		return nullptr;
 	}
 
@@ -297,8 +297,8 @@ void SoundDecoder_Unregister(TFB_RegSoundDecoder* regdec)
 {
 	if (regdec < sd_decoders || regdec >= sd_decoders + MAX_REG_DECODERS || !regdec->ext || !regdec->funcs)
 	{
-		log_add(log_Warning, "SoundDecoder_Unregister(): "
-							 "Invalid or expired decoder passed");
+		uqm::log::warn("SoundDecoder_Unregister(): "
+					   "Invalid or expired decoder passed");
 		return;
 	}
 
@@ -332,8 +332,8 @@ SoundDecoder_Load(uio_DirHandle* dir, char* filename,
 	pext = strrchr(filename, '.');
 	if (!pext)
 	{
-		log_add(log_Warning, "SoundDecoder_Load(): Unknown file type (%s)",
-				filename);
+		uqm::log::warn("SoundDecoder_Load(): Unknown file type (%s)",
+					   filename);
 		return nullptr;
 	}
 	++pext;
@@ -343,8 +343,8 @@ SoundDecoder_Load(uio_DirHandle* dir, char* filename,
 		;
 	if (!info->ext)
 	{
-		log_add(log_Warning, "SoundDecoder_Load(): Unsupported file type (%s)",
-				filename);
+		uqm::log::warn("SoundDecoder_Load(): Unsupported file type (%s)",
+					   filename);
 
 		if (runTime)
 		{
@@ -372,8 +372,8 @@ SoundDecoder_Load(uio_DirHandle* dir, char* filename,
 		}
 		else
 		{
-			log_add(log_Warning, "SoundDecoder_Load(): %s does not exist",
-					filename);
+			uqm::log::warn("SoundDecoder_Load(): %s does not exist",
+						   filename);
 			return nullptr;
 		}
 	}
@@ -388,18 +388,18 @@ SoundDecoder_Load(uio_DirHandle* dir, char* filename,
 	decoder->funcs = funcs;
 	if (!decoder->funcs->Init(decoder))
 	{
-		log_add(log_Warning, "SoundDecoder_Load(): "
-							 "%s decoder instance failed init",
-				decoder->funcs->GetName());
+		uqm::log::warn("SoundDecoder_Load(): "
+					   "%s decoder instance failed init",
+					   decoder->funcs->GetName());
 		HFree(decoder);
 		return nullptr;
 	}
 
 	if (!decoder->funcs->Open(decoder, dir, filename))
 	{
-		log_add(log_Warning, "SoundDecoder_Load(): "
-							 "%s decoder could not load %s",
-				decoder->funcs->GetName(), filename);
+		uqm::log::warn("SoundDecoder_Load(): "
+					   "%s decoder could not load %s",
+					   decoder->funcs->GetName(), filename);
 		decoder->funcs->Term(decoder);
 		HFree(decoder);
 		return nullptr;
@@ -468,7 +468,7 @@ SoundDecoder_Decode(TFB_SoundDecoder* decoder)
 
 	if (!decoder || !decoder->funcs)
 	{
-		log_add(log_Warning, "SoundDecoder_Decode(): null or bad decoder");
+		uqm::log::warn("SoundDecoder_Decode(): null or bad decoder");
 		return 0;
 	}
 
@@ -495,9 +495,9 @@ SoundDecoder_Decode(TFB_SoundDecoder* decoder)
 									buffer_size - decoded_bytes);
 		if (rc < 0)
 		{
-			log_add(log_Warning, "SoundDecoder_Decode(): "
-								 "error decoding %s, code %ld",
-					decoder->filename, rc);
+			uqm::log::warn("SoundDecoder_Decode(): "
+						   "error decoding %s, code %ld",
+						   decoder->filename, rc);
 		}
 		else if (rc == 0)
 		{ // probably EOF
@@ -506,23 +506,23 @@ SoundDecoder_Decode(TFB_SoundDecoder* decoder)
 				SoundDecoder_Rewind(decoder);
 				if (decoder->error)
 				{
-					log_add(log_Warning, "SoundDecoder_Decode(): "
-										 "tried to loop %s but couldn't rewind, "
-										 "error code %d",
-							decoder->filename, decoder->error);
+					uqm::log::warn("SoundDecoder_Decode(): "
+								   "tried to loop %s but couldn't rewind, "
+								   "error code %d",
+								   decoder->filename, decoder->error);
 				}
 				else
 				{
-					log_add(log_Info, "SoundDecoder_Decode(): "
-									  "looping %s",
-							decoder->filename);
+					uqm::log::info("SoundDecoder_Decode(): "
+								   "looping %s",
+								   decoder->filename);
 					rc = 1; // prime the loop again
 				}
 			}
 			else
 			{
-				log_add(log_Info, "SoundDecoder_Decode(): eof for %s",
-						decoder->filename);
+				uqm::log::info("SoundDecoder_Decode(): eof for %s",
+							   decoder->filename);
 			}
 		}
 		else
@@ -562,7 +562,7 @@ SoundDecoder_DecodeAll(TFB_SoundDecoder* decoder)
 
 	if (!decoder || !decoder->funcs)
 	{
-		log_add(log_Warning, "SoundDecoder_DecodeAll(): null or bad decoder");
+		uqm::log::warn("SoundDecoder_DecodeAll(): null or bad decoder");
 		return 0;
 	}
 
@@ -570,9 +570,9 @@ SoundDecoder_DecodeAll(TFB_SoundDecoder* decoder)
 
 	if (decoder->looping)
 	{
-		log_add(log_Warning, "SoundDecoder_DecodeAll(): "
-							 "called for %s with looping",
-				decoder->filename);
+		uqm::log::warn("SoundDecoder_DecodeAll(): "
+					   "called for %s with looping",
+					   decoder->filename);
 		return 0;
 	}
 
@@ -613,9 +613,9 @@ SoundDecoder_DecodeAll(TFB_SoundDecoder* decoder)
 	if (rc < 0)
 	{
 		decoder->error = SOUNDDECODER_ERROR;
-		log_add(log_Warning, "SoundDecoder_DecodeAll(): "
-							 "error decoding %s, code %ld",
-				decoder->filename, rc);
+		uqm::log::warn("SoundDecoder_DecodeAll(): "
+					   "error decoding %s, code %ld",
+					   decoder->filename, rc);
 		return decoded_bytes;
 	}
 
@@ -648,7 +648,7 @@ void SoundDecoder_Seek(TFB_SoundDecoder* decoder, uint32 seekTime)
 	}
 	if (!decoder->funcs)
 	{
-		log_add(log_Warning, "SoundDecoder_Seek(): bad decoder passed");
+		uqm::log::warn("SoundDecoder_Seek(): bad decoder passed");
 		return;
 	}
 
@@ -675,7 +675,7 @@ void SoundDecoder_Free(TFB_SoundDecoder* decoder)
 	}
 	if (!decoder->funcs)
 	{
-		log_add(log_Warning, "SoundDecoder_Free(): bad decoder passed");
+		uqm::log::warn("SoundDecoder_Free(): bad decoder passed");
 		return;
 	}
 
@@ -695,7 +695,7 @@ float SoundDecoder_GetTime(TFB_SoundDecoder* decoder)
 	}
 	if (!decoder->funcs)
 	{
-		log_add(log_Warning, "SoundDecoder_GetTime(): bad decoder passed");
+		uqm::log::warn("SoundDecoder_GetTime(): bad decoder passed");
 		return 0.0f;
 	}
 
@@ -713,7 +713,7 @@ SoundDecoder_GetFrame(TFB_SoundDecoder* decoder)
 	}
 	if (!decoder->funcs)
 	{
-		log_add(log_Warning, "SoundDecoder_GetFrame(): bad decoder passed");
+		uqm::log::warn("SoundDecoder_GetFrame(): bad decoder passed");
 		return 0;
 	}
 
@@ -732,7 +732,7 @@ static bool
 bufa_InitModule(int flags, const TFB_DecoderFormats* fmts)
 {
 	// this should never be called
-	log_add(log_Debug, "bufa_InitModule(): dead function called");
+	uqm::log::debug("bufa_InitModule(): dead function called");
 	return false;
 
 	(void)flags;
@@ -743,7 +743,7 @@ static void
 bufa_TermModule(void)
 {
 	// this should never be called
-	log_add(log_Debug, "bufa_TermModule(): dead function called");
+	uqm::log::debug("bufa_TermModule(): dead function called");
 }
 
 static uint32
@@ -785,7 +785,7 @@ static bool
 bufa_Open(THIS_PTR, uio_DirHandle* dir, const char* filename)
 {
 	// this should never be called
-	log_add(log_Debug, "bufa_Open(): dead function called");
+	uqm::log::debug("bufa_Open(): dead function called");
 	return false;
 
 	// laugh at compiler warnings
@@ -869,7 +869,7 @@ static bool
 nula_InitModule(int flags, const TFB_DecoderFormats* fmts)
 {
 	// this should never be called
-	log_add(log_Debug, "nula_InitModule(): dead function called");
+	uqm::log::debug("nula_InitModule(): dead function called");
 	return false;
 
 	(void)flags;
@@ -880,7 +880,7 @@ static void
 nula_TermModule(void)
 {
 	// this should never be called
-	log_add(log_Debug, "nula_TermModule(): dead function called");
+	uqm::log::debug("nula_TermModule(): dead function called");
 }
 
 static uint32

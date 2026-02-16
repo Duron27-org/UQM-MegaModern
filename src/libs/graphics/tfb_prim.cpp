@@ -26,7 +26,7 @@
 #include "tfb_draw.h"
 #include "tfb_prim.h"
 #include "cmap.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "uqm/units.h"
 
 void TFB_Prim_Point(POINT* p, Color color, DrawMode mode, POINT ctxOrigin, bool scaled)
@@ -145,16 +145,16 @@ void TFB_Prim_Stamp(STAMP* stmp, DrawMode mode, POINT ctxOrigin, bool unscaled)
 	SrcFramePtr = stmp->frame;
 	if (!SrcFramePtr)
 	{
-		log_add(log_Warning, "TFB_Prim_Stamp: Tried to draw a nullptr frame"
-							 " (Stamp address = %p)",
-				(void*)stmp);
+		uqm::log::warn("TFB_Prim_Stamp: Tried to draw a nullptr frame"
+					   " (Stamp address = %p)",
+					   (void*)stmp);
 		return;
 	}
 	img = SrcFramePtr->image;
 
 	if (!img)
 	{
-		log_add(log_Warning, "Non-existent image to TFB_Prim_Stamp()");
+		uqm::log::warn("Non-existent image to TFB_Prim_Stamp()");
 		return;
 	}
 
@@ -204,16 +204,16 @@ void TFB_Prim_StampFill(STAMP* stmp, Color color, DrawMode mode, POINT ctxOrigin
 	SrcFramePtr = stmp->frame;
 	if (!SrcFramePtr)
 	{
-		log_add(log_Warning, "TFB_Prim_StampFill: Tried to draw a nullptr frame"
-							 " (Stamp address = %p)",
-				(void*)stmp);
+		uqm::log::warn("TFB_Prim_StampFill: Tried to draw a nullptr frame"
+					   " (Stamp address = %p)",
+					   (void*)stmp);
 		return;
 	}
 	img = SrcFramePtr->image;
 
 	if (!img)
 	{
-		log_add(log_Warning, "Non-existent image to TFB_Prim_StampFill()");
+		uqm::log::warn("Non-existent image to TFB_Prim_StampFill()");
 		return;
 	}
 
@@ -277,7 +277,7 @@ void TFB_Prim_MaskFrame(FRAME layer, FRAME base, DrawMode mode, Color* fill)
 
 	if (!base)
 	{
-		log_add(log_Warning, "TFB_Prim_MaskFrame: nullptr frame passed");
+		uqm::log::warn("TFB_Prim_MaskFrame: nullptr frame passed");
 		return;
 	}
 
@@ -290,7 +290,7 @@ void TFB_Prim_MaskFrame(FRAME layer, FRAME base, DrawMode mode, Color* fill)
 		img = layer->image;
 		if (!img)
 		{
-			log_add(log_Warning, "Non-existent layer image to TFB_Prim_MaskFrame()");
+			uqm::log::warn("Non-existent layer image to TFB_Prim_MaskFrame()");
 			return;
 		}
 	}
@@ -299,7 +299,7 @@ void TFB_Prim_MaskFrame(FRAME layer, FRAME base, DrawMode mode, Color* fill)
 
 	if (!bas)
 	{
-		log_add(log_Warning, "Non-existent base image to TFB_Prim_MaskFrame()");
+		uqm::log::warn("Non-existent base image to TFB_Prim_MaskFrame()");
 		return;
 	}
 

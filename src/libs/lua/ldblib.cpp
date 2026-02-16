@@ -209,8 +209,8 @@ static int db_getlocal(lua_State* L)
 	const char* name;
 	int nvar = luaL_checkint(L, arg + 2); /* local-variable index */
 	if (lua_isfunction(L, arg + 1))
-	{													/* function argument? */
-		lua_pushvalue(L, arg + 1);						/* push function */
+	{													   /* function argument? */
+		lua_pushvalue(L, arg + 1);						   /* push function */
 		lua_pushstring(L, lua_getlocal(L, nullptr, nvar)); /* push local name */
 		return 1;
 	}
@@ -499,7 +499,7 @@ static const luaL_Reg dblib[] = {
 	{"setmetatable", db_setmetatable},
 	{"setupvalue",   db_setupvalue	},
 	{"traceback",	  db_traceback	  },
-	{nullptr,		   nullptr		   }
+	{nullptr,		  nullptr		 }
 };
 
 

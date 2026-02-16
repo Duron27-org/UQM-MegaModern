@@ -30,7 +30,7 @@
 #include "libs/graphics/gfx_common.h"
 #include "libs/graphics/drawable.h"
 #include "libs/mathlib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/memlib.h"
 #include "../starmap.h"
 #include "../gendef.h"
@@ -515,8 +515,8 @@ RenderTopography(FRAME DstFrame, uqm::SBYTE* pTopoData, int w, int h,
 	{ // There is currently nothing we can do w/o an xlat table
 		// This is still called for Earth for 4x scaled topo, but we
 		// do not need it because we cannot land on Earth.
-		log_add(log_Warning,
-				"No xlat table -- could not generate surface.\n");
+		uqm::log::warn(
+			"No xlat table -- could not generate surface.\n");
 		return;
 	}
 
@@ -1387,10 +1387,10 @@ void RenderPlanetSphere(PLANET_ORBIT* Orbit, FRAME MaskFrame, int offset,
 	t += clock() - t1;
 	if (frames_done == width)
 	{
-		log_add(log_Debug, "Rotation frames/sec: %d/%ld(msec)=%f",
-				frames_done,
-				(long int)(((double)t / CLOCKS_PER_SEC) * 1000.0 + 0.5),
-				frames_done / ((double)t / CLOCKS_PER_SEC + 0.5));
+		uqm::log::debug("Rotation frames/sec: %d/%ld(msec)=%f",
+						frames_done,
+						(long int)(((double)t / CLOCKS_PER_SEC) * 1000.0 + 0.5),
+						frames_done / ((double)t / CLOCKS_PER_SEC + 0.5));
 		frames_done = 1;
 		t = clock() - t1;
 	}
@@ -2983,7 +2983,7 @@ void GeneratePlanetSurface(PLANET_DESC* pPlanetDesc, FRAME SurfDefFrame,
 		}
 		else
 		{
-			log_add(log_Warning, "No planet mask generated.\n");
+			uqm::log::warn("No planet mask generated.\n");
 		}
 	}
 

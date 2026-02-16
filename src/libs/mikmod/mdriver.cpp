@@ -1122,9 +1122,9 @@ MIKMODAPI BOOL MikMod_InitThreads(void)
 #ifdef HAVE_PTHREAD
 		result = 1;
 #elif defined(__OS2__) || defined(__EMX__)
-		if (DosCreateMutexSem((PSZ)nullptr, &_mm_mutex_lists, 0, 0) || DosCreateMutexSem((PSZ)nullptr, &_mm_mutex_vars, 0, 0))
+		if (DosCreateMutexSem((PSZ) nullptr, &_mm_mutex_lists, 0, 0) || DosCreateMutexSem((PSZ) nullptr, &_mm_mutex_vars, 0, 0))
 		{
-			_mm_mutex_lists = _mm_mutex_vars = (HMTX)nullptr;
+			_mm_mutex_lists = _mm_mutex_vars = (HMTX) nullptr;
 			result = 0;
 		}
 		else

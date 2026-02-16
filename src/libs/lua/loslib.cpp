@@ -57,8 +57,8 @@
 #elif !defined(lua_tmpnam)
 
 #define LUA_TMPNAMBUFSIZE L_tmpnam
-#define lua_tmpnam(b, e)         \
-	{                            \
+#define lua_tmpnam(b, e)            \
+	{                               \
 		e = (tmpnam(b) == nullptr); \
 	}
 
@@ -370,7 +370,7 @@ static const luaL_Reg syslib[] = {
 	{"setlocale", os_setlocale},
 	{"time",		 os_time		},
 	{"tmpname",	os_tmpname  },
-	{nullptr,		   nullptr		   }
+	{nullptr,	  nullptr	 }
 };
 
 /* }====================================================== */

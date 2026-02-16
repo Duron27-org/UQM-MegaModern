@@ -18,7 +18,7 @@
 #include "sound.h"
 #include "sndintrn.h"
 #include "libs/reslib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/strlib.h"
 // for GetStringAddress()
 #include "libs/strings/strintrn.h"
@@ -194,18 +194,18 @@ void* _GetSoundBankData(uio_Stream* fp, uqm::DWORD length)
 
 		if (sscanf(CurrentLine, "%s", &filename[n]) != 1)
 		{
-			log_add(log_Warning, "_GetSoundBankData: bad line: '%s'",
-					CurrentLine);
+			uqm::log::warn("_GetSoundBankData: bad line: '%s'",
+						   CurrentLine);
 			continue;
 		}
 
-		log_add(log_Info, "_GetSoundBankData(): loading %s", filename);
+		uqm::log::info("_GetSoundBankData(): loading %s", filename);
 
 		decoder = SoundDecoder_Load(contentDir, filename, 4096, 0, 0);
 		if (!decoder)
 		{
-			log_add(log_Warning, "_GetSoundBankData(): couldn't load %s",
-					filename);
+			uqm::log::warn("_GetSoundBankData(): couldn't load %s",
+						   filename);
 			continue;
 		}
 
@@ -214,8 +214,8 @@ void* _GetSoundBankData(uio_Stream* fp, uqm::DWORD length)
 
 		// Decode everything and stash it in 1 buffer
 		decoded_bytes = SoundDecoder_DecodeAll(decoder);
-		log_add(log_Info, "_GetSoundBankData(): decoded bytes %d",
-				decoded_bytes);
+		uqm::log::info("_GetSoundBankData(): decoded bytes %d",
+					   decoded_bytes);
 
 		audio_BufferData(sample->buffer[0], decoder->format,
 						 decoder->buffer, decoded_bytes, decoder->frequency);

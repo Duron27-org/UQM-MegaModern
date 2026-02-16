@@ -25,7 +25,7 @@
 #include "util.h"
 #include "libs/graphics/widgets.h"
 #include "libs/sound/trackplayer.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/resource/stringbank.h"
 #include "battle.h"
 #include "comm.h"
@@ -250,7 +250,7 @@ void DoPopupWindow(const char* msg)
 
 	if (!bank)
 	{
-		log_add(log_Fatal, "FATAL: Memory exhaustion when preparing popup"
+		uqm::log::critical("FATAL: Memory exhaustion when preparing popup"
 						   " window");
 		exit(EXIT_FAILURE);
 	}

@@ -57,32 +57,32 @@ extern void log_add_nothreadV(log_Level, const char* fmt, va_list)
 	VPRINTF_FUNCTION(2);
 
 
-namespace error
-{
-
+//namespace error
+//{
+//
 bool haveError();
 const char* getError();
 void clear();
-
-void saveError(uqstl::string_view err);
-
-inline void saveErrorV(fmt::string_view fmt, fmt::format_args args)
-{
-	const auto formatted {fmt::vformat(fmt, args)};
-	saveError(formatted);
-}
-inline void saveErrorV(const char* file, int line,
-				fmt::string_view fmt, fmt::format_args args)
-{
-	fmt::print("{}: {}: {}", file, line, fmt::vformat(fmt, args));
-}
-
-template <typename... T>
-inline void saveError(fmt::format_string<T...> fmt, T&&... args)
-{
-	saveErrorV(fmt, fmt::make_format_args(args...));
-}
-
-} // namespace error
+//
+//void saveError(uqstl::string_view err);
+//
+//inline void saveErrorV(fmt::string_view fmt, fmt::format_args args)
+//{
+//	const auto formatted {fmt::vformat(fmt, args)};
+//	saveError(formatted);
+//}
+//inline void saveErrorV(const char* file, int line,
+//				fmt::string_view fmt, fmt::format_args args)
+//{
+//	fmt::print("{}: {}: {}", file, line, fmt::vformat(fmt, args));
+//}
+//
+//template <typename... T>
+//inline void saveError(fmt::format_string<T...> fmt, T&&... args)
+//{
+//	saveErrorV(fmt, fmt::make_format_args(args...));
+//}
+//
+//} // namespace error
 
 #endif /* UQMLOG_H_INCL__ */

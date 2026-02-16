@@ -26,7 +26,7 @@
 #include "grpintrn.h"
 
 #include "libs/mathlib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -63,7 +63,7 @@ void ReadShipFragment(GAME_STATE_FILE* fp, SHIP_FRAGMENT* FragPtr)
 
 	sread_16(fp, nullptr); /* unused: was which_side */
 	sread_8(fp, &FragPtr->captains_name_index);
-	sread_8(fp, nullptr);	/* padding; for savegame compat */
+	sread_8(fp, nullptr);  /* padding; for savegame compat */
 	sread_16(fp, nullptr); /* unused: was ship_flags */
 	sread_8(fp, &FragPtr->race_id);
 	sread_8(fp, &FragPtr->index);
@@ -100,15 +100,15 @@ void ReadIpGroup(GAME_STATE_FILE* fp, IP_GROUP* GroupPtr)
 	uqm::BYTE tmpb;
 
 	sread_16(fp, nullptr); /* unused; was which_side */
-	sread_8(fp, nullptr);	/* unused; was captains_name_index */
-	sread_8(fp, nullptr);	/* padding; for savegame compat */
+	sread_8(fp, nullptr);  /* unused; was captains_name_index */
+	sread_8(fp, nullptr);  /* padding; for savegame compat */
 	sread_16(fp, &GroupPtr->group_counter);
 	sread_8(fp, &GroupPtr->race_id);
 	sread_8(fp, &tmpb); /* was var2 */
 	GroupPtr->sys_loc = LONIBBLE(tmpb);
 	GroupPtr->task = HINIBBLE(tmpb);
 	sread_8(fp, &GroupPtr->in_system); /* was crew_level */
-	sread_8(fp, nullptr);				   /* unused; was max_crew */
+	sread_8(fp, nullptr);			   /* unused; was max_crew */
 	sread_8(fp, &tmpb);				   /* was energy_level */
 	GroupPtr->dest_loc = LONIBBLE(tmpb);
 	GroupPtr->orbit_pos = HINIBBLE(tmpb);
@@ -538,10 +538,10 @@ FlushGroupInfo(GROUP_HEADER* pGH, uqm::DWORD offset, uqm::BYTE which_group,
 	WriteGroupHeader(fp, pGH);
 
 #ifdef DEBUG_GROUPS
-	log_add(log_Debug, "1)FlushGroupInfo(%lu): WG = %u(%lu), NG = %u, "
-					   "SI = %u",
-			offset, which_group, pGH->GroupOffset[which_group],
-			pGH->NumGroups, pGH->star_index);
+	uqm::log::debug("1)FlushGroupInfo(%lu): WG = %u(%lu), NG = %u, "
+					"SI = %u",
+					offset, which_group, pGH->GroupOffset[which_group],
+					pGH->NumGroups, pGH->star_index);
 #endif /* DEBUG_GROUPS */
 
 	if (which_group == GROUP_LIST)
@@ -565,13 +565,13 @@ FlushGroupInfo(GROUP_HEADER* pGH, uqm::DWORD offset, uqm::BYTE which_group,
 			swrite_8(fp, GroupPtr->race_id);
 
 #ifdef DEBUG_GROUPS
-			log_add(log_Debug, "F) type %u, loc %u<%d, %d>, task 0x%02x:%u",
-					GroupPtr->race_id,
-					GET_GROUP_LOC(GroupPtr),
-					GroupPtr->loc.x,
-					GroupPtr->loc.y,
-					GET_GROUP_MISSION(GroupPtr),
-					GET_GROUP_DEST(GroupPtr));
+			uqm::log::debug("F) type %u, loc %u<%d, %d>, task 0x%02x:%u",
+							GroupPtr->race_id,
+							GET_GROUP_LOC(GroupPtr),
+							GroupPtr->loc.x,
+							GroupPtr->loc.y,
+							GET_GROUP_MISSION(GroupPtr),
+							GET_GROUP_DEST(GroupPtr));
 #endif /* DEBUG_GROUPS */
 
 			WriteIpGroup(fp, GroupPtr);
@@ -638,8 +638,8 @@ bool GetGroupInfo(uqm::DWORD offset, uqm::BYTE which_group)
 	SeekStateFile(fp, offset, SEEK_SET);
 	ReadGroupHeader(fp, &GH);
 #ifdef DEBUG_GROUPS
-	log_add(log_Debug, "GetGroupInfo(%lu): %u(%lu) out of %u", offset,
-			which_group, GH.GroupOffset[which_group], GH.NumGroups);
+	uqm::log::debug("GetGroupInfo(%lu): %u(%lu) out of %u", offset,
+					which_group, GH.GroupOffset[which_group], GH.NumGroups);
 #endif /* DEBUG_GROUPS */
 
 	if (which_group == GROUP_INIT_IP)
@@ -648,8 +648,8 @@ bool GetGroupInfo(uqm::DWORD offset, uqm::BYTE which_group)
 
 		ReinitQueue(&GLOBAL(ip_group_q));
 #ifdef DEBUG_GROUPS
-		log_add(log_Debug, "%u == %u", GH.star_index,
-				(uqm::COUNT)(CurStarDescPtr - star_array));
+		uqm::log::debug("%u == %u", GH.star_index,
+						(uqm::COUNT)(CurStarDescPtr - star_array));
 #endif /* DEBUG_GROUPS */
 
 		/* Check if the requested groups are valid for this star system
@@ -665,10 +665,10 @@ bool GetGroupInfo(uqm::DWORD offset, uqm::BYTE which_group)
 #ifdef DEBUG_GROUPS
 			if (GH.star_index == CurStarDescPtr - star_array)
 			{
-				log_add(log_Debug, "GetGroupInfo: battle groups out of "
-								   "date %u/%u/%u!",
-						month_index, day_index,
-						year_index);
+				uqm::log::debug("GetGroupInfo: battle groups out of "
+								"date %u/%u/%u!",
+								month_index, day_index,
+								year_index);
 			}
 #endif /* DEBUG_GROUPS */
 
@@ -754,16 +754,16 @@ bool GetGroupInfo(uqm::DWORD offset, uqm::BYTE which_group)
 			GroupPtr->sys_loc = group_loc;
 
 #ifdef DEBUG_GROUPS
-			log_add(log_Debug, "battle group %u(0x%04x) strength "
-							   "%u, type %u, loc %u<%d, %d>, task %u",
-					which_group,
-					hGroup,
-					NumShips,
-					RaceType,
-					group_loc,
-					GroupPtr->loc.x,
-					GroupPtr->loc.y,
-					task);
+			uqm::log::debug("battle group %u(0x%04x) strength "
+							"%u, type %u, loc %u<%d, %d>, task %u",
+							which_group,
+							hGroup,
+							NumShips,
+							RaceType,
+							group_loc,
+							GroupPtr->loc.x,
+							GroupPtr->loc.y,
+							task);
 #endif /* DEBUG_GROUPS */
 
 			UnlockIpGroup(&GLOBAL(ip_group_q), hGroup);
@@ -844,13 +844,13 @@ bool GetGroupInfo(uqm::DWORD offset, uqm::BYTE which_group)
 			group_id = GroupPtr->group_id;
 
 #ifdef DEBUG_GROUPS
-			log_add(log_Debug, "G) type %u, loc %u<%d, %d>, task 0x%02x:%u",
-					RaceType,
-					GroupPtr->sys_loc,
-					GroupPtr->loc.x,
-					GroupPtr->loc.y,
-					GroupPtr->task,
-					GroupPtr->dest_loc);
+			uqm::log::debug("G) type %u, loc %u<%d, %d>, task 0x%02x:%u",
+							RaceType,
+							GroupPtr->sys_loc,
+							GroupPtr->loc.x,
+							GroupPtr->loc.y,
+							GroupPtr->task,
+							GroupPtr->dest_loc);
 #endif /* DEBUG_GROUPS */
 
 			UnlockIpGroup(&GLOBAL(ip_group_q), hGroup);
@@ -859,7 +859,7 @@ bool GetGroupInfo(uqm::DWORD offset, uqm::BYTE which_group)
 			{
 				/* No ships left in the last encountered group, remove it */
 #ifdef DEBUG_GROUPS
-				log_add(log_Debug, " -- REMOVING");
+				uqm::log::debug(" -- REMOVING");
 #endif /* DEBUG_GROUPS */
 				RemoveQueue(&GLOBAL(ip_group_q), hGroup);
 				FreeIpGroup(&GLOBAL(ip_group_q), hGroup);
@@ -995,9 +995,9 @@ PutGroupInfo(uqm::DWORD offset, uqm::BYTE which_group)
 	GH.star_index = CurStarDescPtr - star_array;
 
 #ifdef DEBUG_GROUPS
-	log_add(log_Debug, "PutGroupInfo(%lu): %u out of %u -- %u/%u/%u",
-			offset, which_group, GH.NumGroups,
-			GH.month_index, GH.day_index, GH.year_index);
+	uqm::log::debug("PutGroupInfo(%lu): %u out of %u -- %u/%u/%u",
+					offset, which_group, GH.NumGroups,
+					GH.month_index, GH.day_index, GH.year_index);
 #endif /* DEBUG_GROUPS */
 
 	FlushGroupInfo(&GH, offset, which_group, fp);

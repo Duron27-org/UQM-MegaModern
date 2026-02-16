@@ -21,7 +21,7 @@
 
 #include "netplay.h"
 #include "checkbuf.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 
 #include "../../battle.h"
 // for battleFrameCount
@@ -136,9 +136,9 @@ bool ChecksumBuffer_getChecksum(ChecksumBuffer* cb, BattleFrameCounter frameNr,
 #ifdef NETPLAY_DEBUG
 	if (frameNr != entry->frameNr)
 	{
-		log_add(log_Error, "Checksum buffer entry for requested frame %u "
-						   "(still?) contains a checksum for frame %u.\n",
-				frameNr, entry->frameNr);
+		uqm::log::error("Checksum buffer entry for requested frame %u "
+						"(still?) contains a checksum for frame %u.\n",
+						frameNr, entry->frameNr);
 		return false;
 	}
 #endif

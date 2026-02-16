@@ -10,6 +10,7 @@
 #include <fmt/format.h>
 #include "core/stl/stl.h"
 
+
 namespace uqm
 {
 static constexpr const char* TrueText {"true"};
@@ -91,8 +92,6 @@ inline const char* toString(const T value, uqstl::span<char> buffer)
 		return uqstl::tolower(static_cast<const unsigned char>(a)) == uqstl::tolower(static_cast<const unsigned char>(b));
 	});
 }
-
-
 
 
 [[nodiscard]] inline constexpr bool isEmpty(uqstl::string_view str) noexcept

@@ -20,7 +20,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "port.h"
 #include "types.h"
 #include "libs/uio.h"
@@ -174,16 +174,16 @@ ova_Open(THIS_PTR, uio_DirHandle* dir, const char* filename)
 	fp = uio_fopen(dir, filename, "rb");
 	if (fp == nullptr)
 	{
-		log_add(log_Warning, "ova_Open(): could not open %s", filename);
+		uqm::log::warn("ova_Open(): could not open %s", filename);
 		return false;
 	}
 
 	rc = ov_open_callbacks(fp, &ova->vf, nullptr, 0, ogg_callbacks);
 	if (rc != 0)
 	{
-		log_add(log_Warning, "ova_Open(): "
-							 "ov_open_callbacks failed for %s, error code %d",
-				filename, rc);
+		uqm::log::warn("ova_Open(): "
+					   "ov_open_callbacks failed for %s, error code %d",
+					   filename, rc);
 		uio_fclose(fp);
 		return false;
 	}
@@ -191,9 +191,9 @@ ova_Open(THIS_PTR, uio_DirHandle* dir, const char* filename)
 	vinfo = ov_info(&ova->vf, -1);
 	if (!vinfo)
 	{
-		log_add(log_Warning, "ova_Open(): "
-							 "failed to retrieve ogg bitstream info for %s",
-				filename);
+		uqm::log::warn("ova_Open(): "
+					   "failed to retrieve ogg bitstream info for %s",
+					   filename);
 		ov_clear(&ova->vf);
 		return false;
 	}

@@ -172,7 +172,7 @@ static const luaL_Reg co_funcs[] = {
 	{"status",  luaB_costatus },
 	{"wrap",	 luaB_cowrap	},
 	{"yield",	  luaB_yield	},
-	{nullptr,	   nullptr		   }
+	{nullptr,	  nullptr		 }
 };
 
 

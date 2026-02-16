@@ -24,7 +24,7 @@
 #include "types.h"
 #include "libs/uio.h"
 #include "endian_uqm.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "wav.h"
 
 #define wave_MAKE_ID(x1, x2, x3, x4) \
@@ -242,9 +242,9 @@ wava_Open(THIS_PTR, uio_DirHandle* dir, const char* filename)
 	}
 	if (fileHdr.id != wave_RiffID || fileHdr.type != wave_WaveID)
 	{
-		log_add(log_Warning, "wava_Open(): "
-							 "not a wave file, ID 0x%08x, Type 0x%08x",
-				fileHdr.id, fileHdr.type);
+		uqm::log::warn("wava_Open(): "
+					   "not a wave file, ID 0x%08x, Type 0x%08x",
+					   fileHdr.id, fileHdr.type);
 		wava_Close(This);
 		return false;
 	}
@@ -285,31 +285,31 @@ wava_Open(THIS_PTR, uio_DirHandle* dir, const char* filename)
 
 	if (!wava->data_size || !wava->data_ofs)
 	{
-		log_add(log_Warning, "wava_Open(): bad wave file,"
-							 " no DATA chunk found");
+		uqm::log::warn("wava_Open(): bad wave file,"
+					   " no DATA chunk found");
 		wava_Close(This);
 		return false;
 	}
 
 	if (wava->fmtHdr.format != 0x0001)
 	{ // not a PCM format
-		log_add(log_Warning, "wava_Open(): unsupported format %x",
-				wava->fmtHdr.format);
+		uqm::log::warn("wava_Open(): unsupported format %x",
+					   wava->fmtHdr.format);
 		wava_Close(This);
 		return false;
 	}
 	if (wava->fmtHdr.channels != 1 && wava->fmtHdr.channels != 2)
 	{
-		log_add(log_Warning, "wava_Open(): unsupported number of channels %u",
-				(unsigned)wava->fmtHdr.channels);
+		uqm::log::warn("wava_Open(): unsupported number of channels %u",
+					   (unsigned)wava->fmtHdr.channels);
 		wava_Close(This);
 		return false;
 	}
 
 	if (dataLeft != 0)
 	{
-		log_add(log_Warning, "wava_Open(): bad or unsupported wave file, "
-							 "size in header does not match read chunks");
+		uqm::log::warn("wava_Open(): bad or unsupported wave file, "
+					   "size in header does not match read chunks");
 	}
 
 	This->format = (wava->fmtHdr.channels == 1 ?

@@ -21,7 +21,7 @@
 #define SOCKET_INTERNAL
 #include "socket.h"
 
-#include "libs/log.h"
+#include "core/log/log.h"
 
 #include <assert.h>
 #include <errno.h>
@@ -168,9 +168,9 @@ int Socket_setNonBlocking(Socket* sock)
 	if (flags == -1)
 	{
 		int savedErrno = errno;
-		log_add(log_Error, "Getting file descriptor flags of socket failed: "
-						   "%s.",
-				strerror(errno));
+		uqm::log::error("Getting file descriptor flags of socket failed: "
+						"%s.",
+						strerror(errno));
 		errno = savedErrno;
 		return -1;
 	}
@@ -178,9 +178,9 @@ int Socket_setNonBlocking(Socket* sock)
 	if (fcntl(sock->fd, F_SETFL, flags | O_NONBLOCK) == -1)
 	{
 		int savedErrno = errno;
-		log_add(log_Error, "Setting non-blocking mode on socket failed: "
-						   "%s.",
-				strerror(errno));
+		uqm::log::error("Setting non-blocking mode on socket failed: "
+						"%s.",
+						strerror(errno));
 		errno = savedErrno;
 		return -1;
 	}
@@ -196,8 +196,8 @@ int Socket_setReuseAddr(Socket* sock)
 		== -1)
 	{
 		int savedErrno = errno;
-		log_add(log_Error, "Setting socket reuse failed: %s.",
-				strerror(errno));
+		uqm::log::error("Setting socket reuse failed: %s.",
+						strerror(errno));
 		errno = savedErrno;
 		return -1;
 	}
@@ -215,8 +215,8 @@ int Socket_setNodelay(Socket* sock)
 	{
 #ifdef DEBUG
 		int savedErrno = errno;
-		log_add(log_Warning, "Disabling Nagle algorithm failed: %s.",
-				strerror(errno));
+		uqm::log::warn("Disabling Nagle algorithm failed: %s.",
+					   strerror(errno));
 		errno = savedErrno;
 #endif
 		return -1;
@@ -232,8 +232,8 @@ int Socket_setTOS(Socket* sock, int tos)
 	{
 #ifdef DEBUG
 		int savedErrno = errno;
-		log_add(log_Warning, "Setting socket type-of-service failed: %s.",
-				strerror(errno));
+		uqm::log::warn("Setting socket type-of-service failed: %s.",
+					   strerror(errno));
 		errno = savedErrno;
 #endif
 		return -1;
@@ -267,8 +267,8 @@ int Socket_setInlineOOB(Socket* sock)
 		== -1)
 	{
 		int savedErrno = errno;
-		log_add(log_Error, "Setting inline OOB on socket failed: %s",
-				strerror(errno));
+		uqm::log::error("Setting inline OOB on socket failed: %s",
+						strerror(errno));
 		errno = savedErrno;
 		return -1;
 	}
@@ -283,8 +283,8 @@ int Socket_setKeepAlive(Socket* sock)
 		== -1)
 	{
 		int savedErrno = errno;
-		log_add(log_Error, "Setting keep-alive on socket failed: %s",
-				strerror(errno));
+		uqm::log::error("Setting keep-alive on socket failed: %s",
+						strerror(errno));
 		errno = savedErrno;
 		return -1;
 	}

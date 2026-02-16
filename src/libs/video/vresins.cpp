@@ -19,7 +19,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "vidintrn.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/memlib.h"
 
 
@@ -90,22 +90,22 @@ GetLegacyVideoData(const char* path, RESOURCE_DATA* resdata)
 		}
 	}
 
-	log_add(log_Info, "\t'%s' -- video", paths);
+	uqm::log::info("\t'%s' -- video", paths);
 	if (audio_path)
 	{
-		log_add(log_Info, "\t'%s' -- audio", audio_path);
+		uqm::log::info("\t'%s' -- audio", audio_path);
 	}
 	else
 	{
-		log_add(log_Info, "\tNo associated audio");
+		uqm::log::info("\tNo associated audio");
 	}
 	if (speech_path)
 	{
-		log_add(log_Info, "\t'%s' -- speech path", speech_path);
+		uqm::log::info("\t'%s' -- speech path", speech_path);
 	}
 	else
 	{
-		log_add(log_Info, "\tNo associated speech");
+		uqm::log::info("\tNo associated speech");
 	}
 	if (loop_str)
 	{
@@ -114,14 +114,14 @@ GetLegacyVideoData(const char* path, RESOURCE_DATA* resdata)
 		// We allow whitespace at the end, but nothing printable.
 		if (*end > 32)
 		{
-			log_add(log_Warning, "Warning: Unparsable loop frame '%s'. Disabling loop.", loop_str);
+			uqm::log::warn("Warning: Unparsable loop frame '%s'. Disabling loop.", loop_str);
 			LoopFrame = VID_NO_LOOP;
 		}
-		log_add(log_Info, "\tLoop frame is %u", LoopFrame);
+		uqm::log::info("\tLoop frame is %u", LoopFrame);
 	}
 	else
 	{
-		log_add(log_Info, "\tNo specified loop frame");
+		uqm::log::info("\tNo specified loop frame");
 	}
 
 	result = HMalloc(sizeof(LEGACY_VIDEO_DESC));
@@ -138,7 +138,7 @@ GetLegacyVideoData(const char* path, RESOURCE_DATA* resdata)
 		pLV->video = (char*)HMalloc(len);
 		if (!pLV->video)
 		{
-			log_add(log_Warning, "Warning: Couldn't allocate space for '%s'", paths);
+			uqm::log::warn("Warning: Couldn't allocate space for '%s'", paths);
 			goto err;
 		}
 		strncpy(pLV->video, paths, len);
@@ -149,7 +149,7 @@ GetLegacyVideoData(const char* path, RESOURCE_DATA* resdata)
 			pLV->audio = (char*)HMalloc(len);
 			if (!pLV->audio)
 			{
-				log_add(log_Warning, "Warning: Couldn't allocate space for '%s'", audio_path);
+				uqm::log::warn("Warning: Couldn't allocate space for '%s'", audio_path);
 				goto err;
 			}
 			strncpy(pLV->audio, audio_path, len);
@@ -161,7 +161,7 @@ GetLegacyVideoData(const char* path, RESOURCE_DATA* resdata)
 			pLV->speech = (char*)HMalloc(len);
 			if (!pLV->speech)
 			{
-				log_add(log_Warning, "Warning: Couldn't allocate space for '%s'", speech_path);
+				uqm::log::warn("Warning: Couldn't allocate space for '%s'", speech_path);
 				goto err;
 			}
 			strncpy(pLV->speech, speech_path, len);

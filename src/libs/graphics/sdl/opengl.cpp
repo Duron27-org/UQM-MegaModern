@@ -22,7 +22,7 @@
 #include "libs/graphics/bbox.h"
 #include "scalers.h"
 #include "options.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "uqm/units.h"
 
 #if SDL_MAJOR_VERSION == 1
@@ -84,8 +84,8 @@ Create_Screen(SDL_Surface* templat, int w, int h)
 												templat->format->Bmask, 0);
 	if (newsurf == 0)
 	{
-		log_add(log_Error, "Couldn't create screen buffers: %s",
-				SDL_GetError());
+		uqm::log::error("Couldn't create screen buffers: %s",
+						SDL_GetError());
 	}
 	return newsurf;
 }
@@ -153,7 +153,7 @@ AttemptColorDepth(int flags, int width, int height, int bpp, int resFactor)
 		height = fs_height;
 		width = fs_width;
 
-		log_add(log_Debug, "X:%d y:%d", width, height);
+		uqm::log::debug("X:%d y:%d", width, height);
 	}
 
 	ScreenWidthActual = width;
@@ -163,15 +163,15 @@ AttemptColorDepth(int flags, int width, int height, int bpp, int resFactor)
 								 bpp, videomode_flags);
 	if (SDL_Video == nullptr)
 	{
-		log_add(log_Error, "Couldn't set OpenGL %ix%ix%i video mode: %s",
-				ScreenWidthActual, ScreenHeightActual, bpp,
-				SDL_GetError());
+		uqm::log::error("Couldn't set OpenGL %ix%ix%i video mode: %s",
+						ScreenWidthActual, ScreenHeightActual, bpp,
+						SDL_GetError());
 
 		if (flags & TFB_GFXFLAGS_FULLSCREEN
 			|| flags & TFB_GFXFLAGS_EX_FULLSCREEN)
 		{
 			videomode_flags &= ~SDL_FULLSCREEN;
-			log_add(log_Error, "Falling back to windowed mode!!");
+			uqm::log::error("Falling back to windowed mode!!");
 			SDL_Video = SDL_SetVideoMode(ScreenWidthActual, ScreenHeightActual, bpp, videomode_flags);
 
 			if (SDL_Video != nullptr)
@@ -185,14 +185,14 @@ AttemptColorDepth(int flags, int width, int height, int bpp, int resFactor)
 	else
 	{
 successful_change:
-		log_add(log_Info, "Set the resolution to: %ix%ix%i"
-						  " (surface reports %ix%ix%i) (res_cat %u)",
-				width, height, bpp,
-				SDL_GetVideoSurface()->w, SDL_GetVideoSurface()->h,
-				SDL_GetVideoSurface()->format->BitsPerPixel, resFactor);
+		uqm::log::info("Set the resolution to: %ix%ix%i"
+					   " (surface reports %ix%ix%i) (res_cat %u)",
+					   width, height, bpp,
+					   SDL_GetVideoSurface()->w, SDL_GetVideoSurface()->h,
+					   SDL_GetVideoSurface()->format->BitsPerPixel, resFactor);
 
-		log_add(log_Info, "OpenGL renderer: %s version: %s",
-				glGetString(GL_RENDERER), glGetString(GL_VERSION));
+		uqm::log::info("OpenGL renderer: %s version: %s",
+					   glGetString(GL_RENDERER), glGetString(GL_VERSION));
 
 		// JMS: Now, this makes the game center horizontally
 		// between the black bars on the sides.
@@ -209,8 +209,8 @@ int TFB_GL_ConfigureVideo(int driver, int flags, int width, int height,
 
 	if (AttemptColorDepth(flags, width, height, 32, resFactor) && AttemptColorDepth(flags, width, height, 24, resFactor) && AttemptColorDepth(flags, width, height, 16, resFactor))
 	{
-		log_add(log_Error, "Couldn't set any OpenGL %ix%i video mode!",
-				width, height);
+		uqm::log::error("Couldn't set any OpenGL %ix%i video mode!",
+						width, height);
 		return -1;
 	}
 
@@ -224,8 +224,8 @@ int TFB_GL_ConfigureVideo(int driver, int flags, int width, int height,
 												R_MASK, G_MASK, B_MASK, A_MASK);
 		if (format_conv_surf == nullptr)
 		{
-			log_add(log_Error, "Couldn't create format_conv_surf: %s",
-					SDL_GetError());
+			uqm::log::error("Couldn't create format_conv_surf: %s",
+							SDL_GetError());
 			return -1;
 		}
 
@@ -326,19 +326,19 @@ int TFB_GL_InitGraphics(int driver, int flags, int width, int height,
 {
 	char VideoName[256];
 
-	log_add(log_Info, "Initializing SDL with OpenGL support.");
+	uqm::log::info("Initializing SDL with OpenGL support.");
 
 	SDL_VideoDriverName(VideoName, sizeof(VideoName));
-	log_add(log_Info, "SDL driver used: %s", VideoName);
-	log_add(log_Info, "SDL initialized.");
-	log_add(log_Info, "Initializing Screen.");
+	uqm::log::info("SDL driver used: %s", VideoName);
+	uqm::log::info("SDL initialized.");
+	uqm::log::info("Initializing Screen.");
 
 	ScreenWidth = (320 << resFactor);
 	ScreenHeight = ((windowType ? 240 : 200) << resFactor);
 
 	if (TFB_GL_ConfigureVideo(driver, flags, width, height, 0, resFactor))
 	{
-		log_add(log_Fatal, "Could not initialize video: "
+		uqm::log::critical("Could not initialize video: "
 						   "no fallback at start of program!");
 		exit(EXIT_FAILURE);
 	}

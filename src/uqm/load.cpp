@@ -31,7 +31,7 @@
 #include "uqmdebug.h"
 #include "gameev.h"
 #include "libs/tasklib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/misc.h"
 #include "master.h"
 
@@ -409,20 +409,20 @@ LoadGameState(GAME_STATE* GSPtr, void* fh, bool try_core)
 
 		if (rev < 0 || magic < gameStateByteCount)
 		{
-			log_add(log_Error, "Warning: Savegame is corrupt: saved game "
-							   "state is too small.");
+			uqm::log::error("Warning: Savegame is corrupt: saved game "
+							"state is too small.");
 			return false;
 		}
 
-		log_add(log_Debug, "Detected save game state rev %d: %s",
-				rev, gameStateBitMapRevTag[rev]);
+		uqm::log::debug("Detected save game state rev %d: %s",
+						rev, gameStateBitMapRevTag[rev]);
 
 		buf = (uqm::BYTE*)HMalloc(gameStateByteCount);
 		if (buf == nullptr)
 		{
-			log_add(log_Error, "Warning: Cannot allocate enough bytes for "
-							   "the saved game state (%lu bytes).",
-					(unsigned long)gameStateByteCount);
+			uqm::log::error("Warning: Cannot allocate enough bytes for "
+							"the saved game state (%lu bytes).",
+							(unsigned long)gameStateByteCount);
 			return false;
 		}
 
@@ -693,8 +693,8 @@ SetBattleGroupOffset(int encounterIndex, uqm::DWORD offset)
 			SET_GAME_STATE(SAMATRA_GRPOFFS, offset);
 			break;
 		default:
-			log_add(log_Warning, "SetBattleGroupOffset: invalid encounter "
-								 "index.\n");
+			uqm::log::warn("SetBattleGroupOffset: invalid encounter "
+						   "index.\n");
 			break;
 	}
 }
@@ -788,7 +788,7 @@ LoadBattleGroup(uio_Stream* fh, uqm::DWORD chunksize)
 	/* Consistency check. */
 	if (chunksize)
 	{
-		log_add(log_Warning, "BattleGroup chunk mis-sized!");
+		uqm::log::warn("BattleGroup chunk mis-sized!");
 	}
 }
 
@@ -935,7 +935,7 @@ bool LoadGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, uio_Stream* in_fp, b
 			case EVENTS_TAG:
 				num_links = chunkSize / 5;
 #ifdef DEBUG_LOAD
-				log_add(log_Debug, "EVENTS:");
+				uqm::log::debug("EVENTS:");
 #endif /* DEBUG_LOAD */
 				while (num_links--)
 				{
@@ -949,11 +949,11 @@ bool LoadGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, uio_Stream* in_fp, b
 					LoadEvent(EventPtr, in_fp);
 
 #ifdef DEBUG_LOAD
-					log_add(log_Debug, "\t%u/%u/%u -- %u",
-							EventPtr->month_index,
-							EventPtr->day_index,
-							EventPtr->year_index,
-							EventPtr->func_index);
+					uqm::log::debug("\t%u/%u/%u -- %u",
+									EventPtr->month_index,
+									EventPtr->day_index,
+									EventPtr->year_index,
+									EventPtr->func_index);
 #endif /* DEBUG_LOAD */
 					if (optDeCleansing && EventPtr->func_index == KOHR_AH_VICTORIOUS_EVENT)
 					{
@@ -1013,7 +1013,7 @@ bool LoadGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, uio_Stream* in_fp, b
 				LoadBattleGroup(in_fp, chunkSize);
 				break;
 			default:
-				log_add(log_Debug, "Skipping chunk of tag %08X (size %u)", chunk, chunkSize);
+				uqm::log::debug("Skipping chunk of tag %08X (size %u)", chunk, chunkSize);
 				if (skip_8(in_fp, chunkSize) != 1)
 				{
 					res_CloseResFile(in_fp);

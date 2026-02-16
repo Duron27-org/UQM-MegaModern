@@ -18,6 +18,7 @@
 #pragma once
 #include "core/stl/stl.h"
 #include "options/options.h"
+#include "core/log/logger.h"
 
 namespace uqm
 {
@@ -33,6 +34,7 @@ public:
 
 private:
 	OptionsStruct m_options {};
+	Logger m_logger {};
 };
 
 } // namespace uqm

@@ -18,7 +18,7 @@
 #include "video.h"
 #include "videodec.h"
 #include "dukvid.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/memlib.h"
 #include "../../uqm/units.h"
 
@@ -37,8 +37,8 @@ struct TFB_RegVideoDecoder
 };
 static TFB_RegVideoDecoder vd_decoders[MAX_REG_DECODERS + 1] =
 	{
-		{true,  true,	 "duk", &dukv_DecoderVtbl},
-		{false, false, nullptr,	 nullptr			 }, // null term
+		{true,  true,	 "duk",	&dukv_DecoderVtbl},
+		{false, false, nullptr, nullptr		   }, // null term
 };
 
 static void vd_computeMasks(uint32 mask, uqm::DWORD* shift, uqm::DWORD* loss);
@@ -62,15 +62,15 @@ bool VideoDecoder_Init(int flags, int depth, uint32 Rmask, uint32 Gmask,
 
 	if (depth < 15 || depth > 32)
 	{
-		log_add(log_Error, "VideoDecoder_Init: "
-						   "Unsupported video depth %d",
-				depth);
+		uqm::log::error("VideoDecoder_Init: "
+						"Unsupported video depth %d",
+						depth);
 		return false;
 	}
 
 	if ((Rmask & Gmask) || (Rmask & Bmask) || (Rmask & Amask) || (Gmask & Bmask) || (Gmask & Amask) || (Bmask & Amask))
 	{
-		log_add(log_Error, "VideoDecoder_Init: Invalid channel masks");
+		uqm::log::error("VideoDecoder_Init: Invalid channel masks");
 		return false;
 	}
 
@@ -92,9 +92,9 @@ bool VideoDecoder_Init(int flags, int depth, uint32 Rmask, uint32 Gmask,
 	{
 		if (!info->funcs->InitModule(flags))
 		{
-			log_add(log_Error, "VideoDecoder_Init(): "
-							   "%s video decoder init failed",
-					info->funcs->GetName());
+			uqm::log::error("VideoDecoder_Init(): "
+							"%s video decoder init failed",
+							info->funcs->GetName());
 		}
 	}
 
@@ -135,13 +135,13 @@ VideoDecoder_Register(const char* fileext, TFB_VideoDecoderFuncs* decvtbl)
 
 	if (!decvtbl)
 	{
-		log_add(log_Warning, "VideoDecoder_Register(): Null decoder table");
+		uqm::log::warn("VideoDecoder_Register(): Null decoder table");
 		return nullptr;
 	}
 	if (!fileext)
 	{
-		log_add(log_Warning, "VideoDecoder_Register(): Bad file type for %s",
-				decvtbl->GetName());
+		uqm::log::warn("VideoDecoder_Register(): Bad file type for %s",
+					   decvtbl->GetName());
 		return nullptr;
 	}
 
@@ -158,21 +158,21 @@ VideoDecoder_Register(const char* fileext, TFB_VideoDecoderFuncs* decvtbl)
 
 	if (info >= vd_decoders + MAX_REG_DECODERS)
 	{
-		log_add(log_Warning, "VideoDecoder_Register(): Decoders limit reached");
+		uqm::log::warn("VideoDecoder_Register(): Decoders limit reached");
 		return nullptr;
 	}
 	else if (info->ext)
 	{
-		log_add(log_Warning, "VideoDecoder_Register(): "
-							 "'%s' decoder already registered (%s denied)",
-				fileext, decvtbl->GetName());
+		uqm::log::warn("VideoDecoder_Register(): "
+					   "'%s' decoder already registered (%s denied)",
+					   fileext, decvtbl->GetName());
 		return nullptr;
 	}
 
 	if (!decvtbl->InitModule(vd_flags))
 	{
-		log_add(log_Warning, "VideoDecoder_Register(): %s decoder init failed",
-				decvtbl->GetName());
+		uqm::log::warn("VideoDecoder_Register(): %s decoder init failed",
+					   decvtbl->GetName());
 		return nullptr;
 	}
 
@@ -196,8 +196,8 @@ void VideoDecoder_Unregister(TFB_RegVideoDecoder* regdec)
 {
 	if (regdec < vd_decoders || regdec >= vd_decoders + MAX_REG_DECODERS || !regdec->ext || !regdec->funcs)
 	{
-		log_add(log_Warning, "VideoDecoder_Unregister(): "
-							 "Invalid or expired decoder passed");
+		uqm::log::warn("VideoDecoder_Unregister(): "
+					   "Invalid or expired decoder passed");
 		return;
 	}
 
@@ -233,7 +233,7 @@ VideoDecoder_Load(uio_DirHandle* dir, const char* filename)
 	pext = strrchr(filename, '.');
 	if (!pext)
 	{
-		log_add(log_Warning, "VideoDecoder_Load: Unknown file type");
+		uqm::log::warn("VideoDecoder_Load: Unknown file type");
 		return nullptr;
 	}
 	++pext;
@@ -243,7 +243,7 @@ VideoDecoder_Load(uio_DirHandle* dir, const char* filename)
 		;
 	if (!info->ext)
 	{
-		log_add(log_Warning, "VideoDecoder_Load: Unsupported file type");
+		uqm::log::warn("VideoDecoder_Load: Unsupported file type");
 		return nullptr;
 	}
 
@@ -251,10 +251,10 @@ VideoDecoder_Load(uio_DirHandle* dir, const char* filename)
 	decoder->funcs = info->funcs;
 	if (!decoder->funcs->Init(decoder, &vd_vidfmt))
 	{
-		log_add(log_Warning, "VideoDecoder_Load: "
-							 "Cannot init '%s' decoder, code %d",
-				decoder->funcs->GetName(),
-				decoder->funcs->GetError(decoder));
+		uqm::log::warn("VideoDecoder_Load: "
+					   "Cannot init '%s' decoder, code %d",
+					   decoder->funcs->GetName(),
+					   decoder->funcs->GetError(decoder));
 		HFree(decoder);
 		return nullptr;
 	}
@@ -266,10 +266,10 @@ VideoDecoder_Load(uio_DirHandle* dir, const char* filename)
 
 	if (!decoder->funcs->Open(decoder, dir, filename))
 	{
-		log_add(log_Warning, "VideoDecoder_Load: "
-							 "'%s' decoder did not load %s, code %d",
-				decoder->funcs->GetName(), filename,
-				decoder->funcs->GetError(decoder));
+		uqm::log::warn("VideoDecoder_Load: "
+					   "'%s' decoder did not load %s, code %d",
+					   decoder->funcs->GetName(), filename,
+					   decoder->funcs->GetError(decoder));
 
 		VideoDecoder_Free(decoder);
 		return nullptr;

@@ -22,7 +22,7 @@
 #include "crc.h"
 
 #ifdef DUMP_CRC_OPS
-#include "libs/log.h"
+#include "core/log/log.h"
 #endif
 
 

@@ -20,7 +20,7 @@
 #include "collide.h"
 #include "races.h"
 #include "units.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 
 //#define DEBUG_GRAVITY
 
@@ -65,8 +65,8 @@ bool CalculateGravity(ELEMENT* ElementPtr)
 #ifdef DEBUG_GRAVITY
 			if (TestElementPtr->state_flags & PLAYER_SHIP)
 			{
-				log_add(log_Debug, "CalculateGravity:");
-				log_add(log_Debug, "\tdx = %d, dy = %d", dx, dy);
+				uqm::log::debug("CalculateGravity:");
+				uqm::log::debug("\tdx = %d, dy = %d", dx, dy);
 			}
 #endif /* DEBUG_GRAVITY */
 			dx = WRAP_DELTA_X(dx);
@@ -74,7 +74,7 @@ bool CalculateGravity(ELEMENT* ElementPtr)
 #ifdef DEBUG_GRAVITY
 			if (TestElementPtr->state_flags & PLAYER_SHIP)
 			{
-				log_add(log_Debug, "\twrap_dx = %d, wrap_dy = %d", dx, dy);
+				uqm::log::debug("\twrap_dx = %d, wrap_dy = %d", dx, dy);
 			}
 #endif /* DEBUG_GRAVITY */
 			abs_dx = dx >= 0 ? dx : -dx;
@@ -84,8 +84,8 @@ bool CalculateGravity(ELEMENT* ElementPtr)
 #ifdef DEBUG_GRAVITY
 			if (TestElementPtr->state_flags & PLAYER_SHIP)
 			{
-				log_add(log_Debug, "\tdisplay_dx = %d, display_dy = %d",
-						abs_dx, abs_dy);
+				uqm::log::debug("\tdisplay_dx = %d, display_dy = %d",
+								abs_dx, abs_dy);
 			}
 #endif /* DEBUG_GRAVITY */
 			if (abs_dx <= GRAVITY_THRESHOLD
@@ -118,13 +118,13 @@ bool CalculateGravity(ELEMENT* ElementPtr)
 					{
 						magnitude = MAX_MAGNITUDE;
 					}
-					log_add(log_Debug, "magnitude = %u", magnitude);
+					uqm::log::debug("magnitude = %u", magnitude);
 #endif /* NEVER */
 
 #ifdef DEBUG_GRAVITY
 					if (TestElementPtr->state_flags & PLAYER_SHIP)
 					{
-						log_add(log_Debug, "dist_squared = %lu", dist_squared);
+						uqm::log::debug("dist_squared = %lu", dist_squared);
 					}
 #endif /* DEBUG_GRAVITY */
 					if (TestHasGravity)

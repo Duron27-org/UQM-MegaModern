@@ -19,7 +19,7 @@
 #include "meleesetup.h"
 
 #include "../master.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -100,9 +100,8 @@ int MeleeTeam_deserialize(MeleeTeam* team, uio_Stream* stream)
 
 		if (team->ships[slotI] >= NUM_MELEE_SHIPS)
 		{
-			log_add(log_Warning, "Invalid ship type in loaded team (index "
-								 "%d, ship type is %d, max valid is %d).",
-					slotI, team->ships[slotI], NUM_MELEE_SHIPS - 1);
+			uqm::log::warn("Invalid ship type in loaded team (index {}, ship type is {}, max valid is {}).",
+						   static_cast<int>(slotI), static_cast<int>(team->ships[slotI]), NUM_MELEE_SHIPS - 1);
 			team->ships[slotI] = MELEE_NONE;
 		}
 	}

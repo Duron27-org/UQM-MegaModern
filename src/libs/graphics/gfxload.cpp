@@ -25,7 +25,7 @@
 #include "libs/uio.h"
 #include "libs/reslib.h"
 // for _cur_resfile_name
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/memlib.h"
 #include "libs/graphics/tfb_draw.h"
 #include "libs/graphics/drawable.h"
@@ -240,7 +240,7 @@ void* _GetCelData(uio_Stream* fp, uqm::DWORD length)
 	ani = (AniData*)HMalloc(sizeof(AniData) * cel_total);
 	if (!img || !ani)
 	{
-		log_add(log_Warning, "Couldn't allocate space for '%s'", _cur_resfile_name);
+		uqm::log::warn("Couldn't allocate space for '%s'", _cur_resfile_name);
 		if (aniMount)
 		{
 			uio_fclose(aniFile);
@@ -271,10 +271,10 @@ void* _GetCelData(uio_Stream* fp, uqm::DWORD length)
 			const char* err;
 
 			err = TFB_DrawCanvas_GetError();
-			log_add(log_Warning, "_GetCelData: Unable to load image!");
+			uqm::log::warn("_GetCelData: Unable to load image!");
 			if (err != nullptr)
 			{
-				log_add(log_Warning, "Gfx Driver reports: %s", err);
+				uqm::log::warn("Gfx Driver reports: %s", err);
 			}
 		}
 		else
@@ -318,8 +318,8 @@ void* _GetCelData(uio_Stream* fp, uqm::DWORD length)
 
 	if (Drawable == nullptr)
 	{
-		log_add(log_Warning, "Couldn't get cel data for '%s'",
-				_cur_resfile_name);
+		uqm::log::warn("Couldn't get cel data for '%s'",
+					   _cur_resfile_name);
 	}
 
 	if (aniMount)
@@ -636,10 +636,10 @@ void* _GetFontData(uio_Stream* fp, uqm::DWORD length)
 					if (destChar->data != nullptr)
 					{
 						// There's already an image for this character.
-						log_add(log_Debug, "Duplicate image for character %d "
-										   "for font %s.",
-								(int)bcd->index,
-								_cur_resfile_name);
+						uqm::log::debug("Duplicate image for character %d "
+										"for font %s.",
+										(int)bcd->index,
+										_cur_resfile_name);
 						TFB_DrawCanvas_Delete(bcd->canvas);
 						continue;
 					}

@@ -19,7 +19,7 @@
 #include "vidintrn.h"
 #include "libs/graphics/gfx_common.h"
 #include "libs/graphics/tfb_draw.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/memlib.h"
 #include "libs/sndlib.h"
 #include "uqm/units.h"
@@ -291,8 +291,8 @@ bool TFB_PlayVideo(VIDEO_REF vid, uint32 x, uint32 y)
 	{
 		if (!vid->hAudio)
 		{
-			log_add(log_Warning, "TFB_PlayVideo: "
-								 "Cannot load sound-track for audio-synced video");
+			uqm::log::warn("TFB_PlayVideo: "
+						   "Cannot load sound-track for audio-synced video");
 			return false;
 		}
 

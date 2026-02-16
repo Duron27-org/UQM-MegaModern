@@ -22,7 +22,7 @@
 
 #include "libs/compiler.h"
 #include "libs/misc.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 
 #include <errno.h>
 #include <winsock2.h>
@@ -37,26 +37,26 @@ void Network_init(void)
 	if (startupResult != 0)
 	{
 		int savedErrno = winsockErrorToErrno(startupResult);
-		log_add(log_Fatal, "WSAStartup failed.");
+		uqm::log::critical("WSAStartup failed.");
 		errno = savedErrno;
 		explode();
 	}
 
 #ifdef DEBUG
-	log_add(log_Debug, "Winsock version %d.%d found: \"%s\".",
-			lowByte(data.wHighVersion), highByte(data.wHighVersion),
-			data.szDescription);
-	log_add(log_Debug, "Requesting to use Winsock version %d.%d, got "
-					   "version %d.%d.",
-			lowByte(requestVersion), highByte(requestVersion),
-			lowByte(data.wVersion), highByte(data.wVersion));
+	uqm::log::debug("Winsock version %d.%d found: \"%s\".",
+					lowByte(data.wHighVersion), highByte(data.wHighVersion),
+					data.szDescription);
+	uqm::log::debug("Requesting to use Winsock version %d.%d, got "
+					"version %d.%d.",
+					lowByte(requestVersion), highByte(requestVersion),
+					lowByte(data.wVersion), highByte(data.wVersion));
 #endif
 	if (data.wVersion != requestVersion)
 	{
-		log_add(log_Fatal, "Winsock version %d.%d presented, requested "
+		uqm::log::critical("Winsock version %d.%d presented, requested "
 						   "%d.%d.",
-				lowByte(data.wVersion), highByte(data.wVersion),
-				lowByte(requestVersion), highByte(requestVersion));
+						   lowByte(data.wVersion), highByte(data.wVersion),
+						   lowByte(requestVersion), highByte(requestVersion));
 		(void)WSACleanup();
 		// Ignoring errors; we're going to abort anyhow.
 		explode();
@@ -71,7 +71,7 @@ void Network_uninit(void)
 	if (cleanupResult == SOCKET_ERROR)
 	{
 		int savedErrno = getWinsockErrno();
-		log_add(log_Fatal, "WSACleanup failed.");
+		uqm::log::critical("WSACleanup failed.");
 		errno = savedErrno;
 		explode();
 	}

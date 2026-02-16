@@ -27,7 +27,7 @@
 #include "types.h"
 #include "filintrn.h"
 #include "libs/memlib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 
 static int copyError(uio_Handle* srcHandle, uio_Handle* dstHandle,
 					 uio_DirHandle* unlinkHandle, const char* unlinkPath, uint8* buf);
@@ -158,7 +158,7 @@ copyError(uio_Handle* srcHandle, uio_Handle* dstHandle,
 
 	savedErrno = errno;
 
-	log_add(log_Debug, "Error while copying: %s", strerror(errno));
+	uqm::log::debug("Error while copying: %s", strerror(errno));
 
 	if (srcHandle != nullptr)
 	{

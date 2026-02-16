@@ -15,6 +15,6 @@ constexpr bool isPowerOfTwo(T value) noexcept
 	return value > 0 && (value & (value - 1)) == 0;
 }
 
-}
+} // namespace uqm
 
 #endif /* UQM_CORE_MISC_BITTRICKS_H_ */

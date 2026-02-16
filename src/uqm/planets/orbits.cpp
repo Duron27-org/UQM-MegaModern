@@ -20,7 +20,7 @@
 #include "../starmap.h"
 #include "libs/compiler.h"
 #include "libs/mathlib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "../clock.h"
 #include <math.h>
 #include <stdlib.h>
@@ -554,9 +554,9 @@ void FillOrbits(SOLARSYS_STATE* system, uqm::BYTE NumPlanets,
 
 #ifdef DEBUG_ORBITS
 	GetClusterName(CurStarDescPtr, buf);
-	log_add(log_Debug, "cluster name = %s  color = %c type = %c", buf,
-			scolor[STAR_COLOR(CurStarDescPtr->Type)],
-			stype[STAR_TYPE(CurStarDescPtr->Type)]);
+	uqm::log::debug("cluster name = %s  color = %c type = %c", buf,
+					scolor[STAR_COLOR(CurStarDescPtr->Type)],
+					stype[STAR_TYPE(CurStarDescPtr->Type)]);
 #endif /* DEBUG_ORBITS */
 	GeneratingMoons = (bool)(pBaseDesc == system->MoonDesc);
 	bool GasGiant = pPD && pPD->pPrevDesc && (pPD->pPrevDesc->data_index & ~PLANET_SHIELDED) >= FIRST_GAS_GIANT;

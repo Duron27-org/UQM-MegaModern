@@ -55,7 +55,7 @@ const CHAR* STM_Version[STM_NTRACKERS] = {
 
 /*========== Shared loader variables */
 
-SBYTE remap[UF_MAXCHAN]; /* for removing empty channels */
+SBYTE remap[UF_MAXCHAN];	/* for removing empty channels */
 UBYTE* poslookup = nullptr; /* lookup table for pattern jumps after blank
                                pattern removal */
 UWORD poslookupcnt;

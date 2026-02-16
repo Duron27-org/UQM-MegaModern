@@ -41,7 +41,7 @@
 #include "uqmdebug.h"
 #include "uqm/lua/luastate.h"
 #include "libs/tasklib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/gfxlib.h"
 #include "libs/graphics/gfx_common.h"
 #include "libs/graphics/tfb_draw.h"
@@ -131,7 +131,7 @@ void ProcessUtilityKeys(void)
 {
 	if (ImmediateInputState.menu[KEY_ABORT])
 	{
-		log_showBox(false, false);
+		//log_showBox(false, false);
 		exit(EXIT_SUCCESS);
 	}
 
@@ -254,24 +254,25 @@ int Starcon2Main(void* threadArg)
 
 	if (!LoadKernel(0, 0))
 	{
-		log_add(log_Fatal, "\n  *** FATAL ERROR: Could not load basic "
+		uqm::log::critical("\n  *** FATAL ERROR: Could not load basic "
 						   "content ***\n\nUQM requires at least the base content "
 						   "pack to run properly.");
-		log_add(log_Fatal, "This file is typically called "
+		uqm::log::critical("This file is typically called "
 						   "mm-%d.%d.%d-content.uqm.  UQM was expecting",
-				UQM_MAJOR_VERSION, UQM_MINOR_VERSION, UQM_PATCH_VERSION);
-		log_add(log_Fatal, "it in the %s/packages directory.",
-				baseContentPath);
-		log_add(log_Fatal, "Either your installation did not install the "
+						   UQM_MAJOR_VERSION, UQM_MINOR_VERSION, UQM_PATCH_VERSION);
+		uqm::log::critical("it in the %s/packages directory.",
+						   baseContentPath);
+		uqm::log::critical("Either your installation did not install the "
 						   "content pack at all, or it\ninstalled it in a different "
 						   "directory.\n\nFix your installation and rerun UQM.\n\n  "
 						   "*******************\n");
-		log_showBox(true, true);
+
+		uqm::Logger::getInstance().showLogOnExit(true, true);
 
 		MainExited = true;
 		return EXIT_FAILURE;
 	}
-	log_add(log_Info, "We've loaded the Kernel");
+	uqm::log::info("We've loaded the Kernel");
 
 	GLOBAL(CurrentActivity) = 0;
 	luaUqm_initState();
@@ -293,11 +294,11 @@ int Starcon2Main(void* threadArg)
 	printf("Set Extended: %s\n", BOOL_STR(optExtended));
 	printf("Set Nomad: %s\n\n", NOMAD_STR(optNomad));
 #endif
-	log_add(log_Info, "Set Seed Type: %s\n", toString(g_seedType));
-	log_add(log_Info, "Set Seed: %d\n", optCustomSeed);
-	log_add(log_Info, "Set Difficulty: %s\n", DIF_STR(optDifficulty));
-	log_add(log_Info, "Set Extended: %s\n", BOOL_STR(optExtended));
-	log_add(log_Info, "Set Nomad: %s\n\n", NOMAD_STR(optNomad));
+	uqm::log::info("Set Seed Type: %s\n", toString(g_seedType));
+	uqm::log::info("Set Seed: %d\n", optCustomSeed);
+	uqm::log::info("Set Difficulty: %s\n", DIF_STR(optDifficulty));
+	uqm::log::info("Set Extended: %s\n", BOOL_STR(optExtended));
+	uqm::log::info("Set Nomad: %s\n\n", NOMAD_STR(optNomad));
 
 	//	OpenJournal ();
 	while (StartGame())
@@ -305,7 +306,7 @@ int Starcon2Main(void* threadArg)
 		// Initialise a new game
 		if (!SetPlayerInputAll())
 		{
-			log_add(log_Fatal, "Could not set player input.");
+			uqm::log::critical("Could not set player input.");
 			explode(); // Does not return;
 		}
 
@@ -331,14 +332,14 @@ int Starcon2Main(void* threadArg)
 			printf("New Game Nomad: %s\n\n",
 				   NOMAD_STR(GLOBAL_SIS(Nomad)));
 #endif
-			log_add(log_Info, "New Game Seed Type: %s\n", toString(g_seedType));
-			log_add(log_Info, "New Game Seed: %d\n", GLOBAL_SIS(Seed));
-			log_add(log_Info, "New Game Difficulty: %s\n",
-					DIF_STR(GLOBAL_SIS(Difficulty)));
-			log_add(log_Info, "New Game Extended: %s\n",
-					BOOL_STR(GLOBAL_SIS(Extended)));
-			log_add(log_Info, "New Game Nomad: %s\n\n",
-					NOMAD_STR(GLOBAL_SIS(Nomad)));
+			uqm::log::info("New Game Seed Type: %s\n", toString(g_seedType));
+			uqm::log::info("New Game Seed: %d\n", GLOBAL_SIS(Seed));
+			uqm::log::info("New Game Difficulty: %s\n",
+						   DIF_STR(GLOBAL_SIS(Difficulty)));
+			uqm::log::info("New Game Extended: %s\n",
+						   BOOL_STR(GLOBAL_SIS(Extended)));
+			uqm::log::info("New Game Nomad: %s\n\n",
+						   NOMAD_STR(GLOBAL_SIS(Nomad)));
 		}
 
 		do
@@ -453,7 +454,6 @@ int Starcon2Main(void* threadArg)
 	FreeMasterShipList();
 	FreeKernel();
 
-	log_showBox(false, false);
 	MainExited = true;
 
 	(void)threadArg; /* Satisfying compiler (unused parameter) */

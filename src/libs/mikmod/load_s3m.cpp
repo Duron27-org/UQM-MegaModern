@@ -103,7 +103,7 @@ typedef struct S3MNOTE
 static S3MNOTE* s3mbuf = nullptr; /* pointer to a complete S3M pattern */
 static S3MHEADER* mh = nullptr;
 static UWORD* paraptr = nullptr; /* parapointer array (see S3M docs) */
-static unsigned int tracker;  /* tracker id */
+static unsigned int tracker;	 /* tracker id */
 
 /* tracker identifiers */
 #define NUMTRACKERS 4

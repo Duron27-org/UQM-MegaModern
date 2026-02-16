@@ -26,7 +26,7 @@
 // for NETWORK_CONTROL
 #include "../../setup.h"
 // For PlayerControl
-#include "libs/log.h"
+#include "core/log/log.h"
 
 #include <errno.h>
 #include <stdlib.h>
@@ -126,7 +126,7 @@ bool BattleInputBuffer_push(BattleInputBuffer* bib, BATTLE_INPUT_STATE input)
 	if (bib->size == bib->maxSize)
 	{
 		// No more space.
-		log_add(log_Error, "NETPLAY:     battleInputBuffer full.\n");
+		uqm::log::error("NETPLAY:     battleInputBuffer full.\n");
 		errno = ENOBUFS;
 		return false;
 	}

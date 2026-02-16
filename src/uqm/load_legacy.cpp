@@ -33,7 +33,7 @@
 #include "uqmdebug.h"
 
 #include "libs/tasklib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/misc.h"
 #include "libs/scriptlib.h"
 
@@ -447,7 +447,7 @@ static const GameStateBitMap legacyGameStateBitMap[] = {
 	{"ORZ_STACK1",				   1 },
 
 	/* end rev 0 */
-	{nullptr,						  1 },
+	{nullptr,					   1 },
 	/* begin rev 1, was legacyGameStateBitMapHD */
 
 	{"AUTOPILOT_OK",				 1 },
@@ -455,7 +455,7 @@ static const GameStateBitMap legacyGameStateBitMap[] = {
 	{"KNOW_QS_PORTAL",			   16},
 
 	/* end rev 1, was legacyGameStateBitMapHD */
-	{nullptr,						  0 },
+	{nullptr,					   0 },
 };
 
 // XXX: these should handle endian conversions later
@@ -628,7 +628,7 @@ LoadEmptyQueue(DECODE_REF fh)
 	cread_16(fh, &num_links);
 	if (num_links)
 	{
-		log_add(log_Error, "LoadEmptyQueue(): BUG: the queue is not empty!");
+		uqm::log::error("LoadEmptyQueue(): BUG: the queue is not empty!");
 #ifdef DEBUG
 		explode();
 #endif
@@ -657,7 +657,7 @@ LoadShipQueue(DECODE_REF fh, QUEUE* pQueue)
 		// Read SHIP_FRAGMENT elements
 		cread_16(fh, nullptr); /* unused: was which_side */
 		cread_8(fh, &FragPtr->captains_name_index);
-		cread_8(fh, nullptr);	/* padding */
+		cread_8(fh, nullptr);  /* padding */
 		cread_16(fh, nullptr); /* unused: was ship_flags */
 		cread_8(fh, &FragPtr->race_id);
 		cread_8(fh, &FragPtr->index);
@@ -740,15 +740,15 @@ LoadGroupQueue(DECODE_REF fh, QUEUE* pQueue)
 		GroupPtr = LockIpGroup(pQueue, hGroup);
 
 		cread_16(fh, nullptr); /* unused; was which_side */
-		cread_8(fh, nullptr);	/* unused; was captains_name_index */
-		cread_8(fh, nullptr);	/* padding; for savegame compat */
+		cread_8(fh, nullptr);  /* unused; was captains_name_index */
+		cread_8(fh, nullptr);  /* padding; for savegame compat */
 		cread_16(fh, &GroupPtr->group_counter);
 		cread_8(fh, &GroupPtr->race_id);
 		cread_8(fh, &tmpb); /* was var2 */
 		GroupPtr->sys_loc = LONIBBLE(tmpb);
 		GroupPtr->task = HINIBBLE(tmpb);
 		cread_8(fh, &GroupPtr->in_system); /* was crew_level */
-		cread_8(fh, nullptr);				   /* unused; was max_crew */
+		cread_8(fh, nullptr);			   /* unused; was max_crew */
 		cread_8(fh, &tmpb);				   /* was energy_level */
 		GroupPtr->dest_loc = LONIBBLE(tmpb);
 		GroupPtr->orbit_pos = HINIBBLE(tmpb);
@@ -803,8 +803,8 @@ LoadEncounter(ENCOUNTER* EncounterPtr, DECODE_REF fh, bool try_vanilla)
 		cread_16(fh, nullptr); /* useless; was SHIP_INFO.loc.x */
 		cread_16(fh, nullptr); /* useless; was SHIP_INFO.loc.y */
 		cread_32(fh, nullptr); /* useless val; STRING race_strings */
-		cread_ptr(fh);		/* useless ptr; FRAME icons */
-		cread_ptr(fh);		/* useless ptr; FRAME melee_icon */
+		cread_ptr(fh);		   /* useless ptr; FRAME icons */
+		cread_ptr(fh);		   /* useless ptr; FRAME melee_icon */
 	}
 
 	// Load the stuff after the BRIEF_SHIP_INFO array
@@ -834,7 +834,7 @@ LoadEvent(EVENT* EventPtr, DECODE_REF fh)
 	cread_8(fh, &EventPtr->month_index);
 	cread_16(fh, &EventPtr->year_index);
 	cread_8(fh, &EventPtr->func_index);
-	cread_8(fh, nullptr);	/* padding */
+	cread_8(fh, nullptr);  /* padding */
 	cread_16(fh, nullptr); /* padding */
 }
 
@@ -847,15 +847,15 @@ DummyLoadQueue(QUEUE* QueuePtr, DECODE_REF fh)
 	(void)QueuePtr; /* silence compiler */
 
 	/* QUEUE format with QUEUE_TABLE defined -- UQM default */
-	cread_ptr(fh);		/* HLINK head */
-	cread_ptr(fh);		/* HLINK tail */
-	cread_ptr(fh);		/* uqm::BYTE* pq_tab */
-	cread_ptr(fh);		/* HLINK free_list */
+	cread_ptr(fh);		   /* HLINK head */
+	cread_ptr(fh);		   /* HLINK tail */
+	cread_ptr(fh);		   /* uqm::BYTE* pq_tab */
+	cread_ptr(fh);		   /* HLINK free_list */
 	cread_16(fh, nullptr); /* MEM_HANDLE hq_tab */
 	cread_16(fh, nullptr); /* uqm::COUNT object_size */
-	cread_8(fh, nullptr);	/* uqm::BYTE num_objects */
+	cread_8(fh, nullptr);  /* uqm::BYTE num_objects */
 
-	cread_8(fh, nullptr);	/* padding */
+	cread_8(fh, nullptr);  /* padding */
 	cread_16(fh, nullptr); /* padding */
 }
 
@@ -867,8 +867,8 @@ LoadClockState(CLOCK_STATE* ClockPtr, DECODE_REF fh)
 	cread_16(fh, &ClockPtr->year_index);
 	cread_16s(fh, &ClockPtr->tick_count);
 	cread_16s(fh, &ClockPtr->day_in_ticks);
-	cread_ptr(fh);		/* not loading ptr; Semaphore clock_sem */
-	cread_ptr(fh);		/* not loading ptr; Task clock_task */
+	cread_ptr(fh);		   /* not loading ptr; Semaphore clock_sem */
+	cread_ptr(fh);		   /* not loading ptr; Task clock_task */
 	cread_32(fh, nullptr); /* not loading; uqm::DWORD TimeCounter */
 
 	DummyLoadQueue(&ClockPtr->event_q, fh);
@@ -1147,7 +1147,7 @@ bool LoadLegacyGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, bool try_vanil
 	loc_sd.SaveName[0] = '\0';
 	if (!LoadSummary(&loc_sd, in_fp, try_vanilla))
 	{
-		log_add(log_Error, "Warning: Savegame is corrupt");
+		uqm::log::error("Warning: Savegame is corrupt");
 		res_CloseResFile(in_fp);
 		return false;
 	}
@@ -1168,8 +1168,8 @@ bool LoadLegacyGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, bool try_vanil
 	// a specific recognisable range.
 	if (SummPtr->year_index < START_YEAR || SummPtr->year_index >= START_YEAR + YEARS_TO_KOHRAH_VICTORY + 1 /* Utwig intervention */ + 1 /* time to destroy all races, plenty */ + 25 /* for cheaters */)
 	{
-		log_add(log_Error, "Warning: Savegame corrupt or from "
-						   "an incompatible platform.");
+		uqm::log::error("Warning: Savegame corrupt or from "
+						"an incompatible platform.");
 		res_CloseResFile(in_fp);
 		return false;
 	}
@@ -1250,7 +1250,7 @@ bool LoadLegacyGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, bool try_vanil
 	cread_16(fh, &num_links);
 	{
 #ifdef DEBUG_LOAD
-		log_add(log_Debug, "EVENTS:");
+		uqm::log::debug("EVENTS:");
 #endif /* DEBUG_LOAD */
 		while (num_links--)
 		{
@@ -1264,11 +1264,11 @@ bool LoadLegacyGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, bool try_vanil
 			LoadEvent(EventPtr, fh);
 
 #ifdef DEBUG_LOAD
-			log_add(log_Debug, "\t%u/%u/%u -- %u",
-					EventPtr->month_index,
-					EventPtr->day_index,
-					EventPtr->year_index,
-					EventPtr->func_index);
+			uqm::log::debug("\t%u/%u/%u -- %u",
+							EventPtr->month_index,
+							EventPtr->day_index,
+							EventPtr->year_index,
+							EventPtr->func_index);
 #endif /* DEBUG_LOAD */
 			if (optDeCleansing && EventPtr->func_index == KOHR_AH_VICTORIOUS_EVENT)
 			{

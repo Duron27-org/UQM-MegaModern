@@ -20,7 +20,7 @@
 #include "audiodrv_nosound.h"
 #include "../../sndintrn.h"
 #include "libs/tasklib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/memlib.h"
 #include <stdlib.h>
 
@@ -147,26 +147,26 @@ noSound_Init(audio_Driver* driver, sint32 flags)
 			audio_FORMAT_MONO8, audio_FORMAT_STEREO8,
 			audio_FORMAT_MONO16, audio_FORMAT_STEREO16};
 
-	log_add(log_Info, "Using nosound audio driver.");
-	log_add(log_Info, "Initializing mixer.");
+	uqm::log::info("Using nosound audio driver.");
+	uqm::log::info("Initializing mixer.");
 
 	if (!mixer_Init(nosound_freq, MIX_FORMAT_MAKE(1, 1),
 					MIX_QUALITY_LOW, MIX_FAKE_DATA))
 	{
-		log_add(log_Error, "Mixer initialization failed: %x",
-				mixer_GetError());
+		uqm::log::error("Mixer initialization failed: %x",
+						mixer_GetError());
 		return -1;
 	}
-	log_add(log_Info, "Mixer initialized.");
+	uqm::log::info("Mixer initialized.");
 
-	log_add(log_Info, "Initializing sound decoders.");
+	uqm::log::info("Initializing sound decoders.");
 	if (SoundDecoder_Init(flags, &formats))
 	{
-		log_add(log_Error, "Sound decoders initialization failed.");
+		uqm::log::error("Sound decoders initialization failed.");
 		mixer_Uninit();
 		return -1;
 	}
-	log_add(log_Info, "Sound decoders initialized.");
+	uqm::log::info("Sound decoders initialized.");
 
 	*driver = noSound_Driver;
 	for (i = 0; i < NUM_SOUNDSOURCES; ++i)
@@ -177,7 +177,7 @@ noSound_Init(audio_Driver* driver, sint32 flags)
 
 	if (InitStreamDecoder())
 	{
-		log_add(log_Error, "Stream decoder initialization failed.");
+		uqm::log::error("Stream decoder initialization failed.");
 		// TODO: cleanup source mutexes [or is it "muti"? :) ]
 		SoundDecoder_Uninit();
 		mixer_Uninit();
@@ -279,8 +279,8 @@ noSound_GetError(void)
 		case MIX_OUT_OF_MEMORY:
 			return audio_OUT_OF_MEMORY;
 		default:
-			log_add(log_Debug, "noSound_GetError: unknown value %x",
-					value);
+			uqm::log::debug("noSound_GetError: unknown value %x",
+							value);
 			return audio_DRIVER_FAILURE;
 			break;
 	}
@@ -353,8 +353,8 @@ void noSound_GetSourcei(audio_Object srcobj, audio_SourceProp pname,
 				*value = audio_PAUSED;
 				break;
 			default:
-				log_add(log_Debug, "noSound_GetSourcei(): unknown value %lx",
-						(long int)*value);
+				uqm::log::debug("noSound_GetSourcei(): unknown value %lx",
+								(long int)*value);
 				*value = audio_DRIVER_FAILURE;
 		}
 	}

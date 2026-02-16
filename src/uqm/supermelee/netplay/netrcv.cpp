@@ -26,7 +26,7 @@
 #include "packet.h"
 
 #include "types.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 
 #include <errno.h>
 #include <string.h>
@@ -54,7 +54,7 @@ dataReceivedSingle(NetConnection* conn, const uint8* data,
 
 	if (!validPacketType(type))
 	{
-		log_add(log_Warning, "Packet with invalid type %d received.\n", type);
+		uqm::log::warn("Packet with invalid type %d received.\n", static_cast<int>(type));
 		errno = EBADMSG;
 		return -1;
 	}
@@ -62,10 +62,10 @@ dataReceivedSingle(NetConnection* conn, const uint8* data,
 	if (packetLen < packetTypeData[type].len)
 	{
 		// Bad len field of packet.
-		log_add(log_Warning, "Packet with bad length field received (type="
-							 "%s, lenfield=%d.\n",
-				packetTypeData[type].name,
-				packetLen);
+		uqm::log::warn("Packet with bad length field received (type="
+					   "%s, lenfield=%d.\n",
+					   packetTypeData[type].name,
+					   packetLen);
 		errno = EBADMSG;
 		return -1;
 	}
@@ -86,8 +86,8 @@ dataReceivedSingle(NetConnection* conn, const uint8* data,
 	{
 		// Reporting BattleInput and Checksum would get so spammy that it
 		// would slow down the battle.
-		log_add(log_Debug, "NETPLAY: [%d] <== Received packet of type %s.\n",
-				NetConnection_getPlayerNr(conn), packetTypeData[type].name);
+		uqm::log::debug("NETPLAY: [%d] <== Received packet of type %s.\n",
+						NetConnection_getPlayerNr(conn), packetTypeData[type].name);
 	}
 #ifdef NETPLAY_DEBUG_FILE
 	if (conn->debugFile != nullptr)
@@ -173,8 +173,8 @@ void dataReadyCallback(NetDescriptor* nd)
 			else
 			{
 				int savedErrno = errno;
-				log_add(log_Error, "recv() failed: %s.\n",
-						strerror(errno));
+				uqm::log::error("recv() failed: %s.\n",
+								strerror(errno));
 				NetConnection_doErrorCallback(conn, savedErrno);
 				NetDescriptor_close(nd);
 				return;

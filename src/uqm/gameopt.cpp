@@ -33,7 +33,7 @@
 #include "sounds.h"
 #include "util.h"
 #include "libs/graphics/gfx_common.h"
-#include "libs/log/uqmlog.h"
+#include "core/log/log.h"
 #include "comm.h"
 #include "master.h"
 
@@ -1999,14 +1999,14 @@ PickGame(bool saving, bool fromMainMenu)
 		printf("Extended: %s\n", BOOL_STR(EXTENDED));
 		printf("Nomad: %s\n\n", NOMAD_STR(NOMAD));
 #endif
-		log_add(log_Info, saving ? "Saving > " : "Loading > ");
-		log_add(log_Info, "Name: %s\n", pSD->SaveName);
-		log_add(log_Info, "Slot: %d\n", MenuState.CurState);
-		log_add(log_Info, "Seed Type: %s\n", toString(g_seedType));
-		log_add(log_Info, "Seed: %d\n", GLOBAL_SIS(Seed));
-		log_add(log_Info, "Difficulty: %s\n", DIF_STR(DIFFICULTY));
-		log_add(log_Info, "Extended: %s\n", BOOL_STR(EXTENDED));
-		log_add(log_Info, "Nomad: %s\n\n", toString(NOMAD));
+		uqm::log::info(saving ? "Saving > " : "Loading > ");
+		uqm::log::info("Name: %s\n", pSD->SaveName);
+		uqm::log::info("Slot: %d\n", MenuState.CurState);
+		uqm::log::info("Seed Type: %s\n", toString(g_seedType));
+		uqm::log::info("Seed: %d\n", GLOBAL_SIS(Seed));
+		uqm::log::info("Difficulty: %s\n", DIF_STR(DIFFICULTY));
+		uqm::log::info("Extended: %s\n", BOOL_STR(EXTENDED));
+		uqm::log::info("Nomad: %s\n\n", toString(NOMAD));
 	}
 
 	if (!(GLOBAL(CurrentActivity) & CHECK_ABORT) && (saving || (!pickState.success && !fromMainMenu)))

@@ -23,7 +23,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/misc.h"
 #include "libs/strlib.h"
 #include "uqm/units.h"
@@ -160,7 +160,7 @@ err:
 	{
 		errData &= origPtr[3];
 	}
-	log_add(log_Warning, "Warning: Invalid UTF8 sequence: result 0x%x last byte 0x%02x str 0x%08x %s", result, (unsigned)(**ptr), errData, origPtr);
+	uqm::log::warn("Warning: Invalid UTF8 sequence: result 0x%x last byte 0x%02x str 0x%08x %s", result, (unsigned)(**ptr), errData, (const char*)origPtr);
 
 	// Resynchronise (skip everything starting with 0x10xxxxxx):
 	resyncUTF8(ptr);
@@ -563,9 +563,9 @@ int getStringFromChar(unsigned char* ptr, size_t size, UniChar ch)
 		;
 	if (def->mask == 0)
 	{ // invalid or unsupported char
-		log_add(log_Warning, "Warning: Invalid or unsupported unicode "
-							 "char (%lu)",
-				(unsigned long)ch);
+		uqm::log::warn("Warning: Invalid or unsupported unicode "
+					   "char (%lu)",
+					   (unsigned long)ch);
 		return 0;
 	}
 
@@ -706,10 +706,10 @@ AlignText(const uqm::CHAR_T* str, sint16* loc_x)
 
 	if (sscanf(str, "|%d|", &modSize) != 1)
 	{
-		log_add(log_Debug,
-				"\nVariable between delimiters is missing, corrupt, or "
-				"not an integer: %s\n",
-				str);
+		uqm::log::debug(
+			"\nVariable between delimiters is missing, corrupt, or "
+			"not an integer: %s\n",
+			str);
 		return (uqm::CHAR_T*)str;
 	}
 
@@ -737,10 +737,10 @@ AddPadd(const uqm::CHAR_T* str, sint16* padding)
 
 	if (sscanf(str, ":%d:", &modSize) != 1)
 	{
-		log_add(log_Debug,
-				"\nVariable between delimiters is missing, corrupt, or "
-				"not an integer: %s\n",
-				str);
+		uqm::log::debug(
+			"\nVariable between delimiters is missing, corrupt, or "
+			"not an integer: %s\n",
+			str);
 		return (uqm::CHAR_T*)str;
 	}
 

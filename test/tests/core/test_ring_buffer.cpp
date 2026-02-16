@@ -5,7 +5,7 @@
 #include <type_traits>
 
 #include "core/stl/ring_buffer.h"
-#pragma optimize clang off
+
 namespace uqm
 {
 

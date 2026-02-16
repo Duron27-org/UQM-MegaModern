@@ -355,11 +355,11 @@ typedef struct lua_TValue TValue;
 		} i;           \
 		double d__;    \
 	} u
-#define NILCONSTANT                  \
-	{                                \
-		{                            \
+#define NILCONSTANT                     \
+	{                                   \
+		{                               \
 			{nullptr}, tag2tt(LUA_TNIL) \
-		}                            \
+		}                               \
 	}
 /* field-access macros */
 #define v_(o) ((o)->u.i.v__)
@@ -379,11 +379,11 @@ typedef struct lua_TValue TValue;
 		} i;           \
 		double d__;    \
 	} u
-#define NILCONSTANT                    \
-	{                                  \
-		{                              \
+#define NILCONSTANT                       \
+	{                                     \
+		{                                 \
 			tag2tt(LUA_TNIL), { nullptr } \
-		}                              \
+		}                                 \
 	}
 /* field-access macros */
 #define v_(o) ((o)->u.i.v__)

@@ -38,7 +38,7 @@
 #include "../setup.h"
 #include "../sounds.h"
 #include "libs/async.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/mathlib.h"
 
 
@@ -970,15 +970,15 @@ bool updateMeleeSelection(GETMELEE_STATE* gms, uqm::COUNT playerI, uqm::COUNT sh
 	{
 		// This happens when we get an update message from a connection
 		// for who we are not selecting a ship.
-		log_add(log_Warning, "Unexpected ship selection packet "
-							 "received.\n");
+		uqm::log::warn("Unexpected ship selection packet "
+					   "received.\n");
 		return false;
 	}
 
 	if (!setShipSelected(gms, playerI, ship, false))
 	{
-		log_add(log_Warning, "Invalid ship selection received from remote "
-							 "party.\n");
+		uqm::log::warn("Invalid ship selection received from remote "
+					   "party.\n");
 		return false;
 	}
 

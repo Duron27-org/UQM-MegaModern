@@ -43,7 +43,7 @@
 #include "libs/graphics/gfx_common.h"
 #include "libs/graphics/drawable.h"
 #include "libs/mathlib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "util.h"
 
 #define XOFFS ((RADAR_SCAN_WIDTH + (UNIT_SCREEN_WIDTH << 2)) >> 1)
@@ -704,7 +704,7 @@ InterplanetaryTransition(ELEMENT* ElementPtr)
 			STAR_DESC *SDPtr, *SDPtr2;
 			SDPtr = CurStarDescPtr;
 			SDPtr2 = FindStar (nullptr, &pt, 500, 500);
-			log_add(log_Debug, "SDPtr.x %d, SDPtr.y %d SDPtr2.x %d, "
+			uqm::log::debug( "SDPtr.x %d, SDPtr.y %d SDPtr2.x %d, "
 					"SDPtr2.y %d, pt.x %d pt.y %d", 
 					SDPtr->star_pt.x, SDPtr->star_pt.y, SDPtr2->star_pt.x,
 					SDPtr2->star_pt.y, pt.x, pt.y);

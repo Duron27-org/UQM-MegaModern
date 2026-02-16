@@ -22,7 +22,7 @@
 #include "libs/inplib.h"
 #include "libs/strlib.h"
 // for GetStringAddress()
-#include "libs/log.h"
+#include "core/log/log.h"
 #include <string.h>
 #include <stdlib.h>
 
@@ -156,8 +156,8 @@ clone_colormap(TFB_ColorMap* from, int index)
 	map = alloc_colormap();
 	if (!map)
 	{
-		log_add(log_Warning, "FATAL: clone_colormap(): "
-							 "could not allocate a map");
+		uqm::log::warn("FATAL: clone_colormap(): "
+					   "could not allocate a map");
 		exit(EXIT_FAILURE);
 	}
 	else
@@ -185,7 +185,7 @@ free_colormap(TFB_ColorMap* map)
 {
 	if (!map)
 	{
-		log_add(log_Warning, "free_colormap(): tried to free a nullptr map");
+		uqm::log::warn("free_colormap(): tried to free a nullptr map");
 		return;
 	}
 
@@ -209,7 +209,7 @@ get_colormap(int index)
 	map = colormaps[index];
 	if (!map)
 	{
-		log_add(log_Fatal, "BUG: get_colormap(): map not present");
+		uqm::log::critical("BUG: get_colormap(): map not present");
 		exit(EXIT_FAILURE);
 	}
 
@@ -227,7 +227,7 @@ release_colormap(TFB_ColorMap* map)
 
 	if (map->refcount <= 0)
 	{
-		log_add(log_Warning, "BUG: release_colormap(): refcount not >0");
+		uqm::log::warn("BUG: release_colormap(): refcount not >0");
 		return;
 	}
 
@@ -288,23 +288,23 @@ bool SetColorMap(COLORMAPPTR map)
 	end = *colors++;
 	if (start > end)
 	{
-		log_add(log_Warning, "ERROR: SetColorMap(): "
-							 "starting map (%d) not less or eq ending (%d)",
-				start, end);
+		uqm::log::warn("ERROR: SetColorMap(): "
+					   "starting map (%d) not less or eq ending (%d)",
+					   start, end);
 		return false;
 	}
 	if (start >= MAX_COLORMAPS)
 	{
-		log_add(log_Warning, "ERROR: SetColorMap(): "
-							 "starting map (%d) beyond range (0-%d)",
-				start, (int)MAX_COLORMAPS - 1);
+		uqm::log::warn("ERROR: SetColorMap(): "
+					   "starting map (%d) beyond range (0-%d)",
+					   start, (int)MAX_COLORMAPS - 1);
 		return false;
 	}
 	if (end >= MAX_COLORMAPS)
 	{
-		log_add(log_Warning, "SetColorMap(): "
-							 "ending map (%d) beyond range (0-%d)\n",
-				end, (int)MAX_COLORMAPS - 1);
+		uqm::log::warn("SetColorMap(): "
+					   "ending map (%d) beyond range (0-%d)\n",
+					   end, (int)MAX_COLORMAPS - 1);
 		end = MAX_COLORMAPS - 1;
 	}
 
@@ -510,7 +510,7 @@ bool XFormColorMap_step(void)
 		if (!curmap)
 		{
 			UnlockMutex(maplock);
-			log_add(log_Error, "BUG: XFormColorMap_step(): no current map");
+			uqm::log::error("BUG: XFormColorMap_step(): no current map");
 			finish_colormap_xform(x);
 			continue;
 		}
@@ -621,7 +621,7 @@ XFormPLUT(COLORMAPPTR ColorMapPtr, uqm::SIZE TimeInterval)
 	}
 	else if (x >= MAX_XFORMS)
 	{ // flush some xforms if the queue is full
-		log_add(log_Debug, "WARNING: XFormPLUT(): no slots available");
+		uqm::log::debug("WARNING: XFormPLUT(): no slots available");
 		x = XFormControl.Highest;
 		finish_colormap_xform(x);
 	}
@@ -639,7 +639,7 @@ XFormPLUT(COLORMAPPTR ColorMapPtr, uqm::SIZE TimeInterval)
 	{
 		UnlockMutex(maplock);
 		UnlockMutex(XFormControl.Lock);
-		log_add(log_Warning, "BUG: XFormPLUT(): no current map");
+		uqm::log::warn("BUG: XFormPLUT(): no current map");
 		return (0);
 	}
 	GetColorMapColors(control->OldCMap, map);
@@ -703,7 +703,7 @@ DoTransformColorMap(Color* colors, COLORMAPPTR ColorMapPtr, uqm::COUNT from,
 	if (!map)
 	{
 		UnlockMutex(maplock);
-		log_add(log_Error, "BUG: XFormColorMap_step(): no current map");
+		uqm::log::error("BUG: XFormColorMap_step(): no current map");
 		return;
 	}
 

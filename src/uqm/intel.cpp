@@ -22,7 +22,7 @@
 #include "controls.h"
 #include "globdata.h"
 #include "setup.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 
 #include <stdio.h>
 
@@ -73,8 +73,8 @@ computer_intelligence(ComputerInputContext* context, STARSHIP* StarShipPtr)
 				}
 			default:
 				// Should not happen. Satisfying compiler.
-				log_add(log_Warning, "Warning: Unexpected state in "
-									 "computer_intelligence().");
+				uqm::log::warn("Warning: Unexpected state in "
+							   "computer_intelligence().");
 				InputState = 0;
 				break;
 		}

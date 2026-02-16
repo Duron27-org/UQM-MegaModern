@@ -18,7 +18,7 @@
 #include <stdlib.h>
 #include "libs/threadlib.h"
 #include "libs/timelib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/async.h"
 #include "libs/memlib.h"
 #include "thrcommon.h"
@@ -83,7 +83,7 @@ FlagStartThread(SpawnRequest s)
 			return nullptr;
 		}
 	}
-	log_add(log_Fatal, "Thread Lifecycle array filled.  This is a fatal error!  Make LIFECYCLE_SIZE something larger than %d.", LIFECYCLE_SIZE);
+	uqm::log::critical("Thread Lifecycle array filled.  This is a fatal error!  Make LIFECYCLE_SIZE something larger than %d.", LIFECYCLE_SIZE);
 	exit(EXIT_FAILURE);
 }
 
@@ -100,7 +100,7 @@ void FinishThread(Thread thread)
 			return;
 		}
 	}
-	log_add(log_Fatal, "Thread Lifecycle array filled.  This is a fatal error!  Make LIFECYCLE_SIZE something larger than %d.", LIFECYCLE_SIZE);
+	uqm::log::critical("Thread Lifecycle array filled.  This is a fatal error!  Make LIFECYCLE_SIZE something larger than %d.", LIFECYCLE_SIZE);
 	exit(EXIT_FAILURE);
 }
 
@@ -285,7 +285,7 @@ void HibernateThread(TimePeriod timePeriod)
 #ifdef DEBUG_SLEEP
 	if (SDL_ThreadID() == mainThreadId)
 	{
-		log_add(log_Debug, "HibernateThread called from main thread.\n");
+		uqm::log::debug("HibernateThread called from main thread.\n");
 	}
 #endif /* DEBUG_SLEEP */
 
@@ -297,8 +297,8 @@ void HibernateThreadUntil(TimeCount wakeTime)
 #ifdef DEBUG_SLEEP
 	if (SDL_ThreadID() == mainThreadId)
 	{
-		log_add(log_Debug, "HibernateThreadUntil called from main "
-						   "thread.\n");
+		uqm::log::debug("HibernateThreadUntil called from main "
+						"thread.\n");
 	}
 #endif /* DEBUG_SLEEP */
 
@@ -312,8 +312,8 @@ void SleepThread(TimePeriod timePeriod)
 #ifdef DEBUG_SLEEP
 	if (SDL_ThreadID() != mainThreadId)
 	{
-		log_add(log_Debug, "SleepThread called from non-main "
-						   "thread.\n");
+		uqm::log::debug("SleepThread called from non-main "
+						"thread.\n");
 	}
 #endif /* DEBUG_SLEEP */
 
@@ -327,8 +327,8 @@ void SleepThreadUntil(TimeCount wakeTime)
 #ifdef DEBUG_SLEEP
 	if (SDL_ThreadID() != mainThreadId)
 	{
-		log_add(log_Debug, "SleepThreadUntil called from non-main "
-						   "thread.\n");
+		uqm::log::debug("SleepThreadUntil called from non-main "
+						"thread.\n");
 	}
 #endif /* DEBUG_SLEEP */
 

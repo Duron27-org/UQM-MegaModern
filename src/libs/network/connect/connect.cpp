@@ -27,7 +27,7 @@
 #include "libs/callback/alarm.h"
 #include "../socket/socket.h"
 #include "libs/misc.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 
 #include <assert.h>
 #include <errno.h>
@@ -81,8 +81,8 @@ void ConnectState_incRef(ConnectState* connectState)
 	assert(connectState->refCount < REFCOUNT_MAX);
 	connectState->refCount++;
 #ifdef DEBUG_CONNECT_REF
-	log_add(log_Debug, "ConnectState %08" PRIxPTR ": ref++ (%d)",
-			(uintptr_t)connectState, connectState->refCount);
+	uqm::log::debug("ConnectState %08" PRIxPTR ": ref++ (%d)",
+					(uintptr_t)connectState, connectState->refCount);
 #endif
 }
 
@@ -91,8 +91,8 @@ bool ConnectState_decRef(ConnectState* connectState)
 	assert(connectState->refCount > 0);
 	connectState->refCount--;
 #ifdef DEBUG_CONNECT_REF
-	log_add(log_Debug, "ConnectState %08" PRIxPTR ": ref-- (%d)",
-			(uintptr_t)connectState, connectState->refCount);
+	uqm::log::debug("ConnectState %08" PRIxPTR ": ref-- (%d)",
+					(uintptr_t)connectState, connectState->refCount);
 #endif
 	if (connectState->refCount == 0)
 	{
@@ -158,7 +158,7 @@ connectCallback(NetDescriptor* nd)
 	{
 		// The connection attempt has been aborted.
 #ifdef DEBUG
-		log_add(log_Debug, "Connection attempt was aborted.");
+		uqm::log::debug("Connection attempt was aborted.");
 #endif
 		ConnectState_decRef(connectState);
 		return;
@@ -166,14 +166,14 @@ connectCallback(NetDescriptor* nd)
 
 	if (Socket_getError(NetDescriptor_getSocket(nd), &err) == -1)
 	{
-		log_add(log_Fatal, "Socket_getError() failed: %s.",
-				strerror(errno));
+		uqm::log::critical("Socket_getError() failed: %s.",
+						   strerror(errno));
 		explode();
 	}
 	if (err != 0)
 	{
 #ifdef DEBUG
-		log_add(log_Debug, "connect() failed: %s.", strerror(err));
+		uqm::log::debug("connect() failed: %s.", strerror(err));
 #endif
 		NetDescriptor_close(nd);
 		connectState->nd = nullptr;
@@ -183,7 +183,7 @@ connectCallback(NetDescriptor* nd)
 	}
 
 #ifdef DEBUG
-	log_add(log_Debug, "Connection established.");
+	uqm::log::debug("Connection established.");
 #endif
 
 	// Notify the higher layer.
@@ -245,7 +245,7 @@ tryConnectHostNext(ConnectState* connectState)
 	if (sock == Socket_noSocket)
 	{
 		int savedErrno = errno;
-		log_add(log_Error, "socket() failed: %s.", strerror(errno));
+		uqm::log::error("socket() failed: %s.", strerror(errno));
 		errno = savedErrno;
 		return Socket_noSocket;
 	}
@@ -253,8 +253,8 @@ tryConnectHostNext(ConnectState* connectState)
 	if (Socket_setNonBlocking(sock) == -1)
 	{
 		int savedErrno = errno;
-		log_add(log_Error, "Could not make socket non-blocking: %s.",
-				strerror(errno));
+		uqm::log::error("Could not make socket non-blocking: %s.",
+						strerror(errno));
 		errno = savedErrno;
 		return Socket_noSocket;
 	}
@@ -291,9 +291,9 @@ tryConnectHostNext(ConnectState* connectState)
 		int savedErrno = errno;
 		Socket_close(sock);
 #ifdef DEBUG
-		log_add(log_Debug, "connect() immediately failed for one address: "
-						   "%s.",
-				strerror(errno));
+		uqm::log::debug("connect() immediately failed for one address: "
+						"%s.",
+						strerror(errno));
 		// TODO: add the address in the status message.
 #endif
 		errno = savedErrno;
@@ -359,8 +359,8 @@ connectHostNext(ConnectState* connectState)
 				ConnectError error;
 				int savedErrno = errno;
 
-				log_add(log_Error, "NetDescriptor_new() failed: %s.",
-						strerror(errno));
+				uqm::log::error("NetDescriptor_new() failed: %s.",
+								strerror(errno));
 				Socket_close(sock);
 				freeaddrinfo(connectState->info);
 				connectState->info = nullptr;
@@ -474,8 +474,8 @@ connectHostByName(const char* host, const char* service, Protocol proto,
 	connectState = ConnectState_alloc();
 	connectState->refCount = 1;
 #ifdef DEBUG_CONNECT_REF
-	log_add(log_Debug, "ConnectState %08" PRIxPTR ": ref=1 (%d)",
-			(uintptr_t)connectState, connectState->refCount);
+	uqm::log::debug("ConnectState %08" PRIxPTR ": ref=1 (%d)",
+					(uintptr_t)connectState, connectState->refCount);
 #endif
 	connectState->state = Connect_resolving;
 	connectState->flags = *flags;

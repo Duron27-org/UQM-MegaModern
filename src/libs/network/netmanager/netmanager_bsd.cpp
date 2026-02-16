@@ -24,7 +24,7 @@
 
 #include "ndesc.h"
 #include "types.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 
 #include <assert.h>
 #include <errno.h>
@@ -163,7 +163,7 @@ int NetManager_process(uint32* timeoutMs)
 	if (selectResult == -1)
 	{
 		int savedErrno = errno;
-		log_add(log_Error, "select() failed: %s.", strerror(errno));
+		uqm::log::error("select() failed: %s.", strerror(errno));
 		errno = savedErrno;
 		*timeoutMs = (timeout.tv_sec * 1000) + (timeout.tv_usec / 1000);
 		// XXX: rounding microseconds down. Is that the correct

@@ -17,7 +17,7 @@
  */
 
 #include "displist.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 
 #ifdef QUEUE_TABLE
 #define NULL_HANDLE nullptr
@@ -122,7 +122,7 @@ AllocLink(QUEUE* pq)
 	}
 	else
 	{
-		log_add(log_Debug, "AllocLink(): No more elements");
+		uqm::log::debug("AllocLink(): No more elements");
 	}
 
 	return (hLink);

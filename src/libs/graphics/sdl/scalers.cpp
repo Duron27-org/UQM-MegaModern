@@ -17,7 +17,7 @@
 #include "types.h"
 #include "libs/graphics/sdl/sdl_common.h"
 #include "libs/platform.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "scalers.h"
 #include "scaleint.h"
 #include "2xscalers.h"
@@ -230,7 +230,7 @@ Scale_PrepPlatform(int flags, const SDL_PixelFormat* fmt)
 	if ((!force_platform && (SDL_HasSSE() || SDL_HasMMX()))
 		|| force_platform == PLATFORM_SSE)
 	{
-		log_add(log_Info, "Screen scalers are using SSE/MMX-Ext/MMX code");
+		uqm::log::info("Screen scalers are using SSE/MMX-Ext/MMX code");
 		Scale_Platform = SCALEPLAT_SSE;
 
 		Scale_SSE_PrepPlatform(fmt);
@@ -238,14 +238,14 @@ Scale_PrepPlatform(int flags, const SDL_PixelFormat* fmt)
 	else if ((!force_platform && SDL_HasAltiVec())
 			 || force_platform == PLATFORM_ALTIVEC)
 	{
-		log_add(log_Info, "Screen scalers would use AltiVec code "
-						  "if someone actually wrote it");
+		uqm::log::info("Screen scalers would use AltiVec code "
+					   "if someone actually wrote it");
 		//Scale_Platform = SCALEPLAT_ALTIVEC;
 	}
 	else if ((!force_platform && SDL_Has3DNow())
 			 || force_platform == PLATFORM_3DNOW)
 	{
-		log_add(log_Info, "Screen scalers are using 3DNow/MMX code");
+		uqm::log::info("Screen scalers are using 3DNow/MMX code");
 		Scale_Platform = SCALEPLAT_3DNOW;
 
 		Scale_3DNow_PrepPlatform(fmt);
@@ -253,7 +253,7 @@ Scale_PrepPlatform(int flags, const SDL_PixelFormat* fmt)
 	else if ((!force_platform && SDL_HasMMX())
 			 || force_platform == PLATFORM_MMX)
 	{
-		log_add(log_Info, "Screen scalers are using MMX code");
+		uqm::log::info("Screen scalers are using MMX code");
 		Scale_Platform = SCALEPLAT_MMX;
 
 		Scale_MMX_PrepPlatform(fmt);
@@ -280,19 +280,19 @@ Scale_PrepPlatform(int flags, const SDL_PixelFormat* fmt)
 		}
 		else
 		{ // use slowest default
-			log_add(log_Warning, "Scale_PrepPlatform(): unknown masks "
-								 "(Red %08x, Blue %08x)",
-					fmt->Rmask, fmt->Bmask);
+			uqm::log::warn("Scale_PrepPlatform(): unknown masks "
+						   "(Red %08x, Blue %08x)",
+						   fmt->Rmask, fmt->Bmask);
 			Scale_Platform = SCALEPLAT_C;
 		}
 
 		if (Scale_Platform == SCALEPLAT_C)
 		{
-			log_add(log_Info, "Screen scalers are using slow generic C code");
+			uqm::log::info("Screen scalers are using slow generic C code");
 		}
 		else
 		{
-			log_add(log_Info, "Screen scalers are using optimized C code");
+			uqm::log::info("Screen scalers are using optimized C code");
 		}
 	}
 

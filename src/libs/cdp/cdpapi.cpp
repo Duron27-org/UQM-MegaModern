@@ -175,7 +175,7 @@ cdp_EventReg cdp_evts[MAX_REG_EVENTS + 1] =
 		CDP_DECLARE_EVENT(PlanetSide.LiftOff),
 		// TODO: put newly defined built-in events here
 
-		{false, false, "", nullptr, 0, nullptr}  // term
+		{false, false, "", nullptr, 0, nullptr}	// term
 };
 
 cdp_Error

@@ -24,7 +24,7 @@
 #include "uqm/shipcont.h"
 #include "libs/inplib.h"
 #include "libs/mathlib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "uqm/lua/luacomm.h"
 #include "uqm/hyper.h"
 // for SOL_X/SOL_Y
@@ -84,8 +84,8 @@ static const NUMBER_SPEECH_DESC melnorme_numbers_english =
 				/* 1000-999999 */
 				1000,			   /* Divider */
 				0,				   /* Subtrahend */
-				nullptr,			   /* StrDigits - recurse */
-				nullptr,			   /* Names - not used */
+				nullptr,		   /* StrDigits - recurse */
+				nullptr,		   /* Names - not used */
 				ENUMERATE_THOUSAND /* CommonIndex */
 			},
 						  {
@@ -93,7 +93,7 @@ static const NUMBER_SPEECH_DESC melnorme_numbers_english =
 				100,				  /* Divider */
 				0,					  /* Subtrahend */
 				melnorme_digit_names, /* StrDigits */
-				nullptr,				  /* Names - not used */
+				nullptr,			  /* Names - not used */
 				ENUMERATE_HUNDRED	  /* CommonIndex */
 			},
 						  {
@@ -101,7 +101,7 @@ static const NUMBER_SPEECH_DESC melnorme_numbers_english =
 				10,					 /* Divider */
 				0,					 /* Subtrahend */
 				melnorme_tens_names, /* StrDigits */
-				nullptr,				 /* Names - not used */
+				nullptr,			 /* Names - not used */
 				0					 /* CommonIndex - not used */
 			},
 						  {
@@ -109,7 +109,7 @@ static const NUMBER_SPEECH_DESC melnorme_numbers_english =
 				1,					 /* Divider */
 				10,					 /* Subtrahend */
 				melnorme_teen_names, /* StrDigits */
-				nullptr,				 /* Names - not used */
+				nullptr,			 /* Names - not used */
 				0					 /* CommonIndex - not used */
 			},
 						  {
@@ -117,7 +117,7 @@ static const NUMBER_SPEECH_DESC melnorme_numbers_english =
 				1,					  /* Divider */
 				0,					  /* Subtrahend */
 				melnorme_digit_names, /* StrDigits */
-				nullptr,				  /* Names - not used */
+				nullptr,			  /* Names - not used */
 				0					  /* CommonIndex - not used */
 			}}
 };

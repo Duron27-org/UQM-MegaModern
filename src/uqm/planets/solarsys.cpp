@@ -46,7 +46,7 @@
 #include "options.h"
 #include "libs/graphics/gfx_common.h"
 #include "libs/mathlib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/misc.h"
 #include "scan.h"
 #include "libs/graphics/cmap.h"
@@ -1071,8 +1071,8 @@ CheckIntersect(void)
 							  &PlanetIntersect, MAX_TIME_VALUE))
 	{
 #ifdef DEBUG_SOLARSYS
-		log_add(log_Debug, "0: Planet %d, Moon %d", PlanetOffset,
-				MoonOffset);
+		uqm::log::debug("0: Planet %d, Moon %d", PlanetOffset,
+						MoonOffset);
 #endif /* DEBUG_SOLARSYS */
 		NewWaitPlanet = MAKE_WORD(PlanetOffset, MoonOffset);
 		if (pSolarSysState->WaitIntersect != (uqm::COUNT)~0
@@ -1080,12 +1080,12 @@ CheckIntersect(void)
 		{
 			pSolarSysState->WaitIntersect = NewWaitPlanet;
 #ifdef DEBUG_SOLARSYS
-			log_add(log_Debug,
-					"Star index = %d, Planet index = %d, <%d, %d>",
-					CurStarDescPtr - star_array,
-					pCurDesc - pSolarSysState->PlanetDesc,
-					pSolarSysState->SunDesc[0].location.x,
-					pSolarSysState->SunDesc[0].location.y);
+			uqm::log::debug(
+				"Star index = %d, Planet index = %d, <%d, %d>",
+				CurStarDescPtr - star_array,
+				pCurDesc - pSolarSysState->PlanetDesc,
+				pSolarSysState->SunDesc[0].location.x,
+				pSolarSysState->SunDesc[0].location.y);
 #endif /* DEBUG_SOLARSYS */
 			return pCurDesc;
 		}
@@ -1121,8 +1121,8 @@ CheckIntersect(void)
 							   &PlanetIntersect, MAX_TIME_VALUE))
 		{
 #ifdef DEBUG_SOLARSYS
-			log_add(log_Debug, "1: Planet %d, Moon %d", PlanetOffset,
-					MoonOffset);
+			uqm::log::debug("1: Planet %d, Moon %d", PlanetOffset,
+							MoonOffset);
 #endif /* DEBUG_SOLARSYS */
 			NewWaitPlanet = MAKE_WORD(PlanetOffset, MoonOffset);
 
@@ -1541,8 +1541,8 @@ ProcessShipControls(void)
 	uqm::COUNT index;
 	uqm::SIZE delta_x, delta_y;
 
-	if (CurrentInputState.key[PlayerControls[0]][KEY_UP]
-		|| CurrentInputState.key[PlayerControls[0]][KEY_THRUST])
+	if (CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_UP]
+		|| CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_THRUST])
 	{
 		delta_y = -1;
 	}
@@ -1553,11 +1553,11 @@ ProcessShipControls(void)
 
 	delta_x = 0;
 
-	if (CurrentInputState.key[PlayerControls[0]][KEY_LEFT])
+	if (CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_LEFT])
 	{
 		delta_x -= 1;
 	}
-	if (CurrentInputState.key[PlayerControls[0]][KEY_RIGHT])
+	if (CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_RIGHT])
 	{
 		delta_x += 1;
 	}
@@ -2942,8 +2942,8 @@ void ExploreSolarSys(void)
 		CurStarDescPtr = FindStar(0, &universe, 1, 1);
 		if (!CurStarDescPtr)
 		{
-			log_add(log_Fatal,
-					"ExploreSolarSys(): do not know where you are!");
+			uqm::log::critical(
+				"ExploreSolarSys(): do not know where you are!");
 			explode();
 		}
 	}

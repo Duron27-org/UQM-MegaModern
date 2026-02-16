@@ -31,7 +31,7 @@
 #include "../setup.h"
 #include "../sounds.h"
 #include "options.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/memlib.h"
 
 
@@ -126,9 +126,9 @@ GetFleetByIndex(MELEE_STATE* pMS, uqm::COUNT index, MeleeTeam* result)
 		{
 			const char* fileName;
 			fileName = GetDirEntryAddress(entry);
-			log_add(log_Warning, "Warning: File '%s' is not a valid "
-								 "SuperMelee team.",
-					fileName);
+			uqm::log::warn("Warning: File '%s' is not a valid "
+						   "SuperMelee team.",
+						   fileName);
 		}
 	}
 

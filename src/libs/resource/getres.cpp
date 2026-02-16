@@ -21,7 +21,7 @@
 #include "port.h"
 #include "resintrn.h"
 #include "libs/memlib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/uio/charhashtable.h"
 
 const char* _cur_resfile_name;
@@ -52,16 +52,16 @@ void* LoadResourceFromPath(const char* path, ResourceLoadFileFun* loadFun)
 	stream = res_OpenResFile(contentDir, path, "rb");
 	if (stream == nullptr)
 	{
-		log_add(log_Warning, "Warning: Can't open '%s'", path);
+		uqm::log::warn("Warning: Can't open '%s'", path);
 		return nullptr;
 	}
 
 	dataLen = LengthResFile(stream);
-	log_add(log_Info, "\t'%s' -- %lu bytes", path, dataLen);
+	uqm::log::info("\t'%s' -- %lu bytes", path, dataLen);
 
 	if (dataLen == 0)
 	{
-		log_add(log_Warning, "Warning: Trying to load empty file '%s'.", path);
+		uqm::log::warn("Warning: Trying to load empty file '%s'.", path);
 		goto err;
 	}
 
@@ -85,7 +85,7 @@ res_GetResourceType(RESOURCE res)
 
 	if (res == NULL_RESOURCE)
 	{
-		log_add(log_Warning, "Trying to get type of null resource");
+		uqm::log::warn("Trying to get type of null resource");
 		return nullptr;
 	}
 
@@ -93,8 +93,8 @@ res_GetResourceType(RESOURCE res)
 	desc = lookupResourceDesc(resourceIndex, res);
 	if (desc == nullptr)
 	{
-		log_add(log_Warning, "Trying to get type of undefined resource '%s'",
-				res);
+		uqm::log::warn("Trying to get type of undefined resource '%s'",
+					   res);
 		return nullptr;
 	}
 
@@ -110,7 +110,7 @@ void* res_GetResource(RESOURCE res)
 
 	if (res == NULL_RESOURCE)
 	{
-		log_add(log_Warning, "Trying to get null resource");
+		uqm::log::warn("Trying to get null resource");
 		return nullptr;
 	}
 
@@ -119,8 +119,8 @@ void* res_GetResource(RESOURCE res)
 	desc = lookupResourceDesc(resourceIndex, res);
 	if (desc == nullptr)
 	{
-		log_add(log_Warning, "Trying to get undefined resource '%s'",
-				res);
+		uqm::log::warn("Trying to get undefined resource '%s'",
+					   res);
 		return nullptr;
 	}
 
@@ -145,7 +145,7 @@ res_GetIntResource(RESOURCE res)
 
 	if (res == NULL_RESOURCE)
 	{
-		log_add(log_Warning, "Trying to get null resource");
+		uqm::log::warn("Trying to get null resource");
 		return 0;
 	}
 
@@ -154,8 +154,8 @@ res_GetIntResource(RESOURCE res)
 	desc = lookupResourceDesc(resourceIndex, res);
 	if (desc == nullptr)
 	{
-		log_add(log_Warning, "Trying to get undefined resource '%s'",
-				res);
+		uqm::log::warn("Trying to get undefined resource '%s'",
+					   res);
 		return 0;
 	}
 
@@ -176,8 +176,8 @@ void res_FreeResource(RESOURCE res)
 	desc = lookupResourceDesc(_get_current_index_header(), res);
 	if (desc == nullptr)
 	{
-		log_add(log_Debug, "Warning: trying to free an unrecognised "
-						   "resource.");
+		uqm::log::debug("Warning: trying to free an unrecognised "
+						"resource.");
 		return;
 	}
 
@@ -187,7 +187,7 @@ void res_FreeResource(RESOURCE res)
 	}
 	else
 	{
-		log_add(log_Debug, "Warning: freeing an unreferenced resource.");
+		uqm::log::debug("Warning: freeing an unreferenced resource.");
 	}
 	if (desc->refcount > 0)
 	{
@@ -197,14 +197,14 @@ void res_FreeResource(RESOURCE res)
 	freeFun = desc->vtable->freeFun;
 	if (freeFun == nullptr)
 	{
-		log_add(log_Debug, "Warning: trying to free a non-heap resource.");
+		uqm::log::debug("Warning: trying to free a non-heap resource.");
 		return;
 	}
 
 	if (desc->resdata.ptr == nullptr)
 	{
-		log_add(log_Debug, "Warning: trying to free not loaded "
-						   "resource.");
+		uqm::log::debug("Warning: trying to free not loaded "
+						"resource.");
 		return;
 	}
 
@@ -225,30 +225,30 @@ void* res_DetachResource(RESOURCE res)
 	desc = lookupResourceDesc(_get_current_index_header(), res);
 	if (desc == nullptr)
 	{
-		log_add(log_Debug, "Warning: trying to detach from an unrecognised "
-						   "resource.");
+		uqm::log::debug("Warning: trying to detach from an unrecognised "
+						"resource.");
 		return nullptr;
 	}
 
 	freeFun = desc->vtable->freeFun;
 	if (freeFun == nullptr)
 	{
-		log_add(log_Debug, "Warning: trying to detach from a non-heap resource.");
+		uqm::log::debug("Warning: trying to detach from a non-heap resource.");
 		return nullptr;
 	}
 
 	if (desc->resdata.ptr == nullptr)
 	{
-		log_add(log_Debug, "Warning: trying to detach from a not loaded "
-						   "resource.");
+		uqm::log::debug("Warning: trying to detach from a not loaded "
+						"resource.");
 		return nullptr;
 	}
 
 	if (desc->refcount > 1)
 	{
-		log_add(log_Debug, "Warning: trying to detach a resource referenced "
-						   "%u times",
-				desc->refcount);
+		uqm::log::debug("Warning: trying to detach a resource referenced "
+						"%u times",
+						desc->refcount);
 		return nullptr;
 	}
 

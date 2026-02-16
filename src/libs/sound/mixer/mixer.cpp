@@ -26,7 +26,7 @@
 #include "mixerint.h"
 #include "libs/misc.h"
 #include "libs/threadlib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/memlib.h"
 
 static uint32 mixer_initialized = 0;
@@ -264,7 +264,7 @@ void mixer_GenSources(uint32 n, mixer_Object* psrcobj)
 	if (!psrcobj)
 	{
 		mixer_SetError(MIX_INVALID_NAME);
-		log_add(log_Debug, "mixer_GenSources() called with null ptr");
+		uqm::log::debug("mixer_GenSources() called with null ptr");
 		return;
 	}
 	for (; n; n--, psrcobj++)
@@ -306,7 +306,7 @@ void mixer_DeleteSources(uint32 n, mixer_Object* psrcobj)
 	if (!psrcobj)
 	{
 		mixer_SetError(MIX_INVALID_NAME);
-		log_add(log_Debug, "mixer_DeleteSources() called with null ptr");
+		uqm::log::debug("mixer_DeleteSources() called with null ptr");
 		return;
 	}
 
@@ -331,7 +331,7 @@ void mixer_DeleteSources(uint32 n, mixer_Object* psrcobj)
 	if (i)
 	{ /* some source failed */
 		mixer_SetError(MIX_INVALID_NAME);
-		log_add(log_Debug, "mixer_DeleteSources(): not a source");
+		uqm::log::debug("mixer_DeleteSources(): not a source");
 	}
 	else
 	{ /* all sources checked out */
@@ -391,7 +391,7 @@ void mixer_Sourcei(mixer_Object srcobj, mixer_SourceProp pname,
 	if (!src)
 	{
 		mixer_SetError(MIX_INVALID_NAME);
-		log_add(log_Debug, "mixer_Sourcei() called with null source");
+		uqm::log::debug("mixer_Sourcei() called with null source");
 		return;
 	}
 
@@ -400,7 +400,7 @@ void mixer_Sourcei(mixer_Object srcobj, mixer_SourceProp pname,
 	if (src->magic != mixer_srcMagic)
 	{
 		mixer_SetError(MIX_INVALID_NAME);
-		log_add(log_Debug, "mixer_Sourcei(): not a source");
+		uqm::log::debug("mixer_Sourcei(): not a source");
 	}
 	else
 	{
@@ -441,15 +441,13 @@ void mixer_Sourcei(mixer_Object srcobj, mixer_SourceProp pname,
 				}
 				else
 				{
-					log_add(log_Debug, "mixer_Sourcei(MIX_SOURCE_STATE): "
-									   "unsupported state, call ignored");
+					uqm::log::debug("mixer_Sourcei(MIX_SOURCE_STATE): "
+									"unsupported state, call ignored");
 				}
 				break;
 			default:
 				mixer_SetError(MIX_INVALID_ENUM);
-				log_add(log_Debug, "mixer_Sourcei() called "
-								   "with unsupported property %u",
-						pname);
+				uqm::log::debug("mixer_Sourcei() called with unsupported property {}", static_cast<uint32_t>(pname));
 		}
 	}
 
@@ -464,7 +462,7 @@ void mixer_Sourcef(mixer_Object srcobj, mixer_SourceProp pname, float value)
 	if (!src)
 	{
 		mixer_SetError(MIX_INVALID_NAME);
-		log_add(log_Debug, "mixer_Sourcef() called with null source");
+		uqm::log::debug("mixer_Sourcef() called with null source");
 		return;
 	}
 
@@ -473,7 +471,7 @@ void mixer_Sourcef(mixer_Object srcobj, mixer_SourceProp pname, float value)
 	if (src->magic != mixer_srcMagic)
 	{
 		mixer_SetError(MIX_INVALID_NAME);
-		log_add(log_Debug, "mixer_Sourcef(): not a source");
+		uqm::log::debug("mixer_Sourcef(): not a source");
 	}
 	else
 	{
@@ -483,9 +481,7 @@ void mixer_Sourcef(mixer_Object srcobj, mixer_SourceProp pname, float value)
 				src->gain = value * MIX_GAIN_ADJ;
 				break;
 			default:
-				log_add(log_Debug, "mixer_Sourcei() called "
-								   "with unsupported property %u",
-						pname);
+				uqm::log::debug("mixer_Sourcei() called with unsupported property %u", static_cast<uint32_t>(pname));
 		}
 	}
 
@@ -505,7 +501,7 @@ void mixer_Sourcefv(mixer_Object srcobj, mixer_SourceProp pname, float* value)
 	if (!src)
 	{
 		mixer_SetError(MIX_INVALID_NAME);
-		log_add(log_Debug, "mixer_Sourcefv() called with null source");
+		uqm::log::debug("mixer_Sourcefv() called with null source");
 		return;
 	}
 
@@ -514,7 +510,7 @@ void mixer_Sourcefv(mixer_Object srcobj, mixer_SourceProp pname, float* value)
 	if (src->magic != mixer_srcMagic)
 	{
 		mixer_SetError(MIX_INVALID_NAME);
-		log_add(log_Debug, "mixer_Sourcefv(): not a source");
+		uqm::log::debug("mixer_Sourcefv(): not a source");
 	}
 	else
 	{
@@ -538,9 +534,7 @@ void mixer_Sourcefv(mixer_Object srcobj, mixer_SourceProp pname, float* value)
 					break;
 				}
 			default:
-				log_add(log_Debug, "mixer_Sourcefv() called "
-								   "with unsupported property %u",
-						pname);
+				uqm::log::debug("mixer_Sourcefv() called with unsupported property {}", static_cast<uint32_t>(pname));
 		}
 	}
 
@@ -557,7 +551,7 @@ void mixer_GetSourcei(mixer_Object srcobj, mixer_SourceProp pname,
 	if (!src || !value)
 	{
 		mixer_SetError(src ? MIX_INVALID_VALUE : MIX_INVALID_NAME);
-		log_add(log_Debug, "mixer_GetSourcei() called with null param");
+		uqm::log::debug("mixer_GetSourcei() called with null param");
 		return;
 	}
 
@@ -566,7 +560,7 @@ void mixer_GetSourcei(mixer_Object srcobj, mixer_SourceProp pname,
 	if (src->magic != mixer_srcMagic)
 	{
 		mixer_SetError(MIX_INVALID_NAME);
-		log_add(log_Debug, "mixer_GetSourcei(): not a source");
+		uqm::log::debug("mixer_GetSourcei(): not a source");
 	}
 	else
 	{
@@ -589,9 +583,7 @@ void mixer_GetSourcei(mixer_Object srcobj, mixer_SourceProp pname,
 				break;
 			default:
 				mixer_SetError(MIX_INVALID_ENUM);
-				log_add(log_Debug, "mixer_GetSourcei() called "
-								   "with unsupported property %u",
-						pname);
+				uqm::log::debug("mixer_GetSourcei() called with unsupported property %u", static_cast<uint32_t>(pname));
 		}
 	}
 
@@ -607,7 +599,7 @@ void mixer_GetSourcef(mixer_Object srcobj, mixer_SourceProp pname,
 	if (!src || !value)
 	{
 		mixer_SetError(src ? MIX_INVALID_VALUE : MIX_INVALID_NAME);
-		log_add(log_Debug, "mixer_GetSourcef() called with null param");
+		uqm::log::debug("mixer_GetSourcef() called with null param");
 		return;
 	}
 
@@ -616,7 +608,7 @@ void mixer_GetSourcef(mixer_Object srcobj, mixer_SourceProp pname,
 	if (src->magic != mixer_srcMagic)
 	{
 		mixer_SetError(MIX_INVALID_NAME);
-		log_add(log_Debug, "mixer_GetSourcef(): not a source");
+		uqm::log::debug("mixer_GetSourcef(): not a source");
 	}
 	else
 	{
@@ -626,9 +618,7 @@ void mixer_GetSourcef(mixer_Object srcobj, mixer_SourceProp pname,
 				*value = src->gain / MIX_GAIN_ADJ;
 				break;
 			default:
-				log_add(log_Debug, "mixer_GetSourcef() called "
-								   "with unsupported property %u",
-						pname);
+				uqm::log::debug("mixer_GetSourcef() called with unsupported property {}", static_cast<uint32_t>(pname));
 		}
 	}
 
@@ -643,7 +633,7 @@ void mixer_SourcePlay(mixer_Object srcobj)
 	if (!src)
 	{
 		mixer_SetError(MIX_INVALID_NAME);
-		log_add(log_Debug, "mixer_SourcePlay() called with null source");
+		uqm::log::debug("mixer_SourcePlay() called with null source");
 		return;
 	}
 
@@ -652,7 +642,7 @@ void mixer_SourcePlay(mixer_Object srcobj)
 	if (src->magic != mixer_srcMagic)
 	{
 		mixer_SetError(MIX_INVALID_NAME);
-		log_add(log_Debug, "mixer_SourcePlay(): not a source");
+		uqm::log::debug("mixer_SourcePlay(): not a source");
 	}
 	else /* should make the source active */
 	{
@@ -678,7 +668,7 @@ void mixer_SourceRewind(mixer_Object srcobj)
 	if (!src)
 	{
 		mixer_SetError(MIX_INVALID_NAME);
-		log_add(log_Debug, "mixer_SourceRewind() called with null source");
+		uqm::log::debug("mixer_SourceRewind() called with null source");
 		return;
 	}
 
@@ -687,7 +677,7 @@ void mixer_SourceRewind(mixer_Object srcobj)
 	if (src->magic != mixer_srcMagic)
 	{
 		mixer_SetError(MIX_INVALID_NAME);
-		log_add(log_Debug, "mixer_SourcePlay(): not a source");
+		uqm::log::debug("mixer_SourcePlay(): not a source");
 	}
 	else
 	{
@@ -705,7 +695,7 @@ void mixer_SourcePause(mixer_Object srcobj)
 	if (!src)
 	{
 		mixer_SetError(MIX_INVALID_NAME);
-		log_add(log_Debug, "mixer_SourcePause() called with null source");
+		uqm::log::debug("mixer_SourcePause() called with null source");
 		return;
 	}
 
@@ -714,7 +704,7 @@ void mixer_SourcePause(mixer_Object srcobj)
 	if (src->magic != mixer_srcMagic)
 	{
 		mixer_SetError(MIX_INVALID_NAME);
-		log_add(log_Debug, "mixer_SourcePause(): not a source");
+		uqm::log::debug("mixer_SourcePause(): not a source");
 	}
 	else /* should keep all buffers and offsets */
 	{
@@ -738,7 +728,7 @@ void mixer_SourceStop(mixer_Object srcobj)
 	if (!src)
 	{
 		mixer_SetError(MIX_INVALID_NAME);
-		log_add(log_Debug, "mixer_SourceStop() called with null source");
+		uqm::log::debug("mixer_SourceStop() called with null source");
 		return;
 	}
 
@@ -747,7 +737,7 @@ void mixer_SourceStop(mixer_Object srcobj)
 	if (src->magic != mixer_srcMagic)
 	{
 		mixer_SetError(MIX_INVALID_NAME);
-		log_add(log_Debug, "mixer_SourceStop(): not a source");
+		uqm::log::debug("mixer_SourceStop(): not a source");
 	}
 	else /* should remove queued buffers */
 	{
@@ -773,8 +763,8 @@ void mixer_SourceQueueBuffers(mixer_Object srcobj, uint32 n,
 	if (!src || !pbufobj)
 	{
 		mixer_SetError(MIX_INVALID_NAME);
-		log_add(log_Debug, "mixer_SourceQueueBuffers() called "
-						   "with null param");
+		uqm::log::debug("mixer_SourceQueueBuffers() called "
+						"with null param");
 		return;
 	}
 
@@ -798,7 +788,7 @@ void mixer_SourceQueueBuffers(mixer_Object srcobj, uint32 n,
 		if (src->magic != mixer_srcMagic)
 		{
 			mixer_SetError(MIX_INVALID_NAME);
-			log_add(log_Debug, "mixer_SourceQueueBuffers(): not a source");
+			uqm::log::debug("mixer_SourceQueueBuffers(): not a source");
 		}
 		else
 		{
@@ -840,8 +830,8 @@ void mixer_SourceUnqueueBuffers(mixer_Object srcobj, uint32 n,
 	if (!src || !pbufobj)
 	{
 		mixer_SetError(MIX_INVALID_NAME);
-		log_add(log_Debug, "mixer_SourceUnqueueBuffers() called "
-						   "with null source");
+		uqm::log::debug("mixer_SourceUnqueueBuffers() called "
+						"with null source");
 		return;
 	}
 
@@ -850,7 +840,7 @@ void mixer_SourceUnqueueBuffers(mixer_Object srcobj, uint32 n,
 	if (src->magic != mixer_srcMagic)
 	{
 		mixer_SetError(MIX_INVALID_NAME);
-		log_add(log_Debug, "mixer_SourceUnqueueBuffers(): not a source");
+		uqm::log::debug("mixer_SourceUnqueueBuffers(): not a source");
 	}
 	else if (n > src->cqueued)
 	{
@@ -869,8 +859,8 @@ void mixer_SourceUnqueueBuffers(mixer_Object srcobj, uint32 n,
 		if (i)
 		{
 			mixer_SetError(MIX_INVALID_OPERATION);
-			log_add(log_Debug, "mixer_SourceUnqueueBuffers(): "
-							   "active buffer attempted");
+			uqm::log::debug("mixer_SourceUnqueueBuffers(): "
+							"active buffer attempted");
 		}
 		else
 		{ /* all buffers checked out */
@@ -923,8 +913,8 @@ mixer_SourceUnqueueAll(mixer_Source* src)
 
 	if (!src)
 	{
-		log_add(log_Debug, "mixer_SourceUnqueueAll() called "
-						   "with null source");
+		uqm::log::debug("mixer_SourceUnqueueAll() called "
+						"with null source");
 		return;
 	}
 
@@ -934,8 +924,8 @@ mixer_SourceUnqueueAll(mixer_Source* src)
 	{
 		if (buf->state == MIX_BUF_PLAYING)
 		{
-			log_add(log_Debug, "mixer_SourceUnqueueAll(): "
-							   "attempted on active buffer");
+			uqm::log::debug("mixer_SourceUnqueueAll(): "
+							"attempted on active buffer");
 		}
 		nextbuf = buf->next;
 		buf->state = MIX_BUF_FILLED;
@@ -967,9 +957,9 @@ mixer_SourceActivate(mixer_Source* src)
 		;
 	if (i < MAX_SOURCES)
 	{ /* source found */
-		log_add(log_Debug, "mixer_SourceActivate(): "
-						   "source already active in slot %u",
-				i);
+		uqm::log::debug("mixer_SourceActivate(): "
+						"source already active in slot %u",
+						i);
 		UnlockRecursiveMutex(act_mutex);
 		return;
 	}
@@ -983,9 +973,9 @@ mixer_SourceActivate(mixer_Source* src)
 	}
 	else
 	{
-		log_add(log_Debug, "mixer_SourceActivate(): "
-						   "no more slots available (max=%d)",
-				MAX_SOURCES);
+		uqm::log::debug("mixer_SourceActivate(): "
+						"no more slots available (max=%d)",
+						MAX_SOURCES);
 	}
 
 	UnlockRecursiveMutex(act_mutex);
@@ -1008,7 +998,7 @@ mixer_SourceDeactivate(mixer_Source* src)
 	}
 	else
 	{ /* source not found */
-		log_add(log_Debug, "mixer_SourceDeactivate(): source not active");
+		uqm::log::debug("mixer_SourceDeactivate(): source not active");
 	}
 
 	UnlockRecursiveMutex(act_mutex);
@@ -1028,8 +1018,8 @@ mixer_SourceStop_internal(mixer_Source* src)
 	/* assert the source buffers state */
 	if (!src->lastqueued)
 	{
-		log_add(log_Debug, "mixer_SourceStop_internal(): "
-						   "desynced source state");
+		uqm::log::debug("mixer_SourceStop_internal(): "
+						"desynced source state");
 #ifdef DEBUG
 		explode();
 #endif
@@ -1260,7 +1250,7 @@ void mixer_GenBuffers(uint32 n, mixer_Object* pbufobj)
 	if (!pbufobj)
 	{
 		mixer_SetError(MIX_INVALID_VALUE);
-		log_add(log_Debug, "mixer_GenBuffers() called with null ptr");
+		uqm::log::debug("mixer_GenBuffers() called with null ptr");
 		return;
 	}
 	for (; n; n--, pbufobj++)
@@ -1298,7 +1288,7 @@ void mixer_DeleteBuffers(uint32 n, mixer_Object* pbufobj)
 	if (!pbufobj)
 	{
 		mixer_SetError(MIX_INVALID_NAME);
-		log_add(log_Debug, "mixer_DeleteBuffers() called with null ptr");
+		uqm::log::debug("mixer_DeleteBuffers() called with null ptr");
 		return;
 	}
 
@@ -1317,20 +1307,20 @@ void mixer_DeleteBuffers(uint32 n, mixer_Object* pbufobj)
 		if (buf->magic != mixer_bufMagic)
 		{
 			mixer_SetError(MIX_INVALID_NAME);
-			log_add(log_Debug, "mixer_DeleteBuffers(): not a buffer");
+			uqm::log::debug("mixer_DeleteBuffers(): not a buffer");
 			break;
 		}
 		else if (buf->locked)
 		{
 			mixer_SetError(MIX_INVALID_OPERATION);
-			log_add(log_Debug, "mixer_DeleteBuffers(): locked buffer");
+			uqm::log::debug("mixer_DeleteBuffers(): locked buffer");
 			break;
 		}
 		else if (buf->state >= MIX_BUF_QUEUED)
 		{
 			mixer_SetError(MIX_INVALID_OPERATION);
-			log_add(log_Debug, "mixer_DeleteBuffers(): "
-							   "attempted on queued/active buffer");
+			uqm::log::debug("mixer_DeleteBuffers(): "
+							"attempted on queued/active buffer");
 			break;
 		}
 	}
@@ -1386,7 +1376,7 @@ void mixer_GetBufferi(mixer_Object bufobj, mixer_BufferProp pname,
 	if (!buf || !value)
 	{
 		mixer_SetError(buf ? MIX_INVALID_VALUE : MIX_INVALID_NAME);
-		log_add(log_Debug, "mixer_GetBufferi() called with null param");
+		uqm::log::debug("mixer_GetBufferi() called with null param");
 		return;
 	}
 
@@ -1396,14 +1386,14 @@ void mixer_GetBufferi(mixer_Object bufobj, mixer_BufferProp pname,
 	{
 		UnlockRecursiveMutex(buf_mutex);
 		mixer_SetError(MIX_INVALID_OPERATION);
-		log_add(log_Debug, "mixer_GetBufferi() called with locked buffer");
+		uqm::log::debug("mixer_GetBufferi() called with locked buffer");
 		return;
 	}
 
 	if (buf->magic != mixer_bufMagic)
 	{
 		mixer_SetError(MIX_INVALID_NAME);
-		log_add(log_Debug, "mixer_GetBufferi(): not a buffer");
+		uqm::log::debug("mixer_GetBufferi(): not a buffer");
 	}
 	else
 	{
@@ -1428,9 +1418,7 @@ void mixer_GetBufferi(mixer_Object bufobj, mixer_BufferProp pname,
 				break;
 			default:
 				mixer_SetError(MIX_INVALID_ENUM);
-				log_add(log_Debug, "mixer_GetBufferi() called "
-								   "with invalid property %u",
-						pname);
+				uqm::log::debug("mixer_GetBufferi() called with invalid property {}", static_cast<uint32_t>(pname));
 		}
 	}
 
@@ -1448,7 +1436,7 @@ void mixer_BufferData(mixer_Object bufobj, uint32 format, void* data,
 	if (!buf || !data || !size)
 	{
 		mixer_SetError(buf ? MIX_INVALID_VALUE : MIX_INVALID_NAME);
-		log_add(log_Debug, "mixer_BufferData() called with bad param");
+		uqm::log::debug("mixer_BufferData() called with bad param");
 		return;
 	}
 
@@ -1458,21 +1446,21 @@ void mixer_BufferData(mixer_Object bufobj, uint32 format, void* data,
 	{
 		UnlockRecursiveMutex(buf_mutex);
 		mixer_SetError(MIX_INVALID_OPERATION);
-		log_add(log_Debug, "mixer_BufferData() called "
-						   "with locked buffer");
+		uqm::log::debug("mixer_BufferData() called "
+						"with locked buffer");
 		return;
 	}
 
 	if (buf->magic != mixer_bufMagic)
 	{
 		mixer_SetError(MIX_INVALID_NAME);
-		log_add(log_Debug, "mixer_BufferData(): not a buffer");
+		uqm::log::debug("mixer_BufferData(): not a buffer");
 	}
 	else if (buf->state > MIX_BUF_FILLED)
 	{
 		mixer_SetError(MIX_INVALID_OPERATION);
-		log_add(log_Debug, "mixer_BufferData() attempted "
-						   "on in-use buffer");
+		uqm::log::debug("mixer_BufferData() attempted "
+						"on in-use buffer");
 	}
 	else
 	{
@@ -1600,21 +1588,21 @@ mixer_CheckBufferState(mixer_Buffer* buf, const char* FuncName)
 	if (buf->magic != mixer_bufMagic)
 	{
 		mixer_SetError(MIX_INVALID_NAME);
-		log_add(log_Debug, "%s(): not a buffer", FuncName);
+		uqm::log::debug("%s(): not a buffer", FuncName);
 		return false;
 	}
 
 	if (buf->locked)
 	{
 		mixer_SetError(MIX_INVALID_OPERATION);
-		log_add(log_Debug, "%s(): locked buffer attempted", FuncName);
+		uqm::log::debug("%s(): locked buffer attempted", FuncName);
 		return false;
 	}
 
 	if (buf->state != MIX_BUF_FILLED)
 	{
 		mixer_SetError(MIX_INVALID_OPERATION);
-		log_add(log_Debug, "%s: invalid buffer attempted", FuncName);
+		uqm::log::debug("%s: invalid buffer attempted", FuncName);
 		return false;
 	}
 	return true;

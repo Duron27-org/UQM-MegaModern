@@ -28,7 +28,7 @@
 #define LUAUQM_INTERNAL
 #include "commfuncs.h"
 #include "libs/scriptlib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 
 #include "uqm/lua/luacomm.h"
 #include "uqm/commglue.h"
@@ -81,7 +81,7 @@ static const luaL_Reg commFuncs[] = {
 	{"getConstellation",	 luaUqm_comm_getConstellation },
 	{"getColor",			 luaUqm_comm_getColor		 },
 	{"swapIfSeeded",		 luaUqm_comm_swapIfSeeded	 },
-	{nullptr,				nullptr						 },
+	{nullptr,			  nullptr					  },
 };
 
 static const luaUqm_EnumValue segueEnum[] = {
@@ -89,7 +89,7 @@ static const luaUqm_EnumValue segueEnum[] = {
 	{/* .name = */ "hostile", /* .value = */ Segue_hostile},
 	{/* .name = */ "victory", /* .value = */ Segue_victory},
 	{/* .name = */ "defeat",	 /* .value = */ Segue_defeat },
-	{/* .name = */ nullptr,		 /* .value = */ 0			 },
+	{/* .name = */ nullptr,	/* .value = */ 0			},
 };
 
 int luaUqm_comm_open(lua_State* luaState)
@@ -123,9 +123,9 @@ testPhraseId(lua_State* luaState, int argn)
 	if (phraseId == (RESPONSE_REF)-1)
 	{
 		// TODO: print script file name.
-		log_add(log_Error, "[script] Warning: testPhraseId(): No phrase "
-						   "exists with id '%s'.",
-				phraseIdStr);
+		uqm::log::error("[script] Warning: testPhraseId(): No phrase "
+						"exists with id '%s'.",
+						phraseIdStr);
 		return -1;
 	}
 
@@ -216,9 +216,9 @@ npcPhraseCallback(CallbackArg extra)
 	if (lua_pcall(luaUqm_commState, 0, 0, 0) != 0)
 	{
 		// An error occurred. We continue nonetheless.
-		log_add(log_Error, "[script] An error occurred during a "
-						   "doNpcPhrase() callback: %s",
-				lua_tostring(luaUqm_commState, -1));
+		uqm::log::error("[script] An error occurred during a "
+						"doNpcPhrase() callback: %s",
+						lua_tostring(luaUqm_commState, -1));
 		lua_pop(luaUqm_commState, 1);
 	}
 	(void)extra;
@@ -234,9 +234,9 @@ responseCallback(RESPONSE_REF response)
 	if (lua_pcall(luaUqm_commState, 1, 0, 0) != 0)
 	{
 		// An error occurred. We continue nonetheless.
-		log_add(log_Error, "[script] An error occurred during an "
-						   "addResponse() callback: %s",
-				lua_tostring(luaUqm_commState, -1));
+		uqm::log::error("[script] An error occurred during an "
+						"addResponse() callback: %s",
+						lua_tostring(luaUqm_commState, -1));
 		lua_pop(luaUqm_commState, 1);
 	}
 }
@@ -374,9 +374,9 @@ luaUqm_comm_setSegue(lua_State* luaState)
 		case Segue_defeat:
 			break;
 		default:
-			log_add(log_Error, "[script] Warning: setSegue(): Invalid "
-							   "parameter value (%d).",
-					what);
+			uqm::log::error("[script] Warning: setSegue(): Invalid "
+							"parameter value (%d).",
+							what);
 			break;
 	};
 	setSegue((Segue)what);

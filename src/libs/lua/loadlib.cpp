@@ -802,7 +802,7 @@ static const luaL_Reg pk_funcs[] = {
 #if defined(LUA_COMPAT_MODULE)
 	{"seeall",	   ll_seeall	},
 #endif
-	{nullptr,		   nullptr		   }
+	{nullptr,	  nullptr		 }
 };
 
 
@@ -811,7 +811,7 @@ static const luaL_Reg ll_funcs[] = {
 	{"module",  ll_module },
 #endif
 	{"require", ll_require},
-	{nullptr,	   nullptr	   }
+	{nullptr,	  nullptr	 }
 };
 
 

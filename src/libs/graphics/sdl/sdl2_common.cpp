@@ -30,7 +30,7 @@
 #include "libs/graphics/bbox.h"
 #include "port.h"
 #include "libs/uio.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/memlib.h"
 #include "libs/vidlib.h"
 
@@ -43,11 +43,11 @@ void TFB_PreInit(void)
 	SDL_version compiled, linked;
 	SDL_VERSION(&compiled);
 	SDL_GetVersion(&linked);
-	log_add(log_Info, "Initializing base SDL functionality.");
-	log_add(log_Info, "Using SDL version %d.%d.%d (compiled with "
-					  "%d.%d.%d)",
-			linked.major, linked.minor, linked.patch,
-			compiled.major, compiled.minor, compiled.patch);
+	uqm::log::info("Initializing base SDL functionality.");
+	uqm::log::info("Using SDL version %d.%d.%d (compiled with "
+				   "%d.%d.%d)",
+				   linked.major, linked.minor, linked.patch,
+				   compiled.major, compiled.minor, compiled.patch);
 	printf("Using SDL version %d.%d.%d\nCompiled with "
 		   "%d.%d.%d\n\n",
 		   linked.major, linked.minor, linked.patch,
@@ -65,7 +65,7 @@ void TFB_PreInit(void)
 
 	if ((SDL_Init(SDL_INIT_VIDEO) == -1))
 	{
-		log_add(log_Fatal, "Could not initialize SDL: %s.", SDL_GetError());
+		uqm::log::critical("Could not initialize SDL: %s.", SDL_GetError());
 		exit(EXIT_FAILURE);
 	}
 

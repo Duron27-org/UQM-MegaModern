@@ -27,7 +27,7 @@
 #include "lua/luaevent.h"
 #include "lua/luafuncs/customfuncs.h"
 #include "libs/compiler.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/mathlib.h"
 #include "nameref.h"
 #include "options.h"
@@ -100,8 +100,8 @@ void initEventSystem(void)
 		{"yehat_rebel_event",			  yehat_rebel_event		   },
 		{"slylandro_ramp_up",			  slylandro_ramp_up		   },
 		{"slylandro_ramp_down",			slylandro_ramp_down		   },
-		{nullptr,						  nullptr					   }
-	};
+		{nullptr,					   nullptr					 }
+	  };
 
 	luaUqm_event_init(eventFuncs, EVENT_SCRIPT);
 }
@@ -155,9 +155,9 @@ void EventHandler(uqm::BYTE selector)
 	eventIdStr = eventIdNumToStr(selector);
 	if (eventIdStr == nullptr)
 	{
-		log_add(log_Warning, "Warning: EventHandler(): Event %d is "
-							 "unknown.",
-				selector);
+		uqm::log::warn("Warning: EventHandler(): Event %d is "
+					   "unknown.",
+					   selector);
 		return;
 	}
 

@@ -1473,7 +1473,7 @@ zip_fillDirStructureProcessExtraFields(uio_FileBlock* fileBlock,
 		switch (headerID)
 		{
 			case 0x000d: // 'Unix0'
-				// fallthrough
+						 // fallthrough
 			case 0x5855: // 'Unix1'
 				gPFileData->atime = (time_t)makeUInt32(
 					buf[0], buf[1], buf[2], buf[3]);

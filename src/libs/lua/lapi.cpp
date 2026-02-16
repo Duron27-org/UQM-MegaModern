@@ -1509,7 +1509,7 @@ LUA_API const char* lua_getupvalue(lua_State* L, int funcindex, int n)
 LUA_API const char* lua_setupvalue(lua_State* L, int funcindex, int n)
 {
 	const char* name;
-	TValue* val = nullptr;		/* to avoid warnings */
+	TValue* val = nullptr;	   /* to avoid warnings */
 	GCObject* owner = nullptr; /* to avoid warnings */
 	StkId fi;
 	lua_lock(L);

@@ -28,7 +28,7 @@
 // for DUMP_CRC_OPS
 #include "netconnection.h"
 #include "netmelee.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/mathlib.h"
 
 ChecksumBuffer localChecksumBuffer;
@@ -301,8 +301,8 @@ bool verifyChecksums(BattleFrameCounter frameNr)
 
 		if (localChecksum != remoteChecksum)
 		{
-			log_add(log_Error, "Network connections have gone out of "
-							   "sync.\n");
+			uqm::log::error("Network connections have gone out of "
+							"sync.\n");
 			return false;
 		}
 	}

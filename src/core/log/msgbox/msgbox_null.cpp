@@ -15,24 +15,27 @@
  */
 
 #include "msgbox.h"
-#include "loginternal.h"
 #if defined(ANDROID) || defined(__ANDROID__)
 #include <android/log.h>
 #endif
 
-void log_displayBox(const /*UTF-8*/ char* title, int isError,
-					const /*UTF-8*/ char* msg)
+namespace uqm
 {
+
+void displayMessageBox(uqgsl::czstring utf8Title, uqgsl::czstring utf8Message, MessageBoxType type);
+{
+	const bool isError {type == MessageBoxType::Error};
 	// We do not know how to display a box. Perhaps it's done with a
 	// hefty dose of pixie dust, or perhaps with a hammer and nails.
 	// So just inform the user of our predicament
-	fprintf(streamOut, "Do not know how to display %s box\n",
-			isError ? "an error" : "a");
+	fmt::print(streamOut, "Do not know how to display {} box. Message follows:\n----------------------\n{}\n{}", isError ? "an error" : "a message", utf8Title, utf8Message);
 #if defined(ANDROID) || defined(__ANDROID__)
 	__android_log_print(isError ? ANDROID_LOG_FATAL : ANDROID_LOG_INFO, "Ur-Quan Masters MegaMod", "%s: %s", title, msg);
 #endif
 
 	// Suppress the compiler warnings in any case.
-	(void)title;
-	(void)msg;
+	uqstl::ignore = title;
+	uqstl::ignore = msg;
 }
+
+} // namespace uqm

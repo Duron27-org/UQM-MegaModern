@@ -21,7 +21,7 @@
 #include <stdarg.h>
 #include <string.h>
 #include "libs/memlib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/misc.h"
 
 
@@ -40,7 +40,7 @@ void* HMalloc(size_t size)
 	void* p = malloc(size);
 	if (p == nullptr && size > 0)
 	{
-		log_add(log_Fatal, "HMalloc() FATAL: out of memory.");
+		uqm::log::critical("HMalloc() FATAL: out of memory.");
 		fflush(stderr);
 		explode();
 	}
@@ -68,7 +68,7 @@ void* HRealloc(void* p, size_t size)
 	p = realloc(p, size);
 	if (p == nullptr && size > 0)
 	{
-		log_add(log_Fatal, "HRealloc() FATAL: out of memory.");
+		uqm::log::critical("HRealloc() FATAL: out of memory.");
 		fflush(stderr);
 		explode();
 	}

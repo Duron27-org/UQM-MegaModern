@@ -20,7 +20,7 @@
 #include "strintrn.h"
 #include "libs/graphics/gfx_common.h"
 #include "libs/reslib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/memlib.h"
 
 
@@ -186,35 +186,35 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 	fp = res_OpenResFile(contentDir, paths, "rb");
 	if (fp == nullptr)
 	{
-		log_add(log_Warning, "Warning: Can't open '%s'", paths);
+		uqm::log::warn("Warning: Can't open '%s'", paths);
 		resdata->ptr = nullptr;
 		return;
 	}
 
 	dataLen = LengthResFile(fp);
-	log_add(log_Info, "\t'%s' -- conversation phrases -- %lu bytes", paths,
-			dataLen);
+	uqm::log::info("\t'%s' -- conversation phrases -- %lu bytes", paths,
+				   dataLen);
 	if (clip_path)
 	{
-		log_add(log_Info, "\t'%s' -- voice clip directory", clip_path);
+		uqm::log::info("\t'%s' -- voice clip directory", clip_path);
 	}
 	else
 	{
-		log_add(log_Info, "\tNo associated voice clips");
+		uqm::log::info("\tNo associated voice clips");
 	}
 	if (ts_path)
 	{
-		log_add(log_Info, "\t'%s' -- timestamps", ts_path);
+		uqm::log::info("\t'%s' -- timestamps", ts_path);
 	}
 	else
 	{
-		log_add(log_Info, "\tNo associated timestamp file");
+		uqm::log::info("\tNo associated timestamp file");
 	}
 
 	if (dataLen == 0)
 	{
-		log_add(log_Warning, "Warning: Trying to load empty file '%s'.",
-				path);
+		uqm::log::warn("Warning: Trying to load empty file '%s'.",
+					   path);
 		goto err;
 	}
 
@@ -360,9 +360,9 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 					if (!ts_ok)
 					{
 						// timestamp data is invalid, remove all of it
-						log_add(log_Warning, "Invalid timestamp data "
-											 "for '%s'.  Disabling timestamps",
-								name);
+						uqm::log::warn("Invalid timestamp data "
+									   "for '%s'.  Disabling timestamps",
+									   name);
 						HFree(ts_data);
 						ts_data = nullptr;
 						uio_fclose(timestamp_fp);

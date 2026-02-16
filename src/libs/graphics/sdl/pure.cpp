@@ -18,7 +18,7 @@
 #include "pure.h"
 #include "libs/graphics/bbox.h"
 #include "scalers.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "../../../uqm/units.h"
 #include "png2sdl.h"
 
@@ -64,8 +64,8 @@ Create_Screen(SDL_Surface* templat, int w, int h)
 												templat->format->Bmask, 0);
 	if (newsurf == 0)
 	{
-		log_add(log_Error, "Couldn't create screen buffers: %s",
-				SDL_GetError());
+		uqm::log::error("Couldn't create screen buffers: %s",
+						SDL_GetError());
 	}
 	return newsurf;
 }
@@ -160,9 +160,9 @@ int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
 			// Check the sanity of resolution.
 			if (width > 320 || height > 240)
 			{
-				log_add(log_Error, "Screen resolution of %dx%d not supported "
-								   "under pure SDL, using 320x240",
-						width, height);
+				uqm::log::error("Screen resolution of %dx%d not supported "
+								"under pure SDL, using 320x240",
+								width, height);
 
 				width = 320;
 				height = windowType ? 240 : 200;
@@ -194,9 +194,9 @@ int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
 
 	if (SDL_Video == nullptr)
 	{
-		log_add(log_Error, "Couldn't set %ix%i video mode: %s",
-				ScreenWidthActual, ScreenHeightActual,
-				SDL_GetError());
+		uqm::log::error("Couldn't set %ix%i video mode: %s",
+						ScreenWidthActual, ScreenHeightActual,
+						SDL_GetError());
 		return -1;
 	}
 	else
@@ -205,10 +205,10 @@ int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
 		const SDL_PixelFormat* fmt = video->format;
 
 		ScreenColorDepth = fmt->BitsPerPixel;
-		log_add(log_Info, "Set the resolution to: %ix%ix%i",
-				video->w, video->h, ScreenColorDepth);
-		log_add(log_Info, "  Video: R %08x, G %08x, B %08x, A %08x",
-				fmt->Rmask, fmt->Gmask, fmt->Bmask, fmt->Amask);
+		uqm::log::info("Set the resolution to: %ix%ix%i",
+					   video->w, video->h, ScreenColorDepth);
+		uqm::log::info("  Video: R %08x, G %08x, B %08x, A %08x",
+					   fmt->Rmask, fmt->Gmask, fmt->Bmask, fmt->Amask);
 
 		if (togglefullscreen)
 		{
@@ -220,8 +220,8 @@ int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
 			fmt = format_conv_surf->format;
 			if (conv_fmt.Rmask != fmt->Rmask || conv_fmt.Bmask != fmt->Bmask)
 			{
-				log_add(log_Warning, "Warning: pixel format has changed "
-									 "significantly. Rendering will be slow.");
+				uqm::log::warn("Warning: pixel format has changed "
+							   "significantly. Rendering will be slow.");
 			}
 			return 0;
 		}
@@ -240,15 +240,15 @@ int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
 											conv_fmt.Bmask, conv_fmt.Amask);
 	if (!format_conv_surf)
 	{
-		log_add(log_Error, "Couldn't create format_conv_surf: %s",
-				SDL_GetError());
+		uqm::log::error("Couldn't create format_conv_surf: %s",
+						SDL_GetError());
 		return -1;
 	}
 	else
 	{
 		const SDL_PixelFormat* fmt = format_conv_surf->format;
-		log_add(log_Info, "  Internal: R %08x, G %08x, B %08x, A %08x",
-				fmt->Rmask, fmt->Gmask, fmt->Bmask, fmt->Amask);
+		uqm::log::info("  Internal: R %08x, G %08x, B %08x, A %08x",
+					   fmt->Rmask, fmt->Gmask, fmt->Bmask, fmt->Amask);
 	}
 
 	for (i = 0; i < TFB_GFX_NUMSCREENS; i++)
@@ -297,10 +297,10 @@ int TFB_Pure_InitGraphics(int driver, int flags, const char* renderer,
 {
 	char VideoName[256];
 
-	log_add(log_Info, "Initializing Pure-SDL graphics.");
+	uqm::log::info("Initializing Pure-SDL graphics.");
 
 	SDL_VideoDriverName(VideoName, sizeof(VideoName));
-	log_add(log_Info, "SDL driver used: %s", VideoName);
+	uqm::log::info("SDL driver used: %s", VideoName);
 	(void)renderer;
 	// The "renderer" argument is ignored by SDL1. To control how SDL1
 	// gets its pixmap, set the environment variable SDL_VIDEODRIVER.
@@ -308,8 +308,8 @@ int TFB_Pure_InitGraphics(int driver, int flags, const char* renderer,
 	//              ggi, aalib
 	// For Windows: directx (default), windib
 
-	log_add(log_Info, "SDL initialized.");
-	log_add(log_Info, "Initializing Screen.");
+	uqm::log::info("SDL initialized.");
+	uqm::log::info("Initializing Screen.");
 
 	ScreenWidth = (320 << resFactor);						// 320
 	ScreenHeight = ((windowType ? 240 : 200) << resFactor); // 240
@@ -317,7 +317,7 @@ int TFB_Pure_InitGraphics(int driver, int flags, const char* renderer,
 	if (TFB_Pure_ConfigureVideo(driver, flags, width, height, 0,
 								resFactor, windowType))
 	{
-		log_add(log_Fatal, "Could not initialize video: "
+		uqm::log::critical("Could not initialize video: "
 						   "no fallback at start of program!");
 		exit(EXIT_FAILURE);
 	}
@@ -506,14 +506,14 @@ void Scale_PerfTest(void)
 
 	if (!scaler)
 	{
-		log_add(log_Error, "No scaler configured! "
-						   "Run with larger resolution, please");
+		uqm::log::error("No scaler configured! "
+						"Run with larger resolution, please");
 		return;
 	}
 	if (!scaled_display)
 	{
-		log_add(log_Error, "Run scaler performance tests "
-						   "in Pure mode, please");
+		uqm::log::error("Run scaler performance tests "
+						"in Pure mode, please");
 		return;
 	}
 
@@ -534,14 +534,14 @@ void Scale_PerfTest(void)
 		if (i % 100 == 0)
 		{
 			Now = SDL_GetTicks();
-			log_add(log_Debug, "%03d(%04u) ", 100 * 1000 / (Now - TimeIn),
-					Now - TimeIn);
+			uqm::log::debug("%03d(%04u) ", 100 * 1000 / (Now - TimeIn),
+							Now - TimeIn);
 			TimeIn = Now;
 		}
 	}
 
-	log_add(log_Debug, "Full frames scaled: %d; over %u ms; %d fps\n",
-			(i - 1), Now - TimeStart, i * 1000 / (Now - TimeStart));
+	uqm::log::debug("Full frames scaled: %d; over %u ms; %d fps\n",
+					(i - 1), Now - TimeStart, i * 1000 / (Now - TimeStart));
 
 	SDL_UnlockSurface(scaled_display);
 	SDL_UnlockSurface(SDL_Screen);
@@ -560,7 +560,7 @@ bool TFB_SDL_ScreenShot(const char* path)
 
 	if (successful && CopySurfaceToClipboard(tmp) != 0)
 	{
-		log_add(log_Warning, "Failed to copy PNG to clipboard\n");
+		uqm::log::warn("Failed to copy PNG to clipboard\n");
 	}
 
 	SDL_UnlockSurface(tmp);

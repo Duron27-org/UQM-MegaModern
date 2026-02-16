@@ -343,7 +343,7 @@ static const luaL_Reg tab_funcs[] = {
 	{"unpack", unpack },
 	{"remove", tremove},
 	{"sort",	 sort	 },
-	{nullptr,	   nullptr   }
+	{nullptr,  nullptr}
 };
 
 

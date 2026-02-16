@@ -28,7 +28,7 @@
 #include "libs/compiler.h"
 #include "libs/memlib.h"
 #include "libs/misc.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 
 #ifdef HAVE_DRIVE_LETTERS
 #include <ctype.h>
@@ -88,7 +88,7 @@ int mkdirhier(const char* path)
 		ptr[1] = '\0';
 		if (stat(buf, &statbuf) == -1)
 		{
-			log_add(log_Error, "Can't stat \"%s\": %s", buf, strerror(errno));
+			uqm::log::error("Can't stat \"%s\": %s", buf, strerror(errno));
 			goto err;
 		}
 	}
@@ -111,7 +111,7 @@ int mkdirhier(const char* path)
 
 		if (*pathstart == '\0')
 		{
-			log_add(log_Error, "Incomplete UNC path \"%s\"", pathstart);
+			uqm::log::error("Incomplete UNC path \"%s\"", pathstart);
 			goto err;
 		}
 
@@ -128,7 +128,7 @@ int mkdirhier(const char* path)
 		ptr[1] = '\0';
 		if (stat(buf, &statbuf) == -1)
 		{
-			log_add(log_Error, "Can't stat \"%s\": %s", buf, strerror(errno));
+			uqm::log::error("Can't stat \"%s\": %s", buf, strerror(errno));
 			goto err;
 		}
 	}
@@ -179,8 +179,8 @@ int mkdirhier(const char* path)
 			if (errno != EACCES)
 #endif
 			{
-				log_add(log_Error, "Can't stat \"%s\": %s", buf,
-						strerror(errno));
+				uqm::log::error("Can't stat \"%s\": %s", buf,
+								strerror(errno));
 				goto err;
 			}
 		}
@@ -210,8 +210,8 @@ int mkdirhier(const char* path)
 	{
 		if (createDirectory(buf, 0777) == -1)
 		{
-			log_add(log_Error, "Error: Can't create %s: %s", buf,
-					strerror(errno));
+			uqm::log::error("Error: Can't create %s: %s", buf,
+							strerror(errno));
 			goto err;
 		}
 
@@ -368,9 +368,9 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 							// fallback for when the APPDATA env var is not set
 							// Using SHGetFolderPath or SHGetSpecialFolderPath
 							// is problematic (not everywhere available).
-							log_add(log_Warning, "Warning: %%APPDATA%% is not set. "
-												 "Falling back to \"%%USERPROFILE%%\\Application "
-												 "Data\"");
+							uqm::log::warn("Warning: %%APPDATA%% is not set. "
+										   "Falling back to \"%%USERPROFILE%%\\Application "
+										   "Data\"");
 							envVar = getenv("USERPROFILE");
 							if (envVar != nullptr)
 							{
@@ -388,10 +388,10 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 
 							// fallback to "./userdata"
 #define APPDATA_FALLBACK_STRING ".\\userdata"
-							log_add(log_Warning,
-									"Warning: %%USERPROFILE%% is not set. "
-									"Falling back to \"%s\" for %%APPDATA%%",
-									APPDATA_FALLBACK_STRING);
+							uqm::log::warn(
+								"Warning: %%USERPROFILE%% is not set. "
+								"Falling back to \"%s\" for %%APPDATA%%",
+								APPDATA_FALLBACK_STRING);
 							CHECKLEN(buf, sizeof(APPDATA_FALLBACK_STRING) - 1);
 							strcpy(bufptr, APPDATA_FALLBACK_STRING);
 							bufptr += sizeof(APPDATA_FALLBACK_STRING) - 1;

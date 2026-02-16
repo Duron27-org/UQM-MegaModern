@@ -21,7 +21,7 @@
 #include "uqm/starmap.h"
 #include "uqm/gendef.h"
 #include "libs/mathlib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 /* -------------------------------- DATA -------------------------------- */
 
 /* -------------------------------- CODE -------------------------------- */
@@ -468,11 +468,11 @@ void DoPlanetaryAnalysis(SYSTEM_INFO* SysInfoPtr, PLANET_DESC* pPlanetDesc)
 			"Supergiant",
 		};
 
-		log_add(log_Debug, "%s %s",
-				ColorClass[SysInfoPtr->StarIntensity],
-				SizeName[SysInfoPtr->StarSize]);
-		log_add(log_Debug, "Stellar Energy: %d (sol = 3)",
-				SysInfoPtr->StarEnergy);
+		uqm::log::debug("%s %s",
+						ColorClass[SysInfoPtr->StarIntensity],
+						SizeName[SysInfoPtr->StarSize]);
+		uqm::log::debug("Stellar Energy: %d (sol = 3)",
+						SysInfoPtr->StarEnergy);
 	}
 #endif /* DEBUG_PLANET_CALC */
 
@@ -560,64 +560,64 @@ void DoPlanetaryAnalysis(SYSTEM_INFO* SysInfoPtr, PLANET_DESC* pPlanetDesc)
 
 #ifdef DEBUG_PLANET_CALC
 		radius = (uqm::SIZE)((uqm::DWORD)UNSCALE_RADIUS(radius) * 100 / UNSCALE_RADIUS(EARTH_RADIUS));
-		log_add(log_Debug, "\tOrbital Distance   : %d.%02d AU", radius / 100, radius % 100);
+		uqm::log::debug("\tOrbital Distance   : %d.%02d AU", radius / 100, radius % 100);
 		//log_add (log_Debug, "\tPlanetary Mass : %d.%02d Earth masses",
 		// SysInfoPtr->PlanetInfo.PlanetMass / 100,
 		// SysInfoPtr->PlanetInfo.PlanetMass % 100);
-		log_add(log_Debug, "\tPlanetary Radius   : %d.%02d Earth radii",
-				SysInfoPtr->PlanetInfo.PlanetRadius / 100,
-				SysInfoPtr->PlanetInfo.PlanetRadius % 100);
-		log_add(log_Debug, "\tSurface Gravity: %d.%02d gravities",
-				SysInfoPtr->PlanetInfo.SurfaceGravity / 100,
-				SysInfoPtr->PlanetInfo.SurfaceGravity % 100);
-		log_add(log_Debug, "\tSurface Temperature: %d degrees C",
-				SysInfoPtr->PlanetInfo.SurfaceTemperature);
-		log_add(log_Debug, "\tAxial Tilt : %d degrees",
-				abs(SysInfoPtr->PlanetInfo.AxialTilt));
-		log_add(log_Debug, "\tTectonics : Class %u",
-				SysInfoPtr->PlanetInfo.Tectonics + 1);
-		log_add(log_Debug, "\tAtmospheric Density: %u.%02u",
-				SysInfoPtr->PlanetInfo.AtmoDensity / EARTH_ATMOSPHERE,
-				(SysInfoPtr->PlanetInfo.AtmoDensity * 100 / EARTH_ATMOSPHERE) % 100);
+		uqm::log::debug("\tPlanetary Radius   : %d.%02d Earth radii",
+						SysInfoPtr->PlanetInfo.PlanetRadius / 100,
+						SysInfoPtr->PlanetInfo.PlanetRadius % 100);
+		uqm::log::debug("\tSurface Gravity: %d.%02d gravities",
+						SysInfoPtr->PlanetInfo.SurfaceGravity / 100,
+						SysInfoPtr->PlanetInfo.SurfaceGravity % 100);
+		uqm::log::debug("\tSurface Temperature: %d degrees C",
+						SysInfoPtr->PlanetInfo.SurfaceTemperature);
+		uqm::log::debug("\tAxial Tilt : %d degrees",
+						abs(SysInfoPtr->PlanetInfo.AxialTilt));
+		uqm::log::debug("\tTectonics : Class %u",
+						SysInfoPtr->PlanetInfo.Tectonics + 1);
+		uqm::log::debug("\tAtmospheric Density: %u.%02u",
+						SysInfoPtr->PlanetInfo.AtmoDensity / EARTH_ATMOSPHERE,
+						(SysInfoPtr->PlanetInfo.AtmoDensity * 100 / EARTH_ATMOSPHERE) % 100);
 		if (SysInfoPtr->PlanetInfo.AtmoDensity == 0)
 		{
-			log_add(log_Debug, "\tAtmosphere: (Vacuum)");
+			uqm::log::debug("\tAtmosphere: (Vacuum)");
 		}
 		else if (SysInfoPtr->PlanetInfo.AtmoDensity < THIN_ATMOSPHERE)
 		{
-			log_add(log_Debug, "\tAtmosphere: (Thin)");
+			uqm::log::debug("\tAtmosphere: (Thin)");
 		}
 		else if (SysInfoPtr->PlanetInfo.AtmoDensity < NORMAL_ATMOSPHERE)
 		{
-			log_add(log_Debug, "\tAtmosphere: (Normal)");
+			uqm::log::debug("\tAtmosphere: (Normal)");
 		}
 		else if (SysInfoPtr->PlanetInfo.AtmoDensity < THICK_ATMOSPHERE)
 		{
-			log_add(log_Debug, "\tAtmosphere: (Thick)");
+			uqm::log::debug("\tAtmosphere: (Thick)");
 		}
 		else if (SysInfoPtr->PlanetInfo.AtmoDensity < SUPER_THICK_ATMOSPHERE)
 		{
-			log_add(log_Debug, "\tAtmosphere: (Super thick)");
+			uqm::log::debug("\tAtmosphere: (Super thick)");
 		}
 		else
 		{
-			log_add(log_Debug, "\tAtmosphere: (Gas Giant)");
+			uqm::log::debug("\tAtmosphere: (Gas Giant)");
 		}
 
-		log_add(log_Debug, "\tWeather   : Class %u",
-				SysInfoPtr->PlanetInfo.Weather + 1);
+		uqm::log::debug("\tWeather   : Class %u",
+						SysInfoPtr->PlanetInfo.Weather + 1);
 
 		if (SysInfoPtr->PlanetInfo.RotationPeriod >= 480)
 		{
-			log_add(log_Debug, "\tLength of day  : %d.%d Earth days",
-					SysInfoPtr->PlanetInfo.RotationPeriod / 240,
-					SysInfoPtr->PlanetInfo.RotationPeriod % 240);
+			uqm::log::debug("\tLength of day  : %d.%d Earth days",
+							SysInfoPtr->PlanetInfo.RotationPeriod / 240,
+							SysInfoPtr->PlanetInfo.RotationPeriod % 240);
 		}
 		else
 		{
-			log_add(log_Debug, "\tLength of day  : %d.%d Earth hours",
-					SysInfoPtr->PlanetInfo.RotationPeriod / 10,
-					SysInfoPtr->PlanetInfo.RotationPeriod % 10);
+			uqm::log::debug("\tLength of day  : %d.%d Earth hours",
+							SysInfoPtr->PlanetInfo.RotationPeriod / 10,
+							SysInfoPtr->PlanetInfo.RotationPeriod % 10);
 		}
 #endif /* DEBUG_PLANET_CALC */
 	}

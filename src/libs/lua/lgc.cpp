@@ -1070,7 +1070,7 @@ void luaC_checkfinalizer(lua_State* L, GCObject* o, Table* mt)
 	global_State* g = G(L);
 	if (testbit(gch(o)->marked, SEPARATED) || /* obj. is already separated... */
 		isfinalized(o) ||					  /* ... or is finalized... */
-		gfasttm(g, mt, TM_GC) == nullptr)		  /* or has no finalizer? */
+		gfasttm(g, mt, TM_GC) == nullptr)	  /* or has no finalizer? */
 	{
 		return; /* nothing to be done */
 	}
@@ -1250,7 +1250,7 @@ static l_mem atomic(lua_State* L)
 	/* at this point, all resurrected objects are marked. */
 	/* remove dead objects from weak tables */
 	clearkeys(g, g->ephemeron, nullptr); /* clear keys from all ephemeron tables */
-	clearkeys(g, g->allweak, nullptr);	  /* clear keys from all allweak tables */
+	clearkeys(g, g->allweak, nullptr);	 /* clear keys from all allweak tables */
 	/* clear values from resurrected weak tables */
 	clearvalues(g, g->weak, origweak);
 	clearvalues(g, g->allweak, origall);

@@ -30,7 +30,7 @@
 #include "libs/graphics/bbox.h"
 #include "port.h"
 #include "libs/uio.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/memlib.h"
 #include "libs/vidlib.h"
 
@@ -40,12 +40,12 @@ static void TFB_PreQuit(void);
 
 void TFB_PreInit(void)
 {
-	log_add(log_Info, "Initializing base SDL functionality.");
-	log_add(log_Info, "Using SDL version %d.%d.%d (compiled with "
-					  "%d.%d.%d)",
-			SDL_Linked_Version()->major,
-			SDL_Linked_Version()->minor, SDL_Linked_Version()->patch,
-			SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL);
+	uqm::log::info("Initializing base SDL functionality.");
+	uqm::log::info("Using SDL version %d.%d.%d (compiled with "
+				   "%d.%d.%d)",
+				   SDL_Linked_Version()->major,
+				   SDL_Linked_Version()->minor, SDL_Linked_Version()->patch,
+				   SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL);
 	printf("Using SDL version %d.%d.%d\nCompiled with "
 		   "%d.%d.%d\n\n",
 		   SDL_Linked_Version()->major,
@@ -64,7 +64,7 @@ void TFB_PreInit(void)
 
 	if ((SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE) == -1))
 	{
-		log_add(log_Fatal, "Could not initialize SDL: %s.", SDL_GetError());
+		uqm::log::critical("Could not initialize SDL: %s.", SDL_GetError());
 		exit(EXIT_FAILURE);
 	}
 
@@ -98,8 +98,8 @@ int TFB_ReInitGraphics(int driver, int flags, int width, int height,
 									   togglefullscreen, *resFactor);
 #else
 		driver = TFB_GFXDRIVER_SDL_PURE;
-		log_add(log_Warning, "OpenGL support not compiled in,"
-							 " so using pure SDL driver");
+		uqm::log::warn("OpenGL support not compiled in,"
+					   " so using pure SDL driver");
 		result = TFB_Pure_ConfigureVideo(driver, flags, width, height,
 										 togglefullscreen, *resFactor, *windowType);
 #endif

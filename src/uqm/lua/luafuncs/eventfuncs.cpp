@@ -22,7 +22,7 @@
 #include "uqm/gameev.h"
 #include "uqm/lua/luastate.h"
 #include "libs/scriptlib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 
 
 static int luaUqm_event_addAbsolute(lua_State* luaState);
@@ -35,7 +35,7 @@ static const luaL_Reg eventFuncs[] = {
 	{"addRelative", luaUqm_event_addRelative},
 	{"register",	 luaUqm_event_register	  },
 	{"unregister",  luaUqm_event_unregister },
-	{nullptr,		   nullptr					},
+	{nullptr,		  nullptr				 },
 };
 
 int luaUqm_event_open(lua_State* luaState)
@@ -93,10 +93,10 @@ addEvent(lua_State* luaState, EVENT_TYPE type)
 
 	if (!isEventRegistered(luaState, 4))
 	{
-		log_add(log_Warning, "[script] event.%s(): Event '%s' is "
-							 "not registered.",
-				(type == RELATIVE_EVENT) ? "addRelative" : "addAbsolute",
-				lua_tostring(luaState, 1));
+		uqm::log::warn("[script] event.%s(): Event '%s' is "
+					   "not registered.",
+					   (type == RELATIVE_EVENT) ? "addRelative" : "addAbsolute",
+					   lua_tostring(luaState, 1));
 		lua_pushinteger(luaState, -1);
 		return 1;
 	}
@@ -104,11 +104,11 @@ addEvent(lua_State* luaState, EVENT_TYPE type)
 	eventNum = eventIdStrToNum(eventIdStr);
 	if (eventNum == -1)
 	{
-		log_add(log_Warning, "[script] event.%s(): Event '%s' is "
-							 "not known. It must currently be one of the hard-coded "
-							 "strings.",
-				(type == RELATIVE_EVENT) ? "addRelative" : "addAbsolute",
-				lua_tostring(luaState, 1));
+		uqm::log::warn("[script] event.%s(): Event '%s' is "
+					   "not known. It must currently be one of the hard-coded "
+					   "strings.",
+					   (type == RELATIVE_EVENT) ? "addRelative" : "addAbsolute",
+					   lua_tostring(luaState, 1));
 		lua_pushinteger(luaState, -1);
 		return 1;
 	}
@@ -155,9 +155,9 @@ luaUqm_event_register(lua_State* luaState)
 
 	if (isEventRegistered(luaState, 1))
 	{
-		log_add(log_Warning, "[script] event.register(): Event '%s' is "
-							 "already registered.",
-				lua_tostring(luaState, 1));
+		uqm::log::warn("[script] event.register(): Event '%s' is "
+					   "already registered.",
+					   lua_tostring(luaState, 1));
 		return 0;
 	}
 
@@ -183,9 +183,9 @@ luaUqm_event_unregister(lua_State* luaState)
 
 	if (!isEventRegistered(luaState, 1))
 	{
-		log_add(log_Warning, "[script] event.unregister(): Event '%s' was "
-							 "not registered.",
-				lua_tostring(luaState, 1));
+		uqm::log::warn("[script] event.unregister(): Event '%s' was "
+					   "not registered.",
+					   lua_tostring(luaState, 1));
 		return 0;
 	}
 

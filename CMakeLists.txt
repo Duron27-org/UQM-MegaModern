@@ -76,12 +76,23 @@ find_package(OpenAL REQUIRED)
 find_package(PNG REQUIRED)
 find_package(Vorbis REQUIRED)
 find_package(SDL2 REQUIRED)
+find_package(spdlog REQUIRED)
+find_package(utf8cpp REQUIRED)
 find_package(ZLIB REQUIRED)
 
 find_package(GTest QUIET)
 if (GTest_FOUND)
     add_subdirectory(test)
 endif()
+
+add_library(uqm_project_features INTERFACE)
+if (GTest_FOUND)
+    target_compile_definitions(uqm_project_features
+        INTERFACE WITH_GTEST
+    )
+endif()
+
+target_link_libraries(${APP_TARGET} PRIVATE uqm_project_features)
 
 ################################################################################
 # Include directories
@@ -229,6 +240,8 @@ target_link_libraries(${APP_TARGET}
         OpenAL::OpenAL
         PNG::PNG 
         SDL2::SDL2main 
+        spdlog::spdlog
+        utf8cpp
         vorbis::vorbis 
         ws2_32
         ZLIB::ZLIB 

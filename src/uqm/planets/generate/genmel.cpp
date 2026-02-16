@@ -26,7 +26,7 @@
 #include "../../starmap.h"
 #include "../../globdata.h"
 #include "../../state.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 
 #include <ctype.h>
 
@@ -250,7 +250,7 @@ GetMelnormeRef(void)
 
 	if (isdigit(RefVar[0]))
 	{
-		log_add(log_Warning, "GetMelnormeRef(): reference unknown");
+		uqm::log::warn("GetMelnormeRef(): reference unknown");
 		return 0;
 	}
 
@@ -264,7 +264,7 @@ SetMelnormeRef(uqm::DWORD Ref)
 
 	if (isdigit(RefVar[0]))
 	{
-		log_add(log_Warning, "SetMelnormeRef(): reference unknown");
+		uqm::log::warn("SetMelnormeRef(): reference unknown");
 		return;
 	}
 

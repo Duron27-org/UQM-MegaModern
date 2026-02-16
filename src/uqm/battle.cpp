@@ -42,7 +42,7 @@
 #include "sounds.h"
 #include "libs/async.h"
 #include "libs/graphics/gfx_common.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/mathlib.h"
 #include "globdata.h"
 #include "libs/input/sdl/vcontrol.h"
@@ -438,8 +438,8 @@ selectAllShips(uqm::SIZE num_ships)
 #ifdef NETPLAY
 	if ((PlayerControl[0] & NETWORK_CONTROL) && (PlayerControl[1] & NETWORK_CONTROL))
 	{
-		log_add(log_Error, "Only one side at a time can be network "
-						   "controlled.\n");
+		uqm::log::error("Only one side at a time can be network "
+						"controlled.\n");
 		return false;
 	}
 #endif

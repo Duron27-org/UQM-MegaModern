@@ -19,7 +19,7 @@
 #define LUAUQM_INTERNAL
 #include "customfuncs.h"
 #include "libs/scriptlib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 
 
 // We use a wrapper, so that we can call the custom function with the
@@ -41,9 +41,9 @@ luaFunctionWrapper(lua_State* luaState)
 		arg = lua_tointegerx(luaState, -1, &isNum);
 		if (!isNum)
 		{
-			log_add(log_Error, "[script] Warning: luaFunctionWrapper(): "
-							   "Invalid type of argument to custom function (%s).",
-					lua_typename(luaState, lua_type(luaState, -1)));
+			uqm::log::error("[script] Warning: luaFunctionWrapper(): "
+							"Invalid type of argument to custom function (%s).",
+							lua_typename(luaState, lua_type(luaState, -1)));
 			// arg will be 0
 		}
 	}

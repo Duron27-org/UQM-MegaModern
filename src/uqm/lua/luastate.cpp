@@ -21,7 +21,7 @@
 #include "luastate.h"
 #include "luainit.h"
 #include "uqm/globdata.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/scriptlib.h"
 
 
@@ -43,7 +43,7 @@ void luaUqm_initState(void)
 {
 	if (luaUqm_globalState != nullptr)
 	{
-		log_add(log_Warning, "Lua state multiply uninitialized");
+		uqm::log::warn("Lua state multiply uninitialized");
 		luaUqm_uninitState();
 	}
 	luaUqm_globalState = luaL_newstate();
@@ -66,7 +66,7 @@ void luaUqm_uninitState(void)
 	}
 	else
 	{
-		log_add(log_Warning, "Lua state multiply uninitialized");
+		uqm::log::warn("Lua state multiply uninitialized");
 	}
 }
 
@@ -79,7 +79,7 @@ void luaUqm_reinitState(void)
 {
 	if (luaUqm_globalState == nullptr)
 	{
-		log_add(log_Warning, "Lua state reinitialized while nullptr");
+		uqm::log::warn("Lua state reinitialized while nullptr");
 	}
 	else
 	{
@@ -170,7 +170,7 @@ void setGameStateUint(const char* name, uqm::DWORD val)
 	lua_pop(luaUqm_globalState, 2);
 
 #ifdef STATE_DEBUG
-	log_add(log_Debug, "State '%s' set to %u.", name, val);
+	uqm::log::debug("State '%s' set to %u.", name, val);
 #endif
 }
 
@@ -196,10 +196,10 @@ getGameStateUint(const char* name)
 			// Ok.
 			break;
 		default:
-			log_add(log_Error, "Warning: getGameState(): property '%s' has "
-							   "a non-number value (%s).",
-					name,
-					lua_typename(luaUqm_globalState, -1));
+			uqm::log::error("Warning: getGameState(): property '%s' has "
+							"a non-number value (%s).",
+							name,
+							lua_typename(luaUqm_globalState, -1));
 			lua_pop(luaUqm_globalState, 2);
 			return 0;
 	}

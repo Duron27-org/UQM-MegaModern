@@ -20,7 +20,7 @@
 #include "sound.h"
 #include "sndintrn.h"
 #include "libs/reslib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/memlib.h"
 #include "uqm/globdata.h"
 #include "uqm/setup.h"
@@ -261,7 +261,7 @@ char* CheckMusicResName(char* fileName)
 {
 	if (!fileExists2(contentDir, fileName))
 	{
-		log_add(log_Warning, "Requested track '%s' not found.", fileName);
+		uqm::log::warn("Requested track '%s' not found.", fileName);
 	}
 	return fileName;
 }
@@ -282,11 +282,11 @@ void* _GetMusicData(uio_Stream* fp, uqm::DWORD length)
 	filename[sizeof(filename) - 1] = '\0';
 	CheckMusicResName(filename);
 
-	log_add(log_Info, "_GetMusicData(): loading %s", filename);
+	uqm::log::info("_GetMusicData(): loading %s", filename);
 	decoder = SoundDecoder_Load(contentDir, filename, 4096, 0, 0);
 	if (!decoder)
 	{
-		log_add(log_Warning, "_GetMusicData(): couldn't load %s", filename);
+		uqm::log::warn("_GetMusicData(): couldn't load %s", filename);
 		return nullptr;
 	}
 
@@ -300,9 +300,9 @@ void* _GetMusicData(uio_Stream* fp, uqm::DWORD length)
 	sample = TFB_CreateSoundSample(decoder, 64, nullptr);
 	*h = sample;
 
-	log_add(log_Info, "    decoder: %s, rate %d format %x",
-			SoundDecoder_GetName(sample->decoder),
-			sample->decoder->frequency, sample->decoder->format);
+	uqm::log::info("    decoder: %s, rate %d format %x",
+				   SoundDecoder_GetName(sample->decoder),
+				   sample->decoder->frequency, sample->decoder->format);
 
 	(void)fp;	  /* satisfy compiler (unused parameter) */
 	(void)length; /* satisfy compiler (unused parameter) */

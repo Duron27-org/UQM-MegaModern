@@ -39,7 +39,7 @@
 #include "planets/planets.h"
 // for SaveSolarSysLocation() and tests
 #include "libs/inplib.h"
-#include "libs/log.h"
+#include "core/log/log.h"
 #include "libs/memlib.h"
 #include "colors.h"
 
@@ -705,7 +705,7 @@ const GameStateBitMap gameStateBitMap[] = {
 	{"SAMATRA_GRPOFFS",				32},
 
 	/* end rev 0, Core UQM v0.8.0 */
-	{nullptr,						  1 },
+	{nullptr,					   1 },
 	/* begin rev 1, MegaMod v0.8.0.85 */
 
 	{"AUTOPILOT_OK",				 1 },
@@ -713,7 +713,7 @@ const GameStateBitMap gameStateBitMap[] = {
 	{"KNOW_QS_PORTAL",			   16},
 
 	/* end rev 1, MegaMod v0.8.0.85 */
-	{nullptr,						  2 },
+	{nullptr,					   2 },
 	/* begin rev 2, MegaMod v0.8.1 */
 
 	{"SYS_VISITED_00",			   32},
@@ -740,7 +740,7 @@ const GameStateBitMap gameStateBitMap[] = {
 	{"RESERVED",					32},
 
 	/* end rev 2, MegaMod v0.8.1 */
-	{nullptr,						  3 },
+	{nullptr,					   3 },
 	/* begin rev 3, MegaMod v0.8.2 */
 
 	{"SYS_PLYR_MARKER_00",		   32},
@@ -764,7 +764,7 @@ const GameStateBitMap gameStateBitMap[] = {
 	{"LAST_LOCATION_Y",				16},
 
 	/* end rev 3, MegaMod v0.8.2 */
-	{nullptr,						  4 },
+	{nullptr,					   4 },
 	/* begin rev 4, MegaMod v0.8.3 */
 
 	{"ADV_AUTOPILOT_SAVE_X",		 16},
@@ -774,7 +774,7 @@ const GameStateBitMap gameStateBitMap[] = {
 	{"ADV_AUTOPILOT_QUASI_Y",		  16},
 
 	/* end rev 4, MegaMod v0.8.3 */
-	{nullptr,						  5 },
+	{nullptr,					   5 },
 	/* begin rev 5, MegaMod v0.8.4 */
 
 	{"SEED_TYPE",				   2 },
@@ -787,7 +787,7 @@ const GameStateBitMap gameStateBitMap[] = {
 	{"REV_5_PAD",				   1 },
 
 	/* end rev 5, MegaMod v0.8.4 */
-	{nullptr,						  0 },
+	{nullptr,					   0 },
 };
 
 // This describes the release version corresponding to each game state
@@ -1416,8 +1416,8 @@ SaveStarInfo(uio_Stream* fh)
 		uqm::DWORD flen = LengthStateFile(fp);
 		if (flen % 4)
 		{
-			log_add(log_Warning, "Unexpected Star Info length! Expected "
-								 "an integral number of DWORDS.\n");
+			uqm::log::warn("Unexpected Star Info length! Expected "
+						   "an integral number of DWORDS.\n");
 		}
 		else
 		{
@@ -1526,8 +1526,8 @@ GetBattleGroupOffset(int encounterIndex)
 		case 14:
 			return GET_GAME_STATE(SAMATRA_GRPOFFS);
 		default:
-			log_add(log_Warning, "SetBattleGroupOffset: invalid encounter"
-								 " index.\n");
+			uqm::log::warn("SetBattleGroupOffset: invalid encounter"
+						   " index.\n");
 			return 0;
 	}
 }

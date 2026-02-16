@@ -14,7 +14,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "libs/log/uqmlog.h"
+#include "core/log/log.h"
 #include <SDL.h>
 
 #ifdef _WIN32
@@ -105,8 +105,8 @@ int CopySurfaceToClipboard(SDL_Surface* surface)
 #ifdef _WIN32
 	return CopySurfaceToClipboard_Win32(surface);
 #else
-	log_add(log_Warning, "Clipboard functionality is not implemented on "
-						 "this platform.");
+	uqm::log::warn("Clipboard functionality is not implemented on "
+				   "this platform.");
 	return SDL_FALSE;
 #endif
 }
