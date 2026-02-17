@@ -133,16 +133,13 @@ int UQMGame::setup(uqstl::span<const char* const> args)
 		return EXIT_SUCCESS;
 	}
 
-	uqm::log::info("The Ur-Quan Masters v{}.{}.{} {} (compiled {} {})\n"
-				   "This software comes with ABSOLUTELY NO WARRANTY;\n"
-				   "for details see the included 'COPYING' file.\n",
-				   UQM_MAJOR_VERSION, UQM_MINOR_VERSION,
-				   UQM_PATCH_VERSION,
-				   (resolutionFactor ? "HD " UQM_EXTRA_VERSION : UQM_EXTRA_VERSION),
-				   __DATE__, __TIME__);
+	uqm::log::info("!! The Ur-Quan Masters v{}.{}.{} {} (compiled {} {})", UQM_MAJOR_VERSION, UQM_MINOR_VERSION, UQM_PATCH_VERSION, (resolutionFactor ? "HD " UQM_EXTRA_VERSION : UQM_EXTRA_VERSION), __DATE__, __TIME__);
+	uqm::log::info("!! This software comes with ABSOLUTELY NO WARRANTY;");
+	uqm::log::info("!! for details see the included 'COPYING' file.");
+				   
 #ifdef NETPLAY
 	uqm::log::info("Netplay protocol version {}.{}. Netplay opponent "
-				   "must have UQM {}.{}.{} or later.\n",
+				   "must have UQM {}.{}.{} or later.",
 				   NETPLAY_PROTOCOL_VERSION_MAJOR, NETPLAY_PROTOCOL_VERSION_MINOR,
 				   NETPLAY_MIN_UQM_VERSION_MAJOR, NETPLAY_MIN_UQM_VERSION_MINOR,
 				   NETPLAY_MIN_UQM_VERSION_PATCH);
@@ -150,41 +147,26 @@ int UQMGame::setup(uqstl::span<const char* const> args)
 
 	// Compiler info to help with future debugging.
 #ifdef _MSC_VER
-	fmt::print("MSC_VER: {}\n", _MSC_VER);
-	fmt::print("MSC_FULL_VER: {}\n", _MSC_FULL_VER);
-	fmt::print("MSC_BUILD: {}\n\n", _MSC_BUILD);
-	uqm::log::info("MSC_VER: {}\n", _MSC_VER);
-	uqm::log::info("MSC_FULL_VER: {}\n", _MSC_FULL_VER);
-	uqm::log::info("MSC_BUILD: {}\n", _MSC_BUILD);
+	uqm::log::info("MSC_VER: {}", _MSC_VER);
+	uqm::log::info("MSC_FULL_VER: {}", _MSC_FULL_VER);
+	uqm::log::info("MSC_BUILD: {}", _MSC_BUILD);
 #endif // _MSC_VER
 
 #ifdef __GNUC__
-	fmt::print("GCC_VERSION: {}.{}.{}\n\n", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
-	uqm::log::info("GCC_VERSION: {}.{}.{}\n", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
+	uqm::log::info("GCC_VERSION: {}.{}.{}", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
 #endif // __GNUC__
 
 #ifdef __clang__
-	fmt::print("CLANG_VERSION: {}.{}.{}\n\n", __clang_major__, __clang_minor__, __clang_patchlevel__);
-	uqm::log::info("CLANG_VERSION: {}.{}.{}\n", __clang_major__, __clang_minor__, __clang_patchlevel__);
+	uqm::log::info("CLANG_VERSION: {}.{}.{}", __clang_major__, __clang_minor__, __clang_patchlevel__);
 #endif // __clang__
 
 #ifdef __MINGW32__
-	fmt::print("MINGW32_VERSION: {}.{}\n\n", __MINGW32_MAJOR_VERSION, __MINGW32_MINOR_VERSION);
-	uqm::log::info("MINGW32_VERSION: {}.{}\n", __MINGW32_MAJOR_VERSION, __MINGW32_MINOR_VERSION);
+	uqm::log::info("MINGW32_VERSION: {}.{}", __MINGW32_MAJOR_VERSION, __MINGW32_MINOR_VERSION);
 #endif // __MINGW32__
 
 #ifdef __MINGW64__
-	fmt::print("MINGW64_VERSION: {}.{}\n\n", __MINGW32_MAJOR_VERSION, __MINGW32_MINOR_VERSION);
-	uqm::log::info("MINGW64_VERSION: {}.{}\n", __MINGW32_MAJOR_VERSION, __MINGW32_MINOR_VERSION);
+	uqm::log::info("MINGW64_VERSION: {}.{}", __MINGW32_MAJOR_VERSION, __MINGW32_MINOR_VERSION);
 #endif // __MINGW64__
-
-	fmt::print("Build Time: {} {}\n\n", __DATE__, __TIME__);
-
-	//if (error::haveError())
-	//{ // Have some saved error to log
-	//	uqm::log::error( "{}", error::getError());
-	//	error::clear();
-	//}
 
 	if (m_options.runMode == RunMode::Usage)
 	{

@@ -199,7 +199,7 @@ void* _GetSoundBankData(uio_Stream* fp, uqm::DWORD length)
 			continue;
 		}
 
-		uqm::log::info("_GetSoundBankData(): loading {}", filename);
+		uqm::log::debug("_GetSoundBankData(): loading {}", filename);
 
 		decoder = SoundDecoder_Load(contentDir, filename, 4096, 0, 0);
 		if (!decoder)
@@ -214,7 +214,7 @@ void* _GetSoundBankData(uio_Stream* fp, uqm::DWORD length)
 
 		// Decode everything and stash it in 1 buffer
 		decoded_bytes = SoundDecoder_DecodeAll(decoder);
-		uqm::log::info("_GetSoundBankData(): decoded bytes {}",
+		uqm::log::debug("_GetSoundBankData(): decoded bytes {}",
 					   decoded_bytes);
 
 		audio_BufferData(sample->buffer[0], decoder->format,

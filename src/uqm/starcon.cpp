@@ -287,18 +287,11 @@ int Starcon2Main(void* threadArg)
 
 	SplashScreen(BackgroundInitKernel);
 
-#ifdef DEBUG
-	printf("Set Seed Type: {}\n", toString(g_seedType));
-	printf("Set Seed: {}\n", optCustomSeed);
-	printf("Set Difficulty: {}\n", DIF_STR(optDifficulty));
-	printf("Set Extended: {}\n", BOOL_STR(optExtended));
-	printf("Set Nomad: {}\n\n", NOMAD_STR(optNomad));
-#endif
-	uqm::log::info("Set Seed Type: {}\n", toString(g_seedType));
-	uqm::log::info("Set Seed: {}\n", optCustomSeed);
-	uqm::log::info("Set Difficulty: {}\n", DIF_STR(optDifficulty));
-	uqm::log::info("Set Extended: {}\n", BOOL_STR(optExtended));
-	uqm::log::info("Set Nomad: {}\n\n", NOMAD_STR(optNomad));
+	uqm::log::info("Set Seed Type: {}", toString(g_seedType));
+	uqm::log::info("Set Seed: {}", optCustomSeed);
+	uqm::log::info("Set Difficulty: {}", DIF_STR(optDifficulty));
+	uqm::log::info("Set Extended: {}", BOOL_STR(optExtended));
+	uqm::log::info("Set Nomad: {}", NOMAD_STR(optNomad));
 
 	//	OpenJournal ();
 	while (StartGame())
@@ -322,23 +315,13 @@ int Starcon2Main(void* threadArg)
 		// Debug info when starting a new game
 		if (LastActivity == (CHECK_LOAD | CHECK_RESTART))
 		{
-#ifdef DEBUG
-			printf("New Game Seed Type: {}\n", toString(g_seedType));
-			printf("New Game Seed: {}\n", GLOBAL_SIS(Seed));
-			printf("New Game Difficulty: {}\n",
-				   DIF_STR(GLOBAL_SIS(Difficulty)));
-			printf("New Game Extended: {}\n",
-				   BOOL_STR(GLOBAL_SIS(Extended)));
-			printf("New Game Nomad: {}\n\n",
-				   NOMAD_STR(GLOBAL_SIS(Nomad)));
-#endif
-			uqm::log::info("New Game Seed Type: {}\n", toString(g_seedType));
-			uqm::log::info("New Game Seed: {}\n", GLOBAL_SIS(Seed));
-			uqm::log::info("New Game Difficulty: {}\n",
+			uqm::log::info("New Game Seed Type: {}", toString(g_seedType));
+			uqm::log::info("New Game Seed: {}", GLOBAL_SIS(Seed));
+			uqm::log::info("New Game Difficulty: {}",
 						   DIF_STR(GLOBAL_SIS(Difficulty)));
-			uqm::log::info("New Game Extended: {}\n",
+			uqm::log::info("New Game Extended: {}",
 						   BOOL_STR(GLOBAL_SIS(Extended)));
-			uqm::log::info("New Game Nomad: {}\n\n",
+			uqm::log::info("New Game Nomad: {}",
 						   NOMAD_STR(GLOBAL_SIS(Nomad)));
 		}
 

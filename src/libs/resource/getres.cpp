@@ -57,7 +57,7 @@ void* LoadResourceFromPath(const char* path, ResourceLoadFileFun* loadFun)
 	}
 
 	dataLen = LengthResFile(stream);
-	uqm::log::info("\t'{}' -- {} bytes", path, dataLen);
+	uqm::log::debug("\t'{}' -- {} bytes", path, dataLen);
 
 	if (dataLen == 0)
 	{

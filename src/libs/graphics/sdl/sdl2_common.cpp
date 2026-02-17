@@ -44,13 +44,9 @@ void TFB_PreInit(void)
 	SDL_VERSION(&compiled);
 	SDL_GetVersion(&linked);
 	uqm::log::info("Initializing base SDL functionality.");
-	uqm::log::info("Using SDL version {}.{}.{} (compiled with "
-				   "{}.{}.{})",
+	uqm::log::info("Using SDL version {}.{}.{} (compiled with {}.{}.{})",
 				   linked.major, linked.minor, linked.patch,
 				   compiled.major, compiled.minor, compiled.patch);
-	fmt::print("Using SDL version {}.{}.{}\nCompiled with {}.{}.{}\n\n",
-			   linked.major, linked.minor, linked.patch,
-			   compiled.major, compiled.minor, compiled.patch);
 #if 0
 	if (compiled.major != linked.major || compiled.minor != linked.minor ||
 			compiled.patch != linked.patch)

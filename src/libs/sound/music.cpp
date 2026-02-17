@@ -282,7 +282,7 @@ void* _GetMusicData(uio_Stream* fp, uqm::DWORD length)
 	filename[sizeof(filename) - 1] = '\0';
 	CheckMusicResName(filename);
 
-	uqm::log::info("_GetMusicData(): loading {}", filename);
+	uqm::log::debug("_GetMusicData(): loading {}", filename);
 	decoder = SoundDecoder_Load(contentDir, filename, 4096, 0, 0);
 	if (!decoder)
 	{

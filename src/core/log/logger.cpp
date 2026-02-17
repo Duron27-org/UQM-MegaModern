@@ -42,20 +42,22 @@ void Logger::init(uqstl::string_view logfile)
 {
 	try
 	{
+		spdlog::init_thread_pool(8192, 1);
 		spdlog::sink_ptr stdoutSink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-		stdoutSink->set_level(spdlog::level::warn);
+		stdoutSink->set_level(spdlog::level::info);
 		stdoutSink->set_pattern("[%^%l%$] %v");
 
 		spdlog::filename_t logFileName {logfile};
 		spdlog::sink_ptr fileSink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(logFileName, true);
 		fileSink->set_level(spdlog::level::trace);
-		fileSink->set_pattern("[%Y-%b-{} %T.%e] [%l] %v");
+		fileSink->set_pattern("[%Y-%b-%d %T.%e] [%l] %v");
 
 		m_backtraceBufferSink = {std::make_shared<BacktraceCaptureSink>()};
 
 		std::vector<spdlog::sink_ptr> sinks {stdoutSink, fileSink, m_backtraceBufferSink};
-		auto logger = std::make_shared<spdlog::async_logger>("UQM_Logger", sinks.begin(), sinks.end(), spdlog::thread_pool(), spdlog::async_overflow_policy::block);
-		spdlog::register_logger(logger);
+		auto logger = std::make_shared<spdlog::async_logger>("UQMLogger", sinks.begin(), sinks.end(), spdlog::thread_pool(), spdlog::async_overflow_policy::block);
+		//spdlog::register_logger(logger);
+		spdlog::set_default_logger(logger);
 
 		spdlog::enable_backtrace(BacktraceSize);
 	}
