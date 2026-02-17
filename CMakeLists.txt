@@ -177,8 +177,10 @@ if (ENABLE_ASAN)
     endif()
 endif()
 
-
-
+# Turn on all warnings and all warnings as error
+#if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+#    target_compile_options(${APP_TARGET} PRIVATE -Weverything -Werror)
+#endif()
 
 
 ################################################################################
