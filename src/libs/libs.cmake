@@ -21,8 +21,6 @@ include("src/libs/input/input.cmake")
 list(APPEND uqm_src_libs_master_files ${uqm_src_libs_input_master_files})
 include("src/libs/list/list.cmake")
 list(APPEND uqm_src_libs_master_files ${uqm_src_libs_list_master_files})
-include("src/libs/log/log.cmake")
-list(APPEND uqm_src_libs_master_files ${uqm_src_libs_log_master_files})
 include("src/libs/lua/lua.cmake")
 list(APPEND uqm_src_libs_master_files ${uqm_src_libs_lua_master_files})
 include("src/libs/luauqm/luauqm.cmake")
@@ -67,7 +65,6 @@ set(uqm_src_libs_files
 	"src/libs/inplib.h"
 	"src/libs/libs.cmake"
 	"src/libs/list.h"
-	"src/libs/log.h"
 	"src/libs/mathlib.h"
 	"src/libs/md5.h"
 	"src/libs/memlib.h"

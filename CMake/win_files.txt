@@ -153,10 +153,6 @@ src/libs/input/sdl/vcontrol.h
 src/libs/list.h
 src/libs/list/list.cpp
 src/libs/list/list.h
-src/libs/log.h
-src/libs/log/loginternal.h
-src/libs/log/uqmlog.cpp
-src/libs/log/uqmlog.h
 src/libs/lua/lapi.cpp
 src/libs/lua/lapi.h
 src/libs/lua/lauxlib.cpp
