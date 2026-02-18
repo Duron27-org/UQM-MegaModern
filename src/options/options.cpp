@@ -290,30 +290,49 @@ int UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 
 	const OptionsStruct defaults {};
 
-	app.add_option("-r,--resolution", m_options.resolution.edit(), fmt::format("Screen resolution. Default is {:(}, higher resolutions only work with --opengl enabled.", *defaults.resolution));
-	app.add_option("-f,--fullscreen", m_options.windowMode.edit(), fmt::format("Fullscreen mode, options are [{:|s}], default={:s}.", EnumNames<WindowMode> {}, *defaults.windowMode)); //->check(CLI::IsMember{EnumNames<WindowMode>::list(), CLI::ignore_case});
-	app.add_flag("-o,-x{false},--opengl,--nogl{false}", m_options.opengl.edit(), fmt::format("Use OpenGL. Default={}.", defaults.opengl.toString()));
-	app.add_flag("-k,--keepaspectratio", m_options.keepAspectRatio.edit(), fmt::format("Keep the aspect ratio. Default={}.", defaults.keepAspectRatio.toString()));
-	app.add_option("-c,--scale", m_options.scaler.edit(), fmt::format("Upscaler mode.Keep the aspect ratio. Options are [{:|s}], Default={:s}.", EnumNames<ScalingMode> {}, *defaults.scaler));
-	app.add_option("-b,--meleezoom", m_options.meleeScale.edit(), fmt::format("Zoom mode in melee combat. Options are [{:|s}], Default={:s}.", EnumNames<MeleeScaleMode> {}, *defaults.meleeScale));
-	app.add_flag("-s,--scanlines", m_options.scanlines.edit(), fmt::format("Render simulated scanlines. Default={}.", defaults.scanlines.toString()));
-	app.add_flag("-p,--fps", m_options.showFps.edit(), fmt::format("Render FPS overlay. Default={}", defaults.showFps.toString()));
-	app.add_option("-g,--gamma", m_options.gamma.edit(), fmt::format("Gamma correction value, a value of 1.0 means no change. Default={:0.4}.", *defaults.gamma))
+	// Rendering Options
+	auto renderGroup {app.add_option_group("Rendering", "Options which control the rendering and display of the game.")};
+	renderGroup->add_option("-r,--resolution", m_options.resolution.edit(), fmt::format("Screen resolution. Default is {:(}, higher resolutions only work with --opengl enabled.", *defaults.resolution));
+	renderGroup->add_option("-f,--fullscreen", m_options.windowMode.edit(), fmt::format("Fullscreen mode, default={:s}.", *defaults.windowMode))
+		->check(CLI::IsMember {EnumNames<WindowMode>::list<std::string>(), CLI::ignore_case});
+	renderGroup->add_flag("-o,-x{false},--opengl,--nogl{false}", m_options.opengl.edit(), fmt::format("Use OpenGL. Default={}.", defaults.opengl.toString()));
+	renderGroup->add_flag("-k,--keepaspectratio", m_options.keepAspectRatio.edit(), fmt::format("Keep the aspect ratio. Default={}.", defaults.keepAspectRatio.toString()));
+	renderGroup->add_option("-c,--scale", m_options.scaler.edit(), fmt::format("Upscaler mode.Keep the aspect ratio. Default={:s}.", *defaults.scaler))
+		->check(CLI::IsMember {EnumNames<ScalingMode>::list<std::string>(), CLI::ignore_case});
+	renderGroup->add_option("-b,--meleezoom", m_options.meleeScale.edit(), fmt::format("Zoom mode in melee combat. Default={:s}.", *defaults.meleeScale))
+		->check(CLI::IsMember {EnumNames<MeleeScaleMode>::list<std::string>(), CLI::ignore_case});
+	renderGroup->add_flag("-s,--scanlines", m_options.scanlines.edit(), fmt::format("Render simulated scanlines. Default={}.", defaults.scanlines.toString()));
+	renderGroup->add_flag("-p,--fps", m_options.showFps.edit(), fmt::format("Render FPS overlay. Default={}", defaults.showFps.toString()));
+	renderGroup->add_option("-g,--gamma", m_options.gamma.edit(), fmt::format("Gamma correction value, a value of 1.0 means no change. Default={:0.04}.", *defaults.gamma))
 		->check(CLI::Range(0.1f, 10.0f));
-	app.add_option("-C,--configdir", m_options.configDir, "Path to the directory containing configuration files.")
+
+	// Directory options
+	auto pathGroup {app.add_option_group("Paths", "Paths to load content from, or load/save configuration and saves from.")};
+	pathGroup->add_option("-C,--configdir", m_options.configDir, "Path to the directory containing configuration files.")
 		->check(CLI::ExistingPath);
-	app.add_option("-n,--contentdir", m_options.contentDir, "Path to the directory containing game content.")
+	pathGroup->add_option("-n,--contentdir", m_options.contentDir, "Path to the directory containing game content.")
 		->check(CLI::ExistingPath);
-	app.add_option("-M,--musicvol", m_options.musicVolumeScale, fmt::format("Music volume, 0-100. Default={}.", *m_options.musicVolumeScale))
+
+	/// Audio Options
+	auto audioGroup {app.add_option_group("Audio", "Options which control the game's audio.")};
+	audioGroup->add_option("-M,--musicvol", m_options.musicVolumeScale, fmt::format("Music volume, 0-100. Default={}.", *m_options.musicVolumeScale))
 		->check(CLI::Range(0, 100));
-	app.add_option("-S,--sfxvol", m_options.sfxVolumeScale, fmt::format("SFX volume, 0-100. Default={}.", *m_options.sfxVolumeScale))
+	audioGroup->add_option("-S,--sfxvol", m_options.sfxVolumeScale, fmt::format("SFX volume, 0-100. Default={}.", *m_options.sfxVolumeScale))
 		->check(CLI::Range(0, 100));
-	app.add_option("-T,--speechvol", m_options.speechVolumeScale, fmt::format("Speech volume, 0-100. Default={}.", *m_options.speechVolumeScale))
+	audioGroup->add_option("-T,--speechvol", m_options.speechVolumeScale, fmt::format("Speech volume, 0-100. Default={}.", *m_options.speechVolumeScale))
 		->check(CLI::Range(0, 100));
-	app.add_option("-q,--audioquality", m_options.soundQuality, fmt::format("Audio quality. Options are [{:|s}], Default={:s}.", EnumNames<AudioQuality> {}, *defaults.soundQuality));
-	app.add_option("--sound,--sounddriver", m_options.soundDriver, fmt::format("SoundDriver. Options are [{:|s}], Default={:s}.", EnumNames<AudioDriverType> {}, *defaults.soundDriver));
-	app.add_flag("--stereosfx", m_options.stereoSFX, fmt::format("Enable stereo sfx. Requires --sounddriver to be \"OpenAL\". Default={}", *defaults.stereoSFX)); // todo: validate on the value of soundDriver.	
-	
+	audioGroup->add_option("-q,--audioquality", m_options.soundQuality, fmt::format("Audio quality. Default={:s}.", *defaults.soundQuality))
+		->check(CLI::IsMember {EnumNames<AudioQuality>::list<std::string>(), CLI::ignore_case});
+	audioGroup->add_option("--sound,--sounddriver", m_options.soundDriver, fmt::format("SoundDriver. Default={:s}.", *defaults.soundDriver))
+		->check(CLI::IsMember {EnumNames<AudioDriverType>::list<std::string>(), CLI::ignore_case});
+	audioGroup->add_flag("--stereosfx", m_options.stereoSFX, fmt::format("Enable stereo sfx. Requires --sounddriver to be \"OpenAL\". Default={}", *defaults.stereoSFX))
+		->check([&](const std::string&) -> std::string {
+			if (m_options.soundDriver != AudioDriverType::OpenAL)
+			{
+				return "--stereosfx option requires --sounddriver=OpenAL";
+			}
+			return ""; // no error
+		});
 
 	CLI11_PARSE(app, args.size(), args.data());
 
