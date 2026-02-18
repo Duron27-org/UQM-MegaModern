@@ -160,7 +160,7 @@ err:
 	{
 		errData &= origPtr[3];
 	}
-	uqm::log::warn("Warning: Invalid UTF8 sequence: result {:#x} last byte {:#02x} str {:#08x} {}", result, (unsigned)(**ptr), errData, (const char*)origPtr);
+	uqm::log::warn("Warning: Invalid UTF8 sequence: result {:#x} last byte {:#04x} str {:#010x} {}", result, (unsigned)(**ptr), errData, (const char*)origPtr);
 
 	// Resynchronise (skip everything starting with 0x10xxxxxx):
 	resyncUTF8(ptr);

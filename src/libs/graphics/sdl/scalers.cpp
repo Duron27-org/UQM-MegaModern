@@ -215,18 +215,19 @@ static const Scale_PlatDef_t
 
 
 TFB_ScaleFunc
-Scale_PrepPlatform(int flags, const SDL_PixelFormat* fmt)
+Scale_PrepPlatform(uqm::GfxFlags flags, const SDL_PixelFormat* fmt)
 {
 	const Scale_PlatDef_t* pdef;
 	const Scale_FuncDef_t* fdef;
 
-	(void)flags;
-
+	
 	Scale_Platform = SCALEPLAT_NULL;
 
 	// first match wins
 	// add better platform techs to the top
 #ifdef MMX_ASM
+	uqstl::ignore = flags;
+
 	if ((!force_platform && (SDL_HasSSE() || SDL_HasMMX()))
 		|| force_platform == PLATFORM_SSE)
 	{

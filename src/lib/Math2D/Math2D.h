@@ -70,26 +70,19 @@ template <typename T, typename N,
 >
 auto operator*(const Vec2T<T>& lhs, const N scalar)
 {
-	if constexpr (uqstl::is_floating_point_v<T> != uqstl::is_floating_point_v<N>)
-	{
-		if constexpr (uqstl::is_floating_point_v<T>)
-		{
-			return Vec2T<T> {lhs.x * static_cast<T>(scalar), lhs.y * static_cast<T>(scalar)};
-		}
-		else
-		{
-			return Vec2T<N> {static_cast<N>(lhs.x) * scalar, static_cast<N>(lhs.y) * scalar};
-		}
-	}
-	else if constexpr (sizeof(T) > sizeof(N))
-	{
-		return Vec2T<T> {lhs.x * static_cast<T>(scalar), lhs.y * static_cast<T>(scalar)};
-	}
-	else
-	{
-		return Vec2T<N> {static_cast<N>(lhs.x) * scalar, static_cast<N>(lhs.y) * scalar};
-	}
+	using outT = decltype(T{}*N{});
+	return Vec2T<outT> {lhs.x * scalar, lhs.y * scalar};
 }
+
+template <typename T, typename N,
+		  uqstl::enable_if_t<uqstl::is_arithmetic_v<T>, bool> = true,
+		  uqstl::enable_if_t<uqstl::is_arithmetic_v<N>, bool> = true>
+auto operator/(const Vec2T<T>& lhs, const N scalar)
+{
+	using outT = decltype(T {1} / N {1});
+	return Vec2T<outT> {lhs.x / scalar, lhs.y / scalar};
+}
+
 
 using Vec2f = Vec2T<float>;
 using Vec2d = Vec2T<double>;

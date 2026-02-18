@@ -16,6 +16,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "libs/graphics/gfx_defs.h"
 #include "sdl_common.h"
 #include "opengl.h"
 #include "pure.h"
@@ -56,7 +57,7 @@ const SDL_VideoInfo* SDL_screen_info;
 
 static volatile bool abortFlag = false;
 
-int GfxFlags = 0;
+uqm::GfxFlags g_gfxFlags {uqm::GfxFlags::None};
 
 TFB_GRAPHICS_BACKEND* graphics_backend = nullptr;
 
@@ -64,12 +65,12 @@ volatile int QuitPosted = 0;
 volatile int GameActive = 1; // Track the SDL_ACTIVEEVENT state SDL_APPACTIVE
 
 static inline bool
-IsWholeScreen(RECT* r)
+IsWholeScreen(GFXRECT* r)
 {
 	return (bool)(r->corner.x == 0 && r->corner.y == 0 && r->extent.width == CanvasWidth && r->extent.height == CanvasHeight);
 }
 
-int TFB_InitGraphics(int driver, int flags, const char* renderer,
+int TFB_InitGraphics(uqm::GfxDriver driver, uqm::GfxFlags flags, const char* renderer,
 					 int width, int height, unsigned int* resFactor,
 					 unsigned int* windowType)
 {
@@ -82,7 +83,7 @@ int TFB_InitGraphics(int driver, int flags, const char* renderer,
 		SDL_Screens[i] = nullptr;
 	}
 
-	GfxFlags = flags;
+	g_gfxFlags = flags;
 
 #if SDL_MAJOR_VERSION == 1
 	// JMS_GFX: Let's read the size of the desktop so we can scale the
@@ -124,13 +125,13 @@ int TFB_InitGraphics(int driver, int flags, const char* renderer,
 	}
 #endif
 
-	if (driver == TFB_GFXDRIVER_SDL_OPENGL)
+	if (driver == uqm::GfxDriver::SDL_OpenGL)
 	{
 #ifdef HAVE_OPENGL
 		result = TFB_GL_InitGraphics(driver, flags, width, height,
 									 *resFactor, *windowType);
 #else
-		driver = TFB_GFXDRIVER_SDL_PURE;
+		driver = uqm::GfxDriver::SDL_Pure;
 		uqm::log::warn("OpenGL support not compiled in,"
 					   " so using pure SDL driver");
 		result = TFB_Pure_InitGraphics(driver, flags, renderer, width,
@@ -153,8 +154,7 @@ int TFB_InitGraphics(int driver, int flags, const char* renderer,
 	SDL_WM_SetCaption(caption, nullptr);
 #endif
 
-	if (flags & TFB_GFXFLAGS_FULLSCREEN
-		|| flags & TFB_GFXFLAGS_EX_FULLSCREEN)
+	if (testAnyFlag(flags, uqm::GfxFlagsFullscreen))
 	{
 		SDL_ShowCursor(SDL_DISABLE);
 	}
@@ -218,14 +218,14 @@ void TFB_ProcessEvents()
 				break;
 #if SDL_MAJOR_VERSION == 1
 			case SDL_VIDEOEXPOSE: /* Screen needs to be redrawn */
-				TFB_SwapBuffers(TFB_REDRAW_EXPOSE);
+				TFB_SwapBuffers(TFBRedraw::Expose);
 				break;
 #else
 			case SDL_WINDOWEVENT:
 				if (Event.window.event == SDL_WINDOWEVENT_EXPOSED)
 				{
 					/* Screen needs to be redrawn */
-					TFB_SwapBuffers(TFB_REDRAW_EXPOSE);
+					TFB_SwapBuffers(uqm::TFBRedraw::Expose);
 				}
 				break;
 #endif
@@ -238,7 +238,7 @@ void TFB_ProcessEvents()
 static bool system_box_active = false;
 static SDL_Rect system_box;
 
-void SetSystemRect(const RECT* r)
+void SetSystemRect(const GFXRECT* r)
 {
 	system_box_active = true;
 	system_box.x = r->corner.x;
@@ -252,7 +252,7 @@ void ClearSystemRect(void)
 	system_box_active = false;
 }
 
-void TFB_SwapBuffers(int force_full_redraw)
+void TFB_SwapBuffers(uqm::TFBRedraw force_full_redraw)
 {
 	static int last_fade_amount = 255, last_transition_amount = 255;
 	static int fade_amount = 255, transition_amount = 255;
@@ -261,16 +261,20 @@ void TFB_SwapBuffers(int force_full_redraw)
 	fade_amount = GetFadeAmount();
 	transition_amount = TransitionAmount;
 
-	if (force_full_redraw == TFB_REDRAW_NO && !TFB_BBox.valid && fade_amount == 255 && transition_amount == 255 && last_fade_amount == 255 && last_transition_amount == 255)
+	if (force_full_redraw == uqm::TFBRedraw::No)
 	{
-		return;
+		if (!TFB_BBox.valid && fade_amount == 255 && transition_amount == 255 && last_fade_amount == 255 && last_transition_amount == 255)
+		{
+			return;
+		}
+		
+		if (fade_amount != 255 || transition_amount != 255 || last_fade_amount != 255 || last_transition_amount != 255)
+		{
+			force_full_redraw = uqm::TFBRedraw::Fading;
+		}
 	}
 
-	if (force_full_redraw == TFB_REDRAW_NO && (fade_amount != 255 || transition_amount != 255 || last_fade_amount != 255 || last_transition_amount != 255))
-	{
-		force_full_redraw = TFB_REDRAW_FADING;
-	}
-
+	
 	sfx = last_fade_amount > fade_amount ? 1 : 0;
 
 	last_fade_amount = fade_amount;
@@ -683,7 +687,7 @@ void UnInit_Screen(SDL_Surface** screen)
 	*screen = nullptr;
 }
 
-void TFB_UploadTransitionScreen(RECT* pRect)
+void TFB_UploadTransitionScreen(GFXRECT* pRect)
 {
 	graphics_backend->uploadTransitionScreen();
 

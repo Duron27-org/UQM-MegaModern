@@ -4,62 +4,11 @@
 
 #include "core/stl/stl.h"
 #include "core/types/enum.h"
+#include "core/string/StringUtils.h"
+#include "options/OptionDefs.h"
 
 namespace uqm
 {
-
-enum class SeedType
-{
-	None = 0,
-	Planet = 1,
-	MRQ = 2,
-	Prime = 3,
-	StarSeed = 4
-};
-[[nodiscard]] inline constexpr const char* toString(const SeedType type)
-{
-	switch (type)
-	{
-		case SeedType::None:
-			return "None";
-		case SeedType::Planet:
-			return "Planet";
-		case SeedType::MRQ:
-			return "MRQ";
-		case SeedType::Prime:
-			return "Prime";
-		case SeedType::StarSeed:
-			return "StarSeed";
-		default:
-			return "???";
-	}
-};
-
-enum class EmulationMode : int
-{
-	None = 0x0,
-	Console3DO = 0x1, // would just call it "3d0" but enum names can't start with a number.
-	PC = 0x2,
-	All = 0xFF
-};
-ENUM_BITWISE_OPS(EmulationMode);
-[[nodiscard]] constexpr const char* toString(const EmulationMode mode)
-{
-	switch (mode)
-	{
-		case EmulationMode::None:
-			return "None";
-		case EmulationMode::Console3DO:
-			return "3DO";
-		case EmulationMode::PC:
-			return "PC";
-		case EmulationMode::All:
-			return "All";
-		default:
-			return "???";
-	}
-};
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //* Option types
@@ -90,12 +39,18 @@ struct OptionT
 		return newValue;
 	}
 
-	T operator*() const
+	const T& operator*() const
 	{
 		return value;
 	}
-	operator T() const
+	operator const T&() const
 	{
+		return value;
+	}
+
+	T& edit()
+	{
+		set = true;
 		return value;
 	}
 
@@ -129,20 +84,6 @@ inline const char* OptionT<bool>::toString() const
 {
 	return value ? OptionTrueText : OptionFalseText;
 }
-
-struct Resolution // TODO: Replace this with a standard 2D vector type.
-{
-	int width {};
-	int height {};
-};
-
-enum class RunMode
-{
-	Normal,
-	Usage,
-	Version,
-};
-
 
 } // namespace uqm
 

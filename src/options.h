@@ -28,6 +28,7 @@
 #include "libs/uio.h"
 #include "uqm/setupmenu.h"
 
+#include "options/OptionDefs.h"
 #include "options/OptionTypes.h"
 
 #include "uqmversion.h"
@@ -39,7 +40,7 @@ extern uqm::EmulationMode optWhichFonts;
 extern uqm::EmulationMode optWhichIntro;
 extern uqm::EmulationMode optWhichShield;
 extern uqm::EmulationMode optSmoothScroll;
-extern int optMeleeScale;
+extern uqm::MeleeScaleMode optMeleeScale;
 extern unsigned int loresBlowupScale;
 extern unsigned int resolutionFactor;
 extern unsigned int audioDriver;

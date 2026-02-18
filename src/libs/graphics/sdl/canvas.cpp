@@ -228,7 +228,7 @@ TFB_DrawCanvas_Blit(SDL_Surface* src, SDL_Rect* src_r,
 // XXX: If a colormap is passed in, it has to have been acquired via
 // TFB_GetColorMap(). We release the colormap at the end.
 void TFB_DrawCanvas_Image(TFB_Image* img, int x, int y, int scale,
-						  int scaleMode, TFB_ColorMap* cmap, DrawMode mode, TFB_Canvas target)
+						  uqm::TFBScaleMode scaleMode, TFB_ColorMap* cmap, DrawMode mode, TFB_Canvas target)
 {
 	SDL_Rect srcRect, targetRect, *pSrcRect;
 	SDL_Surface* surf;
@@ -252,18 +252,22 @@ void TFB_DrawCanvas_Image(TFB_Image* img, int x, int y, int scale,
 
 	if (scale != 0 && scale != GSCALE_IDENTITY)
 	{
-		if (scaleMode == TFB_SCALE_TRILINEAR && img->MipmapImg)
+		if (scaleMode == uqm::TFBScaleMode::Trilinear)
 		{
-			// only set the new palette if it changed
-			if (TFB_DrawCanvas_IsPaletted(img->MipmapImg)
-				&& cmap && img->colormap_version != cmap->version)
+			if (img->MipmapImg)
 			{
-				TFB_SetColors((SDL_Surface*)img->MipmapImg, cmap->palette->colors, 0, 256);
+				// only set the new palette if it changed
+				if (TFB_DrawCanvas_IsPaletted(img->MipmapImg)
+					&& cmap && img->colormap_version != cmap->version)
+				{
+					TFB_SetColors((SDL_Surface*)img->MipmapImg, cmap->palette->colors, 0, 256);
+				}
 			}
-		}
-		else if (scaleMode == TFB_SCALE_TRILINEAR && !img->MipmapImg)
-		{ // Do bilinear scaling instead when mipmap is unavailable
-			scaleMode = TFB_SCALE_BILINEAR;
+			else
+			{
+				// Do bilinear scaling instead when mipmap is unavailable
+				scaleMode = uqm::TFBScaleMode::Bilinear;
+			}
 		}
 
 		TFB_DrawImage_FixScaling(img, scale, scaleMode);
@@ -454,7 +458,7 @@ TFB_DrawCanvas_Fill(SDL_Surface* src, Uint32 fillcolor, SDL_Surface* dst)
 }
 
 void TFB_DrawCanvas_FilledImage(TFB_Image* img, int x, int y, int scale,
-								int scaleMode, Color color, DrawMode mode, TFB_Canvas target)
+								uqm::TFBScaleMode scaleMode, Color color, DrawMode mode, TFB_Canvas target)
 {
 	SDL_Surface* dst = (SDL_Surface*)target;
 	SDL_Rect srcRect, targetRect, *pSrcRect;
@@ -476,9 +480,9 @@ void TFB_DrawCanvas_FilledImage(TFB_Image* img, int x, int y, int scale,
 
 	if (scale != 0 && scale != GSCALE_IDENTITY)
 	{
-		if (scaleMode == TFB_SCALE_TRILINEAR)
+		if (scaleMode == uqm::TFBScaleMode::Trilinear)
 		{
-			scaleMode = TFB_SCALE_BILINEAR;
+			scaleMode = uqm::TFBScaleMode::Bilinear;
 		}
 		// no point in trilinear for filled images
 
@@ -903,20 +907,20 @@ TFB_DrawCanvas_New_Paletted(int w, int h, Color palette[256],
 }
 
 TFB_Canvas
-TFB_DrawCanvas_New_ScaleTarget(TFB_Canvas canvas, TFB_Canvas oldcanvas, int type, int last_type)
+TFB_DrawCanvas_New_ScaleTarget(TFB_Canvas canvas, TFB_Canvas oldcanvas, uqm::TFBScaleMode type, uqm::TFBScaleMode last_type)
 {
 	SDL_Surface* src = (SDL_Surface*)canvas;
 	SDL_Surface* old = (SDL_Surface*)oldcanvas;
 	SDL_Surface* newsurf = nullptr;
 
 	// For the purposes of this function, bilinear == trilinear
-	if (type == TFB_SCALE_TRILINEAR)
+	if (type == uqm::TFBScaleMode::Trilinear)
 	{
-		type = TFB_SCALE_BILINEAR;
+		type = uqm::TFBScaleMode::Bilinear;
 	}
-	if (last_type == TFB_SCALE_TRILINEAR)
+	if (last_type == uqm::TFBScaleMode::Trilinear)
 	{
-		last_type = TFB_SCALE_BILINEAR;
+		last_type = uqm::TFBScaleMode::Bilinear;
 	}
 
 	if (old && type != last_type)
@@ -929,7 +933,7 @@ TFB_DrawCanvas_New_ScaleTarget(TFB_Canvas canvas, TFB_Canvas oldcanvas, int type
 		return old; /* can just reuse the old one */
 	}
 
-	if (type == TFB_SCALE_NEAREST)
+	if (type == uqm::TFBScaleMode::Nearest)
 	{
 		newsurf = SDL_CreateRGBSurface(SDL_SWSURFACE, src->w,
 									   src->h,
@@ -1243,7 +1247,7 @@ void TFB_DrawCanvas_GetScaledExtent(TFB_Canvas src_canvas, HOT_SPOT* src_hs,
 		y = mm_hs->y * GSCALE_IDENTITY + (src_hs->y - mm_hs->y) * ratio;
 	}
 
-	if (type != TFB_SCALE_NEAREST)
+	if (type != uqm::TFBScaleMode::Nearest)
 	{
 		// align hotspot on an whole pixel
 		if (x & (GSCALE_IDENTITY - 1))
@@ -1303,7 +1307,7 @@ void TFB_DrawCanvas_Rescale_Nearest(TFB_Canvas src_canvas, TFB_Canvas dst_canvas
 	if (scale > 0)
 	{
 		TFB_DrawCanvas_GetScaledExtent(src, src_hs, nullptr, nullptr, scale,
-									   TFB_SCALE_NEAREST, size, dst_hs);
+									   uqm::TFBScaleMode::Nearest, size, dst_hs);
 
 		w = size->width;
 		h = size->height;
@@ -1559,7 +1563,7 @@ void TFB_DrawCanvas_Rescale_Trilinear(TFB_Canvas src_canvas, TFB_Canvas src_mipm
 
 		// Use (scale / GSCALE_IDENTITY) sizing factor
 		TFB_DrawCanvas_GetScaledExtent(src, src_hs, mm, mm_hs, scale,
-									   TFB_SCALE_TRILINEAR, size, dst_hs);
+									   uqm::TFBScaleMode::Trilinear, size, dst_hs);
 
 		w = size->width;
 		h = size->height;
@@ -1866,7 +1870,7 @@ void TFB_DrawCanvas_Rescale_Bilinear(TFB_Canvas src_canvas, TFB_Canvas dst_canva
 	{
 		// Use (scale / GSCALE_IDENTITY) sizing factor
 		TFB_DrawCanvas_GetScaledExtent(src, src_hs, nullptr, nullptr, scale,
-									   TFB_SCALE_BILINEAR, size, dst_hs);
+									   uqm::TFBScaleMode::Bilinear, size, dst_hs);
 
 		w = size->width;
 		h = size->height;

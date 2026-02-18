@@ -232,7 +232,7 @@ CalcReduction(uqm::SDWORD dx, uqm::SDWORD dy)
 	uqm::log::debug("CalcReduction:");
 #endif
 
-	if (optMeleeScale == TFB_SCALE_STEP)
+	if (uqm::toTFBScaleMode(optMeleeScale) == uqm::TFBScaleMode::Step)
 	{
 		uqm::SDWORD sdx, sdy;
 
@@ -338,7 +338,8 @@ CalcView(DPOINT* pNewScrollPt, uqm::SIZE next_reduction,
 	dy = ((uqm::SDWORD)(LOG_SPACE_HEIGHT >> 1) - pNewScrollPt->y);
 	dx = WRAP_DELTA_X(dx);
 	dy = WRAP_DELTA_Y(dy);
-	if (ships_alive == 1 && (optMeleeScale != TFB_SCALE_STEP || isNetwork()))
+	const bool meleeScaleModeIsTFBStep {uqm::toTFBScaleMode(optMeleeScale) == uqm::TFBScaleMode::Step};
+	if (ships_alive == 1 && (!meleeScaleModeIsTFBStep || isNetwork()))
 	{
 #define ORG_JUMP_X ((uqm::SDWORD)DISPLAY_ALIGN(LOG_SPACE_WIDTH / 75))
 #define ORG_JUMP_Y ((uqm::SDWORD)DISPLAY_ALIGN(LOG_SPACE_HEIGHT / 75))
@@ -371,7 +372,7 @@ CalcView(DPOINT* pNewScrollPt, uqm::SIZE next_reduction,
 	}
 	else
 	{
-		if (optMeleeScale == TFB_SCALE_STEP)
+		if (meleeScaleModeIsTFBStep)
 		{
 			SpaceOrg.x = (uqm::SDWORD)(LOG_SPACE_WIDTH >> 1)
 					   - (LOG_SPACE_WIDTH >> ((MAX_REDUCTION + 1)
@@ -713,7 +714,7 @@ PreProcessQueue(uqm::SDWORD* pscroll_x, uqm::SDWORD* pscroll_y)
 	sides_active = (battle_counter[0] ? 1 : 0)
 				 + (battle_counter[1] ? 1 : 0);
 
-	if (optMeleeScale == TFB_SCALE_STEP)
+	if (uqm::toTFBScaleMode(optMeleeScale) == uqm::TFBScaleMode::Step)
 	{
 		min_reduction = max_reduction = MAX_VIS_REDUCTION + 1;
 	}
@@ -827,7 +828,7 @@ PreProcessQueue(uqm::SDWORD* pscroll_x, uqm::SDWORD* pscroll_y)
 		&& (min_reduction = max_reduction) > opt_max_zoom_out
 		&& (min_reduction = zoom_out) > opt_max_zoom_out)
 	{
-		if (optMeleeScale == TFB_SCALE_STEP)
+		if (uqm::toTFBScaleMode(optMeleeScale) == uqm::TFBScaleMode::Step)
 		{
 			min_reduction = 0;
 		}
@@ -888,7 +889,7 @@ PRIM_LINKS DisplayLinks;
 static inline COORD
 CalcDisplayCoord(uqm::SDWORD c, uqm::SDWORD orgc, uqm::SIZE reduction)
 {
-	if (optMeleeScale == TFB_SCALE_STEP)
+	if (uqm::toTFBScaleMode(optMeleeScale) == uqm::TFBScaleMode::Step)
 	{ /* old fixed-step zoom style */
 		return (c - orgc) >> reduction;
 	}
@@ -908,7 +909,7 @@ PostProcessQueue(VIEW_STATE view_state, uqm::SDWORD scroll_x, uqm::SDWORD scroll
 #ifdef KDEBUG
 	uqm::log::debug("PostProcess:");
 #endif
-	if (optMeleeScale == TFB_SCALE_STEP)
+	if (uqm::toTFBScaleMode(optMeleeScale) == uqm::TFBScaleMode::Step)
 	{
 		reduction = zoom_out + ONE_SHIFT;
 	}
@@ -1033,7 +1034,7 @@ PostProcessQueue(VIEW_STATE view_state, uqm::SDWORD scroll_x, uqm::SDWORD scroll
 						{
 							uqm::COUNT index, scale = GSCALE_IDENTITY;
 
-							if (optMeleeScale == TFB_SCALE_STEP)
+							if (uqm::toTFBScaleMode(optMeleeScale) == uqm::TFBScaleMode::Step)
 							{
 								index = zoom_out;
 							}
@@ -1046,7 +1047,7 @@ PostProcessQueue(VIEW_STATE view_state, uqm::SDWORD scroll_x, uqm::SDWORD scroll
 								ElementPtr->next.image.farray[index],
 								ElementPtr->next.image.frame);
 
-							if (optMeleeScale == TFB_SCALE_TRILINEAR && index < 2 && scale != GSCALE_IDENTITY)
+							if (uqm::toTFBScaleMode(optMeleeScale) == uqm::TFBScaleMode::Trilinear && index < 2 && scale != GSCALE_IDENTITY)
 							{
 								// enqueues drawcommand to assign next
 								// (smaller) zoom level image as mipmap,
@@ -1097,7 +1098,7 @@ void InitDisplayList(void)
 {
 	uqm::COUNT i;
 
-	if (optMeleeScale == TFB_SCALE_STEP)
+	if (uqm::toTFBScaleMode(optMeleeScale) == uqm::TFBScaleMode::Step)
 	{
 		zoom_out = MAX_VIS_REDUCTION + 1;
 		opt_max_zoom_out = MAX_VIS_REDUCTION;
@@ -1152,7 +1153,7 @@ void RedrawQueue(bool clear)
 				ClearDrawable(); // this is for BATCH_BUILD_PAGE effect, but not scaled by SetGraphicScale
 			}
 
-			if (optMeleeScale != TFB_SCALE_STEP)
+			if (uqm::toTFBScaleMode(optMeleeScale) != uqm::TFBScaleMode::Step)
 			{
 				uqm::COUNT index, scale;
 

@@ -642,7 +642,7 @@ void _text_blt_fade(GFXRECT* pClipRect, TEXT* TextPtr, GFXPOINT ctxOrigin, FRAME
 				if (repair && !*skip)
 				{
 					TFB_DrawImage_Image(repair->image, -r.corner.x, -r.corner.y,
-										0, 0, nullptr, DRAW_REPLACE_MODE, b_clear);
+										0, uqm::TFBScaleMode::None, nullptr, DRAW_REPLACE_MODE, b_clear);
 					TFB_Prim_FontChar(origin, fontChar, b_clear, MAKE_DRAW_MODE(DRAW_GRAYSCALE, 0xff),
 									  ctxOrigin);
 				}

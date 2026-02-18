@@ -25,6 +25,8 @@
 #include "core/log/log.h"
 #include "uqm/units.h"
 
+using namespace uqm;
+
 #if SDL_MAJOR_VERSION == 1
 
 typedef struct _gl_screeninfo
@@ -141,14 +143,14 @@ AttemptColorDepth(int flags, int width, int height, int bpp, int resFactor)
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
 	videomode_flags = SDL_OPENGL;
-	if (flags & TFB_GFXFLAGS_FULLSCREEN
-		|| flags & TFB_GFXFLAGS_EX_FULLSCREEN)
+	const bool fullscreen { testAnyFlag(flags, GfxFlagsFullscreen) }
+	if (fullscreen)
 	{
 		videomode_flags |= SDL_FULLSCREEN;
 	}
 	videomode_flags |= SDL_ANYFORMAT;
 
-	if (resFactor == HD && (flags & TFB_GFXFLAGS_FULLSCREEN || flags & TFB_GFXFLAGS_EX_FULLSCREEN))
+	if (resFactor == HD && fullscreen)
 	{
 		height = fs_height;
 		width = fs_width;
@@ -167,8 +169,7 @@ AttemptColorDepth(int flags, int width, int height, int bpp, int resFactor)
 						ScreenWidthActual, ScreenHeightActual, bpp,
 						SDL_GetError());
 
-		if (flags & TFB_GFXFLAGS_FULLSCREEN
-			|| flags & TFB_GFXFLAGS_EX_FULLSCREEN)
+		if (fullscreen)
 		{
 			videomode_flags &= ~SDL_FULLSCREEN;
 			uqm::log::error("Falling back to windowed mode!!");

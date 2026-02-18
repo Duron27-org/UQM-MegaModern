@@ -26,13 +26,13 @@
 const Scale_FuncDef_t
 	Scale_C_Functions[] =
 		{
-			{TFB_GFXFLAGS_SCALE_BILINEAR,	  Scale_BilinearFilter  },
-			{TFB_GFXFLAGS_SCALE_BIADAPT,	 Scale_BiAdaptFilter	},
-			{TFB_GFXFLAGS_SCALE_BIADAPTADV, Scale_BiAdaptAdvFilter},
-			{TFB_GFXFLAGS_SCALE_TRISCAN,	 Scale_TriScanFilter	},
-			{TFB_GFXFLAGS_SCALE_HQXX,		  Scale_HqFilter		},
+			{uqm::GfxFlags::Scale_Bilinear,   Scale_BilinearFilter  },
+			{uqm::GfxFlags::Scale_BiAdapt,	  Scale_BiAdaptFilter	 },
+			{uqm::GfxFlags::Scale_BiAdaptAdv, Scale_BiAdaptAdvFilter},
+			{uqm::GfxFlags::Scale_Triscan,	  Scale_TriScanFilter	 },
+			{uqm::GfxFlags::Scale_HQXX,	   Scale_HqFilter		 },
 			// Default
-			{0,							 Scale_Nearest		 }
+			{uqm::GfxFlags::None,			  Scale_Nearest		   }
 };
 
 // See

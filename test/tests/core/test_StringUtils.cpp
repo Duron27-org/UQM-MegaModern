@@ -30,7 +30,7 @@ TEST_F(StringUtilsTest, ToStringLiteral)
 TEST_F(StringUtilsTest, ToStringWithBuffer_Integer)
 {
 	uqstl::array<char, 32> buf {};
-	auto s = toString(12345, buf); 
+	auto s = toString(12345, buf);
 	EXPECT_STREQ(s, "12345");
 }
 
@@ -71,7 +71,7 @@ TEST_F(StringUtilsTest, CompareICaseEdgeCases)
 {
 	EXPECT_TRUE(compareCharICase('A', 'a'));
 	EXPECT_FALSE(compareICase("abc", "abcd")); // different lengths
-	EXPECT_TRUE(compareICase("ß", "ß"));		 // identical non-ascii byte-equal
+	EXPECT_TRUE(compareICase("ß", "ß"));	   // identical non-ascii byte-equal
 }
 
 TEST_F(StringUtilsTest, IsEmptyVariants)
@@ -172,6 +172,60 @@ TEST_F(StringUtilsTest, ParseEnumUnderlying)
 	// invalid
 	ec = parseStr("x", c);
 	EXPECT_EQ(ec, uqstl::errc::invalid_argument);
+}
+
+enum class TestEnum
+{
+	a=10,
+	b,
+	c
+};
+
+enum class TestEnumWithToStringImpl
+{
+	x=20,
+	y,
+	z
+};
+static constexpr const char* toStringImpl(TestEnumWithToStringImpl v)
+{
+	if (v == TestEnumWithToStringImpl::x)
+	{
+		return "x-string";
+	}
+	if (v == TestEnumWithToStringImpl::y)
+	{
+		return "y-string";
+	}
+	if (v == TestEnumWithToStringImpl::z)
+	{
+		return "z-string";
+	}
+	return "???";
+}
+
+TEST_F(StringUtilsTest, FormatEnum)
+{
+	EXPECT_STREQ("10", fmt::format("{}", TestEnum::a).c_str());
+	EXPECT_STREQ("a", fmt::format("{:s}", TestEnum::a).c_str());
+	EXPECT_STREQ("a (10)", fmt::format("{:sn}", TestEnum::a).c_str());
+	EXPECT_STREQ("a (0xa)", fmt::format("{:sn#x}", TestEnum::a).c_str());
+
+	EXPECT_STREQ("20", fmt::format("{}", TestEnumWithToStringImpl::x).c_str());
+	EXPECT_STREQ("x-string", fmt::format("{:s}", TestEnumWithToStringImpl::x).c_str());
+	EXPECT_STREQ("x-string (20)", fmt::format("{:sn}", TestEnumWithToStringImpl::x).c_str());
+	EXPECT_STREQ("x-string (0x14)", fmt::format("{:sn#x}", TestEnumWithToStringImpl::x).c_str());
+}
+
+TEST_F(StringUtilsTest, FormatEnumNames)
+{
+	EXPECT_STREQ("10, 11, 12", fmt::format("{}", EnumNames<TestEnum>{}).c_str());
+	EXPECT_STREQ("a, b, c", fmt::format("{:s}", EnumNames<TestEnum>{}).c_str());
+	EXPECT_STREQ("a (10) | b (11) | c (12)", fmt::format("{:|sn}", EnumNames<TestEnum>{}).c_str());
+
+	EXPECT_STREQ("20 | 21 | 22", fmt::format("{:|}", EnumNames<TestEnumWithToStringImpl> {}).c_str());
+	EXPECT_STREQ("x-string, y-string, z-string", fmt::format("{:s}", EnumNames<TestEnumWithToStringImpl> {}).c_str());
+	EXPECT_STREQ("x-string (20) | y-string (21) | z-string (22)", fmt::format("{:|sn}", EnumNames<TestEnumWithToStringImpl> {}).c_str());
 }
 
 } // namespace uqm

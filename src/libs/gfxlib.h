@@ -46,7 +46,7 @@ typedef struct frame_desc FRAME_DESC;
 typedef struct font_desc FONT_DESC;
 typedef struct drawable_desc DRAWABLE_DESC;
 
-typedef CONTEXT_DESC* CONTEXT;
+typedef CONTEXT_DESC* GFXCONTEXT;
 typedef FRAME_DESC* FRAME;
 typedef FONT_DESC* FONT;
 typedef DRAWABLE_DESC* DRAWABLE;
@@ -283,9 +283,9 @@ typedef struct point
 
 	COORD x {};
 	COORD y {};
-} POINT;
+} GFXPOINT;
 
-inline POINT operator+(const POINT& lhs, const POINT& rhs)
+inline GFXPOINT operator+(const GFXPOINT& lhs, const GFXPOINT& rhs)
 {
 	return {static_cast<COORD>(lhs.x + rhs.x), static_cast<COORD>(lhs.y + rhs.y)};
 }
@@ -299,15 +299,15 @@ typedef struct dpoint
 
 typedef struct stamp
 {
-	POINT origin;
+	GFXPOINT origin;
 	FRAME frame;
 } STAMP;
 
 typedef struct rect
 {
-	POINT corner;
+	GFXPOINT corner;
 	EXTENT extent;
-} RECT;
+} GFXRECT;
 
 // Kruzen: Thanks to JMS, using this to draw ovals
 // Overflows happen in HD with Starmap and max zoom (Fuel circles)
@@ -319,13 +319,13 @@ typedef struct drect
 
 typedef struct line
 {
-	POINT first, second;
+	GFXPOINT first, second;
 } LINE;
 
-static inline POINT
+static inline GFXPOINT
 MAKE_POINT(COORD x, COORD y)
 {
-	POINT pt = {x, y};
+	GFXPOINT pt = {x, y};
 	return pt;
 }
 
@@ -352,9 +352,9 @@ MAKE_DEXTENT(uqm::SDWORD width, uqm::SDWORD height)
 
 // Kruzen: Some DrawOval() calls still use standard rect where overflow is impossible as it's 2 figures away from that
 // Used to draw SOI and planet orbits
-// To avoid any typedef conflicts - transform standard RECT to DRECT
+// To avoid any typedef conflicts - transform standard GFXRECT to DRECT
 static inline DRECT
-RECT_TO_DRECT(RECT r)
+RECT_TO_DRECT(GFXRECT r)
 {
 	DRECT dr = {
 		{r.corner.x,	 r.corner.y	   },
@@ -374,14 +374,14 @@ RECT_TO_DRECT(RECT r)
 //}
 
 static inline void
-MAKE_LINE(LINE* line, POINT first, POINT second)
+MAKE_LINE(LINE* line, GFXPOINT first, GFXPOINT second)
 {
 	line->first = first;
 	line->second = second;
 }
 
 static inline bool
-pointsEqual(POINT p1, POINT p2)
+pointsEqual(GFXPOINT p1, GFXPOINT p2)
 {
 	return p1.x == p2.x && p1.y == p2.y;
 }
@@ -393,14 +393,14 @@ extentsEqual(EXTENT e1, EXTENT e2)
 }
 
 static inline bool
-rectsEqual(RECT r1, RECT r2)
+rectsEqual(GFXRECT r1, GFXRECT r2)
 {
 	return pointsEqual(r1.corner, r2.corner)
 		&& extentsEqual(r1.extent, r2.extent);
 }
 
 static inline bool
-pointWithinRect(RECT r, POINT p)
+pointWithinRect(GFXRECT r, GFXPOINT p)
 {
 	return p.x >= r.corner.x && p.y >= r.corner.y
 		&& p.x < r.corner.x + r.extent.width
@@ -408,7 +408,7 @@ pointWithinRect(RECT r, POINT p)
 }
 
 static inline double
-ptDistance(POINT p1, POINT p2)
+ptDistance(GFXPOINT p1, GFXPOINT p2)
 {
 	return (sqrt(pow((double)p2.x - (double)p1.x, 2)
 				 + pow((double)p2.y - (double)p1.y, 2)));
@@ -424,7 +424,7 @@ calcDistance(COORD x1, COORD y1, COORD x2, COORD y2)
 }
 
 static inline void
-printPt(POINT pt, uqm::CHAR_T* Str)
+printPt(GFXPOINT pt, uqm::CHAR_T* Str)
 {
 	fmt::print("{} = {} x {}\n", Str, pt.x, pt.y);
 }
@@ -456,7 +456,7 @@ printDExt(DEXTENT dExt, uqm::CHAR_T* Str)
 	printDExt(dext, #dext)
 
 static inline void
-printRect(RECT r, uqm::CHAR_T* Str)
+printRect(GFXRECT r, uqm::CHAR_T* Str)
 {
 	fmt::print("{}.corner = {} x {}\n", Str, r.corner.x, r.corner.y);
 	fmt::print("{}.extent = {} x {}\n", Str, r.extent.width, r.extent.height);
@@ -474,13 +474,13 @@ printDRect(DRECT r, uqm::CHAR_T* Str)
 	printDRect(drect, #drect)
 
 static inline void
-ZeroPoint(POINT* pt)
+ZeroPoint(GFXPOINT* pt)
 {
 	pt->x = pt->y = ~0;
 }
 
 static inline bool
-ValidPoint(POINT pt)
+ValidPoint(GFXPOINT pt)
 {
 	return (bool)(pt.x != ~0 && pt.y != ~0);
 }
@@ -501,7 +501,7 @@ typedef enum
 
 typedef struct text
 {
-	POINT baseline;
+	GFXPOINT baseline;
 	const uqm::CHAR_T* pStr;
 	TEXT_ALIGN align;
 	uqm::COUNT CharCount;
@@ -533,7 +533,7 @@ typedef uqm::BYTE BATCH_FLAGS;
 typedef struct
 {
 	TIME_VALUE last_time_val;
-	POINT EndPoint;
+	GFXPOINT EndPoint;
 	STAMP IntersectStamp;
 } INTERSECT_CONTROL;
 
@@ -546,12 +546,12 @@ typedef uqm::BYTE INTERSECT_CODE;
 #define INTERSECT_NOCLIP (INTERSECT_CODE)(1 << 7)
 #define INTERSECT_ALL_SIDES (INTERSECT_CODE)(INTERSECT_LEFT | INTERSECT_TOP | INTERSECT_RIGHT | INTERSECT_BOTTOM)
 
-typedef POINT HOT_SPOT;
+typedef GFXPOINT HOT_SPOT;
 
 extern HOT_SPOT MAKE_HOT_SPOT(COORD, COORD);
 
-extern INTERSECT_CODE BoxIntersect(RECT* pr1, RECT* pr2, RECT* printer);
-extern void BoxUnion(RECT* pr1, RECT* pr2, RECT* punion);
+extern INTERSECT_CODE BoxIntersect(GFXRECT* pr1, GFXRECT* pr2, GFXRECT* printer);
+extern void BoxUnion(GFXRECT* pr1, GFXRECT* pr2, GFXRECT* punion);
 
 typedef enum
 {
@@ -644,7 +644,7 @@ typedef enum
 	NORTH_WEST_SHADOW,
 } SHADOW_ANGLE;
 
-extern CONTEXT SetContext(CONTEXT Context);
+extern GFXCONTEXT SetContext(GFXCONTEXT Context);
 extern Color SetContextForeGroundColor(Color Color);
 extern Color GetContextForeGroundColor(void);
 extern Color SetContextBackGroundColor(Color Color);
@@ -653,32 +653,32 @@ extern FRAME SetContextFGFrame(FRAME Frame);
 extern FRAME GetContextFGFrame(void);
 // Context cliprect defines the drawing bounds. Additionally, all
 // drawing positions (x,y) are relative to the cliprect corner.
-extern bool SetContextClipRect(RECT* pRect);
+extern bool SetContextClipRect(GFXRECT* pRect);
 // The returned rect is always filled in. If the context cliprect
 // is undefined, the returned rect has foreground frame dimensions.
-extern bool GetContextClipRect(RECT* pRect);
+extern bool GetContextClipRect(GFXRECT* pRect);
 // The actual origin will be orgOffset + context ClipRect.corner
-extern POINT SetContextOrigin(POINT orgOffset);
+extern GFXPOINT SetContextOrigin(GFXPOINT orgOffset);
 extern DrawMode SetContextDrawMode(DrawMode);
 extern DrawMode GetContextDrawMode(void);
-// 'area' may be nullptr to copy the entire CONTEXT cliprect
-// 'area' is relative to the CONTEXT cliprect
-extern DRAWABLE CopyContextRect(const RECT* area);
+// 'area' may be nullptr to copy the entire GFXCONTEXT cliprect
+// 'area' is relative to the GFXCONTEXT cliprect
+extern DRAWABLE CopyContextRect(const GFXRECT* area);
 
 extern TIME_VALUE DrawablesIntersect(INTERSECT_CONTROL* pControl0,
 									 INTERSECT_CONTROL* pControl1, TIME_VALUE max_time_val);
 extern void DrawStamp(STAMP* pStamp);
 extern void DrawFilledStamp(STAMP* pStamp);
-extern void DrawPoint(POINT* pPoint);
-extern void DrawRectangle(RECT* pRect, bool scaled);
-extern void DrawFilledRectangle(RECT* pRect);
+extern void DrawPoint(GFXPOINT* pPoint);
+extern void DrawRectangle(GFXRECT* pRect, bool scaled);
+extern void DrawFilledRectangle(GFXRECT* pRect);
 extern void DrawLine(LINE* pLine, uqm::BYTE thickness);
 extern void ApplyMask(FRAME layer, FRAME base, DrawMode mode, Color* fill);
 extern void InstaPoint(int x, int y);
 extern void InstaRect(int x, int y, int w, int h, bool scaled);
 extern void InstaFilledRect(int x, int y, int w, int h);
 extern void InstaLine(int x1, int y1, int x2, int y2);
-extern RECT font_GetTextRect(TEXT* pText);
+extern GFXRECT font_GetTextRect(TEXT* pText);
 extern void font_DrawText(TEXT* pText);
 extern void font_DrawText_Fade(TEXT* lpText, FRAME repair, bool* skip);
 extern void font_DrawTracedText(TEXT* pText, Color text, Color trace);
@@ -695,23 +695,23 @@ extern void FlushGraphics(void);
 extern void ClearDrawable(void);
 extern void ClearScreen(void);
 #ifdef DEBUG
-extern CONTEXT CreateContextAux(const char* name);
+extern GFXCONTEXT CreateContextAux(const char* name);
 #define CreateContext(name) CreateContextAux((name))
 #else /* if !defined(DEBUG) */
-extern CONTEXT CreateContextAux(void);
+extern GFXCONTEXT CreateContextAux(void);
 #define CreateContext(name) CreateContextAux()
 #endif /* !defined(DEBUG) */
-extern bool DestroyContext(CONTEXT ContextRef);
+extern bool DestroyContext(GFXCONTEXT ContextRef);
 extern DRAWABLE CreateDisplay(CREATE_FLAGS CreateFlags, uqm::SIZE* pwidth,
 							  uqm::SIZE* pheight);
 extern DRAWABLE CreateDrawable(CREATE_FLAGS CreateFlags, uqm::SIZE width,
 							   uqm::SIZE height, uqm::COUNT num_frames);
 extern bool DestroyDrawable(DRAWABLE Drawable);
-extern bool GetFrameRect(FRAME Frame, RECT* pRect);
+extern bool GetFrameRect(FRAME Frame, GFXRECT* pRect);
 #ifdef DEBUG
-extern const char* GetContextName(CONTEXT context);
-extern CONTEXT GetFirstContext(void);
-extern CONTEXT GetNextContext(CONTEXT context);
+extern const char* GetContextName(GFXCONTEXT context);
+extern GFXCONTEXT GetFirstContext(void);
+extern GFXCONTEXT GetNextContext(GFXCONTEXT context);
 extern size_t GetContextCount(void);
 #endif /* DEBUG */
 
@@ -721,13 +721,13 @@ extern bool InstallGraphicResTypes(void);
 extern DRAWABLE LoadGraphicFile(const char* pStr);
 extern FONT LoadFontFile(const char* pStr);
 extern void* LoadGraphicInstance(RESOURCE res);
-extern DRAWABLE LoadDisplayPixmap(const RECT* area, FRAME frame);
+extern DRAWABLE LoadDisplayPixmap(const GFXRECT* area, FRAME frame);
 extern FRAME SetContextFontEffect(FRAME EffectFrame);
 extern FONT SetContextFont(FONT Font);
 extern bool DestroyFont(FONT FontRef);
 // The returned pRect is relative to the context drawing origin
-extern bool TextRect(TEXT* pText, RECT* pRect, uqm::BYTE* pdelta);
-extern bool TextRectAlt(TEXT* lpText, RECT* pRect, uqm::BYTE* pdelta, uqm::BYTE swap, UniChar key, FONT AltFontPtr);
+extern bool TextRect(TEXT* pText, GFXRECT* pRect, uqm::BYTE* pdelta);
+extern bool TextRectAlt(TEXT* lpText, GFXRECT* pRect, uqm::BYTE* pdelta, uqm::BYTE swap, UniChar key, FONT AltFontPtr);
 extern bool GetContextFontLeading(uqm::SIZE* pheight);
 extern bool GetContextFontDispHeight(uqm::SIZE* pheight);
 extern bool GetContextFontDispWidth(uqm::SIZE* pwidth);
@@ -738,7 +738,7 @@ extern FRAME SetRelFrameIndex(FRAME Frame, uqm::SIZE FrameOffs);
 extern FRAME SetEquFrameIndex(FRAME DstFrame, FRAME SrcFrame);
 extern FRAME IncFrameIndex(FRAME Frame);
 extern FRAME DecFrameIndex(FRAME Frame);
-extern DRAWABLE CopyFrameRect(FRAME Frame, const RECT* area);
+extern DRAWABLE CopyFrameRect(FRAME Frame, const GFXRECT* area);
 extern DRAWABLE CloneFrame(FRAME Frame);
 extern DRAWABLE RotateFrame(FRAME Frame, int angle_deg);
 extern DRAWABLE RescaleFrame(FRAME frame, int width, int height);
@@ -758,7 +758,7 @@ extern bool IsFrameIndexed(FRAME Frame);
 
 // If the frame is an active SCREEN_DRAWABLE, this call must be
 // preceeded by FlushGraphics() for draw commands to have taken effect
-extern Color GetFramePixel(FRAME, POINT pixelPt);
+extern Color GetFramePixel(FRAME, GFXPOINT pixelPt);
 
 extern FRAME CaptureDrawable(DRAWABLE Drawable);
 extern DRAWABLE ReleaseDrawable(FRAME Frame);
@@ -786,7 +786,7 @@ extern uqm::UBYTE GetColorMapTableIndex(COLORMAP map);
 
 extern COLORMAPPTR GetColorMapAddress(COLORMAP);
 
-void SetSystemRect(const RECT* pRect);
+void SetSystemRect(const GFXRECT* pRect);
 void ClearSystemRect(void);
 
 #if 0 //defined(__cplusplus)

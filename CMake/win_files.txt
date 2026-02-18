@@ -49,6 +49,10 @@ src/endian_uqm.h
 src/getopt/getopt.cpp
 src/getopt/getopt.h
 src/getopt/getopt1.cpp
+src/lib/Math2D/Math2D.h
+src/lib/Math2D/Math2D.cpp
+src/lib/Math2D/Math2DStringUtils.h
+src/lib/Math2D/Math2DStringUtils.cpp
 src/libs/alarm.h
 src/libs/async.h
 src/libs/callback.h
@@ -88,6 +92,7 @@ src/libs/graphics/font.h
 src/libs/graphics/frame.cpp
 src/libs/graphics/gfx_common.cpp
 src/libs/graphics/gfx_common.h
+src/libs/graphics/gfx_defs.h
 src/libs/graphics/gfxintrn.h
 src/libs/graphics/gfxload.cpp
 src/libs/graphics/intersec.cpp
@@ -401,6 +406,8 @@ src/libs/video/vidplayer.h
 src/libs/video/vresins.cpp
 src/libs/vidlib.h
 src/main.cpp
+src/options/OptionDefs.h
+src/options/OptionDefs.cpp
 src/options/options.cpp
 src/options/options.h
 src/options/OptionConstants.h

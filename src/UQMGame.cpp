@@ -85,32 +85,30 @@ UQMGame::UQMGame()
 {
 }
 
-int UQMGame::setup(uqstl::span<const char* const> args)
+int UQMGame::setup(uqstl::span<uqgsl::zstring> args)
 {
-
-
-	const OptionsStruct defaults {};
-
 
 	// NOTE: we cannot use the logging facility yet because we may have to
 	//   log to a file, and we'll only get the log file name after parsing
-	//   the m_options.
-	const int optionsResult = parseOptions(args, m_options);
+	//   the options.
+	const int optionsResult = m_options.parseArgs(args);
 
 	//log_init(15);
 
+	const auto& options {m_options.get()};
+
 	// For debugging!!
-	if (m_options.logFile.empty())
+	if (options.logFile.empty())
 	{
-		m_options.logFile = "uqm.log";
+		m_options.edit().logFile = "uqm.log";
 	}
 
-	if (!m_options.logFile.empty())
+	if (!options.logFile.empty())
 	{
-		m_logger.init(m_options.logFile);
+		m_logger.init(options.logFile);
 		//
 		//		int i;
-		//		if (!freopen(m_options.logFile.c_str(), "w", stderr))
+		//		if (!freopen(options.logFile.c_str(), "w", stderr))
 		//		{
 		//			fmt::print("Error {} calling freopen() on stderr\n", errno);
 		//			return EXIT_FAILURE;
@@ -124,7 +122,7 @@ int UQMGame::setup(uqstl::span<const char* const> args)
 		}
 	}
 
-	if (m_options.runMode == RunMode::Version)
+	if (options.runMode == RunMode::Version)
 	{
 		uqm::log::info("{}.{}.{} {}\n", UQM_MAJOR_VERSION, UQM_MINOR_VERSION,
 					   UQM_PATCH_VERSION,
@@ -168,12 +166,13 @@ int UQMGame::setup(uqstl::span<const char* const> args)
 	uqm::log::info("MINGW64_VERSION: {}.{}", __MINGW32_MAJOR_VERSION, __MINGW32_MINOR_VERSION);
 #endif // __MINGW64__
 
-	if (m_options.runMode == RunMode::Usage)
+	/*if (options.runMode == RunMode::Usage)
 	{
+		const OptionsStruct defaults {};
 		printUsage(stdout, defaults);
 		m_logger.showLogOnExit(true, false);
 		return EXIT_SUCCESS;
-	}
+	}*/
 
 	if (optionsResult != EXIT_SUCCESS)
 	{ // Options parsing failed. Oh, well.
@@ -186,18 +185,18 @@ int UQMGame::setup(uqstl::span<const char* const> args)
 	InitThreadSystem();
 	//log_initThreads();
 	initIO();
-	prepareConfigDir(m_options.configDir.c_str());
+	prepareConfigDir(options.configDir.c_str());
 
 	PlayerControls[0] = ControlTemplate::KB_1;
 	PlayerControls[1] = ControlTemplate::JOY_1;
 
 	// Fill in the options struct based on uqm.cfg
-	if (!m_options.safeMode.value)
+	if (!options.safeMode.value)
 	{
 		LoadResourceIndex(configDir, "uqm.cfg", "config.");
 		LoadResourceIndex(configDir, "cheats.cfg", "cheat.");
 		LoadResourceIndex(configDir, "megamod.cfg", "mm.");
-		getUserConfigOptions(m_options);
+		getUserConfigOptions(m_options.edit());
 	}
 
 	{ /* remove old control template names */
@@ -220,117 +219,117 @@ int UQMGame::setup(uqstl::span<const char* const> args)
 	   initAudio (in StarCon2Main) can see them.  initAudio needed
 	   to be moved there because calling AssignTask in the main
 	   thread doesn't work */
-	snddriver = m_options.soundDriver.value;
-	soundflags = m_options.soundQuality.value;
+	snddriver = options.soundDriver.value;
+	soundflags = options.soundQuality.value;
 
 	// Fill in global variables:
-	opt3doMusic = (OPT_ENABLABLE)m_options.use3doMusic.value;
-	optRemixMusic = (OPT_ENABLABLE)m_options.useRemixMusic.value;
-	optSpeech = (OPT_ENABLABLE)m_options.useSpeech.value;
-	optWhichCoarseScan = m_options.whichCoarseScan.value;
-	optWhichMenu = m_options.whichMenu.value;
-	optWhichFonts = m_options.whichFonts.value;
-	optWhichIntro = m_options.whichIntro.value;
-	optWhichShield = m_options.whichShield.value;
-	optSmoothScroll = m_options.smoothScroll.value;
-	optMeleeScale = m_options.meleeScale.value;
-	optSubtitles = (OPT_ENABLABLE)m_options.subtitles.value;
-	optStereoSFX = (OPT_ENABLABLE)m_options.stereoSFX.value;
-	musicVolumeScale = m_options.musicVolumeScale.value;
-	sfxVolumeScale = m_options.sfxVolumeScale.value;
-	speechVolumeScale = m_options.speechVolumeScale.value;
-	optAddons = m_options.addons;
+	opt3doMusic = (OPT_ENABLABLE)options.use3doMusic.value;
+	optRemixMusic = (OPT_ENABLABLE)options.useRemixMusic.value;
+	optSpeech = (OPT_ENABLABLE)options.useSpeech.value;
+	optWhichCoarseScan = options.whichCoarseScan.value;
+	optWhichMenu = options.whichMenu.value;
+	optWhichFonts = options.whichFonts.value;
+	optWhichIntro = options.whichIntro.value;
+	optWhichShield = options.whichShield.value;
+	optSmoothScroll = options.smoothScroll.value;
+	optMeleeScale = options.meleeScale.value;
+	optSubtitles = (OPT_ENABLABLE)options.subtitles.value;
+	optStereoSFX = (OPT_ENABLABLE)options.stereoSFX.value;
+	musicVolumeScale = options.musicVolumeScale.value;
+	sfxVolumeScale = options.sfxVolumeScale.value;
+	speechVolumeScale = options.speechVolumeScale.value;
+	optAddons = options.addons;
 
-	optGodModes = m_options.optGodModes.value;
-	timeDilationScale = m_options.timeDilationScale.value;
-	optBubbleWarp = (OPT_ENABLABLE)m_options.bubbleWarp.value;
-	optUnlockShips = (OPT_ENABLABLE)m_options.unlockShips.value;
-	optHeadStart = (OPT_ENABLABLE)m_options.headStart.value;
-	//optUnlockUpgrades = m_options.unlockUpgrades.value;
-	optInfiniteRU = (OPT_ENABLABLE)m_options.infiniteRU.value;
-	optSkipIntro = (OPT_ENABLABLE)m_options.skipIntro.value;
-	optMainMenuMusic = (OPT_ENABLABLE)m_options.mainMenuMusic.value;
-	optNebulae = (OPT_ENABLABLE)m_options.nebulae.value;
-	optOrbitingPlanets = (OPT_ENABLABLE)m_options.orbitingPlanets.value;
-	optTexturedPlanets = (OPT_ENABLABLE)m_options.texturedPlanets.value;
-	optCheatMode = (OPT_ENABLABLE)m_options.cheatMode.value;
-	optDateFormat = m_options.optDateFormat.value;
-	optInfiniteFuel = (OPT_ENABLABLE)m_options.infiniteFuel.value;
-	optPartialPickup = (OPT_ENABLABLE)m_options.partialPickup.value;
-	optSubmenu = (OPT_ENABLABLE)m_options.submenu.value;
-	optInfiniteCredits = (OPT_ENABLABLE)m_options.infiniteCredits.value;
-	optCustomBorder = (OPT_ENABLABLE)m_options.customBorder.value;
-	g_seedType = m_options.seedType.value;
-	optCustomSeed = m_options.customSeed.value;
-	optShipSeed = (OPT_ENABLABLE)m_options.shipSeed.value;
-	optSphereColors = m_options.sphereColors.value;
+	optGodModes = options.optGodModes.value;
+	timeDilationScale = options.timeDilationScale.value;
+	optBubbleWarp = (OPT_ENABLABLE)options.bubbleWarp.value;
+	optUnlockShips = (OPT_ENABLABLE)options.unlockShips.value;
+	optHeadStart = (OPT_ENABLABLE)options.headStart.value;
+	//optUnlockUpgrades = options.unlockUpgrades.value;
+	optInfiniteRU = (OPT_ENABLABLE)options.infiniteRU.value;
+	optSkipIntro = (OPT_ENABLABLE)options.skipIntro.value;
+	optMainMenuMusic = (OPT_ENABLABLE)options.mainMenuMusic.value;
+	optNebulae = (OPT_ENABLABLE)options.nebulae.value;
+	optOrbitingPlanets = (OPT_ENABLABLE)options.orbitingPlanets.value;
+	optTexturedPlanets = (OPT_ENABLABLE)options.texturedPlanets.value;
+	optCheatMode = (OPT_ENABLABLE)options.cheatMode.value;
+	optDateFormat = options.optDateFormat.value;
+	optInfiniteFuel = (OPT_ENABLABLE)options.infiniteFuel.value;
+	optPartialPickup = (OPT_ENABLABLE)options.partialPickup.value;
+	optSubmenu = (OPT_ENABLABLE)options.submenu.value;
+	optInfiniteCredits = (OPT_ENABLABLE)options.infiniteCredits.value;
+	optCustomBorder = (OPT_ENABLABLE)options.customBorder.value;
+	g_seedType = options.seedType.value;
+	optCustomSeed = options.customSeed.value;
+	optShipSeed = (OPT_ENABLABLE)options.shipSeed.value;
+	optSphereColors = options.sphereColors.value;
 	optRequiresReload = false;
 	optRequiresRestart = false;
-	optSpaceMusic = m_options.spaceMusic.value;
-	optVolasMusic = (OPT_ENABLABLE)m_options.volasMusic.value;
-	optWholeFuel = (OPT_ENABLABLE)m_options.wholeFuel.value;
-	optDirectionalJoystick = (OPT_ENABLABLE)m_options.directionalJoystick.value;
-	optLanderHold = m_options.landerHold.value;
-	optScrTrans = m_options.scrTrans.value;
-	optDifficulty = m_options.optDifficulty.value;
-	optDiffChooser = m_options.optDiffChooser.value;
-	optFuelRange = m_options.optFuelRange.value;
-	optExtended = (OPT_ENABLABLE)m_options.extended.value;
-	optNomad = m_options.nomad.value;
-	optGameOver = (OPT_ENABLABLE)m_options.gameOver.value;
-	optShipDirectionIP = (OPT_ENABLABLE)m_options.shipDirectionIP.value;
-	optHazardColors = (OPT_ENABLABLE)m_options.hazardColors.value;
-	optOrzCompFont = (OPT_ENABLABLE)m_options.orzCompFont.value;
-	optControllerType = m_options.optControllerType.value;
-	optSmartAutoPilot = (OPT_ENABLABLE)m_options.smartAutoPilot.value;
-	optTintPlanSphere = m_options.tintPlanSphere.value;
-	optPlanetStyle = m_options.planetStyle.value;
-	optStarBackground = m_options.starBackground.value;
-	optScanStyle = m_options.scanStyle.value;
-	optNonStopOscill = (OPT_ENABLABLE)m_options.nonStopOscill.value;
-	optScopeStyle = m_options.scopeStyle.value;
-	optHyperStars = (OPT_ENABLABLE)m_options.hyperStars.value;
-	optSuperPC = m_options.landerStyle.value;
-	optPlanetTexture = (OPT_ENABLABLE)m_options.planetTexture.value;
-	optFlagshipColor = m_options.flagshipColor.value;
-	optNoHQEncounters = (OPT_ENABLABLE)m_options.noHQEncounters.value;
-	optDeCleansing = (OPT_ENABLABLE)m_options.deCleansing.value;
-	optMeleeObstacles = (OPT_ENABLABLE)m_options.meleeObstacles.value;
-	optShowVisitedStars = (OPT_ENABLABLE)m_options.showVisitedStars.value;
-	optUnscaledStarSystem = (OPT_ENABLABLE)m_options.unscaledStarSystem.value;
-	optScanSphere = m_options.sphereType.value;
-	optNebulaeVolume = m_options.nebulaevol.value;
-	optSlaughterMode = (OPT_ENABLABLE)m_options.slaughterMode.value;
-	optAdvancedAutoPilot = (OPT_ENABLABLE)m_options.advancedAutoPilot.value;
-	optMeleeToolTips = (OPT_ENABLABLE)m_options.meleeToolTips.value;
-	optMusicResume = m_options.musicResume.value;
-	optScatterElements = (OPT_ENABLABLE)m_options.scatterElements.value;
-	optShowUpgrades = (OPT_ENABLABLE)m_options.showUpgrades.value;
-	optFleetPointSys = (OPT_ENABLABLE)m_options.fleetPointSys.value;
-	optShipStore = (OPT_ENABLABLE)m_options.shipStore.value;
-	optCaptainNames = (OPT_ENABLABLE)m_options.captainNames.value;
-	optDosMenus = (OPT_ENABLABLE)m_options.dosMenus.value;
+	optSpaceMusic = options.spaceMusic.value;
+	optVolasMusic = (OPT_ENABLABLE)options.volasMusic.value;
+	optWholeFuel = (OPT_ENABLABLE)options.wholeFuel.value;
+	optDirectionalJoystick = (OPT_ENABLABLE)options.directionalJoystick.value;
+	optLanderHold = options.landerHold.value;
+	optScrTrans = options.scrTrans.value;
+	optDifficulty = options.optDifficulty.value;
+	optDiffChooser = options.optDiffChooser.value;
+	optFuelRange = options.optFuelRange.value;
+	optExtended = (OPT_ENABLABLE)options.extended.value;
+	optNomad = options.nomad.value;
+	optGameOver = (OPT_ENABLABLE)options.gameOver.value;
+	optShipDirectionIP = (OPT_ENABLABLE)options.shipDirectionIP.value;
+	optHazardColors = (OPT_ENABLABLE)options.hazardColors.value;
+	optOrzCompFont = (OPT_ENABLABLE)options.orzCompFont.value;
+	optControllerType = options.optControllerType.value;
+	optSmartAutoPilot = (OPT_ENABLABLE)options.smartAutoPilot.value;
+	optTintPlanSphere = options.tintPlanSphere.value;
+	optPlanetStyle = options.planetStyle.value;
+	optStarBackground = options.starBackground.value;
+	optScanStyle = options.scanStyle.value;
+	optNonStopOscill = (OPT_ENABLABLE)options.nonStopOscill.value;
+	optScopeStyle = options.scopeStyle.value;
+	optHyperStars = (OPT_ENABLABLE)options.hyperStars.value;
+	optSuperPC = options.landerStyle.value;
+	optPlanetTexture = (OPT_ENABLABLE)options.planetTexture.value;
+	optFlagshipColor = options.flagshipColor.value;
+	optNoHQEncounters = (OPT_ENABLABLE)options.noHQEncounters.value;
+	optDeCleansing = (OPT_ENABLABLE)options.deCleansing.value;
+	optMeleeObstacles = (OPT_ENABLABLE)options.meleeObstacles.value;
+	optShowVisitedStars = (OPT_ENABLABLE)options.showVisitedStars.value;
+	optUnscaledStarSystem = (OPT_ENABLABLE)options.unscaledStarSystem.value;
+	optScanSphere = options.sphereType.value;
+	optNebulaeVolume = options.nebulaevol.value;
+	optSlaughterMode = (OPT_ENABLABLE)options.slaughterMode.value;
+	optAdvancedAutoPilot = (OPT_ENABLABLE)options.advancedAutoPilot.value;
+	optMeleeToolTips = (OPT_ENABLABLE)options.meleeToolTips.value;
+	optMusicResume = options.musicResume.value;
+	optScatterElements = (OPT_ENABLABLE)options.scatterElements.value;
+	optShowUpgrades = (OPT_ENABLABLE)options.showUpgrades.value;
+	optFleetPointSys = (OPT_ENABLABLE)options.fleetPointSys.value;
+	optShipStore = (OPT_ENABLABLE)options.shipStore.value;
+	optCaptainNames = (OPT_ENABLABLE)options.captainNames.value;
+	optDosMenus = (OPT_ENABLABLE)options.dosMenus.value;
 
 #pragma clang optimize off
-	prepareContentDir(c_str(m_options.contentDir), c_str(m_options.addonDir), c_str(args.front()));
+	prepareContentDir(c_str(options.contentDir), c_str(options.addonDir), c_str(args.front()));
 
 	resolutionFactor = isAddonAvailable(HD_MODE) ?
-						   (unsigned int)m_options.resolutionFactor.value :
+						   (unsigned int)options.resolutionFactor.value :
 						   0;
-	m_options.resolutionFactor.value = resolutionFactor;
-	m_options.resolutionFactor.set = true;
+	m_options.edit().resolutionFactor.value = resolutionFactor;
+	m_options.edit().resolutionFactor.set = true;
 
-	loresBlowupScale = (unsigned int)m_options.loresBlowupScale.value;
-	optKeepAspectRatio = (OPT_ENABLABLE)m_options.keepAspectRatio.value;
+	loresBlowupScale = (unsigned int)options.loresBlowupScale.value;
+	optKeepAspectRatio = (OPT_ENABLABLE)options.keepAspectRatio.value;
 
 	optWindowType = OPTVAL_UQM_WINDOW;
-	const char* windowMode = WINDOW_MODE(resolutionFactor, m_options.windowType.value);
-	if (m_options.windowType.value < OPTVAL_UQM_WINDOW && isAddonAvailable(windowMode))
+	const char* windowMode = WINDOW_MODE(resolutionFactor, options.windowEmulationMode.value);
+	if (options.windowEmulationMode.value < OPTVAL_UQM_WINDOW && isAddonAvailable(windowMode))
 	{
-		optWindowType = m_options.windowType.value;
+		optWindowType = options.windowEmulationMode.value;
 	}
-	m_options.windowType.value = optWindowType;
-	m_options.windowType.set = true;
+	m_options.edit().windowEmulationMode.value = optWindowType;
+	m_options.edit().windowEmulationMode.set = true;
 #pragma clang optimize on
 
 	{
@@ -348,8 +347,8 @@ int UQMGame::setup(uqstl::span<const char* const> args)
 		}
 		else
 		{
-			SavedWidth = inBounds(m_options.resolution.value.width, 320, 1920);
-			SavedHeight = inBounds(m_options.resolution.value.height, 200, 1440);
+			SavedWidth = inBounds(options.resolution.value.x, 320, 1920);
+			SavedHeight = inBounds(options.resolution.value.y, 200, 1440);
 		}
 
 		if (optKeepAspectRatio)
@@ -359,17 +358,17 @@ int UQMGame::setup(uqstl::span<const char* const> args)
 
 			if (ratio > threshold) // screen is narrower than 4:3
 			{
-				m_options.resolution.value.width = SavedHeight / threshold;
+				m_options.edit().resolution.value.y = SavedHeight / threshold;
 			}
 			else if (ratio < threshold) // screen is wider than 4:3
 			{
-				m_options.resolution.value.height = SavedWidth * threshold;
+				m_options.edit().resolution.value.x = SavedWidth * threshold;
 			}
 		}
 		else
 		{
-			m_options.resolution.value.width = SavedWidth;
-			m_options.resolution.value.height = SavedHeight;
+			m_options.edit().resolution.value.x = SavedWidth;
+			m_options.edit().resolution.value.y = SavedHeight;
 		}
 	}
 
@@ -377,7 +376,7 @@ int UQMGame::setup(uqstl::span<const char* const> args)
 	prepareMeleeDir();
 	prepareSaveDir();
 	prepareScrShotDir();
-	prepareShadowAddons(m_options.addons);
+	prepareShadowAddons(options.addons);
 #if 0
 	initTempDir ();
 #endif
@@ -396,38 +395,39 @@ int UQMGame::setup(uqstl::span<const char* const> args)
 #endif
 
 #if SDL_MAJOR_VERSION == 1
-	const int gfxDriver = m_options.opengl.value ?
-							  TFB_GFXDRIVER_SDL_OPENGL :
-							  TFB_GFXDRIVER_SDL_PURE;
+	const uqm::GfxDriver gfxDriver = options.opengl.value ?
+										 uqm::GfxDriver::SDL_OpenGL :
+										 uqm::GfxDriver::SDL_Pure;
 #else
-	const int gfxDriver = TFB_GFXDRIVER_SDL_PURE;
+	const uqm::GfxDriver gfxDriver = uqm::GfxDriver::SDL_Pure;
 #endif
-	int gfxFlags = m_options.scaler.value;
-	if (m_options.fullscreen.value)
+	uqm::GfxFlags gfxFlags = toGfxFlags(options.scaler);
+	switch (options.windowMode)
 	{
-		if (m_options.fullscreen.value > 1)
-		{
-			gfxFlags |= TFB_GFXFLAGS_FULLSCREEN;
-		}
-		else
-		{
-			gfxFlags |= TFB_GFXFLAGS_EX_FULLSCREEN;
-		}
+		case WindowMode::Windowed:
+			break;
+		case WindowMode::WindowedFullscreen:
+			gfxFlags |= uqm::GfxFlags::Fullscreen;
+			break;
+		case WindowMode::Fullscreen:
+			gfxFlags |= uqm::GfxFlags::ExclusiveFullscreen;
+			break;
 	}
-	if (m_options.scanlines.value)
+
+	if (options.scanlines.value)
 	{
-		gfxFlags |= TFB_GFXFLAGS_SCANLINES;
+		gfxFlags |= uqm::GfxFlags::Scanlines;
 	}
-	if (m_options.showFps.value)
+	if (options.showFps.value)
 	{
-		gfxFlags |= TFB_GFXFLAGS_SHOWFPS;
+		gfxFlags |= uqm::GfxFlags::ShowFPS;
 	}
-	TFB_InitGraphics(gfxDriver, gfxFlags, m_options.graphicsBackend.c_str(),
-					 m_options.resolution.value.width, m_options.resolution.value.height,
+	TFB_InitGraphics(gfxDriver, gfxFlags, options.graphicsBackend.c_str(),
+					 options.resolution.value.x, options.resolution.value.y,
 					 &resolutionFactor, &optWindowType);
-	if (m_options.gamma.set && setGammaCorrection(m_options.gamma.value))
+	if (options.gamma.set && setGammaCorrection(options.gamma.value))
 	{
-		optGamma = m_options.gamma.value;
+		optGamma = options.gamma.value;
 	}
 	else
 	{

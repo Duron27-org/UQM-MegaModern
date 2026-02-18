@@ -1265,16 +1265,15 @@ DoPresentation(void* pIS)
 			int x, y;
 			int scale;
 			int angle;
-			int scale_mode;
+			uqm::TFBScaleMode scale_mode {};
 			char ImgName[16];
-			int old_scale, old_mode;
 			STAMP s;
 
 			if (1 == sscanf(pStr, "%15s", ImgName)
 				&& strcmp(_strupr(ImgName), "SIS") == 0)
 			{
 				draw_what = PRES_DRAW_SIS;
-				scale_mode = TFB_SCALE_NEAREST;
+				scale_mode = uqm::TFBScaleMode::Nearest;
 				cargs = sscanf(pStr, "%*s %d %d %d %d",
 							   &x, &y, &scale, &angle)
 					  + 1;
@@ -1282,7 +1281,7 @@ DoPresentation(void* pIS)
 			else
 			{
 				draw_what = PRES_DRAW_INDEX;
-				scale_mode = TFB_SCALE_BILINEAR;
+				scale_mode = uqm::TFBScaleMode::Bilinear;
 				cargs = sscanf(pStr, "%d %d %d %d %d",
 							   &index, &x, &y, &scale, &angle);
 			}
@@ -1341,8 +1340,8 @@ DoPresentation(void* pIS)
 			}
 			s.origin.x = x;
 			s.origin.y = y;
-			old_mode = SetGraphicScaleMode(scale_mode);
-			old_scale = SetGraphicScale(scale);
+			const uqm::TFBScaleMode old_mode = SetGraphicScaleMode(scale_mode);
+			const int old_scale = SetGraphicScale(scale);
 			DrawStamp(&s);
 			SetGraphicScale(old_scale);
 			SetGraphicScaleMode(old_mode);

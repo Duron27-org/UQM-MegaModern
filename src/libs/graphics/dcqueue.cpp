@@ -400,7 +400,7 @@ void TFB_FlushGraphics(void)
 
 		if ((current_fade != 255 && current_fade != last_fade) || (current_transition != 255 && current_transition != last_transition) || (current_fade == 255 && last_fade != 255) || (current_transition == 255 && last_transition != 255))
 		{
-			TFB_SwapBuffers(TFB_REDRAW_FADING);
+			TFB_SwapBuffers(uqm::TFBRedraw::Fading);
 			// if fading, redraw every frame
 		}
 		else
@@ -414,7 +414,7 @@ void TFB_FlushGraphics(void)
 		return;
 	}
 
-	if (GfxFlags & TFB_GFXFLAGS_SHOWFPS)
+	if (testFlag(g_gfxFlags, uqm::GfxFlags::ShowFPS))
 	{
 		computeFPS(&fps);
 	}
@@ -663,10 +663,10 @@ void TFB_FlushGraphics(void)
 			case TFB_DRAWCOMMANDTYPE_REINITVIDEO:
 				{
 					TFB_DrawCommand_ReinitVideo* cmd = &DC.data.reinitvideo;
-					int oldDriver = GraphicsDriver;
-					int oldFlags = GfxFlags;
-					int oldWidth = WindowWidth;
-					int oldHeight = WindowHeight;
+					const uqm::GfxDriver oldDriver = GraphicsDriver;
+					const uqm::GfxFlags oldFlags = g_gfxFlags;
+					const int oldWidth = WindowWidth;
+					const int oldHeight = WindowHeight;
 					if (TFB_ReInitGraphics(cmd->driver, cmd->flags,
 										   cmd->width, cmd->height, &resolutionFactor,
 										   &optWindowType))
@@ -684,7 +684,7 @@ void TFB_FlushGraphics(void)
 							exit(EXIT_FAILURE);
 						}
 					}
-					TFB_SwapBuffers(TFB_REDRAW_YES);
+					TFB_SwapBuffers(uqm::TFBRedraw::Yes);
 					break;
 				}
 
@@ -701,12 +701,12 @@ void TFB_FlushGraphics(void)
 		Unlock_DCQ();
 	}
 
-	if (GfxFlags & TFB_GFXFLAGS_SHOWFPS)
+	if (testFlag(g_gfxFlags, uqm::GfxFlags::ShowFPS))
 	{
 		RenderFPS(&fps);
 	}
 
-	TFB_SwapBuffers(TFB_REDRAW_NO);
+	TFB_SwapBuffers(uqm::TFBRedraw::No);
 	RenderedFrames++;
 	BroadcastCondVar(RenderingCond);
 }

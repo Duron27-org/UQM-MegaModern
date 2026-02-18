@@ -54,7 +54,7 @@ uqm::EmulationMode optWhichFonts;
 uqm::EmulationMode optWhichIntro;
 uqm::EmulationMode optWhichShield;
 uqm::EmulationMode optSmoothScroll;
-int optMeleeScale;
+uqm::MeleeScaleMode optMeleeScale;
 uqstl::span<const uqstl::string> optAddons;
 
 unsigned int loresBlowupScale;

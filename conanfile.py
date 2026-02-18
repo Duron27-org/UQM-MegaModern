@@ -16,11 +16,13 @@ class UrQuanMastersConan(ConanFile):
         #    raise ConanInvalidConfiguration('ASan requires Debug build')
     
     requires = (
+        'cli11/2.6.0',
         'ogg/1.3.5',
         'fmt/12.1.0',
         'gsl-lite/1.0.1',
         'gtest/1.17.0',
         'libpng/1.6.54',
+        'magic_enum/0.9.7',
         'openal-soft/1.23.1',
         'sdl/2.32.10',
         'spdlog/1.17.0',

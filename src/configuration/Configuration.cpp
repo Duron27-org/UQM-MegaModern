@@ -80,6 +80,24 @@ static bool getListConfigValue(OptionType& option, const char* config_val, const
 	return false;
 }
 
+template <typename E>
+static bool getEnumConfigValue(OptionT<E>& option, const char* config_val)
+{
+	if (option.set || !res_IsString(config_val))
+	{
+		return false;
+	}
+
+	const char* strval = res_GetString(config_val);
+	if (const auto val {fromString<E>(strval)}; val.has_value())
+	{
+		option = *val;
+		return true;
+	}
+
+	return false;
+}
+
 void getUserConfigOptions(OptionsStruct& options)
 {
 	// Most of the user config options are only applied if they
@@ -89,8 +107,8 @@ void getUserConfigOptions(OptionsStruct& options)
 		&& res_IsInteger("config.resheight")
 		&& !options.resolution.set)
 	{
-		options.resolution.value.width = res_GetInteger("config.reswidth");
-		options.resolution.value.height = res_GetInteger("config.resheight");
+		options.resolution.value.x = res_GetInteger("config.reswidth");
+		options.resolution.value.y = res_GetInteger("config.resheight");
 		options.resolution.set = true;
 	}
 
@@ -105,12 +123,12 @@ void getUserConfigOptions(OptionsStruct& options)
 	}
 	getBoolConfigValue(options.opengl, "config.usegl");
 
-	getListConfigValue(options.scaler, "config.scaler", ScalerList);
+	getEnumConfigValue(options.scaler, "config.scaler");
 
 	//getBoolConfigValue (options.fullscreen, "config.fullscreen");
-	if (res_IsInteger("config.fullscreen") && !options.fullscreen.set)
+	if (res_IsInteger("config.fullscreen") && !options.windowMode.set)
 	{
-		options.fullscreen.value = res_GetInteger("config.fullscreen");
+		options.windowMode.value = (WindowMode)res_GetInteger("config.fullscreen");
 	}
 	getBoolConfigValue(options.scanlines, "config.scanlines");
 	getBoolConfigValue(options.showFps, "config.showfps");
@@ -134,17 +152,7 @@ void getUserConfigOptions(OptionsStruct& options)
 	getBoolConfigValue(options.useRemixMusic, "config.remixmusic");
 	getBoolConfigValue(options.useSpeech, "config.speech");
 
-
-#ifdef MELEE_ZOOM
-	if (res_IsInteger("config.smoothmelee") && !options.meleeScale.set)
-	{
-		options.meleeScale.value = res_GetInteger("config.smoothmelee");
-		options.meleeScale.set = true;
-	}
-#else
-	getBoolConfigValueXlat(options.meleeScale, "config.smoothmelee",
-						   TFB_SCALE_TRILINEAR, TFB_SCALE_STEP);
-#endif
+	getEnumConfigValue(options.meleeScale, "config.meleescale");
 
 	getListConfigValue(options.soundDriver, "config.audiodriver", AudioDriverList);
 	getListConfigValue(options.soundQuality, "config.audioquality", AudioQualityList);
@@ -328,9 +336,9 @@ void getUserConfigOptions(OptionsStruct& options)
 		options.musicResume.value = res_GetInteger("mm.musicResume");
 	}
 
-	if (res_IsInteger("mm.windowType") && !options.windowType.set)
+	if (res_IsInteger("mm.windowType") && !options.windowEmulationMode.set)
 	{
-		options.windowType.value = res_GetInteger("mm.windowType");
+		options.windowEmulationMode.value = res_GetInteger("mm.windowType");
 	}
 
 	getBoolConfigValue(options.scatterElements, "mm.scatterElements");

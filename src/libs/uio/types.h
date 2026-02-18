@@ -21,6 +21,7 @@
 #ifndef _uio_TYPES_H
 #define _uio_TYPES_H
 
+#include <cstdint>
 #include "config.h"
 
 #ifdef _MSC_VER
@@ -55,14 +56,14 @@ typedef unsigned char _Bool;
 
 typedef bool uio_bool;
 
-typedef unsigned char uio_uint8;
-typedef signed char uio_sint8;
-typedef unsigned short uio_uint16;
-typedef signed short uio_sint16;
-typedef unsigned int uio_uint32;
-typedef signed int uio_sint32;
+typedef uint8_t uio_uint8;
+typedef int8_t uio_sint8;
+typedef uint16_t uio_uint16;
+typedef int16_t uio_sint16;
+typedef uint32_t uio_uint32;
+typedef int32_t uio_sint32;
 
-typedef unsigned long uio_uintptr;
+typedef uintptr_t uio_uintptr;
 // Needs to be adapted for 64 bits systems
 
 #endif /* _uio_TYPES_H */

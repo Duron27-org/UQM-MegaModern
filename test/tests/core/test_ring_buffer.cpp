@@ -206,8 +206,14 @@ TEST_F(RingBufferTest, ClearResetsState)
 	EXPECT_FALSE(rb.full());
 
 	// after clear, access should throw
-	EXPECT_THROW(rb.front(), std::out_of_range);
-	EXPECT_THROW(rb.back(), std::out_of_range);
+	EXPECT_THROW([&]() {
+		uqstl::ignore = rb.front();
+	}(),
+				 std::out_of_range);
+	EXPECT_THROW([&]() {
+		uqstl::ignore = rb.back();
+	}(),
+				 std::out_of_range);
 	EXPECT_THROW(rb.pop_front(), std::out_of_range);
 }
 
@@ -216,15 +222,27 @@ TEST_F(RingBufferTest, PopFrontOnEmptyThrowsAndFrontBackThrow)
 	std::ring_buffer<int, 2> rb;
 	EXPECT_TRUE(rb.empty());
 	EXPECT_THROW(rb.pop_front(), std::out_of_range);
-	EXPECT_THROW(rb.front(), std::out_of_range);
-	EXPECT_THROW(rb.back(), std::out_of_range);
+	EXPECT_THROW([&]() {
+		uqstl::ignore = rb.front();
+	}(),
+				 std::out_of_range);
+	EXPECT_THROW([&]() {
+		uqstl::ignore = rb.back();
+	}(),
+				 std::out_of_range);
 
 	rb.push_back(1);
-	EXPECT_NO_THROW(rb.front());
-	EXPECT_NO_THROW(rb.back());
+	EXPECT_NO_THROW(uqstl::ignore = rb.front());
+	EXPECT_NO_THROW(uqstl::ignore = rb.back());
 	rb.pop_front();
-	EXPECT_THROW(rb.front(), std::out_of_range);
-	EXPECT_THROW(rb.back(), std::out_of_range);
+	EXPECT_THROW([&]() {
+		uqstl::ignore = rb.front();
+	}(),
+				 std::out_of_range);
+	EXPECT_THROW([&]() {
+		uqstl::ignore = rb.back();
+	}(),
+				 std::out_of_range);
 }
 
 TEST_F(RingBufferTest, MoveOnlyElementSupport)

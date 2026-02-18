@@ -69,8 +69,11 @@ add_executable(${APP_TARGET} ${ALL_FILES})
 # Dependencies
 ################################################################################
 
+# REQUIRED
+find_package(CLI11 REQUIRED)
 find_package(fmt REQUIRED)
 find_package(gsl-lite REQUIRED)
+find_package(magic_enum REQUIRED)
 find_package(Ogg REQUIRED)
 find_package(OpenAL REQUIRED)
 find_package(PNG REQUIRED)
@@ -80,6 +83,7 @@ find_package(spdlog REQUIRED)
 find_package(utf8cpp REQUIRED)
 find_package(ZLIB REQUIRED)
 
+#OPTIONAL
 find_package(GTest QUIET)
 if (GTest_FOUND)
     add_subdirectory(test)
@@ -89,6 +93,12 @@ add_library(uqm_project_features INTERFACE)
 if (GTest_FOUND)
     target_compile_definitions(uqm_project_features
         INTERFACE WITH_GTEST
+    )
+endif()
+
+if (magic_enum_FOUND)
+    target_compile_definitions(uqm_project_features
+        INTERFACE WITH_MAGIC_ENUM
     )
 endif()
 
@@ -236,8 +246,10 @@ target_compile_features(${APP_TARGET} PRIVATE cxx_std_20)
 ################################################################################
 target_link_libraries(${APP_TARGET}
     PRIVATE
+        CLI11::CLI11
         fmt::fmt
         gsl-lite::gsl-lite
+        magic_enum::magic_enum
         Ogg::ogg 
         OpenAL::OpenAL
         PNG::PNG 

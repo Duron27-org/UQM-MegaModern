@@ -355,7 +355,7 @@ static bool
 CmpMovePoints(const GFXPOINT* pt1, const DPOINT* pt2, uqm::SDWORD dx, uqm::SDWORD dy,
 			  uqm::SIZE reduction)
 {
-	if (optMeleeScale == TFB_SCALE_STEP)
+	if (uqm::toTFBScaleMode(optMeleeScale) == uqm::TFBScaleMode::Step)
 	{
 		return (int)pt1->x != (int)((pt2->x - dx) >> reduction)
 			|| (int)pt1->y != (int)((pt2->y - dy) >> reduction);
@@ -376,7 +376,8 @@ void MoveGalaxy(VIEW_STATE view_state, uqm::SDWORD dx, uqm::SDWORD dy)
 			MED_STAR_COUNT,
 			SML_STAR_COUNT};
 	static const uqm::COUNT star_frame_ofs[] = {32 + 26, 26, 0};
-
+	const bool meleeScaleModeIsStep {uqm::toTFBScaleMode(optMeleeScale) == uqm::TFBScaleMode::Step};
+				
 	if (view_state != VIEW_STABLE)
 	{
 		uqm::COUNT reduction, i = 0, iss, scale = 0;
@@ -410,7 +411,7 @@ void MoveGalaxy(VIEW_STATE view_state, uqm::SDWORD dx, uqm::SDWORD dy)
 				GRAPHICS_PRIM star_object[2];
 				FRAME star_frame[3];
 
-				if (optMeleeScale == TFB_SCALE_STEP)
+				if (meleeScaleModeIsStep)
 				{
 					scale = reduction;
 				}
@@ -435,7 +436,7 @@ void MoveGalaxy(VIEW_STATE view_state, uqm::SDWORD dx, uqm::SDWORD dy)
 					star_frame[0] = IncFrameIndex(stars_in_space);
 					star_frame[1] = stars_in_space;
 
-					if (optMeleeScale == TFB_SCALE_STEP)
+					if (meleeScaleModeIsStep)
 					{ /* on PC, the closest stars are images when zoomed out */
 						star_object[0] = STAMP_PRIM;
 						if (reduction > 0)
@@ -469,7 +470,7 @@ void MoveGalaxy(VIEW_STATE view_state, uqm::SDWORD dx, uqm::SDWORD dy)
 
 					star_object[0] = star_object[1] = STAMP_PRIM;
 
-					if (optMeleeScale == TFB_SCALE_STEP && reduction > 0)
+					if (meleeScaleModeIsStep && reduction > 0)
 					{
 						star_frame[0] = star_frame[1];
 						star_frame[1] = star_frame[2];
@@ -530,7 +531,7 @@ void MoveGalaxy(VIEW_STATE view_state, uqm::SDWORD dx, uqm::SDWORD dy)
 		{
 			dx = SpaceOrg.x;
 			dy = SpaceOrg.y;
-			if (optMeleeScale == TFB_SCALE_STEP)
+			if (meleeScaleModeIsStep)
 			{
 				reduction += ONE_SHIFT;
 			}
@@ -547,7 +548,7 @@ void MoveGalaxy(VIEW_STATE view_state, uqm::SDWORD dx, uqm::SDWORD dy)
 			dy = (COORD)(LOG_SPACE_HEIGHT >> 1)
 			   - (LOG_SPACE_HEIGHT >> ((MAX_REDUCTION + 1)
 									   - MAX_VIS_REDUCTION));
-			if (optMeleeScale == TFB_SCALE_STEP)
+			if (meleeScaleModeIsStep)
 			{
 				reduction = MAX_VIS_REDUCTION + ONE_SHIFT;
 			}
@@ -566,7 +567,7 @@ void MoveGalaxy(VIEW_STATE view_state, uqm::SDWORD dx, uqm::SDWORD dy)
 			{
 				// ppt->x &= (LOG_SPACE_WIDTH - 1);
 				ppt->x = WRAP_VAL(ppt->x, wrap_around);
-				if (optMeleeScale == TFB_SCALE_STEP)
+				if (meleeScaleModeIsStep)
 				{
 					pprim->Object.Point.x = (ppt->x - dx) >> reduction;
 					pprim->Object.Point.y = (ppt->y - dy) >> reduction;
@@ -579,7 +580,7 @@ void MoveGalaxy(VIEW_STATE view_state, uqm::SDWORD dx, uqm::SDWORD dy)
 										  / reduction;
 				}
 			}
-			if (optMeleeScale == TFB_SCALE_STEP)
+			if (meleeScaleModeIsStep)
 			{
 				++reduction;
 			}

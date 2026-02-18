@@ -68,7 +68,7 @@ typedef struct tfb_dc_img
 	TFB_ColorMap* colormap;
 	DrawMode drawMode;
 	int scale;
-	int scaleMode;
+	uqm::TFBScaleMode scaleMode;
 } TFB_DrawCommand_Image;
 
 typedef struct tfb_dc_filledimg
@@ -79,7 +79,7 @@ typedef struct tfb_dc_filledimg
 	SCREEN destBuffer;
 	DrawMode drawMode;
 	int scale;
-	int scaleMode;
+	uqm::TFBScaleMode scaleMode;
 } TFB_DrawCommand_FilledImage;
 
 typedef struct tfb_dc_fontchar
@@ -134,7 +134,10 @@ typedef struct tfb_dc_signal
 
 typedef struct tfb_dc_reinit_video
 {
-	int driver, flags, width, height;
+	uqm::GfxDriver driver;
+	uqm::GfxFlags flags;
+	int width;
+	int height;
 } TFB_DrawCommand_ReinitVideo;
 
 typedef struct tfb_dc_callback

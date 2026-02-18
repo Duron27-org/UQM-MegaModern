@@ -394,7 +394,6 @@ void ZoomInPlanetSphere(void)
 	const int base = GSCALE_IDENTITY;
 	int dx, dy;
 	int oldScale;
-	int oldMode;
 	int i;
 	int frameCount;
 	int zoomCorner;
@@ -454,7 +453,7 @@ void ZoomInPlanetSphere(void)
 			RepairBackRect(&repairRect);
 		}
 
-		oldMode = SetGraphicScaleMode(TFB_SCALE_BILINEAR);
+		uqm::TFBScaleMode oldMode = SetGraphicScaleMode(uqm::TFBScaleMode::Bilinear);
 		oldScale = SetGraphicScale((int)(base * scale + 0.5));
 		DrawPlanetSphere(pt.x, pt.y, false);
 		SetGraphicScale(oldScale);

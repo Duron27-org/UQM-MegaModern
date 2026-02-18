@@ -25,6 +25,7 @@
 #include "libs/graphics/drawcmd.h"
 #include "libs/graphics/dcqueue.h"
 #include "libs/graphics/cmap.h"
+#include "libs/graphics/gfx_defs.h"
 #include "libs/input/sdl/input.h"
 // for ProcessInputEvent()
 #include "libs/graphics/bbox.h"
@@ -35,6 +36,7 @@
 #include "libs/vidlib.h"
 
 #if SDL_MAJOR_VERSION > 1
+
 
 static void TFB_PreQuit(void);
 
@@ -73,26 +75,24 @@ TFB_PreQuit(void)
 	SDL_Quit();
 }
 
-int TFB_ReInitGraphics(int driver, int flags, int width, int height,
+int TFB_ReInitGraphics(uqm::GfxDriver driver, uqm::GfxFlags flags, int width, int height,
 					   unsigned int* resFactor, unsigned int* windowType)
 {
 	int result;
 	int togglefullscreen = 0;
 
-	if ((GfxFlags == (flags ^ TFB_GFXFLAGS_FULLSCREEN)
-		 || GfxFlags == (flags ^ TFB_GFXFLAGS_EX_FULLSCREEN))
+	if (!testAnyFlag(g_gfxFlags, uqm::GfxFlagsFullscreen)
 		&& driver == GraphicsDriver && width == WindowWidth && height == WindowHeight)
 	{
 		togglefullscreen = 1;
 	}
 
-	GfxFlags = flags;
+	g_gfxFlags = flags;
 
-	result = TFB_Pure_ConfigureVideo(TFB_GFXDRIVER_SDL_PURE, flags,
+	result = TFB_Pure_ConfigureVideo(uqm::GfxDriver::SDL_Pure, flags,
 									 width, height, togglefullscreen, *resFactor, *windowType);
 
-	if (flags & TFB_GFXFLAGS_FULLSCREEN
-		|| flags & TFB_GFXFLAGS_EX_FULLSCREEN)
+	if (testAnyFlag(flags, uqm::GfxFlagsFullscreen))
 	{
 		SDL_ShowCursor(SDL_DISABLE);
 	}

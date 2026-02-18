@@ -1918,13 +1918,12 @@ RestoreSystemView(void)
 static void
 DrawTexturedBody(PLANET_DESC* planet, STAMP s)
 {
-	int oldScale;
-	int oldMode;
+	int oldScale {};
 	uqm::SIZE moonDiameter;
 	uqm::COUNT size = PBodySize[planet->size];
 
 	BatchGraphics();
-	oldMode = SetGraphicScaleMode(TFB_SCALE_BILINEAR);
+	uqm::TFBScaleMode oldMode = SetGraphicScaleMode(uqm::TFBScaleMode::Bilinear);
 
 	if (worldIsMoon(pSolarSysState, planet))
 	{

@@ -22,7 +22,9 @@
 #include "../../../uqm/units.h"
 #include "png2sdl.h"
 
+
 #if SDL_MAJOR_VERSION == 1
+using namespace uqm;
 
 static SDL_Surface* SDL_Video = nullptr;
 static SDL_Surface* fade_color_surface = nullptr;
@@ -131,7 +133,7 @@ CalcAlphaFormat(const SDL_PixelFormat* video, SDL_PixelFormat* ours)
 	ours->Amask = 0xff000000;
 }
 
-int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
+int TFB_Pure_ConfigureVideo(GfxDriver driver, GfxFlags flags, int width, int height,
 							int togglefullscreen, unsigned int resFactor,
 							unsigned int windowType)
 {
@@ -181,8 +183,7 @@ int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
 	}
 
 	videomode_flags |= SDL_ANYFORMAT;
-	if (flags & TFB_GFXFLAGS_FULLSCREEN
-		|| flags & TFB_GFXFLAGS_EX_FULLSCREEN)
+	if (testAnyFlag(flags, GfxFlagsFullscreen))
 	{
 		videomode_flags |= SDL_FULLSCREEN;
 	}
@@ -291,7 +292,7 @@ int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
 	return 0;
 }
 
-int TFB_Pure_InitGraphics(int driver, int flags, const char* renderer,
+int TFB_Pure_InitGraphics(GfxDriver driver, GfxFlags flags, const char* renderer,
 						  int width, int height, unsigned int resFactor,
 						  unsigned int windowType)
 {
@@ -568,5 +569,5 @@ bool TFB_SDL_ScreenShot(const char* path)
 
 	return successful;
 }
-
+}
 #endif

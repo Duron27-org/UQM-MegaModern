@@ -28,12 +28,12 @@ class UQMGame
 public:
 	UQMGame();
 
-	[[nodiscard]] int setup(uqstl::span<uqgsl::czstring const> args);
+	[[nodiscard]] int setup(uqstl::span<uqgsl::zstring> args);
 	[[nodiscard]] int run();
 	void teardown();
 
 private:
-	OptionsStruct m_options {};
+	UQMOptions m_options {};
 	Logger m_logger {};
 };
 

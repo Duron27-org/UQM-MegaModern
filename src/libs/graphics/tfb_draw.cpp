@@ -20,7 +20,6 @@
 #include "core/log/log.h"
 #include "libs/memlib.h"
 
-using namespace uqm;
 
 static const HOT_SPOT NullHs = {0, 0};
 
@@ -65,7 +64,7 @@ void TFB_DrawScreen_Rect(GFXRECT* rect, Color color, DrawMode mode, SCREEN dest)
 }
 
 void TFB_DrawScreen_Image(TFB_Image* img, int x, int y, int scale,
-						  int scaleMode, TFB_ColorMap* cmap, DrawMode mode, SCREEN dest)
+						  uqm::TFBScaleMode scaleMode, TFB_ColorMap* cmap, DrawMode mode, SCREEN dest)
 {
 	TFB_DrawCommand DC;
 
@@ -83,7 +82,7 @@ void TFB_DrawScreen_Image(TFB_Image* img, int x, int y, int scale,
 }
 
 void TFB_DrawScreen_FilledImage(TFB_Image* img, int x, int y, int scale,
-								int scaleMode, Color color, DrawMode mode, SCREEN dest)
+								uqm::TFBScaleMode scaleMode, Color color, DrawMode mode, SCREEN dest)
 {
 	TFB_DrawCommand DC;
 
@@ -203,7 +202,7 @@ void TFB_DrawScreen_WaitForSignal(void)
 	SetSemaphore(s);
 }
 
-void TFB_DrawScreen_ReinitVideo(int driver, int flags, int width, int height)
+void TFB_DrawScreen_ReinitVideo(uqm::GfxDriver driver, uqm::GfxFlags flags, int width, int height)
 {
 	TFB_DrawCommand DrawCommand;
 	DrawCommand.Type = TFB_DRAWCOMMANDTYPE_REINITVIDEO;
@@ -241,7 +240,7 @@ void TFB_DrawImage_Rect(GFXRECT* rect, Color color, DrawMode mode, TFB_Image* ta
 }
 
 void TFB_DrawImage_Image(TFB_Image* img, int x, int y, int scale,
-						 int scaleMode, TFB_ColorMap* cmap, DrawMode mode, TFB_Image* target)
+						 uqm::TFBScaleMode scaleMode, TFB_ColorMap* cmap, DrawMode mode, TFB_Image* target)
 {
 	LockMutex(target->mutex);
 	TFB_DrawCanvas_Image(img, x, y, scale, scaleMode, cmap,
@@ -251,7 +250,7 @@ void TFB_DrawImage_Image(TFB_Image* img, int x, int y, int scale,
 }
 
 void TFB_DrawImage_FilledImage(TFB_Image* img, int x, int y, int scale,
-							   int scaleMode, Color color, DrawMode mode, TFB_Image* target)
+							   uqm::TFBScaleMode scaleMode, Color color, DrawMode mode, TFB_Image* target)
 {
 	LockMutex(target->mutex);
 	TFB_DrawCanvas_FilledImage(img, x, y, scale, scaleMode, color,
@@ -291,7 +290,7 @@ TFB_DrawImage_New(TFB_Canvas canvas)
 	img->NormalHs = NullHs;
 	img->MipmapHs = NullHs;
 	img->last_scale_hs = NullHs;
-	img->last_scale_type = -1;
+	img->last_scale_type = uqm::TFBScaleMode::None;
 	img->last_scale = 0;
 	img->dirty = false;
 	TFB_DrawCanvas_GetExtent(canvas, &img->extent);
@@ -321,7 +320,7 @@ TFB_DrawImage_CreateForScreen(int w, int h, bool withalpha)
 	img->NormalHs = NullHs;
 	img->MipmapHs = NullHs;
 	img->last_scale_hs = NullHs;
-	img->last_scale_type = -1;
+	img->last_scale_type = uqm::TFBScaleMode::None;
 	img->last_scale = 0;
 	img->extent.width = w;
 	img->extent.height = h;
@@ -424,36 +423,36 @@ void TFB_DrawImage_Delete(TFB_Image* image)
 	HFree(image);
 }
 
-void TFB_DrawImage_FixScaling(TFB_Image* image, int target, int type)
+void TFB_DrawImage_FixScaling(TFB_Image* image, int scaleTarget, uqm::TFBScaleMode type)
 {
-	if (image->dirty || !image->ScaledImg || target != image->last_scale || type != image->last_scale_type)
+	if (image->dirty || !image->ScaledImg || scaleTarget != image->last_scale || type != image->last_scale_type)
 	{
 		image->dirty = false;
 		image->ScaledImg = TFB_DrawCanvas_New_ScaleTarget(image->NormalImg,
 														  image->ScaledImg, type, image->last_scale_type);
 
-		if (type == TFB_SCALE_NEAREST)
+		if (type == uqm::TFBScaleMode::Nearest)
 		{
 			TFB_DrawCanvas_Rescale_Nearest(image->NormalImg,
-										   image->ScaledImg, target, &image->NormalHs,
+										   image->ScaledImg, scaleTarget, &image->NormalHs,
 										   &image->extent, &image->last_scale_hs);
 		}
-		else if (type == TFB_SCALE_BILINEAR)
+		else if (type == uqm::TFBScaleMode::Bilinear)
 		{
 			TFB_DrawCanvas_Rescale_Bilinear(image->NormalImg,
-											image->ScaledImg, target, &image->NormalHs,
+											image->ScaledImg, scaleTarget, &image->NormalHs,
 											&image->extent, &image->last_scale_hs);
 		}
 		else
 		{
 			TFB_DrawCanvas_Rescale_Trilinear(image->NormalImg,
-											 image->MipmapImg, image->ScaledImg, target,
+											 image->MipmapImg, image->ScaledImg, scaleTarget,
 											 &image->NormalHs, &image->MipmapHs,
 											 &image->extent, &image->last_scale_hs);
 		}
 
 		image->last_scale_type = type;
-		image->last_scale = target;
+		image->last_scale = scaleTarget;
 	}
 }
 

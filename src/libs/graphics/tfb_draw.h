@@ -48,7 +48,7 @@ typedef struct tfb_image
 	HOT_SPOT MipmapHs;
 	HOT_SPOT last_scale_hs;
 	int last_scale;
-	int last_scale_type;
+	uqm::TFBScaleMode last_scale_type;
 	Color last_fill;
 	EXTENT extent;
 	Mutex mutex;
@@ -83,10 +83,10 @@ void TFB_DrawScreen_Line(int x1, int y1, int x2, int y2, Color color,
 						 DrawMode, SCREEN dest, uqm::BYTE thickness);
 void TFB_DrawScreen_Rect(GFXRECT* rect, Color, DrawMode, SCREEN dest);
 void TFB_DrawScreen_Image(TFB_Image* img, int x, int y, int scale,
-						  int scaleMode, TFB_ColorMap*, DrawMode, SCREEN dest);
+						  uqm::TFBScaleMode scaleMode, TFB_ColorMap*, DrawMode, SCREEN dest);
 void TFB_DrawScreen_Copy(const GFXRECT* r, SCREEN src, SCREEN dest);
 void TFB_DrawScreen_FilledImage(TFB_Image* img, int x, int y, int scale,
-								int scaleMode, Color, DrawMode, SCREEN dest);
+								uqm::TFBScaleMode scaleMode, Color, DrawMode, SCREEN dest);
 void TFB_DrawScreen_FontChar(TFB_Char*, TFB_Image* backing, int x, int y,
 							 DrawMode, SCREEN dest);
 
@@ -96,7 +96,7 @@ void TFB_DrawScreen_SetMipmap(TFB_Image* img, TFB_Image* mmimg, int hotx,
 void TFB_DrawScreen_DeleteImage(TFB_Image* img);
 void TFB_DrawScreen_DeleteData(void*);
 void TFB_DrawScreen_WaitForSignal(void);
-void TFB_DrawScreen_ReinitVideo(int driver, int flags, int width, int height);
+void TFB_DrawScreen_ReinitVideo(uqm::GfxDriver driver, uqm::GfxFlags flags, int width, int height);
 void TFB_DrawScreen_Callback(void (*callback)(void* arg), void* arg);
 
 TFB_Image* TFB_DrawImage_New(TFB_Canvas canvas);
@@ -105,7 +105,7 @@ TFB_Image* TFB_DrawImage_New_Rotated(TFB_Image* img, int angle);
 void TFB_DrawImage_SetMipmap(TFB_Image* img, TFB_Image* mmimg, int hotx,
 							 int hoty);
 void TFB_DrawImage_Delete(TFB_Image* image);
-void TFB_DrawImage_FixScaling(TFB_Image* image, int target, int type);
+void TFB_DrawImage_FixScaling(TFB_Image* image, int scaleTarget, uqm::TFBScaleMode type);
 bool TFB_DrawImage_Intersect(TFB_Image* img1, GFXPOINT img1org,
 							 TFB_Image* img2, GFXPOINT img2org, const GFXRECT* interRect);
 void TFB_DrawImage_CopyRect(TFB_Image* source, const GFXRECT* srcRect,
@@ -115,9 +115,9 @@ void TFB_DrawImage_Line(int x1, int y1, int x2, int y2, Color color,
 						DrawMode, TFB_Image* target, uqm::BYTE thickness);
 void TFB_DrawImage_Rect(GFXRECT* rect, Color, DrawMode, TFB_Image* target);
 void TFB_DrawImage_Image(TFB_Image* img, int x, int y, int scale,
-						 int scaleMode, TFB_ColorMap*, DrawMode, TFB_Image* target);
+						 uqm::TFBScaleMode scaleMode, TFB_ColorMap*, DrawMode, TFB_Image* target);
 void TFB_DrawImage_FilledImage(TFB_Image* img, int x, int y, int scale,
-							   int scaleMode, Color, DrawMode, TFB_Image* target);
+							   uqm::TFBScaleMode scaleMode, Color, DrawMode, TFB_Image* target);
 void TFB_DrawImage_FontChar(TFB_Char*, TFB_Image* backing, int x, int y,
 							DrawMode, TFB_Image* target);
 void TFB_DrawImage_MaskImage(TFB_Image* img, DrawMode mode, TFB_Image* target, Color* fill);
@@ -128,7 +128,7 @@ TFB_Canvas TFB_DrawCanvas_New_ForScreen(int w, int h, bool withalpha);
 TFB_Canvas TFB_DrawCanvas_New_Paletted(int w, int h, Color palette[256],
 									   int transparent_index);
 TFB_Canvas TFB_DrawCanvas_New_ScaleTarget(TFB_Canvas canvas,
-										  TFB_Canvas oldcanvas, int type, int last_type);
+										  TFB_Canvas oldcanvas, uqm::TFBScaleMode type, uqm::TFBScaleMode last_type);
 TFB_Canvas TFB_DrawCanvas_New_RotationTarget(TFB_Canvas src, int angle);
 TFB_Canvas TFB_DrawCanvas_ToScreenFormat(TFB_Canvas canvas);
 bool TFB_DrawCanvas_IsPaletted(TFB_Canvas canvas);
@@ -154,9 +154,9 @@ void TFB_DrawCanvas_Line(int x1, int y1, int x2, int y2, Color color,
 						 DrawMode, TFB_Canvas target, uqm::BYTE thickness);
 void TFB_DrawCanvas_Rect(GFXRECT* rect, Color, DrawMode, TFB_Canvas target);
 void TFB_DrawCanvas_Image(TFB_Image* img, int x, int y, int scale,
-						  int scaleMode, TFB_ColorMap*, DrawMode, TFB_Canvas target);
+						  uqm::TFBScaleMode scaleMode, TFB_ColorMap*, DrawMode, TFB_Canvas target);
 void TFB_DrawCanvas_FilledImage(TFB_Image* img, int x, int y, int scale,
-								int scaleMode, Color, DrawMode, TFB_Canvas target);
+								uqm::TFBScaleMode scaleMode, Color, DrawMode, TFB_Canvas target);
 void TFB_DrawCanvas_FontChar(TFB_Char*, TFB_Image* backing, int x, int y,
 							 DrawMode, TFB_Canvas target);
 void TFB_DrawCanvas_CopyRect(TFB_Canvas source, const GFXRECT* srcRect,

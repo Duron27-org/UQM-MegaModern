@@ -46,20 +46,20 @@ int ScreenWidthActual;
 int ScreenHeightActual;
 
 int ScreenColorDepth;
-int GraphicsDriver;
+uqm::GfxDriver GraphicsDriver;
 int TFB_DEBUG_HALT = 0;
 
 volatile int TransitionAmount = 255;
 
 static int gscale = GSCALE_IDENTITY;
-static int gscale_mode = TFB_SCALE_NEAREST;
+static uqm::TFBScaleMode gscale_mode = uqm::TFBScaleMode::Nearest;
 
-void DrawFromExtraScreen(RECT* r)
+void DrawFromExtraScreen(GFXRECT* r)
 {
 	TFB_DrawScreen_Copy(r, TFB_SCREEN_EXTRA, TFB_SCREEN_MAIN);
 }
 
-void LoadIntoExtraScreen(RECT* r)
+void LoadIntoExtraScreen(GFXRECT* r)
 {
 	TFB_DrawScreen_Copy(r, TFB_SCREEN_MAIN, TFB_SCREEN_EXTRA);
 }
@@ -76,15 +76,15 @@ int GetGraphicScale(void)
 	return gscale;
 }
 
-int SetGraphicScaleMode(int mode)
+uqm::TFBScaleMode SetGraphicScaleMode(uqm::TFBScaleMode mode)
 {
-	int old_mode = gscale_mode;
-	assert(mode >= TFB_SCALE_NEAREST && mode <= TFB_SCALE_TRILINEAR);
+	uqm::TFBScaleMode old_mode = gscale_mode;
+	assert(mode >= TFBScaleMode::Nearest && mode <= TFBScaleMode::Trilinear);
 	gscale_mode = mode;
 	return old_mode;
 }
 
-int GetGraphicScaleMode(void)
+uqm::TFBScaleMode GetGraphicScaleMode(void)
 {
 	return gscale_mode;
 }
@@ -113,7 +113,7 @@ void FlushGraphics(void)
 
 #if SDL_MAJOR_VERSION == 1
 static void
-ExpandRect(RECT* rect, int expansion)
+ExpandRect(GFXRECT* rect, int expansion)
 {
 	if (rect->corner.x - expansion >= 0)
 	{
@@ -157,10 +157,10 @@ ExpandRect(RECT* rect, int expansion)
 }
 #endif // SDL_MAJOR_VERSION
 
-void SetTransitionSource(const RECT* pRect)
+void SetTransitionSource(const GFXRECT* pRect)
 {
 #if SDL_MAJOR_VERSION == 1
-	RECT ActualRect;
+	GFXRECT ActualRect;
 
 	if (pRect)
 	{ /* expand the rect to accomodate scalers in OpenGL mode */
@@ -176,7 +176,7 @@ void SetTransitionSource(const RECT* pRect)
 }
 
 // ScreenTransition() is synchronous (does not return until transition done)
-void ScreenTransition(uqm::EmulationMode transType, const RECT* pRect)
+void ScreenTransition(uqm::EmulationMode transType, const GFXRECT* pRect)
 {
 	const TimePeriod DURATION = ONE_SECOND * 31 / 60;
 	TimeCount startTime;
@@ -186,7 +186,7 @@ void ScreenTransition(uqm::EmulationMode transType, const RECT* pRect)
 		return;
 	}
 
-	TFB_UploadTransitionScreen((RECT*)pRect);
+	TFB_UploadTransitionScreen((GFXRECT*)pRect);
 
 	TransitionAmount = 0;
 	FlushGraphics();

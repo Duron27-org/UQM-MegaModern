@@ -123,7 +123,7 @@ void printBits(size_t const size, void const* const ptr)
 		for (j = 7; j >= 0; j--)
 		{
 			byte = (b[i] >> j) & 1;
-			printf("{}", byte);
+			printf("%c", byte);
 		}
 	}
 	puts("");

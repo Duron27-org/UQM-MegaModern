@@ -4,33 +4,43 @@
 #include "core/string/StringUtils.h"
 #include "options/OptionConstants.h"
 #include "options/OptionTypes.h"
+#include "options/OptionDefs.h"
 
+#include "lib/Math2D/Math2D.h"
 #include "libs/math/randomdefs.h" // TODO: only used for the PrimeA constant and SeedType. Find a better way to share that perhaps?
 #include "libs/platform.h"
 
 namespace uqm
 {
 
+enum class RunMode
+{
+	Normal,
+	Usage,
+	Version,
+};
+
+
 struct OptionsStruct
 {
 	// Commandline-only options
 	RunMode runMode {RunMode::Normal};
-	std::string logFile {};
-	std::string configDir {};
-	std::string contentDir {};
-	std::string addonDir {};
-	uqstl::vector<std::string> addons {};
+	uqstl::string logFile {};
+	uqstl::string configDir {};
+	uqstl::string contentDir {};
+	uqstl::string addonDir {};
+	uqstl::vector<uqstl::string> addons {};
 
-	std::string graphicsBackend {};
+	uqstl::string graphicsBackend {};
 
 	// Commandline and user config options
 	BoolOption opengl {false};
-	OptionT<Resolution> resolution {
+	OptionT<Vec2u> resolution {
 		{640, 480}
 	  };
-	IntOption fullscreen {2}; // TODO: what is "2"?
+	OptionT<WindowMode> windowMode {WindowMode::Fullscreen};
 	BoolOption scanlines {false};
-	IntOption scaler {0};
+	OptionT<ScalingMode> scaler {ScalingMode::None};
 	BoolOption showFps {false};
 	BoolOption keepAspectRatio {false};
 	FloatOption gamma {1.0f};
@@ -45,7 +55,7 @@ struct OptionsStruct
 	EmulationOption whichIntro {uqm::EmulationMode::PC};
 	EmulationOption whichShield {uqm::EmulationMode::PC};
 	EmulationOption smoothScroll {uqm::EmulationMode::PC};
-	IntOption meleeScale {TFB_SCALE_TRILINEAR};
+	OptionT<MeleeScaleMode> meleeScale {MeleeScaleMode::Smooth};
 	BoolOption subtitles {true};
 	BoolOption stereoSFX {false};
 	FloatOption musicVolumeScale {1.0f};
@@ -116,7 +126,7 @@ struct OptionsStruct
 	BoolOption advancedAutoPilot {false};
 	BoolOption meleeToolTips {false};
 	IntOption musicResume {0};
-	IntOption windowType {2};
+	IntOption windowEmulationMode {2};
 	BoolOption scatterElements {false};
 	BoolOption showUpgrades {false};
 	BoolOption fleetPointSys {false};
@@ -184,8 +194,6 @@ inline bool parseOption(EmulationOption& option, uqstl::string_view valueStr, uq
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-int parseOptions(uqstl::span<uqgsl::czstring const> args, OptionsStruct& options);
-void printUsage(FILE* out, const OptionsStruct& defaultOptions);
 
 template <typename InT>
 [[nodiscard]] inline float normalizeValue(const InT inVol, const InT max) noexcept
@@ -202,5 +210,25 @@ template <typename InT>
 
 	return inVol / static_cast<float>(max);
 }
+
+class UQMOptions
+{
+public:
+	int parseArgs(uqstl::span<uqgsl::zstring> args);
+	void printUsage(FILE* out, const OptionsStruct& defaultOptions);
+
+	const OptionsStruct& get() const
+	{
+		return m_options;
+	}
+
+	OptionsStruct& edit()
+	{
+		return m_options;
+	}
+
+private:
+	OptionsStruct m_options;
+};
 
 } // namespace uqm

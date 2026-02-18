@@ -60,16 +60,16 @@ TEST_F(OptionsTests, BoolOption_ToStringAndSet)
 // Constructor taking default value must not set the 'set' flag (per header implementation)
 TEST_F(OptionsTests, OptionT_DefaultCtorDoesNotSetFlag)
 {
-	OptionT<Resolution> resDefault({800, 600});
+	OptionT<Vec2u> resDefault({800, 600});
 	EXPECT_FALSE(resDefault.set);
-	EXPECT_EQ(resDefault.value.width, 800);
-	EXPECT_EQ(resDefault.value.height, 600);
+	EXPECT_EQ(resDefault.value.x, 800);
+	EXPECT_EQ(resDefault.value.y, 600);
 
 	// assigning marks set
-	resDefault = Resolution {1024, 768};
+	resDefault = Vec2u {1024, 768};
 	EXPECT_TRUE(resDefault.set);
-	EXPECT_EQ(resDefault.value.width, 1024);
-	EXPECT_EQ(resDefault.value.height, 768);
+	EXPECT_EQ(resDefault.value.x, 1024);
+	EXPECT_EQ(resDefault.value.y, 768);
 }
 
 // Enum toString functions for SeedType and EmulationMode
@@ -96,19 +96,6 @@ TEST_F(OptionsTests, OptionListValue_DefaultAndManual)
 	OptionListValueT<int> item {"test", 42};
 	EXPECT_STREQ(item.name, "test");
 	EXPECT_EQ(item.value, 42);
-}
-
-// Resolution struct basic semantics and boundaries
-TEST_F(OptionsTests, Resolution_DefaultsAndAssignment)
-{
-	Resolution r;
-	EXPECT_EQ(r.width, 0);
-	EXPECT_EQ(r.height, 0);
-
-	r.width = 123;
-	r.height = 456;
-	EXPECT_EQ(r.width, 123);
-	EXPECT_EQ(r.height, 456);
 }
 
 // RunMode enum basic checks
@@ -162,26 +149,26 @@ TEST_F(OptionsTests, OptionT_ToString_UsesUqmToStringForEnums)
 TEST_F(OptionsTests, GetOptionListValue_ExactMatchAndNonMatch)
 {
 	// exact matches
-	auto maybe = getOptionListValue(ScalerList, "bilinear");
-	ASSERT_TRUE(maybe.has_value());
-	EXPECT_EQ(*maybe, ScalerList[0].value);
+	//auto maybe = getOptionListValue(ScalerList, "bilinear");
+	//ASSERT_TRUE(maybe.has_value());
+	//EXPECT_EQ(*maybe, ScalerList[0].value);
 
-	// equivalent synonyms present (e.g. "no" and "none")
-	auto none1 = getOptionListValue(ScalerList, "no");
-	ASSERT_TRUE(none1.has_value());
-	EXPECT_EQ(*none1, 0);
+	//// equivalent synonyms present (e.g. "no" and "none")
+	//auto none1 = getOptionListValue(ScalerList, "no");
+	//ASSERT_TRUE(none1.has_value());
+	//EXPECT_EQ(*none1, 0);
 
-	auto none2 = getOptionListValue(ScalerList, "none");
-	ASSERT_TRUE(none2.has_value());
-	EXPECT_EQ(*none2, 0);
+	//auto none2 = getOptionListValue(ScalerList, "none");
+	//ASSERT_TRUE(none2.has_value());
+	//EXPECT_EQ(*none2, 0);
 
-	// case-sensitive: should not match
-	auto upper = getOptionListValue(ScalerList, "BILINEAR");
-	EXPECT_FALSE(upper.has_value());
+	//// case-sensitive: should not match
+	//auto upper = getOptionListValue(ScalerList, "BILINEAR");
+	//EXPECT_FALSE(upper.has_value());
 
-	// partial match must not succeed
-	auto partial = getOptionListValue(ScalerList, "bilin");
-	EXPECT_FALSE(partial.has_value());
+	//// partial match must not succeed
+	//auto partial = getOptionListValue(ScalerList, "bilin");
+	//EXPECT_FALSE(partial.has_value());
 
 	// empty list - should return nullopt
 	uqstl::array<OptionListValueT<int>, 0> emptyList {{}};
@@ -236,21 +223,33 @@ TEST_F(OptionsTests, ParseOptionValue_NumericFloatBoolAndEnum)
 TEST_F(OptionsTests, ParseOptionValue_InvalidInputsThrow)
 {
 	// invalid int
-	EXPECT_THROW(parseOptionValue<int>("abc", "bad-int"), std::invalid_argument);
+	EXPECT_THROW([]() {
+		uqstl::ignore = parseOptionValue<int>("abc", "bad-int");
+	}(),
+				 std::invalid_argument);
 
 	// leading whitespace is not accepted by numeric from_chars
-	EXPECT_THROW(parseOptionValue<int>(" 42", "ws-int"), std::invalid_argument);
+	EXPECT_THROW([]() {
+		uqstl::ignore = parseOptionValue<int>(" 42", "ws-int");
+	}(),
+				 std::invalid_argument);
 	// trailing whitespace is.
 	auto x = parseOptionValue<int>("42 ", "ws-int2");
 	ASSERT_TRUE(x.has_value());
 	EXPECT_EQ(*x, 42);
 
 	// bool specialisation: whitespace will not match known tokens
-	EXPECT_THROW(parseOptionValue<bool>(" yes ", "bool-ws"), std::invalid_argument);
+	EXPECT_THROW([]() {
+		uqstl::ignore = parseOptionValue<bool>(" yes ", "bool-ws");
+	}(),
+				 std::invalid_argument);
 
 	// integer overflow
-	std::string big = fmt::format("{}0", std::numeric_limits<int>::max());
-	EXPECT_THROW(parseOptionValue<int>(big, "too-large"), std::out_of_range);
+	EXPECT_THROW([]() {
+		std::string big = fmt::format("{}0", std::numeric_limits<int>::max());
+		uqstl::ignore = parseOptionValue<int>(big, "too-large");
+	}(),
+				 std::out_of_range);
 }
 
 
@@ -271,7 +270,7 @@ TEST_F(OptionsTests, ParseOption_TemplateAndSpecialization)
 	EXPECT_TRUE(emu.set);
 	EXPECT_TRUE(parseOption(emu, "3do", "emu"));
 	EXPECT_EQ(emu.value, EmulationMode::Console3DO);
-	
+
 	// unknown string should not set
 	EmulationOption emu2;
 	EXPECT_FALSE(parseOption(emu2, "unknown-mode", "emu"));

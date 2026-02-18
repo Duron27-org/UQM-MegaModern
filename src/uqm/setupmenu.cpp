@@ -64,21 +64,42 @@ struct option_list_value
 	int value;
 };
 
-const struct option_list_value scalerList[6] =
-	{
-		{"no",	   0							},
-		{"bilinear", TFB_GFXFLAGS_SCALE_BILINEAR	},
-		{"biadapt",	TFB_GFXFLAGS_SCALE_BIADAPT	  },
-		{"biadv",	  TFB_GFXFLAGS_SCALE_BIADAPTADV},
-		{"triscan",	TFB_GFXFLAGS_SCALE_TRISCAN	  },
-		{"hq",	   TFB_GFXFLAGS_SCALE_HQXX	  }
-};
+//const struct option_list_value scalerList[6] =
+//	{
+//		{"no",	   0							},
+//		{"bilinear", TFB_GFXFLAGS_SCALE_BILINEAR	},
+//		{"biadapt",	TFB_GFXFLAGS_SCALE_BIADAPT	  },
+//		{"biadv",	  TFB_GFXFLAGS_SCALE_BIADAPTADV},
+//		{"triscan",	TFB_GFXFLAGS_SCALE_TRISCAN	  },
+//		{"hq",	   TFB_GFXFLAGS_SCALE_HQXX	  }
+//};
+
 
 static int SfxVol;
 static int MusVol;
 static int SpcVol;
 static int optMScale;
 static SOUND testSounds;
+
+uqm::ScalingMode scaleTypeOptionToScalingMode(OPT_SCALETYPE opt)
+{
+	switch (opt)
+	{
+		case OPTVAL_NO_SCALE:
+			return uqm::ScalingMode::None;
+		case OPTVAL_BILINEAR_SCALE:
+			return uqm::ScalingMode::Bilinear;
+		case OPTVAL_BIADAPT_SCALE:
+			return uqm::ScalingMode::BiAdapt;
+		case OPTVAL_BIADV_SCALE:
+			return uqm::ScalingMode::BiAdaptAdv;
+		case OPTVAL_TRISCAN_SCALE:
+			return uqm::ScalingMode::Triscan;
+		case OPTVAL_HQXX_SCALE:
+			return uqm::ScalingMode::HQ;
+	}
+	return uqm::ScalingMode::None;
+}
 
 int whichPlatformRef(OPT_CONSOLETYPE opt)
 {
@@ -917,15 +938,15 @@ adjustSpeech(WIDGET_SLIDER* self)
 }
 
 static void
-toggle_scanlines(WIDGET_CHOICE* self, int* NewGfxFlags)
+toggle_scanlines(WIDGET_CHOICE* self, uqm::GfxFlags* NewGfxFlags)
 {
 	if (self->selected == 1)
 	{
-		*NewGfxFlags |= TFB_GFXFLAGS_SCANLINES;
+		*NewGfxFlags |= uqm::GfxFlags::Scanlines;
 	}
 	else
 	{
-		*NewGfxFlags &= ~TFB_GFXFLAGS_SCANLINES;
+		*NewGfxFlags &= ~uqm::GfxFlags::Scanlines;
 	}
 	res_PutBoolean("config.scanlines", self->selected);
 }
@@ -956,70 +977,70 @@ change_scaling(WIDGET_CHOICE* self, int* NewWidth, int* NewHeight)
 }
 
 static void
-toggle_fullscreen(WIDGET_CHOICE* self, int* NewGfxFlags)
+toggle_fullscreen(WIDGET_CHOICE* self, uqm::GfxFlags* NewGfxFlags)
 {
 	if (self->selected == 1)
 	{
-		*NewGfxFlags &= ~TFB_GFXFLAGS_FULLSCREEN;
-		*NewGfxFlags |= TFB_GFXFLAGS_EX_FULLSCREEN;
+		*NewGfxFlags &= ~uqm::GfxFlags::Fullscreen;
+		*NewGfxFlags |= uqm::GfxFlags::ExclusiveFullscreen;
 	}
 	else if (self->selected == 2)
 	{
-		*NewGfxFlags &= ~TFB_GFXFLAGS_EX_FULLSCREEN;
-		*NewGfxFlags |= TFB_GFXFLAGS_FULLSCREEN;
+		*NewGfxFlags &= ~uqm::GfxFlags::ExclusiveFullscreen;
+		*NewGfxFlags |= uqm::GfxFlags::Fullscreen;
 	}
 	else
 	{
-		*NewGfxFlags &= ~TFB_GFXFLAGS_FULLSCREEN;
-		*NewGfxFlags &= ~TFB_GFXFLAGS_EX_FULLSCREEN;
+		*NewGfxFlags &= ~(uqm::GfxFlags::Fullscreen | uqm::GfxFlags::ExclusiveFullscreen);
 	}
 	res_PutInteger("config.fullscreen", self->selected);
 }
 
 static void
-change_scaler(WIDGET_CHOICE* self, int OldVal, int* NewGfxFlags)
+change_scaler(WIDGET_CHOICE* self, int OldVal, uqm::GfxFlags* NewGfxFlags)
 {
-	*NewGfxFlags &= ~scalerList[OldVal].value;
-	*NewGfxFlags |= scalerList[self->selected].value;
-	res_PutString("config.scaler", scalerList[self->selected].str);
+	const uqm::ScalingMode oldMode {scaleTypeOptionToScalingMode((OPT_SCALETYPE)OldVal)};
+	const uqm::ScalingMode selectedMode {scaleTypeOptionToScalingMode((OPT_SCALETYPE)self->selected)};
+	*NewGfxFlags &= ~toGfxFlags(oldMode);
+	*NewGfxFlags |= toGfxFlags(selectedMode);
+	res_PutString("config.scaler", fmt::format("{}", selectedMode).c_str());
 }
 
 static void
-toggle_showfps(WIDGET_CHOICE* self, int* NewGfxFlags)
+toggle_showfps(WIDGET_CHOICE* self, uqm::GfxFlags* NewGfxFlags)
 {
 	if (self->selected == 1)
 	{
-		*NewGfxFlags |= TFB_GFXFLAGS_SHOWFPS;
+		*NewGfxFlags |= uqm::GfxFlags::ShowFPS;
 	}
 	else
 	{
-		*NewGfxFlags &= ~TFB_GFXFLAGS_SHOWFPS;
+		*NewGfxFlags &= ~uqm::GfxFlags::ShowFPS;
 	}
 	res_PutBoolean("config.showfps", self->selected);
 }
 
 static void
-change_gfxdriver(WIDGET_CHOICE* self, int* NewGfxDriver)
+change_gfxdriver(WIDGET_CHOICE* self, uqm::GfxDriver* NewGfxDriver)
 {
 #ifdef HAVE_OPENGL
 	*NewGfxDriver = (self->selected == OPTVAL_ALWAYS_GL ?
-						 TFB_GFXDRIVER_SDL_OPENGL :
-						 TFB_GFXDRIVER_SDL_PURE);
+						 uqm::GfxDriver::SDL_OpenGL :
+						 uqm::GfxDriver::SDL_Pure);
 #else
-	*NewGfxDriver = TFB_GFXDRIVER_SDL_PURE;
+	*NewGfxDriver = uqm::GfxDriver::SDL_Pure;
 #endif
 	if (GraphicsDriver != *NewGfxDriver)
 	{
 		res_PutBoolean("config.alwaysgl", self->selected);
-		res_PutBoolean("config.usegl",
-					   *NewGfxDriver == TFB_GFXDRIVER_SDL_OPENGL);
+		res_PutBoolean("config.usegl", *NewGfxDriver == uqm::GfxDriver::SDL_OpenGL);
 	}
 }
 
 void process_graphics_options(WIDGET_CHOICE* self, int OldVal)
 {
-	int NewGfxFlags = GfxFlags;
-	int NewGfxDriver = GraphicsDriver;
+	uqm::GfxFlags NewGfxFlags = g_gfxFlags;
+	uqm::GfxDriver NewGfxDriver = GraphicsDriver;
 	int NewWidth = SavedWidth;
 	int NewHeight = SavedHeight;
 	bool isExclusive = false;
@@ -1052,7 +1073,7 @@ void process_graphics_options(WIDGET_CHOICE* self, int OldVal)
 			break;
 		case CHOICE_RESOLUTION:
 			change_scaling(self, &NewWidth, &NewHeight);
-			isExclusive = NewGfxFlags & TFB_GFXFLAGS_EX_FULLSCREEN;
+			isExclusive = testFlag(NewGfxFlags, uqm::GfxFlags::ExclusiveFullscreen);
 			break;
 		default:
 			return;
@@ -1073,11 +1094,11 @@ void process_graphics_options(WIDGET_CHOICE* self, int OldVal)
 		}
 	}
 
-	if (NewWidth != WindowWidth || NewHeight != WindowHeight || NewGfxFlags != GfxFlags || NewGfxDriver != GraphicsDriver)
+	if (NewWidth != WindowWidth || NewHeight != WindowHeight || NewGfxFlags != g_gfxFlags || NewGfxDriver != GraphicsDriver)
 	{
 		if (isExclusive)
 		{
-			NewGfxFlags &= ~TFB_GFXFLAGS_EX_FULLSCREEN;
+			NewGfxFlags &= ~uqm::GfxFlags::ExclusiveFullscreen;
 		}
 
 		TFB_DrawScreen_ReinitVideo(NewGfxDriver, NewGfxFlags,
@@ -1089,8 +1110,8 @@ void process_graphics_options(WIDGET_CHOICE* self, int OldVal)
 	if (isExclusive)
 	{ // needed twice to reinitialize Exclusive Full Screen after a
 		// resolution change
-		GfxFlags |= TFB_GFXFLAGS_EX_FULLSCREEN;
-		TFB_DrawScreen_ReinitVideo(GraphicsDriver, GfxFlags,
+		g_gfxFlags |= uqm::GfxFlags::ExclusiveFullscreen;
+		TFB_DrawScreen_ReinitVideo(GraphicsDriver, g_gfxFlags,
 								   WindowWidth, WindowHeight);
 	}
 
@@ -1117,8 +1138,8 @@ change_res(WIDGET_TEXTENTRY* self)
 {
 	int NewWidth = SavedWidth;
 	int NewHeight = SavedHeight;
-	int NewGfxFlags = GfxFlags;
-	bool isExclusive = NewGfxFlags & TFB_GFXFLAGS_EX_FULLSCREEN;
+	uqm::GfxFlags NewGfxFlags = g_gfxFlags;
+	bool isExclusive = testFlag(NewGfxFlags, uqm::GfxFlags::ExclusiveFullscreen);
 
 	if (sscanf(self->value, "%dx%d", &NewWidth, &NewHeight) != 2)
 	{
@@ -1151,10 +1172,10 @@ change_res(WIDGET_TEXTENTRY* self)
 	{
 		if (isExclusive)
 		{
-			NewGfxFlags &= ~TFB_GFXFLAGS_EX_FULLSCREEN;
+			NewGfxFlags &= ~uqm::GfxFlags::ExclusiveFullscreen;
 		}
 
-		TFB_DrawScreen_ReinitVideo(GraphicsDriver, GfxFlags,
+		TFB_DrawScreen_ReinitVideo(GraphicsDriver, g_gfxFlags,
 								   NewWidth, NewHeight);
 	}
 	else
@@ -1162,9 +1183,9 @@ change_res(WIDGET_TEXTENTRY* self)
 		return;
 	}
 
-	if (NewGfxFlags != GfxFlags)
+	if (NewGfxFlags != g_gfxFlags)
 	{
-		GfxFlags = NewGfxFlags;
+		g_gfxFlags = NewGfxFlags;
 	}
 
 	FlushInput();
@@ -1172,8 +1193,8 @@ change_res(WIDGET_TEXTENTRY* self)
 	if (isExclusive)
 	{ // needed twice to reinitialize Exclusive Full Screen after a
 		// resolution change
-		GfxFlags |= TFB_GFXFLAGS_EX_FULLSCREEN;
-		TFB_DrawScreen_ReinitVideo(GraphicsDriver, GfxFlags,
+		g_gfxFlags |= uqm::GfxFlags::ExclusiveFullscreen;
+		TFB_DrawScreen_ReinitVideo(GraphicsDriver, g_gfxFlags,
 								   WindowWidth, WindowHeight);
 	}
 
@@ -2345,7 +2366,6 @@ void SetupMenu(void)
 void GetGlobalOptions(GLOBALOPTS* opts)
 {
 	bool whichBound;
-	int flags;
 	uqm::BYTE i;
 
 	/*
@@ -2353,11 +2373,11 @@ void GetGlobalOptions(GLOBALOPTS* opts)
  */
 	opts->screenResolution = (OPT_RESTYPE)(resolutionFactor >> 1);
 
-	if (GfxFlags & TFB_GFXFLAGS_FULLSCREEN)
+	if (testFlag(g_gfxFlags, uqm::GfxFlags::Fullscreen))
 	{
 		opts->fullscreen = OPTVAL_BORDERED_FULLSCREEN;
 	}
-	else if (GfxFlags & TFB_GFXFLAGS_EX_FULLSCREEN)
+	else if (testFlag(g_gfxFlags, uqm::GfxFlags::ExclusiveFullscreen))
 	{
 		opts->fullscreen = OPTVAL_EXCLUSIVE_FULLSCREEN;
 	}
@@ -2367,32 +2387,36 @@ void GetGlobalOptions(GLOBALOPTS* opts)
 	}
 	/*opts->fullscreen = (GfxFlags & TFB_GFXFLAGS_FULLSCREEN) ?
 		OPTVAL_ENABLED : OPTVAL_DISABLED;*/
-	opts->fps = (GfxFlags & TFB_GFXFLAGS_SHOWFPS) ?
+	opts->fps = testFlag(g_gfxFlags, uqm::GfxFlags::ShowFPS) ?
 					OPTVAL_ENABLED :
 					OPTVAL_DISABLED;
-	opts->scanlines = (GfxFlags & TFB_GFXFLAGS_SCANLINES) ?
+	opts->scanlines = testFlag(g_gfxFlags, uqm::GfxFlags::Scanlines) ?
 						  OPTVAL_ENABLED :
 						  OPTVAL_DISABLED;
 
-	flags = GfxFlags & 248; // 11111000 - only scaler fralgs
+	uqm::GfxFlags flags = g_gfxFlags & uqm::GfxFlagsScaleAny;
 
 	switch (flags)
 	{ // this works because there is only 1 scaler flag at a time
-		case TFB_GFXFLAGS_SCALE_BILINEAR:
+		case uqm::GfxFlags::Scale_Bilinear:
 			opts->scaler = OPTVAL_BILINEAR_SCALE;
 			break;
-		case TFB_GFXFLAGS_SCALE_BIADAPT:
+		case uqm::GfxFlags::Scale_BiAdapt:
 			opts->scaler = OPTVAL_BIADAPT_SCALE;
 			break;
-		case TFB_GFXFLAGS_SCALE_BIADAPTADV:
+		case uqm::GfxFlags::Scale_BiAdaptAdv:
 			opts->scaler = OPTVAL_BIADV_SCALE;
 			break;
-		case TFB_GFXFLAGS_SCALE_TRISCAN:
+		case uqm::GfxFlags::Scale_Triscan:
 			opts->scaler = OPTVAL_TRISCAN_SCALE;
 			break;
-		case TFB_GFXFLAGS_SCALE_HQXX:
+		case uqm::GfxFlags::Scale_HQXX:
 			opts->scaler = OPTVAL_HQXX_SCALE;
 			break;
+		case uqm::GfxFlags::ExclusiveFullscreen:
+		case uqm::GfxFlags::Fullscreen:
+		case uqm::GfxFlags::Scanlines:
+		case uqm::GfxFlags::ShowFPS:
 		default:
 			opts->scaler = OPTVAL_NO_SCALE;
 			break;
@@ -2418,7 +2442,7 @@ void GetGlobalOptions(GLOBALOPTS* opts)
 	opts->loresBlowup = (OPT_RESSCALER)loresBlowupScale;
 	/* Work out resolution.  On the way, try to guess a good default
 	 * for config.alwaysgl, then overwrite it if it was set previously. */
-	if ((!IS_HD && (GraphicsDriver != TFB_GFXDRIVER_SDL_PURE) && ((WindowWidth == 320) || (WindowWidth == 640))) || res_GetBoolean("config.alwaysgl"))
+	if ((!IS_HD && (GraphicsDriver != uqm::GfxDriver::SDL_Pure) && ((WindowWidth == 320) || (WindowWidth == 640))) || res_GetBoolean("config.alwaysgl"))
 	{
 		opts->driver = OPTVAL_ALWAYS_GL;
 	}
@@ -2510,7 +2534,7 @@ void GetGlobalOptions(GLOBALOPTS* opts)
 	optMScale = opts->meleezoom = optMeleeScale;
 #else
 	optMScale = opts->meleezoom =
-		(OPT_MELEEZOOM)(optMeleeScale == TFB_SCALE_STEP ? uqm::EmulationMode::PC : uqm::EmulationMode::Console3DO);
+		(OPT_MELEEZOOM)(uqm::toTFBScaleMode(optMeleeScale) == uqm::TFBScaleMode::Step ? uqm::EmulationMode::PC : uqm::EmulationMode::Console3DO);
 #endif
 	opts->controllerType = (OPT_CONTROLLER)optControllerType;
 	opts->directionalJoystick = optDirectionalJoystick; // For Android
@@ -2775,7 +2799,8 @@ void SetGlobalOptions(GLOBALOPTS* opts)
 		}
 		res_PutInteger("config.smoothmelee", opts->meleezoom);
 #else
-		optMeleeScale = ((uqm::EmulationMode)opts->meleezoom == uqm::EmulationMode::Console3DO) ? TFB_SCALE_TRILINEAR : TFB_SCALE_STEP;
+		uqm::TFBScaleMode tfbScale {((uqm::EmulationMode)opts->meleezoom == uqm::EmulationMode::Console3DO) ? uqm::TFBScaleMode::Trilinear : uqm::TFBScaleMode::Step};
+		optMeleeScale = toMeleeScaleMode(tfbScale);
 		res_PutBoolean("config.smoothmelee", (uqm::EmulationMode)opts->meleezoom == uqm::EmulationMode::Console3DO);
 #endif
 	}
@@ -2955,7 +2980,7 @@ void SetGlobalOptions(GLOBALOPTS* opts)
 		TFB_BBox_Init(CanvasWidth, CanvasHeight);
 		FlushColorXForms();
 
-		TFB_DrawScreen_ReinitVideo(GraphicsDriver, GfxFlags, w, h);
+		TFB_DrawScreen_ReinitVideo(GraphicsDriver, g_gfxFlags, w, h);
 		InitVideoPlayer(true);
 
 		Reload();

@@ -137,21 +137,21 @@ void ProcessUtilityKeys(void)
 
 	if (ImmediateInputState.menu[KEY_FULLSCREEN])
 	{
-		int flags = GfxFlags;
+		uqm::GfxFlags flags = g_gfxFlags;
 
-		if (flags & TFB_GFXFLAGS_EX_FULLSCREEN)
+		if (testFlag(flags, uqm::GfxFlags::ExclusiveFullscreen))
 		{
-			flags &= ~TFB_GFXFLAGS_FULLSCREEN;
-			flags &= ~TFB_GFXFLAGS_EX_FULLSCREEN;
+			flags &= ~uqm::GfxFlags::Fullscreen;
+			flags &= ~uqm::GfxFlags::ExclusiveFullscreen;
 		}
 		else
 		{
-			flags ^= TFB_GFXFLAGS_FULLSCREEN;
+			flags ^= uqm::GfxFlags::Fullscreen;
 		}
 
 		if (IS_HD)
 		{
-			flags ^= TFB_GFXFLAGS_SCALE_BILINEAR;
+			flags ^= uqm::GfxFlags::Scale_Bilinear;
 		}
 
 		// clear ImmediateInputState so we don't repeat this next frame

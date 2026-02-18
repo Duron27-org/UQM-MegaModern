@@ -370,7 +370,7 @@ void FixContextFontEffect(void)
 
 		TFB_DrawImage_Image(EffectFrame->image,
 							-EffectFrame->HotSpot.x, -EffectFrame->HotSpot.y,
-							0, 0, nullptr, DRAW_REPLACE_MODE, img);
+							0, uqm::TFBScaleMode::None, nullptr, DRAW_REPLACE_MODE, img);
 	}
 	else
 	{ // solid color backing

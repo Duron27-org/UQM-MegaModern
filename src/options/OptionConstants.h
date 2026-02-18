@@ -10,26 +10,26 @@
 namespace uqm
 {
 
-static inline constexpr uqstl::array<OptionListValueT<int>, 7> ScalerList {
-	{
-		{"bilinear", TFB_GFXFLAGS_SCALE_BILINEAR},
-		{"biadapt", TFB_GFXFLAGS_SCALE_BIADAPT},
-		{"biadv", TFB_GFXFLAGS_SCALE_BIADAPTADV},
-		{"triscan", TFB_GFXFLAGS_SCALE_TRISCAN},
-		{"hq", TFB_GFXFLAGS_SCALE_HQXX},
-		{"none", 0},
-		{"no", 0}, /* uqm.cfg value */
-	}
-};
+//static inline constexpr uqstl::array<OptionListValueT<int>, 7> ScalerList {
+//	{
+//		{"bilinear", TFB_GFXFLAGS_SCALE_BILINEAR},
+//		{"biadapt", TFB_GFXFLAGS_SCALE_BIADAPT},
+//		{"biadv", TFB_GFXFLAGS_SCALE_BIADAPTADV},
+//		{"triscan", TFB_GFXFLAGS_SCALE_TRISCAN},
+//		{"hq", TFB_GFXFLAGS_SCALE_HQXX},
+//		{"none", 0},
+//		{"no", 0}, /* uqm.cfg value */
+//	}
+//};
 
-static inline constexpr uqstl::array<OptionListValueT<int>, 6> MeleeScaleList {
-	{{"smooth", TFB_SCALE_TRILINEAR},
-	 {"3do", TFB_SCALE_TRILINEAR},
-	 {"step", TFB_SCALE_STEP},
-	 {"pc", TFB_SCALE_STEP},
-	 {"bilinear", TFB_SCALE_BILINEAR},
-	 {"nearest", TFB_SCALE_NEAREST}}
-};
+//static inline constexpr uqstl::array<OptionListValueT<int>, 6> MeleeScaleList {
+//	{{"smooth", TFB_SCALE_TRILINEAR},
+//	 {"3do", TFB_SCALE_TRILINEAR},
+//	 {"step", TFB_SCALE_STEP},
+//	 {"pc", TFB_SCALE_STEP},
+//	 {"bilinear", TFB_SCALE_BILINEAR},
+//	 {"nearest", TFB_SCALE_NEAREST}}
+//};
 
 static inline constexpr uqstl::array<OptionListValueT<int>, 4> AudioDriverList {
 	{{"openal", audio_DRIVER_OPENAL},

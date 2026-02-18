@@ -29,7 +29,7 @@
 // The Graphics Backend vtable
 typedef struct _tfb_graphics_backend
 {
-	void (*preprocess)(int force_redraw, int transition_amount, int fade_amount);
+	void (*preprocess)(uqm::TFBRedraw force_redraw, int transition_amount, int fade_amount);
 	void (*postprocess)(bool hd);
 	void (*uploadTransitionScreen)(void);
 	void (*screen)(SCREEN screen, Uint8 alpha, SDL_Rect* rect);

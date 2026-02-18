@@ -9,12 +9,18 @@
 #include <cctype>
 #include <fmt/format.h>
 #include "core/stl/stl.h"
-
+#include "core/types/enum.h"
 
 namespace uqm
 {
 static constexpr const char* TrueText {"true"};
 static constexpr const char* FalseText {"false"};
+
+template <typename E>
+concept HasToStringImpl =
+	requires(E e) {
+		{ toStringImpl(e) } -> ::std::convertible_to<const char*>;
+	};
 
 [[nodiscard]] inline constexpr bool isEmpty(const char* sz) noexcept
 {
@@ -33,6 +39,24 @@ static constexpr const char* FalseText {"false"};
 [[nodiscard]] inline const char* toString(bool value)
 {
 	return value ? TrueText : FalseText;
+}
+
+template <typename E, uqstl::enable_if_t<std::is_enum_v<E>, bool> = true>
+[[nodiscard]] static constexpr const char* toString(const E e)
+{
+#ifdef WITH_MAGIC_ENUM
+	// a toString implementation will override the magic_enum output.
+	if constexpr (HasToStringImpl<E>)
+	{
+		return toStringImpl(e);
+	}
+	else
+	{
+		return magic_enum::enum_name(e).data();
+	}
+#else
+	static_assert(HasToStringImpl<E>, "Enum must have a toStringImpl() method to use this toString() method.") return toStringImpl(e);
+#endif
 }
 
 template <typename T, typename uqstl::enable_if_t<std::is_arithmetic_v<T>, bool> = true>
@@ -80,6 +104,12 @@ inline const char* toString(const T value, uqstl::span<char> buffer)
 	return buffer.data();
 }
 
+template <typename E, uqstl::enable_if_t<std::is_enum_v<E>, bool> = true>
+[[nodiscard]] inline uqstl::optional<E> fromString(const uqstl::string_view s)
+{
+	return magic_enum::enum_cast<E>(s, magic_enum::case_insensitive);
+}
+
 
 [[nodiscard]] inline bool compareCharICase(const char a, const char b) noexcept
 {
@@ -107,6 +137,11 @@ template <typename StringT>
 [[nodiscard]] inline constexpr const char* c_str(const StringT& str) noexcept
 {
 	return str.c_str();
+}
+template <>
+[[nodiscard]] inline constexpr const char* c_str<char*>(char* const& str) noexcept
+{
+	return str;
 }
 template <>
 [[nodiscard]] inline constexpr const char* c_str<const char*>(const char* const& str) noexcept
@@ -148,6 +183,11 @@ inline uqstl::errc parseStr(uqstl::string_view str, T& out)
 	}
 	return ec;
 }
+
+template <typename E>
+struct EnumNames
+{
+};
 } // namespace uqm
 
 namespace fmt
@@ -163,6 +203,114 @@ FMT_INLINE auto format_to_sz_n(OutputIt out, size_t outSize, format_string<T...>
 	*result.out = '\0';
 	return result;
 }
+
+
+template <typename E>
+	requires ::std::is_enum_v<E>
+struct formatter<E> : formatter<std::underlying_type_t<E>>
+{
+	using base_formatter = formatter<std::underlying_type_t<E>>;
+
+	bool m_useString {false};
+	bool m_includeNumericValueWithString {false};
+
+	constexpr auto parse(format_parse_context& ctx)
+	{
+		if (auto it {ctx.begin()}; it != ctx.end() && *it == 's')
+		{
+#ifndef WITH_MAGIC_ENUM
+			if constexpr (!::uqm::HasToStringImpl<E>)
+			{
+				fmt::report_error("Enum requires a toString() impl to use the 's' specifier, or install the magic_enum library.");
+			}
+#endif
+
+			m_useString = true;
+			++it;
+			// 's' followed by 'n' will output the numeric value as well.
+			if (it != ctx.end() && *it == 'n')
+			{
+				m_includeNumericValueWithString = true;
+				++it;
+			}
+			ctx.advance_to(it);
+		}
+
+		return base_formatter::parse(ctx);
+	}
+
+	template <typename FormatContext>
+	auto format(E value, FormatContext& ctx) const -> format_context::iterator
+	{
+		auto out {ctx.out()};
+		if (m_useString)
+		{
+#ifdef WITH_MAGIC_ENUM
+			// a toString implementation will override the magic_enum output.
+			if constexpr (::uqm::HasToStringImpl<E>)
+			{
+				out = fmt::format_to(out, "{}", toStringImpl(value));
+			}
+			else
+			{
+				out = fmt::format_to(out, "{}", magic_enum::enum_name(value));
+			}
+#else
+			out = fmt::format_to(out, "{}", toString(value));
+#endif
+			if (m_includeNumericValueWithString)
+			{
+				*out++ = ' ';
+				*out++ = '(';
+				out = base_formatter::format(static_cast<std::underlying_type_t<E>>(value), ctx);
+				*out++ = ')';
+			}
+
+			return out;
+		}
+
+		return base_formatter::format(static_cast<std::underlying_type_t<E>>(value), ctx);
+	}
+};
+
+template <typename E>
+struct formatter<::uqm::EnumNames<E>> : formatter<E>
+{
+	using base_formatter = formatter<E>;
+	const char* m_sep {", "};
+
+	constexpr auto parse(format_parse_context& ctx)
+	{
+		if (auto it {ctx.begin()}; it != ctx.end() && *it == '|')
+		{
+			m_sep = " | ";
+			++it;
+			ctx.advance_to(it);
+		}
+
+		return base_formatter::parse(ctx);
+	}
+
+	template <typename FormatContext>
+	auto format(::uqm::EnumNames<E> value, FormatContext& ctx) const -> format_context::iterator
+	{
+		auto out {ctx.out()};
+		static constexpr auto enumValues {magic_enum::enum_values<E>()};
+		bool first {true};
+		for (const auto val : enumValues)
+		{
+			if (!first)
+			{
+				out = fmt::format_to(out, "{}", m_sep);
+			}
+			out = base_formatter::format(static_cast<E>(val), ctx);
+			first = false;
+		}
+
+		return out;
+	}
+};
+
 } // namespace fmt
 
 #endif /* UQM_CORE_STRING_STRINGUTILS_H_ */

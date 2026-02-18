@@ -54,7 +54,7 @@ static TFB_ScaleFunc scaler = nullptr;
 #define R_MASK 0xff000000
 #endif
 
-static void TFB_SDL2_Preprocess(int force_full_redraw,
+static void TFB_SDL2_Preprocess(uqm::TFBRedraw force_full_redraw,
 								int transition_amount, int fade_amount);
 static void TFB_SDL2_Postprocess(bool hd);
 static void TFB_SDL2_UploadTransitionScreen(void);
@@ -156,7 +156,7 @@ FindBestRenderDriver(void)
 	return -1;
 }
 
-int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
+int TFB_Pure_ConfigureVideo(uqm::GfxDriver driver, uqm::GfxFlags flags, int width, int height,
 							int togglefullscreen, unsigned int resFactor,
 							unsigned int windowType)
 {
@@ -177,16 +177,17 @@ int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
 		window = SDL_CreateWindow(caption,
 								  SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 								  width, height, 0);
-		if (flags & TFB_GFXFLAGS_FULLSCREEN)
+		if (testFlag(flags, uqm::GfxFlags::Fullscreen))
 		{
 			/* If we create the window fullscreen, it will have
 			 * no icon if and when it becomes windowed. */
 			SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 		}
-		else if (flags & TFB_GFXFLAGS_EX_FULLSCREEN)
+		else if (testFlag(flags, uqm::GfxFlags::ExclusiveFullscreen))
 		{
 			SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
 		}
+
 		if (!window)
 		{
 			return -1;
@@ -216,7 +217,7 @@ int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
 				return -1;
 			}
 		}
-		if (flags & TFB_GFXFLAGS_SHOWFPS)
+		if (testFlag(flags, uqm::GfxFlags::ShowFPS))
 		{
 			if (0 != ReInit_FPS_Screen(&SDL_Screen_fps, CanvasWidth >> 4, CanvasHeight >> 4))
 			{
@@ -258,7 +259,7 @@ int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
 			SDL_Screen = SDL_Screens[0];
 			TransitionScreen = SDL_Screens[2];
 		}
-		if (flags & TFB_GFXFLAGS_SHOWFPS)
+		if (testFlag(flags, uqm::GfxFlags::ShowFPS))
 		{
 			if (0 != ReInit_FPS_Screen(&SDL_Screen_fps, CanvasWidth >> 4, CanvasHeight >> 4))
 			{
@@ -269,11 +270,11 @@ int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
 		{
 			UnInit_Screen(&SDL_Screen_fps);
 		}
-		if (flags & TFB_GFXFLAGS_FULLSCREEN)
+		if (testFlag(flags, uqm::GfxFlags::Fullscreen))
 		{
 			SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 		}
-		else if (flags & TFB_GFXFLAGS_EX_FULLSCREEN)
+		else if (testFlag(flags, uqm::GfxFlags::ExclusiveFullscreen))
 		{
 			SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
 		}
@@ -285,7 +286,7 @@ int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
 		SDL_SetWindowTitle(window, caption);
 	}
 
-	if (GfxFlags & TFB_GFXFLAGS_SCALE_ANY)
+	if (testFlag(g_gfxFlags, uqm::GfxFlagsScaleAny))
 	{
 		/* Linear scaling */
 		SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
@@ -296,7 +297,7 @@ int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
 		SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
 	}
 
-	if (GfxFlags & TFB_GFXFLAGS_SCALE_SOFT_ONLY)
+	if (testFlag(g_gfxFlags, uqm::GfxFlagsScaleSoftwareOnly))
 	{
 		for (i = 0; i < TFB_GFX_NUMSCREENS; i++)
 		{
@@ -322,7 +323,7 @@ int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
 							  SDL2_Screens[i].scaled->pitch);
 			SDL_UnlockSurface(SDL2_Screens[i].scaled);
 		}
-		if (flags & TFB_GFXFLAGS_SHOWFPS)
+		if (testFlag(flags, uqm::GfxFlags::ShowFPS))
 		{
 			if (0 != ReInit_FPS_Screen(&SDL_Screen_fps, CanvasWidth * 2, CanvasHeight * 2))
 			{
@@ -369,7 +370,7 @@ int TFB_Pure_ConfigureVideo(int driver, int flags, int width, int height,
 	return 0;
 }
 
-int TFB_Pure_InitGraphics(int driver, int flags, const char* renderer,
+int TFB_Pure_InitGraphics(uqm::GfxDriver driver, uqm::GfxFlags flags, const char* renderer,
 						  int width, int height, unsigned int resFactor,
 						  unsigned int windowType)
 {
@@ -480,13 +481,13 @@ TFB_SDL2_FPS(void)
 }
 
 static void
-TFB_SDL2_Preprocess(int force_full_redraw, int transition_amount,
+TFB_SDL2_Preprocess(uqm::TFBRedraw force_full_redraw, int transition_amount,
 					int fade_amount)
 {
 	(void)transition_amount;
 	(void)fade_amount;
 
-	if (force_full_redraw == TFB_REDRAW_YES)
+	if (force_full_redraw == uqm::TFBRedraw::Yes)
 	{
 		SDL2_Screens[TFB_SCREEN_MAIN].updated.x = 0;
 		SDL2_Screens[TFB_SCREEN_MAIN].updated.y = 0;
@@ -622,12 +623,12 @@ TFB_SDL2_ColorLayer(Uint8 r, Uint8 g, Uint8 b, Uint8 a, SDL_Rect* rect)
 static void
 TFB_SDL2_Postprocess(bool hd)
 {
-	if (GfxFlags & TFB_GFXFLAGS_SCANLINES)
+	if (testFlag(g_gfxFlags, uqm::GfxFlags::Scanlines))
 	{
 		TFB_SDL2_ScanLines(hd);
 	}
 
-	if (GfxFlags & TFB_GFXFLAGS_SHOWFPS)
+	if (testFlag(g_gfxFlags, uqm::GfxFlags::ShowFPS))
 	{
 		TFB_SDL2_FPS();
 	}
@@ -645,12 +646,10 @@ bool TFB_SDL_ScreenShot(const char* path)
 	SDL_Surface* tmp = SDL_GetWindowSurface(window);
 	bool successful = false;
 
-	if (GfxFlags & TFB_GFXFLAGS_FULLSCREEN
-		|| GfxFlags & TFB_GFXFLAGS_EX_FULLSCREEN)
+	if (testAnyFlag(g_gfxFlags, uqm::GfxFlagsFullscreen))
 	{
-		float width, height;
-		width = (float)tmp->w / 320;
-		height = (float)tmp->h / 240;
+		const float width = (float)tmp->w / 320;
+		const float height = (float)tmp->h / 240;
 
 		if (width > height)
 		{

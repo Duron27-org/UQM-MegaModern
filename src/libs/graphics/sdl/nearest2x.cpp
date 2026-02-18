@@ -14,7 +14,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-// Core algorithm of the BiLinear screen scaler
+// Core algorithm of the Bilinear screen scaler
 //  Template
 //    When this file is built standalone is produces a plain C version
 //    Also #included by 2xscalers_mmx.c for an MMX version
