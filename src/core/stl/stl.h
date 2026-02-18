@@ -8,6 +8,7 @@
 
 #include <algorithm>
 #include <array>
+#include <map>
 #include <memory>
 #include <numeric>
 #include <optional>

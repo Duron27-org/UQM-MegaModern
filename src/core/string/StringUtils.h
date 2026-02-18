@@ -16,10 +16,12 @@ namespace uqm
 static constexpr const char* TrueText {"true"};
 static constexpr const char* FalseText {"false"};
 
-template <typename E>
+
+
+template <typename T>
 concept HasToStringImpl =
-	requires(E e) {
-		{ toStringImpl(e) } -> ::std::convertible_to<const char*>;
+	requires(T v) {
+		{ toStringImpl(v) } -> ::std::convertible_to<const char*>;
 	};
 
 [[nodiscard]] inline constexpr bool isEmpty(const char* sz) noexcept
@@ -41,7 +43,7 @@ concept HasToStringImpl =
 	return value ? TrueText : FalseText;
 }
 
-template <typename E, uqstl::enable_if_t<std::is_enum_v<E>, bool> = true>
+template <EnumType E>
 [[nodiscard]] static constexpr const char* toString(const E e)
 {
 #ifdef WITH_MAGIC_ENUM
@@ -104,7 +106,7 @@ inline const char* toString(const T value, uqstl::span<char> buffer)
 	return buffer.data();
 }
 
-template <typename E, uqstl::enable_if_t<std::is_enum_v<E>, bool> = true>
+template <EnumType E>
 [[nodiscard]] inline uqstl::optional<E> fromString(const uqstl::string_view s)
 {
 	return magic_enum::enum_cast<E>(s, magic_enum::case_insensitive);
@@ -170,35 +172,61 @@ inline uqstl::errc parseStr(uqstl::string_view str, T& out)
 template <>
 uqstl::errc parseStr(uqstl::string_view str, bool& out);
 
-template <typename T, typename uqstl::enable_if_t<std::is_enum_v<T>, bool> = true>
-inline uqstl::errc parseStr(uqstl::string_view str, T& out)
+template <EnumType E>
+inline uqstl::errc parseStr(uqstl::string_view str, E& out)
 {
-	using UnderlyingT = std::underlying_type_t<T>;
+	using UnderlyingT = std::underlying_type_t<E>;
 
 	UnderlyingT intermediate {};
 	const auto ec {parseStr(str, intermediate)};
 	if (ec == std::errc {}) [[likely]]
 	{
-		out = static_cast<T>(intermediate);
+		out = static_cast<E>(intermediate);
 	}
 	return ec;
 }
 
-template <typename E>
+template <EnumType E>
 struct EnumNames
 {
 	template <typename T = uqstl::string_view>
 	static auto list() -> uqstl::vector<T>
 	{
 		uqstl::vector<T> out {};
-		for (const auto& name : magic_enum::enum_names<E>())
+		const auto enumNames {magic_enum::enum_names<E>()};
+		out.reserve(enumNames.size());
+		for (const auto& name : enumNames)
 		{
 			out.emplace_back(name);
 		}
 		return out;
 	}
 
+	template <typename T = uqstl::string_view>
+	static auto map() -> uqstl::unordered_map<T, E>
+	{
+		uqstl::unordered_map<T, E> out {};
+		const auto enumEntries {magic_enum::enum_entries<E>()};
+		for (const auto& [value, name] : enumEntries)
+		{
+			out.insert(uqstl::make_pair(name, value));
+		}
+		return out;
+	}
 };
+
+// istream support for enums.
+//template <EnumType E>
+//std::istream& operator>>(std::istream& in, E& out)
+//{
+//	/*char sep {};
+//	if (!(in >> out.x >> sep >> out.y) || (sep != ',' && sep != 'x'))
+//	{
+//		in.setstate(std::ios::failbit);
+//	}*/
+//	return in;
+//}
+
 } // namespace uqm
 
 namespace fmt
@@ -216,8 +244,7 @@ FMT_INLINE auto format_to_sz_n(OutputIt out, size_t outSize, format_string<T...>
 }
 
 
-template <typename E>
-	requires ::std::is_enum_v<E>
+template <EnumType E>
 struct formatter<E> : formatter<std::underlying_type_t<E>>
 {
 	using base_formatter = formatter<std::underlying_type_t<E>>;
@@ -284,7 +311,7 @@ struct formatter<E> : formatter<std::underlying_type_t<E>>
 	}
 };
 
-template <typename E>
+template <EnumType E>
 struct formatter<::uqm::EnumNames<E>> : formatter<E>
 {
 	using base_formatter = formatter<E>;

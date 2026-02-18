@@ -7,6 +7,7 @@
 #include "../options.h"
 #include "core/log/log.h"
 #include "lib/Math2D/Math2DStringUtils.h"
+#include "libs/graphics/sdl/pure.h" // for enumerating renderer backends.
 
 
 //#include "getopt/getopt.h"
@@ -290,21 +291,39 @@ int UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 
 	const OptionsStruct defaults {};
 
+	auto gameplayGroup {app.add_option_group("Gameplay", "General gameplay options")};
+	gameplayGroup->add_flag("-u,--subtitles,--nosubtitles{false}", m_options.subtitles.edit(), fmt::format("Display subtitles (or not). Default={}", defaults.subtitles.toString()));
+	gameplayGroup->add_flag("--safe,--safemode", m_options.safeMode.edit(), "Start the game in safe-mode. No configurations or other options will be loaded.");
+
+	//	uqm::log::info("The following options can take either '3do' or 'pc' as an option:");
+	//	uqm::log::info("  -i, --intro : Intro/ending version (default: {})", defaults.whichIntro.toString());
+	//	uqm::log::info("  --cscan     : coarse-scan display, pc=text, 3do=hieroglyphs (default: {})", defaults.whichCoarseScan.toString());
+	//	uqm::log::info("  --menu      : menu type, pc=text, 3do=graphical (default: {})", defaults.whichMenu.toString());
+	//	uqm::log::info("  --font      : font types and colors (default: {})", defaults.whichFonts.toString());
+	//	uqm::log::info("  --shield    : slave shield type; pc=static, 3do=throbbing (default: {})", defaults.whichShield.toString());
+	//	uqm::log::info("  --scroll    : ff/frev during comm.  pc=per-page, 3do=smooth (default: {})", defaults.smoothScroll.toString());
+	
+
 	// Rendering Options
 	auto renderGroup {app.add_option_group("Rendering", "Options which control the rendering and display of the game.")};
 	renderGroup->add_option("-r,--resolution", m_options.resolution.edit(), fmt::format("Screen resolution. Default is {:(}, higher resolutions only work with --opengl enabled.", *defaults.resolution));
 	renderGroup->add_option("-f,--fullscreen", m_options.windowMode.edit(), fmt::format("Fullscreen mode, default={:s}.", *defaults.windowMode))
-		->check(CLI::IsMember {EnumNames<WindowMode>::list<std::string>(), CLI::ignore_case});
+		->transform(CLI::CheckedTransformer {EnumNames<WindowMode>::map<std::string>(), CLI::ignore_case});
 	renderGroup->add_flag("-o,-x{false},--opengl,--nogl{false}", m_options.opengl.edit(), fmt::format("Use OpenGL. Default={}.", defaults.opengl.toString()));
 	renderGroup->add_flag("-k,--keepaspectratio", m_options.keepAspectRatio.edit(), fmt::format("Keep the aspect ratio. Default={}.", defaults.keepAspectRatio.toString()));
 	renderGroup->add_option("-c,--scale", m_options.scaler.edit(), fmt::format("Upscaler mode.Keep the aspect ratio. Default={:s}.", *defaults.scaler))
-		->check(CLI::IsMember {EnumNames<ScalingMode>::list<std::string>(), CLI::ignore_case});
+		->transform(CLI::CheckedTransformer {EnumNames<ScalingMode>::map<std::string>(), CLI::ignore_case});
 	renderGroup->add_option("-b,--meleezoom", m_options.meleeScale.edit(), fmt::format("Zoom mode in melee combat. Default={:s}.", *defaults.meleeScale))
-		->check(CLI::IsMember {EnumNames<MeleeScaleMode>::list<std::string>(), CLI::ignore_case});
+		->transform(CLI::CheckedTransformer {EnumNames<MeleeScaleMode>::map<std::string>(), CLI::ignore_case});
 	renderGroup->add_flag("-s,--scanlines", m_options.scanlines.edit(), fmt::format("Render simulated scanlines. Default={}.", defaults.scanlines.toString()));
 	renderGroup->add_flag("-p,--fps", m_options.showFps.edit(), fmt::format("Render FPS overlay. Default={}", defaults.showFps.toString()));
 	renderGroup->add_option("-g,--gamma", m_options.gamma.edit(), fmt::format("Gamma correction value, a value of 1.0 means no change. Default={:0.04}.", *defaults.gamma))
 		->check(CLI::Range(0.1f, 10.0f));
+	uqstl::vector<uqstl::string> rendererBackends {};
+	TFB_Pure_GetRendererBackends(rendererBackends);
+	uqstl::sort(rendererBackends.begin(), rendererBackends.end());
+	renderGroup->add_option("--renderer", m_options.graphicsBackend, "Rendering backend to use. If not specified, SDL will choose a default for us.")
+		->check(CLI::IsMember(rendererBackends, CLI::ignore_case));
 
 	// Directory options
 	auto pathGroup {app.add_option_group("Paths", "Paths to load content from, or load/save configuration and saves from.")};
@@ -312,8 +331,13 @@ int UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 		->check(CLI::ExistingPath);
 	pathGroup->add_option("-n,--contentdir", m_options.contentDir, "Path to the directory containing game content.")
 		->check(CLI::ExistingPath);
+	pathGroup->add_option("--addondir", m_options.addonDir, "Path to the directory containing game addons.")
+		->check(CLI::ExistingPath);
+	pathGroup->add_option("-l,--logfile", m_options.logFile, "Path to the log file to create. If not specified, no log will be generated.");
+	pathGroup->add_option("--addon", m_options.addons, "Addons to load from the addons directory. Any number may be specified")
+		->expected(-1);
 
-	/// Audio Options
+	// Audio Options
 	auto audioGroup {app.add_option_group("Audio", "Options which control the game's audio.")};
 	audioGroup->add_option("-M,--musicvol", m_options.musicVolumeScale, fmt::format("Music volume, 0-100. Default={}.", *m_options.musicVolumeScale))
 		->check(CLI::Range(0, 100));
@@ -322,9 +346,9 @@ int UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 	audioGroup->add_option("-T,--speechvol", m_options.speechVolumeScale, fmt::format("Speech volume, 0-100. Default={}.", *m_options.speechVolumeScale))
 		->check(CLI::Range(0, 100));
 	audioGroup->add_option("-q,--audioquality", m_options.soundQuality, fmt::format("Audio quality. Default={:s}.", *defaults.soundQuality))
-		->check(CLI::IsMember {EnumNames<AudioQuality>::list<std::string>(), CLI::ignore_case});
+		->transform(CLI::CheckedTransformer {EnumNames<AudioQuality>::map<std::string>(), CLI::ignore_case});
 	audioGroup->add_option("--sound,--sounddriver", m_options.soundDriver, fmt::format("SoundDriver. Default={:s}.", *defaults.soundDriver))
-		->check(CLI::IsMember {EnumNames<AudioDriverType>::list<std::string>(), CLI::ignore_case});
+		->transform(CLI::CheckedTransformer {EnumNames<AudioDriverType>::map<std::string>(), CLI::ignore_case});
 	audioGroup->add_flag("--stereosfx", m_options.stereoSFX, fmt::format("Enable stereo sfx. Requires --sounddriver to be \"OpenAL\". Default={}", *defaults.stereoSFX))
 		->check([&](const std::string&) -> std::string {
 			if (m_options.soundDriver != AudioDriverType::OpenAL)
@@ -336,24 +360,11 @@ int UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 
 	CLI11_PARSE(app, args.size(), args.data());
 
-	//	uqm::log::info("  -u, --nosubtitles");
-	//	uqm::log::info("  -l, --logfile=FILE (sends console output to logfile FILE)");
-	//	uqm::log::info("  --addon ADDON (using a specific addon; may be specified multiple times)");
-	//	uqm::log::info("  --addondir=ADDONDIR (directory where addons reside)");
-	//	uqm::log::info("  --renderer=name (Select named rendering engine if possible)");
-	//	uqm::log::info("  --safe (start in safe mode)");
 	//#ifdef NETPLAY
 	//	uqm::log::info("  --nethostN=HOSTNAME (server to connect to for player N (1=bottom, 2=top)");
 	//	uqm::log::info("  --netportN=PORT (port to connect to/listen on for player N (1=bottom, 2=top)");
 	//	uqm::log::info("  --netdelay=FRAMES (number of frames to buffer/delay network input for");
 	//#endif
-	//	uqm::log::info("The following options can take either '3do' or 'pc' as an option:");
-	//	uqm::log::info("  -i, --intro : Intro/ending version (default: {})", defaults.whichIntro.toString());
-	//	uqm::log::info("  --cscan     : coarse-scan display, pc=text, 3do=hieroglyphs (default: {})", defaults.whichCoarseScan.toString());
-	//	uqm::log::info("  --menu      : menu type, pc=text, 3do=graphical (default: {})", defaults.whichMenu.toString());
-	//	uqm::log::info("  --font      : font types and colors (default: {})", defaults.whichFonts.toString());
-	//	uqm::log::info("  --shield    : slave shield type; pc=static, 3do=throbbing (default: {})", defaults.whichShield.toString());
-	//	uqm::log::info("  --scroll    : ff/frev during comm.  pc=per-page, 3do=smooth (default: {})", defaults.smoothScroll.toString());
 	//
 	//	uqm::log::info("\nThe following options are MegaMod specific\n");
 	//

@@ -19,9 +19,10 @@
 #ifndef PURE_H
 #define PURE_H
 
+#include "core/stl/stl.h"
 #include "libs/graphics/sdl/sdl_common.h"
 
-
+void TFB_Pure_GetRendererBackends(uqstl::vector<uqstl::string>& backends);
 int TFB_Pure_InitGraphics(uqm::GfxDriver driver, uqm::GfxFlags flags, const char* renderer,
 						  int width, int height, unsigned int resFactor,
 						  unsigned int windowType);

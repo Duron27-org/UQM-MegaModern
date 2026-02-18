@@ -126,7 +126,7 @@ static int
 FindBestRenderDriver(void)
 {
 	int i, n;
-	if (!rendererBackend)
+	if (!rendererBackend || !*rendererBackend)
 	{
 		/* If the user has no preference, just let SDL2 choose */
 		return -1;
@@ -368,6 +368,21 @@ int TFB_Pure_ConfigureVideo(uqm::GfxDriver driver, uqm::GfxFlags flags, int widt
 	WindowHeight = height;
 
 	return 0;
+}
+
+void TFB_Pure_GetRendererBackends(uqstl::vector<uqstl::string>& backends)
+{
+	const int numDrivers = SDL_GetNumRenderDrivers();
+	
+	for (int i {0}; i < numDrivers; ++i)
+	{
+		SDL_RendererInfo info {};
+		if (SDL_GetRenderDriverInfo(i, &info) < 0)
+		{
+			continue;
+		}
+		backends.emplace_back(info.name);
+	}
 }
 
 int TFB_Pure_InitGraphics(uqm::GfxDriver driver, uqm::GfxFlags flags, const char* renderer,

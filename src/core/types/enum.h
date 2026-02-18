@@ -5,6 +5,9 @@
 #include <magic_enum/magic_enum.hpp>
 #endif
 
+template <typename E>
+concept EnumType = std::is_enum_v<E>;
+
 #define ENUM_BITWISE_OPS(enumName)                                                                                                             \
 	[[nodiscard]] constexpr inline enumName operator|(enumName lhs, enumName rhs) noexcept                                                     \
 	{                                                                                                                                          \

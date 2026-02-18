@@ -292,6 +292,11 @@ int TFB_Pure_ConfigureVideo(GfxDriver driver, GfxFlags flags, int width, int hei
 	return 0;
 }
 
+void TFB_Pure_GetRendererBackends(uqstl::vector<uqstl::string>& backends)
+{
+	// no options here for SDL1. See the comment about "renderer" in InitGraphics below.
+}
+
 int TFB_Pure_InitGraphics(GfxDriver driver, GfxFlags flags, const char* renderer,
 						  int width, int height, unsigned int resFactor,
 						  unsigned int windowType)
