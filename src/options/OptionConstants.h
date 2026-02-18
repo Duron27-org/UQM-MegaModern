@@ -31,18 +31,18 @@ namespace uqm
 //	 {"nearest", TFB_SCALE_NEAREST}}
 //};
 
-static inline constexpr uqstl::array<OptionListValueT<int>, 4> AudioDriverList {
-	{{"openal", audio_DRIVER_OPENAL},
-	 {"mixsdl", audio_DRIVER_MIXSDL},
-	 {"none", audio_DRIVER_NOSOUND},
-	 {"nosound", audio_DRIVER_NOSOUND}}
-};
+//static inline constexpr uqstl::array<OptionListValueT<int>, 4> AudioDriverList {
+//	{{"openal", audio_DRIVER_OPENAL},
+//	 {"mixsdl", audio_DRIVER_MIXSDL},
+//	 {"none", audio_DRIVER_NOSOUND},
+//	 {"nosound", audio_DRIVER_NOSOUND}}
+//};
 
-static inline constexpr uqstl::array<OptionListValueT<int>, 3> AudioQualityList {
-	{{"low", audio_QUALITY_LOW},
-	 {"medium", audio_QUALITY_MEDIUM},
-	 {"high", audio_QUALITY_HIGH}}
-};
+//static inline constexpr uqstl::array<OptionListValueT<int>, 3> AudioQualityList {
+//	{{"low", audio_QUALITY_LOW},
+//	 {"medium", audio_QUALITY_MEDIUM},
+//	 {"high", audio_QUALITY_HIGH}}
+//};
 
 static inline constexpr uqstl::array<OptionListValueT<EmulationMode>, 2> EmulationChoiceList {
 

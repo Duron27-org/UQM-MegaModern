@@ -44,8 +44,8 @@ struct OptionsStruct
 	BoolOption showFps {false};
 	BoolOption keepAspectRatio {false};
 	FloatOption gamma {1.0f};
-	IntOption soundDriver {audio_DRIVER_MIXSDL};
-	IntOption soundQuality {audio_QUALITY_HIGH};
+	OptionT<AudioDriverType> soundDriver {AudioDriverType::MixSDL};
+	OptionT<AudioQuality> soundQuality {AudioQuality::High};
 	BoolOption use3doMusic {true};
 	BoolOption useRemixMusic {false};
 	BoolOption useSpeech {true};

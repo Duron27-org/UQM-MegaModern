@@ -32,7 +32,7 @@ static const audio_Driver noSound_Driver =
 	{
 		noSound_Uninit,
 		noSound_GetError,
-		audio_DRIVER_NOSOUND,
+		AudioDriverType::NoSound,
 		{/* Errors */
 		 MIX_NO_ERROR,
 		  MIX_INVALID_NAME,
@@ -138,7 +138,7 @@ noSound_ConvertObjectArrayFromMixerObjects(uint32 n, audio_Object* arr)
  */
 
 sint32
-noSound_Init(audio_Driver* driver, sint32 flags)
+noSound_Init(audio_Driver* driver, AudioFlags flags)
 {
 	int i;
 	TFB_DecoderFormats formats =

@@ -38,7 +38,7 @@ static const audio_Driver openAL_Driver =
 	{
 		openAL_Uninit,
 		openAL_GetError,
-		audio_DRIVER_OPENAL,
+		AudioDriverType::OpenAL,
 		{/* Errors */
 		 AL_FALSE,
 		  AL_INVALID_NAME,
@@ -144,7 +144,7 @@ openAL_ConvertObjectArrayFromALuints(uint32 n, audio_Object* arr)
  */
 
 sint32
-openAL_Init(audio_Driver* driver, sint32 flags)
+openAL_Init(audio_Driver* driver, AudioFlags flags)
 {
 	int i;
 	TFB_DecoderFormats formats =

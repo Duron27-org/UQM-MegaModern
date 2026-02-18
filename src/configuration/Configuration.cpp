@@ -154,8 +154,8 @@ void getUserConfigOptions(OptionsStruct& options)
 
 	getEnumConfigValue(options.meleeScale, "config.meleescale");
 
-	getListConfigValue(options.soundDriver, "config.audiodriver", AudioDriverList);
-	getListConfigValue(options.soundQuality, "config.audioquality", AudioQualityList);
+	getEnumConfigValue(options.soundDriver, "config.audiodriver");
+	getEnumConfigValue(options.soundQuality, "config.audioquality");
 	getBoolConfigValue(options.stereoSFX, "config.positionalsfx");
 	getVolumeConfigValue(options.musicVolumeScale, "config.musicvol");
 	getVolumeConfigValue(options.sfxVolumeScale, "config.sfxvol");

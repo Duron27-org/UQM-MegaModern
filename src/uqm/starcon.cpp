@@ -213,7 +213,8 @@ SetRandomMenuMusic(void)
 }
 
 /* TODO: Remove these declarations once threading is gone. */
-extern int snddriver, soundflags;
+extern AudioDriverType snddriver;
+extern AudioFlags soundflags;
 
 int Starcon2Main(void* threadArg)
 {
@@ -248,7 +249,7 @@ int Starcon2Main(void* threadArg)
 		/* TODO: Put initAudio back in main where it belongs once threading
 		 *       is gone.
 		 */
-		extern sint32 initAudio(sint32 driver, sint32 flags);
+		extern sint32 initAudio(AudioDriverType driver, AudioFlags flags);
 		initAudio(snddriver, soundflags);
 	}
 

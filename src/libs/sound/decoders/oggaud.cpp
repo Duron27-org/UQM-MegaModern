@@ -38,7 +38,7 @@
 #define THIS_PTR TFB_SoundDecoder* This
 
 static const char* ova_GetName(void);
-static bool ova_InitModule(int flags, const TFB_DecoderFormats*);
+static bool ova_InitModule(AudioFlags flags, const TFB_DecoderFormats*);
 static void ova_TermModule(void);
 static uint32 ova_GetStructSize(void);
 static int ova_GetError(THIS_PTR);
@@ -119,12 +119,12 @@ ova_GetName(void)
 }
 
 static bool
-ova_InitModule(int flags, const TFB_DecoderFormats* fmts)
+ova_InitModule(AudioFlags flags, const TFB_DecoderFormats* fmts)
 {
 	ova_formats = fmts;
 	return true;
 
-	(void)flags; // laugh at compiler warning
+	uqstl::ignore = flags; // laugh at compiler warning
 }
 
 static void

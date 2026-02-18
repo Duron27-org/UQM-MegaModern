@@ -108,7 +108,7 @@ typedef struct
 #define THIS_PTR TFB_SoundDecoder* This
 
 static const char* aifa_GetName(void);
-static bool aifa_InitModule(int flags, const TFB_DecoderFormats*);
+static bool aifa_InitModule(AudioFlags flags, const TFB_DecoderFormats*);
 static void aifa_TermModule(void);
 static uint32 aifa_GetStructSize(void);
 static int aifa_GetError(THIS_PTR);
@@ -179,12 +179,12 @@ aifa_GetName(void)
 }
 
 static bool
-aifa_InitModule(int flags, const TFB_DecoderFormats* fmts)
+aifa_InitModule(AudioFlags flags, const TFB_DecoderFormats* fmts)
 {
 	aifa_formats = fmts;
 	return true;
 
-	(void)flags; // laugh at compiler warning
+	uqstl::ignore = flags; // laugh at compiler warning
 }
 
 static void

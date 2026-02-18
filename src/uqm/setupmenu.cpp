@@ -2485,10 +2485,10 @@ void GetGlobalOptions(GLOBALOPTS* opts)
 
 	switch (snddriver)
 	{
-		case audio_DRIVER_OPENAL:
+		case AudioDriverType::OpenAL:
 			opts->adriver = OPTVAL_OPENAL;
 			break;
-		case audio_DRIVER_MIXSDL:
+		case AudioDriverType::MixSDL:
 			opts->adriver = OPTVAL_MIXSDL;
 			break;
 		default:
@@ -2497,11 +2497,11 @@ void GetGlobalOptions(GLOBALOPTS* opts)
 	}
 	audioDriver = opts->adriver;
 
-	if (soundflags & audio_QUALITY_HIGH)
+	if (testFlag(soundflags, AudioFlags::QualityHigh))
 	{
 		opts->aquality = OPTVAL_HIGH;
 	}
-	else if (soundflags & audio_QUALITY_LOW)
+	else if (testFlag(soundflags, AudioFlags::QualityLow))
 	{
 		opts->aquality = OPTVAL_LOW;
 	}
@@ -2633,7 +2633,7 @@ void GetGlobalOptions(GLOBALOPTS* opts)
 
 void SetGlobalOptions(GLOBALOPTS* opts)
 {
-	int NewSndFlags = 0;
+	AudioFlags NewSndFlags {AudioFlags::None};
 	int resFactor = resolutionFactor;
 	int newFactor;
 	uqm::BYTE i;
@@ -2716,22 +2716,20 @@ void SetGlobalOptions(GLOBALOPTS* opts)
 		switch (opts->adriver)
 		{
 			case OPTVAL_SILENCE:
-				snddriver = audio_DRIVER_NOSOUND;
-				res_PutString("config.audiodriver", "none");
+				snddriver = AudioDriverType::NoSound;
 				break;
 			case OPTVAL_MIXSDL:
-				snddriver = audio_DRIVER_MIXSDL;
-				res_PutString("config.audiodriver", "mixsdl");
+				snddriver = AudioDriverType::MixSDL;
 				break;
 			case OPTVAL_OPENAL:
-				snddriver = audio_DRIVER_OPENAL;
-				res_PutString("config.audiodriver", "openal");
+				snddriver = AudioDriverType::OpenAL;
 				break;
 			default:
 				/* Shouldn't happen; leave config untouched */
 				break;
 		}
 
+		res_PutString("config.audiodriver", fmt::format("{:s}", snddriver).c_str());
 		optRequiresRestart = true;
 	}
 
@@ -2741,21 +2739,19 @@ void SetGlobalOptions(GLOBALOPTS* opts)
 		switch (opts->aquality)
 		{
 			case OPTVAL_LOW:
-				NewSndFlags |= audio_QUALITY_LOW;
-				res_PutString("config.audioquality", "low");
+				NewSndFlags |= AudioFlags::QualityLow;
 				break;
 			case OPTVAL_MEDIUM:
-				NewSndFlags |= audio_QUALITY_MEDIUM;
-				res_PutString("config.audioquality", "medium");
+				NewSndFlags |= AudioFlags::QualityMedium;
 				break;
 			case OPTVAL_HIGH:
-				NewSndFlags |= audio_QUALITY_HIGH;
-				res_PutString("config.audioquality", "high");
+				NewSndFlags |= AudioFlags::QualityHigh;
 				break;
 			default:
 				/* Shouldn't happen; leave config untouched */
 				break;
 		}
+		res_PutString("config.audioquality", fmt::format("{:s}", (NewSndFlags & AudioQualityFlagMask)).c_str());
 		soundflags = NewSndFlags;
 
 		optRequiresRestart = true;

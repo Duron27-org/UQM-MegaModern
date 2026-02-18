@@ -40,7 +40,7 @@
 #define THIS_PTR TFB_SoundDecoder* This
 
 static const char* moda_GetName(void);
-static bool moda_InitModule(int flags, const TFB_DecoderFormats*);
+static bool moda_InitModule(AudioFlags flags, const TFB_DecoderFormats*);
 static void moda_TermModule(void);
 static uint32 moda_GetStructSize(void);
 static int moda_GetError(THIS_PTR);
@@ -254,18 +254,18 @@ moda_GetName(void)
 }
 
 static bool
-moda_InitModule(int flags, const TFB_DecoderFormats* fmts)
+moda_InitModule(AudioFlags flags, const TFB_DecoderFormats* fmts)
 {
 	MikMod_RegisterDriver(&moda_mmout_drv);
 	MikMod_RegisterAllLoaders();
 
-	if (flags & audio_QUALITY_HIGH)
+	if (testFlag(flags, AudioFlags::QualityHigh))
 	{
 		md_mode = DMODE_HQMIXER | DMODE_STEREO | DMODE_16BITS | DMODE_INTERP | DMODE_SURROUND;
 		md_mixfreq = 44100;
 		md_reverb = 1;
 	}
-	else if (flags & audio_QUALITY_LOW)
+	else if (testFlag(flags, AudioFlags::QualityLow))
 	{
 		md_mode = DMODE_SOFT_MUSIC | DMODE_STEREO | DMODE_16BITS;
 #ifdef __SYMBIAN32__

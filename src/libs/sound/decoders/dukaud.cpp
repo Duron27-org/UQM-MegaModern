@@ -27,6 +27,7 @@
 #include "dukaud.h"
 #include "decoder.h"
 #include "endian_uqm.h"
+#include "core/stl/stl.h"
 
 #define DATA_BUF_SIZE 0x8000
 #define DUCK_GENERAL_FPS 14.622f
@@ -35,7 +36,7 @@
 #define THIS_PTR TFB_SoundDecoder* This
 
 static const char* duka_GetName(void);
-static bool duka_InitModule(int flags, const TFB_DecoderFormats*);
+static bool duka_InitModule(AudioFlags flags, const TFB_DecoderFormats*);
 static void duka_TermModule(void);
 static uint32 duka_GetStructSize(void);
 static int duka_GetError(THIS_PTR);
@@ -353,12 +354,12 @@ duka_GetName(void)
 }
 
 static bool
-duka_InitModule(int flags, const TFB_DecoderFormats* fmts)
+duka_InitModule(AudioFlags flags, const TFB_DecoderFormats* fmts)
 {
 	duka_formats = fmts;
 	return true;
 
-	(void)flags; // laugh at compiler warning
+	uqstl::ignore = flags; // laugh at compiler warning
 }
 
 static void

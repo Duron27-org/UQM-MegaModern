@@ -26,7 +26,8 @@
 static audio_Driver audiodrv;
 
 /* The globals that control the sound drivers. */
-int snddriver, soundflags;
+AudioDriverType snddriver;
+AudioFlags soundflags;
 
 volatile bool audio_inited = false;
 
@@ -35,10 +36,10 @@ volatile bool audio_inited = false;
  */
 
 #ifdef HAVE_OPENAL
-sint32 openAL_Init(audio_Driver* driver, sint32 flags);
+sint32 openAL_Init(audio_Driver* driver, AudioFlags flags);
 #endif
-sint32 mixSDL_Init(audio_Driver* driver, sint32 flags);
-sint32 noSound_Init(audio_Driver* driver, sint32 flags);
+sint32 mixSDL_Init(audio_Driver* driver, AudioFlags flags);
+sint32 noSound_Init(audio_Driver* driver, AudioFlags flags);
 
 
 /*
@@ -46,16 +47,16 @@ sint32 noSound_Init(audio_Driver* driver, sint32 flags);
  */
 
 sint32
-initAudio(sint32 driver, sint32 flags)
+initAudio(AudioDriverType driver, AudioFlags flags)
 {
 	sint32 ret;
 
 #ifdef HAVE_OPENAL
-	if (driver == audio_DRIVER_MIXSDL)
+	if (driver == AudioDriverType::MixSDL)
 	{
 		ret = mixSDL_Init(&audiodrv, flags);
 	}
-	else if (driver == audio_DRIVER_OPENAL)
+	else if (driver == AudioDriverType::OpenAL)
 	{
 		ret = openAL_Init(&audiodrv, flags);
 	}
@@ -64,12 +65,12 @@ initAudio(sint32 driver, sint32 flags)
 		ret = noSound_Init(&audiodrv, flags);
 	}
 #else
-	if (driver == audio_DRIVER_OPENAL)
+	if (driver == AudioDriverType::OpenAL)
 	{
 		uqm::log::warn("OpenAL driver not compiled in, so using MixSDL");
-		driver = audio_DRIVER_MIXSDL;
+		driver = AudioDriverType::MixSDL;
 	}
-	if (driver == audio_DRIVER_MIXSDL)
+	if (driver == AudioDriverType::MixSDL)
 	{
 		ret = mixSDL_Init(&audiodrv, flags);
 	}

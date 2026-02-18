@@ -24,6 +24,7 @@
 #include "port.h"
 #include "types.h"
 #include "libs/uio.h"
+#include "libs/sound/audiocoredefs.h"
 
 #ifndef OVCODEC_NONE
 #ifdef _MSC_VER
@@ -59,7 +60,7 @@ typedef struct tfb_sounddecoder TFB_SoundDecoder;
 typedef struct tfb_sounddecoderfunc
 {
 	const char* (*GetName)(void);
-	bool (*InitModule)(int flags, const TFB_DecoderFormats*);
+	bool (*InitModule)(AudioFlags flags, const TFB_DecoderFormats*);
 	void (*TermModule)(void);
 	uint32 (*GetStructSize)(void);
 	int (*GetError)(THIS_PTR);
@@ -127,7 +128,7 @@ void SoundDecoder_Unregister(TFB_RegSoundDecoder* regdec);
 const TFB_SoundDecoderFuncs* SoundDecoder_Lookup(const char* fileext);
 
 void SoundDecoder_SwapWords(uint16* data, uint32 size);
-sint32 SoundDecoder_Init(int flags, TFB_DecoderFormats* formats);
+sint32 SoundDecoder_Init(AudioFlags flags, TFB_DecoderFormats* formats);
 void SoundDecoder_Uninit(void);
 TFB_SoundDecoder* SoundDecoder_Load(uio_DirHandle* dir,
 									char* filename, uint32 buffer_size, uint32 startTime, sint32 runTime);

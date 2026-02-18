@@ -291,6 +291,7 @@ src/libs/resource/stringbank.h
 src/libs/sndlib.h
 src/libs/sound/audiocore.cpp
 src/libs/sound/audiocore.h
+src/libs/sound/audiocoredefs.h
 src/libs/sound/decoders/aiffaud.cpp
 src/libs/sound/decoders/aiffaud.h
 src/libs/sound/decoders/decoder.cpp

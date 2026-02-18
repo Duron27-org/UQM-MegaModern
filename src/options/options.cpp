@@ -291,33 +291,37 @@ int UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 	const OptionsStruct defaults {};
 
 	app.add_option("-r,--resolution", m_options.resolution.edit(), fmt::format("Screen resolution. Default is {:(}, higher resolutions only work with --opengl enabled.", *defaults.resolution));
-	app.add_option("-f,--fullscreen", m_options.windowMode.edit(), fmt::format("Fullscreen mode, options are [{:|s}], default={:s}.", EnumNames<WindowMode> {}, *defaults.windowMode));
+	app.add_option("-f,--fullscreen", m_options.windowMode.edit(), fmt::format("Fullscreen mode, options are [{:|s}], default={:s}.", EnumNames<WindowMode> {}, *defaults.windowMode)); //->check(CLI::IsMember{EnumNames<WindowMode>::list(), CLI::ignore_case});
 	app.add_flag("-o,-x{false},--opengl,--nogl{false}", m_options.opengl.edit(), fmt::format("Use OpenGL. Default={}.", defaults.opengl.toString()));
 	app.add_flag("-k,--keepaspectratio", m_options.keepAspectRatio.edit(), fmt::format("Keep the aspect ratio. Default={}.", defaults.keepAspectRatio.toString()));
 	app.add_option("-c,--scale", m_options.scaler.edit(), fmt::format("Upscaler mode.Keep the aspect ratio. Options are [{:|s}], Default={:s}.", EnumNames<ScalingMode> {}, *defaults.scaler));
 	app.add_option("-b,--meleezoom", m_options.meleeScale.edit(), fmt::format("Zoom mode in melee combat. Options are [{:|s}], Default={:s}.", EnumNames<MeleeScaleMode> {}, *defaults.meleeScale));
 	app.add_flag("-s,--scanlines", m_options.scanlines.edit(), fmt::format("Render simulated scanlines. Default={}.", defaults.scanlines.toString()));
 	app.add_flag("-p,--fps", m_options.showFps.edit(), fmt::format("Render FPS overlay. Default={}", defaults.showFps.toString()));
-	app.add_option("-g,--gamma", m_options.gamma.edit(), fmt::format("Gamma correction value, a value of 1.0 means no change. Default={:0.4}.", *defaults.gamma))->check(CLI::Range(0.1f, 10.0f));
-	app.add_option("-C,--configdir", m_options.configDir, "Path to the directory containing configuration files.")->check(CLI::ExistingPath);
-	app.add_option("-n,--contentdir", m_options.contentDir, "Path to the directory containing game content.")->check(CLI::ExistingPath);
-
+	app.add_option("-g,--gamma", m_options.gamma.edit(), fmt::format("Gamma correction value, a value of 1.0 means no change. Default={:0.4}.", *defaults.gamma))
+		->check(CLI::Range(0.1f, 10.0f));
+	app.add_option("-C,--configdir", m_options.configDir, "Path to the directory containing configuration files.")
+		->check(CLI::ExistingPath);
+	app.add_option("-n,--contentdir", m_options.contentDir, "Path to the directory containing game content.")
+		->check(CLI::ExistingPath);
+	app.add_option("-M,--musicvol", m_options.musicVolumeScale, fmt::format("Music volume, 0-100. Default={}.", *m_options.musicVolumeScale))
+		->check(CLI::Range(0, 100));
+	app.add_option("-S,--sfxvol", m_options.sfxVolumeScale, fmt::format("SFX volume, 0-100. Default={}.", *m_options.sfxVolumeScale))
+		->check(CLI::Range(0, 100));
+	app.add_option("-T,--speechvol", m_options.speechVolumeScale, fmt::format("Speech volume, 0-100. Default={}.", *m_options.speechVolumeScale))
+		->check(CLI::Range(0, 100));
+	app.add_option("-q,--audioquality", m_options.soundQuality, fmt::format("Audio quality. Options are [{:|s}], Default={:s}.", EnumNames<AudioQuality> {}, *defaults.soundQuality));
+	app.add_option("--sound,--sounddriver", m_options.soundDriver, fmt::format("SoundDriver. Options are [{:|s}], Default={:s}.", EnumNames<AudioDriverType> {}, *defaults.soundDriver));
+	app.add_flag("--stereosfx", m_options.stereoSFX, fmt::format("Enable stereo sfx. Requires --sounddriver to be \"OpenAL\". Default={}", *defaults.stereoSFX)); // todo: validate on the value of soundDriver.	
+	
 
 	CLI11_PARSE(app, args.size(), args.data());
 
-	//	uqm::log::info("  -C, --configdir=CONFIGDIR");
-	//	uqm::log::info("  -n, --contentdir=CONTENTDIR");
-	//	uqm::log::info("  -M, --musicvol=VOLUME (0-100, default 100)");
-	//	uqm::log::info("  -S, --sfxvol=VOLUME (0-100, default 100)");
-	//	uqm::log::info("  -T, --speechvol=VOLUME (0-100, default 100)");
-	//	uqm::log::info("  -q, --audioquality=QUALITY (high, medium or low, default medium)");
 	//	uqm::log::info("  -u, --nosubtitles");
 	//	uqm::log::info("  -l, --logfile=FILE (sends console output to logfile FILE)");
 	//	uqm::log::info("  --addon ADDON (using a specific addon; may be specified multiple times)");
 	//	uqm::log::info("  --addondir=ADDONDIR (directory where addons reside)");
 	//	uqm::log::info("  --renderer=name (Select named rendering engine if possible)");
-	//	uqm::log::info("  --sound=DRIVER (openal, mixsdl, none; default mixsdl)");
-	//	uqm::log::info("  --stereosfx (enables positional sound effects, currently only for openal)");
 	//	uqm::log::info("  --safe (start in safe mode)");
 	//#ifdef NETPLAY
 	//	uqm::log::info("  --nethostN=HOSTNAME (server to connect to for player N (1=bottom, 2=top)");

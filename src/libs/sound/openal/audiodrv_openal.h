@@ -46,7 +46,7 @@
 
 
 /* General */
-sint32 openAL_Init(audio_Driver* driver, sint32 flags);
+sint32 openAL_Init(audio_Driver* driver, AudioFlags flags);
 void openAL_Uninit(void);
 sint32 openAL_GetError(void);
 

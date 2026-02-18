@@ -220,7 +220,9 @@ int UQMGame::setup(uqstl::span<uqgsl::zstring> args)
 	   to be moved there because calling AssignTask in the main
 	   thread doesn't work */
 	snddriver = options.soundDriver.value;
-	soundflags = options.soundQuality.value;
+	// clear existing quality flag before applying the option value.
+	soundflags &= ~AudioQualityFlagMask;
+	soundflags |= toAudioFlags(*options.soundQuality);
 
 	// Fill in global variables:
 	opt3doMusic = (OPT_ENABLABLE)options.use3doMusic.value;

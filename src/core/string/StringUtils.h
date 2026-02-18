@@ -187,6 +187,15 @@ inline uqstl::errc parseStr(uqstl::string_view str, T& out)
 template <typename E>
 struct EnumNames
 {
+	static uqstl::vector<uqstl::string_view> list()
+	{
+		uqstl::vector<uqstl::string_view> out {};
+		for (const auto& name : magic_enum::enum_names<E>())
+		{
+			out.push_back(name);
+		}
+		return out;
+	}
 };
 } // namespace uqm
 

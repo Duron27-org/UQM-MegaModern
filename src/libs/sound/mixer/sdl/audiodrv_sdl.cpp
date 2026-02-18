@@ -37,7 +37,7 @@ static const audio_Driver mixSDL_Driver =
 	{
 		mixSDL_Uninit,
 		mixSDL_GetError,
-		audio_DRIVER_MIXSDL,
+		AudioDriverType::MixSDL,
 		{/* Errors */
 		 MIX_NO_ERROR,
 		  MIX_INVALID_NAME,
@@ -145,7 +145,7 @@ static void audioCallback(void* userdata, Uint8* stream, int len);
  */
 
 sint32
-mixSDL_Init(audio_Driver* driver, sint32 flags)
+mixSDL_Init(audio_Driver* driver, AudioFlags flags)
 {
 	int i;
 	SDL_AudioSpec desired, obtained;
@@ -165,13 +165,13 @@ mixSDL_Init(audio_Driver* driver, sint32 flags)
 	}
 	uqm::log::info("SDL audio subsystem initialized.");
 
-	if (flags & audio_QUALITY_HIGH)
+	if (testFlag(flags, AudioFlags::QualityHigh))
 	{
 		quality = MIX_QUALITY_HIGH;
 		desired.freq = 44100;
 		desired.samples = 4096;
 	}
-	else if (flags & audio_QUALITY_LOW)
+	else if (testFlag(flags, AudioFlags::QualityLow))
 	{
 		quality = MIX_QUALITY_LOW;
 #ifdef __SYMBIAN32__

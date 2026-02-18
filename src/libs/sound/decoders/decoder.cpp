@@ -39,7 +39,7 @@
 #define THIS_PTR TFB_SoundDecoder*
 
 static const char* bufa_GetName(void);
-static bool bufa_InitModule(int flags, const TFB_DecoderFormats*);
+static bool bufa_InitModule(AudioFlags flags, const TFB_DecoderFormats*);
 static void bufa_TermModule(void);
 static uint32 bufa_GetStructSize(void);
 static int bufa_GetError(THIS_PTR);
@@ -82,7 +82,7 @@ typedef struct tfb_bufsounddecoder
 #define SD_MIN_SIZE (sizeof(TFB_BufSoundDecoder))
 
 static const char* nula_GetName(void);
-static bool nula_InitModule(int flags, const TFB_DecoderFormats*);
+static bool nula_InitModule(AudioFlags flags, const TFB_DecoderFormats*);
 static void nula_TermModule(void);
 static uint32 nula_GetStructSize(void);
 static int nula_GetError(THIS_PTR);
@@ -143,7 +143,7 @@ static TFB_RegSoundDecoder sd_decoders[MAX_REG_DECODERS + 1] =
 };
 
 static TFB_DecoderFormats decoder_formats;
-static int sd_flags = 0;
+static AudioFlags sd_flags {AudioFlags::None};
 
 /* change endianness of 16bit words
  * Only works optimal when 'data' is aligned on a 32 bits boundary.
@@ -178,7 +178,7 @@ SoundDecoder_GetName(TFB_SoundDecoder* decoder)
 }
 
 sint32
-SoundDecoder_Init(int flags, TFB_DecoderFormats* formats)
+SoundDecoder_Init(AudioFlags flags, TFB_DecoderFormats* formats)
 {
 	TFB_RegSoundDecoder* info;
 	sint32 ret = 0;
@@ -729,14 +729,14 @@ bufa_GetName(void)
 }
 
 static bool
-bufa_InitModule(int flags, const TFB_DecoderFormats* fmts)
+bufa_InitModule(AudioFlags flags, const TFB_DecoderFormats* fmts)
 {
 	// this should never be called
 	uqm::log::debug("bufa_InitModule(): dead function called");
 	return false;
 
-	(void)flags;
-	(void)fmts; // laugh at compiler warning
+	uqstl::ignore = flags;
+	uqstl::ignore = fmts; // laugh at compiler warning
 }
 
 static void
@@ -866,14 +866,14 @@ nula_GetName(void)
 }
 
 static bool
-nula_InitModule(int flags, const TFB_DecoderFormats* fmts)
+nula_InitModule(AudioFlags flags, const TFB_DecoderFormats* fmts)
 {
 	// this should never be called
 	uqm::log::debug("nula_InitModule(): dead function called");
 	return false;
 
-	(void)flags;
-	(void)fmts; // laugh at compiler warning
+	uqstl::ignore = flags;
+	uqstl::ignore = fmts; // laugh at compiler warning
 }
 
 static void

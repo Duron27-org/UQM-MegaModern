@@ -22,74 +22,19 @@
 
 #include "config.h"
 #include "types.h"
+#include "libs/sound/audiocoredefs.h"
 
 
-/* Available drivers */
-enum
-{
-	audio_DRIVER_MIXSDL,
-	audio_DRIVER_NOSOUND,
-	audio_DRIVER_OPENAL
-};
 
-/* Initialization flags */
-#define audio_QUALITY_HIGH (1 << 0)
-#define audio_QUALITY_MEDIUM (1 << 1)
-#define audio_QUALITY_LOW (1 << 2)
-
-
-/* Interface Types */
-typedef uintptr_t audio_Object;
-typedef intptr_t audio_IntVal;
-typedef const sint32 audio_SourceProp;
-typedef const sint32 audio_BufferProp;
-
-enum
-{
-	/* Errors */
-	audio_NO_ERROR = 0,
-	audio_INVALID_NAME,
-	audio_INVALID_ENUM,
-	audio_INVALID_VALUE,
-	audio_INVALID_OPERATION,
-	audio_OUT_OF_MEMORY,
-	audio_DRIVER_FAILURE,
-
-	/* Source properties */
-	audio_POSITION,
-	audio_LOOPING,
-	audio_BUFFER,
-	audio_GAIN,
-	audio_SOURCE_STATE,
-	audio_BUFFERS_QUEUED,
-	audio_BUFFERS_PROCESSED,
-
-	/* Source state information */
-	audio_INITIAL,
-	audio_STOPPED,
-	audio_PLAYING,
-	audio_PAUSED,
-
-	/* Sound buffer properties */
-	audio_FREQUENCY,
-	audio_BITS,
-	audio_CHANNELS,
-	audio_SIZE,
-	audio_FORMAT_MONO16,
-	audio_FORMAT_STEREO16,
-	audio_FORMAT_MONO8,
-	audio_FORMAT_STEREO8,
-	audio_ENUM_SIZE
-};
-
-extern int snddriver, soundflags;
+extern AudioDriverType snddriver;
+extern AudioFlags soundflags;
 
 typedef struct
 {
 	/* General */
 	void (*Uninitialize)(void);
 	sint32 (*GetError)(void);
-	sint32 driverID;
+	AudioDriverType driverID;
 	sint32 EnumLookup[audio_ENUM_SIZE];
 
 	/* Sources */
