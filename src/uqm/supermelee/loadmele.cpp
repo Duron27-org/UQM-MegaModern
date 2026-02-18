@@ -167,12 +167,12 @@ GetFleetIndexByFileName(MELEE_STATE* pMS, const char* fileName)
 // fleet name and value; if not, only the fleet name and value are drawn.
 // If highlite is set the text is drawn in the color used for highlighting.
 static void
-DrawFileString(const MeleeTeam* team, const POINT* origin,
+DrawFileString(const MeleeTeam* team, const GFXPOINT* origin,
 			   bool drawShips, bool highlite)
 {
 	if (IS_HD)
 	{ // Draw the background of the text
-		RECT r;
+		GFXRECT r;
 
 		r.corner.x = origin->x;
 		r.corner.y = origin->y - TEAM_NAME_L_BOX_HEIGHT + RES_SCALE(3);
@@ -274,8 +274,8 @@ FillFileView(MELEE_STATE* pMS)
 static void
 SelectFileString(MELEE_STATE* pMS, bool hilite)
 {
-	CONTEXT OldContext;
-	POINT origin;
+	GFXCONTEXT OldContext;
+	GFXPOINT origin;
 	uqm::COUNT viewI;
 
 	viewI = pMS->load.cur - pMS->load.top;
@@ -295,8 +295,8 @@ SelectFileString(MELEE_STATE* pMS, bool hilite)
 static void
 DrawFileStrings(MELEE_STATE* pMS)
 {
-	POINT origin;
-	CONTEXT OldContext;
+	GFXPOINT origin;
+	GFXCONTEXT OldContext;
 
 	origin.x = FILE_STRING_ORIGIN_X;
 	origin.y = FILE_STRING_ORIGIN_Y;
@@ -348,7 +348,7 @@ flashSelectedTeam(MELEE_STATE* pMS)
 
 	if (Now >= NextTime)
 	{
-		CONTEXT OldContext;
+		GFXCONTEXT OldContext;
 
 		NextTime = Now + FLASH_RATE;
 		hilite ^= 1;
@@ -395,7 +395,7 @@ bool DoLoadTeam(MELEE_STATE* pMS)
 		pMS->InputFunc = DoMelee;
 		pMS->LastInputTime = GetTimeCounter();
 		{
-			RECT r;
+			GFXRECT r;
 
 			GetFrameRect(SetAbsFrameIndex(MeleeFrame, 30), &r);
 			RepairMeleeFrame(&r);
@@ -521,7 +521,7 @@ bool DoSaveTeam(MELEE_STATE* pMS)
 	STAMP MsgStamp;
 	char file[NAME_MAX];
 	uio_Stream* stream;
-	CONTEXT OldContext;
+	GFXCONTEXT OldContext;
 	bool saveOk = false;
 
 	fmt::format_to_sz_n(file, sizeof file, "{}.mle",

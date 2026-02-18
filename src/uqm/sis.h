@@ -189,18 +189,18 @@ extern void RepairSISBorder(void);
 extern void InitSISContexts(void);
 extern void DrawSISFrame(void);
 extern void ClearSISRect(uqm::BYTE ClearFlags);
-extern void SetFlashRect(const RECT* pRect, bool purple);
-extern void SetAdditionalRect(const RECT* pRect, uqm::COUNT number);
+extern void SetFlashRect(const GFXRECT* pRect, bool purple);
+extern void SetAdditionalRect(const GFXRECT* pRect, uqm::COUNT number);
 extern void DumpAdditionalRect(void);
 extern void PreUpdateFlashRect(void);
 extern void PostUpdateFlashRect(void);
 extern bool PauseFlash(void);
 extern void ContinueFlash(void);
 
-#define SFR_MENU_3DO ((RECT*)~0L)
-#define SFR_MENU_ANY ((RECT*)~1L)
-#define SFR_MENU_NON ((RECT*)~2L)
-extern void DrawHyperCoords(POINT puniverse);
+#define SFR_MENU_3DO ((GFXRECT*)~0L)
+#define SFR_MENU_ANY ((GFXRECT*)~1L)
+#define SFR_MENU_NON ((GFXRECT*)~2L)
+extern void DrawHyperCoords(GFXPOINT puniverse);
 extern void DrawSaveInfo(SIS_STATE SisState);
 extern void DrawSISTitle(uqm::CHAR_T* pStr);
 
@@ -222,8 +222,8 @@ extern void DrawSISMessage(const uqm::CHAR_T* pStr);
 extern void DateToString(char* buf, size_t bufLen,
 						 uqm::BYTE month_index, uqm::BYTE day_index, uqm::COUNT year_index);
 
-// Returned RECT is relative to the StatusContext
-extern void GetStatusMessageRect(RECT* r);
+// Returned GFXRECT is relative to the StatusContext
+extern void GetStatusMessageRect(GFXRECT* r);
 extern void DrawStatusMessage(const uqm::CHAR_T* pStr);
 typedef enum
 {
@@ -241,7 +241,7 @@ extern StatMsgMode SetStatusMessageMode(StatMsgMode);
 
 extern void DrawLanders(void);
 extern void DrawStorageBays(bool Refresh);
-extern void GetGaugeRect(RECT* pRect, bool IsCrewRect);
+extern void GetGaugeRect(GFXRECT* pRect, bool IsCrewRect);
 extern void DrawFlagshipStats(void);
 void DrawAutoPilotMessage(bool Reset);
 
@@ -251,11 +251,11 @@ extern uqm::COUNT GetCrewCount(void);
 extern uqm::COUNT GetModuleCrewCapacity(uqm::BYTE moduleType);
 
 extern uqm::COUNT GetCrewPodCapacity(void);
-extern uqm::COUNT GetCPodCapacity(POINT* ppt);
+extern uqm::COUNT GetCPodCapacity(GFXPOINT* ppt);
 
 extern uqm::COUNT GetModuleStorageCapacity(uqm::BYTE moduleType);
 extern uqm::COUNT GetStorageBayCapacity(void);
-extern uqm::COUNT GetSBayCapacity(POINT* ppt);
+extern uqm::COUNT GetSBayCapacity(GFXPOINT* ppt);
 
 extern uqm::DWORD GetModuleFuelCapacity(uqm::BYTE moduleType);
 extern uqm::DWORD GetFuelTankCapacity(void);

@@ -306,7 +306,7 @@ ButtonText(uqm::COUNT which_icon)
 static void
 DrawControlText(STAMP stamp, uqm::COUNT which_icon, bool HiLite)
 {
-	RECT r;
+	GFXRECT r;
 	TEXT t;
 	FONT OldFont;
 	uqm::SIZE leading;
@@ -353,7 +353,7 @@ DrawControlText(STAMP stamp, uqm::COUNT which_icon, bool HiLite)
 static void
 DrawBattleText(STAMP stamp, uqm::COUNT which_icon, bool HiLite)
 {
-	RECT r;
+	GFXRECT r;
 	TEXT t;
 	FONT OldFont;
 	FRAME OldFontEffect;
@@ -398,7 +398,7 @@ DrawBattleText(STAMP stamp, uqm::COUNT which_icon, bool HiLite)
 static void
 DrawButtonText(STAMP stamp, uqm::COUNT which_icon, bool HiLite)
 {
-	RECT r;
+	GFXRECT r;
 	TEXT t;
 	FONT OldFont;
 	Color OldColor;
@@ -432,7 +432,7 @@ DrawButtonText(STAMP stamp, uqm::COUNT which_icon, bool HiLite)
 }
 
 static void
-DrawVerticalText(uqm::CHAR_T* str, POINT point)
+DrawVerticalText(uqm::CHAR_T* str, GFXPOINT point)
 {
 	TEXT t;
 	uqm::COUNT i;
@@ -480,11 +480,11 @@ DrawVerticalText(uqm::CHAR_T* str, POINT point)
 
 void DrawShipPickerText(STAMP stamp)
 {
-	RECT r;
+	GFXRECT r;
 	FONT OldFont;
 	uqm::COUNT i;
 	STAMP s;
-	POINT pt;
+	GFXPOINT pt;
 
 	for (i = 0; i < 2; i++)
 	{ // Check if we actually have text to print
@@ -541,8 +541,8 @@ void DrawShipPickerText(STAMP stamp)
 static void
 DrawTeamPickerText(STAMP stamp)
 {
-	RECT r, text_r;
-	POINT pt;
+	GFXRECT r, text_r;
+	GFXPOINT pt;
 	TEXT t;
 	FONT OldFont;
 	Color OldColor;
@@ -736,7 +736,7 @@ GetShipColumn(int index)
 
 // Get the rectangle containing the ship slot for the specified side, row,
 // and column.
-void GetShipBox(RECT* pRect, uqm::COUNT side, uqm::COUNT row, uqm::COUNT col)
+void GetShipBox(GFXRECT* pRect, uqm::COUNT side, uqm::COUNT row, uqm::COUNT col)
 {
 	pRect->corner.x = MELEE_X_OFFS
 					+ (col * (MELEE_BOX_WIDTH + MELEE_BOX_SPACE));
@@ -750,7 +750,7 @@ void GetShipBox(RECT* pRect, uqm::COUNT side, uqm::COUNT row, uqm::COUNT col)
 static void
 DrawShipBox(uqm::COUNT side, FleetShipIndex index, MeleeShip ship, bool HiLite)
 {
-	RECT r;
+	GFXRECT r;
 	uqm::BYTE row = GetShipRow(index);
 	uqm::BYTE col = GetShipColumn(index);
 	bool FilledSlot = (ship != MELEE_NONE);
@@ -803,7 +803,7 @@ DrawShipBox(uqm::COUNT side, FleetShipIndex index, MeleeShip ship, bool HiLite)
 static void
 ClearShipBox(uqm::COUNT side, FleetShipIndex index)
 {
-	RECT rect;
+	GFXRECT rect;
 	uqm::BYTE row = GetShipRow(index);
 	uqm::BYTE col = GetShipColumn(index);
 
@@ -889,12 +889,12 @@ DrawTeams(void)
 	}
 }
 
-void QuickRepair(uqm::COUNT whichFrame, RECT* pRect)
+void QuickRepair(uqm::COUNT whichFrame, GFXRECT* pRect)
 {
-	RECT r;
-	CONTEXT OldContext;
-	RECT OldRect;
-	POINT oldOrigin;
+	GFXRECT r;
+	GFXCONTEXT OldContext;
+	GFXRECT OldRect;
+	GFXPOINT oldOrigin;
 
 	r.corner.x = pRect->corner.x;
 	r.corner.y = pRect->corner.y;
@@ -950,12 +950,12 @@ DrawSuperMeleeTitle(void)
 	SetContextFontEffect(OldFontEffect);
 }
 
-void RepairMeleeFrame(const RECT* pRect)
+void RepairMeleeFrame(const GFXRECT* pRect)
 {
-	RECT r;
-	CONTEXT OldContext;
-	RECT OldRect;
-	POINT oldOrigin;
+	GFXRECT r;
+	GFXCONTEXT OldContext;
+	GFXRECT OldRect;
+	GFXPOINT oldOrigin;
 
 	r.corner.x = pRect->corner.x + SAFE_X;
 	r.corner.y = pRect->corner.y + SAFE_Y;
@@ -1014,7 +1014,7 @@ void RepairMeleeFrame(const RECT* pRect)
 static void
 RedrawMeleeFrame(void)
 {
-	RECT r;
+	GFXRECT r;
 
 	r.corner.x = 0;
 	r.corner.y = 0;
@@ -1025,7 +1025,7 @@ RedrawMeleeFrame(void)
 }
 
 static void
-GetTeamStringRect(uqm::COUNT side, RECT* r)
+GetTeamStringRect(uqm::COUNT side, GFXRECT* r)
 {
 	r->corner.x = MELEE_X_OFFS - RES_SCALE(1);
 	r->corner.y = (side + 1) * (MELEE_Y_OFFS + ((MELEE_BOX_HEIGHT + MELEE_BOX_SPACE) * NUM_MELEE_ROWS + RES_SCALE(2)));
@@ -1035,7 +1035,7 @@ GetTeamStringRect(uqm::COUNT side, RECT* r)
 }
 
 static void
-GetFleetValueRect(uqm::COUNT side, RECT* r)
+GetFleetValueRect(uqm::COUNT side, GFXRECT* r)
 {
 	r->corner.x = MELEE_X_OFFS
 				+ NUM_MELEE_COLUMNS * (MELEE_BOX_WIDTH + MELEE_BOX_SPACE) - RES_SCALE(30);
@@ -1045,7 +1045,7 @@ GetFleetValueRect(uqm::COUNT side, RECT* r)
 }
 
 static void
-GetFullStringRect(uqm::COUNT side, RECT* r)
+GetFullStringRect(uqm::COUNT side, GFXRECT* r)
 {
 	r->extent.width = TEAM_NAME_BOX_WIDTH;
 	r->extent.height = TEAM_NAME_BOX_HEIGHT;
@@ -1056,7 +1056,7 @@ GetFullStringRect(uqm::COUNT side, RECT* r)
 static void
 DrawTeamStringsBackGround(uqm::COUNT side)
 {
-	RECT r;
+	GFXRECT r;
 
 	GetFullStringRect(side, &r);
 	QuickRepair(0, &r);
@@ -1065,7 +1065,7 @@ DrawTeamStringsBackGround(uqm::COUNT side)
 static void
 DrawFleetValue(MELEE_STATE* pMS, uqm::COUNT side, uqm::COUNT HiLiteState)
 {
-	RECT r;
+	GFXRECT r;
 	TEXT rtText;
 	uqm::CHAR_T buf[30] {};
 	uqm::COUNT fleetValue;
@@ -1097,7 +1097,7 @@ static bool
 DrawTeamString(MELEE_STATE* pMS, uqm::COUNT side, uqm::COUNT HiLiteState,
 			   const char* teamName)
 {
-	RECT r;
+	GFXRECT r;
 	TEXT lfText;
 
 	GetTeamStringRect(side, &r);
@@ -1125,7 +1125,7 @@ DrawTeamString(MELEE_STATE* pMS, uqm::COUNT side, uqm::COUNT HiLiteState,
 	else
 	{ // editing state
 		uqm::COUNT i;
-		RECT text_r;
+		GFXRECT text_r;
 		uqm::BYTE char_deltas[MAX_TEAM_CHARS];
 		uqm::BYTE* pchar_deltas;
 
@@ -1220,9 +1220,9 @@ DrawTeamString(MELEE_STATE* pMS, uqm::COUNT side, uqm::COUNT HiLiteState,
 #ifdef NETPLAY
 // This function is generic. It should probably be moved to elsewhere.
 static void
-multiLineDrawText(TEXT* textIn, RECT* clipRect)
+multiLineDrawText(TEXT* textIn, GFXRECT* clipRect)
 {
-	RECT oldRect;
+	GFXRECT oldRect;
 
 	uqm::SIZE leading;
 	TEXT text;
@@ -1266,8 +1266,8 @@ out:
 static void
 DrawMeleeStatusMessage(const char* message)
 {
-	CONTEXT oldContext;
-	RECT r;
+	GFXCONTEXT oldContext;
+	GFXRECT r;
 
 	oldContext = SetContext(SpaceContext);
 
@@ -1515,7 +1515,7 @@ void Melee_flashSelection(MELEE_STATE* pMS)
 
 	if (Now >= NextTime)
 	{
-		CONTEXT OldContext;
+		GFXCONTEXT OldContext;
 
 		NextTime = Now + ((pMS->MeleeOption != BUILD_PICK || is3DO(optWhichMenu)) ? FLASH_RATE : BLINK_RATE);
 		select = !select;
@@ -1536,7 +1536,7 @@ void Melee_flashSelection(MELEE_STATE* pMS)
 static void
 InitMelee(MELEE_STATE* pMS)
 {
-	RECT r;
+	GFXRECT r;
 
 	SetContext(SpaceContext);
 	SetContextFGFrame(Screen);
@@ -1557,8 +1557,8 @@ InitMelee(MELEE_STATE* pMS)
 
 void DrawMeleeShipStrings(MELEE_STATE* pMS, MeleeShip NewStarShip)
 {
-	RECT r, OldRect;
-	CONTEXT OldContext;
+	GFXRECT r, OldRect;
+	GFXCONTEXT OldContext;
 
 	OldContext = SetContext(StatusContext);
 	GetContextClipRect(&OldRect);
@@ -1571,7 +1571,7 @@ void DrawMeleeShipStrings(MELEE_STATE* pMS, MeleeShip NewStarShip)
 
 	if (NewStarShip == MELEE_NONE)
 	{
-		RECT r;
+		GFXRECT r;
 		TEXT t;
 
 		ClearShipStatus(0);
@@ -1768,7 +1768,7 @@ BuildPickShipPopup(MELEE_STATE* pMS)
 	// it will not redraw the BuildPickFrame.
 
 	{
-		RECT r;
+		GFXRECT r;
 
 		GetBuildPickFrameRect(&r);
 		RepairMeleeFrame(&r);
@@ -2361,7 +2361,7 @@ DoConnectingDialog(MELEE_STATE* pMS)
 	SetMenuSounds(MENU_SOUND_NONE, MENU_SOUND_NONE);
 	if (!pMS->Initialized)
 	{
-		RECT r;
+		GFXRECT r;
 		FONT oldfont;
 		Color oldcolor;
 		TEXT t;

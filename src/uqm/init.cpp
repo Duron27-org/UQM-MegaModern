@@ -242,7 +242,7 @@ InitShips(void)
 	else
 	{
 		uqm::COUNT i;
-		RECT r;
+		GFXRECT r;
 
 		SetContext(SpaceContext);
 
@@ -258,7 +258,7 @@ InitShips(void)
 
 		SetContextBackGroundColor(BLACK_COLOR);
 		{
-			CONTEXT OldContext;
+			GFXCONTEXT OldContext;
 
 			OldContext = SetContext(ScreenContext);
 

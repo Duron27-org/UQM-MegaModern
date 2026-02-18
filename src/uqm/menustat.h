@@ -37,11 +37,11 @@ typedef struct menu_state
 	uqm::BYTE CurState;
 	FRAME CurFrame;
 	STRING CurString;
-	POINT first_item;
+	GFXPOINT first_item;
 	uqm::SIZE delta_item;
 
 	FRAME ModuleFrame;
-	RECT flash_rect0, flash_rect1, flash_rect2;
+	GFXRECT flash_rect0, flash_rect1, flash_rect2;
 	FRAME flash_frame0, flash_frame1;
 	FlashContext* flashContext;
 

@@ -252,11 +252,11 @@ CheckOvalCollision(DPOINT* p0, DPOINT* p1)
 }
 
 //static uqm::BYTE
-//CheckOvalCollisionOld (POINT *ch_one, POINT *ch_two)
+//CheckOvalCollisionOld (GFXPOINT *ch_one, GFXPOINT *ch_two)
 //{
-//	POINT mp;
+//	GFXPOINT mp;
 //	BRESENHAM_LINE ClipLine;
-//	RECT ClipRect;
+//	GFXRECT ClipRect;
 //	uqm::BYTE quad_visible = 0;
 //
 //	ClipRect.corner.x = ClipRect.corner.y = 0;
@@ -793,7 +793,7 @@ void DrawFilledOval(DRECT* pRect)
 	uqm::SQWORD d, dx, dy;
 	PRIMITIVE prim[NUM_QUADS >> 1];
 	uqm::COUNT StartPrim;
-	POINT first, second;
+	GFXPOINT first, second;
 	DPOINT p0, p1;
 	uqm::COUNT lines_r = 0;
 
@@ -964,7 +964,7 @@ void DrawFilledOval(DRECT* pRect)
 
 void DrawEllipseQuadrants(int cx, int cy, int x, int y, int shear, int filled)
 {
-	POINT p;
+	GFXPOINT p;
 	LINE l;
 
 	if (filled && y != 0)

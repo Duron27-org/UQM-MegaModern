@@ -45,7 +45,7 @@ DrawConfirmationWindow(bool answer, bool confirm)
 	Color oldfg = SetContextForeGroundColor(SHADOWBOX_DARK_COLOR);
 	FONT oldfont = SetContextFont(StarConFont);
 	FRAME oldFontEffect = SetContextFontEffect(nullptr);
-	RECT r;
+	GFXRECT r;
 	TEXT t;
 
 	BatchGraphics();
@@ -104,11 +104,11 @@ bool DoConfirmExit(void)
 	FlashPaused = PauseFlash();
 
 	{
-		RECT r;
+		GFXRECT r;
 		STAMP s;
-		RECT ctxRect;
-		CONTEXT oldContext;
-		RECT oldRect;
+		GFXRECT ctxRect;
+		GFXCONTEXT oldContext;
+		GFXRECT oldRect;
 		bool response = false, done;
 		Color OldColor;
 		DrawMode mode, oldMode;
@@ -240,9 +240,9 @@ void DoPopupWindow(const char* msg)
 	const char* lines[30];
 	WIDGET_LABEL label;
 	STAMP s;
-	CONTEXT oldContext;
-	RECT oldRect;
-	RECT windowRect;
+	GFXCONTEXT oldContext;
+	GFXRECT oldRect;
+	GFXRECT windowRect;
 	POPUP_STATE state;
 	MENU_SOUND_FLAGS s0, s1;
 	InputFrameCallback* oldCallback;

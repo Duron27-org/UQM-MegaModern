@@ -33,11 +33,11 @@ typedef uqm::BYTE GRAPHICS_PRIM;
 
 union PRIM_DESC
 {
-	POINT Point;
+	GFXPOINT Point;
 	STAMP Stamp;
 	LINE Line;
 	TEXT Text;
-	RECT Rect;
+	GFXRECT Rect;
 };
 
 typedef uqm::DWORD PRIM_LINKS;

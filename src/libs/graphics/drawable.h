@@ -26,7 +26,7 @@
 
 typedef struct bresenham_line
 {
-	POINT first, second;
+	GFXPOINT first, second;
 	uqm::SIZE abs_delta_x, abs_delta_y;
 	uqm::SIZE error_term;
 	bool end_points_exchanged;
@@ -69,7 +69,7 @@ extern DRAWABLE AllocDrawable(uqm::COUNT num_frames);
 
 typedef struct
 {
-	RECT Box;
+	GFXRECT Box;
 	FRAME FramePtr;
 } IMAGE_BOX;
 
@@ -82,8 +82,8 @@ extern bool _ReleaseCelData(void* handle);
 extern FRAME _CurFramePtr;
 
 // ClipRect is relative to ctxOrigin
-extern void _text_blt(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin);
-extern void _text_blt_fade(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin, FRAME repair, bool* skip);
-extern uqm::BYTE _text_blt_alt(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin, uqm::BYTE swap, FONT AltFontPtr, UniChar key);
+extern void _text_blt(GFXRECT* pClipRect, TEXT* TextPtr, GFXPOINT ctxOrigin);
+extern void _text_blt_fade(GFXRECT* pClipRect, TEXT* TextPtr, GFXPOINT ctxOrigin, FRAME repair, bool* skip);
+extern uqm::BYTE _text_blt_alt(GFXRECT* pClipRect, TEXT* TextPtr, GFXPOINT ctxOrigin, uqm::BYTE swap, FONT AltFontPtr, UniChar key);
 
 #endif /* LIBS_GRAPHICS_DRAWABLE_H_ */

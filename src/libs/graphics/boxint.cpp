@@ -24,7 +24,7 @@
 #define MAX(a, b) (((a) >= (b)) ? (a) : (b))
 
 INTERSECT_CODE
-BoxIntersect(RECT* pr1, RECT* pr2, RECT* pinter)
+BoxIntersect(GFXRECT* pr1, GFXRECT* pr2, GFXRECT* pinter)
 {
 	INTERSECT_CODE intersect_code;
 	COORD x1;
@@ -101,7 +101,7 @@ BoxIntersect(RECT* pr1, RECT* pr2, RECT* pinter)
 	return ((INTERSECT_CODE)0);
 }
 
-void BoxUnion(RECT* pr1, RECT* pr2, RECT* punion)
+void BoxUnion(GFXRECT* pr1, GFXRECT* pr2, GFXRECT* punion)
 {
 #if NEVER // Part of lower FIXME.
 	COORD x2, y2, w2, h2;

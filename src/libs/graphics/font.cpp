@@ -84,14 +84,14 @@ bool DestroyFont(FONT FontRef)
 	return (FreeFont(FontRef));
 }
 
-// Returns the RECT of any given TEXT
-RECT font_GetTextRect(TEXT* lpText)
+// Returns the GFXRECT of any given TEXT
+GFXRECT font_GetTextRect(TEXT* lpText)
 {
-	RECT ClipRect;
-	POINT origin;
+	GFXRECT ClipRect;
+	GFXPOINT origin;
 	TEXT text;
 
-	memset(&ClipRect, 0, sizeof(RECT));
+	memset(&ClipRect, 0, sizeof(GFXRECT));
 
 	FixContextFontEffect();
 	if (!GraphicsSystemActive() || !GetContextValidRect(nullptr, &origin))
@@ -112,8 +112,8 @@ RECT font_GetTextRect(TEXT* lpText)
 // XXX: Should be in frame.c (renamed to something decent?)
 void font_DrawText(TEXT* lpText)
 {
-	RECT ClipRect;
-	POINT origin;
+	GFXRECT ClipRect;
+	GFXPOINT origin;
 	TEXT text;
 
 	FixContextFontEffect();
@@ -134,8 +134,8 @@ void font_DrawText(TEXT* lpText)
 
 void font_DrawText_Fade(TEXT* lpText, FRAME repair, bool* skip)
 {
-	RECT ClipRect;
-	POINT origin;
+	GFXRECT ClipRect;
+	GFXPOINT origin;
 	TEXT text;
 
 	if (!GraphicsSystemActive() || !GetContextValidRect(nullptr, &origin))
@@ -161,8 +161,8 @@ void font_DrawTracedText(TEXT* pText, Color text, Color trace)
 	// Preserve current foreground color for full correctness
 	const Color oldfg = SetContextForeGroundColor(trace);
 	const uqm::BYTE stroke = RES_SCALE(1);
-	const POINT t_baseline = pText->baseline;
-	POINT offset;
+	const GFXPOINT t_baseline = pText->baseline;
+	GFXPOINT offset;
 
 	for (offset.x = -stroke; offset.x <= stroke; ++offset.x)
 	{
@@ -190,8 +190,8 @@ void font_DrawTracedText(TEXT* pText, Color text, Color trace)
 uqm::BYTE
 font_DrawTextAlt(TEXT* lpText, uqm::BYTE swap, FONT AltFontPtr, UniChar key)
 {
-	RECT ClipRect;
-	POINT origin;
+	GFXRECT ClipRect;
+	GFXPOINT origin;
 	TEXT text;
 
 	FixContextFontEffect();
@@ -216,8 +216,8 @@ void font_DrawTracedTextAlt(TEXT* pText, Color text, Color trace, FONT AltFontPt
 	// Preserve current foreground color for full correctness
 	const Color oldfg = SetContextForeGroundColor(trace);
 	const uqm::BYTE stroke = RES_SCALE(1);
-	const POINT t_baseline = pText->baseline;
-	POINT offset;
+	const GFXPOINT t_baseline = pText->baseline;
+	GFXPOINT offset;
 	static uqm::BYTE swap = 0;
 
 	for (offset.x = -stroke; offset.x <= stroke; ++offset.x)
@@ -245,7 +245,7 @@ void font_DrawTracedTextAlt(TEXT* pText, Color text, Color trace, FONT AltFontPt
 void font_DrawShadowedText(TEXT* pText, uqm::BYTE direction,
 						   Color text_color, Color shadow_color)
 {
-	POINT shadow_angle = {0, 0};
+	GFXPOINT shadow_angle = {0, 0};
 	Color OldColor;
 
 	switch (direction)
@@ -329,7 +329,7 @@ bool GetContextFontDispWidth(uqm::SIZE* pwidth)
 	return (false);
 }
 
-bool TextRect(TEXT* lpText, RECT* pRect, uqm::BYTE* pdelta)
+bool TextRect(TEXT* lpText, GFXRECT* pRect, uqm::BYTE* pdelta)
 {
 	uqm::BYTE char_delta_array[MAX_DELTAS];
 	FONT FontPtr;
@@ -461,13 +461,13 @@ bool TextRect(TEXT* lpText, RECT* pRect, uqm::BYTE* pdelta)
 	return (false);
 }
 
-void _text_blt(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin)
+void _text_blt(GFXRECT* pClipRect, TEXT* TextPtr, GFXPOINT ctxOrigin)
 {
 	FONT FontPtr;
 	uqm::COUNT num_chars;
 	UniChar next_ch;
 	const char* pStr;
-	POINT origin;
+	GFXPOINT origin;
 	TFB_Image* backing;
 	DrawMode mode = _get_context_draw_mode();
 
@@ -515,7 +515,7 @@ void _text_blt(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin)
 		fontChar = getCharFrame(FontPtr, ch);
 		if (fontChar != nullptr && fontChar->disp.width)
 		{
-			RECT r;
+			GFXRECT r;
 
 			r.corner.x = origin.x - fontChar->HotSpot.x;
 			r.corner.y = origin.y - fontChar->HotSpot.y;
@@ -543,13 +543,13 @@ void _text_blt(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin)
 	}
 }
 
-void _text_blt_fade(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin, FRAME repair, bool* skip)
+void _text_blt_fade(GFXRECT* pClipRect, TEXT* TextPtr, GFXPOINT ctxOrigin, FRAME repair, bool* skip)
 {
 	FONT FontPtr;
 	uqm::COUNT num_chars;
 	UniChar next_ch;
 	const char* pStr;
-	POINT origin;
+	GFXPOINT origin;
 	uqm::SIZE leading;
 	TFB_Image *b_first, *b_second, *b_clear;
 	DrawMode mode = _get_context_draw_mode();
@@ -557,7 +557,7 @@ void _text_blt_fade(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin, FRAME repai
 	FontPtr = _CurFontPtr;
 	if (FontPtr != nullptr)
 	{
-		RECT r;
+		GFXRECT r;
 		uqm::SIZE w, h;
 
 		if (!GetContextFontDispHeight(&h) || !GetContextFontDispWidth(&w))
@@ -622,7 +622,7 @@ void _text_blt_fade(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin, FRAME repai
 		fontChar = getCharFrame(FontPtr, ch);
 		if (fontChar != nullptr && fontChar->disp.width)
 		{
-			RECT r;
+			GFXRECT r;
 
 			r.corner.x = origin.x - fontChar->HotSpot.x;
 			r.corner.y = origin.y - fontChar->HotSpot.y;
@@ -695,7 +695,7 @@ void _text_blt_fade(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin, FRAME repai
 	}
 }
 
-bool TextRectAlt(TEXT* lpText, RECT* pRect, uqm::BYTE* pdelta, uqm::BYTE swap,
+bool TextRectAlt(TEXT* lpText, GFXRECT* pRect, uqm::BYTE* pdelta, uqm::BYTE swap,
 				 UniChar key, FONT AltFontPtr)
 {
 	uqm::BYTE char_delta_array[MAX_DELTAS];
@@ -840,7 +840,7 @@ bool TextRectAlt(TEXT* lpText, RECT* pRect, uqm::BYTE* pdelta, uqm::BYTE swap,
 }
 
 uqm::BYTE
-_text_blt_alt(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin, uqm::BYTE swap,
+_text_blt_alt(GFXRECT* pClipRect, TEXT* TextPtr, GFXPOINT ctxOrigin, uqm::BYTE swap,
 			  FONT AltFontPtr, UniChar key)
 { // Kruzen: To create text using 2 fonts (Orz case)
 	// Safest way to do so without going too deep into
@@ -851,7 +851,7 @@ _text_blt_alt(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin, uqm::BYTE swap,
 	uqm::COUNT num_chars;
 	UniChar next_ch;
 	const char* pStr;
-	POINT origin;
+	GFXPOINT origin;
 	TFB_Image *backing, *stock, *ext;
 	DrawMode mode = _get_context_draw_mode();
 	uqm::BYTE leading_step;
@@ -871,7 +871,7 @@ _text_blt_alt(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin, uqm::BYTE swap,
 	{ // Local backing needed for alt font
 		// Create one
 		uqm::SIZE w, h;
-		RECT r;
+		GFXRECT r;
 		Color color = _get_context_fg_color();
 		w = (uqm::SIZE)AltFontPtr->disp.width;
 		h = (uqm::SIZE)AltFontPtr->disp.height;
@@ -942,7 +942,7 @@ _text_blt_alt(RECT* pClipRect, TEXT* TextPtr, POINT ctxOrigin, uqm::BYTE swap,
 
 		if (fontChar != nullptr && fontChar->disp.width)
 		{
-			RECT r;
+			GFXRECT r;
 
 			r.corner.x = origin.x - fontChar->HotSpot.x;
 			r.corner.y = origin.y - fontChar->HotSpot.y;

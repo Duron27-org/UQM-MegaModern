@@ -49,13 +49,13 @@ extern uqm::COUNT GenerateMineralDeposits(const SYSTEM_INFO*, uqm::COUNT whichDe
 										  NODE_INFO* info);
 extern uqm::COUNT GenerateLifeForms(const SYSTEM_INFO*, uqm::COUNT whichLife,
 									NODE_INFO* info);
-extern void GenerateRandomLocation(POINT* loc);
+extern void GenerateRandomLocation(GFXPOINT* loc);
 extern uqm::COUNT GenerateRandomNodes(const SYSTEM_INFO*, uqm::COUNT scan, uqm::COUNT numNodes,
 									  uqm::COUNT type, uqm::COUNT whichNode, NODE_INFO* info);
 extern uqm::COUNT CustomMineralDeposits(const SYSTEM_INFO* SysInfoPtr, uqm::COUNT which_deposit,
 										NODE_INFO* info, uqm::COUNT numNodes, uqm::COUNT type, uqm::BYTE quality);
 extern uqm::COUNT CustomMineralDeposit(NODE_INFO* info, uqm::COUNT type, uqm::BYTE quality,
-									   POINT location);
+									   GFXPOINT location);
 // Generate lifeforms from a preset lifeTypes[] array
 extern uqm::COUNT GeneratePresetLife(const SYSTEM_INFO*,
 									 const uqm::SBYTE* lifeTypes, uqm::COUNT whichLife, NODE_INFO* info);

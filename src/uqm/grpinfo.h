@@ -21,7 +21,7 @@
 #include "libs/compiler.h"
 #include "displist.h"
 #include "libs/gfxlib.h"
-// for POINT
+// for GFXPOINT
 #include <assert.h>
 
 #if 0 //defined(__cplusplus)
@@ -61,7 +61,7 @@ typedef struct
 	/* Also: saved prev dest_loc before intercept call,
 			 *   restored to dest_loc on all-clear */
 	uqm::BYTE group_id;
-	POINT loc;
+	GFXPOINT loc;
 
 	FRAME melee_icon;
 

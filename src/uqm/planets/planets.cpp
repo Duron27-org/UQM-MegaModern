@@ -52,7 +52,7 @@ enum PlanetMenuItems
 	NAVIGATION,
 };
 
-CONTEXT PlanetContext;
+GFXCONTEXT PlanetContext;
 // Context for rotating planet view and lander surface view
 
 bool useDosSpheres = false;
@@ -163,8 +163,8 @@ void DestroyOrbitStruct(PLANET_ORBIT* Orbit, uqm::SIZE height)
 static void
 CreatePlanetContext(void)
 {
-	CONTEXT oldContext;
-	RECT r;
+	GFXCONTEXT oldContext;
+	GFXRECT r;
 
 	assert(PlanetContext == nullptr);
 
@@ -220,10 +220,10 @@ void DrawScannedObjects(bool Reversed)
 
 void DrawPlanetSurfaceBorder(void)
 {
-	CONTEXT oldContext;
-	RECT oldClipRect;
-	RECT clipRect;
-	RECT r;
+	GFXCONTEXT oldContext;
+	GFXRECT oldClipRect;
+	GFXRECT clipRect;
+	GFXRECT r;
 
 	oldContext = SetContext(SpaceContext);
 	GetContextClipRect(&oldClipRect);
@@ -321,7 +321,7 @@ typedef enum
 } DRAW_ORBITAL_MODE;
 
 static void
-DrawEnterOrbitText(RECT rect)
+DrawEnterOrbitText(GFXRECT rect)
 {
 	TEXT text;
 	FONT OldFont;
@@ -397,7 +397,7 @@ void DrawOrbitMapGraphic(void)
 
 		if (HaveString)
 		{
-			RECT rect;
+			GFXRECT rect;
 
 			GetFrameRect(s.frame, &rect);
 			rect.corner.x += s.origin.x;
@@ -441,7 +441,7 @@ void DrawOrbitMapGraphic(void)
 static void
 DrawOrbitalDisplay(DRAW_ORBITAL_MODE Mode)
 {
-	RECT r;
+	GFXRECT r;
 
 	SetContext(SpaceContext);
 	GetContextClipRect(&r);

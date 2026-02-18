@@ -164,7 +164,7 @@ uqm::COUNT ShipPoints(HFLEETINFO hFleet);
 static void
 DrawShipsStatus(uqm::COUNT index, uqm::COUNT pos, bool selected)
 {
-	RECT r;
+	GFXRECT r;
 	TEXT t;
 	uqm::CHAR_T buf[10];
 
@@ -233,7 +233,7 @@ static void
 DrawShipsDisplay(SHIPS_STATE* shipState)
 {
 	TEXT t;
-	RECT r;
+	GFXRECT r;
 	uqm::COUNT i;
 
 	r.corner.x = RES_SCALE(2);
@@ -292,7 +292,7 @@ DrawShipsDisplay(SHIPS_STATE* shipState)
 static void
 DrawShips(SHIPS_STATE* shipState, uqm::COUNT NewItem)
 {
-	CONTEXT OldContext = SetContext(StatusContext);
+	GFXCONTEXT OldContext = SetContext(StatusContext);
 	uqm::COUNT pos = NewItem - shipState->topIndex;
 
 	BatchGraphics();
@@ -447,7 +447,7 @@ FillHangarX(void)
 static void
 showRemainingCrew(void)
 {
-	RECT r;
+	GFXRECT r;
 	TEXT t;
 	uqm::CHAR_T buf[30] {};
 	uqm::SIZE remaining_crew;
@@ -611,7 +611,7 @@ bool CanBuyPoints(HFLEETINFO hFleet)
 static void
 showRemainingPoints(int delta)
 {
-	RECT r;
+	GFXRECT r;
 	TEXT t;
 	uqm::SBYTE percentage_left;
 	uqm::SIZE FP = REMAINING_FP + delta;
@@ -736,7 +736,7 @@ SpinStarShip(MENU_STATE* pMS, HFLEETINFO hStarShip)
 static void
 on_input_frame(void)
 {
-	CONTEXT oldContext;
+	GFXCONTEXT oldContext;
 
 	oldContext = SetContext(SpaceContext);
 	if (!DoShipSpins)
@@ -800,14 +800,14 @@ GetAvailableRaceFromIndex(uqm::BYTE Index)
 }
 
 static void
-DrawShipyardShipText(RECT* r, int Index)
+DrawShipyardShipText(GFXRECT* r, int Index)
 {
 	uqm::CHAR_T race_name[64];
 	uqm::CHAR_T ship_name[64];
 	FONT OldFont;
 	Color OldColor;
 	uqm::SIZE leading;
-	RECT block;
+	GFXRECT block;
 	TEXT text;
 	COORD strip_align;
 
@@ -878,9 +878,9 @@ DrawShipyardShipText(RECT* r, int Index)
 static void
 DrawRaceStrings(uqm::BYTE NewRaceItem)
 {
-	RECT r, textRect;
+	GFXRECT r, textRect;
 	STAMP s;
-	CONTEXT OldContext;
+	GFXCONTEXT OldContext;
 
 
 	OldContext = SetContext(StatusContext);
@@ -917,7 +917,7 @@ DrawRaceStrings(uqm::BYTE NewRaceItem)
 	}
 	else
 	{
-		RECT dosRect;
+		GFXRECT dosRect;
 
 		dosRect.corner.x = RES_SCALE(3);
 		dosRect.corner.y = RADAR_Y + RES_SCALE(1);
@@ -944,7 +944,7 @@ DrawRaceStrings(uqm::BYTE NewRaceItem)
 		HFLEETINFO hStarShip;
 		FLEET_INFO* FleetPtr;
 		uqm::COUNT shipCost, shipPoints, shipCrew, maxCrew;
-		RECT r;
+		GFXRECT r;
 		STRING captain;
 
 		ManipulateShips(NewRaceItem);
@@ -1111,9 +1111,9 @@ DrawRaceStrings(uqm::BYTE NewRaceItem)
 // (empty).
 // pRect is the rectangle of the ship image.
 static void
-ShowShipCrew(SHIP_FRAGMENT* StarShipPtr, const RECT* pRect)
+ShowShipCrew(SHIP_FRAGMENT* StarShipPtr, const GFXRECT* pRect)
 {
-	RECT r;
+	GFXRECT r;
 	TEXT t;
 	HFLEETINFO hTemplate;
 	FLEET_INFO* TemplatePtr;
@@ -1214,7 +1214,7 @@ ShowCombatShip(MENU_STATE* pMS, uqm::COUNT which_window,
 	struct
 	{
 		SHIP_FRAGMENT* StarShipPtr;
-		POINT finished_s;
+		GFXPOINT finished_s;
 		STAMP ship_s;
 		STAMP lfdoor_s;
 		STAMP rtdoor_s;
@@ -1316,9 +1316,9 @@ ShowCombatShip(MENU_STATE* pMS, uqm::COUNT which_window,
 	{
 		bool AllDoorsFinished;
 		uqm::DWORD TimeIn;
-		RECT r;
-		CONTEXT OldContext;
-		RECT OldClipRect;
+		GFXRECT r;
+		GFXCONTEXT OldContext;
+		GFXRECT OldClipRect;
 		int j;
 
 		AllDoorsFinished = false;
@@ -1351,7 +1351,7 @@ ShowCombatShip(MENU_STATE* pMS, uqm::COUNT which_window,
 			for (i = 0; i < num_ships; ++i)
 			{
 				{
-					RECT ClipRect;
+					GFXRECT ClipRect;
 
 					ClipRect.corner.x = SIS_ORG_X + pship_win_info->finished_s.x;
 					ClipRect.corner.y = SIS_ORG_Y + pship_win_info->finished_s.y;
@@ -1444,7 +1444,7 @@ CrewTransaction(uqm::SIZE crew_delta)
 static void
 DMS_FlashFlagShip(void)
 {
-	RECT r;
+	GFXRECT r;
 	r.corner.x = 0;
 	r.corner.y = 0;
 	r.extent.width = SIS_SCREEN_WIDTH;
@@ -1460,7 +1460,7 @@ DMS_FlashFlagShip(void)
 }
 
 static void
-DMS_GetEscortShipRect(RECT* rOut, uqm::BYTE slotNr)
+DMS_GetEscortShipRect(GFXRECT* rOut, uqm::BYTE slotNr)
 {
 	uqm::BYTE row = slotNr / HANGAR_SHIPS_ROW;
 	uqm::BYTE col = slotNr % HANGAR_SHIPS_ROW;
@@ -1474,7 +1474,7 @@ DMS_GetEscortShipRect(RECT* rOut, uqm::BYTE slotNr)
 static void
 DMS_FlashEscortShip(uqm::BYTE slotNr)
 {
-	RECT r;
+	GFXRECT r;
 	DMS_GetEscortShipRect(&r, slotNr);
 	SetFlashRect(&r, optWhichMenu == uqm::EmulationMode::PC);
 }
@@ -1482,7 +1482,7 @@ DMS_FlashEscortShip(uqm::BYTE slotNr)
 static void
 DMS_FlashFlagShipCrewCount(void)
 {
-	RECT r;
+	GFXRECT r;
 	SetContext(StatusContext);
 	GetGaugeRect(&r, true);
 	SetFlashRect(&r, false);
@@ -1492,7 +1492,7 @@ DMS_FlashFlagShipCrewCount(void)
 static void
 DMS_FlashEscortShipCrewCount(uqm::BYTE slotNr)
 {
-	RECT r;
+	GFXRECT r;
 	uqm::BYTE row = slotNr / HANGAR_SHIPS_ROW;
 	uqm::BYTE col = slotNr % HANGAR_SHIPS_ROW;
 
@@ -1573,8 +1573,8 @@ static bool
 DMS_SpinShip(MENU_STATE* pMS, HSHIPFRAG hStarShip)
 {
 	HFLEETINFO hSpinShip = 0;
-	CONTEXT OldContext;
-	RECT OldClipRect;
+	GFXCONTEXT OldContext;
+	GFXRECT OldClipRect;
 
 	// No spinning the flagship.
 	if (HINIBBLE(pMS->CurState) != 0)
@@ -1639,7 +1639,7 @@ DMS_SpinShip(MENU_STATE* pMS, HSHIPFRAG hStarShip)
 static uqm::SIZE
 DMS_HireFlagShipCrew(void)
 {
-	RECT r;
+	GFXRECT r;
 	uqm::SIZE crew_bought;
 
 	crew_bought = (uqm::SIZE)MAKE_WORD(
@@ -1688,7 +1688,7 @@ static uqm::SIZE
 DMS_DismissFlagShipCrew(void)
 {
 	uqm::SIZE crew_bought;
-	RECT r;
+	GFXRECT r;
 
 	if (GetCrewCount() == 0)
 	{
@@ -1724,7 +1724,7 @@ static uqm::SIZE
 DMS_HireEscortShipCrew(SHIP_FRAGMENT* StarShipPtr)
 {
 	uqm::COUNT templateMaxCrew;
-	RECT r;
+	GFXRECT r;
 	uqm::SIZE crew_bought;
 	uqm::COUNT crew_level = (StarShipPtr->crew_level > StarShipPtr->max_crew ? StarShipPtr->crew_level - StarShipPtr->max_crew : StarShipPtr->crew_level);
 
@@ -1799,7 +1799,7 @@ static uqm::SIZE
 DMS_DismissEscortShipCrew(SHIP_FRAGMENT* StarShipPtr)
 {
 	uqm::SIZE crew_delta = 0;
-	RECT r;
+	GFXRECT r;
 	uqm::COUNT crew_level = (StarShipPtr->crew_level > StarShipPtr->max_crew ? StarShipPtr->crew_level - StarShipPtr->max_crew : StarShipPtr->crew_level);
 
 	if (crew_level > 0)
@@ -1856,7 +1856,7 @@ DMS_ModifyCrew(MENU_STATE* pMS, HSHIPFRAG hStarShip, uqm::SBYTE dy)
 	SHIP_FRAGMENT* StarShipPtr = nullptr;
 	uqm::COUNT loop;
 	uqm::COUNT DoLoop = 1;
-	RECT r;
+	GFXRECT r;
 	//uqm::SIZE remaining_crew = INITIAL_CREW - (uqm::SIZE)MAKE_WORD (
 	//		GET_GAME_STATE (CREW_PURCHASED0),
 	//		GET_GAME_STATE (CREW_PURCHASED1)); Unused
@@ -2354,7 +2354,7 @@ DMS_EditCrewMode(MENU_STATE* pMS, HSHIPFRAG hStarShip,
 			showRemainingPoints(ShipPoints(hTemplate));
 		}
 
-		RECT r;
+		GFXRECT r;
 		PreUpdateFlashRect();
 		DMS_GetEscortShipRect(&r, StarShipPtr->index);
 		ShowShipCrew(StarShipPtr, &r);
@@ -2630,7 +2630,7 @@ DrawBluePrint(MENU_STATE* pMS)
 
 		while (num_frames--)
 		{
-			RECT r;
+			GFXRECT r;
 			// Crew dots
 			r.extent.width = RES_SCALE(1);
 			r.extent.height = r.extent.width;
@@ -2642,7 +2642,7 @@ DrawBluePrint(MENU_STATE* pMS)
 		}
 	}
 	{
-		RECT r;
+		GFXRECT r;
 
 		num_frames = GLOBAL_SIS(TotalElementMass);
 		GLOBAL_SIS(TotalElementMass) = 0;
@@ -2706,7 +2706,7 @@ bool DoShipyard(MENU_STATE* pMS)
 
 		{
 			STAMP s;
-			RECT r, old_r;
+			GFXRECT r, old_r;
 
 			pMS->ModuleFrame = CaptureDrawable(
 				LoadGraphic(SHIPYARD_PMAP_ANIM));

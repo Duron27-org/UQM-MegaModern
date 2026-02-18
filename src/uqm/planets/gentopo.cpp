@@ -22,7 +22,7 @@
 #include "libs/mathlib.h"
 #include "planets.h"
 
-void DeltaTopography(uqm::COUNT num_iterations, uqm::SBYTE* DepthArray, RECT* pRect,
+void DeltaTopography(uqm::COUNT num_iterations, uqm::SBYTE* DepthArray, GFXRECT* pRect,
 					 uqm::SIZE depth_delta)
 {
 	uqm::SIZE width, height, delta_y;

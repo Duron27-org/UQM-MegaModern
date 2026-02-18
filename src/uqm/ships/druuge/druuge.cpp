@@ -125,8 +125,8 @@ static RACE_DESC druuge_desc =
 };
 
 static void
-cannon_collision(ELEMENT* ElementPtr0, POINT* pPt0,
-				 ELEMENT* ElementPtr1, POINT* pPt1)
+cannon_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
+				 ELEMENT* ElementPtr1, GFXPOINT* pPt1)
 {
 	weapon_collision(ElementPtr0, pPt0, ElementPtr1, pPt1);
 

@@ -125,7 +125,7 @@ void TFB_DrawCanvas_Line(int x1, int y1, int x2, int y2, Color color,
 	}
 }
 
-void TFB_DrawCanvas_Rect(RECT* rect, Color color, DrawMode mode, TFB_Canvas target)
+void TFB_DrawCanvas_Rect(GFXRECT* rect, Color color, DrawMode mode, TFB_Canvas target)
 {
 	SDL_Surface* dst = (SDL_Surface*)target;
 	SDL_PixelFormat* fmt = dst->format;
@@ -2140,8 +2140,8 @@ void TFB_DrawCanvas_GetRotatedExtent(TFB_Canvas src_canvas, int angle, EXTENT* s
 	size->width = dstw;
 }
 
-void TFB_DrawCanvas_CopyRect(TFB_Canvas source, const RECT* srcRect,
-							 TFB_Canvas target, POINT dstPt)
+void TFB_DrawCanvas_CopyRect(TFB_Canvas source, const GFXRECT* srcRect,
+							 TFB_Canvas target, GFXPOINT dstPt)
 {
 	SDL_Rect sourceRect, targetRect;
 
@@ -2167,7 +2167,7 @@ void TFB_DrawCanvas_CopyRect(TFB_Canvas source, const RECT* srcRect,
 	SDL_BlitSurface((SDL_Surface*)source, &sourceRect, (SDL_Surface*)target, &targetRect);
 }
 
-void TFB_DrawCanvas_SetClipRect(TFB_Canvas canvas, const RECT* clipRect)
+void TFB_DrawCanvas_SetClipRect(TFB_Canvas canvas, const GFXRECT* clipRect)
 {
 	if (canvas == 0)
 	{
@@ -2191,8 +2191,8 @@ void TFB_DrawCanvas_SetClipRect(TFB_Canvas canvas, const RECT* clipRect)
 	}
 }
 
-bool TFB_DrawCanvas_Intersect(TFB_Canvas canvas1, POINT c1org,
-							  TFB_Canvas canvas2, POINT c2org, const RECT* interRect)
+bool TFB_DrawCanvas_Intersect(TFB_Canvas canvas1, GFXPOINT c1org,
+							  TFB_Canvas canvas2, GFXPOINT c2org, const GFXRECT* interRect)
 {
 	bool ret = false;
 	SDL_Surface* surf1 = (SDL_Surface*)canvas1;

@@ -276,7 +276,7 @@ LeaveAutoPilot:
 	else
 	{
 		uqm::SIZE facing;
-		POINT universe;
+		GFXPOINT universe;
 
 		universe.x = LOGX_TO_UNIVERSE(GLOBAL_SIS(log_x));
 		universe.y = LOGY_TO_UNIVERSE(GLOBAL_SIS(log_y));
@@ -588,8 +588,8 @@ sis_battle_postprocess(ELEMENT* ElementPtr)
 }
 
 static void
-blaster_collision(ELEMENT* ElementPtr0, POINT* pPt0,
-				  ELEMENT* ElementPtr1, POINT* pPt1)
+blaster_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
+				  ELEMENT* ElementPtr1, GFXPOINT* pPt1)
 {
 	HELEMENT hBlastElement;
 

@@ -70,7 +70,7 @@ typedef struct
 
 extern MUSIC_REF LanderMusic;
 
-extern void PlanetSide(POINT planetLoc);
+extern void PlanetSide(GFXPOINT planetLoc);
 extern void DoDiscoveryReport(SOUND ReadOutSounds);
 extern uqm::BYTE SetPlanetMusic(uqm::BYTE planet_type);
 extern void LoadLanderData(void);

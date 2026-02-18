@@ -73,7 +73,7 @@ FRAME LanderFrame[8];
 uqm::BYTE LanderUpgradesFlag;
 static SOUND LanderSounds;
 MUSIC_REF LanderMusic;
-static CONTEXT PCLanderContext;
+static GFXCONTEXT PCLanderContext;
 static MUSIC_REF OrbitMusic[NUM_ORBIT_THEMES];
 
 LIFEFORM_DESC CreatureData[] =
@@ -166,7 +166,7 @@ extern PRIM_LINKS DisplayLinks;
 
 #define DEATH_EXPLOSION 0
 
-// TODO: redefine these in terms of CONTEXT width/height
+// TODO: redefine these in terms of GFXCONTEXT width/height
 #define SURFACE_WIDTH SIS_SCREEN_WIDTH
 #define SURFACE_HEIGHT (SIS_SCREEN_HEIGHT - MAP_HEIGHT - MAP_BORDER_HEIGHT)
 
@@ -179,7 +179,7 @@ extern PRIM_LINKS DisplayLinks;
 #define LANDER_SPEED_DENOM (isPC(optSuperPC) ? 14 : 10)
 
 static uqm::BYTE lander_flags;
-static POINT curLanderLoc;
+static GFXPOINT curLanderLoc;
 static int crew_left;
 static int shieldHit;
 // which shield was hit, assuming it helped
@@ -200,12 +200,12 @@ EXTENT MapSurface;
 
 #define ON_THE_GROUND 0
 
-CONTEXT
+GFXCONTEXT
 CreatePCLanderContext(void)
 {
-	CONTEXT oldContext;
-	CONTEXT context;
-	RECT r;
+	GFXCONTEXT oldContext;
+	GFXCONTEXT context;
+	GFXRECT r;
 
 	// PCLanderContext rect is relative to SpaceContext
 	oldContext = SetContext(SpaceContext);
@@ -227,10 +227,10 @@ CreatePCLanderContext(void)
 	return context;
 }
 
-CONTEXT
+GFXCONTEXT
 GetPCLanderContext(bool* owner)
 {
-	// TODO: Make CONTEXT ref-counted
+	// TODO: Make GFXCONTEXT ref-counted
 	if (PCLanderContext)
 	{
 		if (owner)
@@ -579,7 +579,7 @@ static void
 DeltaLanderCrew(uqm::SIZE crew_delta, uqm::COUNT which_disaster)
 {
 	STAMP s;
-	CONTEXT OldContext;
+	GFXCONTEXT OldContext;
 
 	if (crew_delta > 0)
 	{
@@ -646,7 +646,7 @@ FillLanderHold(PLANETSIDE_DESC* pPSD, uqm::COUNT scan, uqm::COUNT NumRetrieved)
 {
 	uqm::COUNT start_count, tmpholdint;
 	STAMP s;
-	CONTEXT OldContext;
+	GFXCONTEXT OldContext;
 
 	PlaySound(SetAbsSoundIndex(LanderSounds, LANDER_PICKUP),
 			  NotPositional(), nullptr, GAME_SOUND_PRIORITY);
@@ -1387,7 +1387,7 @@ static void
 BuildObjectList(void)
 {
 	uqm::DWORD rand_val;
-	POINT org;
+	GFXPOINT org;
 	HELEMENT hElement, hNextElement;
 	PLANETSIDE_DESC* pPSD = planetSideDesc;
 
@@ -1527,9 +1527,9 @@ BuildObjectList(void)
 static void
 ScrollPlanetSide(uqm::SIZE dx, uqm::SIZE dy, int landingOffset)
 {
-	POINT new_pt;
+	GFXPOINT new_pt;
 	STAMP lander_s, shadow_s, shield_s;
-	CONTEXT OldContext;
+	GFXCONTEXT OldContext;
 
 	new_pt.y = curLanderLoc.y + dy;
 	if (new_pt.y < 0)
@@ -1721,7 +1721,7 @@ animationInterframe(TimeCount* TimeIn, uqm::COUNT periods)
 static void
 AnimateLaunch(FRAME farray, bool isLanding)
 {
-	RECT r;
+	GFXRECT r;
 	STAMP s;
 	uqm::COUNT num_frames;
 	static TimeCount NextTime, psNextTime;
@@ -1780,7 +1780,7 @@ AnimateLanderWarmup(void)
 {
 	uqm::SIZE num_crew;
 	STAMP s;
-	//CONTEXT OldContext; unused
+	//GFXCONTEXT OldContext; unused
 	TimeCount TimeIn = GetTimeCounter();
 
 	if (is3DO(optSuperPC))
@@ -1866,7 +1866,7 @@ AnimateLanderWarmup(void)
 }
 
 static void
-InitPlanetSide(POINT pt)
+InitPlanetSide(GFXPOINT pt)
 {
 	// Adjust landing location by a random jitter.
 #define RANDOM_MISS RES_SCALE(64)
@@ -1919,7 +1919,7 @@ InitPlanetSide(POINT pt)
 	}
 
 	{
-		RECT r;
+		GFXRECT r;
 
 		GetContextClipRect(&r);
 
@@ -2562,8 +2562,8 @@ SetPlanetMusic(uqm::BYTE planet_type)
 static void
 ReturnToOrbit(void)
 {
-	CONTEXT OldContext;
-	RECT r;
+	GFXCONTEXT OldContext;
+	GFXRECT r;
 
 	if (is3DO(optSuperPC))
 	{
@@ -2582,7 +2582,7 @@ ReturnToOrbit(void)
 	}
 	else
 	{
-		RECT b;
+		GFXRECT b;
 		OldContext = SetContext(RadarContext);
 		GetContextClipRect(&r);
 		b = r;
@@ -2778,7 +2778,7 @@ GetHazardChance(int hazardType, unsigned HazardRating)
 	return 0;
 }
 
-void PlanetSide(POINT planetLoc)
+void PlanetSide(GFXPOINT planetLoc)
 {
 	uqm::SIZE index;
 	LanderInputState landerInputState;
@@ -2952,7 +2952,7 @@ static void
 DrawMinDatText(void)
 {
 	TEXT text;
-	RECT rect;
+	GFXRECT rect;
 	Color OldColor;
 	FONT OldFont;
 
@@ -2992,7 +2992,7 @@ DrawMinDatText(void)
 
 void InitLander(uqm::BYTE LanderFlags)
 {
-	RECT r;
+	GFXRECT r;
 
 	SetContext(RadarContext);
 	BatchGraphics();
@@ -3104,7 +3104,7 @@ void InitLander(uqm::BYTE LanderFlags)
 
 void InitPCLander(bool Loading)
 {
-	RECT r;
+	GFXRECT r;
 
 	SetContext(GetPCLanderContext(nullptr));
 

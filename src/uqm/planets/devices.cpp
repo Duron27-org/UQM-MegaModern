@@ -90,7 +90,7 @@ typedef struct
 static void
 EraseDevicesBackground (void)
 {
-	RECT r;
+	GFXRECT r;
 
 	r.corner.x = RES_SCALE (3); 
 	r.extent.width = FIELD_WIDTH - RES_SCALE (1); 
@@ -104,7 +104,7 @@ EraseDevicesBackground (void)
 static void
 DrawDevice(uqm::COUNT device, uqm::COUNT pos, bool selected)
 {
-	RECT r;
+	GFXRECT r;
 	TEXT t;
 
 	t.align = ALIGN_CENTER;
@@ -148,7 +148,7 @@ static void
 DrawDevicesDisplay(DEVICES_STATE* devState)
 {
 	TEXT t;
-	RECT r;
+	GFXRECT r;
 	STAMP s;
 	COORD cy;
 	uqm::COUNT i;

@@ -47,7 +47,7 @@ void FunkyMenu(uqm::BYTE m, STAMP stmp);
 /* Draw the blue background for PC Menu Text, with a border around it.
  * The specified rectangle includes the border. */
 static void
-DrawPCMenuFrame(RECT* r)
+DrawPCMenuFrame(GFXRECT* r)
 {
 
 	if (IS_HD || optCustomBorder)
@@ -83,7 +83,7 @@ static uqm::CHAR_T pm_fuel_str[128];
 
 /* Actually display the menu text */
 static void
-DrawPCMenu(uqm::BYTE beg_index, uqm::BYTE end_index, uqm::BYTE NewState, uqm::BYTE hilite, RECT* r)
+DrawPCMenu(uqm::BYTE beg_index, uqm::BYTE end_index, uqm::BYTE NewState, uqm::BYTE hilite, GFXRECT* r)
 {
 	uqm::BYTE pos;
 	uqm::COUNT i, j;
@@ -92,7 +92,7 @@ DrawPCMenu(uqm::BYTE beg_index, uqm::BYTE end_index, uqm::BYTE NewState, uqm::BY
 	FONT OldFont;
 	TEXT t;
 	uqm::CHAR_T buf[256];
-	RECT rt;
+	GFXRECT rt;
 
 	pos = beg_index + NewState;
 	num_items = 1 + end_index - beg_index;
@@ -663,11 +663,11 @@ IndexToText(int Index)
 }
 
 static void
-Draw3DOMenuText(RECT* r, int Index)
+Draw3DOMenuText(GFXRECT* r, int Index)
 {
 	TEXT text;
 	uqm::SIZE leading;
-	RECT block;
+	GFXRECT block;
 	FONT OldFont;
 	Color OldColor;
 
@@ -710,9 +710,9 @@ Draw3DOMenuText(RECT* r, int Index)
 void DrawMenuStateStrings(uqm::BYTE beg_index, uqm::SWORD NewState)
 {
 	uqm::BYTE end_index;
-	RECT r;
+	GFXRECT r;
 	STAMP s;
-	CONTEXT OldContext;
+	GFXCONTEXT OldContext;
 	uqm::BYTE hilite = 1;
 	extern FRAME PlayFrame;
 
@@ -908,12 +908,12 @@ void DrawMenuStateStrings(uqm::BYTE beg_index, uqm::SWORD NewState)
 
 void DrawMineralHelpers(void)
 {
-	CONTEXT OldContext;
+	GFXCONTEXT OldContext;
 	uqm::COUNT i;
 	STAMP s;
 	TEXT t;
 	uqm::CHAR_T buf[40];
-	RECT r;
+	GFXRECT r;
 	uqm::SIZE leading;
 
 	if (!optSubmenu)
@@ -1085,7 +1085,7 @@ void DrawMineralHelpers(void)
 void DrawBorder(uqm::BYTE Visible)
 {
 	STAMP s;
-	CONTEXT OldContext;
+	GFXCONTEXT OldContext;
 
 	OldContext = SetContext(ScreenContext);
 

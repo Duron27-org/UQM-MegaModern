@@ -219,8 +219,8 @@ tongue_postprocess(ELEMENT* ElementPtr)
 }
 
 static void
-tongue_collision(ELEMENT* ElementPtr0, POINT* pPt0,
-				 ELEMENT* ElementPtr1, POINT* pPt1)
+tongue_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
+				 ELEMENT* ElementPtr1, GFXPOINT* pPt1)
 {
 	STARSHIP* StarShipPtr;
 
@@ -271,7 +271,7 @@ spawn_tongue(ELEMENT* ElementPtr)
 		else
 		{
 			uqm::COUNT angle;
-			RECT r;
+			GFXRECT r;
 			uqm::SDWORD x_offs, y_offs;
 
 			TonguePtr->turn_wait = ElementPtr->turn_wait - 1;

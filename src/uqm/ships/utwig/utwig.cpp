@@ -273,8 +273,8 @@ utwig_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 }
 
 static void
-utwig_collision(ELEMENT* ElementPtr0, POINT* pPt0,
-				ELEMENT* ElementPtr1, POINT* pPt1)
+utwig_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
+				ELEMENT* ElementPtr1, GFXPOINT* pPt1)
 {
 	if (ElementPtr0->life_span > NORMAL_LIFE
 		&& (ElementPtr1->state_flags & FINITE_LIFE)

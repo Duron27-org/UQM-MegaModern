@@ -29,9 +29,9 @@
 #include "core/log/log.h"
 #include "uqm/units.h"
 
-void TFB_Prim_Point(POINT* p, Color color, DrawMode mode, POINT ctxOrigin, bool scaled)
+void TFB_Prim_Point(GFXPOINT* p, Color color, DrawMode mode, GFXPOINT ctxOrigin, bool scaled)
 {
-	RECT r;
+	GFXRECT r;
 
 	// The caller must scale the origin!
 	r.corner.x = p->x + ctxOrigin.x;
@@ -48,9 +48,9 @@ void TFB_Prim_Point(POINT* p, Color color, DrawMode mode, POINT ctxOrigin, bool 
 	}
 }
 
-void TFB_Prim_Rect(RECT* r, Color color, DrawMode mode, POINT ctxOrigin, bool scaled)
+void TFB_Prim_Rect(GFXRECT* r, Color color, DrawMode mode, GFXPOINT ctxOrigin, bool scaled)
 {
-	RECT arm;
+	GFXRECT arm;
 	int gscale;
 	uqm::BYTE scale = !scaled ? 1 : 4;
 
@@ -79,9 +79,9 @@ void TFB_Prim_Rect(RECT* r, Color color, DrawMode mode, POINT ctxOrigin, bool sc
 	TFB_Prim_FillRect(&arm, color, mode, ctxOrigin);
 }
 
-void TFB_Prim_FillRect(RECT* r, Color color, DrawMode mode, POINT ctxOrigin)
+void TFB_Prim_FillRect(GFXRECT* r, Color color, DrawMode mode, GFXPOINT ctxOrigin)
 {
-	RECT rect;
+	GFXRECT rect;
 	int gscale;
 
 	rect.corner.x = r->corner.x + ctxOrigin.x;
@@ -113,7 +113,7 @@ void TFB_Prim_FillRect(RECT* r, Color color, DrawMode mode, POINT ctxOrigin)
 	}
 }
 
-void TFB_Prim_Line(LINE* line, Color color, DrawMode mode, POINT ctxOrigin,
+void TFB_Prim_Line(LINE* line, Color color, DrawMode mode, GFXPOINT ctxOrigin,
 				   uqm::BYTE thickness)
 {
 	int x1, y1, x2, y2;
@@ -134,7 +134,7 @@ void TFB_Prim_Line(LINE* line, Color color, DrawMode mode, POINT ctxOrigin,
 	}
 }
 
-void TFB_Prim_Stamp(STAMP* stmp, DrawMode mode, POINT ctxOrigin, bool unscaled)
+void TFB_Prim_Stamp(STAMP* stmp, DrawMode mode, GFXPOINT ctxOrigin, bool unscaled)
 {
 	int x, y;
 	FRAME SrcFramePtr;
@@ -194,7 +194,7 @@ void TFB_Prim_Stamp(STAMP* stmp, DrawMode mode, POINT ctxOrigin, bool unscaled)
 	}
 }
 
-void TFB_Prim_StampFill(STAMP* stmp, Color color, DrawMode mode, POINT ctxOrigin, bool unscaled)
+void TFB_Prim_StampFill(STAMP* stmp, Color color, DrawMode mode, GFXPOINT ctxOrigin, bool unscaled)
 {
 	int x, y;
 	FRAME SrcFramePtr;
@@ -247,8 +247,8 @@ void TFB_Prim_StampFill(STAMP* stmp, Color color, DrawMode mode, POINT ctxOrigin
 	}
 }
 
-void TFB_Prim_FontChar(POINT charOrigin, TFB_Char* fontChar, TFB_Image* backing,
-					   DrawMode mode, POINT ctxOrigin)
+void TFB_Prim_FontChar(GFXPOINT charOrigin, TFB_Char* fontChar, TFB_Image* backing,
+					   DrawMode mode, GFXPOINT ctxOrigin)
 {
 	int x, y;
 

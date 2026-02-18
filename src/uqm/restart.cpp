@@ -115,7 +115,7 @@ void DrawToolTips(MENU_STATE* pMS, int answer)
 	stringbank* bank = StringBank_Create();
 	const char* lines[30];
 	int line_count;
-	RECT r;
+	GFXRECT r;
 	STAMP s;
 
 	SetContextFont(TinyFont);
@@ -194,9 +194,9 @@ DoDiffChooser(MENU_STATE* pMS)
 {
 	static TimeCount LastInputTime;
 	static TimeCount InactTimeOut;
-	RECT oldRect;
+	GFXRECT oldRect;
 	STAMP s;
-	CONTEXT oldContext;
+	GFXCONTEXT oldContext;
 	bool response = false;
 	bool done = false;
 	uqm::BYTE a = 1;
@@ -353,7 +353,7 @@ InitPulseText(void)
 static void
 DrawRestartMenuGraphic(MENU_STATE* pMS)
 {
-	RECT r;
+	GFXRECT r;
 	STAMP s;
 	TEXT t;
 	uqm::CHAR_T buf[64];
@@ -423,7 +423,7 @@ DrawRestartMenuGraphic(MENU_STATE* pMS)
 static void
 DrawRestartMenu(MENU_STATE* pMS, uqm::BYTE NewState, FRAME f)
 {
-	POINT origin;
+	GFXPOINT origin;
 	origin.x = 0;
 	origin.y = 0;
 	Flash_setOverlay(pMS->flashContext, &origin, TextCache[NewState], false);
@@ -917,7 +917,7 @@ bool StartGame(void)
 		}
 		Elements = ElementsArray;
 		PlanData = PlanetsArray;
-		constel_array = (const POINT*)ConstellationsArray;
+		constel_array = (const GFXPOINT*)ConstellationsArray;
 	}
 	PlayerControl[0] = HUMAN_CONTROL | STANDARD_RATING;
 	PlayerControl[1] = COMPUTER_CONTROL | AWESOME_RATING;

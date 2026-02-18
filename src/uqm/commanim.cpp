@@ -795,7 +795,7 @@ bool DrawAlienFrame(SEQUENCE* Sequences, uqm::COUNT Num, bool fullRedraw)
 
 				if (FTPtr->FrameIndex == -1)
 				{ // Don't have frame - draw rect on top of everything
-					RECT r;
+					GFXRECT r;
 
 					GetContextClipRect(&r);
 					r.corner.x = r.corner.y = 0;

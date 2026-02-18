@@ -313,8 +313,8 @@ advance_pkunk_mission(int arg)
 	hPkunk = GetStarShipFromIndex(&GLOBAL(avail_race_q), PKUNK_SHIP);
 	PkunkPtr = LockFleetInfo(&GLOBAL(avail_race_q), hPkunk);
 
-	POINT yehat = SeedFleetLocation(PkunkPtr, plot_map, YEHAT_DEFINED);
-	POINT pkunk = SeedFleetLocation(PkunkPtr, plot_map, 0);
+	GFXPOINT yehat = SeedFleetLocation(PkunkPtr, plot_map, YEHAT_DEFINED);
+	GFXPOINT pkunk = SeedFleetLocation(PkunkPtr, plot_map, 0);
 
 	if (PkunkPtr->actual_strength)
 	{
@@ -348,7 +348,7 @@ advance_pkunk_mission(int arg)
 		}
 		else
 		{
-			POINT loc;
+			GFXPOINT loc;
 
 			if (!(MissionState & 1))
 			{
@@ -387,7 +387,7 @@ advance_thradd_mission(int arg)
 	MissionState = GET_GAME_STATE(THRADD_MISSION);
 	if (ThraddPtr->actual_strength && MissionState < 3)
 	{
-		POINT loc;
+		GFXPOINT loc;
 
 		if (MissionState < 2)
 		{ /* attacking */
@@ -572,7 +572,7 @@ advance_utwig_supox_mission(int arg)
 		}
 		else
 		{
-			POINT utwig, supox;
+			GFXPOINT utwig, supox;
 
 			if (MissionState == 0)
 			{
@@ -787,8 +787,8 @@ advance_ilwrath_mission(int arg)
 	IlwrathPtr = LockFleetInfo(&GLOBAL(avail_race_q), hIlwrath);
 	hThradd = GetStarShipFromIndex(&GLOBAL(avail_race_q), THRADDASH_SHIP);
 	ThraddPtr = LockFleetInfo(&GLOBAL(avail_race_q), hThradd);
-	POINT thradd_home = SeedFleetLocation(ThraddPtr, plot_map, 0);
-	POINT conflict = SeedFleetLocation(IlwrathPtr, plot_map, THRADD_DEFINED);
+	GFXPOINT thradd_home = SeedFleetLocation(ThraddPtr, plot_map, 0);
+	GFXPOINT conflict = SeedFleetLocation(IlwrathPtr, plot_map, THRADD_DEFINED);
 	if (GET_GAME_STATE(ILWRATH_FIGHT_THRADDASH))
 	{
 		IlwrathPtr->actual_strength = 0;
@@ -892,8 +892,8 @@ advance_mycon_mission(int arg)
 	hMycon = GetStarShipFromIndex(&GLOBAL(avail_race_q), MYCON_SHIP);
 	MyconPtr = LockFleetInfo(&GLOBAL(avail_race_q), hMycon);
 
-	POINT home = SeedFleetLocation(MyconPtr, plot_map, 0);
-	POINT trap = SeedFleetLocation(MyconPtr, plot_map, MYCON_TRAP_DEFINED);
+	GFXPOINT home = SeedFleetLocation(MyconPtr, plot_map, 0);
+	GFXPOINT trap = SeedFleetLocation(MyconPtr, plot_map, MYCON_TRAP_DEFINED);
 
 	if (MyconPtr->actual_strength)
 	{
@@ -913,7 +913,7 @@ advance_mycon_mission(int arg)
 				SyreenPtr = LockFleetInfo(&GLOBAL(avail_race_q), hSyreen);
 				if (SyreenPtr)
 				{
-					POINT syra = SeedFleetLocation(SyreenPtr, plot_map, 0);
+					GFXPOINT syra = SeedFleetLocation(SyreenPtr, plot_map, 0);
 					SetRaceDest(SYREEN_SHIP, syra.x, syra.y, 30, (uqm::BYTE)~0);
 					SyreenPtr->growth = 0;
 					SyreenPtr->growth_fract = 0;

@@ -1305,7 +1305,7 @@ static void
 SaveProblemMessage(STAMP* MsgStamp)
 {
 #define MAX_MSG_LINES 1
-	RECT r = {
+	GFXRECT r = {
 		{0, 0},
 		{0, 0}
 	  };
@@ -1323,7 +1323,7 @@ SaveProblemMessage(STAMP* MsgStamp)
 	t.align = ALIGN_CENTER;
 	for (i = 0; i < MAX_MSG_LINES; ++i)
 	{
-		RECT tr;
+		GFXRECT tr;
 
 		t.pStr = ppStr[i];
 		if (*t.pStr == '\0')
@@ -1378,7 +1378,7 @@ SaveProblemMessage(STAMP* MsgStamp)
 void SaveProblem(void)
 {
 	STAMP s;
-	CONTEXT OldContext;
+	GFXCONTEXT OldContext;
 
 	OldContext = SetContext(SpaceContext);
 	SaveProblemMessage(&s);
@@ -1593,7 +1593,7 @@ SaveGroups(uio_Stream* fh)
 bool SaveGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, const char* name)
 {
 	uio_Stream* out_fp;
-	POINT pt;
+	GFXPOINT pt;
 	STAR_DESC SD;
 	char file[PATH_MAX] {};
 	if (CurStarDescPtr)

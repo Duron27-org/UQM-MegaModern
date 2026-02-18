@@ -87,7 +87,7 @@ void DrawShipPiece(FRAME ModuleFrame, uqm::COUNT which_piece, uqm::COUNT which_s
 {
 	Color OldColor = UNDEFINED_COLOR;
 	// Initialisation is just to keep the compiler silent.
-	RECT r;
+	GFXRECT r;
 	STAMP Side, Top;
 	uqm::SBYTE RepairSlot;
 
@@ -500,7 +500,7 @@ DoTimePassage(void)
 	if (optOrbitingPlanets)
 	{
 		double newAngle;
-		POINT starbase_coords;
+		GFXPOINT starbase_coords;
 
 		// Calculate the starbase position on a circle with the help of sin and cos.
 		newAngle = ((double)(10) + daysElapsed() * (FULL_CIRCLE / 11.46)) * M_PI / 32 - M_PI / 2; // JMS: Starbase orbit values copied from gensol.c
@@ -518,7 +518,7 @@ DoTimePassage(void)
 void VisitStarBase(void)
 {
 	MENU_STATE MenuState;
-	CONTEXT OldContext;
+	GFXCONTEXT OldContext;
 	StatMsgMode prevMsgMode = SMM_UNDEFINED;
 
 	// XXX: This should probably be moved out to Starcon2Main()
@@ -652,7 +652,7 @@ WrapText(const uqm::CHAR_T* pStr, uqm::COUNT len, TEXT* tarray, uqm::SIZE field_
 	num_lines = 0;
 	do
 	{
-		RECT r;
+		GFXRECT r;
 		uqm::COUNT OldCount;
 
 		tarray->align = ALIGN_LEFT; /* set alignment to something */

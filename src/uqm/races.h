@@ -198,7 +198,7 @@ typedef struct
 typedef struct
 {
 	uqm::COUNT strength;
-	POINT known_loc;
+	GFXPOINT known_loc;
 
 #define INFINITE_RADIUS ((uqm::COUNT)~0)
 } FLEET_STUFF;
@@ -370,7 +370,7 @@ typedef struct
 	uqm::COUNT max_crew;
 	uqm::BYTE growth;
 	uqm::BYTE max_energy;
-	POINT loc; /* Location of the fleet (center) */
+	GFXPOINT loc; /* Location of the fleet (center) */
 
 	STRING race_strings;
 	/* Race specific strings, see doc/devel/racestrings. */
@@ -386,7 +386,7 @@ typedef struct
 	/* Measure for the size of the sphere of influence when last
 			 * checked the starmap.
 			 * 0 if the race's SoI is not known. */
-	POINT known_loc;
+	GFXPOINT known_loc;
 	/* Location of the SoI (center) when last checked
 			 * the starmap. */
 
@@ -395,7 +395,7 @@ typedef struct
 	/* Function index defined in clock.h (the same as in SetEvent())
 			 * for the function to call when the fleet reaches 'dest_loc'.
 			 * '(uqm::BYTE) ~0' means no function to call. */
-	POINT dest_loc;
+	GFXPOINT dest_loc;
 	/* Location to which the fleet (center) is moving. */
 	bool can_build;
 	/* Determines if you can build the ship regardless

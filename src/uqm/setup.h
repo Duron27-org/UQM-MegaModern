@@ -43,13 +43,13 @@ extern FRAME HDBorderFrame;
 extern FRAME CustBevelFrame;
 extern FRAME DefBevelFrame;
 
-extern CONTEXT OffScreenContext;
+extern GFXCONTEXT OffScreenContext;
 // OffScreenContext can often refer to a deleted ForeGroundFrame
 // Always call SetContextFGFrame() before drawing anything to it
 // Neither is the state of its ClipRect guaranteed.
-extern CONTEXT ScreenContext;
-extern CONTEXT SpaceContext;
-extern CONTEXT StatusContext;
+extern GFXCONTEXT ScreenContext;
+extern GFXCONTEXT SpaceContext;
+extern GFXCONTEXT StatusContext;
 
 extern uqm::SIZE screen_width, screen_height;
 

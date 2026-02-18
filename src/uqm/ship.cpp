@@ -155,7 +155,7 @@ inertial_thrust(ELEMENT* ElementPtr)
 void DrawHDMeleeBorder(STARSHIP* StarShipPtr)
 {
 	COORD y = 0;
-	RECT r;
+	GFXRECT r;
 
 	if (lowByte(GLOBAL(CurrentActivity)) == IN_LAST_BATTLE
 		&& StarShipPtr->playerNr != RPG_PLAYER_NUM)
@@ -198,7 +198,7 @@ void ship_preprocess(ELEMENT* ElementPtr)
 			&& lowByte(GLOBAL(CurrentActivity)) == IN_LAST_BATTLE)
 		{ // Sa-Matra
 			STAMP s;
-			CONTEXT OldContext;
+			GFXCONTEXT OldContext;
 
 			OldContext = SetContext(StatusContext);
 			s.origin.x = s.origin.y = 0;
@@ -210,7 +210,7 @@ void ship_preprocess(ELEMENT* ElementPtr)
 		}
 		else if (lowByte(GLOBAL(CurrentActivity)) <= IN_ENCOUNTER)
 		{
-			CONTEXT OldContext;
+			GFXCONTEXT OldContext;
 
 			InitShipStatus(&RDPtr->ship_info, StarShipPtr, nullptr, false);
 			OldContext = SetContext(StatusContext);
@@ -413,8 +413,8 @@ void ship_postprocess(ELEMENT* ElementPtr)
 	}
 }
 
-void collision(ELEMENT* ElementPtr0, POINT* pPt0,
-			   ELEMENT* ElementPtr1, POINT* pPt1)
+void collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
+			   ELEMENT* ElementPtr1, GFXPOINT* pPt1)
 {
 	if (!(ElementPtr1->state_flags & FINITE_LIFE))
 	{

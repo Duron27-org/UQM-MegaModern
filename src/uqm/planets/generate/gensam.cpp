@@ -137,7 +137,7 @@ GenerateSaMatra_reinitNpcs(SOLARSYS_STATE* solarSys)
 		if (GuardEngaged)
 		{
 			uqm::COUNT angle;
-			POINT org;
+			GFXPOINT org;
 
 			org = planetOuterLocation(solarSys->SunDesc[0].PlanetByte);
 			angle = ARCTAN(GLOBAL(ip_location.x) - org.x,
@@ -441,7 +441,7 @@ BuildUrquanGuard(SOLARSYS_STATE* solarSys)
 {
 	uqm::BYTE ship1, ship2;
 	uqm::BYTE b0, b1;
-	POINT org;
+	GFXPOINT org;
 	HIPGROUP hGroup, hNextGroup;
 
 	GLOBAL(BattleGroupRef) = GET_GAME_STATE(SAMATRA_GRPOFFS);

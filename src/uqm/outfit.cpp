@@ -52,14 +52,14 @@ enum
 	OUTFIT_DOFUEL
 };
 
-POINT lander_pos[MAX_LANDERS];
+GFXPOINT lander_pos[MAX_LANDERS];
 FONT ModuleFont;
 
 static void
 InitializeDOSLanderPos(void)
 { // Initialize the DOS lander icon positions
 	int i;
-	POINT temp[MAX_LANDERS] = {LANDER_DOS_PTS};
+	GFXPOINT temp[MAX_LANDERS] = {LANDER_DOS_PTS};
 
 	if (!IS_DOS)
 	{
@@ -107,7 +107,7 @@ MODULES_STATE ModuleState;
 static void
 DrawModuleStatus(uqm::COUNT index, uqm::COUNT pos, bool selected)
 {
-	RECT r;
+	GFXRECT r;
 	TEXT t;
 	uqm::CHAR_T buf[10];
 
@@ -169,7 +169,7 @@ static void
 DrawModuleDisplay(MODULES_STATE* modState)
 {
 	TEXT t;
-	RECT r;
+	GFXRECT r;
 	uqm::COUNT i;
 
 	r.corner.x = RES_SCALE(2);
@@ -215,7 +215,7 @@ DrawModuleDisplay(MODULES_STATE* modState)
 static void
 DrawModules(MODULES_STATE* modState, uqm::COUNT NewItem)
 {
-	CONTEXT OldContext = SetContext(StatusContext);
+	GFXCONTEXT OldContext = SetContext(StatusContext);
 
 	BatchGraphics();
 
@@ -280,11 +280,11 @@ InventoryModules(uqm::BYTE* pModuleMap, uqm::COUNT Size)
 }
 
 static void
-DrawModuleMenuText(RECT* r, int Index)
+DrawModuleMenuText(GFXRECT* r, int Index)
 {
 	TEXT text;
 	uqm::SIZE leading;
-	RECT block;
+	GFXRECT block;
 	uqm::CHAR_T buf[256];
 	COORD og_baseline_x;
 
@@ -340,9 +340,9 @@ DrawModuleMenuText(RECT* r, int Index)
 static void
 DrawModuleStrings(MENU_STATE* pMS, uqm::BYTE NewModule)
 {
-	RECT r;
+	GFXRECT r;
 	STAMP s;
-	CONTEXT OldContext;
+	GFXCONTEXT OldContext;
 
 	OldContext = SetContext(StatusContext);
 	GetContextClipRect(&r);
@@ -369,7 +369,7 @@ DrawModuleStrings(MENU_STATE* pMS, uqm::BYTE NewModule)
 
 	if (IS_DOS)
 	{
-		RECT dosRect;
+		GFXRECT dosRect;
 
 		dosRect.corner.x = RES_SCALE(2);
 		dosRect.corner.y = RADAR_Y - RES_SCALE(1);
@@ -461,7 +461,7 @@ DrawModuleStrings(MENU_STATE* pMS, uqm::BYTE NewModule)
 static void
 RedistributeFuel(void)
 {
-	const CONTEXT OldContext = SetContext(SpaceContext);
+	const GFXCONTEXT OldContext = SetContext(SpaceContext);
 
 	BatchGraphics();
 
@@ -472,13 +472,13 @@ RedistributeFuel(void)
 }
 
 static void
-DrawEscapePodText(RECT rect)
+DrawEscapePodText(GFXRECT rect)
 {
 	TEXT text;
 	FONT OldFont;
 	Color OldColor;
 	uqm::SIZE leading;
-	RECT block;
+	GFXRECT block;
 	uqm::CHAR_T buf[256];
 	COORD og_baseline_x;
 
@@ -539,12 +539,12 @@ DrawEscapePodText(RECT rect)
 }
 
 static void
-DrawNoLandersText(RECT rect)
+DrawNoLandersText(GFXRECT rect)
 {
 	TEXT text;
 	FONT OldFont;
 	Color OldColor;
-	RECT block;
+	GFXRECT block;
 
 	if (IS_DOS || !strlen(GAME_STRING(END_STARBASE_STRING_BASE)))
 	{
@@ -588,7 +588,7 @@ DisplayLanders(MENU_STATE* pMS)
 	s.frame = pMS->ModuleFrame;
 	if (GET_GAME_STATE(CHMMR_BOMB_STATE) == 3)
 	{
-		RECT rect;
+		GFXRECT rect;
 		s.origin.x = -SAFE_X;
 		s.origin.y = 0;
 		s.frame = SetAbsFrameIndex(pMS->ModuleFrame,
@@ -1248,8 +1248,8 @@ ChangeFuelQuantity(void)
 	}
 
 	{ // Make fuel gauge flash.
-		RECT r;
-		CONTEXT oldContext = SetContext(StatusContext);
+		GFXRECT r;
+		GFXCONTEXT oldContext = SetContext(StatusContext);
 		GetGaugeRect(&r, false);
 		SetFlashRect(&r, false);
 		SetContext(oldContext);
@@ -1450,7 +1450,7 @@ ExitOutfit:
 		{
 			case OUTFIT_FUEL:
 				{
-					RECT r;
+					GFXRECT r;
 					DrawMenuStateStrings(PM_FUEL, pMS->CurState);
 					pMS->CurState = OUTFIT_DOFUEL;
 					SetContext(StatusContext);

@@ -172,7 +172,7 @@ decorate_vortex (ELEMENT *ElementPtr)
 					// a sensible memory management strategy  ;)
 					if (f)
 					{
-						CONTEXT tmp, old;
+						GFXCONTEXT tmp, old;
 						Color trans;
 						STAMP s;
 
@@ -338,7 +338,7 @@ void MoveSIS(uqm::SDWORD* pdx, uqm::SDWORD* pdy)
 void check_hyperspace_encounter(void)
 {
 	uqm::BYTE Type;
-	POINT universe;
+	GFXPOINT universe;
 	HFLEETINFO hStarShip, hNextShip;
 	uqm::COUNT EncounterPercent[] =
 		{
@@ -623,7 +623,7 @@ bool FreeHyperspace(void)
 }
 
 static void
-ElementToUniverse(ELEMENT* ElementPtr, POINT* pPt)
+ElementToUniverse(ELEMENT* ElementPtr, GFXPOINT* pPt)
 {
 	uqm::SDWORD log_x, log_y;
 
@@ -690,7 +690,7 @@ InterplanetaryTransition(ELEMENT* ElementPtr)
 	}
 	else
 	{
-		POINT pt;
+		GFXPOINT pt;
 		uqm::UWORD KnownQSPortals = GET_GAME_STATE(KNOW_QS_PORTAL);
 
 		GLOBAL(autopilot.x) = ~0;
@@ -726,7 +726,7 @@ InterplanetaryTransition(ELEMENT* ElementPtr)
 			// one of the permanent portals.
 			uqm::COUNT index;
 			// JSD - portal_map can be used to find the exit point
-			//const POINT portal_pt[] =
+			//const GFXPOINT portal_pt[] =
 			//		QUASISPACE_PORTALS_HYPERSPACE_ENDPOINTS;
 
 			index = CurStarDescPtr - &star_array[NUM_SOLAR_SYSTEMS + 1];
@@ -812,7 +812,7 @@ unhyper_transition(ELEMENT* ElementPtr)
 			&& (GLOBAL(autopilot)).y != ~0))
 	{
 		STARSHIP* StarShipPtr;
-		POINT universe;
+		GFXPOINT universe;
 		uqm::SIZE facing;
 		uqm::SDWORD udx = 0, udy = 0;
 
@@ -901,8 +901,8 @@ init_transition(ELEMENT* ElementPtr0, ELEMENT* ElementPtr1,
 
 void DoAdvancedAutoPilot(void)
 {
-	POINT QuasiPilot = LoadAdvancedQuasiPilot();
-	POINT SavedPilot = LoadAdvancedAutoPilot();
+	GFXPOINT QuasiPilot = LoadAdvancedQuasiPilot();
+	GFXPOINT SavedPilot = LoadAdvancedAutoPilot();
 
 	if (!ValidPoint(SavedPilot))
 	{
@@ -969,7 +969,7 @@ bool hyper_transition(ELEMENT* ElementPtr)
 		if (optSmartAutoPilot && ValidPoint(GLOBAL(autopilot)))
 		{
 			STARSHIP* StarShipPtr;
-			POINT universe;
+			GFXPOINT universe;
 			uqm::SIZE facing;
 			uqm::SDWORD udx = 0, udy = 0;
 
@@ -1031,14 +1031,14 @@ bool hyper_transition(ELEMENT* ElementPtr)
 }
 
 static void
-hyper_collision(ELEMENT* ElementPtr0, POINT* pPt0,
-				ELEMENT* ElementPtr1, POINT* pPt1)
+hyper_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
+				ELEMENT* ElementPtr1, GFXPOINT* pPt1)
 {
 	if ((ElementPtr1->state_flags & PLAYER_SHIP)
 		&& GET_GAME_STATE(PORTAL_COUNTER) == 0)
 	{
 		uqm::SIZE dx, dy;
-		POINT pt;
+		GFXPOINT pt;
 		STAR_DESC* SDPtr;
 		STARSHIP* StarShipPtr;
 
@@ -1101,7 +1101,7 @@ arilou_space_death(ELEMENT* ElementPtr)
 
 static void
 arilou_space_collision(ELEMENT* ElementPtr0,
-					   POINT* pPt0, ELEMENT* ElementPtr1, POINT* pPt1)
+					   GFXPOINT* pPt0, ELEMENT* ElementPtr1, GFXPOINT* pPt1)
 {
 	uqm::COUNT which_side;
 
@@ -1130,7 +1130,7 @@ arilou_space_collision(ELEMENT* ElementPtr0,
 }
 
 static HELEMENT
-AllocHyperElement(const POINT* elem_pt)
+AllocHyperElement(const GFXPOINT* elem_pt)
 {
 	HELEMENT hHyperSpaceElement;
 
@@ -1327,8 +1327,8 @@ getSisElement(void)
 }
 
 static void
-encounter_collision(ELEMENT* ElementPtr0, POINT* pPt0,
-					ELEMENT* ElementPtr1, POINT* pPt1)
+encounter_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
+					ELEMENT* ElementPtr1, GFXPOINT* pPt1)
 {
 	HENCOUNTER hEncounter;
 	HENCOUNTER hNextEncounter;
@@ -1371,11 +1371,11 @@ encounter_collision(ELEMENT* ElementPtr0, POINT* pPt0,
 }
 
 static HELEMENT
-AddEncounterElement(ENCOUNTER* EncounterPtr, POINT* puniverse)
+AddEncounterElement(ENCOUNTER* EncounterPtr, GFXPOINT* puniverse)
 {
 	bool NewEncounter;
 	HELEMENT hElement;
-	POINT enc_pt;
+	GFXPOINT enc_pt;
 
 	if (GET_GAME_STATE(ARILOU_SPACE_SIDE) >= 2)
 	{
@@ -1549,7 +1549,7 @@ static void
 DrawHyperGrid(COORD ux, COORD uy, COORD ox, COORD oy)
 {
 	COORD sx, sy, ex, ey;
-	RECT r;
+	GFXRECT r;
 
 	ClearDrawable();
 	SetContextForeGroundColor(
@@ -1617,7 +1617,7 @@ DrawHyperGrid(COORD ux, COORD uy, COORD ox, COORD oy)
 
 // Returns false if the encounter is to be removed.
 static bool
-ProcessEncounter(ENCOUNTER* EncounterPtr, POINT* puniverse,
+ProcessEncounter(ENCOUNTER* EncounterPtr, GFXPOINT* puniverse,
 				 COORD ox, COORD oy, STAMP* stamp)
 {
 	ELEMENT* ElementPtr;
@@ -1811,7 +1811,7 @@ ProcessEncounter(ENCOUNTER* EncounterPtr, POINT* puniverse,
 }
 
 static void
-ProcessEncounters(POINT* puniverse, COORD ox, COORD oy)
+ProcessEncounters(GFXPOINT* puniverse, COORD ox, COORD oy)
 {
 	STAMP stamp;
 	HENCOUNTER hEncounter, hNextEncounter;
@@ -1864,14 +1864,14 @@ void SeedUniverse(void)
 	COORD ox, oy;
 	COORD sx, sy, ex, ey;
 	uqm::SWORD portalCounter, arilouSpaceCounter, arilouSpaceSide;
-	POINT universe;
+	GFXPOINT universe;
 	FRAME blip_frame, star_frame;
 	STAMP s;
 	STAR_DESC* SDPtr;
 	HELEMENT hHyperSpaceElement;
 	ELEMENT* HyperSpaceElementPtr;
 	uqm::SDWORD lx, ly;
-	RECT frameRect;
+	GFXRECT frameRect;
 	DEXTENT img_log;
 
 	static uqm::COUNT frameCounter = 0; // BW
@@ -1944,7 +1944,7 @@ void SeedUniverse(void)
 		if (portalCounter)
 		{
 			// A player-created QuasiSpace portal is opening.
-			static POINT portal_pt;
+			static GFXPOINT portal_pt;
 
 			if (ANIMATED_HYPERSPACE)
 			{
@@ -2305,7 +2305,7 @@ DoHyperspaceMenu(MENU_STATE* pMS)
 void HyperspaceMenu(void)
 {
 	Color OldColor;
-	CONTEXT OldContext;
+	GFXCONTEXT OldContext;
 	MENU_STATE MenuState;
 
 	UnbatchGraphics();

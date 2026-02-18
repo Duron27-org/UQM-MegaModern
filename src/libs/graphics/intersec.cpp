@@ -25,15 +25,15 @@
 //#define DEBUG_INTERSEC
 
 static inline bool
-images_intersect(IMAGE_BOX* box1, IMAGE_BOX* box2, const RECT* rect)
+images_intersect(IMAGE_BOX* box1, IMAGE_BOX* box2, const GFXRECT* rect)
 {
 	return TFB_DrawImage_Intersect(box1->FramePtr->image, box1->Box.corner,
 								   box2->FramePtr->image, box2->Box.corner, rect);
 }
 
 static TIME_VALUE
-frame_intersect(INTERSECT_CONTROL* pControl0, RECT* pr0,
-				INTERSECT_CONTROL* pControl1, RECT* pr1, TIME_VALUE t0,
+frame_intersect(INTERSECT_CONTROL* pControl0, GFXRECT* pr0,
+				INTERSECT_CONTROL* pControl1, GFXRECT* pr1, TIME_VALUE t0,
 				TIME_VALUE t1)
 {
 	uqm::SDWORD time_error0, time_error1;
@@ -42,7 +42,7 @@ frame_intersect(INTERSECT_CONTROL* pControl0, RECT* pr0,
 	uqm::SDWORD xincr0, yincr0, xincr1, yincr1;
 	uqm::SDWORD xerror0, xerror1, yerror0, yerror1;
 	uqm::SDWORD iterator, xstep0, ystep0, xstep1, ystep1;
-	RECT r_intersect;
+	GFXRECT r_intersect;
 	IMAGE_BOX IB0, IB1;
 	bool check0, check1;
 
@@ -281,7 +281,7 @@ DrawablesIntersect(INTERSECT_CONTROL* pControl0,
 {
 	uqm::SDWORD dy;
 	uqm::SDWORD time_y_0, time_y_1;
-	RECT r0, r1;
+	GFXRECT r0, r1;
 	FRAME FramePtr0, FramePtr1;
 
 	if (!ContextActive() || max_time_val == 0)

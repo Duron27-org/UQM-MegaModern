@@ -914,7 +914,7 @@ PlanAmbush(RESPONSE_REF R)
 			SyreenPtr->actual_strength = 300 / SPHERE_RADIUS_INCREMENT * 2;
 			SyreenPtr->loc = SeedFleetLocation(SyreenPtr, plot_map, HOME);
 			StartSphereTracking(SYREEN_SHIP);
-			POINT loc = SeedFleetLocation(SyreenPtr, plot_map,
+			GFXPOINT loc = SeedFleetLocation(SyreenPtr, plot_map,
 										  MYCON_TRAP_DEFINED);
 			SetRaceDest(SYREEN_SHIP, loc.x, loc.y, 15, (uqm::BYTE)~0);
 		}

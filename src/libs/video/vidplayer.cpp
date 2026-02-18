@@ -84,7 +84,7 @@ processAudioSyncedFrame(VIDEO_REF vid)
 	uint32 want_frame;
 	uint32 prev_want_frame;
 	sint32 wait_msec;
-	CONTEXT oldContext;
+	GFXCONTEXT oldContext;
 	TimeCount Now = GetTimeCounter();
 
 	if (!vid->playing)
@@ -192,7 +192,7 @@ processMuteFrame(VIDEO_REF vid)
 	//
 	if (Now >= vid->frame_time)
 	{
-		CONTEXT oldContext;
+		GFXCONTEXT oldContext;
 
 		vid->cur_frame = vid->decoder->cur_frame;
 
@@ -221,20 +221,20 @@ processMuteFrame(VIDEO_REF vid)
 
 bool TFB_PlayVideo(VIDEO_REF vid, uint32 x, uint32 y)
 {
-	RECT scrn_r;
-	RECT clip_r = {
+	GFXRECT scrn_r;
+	GFXRECT clip_r = {
 		{0,			 0			 },
 		{(COORD)vid->w, (COORD)vid->h}
 	  };
-	RECT vid_r = {
+	GFXRECT vid_r = {
 		{0,				  0				  },
 		{(COORD)CanvasWidth, (COORD)CanvasHeight}
 	 };
-	RECT dr = {
+	GFXRECT dr = {
 		{(COORD)x,	   (COORD)y	   },
 		{(COORD)vid->w, (COORD)vid->h}
 	  };
-	RECT sr;
+	GFXRECT sr;
 	bool loop_music = false;
 	int ret;
 

@@ -66,7 +66,7 @@ typedef enum
 
 typedef struct namePlate
 {
-	RECT rect;
+	GFXRECT rect;
 	TEXT text;
 	uqm::BYTE index;
 } NAMEPLATE;
@@ -83,8 +83,8 @@ SwapPlates(NAMEPLATE* n1, NAMEPLATE* n2)
 #define PRE_DEATH_SOI (1 << 6)
 #define DEATH_SOI (1 << 7)
 
-static POINT cursorLoc;
-static POINT mapOrigin;
+static GFXPOINT cursorLoc;
+static GFXPOINT mapOrigin;
 static int zoomLevel;
 static FRAME StarMapFrame;
 static CURRENT_STARMAP_SHOWN which_starmap;
@@ -195,12 +195,12 @@ universeToDispy2(COORD uy)
 static bool transition_pending;
 
 static void
-flashCurrentLocation(POINT* where, bool force)
+flashCurrentLocation(GFXPOINT* where, bool force)
 {
 	static bool redraw = false;
 	static uqm::BYTE c = 0;
 	static int val = -2;
-	static POINT universe;
+	static GFXPOINT universe;
 	static TimeCount NextTime = 0;
 
 	if (where)
@@ -224,7 +224,7 @@ flashCurrentLocation(POINT* where, bool force)
 	if (force || redraw)
 	{
 		Color OldColor;
-		CONTEXT OldContext;
+		GFXCONTEXT OldContext;
 		STAMP s;
 
 		OldContext = SetContext(SpaceContext);
@@ -256,7 +256,7 @@ DrawCursor(COORD curs_x, COORD curs_y)
 }
 
 static void
-DrawMarker(POINT dest, uqm::BYTE type)
+DrawMarker(GFXPOINT dest, uqm::BYTE type)
 {
 	STAMP s;
 
@@ -274,13 +274,13 @@ DrawMarker(POINT dest, uqm::BYTE type)
 }
 
 static void
-DrawAutoPilot(POINT* pDstPt)
+DrawAutoPilot(GFXPOINT* pDstPt)
 {
 	uqm::SIZE dx, dy,
 		xincr, yincr,
 		xerror, yerror,
 		cycle, delta;
-	POINT pt;
+	GFXPOINT pt;
 	STAMP s;
 
 	if (!inHQSpace())
@@ -369,7 +369,7 @@ DrawAutoPilot(POINT* pDstPt)
 }
 
 static void
-GetSphereRect(FLEET_INFO* FleetPtr, RECT* pRect, RECT* pRepairRect)
+GetSphereRect(FLEET_INFO* FleetPtr, GFXRECT* pRect, GFXRECT* pRepairRect)
 {
 	long diameter;
 
@@ -442,10 +442,10 @@ GetSphereRect(FLEET_INFO* FleetPtr, RECT* pRect, RECT* pRepairRect)
 
 // For showing the War-Era situation in starmap
 static void
-GetWarEraSphereRect(FLEET_INFO* FleetPtr, RECT* pRect, RECT* pRepairRect)
+GetWarEraSphereRect(FLEET_INFO* FleetPtr, GFXRECT* pRect, GFXRECT* pRepairRect)
 {
 	long diameter = (long)(WarEraStrength(FleetPtr->SpeciesID) * SPHERE_RADIUS_INCREMENT);
-	POINT loc = SeedFleetLocation(FleetPtr, plot_map, WAR_ERA);
+	GFXPOINT loc = SeedFleetLocation(FleetPtr, plot_map, WAR_ERA);
 
 	pRect->extent.width = UNIVERSE_TO_DISPX(diameter)
 						- UNIVERSE_TO_DISPX(0);
@@ -497,11 +497,11 @@ GetWarEraSphereRect(FLEET_INFO* FleetPtr, RECT* pRect, RECT* pRepairRect)
 }
 
 static unsigned int
-FuelRequiredTo(POINT dest)
+FuelRequiredTo(GFXPOINT dest)
 {
 	uqm::COUNT fuel_required;
 	uqm::DWORD f;
-	POINT pt;
+	GFXPOINT pt;
 
 	if (!inHQSpace())
 	{
@@ -532,33 +532,33 @@ FuelRequiredTo(POINT dest)
 // Begin Malin's fuel to Sol ellipse code. Edited by Kruzen
 #define MATH_ROUND(X) ((X) + ((int)((X) + 0.5) > (X) ? 1 : 0))
 
-POINT
+GFXPOINT
 GetPointOfEllipse(double a, double b, double radian)
 {
 	double t[2] = {a * cos(radian), b * sin(radian)};
-	return POINT {(COORD)MATH_ROUND(t[0]), (COORD)MATH_ROUND(t[1])};
+	return GFXPOINT {(COORD)MATH_ROUND(t[0]), (COORD)MATH_ROUND(t[1])};
 }
 
-POINT
-ShiftPoint(POINT p, POINT s)
+GFXPOINT
+ShiftPoint(GFXPOINT p, GFXPOINT s)
 {
 	return p + s;
 }
 
-POINT
-RotatePoint(POINT p, POINT Pivot, double radian)
+GFXPOINT
+RotatePoint(GFXPOINT p, GFXPOINT Pivot, double radian)
 {
 	double d[2] = {static_cast<double>(p.x - Pivot.x), static_cast<double>(p.y - Pivot.y)};
 	double cosine[2] = {cos(radian), sin(radian)};
 	double x = Pivot.x + (d[0] * cosine[0] - d[1] * cosine[1]);
 	double y = Pivot.y + (d[0] * cosine[1] + d[1] * cosine[0]);
 
-	return POINT {(COORD)MATH_ROUND(x), (COORD)MATH_ROUND(y)};
+	return GFXPOINT {(COORD)MATH_ROUND(x), (COORD)MATH_ROUND(y)};
 }
 
 // Kruzen: Merged together with overflow check. Functions above are redundant
-POINT
-CalcEllipsePoint(double a, double b, double rad_one, double rad_two, POINT Pivot)
+GFXPOINT
+CalcEllipsePoint(double a, double b, double rad_one, double rad_two, GFXPOINT Pivot)
 {
 	double q[2] = {a * cos(rad_one), b * sin(rad_one)};
 	double w[2] = {MATH_ROUND(q[0]) + Pivot.x, MATH_ROUND(q[1]) + Pivot.y};
@@ -588,7 +588,7 @@ CalcEllipsePoint(double a, double b, double rad_one, double rad_two, POINT Pivot
 		y = -32768.0;
 	}
 
-	return POINT {UNIVERSE_TO_DISPX2(x), UNIVERSE_TO_DISPY2(y)};
+	return GFXPOINT {UNIVERSE_TO_DISPX2(x), UNIVERSE_TO_DISPY2(y)};
 }
 
 bool onScreen(LINE* l, bool ignoreX, bool ignoreY)
@@ -605,18 +605,18 @@ static void
 DrawNoReturnZone(void)
 {
 	double dist;
-	POINT sol, sis;
+	GFXPOINT sol, sis;
 	double halfFuel = GLOBAL_SIS(FuelOnBoard) / 2;
 
 	sol = plot_map[SOL_DEFINED].star_pt;
-	sis = POINT {(COORD)LOGX_TO_UNIVERSE(GLOBAL_SIS(log_x)),
+	sis = GFXPOINT {(COORD)LOGX_TO_UNIVERSE(GLOBAL_SIS(log_x)),
 				 (COORD)LOGY_TO_UNIVERSE(GLOBAL_SIS(log_y))};
 
 	dist = (double)FuelRequiredTo(sol) / 2;
 
 	if (dist <= halfFuel)
 	{ // do not draw ellipse when fuel is not enough to reach Sol
-		POINT curr, center, rmax_y, rmin_y;
+		GFXPOINT curr, center, rmax_y, rmin_y;
 		double i, Step, ry, rotation;
 
 		ry = sqrt(pow(halfFuel, 2) - pow(dist, 2));
@@ -627,8 +627,8 @@ DrawNoReturnZone(void)
 		center = MAKE_POINT((sis.x + sol.x) / 2, (sis.y + sol.y) / 2);
 		rotation = atan2(sol.y - sis.y, sol.x - sis.x);
 
-		rmax_y = POINT {-1, -1};
-		rmin_y = POINT {(COORD)SIS_SCREEN_WIDTH, (COORD)SIS_SCREEN_HEIGHT};
+		rmax_y = GFXPOINT {-1, -1};
+		rmin_y = GFXPOINT {(COORD)SIS_SCREEN_WIDTH, (COORD)SIS_SCREEN_HEIGHT};
 
 		for (i = 0; i < M_PI * 2; i += Step)
 		{
@@ -648,7 +648,7 @@ DrawNoReturnZone(void)
 		{ // If the ellipse is completely off screen - drop it
 			LINE L;
 			LINE tempLine;
-			POINT prev = CalcEllipsePoint(halfFuel, ry, i - Step, rotation, center);
+			GFXPOINT prev = CalcEllipsePoint(halfFuel, ry, i - Step, rotation, center);
 			COORD dy;
 			double err = ((double)rmax_y.x - (double)rmin_y.x)
 					   / ((double)rmax_y.y - (double)rmin_y.y);
@@ -711,7 +711,7 @@ DrawNoReturnZone(void)
 }
 
 static void
-GetFuelRect(DRECT* r, uqm::SDWORD diameter, POINT corner)
+GetFuelRect(DRECT* r, uqm::SDWORD diameter, GFXPOINT corner)
 { // Operating with DRECT because of overflows in HD on max zoom
 	uqm::SDWORD x, y, width, height;
 
@@ -763,7 +763,7 @@ static void
 DrawFuelCircle(bool secondary)
 {
 	DRECT r;
-	POINT corner;
+	GFXPOINT corner;
 	Color OldColor;
 	uqm::DWORD OnBoardFuel = GLOBAL_SIS(FuelOnBoard);
 
@@ -821,12 +821,12 @@ DrawFuelCircle(bool secondary)
 DrawFuelEllipse ()
 {
 	Color OldColor;
-	POINT center, sol, sis;
+	GFXPOINT center, sol, sis;
 	double ry, dist, angle;
 	double halfFuel = GLOBAL_SIS (FuelOnBoard) / 2;
 
-	sol = (POINT){ SOL_X, SOL_Y };
-	sis = (POINT){ LOGX_TO_UNIVERSE (GLOBAL_SIS (log_x)),
+	sol = (GFXPOINT){ SOL_X, SOL_Y };
+	sis = (GFXPOINT){ LOGX_TO_UNIVERSE (GLOBAL_SIS (log_x)),
 			LOGY_TO_UNIVERSE (GLOBAL_SIS (log_y)) };
 
 	dist = FuelRequiredTo (sol) / 2;
@@ -1040,7 +1040,7 @@ void setStarMarked(const int star_index, const char* marker_state)
 }
 
 static COORD
-CheckTextsIntersect(RECT* curr, RECT* prev)
+CheckTextsIntersect(GFXRECT* curr, GFXRECT* prev)
 {
 	if (((curr->corner.x + curr->extent.width) <= prev->corner.x) || ((prev->corner.x + prev->extent.width) <= curr->corner.x))
 	{
@@ -1056,7 +1056,7 @@ CheckTextsIntersect(RECT* curr, RECT* prev)
 }
 
 static void
-AdjustTextRect(RECT* r, TEXT* t)
+AdjustTextRect(GFXRECT* r, TEXT* t)
 {
 	COORD offs;
 	if (r->corner.x <= 0)
@@ -1188,20 +1188,20 @@ Color RaceColor(uqm::COUNT index)
 }
 
 static void
-DrawStarMap(uqm::COUNT race_update, RECT* pClipRect)
+DrawStarMap(uqm::COUNT race_update, GFXRECT* pClipRect)
 {
 #define GRID_DELTA 500
 	uqm::SIZE i;
 	uqm::COUNT which_space;
 	// long diameter;
-	RECT r, old_r;
-	POINT oldOrigin = {0, 0};
+	GFXRECT r, old_r;
+	GFXPOINT oldOrigin = {0, 0};
 	STAMP s;
 	FRAME star_frame;
 	STAR_DESC* SDPtr;
 	bool draw_cursor;
 
-	if (pClipRect == (RECT*)-1)
+	if (pClipRect == (GFXRECT*)-1)
 	{
 		pClipRect = 0;
 		draw_cursor = false;
@@ -1327,7 +1327,7 @@ DrawStarMap(uqm::COUNT race_update, RECT* pClipRect)
 
 			if ((FleetPtr->known_strength && which_starmap != WAR_ERA_STARMAP) || (which_starmap == WAR_ERA_STARMAP && WarEraStrength(FleetPtr->SpeciesID) && index < NUM_BUILDABLE_SHIPS))
 			{
-				RECT repair_r;
+				GFXRECT repair_r;
 
 				if (which_starmap == WAR_ERA_STARMAP)
 				{
@@ -1445,7 +1445,7 @@ DrawStarMap(uqm::COUNT race_update, RECT* pClipRect)
 			{ // Kruzen: SoI is dead, but we need to fade nameplate
 				TEXT t;
 				STRING locString;
-				RECT repair_r;
+				GFXRECT repair_r;
 
 				locString = SetAbsStringTableIndex(FleetPtr->race_strings, 1);
 				t.CharCount = GetStringLength(locString);
@@ -1610,7 +1610,7 @@ DrawStarMap(uqm::COUNT race_update, RECT* pClipRect)
 		}
 #else
 		Color oldColor;
-		const POINT* CNPtr;
+		const GFXPOINT* CNPtr;
 		LINE l;
 		uqm::BYTE c = 0x3F + IF_HD(0x11);
 		CNPtr = &constel_array[0];
@@ -1805,7 +1805,7 @@ DrawStarMap(uqm::COUNT race_update, RECT* pClipRect)
 static void
 EraseCursor(COORD curs_x, COORD curs_y)
 {
-	RECT r;
+	GFXRECT r;
 
 	GetFrameRect(StarMapFrame, &r);
 
@@ -1874,12 +1874,12 @@ ZoomStarMap(uqm::SIZE dir)
 }
 
 static void
-UpdateCursorLocation(int sx, int sy, const POINT* newpt)
+UpdateCursorLocation(int sx, int sy, const GFXPOINT* newpt)
 { // Kruzen: ORIG_SIS_SCREEN_WIDTH/HEIGHT for viewport follows cursor mode
 	// We're scaling the result of s.origin afterwards, but calculating
 	// everything in SD values. So we can use max zoom in HD
 	STAMP s;
-	POINT pt;
+	GFXPOINT pt;
 
 	pt.x = ORIG_UNIVERSE_TO_DISPX(cursorLoc.x);
 	pt.y = ORIG_UNIVERSE_TO_DISPY(cursorLoc.y);
@@ -1960,7 +1960,7 @@ UpdateCursorLocation(int sx, int sy, const POINT* newpt)
 
 #define CURSOR_INFO_BUFSIZE 256
 
-int starIndex(POINT starPt)
+int starIndex(GFXPOINT starPt)
 {
 	uqm::COUNT i;
 
@@ -1979,7 +1979,7 @@ static void
 UpdateCursorInfo(uqm::CHAR_T* prevbuf)
 {
 	uqm::CHAR_T buf[CURSOR_INFO_BUFSIZE] = "";
-	POINT pt;
+	GFXPOINT pt;
 	STAR_DESC* SDPtr;
 	STAR_DESC* BestSDPtr;
 
@@ -2090,7 +2090,7 @@ UpdateCursorInfo(uqm::CHAR_T* prevbuf)
 
 	if (GET_GAME_STATE(ARILOU_SPACE))
 	{
-		POINT ari_pt;
+		GFXPOINT ari_pt;
 
 		if (GET_GAME_STATE(ARILOU_SPACE_SIDE) <= 1)
 		{
@@ -2140,7 +2140,7 @@ UpdateCursorInfo(uqm::CHAR_T* prevbuf)
 			// In HS, display default star search button name.
 			if (GET_GAME_STATE(ARILOU_SPACE_SIDE) <= 1)
 			{
-				CONTEXT OldContext;
+				GFXCONTEXT OldContext;
 				OldContext = SetContext(OffScreenContext);
 
 				if (which_starmap == WAR_ERA_STARMAP)
@@ -2658,7 +2658,7 @@ DoStarSearch(MENU_STATE* pMS)
 
 	if (coords_only(tes.BaseStr))
 	{
-		POINT coord;
+		GFXPOINT coord;
 
 		coord.x = (COORD)(atof(strtok(tes.BaseStr, ":")) * 10);
 		coord.y = (COORD)(atof(strtok(nullptr, ":")) * 10);
@@ -2713,9 +2713,9 @@ static void
 AdvancedAutoPilot(void)
 { // (Based on the Python QuasiSpace Calculator by Lukrative525
 	// https://www.reddit.com/r/starcontrol/comments/zpyhkc/quasispace_calculator/
-	POINT current_position;
-	POINT destination = GLOBAL(autopilot);
-	POINT portal_coordinates;
+	GFXPOINT current_position;
+	GFXPOINT destination = GLOBAL(autopilot);
+	GFXPOINT portal_coordinates;
 	double distance, fuel_no_portal, fuel_with_portal;
 	double minimum = 0.0;
 	uqm::BYTE i;
@@ -2783,7 +2783,7 @@ DoMoveCursor(MENU_STATE* pMS)
 
 	if (!pMS->Initialized)
 	{
-		POINT universe;
+		GFXPOINT universe;
 
 		pMS->Initialized = true;
 		pMS->InputFunc = DoMoveCursor;
@@ -2871,7 +2871,7 @@ DoMoveCursor(MENU_STATE* pMS)
 
 		if (GET_GAME_STATE(ARILOU_SPACE_SIDE) <= 1)
 		{ // HyperSpace search
-			POINT oldpt = cursorLoc;
+			GFXPOINT oldpt = cursorLoc;
 
 			if (!DoStarSearch(pMS))
 			{ // search failed or canceled - return cursor
@@ -3032,9 +3032,9 @@ DoMoveCursor(MENU_STATE* pMS)
 }
 
 static void
-RepairMap(uqm::COUNT update_race, RECT* pLastRect, RECT* pNextRect)
+RepairMap(uqm::COUNT update_race, GFXRECT* pLastRect, GFXRECT* pNextRect)
 {
-	RECT r;
+	GFXRECT r;
 
 	/* make a rect big enough for text */
 	r.extent.width = 50;
@@ -3129,7 +3129,7 @@ UpdateMap(void)
 		if (FleetPtr->known_strength)
 		{
 			uqm::SIZE dx, dy, delta;
-			RECT r, last_r, temp_r0, temp_r1;
+			GFXRECT r, last_r, temp_r0, temp_r1;
 			uqm::COUNT str;
 
 			dx = FleetPtr->loc.x - FleetPtr->known_loc.x;
@@ -3328,10 +3328,10 @@ static void
 DrawStarmapHelper(void)
 {
 
-	CONTEXT OldContext;
+	GFXCONTEXT OldContext;
 	STAMP s;
 	TEXT t;
-	RECT r;
+	GFXRECT r;
 	uqm::SIZE leading;
 	int frame_index;
 #define GAMEPAD(a) (RES_SCALE(optControllerType ? (a) : 0))
@@ -3460,10 +3460,10 @@ DrawStarmapHelper(void)
 bool StarMap(void)
 {
 	MENU_STATE MenuState;
-	POINT universe;
+	GFXPOINT universe;
 	//FRAME OldFrame;
-	RECT clip_r;
-	CONTEXT OldContext;
+	GFXRECT clip_r;
+	GFXCONTEXT OldContext;
 
 	memset(&MenuState, 0, sizeof(MenuState));
 
@@ -3525,7 +3525,7 @@ bool StarMap(void)
 		DrawStarmapHelper();
 	}
 
-	DrawStarMap(0, (RECT*)-1);
+	DrawStarMap(0, (GFXRECT*)-1);
 	transition_pending = false;
 
 	BatchGraphics();

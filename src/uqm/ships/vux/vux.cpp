@@ -155,8 +155,8 @@ limpet_preprocess(ELEMENT* ElementPtr)
 }
 
 static void
-limpet_collision(ELEMENT* ElementPtr0, POINT* pPt0,
-				 ELEMENT* ElementPtr1, POINT* pPt1)
+limpet_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
+				 ELEMENT* ElementPtr1, GFXPOINT* pPt1)
 {
 	if (ElementPtr1->state_flags & PLAYER_SHIP)
 	{
@@ -370,7 +370,7 @@ vux_preprocess(ELEMENT* ElementPtr)
 			do
 			{
 				// JMS_GFX: Circumventing overflows by using temp variables
-				// instead of subtracting straight from the POINT sized
+				// instead of subtracting straight from the GFXPOINT sized
 				// ShipImagePtr->current.location.
 				uqm::SDWORD dx, dy;
 				uqm::SDWORD temp_x =

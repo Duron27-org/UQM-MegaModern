@@ -33,9 +33,9 @@ static FRAME BuildPickFrame;
 void BuildBuildPickFrame(void)
 {
 	STAMP s;
-	RECT r;
+	GFXRECT r;
 	uqm::COUNT i;
-	CONTEXT OldContext = SetContext(OffScreenContext);
+	GFXCONTEXT OldContext = SetContext(OffScreenContext);
 
 	// create team building ship selection box
 	s.origin.x = 0;
@@ -87,12 +87,12 @@ Color GetShipFlashColor(void)
 }
 
 // Draw part of the frame underneath the ship (removes artifacts in HD)
-void RepairBuildPickFrame(RECT* pRect, POINT* origin)
+void RepairBuildPickFrame(GFXRECT* pRect, GFXPOINT* origin)
 {
-	RECT r;
-	CONTEXT OldContext;
-	RECT OldRect;
-	POINT oldOrigin;
+	GFXRECT r;
+	GFXCONTEXT OldContext;
+	GFXRECT OldRect;
+	GFXPOINT oldOrigin;
 	STAMP s;
 
 	r.corner.x = origin->x;
@@ -128,7 +128,7 @@ void RepairBuildPickFrame(RECT* pRect, POINT* origin)
 void DrawPickIcon(MeleeShip ship, bool DrawErase)
 {
 	STAMP s;
-	RECT r;
+	GFXRECT r;
 
 	GetFrameRect(BuildPickFrame, &r);
 
@@ -168,7 +168,7 @@ DrawTooltipBox(void)
 	DrawStamp(&s);
 }
 
-void GetToolTipFrameRect(RECT* r)
+void GetToolTipFrameRect(GFXRECT* r)
 {
 	GetFrameRect(SetAbsFrameIndex(MeleeFrame, TTIP_FRAME_OFFSET), r);
 }
@@ -181,10 +181,10 @@ void DrawTooltip(SHIP_INFO* SIPtr)
 	uqm::CHAR_T* ptr;
 	uqm::CHAR_T buf[PATH_MAX] {};
 	TEXT Text;
-	CONTEXT oldContext;
+	GFXCONTEXT oldContext;
 	FONT oldFont;
 	Color oldColor;
-	RECT r;
+	GFXRECT r;
 	uqm::CHAR_T delim[] = "\n";
 
 	GetToolTipFrameRect(&r);
@@ -236,7 +236,7 @@ void DrawTooltip(SHIP_INFO* SIPtr)
 
 void DrawPickFrame(MELEE_STATE* pMS)
 {
-	RECT r, r0, r1, ship_r;
+	GFXRECT r, r0, r1, ship_r;
 	STAMP s;
 
 	GetShipBox(&r0, 0, 0, 0),
@@ -270,7 +270,7 @@ void DrawPickFrame(MELEE_STATE* pMS)
 	}
 }
 
-void GetBuildPickFrameRect(RECT* r)
+void GetBuildPickFrameRect(GFXRECT* r)
 {
 	GetFrameRect(BuildPickFrame, r);
 }

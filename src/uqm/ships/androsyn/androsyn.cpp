@@ -172,8 +172,8 @@ SetCustomShipData(RACE_DESC* pRaceDesc, const CustomShipData_t* data)
 }
 
 static void
-blazer_collision(ELEMENT* ElementPtr0, POINT* pPt0,
-				 ELEMENT* ElementPtr1, POINT* pPt1)
+blazer_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
+				 ELEMENT* ElementPtr1, GFXPOINT* pPt1)
 {
 	uqm::BYTE old_offs;
 	uqm::COUNT old_crew_level;

@@ -93,7 +93,7 @@ process_image(FRAME FramePtr, TFB_Canvas img[], AniData* ani, int cel_ct)
 	       every corner of the image
 		 */
 		Color color = {0xff, 0xff, 0xff, 0xff};
-		RECT r = {
+		GFXRECT r = {
 			{0, 0},
 			{1, 1}
 		  };

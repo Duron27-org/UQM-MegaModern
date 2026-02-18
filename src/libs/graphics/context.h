@@ -37,7 +37,7 @@ struct context_desc
 	FRAME ForeGroundFrame;
 	FONT Font;
 
-	RECT ClipRect;
+	GFXRECT ClipRect;
 
 	FRAME FontEffect;
 	TFB_Image* FontBacking;
@@ -45,14 +45,14 @@ struct context_desc
 
 #ifdef DEBUG
 	const char* name;
-	CONTEXT next;
+	GFXCONTEXT next;
 #endif
 };
 
 #define AllocContext() HCalloc(sizeof(CONTEXT_DESC))
 #define FreeContext HFree
 
-extern CONTEXT _pCurContext;
+extern GFXCONTEXT _pCurContext;
 extern PRIMITIVE _locPrim;
 
 #define _get_context_fg_color() (_pCurContext->ForeGroundColor)
@@ -139,7 +139,7 @@ extern GRAPHICS_STATUS _GraphicsStatusFlags;
 	(_GraphicsStatusFlags & (GRAPHICS_STATUS)(GRAPHICS_ACTIVE | GRAPHICS_VISIBLE))
 
 // pValidRect or origin may be nullptr
-bool GetContextValidRect(RECT* pValidRect, POINT* origin);
+bool GetContextValidRect(GFXRECT* pValidRect, GFXPOINT* origin);
 extern void FixContextFontEffect(void);
 
 #endif /* LIBS_GRAPHICS_CONTEXT_H_ */

@@ -148,7 +148,7 @@ extern void AlienTalkSegue(uqm::COUNT wait_track);
 bool getLineWithinWidth(TEXT* pText, const char** startNext,
 						uqm::SIZE maxWidth, uqm::COUNT maxChars);
 
-extern RECT CommWndRect; /* comm window rect */
+extern GFXRECT CommWndRect; /* comm window rect */
 
 typedef enum
 {
@@ -164,7 +164,7 @@ extern void SetCommIntroMode(CommIntroMode, TimeCount howLong);
 extern void EnableTalkingAnim(bool enable);
 extern void SetCommDarkMode(bool state);
 extern void RedrawSISComWindow(void);
-extern void SetCustomBaseLine(uqm::COUNT sentence, POINT bl, TEXT_ALIGN align);
+extern void SetCustomBaseLine(uqm::COUNT sentence, GFXPOINT bl, TEXT_ALIGN align);
 extern void FlushCustomBaseLine(void);
 extern void BlockTalkingAnim(uqm::COUNT trackStart, uqm::COUNT trackEnd);
 extern void UpdateDuty(bool talk);

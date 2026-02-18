@@ -33,7 +33,7 @@ extern STAR_DESC* CurStarDescPtr;
 // star_array is now a static buffer we will copy the starmap_array into, and
 // then manipulate from there, so that original starmap is never altered.
 extern STAR_DESC star_array[];
-extern const POINT* constel_array;
+extern const GFXPOINT* constel_array;
 
 // Global plot_map stores star_pt (coords) used while seeding into starmap
 // Once seeded the plot_map will contain STAR_DESC pointers to the
@@ -49,7 +49,7 @@ extern PORTAL_LOCATION portal_map[NUM_HYPER_VORTICES + 1];
 // A globally available seed for seeding the starmap and the plots it contains.
 extern RandomContext* StarGenRNG;
 
-extern STAR_DESC* FindStar(STAR_DESC* pLastStar, POINT* puniverse,
+extern STAR_DESC* FindStar(STAR_DESC* pLastStar, GFXPOINT* puniverse,
 						   uqm::SIZE xbounds, uqm::SIZE ybounds);
 
 // Populates buf with the full name of the star at pSD
@@ -57,11 +57,11 @@ extern STAR_DESC* FindStar(STAR_DESC* pLastStar, POINT* puniverse,
 extern void GetClusterName(const STAR_DESC* pSD, uqm::CHAR_T buf[]);
 
 // Returns the closest star to point p on the given starmap
-STAR_DESC* FindNearestStar(STAR_DESC* starmap, POINT p);
+STAR_DESC* FindNearestStar(STAR_DESC* starmap, GFXPOINT p);
 
 // Returns the star in the closest constellation to point p on the starmap
 // Constellation only returns stars with a Prefix > 0
-STAR_DESC* FindNearestConstellation(STAR_DESC* starmap, POINT p);
+STAR_DESC* FindNearestConstellation(STAR_DESC* starmap, GFXPOINT p);
 
 // Resets the starmap given to the default values of the static starmap_array.
 void DefaultStarmap(STAR_DESC* starmap);

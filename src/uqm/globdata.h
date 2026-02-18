@@ -148,7 +148,7 @@ typedef struct
 	RESOURCE AlienFrameRes;
 	RESOURCE AlienFontRes;
 	Color AlienTextFColor, AlienTextBColor;
-	POINT AlienTextBaseline;
+	GFXPOINT AlienTextBaseline;
 	uqm::COUNT AlienTextWidth;
 	TEXT_ALIGN AlienTextAlign;
 	TEXT_VALIGN AlienTextValign;
@@ -1037,8 +1037,8 @@ typedef struct
 
 	CLOCK_STATE GameClock;
 
-	POINT autopilot;
-	POINT ip_location;
+	GFXPOINT autopilot;
+	GFXPOINT ip_location;
 	STAMP ShipStamp;
 	uqm::UWORD ShipFacing;
 	uqm::BYTE ip_planet;
@@ -1117,7 +1117,7 @@ enum
 #define D_GET_GAME_STATE(SName) \
 	getGameStateUint(SName)
 
-extern CONTEXT RadarContext;
+extern GFXCONTEXT RadarContext;
 
 extern void FreeSC2Data(void);
 extern bool LoadSC2Data(void);
@@ -1169,15 +1169,15 @@ extern void UninitGameStructures(void);
 // Storage Queue
 #define STORAGE_Q (optShipStore || DIF_HARD || optFleetPointSys)
 
-static inline POINT
+static inline GFXPOINT
 LoadLastLoc(void)
 {
-	return POINT {(COORD)GET_GAME_STATE(LAST_LOCATION_X),
+	return GFXPOINT {(COORD)GET_GAME_STATE(LAST_LOCATION_X),
 				  (COORD)GET_GAME_STATE(LAST_LOCATION_Y)};
 }
 
 static inline void
-SaveLastLoc(POINT pt)
+SaveLastLoc(GFXPOINT pt)
 {
 	SET_GAME_STATE(LAST_LOCATION_X, pt.x);
 	SET_GAME_STATE(LAST_LOCATION_Y, pt.y);
@@ -1190,29 +1190,29 @@ ZeroLastLoc(void)
 	SET_GAME_STATE(LAST_LOCATION_Y, ~0);
 }
 
-static inline POINT
+static inline GFXPOINT
 LoadAdvancedQuasiPilot(void)
 {
-	return POINT {(COORD)GET_GAME_STATE(ADV_AUTOPILOT_QUASI_X),
+	return GFXPOINT {(COORD)GET_GAME_STATE(ADV_AUTOPILOT_QUASI_X),
 				  (COORD)GET_GAME_STATE(ADV_AUTOPILOT_QUASI_Y)};
 }
 
-static inline POINT
+static inline GFXPOINT
 LoadAdvancedAutoPilot(void)
 {
-	return POINT {(COORD)GET_GAME_STATE(ADV_AUTOPILOT_SAVE_X),
+	return GFXPOINT {(COORD)GET_GAME_STATE(ADV_AUTOPILOT_SAVE_X),
 				  (COORD)GET_GAME_STATE(ADV_AUTOPILOT_SAVE_Y)};
 }
 
 static inline void
-SaveAdvancedQuasiPilot(POINT pt)
+SaveAdvancedQuasiPilot(GFXPOINT pt)
 {
 	SET_GAME_STATE(ADV_AUTOPILOT_QUASI_X, pt.x);
 	SET_GAME_STATE(ADV_AUTOPILOT_QUASI_Y, pt.y);
 }
 
 static inline void
-SaveAdvancedAutoPilot(POINT pt)
+SaveAdvancedAutoPilot(GFXPOINT pt)
 {
 	SET_GAME_STATE(ADV_AUTOPILOT_SAVE_X, pt.x);
 	SET_GAME_STATE(ADV_AUTOPILOT_SAVE_Y, pt.y);

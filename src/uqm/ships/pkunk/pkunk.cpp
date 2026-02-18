@@ -468,7 +468,7 @@ phoenix_transition(ELEMENT* ElementPtr)
 			angle = FACING_TO_ANGLE(StarShipPtr->ShipFacing);
 
 			// JMS_GFX: Circumventing overflows by using temp variables
-			// instead of subtracting straight from the POINT sized
+			// instead of subtracting straight from the GFXPOINT sized
 			// ShipImagePtr->current.location.
 			temp_x = (uqm::SDWORD)ShipImagePtr->current.location.x - COSINE(angle, TRANSITION_SPEED) * (ElementPtr->life_span - 1);
 			temp_y = (uqm::SDWORD)ShipImagePtr->current.location.y - SINE(angle, TRANSITION_SPEED) * (ElementPtr->life_span - 1);

@@ -76,7 +76,7 @@ extern void loadGameCheats(void);
 // WarEraStrength gives the hard coded strength values (formerly an array)
 extern uqm::COUNT WarEraStrength(SPECIES_ID SpeciesID);
 // SeedFleetLocation moves the fleet to the plot location specified in visit.
-extern POINT SeedFleetLocation(FLEET_INFO* FleetPtr, PLOT_LOCATION* plotmap,
+extern GFXPOINT SeedFleetLocation(FLEET_INFO* FleetPtr, PLOT_LOCATION* plotmap,
 							   uqm::COUNT visit);
 // SeedFleet does initial fleet placement for StarSeed
 extern void SeedFleet(FLEET_INFO* FleetPtr, PLOT_LOCATION* plotmap);

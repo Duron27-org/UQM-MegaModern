@@ -152,7 +152,7 @@ typedef struct portal_location PORTAL_LOCATION;
 
 typedef struct
 {
-	POINT p[4];
+	GFXPOINT p[4];
 	uqm::DWORD m[4];
 } MAP3D_POINT;
 
@@ -209,7 +209,7 @@ struct planet_desc
 	uqm::BYTE data_index; // what planet is this
 	uqm::BYTE NumPlanets; // number of moons
 	uqm::SIZE radius;	  // radius of planet orbit
-	POINT location;		  // coords on screen
+	GFXPOINT location;		  // coords on screen
 
 	Color temp_color;	  // color of planet orbit
 	uqm::COUNT NextIndex; // index to a next planet
@@ -236,7 +236,7 @@ struct planet_desc
 
 struct star_desc
 {
-	POINT star_pt;
+	GFXPOINT star_pt;
 	uqm::BYTE Type;
 	uqm::BYTE Index;
 	uqm::BYTE Prefix;
@@ -247,7 +247,7 @@ struct node_info
 {
 	// This structire is filled in when a generateMinerals, generateEnergy,
 	// or generateLife call is made.
-	POINT loc_pt;
+	GFXPOINT loc_pt;
 	// Position of the mineral/bio/energy node on the planet.
 	uqm::COUNT density;
 	// For bio and energy: undefined
@@ -350,7 +350,7 @@ struct solarsys_state
 // dist_sq is internal and accessed by the "PLOT_" defines on "plot" variable.
 struct plot_location
 {
-	POINT star_pt;
+	GFXPOINT star_pt;
 	STAR_DESC* star;
 	uqm::DWORD dist_sq[NUM_PLOTS];
 };
@@ -361,14 +361,14 @@ struct plot_location
 // starmap provided of the nearest actual star.
 struct portal_location
 {
-	POINT star_pt;
-	POINT quasi_pt;
+	GFXPOINT star_pt;
+	GFXPOINT quasi_pt;
 	STAR_DESC* nearest_star;
 };
 
 extern SOLARSYS_STATE* pSolarSysState;
 extern MUSIC_REF SpaceMusic;
-extern CONTEXT PlanetContext;
+extern GFXCONTEXT PlanetContext;
 extern bool useDosSpheres;
 extern bool use3DOSpheres;
 
@@ -395,9 +395,9 @@ bool matchWorld(const SOLARSYS_STATE* solarSys, const PLANET_DESC* world,
 
 uqm::DWORD GetRandomSeedForStar(const STAR_DESC* star);
 
-POINT locationToDisplay(POINT pt, uqm::SIZE scaleRadius);
-POINT displayToLocation(POINT pt, uqm::SIZE scaleRadius);
-POINT planetOuterLocation(uqm::COUNT planetI);
+GFXPOINT locationToDisplay(GFXPOINT pt, uqm::SIZE scaleRadius);
+GFXPOINT displayToLocation(GFXPOINT pt, uqm::SIZE scaleRadius);
+GFXPOINT planetOuterLocation(uqm::COUNT planetI);
 
 extern void DestroyOrbitStruct(PLANET_ORBIT* Orbit, uqm::SIZE height);
 extern void LoadPlanet(FRAME SurfDefFrame);
@@ -410,7 +410,7 @@ extern void FreeLanderFont(PLANET_INFO* info);
 extern void ExploreSolarSys(void);
 extern void DrawStarBackGround(void);
 extern FRAME GetStarBackFround(void);
-extern void XFormIPLoc(POINT* pIn, POINT* pOut, bool ToDisplay);
+extern void XFormIPLoc(GFXPOINT* pIn, GFXPOINT* pOut, bool ToDisplay);
 extern void DrawOval(DRECT* pRect, uqm::BYTE num_off_pixels, bool scaled);
 extern void DrawFilledOval(DRECT* pRect);
 extern void DrawEllipse(int cx, int cy, int rx, int ry, int shear,
@@ -454,7 +454,7 @@ extern void GetPlanetTopography(PLANET_DESC* pPlanetDesc, FRAME SurfDefFrame);
 extern void GeneratePlanetSurface(PLANET_DESC* pPlanetDesc,
 								  FRAME SurfDefFrame, uqm::COUNT width, uqm::COUNT height);
 extern void DeltaTopography(uqm::COUNT num_iterations, uqm::SBYTE* DepthArray,
-							RECT* pRect, uqm::SIZE depth_delta);
+							GFXRECT* pRect, uqm::SIZE depth_delta);
 
 extern void TransformColor(Color* c, uqm::COUNT scan);
 

@@ -352,7 +352,7 @@ void InitGalaxy(void)
 }
 
 static bool
-CmpMovePoints(const POINT* pt1, const DPOINT* pt2, uqm::SDWORD dx, uqm::SDWORD dy,
+CmpMovePoints(const GFXPOINT* pt1, const DPOINT* pt2, uqm::SDWORD dx, uqm::SDWORD dy,
 			  uqm::SIZE reduction)
 {
 	if (optMeleeScale == TFB_SCALE_STEP)
@@ -593,7 +593,7 @@ void MoveGalaxy(VIEW_STATE view_state, uqm::SDWORD dx, uqm::SDWORD dy)
 	DisplayLinks = MakeLinks(NUM_STARS - 1, 0);
 }
 
-void SetStarPoint(POINT pt, uqm::COUNT i)
+void SetStarPoint(GFXPOINT pt, uqm::COUNT i)
 {
 	log_star_array[i].x = pt.x;
 	log_star_array[i].y = pt.y;

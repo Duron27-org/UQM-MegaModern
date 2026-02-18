@@ -120,7 +120,7 @@ static FRAME StarsFrame;
 static FRAME SolarSysFrame;
 // saved solar system view graphic
 
-static RECT scaleRect;
+static GFXRECT scaleRect;
 // system zooms in when the flagship enters this rect
 
 static uqm::COUNT PBodySize[7] = {0, 3, 4, 7, 11, 15, 29};
@@ -155,10 +155,10 @@ RandomContext* SysGenRNGDebug;
 #define SUN_MASK (USE_RGB_STARS ? SUNANIM_MASK_PMAP_ANIM : SUN_MASK_PMAP_ANIM)
 
 
-POINT
-locationToDisplay(POINT pt, uqm::SIZE scaleRadius)
+GFXPOINT
+locationToDisplay(GFXPOINT pt, uqm::SIZE scaleRadius)
 {
-	POINT out;
+	GFXPOINT out;
 
 	out.x = (RES_SCALE(ORIG_SIS_SCREEN_WIDTH >> 1)
 			 + (long)pt.x * DISPLAY_TO_LOC / scaleRadius);
@@ -168,10 +168,10 @@ locationToDisplay(POINT pt, uqm::SIZE scaleRadius)
 	return out;
 }
 
-POINT
-displayToLocation(POINT pt, uqm::SIZE scaleRadius)
+GFXPOINT
+displayToLocation(GFXPOINT pt, uqm::SIZE scaleRadius)
 {
-	POINT out;
+	GFXPOINT out;
 
 	out.x = (((long)pt.x - RES_SCALE(ORIG_SIS_SCREEN_WIDTH >> 1))
 			 * scaleRadius / DISPLAY_TO_LOC);
@@ -181,7 +181,7 @@ displayToLocation(POINT pt, uqm::SIZE scaleRadius)
 	return out;
 }
 
-POINT
+GFXPOINT
 planetOuterLocation(uqm::COUNT planetI)
 {
 	uqm::SIZE scaleRadius = pSolarSysState->SunDesc[0].radius;
@@ -423,12 +423,12 @@ GenerateMoons(SOLARSYS_STATE* system, PLANET_DESC* planet)
 }
 
 FRAME
-LoadNebulaeFrame(POINT location)
+LoadNebulaeFrame(GFXPOINT location)
 {
 	STRING nebulaRes;
 	uqm::COUNT nebulaCount;
-	POINT neb_seed;
-	const POINT solPoint = plot_map[SOL_DEFINED].star_pt;
+	GFXPOINT neb_seed;
+	const GFXPOINT solPoint = plot_map[SOL_DEFINED].star_pt;
 
 	// Kruzen: Either loading from main menu or option is disabled or
 	// at Sol with MegaMod nebulas
@@ -657,7 +657,7 @@ GetRandomSeedForStar(const STAR_DESC* star)
 }
 
 uqm::DWORD
-GetRandomSeedForVar(const POINT point)
+GetRandomSeedForVar(const GFXPOINT point)
 {
 	return MAKE_DWORD(point.x, point.y);
 }
@@ -1158,7 +1158,7 @@ CheckIntersect(void)
 }
 
 static void
-GetOrbitRect(RECT* pRect, COORD dx, COORD dy, uqm::SIZE radius,
+GetOrbitRect(GFXRECT* pRect, COORD dx, COORD dy, uqm::SIZE radius,
 			 int xnumer, int ynumer, int denom)
 {
 	pRect->corner.x = RES_SCALE(ORIG_SIS_SCREEN_WIDTH >> 1)
@@ -1170,7 +1170,7 @@ GetOrbitRect(RECT* pRect, COORD dx, COORD dy, uqm::SIZE radius,
 }
 
 static void
-GetPlanetOrbitRect(RECT* r, PLANET_DESC* planet, int sizeNumer,
+GetPlanetOrbitRect(GFXRECT* r, PLANET_DESC* planet, int sizeNumer,
 				   int dyNumer, int denom)
 {
 	COORD dx, dy;
@@ -1189,7 +1189,7 @@ static void
 SetPlanetOldFrame(PLANET_DESC* planet, uqm::COUNT index, uqm::COUNT color)
 {
 	FRAME oldFrame;
-	RECT r;
+	GFXRECT r;
 
 	oldFrame = SetAbsFrameIndex(OrbitalFrame, index);
 	GetFrameRect(oldFrame, &r);
@@ -1232,7 +1232,7 @@ ValidateOrbit(PLANET_DESC* planet, int sizeNumer, int dyNumer, int denom)
 
 	if (sizeNumer <= DISPLAY_FACTOR)
 	{ // All planets in outer view, and moons in inner
-		RECT r;
+		GFXRECT r;
 
 		GetPlanetOrbitRect(&r, planet, sizeNumer, dyNumer, denom);
 
@@ -1337,7 +1337,7 @@ ValidateOrbit(PLANET_DESC* planet, int sizeNumer, int dyNumer, int denom)
 static void
 DrawOrbit(PLANET_DESC* planet, int sizeNumer, int dyNumer, int denom)
 {
-	RECT r;
+	GFXRECT r;
 	DRECT dr;
 
 	GetPlanetOrbitRect(&r, planet, sizeNumer, dyNumer, denom);
@@ -1355,10 +1355,10 @@ DrawOrbit(PLANET_DESC* planet, int sizeNumer, int dyNumer, int denom)
 }
 
 static uqm::SIZE
-FindRadius(POINT shipLoc, uqm::SIZE fromRadius)
+FindRadius(GFXPOINT shipLoc, uqm::SIZE fromRadius)
 {
 	uqm::SIZE nextRadius;
-	POINT displayLoc;
+	GFXPOINT displayLoc;
 
 	do
 	{
@@ -1461,7 +1461,7 @@ static uqm::SIZE
 ScreenCompass(uqm::COUNT index)
 {
 	uqm::SIZE facing;
-	POINT scrLoc = GLOBAL(ShipStamp.origin);
+	GFXPOINT scrLoc = GLOBAL(ShipStamp.origin);
 	EXTENT sisScr = {(COORD)SIS_SCREEN_WIDTH, (COORD)SIS_SCREEN_HEIGHT};
 	bool westOfCenter = scrLoc.x < (sisScr.width >> 1);
 	bool northOfCenter = scrLoc.y < (sisScr.height >> 1);
@@ -1495,12 +1495,12 @@ ScreenCompass(uqm::COUNT index)
 #define TURN_LEFT 1
 #define TURN_RIGHT -1
 
-static POINT
+static GFXPOINT
 TurnAbout(uqm::SIZE delta_x, uqm::SIZE delta_y)
 {
 	uqm::SIZE facing;
 	uqm::COUNT index;
-	POINT delta = {delta_x, delta_y};
+	GFXPOINT delta = {delta_x, delta_y};
 
 	if (!optSmartAutoPilot)
 	{
@@ -1577,7 +1577,7 @@ ProcessShipControls(void)
 	}
 	else if (GLOBAL(autopilot.x) != ~0 && GLOBAL(autopilot.y) != ~0)
 	{
-		POINT delta;
+		GFXPOINT delta;
 		delta = TurnAbout(delta_x, delta_y);
 
 		delta_x = delta.x;
@@ -1889,7 +1889,7 @@ ScaleSystem(uqm::SIZE new_radius)
 	UnbatchGraphics();
 
 #else  // !SMOOTH_SYSTEM_ZOOM
-	RECT r;
+	GFXRECT r;
 
 	pSolarSysState->SunDesc[0].radius = new_radius;
 	XFormIPLoc(&GLOBAL(ip_location), &GLOBAL(ShipStamp.origin), true);
@@ -2052,7 +2052,7 @@ static bool
 CheckZoomLevel(void)
 {
 	bool InnerSystem;
-	POINT shipLoc;
+	GFXPOINT shipLoc;
 
 	InnerSystem = playerInInnerSystem();
 	if (InnerSystem)
@@ -2469,7 +2469,7 @@ endInterPlanetary(void)
 
 // Find the closest planet to a point, in interplanetary.
 static PLANET_DESC*
-closestPlanetInterPlanetary(const POINT* point)
+closestPlanetInterPlanetary(const GFXPOINT* point)
 {
 	uqm::BYTE i;
 	uqm::BYTE numPlanets;
@@ -2681,7 +2681,7 @@ DrawSystem(uqm::SIZE radius, bool IsInnerSystem)
 	uqm::BYTE i;
 	PLANET_DESC* pCurDesc;
 	PLANET_DESC* pBaseDesc;
-	CONTEXT oldContext;
+	GFXCONTEXT oldContext;
 	STAMP s;
 
 	if (optTexturedPlanets)
@@ -2695,7 +2695,7 @@ DrawSystem(uqm::SIZE radius, bool IsInnerSystem)
 
 	if (!SolarSysFrame)
 	{ // Create the saved view graphic
-		RECT clipRect;
+		GFXRECT clipRect;
 
 		GetContextClipRect(&clipRect);
 		SolarSysFrame = CaptureDrawable(CreateDrawable(WANT_PIXMAP,
@@ -2827,8 +2827,8 @@ CreateStarBackGround(RandomContext* SysRNG, FRAME nebula, FRAME junk)
 {
 	uqm::BYTE num_brt_drawn;
 	uqm::BYTE start_index;
-	CONTEXT oldContext;
-	RECT clipRect;
+	GFXCONTEXT oldContext;
+	GFXRECT clipRect;
 	FRAME frame;
 	bool hdScaled = (!optUnscaledStarSystem || !IS_HD);
 
@@ -2866,7 +2866,7 @@ FRAME
 GetStarBackGround(bool encounter)
 {
 	RandomContext* SysRNG;
-	POINT location;
+	GFXPOINT location;
 	FRAME junk, nebula, result;
 
 	if (!encounter)
@@ -2916,7 +2916,7 @@ GetStarBackGround(bool encounter)
 	return result;
 }
 
-void XFormIPLoc(POINT* pIn, POINT* pOut, bool ToDisplay)
+void XFormIPLoc(GFXPOINT* pIn, GFXPOINT* pOut, bool ToDisplay)
 {
 	if (ToDisplay)
 	{
@@ -2936,7 +2936,7 @@ void ExploreSolarSys(void)
 
 	if (CurStarDescPtr == 0)
 	{
-		POINT universe;
+		GFXPOINT universe;
 
 		universe.x = LOGX_TO_UNIVERSE(GLOBAL_SIS(log_x));
 		universe.y = LOGY_TO_UNIVERSE(GLOBAL_SIS(log_y));

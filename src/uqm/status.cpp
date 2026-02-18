@@ -310,7 +310,7 @@ CaptainsWindow (CAPTAIN_STUFF *CSPtr, COORD y,
 void DrawBattleCrewAmount(SHIP_INFO* ShipInfoPtr, COORD y_offs)
 {
 #define MAX_CREW_DIGITS 3
-	RECT r;
+	GFXRECT r;
 	TEXT t;
 	uqm::CHAR_T buf[40] {};
 
@@ -337,7 +337,7 @@ void DrawCaptainsWindow(STARSHIP* StarShipPtr)
 {
 	COORD y;
 	COORD y_offs;
-	RECT r;
+	GFXRECT r;
 	STAMP s;
 	FRAME Frame;
 	RACE_DESC* RDPtr;
@@ -630,7 +630,7 @@ void PostProcessStatus(ELEMENT* ShipPtr)
 				// avoiding drawing black area
 				uqm::BYTE i, j;
 				Color c;
-				RECT r;
+				GFXRECT r;
 
 				i = (uqm::BYTE)(NUM_EXPLOSION_FRAMES * 3 - 1) - ShipPtr->life_span;
 

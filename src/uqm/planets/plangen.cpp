@@ -88,7 +88,7 @@
 // BW: Moved to planets.h
 // typedef struct
 // {
-// 	POINT p[4];
+// 	GFXPOINT p[4];
 // 	uqm::DWORD m[4];
 // } MAP3D_POINT;
 
@@ -390,13 +390,13 @@ RenderLevelMasks(FRAME mask, uqm::SBYTE* pTopoData, bool SurfDef)
 	uqm::BYTE AlgoType;
 	uqm::SIZE base, d;
 	const XLAT_DESC* xlatDesc;
-	POINT pt;
+	GFXPOINT pt;
 	const PlanetFrame* PlanDataPtr;
 	PRIMITIVE BatchArray[NUM_BATCH_POINTS];
 	PRIMITIVE* pBatch;
 	uqm::SBYTE* pSrc;
-	POINT oldOrigin;
-	RECT ClipRect;
+	GFXPOINT oldOrigin;
+	GFXRECT ClipRect;
 	uqm::SIZE w, h;
 	uqm::SIZE num_frames = 3;
 	const uqm::SIZE* level_tab;
@@ -618,9 +618,9 @@ P3norm(POINT3* res, POINT3* vec)
 // GenerateSphereMask builds a shadow map for the rotating planet
 //  loc indicates the planet's position relative to the sun
 static void
-GenerateSphereMask(POINT loc, uqm::COUNT radius)
+GenerateSphereMask(GFXPOINT loc, uqm::COUNT radius)
 {
-	POINT pt;
+	GFXPOINT pt;
 	POINT3 light;
 	double lrad;
 	const uqm::DWORD step = 1 << DIFFUSE_BITS;
@@ -1028,7 +1028,7 @@ CreateShieldMask(uqm::COUNT radius)
 FRAME
 SaveBackFrame(uqm::COUNT radius)
 {
-	RECT r;
+	GFXRECT r;
 	FRAME BackFrame;
 	uqm::COUNT shieldradius = SHIELD_RADIUS * radius / RADIUS;
 	uqm::COUNT shielddiam = (shieldradius << 1) + 1;
@@ -1152,7 +1152,7 @@ ApplyShieldTint(void)
 	DrawMode mode, oldMode;
 	FRAME oldFrame;
 	Color tint;
-	RECT r;
+	GFXRECT r;
 
 	// TopoFrame will be permanently changed
 	oldFrame = SetContextFGFrame(pSolarSysState->TopoFrame);
@@ -1244,7 +1244,7 @@ void RenderPlanetSphere(PLANET_ORBIT* Orbit, FRAME MaskFrame, int offset,
 						bool shielded, bool doThrob, uqm::COUNT width, uqm::COUNT height,
 						uqm::COUNT radius)
 {
-	POINT pt;
+	GFXPOINT pt;
 	Color* pix;
 	Color clear;
 	int x, y;
@@ -1414,7 +1414,7 @@ void RenderDOSPlanetSphere(PLANET_ORBIT* Orbit, FRAME MaskFrame, int offset)
 		uqm::COUNT x, y;
 		uqm::SIZE width = MaskFrame->Bounds.width;
 		uqm::SIZE height = Orbit->TopoMask->Bounds.height;
-		RECT r;
+		GFXRECT r;
 		FRAME dupeframe;
 		PLANET_INFO* PlanetInfo = &pSolarSysState->SysInfo.PlanetInfo;
 
@@ -1431,7 +1431,7 @@ void RenderDOSPlanetSphere(PLANET_ORBIT* Orbit, FRAME MaskFrame, int offset)
 			STAMP s;
 			FRAME baseframe, rotFrame;
 			DrawMode oldMode;
-			CONTEXT oldContext;
+			GFXCONTEXT oldContext;
 			uqm::SIZE trueheight = MaskFrame->Bounds.height;
 
 			rotFrame = CaptureDrawable(
@@ -1498,7 +1498,7 @@ void Render3DOPlanetSphere(PLANET_ORBIT* Orbit, FRAME MaskFrame, int offset,
 	int x, y;
 	Color *c, *pixels, *shade;
 	Color clear;
-	POINT pt;
+	GFXPOINT pt;
 	uqm::COUNT spherespanx = height;
 	uqm::COUNT radius = (spherespanx >> 1) - IF_HD(2);
 	uqm::COUNT tworadius = radius << 1;
@@ -1581,7 +1581,7 @@ DitherMap(uqm::SBYTE* DepthArray, uqm::COUNT width, uqm::COUNT height)
 }
 
 static void
-MakeCrater(RECT* pRect, uqm::SBYTE* DepthArray, uqm::SIZE rim_delta, uqm::SIZE crater_delta, bool SetDepth, uqm::COUNT width)
+MakeCrater(GFXRECT* pRect, uqm::SBYTE* DepthArray, uqm::SIZE rim_delta, uqm::SIZE crater_delta, bool SetDepth, uqm::COUNT width)
 {
 	COORD x, y, lf_x, rt_x;
 	uqm::SIZE A, B;
@@ -1781,8 +1781,8 @@ MakeStorms(uqm::COUNT storm_count, uqm::SBYTE* DepthArray, uqm::COUNT width,
 {
 #define MAX_STORMS 8
 	uqm::COUNT i;
-	RECT storm_r[MAX_STORMS];
-	RECT* pstorm_r;
+	GFXRECT storm_r[MAX_STORMS];
+	GFXRECT* pstorm_r;
 
 	pstorm_r = &storm_r[i = storm_count];
 	while (i--)
@@ -1914,7 +1914,7 @@ MakeStorms(uqm::COUNT storm_count, uqm::SBYTE* DepthArray, uqm::COUNT width,
 }
 
 static void
-MakeGasGiant(uqm::COUNT num_bands, uqm::SBYTE* DepthArray, RECT* pRect, uqm::SIZE depth_delta)
+MakeGasGiant(uqm::COUNT num_bands, uqm::SBYTE* DepthArray, GFXRECT* pRect, uqm::SIZE depth_delta)
 {
 	COORD last_y, next_y;
 	uqm::SIZE band_error, band_bump, band_delta;
@@ -1953,7 +1953,7 @@ MakeGasGiant(uqm::COUNT num_bands, uqm::SBYTE* DepthArray, RECT* pRect, uqm::SIZ
 		}
 		else
 		{
-			RECT r;
+			GFXRECT r;
 
 			cur_y = next_y
 				  + ((band_height - 2) >> 1)
@@ -2693,7 +2693,7 @@ void load_color_resources(PLANET_DESC* pPlanetDesc,
 void generate_surface_frame(uqm::COUNT width, uqm::COUNT height, PLANET_ORBIT* Orbit,
 							const PlanetFrame* PlanDataPtr)
 { // Generate planet surface elevation data and look
-	RECT r;
+	GFXRECT r;
 	uqm::COUNT i;
 
 	r.corner.x = r.corner.y = 0;
@@ -2718,7 +2718,7 @@ void generate_surface_frame(uqm::COUNT width, uqm::COUNT height, PLANET_ORBIT* O
 
 			for (i = 0; i < PlanDataPtr->num_blemishes; ++i)
 			{
-				RECT crater_r;
+				GFXRECT crater_r;
 				uqm::UWORD loword;
 
 				loword = LOWORD(RandomContext_Random(SysGenRNG));
@@ -2854,8 +2854,8 @@ void GeneratePlanetSurface(PLANET_DESC* pPlanetDesc, FRAME SurfDefFrame,
 {
 	const PlanetFrame* PlanDataPtr;
 	PLANET_INFO* PlanetInfo = &pSolarSysState->SysInfo.PlanetInfo;
-	POINT loc;
-	CONTEXT OldContext, TopoContext;
+	GFXPOINT loc;
+	GFXCONTEXT OldContext, TopoContext;
 	PLANET_ORBIT* Orbit = &pSolarSysState->Orbit;
 	bool SurfDef = false;
 	bool shielded = (pPlanetDesc->data_index & PLANET_SHIELDED) != 0;

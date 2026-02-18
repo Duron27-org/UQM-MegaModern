@@ -46,7 +46,7 @@ void DrawCurrentPlanetSphere(void)
 {
 	STAMP s;
 	PLANET_ORBIT* Orbit = &pSolarSysState->Orbit;
-	CONTEXT oldContext = SetContext(PlanetContext);
+	GFXCONTEXT oldContext = SetContext(PlanetContext);
 
 	s.origin.x = RES_SCALE(ORIG_SIS_SCREEN_WIDTH >> 1);
 	s.origin.y = PLANET_ORG_Y;
@@ -153,7 +153,7 @@ void DrawPlanetSphere(int x, int y, bool back)
 
 void DrawDefaultPlanetSphere(void)
 {
-	CONTEXT oldContext;
+	GFXCONTEXT oldContext;
 
 	oldContext = SetContext(PlanetContext);
 	DrawPlanetSphere(
@@ -398,8 +398,8 @@ void ZoomInPlanetSphere(void)
 	int i;
 	int frameCount;
 	int zoomCorner;
-	RECT frameRect;
-	RECT repairRect;
+	GFXRECT frameRect;
+	GFXRECT repairRect;
 	TimeCount NextTime, Now, RenderNextTime;
 
 	frameCount = ZOOM_TIME / (ONE_SECOND / ZOOM_RATE);
@@ -423,7 +423,7 @@ void ZoomInPlanetSphere(void)
 	for (i = 0; i <= frameCount; ++i)
 	{
 		double scale;
-		POINT pt;
+		GFXPOINT pt;
 
 		Now = GetTimeCounter();
 		NextTime = Now + (ONE_SECOND / ZOOM_RATE);
@@ -520,10 +520,10 @@ static void
 renderTintFrame(Color tintColor)
 {
 	PLANET_ORBIT* Orbit = &pSolarSysState->Orbit;
-	CONTEXT oldContext;
+	GFXCONTEXT oldContext;
 	DrawMode mode, oldMode;
 	STAMP s;
-	RECT r;
+	GFXRECT r;
 	double is_red;
 
 	if (sameColor(BRIGHT_RED_COLOR, tintColor))
@@ -606,9 +606,9 @@ void DrawPlanet(int tintY, Color tintColor)
 
 		if (tintY >= 0)
 		{ // tinted piece showing, draw tinted piece
-			RECT oldClipRect;
-			RECT clipRect;
-			RECT edge;
+			GFXRECT oldClipRect;
+			GFXRECT clipRect;
+			GFXRECT edge;
 			uqm::COUNT i;
 
 			// adjust cliprect to confine the tint

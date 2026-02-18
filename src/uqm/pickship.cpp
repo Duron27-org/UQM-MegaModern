@@ -43,7 +43,7 @@
 #define FLAGSHIP_HEIGHT RES_SCALE(48)
 
 FRAME PickFrame;
-POINT frameOrigin;
+GFXPOINT frameOrigin;
 
 void InitPickFrame(void)
 {
@@ -57,11 +57,11 @@ void DestroyPickFrame(void)
 	PickFrame = 0;
 }
 
-void RepairPickFrame(RECT* pRect, uqm::COUNT frame)
+void RepairPickFrame(GFXRECT* pRect, uqm::COUNT frame)
 {
-	RECT OldRect;
+	GFXRECT OldRect;
 	STAMP s;
-	RECT r;
+	GFXRECT r;
 
 	GetContextClipRect(&OldRect);
 
@@ -82,7 +82,7 @@ void RepairPickFrame(RECT* pRect, uqm::COUNT frame)
 static bool
 DoPickBattleShip(MENU_STATE* pMS)
 {
-	RECT r {};
+	GFXRECT r {};
 	TEXT t {};
 	int dx = 0, dy = 0;
 
@@ -339,8 +339,8 @@ ChangeSelection:
 static HSTARSHIP
 GetArmadaStarShip(void)
 {
-	RECT pick_r;
-	CONTEXT OldContext;
+	GFXRECT pick_r;
+	GFXCONTEXT OldContext;
 	HSTARSHIP hBattleShip;
 
 	if (battle_counter[1] == 0)
@@ -486,15 +486,15 @@ GetEncounterStarShip(STARSHIP* LastStarShipPtr, uqm::COUNT which_player)
 	}
 }
 
-void DrawArmadaPickShip(bool draw_salvage_frame, RECT* pPickRect)
+void DrawArmadaPickShip(bool draw_salvage_frame, GFXRECT* pPickRect)
 {
 #define PICK_NAME_HEIGHT RES_SCALE(6);
 	HSTARSHIP hBattleShip, hNextShip;
 	STARSHIP* StarShipPtr;
-	RECT r, pick_r;
+	GFXRECT r, pick_r;
 	STAMP s;
 	TEXT t;
-	CONTEXT OldContext;
+	GFXCONTEXT OldContext;
 	FRAME OldFontEffect;
 
 	OldContext = SetContext(SpaceContext);

@@ -35,7 +35,7 @@
 void spawn_planet(void)
 {
 	HELEMENT hPlanetElement;
-	POINT pt = MAKE_POINT(0, 0);
+	GFXPOINT pt = MAKE_POINT(0, 0);
 
 	hPlanetElement = AllocElement();
 	if (hPlanetElement)
@@ -357,8 +357,8 @@ void crew_preprocess(ELEMENT* ElementPtr)
 	}
 }
 
-void crew_collision(ELEMENT* ElementPtr0, POINT* pPt0,
-					ELEMENT* ElementPtr1, POINT* pPt1)
+void crew_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
+					ELEMENT* ElementPtr1, GFXPOINT* pPt1)
 {
 	if ((ElementPtr1->state_flags & PLAYER_SHIP)
 		&& ElementPtr1->life_span >= NORMAL_LIFE
@@ -386,7 +386,7 @@ void AbandonShip(ELEMENT* ShipPtr, ELEMENT* TargetPtr,
 {
 	uqm::SIZE dx, dy;
 	uqm::COUNT direction;
-	RECT r;
+	GFXRECT r;
 	STARSHIP* StarShipPtr;
 	HELEMENT hCrew;
 	INTERSECT_CONTROL ShipIntersect;

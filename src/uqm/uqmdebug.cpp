@@ -124,7 +124,7 @@ void resetEnergyBattle(void)
 {
 	STARSHIP* StarShipPtr;
 	uqm::COUNT delta;
-	CONTEXT OldContext;
+	GFXCONTEXT OldContext;
 
 	if (!(GLOBAL(CurrentActivity) & IN_BATTLE) || inHQSpace())
 	{
@@ -162,7 +162,7 @@ scuttleOpponent(void)
 {
 	STARSHIP* StarShipPtr;
 	uqm::COUNT delta;
-	CONTEXT OldContext;
+	GFXCONTEXT OldContext;
 
 	if (!(GLOBAL(CurrentActivity) & IN_BATTLE) || inHQSpace())
 	{
@@ -1398,7 +1398,7 @@ void fmt::printWorld(const PLANET_DESC* world)
 	PLANET_INFO* info;
 	uqm::CHAR_T buf[200] {};
 	FILE* fp = fopen("planetLog.txt", "a");
-	POINT universe = CurStarDescPtr->star_pt;
+	GFXPOINT universe = CurStarDescPtr->star_pt;
 
 	if (world->data_index == HIERARCHY_STARBASE
 		|| world->data_index == SA_MATRA
@@ -1884,7 +1884,7 @@ void resetCrewBattle(void)
 {
 	STARSHIP* StarShipPtr;
 	uqm::COUNT delta;
-	CONTEXT OldContext;
+	GFXCONTEXT OldContext;
 
 	if (!(GLOBAL(CurrentActivity) & IN_BATTLE) || (inHQSpace()))
 	{
@@ -2032,12 +2032,12 @@ hsvaToRgba(double hue, double sat, double val, uqm::BYTE alpha)
 
 // Returns true iff this context has a visible FRAME.
 static bool
-isContextVisible(CONTEXT context)
+isContextVisible(GFXCONTEXT context)
 {
 	FRAME contextFrame;
 
 	// Save the original context.
-	CONTEXT oldContext = SetContext(context);
+	GFXCONTEXT oldContext = SetContext(context);
 
 	// Get the frame of the specified context.
 	contextFrame = GetContextFGFrame();
@@ -2052,7 +2052,7 @@ static size_t
 countVisibleContexts(void)
 {
 	size_t contextCount;
-	CONTEXT context;
+	GFXCONTEXT context;
 
 	contextCount = 0;
 	for (context = GetFirstContext(); context != nullptr;
@@ -2070,10 +2070,10 @@ countVisibleContexts(void)
 }
 
 static void
-drawContext(CONTEXT context, double hue /* no pun intended */)
+drawContext(GFXCONTEXT context, double hue /* no pun intended */)
 {
 	//FRAME drawFrame; unused
-	CONTEXT oldContext;
+	GFXCONTEXT oldContext;
 	FONT oldFont;
 	DrawMode oldMode;
 	Color oldFgCol;
@@ -2081,10 +2081,10 @@ drawContext(CONTEXT context, double hue /* no pun intended */)
 	Color lineCol;
 	Color textCol;
 	//bool haveClippingRect; unused
-	RECT rect;
+	GFXRECT rect;
 	LINE line;
 	TEXT text;
-	POINT p1, p2, p3, p4;
+	GFXPOINT p1, p2, p3, p4;
 
 	//drawFrame = GetContextFGFrame (); unused
 	rectCol = hsvaToRgba(hue, 1.0, 0.5, 100);
@@ -2150,10 +2150,10 @@ drawContext(CONTEXT context, double hue /* no pun intended */)
 }
 
 static void
-describeContext(FILE* out, const CONTEXT context)
+describeContext(FILE* out, const GFXCONTEXT context)
 {
-	RECT rect;
-	CONTEXT oldContext = SetContext(context);
+	GFXRECT rect;
+	GFXCONTEXT oldContext = SetContext(context);
 
 	GetContextClipRect(&rect);
 	fmt::print(out, "Context '{}':\n"
@@ -2194,9 +2194,9 @@ waitForKey(struct wait_state* self)
 static FRAME
 getScreen(void)
 {
-	CONTEXT oldContext = SetContext(ScreenContext);
+	GFXCONTEXT oldContext = SetContext(ScreenContext);
 	FRAME savedFrame;
-	RECT screenRect;
+	GFXRECT screenRect;
 
 	screenRect.corner.x = 0;
 	screenRect.corner.y = 0;
@@ -2213,7 +2213,7 @@ putScreen(FRAME savedFrame)
 {
 	STAMP stamp;
 
-	CONTEXT oldContext = SetContext(ScreenContext);
+	GFXCONTEXT oldContext = SetContext(ScreenContext);
 
 	stamp.origin.x = 0;
 	stamp.origin.y = 0;
@@ -2230,13 +2230,13 @@ void debugContexts(void)
 	static volatile bool inDebugContexts = false;
 	// Prevent this function from being called from within itself.
 
-	CONTEXT orgContext;
-	CONTEXT debugDrawContext;
+	GFXCONTEXT orgContext;
+	GFXCONTEXT debugDrawContext;
 	// We're going to use this context to draw in.
 	FRAME debugDrawFrame;
 	double hueIncrement;
 	size_t visibleContextI;
-	CONTEXT context;
+	GFXCONTEXT context;
 	size_t contextCount;
 	FRAME savedScreen;
 

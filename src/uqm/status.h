@@ -59,7 +59,7 @@ extern void InitStatusOffsets(void);
 extern void DrawCrewFuelString(COORD y, uqm::SIZE state);
 extern void ClearShipStatus(COORD y);
 extern void OutlineShipStatus(COORD y);
-extern void InitShipStatus(SHIP_INFO* ShipInfoPtr, STARSHIP* StarShipPtr, RECT* pClipRect, bool inMeleeMenu);
+extern void InitShipStatus(SHIP_INFO* ShipInfoPtr, STARSHIP* StarShipPtr, GFXRECT* pClipRect, bool inMeleeMenu);
 // StarShipPtr or pClipRect can be nullptr
 extern void DeltaStatistics(SHIP_INFO* ShipInfoPtr, COORD y_offs,
 							uqm::SIZE crew_delta, uqm::SIZE energy_delta);

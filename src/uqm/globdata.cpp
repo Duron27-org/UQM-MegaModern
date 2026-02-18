@@ -43,7 +43,7 @@
 #define OOPS_ALL 0 // Set a plot ID to stamp it to all empty starsystems
 static void CreateRadar(void);
 
-CONTEXT RadarContext;
+GFXCONTEXT RadarContext;
 FRAME PlayFrame;
 
 GLOBDATA GlobData;
@@ -373,8 +373,8 @@ CreateRadar(void)
 {
 	if (RadarContext == 0)
 	{
-		RECT r;
-		CONTEXT OldContext;
+		GFXRECT r;
+		GFXCONTEXT OldContext;
 
 		RadarContext = CreateContext("RadarContext");
 		OldContext = SetContext(RadarContext);

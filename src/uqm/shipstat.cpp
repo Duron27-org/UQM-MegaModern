@@ -57,7 +57,7 @@ void DrawCrewFuelString(COORD y, uqm::SIZE state)
 	{
 		if (IS_HD)
 		{
-			RECT r;
+			GFXRECT r;
 			GetFrameRect(Stamp.frame, &r);
 			r.corner.x += Stamp.origin.x;
 			r.corner.y += Stamp.origin.y;
@@ -103,7 +103,7 @@ DrawShipNameString(uqm::CHAR_T* pStr, uqm::COUNT CharCount, COORD y)
 
 void ClearShipStatus(COORD y)
 {
-	RECT r;
+	GFXRECT r;
 
 	SetContextForeGroundColor(
 		BUILD_COLOR(MAKE_RGB15(0x0A, 0x0A, 0x0A), 0x08));
@@ -116,7 +116,7 @@ void ClearShipStatus(COORD y)
 
 void OutlineShipStatus(COORD y)
 {
-	RECT r;
+	GFXRECT r;
 
 	SetContextForeGroundColor(
 		BUILD_COLOR(MAKE_RGB15(0x08, 0x08, 0x08), 0x1F));
@@ -151,14 +151,14 @@ void OutlineShipStatus(COORD y)
 	DrawFilledRectangle(&r);
 }
 
-void InitShipStatus(SHIP_INFO* SIPtr, STARSHIP* StarShipPtr, RECT* pClipRect, bool inMeleeMenu)
+void InitShipStatus(SHIP_INFO* SIPtr, STARSHIP* StarShipPtr, GFXRECT* pClipRect, bool inMeleeMenu)
 {
-	RECT r;
+	GFXRECT r;
 	COORD y = 0; // default, for Melee menu
 	STAMP Stamp;
-	CONTEXT OldContext;
-	RECT oldClipRect;
-	POINT oldOrigin = {0, 0};
+	GFXCONTEXT OldContext;
+	GFXRECT oldClipRect;
+	GFXPOINT oldOrigin = {0, 0};
 
 	if (StarShipPtr) // set during battle
 	{
@@ -388,7 +388,7 @@ void DeltaStatistics(SHIP_INFO* ShipInfoPtr, COORD y_offs,
 					 uqm::SIZE crew_delta, uqm::SIZE energy_delta)
 {
 	COORD x, y;
-	RECT r;
+	GFXRECT r;
 
 	if (crew_delta == 0 && energy_delta == 0)
 	{

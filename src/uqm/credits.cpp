@@ -50,9 +50,9 @@ static STRING CreditsTab;
 static FRAME CreditsBack;
 
 // Context used for drawing to the screen
-static CONTEXT DrawContext;
+static GFXCONTEXT DrawContext;
 // Context used for pre-rendering a credits frame
-static CONTEXT LocalContext;
+static GFXCONTEXT LocalContext;
 // Pre-rendered frame, possibly with a cutout
 static FRAME CreditsFrame;
 // Size of the credits "window" (normally screen size)
@@ -137,11 +137,11 @@ ParseTextLines(TEXT* Lines, int MaxLines, char* Buffer)
 #define MAX_TEXT_COLS 5
 
 static FRAME
-Credits_RenderTextFrame(CONTEXT TempContext, int* istr, int dir,
+Credits_RenderTextFrame(GFXCONTEXT TempContext, int* istr, int dir,
 						Color BackColor, Color ForeColor)
 {
 	FRAME f;
-	CONTEXT OldContext;
+	GFXCONTEXT OldContext;
 	FRAME OldFrame;
 	TEXT TextLines[MAX_TEXT_LINES];
 	char* pStr = nullptr;
@@ -154,7 +154,7 @@ Credits_RenderTextFrame(CONTEXT TempContext, int* istr, int dir,
 	FONT_SIZE_DEF* fdef;
 	uqm::SIZE leading;
 	TEXT t;
-	RECT r;
+	GFXRECT r;
 	typedef struct
 	{
 		TEXT_ALIGN align;
@@ -351,9 +351,9 @@ frameIndex(int index)
 }
 
 static void
-RenderCreditsScreen(CONTEXT targetContext)
+RenderCreditsScreen(GFXCONTEXT targetContext)
 {
-	CONTEXT oldContext;
+	GFXCONTEXT oldContext;
 	STAMP s;
 	int i;
 
@@ -368,7 +368,7 @@ RenderCreditsScreen(CONTEXT targetContext)
 	s.origin.y = -curFrameOfs;
 	for (i = firstFrame; i != lastFrame; i = frameIndex(i + 1))
 	{
-		RECT fr;
+		GFXRECT fr;
 
 		s.frame = textFrames[i].frame;
 		DrawStamp(&s);
@@ -388,8 +388,8 @@ RenderCreditsScreen(CONTEXT targetContext)
 static void
 InitCredits(void)
 {
-	RECT ctxRect;
-	CONTEXT oldContext;
+	GFXRECT ctxRect;
+	GFXCONTEXT oldContext;
 	FRAME targetFrame;
 
 	memset(textFrames, 0, sizeof textFrames);
@@ -466,7 +466,7 @@ calcDeficitHeight(void)
 	maxPos = -curFrameOfs;
 	for (i = firstFrame; i != lastFrame; i = frameIndex(i + 1))
 	{
-		RECT fr;
+		GFXRECT fr;
 
 		GetFrameRect(textFrames[i].frame, &fr);
 		maxPos += fr.extent.height;
@@ -483,8 +483,8 @@ processCreditsFrame(void)
 
 	if (Now >= NextTime)
 	{
-		RECT fr;
-		CONTEXT OldContext;
+		GFXRECT fr;
+		GFXCONTEXT OldContext;
 		int rate, direction, dirstep;
 		int deficitHeight;
 		STAMP s;
@@ -813,7 +813,7 @@ void Credits(bool WithOuttakes)
 {
 	MUSIC_REF hMusic;
 	CREDITS_INPUT_STATE cis;
-	RECT screenRect;
+	GFXRECT screenRect;
 	STAMP s;
 
 	hMusic = LoadMusic(CREDITS_MUSIC);

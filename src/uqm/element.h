@@ -85,7 +85,7 @@ typedef uqm::UWORD ELEMENT_FLAGS;
 
 typedef struct state
 {
-	POINT location;
+	GFXPOINT location;
 	struct
 	{
 		FRAME frame;
@@ -97,8 +97,8 @@ typedef struct state
 typedef struct element ELEMENT;
 
 typedef void(ElementProcessFunc)(ELEMENT* ElementPtr);
-typedef void(ElementCollisionFunc)(ELEMENT* ElementPtr0, POINT* pPt0,
-								   ELEMENT* ElementPtr1, POINT* pPt1);
+typedef void(ElementCollisionFunc)(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
+								   ELEMENT* ElementPtr1, GFXPOINT* pPt1);
 
 // Any physical object in the simulation.
 struct element
@@ -231,8 +231,8 @@ extern void spawn_planet(void);
 extern void spawn_asteroid(ELEMENT* ElementPtr);
 extern void do_damage(ELEMENT* ElementPtr, uqm::SIZE damage);
 extern void crew_preprocess(ELEMENT* ElementPtr);
-extern void crew_collision(ELEMENT* ElementPtr0, POINT* pPt0,
-						   ELEMENT* ElementPtr1, POINT* pPt1);
+extern void crew_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
+						   ELEMENT* ElementPtr1, GFXPOINT* pPt1);
 extern void AbandonShip(ELEMENT* ShipPtr, ELEMENT* TargetPtr,
 						uqm::COUNT crew_loss);
 extern bool TimeSpaceMatterConflict(ELEMENT* ElementPtr);
@@ -240,7 +240,7 @@ extern uqm::COUNT PlotIntercept(ELEMENT* ElementPtr0,
 								ELEMENT* ElementPtr1, uqm::COUNT max_turns, uqm::COUNT margin_of_error);
 
 extern void InitGalaxy(void);
-extern void SetStarPoint(POINT pt, uqm::COUNT i);
+extern void SetStarPoint(GFXPOINT pt, uqm::COUNT i);
 extern void MoveGalaxy(VIEW_STATE view_state, uqm::SDWORD dx, uqm::SDWORD dy);
 
 extern bool CalculateGravity(ELEMENT* ElementPtr);

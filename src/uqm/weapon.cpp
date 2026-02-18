@@ -36,8 +36,8 @@
 // A wrapper function for weapon_collision that discards the return value.
 // This makes its signature match ElementCollisionFunc.
 static void
-weapon_collision_cb(ELEMENT* WeaponElementPtr, POINT* pWPt,
-					ELEMENT* HitElementPtr, POINT* pHPt)
+weapon_collision_cb(ELEMENT* WeaponElementPtr, GFXPOINT* pWPt,
+					ELEMENT* HitElementPtr, GFXPOINT* pHPt)
 {
 	weapon_collision(WeaponElementPtr, pWPt, HitElementPtr, pHPt);
 }
@@ -134,8 +134,8 @@ initialize_missile(MISSILE_BLOCK* pMissileBlock)
 }
 
 HELEMENT
-weapon_collision(ELEMENT* WeaponElementPtr, POINT* pWPt,
-				 ELEMENT* HitElementPtr, POINT* pHPt)
+weapon_collision(ELEMENT* WeaponElementPtr, GFXPOINT* pWPt,
+				 ELEMENT* HitElementPtr, GFXPOINT* pHPt)
 {
 	uqm::SIZE damage;
 	HELEMENT hBlastElement;
@@ -261,11 +261,11 @@ ModifySilhouette(ELEMENT* ElementPtr, STAMP* modify_stamp,
 				 uqm::BYTE modify_flags)
 {
 	FRAME f;
-	RECT r {};
-	RECT originalRect {};
+	GFXRECT r {};
+	GFXRECT originalRect {};
 	INTERSECT_CONTROL ShipIntersect, ObjectIntersect;
 	STARSHIP* StarShipPtr;
-	CONTEXT OldContext;
+	GFXCONTEXT OldContext;
 
 	f = 0;
 	ObjectIntersect.IntersectStamp = *modify_stamp;

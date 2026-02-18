@@ -190,8 +190,8 @@ plasma_blast_preprocess(ELEMENT* ElementPtr)
 }
 
 static void
-plasma_collision(ELEMENT* ElementPtr0, POINT* pPt0,
-				 ELEMENT* ElementPtr1, POINT* pPt1)
+plasma_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
+				 ELEMENT* ElementPtr1, GFXPOINT* pPt1)
 {
 	uqm::SIZE old_mass;
 	HELEMENT hBlastElement;

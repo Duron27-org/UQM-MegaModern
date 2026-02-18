@@ -50,8 +50,8 @@ typedef struct
 
 extern HELEMENT initialize_laser(LASER_BLOCK* pLaserBlock);
 extern HELEMENT initialize_missile(MISSILE_BLOCK* pMissileBlock);
-extern HELEMENT weapon_collision(ELEMENT* ElementPtr0, POINT* pPt0,
-								 ELEMENT* ElementPtr1, POINT* pPt1);
+extern HELEMENT weapon_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
+								 ELEMENT* ElementPtr1, GFXPOINT* pPt1);
 extern uqm::SIZE TrackShip(ELEMENT* Tracker, uqm::COUNT* pfacing);
 extern void Untarget(ELEMENT* ElementPtr);
 

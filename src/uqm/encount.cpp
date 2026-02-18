@@ -51,7 +51,7 @@
 
 
 static void DrawFadeText(const uqm::CHAR_T* str1, const uqm::CHAR_T* str2,
-						 bool fade_in, RECT* pRect);
+						 bool fade_in, GFXRECT* pRect);
 
 
 static bool
@@ -410,7 +410,7 @@ InitEncounter(void)
 	{
 #define NUM_DISPLAY_PTS (ARRAY_SIZE(display_pt))
 		HSHIPFRAG hStarShip, hNextShip;
-		POINT display_pt[] =
+		GFXPOINT display_pt[] =
 			{
 				{10,	 51 },
 				{-10, 51 },
@@ -427,7 +427,7 @@ InitEncounter(void)
 		for (hStarShip = GetHeadLink(&GLOBAL(npc_built_ship_q)), i = 0;
 			 hStarShip && i < 60; hStarShip = hNextShip, ++i)
 		{
-			RECT r;
+			GFXRECT r;
 			SHIP_FRAGMENT* FragPtr;
 
 			FragPtr = LockShipFrag(&GLOBAL(npc_built_ship_q), hStarShip);
@@ -493,11 +493,11 @@ InitEncounter(void)
 }
 
 //static STAMP
-//SetTextFrameRect (const uqm::CHAR_T* str1, const uqm::CHAR_T* str2, RECT* pRect)
+//SetTextFrameRect (const uqm::CHAR_T* str1, const uqm::CHAR_T* str2, GFXRECT* pRect)
 //{
 //	STAMP s;
 //	TEXT t1, t2;
-//	RECT r1, r2, res;
+//	GFXRECT r1, r2, res;
 //
 //	t1.baseline.x = pRect->corner.x + RES_SCALE(100);
 //	t1.baseline.y = pRect->corner.y + RES_SCALE(45);
@@ -528,12 +528,12 @@ InitEncounter(void)
 
 static void
 DrawFadeText(const uqm::CHAR_T* str1, const uqm::CHAR_T* str2, bool fade_in,
-			 RECT* pRect)
+			 GFXRECT* pRect)
 {
 	uqm::SIZE i;
 	uqm::DWORD TimeIn;
 	TEXT t1, t2;
-	RECT r1, r2;
+	GFXRECT r1, r2;
 	static const Color fade_cycle[] = SCAVENGE_TEXT_COLOR_TABLE;
 #define NUM_FADES (ARRAY_SIZE(fade_cycle))
 
@@ -589,7 +589,7 @@ DrawFadeText(const uqm::CHAR_T* str1, const uqm::CHAR_T* str2, bool fade_in,
 }
 
 static void
-ClearRectBack(RECT* pRect)
+ClearRectBack(GFXRECT* pRect)
 {
 	if (IS_HD)
 	{
@@ -628,8 +628,8 @@ UninitEncounter(void)
 		bool Sleepy;
 		uqm::SIZE VictoryState, i;
 		uqm::COUNT RecycleAmount = 0;
-		RECT r;
-		RECT scavenge_r = {
+		GFXRECT r;
+		GFXRECT scavenge_r = {
 			{0, 0},
 			{0, 0}
 		  };
@@ -842,7 +842,7 @@ UninitEncounter(void)
 							}
 							else
 							{
-								RECT textRect = font_GetTextRect(&t);
+								GFXRECT textRect = font_GetTextRect(&t);
 								SetContextForeGroundColor(BLACK_COLOR);
 
 								r.corner.x =
@@ -878,8 +878,8 @@ UninitEncounter(void)
 
 									if (IS_HD)
 									{ // Back of the current ship
-										POINT p;
-										RECT ship_r;
+										GFXPOINT p;
+										GFXRECT ship_r;
 
 										GetFrameRect(ship_s.frame, &ship_r);
 										p = GetFrameHot(ship_s.frame);

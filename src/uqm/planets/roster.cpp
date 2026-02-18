@@ -34,11 +34,11 @@
 #include <stdlib.h>
 
 // JMS_GFX: These exist to prevent the leftover red borders of the rostered ships in hi-res.
-static RECT savedShipFrame_r;
+static GFXRECT savedShipFrame_r;
 static STAMP savedShipFrame;
 
 // Ship icon positions in status display around the flagship
-static const POINT ship_pos[MAX_BUILT_SHIPS] =
+static const GFXPOINT ship_pos[MAX_BUILT_SHIPS] =
 	{
 		SUPPORT_SHIP_PTS};
 
@@ -47,11 +47,11 @@ typedef struct
 	// Ship icon positions split into (lower half) left and right (upper)
 	// and sorted in the Y coord. These are used for navigation around the
 	// escort positions.
-	POINT shipPos[MAX_BUILT_SHIPS];
+	GFXPOINT shipPos[MAX_BUILT_SHIPS];
 	uqm::COUNT count;
 	// Number of ships
 
-	POINT curShipPt;
+	GFXPOINT curShipPt;
 	// Location of the currently selected escort
 	FRAME curShipFrame;
 	// Icon of the currently selected escort
@@ -158,7 +158,7 @@ flashSupportShip(ROSTER_STATE* rosterState, bool saveFrame)
 static SHIP_FRAGMENT*
 LockSupportShip(ROSTER_STATE* rosterState, HSHIPFRAG* phFrag)
 {
-	const POINT* pship_pos;
+	const GFXPOINT* pship_pos;
 	HSHIPFRAG hStarShip, hNextShip;
 
 	// Lookup the current escort's location in the unsorted points list
@@ -187,7 +187,7 @@ LockSupportShip(ROSTER_STATE* rosterState, HSHIPFRAG* phFrag)
 static void
 flashSupportShipCrew(void)
 {
-	RECT r;
+	GFXRECT r;
 
 	SetContext(StatusContext);
 	GetStatusMessageRect(&r);
@@ -354,7 +354,7 @@ DoModifyRoster(MENU_STATE* pMS)
 	else
 	{
 		uqm::COUNT NewState;
-		POINT* pship_pos = rosterState->shipPos;
+		GFXPOINT* pship_pos = rosterState->shipPos;
 		uqm::COUNT top_right = (rosterState->count + 1) >> 1;
 
 		NewState = pMS->CurState;
@@ -460,8 +460,8 @@ DoModifyRoster(MENU_STATE* pMS)
 static int
 compShipPos(const void* ptr1, const void* ptr2)
 {
-	const POINT* pt1 = (const POINT*)ptr1;
-	const POINT* pt2 = (const POINT*)ptr2;
+	const GFXPOINT* pt1 = (const GFXPOINT*)ptr1;
+	const GFXPOINT* pt2 = (const GFXPOINT*)ptr2;
 
 	// Ships on the left in the lower half
 	if (pt1->x < pt2->x)

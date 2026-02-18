@@ -37,8 +37,8 @@
 
 void DoShipSpin(uqm::COUNT index, MUSIC_REF hMusic)
 {
-	RECT old_r;
-	CONTEXT OldContext;
+	GFXRECT old_r;
+	GFXCONTEXT OldContext;
 
 	OldContext = SetContext(ScreenContext);
 
@@ -230,7 +230,7 @@ void AdvanceLoadProgress(void)
 {
 	if (optRequiresReload)
 	{
-		RECT r;
+		GFXRECT r;
 		static uqm::COUNT i = 0;
 
 		r.corner.x = RES_SCALE(16);

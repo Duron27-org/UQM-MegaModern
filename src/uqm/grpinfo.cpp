@@ -209,7 +209,7 @@ void BuildGroups(void)
 	uqm::BYTE Index;
 	uqm::BYTE BestIndex = 0;
 	uqm::COUNT BestPercent = 0;
-	POINT universe;
+	GFXPOINT universe;
 	HFLEETINFO hFleet, hNextFleet;
 
 	uqm::BYTE HomeWorld[] = {HOMEWORLD_LOC};
@@ -367,7 +367,7 @@ FoundHome:
 
 void findRaceSOI(void)
 {
-	POINT universe = CurStarDescPtr->star_pt;
+	GFXPOINT universe = CurStarDescPtr->star_pt;
 	HFLEETINFO hFleet, hNextFleet;
 	uqm::BYTE Index;
 	uqm::BYTE i = 0, j;
@@ -741,7 +741,7 @@ bool GetGroupInfo(uqm::DWORD offset, uqm::BYTE which_group)
 			else if (task == ON_STATION)
 			{
 				uqm::COUNT angle;
-				POINT org;
+				GFXPOINT org;
 
 				org = planetOuterLocation(group_loc - 1);
 				angle = FACING_TO_ANGLE(GroupPtr->orbit_pos + 1);

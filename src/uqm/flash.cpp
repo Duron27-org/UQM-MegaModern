@@ -19,7 +19,7 @@
 //       currently in use.
 
 // NOTE:
-// - If you change the properties of the original CONTEXT, specifically the
+// - If you change the properties of the original GFXCONTEXT, specifically the
 //   dimensions and origin, you'll need to call Flash_preUpdate() before and
 //   Flash_postUpdate() after that change. Note that this may change which
 //   part of the screen is flashing.
@@ -46,7 +46,7 @@
 #include "util.h"
 
 
-static FlashContext* Flash_create(CONTEXT gfxContext);
+static FlashContext* Flash_create(GFXCONTEXT gfxContext);
 static void Flash_fixState(FlashContext* context);
 static void Flash_nextState(FlashContext* context);
 static void Flash_clearCache(FlashContext* context);
@@ -66,11 +66,11 @@ static inline void Flash_drawCachedFrame(FlashContext* context,
 										 int numer, int denom);
 static void Flash_drawCurrentFrame(FlashContext* context);
 
-static CONTEXT workGfxContext;
+static GFXCONTEXT workGfxContext;
 // Off-screen internal drawing context
 
 static FlashContext*
-Flash_create(CONTEXT gfxContext)
+Flash_create(GFXCONTEXT gfxContext)
 {
 	FlashContext* context = (FlashContext*)HMalloc(sizeof(FlashContext));
 
@@ -114,7 +114,7 @@ Flash_create(CONTEXT gfxContext)
 // 'endNumer / denom' is the brightness in the end state of the sequence.
 // These numbers are relative to the brighness of the original image.
 FlashContext*
-Flash_createHighlight(CONTEXT gfxContext, const RECT* rect)
+Flash_createHighlight(GFXCONTEXT gfxContext, const GFXRECT* rect)
 {
 	FlashContext* context = Flash_create(gfxContext);
 
@@ -137,7 +137,7 @@ Flash_createHighlight(CONTEXT gfxContext, const RECT* rect)
 }
 
 FlashContext*
-Flash_createTransition(CONTEXT gfxContext, const POINT* origin,
+Flash_createTransition(GFXCONTEXT gfxContext, const GFXPOINT* origin,
 					   FRAME first, FRAME final)
 {
 	FlashContext* context = Flash_create(gfxContext);
@@ -153,7 +153,7 @@ Flash_createTransition(CONTEXT gfxContext, const POINT* origin,
 }
 
 FlashContext*
-Flash_createOverlay(CONTEXT gfxContext, const POINT* origin, FRAME overlay)
+Flash_createOverlay(GFXCONTEXT gfxContext, const GFXPOINT* origin, FRAME overlay)
 {
 	FlashContext* context = Flash_create(gfxContext);
 
@@ -459,7 +459,7 @@ Flash_clearCache(FlashContext* context)
 	}
 }
 
-void Flash_setRect(FlashContext* context, const RECT* rect)
+void Flash_setRect(FlashContext* context, const GFXRECT* rect)
 {
 	assert(context->type == FlashType_highlight);
 
@@ -479,7 +479,7 @@ void Flash_setRect(FlashContext* context, const RECT* rect)
 	}
 }
 
-void Flash_getRect(FlashContext* context, RECT* rect)
+void Flash_getRect(FlashContext* context, GFXRECT* rect)
 {
 	//assert (!context->type == FlashType_highlight); <-- original expression. hmmm
 	assert(context->type != FlashType_highlight);
@@ -490,7 +490,7 @@ void Flash_getRect(FlashContext* context, RECT* rect)
 // JMS_GFX: The cleanup boolean can be used when changing between normal and hi-res modes.
 // It ensures that an ugly wrong-sized flash overlay from previous resolution is cleaned
 // from the flash process.
-void Flash_setOverlay(FlashContext* context, const POINT* origin, FRAME overlay, bool cleanup)
+void Flash_setOverlay(FlashContext* context, const GFXPOINT* origin, FRAME overlay, bool cleanup)
 {
 	assert(context->type == FlashType_overlay);
 
@@ -578,7 +578,7 @@ Flash_getCacheSize(const FlashContext* context)
 static void
 Flash_grabOriginal(FlashContext* context)
 {
-	CONTEXT oldGfxContext;
+	GFXCONTEXT oldGfxContext;
 
 	if (context->original != (FRAME)0)
 	{
@@ -621,7 +621,7 @@ Flash_blendFraction(FlashContext* context, int numer, int denom,
 static void
 Flash_makeFrame(FlashContext* context, FRAME dest, int numer, int denom)
 {
-	CONTEXT oldGfxContext;
+	GFXCONTEXT oldGfxContext;
 	STAMP s;
 	int blendedNumer;
 	int blendedDenom;
@@ -677,7 +677,7 @@ Flash_makeFrame(FlashContext* context, FRAME dest, int numer, int denom)
 			}
 		case FlashType_overlay:
 			{
-				POINT oldOrigin;
+				GFXPOINT oldOrigin;
 
 				// Draw the original at full strength
 				SetContextDrawMode(DRAW_REPLACE_MODE);
@@ -756,7 +756,7 @@ Color GetFlashPCColor(void)
 static void
 Flash_drawFrame(FlashContext* context, FRAME frame, bool pcRect)
 {
-	CONTEXT oldGfxContext;
+	GFXCONTEXT oldGfxContext;
 	STAMP stamp;
 
 	oldGfxContext = SetContext(context->gfxContext);

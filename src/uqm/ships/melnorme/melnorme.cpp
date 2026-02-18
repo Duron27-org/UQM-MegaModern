@@ -289,10 +289,10 @@ animate(ELEMENT* ElementPtr)
 }
 
 static void
-pump_up_collision(ELEMENT* ElementPtr0, POINT* pPt0,
-				  ELEMENT* ElementPtr1, POINT* pPt1)
+pump_up_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
+				  ELEMENT* ElementPtr1, GFXPOINT* pPt1)
 {
-	RECT r;
+	GFXRECT r;
 	uqm::BYTE old_thrust_wait;
 	HELEMENT hBlastElement;
 
@@ -539,8 +539,8 @@ confuse_preprocess(ELEMENT* ElementPtr)
 }
 
 static void
-confusion_collision(ELEMENT* ElementPtr0, POINT* pPt0,
-					ELEMENT* ElementPtr1, POINT* pPt1)
+confusion_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
+					ELEMENT* ElementPtr1, GFXPOINT* pPt1)
 {
 	if (ElementPtr1->state_flags & PLAYER_SHIP)
 	{

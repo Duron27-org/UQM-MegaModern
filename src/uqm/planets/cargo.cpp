@@ -49,9 +49,9 @@
 
 void ShowRemainingCapacity(void)
 {
-	RECT r;
+	GFXRECT r;
 	TEXT t;
-	CONTEXT OldContext;
+	GFXCONTEXT OldContext;
 	uqm::CHAR_T buf[40];
 
 	OldContext = SetContext(StatusContext);
@@ -93,7 +93,7 @@ void ShowRemainingCapacity(void)
 static void
 DrawElementAmount(uqm::COUNT element, bool selected)
 {
-	RECT r;
+	GFXRECT r;
 	TEXT t;
 	uqm::CHAR_T buf[40];
 
@@ -152,7 +152,7 @@ DrawCargoDisplay(void)
 {
 	STAMP s;
 	TEXT t;
-	RECT r;
+	GFXRECT r;
 	COORD cy;
 	uqm::COUNT i;
 
@@ -265,7 +265,7 @@ DrawCargoDisplay(void)
 
 void DrawCargoStrings(uqm::BYTE OldElement, uqm::BYTE NewElement)
 {
-	CONTEXT OldContext;
+	GFXCONTEXT OldContext;
 
 	OldContext = SetContext(StatusContext);
 	if (isPC(optWhichFonts))
@@ -311,9 +311,9 @@ void DrawRainbowPlanet(uqm::COUNT planet)
 {
 	STAMP s;
 	TEXT t;
-	RECT r;
+	GFXRECT r;
 	uqm::CHAR_T buf[40];
-	CONTEXT OldContext;
+	GFXCONTEXT OldContext;
 
 	OldContext = SetContext(StatusContext);
 

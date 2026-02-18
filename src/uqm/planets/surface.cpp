@@ -292,7 +292,7 @@ scaleMapHeight(COORD value)
 	return RES_SCALE((COORD)(value * percentage));
 }
 
-void GenerateRandomLocation(POINT* loc)
+void GenerateRandomLocation(GFXPOINT* loc)
 {
 	uqm::UWORD rand_val;
 
@@ -449,7 +449,7 @@ CustomMineralDeposits(const SYSTEM_INFO* SysInfoPtr, uqm::COUNT which_deposit,
 
 uqm::COUNT
 CustomMineralDeposit(NODE_INFO* info, uqm::COUNT type, uqm::BYTE quality,
-					 POINT location)
+					 GFXPOINT location)
 {
 	uqm::COUNT deposit_quality_fine;
 	uqm::COUNT deposit_quality_gross;

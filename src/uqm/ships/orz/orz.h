@@ -24,8 +24,8 @@ extern "C" {
 RACE_DESC* init_orz(void);
 
 void intruder_preprocess(ELEMENT* ElementPtr);
-void marine_collision(ELEMENT* ElementPtr0, POINT* pPt0,
-					  ELEMENT* ElementPtr1, POINT* pPt1);
+void marine_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
+					  ELEMENT* ElementPtr1, GFXPOINT* pPt1);
 
 #if 0 //defined(__cplusplus)
 }

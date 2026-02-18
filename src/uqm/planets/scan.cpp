@@ -54,10 +54,10 @@ extern FRAME SpaceJunkFrame;
 
 #define FLASH_INDEX 105
 
-static CONTEXT ScanContext;
+static GFXCONTEXT ScanContext;
 
-static POINT planetLoc;
-static RECT cursorRect;
+static GFXPOINT planetLoc;
+static GFXRECT cursorRect;
 static FRAME eraseFrame;
 
 // ScanSystem() menu items
@@ -70,9 +70,9 @@ enum ScanMenuItems
 };
 
 
-void RepairBackRect(RECT* pRect)
+void RepairBackRect(GFXRECT* pRect)
 {
-	RECT new_r, old_r;
+	GFXRECT new_r, old_r;
 
 	GetContextClipRect(&old_r);
 	new_r.corner.x = pRect->corner.x + old_r.corner.x;
@@ -118,7 +118,7 @@ PrintScanTitleText(TEXT* t)
 static void
 PrintScanTitlePC(TEXT* t, uqm::CHAR_T* buf, COORD xpos)
 {
-	RECT r;
+	GFXRECT r;
 
 	t->baseline.x = xpos;
 
@@ -624,7 +624,7 @@ initPlanetLocationImage(void)
 static void
 savePlanetLocationImage(void)
 {
-	RECT r;
+	GFXRECT r;
 	FRAME cursorFrame = SetAbsFrameIndex(MiscDataFrame, FLASH_INDEX);
 	HOT_SPOT hs = GetFrameHot(cursorFrame);
 
@@ -665,7 +665,7 @@ drawPlanetCursor(bool filled)
 }
 
 static void
-setPlanetCursorLoc(POINT new_pt)
+setPlanetCursorLoc(GFXPOINT new_pt)
 {
 	new_pt.x >>= MAG_SHIFT;
 	new_pt.y >>= MAG_SHIFT;
@@ -673,7 +673,7 @@ setPlanetCursorLoc(POINT new_pt)
 }
 
 static void
-setPlanetLoc(POINT new_pt, bool restoreOld)
+setPlanetLoc(GFXPOINT new_pt, bool restoreOld)
 {
 	planetLoc = new_pt;
 
@@ -692,7 +692,7 @@ flashPlanetLocation(void)
 #define FLASH_FRAME_DELAY (ONE_SECOND / 16)
 	static uqm::BYTE c = 0x00;
 	static int val = -2;
-	static POINT prevPt;
+	static GFXPOINT prevPt;
 	static TimeCount NextTime = 0;
 	bool locChanged;
 	TimeCount Now = GetTimeCounter();
@@ -738,9 +738,9 @@ flashPlanetLocation(void)
 	drawPlanetCursor(true);
 }
 
-void RedrawSurfaceScan(const POINT* newLoc)
+void RedrawSurfaceScan(const GFXPOINT* newLoc)
 {
-	CONTEXT OldContext;
+	GFXCONTEXT OldContext;
 
 	OldContext = SetContext(ScanContext);
 
@@ -890,7 +890,7 @@ DoPickPlanetSide(MENU_STATE* pMS)
 	{
 		uqm::SIZE dx = 0;
 		uqm::SIZE dy = 0;
-		POINT new_pt;
+		GFXPOINT new_pt;
 		static uqm::DWORD tNext;
 
 		new_pt = planetLoc;
@@ -1294,7 +1294,7 @@ ScanPlanet(uqm::COUNT scanType)
 
 	uqm::COUNT startScan, endScan;
 	uqm::COUNT scan;
-	RECT r;
+	GFXRECT r;
 	static const Color textColors[] =
 		{
 			SCAN_MINERAL_TEXT_COLOR,
@@ -1536,12 +1536,12 @@ DoScan(MENU_STATE* pMS)
 	return true;
 }
 
-static CONTEXT
+static GFXCONTEXT
 CreateScanContext(bool inSpace)
 {
-	CONTEXT oldContext;
-	CONTEXT context;
-	RECT r;
+	GFXCONTEXT oldContext;
+	GFXCONTEXT context;
+	GFXRECT r;
 	COORD x_offset;
 
 	// ScanContext rect is relative to SpaceContext
@@ -1570,10 +1570,10 @@ CreateScanContext(bool inSpace)
 	return context;
 }
 
-CONTEXT
+GFXCONTEXT
 GetScanContext(bool* owner)
 {
-	// TODO: Make CONTEXT ref-counted
+	// TODO: Make GFXCONTEXT ref-counted
 	if (ScanContext)
 	{
 		if (owner)

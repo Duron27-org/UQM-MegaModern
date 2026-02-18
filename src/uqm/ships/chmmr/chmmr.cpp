@@ -214,7 +214,7 @@ laser_death(ELEMENT* ElementPtr)
 static uqm::COUNT
 initialize_megawatt_laser(ELEMENT* ShipPtr, HELEMENT LaserArray[])
 {
-	RECT r;
+	GFXRECT r;
 	STARSHIP* StarShipPtr;
 	LASER_BLOCK LaserBlock;
 	static const Color cycle_array[] =
@@ -644,8 +644,8 @@ satellite_postprocess(ELEMENT* ElementPtr)
 }
 
 static void
-satellite_collision(ELEMENT* ElementPtr0, POINT* pPt0,
-					ELEMENT* ElementPtr1, POINT* pPt1)
+satellite_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
+					ELEMENT* ElementPtr1, GFXPOINT* pPt1)
 {
 	(void)ElementPtr0; /* Satisfying compiler (unused parameter) */
 	(void)pPt0;		   /* Satisfying compiler (unused parameter) */

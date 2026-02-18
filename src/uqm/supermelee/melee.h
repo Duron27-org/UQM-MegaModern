@@ -105,12 +105,12 @@ extern void Melee(void);
 // Some prototypes for use by loadmele.c:
 bool DoMelee(MELEE_STATE* pMS);
 void DrawMeleeIcon(uqm::COUNT which_icon, bool HiLite);
-void GetShipBox(RECT* pRect, uqm::COUNT side, uqm::COUNT row, uqm::COUNT col);
-void RepairMeleeFrame(const RECT* pRect);
+void GetShipBox(GFXRECT* pRect, uqm::COUNT side, uqm::COUNT row, uqm::COUNT col);
+void RepairMeleeFrame(const GFXRECT* pRect);
 void DrawMeleeShipStrings(MELEE_STATE* pMS, MeleeShip NewStarShip);
 extern FRAME MeleeFrame;
 void Melee_flashSelection(MELEE_STATE* pMS);
-extern void QuickRepair(uqm::COUNT whichFrame, RECT* pRect);
+extern void QuickRepair(uqm::COUNT whichFrame, GFXRECT* pRect);
 
 uqm::COUNT GetShipValue(MeleeShip StarShip);
 

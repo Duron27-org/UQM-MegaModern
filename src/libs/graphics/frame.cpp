@@ -34,11 +34,11 @@ MAKE_HOT_SPOT(COORD x, COORD y)
 // XXX: INTERNAL_PRIMITIVE and INTERNAL_PRIM_DESC are not used
 typedef union
 {
-	POINT Point;
+	GFXPOINT Point;
 	STAMP Stamp;
 	BRESENHAM_LINE Line;
 	TEXT Text;
-	RECT Rect;
+	GFXRECT Rect;
 } INTERNAL_PRIM_DESC;
 
 typedef struct
@@ -51,10 +51,10 @@ typedef struct
 
 
 // pValidRect or origin may be nullptr
-bool GetContextValidRect(RECT* pValidRect, POINT* origin)
+bool GetContextValidRect(GFXRECT* pValidRect, GFXPOINT* origin)
 {
-	RECT tempRect;
-	POINT tempPt;
+	GFXRECT tempRect;
+	GFXPOINT tempPt;
 
 	if (!pValidRect)
 	{
@@ -91,9 +91,9 @@ bool GetContextValidRect(RECT* pValidRect, POINT* origin)
 }
 
 static void
-ClearBackGround(RECT* pClipRect)
+ClearBackGround(GFXRECT* pClipRect)
 {
-	RECT clearRect;
+	GFXRECT clearRect;
 	Color color = _get_context_bg_color();
 	clearRect.corner.x = 0;
 	clearRect.corner.y = 0;
@@ -105,8 +105,8 @@ ClearBackGround(RECT* pClipRect)
 void DrawBatch(PRIMITIVE* lpBasePrim, PRIM_LINKS PrimLinks,
 			   BATCH_FLAGS BatchFlags)
 {
-	RECT ValidRect;
-	POINT origin;
+	GFXRECT ValidRect;
+	GFXPOINT origin;
 
 	if (GraphicsSystemActive() && GetContextValidRect(&ValidRect, &origin))
 	{
@@ -128,7 +128,7 @@ void DrawBatch(PRIMITIVE* lpBasePrim, PRIM_LINKS PrimLinks,
 		{
 			GRAPHICS_PRIM PrimType;
 			PRIMITIVE* lpWorkPrim;
-			RECT ClipRect;
+			GFXRECT ClipRect;
 			Color color;
 			uqm::BYTE flags;
 
@@ -213,7 +213,7 @@ void DrawBatch(PRIMITIVE* lpBasePrim, PRIM_LINKS PrimLinks,
 
 void ClearDrawable(void)
 {
-	RECT ValidRect;
+	GFXRECT ValidRect;
 
 	if (GraphicsSystemActive() && GetContextValidRect(&ValidRect, nullptr))
 	{
@@ -223,7 +223,7 @@ void ClearDrawable(void)
 
 void ClearScreen(void)
 {
-	RECT ValidRect;
+	GFXRECT ValidRect;
 
 	if (!GraphicsSystemActive())
 	{
@@ -237,9 +237,9 @@ void ClearScreen(void)
 	ClearBackGround(&ValidRect);
 }
 
-void DrawPoint(POINT* lpPoint)
+void DrawPoint(GFXPOINT* lpPoint)
 {
-	POINT origin;
+	GFXPOINT origin;
 
 	if (GraphicsSystemActive() && GetContextValidRect(nullptr, &origin))
 	{
@@ -251,13 +251,13 @@ void DrawPoint(POINT* lpPoint)
 
 void InstaPoint(int x, int y)
 {
-	POINT origin = {(COORD)x, (COORD)y};
+	GFXPOINT origin = {(COORD)x, (COORD)y};
 	DrawPoint(&origin);
 }
 
-void DrawRectangle(RECT* lpRect, bool scaled)
+void DrawRectangle(GFXRECT* lpRect, bool scaled)
 {
-	POINT origin;
+	GFXPOINT origin;
 
 	if (GraphicsSystemActive() && GetContextValidRect(nullptr, &origin))
 	{
@@ -269,16 +269,16 @@ void DrawRectangle(RECT* lpRect, bool scaled)
 
 void InstaRect(int x, int y, int w, int h, bool scaled)
 {
-	RECT r = {
+	GFXRECT r = {
 		{(COORD)x, (COORD)y},
 		{(COORD)w, (COORD)h}
 	};
 	DrawRectangle(&r, scaled);
 }
 
-void DrawFilledRectangle(RECT* lpRect)
+void DrawFilledRectangle(GFXRECT* lpRect)
 {
-	POINT origin;
+	GFXPOINT origin;
 
 	if (GraphicsSystemActive() && GetContextValidRect(nullptr, &origin))
 	{
@@ -290,7 +290,7 @@ void DrawFilledRectangle(RECT* lpRect)
 
 void InstaFilledRect(int x, int y, int w, int h)
 {
-	RECT r = {
+	GFXRECT r = {
 		{(COORD)x, (COORD)y},
 		{(COORD)w, (COORD)h}
 	};
@@ -299,7 +299,7 @@ void InstaFilledRect(int x, int y, int w, int h)
 
 void DrawLine(LINE* lpLine, uqm::BYTE thickness)
 {
-	POINT origin;
+	GFXPOINT origin;
 
 	if (GraphicsSystemActive() && GetContextValidRect(nullptr, &origin))
 	{
@@ -320,7 +320,7 @@ void InstaLine(int x1, int y1, int x2, int y2)
 
 void DrawStamp(STAMP* stmp)
 {
-	POINT origin;
+	GFXPOINT origin;
 
 	if (GraphicsSystemActive() && GetContextValidRect(nullptr, &origin))
 	{
@@ -331,7 +331,7 @@ void DrawStamp(STAMP* stmp)
 
 void DrawFilledStamp(STAMP* stmp)
 {
-	POINT origin;
+	GFXPOINT origin;
 
 	if (GraphicsSystemActive() && GetContextValidRect(nullptr, &origin))
 	{
@@ -349,7 +349,7 @@ void DrawFilledStamp(STAMP* stmp)
 // applied to every pixel equally with alpha = 255
 void ApplyMask(FRAME layer, FRAME base, DrawMode mode, Color* fill)
 {
-	POINT origin;
+	GFXPOINT origin;
 
 	if (GraphicsSystemActive() && GetContextValidRect(nullptr, &origin))
 	{

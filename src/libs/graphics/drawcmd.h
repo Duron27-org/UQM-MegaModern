@@ -54,7 +54,7 @@ typedef struct tfb_dc_line
 
 typedef struct tfb_dc_rect
 {
-	RECT rect;
+	GFXRECT rect;
 	Color color;
 	DrawMode drawMode;
 	SCREEN destBuffer;
@@ -93,20 +93,20 @@ typedef struct tfb_dc_fontchar
 
 typedef struct tfb_dc_copy
 {
-	RECT rect;
+	GFXRECT rect;
 	SCREEN srcBuffer, destBuffer;
 } TFB_DrawCommand_Copy;
 
 typedef struct tfb_dc_copyimg
 {
 	TFB_Image* image;
-	RECT rect;
+	GFXRECT rect;
 	SCREEN srcBuffer;
 } TFB_DrawCommand_CopyToImage;
 
 typedef struct tfb_dc_scissor
 {
-	RECT rect;
+	GFXRECT rect;
 } TFB_DrawCommand_Scissor;
 
 typedef struct tfb_dc_setmip
@@ -173,8 +173,8 @@ typedef struct tfb_drawcommandqueue
 	int Back;
 	int InsertionPoint;
 	int Batching;
-	volatile int FullSize;
-	volatile int Size;
+	int FullSize;
+	int Size;
 } TFB_DrawCommandQueue;
 
 void Init_DrawCommandQueue(void);

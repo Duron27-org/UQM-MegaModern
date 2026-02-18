@@ -823,7 +823,7 @@ void spawn_ion_trail(ELEMENT* ElementPtr, uqm::SIZE x_offset, uqm::SIZE y_offset
 	{
 #define ION_LIFE 1
 		uqm::COUNT angle;
-		RECT r;
+		GFXRECT r;
 		ELEMENT* IonElementPtr;
 		STARSHIP* StarShipPtr;
 
@@ -971,7 +971,7 @@ void ship_transition(ELEMENT* ElementPtr)
 			else if (ElementPtr->crew_level)
 			{
 				// JMS_GFX: Circumventing overflows by using temp variables
-				// instead of subtracting straight from the POINT sized
+				// instead of subtracting straight from the GFXPOINT sized
 				// ShipImagePtr->current.location.
 				uqm::SDWORD temp_x = (uqm::SDWORD)ShipImagePtr->current.location.x - COSINE(angle, TRANSITION_SPEED) * (ElementPtr->life_span - 1);
 				uqm::SDWORD temp_y = (uqm::SDWORD)ShipImagePtr->current.location.y - SINE(angle, TRANSITION_SPEED) * (ElementPtr->life_span - 1);

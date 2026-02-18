@@ -209,7 +209,7 @@ ip_group_preprocess(ELEMENT* ElementPtr)
 	uqm::BYTE task;
 	uqm::BYTE target_loc, group_loc, flagship_loc;
 	uqm::SIZE radius;
-	POINT dest_pt;
+	GFXPOINT dest_pt;
 	uqm::SIZE vdx, vdy;
 	ELEMENT* EPtr;
 	IP_GROUP* GroupPtr;
@@ -378,7 +378,7 @@ ip_group_preprocess(ELEMENT* ElementPtr)
 			else
 			{
 				uqm::COUNT orbit_dist;
-				POINT org;
+				GFXPOINT org;
 
 				isOrbiting = true;
 				if (task != ON_STATION)
@@ -559,7 +559,7 @@ CheckGetAway:
 				}
 				else
 				{
-					POINT entryPt;
+					GFXPOINT entryPt;
 
 					if (target_loc == GroupPtr->dest_loc)
 					{
@@ -660,7 +660,7 @@ CheckGetAway:
 			{ // Define direction only once and not follow player while
 				// reforming
 				uqm::SIZE delta_x, delta_y;
-				POINT sis_pt;
+				GFXPOINT sis_pt;
 
 				sis_pt = displayToLocation(
 					GLOBAL(ShipStamp.origin), radius);
@@ -718,8 +718,8 @@ CheckGetAway:
 }
 
 static void
-flag_ship_collision(ELEMENT* ElementPtr0, POINT* pPt0,
-					ELEMENT* ElementPtr1, POINT* pPt1)
+flag_ship_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
+					ELEMENT* ElementPtr1, GFXPOINT* pPt1)
 {
 	if (GLOBAL(CurrentActivity) & START_ENCOUNTER)
 	{
@@ -741,8 +741,8 @@ flag_ship_collision(ELEMENT* ElementPtr0, POINT* pPt0,
 }
 
 static void
-ip_group_collision(ELEMENT* ElementPtr0, POINT* pPt0,
-				   ELEMENT* ElementPtr1, POINT* pPt1)
+ip_group_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
+				   ELEMENT* ElementPtr1, GFXPOINT* pPt1)
 {
 	IP_GROUP* GroupPtr;
 	void* OtherPtr;
@@ -912,7 +912,7 @@ spawn_ip_group(IP_GROUP* GroupPtr)
 
 		{
 			uqm::SIZE radius;
-			POINT pt;
+			GFXPOINT pt;
 
 			radius = zoomRadiusForLocation(GroupPtr->sys_loc);
 			pt = locationToDisplay(GroupPtr->loc, radius);
@@ -971,7 +971,7 @@ flag_ship_preprocess(ELEMENT* ElementPtr)
 	{
 		uqm::BYTE flagship_loc, ec;
 		uqm::SIZE vdx, vdy, radius;
-		POINT pt;
+		GFXPOINT pt;
 
 		GetCurrentVelocityComponents(&GLOBAL(velocity), &vdx, &vdy);
 
@@ -1046,7 +1046,7 @@ AdjustInitialPosition(void)
 	// EnterPlanetOrbit() in solarsys.c
 	uqm::BYTE flagship_loc;
 	uqm::SIZE radius;
-	POINT pt;
+	GFXPOINT pt;
 
 	flagship_loc = getFlagshipLocation();
 	radius = zoomRadiusForLocation(flagship_loc);

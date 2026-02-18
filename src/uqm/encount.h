@@ -66,13 +66,13 @@ struct encounter
 	HELEMENT hElement;
 
 	uqm::SIZE transition_state;
-	POINT origin;
+	GFXPOINT origin;
 	uqm::COUNT radius;
 	uqm::BYTE race_id;
 	uqm::BYTE num_ships;
 	uqm::BYTE flags;
 	// See ENCOUNTER.flags above
-	POINT loc_pt;
+	GFXPOINT loc_pt;
 
 	BRIEF_SHIP_INFO ShipList[MAX_HYPER_SHIPS];
 	// Only the crew_level member is currently used

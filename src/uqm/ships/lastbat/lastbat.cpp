@@ -189,8 +189,8 @@ comet_preprocess(ELEMENT* ElementPtr)
 }
 
 static void
-comet_collision(ELEMENT* ElementPtr0, POINT* pPt0,
-				ELEMENT* ElementPtr1, POINT* pPt1)
+comet_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
+				ELEMENT* ElementPtr1, GFXPOINT* pPt1)
 {
 	if (ElementPtr1->playerNr == RPG_PLAYER_NUM)
 	{
@@ -326,8 +326,8 @@ turret_preprocess(ELEMENT* ElementPtr)
 }
 
 static void
-gate_collision(ELEMENT* ElementPtr0, POINT* pPt0,
-			   ELEMENT* ElementPtr1, POINT* pPt1)
+gate_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
+			   ELEMENT* ElementPtr1, GFXPOINT* pPt1)
 {
 	if (ElementPtr1->playerNr == RPG_PLAYER_NUM)
 	{
@@ -471,8 +471,8 @@ generator_preprocess(ELEMENT* ElementPtr)
 }
 
 static void
-generator_collision(ELEMENT* ElementPtr0, POINT* pPt0,
-					ELEMENT* ElementPtr1, POINT* pPt1)
+generator_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
+					ELEMENT* ElementPtr1, GFXPOINT* pPt1)
 {
 	if (!(ElementPtr1->state_flags & FINITE_LIFE))
 	{
@@ -639,8 +639,8 @@ sentinel_preprocess(ELEMENT* ElementPtr)
 }
 
 static void
-sentinel_collision(ELEMENT* ElementPtr0, POINT* pPt0,
-				   ELEMENT* ElementPtr1, POINT* pPt1)
+sentinel_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
+				   ELEMENT* ElementPtr1, GFXPOINT* pPt1)
 {
 	uqm::COUNT angle;
 	STARSHIP* StarShipPtr;
@@ -838,9 +838,9 @@ samatra_preprocess(ELEMENT* ElementPtr)
 	}
 	else
 	{
-		POINT* offs;
+		GFXPOINT* offs;
 
-		POINT offs_orig[8] =
+		GFXPOINT offs_orig[8] =
 			{
 				{-127 - 9, -53 + 18},
 				{-38 - 9,  -88 + 18},
@@ -852,7 +852,7 @@ samatra_preprocess(ELEMENT* ElementPtr)
 				{-136 - 9, 29 + 18 },
 		};
 
-		POINT offs_hd[] =
+		GFXPOINT offs_hd[] =
 			{
 				{-544 + 44, -140 - 16},
 				{-188 + 38, -280 - 20},
@@ -864,7 +864,7 @@ samatra_preprocess(ELEMENT* ElementPtr)
 				{-580 + 32, 188 - 24 },
 		};
 
-		offs = chooseIfHd<POINT*>(offs_orig, offs_hd);
+		offs = chooseIfHd<GFXPOINT*>(offs_orig, offs_hd);
 
 		for (StarShipPtr->RaceDescPtr->num_generators = 0;
 			 StarShipPtr->RaceDescPtr->num_generators < MAX_GENERATORS;

@@ -77,7 +77,7 @@ crc_processTIME_VALUE(crc_State *state, const TIME_VALUE val) {
 
 void crc_processEXTENT(crc_State* state, const EXTENT* val);
 void crc_processVELOCITY_DESC(crc_State* state, const VELOCITY_DESC* val);
-void crc_processPOINT(crc_State* state, const POINT* val);
+void crc_processPOINT(crc_State* state, const GFXPOINT* val);
 #if 0
 void crc_processSTAMP(crc_State *state, const STAMP *val);
 void crc_processINTERSECT_CONTROL(crc_State *state,

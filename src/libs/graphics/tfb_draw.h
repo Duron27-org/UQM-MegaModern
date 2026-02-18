@@ -81,16 +81,16 @@ typedef struct tfb_pixelformat
 
 void TFB_DrawScreen_Line(int x1, int y1, int x2, int y2, Color color,
 						 DrawMode, SCREEN dest, uqm::BYTE thickness);
-void TFB_DrawScreen_Rect(RECT* rect, Color, DrawMode, SCREEN dest);
+void TFB_DrawScreen_Rect(GFXRECT* rect, Color, DrawMode, SCREEN dest);
 void TFB_DrawScreen_Image(TFB_Image* img, int x, int y, int scale,
 						  int scaleMode, TFB_ColorMap*, DrawMode, SCREEN dest);
-void TFB_DrawScreen_Copy(const RECT* r, SCREEN src, SCREEN dest);
+void TFB_DrawScreen_Copy(const GFXRECT* r, SCREEN src, SCREEN dest);
 void TFB_DrawScreen_FilledImage(TFB_Image* img, int x, int y, int scale,
 								int scaleMode, Color, DrawMode, SCREEN dest);
 void TFB_DrawScreen_FontChar(TFB_Char*, TFB_Image* backing, int x, int y,
 							 DrawMode, SCREEN dest);
 
-void TFB_DrawScreen_CopyToImage(TFB_Image* img, const RECT* r, SCREEN src);
+void TFB_DrawScreen_CopyToImage(TFB_Image* img, const GFXRECT* r, SCREEN src);
 void TFB_DrawScreen_SetMipmap(TFB_Image* img, TFB_Image* mmimg, int hotx,
 							  int hoty);
 void TFB_DrawScreen_DeleteImage(TFB_Image* img);
@@ -106,14 +106,14 @@ void TFB_DrawImage_SetMipmap(TFB_Image* img, TFB_Image* mmimg, int hotx,
 							 int hoty);
 void TFB_DrawImage_Delete(TFB_Image* image);
 void TFB_DrawImage_FixScaling(TFB_Image* image, int target, int type);
-bool TFB_DrawImage_Intersect(TFB_Image* img1, POINT img1org,
-							 TFB_Image* img2, POINT img2org, const RECT* interRect);
-void TFB_DrawImage_CopyRect(TFB_Image* source, const RECT* srcRect,
-							TFB_Image* target, POINT dstPt);
+bool TFB_DrawImage_Intersect(TFB_Image* img1, GFXPOINT img1org,
+							 TFB_Image* img2, GFXPOINT img2org, const GFXRECT* interRect);
+void TFB_DrawImage_CopyRect(TFB_Image* source, const GFXRECT* srcRect,
+							TFB_Image* target, GFXPOINT dstPt);
 
 void TFB_DrawImage_Line(int x1, int y1, int x2, int y2, Color color,
 						DrawMode, TFB_Image* target, uqm::BYTE thickness);
-void TFB_DrawImage_Rect(RECT* rect, Color, DrawMode, TFB_Image* target);
+void TFB_DrawImage_Rect(GFXRECT* rect, Color, DrawMode, TFB_Image* target);
 void TFB_DrawImage_Image(TFB_Image* img, int x, int y, int scale,
 						 int scaleMode, TFB_ColorMap*, DrawMode, TFB_Image* target);
 void TFB_DrawImage_FilledImage(TFB_Image* img, int x, int y, int scale,
@@ -146,21 +146,21 @@ void TFB_DrawCanvas_Rotate(TFB_Canvas src, TFB_Canvas dst, int angle,
 						   EXTENT size);
 void TFB_DrawCanvas_GetRotatedExtent(TFB_Canvas src, int angle, EXTENT* size);
 void TFB_DrawCanvas_GetExtent(TFB_Canvas canvas, EXTENT* size);
-void TFB_DrawCanvas_SetClipRect(TFB_Canvas canvas, const RECT* clipRect);
+void TFB_DrawCanvas_SetClipRect(TFB_Canvas canvas, const GFXRECT* clipRect);
 
 void TFB_DrawCanvas_Delete(TFB_Canvas canvas);
 
 void TFB_DrawCanvas_Line(int x1, int y1, int x2, int y2, Color color,
 						 DrawMode, TFB_Canvas target, uqm::BYTE thickness);
-void TFB_DrawCanvas_Rect(RECT* rect, Color, DrawMode, TFB_Canvas target);
+void TFB_DrawCanvas_Rect(GFXRECT* rect, Color, DrawMode, TFB_Canvas target);
 void TFB_DrawCanvas_Image(TFB_Image* img, int x, int y, int scale,
 						  int scaleMode, TFB_ColorMap*, DrawMode, TFB_Canvas target);
 void TFB_DrawCanvas_FilledImage(TFB_Image* img, int x, int y, int scale,
 								int scaleMode, Color, DrawMode, TFB_Canvas target);
 void TFB_DrawCanvas_FontChar(TFB_Char*, TFB_Image* backing, int x, int y,
 							 DrawMode, TFB_Canvas target);
-void TFB_DrawCanvas_CopyRect(TFB_Canvas source, const RECT* srcRect,
-							 TFB_Canvas target, POINT dstPt);
+void TFB_DrawCanvas_CopyRect(TFB_Canvas source, const GFXRECT* srcRect,
+							 TFB_Canvas target, GFXPOINT dstPt);
 void TFB_DrawCanvas_MaskImage(TFB_Image* img, DrawMode mode, TFB_Canvas target, Color* fill);
 
 bool TFB_DrawCanvas_GetFontCharData(TFB_Canvas canvas, uqm::BYTE* outData,
@@ -182,8 +182,8 @@ void TFB_DrawCanvas_GetScreenFormat(TFB_PixelFormat* fmt);
 int TFB_DrawCanvas_GetStride(TFB_Canvas canvas);
 void* TFB_DrawCanvas_GetLine(TFB_Canvas canvas, int line);
 Color TFB_DrawCanvas_GetPixel(TFB_Canvas canvas, int x, int y);
-bool TFB_DrawCanvas_Intersect(TFB_Canvas canvas1, POINT c1org,
-							  TFB_Canvas canvas2, POINT c2org, const RECT* interRect);
+bool TFB_DrawCanvas_Intersect(TFB_Canvas canvas1, GFXPOINT c1org,
+							  TFB_Canvas canvas2, GFXPOINT c2org, const GFXRECT* interRect);
 
 bool TFB_DrawCanvas_GetPixelColors(TFB_Canvas, Color* pixels,
 								   int width, int height);

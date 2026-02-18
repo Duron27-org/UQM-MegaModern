@@ -30,7 +30,7 @@
 
 void InitSISContexts(void)
 {
-	RECT r;
+	GFXRECT r;
 
 	SetContext(StatusContext);
 
@@ -46,7 +46,7 @@ void InitSISContexts(void)
 
 void DrawSISFrame(void)
 {
-	RECT r;
+	GFXRECT r;
 
 	SetContext(ScreenContext);
 

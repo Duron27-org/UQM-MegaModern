@@ -33,7 +33,7 @@ extern "C" {
 
 struct scan_desc
 {
-	POINT start;
+	GFXPOINT start;
 	uqm::COUNT start_dot;
 	uqm::COUNT num_dots;
 	uqm::COUNT dots_per_semi;
@@ -41,7 +41,7 @@ struct scan_desc
 
 struct scan_block
 {
-	POINT* line_base;
+	GFXPOINT* line_base;
 	uqm::COUNT num_scans;
 	uqm::COUNT num_same_scans;
 	SCAN_DESC* scan_base;
@@ -49,7 +49,7 @@ struct scan_block
 
 extern void ScanSystem(void);
 
-extern void RepairBackRect(RECT* pRect);
+extern void RepairBackRect(GFXRECT* pRect);
 extern void GeneratePlanetSide(void);
 extern uqm::COUNT callGenerateForScanType(const SOLARSYS_STATE*,
 										  const PLANET_DESC* world, uqm::COUNT node, uqm::BYTE scanType, NODE_INFO*);
@@ -57,8 +57,8 @@ extern uqm::COUNT callGenerateForScanType(const SOLARSYS_STATE*,
 extern bool callPickupForScanType(SOLARSYS_STATE* solarSys,
 								  PLANET_DESC* world, uqm::COUNT node, uqm::BYTE scanType);
 
-extern void RedrawSurfaceScan(const POINT* newLoc);
-extern CONTEXT GetScanContext(bool* owner);
+extern void RedrawSurfaceScan(const GFXPOINT* newLoc);
+extern GFXCONTEXT GetScanContext(bool* owner);
 extern void DestroyScanContext(void);
 
 bool isNodeRetrieved(PLANET_INFO* planetInfo, uqm::BYTE scanType, uqm::BYTE nodeNr);

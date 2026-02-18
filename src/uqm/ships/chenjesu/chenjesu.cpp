@@ -220,8 +220,8 @@ animate(ELEMENT* ElementPtr)
 }
 
 static void
-crystal_collision(ELEMENT* ElementPtr0, POINT* pPt0,
-				  ELEMENT* ElementPtr1, POINT* pPt1)
+crystal_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
+				  ELEMENT* ElementPtr1, GFXPOINT* pPt1)
 {
 	HELEMENT hBlastElement;
 
@@ -331,8 +331,8 @@ doggy_death(ELEMENT* ElementPtr)
 }
 
 static void
-doggy_collision(ELEMENT* ElementPtr0, POINT* pPt0,
-				ELEMENT* ElementPtr1, POINT* pPt1)
+doggy_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
+				ELEMENT* ElementPtr1, GFXPOINT* pPt1)
 {
 	collision(ElementPtr0, pPt0, ElementPtr1, pPt1);
 	if ((ElementPtr1->state_flags & PLAYER_SHIP)

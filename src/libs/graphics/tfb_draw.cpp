@@ -20,6 +20,7 @@
 #include "core/log/log.h"
 #include "libs/memlib.h"
 
+using namespace uqm;
 
 static const HOT_SPOT NullHs = {0, 0};
 
@@ -41,9 +42,9 @@ void TFB_DrawScreen_Line(int x1, int y1, int x2, int y2, Color color,
 	TFB_EnqueueDrawCommand(&DC);
 }
 
-void TFB_DrawScreen_Rect(RECT* rect, Color color, DrawMode mode, SCREEN dest)
+void TFB_DrawScreen_Rect(GFXRECT* rect, Color color, DrawMode mode, SCREEN dest)
 {
-	RECT locRect;
+	GFXRECT locRect;
 	TFB_DrawCommand DC;
 
 	if (!rect)
@@ -115,7 +116,7 @@ void TFB_DrawScreen_FontChar(TFB_Char* fontChar, TFB_Image* backing,
 	TFB_EnqueueDrawCommand(&DC);
 }
 
-void TFB_DrawScreen_CopyToImage(TFB_Image* img, const RECT* r, SCREEN src)
+void TFB_DrawScreen_CopyToImage(TFB_Image* img, const GFXRECT* r, SCREEN src)
 {
 	TFB_DrawCommand DC;
 
@@ -127,9 +128,9 @@ void TFB_DrawScreen_CopyToImage(TFB_Image* img, const RECT* r, SCREEN src)
 	TFB_EnqueueDrawCommand(&DC);
 }
 
-void TFB_DrawScreen_Copy(const RECT* r, SCREEN src, SCREEN dest)
+void TFB_DrawScreen_Copy(const GFXRECT* r, SCREEN src, SCREEN dest)
 {
-	RECT locRect;
+	GFXRECT locRect;
 	TFB_DrawCommand DC;
 
 	if (!r)
@@ -231,7 +232,7 @@ void TFB_DrawImage_Line(int x1, int y1, int x2, int y2, Color color,
 	UnlockMutex(target->mutex);
 }
 
-void TFB_DrawImage_Rect(RECT* rect, Color color, DrawMode mode, TFB_Image* target)
+void TFB_DrawImage_Rect(GFXRECT* rect, Color color, DrawMode mode, TFB_Image* target)
 {
 	LockMutex(target->mutex);
 	TFB_DrawCanvas_Rect(rect, color, mode, target->NormalImg);
@@ -456,8 +457,8 @@ void TFB_DrawImage_FixScaling(TFB_Image* image, int target, int type)
 	}
 }
 
-bool TFB_DrawImage_Intersect(TFB_Image* img1, POINT img1org,
-							 TFB_Image* img2, POINT img2org, const RECT* interRect)
+bool TFB_DrawImage_Intersect(TFB_Image* img1, GFXPOINT img1org,
+							 TFB_Image* img2, GFXPOINT img2org, const GFXRECT* interRect)
 {
 	bool ret;
 
@@ -471,8 +472,8 @@ bool TFB_DrawImage_Intersect(TFB_Image* img1, POINT img1org,
 	return ret;
 }
 
-void TFB_DrawImage_CopyRect(TFB_Image* source, const RECT* srcRect,
-							TFB_Image* target, POINT dstPt)
+void TFB_DrawImage_CopyRect(TFB_Image* source, const GFXRECT* srcRect,
+							TFB_Image* target, GFXPOINT dstPt)
 {
 	LockMutex(source->mutex);
 	LockMutex(target->mutex);

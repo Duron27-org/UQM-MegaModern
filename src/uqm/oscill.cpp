@@ -92,7 +92,7 @@ ScaleHeightByVolume(uint8 scope_data, bool toScale)
 void DrawOscilloscopeLines(STAMP* s, uint8* scope_data, bool nonStop, bool toScale)
 {
 	int i;
-	CONTEXT oldContext;
+	GFXCONTEXT oldContext;
 	Color scopeColor;
 
 	oldContext = SetContext(OffScreenContext);
@@ -197,7 +197,7 @@ void DrawOscilloscope(void)
 void FlattenOscilloscope(void)
 {
 	STAMP s;
-	CONTEXT OldContext;
+	GFXCONTEXT OldContext;
 
 	OldContext = SetContext(RadarContext);
 

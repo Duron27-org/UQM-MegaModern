@@ -51,10 +51,10 @@ uqm::BYTE PlayerControl[NUM_PLAYERS];
 
 // XXX: These declarations should really go to the file they belong to.
 RESOURCE_INDEX hResIndex;
-CONTEXT ScreenContext;
-CONTEXT SpaceContext;
-CONTEXT StatusContext;
-CONTEXT OffScreenContext;
+GFXCONTEXT ScreenContext;
+GFXCONTEXT SpaceContext;
+GFXCONTEXT StatusContext;
+GFXCONTEXT OffScreenContext;
 uqm::SIZE screen_width, screen_height;
 FRAME Screen;
 FONT StarConFont;
@@ -265,8 +265,8 @@ bool LoadKernel(int argc, char* argv[])
 
 bool InitContexts(void)
 {
-	RECT r;
-	CONTEXT oldContext;
+	GFXRECT r;
+	GFXCONTEXT oldContext;
 
 	StatusContext = CreateContext("StatusContext");
 	if (StatusContext == nullptr)

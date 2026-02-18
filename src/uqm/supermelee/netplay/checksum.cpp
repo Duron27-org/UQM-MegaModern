@@ -60,7 +60,7 @@ void crc_processVELOCITY_DESC(crc_State* state, const VELOCITY_DESC* val)
 #endif
 }
 
-void crc_processPOINT(crc_State* state, const POINT* val)
+void crc_processPOINT(crc_State* state, const GFXPOINT* val)
 {
 #ifdef DUMP_CRC_OPS
 	crc_log("START crc_processPOINT().");

@@ -132,7 +132,7 @@ MCD_DrawSlider(WIDGET* _self, int x, int y)
 	FONT oldfont = SetContextFont(PlayerFont);
 	FRAME oldFontEffect = SetContextFontEffect(nullptr);
 	TEXT t;
-	RECT r;
+	GFXRECT r;
 	int tick = RES_SCALE(RES_DESCALE(MCD_WIDTH) / 8);
 
 	default_color = MENU_TEXT_COLOR;
@@ -229,10 +229,10 @@ MCD_DrawTextEntry(WIDGET* _self, int x, int y)
 	else
 	{ // editing state
 		uqm::COUNT i;
-		RECT text_r;
+		GFXRECT text_r;
 		uqm::BYTE char_deltas[WIDGET_TEXTENTRY_WIDTH];
 		uqm::BYTE* pchar_deltas;
-		RECT r;
+		GFXRECT r;
 		uqm::SIZE leading;
 
 		t.baseline.x = x + (RES_SCALE(90));
@@ -546,7 +546,7 @@ CreateWidgets(void)
 static void
 DrawConnectDialog(void)
 {
-	RECT r;
+	GFXRECT r;
 
 	r.extent.width = MCD_WIDTH;
 	r.extent.height = MCD_HEIGHT;

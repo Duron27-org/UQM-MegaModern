@@ -36,11 +36,11 @@ PlotIntercept(ELEMENT* ElementPtr0, ELEMENT* ElementPtr1,
 	uqm::SDWORD dy;
 	uqm::SDWORD time_y_0, time_y_1;
 	DPOINT dst[2];
-	RECT r0 = {
+	GFXRECT r0 = {
 		{0, 0},
 		{0, 0}
 	  };
-	RECT r1 = {
+	GFXRECT r1 = {
 		{0, 0},
 		{0, 0}
 	  };
@@ -1229,7 +1229,7 @@ tactical_intelligence(ComputerInputContext* context, STARSHIP* StarShipPtr)
 			if (GRAVITY_MASS(ed.ObjectPtr->mass_points))
 			{
 				uqm::COUNT maneuver_turn, ship_bounds;
-				RECT ship_footprint;
+				GFXRECT ship_footprint;
 
 				if (UltraManeuverable)
 				{

@@ -33,8 +33,8 @@
 // for bool TextEntry3DO
 #include "gameopt.h"
 
-static RECT cursor;
-static CONTEXT curContext;
+static GFXRECT cursor;
+static GFXCONTEXT curContext;
 static bool block = false;
 
 // TODO: This may be better done with UniChar at the cost of a tiny bit
@@ -144,7 +144,7 @@ void SetCursorFlashBlock(bool state)
 	block = state;
 }
 
-void SetCursorRect(RECT* r, CONTEXT context)
+void SetCursorRect(GFXRECT* r, GFXCONTEXT context)
 {
 	cursor = *r;
 	curContext = context;
@@ -169,7 +169,7 @@ FlashCursor(void)
 
 	if (GetTimeCounter() >= NextTime)
 	{
-		CONTEXT OldContext;
+		GFXCONTEXT OldContext;
 
 		NextTime = GetTimeCounter() + BLINK_RATE;
 
@@ -177,7 +177,7 @@ FlashCursor(void)
 
 		if (curContext == OffScreenContext)
 		{
-			RECT r;
+			GFXRECT r;
 
 			r.corner.x = SIS_ORG_X + RES_SCALE(1);
 			r.corner.y = SIS_ORG_Y - SIS_MESSAGE_HEIGHT;

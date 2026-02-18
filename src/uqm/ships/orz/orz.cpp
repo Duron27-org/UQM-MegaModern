@@ -138,8 +138,8 @@ static RACE_DESC orz_desc =
 };
 
 static void
-howitzer_collision(ELEMENT* ElementPtr0, POINT* pPt0,
-				   ELEMENT* ElementPtr1, POINT* pPt1)
+howitzer_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
+				   ELEMENT* ElementPtr1, GFXPOINT* pPt1)
 {
 	if (!elementsOfSamePlayer(ElementPtr0, ElementPtr1))
 	{
@@ -788,8 +788,8 @@ marine_preprocess(ELEMENT* ElementPtr)
 	}
 }
 
-void marine_collision(ELEMENT* ElementPtr0, POINT* pPt0,
-					  ELEMENT* ElementPtr1, POINT* pPt1)
+void marine_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
+					  ELEMENT* ElementPtr1, GFXPOINT* pPt1)
 {
 	if (ElementPtr0->life_span
 		&& !(ElementPtr0->state_flags & (NONSOLID | COLLISION))

@@ -36,11 +36,11 @@
 // JSD added to reference plot_map for SOL.
 #include "starmap.h"
 
-void DrawStarConBox(RECT* pRect, uqm::SIZE BorderWidth, Color TopLeftColor,
+void DrawStarConBox(GFXRECT* pRect, uqm::SIZE BorderWidth, Color TopLeftColor,
 					Color BottomRightColor, bool FillInterior, Color InteriorColor,
 					bool CreateCorners, Color CornerColor)
 {
-	RECT locRect;
+	GFXRECT locRect;
 	Color oldcolor;
 
 	BatchGraphics();
@@ -156,7 +156,7 @@ void DrawStarConBox(RECT* pRect, uqm::SIZE BorderWidth, Color TopLeftColor,
 	UnbatchGraphics();
 }
 
-void DrawRenderedBox(RECT* r, bool filled, Color fill_color, int type,
+void DrawRenderedBox(GFXRECT* r, bool filled, Color fill_color, int type,
 					 int custom)
 {
 	int i;
@@ -249,8 +249,8 @@ void DrawRenderedBox(RECT* r, bool filled, Color fill_color, int type,
 
 void DrawBorderPadding(uqm::DWORD videoWidth)
 {
-	RECT r;
-	CONTEXT OldContext;
+	GFXRECT r;
+	GFXCONTEXT OldContext;
 	uqm::UWORD safe_x =
 		(videoWidth && videoWidth < 280 ? SAFE_NEG(4) * 2 : SAFE_X);
 
@@ -300,8 +300,8 @@ void DrawBorderPadding(uqm::DWORD videoWidth)
 
 void DrawRadarBorder(void)
 {
-	RECT r;
-	CONTEXT OldContext;
+	GFXRECT r;
+	GFXCONTEXT OldContext;
 
 	if (IS_PAD)
 	{
@@ -342,7 +342,7 @@ SeedRandomNumbers(void)
 }
 
 STAMP
-SaveContextFrame(const RECT* saveRect)
+SaveContextFrame(const GFXRECT* saveRect)
 {
 	STAMP s;
 
@@ -362,12 +362,12 @@ SaveContextFrame(const RECT* saveRect)
 }
 
 static void
-DrawPauseText(RECT* rect)
+DrawPauseText(GFXRECT* rect)
 {
 	TEXT text;
 	FONT OldFont;
 	Color OldColor;
-	RECT block;
+	GFXRECT block;
 
 	if (!strlen(GAME_STRING(QUITMENU_STRING_BASE + 4)))
 	{
@@ -406,13 +406,13 @@ DrawPauseText(RECT* rect)
 
 bool PauseGame(void)
 {
-	RECT r;
+	GFXRECT r;
 	STAMP s;
-	CONTEXT OldContext;
+	GFXCONTEXT OldContext;
 	STAMP saveStamp;
-	RECT ctxRect;
-	POINT OldOrigin;
-	RECT OldRect;
+	GFXRECT ctxRect;
+	GFXPOINT OldOrigin;
+	GFXRECT OldRect;
 	Color OldColor;
 	DrawMode mode, oldMode;
 	uqm::BYTE oldVolume;
@@ -670,7 +670,7 @@ void SleepGame(void)
 uqm::DWORD
 get_fuel_to_sol(void)
 {
-	POINT pt;
+	GFXPOINT pt;
 	uqm::DWORD f;
 
 	pt.x = LOGX_TO_UNIVERSE(GLOBAL_SIS(log_x));
@@ -696,7 +696,7 @@ get_fuel_to_sol(void)
 void DrawFlagStatDisplay(const uqm::CHAR_T* str)
 {
 	TEXT t;
-	RECT r;
+	GFXRECT r;
 
 	r.corner.x = RES_SCALE(2);
 	r.corner.y = RES_SCALE(20);

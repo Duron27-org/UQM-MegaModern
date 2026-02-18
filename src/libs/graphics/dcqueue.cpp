@@ -15,7 +15,7 @@
  */
 
 #include "port.h"
-#include "/core/string/StringUtils.h"
+#include "core/string/StringUtils.h"
 #include "libs/threadlib.h"
 #include "libs/graphics/drawcmd.h"
 #include "libs/graphics/drawable.h"
@@ -264,7 +264,7 @@ void TFB_EnqueueDrawCommand(TFB_DrawCommand* DrawCommand)
 	if (DrawCommand->Type <= TFB_DRAWCOMMANDTYPE_COPYTOIMAGE
 		&& _CurFramePtr->Type == SCREEN_DRAWABLE)
 	{
-		static RECT scissor_rect;
+		static GFXRECT scissor_rect;
 
 		// Set the clipping region.
 		// We allow drawing with no current context set, so the whole screen
@@ -330,7 +330,7 @@ RenderFPS(int* fps)
 	static int prevFPS = 0;
 	if (GoodToGoFPS() && (prevFPS != *fps))
 	{
-		RECT tr;
+		GFXRECT tr;
 		uqm::SIZE w, h;
 		int i;
 		int max;
@@ -542,7 +542,7 @@ void TFB_FlushGraphics(void)
 
 					if (cmd->destBuffer == TFB_SCREEN_MAIN)
 					{
-						RECT r;
+						GFXRECT r;
 
 						r.corner.x = x - DC_char->HotSpot.x;
 						r.corner.y = y - DC_char->HotSpot.y;
@@ -561,7 +561,7 @@ void TFB_FlushGraphics(void)
 
 					if (cmd->destBuffer == TFB_SCREEN_MAIN)
 					{
-						RECT r;
+						GFXRECT r;
 						r.corner.x = MIN(cmd->x1, cmd->x2);
 						r.corner.y = MIN(cmd->y1, cmd->y2);
 						r.extent.width = abs(cmd->x1 - cmd->x2) + cmd->thickness;
@@ -610,7 +610,7 @@ void TFB_FlushGraphics(void)
 				{
 					TFB_DrawCommand_CopyToImage* cmd = &DC.data.copytoimage;
 					TFB_Image* DC_image = cmd->image;
-					const POINT dstPt = {0, 0};
+					const GFXPOINT dstPt = {0, 0};
 
 					if (DC_image == 0)
 					{
@@ -629,7 +629,7 @@ void TFB_FlushGraphics(void)
 			case TFB_DRAWCOMMANDTYPE_COPY:
 				{
 					TFB_DrawCommand_Copy* cmd = &DC.data.copy;
-					const RECT r = cmd->rect;
+					const GFXRECT r = cmd->rect;
 
 					if (cmd->destBuffer == TFB_SCREEN_MAIN)
 					{

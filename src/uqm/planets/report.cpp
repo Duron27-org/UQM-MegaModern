@@ -48,7 +48,7 @@ static void
 ClearReportArea(COORD startx)
 {
 	uqm::COUNT x, y;
-	RECT r;
+	GFXRECT r;
 	STAMP s;
 
 	if (optWhichFonts == uqm::EmulationMode::PC)
@@ -98,7 +98,7 @@ MakeReport(SOUND ReadOutSounds, uqm::CHAR_T* pStr, uqm::COUNT StrLen)
 	UniChar last_c = 0;
 	uqm::COUNT row_cells;
 	bool Sleepy;
-	RECT r, contextRect;
+	GFXRECT r, contextRect;
 	TEXT t;
 	Color fgcolor;
 	COORD startx;
@@ -360,8 +360,8 @@ MakeReport(SOUND ReadOutSounds, uqm::CHAR_T* pStr, uqm::COUNT StrLen)
 
 void DoDiscoveryReport(SOUND ReadOutSounds)
 {
-	CONTEXT OldContext;
-	CONTEXT context;
+	GFXCONTEXT OldContext;
+	GFXCONTEXT context;
 	bool ownContext;
 	STAMP saveStamp;
 
@@ -413,7 +413,7 @@ void DoDiscoveryReport(SOUND ReadOutSounds)
 	// Restore previous screen
 	DrawStamp(&saveStamp);
 	SetContext(OldContext);
-	// TODO: Make CONTEXT ref-counted
+	// TODO: Make GFXCONTEXT ref-counted
 	if (ownContext)
 	{
 		DestroyScanContext();

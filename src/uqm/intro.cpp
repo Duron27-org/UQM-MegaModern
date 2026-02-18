@@ -67,8 +67,8 @@ typedef struct
 	Color TextBackColor;
 	int TextVPos;
 	int TextEffect;
-	RECT clip_r;
-	RECT tfade_r;
+	GFXRECT clip_r;
+	GFXRECT tfade_r;
 #define MAX_TEXT_LINES 15
 	TEXT TextLines[MAX_TEXT_LINES];
 	uqm::COUNT LinesCount;
@@ -78,9 +78,9 @@ typedef struct
 	int InterframeDelay;
 
 	// For DOS Spins
-	RECT StatBox;
+	GFXRECT StatBox;
 	uqm::COUNT NumSpinStat;
-	RECT GetRect;
+	GFXRECT GetRect;
 	uqm::COUNT CurrentFrameIndex;
 	bool HaveFrame;
 	bool Skip;
@@ -203,12 +203,12 @@ Present_GenerateSIS(PRESENTATION_INPUT_STATE* pPIS)
 #define JET_TOP_Y_P (JET_TOP_Y + MODULE_YOFS_P)
 #define MODULE_TOP_Y_P (MODULE_TOP_Y + MODULE_YOFS_P)
 #define MODULE_TOP_X_P MODULE_TOP_X
-	CONTEXT OldContext;
+	GFXCONTEXT OldContext;
 	FRAME SisFrame;
 	FRAME ModuleFrame;
 	FRAME SkelFrame;
 	STAMP s;
-	RECT r;
+	GFXRECT r;
 	HOT_SPOT hs;
 	int slot;
 	uqm::COUNT piece;
@@ -335,7 +335,7 @@ DoSpinLine(LINE* l, Color front, Color back, bool* skip)
 }
 
 static void
-DoSpinStatBox(RECT* r, Color front, Color back, bool* skip)
+DoSpinStatBox(GFXRECT* r, Color front, Color back, bool* skip)
 {
 	if (!*skip)
 	{
@@ -352,9 +352,9 @@ DoSpinStat(uqm::CHAR_T* buf, COORD x, COORD y, uqm::COUNT filled, uqm::COUNT emp
 {
 	TEXT Text;
 	uqm::COUNT i;
-	RECT sq;
-	POINT c;
-	RECT chd;
+	GFXRECT sq;
+	GFXPOINT c;
+	GFXRECT chd;
 
 	sq.corner.x = x + RES_SCALE(63);
 	sq.corner.y = y - RES_SCALE(5);
@@ -1590,9 +1590,9 @@ DoPresentation(void* pIS)
 static bool
 ShowSlidePresentation(STRING PresStr)
 {
-	CONTEXT OldContext;
+	GFXCONTEXT OldContext;
 	FONT OldFont;
-	RECT OldRect;
+	GFXRECT OldRect;
 	PRESENTATION_INPUT_STATE pis;
 	int i;
 

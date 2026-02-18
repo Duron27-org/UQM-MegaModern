@@ -594,7 +594,7 @@ ProcessCollisions(HELEMENT hSuccElement, ELEMENT* ElementPtr,
 
 			if (time_val > 0)
 			{
-				POINT SavePt, TestSavePt;
+				GFXPOINT SavePt, TestSavePt;
 
 #ifdef DEBUG_PROCESS
 				uqm::log::debug("{:#x} <--> {:#x} at {}", ElementPtr,
@@ -999,7 +999,7 @@ PostProcessQueue(VIEW_STATE view_state, uqm::SDWORD scroll_x, uqm::SDWORD scroll
 			if (view_state != VIEW_STABLE
 				|| (state_flags & (APPEARING | CHANGING)))
 			{
-				POINT next;
+				GFXPOINT next;
 
 				if (ObjType == LINE_PRIM)
 				{

@@ -119,10 +119,10 @@ enum FlashType
 
 struct FlashContext
 {
-	CONTEXT gfxContext;
+	GFXCONTEXT gfxContext;
 	// The graphics context used for drawing.
 
-	RECT rect;
+	GFXRECT rect;
 	// The rectangle to flash.
 
 	FRAME original;
@@ -194,11 +194,11 @@ struct FlashContext
 #endif /* FLASH_INTERNAL */
 
 
-FlashContext* Flash_createHighlight(CONTEXT gfxContext, const RECT* rect);
-FlashContext* Flash_createTransition(CONTEXT gfxContext,
-									 const POINT* origin, FRAME first, FRAME final);
-FlashContext* Flash_createOverlay(CONTEXT gfxContext,
-								  const POINT* origin, FRAME overlay);
+FlashContext* Flash_createHighlight(GFXCONTEXT gfxContext, const GFXRECT* rect);
+FlashContext* Flash_createTransition(GFXCONTEXT gfxContext,
+									 const GFXPOINT* origin, FRAME first, FRAME final);
+FlashContext* Flash_createOverlay(GFXCONTEXT gfxContext,
+								  const GFXPOINT* origin, FRAME overlay);
 
 void Flash_setState(FlashContext* context, FlashState state,
 					TimeCount timeSpentInState);
@@ -215,9 +215,9 @@ void Flash_setFrameTime(FlashContext* context, TimeCount frameTime);
 void Flash_setPulseBox(FlashContext* context, bool isPulsing);
 bool Flash_getPulseBox(FlashContext* context);
 TimeCount Flash_nextTime(FlashContext* context);
-void Flash_setRect(FlashContext* context, const RECT* rect);
-void Flash_getRect(FlashContext* context, RECT* rect);
-void Flash_setOverlay(FlashContext* context, const POINT* origin,
+void Flash_setRect(FlashContext* context, const GFXRECT* rect);
+void Flash_getRect(FlashContext* context, GFXRECT* rect);
+void Flash_setOverlay(FlashContext* context, const GFXPOINT* origin,
 					  FRAME overlay, bool cleanup);
 void Flash_preUpdate(FlashContext* context);
 void Flash_postUpdate(FlashContext* context);

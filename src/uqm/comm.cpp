@@ -67,7 +67,7 @@
 // The highest known stable animation rate is 40fps, so that's what we use.
 #define COMM_ANIM_RATE (ONE_SECOND / 40)
 
-static CONTEXT AnimContext;
+static GFXCONTEXT AnimContext;
 
 LOCDATA CommData;
 uqm::CHAR_T shared_phrase_buf[2048];
@@ -109,7 +109,7 @@ typedef struct encounter_state
 typedef struct CustomBaseline
 {
 	uqm::COUNT index;
-	POINT baseline;
+	GFXPOINT baseline;
 	TEXT_ALIGN align;
 	struct CustomBaseline* next;
 
@@ -130,11 +130,11 @@ static bool next_page = false;
 static TEXT SubtitleText;
 static const uqm::CHAR_T* last_subtitle;
 
-static CONTEXT TextCacheContext;
+static GFXCONTEXT TextCacheContext;
 static FRAME TextCacheFrame;
 
 
-RECT CommWndRect = {
+GFXRECT CommWndRect = {
 	// default values; actually inited by HailAlien()
 	{0, 0},
 	{0, 0}  //was {SIS_ORG_X, SIS_ORG_Y},
@@ -189,8 +189,8 @@ add_text(int status, TEXT* pTextIn)
 	int num_lines = 0;
 	static COORD last_baseline;
 	bool eol;
-	CONTEXT OldContext = nullptr;
-	RECT arrow;
+	GFXCONTEXT OldContext = nullptr;
+	GFXRECT arrow;
 
 	BatchGraphics();
 
@@ -477,7 +477,7 @@ bool getLineWithinWidth(TEXT* pText, const char** startNext,
 	// The end of the line of text has been reached.
 	bool done;
 	// We cannot add any more words.
-	RECT rect;
+	GFXRECT rect;
 	uqm::COUNT oldCount;
 	const char* ptr;
 	const char* wordStart;
@@ -536,10 +536,10 @@ bool getLineWithinWidth(TEXT* pText, const char** startNext,
 	}
 }
 
-void DrawCommBorder(RECT r)
+void DrawCommBorder(GFXRECT r)
 {
-	RECT clipRect;
-	RECT oldClipRect;
+	GFXRECT clipRect;
+	GFXRECT oldClipRect;
 
 	GetContextClipRect(&oldClipRect);
 
@@ -574,11 +574,11 @@ void DrawCommBorder(RECT r)
 static void
 DrawSISComWindow(void)
 {
-	CONTEXT OldContext;
+	GFXCONTEXT OldContext;
 
 	if (lowByte(GLOBAL(CurrentActivity)) != WON_LAST_BATTLE)
 	{
-		RECT r;
+		GFXRECT r;
 
 		OldContext = SetContext(SpaceContext);
 
@@ -698,7 +698,7 @@ RefreshResponses(ENCOUNTER_STATE* pES)
 	}
 	if (s.frame)
 	{
-		RECT r;
+		GFXRECT r;
 
 		GetFrameRect(s.frame, &r);
 		s.origin.x = SIS_SCREEN_WIDTH - r.extent.width - RES_SCALE(1);
@@ -767,7 +767,7 @@ static void
 UpdateSpeechGraphics(void)
 {
 	static TimeCount NextTime;
-	CONTEXT OldContext;
+	GFXCONTEXT OldContext;
 
 	if (GetTimeCounter() < NextTime)
 	{
@@ -787,7 +787,7 @@ static void
 UpdateAnimations(bool paused)
 {
 	static TimeCount NextTime;
-	CONTEXT OldContext;
+	GFXCONTEXT OldContext;
 	bool change;
 
 	if (GetTimeCounter() < NextTime)
@@ -824,7 +824,7 @@ void UpdateDuty(bool talk)
 	UpdateSpeechGraphics();
 }
 
-RECT DarkModeRect[6];
+GFXRECT DarkModeRect[6];
 
 void InitUIRects(bool state)
 {
@@ -880,7 +880,7 @@ FadePlayerUI(void)
 	else
 	{
 		static TimeCount NextTime;
-		CONTEXT OldContext;
+		GFXCONTEXT OldContext;
 		uqm::BYTE i;
 
 		// emulating as close as possible PC-DOS text glow
@@ -1222,7 +1222,7 @@ CommIntroTransition(void)
 	}
 	else if (curIntroMode == CIM_CROSSFADE_SPACE)
 	{
-		RECT r;
+		GFXRECT r;
 		r.corner.x = SIS_ORG_X;
 		r.corner.y = SIS_ORG_Y;
 		r.extent.width = SIS_SCREEN_WIDTH;
@@ -1360,7 +1360,7 @@ DoConvSummary(SUMMARY_STATE* pSS)
 	}
 	else if (pSS->PrintNext)
 	{ // print the next page
-		RECT r;
+		GFXRECT r;
 		TEXT t;
 		int row;
 
@@ -1933,7 +1933,7 @@ HailAlien(void)
 	OldFont = SetContextFont(PlayerFont);
 
 	{
-		RECT r;
+		GFXRECT r;
 
 		AnimContext = CreateContext("AnimContext");
 		SetContext(AnimContext);
@@ -1956,7 +1956,7 @@ HailAlien(void)
 		}
 		else
 		{
-			POINT Log = MAKE_POINT(LOGX_TO_UNIVERSE(GLOBAL_SIS(log_x)),
+			GFXPOINT Log = MAKE_POINT(LOGX_TO_UNIVERSE(GLOBAL_SIS(log_x)),
 								   LOGY_TO_UNIVERSE(GLOBAL_SIS(log_y)));
 
 			r.corner.x = SIS_ORG_X;
@@ -2437,7 +2437,7 @@ static void
 CheckSubtitles(bool really)
 {
 	const uqm::CHAR_T* pStr;
-	POINT baseline;
+	GFXPOINT baseline;
 	TEXT_ALIGN align;
 	uqm::COUNT num;
 
@@ -2511,7 +2511,7 @@ void RedrawSISComWindow(void)
 	DrawSISComWindow();
 }
 
-void SetCustomBaseLine(uqm::COUNT sentence, POINT bl, TEXT_ALIGN align)
+void SetCustomBaseLine(uqm::COUNT sentence, GFXPOINT bl, TEXT_ALIGN align)
 { // Add custom baseline to the list
 	CUSTOM_BASELINE *cur, *sPtr;
 

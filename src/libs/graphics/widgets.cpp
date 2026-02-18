@@ -102,7 +102,7 @@ void ReleaseArrows(void)
 	}
 }
 
-void DrawShadowedBox(RECT* r, Color bg, Color dark, Color medium)
+void DrawShadowedBox(GFXRECT* r, Color bg, Color dark, Color medium)
 { // Dialog box
 	DrawStarConBox(r, RES_SCALE(2), dark, medium, true, bg, true,
 				   TRANSPARENT);
@@ -110,12 +110,12 @@ void DrawShadowedBox(RECT* r, Color bg, Color dark, Color medium)
 
 // windowRect, if not nullptr, will be filled with the dimensions of the
 // window drawn.
-void DrawLabelAsWindow(WIDGET_LABEL* label, RECT* windowRect)
+void DrawLabelAsWindow(WIDGET_LABEL* label, GFXRECT* windowRect)
 {
 	Color oldfg = SetContextForeGroundColor(WIDGET_DIALOG_TEXT_COLOR);
 	FONT oldfont = 0;
 	FRAME oldFontEffect = SetContextFontEffect(nullptr);
-	RECT r;
+	GFXRECT r;
 	TEXT t;
 	int i, win_w, win_h;
 
@@ -200,7 +200,7 @@ Widget_DrawToolTips(int numlines, const char** tips)
 {
 	// This functions draws the text at the bottom of the screen
 	// which explains what the current option does.
-	RECT r;
+	GFXRECT r;
 	FONT oldfont = 0;
 	FRAME oldFontEffect = SetContextFontEffect(nullptr);
 	Color oldtext = SetContextForeGroundColor(WIDGET_TOOLTIP_COLOR);
@@ -257,7 +257,7 @@ Widget_DrawToolTips(int numlines, const char** tips)
 
 void Widget_DrawMenuScreen(WIDGET* _self, int x, int y)
 { // Main menu function that draws backgroung and all widgets
-	RECT r;
+	GFXRECT r;
 	Color title, oldtext;
 	FONT oldfont = 0;
 	FRAME oldFontEffect = SetContextFontEffect(nullptr);
@@ -490,7 +490,7 @@ void Widget_DrawChoice(WIDGET* _self, int x, int y)
 				}
 
 				{ // Navigation Dots
-					RECT d;
+					GFXRECT d;
 					uqm::COUNT c;
 
 					d.extent.width = RES_SCALE(4);
@@ -574,7 +574,7 @@ void Widget_DrawLabel(WIDGET* _self, int x, int y)
 	FRAME oldFontEffect = SetContextFontEffect(nullptr);
 	TEXT t;
 	int i;
-	RECT r;
+	GFXRECT r;
 	const uqm::CHAR_T* amperScore = "&_";
 	const uqm::CHAR_T* amperBang = "&!";
 	const size_t asSize = strlen(amperScore);
@@ -643,7 +643,7 @@ void Widget_DrawSlider(WIDGET* _self, int x, int y)
 	FONT oldfont = 0;
 	FRAME oldFontEffect = SetContextFontEffect(nullptr);
 	TEXT t;
-	RECT r;
+	GFXRECT r;
 	int tick = (CanvasWidth - x) / 8;
 	int slider_width;
 
@@ -777,10 +777,10 @@ void Widget_DrawTextEntry(WIDGET* _self, int x, int y)
 	else
 	{ // editing state
 		uqm::COUNT i;
-		RECT text_r;
+		GFXRECT text_r;
 		uqm::BYTE char_deltas[WIDGET_TEXTENTRY_WIDTH];
 		uqm::BYTE* pchar_deltas;
-		RECT r;
+		GFXRECT r;
 		uqm::SIZE leading;
 
 		t.baseline.x = RSTEP;

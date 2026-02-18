@@ -149,7 +149,7 @@ queueIndexFromShip (HSTARSHIP hShip)
 static void
 PickMelee_ChangedSelection(GETMELEE_STATE* gms, uqm::COUNT playerI)
 {
-	RECT r;
+	GFXRECT r;
 
 	r.corner.x = SAFE_X + PICK_X_OFFS + ((ICON_WIDTH + RES_SCALE(2)) * gms->player[playerI].col);
 	r.corner.y = SAFE_Y + PICK_Y_OFFS + ((ICON_HEIGHT + RES_SCALE(2)) * gms->player[playerI].row) + ((1 - playerI) * PICK_SIDE_OFFS);
@@ -448,7 +448,7 @@ GetRaceQueueValue(const QUEUE* queue)
 static void
 CrossOutShip(FRAME frame, uqm::COUNT shipNr)
 {
-	CONTEXT OldContext;
+	GFXCONTEXT OldContext;
 	STAMP s;
 	uqm::BYTE row = PickMelee_GetShipRow(shipNr);
 	uqm::BYTE col = PickMelee_GetShipColumn(shipNr);
@@ -471,9 +471,9 @@ CrossOutShip(FRAME frame, uqm::COUNT shipNr)
 static void
 UpdatePickMeleeFleetValue(FRAME frame, uqm::COUNT which_player)
 {
-	CONTEXT OldContext;
+	GFXCONTEXT OldContext;
 	uqm::COUNT value;
-	RECT r;
+	GFXRECT r;
 	TEXT t;
 
 	value = GetRaceQueueValue(&race_q[which_player]);
@@ -518,7 +518,7 @@ UpdatePickMeleeFleetValue(FRAME frame, uqm::COUNT which_player)
 void BuildPickMeleeFrame(void)
 {
 	STAMP s;
-	CONTEXT OldContext = SetContext(OffScreenContext);
+	GFXCONTEXT OldContext = SetContext(OffScreenContext);
 
 	if (PickMeleeFrame)
 	{
@@ -549,7 +549,7 @@ void BuildPickMeleeFrame(void)
 void FillPickMeleeFrame(MeleeSetup* setup)
 {
 	uqm::COUNT i;
-	CONTEXT OldContext;
+	GFXCONTEXT OldContext;
 
 	OldContext = SetContext(OffScreenContext);
 
@@ -557,7 +557,7 @@ void FillPickMeleeFrame(MeleeSetup* setup)
 	{
 		uqm::COUNT side;
 		uqm::COUNT sideI;
-		RECT r;
+		GFXRECT r;
 		TEXT t;
 		STAMP s;
 		FleetShipIndex index;
@@ -679,7 +679,7 @@ void DestroyPickMeleeFrame(void)
 static void
 DrawPickMeleeFrame(uqm::COUNT which_player)
 {
-	CONTEXT oldContext;
+	GFXCONTEXT oldContext;
 	STAMP s;
 
 	oldContext = SetContext(SpaceContext);

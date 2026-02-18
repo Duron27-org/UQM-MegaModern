@@ -619,7 +619,7 @@ static constexpr STAR_DESC StarmapArray[] =
 		{{MAX_X_UNIVERSE << 1, MAX_Y_UNIVERSE << 1}, 0, 0, 0, 0},
 };
 
-static constexpr POINT ConstellationsArray[] =
+static constexpr GFXPOINT ConstellationsArray[] =
 	{
 		/* Crateris */
 		{6014, 5632},

@@ -97,7 +97,7 @@ enum
 
 extern STRING GameStrings;
 
-extern void SetCursorRect(RECT* r, CONTEXT context);
+extern void SetCursorRect(GFXRECT* r, GFXCONTEXT context);
 extern void FlushCursorRect(void);
 void SetCursorFlashBlock(bool state);
 

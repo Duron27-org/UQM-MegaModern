@@ -42,7 +42,7 @@ STAR_DESC star_array[NUM_SOLAR_SYSTEMS + NUM_HYPER_VORTICES + 3] {};
 //		{[0 ... (NUM_SOLAR_SYSTEMS + NUM_HYPER_VORTICES + 2)] =
 //		{{~0, ~0}, 0, 0, 0, 0}};
 STAR_DESC* CurStarDescPtr = 0;
-const POINT* constel_array;
+const GFXPOINT* constel_array;
 // JSD Give my own starseed
 RandomContext* StarGenRNG;
 PORTAL_LOCATION portal_map[NUM_HYPER_VORTICES + 1] {};
@@ -51,7 +51,7 @@ PORTAL_LOCATION portal_map[NUM_HYPER_VORTICES + 1] {};
 
 
 STAR_DESC*
-FindStar(STAR_DESC* LastSDPtr, POINT* puniverse, uqm::SIZE xbounds,
+FindStar(STAR_DESC* LastSDPtr, GFXPOINT* puniverse, uqm::SIZE xbounds,
 		 uqm::SIZE ybounds)
 {
 	COORD min_y, max_y;
@@ -167,7 +167,7 @@ void GetClusterName(const STAR_DESC* pSD, uqm::CHAR_T buf[])
 // Finds the nearest (constellation = true / false = star) to the
 // point P provided on the starmap, returns pointer to that star.
 STAR_DESC*
-FindNearest(STAR_DESC* starmap, POINT p, bool constellation)
+FindNearest(STAR_DESC* starmap, GFXPOINT p, bool constellation)
 {
 	if (!starmap || p.x == ~0 || p.y == ~0)
 	{
@@ -189,14 +189,14 @@ FindNearest(STAR_DESC* starmap, POINT p, bool constellation)
 
 // Returns a pointer to the closest star to point p on the starmap
 STAR_DESC*
-FindNearestStar(STAR_DESC* starmap, POINT p)
+FindNearestStar(STAR_DESC* starmap, GFXPOINT p)
 {
 	return (starmap ? FindNearest(starmap, p, false) : nullptr);
 }
 
 // Returns a pointer to the closest constellation to point p on the starmap
 STAR_DESC*
-FindNearestConstellation(STAR_DESC* starmap, POINT p)
+FindNearestConstellation(STAR_DESC* starmap, GFXPOINT p)
 {
 	return (starmap ? FindNearest(starmap, p, true) : nullptr);
 }
@@ -589,7 +589,7 @@ void ResetPlot(PLOT_LOCATION* plot)
 		{
 			plot[i].dist_sq[j] = 0;
 		}
-		plot[i].star_pt = POINT {~0, ~0};
+		plot[i].star_pt = GFXPOINT {~0, ~0};
 		plot[i].star = nullptr;
 	}
 }
@@ -609,7 +609,7 @@ void DefaultPlot(PLOT_LOCATION* plot, STAR_DESC* starmap)
 	}
 
 	ResetPlot(plot);
-	plot[0].star_pt = POINT {ARILOU_SPACE_X, ARILOU_SPACE_Y};
+	plot[0].star_pt = GFXPOINT {ARILOU_SPACE_X, ARILOU_SPACE_Y};
 	plot[0].star = &(starmap[NUM_SOLAR_SYSTEMS + 1 + NUM_HYPER_VORTICES + 1]);
 	for (i = 0; i < NUM_SOLAR_SYSTEMS; i++)
 	{
@@ -841,7 +841,7 @@ void InitMelnormeRainbow(PLOT_LOCATION* plotmap)
 	for (i = RAINBOW0_DEFINED; i <= RAINBOW9_DEFINED; i++)
 	{
 		plotmap[i].star = nullptr;
-		plotmap[i].star_pt = POINT {~0, ~0};
+		plotmap[i].star_pt = GFXPOINT {~0, ~0};
 		for (j = RAINBOW0_DEFINED; j <= RAINBOW9_DEFINED; j++)
 		{
 			if (i != j)
@@ -853,7 +853,7 @@ void InitMelnormeRainbow(PLOT_LOCATION* plotmap)
 	for (i = MELNORME0_DEFINED; i <= MELNORME8_DEFINED; i++)
 	{
 		plotmap[i].star = nullptr;
-		plotmap[i].star_pt = POINT {~0, ~0};
+		plotmap[i].star_pt = GFXPOINT {~0, ~0};
 		for (j = MELNORME0_DEFINED; j <= MELNORME8_DEFINED; j++)
 		{
 			if (i != j)
@@ -1498,7 +1498,7 @@ SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap)
 		if (plot_id == ARILOU_DEFINED)
 		{
 			star_id = (rand_val + i * STAR_FACTOR) % 100;
-			plotmap[ARILOU_DEFINED].star_pt = POINT {
+			plotmap[ARILOU_DEFINED].star_pt = GFXPOINT {
 				(star_id / 10) * 1000 + lowByte(rand_val) * 100 / 256,
 				(star_id % 10) * 1000 + highByte(rand_val) * 100 / 256};
 			plotmap[ARILOU_DEFINED].star = FindNearestStar(starmap,
@@ -1570,7 +1570,7 @@ SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap)
 				{
 					starmap[star_id].Index = 0;
 				}
-				plotmap[plot_id].star_pt = POINT {~0, ~0};
+				plotmap[plot_id].star_pt = GFXPOINT {~0, ~0};
 				plotmap[plot_id].star = nullptr;
 				if (my_clock)
 				{
@@ -1592,7 +1592,7 @@ SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap)
 		{
 			starmap[star_id].Index = 0;
 		}
-		plotmap[plot_id].star_pt = POINT {~0, ~0};
+		plotmap[plot_id].star_pt = GFXPOINT {~0, ~0};
 		plotmap[plot_id].star = nullptr;
 	}
 #ifdef DEBUG_STARSEED_TRACE_Z
@@ -1673,7 +1673,7 @@ bool SeedQuasispace(PORTAL_LOCATION* portalmap, PLOT_LOCATION* plotmap,
 				// half above.
 				// We locate the portal by up to 1147 (114.7) in any direction.
 				// Also note COORD is just uqm::SWORD and can be negative.
-				portalmap[i].star_pt = POINT {
+				portalmap[i].star_pt = GFXPOINT {
 					(COORD)lowByte(rand_val) * 9 + plotmap[SOL_DEFINED].star_pt.x - 1147,
 					(COORD)highByte(rand_val) * 9 + plotmap[SOL_DEFINED].star_pt.y - 1147};
 				// Take care of anything off the map (w/in 18.9) or too close
@@ -1698,7 +1698,7 @@ bool SeedQuasispace(PORTAL_LOCATION* portalmap, PLOT_LOCATION* plotmap,
 				// 189 [0] and 9810 [255].
 				// ([rnd] 255 * 9999 / 265 = 9621) + 189 = 9810
 				// (or 189 below the top)
-				portalmap[i].star_pt = POINT {lowByte(rand_val) * MAX_X_UNIVERSE / 265 + 189,
+				portalmap[i].star_pt = GFXPOINT {lowByte(rand_val) * MAX_X_UNIVERSE / 265 + 189,
 											  highByte(rand_val) * MAX_Y_UNIVERSE / 265 + 189};
 				for (j = 0; j < i; j++)
 				{
@@ -1754,7 +1754,7 @@ bool SeedQuasispace(PORTAL_LOCATION* portalmap, PLOT_LOCATION* plotmap,
 		{
 			valid = true;
 			rand_val = RandomContext_Random(StarGenRNG);
-			portalmap[i].quasi_pt = POINT {(lowByte(rand_val) * 51 / 256 - 25) * VORTEX_SCALE + 5000,
+			portalmap[i].quasi_pt = GFXPOINT {(lowByte(rand_val) * 51 / 256 - 25) * VORTEX_SCALE + 5000,
 										   (highByte(rand_val) * 51 / 256 - 25) * VORTEX_SCALE + 5000};
 			for (j = 0; j < i; j++)
 			{

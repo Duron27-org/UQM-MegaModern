@@ -271,7 +271,7 @@ bool DestroyDrawable(DRAWABLE Drawable)
 	return (false);
 }
 
-bool GetFrameRect(FRAME FramePtr, RECT* pRect)
+bool GetFrameRect(FRAME FramePtr, GFXRECT* pRect)
 {
 	if (FramePtr)
 	{
@@ -384,7 +384,7 @@ void SetFrameTransparentColor(FRAME frame, Color color)
 	UnlockMutex(img->mutex);
 }
 
-Color GetFramePixel(FRAME frame, POINT pixelPt)
+Color GetFramePixel(FRAME frame, GFXPOINT pixelPt)
 {
 	TFB_Image* img;
 	Color ret;
@@ -461,10 +461,10 @@ makeMatchingIndexedFrame(FRAME frame, int width, int height)
 // Creates an new DRAWABLE containing a copy of specified FRAME's rect
 // Source FRAME must not be a SCREEN_DRAWABLE
 DRAWABLE
-CopyFrameRect(FRAME frame, const RECT* area)
+CopyFrameRect(FRAME frame, const GFXRECT* area)
 {
 	FRAME newFrame;
-	POINT nullPt = MAKE_POINT(0, 0);
+	GFXPOINT nullPt = MAKE_POINT(0, 0);
 
 	if (!frame)
 	{
@@ -491,7 +491,7 @@ DRAWABLE
 CloneFrame(FRAME frame)
 {
 	FRAME newFrame;
-	RECT r;
+	GFXRECT r;
 
 	if (!frame)
 	{

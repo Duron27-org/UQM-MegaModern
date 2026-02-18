@@ -305,8 +305,8 @@ mmrnmhrm_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 }
 
 static void
-twin_laser_collision(ELEMENT* ElementPtr0, POINT* pPt0,
-					 ELEMENT* ElementPtr1, POINT* pPt1)
+twin_laser_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
+					 ELEMENT* ElementPtr1, GFXPOINT* pPt1)
 {
 	if (!(ElementPtr1->state_flags & PLAYER_SHIP)
 		|| !elementsOfSamePlayer(ElementPtr0, ElementPtr1))

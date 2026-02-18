@@ -49,6 +49,7 @@
 #include "hyper.h"
 // for EraseRadar()
 
+using namespace uqm;
 
 uqm::BYTE battle_counter[NUM_SIDES];
 // The number of ships still available for battle to each side.
@@ -310,7 +311,7 @@ static bool
 DoBattle(BATTLE_STATE* bs)
 {
 	extern uqm::UWORD nth_frame;
-	RECT r;
+	GFXRECT r;
 	uqm::BYTE battle_speed;
 
 	SetMenuSounds(MENU_SOUND_NONE, MENU_SOUND_NONE);
@@ -486,7 +487,7 @@ bool Battle(BattleFrameCallback* callback)
 		battle_counter[0] = CountLinks(&race_q[0]);
 		battle_counter[1] = CountLinks(&race_q[1]);
 
-		if (optMeleeScale != TFB_SCALE_STEP)
+		if (optMeleeScale != MeleeScaleMode::Step)
 		{
 			SetGraphicScaleMode(optMeleeScale);
 		}

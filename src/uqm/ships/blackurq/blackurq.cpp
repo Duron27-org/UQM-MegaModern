@@ -269,8 +269,8 @@ splinter_preprocess(ELEMENT* ElementPtr)
 }
 
 static void
-buzzsaw_collision(ELEMENT* ElementPtr0, POINT* pPt0,
-				  ELEMENT* ElementPtr1, POINT* pPt1)
+buzzsaw_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
+				  ELEMENT* ElementPtr1, GFXPOINT* pPt1)
 {
 	weapon_collision(ElementPtr0, pPt0, ElementPtr1, pPt1);
 
@@ -487,8 +487,8 @@ gas_cloud_preprocess(ELEMENT* ElementPtr)
 }
 
 static void
-gas_cloud_collision(ELEMENT* ElementPtr0, POINT* pPt0,
-					ELEMENT* ElementPtr1, POINT* pPt1)
+gas_cloud_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
+					ELEMENT* ElementPtr1, GFXPOINT* pPt1)
 {
 	if (ElementPtr1->state_flags & PLAYER_SHIP)
 	{
