@@ -41,15 +41,22 @@ jobs:
         pip install conan
         conan --version
 
-    - name: Create minimal Conan default profile
+    - name: Detect Conan Profile
       run: |
-        conan profile new default --detect
+        conan profile detect --force
         conan profile show
-    
-#    - name: Configure Conan Profile for C++20
-#      run: |
-#        conan profile update settings.compiler.cppstd=20 default
-    
+
+    - name: Cache Conan packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          C:\Users\runneradmin\.conan2
+        key: conan-${{ runner.os }}-clang21-${{ matrix.build_type }}-${{ hashFiles('conanfile.*') }}
+        restore-keys: |
+          conan-${{ runner.os }}-clang21-${{ matrix.build_type }}-
+          conan-${{ runner.os }}-clang21-
+
+   
     - name: Install Dependencies with Conan
       run: |
         conan install . `
