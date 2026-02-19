@@ -41,10 +41,10 @@ jobs:
         pip install conan
         conan --version
 
- #   - name: Detect Conan Profile
- #     run: |
- #       conan profile detect --force
- #       conan profile show
+    - name: Create minimal Conan default profile
+      run: |
+        conan profile new default --detect
+        conan profile show
     
 #    - name: Configure Conan Profile for C++20
 #      run: |
