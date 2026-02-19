@@ -893,7 +893,7 @@ bool setGammaCorrection(float gamma)
 	bool set = TFB_SetGamma(gamma);
 	if (set)
 	{
-		uqm::log::info("Gamma correction set to %.4f.", gamma);
+		uqm::log::info("Gamma correction set to {:.4}.", gamma);
 	}
 	else
 	{
