@@ -1,4 +1,4 @@
-//Copyright Paul Reiche, Fred Ford. 1992-2002
+//Copyright Paul Reiche, Fred Ford. 1992-2002#include "libs/time/timelib.h"
 
 /*
  *  This program is free software; you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 
 #include "libs/compiler.h"
 #include "libs/strlib.h"
-#include "libs/timelib.h"
+#include "libs/time/timelib.h"
 
 #if 0 //defined(__cplusplus)
 extern "C" {

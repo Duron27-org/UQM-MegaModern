@@ -60,10 +60,10 @@ static LOCDATA commander_desc =
 				1,		   /* StartIndex */
 				3,		   /* NumFrames */
 				YOYO_ANIM, /* AnimFlags */
-				ONE_SECOND / 15,
+				GameTicksPerSecond / 15,
 				0, /* FrameRate */
 				0,
-				ONE_SECOND * 8, /* RestartRate */
+				GameTicksPerSecond * 8, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
@@ -71,9 +71,9 @@ static LOCDATA commander_desc =
 				10,			   /* StartIndex */
 				30,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND / 40,
+				GameTicksPerSecond / 40,
 				0, /* FrameRate */
-				ONE_SECOND * 2,
+				GameTicksPerSecond * 2,
 				0, /* RestartRate */
 				0, /* BlockMask */
 			},
@@ -84,9 +84,9 @@ static LOCDATA commander_desc =
 				RANDOM_ANIM | COLORXFORM_ANIM
 					| ANIM_DISABLED, /* AnimFlags */
 				0,
-				ONE_SECOND / 30, /* FrameRate */
+				GameTicksPerSecond / 30, /* FrameRate */
 				0,
-				ONE_SECOND / 15, /* RestartRate */
+				GameTicksPerSecond / 15, /* RestartRate */
 				0,				 /* BlockMask */
 			},
 								{
@@ -96,9 +96,9 @@ static LOCDATA commander_desc =
 				RANDOM_ANIM | ANIM_DISABLED
 					| IMMUME_TO_RESTART, /* AnimFlags */
 				0,
-				ONE_SECOND / 5, /* FrameRate */
+				GameTicksPerSecond / 5, /* FrameRate */
 				0,
-				ONE_SECOND / 4, /* RestartRate */
+				GameTicksPerSecond / 4, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								},
@@ -118,10 +118,10 @@ static LOCDATA commander_desc =
 			4, /* StartIndex */
 			6, /* NumFrames */
 			0, /* AnimFlags */
-			ONE_SECOND / 10,
-								ONE_SECOND / 15, /* FrameRate */
-			ONE_SECOND * 7 / 60,
-								ONE_SECOND / 12, /* RestartRate */
+			GameTicksPerSecond / 10,
+								GameTicksPerSecond / 15, /* FrameRate */
+			GameTicksPerSecond * 7 / 60,
+								GameTicksPerSecond / 12, /* RestartRate */
 			0,				 /* BlockMask */
 		},
 		nullptr, /* AlienNumberSpeech - none */
@@ -737,7 +737,7 @@ GiveRadios(RESPONSE_REF R)
 
 		XFormColorMap(GetColorMapAddress(
 						  SetAbsColorMapIndex(CommData.AlienColorMap, 0)),
-					  ONE_SECOND / 2);
+					  GameTicksPerSecond / 2);
 
 		if (altResFlags & USE_ALT_SONG)
 		{
@@ -748,7 +748,7 @@ GiveRadios(RESPONSE_REF R)
 			SetMusicVolume(MUTE_VOLUME);
 			PlayMusic(CommData.AlienSong, true, 1);
 			SeekMusic(MusicPos);
-			FadeMusic(NORMAL_VOLUME, ONE_SECOND);
+			FadeMusic(NORMAL_VOLUME, GameTicksPerSecond);
 
 			altResFlags &= ~USE_ALT_SONG;
 		}
@@ -779,7 +779,7 @@ Intro(void)
 {
 	if (IS_HD) // To smooth out HD blink animation
 	{
-		CommData.AlienAmbientArray[0].BaseFrameRate = ONE_SECOND / 40;
+		CommData.AlienAmbientArray[0].BaseFrameRate = GameTicksPerSecond / 40;
 	}
 
 	if (GET_GAME_STATE(PROBE_ILWRATH_ENCOUNTER))

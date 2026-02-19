@@ -38,10 +38,10 @@
  * Flash_setMergeFactors(fc, 2, 3, 2);
  *
  * // We change the flashing speed from the defaults.
- * Flash_setSpeed (fc, ONE_SECOND, ONE_SECOND, ONE_SECOND, ONE_SECOND);
+ * Flash_setSpeed (fc, GameTicksPerSecond, GameTicksPerSecond, GameTicksPerSecond, GameTicksPerSecond);
  * 
  * // During cross-fades, update 8 times per second.
- * Flash_setFrameTime (fc, ONE_SECOND / 8);
+ * Flash_setFrameTime (fc, GameTicksPerSecond / 8);
  *
  * // We start the flashing. The default is to start from the "off" state.
  * Flash_start (fc);
@@ -89,7 +89,7 @@
  */
 
 #include "libs/gfxlib.h"
-#include "libs/timelib.h"
+#include "libs/time/timelib.h"
 
 #if 0 //defined(__cplusplus)
 extern "C" {
@@ -186,9 +186,9 @@ struct FlashContext
 };
 
 #define Flash_DEFAULT_FADE_IN_TIME 0
-#define Flash_DEFAULT_ON_TIME (ONE_SECOND / 8)
+#define Flash_DEFAULT_ON_TIME (GameTicksPerSecond / 8)
 #define Flash_DEFAULT_FADE_OUT_TIME 0
-#define Flash_DEFAULT_OFF_TIME (ONE_SECOND / 8)
+#define Flash_DEFAULT_OFF_TIME (GameTicksPerSecond / 8)
 
 #define Flash_DEFAULT_CACHE_SIZE 9
 #endif /* FLASH_INTERNAL */

@@ -22,18 +22,13 @@
 #include "libs/tasklib.h"
 #include "displist.h"
 
-#if 0 //defined(__cplusplus)
-extern "C" {
-#endif
-
-
 #define START_YEAR 2155
 
 // the running of the game-clock is based on game framerates
 // *not* on the system (or translated) timer
 // and is hard-coded to the original 24 fps
 #define CLOCK_BASE_FRAMERATE 24
-#define CLOCK_FRAME_RATE (ONE_SECOND / CLOCK_BASE_FRAMERATE)
+#define CLOCK_FRAME_RATE (GameTicksPerSecond / CLOCK_BASE_FRAMERATE)
 
 typedef struct
 {
@@ -106,9 +101,5 @@ extern void UnlockGameClock(void);
 // A weak indicator of the clock moving. Suitable for debugging,
 // but not much else
 extern bool GameClockRunning(void);
-
-#if 0 //defined(__cplusplus)
-}
-#endif
 
 #endif /* UQM_CLOCK_H_ */

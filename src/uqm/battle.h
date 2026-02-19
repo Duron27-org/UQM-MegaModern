@@ -55,7 +55,8 @@ uqm::COUNT GetPlayerOrder(uqm::COUNT i);
 
 bool Battle(BattleFrameCallback*);
 
-#define BATTLE_FRAME_RATE (ONE_SECOND / 24)
+static constexpr uqm::DWORD BattleFPS {24}; // TODO: this is also defined in netoptions.cpp as BattleFPS. Maybe we should unify these?
+static constexpr uqm::DWORD BattleFrameRateTicks {getTicksForFramerate(BattleFPS)};
 
 extern void BattleSong(bool DoPlay);
 extern void FreeBattleSong(void);

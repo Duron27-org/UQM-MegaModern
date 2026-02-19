@@ -461,7 +461,7 @@ bool PauseGame(void)
 	DrawPauseText(&r);
 
 	oldVolume = GetCurrMusicVol();
-	FadeMusic(60, ONE_SECOND / 2);
+	FadeMusic(60, GameTicksPerSecond / 2);
 
 	FlushGraphics();
 
@@ -489,13 +489,13 @@ bool PauseGame(void)
 	DestroyDrawable(ReleaseDrawable(saveStamp.frame));
 	ClearSystemRect();
 
-	FadeMusic(oldVolume, ONE_SECOND / 2);
+	FadeMusic(oldVolume, GameTicksPerSecond / 2);
 
 	SetContextClipRect(&OldRect);
 	SetContextOrigin(OldOrigin);
 	SetContext(OldContext);
 
-	WaitForNoInput(ONE_SECOND / 4, true);
+	WaitForNoInput(GameTicksPerSecond / 4, true);
 
 	DeltaLastTime(GetTimeCounter() - deltaT);
 
@@ -529,7 +529,7 @@ bool WaitForAnyButtonUntil(bool newButton, TimeCount timeOut,
 		   && !(GLOBAL(CurrentActivity) & CHECK_ABORT)
 		   && !QuitPosted)
 	{
-		SleepThread(ONE_SECOND / 40);
+		SleepThread(GameTicksPerSecond / 40);
 		buttonPressed = AnyButtonPress(true);
 	}
 
@@ -560,7 +560,7 @@ bool WaitForActButtonUntil(bool newButton, TimeCount timeOut,
 		   && !(GLOBAL(CurrentActivity) & CHECK_ABORT)
 		   && !QuitPosted)
 	{
-		SleepThread(ONE_SECOND / 40);
+		SleepThread(GameTicksPerSecond / 40);
 		buttonPressed = ActKeysPress();
 	}
 
@@ -604,7 +604,7 @@ bool WaitForNoInputUntil(TimeCount timeOut, bool resetInput)
 		   && !(GLOBAL(CurrentActivity) & CHECK_ABORT)
 		   && !QuitPosted)
 	{
-		SleepThread(ONE_SECOND / 40);
+		SleepThread(GameTicksPerSecond / 40);
 		buttonPressed = AnyButtonPress(true);
 	}
 
@@ -647,12 +647,12 @@ void SleepGame(void)
 
 	while (!GameActive && !QuitPosted)
 	{
-		SleepThread(ONE_SECOND / 2);
+		SleepThread(GameTicksPerSecond / 2);
 	}
 
 	uqm::log::debug("Game is waking up");
 
-	WaitForNoInput(ONE_SECOND / 10, true);
+	WaitForNoInput(GameTicksPerSecond / 10, true);
 
 	ResumeMusic();
 

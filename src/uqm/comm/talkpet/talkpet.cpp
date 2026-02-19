@@ -26,8 +26,8 @@
 #include "uqm/sounds.h"
 
 #define STROBE_RATE 30
-#define STROBE_LENGTH (ONE_SECOND / 3)
-#define NUM_STROBES (STROBE_LENGTH * STROBE_RATE / ONE_SECOND)
+#define STROBE_LENGTH (GameTicksPerSecond / 3)
+#define NUM_STROBES (STROBE_LENGTH * STROBE_RATE / GameTicksPerSecond)
 
 static LOCDATA talkpet_desc =
 	{
@@ -60,10 +60,10 @@ static LOCDATA talkpet_desc =
 				3, /* NumFrames */
 				YOYO_ANIM
 					| WAIT_TALKING, /* AnimFlags */
-				ONE_SECOND / 15,
-				ONE_SECOND / 15, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond / 15,
+				GameTicksPerSecond / 15, /* FrameRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
@@ -71,30 +71,30 @@ static LOCDATA talkpet_desc =
 				3,	/* NumFrames */
 				YOYO_ANIM
 					| WAIT_TALKING, /* AnimFlags */
-				ONE_SECOND / 15,
-				ONE_SECOND / 15, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond / 15,
+				GameTicksPerSecond / 15, /* FrameRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
 				13,			 /* StartIndex */
 				3,			 /* NumFrames */
 				RANDOM_ANIM, /* AnimFlags */
-				ONE_SECOND / 15,
-				ONE_SECOND / 15, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond / 15,
+				GameTicksPerSecond / 15, /* FrameRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
 				16,			 /* StartIndex */
 				2,			 /* NumFrames */
 				RANDOM_ANIM, /* AnimFlags */
-				ONE_SECOND / 15,
-				ONE_SECOND / 15, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond / 15,
+				GameTicksPerSecond / 15, /* FrameRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
@@ -102,8 +102,8 @@ static LOCDATA talkpet_desc =
 				18,							/* StartIndex */
 				3,							/* NumFrames */
 				YOYO_ANIM,					/* AnimFlags */
-				ONE_SECOND / 20, 0,			/* FrameRate */
-				ONE_SECOND, ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond / 20, 0,			/* FrameRate */
+				GameTicksPerSecond, GameTicksPerSecond * 3, /* RestartRate */
 				(1 << 13)					/* BlockMask */
 			},
 								{
@@ -111,70 +111,70 @@ static LOCDATA talkpet_desc =
 				21,		   /* StartIndex */
 				3,		   /* NumFrames */
 				YOYO_ANIM, /* AnimFlags */
-				ONE_SECOND / 20,
+				GameTicksPerSecond / 20,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3,		   /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3,		   /* RestartRate */
 				(1 << 12) | (1 << 14), /* BlockMask */
 			},
 								{
 				24,			 /* StartIndex */
 				2,			 /* NumFrames */
 				RANDOM_ANIM, /* AnimFlags */
-				ONE_SECOND / 10,
+				GameTicksPerSecond / 10,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
 				26,			 /* StartIndex */
 				2,			 /* NumFrames */
 				RANDOM_ANIM, /* AnimFlags */
-				ONE_SECOND / 10,
+				GameTicksPerSecond / 10,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
 				28,			 /* StartIndex */
 				4,			 /* NumFrames */
 				RANDOM_ANIM, /* AnimFlags */
-				ONE_SECOND / 10,
+				GameTicksPerSecond / 10,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
 				32,			 /* StartIndex */
 				3,			 /* NumFrames */
 				RANDOM_ANIM, /* AnimFlags */
-				ONE_SECOND / 10,
+				GameTicksPerSecond / 10,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
 				35,			 /* StartIndex */
 				5,			 /* NumFrames */
 				RANDOM_ANIM, /* AnimFlags */
-				ONE_SECOND / 10,
+				GameTicksPerSecond / 10,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
 				40,			 /* StartIndex */
 				2,			 /* NumFrames */
 				RANDOM_ANIM, /* AnimFlags */
-				ONE_SECOND / 10,
+				GameTicksPerSecond / 10,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
@@ -182,10 +182,10 @@ static LOCDATA talkpet_desc =
 				6,	/* NumFrames */
 				CIRCULAR_ANIM
 					| WAIT_TALKING, /* AnimFlags */
-				ONE_SECOND / 10,
+				GameTicksPerSecond / 10,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				(1 << 5),		/* BlockMask */
 			},
 								{
@@ -193,10 +193,10 @@ static LOCDATA talkpet_desc =
 				48,			 /* StartIndex */
 				2,			 /* NumFrames */
 				RANDOM_ANIM, /* AnimFlags */
-				ONE_SECOND / 10,
+				GameTicksPerSecond / 10,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				(1 << 4),		/* BlockMask */
 			},
 								{
@@ -204,20 +204,20 @@ static LOCDATA talkpet_desc =
 				50,			 /* StartIndex */
 				2,			 /* NumFrames */
 				RANDOM_ANIM, /* AnimFlags */
-				ONE_SECOND / 10,
+				GameTicksPerSecond / 10,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				(1 << 5),		/* BlockMask */
 			},
 								{
 				52,							/* StartIndex */
 				2,							/* NumFrames */
 				RANDOM_ANIM | WAIT_TALKING, /* AnimFlags */
-				ONE_SECOND / 10,
+				GameTicksPerSecond / 10,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
@@ -226,7 +226,7 @@ static LOCDATA talkpet_desc =
 				NUM_STROBES * 2, /* NumFrames */
 				CIRCULAR_ANIM | COLORXFORM_ANIM | ONE_SHOT_ANIM
 					| ANIM_DISABLED, /* AnimFlags */
-				ONE_SECOND / (STROBE_RATE * 2),
+				GameTicksPerSecond / (STROBE_RATE * 2),
 				0, /* FrameRate */
 				0,
 				0, /* RestartRate */
@@ -249,9 +249,9 @@ static LOCDATA talkpet_desc =
 			1, /* StartIndex */
 			6, /* NumFrames */
 			0, /* AnimFlags */
-			ONE_SECOND / 15,
+			GameTicksPerSecond / 15,
 								0, /* FrameRate */
-			ONE_SECOND / 12,
+			GameTicksPerSecond / 12,
 								0, /* RestartRate */
 			0, /* BlockMask */
 		},

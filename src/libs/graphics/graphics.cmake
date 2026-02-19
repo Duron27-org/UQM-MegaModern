@@ -31,6 +31,7 @@ set(uqm_src_libs_graphics_files
 	"src/libs/graphics/frame.cpp"
 	"src/libs/graphics/gfx_common.cpp"
 	"src/libs/graphics/gfx_common.h"
+	"src/libs/graphics/gfx_defs.h"
 	"src/libs/graphics/gfxintrn.h"
 	"src/libs/graphics/gfxload.cpp"
 	"src/libs/graphics/graphics.cmake"

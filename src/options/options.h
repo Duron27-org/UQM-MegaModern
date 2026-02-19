@@ -2,6 +2,7 @@
 
 #include "core/stl/stl.h"
 #include "core/string/StringUtils.h"
+#include "options/netoptions.h"
 #include "options/OptionConstants.h"
 #include "options/OptionTypes.h"
 #include "options/OptionDefs.h"
@@ -214,6 +215,11 @@ template <typename InT>
 class UQMOptions
 {
 public:
+	UQMOptions();
+	~UQMOptions();
+
+	[[nodiscard]] static UQMOptions& getInstance();
+
 	// Returns an [exit code, needs exit] result.
 	uqstl::pair<int, bool> parseArgs(uqstl::span<uqgsl::zstring> args);
 	//void printUsage(FILE* out, const OptionsStruct& defaultOptions);
@@ -227,9 +233,21 @@ public:
 	{
 		return m_options;
 	}
+#ifdef NETPLAY
+	NetplayOptions& getNetplayOptions()
+	{
+		return m_netplayOptions;
+	}
+#endif
+
 
 private:
 	OptionsStruct m_options;
+#ifdef NETPLAY
+	NetplayOptions m_netplayOptions;
+#endif
+
+	static UQMOptions* s_instance;
 };
 
 } // namespace uqm

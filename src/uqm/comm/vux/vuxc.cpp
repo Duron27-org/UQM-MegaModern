@@ -52,29 +52,29 @@ static LOCDATA vux_desc =
 				12,			 /* StartIndex */
 				3,			 /* NumFrames */
 				RANDOM_ANIM, /* AnimFlags */
-				ONE_SECOND / 30,
-				ONE_SECOND / 30, /* FrameRate */
-				ONE_SECOND / 30,
-				ONE_SECOND / 30, /* RestartRate */
+				GameTicksPerSecond / 30,
+				GameTicksPerSecond / 30, /* FrameRate */
+				GameTicksPerSecond / 30,
+				GameTicksPerSecond / 30, /* RestartRate */
 				0,				 /* BlockMask */
 			},
 								{
 				15,			 /* StartIndex */
 				5,			 /* NumFrames */
 				RANDOM_ANIM, /* AnimFlags */
-				ONE_SECOND / 30,
-				ONE_SECOND / 30, /* FrameRate */
-				ONE_SECOND / 30,
-				ONE_SECOND / 30, /* RestartRate */
+				GameTicksPerSecond / 30,
+				GameTicksPerSecond / 30, /* FrameRate */
+				GameTicksPerSecond / 30,
+				GameTicksPerSecond / 30, /* RestartRate */
 				0,				 /* BlockMask */
 			},
 								{
 				20,			   /* StartIndex */
 				14,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND / 30,
+				GameTicksPerSecond / 30,
 				0, /* FrameRate */
-				ONE_SECOND / 30,
+				GameTicksPerSecond / 30,
 				0, /* RestartRate */
 				0, /* BlockMask */
 			},
@@ -82,150 +82,150 @@ static LOCDATA vux_desc =
 				34,			   /* StartIndex */
 				7,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND / 30,
-				ONE_SECOND / 30, /* FrameRate */
-				ONE_SECOND / 30,
-				ONE_SECOND / 30, /* RestartRate */
+				GameTicksPerSecond / 30,
+				GameTicksPerSecond / 30, /* FrameRate */
+				GameTicksPerSecond / 30,
+				GameTicksPerSecond / 30, /* RestartRate */
 				0,				 /* BlockMask */
 			},
 								{
 				41,			 /* StartIndex */
 				6,			 /* NumFrames */
 				RANDOM_ANIM, /* AnimFlags */
-				ONE_SECOND / 30,
-				ONE_SECOND / 30, /* FrameRate */
-				ONE_SECOND / 30,
-				ONE_SECOND / 30, /* RestartRate */
+				GameTicksPerSecond / 30,
+				GameTicksPerSecond / 30, /* FrameRate */
+				GameTicksPerSecond / 30,
+				GameTicksPerSecond / 30, /* RestartRate */
 				0,				 /* BlockMask */
 			},
 								{
 				47,			   /* StartIndex */
 				11,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND / 30,
-				ONE_SECOND / 30, /* FrameRate */
-				ONE_SECOND / 30,
-				ONE_SECOND / 30, /* RestartRate */
+				GameTicksPerSecond / 30,
+				GameTicksPerSecond / 30, /* FrameRate */
+				GameTicksPerSecond / 30,
+				GameTicksPerSecond / 30, /* RestartRate */
 				0,				 /* BlockMask */
 			},
 								{
 				58,			 /* StartIndex */
 				3,			 /* NumFrames */
 				RANDOM_ANIM, /* AnimFlags */
-				ONE_SECOND / 30,
-				ONE_SECOND / 30, /* FrameRate */
-				ONE_SECOND / 30,
-				ONE_SECOND / 30, /* RestartRate */
+				GameTicksPerSecond / 30,
+				GameTicksPerSecond / 30, /* FrameRate */
+				GameTicksPerSecond / 30,
+				GameTicksPerSecond / 30, /* RestartRate */
 				0,				 /* BlockMask */
 			},
 								{
 				61,			 /* StartIndex */
 				4,			 /* NumFrames */
 				RANDOM_ANIM, /* AnimFlags */
-				ONE_SECOND / 30,
-				ONE_SECOND / 30, /* FrameRate */
-				ONE_SECOND / 30,
-				ONE_SECOND / 30, /* RestartRate */
+				GameTicksPerSecond / 30,
+				GameTicksPerSecond / 30, /* FrameRate */
+				GameTicksPerSecond / 30,
+				GameTicksPerSecond / 30, /* RestartRate */
 				0,				 /* BlockMask */
 			},
 								{
 				65,			 /* StartIndex */
 				4,			 /* NumFrames */
 				RANDOM_ANIM, /* AnimFlags */
-				ONE_SECOND / 30,
-				ONE_SECOND / 30, /* FrameRate */
-				ONE_SECOND / 30,
-				ONE_SECOND / 30, /* RestartRate */
+				GameTicksPerSecond / 30,
+				GameTicksPerSecond / 30, /* FrameRate */
+				GameTicksPerSecond / 30,
+				GameTicksPerSecond / 30, /* RestartRate */
 				0,				 /* BlockMask */
 			},
 								{
 				69,			 /* StartIndex */
 				2,			 /* NumFrames */
 				RANDOM_ANIM, /* AnimFlags */
-				ONE_SECOND / 30,
-				ONE_SECOND / 30, /* FrameRate */
-				ONE_SECOND / 30,
-				ONE_SECOND / 30, /* RestartRate */
+				GameTicksPerSecond / 30,
+				GameTicksPerSecond / 30, /* FrameRate */
+				GameTicksPerSecond / 30,
+				GameTicksPerSecond / 30, /* RestartRate */
 				0,				 /* BlockMask */
 			},
 								{
 				71,		   /* StartIndex */
 				3,		   /* NumFrames */
 				YOYO_ANIM, /* AnimFlags */
-				ONE_SECOND / 20,
+				GameTicksPerSecond / 20,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
 				74,		   /* StartIndex */
 				6,		   /* NumFrames */
 				YOYO_ANIM, /* AnimFlags */
-				ONE_SECOND / 15,
-				ONE_SECOND / 15, /* FrameRate */
-				ONE_SECOND / 15,
-				ONE_SECOND / 15, /* RestartRate */
+				GameTicksPerSecond / 15,
+				GameTicksPerSecond / 15, /* FrameRate */
+				GameTicksPerSecond / 15,
+				GameTicksPerSecond / 15, /* RestartRate */
 				0,				 /* BlockMask */
 			},
 								{
 				80,		   /* StartIndex */
 				5,		   /* NumFrames */
 				YOYO_ANIM, /* AnimFlags */
-				ONE_SECOND / 15,
-				ONE_SECOND / 15, /* FrameRate */
-				ONE_SECOND / 15,
-				ONE_SECOND / 15, /* RestartRate */
+				GameTicksPerSecond / 15,
+				GameTicksPerSecond / 15, /* FrameRate */
+				GameTicksPerSecond / 15,
+				GameTicksPerSecond / 15, /* RestartRate */
 				(1 << 14),		 /* BlockMask */
 			},
 								{
 				85,		   /* StartIndex */
 				5,		   /* NumFrames */
 				YOYO_ANIM, /* AnimFlags */
-				ONE_SECOND / 15,
-				ONE_SECOND / 15, /* FrameRate */
-				ONE_SECOND / 15,
-				ONE_SECOND / 15, /* RestartRate */
+				GameTicksPerSecond / 15,
+				GameTicksPerSecond / 15, /* FrameRate */
+				GameTicksPerSecond / 15,
+				GameTicksPerSecond / 15, /* RestartRate */
 				0,				 /* BlockMask */
 			},
 								{
 				90,		   /* StartIndex */
 				5,		   /* NumFrames */
 				YOYO_ANIM, /* AnimFlags */
-				ONE_SECOND / 15,
-				ONE_SECOND / 15, /* FrameRate */
-				ONE_SECOND / 15,
-				ONE_SECOND / 15, /* RestartRate */
+				GameTicksPerSecond / 15,
+				GameTicksPerSecond / 15, /* FrameRate */
+				GameTicksPerSecond / 15,
+				GameTicksPerSecond / 15, /* RestartRate */
 				(1 << 12),		 /* BlockMask */
 			},
 								{
 				95,		   /* StartIndex */
 				4,		   /* NumFrames */
 				YOYO_ANIM, /* AnimFlags */
-				ONE_SECOND / 15,
-				ONE_SECOND / 15, /* FrameRate */
-				ONE_SECOND * 5,
-				ONE_SECOND * 5, /* RestartRate */
+				GameTicksPerSecond / 15,
+				GameTicksPerSecond / 15, /* FrameRate */
+				GameTicksPerSecond * 5,
+				GameTicksPerSecond * 5, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
 				99,		   /* StartIndex */
 				4,		   /* NumFrames */
 				YOYO_ANIM, /* AnimFlags */
-				ONE_SECOND / 15,
-				ONE_SECOND / 15, /* FrameRate */
-				ONE_SECOND * 5,
-				ONE_SECOND * 5, /* RestartRate */
+				GameTicksPerSecond / 15,
+				GameTicksPerSecond / 15, /* FrameRate */
+				GameTicksPerSecond * 5,
+				GameTicksPerSecond * 5, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
 				103,						   /* StartIndex */
 				16,							   /* NumFrames */
 				CIRCULAR_ANIM | ANIM_DISABLED, /* AnimFlags */
-				ONE_SECOND / 30,
-				ONE_SECOND / 30, /* FrameRate */
-				ONE_SECOND / 30,
-				ONE_SECOND / 30, /* RestartRate */
+				GameTicksPerSecond / 30,
+				GameTicksPerSecond / 30, /* FrameRate */
+				GameTicksPerSecond / 30,
+				GameTicksPerSecond / 30, /* RestartRate */
 				0,				 /* BlockMask */
 			},
 								{
@@ -233,7 +233,7 @@ static LOCDATA vux_desc =
 				8,	 /* NumFrames */
 				CIRCULAR_ANIM | ONE_SHOT_ANIM
 					| WAIT_TALKING | ANIM_DISABLED, /* AnimFlags */
-				ONE_SECOND / 15,
+				GameTicksPerSecond / 15,
 				0, /* FrameRate */
 				0,
 				0, /* RestartRate */
@@ -256,9 +256,9 @@ static LOCDATA vux_desc =
 			1,	/* StartIndex */
 			11, /* NumFrames */
 			0,	/* AnimFlags */
-			ONE_SECOND / 15,
+			GameTicksPerSecond / 15,
 								0, /* FrameRate */
-			ONE_SECOND / 12,
+			GameTicksPerSecond / 12,
 								0, /* RestartRate */
 			0, /* BlockMask */
 		},
@@ -306,14 +306,14 @@ ZexBeingEatenAlive(void)
 
 			XFormColorMap(GetColorMapAddress(
 							  SetAbsColorMapIndex(CommData.AlienColorMap, 1)),
-						  ONE_SECOND / 4);
+						  GameTicksPerSecond / 4);
 		}
 	}
 	else
 	{
 		XFormColorMap(GetColorMapAddress(
 						  SetAbsColorMapIndex(CommData.AlienColorMap, 1)),
-					  ONE_SECOND / 4);
+					  GameTicksPerSecond / 4);
 
 		if (IS_HD)
 		{

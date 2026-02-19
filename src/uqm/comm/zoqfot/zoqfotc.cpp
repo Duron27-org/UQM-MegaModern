@@ -72,10 +72,10 @@ static LOCDATA zoqfot_desc =
 				4,		  /* NumFrames */
 				YOYO_ANIM /* AnimFlags */
 					| WAIT_TALKING,
-				ONE_SECOND / 24,
+				GameTicksPerSecond / 24,
 				0, /* FrameRate */
 				0,
-				ONE_SECOND * 10, /* RestartRate */
+				GameTicksPerSecond * 10, /* RestartRate */
 				0,				 /* BlockMask */
 			},
 								{
@@ -83,9 +83,9 @@ static LOCDATA zoqfot_desc =
 				5,			   /* StartIndex */
 				5,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND * 7 / 120,
+				GameTicksPerSecond * 7 / 120,
 				0, /* FrameRate */
-				ONE_SECOND * 2,
+				GameTicksPerSecond * 2,
 				0, /* RestartRate */
 				0, /* BlockMask */
 			},
@@ -94,10 +94,10 @@ static LOCDATA zoqfot_desc =
 				10,			   /* StartIndex */
 				8,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND / 15,
+				GameTicksPerSecond / 15,
 				0, /* FrameRate */
 				0,
-				ONE_SECOND * 10, /* RestartRate */
+				GameTicksPerSecond * 10, /* RestartRate */
 				0,				 /* BlockMask */
 			},
 								},
@@ -106,7 +106,7 @@ static LOCDATA zoqfot_desc =
 			FOT_TO_ZOQ, /* StartIndex */
 			3,			/* NumFrames */
 			0,			/* AnimFlags */
-			ONE_SECOND / 30,
+			GameTicksPerSecond / 30,
 								0, /* FrameRate */
 			0,
 								0, /* RestartRate */
@@ -117,9 +117,9 @@ static LOCDATA zoqfot_desc =
 			ZOQ_TALK_INDEX,	 /* StartIndex */
 			ZOQ_TALK_FRAMES, /* NumFrames */
 			0,				 /* AnimFlags */
-			ONE_SECOND / 15,
+			GameTicksPerSecond / 15,
 								0, /* FrameRate */
-			ONE_SECOND / 12,
+			GameTicksPerSecond / 12,
 								0, /* RestartRate */
 			0, /* BlockMask */
 		},

@@ -636,7 +636,7 @@ void _text_blt_fade(GFXRECT* pClipRect, TEXT* TextPtr, GFXPOINT ctxOrigin, FRAME
 									  ctxOrigin);
 					PlayMenuSound(MENU_SOUND_TEXT);
 
-					SleepThread(ONE_SECOND / 16);
+					SleepThread(getTicksForFramerate(16));
 				}
 				BatchGraphics();
 				if (repair && !*skip)

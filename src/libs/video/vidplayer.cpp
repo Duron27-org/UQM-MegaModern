@@ -69,7 +69,7 @@ void TFB_UninitVideoPlayer(void)
 static inline sint32
 msecToTimeCount(sint32 msec)
 {
-	return msec * ONE_SECOND / 1000;
+	return msec * GameTicksPerSecond / 1000;
 }
 
 // audio-synced video playback frame function
@@ -455,7 +455,7 @@ static uint32
 vp_GetTicks(TFB_VideoDecoder* decoder)
 {
 	uint32 ctr = GetTimeCounter();
-	return (ctr / ONE_SECOND) * 1000 + ((ctr % ONE_SECOND) * 1000) / ONE_SECOND;
+	return (ctr / GameTicksPerSecond) * 1000 + ((ctr % GameTicksPerSecond) * 1000) / GameTicksPerSecond;
 
 	(void)decoder; // gobble up compiler warning
 }
@@ -471,7 +471,7 @@ vp_SetTimer(TFB_VideoDecoder* decoder, uint32 msecs)
 	}
 
 	// time when next frame should be displayed
-	vid->frame_time = GetTimeCounter() + msecs * ONE_SECOND / 1000;
+	vid->frame_time = GetTimeCounter() + msecs * GameTicksPerSecond / 1000;
 	return true;
 }
 

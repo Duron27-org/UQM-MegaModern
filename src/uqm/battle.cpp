@@ -391,7 +391,7 @@ DoBattle(BATTLE_STATE* bs)
 	else
 	{
 		SleepThreadUntil(bs->NextTime
-						 + BATTLE_FRAME_RATE / (battle_speed + 1));
+						 + BattleFrameRateTicks / (battle_speed + 1));
 		bs->NextTime = GetTimeCounter();
 	}
 

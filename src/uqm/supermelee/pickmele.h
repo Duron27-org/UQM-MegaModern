@@ -52,7 +52,7 @@ bool selectShipNetwork(NetworkInputContext* context, GETMELEE_STATE* gms);
 #ifdef PICKMELE_INTERNAL
 
 #include "../flash.h"
-#include "libs/timelib.h"
+#include "libs/time/timelib.h"
 #include "../init.h"
 
 #if 0 //defined(__cplusplus)

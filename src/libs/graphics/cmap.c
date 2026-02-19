@@ -18,7 +18,7 @@
 
 #include "libs/graphics/cmap.h"
 #include "libs/threadlib.h"
-#include "libs/timelib.h"
+#include "libs/time/timelib.h"
 #include "libs/inplib.h"
 #include "libs/strlib.h"
 		// for GetStringAddress()

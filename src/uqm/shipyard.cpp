@@ -702,7 +702,7 @@ animatePowerLines(MENU_STATE* pMS)
 
 	if (Now >= NextTime || pMS)
 	{
-		NextTime = Now + (ONE_SECOND / HANGAR_ANIM_RATE);
+		NextTime = Now + (GameTicksPerSecond / HANGAR_ANIM_RATE);
 
 		SetColorMap(GetColorMapAddress(ColorMap));
 		DrawStamp(&s);
@@ -1330,7 +1330,7 @@ ShowCombatShip(MENU_STATE* pMS, uqm::COUNT which_window,
 
 		for (j = 0; (j < SHIP_WIN_FRAMES) && !AllDoorsFinished; j++)
 		{
-			SleepThreadUntil(TimeIn + ONE_SECOND / RES_SCALE(24));
+			SleepThreadUntil(TimeIn + GameTicksPerSecond / RES_SCALE(24));
 			TimeIn = GetTimeCounter();
 			if (AnyButtonPress(false))
 			{
@@ -2565,7 +2565,7 @@ DoModifyShips(MENU_STATE* pMS)
 		}
 	}
 
-	SleepThread(ONE_SECOND / 60);
+	SleepThread(GameTicksPerSecond / 60);
 	// Kruzen: was 30, upped to 60 to fit new HD
 	// powerline animation. No issues detected so far
 

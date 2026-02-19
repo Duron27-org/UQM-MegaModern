@@ -31,15 +31,15 @@
 #include "uqmdebug.h"
 #include "libs/async.h"
 #include "libs/inplib.h"
-#include "libs/timelib.h"
+#include "libs/time/timelib.h"
 #include "libs/threadlib.h"
 #include "libs/input/sdl/vcontrol.h"
 #include "setup.h"
 #include "setupmenu.h"
 #include "libs/graphics/gfx_common.h"
 
-#define ACCELERATION_INCREMENT (ONE_SECOND / 12)
-#define MENU_REPEAT_DELAY (ONE_SECOND >> 1)
+#define ACCELERATION_INCREMENT (GameTicksPerSecond / 12)
+#define MENU_REPEAT_DELAY (GameTicksPerSecond >> 1)
 
 typedef struct
 {

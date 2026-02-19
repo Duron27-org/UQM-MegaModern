@@ -54,139 +54,139 @@ static LOCDATA umgah_desc =
 				5,		   /* StartIndex */
 				3,		   /* NumFrames */
 				YOYO_ANIM, /* AnimFlags */
-				ONE_SECOND / 20,
+				GameTicksPerSecond / 20,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				(1 << 5),
 			},
 								{
 				8,		   /* StartIndex */
 				3,		   /* NumFrames */
 				YOYO_ANIM, /* AnimFlags */
-				ONE_SECOND / 20,
+				GameTicksPerSecond / 20,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				(1 << 6),
 			},
 								{
 				11,		   /* StartIndex */
 				2,		   /* NumFrames */
 				YOYO_ANIM, /* AnimFlags */
-				ONE_SECOND / 20,
+				GameTicksPerSecond / 20,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				(1 << 7),
 			},
 								{
 				13,		   /* StartIndex */
 				2,		   /* NumFrames */
 				YOYO_ANIM, /* AnimFlags */
-				ONE_SECOND / 20,
+				GameTicksPerSecond / 20,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				(1 << 8),
 			},
 								{
 				15,		   /* StartIndex */
 				2,		   /* NumFrames */
 				YOYO_ANIM, /* AnimFlags */
-				ONE_SECOND / 20,
+				GameTicksPerSecond / 20,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				(1 << 9),
 			},
 								{
 				17,			   /* StartIndex */
 				3,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND * 7 / 60,
+				GameTicksPerSecond * 7 / 60,
 				0, /* FrameRate */
-				ONE_SECOND * 3,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond * 3,
+				GameTicksPerSecond * 3, /* RestartRate */
 				(1 << 0),
 			},
 								{
 				20,			   /* StartIndex */
 				3,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND * 7 / 60,
+				GameTicksPerSecond * 7 / 60,
 				0, /* FrameRate */
-				ONE_SECOND * 3,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond * 3,
+				GameTicksPerSecond * 3, /* RestartRate */
 				(1 << 1),
 			},
 								{
 				23,			   /* StartIndex */
 				2,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND * 7 / 60,
+				GameTicksPerSecond * 7 / 60,
 				0, /* FrameRate */
-				ONE_SECOND * 3,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond * 3,
+				GameTicksPerSecond * 3, /* RestartRate */
 				(1 << 2),
 			},
 								{
 				25,			   /* StartIndex */
 				2,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND * 7 / 60,
+				GameTicksPerSecond * 7 / 60,
 				0, /* FrameRate */
-				ONE_SECOND * 3,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond * 3,
+				GameTicksPerSecond * 3, /* RestartRate */
 				(1 << 3),
 			},
 								{
 				27,			   /* StartIndex */
 				2,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND * 7 / 60,
+				GameTicksPerSecond * 7 / 60,
 				0, /* FrameRate */
-				ONE_SECOND * 3,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond * 3,
+				GameTicksPerSecond * 3, /* RestartRate */
 				(1 << 4),
 			},
 								{
 				29,		   /* StartIndex */
 				3,		   /* NumFrames */
 				YOYO_ANIM, /* AnimFlags */
-				ONE_SECOND / 10,
+				GameTicksPerSecond / 10,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
 				32,		   /* StartIndex */
 				3,		   /* NumFrames */
 				YOYO_ANIM, /* AnimFlags */
-				ONE_SECOND / 10,
+				GameTicksPerSecond / 10,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
 				35,		   /* StartIndex */
 				5,		   /* NumFrames */
 				YOYO_ANIM, /* AnimFlags */
-				ONE_SECOND / 10,
+				GameTicksPerSecond / 10,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
 				40,		   /* StartIndex */
 				6,		   /* NumFrames */
 				YOYO_ANIM, /* AnimFlags */
-				ONE_SECOND / 10,
+				GameTicksPerSecond / 10,
 				0, /* FrameRate */
-				ONE_SECOND / 10,
+				GameTicksPerSecond / 10,
 				0, /* RestartRate */
 				0, /* BlockMask */
 			},
@@ -194,20 +194,20 @@ static LOCDATA umgah_desc =
 				46,			   /* StartIndex */
 				2,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND / 5,
+				GameTicksPerSecond / 5,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				(1 << 15),		/* BlockMask */
 			},
 								{
 				48,			   /* StartIndex */
 				2,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND / 5,
+				GameTicksPerSecond / 5,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				(1 << 14),		/* BlockMask */
 			},
 								},
@@ -227,9 +227,9 @@ static LOCDATA umgah_desc =
 			1, /* StartIndex */
 			4, /* NumFrames */
 			0, /* AnimFlags */
-			ONE_SECOND / 15,
+			GameTicksPerSecond / 15,
 								0, /* FrameRate */
-			ONE_SECOND / 12,
+			GameTicksPerSecond / 12,
 								0, /* RestartRate */
 			0, /* BlockMask */
 		},

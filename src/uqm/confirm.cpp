@@ -145,7 +145,7 @@ bool DoConfirmExit(void)
 		done = false;
 
 		oldVolume = GetCurrMusicVol();
-		FadeMusic(60, ONE_SECOND / 2);
+		FadeMusic(60, GameTicksPerSecond / 2);
 
 		while (!done)
 		{
@@ -175,7 +175,7 @@ bool DoConfirmExit(void)
 				DrawConfirmationWindow(response, false);
 				PlayMenuSound(MENU_SOUND_MOVE);
 			}
-			SleepThread(ONE_SECOND / 30);
+			SleepThread(GameTicksPerSecond / 30);
 		};
 
 		// Restore the screen under the confirmation window
@@ -183,7 +183,7 @@ bool DoConfirmExit(void)
 		{
 			DrawStamp(&s);
 			DeltaLastTime(GetTimeCounter() - deltaT);
-			FadeMusic(oldVolume, ONE_SECOND / 2);
+			FadeMusic(oldVolume, GameTicksPerSecond / 2);
 		}
 		else
 		{
@@ -230,7 +230,7 @@ static bool
 DoPopup(struct popup_state* self)
 {
 	(void)self;
-	SleepThread(ONE_SECOND / 20);
+	SleepThread(GameTicksPerSecond / 20);
 	return !(PulsedInputState.menu[KEY_MENU_SELECT] || PulsedInputState.menu[KEY_MENU_CANCEL] || (GLOBAL(CurrentActivity) & CHECK_ABORT));
 }
 

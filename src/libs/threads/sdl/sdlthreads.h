@@ -21,7 +21,7 @@
 #include <SDL.h>
 #include <SDL_thread.h>
 #include "libs/threadlib.h"
-#include "libs/timelib.h"
+#include "libs/time/timelib.h"
 
 void InitThreadSystem_SDL(void);
 void UnInitThreadSystem_SDL(void);

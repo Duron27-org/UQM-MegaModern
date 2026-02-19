@@ -383,7 +383,7 @@ void PrepareNextRotationFrameForIP(PLANET_DESC* pPlanetDesc, uqm::SIZE frameCoun
 #else
 #define ZOOM_RATE RES_SCALE(35)
 #endif
-#define ZOOM_TIME (ONE_SECOND * 6 / 5)
+#define ZOOM_TIME (GameTicksPerSecond * 6 / 5)
 
 
 // This takes care of zooming the planet sphere into place
@@ -401,7 +401,7 @@ void ZoomInPlanetSphere(void)
 	GFXRECT repairRect;
 	TimeCount NextTime, Now, RenderNextTime;
 
-	frameCount = ZOOM_TIME / (ONE_SECOND / ZOOM_RATE);
+	frameCount = ZOOM_TIME / (GameTicksPerSecond / ZOOM_RATE);
 
 	// Planet zoom in from a randomly chosen corner
 	zoomCorner = TFB_Random();
@@ -425,7 +425,7 @@ void ZoomInPlanetSphere(void)
 		GFXPOINT pt;
 
 		Now = GetTimeCounter();
-		NextTime = Now + (ONE_SECOND / ZOOM_RATE);
+		NextTime = Now + (GameTicksPerSecond / ZOOM_RATE);
 
 		// Use 1 + e^-2 - e^(-2x / frameCount)) function to get a
 		// decelerating zoom like the one 3DO does (supposedly)
@@ -475,9 +475,9 @@ void ZoomInPlanetSphere(void)
 }
 
 #if SDL_MAJOR_VERSION == 1
-#define PLANET_ROTATION_FPS (ONE_SECOND / chooseIfHd(24, 42))
+#define PLANET_ROTATION_FPS (GameTicksPerSecond / chooseIfHd(24, 42))
 #else
-#define PLANET_ROTATION_FPS (ONE_SECOND / 60)
+#define PLANET_ROTATION_FPS (GameTicksPerSecond / 60)
 #endif
 
 void RotatePlanetSphere(bool keepRate, STAMP* onTop)

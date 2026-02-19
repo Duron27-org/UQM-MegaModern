@@ -303,7 +303,7 @@ CreateThread_SDL(ThreadFunction func, void* data, uqm::SDWORD stackSize
 
 void SleepThread_SDL(TimeCount sleepTime)
 {
-	SDL_Delay(sleepTime * 1000 / ONE_SECOND);
+	SDL_Delay(sleepTime * 1000 / GameTicksPerSecond);
 }
 
 void SleepThreadUntil_SDL(TimeCount wakeTime)
@@ -317,7 +317,7 @@ void SleepThreadUntil_SDL(TimeCount wakeTime)
 	}
 	else
 	{
-		SDL_Delay((wakeTime - now) * 1000 / ONE_SECOND);
+		SDL_Delay((wakeTime - now) * 1000 / GameTicksPerSecond);
 	}
 }
 

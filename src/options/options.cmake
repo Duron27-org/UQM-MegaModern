@@ -11,6 +11,8 @@ set(uqm_src_options_files
 	"src/options/OptionDefs.cpp"
 	"src/options/OptionDefs.h"
 	"src/options/OptionTypes.h"
+	"src/options/netoptions.cpp"
+	"src/options/netoptions.h"
 	"src/options/options.cmake"
 	"src/options/options.cpp"
 	"src/options/options.h"

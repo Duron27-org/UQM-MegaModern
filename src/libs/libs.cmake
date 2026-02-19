@@ -77,7 +77,6 @@ set(uqm_src_libs_files
 	"src/libs/strlib.h"
 	"src/libs/tasklib.h"
 	"src/libs/threadlib.h"
-	"src/libs/timelib.h"
 	"src/libs/uio.h"
 #	"src/libs/uioutils.h"
 	"src/libs/unicode.h"

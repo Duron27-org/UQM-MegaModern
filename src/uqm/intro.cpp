@@ -129,8 +129,8 @@ DoFadeScreen(PRESENTATION_INPUT_STATE* pPIS, const char* Src, uqm::BYTE FadeType
 	int msecs;
 	if (1 == sscanf(Src, "%d", &msecs))
 	{
-		pPIS->TimeOut = FadeScreen((ScreenFadeType)FadeType, msecs * ONE_SECOND / 1000)
-					  + ONE_SECOND / 10;
+		pPIS->TimeOut = FadeScreen((ScreenFadeType)FadeType, msecs * GameTicksPerSecond / 1000)
+					  + GameTicksPerSecond / 10;
 		pPIS->TimeOutOnSkip = false;
 	}
 	return true;
@@ -328,7 +328,7 @@ DoSpinLine(LINE* l, Color front, Color back, bool* skip)
 		SetContextForeGroundColor(back);
 		DrawLine(l, RES_SCALE(1));
 		PlayMenuSound(MENU_SOUND_TEXT);
-		SleepThread(ONE_SECOND / 16);
+		SleepThread(GameTicksPerSecond / 16);
 	}
 	SetContextForeGroundColor(front);
 	DrawLine(l, RES_SCALE(1));
@@ -341,7 +341,7 @@ DoSpinStatBox(GFXRECT* r, Color front, Color back, bool* skip)
 	{
 		DrawStarConBox(r, RES_SCALE(1), back, back, false, BLACK_COLOR, false, BLACK_COLOR);
 		PlayMenuSound(MENU_SOUND_TEXT);
-		SleepThread(ONE_SECOND / 16);
+		SleepThread(GameTicksPerSecond / 16);
 	}
 	DrawStarConBox(r, RES_SCALE(1), front, front, false, BLACK_COLOR, false, BLACK_COLOR);
 }
@@ -373,7 +373,7 @@ DoSpinStat(uqm::CHAR_T* buf, COORD x, COORD y, uqm::COUNT filled, uqm::COUNT emp
 		SetContextForeGroundColor(back);
 		font_DrawText(&Text);
 		PlayMenuSound(MENU_SOUND_TEXT);
-		SleepThread(ONE_SECOND / 16);
+		SleepThread(GameTicksPerSecond / 16);
 	}
 	SetContextForeGroundColor(front);
 	font_DrawText(&Text);
@@ -385,7 +385,7 @@ DoSpinStat(uqm::CHAR_T* buf, COORD x, COORD y, uqm::COUNT filled, uqm::COUNT emp
 			SetContextForeGroundColor(back);
 			DrawFilledRectangle(&sq);
 			PlayMenuSound(MENU_SOUND_TEXT);
-			SleepThread(ONE_SECOND / 16);
+			SleepThread(GameTicksPerSecond / 16);
 		}
 		SetContextForeGroundColor(front);
 		DrawFilledRectangle(&sq);
@@ -415,7 +415,7 @@ DoSpinStat(uqm::CHAR_T* buf, COORD x, COORD y, uqm::COUNT filled, uqm::COUNT emp
 				DrawPoint(&c);
 			}
 			PlayMenuSound(MENU_SOUND_TEXT);
-			SleepThread(ONE_SECOND / 16);
+			SleepThread(GameTicksPerSecond / 16);
 		}
 		SetContextForeGroundColor(front);
 		DrawStarConBox(&sq, RES_SCALE(1), front, front, false, BLACK_COLOR, false, BLACK_COLOR);
@@ -719,7 +719,7 @@ DoPresentation(void* pIS)
 
 	if (pPIS->TimeOut)
 	{
-		TimeCount Delay = ONE_SECOND / 84;
+		TimeCount Delay = GameTicksPerSecond / 84;
 
 		if (GetTimeCounter() >= pPIS->TimeOut)
 		{
@@ -932,7 +932,7 @@ DoPresentation(void* pIS)
 			if (1 == sscanf(pStr, "%d", &msecs))
 			{
 				pPIS->TimeOut = GetTimeCounter()
-							  + msecs * ONE_SECOND / 1000;
+							  + msecs * GameTicksPerSecond / 1000;
 				pPIS->TimeOutOnSkip = true;
 				return true;
 			}
@@ -948,7 +948,7 @@ DoPresentation(void* pIS)
 					pPIS->Skip = true;
 					return true;
 				}
-				SleepThread(ONE_SECOND / 10);
+				SleepThread(GameTicksPerSecond / 10);
 				UpdateInputState();
 			}
 		}
@@ -959,7 +959,7 @@ DoPresentation(void* pIS)
 			if (1 == sscanf(pStr, "%d", &msecs) && !pPIS->Skip)
 			{
 				TimeOut = GetTimeCounter()
-						+ msecs * ONE_SECOND / 1000;
+						+ msecs * GameTicksPerSecond / 1000;
 				while (GetTimeCounter() < TimeOut)
 				{
 					if (CurrentInputState.menu[KEY_MENU_CANCEL]
@@ -969,7 +969,7 @@ DoPresentation(void* pIS)
 						pPIS->Skip = true;
 						return true;
 					}
-					SleepThread(ONE_SECOND / 84);
+					SleepThread(GameTicksPerSecond / 84);
 					UpdateInputState();
 				}
 			}
@@ -981,7 +981,7 @@ DoPresentation(void* pIS)
 			if (1 == sscanf(pStr, "%d", &msecs))
 			{
 				pPIS->LastSyncTime = pPIS->StartTime
-								   + msecs * ONE_SECOND / 1000;
+								   + msecs * GameTicksPerSecond / 1000;
 				pPIS->TimeOut = pPIS->LastSyncTime;
 				pPIS->TimeOutOnSkip = false;
 				return true;
@@ -998,7 +998,7 @@ DoPresentation(void* pIS)
 			if (1 == sscanf(pStr, "%d", &msecs))
 			{
 				pPIS->TimeOut = pPIS->LastSyncTime
-							  + msecs * ONE_SECOND / 1000;
+							  + msecs * GameTicksPerSecond / 1000;
 				pPIS->TimeOutOnSkip = false;
 				return true;
 			}
@@ -1507,7 +1507,7 @@ DoPresentation(void* pIS)
 
 				pPIS->MovieFrame = from;
 				pPIS->MovieEndFrame = to;
-				pPIS->InterframeDelay = ONE_SECOND / fps;
+				pPIS->InterframeDelay = GameTicksPerSecond / fps;
 
 				pPIS->TimeOut = GetTimeCounter();
 				pPIS->TimeOutOnSkip = true;
@@ -1528,7 +1528,7 @@ DoPresentation(void* pIS)
 				int loops = 0;
 				uqm::COUNT index = 0;
 				TimeCount Now, timeout, NextTime;
-				int animation_rate = ONE_SECOND / fps;
+				int animation_rate = GameTicksPerSecond / fps;
 
 				s.origin.x = 0;
 				s.origin.y = 0;
@@ -1620,7 +1620,7 @@ ShowSlidePresentation(STRING PresStr)
 
 	if (pis.MusicRef && PlayingStream(MUSIC_SOURCE))
 	{
-		SleepThreadUntil(FadeMusic(0, ONE_SECOND));
+		SleepThreadUntil(FadeMusic(0, GameTicksPerSecond));
 		StopMusic();
 		FadeMusic(NORMAL_VOLUME, 0);
 	}
@@ -1683,7 +1683,7 @@ DoVideoInput(void* pIS)
 			return false;
 		}
 
-		SleepThread(ONE_SECOND / 40);
+		SleepThread(GameTicksPerSecond / 40);
 	}
 
 	return true;
@@ -1692,7 +1692,7 @@ DoVideoInput(void* pIS)
 static void
 FadeClearScreen(void)
 {
-	SleepThreadUntil(FadeScreen(FadeAllToBlack, ONE_SECOND / 2));
+	SleepThreadUntil(FadeScreen(FadeAllToBlack, GameTicksPerSecond / 2));
 
 	// clear the screen with black
 	SetContext(ScreenContext);

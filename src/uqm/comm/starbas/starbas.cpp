@@ -69,10 +69,10 @@ static LOCDATA commander_desc =
 				1,		   /* StartIndex */
 				3,		   /* NumFrames */
 				YOYO_ANIM, /* AnimFlags */
-				ONE_SECOND / 15,
+				GameTicksPerSecond / 15,
 				0, /* FrameRate */
 				0,
-				ONE_SECOND * 8, /* RestartRate */
+				GameTicksPerSecond * 8, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
@@ -80,9 +80,9 @@ static LOCDATA commander_desc =
 				10,			   /* StartIndex */
 				30,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND / 40,
+				GameTicksPerSecond / 40,
 				0, /* FrameRate */
-				ONE_SECOND * 2,
+				GameTicksPerSecond * 2,
 				0, /* RestartRate */
 				0, /* BlockMask */
 			},
@@ -91,10 +91,10 @@ static LOCDATA commander_desc =
 				40,			   /* StartIndex */
 				7,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND / 40,
+				GameTicksPerSecond / 40,
 				0, /* FrameRate */
 				0,
-				ONE_SECOND * 8, /* RestartRate */
+				GameTicksPerSecond * 8, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
@@ -102,10 +102,10 @@ static LOCDATA commander_desc =
 				47,			   /* StartIndex */
 				8,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND / 40,
+				GameTicksPerSecond / 40,
 				0, /* FrameRate */
 				0,
-				ONE_SECOND * 8, /* RestartRate */
+				GameTicksPerSecond * 8, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
@@ -113,10 +113,10 @@ static LOCDATA commander_desc =
 				55,			   /* StartIndex */
 				6,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND / 40,
+				GameTicksPerSecond / 40,
 				0, /* FrameRate */
 				0,
-				ONE_SECOND * 8, /* RestartRate */
+				GameTicksPerSecond * 8, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
@@ -124,10 +124,10 @@ static LOCDATA commander_desc =
 				61,			   /* StartIndex */
 				6,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND / 40,
+				GameTicksPerSecond / 40,
 				0, /* FrameRate */
 				0,
-				ONE_SECOND * 8, /* RestartRate */
+				GameTicksPerSecond * 8, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
@@ -135,10 +135,10 @@ static LOCDATA commander_desc =
 				67,			   /* StartIndex */
 				7,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND / 40,
+				GameTicksPerSecond / 40,
 				0, /* FrameRate */
 				0,
-				ONE_SECOND * 8, /* RestartRate */
+				GameTicksPerSecond * 8, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
@@ -146,10 +146,10 @@ static LOCDATA commander_desc =
 				74,			   /* StartIndex */
 				11,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND / 40,
+				GameTicksPerSecond / 40,
 				0, /* FrameRate */
 				0,
-				ONE_SECOND * 8, /* RestartRate */
+				GameTicksPerSecond * 8, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
@@ -157,10 +157,10 @@ static LOCDATA commander_desc =
 				85,			   /* StartIndex */
 				10,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND / 40,
+				GameTicksPerSecond / 40,
 				0, /* FrameRate */
 				0,
-				ONE_SECOND * 8, /* RestartRate */
+				GameTicksPerSecond * 8, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
@@ -191,10 +191,10 @@ static LOCDATA commander_desc =
 			4, /* StartIndex */
 			6, /* NumFrames */
 			0, /* AnimFlags */
-			ONE_SECOND / 10,
-								ONE_SECOND / 15, /* FrameRate */
-			ONE_SECOND * 7 / 60,
-								ONE_SECOND / 12, /* RestartRate */
+			GameTicksPerSecond / 10,
+								GameTicksPerSecond / 15, /* FrameRate */
+			GameTicksPerSecond * 7 / 60,
+								GameTicksPerSecond / 12, /* RestartRate */
 			0,				 /* BlockMask */
 		},
 		nullptr, /* AlienNumberSpeech - none */
@@ -225,7 +225,7 @@ DoSellMinerals(void)
 		if (i == 0)
 		{
 			DrawCargoStrings((uqm::BYTE)~0, (uqm::BYTE)~0);
-			TimeIn = GetTimeCounter() + ONE_SECOND / 2;
+			TimeIn = GetTimeCounter() + GameTicksPerSecond / 2;
 			while (GetTimeCounter() <= TimeIn)
 			{
 				if (AnyButtonPress(true) || (GLOBAL(CurrentActivity) & CHECK_ABORT))
@@ -273,7 +273,7 @@ DoSellMinerals(void)
 		}
 		if (Sleepy)
 		{
-			TimeIn = GetTimeCounter() + (ONE_SECOND / 4);
+			TimeIn = GetTimeCounter() + (GameTicksPerSecond / 4);
 			while (GetTimeCounter() <= TimeIn)
 			{
 				if (AnyButtonPress(true) || (GLOBAL(CurrentActivity) & CHECK_ABORT))
@@ -286,7 +286,7 @@ DoSellMinerals(void)
 		}
 	}
 
-	SleepThread(ONE_SECOND / 2);
+	SleepThread(GameTicksPerSecond / 2);
 
 	ClearSISRect(DRAW_SIS_DISPLAY);
 
@@ -2170,7 +2170,7 @@ Intro(void)
 {
 	if (IS_HD) // To smooth out HD blink animation
 	{
-		CommData.AlienAmbientArray[0].BaseFrameRate = ONE_SECOND / 40;
+		CommData.AlienAmbientArray[0].BaseFrameRate = GameTicksPerSecond / 40;
 	}
 
 	NormalStarbase(0);

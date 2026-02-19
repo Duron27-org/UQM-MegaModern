@@ -13,37 +13,37 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
+#pragma once
 
-#ifndef LIBS_TIMELIB_H_
-#define LIBS_TIMELIB_H_
+#ifndef LIBS_TIME_TIMELIB_H_
+#define LIBS_TIME_TIMELIB_H_
 
 #define TIMELIB SDL
 
 #include "libs/compiler.h"
 
-#if 0 //defined(__cplusplus)
-extern "C" {
-#endif
+	
+typedef uqm::DWORD TimeCount;
+typedef uqm::DWORD TimePeriod;
 
-/* ONE_SECOND is the LCM of all the fractions of a second the game uses.
+/* GameTicksPerSecond is the LCM of all the fractions of a second the game uses.
  * Battle is 24 FPS, Landers are 35 FPS, most UI-level things are 15 FPS,
  * The Interplanetary flight is 30 FPS, Comm ambient animation is 40 FPS,
  * (also Comm Oscilloscope is 32 FPS, but it does not require a stable
  * timer and currently runs within the Comm ambient anim paradigm anyway)
- * Thus, the minimum value for ONE_SECOND is 840. */
+ * Thus, the minimum value for GameTicksPerSecond is 840. */
 #if TIMELIB == SDL
-#define ONE_SECOND 840
+constexpr uqm::DWORD GameTicksPerSecond {840};
+static constexpr uqm::DWORD getTicksForFramerate(const uqm::DWORD desiredFps)
+{
+	return GameTicksPerSecond / desiredFps;
+}
 #endif
 
-typedef uqm::DWORD TimeCount;
-typedef uqm::DWORD TimePeriod;
 
 extern void InitTimeSystem(void);
 extern void UnInitTimeSystem(void);
 extern TimeCount GetTimeCounter(void);
 
-#if 0 //defined(__cplusplus)
-}
-#endif
 
-#endif /* LIBS_TIMELIB_H_ */
+#endif /* LIBS_TIME_TIMELIB_H_ */

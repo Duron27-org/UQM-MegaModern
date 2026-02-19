@@ -43,7 +43,7 @@
 #endif /* DEBUG_THREADS */
 
 #include <sys/types.h>
-#include "libs/timelib.h"
+#include "libs/time/timelib.h"
 
 #if 0 //defined(__cplusplus)
 extern "C" {

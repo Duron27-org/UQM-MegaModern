@@ -19,7 +19,7 @@
 #include "gfxintrn.h"
 #include "libs/graphics/gfx_common.h"
 #include "libs/graphics/drawcmd.h"
-#include "libs/timelib.h"
+#include "libs/time/timelib.h"
 #include "libs/misc.h"
 // for TFB_DEBUG_HALT
 #include "options.h"
@@ -178,7 +178,7 @@ void SetTransitionSource(const GFXRECT* pRect)
 // ScreenTransition() is synchronous (does not return until transition done)
 void ScreenTransition(uqm::EmulationMode transType, const GFXRECT* pRect)
 {
-	const TimePeriod DURATION = ONE_SECOND * 31 / 60;
+	static constexpr TimePeriod Duration = GameTicksPerSecond * 31 / 60;
 	TimeCount startTime;
 
 	if (transType == uqm::EmulationMode::PC)
@@ -196,10 +196,10 @@ void ScreenTransition(uqm::EmulationMode transType, const GFXRECT* pRect)
 		TimePeriod deltaT;
 		int newAmount;
 
-		SleepThread(ONE_SECOND / 100);
+		SleepThread(getTicksForFramerate(100));
 
 		deltaT = GetTimeCounter() - startTime;
-		newAmount = deltaT * 255 / DURATION;
+		newAmount = deltaT * 255 / Duration;
 		if (newAmount > 255)
 		{
 			newAmount = 255;

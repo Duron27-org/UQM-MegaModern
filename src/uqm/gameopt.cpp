@@ -1822,7 +1822,7 @@ DoPickGame(MENU_STATE* pMS)
 			RedrawPickDisplay(pickState, pMS->CurState);
 		}
 
-		SleepThreadUntil(TimeIn + ONE_SECOND / 30);
+		SleepThreadUntil(TimeIn + GameTicksPerSecond / 30);
 	}
 
 	return true;
@@ -1899,7 +1899,7 @@ PickGame(bool saving, bool fromMainMenu)
 	// select the last used slot
 	MenuState.CurState = lastUsedSlot;
 
-	TimeOut = FadeMusic(0, ONE_SECOND / 2);
+	TimeOut = FadeMusic(0, GameTicksPerSecond / 2);
 
 	// Deactivate any background drawing, like planet rotation
 	oldCallback = SetInputCallback(nullptr);
@@ -1929,7 +1929,7 @@ PickGame(bool saving, bool fromMainMenu)
 	if (fromMainMenu)
 	{
 		UnbatchGraphics();
-		FadeScreen(FadeAllToColor, ONE_SECOND / 2);
+		FadeScreen(FadeAllToColor, GameTicksPerSecond / 2);
 	}
 	else
 	{

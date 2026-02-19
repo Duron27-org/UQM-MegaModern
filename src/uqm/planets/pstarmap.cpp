@@ -210,7 +210,7 @@ flashCurrentLocation(GFXPOINT* where, bool force)
 
 	if (GetTimeCounter() >= NextTime)
 	{
-		NextTime = GetTimeCounter() + (ONE_SECOND / 16);
+		NextTime = GetTimeCounter() + (GameTicksPerSecond / 16);
 
 		if (c == 0x00 || c == 0x1A)
 		{
@@ -1849,7 +1849,7 @@ ZoomStarMap(uqm::SIZE dir)
 			mapOrigin = cursorLoc;
 
 			DrawStarMap(0, nullptr);
-			SleepThread(ONE_SECOND / 8);
+			SleepThread(GameTicksPerSecond / 8);
 		}
 	}
 	else if (dir < 0)
@@ -1868,7 +1868,7 @@ ZoomStarMap(uqm::SIZE dir)
 			--zoomLevel;
 
 			DrawStarMap(0, nullptr);
-			SleepThread(ONE_SECOND / 8);
+			SleepThread(GameTicksPerSecond / 8);
 		}
 	}
 }
@@ -2583,7 +2583,7 @@ OnStarNameFrame(TEXTENTRY_STATE* pTES)
 
 	flashCurrentLocation(nullptr, false);
 
-	SleepThread(ONE_SECOND / 30);
+	SleepThread(GameTicksPerSecond / 30);
 
 	return true;
 }
@@ -2773,9 +2773,9 @@ AdvancedAutoPilot(void)
 static bool
 DoMoveCursor(MENU_STATE* pMS)
 {
-#define MIN_ACCEL_DELAY (ONE_SECOND / 60)
-#define MAX_ACCEL_DELAY (ONE_SECOND / 8)
-#define STEP_ACCEL_DELAY (ONE_SECOND / 120)
+#define MIN_ACCEL_DELAY (GameTicksPerSecond / 60)
+#define MAX_ACCEL_DELAY (GameTicksPerSecond / 8)
+#define STEP_ACCEL_DELAY (GameTicksPerSecond / 120)
 	static uqm::CHAR_T last_buf[CURSOR_INFO_BUFSIZE];
 	uqm::DWORD TimeIn = GetTimeCounter();
 	static uqm::COUNT moveRepeats;
@@ -2955,7 +2955,7 @@ DoMoveCursor(MENU_STATE* pMS)
 				{
 					setStarMarked(i, "PLYR_MARKER");
 					DrawStarMap(0, nullptr);
-					SleepThread(ONE_SECOND / 8);
+					SleepThread(GameTicksPerSecond / 8);
 				}
 			}
 		}
@@ -3222,7 +3222,7 @@ UpdateMap(void)
 					{ // Ignore name stacking during movement
 						VisibleChange = true;
 						RepairMap(index | IGNORE_MOVING_SOI, &last_r, &r);
-						SleepThread(ONE_SECOND / 24);
+						SleepThread(GameTicksPerSecond / 24);
 					}
 				} while (delta >= 0);
 				if (VisibleChange)
@@ -3298,15 +3298,15 @@ DoneSphereMove:
 						VisibleChange = true;
 						RepairMap(index, &last_r, &r);
 						SleepThread(
-							ONE_SECOND / (12 + GrowthFactor / 44));
+							GameTicksPerSecond / (12 + GrowthFactor / 44));
 					}
 					else if (str > 0 && FleetPtr->known_strength == 0)
 					{ // Flash dying race name
 						VisibleChange = true;
 						RepairMap(index | PRE_DEATH_SOI, &last_r, &r);
-						SleepThread(ONE_SECOND / 12);
+						SleepThread(GameTicksPerSecond / 12);
 						RepairMap(index | DEATH_SOI, &last_r, &r);
-						SleepThread(ONE_SECOND / 12);
+						SleepThread(GameTicksPerSecond / 12);
 					}
 				} while (delta >= 0);
 				if (VisibleChange

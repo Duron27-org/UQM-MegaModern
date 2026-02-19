@@ -530,7 +530,7 @@ void LoadPlanet(FRAME SurfDefFrame)
 
 	StopMusic();
 
-	sleep = GetTimeCounter() + (ONE_SECOND * 6 / 5);
+	sleep = GetTimeCounter() + (GameTicksPerSecond * 6 / 5);
 	pPlanetDesc = pSolarSysState->pOrbitalDesc;
 
 	if (WaitMode)

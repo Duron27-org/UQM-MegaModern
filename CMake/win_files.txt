@@ -345,7 +345,7 @@ src/libs/time/sdl/sdltime.cpp
 src/libs/time/sdl/sdltime.h
 src/libs/time/timecommon.cpp
 src/libs/time/timecommon.h
-src/libs/timelib.h
+src/libs/time/timelib.h
 src/libs/uio.h
 src/libs/uio/charhashtable.cpp
 src/libs/uio/charhashtable.h
@@ -413,6 +413,8 @@ src/options/options.cpp
 src/options/options.h
 src/options/OptionConstants.h
 src/options/OptionTypes.h
+src/options/netoptions.cpp
+src/options/netoptions.h
 src/options.cpp
 src/options.h
 src/port.cpp
@@ -840,8 +842,6 @@ src/uqm/supermelee/netplay/netmelee.cpp
 src/uqm/supermelee/netplay/netmelee.h
 src/uqm/supermelee/netplay/netmisc.cpp
 src/uqm/supermelee/netplay/netmisc.h
-src/uqm/supermelee/netplay/netoptions.cpp
-src/uqm/supermelee/netplay/netoptions.h
 src/uqm/supermelee/netplay/netplay.h
 src/uqm/supermelee/netplay/netrcv.cpp
 src/uqm/supermelee/netplay/netrcv.h

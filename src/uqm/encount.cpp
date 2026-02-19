@@ -569,7 +569,7 @@ DrawFadeText(const uqm::CHAR_T* str1, const uqm::CHAR_T* str2, bool fade_in,
 			fade_cycle[fade_in ? i : (uqm::SIZE)(NUM_FADES - i - 1)]);
 		font_DrawText(&t1);
 		font_DrawText(&t2);
-		SleepThreadUntil(TimeIn + (ONE_SECOND / 20));
+		SleepThreadUntil(TimeIn + (GameTicksPerSecond / 20));
 		TimeIn = GetTimeCounter();
 	}
 	if (!fade_in)
@@ -856,7 +856,7 @@ UninitEncounter(void)
 								// Pause between erasing
 								if (Sleepy)
 								{
-									SleepThread(ONE_SECOND / 15);
+									SleepThread(GameTicksPerSecond / 15);
 								}
 
 								// MAX_DEAD_DISPLAYED reached - erase
@@ -898,7 +898,7 @@ UninitEncounter(void)
 									SetContextForeGroundColor(fade_ship_cycle[j]);
 									DrawFilledStamp(&ship_s);
 
-									SleepThreadUntil(Time + (ONE_SECOND / 15));
+									SleepThreadUntil(Time + (GameTicksPerSecond / 15));
 									Time = GetTimeCounter();
 								}
 							}
@@ -928,7 +928,7 @@ UninitEncounter(void)
 			DestroyDrawable(ReleaseDrawable(s.frame));
 #endif /* NEVER */
 
-			WaitForAnyButton(true, ONE_SECOND * 3, false);
+			WaitForAnyButton(true, GameTicksPerSecond * 3, false);
 			if (!CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_ESCAPE])
 			{
 				DrawFadeText(str1, str2, false, &scavenge_r);
@@ -959,7 +959,7 @@ UninitEncounter(void)
 					// "Scavenged"
 
 					DrawFadeText(str1, str2, true, &scavenge_r);
-					WaitForAnyButton(true, ONE_SECOND * 2, false);
+					WaitForAnyButton(true, GameTicksPerSecond * 2, false);
 					if (!CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_ESCAPE])
 					{
 						DrawFadeText(str1, str2, false, &scavenge_r);

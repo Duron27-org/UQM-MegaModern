@@ -741,7 +741,7 @@ Color GetFlashPCColor(void)
 
 	static const Color cycle_tab[] = PC_RECT_COLOR_CYCLE_TABLE;
 	const size_t cycleCount = ARRAY_SIZE(cycle_tab);
-#define BLINK_RATE (ONE_SECOND / 18)
+#define BLINK_RATE (GameTicksPerSecond / 18)
 
 	if (GetTimeCounter() >= NextTime)
 	{

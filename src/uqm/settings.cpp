@@ -89,7 +89,7 @@ void PlayMusicResume(MUSIC_REF MusicRef, uqm::BYTE Volume)
 	if (OkayToResume())
 	{
 		SeekMusic(GetMusicPosition());
-		FadeMusic(Volume, ONE_SECOND * 2);
+		FadeMusic(Volume, GameTicksPerSecond * 2);
 	}
 	else
 	{

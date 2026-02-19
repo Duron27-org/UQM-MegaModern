@@ -27,8 +27,6 @@ set(uqm_src_uqm_supermelee_netplay_files
 	"src/uqm/supermelee/netplay/netmelee.h"
 	"src/uqm/supermelee/netplay/netmisc.cpp"
 	"src/uqm/supermelee/netplay/netmisc.h"
-	"src/uqm/supermelee/netplay/netoptions.cpp"
-	"src/uqm/supermelee/netplay/netoptions.h"
 	"src/uqm/supermelee/netplay/netplay.cmake"
 	"src/uqm/supermelee/netplay/netplay.h"
 	"src/uqm/supermelee/netplay/netrcv.cpp"

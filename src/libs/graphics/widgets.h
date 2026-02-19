@@ -46,7 +46,7 @@ typedef enum
 	NUM_WIDGET_TYPES
 } WIDGET_TYPE;
 
-#define WIDGET_TEXTENTRY_WIDTH 31
+#define WIDGET_TEXTENTRY_WIDTH 32
 #define WIDGET_CONTROLENTRY_WIDTH 16
 
 typedef struct _widget

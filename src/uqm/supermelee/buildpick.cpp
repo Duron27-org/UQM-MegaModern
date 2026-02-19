@@ -367,7 +367,7 @@ DoPickShip(MELEE_STATE* pMS)
 
 	Melee_flashSelection(pMS);
 
-	SleepThreadUntil(TimeIn + ONE_SECOND / 30);
+	SleepThreadUntil(TimeIn + GameTicksPerSecond / 30);
 
 	return true;
 }

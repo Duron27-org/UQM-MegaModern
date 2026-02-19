@@ -165,7 +165,7 @@ FlashCursor(void)
 
 	static const Color cycle_tab[] = CURSOR_COLOR_CYCLE_TABLE;
 	const size_t cycleCount = ARRAY_SIZE(cycle_tab);
-#define BLINK_RATE (ONE_SECOND / 32)
+#define BLINK_RATE (GameTicksPerSecond / 32)
 
 	if (GetTimeCounter() >= NextTime)
 	{
@@ -544,7 +544,7 @@ bool DoTextEntry(TEXTENTRY_STATE* pTES)
 		return pTES->FrameCallback(pTES);
 	}
 	/*else
-		SleepThread (ONE_SECOND / 30);*/
+		SleepThread (GameTicksPerSecond / 30);*/
 
 	return true;
 }

@@ -55,58 +55,58 @@ static LOCDATA spahome_desc =
 				1,			   /* StartIndex */
 				3,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND / 20,
+				GameTicksPerSecond / 20,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
 				4,			   /* StartIndex */
 				5,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND / 20,
+				GameTicksPerSecond / 20,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
 				9,			   /* StartIndex */
 				4,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND / 20,
+				GameTicksPerSecond / 20,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3,		   /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3,		   /* RestartRate */
 				(1 << 10) | (1 << 11), /* BlockMask */
 			},
 								{
 				13,					/* StartIndex */
 				6,					/* NumFrames */
 				CIRCULAR_ANIM,		/* AnimFlags */
-				ONE_SECOND / 20, 0, /* FrameRate */
-				ONE_SECOND / 20, 0, /* RestartRate */
+				GameTicksPerSecond / 20, 0, /* FrameRate */
+				GameTicksPerSecond / 20, 0, /* RestartRate */
 				(1 << 4) | (1 << 5) /* BlockMask */
 			},
 								{
 				19,		   /* StartIndex */
 				3,		   /* NumFrames */
 				YOYO_ANIM, /* AnimFlags */
-				ONE_SECOND / 20,
+				GameTicksPerSecond / 20,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3,		 /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3,		 /* RestartRate */
 				(1 << 3) | (1 << 5), /* BlockMask */
 			},
 								{
 				22,		   /* StartIndex */
 				4,		   /* NumFrames */
 				YOYO_ANIM, /* AnimFlags */
-				ONE_SECOND / 10,
-				ONE_SECOND / 30, /* FrameRate */
-				ONE_SECOND / 10,
-				ONE_SECOND / 30, /* RestartRate */
+				GameTicksPerSecond / 10,
+				GameTicksPerSecond / 30, /* FrameRate */
+				GameTicksPerSecond / 10,
+				GameTicksPerSecond / 30, /* RestartRate */
 				(1 << 3) | (1 << 4)
 					| (1 << 10), /* BlockMask */
 			},
@@ -114,29 +114,29 @@ static LOCDATA spahome_desc =
 				26,		   /* StartIndex */
 				3,		   /* NumFrames */
 				YOYO_ANIM, /* AnimFlags */
-				ONE_SECOND / 10,
-				ONE_SECOND / 30, /* FrameRate */
-				ONE_SECOND * 10,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond / 10,
+				GameTicksPerSecond / 30, /* FrameRate */
+				GameTicksPerSecond * 10,
+				GameTicksPerSecond * 3, /* RestartRate */
 				(1 << 10),		/* BlockMask */
 			},
 								{
 				29,		   /* StartIndex */
 				3,		   /* NumFrames */
 				YOYO_ANIM, /* AnimFlags */
-				ONE_SECOND / 10,
-				ONE_SECOND / 30, /* FrameRate */
-				ONE_SECOND * 10,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond / 10,
+				GameTicksPerSecond / 30, /* FrameRate */
+				GameTicksPerSecond * 10,
+				GameTicksPerSecond * 3, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
 				32,			   /* StartIndex */
 				7,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND / 20,
+				GameTicksPerSecond / 20,
 				0, /* FrameRate */
-				ONE_SECOND / 20,
+				GameTicksPerSecond / 20,
 				0,					  /* RestartRate */
 				(1 << 9) | (1 << 10), /* BlockMask */
 			},
@@ -144,19 +144,19 @@ static LOCDATA spahome_desc =
 				39,		   /* StartIndex */
 				3,		   /* NumFrames */
 				YOYO_ANIM, /* AnimFlags */
-				ONE_SECOND / 20,
+				GameTicksPerSecond / 20,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3,		  /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3,		  /* RestartRate */
 				(1 << 8) | (1 << 10), /* BlockMask */
 			},
 								{
 				42,		   /* StartIndex */
 				4,		   /* NumFrames */
 				YOYO_ANIM, /* AnimFlags */
-				ONE_SECOND / 10,
-				ONE_SECOND / 30, /* FrameRate */
-				ONE_SECOND / 30,
+				GameTicksPerSecond / 10,
+				GameTicksPerSecond / 30, /* FrameRate */
+				GameTicksPerSecond / 30,
 				0, /* RestartRate */
 				(1 << 8) | (1 << 9)
 					| (1 << 6) | (1 << 2)
@@ -166,19 +166,19 @@ static LOCDATA spahome_desc =
 				46,		   /* StartIndex */
 				4,		   /* NumFrames */
 				YOYO_ANIM, /* AnimFlags */
-				ONE_SECOND / 10,
-				ONE_SECOND / 30, /* FrameRate */
-				ONE_SECOND / 10,
-				ONE_SECOND / 30,	  /* RestartRate */
+				GameTicksPerSecond / 10,
+				GameTicksPerSecond / 30, /* FrameRate */
+				GameTicksPerSecond / 10,
+				GameTicksPerSecond / 30,	  /* RestartRate */
 				(1 << 2) | (1 << 10), /* BlockMask */
 			},
 								{
 				50,			   /* StartIndex */
 				6,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND / 20,
+				GameTicksPerSecond / 20,
 				0, /* FrameRate */
-				ONE_SECOND / 20,
+				GameTicksPerSecond / 20,
 				0,		   /* RestartRate */
 				(1 << 13), /* BlockMask */
 			},
@@ -186,10 +186,10 @@ static LOCDATA spahome_desc =
 				56,		   /* StartIndex */
 				3,		   /* NumFrames */
 				YOYO_ANIM, /* AnimFlags */
-				ONE_SECOND / 20,
+				GameTicksPerSecond / 20,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				(1 << 12),		/* BlockMask */
 			},
 								},
@@ -676,7 +676,7 @@ AllianceOffer(RESPONSE_REF R)
 
 		XFormColorMap(GetColorMapAddress(
 						  SetAbsColorMapIndex(CommData.AlienColorMap, 1)),
-					  ONE_SECOND / 4);
+					  GameTicksPerSecond / 4);
 
 		SET_GAME_STATE(SPATHI_MANNER, 3);
 		SET_GAME_STATE(SPATHI_VISITS, 0);
@@ -879,7 +879,7 @@ SpathiCouncil(RESPONSE_REF R)
 
 		XFormColorMap(GetColorMapAddress(
 						  SetAbsColorMapIndex(CommData.AlienColorMap, 1)),
-					  ONE_SECOND / 4);
+					  GameTicksPerSecond / 4);
 
 		SET_GAME_STATE(KNOW_SPATHI_PASSWORD, 1);
 		SET_GAME_STATE(SPATHI_HOME_VISITS, 0);

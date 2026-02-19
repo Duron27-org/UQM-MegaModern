@@ -18,7 +18,7 @@
  */
 
 #include <stdio.h>
-#include "libs/timelib.h"
+#include "libs/time/timelib.h"
 #include "timecommon.h"
 
 void InitTimeSystem(void)

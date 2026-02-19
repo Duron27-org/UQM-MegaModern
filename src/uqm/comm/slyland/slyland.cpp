@@ -145,48 +145,48 @@ static LOCDATA slylandro_desc =
 				1,					/* StartIndex */
 				9,					/* NumFrames */
 				CIRCULAR_ANIM,		/* AnimFlags */
-				ONE_SECOND / 40, 0, /* FrameRate */
-				0, ONE_SECOND * 3,	/* RestartRate */
+				GameTicksPerSecond / 40, 0, /* FrameRate */
+				0, GameTicksPerSecond * 3,	/* RestartRate */
 				(1 << 3)			/* BlockMask */
 			},
 								{
 				10,					/* StartIndex */
 				8,					/* NumFrames */
 				CIRCULAR_ANIM,		/* AnimFlags */
-				ONE_SECOND / 40, 0, /* FrameRate */
-				0, ONE_SECOND * 3,	/* RestartRate */
+				GameTicksPerSecond / 40, 0, /* FrameRate */
+				0, GameTicksPerSecond * 3,	/* RestartRate */
 				(1 << 4)			/* BlockMask */
 			},
 								{
 				18,					/* StartIndex */
 				8,					/* NumFrames */
 				CIRCULAR_ANIM,		/* AnimFlags */
-				ONE_SECOND / 40, 0, /* FrameRate */
-				0, ONE_SECOND * 3,	/* RestartRate */
+				GameTicksPerSecond / 40, 0, /* FrameRate */
+				0, GameTicksPerSecond * 3,	/* RestartRate */
 				(1 << 5)			/* BlockMask */
 			},
 								{
 				26,					/* StartIndex */
 				8,					/* NumFrames */
 				CIRCULAR_ANIM,		/* AnimFlags */
-				ONE_SECOND / 40, 0, /* FrameRate */
-				0, ONE_SECOND * 3,	/* RestartRate */
+				GameTicksPerSecond / 40, 0, /* FrameRate */
+				0, GameTicksPerSecond * 3,	/* RestartRate */
 				(1 << 0)			/* BlockMask */
 			},
 								{
 				34,					/* StartIndex */
 				8,					/* NumFrames */
 				CIRCULAR_ANIM,		/* AnimFlags */
-				ONE_SECOND / 40, 0, /* FrameRate */
-				0, ONE_SECOND * 3,	/* RestartRate */
+				GameTicksPerSecond / 40, 0, /* FrameRate */
+				0, GameTicksPerSecond * 3,	/* RestartRate */
 				(1 << 1)			/* BlockMask */
 			},
 								{
 				42,					/* StartIndex */
 				9,					/* NumFrames */
 				CIRCULAR_ANIM,		/* AnimFlags */
-				ONE_SECOND / 40, 0, /* FrameRate */
-				0, ONE_SECOND * 3,	/* RestartRate */
+				GameTicksPerSecond / 40, 0, /* FrameRate */
+				0, GameTicksPerSecond * 3,	/* RestartRate */
 				(1 << 2)			/* BlockMask */
 			},
 								},

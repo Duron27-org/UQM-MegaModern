@@ -2332,7 +2332,7 @@ void HyperspaceMenu(void)
 	if (!(GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
 	{
 		ClearSISRect(CLEAR_SIS_RADAR);
-		WaitForNoInput(ONE_SECOND / 2, false);
+		WaitForNoInput(GameTicksPerSecond / 2, false);
 	}
 
 	SetContextBackGroundColor(OldColor);

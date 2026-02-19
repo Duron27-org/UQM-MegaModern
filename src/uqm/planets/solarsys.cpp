@@ -64,7 +64,7 @@
 //#define DEBUG_SOLARSYS
 //#define SMOOTH_SYSTEM_ZOOM  1
 
-#define IP_FRAME_RATE (ONE_SECOND / 30)
+#define IP_FRAME_RATE (GameTicksPerSecond / 30)
 
 // BW: those do not depend on the resolution because numbers too small
 // cause crashes in the generation and rendering
@@ -1876,7 +1876,7 @@ ScaleSystem(uqm::SIZE new_radius)
 		RedrawQueue(false);
 		UnbatchGraphics();
 
-		SleepThread(ONE_SECOND / 30);
+		SleepThread(GameTicksPerSecond / 30);
 	}
 
 	// Final zoom step
@@ -2418,7 +2418,7 @@ InitSolarSys(void)
 			DrawOuterSystem();
 			RedrawQueue(false);
 			UnbatchGraphics();
-			FadeScreen(FadeAllToColor, ONE_SECOND / 2);
+			FadeScreen(FadeAllToColor, GameTicksPerSecond / 2);
 			NewGameInit = true;
 
 			LastActivity = 0;

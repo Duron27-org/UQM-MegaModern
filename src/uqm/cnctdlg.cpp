@@ -27,13 +27,13 @@
 #include "resinst.h"
 #include "nameref.h"
 #include "libs/graphics/widgets.h"
-#include "supermelee/netplay/netoptions.h"
+#include "options/options.h"
 
 
 #define MCD_WIDTH RES_SCALE(260)
 #define MCD_HEIGHT RES_SCALE(110)
 
-#define MENU_FRAME_RATE (ONE_SECOND / 20)
+#define MENU_FRAME_RATE (GameTicksPerSecond / 20)
 
 typedef struct connect_dialog_state
 {
@@ -411,12 +411,13 @@ do_connect(WIDGET* self, int event)
 	if (event == WIDGET_EVENT_SELECT)
 	{
 		/* These assignments are safe exactly because texts[] is file-scope) */
-		g_netplayOptions.peer[current_state->which_side].host = texts[0].value;
-		g_netplayOptions.peer[current_state->which_side].port = texts[1].value;
-		g_netplayOptions.peer[current_state->which_side].isServer = false;
+		auto& netplayOptions {uqm::UQMOptions::getInstance().getNetplayOptions()};
+		auto& peerData {netplayOptions.editPeers()[current_state->which_side]};
+		peerData.address.host = texts[0].value;
+		peerData.address.port = std::stoul(texts[1].value);
+		peerData.isServer = false;
 		current_state->confirmed = true;
-		g_netplayOptions.inputDelay = slider.value;
-
+		netplayOptions.setFrameInputDelay(slider.value);
 		done = true;
 	}
 	(void)self;
@@ -429,9 +430,11 @@ do_listen(WIDGET* self, int event)
 	if (event == WIDGET_EVENT_SELECT)
 	{
 		/* These assignments are safe exactly because texts[] is file-scope) */
-		g_netplayOptions.peer[current_state->which_side].port = texts[1].value;
-		g_netplayOptions.peer[current_state->which_side].isServer = true;
-		g_netplayOptions.inputDelay = slider.value;
+		auto& netplayOptions {uqm::UQMOptions::getInstance().getNetplayOptions()};
+		auto& peerData {netplayOptions.editPeers()[current_state->which_side]};
+		peerData.address.port = std::stoul(texts[1].value);
+		peerData.isServer = true;
+		netplayOptions.setFrameInputDelay(slider.value);
 		current_state->confirmed = true;
 		done = true;
 	}
@@ -489,6 +492,8 @@ CreateWidgets(void)
 	menu.child = menu_widgets;
 	menu.handleEvent = Widget_HandleEventMenuScreen;
 
+	auto& netplayOptions {uqm::UQMOptions::getInstance().getNetplayOptions()};
+		
 	slider.tag = WIDGET_TYPE_SLIDER;
 	slider.parent = nullptr;
 	slider.handleEvent = Widget_HandleEventSlider;
@@ -498,9 +503,9 @@ CreateWidgets(void)
 	slider.width = Widget_WidthFullScreen;
 	slider.draw_value = Widget_Slider_DrawValue;
 	slider.min = 0;
-	slider.max = 9;
+	slider.max = netplayOptions.getMaxFrameInputDelay();
 	slider.step = 1;
-	slider.value = g_netplayOptions.inputDelay;
+	slider.value = netplayOptions.getFrameInputDelay();
 	slider.category = GAME_STRING(NETMELEE_STRING_BASE + 24);
 	// "Net Delay"
 
@@ -525,21 +530,16 @@ CreateWidgets(void)
 	// "Port"
 
 	/* We sometimes assign to these internals; cannot strncpy over self! */
-	if (texts[0].value != g_netplayOptions.peer[current_state->which_side].host)
+	auto& peerData {netplayOptions.editPeers()[current_state->which_side]};
+	if (texts[0].value != peerData.address.host)
 	{
+		memset(texts[0].value, 0, sizeof(texts[0].value));
 		strncpy(texts[0].value,
-				g_netplayOptions.peer[current_state->which_side].host,
-				texts[0].maxlen);
+				peerData.address.host.c_str(),
+				std::min(sizeof(texts[0].value), static_cast<size_t>(texts[0].maxlen)));
 	}
-	if (texts[1].value != g_netplayOptions.peer[current_state->which_side].port)
-	{
-		strncpy(texts[1].value,
-				g_netplayOptions.peer[current_state->which_side].port,
-				texts[1].maxlen);
-	}
-	texts[0].value[texts[0].maxlen] = 0;
-	texts[1].value[texts[1].maxlen] = 0;
-
+	fmt::format_to_sz_n(texts[1].value, std::min(sizeof(texts[1].value), static_cast<size_t>(texts[1].maxlen)), "{}", peerData.address.port);
+		
 	menu.receiveFocus((WIDGET*)&menu, WIDGET_EVENT_DOWN);
 }
 

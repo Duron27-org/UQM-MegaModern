@@ -23,7 +23,7 @@
 #include "libs/graphics/dcqueue.h"
 #include "libs/graphics/gfx_common.h"
 #include "libs/graphics/bbox.h"
-#include "libs/timelib.h"
+#include "libs/time/timelib.h"
 #include "core/log/log.h"
 #include "libs/misc.h"
 // for TFB_DEBUG_HALT
@@ -42,7 +42,8 @@ TFB_DrawCommand DCQ[DCQ_MAX];
 
 TFB_DrawCommandQueue DrawCommandQueue;
 
-#define FPS_PERIOD (ONE_SECOND / 20)
+static inline constexpr uqm::DWORD DCQueueFPS {20};
+static inline constexpr auto DCQueueTicksForFps {getTicksForFramerate(DCQueueFPS)};
 int RenderedFrames = 0;
 
 
@@ -313,11 +314,11 @@ computeFPS(int* fps)
 	last_time = current_time;
 
 	fps_counter += delta_time;
-	if (fps_counter > FPS_PERIOD)
+	if (fps_counter > DCQueueTicksForFps)
 	{
-		*fps = (int)((float)ONE_SECOND * RenderedFrames / fps_counter);
+		*fps = (int)((float)DCQueueTicksForFps * RenderedFrames / fps_counter);
 		uqm::log::info("fps {:.2}, effective {}",
-					   (float)ONE_SECOND / delta_time, *fps);
+					   (float)DCQueueTicksForFps / delta_time, *fps);
 
 		fps_counter = 0;
 		RenderedFrames = 0;

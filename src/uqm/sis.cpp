@@ -27,7 +27,7 @@
 #include "gamestr.h"
 #include "options.h"
 #include "battle.h"
-// For BATTLE_FRAME_RATE
+// For BattleFrameRateTicks
 #include "element.h"
 #include "setup.h"
 #include "state.h"
@@ -965,7 +965,7 @@ void DrawFlagshipStats(void)
 	if (!IS_DOS)
 	{
 		unsigned int energy_per_10_sec =
-			(((100 * ONE_SECOND * energy_regeneration) / ((1 + energy_wait) * BATTLE_FRAME_RATE)) + 5) / 10;
+			(((100 * GameTicksPerSecond * energy_regeneration) / ((1 + energy_wait) * BattleFrameRateTicks)) + 5) / 10;
 		fmt::format_to_sz_n(buf, sizeof buf, "{:2}.{:1}",
 							energy_per_10_sec / 10, energy_per_10_sec % 10);
 	}
@@ -2068,7 +2068,7 @@ void DrawAutoPilotMessage(bool Reset)
 
 	static const Color cycle_tab[] = AUTOPILOT_COLOR_CYCLE_TABLE;
 	const size_t cycleCount = ARRAY_SIZE(cycle_tab);
-#define BLINK_RATE (ONE_SECOND * 3 / 40) // 9 @ 120 ticks/second
+#define BLINK_RATE (GameTicksPerSecond * 3 / 40) // 9 @ 120 ticks/second
 
 	if (Reset || optBubbleWarp)
 	{ // Just a reset, not drawing
@@ -2238,7 +2238,7 @@ static void
 scheduleFlashAlarm(void)
 {
 	TimeCount nextTime = Flash_nextTime(flashContext[0]);
-	uqm::DWORD nextTimeMs = (nextTime / ONE_SECOND) * 1000 + ((nextTime % ONE_SECOND) * 1000 / ONE_SECOND);
+	uqm::DWORD nextTimeMs = (nextTime / GameTicksPerSecond) * 1000 + ((nextTime % GameTicksPerSecond) * 1000 / GameTicksPerSecond);
 	// Overflow-safe conversion.
 	flashAlarm = Alarm_addAbsoluteMs(nextTimeMs, updateFlashRect, nullptr);
 }
@@ -2336,8 +2336,8 @@ void SetFlashRect(const GFXRECT* pRect, bool pcRect)
 			{
 				flashContext[i] = Flash_createHighlight(ScreenContext, &flash_rect[i]);
 				Flash_setMergeFactors(flashContext[i], 3, 2, 2);
-				Flash_setSpeed(flashContext[i], 0, ONE_SECOND / 16, 0, ONE_SECOND / 16);
-				Flash_setFrameTime(flashContext[i], ONE_SECOND / 16);
+				Flash_setSpeed(flashContext[i], 0, GameTicksPerSecond / 16, 0, GameTicksPerSecond / 16);
+				Flash_setFrameTime(flashContext[i], GameTicksPerSecond / 16);
 				Flash_setPulseBox(flashContext[i], pcRect);
 				Flash_start(flashContext[i]);
 				if (i == (count_r - 1))

@@ -17,6 +17,7 @@ list(APPEND uqm_src_libs_sound_master_files ${uqm_src_libs_sound_openal_master_f
 set(uqm_src_libs_sound_files
 	"src/libs/sound/audiocore.cpp"
 	"src/libs/sound/audiocore.h"
+	"src/libs/sound/audiocoredefs.h"
 	"src/libs/sound/fileinst.cpp"
 	"src/libs/sound/music.cpp"
 	"src/libs/sound/resinst.cpp"

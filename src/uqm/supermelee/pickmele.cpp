@@ -288,7 +288,7 @@ bool selectShipHuman(HumanInputContext* context, GETMELEE_STATE* gms)
 
 bool selectShipComputer(ComputerInputContext* context, GETMELEE_STATE* gms)
 {
-#define COMPUTER_SELECTION_DELAY (ONE_SECOND >> 1)
+#define COMPUTER_SELECTION_DELAY (GameTicksPerSecond >> 1)
 	TimeCount now = GetTimeCounter();
 	if (now < gms->player[context->playerNr].timeIn + COMPUTER_SELECTION_DELAY)
 	{
@@ -348,7 +348,7 @@ DoGetMelee(GETMELEE_STATE* gms)
 		}
 	}
 
-	SleepThread(ONE_SECOND / 120);
+	SleepThread(GameTicksPerSecond / 120);
 
 #ifdef NETPLAY
 	netInput();
@@ -710,7 +710,7 @@ void MeleeGameOver(void)
 	negotiateReadyConnections(true, NetState_inSetup);
 #endif
 
-	TimeOut = GetTimeCounter() + (ONE_SECOND * 4);
+	TimeOut = GetTimeCounter() + (GameTicksPerSecond * 4);
 
 	PressState = PulsedInputState.menu[KEY_MENU_SELECT] || PulsedInputState.menu[KEY_MENU_CANCEL];
 	do
@@ -809,20 +809,20 @@ GetMeleeStarShips(uqm::COUNT playerMask, HSTARSHIP* ships)
 		Flash_setMergeFactors(gmstate.player[playerI].flashContext,
 							  2, 3, 2);
 		Flash_setFrameTime(gmstate.player[playerI].flashContext,
-						   ONE_SECOND / 16);
+						   GameTicksPerSecond / 16);
 		Flash_setPulseBox(gmstate.player[playerI].flashContext,
 						  (bool)isPC(optWhichMenu));
 #ifdef NETPLAY
 		if (PlayerControl[playerI] & NETWORK_CONTROL)
 		{
 			Flash_setSpeed(gmstate.player[playerI].flashContext,
-						   ONE_SECOND / 2, 0, ONE_SECOND / 2, 0);
+						   GameTicksPerSecond / 2, 0, GameTicksPerSecond / 2, 0);
 		}
 		else
 #endif
 		{
 			Flash_setSpeed(gmstate.player[playerI].flashContext,
-						   0, ONE_SECOND / 16, 0, ONE_SECOND / 16);
+						   0, GameTicksPerSecond / 16, 0, GameTicksPerSecond / 16);
 		}
 		PickMelee_ChangedSelection(&gmstate, playerI);
 		Flash_start(gmstate.player[playerI].flashContext);
@@ -930,8 +930,8 @@ bool GetInitialMeleeStarShips(HSTARSHIP* result)
 	}
 
 	// Fade in
-	SleepThreadUntil(FadeScreen(FadeAllToColor, ONE_SECOND / 2)
-					 + ONE_SECOND / 60);
+	SleepThreadUntil(FadeScreen(FadeAllToColor, GameTicksPerSecond / 2)
+					 + GameTicksPerSecond / 60);
 	FlushColorXForms();
 
 	playerMask = 0;

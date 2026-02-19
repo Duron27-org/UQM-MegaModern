@@ -266,33 +266,33 @@ MakeReport(SOUND ReadOutSounds, uqm::CHAR_T* pStr, uqm::COUNT StrLen)
 						switch (c)
 						{
 							case ',':
-								TimeOut += ONE_SECOND / (4 << scale);
+								TimeOut += GameTicksPerSecond / (4 << scale);
 								break;
 							case '.':
-								TimeOut += ONE_SECOND / (2 << scale);
+								TimeOut += GameTicksPerSecond / (2 << scale);
 								break;
 							case '!':
 								if (last_c != '!' && last_c != ' ')
 								{
-									TimeOut += ONE_SECOND / (2 << scale);
+									TimeOut += GameTicksPerSecond / (2 << scale);
 								}
 								else
 								{
-									TimeOut += ONE_SECOND / (20 << scale);
+									TimeOut += GameTicksPerSecond / (20 << scale);
 								}
 								break;
 							case '?':
 								if (last_c != '?' && last_c != ' ')
 								{
-									TimeOut += ONE_SECOND / (2 << scale);
+									TimeOut += GameTicksPerSecond / (2 << scale);
 								}
 								else
 								{
-									TimeOut += ONE_SECOND / (20 << scale);
+									TimeOut += GameTicksPerSecond / (20 << scale);
 								}
 								break;
 							default:
-								TimeOut += ONE_SECOND / (20 << scale);
+								TimeOut += GameTicksPerSecond / (20 << scale);
 								break;
 						}
 
@@ -300,7 +300,7 @@ MakeReport(SOUND ReadOutSounds, uqm::CHAR_T* pStr, uqm::COUNT StrLen)
 
 						if (word_chars == 0)
 						{
-							TimeOut += ONE_SECOND / (20 << scale);
+							TimeOut += GameTicksPerSecond / (20 << scale);
 						}
 
 						if (WaitForActButtonUntil(true, TimeOut, false))

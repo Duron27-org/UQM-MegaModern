@@ -19,7 +19,7 @@
 #ifdef NETPLAY
 
 #include "checksum.h"
-#include "netoptions.h"
+#include "options/netoptions.h"
 
 #ifdef NETPLAY_CHECKSUM
 
@@ -204,7 +204,7 @@ void initChecksumBuffers(void)
 {
 	size_t player;
 
-	for (player = 0; player < NetplayNumPlayers; player++)
+	for (player = 0; player < NUM_PLAYERS; player++)
 	{
 		NetConnection* conn;
 		ChecksumBuffer* cb;
@@ -228,7 +228,7 @@ void uninitChecksumBuffers(void)
 {
 	size_t player;
 
-	for (player = 0; player < NetplayNumPlayers; player++)
+	for (player = 0; player < NUM_PLAYERS; player++)
 	{
 		NetConnection* conn;
 		ChecksumBuffer* cb;
@@ -280,7 +280,7 @@ bool verifyChecksums(BattleFrameCounter frameNr)
 		return false;
 	}
 
-	for (player = 0; player < NetplayNumPlayers; player++)
+	for (player = 0; player < NUM_PLAYERS; player++)
 	{
 		NetConnection* conn;
 		ChecksumBuffer* cb;

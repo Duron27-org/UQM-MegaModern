@@ -56,9 +56,9 @@ static LOCDATA mycon_desc =
 				12,			   /* StartIndex */
 				10,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND * 3 / 40,
+				GameTicksPerSecond * 3 / 40,
 				0, /* FrameRate */
-				ONE_SECOND * 3 / 80,
+				GameTicksPerSecond * 3 / 80,
 				0, /* RestartRate */
 				0, /* BlockMask */
 			},
@@ -71,17 +71,17 @@ static LOCDATA mycon_desc =
 			//		18, /* StartIndex */
 			//		4, /* NumFrames */
 			//		CIRCULAR_ANIM, /* AnimFlags */
-			//		ONE_SECOND * 3 / 40, 0, /* FrameRate */
-			//		ONE_SECOND * 3 / 40, 0, /* RestartRate */
+			//		GameTicksPerSecond * 3 / 40, 0, /* FrameRate */
+			//		GameTicksPerSecond * 3 / 40, 0, /* RestartRate */
 			//		(1 << 0), /* BlockMask */
 			//	},
 			{
 				22,			   /* StartIndex */
 				6,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND * 3 / 40,
+				GameTicksPerSecond * 3 / 40,
 				0, /* FrameRate */
-				ONE_SECOND * 3 / 40,
+				GameTicksPerSecond * 3 / 40,
 				0, /* RestartRate */
 				0, /* BlockMask */
 			},
@@ -89,9 +89,9 @@ static LOCDATA mycon_desc =
 				28,			   /* StartIndex */
 				5,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND * 3 / 40,
+				GameTicksPerSecond * 3 / 40,
 				0, /* FrameRate */
-				ONE_SECOND * 3 / 40,
+				GameTicksPerSecond * 3 / 40,
 				0, /* RestartRate */
 				0, /* BlockMask */
 			},
@@ -99,9 +99,9 @@ static LOCDATA mycon_desc =
 				33,		   /* StartIndex */
 				4,		   /* NumFrames */
 				YOYO_ANIM, /* AnimFlags */
-				ONE_SECOND * 3 / 40,
+				GameTicksPerSecond * 3 / 40,
 				0, /* FrameRate */
-				ONE_SECOND * 3 / 40,
+				GameTicksPerSecond * 3 / 40,
 				0, /* RestartRate */
 				0, /* BlockMask */
 			},
@@ -122,9 +122,9 @@ static LOCDATA mycon_desc =
 			1,	/* StartIndex */
 			11, /* NumFrames */
 			0,	/* AnimFlags */
-			ONE_SECOND / 15,
+			GameTicksPerSecond / 15,
 								0, /* FrameRate */
-			ONE_SECOND / 12,
+			GameTicksPerSecond / 12,
 								0, /* RestartRate */
 			0, /* BlockMask */
 		},

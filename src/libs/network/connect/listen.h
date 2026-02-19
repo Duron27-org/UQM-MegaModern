@@ -15,7 +15,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-
+#pragma once
 #ifndef LIBS_NETWORK_CONNECT_LISTEN_H_
 #define LIBS_NETWORK_CONNECT_LISTEN_H_
 
@@ -29,6 +29,7 @@ typedef enum
 typedef struct ListenError ListenError;
 typedef struct ListenState ListenState;
 
+#include "core/stl/stl.h"
 #include "port.h"
 
 #ifdef USE_WINSOCK
@@ -97,7 +98,7 @@ struct ListenState
 };
 #endif /* defined(LISTEN_INTERNAL) */
 
-ListenState* listenPort(const char* service, Protocol proto,
+ListenState* listenService(uqgsl::czstring service, Protocol proto,
 						const ListenFlags* flags, ListenConnectCallback connectCallback,
 						ListenErrorCallback errorCallback, void* extra);
 void ListenState_close(ListenState* listenState);

@@ -321,7 +321,7 @@ rotateStarbase(MENU_STATE* pMS, FRAME AniFrame)
 	{
 		STAMP s;
 
-		NextTime = Now + (ONE_SECOND / 20); // Starbase animation framerate
+		NextTime = Now + (GameTicksPerSecond / 20); // Starbase animation framerate
 
 		s.origin = pMS->flash_rect0.corner;
 		s.frame = pMS->flash_frame0;
@@ -483,7 +483,7 @@ ExitStarBase:
 
 		UnbatchGraphics();
 
-		SleepThread(ONE_SECOND / 30);
+		SleepThread(GameTicksPerSecond / 30);
 	}
 
 	return (true);
@@ -493,7 +493,7 @@ static void
 DoTimePassage(void)
 {
 #define LOST_DAYS 14
-	SleepThreadUntil(FadeScreen(FadeAllToBlack, ONE_SECOND * 2));
+	SleepThreadUntil(FadeScreen(FadeAllToBlack, GameTicksPerSecond * 2));
 	MoveGameClockDays(LOST_DAYS);
 
 	// JMS: Calculate flagship location in IP.
@@ -587,7 +587,7 @@ void VisitStarBase(void)
 			return; // You are now dead! Thank you! (killed by Kohr-Ah)
 		}
 
-		SetCommIntroMode(CIM_FADE_IN_SCREEN, ONE_SECOND * 2);
+		SetCommIntroMode(CIM_FADE_IN_SCREEN, GameTicksPerSecond * 2);
 		InitCommunication(COMMANDER_CONVERSATION);
 		if (GLOBAL(CurrentActivity) & CHECK_ABORT)
 		{

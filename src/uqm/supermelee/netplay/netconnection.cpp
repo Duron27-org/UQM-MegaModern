@@ -41,7 +41,7 @@
 static void closeCallback(NetDescriptor* nd);
 static void NetConnection_doClose(NetConnection* conn);
 
-
+#include "core/string/StringUtils.h"
 #include "nc_connect.ci"
 
 #if defined(NETPLAY_DEBUG) && defined(NETPLAY_DEBUG_FILE)
@@ -55,7 +55,7 @@ const Agreement Agreement_nothingAgreed {};
 // The NetConnection keeps a pointer to the passed NetplayPeerOptions;
 // do not free it as long as the NetConnection exists.
 NetConnection*
-NetConnection_open(int player, const NetplayPeerOptions* options,
+NetConnection_open(int player, const uqm::NetplayPeerOptions* options,
 				   NetConnection_ConnectCallback connectCallback,
 				   NetConnection_CloseCallback closeCallback,
 				   NetConnection_ErrorCallback errorCallback,
@@ -367,7 +367,7 @@ bool NetConnection_getDiscriminant(const NetConnection* conn)
 	return conn->stateFlags.discriminant;
 }
 
-const NetplayPeerOptions*
+const uqm::NetplayPeerOptions*
 NetConnection_getPeerOptions(const NetConnection* conn)
 {
 	return conn->options;

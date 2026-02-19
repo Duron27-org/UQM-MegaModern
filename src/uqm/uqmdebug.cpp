@@ -2184,7 +2184,7 @@ waitForKey(struct wait_state* self)
 		return false;
 	}
 
-	SleepThread(ONE_SECOND / 20);
+	SleepThread(GameTicksPerSecond / 20);
 
 	(void)self;
 	return true;

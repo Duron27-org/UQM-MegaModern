@@ -443,7 +443,7 @@ connectHostResolveErrorCallback(ResolveState* resolveState,
 }
 
 ConnectState*
-connectHostByName(const char* host, const char* service, Protocol proto,
+connectHostByName(uqgsl::czstring host, uqgsl::czstring service, Protocol proto,
 				  const ConnectFlags* flags, ConnectConnectCallback connectCallback,
 				  ConnectErrorCallback errorCallback, void* extra)
 {

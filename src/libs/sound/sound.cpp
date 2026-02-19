@@ -122,7 +122,7 @@ void WaitForSoundEnd(uqm::COUNT Channel)
 			   SoundPlaying() :
 			   ChannelPlaying(Channel))
 	{
-		SleepThread(ONE_SECOND / 20);
+		SleepThread(getTicksForFramerate(20));
 		if (QuitPosted) // Don't make users wait for sounds to end
 		{
 			break;

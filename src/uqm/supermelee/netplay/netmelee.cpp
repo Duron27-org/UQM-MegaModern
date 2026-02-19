@@ -31,6 +31,7 @@
 #include "proto/npconfirm.h"
 #include "proto/ready.h"
 #include "proto/reset.h"
+#include "options/options.h"
 
 #include "../../battlecontrols.h"
 // for NetworkInputContext
@@ -434,9 +435,9 @@ openPlayerNetworkConnection(uqm::COUNT player, void* extra)
 	NetConnection* conn;
 
 	assert(netConnections[player] == nullptr);
-
+	const auto& netplayOptions {uqm::UQMOptions::getInstance().getNetplayOptions()};
 	conn = NetConnection_open(player,
-							  &g_netplayOptions.peer[player], NetMelee_connectCallback,
+							  &netplayOptions.getPeers()[player], NetMelee_connectCallback,
 							  NetMelee_closeCallback, NetMelee_errorCallback,
 							  deleteConnectionCallback, extra);
 
@@ -558,7 +559,7 @@ bool localReadyConnections(NetConnection_ReadyCallback readyCallback,
 
 /////////////////////////////////////////////////////////////////////////////
 
-#define NETWORK_POLL_DELAY (ONE_SECOND / 24)
+#define NETWORK_POLL_DELAY (GameTicksPerSecond / 24)
 
 typedef struct NegotiateReadyState NegotiateReadyState;
 struct NegotiateReadyState

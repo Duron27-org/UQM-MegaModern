@@ -1215,7 +1215,7 @@ change_res(WIDGET_TEXTENTRY* self)
 #define NUM_STEPS 20
 #define X_STEP (SCREEN_WIDTH / NUM_STEPS)
 #define Y_STEP (SCREEN_HEIGHT / NUM_STEPS)
-#define MENU_FRAME_RATE (ONE_SECOND / 20)
+#define MENU_FRAME_RATE (GameTicksPerSecond / 20)
 
 #define DEVICE_START 87
 #define UPGRADE_START 112
@@ -2647,7 +2647,7 @@ void SetGlobalOptions(GLOBALOPTS* opts)
 
 	if (resFactor != (int)resolutionFactor)
 	{
-		SleepThreadUntil(FadeScreen(FadeAllToBlack, ONE_SECOND / 2));
+		SleepThreadUntil(FadeScreen(FadeAllToBlack, GameTicksPerSecond / 2));
 		resolutionFactor = resFactor;
 
 		switch (opts->windowType)
@@ -2932,7 +2932,7 @@ void SetGlobalOptions(GLOBALOPTS* opts)
 		int w = WindowWidth;
 		int h = WindowHeight;
 
-		SleepThreadUntil(FadeScreen(FadeAllToBlack, ONE_SECOND / 2));
+		SleepThreadUntil(FadeScreen(FadeAllToBlack, GameTicksPerSecond / 2));
 
 		FlushGraphics();
 		UninitVideoPlayer();

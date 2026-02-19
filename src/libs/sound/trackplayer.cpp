@@ -77,7 +77,7 @@ static inline sint32
 chunk_end_time(TFB_SoundChunk* chunk)
 {
 	return (sint32)((chunk->start_time + chunk->decoder->length)
-					* ONE_SECOND);
+					* GameTicksPerSecond);
 }
 
 static inline sint32
@@ -237,7 +237,7 @@ OnStreamStart(TFB_SoundSample* sample)
 
 	// Adjust the sample to play what we want
 	sample->decoder = cur_chunk->decoder;
-	sample->offset = (sint32)(cur_chunk->start_time * ONE_SECOND);
+	sample->offset = (sint32)(cur_chunk->start_time * GameTicksPerSecond);
 
 	if (cur_chunk->tag_me)
 	{
@@ -697,7 +697,7 @@ seek_track(sint32 offset)
 	if (cur)
 	{
 		cur_chunk = cur;
-		SoundDecoder_Seek(cur->decoder, (uint32)(((float)offset / ONE_SECOND
+		SoundDecoder_Seek(cur->decoder, (uint32)(((float)offset / GameTicksPerSecond
 												  - cur->start_time)
 												 * 1000));
 		sound_sample->decoder = cur->decoder;
@@ -1019,12 +1019,12 @@ uqm::DWORD
 RecalculateDelay(uqm::DWORD numChars, bool talk)
 {
 	uqm::DWORD silence_length;
-	uqm::DWORD talk_length = ONE_SECOND * numChars / MODERATE_SPEED;
+	uqm::DWORD talk_length = GameTicksPerSecond * numChars / MODERATE_SPEED;
 	uqm::BYTE read_speed = speed_array[GLOBAL(glob_flags) & READ_SPEED_MASK];
 
 	if (read_speed)
 	{
-		silence_length = ONE_SECOND * (numChars + MODERATE_SPEED) / read_speed;
+		silence_length = GameTicksPerSecond * (numChars + MODERATE_SPEED) / read_speed;
 		if (silence_length < talk_length)
 		{
 			talk_length = silence_length;

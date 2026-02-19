@@ -40,6 +40,7 @@
 #include "netplay/netmelee.h"
 #include "netplay/notify.h"
 #include "netplay/notifyall.h"
+#include "options/options.h"
 #include "libs/graphics/widgets.h"
 // for DrawShadowedBox()
 #include "../cnctdlg.h"
@@ -1507,8 +1508,8 @@ Select(uqm::BYTE opt)
 
 void Melee_flashSelection(MELEE_STATE* pMS)
 {
-#define FLASH_RATE (ONE_SECOND / 9)
-#define BLINK_RATE (ONE_SECOND / 16)
+#define FLASH_RATE (GameTicksPerSecond / 9)
+#define BLINK_RATE (GameTicksPerSecond / 16)
 	static TimeCount NextTime = 0;
 	static bool select = false;
 	TimeCount Now = GetTimeCounter();
@@ -1956,7 +1957,7 @@ DoEdit(MELEE_STATE* pMS)
 
 	Melee_flashSelection(pMS);
 
-	SleepThreadUntil(TimeIn + ONE_SECOND / 30);
+	SleepThreadUntil(TimeIn + GameTicksPerSecond / 30);
 
 	return true;
 }
@@ -2052,7 +2053,7 @@ DoConfirmSettings(MELEE_STATE* pMS)
 #else
 	closeDisconnectedConnections();
 	netInput();
-	SleepThread(ONE_SECOND / 120);
+	SleepThread(GameTicksPerSecond / 120);
 
 	numDone = numPlayersReady();
 	if (numDone == -1)
@@ -2072,7 +2073,7 @@ DoConfirmSettings(MELEE_STATE* pMS)
 	// All sides have confirmed.
 
 	// Send our own prefered frame delay.
-	Netplay_NotifyAll_inputDelay(g_netplayOptions.inputDelay);
+	Netplay_NotifyAll_inputDelay(uqm::UQMOptions::getInstance().getNetplayOptions().getFrameInputDelay());
 
 	// Synchronise the RNGs:
 	{
@@ -2118,7 +2119,7 @@ DoConfirmSettings(MELEE_STATE* pMS)
 
 	// The maximum value for all connections is used.
 	{
-		bool ok = setupInputDelay(g_netplayOptions.inputDelay);
+		bool ok = setupInputDelay(uqm::UQMOptions::getInstance().getNetplayOptions().getFrameInputDelay());
 		if (!ok)
 		{
 			return false;
@@ -2197,9 +2198,9 @@ static void
 StartMelee(MELEE_STATE* pMS)
 {
 	{
-		FadeMusic(0, ONE_SECOND / 2);
-		SleepThreadUntil(FadeScreen(FadeAllToBlack, ONE_SECOND / 2)
-						 + ONE_SECOND / 60);
+		FadeMusic(0, GameTicksPerSecond / 2);
+		SleepThreadUntil(FadeScreen(FadeAllToBlack, GameTicksPerSecond / 2)
+						 + GameTicksPerSecond / 60);
 		FlushColorXForms();
 
 		SetMusicPosition();
@@ -2232,8 +2233,8 @@ StartMelee(MELEE_STATE* pMS)
 			return;
 		}
 
-		SleepThreadUntil(FadeScreen(FadeAllToBlack, ONE_SECOND / 2)
-						 + ONE_SECOND / 60);
+		SleepThreadUntil(FadeScreen(FadeAllToBlack, GameTicksPerSecond / 2)
+						 + GameTicksPerSecond / 60);
 		FlushColorXForms();
 
 	} while (0 /* !(GLOBAL (CurrentActivity) & CHECK_ABORT) */);
@@ -2455,7 +2456,7 @@ DoConnectingDialog(MELEE_STATE* pMS)
 
 	flushPacketQueues();
 
-	SleepThreadUntil(TimeIn + ONE_SECOND / 30);
+	SleepThreadUntil(TimeIn + GameTicksPerSecond / 30);
 
 	return true;
 }
@@ -2644,7 +2645,7 @@ bool DoMelee(MELEE_STATE* pMS)
 
 		InitMelee(pMS);
 
-		FadeScreen(FadeAllToColor, ONE_SECOND / 2);
+		FadeScreen(FadeAllToColor, GameTicksPerSecond / 2);
 		pMS->LastInputTime = GetTimeCounter();
 		return true;
 	}
@@ -2691,7 +2692,7 @@ bool DoMelee(MELEE_STATE* pMS)
 		}
 
 		if ((PlayerControl[0] & PlayerControl[1] & PSYTRON_CONTROL)
-			&& GetTimeCounter() - pMS->LastInputTime > ONE_SECOND * 10)
+			&& GetTimeCounter() - pMS->LastInputTime > GameTicksPerSecond * 10)
 		{
 			force_select = true;
 			NewMeleeOption = START_MELEE;
@@ -2742,7 +2743,7 @@ bool DoMelee(MELEE_STATE* pMS)
 
 	Melee_flashSelection(pMS);
 
-	SleepThreadUntil(TimeIn + ONE_SECOND / 30);
+	SleepThreadUntil(TimeIn + GameTicksPerSecond / 30);
 
 	return true;
 }

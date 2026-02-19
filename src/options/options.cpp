@@ -9,13 +9,12 @@
 #include "core/log/log.h"
 #include "lib/Math2D/Math2DStringUtils.h"
 #include "libs/graphics/sdl/pure.h" // for enumerating renderer backends.
-
+#include "uqm/init.h"				// for NUM_PLAYERS, which we need to know to set up netplay options. Maybe we should move that somewhere else?
 
 //#include "getopt/getopt.h"
 
-#include "uqm/battle.h" // for BATTLE_FRAME_RATE
 #ifdef NETPLAY
-#include "uqm/supermelee/netplay/netoptions.h" // for NETPLAY options
+#include "options/netoptions.h" // for NETPLAY options
 #endif
 /*
 static int InvalidArgument(const char* supplied, const char* opt_name)
@@ -283,6 +282,30 @@ bool setVolumeOption(FloatOption& option, uqgsl::czstring strval, uqgsl::czstrin
 	return false;
 }
 
+UQMOptions* UQMOptions::s_instance {nullptr};
+
+UQMOptions::UQMOptions()
+	: m_options {}
+#ifdef NETPLAY
+	, m_netplayOptions {NUM_PLAYERS}
+#endif
+{
+	assert(s_instance == nullptr);
+	s_instance = this;
+}
+
+UQMOptions::~UQMOptions()
+{
+	assert(s_instance == this);
+	s_instance = nullptr;
+}
+
+UQMOptions& UQMOptions::getInstance()
+{
+	assert(s_instance != nullptr);
+	return *s_instance;
+}
+
 uqstl::pair<int, bool> UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 {
 
@@ -383,6 +406,10 @@ uqstl::pair<int, bool> UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 			}
 			return ""; // no error
 		});
+
+#ifdef NETPLAY
+	m_netplayOptions.configureCommands(app);
+#endif
 
 	try
 	{
@@ -1276,7 +1303,7 @@ uqstl::pair<int, bool> UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 	//				if (const auto temp {parseOptionValue<int>(optarg, "network input delay")}; temp.has_value())
 	//				{
 	//
-	//					if (g_netplayOptions.inputDelay > BATTLE_FRAME_RATE)
+	//					if (g_netplayOptions.inputDelay > BattleFrameRateTicks)
 	//					{
 	//						error::saveError("Network input delay is absurdly large.");
 	//						badArg = true;

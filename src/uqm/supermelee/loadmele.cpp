@@ -341,7 +341,7 @@ RefocusView(MELEE_STATE* pMS, uqm::COUNT index)
 static void
 flashSelectedTeam(MELEE_STATE* pMS)
 {
-#define FLASH_RATE (ONE_SECOND / 9)
+#define FLASH_RATE (GameTicksPerSecond / 9)
 	static TimeCount NextTime = 0;
 	static int hilite = 0;
 	TimeCount Now = GetTimeCounter();
@@ -479,7 +479,7 @@ bool DoLoadTeam(MELEE_STATE* pMS)
 
 	flashSelectedTeam(pMS);
 
-	SleepThreadUntil(TimeIn + ONE_SECOND / 30);
+	SleepThreadUntil(TimeIn + GameTicksPerSecond / 30);
 
 	return true;
 }

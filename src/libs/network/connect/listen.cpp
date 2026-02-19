@@ -307,7 +307,7 @@ listenPortResolveErrorCallback(ResolveState* resolveState,
 
 // 'proto' is one of IPProto_tcp or IPProto_udp.
 ListenState*
-listenPort(const char* service, Protocol proto, const ListenFlags* flags,
+listenService(uqgsl::czstring service, Protocol proto, const ListenFlags* flags,
 		   ListenConnectCallback connectCallback,
 		   ListenErrorCallback errorCallback, void* extra)
 {

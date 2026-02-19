@@ -56,126 +56,126 @@ static LOCDATA arilou_desc =
 				4,							/* StartIndex */
 				9,							/* NumFrames */
 				CIRCULAR_ANIM,				/* AnimFlags */
-				ONE_SECOND / 30, 0,			/* FrameRate */
-				ONE_SECOND, ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond / 30, 0,			/* FrameRate */
+				GameTicksPerSecond, GameTicksPerSecond * 3, /* RestartRate */
 				(1 << 1) | (1L << 16)},
 								{13,						 /* StartIndex */
 			 9,							 /* NumFrames */
 			 CIRCULAR_ANIM,				 /* AnimFlags */
-			 ONE_SECOND / 30, 0,		 /* FrameRate */
-			 ONE_SECOND, ONE_SECOND * 3, /* RestartRate */
+			 GameTicksPerSecond / 30, 0,		 /* FrameRate */
+			 GameTicksPerSecond, GameTicksPerSecond * 3, /* RestartRate */
 			 (1 << 0) | (1L << 16)},
 								{22,						 /* StartIndex */
 			 9,							 /* NumFrames */
 			 CIRCULAR_ANIM,				 /* AnimFlags */
-			 ONE_SECOND / 30, 0,		 /* FrameRate */
-			 ONE_SECOND, ONE_SECOND * 3, /* RestartRate */
+			 GameTicksPerSecond / 30, 0,		 /* FrameRate */
+			 GameTicksPerSecond, GameTicksPerSecond * 3, /* RestartRate */
 			 (1L << 16)},
 								{31,						 /* StartIndex */
 			 9,							 /* NumFrames */
 			 CIRCULAR_ANIM,				 /* AnimFlags */
-			 ONE_SECOND / 30, 0,		 /* FrameRate */
-			 ONE_SECOND, ONE_SECOND * 3, /* RestartRate */
+			 GameTicksPerSecond / 30, 0,		 /* FrameRate */
+			 GameTicksPerSecond, GameTicksPerSecond * 3, /* RestartRate */
 			 (1 << 4)},
 								{40,						 /* StartIndex */
 			 10,						 /* NumFrames */
 			 CIRCULAR_ANIM,				 /* AnimFlags */
-			 ONE_SECOND / 30, 0,		 /* FrameRate */
-			 ONE_SECOND, ONE_SECOND * 3, /* RestartRate */
+			 GameTicksPerSecond / 30, 0,		 /* FrameRate */
+			 GameTicksPerSecond, GameTicksPerSecond * 3, /* RestartRate */
 			 (1 << 3)},
 								{50,						 /* StartIndex */
 			 9,							 /* NumFrames */
 			 CIRCULAR_ANIM,				 /* AnimFlags */
-			 ONE_SECOND / 30, 0,		 /* FrameRate */
-			 ONE_SECOND, ONE_SECOND * 3, /* RestartRate */
+			 GameTicksPerSecond / 30, 0,		 /* FrameRate */
+			 GameTicksPerSecond, GameTicksPerSecond * 3, /* RestartRate */
 			 (1 << 7)},
 								{
 				59,			   /* StartIndex */
 				8,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND / 30,
+				GameTicksPerSecond / 30,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{67,						 /* StartIndex */
 			 9,							 /* NumFrames */
 			 CIRCULAR_ANIM,				 /* AnimFlags */
-			 ONE_SECOND / 30, 0,		 /* FrameRate */
-			 ONE_SECOND, ONE_SECOND * 3, /* RestartRate */
+			 GameTicksPerSecond / 30, 0,		 /* FrameRate */
+			 GameTicksPerSecond, GameTicksPerSecond * 3, /* RestartRate */
 			 (1 << 5)},
 								{76,						 /* StartIndex */
 			 9,							 /* NumFrames */
 			 CIRCULAR_ANIM,				 /* AnimFlags */
-			 ONE_SECOND / 30, 0,		 /* FrameRate */
-			 ONE_SECOND, ONE_SECOND * 3, /* RestartRate */
+			 GameTicksPerSecond / 30, 0,		 /* FrameRate */
+			 GameTicksPerSecond, GameTicksPerSecond * 3, /* RestartRate */
 			 (1 << 9)},
 								{85,						 /* StartIndex */
 			 9,							 /* NumFrames */
 			 CIRCULAR_ANIM,				 /* AnimFlags */
-			 ONE_SECOND / 30, 0,		 /* FrameRate */
-			 ONE_SECOND, ONE_SECOND * 3, /* RestartRate */
+			 GameTicksPerSecond / 30, 0,		 /* FrameRate */
+			 GameTicksPerSecond, GameTicksPerSecond * 3, /* RestartRate */
 			 (1 << 8)},
 								{
 				94,			   /* StartIndex */
 				9,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND / 30,
+				GameTicksPerSecond / 30,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{103,						 /* StartIndex */
 			 9,							 /* NumFrames */
 			 CIRCULAR_ANIM,				 /* AnimFlags */
-			 ONE_SECOND / 30, 0,		 /* FrameRate */
-			 ONE_SECOND, ONE_SECOND * 3, /* RestartRate */
+			 GameTicksPerSecond / 30, 0,		 /* FrameRate */
+			 GameTicksPerSecond, GameTicksPerSecond * 3, /* RestartRate */
 			 (1 << 13)},
 								{
 				112,		   /* StartIndex */
 				9,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND / 30,
+				GameTicksPerSecond / 30,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{121,						 /* StartIndex */
 			 8,							 /* NumFrames */
 			 CIRCULAR_ANIM,				 /* AnimFlags */
-			 ONE_SECOND / 30, 0,		 /* FrameRate */
-			 ONE_SECOND, ONE_SECOND * 3, /* RestartRate */
+			 GameTicksPerSecond / 30, 0,		 /* FrameRate */
+			 GameTicksPerSecond, GameTicksPerSecond * 3, /* RestartRate */
 			 (1 << 11)},
 								{129,						 /* StartIndex */
 			 9,							 /* NumFrames */
 			 CIRCULAR_ANIM,				 /* AnimFlags */
-			 ONE_SECOND / 30, 0,		 /* FrameRate */
-			 ONE_SECOND, ONE_SECOND * 3, /* RestartRate */
+			 GameTicksPerSecond / 30, 0,		 /* FrameRate */
+			 GameTicksPerSecond, GameTicksPerSecond * 3, /* RestartRate */
 			 (1L << 15)},
 								{138,						 /* StartIndex */
 			 8,							 /* NumFrames */
 			 CIRCULAR_ANIM,				 /* AnimFlags */
-			 ONE_SECOND / 30, 0,		 /* FrameRate */
-			 ONE_SECOND, ONE_SECOND * 3, /* RestartRate */
+			 GameTicksPerSecond / 30, 0,		 /* FrameRate */
+			 GameTicksPerSecond, GameTicksPerSecond * 3, /* RestartRate */
 			 (1 << 14)},
 								{146,						 /* StartIndex */
 			 9,							 /* NumFrames */
 			 CIRCULAR_ANIM,				 /* AnimFlags */
-			 ONE_SECOND / 30, 0,		 /* FrameRate */
-			 ONE_SECOND, ONE_SECOND * 3, /* RestartRate */
+			 GameTicksPerSecond / 30, 0,		 /* FrameRate */
+			 GameTicksPerSecond, GameTicksPerSecond * 3, /* RestartRate */
 			 (1 << 0) | (1 << 1) | (1 << 2)},
 								{
 				/* Hands moving (right up) */
 				155,						  /* StartIndex */
 				2,							  /* NumFrames */
 				CIRCULAR_ANIM | WAIT_TALKING, /* AnimFlags */
-				ONE_SECOND / 15,
+				GameTicksPerSecond / 15,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				(1 << 19),		/* BlockMask */
 			},
 								{
@@ -183,10 +183,10 @@ static LOCDATA arilou_desc =
 				157,						  /* StartIndex */
 				2,							  /* NumFrames */
 				CIRCULAR_ANIM | WAIT_TALKING, /* AnimFlags */
-				ONE_SECOND / 15,
+				GameTicksPerSecond / 15,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				(1 << 19),		/* BlockMask */
 			},
 								{
@@ -194,10 +194,10 @@ static LOCDATA arilou_desc =
 				159,		   /* StartIndex */
 				4,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND / 12,
+				GameTicksPerSecond / 12,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3,		   /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3,		   /* RestartRate */
 				(1 << 17) | (1 << 18), /* BlockMask */
 			},
 								},
@@ -217,9 +217,9 @@ static LOCDATA arilou_desc =
 			1, /* StartIndex */
 			3, /* NumFrames */
 			0, /* AnimFlags */
-			ONE_SECOND / 15,
+			GameTicksPerSecond / 15,
 								0, /* FrameRate */
-			ONE_SECOND / 12,
+			GameTicksPerSecond / 12,
 								0, /* RestartRate */
 			0, /* BlockMask */
 		},

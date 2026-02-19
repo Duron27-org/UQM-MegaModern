@@ -37,7 +37,7 @@
 // Maximum frame rate
 #define CREDITS_FRAME_RATE RES_SCALE(36)
 
-#define CREDITS_TIMEOUT (ONE_SECOND * 5)
+#define CREDITS_TIMEOUT (GameTicksPerSecond * 5)
 
 #define TRANS_COLOR BRIGHT_BLUE_COLOR
 
@@ -496,7 +496,7 @@ processCreditsFrame(void)
 			direction = CreditsRate / rate;
 			// step in pixels
 			dirstep = (rate + CREDITS_FRAME_RATE - 1) / CREDITS_FRAME_RATE;
-			rate = ONE_SECOND * dirstep / rate;
+			rate = GameTicksPerSecond * dirstep / rate;
 			// step is also directional
 			dirstep *= direction;
 		}
@@ -505,7 +505,7 @@ processCreditsFrame(void)
 			direction = 0;
 			dirstep = 0;
 			// one second interframe
-			rate = ONE_SECOND;
+			rate = GameTicksPerSecond;
 		}
 
 		NextTime = GetTimeCounter() + rate;
@@ -798,7 +798,7 @@ DoCreditsInput(void* pIS)
 		return false;
 	}
 
-	SleepThread(ONE_SECOND / CREDITS_FRAME_RATE);
+	SleepThread(GameTicksPerSecond / CREDITS_FRAME_RATE);
 
 	return true;
 }
@@ -834,7 +834,7 @@ void Credits(bool WithOuttakes)
 	s.origin.y = 0;
 	s.frame = CreditsBack;
 	DrawStamp(&s);
-	FadeScreen(FadeAllToColor, ONE_SECOND / 2);
+	FadeScreen(FadeAllToColor, GameTicksPerSecond / 2);
 
 	// set the position of outtakes comm
 	CommWndRect.corner.x = (screenRect.extent.width - CommWndRect.extent.width)
@@ -869,11 +869,11 @@ void Credits(bool WithOuttakes)
 	}
 
 	SetInputCallback(nullptr);
-	FadeMusic(0, ONE_SECOND / 2);
+	FadeMusic(0, GameTicksPerSecond / 2);
 	UninitCredits();
 
 	SetContext(ScreenContext);
-	SleepThreadUntil(FadeScreen(FadeAllToBlack, ONE_SECOND / 2));
+	SleepThreadUntil(FadeScreen(FadeAllToBlack, GameTicksPerSecond / 2));
 	FlushColorXForms();
 
 	if (hMusic)

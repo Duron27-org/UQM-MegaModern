@@ -23,7 +23,7 @@
 #include "libs/compiler.h"
 #include "libs/gfxlib.h"
 #include "libs/sndlib.h"
-#include "libs/timelib.h"
+#include "libs/time/timelib.h"
 #include "../element.h"
 
 #if 0 //defined(__cplusplus)

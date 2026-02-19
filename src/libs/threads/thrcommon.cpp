@@ -17,7 +17,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "libs/threadlib.h"
-#include "libs/timelib.h"
+#include "libs/time/timelib.h"
 #include "core/log/log.h"
 #include "libs/async.h"
 #include "libs/memlib.h"
@@ -347,7 +347,7 @@ void SleepThreadUntil(TimeCount wakeTime)
 		}
 
 		nextTimeMs = Async_timeBeforeNextMs();
-		nextTime = (nextTimeMs / 1000) * ONE_SECOND + ((nextTimeMs % 1000) * ONE_SECOND / 1000);
+		nextTime = (nextTimeMs / 1000) * GameTicksPerSecond + ((nextTimeMs % 1000) * GameTicksPerSecond / 1000);
 		// Overflow-safe conversion.
 		if (wakeTime < nextTime)
 		{

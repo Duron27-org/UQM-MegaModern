@@ -47,7 +47,7 @@ typedef void (*NetConnection_ResetCallback)(NetConnection* conn, void* arg);
 #endif
 
 #include "netstate.h"
-#include "netoptions.h"
+#include "options/netoptions.h"
 #ifdef NETPLAY_CHECKSUM
 #include "checkbuf.h"
 #endif
@@ -175,7 +175,7 @@ struct NetConnection
 	// Extra argument for resetCallback().
 	// XXX: when is this cleaned up if a connection is broken?
 
-	const NetplayPeerOptions* options;
+	const uqm::NetplayPeerOptions* options;
 	PacketQueue queue;
 #ifdef NETPLAY_STATISTICS
 	NetStatistics statistics;
@@ -216,7 +216,7 @@ struct ConnectStateData
 
 
 NetConnection* NetConnection_open(int player,
-								  const NetplayPeerOptions* options,
+								  const uqm::NetplayPeerOptions* options,
 								  NetConnection_ConnectCallback connectCallback,
 								  NetConnection_CloseCallback closeCallback,
 								  NetConnection_ErrorCallback errorCallback,
@@ -234,8 +234,7 @@ void* NetConnection_getExtra(const NetConnection* conn);
 void NetConnection_setState(NetConnection* conn, NetState state);
 NetState NetConnection_getState(const NetConnection* conn);
 bool NetConnection_getDiscriminant(const NetConnection* conn);
-const NetplayPeerOptions* NetConnection_getPeerOptions(
-	const NetConnection* conn);
+const uqm::NetplayPeerOptions* NetConnection_getPeerOptions(const NetConnection* conn);
 int NetConnection_getPlayerNr(const NetConnection* conn);
 size_t NetConnection_getInputDelay(const NetConnection* conn);
 #ifdef NETPLAY_CHECKSUM

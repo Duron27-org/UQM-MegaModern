@@ -49,7 +49,7 @@
 #include "libs/scriptlib.h"
 #include "uqm/controls.h"
 #include "uqm/battle.h"
-// For BATTLE_FRAME_RATE
+// For BattleFrameRateTicks
 #include "libs/file.h"
 #include "types.h"
 #include "port.h"
@@ -63,7 +63,6 @@
 #include "libs/callback/callback.h"
 #include "libs/callback/alarm.h"
 #include "libs/net.h"
-#include "uqm/supermelee/netplay/netoptions.h"
 #include "uqm/supermelee/netplay/netplay.h"
 #endif
 #include "uqm/setup.h"
@@ -81,8 +80,24 @@ bool restartGame;
 namespace uqm
 {
 
+UQMGame* UQMGame::s_instance {nullptr};
+
 UQMGame::UQMGame()
 {
+	assert(s_instance == nullptr);
+	s_instance = this;
+}
+
+UQMGame::~UQMGame()
+{
+	assert(s_instance == this);
+	s_instance = nullptr;
+}
+
+UQMGame& UQMGame::getInstance()
+{
+	assert(s_instance != nullptr);
+	return *s_instance;
 }
 
 uqstl::pair<int, bool> UQMGame::setup(uqstl::span<uqgsl::zstring> args)
@@ -457,7 +472,7 @@ int UQMGame::run()
 		}
 		else if (!GameActive)
 		{ // Throttle down the main loop when game is inactive
-			HibernateThread(ONE_SECOND / 4);
+			HibernateThread(getTicksForFramerate(4));
 		}
 
 		TFB_ProcessEvents();

@@ -1517,7 +1517,7 @@ ExitOutfit:
 				ChangeFuelQuantity();
 			}
 
-			SleepThread(ONE_SECOND / 30);
+			SleepThread(GameTicksPerSecond / 30);
 		}
 		else
 		{

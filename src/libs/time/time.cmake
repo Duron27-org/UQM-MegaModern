@@ -14,6 +14,7 @@ set(uqm_src_libs_time_files
 	"src/libs/time/time.cmake"
 	"src/libs/time/timecommon.cpp"
 	"src/libs/time/timecommon.h"
+	"src/libs/time/timelib.h"
 )
 
 source_group("src\\libs\\time" FILES ${uqm_src_libs_time_files})

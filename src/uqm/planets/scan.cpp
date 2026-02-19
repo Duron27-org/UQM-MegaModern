@@ -689,7 +689,7 @@ setPlanetLoc(GFXPOINT new_pt, bool restoreOld)
 static void
 flashPlanetLocation(void)
 {
-#define FLASH_FRAME_DELAY (ONE_SECOND / 16)
+#define FLASH_FRAME_DELAY (GameTicksPerSecond / 16)
 	static uqm::BYTE c = 0x00;
 	static int val = -2;
 	static GFXPOINT prevPt;
@@ -963,7 +963,7 @@ DoPickPlanetSide(MENU_STATE* pMS)
 
 		if (dx || dy)
 		{
-			tNext = TimeIn + ONE_SECOND / 40;
+			tNext = TimeIn + GameTicksPerSecond / 40;
 		}
 	}
 
@@ -1152,7 +1152,7 @@ DrawPCScannedStuff(uqm::COUNT scan)
 	ELEMENT* ElementPtr;
 	STAMP s;
 
-	interval = ONE_SECOND / 10;
+	interval = GameTicksPerSecond / 10;
 
 	hElement = GetHeadElement();
 	now = GetTimeCounter() + interval;
@@ -1284,13 +1284,13 @@ bool callPickupForScanType(SOLARSYS_STATE* solarSys, PLANET_DESC* world,
 static void
 ScanPlanet(uqm::COUNT scanType)
 {
-#define SCAN_DURATION ((ONE_SECOND * 7 / 4 + chooseIfHd(UINT8_MAX, 0ui8)))
+#define SCAN_DURATION ((GameTicksPerSecond * 7 / 4 + chooseIfHd(UINT8_MAX, 0ui8)))
 // NUM_FLASH_COLORS for flashing blips; 1 for the final frame
 #define SCAN_LINES_OG (ORIGINAL_MAP_HEIGHT + NUM_FLASH_COLORS + 1)
 #define SCAN_LINES RES_SCALE(SCAN_LINES_OG)
 #define SCAN_LINE_WAIT (SCAN_DURATION / SCAN_LINES_OG)
 	// For taming the scan FPS on underpowered devices
-#define SCAN_LINE_FPS (ONE_SECOND / chooseIfHd(42, 60))
+#define SCAN_LINE_FPS (GameTicksPerSecond / chooseIfHd(42, 60))
 
 	uqm::COUNT startScan, endScan;
 	uqm::COUNT scan;
@@ -1414,7 +1414,7 @@ ScanPlanet(uqm::COUNT scanType)
 
 			if (scanType == AUTO_SCAN)
 			{ // delay between scans
-				TimeOut = GetTimeCounter() + ONE_SECOND;
+				TimeOut = GetTimeCounter() + GameTicksPerSecond;
 				while (GetTimeCounter() < TimeOut
 					   && !AnyButtonPress(true))
 				{

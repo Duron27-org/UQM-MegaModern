@@ -240,7 +240,7 @@ CreateThread_PT(ThreadFunction func, void* data, uqm::SDWORD stackSize
 
 void SleepThread_PT(TimeCount sleepTime)
 {
-	usleep(sleepTime * 1000000 / ONE_SECOND);
+	usleep(sleepTime * 1000000 / GameTicksPerSecond);
 }
 
 void SleepThreadUntil_PT(TimeCount wakeTime)
@@ -254,7 +254,7 @@ void SleepThreadUntil_PT(TimeCount wakeTime)
 	}
 	else
 	{
-		usleep((wakeTime - now) * 1000000 / ONE_SECOND);
+		usleep((wakeTime - now) * 1000000 / GameTicksPerSecond);
 	}
 }
 

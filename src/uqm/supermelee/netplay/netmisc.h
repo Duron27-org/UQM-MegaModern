@@ -26,7 +26,7 @@ typedef struct BattleStateData BattleStateData;
 #include "types.h"
 
 #include "../../battle.h"
-// for BattleFrameCounter, BATTLE_FRAME_RATE
+// for BattleFrameCounter, BattleFrameRateTicks
 
 #if 0 //defined(__cplusplus)
 extern "C" {

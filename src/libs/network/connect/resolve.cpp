@@ -130,7 +130,7 @@ resolveCallback(ResolveState* resolveState)
 // TODO: actually make this function asynchronous. Right now it just calls
 // getaddrinfo() (which blocks) and then schedules the callback.
 ResolveState*
-getaddrinfoAsync(const char* node, const char* service,
+getaddrinfoAsync(uqgsl::czstring node, uqgsl::czstring service,
 				 const struct addrinfo* hints, ResolveFlags* flags,
 				 ResolveCallback callback, ResolveErrorCallback errorCallback,
 				 ResolveCallbackArg extra)

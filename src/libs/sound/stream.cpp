@@ -21,7 +21,7 @@
 #include "sound.h"
 #include "sndintrn.h"
 #include "libs/tasklib.h"
-#include "libs/timelib.h"
+#include "libs/time/timelib.h"
 #include "libs/threadlib.h"
 #include "core/log/log.h"
 #include "libs/memlib.h"
@@ -71,7 +71,7 @@ void PlayStream(TFB_SoundSample* sample, uint32 source, bool looping, bool scope
 	}
 	else
 	{
-		offset += (sint32)(SoundDecoder_GetTime(decoder) * ONE_SECOND);
+		offset += (sint32)(SoundDecoder_GetTime(decoder) * GameTicksPerSecond);
 	}
 
 	if (source == MUSIC_SOURCE)
@@ -673,7 +673,7 @@ StreamDecoderTaskFunc(void* data)
 
 		if (active_streams == 0)
 		{ // Throttle down the thread when there are no active streams
-			HibernateThread(ONE_SECOND / 10);
+			HibernateThread(getTicksForFramerate(10));
 		}
 		else
 		{
@@ -797,7 +797,7 @@ int GraphForegroundStream(uint8* data, sint32 width, sint32 height,
 
 	// See how far into the buffer we should be now
 	played_time = GetTimeCounter() - source->sbuf_lasttime;
-	delta = played_time * decoder->frequency * full_sample / ONE_SECOND;
+	delta = played_time * decoder->frequency * full_sample / GameTicksPerSecond;
 	// align delta to sample start
 	delta = delta & ~(full_sample - 1);
 

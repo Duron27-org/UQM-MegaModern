@@ -151,40 +151,40 @@ static LOCDATA melnorme_desc =
 				6,		   /* StartIndex */
 				5,		   /* NumFrames */
 				YOYO_ANIM, /* AnimFlags */
-				ONE_SECOND / 12,
+				GameTicksPerSecond / 12,
 				0, /* FrameRate */
-				ONE_SECOND * 4,
-				ONE_SECOND * 4, /* RestartRate */
+				GameTicksPerSecond * 4,
+				GameTicksPerSecond * 4, /* RestartRate */
 				(1 << 1),		/* BlockMask */
 			},
 								{
 				11,		   /* StartIndex */
 				9,		   /* NumFrames */
 				YOYO_ANIM, /* AnimFlags */
-				ONE_SECOND / 20,
+				GameTicksPerSecond / 20,
 				0, /* FrameRate */
-				ONE_SECOND * 4,
-				ONE_SECOND * 4, /* RestartRate */
+				GameTicksPerSecond * 4,
+				GameTicksPerSecond * 4, /* RestartRate */
 				(1 << 0),		/* BlockMask */
 			},
 								{
 				20,		   /* StartIndex */
 				2,		   /* NumFrames */
 				YOYO_ANIM, /* AnimFlags */
-				ONE_SECOND / 10,
-				ONE_SECOND / 15, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond / 10,
+				GameTicksPerSecond / 15, /* FrameRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
 				22,		   /* StartIndex */
 				2,		   /* NumFrames */
 				YOYO_ANIM, /* AnimFlags */
-				ONE_SECOND / 10,
-				ONE_SECOND / 15, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond / 10,
+				GameTicksPerSecond / 15, /* FrameRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
@@ -215,9 +215,9 @@ static LOCDATA melnorme_desc =
 			1, /* StartIndex */
 			5, /* NumFrames */
 			0, /* AnimFlags */
-			ONE_SECOND / 15,
+			GameTicksPerSecond / 15,
 								0, /* FrameRate */
-			ONE_SECOND / 12,
+			GameTicksPerSecond / 12,
 								0, /* RestartRate */
 			0, /* BlockMask */
 		},
@@ -1515,7 +1515,7 @@ DoSell(RESPONSE_REF R)
 			FlushInput();
 
 			DrawCargoStrings((uqm::BYTE)~0, (uqm::BYTE)~0);
-			TimeIn = GetTimeCounter() + ONE_SECOND / 2;
+			TimeIn = GetTimeCounter() + GameTicksPerSecond / 2;
 			while (GetTimeCounter() < TimeIn && Sleepy)
 			{
 				UpdateDuty(true);
@@ -1549,7 +1549,7 @@ DoSell(RESPONSE_REF R)
 			}
 			else
 			{
-				TimeIn = GetTimeCounter() + ONE_SECOND / 2;
+				TimeIn = GetTimeCounter() + GameTicksPerSecond / 2;
 				while (GetTimeCounter() < TimeIn && Sleepy)
 				{
 					UpdateDuty(true);
@@ -1596,7 +1596,7 @@ DoSell(RESPONSE_REF R)
 				FlushInput();
 
 				DrawRainbowPlanet(planets);
-				TimeIn = GetTimeCounter() + ONE_SECOND / 2;
+				TimeIn = GetTimeCounter() + GameTicksPerSecond / 2;
 				while (GetTimeCounter() < TimeIn && Sleepy)
 				{
 					UpdateDuty(true);
@@ -1605,7 +1605,7 @@ DoSell(RESPONSE_REF R)
 
 				DrawRainbowPlanet(planets);
 
-				TimeIn = GetTimeCounter() + ONE_SECOND / 10;
+				TimeIn = GetTimeCounter() + GameTicksPerSecond / 10;
 
 				while (planets != 0 && Sleepy)
 				{
@@ -1619,7 +1619,7 @@ DoSell(RESPONSE_REF R)
 						--planets;
 						DeltaCredit(diffCase * BioCreditValue);
 						DrawRainbowPlanet(planets);
-						TimeIn = GetTimeCounter() + ONE_SECOND / 6;
+						TimeIn = GetTimeCounter() + GameTicksPerSecond / 6;
 					}
 				}
 
@@ -1630,7 +1630,7 @@ DoSell(RESPONSE_REF R)
 				}
 				else
 				{
-					TimeIn = GetTimeCounter() + ONE_SECOND / 2;
+					TimeIn = GetTimeCounter() + GameTicksPerSecond / 2;
 					while (GetTimeCounter() < TimeIn && Sleepy)
 					{
 						UpdateDuty(true);
@@ -1736,7 +1736,7 @@ NatureOfConversation(RESPONSE_REF R)
 
 			XFormColorMap(GetColorMapAddress(
 							  SetAbsColorMapIndex(CommData.AlienColorMap, 1)),
-						  ONE_SECOND / 2);
+						  GameTicksPerSecond / 2);
 
 			AlienTalkSegue((uqm::COUNT)~0);
 		}
@@ -1809,7 +1809,7 @@ DoBluster(RESPONSE_REF R)
 
 		XFormColorMap(GetColorMapAddress(
 						  SetAbsColorMapIndex(CommData.AlienColorMap, 2)),
-					  ONE_SECOND / 2);
+					  GameTicksPerSecond / 2);
 
 		SET_GAME_STATE(MELNORME_YACK_STACK2, 4);
 	}
@@ -2000,7 +2000,7 @@ DoFirstMeeting(RESPONSE_REF R)
 
 		XFormColorMap(GetColorMapAddress(
 						  SetAbsColorMapIndex(CommData.AlienColorMap, 0)),
-					  ONE_SECOND / 2);
+					  GameTicksPerSecond / 2);
 	}
 	else if (PLAYER_SAID(R, we_apologize))
 	{
@@ -2010,7 +2010,7 @@ DoFirstMeeting(RESPONSE_REF R)
 
 		XFormColorMap(GetColorMapAddress(
 						  SetAbsColorMapIndex(CommData.AlienColorMap, 0)),
-					  ONE_SECOND / 2);
+					  GameTicksPerSecond / 2);
 	}
 
 	temp_func = stack_func[0];
@@ -2049,7 +2049,7 @@ DoMelnormeMiffed(RESPONSE_REF R)
 
 		XFormColorMap(GetColorMapAddress(
 						  SetAbsColorMapIndex(CommData.AlienColorMap, 2)),
-					  ONE_SECOND / 2);
+					  GameTicksPerSecond / 2);
 	}
 	else if (PLAYER_SAID(R, explore_relationship))
 	{
@@ -2123,7 +2123,7 @@ DoMelnormePissed(RESPONSE_REF R)
 
 		XFormColorMap(GetColorMapAddress(
 						  SetAbsColorMapIndex(CommData.AlienColorMap, 2)),
-					  ONE_SECOND / 2);
+					  GameTicksPerSecond / 2);
 	}
 	else if (PLAYER_SAID(R, beg_forgiveness))
 	{
@@ -2180,7 +2180,7 @@ DoMelnormeHate(RESPONSE_REF R)
 
 	XFormColorMap(GetColorMapAddress(
 					  SetAbsColorMapIndex(CommData.AlienColorMap, 2)),
-				  ONE_SECOND / 2);
+				  GameTicksPerSecond / 2);
 
 	Response(well_if_thats_the_way_you_feel, ExitConversation);
 	Response(you_hate_us_so_we_go_away, ExitConversation);

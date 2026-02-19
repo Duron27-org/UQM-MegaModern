@@ -60,9 +60,9 @@ static LOCDATA druuge_desc =
 				5,			   /* StartIndex */
 				4,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND * 3 / 40,
+				GameTicksPerSecond * 3 / 40,
 				0, /* FrameRate */
-				ONE_SECOND * 3 / 40,
+				GameTicksPerSecond * 3 / 40,
 				0, /* RestartRate */
 				0, /* BlockMask */
 			},
@@ -71,9 +71,9 @@ static LOCDATA druuge_desc =
 				9,			   /* StartIndex */
 				4,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND * 3 / 40,
+				GameTicksPerSecond * 3 / 40,
 				0, /* FrameRate */
-				ONE_SECOND * 3 / 40,
+				GameTicksPerSecond * 3 / 40,
 				0, /* RestartRate */
 				0, /* BlockMask */
 			},
@@ -82,9 +82,9 @@ static LOCDATA druuge_desc =
 				13,			   /* StartIndex */
 				6,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND * 3 / 40,
+				GameTicksPerSecond * 3 / 40,
 				0, /* FrameRate */
-				ONE_SECOND * 3 / 40,
+				GameTicksPerSecond * 3 / 40,
 				0, /* RestartRate */
 				0, /* BlockMask */
 			},
@@ -93,69 +93,69 @@ static LOCDATA druuge_desc =
 				19,			   /* StartIndex */
 				3,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND / 20,
+				GameTicksPerSecond / 20,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
 				22,			 /* StartIndex */
 				3,			 /* NumFrames */
 				RANDOM_ANIM, /* AnimFlags */
-				ONE_SECOND / 12,
+				GameTicksPerSecond / 12,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
 				25,			 /* StartIndex */
 				3,			 /* NumFrames */
 				RANDOM_ANIM, /* AnimFlags */
-				ONE_SECOND / 12,
+				GameTicksPerSecond / 12,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
 				28,			 /* StartIndex */
 				3,			 /* NumFrames */
 				RANDOM_ANIM, /* AnimFlags */
-				ONE_SECOND / 12,
+				GameTicksPerSecond / 12,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
 				31,			   /* StartIndex */
 				2,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND / 12,
+				GameTicksPerSecond / 12,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
 				33,							  /* StartIndex */
 				7,							  /* NumFrames */
 				CIRCULAR_ANIM | WAIT_TALKING, /* AnimFlags */
-				ONE_SECOND / 12,
+				GameTicksPerSecond / 12,
 				0, /* FrameRate */
-				ONE_SECOND * 7,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond * 7,
+				GameTicksPerSecond * 3, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
 				40,			   /* StartIndex */
 				4,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND * 3 / 10,
+				GameTicksPerSecond * 3 / 10,
 				0, /* FrameRate */
-				ONE_SECOND * 3 / 10,
+				GameTicksPerSecond * 3 / 10,
 				0, /* RestartRate */
 				0, /* BlockMask */
 			},
@@ -163,9 +163,9 @@ static LOCDATA druuge_desc =
 				44,			   /* StartIndex */
 				4,			   /* NumFrames */
 				CIRCULAR_ANIM, /* AnimFlags */
-				ONE_SECOND / 5,
+				GameTicksPerSecond / 5,
 				0, /* FrameRate */
-				ONE_SECOND / 5,
+				GameTicksPerSecond / 5,
 				0, /* RestartRate */
 				0, /* BlockMask */
 			},
@@ -186,10 +186,10 @@ static LOCDATA druuge_desc =
 			1, /* StartIndex */
 			4, /* NumFrames */
 			0, /* AnimFlags */
-			ONE_SECOND / 15,
-								ONE_SECOND / 15, /* FrameRate */
-			ONE_SECOND / 12,
-								ONE_SECOND / 12, /* RestartRate */
+			GameTicksPerSecond / 15,
+								GameTicksPerSecond / 15, /* FrameRate */
+			GameTicksPerSecond / 12,
+								GameTicksPerSecond / 12, /* RestartRate */
 			0,				 /* BlockMask */
 		},
 		nullptr, /* AlienNumberSpeech - none */

@@ -55,10 +55,10 @@ static LOCDATA pkunk_desc =
 				4, /* NumFrames */
 				CIRCULAR_ANIM
 					| WAIT_TALKING, /* AnimFlags */
-				ONE_SECOND / 30,
+				GameTicksPerSecond / 30,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				0,				/* BlockMask */
 			},
 								{
@@ -66,10 +66,10 @@ static LOCDATA pkunk_desc =
 				4, /* NumFrames */
 				YOYO_ANIM
 					| WAIT_TALKING, /* AnimFlags */
-				ONE_SECOND / 10,
+				GameTicksPerSecond / 10,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				(1 << 2),		/* BlockMask */
 			},
 								{
@@ -77,10 +77,10 @@ static LOCDATA pkunk_desc =
 				3,	/* NumFrames */
 				YOYO_ANIM
 					| WAIT_TALKING, /* AnimFlags */
-				ONE_SECOND / 30,
+				GameTicksPerSecond / 30,
 				0, /* FrameRate */
-				ONE_SECOND,
-				ONE_SECOND * 3, /* RestartRate */
+				GameTicksPerSecond,
+				GameTicksPerSecond * 3, /* RestartRate */
 				(1 << 1),		/* BlockMask */
 			},
 								},
@@ -100,10 +100,10 @@ static LOCDATA pkunk_desc =
 			1, /* StartIndex */
 			2, /* NumFrames */
 			0, /* AnimFlags */
-			ONE_SECOND / 15,
-								ONE_SECOND / 6, /* FrameRate */
-			ONE_SECOND / 12,
-								ONE_SECOND / 2, /* RestartRate */
+			GameTicksPerSecond / 15,
+								GameTicksPerSecond / 6, /* FrameRate */
+			GameTicksPerSecond / 12,
+								GameTicksPerSecond / 2, /* RestartRate */
 			0,				/* BlockMask */
 		},
 		nullptr, /* AlienNumberSpeech - none */

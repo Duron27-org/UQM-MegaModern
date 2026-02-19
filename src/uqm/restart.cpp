@@ -89,7 +89,7 @@ void InitMenuMusic(void)
 			SeekMusic(GetMusicPosition());
 		}
 
-		FadeMusic(NORMAL_VOLUME + 70, ONE_SECOND * 3);
+		FadeMusic(NORMAL_VOLUME + 70, GameTicksPerSecond * 3);
 	}
 }
 
@@ -97,7 +97,7 @@ void UninitMenuMusic(void)
 {
 	if (menuMusic)
 	{
-		SleepThreadUntil(FadeMusic(MUTE_VOLUME, ONE_SECOND));
+		SleepThreadUntil(FadeMusic(MUTE_VOLUME, GameTicksPerSecond));
 
 		SetMusicPosition();
 		StopMusic();
@@ -201,7 +201,7 @@ DoDiffChooser(MENU_STATE* pMS)
 	bool done = false;
 	uqm::BYTE a = 1;
 
-	InactTimeOut = (optMainMenuMusic ? 60 : 20) * ONE_SECOND;
+	InactTimeOut = (optMainMenuMusic ? 60 : 20) * GameTicksPerSecond;
 	LastInputTime = GetTimeCounter();
 
 	oldContext = SetContext(ScreenContext);
@@ -283,7 +283,7 @@ DoDiffChooser(MENU_STATE* pMS)
 			response = false;
 		}
 
-		SleepThread(ONE_SECOND / 30);
+		SleepThread(GameTicksPerSecond / 30);
 	}
 
 	if (response)
@@ -444,7 +444,7 @@ RestartMessage(void)
 	// Got to restart -message
 	SetMenuSounds(MENU_SOUND_UP | MENU_SOUND_DOWN, MENU_SOUND_SELECT);
 	SetTransitionSource(nullptr);
-	SleepThreadUntil(FadeScreen(FadeAllToBlack, ONE_SECOND / 2));
+	SleepThreadUntil(FadeScreen(FadeAllToBlack, GameTicksPerSecond / 2));
 	GLOBAL(CurrentActivity) = CHECK_ABORT;
 	restartGame = true;
 	return true;
@@ -489,16 +489,16 @@ DoRestart(MENU_STATE* pMS)
 		InitPulseText();
 		ResetMusicResume();
 
-		InactTimeOut = (optMainMenuMusic ? 60 : 20) * ONE_SECOND;
+		InactTimeOut = (optMainMenuMusic ? 60 : 20) * GameTicksPerSecond;
 
 		pMS->flashContext = Flash_createOverlay(ScreenContext,
 												nullptr, nullptr);
 		Flash_setMergeFactors(pMS->flashContext, -3, 3, 16);
-		Flash_setSpeed(pMS->flashContext, (6 * ONE_SECOND) / 14, 0,
-					   (6 * ONE_SECOND) / 14, 0);
-		Flash_setFrameTime(pMS->flashContext, ONE_SECOND / 16);
+		Flash_setSpeed(pMS->flashContext, (6 * GameTicksPerSecond) / 14, 0,
+					   (6 * GameTicksPerSecond) / 14, 0);
+		Flash_setFrameTime(pMS->flashContext, GameTicksPerSecond / 16);
 		Flash_setState(pMS->flashContext, FlashState_fadeIn,
-					   (3 * ONE_SECOND) / 16);
+					   (3 * GameTicksPerSecond) / 16);
 		Flash_setPulseBox(pMS->flashContext, false);
 
 		DrawRestartMenu(pMS, pMS->CurState, nullptr);
@@ -507,12 +507,12 @@ DoRestart(MENU_STATE* pMS)
 		LastInputTime = GetTimeCounter();
 		pMS->Initialized = true;
 
-		SleepThreadUntil(FadeScreen(FadeAllToColor, ONE_SECOND / 2));
+		SleepThreadUntil(FadeScreen(FadeAllToColor, GameTicksPerSecond / 2));
 	}
 	else if (GLOBAL(CurrentActivity) & CHECK_ABORT)
 	{
 		SleepThreadUntil(
-			FadeScreen(FadeAllToBlack, ONE_SECOND / 2));
+			FadeScreen(FadeAllToBlack, GameTicksPerSecond / 2));
 		return false;
 	}
 	else if (PulsedInputState.menu[KEY_MENU_SELECT])
@@ -531,7 +531,7 @@ DoRestart(MENU_STATE* pMS)
 						MENU_SOUND_SELECT);
 					SetTransitionSource(nullptr);
 					SleepThreadUntil(
-						FadeScreen(FadeAllToBlack, ONE_SECOND / 2));
+						FadeScreen(FadeAllToBlack, GameTicksPerSecond / 2));
 					GLOBAL(CurrentActivity) = CHECK_ABORT;
 					restartGame = true;
 					break;
@@ -541,7 +541,7 @@ DoRestart(MENU_STATE* pMS)
 				{
 					Flash_pause(pMS->flashContext);
 					Flash_setState(pMS->flashContext, FlashState_fadeIn,
-								   (3 * ONE_SECOND) / 16);
+								   (3 * GameTicksPerSecond) / 16);
 					if (!DoDiffChooser(pMS))
 					{
 						LastInputTime = GetTimeCounter();			 // if we timed out - don't start second credit roll
@@ -570,7 +570,7 @@ DoRestart(MENU_STATE* pMS)
 			case SETUP_GAME:
 				Flash_pause(pMS->flashContext);
 				Flash_setState(pMS->flashContext, FlashState_fadeIn,
-							   (3 * ONE_SECOND) / 16);
+							   (3 * GameTicksPerSecond) / 16);
 
 				SetupMenu();
 
@@ -580,7 +580,7 @@ DoRestart(MENU_STATE* pMS)
 				}
 
 				LastInputTime = GetTimeCounter();
-				InactTimeOut = (optMainMenuMusic ? 60 : 20) * ONE_SECOND;
+				InactTimeOut = (optMainMenuMusic ? 60 : 20) * GameTicksPerSecond;
 
 				SetTransitionSource(nullptr);
 				BatchGraphics();
@@ -596,7 +596,7 @@ DoRestart(MENU_STATE* pMS)
 				return true;
 			case QUIT_GAME:
 				SleepThreadUntil(
-					FadeScreen(FadeAllToBlack, ONE_SECOND / 2));
+					FadeScreen(FadeAllToBlack, GameTicksPerSecond / 2));
 				GLOBAL(CurrentActivity) = CHECK_ABORT;
 				break;
 		}
@@ -672,7 +672,7 @@ DoRestart(MENU_STATE* pMS)
 		}
 	}
 
-	SleepThreadUntil(TimeIn + ONE_SECOND / 30);
+	SleepThreadUntil(TimeIn + GameTicksPerSecond / 30);
 
 	return true;
 }
@@ -696,13 +696,13 @@ RestartMenu(MENU_STATE* pMS)
 	{ // player blew himself up with Utwig bomb
 		SET_GAME_STATE(UTWIG_BOMB_ON_SHIP, 0);
 
-		SleepThreadUntil(FadeScreen(FadeAllToWhite, ONE_SECOND / 8)
-						 + ONE_SECOND / 60);
+		SleepThreadUntil(FadeScreen(FadeAllToWhite, GameTicksPerSecond / 8)
+						 + GameTicksPerSecond / 60);
 		SetContextBackGroundColor(WHITE_COLOR);
 
 		ClearDrawable();
 		FlushColorXForms();
-		TimeOut = ONE_SECOND / 8;
+		TimeOut = GameTicksPerSecond / 8;
 
 		GLOBAL(CurrentActivity) = IN_ENCOUNTER;
 
@@ -718,7 +718,7 @@ RestartMenu(MENU_STATE* pMS)
 	}
 	else
 	{
-		TimeOut = ONE_SECOND / 2;
+		TimeOut = GameTicksPerSecond / 2;
 
 		if (GLOBAL_SIS(CrewEnlisted) == (uqm::COUNT)~0)
 		{
@@ -762,9 +762,9 @@ RestartMenu(MENU_STATE* pMS)
 	// and when Skip Intro option is enabled, 3 second pause goes when
 	// the player used the Utwig bomb
 	SleepThreadUntil(FadeScreen(FadeAllToBlack, TimeOut));
-	if (TimeOut == ONE_SECOND / 8)
+	if (TimeOut == GameTicksPerSecond / 8)
 	{
-		SleepThread(ONE_SECOND * 3);
+		SleepThread(GameTicksPerSecond * 3);
 	}
 
 	pMS->CurFrame = CaptureDrawable(LoadGraphic(RESTART_PMAP_ANIM));
@@ -806,7 +806,7 @@ RestartMenu(MENU_STATE* pMS)
 		return (false); // quit
 	}
 
-	TimeOut = FadeScreen(FadeAllToBlack, ONE_SECOND / 2);
+	TimeOut = FadeScreen(FadeAllToBlack, GameTicksPerSecond / 2);
 
 	SleepThreadUntil(TimeOut);
 	FlushColorXForms();
@@ -837,7 +837,7 @@ TryStartGame(void)
 		}
 		else if (GLOBAL(CurrentActivity) == (ACTIVITY)~0)
 		{ // timed out
-			SleepThreadUntil(FadeScreen(FadeAllToBlack, ONE_SECOND / 2));
+			SleepThreadUntil(FadeScreen(FadeAllToBlack, GameTicksPerSecond / 2));
 			return (false);
 		}
 		else if (GLOBAL(CurrentActivity) & CHECK_ABORT)

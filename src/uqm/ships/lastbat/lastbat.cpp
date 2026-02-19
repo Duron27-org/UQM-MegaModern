@@ -23,9 +23,9 @@
 #include "uqm/colors.h"
 #include "uqm/globdata.h"
 #include "uqm/battle.h"
-// For BATTLE_FRAME_RATE
+// For BattleFrameRateTicks
 #include "libs/mathlib.h"
-#include "libs/timelib.h"
+#include "libs/time/timelib.h"
 
 #define num_generators characteristics.max_thrust
 
@@ -44,7 +44,7 @@
                        * TURRET_WAIT frames. */
 
 // Yellow comet
-#define WEAPON_WAIT ((ONE_SECOND / BATTLE_FRAME_RATE) * 10)
+#define WEAPON_WAIT ((GameTicksPerSecond / BattleFrameRateTicks) * 10)
 #define COMET_DAMAGE 2
 #define COMET_OFFSET 0
 #define COMET_HITS DIF_CASE(12, 10, 15)
@@ -58,7 +58,7 @@
 		 * actually used. */
 
 // Green sentinel
-#define SPECIAL_WAIT ((ONE_SECOND / BATTLE_FRAME_RATE) * 3)
+#define SPECIAL_WAIT ((GameTicksPerSecond / BattleFrameRateTicks) * 3)
 #define SENTINEL_SPEED DISPLAY_TO_WORLD(RES_SCALE(8))
 #define SENTINEL_LIFE 2
 #define SENTINEL_OFFSET 0
@@ -683,7 +683,7 @@ sentinel_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
 			ElementPtr0->hit_points = old_hits;
 			ElementPtr0->state_flags &= ~DISAPPEARING;
 			ElementPtr0->state_flags |= DEFY_PHYSICS;
-			ElementPtr0->turn_wait = (ONE_SECOND / BATTLE_FRAME_RATE) >> 1;
+			ElementPtr0->turn_wait = (GameTicksPerSecond / BattleFrameRateTicks) >> 1;
 
 			GetElementStarShip(ElementPtr1, &StarShipPtr);
 			StarShipPtr->cur_status_flags &=

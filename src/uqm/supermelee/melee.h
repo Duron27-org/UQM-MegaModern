@@ -23,7 +23,7 @@
 #include "libs/gfxlib.h"
 #include "libs/mathlib.h"
 #include "libs/sndlib.h"
-#include "libs/timelib.h"
+#include "libs/time/timelib.h"
 #include "libs/reslib.h"
 #include "netplay/packet.h"
 // for NetplayAbortReason and NetplayResetReason.

@@ -237,7 +237,7 @@ int PlaybackTaskFunc(void* data)
 	uint32 len = 2048;
 
 	stream = (uint8*)HMalloc(len);
-	period = (sint32)((len / (double)nosound_freq) * ONE_SECOND);
+	period = (sint32)((len / (double)nosound_freq) * GameTicksPerSecond);
 
 	while (!Task_ReadState(task, TASK_EXIT))
 	{

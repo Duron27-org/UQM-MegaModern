@@ -27,6 +27,9 @@ class UQMGame
 {
 public:
 	UQMGame();
+	~UQMGame();
+
+	[[nodiscard]] static UQMGame& getInstance();
 
 	[[nodiscard]] uqstl::pair<int, bool> setup(uqstl::span<uqgsl::zstring> args);
 	[[nodiscard]] int run();
@@ -35,6 +38,8 @@ public:
 private:
 	UQMOptions m_options {};
 	Logger m_logger {};
+
+	static UQMGame* s_instance;
 };
 
 } // namespace uqm

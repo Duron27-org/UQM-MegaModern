@@ -127,7 +127,7 @@ flashSupportShip(ROSTER_STATE* rosterState, bool saveFrame)
 
 	if (GetTimeCounter() >= NextTime)
 	{
-		NextTime = GetTimeCounter() + (ONE_SECOND / 15);
+		NextTime = GetTimeCounter() + (GameTicksPerSecond / 15);
 
 		/* The commented code out code is the old code before the switch
 		 * to 24-bits colors. The current code produces very slightly
