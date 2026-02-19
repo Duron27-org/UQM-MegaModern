@@ -40,13 +40,14 @@ jobs:
         conan profile detect --force
         conan profile show
     
-    - name: Configure Conan Profile for C++20
-      run: |
-        conan profile update settings.compiler.cppstd=20 default
+#    - name: Configure Conan Profile for C++20
+#      run: |
+#        conan profile update settings.compiler.cppstd=20 default
     
     - name: Install Dependencies with Conan
       run: |
         conan install . `
+          -s compiler.cppstd=20 `
           -of conanbuild `
           --build=missing `
           -s build_type=${{ matrix.build_type }}
