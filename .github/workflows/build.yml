@@ -12,7 +12,8 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        build_type: [Debug, Release]
+        build_type: [Release]
+        #[Debug, Release]
     
     steps:
     - uses: actions/checkout@v4
@@ -26,7 +27,12 @@ jobs:
       uses: ilammy/msvc-dev-cmd@v1
       with:
         arch: x64
-    
+
+    - name: Install LLVM (clang-cl)
+      uses: KyleMayes/install-llvm-action@v2
+      with:
+        version: "21.1.8"
+        
     - name: Install Ninja
       run: choco install ninja
     
@@ -47,9 +53,15 @@ jobs:
     - name: Install Dependencies with Conan
       run: |
         conan install . `
-          -s compiler.cppstd=20 `
           -of conanbuild `
           --build=missing `
+          -s os=Windows `
+          -s arch=x86_64 `
+          -s compiler=clang `
+          -s compiler.version=21 `
+          -s compiler.runtime=dynamic `
+          -s compiler.runtime_type=${{ matrix.build_type }} `
+          -s compiler.cppstd=20 `
           -s build_type=${{ matrix.build_type }}
     
     - name: Configure CMake
