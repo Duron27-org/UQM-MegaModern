@@ -86,6 +86,7 @@ find_package(ZLIB REQUIRED)
 #OPTIONAL
 find_package(GTest QUIET)
 if (GTest_FOUND)
+    enable_testing()
     add_subdirectory(test)
 endif()
 
