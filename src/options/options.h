@@ -214,8 +214,8 @@ template <typename InT>
 class UQMOptions
 {
 public:
-	
-	int parseArgs(uqstl::span<uqgsl::zstring> args);
+	// Returns an [exit code, needs exit] result.
+	uqstl::pair<int, bool> parseArgs(uqstl::span<uqgsl::zstring> args);
 	//void printUsage(FILE* out, const OptionsStruct& defaultOptions);
 
 	const OptionsStruct& get() const

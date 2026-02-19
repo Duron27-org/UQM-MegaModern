@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
 {
 	uqm::UQMGame game {};
 
-	if (const int setupResult {game.setup({argv, static_cast<size_t>(argc)})}; setupResult != EXIT_SUCCESS)
+	if (const auto [setupResult, needExit] {game.setup({argv, static_cast<size_t>(argc)})}; setupResult != EXIT_SUCCESS || needExit)
 	{
 		return setupResult;
 	}

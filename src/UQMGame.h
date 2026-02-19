@@ -28,7 +28,7 @@ class UQMGame
 public:
 	UQMGame();
 
-	[[nodiscard]] int setup(uqstl::span<uqgsl::zstring> args);
+	[[nodiscard]] uqstl::pair<int, bool> setup(uqstl::span<uqgsl::zstring> args);
 	[[nodiscard]] int run();
 	void teardown();
 

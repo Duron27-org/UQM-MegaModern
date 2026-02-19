@@ -282,7 +282,8 @@ bool setVolumeOption(FloatOption& option, uqgsl::czstring strval, uqgsl::czstrin
 	}
 	return false;
 }
-int UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
+
+uqstl::pair<int, bool> UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 {
 
 	CLI::App app("A port of the UQM MegaMod depot to modern C++", "Ur-Quan Masters MegaModERN");
@@ -383,7 +384,24 @@ int UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 			return ""; // no error
 		});
 
-	CLI11_PARSE(app, args.size(), args.data());
+	try
+	{
+		app.parse(args.size(), args.data());
+	}
+	catch (const CLI::CallForHelp& e)
+	{
+		std::cout << app.help();
+		return {0, true};
+	}
+	catch (const CLI::CallForAllHelp& e)
+	{
+		std::cout << app.help("", CLI::AppFormatMode::All);
+		return {0, true};
+	}
+	catch (const CLI::ParseError& e)
+	{
+		return {app.exit(e), true};
+	}
 
 	//#ifdef NETPLAY
 	//	uqm::log::info("  --nethostN=HOSTNAME (server to connect to for player N (1=bottom, 2=top)");
@@ -1290,7 +1308,7 @@ int UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 	//	}
 	//
 	//	return badArg ? EXIT_FAILURE : EXIT_SUCCESS;
-	return EXIT_SUCCESS;
+	return {EXIT_SUCCESS, false};
 }
 
 //

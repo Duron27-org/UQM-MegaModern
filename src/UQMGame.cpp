@@ -85,16 +85,16 @@ UQMGame::UQMGame()
 {
 }
 
-int UQMGame::setup(uqstl::span<uqgsl::zstring> args)
+uqstl::pair<int, bool> UQMGame::setup(uqstl::span<uqgsl::zstring> args)
 {
 
 	// NOTE: we cannot use the logging facility yet because we may have to
 	//   log to a file, and we'll only get the log file name after parsing
 	//   the options.
-	const int optionsResult = m_options.parseArgs(args);
-	if (optionsResult != 0)
+	const auto [parseResult, needExit] = m_options.parseArgs(args);
+	if (parseResult != 0 || needExit)
 	{
-		return optionsResult;
+		return {parseResult, needExit};
 	}
 
 	//log_init(15);
@@ -120,7 +120,7 @@ int UQMGame::setup(uqstl::span<uqgsl::zstring> args)
 					   UQM_PATCH_VERSION,
 					   (resolutionFactor ? "HD " UQM_EXTRA_VERSION : UQM_EXTRA_VERSION));
 		//log_showBox(false, false);
-		return EXIT_SUCCESS;
+		return {EXIT_SUCCESS, true};
 	}
 
 	uqm::log::info("!! The Ur-Quan Masters v{}.{}.{} {} (compiled {} {})", UQM_MAJOR_VERSION, UQM_MINOR_VERSION, UQM_PATCH_VERSION, (resolutionFactor ? "HD " UQM_EXTRA_VERSION : UQM_EXTRA_VERSION), __DATE__, __TIME__);
@@ -166,11 +166,11 @@ int UQMGame::setup(uqstl::span<uqgsl::zstring> args)
 		return EXIT_SUCCESS;
 	}*/
 
-	if (optionsResult != EXIT_SUCCESS)
-	{ // Options parsing failed. Oh, well.
-		uqm::log::critical("Run with -h to see the allowed arguments.");
-		return optionsResult;
-	}
+	//if (optionsResult != EXIT_SUCCESS)
+	//{ // Options parsing failed. Oh, well.
+	//	uqm::log::critical("Run with -h to see the allowed arguments.");
+	//	return optionsResult;
+	//}
 
 	TFB_PreInit();
 	mem_init();
@@ -441,7 +441,7 @@ int UQMGame::setup(uqstl::span<uqgsl::zstring> args)
 						static_cast<int>(ControlTemplate::NUM));
 	TFB_InitInput(TFB_INPUTDRIVER_SDL, 0);
 
-	return EXIT_SUCCESS;
+	return {EXIT_SUCCESS, false};
 }
 
 int UQMGame::run()
