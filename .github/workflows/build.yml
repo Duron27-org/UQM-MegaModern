@@ -31,10 +31,9 @@ jobs:
       run: choco install ninja
     
     - name: Install Conan
-      uses: conan-io/setup-conan@v2
-      with:
-        # Optional: cache Conan packages to speed up builds
-        cache-conan-packages: true
+      run: |
+        pip install conan
+        conan --version
 
     - name: Detect Conan Profile
       run: conan profile detect --force
