@@ -95,7 +95,7 @@ jobs:
     - name: Configure CMake
       run: |
         cmake -S . -B conanbuild -G Ninja `
-          -DCMAKE_TOOLCHAIN_FILE="conanbuild/build/${{ matrix.build_type }}generators/conan_toolchain.cmake" `
+          -DCMAKE_TOOLCHAIN_FILE="conanbuild/build/${{ matrix.build_type }}/generators/conan_toolchain.cmake" `
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} `
           -DCMAKE_C_COMPILER=clang-cl `
           -DCMAKE_CXX_COMPILER=clang-cl
