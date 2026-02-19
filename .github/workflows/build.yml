@@ -1,4 +1,4 @@
-name: Build UQM Binaries
+name: Build UQM with Conan and CMake
 
 on:
   push:
@@ -8,102 +8,189 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-linux:
-    runs-on: ubuntu-latest
-    
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Install Linux Dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y \
-          build-essential \
-          libsdl2-dev \
-          libpng-dev \
-          libogg-dev \
-          libvorbis-dev \
-          zlib1g-dev \
-          make \
-          automake \
-          autoconf
-      
-    - name: Create config.state
-      run: |
-        cat > config.state << 'EOF'
-        CHOICE_debug_VALUE='debug'
-        CHOICE_graphics_VALUE='sdl2'
-        CHOICE_sound_VALUE='mixsdl'
-        CHOICE_mikmod_VALUE='internal'
-        CHOICE_lua_VALUE='internal'
-        CHOICE_ovcodec_VALUE='standard'
-        CHOICE_netplay_VALUE='full'
-        CHOICE_joystick_VALUE='enabled'
-        CHOICE_ioformat_VALUE='stdio_zip'
-        CHOICE_accel_VALUE='asm'
-        CHOICE_threadlib_VALUE='sdl'
-        EOF
-    
-    - name: Build Linux Binary
-      run: |
-        ./build.sh uqm -j$(nproc)
-    
-    - name: Upload Linux Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: UrQuanMastersDebug-Linux
-        path: ./UrQuanMastersDebug
-        if-no-files-found: error
-
-  build-windows-32bit:
+  build-windows:
     runs-on: windows-latest
+    strategy:
+      matrix:
+        build_type: [Debug, Release]
     
     steps:
     - uses: actions/checkout@v4
     
-    - name: Setup MSYS2 for 32-bit
-      uses: msys2/setup-msys2@v2
+    - name: Setup Python
+      uses: actions/setup-python@v5
       with:
-        update: true
-        msystem: MINGW32
-        install: >-
-          base-devel
-          mingw-w64-i686-toolchain
-          mingw-w64-i686-SDL2
-          mingw-w64-i686-libpng
-          mingw-w64-i686-libogg
-          mingw-w64-i686-libvorbis
-          mingw-w64-i686-zlib
-          make
-          autoconf
-          automake
+        python-version: '3.11'
     
-    - name: Create config.state
-      shell: msys2 {0}
+    - name: Setup Visual Studio Environment
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: x64
+    
+    - name: Install Ninja
+      run: choco install ninja
+    
+    - name: Detect Conan Profile
+      run: conan profile detect --force
+    
+    - name: Install Dependencies with Conan
       run: |
-        cat > config.state << 'EOF'
-        CHOICE_debug_VALUE='debug'
-        CHOICE_graphics_VALUE='sdl2'
-        CHOICE_sound_VALUE='mixsdl'
-        CHOICE_mikmod_VALUE='internal'
-        CHOICE_lua_VALUE='internal'
-        CHOICE_ovcodec_VALUE='standard'
-        CHOICE_netplay_VALUE='full'
-        CHOICE_joystick_VALUE='enabled'
-        CHOICE_ioformat_VALUE='stdio_zip'
-        CHOICE_accel_VALUE='asm'
-        CHOICE_threadlib_VALUE='sdl'
-        EOF
+        conan install . `
+          -of conanbuild `
+          --build=missing `
+          -s build_type=${{ matrix.build_type }}
     
-    - name: Build Windows 32-bit Binary
-      shell: msys2 {0}
+    - name: Configure CMake
       run: |
-        chmod +x build.sh
-        ./build.sh uqm -j$(nproc)
+        cmake -G Ninja -B conanbuild `
+          -DCMAKE_TOOLCHAIN_FILE="conanbuild/build/${{ matrix.build_type }}/generators/conan_toolchain.cmake" `
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
     
-    - name: Upload Windows 32-bit Artifact
+    - name: Build
+      run: cmake --build conanbuild --config ${{ matrix.build_type }}
+    
+    - name: Run Unit Tests
+      run: |
+        cd conanbuild
+        ctest --output-on-failure --build-config ${{ matrix.build_type }}
+    
+    - name: Collect DLLs
+      shell: bash
+      run: |
+        mkdir -p artifact
+        cp conanbuild/UrQuanMasters.exe artifact/ || true
+        cp conanbuild/*.dll artifact/ || true
+    
+    - name: Upload Windows Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: UrQuanMastersDebug-Windows
-        path: ./UrQuanMastersDebug.exe
+        name: UrQuanMasters-Windows-${{ matrix.build_type }}
+        path: artifact/
         if-no-files-found: error
+    
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results-Windows-${{ matrix.build_type }}
+        path: conanbuild/Testing/
+        if-no-files-found: ignore
+
+#  build-linux:
+#    runs-on: ubuntu-latest
+#    strategy:
+#      matrix:
+#        build_type: [Debug, Release]
+#    
+#    steps:
+#    - uses: actions/checkout@v4
+#    
+#    - name: Setup Python
+#      uses: actions/setup-python@v5
+#      with:
+#        python-version: '3.11'
+#    
+#    - name: Install Conan
+#      run: |
+#        pip install conan
+#        conan --version
+#    
+#    - name: Detect Conan Profile
+#      run: conan profile detect --force
+#    
+#    - name: Install Dependencies with Conan
+#      run: |
+#        conan install . \
+#          -of conanbuild \
+#          --build=missing \
+#          -s build_type=${{ matrix.build_type }}
+#    
+#    - name: Configure CMake
+#      run: |
+#        cmake -G Ninja -B conanbuild \
+#          -DCMAKE_TOOLCHAIN_FILE="conanbuild/build/${{ matrix.build_type }}/generators/conan_toolchain.cmake" \
+#          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+#    
+#    - name: Build
+#      run: cmake --build conanbuild --config ${{ matrix.build_type }} -j$(nproc)
+#    
+#    - name: Run Unit Tests
+#      run: |
+#        cd conanbuild
+#        ctest --output-on-failure --build-config ${{ matrix.build_type }}
+#    
+#    - name: Upload Linux Artifact
+#      uses: actions/upload-artifact@v4
+#      with:
+#        name: UrQuanMasters-Linux-${{ matrix.build_type }}
+#        path: conanbuild/UrQuanMasters
+#        if-no-files-found: error
+#    
+#    - name: Upload Test Results
+#      uses: actions/upload-artifact@v4
+#      if: always()
+#      with:
+#        name: test-results-Linux-${{ matrix.build_type }}
+#        path: conanbuild/Testing/
+#        if-no-files-found: ignore
+
+#  build-macos:
+#    runs-on: macos-latest
+#    strategy:
+#      matrix:
+#        build_type: [Debug, Release]
+#    
+#    steps:
+#    - uses: actions/checkout@v4
+#    
+#    - name: Setup Python
+#      uses: actions/setup-python@v5
+#      with:
+#        python-version: '3.11'
+#    
+#    - name: Install Conan
+#      run: |
+#        pip install conan
+#        conan --version
+#    
+#    - name: Install Ninja
+#      run: brew install ninja
+#    
+#    - name: Detect Conan Profile
+#      run: conan profile detect --force
+#    
+#    - name: Install Dependencies with Conan
+#      run: |
+#        conan install . \
+#          -of conanbuild \
+#          --build=missing \
+#          -s build_type=${{ matrix.build_type }}
+#    
+#    - name: Configure CMake
+#      run: |
+#        cmake -G Ninja -B conanbuild \
+#          -DCMAKE_TOOLCHAIN_FILE="conanbuild/build/${{ matrix.build_type }}/generators/conan_toolchain.cmake" \
+#          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+#    
+#    - name: Build
+#      run: cmake --build conanbuild --config ${{ matrix.build_type }} -j$(sysctl -n hw.ncpu)
+#    
+#    - name: Run Unit Tests
+#      run: |
+#        cd conanbuild
+#        ctest --output-on-failure --build-config ${{ matrix.build_type }}
+#    
+#    - name: Upload macOS Artifact
+#      uses: actions/upload-artifact@v4
+#      with:
+#        name: UrQuanMasters-macOS-${{ matrix.build_type }}
+#        path: conanbuild/UrQuanMasters
+#        if-no-files-found: error
+#    
+#    - name: Upload Test Results
+#      uses: actions/upload-artifact@v4
+#      if: always()
+#      with:
+#        name: test-results-macOS-${{ matrix.build_type }}
+#        path: conanbuild/Testing/
+#        if-no-files-found: ignore
