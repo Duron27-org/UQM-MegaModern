@@ -22,6 +22,7 @@
 
 #include <errno.h>
 #include <fcntl.h>
+#include <fmt/format.h>
 
 #include "ioaux.h"
 #include "iointrn.h"

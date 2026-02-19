@@ -79,7 +79,7 @@ int GetGraphicScale(void)
 uqm::TFBScaleMode SetGraphicScaleMode(uqm::TFBScaleMode mode)
 {
 	uqm::TFBScaleMode old_mode = gscale_mode;
-	assert(mode >= TFBScaleMode::Nearest && mode <= TFBScaleMode::Trilinear);
+	assert(mode >= uqm::TFBScaleMode::Nearest && mode <= uqm::TFBScaleMode::Trilinear);
 	gscale_mode = mode;
 	return old_mode;
 }

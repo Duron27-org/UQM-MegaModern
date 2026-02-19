@@ -1073,7 +1073,7 @@ void dumpUniverseToFile(void)
 	if (out == nullptr)
 	{
 		fmt::print(stderr, "Error: Could not open file '{}' for "
-						   "writing: {}\n",
+						   "writing: {}",
 				   UNIVERSE_DUMP_FILE, strerror(errno));
 		return;
 	}
@@ -1083,7 +1083,7 @@ void dumpUniverseToFile(void)
 	fclose(out);
 
 	fmt::print(stdout, "*** Star dump complete. The game may be in an "
-					   "undefined state.\n");
+					   "undefined state.");
 	// Data generation may have changed the game state,
 	// in particular for special planet generation.
 }
@@ -1106,7 +1106,7 @@ void dumpSystem(FILE* out, const STAR_DESC* star, const SOLARSYS_STATE* system)
 						bodyColorString(STAR_COLOR(star->Type)),
 						starTypeString(STAR_TYPE(star->Type)));
 
-	fmt::print(out, "{:-22}  ({:3}.{:1}, {:3}.{:1}) {:-19}  {}\n",
+	fmt::print(out, "{:>22}  ({:3}.{:1}, {:3}.{:1}) {:>19}  {}\n",
 			   name,
 			   star->star_pt.x / 10, star->star_pt.x % 10,
 			   star->star_pt.y / 10, star->star_pt.y % 10,
@@ -1302,7 +1302,7 @@ dumpPlanetCallback(const PLANET_DESC* planet, void* arg)
 void dumpPlanet(FILE* out, const PLANET_DESC* planet)
 {
 	(*pSolarSysState->genFuncs->generateName)(pSolarSysState, planet);
-	fmt::print(out, "- %-37s  {}\n", GLOBAL_SIS(PlanetName),
+	fmt::print(out, "- {:>37}  {}\n", GLOBAL_SIS(PlanetName),
 			   planetTypeString(planet->data_index & ~PLANET_SHIELDED));
 	dumpWorld(out, planet);
 }
@@ -1338,7 +1338,7 @@ void dumpMoon(FILE* out, const PLANET_DESC* moon)
 	{
 		typeStr = planetTypeString(moon->data_index & ~PLANET_SHIELDED);
 	}
-	fmt::print(out, "  - Moon %-30c  {}\n",
+	fmt::print(out, "  - Moon {:>30}  {}\n",
 			   'a' + (uqm::CHAR_T)(moon - &pSolarSysState->MoonDesc[0]), typeStr);
 
 	dumpWorld(out, moon);
@@ -1388,12 +1388,12 @@ dumpWorld(FILE* out, const PLANET_DESC* world)
 		return;
 	}
 
-	fmt::print(out, "          Bio: %4d    Min: %4d\n",
+	fmt::print(out, "          Bio: {:4}    Min: {:4}\n",
 			   calculateBioValue(pSolarSysState, world),
 			   calculateMineralValue(pSolarSysState, world));
 }
 
-void fmt::printWorld(const PLANET_DESC* world)
+void printWorld(const PLANET_DESC* world)
 {
 	PLANET_INFO* info;
 	uqm::CHAR_T buf[200] {};
@@ -1408,7 +1408,7 @@ void fmt::printWorld(const PLANET_DESC* world)
 		return;
 	}
 
-	fmt::print(fp, "Coords:     %03u.%01u : %03u.%01u\n",
+	fmt::print(fp, "Coords:     {:03}.{:01} : {:03}.{:01}\n",
 			   universe.x / 10, universe.x % 10,
 			   universe.y / 10, universe.y % 10);
 
@@ -1448,7 +1448,7 @@ void fmt::printWorld(const PLANET_DESC* world)
 		fmt::print(fp, "LifeChance: {}\n", info->LifeChance);
 	}
 
-	fmt::print(fp, "Bio: %4d    Min: %4d\n",
+	fmt::print(fp, "Bio: {:4}    Min: {:4}\n",
 			   calculateBioValue(pSolarSysState, world),
 			   calculateMineralValue(pSolarSysState, world));
 	fmt::print(fp, "____________________________________\n\n");
@@ -1969,7 +1969,7 @@ void dumpStrings(FILE* out)
 	if (GAMESTR_COUNT != numStrings)
 	{
 		fmt::print(stderr, "Warning: GAMESTR_COUNT is {}, but GameStrings "
-						   "contains %zu strings.\n",
+						   "contains {} strings.\n",
 				   GAMESTR_COUNT, numStrings);
 	}
 
@@ -1980,7 +1980,7 @@ void dumpStrings(FILE* out)
 		{
 			categoryI++;
 		}
-		fmt::print(out, "[ {} + %zu ]  {}\n", categories[categoryI].name,
+		fmt::print(out, "[ {} + {} ]  {}\n", categories[categoryI].name,
 				   stringI - categories[categoryI].base, GAME_STRING((uqm::COUNT)stringI));
 	}
 }

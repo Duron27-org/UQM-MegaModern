@@ -199,7 +199,7 @@ void dumpStrings(FILE* out);
 // Must be called on the Starcon2Main thread.
 void debugContexts(void);
 
-void fmt::printWorld(const PLANET_DESC* world);
+void printWorld(const PLANET_DESC* world);
 
 
 // To add some day:

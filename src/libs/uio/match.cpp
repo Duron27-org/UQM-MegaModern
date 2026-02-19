@@ -22,6 +22,7 @@
 #ifdef DEBUG
 #include <stdio.h>
 #endif
+#include "core/string/StringUtils.h"
 
 #define match_INTERNAL
 
@@ -117,8 +118,7 @@ match_prepareContext(const char* pattern, match_MatchContext** contextPtr,
 		default:
 #ifdef DEBUG
 			fmt::print(stderr, "match_prepareContext called with unsupported "
-							   "type {} matching.\n",
-					   type);
+							   "type {:sn} matching.\n", type);
 #endif
 			return match_ENOSYS;
 	}
