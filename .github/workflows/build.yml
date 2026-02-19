@@ -23,16 +23,20 @@ jobs:
       with:
         python-version: '3.11'
 
+    - name: Setup MSVC environment (preinstalled)
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: x64
 
-    - name: Install MSVC v143 toolset
-      shell: powershell
-      run: |
-        choco install visualstudio2022buildtools -y
-        choco install visualstudio2022-workload-vctools -y
+#    - name: Install MSVC v143 toolset
+#      shell: powershell
+#      run: |
+#        choco install visualstudio2022buildtools -y
+#        choco install visualstudio2022-workload-vctools -y
         
-    - name: Dump VS Toolset Version
-      shell: powershell
-      run: dir "C:\Program Files\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC"
+#    - name: Dump VS Toolset Version
+#      shell: powershell
+#      run: dir "C:\Program Files\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC"
     
     - name: Setup Visual Studio Environment
       uses: ilammy/msvc-dev-cmd@v1
