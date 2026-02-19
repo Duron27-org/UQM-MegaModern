@@ -49,7 +49,7 @@ struct OptionsStruct
 	BoolOption use3doMusic {true};
 	BoolOption useRemixMusic {false};
 	BoolOption useSpeech {true};
-	IntOption whichCoarseScan {0};
+	EmulationOption whichCoarseScan {EmulationMode::PC};
 	EmulationOption whichMenu {uqm::EmulationMode::PC};
 	EmulationOption whichFonts {uqm::EmulationMode::PC};
 	EmulationOption whichIntro {uqm::EmulationMode::PC};
@@ -214,8 +214,9 @@ template <typename InT>
 class UQMOptions
 {
 public:
+	
 	int parseArgs(uqstl::span<uqgsl::zstring> args);
-	void printUsage(FILE* out, const OptionsStruct& defaultOptions);
+	//void printUsage(FILE* out, const OptionsStruct& defaultOptions);
 
 	const OptionsStruct& get() const
 	{

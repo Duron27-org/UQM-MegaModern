@@ -1233,7 +1233,7 @@ SetDefaults(void)
 	choices[CHOICE_SCANLINE].selected = opts.scanlines;
 	choices[CHOICE_MENUSTYLE].selected = static_cast<int>(opts.menu);
 	choices[CHOICE_FONTSTYLE].selected = static_cast<int>(opts.text);
-	choices[CHOICE_SCANMENU].selected = opts.cscan;
+	choices[CHOICE_SCANMENU].selected = static_cast<int>(opts.cscan);
 	choices[CHOICE_SCROLLSTYLE].selected = static_cast<int>(opts.scroll);
 	choices[CHOICE_SUBTITLES].selected = opts.subtitles;
 	choices[CHOICE_REMIXES1].selected = opts.music3do;
@@ -1361,7 +1361,7 @@ PropagateResults(void)
 	opts.scanlines = (OPT_ENABLABLE)choices[CHOICE_SCANLINE].selected;
 	opts.menu = (OPT_CONSOLETYPE)choices[CHOICE_MENUSTYLE].selected;
 	opts.text = (OPT_CONSOLETYPE)choices[CHOICE_FONTSTYLE].selected;
-	opts.cscan = choices[CHOICE_SCANMENU].selected;
+	opts.cscan = (OPT_CONSOLETYPE)choices[CHOICE_SCANMENU].selected;
 	opts.scroll = (OPT_CONSOLETYPE)choices[CHOICE_SCROLLSTYLE].selected;
 	opts.subtitles = (OPT_ENABLABLE)choices[CHOICE_SUBTITLES].selected;
 	opts.music3do = (OPT_ENABLABLE)choices[CHOICE_REMIXES1].selected;
@@ -2562,7 +2562,7 @@ void GetGlobalOptions(GLOBALOPTS* opts)
 	// Orbit
 	opts->landerHold = whichPlatformOpt(optLanderHold);
 	opts->partialPickup = optPartialPickup;
-	opts->cscan = optWhichCoarseScan;
+	opts->cscan = whichPlatformOpt(optWhichCoarseScan);
 	opts->hazardColors = optHazardColors;
 	opts->scanStyle = whichPlatformOpt(optScanStyle);
 	opts->landerStyle = whichPlatformOpt(optSuperPC);

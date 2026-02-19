@@ -99,9 +99,7 @@ EraseCoarseScan(void)
 static void
 PrintScanTitleText(TEXT* t)
 {
-	SetContextForeGroundColor(optWhichCoarseScan ?
-								  SCAN_PC_TITLE_COLOR_6014 :
-								  SCAN_PC_TITLE_COLOR);
+	SetContextForeGroundColor(optWhichCoarseScan == uqm::EmulationMode::Console3DO ? SCAN_PC_TITLE_COLOR_6014 :  SCAN_PC_TITLE_COLOR);
 
 	if (!optNebulae)
 	{
@@ -109,7 +107,7 @@ PrintScanTitleText(TEXT* t)
 	}
 	else
 	{
-		font_DrawTracedText(t, (optWhichCoarseScan ? SCAN_PC_TITLE_COLOR_6014 : GetContextForeGroundColor()), OUTLINE_COLOR);
+		font_DrawTracedText(t, (optWhichCoarseScan == uqm::EmulationMode::Console3DO ? SCAN_PC_TITLE_COLOR_6014 : GetContextForeGroundColor()), OUTLINE_COLOR);
 	}
 
 	SetContextForeGroundColor(SCAN_INFO_COLOR);
@@ -134,7 +132,7 @@ PrintScanTitlePC(TEXT* t, uqm::CHAR_T* buf, COORD xpos)
 static void
 PrintScanText(TEXT* t)
 {
-	if (!(optWhichCoarseScan & 1))
+	if (optWhichCoarseScan == uqm::EmulationMode::PC)
 	{
 		t->CharCount = (uqm::COUNT)~0;
 	}
@@ -286,7 +284,7 @@ PrintCoarseScanPC(void)
 	t.pStr = buf;
 	t.CharCount = (uqm::COUNT)~0;
 
-	SetContextForeGroundColor(optWhichCoarseScan ?
+	SetContextForeGroundColor(optWhichCoarseScan == uqm::EmulationMode::Console3DO ?
 								  SCAN_INFO_COLOR :
 								  SCAN_PC_TITLE_COLOR);
 	SetContextFont(MicroFont);
@@ -464,10 +462,12 @@ PrintCoarseScan3DO(void)
 	uqm::CHAR_T buf[200] {};
 	uqm::COUNT frameIndex = 20;
 
-	if (optWhichCoarseScan == 3)
-	{
-		frameIndex = 24;
-	}
+
+	// options here were PC(0), or 3DO(1). Not sure how this ever became 3. - PragmaNull
+	//if (optWhichCoarseScan == 3)
+	//{
+	//	frameIndex = 24;
+	//}
 
 	SetContext(PlanetContext);
 
@@ -839,7 +839,7 @@ DispatchLander(void)
 		return false;
 	}
 
-	if (optWhichCoarseScan & 1)
+	if (optWhichCoarseScan == uqm::EmulationMode::Console3DO)
 	{
 		PrintCoarseScan3DO();
 	}
@@ -1634,7 +1634,7 @@ void ScanSystem(void)
 
 	SetFlashRect(SFR_MENU_3DO, false);
 
-	if (optWhichCoarseScan & 1)
+	if (optWhichCoarseScan == uqm::EmulationMode::Console3DO)
 	{
 		PrintCoarseScan3DO();
 	}

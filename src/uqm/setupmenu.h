@@ -475,9 +475,9 @@ typedef struct globalopts_struct
 	OPT_FULLSCREEN fullscreen;
 	OPT_CONSOLETYPE menu, text, scroll, intro, shield, scrTrans,
 		landerHold, tintPlanSphere, planetStyle, scanStyle,
-		scopeStyle, landerStyle, flagshipColor;
+		scopeStyle, landerStyle, flagshipColor, cscan;
 	ControlTemplate player1, player2;
-	int speechvol, musicvol, sfxvol, nebulaevol, cscan;
+	int speechvol, musicvol, sfxvol, nebulaevol;
 	int gamma, starBackground;
 } GLOBALOPTS;
 

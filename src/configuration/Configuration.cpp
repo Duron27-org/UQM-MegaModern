@@ -142,7 +142,7 @@ void getUserConfigOptions(OptionsStruct& options)
 	getBoolConfigValueXlat(options.whichFonts, "config.textgradients", uqm::EmulationMode::Console3DO, uqm::EmulationMode::PC);
 	if (res_IsInteger("config.iconicscan") && !options.whichCoarseScan.set)
 	{
-		options.whichCoarseScan.value = res_GetInteger("config.iconicscan");
+		options.whichCoarseScan.value = (EmulationMode)res_GetInteger("config.iconicscan");
 	}
 	getBoolConfigValueXlat(options.smoothScroll, "config.smoothscroll", uqm::EmulationMode::Console3DO, uqm::EmulationMode::PC);
 	getBoolConfigValueXlat(options.whichShield, "config.pulseshield", uqm::EmulationMode::Console3DO, uqm::EmulationMode::PC);

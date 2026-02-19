@@ -34,7 +34,7 @@
 #include "uqmversion.h"
 
 
-extern int optWhichCoarseScan;
+extern uqm::EmulationMode optWhichCoarseScan;
 extern uqm::EmulationMode optWhichMenu;
 extern uqm::EmulationMode optWhichFonts;
 extern uqm::EmulationMode optWhichIntro;

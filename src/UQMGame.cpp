@@ -92,6 +92,10 @@ int UQMGame::setup(uqstl::span<uqgsl::zstring> args)
 	//   log to a file, and we'll only get the log file name after parsing
 	//   the options.
 	const int optionsResult = m_options.parseArgs(args);
+	if (optionsResult != 0)
+	{
+		return optionsResult;
+	}
 
 	//log_init(15);
 
@@ -103,23 +107,11 @@ int UQMGame::setup(uqstl::span<uqgsl::zstring> args)
 		m_options.edit().logFile = "uqm.log";
 	}
 
-	if (!options.logFile.empty())
+	m_logger.init(options.logFile);
+
+	for (size_t i = 0; i < args.size(); ++i)
 	{
-		m_logger.init(options.logFile);
-		//
-		//		int i;
-		//		if (!freopen(options.logFile.c_str(), "w", stderr))
-		//		{
-		//			fmt::print("Error {} calling freopen() on stderr\n", errno);
-		//			return EXIT_FAILURE;
-		//		}
-		//#ifdef UNBUFFERED_LOGFILE
-		//		setbuf(stderr, nullptr);
-		//#endif
-		for (size_t i = 0; i < args.size(); ++i)
-		{
-			uqm::log::info("argv[{}] = \"{}\"", i, args[i]);
-		}
+		uqm::log::debug("argv[{}] = \"{}\"", i, args[i]);
 	}
 
 	if (options.runMode == RunMode::Version)
@@ -134,7 +126,7 @@ int UQMGame::setup(uqstl::span<uqgsl::zstring> args)
 	uqm::log::info("!! The Ur-Quan Masters v{}.{}.{} {} (compiled {} {})", UQM_MAJOR_VERSION, UQM_MINOR_VERSION, UQM_PATCH_VERSION, (resolutionFactor ? "HD " UQM_EXTRA_VERSION : UQM_EXTRA_VERSION), __DATE__, __TIME__);
 	uqm::log::info("!! This software comes with ABSOLUTELY NO WARRANTY;");
 	uqm::log::info("!! for details see the included 'COPYING' file.");
-				   
+
 #ifdef NETPLAY
 	uqm::log::info("Netplay protocol version {}.{}. Netplay opponent "
 				   "must have UQM {}.{}.{} or later.",

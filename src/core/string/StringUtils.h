@@ -193,11 +193,11 @@ struct EnumNames
 	static auto list() -> uqstl::vector<T>
 	{
 		uqstl::vector<T> out {};
-		const auto enumNames {magic_enum::enum_names<E>()};
-		out.reserve(enumNames.size());
-		for (const auto& name : enumNames)
+		const auto enumValues {magic_enum::enum_values<E>()};
+		out.reserve(enumValues.size());
+		for (const E value : enumValues)
 		{
-			out.emplace_back(name);
+			out.emplace_back(toString(value));
 		}
 		return out;
 	}
@@ -206,10 +206,10 @@ struct EnumNames
 	static auto map() -> uqstl::unordered_map<T, E>
 	{
 		uqstl::unordered_map<T, E> out {};
-		const auto enumEntries {magic_enum::enum_entries<E>()};
-		for (const auto& [value, name] : enumEntries)
+		const auto enumValues {magic_enum::enum_values<E>()};
+		for (const E value : enumValues)
 		{
-			out.insert(uqstl::make_pair(name, value));
+			out.insert(uqstl::make_pair(toString(value), value));
 		}
 		return out;
 	}

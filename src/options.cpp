@@ -48,7 +48,7 @@
 #endif
 
 
-int optWhichCoarseScan;
+uqm::EmulationMode optWhichCoarseScan;
 uqm::EmulationMode optWhichMenu;
 uqm::EmulationMode optWhichFonts;
 uqm::EmulationMode optWhichIntro;
