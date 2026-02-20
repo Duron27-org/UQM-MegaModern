@@ -22,10 +22,8 @@
 #include "netplay.h"
 #include "netinput.h"
 
-#include "../../intel.h"
-// for NETWORK_CONTROL
-#include "../../setup.h"
-// For PlayerControl
+#include "uqm/intelDefs.h" // for PlayerControlFlags
+#include "uqm/setup.h" // for PlayerControl
 #include "core/log/log.h"
 
 #include <errno.h>

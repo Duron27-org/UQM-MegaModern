@@ -15,10 +15,12 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-
+#pragma once
 #ifndef UQM_INTEL_H_
 #define UQM_INTEL_H_
 
+
+#include "uqm/inteldefs.h"
 #include "options/OptionDefs.h"
 #include "battlecontrols.h"
 #include "controls.h"
@@ -30,34 +32,7 @@
 #define WEAPON_RANGE(pi) ((pi)->WeaponRange)
 
 #define WORLD_TO_TURN(d) ((d) >> 6)
-
-#define CLOSE_RANGE_WEAPON DISPLAY_TO_WORLD(50)
-#define LONG_RANGE_WEAPON DISPLAY_TO_WORLD(1000)
-#define FAST_SHIP 150
-#define MEDIUM_SHIP 45
-#define SLOW_SHIP 25
-
-
-#define CLOSE_RANGE_WEAPON_HD DISPLAY_TO_WORLD(200)
-#define LONG_RANGE_WEAPON_HD DISPLAY_TO_WORLD(4000)
-
-// JMS_GFX: Multiplied by 4*4=16 because of the way the ManeuverabilityIndex
-// is calculated in InitCyborg () (cyborg.c).
-#define FAST_SHIP_HD 2400
-#define MEDIUM_SHIP_HD 720
-#define SLOW_SHIP_HD 400
-
-
 #define RESOLUTION_COMPENSATED(speed) (RES_SCALE(RES_SCALE(speed)))
-
-enum
-{
-	ENEMY_SHIP_INDEX = 0,
-	CREW_OBJECT_INDEX,
-	ENEMY_WEAPON_INDEX,
-	GRAVITY_MASS_INDEX,
-	FIRST_EMPTY_INDEX
-};
 
 extern BATTLE_INPUT_STATE computer_intelligence(
 	ComputerInputContext* context, STARSHIP* StarShipPtr);
@@ -74,26 +49,15 @@ extern void Avoid(ELEMENT* ShipPtr, EVALUATE_DESC* EvalDescPtr);
 extern bool TurnShip(ELEMENT* ShipPtr, uqm::COUNT angle);
 extern bool ThrustShip(ELEMENT* ShipPtr, uqm::COUNT angle);
 
-
-#define HUMAN_CONTROL (uqm::BYTE)(1 << 0)
-#define CYBORG_CONTROL (uqm::BYTE)(1 << 1)
-// The computer fights the battles.
-#define PSYTRON_CONTROL (uqm::BYTE)(1 << 2)
-// The computer selects the ships to fight with.
-#define NETWORK_CONTROL (uqm::BYTE)(1 << 3)
-#define COMPUTER_CONTROL (CYBORG_CONTROL | PSYTRON_CONTROL)
-#define CONTROL_MASK (HUMAN_CONTROL | COMPUTER_CONTROL | NETWORK_CONTROL)
-
-#define STANDARD_RATING (uqm::BYTE)(1 << 4)
-#define GOOD_RATING (uqm::BYTE)(1 << 5)
-#define AWESOME_RATING (uqm::BYTE)(1 << 6)
+extern PlayerControlFlags PlayerControl[];
 
 static inline bool
-antiCheatImpl(const ELEMENT* element, const bool swapPlayers, const uqm::GodModeFlags testFlags, uqstl::span<const uqm::BYTE> playerControl, const uqm::GodModeFlags godModeData)
+antiCheatImpl(const ELEMENT* element, const bool swapPlayers, const uqm::GodModeFlags testFlags, uqstl::span<PlayerControlFlags> playerControl, const uqm::GodModeFlags godModeData)
 {
-	if ((playerControl[0] & COMPUTER_CONTROL) && (playerControl[1] & COMPUTER_CONTROL))
+	// both players are AI-controlled
+	if (testFlag(playerControl[0] & playerControl[1], ComputerControlFlags))
 	{
-		return false; // both players are AI-controlled
+		return false;
 	}
 
 	if (!testFlag(godModeData, testFlags))
@@ -106,7 +70,7 @@ antiCheatImpl(const ELEMENT* element, const bool swapPlayers, const uqm::GodMode
 
 	const int playerIndex = swapPlayers ? elementOwner : opponent;
 
-	return (playerControl[playerIndex] & COMPUTER_CONTROL) != 0;
+	return testFlag(playerControl[playerIndex], ComputerControlFlags);
 }
 
 static inline bool
@@ -116,10 +80,10 @@ antiCheat(ELEMENT* ElementPtr, bool SwapBool, uqm::GodModeFlags godModeType)
 }
 
 static inline bool
-antiCheatAltImpl(const uqm::GodModeFlags testFlags, const uqstl::span<const uqm::BYTE> playerControl, const uqm::GodModeFlags godModeData)
+antiCheatAltImpl(const uqm::GodModeFlags testFlags, const uqstl::span<PlayerControlFlags> playerControl, const uqm::GodModeFlags godModeData)
 {
-	const bool player0Computer = (playerControl[0] & COMPUTER_CONTROL) != 0;
-	const bool player1Computer = (playerControl[1] & COMPUTER_CONTROL) != 0;
+	const bool player0Computer = testFlag(playerControl[0], ComputerControlFlags);
+	const bool player1Computer = testFlag(playerControl[1], ComputerControlFlags);
 
 	if (player0Computer && player1Computer)
 	{
@@ -143,12 +107,7 @@ antiCheatAlt(uqm::GodModeFlags godModeFlags)
 static inline bool
 isNetwork(void)
 {
-	return (PlayerControl[0] & NETWORK_CONTROL
-			|| PlayerControl[1] & NETWORK_CONTROL);
+	return testFlag(PlayerControl[0] | PlayerControl[1], PlayerControlFlags::Network);
 }
-
-#if 0 //defined(__cplusplus)
-}
-#endif
 
 #endif /* UQM_INTEL_H_ */

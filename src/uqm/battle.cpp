@@ -125,7 +125,7 @@ setupBattleInputOrder(void)
 	// First put the locally controlled players in the array.
 	for (j = 0; j < NUM_SIDES; j++)
 	{
-		if (!(PlayerControl[j] & NETWORK_CONTROL))
+		if (!testFlag(PlayerControl[j], PlayerControlFlags::Network))
 		{
 			battleInputOrder[i] = j;
 			i++;
@@ -135,7 +135,7 @@ setupBattleInputOrder(void)
 	// Next put the network controlled players in the array.
 	for (j = 0; j < NUM_SIDES; j++)
 	{
-		if (PlayerControl[j] & NETWORK_CONTROL)
+		if (testFlag(PlayerControl[j], PlayerControlFlags::Network))
 		{
 			battleInputOrder[i] = j;
 			i++;
@@ -190,7 +190,7 @@ ProcessInput(void)
 				JournalInput(InputState);
 #endif /* CREATE_JOURNAL */
 #ifdef NETPLAY
-				if (!(PlayerControl[cur_player] & NETWORK_CONTROL))
+				if (!testFlag(PlayerControl[cur_player], PlayerControlFlags::Network))
 				{
 					BattleInputBuffer* bib = getBattleInputBuffer(cur_player);
 					Netplay_NotifyAll_battleInput(InputState);
@@ -414,7 +414,8 @@ GetPlayerOrder(uqm::COUNT i)
 	// processed first.
 	// If neither is network controlled, the top player (1) is handled
 	// first.
-	if (((PlayerControl[0] & NETWORK_CONTROL) && !NetConnection_getDiscriminant(netConnections[0])) || ((PlayerControl[1] & NETWORK_CONTROL) && NetConnection_getDiscriminant(netConnections[1])))
+	if ((testFlag(PlayerControl[0], PlayerControlFlags::Network) && !NetConnection_getDiscriminant(netConnections[0])) 
+		|| (testFlag(PlayerControl[1], PlayerControlFlags::Network) && NetConnection_getDiscriminant(netConnections[1])))
 	{
 		return i;
 	}
@@ -436,7 +437,7 @@ selectAllShips(uqm::SIZE num_ships)
 	}
 
 #ifdef NETPLAY
-	if ((PlayerControl[0] & NETWORK_CONTROL) && (PlayerControl[1] & NETWORK_CONTROL))
+	if (testFlag(PlayerControl[0], PlayerControlFlags::Network) && testFlag(PlayerControl[1], PlayerControlFlags::Network))
 	{
 		uqm::log::error("Only one side at a time can be network "
 						"controlled.\n");

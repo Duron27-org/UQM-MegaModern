@@ -23,6 +23,7 @@
 #include "libs/compiler.h"
 #include "units.h"
 #include "displist.h"
+#include "uqm/inteldefs.h"
 
 typedef struct STARSHIP STARSHIP;
 typedef HLINK HSTARSHIP;
@@ -30,10 +31,6 @@ typedef HLINK HSTARSHIP;
 #include "element.h"
 #include "libs/sndlib.h"
 #include "libs/reslib.h"
-
-#if 0 //defined(__cplusplus)
-extern "C" {
-#endif
 
 
 // TODO: remove RACES_PER_PLAYER remnant of SC1
@@ -245,24 +242,21 @@ struct race_desc
 	void* CodeRef;
 };
 
-#define SHIP_BASE_COMMON               \
-	/* LINK elements; must be first */ \
-	HLINK pred;                        \
-	HLINK succ;                        \
-                                       \
-	SPECIES_ID SpeciesID;              \
-	uqm::BYTE captains_name_index /* Also used in full-game to detect if a STARSHIP is an escort
-			 * or the flagship (captains_name_index == 0) */
 
 typedef struct
 {
-	SHIP_BASE_COMMON;
+	/* LINK elements; must be first */
+	HLINK pred;
+	HLINK succ;
+
+	SPECIES_ID SpeciesID;
+	uqm::BYTE captains_name_index; /* Also used in full-game to detect if a STARSHIP is an escort
+			 * or the flagship (captains_name_index == 0) */
 } SHIP_BASE;
 
 
-struct STARSHIP
+struct STARSHIP : SHIP_BASE
 {
-	SHIP_BASE_COMMON;
 
 	RACE_DESC* RaceDescPtr;
 
@@ -280,12 +274,9 @@ struct STARSHIP
 	FRAME icons;
 
 	// Battle states
-	uqm::BYTE weapon_counter;
-	// In battle: frames left before primary weapon can be used
-	uqm::BYTE special_counter;
-	// In battle: frames left before special can be used
-	uqm::BYTE energy_counter;
-	// In battle: frames left before energy regeneration
+	uqm::BYTE weapon_counter; // In battle: frames left before primary weapon can be used
+	uqm::BYTE special_counter; // In battle: frames left before special can be used
+	uqm::BYTE energy_counter; // In battle: frames left before energy regeneration
 
 	uqm::BYTE ship_input_state;
 	STATUS_FLAGS cur_status_flags;
@@ -294,12 +285,12 @@ struct STARSHIP
 	HELEMENT hShip;
 	uqm::COUNT ShipFacing;
 
-	uqm::SIZE playerNr;
 	//  0: bottom player; In full-game: the human player (RPG)
 	//  1: top player; In full-game: the NPC opponent
 	// -1: neutral; this should currently never happen (asserts)
-	uqm::BYTE control;
-	// HUMAN, COMPUTER or NETWORK control flags, see intel.h
+	uqm::SIZE playerNr;
+	// Human, Computer or Network control flags, see intelDefs.h
+	PlayerControlFlags control {PlayerControlFlags::None};
 };
 
 #define RPG_PLAYER_NUM 0
@@ -318,10 +309,8 @@ LockStarShip(const QUEUE* pq, HSTARSHIP h)
 
 typedef HLINK HSHIPFRAG;
 
-typedef struct
+struct SHIP_FRAGMENT : SHIP_BASE
 {
-	SHIP_BASE_COMMON;
-
 	uqm::BYTE race_id;
 	uqm::BYTE index;
 	uqm::COUNT crew_level;
@@ -339,7 +328,7 @@ typedef struct
 	FRAME melee_icon; /* Only used by Shipyard */
 
 #define INFINITE_FLEET ((uqm::COUNT)~0)
-} SHIP_FRAGMENT;
+};
 
 static inline SHIP_FRAGMENT*
 LockShipFrag(const QUEUE* pq, HSHIPFRAG h)
@@ -879,9 +868,5 @@ SpeciesToHomeID(SPECIES_ID species_id)
 	}
 }
 
-
-#if 0 //defined(__cplusplus)
-}
-#endif
 
 #endif /* UQM_RACES_H_ */

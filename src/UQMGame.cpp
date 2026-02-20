@@ -194,8 +194,8 @@ uqstl::pair<int, bool> UQMGame::setup(uqstl::span<uqgsl::zstring> args)
 	initIO();
 	prepareConfigDir(options.configDir.c_str());
 
-	PlayerControls[0] = ControlTemplate::KB_1;
-	PlayerControls[1] = ControlTemplate::JOY_1;
+	PlayerControlTemplates[0] = ControlTemplate::KB_1;
+	PlayerControlTemplates[1] = ControlTemplate::JOY_1;
 
 	// Fill in the options struct based on uqm.cfg
 	if (!options.safeMode.value)

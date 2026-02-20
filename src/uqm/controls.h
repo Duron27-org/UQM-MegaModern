@@ -149,7 +149,7 @@ BATTLE_INPUT_STATE PulsedInputToBattleInput(uqm::COUNT player);
 extern CONTROLLER_INPUT_STATE CurrentInputState;
 extern CONTROLLER_INPUT_STATE PulsedInputState;
 extern volatile CONTROLLER_INPUT_STATE ImmediateInputState;
-extern ControlTemplate PlayerControls[];
+extern ControlTemplate PlayerControlTemplates[];
 extern bool WarpFromMenu;
 
 void UpdateInputState(void);

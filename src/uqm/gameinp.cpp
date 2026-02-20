@@ -55,7 +55,7 @@ typedef struct
 } MENU_ANNOTATIONS;
 
 
-ControlTemplate PlayerControls[NUM_PLAYERS];
+ControlTemplate PlayerControlTemplates[NUM_PLAYERS];
 CONTROLLER_INPUT_STATE CurrentInputState, PulsedInputState;
 static CONTROLLER_INPUT_STATE CachedInputState, OldInputState;
 static MENU_ANNOTATIONS RepeatDelays, Times;
@@ -519,14 +519,14 @@ BATTLE_INPUT_STATE
 CurrentInputToBattleInput(uqm::COUNT player)
 {
 	return ControlInputToBattleInput(
-		CurrentInputState.key[static_cast<int>(PlayerControls[player])]);
+		CurrentInputState.key[static_cast<int>(PlayerControlTemplates[player])]);
 }
 
 BATTLE_INPUT_STATE
 PulsedInputToBattleInput(uqm::COUNT player)
 {
 	return ControlInputToBattleInput(
-		PulsedInputState.key[static_cast<int>(PlayerControls[player])]);
+		PulsedInputState.key[static_cast<int>(PlayerControlTemplates[player])]);
 }
 
 bool AnyButtonPress(bool CheckSpecial)
@@ -565,7 +565,12 @@ bool ActKeysPress(void)
 	UpdateInputState();
 
 	return (
-		CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_WEAPON] || CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_SPECIAL] || CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_ESCAPE] || CurrentInputState.menu[KEY_MENU_SELECT] || CurrentInputState.menu[KEY_MENU_CANCEL] || CurrentInputState.menu[KEY_MENU_SPECIAL]);
+		CurrentInputState.key[static_cast<int>(PlayerControlTemplates[0])][KEY_WEAPON] 
+		|| CurrentInputState.key[static_cast<int>(PlayerControlTemplates[0])][KEY_SPECIAL] 
+		|| CurrentInputState.key[static_cast<int>(PlayerControlTemplates[0])][KEY_ESCAPE] 
+		|| CurrentInputState.menu[KEY_MENU_SELECT]
+		|| CurrentInputState.menu[KEY_MENU_CANCEL] 
+		|| CurrentInputState.menu[KEY_MENU_SPECIAL]);
 }
 
 bool ConfirmExit(void)

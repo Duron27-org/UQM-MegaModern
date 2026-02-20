@@ -1542,8 +1542,8 @@ ProcessShipControls(void)
 	uqm::COUNT index;
 	uqm::SIZE delta_x, delta_y;
 
-	if (CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_UP]
-		|| CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_THRUST])
+	if (CurrentInputState.key[static_cast<int>(PlayerControlTemplates[0])][KEY_UP]
+		|| CurrentInputState.key[static_cast<int>(PlayerControlTemplates[0])][KEY_THRUST])
 	{
 		delta_y = -1;
 	}
@@ -1554,11 +1554,11 @@ ProcessShipControls(void)
 
 	delta_x = 0;
 
-	if (CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_LEFT])
+	if (CurrentInputState.key[static_cast<int>(PlayerControlTemplates[0])][KEY_LEFT])
 	{
 		delta_x -= 1;
 	}
-	if (CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_RIGHT])
+	if (CurrentInputState.key[static_cast<int>(PlayerControlTemplates[0])][KEY_RIGHT])
 	{
 		delta_x += 1;
 	}

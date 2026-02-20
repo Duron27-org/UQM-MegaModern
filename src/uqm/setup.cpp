@@ -26,7 +26,7 @@
 #include "supermelee/netplay/netmelee.h"
 #endif
 #include "init.h"
-#include "intel.h"
+
 #include "status.h"
 #include "resinst.h"
 #include "sounds.h"
@@ -47,7 +47,7 @@
 
 
 ACTIVITY LastActivity;
-uqm::BYTE PlayerControl[NUM_PLAYERS];
+PlayerControlFlags PlayerControl[NUM_PLAYERS];
 
 // XXX: These declarations should really go to the file they belong to.
 RESOURCE_INDEX hResIndex;
@@ -466,26 +466,26 @@ bool SetPlayerInput(uqm::COUNT playerI)
 {
 	assert(PlayerInput[playerI] == nullptr);
 
-	switch (PlayerControl[playerI] & CONTROL_MASK)
+	switch (PlayerControl[playerI] & ControlFlagsMask)
 	{
-		case HUMAN_CONTROL:
+		case PlayerControlFlags::Human:
 			PlayerInput[playerI] =
 				(InputContext*)HumanInputContext_new(playerI);
 			break;
-		case COMPUTER_CONTROL:
-		case CYBORG_CONTROL:
-			// COMPUTER_CONTROL is used in SuperMelee; the computer chooses
+		case PlayerControlFlags::Cyborg:
+		case PlayerControlFlags::Psytron:
+			// ComputerControlFlags is used in SuperMelee; the computer chooses
 			// the ships and fights the battles.
-			// CYBORG_CONTROL is used in the full game; the computer only
+			// PlayerControlFlags::Cyborg is used in the full game; the computer only
 			// fights the battles. XXX: This will need to be handled
 			// separately in the future if we want to remove the special
-			// cases for ship selection with CYBORG_CONTROL from the
+			// cases for ship selection with PlayerControlFlags::Cyborg from the
 			// computer handlers.
 			PlayerInput[playerI] =
 				(InputContext*)ComputerInputContext_new(playerI);
 			break;
 #ifdef NETPLAY
-		case NETWORK_CONTROL:
+		case PlayerControlFlags::Network:
 			PlayerInput[playerI] =
 				(InputContext*)NetworkInputContext_new(playerI);
 			break;

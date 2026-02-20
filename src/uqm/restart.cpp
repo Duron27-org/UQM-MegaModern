@@ -919,8 +919,8 @@ bool StartGame(void)
 		PlanData = PlanetsArray;
 		constel_array = (const GFXPOINT*)ConstellationsArray;
 	}
-	PlayerControl[0] = HUMAN_CONTROL | STANDARD_RATING;
-	PlayerControl[1] = COMPUTER_CONTROL | AWESOME_RATING;
+	PlayerControl[0] = PlayerControlFlags::Human | PlayerControlFlags::DifficultyStandard;
+	PlayerControl[1] = PlayerControlFlags::Cyborg | PlayerControlFlags::Psytron | PlayerControlFlags::DifficultyAwesome;
 
 	return (true);
 }

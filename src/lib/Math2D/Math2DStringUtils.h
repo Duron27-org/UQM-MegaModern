@@ -1,6 +1,6 @@
 #pragma once
-#ifndef LIB_MATH2D_H_
-#define LIB_MATH2D_H_
+#ifndef LIB_MATH2D_MATH2DSTRINGS_H_
+#define LIB_MATH2D_MATH2DSTRINGS_H_
 
 #include <fmt/format.h>
 #include <istream>
@@ -119,4 +119,4 @@ struct formatter<::uqm::Vec2T<T>> : formatter<T>
 
 } // namespace fmt
 
-#endif /* LIB_MATH2D_H_ */
+#endif /* LIB_MATH2D_MATH2DSTRINGS_H_ */

@@ -2592,8 +2592,8 @@ void GetGlobalOptions(GLOBALOPTS* opts)
 	opts->shipDirectionIP = optShipDirectionIP;
 
 	// Controls
-	opts->player1 = PlayerControls[0];
-	opts->player2 = PlayerControls[1];
+	opts->player1 = PlayerControlTemplates[0];
+	opts->player2 = PlayerControlTemplates[1];
 
 	// QoL
 	opts->scatterElements = optScatterElements;
@@ -2878,8 +2878,8 @@ void SetGlobalOptions(GLOBALOPTS* opts)
 	putOpt(optShipDirectionIP, opts->shipDirectionIP, "mm.shipDirectionIP", false);
 
 	// Controls
-	PlayerControls[0] = opts->player1;
-	PlayerControls[1] = opts->player2;
+	PlayerControlTemplates[0] = opts->player1;
+	PlayerControlTemplates[1] = opts->player2;
 
 	res_PutInteger("config.player1control", static_cast<int>(opts->player1));
 	res_PutInteger("config.player2control", static_cast<int>(opts->player2));

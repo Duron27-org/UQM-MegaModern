@@ -25,7 +25,6 @@
 #include "core/log/log.h"
 #include "uqm/units.h"
 
-using namespace uqm;
 
 #if SDL_MAJOR_VERSION == 1
 

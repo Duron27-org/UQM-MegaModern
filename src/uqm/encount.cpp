@@ -929,10 +929,10 @@ UninitEncounter(void)
 #endif /* NEVER */
 
 			WaitForAnyButton(true, GameTicksPerSecond * 3, false);
-			if (!CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_ESCAPE])
+			if (!CurrentInputState.key[static_cast<int>(PlayerControlTemplates[0])][KEY_ESCAPE])
 			{
 				DrawFadeText(str1, str2, false, &scavenge_r);
-				if (!CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_ESCAPE])
+				if (!CurrentInputState.key[static_cast<int>(PlayerControlTemplates[0])][KEY_ESCAPE])
 				{
 					SetContextForeGroundColor(BLACK_COLOR);
 					r.corner.x = scavenge_r.corner.x + RES_SCALE(10);
@@ -960,7 +960,7 @@ UninitEncounter(void)
 
 					DrawFadeText(str1, str2, true, &scavenge_r);
 					WaitForAnyButton(true, GameTicksPerSecond * 2, false);
-					if (!CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_ESCAPE])
+					if (!CurrentInputState.key[static_cast<int>(PlayerControlTemplates[0])][KEY_ESCAPE])
 					{
 						DrawFadeText(str1, str2, false, &scavenge_r);
 					}
@@ -1082,7 +1082,7 @@ void EncounterBattle(void)
 			cur_speed = (uqm::BYTE)~0; /* maximum speed - no rendering */
 		}
 		nth_frame = MAKE_WORD(1, cur_speed);
-		PlayerControl[0] = CYBORG_CONTROL | AWESOME_RATING;
+		PlayerControl[0] = PlayerControlFlags::Cyborg | PlayerControlFlags::DifficultyAwesome;
 		savedPlayerInput = PlayerInput[0];
 		PlayerInput[0] = nullptr;
 		if (!SetPlayerInput(0))
@@ -1094,10 +1094,10 @@ void EncounterBattle(void)
 
 	if (DIF_EASY)
 	{
-		PlayerControl[1] = CYBORG_CONTROL | STANDARD_RATING;
+		PlayerControl[1] = PlayerControlFlags::Cyborg | PlayerControlFlags::DifficultyAwesome;
 	}
 
-	// PlayerControl[1] = HUMAN_CONTROL | STANDARD_RATING; // Yes, you can make Adventure mode 2-player
+	// PlayerControl[1] = PlayerControlFlags::Human | PlayerControlFlags::DifficultyStandard; // Yes, you can make Adventure mode 2-player
 
 	GameSounds = CaptureSound(LoadSound(GAME_SOUNDS));
 
@@ -1114,7 +1114,7 @@ void EncounterBattle(void)
 	if (GLOBAL(glob_flags) & CYBORG_ENABLED)
 	{
 		nth_frame = MAKE_WORD(0, 0);
-		PlayerControl[0] = HUMAN_CONTROL | STANDARD_RATING;
+		PlayerControl[0] = PlayerControlFlags::Human | PlayerControlFlags::DifficultyStandard;
 		ClearPlayerInput(0);
 		PlayerInput[0] = savedPlayerInput;
 	}

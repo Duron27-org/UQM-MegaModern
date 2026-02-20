@@ -16,6 +16,9 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 #pragma once
+#ifndef UQMGAME_H_
+#define UQMGAME_H_
+
 #include "core/stl/stl.h"
 #include "options/options.h"
 #include "core/log/logger.h"
@@ -43,3 +46,5 @@ private:
 };
 
 } // namespace uqm
+
+#endif /* UQMGAME_H_ */

@@ -252,7 +252,7 @@ pkunk_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 
 	GetElementStarShip(ShipPtr, &StarShipPtr);
 	PkunkData = GetCustomShipData(StarShipPtr->RaceDescPtr);
-	if (PkunkData->hPhoenix && (StarShipPtr->control & STANDARD_RATING))
+	if (PkunkData->hPhoenix && testFlag(StarShipPtr->control, PlayerControlFlags::DifficultyStandard))
 	{
 		RemoveElement(PkunkData->hPhoenix);
 		FreeElement(PkunkData->hPhoenix);

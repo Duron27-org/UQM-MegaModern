@@ -131,11 +131,11 @@ void resetEnergyBattle(void)
 		return;
 	}
 
-	if (PlayerControl[1] & HUMAN_CONTROL)
+	if (testFlag(PlayerControl[1], PlayerControlFlags::Human))
 	{
 		StarShipPtr = findPlayerShip(NPC_PLAYER_NUM);
 	}
-	else if (PlayerControl[0] & HUMAN_CONTROL)
+	else if (testFlag(PlayerControl[0], PlayerControlFlags::Human))
 	{
 		StarShipPtr = findPlayerShip(RPG_PLAYER_NUM);
 	}
@@ -169,11 +169,11 @@ scuttleOpponent(void)
 		return;
 	}
 
-	if (PlayerControl[1] & HUMAN_CONTROL)
+	if (testFlag(PlayerControl[1], PlayerControlFlags::Human))
 	{
 		StarShipPtr = findPlayerShip(RPG_PLAYER_NUM);
 	}
-	else if (PlayerControl[0] & HUMAN_CONTROL)
+	else if (testFlag(PlayerControl[0], PlayerControlFlags::Human))
 	{
 		StarShipPtr = findPlayerShip(NPC_PLAYER_NUM);
 	}

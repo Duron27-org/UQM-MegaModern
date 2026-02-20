@@ -980,8 +980,8 @@ flag_ship_preprocess(ELEMENT* ElementPtr)
 			vdx >>= 1;
 			vdy >>= 1;
 		}
-		else if ((CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_UP]
-				  || CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_THRUST])
+		else if ((CurrentInputState.key[static_cast<int>(PlayerControlTemplates[0])][KEY_UP]
+				  || CurrentInputState.key[static_cast<int>(PlayerControlTemplates[0])][KEY_THRUST])
 				 || (vdx == 0 && vdy == 0))
 		{
 			legacySave = false;

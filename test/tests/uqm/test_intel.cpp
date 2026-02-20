@@ -21,8 +21,8 @@ protected:
 	void SetUp() override
 	{
 		// Initialize PlayerControl array
-		m_playerControl[0] = 0;
-		m_playerControl[1] = 0;
+		m_playerControl[0] = PlayerControlFlags::None;
+		m_playerControl[1] = PlayerControlFlags::None;
 
 		// Reset god mode flags
 		m_godModes = GodModeFlags::None;
@@ -35,13 +35,13 @@ protected:
 	void TearDown() override
 	{
 		// Reset global state
-		m_playerControl[0] = 0;
-		m_playerControl[1] = 0;
+		m_playerControl[0] = PlayerControlFlags::None;
+		m_playerControl[1] = PlayerControlFlags::None;
 		m_godModes = GodModeFlags::None;
 	}
 
 	ELEMENT m_testElement {};
-	uqm::BYTE m_playerControl[NUM_PLAYERS] {};
+	PlayerControlFlags m_playerControl[NUM_PLAYERS] {};
 	GodModeFlags m_godModes {};
 
 };
@@ -53,8 +53,8 @@ protected:
 TEST_F(AntiCheatTest, AntiCheat_BothPlayersAI_ReturnsFalse)
 {
 	// Arrange: Both players are AI-controlled
-	m_playerControl[0] = COMPUTER_CONTROL;
-	m_playerControl[1] = COMPUTER_CONTROL;
+	m_playerControl[0] = ComputerControlFlags;
+	m_playerControl[1] = ComputerControlFlags;
 	m_godModes = GodModeFlags::InfiniteBattery;
 	m_testElement.playerNr = 0;
 
@@ -66,8 +66,8 @@ TEST_F(AntiCheatTest, AntiCheat_BothPlayersAI_ReturnsFalse)
 TEST_F(AntiCheatTest, AntiCheat_GodModeDisabled_ReturnsFalse)
 {
 	// Arrange: God mode is disabled
-	m_playerControl[0] = HUMAN_CONTROL;
-	m_playerControl[1] = COMPUTER_CONTROL;
+	m_playerControl[0] = PlayerControlFlags::Human;
+	m_playerControl[1] = ComputerControlFlags;
 	m_godModes = GodModeFlags::None;
 	m_testElement.playerNr = 0;
 
@@ -79,8 +79,8 @@ TEST_F(AntiCheatTest, AntiCheat_GodModeDisabled_ReturnsFalse)
 TEST_F(AntiCheatTest, AntiCheat_WrongGodModeFlag_ReturnsFalse)
 {
 	// Arrange: Different god mode flag is enabled
-	m_playerControl[0] = HUMAN_CONTROL;
-	m_playerControl[1] = COMPUTER_CONTROL;
+	m_playerControl[0] = PlayerControlFlags::Human;
+	m_playerControl[1] = ComputerControlFlags;
 	m_godModes = GodModeFlags::InfiniteBattery;
 	m_testElement.playerNr = 0;
 
@@ -91,8 +91,8 @@ TEST_F(AntiCheatTest, AntiCheat_WrongGodModeFlag_ReturnsFalse)
 TEST_F(AntiCheatTest, AntiCheat_Player0AI_ElementPlayer1_SwapFalse_ReturnsTrue)
 {
 	// Arrange: Player 0 is AI, element belongs to player 1, no swap
-	m_playerControl[0] = COMPUTER_CONTROL;
-	m_playerControl[1] = HUMAN_CONTROL;
+	m_playerControl[0] = ComputerControlFlags;
+	m_playerControl[1] = PlayerControlFlags::Human;
 	m_godModes = GodModeFlags::InfiniteBattery;
 	m_testElement.playerNr = 1;
 
@@ -103,8 +103,8 @@ TEST_F(AntiCheatTest, AntiCheat_Player0AI_ElementPlayer1_SwapFalse_ReturnsTrue)
 TEST_F(AntiCheatTest, AntiCheat_Player0AI_ElementPlayer0_SwapFalse_ReturnsFalse)
 {
 	// Arrange: Player 0 is AI, element belongs to player 0, no swap
-	m_playerControl[0] = COMPUTER_CONTROL;
-	m_playerControl[1] = HUMAN_CONTROL;
+	m_playerControl[0] = ComputerControlFlags;
+	m_playerControl[1] = PlayerControlFlags::Human;
 	m_godModes = GodModeFlags::InfiniteBattery;
 	m_testElement.playerNr = 0;
 
@@ -115,8 +115,8 @@ TEST_F(AntiCheatTest, AntiCheat_Player0AI_ElementPlayer0_SwapFalse_ReturnsFalse)
 TEST_F(AntiCheatTest, AntiCheat_Player1AI_ElementPlayer0_SwapFalse_ReturnsTrue)
 {
 	// Arrange: Player 1 is AI, element belongs to player 0, no swap
-	m_playerControl[0] = HUMAN_CONTROL;
-	m_playerControl[1] = COMPUTER_CONTROL;
+	m_playerControl[0] = PlayerControlFlags::Human;
+	m_playerControl[1] = ComputerControlFlags;
 	m_godModes = GodModeFlags::InfiniteBattery;
 	m_testElement.playerNr = 0;
 
@@ -127,8 +127,8 @@ TEST_F(AntiCheatTest, AntiCheat_Player1AI_ElementPlayer0_SwapFalse_ReturnsTrue)
 TEST_F(AntiCheatTest, AntiCheat_Player1AI_ElementPlayer1_SwapFalse_ReturnsFalse)
 {
 	// Arrange: Player 1 is AI, element belongs to player 1, no swap
-	m_playerControl[0] = HUMAN_CONTROL;
-	m_playerControl[1] = COMPUTER_CONTROL;
+	m_playerControl[0] = PlayerControlFlags::Human;
+	m_playerControl[1] = ComputerControlFlags;
 	m_godModes = GodModeFlags::InfiniteBattery;
 	m_testElement.playerNr = 1;
 
@@ -139,8 +139,8 @@ TEST_F(AntiCheatTest, AntiCheat_Player1AI_ElementPlayer1_SwapFalse_ReturnsFalse)
 TEST_F(AntiCheatTest, AntiCheat_Player0AI_ElementPlayer0_SwapTrue_ReturnsTrue)
 {
 	// Arrange: Player 0 is AI, element belongs to player 0, swap enabled
-	m_playerControl[0] = COMPUTER_CONTROL;
-	m_playerControl[1] = HUMAN_CONTROL;
+	m_playerControl[0] = ComputerControlFlags;
+	m_playerControl[1] = PlayerControlFlags::Human;
 	m_godModes = GodModeFlags::InfiniteBattery;
 	m_testElement.playerNr = 0;
 
@@ -151,8 +151,8 @@ TEST_F(AntiCheatTest, AntiCheat_Player0AI_ElementPlayer0_SwapTrue_ReturnsTrue)
 TEST_F(AntiCheatTest, AntiCheat_Player0AI_ElementPlayer1_SwapTrue_ReturnsFalse)
 {
 	// Arrange: Player 0 is AI, element belongs to player 1, swap enabled
-	m_playerControl[0] = COMPUTER_CONTROL;
-	m_playerControl[1] = HUMAN_CONTROL;
+	m_playerControl[0] = ComputerControlFlags;
+	m_playerControl[1] = PlayerControlFlags::Human;
 	m_godModes = GodModeFlags::InfiniteBattery;
 	m_testElement.playerNr = 1;
 
@@ -163,8 +163,8 @@ TEST_F(AntiCheatTest, AntiCheat_Player0AI_ElementPlayer1_SwapTrue_ReturnsFalse)
 TEST_F(AntiCheatTest, AntiCheat_Player1AI_ElementPlayer0_SwapTrue_ReturnsFalse)
 {
 	// Arrange: Player 1 is AI, element belongs to player 0, swap enabled
-	m_playerControl[0] = HUMAN_CONTROL;
-	m_playerControl[1] = COMPUTER_CONTROL;
+	m_playerControl[0] = PlayerControlFlags::Human;
+	m_playerControl[1] = ComputerControlFlags;
 	m_godModes = GodModeFlags::InfiniteBattery;
 	m_testElement.playerNr = 0;
 
@@ -175,8 +175,8 @@ TEST_F(AntiCheatTest, AntiCheat_Player1AI_ElementPlayer0_SwapTrue_ReturnsFalse)
 TEST_F(AntiCheatTest, AntiCheat_Player1AI_ElementPlayer1_SwapTrue_ReturnsTrue)
 {
 	// Arrange: Player 1 is AI, element belongs to player 1, swap enabled
-	m_playerControl[0] = HUMAN_CONTROL;
-	m_playerControl[1] = COMPUTER_CONTROL;
+	m_playerControl[0] = PlayerControlFlags::Human;
+	m_playerControl[1] = ComputerControlFlags;
 	m_godModes = GodModeFlags::InfiniteBattery;
 	m_testElement.playerNr = 1;
 
@@ -187,8 +187,8 @@ TEST_F(AntiCheatTest, AntiCheat_Player1AI_ElementPlayer1_SwapTrue_ReturnsTrue)
 TEST_F(AntiCheatTest, AntiCheat_BothPlayersHuman_ReturnsFalse)
 {
 	// Arrange: Both players are human-controlled
-	m_playerControl[0] = HUMAN_CONTROL;
-	m_playerControl[1] = HUMAN_CONTROL;
+	m_playerControl[0] = PlayerControlFlags::Human;
+	m_playerControl[1] = PlayerControlFlags::Human;
 	m_godModes = GodModeFlags::InfiniteBattery;
 	m_testElement.playerNr = 0;
 
@@ -200,8 +200,8 @@ TEST_F(AntiCheatTest, AntiCheat_BothPlayersHuman_ReturnsFalse)
 TEST_F(AntiCheatTest, AntiCheat_AllGodModesEnabled_ReturnsTrue)
 {
 	// Arrange: All god modes enabled
-	m_playerControl[0] = COMPUTER_CONTROL;
-	m_playerControl[1] = HUMAN_CONTROL;
+	m_playerControl[0] = ComputerControlFlags;
+	m_playerControl[1] = PlayerControlFlags::Human;
 	m_godModes = GodModeFlags::All;
 	m_testElement.playerNr = 1;
 
@@ -213,36 +213,36 @@ TEST_F(AntiCheatTest, AntiCheat_AllGodModesEnabled_ReturnsTrue)
 TEST_F(AntiCheatTest, AntiCheat_CyborgControl_TreatedAsComputer)
 {
 	// Arrange: Cyborg control should be treated as computer control
-	m_playerControl[0] = CYBORG_CONTROL;
-	m_playerControl[1] = HUMAN_CONTROL;
+	m_playerControl[0] = PlayerControlFlags::Cyborg;
+	m_playerControl[1] = PlayerControlFlags::Human;
 	m_godModes = GodModeFlags::InfiniteBattery;
 	m_testElement.playerNr = 1;
 
-	// Act & Assert: CYBORG_CONTROL is part of COMPUTER_CONTROL
+	// Act & Assert: PlayerControlFlags::Cyborg is part of ComputerControlFlags
 	EXPECT_TRUE(antiCheatImpl(&m_testElement, false, GodModeFlags::InfiniteBattery, m_playerControl, m_godModes));
 }
 
 TEST_F(AntiCheatTest, AntiCheat_PsytronControl_TreatedAsComputer)
 {
 	// Arrange: Psytron control should be treated as computer control
-	m_playerControl[0] = PSYTRON_CONTROL;
-	m_playerControl[1] = HUMAN_CONTROL;
+	m_playerControl[0] = PlayerControlFlags::Psytron;
+	m_playerControl[1] = PlayerControlFlags::Human;
 	m_godModes = GodModeFlags::InfiniteBattery;
 	m_testElement.playerNr = 1;
 
-	// Act & Assert: PSYTRON_CONTROL is part of COMPUTER_CONTROL
+	// Act & Assert: PlayerControlFlags::Psytron is part of ComputerControlFlags
 	EXPECT_TRUE(antiCheatImpl(&m_testElement, false, GodModeFlags::InfiniteBattery, m_playerControl, m_godModes));
 }
 
 TEST_F(AntiCheatTest, AntiCheat_NetworkControl_ReturnsFalse)
 {
 	// Arrange: Network control is not considered AI
-	m_playerControl[0] = NETWORK_CONTROL;
-	m_playerControl[1] = HUMAN_CONTROL;
+	m_playerControl[0] = PlayerControlFlags::Network;
+	m_playerControl[1] = PlayerControlFlags::Human;
 	m_godModes = GodModeFlags::InfiniteBattery;
 	m_testElement.playerNr = 1;
 
-	// Act & Assert: Network control is not COMPUTER_CONTROL
+	// Act & Assert: Network control is not ComputerControlFlags
 	EXPECT_FALSE(antiCheatImpl(&m_testElement, false, GodModeFlags::InfiniteBattery, m_playerControl, m_godModes));
 }
 
@@ -253,8 +253,8 @@ TEST_F(AntiCheatTest, AntiCheat_NetworkControl_ReturnsFalse)
 TEST_F(AntiCheatTest, AntiCheatAlt_BothPlayersAI_ReturnsFalse)
 {
 	// Arrange: Both players are AI-controlled
-	m_playerControl[0] = COMPUTER_CONTROL;
-	m_playerControl[1] = COMPUTER_CONTROL;
+	m_playerControl[0] = ComputerControlFlags;
+	m_playerControl[1] = ComputerControlFlags;
 	m_godModes = GodModeFlags::InfiniteBattery;
 
 	// Act & Assert: Should return false for AI vs AI
@@ -264,8 +264,8 @@ TEST_F(AntiCheatTest, AntiCheatAlt_BothPlayersAI_ReturnsFalse)
 TEST_F(AntiCheatTest, AntiCheatAlt_GodModeDisabled_ReturnsFalse)
 {
 	// Arrange: God mode is disabled
-	m_playerControl[0] = HUMAN_CONTROL;
-	m_playerControl[1] = COMPUTER_CONTROL;
+	m_playerControl[0] = PlayerControlFlags::Human;
+	m_playerControl[1] = ComputerControlFlags;
 	m_godModes = GodModeFlags::None;
 
 	// Act & Assert: Should return false when god mode is not enabled
@@ -275,8 +275,8 @@ TEST_F(AntiCheatTest, AntiCheatAlt_GodModeDisabled_ReturnsFalse)
 TEST_F(AntiCheatTest, AntiCheatAlt_WrongGodModeFlag_ReturnsFalse)
 {
 	// Arrange: Different god mode flag is enabled
-	m_playerControl[0] = HUMAN_CONTROL;
-	m_playerControl[1] = COMPUTER_CONTROL;
+	m_playerControl[0] = PlayerControlFlags::Human;
+	m_playerControl[1] = ComputerControlFlags;
 	m_godModes = GodModeFlags::InfiniteBattery;
 
 	// Act & Assert: Should return false when requesting different god mode
@@ -286,8 +286,8 @@ TEST_F(AntiCheatTest, AntiCheatAlt_WrongGodModeFlag_ReturnsFalse)
 TEST_F(AntiCheatTest, AntiCheatAlt_Player0AI_Player1Human_ReturnsTrue)
 {
 	// Arrange: Player 0 is AI, Player 1 is human
-	m_playerControl[0] = COMPUTER_CONTROL;
-	m_playerControl[1] = HUMAN_CONTROL;
+	m_playerControl[0] = ComputerControlFlags;
+	m_playerControl[1] = PlayerControlFlags::Human;
 	m_godModes = GodModeFlags::InfiniteBattery;
 
 	// Act & Assert: Should allow cheat for human vs AI
@@ -297,8 +297,8 @@ TEST_F(AntiCheatTest, AntiCheatAlt_Player0AI_Player1Human_ReturnsTrue)
 TEST_F(AntiCheatTest, AntiCheatAlt_Player0Human_Player1AI_ReturnsTrue)
 {
 	// Arrange: Player 0 is human, Player 1 is AI
-	m_playerControl[0] = HUMAN_CONTROL;
-	m_playerControl[1] = COMPUTER_CONTROL;
+	m_playerControl[0] = PlayerControlFlags::Human;
+	m_playerControl[1] = ComputerControlFlags;
 	m_godModes = GodModeFlags::InfiniteBattery;
 
 	// Act & Assert: Should allow cheat for human vs AI
@@ -308,8 +308,8 @@ TEST_F(AntiCheatTest, AntiCheatAlt_Player0Human_Player1AI_ReturnsTrue)
 TEST_F(AntiCheatTest, AntiCheatAlt_BothPlayersHuman_ReturnsFalse)
 {
 	// Arrange: Both players are human-controlled
-	m_playerControl[0] = HUMAN_CONTROL;
-	m_playerControl[1] = HUMAN_CONTROL;
+	m_playerControl[0] = PlayerControlFlags::Human;
+	m_playerControl[1] = PlayerControlFlags::Human;
 	m_godModes = GodModeFlags::InfiniteBattery;
 
 	// Act & Assert: No AI player, so no cheat should apply
@@ -319,8 +319,8 @@ TEST_F(AntiCheatTest, AntiCheatAlt_BothPlayersHuman_ReturnsFalse)
 TEST_F(AntiCheatTest, AntiCheatAlt_AllGodModesEnabled_ReturnsTrue)
 {
 	// Arrange: All god modes enabled
-	m_playerControl[0] = COMPUTER_CONTROL;
-	m_playerControl[1] = HUMAN_CONTROL;
+	m_playerControl[0] = ComputerControlFlags;
+	m_playerControl[1] = PlayerControlFlags::Human;
 	m_godModes = GodModeFlags::All;
 
 	// Act & Assert: Should work with any god mode flag
@@ -331,41 +331,41 @@ TEST_F(AntiCheatTest, AntiCheatAlt_AllGodModesEnabled_ReturnsTrue)
 TEST_F(AntiCheatTest, AntiCheatAlt_CyborgControl_TreatedAsComputer)
 {
 	// Arrange: Cyborg control should be treated as computer control
-	m_playerControl[0] = CYBORG_CONTROL;
-	m_playerControl[1] = HUMAN_CONTROL;
+	m_playerControl[0] = PlayerControlFlags::Cyborg;
+	m_playerControl[1] = PlayerControlFlags::Human;
 	m_godModes = GodModeFlags::InfiniteBattery;
 
-	// Act & Assert: CYBORG_CONTROL is part of COMPUTER_CONTROL
+	// Act & Assert: PlayerControlFlags::Cyborg is part of ComputerControlFlags
 	EXPECT_TRUE(antiCheatAltImpl(GodModeFlags::InfiniteBattery, m_playerControl, m_godModes));
 }
 
 TEST_F(AntiCheatTest, AntiCheatAlt_PsytronControl_TreatedAsComputer)
 {
 	// Arrange: Psytron control should be treated as computer control
-	m_playerControl[0] = PSYTRON_CONTROL;
-	m_playerControl[1] = HUMAN_CONTROL;
+	m_playerControl[0] = PlayerControlFlags::Psytron;
+	m_playerControl[1] = PlayerControlFlags::Human;
 	m_godModes = GodModeFlags::InfiniteBattery;
 
-	// Act & Assert: PSYTRON_CONTROL is part of COMPUTER_CONTROL
+	// Act & Assert: PlayerControlFlags::Psytron is part of ComputerControlFlags
 	EXPECT_TRUE(antiCheatAltImpl(GodModeFlags::InfiniteBattery, m_playerControl, m_godModes));
 }
 
 TEST_F(AntiCheatTest, AntiCheatAlt_NetworkControl_ReturnsFalse)
 {
 	// Arrange: Network control is not considered AI
-	m_playerControl[0] = NETWORK_CONTROL;
-	m_playerControl[1] = HUMAN_CONTROL;
+	m_playerControl[0] = PlayerControlFlags::Network;
+	m_playerControl[1] = PlayerControlFlags::Human;
 	m_godModes = GodModeFlags::InfiniteBattery;
 
-	// Act & Assert: Network control is not COMPUTER_CONTROL
+	// Act & Assert: Network control is not ComputerControlFlags
 	EXPECT_FALSE(antiCheatAltImpl(GodModeFlags::InfiniteBattery, m_playerControl, m_godModes));
 }
 
 TEST_F(AntiCheatTest, AntiCheatAlt_MixedControlFlags_ReturnsCorrectly)
 {
 	// Arrange: Player has multiple control flags (e.g., CYBORG + something else)
-	m_playerControl[0] = CYBORG_CONTROL | STANDARD_RATING;
-	m_playerControl[1] = HUMAN_CONTROL;
+	m_playerControl[0] = PlayerControlFlags::Cyborg | PlayerControlFlags::DifficultyStandard;
+	m_playerControl[1] = PlayerControlFlags::Human;
 	m_godModes = GodModeFlags::InfiniteBattery;
 
 	// Act & Assert: Should still detect AI control
@@ -379,8 +379,8 @@ TEST_F(AntiCheatTest, AntiCheatAlt_MixedControlFlags_ReturnsCorrectly)
 TEST_F(AntiCheatTest, EdgeCase_NeutralPlayerNumber)
 {
 	// Arrange: Element with neutral player number (-1)
-	m_playerControl[0] = COMPUTER_CONTROL;
-	m_playerControl[1] = HUMAN_CONTROL;
+	m_playerControl[0] = ComputerControlFlags;
+	m_playerControl[1] = PlayerControlFlags::Human;
 	m_godModes = GodModeFlags::InfiniteBattery;
 	m_testElement.playerNr = NEUTRAL_PLAYER_NUM;
 
@@ -392,8 +392,8 @@ TEST_F(AntiCheatTest, EdgeCase_NeutralPlayerNumber)
 TEST_F(AntiCheatTest, EdgeCase_MultipleFlagsInGodMode)
 {
 	// Arrange: Multiple god mode flags enabled
-	m_playerControl[0] = COMPUTER_CONTROL;
-	m_playerControl[1] = HUMAN_CONTROL;
+	m_playerControl[0] = ComputerControlFlags;
+	m_playerControl[1] = PlayerControlFlags::Human;
 	m_godModes = GodModeFlags::InfiniteBattery | GodModeFlags::NoDamage;
 	m_testElement.playerNr = 1;
 
@@ -408,8 +408,8 @@ TEST_F(AntiCheatTest, Consistency_AntiCheatVsAntiCheatAlt)
 	// handling of player control checks
 
 	// Setup: One AI, one human
-	m_playerControl[0] = COMPUTER_CONTROL;
-	m_playerControl[1] = HUMAN_CONTROL;
+	m_playerControl[0] = ComputerControlFlags;
+	m_playerControl[1] = PlayerControlFlags::Human;
 	m_godModes = GodModeFlags::InfiniteBattery;
 
 	// antiCheatAlt should return true for human vs AI

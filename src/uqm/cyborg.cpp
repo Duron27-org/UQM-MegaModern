@@ -499,11 +499,11 @@ void ship_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 		}
 	}
 
-	if (StarShipPtr->control & AWESOME_RATING)
+	if (testFlag(StarShipPtr->control, PlayerControlFlags::DifficultyAwesome))
 	{
 		margin_of_error = 0;
 	}
-	else if (StarShipPtr->control & GOOD_RATING)
+	else if (testFlag(StarShipPtr->control, PlayerControlFlags::DifficultyGood))
 	{
 		margin_of_error = DISPLAY_TO_WORLD(RES_SCALE(20));
 	}
@@ -1168,7 +1168,7 @@ tactical_intelligence(ComputerInputContext* context, STARSHIP* StarShipPtr)
 
 	ShipMoved = true;
 	/* Disable ship's special completely for the Standard AI */
-	if (StarShipPtr->control & STANDARD_RATING)
+	if (testFlag(StarShipPtr->control, PlayerControlFlags::DifficultyStandard))
 	{
 		++StarShipPtr->special_counter;
 	}
@@ -1401,7 +1401,7 @@ tactical_intelligence(ComputerInputContext* context, STARSHIP* StarShipPtr)
 						}
 					}
 				}
-				else if (!(StarShipPtr->control & AWESOME_RATING))
+				else if (!testFlag(StarShipPtr->control, PlayerControlFlags::DifficultyAwesome))
 				{
 					ed.which_turn = 0;
 				}

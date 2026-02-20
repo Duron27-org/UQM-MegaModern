@@ -23,6 +23,7 @@
 #include "libs/sndlib.h"
 #include "libs/gfxlib.h"
 #include "libs/threadlib.h"
+#include "uqm/inteldefs.h"
 
 #if 0 //defined(__cplusplus)
 extern "C" {
@@ -85,7 +86,7 @@ extern bool classicPackPresent;
 
 extern ACTIVITY LastActivity;
 
-extern uqm::BYTE PlayerControl[];
+extern PlayerControlFlags PlayerControl[];
 
 extern bool usingSpeech;
 // Actual speech presence indicator which decouples reality from

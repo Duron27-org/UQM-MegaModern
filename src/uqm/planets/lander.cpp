@@ -1985,8 +1985,8 @@ LanderFire(uqm::SIZE facing)
 						 /* shot images immediately follow the lander images */
 						 facing + ANGLE_TO_FACING(FULL_CIRCLE));
 
-	if (CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_UP]
-		|| CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_THRUST])
+	if (CurrentInputState.key[static_cast<int>(PlayerControlTemplates[0])][KEY_UP]
+		|| CurrentInputState.key[static_cast<int>(PlayerControlTemplates[0])][KEY_THRUST])
 	{
 		GetCurrentVelocityComponents(&GLOBAL(velocity), &wdx, &wdy);
 	}
@@ -2308,7 +2308,7 @@ DoPlanetSide(LanderInputState* pMS)
 		return true;
 	}
 	else if (crew_left /* alive and taking off */
-			 && ((CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_ESCAPE] || CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_SPECIAL])
+			 && ((CurrentInputState.key[static_cast<int>(PlayerControlTemplates[0])][KEY_ESCAPE] || CurrentInputState.key[static_cast<int>(PlayerControlTemplates[0])][KEY_SPECIAL])
 				 || planetSideDesc->InTransit))
 	{
 		return false;
@@ -2356,12 +2356,12 @@ DoPlanetSide(LanderInputState* pMS)
 			{
 				--turn_wait;
 			}
-			else if (CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_LEFT] || CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_RIGHT])
+			else if (CurrentInputState.key[static_cast<int>(PlayerControlTemplates[0])][KEY_LEFT] || CurrentInputState.key[static_cast<int>(PlayerControlTemplates[0])][KEY_RIGHT])
 			{
 				uqm::COUNT landerSpeedNumer;
 				uqm::COUNT angle;
 
-				if (CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_LEFT])
+				if (CurrentInputState.key[static_cast<int>(PlayerControlTemplates[0])][KEY_LEFT])
 				{
 					--index;
 				}
@@ -2390,8 +2390,8 @@ DoPlanetSide(LanderInputState* pMS)
 
 				turn_wait = SHUTTLE_TURN_WAIT;
 			}
-			if (CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_THRUST]
-				|| CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_UP])
+			if (CurrentInputState.key[static_cast<int>(PlayerControlTemplates[0])][KEY_THRUST]
+				|| CurrentInputState.key[static_cast<int>(PlayerControlTemplates[0])][KEY_UP])
 			{
 				GetNextVelocityComponents(
 					&GLOBAL(velocity), &dx, &dy, 1);
@@ -2405,7 +2405,7 @@ DoPlanetSide(LanderInputState* pMS)
 			{
 				--weapon_wait;
 			}
-			else if (CurrentInputState.key[static_cast<int>(PlayerControls[0])][KEY_WEAPON])
+			else if (CurrentInputState.key[static_cast<int>(PlayerControlTemplates[0])][KEY_WEAPON])
 			{
 				LanderFire(index);
 

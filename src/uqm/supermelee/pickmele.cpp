@@ -725,7 +725,10 @@ void MeleeGameOver(void)
 
 		Async_process();
 		TaskSwitch();
-	} while (!(GLOBAL(CurrentActivity) & CHECK_ABORT) && (!ButtonState && (!(PlayerControl[0] & PlayerControl[1] & PSYTRON_CONTROL) || GetTimeCounter() < TimeOut)));
+	} while (!(GLOBAL(CurrentActivity) & CHECK_ABORT)
+			 && (!ButtonState
+				 && (!testFlag((PlayerControl[0] & PlayerControl[1]), PlayerControlFlags::Psytron)
+					 || GetTimeCounter() < TimeOut)));
 }
 
 void MeleeShipDeath(STARSHIP* ship)
@@ -813,7 +816,7 @@ GetMeleeStarShips(uqm::COUNT playerMask, HSTARSHIP* ships)
 		Flash_setPulseBox(gmstate.player[playerI].flashContext,
 						  (bool)isPC(optWhichMenu));
 #ifdef NETPLAY
-		if (PlayerControl[playerI] & NETWORK_CONTROL)
+		if (testFlag(PlayerControl[playerI], PlayerControlFlags::Network))
 		{
 			Flash_setSpeed(gmstate.player[playerI].flashContext,
 						   GameTicksPerSecond / 2, 0, GameTicksPerSecond / 2, 0);

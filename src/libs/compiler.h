@@ -21,10 +21,6 @@
 
 #include "types.h"
 
-#if 0 //defined(__cplusplus)
-extern "C" {
-#endif
-
 namespace uqm
 {
 typedef uint8 BYTE;
@@ -108,8 +104,5 @@ constexpr inline auto highByte(T x) -> uqm::BYTE
 #define _ALIGNED_ON(bytes)
 #endif
 
-#if 0 //defined(__cplusplus)
-}
-#endif
 
 #endif /* LIBS_COMPILER_H_ */

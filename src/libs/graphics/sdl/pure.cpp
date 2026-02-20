@@ -24,7 +24,6 @@
 
 
 #if SDL_MAJOR_VERSION == 1
-using namespace uqm;
 
 static SDL_Surface* SDL_Video = nullptr;
 static SDL_Surface* fade_color_surface = nullptr;

@@ -826,29 +826,28 @@ DrawControls(uqm::COUNT which_side, bool HiLite)
 {
 	uqm::COUNT which_icon;
 
-	if (PlayerControl[which_side] & NETWORK_CONTROL)
+	if (testFlag(PlayerControl[which_side], PlayerControlFlags::Network))
 	{
 		DrawMeleeIcon(35 + (HiLite ? 1 : 0) + 2 * (1 - which_side), HiLite);
 		/* "Network Control" */
 		return;
 	}
 
-	if (PlayerControl[which_side] & HUMAN_CONTROL)
+	if (testFlag(PlayerControl[which_side], PlayerControlFlags::Human))
 	{
 		which_icon = 0;
 	}
 	else
 	{
-		switch (PlayerControl[which_side]
-				& (STANDARD_RATING | GOOD_RATING | AWESOME_RATING))
+		switch (PlayerControl[which_side] & DifficultyFlagsMask)
 		{
-			case STANDARD_RATING:
+			case PlayerControlFlags::DifficultyStandard:
 				which_icon = 1;
 				break;
-			case GOOD_RATING:
+			case PlayerControlFlags::DifficultyGood:
 				which_icon = 2;
 				break;
-			case AWESOME_RATING:
+			case PlayerControlFlags::DifficultyAwesome:
 				which_icon = 3;
 				break;
 			default:
@@ -1973,7 +1972,7 @@ numPlayersReady(void)
 	numDone = 0;
 	for (player = 0; player < NUM_PLAYERS; player++)
 	{
-		if (!(PlayerControl[player] & NETWORK_CONTROL))
+		if (!testFlag(PlayerControl[player], PlayerControlFlags::Network))
 		{
 			numDone++;
 			continue;
@@ -2083,7 +2082,7 @@ DoConfirmSettings(MELEE_STATE* pMS)
 		{
 			NetConnection* conn;
 
-			if (!(PlayerControl[player] & NETWORK_CONTROL))
+			if (!testFlag(PlayerControl[player], PlayerControlFlags::Network))
 			{
 				continue;
 			}
@@ -2254,14 +2253,15 @@ StartMeleeButtonPressed(MELEE_STATE* pMS)
 	}
 
 #ifdef NETPLAY
-	if ((PlayerControl[0] & NETWORK_CONTROL) && (PlayerControl[1] & NETWORK_CONTROL))
+	if (testFlag(PlayerControl[0] & PlayerControl[1], PlayerControlFlags::Network))
 	{
 		DrawMeleeStatusMessage(GAME_STRING(NETMELEE_STRING_BASE + 32));
 		// "Only one side at a time can be network controlled."
 		return;
 	}
 
-	if (((PlayerControl[0] & NETWORK_CONTROL) && (PlayerControl[1] & COMPUTER_CONTROL)) || ((PlayerControl[0] & COMPUTER_CONTROL) && (PlayerControl[1] & NETWORK_CONTROL)))
+	if ((testFlag(PlayerControl[0], PlayerControlFlags::Network) && testFlag(PlayerControl[1], ComputerControlFlags)) 
+		|| (testFlag(PlayerControl[1], PlayerControlFlags::Network) && testFlag(PlayerControl[0], ComputerControlFlags)))
 	{
 		DrawMeleeStatusMessage(GAME_STRING(NETMELEE_STRING_BASE + 33));
 		// "Netplay with a computer-controlled side is currently
@@ -2280,7 +2280,7 @@ StartMeleeButtonPressed(MELEE_STATE* pMS)
 		{
 			NetConnection* conn;
 
-			if (!(PlayerControl[player] & NETWORK_CONTROL))
+			if (!testFlag(PlayerControl[player], PlayerControlFlags::Network))
 			{
 				continue;
 			}
@@ -2441,7 +2441,7 @@ DoConnectingDialog(MELEE_STATE* pMS)
 		if ((status == NetState_init) || (status == NetState_inSetup))
 		{
 			/* Connection complete! */
-			PlayerControl[which_side] = NETWORK_CONTROL | STANDARD_RATING;
+			PlayerControl[which_side] = PlayerControlFlags::Network | PlayerControlFlags::DifficultyStandard;
 			DrawControls(which_side, true);
 
 			RedrawMeleeFrame();
@@ -2471,7 +2471,7 @@ check_for_disconnects(MELEE_STATE* pMS)
 	{
 		NetConnection* conn;
 
-		if (!(PlayerControl[player] & NETWORK_CONTROL))
+		if (!testFlag(PlayerControl[player], PlayerControlFlags::Network))
 		{
 			continue;
 		}
@@ -2479,11 +2479,9 @@ check_for_disconnects(MELEE_STATE* pMS)
 		conn = netConnections[player];
 		if (conn == nullptr || !NetConnection_isConnected(conn))
 		{
-			PlayerControl[player] = HUMAN_CONTROL | STANDARD_RATING;
+			PlayerControl[player] = PlayerControlFlags::Human | PlayerControlFlags::DifficultyStandard;
 			DrawControls(player, false);
-			uqm::log::info("Player {} has disconnected; shifting "
-						   "controls\n",
-						   player);
+			uqm::log::info("Player {} has disconnected; shifting controls", player);
 		}
 	}
 
@@ -2497,34 +2495,34 @@ nextControlType(uqm::COUNT which_side)
 {
 	switch (PlayerControl[which_side])
 	{
-		case HUMAN_CONTROL | STANDARD_RATING:
-			PlayerControl[which_side] = COMPUTER_CONTROL | STANDARD_RATING;
+		case PlayerControlFlags::Human | PlayerControlFlags::DifficultyStandard:
+			PlayerControl[which_side] = ComputerControlFlags | PlayerControlFlags::DifficultyStandard;
 			break;
-		case COMPUTER_CONTROL | STANDARD_RATING:
-			PlayerControl[which_side] = COMPUTER_CONTROL | GOOD_RATING;
+		case ComputerControlFlags | PlayerControlFlags::DifficultyStandard:
+			PlayerControl[which_side] = ComputerControlFlags | PlayerControlFlags::DifficultyGood;
 			break;
-		case COMPUTER_CONTROL | GOOD_RATING:
-			PlayerControl[which_side] = COMPUTER_CONTROL | AWESOME_RATING;
+		case ComputerControlFlags | PlayerControlFlags::DifficultyGood:
+			PlayerControl[which_side] = ComputerControlFlags | PlayerControlFlags::DifficultyAwesome;
 			break;
-		case COMPUTER_CONTROL | AWESOME_RATING:
-			PlayerControl[which_side] = HUMAN_CONTROL | STANDARD_RATING;
+		case ComputerControlFlags | PlayerControlFlags::DifficultyAwesome:
+			PlayerControl[which_side] = PlayerControlFlags::Human | PlayerControlFlags::DifficultyStandard;
 			break;
 
 #ifdef NETPLAY
-		case NETWORK_CONTROL | STANDARD_RATING:
+		case PlayerControlFlags::Network | PlayerControlFlags::DifficultyStandard:
 			if (netConnections[which_side] != nullptr)
 			{
 				closePlayerNetworkConnection(which_side);
 			}
 			UpdateMeleeStatusMessage(-1);
-			PlayerControl[which_side] = HUMAN_CONTROL | STANDARD_RATING;
+			PlayerControl[which_side] = PlayerControlFlags::Human | PlayerControlFlags::DifficultyStandard;
 			break;
 #endif /* NETPLAY */
 		default:
 			uqm::log::error("Error: Bad control type ({}) in "
 							"nextControlType().\n",
 							PlayerControl[which_side]);
-			PlayerControl[which_side] = HUMAN_CONTROL | STANDARD_RATING;
+			PlayerControl[which_side] = PlayerControlFlags::Human | PlayerControlFlags::DifficultyStandard;
 			break;
 	}
 
@@ -2691,7 +2689,7 @@ bool DoMelee(MELEE_STATE* pMS)
 			NewMeleeOption = MeleeOptionDown(pMS->MeleeOption);
 		}
 
-		if ((PlayerControl[0] & PlayerControl[1] & PSYTRON_CONTROL)
+		if (testFlag((PlayerControl[0] & PlayerControl[1]), PlayerControlFlags::Psytron)
 			&& GetTimeCounter() - pMS->LastInputTime > GameTicksPerSecond * 10)
 		{
 			force_select = true;
@@ -2713,7 +2711,7 @@ bool DoMelee(MELEE_STATE* pMS)
 			if (NewMeleeOption == CONTROLS_TOP || NewMeleeOption == CONTROLS_BOT)
 			{
 				uqm::COUNT side = (NewMeleeOption == CONTROLS_TOP) ? 1 : 0;
-				if (PlayerControl[side] & NETWORK_CONTROL)
+				if (testFlag(PlayerControl[side], PlayerControlFlags::Network))
 				{
 					UpdateMeleeStatusMessage(side);
 				}
@@ -2781,18 +2779,18 @@ LoadMeleeConfig(MELEE_STATE* pMS)
 		{
 			goto err;
 		}
-		PlayerControl[side] = (uqm::BYTE)status;
-		// XXX: insert sanity check on PlanetControl here.
-
+		PlayerControl[side] = (PlayerControlFlags)status;
+		// TODO XXX: insert sanity check on PlayerControl here.
+		
 		if (MeleeSetup_deserializeTeam(pMS->meleeSetup, side, stream) == -1)
 		{
 			goto err;
 		}
 
 		/* Do not allow netplay mode at the start. */
-		if (PlayerControl[side] & NETWORK_CONTROL)
+		if (testFlag(PlayerControl[side], PlayerControlFlags::Network))
 		{
-			PlayerControl[side] = HUMAN_CONTROL | STANDARD_RATING;
+			PlayerControl[side] = PlayerControlFlags::Human | PlayerControlFlags::DifficultyStandard;
 		}
 	}
 
@@ -2821,7 +2819,7 @@ WriteMeleeConfig(MELEE_STATE* pMS)
 
 	for (side = 0; side < NUM_SIDES; side++)
 	{
-		if (uio_putc(PlayerControl[side], stream) == EOF)
+		if (uio_putc(static_cast<int>(PlayerControl[side]), stream) == EOF)
 		{
 			goto err;
 		}
@@ -2888,10 +2886,10 @@ void Melee(void)
 		LoadMeleeInfo(&MenuState);
 		if (LoadMeleeConfig(&MenuState) == -1)
 		{ // This sets the default controls on the Super Melee screen
-			PlayerControl[0] = HUMAN_CONTROL | STANDARD_RATING;
+			PlayerControl[0] = PlayerControlFlags::Human | PlayerControlFlags::DifficultyStandard;
 			Melee_LocalChange_team(&MenuState, 0,
 								   MenuState.load.preBuiltList[0]);
-			PlayerControl[1] = COMPUTER_CONTROL | STANDARD_RATING;
+			PlayerControl[1] = ComputerControlFlags | PlayerControlFlags::DifficultyStandard;
 			Melee_LocalChange_team(&MenuState, 1,
 								   MenuState.load.preBuiltList[1]);
 		}

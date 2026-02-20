@@ -40,7 +40,7 @@ computer_intelligence(ComputerInputContext* context, STARSHIP* StarShipPtr)
 	if (StarShipPtr)
 	{
 		// Selecting the next action for in battle.
-		if (StarShipPtr->control & CYBORG_CONTROL)
+		if (testFlag(StarShipPtr->control, PlayerControlFlags::Cyborg))
 		{
 			InputState = tactical_intelligence(context, StarShipPtr);
 
@@ -57,7 +57,7 @@ computer_intelligence(ComputerInputContext* context, STARSHIP* StarShipPtr)
 			InputState = CurrentInputToBattleInput(context->playerNr);
 		}
 	}
-	else if (!(PlayerControl[context->playerNr] & PSYTRON_CONTROL))
+	else if (!testFlag(PlayerControl[context->playerNr], PlayerControlFlags::Psytron))
 	{
 		InputState = 0;
 	}

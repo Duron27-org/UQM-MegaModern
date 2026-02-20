@@ -359,23 +359,23 @@ void getUserConfigOptions(OptionsStruct& options)
 
 	if (res_IsInteger("config.player1control"))
 	{
-		PlayerControls[0] = (ControlTemplate)res_GetInteger("config.player1control");
+		PlayerControlTemplates[0] = (ControlTemplate)res_GetInteger("config.player1control");
 		/* This is an unsigned, so no < 0 check is necessary */
-		if (PlayerControls[0] >= ControlTemplate::NUM)
+		if (PlayerControlTemplates[0] >= ControlTemplate::NUM)
 		{
-			uqm::log::error("Illegal control template '{}' ({}) for Player One.", static_cast<int>(PlayerControls[0]), toString(PlayerControls[0]));
-			PlayerControls[0] = ControlTemplate::KB_1;
+			uqm::log::error("Illegal control template '{}' ({}) for Player One.", static_cast<int>(PlayerControlTemplates[0]), toString(PlayerControlTemplates[0]));
+			PlayerControlTemplates[0] = ControlTemplate::KB_1;
 		}
 	}
 
 	if (res_IsInteger("config.player2control"))
 	{
 		/* This is an unsigned, so no < 0 check is necessary */
-		PlayerControls[1] = (ControlTemplate)res_GetInteger("config.player2control");
-		if (PlayerControls[1] >= ControlTemplate::NUM)
+		PlayerControlTemplates[1] = (ControlTemplate)res_GetInteger("config.player2control");
+		if (PlayerControlTemplates[1] >= ControlTemplate::NUM)
 		{
-			uqm::log::error("Illegal control template '{}' ({}) for Player Two.", static_cast<int>(PlayerControls[1]), toString(PlayerControls[1]));
-			PlayerControls[1] = ControlTemplate::JOY_1;
+			uqm::log::error("Illegal control template '{}' ({}) for Player Two.", static_cast<int>(PlayerControlTemplates[1]), toString(PlayerControlTemplates[1]));
+			PlayerControlTemplates[1] = ControlTemplate::JOY_1;
 		}
 	}
 }
