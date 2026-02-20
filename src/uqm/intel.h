@@ -70,7 +70,7 @@ antiCheatImpl(const ELEMENT* element, const bool swapPlayers, const uqm::GodMode
 		return false;
 	}
 
-	assert(element->playerNr == 0 || element->playerNr == 1, "Logic below assumes a 1 or zero");
+	assert(element->playerNr == 0 || element->playerNr == 1);
 	const int elementOwner = element->playerNr;
 	const int opponent = elementOwner ^ 1;
 
