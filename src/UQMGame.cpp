@@ -250,7 +250,7 @@ uqstl::pair<int, bool> UQMGame::setup(uqstl::span<uqgsl::zstring> args)
 	optAddons = options.addons;
 
 	optGodModes = options.optGodModes.value;
-	timeDilationScale = options.timeDilationScale.value;
+	timeDilationPct = options.timeDilationPct.value;
 	optBubbleWarp = (OPT_ENABLABLE)options.bubbleWarp.value;
 	optUnlockShips = (OPT_ENABLABLE)options.unlockShips.value;
 	optHeadStart = (OPT_ENABLABLE)options.headStart.value;

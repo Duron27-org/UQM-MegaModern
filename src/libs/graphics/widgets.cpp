@@ -713,6 +713,22 @@ void Widget_Slider_DrawValue(WIDGET_SLIDER* self, int x, int y)
 	font_DrawText(&t);
 }
 
+void Widget_Slider_DrawPercentageValue(WIDGET_SLIDER* self, int x, int y)
+{ // Number from 0% to 100% near slider
+	TEXT t;
+	char buffer[16] {};
+
+	fmt::format_to_n(buffer, sizeof(buffer) - 1, "{}%", self->value);
+
+	t.baseline.x = x + RES_SCALE(14);
+	t.baseline.y = y;
+	t.align = ALIGN_LEFT;
+	t.CharCount = ~0;
+	t.pStr = buffer;
+
+	font_DrawText(&t);
+}
+
 void Widget_DrawTextEntry(WIDGET* _self, int x, int y)
 { // Custom seed and key layout name
 	WIDGET_TEXTENTRY* self = (WIDGET_TEXTENTRY*)_self;

@@ -219,24 +219,15 @@ bool GameClockRunning(void)
 
 void SetGameClockRate(uqm::COUNT seconds_per_day)
 {
-	uqm::SIZE new_day_in_ticks, new_tick_count;
-
-	new_day_in_ticks = (uqm::SIZE)(seconds_per_day * CLOCK_BASE_FRAMERATE);
-	switch (timeDilationScale)
+	
+	uqm::SIZE new_day_in_ticks = (uqm::SIZE)(seconds_per_day * CLOCK_BASE_FRAMERATE);
+	if (timeDilationPct != 100) [[unlikely]]
 	{
-		case 1:
-			new_day_in_ticks = new_day_in_ticks * 6;
-			//printf("TD Slow\n");
-			break;
-		case 2:
-			new_day_in_ticks = new_day_in_ticks / 5;
-			//printf("TD Fast\n");
-			break;
-		case 0:
-		default:
-			//printf("TD Normal\n");
-			break;
+		new_day_in_ticks = static_cast<uqm::SIZE>(new_day_in_ticks * (timeDilationPct/100.f));
+		uqm::log::debug("Setting time dilation scale to {}%, with a day tick length of {}", timeDilationPct, new_day_in_ticks);
 	}
+
+	uqm::SIZE new_tick_count {};
 	if (GLOBAL(GameClock.day_in_ticks) == 0)
 	{
 		new_tick_count = new_day_in_ticks;

@@ -242,6 +242,7 @@ void Widget_DrawTextEntry(WIDGET* _self, int x, int y);
 void Widget_DrawControlEntry(WIDGET* _self, int x, int y);
 
 void Widget_Slider_DrawValue(WIDGET_SLIDER* self, int x, int y);
+void Widget_Slider_DrawPercentageValue(WIDGET_SLIDER* self, int x, int y);
 
 void ResetOffset(void);
 void LoadArrows(void);

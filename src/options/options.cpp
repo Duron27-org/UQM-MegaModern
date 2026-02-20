@@ -324,7 +324,7 @@ uqstl::pair<int, bool> UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 	};
 
 	auto gameplayGroup {app.add_option_group("Gameplay", "General gameplay options")};
-	
+
 	gameplayGroup->add_flag("-u,--subtitles,--nosubtitles{false}", m_options.subtitles.edit(), fmt::format("Display subtitles (or not). Default={}", defaults.subtitles.toString()));
 	gameplayGroup->add_flag("--safe,--safemode", m_options.safeMode.edit(), "Start the game in safe-mode. No configurations or other options will be loaded.");
 	gameplayGroup->add_option("-i,--intro", m_options.whichIntro.edit(), fmt::format("Which intro/ending version to use. Default={:s}", *defaults.whichIntro))
@@ -343,7 +343,7 @@ uqstl::pair<int, bool> UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 
 	// Rendering Options
 	auto renderGroup {app.add_option_group("Rendering", "Options which control the rendering and display of the game.")};
-	
+
 	auto resolutionAssignmentCallback = [&](const std::string& value) {
 		static const std::regex re {R"(^(\d+)[x,](\d+)$)"};
 		if (std::smatch match {}; std::regex_match(value, match, re))
@@ -379,7 +379,7 @@ uqstl::pair<int, bool> UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 
 	// Directory options
 	auto pathGroup {app.add_option_group("Paths", "Paths to load content from, or load/save configuration and saves from.")};
-	
+
 	pathGroup->add_option("-C,--configdir", m_options.configDir, "Path to the directory containing configuration files.")
 		->check(CLI::ExistingPath);
 	pathGroup->add_option("-n,--contentdir", m_options.contentDir, "Path to the directory containing game content.")
@@ -419,48 +419,16 @@ uqstl::pair<int, bool> UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 	// MegaMod specific options
 	auto modGroup {app.add_option_group("MegaMod", "The following options are MegaMod specific.")};
 
-	auto godModeParser = [&](std::string arg) {
-		if (auto enumVal {fromString<GodModeFlags>(arg)}; enumVal.has_value())
-		{
-			if (m_options.optGodModes.set)
-			{
-				m_options.optGodModes.value |= *enumVal;
-			}
-			else
-			{
-				m_options.optGodModes = *enumVal;
-			}
-		}
-		else
-		{
-			throw CLI::ValidationError {"--precursormode/--godmode", fmt::format("Invalid god mode flag: {:s}", arg)};
-		}
-	};
-				
-
 	modGroup->add_flag("--kohrstahp", m_options.cheatMode.edit(), fmt::format("Stops Kohr-Ah advancing. Default={}", defaults.cheatMode.toString()));
-	modGroup->add_option_function<std::string>("--precursormode,--godmode", godModeParser, fmt::format("A comma-separated list of god-mode flags to enable. Can be any combindation. Default={:s}", *defaults.optGodModes)) // todo: selected flags.
-		->delimiter(',')
+	uqstl::vector<GodModeFlags> specifiedGodModeFlags {};
+	modGroup->add_option("--precursormode,--godmode", specifiedGodModeFlags, fmt::format("A comma-separated list of god-mode flags to enable. Can be any combindation. Default={:s}", *defaults.optGodModes)) // todo: selected flags.
+		->expected(-1)
+		//->delimiter(',')
 		->transform(CLI::CheckedTransformer {EnumNames<GodModeFlags>::map<std::string>(), CLI::ignore_case});
-	//int temp;
-	//					if (const auto godModeVal {parseOptionValue<int>(optarg, "God Modes")}; godModeVal.has_value())
-	//					{
-	//						if (temp < 0 || temp > 2)
-	//						{
-	//							error::saveError("God Mode has to be 0, 1, or 2. Got {}", *godModeVal);
-	//							badArg = true;
-	//						}
-	//						else
-	//						{
-	//							options.optGodModes = *godModeVal;
-	//						}
-	//					}
-	//					else
-	//					{
-	//						badArg = true;
-	//					}
+	modGroup->add_option("--timedilation", m_options.timeDilationPct.edit(), fmt::format("Time dilation scale percentage. 100 = regular speed. Default={}%", *defaults.timeDilationPct))
+		->check(CLI::Range(0, 1000));
 
-	//modGroup->add_option("--timedilation", m_options.timeDilation.edit(), fmt::format("Time dilation mode. 0=Off, 1=Time is slowed down times 6, 2=Time is sped up times 5. Default={}", *defaults.timeDilation));)
+	uqm::log::info("Stops Kohr-Ah advancing. Default={}", *m_options.optGodModes);
 
 	try
 	{
@@ -481,6 +449,24 @@ uqstl::pair<int, bool> UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 		return {app.exit(e), true};
 	}
 
+	// Collect selected god mode flags into a final value
+	if (!specifiedGodModeFlags.empty())
+	{
+		for (const GodModeFlags flag : specifiedGodModeFlags)
+		{
+			if (m_options.optGodModes.set)
+			{
+				m_options.optGodModes.value |= flag;
+			}
+			else
+			{
+				m_options.optGodModes = flag;
+			}
+		}
+	}
+
+	return {EXIT_SUCCESS, false};
+}
 	
 	//	uqm::log::info("  --timedilation : =1 Time is slowed down times 6. =2 Time is sped up times 5 (default: 0)");
 	//	uqm::log::info("  --bubblewarp : Instantaneous travel to any point on the Starmap. (default: {})", defaults.bubbleWarp.toString());
@@ -1377,8 +1363,8 @@ uqstl::pair<int, bool> UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 	//	}
 	//
 	//	return badArg ? EXIT_FAILURE : EXIT_SUCCESS;
-	return {EXIT_SUCCESS, false};
-}
+//	return {EXIT_SUCCESS, false};
+//}
 
 //
 //void printUsage(FILE* out, const OptionsStruct& defaults)

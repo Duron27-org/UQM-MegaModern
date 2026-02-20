@@ -185,11 +185,10 @@ void getUserConfigOptions(OptionsStruct& options)
 		options.optGodModes.value = (uqm::GodModeFlags)res_GetInteger("cheat.godModes");
 	}
 
-	if (res_IsInteger("cheat.timeDilation")
-		&& !options.timeDilationScale.set)
+	if (res_IsInteger("cheat.timeDilationPct")
+		&& !options.timeDilationPct.set)
 	{
-		options.timeDilationScale.value =
-			res_GetInteger("cheat.timeDilation");
+		options.timeDilationPct.value = res_GetInteger("cheat.timeDilationPct");
 	}
 	getBoolConfigValue(options.bubbleWarp, "cheat.bubbleWarp");
 	getBoolConfigValue(options.unlockShips, "cheat.unlockShips");

@@ -152,8 +152,15 @@ UseDescriptorAsRes(const char* descriptor, RESOURCE_DATA* resdata)
 static void
 DescriptorToInt(const char* descriptor, RESOURCE_DATA* resdata)
 {
-	resdata->num = atoi(descriptor);
+	resdata->num = std::atoi(descriptor);
 }
+
+static void
+DescriptorToFloat(const char* descriptor, RESOURCE_DATA* resdata)
+{
+	resdata->fnum = static_cast<float>(std::atof(descriptor));
+}
+
 
 static void
 DescriptorToBoolean(const char* descriptor, RESOURCE_DATA* resdata)
@@ -312,6 +319,11 @@ IntToString(RESOURCE_DATA* resdata, char* buf, unsigned int size)
 	fmt::format_to_sz_n(buf, size, "{}", resdata->num);
 }
 
+static void
+FloatToString(RESOURCE_DATA* resdata, char* buf, unsigned int size)
+{
+	fmt::format_to_sz_n(buf, size, "{}", resdata->fnum);
+}
 
 static void
 BooleanToString(RESOURCE_DATA* resdata, char* buf, unsigned int size)
@@ -360,8 +372,8 @@ InitResourceSystem(void)
 	InstallResTypeVectors("UNKNOWNRES", UseDescriptorAsRes, nullptr, nullptr);
 	InstallResTypeVectors("STRING", UseDescriptorAsRes, nullptr, RawDescriptor);
 	InstallResTypeVectors("INT32", DescriptorToInt, nullptr, IntToString);
-	InstallResTypeVectors("bool", DescriptorToBoolean, nullptr,
-						  BooleanToString);
+	InstallResTypeVectors("FLT32", DescriptorToFloat, nullptr, FloatToString);
+	InstallResTypeVectors("bool", DescriptorToBoolean, nullptr, BooleanToString);
 	InstallResTypeVectors("COLOR", DescriptorToColor, nullptr, ColorToString);
 	InstallGraphicResTypes();
 	InstallStringTableResType();
@@ -590,6 +602,25 @@ int res_GetInteger(const char* key)
 	return desc->resdata.num;
 }
 
+bool res_IsFloat(const char* key)
+{
+	RESOURCE_INDEX idx = _get_current_index_header();
+	ResourceDesc* desc = lookupResourceDesc(idx, key);
+	return (bool)(desc && !strcmp(desc->vtable->resType, "FLT32"));
+}
+
+int res_GetFloat(const char* key)
+{
+	RESOURCE_INDEX idx = _get_current_index_header();
+	ResourceDesc* desc = lookupResourceDesc(idx, key);
+	if (!desc || strcmp(desc->vtable->resType, "FLT32"))
+	{
+		// TODO: Better error handling
+		return 0;
+	}
+	return desc->resdata.fnum;
+}
+
 void res_PutInteger(const char* key, int value)
 {
 	RESOURCE_INDEX idx = _get_current_index_header();
@@ -601,6 +632,19 @@ void res_PutInteger(const char* key, int value)
 		desc = lookupResourceDesc(idx, key);
 	}
 	desc->resdata.num = value;
+}
+
+void res_PutFloat(const char* key, float value)
+{
+	RESOURCE_INDEX idx = _get_current_index_header();
+	ResourceDesc* desc = lookupResourceDesc(idx, key);
+	if (!desc || strcmp(desc->vtable->resType, "FLT32"))
+	{
+		/* TODO: This is kind of roundabout. We can do better by refactoring newResourceDesc */
+		process_resource_desc(key, "FLT32:0.0");
+		desc = lookupResourceDesc(idx, key);
+	}
+	desc->resdata.fnum = value;
 }
 
 bool res_IsBoolean(const char* key)

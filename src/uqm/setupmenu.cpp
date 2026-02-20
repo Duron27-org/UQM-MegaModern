@@ -144,6 +144,10 @@ bool putOpt(GlobT& glob, const SetT set, uqgsl::czstring key, const bool reload)
 		{
 			res_PutInteger(key, set);
 		}
+		else if constexpr (uqstl::is_same_v<float, base_t>)
+		{
+			res_putFloat(key, set);
+		}
 		else if constexpr (uqstl::is_enum_v<base_t>)
 		{
 			res_PutInteger(key, static_cast<int>(set));
@@ -325,7 +329,7 @@ static WIDGET* cheat_widgets[] = {
 	(WIDGET*)(&choices[CHOICE_CHEATING]),	  // JMS: cheatMode on/off
 	(WIDGET*)(&choices[CHOICE_CHDECLEAN]),	  // Kohr-Ah DeCleansing mode
 	(WIDGET*)(&choices[CHOICE_CHGODMODE]),	  // Precursor Mode
-	(WIDGET*)(&choices[CHOICE_CHTIME]),		  // Time Dilation
+	(WIDGET*)(&sliders[SLIDER_TIMEDILATION]), // Time Dilation
 	(WIDGET*)(&choices[CHOICE_CHWARP]),		  // Bubble Warp
 	(WIDGET*)(&choices[CHOICE_CHHEADSTART]),  // Head Start
 	(WIDGET*)(&choices[CHOICE_CHSHIPS]),	  // Unlock Ships
@@ -1257,7 +1261,6 @@ SetDefaults(void)
 	choices[CHOICE_ASPRATIO].selected = opts.keepaspect;
 	choices[CHOICE_CHEATING].selected = opts.cheatMode;
 	choices[CHOICE_CHGODMODE].selected = opts.godModes;
-	choices[CHOICE_CHTIME].selected = opts.tdType;
 	choices[CHOICE_CHWARP].selected = opts.bubbleWarp;
 	choices[CHOICE_CHSHIPS].selected = opts.unlockShips;
 	choices[CHOICE_CHHEADSTART].selected = opts.headStart;
@@ -1347,6 +1350,7 @@ SetDefaults(void)
 	sliders[SLIDER_SPCHVOLUME].value = opts.speechvol;
 	sliders[SLIDER_GAMMA].value = opts.gamma;
 	sliders[SLIDER_NEBULA].value = opts.nebulaevol;
+	sliders[SLIDER_TIMEDILATION].value = opts.timeDilationPct;
 }
 
 static void
@@ -1384,7 +1388,6 @@ PropagateResults(void)
 	opts.keepaspect = (OPT_ENABLABLE)choices[CHOICE_ASPRATIO].selected;
 	opts.cheatMode = (OPT_ENABLABLE)choices[CHOICE_CHEATING].selected;
 	opts.godModes = (OPT_GODTYPE)choices[CHOICE_CHGODMODE].selected;
-	opts.tdType = (OPT_TDTYPE)choices[CHOICE_CHTIME].selected;
 	opts.bubbleWarp = (OPT_ENABLABLE)choices[CHOICE_CHWARP].selected;
 	opts.unlockShips = (OPT_ENABLABLE)choices[CHOICE_CHSHIPS].selected;
 	opts.headStart = (OPT_ENABLABLE)choices[CHOICE_CHHEADSTART].selected;
@@ -1472,6 +1475,7 @@ PropagateResults(void)
 	opts.speechvol = sliders[SLIDER_SPCHVOLUME].value;
 	opts.gamma = sliders[SLIDER_GAMMA].value;
 	opts.nebulaevol = sliders[SLIDER_NEBULA].value;
+	opts.timeDilationPct = sliders[SLIDER_TIMEDILATION].value;
 
 	SetGlobalOptions(&opts);
 }
@@ -1991,9 +1995,8 @@ init_widgets(void)
 		exit(EXIT_FAILURE);
 	}
 
-	if (SplitString(GetStringAddress(SetAbsStringTableIndex(
-						SetupTab, index++)),
-					'\n', MAX_BUFF, buffer, bank)
+	const auto rawSliderString {GetStringAddress(SetAbsStringTableIndex(SetupTab, index++))};
+	if (SplitString(rawSliderString, '\n', MAX_BUFF, buffer, bank)
 		!= SLIDER_COUNT)
 	{
 		/* TODO: Ignore extras instead of dying. */
@@ -2033,6 +2036,12 @@ init_widgets(void)
 	// nebulaevol is a special case
 	sliders[SLIDER_NEBULA].step = 1;
 	sliders[SLIDER_NEBULA].max = 50;
+
+	// special settings for time dilation
+	sliders[SLIDER_TIMEDILATION].min = 0;
+	sliders[SLIDER_TIMEDILATION].max = 1000;
+	sliders[SLIDER_TIMEDILATION].step = 10;
+	sliders[SLIDER_TIMEDILATION].draw_value = Widget_Slider_DrawPercentageValue;
 
 	for (i = 0; i < SLIDER_COUNT; i++)
 	{
@@ -2606,7 +2615,7 @@ void GetGlobalOptions(GLOBALOPTS* opts)
  */
 	opts->cheatMode = optCheatMode;
 	opts->godModes = (OPT_GODTYPE)optGodModes;
-	opts->tdType = (OPT_TDTYPE)timeDilationScale;
+	opts->timeDilationPct = timeDilationPct;
 	opts->bubbleWarp = optBubbleWarp;
 	opts->unlockShips = optUnlockShips;
 	opts->headStart = optHeadStart;
@@ -2897,7 +2906,7 @@ void SetGlobalOptions(GLOBALOPTS* opts)
  */
 	putOpt(optCheatMode, opts->cheatMode, "cheat.kohrStahp", false);
 	putOpt(optGodModes, (int)opts->godModes, "cheat.godModes", false);
-	putOpt(timeDilationScale, (int)opts->tdType, "cheat.timeDilation", false);
+	putOpt(timeDilationPct, opts->timeDilationPct, "cheat.timeDilationPct", false);
 	putOpt(optBubbleWarp, opts->bubbleWarp, "cheat.bubbleWarp", false);
 	putOpt(optUnlockShips, opts->unlockShips, "cheat.unlockShips", false);
 	putOpt(optHeadStart, opts->headStart, "cheat.headStart", false);

@@ -51,7 +51,7 @@ extern bool optRequiresReload;
 extern bool optRequiresRestart;
 extern OPT_ENABLABLE optCheatMode;
 extern uqm::GodModeFlags optGodModes;
-extern int timeDilationScale;
+extern int timeDilationPct;
 extern OPT_ENABLABLE optBubbleWarp;
 extern OPT_ENABLABLE optUnlockShips;
 extern OPT_ENABLABLE optHeadStart;

@@ -67,7 +67,7 @@ bool optRequiresReload;
 bool optRequiresRestart;
 OPT_ENABLABLE optCheatMode;
 uqm::GodModeFlags optGodModes;
-int timeDilationScale;
+int timeDilationPct;
 OPT_ENABLABLE optBubbleWarp;
 OPT_ENABLABLE optUnlockShips;
 OPT_ENABLABLE optHeadStart;

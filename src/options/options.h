@@ -68,7 +68,7 @@ struct OptionsStruct
 	IntOption loresBlowupScale {1};
 	BoolOption cheatMode {false}; // stops kor-ah from advancing.
 	OptionT<GodModeFlags> optGodModes {GodModeFlags::None};
-	IntOption timeDilationScale {0};
+	IntOption timeDilationPct {100};
 	BoolOption bubbleWarp {false};
 	BoolOption unlockShips {false};
 	BoolOption headStart {false};

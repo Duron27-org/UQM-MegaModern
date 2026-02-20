@@ -37,6 +37,7 @@ typedef const char* RESOURCE;
 typedef union
 {
 	uqm::DWORD num;
+	float fnum;
 	void* ptr;
 	const char* str;
 } RESOURCE_DATA;
@@ -123,6 +124,10 @@ void res_PutString(const char* key, const char* value);
 bool res_IsInteger(const char* key);
 int res_GetInteger(const char* key);
 void res_PutInteger(const char* key, int value);
+
+bool res_IsFloat(const char* key);
+int res_GetFloat(const char* key);
+void res_PutFloat(const char* key, float value);
 
 bool res_IsBoolean(const char* key);
 bool res_GetBoolean(const char* key);

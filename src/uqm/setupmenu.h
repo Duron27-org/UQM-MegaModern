@@ -235,7 +235,6 @@ enum
 	CHOICE_ASPRATIO,
 	CHOICE_CHEATING,
 	CHOICE_CHGODMODE,
-	CHOICE_CHTIME,
 	CHOICE_CHWARP,
 	CHOICE_CHSHIPS,
 	CHOICE_CHHEADSTART,
@@ -368,6 +367,7 @@ enum
 	SLIDER_SPCHVOLUME,
 	SLIDER_GAMMA,
 	SLIDER_NEBULA,
+	SLIDER_TIMEDILATION,
 
 	SLIDER_COUNT
 };
@@ -446,7 +446,6 @@ typedef struct globalopts_struct
 	OPT_ADRIVERTYPE adriver;
 	OPT_AQUALITYTYPE aquality;
 	OPT_GODTYPE godModes;
-	OPT_TDTYPE tdType;
 	OPT_DATETYPE dateType;
 	OPT_DIFFICULTY difficulty;
 	OPT_NOMAD nomad;
@@ -479,6 +478,7 @@ typedef struct globalopts_struct
 	ControlTemplate player1, player2;
 	int speechvol, musicvol, sfxvol, nebulaevol;
 	int gamma, starBackground;
+	int timeDilationPct;
 } GLOBALOPTS;
 
 void SetupMenu(void);
