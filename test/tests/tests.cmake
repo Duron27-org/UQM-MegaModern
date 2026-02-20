@@ -10,7 +10,9 @@ list(APPEND uqm_tests_master_files ${uqm_tests_core_master_files})
 include("tests/lib/lib.cmake")
 list(APPEND uqm_tests_master_files ${uqm_tests_lib_master_files})
 include("tests/options/options.cmake")
-list(APPEND uqm_tests_master_files ${uqm_tests_options_files})
+list(APPEND uqm_tests_master_files ${uqm_tests_options_master_files})
+include("tests/uqm/uqm.cmake")
+list(APPEND uqm_tests_master_files ${uqm_tests_uqm_master_files})
 
 ############################################################
 # Local files

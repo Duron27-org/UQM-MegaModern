@@ -215,9 +215,7 @@ spawn_crew(ELEMENT* ElementPtr)
 				{
 					uqm::COUNT crew_loss;
 
-					if (!(antiCheat(ElementPtr, true, OPTVAL_INF_HEALTH)
-						  || antiCheat(
-							  ElementPtr, true, OPTVAL_FULL_GOD)))
+					if (!antiCheat(ElementPtr, true, uqm::GodModeFlags::NoDamage))
 					{
 						crew_loss = ((MAX_ABANDONERS * (ABANDONER_RANGE - square_root(d_squared))) / ABANDONER_RANGE) + 1;
 					}

@@ -314,8 +314,7 @@ self_destruct_kill_objects(ELEMENT* ElementPtr)
 			// XXX: Why not simply call do_damage()?
 			if (ObjPtr->state_flags & PLAYER_SHIP)
 			{
-				if (!(antiCheat(ElementPtr, true, OPTVAL_INF_HEALTH)
-					  || antiCheat(ElementPtr, true, OPTVAL_FULL_GOD)))
+				if (!antiCheat(ElementPtr, true, uqm::GodModeFlags::NoDamage))
 				{
 					if (!DeltaCrew(ObjPtr, -destruction))
 					{

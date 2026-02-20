@@ -66,7 +66,7 @@ unsigned int audioQuality;
 bool optRequiresReload;
 bool optRequiresRestart;
 OPT_ENABLABLE optCheatMode;
-int optGodModes;
+uqm::GodModeFlags optGodModes;
 int timeDilationScale;
 OPT_ENABLABLE optBubbleWarp;
 OPT_ENABLABLE optUnlockShips;

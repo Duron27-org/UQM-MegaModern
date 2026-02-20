@@ -166,8 +166,7 @@ limpet_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
 
 		GetElementStarShip(ElementPtr1, &StarShipPtr);
 		RDPtr = StarShipPtr->RaceDescPtr;
-		if (!(antiCheat(ElementPtr1, false, OPTVAL_INF_HEALTH)
-			  || antiCheat(ElementPtr1, false, OPTVAL_FULL_GOD)))
+		if (!antiCheat(ElementPtr1, false, uqm::GodModeFlags::NoDamage))
 		{
 			if (++RDPtr->characteristics.turn_wait == 0)
 			{

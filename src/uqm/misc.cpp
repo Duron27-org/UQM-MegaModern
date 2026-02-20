@@ -260,8 +260,7 @@ void spawn_asteroid(ELEMENT* ElementPtr)
 void do_damage(ELEMENT* ElementPtr, uqm::SIZE damage)
 {
 	// God Mode, borrowed from the UQM-HD debug invincibility code
-	if (antiCheat(ElementPtr, false, OPTVAL_INF_HEALTH)
-		|| antiCheat(ElementPtr, false, OPTVAL_FULL_GOD))
+	if (antiCheat(ElementPtr, false, uqm::GodModeFlags::NoDamage))
 	{
 		damage = 0;
 	}

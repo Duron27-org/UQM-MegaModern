@@ -306,6 +306,7 @@ UQMOptions& UQMOptions::getInstance()
 	return *s_instance;
 }
 
+
 uqstl::pair<int, bool> UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 {
 
@@ -323,6 +324,7 @@ uqstl::pair<int, bool> UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 	};
 
 	auto gameplayGroup {app.add_option_group("Gameplay", "General gameplay options")};
+	
 	gameplayGroup->add_flag("-u,--subtitles,--nosubtitles{false}", m_options.subtitles.edit(), fmt::format("Display subtitles (or not). Default={}", defaults.subtitles.toString()));
 	gameplayGroup->add_flag("--safe,--safemode", m_options.safeMode.edit(), "Start the game in safe-mode. No configurations or other options will be loaded.");
 	gameplayGroup->add_option("-i,--intro", m_options.whichIntro.edit(), fmt::format("Which intro/ending version to use. Default={:s}", *defaults.whichIntro))
@@ -340,6 +342,8 @@ uqstl::pair<int, bool> UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 
 
 	// Rendering Options
+	auto renderGroup {app.add_option_group("Rendering", "Options which control the rendering and display of the game.")};
+	
 	auto resolutionAssignmentCallback = [&](const std::string& value) {
 		static const std::regex re {R"(^(\d+)[x,](\d+)$)"};
 		if (std::smatch match {}; std::regex_match(value, match, re))
@@ -354,7 +358,6 @@ uqstl::pair<int, bool> UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 		}
 	};
 
-	auto renderGroup {app.add_option_group("Rendering", "Options which control the rendering and display of the game.")};
 	renderGroup->add_option_function<std::string>("-r,--resolution", resolutionAssignmentCallback, fmt::format("Screen resolution. Default is {:(}, higher resolutions only work with --opengl enabled.", *defaults.resolution));
 	renderGroup->add_option("-f,--fullscreen", m_options.windowMode.edit(), fmt::format("Fullscreen mode, default={:s}.", *defaults.windowMode))
 		->transform(CLI::CheckedTransformer {EnumNames<WindowMode>::map<std::string>(), CLI::ignore_case});
@@ -376,6 +379,7 @@ uqstl::pair<int, bool> UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 
 	// Directory options
 	auto pathGroup {app.add_option_group("Paths", "Paths to load content from, or load/save configuration and saves from.")};
+	
 	pathGroup->add_option("-C,--configdir", m_options.configDir, "Path to the directory containing configuration files.")
 		->check(CLI::ExistingPath);
 	pathGroup->add_option("-n,--contentdir", m_options.contentDir, "Path to the directory containing game content.")
@@ -388,6 +392,7 @@ uqstl::pair<int, bool> UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 
 	// Audio Options
 	auto audioGroup {app.add_option_group("Audio", "Options which control the game's audio.")};
+
 	audioGroup->add_option("-M,--musicvol", m_options.musicVolumeScale, fmt::format("Music volume, 0-100. Default={}.", *m_options.musicVolumeScale))
 		->check(CLI::Range(0, 100));
 	audioGroup->add_option("-S,--sfxvol", m_options.sfxVolumeScale, fmt::format("SFX volume, 0-100. Default={}.", *m_options.sfxVolumeScale))
@@ -411,6 +416,52 @@ uqstl::pair<int, bool> UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 	m_netplayOptions.configureCommands(app);
 #endif
 
+	// MegaMod specific options
+	auto modGroup {app.add_option_group("MegaMod", "The following options are MegaMod specific.")};
+
+	auto godModeParser = [&](std::string arg) {
+		if (auto enumVal {fromString<GodModeFlags>(arg)}; enumVal.has_value())
+		{
+			if (m_options.optGodModes.set)
+			{
+				m_options.optGodModes.value |= *enumVal;
+			}
+			else
+			{
+				m_options.optGodModes = *enumVal;
+			}
+		}
+		else
+		{
+			throw CLI::ValidationError {"--precursormode/--godmode", fmt::format("Invalid god mode flag: {:s}", arg)};
+		}
+	};
+				
+
+	modGroup->add_flag("--kohrstahp", m_options.cheatMode.edit(), fmt::format("Stops Kohr-Ah advancing. Default={}", defaults.cheatMode.toString()));
+	modGroup->add_option_function<std::string>("--precursormode,--godmode", godModeParser, fmt::format("A comma-separated list of god-mode flags to enable. Can be any combindation. Default={:s}", *defaults.optGodModes)) // todo: selected flags.
+		->delimiter(',')
+		->transform(CLI::CheckedTransformer {EnumNames<GodModeFlags>::map<std::string>(), CLI::ignore_case});
+	//int temp;
+	//					if (const auto godModeVal {parseOptionValue<int>(optarg, "God Modes")}; godModeVal.has_value())
+	//					{
+	//						if (temp < 0 || temp > 2)
+	//						{
+	//							error::saveError("God Mode has to be 0, 1, or 2. Got {}", *godModeVal);
+	//							badArg = true;
+	//						}
+	//						else
+	//						{
+	//							options.optGodModes = *godModeVal;
+	//						}
+	//					}
+	//					else
+	//					{
+	//						badArg = true;
+	//					}
+
+	//modGroup->add_option("--timedilation", m_options.timeDilation.edit(), fmt::format("Time dilation mode. 0=Off, 1=Time is slowed down times 6, 2=Time is sped up times 5. Default={}", *defaults.timeDilation));)
+
 	try
 	{
 		app.parse(args.size(), args.data());
@@ -430,16 +481,7 @@ uqstl::pair<int, bool> UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 		return {app.exit(e), true};
 	}
 
-	//#ifdef NETPLAY
-	//	uqm::log::info("  --nethostN=HOSTNAME (server to connect to for player N (1=bottom, 2=top)");
-	//	uqm::log::info("  --netportN=PORT (port to connect to/listen on for player N (1=bottom, 2=top)");
-	//	uqm::log::info("  --netdelay=FRAMES (number of frames to buffer/delay network input for");
-	//#endif
-	//
-	//	uqm::log::info("\nThe following options are MegaMod specific\n");
-	//
-	//	uqm::log::info("  --kohrstahp : Stops Kohr-Ah advancing. (default: {})", defaults.cheatMode.toString());
-	//	uqm::log::info("  --precursormode : =1 Infinite ship battery. =2 No damage, =3 Infinite ship battery and no damage (default: 0)");
+	
 	//	uqm::log::info("  --timedilation : =1 Time is slowed down times 6. =2 Time is sped up times 5 (default: 0)");
 	//	uqm::log::info("  --bubblewarp : Instantaneous travel to any point on the Starmap. (default: {})", defaults.bubbleWarp.toString());
 	//	uqm::log::info("  --unlockships : Allows you to purchase ships that you can't normally acquire in the main game. (default: {})", defaults.unlockShips.toString());

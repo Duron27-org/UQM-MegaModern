@@ -201,8 +201,7 @@ pump_up_postprocess(ELEMENT* ElementPtr)
 								 StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 0),
 							 EPtr);
 			}
-			if (antiCheat(ElementPtr, false, OPTVAL_INF_HEALTH)
-				|| antiCheat(ElementPtr, false, OPTVAL_FULL_GOD))
+			if (antiCheat(ElementPtr, false, uqm::GodModeFlags::NoDamage))
 			{
 				EPtr->thrust_wait = 5;
 			}
@@ -357,8 +356,7 @@ initialize_pump_up(ELEMENT* ShipPtr, HELEMENT PumpUpArray[])
 		PumpUpPtr->postprocess_func = pump_up_postprocess;
 		PumpUpPtr->collision_func = pump_up_collision;
 
-		if (antiCheat(ShipPtr, false, OPTVAL_INF_HEALTH)
-			|| antiCheat(ShipPtr, false, OPTVAL_FULL_GOD))
+		if (antiCheat(ShipPtr, false, uqm::GodModeFlags::NoDamage))
 		{
 			PumpUpPtr->thrust_wait = 5;
 		}
@@ -597,8 +595,7 @@ confusion_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
 				ConfusionPtr->hTarget = StarShipPtr->hShip;
 			}
 
-			if (!(antiCheat(ElementPtr1, false, OPTVAL_INF_HEALTH)
-				  || antiCheat(ElementPtr1, false, OPTVAL_FULL_GOD)))
+			if (!antiCheat(ElementPtr1, false, uqm::GodModeFlags::NoDamage))
 			{
 				ConfusionPtr->life_span = 400;
 			}

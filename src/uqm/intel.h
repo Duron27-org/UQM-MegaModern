@@ -19,15 +19,12 @@
 #ifndef UQM_INTEL_H_
 #define UQM_INTEL_H_
 
+#include "options/OptionDefs.h"
 #include "battlecontrols.h"
 #include "controls.h"
 #include "element.h"
 #include "races.h"
 #include "setup.h"
-
-#if 0 //defined(__cplusplus)
-extern "C" {
-#endif
 
 #define MANEUVERABILITY(pi) ((pi)->ManeuverabilityIndex)
 #define WEAPON_RANGE(pi) ((pi)->WeaponRange)
@@ -92,27 +89,55 @@ extern bool ThrustShip(ELEMENT* ShipPtr, uqm::COUNT angle);
 #define AWESOME_RATING (uqm::BYTE)(1 << 6)
 
 static inline bool
-antiCheat(ELEMENT* ElementPtr, bool SwapBool, int GodModeType)
+antiCheatImpl(const ELEMENT* element, const bool swapPlayers, const uqm::GodModeFlags testFlags, uqstl::span<const uqm::BYTE> playerControl, const uqm::GodModeFlags godModeData)
 {
-	return !(PlayerControl[0] & COMPUTER_CONTROL
-			 && PlayerControl[1] & COMPUTER_CONTROL)
-		&& (optGodModes == GodModeType
-			&& (((PlayerControl[0] & COMPUTER_CONTROL)
-				 && ElementPtr->playerNr == (SwapBool ? 0 : 1))
-				|| ((PlayerControl[1] & COMPUTER_CONTROL)
-					&& ElementPtr->playerNr == (SwapBool ? 1 : 0))));
+	if ((playerControl[0] & COMPUTER_CONTROL) && (playerControl[1] & COMPUTER_CONTROL))
+	{
+		return false; // both players are AI-controlled
+	}
+
+	if (!testFlag(godModeData, testFlags))
+	{
+		return false;
+	}
+
+	const int elementOwner = element->playerNr;
+	const int opponent = elementOwner ^ 1;
+
+	const int playerIndex = swapPlayers ? elementOwner : opponent;
+
+	return (playerControl[playerIndex] & COMPUTER_CONTROL) != 0;
 }
 
 static inline bool
-antiCheatAlt(int GodModeType)
+antiCheat(ELEMENT* ElementPtr, bool SwapBool, uqm::GodModeFlags godModeType)
 {
-	return !(PlayerControl[0] & COMPUTER_CONTROL
-			 && PlayerControl[1] & COMPUTER_CONTROL)
-		&& (optGodModes == GodModeType
-			&& (((PlayerControl[0] & COMPUTER_CONTROL)
-				 && PlayerControl[1] & HUMAN_CONTROL)
-				|| ((PlayerControl[1] & COMPUTER_CONTROL)
-					&& PlayerControl[0] & HUMAN_CONTROL)));
+	return antiCheatImpl(ElementPtr, SwapBool, godModeType, {PlayerControl, NUM_PLAYERS}, optGodModes);
+}
+
+static inline bool
+antiCheatAltImpl(const uqm::GodModeFlags testFlags, const uqstl::span<const uqm::BYTE> playerControl, const uqm::GodModeFlags godModeData)
+{
+	const bool player0Computer = (playerControl[0] & COMPUTER_CONTROL) != 0;
+	const bool player1Computer = (playerControl[1] & COMPUTER_CONTROL) != 0;
+
+	if (player0Computer && player1Computer)
+	{
+		return false;
+	}
+
+	if (!testFlag(godModeData, testFlags))
+	{
+		return false;
+	}
+
+	return player0Computer != player1Computer;
+}
+
+static inline bool
+antiCheatAlt(uqm::GodModeFlags godModeFlags)
+{
+	return antiCheatAltImpl(godModeFlags, {PlayerControl, NUM_PLAYERS}, optGodModes);
 }
 
 static inline bool

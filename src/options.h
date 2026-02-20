@@ -50,7 +50,7 @@ extern unsigned int audioQuality;
 extern bool optRequiresReload;
 extern bool optRequiresRestart;
 extern OPT_ENABLABLE optCheatMode;
-extern int optGodModes;
+extern uqm::GodModeFlags optGodModes;
 extern int timeDilationScale;
 extern OPT_ENABLABLE optBubbleWarp;
 extern OPT_ENABLABLE optUnlockShips;

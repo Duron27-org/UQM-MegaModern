@@ -66,8 +66,8 @@ struct OptionsStruct
 	// megamod options
 	IntOption resolutionFactor {0};
 	IntOption loresBlowupScale {1};
-	BoolOption cheatMode {false};
-	IntOption optGodModes {0};
+	BoolOption cheatMode {false}; // stops kor-ah from advancing.
+	OptionT<GodModeFlags> optGodModes {GodModeFlags::None};
 	IntOption timeDilationScale {0};
 	BoolOption bubbleWarp {false};
 	BoolOption unlockShips {false};

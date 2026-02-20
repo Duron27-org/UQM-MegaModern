@@ -600,7 +600,7 @@ DeltaLanderCrew(uqm::SIZE crew_delta, uqm::COUNT which_disaster)
 		shieldHit &= 1 << which_disaster;
 		if (!shieldHit || TFB_Random() % 100 >= 95)
 		{ // No shield, or it did not help
-			if (optGodModes < OPTVAL_INF_HEALTH)
+			if (!testFlag(optGodModes, uqm::GodModeFlags::NoDamage))
 			{
 				shieldHit = 0;
 				--crew_left;

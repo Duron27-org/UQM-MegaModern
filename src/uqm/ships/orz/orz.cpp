@@ -460,9 +460,7 @@ LeftShip:
 				}
 				else if (randval < (0x0100 / 2 + 0x0100 / 16))
 				{
-					if (!(antiCheat(ElementPtr, true, OPTVAL_INF_HEALTH)
-						  || antiCheat(
-							  ElementPtr, true, OPTVAL_FULL_GOD)))
+					if (!antiCheat(ElementPtr, true, uqm::GodModeFlags::NoDamage))
 					{
 						if (!DeltaCrew(ShipPtr, -1))
 						{
@@ -837,9 +835,7 @@ void marine_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
 
 				GetElementStarShip(ElementPtr0, &StarShipPtr);
 
-				if (!(antiCheat(ElementPtr1, false, OPTVAL_INF_HEALTH)
-					  || antiCheat(
-						  ElementPtr1, false, OPTVAL_FULL_GOD)))
+				if (!antiCheat(ElementPtr1, false, uqm::GodModeFlags::NoDamage))
 				{
 					if (!DeltaCrew(ElementPtr1, -1))
 					{
@@ -1058,8 +1054,7 @@ turret_postprocess(ELEMENT* ElementPtr)
 				UnlockElement(hSpaceMarine);
 				PutElement(hSpaceMarine);
 
-				if (!(antiCheat(ElementPtr, false, OPTVAL_INF_HEALTH)
-					  || antiCheat(ElementPtr, false, OPTVAL_FULL_GOD)))
+				if (!antiCheat(ElementPtr, false, uqm::GodModeFlags::NoDamage))
 				{
 					DeltaCrew(ShipPtr, -1);
 				}

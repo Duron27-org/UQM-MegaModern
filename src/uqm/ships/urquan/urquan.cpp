@@ -501,8 +501,7 @@ spawn_fighters(ELEMENT* ElementPtr)
 		uqm::COUNT fighter_facing;
 		ELEMENT* FighterElementPtr;
 
-		if (!(antiCheat(ElementPtr, false, OPTVAL_INF_HEALTH)
-			  || antiCheat(ElementPtr, false, OPTVAL_FULL_GOD)))
+		if (!antiCheat(ElementPtr, false, uqm::GodModeFlags::NoDamage))
 		{
 			DeltaCrew(ElementPtr, -1);
 		}

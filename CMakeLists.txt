@@ -77,10 +77,10 @@ find_package(magic_enum REQUIRED)
 find_package(Ogg REQUIRED)
 find_package(OpenAL REQUIRED)
 find_package(PNG REQUIRED)
-find_package(Vorbis REQUIRED)
 find_package(SDL2 REQUIRED)
 find_package(spdlog REQUIRED)
 find_package(utf8cpp REQUIRED)
+find_package(Vorbis REQUIRED)
 find_package(ZLIB REQUIRED)
 
 #OPTIONAL
@@ -97,11 +97,18 @@ if (GTest_FOUND)
     )
 endif()
 
-if (magic_enum_FOUND)
-    target_compile_definitions(uqm_project_features
-        INTERFACE WITH_MAGIC_ENUM
-    )
-endif()
+target_compile_definitions(uqm_project_features
+    INTERFACE 
+        WITH_MAGIC_ENUM
+        THREADLIB_SDL
+        GFXMODULE_SDL
+        HAVE_OPENAL
+        HAVE_JOYSTICK
+        NETPLAY
+        USE_INTERNAL_MIKMOD
+        USE_INTERNAL_LUA
+        USE_PLATFORM_ACCEL
+)
 
 target_link_libraries(${APP_TARGET} PRIVATE uqm_project_features)
 
@@ -129,17 +136,8 @@ target_compile_definitions(${APP_TARGET} PRIVATE
     "_CONSOLE;"
     "_VW=320;"
     "_VH=240;"
-    "GFXMODULE_SDL;"
-    "THREADLIB_SDL;"
-    "HAVE_OPENAL;"
-    "HAVE_ZIP;"
-    "HAVE_JOYSTICK;"
-    "NETPLAY;"
-   # "ZLIB_DLL;"
-    "USE_INTERNAL_MIKMOD;"
-    "USE_INTERNAL_LUA;"
-    "USE_PLATFORM_ACCEL;"
-    "_CRT_SECURE_NO_WARNINGS;"
+   
+   # "_CRT_SECURE_NO_WARNINGS;"
     "_MBCS;"
 # required to suppress issue in SDL_endian.h regarding a redefinition of the _m_prefetch intrinsic under clang.
     "__PRFCHWINTRIN_H" 

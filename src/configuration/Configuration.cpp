@@ -182,7 +182,7 @@ void getUserConfigOptions(OptionsStruct& options)
 
 	if (res_IsInteger("cheat.godModes") && !options.optGodModes.set)
 	{
-		options.optGodModes.value = res_GetInteger("cheat.godModes");
+		options.optGodModes.value = (uqm::GodModeFlags)res_GetInteger("cheat.godModes");
 	}
 
 	if (res_IsInteger("cheat.timeDilation")

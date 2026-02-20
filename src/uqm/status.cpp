@@ -486,8 +486,7 @@ bool DeltaEnergy(ELEMENT* ElementPtr, uqm::SIZE energy_delta)
 
 	retval = true;
 
-	if (antiCheat(ElementPtr, false, OPTVAL_INF_ENERGY)
-		|| antiCheat(ElementPtr, false, OPTVAL_FULL_GOD))
+	if (antiCheat(ElementPtr, false, uqm::GodModeFlags::InfiniteBattery))
 	{
 		return retval;
 	}
