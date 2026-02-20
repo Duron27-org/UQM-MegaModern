@@ -65,6 +65,12 @@ antiCheatImpl(const ELEMENT* element, const bool swapPlayers, const uqm::GodMode
 		return false;
 	}
 
+	if (element == nullptr || element->playerNr < 0 || element->playerNr >= playerControl.size()) [[unlikely]]
+	{
+		return false;
+	}
+
+	assert(element->playerNr == 0 || element->playerNr == 1, "Logic below assumes a 1 or zero");
 	const int elementOwner = element->playerNr;
 	const int opponent = elementOwner ^ 1;
 
