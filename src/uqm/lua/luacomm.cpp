@@ -20,7 +20,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-
+#include "core/string/StringUtils.h"
 #define LUAUQM_INTERNAL
 #include "port.h"
 #include "luacomm.h"
@@ -225,10 +225,11 @@ char* luaUqm_comm_stringInterpolate(const char* str)
 		{
 			size_t exprLen = endTag - luaStart;
 #define LUAEXPR_START "return "
-			char* exprBuf = (char*)HMalloc(sizeof LUAEXPR_START + exprLen);
+			const uint32_t exprBufSize = sizeof LUAEXPR_START + exprLen;
+			char* exprBuf = (char*)HMalloc(exprBufSize);
 			// 'sizeof LUAEXPR_START' includes a null byte
 			char* exprBufPtr = exprBuf;
-			strcpy(exprBuf, LUAEXPR_START);
+			uqm::strncpy_safe({exprBuf, exprBufSize}, {LUAEXPR_START, sizeof(LUAEXPR_START)});			
 			exprBufPtr += sizeof LUAEXPR_START - 1;
 			memcpy(exprBufPtr, luaStart, exprLen);
 			exprBufPtr += exprLen;

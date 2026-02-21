@@ -141,8 +141,7 @@ register_flight_controls(void)
 		fmt::format_to_sz_n(buf, sizeof(buf), "keys.{}.name", i + 1);
 		if (res_IsString(buf))
 		{
-			strncpy(uqm::input_templates[i].name, res_GetString(buf), 29);
-			uqm::input_templates[i].name[29] = '\0';
+			uqm::strncpy_safe(uqm::input_templates[i].name, res_GetString(buf));
 		}
 		else
 		{

@@ -90,7 +90,7 @@ bool RoboInterpolation(uqm::CHAR_T* start, uqm::CHAR_T* end)
 // This will write to buffer the interpolated chunk, while returning a new
 // "start" value from the original string where interpolation ended.
 uqm::CHAR_T*
-InterpolateChunk(uqm::CHAR_T buffer[], uqm::CHAR_T* start)
+InterpolateChunk(uqstl::span<uqm::CHAR_T> buffer, uqm::CHAR_T* start)
 {
 	uqm::CHAR_T* end = start;
 	uqm::CHAR_T str_buf[MAX_INTERPOLATE] = "";
@@ -109,8 +109,8 @@ InterpolateChunk(uqm::CHAR_T buffer[], uqm::CHAR_T* start)
 				fmt::print(stderr, "String too long to interpolate.\n");
 				return nullptr;
 			}
-			strncpy(buffer, start, end - start);
-			buffer = &buffer[end - start];
+			uqm::strncpy_safe(buffer, {start, end});
+			buffer = buffer.subspan(end - start);
 			start = end;
 		}
 
@@ -127,8 +127,8 @@ InterpolateChunk(uqm::CHAR_T buffer[], uqm::CHAR_T* start)
 			}
 			done = true;
 		}
-		strncpy(str_buf, start, end - start);
-		str_buf[end - start] = '\0';
+		
+		uqm::strncpy_safe(str_buf, {start, end});
 		pStr = luaUqm_comm_stringInterpolate(str_buf);
 		if (!pStr)
 		{
@@ -141,10 +141,10 @@ InterpolateChunk(uqm::CHAR_T buffer[], uqm::CHAR_T* start)
 			fmt::print(stderr, "String too long to interpolate.\n");
 			return nullptr;
 		}
-		strncpy(buffer, pStr, strlen(pStr));
+		uqm::strncpy_safe(buffer, pStr);
 		HFree(pStr);
 		pStr = nullptr;
-		buffer = &buffer[end - start];
+		buffer = buffer.subspan(end - start);
 		start = end;
 	}
 	// If we ended because of robointerpolation...
@@ -160,7 +160,7 @@ InterpolateChunk(uqm::CHAR_T buffer[], uqm::CHAR_T* start)
 		fmt::print(stderr, "String too long to interpolate.\n");
 		return nullptr;
 	}
-	strcpy(buffer, start);
+	uqm::strncpy_safe(buffer, start);
 	return nullptr;
 }
 

@@ -29,6 +29,7 @@
 #include "libs/memlib.h"
 #include "libs/misc.h"
 #include "core/log/log.h"
+#include "core/string/StringUtils.h"
 
 #ifdef HAVE_DRIVE_LETTERS
 #include <ctype.h>
@@ -378,9 +379,9 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 								envVarLen = strlen(envVar);
 								CHECKLEN(buf,
 										 envVarLen + sizeof(APPDATA_STRING) - 1);
-								strcpy(bufptr, envVar);
+								uqm::strncpy_safe({bufptr, bufend}, envVar);
 								bufptr += envVarLen;
-								strcpy(bufptr, APPDATA_STRING);
+								uqm::strncpy_safe({bufptr, bufend}, APPDATA_STRING);
 								bufptr += sizeof(APPDATA_STRING) - 1;
 								src = end + 1;
 								break;
@@ -393,7 +394,7 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 								"Falling back to \"{}\" for %%APPDATA%%",
 								APPDATA_FALLBACK_STRING);
 							CHECKLEN(buf, sizeof(APPDATA_FALLBACK_STRING) - 1);
-							strcpy(bufptr, APPDATA_FALLBACK_STRING);
+							uqm::strncpy_safe({bufptr, bufend}, APPDATA_FALLBACK_STRING);
 							bufptr += sizeof(APPDATA_FALLBACK_STRING) - 1;
 							src = end + 1;
 							break;
@@ -407,7 +408,7 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 
 						envVarLen = strlen(envVar);
 						CHECKLEN(buf, envVarLen);
-						strcpy(bufptr, envVar);
+						uqm::strncpy_safe({bufptr, bufend}, envVar);
 						bufptr += envVarLen;
 						src = end + 1;
 						break;

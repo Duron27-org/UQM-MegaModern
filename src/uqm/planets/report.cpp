@@ -108,7 +108,7 @@ MakeReport(SOUND ReadOutSounds, uqm::CHAR_T* pStr, uqm::COUNT StrLen)
 	uqm::COUNT first_line_length = 0;
 
 	fmt::format_to_n(end_page_buf, sizeof(end_page_buf) - 1, "{}\n",
-					 GAME_STRING(SCAN_STRING_BASE + NUM_SCAN_TYPES));
+					 GAME_STRING(static_cast<int>(SCAN_STRING_BASE) + static_cast<int>(NUM_SCAN_TYPES)));
 	end_page_len = utf8StringCount(end_page_buf);
 
 	GetFrameRect(SetAbsFrameIndex(SpaceJunkFrame, 18), &r);

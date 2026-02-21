@@ -509,7 +509,7 @@ PrintCoarseScan3DO(void)
 	if (pSolarSysState->SysInfo.PlanetInfo.AtmoDensity
 		== GAS_GIANT_ATMOSPHERE)
 	{
-		strcpy(buf, STR_INFINITY_SIGN);
+		uqm::strncpy_safe(buf, STR_INFINITY_SIGN);
 	}
 	else
 	{

@@ -1859,13 +1859,13 @@ DoEdit(MELEE_STATE* pMS)
 			if (PulsedInputState.menu[KEY_MENU_SELECT])
 			{
 				TEXTENTRY_STATE tes;
-				char buf[MAX_TEAM_CHARS + 1];
+				char buf[MAX_TEAM_CHARS + 1] {};
 
 				// going to enter text
 				pMS->CurIndex = 0;
 				DrawTeamString(pMS, pMS->side, DTSHS_EDIT, nullptr);
 
-				strncpy(buf, MeleeSetup_getTeamName(pMS->meleeSetup, pMS->side), MAX_TEAM_CHARS);
+				uqm::strncpy_safe(buf, MeleeSetup_getTeamName(pMS->meleeSetup, pMS->side));
 				buf[MAX_TEAM_CHARS] = '\0';
 
 				tes.Initialized = false;
@@ -1918,7 +1918,7 @@ DoEdit(MELEE_STATE* pMS)
 					else
 					{
 						row = NUM_MELEE_ROWS;
-						side = !side;
+						side = side ? 0 : 1;
 					}
 				}
 			}
@@ -1933,7 +1933,7 @@ DoEdit(MELEE_STATE* pMS)
 					else
 					{
 						row = 0;
-						side = !side;
+						side = side ? 0 : 1;
 					}
 				}
 			}

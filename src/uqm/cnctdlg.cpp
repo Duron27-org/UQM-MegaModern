@@ -534,9 +534,8 @@ CreateWidgets(void)
 	if (texts[0].value != peerData.address.host)
 	{
 		memset(texts[0].value, 0, sizeof(texts[0].value));
-		strncpy(texts[0].value,
-				peerData.address.host.c_str(),
-				std::min(sizeof(texts[0].value), static_cast<size_t>(texts[0].maxlen)));
+		const uqstl::string_view toCopy {peerData.address.host.c_str(), std::min(peerData.address.host.size(), static_cast<size_t>(texts[0].maxlen))};
+		uqm::strncpy_safe(texts[0].value, toCopy);
 	}
 	fmt::format_to_sz_n(texts[1].value, std::min(sizeof(texts[1].value), static_cast<size_t>(texts[1].maxlen)), "{}", peerData.address.port);
 		

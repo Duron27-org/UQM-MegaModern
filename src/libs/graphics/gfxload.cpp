@@ -175,7 +175,7 @@ void* _GetCelData(uio_Stream* fp, uqm::DWORD length)
 
 	{
 		const char *s1, *s2;
-		char aniDirName[PATH_MAX];
+		char aniDirName[PATH_MAX] {};
 		const char* aniFileName;
 		uint8 buf[4] = {0, 0, 0, 0};
 		uint32 header;
@@ -202,13 +202,12 @@ void* _GetCelData(uio_Stream* fp, uqm::DWORD length)
 			// zipped ani file
 			if (n)
 			{
-				strncpy(aniDirName, _cur_resfile_name, n - 1);
-				aniDirName[n - 1] = 0;
+				uqm::strncpy_safe(aniDirName, {_cur_resfile_name, n - 1});
 				aniFileName = _cur_resfile_name + n;
 			}
 			else
 			{
-				strcpy(aniDirName, ".");
+				uqm::strncpy_safe(aniDirName, ".");
 				aniFileName = _cur_resfile_name;
 			}
 			aniDir = uio_openDir(repository, aniDirName, 0);
@@ -223,7 +222,7 @@ void* _GetCelData(uio_Stream* fp, uqm::DWORD length)
 		else
 		{
 			// unpacked ani file
-			strncpy(filename, _cur_resfile_name, n);
+			uqm::strncpy_safe(filename, {_cur_resfile_name, n});
 			aniFile = fp;
 			aniDir = contentDir;
 		}
@@ -407,12 +406,12 @@ void* _GetFontData(uio_Stream* fp, uqm::DWORD length)
 		const char *s1, *s2;
 		int n;
 		const char* fontZipName;
-		char fontDirName[PATH_MAX];
+		char fontDirName[PATH_MAX] {};
 
 		if ((((s2 = 0), (s1 = strrchr(_cur_resfile_name, '/')) == 0)
 			 && (s2 = strrchr(_cur_resfile_name, '\\')) == 0))
 		{
-			strcpy(fontDirName, ".");
+			uqm::strncpy_safe(fontDirName, ".");
 			fontZipName = _cur_resfile_name;
 		}
 		else
@@ -422,8 +421,7 @@ void* _GetFontData(uio_Stream* fp, uqm::DWORD length)
 				s1 = s2;
 			}
 			n = s1 - _cur_resfile_name + 1;
-			strncpy(fontDirName, _cur_resfile_name, n - 1);
-			fontDirName[n - 1] = 0;
+			uqm::strncpy_safe(fontDirName, {_cur_resfile_name, n - 1});
 			fontZipName = _cur_resfile_name + n;
 		}
 

@@ -228,4 +228,273 @@ TEST_F(StringUtilsTest, FormatEnumNames)
 	EXPECT_STREQ("x-string (20) | y-string (21) | z-string (22)", fmt::format("{:|sn}", EnumNames<TestEnumWithToStringImpl> {}).c_str());
 }
 
+TEST_F(StringUtilsTest, StrncpySafe_BasicCopy)
+{
+	uqstl::array<char, 10> dest {};
+	uqstl::string_view src = "hello";
+
+	size_t copied = strncpy_safe(dest, src);
+
+	EXPECT_EQ(copied, 5);
+	EXPECT_STREQ(dest.data(), "hello");
+	EXPECT_EQ(dest[5], '\0');
+}
+
+TEST_F(StringUtilsTest, StrncpySafe_ExactFit)
+{
+	uqstl::array<char, 6> dest {}; // exactly "hello" + '\0'
+	uqstl::string_view src = "hello";
+
+	size_t copied = strncpy_safe(dest, src);
+
+	EXPECT_EQ(copied, 5);
+	EXPECT_STREQ(dest.data(), "hello");
+	EXPECT_EQ(dest[5], '\0');
+}
+
+TEST_F(StringUtilsTest, StrncpySafe_Truncation)
+{
+	uqstl::array<char, 6> dest {}; // can hold 5 chars + '\0'
+	uqstl::string_view src = "hello world";
+
+	size_t copied = strncpy_safe(dest, src);
+
+	EXPECT_EQ(copied, 5);
+	EXPECT_STREQ(dest.data(), "hello");
+	EXPECT_EQ(dest[5], '\0');
+}
+
+TEST_F(StringUtilsTest, StrncpySafe_EmptySource)
+{
+	uqstl::array<char, 10> dest {};
+	dest.fill('x'); // fill with non-null
+	uqstl::string_view src = "";
+
+	size_t copied = strncpy_safe(dest, src);
+
+	EXPECT_EQ(copied, 0);
+}
+
+TEST_F(StringUtilsTest, StrncpySafe_EmptyDestination)
+{
+	uqstl::array<char, 0> dest {};
+	uqstl::string_view src = "hello";
+
+	size_t copied = strncpy_safe(dest, src);
+
+	EXPECT_EQ(copied, 0);
+}
+
+TEST_F(StringUtilsTest, StrncpySafe_SingleCharBuffer)
+{
+	uqstl::array<char, 1> dest {};
+	uqstl::string_view src = "hello";
+
+	size_t copied = strncpy_safe(dest, src);
+
+	EXPECT_EQ(copied, 0);
+	EXPECT_EQ(dest[0], '\0');
+}
+
+TEST_F(StringUtilsTest, StrncpySafe_TwoCharBuffer)
+{
+	uqstl::array<char, 2> dest {};
+	uqstl::string_view src = "hello";
+
+	size_t copied = strncpy_safe(dest, src);
+
+	EXPECT_EQ(copied, 1);
+	EXPECT_EQ(dest[0], 'h');
+	EXPECT_EQ(dest[1], '\0');
+}
+
+TEST_F(StringUtilsTest, StrncpySafe_SourceLongerThanDest)
+{
+	uqstl::array<char, 5> dest {};
+	uqstl::string_view src = "abcdefghijklmnop";
+
+	size_t copied = strncpy_safe(dest, src);
+
+	EXPECT_EQ(copied, 4);
+	EXPECT_STREQ(dest.data(), "abcd");
+	EXPECT_EQ(dest[4], '\0');
+}
+
+TEST_F(StringUtilsTest, StrncpySafe_SourceShorterThanDest)
+{
+	uqstl::array<char, 20> dest {};
+	dest.fill('x'); // fill with non-null to verify proper termination
+	uqstl::string_view src = "hi";
+
+	size_t copied = strncpy_safe(dest, src);
+
+	EXPECT_EQ(copied, 2);
+	EXPECT_STREQ(dest.data(), "hi");
+	EXPECT_EQ(dest[2], '\0');
+	// Note: unlike strncpy, this doesn't zero-fill the rest
+	EXPECT_EQ(dest[3], 'x'); // original content remains
+}
+
+TEST_F(StringUtilsTest, StrncpySafe_SpecialCharacters)
+{
+	uqstl::array<char, 20> dest {};
+	uqstl::string_view src = "line1\nline2\ttab";
+
+	size_t copied = strncpy_safe(dest, src);
+
+	EXPECT_EQ(copied, src.size());
+	EXPECT_STREQ(dest.data(), "line1\nline2\ttab");
+}
+
+TEST_F(StringUtilsTest, StrncpySafe_NullTerminatorInSource)
+{
+	// string_view can contain embedded nulls
+	const char srcData[] = {'a', 'b', '\0', 'c', 'd'};
+	uqstl::string_view src(srcData, 5);
+	uqstl::array<char, 10> dest {};
+
+	size_t copied = strncpy_safe(dest, src);
+
+	EXPECT_EQ(copied, 2);
+	// The copied data includes the embedded null
+	EXPECT_EQ(dest[0], 'a');
+	EXPECT_EQ(dest[1], 'b');
+	EXPECT_EQ(dest[2], '\0');
+}
+
+TEST_F(StringUtilsTest, StrncpySafe_MaxSizeString)
+{
+	uqstl::array<char, 100> dest {};
+	uqstl::string longSrc(99, 'a'); // 99 'a' characters
+
+	size_t copied = strncpy_safe(dest, longSrc);
+
+	EXPECT_EQ(copied, 99);
+	EXPECT_EQ(dest[99], '\0');
+	EXPECT_EQ(uqstl::strlen(dest.data()), 99);
+}
+
+TEST_F(StringUtilsTest, StrncpySafe_OverwriteExistingData)
+{
+	uqstl::array<char, 10> dest {};
+	uqstl::string_view src1 = "hello";
+	uqstl::string_view src2 = "hi";
+
+	strncpy_safe(dest, src1);
+	EXPECT_STREQ(dest.data(), "hello");
+
+	// Overwrite with shorter string
+	size_t copied = strncpy_safe(dest, src2);
+
+	EXPECT_EQ(copied, 2);
+	EXPECT_STREQ(dest.data(), "hi");
+	// The 'l' characters remain after the new null terminator
+	EXPECT_EQ(dest[2], '\0');
+}
+
+TEST_F(StringUtilsTest, StrncpySafe_WithCStyleString)
+{
+	uqstl::array<char, 10> dest {};
+	const char* cstr = "test";
+	uqstl::string_view src(cstr);
+
+	size_t copied = strncpy_safe(dest, src);
+
+	EXPECT_EQ(copied, 4);
+	EXPECT_STREQ(dest.data(), "test");
+}
+
+TEST_F(StringUtilsTest, StrncpySafe_WithStdString)
+{
+	uqstl::array<char, 10> dest {};
+	uqstl::string stdstr = "example";
+	uqstl::string_view src(stdstr);
+
+	size_t copied = strncpy_safe(dest, src);
+
+	EXPECT_EQ(copied, 7);
+	EXPECT_STREQ(dest.data(), "example");
+}
+
+TEST_F(StringUtilsTest, StrncpySafe_ReturnValue)
+{
+	uqstl::array<char, 5> dest {};
+
+	// When truncated, returns number actually copied (not including null)
+	size_t copied1 = strncpy_safe(dest, "abcdefgh");
+	EXPECT_EQ(copied1, 4);
+
+	// When not truncated, returns source size
+	dest.fill(0);
+	size_t copied2 = strncpy_safe(dest, "abc");
+	EXPECT_EQ(copied2, 3);
+
+	// Empty source
+	dest.fill(0);
+	size_t copied3 = strncpy_safe(dest, "");
+	EXPECT_EQ(copied3, 0);
+}
+
+TEST_F(StringUtilsTest, StrncpySafe_BoundaryConditions)
+{
+	// Test SIZE_MAX scenario (unlikely but important for safety)
+	uqstl::array<char, 3> dest {};
+	uqstl::string_view src = "ab";
+
+	size_t copied = strncpy_safe(dest, src);
+
+	EXPECT_EQ(copied, 2);
+	EXPECT_STREQ(dest.data(), "ab");
+	EXPECT_EQ(dest[2], '\0');
+}
+
+TEST_F(StringUtilsTest, StrncpySafe_SpanFromVector)
+{
+	uqstl::vector<char> dest(10);
+	uqstl::string_view src = "vector";
+
+	size_t copied = strncpy_safe(uqstl::span<char>(dest), src);
+
+	EXPECT_EQ(copied, 6);
+	EXPECT_STREQ(dest.data(), "vector");
+}
+
+TEST_F(StringUtilsTest, StrncpySafe_AllWhitespace)
+{
+	uqstl::array<char, 10> dest {};
+	uqstl::string_view src = "   \t\n  ";
+
+	size_t copied = strncpy_safe(dest, src);
+
+	EXPECT_EQ(copied, src.size());
+	EXPECT_STREQ(dest.data(), "   \t\n  ");
+}
+
+TEST_F(StringUtilsTest, StrncpySafe_NumericStrings)
+{
+	uqstl::array<char, 15> dest {};
+	uqstl::string_view src = "1234567890";
+
+	size_t copied = strncpy_safe(dest, src);
+
+	EXPECT_EQ(copied, 10);
+	EXPECT_STREQ(dest.data(), "1234567890");
+}
+
+TEST_F(StringUtilsTest, StrncpySafe_Appending)
+{
+	uqstl::array<char, 15> dest {};
+	uqstl::string_view src = "1234567890";
+
+	std::span<char> destSpan(dest);
+	size_t copied = strncpy_safe(destSpan, src.substr(0,5));
+	EXPECT_EQ(copied, 5);
+	EXPECT_STREQ(dest.data(), "12345");
+
+	destSpan = destSpan.subspan(5);
+	size_t copied2 = strncpy_safe(destSpan, src.substr(5));
+	EXPECT_EQ(copied2, 5);
+	EXPECT_STREQ(dest.data(), "1234567890");
+}
+
 } // namespace uqm

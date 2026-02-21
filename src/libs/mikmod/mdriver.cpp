@@ -24,6 +24,7 @@
 
 ==============================================================================*/
 
+#include <core/string/StringUtils.h>
 #include <fmt/format.h>
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -1180,20 +1181,22 @@ CHAR* MD_GetAtom(const CHAR* atomname, const CHAR* cmdline, BOOL implicit)
 			{
 				for (buf = ++ptr; (*ptr) && ((*ptr) != ','); ptr++)
 					;
-				ret = (CHAR*)MikMod_malloc((1 + ptr - buf) * sizeof(CHAR));
+				const auto retChars = (1 + ptr - buf);
+				ret = (CHAR*)MikMod_malloc(retChars * sizeof(CHAR));
 				if (ret)
 				{
-					strncpy(ret, buf, ptr - buf);
+					uqm::strncpy_safe({ret, static_cast<uint32_t>(retChars)}, {buf, static_cast<uint32_t>(std::distance(buf, ptr))});
 				}
 			}
 			else if ((*ptr == ',') || (!*ptr))
 			{
 				if (implicit)
 				{
-					ret = (CHAR*)MikMod_malloc((1 + ptr - buf) * sizeof(CHAR));
+					const auto retChars = (1 + ptr - buf);
+					ret = (CHAR*)MikMod_malloc(retChars * sizeof(CHAR));
 					if (ret)
 					{
-						strncpy(ret, buf, ptr - buf);
+						uqm::strncpy_safe({ret, static_cast<uint32_t>(retChars)}, {buf, static_cast<uint32_t>(std::distance(buf, ptr))});
 					}
 				}
 			}

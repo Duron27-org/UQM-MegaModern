@@ -25,6 +25,7 @@
   Fasttracker (XM) module loader
 
 ==============================================================================*/
+#include <string>
 #include <fmt/base.h>
 
 #ifdef HAVE_CONFIG_H
@@ -51,9 +52,9 @@ extern int fmt::print(FILE*, const char*, ...);
 
 typedef struct XMHEADER
 {
-	CHAR id[17];		  /* ID text: 'Extended module: ' */
-	CHAR songname[21];	  /* Module name */
-	CHAR trackername[20]; /* Tracker name */
+	CHAR id[17] {};		  /* ID text: 'Extended module: ' */
+	CHAR songname[21] {}; /* Module name */
+	CHAR trackername[20] {}; /* Tracker name */
 	UWORD version;		  /* Version number */
 	ULONG headersize;	  /* Header size */
 	UWORD songlength;	  /* Song length (in patten order table) */
@@ -70,7 +71,7 @@ typedef struct XMHEADER
 typedef struct XMINSTHEADER
 {
 	ULONG size;	   /* Instrument size */
-	CHAR name[22]; /* Instrument name */
+	CHAR name[22] {}; /* Instrument name */
 	UBYTE type;	   /* Instrument type (always 0) */
 	UWORD numsmp;  /* Number of samples in instrument */
 	ULONG ssize;
@@ -863,14 +864,24 @@ static BOOL XM_Load(BOOL curious)
 	SAMPLE* q;
 	int t, u;
 	BOOL dummypat = 0;
-	char tracker[21];
-
-	char modtype[60] {};
-
+	
+	
 	/* try to read module header */
-	_mm_read_string(mh->id, 17, modreader);
-	_mm_read_string(mh->songname, 21, modreader);
-	_mm_read_string(mh->trackername, 20, modreader);
+	static constexpr auto IdSize {sizeof(mh->id)};
+	static constexpr auto SongnameSize { sizeof(mh->songname) };
+	static constexpr auto TrackernameSize {sizeof(mh->trackername)};
+
+	memset(mh->id, '\0', IdSize);
+	memset(mh->songname, '\0', SongnameSize);
+	memset(mh->trackername, '\0', TrackernameSize);
+	_mm_read_string(mh->id, IdSize, modreader);
+	_mm_read_string(mh->songname, SongnameSize, modreader);
+	_mm_read_string(mh->trackername, TrackernameSize, modreader);
+	// make sure they are still null-terminated
+	mh->id[IdSize - 1] = '\0';
+	mh->songname[SongnameSize - 1] = '\0';
+	mh->trackername[TrackernameSize - 1] = '\0';
+
 	mh->version = _mm_read_I_UWORD(modreader);
 	if (mh->version < 0x102 || mh->version > 0x104)
 	{
@@ -912,20 +923,26 @@ static BOOL XM_Load(BOOL curious)
 	/* set module variables */
 	of.initspeed = mh->tempo;
 	of.inittempo = mh->bpm;
-	strncpy(tracker, mh->trackername, 20);
-	tracker[20] = 0;
-	for (t = 20; (t >= 0) && (tracker[t] <= ' '); t--)
+	std::string tracker {mh->trackername};
+	for (auto it {tracker.rbegin()}; it != tracker.rend(); ++it)
 	{
-		tracker[t] = 0;
+		if (*it <= ' ')
+		{
+			*it = 0;
+		}
+		else
+		{
+			break;
+		}
 	}
 
 	/* some modules have the tracker name empty */
-	if (!tracker[0])
+	if (tracker.empty())
 	{
-		strcpy(tracker, "Unknown tracker");
+		tracker = "Unknown tracker";
 	}
 
-
+	char modtype[60] {};
 #ifdef HAVE_SNPRINTF______NEVERWILL
 	snprintf(modtype, sizeof(modtype), "{} (XM format {}.%02d)",
 			 tracker, mh->version >> 8, mh->version & 0xff);

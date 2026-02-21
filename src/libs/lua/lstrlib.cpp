@@ -18,7 +18,7 @@
 
 #include "lauxlib.h"
 #include "lualib.h"
-
+#include "core/string/StringUtils.h"
 
 /*
 ** maximum number of captures that a pattern can do during
@@ -1230,7 +1230,7 @@ static void addlenmod(char* form, const char* lenmod)
 	size_t l = strlen(form);
 	size_t lm = strlen(lenmod);
 	char spec = form[l - 1];
-	strcpy(form + l - 1, lenmod);
+	uqm::strncpy_safe({form, l}, {lenmod, lm});
 	form[l + lm - 1] = spec;
 	form[l + lm] = '\0';
 }

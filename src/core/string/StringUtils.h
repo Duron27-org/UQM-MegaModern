@@ -3,6 +3,8 @@
 #ifndef UQM_CORE_STRING_STRINGUTILS_H_
 #define UQM_CORE_STRING_STRINGUTILS_H_
 
+#define __STDC_WANT_LIB_EXT1__ 1
+
 #include <algorithm>
 #include <ranges>
 #include <charconv>
@@ -15,7 +17,6 @@ namespace uqm
 {
 static constexpr const char* TrueText {"true"};
 static constexpr const char* FalseText {"false"};
-
 
 
 template <typename T>
@@ -185,6 +186,37 @@ inline uqstl::errc parseStr(uqstl::string_view str, E& out)
 	}
 	return ec;
 }
+
+inline size_t strncpy_safe(uqstl::span<char> dest, uqstl::string_view src)
+{
+	if (dest.empty() || src.empty()) [[unlikely]]
+	{
+		return 0;
+	}
+
+#ifdef __STDC_LIB_EXT1__
+	strncpy_s(dest.data(), dest.size(), src.data(), src.size());
+	return std::min(src.size(), dest.size() - 1);
+#else
+
+	const size_t toCopy {std::min(src.size(), dest.size() - 1)};
+
+	for (size_t i = 0; i < toCopy; ++i)
+	{
+		dest[i] = src[i];
+		if (src[i] == '\0')
+		{
+			return i;
+		}
+	}
+	dest[toCopy] = '\0';
+
+	return toCopy;
+#endif
+}
+
+
+///////////////////////////////////////////// ENUM //////////////////////////////////////////////////
 
 template <EnumType E>
 struct EnumNames

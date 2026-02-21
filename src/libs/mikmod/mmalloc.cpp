@@ -161,7 +161,8 @@ CHAR* MikMod_strdup(const CHAR* s)
 	d = (CHAR*)MikMod_calloc(1, l * sizeof(CHAR));
 	if (d)
 	{
-		strcpy(d, s);
+		strcpy_s(d, l, s);
+		d[l - 1] = '\0';
 	}
 	return d;
 }

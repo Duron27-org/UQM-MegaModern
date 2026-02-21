@@ -679,7 +679,7 @@ extern ULONG MD_SampleLength(int, SAMPLE*);
 extern void unsignedtoulaw(char*, int);
 
 /* Parameter extraction helper */
-extern CHAR* MD_GetAtom(const CHAR*, const CHAR*, BOOL);
+extern CHAR* MD_GetAtom(const CHAR* atomName, const CHAR* commandLine, BOOL implicit);
 
 /* Internal software mixer stuff */
 extern void VC_SetupPointers(void);

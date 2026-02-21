@@ -1736,12 +1736,12 @@ DrawStarMap(uqm::COUNT race_update, GFXRECT* pClipRect)
 				 && SDPtr->star_pt.y == ARILOU_HOME_Y)
 		{
 			s.frame = SetRelFrameIndex(star_frame,
-									   SUPER_GIANT_STAR * NUM_STAR_COLORS + GREEN_BODY);
+									   (int)SUPER_GIANT_STAR * (int)NUM_STAR_COLORS + (int)GREEN_BODY); // TODO PragmaNull: this is weird enum arithmetic. helper function?
 		}
 		else
 		{
 			s.frame = SetRelFrameIndex(star_frame,
-									   GIANT_STAR * NUM_STAR_COLORS + GREEN_BODY);
+									   (int)GIANT_STAR * (int)NUM_STAR_COLORS + (int)GREEN_BODY); // TODO PragmaNull: this is weird enum arithmetic. helper function?
 		}
 		DrawStamp(&s);
 
@@ -1976,9 +1976,9 @@ int starIndex(GFXPOINT starPt)
 }
 
 static void
-UpdateCursorInfo(uqm::CHAR_T* prevbuf)
+UpdateCursorInfo(std::span<uqm::CHAR_T> prevbuf)
 {
-	uqm::CHAR_T buf[CURSOR_INFO_BUFSIZE] = "";
+	uqm::CHAR_T buf[CURSOR_INFO_BUFSIZE] {};
 	GFXPOINT pt;
 	STAR_DESC* SDPtr;
 	STAR_DESC* BestSDPtr;
@@ -2112,10 +2112,10 @@ UpdateCursorInfo(uqm::CHAR_T* prevbuf)
 	}
 
 	DrawHyperCoords(cursorLoc);
-	if (strcmp(buf, prevbuf) != 0)
+	if (strncmp(buf, prevbuf.data(), sizeof(buf)) != 0)
 	{
-		strcpy(prevbuf, buf);
-
+		uqm::strncpy_safe(prevbuf, buf);
+		
 		// Cursor is on top of a star. Display its name.
 		if (BestSDPtr)
 		{
@@ -2162,7 +2162,8 @@ UpdateCursorInfo(uqm::CHAR_T* prevbuf)
 			else
 			{ // In QS, don't display star search button - the search is
 				// unusable.
-				strcpy(buf, GAME_STRING(NAVIGATION_STRING_BASE + 1));
+				const char* sz GAME_STRING(NAVIGATION_STRING_BASE + 1);
+				uqm::strncpy_safe(buf, sz);
 				DrawSISMessage(buf);
 			}
 		}
@@ -2423,7 +2424,7 @@ static void
 DrawMatchedStarName(TEXTENTRY_STATE* pTES)
 {
 	STAR_SEARCH_STATE* pSS = (STAR_SEARCH_STATE*)pTES->CbParam;
-	uqm::CHAR_T buf[STAR_SEARCH_BUFSIZE] = "";
+	uqm::CHAR_T buf[STAR_SEARCH_BUFSIZE] {};
 	uqm::SIZE ExPos = 0;
 	uqm::SIZE CurPos = -1;
 	STAR_DESC* SDPtr = &star_array[pSS->SortedStars[pSS->CurIndex]];
@@ -2439,11 +2440,11 @@ DrawMatchedStarName(TEXTENTRY_STATE* pTES)
 	{ // draw substring match
 		uqm::CHAR_T* pstr = buf;
 
-		strcpy(pstr, pSS->Text);
+		uqm::strncpy_safe(buf, pSS->Text);
 		ExPos = pSS->ClusterPos;
 		pstr = skipUTF8Chars(pstr, pSS->ClusterPos);
 
-		strcpy(pstr, GAME_STRING(SDPtr->Postfix));
+		uqm::strncpy_safe({pstr, sizeof(buf) - uqstl::distance(buf, pstr)}, pSS->Text);
 		ExPos += pSS->ClusterLen;
 		CurPos = pTES->CursorPos;
 
@@ -2472,7 +2473,7 @@ MatchNextStar(STAR_SEARCH_STATE* pSS, bool Reset)
 		pSS->LastIndex = -1;
 		pSS->SingleClust = false;
 		pSS->SingleMatch = false;
-		strcpy(pSS->Buffer, pSS->Text);
+		uqm::strncpy_safe(pSS->Buffer, pSS->Text);
 		SplitStarName(pSS);
 	}
 
@@ -2512,10 +2513,10 @@ OnStarNameChange(TEXTENTRY_STATE* pTES)
 	uqm::COUNT flags;
 	bool ret = true;
 
-	if (strcmp(pSS->Text, pSS->LastText) != 0)
+	if (strncmp(pSS->Text, pSS->LastText, sizeof(pSS->Text)) != 0)
 	{ // string changed
 		pSS->LastChangeTime = GetTimeCounter();
-		strcpy(pSS->LastText, pSS->Text);
+		uqm::strncpy_safe(pSS->LastText, pSS->Text);
 
 		// reset the search
 		MatchNextStar(pSS, true);
@@ -2879,7 +2880,7 @@ DoMoveCursor(MENU_STATE* pMS)
 			}
 			FlushCursorRect();
 			// make sure cmp fails
-			strcpy(last_buf, "  <random garbage>  ");
+			uqm::strncpy_safe(last_buf, "  <random garbage>  ");
 			UpdateCursorInfo(last_buf);
 			UpdateFuelRequirement();
 
