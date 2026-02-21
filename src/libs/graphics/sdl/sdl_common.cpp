@@ -16,6 +16,10 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include <filesystem>
+#include <fmt/chrono.h>
+#include <fmt/format.h>
+
 #include "libs/graphics/gfx_defs.h"
 #include "sdl_common.h"
 #include "opengl.h"
@@ -717,50 +721,27 @@ int TFB_HasColorKey(SDL_Surface* surface)
 
 void TFB_ScreenShot(void)
 {
-	char* fullPath;
-	time_t t = time(nullptr);
-	struct tm* tm = localtime(&t);
 	const char* shotDirName = getenv("UQM_SCR_SHOT_DIR");
-	struct stat sb;
+	auto now = std::chrono::system_clock::now();
+	auto fullPath = fmt::format("{}{:%Y-%m-%d %H-%M-%S} v{}.{}.{} {}.png", shotDirName, now,
+									   UQM_MAJOR_VERSION, UQM_MINOR_VERSION, UQM_PATCH_VERSION,
+									chooseIfHd<const char*>(UQM_EXTRA_VERSION, "HD " UQM_EXTRA_VERSION));
 
-	char curTime[64] {};
-	strftime(curTime, sizeof(curTime),
-			 "%Y-%m-%e_%H-%M-%S", tm);
-
-	const size_t len = fmt::formatted_size("{}{} v{}.{}.{} {}.png", shotDirName, curTime,
-										   UQM_MAJOR_VERSION, UQM_MINOR_VERSION, UQM_PATCH_VERSION,
-										   chooseIfHd<const char*>(UQM_EXTRA_VERSION, "HD " UQM_EXTRA_VERSION));
-
-	if (len < 0)
+	if (std::filesystem::exists(shotDirName))
 	{
-		return;
-	}
-
-	fullPath = (char*)HMalloc(len + 1);
-	if (!fullPath)
-	{
-		return;
-	}
-
-	fmt::format_to_sz_n(fullPath, len + 1,
-						"{}{} v{}.{}.{} {}.png", shotDirName, curTime,
-						UQM_MAJOR_VERSION, UQM_MINOR_VERSION, UQM_PATCH_VERSION,
-						chooseIfHd<const char*>(UQM_EXTRA_VERSION, "HD " UQM_EXTRA_VERSION));
-
-
-	if (stat(shotDirName, &sb) == 0 && S_ISDIR(sb.st_mode))
-	{
-		if (TFB_SDL_ScreenShot(fullPath))
+		if (TFB_SDL_ScreenShot(fullPath.c_str()))
 		{
 			uqm::log::info("Screenshot saved at path, '{}'", fullPath);
 		}
 		else
 		{
-			uqm::log::debug("Screenshot not saved due to an error");
+			uqm::log::error("Screenshot not saved due to an error");
 		}
 	}
-
-	HFree(fullPath);
+	else
+	{
+		uqm::log::error("Screenshot not saved because the directory '{}' does not exist", shotDirName);
+	}
 }
 
 void TFB_ClearFPSCanvas(void)

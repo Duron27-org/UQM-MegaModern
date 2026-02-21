@@ -36,7 +36,7 @@ Task AssignTask(ThreadFunction task_func, uqm::SDWORD stackSize, const char* nam
 			// log_add (log_Debug, "Assigning Task #{}: {}", i+1, name);
 			Task_ClearState(task_array + i, ~TASK_INUSE);
 			task_array[i].name = name;
-			task_array[i].thread = CREATESETHREAD(task_func, task_array + i,
+			task_array[i].thread = CREATETHREAD(task_func, task_array + i,
 												stackSize, name);
 			return task_array + i;
 		}

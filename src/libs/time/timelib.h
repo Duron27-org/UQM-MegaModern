@@ -20,6 +20,7 @@
 
 #define TIMELIB SDL
 
+#include <chrono>
 #include "libs/compiler.h"
 
 	
