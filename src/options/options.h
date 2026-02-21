@@ -79,7 +79,7 @@ struct OptionsStruct
 	BoolOption nebulae {false};
 	BoolOption orbitingPlanets {false};
 	BoolOption texturedPlanets {false};
-	IntOption optDateFormat {0};
+	OptionT<DateFormat> optDateFormat {DateFormat::MMM_dd_yyyy};
 	BoolOption infiniteFuel {false};
 	BoolOption partialPickup {false};
 	BoolOption submenu {false};

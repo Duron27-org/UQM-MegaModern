@@ -129,6 +129,22 @@ OPT_CONSOLETYPE whichPlatformOpt(uqm::EmulationMode platform)
 	return OPT_CONSOLETYPE::OPTVAL_PC;
 }
 
+OPT_DATETYPE dateFormatToDateTypeOpt(uqm::DateFormat fmt)
+{
+	switch (fmt)
+	{
+		case uqm::DateFormat::MMM_dd_yyyy:
+			return OPTVAL_MMMDDYYYY;
+		case uqm::DateFormat::MM_dd_yyyy:
+			return OPTVAL_MMDDYYYY;
+		case uqm::DateFormat::dd_MMM_yyyy:
+			return OPTVAL_DDMMMYYYY;
+		case uqm::DateFormat::dd_MM_yyyy:
+			return OPTVAL_DDMMYYYY;
+	}
+	return OPTVAL_MMMDDYYYY;
+}
+
 template <typename GlobT, typename SetT>
 bool putOpt(GlobT& glob, const SetT set, uqgsl::czstring key, const bool reload)
 {
@@ -2547,7 +2563,7 @@ void GetGlobalOptions(GLOBALOPTS* opts)
 #endif
 	opts->controllerType = (OPT_CONTROLLER)optControllerType;
 	opts->directionalJoystick = optDirectionalJoystick; // For Android
-	opts->dateType = (OPT_DATETYPE)optDateFormat;
+	opts->dateType = dateFormatToDateTypeOpt(optDateFormat);
 	opts->customBorder = optCustomBorder;
 	opts->flagshipColor = whichPlatformOpt(optFlagshipColor);
 	opts->gameOver = optGameOver;

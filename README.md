@@ -81,7 +81,7 @@ And the full changelog can be found in the root of this repository: [Changelog](
 	* [libOGG](https://xiph.org/ogg/)
 	* [libVorbis](https://xiph.org/vorbis)
 	* [zlib](https://www.zlib.net/)
-	* [UQM-MegaMod-Content](https://github.com/JHGuitarFreak/UQM-MegaMod-Content/)
+	* [UQM-MegaMod-Content](https://github.com/PragmaNull/UQM-MegaModern-Content/)
 * Optional Dependencies
 	* [SDL1](https://github.com/libsdl-org/SDL-1.2) (For systems that do not support SDL2)
 
@@ -94,7 +94,7 @@ And the full changelog can be found in the root of this repository: [Changelog](
 
 This process assumes you've downloaded or cloned this repository already.
 
-Download or clone the [UQM-MegaMod-Content](https://github.com/JHGuitarFreak/UQM-MegaMod-Content/) repository and copy *all* the files within the content repository into the `UQM-MegaMod/content` folder of your downloaded or cloned UQM-MegaMod repository.
+Download or clone the [UQM-MegaMod-Content]((https://github.com/PragmaNull/UQM-MegaModern-Content/) repository and copy *all* the files within the content repository into the `UQM-MegaModern/content` folder of your downloaded or cloned UQM-MegaMod repository.
 
 It should look like this: 
 

@@ -203,7 +203,7 @@ void getUserConfigOptions(OptionsStruct& options)
 
 	if (res_IsInteger("mm.dateFormat") && !options.optDateFormat.set)
 	{
-		options.optDateFormat.value = res_GetInteger("mm.dateFormat");
+		options.optDateFormat.value = (uqm::DateFormat)res_GetInteger("mm.dateFormat");
 	}
 
 	getBoolConfigValue(options.infiniteFuel, "cheat.infiniteFuel");

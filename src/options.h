@@ -63,7 +63,7 @@ extern OPT_ENABLABLE optMainMenuMusic;
 extern OPT_ENABLABLE optNebulae;
 extern OPT_ENABLABLE optOrbitingPlanets;
 extern OPT_ENABLABLE optTexturedPlanets;
-extern int optDateFormat;
+extern uqm::DateFormat optDateFormat;
 extern OPT_ENABLABLE optInfiniteFuel;
 extern uqm::DWORD loadFuel;
 extern OPT_ENABLABLE optPartialPickup;

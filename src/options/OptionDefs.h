@@ -174,7 +174,33 @@ enum class GodModeFlags
 };
 ENUM_BITWISE_OPS(GodModeFlags);
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// seems restrictive to have only these four options, but when one considers space constraints,
+// it makes sense, I usppose.
+enum class DateFormat
+{
+	MMM_dd_yyyy,	//MMM dd.yyyy ie: Mar 01.2500
+	MM_dd_yyyy,		//MM.dd.yyyy  ie: 03.01.2500
+	dd_MMM_yyyy,	//dd MMM yyyy ie: 01 Mar 2500
+	dd_MM_yyyy		//dd.MM.yyyy  ie: 01.03.2500
+};
+static constexpr const char* toStringImpl(const DateFormat fmt)
+{
+	switch (fmt)
+	{
+		case DateFormat::MMM_dd_yyyy:
+			return "MMM dd.yyyy";
+		case DateFormat::MM_dd_yyyy:
+			return "MM.dd.yyyy";
+		case DateFormat::dd_MMM_yyyy:
+			return "dd MMM yyyy";
+		case DateFormat::dd_MM_yyyy:
+			return "dd.MM.yyyy";
+	}
+	return "???";
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 } // namespace uqm

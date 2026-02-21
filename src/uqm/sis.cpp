@@ -499,24 +499,23 @@ void DateToString(char* buf, size_t bufLen,
 {
 	switch (optDateFormat)
 	{
-		case 1: /* MM.DD.YYYY */
+		case uqm::DateFormat::MMM_dd_yyyy: //MMM dd.yyyy ie: Mar 01.2500
+			fmt::format_to_sz_n(buf, bufLen, "{} {:02}" STR_MIDDLE_DOT "{:04}",
+								GAME_STRING(MONTHS_STRING_BASE + month_index - 1),
+								day_index, year_index);
+			break;
+		case uqm::DateFormat::MM_dd_yyyy:  //MM.dd.yyyy  ie: 03.01.2500
 			fmt::format_to_sz_n(buf, bufLen, "{:02}" STR_MIDDLE_DOT "{:02}" STR_MIDDLE_DOT "{:04}", month_index,
 								day_index, year_index);
 			break;
-		case 2: /* DD MMM YYYY */
+		case uqm::DateFormat::dd_MMM_yyyy: //dd MMM yyyy ie: 01 Mar 2500
 			fmt::format_to_sz_n(buf, bufLen, "{:02} {} {:04}", day_index,
 								GAME_STRING(MONTHS_STRING_BASE + month_index - 1),
 								year_index);
 			break;
-		case 3: /* DD.MM.YYYY */
+		case uqm::DateFormat::dd_MM_yyyy: //dd MM yyyy  ie: 01.03.2500
 			fmt::format_to_sz_n(buf, bufLen, "{:02}" STR_MIDDLE_DOT "{:02}" STR_MIDDLE_DOT "{:04}", day_index,
 								month_index, year_index);
-			break;
-		case 0:
-		default: /* MMM DD.YYYY */
-			fmt::format_to_sz_n(buf, bufLen, "{} {:02}" STR_MIDDLE_DOT "{:04}",
-								GAME_STRING(MONTHS_STRING_BASE + month_index - 1),
-								day_index, year_index);
 			break;
 	}
 }

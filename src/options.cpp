@@ -79,7 +79,7 @@ OPT_ENABLABLE optMainMenuMusic;
 OPT_ENABLABLE optNebulae;
 OPT_ENABLABLE optOrbitingPlanets;
 OPT_ENABLABLE optTexturedPlanets;
-int optDateFormat;
+uqm::DateFormat optDateFormat;
 OPT_ENABLABLE optInfiniteFuel;
 uqm::DWORD loadFuel;
 OPT_ENABLABLE optPartialPickup;
