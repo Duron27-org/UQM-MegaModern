@@ -161,7 +161,7 @@ bool InitGameClock(void)
 	{
 		return (false);
 	}
-	clock_mutex = CreateMutex("Clock Mutex", SYNC_CLASS_TOPLEVEL);
+	clock_mutex = CREATEMUTEX("Clock Mutex", SYNC_CLASS_TOPLEVEL);
 	GLOBAL(GameClock.month_index) = 2;
 	GLOBAL(GameClock.day_index) = 17;
 	GLOBAL(GameClock.year_index) = START_YEAR; /* Feb 17, START_YEAR */

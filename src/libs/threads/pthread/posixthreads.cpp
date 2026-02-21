@@ -230,7 +230,7 @@ CreateThread_PT(ThreadFunction func, void* data, uqm::SDWORD stackSize
 	// and it can begin to use it.
 	if (sem_post(&startInfo->sem))
 	{
-		uqm::log::critical("CreateThread sem_post fail");
+		uqm::log::critical("CREATESETHREAD sem_post fail");
 		exit(EXIT_FAILURE);
 	}
 

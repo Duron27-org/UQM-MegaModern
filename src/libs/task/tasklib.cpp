@@ -36,7 +36,7 @@ Task AssignTask(ThreadFunction task_func, uqm::SDWORD stackSize, const char* nam
 			// log_add (log_Debug, "Assigning Task #{}: {}", i+1, name);
 			Task_ClearState(task_array + i, ~TASK_INUSE);
 			task_array[i].name = name;
-			task_array[i].thread = CreateThread(task_func, task_array + i,
+			task_array[i].thread = CREATESETHREAD(task_func, task_array + i,
 												stackSize, name);
 			return task_array + i;
 		}
@@ -119,7 +119,7 @@ void InitTaskSystem(void)
 	int i;
 	for (i = 0; i < TASK_MAX; ++i)
 	{
-		task_array[i].state_mutex = CreateMutex("task manager lock", SYNC_CLASS_TOPLEVEL | SYNC_CLASS_RESOURCE);
+		task_array[i].state_mutex = CREATEMUTEX("task manager lock", SYNC_CLASS_TOPLEVEL | SYNC_CLASS_RESOURCE);
 	}
 }
 

@@ -919,7 +919,7 @@ bool SetMusicStreamFade(sint32 howLong, int endVolume)
 
 int InitStreamDecoder(void)
 {
-	fade_mutex = CreateMutex("Stream fade mutex", SYNC_CLASS_AUDIO);
+	fade_mutex = CREATEMUTEX("Stream fade mutex", SYNC_CLASS_AUDIO);
 	if (!fade_mutex)
 	{
 		return -1;

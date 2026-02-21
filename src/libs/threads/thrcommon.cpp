@@ -51,7 +51,7 @@ void InitThreadSystem(void)
 		pendingBirth[i] = nullptr;
 		pendingDeath[i] = nullptr;
 	}
-	lifecycleMutex = CreateMutex("Thread Lifecycle Mutex", SYNC_CLASS_RESOURCE);
+	lifecycleMutex = CREATEMUTEX("Thread Lifecycle Mutex", SYNC_CLASS_RESOURCE);
 }
 
 void UnInitThreadSystem(void)
@@ -160,7 +160,7 @@ CreateThread_Core(ThreadFunction func, void* data, uqm::SDWORD stackSize, const 
 	s->data = data;
 	s->stackSize = stackSize;
 	s->name = name;
-	s->sem = CreateSemaphore(0, "SpawnRequest semaphore", SYNC_CLASS_RESOURCE);
+	s->sem = CREATESEMAPHORE(0, "SpawnRequest semaphore", SYNC_CLASS_RESOURCE);
 	return FlagStartThread(s);
 }
 
@@ -207,7 +207,7 @@ CreateThread_Core(ThreadFunction func, void* data, uqm::SDWORD stackSize)
 	s->func = func;
 	s->data = data;
 	s->stackSize = stackSize;
-	s->sem = CreateSemaphore(0, "SpawnRequest semaphore", SYNC_CLASS_RESOURCE);
+	s->sem = CREATESEMAPHORE(0, "SpawnRequest semaphore", SYNC_CLASS_RESOURCE);
 	return FlagStartThread(s);
 }
 
@@ -254,7 +254,7 @@ ThreadLocal*
 CreateThreadLocal(void)
 {
 	ThreadLocal* tl = (ThreadLocal*)HMalloc(sizeof(ThreadLocal));
-	tl->flushSem = CreateSemaphore(0, "FlushGraphics", SYNC_CLASS_VIDEO);
+	tl->flushSem = CREATESEMAPHORE(0, "FlushGraphics", SYNC_CLASS_VIDEO);
 	return tl;
 }
 

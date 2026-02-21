@@ -67,7 +67,7 @@ void Callback_init(void)
 	callbacks = nullptr;
 	callbacksEnd = &callbacks;
 	callbacksProcessEnd = &callbacks;
-	callbackListLock = CreateMutex("Callback List Lock", SYNC_CLASS_TOPLEVEL);
+	callbackListLock = CREATEMUTEX("Callback List Lock", SYNC_CLASS_TOPLEVEL);
 }
 
 void Callback_uninit(void)

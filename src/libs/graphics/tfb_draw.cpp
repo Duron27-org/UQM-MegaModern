@@ -281,7 +281,7 @@ TFB_Image*
 TFB_DrawImage_New(TFB_Canvas canvas)
 {
 	TFB_Image* img = (TFB_Image*)HMalloc(sizeof(TFB_Image));
-	img->mutex = CreateMutex("image lock", SYNC_CLASS_VIDEO);
+	img->mutex = CREATEMUTEX("image lock", SYNC_CLASS_VIDEO);
 	img->ScaledImg = nullptr;
 	img->MipmapImg = nullptr;
 	img->FilledImg = nullptr;
@@ -311,7 +311,7 @@ TFB_Image*
 TFB_DrawImage_CreateForScreen(int w, int h, bool withalpha)
 {
 	TFB_Image* img = (TFB_Image*)HMalloc(sizeof(TFB_Image));
-	img->mutex = CreateMutex("image lock", SYNC_CLASS_VIDEO);
+	img->mutex = CREATEMUTEX("image lock", SYNC_CLASS_VIDEO);
 	img->ScaledImg = nullptr;
 	img->MipmapImg = nullptr;
 	img->FilledImg = nullptr;

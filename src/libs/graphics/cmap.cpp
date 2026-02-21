@@ -73,17 +73,17 @@ void InitColorMaps(void)
 	int i;
 
 	// init colormaps
-	maplock = CreateMutex("Colormaps Lock", SYNC_CLASS_TOPLEVEL | SYNC_CLASS_VIDEO);
+	maplock = CREATEMUTEX("Colormaps Lock", SYNC_CLASS_TOPLEVEL | SYNC_CLASS_VIDEO);
 
 	// init xform control
 	XFormControl.Highest = -1;
-	XFormControl.Lock = CreateMutex("Transform Lock", SYNC_CLASS_TOPLEVEL | SYNC_CLASS_VIDEO);
+	XFormControl.Lock = CREATEMUTEX("Transform Lock", SYNC_CLASS_TOPLEVEL | SYNC_CLASS_VIDEO);
 	for (i = 0; i < MAX_XFORMS; ++i)
 	{
 		XFormControl.TaskControl[i].CMapIndex = -1;
 	}
 
-	fadeLock = CreateMutex("Fade Lock", SYNC_CLASS_TOPLEVEL | SYNC_CLASS_VIDEO);
+	fadeLock = CREATEMUTEX("Fade Lock", SYNC_CLASS_TOPLEVEL | SYNC_CLASS_VIDEO);
 }
 
 void UninitColorMaps(void)

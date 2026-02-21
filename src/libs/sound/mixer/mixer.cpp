@@ -109,9 +109,9 @@ bool mixer_Init(uint32 frequency, uint32 format, mixer_Quality quality,
 		mixer_resampling.Upsample = mixer_ResampleNearest;
 	}
 
-	src_mutex = CreateRecursiveMutex("mixer_SourceMutex", SYNC_CLASS_AUDIO);
-	buf_mutex = CreateRecursiveMutex("mixer_BufferMutex", SYNC_CLASS_AUDIO);
-	act_mutex = CreateRecursiveMutex("mixer_ActiveMutex", SYNC_CLASS_AUDIO);
+	src_mutex = CREATERECURSIVEMUTEX("mixer_SourceMutex", SYNC_CLASS_AUDIO);
+	buf_mutex = CREATERECURSIVEMUTEX("mixer_BufferMutex", SYNC_CLASS_AUDIO);
+	act_mutex = CREATERECURSIVEMUTEX("mixer_ActiveMutex", SYNC_CLASS_AUDIO);
 
 	mixer_initialized = 1;
 

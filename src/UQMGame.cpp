@@ -462,7 +462,7 @@ uqstl::pair<int, bool> UQMGame::setup(uqstl::span<uqgsl::zstring> args)
 
 int UQMGame::run()
 {
-	StartThread(Starcon2Main, nullptr, 1024, "Starcon2Main");
+	STARTTHREAD(Starcon2Main, nullptr, 1024, "Starcon2Main");
 
 	for (int i = 0; i < 2000 && !MainExited;)
 	{

@@ -151,10 +151,10 @@ void Init_DrawCommandQueue(void)
 
 	TFB_BBox_Init(CanvasWidth, CanvasHeight);
 
-	DCQ_Mutex = CreateRecursiveMutex("DCQ",
+	DCQ_Mutex = CREATERECURSIVEMUTEX("DCQ",
 									 SYNC_CLASS_TOPLEVEL | SYNC_CLASS_VIDEO);
 
-	RenderingCond = CreateCondVar("DCQ empty",
+	RenderingCond = CREATECONDVAR("DCQ empty",
 								  SYNC_CLASS_TOPLEVEL | SYNC_CLASS_VIDEO);
 }
 

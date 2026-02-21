@@ -1137,7 +1137,7 @@ MIKMODAPI BOOL MikMod_InitThreads(void)
 			result = 1;
 		}
 #elif defined(_WIN32)
-		if ((!(_mm_mutex_lists = CreateMutex(nullptr, false, TEXT("libmikmod(lists)")))) || (!(_mm_mutex_vars = CreateMutex(nullptr, false, TEXT("libmikmod(vars)")))))
+		if ((!(_mm_mutex_lists = CREATEMUTEX(nullptr, false, TEXT("libmikmod(lists)")))) || (!(_mm_mutex_vars = CREATEMUTEX(nullptr, false, TEXT("libmikmod(vars)")))))
 		{
 			result = 0;
 		}

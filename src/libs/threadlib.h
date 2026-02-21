@@ -80,8 +80,8 @@ enum
 	SYNC_CLASS_RESOURCE = (1 << 3)	/* Involves system resources (_MemoryLock) */
 };
 
-/* Note.  NEVER call CreateThread from the main thread, or deadlocks
-   are guaranteed.  Use StartThread instead (which doesn't wait around
+/* Note.  NEVER call CREATESETHREAD from the main thread, or deadlocks
+   are guaranteed.  Use STARTTHREAD instead (which doesn't wait around
    for the main thread to actually create the thread and return
    it). */
 
@@ -100,17 +100,17 @@ CondVar CreateCondVar_Core(const char* name, uqm::DWORD syncClass);
 
 /* Preprocessor directives to forward to the appropriate routines */
 
-#define CreateThread(func, data, stackSize, name) \
+#define CREATETHREAD(func, data, stackSize, name) \
 	CreateThread_Core((func), (data), (stackSize), (name))
-#define StartThread(func, data, stackSize, name) \
+#define STARTTHREAD(func, data, stackSize, name) \
 	StartThread_Core((func), (data), (stackSize), (name))
-#define CreateSemaphore(initial, name, syncClass) \
+#define CREATESEMAPHORE(initial, name, syncClass) \
 	CreateSemaphore_Core((initial), (name), (syncClass))
-#define CreateMutex(name, syncClass) \
+#define CREATEMUTEX(name, syncClass) \
 	CreateMutex_Core((name), (syncClass))
-#define CreateRecursiveMutex(name, syncClass) \
+#define CREATERECURSIVEMUTEX(name, syncClass) \
 	CreateRecursiveMutex_Core((name), (syncClass))
-#define CreateCondVar(name, syncClass) \
+#define CREATECONDVAR(name, syncClass) \
 	CreateCondVar_Core((name), (syncClass))
 
 #else
@@ -127,17 +127,17 @@ CondVar CreateCondVar_Core(void);
 /* Preprocessor directives to forward to the appropriate routines.
    The "name" field is stripped away in preprocessing. */
 
-#define CreateThread(func, data, stackSize, name) \
+#define CREATESETHREAD(func, data, stackSize, name) \
 	CreateThread_Core((func), (data), (stackSize))
-#define StartThread(func, data, stackSize, name) \
+#define STARTTHREAD(func, data, stackSize, name) \
 	StartThread_Core((func), (data), (stackSize))
-#define CreateSemaphore(initial, name, syncClass) \
+#define CREATESEMAPHORE(initial, name, syncClass) \
 	CreateSemaphore_Core((initial))
-#define CreateMutex(name, syncClass) \
+#define CREATEMUTEX(name, syncClass) \
 	CreateMutex_Core()
-#define CreateRecursiveMutex(name, syncClass) \
+#define CREATERECURSIVEMUTEX(name, syncClass) \
 	CreateRecursiveMutex_Core()
-#define CreateCondVar(name, syncClass) \
+#define CREATECONDVAR(name, syncClass) \
 	CreateCondVar_Core()
 
 #endif
