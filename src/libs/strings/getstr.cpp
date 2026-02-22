@@ -151,8 +151,8 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 	uqm::DWORD TSOffs;
 	size_t tot_ts_size = 0;
 
-	char CurrentLine[1024];
-	char paths[1024];
+	char CurrentLine[1024] {};
+	char paths[1024] {};
 	char* clip_path;
 	char* ts_path;
 
@@ -163,7 +163,7 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 	// to a STRING.
 
 	/* Parse out the conversation components. */
-	strncpy(paths, path, 1023);
+	uqm::strncpy_safe(paths, path);
 	paths[1023] = '\0';
 	clip_path = strchr(paths, ':');
 	if (clip_path == nullptr)
@@ -289,11 +289,11 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 		{
 			// String header, of the following form:
 			//     #(GLAD_WHEN_YOU_COME_BACK) commander-000.ogg
-			char CopyLine[1024];
+			char CopyLine[1024] {};
 			char* name;
 			char* ts;
 
-			strcpy(CopyLine, CurrentLine);
+			uqm::strncpy_safe(CopyLine, CurrentLine);
 			name = strtok(&CopyLine[1], "()");
 			if (name)
 			{
@@ -316,7 +316,7 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 				{
 					goto err;
 				}
-				strcpy(&namedata[NameOffs], name);
+				uqm::strncpy_safe({&namedata[NameOffs], static_cast<uint32_t>(l)}, name);
 				NameOffs += l;
 				nlen[stringI] = l;
 
@@ -351,7 +351,7 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 									goto err;
 								}
 
-								strcpy(&ts_data[TSOffs], tsptr);
+								uqm::strncpy_safe({&ts_data[TSOffs], static_cast<uint32_t>(l)}, tsptr);
 								TSOffs += l;
 								tslen[stringI] = l;
 							}
@@ -374,7 +374,8 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 				ts = strtok(nullptr, " \t\r\n)");
 				if (ts)
 				{
-					l = path_len + strlen(ts) + 1;
+					const uint32_t tsLen = strlen(ts);
+					l = path_len + tsLen + 1;
 					if (!ensureBufSize(&clipdata, &tot_clip_size,
 									   ClipOffs + l, POOL_SIZE))
 					{
@@ -383,9 +384,9 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 
 					if (clip_path)
 					{
-						strcpy(&clipdata[ClipOffs], clip_path);
+						uqm::strncpy_safe({&clipdata[ClipOffs], static_cast<uint32_t>(l)}, clip_path);
 					}
-					strcpy(&clipdata[ClipOffs + path_len], ts);
+					uqm::strncpy_safe({&clipdata[ClipOffs + path_len], static_cast<uint32_t>(l - path_len)}, {ts, tsLen});
 					ClipOffs += l;
 					clen[stringI] = l;
 				}
@@ -411,7 +412,7 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 			slen[stringI] += l;
 			StringOffs += l;
 
-			strcpy(s, CurrentLine);
+			uqm::strncpy_safe({s, static_cast<uint32_t>(l)}, {CurrentLine, static_cast<uint32_t>(l-1)});
 		}
 
 		if ((int)uio_ftell(fp) - (int)opos >= (int)dataLen)
@@ -571,10 +572,10 @@ void* _GetStringData(uio_Stream* fp, uqm::DWORD length)
 
 		if (CurrentLine[0] == '#')
 		{
-			char CopyLine[1024];
+			char CopyLine[1024] {};
 			char* s;
 
-			strcpy(CopyLine, CurrentLine);
+			uqm::strncpy_safe(CopyLine, CurrentLine);
 			s = strtok(&CopyLine[1], "()");
 			if (s)
 			{
@@ -611,7 +612,7 @@ void* _GetStringData(uio_Stream* fp, uqm::DWORD length)
 			slen[stringI] += l;
 			StringOffs += l;
 
-			strcpy(s, CurrentLine);
+			uqm::strncpy_safe({s, static_cast<uint32_t>(l)}, {CurrentLine, static_cast<uint32_t>(l-1)});
 		}
 
 		if ((int)uio_ftell(fp) - (int)opos >= (int)length)

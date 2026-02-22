@@ -21,6 +21,7 @@
 #include <string.h>
 
 #include "stringbank.h"
+#include "core/string/StringUtils.h"
 
 typedef stringbank chunk;
 
@@ -71,7 +72,7 @@ StringBank_AddString(stringbank* bank, const char* str)
 		if (len < remaining)
 		{
 			char* result = x->data + x->len;
-			strcpy(result, str);
+			uqm::strncpy_safe({result, uqstl::end(x->data)}, str);
 			x->len += len;
 			return result;
 		}
@@ -79,7 +80,7 @@ StringBank_AddString(stringbank* bank, const char* str)
 	}
 	/* No room in any currently existing chunk */
 	x = add_chunk(bank);
-	strcpy(x->data, str);
+	uqm::strncpy_safe(x->data, str);
 	x->len += len;
 	return x->data;
 }
@@ -128,8 +129,7 @@ StringBank_AddSubstring(stringbank* bank, const char* str, unsigned int n)
 	{
 		return nullptr;
 	}
-	strncpy(buffer, str, n);
-	buffer[n] = '\0';
+	uqm::strncpy_safe(buffer, {str, n});
 	return StringBank_AddString(bank, buffer);
 }
 
@@ -145,8 +145,7 @@ StringBank_AddOrFindSubstring(stringbank* bank, const char* str, unsigned int n)
 	{
 		return nullptr;
 	}
-	strncpy(buffer, str, n);
-	buffer[n] = '\0';
+	uqm::strncpy_safe(buffer, {str, n});
 	return StringBank_AddOrFindString(bank, buffer);
 }
 

@@ -62,26 +62,22 @@ newResourceDesc(const char* res_id, const char* resval)
 	ResourceHandlers* vtable;
 	ResourceDesc *result, *handlerdesc;
 	RESOURCE_INDEX idx = _get_current_index_header();
-	char typestr[TYPESIZ];
-
+	char typestr[TYPESIZ] {};
+	uqstl::span<char> typestrDest {typestr};
 	path = strchr(resval, ':');
 	if (path == nullptr)
 	{
 		uqm::log::warn("Could not find type information for resource '{}'", res_id);
-		strncpy(typestr, "sys.UNKNOWNRES", TYPESIZ);
+		uqm::strncpy_safe(typestrDest, "sys.UNKNOWNRES");
 		path = resval;
 	}
 	else
 	{
-		int n = path - resval;
+		const auto resValLength = static_cast<uint32_t>(uqstl::distance(resval, path));
 
-		if (n >= TYPESIZ - 4)
-		{
-			n = TYPESIZ - 5;
-		}
-		strncpy(typestr, "sys.", TYPESIZ);
-		strncat(typestr + 1, resval, n);
-		typestr[n + 4] = '\0';
+		const auto copied = uqm::strncpy_safe(typestrDest, "sys.");
+		typestrDest = typestrDest.subspan(copied);
+		uqm::strncpy_safe(typestrDest, {resval, resValLength});
 		path++;
 	}
 	pathlen = strlen(path);
@@ -111,7 +107,7 @@ newResourceDesc(const char* res_id, const char* resval)
 	}
 
 	result->fname = (char*)HMalloc(pathlen + 1);
-	strncpy(result->fname, path, pathlen);
+	uqm::strncpy_safe({result->fname, static_cast<uint32_t>(pathlen + 1)}, path);
 	result->fname[pathlen] = '\0';
 	result->vtable = vtable;
 	result->refcount = 0;
@@ -438,8 +434,9 @@ void SaveResourceIndex(uio_DirHandle* dir, const char* rmpfile, const char* root
 				capacity *= 2;
 				keys = (char**)HRealloc(keys, capacity * sizeof(char*));
 			}
-			keys[count] = (char*)HMalloc(strlen(key) + 1);
-			strcpy(keys[count], key);
+			const auto keyStrLen = strlen(key);
+			keys[count] = (char*)HMalloc(keyStrLen + 1);
+			uqm::strncpy_safe({keys[count], keyStrLen + 1}, key);
 			count++;
 		}
 	}
@@ -502,7 +499,6 @@ bool InstallResTypeVectors(const char* resType, ResourceLoadFun* loadFun,
 	CharHashTable_HashTable* map;
 
 	fmt::format_to_sz_n(key, TYPESIZ, "sys.{}", resType);
-	key[TYPESIZ - 1] = '\0';
 	typelen = strlen(resType);
 
 	handlers = (ResourceHandlers*)HMalloc(sizeof(ResourceHandlers));
@@ -521,9 +517,9 @@ bool InstallResTypeVectors(const char* resType, ResourceLoadFun* loadFun,
 		return false;
 	}
 
-	result->fname = (char*)HMalloc(strlen(resType) + 1);
-	strncpy(result->fname, resType, typelen);
-	result->fname[typelen] = '\0';
+	const auto resTypeLen = strlen(resType);
+	result->fname = (char*)HMalloc(resTypeLen + 1);
+	uqm::strncpy_safe({result->fname, resTypeLen}, resType);
 	result->vtable = nullptr;
 	result->resdata.ptr = handlers;
 
@@ -572,14 +568,14 @@ void res_PutString(const char* key, const char* value)
 		char* newValue = (char*)HMalloc(srclen + 1);
 		char* oldValue = desc->fname;
 		uqm::log::warn("Reallocating string space for '{}'", key);
-		strncpy(newValue, value, srclen + 1);
+		uqm::strncpy_safe({newValue, static_cast<uint32_t>(srclen + 1)}, value);
 		desc->resdata.str = newValue;
 		desc->fname = newValue;
 		HFree(oldValue);
 	}
 	else
 	{
-		strncpy(desc->fname, value, dstlen + 1);
+		uqm::strncpy_safe({desc->fname, static_cast<uint32_t>(dstlen + 1)}, value);
 	}
 }
 

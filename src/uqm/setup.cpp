@@ -47,7 +47,7 @@
 
 
 ACTIVITY LastActivity;
-PlayerControlFlags PlayerControl[NUM_PLAYERS];
+PlayerControlFlags PlayerControl[NUM_PLAYERS] {};
 
 // XXX: These declarations should really go to the file they belong to.
 RESOURCE_INDEX hResIndex;
@@ -246,7 +246,7 @@ bool LoadKernel(int argc, char* argv[])
 	uqm::prepareAddons(optAddons);
 
 	{
-		COLORMAP ColorMapTab;
+		COLORMAP ColorMapTab {};
 
 		ColorMapTab = CaptureColorMap(LoadColorMap(STARCON_COLOR_MAP));
 		if (ColorMapTab == nullptr)
@@ -466,34 +466,36 @@ bool SetPlayerInput(uqm::COUNT playerI)
 {
 	assert(PlayerInput[playerI] == nullptr);
 
-	switch (PlayerControl[playerI] & ControlFlagsMask)
+	const auto extractedControls {PlayerControl[playerI] & ControlFlagsMask};
+	if (testFlag(extractedControls, PlayerControlFlags::Human))
 	{
-		case PlayerControlFlags::Human:
-			PlayerInput[playerI] =
-				(InputContext*)HumanInputContext_new(playerI);
-			break;
-		case PlayerControlFlags::Cyborg:
-		case PlayerControlFlags::Psytron:
-			// ComputerControlFlags is used in SuperMelee; the computer chooses
-			// the ships and fights the battles.
-			// PlayerControlFlags::Cyborg is used in the full game; the computer only
-			// fights the battles. XXX: This will need to be handled
-			// separately in the future if we want to remove the special
-			// cases for ship selection with PlayerControlFlags::Cyborg from the
-			// computer handlers.
-			PlayerInput[playerI] =
-				(InputContext*)ComputerInputContext_new(playerI);
-			break;
+		PlayerInput[playerI] = (InputContext*)HumanInputContext_new(playerI);
+		uqm::log::debug("Player {} is human-controlled.", playerI);
+	}
+	else if (testFlag(extractedControls, PlayerControlFlags::Cyborg | PlayerControlFlags::Psytron))
+	{
+		// ComputerControlFlags is used in SuperMelee; the computer chooses
+		// the ships and fights the battles.
+		// PlayerControlFlags::Cyborg is used in the full game; the computer only
+		// fights the battles. XXX: This will need to be handled
+		// separately in the future if we want to remove the special
+		// cases for ship selection with PlayerControlFlags::Cyborg from the
+		// computer handlers.
+		PlayerInput[playerI] = (InputContext*)ComputerInputContext_new(playerI);
+		uqm::log::debug("Player {} is computer-controlled (Cyborg).", playerI);
+	}
 #ifdef NETPLAY
-		case PlayerControlFlags::Network:
-			PlayerInput[playerI] =
-				(InputContext*)NetworkInputContext_new(playerI);
-			break;
+	else if (testFlag(extractedControls, PlayerControlFlags::Network))
+	{
+		PlayerInput[playerI] = (InputContext*)NetworkInputContext_new(playerI);
+		uqm::log::debug("Player {} is network-controlled.", playerI);
+	}
 #endif
-		default:
-			uqm::log::critical(
-				"Invalid control method in SetPlayerInput().");
-			explode(); /* Does not return */
+	else
+	{
+		uqm::log::critical(
+			"Invalid control method {} ,in SetPlayerInput().", extractedControls);
+		explode(); /* Does not return */
 	}
 
 	return PlayerInput[playerI] != nullptr;

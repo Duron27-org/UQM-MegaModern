@@ -1761,11 +1761,11 @@ int VControl_GetLastGesture(VCONTROL_GESTURE* g)
 
 typedef struct vcontrol_parse_state
 {
-	char line[LINE_SIZE];
-	char token[TOKEN_SIZE];
-	int index;
-	int error;
-	int linenum;
+	char line[LINE_SIZE] {};
+	char token[TOKEN_SIZE] {};
+	int index {};
+	int error {};
+	int linenum {};
 } parse_state;
 
 static void
@@ -1985,10 +1985,9 @@ parse_gesture(parse_state* state, VCONTROL_GESTURE* gesture)
 
 void VControl_ParseGesture(VCONTROL_GESTURE* g, const char* spec)
 {
-	parse_state ps;
+	parse_state ps {};
 
-	strncpy(ps.line, spec, LINE_SIZE);
-	ps.line[LINE_SIZE - 1] = '\0';
+	uqm::strncpy_safe(ps.line, spec);
 	ps.index = ps.error = 0;
 	ps.linenum = -1;
 

@@ -28,6 +28,7 @@
 #include "decoder.h"
 #include "endian_uqm.h"
 #include "core/stl/stl.h"
+#include "core/string/StringUtils.h"
 
 #define DATA_BUF_SIZE 0x8000
 #define DUCK_GENERAL_FPS 14.622f
@@ -406,7 +407,7 @@ duka_Open(THIS_PTR, uio_DirHandle* dir, const char* file)
 	uio_Stream* duk;
 	uio_Stream* frm;
 	DukAud_AudSubframe aud;
-	char filename[256];
+	char filename[256] {};
 	uint32 filelen;
 	size_t cread;
 	uint32 i;
@@ -416,7 +417,8 @@ duka_Open(THIS_PTR, uio_DirHandle* dir, const char* file)
 	{
 		return false;
 	}
-	strcpy(filename, file);
+	uqstl::span<char> filenameDst {filename};
+	uqm::strncpy_safe(filenameDst, {file, filelen});
 
 	duk = uio_fopen(dir, filename, "rb");
 	if (!duk)
@@ -425,7 +427,9 @@ duka_Open(THIS_PTR, uio_DirHandle* dir, const char* file)
 		return false;
 	}
 
-	strcpy(filename + filelen - 3, "frm");
+	// overwrite the extension with 'frm".. weird.
+	filenameDst = filenameDst.subspan(filelen - 3);
+	uqm::strncpy_safe(filenameDst, "frm");
 	frm = uio_fopen(dir, filename, "rb");
 	if (!frm)
 	{

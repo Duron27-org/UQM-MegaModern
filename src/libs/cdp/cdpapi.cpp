@@ -254,14 +254,9 @@ cdp_Host_GetApiError(void)
 static char*
 cdp_MakeContextName(const char* ctx, const char* name)
 {
-	int namelen;
-	char* id_name;
-
-	namelen = strlen(ctx) + strlen(name) + 2;
-	id_name = HMalloc(namelen);
-	_strcpy(id_name, ctx);
-	strcat(id_name, ".");
-	strcat(id_name, name);
+	uint32_t namelen = strlen(ctx) + strlen(name) + 2;
+	char* id_name = HMalloc(namelen * sizeof(char));
+	fmt::format_to_sz_n(id_name, namelen, "{}.{}", ctx, name);
 
 	return id_name;
 }

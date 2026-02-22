@@ -364,16 +364,20 @@ SplitSubPages(uqm::CHAR_T* text, uqm::CHAR_T* pages[], sint32 timestamp[], int s
 		// XXX: this will only work when ASCII punctuation and spaces
 		//   are used exclusively
 		aft_ellips = 3 * (text[pos] != '\0' && pos > 0 && !ispunct(text[pos - 1]) && !isspace(text[pos - 1]));
-		pages[page] = (uqm::CHAR_T*)HMalloc(sizeof(uqm::CHAR_T) * (lead_ellips + pos + aft_ellips + 1));
+		const uint32_t page_len = lead_ellips + pos + aft_ellips;
+		pages[page] = (uqm::CHAR_T*)HMalloc(sizeof(uqm::CHAR_T) * (page_len + 1));
+		uqstl::span<char> pageBuf {pages[page], page_len + 1};
 		if (lead_ellips)
 		{
-			strcpy(pages[page], "...");
+			const uint32_t leadElipsLen = uqm::strncpy_safe(pageBuf, "...");
+			pageBuf = pageBuf.subspan(leadElipsLen);
+
 		}
-		memcpy(pages[page] + lead_ellips, text, pos);
-		pages[page][lead_ellips + pos] = '\0'; // string term
+		const uint32_t pageTextCopied = uqm::strncpy_safe(pageBuf, {text, static_cast<uint32_t>(pos)});
+		pageBuf = pageBuf.subspan(pageTextCopied);
 		if (aft_ellips)
 		{
-			strcpy(pages[page] + lead_ellips + pos, "...");
+			uqm::strncpy_safe(pageBuf, "...");
 		}
 
 		if (optSmoothScroll == uqm::EmulationMode::PC && !usingSpeech
@@ -410,8 +414,7 @@ void SpliceMultiTrack(uqm::CHAR_T* TrackNames[], uqm::CHAR_T* TrackText)
 #define MAX_MULTI_BUFFERS 100
 	TFB_SoundDecoder* track_decs[MAX_MULTI_TRACKS + 1];
 	int tracks;
-	int slen1, slen2;
-
+	
 	if (!TrackText)
 	{
 		uqm::log::debug("SpliceMultiTrack(): no track text");
@@ -458,10 +461,11 @@ void SpliceMultiTrack(uqm::CHAR_T* TrackNames[], uqm::CHAR_T* TrackText)
 		return;
 	}
 
-	slen1 = strlen(last_sub->text);
-	slen2 = strlen(TrackText);
-	last_sub->text = (uqm::CHAR_T*)HRealloc(last_sub->text, slen1 + slen2 + 1);
-	strcpy(last_sub->text + slen1, TrackText);
+	uint32_t slen1 = strlen(last_sub->text);
+	uint32_t slen2 = strlen(TrackText);
+	const uint32_t newLen {slen1 + slen2 + 1};
+	last_sub->text = (uqm::CHAR_T*)HRealloc(last_sub->text, newLen);
+	uqm::strncpy_safe({last_sub->text + slen1, newLen - slen1}, {TrackText, slen2});
 
 	no_page_break = 1;
 }
@@ -484,8 +488,7 @@ void SpliceTrack(uqm::CHAR_T* TrackName, uqm::CHAR_T* TrackText, uqm::CHAR_T* Ti
 
 	if (!TrackName)
 	{ // Appending a piece of subtitles to the last track
-		int slen1, slen2;
-
+		
 		if (track_count == 0)
 		{
 			uqm::log::warn("SpliceTrack(): Tried to append a subtitle,"
@@ -511,10 +514,11 @@ void SpliceTrack(uqm::CHAR_T* TrackName, uqm::CHAR_T* TrackText, uqm::CHAR_T* Ti
 		time_stamps[num_pages - 1] = -time_stamps[num_pages - 1];
 
 		// Add the first piece to the last subtitle page
-		slen1 = strlen(last_sub->text);
-		slen2 = strlen(pages[0]);
-		last_sub->text = (uqm::CHAR_T*)HRealloc(last_sub->text, slen1 + slen2 + 1);
-		strcpy(last_sub->text + slen1, pages[0]);
+		const uint32_t slen1 = strlen(last_sub->text);
+		const uint32_t slen2 = strlen(pages[0]);
+		const uint32_t newLen {slen1 + slen2 + 1};
+		last_sub->text = (uqm::CHAR_T*)HRealloc(last_sub->text, newLen);
+		uqm::strncpy_safe({last_sub->text + slen1, static_cast<uint32_t>(newLen - slen1)}, {pages[0], static_cast<uint32_t>(slen2)});
 		HFree(pages[0]);
 
 		// Add the rest of the pages
@@ -567,12 +571,11 @@ void SpliceTrack(uqm::CHAR_T* TrackName, uqm::CHAR_T* TrackText, uqm::CHAR_T* Ti
 
 		if (no_page_break && track_count)
 		{
-			int slen1, slen2;
-
-			slen1 = strlen(last_sub->text);
-			slen2 = strlen(pages[0]);
-			last_sub->text = (uqm::CHAR_T*)HRealloc(last_sub->text, slen1 + slen2 + 1);
-			strcpy(last_sub->text + slen1, pages[0]);
+			const uint32_t slen1 = strlen(last_sub->text);
+			const uint32_t slen2 = strlen(pages[0]);
+			const uint32_t newLen {slen1 + slen2 + 1};
+			last_sub->text = (uqm::CHAR_T*)HRealloc(last_sub->text, newLen);
+			uqm::strncpy_safe({last_sub->text + slen1, newLen - slen1}, {pages[0], slen2});
 			HFree(pages[0]);
 		}
 		else

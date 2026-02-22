@@ -46,7 +46,14 @@ enum class PlayerControlFlags : uint8_t
 	DifficultyAwesome = 1 << 6,
 };
 ENUM_BITWISE_OPS(PlayerControlFlags);
-static inline constexpr PlayerControlFlags ComputerControlFlags {PlayerControlFlags::Cyborg | PlayerControlFlags::Psytron};
+// ComputerControlFlags is used in SuperMelee; the computer chooses
+// the ships and fights the battles.
+// PlayerControlFlags::Cyborg is used in the full game; the computer only
+// fights the battles. XXX: This will need to be handled
+// separately in the future if we want to remove the special
+// cases for ship selection with PlayerControlFlags::Cyborg from the
+// computer handlers.
+ static inline constexpr PlayerControlFlags ComputerControlFlags {PlayerControlFlags::Cyborg | PlayerControlFlags::Psytron};
 static inline constexpr PlayerControlFlags ControlFlagsMask {PlayerControlFlags::Human | PlayerControlFlags::Network | ComputerControlFlags};
 static inline constexpr PlayerControlFlags DifficultyFlagsMask {PlayerControlFlags::DifficultyStandard | PlayerControlFlags::DifficultyGood | PlayerControlFlags::DifficultyAwesome};
 

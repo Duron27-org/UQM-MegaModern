@@ -202,7 +202,7 @@ void* _GetCelData(uio_Stream* fp, uqm::DWORD length)
 			// zipped ani file
 			if (n)
 			{
-				uqm::strncpy_safe(aniDirName, {_cur_resfile_name, n - 1});
+				uqm::strncpy_safe(aniDirName, {_cur_resfile_name, static_cast<uint32_t>(n - 1)});
 				aniFileName = _cur_resfile_name + n;
 			}
 			else
@@ -222,7 +222,7 @@ void* _GetCelData(uio_Stream* fp, uqm::DWORD length)
 		else
 		{
 			// unpacked ani file
-			uqm::strncpy_safe(filename, {_cur_resfile_name, n});
+			uqm::strncpy_safe(filename, {_cur_resfile_name, static_cast<uint32_t>(n)});
 			aniFile = fp;
 			aniDir = contentDir;
 		}
@@ -421,7 +421,7 @@ void* _GetFontData(uio_Stream* fp, uqm::DWORD length)
 				s1 = s2;
 			}
 			n = s1 - _cur_resfile_name + 1;
-			uqm::strncpy_safe(fontDirName, {_cur_resfile_name, n - 1});
+			uqm::strncpy_safe(fontDirName, {_cur_resfile_name, static_cast<uint32_t> (n - 1)});
 			fontZipName = _cur_resfile_name + n;
 		}
 

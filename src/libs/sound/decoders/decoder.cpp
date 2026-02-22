@@ -24,6 +24,7 @@
 #include "libs/memlib.h"
 #include "libs/file.h"
 #include "core/log/log.h"
+#include "core/string/StringUtils.h"
 #include "decoder.h"
 #include "wav.h"
 #include "dukaud.h"
@@ -410,8 +411,10 @@ SoundDecoder_Load(uio_DirHandle* dir, char* filename,
 	decoder->looping = false;
 	decoder->error = SOUNDDECODER_OK;
 	decoder->dir = dir;
-	decoder->filename = (char*)HMalloc(strlen(filename) + 1);
-	strcpy(decoder->filename, filename);
+	const uint32_t filenameLen = strlen(filename);
+	decoder->filename = (char*)HMalloc(filenameLen + 1);
+	memcpy(decoder->filename, filename, filenameLen);
+	decoder->filename[filenameLen] = '\0';
 
 	if (decoder->is_null)
 	{ // fake decoder, keeps voiceovers and etc. going

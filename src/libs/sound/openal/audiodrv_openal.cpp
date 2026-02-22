@@ -198,7 +198,7 @@ openAL_Init(audio_Driver* driver, AudioFlags flags)
 		alcDevice = nullptr;
 		return -1;
 	}
-	uqm::log::error("Sound decoders initialized.");
+	uqm::log::info("Sound decoders initialized.");
 
 	alListenerfv(AL_POSITION, listenerPos);
 	alListenerfv(AL_VELOCITY, listenerVel);

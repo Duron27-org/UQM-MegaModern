@@ -271,15 +271,14 @@ void* _GetMusicData(uio_Stream* fp, uqm::DWORD length)
 	MUSIC_REF h;
 	TFB_SoundSample* sample;
 	TFB_SoundDecoder* decoder;
-	char filename[256];
+	char filename[256] {};
 
 	if (!_cur_resfile_name)
 	{
 		return nullptr;
 	}
 
-	strncpy(filename, _cur_resfile_name, sizeof(filename) - 1);
-	filename[sizeof(filename) - 1] = '\0';
+	uqm::strncpy_safe(filename, _cur_resfile_name);
 	CheckMusicResName(filename);
 
 	uqm::log::debug("_GetMusicData(): loading {}", filename);

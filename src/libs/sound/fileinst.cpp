@@ -55,9 +55,6 @@ LoadSoundFile(const char* pStr)
 MUSIC_REF
 LoadMusicFile(const char* pStr)
 {
-	uio_Stream* fp;
-	char filename[256];
-
 	// FIXME: this theoretically needs a mechanism to prevent races
 	if (_cur_resfile_name)
 	{
@@ -65,20 +62,17 @@ LoadMusicFile(const char* pStr)
 		return 0;
 	}
 
-	strncpy(filename, pStr, sizeof(filename) - 1);
-	filename[sizeof(filename) - 1] = '\0';
+	char filename[256] {};
+	uqm::strncpy_safe(filename, pStr);
 	CheckMusicResName(filename);
 
 	// Opening the res file is not technically necessary right now
 	// since _GetMusicData() completely ignores the arguments
 	// But just for the sake of correctness
-	fp = res_OpenResFile(contentDir, filename, "rb");
-	if (fp)
+	if (uio_Stream * fp {res_OpenResFile(contentDir, filename, "rb")})
 	{
-		MUSIC_REF hData;
-
 		_cur_resfile_name = filename;
-		hData = (MUSIC_REF)_GetMusicData(fp, LengthResFile(fp));
+		 MUSIC_REF hData = (MUSIC_REF)_GetMusicData(fp, LengthResFile(fp));
 		_cur_resfile_name = 0;
 
 		res_CloseResFile(fp);

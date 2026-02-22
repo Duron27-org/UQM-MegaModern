@@ -155,7 +155,8 @@ void SetChannelVolume(uqm::COUNT channel, uqm::COUNT volume, uqm::BYTE priority)
 void* _GetSoundBankData(uio_Stream* fp, uqm::DWORD length)
 {
 	int snd_ct, n;
-	char CurrentLine[1024], filename[1024];
+	char CurrentLine[1024] {};
+	char filename[1024] {};
 #define MAX_FX 256
 	TFB_SoundSample* sndfx[MAX_FX];
 	STRING_TABLE Snd;
@@ -181,7 +182,7 @@ void* _GetSoundBankData(uio_Stream* fp, uqm::DWORD length)
 				s1 = s2;
 			}
 			n = s1 - _cur_resfile_name + 1;
-			strncpy(filename, _cur_resfile_name, n);
+			uqm::strncpy_safe(filename, {_cur_resfile_name, static_cast<uint32_t>(n)});
 		}
 	}
 

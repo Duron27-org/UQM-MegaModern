@@ -73,7 +73,7 @@ tryTempDir(char* buf, size_t buflen, const char* dir)
 		return ENAMETOOLONG;
 	}
 
-	strcpy(buf, dir);
+	uqm::strcpy_safe({buf, static_cast<uint32_t>(buflen)}, dir);
 #if 0
 	//def WIN32
 	{

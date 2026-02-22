@@ -418,12 +418,12 @@ int cdp_LoadAllModules(void)
 
 	for (i = 0; i < dirList->numNames; i++)
 	{
-		char modname[PATH_MAX];
+		char modname[PATH_MAX] {};
 		char* pext;
 		cdp_Module* mod;
 
 		fmt::print(stderr, "Loading CDP {}...\n", dirList->names[i]);
-		strcpy(modname, dirList->names[i]);
+		uqm::strncpy_safe(modname, dirList->names[i]);
 		pext = strrchr(modname, '.');
 		if (pext) // strip extension
 		{
