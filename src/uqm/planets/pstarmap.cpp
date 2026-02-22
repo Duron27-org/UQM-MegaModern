@@ -1003,7 +1003,7 @@ markerBuf(const int star_index, const char* marker_state)
 	// "SYS_VISITED_##" or "SYS_PLYR_MARKER_##" which is used to
 	// differentiate between which kind of marker we're working with.
 
-	fmt::format_to_sz_n(buf, sizeof(buf), "SYS_{}_%02u", marker_state,
+	fmt::format_to_sz_n(buf, sizeof(buf), "SYS_{}_{:02}", marker_state,
 						star_index / 32);
 
 	return buf;

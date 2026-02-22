@@ -166,20 +166,16 @@ InterpolateChunk(uqstl::span<uqm::CHAR_T> buffer, uqm::CHAR_T* start)
 
 // Creates the file name of subclip # clip_number, and prints it to buffer.
 // Assumes track names end in ".ogg".
-void GetSubClip(uqm::CHAR_T buffer[], uqm::CHAR_T* pClip, uqm::COUNT clip_number)
+void GetSubClip(uqstl::span<uqm::CHAR_T> buffer, uqm::CHAR_T* pClip, uqm::COUNT clip_number)
 {
 	uqm::CHAR_T* pStr = strstr(pClip, ".ogg");
 	if (!pStr)
 	{
 		// Fall through passing back the whole thing
-		strcpy(buffer, pClip);
+		uqm::strncpy_safe(buffer, pClip);
 		return;
 	}
-	strncpy(buffer, pClip, pStr - pClip);
-	buffer[pStr - pClip] = 'a' + clip_number;
-	pStr++;
-	strncpy(&buffer[pStr - pClip], ".ogg\0", 5);
-	return;
+	fmt::format_to_sz_n(buffer.data(), buffer.size(), "{}{}.ogg", std::string_view(pClip, pStr - pClip), 'a' + clip_number);
 }
 
 // The CallbackFunction is queued and executes synchronously
@@ -327,7 +323,7 @@ void NPCPhrase_cb(int index, CallbackFunction cb)
 					fmt::print(stderr, "Allocating for track {}.\n", i);
 #endif
 					tracks[i] = (uqm::CHAR_T*)HCalloc(sizeof(char) * MAX_CLIPNAME);
-					GetSubClip(tracks[i], pClip, clip_number);
+					GetSubClip({tracks[i], MAX_CLIPNAME}, pClip, clip_number);
 #ifdef DEBUG_STARSEED
 					fmt::print(stderr, "RoboTrack[{}] = <<{}>>.\n", i, tracks[i]);
 #endif
@@ -528,34 +524,36 @@ NPCNumberPhrase(int number, const char* fmt, uqm::CHAR_T** ptrack)
 	return queued;
 }
 
-void construct_response(uqm::CHAR_T* buf, int R /* promoted from RESPONSE_REF */, ...)
+void construct_response(uqstl::span<uqm::CHAR_T> buf, int R /* promoted from RESPONSE_REF */, ...)
 {
-	uqm::CHAR_T* buf_start = buf;
+	uqm::CHAR_T* buf_start = buf.data();
 	uqm::CHAR_T* name;
 	va_list vlist;
 
 	va_start(vlist, R);
 
+	auto destBuf {buf};
 	do
 	{
-		uqm::COUNT len;
+		if (destBuf.empty())
+		{
+			uqm::log::critical("Error: construct_response buffer size of {} exceeded, please increase!", buf.size());
+			exit(EXIT_FAILURE);
+		}
 		STRING S;
 
 		S = SetAbsStringTableIndex(CommData.ConversationPhrases, R - 1);
 
-		strcpy(buf, (uqm::CHAR_T*)GetStringAddress(S));
-
-		len = (uqm::COUNT)strlen(buf);
-
-		buf += len;
+		uqm::COUNT len = uqm::strncpy_safe(destBuf, (uqm::CHAR_T*)GetStringAddress(S));
+		destBuf = destBuf.subspan(len);
 
 		name = va_arg(vlist, uqm::CHAR_T*);
 
 		if (name)
 		{
-			len = (uqm::COUNT)strlen(name);
-			strcpy(buf, name);
-			buf += len;
+			const uint32_t nameLen = strlen(name);
+			len = uqm::strncpy_safe(destBuf, {name, nameLen});
+			destBuf = destBuf.subspan(len);
 
 			/*
 			if ((R = va_arg (vlist, RESPONSE_REF)) == (RESPONSE_REF)-1)
@@ -570,17 +568,6 @@ void construct_response(uqm::CHAR_T* buf, int R /* promoted from RESPONSE_REF */
 		}
 	} while (name);
 	va_end(vlist);
-
-	*buf = '\0';
-
-	// XXX: this should someday be changed so that the function takes
-	//   the buffer size as an argument
-	if ((buf_start == shared_phrase_buf) && (buf > shared_phrase_buf + sizeof(shared_phrase_buf)))
-	{
-		uqm::log::critical("Error: shared_phrase_buf size exceeded,"
-						   " please increase!\n");
-		exit(EXIT_FAILURE);
-	}
 }
 
 void setSegue(Segue segue)

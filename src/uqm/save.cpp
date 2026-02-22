@@ -1297,7 +1297,7 @@ PrepareSummary(SUMMARY_DESC* SummPtr, const char* name)
 	SummPtr->month_index = GLOBAL(GameClock.month_index);
 	SummPtr->year_index = GLOBAL(GameClock.year_index);
 	SummPtr->SaveName[SAVE_NAME_SIZE - 1] = 0;
-	strncpy(SummPtr->SaveName, name, SAVE_NAME_SIZE - 1);
+	uqm::strncpy_safe(SummPtr->SaveName, name);
 	SummPtr->res_factor = RESOLUTION_FACTOR;
 }
 

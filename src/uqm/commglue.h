@@ -56,7 +56,7 @@ extern void NPCPhrase_cb(int index, CallbackFunction cb);
 extern void NPCPhrase_splice(int index);
 extern void NPCNumber(int number, const char* fmt);
 
-extern void construct_response(uqm::CHAR_T* buf, int R /* promoted from
+extern void construct_response(uqstl::span<uqm::CHAR_T> buf, int R /* promoted from
 		RESPONSE_REF */
 							   ,
 							   ...);

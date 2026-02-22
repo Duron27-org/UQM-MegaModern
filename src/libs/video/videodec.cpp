@@ -19,6 +19,7 @@
 #include "videodec.h"
 #include "dukvid.h"
 #include "core/log/log.h"
+#include "core/string/StringUtils.h"
 #include "libs/memlib.h"
 #include "../../uqm/units.h"
 
@@ -260,8 +261,9 @@ VideoDecoder_Load(uio_DirHandle* dir, const char* filename)
 	}
 
 	decoder->dir = dir;
-	decoder->filename = (char*)HMalloc(strlen(filename) + 1);
-	strcpy(decoder->filename, filename);
+	const uint32_t filenameLen = strlen(filename);
+	decoder->filename = (char*)HMalloc(filenameLen + 1);
+	uqm::strncpy_safe({decoder->filename, filenameLen + 1}, {filename, filenameLen});
 	decoder->error = VIDEODECODER_OK;
 
 	if (!decoder->funcs->Open(decoder, dir, filename))

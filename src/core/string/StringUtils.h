@@ -276,6 +276,7 @@ FMT_INLINE auto format_to_sz_n(OutputIt out, size_t outSize, format_string<T...>
 }
 
 
+
 template <EnumType E>
 struct formatter<E> : formatter<std::underlying_type_t<E>>
 {

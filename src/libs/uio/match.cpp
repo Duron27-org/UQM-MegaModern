@@ -588,7 +588,7 @@ match_errorStringRegex(match_RegexContext* context, int errorCode)
 	}
 
 	context->errorString = (char*)uio_malloc(errorStringLength);
-	strncpy(context->errorString, err, errorStringLength);
+	uqm::strncpy_safe({context->errorString, static_cast<uint32_t>(errorStringLength)}, {err, static_cast<uint32_t>(errorStringLength)});
 
 	std::ignore = errorCode;
 	return context->errorString;

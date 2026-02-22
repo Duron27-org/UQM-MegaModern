@@ -749,10 +749,8 @@ populate_editkeys(int templat)
 {
 	int i, j;
 
-	strncpy(textentries[TEXT_LOUTNAME].value, uqm::input_templates[templat].name,
-			textentries[TEXT_LOUTNAME].maxlen);
-	textentries[TEXT_LOUTNAME].value[textentries[TEXT_LOUTNAME].maxlen - 1] = 0;
-
+	uqm::strncpy_safe(textentries[TEXT_LOUTNAME].value, {uqm::input_templates[templat].name, static_cast<uint32_t>(textentries[TEXT_LOUTNAME].maxlen)});
+	
 	for (i = 0; i < NUM_KEYS; i++)
 	{
 		for (j = 0; j < 2; j++)
@@ -905,8 +903,7 @@ rename_template(WIDGET_TEXTENTRY* self)
 	   to track this symbolically or ensure that self->value's
 	   buffer is always at least this big; this will require some
 	   reworking of widgets */
-	strncpy(uqm::input_templates[choices[CHOICE_KBLAYOUT].selected].name, self->value, 30);
-	uqm::input_templates[choices[CHOICE_KBLAYOUT].selected].name[29] = 0;
+	uqm::strncpy_safe(uqm::input_templates[choices[CHOICE_KBLAYOUT].selected].name, self->value);
 }
 
 static void
@@ -2239,8 +2236,7 @@ init_widgets(void)
 	{
 		int j, tipcount;
 
-		strncpy(textentries[i].value, buffer[i], textentries[i].maxlen);
-		textentries[i].value[textentries[i].maxlen] = 0;
+		uqm::strncpy_safe(textentries[i].value, {buffer[i], static_cast<uint32_t>(textentries[i].maxlen)});
 
 		if (index >= count)
 		{

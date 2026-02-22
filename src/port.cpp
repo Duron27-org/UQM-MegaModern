@@ -33,6 +33,7 @@
 #if !defined(_MSC_VER) && !defined(HAVE_READDIR_R)
 #include <dirent.h>
 #endif
+#include "core/string/StringUtils.h"
 
 #ifndef HAVE_STRUPR
 char* strupr(char* str)
@@ -69,20 +70,12 @@ int setenv(const char* name, const char* value, int overwrite)
 	nameLen = strlen(name);
 	valueLen = strlen(value);
 
-	string = (char*)malloc(nameLen + valueLen + 2);
+	const size_t bufLen = nameLen + valueLen + 2;
+	string = (char*)malloc(bufLen);
 	// "NAME=VALUE\0"
-	// putenv() does NOT make a copy, but uses the string passed.
-
-	ptr = string;
-
-	strcpy(string, name);
-	ptr += nameLen;
-
-	*ptr = '=';
-	ptr++;
-
-	strcpy(ptr, value);
-
+	// putenv() does NOT make a copy, but takes ownership of the string passed.
+	fmt::format_to_sz_n(string, bufLen, "{}={}", name, value);
+	
 	return _putenv(string);
 }
 #endif

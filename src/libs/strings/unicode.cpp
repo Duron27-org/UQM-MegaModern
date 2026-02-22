@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "core/log/log.h"
+#include "core/string/StringUtils.h"
 #include "libs/misc.h"
 #include "libs/strlib.h"
 #include "uqm/units.h"
@@ -395,15 +396,14 @@ int utf8StringLastPos(const unsigned char* pStr, UniChar ch)
 unsigned char*
 utf8StringCopy(unsigned char* dst, size_t size, const unsigned char* src)
 {
-	if (size == 0)
+	// just delegate to strncpy_safe.
+	const auto copied {uqm::strncpy_safe({reinterpret_cast<char*>(dst), reinterpret_cast<char*>(dst) + size}, reinterpret_cast<const char*>(src))};
+	if (copied) [[likely]]
 	{
-		return 0;
+		return dst;
 	}
-
-	strncpy((char*)dst, (const char*)src, size);
-	dst[size - 1] = '\0';
-
-	return dst;
+	
+	return nullptr;
 }
 
 // TODO: this is not implemented with respect to collating order

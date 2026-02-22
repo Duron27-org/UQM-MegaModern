@@ -414,7 +414,7 @@ NameCaptainOrShip(bool nameCaptain, bool gamestart)
 	// at New Game, fill them in with the default names.
 	if (gamestart && (Setting != nullptr) && (Setting[0] == '\0'))
 	{
-		strcpy(Setting, GAME_STRING // Zelnick & Vindicator
+		uqm::strncpy_safe({Setting, strlen(Setting)}, GAME_STRING // Zelnick & Vindicator
 			   (NAMING_STRING_BASE + 2 + nameCaptain));
 		CursPos = (uqm::COUNT)strlen(GAME_STRING(NAMING_STRING_BASE + 2 + nameCaptain));
 	}
@@ -1538,7 +1538,7 @@ DrawSavegameSummary(PICK_GAME_STATE* pickState, uqm::COUNT gameIndex)
 				utf8StringCopy(buf, sizeof(buf), pSD->SS.PlanetName);
 				break;
 			default:
-				fmt::format_to_sz_n(buf, sizeof buf, "%03u.%01u : %03u.%01u",
+				fmt::format_to_sz_n(buf, sizeof buf, "{:03}.{:01} : {:03}.{:01}",
 									starPt.x / 10, starPt.x % 10,
 									starPt.y / 10, starPt.y % 10);
 		}
@@ -1566,12 +1566,12 @@ DrawSavegameSummary(PICK_GAME_STATE* pickState, uqm::COUNT gameIndex)
 }
 
 static void
-TruncateSaveName(uqm::CHAR_T* buf, COORD maxWidth, bool naming)
+TruncateSaveName(uqstl::span<uqm::CHAR_T> buf, COORD maxWidth, bool naming)
 {
 	TEXT t;
 	GFXRECT r;
 
-	t.pStr = buf;
+	t.pStr = buf.data();
 
 	r = font_GetTextRect(&t);
 
@@ -1582,13 +1582,14 @@ TruncateSaveName(uqm::CHAR_T* buf, COORD maxWidth, bool naming)
 
 		do
 		{ // Shorten the save name down so it will fit the width of the save name box
-			strncpy(&buf[--stringLength - sizeof(ellipses)], ellipses, sizeof(ellipses));
+			auto nameBuf = buf.subspan(--stringLength - sizeof(ellipses));
+			uqm::strncpy_safe(nameBuf, ellipses);
 			r = font_GetTextRect(&t);
 		} while (r.extent.width > maxWidth);
 
 		if (naming)
 		{
-			buf[strlen(buf) - strlen(ellipses)] = '\0';
+			buf[strlen(buf.data()) - strlen(ellipses)] = '\0';
 		}
 	}
 }
@@ -1643,7 +1644,7 @@ DrawGameSelection(PICK_GAME_STATE* pickState, uqm::COUNT selSlot)
 		t.baseline.x = r.corner.x + RES_SCALE(3);
 		t.baseline.y = r.corner.y + RES_SCALE(8);
 		fmt::format_to_sz_n(buf, sizeof buf,
-							(MAX_SAVED_GAMES > 99) ? "%03u" : "%02u", curSlot);
+							(MAX_SAVED_GAMES > 99) ? "{:03}" : "{:02}", curSlot);
 		font_DrawText(&t);
 
 		r.extent.width = RES_SCALE(204) + (SIS_SCREEN_WIDTH - RES_SCALE(242));
@@ -1832,7 +1833,6 @@ static bool
 SaveLoadGame(PICK_GAME_STATE* pickState, uqm::COUNT gameIndex, bool* canceled_by_user)
 {
 	SUMMARY_DESC* desc = pickState->summary + gameIndex;
-	uqm::CHAR_T nameBuf[256];
 	STAMP saveStamp;
 	bool success;
 	GFXRECT r;
@@ -1845,10 +1845,10 @@ SaveLoadGame(PICK_GAME_STATE* pickState, uqm::COUNT gameIndex, bool* canceled_by
 	{
 		TruncateSaveName(desc->SaveName, r.extent.width - 104, true);
 
+		uqm::CHAR_T nameBuf[256] {};
 		// Initialize the save name with whatever name is there already
 		// SAVE_NAME_SIZE is less than 256, so this is safe.
-		strncpy(nameBuf, desc->SaveName, SAVE_NAME_SIZE);
-		nameBuf[SAVE_NAME_SIZE] = 0;
+		uqm::strncpy_safe(nameBuf, desc->SaveName);
 		if (NameSaveGame(gameIndex, nameBuf))
 		{
 			PlayMenuSound(MENU_SOUND_SUCCESS);

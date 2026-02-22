@@ -165,11 +165,9 @@ MeleeTeam_getTeamName(const MeleeTeam* team)
 	return team->name;
 }
 
-// Returns true iff the state has actually changed.
 void MeleeTeam_setName(MeleeTeam* team, const char* name)
 {
-	strncpy(team->name, name, sizeof team->name - 1);
-	team->name[sizeof team->name - 1] = '\0';
+	uqm::strncpy_safe(team->name, name);
 }
 
 void MeleeTeam_copy(MeleeTeam* copy, const MeleeTeam* original)

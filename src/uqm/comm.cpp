@@ -1408,9 +1408,9 @@ DoConvSummary(SUMMARY_STATE* pSS)
 				if (CommData.AlienConv == ORZ_CONVERSATION)
 				{ // MB: nasty hack: remove '$'s from conversation for
 					// Orz
-					uqm::CHAR_T my_copy[128];
+					uqm::CHAR_T my_copy[128] {};
 
-					strcpy(my_copy, t.pStr);
+					uqm::strncpy_safe(my_copy, t.pStr);
 					remove_char_from_string(my_copy, '$');
 					t.pStr = my_copy;
 
@@ -1436,9 +1436,9 @@ DoConvSummary(SUMMARY_STATE* pSS)
 			// this subtitle fit completely
 			if (CommData.AlienConv == ORZ_CONVERSATION)
 			{ // MB: nasty hack: remove '$'s from conversation for Orz
-				uqm::CHAR_T my_copy[128];
+				uqm::CHAR_T my_copy[128] {};
 
-				strcpy(my_copy, t.pStr);
+				uqm::strncpy_safe(my_copy, t.pStr);
 				remove_char_from_string(my_copy, '$');
 				t.pStr = my_copy;
 				font_DrawText(&t);

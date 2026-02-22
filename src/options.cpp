@@ -269,8 +269,9 @@ void prepareContentDir(uqgsl::czstring contentDirName, uqgsl::czstring addonDirN
 
 			/* dirname can modify its argument, so we need a local
 			 * mutable copy of it. */
-			execFileDup = (char*)HMalloc(strlen(execFile) + 1);
-			strcpy(execFileDup, execFile);
+			const uint32_t execFileLen = strlen(execFile);
+			execFileDup = (char*)HMalloc(execFileLen + 1);
+			uqm::strncpy_safe({execFileDup, execFileLen + 1}, {execFile, execFileLen});
 			fmt::format_to_sz_n(tempDir, PATH_MAX, "{}/../Resources/content", dirname(execFileDup));
 			loc = findFileInDirs((const char**)&tempDir, 1, testFile);
 			HFree(execFileDup);

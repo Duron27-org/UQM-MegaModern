@@ -27,6 +27,7 @@
 #include "libs/memlib.h"
 #include "endian_uqm.h"
 #include "uqm/units.h"
+#include "core/string/StringUtils.h"
 
 #define THIS_PTR TFB_VideoDecoder* This
 
@@ -285,9 +286,8 @@ dukv_DecodeFrameV3(uint8* src_p, uint32* dst_p, uint32 wb, uint32 hb,
 static bool
 dukv_OpenStream(TFB_DuckVideoDecoder* dukv)
 {
-	char filename[280];
-
-	strcat(strcpy(filename, dukv->basename), ".duk");
+	char filename[280] {};
+	fmt::format_to_sz_n(filename, sizeof(filename), "{}.duk", dukv->basename);
 
 	return (dukv->stream =
 				uio_fopen(dukv->basedir, filename, "rb"))
@@ -297,11 +297,11 @@ dukv_OpenStream(TFB_DuckVideoDecoder* dukv)
 static bool
 dukv_ReadFrames(TFB_DuckVideoDecoder* dukv)
 {
-	char filename[280];
+	char filename[280] {};
 	uint32 i;
 	uio_Stream* fp;
 
-	strcat(strcpy(filename, dukv->basename), ".frm");
+	fmt::format_to_sz_n(filename, sizeof(filename), "{}.frm", dukv->basename);
 
 	if (!(fp = uio_fopen(dukv->basedir, filename, "rb")))
 	{
@@ -336,10 +336,10 @@ static bool
 dukv_ReadVectors(TFB_DuckVideoDecoder* dukv, uint8* vectors)
 {
 	uio_Stream* fp;
-	char filename[280];
+	char filename[280] {};
 	int ret;
 
-	strcat(strcpy(filename, dukv->basename), ".tbl");
+	fmt::format_to_sz_n(filename, sizeof(filename), "{}.tbl", dukv->basename);
 
 	if (!(fp = uio_fopen(dukv->basedir, filename, "rb")))
 	{
@@ -356,12 +356,12 @@ static bool
 dukv_ReadHeader(TFB_DuckVideoDecoder* dukv, sint32* pl, sint32* pc)
 {
 	uio_Stream* fp;
-	char filename[280];
+	char filename[280] {};
 	int ret;
 	int i;
 	TFB_DuckVideoHeader hdr;
 
-	strcat(strcpy(filename, dukv->basename), ".hdr");
+	fmt::format_to_sz_n(filename, sizeof(filename), "{}.hdr", dukv->basename);
 
 	if (!(fp = uio_fopen(dukv->basedir, filename, "rb")))
 	{
@@ -652,8 +652,9 @@ dukv_Open(THIS_PTR, uio_DirHandle* dir, const char* filename)
 	uint8* vectors;
 
 	dukv->basedir = dir;
-	dukv->basename = (char*)HMalloc(strlen(filename) + 1);
-	strcpy(dukv->basename, filename);
+	const uint32_t filenameLen = strlen(filename);
+	dukv->basename = (char*)HMalloc(filenameLen + 1);
+	uqm::strncpy_safe({dukv->basename, filenameLen + 1}, {filename, filenameLen});
 	pext = strrchr(dukv->basename, '.');
 	if (pext) // strip extension
 	{

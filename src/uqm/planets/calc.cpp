@@ -560,14 +560,14 @@ void DoPlanetaryAnalysis(SYSTEM_INFO* SysInfoPtr, PLANET_DESC* pPlanetDesc)
 
 #ifdef DEBUG_PLANET_CALC
 		radius = (uqm::SIZE)((uqm::DWORD)UNSCALE_RADIUS(radius) * 100 / UNSCALE_RADIUS(EARTH_RADIUS));
-		uqm::log::debug("\tOrbital Distance   : {}.%02d AU", radius / 100, radius % 100);
+		uqm::log::debug("\tOrbital Distance   : {}.{:02} AU", radius / 100, radius % 100);
 		//log_add (log_Debug, "\tPlanetary Mass : {}.%02d Earth masses",
 		// SysInfoPtr->PlanetInfo.PlanetMass / 100,
 		// SysInfoPtr->PlanetInfo.PlanetMass % 100);
-		uqm::log::debug("\tPlanetary Radius   : {}.%02d Earth radii",
+		uqm::log::debug("\tPlanetary Radius   : {}.{:02} Earth radii",
 						SysInfoPtr->PlanetInfo.PlanetRadius / 100,
 						SysInfoPtr->PlanetInfo.PlanetRadius % 100);
-		uqm::log::debug("\tSurface Gravity: {}.%02d gravities",
+		uqm::log::debug("\tSurface Gravity: {}.{:02} gravities",
 						SysInfoPtr->PlanetInfo.SurfaceGravity / 100,
 						SysInfoPtr->PlanetInfo.SurfaceGravity % 100);
 		uqm::log::debug("\tSurface Temperature: {} degrees C",
@@ -576,7 +576,7 @@ void DoPlanetaryAnalysis(SYSTEM_INFO* SysInfoPtr, PLANET_DESC* pPlanetDesc)
 						abs(SysInfoPtr->PlanetInfo.AxialTilt));
 		uqm::log::debug("\tTectonics : Class {}",
 						SysInfoPtr->PlanetInfo.Tectonics + 1);
-		uqm::log::debug("\tAtmospheric Density: {}.%02u",
+		uqm::log::debug("\tAtmospheric Density: {}.{:02}",
 						SysInfoPtr->PlanetInfo.AtmoDensity / EARTH_ATMOSPHERE,
 						(SysInfoPtr->PlanetInfo.AtmoDensity * 100 / EARTH_ATMOSPHERE) % 100);
 		if (SysInfoPtr->PlanetInfo.AtmoDensity == 0)

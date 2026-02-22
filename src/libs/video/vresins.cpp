@@ -20,6 +20,7 @@
 #include <string.h>
 #include "vidintrn.h"
 #include "core/log/log.h"
+#include "core/string/StringUtils.h"
 #include "libs/memlib.h"
 
 
@@ -54,12 +55,12 @@ static void
 GetLegacyVideoData(const char* path, RESOURCE_DATA* resdata)
 {
 	void* result = nullptr;
-	char paths[1024], *audio_path, *speech_path, *loop_str;
+	char paths[1024] {};
+	char *audio_path, *speech_path, *loop_str;
 	uint32 LoopFrame = VID_NO_LOOP;
 
 	/* Parse out the video components. */
-	strncpy(paths, path, 1023);
-	paths[1023] = '\0';
+	uqm::strncpy_safe(paths, path);
 	audio_path = strchr(paths, ':');
 	if (audio_path == nullptr)
 	{
@@ -128,20 +129,19 @@ GetLegacyVideoData(const char* path, RESOURCE_DATA* resdata)
 	if (result)
 	{
 		LEGACY_VIDEO pLV = (LEGACY_VIDEO)result;
-		int len;
 		pLV->video = nullptr;
 		pLV->audio = nullptr;
 		pLV->speech = nullptr;
 		pLV->loop = LoopFrame;
 
-		len = strlen(paths) + 1;
+		uint32_t len = strlen(paths) + 1;
 		pLV->video = (char*)HMalloc(len);
 		if (!pLV->video)
 		{
 			uqm::log::warn("Warning: Couldn't allocate space for '{}'", paths);
 			goto err;
 		}
-		strncpy(pLV->video, paths, len);
+		uqm::strncpy_safe({pLV->video, len}, {paths, len-1});
 
 		if (audio_path)
 		{
@@ -152,7 +152,7 @@ GetLegacyVideoData(const char* path, RESOURCE_DATA* resdata)
 				uqm::log::warn("Warning: Couldn't allocate space for '{}'", audio_path);
 				goto err;
 			}
-			strncpy(pLV->audio, audio_path, len);
+			uqm::strncpy_safe({pLV->audio, len}, {audio_path, len-1});
 		}
 
 		if (speech_path)
@@ -164,7 +164,7 @@ GetLegacyVideoData(const char* path, RESOURCE_DATA* resdata)
 				uqm::log::warn("Warning: Couldn't allocate space for '{}'", speech_path);
 				goto err;
 			}
-			strncpy(pLV->speech, speech_path, len);
+			uqm::strncpy_safe({pLV->speech, len}, {speech_path, len-1});
 		}
 
 		resdata->ptr = result;
