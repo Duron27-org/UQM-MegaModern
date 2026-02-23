@@ -453,7 +453,7 @@ showRemainingCrew(void)
 	uqm::SIZE remaining_crew;
 #define INITIAL_CREW 2000
 
-	if (!DIF_HARD)
+	if (!isDifficulty(uqm::Difficulty::Hard))
 	{
 		return;
 	}
@@ -543,7 +543,7 @@ CalculateAllyPoints()
 	uqm::BYTE i;
 	HFLEETINFO hFleet;
 	FLEET_INFO* FleetPtr;
-	uqm::SIZE MaxPoints = DIF_CASE(60, 90, 30);
+	uqm::SIZE MaxPoints = difficultyCase(90, 60, 30);
 
 	for (i = ARILOU_SHIP; i <= LAST_MELEE_ID; i++)
 	{
@@ -561,7 +561,7 @@ CalculateAllyPoints()
 
 		if (FleetPtr->allied_state == GOOD_GUY)
 		{
-			MaxPoints += ShipPoints(hFleet) * DIF_CASE(2, 3, 1);
+			MaxPoints += ShipPoints(hFleet) * difficultyCase(3, 2, 1);
 		}
 
 		UnlockFleetInfo(&GLOBAL(avail_race_q), hFleet);
@@ -594,7 +594,7 @@ CalculateEscortsPoints(void)
 
 bool CanBuyPoints(HFLEETINFO hFleet)
 {
-	if ((!optFleetPointSys && !DIF_HARD)
+	if ((!optFleetPointSys && !isDifficulty(uqm::Difficulty::Hard))
 		|| GET_GAME_STATE(CHMMR_BOMB_STATE) == 3)
 	{
 		return true;
@@ -616,7 +616,7 @@ showRemainingPoints(int delta)
 	uqm::SBYTE percentage_left;
 	uqm::SIZE FP = REMAINING_FP + delta;
 
-	if ((!optFleetPointSys && !DIF_HARD)
+	if ((!optFleetPointSys && !isDifficulty(uqm::Difficulty::Hard))
 		|| GET_GAME_STATE(CHMMR_BOMB_STATE) == 3)
 	{
 		return;
@@ -1058,7 +1058,7 @@ DrawRaceStrings(uqm::BYTE NewRaceItem)
 		font_DrawText(&t);
 
 		// Print the fleet points
-		if ((optFleetPointSys || DIF_HARD)
+		if ((optFleetPointSys || isDifficulty(uqm::Difficulty::Hard))
 			&& GET_GAME_STATE(CHMMR_BOMB_STATE) < 3)
 		{
 			t.baseline.y = RADAR_Y + RES_SCALE(7)
@@ -1658,7 +1658,7 @@ DMS_HireFlagShipCrew(void)
 		return 0;
 	}
 
-	if (DIF_HARD && crew_bought >= 2000
+	if (isDifficulty(uqm::Difficulty::Hard) && crew_bought >= 2000
 		&& CheckAlliance(SHOFIXTI_SHIP) != GOOD_GUY)
 	{
 		// Ran out of StarBase crew
@@ -1739,7 +1739,7 @@ DMS_HireEscortShipCrew(SHIP_FRAGMENT* StarShipPtr)
 			StarShipPtr->race_id);
 		FLEET_INFO* TemplatePtr =
 			LockFleetInfo(&GLOBAL(avail_race_q), hTemplate);
-		templateMaxCrew = (EXTENDED && !DIF_HARD) ?
+		templateMaxCrew = (EXTENDED && !isDifficulty(uqm::Difficulty::Hard)) ?
 							  TemplatePtr->max_crew :
 							  TemplatePtr->crew_level;
 		UnlockFleetInfo(&GLOBAL(avail_race_q), hTemplate);
@@ -1763,7 +1763,7 @@ DMS_HireEscortShipCrew(SHIP_FRAGMENT* StarShipPtr)
 		return 0;
 	}
 
-	if (DIF_HARD && crew_bought >= 2000
+	if (isDifficulty(uqm::Difficulty::Hard) && crew_bought >= 2000
 		&& CheckAlliance(SHOFIXTI_SHIP) != GOOD_GUY)
 	{
 		// Ran out of StarBase crew
@@ -1948,7 +1948,7 @@ DMS_ModifyCrew(MENU_STATE* pMS, HSHIPFRAG hStarShip, uqm::SBYTE dy)
 				break;
 			}
 
-			if (!DIF_HARD || ((dy > 0 && StarShipPtr->crew_level >= 1) || (dy < 0 && StarShipPtr->crew_level != 1)))
+			if (!isDifficulty(uqm::Difficulty::Hard) || ((dy > 0 && StarShipPtr->crew_level >= 1) || (dy < 0 && StarShipPtr->crew_level != 1)))
 			{
 				CrewTransaction(crew_delta);
 				animatePowerLines(nullptr);

@@ -127,7 +127,7 @@ GenerateShofixti_uninitNpcs(SOLARSYS_STATE* solarSys)
 		{
 			SET_GAME_STATE(SHOFIXTI_KIA, 1);
 			SET_GAME_STATE(SHOFIXTI_VISITS, 0);
-			if (DIF_HARD)
+			if (isDifficulty(uqm::Difficulty::Hard))
 			{
 				SET_GAME_STATE(SHOFIXTI_BRO_KIA, 1);
 			}
@@ -272,7 +272,7 @@ GenerateShofixti_generateOrbital(SOLARSYS_STATE* solarSys,
 	{
 		if (CheckAlliance(SHOFIXTI_SHIP) == GOOD_GUY)
 		{
-			bool MaxShips = (CountEscortShips(SHOFIXTI_SHIP) < IF_HARD(2, 1) ? true : false);
+			bool MaxShips = (CountEscortShips(SHOFIXTI_SHIP) < ifHardDifficulty(1, 2) ? true : false);
 			bool RoomInFleet = EscortFeasibilityStudy(SHOFIXTI_SHIP);
 			uqm::BYTE Index = !MaxShips ? 0 : (!RoomInFleet ? 1 : 2);
 

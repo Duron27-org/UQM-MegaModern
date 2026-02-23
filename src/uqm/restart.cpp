@@ -152,7 +152,7 @@ void DrawToolTips(MENU_STATE* pMS, int answer)
 }
 
 static void
-DrawDiffChooser(MENU_STATE* pMS, uqm::BYTE answer, bool confirm)
+DrawDiffChooser(MENU_STATE* pMS, int answer, bool confirm)
 {
 	STAMP s;
 	FONT oldFont;
@@ -288,7 +288,19 @@ DoDiffChooser(MENU_STATE* pMS)
 
 	if (response)
 	{
-		optDifficulty = (!a ? (int)OPTVAL_EASY : (a > 1 ? (int)OPTVAL_HARD : (int)OPTVAL_NORMAL));
+		switch (a)
+		{
+			case 0:
+				optDifficulty = uqm::Difficulty::Easy;
+				break;
+			case 2:
+				optDifficulty = uqm::Difficulty::Hard;
+				break;
+			case 1:
+			default:
+				optDifficulty = uqm::Difficulty::Normal;
+				break;
+		}
 	}
 
 	DestroyDrawable(ReleaseDrawable(s.frame));
@@ -537,7 +549,7 @@ DoRestart(MENU_STATE* pMS)
 					break;
 				}
 
-				if (optDiffChooser == OPTVAL_IMPO)
+				if (optDiffChooser == uqm::Difficulty::ChooseYourOwn)
 				{
 					Flash_pause(pMS->flashContext);
 					Flash_setState(pMS->flashContext, FlashState_fadeIn,

@@ -199,7 +199,7 @@ GenerateMycon_generateOrbital(SOLARSYS_STATE* solarSys,
 				else
 				{
 					uqm::COUNT i;
-					uqm::COUNT sum = DIF_CASE(5, 3, 12);
+					uqm::COUNT sum = difficultyCase(3, 5, 12);
 
 					for (i = 0; i < sum; ++i)
 					{
@@ -268,7 +268,7 @@ GenerateMycon_generateOrbital(SOLARSYS_STATE* solarSys,
 					SET_GAME_STATE(KNOW_ABOUT_SHATTERED, 1);
 				}
 
-				if (DIF_HARD && StartSphereTracking(MYCON_SHIP))
+				if (isDifficulty(uqm::Difficulty::Hard) && StartSphereTracking(MYCON_SHIP))
 				{
 					if (GenerateMyconDefenders(CurStarDescPtr->Index))
 					{
@@ -295,7 +295,7 @@ GenerateMycon_generateOrbital(SOLARSYS_STATE* solarSys,
 
 	if (matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET)
 		&& !PrimeSeed
-		&& (CurStarDescPtr->Index != EGG_CASE0_DEFINED || DIF_HARD))
+		&& (CurStarDescPtr->Index != EGG_CASE0_DEFINED || isDifficulty(uqm::Difficulty::Hard)))
 	{
 		PLANET_INFO* pPlanetInfo = &solarSys->SysInfo.PlanetInfo;
 		uqm::DWORD rand = RandomContext_Random(SysGenRNG);

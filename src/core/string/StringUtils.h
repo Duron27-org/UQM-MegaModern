@@ -245,6 +245,18 @@ struct EnumNames
 		}
 		return out;
 	}
+
+	template <typename T = uqstl::string_view>
+	static auto pairs() -> uqstl::vector<uqstl::pair<T, E>>
+	{
+		uqstl::vector<uqstl::pair<T, E>> out {};
+		const auto enumValues {magic_enum::enum_values<E>()};
+		for (const E value : enumValues)
+		{
+			out.emplace_back(toString(value), value);
+		}
+		return out;
+	}
 };
 
 // istream support for enums.
@@ -331,10 +343,9 @@ struct formatter<E> : formatter<std::underlying_type_t<E>>
 #endif
 			if (m_includeNumericValueWithString)
 			{
-				*out++ = ' ';
-				*out++ = '(';
+				*out++ = '-';
+				*out++ = '>';
 				out = base_formatter::format(static_cast<std::underlying_type_t<E>>(value), ctx);
-				*out++ = ')';
 			}
 
 			return out;

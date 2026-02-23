@@ -490,7 +490,7 @@ void RotatePlanetSphere(bool keepRate, STAMP* onTop)
 		return; // not time yet
 	}
 
-	if (DIF_HARD && Now >= TimeOutClock)
+	if (isDifficulty(uqm::Difficulty::Hard) && Now >= TimeOutClock)
 	{
 		GameClockTick();
 		TimeOutClock = Now + CLOCK_FRAME_RATE;

@@ -21,10 +21,8 @@
 #include "libs/gfxlib.h"
 #include "planets/elemdata.h" // for NUM_ELEMENT_CATEGORIES
 #include "units.h"			  // for RESOLUTION_FACTOR
+#include "options/OptionDefs.h"
 
-#if 0 //defined(__cplusplus)
-extern "C" {
-#endif
 
 #define CLEAR_SIS_RADAR (1 << 2)
 #define DRAW_SIS_DISPLAY (1 << 3)
@@ -177,7 +175,8 @@ typedef struct
 	uqm::CHAR_T ShipName[SIS_NAME_SIZE];
 	uqm::CHAR_T CommanderName[SIS_NAME_SIZE];
 	uqm::CHAR_T PlanetName[SIS_NAME_SIZE];
-	uqm::BYTE Difficulty, Extended, Nomad, ShipSeed;
+	uqm::Difficulty Difficulty;
+	uqm::BYTE Extended, Nomad, ShipSeed;
 	uqm::SDWORD Seed;
 	uqm::BYTE SaveVersion;
 } SIS_STATE;
@@ -299,8 +298,5 @@ typedef enum
 	THICK_OUT_INV_BEVEL = THICK_OUTER_BEVEL + 8,
 } BEVEL_LEVEL;
 
-#if 0 //defined(__cplusplus)
-}
-#endif
 
 #endif /* SIS_H_INCL__ */

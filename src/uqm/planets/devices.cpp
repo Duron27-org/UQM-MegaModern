@@ -473,29 +473,33 @@ InvokeDevice(uqm::BYTE which_device)
 		case DESTRUCT_CODE_DEVICE:
 			break;
 		case PORTAL_SPAWNER_DEVICE:
-#define PORTAL_FUEL_COST (DIF_CASE(10, 5, 20) * FUEL_TANK_SCALE)
-			if ((inHyperSpace() || (EXTENDED && inHQSpace()))
-				&& GLOBAL_SIS(FuelOnBoard) >= (uqm::DWORD)PORTAL_FUEL_COST)
 			{
-				/* No DeltaSISGauges because the flagship picture
+#define MAX_ZFP_SHIPS DIF_CASE(4, 4, 2)
+				const uqm::DWORD portalFuelCost {difficultyCase < uqm::DWORD>(5, 10, 20) * FUEL_TANK_SCALE};
+
+				if ((inHyperSpace() || (EXTENDED && inHQSpace()))
+					&& GLOBAL_SIS(FuelOnBoard) >= portalFuelCost)
+				{
+					/* No DeltaSISGauges because the flagship picture
 				 * is currently obscured.
 				 */
-				if (!optInfiniteFuel
-					|| (EXTENDED && !optInfiniteFuel
-						&& inHyperSpace()))
-				{
-					GLOBAL_SIS(FuelOnBoard) -= PORTAL_FUEL_COST;
-				}
+					if (!optInfiniteFuel
+						|| (EXTENDED && !optInfiniteFuel
+							&& inHyperSpace()))
+					{
+						GLOBAL_SIS(FuelOnBoard) -= portalFuelCost;
+					}
 
-				if (EXTENDED && inHyperSpace())
-				{
-					SaveLastLoc(MAKE_POINT(
-						LOGX_TO_UNIVERSE(GLOBAL_SIS(log_x)),
-						LOGY_TO_UNIVERSE(GLOBAL_SIS(log_y))));
-				}
+					if (EXTENDED && inHyperSpace())
+					{
+						SaveLastLoc(MAKE_POINT(
+							LOGX_TO_UNIVERSE(GLOBAL_SIS(log_x)),
+							LOGY_TO_UNIVERSE(GLOBAL_SIS(log_y))));
+					}
 
-				SET_GAME_STATE(PORTAL_COUNTER, 1);
-				return DEVICE_SUCCESS;
+					SET_GAME_STATE(PORTAL_COUNTER, 1);
+					return DEVICE_SUCCESS;
+				}
 			}
 			break;
 		case URQUAN_WARP_DEVICE:

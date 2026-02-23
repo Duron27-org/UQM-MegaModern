@@ -301,7 +301,7 @@ ExitConversation(RESPONSE_REF R)
 		SET_GAME_STATE(YEHAT_REBEL_TOLD_PKUNK, 0);
 		SET_GAME_STATE(NO_YEHAT_INFO, 0);
 
-		if (GET_GAME_STATE(YEHAT_ABSORBED_PKUNK) && DIF_HARD)
+		if (GET_GAME_STATE(YEHAT_ABSORBED_PKUNK) && isDifficulty(uqm::Difficulty::Hard))
 		{ // absorbed before revolution
 			uqm::UWORD state;
 

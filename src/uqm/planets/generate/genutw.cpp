@@ -237,7 +237,7 @@ GenerateUtwig_generateOrbital(SOLARSYS_STATE* solarSys,
 			&& StartSphereTracking(DRUUGE_SHIP))
 		{
 			uqm::COUNT i;
-			uqm::COUNT sum = DIF_CASE(5, 4, 14);
+			uqm::COUNT sum = difficultyCase(4, 5, 14);
 
 			PutGroupInfo(GROUPS_RANDOM, GROUP_SAVE_IP);
 			ReinitQueue(&GLOBAL(ip_group_q));
@@ -299,7 +299,7 @@ GenerateUtwig_generateOrbital(SOLARSYS_STATE* solarSys,
 
 	if (CurStarDescPtr->Index == UTWIG_DEFINED
 		&& matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET)
-		&& !DIF_HARD)
+		&& !isDifficulty(uqm::Difficulty::Hard))
 	{
 		solarSys->SysInfo.PlanetInfo.Weather = 1;
 		solarSys->SysInfo.PlanetInfo.Tectonics = 1;

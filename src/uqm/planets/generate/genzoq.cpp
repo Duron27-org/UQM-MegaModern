@@ -245,7 +245,7 @@ GenerateZoqFotPik_generateOrbital(SOLARSYS_STATE* solarSys,
 	if ((CurStarDescPtr->Index == ZOQFOT_DEFINED || EXTENDED)
 		&& CurStarDescPtr->Index != ZOQ_COLONY2_DEFINED
 		&& matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET)
-		&& !DIF_HARD)
+		&& !isDifficulty(uqm::Difficulty::Hard))
 	{
 		uqm::DWORD rand = RandomContext_GetSeed(SysGenRNG);
 		PLANET_INFO* PlanetInfo = &solarSys->SysInfo.PlanetInfo;
@@ -257,7 +257,7 @@ GenerateZoqFotPik_generateOrbital(SOLARSYS_STATE* solarSys,
 
 	if (CurStarDescPtr->Index == ZOQ_COLONY2_DEFINED
 		&& matchWorld(solarSys, world, MATCH_PBYTE, MATCH_MBYTE)
-		&& EXTENDED && !DIF_HARD)
+		&& EXTENDED && !isDifficulty(uqm::Difficulty::Hard))
 	{
 		uqm::DWORD rand = RandomContext_GetSeed(SysGenRNG);
 		PLANET_INFO* PlanetInfo = &solarSys->SysInfo.PlanetInfo;

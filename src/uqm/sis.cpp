@@ -232,7 +232,7 @@ void DrawSaveInfo(SIS_STATE SisState)
 
 		utf8StringCopy(TempDiff, sizeof(TempDiff),
 					   GAME_STRING(MAINMENU_STRING_BASE + 56
-								   + SisState.Difficulty));
+								   + static_cast<int>(SisState.Difficulty)));
 
 		fmt::format_to_sz_n(buf, sizeof buf, "{} {}{}{}",
 							GAME_STRING(MAINMENU_STRING_BASE + 55), // Difficulty:

@@ -78,7 +78,7 @@
 		 * for module IDs (bigger gun == longer life). See the first half of
 		 * InitWeaponSlots */
 #define MAX_TRACKING 3
-#define TRACKER_ENERGY_COST IF_HARD(3, 6)
+#define TRACKER_ENERGY_COST ifHardDifficulty(6, 3)
 #define BLASTER_OFFSET RES_SCALE(8)
 #define SIS_VERT_OFFSET RES_SCALE(28)
 /* Used for foward, spread, and rear slots */
@@ -800,7 +800,7 @@ InitWeaponSlots(RACE_DESC* RaceDescPtr, const uqm::BYTE* ModuleSlots)
 	for (i = 0; i < NUM_MODULE_SLOTS; ++i)
 	{
 		uqm::COUNT which_gun;
-		bool IfHard = DIF_HARD && (i == 1 || i == 2) ? true : false;
+		bool IfHard = isDifficulty(uqm::Difficulty::Hard) && (i == 1 || i == 2) ? true : false;
 
 		if (i == 3)
 		{

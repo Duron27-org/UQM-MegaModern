@@ -169,7 +169,7 @@ ExitConversation(RESPONSE_REF R)
 		{
 			NPCPhrase(INIT_SHIP_GIFT);
 			AlienTalkSegue((uqm::COUNT)~0);
-			if (AddEscortShips(PKUNK_SHIP, DIF_CASE(4, 4, 2)))
+			if (AddEscortShips(PKUNK_SHIP, difficultyCase(4, 4, 2)))
 			{
 				PrepareShip(PKUNK_SHIP);
 			}
@@ -1015,7 +1015,7 @@ Intro(void)
 				else
 				{
 					NPCPhrase(SHIP_GIFT);
-					if (AddEscortShips(PKUNK_SHIP, DIF_CASE(4, 4, 2)))
+					if (AddEscortShips(PKUNK_SHIP, difficultyCase(4, 4, 2)))
 					{
 						PrepareShip(PKUNK_SHIP);
 					}

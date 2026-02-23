@@ -807,7 +807,7 @@ Intro(void)
 	}
 	else if (GET_GAME_STATE(ILWRATH_FIGHT_THRADDASH))
 	{
-		if (DIF_HARD && GET_GAME_STATE(GLOBAL_FLAGS_AND_DATA) & (1 << 6))
+		if (isDifficulty(uqm::Difficulty::Hard) && GET_GAME_STATE(GLOBAL_FLAGS_AND_DATA) & (1 << 6))
 		{
 			RESPONSE_REF pStr0, pStr1;
 

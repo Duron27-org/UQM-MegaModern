@@ -352,7 +352,7 @@ vux_preprocess(ELEMENT* ElementPtr)
 		GetElementStarShip(ElementPtr, &StarShipPtr);
 		facing = StarShipPtr->ShipFacing;
 		if ((lowByte(GLOBAL(CurrentActivity)) != IN_ENCOUNTER
-			 || DIF_HARD)
+			 || isDifficulty(uqm::Difficulty::Hard))
 			&& TrackShip(ElementPtr, &facing) >= 0)
 		{
 			ELEMENT* OtherShipPtr;

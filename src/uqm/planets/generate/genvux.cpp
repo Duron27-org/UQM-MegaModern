@@ -226,7 +226,7 @@ GenerateVux_generateOrbital(SOLARSYS_STATE* solarSys, PLANET_DESC* world)
 	GenerateDefault_generateOrbital(solarSys, world);
 
 	if (matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET)
-		&& !DIF_HARD)
+		&& !isDifficulty(uqm::Difficulty::Hard))
 	{
 		solarSys->SysInfo.PlanetInfo.Weather = 2;
 		solarSys->SysInfo.PlanetInfo.Tectonics = 0;

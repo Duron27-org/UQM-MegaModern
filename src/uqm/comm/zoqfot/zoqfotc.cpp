@@ -704,7 +704,7 @@ ZoqFotHome(RESPONSE_REF R)
 		{
 			uqm::SIZE i;
 
-			i = START_YEAR + (YEARS_TO_KOHRAH_VICTORY + DIF_CASE(0, 2, -1));
+			i = START_YEAR + (YEARS_TO_KOHRAH_VICTORY + difficultyCase(2, 0, -1));
 			if (NumVisits)
 			{
 				++i;
@@ -894,7 +894,6 @@ Intro(void)
 	{
 		if (GET_GAME_STATE(ZOQFOT_DISTRESS))
 		{
-#define MAX_ZFP_SHIPS DIF_CASE(4, 4, 2)
 			NPCPhrase_cb(THANKS_FOR_RESCUE0, &SelectAlienZOQ);
 			NPCPhrase_cb(THANKS_FOR_RESCUE1, &SelectAlienPIK);
 			NPCPhrase_cb(THANKS_FOR_RESCUE2, &SelectAlienZOQ);
@@ -910,7 +909,7 @@ Intro(void)
 			ZFPTalkSegue((uqm::COUNT)~0);
 
 			SET_GAME_STATE(ZOQFOT_DISTRESS, 0);
-			AddEscortShips(ZOQFOTPIK_SHIP, MAX_ZFP_SHIPS);
+			AddEscortShips(ZOQFOTPIK_SHIP, difficultyCase(4, 4, 2));
 		}
 		else
 		{

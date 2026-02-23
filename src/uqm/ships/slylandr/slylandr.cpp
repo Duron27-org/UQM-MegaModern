@@ -280,7 +280,7 @@ slylandro_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 
 	// no dodging in role playing game, unless you haven't
 	// visited the starbase yet or difficulty is set to Hard
-	if ((lowByte(GLOBAL(CurrentActivity)) == IN_ENCOUNTER) && GET_GAME_STATE(STARBASE_AVAILABLE) && !DIF_HARD)
+	if ((lowByte(GLOBAL(CurrentActivity)) == IN_ENCOUNTER) && GET_GAME_STATE(STARBASE_AVAILABLE) && !isDifficulty(uqm::Difficulty::Hard))
 	{
 		ObjectsOfConcern[ENEMY_WEAPON_INDEX].ObjectPtr = 0;
 	}

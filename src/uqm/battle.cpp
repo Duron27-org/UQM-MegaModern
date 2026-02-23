@@ -70,7 +70,7 @@ bool RunAwayAllowed(void)
 			 || lowByte(GLOBAL(CurrentActivity)) == IN_LAST_BATTLE)
 			&& (NOMAD_DIF(OPTVAL_NOM_EASY)
 				|| GET_GAME_STATE(STARBASE_AVAILABLE))
-			&& (DIF_EASY || !GET_GAME_STATE(BOMB_CARRIER)));
+			&& (isDifficulty(uqm::Difficulty::Easy) || !GET_GAME_STATE(BOMB_CARRIER)));
 }
 
 static void

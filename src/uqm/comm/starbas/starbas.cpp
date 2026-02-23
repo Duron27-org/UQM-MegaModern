@@ -1793,7 +1793,7 @@ CheckBulletins(bool Repeat)
 					{
 						BulletinMask |= 1L << b0;
 					}
-					else if (CheckTiming(IF_EASY(3, 1), 0))
+					else if (CheckTiming(ifEasyDifficulty(1, 3), 0))
 					{
 						pStr = STARBASE_BULLETIN_8;
 					}
@@ -1803,7 +1803,7 @@ CheckBulletins(bool Repeat)
 					{
 						BulletinMask |= 1L << b0;
 					}
-					else if (CheckTiming(IF_EASY(6, 3), 0))
+					else if (CheckTiming(ifEasyDifficulty(3, 6), 0))
 					{
 						pStr = STARBASE_BULLETIN_9;
 					}
@@ -1830,7 +1830,7 @@ CheckBulletins(bool Repeat)
 					{
 						BulletinMask |= 1L << b0;
 					}
-					else if (CheckTiming(0, IF_EASY(42, 21)))
+					else if (CheckTiming(0, ifEasyDifficulty(21, 42)))
 					{
 						pStr = STARBASE_BULLETIN_12;
 					}

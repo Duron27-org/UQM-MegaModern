@@ -89,6 +89,7 @@ set(uqm_src_uqm_files
 	"src/uqm/init.h"
 	"src/uqm/intel.cpp"
 	"src/uqm/intel.h"
+#	"src/uqm/inteldefs.h"
 	"src/uqm/intro.cpp"
 	"src/uqm/ipdisp.cpp"
 	"src/uqm/ipdisp.h"

@@ -154,7 +154,7 @@ GenerateThraddash_generateOrbital(SOLARSYS_STATE* solarSys,
 			// reachable if you're frendly with thraddsh and talk to
 			// them at helix world
 		}
-		else if (DIF_HARD
+		else if (isDifficulty(uqm::Difficulty::Hard)
 				 && CurStarDescPtr->Index == AQUA_HELIX_DEFINED
 				 && !GET_GAME_STATE(HELIX_UNPROTECTED)
 				 && !(GET_GAME_STATE(HM_ENCOUNTERS)

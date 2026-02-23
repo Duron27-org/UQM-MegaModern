@@ -1986,24 +1986,14 @@ PickGame(bool saving, bool fromMainMenu)
 	{
 		SUMMARY_DESC* pSD = pickState.summary + MenuState.CurState;
 
-#ifdef DEBUG
-		printf(saving ? "Saving -> " : "Loading -> ");
-		printf("Slot: {}\n", MenuState.CurState);
-		printf("Name: {}\n", pSD->SaveName);
-		printf("Seed Type: {}\n", toString(g_seedType));
-		printf("Seed: {}\n", GLOBAL_SIS(Seed));
-		printf("Difficulty: {}\n", DIF_STR(DIFFICULTY));
-		printf("Extended: {}\n", BOOL_STR(EXTENDED));
-		printf("Nomad: {}\n\n", NOMAD_STR(NOMAD));
-#endif
 		uqm::log::info(saving ? "Saving > " : "Loading > ");
-		uqm::log::info("Name: {}\n", pSD->SaveName);
-		uqm::log::info("Slot: {}\n", MenuState.CurState);
-		uqm::log::info("Seed Type: {}\n", toString(g_seedType));
-		uqm::log::info("Seed: {}\n", GLOBAL_SIS(Seed));
-		uqm::log::info("Difficulty: {}\n", DIF_STR(DIFFICULTY));
-		uqm::log::info("Extended: {}\n", BOOL_STR(EXTENDED));
-		uqm::log::info("Nomad: {}\n\n", toString(NOMAD));
+		uqm::log::info("Name: {}", pSD->SaveName);
+		uqm::log::info("Slot: {}", MenuState.CurState);
+		uqm::log::info("Seed Type: {}", toString(g_seedType));
+		uqm::log::info("Seed: {}", GLOBAL_SIS(Seed));
+		uqm::log::info("Difficulty: {:s}", getDifficulty());
+		uqm::log::info("Extended: {}", BOOL_STR(EXTENDED));
+		uqm::log::info("Nomad: {}\n", toString(NOMAD));
 	}
 
 	if (!(GLOBAL(CurrentActivity) & CHECK_ABORT) && (saving || (!pickState.success && !fromMainMenu)))

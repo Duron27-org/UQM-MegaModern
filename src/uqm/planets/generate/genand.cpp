@@ -174,7 +174,7 @@ GenerateAndrosynth_generateOrbital(SOLARSYS_STATE* solarSys,
 				EARTH_ATMOSPHERE * 144 / 100;
 			solarSys->SysInfo.PlanetInfo.SurfaceTemperature = 28;
 		}
-		if (!DIF_HARD)
+		if (!isDifficulty(uqm::Difficulty::Hard))
 		{
 			solarSys->SysInfo.PlanetInfo.Weather = 1;
 			solarSys->SysInfo.PlanetInfo.Tectonics = 1;

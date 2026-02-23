@@ -175,7 +175,7 @@ GenerateChmmr_generateOrbital(SOLARSYS_STATE* solarSys,
 	if (CurStarDescPtr->Index == CHMMR_DEFINED
 		&& matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{
-		bool HardModeBS = DIF_HARD && !GET_GAME_STATE(KOHR_AH_FRENZY)
+		bool HardModeBS = isDifficulty(uqm::Difficulty::Hard) && !GET_GAME_STATE(KOHR_AH_FRENZY)
 					   && !(GET_GAME_STATE(HM_ENCOUNTERS) & 1 << ILWRATH_ENCOUNTER);
 
 		if (RaceDead(CHMMR_SHIP))
@@ -216,7 +216,7 @@ GenerateChmmr_generateOrbital(SOLARSYS_STATE* solarSys,
 			ReinitQueue(&GLOBAL(ip_group_q));
 			assert(CountLinks(&GLOBAL(npc_built_ship_q)) == 0);
 
-			if (GET_GAME_STATE(ILWRATH_DECEIVED) && DIF_HARD)
+			if (GET_GAME_STATE(ILWRATH_DECEIVED) && isDifficulty(uqm::Difficulty::Hard))
 			{
 				uqm::COUNT lim, i;
 

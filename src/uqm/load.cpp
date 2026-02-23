@@ -32,6 +32,7 @@
 #include "gameev.h"
 #include "libs/tasklib.h"
 #include "core/log/log.h"
+#include "core/stl/stl.h"
 #include "libs/misc.h"
 #include "master.h"
 
@@ -40,123 +41,92 @@
 ACTIVITY NextActivity;
 uqm::BYTE IndependantResFactor;
 
-static inline size_t
-read_8(void* fp, uqm::BYTE* v)
+template <size_t TypeSize>
+struct ReadValueTypes
 {
-	uqm::BYTE t;
-	if (!v) /* read value ignored */
-	{
-		v = &t;
-	}
-	return ReadResFile(v, 1, 1, (uio_Stream*)fp);
-}
+	using temp_type = uint64_t; // default to something absurd.
+};
+template <> struct ReadValueTypes<1>
+{
+	using temp_type = uint8_t;
+};
+template <>
+struct ReadValueTypes<2>
+{
+	using temp_type = uint16_t;
+};
+template <>
+struct ReadValueTypes<4>
+{
+	using temp_type = uint32_t;
+};
 
-static inline size_t
-read_16(void* fp, uqm::UWORD* v)
+
+template <typename T>
+static inline bool readValue(void* fp, T* v)
 {
-	uqm::UWORD t = 0;
-	int shift, i;
-	for (i = 0, shift = 0; i < 2; ++i, shift += 8)
+	using temp_type = typename ReadValueTypes<sizeof(T)>::temp_type;
+	temp_type t {};
+	for (uint8_t n {}, shift {}; n < sizeof(T); ++n, shift += 8)
 	{
-		uqm::BYTE b;
-		if (read_8(fp, &b) != 1)
+		uint8_t b {};
+		if (const auto bytesRead = ReadResFile(&b, 1, 1, (uio_Stream*)fp); bytesRead != 1) [[unlikely]]
 		{
-			return 0;
+			return false;
 		}
-		t |= ((uqm::UWORD)b) << shift;
+
+		t |= static_cast<temp_type>(b) << shift;
 	}
 
-	if (v)
+	if (v) [[likely]]
 	{
-		*v = t;
+		*v = static_cast<T>(t);
 	}
-
-	return 1;
+	return true;
 }
 
-static inline size_t
-read_16s(void* fp, uqm::SWORD* v)
+template <typename T>
+static inline bool readValueArray(void* fp, uqstl::span<T> ar)
 {
-	return read_16(fp, (uqm::UWORD*)v);
-}
-
-static inline size_t
-read_32(void* fp, uqm::DWORD* v)
-{
-	uqm::DWORD t = 0;
-	int shift, i;
-	for (i = 0, shift = 0; i < 4; ++i, shift += 8)
+	assert(!ar.empty());
+	if constexpr (sizeof(T) == 1)
 	{
-		uqm::BYTE b;
-		if (read_8(fp, &b) != 1)
+		return ReadResFile(ar.data(), 1, ar.size(), (uio_Stream*)fp) == ar.size();
+	}
+	else
+	{
+		for (auto& v : ar)
 		{
-			return 0;
+			if (!readValue<T>(fp, &v)) [[unlikely]]
+			{
+				return false;
+			}
 		}
-		t |= ((uqm::DWORD)b) << shift;
+		return true;
 	}
-
-	if (v)
-	{
-		*v = t;
-	}
-
-	return 1;
 }
 
-static inline size_t
-read_32s(void* fp, uqm::SDWORD* v)
-{
-	return read_32(fp, (uqm::DWORD*)v);
-}
-
-static inline size_t
-read_a8(void* fp, uqm::BYTE* ar, uqm::COUNT count)
-{
-	assert(ar != nullptr);
-	return ReadResFile(ar, 1, count, (uio_Stream*)fp) == count;
-}
-
-static inline size_t
-read_a8s(void* fp, char* ar, uqm::COUNT count)
-{
-	return read_a8(fp, (uqm::BYTE*)ar, count);
-}
-
-static inline size_t
-skip_8(void* fp, uqm::COUNT count)
-{
-	int i;
-	for (i = 0; i < count; ++i)
-	{
-		if (read_8(fp, nullptr) != 1)
-		{
-			return 0;
-		}
-	}
-	return 1;
-}
-
-static inline size_t
-read_str(void* fp, char* str, uqm::COUNT count)
+static inline bool read_str(void* fp, uqstl::span<char> str)
 {
 	// no type conversion needed for strings
-	return read_a8(fp, (uqm::BYTE*)str, count);
+	return readValueArray(fp, str);
 }
 
-static inline size_t
-read_a16(void* fp, uqm::UWORD* ar, uqm::COUNT count)
+template <typename T>
+static inline bool skipN(void* fp, uqm::COUNT count)
 {
-	assert(ar != nullptr);
-
-	for (; count > 0; --count, ++ar)
+	for (int i = 0; i < count; ++i)
 	{
-		if (read_16(fp, ar) != 1)
+		if (!readValue<T>(fp, nullptr))
 		{
-			return 0;
+			return false;
 		}
 	}
-	return 1;
+	return true;
 }
+
+
+
 
 static void
 LoadShipQueue(void* fh, QUEUE* pQueue, uqm::DWORD size)
@@ -169,19 +139,19 @@ LoadShipQueue(void* fh, QUEUE* pQueue, uqm::DWORD size)
 		SHIP_FRAGMENT* FragPtr;
 		uqm::COUNT Index;
 
-		read_16(fh, &Index);
+		readValue(fh, &Index);
 
 		hStarShip = CloneShipFragment((RACE_ID)Index, pQueue, 0);
 		FragPtr = LockShipFrag(pQueue, hStarShip);
 
 		// Read SHIP_FRAGMENT elements
-		read_8(fh, &FragPtr->captains_name_index);
-		read_8(fh, &FragPtr->race_id);
-		read_8(fh, &FragPtr->index);
-		read_16(fh, &FragPtr->crew_level);
-		read_16(fh, &FragPtr->max_crew);
-		read_8(fh, &FragPtr->energy_level);
-		read_8(fh, &FragPtr->max_energy);
+		readValue(fh, &FragPtr->captains_name_index);
+		readValue(fh, &FragPtr->race_id);
+		readValue(fh, &FragPtr->index);
+		readValue(fh, &FragPtr->crew_level);
+		readValue(fh, &FragPtr->max_crew);
+		readValue(fh, &FragPtr->energy_level);
+		readValue(fh, &FragPtr->max_energy);
 
 		UnlockShipFrag(pQueue, hStarShip);
 	}
@@ -198,36 +168,36 @@ LoadRaceQueue(void* fh, QUEUE* pQueue, uqm::DWORD size)
 		FLEET_INFO* FleetPtr;
 		uqm::COUNT Index;
 
-		read_16(fh, &Index);
+		readValue(fh, &Index);
 
 		hStarShip = GetStarShipFromIndex(pQueue, Index);
 		FleetPtr = LockFleetInfo(pQueue, hStarShip);
 
 		// Read FLEET_INFO elements
-		read_16(fh, &FleetPtr->allied_state);
+		readValue(fh, &FleetPtr->allied_state);
 
 		if (FleetPtr->allied_state > 2)
 		{
 			FleetPtr->allied_state = BAD_GUY;
 		}
 
-		read_8(fh, &FleetPtr->days_left);
-		read_8(fh, &FleetPtr->growth_fract);
-		read_16(fh, &FleetPtr->crew_level);
-		read_16(fh, &FleetPtr->max_crew);
-		read_8(fh, &FleetPtr->growth);
-		read_8(fh, &FleetPtr->max_energy);
-		read_16s(fh, &FleetPtr->loc.x);
-		read_16s(fh, &FleetPtr->loc.y);
+		readValue(fh, &FleetPtr->days_left);
+		readValue(fh, &FleetPtr->growth_fract);
+		readValue(fh, &FleetPtr->crew_level);
+		readValue(fh, &FleetPtr->max_crew);
+		readValue(fh, &FleetPtr->growth);
+		readValue(fh, &FleetPtr->max_energy);
+		readValue(fh, &FleetPtr->loc.x);
+		readValue(fh, &FleetPtr->loc.y);
 
-		read_16(fh, &FleetPtr->actual_strength);
-		read_16(fh, &FleetPtr->known_strength);
-		read_16s(fh, &FleetPtr->known_loc.x);
-		read_16s(fh, &FleetPtr->known_loc.y);
-		read_8(fh, &FleetPtr->growth_err_term);
-		read_8(fh, &FleetPtr->func_index);
-		read_16s(fh, &FleetPtr->dest_loc.x);
-		read_16s(fh, &FleetPtr->dest_loc.y);
+		readValue(fh, &FleetPtr->actual_strength);
+		readValue(fh, &FleetPtr->known_strength);
+		readValue(fh, &FleetPtr->known_loc.x);
+		readValue(fh, &FleetPtr->known_loc.y);
+		readValue(fh, &FleetPtr->growth_err_term);
+		readValue(fh, &FleetPtr->func_index);
+		readValue(fh, &FleetPtr->dest_loc.x);
+		readValue(fh, &FleetPtr->dest_loc.y);
 
 		UnlockFleetInfo(pQueue, hStarShip);
 	}
@@ -246,16 +216,16 @@ LoadGroupQueue(void* fh, QUEUE* pQueue, uqm::DWORD size)
 		hGroup = BuildGroup(pQueue, 0);
 		GroupPtr = LockIpGroup(pQueue, hGroup);
 
-		read_16(fh, &GroupPtr->group_counter);
-		read_8(fh, &GroupPtr->race_id);
-		read_8(fh, &GroupPtr->sys_loc);
-		read_8(fh, &GroupPtr->task);
-		read_8(fh, &GroupPtr->in_system); /* was crew_level */
-		read_8(fh, &GroupPtr->dest_loc);
-		read_8(fh, &GroupPtr->orbit_pos);
-		read_8(fh, &GroupPtr->group_id); /* was max_energy */
-		read_16s(fh, &GroupPtr->loc.x);
-		read_16s(fh, &GroupPtr->loc.y);
+		readValue(fh, &GroupPtr->group_counter);
+		readValue(fh, &GroupPtr->race_id);
+		readValue(fh, &GroupPtr->sys_loc);
+		readValue(fh, &GroupPtr->task);
+		readValue(fh, &GroupPtr->in_system); /* was crew_level */
+		readValue(fh, &GroupPtr->dest_loc);
+		readValue(fh, &GroupPtr->orbit_pos);
+		readValue(fh, &GroupPtr->group_id); /* was max_energy */
+		readValue(fh, &GroupPtr->loc.x);
+		readValue(fh, &GroupPtr->loc.y);
 
 		UnlockIpGroup(pQueue, hGroup);
 	}
@@ -269,31 +239,31 @@ LoadEncounter(ENCOUNTER* EncounterPtr, void* fh, bool try_core)
 	EncounterPtr->pred = 0;
 	EncounterPtr->succ = 0;
 	EncounterPtr->hElement = 0;
-	read_16s(fh, &EncounterPtr->transition_state);
-	read_16s(fh, &EncounterPtr->origin.x);
-	read_16s(fh, &EncounterPtr->origin.y);
-	read_16(fh, &EncounterPtr->radius);
+	readValue(fh, &EncounterPtr->transition_state);
+	readValue(fh, &EncounterPtr->origin.x);
+	readValue(fh, &EncounterPtr->origin.y);
+	readValue(fh, &EncounterPtr->radius);
 	// former STAR_DESC fields
-	read_16s(fh, &EncounterPtr->loc_pt.x);
-	read_16s(fh, &EncounterPtr->loc_pt.y);
-	read_8(fh, &EncounterPtr->race_id);
-	read_8(fh, &EncounterPtr->num_ships);
-	read_8(fh, &EncounterPtr->flags);
+	readValue(fh, &EncounterPtr->loc_pt.x);
+	readValue(fh, &EncounterPtr->loc_pt.y);
+	readValue(fh, &EncounterPtr->race_id);
+	readValue(fh, &EncounterPtr->num_ships);
+	readValue(fh, &EncounterPtr->flags);
 
 	// Load each entry in the BRIEF_SHIP_INFO array
 	for (i = 0; i < MAX_HYPER_SHIPS; i++)
 	{
 		BRIEF_SHIP_INFO* ShipInfo = &EncounterPtr->ShipList[i];
 
-		read_8(fh, &ShipInfo->race_id);
-		read_16(fh, &ShipInfo->crew_level);
-		read_16(fh, &ShipInfo->max_crew);
-		read_8(fh, &ShipInfo->max_energy);
+		readValue(fh, &ShipInfo->race_id);
+		readValue(fh, &ShipInfo->crew_level);
+		readValue(fh, &ShipInfo->max_crew);
+		readValue(fh, &ShipInfo->max_energy);
 	}
 
 	// Load the stuff after the BRIEF_SHIP_INFO array
-	read_32s(fh, &EncounterPtr->log_x);
-	read_32s(fh, &EncounterPtr->log_y);
+	readValue(fh, &EncounterPtr->log_x);
+	readValue(fh, &EncounterPtr->log_y);
 
 	if (try_core)
 	{ // Use old Log X to Universe code to get proper coordinates from core saves
@@ -312,20 +282,20 @@ LoadEvent(EVENT* EventPtr, void* fh)
 {
 	EventPtr->pred = 0;
 	EventPtr->succ = 0;
-	read_8(fh, &EventPtr->day_index);
-	read_8(fh, &EventPtr->month_index);
-	read_16(fh, &EventPtr->year_index);
-	read_8(fh, &EventPtr->func_index);
+	readValue(fh, &EventPtr->day_index);
+	readValue(fh, &EventPtr->month_index);
+	readValue(fh, &EventPtr->year_index);
+	readValue(fh, &EventPtr->func_index);
 }
 
 static void
 LoadClockState(CLOCK_STATE* ClockPtr, void* fh)
 {
-	read_8(fh, &ClockPtr->day_index);
-	read_8(fh, &ClockPtr->month_index);
-	read_16(fh, &ClockPtr->year_index);
-	read_16s(fh, &ClockPtr->tick_count);
-	read_16s(fh, &ClockPtr->day_in_ticks);
+	readValue(fh, &ClockPtr->day_index);
+	readValue(fh, &ClockPtr->month_index);
+	readValue(fh, &ClockPtr->year_index);
+	readValue(fh, &ClockPtr->tick_count);
+	readValue(fh, &ClockPtr->day_in_ticks);
 }
 
 static bool
@@ -333,52 +303,52 @@ LoadGameState(GAME_STATE* GSPtr, void* fh, bool try_core)
 {
 	uqm::DWORD magic;
 	legacySave = try_core;
-	read_32(fh, &magic);
+	readValue(fh, &magic);
 	if (magic != GLOBAL_STATE_TAG)
 	{
 		return false;
 	}
-	read_32(fh, &magic);
+	readValue(fh, &magic);
 	if (magic != 75)
 	{
 		/* Chunk is the wrong size. */
 		return false;
 	}
-	read_8(fh, &GSPtr->glob_flags);
-	read_8(fh, &GSPtr->CrewCost);
-	read_8(fh, &GSPtr->FuelCost);
+	readValue(fh, &GSPtr->glob_flags);
+	readValue(fh, &GSPtr->CrewCost);
+	readValue(fh, &GSPtr->FuelCost);
 
-	read_a8(fh, GSPtr->ModuleCost, NUM_MODULES);
-	read_a8(fh, GSPtr->ElementWorth, NUM_ELEMENT_CATEGORIES);
-	read_16(fh, &GSPtr->CurrentActivity);
+	readValueArray<uqm::BYTE>(fh, GSPtr->ModuleCost);
+	readValueArray<uqm::BYTE>(fh, GSPtr->ElementWorth);
+	readValue(fh, &GSPtr->CurrentActivity);
 
 	LoadClockState(&GSPtr->GameClock, fh);
 
-	read_16s(fh, &GSPtr->autopilot.x);
-	read_16s(fh, &GSPtr->autopilot.y);
-	read_16s(fh, &GSPtr->ip_location.x);
-	read_16s(fh, &GSPtr->ip_location.y);
+	readValue(fh, &GSPtr->autopilot.x);
+	readValue(fh, &GSPtr->autopilot.y);
+	readValue(fh, &GSPtr->ip_location.x);
+	readValue(fh, &GSPtr->ip_location.y);
 	/* STAMP ShipStamp */
-	read_16s(fh, &GSPtr->ShipStamp.origin.x);
-	read_16s(fh, &GSPtr->ShipStamp.origin.y);
-	read_16(fh, &GSPtr->ShipFacing);
-	read_8(fh, &GSPtr->ip_planet);
-	read_8(fh, &GSPtr->in_orbit);
+	readValue(fh, &GSPtr->ShipStamp.origin.x);
+	readValue(fh, &GSPtr->ShipStamp.origin.y);
+	readValue(fh, &GSPtr->ShipFacing);
+	readValue(fh, &GSPtr->ip_planet);
+	readValue(fh, &GSPtr->in_orbit);
 
 	// Let's make savegames work even between different resolution modes.
 	GSPtr->ShipStamp.origin.x <<= RESOLUTION_FACTOR;
 	GSPtr->ShipStamp.origin.y <<= RESOLUTION_FACTOR;
 
 	/* VELOCITY_DESC velocity */
-	read_16(fh, &GSPtr->velocity.TravelAngle);
-	read_16s(fh, &GSPtr->velocity.vector.width);
-	read_16s(fh, &GSPtr->velocity.vector.height);
-	read_16s(fh, &GSPtr->velocity.fract.width);
-	read_16s(fh, &GSPtr->velocity.fract.height);
-	read_16s(fh, &GSPtr->velocity.error.width);
-	read_16s(fh, &GSPtr->velocity.error.height);
-	read_16s(fh, &GSPtr->velocity.incr.width);
-	read_16s(fh, &GSPtr->velocity.incr.height);
+	readValue(fh, &GSPtr->velocity.TravelAngle);
+	readValue(fh, &GSPtr->velocity.vector.width);
+	readValue(fh, &GSPtr->velocity.vector.height);
+	readValue(fh, &GSPtr->velocity.fract.width);
+	readValue(fh, &GSPtr->velocity.fract.height);
+	readValue(fh, &GSPtr->velocity.error.width);
+	readValue(fh, &GSPtr->velocity.error.height);
+	readValue(fh, &GSPtr->velocity.incr.width);
+	readValue(fh, &GSPtr->velocity.incr.height);
 
 	if (lowByte(GSPtr->CurrentActivity) != IN_INTERPLANETARY)
 	{ // Let's make savegames work even between different resolution modes.
@@ -392,7 +362,7 @@ LoadGameState(GAME_STATE* GSPtr, void* fh, bool try_core)
 		GSPtr->velocity.incr.height <<= RESOLUTION_FACTOR;
 	}
 
-	read_32(fh, &magic);
+	readValue(fh, &magic);
 	if (magic != GAME_STATE_TAG)
 	{
 		return false;
@@ -403,7 +373,7 @@ LoadGameState(GAME_STATE* GSPtr, void* fh, bool try_core)
 		int rev;
 		size_t gameStateByteCount;
 
-		read_32(fh, &magic);
+		readValue(fh, &magic);
 		rev = (try_core ? 0 : getGameStateRevByBytes(gameStateBitMap, magic));
 		gameStateByteCount = (totalBitsForGameState(gameStateBitMap, rev) + 7) >> 3;
 
@@ -426,7 +396,7 @@ LoadGameState(GAME_STATE* GSPtr, void* fh, bool try_core)
 			return false;
 		}
 
-		read_a8(fh, buf, (uqm::COUNT)gameStateByteCount);
+		readValueArray<uqm::BYTE>(fh, {buf, (uqm::COUNT)gameStateByteCount});
 		result = deserialiseGameState(gameStateBitMap, buf, gameStateByteCount, rev);
 		HFree(buf);
 		if (result == false)
@@ -453,7 +423,7 @@ LoadGameState(GAME_STATE* GSPtr, void* fh, bool try_core)
 
 		if (magic > gameStateByteCount)
 		{
-			skip_8(fh, (uqm::COUNT)(magic - gameStateByteCount));
+			skipN<uint8_t>(fh, (uqm::COUNT)(magic - gameStateByteCount));
 		}
 	}
 	return true;
@@ -467,10 +437,26 @@ LoadSisState(SIS_STATE* SSPtr, void* fp, bool try_core,
 								 LEGACY_SIS_NAME_SIZE :
 								 SIS_NAME_SIZE;
 
-	if (
-		read_32s(fp, &SSPtr->log_x) != 1 || read_32s(fp, &SSPtr->log_y) != 1 || read_32(fp, &SSPtr->ResUnits) != 1 || read_32(fp, &SSPtr->FuelOnBoard) != 1 || read_16(fp, &SSPtr->CrewEnlisted) != 1 || read_16(fp, &SSPtr->TotalElementMass) != 1 || read_16(fp, &SSPtr->TotalBioMass) != 1 || read_a8(fp, SSPtr->ModuleSlots, NUM_MODULE_SLOTS) != 1 || read_a8(fp, SSPtr->DriveSlots, NUM_DRIVE_SLOTS) != 1 || read_a8(fp, SSPtr->JetSlots, NUM_JET_SLOTS) != 1 || read_8(fp, &SSPtr->NumLanders) != 1 || read_a16(fp, SSPtr->ElementAmounts, NUM_ELEMENT_CATEGORIES) != 1 ||
-
-		read_str(fp, SSPtr->ShipName, SisNameSize) != 1 || read_str(fp, SSPtr->CommanderName, SisNameSize) != 1 || read_str(fp, SSPtr->PlanetName, SisNameSize) != 1 || (!try_core && (read_8(fp, &SSPtr->Difficulty) != 1)) || (!try_core && (read_8(fp, &SSPtr->Extended) != 1)) || (!try_core && (read_8(fp, &SSPtr->Nomad) != 1)) || (!try_core && (read_32s(fp, &SSPtr->Seed) != 1)) || (!try_core && !(legacyMM > 0) && (read_8(fp, &SSPtr->ShipSeed) != 1)))
+	if (readValue(fp, &SSPtr->log_x) == false
+		|| readValue(fp, &SSPtr->log_y) == false
+		|| readValue(fp, &SSPtr->ResUnits) == false
+		|| readValue(fp, &SSPtr->FuelOnBoard) == false
+		|| readValue(fp, &SSPtr->CrewEnlisted) == false
+		|| readValue(fp, &SSPtr->TotalElementMass) == false
+		|| readValue(fp, &SSPtr->TotalBioMass) == false
+		|| readValueArray<uqm::BYTE>(fp, SSPtr->ModuleSlots) == false
+		|| readValueArray<uqm::BYTE>(fp, SSPtr->DriveSlots) == false
+		|| readValueArray<uqm::BYTE>(fp, SSPtr->JetSlots) == false
+		|| readValue(fp, &SSPtr->NumLanders) == false
+		|| readValueArray<uqm::COUNT>(fp, SSPtr->ElementAmounts) == false
+		|| read_str(fp, SSPtr->ShipName) == false
+		|| read_str(fp, SSPtr->CommanderName) == false
+		|| read_str(fp, SSPtr->PlanetName) == false
+		|| (!try_core && (readValue(fp, &SSPtr->Difficulty) == false))
+		|| (!try_core && (readValue(fp, &SSPtr->Extended) == false))
+		|| (!try_core && (readValue(fp, &SSPtr->Nomad) == false))
+		|| (!try_core && (readValue(fp, &SSPtr->Seed) == false))
+		|| (!try_core && !(legacyMM > 0) && (readValue(fp, &SSPtr->ShipSeed) == false)))
 	{
 		return false;
 	}
@@ -497,7 +483,7 @@ LoadSummary(SUMMARY_DESC* SummPtr, void* fp, bool try_core)
 	uqm::DWORD magicTag = try_core ? SAVEFILE_TAG : MMV4_TAG;
 	uqm::DWORD nameSize = 0;
 	int legacyMM = false;
-	if (!read_32(fp, &magic))
+	if (!readValue(fp, &magic))
 	{
 		return false;
 	}
@@ -506,11 +492,11 @@ LoadSummary(SUMMARY_DESC* SummPtr, void* fp, bool try_core)
 		legacyMM = magic == MEGA_TAG ? 1 : magic == MMV3_TAG ? 2 :
 															   0;
 
-		if (read_32(fp, &magic) != 1 || magic != SUMMARY_TAG)
+		if (!readValue(fp, &magic) || magic != SUMMARY_TAG)
 		{
 			return false;
 		}
-		if (read_32(fp, &magic) != 1 || magic < 160)
+		if (!readValue(fp, &magic) || magic < 160)
 		{
 			return false;
 		}
@@ -530,7 +516,8 @@ LoadSummary(SUMMARY_DESC* SummPtr, void* fp, bool try_core)
 
 	if (try_core)
 	{ // Sanitize seed, difficulty, extended, and nomad variables
-		SummPtr->SS.Seed = SummPtr->SS.Difficulty = 0;
+		SummPtr->SS.Difficulty = uqm::Difficulty::Normal;
+		SummPtr->SS.Seed = 0;
 		SummPtr->SS.Extended = SummPtr->SS.Nomad = 0;
 		SummPtr->SS.SaveVersion = 1;
 	}
@@ -539,7 +526,18 @@ LoadSummary(SUMMARY_DESC* SummPtr, void* fp, bool try_core)
 		SummPtr->SS.ShipSeed = 0;
 	}
 
-	if (read_8(fp, &SummPtr->Activity) != 1 || read_8(fp, &SummPtr->Flags) != 1 || read_8(fp, &SummPtr->day_index) != 1 || read_8(fp, &SummPtr->month_index) != 1 || read_16(fp, &SummPtr->year_index) != 1 || read_8(fp, &SummPtr->MCreditLo) != 1 || read_8(fp, &SummPtr->MCreditHi) != 1 || read_8(fp, &SummPtr->NumShips) != 1 || read_8(fp, &SummPtr->NumDevices) != 1 || read_a8(fp, SummPtr->ShipList, MAX_BUILT_SHIPS) != 1 || read_a8(fp, SummPtr->DeviceList, MAX_EXCLUSIVE_DEVICES) != 1 || (!try_core && (read_8(fp, &SummPtr->res_factor) != 1)))
+	if (readValue(fp, &SummPtr->Activity) == false
+		|| readValue(fp, &SummPtr->Flags) == false
+		|| readValue(fp, &SummPtr->day_index) == false
+		|| readValue(fp, &SummPtr->month_index) == false
+		|| readValue(fp, &SummPtr->year_index) == false
+		|| readValue(fp, &SummPtr->MCreditLo) == false
+		|| readValue(fp, &SummPtr->MCreditHi) == false
+		|| readValue(fp, &SummPtr->NumShips) == false
+		|| readValue(fp, &SummPtr->NumDevices) == false
+		|| readValueArray<uqm::BYTE>(fp, SummPtr->ShipList) == false
+		|| readValueArray<uqm::BYTE>(fp, SummPtr->DeviceList) == false
+		|| (!try_core && (readValue(fp, &SummPtr->res_factor) == false)))
 	{
 		return false;
 	}
@@ -548,7 +546,7 @@ LoadSummary(SUMMARY_DESC* SummPtr, void* fp, bool try_core)
 
 	if (nameSize < SAVE_NAME_SIZE)
 	{
-		if (read_a8s(fp, SummPtr->SaveName, nameSize) != 1)
+		if (!readValueArray<uqm::CHAR_T>(fp, {SummPtr->SaveName, nameSize}))
 		{
 			return false;
 		}
@@ -557,12 +555,12 @@ LoadSummary(SUMMARY_DESC* SummPtr, void* fp, bool try_core)
 	else
 	{
 		uqm::DWORD remaining = nameSize - SAVE_NAME_SIZE + 1;
-		if (read_a8s(fp, SummPtr->SaveName, SAVE_NAME_SIZE - 1) != 1)
+		if (!readValueArray<uqm::CHAR_T>(fp, {SummPtr->SaveName, SAVE_NAME_SIZE - 1}))
 		{
 			return false;
 		}
 		SummPtr->SaveName[SAVE_NAME_SIZE - 1] = 0;
-		if (skip_8(fp, remaining) != 1)
+		if (!skipN<char>(fp, remaining))
 		{
 			return false;
 		}
@@ -573,12 +571,12 @@ LoadSummary(SUMMARY_DESC* SummPtr, void* fp, bool try_core)
 static void
 LoadStarDesc(STAR_DESC* SDPtr, void* fh)
 {
-	read_16s(fh, &SDPtr->star_pt.x);
-	read_16s(fh, &SDPtr->star_pt.y);
-	read_8(fh, &SDPtr->Type);
-	read_8(fh, &SDPtr->Index);
-	read_8(fh, &SDPtr->Prefix);
-	read_8(fh, &SDPtr->Postfix);
+	readValue(fh, &SDPtr->star_pt.x);
+	readValue(fh, &SDPtr->star_pt.y);
+	readValue(fh, &SDPtr->Type);
+	readValue(fh, &SDPtr->Index);
+	readValue(fh, &SDPtr->Prefix);
+	readValue(fh, &SDPtr->Postfix);
 }
 
 static void
@@ -590,7 +588,7 @@ LoadScanInfo(uio_Stream* fh, uqm::DWORD flen)
 		while (flen)
 		{
 			uqm::DWORD val;
-			read_32(fh, &val);
+			readValue(fh, &val);
 			swrite_32(fp, val);
 			flen -= 4;
 		}
@@ -615,7 +613,7 @@ LoadGroupList(uio_Stream* fh, uqm::DWORD chunksize)
 		SeekStateFile(fp, 0, SEEK_SET);
 		WriteGroupHeader(fp, &h);
 		SeekStateFile(fp, h.GroupOffset[0], SEEK_SET);
-		read_8(fh, &LastEnc);
+		readValue(fh, &LastEnc);
 		NumGroups = (chunksize - 1) / 14;
 		swrite_8(fp, LastEnc);
 		swrite_8(fp, NumGroups);
@@ -623,17 +621,17 @@ LoadGroupList(uio_Stream* fh, uqm::DWORD chunksize)
 		{
 			uqm::BYTE race_outer;
 			IP_GROUP ip;
-			read_8(fh, &race_outer);
-			read_16(fh, &ip.group_counter);
-			read_8(fh, &ip.race_id);
-			read_8(fh, &ip.sys_loc);
-			read_8(fh, &ip.task);
-			read_8(fh, &ip.in_system);
-			read_8(fh, &ip.dest_loc);
-			read_8(fh, &ip.orbit_pos);
-			read_8(fh, &ip.group_id);
-			read_16s(fh, &ip.loc.x);
-			read_16s(fh, &ip.loc.y);
+			readValue(fh, &race_outer);
+			readValue(fh, &ip.group_counter);
+			readValue(fh, &ip.race_id);
+			readValue(fh, &ip.sys_loc);
+			readValue(fh, &ip.task);
+			readValue(fh, &ip.in_system);
+			readValue(fh, &ip.dest_loc);
+			readValue(fh, &ip.orbit_pos);
+			readValue(fh, &ip.group_id);
+			readValue(fh, &ip.loc.x);
+			readValue(fh, &ip.loc.y);
 
 			swrite_8(fp, race_outer);
 			WriteIpGroup(fp, &ip);
@@ -708,8 +706,8 @@ LoadBattleGroup(uio_Stream* fh, uqm::DWORD chunksize)
 	uqm::BYTE current;
 	int i;
 
-	read_32(fh, &encounter);
-	read_8(fh, &current);
+	readValue(fh, &encounter);
+	readValue(fh, &current);
 	chunksize -= 5;
 	if (encounter)
 	{
@@ -729,14 +727,14 @@ LoadBattleGroup(uio_Stream* fh, uqm::DWORD chunksize)
 	}
 	if (!fp)
 	{
-		skip_8(fh, chunksize);
+		skipN<char>(fh, chunksize);
 		return;
 	}
-	read_16(fh, &h.star_index);
-	read_8(fh, &h.day_index);
-	read_8(fh, &h.month_index);
-	read_16(fh, &h.year_index);
-	read_8(fh, &h.NumGroups);
+	readValue(fh, &h.star_index);
+	readValue(fh, &h.day_index);
+	readValue(fh, &h.month_index);
+	readValue(fh, &h.year_index);
+	readValue(fh, &h.NumGroups);
 	chunksize -= 7;
 	/* Write out the half-finished state file so that we can use
 	 * the file size to compute group offsets */
@@ -746,8 +744,8 @@ LoadBattleGroup(uio_Stream* fh, uqm::DWORD chunksize)
 	{
 		int j;
 		uqm::BYTE icon, NumShips;
-		read_8(fh, &icon);
-		read_8(fh, &NumShips);
+		readValue(fh, &icon);
+		readValue(fh, &NumShips);
 		chunksize -= 2;
 		h.GroupOffset[i] = LengthStateFile(fp);
 		SeekStateFile(fp, h.GroupOffset[i], SEEK_SET);
@@ -757,14 +755,14 @@ LoadBattleGroup(uio_Stream* fh, uqm::DWORD chunksize)
 		{
 			uqm::BYTE race_outer;
 			SHIP_FRAGMENT sf;
-			read_8(fh, &race_outer);
-			read_8(fh, &sf.captains_name_index);
-			read_8(fh, &sf.race_id);
-			read_8(fh, &sf.index);
-			read_16(fh, &sf.crew_level);
-			read_16(fh, &sf.max_crew);
-			read_8(fh, &sf.energy_level);
-			read_8(fh, &sf.max_energy);
+			readValue(fh, &race_outer);
+			readValue(fh, &sf.captains_name_index);
+			readValue(fh, &sf.race_id);
+			readValue(fh, &sf.index);
+			readValue(fh, &sf.crew_level);
+			readValue(fh, &sf.max_crew);
+			readValue(fh, &sf.energy_level);
+			readValue(fh, &sf.max_energy);
 			chunksize -= 10;
 
 			swrite_8(fp, race_outer);
@@ -899,11 +897,11 @@ bool LoadGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, uio_Stream* in_fp, b
 	chunk = 0;
 	while (true)
 	{
-		if (read_32(in_fp, &chunk) != 1)
+		if (!readValue(in_fp, &chunk))
 		{
 			break;
 		}
-		if (read_32(in_fp, &chunkSize) != 1)
+		if (!readValue(in_fp, &chunkSize))
 		{
 			res_CloseResFile(in_fp);
 			return false;
@@ -1014,7 +1012,7 @@ bool LoadGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, uio_Stream* in_fp, b
 				break;
 			default:
 				uqm::log::debug("Skipping chunk of tag %08X (size {})", chunk, chunkSize);
-				if (skip_8(in_fp, chunkSize) != 1)
+				if (!skipN<char>(in_fp, chunkSize))
 				{
 					res_CloseResFile(in_fp);
 					return false;

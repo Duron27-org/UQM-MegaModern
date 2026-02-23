@@ -535,7 +535,7 @@ GetNextTechForSale(void)
 	uqm::BYTE i = 0;
 	uqm::BYTE j = 0;
 
-	if (DIF_HARD && CurStarDescPtr)
+	if (isDifficulty(uqm::Difficulty::Hard) && CurStarDescPtr)
 	{
 		switch (CurStarDescPtr->Index)
 		{
@@ -588,7 +588,7 @@ GetNextTechForSale(void)
 			}
 		}
 	}
-	else if (DIF_HARD && !CurStarDescPtr)
+	else if (isDifficulty(uqm::Difficulty::Hard) && !CurStarDescPtr)
 	{
 		return nullptr;
 	}
@@ -1354,7 +1354,7 @@ TryFuelAgain:
 
 		NPCPhrase(nextTech->sale_line);
 
-		if (DIF_HARD && countTech())
+		if (isDifficulty(uqm::Difficulty::Hard) && countTech())
 		{
 			nextTech->price = TECHPRICE + countTech() * 50;
 			NPCPhrase(NEED_MORE_CREDIT0);
@@ -1466,7 +1466,7 @@ DoSell(RESPONSE_REF R)
 	uqm::UWORD rainbow_mask;
 	uqm::SIZE added_credit;
 	int what_to_sell_queued = 0;
-	uqm::BYTE BioCreditValue = IF_HARD(BIO_CREDIT_VALUE, 1);
+	uqm::BYTE BioCreditValue = ifHardDifficulty(1, BIO_CREDIT_VALUE);
 
 	rainbow_mask = MAKE_WORD(
 		GET_GAME_STATE(RAINBOW_WORLD0),
@@ -1563,7 +1563,7 @@ DoSell(RESPONSE_REF R)
 			uqm::DWORD TimeIn;
 			bool Sleepy = true;
 			uqm::BYTE planets;
-			int diffCase = DIF_CASE(250, 500, 125);
+			int diffCase = difficultyCase(500, 200, 125);
 
 			added_credit = num_new_rainbows * (diffCase * BioCreditValue);
 

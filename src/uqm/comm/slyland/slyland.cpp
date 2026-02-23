@@ -492,7 +492,7 @@ CombatIsInevitable(RESPONSE_REF R)
 static void
 Intro(void)
 {
-	if (DIF_HARD && GET_GAME_STATE(GLOBAL_FLAGS_AND_DATA) & (1 << 6))
+	if (isDifficulty(uqm::Difficulty::Hard) && GET_GAME_STATE(GLOBAL_FLAGS_AND_DATA) & (1 << 6))
 	{
 		uqm::COUNT i;
 

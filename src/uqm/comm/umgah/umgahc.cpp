@@ -295,7 +295,7 @@ CombatIsInevitable(RESPONSE_REF R)
 		NPCPhrase(FUNNY_IDEA);
 
 		AlienTalkSegue((uqm::COUNT)~0);
-		AddEscortShips(UMGAH_SHIP, DIF_CASE(4, 4, 2));
+		AddEscortShips(UMGAH_SHIP, difficultyCase(4, 4, 2));
 		SET_GAME_STATE(UMGAH_HOSTILE, 1);
 	}
 }

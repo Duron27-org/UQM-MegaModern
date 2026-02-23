@@ -367,14 +367,15 @@ Rebels(RESPONSE_REF R)
 		}
 		else
 		{
-#define NUM_YEHAT_SHIPS DIF_CASE(4, 4, 2)
-			if (NumVisits < NUM_YEHAT_SHIPS)
+			const int numYehatShips { difficultyCase(4, 4, 2) };
+
+			if (NumVisits < numYehatShips)
 			{
 				NPCPhrase(HAVE_FEW_SHIPS);
 			}
 			else
 			{
-				NumVisits = NUM_YEHAT_SHIPS;
+				NumVisits = numYehatShips;
 				NPCPhrase(HAVE_ALL_SHIPS);
 			}
 
@@ -438,7 +439,7 @@ Intro(void)
 		NumVisits = (uqm::BYTE)EscortFeasibilityStudy(YEHAT_REBEL_SHIP);
 		if (NumVisits > 8)
 		{
-			NumVisits = DIF_CASE(8, 8, 4);
+			NumVisits = difficultyCase(8, 8, 4);
 		}
 		AddEscortShips(YEHAT_REBEL_SHIP, NumVisits - (NumVisits >> 1));
 		AddEscortShips(PKUNK_SHIP, NumVisits >> 1);

@@ -491,14 +491,8 @@ uqstl::pair<int, bool> UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 		->default_str(defaults.partialPickup.toString());
 	modGroup->add_flag("--submenu", m_options.submenu.edit(), "Enables/Disables mineral and star map keys submenu")
 		->default_str(defaults.submenu.toString());
-	uqstl::vector<uqstl::pair<std::string, DateFormat>> dateFormatOptions {
-		{"MMM DD.YYYY", DateFormat::MMM_dd_yyyy},
-		{"MM.DD.YYYY",  DateFormat::MM_dd_yyyy },
-		{"DD MMM YYYY", DateFormat::dd_MMM_yyyy},
-		{"DD.MM.YYYY",  DateFormat::dd_MM_yyyy }
-	  };
 	modGroup->add_option("--dateformat", m_options.optDateFormat.edit(), "Date format to use in-game")
-		->transform(CLI::CheckedTransformer {dateFormatOptions, CLI::ignore_case})
+		->transform(CLI::CheckedTransformer {EnumNames<DateFormat>::pairs<std::string>(), CLI::ignore_case})
 		->default_str(fmt::format("{:s}", *defaults.optDateFormat));
 	modGroup->add_flag("--infinitecredits", m_options.infiniteCredits.edit(), "Gives you infinite Melnorme Credits")
 		->default_str(defaults.infiniteCredits.toString());
@@ -506,17 +500,26 @@ uqstl::pair<int, bool> UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 	modGroup->add_flag("--loadgame", optLoadGame, "Takes you straight to the Load Game sceen after the splash screen.");
 	modGroup->add_flag("--customborder", m_options.customBorder.edit(), "Enables the custom border frame")
 		->default_str(defaults.customBorder.toString());
+	modGroup->add_option("--seedtype", m_options.seedType.edit(), "Seed type for solar system generation. Default is \"None\", which is the same seed used in the original game. Changing this will change the layout of the entire star map")
+		->transform(CLI::CheckedTransformer {EnumNames<SeedType>::pairs<std::string>(), CLI::ignore_case})
+		->default_str(fmt::format("{:s}", *defaults.seedType));
 	//	uqm::log::info("  --seedtype: 0: Default seed | 1: Seed planets  | 2: Seed Melnorme/Rainbow/Quasispace  | 3: Seed Starmap (default: 0)");
-	//	uqm::log::info("  --customseed=# : Allows you to customize the internal seed used to generate the solar systems in-game. (default: 16807)");
-	//	uqm::log::info("  --shipseed: Seed the ships assigned to each race. Uses --customseed value (default {})", defaults.shipSeed.toString());
+	modGroup->add_option("--customseed", m_options.customSeed, "Allows you to customize the internal seed used to generate the solar systems in-game.")
+		->capture_default_str();
+	modGroup->add_flag("--shipseed", m_options.shipSeed.edit(), "Seeds the ships assigned to each race. Uses --customseed value")
+		->default_str(defaults.shipSeed.toString());
 	//	uqm::log::info("  --spherecolors: 0: Default colors | 1: StarSeed colors (default: 0)");
 	//	uqm::log::info("  --spacemusic #: Enables localized music for aliens when you are in their sphere of influence\n0: Default (OFF) | 1: No Spoilers | 2: Spoilers");
 	modGroup->add_flag("--wholefuel", m_options.wholeFuel.edit(), "Enables the display of the whole fuel value in the ship status")
 		->default_str(defaults.wholeFuel.toString());
 	modGroup->add_flag("--dirjoystick", m_options.directionalJoystick.edit(), "Enables the use of directional joystick controls for Android")
 		->default_str(defaults.directionalJoystick.toString());
-	//	uqm::log::info("  --landerhold : Switch between PC/3DO max lander hold, pc=64, 3do=50", defaults.landerHold.toString());
-	//	uqm::log::info("  --scrtrans : Screen transitions, pc=instantaneous, 3do=crossfade", defaults.scrTrans.toString());
+	modGroup->add_option("--landerhold", m_options.landerHold.edit(), "Switch between PC/3DO max lander hold, pc=64, 3do=50")
+		->transform(emulationModeTransformer)
+		->default_str(fmt::format("{:s}", *defaults.landerHold));
+	modGroup->add_option("--scrtrans", m_options.scrTrans.edit(), "Screen transitions, pc=instantaneous, 3do=crossfade")
+		->transform(emulationModeTransformer)
+		->default_str(fmt::format("{:s}", *defaults.scrTrans));
 	//	uqm::log::info("  --difficulty : 0: Normal | 1: Easy | 2: Hard | 3: Choose at Start (default: 0)");
 	//	uqm::log::info("  --fuelrange : Enables extra fuel range indicators : 0: No indicators | 1: Fuel range at destination | 2: Remaining fuel range to Sol | 3: Both option 1 and 2  enabled simultaneously (default: 0)");
 	modGroup->add_flag("--extended", m_options.extended.edit(), "Enables Extended Edition features")
@@ -533,18 +536,30 @@ uqstl::pair<int, bool> UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 	modGroup->add_flag("--smartautopilot", m_options.smartAutoPilot.edit(), "Activating Auto-Pilot within Solar System pilots the Flagship out via the shortest route.")
 		->default_str(defaults.smartAutoPilot.toString());
 	//	uqm::log::info("  --controllertype : 0: Keyboard | 1: Xbox | 2: PlayStation 4 (default: 0)");
-	//	uqm::log::info("  --tintplansphere : Tint the planet sphere with scan color during scan", defaults.tintPlanSphere.toString());
-	//	uqm::log::info("  --planetstyle : Choose between PC or 3DO planet color and shading", defaults.planetStyle.toString());
+	modGroup->add_option("--tintplansphere", m_options.tintPlanSphere.edit(), "Tint the planet sphere with scan color during scan")
+		->transform(emulationModeTransformer)
+		->default_str(fmt::format("{:s}", *defaults.tintPlanSphere));
+	modGroup->add_option("--planetstyle", m_options.planetStyle.edit(), "Choose between PC or 3DO planet color and shading")
+		->transform(emulationModeTransformer)
+		->default_str(fmt::format("{:s}", *defaults.planetStyle));
 	//	uqm::log::info("  --starbackground : Set the background stars in solar system between PC, 3DO, UQM, or HD-mod patterns (default: pc)");
-	//	uqm::log::info("  --scanstyle : Choose between PC or 3DO scanning types", defaults.scanStyle.toString());
+	modGroup->add_option("--scanstyle", m_options.scanStyle.edit(), "Choose between PC or 3DO scanning types")
+		->transform(emulationModeTransformer)
+		->default_str(fmt::format("{:s}", *defaults.scanStyle));
 	modGroup->add_flag("--nonstoposcill", m_options.nonStopOscill.edit(), "Oscilloscope uses both voice and music data")
 		->default_str(defaults.nonStopOscill.toString());
-	//	uqm::log::info("  --scopestyle : Choose between either the PC or 3DO oscilloscope type", defaults.scopeStyle.toString());
+	modGroup->add_option("--scopestyle", m_options.scopeStyle.edit(), "Choose between either the PC or 3DO oscilloscope type")
+		->transform(emulationModeTransformer)
+		->default_str(fmt::format("{:s}", *defaults.scopeStyle));
 	modGroup->add_flag("--animhyperstars", m_options.hyperStars.edit(), "HD only - Use old HD-mod animated HyperSpace stars")
 		->default_str(defaults.hyperStars.toString());
-	//	uqm::log::info("  --landerview : Choose between either the PC or 3DO lander view", defaults.landerStyle.toString());
+	modGroup->add_option("--landerview", m_options.landerStyle.edit(), "Choose between either the PC or 3DO lander view")
+		->transform(emulationModeTransformer)
+		->default_str(fmt::format("{:s}", *defaults.landerStyle));
 	//	uqm::log::info("  --planettexture : Choose between either 3DO or UQM planet map texture [when not using custom seed] (default: 3do)");
-	//	uqm::log::info("  --sisenginecolor : Choose between either the PC or 3DO Flagship engine color", defaults.flagshipColor.toString());
+	modGroup->add_option("--sisenginecolor", m_options.flagshipColor.edit(), "Choose between either the PC or 3DO Flagship engine color")
+		->transform(emulationModeTransformer)
+		->default_str(fmt::format("{:s}", *defaults.flagshipColor));
 	modGroup->add_flag("--nohqencounters", m_options.noHQEncounters.edit(), "Disables HyperSpace encounters")
 		->default_str(defaults.noHQEncounters.toString());
 	modGroup->add_flag("--decleanse", m_options.deCleansing.edit(), "Moves the Death March 100 years ahead from its actual start date [does not work once the Death March has started]")
@@ -556,7 +571,9 @@ uqstl::pair<int, bool> UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 	modGroup->add_flag("--unscaledstarsystem", m_options.unscaledStarSystem.edit(), "Show the classic HD-mod Beta Star System view")
 		->default_str(defaults.unscaledStarSystem.toString());
 	//	uqm::log::info("  --spheretype : Choose between PC, 3DO, or UQM scan sphere styles", defaults.sphereType.toString());
-	//	uqm::log::info("  --nebulaevol=VOLUME (0-50, default 11)");
+	modGroup->add_option("--nebulaevol", m_options.nebulaevol.edit(), "Nebula volume scale") // TODO Pragma null why 0-50? Make all music/audoi volume options 0-100 for consistency!
+		->check(CLI::Range(0, 50))
+		->capture_default_str();
 	modGroup->add_flag("--slaughtermode", m_options.slaughterMode.edit(), "Affect a race's SOI by destroying their ships in battle")
 		->default_str(defaults.slaughterMode.toString());
 	modGroup->add_flag("--advancedautopilot", m_options.advancedAutoPilot.edit(), "Finds the route that uses the least amount of fuel through HyperSpace or QuasiSpace and Auto-Pilots the Flagship on the best route")

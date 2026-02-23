@@ -374,7 +374,7 @@ ExitConversation(RESPONSE_REF R)
 			NPCPhrase(HAVE_4_SHIPS);
 
 			AlienTalkSegue((uqm::COUNT)~0);
-			AddEscortShips(UTWIG_SHIP, DIF_CASE(4, 4, 2));
+			AddEscortShips(UTWIG_SHIP, difficultyCase(4, 4, 2));
 			PrepareShip(UTWIG_SHIP);
 		}
 	}

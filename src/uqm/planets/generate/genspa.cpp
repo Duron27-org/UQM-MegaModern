@@ -243,7 +243,7 @@ GenerateSpathi_generateOrbital(SOLARSYS_STATE* solarSys,
 			solarSys->SysInfo.PlanetInfo.ScanSeed[ENERGY_SCAN] = rand_val;
 
 
-			if (!DIF_HARD)
+			if (!isDifficulty(uqm::Difficulty::Hard))
 			{
 				solarSys->SysInfo.PlanetInfo.Weather = 0;
 				solarSys->SysInfo.PlanetInfo.Tectonics = 0;
@@ -304,7 +304,7 @@ GenerateSpathi_generateOrbital(SOLARSYS_STATE* solarSys,
 
 			solarSys->SysInfo.PlanetInfo.PlanetRadius = 120;
 			solarSys->SysInfo.PlanetInfo.SurfaceGravity = 23;
-			if (!DIF_HARD)
+			if (!isDifficulty(uqm::Difficulty::Hard))
 			{
 				solarSys->SysInfo.PlanetInfo.Weather = 0;
 				solarSys->SysInfo.PlanetInfo.Tectonics = 0;

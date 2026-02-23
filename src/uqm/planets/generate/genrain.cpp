@@ -52,7 +52,7 @@ const GenerateFunctions generateRainbowWorldFunctions = {
 static bool
 GenerateRainbowWorld_initNpcs(SOLARSYS_STATE* solarSys)
 {
-	if (DIF_HARD && GET_GAME_STATE(SLYLANDRO_MULTIPLIER) > 0)
+	if (isDifficulty(uqm::Difficulty::Hard) && GET_GAME_STATE(SLYLANDRO_MULTIPLIER) > 0)
 	{
 		GenerateSlylandro(solarSys);
 	}

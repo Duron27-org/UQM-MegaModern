@@ -114,13 +114,7 @@ typedef enum
 	OPTVAL_DDMMYYYY
 } OPT_DATETYPE;
 
-typedef enum
-{
-	OPTVAL_NORM,
-	OPTVAL_EASY,
-	OPTVAL_HARD,
-	OPTVAL_IMPO
-} OPT_DIFFICULTY;
+
 
 enum OPT_NOMAD
 {
@@ -447,7 +441,7 @@ typedef struct globalopts_struct
 	OPT_AQUALITYTYPE aquality;
 	OPT_GODTYPE godModes;
 	OPT_DATETYPE dateType;
-	OPT_DIFFICULTY difficulty;
+	uqm::Difficulty difficulty;
 	OPT_NOMAD nomad;
 	OPT_MELEEZOOM meleezoom;
 	OPT_CONTROLLER controllerType;

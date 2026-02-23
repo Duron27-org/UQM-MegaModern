@@ -1092,7 +1092,7 @@ void EncounterBattle(void)
 		}
 	}
 
-	if (DIF_EASY)
+	if (isDifficulty(uqm::Difficulty::Easy))
 	{
 		PlayerControl[1] = PlayerControlFlags::Cyborg | PlayerControlFlags::DifficultyAwesome;
 	}

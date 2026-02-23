@@ -95,8 +95,8 @@ struct OptionsStruct
 	BoolOption directionalJoystick {false};
 	EmulationOption landerHold {uqm::EmulationMode::Console3DO};
 	EmulationOption scrTrans {uqm::EmulationMode::Console3DO};
-	IntOption optDifficulty {0};
-	IntOption optDiffChooser {3};
+	OptionT<Difficulty> optDifficulty {Difficulty::Normal};
+	OptionT<Difficulty> optDiffChooser {Difficulty::ChooseYourOwn};
 	IntOption optFuelRange {0};
 	BoolOption extended {false};
 	IntOption nomad {0};

@@ -109,7 +109,7 @@ GenerateVault_generateOrbital(SOLARSYS_STATE* solarSys,
 		}
 		else if (GET_GAME_STATE(SYREEN_SHUTTLE_ON_SHIP))
 		{
-			if (DIF_HARD && !(GET_GAME_STATE(HM_ENCOUNTERS) & 1 << URQUAN_ENCOUNTER)
+			if (isDifficulty(uqm::Difficulty::Hard) && !(GET_GAME_STATE(HM_ENCOUNTERS) & 1 << URQUAN_ENCOUNTER)
 				&& !(GET_GAME_STATE(KOHR_AH_FRENZY)))
 			{
 				uqm::COUNT i;

@@ -50,7 +50,7 @@
 // It's arguably over-paranoid to check for error on
 // every single write, but this preserves the older
 // behavior.
-
+#pragma clang optimize off
 static bool io_ok = true;
 
 // This defines the order and the number of bits in which the game state
@@ -1183,7 +1183,7 @@ SaveSisState(const SIS_STATE* SSPtr, void* fp)
 	write_str(fp, SSPtr->ShipName, SIS_NAME_SIZE);
 	write_str(fp, SSPtr->CommanderName, SIS_NAME_SIZE);
 	write_str(fp, SSPtr->PlanetName, SIS_NAME_SIZE);
-	write_8(fp, SSPtr->Difficulty);
+	write_8(fp, static_cast<uqm::BYTE>(SSPtr->Difficulty));
 	write_8(fp, SSPtr->Extended);
 	write_8(fp, SSPtr->Nomad);
 	write_32(fp, SSPtr->Seed);

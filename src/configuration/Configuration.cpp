@@ -244,11 +244,11 @@ void getUserConfigOptions(OptionsStruct& options)
 	getBoolConfigValueXlat(options.scrTrans, "mm.scrTransition", uqm::EmulationMode::Console3DO, uqm::EmulationMode::PC);
 	if (res_IsInteger("mm.difficulty") && !options.optDifficulty.set)
 	{
-		options.optDifficulty.value = res_GetInteger("mm.difficulty");
+		options.optDifficulty.value = (uqm::Difficulty)res_GetInteger("mm.difficulty");
 		options.optDiffChooser.value = options.optDifficulty.value;
-		if (options.optDifficulty.value > 2)
+		if (options.optDifficulty.value == uqm::Difficulty::ChooseYourOwn)
 		{
-			options.optDifficulty.value = 0;
+			options.optDifficulty.value = uqm::Difficulty::Normal;
 		}
 	}
 	if (res_IsInteger("mm.fuelRange") && !options.optFuelRange.set)

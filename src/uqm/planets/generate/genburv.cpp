@@ -158,7 +158,7 @@ GenerateBurvixese_generateOrbital(SOLARSYS_STATE* solarSys,
 			CaptureStringTable(
 				LoadStringTable(BURV_RUINS_STRTAB));
 
-		if (!DIF_HARD)
+		if (!isDifficulty(uqm::Difficulty::Hard))
 		{
 			solarSys->SysInfo.PlanetInfo.Weather = 0;
 			solarSys->SysInfo.PlanetInfo.Tectonics = 0;
@@ -173,7 +173,7 @@ GenerateBurvixese_generateOrbital(SOLARSYS_STATE* solarSys,
 		solarSys->SysInfo.PlanetInfo.DiscoveryString =
 			CaptureStringTable(LoadStringTable(BURV_BCS_STRTAB));
 
-		if (!DIF_HARD)
+		if (!isDifficulty(uqm::Difficulty::Hard))
 		{
 			solarSys->SysInfo.PlanetInfo.Weather = 2;
 			solarSys->SysInfo.PlanetInfo.Tectonics = 1;

@@ -249,14 +249,14 @@ GenerateOrz_generateOrbital(SOLARSYS_STATE* solarSys, PLANET_DESC* world)
 
 	if (CurStarDescPtr->Index == TAALO_PROTECTOR_DEFINED
 		&& matchWorld(solarSys, world, MATCH_PBYTE, MATCH_MBYTE)
-		&& !DIF_HARD)
+		&& !isDifficulty(uqm::Difficulty::Hard))
 	{
 		solarSys->SysInfo.PlanetInfo.Weather = 0;
 		solarSys->SysInfo.PlanetInfo.Tectonics = 0;
 	}
 	if (CurStarDescPtr->Index == ORZ_DEFINED
 		&& matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET)
-		&& !DIF_HARD)
+		&& !isDifficulty(uqm::Difficulty::Hard))
 	{
 		solarSys->SysInfo.PlanetInfo.Weather = 3;
 		solarSys->SysInfo.PlanetInfo.Tectonics = 1;

@@ -211,7 +211,7 @@ bool serialiseGameState(const GameStateBitMap* bm, uqm::BYTE** buf,
 
 			if (value > bitmask32(numBits))
 			{
-				uqm::log::error("Warning: serialiseGameState(): the "
+				uqm::log::error("Error: serialiseGameState(): the "
 								"value of the property '{}' ({}) does not fit in "
 								"the reserved number of bits ({}).",
 								bmPtr->name, value, numBits);
@@ -582,7 +582,7 @@ bool InitGameStructures(void)
 		optShipSeed = OPTVAL_DISABLED;
 		optCustomSeed = PrimeA;
 	}
-	if (DIF_HARD && !PrimeSeed && !StarSeed)
+	if (isDifficulty(uqm::Difficulty::Hard) && !PrimeSeed && !StarSeed)
 	{
 		srand(time(nullptr));
 		optCustomSeed = (rand() % ((MAX_SEED - MIN_SEED) + MIN_SEED));
@@ -640,19 +640,21 @@ bool InitGameStructures(void)
 	GLOBAL(ElementWorth[EXOTIC]) = 25;
 	GLOBAL_SIS(ElementAmounts[EXOTIC]) = 0;
 
-	switch (DIFFICULTY)
+	switch (getDifficulty())
 	{
-		int i;
-		case EASY:
-			for (i = 0; i < NUM_ELEMENT_CATEGORIES; i++)
+		case uqm::Difficulty::Easy:
+			for (int i = 0; i < NUM_ELEMENT_CATEGORIES; i++)
 			{
 				GLOBAL(ElementWorth[i]) *= 2;
 			}
 			break;
-		case HARD:
+		case uqm::Difficulty::Hard:
 			GLOBAL(ElementWorth[EXOTIC]) = 16;
 			SET_GAME_STATE(CREW_PURCHASED0, lowByte<uqm::BYTE>(100));
 			SET_GAME_STATE(CREW_PURCHASED1, highByte<uqm::BYTE>(100));
+			break;
+		case uqm::Difficulty::Normal:
+		case uqm::Difficulty::ChooseYourOwn:
 			break;
 	}
 
@@ -678,12 +680,12 @@ bool InitGameStructures(void)
 	// Tobermoon during the journey from Vela to Sol, Hard and/or Extended
 	// mode only
 	GLOBAL_SIS(CrewEnlisted) =
-		(DIF_HARD || EXTENDED) ? 31 : CREW_POD_CAPACITY;
+		(isDifficulty(uqm::Difficulty::Hard) || EXTENDED) ? 31 : CREW_POD_CAPACITY;
 	GLOBAL_SIS(ModuleSlots[8]) = STORAGE_BAY;
 	GLOBAL_SIS(ModuleSlots[1]) = FUEL_TANK;
-	GLOBAL_SIS(FuelOnBoard) = IF_EASY(10 * FUEL_TANK_SCALE, 4338);
+	GLOBAL_SIS(FuelOnBoard) = ifEasyDifficulty(4338, 10 * FUEL_TANK_SCALE);
 
-	if (DIF_EASY)
+	if (isDifficulty(uqm::Difficulty::Easy))
 	{
 		GLOBAL_SIS(DriveSlots[7]) =
 			GLOBAL_SIS(DriveSlots[8]) = FUSION_THRUSTER;
@@ -727,7 +729,7 @@ bool InitGameStructures(void)
 
 	GLOBAL(CurrentActivity) = IN_INTERPLANETARY | START_INTERPLANETARY;
 
-	GLOBAL_SIS(ResUnits) = IF_EASY(0, 2500);
+	GLOBAL_SIS(ResUnits) = ifEasyDifficulty(2500, 0);
 	GLOBAL(CrewCost) = 3;
 	GLOBAL(FuelCost) = FUEL_COST_RU; // JMS: Was "20"
 	GLOBAL(ModuleCost[PLANET_LANDER]) = 500 / MODULE_COST_SCALE;
@@ -739,7 +741,7 @@ bool InitGameStructures(void)
 	GLOBAL(ModuleCost[DYNAMO_UNIT]) = 2000 / MODULE_COST_SCALE;
 	GLOBAL(ModuleCost[GUN_WEAPON]) = 2000 / MODULE_COST_SCALE;
 
-	GLOBAL_SIS(NumLanders) = IF_EASY(1, 2);
+	GLOBAL_SIS(NumLanders) = ifEasyDifficulty(2, 1);
 
 	utf8StringCopy(GLOBAL_SIS(ShipName),
 				   sizeof(GLOBAL_SIS(ShipName)),
@@ -753,7 +755,7 @@ bool InitGameStructures(void)
 
 	if (optHeadStart)
 	{
-		uqm::BYTE SpaCrew = IF_EASY(1, MAX_CREW_SIZE);
+		uqm::BYTE SpaCrew = ifEasyDifficulty(MAX_CREW_SIZE, 1);
 		AddEscortShips(SPATHI_SHIP, 1);
 		// Make the Eluder escort captained by Fwiffo alone or have a full
 		// compliment for Easy mode.

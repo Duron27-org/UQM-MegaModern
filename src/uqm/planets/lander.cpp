@@ -2420,7 +2420,7 @@ DoPlanetSide(LanderInputState* pMS)
 
 	ScrollPlanetSide(dx, dy, ON_THE_GROUND);
 
-	if (DIF_HARD)
+	if (isDifficulty(uqm::Difficulty::Hard))
 	{
 		static TimeCount TimeOutClock;
 		TimeCount Now = GetTimeCounter();

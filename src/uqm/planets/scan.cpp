@@ -1673,7 +1673,7 @@ generateBioNode(SOLARSYS_STATE* system, ELEMENT* NodeElementPtr,
 	uqm::COUNT i;
 	uqm::DWORD j;
 
-	if (DIF_HARD)
+	if (isDifficulty(uqm::Difficulty::Hard))
 	{
 		CreatureData[EVIL_ONE].Attributes =
 			BEHAVIOR_HUNT | AWARENESS_HIGH | SPEED_SLOW | DANGER_MONSTROUS;
@@ -1683,7 +1683,7 @@ generateBioNode(SOLARSYS_STATE* system, ELEMENT* NodeElementPtr,
 		//			DANGER_MONSTROUS;
 		// CreatureData[ZEX_BEAUTY].ValueAndHitPoints = MAKE_BYTE(15, 30);
 	}
-	else if (DIF_EASY)
+	else if (isDifficulty(uqm::Difficulty::Easy))
 	{
 		CreatureData[ZEX_BEAUTY].Attributes =
 			BEHAVIOR_HUNT | AWARENESS_LOW | SPEED_SLOW | DANGER_MONSTROUS;

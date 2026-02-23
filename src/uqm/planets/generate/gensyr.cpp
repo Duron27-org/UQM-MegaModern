@@ -174,7 +174,7 @@ GenerateSyreen_generateOrbital(SOLARSYS_STATE* solarSys,
 		solarSys->SysInfo.PlanetInfo.AtmoDensity =
 			EARTH_ATMOSPHERE * 9 / 10;
 
-		if (!DIF_HARD)
+		if (!isDifficulty(uqm::Difficulty::Hard))
 		{
 			solarSys->SysInfo.PlanetInfo.Tectonics = 0;
 			solarSys->SysInfo.PlanetInfo.Weather = 0;

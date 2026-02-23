@@ -15,7 +15,7 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-
+#pragma once
 #ifndef UQM_GLOBDATA_H_
 #define UQM_GLOBDATA_H_
 
@@ -28,11 +28,6 @@
 #include "velocity.h"
 #include "commanim.h"
 #include "lua/luastate.h"
-
-#if 0 //defined(__cplusplus)
-extern "C" {
-#endif
-
 
 // general numbers-speech generator info
 // should accomodate most common base-10 languages
@@ -656,7 +651,7 @@ ADD_GAME_STATE(CREW_PURCHASED1, 8)
 
 ADD_GAME_STATE(URQUAN_PROTECTING_SAMATRA, 1)
 
-#define THRADDASH_BODY_THRESHOLD DIF_CASE(25, 15, 30)
+#define THRADDASH_BODY_THRESHOLD difficultyCase(15, 25, 30)
 ADD_GAME_STATE(THRADDASH_BODY_COUNT, 5)
 
 ADD_GAME_STATE(UTWIG_SUPOX_MISSION, 3)
@@ -1143,19 +1138,47 @@ extern bool InitGameStructures(void);
 extern void UninitGameStructures(void);
 
 // Difficulty
-#define NORM 0
-#define EASY 1
-#define HARD 2
-#define DIFFICULTY (GLOBAL_SIS(Difficulty) ? GLOBAL_SIS(Difficulty) : NORM)
-#define DIF_CASE(a, b, c) (DIFFICULTY == NORM ? (a) : (DIFFICULTY == EASY ? (b) : (c)))
-#define DIF_NORM (DIFFICULTY == NORM ? true : false)
-#define DIF_EASY (DIFFICULTY == EASY ? true : false)
-#define DIF_HARD (DIFFICULTY == HARD ? true : false)
-#define IF_NORM(a, b) (!DIF_NORM ? (a) : (b))
-#define IF_EASY(a, b) (!DIF_EASY ? (a) : (b))
-#define IF_HARD(a, b) (!DIF_HARD ? (a) : (b))
-#define DIF_STR(a) ((a) == NORM ? "Normal" : ((a) == EASY ? "Easy" : (a) == HARD ? "Hard" : \
-																				   "CYO"))
+inline uqm::Difficulty getDifficulty()
+{
+	return GLOBAL_SIS(Difficulty);
+}
+
+template <typename T>
+inline T difficultyCase(T easy, T normal, T hard)
+{
+	switch (getDifficulty())
+	{
+		case uqm::Difficulty::Normal:
+			return normal;
+		case uqm::Difficulty::Easy:
+			return easy;
+		case uqm::Difficulty::Hard:
+			return hard;
+		case uqm::Difficulty::ChooseYourOwn:
+		default:
+			return normal; // Default to normal if somehow an invalid difficulty is set
+	}
+}
+
+inline bool isDifficulty(uqm::Difficulty difficulty)
+{
+	return getDifficulty() == difficulty;
+}
+
+template <typename T>
+inline T ifEasyDifficulty(T trueVal, T falseVal) { return isDifficulty(uqm::Difficulty::Easy) ? trueVal : falseVal; }
+template <typename T>
+inline T ifNormaDifficulty(T trueVal, T falseVal) { return isDifficulty(uqm::Difficulty::Normal) ? trueVal : falseVal; }
+template <typename T>
+inline T ifHardDifficulty(T trueVal, T falseVal) { return isDifficulty(uqm::Difficulty::Hard) ? trueVal : falseVal; }
+//#define DIF_NORM (DIFFICULTY == uqm::Difficulty::Normal ? true : false)
+//#define isDifficulty(uqm::Difficulty::Easy) (DIFFICULTY == uqm::Difficulty::Easy ? true : false)
+//#define isDifficulty(uqm::Difficulty::Hard) (DIFFICULTY == uqm::Difficulty::Hard ? true : false)
+//#define IF_NORM(a, b) (!DIF_NORM ? (a) : (b))
+//#define IF_EASY(a, b) (!isDifficulty(uqm::Difficulty::Easy) ? (a) : (b))
+//#define IF_HARD(a, b) (!isDifficulty(uqm::Difficulty::Hard) ? (a) : (b))
+//#define DIF_STR(a) ((a) == NORM ? "Normal" : ((a) == EASY ? "Easy" : (a) == HARD ? "Hard" : \
+//																				   "CYO"))
 
 // Extended
 #define EXTENDED (GLOBAL_SIS(Extended) ? true : false)
@@ -1167,13 +1190,13 @@ extern void UninitGameStructures(void);
 #define NOMAD_STR(a) (toString(static_cast<OPT_NOMAD>(a)))
 
 // Storage Queue
-#define STORAGE_Q (optShipStore || DIF_HARD || optFleetPointSys)
+#define STORAGE_Q (optShipStore || isDifficulty(uqm::Difficulty::Hard) || optFleetPointSys)
 
 static inline GFXPOINT
 LoadLastLoc(void)
 {
 	return GFXPOINT {(COORD)GET_GAME_STATE(LAST_LOCATION_X),
-				  (COORD)GET_GAME_STATE(LAST_LOCATION_Y)};
+					 (COORD)GET_GAME_STATE(LAST_LOCATION_Y)};
 }
 
 static inline void
@@ -1194,14 +1217,14 @@ static inline GFXPOINT
 LoadAdvancedQuasiPilot(void)
 {
 	return GFXPOINT {(COORD)GET_GAME_STATE(ADV_AUTOPILOT_QUASI_X),
-				  (COORD)GET_GAME_STATE(ADV_AUTOPILOT_QUASI_Y)};
+					 (COORD)GET_GAME_STATE(ADV_AUTOPILOT_QUASI_Y)};
 }
 
 static inline GFXPOINT
 LoadAdvancedAutoPilot(void)
 {
 	return GFXPOINT {(COORD)GET_GAME_STATE(ADV_AUTOPILOT_SAVE_X),
-				  (COORD)GET_GAME_STATE(ADV_AUTOPILOT_SAVE_Y)};
+					 (COORD)GET_GAME_STATE(ADV_AUTOPILOT_SAVE_Y)};
 }
 
 static inline void
@@ -1239,8 +1262,8 @@ ZeroAdvancedAutoPilot(void)
 #define EARTH_OUTER_Y 597
 
 // Druuge Crew Values
-#define MIN_SOLD DIF_CASE(100, 200, 10)
-#define MAX_SOLD DIF_CASE(250, 500, 25)
+#define MIN_SOLD difficultyCase(200, 100, 10)
+#define MAX_SOLD difficultyCase(500, 250, 25)
 
 static inline bool
 IsHomeworldKnown(uqm::DWORD homeworld)

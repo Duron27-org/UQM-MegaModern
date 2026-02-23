@@ -311,10 +311,9 @@ GenerateSaMatra_generateOrbital(SOLARSYS_STATE* solarSys,
 			}
 			else
 			{
-#define URQUAN_REMNANTS DIF_CASE(3, 2, 5)
-				uqm::BYTE i;
+				const uqm::BYTE urQuanRemants {difficultyCase<uqm::BYTE>(2, 3, 5)};
 
-				for (i = 0; i < URQUAN_REMNANTS; ++i)
+				for (uqm::BYTE i = 0; i < urQuanRemants; ++i)
 				{
 					CloneShipFragment((EXTENDED
 											   && GET_GAME_STATE(KOHR_AH_FRENZY) ?
@@ -354,7 +353,7 @@ GenerateSaMatra_generateOrbital(SOLARSYS_STATE* solarSys,
 				}
 				else
 				{
-					if (DIF_HARD && (GET_GAME_STATE(HM_ENCOUNTERS) & 1 << NO_HELP_FROM_PKUNK))
+					if (isDifficulty(uqm::Difficulty::Hard) && (GET_GAME_STATE(HM_ENCOUNTERS) & 1 << NO_HELP_FROM_PKUNK))
 					{
 						return true;
 					}

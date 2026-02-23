@@ -1304,7 +1304,7 @@ SetDefaults(void)
 #endif
 	choices[CHOICE_LANDERHOLD].selected = static_cast<int>(opts.landerHold);
 	choices[CHOICE_SCRMELT].selected = static_cast<int>(opts.scrTrans);
-	choices[CHOICE_SKILLLVL].selected = opts.difficulty;
+	choices[CHOICE_SKILLLVL].selected = static_cast<int>(opts.difficulty);
 	choices[CHOICE_EXTENDED].selected = opts.extended;
 	choices[CHOICE_NOMAD].selected = opts.nomad;
 	choices[CHOICE_GAMEOVER].selected = opts.gameOver;
@@ -1431,7 +1431,7 @@ PropagateResults(void)
 #endif
 	opts.landerHold = (OPT_CONSOLETYPE)choices[CHOICE_LANDERHOLD].selected;
 	opts.scrTrans = (OPT_CONSOLETYPE)choices[CHOICE_SCRMELT].selected;
-	opts.difficulty = (OPT_DIFFICULTY)choices[CHOICE_SKILLLVL].selected;
+	opts.difficulty = static_cast<uqm::Difficulty>(choices[CHOICE_SKILLLVL].selected);
 	opts.extended = (OPT_ENABLABLE)choices[CHOICE_EXTENDED].selected;
 	opts.nomad = (OPT_NOMAD)choices[CHOICE_NOMAD].selected;
 	opts.gameOver = (OPT_ENABLABLE)choices[CHOICE_GAMEOVER].selected;
@@ -2593,7 +2593,7 @@ void GetGlobalOptions(GLOBALOPTS* opts)
 	opts->shield = whichPlatformOpt(optWhichShield);
 
 	// Game modes
-	opts->difficulty = (OPT_DIFFICULTY)optDiffChooser;
+	opts->difficulty = optDiffChooser;
 	opts->extended = optExtended;
 	opts->nomad = (OPT_NOMAD)optNomad;
 	opts->slaughterMode = optSlaughterMode;
@@ -2878,9 +2878,9 @@ void SetGlobalOptions(GLOBALOPTS* opts)
 	}
 
 	putOpt(optDiffChooser, (int)opts->difficulty, "mm.difficulty", false);
-	if ((optDifficulty = opts->difficulty) == OPTVAL_IMPO)
+	if ((optDifficulty = opts->difficulty) == uqm::Difficulty::ChooseYourOwn)
 	{
-		optDifficulty = OPTVAL_NORM;
+		optDifficulty = uqm::Difficulty::Normal;
 	}
 	putOpt(optExtended, opts->extended, "mm.extended", false);
 	putOpt(optNomad, (int)opts->nomad, "mm.nomad", false);

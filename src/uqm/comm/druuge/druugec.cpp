@@ -467,7 +467,7 @@ DoTransaction(RESPONSE_REF R)
 		uqm::BYTE trade_gas;
 		uqm::BYTE ship_slots, ships_to_trade;
 
-		if (DIF_HARD && !(GET_GAME_STATE(HM_ENCOUNTERS) & 1 << READY_TO_BARGAIN))
+		if (isDifficulty(uqm::Difficulty::Hard) && !(GET_GAME_STATE(HM_ENCOUNTERS) & 1 << READY_TO_BARGAIN))
 		{
 			uqm::UWORD state;
 
@@ -551,7 +551,7 @@ DoTransaction(RESPONSE_REF R)
 			capacity -= FuelOnBoard;
 			f = (uqm::COUNT)((capacity + (FUEL_TANK_SCALE >> 1)) / FUEL_TANK_SCALE);
 
-			if (DIF_HARD && f > HardLimit)
+			if (isDifficulty(uqm::Difficulty::Hard) && f > HardLimit)
 			{
 				f -= (f - HardLimit);
 				capacity = (f * FUEL_TANK_SCALE) - FuelOnBoard;
@@ -628,7 +628,7 @@ Sell(RESPONSE_REF R)
 
 	if (!GET_GAME_STATE(ROSY_SPHERE))
 	{
-		if ((DIF_HARD && GET_GAME_STATE(HM_ENCOUNTERS) & 1 << READY_TO_BARGAIN) || !DIF_HARD)
+		if ((isDifficulty(uqm::Difficulty::Hard) && GET_GAME_STATE(HM_ENCOUNTERS) & 1 << READY_TO_BARGAIN) || !isDifficulty(uqm::Difficulty::Hard))
 		{
 			RespFunc = (RESPONSE_FUNC)Trade;
 		}

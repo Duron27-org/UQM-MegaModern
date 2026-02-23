@@ -547,7 +547,7 @@ init_shofixti(void)
 		new_shofixti_desc.ship_info.icons_rsc = OLDSHOF_ICON_MASK_PMAP_ANIM;
 
 		/* Weapon doesn't work as well */
-		if (!DIF_HARD)
+		if (!isDifficulty(uqm::Difficulty::Hard))
 		{
 			new_shofixti_desc.characteristics.weapon_wait = 10;
 		}
@@ -555,7 +555,7 @@ init_shofixti(void)
 		/* Simulate VUX limpets */
 		for (i = 0; i < NUM_LIMPETS; ++i)
 		{
-			if (!DIF_HARD)
+			if (!isDifficulty(uqm::Difficulty::Hard))
 			{
 				if (++new_shofixti_desc.characteristics.turn_wait == 0)
 				{

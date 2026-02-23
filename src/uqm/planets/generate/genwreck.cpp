@@ -101,7 +101,7 @@ GenerateWreck_generateOrbital(SOLARSYS_STATE* solarSys,
 {
 	if (matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{
-		if (DIF_HARD && !(GET_GAME_STATE(HM_ENCOUNTERS) & 1 << PROBE_ENCOUNTER))
+		if (isDifficulty(uqm::Difficulty::Hard) && !(GET_GAME_STATE(HM_ENCOUNTERS) & 1 << PROBE_ENCOUNTER))
 		{
 			uqm::COUNT sum, i;
 

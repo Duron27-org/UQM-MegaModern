@@ -143,7 +143,7 @@ void AddInitialGameEvents(void)
 	AddEvent(RELATIVE_EVENT, 0, 1, 0, HYPERSPACE_ENCOUNTER_EVENT);
 	AddEvent(ABSOLUTE_EVENT, 3, 17, START_YEAR, ARILOU_ENTRANCE_EVENT);
 	AddEvent(RELATIVE_EVENT, 0, 0,
-			 YEARS_TO_KOHRAH_VICTORY + DIF_CASE(0, 2, -1),
+			 YEARS_TO_KOHRAH_VICTORY + difficultyCase(2, 0, -1),
 			 KOHR_AH_VICTORIOUS_EVENT);
 	AddEvent(RELATIVE_EVENT, 0, 0, 0, SLYLANDRO_RAMP_UP);
 }
@@ -502,7 +502,7 @@ shofixti_return_event(int arg)
 		AddEvent(RELATIVE_EVENT, 3, 0, 0, SHOFIXTI_RETURN_EVENT);
 	}
 	SetRaceAllied(SHOFIXTI_SHIP, true);
-	GLOBAL(CrewCost) -= IF_HARD(2, 1);
+	GLOBAL(CrewCost) -= ifHardDifficulty(1, 2);
 	/* crew is not an issue anymore */
 	SET_GAME_STATE(CREW_PURCHASED0, 0);
 	SET_GAME_STATE(CREW_PURCHASED1, 0);
@@ -760,7 +760,7 @@ spathi_shield_event(int arg)
 		if (SpathiPtr->actual_strength)
 		{
 			SetRaceAllied(SPATHI_SHIP, false);
-			if (DIF_HARD)
+			if (isDifficulty(uqm::Difficulty::Hard))
 			{
 				RemoveEscortShips(SPATHI_SHIP);
 			}

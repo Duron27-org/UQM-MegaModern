@@ -89,7 +89,7 @@ GenerateTrap_generateOrbital(SOLARSYS_STATE* solarSys, PLANET_DESC* world)
 				EARTH_ATMOSPHERE * 2;
 			solarSys->SysInfo.PlanetInfo.SurfaceTemperature = 35;
 		}
-		if (!DIF_HARD)
+		if (!isDifficulty(uqm::Difficulty::Hard))
 		{
 			solarSys->SysInfo.PlanetInfo.Weather = 3;
 			solarSys->SysInfo.PlanetInfo.Tectonics = 1;

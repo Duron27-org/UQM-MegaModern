@@ -610,7 +610,7 @@ DrawNoReturnZone(void)
 
 	sol = plot_map[SOL_DEFINED].star_pt;
 	sis = GFXPOINT {(COORD)LOGX_TO_UNIVERSE(GLOBAL_SIS(log_x)),
-				 (COORD)LOGY_TO_UNIVERSE(GLOBAL_SIS(log_y))};
+					(COORD)LOGY_TO_UNIVERSE(GLOBAL_SIS(log_y))};
 
 	dist = (double)FuelRequiredTo(sol) / 2;
 
@@ -2115,7 +2115,7 @@ UpdateCursorInfo(std::span<uqm::CHAR_T> prevbuf)
 	if (strncmp(buf, prevbuf.data(), sizeof(buf)) != 0)
 	{
 		uqm::strncpy_safe(prevbuf, buf);
-		
+
 		// Cursor is on top of a star. Display its name.
 		if (BestSDPtr)
 		{
@@ -2708,11 +2708,12 @@ void DoBubbleWarp(bool UseFuel)
 	}
 }
 
-#define PORTAL_FUEL_COST DIF_CASE(10, 5, 20)
 
 static void
 AdvancedAutoPilot(void)
-{ // (Based on the Python QuasiSpace Calculator by Lukrative525
+{
+	const uqm::COUNT portalFuelCost {difficultyCase<uqm::COUNT>(5, 20, 20)};
+	// (Based on the Python QuasiSpace Calculator by Lukrative525
 	// https://www.reddit.com/r/starcontrol/comments/zpyhkc/quasispace_calculator/
 	GFXPOINT current_position;
 	GFXPOINT destination = GLOBAL(autopilot);
@@ -2735,7 +2736,7 @@ AdvancedAutoPilot(void)
 	{
 		distance = ptDistance(destination, portal_map[i].star_pt);
 
-		if (!DIF_EASY && !(KnownQSPortals & (1 << i)))
+		if (!isDifficulty(uqm::Difficulty::Easy) && !(KnownQSPortals & (1 << i)))
 		{
 			distance = MAX_X_UNIVERSE * MAX_Y_UNIVERSE;
 		}
@@ -2750,7 +2751,7 @@ AdvancedAutoPilot(void)
 	portal_coordinates = star_array[NUM_SOLAR_SYSTEMS + index].star_pt;
 
 	fuel_no_portal = ptDistance(current_position, destination) / 100;
-	fuel_with_portal = minimum / 100 + PORTAL_FUEL_COST;
+	fuel_with_portal = minimum / 100 + portalFuelCost;
 
 	if (fuel_no_portal < fuel_with_portal)
 	{
