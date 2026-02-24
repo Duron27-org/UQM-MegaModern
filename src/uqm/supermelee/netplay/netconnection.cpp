@@ -41,6 +41,7 @@
 static void closeCallback(NetDescriptor* nd);
 static void NetConnection_doClose(NetConnection* conn);
 
+#include "core/platform/platform.h"
 #include "core/string/StringUtils.h"
 #include "nc_connect.ci"
 
@@ -75,7 +76,7 @@ NetConnection_open(int player, const uqm::NetplayPeerOptions* options,
 		now = time(nullptr);
 		if (now == (time_t)-1)
 		{
-			uqm::log::critical("time() failed: {}.", strerror(errno));
+			uqm::log::critical("time() failed: {}.", uqm::strerror(errno));
 			abort();
 		}
 
@@ -87,7 +88,7 @@ NetConnection_open(int player, const uqm::NetplayPeerOptions* options,
 		strftimeResult = strftime(dumpFileName, sizeof dumpFileName, "debug/netlog-%Y%m%e%H%M%S", nowTm);
 		if (strftimeResult == 0)
 		{
-			uqm::log::critical("strftime() failed: {}.", strerror(errno));
+			uqm::log::critical("strftime() failed: {}.", uqm::strerror(errno));
 			abort();
 		}
 

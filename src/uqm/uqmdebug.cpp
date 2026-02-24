@@ -35,6 +35,7 @@
 #include "setup.h"
 #include "starmap.h"
 #include "state.h"
+#include "core/platform/platform.h"
 #include "core/string/StringUtils.h"
 #include "libs/mathlib.h"
 #include "lua/luadebug.h"
@@ -1074,7 +1075,7 @@ void dumpUniverseToFile(void)
 	{
 		fmt::print(stderr, "Error: Could not open file '{}' for "
 						   "writing: {}",
-				   UNIVERSE_DUMP_FILE, strerror(errno));
+				   UNIVERSE_DUMP_FILE, uqm::strerror(errno));
 		return;
 	}
 
@@ -1586,7 +1587,7 @@ void tallyResourcesToFile(void)
 	{
 		fmt::print(stderr, "Error: Could not open file '{}' for "
 						   "writing: {}\n",
-				   RESOURCE_TALLY_FILE, strerror(errno));
+				   RESOURCE_TALLY_FILE, uqm::strerror(errno));
 		return;
 	}
 

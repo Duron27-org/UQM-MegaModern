@@ -2,9 +2,11 @@
 #ifndef UQM_CORE_STL_H_
 #define UQM_CORE_STL_H_
 
-#ifdef USING_EASTL
-// balh
-#else
+#ifndef __STDC_WANT_LIB_EXT1__
+#define __STDC_WANT_LIB_EXT1__ 1
+#endif
+
+#ifndef USING_EASTL
 
 #include <algorithm>
 #include <array>
@@ -32,7 +34,9 @@ namespace std
 template <size_t N>
 using fixed_string = string; // std library has no fixed string :(
 }
-
+#else
+static_assert(false, "EASTL is not supported yet. If you want to add support for it, submit a PR!");
 #endif /* !defined(USING_EASTL)*/
+
 
 #endif //UQM_CORE_STL_H_

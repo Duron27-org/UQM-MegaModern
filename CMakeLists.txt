@@ -5,7 +5,7 @@ project(UrQuanMastersMegaModern CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF) # Optional, but recommended for standard compliance
+set(CMAKE_CXX_EXTENSIONS ON) # Optional, but recommended for standard compliance
 
 include(CMake/helpers.cmake)
 #set(CMAKE_SYSTEM_VERSION 10.0 CACHE STRING "" FORCE)
@@ -108,6 +108,7 @@ target_compile_definitions(uqm_project_features
         USE_INTERNAL_MIKMOD
         USE_INTERNAL_LUA
         USE_PLATFORM_ACCEL
+        __STDC_WANT_LIB_EXT1__=1
 )
 
 target_link_libraries(${APP_TARGET} PRIVATE uqm_project_features)

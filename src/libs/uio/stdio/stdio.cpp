@@ -41,6 +41,7 @@
 #include <assert.h>
 #include <fcntl.h>
 #include <ctype.h>
+#include "core/platform/platform.h"
 
 #include "../iointrn.h"
 #include "../uioport.h"
@@ -123,7 +124,7 @@ void stdio_close(uio_Handle* handle)
 		if (errno != EINTR)
 		{
 			fmt::print(stderr, "Warning: Error while closing socket: {}\n",
-					   strerror(errno));
+					   uqm::strerror(errno));
 			break;
 		}
 	}
@@ -639,7 +640,7 @@ stdio_openEntries(uio_PDirHandle* pDirHandle)
 	if (result->status != 0)
 	{
 		fmt::print(stderr, "Warning: readdir_r() failed: {}\n",
-				   strerror(result->status));
+				   uqm::strerror(result->status));
 	}
 #endif
 #endif
@@ -711,7 +712,7 @@ int stdio_readEntries(stdio_EntriesIterator** iteratorPtr,
 	if (iterator->status != 0)
 	{
 		fmt::print(stderr, "Warning: readdir_r() failed: {}\n",
-				   strerror(iterator->status));
+				   uqm::strerror(iterator->status));
 	}
 #endif
 #endif

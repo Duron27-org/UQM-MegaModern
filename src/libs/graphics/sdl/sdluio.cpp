@@ -25,7 +25,7 @@
 #include "png2sdl.h"
 #include <errno.h>
 #include <string.h>
-
+#include "core/platform/platform.h"
 
 static SDL_RWops* sdluio_makeRWops(uio_Stream* stream);
 
@@ -51,7 +51,7 @@ sdluio_loadImage(uio_DirHandle* dir, const char* fileName)
 	if (stream == nullptr)
 	{
 		SDL_SetError("Couldn't open '%s': %s", fileName,
-					 strerror(errno));
+					 uqm::strerror(errno).c_str());
 		return nullptr;
 	}
 	rwops = sdluio_makeRWops(stream);
@@ -75,7 +75,7 @@ sdluio_seek(SDL_RWops* context, Sint64 offset, int whence)
 		== -1)
 	{
 		SDL_SetError("Error seeking in uio_Stream: %s",
-					 strerror(errno));
+					 uqm::strerror(errno).c_str());
 		return -1;
 	}
 	return uio_ftell((uio_Stream*)context->hidden.unknown.data1);
@@ -95,7 +95,7 @@ sdluio_read(SDL_RWops* context, void* ptr, size_t size, size_t maxnum)
 	if (numRead == 0 && uio_ferror((uio_Stream*)context->hidden.unknown.data1))
 	{
 		SDL_SetError("Error reading from uio_Stream: %s",
-					 strerror(errno));
+					 uqm::strerror(errno).c_str());
 		return 0;
 	}
 	return (int)numRead;
@@ -115,7 +115,7 @@ sdluio_write(SDL_RWops* context, const void* ptr, size_t size, size_t num)
 	if (numWritten == 0 && uio_ferror((uio_Stream*)context->hidden.unknown.data1))
 	{
 		SDL_SetError("Error writing to uio_Stream: %s",
-					 strerror(errno));
+					 uqm::strerror(errno).c_str());
 		return 0;
 	}
 	return (size_t)numWritten;

@@ -25,6 +25,7 @@
 #include "netconnection.h"
 #include "packet.h"
 #include "core/log/log.h"
+#include "core/platform/platform.h"
 #include "libs/net.h"
 
 #include <assert.h>
@@ -83,7 +84,7 @@ int sendPacket(NetConnection* conn, Packet* packet)
 				{
 					// Should not happen.
 					int savedErrno = errno;
-					uqm::log::error("send() failed: {}.\n", strerror(errno));
+					uqm::log::error("send() failed: {}.\n", uqm::strerror(errno));
 					errno = savedErrno;
 					return -1;
 				}

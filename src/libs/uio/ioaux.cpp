@@ -24,6 +24,8 @@
 #include <fcntl.h>
 #include <fmt/format.h>
 
+#include "core/platform/platform.h"
+
 #include "ioaux.h"
 #include "iointrn.h"
 #include "uioport.h"
@@ -291,7 +293,7 @@ copyError(int error,
 		  uio_PDirHandle* toDir, const char* toName, char* buf)
 {
 #ifdef DEBUG
-	fmt::print(stderr, "Error while copying: {}\n", strerror(error));
+	fmt::print(stderr, "Error while copying: {}\n", uqm::strerror(error));
 #endif
 
 	if (fromHandle != nullptr)
@@ -860,7 +862,7 @@ int uio_verifyPath(uio_DirHandle* dirHandle, const char* path,
 #ifdef DEBUG
 				fmt::print(stderr, "Warning: Unknown error from "
 								   "uio_walkPhysicalPath: {}\n",
-						   strerror(retVal));
+						   uqm::strerror(retVal));
 #endif
 				uio_free(*resolvedPath);
 				errno = retVal;

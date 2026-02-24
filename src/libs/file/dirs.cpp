@@ -29,7 +29,9 @@
 #include "libs/memlib.h"
 #include "libs/misc.h"
 #include "core/log/log.h"
+#include "core/platform/platform.h"
 #include "core/string/StringUtils.h"
+
 
 #ifdef HAVE_DRIVE_LETTERS
 #include <ctype.h>
@@ -89,7 +91,7 @@ int mkdirhier(const char* path)
 		ptr[1] = '\0';
 		if (stat(buf, &statbuf) == -1)
 		{
-			uqm::log::error("Can't stat \"{}\": {}", buf, strerror(errno));
+			uqm::log::error("Can't stat \"{}\": {}", buf, uqm::strerror(errno));
 			goto err;
 		}
 	}
@@ -129,7 +131,7 @@ int mkdirhier(const char* path)
 		ptr[1] = '\0';
 		if (stat(buf, &statbuf) == -1)
 		{
-			uqm::log::error("Can't stat \"{}\": {}", buf, strerror(errno));
+			uqm::log::error("Can't stat \"{}\": {}", buf, uqm::strerror(errno));
 			goto err;
 		}
 	}
@@ -181,7 +183,7 @@ int mkdirhier(const char* path)
 #endif
 			{
 				uqm::log::error("Can't stat \"{}\": {}", buf,
-								strerror(errno));
+								uqm::strerror(errno));
 				goto err;
 			}
 		}
@@ -212,7 +214,7 @@ int mkdirhier(const char* path)
 		if (createDirectory(buf, 0777) == -1)
 		{
 			uqm::log::error("Error: Can't create {}: {}", buf,
-							strerror(errno));
+							uqm::strerror(errno));
 			goto err;
 		}
 
@@ -261,29 +263,25 @@ err:
 
 // Get the user's home dir
 // returns a pointer to a static buffer from either getenv() or getpwuid().
-const char*
-getHomeDir(void)
+uqstl::string getHomeDir(void)
 {
 #ifdef WIN32
-	return getenv("HOME");
+	return uqm::getEnvironmentValue("HOME");
 #else
-	const char* home;
-	struct passwd* pw;
-
-	home = getenv("HOME");
-	if (home != nullptr)
+	uqstl::string home = uqm::getEnvironmentValue("HOME");
+	if (!home.empty())
 	{
 		return home;
 	}
 
-	pw = getpwuid(getuid());
+	struct passwd* pw = getpwuid(getuid());
 	if (pw == nullptr)
 	{
-		return nullptr;
+		return {};
 	}
 	// NB: pw points to a static buffer.
 
-	return pw->pw_dir;
+	return {pw->pw_dir};
 #endif
 }
 
@@ -337,7 +335,6 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 					{
 						/* Environment variable substitution in Windows */
 						const char* end; // end of env var name in src
-						const char* envVar;
 						char* envName;
 						size_t envNameLen, envVarLen;
 
@@ -353,10 +350,10 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 						envName = (char*)HMalloc(envNameLen + 1);
 						memcpy(envName, src, envNameLen + 1);
 						envName[envNameLen] = '\0';
-						envVar = getenv(envName);
+						uqstl::string envVar = uqm::getEnvironmentValue(envName);
 						HFree(envName);
 
-						if (envVar == nullptr)
+						if (envVar.empty())
 						{
 #ifdef APPDATA_FALLBACK
 							if (strncmp(src, "APPDATA", envNameLen) != 0)
@@ -372,11 +369,11 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 							uqm::log::warn("Warning: %%APPDATA%% is not set. "
 										   "Falling back to \"%%USERPROFILE%%\\Application "
 										   "Data\"");
-							envVar = getenv("USERPROFILE");
-							if (envVar != nullptr)
+							envVar = uqm::getEnvironmentValue("USERPROFILE");
+							if (!envVar.empty())
 							{
 #define APPDATA_STRING "\\Application Data"
-								envVarLen = strlen(envVar);
+								envVarLen = envVar.size();
 								CHECKLEN(buf,
 										 envVarLen + sizeof(APPDATA_STRING) - 1);
 								uqm::strncpy_safe({bufptr, bufend}, envVar);
@@ -406,7 +403,7 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 #endif /* APPDATA_FALLBACK */
 						}
 
-						envVarLen = strlen(envVar);
+						envVarLen = envVar.length();
 						CHECKLEN(buf, envVarLen);
 						uqm::strncpy_safe({bufptr, bufend}, envVar);
 						bufptr += envVarLen;
@@ -420,7 +417,6 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 						const char* end;
 						char* envName;
 						size_t envNameLen;
-						const char* envVar;
 						size_t envVarLen;
 
 						src++;
@@ -449,14 +445,14 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 						envName = HMalloc(envNameLen + 1);
 						memcpy(envName, src, envNameLen + 1);
 						envName[envNameLen] = '\0';
-						envVar = getenv(envName);
+						uqstl::string envVar = uqm::getEnvironmentValue(envName);
 						HFree(envName);
 
-						if (envVar != nullptr)
+						if (!envVar.empty())
 						{
-							envVarLen = strlen(envVar);
+							envVarLen = envVar.size();
 							CHECKLEN(buf, envVarLen);
-							memcpy(bufptr, envVar, envVarLen);
+							memcpy(bufptr, envVar.c_str(), envVarLen);
 							bufptr += envVarLen;
 						}
 
@@ -483,7 +479,6 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 	{
 		if (src[0] == '~')
 		{
-			const char* home;
 			size_t homelen;
 
 			if (src[1] != '/')
@@ -492,19 +487,19 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 				goto err;
 			}
 
-			home = getHomeDir();
-			if (home == nullptr)
+			uqstl::string home = getHomeDir();
+			if (home.empty())
 			{
 				errno = ENOENT;
 				goto err;
 			}
-			homelen = strlen(home);
+			homelen = home.size();
 
 			if (what & EP_ABSOLUTE)
 			{
 				size_t skip;
 				destptr = expandPathAbsolute(dest, destend - dest,
-											 home, &skip, what);
+											 home.c_str(), &skip, what);
 				if (destptr == nullptr)
 				{
 					// errno is set
@@ -517,7 +512,7 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 			}
 
 			CHECKLEN(dest, homelen);
-			memcpy(destptr, home, homelen);
+			memcpy(destptr, home.c_str(), homelen);
 			destptr += homelen;
 			src++; /* skip the ~ */
 		}

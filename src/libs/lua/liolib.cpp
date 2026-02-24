@@ -244,7 +244,7 @@ static void opencheck(lua_State* L, const char* fname, const char* mode)
 	p->f = fopen(fname, mode);
 	if (p->f == nullptr)
 	{
-		luaL_error(L, "cannot open file " LUA_QS " (%s)", fname, strerror(errno));
+		luaL_error(L, "cannot open file " LUA_QS " (%s)", fname, uqm::strerror(errno));
 	}
 }
 

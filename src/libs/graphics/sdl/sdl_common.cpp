@@ -27,6 +27,7 @@
 #include "primitives.h"
 #include "options.h"
 #include "uqmversion.h"
+#include "core/platform/platform.h"
 #include "core/string/StringUtils.h"
 #include "libs/graphics/drawcmd.h"
 #include "libs/graphics/dcqueue.h"
@@ -721,7 +722,7 @@ int TFB_HasColorKey(SDL_Surface* surface)
 
 void TFB_ScreenShot(void)
 {
-	const char* shotDirName = getenv("UQM_SCR_SHOT_DIR");
+	const uqstl::string shotDirName = uqm::getEnvironmentValue("UQM_SCR_SHOT_DIR");
 	auto now = std::chrono::system_clock::now();
 	auto fullPath = fmt::format("{}{:%Y-%m-%d %H-%M-%S} v{}.{}.{} {}.png", shotDirName, now,
 									   UQM_MAJOR_VERSION, UQM_MINOR_VERSION, UQM_PATCH_VERSION,

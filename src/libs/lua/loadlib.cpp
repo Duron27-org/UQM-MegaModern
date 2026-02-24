@@ -19,7 +19,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-
+#include "core/platform/platform.h"
 
 #define loadlib_c
 #define LUA_LIB
@@ -774,12 +774,12 @@ static int noenv(lua_State* L)
 static void setpath(lua_State* L, const char* fieldname, const char* envname1,
 					const char* envname2, const char* def)
 {
-	const char* path = getenv(envname1);
-	if (path == nullptr) /* no environment variable? */
+	const uqstl::string path = uqm::getEnvironmentValue(envname1);
+	if (path.empty()) /* no environment variable? */
 	{
 		path = getenv(envname2); /* try alternative name */
 	}
-	if (path == nullptr || noenv(L)) /* no environment variable? */
+	if (path.empty() || noenv(L)) /* no environment variable? */
 	{
 		lua_pushstring(L, def); /* use default */
 	}

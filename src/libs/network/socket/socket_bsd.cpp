@@ -22,6 +22,7 @@
 #include "socket.h"
 
 #include "core/log/log.h"
+#include "core/stl/stl.h"
 
 #include <assert.h>
 #include <errno.h>
@@ -170,7 +171,7 @@ int Socket_setNonBlocking(Socket* sock)
 		int savedErrno = errno;
 		uqm::log::error("Getting file descriptor flags of socket failed: "
 						"{}.",
-						strerror(errno));
+						uqm::strerror(errno));
 		errno = savedErrno;
 		return -1;
 	}
@@ -180,7 +181,7 @@ int Socket_setNonBlocking(Socket* sock)
 		int savedErrno = errno;
 		uqm::log::error("Setting non-blocking mode on socket failed: "
 						"{}.",
-						strerror(errno));
+						uqm::strerror(errno));
 		errno = savedErrno;
 		return -1;
 	}
@@ -197,7 +198,7 @@ int Socket_setReuseAddr(Socket* sock)
 	{
 		int savedErrno = errno;
 		uqm::log::error("Setting socket reuse failed: {}.",
-						strerror(errno));
+						uqm::strerror(errno));
 		errno = savedErrno;
 		return -1;
 	}
@@ -216,7 +217,7 @@ int Socket_setNodelay(Socket* sock)
 #ifdef DEBUG
 		int savedErrno = errno;
 		uqm::log::warn("Disabling Nagle algorithm failed: {}.",
-					   strerror(errno));
+					   uqm::strerror(errno));
 		errno = savedErrno;
 #endif
 		return -1;
@@ -233,7 +234,7 @@ int Socket_setTOS(Socket* sock, int tos)
 #ifdef DEBUG
 		int savedErrno = errno;
 		uqm::log::warn("Setting socket type-of-service failed: {}.",
-					   strerror(errno));
+					   uqm::strerror(errno));
 		errno = savedErrno;
 #endif
 		return -1;
@@ -268,7 +269,7 @@ int Socket_setInlineOOB(Socket* sock)
 	{
 		int savedErrno = errno;
 		uqm::log::error("Setting inline OOB on socket failed: {}",
-						strerror(errno));
+						uqm::strerror(errno));
 		errno = savedErrno;
 		return -1;
 	}
@@ -284,7 +285,7 @@ int Socket_setKeepAlive(Socket* sock)
 	{
 		int savedErrno = errno;
 		uqm::log::error("Setting keep-alive on socket failed: {}",
-						strerror(errno));
+						uqm::strerror(errno));
 		errno = savedErrno;
 		return -1;
 	}

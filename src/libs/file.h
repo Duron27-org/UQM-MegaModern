@@ -21,6 +21,7 @@
 
 #include "port.h"
 #include "libs/uio.h"
+#include "core/platform/platform.h"
 
 // for bool
 #include "types.h"
@@ -40,7 +41,7 @@ extern uio_DirHandle *tempDir;
 
 // from dirs.h
 int mkdirhier(const char* path);
-const char* getHomeDir(void);
+uqstl::string getHomeDir(void);
 int createDirectory(const char* dir, int mode);
 
 int expandPath(char* dest, size_t len, const char* src, int what);

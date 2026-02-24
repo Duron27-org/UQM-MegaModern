@@ -22,7 +22,7 @@
 #include "netplay.h"
 #include "netinput.h"
 
-#include "uqm/intelDefs.h" // for PlayerControlFlags
+#include "uqm/inteldefs.h" // for PlayerControlFlags
 #include "uqm/setup.h" // for PlayerControl
 #include "core/log/log.h"
 

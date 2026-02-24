@@ -26,9 +26,11 @@
 #include <stdarg.h>
 #endif /* _MSC_VER */
 
+#include "core/platform/platform.h"
 #include "iointrn.h"
 #include "ioaux.h"
 #include "utils.h"
+
 
 static int uio_copyError(uio_Handle* srcHandle, uio_Handle* dstHandle,
 						 uio_DirHandle* unlinkHandle, const char* unlinkPath, uio_uint8* buf);
@@ -159,7 +161,7 @@ uio_copyError(uio_Handle* srcHandle, uio_Handle* dstHandle,
 	savedErrno = errno;
 
 #ifdef DEBUG
-	fmt::print(stderr, "Error while copying: {}\n", strerror(errno));
+	fmt::print(stderr, "Error while copying: {}\n", uqm::strerror(errno));
 #endif
 
 	if (srcHandle != nullptr)
@@ -253,7 +255,7 @@ uio_getStdioAccess(uio_DirHandle* dir, const char* path, int flags,
 				savedErrno = errno;
 #ifdef DEBUG
 				fmt::print(stderr, "Error: Could not create temporary dir: {}\n",
-						   strerror(errno));
+						   uqm::strerror(errno));
 #endif
 				uio_free(tempDirName);
 				errno = savedErrno;
@@ -267,7 +269,7 @@ uio_getStdioAccess(uio_DirHandle* dir, const char* path, int flags,
 		{
 #ifdef DEBUG
 			fmt::print(stderr, "Error: Could not open temporary dir: {}\n",
-					   strerror(errno));
+					   uqm::strerror(errno));
 #endif
 			res = uio_rmdir(tempDir, tempDirName);
 #ifdef DEBUG
@@ -275,7 +277,7 @@ uio_getStdioAccess(uio_DirHandle* dir, const char* path, int flags,
 			{
 				fmt::print(stderr, "Warning: Could not remove temporary dir: "
 								   "{}.\n",
-						   strerror(errno));
+						   uqm::strerror(errno));
 			}
 #endif
 			uio_free(tempDirName);
@@ -299,7 +301,7 @@ uio_getStdioAccess(uio_DirHandle* dir, const char* path, int flags,
 #ifdef DEBUG
 			fmt::print(stderr, "Error: Could not copy file to temporary dir: "
 							   "{}\n",
-					   strerror(errno));
+					   uqm::strerror(errno));
 #endif
 			uio_closeDir(newDir);
 			uio_free(tempDirName);
@@ -314,7 +316,7 @@ uio_getStdioAccess(uio_DirHandle* dir, const char* path, int flags,
 		int savedErrno = errno;
 		fmt::print(stderr, "Error: uio_getStdioAccess: Could not get location "
 						   "of temporary dir: {}.\n",
-				   strerror(errno));
+				   uqm::strerror(errno));
 		uio_closeDir(newDir);
 		uio_free(tempDirName);
 		errno = savedErrno;
@@ -350,7 +352,7 @@ void uio_releaseStdioAccess(uio_StdioAccessHandlePtr handlePtr)
 #ifdef DEBUG
 			fmt::print(stderr, "Error: Could not remove temporary file: "
 							   "{}\n",
-					   strerror(errno));
+					   uqm::strerror(errno));
 #endif
 		}
 
@@ -364,7 +366,7 @@ void uio_releaseStdioAccess(uio_StdioAccessHandlePtr handlePtr)
 #ifdef DEBUG
 			fmt::print(stderr, "Error: Could not remove temporary directory: "
 							   "{}\n",
-					   strerror(errno));
+					   uqm::strerror(errno));
 #endif
 		}
 	}

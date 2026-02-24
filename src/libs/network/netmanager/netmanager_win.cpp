@@ -31,6 +31,7 @@
 #include "libs/compiler.h"
 #include "libs/misc.h"
 #include "core/log/log.h"
+#include "core/platform/platform.h"
 
 #include <assert.h>
 #include <winsock2.h>
@@ -155,7 +156,7 @@ int NetManager_addDesc(NetDescriptor* nd)
 			if (closeStatus == -1)
 			{
 				uqm::log::critical("closeWSAEvent() failed: {}.",
-								   strerror(errno));
+								   uqm::strerror(errno));
 				explode();
 			}
 			SocketManagementData_free(nd->smd);
@@ -254,7 +255,7 @@ NetManager_updateEvent(NetDescriptor* nd)
 		if (closeStatus == -1)
 		{
 			uqm::log::critical("closeWSAEvent() failed: {}.",
-							   strerror(errno));
+							   uqm::strerror(errno));
 			explode();
 		}
 		errno = savedErrno;
@@ -304,7 +305,7 @@ activateSomeCallback(NetDescriptor* nd, long eventMask)
 		if (status == -1)
 		{
 			uqm::log::critical("NetManager_updateEvent() failed: {}.",
-							   strerror(errno));
+							   uqm::strerror(errno));
 			explode();
 			// TODO: better error handling.
 		}
@@ -320,7 +321,7 @@ deactivateSomeCallback(NetDescriptor* nd, long eventMask)
 		if (status == -1)
 		{
 			uqm::log::critical("NetManager_updateEvent() failed: {}.",
-							   strerror(errno));
+							   uqm::strerror(errno));
 			explode();
 			// TODO: better error handling
 		}

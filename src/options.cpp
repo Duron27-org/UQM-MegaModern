@@ -19,6 +19,7 @@
  * for now there's few options which indicate 3do/pc flavors.
  */
 
+#include "core/platform/platform.h"
 #include "core/string/StringUtils.h"
 
 #include "options.h"
@@ -296,7 +297,7 @@ void prepareContentDir(uqgsl::czstring contentDirName, uqgsl::czstring addonDirN
 	{
 		uqm::log::critical("Fatal error: Could not expand path to content "
 						   "directory: {}",
-						   strerror(errno));
+						   uqm::strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 
@@ -324,17 +325,22 @@ void prepareContentDir(uqgsl::czstring contentDirName, uqgsl::czstring addonDirN
 #endif
 }
 
-void prepareConfigDir(const char* configDirName)
+void prepareConfigDir(uqgsl::czstring configDirName)
 {
 	char buf[PATH_MAX];
 	static uio_AutoMount* autoMount[] = {nullptr};
 	uio_MountHandle* contentHandle;
 
+	uqstl::string envVar {};
 	if (configDirName == nullptr)
 	{
-		configDirName = getenv("UQM_CONFIG_DIR");
+		envVar = uqm::getEnvironmentValue("UQM_CONFIG_DIR");
 
-		if (configDirName == nullptr)
+		if (!envVar.empty())
+		{
+			configDirName = envVar.c_str();
+		}
+		if (envVar.empty())
 		{
 			configDirName = CONFIGDIR;
 		}
@@ -354,7 +360,7 @@ void prepareConfigDir(const char* configDirName)
 
 	// Set the environment variable UQM_CONFIG_DIR so UQM_MELEE_DIR
 	// and UQM_SAVE_DIR can refer to it.
-	setenv("UQM_CONFIG_DIR", configDirName, 1);
+	uqm::setEnvironmentValue("UQM_CONFIG_DIR", configDirName, true);
 
 	// Create the path upto the config dir, if not already existing.
 	if (mkdirhier(configDirName) == -1)
@@ -368,7 +374,7 @@ void prepareConfigDir(const char* configDirName)
 	if (contentHandle == nullptr)
 	{
 		uqm::log::critical("Fatal error: Could not mount config dir: {}",
-						   strerror(errno));
+						   uqm::strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 
@@ -376,23 +382,22 @@ void prepareConfigDir(const char* configDirName)
 	if (configDir == nullptr)
 	{
 		uqm::log::critical("Fatal error: Could not open config dir: {}",
-						   strerror(errno));
+						   uqm::strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 }
 
 void prepareSaveDir(void)
 {
-	char buf[PATH_MAX];
-	const char* saveDirName;
+	char buf[PATH_MAX] {};
 
-	saveDirName = getenv("UQM_SAVE_DIR");
-	if (saveDirName == nullptr)
+	uqstl::string saveDirName = uqm::getEnvironmentValue("UQM_SAVE_DIR");
+	if (saveDirName.empty())
 	{
 		saveDirName = SAVEDIR;
 	}
 
-	if (expandPath(buf, PATH_MAX - 13, saveDirName, EP_ALL_SYSTEM) == -1)
+	if (expandPath(buf, PATH_MAX - 13, saveDirName.c_str(), EP_ALL_SYSTEM) == -1)
 	{
 		// Doesn't have to be fatal, but might mess up things when saving
 		// config files.
@@ -401,10 +406,10 @@ void prepareSaveDir(void)
 	}
 
 	saveDirName = buf;
-	setenv("UQM_SAVE_DIR", saveDirName, 1);
+	uqm::setEnvironmentValue("UQM_SAVE_DIR", saveDirName.c_str(), true);
 
 	// Create the path upto the save dir, if not already existing.
-	if (mkdirhier(saveDirName) == -1)
+	if (mkdirhier(saveDirName.c_str()) == -1)
 	{
 		exit(EXIT_FAILURE);
 	}
@@ -417,23 +422,22 @@ void prepareSaveDir(void)
 	if (saveDir == nullptr)
 	{
 		uqm::log::critical("Fatal error: Could not open save dir: {}",
-						   strerror(errno));
+						   uqm::strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 }
 
 void prepareMeleeDir(void)
 {
-	char buf[PATH_MAX];
-	const char* meleeDirName;
+	char buf[PATH_MAX] {};
 
-	meleeDirName = getenv("UQM_MELEE_DIR");
-	if (meleeDirName == nullptr)
+	uqstl::string meleeDirName = uqm::getEnvironmentValue("UQM_MELEE_DIR");
+	if (meleeDirName.empty())
 	{
 		meleeDirName = MELEEDIR;
 	}
 
-	if (expandPath(buf, PATH_MAX - 13, meleeDirName, EP_ALL_SYSTEM) == -1)
+	if (expandPath(buf, PATH_MAX - 13, meleeDirName.c_str(), EP_ALL_SYSTEM) == -1)
 	{
 		// Doesn't have to be fatal, but might mess up things when saving
 		// config files.
@@ -442,10 +446,10 @@ void prepareMeleeDir(void)
 	}
 
 	meleeDirName = buf;
-	setenv("UQM_MELEE_DIR", meleeDirName, 1);
+	uqm::setEnvironmentValue("UQM_MELEE_DIR", meleeDirName.c_str(), true);
 
 	// Create the path upto the save dir, if not already existing.
-	if (mkdirhier(meleeDirName) == -1)
+	if (mkdirhier(meleeDirName.c_str()) == -1)
 	{
 		exit(EXIT_FAILURE);
 	}
@@ -456,35 +460,34 @@ void prepareMeleeDir(void)
 	if (meleeDir == nullptr)
 	{
 		uqm::log::critical("Fatal error: Could not open melee teams dir: {}",
-						   strerror(errno));
+						   uqm::strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 }
 
 void prepareScrShotDir(void)
 {
-	char buf[PATH_MAX];
-	const char* shotDirName;
+	char buf[PATH_MAX] {};
 
-	shotDirName = getenv("UQM_SCR_SHOT_DIR");
-	if (shotDirName == nullptr)
+	uqstl::string shotDirName = getenv("UQM_SCR_SHOT_DIR");
+	if (shotDirName.empty())
 	{
 		shotDirName = SCRSHOTDIR;
 	}
 
-	if (expandPath(buf, PATH_MAX - 13, shotDirName, EP_ALL_SYSTEM) == -1)
+	if (expandPath(buf, PATH_MAX - 13, shotDirName.c_str(), EP_ALL_SYSTEM) == -1)
 	{
 		// Doesn't have to be fatal, but might mess up things when saving
 		// config files.
-		uqm::log::critical("Fatal error: Invalid path to config files.");
+		uqm::log::critical("Fatal error: Invalid path to screen shot files.");
 		exit(EXIT_FAILURE);
 	}
 
 	shotDirName = buf;
-	setenv("UQM_SCR_SHOT_DIR", shotDirName, 1);
+	uqm::setEnvironmentValue("UQM_SCR_SHOT_DIR", shotDirName.c_str(), true);
 
 	// Create the path upto the save dir, if not already existing.
-	if (mkdirhier(shotDirName) == -1)
+	if (mkdirhier(shotDirName.c_str()) == -1)
 	{
 		exit(EXIT_FAILURE);
 	}
@@ -495,7 +498,7 @@ void prepareScrShotDir(void)
 	if (scrShotDir == nullptr)
 	{
 		uqm::log::critical("Fatal error: Could not open screenshot dir: {}",
-						   strerror(errno));
+						   uqm::strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 }
@@ -513,7 +516,7 @@ mountContentDir(uio_Repository* repository, const char* contentPath)
 	if (contentMountHandle == nullptr)
 	{
 		uqm::log::critical("Fatal error: Could not mount content dir: {}",
-						   strerror(errno));
+						   uqm::strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 
@@ -521,7 +524,7 @@ mountContentDir(uio_Repository* repository, const char* contentPath)
 	if (contentDir == nullptr)
 	{
 		uqm::log::critical("Fatal error: Could not open content dir: {}",
-						   strerror(errno));
+						   uqm::strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 
@@ -552,7 +555,7 @@ void mountAddonDir(uio_Repository* repository, uio_MountHandle* contentMountHand
 		{
 			uqm::log::warn("Warning: Could not mount addon directory: {}"
 						   ";\n\t'--addon' options are ignored.",
-						   strerror(errno));
+						   uqm::strerror(errno));
 			return;
 		}
 	}
@@ -669,7 +672,7 @@ mountDirZips(uio_DirHandle* dirHandle, const char* mountPoint,
 				== nullptr)
 			{
 				uqm::log::warn("Warning: Could not mount '{}': {}.",
-							   dirList->names[i], strerror(errno));
+							   dirList->names[i], uqm::strerror(errno));
 			}
 		}
 	}
@@ -705,7 +708,7 @@ mountBaseZip(uio_DirHandle* dirHandle, const char* mountPoint,
 			if (name_hash != names_hash)
 			{
 				uqm::log::warn("Warning: Could not find '{}': {}.",
-							   BASE_CONTENT_NAME, strerror(errno));
+							   BASE_CONTENT_NAME, uqm::strerror(errno));
 
 				uio_DirList_free(dirList);
 				return;
@@ -723,7 +726,7 @@ mountBaseZip(uio_DirHandle* dirHandle, const char* mountPoint,
 			== nullptr)
 		{
 			uqm::log::warn("Warning: Could not mount '{}': {}.",
-						   dirList->names[i], strerror(errno));
+						   dirList->names[i], uqm::strerror(errno));
 		}
 	}
 	uio_DirList_free(dirList);
@@ -834,7 +837,7 @@ void prepareShadowAddons(uqstl::span<const std::string> addons)
 			{
 				uqm::log::warn("Warning: Could not mount shadow content"
 							   " of '{}': {}.",
-							   c_str(addon), strerror(errno));
+							   c_str(addon), uqm::strerror(errno));
 			}
 
 			uio_closeDir(shadowDir);

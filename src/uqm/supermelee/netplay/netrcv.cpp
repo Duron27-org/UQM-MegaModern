@@ -27,6 +27,7 @@
 
 #include "types.h"
 #include "core/log/log.h"
+#include "core/platform/platform.h"
 
 #include <errno.h>
 #include <string.h>
@@ -174,7 +175,7 @@ void dataReadyCallback(NetDescriptor* nd)
 			{
 				int savedErrno = errno;
 				uqm::log::error("recv() failed: {}.\n",
-								strerror(errno));
+								uqm::strerror(errno));
 				NetConnection_doErrorCallback(conn, savedErrno);
 				NetDescriptor_close(nd);
 				return;

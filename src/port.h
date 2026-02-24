@@ -190,14 +190,6 @@ int vsnprintf(char* str, size_t size, const char* format, va_list args);
 
 #endif /* _MSC_VER */
 
-#if 0 //defined(__cplusplus)
-extern "C" {
-#endif
-
-// setenv()
-#ifndef HAVE_SETENV
-int setenv(const char* name, const char* value, int overwrite);
-#endif
 
 #ifndef HAVE_WCHAR_T
 typedef unsigned short wchar_t;
@@ -205,10 +197,6 @@ typedef unsigned short wchar_t;
 
 #ifndef HAVE_WINT_T
 typedef unsigned int wint_t;
-#endif
-
-#if 0 //defined(__cplusplus)
-}
 #endif
 
 #if defined(_MSC_VER) || defined(__MINGW32__)

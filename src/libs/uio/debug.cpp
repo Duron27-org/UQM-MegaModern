@@ -30,6 +30,8 @@
 #endif
 #include <fmt/format.h>
 
+#include "core/platform/platform.h"
+
 #include "debug.h"
 #include "uioport.h"
 #include "io.h"
@@ -143,7 +145,7 @@ debugMountOne(uio_Repository* destRep, const char* mountPoint,
 		int savedErrno = errno;
 		fmt::print(stderr, "Could not mount '{}' and graft '{}' from that "
 						   "into the repository at '{}': {}\n",
-				   sourcePath, inPath, mountPoint, strerror(errno));
+				   sourcePath, inPath, mountPoint, uqm::uqm::strerror(errno));
 		errno = savedErrno;
 	}
 	return mountHandle;
@@ -422,7 +424,7 @@ debugCmdCat(DebugContext* debugContext, int argc, char* argv[])
 	if (handle == nullptr)
 	{
 		fmt::print(debugContext->err, "Could not open file: {}\n",
-				   strerror(errno));
+				   uqm::strerror(errno));
 		return 1;
 	}
 
@@ -437,7 +439,7 @@ debugCmdCat(DebugContext* debugContext, int argc, char* argv[])
 				continue;
 			}
 			fmt::print(debugContext->err, "Could not read from file: {}\n",
-					   strerror(errno));
+					   uqm::strerror(errno));
 			uio_close(handle);
 			return 1;
 		}
@@ -456,7 +458,7 @@ debugCmdCat(DebugContext* debugContext, int argc, char* argv[])
 					continue;
 				}
 				fmt::print(debugContext->err, "Could not read from file: {}\n",
-						   strerror(errno));
+						   uqm::strerror(errno));
 				uio_close(handle);
 			}
 			numInBuf -= numWritten;
@@ -484,7 +486,7 @@ debugCmdCd(DebugContext* debugContext, int argc, char* argv[])
 	if (newWd == nullptr)
 	{
 		fmt::print(debugContext->err, "Could not access new dir: {}\n",
-				   strerror(errno));
+				   uqm::strerror(errno));
 		return 1;
 	}
 	uio_closeDir(debugContext->cwd);
@@ -511,7 +513,7 @@ debugCmdExec(DebugContext* debugContext, int argc, char* argv[])
 	if (tempDir == 0)
 	{
 		fmt::print(debugContext->err, "Could not open temp dir: {}.\n",
-				   strerror(errno));
+				   uqm::strerror(errno));
 		return 1;
 	}
 
@@ -543,7 +545,7 @@ debugCmdExec(DebugContext* debugContext, int argc, char* argv[])
 			// error
 			fmt::print(debugContext->err,
 					   "Cannot execute: Cannot get stdio access to {}: {}.\n",
-					   argv[i], strerror(errno));
+					   argv[i], uqm::strerror(errno));
 			errCode = 1;
 			argc = i + 1;
 			goto err;
@@ -569,13 +571,13 @@ debugCmdExec(DebugContext* debugContext, int argc, char* argv[])
 		{
 			case -1:
 				fmt::print(debugContext->err, "Error: fork() failed: {}.\n",
-						   strerror(errno));
+						   uqm::strerror(errno));
 				break;
 			case 0:
 				// child
 				execvp(newArgs[0], (char* const*)newArgs);
 				fmt::print(debugContext->err, "Error: execvp() failed: {}.\n",
-						   strerror(errno));
+						   uqm::strerror(errno));
 				_exit(EXIT_FAILURE);
 				break;
 			default:
@@ -595,7 +597,7 @@ debugCmdExec(DebugContext* debugContext, int argc, char* argv[])
 						{
 							fmt::print(debugContext->err, "Error: waitpid() "
 														  "failed: {}\n",
-									   strerror(errno));
+									   uqm::strerror(errno));
 							break;
 						}
 					}
@@ -667,38 +669,38 @@ debugCmdFwriteTest(DebugContext* debugContext, int argc, char* argv[])
 	if (stream == nullptr)
 	{
 		fmt::print(debugContext->err, "Could not open file: {}\n",
-				   strerror(errno));
+				   uqm::strerror(errno));
 		goto err;
 	}
 
 	if (uio_fwrite(testString, strlen(testString), 1, stream) != 1)
 	{
 		fmt::print(debugContext->err, "uio_fwrite() failed: {}\n",
-				   strerror(errno));
+				   uqm::strerror(errno));
 		goto err;
 	}
 	if (uio_fputs(testString, stream) == EOF)
 	{
 		fmt::print(debugContext->err, "uio_fputs() failed: {}\n",
-				   strerror(errno));
+				   uqm::strerror(errno));
 		goto err;
 	}
 	if (uio_fseek(stream, 15, SEEK_SET) != 0)
 	{
 		fmt::print(debugContext->err, "uio_fseek() failed: {}\n",
-				   strerror(errno));
+				   uqm::strerror(errno));
 		goto err;
 	}
 	if (uio_fputc('A', stream) != 'A')
 	{
 		fmt::print(debugContext->err, "uio_fputc() failed: {}\n",
-				   strerror(errno));
+				   uqm::strerror(errno));
 		goto err;
 	}
 	if (uio_fseek(stream, 0, SEEK_SET) != 0)
 	{
 		fmt::print(debugContext->err, "uio_fseek() failed: {}\n",
-				   strerror(errno));
+				   uqm::strerror(errno));
 		goto err;
 	}
 	{
@@ -719,7 +721,7 @@ debugCmdFwriteTest(DebugContext* debugContext, int argc, char* argv[])
 		if (uio_ferror(stream))
 		{
 			fmt::print(debugContext->err, "uio_fgets() failed: {}\n",
-					   strerror(errno));
+					   uqm::strerror(errno));
 			goto err;
 		}
 		uio_clearerr(stream);
@@ -727,7 +729,7 @@ debugCmdFwriteTest(DebugContext* debugContext, int argc, char* argv[])
 	if (uio_fseek(stream, 4, SEEK_END) != 0)
 	{
 		fmt::print(debugContext->err, "uio_fseek() failed: {}\n",
-				   strerror(errno));
+				   uqm::strerror(errno));
 		goto err;
 	}
 	{
@@ -736,20 +738,20 @@ debugCmdFwriteTest(DebugContext* debugContext, int argc, char* argv[])
 		if (uio_fwrite(buf, 100, 20, stream) != 20)
 		{
 			fmt::print(debugContext->err, "uio_fwrite() failed: {}\n",
-					   strerror(errno));
+					   uqm::strerror(errno));
 			goto err;
 		}
 	}
 	if (uio_fseek(stream, 5, SEEK_SET) != 0)
 	{
 		fmt::print(debugContext->err, "uio_fseek() failed: {}\n",
-				   strerror(errno));
+				   uqm::strerror(errno));
 		goto err;
 	}
 	if (uio_fputc('B', stream) != 'B')
 	{
 		fmt::print(debugContext->err, "uio_fputc() failed: {}\n",
-				   strerror(errno));
+				   uqm::strerror(errno));
 		goto err;
 	}
 	uio_fclose(stream);
@@ -822,7 +824,7 @@ listOneDir(DebugContext* debugContext, const char* arg)
 	if (dirList == nullptr)
 	{
 		fmt::print(debugContext->out, "Error in uio_getDirList(): {}.\n",
-				   strerror(errno));
+				   uqm::strerror(errno));
 		if (buf != nullptr)
 		{
 			uio_free(buf);
@@ -892,7 +894,7 @@ debugCmdMkDir(DebugContext* debugContext, int argc, char* argv[])
 	if (retVal == -1)
 	{
 		fmt::print(debugContext->err, "Could not create directory: {}\n",
-				   strerror(errno));
+				   uqm::strerror(errno));
 		return 1;
 	}
 	return 0;
@@ -925,7 +927,7 @@ debugCmdMv(DebugContext* debugContext, int argc, char* argv[])
 						debugContext->cwd, argv[2]);
 	if (retVal == -1)
 	{
-		fmt::print(debugContext->err, "Could not rename: {}\n", strerror(errno));
+		fmt::print(debugContext->err, "Could not rename: {}\n", uqm::strerror(errno));
 		return 1;
 	}
 	return 0;
@@ -955,7 +957,7 @@ debugCmdRm(DebugContext* debugContext, int argc, char* argv[])
 	if (retVal == -1)
 	{
 		fmt::print(debugContext->err, "Could not remove file: {}\n",
-				   strerror(errno));
+				   uqm::strerror(errno));
 		return 1;
 	}
 	return 0;
@@ -976,7 +978,7 @@ debugCmdRmDir(DebugContext* debugContext, int argc, char* argv[])
 	if (retVal == -1)
 	{
 		fmt::print(debugContext->err, "Could not remove directory: {}\n",
-				   strerror(errno));
+				   uqm::strerror(errno));
 		return 1;
 	}
 	return 0;
@@ -999,7 +1001,7 @@ debugCmdStat(DebugContext* debugContext, int argc, char* argv[])
 		int savedErrno;
 		savedErrno = errno;
 		fmt::print(debugContext->err, "Could not stat file: {}\n",
-				   strerror(errno));
+				   uqm::strerror(errno));
 		errno = savedErrno;
 		return 1;
 	}
@@ -1045,14 +1047,14 @@ debugCmdWriteTest(DebugContext* debugContext, int argc, char* argv[])
 	if (handle == nullptr)
 	{
 		fmt::print(debugContext->err, "Could not open file: {}\n",
-				   strerror(errno));
+				   uqm::strerror(errno));
 		return 1;
 	}
 
 	if (uio_write(handle, testString, sizeof testString) == -1)
 	{
 		fmt::print(debugContext->err, "Write failed: {}\n",
-				   strerror(errno));
+				   uqm::strerror(errno));
 		return 1;
 	}
 

@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include <config.h>
 #include <string.h>
+#include "core/platform/platform.h"
 
 #ifndef HAVE_GETOPT_LONG
 #if !defined __STDC__ || !__STDC__
@@ -190,7 +191,7 @@ static enum {
 } ordering;
 
 /* Value of POSIXLY_CORRECT environment variable.  */
-static char* posixly_correct;
+static uqstl::string posixly_correct;
 
 #ifdef __GNU_LIBRARY__
 /* We want to avoid inclusion of string.h with non-GNU libraries
@@ -214,9 +215,6 @@ static char* posixly_correct;
 /* Avoid depending on library functions or files
    whose names are inconsistent.  */
 
-#ifndef getenv
-extern char* getenv();
-#endif
 
 static char*
 my_index(const char* str, int chr)
@@ -398,7 +396,7 @@ _getopt_initialize(int argc, const char* const* argv, const char* optstring)
 
 	nextchar = nullptr;
 
-	posixly_correct = getenv("POSIXLY_CORRECT");
+	posixly_correct = uqm::getEnvironmentValue("POSIXLY_CORRECT");
 
 	/* Determine how to handle the ordering of options and nonoptions.  */
 
@@ -412,7 +410,7 @@ _getopt_initialize(int argc, const char* const* argv, const char* optstring)
 		ordering = REQUIRE_ORDER;
 		++optstring;
 	}
-	else if (posixly_correct != nullptr)
+	else if (!posixly_correct.empty())
 	{
 		ordering = REQUIRE_ORDER;
 	}
@@ -422,7 +420,7 @@ _getopt_initialize(int argc, const char* const* argv, const char* optstring)
 	}
 
 #if defined _LIBC && defined USE_NONOPTION_FLAGS
-	if (posixly_correct == nullptr
+	if (posixly_correct.empty()
 		&& argc == __libc_argc && argv == __libc_argv)
 	{
 		if (nonoption_flags_max_len == 0)
@@ -842,7 +840,7 @@ int _getopt_internal(int argc, const char* const* argv, const char* optstring, c
 		{
 			if (print_errors)
 			{
-				if (posixly_correct)
+				if (!posixly_correct.empty())
 				{
 					/* 1003.2 specifies the format of this message.  */
 					fprintf(stderr, _("%s: illegal option -- %c\n"),

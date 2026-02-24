@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "core/platform/platform.h"
 
 #define lua_c
 
@@ -541,13 +542,13 @@ static int runargs(lua_State* L, char** argv, int n)
 static int handle_luainit(lua_State* L)
 {
 	const char* name = "=" LUA_INITVERSION;
-	const char* init = getenv(name + 1);
-	if (init == nullptr)
+	uqstl::string init = uqm::getEnvironmentValue(name + 1);
+	if (init.empty() == nullptr)
 	{
 		name = "=" LUA_INIT;
-		init = getenv(name + 1); /* try alternative name */
+		init = uqm::getEnvironmentValue(name + 1); /* try alternative name */
 	}
-	if (init == nullptr)
+	if (init.empty())
 	{
 		return LUA_OK;
 	}

@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include "core/platform/platform.h"
 
 #define loslib_c
 #define LUA_LIB
@@ -129,7 +130,8 @@ static int os_tmpname(lua_State* L)
 
 static int os_getenv(lua_State* L)
 {
-	lua_pushstring(L, getenv(luaL_checkstring(L, 1))); /* if nullptr push nil */
+	const uqstl::string envVarName = uqm::getEnvironmentValue(luaL_checkstring(L, 1));
+	lua_pushstring(L, envVarName.c_str()); /* if nullptr push nil */
 	return 1;
 }
 

@@ -44,6 +44,8 @@
 #ifdef uio_MEM_DEBUG
 #include "../memdebug.h"
 #endif
+#include "core/platform/platform.h"
+
 
 
 #define DIR_STRUCTURE_READ_BUFSIZE 0x10000
@@ -626,7 +628,7 @@ zip_seekDeflated(uio_Handle* handle, off_t offset)
 			// Should not fail anyhow.
 			fmt::print(stderr, "Fatal: Could not reinitialise zip stream: "
 							   "{}.\n",
-					   strerror(errno));
+					   uqm::strerror(errno));
 			abort();
 		}
 		zipHandle->compressedOffset = 0;
@@ -655,7 +657,7 @@ zip_seekDeflated(uio_Handle* handle, off_t offset)
 			if (numRead == -1)
 			{
 				fmt::print(stderr, "Warning: Could not read zipped file: {}\n",
-						   strerror(errno));
+						   uqm::strerror(errno));
 				break;
 				// The current location is returned.
 			}
@@ -691,7 +693,7 @@ zip_mount(uio_Handle* handle, int flags)
 #ifdef DEBUG
 		fmt::print(stderr, "Error: failed to read the zip directory "
 						   "structure - {}.\n",
-				   strerror(errno));
+				   uqm::strerror(errno));
 #endif
 		uio_GPRoot_umount(result);
 		errno = savedErrno;

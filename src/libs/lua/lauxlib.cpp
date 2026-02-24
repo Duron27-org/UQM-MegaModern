@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "core/platform/platform.h"
 
 /* This file uses only the official API of Lua.
 ** Any function declared here could be written as an application function.
@@ -274,11 +275,11 @@ LUALIB_API int luaL_fileresult(lua_State* L, int stat, const char* fname)
 		lua_pushnil(L);
 		if (fname)
 		{
-			lua_pushfstring(L, "%s: %s", fname, strerror(en));
+			lua_pushfstring(L, "%s: %s", fname, uqm::strerror(en).c_str());
 		}
 		else
 		{
-			lua_pushstring(L, strerror(en));
+			lua_pushstring(L, uqm::strerror(en).c_str());
 		}
 		lua_pushinteger(L, en);
 		return 3;
@@ -751,9 +752,9 @@ static const char* getF(lua_State* L, void* ud, size_t* size)
 
 static int errfile(lua_State* L, const char* what, int fnameindex)
 {
-	const char* serr = strerror(errno);
+	const auto serr = uqm::strerror(errno);
 	const char* filename = lua_tostring(L, fnameindex) + 1;
-	lua_pushfstring(L, "cannot %s %s: %s", what, filename, serr);
+	lua_pushfstring(L, "cannot %s %s: %s", what, filename, serr.c_str());
 	lua_remove(L, fnameindex);
 	return LUA_ERRFILE;
 }

@@ -31,6 +31,7 @@
 #endif
 
 #include <fmt/format.h>
+#include "core/platform/platform.h"
 
 
 static uio_bool uio_validFileSystemHandler(uio_FileSystemHandler* handler);
@@ -72,7 +73,7 @@ void uio_registerDefaultFileSystems(void)
 				fmt::print(stderr, "Error: Could not register '{}' file \n"
 								   "system: {}\n",
 						   defaultFileSystems[i].name,
-						   strerror(errno));
+						   uqm::strerror(errno));
 				break;
 			default:
 				assert(registerResult == defaultFileSystems[i].id);
@@ -92,7 +93,7 @@ void uio_unRegisterDefaultFileSystems(void)
 		if (uio_unRegisterFileSystem(defaultFileSystems[i].id) == -1)
 		{
 			fmt::print(stderr, "Could not unregister '{}' file system: {}\n",
-					   defaultFileSystems[i].name, strerror(errno));
+					   defaultFileSystems[i].name, uqm::strerror(errno));
 		}
 	}
 }

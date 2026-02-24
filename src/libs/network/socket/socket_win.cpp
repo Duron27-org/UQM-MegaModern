@@ -26,6 +26,8 @@
 #include "socket.h"
 
 #include "core/log/log.h"
+#include "core/platform/platform.h"
+
 
 #include <assert.h>
 #include <errno.h>
@@ -230,7 +232,7 @@ int Socket_setNonBlocking(Socket* sock)
 	{
 		int savedErrno = getWinsockErrno();
 		uqm::log::error("Setting non-block mode on socket failed: {}.",
-						strerror(errno));
+						uqm::strerror(errno));
 		errno = savedErrno;
 		return -1;
 	}
@@ -247,7 +249,7 @@ int Socket_setReuseAddr(Socket* sock)
 	{
 		int savedErrno = getWinsockErrno();
 		uqm::log::error("Setting socket reuse failed: {}.",
-						strerror(errno));
+						uqm::strerror(errno));
 		errno = savedErrno;
 		return -1;
 	}
@@ -267,7 +269,7 @@ int Socket_setNodelay(Socket* sock)
 #ifdef DEBUG
 		int savedErrno = getWinsockErrno();
 		uqm::log::warn("Disabling Nagle algorithm failed: {}.",
-					   strerror(errno));
+					   uqm::strerror(errno));
 		errno = savedErrno;
 #endif
 		return -1;
@@ -304,7 +306,7 @@ int Socket_setInlineOOB(Socket* sock)
 	{
 		int savedErrno = getWinsockErrno();
 		uqm::log::error("Setting inline OOB on socket failed: {}",
-						strerror(errno));
+						uqm::strerror(errno));
 		errno = savedErrno;
 		return -1;
 	}
@@ -321,7 +323,7 @@ int Socket_setKeepAlive(Socket* sock)
 	{
 		int savedErrno = getWinsockErrno();
 		uqm::log::error("Setting keep-alive on socket failed: {}",
-						strerror(errno));
+						uqm::strerror(errno));
 		errno = savedErrno;
 		return -1;
 	}

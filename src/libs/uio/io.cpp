@@ -37,6 +37,8 @@
 #include "uioutils.h"
 #include "uioport.h"
 #include "core/log/log.h"
+#include "core/platform/platform.h"
+
 #ifdef uio_MEM_DEBUG
 #include "memdebug.h"
 #endif
@@ -1655,7 +1657,7 @@ uio_collectDirEntries(uio_PDirHandle* pDirHandle, uio_DirBufferLink** linkPtr,
 	{
 #ifdef DEBUG
 		fmt::print(stderr, "Error: uio_openEntriesPhysical() failed: {}\n",
-				   strerror(errno));
+				   uqm::strerror(errno));
 #endif
 		*linkPtr = nullptr;
 		*numEntries = 0;

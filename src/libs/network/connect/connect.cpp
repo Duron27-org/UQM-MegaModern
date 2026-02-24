@@ -28,6 +28,7 @@
 #include "../socket/socket.h"
 #include "libs/misc.h"
 #include "core/log/log.h"
+#include "core/platform/platform.h"
 
 #include <assert.h>
 #include <errno.h>
@@ -166,14 +167,13 @@ connectCallback(NetDescriptor* nd)
 
 	if (Socket_getError(NetDescriptor_getSocket(nd), &err) == -1)
 	{
-		uqm::log::critical("Socket_getError() failed: {}.",
-						   strerror(errno));
+		uqm::log::critical("Socket_getError() failed: {}.", uqm::strerror(errno));
 		explode();
 	}
 	if (err != 0)
 	{
 #ifdef DEBUG
-		uqm::log::debug("connect() failed: {}.", strerror(err));
+		uqm::log::debug("connect() failed: {}.", uqm::strerror(err));
 #endif
 		NetDescriptor_close(nd);
 		connectState->nd = nullptr;
@@ -245,7 +245,7 @@ tryConnectHostNext(ConnectState* connectState)
 	if (sock == Socket_noSocket)
 	{
 		int savedErrno = errno;
-		uqm::log::error("socket() failed: {}.", strerror(errno));
+		uqm::log::error("socket() failed: {}.", uqm::strerror(errno));
 		errno = savedErrno;
 		return Socket_noSocket;
 	}
@@ -253,8 +253,7 @@ tryConnectHostNext(ConnectState* connectState)
 	if (Socket_setNonBlocking(sock) == -1)
 	{
 		int savedErrno = errno;
-		uqm::log::error("Could not make socket non-blocking: {}.",
-						strerror(errno));
+		uqm::log::error("Could not make socket non-blocking: {}.", uqm::strerror(errno));
 		errno = savedErrno;
 		return Socket_noSocket;
 	}
@@ -293,7 +292,7 @@ tryConnectHostNext(ConnectState* connectState)
 #ifdef DEBUG
 		uqm::log::debug("connect() immediately failed for one address: "
 						"{}.",
-						strerror(errno));
+						uqm::strerror(errno));
 		// TODO: add the address in the status message.
 #endif
 		errno = savedErrno;
@@ -359,8 +358,7 @@ connectHostNext(ConnectState* connectState)
 				ConnectError error;
 				int savedErrno = errno;
 
-				uqm::log::error("NetDescriptor_new() failed: {}.",
-								strerror(errno));
+				uqm::log::error("NetDescriptor_new() failed: {}.", uqm::strerror(errno));
 				Socket_close(sock);
 				freeaddrinfo(connectState->info);
 				connectState->info = nullptr;

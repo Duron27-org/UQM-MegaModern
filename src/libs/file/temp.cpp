@@ -29,6 +29,7 @@
 #include "port.h"
 #include "libs/compiler.h"
 #include "core/log/log.h"
+#include "core/platform/platform.h"
 #include "libs/memlib.h"
 
 static char* tempDirName;
@@ -104,7 +105,9 @@ getTempDir(char* buf, size_t buflen)
 {
 	char cwd[PATH_MAX];
 
-	if (tryTempDir(buf, buflen, getenv("TMP")) && tryTempDir(buf, buflen, getenv("TEMP")) &&
+	const uqstl::string tmpDirEnv = uqm::getEnvironmentValue("TMP");
+	const uqstl::string tempDirEnv = uqm::getEnvironmentValue("TEMP");
+	if (tryTempDir(buf, buflen, tmpDirEnv.c_str()) && tryTempDir(buf, buflen, tempDirEnv.c_str()) &&
 #if !defined(WIN32) || defined(__CYGWIN__)
 		tryTempDir(buf, buflen, "/tmp/") && tryTempDir(buf, buflen, "/var/tmp/") &&
 #endif
@@ -132,7 +135,7 @@ mountTempDir(const char* name)
 		int saveErrno = errno;
 		uqm::log::critical("Fatal error: Couldn't mount temp dir '{}': "
 						   "{}",
-						   name, strerror(errno));
+						   name, uqm::strerror(errno));
 		errno = saveErrno;
 		return -1;
 	}
@@ -142,7 +145,7 @@ mountTempDir(const char* name)
 	{
 		int saveErrno = errno;
 		uqm::log::critical("Fatal error: Could not open temp dir: {}",
-						   strerror(errno));
+						   uqm::strerror(errno));
 		errno = saveErrno;
 		return -1;
 	}

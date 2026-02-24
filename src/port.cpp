@@ -50,36 +50,6 @@ char* strupr(char* str)
 }
 #endif
 
-#ifndef HAVE_SETENV
-int setenv(const char* name, const char* value, int overwrite)
-{
-	char *string, *ptr;
-	size_t nameLen, valueLen;
-
-	if (!overwrite)
-	{
-		char* old;
-
-		old = getenv(name);
-		if (old != nullptr)
-		{
-			return 0;
-		}
-	}
-
-	nameLen = strlen(name);
-	valueLen = strlen(value);
-
-	const size_t bufLen = nameLen + valueLen + 2;
-	string = (char*)malloc(bufLen);
-	// "NAME=VALUE\0"
-	// putenv() does NOT make a copy, but takes ownership of the string passed.
-	fmt::format_to_sz_n(string, bufLen, "{}={}", name, value);
-	
-	return _putenv(string);
-}
-#endif
-
 #if !defined(_MSC_VER) && !defined(HAVE_READDIR_R)
 // NB. This function calls readdir() directly, and as such has the same
 //     reentrance issues as that function. For the purposes of UQM it will
