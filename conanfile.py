@@ -24,6 +24,7 @@ class UrQuanMastersConan(ConanFile):
         'libpng/1.6.54',
         'magic_enum/0.9.7',
         'openal-soft/1.23.1',
+        'scnlib/4.0.1',
         'sdl/2.32.10',
         'spdlog/1.17.0',
         'utfcpp/4.0.8',

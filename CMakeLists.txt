@@ -77,6 +77,7 @@ find_package(magic_enum REQUIRED)
 find_package(Ogg REQUIRED)
 find_package(OpenAL REQUIRED)
 find_package(PNG REQUIRED)
+find_package(scn REQUIRED)
 find_package(SDL2 REQUIRED)
 find_package(spdlog REQUIRED)
 find_package(utf8cpp REQUIRED)
@@ -252,7 +253,8 @@ target_link_libraries(${APP_TARGET}
         magic_enum::magic_enum
         Ogg::ogg 
         OpenAL::OpenAL
-        PNG::PNG 
+        PNG::PNG
+        scn::scn
         SDL2::SDL2main 
         spdlog::spdlog
         utf8cpp
