@@ -469,7 +469,7 @@ void prepareScrShotDir(void)
 {
 	char buf[PATH_MAX] {};
 
-	uqstl::string shotDirName = getenv("UQM_SCR_SHOT_DIR");
+	uqstl::string shotDirName = uqm::getEnvironmentValue("UQM_SCR_SHOT_DIR");
 	if (shotDirName.empty())
 	{
 		shotDirName = SCRSHOTDIR;
