@@ -189,7 +189,7 @@ inline uqstl::errc parseStr(uqstl::string_view str, E& out)
 
 inline size_t strncpy_safe(uqstl::span<char> dest, uqstl::string_view src)
 {
-	if (dest.empty() || src.empty()) [[unlikely]]
+	if (dest.empty()) [[unlikely]]
 	{
 		return 0;
 	}

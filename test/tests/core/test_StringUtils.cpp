@@ -273,6 +273,7 @@ TEST_F(StringUtilsTest, StrncpySafe_EmptySource)
 	size_t copied = strncpy_safe(dest, src);
 
 	EXPECT_EQ(copied, 0);
+	EXPECT_EQ(dest[0], '\0'); // empy source should still null-terminate
 }
 
 TEST_F(StringUtilsTest, StrncpySafe_EmptyDestination)
