@@ -69,7 +69,7 @@ uqstl::string strerror(errno_t err)
 	return errStr;
 #else
 	// yolo.
-	return strerror(err);
+	return ::strerror(err);
 #endif
 }
 

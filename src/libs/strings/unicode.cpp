@@ -14,15 +14,17 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#include <ctype.h>
+#include <stddef.h>
+#include <stdio.h>
+#include <string.h>
+#include <scn/scan.h>
+
 #include "port.h"
 
 #define UNICODE_INTERNAL
 #include "libs/unicode.h"
 
-#include <ctype.h>
-#include <stddef.h>
-#include <stdio.h>
-#include <string.h>
 #include "core/log/log.h"
 #include "core/string/StringUtils.h"
 #include "libs/misc.h"
@@ -402,7 +404,7 @@ utf8StringCopy(unsigned char* dst, size_t size, const unsigned char* src)
 	{
 		return dst;
 	}
-	
+
 	return nullptr;
 }
 
@@ -704,12 +706,14 @@ AlignText(const uqm::CHAR_T* str, sint16* loc_x)
 		return (uqm::CHAR_T*)str;
 	}
 
-	if (sscanf(str, "|%d|", &modSize) != 1)
+	uqstl::string_view strView {str};
+	if (const auto result {scn::scan<int>(strView, "|{}|")})
 	{
-		uqm::log::debug(
-			"\nVariable between delimiters is missing, corrupt, or "
-			"not an integer: {}\n",
-			str);
+		modSize = result->value();
+	}
+	else
+	{
+		uqm::log::debug("\nVariable between delimiters is missing, corrupt, or not an integer: {}\n", strView);
 		return (uqm::CHAR_T*)str;
 	}
 
@@ -735,12 +739,14 @@ AddPadd(const uqm::CHAR_T* str, sint16* padding)
 		return (uqm::CHAR_T*)str;
 	}
 
-	if (sscanf(str, ":%d:", &modSize) != 1)
+	uqstl::string_view strView {str};
+	if (const auto result {scn::scan<int>(strView, ":{}:")})
 	{
-		uqm::log::debug(
-			"\nVariable between delimiters is missing, corrupt, or "
-			"not an integer: {}\n",
-			str);
+		modSize = result->value();
+	}
+	else
+	{
+		uqm::log::debug("Variable between delimiters is missing, corrupt, or not an integer: {}\n",	strView);
 		return (uqm::CHAR_T*)str;
 	}
 

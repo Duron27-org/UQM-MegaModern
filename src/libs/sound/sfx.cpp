@@ -14,6 +14,9 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include <math.h>
+#include <scn/scan.h>
+
 #include "options.h"
 #include "sound.h"
 #include "sndintrn.h"
@@ -24,7 +27,6 @@
 #include "libs/strings/strintrn.h"
 // for AllocStringTable(), FreeStringTable()
 #include "libs/memlib.h"
-#include <math.h>
 
 
 static void CheckFinishedChannels(void);
@@ -193,8 +195,14 @@ void* _GetSoundBankData(uio_Stream* fp, uqm::DWORD length)
 		TFB_SoundDecoder* decoder;
 		uint32 decoded_bytes;
 
-		if (sscanf(CurrentLine, "%s", &filename[n]) != 1)
+		if (const auto result{ scn::scan<std::string>(CurrentLine, "{}") })
 		{
+			const std::string parsed {result->value()};
+			uqm::strncpy_safe({&filename[n], static_cast<uint32_t>(sizeof(filename) - n)}, parsed);
+		}
+		else
+		{
+
 			uqm::log::warn("_GetSoundBankData: bad line: '{}'",
 						   CurrentLine);
 			continue;

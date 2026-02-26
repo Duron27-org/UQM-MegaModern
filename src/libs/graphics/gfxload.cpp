@@ -18,6 +18,7 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <scn/scan.h>
 
 #include "options.h"
 #include "port.h"
@@ -30,7 +31,6 @@
 #include "libs/graphics/tfb_draw.h"
 #include "libs/graphics/drawable.h"
 #include "libs/graphics/font.h"
-
 typedef struct anidata
 {
 	int transparent_color;
@@ -255,11 +255,16 @@ void* _GetCelData(uio_Stream* fp, uqm::DWORD length)
 	uio_fseek(aniFile, opos, SEEK_SET);
 	while (uio_fgets(CurrentLine, sizeof(CurrentLine), aniFile) && cel_index < cel_total)
 	{
-		if (sscanf(CurrentLine, "%s %d %d %d %d", &filename[n],
-				   &ani[cel_index].transparent_color,
-				   &ani[cel_index].colormap_index,
-				   &ani[cel_index].hotspot_x, &ani[cel_index].hotspot_y)
-			!= 5)
+		if (auto result {scn::scan<uqstl::string, int, int, int, int>(CurrentLine, "{} {} {} {} {}")})
+		{
+			const auto& [filename_str, transparent_color, colormap_index, hotspot_x, hotspot_y] = result->values();
+			uqm::strncpy_safe({&filename[n], sizeof(filename) - n}, filename_str);
+			ani[cel_index].transparent_color = transparent_color;
+			ani[cel_index].colormap_index = colormap_index;
+			ani[cel_index].hotspot_x = hotspot_x;
+			ani[cel_index].hotspot_y = hotspot_y;
+		}
+		else
 		{
 			break;
 		}
@@ -421,7 +426,7 @@ void* _GetFontData(uio_Stream* fp, uqm::DWORD length)
 				s1 = s2;
 			}
 			n = s1 - _cur_resfile_name + 1;
-			uqm::strncpy_safe(fontDirName, {_cur_resfile_name, static_cast<uint32_t> (n - 1)});
+			uqm::strncpy_safe(fontDirName, {_cur_resfile_name, static_cast<uint32_t>(n - 1)});
 			fontZipName = _cur_resfile_name + n;
 		}
 
@@ -456,12 +461,11 @@ void* _GetFontData(uio_Stream* fp, uqm::DWORD length)
 	// Load the surfaces for all dir Entries
 	for (dirEntryI = 0; dirEntryI < numDirEntries; dirEntryI++)
 	{
-		char* char_name;
-		unsigned int charIndex;
+		unsigned int charIndex {};
 		TFB_Canvas canvas;
 		EXTENT size;
 
-		char_name = GetDirEntryAddress(SetAbsDirEntryTableIndex(
+		const char* char_name = GetDirEntryAddress(SetAbsDirEntryTableIndex(
 			fontDir, dirEntryI));
 
 		if (strcmp(char_name, cfg_name) == 0)
@@ -469,7 +473,11 @@ void* _GetFontData(uio_Stream* fp, uqm::DWORD length)
 			continue;
 		}
 
-		if (sscanf(char_name, "%x.", &charIndex) != 1)
+		if (const auto result {scn::scan<unsigned int>(uqstl::string_view {char_name}, "{:x}.")})
+		{
+			charIndex = result->value();
+		}
+		else
 		{
 			continue;
 		}
@@ -532,12 +540,9 @@ void* _GetFontData(uio_Stream* fp, uqm::DWORD length)
 		{
 			if (cel_index > 0)
 			{
-				uqm::SDWORD KernChar, kernLBits, kernRBits;
-
-				if (sscanf(CurrentLine, "%x %u %u", &KernChar,
-						   &kernLBits, &kernRBits)
-					== 3)
+				if (const auto result {scn::scan<uqm::SDWORD, uqm::SDWORD, uqm::SDWORD>(CurrentLine, "{:x} {} {}")})
 				{
+					auto [KernChar, kernLBits, kernRBits] = result->values();
 					if (kernLBits > 3 || kernLBits < 0)
 					{
 						kernLBits = 3;
@@ -553,12 +558,15 @@ void* _GetFontData(uio_Stream* fp, uqm::DWORD length)
 			}
 			else
 			{
-				if (sscanf(CurrentLine, "%s %hhu %hhu %hhu %hhd",
-						   fontPtr->filename, &fontPtr->Leading,
-						   &fontPtr->CharSpace, &fontPtr->KernAmount,
-						   &fontPtr->VertAlign)
-					== 5)
+				if (const auto result {scn::scan<uqstl::string, uqm::BYTE, uqm::BYTE, uqm::BYTE, uqm::SBYTE>(CurrentLine, "{} {} {} {} {}")})
 				{
+					auto [filename_str, Leading, CharSpace, KernAmount, VertAlign] = result->values();
+					uqm::strncpy_safe(fontPtr->filename, filename_str);
+					fontPtr->Leading = Leading;
+					fontPtr->CharSpace = CharSpace;
+					fontPtr->KernAmount = KernAmount;
+					fontPtr->VertAlign = VertAlign;
+
 					fontPtr->HaveFntData = true;
 				}
 				else

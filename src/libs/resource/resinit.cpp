@@ -16,6 +16,10 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include <scn/scan.h>
+#include <ctype.h>
+#include <stdlib.h>
+
 #include "resintrn.h"
 #include "libs/memlib.h"
 #include "options.h"
@@ -27,8 +31,6 @@
 #include "libs/sndlib.h"
 #include "libs/vidlib.h"
 #include "propfile.h"
-#include <ctype.h>
-#include <stdlib.h>
 // XXX: we should not include anything from uqm/ inside libs/
 #include "uqm/coderes.h"
 
@@ -186,121 +188,96 @@ skipWhiteSpace(const char* start)
 static void
 DescriptorToColor(const char* descriptor, RESOURCE_DATA* resdata)
 {
-	int bytesParsed;
-	int componentBits;
-	int maxComponentValue;
-	size_t componentCount;
-	size_t compI;
-	int comps[4];
 	// One element for each of r, g, b, a.
 
+	resdata->num = 0;
 	descriptor += skipWhiteSpace(descriptor);
 
-#if 0
-	// Can't use this; '#' starts a comment.
-	if (*descriptor == '#')
-	{
-		// "#rrggbb"
-		int i;
-		uqm::DWORD value = 0;
-
-		descriptor++;
-		for (i = 0; i < 6; i++)
-		{
-			uqm::BYTE nibbleValue;
-			if (*descriptor >= '0' && *descriptor <= '9')
-				nibbleValue = *descriptor - '0';
-			else if (*descriptor >= 'a' && *descriptor <= 'f')
-				nibbleValue = 0xa + *descriptor - 'a';
-			else if (*descriptor >= 'A' && *descriptor <= 'F')
-				nibbleValue = 0xa + *descriptor - 'A';
-			else
-				goto fail;
-
-			value = (value * 16) + nibbleValue;
-			descriptor++;
-		}
-	
-		descriptor += skipWhiteSpace (descriptor);
-
-		if (*descriptor != '\0')
-			log_add (log_Warning, "Junk after color resource string.");
-
-		resdata->num = (value << 8) | 0xff;
-		return;
-	}
-#endif
 
 	// Color is of the form "rgb(r, g, b)", "rgba(r, g, b, a)",
 	// or "rgb15(r, g, b)".
+	
+	size_t componentCount {};
+	uqm::DWORD comps[4] {0, 0, 0, 0xFF};
+		
+	uint8_t maxComponentValue {0xFF};
+	uint8_t componentBits {8};
+	uqstl::string_view descView {descriptor};
+	uqstl::string_view trailingJunk {};
+	if (const auto rgbRes {scn::scan<uint8_t, uint8_t, uint8_t>(descView, "rgb ( {} , {} , {} )")})
+	{
+		const auto [r, g, b] = rgbRes->values();
+		comps[0] = r;
+		comps[1] = g;
+		comps[2] = b;
 
-	if (sscanf(descriptor, "rgb ( %i , %i , %i ) %n",
-			   &comps[0], &comps[1], &comps[2], &bytesParsed)
-		>= 3)
-	{
-		componentBits = 8;
 		componentCount = 3;
-		comps[3] = 0xff;
+
+		if (!rgbRes->range().empty())
+		{
+			trailingJunk = {rgbRes->begin(), rgbRes->end()};
+		}
 	}
-	else if (sscanf(descriptor, "rgba ( %i , %i , %i , %i ) %n",
-					&comps[0], &comps[1], &comps[2], &comps[3], &bytesParsed)
-			 >= 4)
+
+	else if (const auto rgbRes {scn::scan<uint8_t, uint8_t, uint8_t, uint8_t>(descView, "rgba ( {} , {} , {} , {} )")})
 	{
-		componentBits = 8;
+		const auto [r, g, b, a] = rgbRes->values();
+		comps[0] = r;
+		comps[1] = g;
+		comps[2] = b;
+		comps[3] = a;
+
 		componentCount = 4;
+
+		if (!rgbRes->range().empty())
+		{
+			trailingJunk = {rgbRes->begin(), rgbRes->end()};
+		}
 	}
-	else if (sscanf(descriptor, "rgb15 ( %i , %i , %i ) %n",
-					&comps[0], &comps[1], &comps[2], &bytesParsed)
-			 >= 3)
+	else if (const auto rgbRes {scn::scan<uint8_t, uint8_t, uint8_t>(descView, "rgb15 ( {} , {} , {} )")})
 	{
+		const auto [r, g, b] = rgbRes->values();
+		comps[0] = r;
+		comps[1] = g;
+		comps[2] = b;
+
+		maxComponentValue = (uint8_t {1} << 5) - 1;
 		componentBits = 5;
 		componentCount = 3;
-		comps[3] = 0xff;
+	}
+
+	if (componentCount > 0)
+	{
+
+		if (!trailingJunk.empty())
+		{
+			uqm::log::warn("Junk after color resource string (\"{}\").", trailingJunk);
+		}
+
+		// Check the range of the components.
+		for (size_t compI = 0; compI < componentCount; ++compI)
+		{
+			if (comps[compI] > maxComponentValue)
+			{
+				uqm::log::warn("Color component value too large; value {} clipped to max of {}.", comps[compI], maxComponentValue);
+				comps[compI] = maxComponentValue;
+			}
+		}
+
+		if (componentBits == 5)
+		{
+			resdata->num = ((CC5TO8(comps[0]) << 24) | (CC5TO8(comps[1]) << 16) | (CC5TO8(comps[2]) << 8) | comps[3]);
+		}
+		else
+		{
+			resdata->num = ((comps[0] << 24) | (comps[1] << 16) | (comps[2] << 8) | comps[3]);
+		}
 	}
 	else
 	{
-		goto fail;
+		uqm::log::error("Invalid color description string for resource. \"{}\"", descView);
 	}
 
-	if (descriptor[bytesParsed] != '\0')
-	{
-		uqm::log::warn("Junk after color resource string.");
-	}
-
-	maxComponentValue = (1 << componentBits) - 1;
-
-	// Check the range of the components.
-	for (compI = 0; compI < componentCount; compI++)
-	{
-		if (comps[compI] < 0)
-		{
-			comps[compI] = 0;
-			uqm::log::warn("Color component value too small; "
-						   "value clipped.");
-		}
-
-		if (comps[compI] > (long)maxComponentValue)
-		{
-			comps[compI] = maxComponentValue;
-			uqm::log::warn("Color component value too large; "
-						   "value clipped.");
-		}
-	}
-
-	if (componentBits == 5)
-	{
-		resdata->num = ((CC5TO8(comps[0]) << 24) | (CC5TO8(comps[1]) << 16) | (CC5TO8(comps[2]) << 8) | comps[3]);
-	}
-	else
-	{
-		resdata->num = ((comps[0] << 24) | (comps[1] << 16) | (comps[2] << 8) | comps[3]);
-	}
-
-	return;
-
-fail:
-	uqm::log::error("Invalid color description string for resource.\n");
-	resdata->num = 0x00000000;
 }
 
 static void

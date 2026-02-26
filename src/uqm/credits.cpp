@@ -16,6 +16,9 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include <math.h>
+#include <scn/scan.h>
+
 #include "credits.h"
 
 #include "controls.h"
@@ -29,7 +32,6 @@
 #include "sounds.h"
 #include "setup.h"
 #include "libs/graphics/drawable.h"
-#include <math.h>
 
 // Rates in pixel lines per second
 #define CREDITS_BASE_RATE RES_SCALE(9)
@@ -144,13 +146,12 @@ Credits_RenderTextFrame(GFXCONTEXT TempContext, int* istr, int dir,
 	GFXCONTEXT OldContext;
 	FRAME OldFrame;
 	TEXT TextLines[MAX_TEXT_LINES];
-	char* pStr = nullptr;
-	int size;
-	char salign[32];
+	char* tableStr = nullptr;
+	int textSize {};
+	char salign[32] {};
 	char* scol;
 	int scaned;
 	int i, rows, cnt;
-	char buf[2048];
 	FONT_SIZE_DEF* fdef;
 	uqm::SIZE leading;
 	TEXT t;
@@ -177,28 +178,40 @@ Credits_RenderTextFrame(GFXCONTEXT TempContext, int* istr, int dir,
 	// skip empty lines
 	while (*istr >= 0 && *istr < GetStringTableCount(CreditsTab))
 	{
-		pStr = GetStringAddress(
+		tableStr = GetStringAddress(
 			SetAbsStringTableIndex(CreditsTab, *istr));
 		*istr += dir;
-		if (pStr && *pStr != '\0')
+		if (tableStr && *tableStr != '\0')
 		{
 			break;
 		}
 	}
 
-	if (!pStr || *pStr == '\0')
+	if (!tableStr || *tableStr == '\0')
 	{
 		return 0;
 	}
 
-	if (2 != sscanf(pStr, "%d %31s %n", &size, salign, &scaned)
-		|| size <= 0)
+	uqstl::string_view strView {tableStr};
+	if (const auto result {scn::scan<int, std::string>(strView, "{} {} ")})
+	{
+		textSize = uqstl::get<0>(result->values());
+		if (textSize <= 0)
+		{
+			return 0;
+		}
+
+		uqm::strncpy_safe(salign, uqstl::get<1>(result->values()));
+		strView = {result->begin(), result->end()};
+	}
+	else
 	{
 		return 0;
 	}
-	pStr += scaned;
 
-	utf8StringCopy(buf, sizeof(buf), pStr);
+	char buf[2048]{};
+	uqm::strncpy_safe(buf, strView);
+	//utf8StringCopy(buf, sizeof(buf), strView.data());
 	rows = ParseTextLines(TextLines, MAX_TEXT_LINES, buf);
 	if (rows == 0)
 	{
@@ -241,7 +254,7 @@ Credits_RenderTextFrame(GFXCONTEXT TempContext, int* istr, int dir,
 	}
 
 	// find the right font
-	for (fdef = CreditsFont; fdef->size && size > fdef->size; ++fdef)
+	for (fdef = CreditsFont; fdef->size && textSize > fdef->size; ++fdef)
 		;
 	if (!fdef->size)
 	{
@@ -267,36 +280,44 @@ Credits_RenderTextFrame(GFXCONTEXT TempContext, int* istr, int dir,
 		 scol && i < MAX_TEXT_COLS;
 		 ++i, scol = strtok(nullptr, ","))
 	{
-		char c;
-		int x;
-		int n;
+		char c {};
+		uqstl::optional<int> x {};
 
 		// default
 		colfmt[i].align = ALIGN_LEFT;
 		colfmt[i].basex = r.extent.width;
 
-		n = sscanf(scol, "%c/%d", &c, &x);
-		if (n < 1)
-		{ // DOES NOT COMPUTE! :)
+		const uqstl::string_view scolView {scol};
+		if (const auto scanRes {scn::scan<char, int>(scolView, "{}/{}")})
+		{
+			c = uqstl::get<0>(scanRes->values());
+			x = uqstl::get<1>(scanRes->values()) << RESOLUTION_FACTOR;
+		}
+		else if (const auto scanRes {scn::scan<char>(scolView, "{}")})
+		{
+			c = uqstl::get<0>(scanRes->values());
+		}
+		else
+		{
+			// DOES NOT COMPUTE! :)
 			continue;
 		}
 
-		x <<= RESOLUTION_FACTOR;
 
 		switch (c)
 		{
 			case 'L':
 				colfmt[i].align = ALIGN_LEFT;
-				if (n >= 2)
+				if (x.has_value())
 				{
-					colfmt[i].basex = x;
+					colfmt[i].basex = *x;
 				}
 				break;
 			case 'C':
 				colfmt[i].align = ALIGN_CENTER;
-				if (n >= 2)
+				if (x.has_value())
 				{
-					colfmt[i].basex = x;
+					colfmt[i].basex = *x;
 				}
 				else
 				{
@@ -305,9 +326,9 @@ Credits_RenderTextFrame(GFXCONTEXT TempContext, int* istr, int dir,
 				break;
 			case 'R':
 				colfmt[i].align = ALIGN_RIGHT;
-				if (n >= 2)
+				if (x.has_value())
 				{
-					colfmt[i].basex = x;
+					colfmt[i].basex = *x;
 				}
 				else
 				{
