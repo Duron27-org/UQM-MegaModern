@@ -230,7 +230,7 @@ void getUserConfigOptions(OptionsStruct& options)
 	}
 	if (res_IsInteger("mm.spaceMusic") && !options.spaceMusic.set)
 	{
-		options.spaceMusic.value = res_GetInteger("mm.spaceMusic");
+		options.spaceMusic.value = static_cast <uqm::SphereOfInfluenceMusic>(res_GetInteger("mm.spaceMusic"));
 	}
 	getBoolConfigValue(options.volasMusic, "mm.volasMusic");
 	getBoolConfigValue(options.wholeFuel, "mm.wholeFuel");

@@ -750,7 +750,7 @@ populate_editkeys(int templat)
 	int i, j;
 
 	uqm::strncpy_safe(textentries[TEXT_LOUTNAME].value, {uqm::input_templates[templat].name, static_cast<uint32_t>(textentries[TEXT_LOUTNAME].maxlen)});
-	
+
 	for (i = 0; i < NUM_KEYS; i++)
 	{
 		for (j = 0; j < 2; j++)
@@ -1293,7 +1293,7 @@ SetDefaults(void)
 	choices[CHOICE_CHINFCRD].selected = opts.infiniteCredits;
 	choices[CHOICE_HAZARDCLR].selected = opts.hazardColors;
 	choices[CHOICE_CUSTBORDER].selected = opts.customBorder;
-	choices[CHOICE_IPMUSIC].selected = opts.spaceMusic;
+	choices[CHOICE_IPMUSIC].selected = static_cast<int>(opts.spaceMusic);
 	choices[CHOICE_REMIXES3].selected = opts.volasMusic;
 	choices[CHOICE_FUELDECIM].selected = opts.wholeFuel;
 #ifdef DIRECTIONAL_JOY
@@ -1334,7 +1334,7 @@ SetDefaults(void)
 	choices[CHOICE_MUSRESUME].selected = opts.musicResume;
 	choices[CHOICE_WINDOWTYPE].selected = opts.windowType;
 	choices[CHOICE_GAMESEED].selected = opts.seedType;
-	choices[CHOICE_SOICOLOR].selected = opts.sphereColors;
+	choices[CHOICE_SOICOLOR].selected = static_cast<int>(opts.sphereColors);
 	choices[CHOICE_SCATTERCARGO].selected = opts.scatterElements;
 	choices[CHOICE_LANDERUPGMASK].selected = opts.showUpgrades;
 	choices[CHOICE_FLEETPOINT].selected = opts.fleetPointSys;
@@ -1420,7 +1420,7 @@ PropagateResults(void)
 	opts.infiniteCredits = (OPT_ENABLABLE)choices[CHOICE_CHINFCRD].selected;
 	opts.hazardColors = (OPT_ENABLABLE)choices[CHOICE_HAZARDCLR].selected;
 	opts.customBorder = (OPT_ENABLABLE)choices[CHOICE_CUSTBORDER].selected;
-	opts.spaceMusic = (OPT_SPACEMUSIC)choices[CHOICE_IPMUSIC].selected;
+	opts.spaceMusic = static_cast<uqm::SphereOfInfluenceMusic>(choices[CHOICE_IPMUSIC].selected);
 	opts.volasMusic = (OPT_ENABLABLE)choices[CHOICE_REMIXES3].selected;
 	opts.wholeFuel = (OPT_ENABLABLE)choices[CHOICE_FUELDECIM].selected;
 #ifdef DIRECTIONAL_JOY
@@ -1461,7 +1461,7 @@ PropagateResults(void)
 	opts.musicResume = (OPT_MUSICRESUME)choices[CHOICE_MUSRESUME].selected;
 	opts.windowType = (OPT_WINDOWTYPE)choices[CHOICE_WINDOWTYPE].selected;
 	opts.seedType = (OPT_SEED)choices[CHOICE_GAMESEED].selected;
-	opts.sphereColors = (OPT_SPHERECOLORS)choices[CHOICE_SOICOLOR].selected;
+	opts.sphereColors = static_cast<uqm::SphereOfInfluenceColors>(choices[CHOICE_SOICOLOR].selected);
 	opts.scatterElements = (OPT_ENABLABLE)choices[CHOICE_SCATTERCARGO].selected;
 	opts.showUpgrades = (OPT_ENABLABLE)choices[CHOICE_LANDERUPGMASK].selected;
 	opts.fleetPointSys = (OPT_ENABLABLE)choices[CHOICE_FLEETPOINT].selected;
@@ -2499,7 +2499,7 @@ void GetGlobalOptions(GLOBALOPTS* opts)
 	opts->musicremix = optRemixMusic; // Precursors Pack
 	opts->volasMusic = optVolasMusic;
 
-	opts->spaceMusic = (OPT_SPACEMUSIC)optSpaceMusic;
+	opts->spaceMusic = optSpaceMusic;
 	opts->mainMenuMusic = optMainMenuMusic;
 	opts->musicResume = (OPT_MUSICRESUME)optMusicResume;
 	opts->speech = optSpeech;
@@ -2568,7 +2568,7 @@ void GetGlobalOptions(GLOBALOPTS* opts)
 	opts->fuelRange = (OPT_FUELRANGE)optFuelRange;
 	opts->wholeFuel = optWholeFuel;
 	opts->meleeToolTips = optMeleeToolTips;
-	opts->sphereColors = (OPT_SPHERECOLORS)optSphereColors;
+	opts->sphereColors = optSphereColors;
 	opts->dosMenus = optDosMenus;
 
 	// Interplanetary

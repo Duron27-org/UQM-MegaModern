@@ -89,7 +89,7 @@ struct OptionsStruct
 	IntOption customSeed {PrimeA};
 	BoolOption shipSeed {false};
 	OptionT<SphereOfInfluenceColors> sphereColors {SphereOfInfluenceColors::Default};
-	IntOption spaceMusic {0};
+	OptionT<SphereOfInfluenceMusic> spaceMusic {SphereOfInfluenceMusic::None};
 	BoolOption volasMusic {false};
 	BoolOption wholeFuel {false};
 	BoolOption directionalJoystick {false};

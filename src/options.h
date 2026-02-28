@@ -75,8 +75,8 @@ extern OPT_ENABLABLE optCustomBorder;
 extern int optCustomSeed;
 extern OPT_ENABLABLE optShipSeed;
 extern uqm::SphereOfInfluenceColors optSphereColors;
-extern int spaceMusicBySOI;
-extern int optSpaceMusic;
+extern uqm::SphereOfInfluenceMusic optSpaceMusic;
+extern int spaceMusicBySOI;			// not an option, just the global setting chosen as a result of optSpaceMusic.
 extern OPT_ENABLABLE optVolasMusic;
 extern OPT_ENABLABLE optWholeFuel;
 extern OPT_ENABLABLE optDirectionalJoystick;

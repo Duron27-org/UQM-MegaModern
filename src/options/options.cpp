@@ -510,7 +510,9 @@ uqstl::pair<int, bool> UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 	modGroup->add_option("--spherecolors", m_options.sphereColors.edit(), "Color scheme for race spheres of influence in star map")
 		->transform(CLI::CheckedTransformer {EnumNames<SphereOfInfluenceColors>::pairs<std::string>(), CLI::ignore_case})
 		->default_str(fmt::format("{:s}", *defaults.sphereColors));
-	//	uqm::log::info("  --spacemusic #: Enables localized music for aliens when you are in their sphere of influence\n0: Default (OFF) | 1: No Spoilers | 2: Spoilers");
+	modGroup->add_option("--spacemusic", m_options.spaceMusic.edit(), "Enables localized music for aliens when you are in their sphere of influence")
+		->transform(CLI::CheckedTransformer {EnumNames<SphereOfInfluenceMusic>::pairs<std::string>(), CLI::ignore_case})
+		->default_str(fmt::format("{:s}", *defaults.spaceMusic));
 	modGroup->add_flag("--wholefuel", m_options.wholeFuel.edit(), "Enables the display of the whole fuel value in the ship status")
 		->default_str(defaults.wholeFuel.toString());
 	modGroup->add_flag("--dirjoystick", m_options.directionalJoystick.edit(), "Enables the use of directional joystick controls for Android")

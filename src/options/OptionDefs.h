@@ -218,6 +218,15 @@ enum class SphereOfInfluenceColors
 	Starseed,
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+enum class SphereOfInfluenceMusic
+{
+	None,
+	RaceAfterDiscovery,
+	RaceBeforeDiscovery,
+};
+
 } // namespace uqm
 
 #endif /* OPTIONS_OPTIONDEFS_H_ */

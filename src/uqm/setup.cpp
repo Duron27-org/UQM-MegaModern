@@ -205,12 +205,12 @@ bool LoadKernel(int argc, char* argv[])
 	{
 		VolasPackPresent = uqm::loadAddon("volasaurus-remix-pack");
 
-		SpaceMusicOK = optSpaceMusic && VolasPackPresent;
+		SpaceMusicOK = optSpaceMusic != uqm::SphereOfInfluenceMusic::None && VolasPackPresent;
 	}
 
 	if (!VolasPackPresent)
 	{
-		SpaceMusicOK = optSpaceMusic && uqm::loadAddon("SpaceMusic");
+		SpaceMusicOK = optSpaceMusic != uqm::SphereOfInfluenceMusic::None && uqm::loadAddon("SpaceMusic");
 	}
 
 	if (optWhichIntro == uqm::EmulationMode::Console3DO)

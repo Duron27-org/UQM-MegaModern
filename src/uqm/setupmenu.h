@@ -181,18 +181,18 @@ typedef enum
 	OPTVAL_STAR
 } OPT_SEED;
 
-typedef enum
-{
-	OPTVAL_DEFAULT_COLORS,
-	OPTVAL_STARSEED_COLORS
-} OPT_SPHERECOLORS;
+//typedef enum
+//{
+//	OPTVAL_DEFAULT_COLORS,
+//	OPTVAL_STARSEED_COLORS
+//} OPT_SPHERECOLORS;
 
-typedef enum
-{
-	OPTVAL_NO_SPACEMUSIC,
-	OPTVAL_SM_NO_SPOILERS,
-	OPTVAL_SM_SPOILERS
-} OPT_SPACEMUSIC;
+//typedef enum
+//{
+//	OPTVAL_NO_SPACEMUSIC,
+//	OPTVAL_SM_NO_SPOILERS,
+//	OPTVAL_SM_SPOILERS
+//} OPT_SPACEMUSIC;
 
 typedef enum
 {
@@ -450,8 +450,8 @@ typedef struct globalopts_struct
 	OPT_WINDOWTYPE windowType;
 	OPT_MUSICRESUME musicResume;
 	OPT_SEED seedType;
-	OPT_SPHERECOLORS sphereColors;
-	OPT_SPACEMUSIC spaceMusic;
+	uqm::SphereOfInfluenceColors sphereColors;
+	uqm::SphereOfInfluenceMusic spaceMusic;
 	OPT_ADD_REMOVE deviceArray[28], upgradeArray[NUM_UPGRADES];
 	OPT_ENABLABLE subtitles, scanlines, fps, stereo, music3do,
 		musicremix, speech, keepaspect, cheatMode, mainMenuMusic,
