@@ -797,7 +797,7 @@ DrawFuelCircle(bool secondary)
 		DrawFilledOval(&r);
 		SetContextForeGroundColor(OldColor);
 
-		if (optFuelRange > 1)
+		if (testFlag(optFuelRange, uqm::FuelRangeDisplay::FuelToSol))
 		{
 			OldColor =
 				SetContextForeGroundColor(STARMAP_SECONDARY_RANGE_COLOR);
@@ -1283,7 +1283,7 @@ DrawStarMap(uqm::COUNT race_update, GFXRECT* pClipRect)
 	if (which_starmap != CONSTELLATION_MAP
 		&& (race_update == 0 && which_space < 2)
 		&& !(optInfiniteFuel || GLOBAL_SIS(FuelOnBoard) == 0)
-		&& (optFuelRange == 1 || optFuelRange == 3)
+		&& (testFlag(optFuelRange, uqm::FuelRangeDisplay::FuelAtDestination))
 		&& (GLOBAL(autopilot.x) != ~0 && GLOBAL(autopilot.y) != ~0))
 	{ // Draw the autopilot fuel range circle (on top of the grid)
 		DrawFuelCircle(true);

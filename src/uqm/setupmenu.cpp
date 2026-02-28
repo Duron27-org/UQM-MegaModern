@@ -1280,7 +1280,7 @@ SetDefaults(void)
 	//	choices[CHOICE_CHUPGRADES   ].selected = opts.unlockUpgrades;
 	choices[CHOICE_CHINFRU].selected = opts.infiniteRU;
 	choices[CHOICE_SKIPINTRO].selected = opts.skipIntro;
-	choices[CHOICE_FUELCIRCLE].selected = opts.fuelRange;
+	choices[CHOICE_FUELCIRCLE].selected = static_cast<int>(opts.fuelRange);
 	choices[CHOICE_MMENUMUSIC].selected = opts.mainMenuMusic;
 	choices[CHOICE_NEBULAE].selected = opts.nebulae;
 	choices[CHOICE_ORBPLANETS].selected = opts.orbitingPlanets;
@@ -1407,7 +1407,7 @@ PropagateResults(void)
 	//	opts.unlockUpgrades =   choices[CHOICE_CHUPGRADES   ].selected;
 	opts.infiniteRU = (OPT_ENABLABLE)choices[CHOICE_CHINFRU].selected;
 	opts.skipIntro = (OPT_ENABLABLE)choices[CHOICE_SKIPINTRO].selected;
-	opts.fuelRange = (OPT_FUELRANGE)choices[CHOICE_FUELCIRCLE].selected;
+	opts.fuelRange = static_cast<uqm::FuelRangeDisplay>(choices[CHOICE_FUELCIRCLE].selected);
 	opts.mainMenuMusic = (OPT_ENABLABLE)choices[CHOICE_MMENUMUSIC].selected;
 	opts.nebulae = (OPT_ENABLABLE)choices[CHOICE_NEBULAE].selected;
 	opts.orbitingPlanets = (OPT_ENABLABLE)choices[CHOICE_ORBPLANETS].selected;
@@ -2565,7 +2565,7 @@ void GetGlobalOptions(GLOBALOPTS* opts)
 	opts->gameOver = optGameOver;
 	opts->hyperStars = optHyperStars;
 	opts->showVisitedStars = optShowVisitedStars;
-	opts->fuelRange = (OPT_FUELRANGE)optFuelRange;
+	opts->fuelRange = optFuelRange;
 	opts->wholeFuel = optWholeFuel;
 	opts->meleeToolTips = optMeleeToolTips;
 	opts->sphereColors = optSphereColors;
@@ -2824,20 +2824,20 @@ void SetGlobalOptions(GLOBALOPTS* opts)
 #if SDL_MAJOR_VERSION == 1 // Refined joypad controls aren't supported on SDL1
 	opts->controllerType = 0;
 #endif
-	putOpt(optControllerType, (int)(opts->controllerType), "mm.controllerType", false);
+	putOpt(optControllerType, opts->controllerType, "mm.controllerType", false);
 #ifdef DIRECTIONAL_JOY
 	putOpt(optDirectionalJoystick, opts->directionalJoystick, "mm.directionalJoystick", false);
 #endif
-	putOpt(optDateFormat, (int)(opts->dateType), "mm.dateFormat", false);
+	putOpt(optDateFormat, opts->dateType, "mm.dateFormat", false);
 	putOpt(optCustomBorder, opts->customBorder, "mm.customBorder", false);
 	putOpt(optFlagshipColor, opts->flagshipColor, "mm.flagshipColor", false);
 	putOpt(optGameOver, opts->gameOver, "mm.gameOver", false);
 	putOpt(optHyperStars, opts->hyperStars, "mm.hyperStars", false);
 	putOpt(optShowVisitedStars, opts->showVisitedStars, "mm.showVisitedStars", false);
-	putOpt(optFuelRange, (int)(opts->fuelRange), "mm.fuelRange", false);
+	putOpt(optFuelRange, opts->fuelRange, "mm.fuelRange", false);
 	putOpt(optWholeFuel, opts->wholeFuel, "mm.wholeFuel", false);
 	putOpt(optMeleeToolTips, opts->meleeToolTips, "mm.meleeToolTips", false);
-	putOpt(optSphereColors, (int)opts->sphereColors, "mm.sphereColors", false);
+	putOpt(optSphereColors, opts->sphereColors, "mm.sphereColors", false);
 	putOpt(optScatterElements, opts->scatterElements, "mm.scatterElements", false);
 	putOpt(optShipStore, opts->shipStore, "mm.shipStore", false);
 	putOpt(optCaptainNames, opts->captainNames, "mm.captainNames", false);

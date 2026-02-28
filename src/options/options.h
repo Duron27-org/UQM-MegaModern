@@ -93,11 +93,11 @@ struct OptionsStruct
 	BoolOption volasMusic {false};
 	BoolOption wholeFuel {false};
 	BoolOption directionalJoystick {false};
-	EmulationOption landerHold {uqm::EmulationMode::Console3DO};
-	EmulationOption scrTrans {uqm::EmulationMode::Console3DO};
+	EmulationOption landerHold {EmulationMode::Console3DO};
+	EmulationOption scrTrans {EmulationMode::Console3DO};
 	OptionT<Difficulty> optDifficulty {Difficulty::Normal};
 	OptionT<Difficulty> optDiffChooser {Difficulty::ChooseYourOwn};
-	IntOption optFuelRange {0};
+	OptionT<FuelRangeDisplay> optFuelRange {FuelRangeDisplay::Normal};
 	BoolOption extended {false};
 	IntOption nomad {0};
 	BoolOption gameOver {false};

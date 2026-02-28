@@ -102,7 +102,7 @@ uqm::EmulationMode optLanderHold;
 uqm::EmulationMode optScrTrans;
 uqm::Difficulty optDifficulty;
 uqm::Difficulty optDiffChooser;
-int optFuelRange;
+uqm::FuelRangeDisplay optFuelRange;
 OPT_ENABLABLE optExtended;
 int optNomad;
 OPT_ENABLABLE optGameOver;

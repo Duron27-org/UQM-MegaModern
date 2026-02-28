@@ -136,13 +136,13 @@ typedef enum
 	OPTVAL_PS4
 } OPT_CONTROLLER;
 
-typedef enum
-{
-	OPTVAL_FUEL_NORM,
-	OPTVAL_FUEL_AT_DEST,
-	OPTVAL_FUEL_TO_SOL,
-	OPTVAL_FUEL_ALL
-} OPT_FUELRANGE;
+//typedef enum
+//{
+//	OPTVAL_FUEL_NORM,
+//	OPTVAL_FUEL_AT_DEST,
+//	OPTVAL_FUEL_TO_SOL,
+//	OPTVAL_FUEL_ALL
+//} OPT_FUELRANGE;
 
 typedef enum
 {
@@ -445,7 +445,7 @@ typedef struct globalopts_struct
 	OPT_NOMAD nomad;
 	OPT_MELEEZOOM meleezoom;
 	OPT_CONTROLLER controllerType;
-	OPT_FUELRANGE fuelRange;
+	uqm::FuelRangeDisplay fuelRange;
 	OPT_SPHERETYPE sphereType;
 	OPT_WINDOWTYPE windowType;
 	OPT_MUSICRESUME musicResume;

@@ -230,7 +230,7 @@ void getUserConfigOptions(OptionsStruct& options)
 	}
 	if (res_IsInteger("mm.spaceMusic") && !options.spaceMusic.set)
 	{
-		options.spaceMusic.value = static_cast <uqm::SphereOfInfluenceMusic>(res_GetInteger("mm.spaceMusic"));
+		options.spaceMusic.value = static_cast<uqm::SphereOfInfluenceMusic>(res_GetInteger("mm.spaceMusic"));
 	}
 	getBoolConfigValue(options.volasMusic, "mm.volasMusic");
 	getBoolConfigValue(options.wholeFuel, "mm.wholeFuel");
@@ -253,7 +253,7 @@ void getUserConfigOptions(OptionsStruct& options)
 	}
 	if (res_IsInteger("mm.fuelRange") && !options.optFuelRange.set)
 	{
-		options.optFuelRange.value = res_GetInteger("mm.fuelRange");
+		options.optFuelRange.value = static_cast<uqm::FuelRangeDisplay>(res_GetInteger("mm.fuelRange"));
 	}
 	getBoolConfigValue(options.extended, "mm.extended");
 	if (res_IsInteger("mm.nomad") && !options.nomad.set)

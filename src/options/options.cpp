@@ -523,7 +523,15 @@ uqstl::pair<int, bool> UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 	modGroup->add_option("--scrtrans", m_options.scrTrans.edit(), "Screen transitions, pc=instantaneous, 3do=crossfade")
 		->transform(emulationModeTransformer)
 		->default_str(fmt::format("{:s}", *defaults.scrTrans));
-	//	uqm::log::info("  --difficulty : 0: Normal | 1: Easy | 2: Hard | 3: Choose at Start (default: 0)");
+	modGroup->add_option("--difficulty", m_options.optDifficulty.edit(), "Game difficulty.")
+		->transform(CLI::CheckedTransformer {EnumNames<Difficulty>::pairs<std::string>(), CLI::ignore_case})
+		->default_str(fmt::format("{:s}", *defaults.optDifficulty));
+	uqstl::vector<FuelRangeDisplay> specifiedFuelRangeDisplayFlags {};
+	modGroup->add_option("--fuelrange", specifiedFuelRangeDisplayFlags, "A comma-separated list of fuel range display flags to enable. Can be any combindation") // todo: selected flags.
+		->expected(-1)
+		->transform(CLI::CheckedTransformer {EnumNames<FuelRangeDisplay>::map<std::string>(), CLI::ignore_case})
+		->default_str(fmt::format("{:s}", *defaults.optGodModes));
+	
 	//	uqm::log::info("  --fuelrange : Enables extra fuel range indicators : 0: No indicators | 1: Fuel range at destination | 2: Remaining fuel range to Sol | 3: Both option 1 and 2  enabled simultaneously (default: 0)");
 	modGroup->add_flag("--extended", m_options.extended.edit(), "Enables Extended Edition features")
 		->default_str(defaults.extended.toString());
@@ -630,6 +638,22 @@ uqstl::pair<int, bool> UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 			else
 			{
 				m_options.optGodModes = flag;
+			}
+		}
+	}
+
+	// Collect selected fuel display flags into a final value
+	if (!specifiedFuelRangeDisplayFlags.empty())
+	{
+		for (const FuelRangeDisplay flag : specifiedFuelRangeDisplayFlags)
+		{
+			if (m_options.optFuelRange.set)
+			{
+				m_options.optFuelRange.value |= flag;
+			}
+			else
+			{
+				m_options.optFuelRange = flag;
 			}
 		}
 	}

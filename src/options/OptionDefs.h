@@ -227,6 +227,17 @@ enum class SphereOfInfluenceMusic
 	RaceBeforeDiscovery,
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+enum class FuelRangeDisplay
+{
+	Normal,
+	FuelAtDestination,
+	FuelToSol,
+	All = FuelAtDestination | FuelToSol
+};
+ENUM_BITWISE_OPS(FuelRangeDisplay);
+
 } // namespace uqm
 
 #endif /* OPTIONS_OPTIONDEFS_H_ */
