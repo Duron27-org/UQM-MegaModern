@@ -88,7 +88,7 @@ struct OptionsStruct
 	OptionT<SeedType> seedType {SeedType::None};
 	IntOption customSeed {PrimeA};
 	BoolOption shipSeed {false};
-	IntOption sphereColors {0};
+	OptionT<SphereOfInfluenceColors> sphereColors {SphereOfInfluenceColors::Default};
 	IntOption spaceMusic {0};
 	BoolOption volasMusic {false};
 	BoolOption wholeFuel {false};

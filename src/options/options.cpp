@@ -503,12 +503,13 @@ uqstl::pair<int, bool> UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 	modGroup->add_option("--seedtype", m_options.seedType.edit(), "Seed type for solar system generation. Default is \"None\", which is the same seed used in the original game. Changing this will change the layout of the entire star map")
 		->transform(CLI::CheckedTransformer {EnumNames<SeedType>::pairs<std::string>(), CLI::ignore_case})
 		->default_str(fmt::format("{:s}", *defaults.seedType));
-	//	uqm::log::info("  --seedtype: 0: Default seed | 1: Seed planets  | 2: Seed Melnorme/Rainbow/Quasispace  | 3: Seed Starmap (default: 0)");
 	modGroup->add_option("--customseed", m_options.customSeed, "Allows you to customize the internal seed used to generate the solar systems in-game.")
 		->capture_default_str();
 	modGroup->add_flag("--shipseed", m_options.shipSeed.edit(), "Seeds the ships assigned to each race. Uses --customseed value")
 		->default_str(defaults.shipSeed.toString());
-	//	uqm::log::info("  --spherecolors: 0: Default colors | 1: StarSeed colors (default: 0)");
+	modGroup->add_option("--spherecolors", m_options.sphereColors.edit(), "Color scheme for race spheres of influence in star map")
+		->transform(CLI::CheckedTransformer {EnumNames<SphereOfInfluenceColors>::pairs<std::string>(), CLI::ignore_case})
+		->default_str(fmt::format("{:s}", *defaults.sphereColors));
 	//	uqm::log::info("  --spacemusic #: Enables localized music for aliens when you are in their sphere of influence\n0: Default (OFF) | 1: No Spoilers | 2: Spoilers");
 	modGroup->add_flag("--wholefuel", m_options.wholeFuel.edit(), "Enables the display of the whole fuel value in the ship status")
 		->default_str(defaults.wholeFuel.toString());

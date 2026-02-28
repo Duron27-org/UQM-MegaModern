@@ -226,7 +226,7 @@ void getUserConfigOptions(OptionsStruct& options)
 	getBoolConfigValue(options.shipSeed, "mm.shipSeed");
 	if (res_IsInteger("mm.sphereColors") && !options.sphereColors.set)
 	{
-		options.sphereColors.value = res_GetInteger("mm.sphereColors");
+		options.sphereColors.value = static_cast<uqm::SphereOfInfluenceColors>(res_GetInteger("mm.sphereColors"));
 	}
 	if (res_IsInteger("mm.spaceMusic") && !options.spaceMusic.set)
 	{

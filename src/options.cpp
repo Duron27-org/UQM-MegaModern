@@ -92,7 +92,7 @@ OPT_ENABLABLE optCustomBorder;
 uqm::SeedType optSeedType;
 int optCustomSeed;
 OPT_ENABLABLE optShipSeed;
-int optSphereColors;
+uqm::SphereOfInfluenceColors optSphereColors;
 int spaceMusicBySOI;
 int optSpaceMusic;
 OPT_ENABLABLE optVolasMusic;

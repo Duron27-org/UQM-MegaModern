@@ -74,7 +74,7 @@ extern bool optLoadGame;
 extern OPT_ENABLABLE optCustomBorder;
 extern int optCustomSeed;
 extern OPT_ENABLABLE optShipSeed;
-extern int optSphereColors;
+extern uqm::SphereOfInfluenceColors optSphereColors;
 extern int spaceMusicBySOI;
 extern int optSpaceMusic;
 extern OPT_ENABLABLE optVolasMusic;

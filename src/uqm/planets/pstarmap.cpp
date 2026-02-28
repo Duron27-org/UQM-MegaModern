@@ -1110,74 +1110,56 @@ DrawRaceName(TEXT* t, Color* c)
 
 Color RaceColor(uqm::COUNT index)
 {
-	static const Color race_colors[] =
+	if (optSphereColors == uqm::SphereOfInfluenceColors::Default)
+	{
+		static constexpr Color RaceColors[] = {RACE_COLORS};
+		static constexpr uqm::COUNT NumColors = sizeof(RaceColors) / sizeof(Color);
+		if (index < NumColors)
 		{
-			RACE_COLORS};
-	if (optSphereColors == OPTVAL_DEFAULT_COLORS)
-	{
-		return race_colors[index];
+			return RaceColors[index];
+		}
 	}
-	// right now, assume OPTVAL_STARSEED_COLORS (option 1), but more options
-	// can be added here with if statements, or with more complicated (better) code
-	switch (index)
+	else if (optSphereColors == uqm::SphereOfInfluenceColors::Starseed)
 	{
-		case ARILOU_SHIP: // Bold blue
-			return Color BUILD_COLOR(MAKE_RGB15_INIT(0x00, 0x00, 0x17), 0x00);
-		case CHMMR_SHIP: // Pale blue-grey
-			return Color BUILD_COLOR(MAKE_RGB15_INIT(0x10, 0x15, 0x19), 0x00);
-		case HUMAN_SHIP: // Blue
-			return Color BUILD_COLOR(MAKE_RGB15_INIT(0x09, 0x09, 0x1B), 0x00);
-		case ORZ_SHIP: // Plum
-			return Color BUILD_COLOR(MAKE_RGB15_INIT(0x0D, 0x00, 0x05), 0x00);
-		case PKUNK_SHIP: // Pinkunk
-			return Color BUILD_COLOR(MAKE_RGB15_INIT(0x1C, 0x07, 0x19), 0x00);
-		case SHOFIXTI_SHIP: // Marsupial brown
-			return Color BUILD_COLOR(MAKE_RGB15_INIT(0x0A, 0x06, 0x00), 0x00);
-		case SPATHI_SHIP: // Mustard yellow
-			return Color BUILD_COLOR(MAKE_RGB15_INIT(0x15, 0x12, 0x03), 0x00);
-		case SUPOX_SHIP: // Leaf green
-			return Color BUILD_COLOR(MAKE_RGB15_INIT(0x05, 0x14, 0x01), 0x00);
-		case THRADDASH_SHIP: // Dark cyan
-			return Color BUILD_COLOR(MAKE_RGB15_INIT(0x00, 0x06, 0x08), 0x00);
-		case UTWIG_SHIP: // Beige
-			return Color BUILD_COLOR(MAKE_RGB15_INIT(0x1A, 0x16, 0x12), 0x00);
-		case VUX_SHIP: // Very Ugly Aqua
-			return Color BUILD_COLOR(MAKE_RGB15_INIT(0x06, 0x16, 0x0F), 0x00);
-		case YEHAT_SHIP: // Royal purple
-			return Color BUILD_COLOR(MAKE_RGB15_INIT(0x0A, 0x00, 0x11), 0x00);
-		case MELNORME_SHIP: // Yellowish
-			return Color BUILD_COLOR(MAKE_RGB15_INIT(0x1A, 0x16, 0x08), 0x00);
-		case DRUUGE_SHIP: // Crimson (tm)
-			return Color BUILD_COLOR(MAKE_RGB15_INIT(0x0F, 0x00, 0x00), 0x00);
-		case ILWRATH_SHIP: // Purple
-			return Color BUILD_COLOR(MAKE_RGB15_INIT(0x0E, 0x00, 0x0E), 0x00);
-		case MYCON_SHIP: // Fungal fuchsia
-			return Color BUILD_COLOR(MAKE_RGB15_INIT(0x14, 0x00, 0x0C), 0x00);
-		case SLYLANDRO_SHIP: // Red Alert
-			return Color BUILD_COLOR(MAKE_RGB15_INIT(0x1D, 0x00, 0x07), 0x00);
-		case UMGAH_SHIP: // Olive
-			return Color BUILD_COLOR(MAKE_RGB15_INIT(0x0B, 0x0C, 0x00), 0x00);
-		case URQUAN_SHIP: // Dark Green
-			return Color BUILD_COLOR(MAKE_RGB15_INIT(0x00, 0x08, 0x00), 0x00);
-		case ZOQFOTPIK_SHIP: // Orange
-			return Color BUILD_COLOR(MAKE_RGB15_INIT(0x16, 0x0D, 0x00), 0x00);
-		case SYREEN_SHIP: // Slightly-orange red
-			return Color BUILD_COLOR(MAKE_RGB15_INIT(0x15, 0x07, 0x03), 0x00);
-		case BLACK_URQUAN_SHIP: // Dark grey
-			return Color BUILD_COLOR(MAKE_RGB15_INIT(0x06, 0x06, 0x06), 0x00);
-		case ANDROSYNTH_SHIP: // Violet
-			return Color BUILD_COLOR(MAKE_RGB15_INIT(0x09, 0x00, 0x15), 0x00);
-		case CHENJESU_SHIP: // Cyan
-			return Color BUILD_COLOR(MAKE_RGB15_INIT(0x00, 0x15, 0x1C), 0x00);
-		case MMRNMHRM_SHIP: // Silver
-			return Color BUILD_COLOR(MAKE_RGB15_INIT(0x10, 0x10, 0x10), 0x00);
-		case YEHAT_REBEL_SHIP: // Lavender
-			return Color BUILD_COLOR(MAKE_RGB15_INIT(0x19, 0x10, 0x1F), 0x00);
-		default: // Hot pink (just a fail state but also reserved)
-			return Color BUILD_COLOR(MAKE_RGB15_INIT(0x1C, 0x00, 0x0C), 0x00);
+		static constexpr Color StarseedColors[] =
+			{
+				BUILD_COLOR(MAKE_RGB15_INIT(0x00, 0x00, 0x17), 0x00), // ARILOU_SHIP Bold blue
+				BUILD_COLOR(MAKE_RGB15_INIT(0x10, 0x15, 0x19), 0x00), // CHMMR_SHIP Pale blue-grey
+				BUILD_COLOR(MAKE_RGB15_INIT(0x09, 0x09, 0x1B), 0x00), // HUMAN_SHIP Blue
+				BUILD_COLOR(MAKE_RGB15_INIT(0x0D, 0x00, 0x05), 0x00), // ORZ_SHIP Plum
+				BUILD_COLOR(MAKE_RGB15_INIT(0x1C, 0x07, 0x19), 0x00), // PKUNK_SHIP Pinkunk
+				BUILD_COLOR(MAKE_RGB15_INIT(0x0A, 0x06, 0x00), 0x00), // SHOFIXTI_SHIP Marsupial brown
+				BUILD_COLOR(MAKE_RGB15_INIT(0x15, 0x12, 0x03), 0x00), // SPATHI_SHIP Mustard yellow
+				BUILD_COLOR(MAKE_RGB15_INIT(0x05, 0x14, 0x01), 0x00), // SUPOX_SHIP Leaf green
+				BUILD_COLOR(MAKE_RGB15_INIT(0x00, 0x06, 0x08), 0x00), // THRADDASH_SHIP Dark cyan
+				BUILD_COLOR(MAKE_RGB15_INIT(0x1A, 0x16, 0x12), 0x00), // UTWIG_SHIP Beige
+				BUILD_COLOR(MAKE_RGB15_INIT(0x06, 0x16, 0x0F), 0x00), // VUX_SHIP Very Ugly Aqua
+				BUILD_COLOR(MAKE_RGB15_INIT(0x0A, 0x00, 0x11), 0x00), // YEHAT_SHIP Royal purple
+				BUILD_COLOR(MAKE_RGB15_INIT(0x1A, 0x16, 0x08), 0x00), // MELNORME_SHIP Yellowish
+				BUILD_COLOR(MAKE_RGB15_INIT(0x0F, 0x00, 0x00), 0x00), // DRUUGE_SHIP Crimson (tm)
+				BUILD_COLOR(MAKE_RGB15_INIT(0x0E, 0x00, 0x0E), 0x00), // ILWRATH_SHIP Purple
+				BUILD_COLOR(MAKE_RGB15_INIT(0x14, 0x00, 0x0C), 0x00), // MYCON_SHIP Fungal fuchsia
+				BUILD_COLOR(MAKE_RGB15_INIT(0x1D, 0x00, 0x07), 0x00), // SLYLANDRO_SHIP Red Alert
+				BUILD_COLOR(MAKE_RGB15_INIT(0x0B, 0x0C, 0x00), 0x00), // UMGAH_SHIP Olive
+				BUILD_COLOR(MAKE_RGB15_INIT(0x00, 0x08, 0x00), 0x00), // URQUAN_SHIP Dark Green
+				BUILD_COLOR(MAKE_RGB15_INIT(0x16, 0x0D, 0x00), 0x00), // ZOQFOTPIK_SHIP Orange
+				BUILD_COLOR(MAKE_RGB15_INIT(0x15, 0x07, 0x03), 0x00), // SYREEN_SHIP Slightly-orange red
+				BUILD_COLOR(MAKE_RGB15_INIT(0x06, 0x06, 0x06), 0x00), // BLACK_URQUAN_SHIP Dark grey
+				BUILD_COLOR(MAKE_RGB15_INIT(0x09, 0x00, 0x15), 0x00), // ANDROSYNTH_SHIP Violet
+				BUILD_COLOR(MAKE_RGB15_INIT(0x00, 0x15, 0x1C), 0x00), // CHENJESU_SHIP Cyan
+				BUILD_COLOR(MAKE_RGB15_INIT(0x10, 0x10, 0x10), 0x00), // MMRNMHRM_SHIP Silver
+				BUILD_COLOR(MAKE_RGB15_INIT(0x19, 0x10, 0x1F), 0x00), // YEHAT_REBEL_SHIP Lavender
+			};
+
+		static constexpr uqm::COUNT NumColors = sizeof(StarseedColors) / sizeof(Color);
+		
+		if (index < NumColors)
+		{
+			return StarseedColors[index];
+		}
 	}
-	// Slylandro lightish red (pale pink for gas giant creatures)
-	return Color BUILD_COLOR(MAKE_RGB15_INIT(0x1F, 0x15, 0x19), 0x00);
+	// Hot pink (just a fail state but also reserved)
+	return Color BUILD_COLOR(MAKE_RGB15_INIT(0x1C, 0x00, 0x0C), 0x00);
 #if 0
 	// A way to choose colors entirely "fairly", although colors don't really map
 	// in such an even distribution.
@@ -1412,7 +1394,7 @@ DrawStarMap(uqm::COUNT race_update, GFXRECT* pClipRect)
 								break;
 						}
 					}
-					else if (index == YEHAT_REBEL_SHIP && optSphereColors == 1)
+					else if (index == YEHAT_REBEL_SHIP && optSphereColors == uqm::SphereOfInfluenceColors::Starseed)
 					{
 						t.CharCount = 7;
 						t.pStr = yehat_rebels;

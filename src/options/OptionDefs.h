@@ -210,6 +210,14 @@ enum class Difficulty : uint8_t
 	ChooseYourOwn, // shows difficulty selection screen at the start of a new game, like in the original 3DO version. Note that this doesn't actually change any game parameters, it's just for show.
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+enum class SphereOfInfluenceColors
+{
+	Default,
+	Starseed,
+};
+
 } // namespace uqm
 
 #endif /* OPTIONS_OPTIONDEFS_H_ */
