@@ -334,29 +334,22 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 				case '%':
 					{
 						/* Environment variable substitution in Windows */
-						const char* end; // end of env var name in src
-						char* envName;
-						size_t envNameLen, envVarLen;
-
 						src++;
-						end = strchr(src, '%');
+						const char* end {strchr(src, '%')};
 						if (end == nullptr)
 						{
 							errno = EINVAL;
 							goto err;
 						}
 
-						envNameLen = end - src;
-						envName = (char*)HMalloc(envNameLen + 1);
-						memcpy(envName, src, envNameLen + 1);
-						envName[envNameLen] = '\0';
-						uqstl::string envVar = uqm::getEnvironmentValue(envName);
-						HFree(envName);
+						size_t envVarLen {static_cast<size_t>(uqstl::distance(src, end))};
+						uqstl::string envName {src, envVarLen};
+						uqstl::string envVar = uqm::getEnvironmentValue(envName.c_str());
 
 						if (envVar.empty())
 						{
 #ifdef APPDATA_FALLBACK
-							if (strncmp(src, "APPDATA", envNameLen) != 0)
+							if (envName != "APPDATA")
 							{
 								// Substitute an empty string
 								src = end + 1;
@@ -366,8 +359,8 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 							// fallback for when the APPDATA env var is not set
 							// Using SHGetFolderPath or SHGetSpecialFolderPath
 							// is problematic (not everywhere available).
-							uqm::log::warn("Warning: %%APPDATA%% is not set. "
-										   "Falling back to \"%%USERPROFILE%%\\Application "
+							uqm::log::warn("Warning: %APPDATA% is not set. "
+										   "Falling back to \"%USERPROFILE%\\Application "
 										   "Data\"");
 							envVar = uqm::getEnvironmentValue("USERPROFILE");
 							if (!envVar.empty())
@@ -387,8 +380,8 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 							// fallback to "./userdata"
 #define APPDATA_FALLBACK_STRING ".\\userdata"
 							uqm::log::warn(
-								"Warning: %%USERPROFILE%% is not set. "
-								"Falling back to \"{}\" for %%APPDATA%%",
+								"Warning: %USERPROFILE% is not set. "
+								"Falling back to \"{}\" for %APPDATA%",
 								APPDATA_FALLBACK_STRING);
 							CHECKLEN(buf, sizeof(APPDATA_FALLBACK_STRING) - 1);
 							uqm::strncpy_safe({bufptr, bufend}, APPDATA_FALLBACK_STRING);
@@ -403,7 +396,7 @@ int expandPath(char* dest, size_t len, const char* src, int what)
 #endif /* APPDATA_FALLBACK */
 						}
 
-						envVarLen = envVar.length();
+						envVarLen = envVar.length() - 1;
 						CHECKLEN(buf, envVarLen);
 						uqm::strncpy_safe({bufptr, bufend}, envVar);
 						bufptr += envVarLen;
