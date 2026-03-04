@@ -86,7 +86,7 @@ extern uqm::Difficulty optDifficulty;
 extern uqm::Difficulty optDiffChooser;
 extern uqm::FuelRangeDisplay optFuelRange;
 extern OPT_ENABLABLE optExtended;
-extern int optNomad;
+extern uqm::NomadMode optNomad;
 extern OPT_ENABLABLE optGameOver;
 extern OPT_ENABLABLE optShipDirectionIP;
 extern OPT_ENABLABLE optHazardColors;

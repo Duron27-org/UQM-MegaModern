@@ -531,11 +531,11 @@ uqstl::pair<int, bool> UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 		->expected(-1)
 		->transform(CLI::CheckedTransformer {EnumNames<FuelRangeDisplay>::map<std::string>(), CLI::ignore_case})
 		->default_str(fmt::format("{:s}", *defaults.optGodModes));
-	
-	//	uqm::log::info("  --fuelrange : Enables extra fuel range indicators : 0: No indicators | 1: Fuel range at destination | 2: Remaining fuel range to Sol | 3: Both option 1 and 2  enabled simultaneously (default: 0)");
 	modGroup->add_flag("--extended", m_options.extended.edit(), "Enables Extended Edition features")
 		->default_str(defaults.extended.toString());
-	//	uqm::log::info("  --nomad : Enables 'Nomad Mode' (No Starbase) : 0: Off | 1: Easy | 2: Normal (default: 0)");
+	modGroup->add_option("--nomad", m_options.nomad.edit(), "Enables 'Nomad Mode' (No Starbase)")
+		->transform(CLI::CheckedTransformer {EnumNames<NomadMode>::map<std::string>(), CLI::ignore_case})
+		->default_str(fmt::format("{:s}", *defaults.nomad));
 	modGroup->add_flag("--gameover", m_options.gameOver.edit(), "Enables Game Over cutscenes")
 		->default_str(defaults.gameOver.toString());
 	modGroup->add_flag("--shipdirectionip", m_options.shipDirectionIP.edit(), "Enable NPC ships in IP to face their direction of travel")

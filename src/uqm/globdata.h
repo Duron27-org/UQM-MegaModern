@@ -1185,9 +1185,7 @@ inline T ifHardDifficulty(T trueVal, T falseVal) { return isDifficulty(uqm::Diff
 #define EXT_CASE(a, b) (!EXTENDED ? (a) : (b))
 
 // Nomad
-#define NOMAD (static_cast<OPT_NOMAD>(GLOBAL_SIS(Nomad)))
-#define NOMAD_DIF(a) (GLOBAL_SIS(Nomad) == (a) ? true : false)
-#define NOMAD_STR(a) (toString(static_cast<OPT_NOMAD>(a)))
+static inline uqm::NomadMode getNomadMode() { return GLOBAL_SIS(Nomad); }
 
 // Storage Queue
 #define STORAGE_Q (optShipStore || isDifficulty(uqm::Difficulty::Hard) || optFleetPointSys)

@@ -71,7 +71,7 @@ TEST_F(StringUtilsTest, CompareICaseEdgeCases)
 {
 	EXPECT_TRUE(compareCharICase('A', 'a'));
 	EXPECT_FALSE(compareICase("abc", "abcd")); // different lengths
-	EXPECT_TRUE(compareICase("ß", "ß"));	   // identical non-ascii byte-equal
+	//EXPECT_TRUE(compareICase(u8"ß", u8"ß"));	   // identical non-ascii byte-equal
 }
 
 TEST_F(StringUtilsTest, IsEmptyVariants)

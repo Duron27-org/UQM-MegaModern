@@ -1079,7 +1079,8 @@ LoadSummary(SUMMARY_DESC* SummPtr, void* fp, bool try_vanilla)
 	// Sanitize seed, difficulty, extended, and nomad variables
 	SummPtr->SS.Difficulty = uqm::Difficulty::Normal;
 	SummPtr->SS.Seed = 0;
-	SummPtr->SS.Extended = SummPtr->SS.Nomad = 0;
+	SummPtr->SS.Extended = 0;
+	SummPtr->SS.Nomad = uqm::NomadMode::Off;
 	SummPtr->SS.ShipSeed = 0;
 	SummPtr->SS.SaveVersion = no_savename ? 2 : 3;
 

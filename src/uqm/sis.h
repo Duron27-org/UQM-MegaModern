@@ -176,7 +176,9 @@ typedef struct
 	uqm::CHAR_T CommanderName[SIS_NAME_SIZE];
 	uqm::CHAR_T PlanetName[SIS_NAME_SIZE];
 	uqm::Difficulty Difficulty;
-	uqm::BYTE Extended, Nomad, ShipSeed;
+	uqm::BYTE Extended;
+	uqm::NomadMode Nomad;
+	uqm::BYTE ShipSeed;
 	uqm::SDWORD Seed;
 	uqm::BYTE SaveVersion;
 } SIS_STATE;

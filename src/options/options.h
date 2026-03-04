@@ -99,7 +99,7 @@ struct OptionsStruct
 	OptionT<Difficulty> optDiffChooser {Difficulty::ChooseYourOwn};
 	OptionT<FuelRangeDisplay> optFuelRange {FuelRangeDisplay::Normal};
 	BoolOption extended {false};
-	IntOption nomad {0};
+	OptionT<NomadMode> nomad {NomadMode::Off};
 	BoolOption gameOver {false};
 	BoolOption shipDirectionIP {false};
 	BoolOption hazardColors {false};

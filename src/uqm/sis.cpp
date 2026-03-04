@@ -215,15 +215,15 @@ void DrawSaveInfo(SIS_STATE SisState)
 
 	if (SisState.Seed)
 	{
-		if (SisState.Nomad)
+		if (SisState.Nomad != uqm::NomadMode::Off)
 		{
+			static const char* NomadModeSuffix[] {"", "-", "+"};
+
 			fmt::format_to_sz_n(TempNom, sizeof(TempNom), "{}{}",
 								GAME_STRING(MAINMENU_STRING_BASE + 60),
-								SisState.Nomad == 2 ? "+" :
-								SisState.Nomad == 1 ? "-" :
-													  "");
+								NomadModeSuffix[static_cast<int>(SisState.Nomad)]);
 		}
-
+		
 		if (SisState.Extended)
 		{
 			utf8StringCopy(TempExt, sizeof(TempExt),

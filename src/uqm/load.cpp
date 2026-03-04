@@ -518,7 +518,8 @@ LoadSummary(SUMMARY_DESC* SummPtr, void* fp, bool try_core)
 	{ // Sanitize seed, difficulty, extended, and nomad variables
 		SummPtr->SS.Difficulty = uqm::Difficulty::Normal;
 		SummPtr->SS.Seed = 0;
-		SummPtr->SS.Extended = SummPtr->SS.Nomad = 0;
+		SummPtr->SS.Extended = 0;
+		SummPtr->SS.Nomad = uqm::NomadMode::Off;
 		SummPtr->SS.SaveVersion = 1;
 	}
 	if (try_core || legacyMM > 0)

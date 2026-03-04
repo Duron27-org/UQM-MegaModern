@@ -1993,7 +1993,7 @@ PickGame(bool saving, bool fromMainMenu)
 		uqm::log::info("Seed: {}", GLOBAL_SIS(Seed));
 		uqm::log::info("Difficulty: {:s}", getDifficulty());
 		uqm::log::info("Extended: {}", BOOL_STR(EXTENDED));
-		uqm::log::info("Nomad: {}\n", toString(NOMAD));
+		uqm::log::info("Nomad: {:s}\n", getNomadMode());
 	}
 
 	if (!(GLOBAL(CurrentActivity) & CHECK_ABORT) && (saving || (!pickState.success && !fromMainMenu)))

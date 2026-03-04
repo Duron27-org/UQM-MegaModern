@@ -297,7 +297,7 @@ GenerateSol_generateOrbital(SOLARSYS_STATE* solarSys, PLANET_DESC* world)
 
 	if (matchWorld(solarSys, world, 2, 0))
 	{
-		if (!NOMAD)
+		if (getNomadMode() == uqm::NomadMode::Off)
 		{
 			/* Starbase */
 			PutGroupInfo(GROUPS_RANDOM, GROUP_SAVE_IP);
@@ -770,7 +770,7 @@ GenerateSol_pickupEnergy(SOLARSYS_STATE* solarSys, PLANET_DESC* world,
 
 		GenerateDefault_landerReport(solarSys);
 
-		if (!NOMAD)
+		if (getNomadMode() == uqm::NomadMode::Off)
 		{
 			SetLanderTakeoff();
 

@@ -258,10 +258,11 @@ void getUserConfigOptions(OptionsStruct& options)
 	getBoolConfigValue(options.extended, "mm.extended");
 	if (res_IsInteger("mm.nomad") && !options.nomad.set)
 	{
-		options.nomad.value = res_GetInteger("mm.nomad");
-		if (options.nomad.value > 2)
+		const int nomadResInt = res_GetInteger("mm.nomad");
+		options.nomad.value = static_cast<uqm::NomadMode>(nomadResInt);
+		if (nomadResInt > static_cast<int>(uqm::NomadMode::Normal))
 		{
-			options.nomad.value = 0;
+			options.nomad.value = uqm::NomadMode::Off;
 		}
 	}
 	getBoolConfigValue(options.gameOver, "mm.gameOver");

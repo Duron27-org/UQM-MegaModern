@@ -104,7 +104,7 @@ uqm::Difficulty optDifficulty;
 uqm::Difficulty optDiffChooser;
 uqm::FuelRangeDisplay optFuelRange;
 OPT_ENABLABLE optExtended;
-int optNomad;
+uqm::NomadMode optNomad;
 OPT_ENABLABLE optGameOver;
 OPT_ENABLABLE optShipDirectionIP;
 OPT_ENABLABLE optHazardColors;

@@ -218,7 +218,7 @@ GenerateShofixti_generatePlanets(SOLARSYS_STATE* solarSys)
 		}
 	}
 
-	if (NOMAD && CheckAlliance(SHOFIXTI_SHIP) == GOOD_GUY)
+	if (getNomadMode() != uqm::NomadMode::Off && CheckAlliance(SHOFIXTI_SHIP) == GOOD_GUY)
 	{
 		solarSys->PlanetDesc[pSunDesc->PlanetByte].NumPlanets = 1;
 	}
@@ -232,7 +232,7 @@ GenerateShofixti_generateMoons(SOLARSYS_STATE* solarSys,
 {
 	GenerateDefault_generateMoons(solarSys, planet);
 
-	if (NOMAD && matchWorld(solarSys, planet, MATCH_PBYTE, MATCH_PLANET))
+	if (getNomadMode() != uqm::NomadMode::Off && matchWorld(solarSys, planet, MATCH_PBYTE, MATCH_PLANET))
 	{
 		uqm::BYTE MoonByte = solarSys->SunDesc[0].MoonByte;
 		PLANET_DESC* pMoonDesc = &solarSys->MoonDesc[MoonByte];
@@ -268,7 +268,7 @@ static bool
 GenerateShofixti_generateOrbital(SOLARSYS_STATE* solarSys,
 								 PLANET_DESC* world)
 {
-	if (NOMAD && matchWorld(solarSys, world, MATCH_PBYTE, MATCH_MBYTE))
+	if (getNomadMode() != uqm::NomadMode::Off && matchWorld(solarSys, world, MATCH_PBYTE, MATCH_MBYTE))
 	{
 		if (CheckAlliance(SHOFIXTI_SHIP) == GOOD_GUY)
 		{

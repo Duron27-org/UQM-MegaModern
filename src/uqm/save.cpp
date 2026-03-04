@@ -800,65 +800,54 @@ const char* gameStateBitMapRevTag[] = {
 	"MegaMod v0.8.3",
 	"MegaMod v0.8.4"};
 
-// XXX: these should handle endian conversions later
-static inline void
-write_8(void* fp, uqm::BYTE v)
+template <typename T>
+static inline void writeValue(void* fp, T v)
 {
 	if (io_ok)
 	{
-		if (WriteResFile(&v, 1, 1, (uio_Stream*)fp) != 1)
+		for (int byteNum = 0; byteNum < sizeof(T); ++byteNum)
 		{
-			io_ok = false;
+			const uint8_t valueToWrite {static_cast<uint8_t>((v >> (8 * byteNum)) & 0xff)};
+			if (WriteResFile(&valueToWrite, 1, 1, (uio_Stream*)fp) != 1)
+			{
+				io_ok = false;
+				break;
+			}
+		}
+	}
+}
+
+template <typename T>
+static inline void writeValueArray(void* fp, uqstl::span<const T> ar)
+{
+	if (io_ok)
+	{
+		if constexpr (sizeof(T) == 1)
+		{
+			if (WriteResFile(ar.data(), 1, ar.size(), (uio_Stream*)fp) != ar.size()) [[unlikely]]
+			{
+				io_ok = false;
+			}
+		}
+		else
+		{
+			for (const auto& v : ar)
+			{
+				if (!io_ok) [[unlikely]]
+				{
+					break;
+				}
+				writeValue<T>(fp, v);
+			}
 		}
 	}
 }
 
 static inline void
-write_16(void* fp, uqm::UWORD v)
-{
-	write_8(fp, (uqm::BYTE)(v & 0xff));
-	write_8(fp, (uqm::BYTE)((v >> 8) & 0xff));
-}
-
-static inline void
-write_32(void* fp, uqm::DWORD v)
-{
-	write_8(fp, (uqm::BYTE)(v & 0xff));
-	write_8(fp, (uqm::BYTE)((v >> 8) & 0xff));
-	write_8(fp, (uqm::BYTE)((v >> 16) & 0xff));
-	write_8(fp, (uqm::BYTE)((v >> 24) & 0xff));
-}
-
-static inline void
-write_a8(void* fp, const uqm::BYTE* ar, uqm::COUNT count)
-{
-	if (io_ok)
-	{
-		if (WriteResFile(ar, 1, count, (uio_Stream*)fp) != count)
-		{
-			io_ok = false;
-		}
-	}
-}
-
-static inline void
-write_str(void* fp, const char* str, uqm::COUNT count)
+write_str(void* fp, uqstl::string_view str)
 {
 	// no type conversion needed for strings
-	write_a8(fp, (const uqm::BYTE*)str, count);
-}
-
-static inline void
-write_a16(void* fp, const uqm::UWORD* ar, uqm::COUNT count)
-{
-	for (; count > 0; --count, ++ar)
-	{
-		if (!io_ok)
-		{
-			break;
-		}
-		write_16(fp, *ar);
-	}
+	writeValueArray<char>(fp, str);
 }
 
 static void
@@ -872,8 +861,8 @@ SaveShipQueue(uio_Stream* fh, QUEUE* pQueue, uqm::DWORD tag)
 	{
 		return;
 	}
-	write_32(fh, tag);
-	write_32(fh, num_links * 11);
+	writeValue(fh, tag);
+	writeValue(fh, num_links * 11);
 	// Size of chunk: each entry is 11 bytes long.
 
 	hStarShip = GetHeadLink(pQueue);
@@ -889,16 +878,16 @@ SaveShipQueue(uio_Stream* fh, QUEUE* pQueue, uqm::DWORD tag)
 		Index = FragPtr->race_id;
 		// Write the number identifying this ship type.
 		// See races.h; look for the enum containing NUM_AVAILABLE_RACES.
-		write_16(fh, Index);
+		writeValue(fh, Index);
 
 		// Write SHIP_FRAGMENT elements
-		write_8(fh, FragPtr->captains_name_index);
-		write_8(fh, FragPtr->race_id);
-		write_8(fh, FragPtr->index);
-		write_16(fh, FragPtr->crew_level);
-		write_16(fh, FragPtr->max_crew);
-		write_8(fh, FragPtr->energy_level);
-		write_8(fh, FragPtr->max_energy);
+		writeValue(fh, FragPtr->captains_name_index);
+		writeValue(fh, FragPtr->race_id);
+		writeValue(fh, FragPtr->index);
+		writeValue(fh, FragPtr->crew_level);
+		writeValue(fh, FragPtr->max_crew);
+		writeValue(fh, FragPtr->energy_level);
+		writeValue(fh, FragPtr->max_energy);
 
 		UnlockShipFrag(pQueue, hStarShip);
 		hStarShip = hNextShip;
@@ -916,9 +905,9 @@ SaveRaceQueue(uio_Stream* fh, QUEUE* pQueue)
 	{
 		return;
 	}
-	write_32(fh, RACE_Q_TAG);
+	writeValue(fh, RACE_Q_TAG);
 	// Write chunk size: 30 bytes per entry
-	write_32(fh, num_links * 30);
+	writeValue(fh, num_links * 30);
 
 	hFleet = GetHeadLink(pQueue);
 	while (num_links--)
@@ -932,27 +921,27 @@ SaveRaceQueue(uio_Stream* fh, QUEUE* pQueue)
 
 		Index = GetIndexFromStarShip(pQueue, hFleet);
 		// The index is the position in the queue.
-		write_16(fh, Index);
+		writeValue(fh, Index);
 
 		// Write FLEET_INFO elements
-		write_16(fh, FleetPtr->allied_state);
-		write_8(fh, FleetPtr->days_left);
-		write_8(fh, FleetPtr->growth_fract);
-		write_16(fh, FleetPtr->crew_level);
-		write_16(fh, FleetPtr->max_crew);
-		write_8(fh, FleetPtr->growth);
-		write_8(fh, FleetPtr->max_energy);
-		write_16(fh, FleetPtr->loc.x);
-		write_16(fh, FleetPtr->loc.y);
+		writeValue(fh, FleetPtr->allied_state);
+		writeValue(fh, FleetPtr->days_left);
+		writeValue(fh, FleetPtr->growth_fract);
+		writeValue(fh, FleetPtr->crew_level);
+		writeValue(fh, FleetPtr->max_crew);
+		writeValue(fh, FleetPtr->growth);
+		writeValue(fh, FleetPtr->max_energy);
+		writeValue(fh, FleetPtr->loc.x);
+		writeValue(fh, FleetPtr->loc.y);
 
-		write_16(fh, FleetPtr->actual_strength);
-		write_16(fh, FleetPtr->known_strength);
-		write_16(fh, FleetPtr->known_loc.x);
-		write_16(fh, FleetPtr->known_loc.y);
-		write_8(fh, FleetPtr->growth_err_term);
-		write_8(fh, FleetPtr->func_index);
-		write_16(fh, FleetPtr->dest_loc.x);
-		write_16(fh, FleetPtr->dest_loc.y);
+		writeValue(fh, FleetPtr->actual_strength);
+		writeValue(fh, FleetPtr->known_strength);
+		writeValue(fh, FleetPtr->known_loc.x);
+		writeValue(fh, FleetPtr->known_loc.y);
+		writeValue(fh, FleetPtr->growth_err_term);
+		writeValue(fh, FleetPtr->func_index);
+		writeValue(fh, FleetPtr->dest_loc.x);
+		writeValue(fh, FleetPtr->dest_loc.y);
 
 		UnlockFleetInfo(pQueue, hFleet);
 		hFleet = hNextFleet;
@@ -970,8 +959,8 @@ SaveGroupQueue(uio_Stream* fh, QUEUE* pQueue)
 	{
 		return;
 	}
-	write_32(fh, IP_GRP_Q_TAG);
-	write_32(fh, num_links * 13); // 13 bytes per element right now
+	writeValue(fh, IP_GRP_Q_TAG);
+	writeValue(fh, num_links * 13); // 13 bytes per element right now
 
 	for (hGroup = GetHeadLink(pQueue); hGroup; hGroup = hNextGroup)
 	{
@@ -980,16 +969,16 @@ SaveGroupQueue(uio_Stream* fh, QUEUE* pQueue)
 		GroupPtr = LockIpGroup(pQueue, hGroup);
 		hNextGroup = _GetSuccLink(GroupPtr);
 
-		write_16(fh, GroupPtr->group_counter);
-		write_8(fh, GroupPtr->race_id);
-		write_8(fh, GroupPtr->sys_loc);
-		write_8(fh, GroupPtr->task);
-		write_8(fh, GroupPtr->in_system); /* was crew_level */
-		write_8(fh, GroupPtr->dest_loc);
-		write_8(fh, GroupPtr->orbit_pos);
-		write_8(fh, GroupPtr->group_id); /* was max_energy */
-		write_16(fh, GroupPtr->loc.x);
-		write_16(fh, GroupPtr->loc.y);
+		writeValue(fh, GroupPtr->group_counter);
+		writeValue(fh, GroupPtr->race_id);
+		writeValue(fh, GroupPtr->sys_loc);
+		writeValue(fh, GroupPtr->task);
+		writeValue(fh, GroupPtr->in_system); /* was crew_level */
+		writeValue(fh, GroupPtr->dest_loc);
+		writeValue(fh, GroupPtr->orbit_pos);
+		writeValue(fh, GroupPtr->group_id); /* was max_energy */
+		writeValue(fh, GroupPtr->loc.x);
+		writeValue(fh, GroupPtr->loc.y);
 
 		UnlockIpGroup(pQueue, hGroup);
 	}
@@ -1005,8 +994,8 @@ SaveEncounters(uio_Stream* fh)
 	{
 		return;
 	}
-	write_32(fh, ENCOUNTERS_TAG);
-	write_32(fh, 65 * num_links);
+	writeValue(fh, ENCOUNTERS_TAG);
+	writeValue(fh, 65 * num_links);
 
 	hEncounter = GetHeadLink(&GLOBAL(encounter_q));
 	while (num_links--)
@@ -1018,31 +1007,31 @@ SaveEncounters(uio_Stream* fh)
 		LockEncounter(hEncounter, &EncounterPtr);
 		hNextEncounter = GetSuccEncounter(EncounterPtr);
 
-		write_16(fh, EncounterPtr->transition_state);
-		write_16(fh, EncounterPtr->origin.x);
-		write_16(fh, EncounterPtr->origin.y);
-		write_16(fh, EncounterPtr->radius);
+		writeValue(fh, EncounterPtr->transition_state);
+		writeValue(fh, EncounterPtr->origin.x);
+		writeValue(fh, EncounterPtr->origin.y);
+		writeValue(fh, EncounterPtr->radius);
 		// former STAR_DESC fields
-		write_16(fh, EncounterPtr->loc_pt.x);
-		write_16(fh, EncounterPtr->loc_pt.y);
-		write_8(fh, EncounterPtr->race_id);
-		write_8(fh, EncounterPtr->num_ships);
-		write_8(fh, EncounterPtr->flags);
+		writeValue(fh, EncounterPtr->loc_pt.x);
+		writeValue(fh, EncounterPtr->loc_pt.y);
+		writeValue(fh, EncounterPtr->race_id);
+		writeValue(fh, EncounterPtr->num_ships);
+		writeValue(fh, EncounterPtr->flags);
 
 		// Save each entry in the BRIEF_SHIP_INFO array
 		for (i = 0; i < MAX_HYPER_SHIPS; i++)
 		{
 			const BRIEF_SHIP_INFO* ShipInfo = &EncounterPtr->ShipList[i];
 
-			write_8(fh, ShipInfo->race_id);
-			write_16(fh, ShipInfo->crew_level);
-			write_16(fh, ShipInfo->max_crew);
-			write_8(fh, ShipInfo->max_energy);
+			writeValue(fh, ShipInfo->race_id);
+			writeValue(fh, ShipInfo->crew_level);
+			writeValue(fh, ShipInfo->max_crew);
+			writeValue(fh, ShipInfo->max_energy);
 		}
 
 		// Save the stuff after the BRIEF_SHIP_INFO array
-		write_32(fh, RES_DESCALE(EncounterPtr->log_x));
-		write_32(fh, RES_DESCALE(EncounterPtr->log_y));
+		writeValue(fh, RES_DESCALE(EncounterPtr->log_x));
+		writeValue(fh, RES_DESCALE(EncounterPtr->log_y));
 
 		UnlockEncounter(hEncounter);
 		hEncounter = hNextEncounter;
@@ -1059,8 +1048,8 @@ SaveEvents(uio_Stream* fh)
 	{
 		return;
 	}
-	write_32(fh, EVENTS_TAG);
-	write_32(fh, num_links * 5); /* Event chunks are five bytes each */
+	writeValue(fh, EVENTS_TAG);
+	writeValue(fh, num_links * 5); /* Event chunks are five bytes each */
 
 	hEvent = GetHeadLink(&GLOBAL(GameClock.event_q));
 	while (num_links--)
@@ -1071,10 +1060,10 @@ SaveEvents(uio_Stream* fh)
 		LockEvent(hEvent, &EventPtr);
 		hNextEvent = GetSuccEvent(EventPtr);
 
-		write_8(fh, EventPtr->day_index);
-		write_8(fh, EventPtr->month_index);
-		write_16(fh, EventPtr->year_index);
-		write_8(fh, EventPtr->func_index);
+		writeValue(fh, EventPtr->day_index);
+		writeValue(fh, EventPtr->month_index);
+		writeValue(fh, EventPtr->year_index);
+		writeValue(fh, EventPtr->func_index);
 
 		UnlockEvent(hEvent);
 		hEvent = hNextEvent;
@@ -1085,11 +1074,11 @@ SaveEvents(uio_Stream* fh)
 static void
 SaveClockState(const CLOCK_STATE* ClockPtr, uio_Stream* fh)
 {
-	write_8(fh, ClockPtr->day_index);
-	write_8(fh, ClockPtr->month_index);
-	write_16(fh, ClockPtr->year_index);
-	write_16(fh, ClockPtr->tick_count);
-	write_16(fh, ClockPtr->day_in_ticks);
+	writeValue(fh, ClockPtr->day_index);
+	writeValue(fh, ClockPtr->month_index);
+	writeValue(fh, ClockPtr->year_index);
+	writeValue(fh, ClockPtr->tick_count);
+	writeValue(fh, ClockPtr->day_in_ticks);
 }
 
 /* Save out the game state chunks. There are two of these; the Global
@@ -1109,50 +1098,50 @@ SaveGameState(const GAME_STATE* GSPtr, uio_Stream* fh)
 		res_scale = 0;
 	}
 
-	write_32(fh, GLOBAL_STATE_TAG);
-	write_32(fh, 75);
-	write_8(fh, GSPtr->glob_flags);
-	write_8(fh, GSPtr->CrewCost);
-	write_8(fh, GSPtr->FuelCost);
-	write_a8(fh, GSPtr->ModuleCost, NUM_MODULES);
-	write_a8(fh, GSPtr->ElementWorth, NUM_ELEMENT_CATEGORIES);
-	write_16(fh, GSPtr->CurrentActivity);
+	writeValue(fh, GLOBAL_STATE_TAG);
+	writeValue(fh, 75);
+	writeValue(fh, GSPtr->glob_flags);
+	writeValue(fh, GSPtr->CrewCost);
+	writeValue(fh, GSPtr->FuelCost);
+	writeValueArray<uqm::BYTE>(fh, GSPtr->ModuleCost);
+	writeValueArray<uqm::BYTE>(fh, GSPtr->ElementWorth);
+	writeValue(fh, GSPtr->CurrentActivity);
 
 	SaveClockState(&GSPtr->GameClock, fh);
 
-	write_16(fh, GSPtr->autopilot.x);
-	write_16(fh, GSPtr->autopilot.y);
-	write_16(fh, GSPtr->ip_location.x);
-	write_16(fh, GSPtr->ip_location.y);
+	writeValue(fh, GSPtr->autopilot.x);
+	writeValue(fh, GSPtr->autopilot.y);
+	writeValue(fh, GSPtr->ip_location.x);
+	writeValue(fh, GSPtr->ip_location.y);
 	/* STAMP ShipStamp */
-	write_16(fh, RES_DESCALE(GSPtr->ShipStamp.origin.x));
-	write_16(fh, RES_DESCALE(GSPtr->ShipStamp.origin.y));
-	write_16(fh, GSPtr->ShipFacing);
-	write_8(fh, GSPtr->ip_planet);
-	write_8(fh, GSPtr->in_orbit);
+	writeValue(fh, RES_DESCALE(GSPtr->ShipStamp.origin.x));
+	writeValue(fh, RES_DESCALE(GSPtr->ShipStamp.origin.y));
+	writeValue(fh, GSPtr->ShipFacing);
+	writeValue(fh, GSPtr->ip_planet);
+	writeValue(fh, GSPtr->in_orbit);
 
 	/* VELOCITY_DESC velocity */
-	write_16(fh, GSPtr->velocity.TravelAngle >> res_scale);
-	write_16(fh, GSPtr->velocity.vector.width >> res_scale);
-	write_16(fh, GSPtr->velocity.vector.height >> res_scale);
-	write_16(fh, GSPtr->velocity.fract.width >> res_scale);
-	write_16(fh, GSPtr->velocity.fract.height >> res_scale);
-	write_16(fh, GSPtr->velocity.error.width >> res_scale);
-	write_16(fh, GSPtr->velocity.error.height >> res_scale);
-	write_16(fh, GSPtr->velocity.incr.width >> res_scale);
-	write_16(fh, GSPtr->velocity.incr.height >> res_scale);
+	writeValue(fh, GSPtr->velocity.TravelAngle >> res_scale);
+	writeValue(fh, GSPtr->velocity.vector.width >> res_scale);
+	writeValue(fh, GSPtr->velocity.vector.height >> res_scale);
+	writeValue(fh, GSPtr->velocity.fract.width >> res_scale);
+	writeValue(fh, GSPtr->velocity.fract.height >> res_scale);
+	writeValue(fh, GSPtr->velocity.error.width >> res_scale);
+	writeValue(fh, GSPtr->velocity.error.height >> res_scale);
+	writeValue(fh, GSPtr->velocity.incr.width >> res_scale);
+	writeValue(fh, GSPtr->velocity.incr.height >> res_scale);
 
 	/* The Game state bits. Vanilla UQM uses 155 bytes here at
 	 * present. Only the first 99 bytes are significant, though;
 	 * the rest will be overwritten by the BtGp chunks. */
-	write_32(fh, GAME_STATE_TAG);
+	writeValue(fh, GAME_STATE_TAG);
 	{
 		uint8* buf = nullptr;
 		size_t bufSize;
 		if (serialiseGameState(gameStateBitMap, &buf, &bufSize))
 		{
-			write_32(fh, bufSize);
-			write_a8(fh, buf, (uqm::COUNT)bufSize);
+			writeValue(fh, bufSize);
+			writeValueArray<uint8>(fh, {buf, (uqm::COUNT)bufSize});
 			HFree(buf);
 		}
 		else
@@ -1167,27 +1156,27 @@ SaveGameState(const GAME_STATE* GSPtr, uio_Stream* fh)
 static void
 SaveSisState(const SIS_STATE* SSPtr, void* fp)
 {
-	write_32(fp, RES_DESCALE(SSPtr->log_x));
-	write_32(fp, RES_DESCALE(SSPtr->log_y));
-	write_32(fp, SSPtr->ResUnits);
-	write_32(fp, SSPtr->FuelOnBoard);
-	write_16(fp, SSPtr->CrewEnlisted);
-	write_16(fp, SSPtr->TotalElementMass);
-	write_16(fp, SSPtr->TotalBioMass);
-	write_a8(fp, SSPtr->ModuleSlots, NUM_MODULE_SLOTS);
-	write_a8(fp, SSPtr->DriveSlots, NUM_DRIVE_SLOTS);
-	write_a8(fp, SSPtr->JetSlots, NUM_JET_SLOTS);
-	write_8(fp, SSPtr->NumLanders);
-	write_a16(fp, SSPtr->ElementAmounts, NUM_ELEMENT_CATEGORIES);
+	writeValue(fp, RES_DESCALE(SSPtr->log_x));
+	writeValue(fp, RES_DESCALE(SSPtr->log_y));
+	writeValue(fp, SSPtr->ResUnits);
+	writeValue(fp, SSPtr->FuelOnBoard);
+	writeValue(fp, SSPtr->CrewEnlisted);
+	writeValue(fp, SSPtr->TotalElementMass);
+	writeValue(fp, SSPtr->TotalBioMass);
+	writeValueArray<uqm::BYTE>(fp, SSPtr->ModuleSlots);
+	writeValueArray<uqm::BYTE>(fp, SSPtr->DriveSlots);
+	writeValueArray<uqm::BYTE>(fp, SSPtr->JetSlots);
+	writeValue(fp, SSPtr->NumLanders);
+	writeValueArray<uqm::COUNT>(fp, SSPtr->ElementAmounts);
 
-	write_str(fp, SSPtr->ShipName, SIS_NAME_SIZE);
-	write_str(fp, SSPtr->CommanderName, SIS_NAME_SIZE);
-	write_str(fp, SSPtr->PlanetName, SIS_NAME_SIZE);
-	write_8(fp, static_cast<uqm::BYTE>(SSPtr->Difficulty));
-	write_8(fp, SSPtr->Extended);
-	write_8(fp, SSPtr->Nomad);
-	write_32(fp, SSPtr->Seed);
-	write_8(fp, SSPtr->ShipSeed);
+	write_str(fp, SSPtr->ShipName);
+	write_str(fp, SSPtr->CommanderName);
+	write_str(fp, SSPtr->PlanetName);
+	writeValue(fp, static_cast<uqm::BYTE>(SSPtr->Difficulty));
+	writeValue(fp, SSPtr->Extended);
+	writeValue(fp, static_cast<uqm::BYTE>(SSPtr->Nomad));
+	writeValue(fp, SSPtr->Seed);
+	writeValue(fp, SSPtr->ShipSeed);
 }
 
 /* Write out the Summary Chunk. This is variable length because of the
@@ -1195,23 +1184,23 @@ SaveSisState(const SIS_STATE* SSPtr, void* fp)
 static void
 SaveSummary(const SUMMARY_DESC* SummPtr, void* fp)
 {
-	write_32(fp, SUMMARY_TAG);
-	write_32(fp, 160 + strlen(SummPtr->SaveName));
+	writeValue(fp, SUMMARY_TAG);
+	writeValue(fp, 160 + strlen(SummPtr->SaveName));
 	SaveSisState(&SummPtr->SS, fp);
 
-	write_8(fp, SummPtr->Activity);
-	write_8(fp, SummPtr->Flags);
-	write_8(fp, SummPtr->day_index);
-	write_8(fp, SummPtr->month_index);
-	write_16(fp, SummPtr->year_index);
-	write_8(fp, SummPtr->MCreditLo);
-	write_8(fp, SummPtr->MCreditHi);
-	write_8(fp, SummPtr->NumShips);
-	write_8(fp, SummPtr->NumDevices);
-	write_a8(fp, SummPtr->ShipList, MAX_BUILT_SHIPS);
-	write_a8(fp, SummPtr->DeviceList, MAX_EXCLUSIVE_DEVICES);
-	write_8(fp, SummPtr->res_factor);
-	write_a8(fp, (uqm::BYTE*)SummPtr->SaveName, (uqm::COUNT)strlen(SummPtr->SaveName));
+	writeValue(fp, SummPtr->Activity);
+	writeValue(fp, SummPtr->Flags);
+	writeValue(fp, SummPtr->day_index);
+	writeValue(fp, SummPtr->month_index);
+	writeValue(fp, SummPtr->year_index);
+	writeValue(fp, SummPtr->MCreditLo);
+	writeValue(fp, SummPtr->MCreditHi);
+	writeValue(fp, SummPtr->NumShips);
+	writeValue(fp, SummPtr->NumDevices);
+	writeValueArray<uqm::BYTE>(fp, SummPtr->ShipList);
+	writeValueArray<uqm::BYTE>(fp, SummPtr->DeviceList);
+	writeValue(fp, SummPtr->res_factor);
+	write_str(fp, SummPtr->SaveName);
 }
 
 /* Save the Star Description chunk. This is not to be confused with
@@ -1220,14 +1209,14 @@ SaveSummary(const SUMMARY_DESC* SummPtr, void* fp)
 static void
 SaveStarDesc(const STAR_DESC* SDPtr, uio_Stream* fh)
 {
-	write_32(fh, STAR_TAG);
-	write_32(fh, 8);
-	write_16(fh, SDPtr->star_pt.x);
-	write_16(fh, SDPtr->star_pt.y);
-	write_8(fh, SDPtr->Type);
-	write_8(fh, SDPtr->Index);
-	write_8(fh, SDPtr->Prefix);
-	write_8(fh, SDPtr->Postfix);
+	writeValue(fh, STAR_TAG);
+	writeValue(fh, 8);
+	writeValue(fh, SDPtr->star_pt.x);
+	writeValue(fh, SDPtr->star_pt.y);
+	writeValue(fh, SDPtr->Type);
+	writeValue(fh, SDPtr->Index);
+	writeValue(fh, SDPtr->Prefix);
+	writeValue(fh, SDPtr->Postfix);
 }
 
 static void
@@ -1421,13 +1410,13 @@ SaveStarInfo(uio_Stream* fh)
 		}
 		else
 		{
-			write_32(fh, SCAN_TAG);
-			write_32(fh, flen);
+			writeValue(fh, SCAN_TAG);
+			writeValue(fh, flen);
 			while (flen)
 			{
 				uqm::DWORD val;
 				sread_32(fp, &val);
-				write_32(fh, val);
+				writeValue(fh, val);
 				flen -= 4;
 			}
 		}
@@ -1452,39 +1441,39 @@ SaveBattleGroup(GAME_STATE_FILE* fp, uqm::DWORD encounter_id, uqm::DWORD grpoffs
 		sread_8(fp, &NumShips);
 		size += 2 + 10 * NumShips;
 	}
-	write_32(fh, BATTLE_GROUP_TAG);
-	write_32(fh, size);
-	write_32(fh, encounter_id);
-	write_8(fh,
+	writeValue(fh, BATTLE_GROUP_TAG);
+	writeValue(fh, size);
+	writeValue(fh, encounter_id);
+	writeValue(fh,
 			(grpoffs && (GLOBAL(BattleGroupRef) == grpoffs)) ? 1 : 0);
-	write_16(fh, h.star_index);
-	write_8(fh, h.day_index);
-	write_8(fh, h.month_index);
-	write_16(fh, h.year_index);
-	write_8(fh, h.NumGroups);
+	writeValue(fh, h.star_index);
+	writeValue(fh, h.day_index);
+	writeValue(fh, h.month_index);
+	writeValue(fh, h.year_index);
+	writeValue(fh, h.NumGroups);
 	for (i = 1; i <= h.NumGroups; ++i)
 	{
 		int j;
 		uqm::BYTE b;
 		SeekStateFile(fp, h.GroupOffset[i], SEEK_SET);
 		sread_8(fp, &b); // Group race icon
-		write_8(fh, b);
+		writeValue(fh, b);
 		sread_8(fp, &b); // NumShips
-		write_8(fh, b);
+		writeValue(fh, b);
 		for (j = 0; j < b; ++j)
 		{
 			uqm::BYTE race_outer;
 			SHIP_FRAGMENT sf;
 			sread_8(fp, &race_outer);
 			ReadShipFragment(fp, &sf);
-			write_8(fh, race_outer);
-			write_8(fh, sf.captains_name_index);
-			write_8(fh, sf.race_id);
-			write_8(fh, sf.index);
-			write_16(fh, sf.crew_level);
-			write_16(fh, sf.max_crew);
-			write_8(fh, sf.energy_level);
-			write_8(fh, sf.max_energy);
+			writeValue(fh, race_outer);
+			writeValue(fh, sf.captains_name_index);
+			writeValue(fh, sf.race_id);
+			writeValue(fh, sf.index);
+			writeValue(fh, sf.crew_level);
+			writeValue(fh, sf.max_crew);
+			writeValue(fh, sf.energy_level);
+			writeValue(fh, sf.max_energy);
 		}
 	}
 }
@@ -1547,9 +1536,9 @@ SaveGroups(uio_Stream* fh)
 		SeekStateFile(fp, h.GroupOffset[0], SEEK_SET);
 		sread_8(fp, &lastenc);
 		sread_8(fp, &count);
-		write_32(fh, GROUP_LIST_TAG);
-		write_32(fh, 1 + 14 * count); // Chunk size
-		write_8(fh, lastenc);
+		writeValue(fh, GROUP_LIST_TAG);
+		writeValue(fh, 1 + 14 * count); // Chunk size
+		writeValue(fh, lastenc);
 		for (i = 0; i < count; ++i)
 		{
 			uqm::BYTE race_outer;
@@ -1557,17 +1546,17 @@ SaveGroups(uio_Stream* fh)
 			sread_8(fp, &race_outer);
 			ReadIpGroup(fp, &ip);
 
-			write_8(fh, race_outer);
-			write_16(fh, ip.group_counter);
-			write_8(fh, ip.race_id);
-			write_8(fh, ip.sys_loc);
-			write_8(fh, ip.task);
-			write_8(fh, ip.in_system);
-			write_8(fh, ip.dest_loc);
-			write_8(fh, ip.orbit_pos);
-			write_8(fh, ip.group_id);
-			write_16(fh, ip.loc.x);
-			write_16(fh, ip.loc.y);
+			writeValue(fh, race_outer);
+			writeValue(fh, ip.group_counter);
+			writeValue(fh, ip.race_id);
+			writeValue(fh, ip.sys_loc);
+			writeValue(fh, ip.task);
+			writeValue(fh, ip.in_system);
+			writeValue(fh, ip.dest_loc);
+			writeValue(fh, ip.orbit_pos);
+			writeValue(fh, ip.group_id);
+			writeValue(fh, ip.loc.x);
+			writeValue(fh, ip.loc.y);
 		}
 		SaveBattleGroup(fp, 0, 0, fh);
 		CloseStateFile(fp);
@@ -1620,7 +1609,7 @@ bool SaveGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, const char* name)
 	if ((out_fp = res_OpenResFile(saveDir, file, "wb")))
 	{
 		io_ok = true;
-		write_32(out_fp, MMV4_TAG);
+		writeValue(out_fp, MMV4_TAG);
 
 		PrepareSummary(SummPtr, name);
 		SaveSummary(SummPtr, out_fp);

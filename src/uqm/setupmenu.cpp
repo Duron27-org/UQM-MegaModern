@@ -1306,7 +1306,7 @@ SetDefaults(void)
 	choices[CHOICE_SCRMELT].selected = static_cast<int>(opts.scrTrans);
 	choices[CHOICE_SKILLLVL].selected = static_cast<int>(opts.difficulty);
 	choices[CHOICE_EXTENDED].selected = opts.extended;
-	choices[CHOICE_NOMAD].selected = opts.nomad;
+	choices[CHOICE_NOMAD].selected = static_cast<int>(opts.nomad);
 	choices[CHOICE_GAMEOVER].selected = opts.gameOver;
 	choices[CHOICE_IPSHIPDIR].selected = opts.shipDirectionIP;
 	choices[CHOICE_ORZFONT].selected = opts.orzCompFont;
@@ -1433,7 +1433,7 @@ PropagateResults(void)
 	opts.scrTrans = (OPT_CONSOLETYPE)choices[CHOICE_SCRMELT].selected;
 	opts.difficulty = static_cast<uqm::Difficulty>(choices[CHOICE_SKILLLVL].selected);
 	opts.extended = (OPT_ENABLABLE)choices[CHOICE_EXTENDED].selected;
-	opts.nomad = (OPT_NOMAD)choices[CHOICE_NOMAD].selected;
+	opts.nomad =  static_cast<uqm::NomadMode>(choices[CHOICE_NOMAD].selected);
 	opts.gameOver = (OPT_ENABLABLE)choices[CHOICE_GAMEOVER].selected;
 	opts.shipDirectionIP = (OPT_ENABLABLE)choices[CHOICE_IPSHIPDIR].selected;
 	opts.orzCompFont = (OPT_ENABLABLE)choices[CHOICE_ORZFONT].selected;
@@ -2595,7 +2595,7 @@ void GetGlobalOptions(GLOBALOPTS* opts)
 	// Game modes
 	opts->difficulty = optDiffChooser;
 	opts->extended = optExtended;
-	opts->nomad = (OPT_NOMAD)optNomad;
+	opts->nomad = optNomad;
 	opts->slaughterMode = optSlaughterMode;
 	opts->seedType = (OPT_SEED)g_seedType;
 	opts->shipSeed = optShipSeed;

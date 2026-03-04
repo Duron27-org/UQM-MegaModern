@@ -115,34 +115,12 @@ typedef enum
 } OPT_DATETYPE;
 
 
-
-enum OPT_NOMAD
-{
-	OPTVAL_NOM_OFF,
-	OPTVAL_NOM_EASY,
-	OPTVAL_NOM_NORM
-};
-inline static const char* toString(const OPT_NOMAD optVal)
-{
-	static constexpr const char* Strings[3] {
-		"Off", "Easy", "Normal"};
-	return Strings[static_cast<int>(optVal)];
-}
-
 typedef enum
 {
 	OPTVAL_KBM,
 	OPTVAL_XBX,
 	OPTVAL_PS4
 } OPT_CONTROLLER;
-
-//typedef enum
-//{
-//	OPTVAL_FUEL_NORM,
-//	OPTVAL_FUEL_AT_DEST,
-//	OPTVAL_FUEL_TO_SOL,
-//	OPTVAL_FUEL_ALL
-//} OPT_FUELRANGE;
 
 typedef enum
 {
@@ -442,7 +420,7 @@ typedef struct globalopts_struct
 	OPT_GODTYPE godModes;
 	OPT_DATETYPE dateType;
 	uqm::Difficulty difficulty;
-	OPT_NOMAD nomad;
+	uqm::NomadMode nomad;
 	OPT_MELEEZOOM meleezoom;
 	OPT_CONTROLLER controllerType;
 	uqm::FuelRangeDisplay fuelRange;

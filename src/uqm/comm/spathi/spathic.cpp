@@ -595,7 +595,7 @@ SpathiAllies(RESPONSE_REF R)
 	{
 		Response(what_do_for_fun, SpathiAllies);
 	}
-	if (NOMAD_DIF(OPTVAL_NOM_EASY))
+	if (getNomadMode() == uqm::NomadMode::Easy)
 	{
 		Response(join_us_nomad, ExitConversation);
 	}

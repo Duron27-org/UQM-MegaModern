@@ -68,7 +68,7 @@ bool RunAwayAllowed(void)
 {
 	return ((lowByte(GLOBAL(CurrentActivity)) == IN_ENCOUNTER
 			 || lowByte(GLOBAL(CurrentActivity)) == IN_LAST_BATTLE)
-			&& (NOMAD_DIF(OPTVAL_NOM_EASY)
+			&& (getNomadMode() == uqm::NomadMode::Easy
 				|| GET_GAME_STATE(STARBASE_AVAILABLE))
 			&& (isDifficulty(uqm::Difficulty::Easy) || !GET_GAME_STATE(BOMB_CARRIER)));
 }
@@ -414,7 +414,7 @@ GetPlayerOrder(uqm::COUNT i)
 	// processed first.
 	// If neither is network controlled, the top player (1) is handled
 	// first.
-	if ((testFlag(PlayerControl[0], PlayerControlFlags::Network) && !NetConnection_getDiscriminant(netConnections[0])) 
+	if ((testFlag(PlayerControl[0], PlayerControlFlags::Network) && !NetConnection_getDiscriminant(netConnections[0]))
 		|| (testFlag(PlayerControl[1], PlayerControlFlags::Network) && NetConnection_getDiscriminant(netConnections[1])))
 	{
 		return i;

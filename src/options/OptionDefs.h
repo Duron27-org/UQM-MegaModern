@@ -238,6 +238,15 @@ enum class FuelRangeDisplay
 };
 ENUM_BITWISE_OPS(FuelRangeDisplay);
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+enum class NomadMode : uint8_t
+{
+	Off,
+	Easy,
+	Normal
+};
+
 } // namespace uqm
 
 #endif /* OPTIONS_OPTIONDEFS_H_ */

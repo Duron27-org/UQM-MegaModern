@@ -693,7 +693,7 @@ bool InitGameStructures(void)
 			GLOBAL_SIS(JetSlots[7]) = TURNING_JETS;
 	}
 
-	if (NOMAD_DIF(OPTVAL_NOM_EASY))
+	if (getNomadMode() == uqm::NomadMode::Easy)
 	{
 		GLOBAL_SIS(DriveSlots[3]) =
 			GLOBAL_SIS(DriveSlots[4]) = FUSION_THRUSTER;
@@ -706,7 +706,7 @@ bool InitGameStructures(void)
 	{
 		SET_GAME_STATE(FOUND_PLUTO_SPATHI, 2);
 		SetHomeworldKnown(SPATHI_HOME);
-		if (!NOMAD)
+		if (getNomadMode() == uqm::NomadMode::Off)
 		{
 			SET_GAME_STATE(MOONBASE_ON_SHIP, 1);
 			SET_GAME_STATE(MOONBASE_DESTROYED, 1);

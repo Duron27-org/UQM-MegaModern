@@ -292,7 +292,7 @@ int Starcon2Main(void* threadArg)
 	uqm::log::info("Set Seed: {}", optCustomSeed);
 	uqm::log::info("Set Difficulty: {:s}", optDifficulty);
 	uqm::log::info("Set Extended: {}", BOOL_STR(optExtended));
-	uqm::log::info("Set Nomad: {}", NOMAD_STR(optNomad));
+	uqm::log::info("Set Nomad: {:s}", optNomad);
 
 	//	OpenJournal ();
 	while (StartGame())
@@ -318,11 +318,10 @@ int Starcon2Main(void* threadArg)
 		{
 			uqm::log::info("New Game Seed Type: {}", toString(g_seedType));
 			uqm::log::info("New Game Seed: {}", GLOBAL_SIS(Seed));
-			uqm::log::info("New Game Difficulty: {}", GLOBAL_SIS(Difficulty));
+			uqm::log::info("New Game Difficulty: {:s}", getDifficulty());
 			uqm::log::info("New Game Extended: {}",
 						   BOOL_STR(GLOBAL_SIS(Extended)));
-			uqm::log::info("New Game Nomad: {}",
-						   NOMAD_STR(GLOBAL_SIS(Nomad)));
+			uqm::log::info("New Game Nomad: {:s}", getNomadMode());
 		}
 
 		do
