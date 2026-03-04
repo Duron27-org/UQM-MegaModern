@@ -44,7 +44,11 @@ void Logger::init(uqstl::string_view logfile)
 	{
 		spdlog::init_thread_pool(8192, 1);
 		spdlog::sink_ptr stdoutSink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+#if defined(DEBUG)
+		stdoutSink->set_level(spdlog::level::debug);
+#else
 		stdoutSink->set_level(spdlog::level::info);
+#endif
 		stdoutSink->set_pattern("[%^%l%$] %v");
 
 		spdlog::filename_t logFileName {logfile};
