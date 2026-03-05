@@ -442,7 +442,7 @@ luaUqm_comm_getPoint(lua_State* luaState)
 		return 1;
 	}
 	char dialog[256] {};
-	fmt::format_to_sz_n(dialog, sizeof(dialog), "{:05.1} : {:05.1}",
+	fmt::format_to_sz_n(dialog, "{:05.1} : {:05.1}",
 						(float)plot_map[plot_id].star_pt.x / 10,
 						(float)plot_map[plot_id].star_pt.y / 10);
 	lua_pushstring(luaState, dialog);
@@ -548,7 +548,7 @@ luaUqm_comm_getConstellation(lua_State* luaState)
 	}
 	char dialog[256];
 	STAR_DESC* SDPtr = FindNearestConstellation(star_array, plot_map[plot_id].star_pt);
-	fmt::format_to_sz_n(dialog, sizeof(dialog), "{}",
+	fmt::format_to_sz_n(dialog, "{}",
 						GAME_STRING(SDPtr->Postfix));
 	CheckCase(prime_text, dialog);
 	lua_pushstring(luaState, dialog);

@@ -287,7 +287,7 @@ static bool
 dukv_OpenStream(TFB_DuckVideoDecoder* dukv)
 {
 	char filename[280] {};
-	fmt::format_to_sz_n(filename, sizeof(filename), "{}.duk", dukv->basename);
+	fmt::format_to_sz_n(filename, "{}.duk", dukv->basename);
 
 	return (dukv->stream =
 				uio_fopen(dukv->basedir, filename, "rb"))
@@ -301,7 +301,7 @@ dukv_ReadFrames(TFB_DuckVideoDecoder* dukv)
 	uint32 i;
 	uio_Stream* fp;
 
-	fmt::format_to_sz_n(filename, sizeof(filename), "{}.frm", dukv->basename);
+	fmt::format_to_sz_n(filename, "{}.frm", dukv->basename);
 
 	if (!(fp = uio_fopen(dukv->basedir, filename, "rb")))
 	{
@@ -339,7 +339,7 @@ dukv_ReadVectors(TFB_DuckVideoDecoder* dukv, uint8* vectors)
 	char filename[280] {};
 	int ret;
 
-	fmt::format_to_sz_n(filename, sizeof(filename), "{}.tbl", dukv->basename);
+	fmt::format_to_sz_n(filename, "{}.tbl", dukv->basename);
 
 	if (!(fp = uio_fopen(dukv->basedir, filename, "rb")))
 	{
@@ -361,7 +361,7 @@ dukv_ReadHeader(TFB_DuckVideoDecoder* dukv, sint32* pl, sint32* pc)
 	int i;
 	TFB_DuckVideoHeader hdr;
 
-	fmt::format_to_sz_n(filename, sizeof(filename), "{}.hdr", dukv->basename);
+	fmt::format_to_sz_n(filename, "{}.hdr", dukv->basename);
 
 	if (!(fp = uio_fopen(dukv->basedir, filename, "rb")))
 	{

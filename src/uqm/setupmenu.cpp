@@ -928,7 +928,7 @@ change_seed(WIDGET_TEXTENTRY* self)
 	if (choices[CHOICE_GAMESEED].selected == OPTVAL_PRIME || !SANE_SEED(optCustomSeed))
 	{
 		customSeed = PrimeA;
-		fmt::format_to_sz_n(self->value, sizeof(self->value), "{}", customSeed);
+		fmt::format_to_sz_n(self->value, "{}", customSeed);
 	}
 	optCustomSeed = customSeed;
 }
@@ -1776,7 +1776,7 @@ gamma_DrawValue(WIDGET_SLIDER* self, int x, int y)
 	TEXT t;
 	char buf[16] {};
 	float gamma = sliderToGamma(self->value);
-	fmt::format_to_sz_n(buf, sizeof buf, "{:.4}", gamma);
+	fmt::format_to_sz_n(buf, "{:.4}", gamma);
 
 	t.baseline.x = x + RES_SCALE(6);
 	t.baseline.y = y;

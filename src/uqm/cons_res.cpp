@@ -81,7 +81,7 @@ void load_gravity_well(uqm::BYTE selector)
 
 		for (i = 0; i < NUM_VIEWS; ++i)
 		{
-			fmt::format_to_sz_n(buffer, sizeof(buffer), "planet.{}.{}", ptype, planet_sizes[i]);
+			fmt::format_to_sz_n(buffer, "planet.{}.{}", ptype, planet_sizes[i]);
 			planet[i] = CaptureDrawable(LoadGraphic(buffer));
 		}
 	}
@@ -102,21 +102,21 @@ void free_gravity_well(void)
 FRAME
 load_life_form(uqm::BYTE selector)
 {
-	fmt::format_to_sz_n(buffer, sizeof(buffer), "graphics.life.{}", selector);
+	fmt::format_to_sz_n(buffer, "graphics.life.{}", selector);
 	return CaptureDrawable(LoadGraphic(buffer));
 }
 
 MUSIC_REF
 load_orbit_theme(uqm::BYTE selector)
 {
-	fmt::format_to_sz_n(buffer, sizeof(buffer), "music.orbit{}", selector + 1);
+	fmt::format_to_sz_n(buffer, "music.orbit{}", selector + 1);
 	return LoadMusic(buffer);
 }
 
 MUSIC_REF
 loadMainMenuMusic(uqm::BYTE selector)
 {
-	fmt::format_to_sz_n(buffer, sizeof(buffer), "music.mainmenu{}", selector + 1);
+	fmt::format_to_sz_n(buffer, "music.mainmenu{}", selector + 1);
 	return LoadMusic(buffer);
 }
 

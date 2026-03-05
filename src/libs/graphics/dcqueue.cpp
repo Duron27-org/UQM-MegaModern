@@ -347,7 +347,7 @@ RenderFPS(int* fps)
 		int y = 7 << resolutionFactor;
 
 		uqm::CHAR_T buf[8] {};
-		const auto fmtResult = fmt::format_to_sz_n(buf, sizeof(buf), "{}", *fps);
+		const auto fmtResult = fmt::format_to_sz_n(buf, "{}", *fps);
 
 		max = fmtResult.size; //(uqm::COUNT) utf8StringCount(buf);
 

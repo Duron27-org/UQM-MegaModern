@@ -213,7 +213,7 @@ uqstl::pair<int, bool> UQMGame::setup(uqstl::span<uqgsl::zstring> args)
 		{
 			char cfgkey[64] {};
 
-			fmt::format_to_sz_n(cfgkey, sizeof(cfgkey), "config.keys.{}.name", i + 1);
+			fmt::format_to_sz_n(cfgkey, "config.keys.{}.name", i + 1);
 			cfgkey[sizeof(cfgkey) - 1] = '\0';
 
 			res_Remove(cfgkey);

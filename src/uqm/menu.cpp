@@ -768,13 +768,13 @@ void DrawMenuStateStrings(uqm::BYTE beg_index, uqm::SWORD NewState)
 	{
 		if (beg_index == PM_CREW)
 		{
-			fmt::format_to_sz_n(pm_crew_str, sizeof pm_crew_str, "{}({})",
+			fmt::format_to_sz_n(pm_crew_str, "{}({})",
 								GAME_STRING(MAINMENU_STRING_BASE + PM_CREW),
 								GLOBAL(CrewCost));
 		}
 		if (beg_index == PM_FUEL)
 		{
-			fmt::format_to_sz_n(pm_fuel_str, sizeof pm_fuel_str, "{}({})",
+			fmt::format_to_sz_n(pm_fuel_str, "{}({})",
 								GAME_STRING(MAINMENU_STRING_BASE + PM_FUEL),
 								GLOBAL(FuelCost));
 		}
@@ -869,7 +869,7 @@ void DrawMenuStateStrings(uqm::BYTE beg_index, uqm::SWORD NewState)
 				t.align = ALIGN_RIGHT;
 				t.CharCount = (uqm::COUNT)~0;
 				t.pStr = buf;
-				fmt::format_to_sz_n(buf, sizeof buf, "{}", GLOBAL(CrewCost));
+				fmt::format_to_sz_n(buf, "{}", GLOBAL(CrewCost));
 				if (isPC(optWhichFonts))
 				{
 					SetContextFont(TinyFont);
@@ -887,7 +887,7 @@ void DrawMenuStateStrings(uqm::BYTE beg_index, uqm::SWORD NewState)
 				t.align = ALIGN_RIGHT;
 				t.CharCount = (uqm::COUNT)~0;
 				t.pStr = buf;
-				fmt::format_to_sz_n(buf, sizeof buf, "{}", GLOBAL(FuelCost));
+				fmt::format_to_sz_n(buf, "{}", GLOBAL(FuelCost));
 				if (optWhichFonts == uqm::EmulationMode::Console3DO && !optWholeFuel)
 				{
 					SetContextFont(TinyFontBold);
@@ -964,18 +964,18 @@ void DrawMineralHelpers(void)
 
 		// print element worth
 		SetContextForeGroundColor(MODULE_PRICE_COLOR);
-		fmt::format_to_sz_n(buf, sizeof buf, "{}", GLOBAL(ElementWorth[i]));
+		fmt::format_to_sz_n(buf, "{}", GLOBAL(ElementWorth[i]));
 		font_DrawText(&t);
 
 		// print x'es
-		fmt::format_to_sz_n(buf, sizeof buf, "x");
+		fmt::format_to_sz_n(buf, "x");
 		t.baseline.x -= RES_SCALE(11);
 		font_DrawText(&t);
 
 		// print the element amount
 		SetContextForeGroundColor(MODULE_NAME_COLOR);
 		t.baseline.x = ELEMENT_COL_2;
-		fmt::format_to_sz_n(buf, sizeof buf, "{}", GLOBAL_SIS(ElementAmounts[i]));
+		fmt::format_to_sz_n(buf, "{}", GLOBAL_SIS(ElementAmounts[i]));
 		font_DrawText(&t);
 
 		t.baseline.x = ELEMENT_COL_1;
@@ -994,7 +994,7 @@ void DrawMineralHelpers(void)
 	// print the bio amount
 	SetContextForeGroundColor(MODULE_NAME_COLOR);
 	t.baseline.x = ELEMENT_COL_2;
-	fmt::format_to_sz_n(buf, sizeof buf, "{}", GLOBAL_SIS(TotalBioMass));
+	fmt::format_to_sz_n(buf, "{}", GLOBAL_SIS(TotalBioMass));
 	font_DrawText(&t);
 	t.baseline.y += ELEMENT_SPACING_Y;
 
@@ -1037,13 +1037,13 @@ void DrawMineralHelpers(void)
 	font_DrawText(&t);
 
 	t.baseline.y += leading;
-	fmt::format_to_sz_n(buf, sizeof(buf), "{}", GLOBAL_SIS(CrewEnlisted));
+	fmt::format_to_sz_n(buf, "{}", GLOBAL_SIS(CrewEnlisted));
 	t.pStr = buf;
 	t.CharCount = (uqm::COUNT)~0;
 	font_DrawText(&t);
 
 	t.baseline.y += leading;
-	fmt::format_to_sz_n(buf, sizeof(buf), "{}", GLOBAL_SIS(NumLanders));
+	fmt::format_to_sz_n(buf, "{}", GLOBAL_SIS(NumLanders));
 	t.pStr = buf;
 	t.CharCount = (uqm::COUNT)~0;
 	font_DrawText(&t);
@@ -1057,20 +1057,20 @@ void DrawMineralHelpers(void)
 
 		if (totalCapacity == 100)
 		{
-			fmt::format_to_sz_n(buf, sizeof(buf), "{:.0}%", totalCapacity);
+			fmt::format_to_sz_n(buf, "{:.0}%", totalCapacity);
 		}
 		else if (totalCapacity > 9)
 		{
-			fmt::format_to_sz_n(buf, sizeof(buf), "{:.1}%", totalCapacity);
+			fmt::format_to_sz_n(buf, "{:.1}%", totalCapacity);
 		}
 		else
 		{
-			fmt::format_to_sz_n(buf, sizeof(buf), "{:.2}%", totalCapacity);
+			fmt::format_to_sz_n(buf, "{:.2}%", totalCapacity);
 		}
 	}
 	else
 	{
-		fmt::format_to_sz_n(buf, sizeof(buf), "---");
+		fmt::format_to_sz_n(buf, "---");
 	}
 
 	t.pStr = buf;

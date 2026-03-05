@@ -186,7 +186,7 @@ void DrawHyperCoords(GFXPOINT universe)
 	uqm::CHAR_T buf[100] {};
 	const char* SpaceOrNull = (isPC(optWhichFonts) ? STR_SPACE : "");
 
-	fmt::format_to_sz_n(buf, sizeof buf, "{:03}.{:01}{}:{}{:03}.{:01}",
+	fmt::format_to_sz_n(buf, "{:03}.{:01}{}:{}{:03}.{:01}",
 						universe.x / 10, universe.x % 10,
 						SpaceOrNull, SpaceOrNull,
 						universe.y / 10, universe.y % 10);
@@ -219,7 +219,7 @@ void DrawSaveInfo(SIS_STATE SisState)
 		{
 			static const char* NomadModeSuffix[] {"", "-", "+"};
 
-			fmt::format_to_sz_n(TempNom, sizeof(TempNom), "{}{}",
+			fmt::format_to_sz_n(TempNom, "{}{}",
 								GAME_STRING(MAINMENU_STRING_BASE + 60),
 								NomadModeSuffix[static_cast<int>(SisState.Nomad)]);
 		}
@@ -234,12 +234,12 @@ void DrawSaveInfo(SIS_STATE SisState)
 					   GAME_STRING(MAINMENU_STRING_BASE + 56
 								   + static_cast<int>(SisState.Difficulty)));
 
-		fmt::format_to_sz_n(buf, sizeof buf, "{} {}{}{}",
+		fmt::format_to_sz_n(buf, "{} {}{}{}",
 							GAME_STRING(MAINMENU_STRING_BASE + 55), // Difficulty:
 							TempDiff, TempExt, TempNom);
 		DrawSISMessage(buf);
 
-		fmt::format_to_sz_n(buf, sizeof buf, "{}", SisState.Seed);
+		fmt::format_to_sz_n(buf, "{}", SisState.Seed);
 		DrawSISTitle(buf);
 	}
 }
@@ -559,7 +559,7 @@ void DrawStatusMessage(const uqm::CHAR_T* pStr)
 		{
 			if (optInfiniteCredits)
 			{
-				fmt::format_to_sz_n(buf, sizeof buf, "{} {}",
+				fmt::format_to_sz_n(buf, "{} {}",
 									(isPC(optWhichMenu) && isPC(optWhichFonts)) ?
 										GAME_STRING(STATUS_STRING_BASE + 2) :
 										STR_INFINITY_SIGN,				  // "UNLIMITED"
@@ -567,14 +567,14 @@ void DrawStatusMessage(const uqm::CHAR_T* pStr)
 			}
 			else
 			{
-				fmt::format_to_sz_n(buf, sizeof buf, "{} {}", MAKE_WORD(GET_GAME_STATE(MELNORME_CREDIT0), GET_GAME_STATE(MELNORME_CREDIT1)), GAME_STRING(STATUS_STRING_BASE + 0)); // "Cr"
+				fmt::format_to_sz_n(buf, "{} {}", MAKE_WORD(GET_GAME_STATE(MELNORME_CREDIT0), GET_GAME_STATE(MELNORME_CREDIT1)), GAME_STRING(STATUS_STRING_BASE + 0)); // "Cr"
 			}
 		}
 		else if (curMsgMode == SMM_RES_UNITS)
 		{
 			if (GET_GAME_STATE(CHMMR_BOMB_STATE) >= 2 || optInfiniteRU)
 			{
-				fmt::format_to_sz_n(buf, sizeof buf, "{} {}",
+				fmt::format_to_sz_n(buf, "{} {}",
 									(isPC(optWhichMenu) && isPC(optWhichFonts)) ?
 										GAME_STRING(STATUS_STRING_BASE + 2) :
 										STR_INFINITY_SIGN,				  // "UNLIMITED"
@@ -582,7 +582,7 @@ void DrawStatusMessage(const uqm::CHAR_T* pStr)
 			}
 			else
 			{
-				fmt::format_to_sz_n(buf, sizeof buf, "{} {}", GLOBAL_SIS(ResUnits),
+				fmt::format_to_sz_n(buf, "{} {}", GLOBAL_SIS(ResUnits),
 									GAME_STRING(STATUS_STRING_BASE + 1)); // "RU"
 			}
 		}
@@ -733,7 +733,7 @@ void DrawFlagshipName(bool InStatusArea, bool NewGame)
 		r.extent.height = SHIP_NAME_HEIGHT;
 
 		t.pStr = buf;
-		fmt::format_to_sz_n(buf, sizeof buf, "{} {}",
+		fmt::format_to_sz_n(buf, "{} {}",
 							GAME_STRING(NAMING_STRING_BASE + 1), GLOBAL_SIS(ShipName));
 		// XXX: this will not work with UTF-8 strings
 		_strupr(buf);
@@ -917,19 +917,19 @@ void DrawFlagshipStats(void)
 	t.align = ALIGN_LEFT;
 	t.pStr = buf;
 
-	fmt::format_to_sz_n(buf, sizeof buf, "{}",
+	fmt::format_to_sz_n(buf, "{}",
 						describeWeapon(GLOBAL_SIS(ModuleSlots[15])));
 	font_DrawText(&t);
 	t.baseline.y += leading;
-	fmt::format_to_sz_n(buf, sizeof buf, "{}",
+	fmt::format_to_sz_n(buf, "{}",
 						describeWeapon(GLOBAL_SIS(ModuleSlots[14])));
 	font_DrawText(&t);
 	t.baseline.y += leading;
-	fmt::format_to_sz_n(buf, sizeof buf, "{}",
+	fmt::format_to_sz_n(buf, "{}",
 						describeWeapon(GLOBAL_SIS(ModuleSlots[13])));
 	font_DrawText(&t);
 	t.baseline.y += leading;
-	fmt::format_to_sz_n(buf, sizeof buf, "{}",
+	fmt::format_to_sz_n(buf, "{}",
 						describeWeapon(GLOBAL_SIS(ModuleSlots[0])));
 	font_DrawText(&t);
 
@@ -955,27 +955,27 @@ void DrawFlagshipStats(void)
 	t.baseline.y = base_y;
 	t.pStr = buf;
 
-	fmt::format_to_sz_n(buf, sizeof buf, "{:4}", max_thrust * 4);
+	fmt::format_to_sz_n(buf, "{:4}", max_thrust * 4);
 	font_DrawText(&t);
 	t.baseline.y += leading;
-	fmt::format_to_sz_n(buf, sizeof buf, "{:4}", 1 + TURN_WAIT - turn_wait);
+	fmt::format_to_sz_n(buf, "{:4}", 1 + TURN_WAIT - turn_wait);
 	font_DrawText(&t);
 	t.baseline.y += leading;
 	if (!IS_DOS)
 	{
 		unsigned int energy_per_10_sec =
 			(((100 * GameTicksPerSecond * energy_regeneration) / ((1 + energy_wait) * BattleFrameRateTicks)) + 5) / 10;
-		fmt::format_to_sz_n(buf, sizeof buf, "{:2}.{:1}",
+		fmt::format_to_sz_n(buf, "{:2}.{:1}",
 							energy_per_10_sec / 10, energy_per_10_sec % 10);
 	}
 	else
 	{
-		fmt::format_to_sz_n(buf, sizeof buf, "{}",
+		fmt::format_to_sz_n(buf, "{}",
 							(num_dynamos * 30) + (num_shivas * 60));
 	}
 	font_DrawText(&t);
 	t.baseline.y += leading;
-	fmt::format_to_sz_n(buf, sizeof buf, "{:4}", (fuel / FUEL_TANK_SCALE));
+	fmt::format_to_sz_n(buf, "{:4}", (fuel / FUEL_TANK_SCALE));
 	font_DrawText(&t);
 
 	SetContextFontEffect(OldFontEffect);
@@ -1358,7 +1358,7 @@ DeltaSISGauges_crewDelta(uqm::SIZE crew_delta)
 		uqm::CHAR_T buf[60];
 		GFXRECT r;
 
-		fmt::format_to_sz_n(buf, sizeof buf, "{}", GLOBAL_SIS(CrewEnlisted));
+		fmt::format_to_sz_n(buf, "{}", GLOBAL_SIS(CrewEnlisted));
 
 		GetGaugeRect(&r, true);
 
@@ -1999,7 +1999,7 @@ AutoPilotTextLogic(void)
 	{ // Show the destination coordinates if the
 		// destination is not a star
 		// AUTO-PILOT to ###.#:###.# - [TargetDistance]
-		fmt::format_to_sz_n(buf, sizeof buf, "{} {} {:03}.{:01}:{:03}.{:01} - {:.1}",
+		fmt::format_to_sz_n(buf, "{} {} {:03}.{:01}:{:03}.{:01} - {:.1}",
 							GAME_STRING(NAVIGATION_STRING_BASE + 3), // "AUTO-PILOT"
 							GAME_STRING(NAVIGATION_STRING_BASE + 6), // "to"
 							destination.x / 10, destination.x % 10,	 // X Coordinates
@@ -2012,7 +2012,7 @@ AutoPilotTextLogic(void)
 
 	if (pointsEqual(LoadLastLoc(), destination))
 	{
-		fmt::format_to_sz_n(buf, sizeof buf, "{} {} {}",
+		fmt::format_to_sz_n(buf, "{} {} {}",
 							GAME_STRING(NAVIGATION_STRING_BASE + 3), // "AUTO-PILOT"
 							GAME_STRING(NAVIGATION_STRING_BASE + 6), // "to"
 							GAME_STRING(NAVIGATION_STRING_BASE)		 // "HyperSpace"
@@ -2025,7 +2025,7 @@ AutoPilotTextLogic(void)
 	GetClusterName(StarPointer, star_cluster);
 
 	// AUTO-PILOT to [StarCluster] - [TargetDistance]
-	fmt::format_to_sz_n(buf, sizeof buf, "{} {} {} - {:.1}",
+	fmt::format_to_sz_n(buf, "{} {} {} - {:.1}",
 						GAME_STRING(NAVIGATION_STRING_BASE + 3), // "AUTO-PILOT"
 						GAME_STRING(NAVIGATION_STRING_BASE + 6), // "to"
 						star_cluster,
@@ -2038,7 +2038,7 @@ AutoPilotTextLogic(void)
 	{ // If the full text is too large then
 		// use "->" instead of "AUTO-PILOT"
 		// -> to [StarCluster] - [TargetDistance]
-		fmt::format_to_sz_n(buf, sizeof buf, "{} {} - {:.1}",
+		fmt::format_to_sz_n(buf, "{} {} - {:.1}",
 							GAME_STRING(NAVIGATION_STRING_BASE + 7), // "->"
 							star_cluster,
 							target_distance);
@@ -2050,7 +2050,7 @@ AutoPilotTextLogic(void)
 	if (r.extent.width > SIS_MESSAGE_WIDTH)
 	{ // If shortened text is *still* too
 		// large then just show distance
-		fmt::format_to_sz_n(buf, sizeof buf, "{} - {:.1}",
+		fmt::format_to_sz_n(buf, "{} - {:.1}",
 							GAME_STRING(NAVIGATION_STRING_BASE + 3), // "AUTO-PILOT"
 							target_distance);
 	}

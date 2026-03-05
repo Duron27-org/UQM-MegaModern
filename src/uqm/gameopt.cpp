@@ -135,14 +135,14 @@ FeedbackSetting(uqm::BYTE which_setting)
 	{
 		case SOUND_ON_SETTING:
 		case SOUND_OFF_SETTING:
-			fmt::format_to_sz_n(buf, sizeof(buf), "{} {}",
+			fmt::format_to_sz_n(buf, "{} {}",
 								GAME_STRING(OPTION_STRING_BASE + 0),
 								GLOBAL(glob_flags) & SOUND_DISABLED ? GAME_STRING(OPTION_STRING_BASE + 3) :
 																	  GAME_STRING(OPTION_STRING_BASE + 4));
 			break;
 		case MUSIC_ON_SETTING:
 		case MUSIC_OFF_SETTING:
-			fmt::format_to_sz_n(buf, sizeof(buf), "{} {}",
+			fmt::format_to_sz_n(buf, "{} {}",
 								GAME_STRING(OPTION_STRING_BASE + 1),
 								GLOBAL(glob_flags) & MUSIC_DISABLED ? GAME_STRING(OPTION_STRING_BASE + 3) :
 																	  GAME_STRING(OPTION_STRING_BASE + 4));
@@ -166,7 +166,7 @@ FeedbackSetting(uqm::BYTE which_setting)
 			{
 				tmpstr = "";
 			}
-			fmt::format_to_sz_n(buf, sizeof(buf), "{} {}{}",
+			fmt::format_to_sz_n(buf, "{} {}{}",
 								GAME_STRING(OPTION_STRING_BASE + 2),
 								!(GLOBAL(glob_flags) & CYBORG_ENABLED) ? GAME_STRING(OPTION_STRING_BASE + 3) :
 																		 GAME_STRING(OPTION_STRING_BASE + 4),
@@ -177,15 +177,14 @@ FeedbackSetting(uqm::BYTE which_setting)
 		case READ_MODERATE_SETTING:
 		case READ_FAST_SETTING:
 		case READ_VERY_FAST_SETTING:
-			fmt::format_to_sz_n(buf, sizeof(buf), "{}",
+			fmt::format_to_sz_n(buf, "{}",
 								GAME_STRING(OPTION_STRING_BASE + 5
 											+ (GLOBAL(glob_flags) & READ_SPEED_MASK)));
 			break;
 		case CHANGE_CAPTAIN_SETTING:
 		case CHANGE_SHIP_SETTING:
-			utf8StringCopy(buf, sizeof(buf),
-						   GAME_STRING(
-							   NAMING_STRING_BASE + (is3DO(optWhichFonts) ? 7 : 0)));
+			uqm::strncpy_safe(buf, GAME_STRING(
+									   NAMING_STRING_BASE + (is3DO(optWhichFonts) ? 7 : 0)));
 			break;
 	}
 
@@ -415,7 +414,7 @@ NameCaptainOrShip(bool nameCaptain, bool gamestart)
 	if (gamestart && (Setting != nullptr) && (Setting[0] == '\0'))
 	{
 		uqm::strncpy_safe({Setting, strlen(Setting)}, GAME_STRING // Zelnick & Vindicator
-			   (NAMING_STRING_BASE + 2 + nameCaptain));
+						  (NAMING_STRING_BASE + 2 + nameCaptain));
 		CursPos = (uqm::COUNT)strlen(GAME_STRING(NAMING_STRING_BASE + 2 + nameCaptain));
 	}
 
@@ -447,12 +446,13 @@ DrawSaveNameString(uqm::CHAR_T* Str, uqm::COUNT CursorPos, uqm::COUNT state, uqm
 	TEXT lf;
 	Color BackGround, ForeGround;
 	FONT Font;
-	uqm::CHAR_T fullStr[256], dateStr[80];
+	uqm::CHAR_T fullStr[256] {};
+	uqm::CHAR_T dateStr[80] {};
 
 	DateToString(dateStr, sizeof dateStr, GLOBAL(GameClock.month_index),
 				 GLOBAL(GameClock.day_index), GLOBAL(GameClock.year_index));
 	strncat(dateStr, ": ", sizeof(dateStr) - strlen(dateStr) - 1);
-	fmt::format_to_sz_n(fullStr, sizeof fullStr, "{}{}", dateStr, Str);
+	fmt::format_to_sz_n(fullStr, "{}{}", dateStr, Str);
 
 	SetContextForeGroundColor(SAVE_SELECTED_COLOR);
 	r.extent.width = RES_SCALE(15);
@@ -1061,7 +1061,7 @@ DrawSavegameCargo(SIS_STATE* sisState)
 		s.origin.y += ELEMENT_SPACING_Y;
 		// print element amount
 		SetContextForeGroundColor(cargo_color[i]);
-		fmt::format_to_sz_n(buf, sizeof buf, "{}", sisState->ElementAmounts[i]);
+		fmt::format_to_sz_n(buf, "{}", sisState->ElementAmounts[i]);
 		t.CharCount = (uqm::COUNT)~0;
 		font_DrawText(&t);
 		t.baseline.y += ELEMENT_SPACING_Y;
@@ -1076,7 +1076,7 @@ DrawSavegameCargo(SIS_STATE* sisState)
 	t.baseline.x = RES_SCALE(50) + SUMMARY_X_OFFS;
 	t.baseline.y = s.origin.y + RES_SCALE(3);
 	SetContextForeGroundColor(cargo_color[i]);
-	fmt::format_to_sz_n(buf, sizeof buf, "{}", sisState->TotalBioMass);
+	fmt::format_to_sz_n(buf, "{}", sisState->TotalBioMass);
 	t.CharCount = (uqm::COUNT)~0;
 	font_DrawText(&t);
 
@@ -1448,7 +1448,7 @@ DrawSavegameSummary(PICK_GAME_STATE* pickState, uqm::COUNT gameIndex)
 			SetContextClipRect(&OldRect);
 			SetContext(SpaceContext);
 
-			fmt::format_to_sz_n(buf, sizeof buf, "{}", pSD->SS.ResUnits);
+			fmt::format_to_sz_n(buf, "{}", pSD->SS.ResUnits);
 			t.baseline.y = RES_SCALE(102);
 			SetContextForeGroundColor(SUMM_VALUE_COLOR);
 			font_DrawText(&t);
@@ -1456,7 +1456,7 @@ DrawSavegameSummary(PICK_GAME_STATE* pickState, uqm::COUNT gameIndex)
 		}
 
 		t.baseline.y = RES_SCALE(126);
-		fmt::format_to_sz_n(buf, sizeof buf, "{}",
+		fmt::format_to_sz_n(buf, "{}",
 							MAKE_WORD(pSD->MCreditLo, pSD->MCreditHi));
 		SetContextForeGroundColor(SUMM_VALUE_COLOR);
 		font_DrawText(&t);
@@ -1527,18 +1527,18 @@ DrawSavegameSummary(PICK_GAME_STATE* pickState, uqm::COUNT gameIndex)
 		switch (pSD->Activity)
 		{
 			case IN_STARBASE:
-				utf8StringCopy(buf, sizeof(buf), // Starbase
-							   GAME_STRING(STARBASE_STRING_BASE));
+				uqm::strncpy_safe(buf, // Starbase
+								  GAME_STRING(STARBASE_STRING_BASE));
 				break;
 			case IN_LAST_BATTLE:
-				utf8StringCopy(buf, sizeof(buf), // Sa-Matra
-							   GAME_STRING(PLANET_NUMBER_BASE + 32));
+				uqm::strncpy_safe(buf, // Sa-Matra
+								  GAME_STRING(PLANET_NUMBER_BASE + 32));
 				break;
 			case IN_PLANET_ORBIT:
-				utf8StringCopy(buf, sizeof(buf), pSD->SS.PlanetName);
+				uqm::strncpy_safe(buf, pSD->SS.PlanetName);
 				break;
 			default:
-				fmt::format_to_sz_n(buf, sizeof buf, "{:03}.{:01} : {:03}.{:01}",
+				fmt::format_to_sz_n(buf, "{:03}.{:01} : {:03}.{:01}",
 									starPt.x / 10, starPt.x % 10,
 									starPt.y / 10, starPt.y % 10);
 		}
@@ -1643,7 +1643,7 @@ DrawGameSelection(PICK_GAME_STATE* pickState, uqm::COUNT selSlot)
 
 		t.baseline.x = r.corner.x + RES_SCALE(3);
 		t.baseline.y = r.corner.y + RES_SCALE(8);
-		fmt::format_to_sz_n(buf, sizeof buf,
+		fmt::format_to_sz_n(buf,
 							(MAX_SAVED_GAMES > 99) ? "{:03}" : "{:02}", curSlot);
 		font_DrawText(&t);
 
@@ -1654,13 +1654,12 @@ DrawGameSelection(PICK_GAME_STATE* pickState, uqm::COUNT selSlot)
 		t.baseline.x = r.corner.x + RES_SCALE(3);
 		if (desc->year_index == 0)
 		{
-			utf8StringCopy(buf, sizeof buf,
-						   GAME_STRING(SAVEGAME_STRING_BASE + 3));
+			uqm::strncpy_safe(buf, GAME_STRING(SAVEGAME_STRING_BASE + 3));
 			// "Empty Slot"
 		}
 		else
 		{
-			DateToString(buf2, sizeof buf2, desc->month_index,
+			DateToString(buf2, sizeof(buf2), desc->month_index,
 						 desc->day_index, desc->year_index);
 
 			if (!(strncmp(desc->SaveNameChecker, LEGACY_SAVE_NAME_CHECKER,
@@ -1674,7 +1673,7 @@ DrawGameSelection(PICK_GAME_STATE* pickState, uqm::COUNT selSlot)
 											   GAME_STRING(SAVEGAME_STRING_BASE + 4);
 			}
 
-			fmt::format_to_sz_n(buf, sizeof buf, "{}: {}", buf2, SaveName);
+			fmt::format_to_sz_n(buf, "{}: {}", buf2, SaveName);
 
 			TruncateSaveName(buf, r.extent.width - 7, false);
 		}

@@ -218,7 +218,7 @@ static const char* findFileInDirs(const char* locs[], int numLocs, const char* f
 			continue;
 		}
 
-		fmt::format_to_sz_n(path, sizeof(path), "{}{}{}", loc, needSlash ? "/" : "", file);
+		fmt::format_to_sz_n(path, "{}{}{}", loc, needSlash ? "/" : "", file);
 		if (fileExists(path))
 		{
 			return loc;
@@ -617,7 +617,7 @@ void mountAddonDir(uio_Repository* repository, uio_MountHandle* contentMountHand
 			++count;
 			uqm::log::info("    {}. {}", count, addon);
 
-			fmt::format_to_sz_n(mountname, sizeof(mountname), "addons/{}", addon);
+			fmt::format_to_sz_n(mountname, "addons/{}", addon);
 
 			addonDir = uio_openDirRelative(addonsDir, addon, 0);
 			if (addonDir == nullptr)

@@ -1606,7 +1606,7 @@ SeedFleetLocation(FLEET_INFO* FleetPtr, PLOT_LOCATION* plotmap, uqm::COUNT visit
 			plotmap[visit].star_pt.x + lowByte(rand_val_s) * 2 * AWAY_X(visit),
 			plotmap[visit].star_pt.y + highByte(rand_val_s) * 2 * AWAY_Y(visit)};
 
-		fmt::format_to_sz_n(buf, sizeof(buf), "'Sa-Matra' center {:05.1} : {:05.1}\n",
+		fmt::format_to_sz_n(buf, "'Sa-Matra' center {:05.1} : {:05.1}\n",
 							(float)warpoint.x / 10, (float)warpoint.y / 10);
 	}
 	else
@@ -1733,7 +1733,7 @@ SeedFleetLocation(FLEET_INFO* FleetPtr, PLOT_LOCATION* plotmap, uqm::COUNT visit
 				location = GFXPOINT {
 					WARPATH_X(warpoint, 500) + TOWARD_X(visit) * Jitter(strength, rand_val_x),
 					WARPATH_Y(warpoint, 500) + TOWARD_Y(visit) * Jitter(strength, rand_val_y)};
-				fmt::format_to_sz_n(buf, sizeof(buf), "{} {:05.1} : {:05.1}\n",
+				fmt::format_to_sz_n(buf, "{} {:05.1} : {:05.1}\n",
 									"ILWRATH x THRADDASH",
 									(float)location.x / 10, (float)location.y / 10);
 				break;
@@ -1744,7 +1744,7 @@ SeedFleetLocation(FLEET_INFO* FleetPtr, PLOT_LOCATION* plotmap, uqm::COUNT visit
 				location = GFXPOINT {
 					WARPATH_X(warpoint, 1400) + TOWARD_X(visit) * Jitter(strength, rand_val_x),
 					WARPATH_Y(warpoint, 1400) + TOWARD_Y(visit) * Jitter(strength, rand_val_y)};
-				fmt::format_to_sz_n(buf, sizeof(buf), "{} {:05.1} : {:05.1}\n",
+				fmt::format_to_sz_n(buf, "{} {:05.1} : {:05.1}\n",
 									"ILWRATH x PKUNK",
 									(float)location.x / 10, (float)location.y / 10);
 				break;

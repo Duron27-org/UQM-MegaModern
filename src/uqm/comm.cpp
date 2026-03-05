@@ -1458,7 +1458,7 @@ DoConvSummary(SUMMARY_STATE* pSS)
 			mt.baseline.x = RES_SCALE(ORIG_SIS_SCREEN_WIDTH >> 1);
 			mt.baseline.y = t.baseline.y;
 			mt.align = ALIGN_CENTER;
-			fmt::format_to_sz_n(buffer, sizeof(buffer), "{}{}{}", // "MORE"
+			fmt::format_to_sz_n(buffer, "{}{}{}", // "MORE"
 								STR_MIDDLE_DOT, GAME_STRING(FEEDBACK_STRING_BASE + 1),
 								STR_MIDDLE_DOT);
 

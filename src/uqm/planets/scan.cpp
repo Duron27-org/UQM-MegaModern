@@ -339,7 +339,7 @@ PrintCoarseScanPC(void)
 	utf8StringCopy(buf, sizeof(buf), ORBITSCAN_TEXT(6));
 	PrintScanTitlePC(&t, buf, LEFT_SIDE_BASELINE_X_PC); // "Temp: "
 
-	fmt::format_to_sz_n(buf, sizeof(buf), "{}{} c",
+	fmt::format_to_sz_n(buf, "{}{} c",
 						pSolarSysState->SysInfo.PlanetInfo.SurfaceTemperature,
 						STR_DEGREE_SIGN);
 
@@ -360,7 +360,7 @@ PrintCoarseScanPC(void)
 	}
 	else
 	{
-		fmt::format_to_sz_n(buf, sizeof(buf), "{} {}", ORBITSCAN_TEXT(9), // "Class"
+		fmt::format_to_sz_n(buf, "{} {}", ORBITSCAN_TEXT(9), // "Class"
 							pSolarSysState->SysInfo.PlanetInfo.Weather + 1);
 	}
 
@@ -381,7 +381,7 @@ PrintCoarseScanPC(void)
 	}
 	else
 	{
-		fmt::format_to_sz_n(buf, sizeof(buf), "{} {}", ORBITSCAN_TEXT(9), // "Class"
+		fmt::format_to_sz_n(buf, "{} {}", ORBITSCAN_TEXT(9), // "Class"
 							pSolarSysState->SysInfo.PlanetInfo.Tectonics + 1);
 	}
 
@@ -446,7 +446,7 @@ PrintCoarseScanPC(void)
 	{
 		val = -val;
 	}
-	fmt::format_to_sz_n(buf, sizeof(buf), "{}{}", val, STR_DEGREE_SIGN);
+	fmt::format_to_sz_n(buf, "{}{}", val, STR_DEGREE_SIGN);
 	PrintScanText(&t);
 
 	UnbatchGraphics();
@@ -521,7 +521,7 @@ PrintCoarseScan3DO(void)
 	PrintScanText(&t);
 	t.baseline.y += SCAN_LEADING;
 
-	fmt::format_to_sz_n(buf, sizeof(buf), "{}{}",
+	fmt::format_to_sz_n(buf, "{}{}",
 						pSolarSysState->SysInfo.PlanetInfo.SurfaceTemperature,
 						STR_DEGREE_SIGN);
 
@@ -533,7 +533,7 @@ PrintCoarseScan3DO(void)
 	PrintScanText(&t);
 	t.baseline.y += SCAN_LEADING;
 
-	fmt::format_to_sz_n(buf, sizeof(buf), "<{}>",
+	fmt::format_to_sz_n(buf, "<{}>",
 						pSolarSysState->SysInfo.PlanetInfo.AtmoDensity == 0 ? 0 : (pSolarSysState->SysInfo.PlanetInfo.Weather + 1));
 
 	if (optHazardColors) // Weather
@@ -544,7 +544,7 @@ PrintCoarseScan3DO(void)
 	PrintScanText(&t);
 	t.baseline.y += SCAN_LEADING;
 
-	fmt::format_to_sz_n(buf, sizeof(buf), "<{}>",
+	fmt::format_to_sz_n(buf, "<{}>",
 						PLANSIZE(
 							pSolarSysState->SysInfo.PlanetInfo.PlanDataPtr->Type)
 								== GAS_GIANT ?
@@ -600,7 +600,7 @@ PrintCoarseScan3DO(void)
 	{
 		val = -val;
 	}
-	fmt::format_to_sz_n(buf, sizeof(buf), "{}{}", val, STR_DEGREE_SIGN);
+	fmt::format_to_sz_n(buf, "{}{}", val, STR_DEGREE_SIGN);
 	PrintScanText(&t);
 	t.baseline.y += SCAN_LEADING;
 

@@ -147,8 +147,7 @@ void PropFile_from_string(char* d, PROPERTY_HANDLER handler, const char* prefix)
 		if (prefix)
 		{
 			char buf[256] {};
-			fmt::format_to_sz_n(buf, sizeof(buf), "{}{}", prefix, d + key_start);
-			buf[255] = 0;
+			fmt::format_to_sz_n(buf, "{}{}", prefix, d + key_start);
 			handler(buf, d + value_start);
 		}
 		else

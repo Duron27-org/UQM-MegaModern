@@ -112,7 +112,7 @@ register_menu_controls(int index)
 	{
 		VCONTROL_GESTURE g;
 
-		fmt::format_to_sz_n(buf, sizeof(buf), "menu.{}.{}", menu_res_names[index], i);
+		fmt::format_to_sz_n(buf, "menu.{}.{}", menu_res_names[index], i);
 
 		if (!res_IsString(buf))
 		{
@@ -138,7 +138,7 @@ register_flight_controls(void)
 	for (i = 0; i < num_templ; i++)
 	{
 		/* Copy in name */
-		fmt::format_to_sz_n(buf, sizeof(buf), "keys.{}.name", i + 1);
+		fmt::format_to_sz_n(buf, "keys.{}.name", i + 1);
 		if (res_IsString(buf))
 		{
 			uqm::strncpy_safe(uqm::input_templates[i].name, res_GetString(buf));
@@ -152,7 +152,7 @@ register_flight_controls(void)
 			for (k = 0; k < MAX_FLIGHT_ALTERNATES; k++)
 			{
 				VCONTROL_GESTURE* g = CONTROL_PTR(i, j, k);
-				fmt::format_to_sz_n(buf, sizeof(buf), "keys.{}.{}.{}", i + 1,
+				fmt::format_to_sz_n(buf, "keys.{}.{}.{}", i + 1,
 									flight_res_names[j], k + 1);
 				if (!res_IsString(buf))
 				{
@@ -734,7 +734,7 @@ void RemoveInputState(int templat, int control, int index)
 								  (int*)(flight_vec + templat * num_flight + control));
 	g->type = VCONTROL_NONE;
 
-	fmt::format_to_sz_n(keybuf, sizeof(keybuf), "keys.{}.{}.{}", templat + 1,
+	fmt::format_to_sz_n(keybuf, "keys.{}.{}.{}", templat + 1,
 						flight_res_names[control], index + 1);
 	res_Remove(keybuf);
 
@@ -768,7 +768,7 @@ void RebindInputState(int templat, int control, int index)
 	VControl_AddGestureBinding(&g,
 							   (int*)(flight_vec + templat * num_flight + control));
 	*CONTROL_PTR(templat, control, index) = g;
-	fmt::format_to_sz_n(keybuf, sizeof(keybuf), "keys.{}.{}.{}", templat + 1,
+	fmt::format_to_sz_n(keybuf, "keys.{}.{}.{}", templat + 1,
 						flight_res_names[control], index + 1);
 	VControl_DumpGesture({valbuf, sizeof(valbuf)}, &g);
 	res_PutString(keybuf, valbuf);

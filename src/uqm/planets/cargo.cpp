@@ -67,7 +67,7 @@ void ShowRemainingCapacity(void)
 	r.corner.x = RES_SCALE(40);
 	r.corner.y = FREE_ORG_Y;
 
-	fmt::format_to_sz_n(buf, sizeof buf, "{}",
+	fmt::format_to_sz_n(buf, "{}",
 						GetStorageBayCapacity() - GLOBAL_SIS(TotalElementMass));
 	t.baseline.x = ELEMENT_COL_2 + RES_SCALE(1);
 	t.baseline.y = r.corner.y + TEXT_BASELINE;
@@ -122,7 +122,7 @@ DrawElementAmount(uqm::COUNT element, bool selected)
 
 	if (element == NUM_ELEMENT_CATEGORIES)
 	{ // Bio
-		fmt::format_to_sz_n(buf, sizeof buf, "{}", GLOBAL_SIS(TotalBioMass));
+		fmt::format_to_sz_n(buf, "{}", GLOBAL_SIS(TotalBioMass));
 	}
 	else
 	{ // Element
@@ -131,11 +131,11 @@ DrawElementAmount(uqm::COUNT element, bool selected)
 									  CARGO_SELECTED_WORTH_COLOR :
 									  CARGO_WORTH_COLOR);
 		t.baseline.x = ELEMENT_COL_1;
-		fmt::format_to_sz_n(buf, sizeof buf, "{}", GLOBAL(ElementWorth[element]));
+		fmt::format_to_sz_n(buf, "{}", GLOBAL(ElementWorth[element]));
 		t.CharCount = (uqm::COUNT)~0;
 		font_DrawText(&t);
 
-		fmt::format_to_sz_n(buf, sizeof buf, "{}", GLOBAL_SIS(ElementAmounts[element]));
+		fmt::format_to_sz_n(buf, "{}", GLOBAL_SIS(ElementAmounts[element]));
 	}
 
 	// print the element/bio amount
@@ -362,7 +362,7 @@ void DrawRainbowPlanet(uqm::COUNT planet)
 			   + RES_SCALE(3);
 	DrawFilledRectangle(&r);
 	t.pStr = buf;
-	fmt::format_to_sz_n(buf, sizeof buf, "{}", planet);
+	fmt::format_to_sz_n(buf, "{}", planet);
 	t.CharCount = (uqm::COUNT)~0;
 	t.baseline.x = (STATUS_WIDTH >> 1);
 	t.baseline.y = r.corner.y + TEXT_BASELINE;

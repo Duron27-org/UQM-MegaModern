@@ -212,7 +212,7 @@ DrawShipsStatus(uqm::COUNT index, uqm::COUNT pos, bool selected)
 	{
 		t.baseline.y -= RES_SCALE(3);
 	}
-	fmt::format_to_sz_n(buf, sizeof(buf), "{}", ShipState.ShipStats[index].ShipCost);
+	fmt::format_to_sz_n(buf, "{}", ShipState.ShipStats[index].ShipCost);
 	t.pStr = buf;
 	t.CharCount = (uqm::COUNT)~0;
 	font_DrawText(&t);
@@ -220,7 +220,7 @@ DrawShipsStatus(uqm::COUNT index, uqm::COUNT pos, bool selected)
 	{
 		// print crew totals
 		t.baseline.y += TEXT_SPACING_Y;
-		fmt::format_to_sz_n(buf, sizeof(buf), "{}/{}",
+		fmt::format_to_sz_n(buf, "{}/{}",
 							ShipState.ShipStats[index].CrewLevel,
 							ShipState.ShipStats[index].MaxCrew);
 		t.pStr = buf;
@@ -339,7 +339,7 @@ GetShipStats(SHIP_STATS* ship_stats, SPECIES_ID species_id)
 	HMASTERSHIP hMasterShip = FindMasterShip(species_id);
 	MASTER_SHIP_INFO* ShipPtr = LockMasterShip(&master_q, hMasterShip);
 
-	fmt::format_to_sz_n(ship_stats->ShipName, sizeof(ship_stats->ShipName), "{} {}",
+	fmt::format_to_sz_n(ship_stats->ShipName, "{} {}",
 						(uqm::CHAR_T*)GetStringAddress(SetAbsStringTableIndex(
 							ShipPtr->ShipInfo.race_strings, 2)),
 						(uqm::CHAR_T*)GetStringAddress(SetAbsStringTableIndex(
@@ -361,7 +361,7 @@ GetStowedShipStats(SHIP_STATS* ship_stats, HSHIPFRAG hStowShip)
 	ship_stats->ShipCost = ShipPtr->ShipInfo.ship_cost;
 	UnlockMasterShip(&master_q, hMasterShip);
 
-	fmt::format_to_sz_n(ship_stats->ShipName, sizeof(ship_stats->ShipName), "{}",
+	fmt::format_to_sz_n(ship_stats->ShipName, "{}",
 						(uqm::CHAR_T*)GetStringAddress(SetAbsStringTableIndex(StowShipPtr->race_strings, StowShipPtr->captains_name_index)));
 
 	ship_stats->CrewLevel = StowShipPtr->crew_level;

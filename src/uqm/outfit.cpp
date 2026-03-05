@@ -148,7 +148,7 @@ DrawModuleStatus(uqm::COUNT index, uqm::COUNT pos, bool selected)
 		t.align = ALIGN_RIGHT;
 		t.baseline.x = MODULE_COL_1 - RES_SCALE(2);
 		t.baseline.y -= RES_SCALE(3);
-		fmt::format_to_sz_n(buf, sizeof(buf), "{}",
+		fmt::format_to_sz_n(buf, "{}",
 							GLOBAL(ModuleCost[index]) * MODULE_COST_SCALE);
 		t.pStr = buf;
 		t.CharCount = (uqm::COUNT)~0;

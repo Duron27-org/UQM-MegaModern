@@ -408,7 +408,7 @@ DrawRestartMenuGraphic(MENU_STATE* pMS)
 	// Put the version number in the bottom right corner.
 	SetContextFont(TinyFont);
 	SetContextForeGroundColor(WHITE_COLOR);
-	fmt::format_to_sz_n(buf, sizeof(buf), "v{}.{}.{} {}",
+	fmt::format_to_sz_n(buf, "v{}.{}.{} {}",
 						UQM_MAJOR_VERSION, UQM_MINOR_VERSION, UQM_PATCH_VERSION,
 						chooseIfHd<const char*>(UQM_EXTRA_VERSION, "HD " UQM_EXTRA_VERSION));
 	t.pStr = buf;
@@ -420,7 +420,7 @@ DrawRestartMenuGraphic(MENU_STATE* pMS)
 	// Put the main menu music credit in the bottom left corner.
 	if (optMainMenuMusic)
 	{
-		fmt::format_to_sz_n(buf, sizeof(buf), "{} {}",
+		fmt::format_to_sz_n(buf, "{} {}",
 							GAME_STRING(MAINMENU_STRING_BASE + 61),
 							GAME_STRING(MAINMENU_STRING_BASE + 62 + Rando));
 		t.baseline.x = RES_SCALE(2);

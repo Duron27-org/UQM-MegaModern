@@ -1003,7 +1003,7 @@ markerBuf(const int star_index, const char* marker_state)
 	// "SYS_VISITED_##" or "SYS_PLYR_MARKER_##" which is used to
 	// differentiate between which kind of marker we're working with.
 
-	fmt::format_to_sz_n(buf, sizeof(buf), "SYS_{}_{:02}", marker_state,
+	fmt::format_to_sz_n(buf, "SYS_{}_{:02}", marker_state,
 						star_index / 32);
 
 	return buf;
@@ -2111,7 +2111,7 @@ UpdateCursorInfo(std::span<uqm::CHAR_T> prevbuf)
 				// This is how you get rid of compiler warnings over string
 				// length:  %.30s where "30" is a limit.  Enjoy. ~JSD~
 				//snprintf(buf, sizeof buf, "%c %.251s %c", '(', visBuf, ')');
-				fmt::format_to_sz_n(buf, sizeof(buf), "( {:251} )", visBuf);
+				fmt::format_to_sz_n(buf, "( {:251} )", visBuf);
 			}
 
 			DrawSISMessage(buf);

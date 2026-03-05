@@ -29,7 +29,7 @@ const char* toString(const Vec2T<T>& value, uqstl::span<char> buffer)
 	{
 		throw std::length_error(fmt::format("The input buffer is not large enough to hold the possible output of converting this Vec2 to a string. Requires {} bytes, including the null terminator", ReqBufferSize));
 	}
-	fmt::format_to_sz_n(buffer.data(), buffer.size(), "{},{}", value.x, value.y);
+	fmt::format_to_sz_n(buffer, "{},{}", value.x, value.y);
 	return buffer.data();
 }
 

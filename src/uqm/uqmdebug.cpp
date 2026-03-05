@@ -1103,7 +1103,7 @@ void dumpSystem(FILE* out, const STAR_DESC* star, const SOLARSYS_STATE* system)
 	uqm::CHAR_T buf[40];
 
 	GetClusterName(star, name);
-	fmt::format_to_sz_n(buf, sizeof buf, "{} {}",
+	fmt::format_to_sz_n(buf, "{} {}",
 						bodyColorString(STAR_COLOR(star->Type)),
 						starTypeString(STAR_TYPE(star->Type)));
 
@@ -1747,13 +1747,13 @@ planetTypeString(int typeIndex)
 	if (typeIndex >= FIRST_GAS_GIANT)
 	{
 		// "Gas Giant"
-		fmt::format_to_sz_n(typeStr, sizeof typeStr, "{}",
+		fmt::format_to_sz_n(typeStr, "{}",
 							GAME_STRING(SCAN_STRING_BASE + 4 + 51));
 	}
 	else
 	{
 		// "<type> World" (eg. "Water World")
-		fmt::format_to_sz_n(typeStr, sizeof typeStr, "{} {}",
+		fmt::format_to_sz_n(typeStr, "{} {}",
 							GAME_STRING(SCAN_STRING_BASE + 4 + typeIndex),
 							GAME_STRING(SCAN_STRING_BASE + 4 + 50));
 	}
@@ -1815,7 +1815,7 @@ tectonicsString(uqm::BYTE tectonics)
 		case SUPER_TECTONICS:
 			return "super";
 		default:
-			fmt::format_to_sz_n(buf, sizeof buf, "{}", tectonics);
+			fmt::format_to_sz_n(buf, "{}", tectonics);
 			return buf;
 	}
 }

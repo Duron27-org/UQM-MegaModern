@@ -733,20 +733,20 @@ void formatFuelValue(uqm::DWORD coarseFuel, uqstl::span<uqm::CHAR_T> buf)
 	{
 		if (!optWholeFuel)
 		{
-			fmt::format_to_sz_n(buf.data(), buf.size(), "{}", coarseFuel);
+			fmt::format_to_sz_n(buf, "{}", coarseFuel);
 		}
 		else if (dblFuelOnBoard > 999.99)
 		{
-			fmt::format_to_sz_n(buf.data(), buf.size(), "{:.1}", dblFuelOnBoard);
+			fmt::format_to_sz_n(buf, "{:.1}", dblFuelOnBoard);
 		}
 		else
 		{
-			fmt::format_to_sz_n(buf.data(), buf.size(), "{:.2}", dblFuelOnBoard);
+			fmt::format_to_sz_n(buf, "{:.2}", dblFuelOnBoard);
 		}
 	}
 	else
 	{
-		fmt::format_to_sz_n(buf.data(), buf.size(), "{}", STR_INFINITY_SIGN);
+		fmt::format_to_sz_n(buf, "{}", STR_INFINITY_SIGN);
 	}
 }
 

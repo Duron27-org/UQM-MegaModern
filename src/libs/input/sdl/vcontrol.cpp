@@ -2004,22 +2004,22 @@ size_t VControl_DumpGesture(uqstl::span<char> buf, VCONTROL_GESTURE* g)
 	switch (g->type)
 	{
 		case VCONTROL_KEY:
-			return fmt::format_to_sz_n(buf.data(), buf.size(), "key {}",
+			return fmt::format_to_sz_n(buf, "key {}",
 									   VControl_code2name(g->gesture.key))
 				.size;
 		case VCONTROL_JOYAXIS:
-			return fmt::format_to_sz_n(buf.data(), buf.size(), "joystick {} axis {} {}",
+			return fmt::format_to_sz_n(buf, "joystick {} axis {} {}",
 									   g->gesture.axis.port, g->gesture.axis.index,
 									   (g->gesture.axis.polarity > 0) ? "positive" : "negative")
 				.size;
 		case VCONTROL_JOYBUTTON:
-			return fmt::format_to_sz_n(buf.data(), buf.size(), "joystick {} button {}",
+			return fmt::format_to_sz_n(buf, "joystick {} button {}",
 									   g->gesture.button.port, g->gesture.button.index)
 				.size;
 
 #if SDL_MAJOR_VERSION == 1
 		case VCONTROL_JOYHAT:
-			return fmt::format_to_sz_n(buf.data(), buf.size(), "joystick {} hat {} {}",
+			return fmt::format_to_sz_n(buf, "joystick {} hat {} {}",
 									   g->gesture.hat.port, g->gesture.hat.index,
 									   (g->gesture.hat.dir == SDL_HAT_UP) ? "up" :
 																			((g->gesture.hat.dir == SDL_HAT_DOWN) ? "down" :

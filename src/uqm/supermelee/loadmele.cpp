@@ -524,7 +524,7 @@ bool DoSaveTeam(MELEE_STATE* pMS)
 	GFXCONTEXT OldContext;
 	bool saveOk = false;
 
-	fmt::format_to_sz_n(file, sizeof file, "{}.mle",
+	fmt::format_to_sz_n(file, "{}.mle",
 						MeleeSetup_getTeamName(pMS->meleeSetup, pMS->side));
 
 	OldContext = SetContext(ScreenContext);

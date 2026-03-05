@@ -175,7 +175,7 @@ void GetSubClip(uqstl::span<uqm::CHAR_T> buffer, uqm::CHAR_T* pClip, uqm::COUNT 
 		uqm::strncpy_safe(buffer, pClip);
 		return;
 	}
-	fmt::format_to_sz_n(buffer.data(), buffer.size(), "{}{}.ogg", std::string_view(pClip, pStr - pClip), 'a' + clip_number);
+	fmt::format_to_sz_n(buffer, "{}{}.ogg", std::string_view(pClip, pStr - pClip), 'a' + clip_number);
 }
 
 // The CallbackFunction is queued and executes synchronously
@@ -410,7 +410,7 @@ void NPCNumber(int number, const char* fmt)
 	}
 
 	// just splice in the subtitle text
-	fmt::format_to_sz_n(buf, sizeof buf, fmt::runtime(fmt), number);
+	fmt::format_to_sz_n(buf, fmt::runtime(fmt), number);
 	SpliceTrack(nullptr, buf, nullptr, nullptr);
 }
 
