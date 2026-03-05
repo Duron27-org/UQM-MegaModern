@@ -22,7 +22,6 @@
 #include "resintrn.h"
 #include "libs/memlib.h"
 #include "core/log/log.h"
-#include "libs/uio/charhashtable.h"
 
 const char* _cur_resfile_name;
 // When a file is being loaded, _cur_resfile_name is set to its name.
@@ -31,7 +30,8 @@ const char* _cur_resfile_name;
 ResourceDesc*
 lookupResourceDesc(RESOURCE_INDEX idx, RESOURCE res)
 {
-	return (ResourceDesc*)CharHashTable_find(idx->map, res);
+	auto it = idx->map->find(res);
+	return it != idx->map->end() ? it->second : nullptr;
 }
 
 void loadResourceDesc(ResourceDesc* desc)

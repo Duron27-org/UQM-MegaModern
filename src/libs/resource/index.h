@@ -23,8 +23,9 @@ typedef struct resource_handlers ResourceHandlers;
 typedef struct resource_desc ResourceDesc;
 
 #include <stdio.h>
+#include <string>
+#include <unordered_map>
 #include "libs/reslib.h"
-#include "libs/uio/charhashtable.h"
 
 struct resource_handlers
 {
@@ -46,7 +47,7 @@ struct resource_desc
 
 struct resource_index_desc
 {
-	CharHashTable_HashTable* map;
+	std::unordered_map<std::string, ResourceDesc*>* map;
 	size_t numRes;
 };
 

@@ -78,6 +78,8 @@ void FreeStringTable(STRING_TABLE strtab)
 		}
 	}
 
+	delete strtab->nameIndex;
+	strtab->nameIndex = nullptr;
 	HFree(strtab->strings);
 	HFree(strtab);
 }
@@ -346,7 +348,10 @@ GetStringAddress(STRING String)
 STRING
 GetStringByName(STRING_TABLE StringTable, const char* index)
 {
-	return (STRING)StringHashTable_find(StringTable->nameIndex, index);
+	if (StringTable->nameIndex == nullptr)
+		return nullptr;
+	auto it = StringTable->nameIndex->find(index);
+	return it != StringTable->nameIndex->end() ? it->second : nullptr;
 }
 
 bool CheckResString(RESOURCE res)

@@ -10,8 +10,6 @@ set(uqm_src_libs_strings_files
 	"src/libs/strings/getstr.cpp"
 	"src/libs/strings/sfileins.cpp"
 	"src/libs/strings/sresins.cpp"
-	"src/libs/strings/stringhashtable.cpp"
-	"src/libs/strings/stringhashtable.h"
 	"src/libs/strings/strings.cmake"
 	"src/libs/strings/strings.cpp"
 	"src/libs/strings/strintrn.h"

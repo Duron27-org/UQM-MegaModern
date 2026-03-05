@@ -158,7 +158,7 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 
 	uio_Stream* fp = nullptr;
 	uio_Stream* timestamp_fp = nullptr;
-	StringHashTable_HashTable* nameHashTable = nullptr;
+	std::unordered_map<std::string, STRING_TABLE_ENTRY_DESC*>* nameHashTable = nullptr;
 	// Hash table of string names (such as "GLAD_WHEN_YOU_COME_BACK")
 	// to a STRING.
 
@@ -240,8 +240,7 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 	}
 	ts_data = nullptr;
 
-	nameHashTable = StringHashTable_newHashTable(
-		nullptr, nullptr, nullptr, nullptr, nullptr, 0, 0.85, 0.9);
+	nameHashTable = new std::unordered_map<std::string, STRING_TABLE_ENTRY_DESC*>();
 	if (nameHashTable == nullptr)
 	{
 		goto err;
@@ -491,8 +490,7 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 			str = &lpST->strings[stringCount];
 			for (stringI = 0; stringI < stringCount; stringI++)
 			{
-				StringHashTable_add(nameHashTable, str[stringI].data,
-									&str[stringI]);
+				(*nameHashTable)[(const char*)str[stringI].data] = &str[stringI];
 			}
 
 			lpST->nameIndex = nameHashTable;
@@ -514,7 +512,7 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 err:
 	if (nameHashTable != nullptr)
 	{
-		StringHashTable_deleteHashTable(nameHashTable);
+		delete nameHashTable;
 	}
 	if (ts_data != nullptr)
 	{

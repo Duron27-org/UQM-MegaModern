@@ -16,8 +16,6 @@ list(APPEND uqm_src_libs_uio_master_files ${uqm_src_libs_uio_zip_master_files})
 # Local files
 set(uqm_src_libs_uio_files
 #	"src/libs/uio/COPYING"
-	"src/libs/uio/charhashtable.cpp"
-	"src/libs/uio/charhashtable.h"
 	"src/libs/uio/debug.cpp"
 	"src/libs/uio/debug.h"
 	"src/libs/uio/defaultfs.cpp"
@@ -29,8 +27,6 @@ set(uqm_src_libs_uio_files
 	"src/libs/uio/getint.h"
 	"src/libs/uio/gphys.cpp"
 	"src/libs/uio/gphys.h"
-	"src/libs/uio/hashtable.cpp"
-	"src/libs/uio/hashtable.h"
 	"src/libs/uio/io.cpp"
 	"src/libs/uio/io.h"
 	"src/libs/uio/ioaux.cpp"

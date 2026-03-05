@@ -17,8 +17,10 @@
  */
 
 #include <scn/scan.h>
+#include <algorithm>
 #include <ctype.h>
 #include <stdlib.h>
+#include <vector>
 
 #include "resintrn.h"
 #include "libs/memlib.h"
@@ -38,8 +40,7 @@ static RESOURCE_INDEX
 allocResourceIndex(void)
 {
 	RESOURCE_INDEX ndx = (RESOURCE_INDEX)HMalloc(sizeof(RESOURCE_INDEX_DESC));
-	ndx->map = CharHashTable_newHashTable(nullptr, nullptr, nullptr, nullptr, nullptr,
-										  0, 0.85, 0.9);
+	ndx->map = new std::unordered_map<std::string, ResourceDesc*>();
 	return ndx;
 }
 
@@ -49,7 +50,7 @@ freeResourceIndex(RESOURCE_INDEX h)
 	if (h != nullptr)
 	{
 		/* TODO: This leaks the contents of h->map */
-		CharHashTable_deleteHashTable(h->map);
+		delete h->map;
 		HFree(h);
 	}
 }
@@ -129,14 +130,15 @@ newResourceDesc(const char* res_id, const char* resval)
 static void
 process_resource_desc(const char* key, const char* value)
 {
-	CharHashTable_HashTable* map = _get_current_index_header()->map;
+	auto* map = _get_current_index_header()->map;
 	ResourceDesc* newDesc = newResourceDesc(key, value);
 	if (newDesc != nullptr)
 	{
-		if (!CharHashTable_add(map, key, newDesc))
+		auto [it, inserted] = map->insert({key, newDesc});
+		if (!inserted)
 		{
 			res_Remove(key);
-			CharHashTable_add(map, key, newDesc);
+			(*map)[key] = newDesc;
 		}
 	}
 }
@@ -372,20 +374,10 @@ void LoadResourceIndex(uio_DirHandle* dir, const char* rmpfile, const char* pref
 	PropFile_from_filename(dir, rmpfile, process_resource_desc, prefix);
 }
 
-static int strptrcmp(const void* a, const void* b)
-{
-	const char* str_a = *(const char**)a;
-	const char* str_b = *(const char**)b;
-	return strcmp(str_a, str_b);
-}
-
 void SaveResourceIndex(uio_DirHandle* dir, const char* rmpfile, const char* root, bool strip_root)
 {
 	uio_Stream* f;
-	CharHashTable_Iterator* it;
 	unsigned int prefix_len;
-	int count, capacity;
-	char** keys;
 
 	f = res_OpenResFile(dir, rmpfile, "wb");
 	if (!f)
@@ -395,36 +387,21 @@ void SaveResourceIndex(uio_DirHandle* dir, const char* rmpfile, const char* root
 	}
 	prefix_len = root ? strlen(root) : 0;
 
-	count = 0;
-	capacity = 100;
-	keys = (char**)HMalloc(capacity * sizeof(char*));
-
-	for (it = CharHashTable_getIterator(_get_current_index_header()->map);
-		 !CharHashTable_iteratorDone(it);
-		 it = CharHashTable_iteratorNext(it))
+	std::vector<std::string> keys;
+	for (const auto& [key, val] : *(_get_current_index_header()->map))
 	{
-		char* key = CharHashTable_iteratorKey(it);
-		if (!root || !strncmp(root, key, prefix_len))
+		if (!root || !strncmp(root, key.c_str(), prefix_len))
 		{
-			if (count >= capacity)
-			{
-				capacity *= 2;
-				keys = (char**)HRealloc(keys, capacity * sizeof(char*));
-			}
-			const auto keyStrLen = strlen(key);
-			keys[count] = (char*)HMalloc(keyStrLen + 1);
-			uqm::strncpy_safe({keys[count], keyStrLen + 1}, key);
-			count++;
+			keys.push_back(key);
 		}
 	}
-	CharHashTable_freeIterator(it);
+	std::sort(keys.begin(), keys.end());
 
-	qsort(keys, count, sizeof(char*), strptrcmp);
-
-	for (int i = 0; i < count; i++)
+	for (const auto& key : keys)
 	{
-		char* key = keys[i];
-		ResourceDesc* value = (ResourceDesc*)CharHashTable_find(_get_current_index_header()->map, key);
+		auto* map = _get_current_index_header()->map;
+		auto mapIt = map->find(key);
+		ResourceDesc* value = (mapIt != map->end()) ? mapIt->second : nullptr;
 		if (!value)
 		{
 			uqm::log::warn("Resource {} had no value", key);
@@ -440,11 +417,11 @@ void SaveResourceIndex(uio_DirHandle* dir, const char* rmpfile, const char* root
 			buf[255] = 0;
 			if (root && strip_root)
 			{
-				WriteResFile(key + prefix_len, 1, strlen(key) - prefix_len, f);
+				WriteResFile(key.c_str() + prefix_len, 1, key.size() - prefix_len, f);
 			}
 			else
 			{
-				WriteResFile(key, 1, strlen(key), f);
+				WriteResFile(key.c_str(), 1, key.size(), f);
 			}
 			PutResFileChar(' ', f);
 			PutResFileChar('=', f);
@@ -454,9 +431,7 @@ void SaveResourceIndex(uio_DirHandle* dir, const char* rmpfile, const char* root
 			WriteResFile(buf, 1, strlen(buf), f);
 			PutResFileNewline(f);
 		}
-		HFree(keys[i]);
 	}
-	HFree(keys);
 	res_CloseResFile(f);
 }
 
@@ -473,7 +448,6 @@ bool InstallResTypeVectors(const char* resType, ResourceLoadFun* loadFun,
 	ResourceDesc* result;
 	char key[TYPESIZ] {};
 	int typelen;
-	CharHashTable_HashTable* map;
 
 	fmt::format_to_sz_n(key, TYPESIZ, "sys.{}", resType);
 	typelen = strlen(resType);
@@ -500,8 +474,8 @@ bool InstallResTypeVectors(const char* resType, ResourceLoadFun* loadFun,
 	result->vtable = nullptr;
 	result->resdata.ptr = handlers;
 
-	map = _get_current_index_header()->map;
-	return (bool)(CharHashTable_add(map, key, result) != 0);
+	auto* map = _get_current_index_header()->map;
+	return map->insert({key, result}).second;
 }
 
 /* These replace the mapres.c calls and probably should be split out at some point. */
@@ -698,8 +672,9 @@ bool res_HasKey(const char* key)
 
 bool res_Remove(const char* key)
 {
-	CharHashTable_HashTable* map = _get_current_index_header()->map;
-	ResourceDesc* oldDesc = (ResourceDesc*)CharHashTable_find(map, key);
+	auto* map = _get_current_index_header()->map;
+	auto it = map->find(key);
+	ResourceDesc* oldDesc = (it != map->end()) ? it->second : nullptr;
 	if (oldDesc != nullptr)
 	{
 		if (oldDesc->resdata.ptr != nullptr)
@@ -716,5 +691,5 @@ bool res_Remove(const char* key)
 		HFree(oldDesc->fname);
 		HFree(oldDesc);
 	}
-	return (bool)CharHashTable_remove(map, key);
+	return map->erase(key) > 0;
 }

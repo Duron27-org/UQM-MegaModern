@@ -23,7 +23,7 @@
 #include <fmt/format.h>
 
 #include "memdebug.h"
-#include "hashtable.h"
+#include <unordered_map>
 #include "mem.h"
 #include "uioutils.h"
 #include "types.h"
@@ -113,13 +113,8 @@ void invokePrintFn(uio_MemDebug_LogType type, FILE* out, const void* arg)
 	}
 }
 
-HashTable_HashTable** uio_MemDebug_logs;
+std::unordered_map<void*, uio_MemDebug_PointerInfo*>* uio_MemDebug_logs[uio_MemDebug_numLogTypes];
 
-
-static uio_uint32 uio_MemDebug_pointerHash(const void* ptr);
-static uio_bool uio_MemDebug_pointerCompare(const void* ptr1, const void* ptr2);
-static void* uio_MemDebug_pointerCopy(const void* ptr);
-static void uio_MemDebug_pointerFree(void* ptr);
 
 static inline uio_MemDebug_PointerInfo* uio_MemDebug_PointerInfo_new(int ref);
 static inline void uio_MemDebug_PointerInfo_delete(
@@ -130,59 +125,21 @@ static inline void uio_MemDebug_PointerInfo_free(
 
 void uio_MemDebug_init(void)
 {
-	int i;
-
 	assert((int)uio_MemDebug_numLogTypes == (sizeof uio_MemDebug_logTypeInfo / sizeof uio_MemDebug_logTypeInfo[0]));
-	uio_MemDebug_logs = (HashTable_HashTable**)(uio_MemDebug_numLogTypes * sizeof(HashTable_HashTable*));
 
-	for (i = 0; i < uio_MemDebug_numLogTypes; i++)
+	for (int i = 0; i < uio_MemDebug_numLogTypes; i++)
 	{
-		uio_MemDebug_logs[i] = HashTable_newHashTable(
-			uio_MemDebug_pointerHash,
-			uio_MemDebug_pointerCompare,
-			uio_MemDebug_pointerCopy,
-			uio_MemDebug_pointerFree,
-			nullptr, 4, 0.85, 0.90);
+		uio_MemDebug_logs[i] = new std::unordered_map<void*, uio_MemDebug_PointerInfo*>();
 	}
 }
 
 void uio_MemDebug_unInit(void)
 {
-	int i;
-
-	for (i = 0; i < uio_MemDebug_numLogTypes; i++)
+	for (int i = 0; i < uio_MemDebug_numLogTypes; i++)
 	{
-		HashTable_deleteHashTable(uio_MemDebug_logs[i]);
+		delete uio_MemDebug_logs[i];
+		uio_MemDebug_logs[i] = nullptr;
 	}
-
-	uio_free(uio_MemDebug_logs);
-}
-
-static uio_uint32
-uio_MemDebug_pointerHash(const void* ptr)
-{
-	uio_uintptr ptrInt;
-
-	ptrInt = (uio_uintptr)ptr;
-	return (uio_uint32)(ptrInt ^ (ptrInt >> 10) ^ (ptrInt >> 20));
-}
-
-static uio_bool
-uio_MemDebug_pointerCompare(const void* ptr1, const void* ptr2)
-{
-	return ptr1 == ptr2;
-}
-
-static void*
-uio_MemDebug_pointerCopy(const void* ptr)
-{
-	return unconst(ptr);
-}
-
-static void
-uio_MemDebug_pointerFree(void* ptr)
-{
-	(void)ptr;
 }
 
 void uio_MemDebug_logAllocation(uio_MemDebug_LogType type, void* ptr)
@@ -202,7 +159,7 @@ void uio_MemDebug_logAllocation(uio_MemDebug_LogType type, void* ptr)
 		fmt::print(stderr, "\n");
 	}
 	pointerInfo = uio_MemDebug_PointerInfo_new(1);
-	HashTable_add(uio_MemDebug_logs[type], ptr, (void*)pointerInfo);
+	(*uio_MemDebug_logs[type])[ptr] = pointerInfo;
 }
 
 void uio_MemDebug_logDeallocation(uio_MemDebug_LogType type, void* ptr)
@@ -221,7 +178,10 @@ void uio_MemDebug_logDeallocation(uio_MemDebug_LogType type, void* ptr)
 		uio_MemDebug_printPointer(stderr, type, ptr);
 		fmt::print(stderr, "\n");
 	}
-	pointerInfo = (uio_MemDebug_PointerInfo*)HashTable_find(uio_MemDebug_logs[type], ptr);
+	{
+		auto it = uio_MemDebug_logs[type]->find(ptr);
+		pointerInfo = (it != uio_MemDebug_logs[type]->end()) ? it->second : nullptr;
+	}
 	if (pointerInfo == nullptr)
 	{
 		fmt::print(stderr, "Fatal: Attempt to free unallocated pointer "
@@ -238,7 +198,7 @@ void uio_MemDebug_logDeallocation(uio_MemDebug_LogType type, void* ptr)
 	}
 #endif
 	uio_MemDebug_PointerInfo_free(pointerInfo);
-	HashTable_remove(uio_MemDebug_logs[type], ptr);
+	uio_MemDebug_logs[type]->erase(ptr);
 }
 
 void uio_MemDebug_logRef(uio_MemDebug_LogType type, void* ptr)
@@ -252,7 +212,10 @@ void uio_MemDebug_logRef(uio_MemDebug_LogType type, void* ptr)
 				   uio_MemDebug_logTypeInfo[(int)type].name);
 		abort();
 	}
-	pointerInfo = (uio_MemDebug_PointerInfo*)HashTable_find(uio_MemDebug_logs[type], ptr);
+	{
+		auto it = uio_MemDebug_logs[type]->find(ptr);
+		pointerInfo = (it != uio_MemDebug_logs[type]->end()) ? it->second : nullptr;
+	}
 	if (pointerInfo == nullptr)
 	{
 		fmt::print(stderr, "Fatal: Attempt to increment reference to "
@@ -280,7 +243,10 @@ void uio_MemDebug_logUnref(uio_MemDebug_LogType type, void* ptr)
 				   uio_MemDebug_logTypeInfo[(int)type].name);
 		abort();
 	}
-	pointerInfo = (uio_MemDebug_PointerInfo*)HashTable_find(uio_MemDebug_logs[type], ptr);
+	{
+		auto it = uio_MemDebug_logs[type]->find(ptr);
+		pointerInfo = (it != uio_MemDebug_logs[type]->end()) ? it->second : nullptr;
+	}
 	if (pointerInfo == nullptr)
 	{
 		fmt::print(stderr, "Fatal: Attempt to decrement reference to "
@@ -316,16 +282,11 @@ void uio_MemDebug_printPointer(FILE* out, uio_MemDebug_LogType type, void* ptr)
 
 void uio_MemDebug_printPointersType(FILE* out, uio_MemDebug_LogType type)
 {
-	HashTable_Iterator* iterator;
-
-	for (iterator = HashTable_getIterator(uio_MemDebug_logs[type]);
-		 !HashTable_iteratorDone(iterator);
-		 iterator = HashTable_iteratorNext(iterator))
+	for (const auto& [ptr, info] : *uio_MemDebug_logs[type])
 	{
-		uio_MemDebug_printPointer(out, type, HashTable_iteratorKey(iterator));
+		uio_MemDebug_printPointer(out, type, ptr);
 		fmt::print(out, "\n");
 	}
-	HashTable_freeIterator(iterator);
 }
 
 void uio_MemDebug_printPointers(FILE* out)

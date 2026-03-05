@@ -22,47 +22,14 @@
 #define LIBS_UIO_GPHYS_H_
 
 #include "uioport.h"
+#include <string>
+#include <unordered_map>
 
 #ifndef uio_INTERNAL_PHYSICAL
 typedef void* uio_GPRootExtra;
 typedef void* uio_GPDirExtra;
 typedef void* uio_GPFileExtra;
 #endif
-
-typedef struct CharHashTable_HashTable uio_GPDirEntries;
-
-#define uio_GPDirEntries_new()                                                \
-	((uio_GPDirEntries*)CharHashTable_newHashTable(nullptr, nullptr, nullptr, \
-												   nullptr, nullptr, 0, 0.85, 0.9))
-#define uio_GPDirEntries_add(hashTable, name, item)              \
-	CharHashTable_add((CharHashTable_HashTable*)hashTable, name, \
-					  (void*)item)
-#define uio_GPDirEntries_remove(hashTable, name) \
-	CharHashTable_remove((CharHashTable_HashTable*)hashTable, name)
-#define uio_GPDirEntries_count(hashTable) \
-	CharHashTable_count((CharHashTable_HashTable*)hashTable)
-#define uio_GPDirEntries_find(hashTable, name) \
-	((uio_GPDirEntry*)CharHashTable_find(      \
-		(CharHashTable_HashTable*)hashTable, name))
-#define uio_GPDirEntries_deleteHashTable(hashTable) \
-	CharHashTable_deleteHashTable((CharHashTable_HashTable*)hashTable)
-//#define uio_GPDirEntries_clear(hashTable)
-//		CharHashTable_clear((CharHashTable_HashTable *) hashTable)
-#define uio_GPDirEntries_getIterator(hashTable)             \
-	((uio_GPDirEntries_Iterator*)CharHashTable_getIterator( \
-		(const CharHashTable_HashTable*)hashTable))
-#define uio_GPDirEntries_iteratorDone(iterator) \
-	CharHashTable_iteratorDone((const CharHashTable_Iterator*)iterator)
-#define uio_GPDirEntries_iteratorName(iterator) \
-	CharHashTable_iteratorKey((CharHashTable_Iterator*)iterator)
-#define uio_GPDirEntries_iteratorItem(iterator)    \
-	((uio_GPDirEntry*)CharHashTable_iteratorValue( \
-		(CharHashTable_Iterator*)iterator))
-#define uio_GPDirEntries_iteratorNext(iterator)              \
-	((uio_GPDirEntries_Iterator*)CharHashTable_iteratorNext( \
-		(CharHashTable_Iterator*)iterator))
-#define uio_GPDirEntries_freeIterator(iterator) \
-	CharHashTable_freeIterator(iterator)
 
 // 'forward' declarations
 typedef struct uio_GPDirEntry uio_GPDirEntry;
@@ -71,8 +38,51 @@ typedef struct uio_GPFile uio_GPFile;
 typedef struct uio_GPRoot_Operations uio_GPRoot_Operations;
 typedef struct uio_GPRoot uio_GPRoot;
 
-#include "charhashtable.h"
-typedef CharHashTable_Iterator uio_GPDirEntries_Iterator;
+using uio_GPDirEntries = std::unordered_map<std::string, uio_GPDirEntry*>;
+
+struct uio_GPDirEntries_Iterator {
+	uio_GPDirEntries::iterator it;
+	uio_GPDirEntries::iterator end;
+};
+
+inline uio_GPDirEntries* uio_GPDirEntries_new() {
+	return new uio_GPDirEntries();
+}
+inline bool uio_GPDirEntries_add(uio_GPDirEntries* ht, const char* name, void* item) {
+	return ht->insert({name, static_cast<uio_GPDirEntry*>(item)}).second;
+}
+inline bool uio_GPDirEntries_remove(uio_GPDirEntries* ht, const char* name) {
+	return ht->erase(name) > 0;
+}
+inline size_t uio_GPDirEntries_count(const uio_GPDirEntries* ht) {
+	return ht->size();
+}
+inline uio_GPDirEntry* uio_GPDirEntries_find(uio_GPDirEntries* ht, const char* name) {
+	auto it = ht->find(name);
+	return it != ht->end() ? it->second : nullptr;
+}
+inline void uio_GPDirEntries_deleteHashTable(uio_GPDirEntries* ht) {
+	delete ht;
+}
+inline uio_GPDirEntries_Iterator* uio_GPDirEntries_getIterator(uio_GPDirEntries* ht) {
+	return new uio_GPDirEntries_Iterator{ht->begin(), ht->end()};
+}
+inline bool uio_GPDirEntries_iteratorDone(const uio_GPDirEntries_Iterator* it) {
+	return it->it == it->end;
+}
+inline const char* uio_GPDirEntries_iteratorName(const uio_GPDirEntries_Iterator* it) {
+	return it->it->first.c_str();
+}
+inline uio_GPDirEntry* uio_GPDirEntries_iteratorItem(const uio_GPDirEntries_Iterator* it) {
+	return it->it->second;
+}
+inline uio_GPDirEntries_Iterator* uio_GPDirEntries_iteratorNext(uio_GPDirEntries_Iterator* it) {
+	++it->it;
+	return it;
+}
+inline void uio_GPDirEntries_freeIterator(uio_GPDirEntries_Iterator* it) {
+	delete it;
+}
 
 #ifdef uio_INTERNAL_GPHYS
 typedef uio_GPDirEntries_Iterator* uio_NativeEntriesContext;

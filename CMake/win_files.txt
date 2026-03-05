@@ -331,8 +331,6 @@ src/libs/sound/trackplayer.h
 src/libs/strings/getstr.cpp
 src/libs/strings/sfileins.cpp
 src/libs/strings/sresins.cpp
-src/libs/strings/stringhashtable.cpp
-src/libs/strings/stringhashtable.h
 src/libs/strings/strings.cpp
 src/libs/strings/strintrn.h
 src/libs/strings/unicode.cpp
@@ -350,8 +348,6 @@ src/libs/time/timecommon.cpp
 src/libs/time/timecommon.h
 src/libs/time/timelib.h
 src/libs/uio.h
-src/libs/uio/charhashtable.cpp
-src/libs/uio/charhashtable.h
 src/libs/uio/debug.cpp
 src/libs/uio/debug.h
 src/libs/uio/defaultfs.cpp
@@ -363,8 +359,6 @@ src/libs/uio/fstypes.h
 src/libs/uio/getint.h
 src/libs/uio/gphys.cpp
 src/libs/uio/gphys.h
-src/libs/uio/hashtable.cpp
-src/libs/uio/hashtable.h
 src/libs/uio/io.cpp
 src/libs/uio/io.h
 src/libs/uio/ioaux.cpp

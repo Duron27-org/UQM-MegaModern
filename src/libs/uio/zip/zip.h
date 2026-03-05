@@ -22,7 +22,8 @@ typedef void* uio_NativeHandle;
 typedef void* uio_GPRootExtra;
 typedef void* uio_GPFileExtra;
 typedef void* uio_GPDirExtra;
-typedef struct CharHashTable_Iterator* uio_NativeEntriesContext;
+struct uio_GPDirEntries_Iterator;
+typedef uio_GPDirEntries_Iterator* uio_NativeEntriesContext;
 
 #define uio_INTERNAL_PHYSICAL
 

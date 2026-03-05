@@ -21,9 +21,10 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <string>
+#include <unordered_map>
 #include "libs/strlib.h"
 #include "libs/reslib.h"
-#include "stringhashtable.h"
 
 struct string_table_entry
 {
@@ -38,7 +39,7 @@ struct string_table
 	unsigned short flags;
 	int size;
 	STRING_TABLE_ENTRY_DESC* strings;
-	StringHashTable_HashTable* nameIndex;
+	std::unordered_map<std::string, STRING_TABLE_ENTRY_DESC*>* nameIndex;
 };
 
 #define HAS_SOUND_CLIPS (1 << 0)
