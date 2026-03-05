@@ -22,8 +22,8 @@
 #define LIBS_UIO_GPHYS_H_
 
 #include "uioport.h"
-#include <string>
-#include <unordered_map>
+#include "core/stl/string.h"
+#include "core/stl/map.h"
 
 #ifndef uio_INTERNAL_PHYSICAL
 typedef void* uio_GPRootExtra;
@@ -38,49 +38,62 @@ typedef struct uio_GPFile uio_GPFile;
 typedef struct uio_GPRoot_Operations uio_GPRoot_Operations;
 typedef struct uio_GPRoot uio_GPRoot;
 
-using uio_GPDirEntries = std::unordered_map<std::string, uio_GPDirEntry*>;
+using uio_GPDirEntries = uqstl::unordered_map<uqstl::string, uio_GPDirEntry*>;
 
-struct uio_GPDirEntries_Iterator {
+struct uio_GPDirEntries_Iterator
+{
 	uio_GPDirEntries::iterator it;
 	uio_GPDirEntries::iterator end;
 };
 
-inline uio_GPDirEntries* uio_GPDirEntries_new() {
+inline uio_GPDirEntries* uio_GPDirEntries_new()
+{
 	return new uio_GPDirEntries();
 }
-inline bool uio_GPDirEntries_add(uio_GPDirEntries* ht, const char* name, void* item) {
+inline bool uio_GPDirEntries_add(uio_GPDirEntries* ht, const char* name, void* item)
+{
 	return ht->insert({name, static_cast<uio_GPDirEntry*>(item)}).second;
 }
-inline bool uio_GPDirEntries_remove(uio_GPDirEntries* ht, const char* name) {
+inline bool uio_GPDirEntries_remove(uio_GPDirEntries* ht, const char* name)
+{
 	return ht->erase(name) > 0;
 }
-inline size_t uio_GPDirEntries_count(const uio_GPDirEntries* ht) {
+inline size_t uio_GPDirEntries_count(const uio_GPDirEntries* ht)
+{
 	return ht->size();
 }
-inline uio_GPDirEntry* uio_GPDirEntries_find(uio_GPDirEntries* ht, const char* name) {
+inline uio_GPDirEntry* uio_GPDirEntries_find(uio_GPDirEntries* ht, const char* name)
+{
 	auto it = ht->find(name);
 	return it != ht->end() ? it->second : nullptr;
 }
-inline void uio_GPDirEntries_deleteHashTable(uio_GPDirEntries* ht) {
+inline void uio_GPDirEntries_deleteHashTable(uio_GPDirEntries* ht)
+{
 	delete ht;
 }
-inline uio_GPDirEntries_Iterator* uio_GPDirEntries_getIterator(uio_GPDirEntries* ht) {
-	return new uio_GPDirEntries_Iterator{ht->begin(), ht->end()};
+inline uio_GPDirEntries_Iterator* uio_GPDirEntries_getIterator(uio_GPDirEntries* ht)
+{
+	return new uio_GPDirEntries_Iterator {ht->begin(), ht->end()};
 }
-inline bool uio_GPDirEntries_iteratorDone(const uio_GPDirEntries_Iterator* it) {
+inline bool uio_GPDirEntries_iteratorDone(const uio_GPDirEntries_Iterator* it)
+{
 	return it->it == it->end;
 }
-inline const char* uio_GPDirEntries_iteratorName(const uio_GPDirEntries_Iterator* it) {
+inline const char* uio_GPDirEntries_iteratorName(const uio_GPDirEntries_Iterator* it)
+{
 	return it->it->first.c_str();
 }
-inline uio_GPDirEntry* uio_GPDirEntries_iteratorItem(const uio_GPDirEntries_Iterator* it) {
+inline uio_GPDirEntry* uio_GPDirEntries_iteratorItem(const uio_GPDirEntries_Iterator* it)
+{
 	return it->it->second;
 }
-inline uio_GPDirEntries_Iterator* uio_GPDirEntries_iteratorNext(uio_GPDirEntries_Iterator* it) {
+inline uio_GPDirEntries_Iterator* uio_GPDirEntries_iteratorNext(uio_GPDirEntries_Iterator* it)
+{
 	++it->it;
 	return it;
 }
-inline void uio_GPDirEntries_freeIterator(uio_GPDirEntries_Iterator* it) {
+inline void uio_GPDirEntries_freeIterator(uio_GPDirEntries_Iterator* it)
+{
 	delete it;
 }
 

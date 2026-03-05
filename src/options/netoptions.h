@@ -21,7 +21,7 @@
 
 #ifdef NETPLAY
 #include <stddef.h>
-#include "core/stl/stl.h"
+#include "core/stl/vector.h"
 #include "types.h"
 
 namespace CLI
@@ -57,6 +57,7 @@ public:
 	size_t getFrameInputDelay() const { return m_inputDelayFrames; }
 	void setFrameInputDelay(size_t newDelay);
 	size_t getMaxFrameInputDelay() const;
+
 private:
 	NetAddress m_metaServerAddress {
 		{"", // was "uqm.stack.nl".. not sure what that is.. not sure what "meta server" is, frankly...

@@ -42,8 +42,14 @@ src/core/memory/memory.h
 src/core/misc/bittricks.h
 src/core/platform/platform.h
 src/core/platform/platform_win.cpp
+src/core/stl/array.h
+src/core/stl/map.h
+src/core/stl/memory.h
+src/core/stl/optional.h
 src/core/stl/ring_buffer.h
 src/core/stl/stl.h
+src/core/stl/string.h
+src/core/stl/vector.h
 src/core/stl/stl.cpp
 src/core/string/StringUtils.cpp
 src/core/string/StringUtils.h

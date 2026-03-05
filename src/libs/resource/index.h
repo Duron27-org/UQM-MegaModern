@@ -24,7 +24,7 @@ typedef struct resource_desc ResourceDesc;
 
 #include <stdio.h>
 #include <string>
-#include <unordered_map>
+#include "core/stl/map.h"
 #include "libs/reslib.h"
 
 struct resource_handlers
@@ -47,7 +47,7 @@ struct resource_desc
 
 struct resource_index_desc
 {
-	std::unordered_map<std::string, ResourceDesc*>* map;
+	uqstl::unordered_map<uqstl::string, ResourceDesc*>* map;
 	size_t numRes;
 };
 

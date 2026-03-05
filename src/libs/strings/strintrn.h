@@ -20,9 +20,8 @@
 #define LIBS_STRINGS_STRINTRN_H_
 
 #include <stdio.h>
-#include <string.h>
-#include <string>
-#include <unordered_map>
+#include "core/stl/map.h"
+#include "core/stl/string.h"
 #include "libs/strlib.h"
 #include "libs/reslib.h"
 
@@ -39,7 +38,7 @@ struct string_table
 	unsigned short flags;
 	int size;
 	STRING_TABLE_ENTRY_DESC* strings;
-	std::unordered_map<std::string, STRING_TABLE_ENTRY_DESC*>* nameIndex;
+	uqstl::unordered_map<uqstl::string, STRING_TABLE_ENTRY_DESC*>* nameIndex;
 };
 
 #define HAS_SOUND_CLIPS (1 << 0)

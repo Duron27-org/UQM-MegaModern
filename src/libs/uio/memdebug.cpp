@@ -23,7 +23,7 @@
 #include <fmt/format.h>
 
 #include "memdebug.h"
-#include <unordered_map>
+#include "core/stl/map.h"
 #include "mem.h"
 #include "uioutils.h"
 #include "types.h"
@@ -113,7 +113,7 @@ void invokePrintFn(uio_MemDebug_LogType type, FILE* out, const void* arg)
 	}
 }
 
-std::unordered_map<void*, uio_MemDebug_PointerInfo*>* uio_MemDebug_logs[uio_MemDebug_numLogTypes];
+uqstl::unordered_map<void*, uio_MemDebug_PointerInfo*>* uio_MemDebug_logs[uio_MemDebug_numLogTypes];
 
 
 static inline uio_MemDebug_PointerInfo* uio_MemDebug_PointerInfo_new(int ref);

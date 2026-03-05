@@ -6,34 +6,18 @@
 #define __STDC_WANT_LIB_EXT1__ 1
 #endif
 
+#include <gsl-lite/gsl-lite.hpp>
+namespace uqgsl = gsl_lite;
+
 #ifndef USING_EASTL
 
 #include <algorithm>
-#include <array>
-#include <map>
-#include <memory>
-#include <numeric>
-#include <optional>
-#include <string>
-#include <string_view>
-#include <span>
-#include <vector>
 #include <type_traits>
-#include <gsl-lite/gsl-lite.hpp>
+#include <numeric>
+#include <span>
 
 namespace uqstl = std;
-namespace uqgsl = gsl_lite;
 
-namespace gsl_lite
-{
-using not_null_czstring = not_null<czstring>;
-}
-
-namespace std
-{
-template <size_t N>
-using fixed_string = string; // std library has no fixed string :(
-}
 #else
 static_assert(false, "EASTL is not supported yet. If you want to add support for it, submit a PR!");
 #endif /* !defined(USING_EASTL)*/
