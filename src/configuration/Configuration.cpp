@@ -273,8 +273,7 @@ void getUserConfigOptions(OptionsStruct& options)
 	if (res_IsInteger("mm.controllerType")
 		&& !options.optControllerType.set)
 	{
-		options.optControllerType.value =
-			res_GetInteger("mm.controllerType");
+		options.optControllerType.value = static_cast<uqm::ControllerType>(res_GetInteger("mm.controllerType"));
 	}
 
 	getBoolConfigValue(options.smartAutoPilot, "mm.smartAutoPilot");

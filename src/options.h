@@ -91,7 +91,7 @@ extern OPT_ENABLABLE optGameOver;
 extern OPT_ENABLABLE optShipDirectionIP;
 extern OPT_ENABLABLE optHazardColors;
 extern OPT_ENABLABLE optOrzCompFont;
-extern int optControllerType;
+extern uqm::ControllerType optControllerType;
 extern OPT_ENABLABLE optSmartAutoPilot;
 extern uqm::EmulationMode optTintPlanSphere;
 extern uqm::EmulationMode optPlanetStyle;

@@ -41,7 +41,7 @@ void BuildBuildPickFrame(void)
 	s.origin.x = 0;
 	s.origin.y = 0;
 	s.frame = SetAbsFrameIndex(MeleeFrame,
-							   BUILDPICK_FRAME_OFFSET + optControllerType);
+							   BUILDPICK_FRAME_OFFSET + static_cast<int>(optControllerType));
 	// 5x5 grid of ships to pick from
 	GetFrameRect(s.frame, &r);
 
@@ -115,7 +115,7 @@ void RepairBuildPickFrame(GFXRECT* pRect, GFXPOINT* origin)
 	s.origin.x = pRect->corner.x;
 	s.origin.y = pRect->corner.y;
 	s.frame = SetAbsFrameIndex(MeleeFrame,
-							   BUILDPICK_FRAME_OFFSET + optControllerType);
+							   BUILDPICK_FRAME_OFFSET + static_cast<int>(optControllerType));
 
 	DrawStamp(&s);
 

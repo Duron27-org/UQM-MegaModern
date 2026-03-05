@@ -3308,6 +3308,12 @@ DoneSphereGrowth:
 	}
 }
 
+template <typename T>
+auto ifGamepad(T gamepadValue, T keyboardValue = {0})
+{
+	return RES_SCALE(optControllerType != uqm::ControllerType::KeyboardMouse ? gamepadValue : keyboardValue);
+}
+
 static void
 DrawStarmapHelper(void)
 {
@@ -3318,7 +3324,6 @@ DrawStarmapHelper(void)
 	GFXRECT r;
 	uqm::SIZE leading;
 	int frame_index;
-#define GAMEPAD(a) (RES_SCALE(optControllerType ? (a) : 0))
 
 	OldContext = SetContext(StatusContext);
 
@@ -3332,7 +3337,7 @@ DrawStarmapHelper(void)
 	r.corner.x = RES_SCALE(4);
 	r.corner.y = RES_SCALE(34);
 
-	frame_index = !optControllerType ? 0 : 5 * optControllerType;
+	frame_index = optControllerType == uqm::ControllerType::KeyboardMouse ? 0 : 5 * static_cast<int>(optControllerType);
 
 	// :Maps
 	s.frame = SetAbsFrameIndex(SubmenuFrame, frame_index);
@@ -3341,7 +3346,7 @@ DrawStarmapHelper(void)
 
 	SetContextForeGroundColor(MODULE_NAME_COLOR);
 	t.align = ALIGN_LEFT;
-	t.baseline.x = r.corner.x + RES_SCALE(12) - GAMEPAD(2);
+	t.baseline.x = r.corner.x + RES_SCALE(12) - ifGamepad(2);
 	t.baseline.y = s.origin.y + leading;
 	t.pStr = GAME_STRING(STATUS_STRING_BASE + 12);
 	t.CharCount = (uqm::COUNT)~0;
@@ -3353,7 +3358,7 @@ DrawStarmapHelper(void)
 	DrawStamp(&s);
 
 	t.align = ALIGN_LEFT;
-	t.baseline.x = r.corner.x + RES_SCALE(16) - GAMEPAD(6);
+	t.baseline.x = r.corner.x + RES_SCALE(16) - ifGamepad(6);
 	t.baseline.y = s.origin.y + leading;
 	t.pStr = GAME_STRING(STATUS_STRING_BASE + 13);
 	t.CharCount = (uqm::COUNT)~0;
@@ -3371,7 +3376,7 @@ DrawStarmapHelper(void)
 	DrawStamp(&s);
 
 	t.align = ALIGN_LEFT;
-	t.baseline.x = r.corner.x + RES_SCALE(18) - GAMEPAD(8);
+	t.baseline.x = r.corner.x + RES_SCALE(18) - ifGamepad(8);
 	t.baseline.y = s.origin.y + leading;
 	t.pStr = ":";
 	t.CharCount = (uqm::COUNT)~0;
@@ -3391,21 +3396,21 @@ DrawStarmapHelper(void)
 	// :Search
 	s.frame = SetAbsFrameIndex(SubmenuFrame, frame_index + 3);
 	s.origin.x = r.corner.x;
-	s.origin.y += RES_SCALE(7) - GAMEPAD(1);
+	s.origin.y += RES_SCALE(7) - ifGamepad(1);
 	DrawStamp(&s);
 
-	t.baseline.x = s.origin.x + RES_SCALE(12) + GAMEPAD(11);
-	t.baseline.y = s.origin.y + leading + RES_SCALE(5) - GAMEPAD(5);
+	t.baseline.x = s.origin.x + RES_SCALE(12) + ifGamepad(11);
+	t.baseline.y = s.origin.y + leading + RES_SCALE(5) - ifGamepad(5);
 	t.pStr = GAME_STRING(STATUS_STRING_BASE + 15);
 	t.CharCount = (uqm::COUNT)~0;
 	font_DrawText(&t);
 
 	// :Zoom
 	s.frame = SetAbsFrameIndex(SubmenuFrame, frame_index + 4);
-	s.origin.y += RES_SCALE(21) - GAMEPAD(11);
+	s.origin.y += RES_SCALE(21) - ifGamepad(11);
 	DrawStamp(&s);
 
-	t.baseline.x = s.origin.x + RES_SCALE(30) - GAMEPAD(18);
+	t.baseline.x = s.origin.x + RES_SCALE(30) - ifGamepad(18);
 	t.baseline.y = s.origin.y + leading + RES_SCALE(5);
 	t.pStr = GAME_STRING(STATUS_STRING_BASE + 16);
 	t.CharCount = (uqm::COUNT)~0;

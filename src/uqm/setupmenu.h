@@ -22,10 +22,6 @@
 #include "options/OptionTypes.h"
 #include "controls.h"
 
-#if 0 //defined(__cplusplus)
-extern "C" {
-#endif
-
 typedef enum
 {
 	OPTVAL_DISABLED,
@@ -115,12 +111,12 @@ typedef enum
 } OPT_DATETYPE;
 
 
-typedef enum
-{
-	OPTVAL_KBM,
-	OPTVAL_XBX,
-	OPTVAL_PS4
-} OPT_CONTROLLER;
+//typedef enum
+//{
+//	OPTVAL_KBM,
+//	OPTVAL_XBX,
+//	OPTVAL_PS4
+//} OPT_CONTROLLER;
 
 typedef enum
 {
@@ -422,7 +418,7 @@ typedef struct globalopts_struct
 	uqm::Difficulty difficulty;
 	uqm::NomadMode nomad;
 	OPT_MELEEZOOM meleezoom;
-	OPT_CONTROLLER controllerType;
+	uqm::ControllerType controllerType;
 	uqm::FuelRangeDisplay fuelRange;
 	OPT_SPHERETYPE sphereType;
 	OPT_WINDOWTYPE windowType;
@@ -457,9 +453,5 @@ void SetupMenu(void);
 
 void GetGlobalOptions(GLOBALOPTS* opts);
 void SetGlobalOptions(GLOBALOPTS* opts);
-
-#if 0 //defined(__cplusplus)
-}
-#endif
 
 #endif // UQM_SETUPMENU_H_

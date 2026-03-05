@@ -356,22 +356,23 @@ uqstl::pair<int, bool> UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 	// Rendering Options
 	auto renderGroup {app.add_option_group("Rendering", "Options which control the rendering and display of the game.")};
 
-	auto resolutionAssignmentCallback = [&](const std::string& value) {
-		static const std::regex re {R"(^(\d+)[x,](\d+)$)"};
-		if (std::smatch match {}; std::regex_match(value, match, re))
-		{
-			m_options.resolution = Vec2u {
-				std::stoul(match[1]),
-				std::stoul(match[2])};
-		}
-		else
-		{
-			throw CLI::ValidationError {"--resolution", "Must be in WIDTHxHEIGHT format."};
-		}
-	};
+	// Resolution CLI option does not actually work. Disable for now.
+	//auto resolutionAssignmentCallback = [&](const std::string& value) {
+	//	static const std::regex re {R"(^(\d+)[x,](\d+)$)"};
+	//	if (std::smatch match {}; std::regex_match(value, match, re))
+	//	{
+	//		m_options.resolution = Vec2u {
+	//			std::stoul(match[1]),
+	//			std::stoul(match[2])};
+	//	}
+	//	else
+	//	{
+	//		throw CLI::ValidationError {"--resolution", "Must be in WIDTHxHEIGHT format."};
+	//	}
+	//};
 
-	renderGroup->add_option_function<std::string>("-r,--resolution", resolutionAssignmentCallback, "Screen resolution; higher resolutions only work with --opengl enabled.")
-		->default_str(fmt::format("{:(}", *defaults.resolution));
+	//renderGroup->add_option_function<std::string>("-r,--resolution", resolutionAssignmentCallback, "Screen resolution; higher resolutions only work with --opengl enabled.")
+	//	->default_str(fmt::format("{:(}", *defaults.resolution));
 	renderGroup->add_option("-f,--fullscreen", m_options.windowMode.edit(), "Fullscreen mode.")
 		->transform(CLI::CheckedTransformer {EnumNames<WindowMode>::map<std::string>(), CLI::ignore_case})
 		->default_str(fmt::format("{:s}", *defaults.windowMode));
@@ -529,12 +530,12 @@ uqstl::pair<int, bool> UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 	uqstl::vector<FuelRangeDisplay> specifiedFuelRangeDisplayFlags {};
 	modGroup->add_option("--fuelrange", specifiedFuelRangeDisplayFlags, "A comma-separated list of fuel range display flags to enable. Can be any combindation") // todo: selected flags.
 		->expected(-1)
-		->transform(CLI::CheckedTransformer {EnumNames<FuelRangeDisplay>::map<std::string>(), CLI::ignore_case})
+		->transform(CLI::CheckedTransformer {EnumNames<FuelRangeDisplay>::pairs<std::string>(), CLI::ignore_case})
 		->default_str(fmt::format("{:s}", *defaults.optGodModes));
 	modGroup->add_flag("--extended", m_options.extended.edit(), "Enables Extended Edition features")
 		->default_str(defaults.extended.toString());
 	modGroup->add_option("--nomad", m_options.nomad.edit(), "Enables 'Nomad Mode' (No Starbase)")
-		->transform(CLI::CheckedTransformer {EnumNames<NomadMode>::map<std::string>(), CLI::ignore_case})
+		->transform(CLI::CheckedTransformer {EnumNames<NomadMode>::pairs<std::string>(), CLI::ignore_case})
 		->default_str(fmt::format("{:s}", *defaults.nomad));
 	modGroup->add_flag("--gameover", m_options.gameOver.edit(), "Enables Game Over cutscenes")
 		->default_str(defaults.gameOver.toString());
@@ -546,7 +547,9 @@ uqstl::pair<int, bool> UQMOptions::parseArgs(uqstl::span<uqgsl::zstring> args)
 		->default_str(defaults.orzCompFont.toString());
 	modGroup->add_flag("--smartautopilot", m_options.smartAutoPilot.edit(), "Activating Auto-Pilot within Solar System pilots the Flagship out via the shortest route.")
 		->default_str(defaults.smartAutoPilot.toString());
-	//	uqm::log::info("  --controllertype : 0: Keyboard | 1: Xbox | 2: PlayStation 4 (default: 0)");
+	modGroup->add_option("--controllertype", m_options.optControllerType.edit(), "Controller type to use for input.")
+		->transform(CLI::CheckedTransformer {EnumNames<ControllerType>::pairs<std::string>(), CLI::ignore_case})
+		->default_str(fmt::format("{:s}", *defaults.optControllerType));
 	modGroup->add_option("--tintplansphere", m_options.tintPlanSphere.edit(), "Tint the planet sphere with scan color during scan")
 		->transform(emulationModeTransformer)
 		->default_str(fmt::format("{:s}", *defaults.tintPlanSphere));

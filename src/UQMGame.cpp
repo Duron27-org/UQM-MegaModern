@@ -319,7 +319,6 @@ uqstl::pair<int, bool> UQMGame::setup(uqstl::span<uqgsl::zstring> args)
 	optCaptainNames = (OPT_ENABLABLE)options.captainNames.value;
 	optDosMenus = (OPT_ENABLABLE)options.dosMenus.value;
 
-#pragma clang optimize off
 	prepareContentDir(c_str(options.contentDir), c_str(options.addonDir), c_str(args.front()));
 
 	resolutionFactor = isAddonAvailable(HD_MODE) ?
@@ -339,11 +338,11 @@ uqstl::pair<int, bool> UQMGame::setup(uqstl::span<uqgsl::zstring> args)
 	}
 	m_options.edit().windowEmulationMode.value = optWindowType;
 	m_options.edit().windowEmulationMode.set = true;
-#pragma clang optimize on
 
 	{
 		int w = 320;
 		int h = (DOS_BOOL(240, 200));
+
 		int scaleFactor = loresBlowupScale + 1; // stored value starts with 0
 
 		CanvasWidth = w << resolutionFactor;

@@ -179,7 +179,7 @@ DrawFileString(const MeleeTeam* team, const GFXPOINT* origin,
 		r.extent.width = TEAM_NAME_L_BOX_WIDTH;
 		r.extent.height = TEAM_NAME_L_BOX_HEIGHT;
 
-		QuickRepair(30 + optControllerType, &r);
+		QuickRepair(30 + static_cast<int>(optControllerType), &r);
 	}
 
 	SetContextForeGroundColor(highlite ?
@@ -305,7 +305,7 @@ DrawFileStrings(MELEE_STATE* pMS)
 	SetContextFont(MicroFont);
 	BatchGraphics();
 
-	DrawMeleeIcon(30 + optControllerType, false); /* The load team frame */
+	DrawMeleeIcon(30 + static_cast<int>(optControllerType), false); /* The load team frame */
 
 	if (FillFileView(pMS))
 	{

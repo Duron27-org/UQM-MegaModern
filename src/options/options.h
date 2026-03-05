@@ -104,7 +104,8 @@ struct OptionsStruct
 	BoolOption shipDirectionIP {false};
 	BoolOption hazardColors {false};
 	BoolOption orzCompFont {false};
-	IntOption optControllerType {0};
+
+	OptionT<ControllerType> optControllerType {ControllerType::KeyboardMouse};
 	BoolOption smartAutoPilot {false};
 	EmulationOption tintPlanSphere {uqm::EmulationMode::Console3DO};
 	EmulationOption planetStyle {uqm::EmulationMode::Console3DO};

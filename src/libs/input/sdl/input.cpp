@@ -655,53 +655,54 @@ void InterrogateInputState(int templat, int control, int index, char* buffer,
 			buffer[maxlen - 1] = 0;
 			break;
 		case VCONTROL_JOYBUTTON:
+			switch (optControllerType)
+			{
 #if SDL_MAJOR_VERSION > 1
-			if (optControllerType == 1)
-			{
-				fmt::format_to_sz_n(buffer, maxlen, "[J{} {}]",
-									g->gesture.button.port,
-									xbx_buttons[g->gesture.button.index]);
-			}
-			else if (optControllerType == 2)
-			{
-				fmt::format_to_sz_n(buffer, maxlen, "[J{} {}]",
-									g->gesture.button.port,
-									ds4_buttons[g->gesture.button.index]);
-			}
-			else
+				case uqm::ControllerType::XBox:
+					fmt::format_to_sz_n(buffer, maxlen, "[J{} {}]",
+										g->gesture.button.port,
+										xbx_buttons[g->gesture.button.index]);
+					break;
+				case uqm::ControllerType::Playstation:
+					fmt::format_to_sz_n(buffer, maxlen, "[J{} {}]",
+										g->gesture.button.port,
+										ds4_buttons[g->gesture.button.index]);
+					break;
 #endif
-			{
-				fmt::format_to_sz_n(buffer, maxlen, "[J{} B{}]",
-									g->gesture.button.port,
-									g->gesture.button.index);
+				case uqm::ControllerType::KeyboardMouse:
+				default:
+					fmt::format_to_sz_n(buffer, maxlen, "[J{} B{}]",
+										g->gesture.button.port,
+										g->gesture.button.index);
+					break;
 			}
-			buffer[maxlen - 1] = 0;
 			break;
 		case VCONTROL_JOYAXIS:
+			switch (optControllerType)
+			{
 #if SDL_MAJOR_VERSION > 1
-			if (optControllerType == 1)
-			{
-				fmt::format_to_sz_n(buffer, maxlen, "[J{} {}{}]",
-									g->gesture.axis.port,
-									xbx_axes[g->gesture.axis.index],
-									g->gesture.axis.polarity > 0 ? '+' : '-');
-			}
-			else if (optControllerType == 2)
-			{
-				fmt::format_to_sz_n(buffer, maxlen, "[J{} {}{}]",
-									g->gesture.axis.port,
-									ds4_axes[g->gesture.axis.index],
-									g->gesture.axis.polarity > 0 ? '+' : '-');
-			}
-			else
+				case uqm::ControllerType::XBox:
+					fmt::format_to_sz_n(buffer, maxlen, "[J{} {}{}]",
+										g->gesture.axis.port,
+										xbx_axes[g->gesture.axis.index],
+										g->gesture.axis.polarity > 0 ? '+' : '-');
+					break;
+				case uqm::ControllerType::Playstation:
+					fmt::format_to_sz_n(buffer, maxlen, "[J{} {}{}]",
+										g->gesture.axis.port,
+										ds4_axes[g->gesture.axis.index],
+										g->gesture.axis.polarity > 0 ? '+' : '-');
+					break;
 #endif
-			{
-				fmt::format_to_sz_n(buffer, maxlen, "[J{} A{} {}]",
-									g->gesture.axis.port,
-									g->gesture.axis.index,
-									g->gesture.axis.polarity > 0 ? '+' : '-');
+				case uqm::ControllerType::KeyboardMouse:
+				default:
+					fmt::format_to_sz_n(buffer, maxlen, "[J{} A{} {}]",
+										g->gesture.axis.port,
+										g->gesture.axis.index,
+										g->gesture.axis.polarity > 0 ? '+' : '-');
+					break;
 			}
-			buffer[maxlen - 1] = 0;
+
 			break;
 #if SDL_MAJOR_VERSION == 1
 		case VCONTROL_JOYHAT:

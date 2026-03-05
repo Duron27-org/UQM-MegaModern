@@ -109,7 +109,7 @@ OPT_ENABLABLE optGameOver;
 OPT_ENABLABLE optShipDirectionIP;
 OPT_ENABLABLE optHazardColors;
 OPT_ENABLABLE optOrzCompFont;
-int optControllerType;
+uqm::ControllerType optControllerType;
 OPT_ENABLABLE optSmartAutoPilot;
 uqm::EmulationMode optTintPlanSphere;
 uqm::EmulationMode optPlanetStyle;

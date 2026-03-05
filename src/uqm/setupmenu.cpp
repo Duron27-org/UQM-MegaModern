@@ -1310,7 +1310,7 @@ SetDefaults(void)
 	choices[CHOICE_GAMEOVER].selected = opts.gameOver;
 	choices[CHOICE_IPSHIPDIR].selected = opts.shipDirectionIP;
 	choices[CHOICE_ORZFONT].selected = opts.orzCompFont;
-	choices[CHOICE_INPDEVICE].selected = opts.controllerType;
+	choices[CHOICE_INPDEVICE].selected = static_cast<int>(opts.controllerType);
 	choices[CHOICE_SMARTAUTO].selected = opts.smartAutoPilot;
 	choices[CHOICE_SCANTINT].selected = static_cast<int>(opts.tintPlanSphere);
 	choices[CHOICE_IPSTYLE].selected = static_cast<int>(opts.planetStyle);
@@ -1437,7 +1437,7 @@ PropagateResults(void)
 	opts.gameOver = (OPT_ENABLABLE)choices[CHOICE_GAMEOVER].selected;
 	opts.shipDirectionIP = (OPT_ENABLABLE)choices[CHOICE_IPSHIPDIR].selected;
 	opts.orzCompFont = (OPT_ENABLABLE)choices[CHOICE_ORZFONT].selected;
-	opts.controllerType = (OPT_CONTROLLER)choices[CHOICE_INPDEVICE].selected;
+	opts.controllerType = static_cast<uqm::ControllerType>(choices[CHOICE_INPDEVICE].selected);
 	opts.smartAutoPilot = (OPT_ENABLABLE)choices[CHOICE_SMARTAUTO].selected;
 	opts.tintPlanSphere = (OPT_CONSOLETYPE)choices[CHOICE_SCANTINT].selected;
 	opts.planetStyle = (OPT_CONSOLETYPE)choices[CHOICE_IPSTYLE].selected;
@@ -2557,7 +2557,7 @@ void GetGlobalOptions(GLOBALOPTS* opts)
 	optMScale = opts->meleezoom =
 		(OPT_MELEEZOOM)(uqm::toTFBScaleMode(optMeleeScale) == uqm::TFBScaleMode::Step ? uqm::EmulationMode::PC : uqm::EmulationMode::Console3DO);
 #endif
-	opts->controllerType = (OPT_CONTROLLER)optControllerType;
+	opts->controllerType = optControllerType;
 	opts->directionalJoystick = optDirectionalJoystick; // For Android
 	opts->dateType = dateFormatToDateTypeOpt(optDateFormat);
 	opts->customBorder = optCustomBorder;
