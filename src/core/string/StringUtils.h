@@ -215,6 +215,62 @@ inline size_t strncpy_safe(uqstl::span<char> dest, uqstl::string_view src)
 #endif
 }
 
+static inline constexpr uint64_t FNV1a_OffsetBasis {14695981039346656037ull};
+static inline constexpr uint64_t FNV1a_Prime {1099511628211ull};
+
+
+// FNV-1a hash function for compile-time string hashing. Not suitable for cryptographic purposes, but good for things like switch statements on strings.
+static constexpr uint64_t hashQuick64(const uqstl::string_view str) noexcept
+{
+
+	uint64_t hash = FNV1a_OffsetBasis;
+
+	for (unsigned char c : str)
+	{
+		hash ^= c;
+		hash *= FNV1a_Prime;
+	}
+
+	return hash;
+}
+
+static constexpr std::array<unsigned char, 256> makeLowercaseTable()
+{
+	std::array<unsigned char, 256> table {};
+
+	for (int i = 0; i < 256; ++i)
+	{
+		if (i >= 'A' && i <= 'Z')
+		{
+			table[i] = static_cast<unsigned char>(i + ('a' - 'A'));
+		}
+		else
+		{
+			table[i] = static_cast<unsigned char>(i);
+		}
+	}
+
+	return table;
+}
+
+static constexpr uint64_t hashQuick64CaseInsensitive(const uqstl::string_view str) noexcept
+{
+	constexpr uint64_t OffsetBasis {14695981039346656037ull};
+	constexpr uint64_t Prime {1099511628211ull};
+
+	constexpr auto AsciiToLowerTable {makeLowercaseTable()};
+
+	uint64_t hash = FNV1a_OffsetBasis;
+
+	for (unsigned char c : str)
+	{
+		hash ^= AsciiToLowerTable[static_cast<int>(c)];
+		hash *= FNV1a_Prime;
+	}
+
+	return hash;
+}
+
 
 ///////////////////////////////////////////// ENUM //////////////////////////////////////////////////
 
@@ -259,17 +315,6 @@ struct EnumNames
 	}
 };
 
-// istream support for enums.
-//template <EnumType E>
-//std::istream& operator>>(std::istream& in, E& out)
-//{
-//	/*char sep {};
-//	if (!(in >> out.x >> sep >> out.y) || (sep != ',' && sep != 'x'))
-//	{
-//		in.setstate(std::ios::failbit);
-//	}*/
-//	return in;
-//}
 
 } // namespace uqm
 
@@ -297,7 +342,6 @@ FMT_INLINE auto format_to_sz_n(char (&out)[N], format_string<T...> fmt, T&&... a
 {
 	return format_to_sz_n(out, N, fmt, std::forward<T>(args)...);
 }
-
 
 
 template <EnumType E>
