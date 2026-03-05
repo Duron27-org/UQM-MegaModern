@@ -74,6 +74,7 @@ find_package(CLI11 REQUIRED)
 find_package(fmt REQUIRED)
 find_package(gsl-lite REQUIRED)
 find_package(magic_enum REQUIRED)
+find_package(nlohmann_json REQUIRED)
 find_package(Ogg REQUIRED)
 find_package(OpenAL REQUIRED)
 find_package(PNG REQUIRED)
@@ -251,6 +252,7 @@ target_link_libraries(${APP_TARGET}
         fmt::fmt
         gsl-lite::gsl-lite
         magic_enum::magic_enum
+        nlohmann_json::nlohmann_json
         Ogg::ogg 
         OpenAL::OpenAL
         PNG::PNG
