@@ -287,6 +287,17 @@ FMT_INLINE auto format_to_sz_n(OutputIt out, size_t outSize, format_string<T...>
 	return result;
 }
 
+template <typename... T>
+FMT_INLINE auto format_to_sz_n(uqstl::span<char> out, format_string<T...> fmt, T&&... args)
+{
+	return format_to_sz_n(out.data(), out.size(), fmt, std::forward<T>(args)...);
+}
+template <size_t N, typename... T>
+FMT_INLINE auto format_to_sz_n(char (&out)[N], format_string<T...> fmt, T&&... args)
+{
+	return format_to_sz_n(out, N, fmt, std::forward<T>(args)...);
+}
+
 
 
 template <EnumType E>

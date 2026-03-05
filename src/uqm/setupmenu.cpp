@@ -46,6 +46,7 @@
 #include "libs/input/input_common.h"
 
 #include "SDL_version.h"
+#include <scn/scan.h>
 
 static STRING SetupTab;
 
@@ -1158,7 +1159,13 @@ change_res(WIDGET_TEXTENTRY* self)
 	uqm::GfxFlags NewGfxFlags = g_gfxFlags;
 	bool isExclusive = testFlag(NewGfxFlags, uqm::GfxFlags::ExclusiveFullscreen);
 
-	if (sscanf(self->value, "%dx%d", &NewWidth, &NewHeight) != 2)
+	if (const auto result {scn::scan<int,int>(self->value, "{}x{}")})
+	{
+		const auto [w, h] = result->values();
+		NewWidth = w;
+		NewHeight = h;
+	}
+	else
 	{
 		populate_res();
 		return;
