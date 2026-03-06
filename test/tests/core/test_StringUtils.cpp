@@ -617,4 +617,424 @@ TEST_F(StringUtilsTest, HashQuick64CI_ConstexprEvaluation)
 		"Lowercase input must match case-sensitive hash");
 }
 
+// ─── tokenize (includeEmpty = true) ─────────────────────────────────────────
+
+TEST_F(StringUtilsTest, Tokenize_CharDelim_BasicSplit)
+{
+	uqstl::vector<uqstl::string_view> out;
+	tokenize("a,b,c", out, ',', true);
+	ASSERT_EQ(out.size(), 3u);
+	EXPECT_EQ(out[0], "a");
+	EXPECT_EQ(out[1], "b");
+	EXPECT_EQ(out[2], "c");
+}
+
+TEST_F(StringUtilsTest, Tokenize_CharDelim_NoDelimiterPresent)
+{
+	uqstl::vector<uqstl::string_view> out;
+	tokenize("hello", out, ',', true);
+	ASSERT_EQ(out.size(), 1u);
+	EXPECT_EQ(out[0], "hello");
+}
+
+TEST_F(StringUtilsTest, Tokenize_CharDelim_EmptyInput)
+{
+	uqstl::vector<uqstl::string_view> out;
+	tokenize("", out, ',', true);
+	ASSERT_EQ(out.size(), 1u);
+	EXPECT_EQ(out[0], "");
+}
+
+TEST_F(StringUtilsTest, Tokenize_CharDelim_LeadingDelimiter)
+{
+	uqstl::vector<uqstl::string_view> out;
+	tokenize(",a,b", out, ',', true);
+	ASSERT_EQ(out.size(), 3u);
+	EXPECT_EQ(out[0], "");
+	EXPECT_EQ(out[1], "a");
+	EXPECT_EQ(out[2], "b");
+}
+
+TEST_F(StringUtilsTest, Tokenize_CharDelim_TrailingDelimiter)
+{
+	uqstl::vector<uqstl::string_view> out;
+	tokenize("a,b,", out, ',', true);
+	ASSERT_EQ(out.size(), 3u);
+	EXPECT_EQ(out[0], "a");
+	EXPECT_EQ(out[1], "b");
+	EXPECT_EQ(out[2], "");
+}
+
+TEST_F(StringUtilsTest, Tokenize_CharDelim_ConsecutiveDelimiters)
+{
+	uqstl::vector<uqstl::string_view> out;
+	tokenize("a,,b", out, ',', true);
+	ASSERT_EQ(out.size(), 3u);
+	EXPECT_EQ(out[0], "a");
+	EXPECT_EQ(out[1], "");
+	EXPECT_EQ(out[2], "b");
+}
+
+TEST_F(StringUtilsTest, Tokenize_CharDelim_OnlyDelimiters)
+{
+	uqstl::vector<uqstl::string_view> out;
+	tokenize(",,,", out, ',', true);
+	ASSERT_EQ(out.size(), 4u);
+	for (const auto& token : out)
+	{
+		EXPECT_EQ(token, "");
+	}
+}
+
+TEST_F(StringUtilsTest, Tokenize_CharDelim_SingleCharTokens)
+{
+	uqstl::vector<uqstl::string_view> out;
+	tokenize("a", out, ',', true);
+	ASSERT_EQ(out.size(), 1u);
+	EXPECT_EQ(out[0], "a");
+}
+
+TEST_F(StringUtilsTest, Tokenize_CharDelim_WhitespaceDelimiter)
+{
+	uqstl::vector<uqstl::string_view> out;
+	tokenize("hello world foo", out, ' ', true);
+	ASSERT_EQ(out.size(), 3u);
+	EXPECT_EQ(out[0], "hello");
+	EXPECT_EQ(out[1], "world");
+	EXPECT_EQ(out[2], "foo");
+}
+
+TEST_F(StringUtilsTest, Tokenize_CharDelim_TokensAreViewsIntoOriginal)
+{
+	uqstl::string_view input = "one,two,three";
+	uqstl::vector<uqstl::string_view> out;
+	tokenize(input, out, ',', true);
+	ASSERT_EQ(out.size(), 3u);
+	// Each token should point into the original buffer
+	EXPECT_EQ(out[0].data(), input.data());
+	EXPECT_EQ(out[1].data(), input.data() + 4);
+	EXPECT_EQ(out[2].data(), input.data() + 8);
+}
+
+TEST_F(StringUtilsTest, Tokenize_SvDelim_BasicCharSet)
+{
+	uqstl::vector<uqstl::string_view> out;
+	tokenize("a,b;c", out, ",;", true);
+	ASSERT_EQ(out.size(), 3u);
+	EXPECT_EQ(out[0], "a");
+	EXPECT_EQ(out[1], "b");
+	EXPECT_EQ(out[2], "c");
+}
+
+TEST_F(StringUtilsTest, Tokenize_SvDelim_MixedDelimiters)
+{
+	uqstl::vector<uqstl::string_view> out;
+	tokenize("hello world\tfoo", out, " \t", true);
+	ASSERT_EQ(out.size(), 3u);
+	EXPECT_EQ(out[0], "hello");
+	EXPECT_EQ(out[1], "world");
+	EXPECT_EQ(out[2], "foo");
+}
+
+TEST_F(StringUtilsTest, Tokenize_SvDelim_NoDelimiterInInput)
+{
+	uqstl::vector<uqstl::string_view> out;
+	tokenize("hello", out, ",;", true);
+	ASSERT_EQ(out.size(), 1u);
+	EXPECT_EQ(out[0], "hello");
+}
+
+TEST_F(StringUtilsTest, Tokenize_SvDelim_EmptyInput)
+{
+	uqstl::vector<uqstl::string_view> out;
+	tokenize("", out, ",", true);
+	ASSERT_EQ(out.size(), 1u);
+	EXPECT_EQ(out[0], "");
+}
+
+TEST_F(StringUtilsTest, Tokenize_SvDelim_ConsecutiveDelimiters)
+{
+	uqstl::vector<uqstl::string_view> out;
+	tokenize("a,,b", out, ",", true);
+	ASSERT_EQ(out.size(), 3u);
+	EXPECT_EQ(out[0], "a");
+	EXPECT_EQ(out[1], "");
+	EXPECT_EQ(out[2], "b");
+}
+
+TEST_F(StringUtilsTest, Tokenize_SvDelim_TrailingDelimiter)
+{
+	uqstl::vector<uqstl::string_view> out;
+	tokenize("x.y-", out, ".-", true);
+	ASSERT_EQ(out.size(), 3u);
+	EXPECT_EQ(out[0], "x");
+	EXPECT_EQ(out[1], "y");
+	EXPECT_EQ(out[2], "");
+}
+
+TEST_F(StringUtilsTest, Tokenize_SvDelim_SingleCharDelimSet)
+{
+	// string_view with one char behaves the same as a char delimiter
+	uqstl::vector<uqstl::string_view> out;
+	tokenize("a,b,c", out, ",", true);
+	ASSERT_EQ(out.size(), 3u);
+	EXPECT_EQ(out[0], "a");
+	EXPECT_EQ(out[1], "b");
+	EXPECT_EQ(out[2], "c");
+}
+
+// ─── tokenize (includeEmpty = false) ────────────────────────────────────────
+
+TEST_F(StringUtilsTest, Tokenize_ExcludeEmpty_BasicSplitUnchanged)
+{
+	// No empty tokens in input — result is identical to includeEmpty=true
+	uqstl::vector<uqstl::string_view> out;
+	tokenize("a,b,c", out, ',', false);
+	ASSERT_EQ(out.size(), 3u);
+	EXPECT_EQ(out[0], "a");
+	EXPECT_EQ(out[1], "b");
+	EXPECT_EQ(out[2], "c");
+}
+
+TEST_F(StringUtilsTest, Tokenize_ExcludeEmpty_LeadingDelimiterSkipped)
+{
+	uqstl::vector<uqstl::string_view> out;
+	tokenize(",a,b", out, ',', false);
+	ASSERT_EQ(out.size(), 2u);
+	EXPECT_EQ(out[0], "a");
+	EXPECT_EQ(out[1], "b");
+}
+
+TEST_F(StringUtilsTest, Tokenize_ExcludeEmpty_TrailingDelimiterSkipped)
+{
+	uqstl::vector<uqstl::string_view> out;
+	tokenize("a,b,", out, ',', false);
+	ASSERT_EQ(out.size(), 2u);
+	EXPECT_EQ(out[0], "a");
+	EXPECT_EQ(out[1], "b");
+}
+
+TEST_F(StringUtilsTest, Tokenize_ExcludeEmpty_ConsecutiveDelimitersSkipped)
+{
+	uqstl::vector<uqstl::string_view> out;
+	tokenize("a,,b", out, ',', false);
+	ASSERT_EQ(out.size(), 2u);
+	EXPECT_EQ(out[0], "a");
+	EXPECT_EQ(out[1], "b");
+}
+
+TEST_F(StringUtilsTest, Tokenize_ExcludeEmpty_OnlyDelimiters)
+{
+	uqstl::vector<uqstl::string_view> out;
+	tokenize(",,,", out, ',', false);
+	EXPECT_TRUE(out.empty());
+}
+
+TEST_F(StringUtilsTest, Tokenize_ExcludeEmpty_EmptyInput)
+{
+	uqstl::vector<uqstl::string_view> out;
+	tokenize("", out, ',', false);
+	EXPECT_TRUE(out.empty());
+}
+
+TEST_F(StringUtilsTest, Tokenize_ExcludeEmpty_LeadingAndTrailing)
+{
+	uqstl::vector<uqstl::string_view> out;
+	tokenize(",a,b,", out, ',', false);
+	ASSERT_EQ(out.size(), 2u);
+	EXPECT_EQ(out[0], "a");
+	EXPECT_EQ(out[1], "b");
+}
+
+TEST_F(StringUtilsTest, Tokenize_ExcludeEmpty_SvDelim_MixedWhitespace)
+{
+	uqstl::vector<uqstl::string_view> out;
+	tokenize("  hello\t\tworld  ", out, " \t", false);
+	ASSERT_EQ(out.size(), 2u);
+	EXPECT_EQ(out[0], "hello");
+	EXPECT_EQ(out[1], "world");
+}
+
+TEST_F(StringUtilsTest, Tokenize_ExcludeEmpty_SvDelim_OnlyDelimiters)
+{
+	uqstl::vector<uqstl::string_view> out;
+	tokenize(",;,;", out, ",;", false);
+	EXPECT_TRUE(out.empty());
+}
+
+TEST_F(StringUtilsTest, Tokenize_ExcludeEmpty_NoDelimiterPresent)
+{
+	// No delimiter at all — single non-empty token is always emitted
+	uqstl::vector<uqstl::string_view> out;
+	tokenize("hello", out, ',', false);
+	ASSERT_EQ(out.size(), 1u);
+	EXPECT_EQ(out[0], "hello");
+}
+
+// ─── trimLeft ───────────────────────────────────────────────────────────────
+
+TEST_F(StringUtilsTest, TrimLeft_NoLeadingWhitespace)
+{
+	EXPECT_EQ(trimLeft("hello"), "hello");
+	EXPECT_EQ(trimLeft("hello world"), "hello world");
+}
+
+TEST_F(StringUtilsTest, TrimLeft_LeadingSpaces)
+{
+	EXPECT_EQ(trimLeft("   hello"), "hello");
+	EXPECT_EQ(trimLeft(" x"), "x");
+}
+
+TEST_F(StringUtilsTest, TrimLeft_LeadingMixedWhitespace)
+{
+	EXPECT_EQ(trimLeft(" \t\r\nhello"), "hello");
+}
+
+TEST_F(StringUtilsTest, TrimLeft_TrailingWhitespaceUntouched)
+{
+	EXPECT_EQ(trimLeft("hello   "), "hello   ");
+}
+
+TEST_F(StringUtilsTest, TrimLeft_BothEnds_OnlyLeftTrimmed)
+{
+	EXPECT_EQ(trimLeft("  hello  "), "hello  ");
+}
+
+TEST_F(StringUtilsTest, TrimLeft_EmptyInput)
+{
+	EXPECT_EQ(trimLeft(""), "");
+}
+
+TEST_F(StringUtilsTest, TrimLeft_AllWhitespace_ReturnsOriginal)
+{
+	// When no non-trim chars exist, the implementation returns the original view unchanged.
+	uqstl::string_view input {"   "};
+	EXPECT_EQ(trimLeft(input), "   ");
+}
+
+TEST_F(StringUtilsTest, TrimLeft_CustomTrimChars)
+{
+	EXPECT_EQ(trimLeft("***hello", "*"), "hello");
+	EXPECT_EQ(trimLeft("abcXYZ", "abc"), "XYZ");
+}
+
+TEST_F(StringUtilsTest, TrimLeft_ReturnsViewIntoOriginal)
+{
+	uqstl::string_view input {"   hello"};
+	uqstl::string_view result {trimLeft(input)};
+	EXPECT_EQ(result.data(), input.data() + 3);
+	EXPECT_EQ(result.size(), 5u);
+}
+
+// ─── trimRight ──────────────────────────────────────────────────────────────
+
+TEST_F(StringUtilsTest, TrimRight_NoTrailingWhitespace)
+{
+	EXPECT_EQ(trimRight("hello"), "hello");
+	EXPECT_EQ(trimRight("hello world"), "hello world");
+}
+
+TEST_F(StringUtilsTest, TrimRight_TrailingSpaces)
+{
+	EXPECT_EQ(trimRight("hello   "), "hello");
+	EXPECT_EQ(trimRight("x "), "x");
+}
+
+TEST_F(StringUtilsTest, TrimRight_TrailingMixedWhitespace)
+{
+	EXPECT_EQ(trimRight("hello \t\r\n"), "hello");
+}
+
+TEST_F(StringUtilsTest, TrimRight_LeadingWhitespaceUntouched)
+{
+	EXPECT_EQ(trimRight("   hello"), "   hello");
+}
+
+TEST_F(StringUtilsTest, TrimRight_BothEnds_OnlyRightTrimmed)
+{
+	EXPECT_EQ(trimRight("  hello  "), "  hello");
+}
+
+TEST_F(StringUtilsTest, TrimRight_EmptyInput)
+{
+	EXPECT_EQ(trimRight(""), "");
+}
+
+TEST_F(StringUtilsTest, TrimRight_AllWhitespace_ReturnsOriginal)
+{
+	// When no non-trim chars exist, the implementation returns the original view unchanged.
+	uqstl::string_view input {"   "};
+	EXPECT_EQ(trimRight(input), "   ");
+}
+
+TEST_F(StringUtilsTest, TrimRight_CustomTrimChars)
+{
+	EXPECT_EQ(trimRight("hello***", "*"), "hello");
+	EXPECT_EQ(trimRight("XYZabc", "abc"), "XYZ");
+}
+
+TEST_F(StringUtilsTest, TrimRight_ReturnsViewIntoOriginal)
+{
+	uqstl::string_view input {"hello   "};
+	uqstl::string_view result {trimRight(input)};
+	EXPECT_EQ(result.data(), input.data());
+	EXPECT_EQ(result.size(), 5u);
+}
+
+// ─── trim ───────────────────────────────────────────────────────────────────
+
+TEST_F(StringUtilsTest, Trim_NoWhitespace)
+{
+	EXPECT_EQ(trim("hello"), "hello");
+}
+
+TEST_F(StringUtilsTest, Trim_LeadingOnly)
+{
+	EXPECT_EQ(trim("   hello"), "hello");
+}
+
+TEST_F(StringUtilsTest, Trim_TrailingOnly)
+{
+	EXPECT_EQ(trim("hello   "), "hello");
+}
+
+TEST_F(StringUtilsTest, Trim_BothEnds)
+{
+	EXPECT_EQ(trim("  hello  "), "hello");
+	EXPECT_EQ(trim(" \t hello \r\n"), "hello");
+}
+
+TEST_F(StringUtilsTest, Trim_EmptyInput)
+{
+	EXPECT_EQ(trim(""), "");
+}
+
+TEST_F(StringUtilsTest, Trim_AllWhitespace_ReturnsOriginal)
+{
+	// trimLeft returns the original for all-whitespace, so trimRight has the same
+	// all-whitespace input and also returns it unchanged.
+	uqstl::string_view input {"   "};
+	EXPECT_EQ(trim(input), "   ");
+}
+
+TEST_F(StringUtilsTest, Trim_InternalWhitespacePreserved)
+{
+	EXPECT_EQ(trim("  hello world  "), "hello world");
+	EXPECT_EQ(trim("  a  b  c  "), "a  b  c");
+}
+
+TEST_F(StringUtilsTest, Trim_CustomTrimChars)
+{
+	EXPECT_EQ(trim("***hello***", "*"), "hello");
+	EXPECT_EQ(trim("abcXYZabc", "abc"), "XYZ");
+}
+
+TEST_F(StringUtilsTest, Trim_ReturnsViewIntoOriginal)
+{
+	uqstl::string_view input {"  hello  "};
+	uqstl::string_view result {trim(input)};
+	EXPECT_EQ(result.data(), input.data() + 2);
+	EXPECT_EQ(result.size(), 5u);
+}
+
 } // namespace uqm

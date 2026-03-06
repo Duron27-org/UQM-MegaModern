@@ -2643,8 +2643,12 @@ DoStarSearch(MENU_STATE* pMS)
 	{
 		GFXPOINT coord;
 
-		coord.x = (COORD)(atof(strtok(tes.BaseStr, ":")) * 10);
-		coord.y = (COORD)(atof(strtok(nullptr, ":")) * 10);
+		{
+			uqstl::vector<uqstl::string> parts;
+			uqm::tokenize(uqstl::string_view{tes.BaseStr}, parts, ':', false);
+			coord.x = (COORD)(atof(parts[0].c_str()) * 10);
+			coord.y = (COORD)(atof(parts[1].c_str()) * 10);
+		}
 
 		if (coord.x > MAX_X_UNIVERSE || coord.y > MAX_Y_UNIVERSE
 			|| coord.x < 0 || coord.y < 0)

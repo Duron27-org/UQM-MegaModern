@@ -18,6 +18,8 @@
 
 #include "melee.h"
 
+#include "core/string/StringUtils.h"
+
 #include "options.h"
 #include "buildpick.h"
 #include "meleeship.h"
@@ -328,24 +330,23 @@ DrawControlText(STAMP stamp, uqm::COUNT which_icon, bool HiLite)
 				   GAME_STRING(MELEE_STRING_BASE + ButtonText(which_icon)));
 
 	t.align = ALIGN_CENTER;
-	t.pStr = strtok(buf, " ");
-	t.CharCount = (uqm::COUNT)~0;
-
 	t.baseline.x = r.corner.x + (r.extent.width >> 1);
 	t.baseline.y = r.corner.y + leading + RES_SCALE(4);
 
-	while (t.pStr != nullptr)
 	{
-		t.pStr = AlignText((const uqm::CHAR_T*)t.pStr, &t.baseline.x);
-		t.CharCount = (uqm::COUNT)~0;
+		uqstl::vector<uqstl::string> tokens;
+		uqm::tokenize(uqstl::string_view{(const char*)buf}, tokens, ' ', false);
+		for (const auto& tok : tokens)
+		{
+			t.pStr = AlignText((const uqm::CHAR_T*)tok.c_str(), &t.baseline.x);
+			t.CharCount = (uqm::COUNT)~0;
 
-		font_DrawTracedText(&t,
-							HiLite ? CONTROL_TEXT_HL_COLOR : CONTROL_TEXT_COLOR,
-							HiLite ? CONTROL_TEXT_TRACE_HL_COLOR : CONTROL_TEXT_TRACE_COLOR);
+			font_DrawTracedText(&t,
+								HiLite ? CONTROL_TEXT_HL_COLOR : CONTROL_TEXT_COLOR,
+								HiLite ? CONTROL_TEXT_TRACE_HL_COLOR : CONTROL_TEXT_TRACE_COLOR);
 
-		t.pStr = strtok(nullptr, " ");
-		t.CharCount = (uqm::COUNT)~0;
-		t.baseline.y += leading;
+			t.baseline.y += leading;
+		}
 	}
 
 	SetContextFont(OldFont);

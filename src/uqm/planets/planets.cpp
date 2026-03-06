@@ -18,6 +18,8 @@
 
 #include "planets.h"
 
+#include "core/string/StringUtils.h"
+
 #include "scan.h"
 #include "lander.h"
 #include "../colors.h"
@@ -347,21 +349,20 @@ DrawEnterOrbitText(GFXRECT rect)
 				   GAME_STRING(NAVIGATION_STRING_BASE + 8));
 
 	text.align = ALIGN_CENTER;
-	text.pStr = strtok(buf, "\n");
-	text.CharCount = (uqm::COUNT)~0;
-
-	while (text.pStr != nullptr)
 	{
-		text.pStr = AlignText((const uqm::CHAR_T*)text.pStr,
-							  &text.baseline.x);
-		text.CharCount = (uqm::COUNT)~0;
+		uqstl::vector<uqstl::string> tokens;
+		uqm::tokenize(uqstl::string_view{buf}, tokens, '\n', false);
+		for (const auto& tok : tokens)
+		{
+			text.pStr = AlignText((const uqm::CHAR_T*)tok.c_str(),
+								  &text.baseline.x);
+			text.CharCount = (uqm::COUNT)~0;
 
-		font_DrawText(&text);
+			font_DrawText(&text);
 
-		text.pStr = strtok(nullptr, "\n");
-		text.CharCount = (uqm::COUNT)~0;
-		text.baseline.y += leading;
-		text.baseline.x = og_baseline_x;
+			text.baseline.y += leading;
+			text.baseline.x = og_baseline_x;
+		}
 	}
 
 	SetContextFont(OldFont);

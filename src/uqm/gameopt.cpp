@@ -1210,17 +1210,17 @@ DrawBombPodText(STAMP* s)
 	og_baseline_x = t.baseline.x;
 
 	t.align = ALIGN_CENTER;
-	t.pStr = strtok(buf, " ");
-	t.CharCount = (uqm::COUNT)~0;
 	SetContextForeGroundColor(BOMB_POD_TEXT_COLOR);
-
-	while (t.pStr != nullptr)
 	{
-		t.pStr = AlignText((const uqm::CHAR_T*)t.pStr, &t.baseline.x);
-		font_DrawText(&t);
-		t.pStr = strtok(nullptr, " ");
-		t.CharCount = (uqm::COUNT)~0;
-		t.baseline.y += leading;
+		uqstl::vector<uqstl::string> tokens;
+		uqm::tokenize(uqstl::string_view{buf}, tokens, ' ', false);
+		for (const auto& tok : tokens)
+		{
+			t.pStr = AlignText((const uqm::CHAR_T*)tok.c_str(), &t.baseline.x);
+			t.CharCount = (uqm::COUNT)~0;
+			font_DrawText(&t);
+			t.baseline.y += leading;
+		}
 	}
 
 	r.corner.y += RES_SCALE(78);
@@ -1234,17 +1234,17 @@ DrawBombPodText(STAMP* s)
 
 	t.baseline.x = og_baseline_x;
 	t.baseline.y = r.corner.y + RES_SCALE(1);
-	t.pStr = strtok(buf, " ");
-	t.CharCount = (uqm::COUNT)~0;
 	SetContextForeGroundColor(BOMB_POD_TEXT_COLOR);
-
-	while (t.pStr != nullptr)
 	{
-		t.pStr = AlignText((const uqm::CHAR_T*)t.pStr, &t.baseline.x);
-		font_DrawText(&t);
-		t.pStr = strtok(nullptr, " ");
-		t.CharCount = (uqm::COUNT)~0;
-		t.baseline.y += leading;
+		uqstl::vector<uqstl::string> tokens;
+		uqm::tokenize(uqstl::string_view{buf}, tokens, ' ', false);
+		for (const auto& tok : tokens)
+		{
+			t.pStr = AlignText((const uqm::CHAR_T*)tok.c_str(), &t.baseline.x);
+			t.CharCount = (uqm::COUNT)~0;
+			font_DrawText(&t);
+			t.baseline.y += leading;
+		}
 	}
 
 	SetContextForeGroundColor(OldColor);

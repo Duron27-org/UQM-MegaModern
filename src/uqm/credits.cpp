@@ -21,6 +21,8 @@
 
 #include "credits.h"
 
+#include "core/string/StringUtils.h"
+
 #include "controls.h"
 #include "colors.h"
 #include "options.h"
@@ -149,7 +151,6 @@ Credits_RenderTextFrame(GFXCONTEXT TempContext, int* istr, int dir,
 	char* tableStr = nullptr;
 	int textSize {};
 	char salign[32] {};
-	char* scol;
 	int scaned;
 	int i, rows, cnt;
 	FONT_SIZE_DEF* fdef;
@@ -276,65 +277,67 @@ Credits_RenderTextFrame(GFXCONTEXT TempContext, int* istr, int dir,
 	TextRect(&t, &r, nullptr);
 
 	// parse text column alignment
-	for (i = 0, scol = strtok(salign, ",");
-		 scol && i < MAX_TEXT_COLS;
-		 ++i, scol = strtok(nullptr, ","))
 	{
-		char c {};
-		uqstl::optional<int> x {};
-
-		// default
-		colfmt[i].align = ALIGN_LEFT;
-		colfmt[i].basex = r.extent.width;
-
-		const uqstl::string_view scolView {scol};
-		if (const auto scanRes {scn::scan<char, int>(scolView, "{}/{}")})
+		uqstl::vector<uqstl::string> scolTokens;
+		uqm::tokenize(uqstl::string_view{salign}, scolTokens, ',', false);
+		for (i = 0; i < static_cast<int>(scolTokens.size()) && i < MAX_TEXT_COLS; ++i)
 		{
-			c = uqstl::get<0>(scanRes->values());
-			x = uqstl::get<1>(scanRes->values()) << RESOLUTION_FACTOR;
-		}
-		else if (const auto scanRes {scn::scan<char>(scolView, "{}")})
-		{
-			c = uqstl::get<0>(scanRes->values());
-		}
-		else
-		{
-			// DOES NOT COMPUTE! :)
-			continue;
-		}
+			char c {};
+			uqstl::optional<int> x {};
+
+			// default
+			colfmt[i].align = ALIGN_LEFT;
+			colfmt[i].basex = r.extent.width;
+
+			const uqstl::string_view scolView {scolTokens[i]};
+			if (const auto scanRes {scn::scan<char, int>(scolView, "{}/{}")})
+			{
+				c = uqstl::get<0>(scanRes->values());
+				x = uqstl::get<1>(scanRes->values()) << RESOLUTION_FACTOR;
+			}
+			else if (const auto scanRes {scn::scan<char>(scolView, "{}")})
+			{
+				c = uqstl::get<0>(scanRes->values());
+			}
+			else
+			{
+				// DOES NOT COMPUTE! :)
+				continue;
+			}
 
 
-		switch (c)
-		{
-			case 'L':
-				colfmt[i].align = ALIGN_LEFT;
-				if (x.has_value())
-				{
-					colfmt[i].basex = *x;
-				}
-				break;
-			case 'C':
-				colfmt[i].align = ALIGN_CENTER;
-				if (x.has_value())
-				{
-					colfmt[i].basex = *x;
-				}
-				else
-				{
-					colfmt[i].basex = CreditsExtent.width / 2;
-				}
-				break;
-			case 'R':
-				colfmt[i].align = ALIGN_RIGHT;
-				if (x.has_value())
-				{
-					colfmt[i].basex = *x;
-				}
-				else
-				{
-					colfmt[i].basex = CreditsExtent.width - r.extent.width;
-				}
-				break;
+			switch (c)
+			{
+				case 'L':
+					colfmt[i].align = ALIGN_LEFT;
+					if (x.has_value())
+					{
+						colfmt[i].basex = *x;
+					}
+					break;
+				case 'C':
+					colfmt[i].align = ALIGN_CENTER;
+					if (x.has_value())
+					{
+						colfmt[i].basex = *x;
+					}
+					else
+					{
+						colfmt[i].basex = CreditsExtent.width / 2;
+					}
+					break;
+				case 'R':
+					colfmt[i].align = ALIGN_RIGHT;
+					if (x.has_value())
+					{
+						colfmt[i].basex = *x;
+					}
+					else
+					{
+						colfmt[i].basex = CreditsExtent.width - r.extent.width;
+					}
+					break;
+			}
 		}
 	}
 

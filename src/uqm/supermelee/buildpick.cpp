@@ -16,6 +16,8 @@
 
 #include "buildpick.h"
 
+#include "core/string/StringUtils.h"
+
 #include "../controls.h"
 #include "../colors.h"
 #include "../fmv.h"
@@ -178,14 +180,12 @@ void GetToolTipFrameRect(GFXRECT* r)
 
 void DrawTooltip(SHIP_INFO* SIPtr)
 {
-	uqm::CHAR_T* ptr;
 	uqm::CHAR_T buf[PATH_MAX] {};
 	TEXT Text;
 	GFXCONTEXT oldContext;
 	FONT oldFont;
 	Color oldColor;
 	GFXRECT r;
-	uqm::CHAR_T delim[] = "\n";
 
 	GetToolTipFrameRect(&r);
 
@@ -216,17 +216,18 @@ void DrawTooltip(SHIP_INFO* SIPtr)
 	utf8StringCopy(buf, sizeof buf,
 				   GET_STRING(SIPtr->race_strings,
 							  GetStringTableCount(SIPtr->race_strings) - 1));
-	ptr = strtok(buf, delim);
-
 	Text.baseline.y += RES_SCALE(2);
 
-	while (ptr != nullptr)
 	{
-		Text.pStr = ptr;
-		Text.CharCount = (uqm::COUNT)utf8StringCount(ptr);
-		Text.baseline.y += RES_SCALE(9);
-		font_DrawText(&Text);
-		ptr = strtok(nullptr, delim);
+		uqstl::vector<uqstl::string> tokens;
+		uqm::tokenize(uqstl::string_view{(const char*)buf}, tokens, '\n', false);
+		for (const auto& tok : tokens)
+		{
+			Text.pStr = (const uqm::CHAR_T*)tok.c_str();
+			Text.CharCount = (uqm::COUNT)utf8StringCount(Text.pStr);
+			Text.baseline.y += RES_SCALE(9);
+			font_DrawText(&Text);
+		}
 	}
 
 	SetContextForeGroundColor(oldColor);

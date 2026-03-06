@@ -215,10 +215,79 @@ inline size_t strncpy_safe(uqstl::span<char> dest, uqstl::string_view src)
 #endif
 }
 
+// Splits 'input' on every occurrence of 'delimiter'.
+// If Delimiter is char, splits on that exact character.
+// If Delimiter is string_view, splits on any character contained in it (character-set semantics).
+// Tokens are written into 'out' as non-owning views into 'input'.
+// Consecutive or trailing delimiters produce empty tokens.
+// Returns the number of tokens written (at most out.size()).
+template <typename DelimiterT, typename OutT = uqstl::string_view>
+	requires(uqstl::is_same_v<DelimiterT, char> || uqstl::is_same_v<DelimiterT, uqgsl::czstring>)
+static void tokenize(uqstl::string_view input, uqstl::vector<OutT>& out, DelimiterT delimiter, bool includeEmpty)
+{
+	while (true)
+	{
+		const auto pos = [&]() {
+			if constexpr (uqstl::is_same_v<DelimiterT, char>)
+			{
+				return input.find(delimiter);
+			}
+			else
+			{
+				return input.find_first_of(delimiter);
+			}
+		}();
+
+		if (pos == uqstl::string_view::npos)
+		{
+			if (includeEmpty || !input.empty())
+			{
+				out.emplace_back(input);
+			}
+			break;
+		}
+
+		if (includeEmpty || pos > 0)
+		{
+			out.emplace_back(input.substr(0, pos));
+		}
+		input.remove_prefix(pos + 1);
+	}
+}
+template <typename DelimiterT, typename OutT = uqstl::string_view>
+	requires(uqstl::is_same_v<DelimiterT, char> || uqstl::is_same_v<DelimiterT, uqgsl::czstring>)
+static auto tokenize(uqstl::string_view input, DelimiterT delimiter, bool includeEmpty) -> uqstl::vector<OutT>
+{
+	uqstl::vector<OutT> result {};
+	tokenize(input, result, delimiter, includeEmpty);
+	return result;
+}
+
+inline uqstl::string_view trimLeft(const uqstl::string_view in, const char* trimChars = " \t\r\n")
+{
+	if (const auto firstNonSpacePos {in.find_first_not_of(trimChars)}; firstNonSpacePos != uqstl::string_view::npos)
+	{
+		return in.substr(firstNonSpacePos);
+	}
+	return in;
+}
+inline uqstl::string_view trimRight(const uqstl::string_view in, const char* trimChars = " \t\r\n")
+{
+	if (const auto lastNonSpacePos {in.find_last_not_of(trimChars)}; lastNonSpacePos != uqstl::string_view::npos)
+	{
+		return in.substr(0, lastNonSpacePos + 1);
+	}
+	return in;
+}
+
+inline uqstl::string_view trim(const uqstl::string_view in, const char* trimChars = " \t\r\n")
+{
+	return trimRight(trimLeft(in, trimChars), trimChars);
+}
+
+
 static inline constexpr uint64_t FNV1a_OffsetBasis {14695981039346656037ull};
 static inline constexpr uint64_t FNV1a_Prime {1099511628211ull};
-
-
 // FNV-1a hash function for compile-time string hashing. Not suitable for cryptographic purposes, but good for things like switch statements on strings.
 static constexpr uint64_t hashQuick64(const uqstl::string_view str) noexcept
 {

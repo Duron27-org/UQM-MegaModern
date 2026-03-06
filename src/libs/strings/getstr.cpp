@@ -288,13 +288,27 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 		{
 			// String header, of the following form:
 			//     #(GLAD_WHEN_YOU_COME_BACK) commander-000.ogg
-			char CopyLine[1024] {};
-			char* name;
-			char* ts;
 
-			uqm::strncpy_safe(CopyLine, CurrentLine);
-			name = strtok(&CopyLine[1], "()");
-			if (name)
+			uqstl::string_view name {};
+			uqstl::string_view ts {};
+
+			uqstl::string_view currentLine {CurrentLine};
+			if (const auto openParenPos {currentLine.find('(')}; openParenPos != uqstl::string_view::npos)
+			{
+				if (const auto closeParenPos {currentLine.find(')', openParenPos + 1)}; closeParenPos != uqstl::string_view::npos)
+				{
+					name = currentLine.substr(openParenPos + 1, closeParenPos - (openParenPos + 1));
+					currentLine.remove_prefix(closeParenPos + 1);
+
+					currentLine = uqm::trim(currentLine);
+
+
+					ts = currentLine;
+				}
+			}
+
+
+			if (!name.empty())
 			{
 				if (stringI >= 0)
 				{
@@ -309,7 +323,7 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 				slen[++stringI] = 0;
 
 				// Store the string name.
-				l = strlen(name) + 1;
+				l = name.size() + 1;
 				if (!ensureBufSize(&namedata, &tot_name_size,
 								   NameOffs + l, POOL_SIZE))
 				{
@@ -323,7 +337,7 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 				if (timestamp_fp)
 				{
 					// We have a time stamp file.
-					char TimeStampLine[1024];
+					char TimeStampLine[1024] {};
 					char* tsptr;
 					bool ts_ok = false;
 					uio_fgets(TimeStampLine, sizeof(TimeStampLine), timestamp_fp);
@@ -331,26 +345,26 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 					{
 						// Line is of the following form:
 						//     #(GIVE_FUEL_AGAIN) 3304,3255
+						uqstl::string_view timeStampView {TimeStampLine};
+
 						tslen[stringI] = 0;
-						tsptr = strstr(TimeStampLine, name);
-						if (tsptr)
+						if (const auto tsPos {timeStampView.find(name)}; tsPos != uqstl::string_view::npos)
 						{
-							tsptr += strlen(name) + 1;
+							timeStampView.remove_prefix(tsPos + name.size() + 1);
 							ts_ok = true;
-							while (!strcspn(tsptr, " \t\r\n") && *tsptr)
+
+							timeStampView = uqm::trim(timeStampView);
+
+							if (!timeStampView.empty())
 							{
-								tsptr++;
-							}
-							if (*tsptr)
-							{
-								l = strlen(tsptr) + 1;
+								l = timeStampView.size() + 1;
 								if (!ensureBufSize(&ts_data, &tot_ts_size, TSOffs + l,
 												   POOL_SIZE))
 								{
 									goto err;
 								}
 
-								uqm::strncpy_safe({&ts_data[TSOffs], static_cast<uint32_t>(l)}, tsptr);
+								uqm::strncpy_safe({&ts_data[TSOffs], static_cast<uint32_t>(l)}, timeStampView);
 								TSOffs += l;
 								tslen[stringI] = l;
 							}
@@ -370,10 +384,9 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 					}
 				}
 				clen[stringI] = 0;
-				ts = strtok(nullptr, " \t\r\n)");
-				if (ts)
+				if (!ts.empty())
 				{
-					const uint32_t tsLen = strlen(ts);
+					const uint32_t tsLen = ts.size();
 					l = path_len + tsLen + 1;
 					if (!ensureBufSize(&clipdata, &tot_clip_size,
 									   ClipOffs + l, POOL_SIZE))
@@ -385,7 +398,7 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 					{
 						uqm::strncpy_safe({&clipdata[ClipOffs], static_cast<uint32_t>(l)}, clip_path);
 					}
-					uqm::strncpy_safe({&clipdata[ClipOffs + path_len], static_cast<uint32_t>(l - path_len)}, {ts, tsLen});
+					uqm::strncpy_safe({&clipdata[ClipOffs + path_len], static_cast<uint32_t>(l - path_len)}, ts);
 					ClipOffs += l;
 					clen[stringI] = l;
 				}
@@ -411,7 +424,7 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 			slen[stringI] += l;
 			StringOffs += l;
 
-			uqm::strncpy_safe({s, static_cast<uint32_t>(l)}, {CurrentLine, static_cast<uint32_t>(l-1)});
+			uqm::strncpy_safe({s, static_cast<uint32_t>(l)}, {CurrentLine, static_cast<uint32_t>(l - 1)});
 		}
 
 		if ((int)uio_ftell(fp) - (int)opos >= (int)dataLen)
@@ -571,11 +584,11 @@ void* _GetStringData(uio_Stream* fp, uqm::DWORD length)
 		if (CurrentLine[0] == '#')
 		{
 			char CopyLine[1024] {};
-			char* s;
 
 			uqm::strncpy_safe(CopyLine, CurrentLine);
-			s = strtok(&CopyLine[1], "()");
-			if (s)
+			const char* const openParen = strchr(&CopyLine[1], '(');
+			const bool hasValidHeader = openParen && strchr(openParen + 1, ')');
+			if (hasValidHeader)
 			{
 				if (stringI >= 0)
 				{
@@ -610,7 +623,7 @@ void* _GetStringData(uio_Stream* fp, uqm::DWORD length)
 			slen[stringI] += l;
 			StringOffs += l;
 
-			uqm::strncpy_safe({s, static_cast<uint32_t>(l)}, {CurrentLine, static_cast<uint32_t>(l-1)});
+			uqm::strncpy_safe({s, static_cast<uint32_t>(l)}, {CurrentLine, static_cast<uint32_t>(l - 1)});
 		}
 
 		if ((int)uio_ftell(fp) - (int)opos >= (int)length)

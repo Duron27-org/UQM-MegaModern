@@ -318,22 +318,21 @@ DrawModuleMenuText(GFXRECT* r, int Index)
 				   GAME_STRING(TDO_STARBASE_STRING_BASE + Index));
 
 	text.align = ALIGN_CENTER;
-	text.pStr = strtok(buf, " ");
-	text.CharCount = (uqm::COUNT)~0;
-
-	while (text.pStr != nullptr)
 	{
-		text.pStr = AlignText((const uqm::CHAR_T*)text.pStr,
-							  &text.baseline.x);
-		text.CharCount = (uqm::COUNT)~0;
+		uqstl::vector<uqstl::string> tokens;
+		uqm::tokenize(uqstl::string_view{buf}, tokens, ' ', false);
+		for (const auto& tok : tokens)
+		{
+			text.pStr = AlignText((const uqm::CHAR_T*)tok.c_str(),
+								  &text.baseline.x);
+			text.CharCount = (uqm::COUNT)~0;
 
-		font_DrawShadowedText(&text, WEST_SHADOW, MDL_TEXT_COLOR,
-							  MDL_SHADOW_COLOR);
+			font_DrawShadowedText(&text, WEST_SHADOW, MDL_TEXT_COLOR,
+								  MDL_SHADOW_COLOR);
 
-		text.pStr = strtok(nullptr, " ");
-		text.CharCount = (uqm::COUNT)~0;
-		text.baseline.y += leading;
-		text.baseline.x = og_baseline_x;
+			text.baseline.y += leading;
+			text.baseline.x = og_baseline_x;
+		}
 	}
 }
 
@@ -515,23 +514,22 @@ DrawEscapePodText(GFXRECT rect)
 				   GAME_STRING(END_STARBASE_STRING_BASE + 1));
 
 	text.align = ALIGN_CENTER;
-	text.pStr = strtok(buf, " ");
-	text.CharCount = (uqm::COUNT)~0;
-
 	SetContextForeGroundColor(LANDER_POD_TEXT_COLOR);
 
-	while (text.pStr != nullptr)
 	{
-		text.pStr = AlignText((const uqm::CHAR_T*)text.pStr,
-							  &text.baseline.x);
-		text.CharCount = (uqm::COUNT)~0;
+		uqstl::vector<uqstl::string> tokens;
+		uqm::tokenize(uqstl::string_view{buf}, tokens, ' ', false);
+		for (const auto& tok : tokens)
+		{
+			text.pStr = AlignText((const uqm::CHAR_T*)tok.c_str(),
+								  &text.baseline.x);
+			text.CharCount = (uqm::COUNT)~0;
 
-		font_DrawText(&text);
+			font_DrawText(&text);
 
-		text.pStr = strtok(nullptr, " ");
-		text.CharCount = (uqm::COUNT)~0;
-		text.baseline.y += leading;
-		text.baseline.x = og_baseline_x;
+			text.baseline.y += leading;
+			text.baseline.x = og_baseline_x;
+		}
 	}
 
 	SetContextFont(OldFont);
