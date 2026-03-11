@@ -177,8 +177,8 @@ void* _GetCelData(uio_Stream* fp, uqm::DWORD length)
 		const char *s1, *s2;
 		char aniDirName[PATH_MAX] {};
 		const char* aniFileName;
-		uint8 buf[4] = {0, 0, 0, 0};
-		uint32 header;
+		uint8_t buf[4] = {0, 0, 0, 0};
+		uint32_t header;
 
 		if (_cur_resfile_name == 0
 			|| (((s2 = 0), (s1 = strrchr(_cur_resfile_name, '/')) == 0)

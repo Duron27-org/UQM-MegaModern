@@ -21,7 +21,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include "port.h"
-#include "types.h"
+#include <cstdint>
 #include "libs/uio.h"
 #include "endian_uqm.h"
 #include "core/log/log.h"
@@ -37,25 +37,25 @@
 
 typedef struct
 {
-	uint32 id;
-	uint32 size;
-	uint32 type;
+	uint32_t id;
+	uint32_t size;
+	uint32_t type;
 } wave_FileHeader;
 
 typedef struct
 {
-	uint16 format;
-	uint16 channels;
-	uint32 samplesPerSec;
-	uint32 bytesPerSec;
-	uint16 blockAlign;
-	uint16 bitsPerSample;
+	uint16_t format;
+	uint16_t channels;
+	uint32_t samplesPerSec;
+	uint32_t bytesPerSec;
+	uint16_t blockAlign;
+	uint16_t bitsPerSample;
 } wave_FormatHeader;
 
 typedef struct
 {
-	uint32 id;
-	uint32 size;
+	uint32_t id;
+	uint32_t size;
 } wave_ChunkHeader;
 
 
@@ -64,15 +64,15 @@ typedef struct
 static const char* wava_GetName(void);
 static bool wava_InitModule(AudioFlags flags, const TFB_DecoderFormats*);
 static void wava_TermModule(void);
-static uint32 wava_GetStructSize(void);
+static uint32_t wava_GetStructSize(void);
 static int wava_GetError(THIS_PTR);
 static bool wava_Init(THIS_PTR);
 static void wava_Term(THIS_PTR);
 static bool wava_Open(THIS_PTR, uio_DirHandle* dir, const char* filename);
 static void wava_Close(THIS_PTR);
-static int wava_Decode(THIS_PTR, void* buf, sint32 bufsize);
-static uint32 wava_Seek(THIS_PTR, uint32 pcm_pos);
-static uint32 wava_GetFrame(THIS_PTR);
+static int wava_Decode(THIS_PTR, void* buf, int32_t bufsize);
+static uint32_t wava_Seek(THIS_PTR, uint32_t pcm_pos);
+static uint32_t wava_GetFrame(THIS_PTR);
 
 TFB_SoundDecoderFuncs wava_DecoderVtbl =
 	{
@@ -96,13 +96,13 @@ typedef struct tfb_wavesounddecoder
 	TFB_SoundDecoder decoder;
 
 	// private
-	sint32 last_error;
+	int32_t last_error;
 	uio_Stream* fp;
 	wave_FormatHeader fmtHdr;
-	uint32 data_ofs;
-	uint32 data_size;
-	uint32 max_pcm;
-	uint32 cur_pcm;
+	uint32_t data_ofs;
+	uint32_t data_size;
+	uint32_t max_pcm;
+	uint32_t cur_pcm;
 
 } TFB_WaveSoundDecoder;
 
@@ -130,7 +130,7 @@ wava_TermModule(void)
 	// no specific module term
 }
 
-static uint32
+static uint32_t
 wava_GetStructSize(void)
 {
 	return sizeof(TFB_WaveSoundDecoder);
@@ -161,7 +161,7 @@ wava_Term(THIS_PTR)
 }
 
 static bool
-read_le_16(uio_Stream* fp, uint16* v)
+read_le_16(uio_Stream* fp, uint16_t* v)
 {
 	if (!uio_fread(v, sizeof(*v), 1, fp))
 	{
@@ -172,7 +172,7 @@ read_le_16(uio_Stream* fp, uint16* v)
 }
 
 static bool
-read_le_32(uio_Stream* fp, uint32* v)
+read_le_32(uio_Stream* fp, uint32_t* v)
 {
 	if (!uio_fread(v, sizeof(*v), 1, fp))
 	{
@@ -344,10 +344,10 @@ wava_Close(THIS_PTR)
 }
 
 static int
-wava_Decode(THIS_PTR, void* buf, sint32 bufsize)
+wava_Decode(THIS_PTR, void* buf, int32_t bufsize)
 {
 	TFB_WaveSoundDecoder* wava = (TFB_WaveSoundDecoder*)This;
-	uint32 dec_pcm;
+	uint32_t dec_pcm;
 
 	dec_pcm = bufsize / wava->fmtHdr.blockAlign;
 	if (dec_pcm > wava->max_pcm - wava->cur_pcm)
@@ -361,8 +361,8 @@ wava_Decode(THIS_PTR, void* buf, sint32 bufsize)
 	return dec_pcm * wava->fmtHdr.blockAlign;
 }
 
-static uint32
-wava_Seek(THIS_PTR, uint32 pcm_pos)
+static uint32_t
+wava_Seek(THIS_PTR, uint32_t pcm_pos)
 {
 	TFB_WaveSoundDecoder* wava = (TFB_WaveSoundDecoder*)This;
 
@@ -378,7 +378,7 @@ wava_Seek(THIS_PTR, uint32 pcm_pos)
 	return pcm_pos;
 }
 
-static uint32
+static uint32_t
 wava_GetFrame(THIS_PTR)
 {
 	//TFB_WaveSoundDecoder* wava = (TFB_WaveSoundDecoder*) This;

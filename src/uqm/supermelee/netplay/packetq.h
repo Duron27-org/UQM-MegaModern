@@ -22,7 +22,7 @@
 typedef struct PacketQueue PacketQueue;
 
 #include "packet.h"
-#include "types.h"
+#include <cstdint>
 
 #include <sys/types.h>
 

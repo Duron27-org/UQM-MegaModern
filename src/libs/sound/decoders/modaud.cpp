@@ -21,7 +21,7 @@
 #include <string.h>
 #include <errno.h>
 #include "port.h"
-#include "types.h"
+#include <cstdint>
 #include "endian_uqm.h"
 #include "decoder.h"
 #include "libs/compiler.h"
@@ -42,15 +42,15 @@
 static const char* moda_GetName(void);
 static bool moda_InitModule(AudioFlags flags, const TFB_DecoderFormats*);
 static void moda_TermModule(void);
-static uint32 moda_GetStructSize(void);
+static uint32_t moda_GetStructSize(void);
 static int moda_GetError(THIS_PTR);
 static bool moda_Init(THIS_PTR);
 static void moda_Term(THIS_PTR);
 static bool moda_Open(THIS_PTR, uio_DirHandle* dir, const char* filename);
 static void moda_Close(THIS_PTR);
-static int moda_Decode(THIS_PTR, void* buf, sint32 bufsize);
-static uint32 moda_Seek(THIS_PTR, uint32 pcm_pos);
-static uint32 moda_GetFrame(THIS_PTR);
+static int moda_Decode(THIS_PTR, void* buf, int32_t bufsize);
+static uint32_t moda_Seek(THIS_PTR, uint32_t pcm_pos);
+static uint32_t moda_GetFrame(THIS_PTR);
 
 TFB_SoundDecoderFuncs moda_DecoderVtbl =
 	{
@@ -74,7 +74,7 @@ typedef struct tfb_modsounddecoder
 	TFB_SoundDecoder decoder;
 
 	// private
-	sint32 last_error;
+	int32_t last_error;
 	MODULE* module;
 
 } TFB_ModSoundDecoder;
@@ -302,7 +302,7 @@ moda_TermModule(void)
 	MikMod_Exit();
 }
 
-static uint32
+static uint32_t
 moda_GetStructSize(void)
 {
 	return sizeof(TFB_ModSoundDecoder);
@@ -397,7 +397,7 @@ moda_Close(THIS_PTR)
 }
 
 static int
-moda_Decode(THIS_PTR, void* buf, sint32 bufsize)
+moda_Decode(THIS_PTR, void* buf, int32_t bufsize)
 {
 	TFB_ModSoundDecoder* moda = (TFB_ModSoundDecoder*)This;
 	volatile ULONG* poutsize;
@@ -414,8 +414,8 @@ moda_Decode(THIS_PTR, void* buf, sint32 bufsize)
 	return *poutsize;
 }
 
-static uint32
-moda_Seek(THIS_PTR, uint32 pcm_pos)
+static uint32_t
+moda_Seek(THIS_PTR, uint32_t pcm_pos)
 {
 	TFB_ModSoundDecoder* moda = (TFB_ModSoundDecoder*)This;
 
@@ -425,7 +425,7 @@ moda_Seek(THIS_PTR, uint32 pcm_pos)
 	return 0;
 }
 
-static uint32
+static uint32_t
 moda_GetFrame(THIS_PTR)
 {
 	TFB_ModSoundDecoder* moda = (TFB_ModSoundDecoder*)This;

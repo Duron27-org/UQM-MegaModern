@@ -909,7 +909,7 @@ FadePlayerUI(void)
 
 		BatchGraphics();
 
-		for (i = 0; i < (ARRAY_SIZE(DarkModeRect) - 1); i++)
+		for (i = 0; i < (std::size(DarkModeRect) - 1); i++)
 		{
 			DrawFilledRectangle(&DarkModeRect[i]);
 		}
@@ -1957,7 +1957,7 @@ HailAlien(void)
 		else
 		{
 			GFXPOINT Log = MAKE_POINT(LOGX_TO_UNIVERSE(GLOBAL_SIS(log_x)),
-								   LOGY_TO_UNIVERSE(GLOBAL_SIS(log_y)));
+									  LOGY_TO_UNIVERSE(GLOBAL_SIS(log_y)));
 
 			r.corner.x = SIS_ORG_X;
 			r.corner.y = SIS_ORG_Y;

@@ -14,7 +14,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "types.h"
+#include <cstdint>
 #include "libs/graphics/sdl/sdl_common.h"
 #include "libs/platform.h"
 #include "core/log/log.h"
@@ -79,7 +79,7 @@ const int YUV_matrix[3][3] =
 
 // pre-computed transformations for 8 bits per channel
 int RGB_to_YUV[/*RGB*/ 3][/*YUV*/ 3][/*mult-res*/ 256];
-sint16 dRGB_to_dYUV[/*RGB*/ 3][/*YUV*/ 3][/*mult-res*/ 512];
+int16_t dRGB_to_dYUV[/*RGB*/ 3][/*YUV*/ 3][/*mult-res*/ 512];
 
 // pre-computed transformations for RGB555
 YUV_VECTOR RGB15_to_YUV[0x8000];
@@ -220,7 +220,7 @@ Scale_PrepPlatform(uqm::GfxFlags flags, const SDL_PixelFormat* fmt)
 	const Scale_PlatDef_t* pdef;
 	const Scale_FuncDef_t* fdef;
 
-	
+
 	Scale_Platform = SCALEPLAT_NULL;
 
 	// first match wins

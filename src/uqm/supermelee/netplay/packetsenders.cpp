@@ -32,7 +32,7 @@ void sendInit(NetConnection* conn)
 	queuePacket(conn, (Packet*)packet);
 }
 
-void sendPing(NetConnection* conn, uint32 id)
+void sendPing(NetConnection* conn, uint32_t id)
 {
 	Packet_Ping* packet;
 
@@ -40,7 +40,7 @@ void sendPing(NetConnection* conn, uint32 id)
 	queuePacket(conn, (Packet*)packet);
 }
 
-void sendAck(NetConnection* conn, uint32 id)
+void sendAck(NetConnection* conn, uint32_t id)
 {
 	Packet_Ack* packet;
 
@@ -107,8 +107,8 @@ void sendFleet(NetConnection* conn, NetplaySide side, const MeleeShip* ships,
 
 	for (i = 0; i < shipCount; i++)
 	{
-		packet->ships[i].index = (uint8)i;
-		packet->ships[i].ship = (uint8)ships[i];
+		packet->ships[i].index = (uint8_t)i;
+		packet->ships[i].ship = (uint8_t)ships[i];
 	}
 
 	queuePacket(conn, (Packet*)packet);
@@ -121,13 +121,13 @@ void sendFleetShip(NetConnection* conn, NetplaySide side,
 
 	packet = Packet_Fleet_create(side, 1);
 
-	packet->ships[0].index = (uint8)shipIndex;
-	packet->ships[0].ship = (uint8)ship;
+	packet->ships[0].index = (uint8_t)shipIndex;
+	packet->ships[0].ship = (uint8_t)ship;
 
 	queuePacket(conn, (Packet*)packet);
 }
 
-void sendSeedRandom(NetConnection* conn, uint32 seed)
+void sendSeedRandom(NetConnection* conn, uint32_t seed)
 {
 	Packet_SeedRandom* packet;
 
@@ -135,7 +135,7 @@ void sendSeedRandom(NetConnection* conn, uint32 seed)
 	queuePacket(conn, (Packet*)packet);
 }
 
-void sendInputDelay(NetConnection* conn, uint32 delay)
+void sendInputDelay(NetConnection* conn, uint32_t delay)
 {
 	Packet_InputDelay* packet;
 
@@ -147,7 +147,7 @@ void sendSelectShip(NetConnection* conn, FleetShipIndex index)
 {
 	Packet_SelectShip* packet;
 
-	packet = Packet_SelectShip_create((uint16)index);
+	packet = Packet_SelectShip_create((uint16_t)index);
 	queuePacket(conn, (Packet*)packet);
 }
 
@@ -155,7 +155,7 @@ void sendBattleInput(NetConnection* conn, BATTLE_INPUT_STATE input)
 {
 	Packet_BattleInput* packet;
 
-	packet = Packet_BattleInput_create((uint8)input);
+	packet = Packet_BattleInput_create((uint8_t)input);
 	queuePacket(conn, (Packet*)packet);
 }
 
@@ -163,7 +163,7 @@ void sendFrameCount(NetConnection* conn, BattleFrameCounter frameCount)
 {
 	Packet_FrameCount* packet;
 
-	packet = Packet_FrameCount_create((uint32)frameCount);
+	packet = Packet_FrameCount_create((uint32_t)frameCount);
 	queuePacket(conn, (Packet*)packet);
 }
 
@@ -173,7 +173,7 @@ void sendChecksum(NetConnection* conn, BattleFrameCounter frameNr,
 {
 	Packet_Checksum* packet;
 
-	packet = Packet_Checksum_create((uint32)frameNr, (uint32)checksum);
+	packet = Packet_Checksum_create((uint32_t)frameNr, (uint32_t)checksum);
 	queuePacket(conn, (Packet*)packet);
 }
 #endif
@@ -182,7 +182,7 @@ void sendAbort(NetConnection* conn, NetplayAbortReason reason)
 {
 	Packet_Abort* packet;
 
-	packet = Packet_Abort_create((uint16)reason);
+	packet = Packet_Abort_create((uint16_t)reason);
 	queuePacket(conn, (Packet*)packet);
 }
 
@@ -190,6 +190,6 @@ void sendReset(NetConnection* conn, NetplayResetReason reason)
 {
 	Packet_Reset* packet;
 
-	packet = Packet_Reset_create((uint16)reason);
+	packet = Packet_Reset_create((uint16_t)reason);
 	queuePacket(conn, (Packet*)packet);
 }

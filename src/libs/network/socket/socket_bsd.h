@@ -19,7 +19,7 @@
 #ifndef LIBS_NETWORK_SOCKET_SOCKET_BSD_H_
 #define LIBS_NETWORK_SOCKET_SOCKET_BSD_H_
 
-#include "types.h"
+#include <cstdint>
 #include <sys/socket.h>
 
 #ifdef SOCKET_INTERNAL

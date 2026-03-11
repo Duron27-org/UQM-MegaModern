@@ -45,8 +45,8 @@ void Netplay_Notify_setFleet(NetConnection* conn, int player,
 							 const MeleeShip* fleet, size_t fleetSize);
 void Netplay_Notify_setShip(NetConnection* conn, int player,
 							FleetShipIndex index, MeleeShip ship);
-void Netplay_Notify_seedRandom(NetConnection* conn, uint32 seed);
-void Netplay_Notify_inputDelay(NetConnection* conn, uint32 delay);
+void Netplay_Notify_seedRandom(NetConnection* conn, uint32_t seed);
+void Netplay_Notify_inputDelay(NetConnection* conn, uint32_t delay);
 void Netplay_Notify_frameCount(NetConnection* conn,
 							   BattleFrameCounter frameCount);
 #ifdef NETPLAY_CHECKSUM

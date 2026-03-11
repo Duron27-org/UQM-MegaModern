@@ -405,7 +405,7 @@ spawn_phoenix_trail(ELEMENT* ElementPtr)
 			BUILD_COLOR(MAKE_RGB15_INIT(0x0F, 0x00, 0x00), 0x2e),
 			BUILD_COLOR(MAKE_RGB15_INIT(0x0B, 0x00, 0x00), 0x2f),
 		};
-	const size_t colorTableCount = ARRAY_SIZE(colorTable);
+	const size_t colorTableCount = std::size(colorTable);
 
 	ElementPtr->colorCycleIndex++;
 	if (ElementPtr->colorCycleIndex != colorTableCount)

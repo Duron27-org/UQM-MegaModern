@@ -46,7 +46,8 @@ struct ReadValueTypes
 {
 	using temp_type = uint64_t; // default to something absurd.
 };
-template <> struct ReadValueTypes<1>
+template <>
+struct ReadValueTypes<1>
 {
 	using temp_type = uint8_t;
 };
@@ -124,8 +125,6 @@ static inline bool skipN(void* fp, uqm::COUNT count)
 	}
 	return true;
 }
-
-
 
 
 static void

@@ -41,37 +41,37 @@ static const audio_Driver openAL_Driver =
 		AudioDriverType::OpenAL,
 		{/* Errors */
 		 AL_FALSE,
-		  AL_INVALID_NAME,
-		  AL_INVALID_ENUM,
-		  AL_INVALID_VALUE,
-		  AL_INVALID_OPERATION,
-		  AL_OUT_OF_MEMORY,
-		  audio_DRIVER_FAILURE,
+				  AL_INVALID_NAME,
+				  AL_INVALID_ENUM,
+				  AL_INVALID_VALUE,
+				  AL_INVALID_OPERATION,
+				  AL_OUT_OF_MEMORY,
+				  audio_DRIVER_FAILURE,
 
-		  /* Source properties */
+				  /* Source properties */
 		 AL_POSITION,
-		  AL_LOOPING,
-		  AL_BUFFER,
-		  AL_GAIN,
-		  AL_SOURCE_STATE,
-		  AL_BUFFERS_QUEUED,
-		  AL_BUFFERS_PROCESSED,
+				  AL_LOOPING,
+				  AL_BUFFER,
+				  AL_GAIN,
+				  AL_SOURCE_STATE,
+				  AL_BUFFERS_QUEUED,
+				  AL_BUFFERS_PROCESSED,
 
-		  /* Source state information */
+				  /* Source state information */
 		 AL_INITIAL,
-		  AL_STOPPED,
-		  AL_PLAYING,
-		  AL_PAUSED,
+				  AL_STOPPED,
+				  AL_PLAYING,
+				  AL_PAUSED,
 
-		  /* Sound buffer properties */
+				  /* Sound buffer properties */
 		 AL_FREQUENCY,
-		  AL_BITS,
-		  AL_CHANNELS,
-		  AL_SIZE,
-		  AL_FORMAT_MONO16,
-		  AL_FORMAT_STEREO16,
-		  AL_FORMAT_MONO8,
-		  AL_FORMAT_STEREO8},
+				  AL_BITS,
+				  AL_CHANNELS,
+				  AL_SIZE,
+				  AL_FORMAT_MONO16,
+				  AL_FORMAT_STEREO16,
+				  AL_FORMAT_MONO8,
+				  AL_FORMAT_STEREO8},
 
 		/* Sources */
 		openAL_GenSources,
@@ -111,9 +111,9 @@ UQM_COMPILE_TIME_ASSERT(ALuint_fits_in_audio_Object,
 
 // Converts an array of n audio_Objects to an array of ALuints, in place.
 static void
-openAL_ConvertObjectArrayToALuints(uint32 n, audio_Object* arr)
+openAL_ConvertObjectArrayToALuints(uint32_t n, audio_Object* arr)
 {
-	uint32 i;
+	uint32_t i;
 	if (sizeof(audio_Object) == sizeof(ALuint))
 	{
 		return;
@@ -125,9 +125,9 @@ openAL_ConvertObjectArrayToALuints(uint32 n, audio_Object* arr)
 }
 // Converts an array of n ALuints to an array of audio_Objects, in place.
 static void
-openAL_ConvertObjectArrayFromALuints(uint32 n, audio_Object* arr)
+openAL_ConvertObjectArrayFromALuints(uint32_t n, audio_Object* arr)
 {
-	uint32 i;
+	uint32_t i;
 	if (sizeof(audio_Object) == sizeof(ALuint))
 	{
 		return;
@@ -143,7 +143,7 @@ openAL_ConvertObjectArrayFromALuints(uint32 n, audio_Object* arr)
  * Initialization
  */
 
-sint32
+int32_t
 openAL_Init(audio_Driver* driver, AudioFlags flags)
 {
 	int i;
@@ -272,7 +272,7 @@ void openAL_Uninit(void)
  * General
  */
 
-sint32
+int32_t
 openAL_GetError(void)
 {
 	ALint value = alGetError();
@@ -302,13 +302,13 @@ openAL_GetError(void)
  * Sources
  */
 
-void openAL_GenSources(uint32 n, audio_Object* psrcobj)
+void openAL_GenSources(uint32_t n, audio_Object* psrcobj)
 {
 	alGenSources((ALsizei)n, (ALuint*)psrcobj);
 	openAL_ConvertObjectArrayFromALuints(n, psrcobj);
 }
 
-void openAL_DeleteSources(uint32 n, audio_Object* psrcobj)
+void openAL_DeleteSources(uint32_t n, audio_Object* psrcobj)
 {
 	openAL_ConvertObjectArrayToALuints(n, psrcobj);
 	alDeleteSources((ALsizei)n, (ALuint*)psrcobj);
@@ -395,7 +395,7 @@ void openAL_SourceStop(audio_Object srcobj)
 	alSourceStop((ALuint)srcobj);
 }
 
-void openAL_SourceQueueBuffers(audio_Object srcobj, uint32 n,
+void openAL_SourceQueueBuffers(audio_Object srcobj, uint32_t n,
 							   audio_Object* pbufobj)
 {
 	openAL_ConvertObjectArrayToALuints(n, pbufobj);
@@ -403,7 +403,7 @@ void openAL_SourceQueueBuffers(audio_Object srcobj, uint32 n,
 	openAL_ConvertObjectArrayFromALuints(n, pbufobj);
 }
 
-void openAL_SourceUnqueueBuffers(audio_Object srcobj, uint32 n,
+void openAL_SourceUnqueueBuffers(audio_Object srcobj, uint32_t n,
 								 audio_Object* pbufobj)
 {
 	openAL_ConvertObjectArrayToALuints(n, pbufobj);
@@ -416,13 +416,13 @@ void openAL_SourceUnqueueBuffers(audio_Object srcobj, uint32 n,
  * Buffers
  */
 
-void openAL_GenBuffers(uint32 n, audio_Object* pbufobj)
+void openAL_GenBuffers(uint32_t n, audio_Object* pbufobj)
 {
 	alGenBuffers((ALsizei)n, (ALuint*)pbufobj);
 	openAL_ConvertObjectArrayFromALuints(n, pbufobj);
 }
 
-void openAL_DeleteBuffers(uint32 n, audio_Object* pbufobj)
+void openAL_DeleteBuffers(uint32_t n, audio_Object* pbufobj)
 {
 	openAL_ConvertObjectArrayToALuints(n, pbufobj);
 	alDeleteBuffers((ALsizei)n, (ALuint*)pbufobj);
@@ -442,8 +442,8 @@ void openAL_GetBufferi(audio_Object bufobj, audio_BufferProp pname,
 	*value = temp;
 }
 
-void openAL_BufferData(audio_Object bufobj, uint32 format, void* data,
-					   uint32 size, uint32 freq)
+void openAL_BufferData(audio_Object bufobj, uint32_t format, void* data,
+					   uint32_t size, uint32_t freq)
 {
 	alBufferData((ALuint)bufobj, (ALenum)format, (ALvoid*)data,
 				 (ALsizei)size, (ALsizei)freq);

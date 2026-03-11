@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "Bash(xargs sed:*)",
-      "Bash(xargs clang-format:*)"
+      "Bash(xargs clang-format:*)",
+      "Bash(__NEW_LINE_c59c22e674c5a7c6__ echo:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)"
     ]
   }
 }

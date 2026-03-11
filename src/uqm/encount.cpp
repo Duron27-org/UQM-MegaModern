@@ -408,7 +408,7 @@ InitEncounter(void)
 
 	if (lowByte(GLOBAL(CurrentActivity)) != IN_LAST_BATTLE)
 	{
-#define NUM_DISPLAY_PTS (ARRAY_SIZE(display_pt))
+#define NUM_DISPLAY_PTS (std::size(display_pt))
 		HSHIPFRAG hStarShip, hNextShip;
 		GFXPOINT display_pt[] =
 			{
@@ -535,7 +535,7 @@ DrawFadeText(const uqm::CHAR_T* str1, const uqm::CHAR_T* str2, bool fade_in,
 	TEXT t1, t2;
 	GFXRECT r1, r2;
 	static const Color fade_cycle[] = SCAVENGE_TEXT_COLOR_TABLE;
-#define NUM_FADES (ARRAY_SIZE(fade_cycle))
+#define NUM_FADES (std::size(fade_cycle))
 
 	t1.baseline.x = pRect->corner.x + RES_SCALE(100);
 	t1.baseline.y = pRect->corner.y + RES_SCALE(45);
@@ -642,7 +642,7 @@ UninitEncounter(void)
 		HSHIPFRAG hStarShip;
 		SHIP_FRAGMENT* FragPtr;
 		static const Color fade_ship_cycle[] = SCAVENGE_SCREEN_COLOR_TABLE;
-#define NUM_SHIP_FADES (ARRAY_SIZE(fade_ship_cycle))
+#define NUM_SHIP_FADES (std::size(fade_ship_cycle))
 
 		SET_GAME_STATE(BATTLE_SEGUE, 0);
 		SET_GAME_STATE(BOMB_CARRIER, 0);
@@ -997,7 +997,7 @@ UninitEncounter(void)
 					ILWRATH_SHIP,
 					SLYLANDRO_SHIP};
 
-			for (j = 0; j < ARRAY_SIZE(bannedShip); j++)
+			for (j = 0; j < std::size(bannedShip); j++)
 			{
 				if (bannedShip[j] == EncounterRace)
 				{

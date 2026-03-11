@@ -385,7 +385,7 @@ confuse_preprocess_april(ELEMENT* ElementPtr)
 			BUILD_COLOR(MAKE_RGB15_INIT(0x00, 0x00, 0x1F), 0x7a),
 			BUILD_COLOR(MAKE_RGB15_INIT(0x15, 0x00, 0x1F), 0x7a),
 		};
-	const size_t colorTabCount = ARRAY_SIZE(colorTable);
+	const size_t colorTabCount = std::size(colorTable);
 
 	if (!(ElementPtr->state_flags & NONSOLID))
 	{

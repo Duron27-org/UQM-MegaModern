@@ -29,13 +29,13 @@
 int PlaybackTaskFunc(void* data);
 
 /* General */
-sint32 noSound_Init(audio_Driver* driver, sint32 flags);
+int32_t noSound_Init(audio_Driver* driver, int32_t flags);
 void noSound_Uninit(void);
-sint32 noSound_GetError(void);
+int32_t noSound_GetError(void);
 
 /* Sources */
-void noSound_GenSources(uint32 n, audio_Object* psrcobj);
-void noSound_DeleteSources(uint32 n, audio_Object* psrcobj);
+void noSound_GenSources(uint32_t n, audio_Object* psrcobj);
+void noSound_DeleteSources(uint32_t n, audio_Object* psrcobj);
 bool noSound_IsSource(audio_Object srcobj);
 void noSound_Sourcei(audio_Object srcobj, audio_SourceProp pname,
 					 audio_IntVal value);
@@ -51,19 +51,19 @@ void noSound_SourceRewind(audio_Object srcobj);
 void noSound_SourcePlay(audio_Object srcobj);
 void noSound_SourcePause(audio_Object srcobj);
 void noSound_SourceStop(audio_Object srcobj);
-void noSound_SourceQueueBuffers(audio_Object srcobj, uint32 n,
+void noSound_SourceQueueBuffers(audio_Object srcobj, uint32_t n,
 								audio_Object* pbufobj);
-void noSound_SourceUnqueueBuffers(audio_Object srcobj, uint32 n,
+void noSound_SourceUnqueueBuffers(audio_Object srcobj, uint32_t n,
 								  audio_Object* pbufobj);
 
 /* Buffers */
-void noSound_GenBuffers(uint32 n, audio_Object* pbufobj);
-void noSound_DeleteBuffers(uint32 n, audio_Object* pbufobj);
+void noSound_GenBuffers(uint32_t n, audio_Object* pbufobj);
+void noSound_DeleteBuffers(uint32_t n, audio_Object* pbufobj);
 bool noSound_IsBuffer(audio_Object bufobj);
 void noSound_GetBufferi(audio_Object bufobj, audio_BufferProp pname,
 						audio_IntVal* value);
-void noSound_BufferData(audio_Object bufobj, uint32 format, void* data,
-						uint32 size, uint32 freq);
+void noSound_BufferData(audio_Object bufobj, uint32_t format, void* data,
+						uint32_t size, uint32_t freq);
 
 
 #endif /* LIBS_SOUND_MIXER_NOSOUND_AUDIODRV_NOSOUND_H_ */

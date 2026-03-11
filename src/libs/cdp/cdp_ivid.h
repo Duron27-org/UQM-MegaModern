@@ -22,7 +22,7 @@
 #ifndef LIBS_CDP_CDP_IVID_H_
 #define LIBS_CDP_CDP_IVID_H_
 
-#include "types.h"
+#include <cstdint>
 #include "libs/video/video.h"
 #include "libs/video/videodec.h"
 

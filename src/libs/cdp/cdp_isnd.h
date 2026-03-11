@@ -22,7 +22,7 @@
 #ifndef LIBS_CDP_CDP_ISND_H_
 #define LIBS_CDP_CDP_ISND_H_
 
-#include "types.h"
+#include <cstdint>
 #include "libs/sound/sound.h"
 #include "libs/sound/decoders/decoder.h"
 

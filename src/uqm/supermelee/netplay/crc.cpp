@@ -27,7 +27,7 @@
 
 
 // CRC table for Polynomial 0x04c11db7 (0xedb88320 reversed)
-uint32 crcTable[256] = {
+uint32_t crcTable[256] = {
 	0x00000000, 0x77073096, 0xee0e612c, 0x990951ba, 0x076dc419, 0x706af48f,
 	0xe963a535, 0x9e6495a3, 0x0edb8832, 0x79dcb8a4, 0xe0d5e91e, 0x97d2d988,
 	0x09b64c2b, 0x7eb17cbd, 0xe7b82d07, 0x90bf1d91, 0x1db71064, 0x6ab020f2,
@@ -77,10 +77,10 @@ void crc_init(crc_State* state)
 	state->crc = 0xffffffff;
 }
 
-void crc_processBytes(crc_State* state, uint8* buf, size_t bufLen)
+void crc_processBytes(crc_State* state, uint8_t* buf, size_t bufLen)
 {
-	uint8* end = buf + bufLen;
-	uint32 newCrc = state->crc;
+	uint8_t* end = buf + bufLen;
+	uint32_t newCrc = state->crc;
 
 	while (buf < end)
 	{
@@ -94,9 +94,9 @@ void crc_processBytes(crc_State* state, uint8* buf, size_t bufLen)
 	state->crc = newCrc;
 }
 
-void crc_processUint8(crc_State* state, uint8 val)
+void crc_processUint8(crc_State* state, uint8_t val)
 {
-	uint32 newCrc = state->crc;
+	uint32_t newCrc = state->crc;
 
 	newCrc = (newCrc >> 8) ^ crcTable[(newCrc ^ val) & 0xff];
 #ifdef DUMP_CRC_OPS
@@ -106,9 +106,9 @@ void crc_processUint8(crc_State* state, uint8 val)
 	state->crc = newCrc;
 }
 
-void crc_processUint16(crc_State* state, uint16 val)
+void crc_processUint16(crc_State* state, uint16_t val)
 {
-	uint32 newCrc = state->crc;
+	uint32_t newCrc = state->crc;
 
 	newCrc = (newCrc >> 8) ^ crcTable[(newCrc ^ (val & 0xff)) & 0xff];
 	newCrc = (newCrc >> 8) ^ crcTable[(newCrc ^ (val >> 8)) & 0xff];
@@ -119,9 +119,9 @@ void crc_processUint16(crc_State* state, uint16 val)
 	state->crc = newCrc;
 }
 
-void crc_processUint32(crc_State* state, uint32 val)
+void crc_processUint32(crc_State* state, uint32_t val)
 {
-	uint32 newCrc = state->crc;
+	uint32_t newCrc = state->crc;
 
 	newCrc = (newCrc >> 8) ^ crcTable[(newCrc ^ (val & 0xff)) & 0xff];
 	newCrc = (newCrc >> 8) ^ crcTable[(newCrc ^ ((val >> 8) & 0xff)) & 0xff];
@@ -135,7 +135,7 @@ void crc_processUint32(crc_State* state, uint32 val)
 	state->crc = newCrc;
 }
 
-uint32
+uint32_t
 crc_finish(const crc_State* state)
 {
 	return ~state->crc;

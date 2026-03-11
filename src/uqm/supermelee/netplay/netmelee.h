@@ -50,7 +50,7 @@ struct melee_state* NetMelee_getMeleeState(NetConnection* conn);
 struct battlestate_struct* NetMelee_getBattleState(NetConnection* conn);
 
 void netInput(void);
-void netInputBlocking(uint32 timeoutMs);
+void netInputBlocking(uint32_t timeoutMs);
 void flushPacketQueues(void);
 
 void confirmConnections(void);

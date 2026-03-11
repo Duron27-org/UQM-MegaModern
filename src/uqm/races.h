@@ -19,7 +19,7 @@
 #ifndef UQM_RACES_H_
 #define UQM_RACES_H_
 
-#include "types.h"
+#include <cstdint>
 #include "libs/compiler.h"
 #include "units.h"
 #include "displist.h"
@@ -274,9 +274,9 @@ struct STARSHIP : SHIP_BASE
 	FRAME icons;
 
 	// Battle states
-	uqm::BYTE weapon_counter; // In battle: frames left before primary weapon can be used
+	uqm::BYTE weapon_counter;  // In battle: frames left before primary weapon can be used
 	uqm::BYTE special_counter; // In battle: frames left before special can be used
-	uqm::BYTE energy_counter; // In battle: frames left before energy regeneration
+	uqm::BYTE energy_counter;  // In battle: frames left before energy regeneration
 
 	uqm::BYTE ship_input_state;
 	STATUS_FLAGS cur_status_flags;

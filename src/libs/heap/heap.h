@@ -19,7 +19,7 @@
 #ifndef LIBS_HEAP_HEAP_H_
 #define LIBS_HEAP_HEAP_H_
 
-#include "types.h"
+#include <cstdint>
 
 #include <sys/types.h>
 #include <stdlib.h>

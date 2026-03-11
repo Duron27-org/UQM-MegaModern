@@ -40,7 +40,6 @@ set(uqm_src_files
 	"src/port.cpp"
 	"src/port.h"
 	"src/src.cmake"
-	"src/types.h"
 	"src/uqmversion.h"
 )
 

@@ -21,9 +21,8 @@
 #define LIBS_SOUND_AUDIOCORE_H_
 
 #include "config.h"
-#include "types.h"
+#include <cstdint>
 #include "libs/sound/audiocoredefs.h"
-
 
 
 extern AudioDriverType snddriver;
@@ -33,13 +32,13 @@ typedef struct
 {
 	/* General */
 	void (*Uninitialize)(void);
-	sint32 (*GetError)(void);
+	int32_t (*GetError)(void);
 	AudioDriverType driverID;
-	sint32 EnumLookup[audio_ENUM_SIZE];
+	int32_t EnumLookup[audio_ENUM_SIZE];
 
 	/* Sources */
-	void (*GenSources)(uint32 n, audio_Object* psrcobj);
-	void (*DeleteSources)(uint32 n, audio_Object* psrcobj);
+	void (*GenSources)(uint32_t n, audio_Object* psrcobj);
+	void (*DeleteSources)(uint32_t n, audio_Object* psrcobj);
 	bool (*IsSource)(audio_Object srcobj);
 	void (*Sourcei)(audio_Object srcobj, audio_SourceProp pname,
 					audio_IntVal value);
@@ -55,32 +54,32 @@ typedef struct
 	void (*SourcePlay)(audio_Object srcobj);
 	void (*SourcePause)(audio_Object srcobj);
 	void (*SourceStop)(audio_Object srcobj);
-	void (*SourceQueueBuffers)(audio_Object srcobj, uint32 n,
+	void (*SourceQueueBuffers)(audio_Object srcobj, uint32_t n,
 							   audio_Object* pbufobj);
-	void (*SourceUnqueueBuffers)(audio_Object srcobj, uint32 n,
+	void (*SourceUnqueueBuffers)(audio_Object srcobj, uint32_t n,
 								 audio_Object* pbufobj);
 
 	/* Buffers */
-	void (*GenBuffers)(uint32 n, audio_Object* pbufobj);
-	void (*DeleteBuffers)(uint32 n, audio_Object* pbufobj);
+	void (*GenBuffers)(uint32_t n, audio_Object* pbufobj);
+	void (*DeleteBuffers)(uint32_t n, audio_Object* pbufobj);
 	bool (*IsBuffer)(audio_Object bufobj);
 	void (*GetBufferi)(audio_Object bufobj, audio_BufferProp pname,
 					   audio_IntVal* value);
-	void (*BufferData)(audio_Object bufobj, uint32 format, void* data,
-					   uint32 size, uint32 freq);
+	void (*BufferData)(audio_Object bufobj, uint32_t format, void* data,
+					   uint32_t size, uint32_t freq);
 } audio_Driver;
 
 
 /* Initialization */
-sint32 initAudio(sint32 driver, sint32 flags);
+int32_t initAudio(int32_t driver, int32_t flags);
 void unInitAudio(void);
 
 /* General */
-sint32 audio_GetError(void);
+int32_t audio_GetError(void);
 
 /* Sources */
-void audio_GenSources(uint32 n, audio_Object* psrcobj);
-void audio_DeleteSources(uint32 n, audio_Object* psrcobj);
+void audio_GenSources(uint32_t n, audio_Object* psrcobj);
+void audio_DeleteSources(uint32_t n, audio_Object* psrcobj);
 bool audio_IsSource(audio_Object srcobj);
 void audio_Sourcei(audio_Object srcobj, audio_SourceProp pname,
 				   audio_IntVal value);
@@ -96,20 +95,20 @@ void audio_SourceRewind(audio_Object srcobj);
 void audio_SourcePlay(audio_Object srcobj);
 void audio_SourcePause(audio_Object srcobj);
 void audio_SourceStop(audio_Object srcobj);
-void audio_SourceQueueBuffers(audio_Object srcobj, uint32 n,
+void audio_SourceQueueBuffers(audio_Object srcobj, uint32_t n,
 							  audio_Object* pbufobj);
-void audio_SourceUnqueueBuffers(audio_Object srcobj, uint32 n,
+void audio_SourceUnqueueBuffers(audio_Object srcobj, uint32_t n,
 								audio_Object* pbufobj);
 
 /* Buffers */
-void audio_GenBuffers(uint32 n, audio_Object* pbufobj);
-void audio_DeleteBuffers(uint32 n, audio_Object* pbufobj);
+void audio_GenBuffers(uint32_t n, audio_Object* pbufobj);
+void audio_DeleteBuffers(uint32_t n, audio_Object* pbufobj);
 bool audio_IsBuffer(audio_Object bufobj);
 void audio_GetBufferi(audio_Object bufobj, audio_BufferProp pname,
 					  audio_IntVal* value);
-void audio_BufferData(audio_Object bufobj, uint32 format, void* data,
-					  uint32 size, uint32 freq);
+void audio_BufferData(audio_Object bufobj, uint32_t format, void* data,
+					  uint32_t size, uint32_t freq);
 
-bool audio_GetFormatInfo(uint32 format, int* channels, int* sample_size);
+bool audio_GetFormatInfo(uint32_t format, int* channels, int* sample_size);
 
 #endif /* LIBS_SOUND_AUDIOCORE_H_ */

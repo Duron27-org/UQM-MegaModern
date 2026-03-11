@@ -81,7 +81,7 @@ void Netplay_Notify_setShip(NetConnection* conn, int player,
 	sendFleetShip(conn, netSide(conn, player), index, ship);
 }
 
-void Netplay_Notify_seedRandom(NetConnection* conn, uint32 seed)
+void Netplay_Notify_seedRandom(NetConnection* conn, uint32_t seed)
 {
 	assert(NetConnection_getState(conn) == NetState_preBattle);
 
@@ -89,7 +89,7 @@ void Netplay_Notify_seedRandom(NetConnection* conn, uint32 seed)
 	conn->stateFlags.agreement.randomSeed = true;
 }
 
-void Netplay_Notify_inputDelay(NetConnection* conn, uint32 delay)
+void Netplay_Notify_inputDelay(NetConnection* conn, uint32_t delay)
 {
 	assert(NetConnection_getState(conn) == NetState_preBattle);
 

@@ -276,8 +276,8 @@ void WaitThread(Thread thread, int* status)
 }
 
 #ifdef DEBUG_SLEEP
-extern uint32 mainThreadId;
-extern uint32 SDL_ThreadID(void);
+extern uint32_t mainThreadId;
+extern uint32_t SDL_ThreadID(void);
 #endif /* DEBUG_SLEEP */
 
 void HibernateThread(TimePeriod timePeriod)
@@ -334,7 +334,7 @@ void SleepThreadUntil(TimeCount wakeTime)
 
 	for (;;)
 	{
-		uint32 nextTimeMs;
+		uint32_t nextTimeMs;
 		TimeCount nextTime;
 		TimeCount now;
 

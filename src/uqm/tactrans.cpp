@@ -794,7 +794,7 @@ cycle_ion_trail(ELEMENT* ElementPtr)
 			BUILD_COLOR(MAKE_RGB15_INIT(0x0F, 0x00, 0x00), 0x2e),
 			BUILD_COLOR(MAKE_RGB15_INIT(0x0B, 0x00, 0x00), 0x2f),
 		};
-	const size_t colorTabCount = ARRAY_SIZE(colorTab);
+	const size_t colorTabCount = std::size(colorTab);
 
 	assert(!(ElementPtr->state_flags & PLAYER_SHIP));
 
@@ -1019,7 +1019,7 @@ void flee_preprocess(ELEMENT* ElementPtr)
 				BUILD_COLOR(MAKE_RGB15_INIT(0x13, 0x00, 0x00), 0x2C),
 				BUILD_COLOR(MAKE_RGB15_INIT(0x0E, 0x00, 0x00), 0x2D),
 			};
-		const size_t colorTabCount = ARRAY_SIZE(colorTab);
+		const size_t colorTabCount = std::size(colorTab);
 
 		ElementPtr->colorCycleIndex++;
 		if (ElementPtr->colorCycleIndex == colorTabCount)

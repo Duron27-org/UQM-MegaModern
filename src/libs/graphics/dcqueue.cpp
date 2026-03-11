@@ -229,8 +229,8 @@ static void
 checkExclusiveThread(TFB_DrawCommand* DrawCommand)
 {
 #ifdef DEBUG_DCQ_THREADS
-	static uint32 exclusiveThreadId;
-	//extern uint32 SDL_ThreadID(void);
+	static uint32_t exclusiveThreadId;
+	//extern uint32_t SDL_ThreadID(void);
 
 	// Only one thread is currently allowed to enqueue commands
 	// This is not a technical limitation but rather a semantical one atm.

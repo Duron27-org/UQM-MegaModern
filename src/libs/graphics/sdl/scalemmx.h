@@ -681,7 +681,7 @@ SCALE_(CmpYUV)(Uint32 pix1, Uint32 pix2, int toler)
 static inline int
 SCALE_(DiffYUV)(Uint32 yuv1, Uint32 yuv2)
 {
-	sint32 ret;
+	int32_t ret;
 
 	__asm__(
 		// load YUV pixels

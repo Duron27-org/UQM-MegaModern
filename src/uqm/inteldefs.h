@@ -23,7 +23,6 @@
 #define SLOW_SHIP_HD 400
 
 
-
 enum
 {
 	ENEMY_SHIP_INDEX = 0,
@@ -53,7 +52,7 @@ ENUM_BITWISE_OPS(PlayerControlFlags);
 // separately in the future if we want to remove the special
 // cases for ship selection with PlayerControlFlags::Cyborg from the
 // computer handlers.
- static inline constexpr PlayerControlFlags ComputerControlFlags {PlayerControlFlags::Cyborg | PlayerControlFlags::Psytron};
+static inline constexpr PlayerControlFlags ComputerControlFlags {PlayerControlFlags::Cyborg | PlayerControlFlags::Psytron};
 static inline constexpr PlayerControlFlags ControlFlagsMask {PlayerControlFlags::Human | PlayerControlFlags::Network | ComputerControlFlags};
 static inline constexpr PlayerControlFlags DifficultyFlagsMask {PlayerControlFlags::DifficultyStandard | PlayerControlFlags::DifficultyGood | PlayerControlFlags::DifficultyAwesome};
 

@@ -19,7 +19,7 @@
 #ifndef UQM_SUPERMELEE_NETPLAY_PACKETSENDERS_H_
 #define UQM_SUPERMELEE_NETPLAY_PACKETSENDERS_H_
 
-#include "types.h"
+#include <cstdint>
 
 #include "netconnection.h"
 #include "packet.h"
@@ -36,8 +36,8 @@ extern "C" {
 #endif
 
 void sendInit(NetConnection* conn);
-void sendPing(NetConnection* conn, uint32 id);
-void sendAck(NetConnection* conn, uint32 id);
+void sendPing(NetConnection* conn, uint32_t id);
+void sendAck(NetConnection* conn, uint32_t id);
 void sendReady(NetConnection* conn);
 void sendHandshake0(NetConnection* conn);
 void sendHandshake1(NetConnection* conn);
@@ -49,8 +49,8 @@ void sendFleet(NetConnection* conn, NetplaySide side,
 			   const MeleeShip* ships, size_t numShips);
 void sendFleetShip(NetConnection* conn, NetplaySide player,
 				   FleetShipIndex shipIndex, MeleeShip ship);
-void sendSeedRandom(NetConnection* conn, uint32 seed);
-void sendInputDelay(NetConnection* conn, uint32 delay);
+void sendSeedRandom(NetConnection* conn, uint32_t seed);
+void sendInputDelay(NetConnection* conn, uint32_t delay);
 void sendSelectShip(NetConnection* conn, FleetShipIndex index);
 void sendBattleInput(NetConnection* conn, BATTLE_INPUT_STATE input);
 void sendFrameCount(NetConnection* conn, BattleFrameCounter frameCount);

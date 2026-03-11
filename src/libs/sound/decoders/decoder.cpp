@@ -42,15 +42,15 @@
 static const char* bufa_GetName(void);
 static bool bufa_InitModule(AudioFlags flags, const TFB_DecoderFormats*);
 static void bufa_TermModule(void);
-static uint32 bufa_GetStructSize(void);
+static uint32_t bufa_GetStructSize(void);
 static int bufa_GetError(THIS_PTR);
 static bool bufa_Init(THIS_PTR);
 static void bufa_Term(THIS_PTR);
 static bool bufa_Open(THIS_PTR, uio_DirHandle* dir, const char* filename);
 static void bufa_Close(THIS_PTR);
-static int bufa_Decode(THIS_PTR, void* buf, sint32 bufsize);
-static uint32 bufa_Seek(THIS_PTR, uint32 pcm_pos);
-static uint32 bufa_GetFrame(THIS_PTR);
+static int bufa_Decode(THIS_PTR, void* buf, int32_t bufsize);
+static uint32_t bufa_Seek(THIS_PTR, uint32_t pcm_pos);
+static uint32_t bufa_GetFrame(THIS_PTR);
 
 TFB_SoundDecoderFuncs bufa_DecoderVtbl =
 	{
@@ -75,8 +75,8 @@ typedef struct tfb_bufsounddecoder
 
 	// private
 	void* data;
-	uint32 max_pcm;
-	uint32 cur_pcm;
+	uint32_t max_pcm;
+	uint32_t cur_pcm;
 
 } TFB_BufSoundDecoder;
 
@@ -85,15 +85,15 @@ typedef struct tfb_bufsounddecoder
 static const char* nula_GetName(void);
 static bool nula_InitModule(AudioFlags flags, const TFB_DecoderFormats*);
 static void nula_TermModule(void);
-static uint32 nula_GetStructSize(void);
+static uint32_t nula_GetStructSize(void);
 static int nula_GetError(THIS_PTR);
 static bool nula_Init(THIS_PTR);
 static void nula_Term(THIS_PTR);
 static bool nula_Open(THIS_PTR, uio_DirHandle* dir, const char* filename);
 static void nula_Close(THIS_PTR);
-static int nula_Decode(THIS_PTR, void* buf, sint32 bufsize);
-static uint32 nula_Seek(THIS_PTR, uint32 pcm_pos);
-static uint32 nula_GetFrame(THIS_PTR);
+static int nula_Decode(THIS_PTR, void* buf, int32_t bufsize);
+static uint32_t nula_Seek(THIS_PTR, uint32_t pcm_pos);
+static uint32_t nula_GetFrame(THIS_PTR);
 
 TFB_SoundDecoderFuncs nula_DecoderVtbl =
 	{
@@ -117,7 +117,7 @@ typedef struct tfb_nullsounddecoder
 	TFB_SoundDecoder decoder;
 
 	// private
-	uint32 cur_pcm;
+	uint32_t cur_pcm;
 
 } TFB_NullSoundDecoder;
 
@@ -149,17 +149,17 @@ static AudioFlags sd_flags {AudioFlags::None};
 /* change endianness of 16bit words
  * Only works optimal when 'data' is aligned on a 32 bits boundary.
  */
-void SoundDecoder_SwapWords(uint16* data, uint32 size)
+void SoundDecoder_SwapWords(uint16_t* data, uint32_t size)
 {
-	uint32 fsize = size & (~3U);
+	uint32_t fsize = size & (~3U);
 
 	size -= fsize;
 	fsize >>= 2;
 	for (; fsize; fsize--, data += 2)
 	{
-		uint32 v = *(uint32*)data;
-		*(uint32*)data = ((v & 0x00ff00ff) << 8)
-					   | ((v & 0xff00ff00) >> 8);
+		uint32_t v = *(uint32_t*)data;
+		*(uint32_t*)data = ((v & 0x00ff00ff) << 8)
+						 | ((v & 0xff00ff00) >> 8);
 	}
 	if (size)
 	{
@@ -178,11 +178,11 @@ SoundDecoder_GetName(TFB_SoundDecoder* decoder)
 	return decoder->funcs->GetName();
 }
 
-sint32
+int32_t
 SoundDecoder_Init(AudioFlags flags, TFB_DecoderFormats* formats)
 {
 	TFB_RegSoundDecoder* info;
-	sint32 ret = 0;
+	int32_t ret = 0;
 
 	if (!formats)
 	{
@@ -321,14 +321,14 @@ SoundDecoder_Lookup(const char* fileext)
 
 TFB_SoundDecoder*
 SoundDecoder_Load(uio_DirHandle* dir, char* filename,
-				  uint32 buffer_size, uint32 startTime, sint32 runTime)
+				  uint32_t buffer_size, uint32_t startTime, int32_t runTime)
 // runTime < 0 specifies a default length for a nul decoder
 {
 	const char* pext;
 	TFB_RegSoundDecoder* info;
 	const TFB_SoundDecoderFuncs* funcs;
 	TFB_SoundDecoder* decoder;
-	uint32 struct_size;
+	uint32_t struct_size;
 
 	pext = strrchr(filename, '.');
 	if (!pext)
@@ -431,7 +431,7 @@ SoundDecoder_Load(uio_DirHandle* dir, char* filename,
 		decoder->length = (float)(runTime / 1000.0);
 	}
 
-	decoder->start_sample = (uint32)(startTime / 1000.0f * decoder->frequency);
+	decoder->start_sample = (uint32_t)(startTime / 1000.0f * decoder->frequency);
 	decoder->end_sample = decoder->start_sample + (unsigned long)(decoder->length * decoder->frequency);
 	if (decoder->start_sample != 0)
 	{
@@ -460,14 +460,14 @@ SoundDecoder_Load(uio_DirHandle* dir, char* filename,
 	return decoder;
 }
 
-uint32
+uint32_t
 SoundDecoder_Decode(TFB_SoundDecoder* decoder)
 {
 	long decoded_bytes;
 	long rc;
 	long buffer_size;
-	uint32 max_bytes = UINT32_MAX;
-	uint8* buffer;
+	uint32_t max_bytes = UINT32_MAX;
+	uint8_t* buffer;
 
 	if (!decoder || !decoder->funcs)
 	{
@@ -475,7 +475,7 @@ SoundDecoder_Decode(TFB_SoundDecoder* decoder)
 		return 0;
 	}
 
-	buffer = (uint8*)decoder->buffer;
+	buffer = (uint8_t*)decoder->buffer;
 	buffer_size = decoder->buffer_size;
 	if (!decoder->looping && decoder->end_sample > 0)
 	{
@@ -550,18 +550,18 @@ SoundDecoder_Decode(TFB_SoundDecoder* decoder)
 	if (decoder->need_swap && decoded_bytes > 0 && (decoder->format == decoder_formats.stereo16 || decoder->format == decoder_formats.mono16))
 	{
 		SoundDecoder_SwapWords(
-			(uint16*)decoder->buffer, decoded_bytes);
+			(uint16_t*)decoder->buffer, decoded_bytes);
 	}
 
 	return decoded_bytes;
 }
 
-uint32
+uint32_t
 SoundDecoder_DecodeAll(TFB_SoundDecoder* decoder)
 {
-	uint32 decoded_bytes;
+	uint32_t decoded_bytes;
 	long rc;
-	uint32 reqbufsize;
+	uint32_t reqbufsize;
 
 	if (!decoder || !decoder->funcs)
 	{
@@ -594,7 +594,7 @@ SoundDecoder_DecodeAll(TFB_SoundDecoder* decoder)
 		}
 
 		rc = decoder->funcs->Decode(decoder,
-									(uint8*)decoder->buffer + decoded_bytes,
+									(uint8_t*)decoder->buffer + decoded_bytes,
 									decoder->buffer_size - decoded_bytes);
 
 		if (rc > 0)
@@ -610,7 +610,7 @@ SoundDecoder_DecodeAll(TFB_SoundDecoder* decoder)
 	if (decoder->need_swap && decoded_bytes > 0 && (decoder->format == decoder_formats.stereo16 || decoder->format == decoder_formats.mono16))
 	{
 		SoundDecoder_SwapWords(
-			(uint16*)decoder->buffer, decoded_bytes);
+			(uint16_t*)decoder->buffer, decoded_bytes);
 	}
 
 	if (rc < 0)
@@ -641,9 +641,9 @@ void SoundDecoder_Rewind(TFB_SoundDecoder* decoder)
 }
 
 // seekTime is specified in mili-seconds
-void SoundDecoder_Seek(TFB_SoundDecoder* decoder, uint32 seekTime)
+void SoundDecoder_Seek(TFB_SoundDecoder* decoder, uint32_t seekTime)
 {
-	uint32 pcm_pos;
+	uint32_t pcm_pos;
 
 	if (!decoder)
 	{
@@ -657,7 +657,7 @@ void SoundDecoder_Seek(TFB_SoundDecoder* decoder, uint32 seekTime)
 
 	if (strcmp(SoundDecoder_GetName(decoder), "MikMod") != 0)
 	{
-		pcm_pos = (uint32)(seekTime / 1000.0f * decoder->frequency);
+		pcm_pos = (uint32_t)(seekTime / 1000.0f * decoder->frequency);
 		pcm_pos = decoder->funcs->Seek(decoder,
 									   decoder->start_sample + pcm_pos);
 		decoder->pos = pcm_pos * decoder->bytes_per_samp;
@@ -707,7 +707,7 @@ float SoundDecoder_GetTime(TFB_SoundDecoder* decoder)
 		 / decoder->frequency;
 }
 
-uint32
+uint32_t
 SoundDecoder_GetFrame(TFB_SoundDecoder* decoder)
 {
 	if (!decoder)
@@ -749,7 +749,7 @@ bufa_TermModule(void)
 	uqm::log::debug("bufa_TermModule(): dead function called");
 }
 
-static uint32
+static uint32_t
 bufa_GetStructSize(void)
 {
 	return sizeof(TFB_BufSoundDecoder);
@@ -812,11 +812,11 @@ bufa_Close(THIS_PTR)
 }
 
 static int
-bufa_Decode(THIS_PTR, void* buf, sint32 bufsize)
+bufa_Decode(THIS_PTR, void* buf, int32_t bufsize)
 {
 	TFB_BufSoundDecoder* bufa = (TFB_BufSoundDecoder*)This;
-	uint32 dec_pcm;
-	uint32 dec_bytes;
+	uint32_t dec_pcm;
+	uint32_t dec_bytes;
 
 	dec_pcm = bufsize / This->bytes_per_samp;
 	if (dec_pcm > bufa->max_pcm - bufa->cur_pcm)
@@ -826,7 +826,7 @@ bufa_Decode(THIS_PTR, void* buf, sint32 bufsize)
 	dec_bytes = dec_pcm * This->bytes_per_samp;
 
 	// Buffer decode is a hack
-	This->buffer = (uint8*)bufa->data
+	This->buffer = (uint8_t*)bufa->data
 				 + bufa->cur_pcm * This->bytes_per_samp;
 
 	if (dec_pcm > 0)
@@ -839,8 +839,8 @@ bufa_Decode(THIS_PTR, void* buf, sint32 bufsize)
 	(void)buf; // laugh at compiler warning
 }
 
-static uint32
-bufa_Seek(THIS_PTR, uint32 pcm_pos)
+static uint32_t
+bufa_Seek(THIS_PTR, uint32_t pcm_pos)
 {
 	TFB_BufSoundDecoder* bufa = (TFB_BufSoundDecoder*)This;
 
@@ -853,7 +853,7 @@ bufa_Seek(THIS_PTR, uint32 pcm_pos)
 	return pcm_pos;
 }
 
-static uint32
+static uint32_t
 bufa_GetFrame(THIS_PTR)
 {
 	return 0; // only 1 frame
@@ -886,7 +886,7 @@ nula_TermModule(void)
 	uqm::log::debug("nula_TermModule(): dead function called");
 }
 
-static uint32
+static uint32_t
 nula_GetStructSize(void)
 {
 	return sizeof(TFB_NullSoundDecoder);
@@ -939,14 +939,14 @@ nula_Close(THIS_PTR)
 }
 
 static int
-nula_Decode(THIS_PTR, void* buf, sint32 bufsize)
+nula_Decode(THIS_PTR, void* buf, int32_t bufsize)
 {
 	TFB_NullSoundDecoder* nula = (TFB_NullSoundDecoder*)This;
-	uint32 max_pcm;
-	uint32 dec_pcm;
-	uint32 dec_bytes;
+	uint32_t max_pcm;
+	uint32_t dec_pcm;
+	uint32_t dec_bytes;
 
-	max_pcm = (uint32)(This->length * This->frequency);
+	max_pcm = (uint32_t)(This->length * This->frequency);
 	dec_pcm = bufsize / This->bytes_per_samp;
 	if (dec_pcm > max_pcm - nula->cur_pcm)
 	{
@@ -963,13 +963,13 @@ nula_Decode(THIS_PTR, void* buf, sint32 bufsize)
 	return dec_bytes;
 }
 
-static uint32
-nula_Seek(THIS_PTR, uint32 pcm_pos)
+static uint32_t
+nula_Seek(THIS_PTR, uint32_t pcm_pos)
 {
 	TFB_NullSoundDecoder* nula = (TFB_NullSoundDecoder*)This;
-	uint32 max_pcm;
+	uint32_t max_pcm;
 
-	max_pcm = (uint32)(This->length * This->frequency);
+	max_pcm = (uint32_t)(This->length * This->frequency);
 	if (pcm_pos > max_pcm)
 	{
 		pcm_pos = max_pcm;
@@ -979,7 +979,7 @@ nula_Seek(THIS_PTR, uint32 pcm_pos)
 	return pcm_pos;
 }
 
-static uint32
+static uint32_t
 nula_GetFrame(THIS_PTR)
 {
 	return 0; // only 1 frame

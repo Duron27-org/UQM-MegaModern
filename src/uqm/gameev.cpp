@@ -113,7 +113,7 @@ void uninitEventSystem(void)
 
 int eventIdStrToNum(const char* eventIdStr)
 {
-	size_t eventCount = ARRAY_SIZE(eventNames);
+	size_t eventCount = std::size(eventNames);
 	size_t eventI;
 
 	// Linear search; acceptable for such a small number of events.
@@ -130,7 +130,7 @@ int eventIdStrToNum(const char* eventIdStr)
 const char*
 eventIdNumToStr(int eventNum)
 {
-	size_t eventCount = ARRAY_SIZE(eventNames);
+	size_t eventCount = std::size(eventNames);
 	if (eventNum < 0 || (size_t)eventNum >= eventCount)
 	{
 		return nullptr;

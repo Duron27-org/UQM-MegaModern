@@ -2502,7 +2502,7 @@ void FreeLanderData(void)
 	DestroySound(ReleaseSound(LanderSounds));
 	LanderSounds = 0;
 
-	landerFrameCount = ARRAY_SIZE(LanderFrame);
+	landerFrameCount = std::size(LanderFrame);
 	for (i = 0; i < landerFrameCount; ++i)
 	{
 		DestroyDrawable(ReleaseDrawable(LanderFrame[i]));
@@ -2736,7 +2736,7 @@ GetThermalHazardRating(int temp)
 {
 	static const int tempBreakpoints[] =
 		{50, 100, 150, 250, 350, 550, 800};
-	const size_t numBreakpoints = ARRAY_SIZE(tempBreakpoints);
+	const size_t numBreakpoints = std::size(tempBreakpoints);
 	unsigned i;
 
 	for (i = 0; i < numBreakpoints; ++i)

@@ -15,7 +15,7 @@
  */
 
 #include "libs/graphics/sdl/sdl_common.h"
-#include "types.h"
+#include <cstdint>
 #include "scalers.h"
 #include "scaleint.h"
 #include "2xscalers.h"
@@ -26,11 +26,11 @@
 const Scale_FuncDef_t
 	Scale_C_Functions[] =
 		{
-			{uqm::GfxFlags::Scale_Bilinear,   Scale_BilinearFilter  },
-			{uqm::GfxFlags::Scale_BiAdapt,	  Scale_BiAdaptFilter	 },
+			{uqm::GfxFlags::Scale_Bilinear,	Scale_BilinearFilter	},
+			{uqm::GfxFlags::Scale_BiAdapt,	   Scale_BiAdaptFilter	  },
 			{uqm::GfxFlags::Scale_BiAdaptAdv, Scale_BiAdaptAdvFilter},
-			{uqm::GfxFlags::Scale_Triscan,	  Scale_TriScanFilter	 },
-			{uqm::GfxFlags::Scale_HQXX,	   Scale_HqFilter		 },
+			{uqm::GfxFlags::Scale_Triscan,	   Scale_TriScanFilter	  },
+			{uqm::GfxFlags::Scale_HQXX,		Scale_HqFilter		  },
 			// Default
 			{uqm::GfxFlags::None,			  Scale_Nearest		   }
 };

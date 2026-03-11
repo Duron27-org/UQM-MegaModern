@@ -27,7 +27,7 @@
 #define LIST_GENERIC
 #endif
 
-#include "types.h"
+#include <cstdint>
 #include "port.h"
 
 // You can use inline lists, by using this file as a template.

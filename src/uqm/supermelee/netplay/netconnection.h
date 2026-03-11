@@ -193,8 +193,8 @@ struct NetConnection
 	NetConnection_ErrorCallback errorCallback;
 	NetConnection_DeleteCallback deleteCallback;
 	// Called when the NetConnection is destroyed.
-	uint8* readBuf;
-	uint8* readEnd;
+	uint8_t* readBuf;
+	uint8_t* readEnd;
 	NetConnectionStateData* stateData;
 	// State dependant information.
 	void* extra;

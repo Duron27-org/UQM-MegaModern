@@ -27,9 +27,9 @@
 // video callbacks
 static void vp_BeginFrame(TFB_VideoDecoder*);
 static void vp_EndFrame(TFB_VideoDecoder*);
-static void* vp_GetCanvasLine(TFB_VideoDecoder*, uint32 line);
-static uint32 vp_GetTicks(TFB_VideoDecoder*);
-static bool vp_SetTimer(TFB_VideoDecoder*, uint32 msecs);
+static void* vp_GetCanvasLine(TFB_VideoDecoder*, uint32_t line);
+static uint32_t vp_GetTicks(TFB_VideoDecoder*);
+static bool vp_SetTimer(TFB_VideoDecoder*, uint32_t msecs);
 
 
 static const TFB_VideoCallbacks vp_DecoderCBs =
@@ -66,8 +66,8 @@ void TFB_UninitVideoPlayer(void)
 	// now just a stub
 }
 
-static inline sint32
-msecToTimeCount(sint32 msec)
+static inline int32_t
+msecToTimeCount(int32_t msec)
 {
 	return msec * GameTicksPerSecond / 1000;
 }
@@ -81,9 +81,9 @@ processAudioSyncedFrame(VIDEO_REF vid)
 #define LAG_FRACTION 6
 #define SYNC_BIAS 1 / 3
 	int ret;
-	uint32 want_frame;
-	uint32 prev_want_frame;
-	sint32 wait_msec;
+	uint32_t want_frame;
+	uint32_t prev_want_frame;
+	int32_t wait_msec;
 	GFXCONTEXT oldContext;
 	TimeCount Now = GetTimeCounter();
 
@@ -219,7 +219,7 @@ processMuteFrame(VIDEO_REF vid)
 	return vid->playing;
 }
 
-bool TFB_PlayVideo(VIDEO_REF vid, uint32 x, uint32 y)
+bool TFB_PlayVideo(VIDEO_REF vid, uint32_t x, uint32_t y)
 {
 	GFXRECT scrn_r;
 	GFXRECT clip_r = {
@@ -377,10 +377,10 @@ bool TFB_ProcessVideoFrame(VIDEO_REF vid)
 	}
 }
 
-uint32
+uint32_t
 TFB_GetVideoPosition(VIDEO_REF vid)
 {
-	uint32 pos;
+	uint32_t pos;
 
 	if (!TFB_VideoPlaying(vid))
 	{
@@ -388,13 +388,13 @@ TFB_GetVideoPosition(VIDEO_REF vid)
 	}
 
 	LockMutex(vid->guard);
-	pos = (uint32)(vid->decoder->pos * 1000);
+	pos = (uint32_t)(vid->decoder->pos * 1000);
 	UnlockMutex(vid->guard);
 
 	return pos;
 }
 
-bool TFB_SeekVideo(VIDEO_REF vid, uint32 pos)
+bool TFB_SeekVideo(VIDEO_REF vid, uint32_t pos)
 {
 	if (!TFB_VideoPlaying(vid))
 	{
@@ -439,7 +439,7 @@ vp_EndFrame(TFB_VideoDecoder* decoder)
 }
 
 static void*
-vp_GetCanvasLine(TFB_VideoDecoder* decoder, uint32 line)
+vp_GetCanvasLine(TFB_VideoDecoder* decoder, uint32_t line)
 {
 	TFB_VideoClip* vid = (TFB_VideoClip*)decoder->data;
 
@@ -451,17 +451,17 @@ vp_GetCanvasLine(TFB_VideoDecoder* decoder, uint32 line)
 	return TFB_DrawCanvas_GetLine(vid->frame->NormalImg, line);
 }
 
-static uint32
+static uint32_t
 vp_GetTicks(TFB_VideoDecoder* decoder)
 {
-	uint32 ctr = GetTimeCounter();
+	uint32_t ctr = GetTimeCounter();
 	return (ctr / GameTicksPerSecond) * 1000 + ((ctr % GameTicksPerSecond) * 1000) / GameTicksPerSecond;
 
 	(void)decoder; // gobble up compiler warning
 }
 
 static bool
-vp_SetTimer(TFB_VideoDecoder* decoder, uint32 msecs)
+vp_SetTimer(TFB_VideoDecoder* decoder, uint32_t msecs)
 {
 	TFB_VideoClip* vid = (TFB_VideoClip*)decoder->data;
 
@@ -509,7 +509,7 @@ static void
 vp_BufferTag(TFB_SoundSample* sample, TFB_SoundTag* tag)
 {
 	TFB_VideoClip* vid = (TFB_VideoClip*)TFB_GetSoundSampleData(sample);
-	uint32 frame = (uint32)tag->data;
+	uint32_t frame = (uint32_t)tag->data;
 
 	assert(sizeof(tag->data) >= sizeof(frame));
 	assert(vid != nullptr);

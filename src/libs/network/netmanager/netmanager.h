@@ -20,7 +20,7 @@
 #define LIBS_NETWORK_NETMANAGER_NETMANAGER_H_
 
 #include "port.h"
-#include "types.h"
+#include <cstdint>
 
 #ifdef USE_WINSOCK
 #include "netmanager_win.h"
@@ -32,7 +32,7 @@
 
 void NetManager_init(void);
 void NetManager_uninit(void);
-int NetManager_process(uint32* timeoutMs);
+int NetManager_process(uint32_t* timeoutMs);
 
 // Only for internal use by the NetManager:
 int NetManager_addDesc(NetDescriptor* nd);

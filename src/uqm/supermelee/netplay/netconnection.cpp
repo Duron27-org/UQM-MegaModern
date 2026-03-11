@@ -132,7 +132,7 @@ NetConnection_open(int player, const uqm::NetplayPeerOptions* options,
 	conn->resetCallback = nullptr;
 	conn->resetCallbackArg = nullptr;
 
-	conn->readBuf = (uint8*)malloc(NETPLAY_READBUFSIZE);
+	conn->readBuf = (uint8_t*)malloc(NETPLAY_READBUFSIZE);
 	conn->readEnd = conn->readBuf;
 
 	conn->stateData = nullptr;

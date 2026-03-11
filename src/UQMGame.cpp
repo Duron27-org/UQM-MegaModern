@@ -51,7 +51,7 @@
 #include "uqm/battle.h"
 // For BattleFrameRateTicks
 #include "libs/file.h"
-#include "types.h"
+#include <cstdint>
 #include "port.h"
 #include "libs/memlib.h"
 #include "libs/platform.h"
@@ -450,7 +450,7 @@ uqstl::pair<int, bool> UQMGame::setup(uqstl::span<uqgsl::zstring> args)
 	// initAudio (snddriver, soundflags);
 	// Make sure that the compiler treats multidim arrays the way we expect
 	assert(sizeof(int[static_cast<int>(ControlTemplate::NUM) * NUM_KEYS]) == sizeof(int[static_cast<int>(ControlTemplate::NUM)][NUM_KEYS]));
-	
+
 	TFB_SetInputVectors((int*)ImmediateInputState.menu, NUM_MENU_KEYS,
 						(int*)ImmediateInputState.key, NUM_KEYS,
 						static_cast<int>(ControlTemplate::NUM));

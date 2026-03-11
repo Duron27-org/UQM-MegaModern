@@ -19,19 +19,20 @@
 #ifndef LIBS_COMPILER_H_
 #define LIBS_COMPILER_H_
 
-#include "types.h"
+#include <cstdint>
+#include <type_traits>
 
 namespace uqm
 {
-typedef uint8 BYTE;
-typedef uint8 UBYTE;
-typedef sint8 SBYTE;
-typedef uint16 UWORD;
-typedef sint16 SWORD;
-typedef uint32 DWORD;
-typedef sint32 SDWORD;
-typedef uint64 QWORD;
-typedef sint64 SQWORD;
+typedef uint8_t BYTE;
+typedef uint8_t UBYTE;
+typedef int8_t SBYTE;
+typedef uint16_t UWORD;
+typedef int16_t SWORD;
+typedef uint32_t DWORD;
+typedef int32_t SDWORD;
+typedef uint64_t QWORD;
+typedef int64_t SQWORD;
 
 typedef UWORD COUNT;
 typedef SWORD SIZE;

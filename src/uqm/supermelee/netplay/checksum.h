@@ -20,9 +20,9 @@
 #define UQM_SUPERMELEE_NETPLAY_CHECKSUM_H_
 
 
-#include "types.h"
+#include <cstdint>
 
-typedef uint32 Checksum;
+typedef uint32_t Checksum;
 
 
 #include "netplay.h"
@@ -41,37 +41,37 @@ extern "C" {
 static inline void
 crc_processELEMENT_FLAGS(crc_State* state, ELEMENT_FLAGS val)
 {
-	crc_processUint16(state, (uint16)val);
+	crc_processUint16(state, (uint16_t)val);
 }
 
 static inline void
 crc_processCOUNT(crc_State* state, uqm::COUNT val)
 {
-	crc_processUint16(state, (uint16)val);
+	crc_processUint16(state, (uint16_t)val);
 }
 
 static inline void
 crc_processBYTE(crc_State* state, uqm::BYTE val)
 {
-	crc_processUint8(state, (uint8)val);
+	crc_processUint8(state, (uint8_t)val);
 }
 
 static inline void
 crc_processDWORD(crc_State* state, uqm::DWORD val)
 {
-	crc_processUint32(state, (uint32)val);
+	crc_processUint32(state, (uint32_t)val);
 }
 
 static inline void
 crc_processCOORD(crc_State* state, COORD val)
 {
-	crc_processUint16(state, (uint16)val);
+	crc_processUint16(state, (uint16_t)val);
 }
 
 #if 0
 static inline void
 crc_processTIME_VALUE(crc_State *state, const TIME_VALUE val) {
-	crc_processUint16(state, (uint16) val);
+	crc_processUint16(state, (uint16_t) val);
 }
 #endif
 

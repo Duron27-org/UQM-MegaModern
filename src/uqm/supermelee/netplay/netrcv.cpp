@@ -25,7 +25,7 @@
 #include "netrcv.h"
 #include "packet.h"
 
-#include "types.h"
+#include <cstdint>
 #include "core/log/log.h"
 #include "core/platform/platform.h"
 
@@ -37,10 +37,10 @@
 // Returns 0 if the packet was successfully processed, or
 // -1 on an error, in which case the state is unchanged.
 static ssize_t
-dataReceivedSingle(NetConnection* conn, const uint8* data,
+dataReceivedSingle(NetConnection* conn, const uint8_t* data,
 				   size_t dataLen)
 {
-	uint32 packetLen;
+	uint32_t packetLen;
 	PacketType type;
 	int result;
 
@@ -113,7 +113,7 @@ dataReceivedSingle(NetConnection* conn, const uint8* data,
 // Try to get all the packets from a stream of data.
 // Returns the number of bytes processed.
 static ssize_t
-dataReceivedMulti(NetConnection* conn, const uint8* data, size_t len)
+dataReceivedMulti(NetConnection* conn, const uint8_t* data, size_t len)
 {
 	size_t processed;
 

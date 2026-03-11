@@ -23,7 +23,7 @@
 #ifndef LIBS_CDP_CDPMOD_H_
 #define LIBS_CDP_CDPMOD_H_
 
-#include "types.h"
+#include <cstdint>
 #include "cdpapi.h"
 
 #define CDP_INFO_SYM cdpmodinfo
@@ -34,20 +34,20 @@
 typedef struct
 {
 	// mandatory, version control
-	uint32 size;			// size of this structure
+	uint32_t size;			// size of this structure
 	cdp_ApiVersion api_ver; // version of cdp API used, set to CDPAPI_VERSION
-	uint16 ver_major;		// module version, somewhat informational
-	uint16 ver_minor;
-	uint16 ver_patch;
-	uint16 host_ver_major; // minimum host version required, purely informational
-	uint16 host_ver_minor;
-	uint16 host_ver_patch;
+	uint16_t ver_major;		// module version, somewhat informational
+	uint16_t ver_minor;
+	uint16_t ver_patch;
+	uint16_t host_ver_major; // minimum host version required, purely informational
+	uint16_t host_ver_minor;
+	uint16_t host_ver_patch;
 
 	// reserved members: set all to 0 or use CDP_MODINFO_RESERVED1
-	uint32 _32_reserved1;
-	uint32 _32_reserved2;
-	uint32 _32_reserved3;
-	uint32 _32_reserved4;
+	uint32_t _32_reserved1;
+	uint32_t _32_reserved2;
+	uint32_t _32_reserved3;
+	uint32_t _32_reserved4;
 
 	const char* context_name;
 	// cannonical context name (in proper case)
@@ -80,7 +80,7 @@ typedef struct
 
 // the following is defined via the last mandatory member
 #define CDP_MODINFO_MIN_SIZE \
-	(((uint32) & ((cdp_ModuleInfo*)0)->module_term) + sizeof(((cdp_ModuleInfo*)0)->module_term))
+	(((uint32_t)&((cdp_ModuleInfo*)0)->module_term) + sizeof(((cdp_ModuleInfo*)0)->module_term))
 
 #if defined(WIN32)
 #define CDPEXPORT __declspec(dllexport)

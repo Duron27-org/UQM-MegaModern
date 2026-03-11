@@ -20,23 +20,23 @@
 int InitStreamDecoder(void);
 void UninitStreamDecoder(void);
 
-void PlayStream(TFB_SoundSample* sample, uint32 source, bool looping,
+void PlayStream(TFB_SoundSample* sample, uint32_t source, bool looping,
 				bool scope, bool rewind);
-void StopStream(uint32 source);
-void PauseStream(uint32 source);
-void ResumeStream(uint32 source);
-void SeekStream(uint32 source, uint32 pos);
-uint32 GetStreamFrame(uint32 source);
-uint16 GetNumTrackerPos(uint32 source);
-bool IsTracker(uint32 source);
-float GetStreamLength(uint32 source);
-uqm::DWORD GetStreamTime(uint32 source);
-bool PlayingStream(uint32 source);
+void StopStream(uint32_t source);
+void PauseStream(uint32_t source);
+void ResumeStream(uint32_t source);
+void SeekStream(uint32_t source, uint32_t pos);
+uint32_t GetStreamFrame(uint32_t source);
+uint16_t GetNumTrackerPos(uint32_t source);
+bool IsTracker(uint32_t source);
+float GetStreamLength(uint32_t source);
+uqm::DWORD GetStreamTime(uint32_t source);
+bool PlayingStream(uint32_t source);
 
-int GraphForegroundStream(uint8* data, sint32 width, sint32 height,
+int GraphForegroundStream(uint8_t* data, int32_t width, int32_t height,
 						  bool wantSpeech);
 
 // returns true if the fade was accepted by stream decoder
-bool SetMusicStreamFade(sint32 howLong, int endVolume);
+bool SetMusicStreamFade(int32_t howLong, int endVolume);
 
 #endif

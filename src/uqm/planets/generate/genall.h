@@ -18,7 +18,7 @@
 #define UQM_PLANETS_GENERATE_GENALL_H_
 
 #include "gendefault.h"
-#include "types.h"
+#include <cstdint>
 #include "../generate.h"
 #include "libs/compiler.h"
 

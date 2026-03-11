@@ -25,7 +25,7 @@
 #include "resintrn.h"
 #include "libs/memlib.h"
 #include "options.h"
-#include "types.h"
+#include <cstdint>
 #include "core/log/log.h"
 #include "core/string/StringUtils.h"
 #include "libs/gfxlib.h"
@@ -198,10 +198,10 @@ DescriptorToColor(const char* descriptor, RESOURCE_DATA* resdata)
 
 	// Color is of the form "rgb(r, g, b)", "rgba(r, g, b, a)",
 	// or "rgb15(r, g, b)".
-	
+
 	size_t componentCount {};
 	uqm::DWORD comps[4] {0, 0, 0, 0xFF};
-		
+
 	uint8_t maxComponentValue {0xFF};
 	uint8_t componentBits {8};
 	uqstl::string_view descView {descriptor};
@@ -279,7 +279,6 @@ DescriptorToColor(const char* descriptor, RESOURCE_DATA* resdata)
 	{
 		uqm::log::error("Invalid color description string for resource. \"{}\"", descView);
 	}
-
 }
 
 static void

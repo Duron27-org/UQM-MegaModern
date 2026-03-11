@@ -20,7 +20,7 @@
 #include "libs/vidlib.h"
 #include "libs/sndlib.h"
 #include "libs/graphics/tfb_draw.h"
-#include "types.h"
+#include <cstdint>
 #include "videodec.h"
 #include "libs/sound/sound.h"
 
@@ -29,23 +29,23 @@ typedef struct tfb_videoclip
 {
 	TFB_VideoDecoder* decoder; // decoder to read from
 	float length;			   // total length of clip seconds
-	uint32 w, h;
+	uint32_t w, h;
 
 	// video player data
 	GFXRECT dst_rect; // destination screen rect
 	GFXRECT src_rect; // source rect
 	MUSIC_REF hAudio;
-	uint32 frame_time; // time when next frame should be rendered
-	TFB_Image* frame;  // frame preped and optimized for rendering
-	uint32 cur_frame;  // index of frame currently displayed
+	uint32_t frame_time; // time when next frame should be rendered
+	TFB_Image* frame;	 // frame preped and optimized for rendering
+	uint32_t cur_frame;	 // index of frame currently displayed
 	bool playing;
 	bool own_audio;
-	uint32 loop_frame; // frame index to loop from
-	uint32 loop_to;	   // frame index to loop to
+	uint32_t loop_frame; // frame index to loop from
+	uint32_t loop_to;	 // frame index to loop to
 
 	Mutex guard;
-	uint32 want_frame; // audio-signaled desired frame index
-	int lag_cnt;	   // N of frames video is behind or ahead of audio
+	uint32_t want_frame; // audio-signaled desired frame index
+	int lag_cnt;		 // N of frames video is behind or ahead of audio
 
 	void* data; // user-defined data
 

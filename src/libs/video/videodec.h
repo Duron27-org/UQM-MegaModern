@@ -31,16 +31,16 @@ typedef struct tfb_videodecoderfunc
 	const char* (*GetName)(void);
 	bool (*InitModule)(int flags);
 	void (*TermModule)(void);
-	uint32 (*GetStructSize)(void);
+	uint32_t (*GetStructSize)(void);
 	int (*GetError)(THIS_PTR);
 	bool (*Init)(THIS_PTR, TFB_PixelFormat* fmt);
 	void (*Term)(THIS_PTR);
 	bool (*Open)(THIS_PTR, uio_DirHandle* dir, const char* filename);
 	void (*Close)(THIS_PTR);
 	int (*DecodeNext)(THIS_PTR);
-	uint32 (*SeekFrame)(THIS_PTR, uint32 frame);
+	uint32_t (*SeekFrame)(THIS_PTR, uint32_t frame);
 	float (*SeekTime)(THIS_PTR, float time);
-	uint32 (*GetFrame)(THIS_PTR);
+	uint32_t (*GetFrame)(THIS_PTR);
 	float (*GetTime)(THIS_PTR);
 
 } TFB_VideoDecoderFuncs;
@@ -52,13 +52,13 @@ typedef struct tfb_videocallbacks
 	// any decoder calls these
 	void (*BeginFrame)(THIS_PTR);
 	void (*EndFrame)(THIS_PTR);
-	void* (*GetCanvasLine)(THIS_PTR, uint32 line);
+	void* (*GetCanvasLine)(THIS_PTR, uint32_t line);
 	// non-audio-driven decoders call this to figure out
 	// when the next frame should be drawn
-	uint32 (*GetTicks)(THIS_PTR);
+	uint32_t (*GetTicks)(THIS_PTR);
 	// non-audio-driven decoders call this to inform
 	// the player when the next frame should be drawn
-	bool (*SetTimer)(THIS_PTR, uint32 msecs);
+	bool (*SetTimer)(THIS_PTR, uint32_t msecs);
 
 } TFB_VideoCallbacks;
 
@@ -71,10 +71,10 @@ struct tfb_videodecoder
 	// video formats - R/O
 	const TFB_PixelFormat* format;
 	// decoder-set data - R/O
-	uint32 w, h;
+	uint32_t w, h;
 	float length; // total length in seconds
-	uint32 frame_count;
-	uint32 interframe_wait; // nominal interframe delay in msecs
+	uint32_t frame_count;
+	uint32_t interframe_wait; // nominal interframe delay in msecs
 	bool audio_synced;
 	// decoder callbacks
 	TFB_VideoCallbacks callbacks;
@@ -83,9 +83,9 @@ struct tfb_videodecoder
 	bool looping;
 	void* data; // user-defined data
 	// info - public R/O
-	sint32 error;
+	int32_t error;
 	float pos; // position in seconds
-	uint32 cur_frame;
+	uint32_t cur_frame;
 
 	// semi-private
 	uio_DirHandle* dir;
@@ -107,14 +107,14 @@ TFB_RegVideoDecoder* VideoDecoder_Register(const char* fileext,
 void VideoDecoder_Unregister(TFB_RegVideoDecoder* regdec);
 const TFB_VideoDecoderFuncs* VideoDecoder_Lookup(const char* fileext);
 
-bool VideoDecoder_Init(int flags, int depth, uint32 Rmask, uint32 Gmask,
-					   uint32 Bmask, uint32 Amask);
+bool VideoDecoder_Init(int flags, int depth, uint32_t Rmask, uint32_t Gmask,
+					   uint32_t Bmask, uint32_t Amask);
 void VideoDecoder_Uninit(void);
 TFB_VideoDecoder* VideoDecoder_Load(uio_DirHandle* dir,
 									const char* filename);
 int VideoDecoder_Decode(TFB_VideoDecoder* decoder);
 float VideoDecoder_Seek(TFB_VideoDecoder* decoder, float time_pos);
-uint32 VideoDecoder_SeekFrame(TFB_VideoDecoder* decoder, uint32 frame_pos);
+uint32_t VideoDecoder_SeekFrame(TFB_VideoDecoder* decoder, uint32_t frame_pos);
 void VideoDecoder_Rewind(TFB_VideoDecoder* decoder);
 void VideoDecoder_Free(TFB_VideoDecoder* decoder);
 const char* VideoDecoder_GetName(TFB_VideoDecoder* decoder);

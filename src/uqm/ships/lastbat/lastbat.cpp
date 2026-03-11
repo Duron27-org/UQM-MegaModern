@@ -50,7 +50,7 @@
 #define COMET_HITS difficultyCase(10, 12, 15)
 #define COMET_SPEED RES_SCALE(DISPLAY_TO_WORLD(ifEasyDifficulty(12, 10))) // Kryzen: 17
 #define COMET_LIFE 2
-#define COMET_TURN_WAIT 3 // Kruzen: 2 \
+#define COMET_TURN_WAIT 3 // Kruzen: 2 \ \
 						  // compensate high speed with lesser maneuverability
 #define MAX_COMETS difficultyCase(2, 3, 4)
 #define WEAPON_ENERGY_COST 2
@@ -62,7 +62,7 @@
 #define SENTINEL_SPEED DISPLAY_TO_WORLD(RES_SCALE(8))
 #define SENTINEL_LIFE 2
 #define SENTINEL_OFFSET 0
-#define SENTINEL_HITS difficultyCase(9,10, 12)
+#define SENTINEL_HITS difficultyCase(9, 10, 12)
 #define SENTINEL_DAMAGE difficultyCase(1, 1, 2)
 #define TRACK_WAIT 1
 #define ANIMATION_WAIT 1

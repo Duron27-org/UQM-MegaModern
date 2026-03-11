@@ -46,13 +46,13 @@
 
 
 /* General */
-sint32 openAL_Init(audio_Driver* driver, AudioFlags flags);
+int32_t openAL_Init(audio_Driver* driver, AudioFlags flags);
 void openAL_Uninit(void);
-sint32 openAL_GetError(void);
+int32_t openAL_GetError(void);
 
 /* Sources */
-void openAL_GenSources(uint32 n, audio_Object* psrcobj);
-void openAL_DeleteSources(uint32 n, audio_Object* psrcobj);
+void openAL_GenSources(uint32_t n, audio_Object* psrcobj);
+void openAL_DeleteSources(uint32_t n, audio_Object* psrcobj);
 bool openAL_IsSource(audio_Object srcobj);
 void openAL_Sourcei(audio_Object srcobj, audio_SourceProp pname,
 					audio_IntVal value);
@@ -68,19 +68,19 @@ void openAL_SourceRewind(audio_Object srcobj);
 void openAL_SourcePlay(audio_Object srcobj);
 void openAL_SourcePause(audio_Object srcobj);
 void openAL_SourceStop(audio_Object srcobj);
-void openAL_SourceQueueBuffers(audio_Object srcobj, uint32 n,
+void openAL_SourceQueueBuffers(audio_Object srcobj, uint32_t n,
 							   audio_Object* pbufobj);
-void openAL_SourceUnqueueBuffers(audio_Object srcobj, uint32 n,
+void openAL_SourceUnqueueBuffers(audio_Object srcobj, uint32_t n,
 								 audio_Object* pbufobj);
 
 /* Buffers */
-void openAL_GenBuffers(uint32 n, audio_Object* pbufobj);
-void openAL_DeleteBuffers(uint32 n, audio_Object* pbufobj);
+void openAL_GenBuffers(uint32_t n, audio_Object* pbufobj);
+void openAL_DeleteBuffers(uint32_t n, audio_Object* pbufobj);
 bool openAL_IsBuffer(audio_Object bufobj);
 void openAL_GetBufferi(audio_Object bufobj, audio_BufferProp pname,
 					   audio_IntVal* value);
-void openAL_BufferData(audio_Object bufobj, uint32 format, void* data,
-					   uint32 size, uint32 freq);
+void openAL_BufferData(audio_Object bufobj, uint32_t format, void* data,
+					   uint32_t size, uint32_t freq);
 
 
 #endif /* LIBS_SOUND_OPENAL_AUDIODRV_OPENAL_H_ */

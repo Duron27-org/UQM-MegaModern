@@ -22,7 +22,7 @@
 //    Also #included by 2xscalers_mmx.c for an MMX version
 
 #include "libs/graphics/sdl/sdl_common.h"
-#include "types.h"
+#include <cstdint>
 #include "scalers.h"
 #include "scaleint.h"
 #include "2xscalers.h"

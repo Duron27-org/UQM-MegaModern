@@ -22,7 +22,7 @@
 #define DECODER_H
 
 #include "port.h"
-#include "types.h"
+#include <cstdint>
 #include "libs/uio.h"
 #include "libs/sound/audiocoredefs.h"
 
@@ -36,10 +36,10 @@ typedef struct tfb_decoderformats
 {
 	bool big_endian;
 	bool want_big_endian;
-	uint32 mono8;
-	uint32 stereo8;
-	uint32 mono16;
-	uint32 stereo16;
+	uint32_t mono8;
+	uint32_t stereo8;
+	uint32_t mono16;
+	uint32_t stereo16;
 } TFB_DecoderFormats;
 
 typedef enum
@@ -62,17 +62,17 @@ typedef struct tfb_sounddecoderfunc
 	const char* (*GetName)(void);
 	bool (*InitModule)(AudioFlags flags, const TFB_DecoderFormats*);
 	void (*TermModule)(void);
-	uint32 (*GetStructSize)(void);
+	uint32_t (*GetStructSize)(void);
 	int (*GetError)(THIS_PTR);
 	bool (*Init)(THIS_PTR);
 	void (*Term)(THIS_PTR);
 	bool (*Open)(THIS_PTR, uio_DirHandle* dir, const char* filename);
 	void (*Close)(THIS_PTR);
-	int (*Decode)(THIS_PTR, void* buf, sint32 bufsize);
+	int (*Decode)(THIS_PTR, void* buf, int32_t bufsize);
 	// returns <0 on error, ==0 when no more data, >0 bytes returned
-	uint32 (*Seek)(THIS_PTR, uint32 pcm_pos);
+	uint32_t (*Seek)(THIS_PTR, uint32_t pcm_pos);
 	// returns the pcm position set
-	uint32 (*GetFrame)(THIS_PTR);
+	uint32_t (*GetFrame)(THIS_PTR);
 
 } TFB_SoundDecoderFuncs;
 
@@ -84,17 +84,17 @@ struct tfb_sounddecoder
 	const TFB_SoundDecoderFuncs* funcs;
 
 	// public R/O, set by decoder
-	uint32 format;
-	uint32 frequency;
+	uint32_t format;
+	uint32_t frequency;
 	float length; // total length in seconds
 	bool is_null;
 	bool need_swap;
 
 	// public R/O, set by wrapper
 	void* buffer;
-	uint32 buffer_size;
-	sint32 error;
-	uint32 bytes_per_samp;
+	uint32_t buffer_size;
+	int32_t error;
+	uint32_t bytes_per_samp;
 
 	// public R/W
 	bool looping;
@@ -102,13 +102,13 @@ struct tfb_sounddecoder
 	// semi-private
 	uio_DirHandle* dir;
 	char* filename;
-	uint32 pos;
-	uint32 start_sample;
-	uint32 end_sample;
+	uint32_t pos;
+	uint32_t start_sample;
+	uint32_t end_sample;
 
-	uint16 numpos;
+	uint16_t numpos;
 	// for tracker modules
-	uint32 filename_hash;
+	uint32_t filename_hash;
 	// for music resume
 };
 
@@ -127,16 +127,16 @@ TFB_RegSoundDecoder* SoundDecoder_Register(const char* fileext,
 void SoundDecoder_Unregister(TFB_RegSoundDecoder* regdec);
 const TFB_SoundDecoderFuncs* SoundDecoder_Lookup(const char* fileext);
 
-void SoundDecoder_SwapWords(uint16* data, uint32 size);
-sint32 SoundDecoder_Init(AudioFlags flags, TFB_DecoderFormats* formats);
+void SoundDecoder_SwapWords(uint16_t* data, uint32_t size);
+int32_t SoundDecoder_Init(AudioFlags flags, TFB_DecoderFormats* formats);
 void SoundDecoder_Uninit(void);
 TFB_SoundDecoder* SoundDecoder_Load(uio_DirHandle* dir,
-									char* filename, uint32 buffer_size, uint32 startTime, sint32 runTime);
-uint32 SoundDecoder_Decode(TFB_SoundDecoder* decoder);
-uint32 SoundDecoder_DecodeAll(TFB_SoundDecoder* decoder);
+									char* filename, uint32_t buffer_size, uint32_t startTime, int32_t runTime);
+uint32_t SoundDecoder_Decode(TFB_SoundDecoder* decoder);
+uint32_t SoundDecoder_DecodeAll(TFB_SoundDecoder* decoder);
 float SoundDecoder_GetTime(TFB_SoundDecoder* decoder);
-uint32 SoundDecoder_GetFrame(TFB_SoundDecoder* decoder);
-void SoundDecoder_Seek(TFB_SoundDecoder* decoder, uint32 msecs);
+uint32_t SoundDecoder_GetFrame(TFB_SoundDecoder* decoder);
+void SoundDecoder_Seek(TFB_SoundDecoder* decoder, uint32_t msecs);
 void SoundDecoder_Rewind(TFB_SoundDecoder* decoder);
 void SoundDecoder_Free(TFB_SoundDecoder* decoder);
 const char* SoundDecoder_GetName(TFB_SoundDecoder* decoder);

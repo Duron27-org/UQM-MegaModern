@@ -23,7 +23,7 @@
 #ifndef LIBS_CDP_CDPAPI_H_
 #define LIBS_CDP_CDPAPI_H_
 
-#include "types.h"
+#include <cstdint>
 
 typedef enum
 {
@@ -97,7 +97,7 @@ typedef intptr_t cdp_EventResult;
 #define CDP_EVENT_INVALID (-1)
 // used with cdp_Event
 
-typedef cdp_EventResult (*cdp_EventProc)(cdp_Event, uint32, void*, bool* pbHandled);
+typedef cdp_EventResult (*cdp_EventProc)(cdp_Event, uint32_t, void*, bool* pbHandled);
 
 // Event definition structure
 // pass an array of these to Host->GetItfs() for batch lookup
@@ -122,8 +122,8 @@ typedef struct
 // acquired through this itf
 typedef struct
 {
-	uint32 (*GetApiVersion)(void);
-	uint32 (*GetVersion)(void);
+	uint32_t (*GetApiVersion)(void);
+	uint32_t (*GetVersion)(void);
 	cdp_Error (*GetApiError)(void);
 	cdp_Itf* (*GetItf)(const char* name);
 	bool (*GetItfs)(cdp_ItfDef* defs);
@@ -143,7 +143,7 @@ typedef struct
 	void (*UnsubscribeEvent)(cdp_Event, cdp_EventProc);
 	bool (*SubscribeEvents)(cdp_EventDef* defs, cdp_Module*);
 	void (*UnsubscribeEvents)(cdp_EventDef* defs);
-	cdp_EventResult (*FireEvent)(cdp_EventReg*, uint32, void*);
+	cdp_EventResult (*FireEvent)(cdp_EventReg*, uint32_t, void*);
 
 } cdp_Itf_HostVtbl_v1;
 

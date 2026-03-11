@@ -29,16 +29,16 @@
 // for inline
 #include "endian_uqm.h"
 // for WORDS_BIGENDIAN
-#include "types.h"
+#include <cstdint>
 
-static inline uint16
-swapBytes16(uint16 x)
+static inline uint16_t
+swapBytes16(uint16_t x)
 {
 	return (x << 8) | (x >> 8);
 }
 
-static inline uint32
-swapBytes32(uint32 x)
+static inline uint32_t
+swapBytes32(uint32_t x)
 {
 	return (x << 24)
 		 | ((x & 0x0000ff00) << 8)
@@ -49,26 +49,26 @@ swapBytes32(uint32 x)
 #ifdef WORDS_BIGENDIAN
 // Already in network order.
 
-static inline uint16
-hton16(uint16 x)
+static inline uint16_t
+hton16(uint16_t x)
 {
 	return x;
 }
 
-static inline uint32
-hton32(uint32 x)
+static inline uint32_t
+hton32(uint32_t x)
 {
 	return x;
 }
 
-static inline uint16
-ntoh16(uint16 x)
+static inline uint16_t
+ntoh16(uint16_t x)
 {
 	return x;
 }
 
-static inline uint32
-ntoh32(uint32 x)
+static inline uint32_t
+ntoh32(uint32_t x)
 {
 	return x;
 }
@@ -76,26 +76,26 @@ ntoh32(uint32 x)
 #else /* !defined(WORDS_BIGENDIAN) */
 // Need to swap bytes
 
-static inline uint16
-hton16(uint16 x)
+static inline uint16_t
+hton16(uint16_t x)
 {
 	return swapBytes16(x);
 }
 
-static inline uint32
-hton32(uint32 x)
+static inline uint32_t
+hton32(uint32_t x)
 {
 	return swapBytes32(x);
 }
 
-static inline uint16
-ntoh16(uint16 x)
+static inline uint16_t
+ntoh16(uint16_t x)
 {
 	return swapBytes16(x);
 }
 
-static inline uint32
-ntoh32(uint32 x)
+static inline uint32_t
+ntoh32(uint32_t x)
 {
 	return swapBytes32(x);
 }

@@ -1136,12 +1136,12 @@ SaveGameState(const GAME_STATE* GSPtr, uio_Stream* fh)
 	 * the rest will be overwritten by the BtGp chunks. */
 	writeValue(fh, GAME_STATE_TAG);
 	{
-		uint8* buf = nullptr;
+		uint8_t* buf = nullptr;
 		size_t bufSize;
 		if (serialiseGameState(gameStateBitMap, &buf, &bufSize))
 		{
 			writeValue(fh, bufSize);
-			writeValueArray<uint8>(fh, {buf, (uqm::COUNT)bufSize});
+			writeValueArray<uint8_t>(fh, {buf, (uqm::COUNT)bufSize});
 			HFree(buf);
 		}
 		else
@@ -1445,7 +1445,7 @@ SaveBattleGroup(GAME_STATE_FILE* fp, uqm::DWORD encounter_id, uqm::DWORD grpoffs
 	writeValue(fh, size);
 	writeValue(fh, encounter_id);
 	writeValue(fh,
-			(grpoffs && (GLOBAL(BattleGroupRef) == grpoffs)) ? 1 : 0);
+			   (grpoffs && (GLOBAL(BattleGroupRef) == grpoffs)) ? 1 : 0);
 	writeValue(fh, h.star_index);
 	writeValue(fh, h.day_index);
 	writeValue(fh, h.month_index);

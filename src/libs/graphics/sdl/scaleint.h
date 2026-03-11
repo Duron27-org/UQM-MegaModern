@@ -22,7 +22,7 @@
 #define SCALEINT_H_
 
 #include "libs/graphics/sdl/sdl_common.h"
-#include "types.h"
+#include <cstdint>
 
 
 // Plain C names
@@ -72,7 +72,7 @@ extern const int YUV_matrix[3][3];
 
 // pre-computed transformations for 8 bits per channel
 extern int RGB_to_YUV[/*RGB*/ 3][/*YUV*/ 3][/*mult-res*/ 256];
-extern sint16 dRGB_to_dYUV[/*RGB*/ 3][/*YUV*/ 3][/*mult-res*/ 512];
+extern int16_t dRGB_to_dYUV[/*RGB*/ 3][/*YUV*/ 3][/*mult-res*/ 512];
 
 typedef Uint32 YUV_VECTOR;
 // pre-computed transformations for RGB555
@@ -240,7 +240,7 @@ SCALE_(DiffYUV)(Uint32 yuv1, Uint32 yuv2)
 	// non-branching version -- assumes 2's complement integers
 	// delta math only needs 25 bits and we have 32 available;
 	// only interested in the sign bits after subtraction
-	sint32 delta, ret;
+	int32_t delta, ret;
 
 	if (yuv1 == yuv2)
 	{

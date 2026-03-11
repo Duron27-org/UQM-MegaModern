@@ -57,7 +57,7 @@ GetLegacyVideoData(const char* path, RESOURCE_DATA* resdata)
 	void* result = nullptr;
 	char paths[1024] {};
 	char *audio_path, *speech_path, *loop_str;
-	uint32 LoopFrame = VID_NO_LOOP;
+	uint32_t LoopFrame = VID_NO_LOOP;
 
 	/* Parse out the video components. */
 	uqm::strncpy_safe(paths, path);
@@ -141,7 +141,7 @@ GetLegacyVideoData(const char* path, RESOURCE_DATA* resdata)
 			uqm::log::warn("Warning: Couldn't allocate space for '{}'", paths);
 			goto err;
 		}
-		uqm::strncpy_safe({pLV->video, len}, {paths, len-1});
+		uqm::strncpy_safe({pLV->video, len}, {paths, len - 1});
 
 		if (audio_path)
 		{
@@ -152,7 +152,7 @@ GetLegacyVideoData(const char* path, RESOURCE_DATA* resdata)
 				uqm::log::warn("Warning: Couldn't allocate space for '{}'", audio_path);
 				goto err;
 			}
-			uqm::strncpy_safe({pLV->audio, len}, {audio_path, len-1});
+			uqm::strncpy_safe({pLV->audio, len}, {audio_path, len - 1});
 		}
 
 		if (speech_path)
@@ -164,7 +164,7 @@ GetLegacyVideoData(const char* path, RESOURCE_DATA* resdata)
 				uqm::log::warn("Warning: Couldn't allocate space for '{}'", speech_path);
 				goto err;
 			}
-			uqm::strncpy_safe({pLV->speech, len}, {speech_path, len-1});
+			uqm::strncpy_safe({pLV->speech, len}, {speech_path, len - 1});
 		}
 
 		resdata->ptr = result;

@@ -49,7 +49,7 @@ static struct
 static int fadeAmount = FADE_NORMAL_INTENSITY;
 static int fadeDelta;
 static TimeCount fadeStartTime;
-static sint32 fadeInterval;
+static int32_t fadeInterval;
 static Mutex fadeLock;
 
 #define SPARE_COLORMAPS 20
@@ -358,7 +358,7 @@ int GetFadeAmount(void)
 	if (fadeInterval)
 	{ // have a pending fade
 		TimeCount Now = GetTimeCounter();
-		sint32 elapsed;
+		int32_t elapsed;
 
 		elapsed = Now - fadeStartTime;
 		if (elapsed > fadeInterval)

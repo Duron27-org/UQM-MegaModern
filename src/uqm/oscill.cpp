@@ -63,7 +63,7 @@ void UninitOscilloscope(void)
 }
 
 uqm::BYTE
-ScaleHeightByVolume(uint8 scope_data, bool toScale)
+ScaleHeightByVolume(uint8_t scope_data, bool toScale)
 {
 	if (!toScale || musicVolume == NORMAL_VOLUME)
 	{
@@ -89,7 +89,7 @@ ScaleHeightByVolume(uint8 scope_data, bool toScale)
 	}
 }
 
-void DrawOscilloscopeLines(STAMP* s, uint8* scope_data, bool nonStop, bool toScale)
+void DrawOscilloscopeLines(STAMP* s, uint8_t* scope_data, bool nonStop, bool toScale)
 {
 	int i;
 	GFXCONTEXT oldContext;

@@ -44,7 +44,7 @@
 
 #define DEBUG_CONNECT_REF
 #ifdef DEBUG_CONNECT_REF
-#include "types.h"
+#include <cstdint>
 #endif
 
 
@@ -82,7 +82,7 @@ void ConnectState_incRef(ConnectState* connectState)
 	assert(connectState->refCount < REFCOUNT_MAX);
 	connectState->refCount++;
 #ifdef DEBUG_CONNECT_REF
-	uqm::log::debug("ConnectState %08" PRIxPTR ": ref++ ({})",
+	uqm::log::debug("ConnectState {:#08X}: ref++ ({})",
 					(uintptr_t)connectState, connectState->refCount);
 #endif
 }
@@ -92,7 +92,7 @@ bool ConnectState_decRef(ConnectState* connectState)
 	assert(connectState->refCount > 0);
 	connectState->refCount--;
 #ifdef DEBUG_CONNECT_REF
-	uqm::log::debug("ConnectState %08" PRIxPTR ": ref-- ({})",
+	uqm::log::debug("ConnectState {:#08X}: ref-- ({})",
 					(uintptr_t)connectState, connectState->refCount);
 #endif
 	if (connectState->refCount == 0)
@@ -472,7 +472,7 @@ connectHostByName(uqgsl::czstring host, uqgsl::czstring service, Protocol proto,
 	connectState = ConnectState_alloc();
 	connectState->refCount = 1;
 #ifdef DEBUG_CONNECT_REF
-	uqm::log::debug("ConnectState %08" PRIxPTR ": ref=1 ({})",
+	uqm::log::debug("ConnectState {:#08X}: ref=1 ({})",
 					(uintptr_t)connectState, connectState->refCount);
 #endif
 	connectState->state = Connect_resolving;

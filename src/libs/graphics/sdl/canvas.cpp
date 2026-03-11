@@ -30,7 +30,7 @@
 #include "sdluio.h"
 #include "rotozoom.h"
 #include "options.h"
-#include "types.h"
+#include <cstdint>
 
 typedef SDL_Surface* NativeCanvas;
 
@@ -1219,7 +1219,7 @@ void TFB_DrawCanvas_GetScaledExtent(TFB_Canvas src_canvas, HOT_SPOT* src_hs,
 									int scale, int type, EXTENT* size, HOT_SPOT* hs)
 {
 	SDL_Surface* src = (SDL_Surface*)src_canvas;
-	sint32 x, y, w, h;
+	int32_t x, y, w, h;
 	int frac;
 
 	if (!src_mipmap)
@@ -2076,7 +2076,7 @@ int TFB_DrawCanvas_GetStride(TFB_Canvas canvas)
 void* TFB_DrawCanvas_GetLine(TFB_Canvas canvas, int line)
 {
 	SDL_Surface* surf = (SDL_Surface*)canvas;
-	return (uint8*)surf->pixels + surf->pitch * line;
+	return (uint8_t*)surf->pixels + surf->pitch * line;
 }
 
 Color TFB_DrawCanvas_GetPixel(TFB_Canvas canvas, int x, int y)

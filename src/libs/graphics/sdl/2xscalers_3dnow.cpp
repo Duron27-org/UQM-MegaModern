@@ -20,7 +20,7 @@
 #if defined(MMX_ASM)
 
 #include "libs/graphics/sdl/sdl_common.h"
-#include "types.h"
+#include <cstdint>
 #include "scalers.h"
 #include "scaleint.h"
 #include "2xscalers.h"

@@ -325,8 +325,8 @@ DoBattle(BATTLE_STATE* bs)
 		crc_processState(&state);
 		checksum = (Checksum)crc_finish(&state);
 
-		Netplay_NotifyAll_checksum((uint32)battleFrameCount,
-								   (uint32)checksum);
+		Netplay_NotifyAll_checksum((uint32_t)battleFrameCount,
+								   (uint32_t)checksum);
 		flushPacketQueues();
 		addLocalChecksum(battleFrameCount, checksum);
 	}

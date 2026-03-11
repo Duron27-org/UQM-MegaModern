@@ -1160,14 +1160,13 @@ DoPresentation(void* pIS)
 
 						if (f > 9 || (f + e) > 9)
 						{
-							char buf[ARRAY_SIZE(pPIS->Buffer) + 12];
+							char buf[sizeof(pPIS->Buffer) + 12];
 							TEXT t;
 
 							uqm::log::warn("SPINSTAT: Stats exceed max "
 										   "values '{}'",
 										   strView);
-							fmt::format_to_sz_n(buf, "{} {}", pPIS->Buffer,
-												"Exceed max!");
+							fmt::format_to_sz_n(buf, "{} Exceed max !", pPIS->Buffer);
 
 							t.align = ALIGN_LEFT;
 							t.pStr = buf;

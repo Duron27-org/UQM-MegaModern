@@ -24,7 +24,7 @@ struct tfb_soundchunk
 	TFB_SoundDecoder* decoder; // decoder for this chunk
 	float start_time;		   // relative time from track start
 	int tag_me;				   // set for chunks with subtitles
-	uint32 track_num;		   // logical track #, comm code needs this
+	uint32_t track_num;		   // logical track #, comm code needs this
 	uqm::CHAR_T* text;		   // subtitle text
 	CallbackFunction callback; // comm callback, executed on chunk start
 	struct tfb_soundchunk* next;

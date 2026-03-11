@@ -1,7 +1,7 @@
 #ifndef MELEESHIP_H
 #define MELEESHIP_H
 
-#include "types.h"
+#include <cstdint>
 
 #if 0 //defined(__cplusplus)
 extern "C" {

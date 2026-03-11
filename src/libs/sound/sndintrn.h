@@ -20,7 +20,7 @@
 #define LIBS_SOUND_SNDINTRN_H_
 
 #include <stdio.h>
-#include "types.h"
+#include <cstdint>
 #include "libs/reslib.h"
 #include "libs/memlib.h"
 
@@ -43,9 +43,9 @@ struct tfb_soundsample
 	TFB_SoundDecoder* decoder; // decoder to read from
 	float length;			   // total length of decoder chain in seconds
 	audio_Object* buffer;
-	uint32 num_buffers;
+	uint32_t num_buffers;
 	TFB_SoundTag* buffer_tag;
-	sint32 offset;				  // initial offset
+	int32_t offset;				  // initial offset
 	void* data;					  // user-defined data
 	TFB_SoundCallbacks callbacks; // user-defined callbacks
 };
@@ -57,18 +57,18 @@ typedef struct tfb_soundsource
 	audio_Object handle;
 	bool stream_should_be_playing;
 	Mutex stream_mutex;
-	sint32 start_time; // for tracks played-time math
-	uint32 pause_time; // keep track for paused tracks
+	int32_t start_time;	 // for tracks played-time math
+	uint32_t pause_time; // keep track for paused tracks
 	void* positional_object;
 
 	audio_Object last_q_buf; // for callbacks processing
 
 	// Cyclic waveform buffer for oscilloscope
 	void* sbuffer;
-	uint32 sbuf_size;
-	uint32 sbuf_tail;
-	uint32 sbuf_head;
-	uint32 sbuf_lasttime; // timestamp of the first queued buffer
+	uint32_t sbuf_size;
+	uint32_t sbuf_tail;
+	uint32_t sbuf_head;
+	uint32_t sbuf_lasttime; // timestamp of the first queued buffer
 } TFB_SoundSource;
 
 extern TFB_SoundSource soundSource[];

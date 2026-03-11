@@ -42,7 +42,7 @@ struct cdp_Module
 	bool builtin;		  // used at least once indicator
 	bool used;			  // used at least once indicator
 	void* hmodule;		  // loaded module handle
-	uint32 refcount;	  // reference count
+	uint32_t refcount;	  // reference count
 	cdp_ModuleInfo* info; // cdp exported info
 };
 
@@ -334,7 +334,7 @@ cdp_GetModuleName(cdp_Module* module, bool bMetaString)
 	return modslot->info->name;
 }
 
-uint32
+uint32_t
 cdp_GetModuleVersion(cdp_Module* module)
 {
 	cdp_Module* modslot = cdp_CheckModule(module);

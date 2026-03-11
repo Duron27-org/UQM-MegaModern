@@ -234,7 +234,7 @@ RaceIdStrToIndex(const char* raceIdStr)
 {
 	RaceIdMap key = {/* .idStr = */ raceIdStr, /* .id = */ (RACE_ID)-1};
 	RaceIdMap* found = (RaceIdMap*)bsearch(&key, raceIdMap,
-										   ARRAY_SIZE(raceIdMap),
+										   std::size(raceIdMap),
 										   sizeof raceIdMap[0], RaceIdCompare);
 
 	if (found == nullptr)
@@ -1110,7 +1110,7 @@ cheatAddRemoveDevices(void)
 {
 	uqm::BYTE i;
 
-	for (i = 0; i < ARRAY_SIZE(optDeviceArray); i++)
+	for (i = 0; i < std::size(optDeviceArray); i++)
 	{
 		if (!optDeviceArray[i])
 		{
@@ -1530,12 +1530,12 @@ GFXPOINT
 SeedFleetLocation(FLEET_INFO* FleetPtr, PLOT_LOCATION* plotmap, uqm::COUNT visit)
 {
 	uqm::UWORD rand_val_x, rand_val_y;
-	uqm::COUNT home;		   // Plot ID of the homeworld for the fleet
-	uqm::COUNT strength;	   // Strength of the fleet
-	GFXPOINT warpoint;			   // location being visited, or offset for samatra
-	GFXPOINT location = {0, 0};   // The results of the seeding
-	bool myRNG = false;		   // If you create RNG, clean up RNG
-	uqm::CHAR_T buf[256] = ""; // For debug string
+	uqm::COUNT home;			// Plot ID of the homeworld for the fleet
+	uqm::COUNT strength;		// Strength of the fleet
+	GFXPOINT warpoint;			// location being visited, or offset for samatra
+	GFXPOINT location = {0, 0}; // The results of the seeding
+	bool myRNG = false;			// If you create RNG, clean up RNG
+	uqm::CHAR_T buf[256] = "";	// For debug string
 
 	if (!FleetPtr || !plotmap)
 	{
@@ -1762,8 +1762,8 @@ SeedFleetLocation(FLEET_INFO* FleetPtr, PLOT_LOCATION* plotmap, uqm::COUNT visit
 				break;
 			}
 			location = GFXPOINT {// Jitter towards sun device and eggs
-							  plotmap[home].star_pt.x + (plotmap[home].star_pt.x * 2 < plotmap[SUN_DEVICE_DEFINED].star_pt.x + plotmap[EGG_CASE2_DEFINED].star_pt.x / 2 + plotmap[EGG_CASE1_DEFINED].star_pt.x / 3 + plotmap[EGG_CASE0_DEFINED].star_pt.x / 6 ? 1 : -1) * Jitter(strength, rand_val_x),
-							  plotmap[home].star_pt.y + (plotmap[home].star_pt.y * 2 < plotmap[SUN_DEVICE_DEFINED].star_pt.y + plotmap[EGG_CASE2_DEFINED].star_pt.y / 2 + plotmap[EGG_CASE1_DEFINED].star_pt.y / 3 + plotmap[EGG_CASE0_DEFINED].star_pt.y / 6 ? 1 : -1) * Jitter(strength, rand_val_y)};
+								 plotmap[home].star_pt.x + (plotmap[home].star_pt.x * 2 < plotmap[SUN_DEVICE_DEFINED].star_pt.x + plotmap[EGG_CASE2_DEFINED].star_pt.x / 2 + plotmap[EGG_CASE1_DEFINED].star_pt.x / 3 + plotmap[EGG_CASE0_DEFINED].star_pt.x / 6 ? 1 : -1) * Jitter(strength, rand_val_x),
+								 plotmap[home].star_pt.y + (plotmap[home].star_pt.y * 2 < plotmap[SUN_DEVICE_DEFINED].star_pt.y + plotmap[EGG_CASE2_DEFINED].star_pt.y / 2 + plotmap[EGG_CASE1_DEFINED].star_pt.y / 3 + plotmap[EGG_CASE0_DEFINED].star_pt.y / 6 ? 1 : -1) * Jitter(strength, rand_val_y)};
 			break;
 		case SLYLANDRO_ID:
 			break;
@@ -1786,15 +1786,15 @@ SeedFleetLocation(FLEET_INFO* FleetPtr, PLOT_LOCATION* plotmap, uqm::COUNT visit
 				plotmap[home].star_pt.x + HALF_Y * Jitter(strength, rand_val_x) / 2,
 				plotmap[home].star_pt.y + HALF_X + Jitter(strength, rand_val_y) / 2};
 			break;
-		case KOHR_AH_ID:	  // Halved jitter, swap x and y from UQ (same seed)
+		case KOHR_AH_ID:		 // Halved jitter, swap x and y from UQ (same seed)
 			location = GFXPOINT {// and ONE sign for a 90 degree turn
-							  plotmap[home].star_pt.x - HALF_X * Jitter(strength, rand_val_y) / 2,
-							  plotmap[home].star_pt.y + HALF_Y + Jitter(strength, rand_val_x) / 2};
+								 plotmap[home].star_pt.x - HALF_X * Jitter(strength, rand_val_y) / 2,
+								 plotmap[home].star_pt.y + HALF_Y + Jitter(strength, rand_val_x) / 2};
 			break;
-		case ZOQFOTPIK_ID:	  // ZoqFot jitter is inverted (str - jit) away from
+		case ZOQFOTPIK_ID:		 // ZoqFot jitter is inverted (str - jit) away from
 			location = GFXPOINT {// KA/UQ zone, then /2, gives 16% - 50% jit
-							  plotmap[home].star_pt.x + AWAY_X(SAMATRA_DEFINED) * (FleetPtr->actual_strength * SPHERE_RADIUS_INCREMENT / 2 - Jitter(strength, rand_val_x)) / 2,
-							  plotmap[home].star_pt.y + AWAY_Y(SAMATRA_DEFINED) * (FleetPtr->actual_strength * SPHERE_RADIUS_INCREMENT / 2 - Jitter(strength, rand_val_y)) / 2};
+								 plotmap[home].star_pt.x + AWAY_X(SAMATRA_DEFINED) * (FleetPtr->actual_strength * SPHERE_RADIUS_INCREMENT / 2 - Jitter(strength, rand_val_x)) / 2,
+								 plotmap[home].star_pt.y + AWAY_Y(SAMATRA_DEFINED) * (FleetPtr->actual_strength * SPHERE_RADIUS_INCREMENT / 2 - Jitter(strength, rand_val_y)) / 2};
 			break;
 		case SYREEN_ID:
 			if (visit == MYCON_TRAP_DEFINED)

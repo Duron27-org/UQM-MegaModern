@@ -20,7 +20,7 @@
 #include "../netplay.h"
 #include "npconfirm.h"
 
-#include "types.h"
+#include <cstdint>
 #include "../netmisc.h"
 #include "../packetsenders.h"
 

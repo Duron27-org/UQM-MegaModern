@@ -59,7 +59,6 @@ bool setEnvironmentValue(uqgsl::czstring name, uqgsl::czstring value, bool overw
 }
 
 
-
 uqstl::string strerror(errno_t err)
 {
 #ifdef __STDC_LIB_EXT1__
@@ -72,7 +71,6 @@ uqstl::string strerror(errno_t err)
 	return ::strerror(err);
 #endif
 }
-
 
 
 } // namespace uqm

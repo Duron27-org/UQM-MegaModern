@@ -740,7 +740,7 @@ Color GetFlashPCColor(void)
 	static uqm::DWORD cycle_index = 0;
 
 	static const Color cycle_tab[] = PC_RECT_COLOR_CYCLE_TABLE;
-	const size_t cycleCount = ARRAY_SIZE(cycle_tab);
+	const size_t cycleCount = std::size(cycle_tab);
 #define BLINK_RATE (GameTicksPerSecond / 18)
 
 	if (GetTimeCounter() >= NextTime)

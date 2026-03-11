@@ -30,8 +30,8 @@
 
 static cdp_Error cdp_api_error = CDPERR_NONE;
 
-static uint32 cdp_Host_GetApiVersion(void);
-static uint32 cdp_Host_GetVersion(void);
+static uint32_t cdp_Host_GetApiVersion(void);
+static uint32_t cdp_Host_GetVersion(void);
 static cdp_Error cdp_Host_GetApiError(void);
 static cdp_Itf* cdp_Host_GetItf(const char* name);
 static bool cdp_Host_GetItfs(cdp_ItfDef* defs);
@@ -51,7 +51,7 @@ static bool cdp_Host_SubscribeEvent(cdp_Event, cdp_EventProc, cdp_Module*);
 static void cdp_Host_UnsubscribeEvent(cdp_Event, cdp_EventProc);
 static bool cdp_Host_SubscribeEvents(cdp_EventDef* defs, cdp_Module*);
 static void cdp_Host_UnsubscribeEvents(cdp_EventDef* defs);
-static cdp_EventResult cdp_Host_FireEvent(cdp_EventReg*, uint32, void*);
+static cdp_EventResult cdp_Host_FireEvent(cdp_EventReg*, uint32_t, void*);
 
 // Interfaces
 cdp_Itf_HostVtbl_v1 cdp_host_itf_v1 =
@@ -159,7 +159,7 @@ struct cdp_EventReg
 	bool used;
 	const char* name;
 	cdp_EventBind* binds;
-	uint32 bindslots;
+	uint32_t bindslots;
 	cdp_Module* module;
 };
 
@@ -233,13 +233,13 @@ void cdp_UninitApi(void)
 	}
 }
 
-static uint32
+static uint32_t
 cdp_Host_GetApiVersion(void)
 {
 	return CDPAPI_VERSION;
 }
 
-static uint32
+static uint32_t
 cdp_Host_GetVersion(void)
 {
 	return (UQM_MAJOR_VERSION << 20) | (UQM_MINOR_VERSION << 15) | UQM_PATCH_VERSION;
@@ -532,10 +532,10 @@ cdp_GetEvent(const char* name)
 }
 
 static cdp_EventBind*
-cdp_AllocEventBinds(cdp_EventBind* binds, uint32 ccur, uint32 cnew)
+cdp_AllocEventBinds(cdp_EventBind* binds, uint32_t ccur, uint32_t cnew)
 {
 	cdp_EventBind* newbinds;
-	uint32 newsize;
+	uint32_t newsize;
 
 	newsize = cnew * sizeof(cdp_EventBind);
 	if (binds)
@@ -736,7 +736,7 @@ cdp_Host_SubscribeEvent(cdp_Event event, cdp_EventProc proc, cdp_Module* module)
 {
 	cdp_EventReg* reg = cdp_RegFromEvent(event);
 	cdp_EventBind* bind = nullptr;
-	uint32 i;
+	uint32_t i;
 
 	if (reg < cdp_evts || reg >= cdp_evts + MAX_REG_EVENTS || !reg->name)
 	{
@@ -781,7 +781,7 @@ cdp_Host_UnsubscribeEvent(cdp_Event event, cdp_EventProc proc)
 {
 	cdp_EventReg* reg = cdp_RegFromEvent(event);
 	cdp_EventBind* bind = nullptr;
-	uint32 i;
+	uint32_t i;
 
 	if (reg < cdp_evts || reg >= cdp_evts + MAX_REG_EVENTS || !reg->name)
 	{ // event either expired or invalid
@@ -840,13 +840,13 @@ cdp_Host_UnsubscribeEvents(cdp_EventDef* defs)
 }
 
 static cdp_EventResult
-cdp_Host_FireEvent(cdp_EventReg* evtreg, uint32 iparam, void* pparam)
+cdp_Host_FireEvent(cdp_EventReg* evtreg, uint32_t iparam, void* pparam)
 {
 	bool bHandled = false;
 	cdp_EventResult ret = 0;
 	cdp_Event event;
 	cdp_EventBind* bind;
-	uint32 i;
+	uint32_t i;
 
 	if (evtreg < cdp_evts || evtreg >= cdp_evts + MAX_REG_EVENTS || !evtreg->name)
 	{

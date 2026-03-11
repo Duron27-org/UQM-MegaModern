@@ -36,7 +36,7 @@
 #include "libs/memlib.h"
 #include "uqm/starmap.h"
 #include "uqm/planets/scan.h"
-#include "types.h"
+#include <cstdint>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -257,7 +257,7 @@ void prepareContentDir(uqgsl::czstring contentDirName, uqgsl::czstring addonDirN
 			buf,		/* expanded CONTENTDIR */
 			"content",
 		};
-		loc = findFileInDirs(locs, ARRAY_SIZE(locs), testFile);
+		loc = findFileInDirs(locs, std::size(locs), testFile);
 
 #ifdef __APPLE__
 		/* On OSX, if the content can't be found in any of the static

@@ -17,7 +17,7 @@
 #ifndef GENDEFAULT_H
 #define GENDEFAULT_H
 
-#include "types.h"
+#include <cstdint>
 #include "../planets.h"
 #include "libs/compiler.h"
 

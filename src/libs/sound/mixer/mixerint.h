@@ -23,7 +23,7 @@
 
 #include <type_traits>
 #include "port.h"
-#include "types.h"
+#include <cstdint>
 
 /*************************************************
  *  Internals
@@ -47,19 +47,19 @@ mixer_ConvFlags operator|=(mixer_ConvFlags lhs, mixer_ConvFlags rhs)
 
 typedef struct
 {
-	uint32 srcfmt;
+	uint32_t srcfmt;
 	void* srcdata;
-	uint32 srcsize;
-	uint32 srcbpc; /* bytes/sample for 1 chan */
-	uint32 srcchans;
-	uint32 srcsamples;
+	uint32_t srcsize;
+	uint32_t srcbpc; /* bytes/sample for 1 chan */
+	uint32_t srcchans;
+	uint32_t srcsamples;
 
-	uint32 dstfmt;
+	uint32_t dstfmt;
 	void* dstdata;
-	uint32 dstsize;
-	uint32 dstbpc; /* bytes/sample for 1 chan */
-	uint32 dstchans;
-	uint32 dstsamples;
+	uint32_t dstsize;
+	uint32_t dstbpc; /* bytes/sample for 1 chan */
+	uint32_t dstchans;
+	uint32_t dstsamples;
 
 	mixer_ConvFlags flags;
 
@@ -75,12 +75,12 @@ typedef struct
 static void mixer_ConvertBuffer_internal(mixer_Convertion* conv);
 static void mixer_ResampleFlat(mixer_Convertion* conv);
 
-static inline sint32 mixer_GetSampleExt(void* src, uint32 bpc);
-static inline sint32 mixer_GetSampleInt(void* src, uint32 bpc);
-static inline void mixer_PutSampleInt(void* dst, uint32 bpc,
-									  sint32 samp);
-static inline void mixer_PutSampleExt(void* dst, uint32 bpc,
-									  sint32 samp);
+static inline int32_t mixer_GetSampleExt(void* src, uint32_t bpc);
+static inline int32_t mixer_GetSampleInt(void* src, uint32_t bpc);
+static inline void mixer_PutSampleInt(void* dst, uint32_t bpc,
+									  int32_t samp);
+static inline void mixer_PutSampleExt(void* dst, uint32_t bpc,
+									  int32_t samp);
 
 static float mixer_ResampleNone(mixer_Source* src, bool left);
 static float mixer_ResampleNearest(mixer_Source* src, bool left);
@@ -98,10 +98,10 @@ static inline bool mixer_CheckBufferState(mixer_Buffer* buf,
 										  const char* FuncName);
 
 /* Clipping boundaries */
-#define MIX_S16_MAX ((float)SINT16_MAX)
-#define MIX_S16_MIN ((float)SINT16_MIN)
-#define MIX_S8_MAX ((float)SINT8_MAX)
-#define MIX_S8_MIN ((float)SINT8_MIN)
+#define MIX_S16_MAX ((float)INT16_MAX)
+#define MIX_S16_MIN ((float)INT16_MIN)
+#define MIX_S8_MAX ((float)INT8_MAX)
+#define MIX_S8_MIN ((float)INT8_MIN)
 
 /* Channel gain adjustment for clipping reduction */
 #define MIX_GAIN_ADJ (0.75f)
@@ -111,6 +111,6 @@ static inline bool mixer_SourceGetNextSample(mixer_Source* src,
 											 float* psamp, bool left);
 static inline bool mixer_SourceGetFakeSample(mixer_Source* src,
 											 float* psamp, bool left);
-static inline uint32 mixer_SourceAdvance(mixer_Source* src, bool left);
+static inline uint32_t mixer_SourceAdvance(mixer_Source* src, bool left);
 
 #endif /* LIBS_SOUND_MIXER_MIXERINT_H_ */

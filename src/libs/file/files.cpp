@@ -24,13 +24,13 @@
 #include "port.h"
 #include "libs/uio.h"
 #include "config.h"
-#include "types.h"
+#include <cstdint>
 #include "filintrn.h"
 #include "libs/memlib.h"
 #include "core/log/log.h"
 
 static int copyError(uio_Handle* srcHandle, uio_Handle* dstHandle,
-					 uio_DirHandle* unlinkHandle, const char* unlinkPath, uint8* buf);
+					 uio_DirHandle* unlinkHandle, const char* unlinkPath, uint8_t* buf);
 
 bool fileExists(const char* name)
 {
@@ -68,7 +68,7 @@ int copyFile(uio_DirHandle* srcDir, const char* srcName,
 	uio_Handle *src, *dst;
 	struct stat sb;
 #define BUFSIZE 65536
-	uint8 *buf, *bufPtr;
+	uint8_t *buf, *bufPtr;
 	ssize_t numInBuf, numWritten;
 
 	src = uio_open(srcDir, srcName, O_RDONLY
@@ -98,7 +98,7 @@ int copyFile(uio_DirHandle* srcDir, const char* srcName,
 		return copyError(src, nullptr, nullptr, nullptr, nullptr);
 	}
 
-	buf = (uint8*)HMalloc(BUFSIZE);
+	buf = (uint8_t*)HMalloc(BUFSIZE);
 	// This was originally a statically allocated buffer,
 	// but as this function might be run from a thread with
 	// a small stack, this is better.
@@ -152,7 +152,7 @@ int copyFile(uio_DirHandle* srcDir, const char* srcName,
  */
 static int
 copyError(uio_Handle* srcHandle, uio_Handle* dstHandle,
-		  uio_DirHandle* unlinkHandle, const char* unlinkPath, uint8* buf)
+		  uio_DirHandle* unlinkHandle, const char* unlinkPath, uint8_t* buf)
 {
 	int savedErrno;
 

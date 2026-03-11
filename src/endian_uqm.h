@@ -23,7 +23,7 @@
 #define ENDIAN_UQM_H_
 
 #include "config.h"
-#include "types.h"
+#include <cstdint>
 
 #if defined(__APPLE__) && defined(__GNUC__)
 // When using the MacOS gcc compiler to build universal binaries,
@@ -70,27 +70,27 @@ extern "C" {
    header should only be included in files that actually use them.
 */
 #ifndef UQM_Swap16
-static __inline__ uint16 UQM_Swap16(uint16 D)
+static __inline__ uint16_t UQM_Swap16(uint16_t D)
 {
 	return ((D << 8) | (D >> 8));
 }
 #endif
 #ifndef UQM_Swap32
-static __inline__ uint32 UQM_Swap32(uint32 D)
+static __inline__ uint32_t UQM_Swap32(uint32_t D)
 {
 	return ((D << 24) | ((D << 8) & 0x00FF0000) | ((D >> 8) & 0x0000FF00) | (D >> 24));
 }
 #endif
 #ifdef UQM_INT64
 #ifndef UQM_Swap64
-static __inline__ uint64 UQM_Swap64(uint64 val)
+static __inline__ uint64_t UQM_Swap64(uint64_t val)
 {
-	uint32 hi, lo;
+	uint32_t hi, lo;
 
 	/* Separate into high and low 32-bit values and swap them */
-	lo = (uint32)(val & 0xFFFFFFFF);
+	lo = (uint32_t)(val & 0xFFFFFFFF);
 	val >>= 32;
-	hi = (uint32)(val & 0xFFFFFFFF);
+	hi = (uint32_t)(val & 0xFFFFFFFF);
 	val = UQM_Swap32(lo);
 	val <<= 32;
 	val |= UQM_Swap32(hi);

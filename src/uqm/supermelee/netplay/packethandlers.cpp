@@ -208,7 +208,7 @@ int PacketHandler_Ready(NetConnection* conn, const Packet_Ready* packet)
 
 int PacketHandler_Fleet(NetConnection* conn, const Packet_Fleet* packet)
 {
-	uint16 numShips = ntoh16(packet->numShips);
+	uint16_t numShips = ntoh16(packet->numShips);
 	size_t i;
 	size_t len;
 	int player;
@@ -521,7 +521,7 @@ int PacketHandler_InputDelay(NetConnection* conn,
 							 const Packet_InputDelay* packet)
 {
 	//BattleStateData *battleStateData;
-	uint32 delay;
+	uint32_t delay;
 
 	if (conn->stateFlags.reset.localReset)
 	{
@@ -658,8 +658,8 @@ int PacketHandler_FrameCount(NetConnection* conn,
 int PacketHandler_Checksum(NetConnection* conn, const Packet_Checksum* packet)
 {
 #ifdef NETPLAY_CHECKSUM
-	uint32 frameNr;
-	uint32 checksum;
+	uint32_t frameNr;
+	uint32_t checksum;
 	size_t delay;
 	size_t interval;
 #endif

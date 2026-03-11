@@ -17,7 +17,7 @@
 #ifndef LIBS_SOUND_SOUND_H_ // try avoiding collisions on id
 #define LIBS_SOUND_SOUND_H_
 
-#include "types.h"
+#include <cstdint>
 #include "audiocore.h"
 #include "decoders/decoder.h"
 #include "libs/threadlib.h"
@@ -63,7 +63,7 @@ void CleanSource(int iSource);
 void SetSFXVolume(float volume);
 void SetSpeechVolume(float volume);
 
-TFB_SoundSample* TFB_CreateSoundSample(TFB_SoundDecoder*, uint32 num_buffers,
+TFB_SoundSample* TFB_CreateSoundSample(TFB_SoundDecoder*, uint32_t num_buffers,
 									   const TFB_SoundCallbacks* /* can be nullptr */);
 void TFB_DestroySoundSample(TFB_SoundSample*);
 void TFB_SetSoundSampleData(TFB_SoundSample*, void* data);

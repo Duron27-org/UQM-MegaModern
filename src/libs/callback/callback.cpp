@@ -17,7 +17,7 @@
  */
 
 #include "port.h"
-#include "types.h"
+#include <cstdint>
 
 #include <assert.h>
 #include <stdlib.h>

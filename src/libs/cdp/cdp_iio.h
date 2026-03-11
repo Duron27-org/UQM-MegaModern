@@ -22,7 +22,7 @@
 #ifndef LIBS_CDP_CDP_IIO_H_
 #define LIBS_CDP_CDP_IIO_H_
 
-#include "types.h"
+#include <cstdint>
 #include "libs/uio.h"
 
 // CDP IO Interface entry points

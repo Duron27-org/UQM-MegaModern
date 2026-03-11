@@ -223,7 +223,7 @@ void DrawSaveInfo(SIS_STATE SisState)
 								GAME_STRING(MAINMENU_STRING_BASE + 60),
 								NomadModeSuffix[static_cast<int>(SisState.Nomad)]);
 		}
-		
+
 		if (SisState.Extended)
 		{
 			utf8StringCopy(TempExt, sizeof(TempExt),
@@ -504,7 +504,7 @@ void DateToString(char* buf, size_t bufLen,
 								GAME_STRING(MONTHS_STRING_BASE + month_index - 1),
 								day_index, year_index);
 			break;
-		case uqm::DateFormat::MM_dd_yyyy:  //MM.dd.yyyy  ie: 03.01.2500
+		case uqm::DateFormat::MM_dd_yyyy: //MM.dd.yyyy  ie: 03.01.2500
 			fmt::format_to_sz_n(buf, bufLen, "{:02}" STR_MIDDLE_DOT "{:02}" STR_MIDDLE_DOT "{:04}", month_index,
 								day_index, year_index);
 			break;
@@ -1900,7 +1900,7 @@ GetFTankScreenPos(GFXPOINT* ppt)
 		ppt->y = RES_SCALE(30 - rowNr);
 	}
 
-	assert(rowNr + 1 < (uqm::COUNT)ARRAY_SIZE(fuelColors));
+	assert(rowNr + 1 < (uqm::COUNT)std::size(fuelColors));
 	SetContextForeGroundColor(fuelColors[rowNr]);
 	SetContextBackGroundColor(fuelColors[rowNr + 1]);
 
@@ -2066,7 +2066,7 @@ void DrawAutoPilotMessage(bool Reset)
 	bool OnAutoPilot;
 
 	static const Color cycle_tab[] = AUTOPILOT_COLOR_CYCLE_TABLE;
-	const size_t cycleCount = ARRAY_SIZE(cycle_tab);
+	const size_t cycleCount = std::size(cycle_tab);
 #define BLINK_RATE (GameTicksPerSecond * 3 / 40) // 9 @ 120 ticks/second
 
 	if (Reset || optBubbleWarp)

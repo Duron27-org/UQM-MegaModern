@@ -1,7 +1,7 @@
 #ifndef BUILDPICK_H
 #define BUILDPICK_H
 
-#include "types.h"
+#include <cstdint>
 #include "melee.h"
 #include "../races.h"
 

@@ -36,20 +36,20 @@ volatile bool audio_inited = false;
  */
 
 #ifdef HAVE_OPENAL
-sint32 openAL_Init(audio_Driver* driver, AudioFlags flags);
+int32_t openAL_Init(audio_Driver* driver, AudioFlags flags);
 #endif
-sint32 mixSDL_Init(audio_Driver* driver, AudioFlags flags);
-sint32 noSound_Init(audio_Driver* driver, AudioFlags flags);
+int32_t mixSDL_Init(audio_Driver* driver, AudioFlags flags);
+int32_t noSound_Init(audio_Driver* driver, AudioFlags flags);
 
 
 /*
  * Initialization
  */
 
-sint32
+int32_t
 initAudio(AudioDriverType driver, AudioFlags flags)
 {
-	sint32 ret;
+	int32_t ret;
 
 #ifdef HAVE_OPENAL
 	if (driver == AudioDriverType::MixSDL)
@@ -114,7 +114,7 @@ void unInitAudio(void)
  * General
  */
 
-sint32
+int32_t
 audio_GetError(void)
 {
 	return audiodrv.GetError();
@@ -125,12 +125,12 @@ audio_GetError(void)
  * Sources
  */
 
-void audio_GenSources(uint32 n, audio_Object* psrcobj)
+void audio_GenSources(uint32_t n, audio_Object* psrcobj)
 {
 	audiodrv.GenSources(n, psrcobj);
 }
 
-void audio_DeleteSources(uint32 n, audio_Object* psrcobj)
+void audio_DeleteSources(uint32_t n, audio_Object* psrcobj)
 {
 	audiodrv.DeleteSources(n, psrcobj);
 }
@@ -191,13 +191,13 @@ void audio_SourceStop(audio_Object srcobj)
 	audiodrv.SourceStop(srcobj);
 }
 
-void audio_SourceQueueBuffers(audio_Object srcobj, uint32 n,
+void audio_SourceQueueBuffers(audio_Object srcobj, uint32_t n,
 							  audio_Object* pbufobj)
 {
 	audiodrv.SourceQueueBuffers(srcobj, n, pbufobj);
 }
 
-void audio_SourceUnqueueBuffers(audio_Object srcobj, uint32 n,
+void audio_SourceUnqueueBuffers(audio_Object srcobj, uint32_t n,
 								audio_Object* pbufobj)
 {
 	audiodrv.SourceUnqueueBuffers(srcobj, n, pbufobj);
@@ -208,12 +208,12 @@ void audio_SourceUnqueueBuffers(audio_Object srcobj, uint32 n,
  * Buffers
  */
 
-void audio_GenBuffers(uint32 n, audio_Object* pbufobj)
+void audio_GenBuffers(uint32_t n, audio_Object* pbufobj)
 {
 	audiodrv.GenBuffers(n, pbufobj);
 }
 
-void audio_DeleteBuffers(uint32 n, audio_Object* pbufobj)
+void audio_DeleteBuffers(uint32_t n, audio_Object* pbufobj)
 {
 	audiodrv.DeleteBuffers(n, pbufobj);
 }
@@ -229,35 +229,35 @@ void audio_GetBufferi(audio_Object bufobj, audio_BufferProp pname,
 	audiodrv.GetBufferi(bufobj, audiodrv.EnumLookup[pname], value);
 }
 
-void audio_BufferData(audio_Object bufobj, uint32 format, void* data,
-					  uint32 size, uint32 freq)
+void audio_BufferData(audio_Object bufobj, uint32_t format, void* data,
+					  uint32_t size, uint32_t freq)
 {
 	audiodrv.BufferData(bufobj, audiodrv.EnumLookup[format], data, size,
 						freq);
 }
 
-bool audio_GetFormatInfo(uint32 format, int* channels, int* sample_size)
+bool audio_GetFormatInfo(uint32_t format, int* channels, int* sample_size)
 {
 	switch (format)
 	{
 		case audio_FORMAT_MONO8:
 			*channels = 1;
-			*sample_size = sizeof(uint8);
+			*sample_size = sizeof(uint8_t);
 			return true;
 
 		case audio_FORMAT_STEREO8:
 			*channels = 2;
-			*sample_size = sizeof(uint8);
+			*sample_size = sizeof(uint8_t);
 			return true;
 
 		case audio_FORMAT_MONO16:
 			*channels = 1;
-			*sample_size = sizeof(sint16);
+			*sample_size = sizeof(int16_t);
 			return true;
 
 		case audio_FORMAT_STEREO16:
 			*channels = 2;
-			*sample_size = sizeof(sint16);
+			*sample_size = sizeof(int16_t);
 			return true;
 	}
 	return false;

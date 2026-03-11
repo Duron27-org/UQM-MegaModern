@@ -74,7 +74,7 @@ typedef enum NetplayResetReason
 #ifndef PACKET_H_STANDALONE
 #include "netconnection.h"
 
-#include "types.h"
+#include <cstdint>
 #include "libs/network/bytesex.h"
 
 #if 0 //defined(__cplusplus)
@@ -114,8 +114,8 @@ extern "C" {
 
 typedef struct
 {
-	uint16 len;
-	uint16 type; /* Actually of type PacketType */
+	uint16_t len;
+	uint16_t type; /* Actually of type PacketType */
 } PacketHeader;
 
 // "Base class" for all packets.
@@ -147,30 +147,30 @@ typedef struct
 	PacketHeader header;
 	struct
 	{
-		uint8 major;
-		uint8 minor;
-	} protoVersion;	 /* Protocol version */
-	uint16 padding0; /* Set to 0 */
+		uint8_t major;
+		uint8_t minor;
+	} protoVersion;	   /* Protocol version */
+	uint16_t padding0; /* Set to 0 */
 	struct
 	{
-		uint8 major;
-		uint8 minor;
-		uint8 patch;
-	} uqmVersion;	/* Protocol version */
-	uint8 padding1; /* Set to 0 */
+		uint8_t major;
+		uint8_t minor;
+		uint8_t patch;
+	} uqmVersion;	  /* Protocol version */
+	uint8_t padding1; /* Set to 0 */
 } Packet_Init;
 
 typedef struct
 {
 	PacketHeader header;
-	uint32 id;
+	uint32_t id;
 } Packet_Ping;
 
 // Acknowledgement of a Ping.
 typedef struct
 {
 	PacketHeader header;
-	uint32 id;
+	uint32_t id;
 } Packet_Ack;
 
 // Used to signal that a party is ready to continue.
@@ -183,13 +183,13 @@ typedef struct
 typedef struct
 {
 	PacketHeader header;
-	uint32 seed;
+	uint32_t seed;
 } Packet_SeedRandom;
 
 typedef struct
 {
 	PacketHeader header;
-	uint32 delay;
+	uint32_t delay;
 } Packet_InputDelay;
 
 // This enum is used to indicate that a packet containing it relates to
@@ -203,8 +203,8 @@ typedef enum
 
 typedef struct
 {
-	uint8 index; /* Position in the fleet */
-	uint8 ship;	 /* Ship type index; actually MeleeShip */
+	uint8_t index; /* Position in the fleet */
+	uint8_t ship;  /* Ship type index; actually MeleeShip */
 } FleetEntry;
 // Structure describing an update to a player's fleet.
 // TODO: use strings as ship identifiers, instead of numbers,
@@ -212,9 +212,9 @@ typedef struct
 typedef struct
 {
 	PacketHeader header;
-	uint8 side;
-	uint8 padding;
-	uint16 numShips;
+	uint8_t side;
+	uint8_t padding;
+	uint16_t numShips;
 	FleetEntry* ships;
 	// Be sure to add padding to this structure to make it a multiple of
 	// 4 bytes in length.
@@ -223,9 +223,9 @@ typedef struct
 typedef struct
 {
 	PacketHeader header;
-	uint8 side;
-	uint8 padding;
-	uint8* name;
+	uint8_t side;
+	uint8_t padding;
+	uint8_t* name;
 	// '\0' terminated.
 	// Be sure to add padding to this structure to make it a multiple of
 	// 4 bytes in length.
@@ -258,68 +258,68 @@ typedef struct
 typedef struct
 {
 	PacketHeader header;
-	uint16 ship;
-	// The value '(uint16) ~0' indicates random selection.
-	uint16 padding;
+	uint16_t ship;
+	// The value '(uint16_t) ~0' indicates random selection.
+	uint16_t padding;
 } Packet_SelectShip;
 
 typedef struct
 {
 	PacketHeader header;
-	uint8 state; /* Actually BATTLE_INPUT_STATE */
-	uint8 padding0;
-	uint16 padding1;
+	uint8_t state; /* Actually BATTLE_INPUT_STATE */
+	uint8_t padding0;
+	uint16_t padding1;
 } Packet_BattleInput;
 
 typedef struct
 {
 	PacketHeader header;
-	uint32 frameCount; /* Actually BattleFrameCounter */
+	uint32_t frameCount; /* Actually BattleFrameCounter */
 } Packet_FrameCount;
 
 typedef struct
 {
 	PacketHeader header;
-	uint32 frameNr;	 /* Actually BattleFrameCounter */
-	uint32 checksum; /* Actually Checksum */
+	uint32_t frameNr;  /* Actually BattleFrameCounter */
+	uint32_t checksum; /* Actually Checksum */
 } Packet_Checksum;
 
 typedef struct
 {
 	PacketHeader header;
-	uint16 reason; /* Actually NetplayAbortReason */
-	uint16 padding0;
+	uint16_t reason; /* Actually NetplayAbortReason */
+	uint16_t padding0;
 } Packet_Abort;
 
 typedef struct
 {
 	PacketHeader header;
-	uint16 reason; /* Actually NetplayResetReason */
-	uint16 padding0;
+	uint16_t reason; /* Actually NetplayResetReason */
+	uint16_t padding0;
 } Packet_Reset;
 
 
 #ifndef PACKET_H_STANDALONE
 void Packet_delete(Packet* packet);
 Packet_Init* Packet_Init_create(void);
-Packet_Ping* Packet_Ping_create(uint32 id);
-Packet_Ack* Packet_Ack_create(uint32 id);
+Packet_Ping* Packet_Ping_create(uint32_t id);
+Packet_Ack* Packet_Ack_create(uint32_t id);
 Packet_Ready* Packet_Ready_create(void);
 Packet_Handshake0* Packet_Handshake0_create(void);
 Packet_Handshake1* Packet_Handshake1_create(void);
 Packet_HandshakeCancel* Packet_HandshakeCancel_create(void);
 Packet_HandshakeCancelAck* Packet_HandshakeCancelAck_create(void);
-Packet_SeedRandom* Packet_SeedRandom_create(uint32 seed);
-Packet_InputDelay* Packet_InputDelay_create(uint32 delay);
+Packet_SeedRandom* Packet_SeedRandom_create(uint32_t seed);
+Packet_InputDelay* Packet_InputDelay_create(uint32_t delay);
 Packet_Fleet* Packet_Fleet_create(NetplaySide side, size_t numShips);
 Packet_TeamName* Packet_TeamName_create(NetplaySide side, const char* name,
 										size_t size);
-Packet_SelectShip* Packet_SelectShip_create(uint16 ship);
-Packet_BattleInput* Packet_BattleInput_create(uint8 state);
-Packet_FrameCount* Packet_FrameCount_create(uint32 frameCount);
-Packet_Checksum* Packet_Checksum_create(uint32 frameNr, uint32 checksum);
-Packet_Abort* Packet_Abort_create(uint16 reason);
-Packet_Reset* Packet_Reset_create(uint16 reason);
+Packet_SelectShip* Packet_SelectShip_create(uint16_t ship);
+Packet_BattleInput* Packet_BattleInput_create(uint8_t state);
+Packet_FrameCount* Packet_FrameCount_create(uint32_t frameCount);
+Packet_Checksum* Packet_Checksum_create(uint32_t frameNr, uint32_t checksum);
+Packet_Abort* Packet_Abort_create(uint16_t reason);
+Packet_Reset* Packet_Reset_create(uint16_t reason);
 #endif
 
 #if 0 //defined(__cplusplus)

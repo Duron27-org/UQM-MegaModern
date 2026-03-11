@@ -26,7 +26,7 @@
 
 
 static Task PlaybackTask;
-static uint32 nosound_freq = 22050;
+static uint32_t nosound_freq = 22050;
 
 static const audio_Driver noSound_Driver =
 	{
@@ -35,37 +35,37 @@ static const audio_Driver noSound_Driver =
 		AudioDriverType::NoSound,
 		{/* Errors */
 		 MIX_NO_ERROR,
-		  MIX_INVALID_NAME,
-		  MIX_INVALID_ENUM,
-		  MIX_INVALID_VALUE,
-		  MIX_INVALID_OPERATION,
-		  MIX_OUT_OF_MEMORY,
-		  MIX_DRIVER_FAILURE,
+				   MIX_INVALID_NAME,
+				   MIX_INVALID_ENUM,
+				   MIX_INVALID_VALUE,
+				   MIX_INVALID_OPERATION,
+				   MIX_OUT_OF_MEMORY,
+				   MIX_DRIVER_FAILURE,
 
-		  /* Source properties */
+				   /* Source properties */
 		 MIX_POSITION,
-		  MIX_LOOPING,
-		  MIX_BUFFER,
-		  MIX_GAIN,
-		  MIX_SOURCE_STATE,
-		  MIX_BUFFERS_QUEUED,
-		  MIX_BUFFERS_PROCESSED,
+				   MIX_LOOPING,
+				   MIX_BUFFER,
+				   MIX_GAIN,
+				   MIX_SOURCE_STATE,
+				   MIX_BUFFERS_QUEUED,
+				   MIX_BUFFERS_PROCESSED,
 
-		  /* Source state information */
+				   /* Source state information */
 		 MIX_INITIAL,
-		  MIX_STOPPED,
-		  MIX_PLAYING,
-		  MIX_PAUSED,
+				   MIX_STOPPED,
+				   MIX_PLAYING,
+				   MIX_PAUSED,
 
-		  /* Sound buffer properties */
+				   /* Sound buffer properties */
 		 MIX_FREQUENCY,
-		  MIX_BITS,
-		  MIX_CHANNELS,
-		  MIX_SIZE,
-		  MIX_FORMAT_MONO16,
-		  MIX_FORMAT_STEREO16,
-		  MIX_FORMAT_MONO8,
-		  MIX_FORMAT_STEREO8},
+				   MIX_BITS,
+				   MIX_CHANNELS,
+				   MIX_SIZE,
+				   MIX_FORMAT_MONO16,
+				   MIX_FORMAT_STEREO16,
+				   MIX_FORMAT_MONO8,
+				   MIX_FORMAT_STEREO8},
 
 		/* Sources */
 		noSound_GenSources,
@@ -105,9 +105,9 @@ UQM_COMPILE_TIME_ASSERT(mixer_Object_fits_in_audio_Object,
 
 // Converts an array of n audio_Objects to an array of mixer_Objects, in place.
 static void
-noSound_ConvertObjectArrayToMixerObjects(uint32 n, audio_Object* arr)
+noSound_ConvertObjectArrayToMixerObjects(uint32_t n, audio_Object* arr)
 {
-	uint32 i;
+	uint32_t i;
 	if (sizeof(audio_Object) == sizeof(mixer_Object))
 	{
 		return;
@@ -119,9 +119,9 @@ noSound_ConvertObjectArrayToMixerObjects(uint32 n, audio_Object* arr)
 }
 // Converts an array of n mixer_Objects to an array of audio_Objects, in place.
 static void
-noSound_ConvertObjectArrayFromMixerObjects(uint32 n, audio_Object* arr)
+noSound_ConvertObjectArrayFromMixerObjects(uint32_t n, audio_Object* arr)
 {
-	uint32 i;
+	uint32_t i;
 	if (sizeof(audio_Object) == sizeof(mixer_Object))
 	{
 		return;
@@ -137,7 +137,7 @@ noSound_ConvertObjectArrayFromMixerObjects(uint32 n, audio_Object* arr)
  * Initialization
  */
 
-sint32
+int32_t
 noSound_Init(audio_Driver* driver, AudioFlags flags)
 {
 	int i;
@@ -231,13 +231,13 @@ void noSound_Uninit(void)
 int PlaybackTaskFunc(void* data)
 {
 	Task task = (Task)data;
-	uint8* stream;
-	uint32 entryTime;
-	sint32 period, delay;
-	uint32 len = 2048;
+	uint8_t* stream;
+	uint32_t entryTime;
+	int32_t period, delay;
+	uint32_t len = 2048;
 
-	stream = (uint8*)HMalloc(len);
-	period = (sint32)((len / (double)nosound_freq) * GameTicksPerSecond);
+	stream = (uint8_t*)HMalloc(len);
+	period = (int32_t)((len / (double)nosound_freq) * GameTicksPerSecond);
 
 	while (!Task_ReadState(task, TASK_EXIT))
 	{
@@ -260,10 +260,10 @@ int PlaybackTaskFunc(void* data)
  * General
  */
 
-sint32
+int32_t
 noSound_GetError(void)
 {
-	sint32 value = mixer_GetError();
+	int32_t value = mixer_GetError();
 	switch (value)
 	{
 		case MIX_NO_ERROR:
@@ -291,13 +291,13 @@ noSound_GetError(void)
  * Sources
  */
 
-void noSound_GenSources(uint32 n, audio_Object* psrcobj)
+void noSound_GenSources(uint32_t n, audio_Object* psrcobj)
 {
 	mixer_GenSources(n, (mixer_Object*)psrcobj);
 	noSound_ConvertObjectArrayFromMixerObjects(n, psrcobj);
 }
 
-void noSound_DeleteSources(uint32 n, audio_Object* psrcobj)
+void noSound_DeleteSources(uint32_t n, audio_Object* psrcobj)
 {
 	noSound_ConvertObjectArrayToMixerObjects(n, psrcobj);
 	mixer_DeleteSources(n, (mixer_Object*)psrcobj);
@@ -386,7 +386,7 @@ void noSound_SourceStop(audio_Object srcobj)
 	mixer_SourceStop((mixer_Object)srcobj);
 }
 
-void noSound_SourceQueueBuffers(audio_Object srcobj, uint32 n,
+void noSound_SourceQueueBuffers(audio_Object srcobj, uint32_t n,
 								audio_Object* pbufobj)
 {
 	noSound_ConvertObjectArrayToMixerObjects(n, pbufobj);
@@ -395,7 +395,7 @@ void noSound_SourceQueueBuffers(audio_Object srcobj, uint32 n,
 	noSound_ConvertObjectArrayFromMixerObjects(n, pbufobj);
 }
 
-void noSound_SourceUnqueueBuffers(audio_Object srcobj, uint32 n,
+void noSound_SourceUnqueueBuffers(audio_Object srcobj, uint32_t n,
 								  audio_Object* pbufobj)
 {
 	noSound_ConvertObjectArrayToMixerObjects(n, pbufobj);
@@ -409,13 +409,13 @@ void noSound_SourceUnqueueBuffers(audio_Object srcobj, uint32 n,
  * Buffers
  */
 
-void noSound_GenBuffers(uint32 n, audio_Object* pbufobj)
+void noSound_GenBuffers(uint32_t n, audio_Object* pbufobj)
 {
 	mixer_GenBuffers(n, (mixer_Object*)pbufobj);
 	noSound_ConvertObjectArrayFromMixerObjects(n, pbufobj);
 }
 
-void noSound_DeleteBuffers(uint32 n, audio_Object* pbufobj)
+void noSound_DeleteBuffers(uint32_t n, audio_Object* pbufobj)
 {
 	noSound_ConvertObjectArrayToMixerObjects(n, pbufobj);
 	mixer_DeleteBuffers(n, (mixer_Object*)pbufobj);
@@ -436,8 +436,8 @@ void noSound_GetBufferi(audio_Object bufobj, audio_BufferProp pname,
 	*value = temp;
 }
 
-void noSound_BufferData(audio_Object bufobj, uint32 format, void* data,
-						uint32 size, uint32 freq)
+void noSound_BufferData(audio_Object bufobj, uint32_t format, void* data,
+						uint32_t size, uint32_t freq)
 {
 	mixer_BufferData((mixer_Object)bufobj, format, data, size, freq);
 }

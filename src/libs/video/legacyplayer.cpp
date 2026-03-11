@@ -24,7 +24,7 @@ LEGACY_VIDEO_REF
 PlayLegacyVideo(LEGACY_VIDEO vid)
 {
 	const char *name, *audname, *speechname;
-	uint32 loopframe;
+	uint32_t loopframe;
 	LEGACY_VIDEO_REF ref;
 	VIDEO_TYPE type;
 

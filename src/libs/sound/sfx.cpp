@@ -193,9 +193,9 @@ void* _GetSoundBankData(uio_Stream* fp, uqm::DWORD length)
 	{
 		TFB_SoundSample* sample;
 		TFB_SoundDecoder* decoder;
-		uint32 decoded_bytes;
+		uint32_t decoded_bytes;
 
-		if (const auto result{ scn::scan<std::string>(CurrentLine, "{}") })
+		if (const auto result {scn::scan<std::string>(CurrentLine, "{}")})
 		{
 			const std::string parsed {result->value()};
 			uqm::strncpy_safe({&filename[n], static_cast<uint32_t>(sizeof(filename) - n)}, parsed);
@@ -224,7 +224,7 @@ void* _GetSoundBankData(uio_Stream* fp, uqm::DWORD length)
 		// Decode everything and stash it in 1 buffer
 		decoded_bytes = SoundDecoder_DecodeAll(decoder);
 		uqm::log::debug("_GetSoundBankData(): decoded bytes {}",
-					   decoded_bytes);
+						decoded_bytes);
 
 		audio_BufferData(sample->buffer[0], decoder->format,
 						 decoder->buffer, decoded_bytes, decoder->frequency);

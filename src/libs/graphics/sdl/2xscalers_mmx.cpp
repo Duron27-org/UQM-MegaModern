@@ -20,7 +20,7 @@
 #if defined(MMX_ASM)
 
 #include "libs/graphics/sdl/sdl_common.h"
-#include "types.h"
+#include <cstdint>
 #include "scalers.h"
 #include "scaleint.h"
 #include "2xscalers.h"
@@ -69,25 +69,25 @@ void Scale_MMX_PrepPlatform(const SDL_PixelFormat* fmt)
 					  | ((Uint64)0x0001) << (fmt->Bshift * 2);
 
 	// prepare the RGB->YUV multipliers
-	mmx_Y_mult = ((Uint64)(uint16)YUV_matrix[YUV_XFORM_R][YUV_XFORM_Y])
+	mmx_Y_mult = ((Uint64)(uint16_t)YUV_matrix[YUV_XFORM_R][YUV_XFORM_Y])
 				  << (fmt->Rshift * 2)
-			   | ((Uint64)(uint16)YUV_matrix[YUV_XFORM_G][YUV_XFORM_Y])
+			   | ((Uint64)(uint16_t)YUV_matrix[YUV_XFORM_G][YUV_XFORM_Y])
 					 << (fmt->Gshift * 2)
-			   | ((Uint64)(uint16)YUV_matrix[YUV_XFORM_B][YUV_XFORM_Y])
+			   | ((Uint64)(uint16_t)YUV_matrix[YUV_XFORM_B][YUV_XFORM_Y])
 					 << (fmt->Bshift * 2);
 
-	mmx_U_mult = ((Uint64)(uint16)YUV_matrix[YUV_XFORM_R][YUV_XFORM_U])
+	mmx_U_mult = ((Uint64)(uint16_t)YUV_matrix[YUV_XFORM_R][YUV_XFORM_U])
 				  << (fmt->Rshift * 2)
-			   | ((Uint64)(uint16)YUV_matrix[YUV_XFORM_G][YUV_XFORM_U])
+			   | ((Uint64)(uint16_t)YUV_matrix[YUV_XFORM_G][YUV_XFORM_U])
 					 << (fmt->Gshift * 2)
-			   | ((Uint64)(uint16)YUV_matrix[YUV_XFORM_B][YUV_XFORM_U])
+			   | ((Uint64)(uint16_t)YUV_matrix[YUV_XFORM_B][YUV_XFORM_U])
 					 << (fmt->Bshift * 2);
 
-	mmx_V_mult = ((Uint64)(uint16)YUV_matrix[YUV_XFORM_R][YUV_XFORM_V])
+	mmx_V_mult = ((Uint64)(uint16_t)YUV_matrix[YUV_XFORM_R][YUV_XFORM_V])
 				  << (fmt->Rshift * 2)
-			   | ((Uint64)(uint16)YUV_matrix[YUV_XFORM_G][YUV_XFORM_V])
+			   | ((Uint64)(uint16_t)YUV_matrix[YUV_XFORM_G][YUV_XFORM_V])
 					 << (fmt->Gshift * 2)
-			   | ((Uint64)(uint16)YUV_matrix[YUV_XFORM_B][YUV_XFORM_V])
+			   | ((Uint64)(uint16_t)YUV_matrix[YUV_XFORM_B][YUV_XFORM_V])
 					 << (fmt->Bshift * 2);
 
 	mmx_YUV_threshold = (SCALE_DIFFYUV_TY << 16) | (SCALE_DIFFYUV_TU << 8)

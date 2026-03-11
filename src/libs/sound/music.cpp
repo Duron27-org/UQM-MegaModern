@@ -186,10 +186,10 @@ void PLRResume(MUSIC_REF MusicRef)
 	}
 }
 
-static uint32
+static uint32_t
 get_current_music_filename_hash(MUSIC_REF MusicRef)
 {
-	uint32 filename_hash;
+	uint32_t filename_hash;
 
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
 	{
@@ -210,7 +210,7 @@ get_current_music_filename_hash(MUSIC_REF MusicRef)
 	}
 }
 
-uint32
+uint32_t
 PLRGetFilenameHash(void)
 {
 	return curMusicRef != 0 ? get_current_music_filename_hash(curMusicRef) : 0;

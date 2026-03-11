@@ -80,7 +80,7 @@ Color GetShipFlashColor(void)
 		static uqm::BYTE cycle_index = 0;
 
 		static const Color cycle_tab[] = SHIP_SELECT_COLOR_CYCLE_TABLE;
-		const size_t cycleCount = ARRAY_SIZE(cycle_tab);
+		const size_t cycleCount = std::size(cycle_tab);
 
 		cycle_index = (cycle_index + 1) % cycleCount;
 
@@ -220,7 +220,7 @@ void DrawTooltip(SHIP_INFO* SIPtr)
 
 	{
 		uqstl::vector<uqstl::string> tokens;
-		uqm::tokenize(uqstl::string_view{(const char*)buf}, tokens, '\n', false);
+		uqm::tokenize(uqstl::string_view {(const char*)buf}, tokens, '\n', false);
 		for (const auto& tok : tokens)
 		{
 			Text.pStr = (const uqm::CHAR_T*)tok.c_str();

@@ -24,7 +24,7 @@
 #include "core/platform/platform.h"
 
 // for bool
-#include "types.h"
+#include <cstdint>
 
 #if 0 //defined(__cplusplus)
 extern "C" {

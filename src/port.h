@@ -28,7 +28,6 @@
 #endif
 
 
-
 // PragmaNull: Stuff like this gives C/C++ a bad name.
 // Turn them back on. Let's not be lazy.  kthnxbye!
 // |  |  |

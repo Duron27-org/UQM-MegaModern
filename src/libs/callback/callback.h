@@ -19,7 +19,7 @@
 #ifndef LIBS_CALLBACK_CALLBACK_H_
 #define LIBS_CALLBACK_CALLBACK_H_
 
-#include "types.h"
+#include <cstdint>
 
 #ifdef CALLBACK_INTERNAL
 //typedef CallbackLink* CallbackID;

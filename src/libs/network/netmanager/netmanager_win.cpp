@@ -27,7 +27,7 @@
 #include "../socket/socket.h"
 
 #include "ndesc.h"
-#include "types.h"
+#include <cstdint>
 #include "libs/compiler.h"
 #include "libs/misc.h"
 #include "core/log/log.h"
@@ -470,7 +470,7 @@ closed: /* No special actions required for now. */
 // triggered by this function. BUG: This may result in callbacks being
 // called multiple times.
 // This function should however not be called from multiple threads at once.
-int NetManager_process(uint32* timeoutMs)
+int NetManager_process(uint32_t* timeoutMs)
 {
 	uqm::DWORD timeoutTemp;
 	uqm::DWORD waitResult;

@@ -22,7 +22,7 @@
 #include "../netplay.h"
 #include "reset.h"
 
-#include "types.h"
+#include <cstdint>
 #include "../packetsenders.h"
 #include "../../melee.h"
 // For resetFeedback.

@@ -87,7 +87,7 @@ AlarmTime_nowMs(void)
 }
 
 Alarm*
-Alarm_addAbsoluteMs(uint32 ms, AlarmCallback callback,
+Alarm_addAbsoluteMs(uint32_t ms, AlarmCallback callback,
 					AlarmCallbackArg arg)
 {
 	Alarm* alarm;
@@ -105,7 +105,7 @@ Alarm_addAbsoluteMs(uint32 ms, AlarmCallback callback,
 }
 
 Alarm*
-Alarm_addRelativeMs(uint32 ms, AlarmCallback callback,
+Alarm_addRelativeMs(uint32_t ms, AlarmCallback callback,
 					AlarmCallbackArg arg)
 {
 	Alarm* alarm;
@@ -179,7 +179,7 @@ Alarm_processAll(void) {
 }
 #endif
 
-uint32
+uint32_t
 Alarm_timeBeforeNextMs(void)
 {
 	Alarm* alarm;

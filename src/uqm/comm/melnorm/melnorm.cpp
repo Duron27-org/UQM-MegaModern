@@ -155,7 +155,7 @@ static LOCDATA melnorme_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond * 4,
 				GameTicksPerSecond * 4, /* RestartRate */
-				(1 << 1),		/* BlockMask */
+				(1 << 1),				/* BlockMask */
 			},
 								{
 				11,		   /* StartIndex */
@@ -165,7 +165,7 @@ static LOCDATA melnorme_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond * 4,
 				GameTicksPerSecond * 4, /* RestartRate */
-				(1 << 0),		/* BlockMask */
+				(1 << 0),				/* BlockMask */
 			},
 								{
 				20,		   /* StartIndex */
@@ -175,7 +175,7 @@ static LOCDATA melnorme_desc =
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				22,		   /* StartIndex */
@@ -185,7 +185,7 @@ static LOCDATA melnorme_desc =
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				/* Flagship picture */
@@ -297,7 +297,7 @@ static const TechData tech_data_table[] =
 		{TECH_MODULE_CANNON,			 TECH_TYPE_MODULE,		   CANNON_WEAPON,		  6000},
 		{TECH_MODULE_FURNACE,		  TECH_TYPE_MODULE,		SHIVA_FURNACE,		   4000},
 };
-const size_t NUM_TECHNOLOGIES = ARRAY_SIZE(tech_data_table);
+const size_t NUM_TECHNOLOGIES = std::size(tech_data_table);
 
 // Lookup function to get the data for a particular tech
 static const TechData*
@@ -421,7 +421,7 @@ static const int ok_buy_event_lines[] =
 	{
 		OK_BUY_EVENT_1, OK_BUY_EVENT_2, OK_BUY_EVENT_3, OK_BUY_EVENT_4,
 		OK_BUY_EVENT_5, OK_BUY_EVENT_6, OK_BUY_EVENT_7, OK_BUY_EVENT_8};
-const size_t NUM_EVENT_ITEMS = ARRAY_SIZE(ok_buy_event_lines);
+const size_t NUM_EVENT_ITEMS = std::size(ok_buy_event_lines);
 
 static const int ok_buy_alien_race_lines[] =
 	{
@@ -431,14 +431,14 @@ static const int ok_buy_alien_race_lines[] =
 		OK_BUY_ALIEN_RACE_10, OK_BUY_ALIEN_RACE_11, OK_BUY_ALIEN_RACE_12,
 		OK_BUY_ALIEN_RACE_13, OK_BUY_ALIEN_RACE_14, OK_BUY_ALIEN_RACE_15,
 		OK_BUY_ALIEN_RACE_16};
-const size_t NUM_ALIEN_RACE_ITEMS = ARRAY_SIZE(ok_buy_alien_race_lines);
+const size_t NUM_ALIEN_RACE_ITEMS = std::size(ok_buy_alien_race_lines);
 
 static const int ok_buy_history_lines[] =
 	{
 		OK_BUY_HISTORY_1, OK_BUY_HISTORY_2, OK_BUY_HISTORY_3,
 		OK_BUY_HISTORY_4, OK_BUY_HISTORY_5, OK_BUY_HISTORY_6,
 		OK_BUY_HISTORY_7, OK_BUY_HISTORY_8, OK_BUY_HISTORY_9};
-const size_t NUM_HISTORY_ITEMS = ARRAY_SIZE(ok_buy_history_lines);
+const size_t NUM_HISTORY_ITEMS = std::size(ok_buy_history_lines);
 
 static const int hello_and_down_to_business_lines[] =
 	{
@@ -447,13 +447,13 @@ static const int hello_and_down_to_business_lines[] =
 		HELLO_AND_DOWN_TO_BUSINESS_5, HELLO_AND_DOWN_TO_BUSINESS_6,
 		HELLO_AND_DOWN_TO_BUSINESS_7, HELLO_AND_DOWN_TO_BUSINESS_8,
 		HELLO_AND_DOWN_TO_BUSINESS_9, HELLO_AND_DOWN_TO_BUSINESS_10};
-const size_t NUM_HELLO_LINES = ARRAY_SIZE(hello_and_down_to_business_lines);
+const size_t NUM_HELLO_LINES = std::size(hello_and_down_to_business_lines);
 
 static const int rescue_lines[] =
 	{
 		RESCUE_EXPLANATION, RESCUE_AGAIN_1, RESCUE_AGAIN_2,
 		RESCUE_AGAIN_3, RESCUE_AGAIN_4, RESCUE_AGAIN_5};
-const size_t NUM_RESCUE_LINES = ARRAY_SIZE(rescue_lines);
+const size_t NUM_RESCUE_LINES = std::size(rescue_lines);
 
 // How many lines are available in the given array?
 static size_t
@@ -525,7 +525,7 @@ TechSaleData tech_sale_catalog[] =
 		{TECH_MODULE_CANNON,			 TECHPRICE, NEW_TECH_12, OK_BUY_NEW_TECH_12},
 		{TECH_MODULE_FURNACE,		  TECHPRICE, NEW_TECH_13, OK_BUY_NEW_TECH_13},
 };
-const size_t NUM_TECH_ITEMS = ARRAY_SIZE(tech_sale_catalog);
+const size_t NUM_TECH_ITEMS = std::size(tech_sale_catalog);
 
 // Return the next tech for sale that the player doesn't already have.
 // Returns nullptr if the player has all the techs.

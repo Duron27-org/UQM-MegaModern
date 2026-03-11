@@ -19,7 +19,7 @@
 
 typedef struct GenerateFunctions GenerateFunctions;
 
-#include "types.h"
+#include <cstdint>
 #include "planets.h"
 #include "libs/compiler.h"
 

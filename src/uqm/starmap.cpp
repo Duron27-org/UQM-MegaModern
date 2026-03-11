@@ -1699,7 +1699,7 @@ bool SeedQuasispace(PORTAL_LOCATION* portalmap, PLOT_LOCATION* plotmap,
 				// ([rnd] 255 * 9999 / 265 = 9621) + 189 = 9810
 				// (or 189 below the top)
 				portalmap[i].star_pt = GFXPOINT {lowByte(rand_val) * MAX_X_UNIVERSE / 265 + 189,
-											  highByte(rand_val) * MAX_Y_UNIVERSE / 265 + 189};
+												 highByte(rand_val) * MAX_Y_UNIVERSE / 265 + 189};
 				for (j = 0; j < i; j++)
 				{
 					if ((portalmap[i].star_pt.x - portalmap[j].star_pt.x) * (portalmap[i].star_pt.x - portalmap[j].star_pt.x) + (portalmap[i].star_pt.y - portalmap[j].star_pt.y) * (portalmap[i].star_pt.y - portalmap[j].star_pt.y) < MIN_PORTAL * MIN_PORTAL)
@@ -1755,7 +1755,7 @@ bool SeedQuasispace(PORTAL_LOCATION* portalmap, PLOT_LOCATION* plotmap,
 			valid = true;
 			rand_val = RandomContext_Random(StarGenRNG);
 			portalmap[i].quasi_pt = GFXPOINT {(lowByte(rand_val) * 51 / 256 - 25) * VORTEX_SCALE + 5000,
-										   (highByte(rand_val) * 51 / 256 - 25) * VORTEX_SCALE + 5000};
+											  (highByte(rand_val) * 51 / 256 - 25) * VORTEX_SCALE + 5000};
 			for (j = 0; j < i; j++)
 			{
 				if ((portalmap[i].quasi_pt.x - portalmap[j].quasi_pt.x) * (portalmap[i].quasi_pt.x - portalmap[j].quasi_pt.x) + (portalmap[i].quasi_pt.y - portalmap[j].quasi_pt.y) * (portalmap[i].quasi_pt.y - portalmap[j].quasi_pt.y) < MIN_VORTEX * MIN_VORTEX)
@@ -1894,7 +1894,7 @@ PlotIdStrToIndex(const char* plotIdStr)
 	fmt::print(stderr, "START PlotIdStrToIndex {}.\n", plotIdStr);
 #endif
 	PlotIdMap key = {/* .idStr = */ plotIdStr, /* .id = */ std::numeric_limits<uqm::COUNT>::max()};
-	PlotIdMap* found = (PlotIdMap*)bsearch(&key, plotIdMap, ARRAY_SIZE(plotIdMap),
+	PlotIdMap* found = (PlotIdMap*)bsearch(&key, plotIdMap, std::size(plotIdMap),
 										   sizeof plotIdMap[0], PlotIdCompare);
 	if (found == nullptr)
 	{

@@ -19,7 +19,7 @@
 #ifndef LIBS_NETWORK_NETMANAGER_NDESC_H_
 #define LIBS_NETWORK_NETMANAGER_NDESC_H_
 
-#include "types.h"
+#include <cstdint>
 
 
 typedef struct NetDescriptor NetDescriptor;
@@ -29,7 +29,7 @@ typedef void (*NetDescriptor_WriteCallback)(NetDescriptor* nd);
 typedef void (*NetDescriptor_ExceptionCallback)(NetDescriptor* nd);
 typedef void (*NetDescriptor_CloseCallback)(NetDescriptor* nd);
 
-typedef uint32 RefCount;
+typedef uint32_t RefCount;
 #define REFCOUNT_MAX UINT32_MAX
 
 #include "../socket/socket.h"

@@ -19,9 +19,9 @@
 #ifndef LIBS_CALLBACK_ASYNC_H_
 #define LIBS_CALLBACK_ASYNC_H_
 
-#include "types.h"
+#include <cstdint>
 
 void Async_process(void);
-uint32 Async_timeBeforeNextMs(void);
+uint32_t Async_timeBeforeNextMs(void);
 
 #endif /* LIBS_CALLBACK_ASYNC_H_ */

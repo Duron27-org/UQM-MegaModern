@@ -349,7 +349,9 @@ STRING
 GetStringByName(STRING_TABLE StringTable, const char* index)
 {
 	if (StringTable->nameIndex == nullptr)
+	{
 		return nullptr;
+	}
 	auto it = StringTable->nameIndex->find(index);
 	return it != StringTable->nameIndex->end() ? it->second : nullptr;
 }

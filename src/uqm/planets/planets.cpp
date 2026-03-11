@@ -351,7 +351,7 @@ DrawEnterOrbitText(GFXRECT rect)
 	text.align = ALIGN_CENTER;
 	{
 		uqstl::vector<uqstl::string> tokens;
-		uqm::tokenize(uqstl::string_view{buf}, tokens, '\n', false);
+		uqm::tokenize(uqstl::string_view {buf}, tokens, '\n', false);
 		for (const auto& tok : tokens)
 		{
 			text.pStr = AlignText((const uqm::CHAR_T*)tok.c_str(),
@@ -583,7 +583,7 @@ void FreePlanet(void)
 
 	StopMusic();
 
-	for (i = 0; i < ARRAY_SIZE(pSolarSysState->PlanetSideFrame); ++i)
+	for (i = 0; i < std::size(pSolarSysState->PlanetSideFrame); ++i)
 	{
 		DestroyDrawable(
 			ReleaseDrawable(pSolarSysState->PlanetSideFrame[i]));

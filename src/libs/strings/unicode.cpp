@@ -693,7 +693,7 @@ UniChar_toLower(UniChar ch)
 
 
 uqm::CHAR_T*
-AlignText(const uqm::CHAR_T* str, sint16* loc_x)
+AlignText(const uqm::CHAR_T* str, int16_t* loc_x)
 {
 	int modSize = 0;
 	int first_pos = utf8StringPos((unsigned char*)str, UNICHAR_PIPE);
@@ -726,7 +726,7 @@ AlignText(const uqm::CHAR_T* str, sint16* loc_x)
 }
 
 uqm::CHAR_T*
-AddPadd(const uqm::CHAR_T* str, sint16* padding)
+AddPadd(const uqm::CHAR_T* str, int16_t* padding)
 {
 	int modSize = 0;
 	int first_pos = utf8StringPos((unsigned char*)str, UNICHAR_COLON);
@@ -746,7 +746,7 @@ AddPadd(const uqm::CHAR_T* str, sint16* padding)
 	}
 	else
 	{
-		uqm::log::debug("Variable between delimiters is missing, corrupt, or not an integer: {}\n",	strView);
+		uqm::log::debug("Variable between delimiters is missing, corrupt, or not an integer: {}\n", strView);
 		return (uqm::CHAR_T*)str;
 	}
 

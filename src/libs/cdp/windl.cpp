@@ -27,7 +27,7 @@
 #include <winbase.h>
 #include <stdio.h>
 
-static uint32 wdl_last_error = 0;
+static uint32_t wdl_last_error = 0;
 static char wdl_errstr[128] = "";
 
 void* dlopen(const char* filename, int flag)

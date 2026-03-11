@@ -30,20 +30,20 @@
 static Task decoderTask;
 
 static TimeCount musicFadeStartTime;
-static sint32 musicFadeInterval;
+static int32_t musicFadeInterval;
 static int musicFadeStartVolume;
 static int musicFadeDelta;
 // Mutex protects fade structures
 static Mutex fade_mutex;
 
-static void add_scope_data(TFB_SoundSource* source, uint32 bytes);
+static void add_scope_data(TFB_SoundSource* source, uint32_t bytes);
 
 
-void PlayStream(TFB_SoundSample* sample, uint32 source, bool looping, bool scope,
+void PlayStream(TFB_SoundSample* sample, uint32_t source, bool looping, bool scope,
 				bool rewind)
 {
-	uint32 i;
-	sint32 offset;
+	uint32_t i;
+	int32_t offset;
 	TFB_SoundDecoder* decoder;
 
 	if (!sample)
@@ -71,7 +71,7 @@ void PlayStream(TFB_SoundSample* sample, uint32 source, bool looping, bool scope
 	}
 	else
 	{
-		offset += (sint32)(SoundDecoder_GetTime(decoder) * GameTicksPerSecond);
+		offset += (int32_t)(SoundDecoder_GetTime(decoder) * GameTicksPerSecond);
 	}
 
 	if (source == MUSIC_SOURCE)
@@ -92,7 +92,7 @@ void PlayStream(TFB_SoundSample* sample, uint32 source, bool looping, bool scope
 
 	for (i = 0; i < sample->num_buffers; ++i)
 	{
-		uint32 decoded_bytes;
+		uint32_t decoded_bytes;
 
 		decoded_bytes = SoundDecoder_Decode(decoder);
 #if 0		
@@ -143,7 +143,7 @@ void PlayStream(TFB_SoundSample* sample, uint32 source, bool looping, bool scope
 	audio_SourcePlay(soundSource[source].handle);
 }
 
-void StopStream(uint32 source)
+void StopStream(uint32_t source)
 {
 	StopSource(source);
 
@@ -162,7 +162,7 @@ void StopStream(uint32 source)
 	soundSource[source].pause_time = 0;
 }
 
-void PauseStream(uint32 source)
+void PauseStream(uint32_t source)
 {
 	soundSource[source].stream_should_be_playing = false;
 	if (!soundSource[source].pause_time)
@@ -172,7 +172,7 @@ void PauseStream(uint32 source)
 	audio_SourcePause(soundSource[source].handle);
 }
 
-void ResumeStream(uint32 source)
+void ResumeStream(uint32_t source)
 {
 	if (soundSource[source].pause_time)
 	{ // Adjust the start time so it looks like the stream has
@@ -185,7 +185,7 @@ void ResumeStream(uint32 source)
 	audio_SourcePlay(soundSource[source].handle);
 }
 
-void SeekStream(uint32 source, uint32 pos)
+void SeekStream(uint32_t source, uint32_t pos)
 {
 	TFB_SoundSample* sample = soundSource[source].sample;
 	bool looping;
@@ -203,8 +203,8 @@ void SeekStream(uint32 source, uint32 pos)
 	PlayStream(sample, source, looping, scope, false);
 }
 
-uint32
-GetStreamFrame(uint32 source)
+uint32_t
+GetStreamFrame(uint32_t source)
 {
 	TFB_SoundSample* sample = soundSource[source].sample;
 
@@ -216,8 +216,8 @@ GetStreamFrame(uint32 source)
 	return SoundDecoder_GetFrame(sample->decoder);
 }
 
-uint16
-GetNumTrackerPos(uint32 source)
+uint16_t
+GetNumTrackerPos(uint32_t source)
 {
 	TFB_SoundSample* sample = soundSource[source].sample;
 
@@ -229,7 +229,7 @@ GetNumTrackerPos(uint32 source)
 	return sample->decoder->numpos;
 }
 
-bool IsTracker(uint32 source)
+bool IsTracker(uint32_t source)
 {
 	TFB_SoundSample* sample = soundSource[source].sample;
 	const uqm::CHAR_T* filetype;
@@ -244,7 +244,7 @@ bool IsTracker(uint32 source)
 	return (bool)(strcmp(filetype, "MikMod") == 0);
 }
 
-float GetStreamLength(uint32 source)
+float GetStreamLength(uint32_t source)
 {
 	TFB_SoundSample* sample = soundSource[source].sample;
 
@@ -257,7 +257,7 @@ float GetStreamLength(uint32 source)
 }
 
 uqm::DWORD
-GetStreamTime(uint32 source)
+GetStreamTime(uint32_t source)
 {
 	TFB_SoundSample* sample = soundSource[source].sample;
 
@@ -269,14 +269,14 @@ GetStreamTime(uint32 source)
 	return (uqm::DWORD)SoundDecoder_GetTime(sample->decoder) * 1000;
 }
 
-bool PlayingStream(uint32 source)
+bool PlayingStream(uint32_t source)
 {
 	return (bool)soundSource[source].stream_should_be_playing;
 }
 
 
 TFB_SoundSample*
-TFB_CreateSoundSample(TFB_SoundDecoder* decoder, uint32 num_buffers,
+TFB_CreateSoundSample(TFB_SoundDecoder* decoder, uint32_t num_buffers,
 					  const TFB_SoundCallbacks* pcbs /* can be nullptr */)
 {
 	TFB_SoundSample* sample;
@@ -338,7 +338,7 @@ TFB_GetSoundSampleDecoder(TFB_SoundSample* sample)
 TFB_SoundTag*
 TFB_FindTaggedBuffer(TFB_SoundSample* sample, audio_Object buffer)
 {
-	uint32 buf_num;
+	uint32_t buf_num;
 
 	if (!sample->buffer_tag)
 	{
@@ -357,7 +357,7 @@ TFB_FindTaggedBuffer(TFB_SoundSample* sample, audio_Object buffer)
 
 bool TFB_TagBuffer(TFB_SoundSample* sample, audio_Object buffer, intptr_t data)
 {
-	uint32 buf_num;
+	uint32_t buf_num;
 
 	if (!sample->buffer_tag)
 	{
@@ -401,12 +401,12 @@ remove_scope_data(TFB_SoundSource* source, audio_Object buffer)
 }
 
 static void
-add_scope_data(TFB_SoundSource* source, uint32 bytes)
+add_scope_data(TFB_SoundSource* source, uint32_t bytes)
 {
-	uint8* sbuffer = (uint8*)source->sbuffer;
-	uint8* dec_buf = (uint8*)source->sample->decoder->buffer;
-	uint32 tail_bytes;
-	uint32 wrap_bytes;
+	uint8_t* sbuffer = (uint8_t*)source->sbuffer;
+	uint8_t* dec_buf = (uint8_t*)source->sample->decoder->buffer;
+	uint32_t tail_bytes;
+	uint32_t wrap_bytes;
 
 	if (source->sbuf_tail + bytes > source->sbuf_size)
 	{ // does not fit at the tail, have to split it up
@@ -485,9 +485,9 @@ process_stream(TFB_SoundSource* source)
 	// Unqueue processed buffers and replace them with new ones
 	for (; processed > 0; --processed)
 	{
-		uint32 error;
+		uint32_t error;
 		audio_Object buffer;
-		uint32 decoded_bytes;
+		uint32_t decoded_bytes;
 
 		audio_GetError(); // clear error state
 
@@ -611,7 +611,7 @@ static void
 processMusicFade(void)
 {
 	TimeCount Now;
-	sint32 elapsed;
+	int32_t elapsed;
 	int newVolume;
 
 	LockMutex(fade_mutex);
@@ -685,16 +685,16 @@ StreamDecoderTaskFunc(void* data)
 	return 0;
 }
 
-static inline sint32
+static inline int32_t
 readSoundSample(void* ptr, int sample_size)
 {
-	if (sample_size == sizeof(uint8))
+	if (sample_size == sizeof(uint8_t))
 	{
-		return (*(uint8*)ptr - 128) << 8;
+		return (*(uint8_t*)ptr - 128) << 8;
 	}
 	else
 	{
-		return *(sint16*)ptr;
+		return *(int16_t*)ptr;
 	}
 }
 
@@ -703,7 +703,7 @@ readSoundSample(void* ptr, int sample_size)
 // the streams at different gain levels (based on running average).
 // We use AGC because different pieces of music and speech can easily be
 // at very different gain levels, because the game is moddable.
-int GraphForegroundStream(uint8* data, sint32 width, sint32 height,
+int GraphForegroundStream(uint8_t* data, int32_t width, int32_t height,
 						  bool wantSpeech)
 {
 	int source_num;
@@ -715,10 +715,10 @@ int GraphForegroundStream(uint8* data, sint32 width, sint32 height,
 	int step;
 	long played_time;
 	long delta;
-	uint8* sbuffer;
+	uint8_t* sbuffer;
 	unsigned long pos;
 	int scale;
-	sint32 i;
+	int32_t i;
 	// AGC variables
 #define DEF_PAGE_MAX 28000
 #define AGC_PAGE_COUNT 16
@@ -821,7 +821,7 @@ int GraphForegroundStream(uint8* data, sint32 width, sint32 height,
 	}
 	step *= full_sample;
 
-	sbuffer = (uint8*)source->sbuffer;
+	sbuffer = (uint8_t*)source->sbuffer;
 	pos = source->sbuf_head + delta;
 
 	// We are not basing the scaling factor on signal energy, because we
@@ -833,7 +833,7 @@ int GraphForegroundStream(uint8* data, sint32 width, sint32 height,
 	energy = 0;
 	for (i = 0; i < width; ++i, pos += step)
 	{
-		sint32 s;
+		int32_t s;
 		int t;
 
 		pos %= source->sbuf_size;
@@ -892,7 +892,7 @@ int GraphForegroundStream(uint8* data, sint32 width, sint32 height,
 }
 
 // This function is normally called on the Starcon2Main thread
-bool SetMusicStreamFade(sint32 howLong, int endVolume)
+bool SetMusicStreamFade(int32_t howLong, int endVolume)
 {
 	bool ret = true;
 

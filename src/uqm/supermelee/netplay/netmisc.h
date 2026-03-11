@@ -23,7 +23,7 @@ typedef struct BattleStateData BattleStateData;
 
 #include "netconnection.h"
 #include "netstate.h"
-#include "types.h"
+#include <cstdint>
 
 #include "../../battle.h"
 // for BattleFrameCounter, BattleFrameRateTicks

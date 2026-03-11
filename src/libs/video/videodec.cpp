@@ -42,7 +42,7 @@ static TFB_RegVideoDecoder vd_decoders[MAX_REG_DECODERS + 1] =
 		{false, false, nullptr, nullptr		   }, // null term
 };
 
-static void vd_computeMasks(uint32 mask, uqm::DWORD* shift, uqm::DWORD* loss);
+static void vd_computeMasks(uint32_t mask, uqm::DWORD* shift, uqm::DWORD* loss);
 
 const char*
 VideoDecoder_GetName(TFB_VideoDecoder* decoder)
@@ -54,8 +54,8 @@ VideoDecoder_GetName(TFB_VideoDecoder* decoder)
 	return decoder->funcs->GetName();
 }
 
-bool VideoDecoder_Init(int flags, int depth, uint32 Rmask, uint32 Gmask,
-					   uint32 Bmask, uint32 Amask)
+bool VideoDecoder_Init(int flags, int depth, uint32_t Rmask, uint32_t Gmask,
+					   uint32_t Bmask, uint32_t Amask)
 {
 	TFB_RegVideoDecoder* info;
 
@@ -326,8 +326,8 @@ float VideoDecoder_Seek(TFB_VideoDecoder* decoder, float pos)
 	return decoder->pos;
 }
 
-uint32
-VideoDecoder_SeekFrame(TFB_VideoDecoder* decoder, uint32 frame)
+uint32_t
+VideoDecoder_SeekFrame(TFB_VideoDecoder* decoder, uint32_t frame)
 {
 	if (!decoder)
 	{
@@ -366,7 +366,7 @@ void VideoDecoder_Free(TFB_VideoDecoder* decoder)
 
 // BEGIN: adapted from SDL
 static void
-vd_computeMasks(uint32 mask, uqm::DWORD* shift, uqm::DWORD* loss)
+vd_computeMasks(uint32_t mask, uqm::DWORD* shift, uqm::DWORD* loss)
 {
 	*shift = 0;
 	*loss = 8;

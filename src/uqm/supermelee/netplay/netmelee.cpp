@@ -164,7 +164,7 @@ NetMelee_getBattleState(NetConnection* conn)
 ////////////////////////////////////////////////////////////////////////////
 
 static inline void
-netInputAux(uint32 timeoutMs)
+netInputAux(uint32_t timeoutMs)
 {
 	NetManager_process(&timeoutMs);
 	// This may cause more packets to be queued, hence the
@@ -186,9 +186,9 @@ void netInput(void)
 	netInputAux(0);
 }
 
-void netInputBlocking(uint32 timeoutMs)
+void netInputBlocking(uint32_t timeoutMs)
 {
-	uint32 nextAsyncMs;
+	uint32_t nextAsyncMs;
 
 	nextAsyncMs = Async_timeBeforeNextMs();
 	if (nextAsyncMs < timeoutMs)

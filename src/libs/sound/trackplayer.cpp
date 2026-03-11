@@ -39,7 +39,7 @@ static int no_page_break; // set when combining several tracks into one
 // This is technically a hack, but a decent one ;)
 static TFB_SoundSample* sound_sample;
 
-static volatile uint32 tracks_length; // total length of tracks in game units
+static volatile uint32_t tracks_length; // total length of tracks in game units
 
 static TFB_SoundChunk* chunks_head; // first decoder in linked list
 static TFB_SoundChunk* chunks_tail; // last decoder in linked list
@@ -57,7 +57,7 @@ static TFB_SoundChunk* cur_sub_chunk; // currently displayed subtitle chunk
 // Use caution when changing code, as you may need to guard other data
 // structures the same way.
 
-static void seek_track(sint32 offset);
+static void seek_track(int32_t offset);
 
 // stream callbacks
 static bool OnStreamStart(TFB_SoundSample* sample);
@@ -73,14 +73,14 @@ static TFB_SoundCallbacks trackCBs =
 		OnBufferTag,
 		nullptr};
 
-static inline sint32
+static inline int32_t
 chunk_end_time(TFB_SoundChunk* chunk)
 {
-	return (sint32)((chunk->start_time + chunk->decoder->length)
-					* GameTicksPerSecond);
+	return (int32_t)((chunk->start_time + chunk->decoder->length)
+					 * GameTicksPerSecond);
 }
 
-static inline sint32
+static inline int32_t
 tracks_end_time(void)
 {
 	return chunk_end_time(chunks_tail);
@@ -237,7 +237,7 @@ OnStreamStart(TFB_SoundSample* sample)
 
 	// Adjust the sample to play what we want
 	sample->decoder = cur_chunk->decoder;
-	sample->offset = (sint32)(cur_chunk->start_time * GameTicksPerSecond);
+	sample->offset = (int32_t)(cur_chunk->start_time * GameTicksPerSecond);
 
 	if (cur_chunk->tag_me)
 	{
@@ -317,7 +317,7 @@ OnBufferTag(TFB_SoundSample* sample, TFB_SoundTag* tag)
 // Rerturns number of timestamps parsed.
 // Stops if it encounters a ; as this is used for alternate time stamps.
 static int
-GetTimeStamps(uqm::CHAR_T* TimeStamps, sint32* time_stamps)
+GetTimeStamps(uqm::CHAR_T* TimeStamps, int32_t* time_stamps)
 {
 	int pos;
 	int num = 0;
@@ -325,7 +325,7 @@ GetTimeStamps(uqm::CHAR_T* TimeStamps, sint32* time_stamps)
 	while (*TimeStamps && (pos = strcspn(TimeStamps, ";,\r\n")))
 	{
 		uqm::CHAR_T valStr[32];
-		uint32 val;
+		uint32_t val;
 
 		memcpy(valStr, TimeStamps, pos);
 		valStr[pos] = '\0';
@@ -349,7 +349,7 @@ GetTimeStamps(uqm::CHAR_T* TimeStamps, sint32* time_stamps)
 #define TEXT_SPEED 80
 // Returns number of parsed pages
 static int
-SplitSubPages(uqm::CHAR_T* text, uqm::CHAR_T* pages[], sint32 timestamp[], int size)
+SplitSubPages(uqm::CHAR_T* text, uqm::CHAR_T* pages[], int32_t timestamp[], int size)
 {
 	int lead_ellips = 0;
 	uqm::COUNT page;
@@ -371,7 +371,6 @@ SplitSubPages(uqm::CHAR_T* text, uqm::CHAR_T* pages[], sint32 timestamp[], int s
 		{
 			const uint32_t leadElipsLen = uqm::strncpy_safe(pageBuf, "...");
 			pageBuf = pageBuf.subspan(leadElipsLen);
-
 		}
 		const uint32_t pageTextCopied = uqm::strncpy_safe(pageBuf, {text, static_cast<uint32_t>(pos)});
 		pageBuf = pageBuf.subspan(pageTextCopied);
@@ -414,7 +413,7 @@ void SpliceMultiTrack(uqm::CHAR_T* TrackNames[], uqm::CHAR_T* TrackText)
 #define MAX_MULTI_BUFFERS 100
 	TFB_SoundDecoder* track_decs[MAX_MULTI_TRACKS + 1];
 	int tracks;
-	
+
 	if (!TrackText)
 	{
 		uqm::log::debug("SpliceMultiTrack(): no track text");
@@ -477,7 +476,7 @@ void SpliceTrack(uqm::CHAR_T* TrackName, uqm::CHAR_T* TrackText, uqm::CHAR_T* Ti
 	static unsigned long dec_offset = 0;
 #define MAX_PAGES 50
 	uqm::CHAR_T* pages[MAX_PAGES];
-	sint32 time_stamps[MAX_PAGES];
+	int32_t time_stamps[MAX_PAGES];
 	int num_pages;
 	int page;
 
@@ -488,7 +487,7 @@ void SpliceTrack(uqm::CHAR_T* TrackName, uqm::CHAR_T* TrackText, uqm::CHAR_T* Ti
 
 	if (!TrackName)
 	{ // Appending a piece of subtitles to the last track
-		
+
 		if (track_count == 0)
 		{
 			uqm::log::warn("SpliceTrack(): Tried to append a subtitle,"
@@ -660,7 +659,7 @@ void SpliceTrack(uqm::CHAR_T* TrackName, uqm::CHAR_T* TrackText, uqm::CHAR_T* Ti
 //   source will continue playing, so we may need some small timing
 //   adjustments. It may be simpler to just call PlayStream().
 static void
-seek_track(sint32 offset)
+seek_track(int32_t offset)
 {
 	TFB_SoundChunk* cur;
 	TFB_SoundChunk* last_tag = nullptr;
@@ -674,7 +673,7 @@ seek_track(sint32 offset)
 	{
 		offset = 0;
 	}
-	else if ((uint32)offset > tracks_length)
+	else if ((uint32_t)offset > tracks_length)
 	{
 		offset = tracks_length + 1;
 	}
@@ -700,9 +699,9 @@ seek_track(sint32 offset)
 	if (cur)
 	{
 		cur_chunk = cur;
-		SoundDecoder_Seek(cur->decoder, (uint32)(((float)offset / GameTicksPerSecond
-												  - cur->start_time)
-												 * 1000));
+		SoundDecoder_Seek(cur->decoder, (uint32_t)(((float)offset / GameTicksPerSecond
+													- cur->start_time)
+												   * 1000));
 		sound_sample->decoder = cur->decoder;
 
 		if (cur->tag_me)
@@ -722,16 +721,16 @@ seek_track(sint32 offset)
 	}
 }
 
-static sint32
+static int32_t
 get_current_track_pos(void)
 {
-	sint32 start_time = soundSource[SPEECH_SOURCE].start_time;
-	sint32 pos = GetTimeCounter() - start_time;
+	int32_t start_time = soundSource[SPEECH_SOURCE].start_time;
+	int32_t pos = GetTimeCounter() - start_time;
 	if (pos < 0)
 	{
 		pos = 0;
 	}
-	else if ((uint32)pos > tracks_length)
+	else if ((uint32_t)pos > tracks_length)
 	{
 		pos = tracks_length;
 	}
@@ -740,7 +739,7 @@ get_current_track_pos(void)
 
 void FastReverse_Smooth(void)
 {
-	sint32 offset;
+	int32_t offset;
 
 	if (!sound_sample)
 	{
@@ -763,7 +762,7 @@ void FastReverse_Smooth(void)
 
 void FastForward_Smooth(void)
 {
-	sint32 offset;
+	int32_t offset;
 
 	if (!sound_sample)
 	{
@@ -830,8 +829,8 @@ void FastForward_Page(void)
 // This is normally called on the ambient_anim_task thread.
 int GetTrackPosition(int in_units)
 {
-	uint32 offset;
-	uint32 length = tracks_length;
+	uint32_t offset;
+	uint32_t length = tracks_length;
 	// detach from the static one, otherwise, we can race for
 	// it and thus divide by 0
 

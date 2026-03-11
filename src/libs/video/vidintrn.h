@@ -19,14 +19,14 @@
 #ifndef VIDINTERN_H_
 #define VIDINTERN_H_
 
-#include "types.h"
+#include <cstdint>
 #include "libs/vidlib.h"
 #include "libs/threadlib.h"
 
 struct legacy_video_desc
 {
 	char *video, *audio, *speech;
-	uint32 loop;
+	uint32_t loop;
 };
 
 typedef struct legacy_video_desc LEGACY_VIDEO_DESC;

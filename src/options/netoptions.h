@@ -22,7 +22,7 @@
 #ifdef NETPLAY
 #include <stddef.h>
 #include "core/stl/vector.h"
-#include "types.h"
+#include <cstdint>
 
 namespace CLI
 {

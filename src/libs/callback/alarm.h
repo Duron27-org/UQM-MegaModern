@@ -20,13 +20,13 @@
 #define LIBS_CALLBACK_ALARM_H_
 
 #include "port.h"
-#include "types.h"
+#include <cstdint>
 
-typedef uint32 AlarmTime;
-static inline uint32
+typedef uint32_t AlarmTime;
+static inline uint32_t
 alarmTimeToMsUint32(AlarmTime time)
 {
-	return (uint32)time;
+	return (uint32_t)time;
 }
 
 typedef struct Alarm Alarm;
@@ -45,11 +45,11 @@ struct Alarm
 
 void Alarm_init(void);
 void Alarm_uninit(void);
-Alarm* Alarm_addAbsoluteMs(uint32 ms, AlarmCallback callback, AlarmCallbackArg arg);
-Alarm* Alarm_addRelativeMs(uint32 ms, AlarmCallback callback, AlarmCallbackArg arg);
+Alarm* Alarm_addAbsoluteMs(uint32_t ms, AlarmCallback callback, AlarmCallbackArg arg);
+Alarm* Alarm_addRelativeMs(uint32_t ms, AlarmCallback callback, AlarmCallbackArg arg);
 void Alarm_remove(Alarm* alarm);
 bool Alarm_processOne(void);
 void Alarm_processAll(void);
-uint32 Alarm_timeBeforeNextMs(void);
+uint32_t Alarm_timeBeforeNextMs(void);
 
 #endif /* LIBS_CALLBACK_ALARM_H_ */

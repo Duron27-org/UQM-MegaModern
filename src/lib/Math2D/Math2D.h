@@ -66,13 +66,12 @@ Vec2T<T> operator*(const Vec2T<T>& lhs, const Vec2T<T>& rhs)
 	return {lhs.x * rhs.x, lhs.y * rhs.y};
 }
 
-template <typename T, typename N, 
-	uqstl::enable_if_t<uqstl::is_arithmetic_v<T>, bool> = true,
-	uqstl::enable_if_t<uqstl::is_arithmetic_v<N>, bool> = true
->
+template <typename T, typename N,
+		  uqstl::enable_if_t<uqstl::is_arithmetic_v<T>, bool> = true,
+		  uqstl::enable_if_t<uqstl::is_arithmetic_v<N>, bool> = true>
 auto operator*(const Vec2T<T>& lhs, const N scalar)
 {
-	using outT = decltype(T{}*N{});
+	using outT = decltype(T {} * N {});
 	return Vec2T<outT> {lhs.x * scalar, lhs.y * scalar};
 }
 

@@ -22,7 +22,7 @@
 #ifndef LIBS_CDP_CDP_IMEM_H_
 #define LIBS_CDP_CDP_IMEM_H_
 
-#include "types.h"
+#include <cstdint>
 #include "libs/memlib.h"
 
 // CDP Memory Interface entry points

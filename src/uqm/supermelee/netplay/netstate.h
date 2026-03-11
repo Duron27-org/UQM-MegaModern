@@ -46,7 +46,7 @@ typedef enum
 }
 #endif
 
-#include "types.h"
+#include <cstdint>
 
 #if 0 //defined(__cplusplus)
 extern "C" {

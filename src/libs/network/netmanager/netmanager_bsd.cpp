@@ -23,7 +23,7 @@
 #include "../socket/socket.h"
 
 #include "ndesc.h"
-#include "types.h"
+#include <cstdint>
 #include "core/log/log.h"
 #include "core/stl/stl.h"
 
@@ -135,7 +135,7 @@ void NetManager_deactivateExceptionCallback(NetDescriptor* nd)
 // triggered by this function. BUG: This may result in callbacks being
 // called multiple times.
 // This function should however not be called from multiple threads at once.
-int NetManager_process(uint32* timeoutMs)
+int NetManager_process(uint32_t* timeoutMs)
 {
 	struct timeval timeout;
 	size_t i;

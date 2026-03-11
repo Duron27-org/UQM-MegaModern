@@ -18,8 +18,8 @@
 //#define UNICODE_H
 
 #include "port.h"
-#include "types.h"
-// for uint32
+#include <cstdint>
+// for uint32_t
 #include <sys/types.h>
 // For size_t
 #include "compiler.h"
@@ -29,7 +29,7 @@
 extern "C" {
 #endif
 
-typedef uint32 UniChar;
+typedef uint32_t UniChar;
 
 //#ifdef UNICODE_INTERNAL
 //using UNICODE_CHAR = unsigned char;
@@ -136,8 +136,8 @@ int UniChar_isPrint(UniChar ch);
 UniChar UniChar_toUpper(UniChar ch);
 UniChar UniChar_toLower(UniChar ch);
 
-uqm::CHAR_T* AlignText(const uqm::CHAR_T* str, sint16* loc_x);
-uqm::CHAR_T* AddPadd(const uqm::CHAR_T* str, sint16* padding);
+uqm::CHAR_T* AlignText(const uqm::CHAR_T* str, int16_t* loc_x);
+uqm::CHAR_T* AddPadd(const uqm::CHAR_T* str, int16_t* padding);
 
 #undef UNICODE_CHAR
 

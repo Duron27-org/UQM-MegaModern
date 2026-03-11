@@ -22,7 +22,7 @@
 #include "battle.h"
 #include "fmv.h"
 #include "gameev.h"
-#include "types.h"
+#include <cstdint>
 #include "globdata.h"
 #include "resinst.h"
 #include "restart.h"
@@ -60,8 +60,8 @@
 
 volatile int MainExited = false;
 #ifdef DEBUG_SLEEP
-uint32 mainThreadId;
-extern uint32 SDL_ThreadID(void);
+uint32_t mainThreadId;
+extern uint32_t SDL_ThreadID(void);
 #endif
 
 // Open or close the periodically occuring QuasiSpace portal.
@@ -249,7 +249,7 @@ int Starcon2Main(void* threadArg)
 		/* TODO: Put initAudio back in main where it belongs once threading
 		 *       is gone.
 		 */
-		extern sint32 initAudio(AudioDriverType driver, AudioFlags flags);
+		extern int32_t initAudio(AudioDriverType driver, AudioFlags flags);
 		initAudio(snddriver, soundflags);
 	}
 

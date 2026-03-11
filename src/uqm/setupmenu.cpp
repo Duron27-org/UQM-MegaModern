@@ -1159,7 +1159,7 @@ change_res(WIDGET_TEXTENTRY* self)
 	uqm::GfxFlags NewGfxFlags = g_gfxFlags;
 	bool isExclusive = testFlag(NewGfxFlags, uqm::GfxFlags::ExclusiveFullscreen);
 
-	if (const auto result {scn::scan<int,int>(self->value, "{}x{}")})
+	if (const auto result {scn::scan<int, int>(self->value, "{}x{}")})
 	{
 		const auto [w, h] = result->values();
 		NewWidth = w;
@@ -1348,7 +1348,7 @@ SetDefaults(void)
 
 	// Devices
 	for (i = DEVICE_START; i < DEVICE_START
-								   + ARRAY_SIZE(opts.deviceArray);
+								   + std::size(opts.deviceArray);
 		 i++)
 	{
 		choices[i].selected = opts.deviceArray[i - DEVICE_START];
@@ -1440,7 +1440,7 @@ PropagateResults(void)
 	opts.scrTrans = (OPT_CONSOLETYPE)choices[CHOICE_SCRMELT].selected;
 	opts.difficulty = static_cast<uqm::Difficulty>(choices[CHOICE_SKILLLVL].selected);
 	opts.extended = (OPT_ENABLABLE)choices[CHOICE_EXTENDED].selected;
-	opts.nomad =  static_cast<uqm::NomadMode>(choices[CHOICE_NOMAD].selected);
+	opts.nomad = static_cast<uqm::NomadMode>(choices[CHOICE_NOMAD].selected);
 	opts.gameOver = (OPT_ENABLABLE)choices[CHOICE_GAMEOVER].selected;
 	opts.shipDirectionIP = (OPT_ENABLABLE)choices[CHOICE_IPSHIPDIR].selected;
 	opts.orzCompFont = (OPT_ENABLABLE)choices[CHOICE_ORZFONT].selected;
@@ -1475,7 +1475,7 @@ PropagateResults(void)
 
 	// Devices
 	for (i = DEVICE_START;
-		 i < DEVICE_START + ARRAY_SIZE(opts.deviceArray); i++)
+		 i < DEVICE_START + std::size(opts.deviceArray); i++)
 	{
 		opts.deviceArray[i - DEVICE_START] = (OPT_ADD_REMOVE)choices[i].selected;
 	}

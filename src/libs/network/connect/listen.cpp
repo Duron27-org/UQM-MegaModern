@@ -47,7 +47,7 @@
 
 #define DEBUG_LISTEN_REF
 #ifdef DEBUG_LISTEN_REF
-#include "types.h"
+#include <cstdint>
 #endif
 
 
@@ -80,7 +80,7 @@ void ListenState_incRef(ListenState* listenState)
 	assert(listenState->refCount < REFCOUNT_MAX);
 	listenState->refCount++;
 #ifdef DEBUG_LISTEN_REF
-	uqm::log::debug("ListenState %08" PRIxPTR ": ref++ ({})",
+	uqm::log::debug("ListenState {:#08X}: ref++ ({})",
 					(uintptr_t)listenState, listenState->refCount);
 #endif
 }
@@ -90,7 +90,7 @@ bool ListenState_decRef(ListenState* listenState)
 	assert(listenState->refCount > 0);
 	listenState->refCount--;
 #ifdef DEBUG_LISTEN_REF
-	uqm::log::debug("ListenState %08" PRIxPTR ": ref-- ({})",
+	uqm::log::debug("ListenState {:#08X}: ref-- ({})",
 					(uintptr_t)listenState, listenState->refCount);
 #endif
 	if (listenState->refCount == 0)
@@ -311,8 +311,8 @@ listenPortResolveErrorCallback(ResolveState* resolveState,
 // 'proto' is one of IPProto_tcp or IPProto_udp.
 ListenState*
 listenService(uqgsl::czstring service, Protocol proto, const ListenFlags* flags,
-		   ListenConnectCallback connectCallback,
-		   ListenErrorCallback errorCallback, void* extra)
+			  ListenConnectCallback connectCallback,
+			  ListenErrorCallback errorCallback, void* extra)
 {
 	struct addrinfo hints;
 	ListenState* listenState;
@@ -342,7 +342,7 @@ listenService(uqgsl::czstring service, Protocol proto, const ListenFlags* flags,
 	listenState = ListenState_alloc();
 	listenState->refCount = 1;
 #ifdef DEBUG_LISTEN_REF
-	uqm::log::debug("ListenState %08" PRIxPTR ": ref=1 ({})",
+	uqm::log::debug("ListenState {:#08X}: ref=1 ({})",
 					(uintptr_t)listenState, listenState->refCount);
 #endif
 	listenState->state = Listen_resolving;
@@ -455,7 +455,7 @@ acceptSingleConnection(ListenState* listenState, NetDescriptor* nd)
 							 hostname, sizeof hostname, nullptr, 0, 0);
 		if (gniRes != 0)
 		{
-			const uqstl::string errStr = [&]() ->uqstl::string {
+			const uqstl::string errStr = [&]() -> uqstl::string {
 				if (gniRes == EAI_SYSTEM)
 				{
 					return uqm::strerror(errno);

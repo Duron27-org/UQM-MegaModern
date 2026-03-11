@@ -22,7 +22,7 @@
 #ifndef LIBS_CDP_CDP_H_
 #define LIBS_CDP_CDP_H_
 
-#include "types.h"
+#include <cstdint>
 #include "cdpapi.h"
 
 // these will be called by the UQM engine
@@ -37,7 +37,7 @@ void cdp_FreeModule(cdp_Module* module);
 // return a valid string -- error meta-string
 const char* cdp_GetModuleContext(cdp_Module* module, bool bMetaString);
 const char* cdp_GetModuleName(cdp_Module* module, bool bMetaString);
-uint32 cdp_GetModuleVersion(cdp_Module* module);
+uint32_t cdp_GetModuleVersion(cdp_Module* module);
 const char* cdp_GetModuleVersionString(cdp_Module* module, bool bMetaString);
 const char* cdp_GetModuleComment(cdp_Module* module, bool bMetaString);
 

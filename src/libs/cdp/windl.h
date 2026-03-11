@@ -22,7 +22,7 @@
 #ifndef LIBS_CDP_WINDL_H_
 #define LIBS_CDP_WINDL_H_
 
-#include "types.h"
+#include <cstdint>
 
 extern void* dlopen(const char* filename, int flag);
 extern void* dlsym(void* handle, const char* symbol);
