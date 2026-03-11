@@ -90,7 +90,7 @@
 /* Increased by 1 for each point defense module */
 #define ANTIMISSILE_ENERGY_INC 1
 #define SPECIAL_WAIT 9
-#define LASER_RANGE (uqm::UWORD) RES_SCALE(100)
+#define LASER_RANGE (uint16_t)RES_SCALE(100)
 #define MAX_DEFENSE 8
 
 // HD
@@ -173,20 +173,20 @@ static RACE_DESC sis_desc =
 // Private per-instance SIS data
 typedef struct
 {
-	uqm::COUNT num_trackers;
-	uqm::COUNT num_blasters;
+	uint16_t num_trackers;
+	uint16_t num_blasters;
 	MISSILE_BLOCK MissileBlock[6];
 
 } SIS_DATA;
 
 static void InitWeaponSlots(RACE_DESC* RaceDescPtr,
-							const uqm::BYTE* ModuleSlots);
+							const uint8_t* ModuleSlots);
 static void InitModuleSlots(RACE_DESC* RaceDescPtr,
-							const uqm::BYTE* ModuleSlots);
+							const uint8_t* ModuleSlots);
 static void InitDriveSlots(RACE_DESC* RaceDescPtr,
-						   const uqm::BYTE* DriveSlots);
+						   const uint8_t* DriveSlots);
 static void InitJetSlots(RACE_DESC* RaceDescPtr,
-						 const uqm::BYTE* JetSlots);
+						 const uint8_t* JetSlots);
 static void uninit_sis(RACE_DESC* pRaceDesc);
 
 
@@ -227,9 +227,9 @@ SetCustomShipData(RACE_DESC* pRaceDesc, const CustomShipData_t* data)
 static void
 sis_hyper_preprocess(ELEMENT* ElementPtr)
 {
-	uqm::SDWORD udx = 0, udy = 0;
-	uqm::SIZE dx = 0, dy = 0;
-	uqm::SIZE AccelerateDirection;
+	int32_t udx = 0, udy = 0;
+	int16_t dx = 0, dy = 0;
+	int16_t AccelerateDirection;
 	STARSHIP* StarShipPtr;
 
 	if (ElementPtr->state_flags & APPEARING)
@@ -267,26 +267,26 @@ LeaveAutoPilot:
 			GetCurrentVelocityComponents(&ElementPtr->velocity,
 										 &dx, &dy);
 
-			udx = chooseIfHd(dx << 4, (uqm::SDWORD)dx);
-			udy = chooseIfHd(dy << 4, (uqm::SDWORD)dy);
+			udx = chooseIfHd(dx << 4, (int32_t)dx);
+			udy = chooseIfHd(dy << 4, (int32_t)dy);
 
 			StarShipPtr->cur_status_flags &= ~THRUST;
 		}
 	}
 	else
 	{
-		uqm::SIZE facing;
+		int16_t facing;
 		GFXPOINT universe;
 
 		universe.x = LOGX_TO_UNIVERSE(GLOBAL_SIS(log_x));
 		universe.y = LOGY_TO_UNIVERSE(GLOBAL_SIS(log_y));
 		udx = (GLOBAL(autopilot)).x - universe.x;
 		udy = -((GLOBAL(autopilot)).y - universe.y);
-		if ((dx = (uqm::SIZE)udx) < 0)
+		if ((dx = (int16_t)udx) < 0)
 		{
 			dx = -dx;
 		}
-		if ((dy = (uqm::SIZE)udy) < 0)
+		if ((dy = (int16_t)udy) < 0)
 		{
 			dy = -dy;
 		}
@@ -352,8 +352,8 @@ LeaveAutoPilot:
 
 	if (ElementPtr->thrust_wait == 0 && AccelerateDirection)
 	{
-		uqm::COUNT dist;
-		uqm::SIZE speed, velocity_increment;
+		uint16_t dist;
+		int16_t speed, velocity_increment;
 
 		velocity_increment = WORLD_TO_VELOCITY(
 			StarShipPtr->RaceDescPtr->characteristics.thrust_increment);
@@ -380,7 +380,7 @@ LeaveAutoPilot:
 		}
 		else
 		{
-			uqm::SIZE max_velocity;
+			int16_t max_velocity;
 
 			AccelerateDirection = 0;
 
@@ -400,8 +400,8 @@ LeaveAutoPilot:
 			}
 		}
 
-		dx = (uqm::SDWORD)((long)udx * speed / (long)dist);
-		dy = (uqm::SDWORD)((long)udy * speed / (long)dist);
+		dx = (int32_t)((long)udx * speed / (long)dist);
+		dy = (int32_t)((long)udy * speed / (long)dist);
 		SetVelocityComponents(&ElementPtr->velocity, dx, dy);
 
 		ElementPtr->thrust_wait =
@@ -484,7 +484,7 @@ spawn_point_defense(ELEMENT* ElementPtr)
 			hNextObject = GetPredElement(ObjectPtr);
 			if (ObjectPtr != ShipPtr && CollidingElement(ObjectPtr) && !OBJECT_CLOAKED(ObjectPtr))
 			{
-				uqm::SDWORD delta_x, delta_y;
+				int32_t delta_x, delta_y;
 
 				delta_x = ObjectPtr->next.location.x - ShipPtr->next.location.x;
 				delta_y = ObjectPtr->next.location.y - ShipPtr->next.location.y;
@@ -498,7 +498,7 @@ spawn_point_defense(ELEMENT* ElementPtr)
 				}
 				delta_x = WORLD_TO_DISPLAY(delta_x);
 				delta_y = WORLD_TO_DISPLAY(delta_y);
-				if ((uqm::UWORD)delta_x <= LASER_RANGE && (uqm::UWORD)delta_y <= LASER_RANGE && (uqm::UWORD)delta_x * (uqm::UWORD)delta_x + (uqm::UWORD)delta_y * (uqm::UWORD)delta_y <= LASER_RANGE * LASER_RANGE)
+				if ((uint16_t)delta_x <= LASER_RANGE && (uint16_t)delta_y <= LASER_RANGE && (uint16_t)delta_x * (uint16_t)delta_x + (uint16_t)delta_y * (uint16_t)delta_y <= LASER_RANGE * LASER_RANGE)
 				{
 					HELEMENT hPointDefense;
 					LASER_BLOCK LaserBlock;
@@ -625,7 +625,7 @@ blaster_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
 static void
 blaster_preprocess(ELEMENT* ElementPtr)
 {
-	uqm::BYTE wait;
+	uint8_t wait;
 
 	switch (ElementPtr->mass_points)
 	{
@@ -658,7 +658,7 @@ blaster_preprocess(ELEMENT* ElementPtr)
 	}
 	else if ((wait = HINIBBLE(ElementPtr->turn_wait)))
 	{
-		uqm::COUNT facing;
+		uint16_t facing;
 
 		facing = NORMALIZE_FACING(ANGLE_TO_FACING(
 			GetVelocityTravelAngle(&ElementPtr->velocity)));
@@ -671,18 +671,18 @@ blaster_preprocess(ELEMENT* ElementPtr)
 	}
 }
 
-static uqm::COUNT
+static uint16_t
 initialize_blasters(ELEMENT* ShipPtr, HELEMENT BlasterArray[])
 {
-	uqm::BYTE nt;
-	uqm::COUNT i;
+	uint8_t nt;
+	uint16_t i;
 	STARSHIP* StarShipPtr;
 	SIS_DATA* SisData;
 
 	GetElementStarShip(ShipPtr, &StarShipPtr);
 	SisData = GetCustomShipData(StarShipPtr->RaceDescPtr);
 
-	nt = (uqm::BYTE)((4 - SisData->num_trackers) & 3);
+	nt = (uint8_t)((4 - SisData->num_trackers) & 3);
 
 	for (i = 0; i < SisData->num_blasters; ++i)
 	{
@@ -712,7 +712,7 @@ initialize_blasters(ELEMENT* ShipPtr, HELEMENT BlasterArray[])
 
 static void
 sis_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
-				 uqm::COUNT ConcernCounter)
+				 uint16_t ConcernCounter)
 {
 	EVALUATE_DESC* lpEvalDesc;
 	STARSHIP* StarShipPtr;
@@ -763,10 +763,10 @@ sis_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 		&& lpEvalDesc->ObjectPtr
 		&& lpEvalDesc->which_turn <= 16)
 	{
-		uqm::COUNT direction_facing;
-		uqm::SDWORD delta_x, delta_y;
-		uqm::UWORD fire_flags, ship_flags;
-		uqm::COUNT facing;
+		uint16_t direction_facing;
+		int32_t delta_x, delta_y;
+		uint16_t fire_flags, ship_flags;
+		uint16_t facing;
 
 		delta_x = lpEvalDesc->ObjectPtr->current.location.x
 				- ShipPtr->current.location.x;
@@ -790,16 +790,16 @@ sis_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 }
 
 static void
-InitWeaponSlots(RACE_DESC* RaceDescPtr, const uqm::BYTE* ModuleSlots)
+InitWeaponSlots(RACE_DESC* RaceDescPtr, const uint8_t* ModuleSlots)
 {
-	uqm::COUNT i;
+	uint16_t i;
 	SIS_DATA* SisData = GetCustomShipData(RaceDescPtr);
 	MISSILE_BLOCK* lpMB = SisData->MissileBlock;
 
 	SisData->num_blasters = 0;
 	for (i = 0; i < NUM_MODULE_SLOTS; ++i)
 	{
-		uqm::COUNT which_gun;
+		uint16_t which_gun;
 		bool IfHard = isDifficulty(uqm::Difficulty::Hard) && (i == 1 || i == 2) ? true : false;
 
 		if (i == 3)
@@ -880,17 +880,17 @@ InitWeaponSlots(RACE_DESC* RaceDescPtr, const uqm::BYTE* ModuleSlots)
 }
 
 static void
-InitModuleSlots(RACE_DESC* RaceDescPtr, const uqm::BYTE* ModuleSlots)
+InitModuleSlots(RACE_DESC* RaceDescPtr, const uint8_t* ModuleSlots)
 {
-	uqm::COUNT i;
-	uqm::COUNT num_trackers;
+	uint16_t i;
+	uint16_t num_trackers;
 	SIS_DATA* SisData = GetCustomShipData(RaceDescPtr);
 
 	RaceDescPtr->ship_info.max_crew = 0;
 	num_trackers = 0;
 	for (i = 0; i < NUM_MODULE_SLOTS; ++i)
 	{
-		uqm::BYTE which_mod;
+		uint8_t which_mod;
 
 		which_mod = ModuleSlots[(NUM_MODULE_SLOTS - 1) - i];
 		switch (which_mod)
@@ -938,9 +938,9 @@ InitModuleSlots(RACE_DESC* RaceDescPtr, const uqm::BYTE* ModuleSlots)
 }
 
 static void
-InitDriveSlots(RACE_DESC* RaceDescPtr, const uqm::BYTE* DriveSlots)
+InitDriveSlots(RACE_DESC* RaceDescPtr, const uint8_t* DriveSlots)
 {
-	uqm::COUNT i;
+	uint16_t i;
 
 	// NB. RaceDescPtr->characteristics.max_thrust is already initialised.
 	RaceDescPtr->characteristics.thrust_wait = 0;
@@ -954,16 +954,16 @@ InitDriveSlots(RACE_DESC* RaceDescPtr, const uqm::BYTE* DriveSlots)
 				break;
 		}
 	}
-	RaceDescPtr->characteristics.thrust_wait = (uqm::BYTE)(THRUST_WAIT - (RaceDescPtr->characteristics.thrust_wait >> 1));
+	RaceDescPtr->characteristics.thrust_wait = (uint8_t)(THRUST_WAIT - (RaceDescPtr->characteristics.thrust_wait >> 1));
 	RaceDescPtr->characteristics.max_thrust =
 		((RaceDescPtr->characteristics.max_thrust / RaceDescPtr->characteristics.thrust_increment) + 1)
 		* RaceDescPtr->characteristics.thrust_increment;
 }
 
 static void
-InitJetSlots(RACE_DESC* RaceDescPtr, const uqm::BYTE* JetSlots)
+InitJetSlots(RACE_DESC* RaceDescPtr, const uint8_t* JetSlots)
 {
-	uqm::COUNT i;
+	uint16_t i;
 
 	for (i = 0; i < NUM_JET_SLOTS; ++i)
 	{
@@ -980,7 +980,7 @@ RACE_DESC*
 init_sis(void)
 {
 	RACE_DESC* RaceDescPtr;
-	uqm::COUNT i;
+	uint16_t i;
 	// The caller of this func will copy the struct
 	static RACE_DESC new_sis_desc;
 	SIS_DATA empty_data;

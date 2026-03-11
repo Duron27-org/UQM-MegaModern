@@ -238,7 +238,7 @@ void DestroyThread_SDL(Thread t)
 }
 
 Thread
-CreateThread_SDL(ThreadFunction func, void* data, uqm::SDWORD stackSize
+CreateThread_SDL(ThreadFunction func, void* data, int32_t stackSize
 #ifdef NAMED_SYNCHRO
 				 ,
 				 const char* name
@@ -352,14 +352,14 @@ typedef struct _mutex
 #endif
 #ifdef NAMED_SYNCHRO
 	const char* name;
-	uqm::DWORD syncClass;
+	uint32_t syncClass;
 #endif
 } Mut;
 
 
 Mutex
 #ifdef NAMED_SYNCHRO
-CreateMutex_SDL(const char* name, uqm::DWORD syncClass)
+CreateMutex_SDL(const char* name, uint32_t syncClass)
 #else
 CreateMutex_SDL(void)
 #endif
@@ -446,15 +446,15 @@ typedef struct _sem
 	SDL_sem* sem;
 #ifdef NAMED_SYNCHRO
 	const char* name;
-	uqm::DWORD syncClass;
+	uint32_t syncClass;
 #endif
 } Sem;
 
 Semaphore
-CreateSemaphore_SDL(uqm::DWORD initial
+CreateSemaphore_SDL(uint32_t initial
 #ifdef NAMED_SYNCHRO
 					,
-					const char* name, uqm::DWORD syncClass
+					const char* name, uint32_t syncClass
 #endif
 )
 {
@@ -530,13 +530,13 @@ typedef struct _recm
 	Uint32 locks;
 #ifdef NAMED_SYNCHRO
 	const char* name;
-	uqm::DWORD syncClass;
+	uint32_t syncClass;
 #endif
 } RecM;
 
 RecursiveMutex
 #ifdef NAMED_SYNCHRO
-CreateRecursiveMutex_SDL(const char* name, uqm::DWORD syncClass)
+CreateRecursiveMutex_SDL(const char* name, uint32_t syncClass)
 #else
 CreateRecursiveMutex_SDL(void)
 #endif
@@ -629,13 +629,13 @@ typedef struct _cond
 	SDL_mutex* mutex;
 #ifdef NAMED_SYNCHRO
 	const char* name;
-	uqm::DWORD syncClass;
+	uint32_t syncClass;
 #endif
 } cvar;
 
 CondVar
 #ifdef NAMED_SYNCHRO
-CreateCondVar_SDL(const char* name, uqm::DWORD syncClass)
+CreateCondVar_SDL(const char* name, uint32_t syncClass)
 #else
 CreateCondVar_SDL(void)
 #endif

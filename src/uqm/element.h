@@ -79,7 +79,7 @@ typedef enum
 	VIEW_CHANGE
 } VIEW_STATE;
 
-typedef uqm::UWORD ELEMENT_FLAGS;
+typedef uint16_t ELEMENT_FLAGS;
 
 #define NO_PRIM NUM_PRIMS
 
@@ -115,51 +115,51 @@ struct element
 	// -1: neutral (planets, asteroids, crew, etc.)
 	//  0: Melee: bottom player; Full-game: the human player
 	//  1: Melee: top player;    Full-game: the NPC opponent
-	uqm::SIZE playerNr;
+	int16_t playerNr;
 
 	ELEMENT_FLAGS state_flags;
 	union
 	{
-		uqm::COUNT life_span;
-		uqm::COUNT scan_node; /* Planetside: scan type and node id */
+		uint16_t life_span;
+		uint16_t scan_node; /* Planetside: scan type and node id */
 	};
 	union
 	{
-		uqm::COUNT crew_level;
-		uqm::COUNT hit_points;
-		uqm::COUNT facing; /* Planetside: lava-spot direction of travel */
-		uqm::COUNT cycle;
+		uint16_t crew_level;
+		uint16_t hit_points;
+		uint16_t facing; /* Planetside: lava-spot direction of travel */
+		uint16_t cycle;
 		/* Planetside: lightning cycle length */
 	};
 	union
 	{
-		uqm::BYTE mass_points;
+		uint8_t mass_points;
 		/* Planetside:
 				 * - for living bio: Index in CreatureData, possibly OR'ed
 				 *   with CREATURE_AWARE
 				 * - for canned bio: value of creature
 				 */
 		// TODO: Use a different name for Planetside bio, like
-		// uqm::BYTE bio_state;
+		// uint8_t bio_state;
 	};
 	union
 	{
-		uqm::BYTE turn_wait;
-		uqm::BYTE sys_loc; /* IP flagship: location in system */
+		uint8_t turn_wait;
+		uint8_t sys_loc; /* IP flagship: location in system */
 	};
 	union
 	{
-		uqm::BYTE thrust_wait;
-		uqm::BYTE blast_offset;
-		uqm::BYTE next_turn; /* Battle: animation interframe for some elements */
+		uint8_t thrust_wait;
+		uint8_t blast_offset;
+		uint8_t next_turn; /* Battle: animation interframe for some elements */
 	};
-	uqm::BYTE colorCycleIndex;
+	uint8_t colorCycleIndex;
 	// Melee: used to cycle ion trails and warp shadows, and
 	//        to cycle the ship color when fleeing.
 
 	VELOCITY_DESC velocity;
 	INTERSECT_CONTROL IntersectControl;
-	uqm::COUNT PrimIndex;
+	uint16_t PrimIndex;
 	STATE current, next;
 
 	void* pParent;
@@ -181,7 +181,7 @@ extern QUEUE disp_q;
 #define MAX_DISPLAY_ELEMENTS 150
 
 #define MAX_DISPLAY_PRIMS 330
-extern uqm::COUNT DisplayFreeList;
+extern uint16_t DisplayFreeList;
 extern PRIMITIVE DisplayArray[MAX_DISPLAY_PRIMS];
 
 #define AllocDisplayPrim() \
@@ -206,7 +206,7 @@ extern PRIMITIVE DisplayArray[MAX_DISPLAY_PRIMS];
 #define MAX_ENERGY_SIZE 42
 #define MAX_SHIP_MASS 10
 #define GRAVITY_MASS(m) ((m) > MAX_SHIP_MASS * 10)
-#define GRAVITY_THRESHOLD (uqm::COUNT) RES_SCALE(255)
+#define GRAVITY_THRESHOLD (uint16_t)RES_SCALE(255)
 
 #define OBJECT_CLOAKED(eptr)                                                     \
 	(GetPrimType(&GLOBAL(DisplayArray[(eptr)->PrimIndex])) >= NUM_PRIMS          \
@@ -229,19 +229,19 @@ extern void RemoveElement(HLINK hLink);
 // XXX: The following functions should not really be here
 extern void spawn_planet(void);
 extern void spawn_asteroid(ELEMENT* ElementPtr);
-extern void do_damage(ELEMENT* ElementPtr, uqm::SIZE damage);
+extern void do_damage(ELEMENT* ElementPtr, int16_t damage);
 extern void crew_preprocess(ELEMENT* ElementPtr);
 extern void crew_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
 						   ELEMENT* ElementPtr1, GFXPOINT* pPt1);
 extern void AbandonShip(ELEMENT* ShipPtr, ELEMENT* TargetPtr,
-						uqm::COUNT crew_loss);
+						uint16_t crew_loss);
 extern bool TimeSpaceMatterConflict(ELEMENT* ElementPtr);
-extern uqm::COUNT PlotIntercept(ELEMENT* ElementPtr0,
-								ELEMENT* ElementPtr1, uqm::COUNT max_turns, uqm::COUNT margin_of_error);
+extern uint16_t PlotIntercept(ELEMENT* ElementPtr0,
+							  ELEMENT* ElementPtr1, uint16_t max_turns, uint16_t margin_of_error);
 
 extern void InitGalaxy(void);
-extern void SetStarPoint(GFXPOINT pt, uqm::COUNT i);
-extern void MoveGalaxy(VIEW_STATE view_state, uqm::SDWORD dx, uqm::SDWORD dy);
+extern void SetStarPoint(GFXPOINT pt, uint16_t i);
+extern void MoveGalaxy(VIEW_STATE view_state, int32_t dx, int32_t dy);
 
 extern bool CalculateGravity(ELEMENT* ElementPtr);
 

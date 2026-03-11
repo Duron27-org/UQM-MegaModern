@@ -35,8 +35,8 @@
 
 /* ----------------------------GLOBALS/EXTERNS---------------------------- */
 
-uqm::DWORD TFB_SeedRandom(uqm::DWORD seed);
-uqm::DWORD TFB_Random(void);
+uint32_t TFB_SeedRandom(uint32_t seed);
+uint32_t TFB_Random(void);
 
 
 typedef struct RandomContext RandomContext;
@@ -44,7 +44,7 @@ typedef struct RandomContext RandomContext;
 #ifdef RANDOM2_INTERNAL
 struct RandomContext
 {
-	uqm::DWORD seed;
+	uint32_t seed;
 };
 #endif
 
@@ -56,14 +56,14 @@ struct RandomContext
 
 
 RandomContext* RandomContext_New(void);
-RandomContext* RandomContext_Set(uqm::DWORD Context);
+RandomContext* RandomContext_Set(uint32_t Context);
 void RandomContext_Delete(RandomContext* context);
 RandomContext* RandomContext_Copy(const RandomContext* source);
-uqm::DWORD RandomContext_Random(RandomContext* context);
-uqm::DWORD RandomContext_SeedRandom(RandomContext* context, uqm::DWORD new_seed);
-uqm::DWORD RandomContext_GetSeed(RandomContext* context);
-uqm::DWORD RandomContext_FastRandom(uqm::DWORD seed);
-int RangeMinMax(int min, int max, uqm::DWORD rand);
+uint32_t RandomContext_Random(RandomContext* context);
+uint32_t RandomContext_SeedRandom(RandomContext* context, uint32_t new_seed);
+uint32_t RandomContext_GetSeed(RandomContext* context);
+uint32_t RandomContext_FastRandom(uint32_t seed);
+int RangeMinMax(int min, int max, uint32_t rand);
 extern void printBits(size_t const size, void const* const ptr);
 
 

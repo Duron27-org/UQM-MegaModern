@@ -35,7 +35,7 @@
 
 #define MAX_LOAD_ENTRIES 40
 
-void DoShipSpin(uqm::COUNT index, MUSIC_REF hMusic)
+void DoShipSpin(uint16_t index, MUSIC_REF hMusic)
 {
 	GFXRECT old_r;
 	GFXCONTEXT OldContext;
@@ -101,10 +101,10 @@ void DoShipSpin(uqm::COUNT index, MUSIC_REF hMusic)
 	FlushColorXForms();
 }
 
-void SplashScreen(void (*DoProcessing)(uqm::DWORD TimeOut))
+void SplashScreen(void (*DoProcessing)(uint32_t TimeOut))
 {
 	STAMP s;
-	uqm::DWORD TimeOut = 0;
+	uint32_t TimeOut = 0;
 	TimeCount OverallWait = GetTimeCounter() + (GameTicksPerSecond * 3);
 
 	if (!optSkipIntro)
@@ -179,7 +179,7 @@ void Victory(void)
 	FadeScreen(FadeAllToBlack, 0);
 }
 
-void GameOver(uqm::BYTE DeathType)
+void GameOver(uint8_t DeathType)
 {
 	if (DeathType != SUICIDE)
 	{
@@ -231,7 +231,7 @@ void AdvanceLoadProgress(void)
 	if (optRequiresReload)
 	{
 		GFXRECT r;
-		static uqm::COUNT i = 0;
+		static uint16_t i = 0;
 
 		r.corner.x = RES_SCALE(16);
 		r.corner.y = CanvasHeight - DOS_BOOL_SCL(50, 30);

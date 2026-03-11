@@ -126,7 +126,7 @@ static RACE_DESC supox_desc =
 
 static void
 supox_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
-				   uqm::COUNT ConcernCounter)
+				   uint16_t ConcernCounter)
 {
 	STARSHIP* StarShipPtr;
 	EVALUATE_DESC* lpEvalDesc;
@@ -141,8 +141,8 @@ supox_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 	else
 	{
 		bool LinedUp;
-		uqm::COUNT direction_angle;
-		uqm::SDWORD delta_x, delta_y;
+		uint16_t direction_angle;
+		int32_t delta_x, delta_y;
 
 		delta_x = lpEvalDesc->ObjectPtr->next.location.x
 				- ShipPtr->next.location.x;
@@ -195,7 +195,7 @@ supox_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 		StarShipPtr->ship_input_state |= SPECIAL;
 		if (!(StarShipPtr->cur_status_flags & (LEFT | RIGHT)))
 		{
-			StarShipPtr->ship_input_state |= 1 << ((uqm::BYTE)TFB_Random() & 1);
+			StarShipPtr->ship_input_state |= 1 << ((uint8_t)TFB_Random() & 1);
 		}
 		else
 		{
@@ -205,7 +205,7 @@ supox_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 	}
 }
 
-static uqm::COUNT
+static uint16_t
 initialize_horn(ELEMENT* ShipPtr, HELEMENT HornArray[])
 {
 	STARSHIP* StarShipPtr;
@@ -241,7 +241,7 @@ supox_preprocess(ELEMENT* ElementPtr)
 */
 	)
 	{
-		uqm::SIZE add_facing;
+		int16_t add_facing;
 
 		add_facing = 0;
 		if (StarShipPtr->cur_status_flags & THRUST)
@@ -288,7 +288,7 @@ supox_preprocess(ELEMENT* ElementPtr)
 
 		if (add_facing)
 		{
-			uqm::COUNT facing;
+			uint16_t facing;
 			STATUS_FLAGS thrust_status;
 
 			facing = StarShipPtr->ShipFacing;

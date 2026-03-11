@@ -64,7 +64,7 @@ static LOCDATA commander_desc =
 				0, /* FrameRate */
 				0,
 				GameTicksPerSecond * 8, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				/* Running light */
@@ -87,7 +87,7 @@ static LOCDATA commander_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				0,
 				GameTicksPerSecond / 15, /* RestartRate */
-				0,				 /* BlockMask */
+				0,						 /* BlockMask */
 			},
 								{
 				/* HD static distortion */
@@ -99,7 +99,7 @@ static LOCDATA commander_desc =
 				GameTicksPerSecond / 5, /* FrameRate */
 				0,
 				GameTicksPerSecond / 4, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								},
 		{
@@ -122,7 +122,7 @@ static LOCDATA commander_desc =
 								GameTicksPerSecond / 15, /* FrameRate */
 			GameTicksPerSecond * 7 / 60,
 								GameTicksPerSecond / 12, /* RestartRate */
-			0,				 /* BlockMask */
+			0,						 /* BlockMask */
 		},
 		nullptr, /* AlienNumberSpeech - none */
 		/* Filler for loaded resources */
@@ -595,7 +595,7 @@ TellProbe(RESPONSE_REF R)
 static void
 RevealSelf(RESPONSE_REF R)
 {
-	uqm::BYTE i, stack;
+	uint8_t i, stack;
 
 	stack = 0;
 	if (PLAYER_SAID(R, we_are_vindicator))
@@ -741,7 +741,7 @@ GiveRadios(RESPONSE_REF R)
 
 		if (altResFlags & USE_ALT_SONG)
 		{
-			uqm::DWORD MusicPos = PLRGetPos();
+			uint32_t MusicPos = PLRGetPos();
 			StopMusic();
 			CommData.AlienSong = LoadMusic(CommData.AlienSongRes);
 
@@ -753,7 +753,7 @@ GiveRadios(RESPONSE_REF R)
 			altResFlags &= ~USE_ALT_SONG;
 		}
 
-		AlienTalkSegue((uqm::COUNT)~0);
+		AlienTalkSegue((uint16_t)~0);
 
 		RevealSelf(0);
 	}
@@ -832,7 +832,7 @@ Intro(void)
 	}
 }
 
-static uqm::COUNT
+static uint16_t
 uninit_commander(void)
 {
 	luaUqm_comm_uninit();

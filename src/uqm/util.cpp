@@ -36,7 +36,7 @@
 // JSD added to reference plot_map for SOL.
 #include "starmap.h"
 
-void DrawStarConBox(GFXRECT* pRect, uqm::SIZE BorderWidth, Color TopLeftColor,
+void DrawStarConBox(GFXRECT* pRect, int16_t BorderWidth, Color TopLeftColor,
 					Color BottomRightColor, bool FillInterior, Color InteriorColor,
 					bool CreateCorners, Color CornerColor)
 {
@@ -247,11 +247,11 @@ void DrawRenderedBox(GFXRECT* r, bool filled, Color fill_color, int type,
 	UnbatchGraphics();
 }
 
-void DrawBorderPadding(uqm::DWORD videoWidth)
+void DrawBorderPadding(uint32_t videoWidth)
 {
 	GFXRECT r;
 	GFXCONTEXT OldContext;
-	uqm::UWORD safe_x =
+	uint16_t safe_x =
 		(videoWidth && videoWidth < 280 ? SAFE_NEG(4) * 2 : SAFE_X);
 
 	if (!safe_x)
@@ -330,10 +330,10 @@ void DrawRadarBorder(void)
 	SetContext(OldContext);
 }
 
-uqm::DWORD
+uint32_t
 SeedRandomNumbers(void)
 {
-	uqm::DWORD cur_time;
+	uint32_t cur_time;
 
 	cur_time = GetTimeCounter();
 	TFB_SeedRandom(cur_time);
@@ -394,9 +394,9 @@ DrawPauseText(GFXRECT* rect)
 	text.baseline.y += RES_SCALE(10);
 	text.align = ALIGN_CENTER;
 	text.pStr = AlignText(
-		(const uqm::CHAR_T*)GAME_STRING(QUITMENU_STRING_BASE + 4),
+		(const char*)GAME_STRING(QUITMENU_STRING_BASE + 4),
 		&text.baseline.x);
-	text.CharCount = (uqm::COUNT)~0;
+	text.CharCount = (uint16_t)~0;
 
 	font_DrawText(&text);
 
@@ -415,7 +415,7 @@ bool PauseGame(void)
 	GFXRECT OldRect;
 	Color OldColor;
 	DrawMode mode, oldMode;
-	uqm::BYTE oldVolume;
+	uint8_t oldVolume;
 	TimeCount deltaT;
 
 	if (ActivityFrame == 0
@@ -667,11 +667,11 @@ void SleepGame(void)
 
 /* Returns the fuel requirement to get to Sol (in fuel units * 100)
  */
-uqm::DWORD
+uint32_t
 get_fuel_to_sol(void)
 {
 	GFXPOINT pt;
-	uqm::DWORD f;
+	uint32_t f;
 
 	pt.x = LOGX_TO_UNIVERSE(GLOBAL_SIS(log_x));
 	pt.y = LOGY_TO_UNIVERSE(GLOBAL_SIS(log_y));
@@ -682,7 +682,7 @@ get_fuel_to_sol(void)
 	pt.x -= plot_map[SOL_DEFINED].star_pt.x;
 	pt.y -= plot_map[SOL_DEFINED].star_pt.y;
 
-	f = (uqm::DWORD)((long)pt.x * pt.x + (long)pt.y * pt.y);
+	f = (uint32_t)((long)pt.x * pt.x + (long)pt.y * pt.y);
 	if (f == 0 || GET_GAME_STATE(ARILOU_SPACE_SIDE) > 1)
 	{
 		return 0;
@@ -693,7 +693,7 @@ get_fuel_to_sol(void)
 	}
 }
 
-void DrawFlagStatDisplay(const uqm::CHAR_T* str)
+void DrawFlagStatDisplay(const char* str)
 {
 	TEXT t;
 	GFXRECT r;
@@ -720,12 +720,12 @@ void DrawFlagStatDisplay(const uqm::CHAR_T* str)
 	t.baseline.y = r.corner.y + RES_SCALE(7);
 	t.align = ALIGN_CENTER;
 	t.pStr = str;
-	t.CharCount = (uqm::COUNT)~0;
+	t.CharCount = (uint16_t)~0;
 	SetContextForeGroundColor(MODULE_SELECTED_COLOR);
 	font_DrawText(&t);
 }
 
-void formatFuelValue(uqm::DWORD coarseFuel, uqstl::span<uqm::CHAR_T> buf)
+void formatFuelValue(uint32_t coarseFuel, uqstl::span<char> buf)
 {
 	double dblFuelOnBoard = (double)coarseFuel / FUEL_TANK_SCALE;
 
@@ -750,10 +750,10 @@ void formatFuelValue(uqm::DWORD coarseFuel, uqstl::span<uqm::CHAR_T> buf)
 	}
 }
 
-uqm::CHAR_T* WholeFuelValue(void)
+char* WholeFuelValue(void)
 {
-	static uqm::CHAR_T buf[8] {};
-	const uqm::DWORD CoarseFuel = GLOBAL_SIS(FuelOnBoard);
+	static char buf[8] {};
+	const uint32_t CoarseFuel = GLOBAL_SIS(FuelOnBoard);
 
 	formatFuelValue(CoarseFuel, {buf, sizeof(buf)});
 

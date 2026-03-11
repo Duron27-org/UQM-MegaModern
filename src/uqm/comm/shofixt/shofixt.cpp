@@ -69,7 +69,7 @@ static LOCDATA shofixti_desc =
 				0, /* FrameRate */
 				(GameTicksPerSecond >> 1),
 				(GameTicksPerSecond >> 1) * 3, /* RestartRate */
-				0,					   /* BlockMask */
+				0,							   /* BlockMask */
 			},
 								{
 				23,			 /* StartIndex */
@@ -79,7 +79,7 @@ static LOCDATA shofixti_desc =
 				0, /* FrameRate */
 				(GameTicksPerSecond >> 1),
 				(GameTicksPerSecond >> 1) * 3, /* RestartRate */
-				0,					   /* BlockMask */
+				0,							   /* BlockMask */
 			},
 								{
 				26,		   /* StartIndex */
@@ -89,7 +89,7 @@ static LOCDATA shofixti_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				29,		   /* StartIndex */
@@ -99,7 +99,7 @@ static LOCDATA shofixti_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 
 								{
@@ -110,7 +110,7 @@ static LOCDATA shofixti_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond / 20,
 				GameTicksPerSecond / 30, /* RestartRate */
-				0,				 /* BlockMask */
+				0,						 /* BlockMask */
 			},
 								{
 				39,			   /* StartIndex */
@@ -120,7 +120,7 @@ static LOCDATA shofixti_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond / 20,
 				GameTicksPerSecond / 30, /* RestartRate */
-				(1 << 7),		 /* BlockMask */
+				(1 << 7),				 /* BlockMask */
 			},
 								{
 				46,			   /* StartIndex */
@@ -130,7 +130,7 @@ static LOCDATA shofixti_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond / 20,
 				GameTicksPerSecond / 30, /* RestartRate */
-				(1 << 6),		 /* BlockMask */
+				(1 << 6),				 /* BlockMask */
 			},
 								{
 				52,			   /* StartIndex */
@@ -140,7 +140,7 @@ static LOCDATA shofixti_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond / 20,
 				GameTicksPerSecond / 30, /* RestartRate */
-				0,				 /* BlockMask */
+				0,						 /* BlockMask */
 			},
 								{
 				56,			   /* StartIndex */
@@ -150,7 +150,7 @@ static LOCDATA shofixti_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond / 20,
 				GameTicksPerSecond / 30, /* RestartRate */
-				(1 << 10),		 /* BlockMask */
+				(1 << 10),				 /* BlockMask */
 			},
 								{
 				63,			   /* StartIndex */
@@ -160,7 +160,7 @@ static LOCDATA shofixti_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond / 20,
 				GameTicksPerSecond / 30, /* RestartRate */
-				(1 << 9),		 /* BlockMask */
+				(1 << 9),				 /* BlockMask */
 			},
 								},
 		{
@@ -296,7 +296,7 @@ ExitConversation(RESPONSE_REF R)
 	}
 	else if (PLAYER_SAID(R, dont_want_to_fight))
 	{
-		uqm::BYTE NumVisits;
+		uint8_t NumVisits;
 
 		NumVisits = GET_GAME_STATE(SHOFIXTI_STACK4);
 		switch (NumVisits++)
@@ -443,7 +443,7 @@ Hostile(RESPONSE_REF R)
 					shofixti_name,
 					"",
 					look1,
-					(uqm::CHAR_T*)nullptr);
+					(char*)nullptr);
 				DoResponsePhrase(look0, ExitConversation, shared_phrase_buf);
 				break;
 			}
@@ -457,13 +457,13 @@ Hostile(RESPONSE_REF R)
 static void
 Friendly(RESPONSE_REF R)
 {
-	uqm::BYTE i, LastStack;
+	uint8_t i, LastStack;
 	struct
 	{
 		RESPONSE_REF pStr;
-		uqm::CHAR_T* c_buf;
+		char* c_buf;
 	} Resp[3];
-	static uqm::CHAR_T buf0[80], buf1[80];
+	static char buf0[80], buf1[80];
 
 	LastStack = 0;
 	memset(Resp, 0, sizeof(Resp));
@@ -520,7 +520,7 @@ Friendly(RESPONSE_REF R)
 			shofixti_name,
 			"",
 			report1,
-			(uqm::CHAR_T*)nullptr);
+			(char*)nullptr);
 		Resp[0].pStr = report0;
 		Resp[0].c_buf = buf0;
 	}
@@ -535,7 +535,7 @@ Friendly(RESPONSE_REF R)
 				shofixti_name,
 				"",
 				why_here1,
-				(uqm::CHAR_T*)nullptr);
+				(char*)nullptr);
 			Resp[1].pStr = why_here0;
 			Resp[1].c_buf = buf1;
 			break;
@@ -580,7 +580,7 @@ Friendly(RESPONSE_REF R)
 		shofixti_name,
 		"",
 		bye1,
-		(uqm::CHAR_T*)nullptr);
+		(char*)nullptr);
 	DoResponsePhrase(bye0, ExitConversation, shared_phrase_buf);
 }
 
@@ -605,7 +605,7 @@ Intro(void)
 	}
 	else
 	{
-		uqm::BYTE NumVisits;
+		uint8_t NumVisits;
 
 		NumVisits = GET_GAME_STATE(SHOFIXTI_VISITS);
 		if (GET_GAME_STATE(SHOFIXTI_KIA))
@@ -664,7 +664,7 @@ Intro(void)
 	}
 }
 
-static uqm::COUNT
+static uint16_t
 uninit_shofixti(void)
 {
 	luaUqm_comm_uninit();

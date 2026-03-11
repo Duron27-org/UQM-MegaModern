@@ -137,7 +137,7 @@ static RACE_DESC urquan_desc =
 		0, /* CodeRef */
 };
 
-static uqm::COUNT
+static uint16_t
 initialize_fusion(ELEMENT* ShipPtr, HELEMENT FusionArray[])
 {
 	STARSHIP* StarShipPtr;
@@ -227,14 +227,14 @@ fighter_postprocess(ELEMENT* ElementPtr)
 
 //static void
 //spawn_fighter_ion_trail (ELEMENT *ElementPtr, STARSHIP *StarShipPtr,
-//		uqm::COUNT facing)
+//		uint16_t facing)
 //{
 //	HELEMENT hIonElement;
 //
 //	hIonElement = AllocElement ();
 //	if (hIonElement)
 //	{
-//		uqm::COUNT angle;
+//		uint16_t angle;
 //		ELEMENT *IonElementPtr;
 //
 //		angle = FACING_TO_ANGLE (facing) + HALF_CIRCLE;
@@ -279,8 +279,8 @@ fighter_preprocess(ELEMENT* ElementPtr)
 		&& !(ElementPtr->state_flags & CHANGING))
 	{
 		bool Enroute;
-		uqm::COUNT orig_facing, facing;
-		uqm::SDWORD delta_x, delta_y;
+		uint16_t orig_facing, facing;
+		int32_t delta_x, delta_y;
 		ELEMENT* eptr;
 
 		Enroute = true;
@@ -347,7 +347,7 @@ fighter_preprocess(ELEMENT* ElementPtr)
 				&& delta_x * delta_x + delta_y * delta_y < (FIGHTER_LASER_RANGE * 3 / 4) * (FIGHTER_LASER_RANGE * 3 / 4))
 			{
 				ElementPtr->thrust_wait =
-					(uqm::BYTE)NORMALIZE_FACING(
+					(uint8_t)NORMALIZE_FACING(
 						ANGLE_TO_FACING(ARCTAN(delta_x, delta_y)));
 				ElementPtr->postprocess_func = fighter_postprocess;
 			}
@@ -400,8 +400,8 @@ fighter_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
 		hFighterElement = AllocElement();
 		if (hFighterElement)
 		{
-			uqm::COUNT primIndex, travel_facing;
-			uqm::SIZE delta_facing;
+			uint16_t primIndex, travel_facing;
+			int16_t delta_facing;
 			ELEMENT* FighterElementPtr;
 
 			LockElement(hFighterElement, &FighterElementPtr);
@@ -483,9 +483,9 @@ fighter_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
 static void
 spawn_fighters(ELEMENT* ElementPtr)
 {
-	uqm::SIZE i;
-	uqm::COUNT facing;
-	uqm::SDWORD delta_x, delta_y;
+	int16_t i;
+	uint16_t facing;
+	int32_t delta_x, delta_y;
 	HELEMENT hFighterElement;
 	STARSHIP* StarShipPtr;
 
@@ -497,8 +497,8 @@ spawn_fighters(ELEMENT* ElementPtr)
 	i = ElementPtr->crew_level > 2 ? 2 : 1;
 	while (i-- && (hFighterElement = AllocElement()))
 	{
-		uqm::SDWORD sx, sy;
-		uqm::COUNT fighter_facing;
+		int32_t sx, sy;
+		uint16_t fighter_facing;
 		ELEMENT* FighterElementPtr;
 
 		if (!antiCheat(ElementPtr, false, uqm::GodModeFlags::NoDamage))
@@ -558,7 +558,7 @@ spawn_fighters(ELEMENT* ElementPtr)
 
 static void
 urquan_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
-					uqm::COUNT ConcernCounter)
+					uint16_t ConcernCounter)
 {
 	EVALUATE_DESC* lpEvalDesc;
 	STARSHIP* StarShipPtr;
@@ -602,7 +602,7 @@ urquan_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 					&& !(EnemyStarShipPtr->cur_status_flags & SHIP_BEYOND_MAX_SPEED))
 				|| (lpEvalDesc->which_turn <= 12
 					&& (StarShipPtr->ship_input_state & (LEFT | RIGHT))
-					&& StarShipPtr->RaceDescPtr->ship_info.energy_level >= (uqm::BYTE)(StarShipPtr->RaceDescPtr->ship_info.max_energy >> 1)))
+					&& StarShipPtr->RaceDescPtr->ship_info.energy_level >= (uint8_t)(StarShipPtr->RaceDescPtr->ship_info.max_energy >> 1)))
 			&& !OBJECT_CLOAKED(lpEvalDesc->ObjectPtr))
 		{
 			StarShipPtr->ship_input_state |= SPECIAL;

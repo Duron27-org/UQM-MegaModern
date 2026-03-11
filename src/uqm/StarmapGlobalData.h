@@ -1678,7 +1678,7 @@ static constexpr GFXPOINT ConstellationsArray[] =
 		/* End */
 		{MAX_X_UNIVERSE << 1, MAX_Y_UNIVERSE << 1}};
 
-static constexpr uqm::BYTE ElementsArray[NUMBER_OF_ELEMENTS] =
+static constexpr uint8_t ElementsArray[NUMBER_OF_ELEMENTS] =
 	{
 		COMMON,		 /* HYDROGEN */
 		COMMON,		 /* HELIUM */

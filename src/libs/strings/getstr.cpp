@@ -28,9 +28,9 @@
 #define POOL_SIZE 4096
 
 static void
-dword_convert(uqm::DWORD* dword_array, uqm::COUNT num_dwords)
+dword_convert(uint32_t* dword_array, uint16_t num_dwords)
 {
-	uqm::BYTE* p = (uqm::BYTE*)dword_array;
+	uint8_t* p = (uint8_t*)dword_array;
 
 	do
 	{
@@ -64,7 +64,7 @@ set_strtab_entry(STRING_TABLE_DESC* strtab, int index, const char* value,
 
 static void
 copy_strings_to_strtab(STRING_TABLE_DESC* strtab, size_t firstIndex,
-					   size_t count, const char* data, const uqm::DWORD* lens)
+					   size_t count, const char* data, const uint32_t* lens)
 {
 	size_t stringI;
 	const char* off = data;
@@ -120,35 +120,35 @@ void _GetConversationData(const char* path, RESOURCE_DATA* resdata)
 	int stringI;
 	int path_len;
 	// int num_data_sets; unused
-	uqm::DWORD opos;
+	uint32_t opos;
 
 	char* namedata = nullptr;
 	// Contains the names (indexes) of the dialogs.
-	uqm::DWORD nlen[MAX_STRINGS];
+	uint32_t nlen[MAX_STRINGS];
 	// Length of each of the names.
-	uqm::DWORD NameOffs;
+	uint32_t NameOffs;
 	size_t tot_name_size;
 
 	char* strdata = nullptr;
 	// Contains the dialog strings.
-	uqm::DWORD slen[MAX_STRINGS];
+	uint32_t slen[MAX_STRINGS];
 	// Length of each of the dialog strings.
-	uqm::DWORD StringOffs;
+	uint32_t StringOffs;
 	size_t tot_string_size;
 
 	char* clipdata = nullptr;
 	// Contains the file names of the speech files.
-	uqm::DWORD clen[MAX_STRINGS];
+	uint32_t clen[MAX_STRINGS];
 	// Length of each of the speech file names.
-	uqm::DWORD ClipOffs;
+	uint32_t ClipOffs;
 	size_t tot_clip_size;
 
 	char* ts_data = nullptr;
 	// Contains the timestamp data for synching the text with the
 	// speech.
-	uqm::DWORD tslen[MAX_STRINGS];
+	uint32_t tslen[MAX_STRINGS];
 	// Length of each of the timestamp strings.
-	uqm::DWORD TSOffs;
+	uint32_t TSOffs;
 	size_t tot_ts_size = 0;
 
 	char CurrentLine[1024] {};
@@ -543,14 +543,14 @@ err:
 	resdata->ptr = nullptr;
 }
 
-void* _GetStringData(uio_Stream* fp, uqm::DWORD length)
+void* _GetStringData(uio_Stream* fp, uint32_t length)
 {
 	void* result;
 
 	int stringI;
-	uqm::DWORD opos;
-	uqm::DWORD slen[MAX_STRINGS];
-	uqm::DWORD StringOffs;
+	uint32_t opos;
+	uint32_t slen[MAX_STRINGS];
+	uint32_t StringOffs;
 	size_t tot_string_size;
 	char CurrentLine[1024];
 	char* strdata = nullptr;
@@ -667,17 +667,17 @@ err:
 }
 
 
-void* _GetBinaryTableData(uio_Stream* fp, uqm::DWORD length)
+void* _GetBinaryTableData(uio_Stream* fp, uint32_t length)
 {
 	void* result;
 	result = GetResourceData(fp, length);
 
 	if (result)
 	{
-		uqm::DWORD* fileData;
+		uint32_t* fileData;
 		STRING_TABLE lpST;
 
-		fileData = (uqm::DWORD*)result;
+		fileData = (uint32_t*)result;
 
 		dword_convert(fileData, 1); /* Length */
 
@@ -685,12 +685,12 @@ void* _GetBinaryTableData(uio_Stream* fp, uqm::DWORD length)
 		if (lpST)
 		{
 			int i, size;
-			uqm::BYTE* stringptr;
+			uint8_t* stringptr;
 
 			size = lpST->size;
 
 			dword_convert(fileData + 1, size + 1);
-			stringptr = (uqm::BYTE*)(fileData + 2 + size + fileData[1]);
+			stringptr = (uint8_t*)(fileData + 2 + size + fileData[1]);
 			for (i = 0; i < size; i++)
 			{
 				set_strtab_entry(lpST, i, (char*)stringptr, fileData[2 + i]);

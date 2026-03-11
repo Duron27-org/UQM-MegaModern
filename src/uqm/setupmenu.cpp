@@ -56,7 +56,7 @@ typedef struct setup_menu_state
 
 	bool initialized;
 	int anim_frame_count;
-	uqm::DWORD NextTime;
+	uint32_t NextTime;
 } SETUP_MENU_STATE;
 
 struct option_list_value
@@ -1248,7 +1248,7 @@ static void
 SetDefaults(void)
 {
 	GLOBALOPTS opts;
-	uqm::BYTE i;
+	uint8_t i;
 
 	GetGlobalOptions(&opts);
 	choices[CHOICE_GRAPHICS].selected = opts.screenResolution;
@@ -1377,7 +1377,7 @@ static void
 PropagateResults(void)
 {
 	GLOBALOPTS opts;
-	uqm::BYTE i;
+	uint8_t i;
 
 	opts.screenResolution = (OPT_RESTYPE)choices[CHOICE_GRAPHICS].selected;
 	opts.driver = (OPT_DRIVERTYPE)choices[CHOICE_FRBUFFER].selected;
@@ -1616,7 +1616,7 @@ static int
 OnTextEntryEvent(WIDGET_TEXTENTRY* widget)
 { // Going to edit the text
 	TEXTENTRY_STATE tes;
-	uqm::CHAR_T revert_buf[256];
+	char revert_buf[256];
 
 	// position cursor at the end of text
 	widget->cursor_pos = utf8StringCount(widget->value);
@@ -2394,7 +2394,7 @@ void SetupMenu(void)
 void GetGlobalOptions(GLOBALOPTS* opts)
 {
 	bool whichBound;
-	uqm::BYTE i;
+	uint8_t i;
 
 	/*
  *		Graphics options
@@ -2664,7 +2664,7 @@ void SetGlobalOptions(GLOBALOPTS* opts)
 	AudioFlags NewSndFlags {AudioFlags::None};
 	int resFactor = resolutionFactor;
 	int newFactor;
-	uqm::BYTE i;
+	uint8_t i;
 
 	/*
  *		Graphics options

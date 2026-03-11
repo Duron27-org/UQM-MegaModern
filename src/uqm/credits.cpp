@@ -154,7 +154,7 @@ Credits_RenderTextFrame(GFXCONTEXT TempContext, int* istr, int dir,
 	int scaned;
 	int i, rows, cnt;
 	FONT_SIZE_DEF* fdef;
-	uqm::SIZE leading;
+	int16_t leading;
 	TEXT t;
 	GFXRECT r;
 	typedef struct
@@ -210,7 +210,7 @@ Credits_RenderTextFrame(GFXCONTEXT TempContext, int* istr, int dir,
 		return 0;
 	}
 
-	char buf[2048]{};
+	char buf[2048] {};
 	uqm::strncpy_safe(buf, strView);
 	//utf8StringCopy(buf, sizeof(buf), strView.data());
 	rows = ParseTextLines(TextLines, MAX_TEXT_LINES, buf);
@@ -279,7 +279,7 @@ Credits_RenderTextFrame(GFXCONTEXT TempContext, int* istr, int dir,
 	// parse text column alignment
 	{
 		uqstl::vector<uqstl::string> scolTokens;
-		uqm::tokenize(uqstl::string_view{salign}, scolTokens, ',', false);
+		uqm::tokenize(uqstl::string_view {salign}, scolTokens, ',', false);
 		for (i = 0; i < static_cast<int>(scolTokens.size()) && i < MAX_TEXT_COLS; ++i)
 		{
 			char c {};
@@ -751,7 +751,7 @@ typedef struct
 	bool AllowCancel;
 	bool AllowSpeedChange;
 	bool CloseWhenDone;
-	uqm::DWORD CloseTimeOut;
+	uint32_t CloseTimeOut;
 
 } CREDITS_INPUT_STATE;
 

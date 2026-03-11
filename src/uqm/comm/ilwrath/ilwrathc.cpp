@@ -60,7 +60,7 @@ static LOCDATA ilwrath_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				11,			   /* StartIndex */
@@ -70,7 +70,7 @@ static LOCDATA ilwrath_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				16,			   /* StartIndex */
@@ -80,7 +80,7 @@ static LOCDATA ilwrath_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				21,			   /* StartIndex */
@@ -90,7 +90,7 @@ static LOCDATA ilwrath_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								},
 		{
@@ -181,7 +181,7 @@ CombatIsInevitable(RESPONSE_REF R)
 			 || PLAYER_SAID(R, whats_up_space_4)
 			 || PLAYER_SAID(R, whats_up_space_5))
 	{
-		uqm::BYTE NumVisits;
+		uint8_t NumVisits;
 
 		NumVisits = GET_GAME_STATE(ILWRATH_INFO);
 		switch (NumVisits++)
@@ -236,7 +236,7 @@ static void IlwrathHome(RESPONSE_REF R);
 static void
 IlwrathGods(RESPONSE_REF R)
 {
-	uqm::BYTE GodsLeft;
+	uint8_t GodsLeft;
 
 	GodsLeft = false;
 	if (PLAYER_SAID(R, want_info_on_gods))
@@ -299,7 +299,7 @@ IlwrathGods(RESPONSE_REF R)
 static void
 IlwrathInfo(RESPONSE_REF R)
 {
-	uqm::BYTE InfoLeft;
+	uint8_t InfoLeft;
 
 	InfoLeft = false;
 	if (PLAYER_SAID(R, want_info_on_ilwrath))
@@ -380,7 +380,7 @@ IlwrathHome(RESPONSE_REF R)
 {
 	if (R == 0)
 	{
-		uqm::BYTE NumVisits;
+		uint8_t NumVisits;
 
 		NumVisits = GET_GAME_STATE(ILWRATH_HOME_VISITS);
 		switch (NumVisits++)
@@ -422,7 +422,7 @@ static void GodsSpeak(RESPONSE_REF R);
 static void
 GodsOrder(RESPONSE_REF R)
 {
-	uqm::BYTE OrdersLeft;
+	uint8_t OrdersLeft;
 
 	OrdersLeft = false;
 	if (PLAYER_SAID(R, other_divine_orders))
@@ -485,7 +485,7 @@ GodsOrder(RESPONSE_REF R)
 static void
 GodsSpeak(RESPONSE_REF R)
 {
-	uqm::BYTE NumVisits;
+	uint8_t NumVisits;
 
 	if (R == 0)
 	{
@@ -575,7 +575,7 @@ GodsSpeak(RESPONSE_REF R)
 static void
 IlwrathSpace(RESPONSE_REF R)
 {
-	uqm::BYTE NumVisits;
+	uint8_t NumVisits;
 
 	if (R == 0)
 	{
@@ -630,7 +630,7 @@ IlwrathSpace(RESPONSE_REF R)
 static void
 Intro(void)
 {
-	uqm::BYTE NumVisits;
+	uint8_t NumVisits;
 
 	if (GET_GAME_STATE(PROBE_ILWRATH_ENCOUNTER))
 	{
@@ -744,7 +744,7 @@ Intro(void)
 	}
 }
 
-static uqm::COUNT
+static uint16_t
 uninit_ilwrath(void)
 {
 	luaUqm_comm_uninit();

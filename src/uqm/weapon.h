@@ -30,9 +30,9 @@ typedef struct
 {
 	COORD cx, cy, ex, ey;
 	ELEMENT_FLAGS flags;
-	uqm::SIZE sender; // player number
-	uqm::SIZE pixoffs;
-	uqm::COUNT face;
+	int16_t sender; // player number
+	int16_t pixoffs;
+	uint16_t face;
 	Color color;
 } LASER_BLOCK;
 
@@ -40,26 +40,26 @@ typedef struct
 {
 	COORD cx, cy;
 	ELEMENT_FLAGS flags;
-	uqm::SIZE sender; // player number
-	uqm::SIZE pixoffs, speed, hit_points, damage;
-	uqm::COUNT face, index, life;
+	int16_t sender; // player number
+	int16_t pixoffs, speed, hit_points, damage;
+	uint16_t face, index, life;
 	FRAME* farray;
 	void (*preprocess_func)(ELEMENT* ElementPtr);
-	uqm::SIZE blast_offs;
+	int16_t blast_offs;
 } MISSILE_BLOCK;
 
 extern HELEMENT initialize_laser(LASER_BLOCK* pLaserBlock);
 extern HELEMENT initialize_missile(MISSILE_BLOCK* pMissileBlock);
 extern HELEMENT weapon_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
 								 ELEMENT* ElementPtr1, GFXPOINT* pPt1);
-extern uqm::SIZE TrackShip(ELEMENT* Tracker, uqm::COUNT* pfacing);
+extern int16_t TrackShip(ELEMENT* Tracker, uint16_t* pfacing);
 extern void Untarget(ELEMENT* ElementPtr);
 
 #define MODIFY_IMAGE (1 << 0)
 #define MODIFY_SWAP (1 << 1)
 
 extern FRAME ModifySilhouette(ELEMENT* ElementPtr, STAMP* modify_stamp,
-							  uqm::BYTE modify_flags);
+							  uint8_t modify_flags);
 
 #if 0 //defined(__cplusplus)
 }

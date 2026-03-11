@@ -57,7 +57,7 @@ extern OPT_ENABLABLE optUnlockShips;
 extern OPT_ENABLABLE optHeadStart;
 extern OPT_ENABLABLE optUnlockUpgrades;
 extern OPT_ENABLABLE optInfiniteRU;
-extern uqm::DWORD oldRU;
+extern uint32_t oldRU;
 extern OPT_ENABLABLE optSkipIntro;
 extern OPT_ENABLABLE optMainMenuMusic;
 extern OPT_ENABLABLE optNebulae;
@@ -65,7 +65,7 @@ extern OPT_ENABLABLE optOrbitingPlanets;
 extern OPT_ENABLABLE optTexturedPlanets;
 extern uqm::DateFormat optDateFormat;
 extern OPT_ENABLABLE optInfiniteFuel;
-extern uqm::DWORD loadFuel;
+extern uint32_t loadFuel;
 extern OPT_ENABLABLE optPartialPickup;
 extern OPT_ENABLABLE optSubmenu;
 extern OPT_ENABLABLE optInfiniteCredits;
@@ -76,7 +76,7 @@ extern int optCustomSeed;
 extern OPT_ENABLABLE optShipSeed;
 extern uqm::SphereOfInfluenceColors optSphereColors;
 extern uqm::SphereOfInfluenceMusic optSpaceMusic;
-extern int spaceMusicBySOI;			// not an option, just the global setting chosen as a result of optSpaceMusic.
+extern int spaceMusicBySOI; // not an option, just the global setting chosen as a result of optSpaceMusic.
 extern OPT_ENABLABLE optVolasMusic;
 extern OPT_ENABLABLE optWholeFuel;
 extern OPT_ENABLABLE optDirectionalJoystick;
@@ -115,7 +115,7 @@ extern bool optMaskOfDeceit;
 extern OPT_ENABLABLE optAdvancedAutoPilot;
 extern OPT_ENABLABLE optMeleeToolTips;
 extern int optMusicResume;
-extern uqm::DWORD optWindowType;
+extern uint32_t optWindowType;
 extern bool optNoClassic;
 extern OPT_ENABLABLE optScatterElements;
 extern OPT_ENABLABLE optShowUpgrades;
@@ -150,7 +150,7 @@ extern uqgsl::czstring addonDirPath;
 extern uqstl::span<const uqstl::string> optAddons;
 
 
-extern uqstl::vector<uqm::DWORD> g_addonList;
+extern uqstl::vector<uint32_t> g_addonList;
 
 // addon names to check against
 #define THREEDO_MUSIC "3domusic"

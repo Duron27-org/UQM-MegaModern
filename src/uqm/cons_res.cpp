@@ -49,9 +49,9 @@ static const char* planet_sizes[] = {
 FRAME planet[NUM_VIEWS];
 static char buffer[80] {};
 
-void load_gravity_well(uqm::BYTE selector)
+void load_gravity_well(uint8_t selector)
 {
-	uqm::COUNT i;
+	uint16_t i;
 
 	if (selector == SA_MATRA)
 	{
@@ -90,7 +90,7 @@ void load_gravity_well(uqm::BYTE selector)
 
 void free_gravity_well(void)
 {
-	uqm::COUNT i;
+	uint16_t i;
 
 	for (i = 0; i < NUM_VIEWS; ++i)
 	{
@@ -100,21 +100,21 @@ void free_gravity_well(void)
 }
 
 FRAME
-load_life_form(uqm::BYTE selector)
+load_life_form(uint8_t selector)
 {
 	fmt::format_to_sz_n(buffer, "graphics.life.{}", selector);
 	return CaptureDrawable(LoadGraphic(buffer));
 }
 
 MUSIC_REF
-load_orbit_theme(uqm::BYTE selector)
+load_orbit_theme(uint8_t selector)
 {
 	fmt::format_to_sz_n(buffer, "music.orbit{}", selector + 1);
 	return LoadMusic(buffer);
 }
 
 MUSIC_REF
-loadMainMenuMusic(uqm::BYTE selector)
+loadMainMenuMusic(uint8_t selector)
 {
 	fmt::format_to_sz_n(buffer, "music.mainmenu{}", selector + 1);
 	return LoadMusic(buffer);

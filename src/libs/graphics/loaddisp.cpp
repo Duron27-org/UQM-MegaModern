@@ -27,7 +27,7 @@ LoadDisplayPixmap(const GFXRECT* area, FRAME frame)
 {
 	// TODO: This should just return a FRAME instead of DRAWABLE
 	DRAWABLE buffer = GetFrameParentDrawable(frame);
-	uqm::COUNT index;
+	uint16_t index;
 
 	if (!buffer)
 	{ // asked to create a new DRAWABLE instead

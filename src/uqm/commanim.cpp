@@ -32,28 +32,28 @@
 static TimeCount LastTime;
 static SEQUENCE Sequences[MAX_ANIMATIONS + 2];
 // 2 extra for Talk and Transition animations
-static uqm::DWORD ActiveMask;
+static uint32_t ActiveMask;
 // Bit mask of all animations that are currently active.
 // Bit 'i' is set if the animation with index 'i' is active.
 static ANIMATION_DESC TalkDesc;
 static ANIMATION_DESC TransitDesc;
 static SEQUENCE* Talk;
 static SEQUENCE* Transit;
-static uqm::COUNT FirstAmbient;
-static uqm::COUNT TotalSequences;
+static uint16_t FirstAmbient;
+static uint16_t TotalSequences;
 static bool doFullRedraw = false;
 
 //stuff for Alpha animation in HD
 bool filterEnabled = false;
 FILTER_DESC FilterData;
 
-static inline uqm::SWORD
-getAlphaChannel(uqm::BYTE index)
+static inline int16_t
+getAlphaChannel(uint8_t index)
 {
-	return (uqm::SWORD)GetColorMapColor(COMM_COLORMAP_INDEX, index).r;
+	return (int16_t)GetColorMapColor(COMM_COLORMAP_INDEX, index).r;
 }
 
-static inline uqm::DWORD
+static inline uint32_t
 randomFrameRate(SEQUENCE* pSeq)
 {
 	ANIMATION_DESC* ADPtr = pSeq->ADPtr;
@@ -61,7 +61,7 @@ randomFrameRate(SEQUENCE* pSeq)
 	return ADPtr->BaseFrameRate + TFB_Random() % (ADPtr->RandomFrameRate + 1);
 }
 
-static inline uqm::DWORD
+static inline uint32_t
 randomRestartRate(SEQUENCE* pSeq)
 {
 	ANIMATION_DESC* ADPtr = pSeq->ADPtr;
@@ -69,8 +69,8 @@ randomRestartRate(SEQUENCE* pSeq)
 	return ADPtr->BaseRestartRate + TFB_Random() % (ADPtr->RandomRestartRate + 1);
 }
 
-static inline uqm::COUNT
-randomFrameIndex(SEQUENCE* pSeq, uqm::COUNT from)
+static inline uint16_t
+randomFrameIndex(SEQUENCE* pSeq, uint16_t from)
 {
 	ANIMATION_DESC* ADPtr = pSeq->ADPtr;
 
@@ -78,9 +78,9 @@ randomFrameIndex(SEQUENCE* pSeq, uqm::COUNT from)
 }
 
 static void
-SetupAmbientSequences(SEQUENCE* pSeq, uqm::COUNT Num)
+SetupAmbientSequences(SEQUENCE* pSeq, uint16_t Num)
 {
-	uqm::COUNT i;
+	uint16_t i;
 
 	for (i = 0; i < Num; ++i, ++pSeq)
 	{
@@ -154,9 +154,9 @@ conflictsWithTalkingAnim(SEQUENCE* pSeq)
 }
 
 static void
-ProcessColormapAnims(SEQUENCE* pSeq, uqm::COUNT Num)
+ProcessColormapAnims(SEQUENCE* pSeq, uint16_t Num)
 {
-	uqm::COUNT i;
+	uint16_t i;
 
 	for (i = 0; i < Num; ++i, ++pSeq)
 	{
@@ -251,7 +251,7 @@ ResetSequence(SEQUENCE* pSeq)
 }
 
 static void
-AdvanceTalkingSequence(SEQUENCE* pSeq, uqm::DWORD ElapsedTicks)
+AdvanceTalkingSequence(SEQUENCE* pSeq, uint32_t ElapsedTicks)
 {
 	// We use the actual descriptor for flags processing and
 	// a copied one for drawing. A copied one is updated only
@@ -304,7 +304,7 @@ AdvanceTalkingSequence(SEQUENCE* pSeq, uqm::DWORD ElapsedTicks)
 }
 
 static bool
-AdvanceTransitSequence(SEQUENCE* pSeq, uqm::DWORD ElapsedTicks)
+AdvanceTransitSequence(SEQUENCE* pSeq, uint32_t ElapsedTicks)
 {
 	bool done = false;
 	// We use the actual descriptor for flags processing and
@@ -419,13 +419,13 @@ bool ProcessCommAnimations(bool FullRedraw, bool paused)
 	}
 	else
 	{
-		uqm::COUNT i;
+		uint16_t i;
 		SEQUENCE* pSeq;
 		bool Change;
 		bool CanTalk = true;
 		TimeCount CurTime;
-		uqm::DWORD ElapsedTicks;
-		uqm::DWORD NextActiveMask;
+		uint32_t ElapsedTicks;
+		uint32_t NextActiveMask;
 
 		CurTime = GetTimeCounter();
 		ElapsedTicks = CurTime - LastTime;
@@ -444,7 +444,7 @@ bool ProcessCommAnimations(bool FullRedraw, bool paused)
 		for (i = 0; i < CommData.NumAnimations; ++i, ++pSeq)
 		{
 			ANIMATION_DESC* ADPtr = pSeq->ADPtr;
-			uqm::DWORD ActiveBit = 1L << i;
+			uint32_t ActiveBit = 1L << i;
 
 			if (ADPtr->AnimFlags & ANIM_DISABLED)
 			{
@@ -590,7 +590,7 @@ bool ProcessCommAnimations(bool FullRedraw, bool paused)
 		for (i = 0; i < CommData.NumAnimations; ++i, ++pSeq)
 		{
 			ANIMATION_DESC* ADPtr = pSeq->ADPtr;
-			uqm::DWORD ActiveBit = 1L << i;
+			uint32_t ActiveBit = 1L << i;
 
 			if (ADPtr->AnimFlags & ANIM_DISABLED)
 			{
@@ -626,13 +626,13 @@ bool ProcessCommAnimations(bool FullRedraw, bool paused)
 static void
 ApplyFilterToStamp(STAMP s)
 {
-	uqm::COUNT i;
+	uint16_t i;
 
 	for (i = 0; i < FilterData.NumFilters; i++)
 	{
 		DrawMode mode, oldMode;
 		Color oldColor, FGColor;
-		uqm::SWORD factor;
+		int16_t factor;
 		FILTER* FTPtr = &FilterData.FilterArray[i];
 
 		if (FTPtr->Flags & FILTER_DISABLED)
@@ -665,7 +665,7 @@ ApplyFilterToStamp(STAMP s)
 	}
 }
 
-bool DrawAlienFrame(SEQUENCE* Sequences, uqm::COUNT Num, bool fullRedraw)
+bool DrawAlienFrame(SEQUENCE* Sequences, uint16_t Num, bool fullRedraw)
 {
 	int i;
 	STAMP s;
@@ -750,7 +750,7 @@ bool DrawAlienFrame(SEQUENCE* Sequences, uqm::COUNT Num, bool fullRedraw)
 		{
 			DrawMode mode, oldMode;
 			Color oldColor, FGColor;
-			uqm::SWORD factor;
+			int16_t factor;
 			FILTER* FTPtr = &FilterData.FilterArray[i];
 
 			if (FTPtr->Flags & FILTER_DISABLED)
@@ -856,7 +856,7 @@ void ShutYourMouth(void)
 void SwitchSequences(bool enableAll)
 { // Kruzen: Needed for disabling animations during
 	// HD one-time transitions (i.e. orz frumple)
-	uqm::COUNT i;
+	uint16_t i;
 
 	for (i = 0; i < CommData.NumAnimations; ++i)
 	{
@@ -888,7 +888,7 @@ void SwitchSequences(bool enableAll)
 	}
 }
 
-void RunOneTimeSequence(uqm::COUNT animIndex, uqm::COUNT flags)
+void RunOneTimeSequence(uint16_t animIndex, uint16_t flags)
 { // Kruzen: HD-only
 	if (!(CommData.AlienAmbientArray[animIndex].AnimFlags
 		  & COLORXFORM_ANIM)

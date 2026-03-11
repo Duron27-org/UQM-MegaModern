@@ -49,7 +49,7 @@ typedef struct tfb_dc_line
 	Color color;
 	DrawMode drawMode;
 	SCREEN destBuffer;
-	uqm::BYTE thickness;
+	uint8_t thickness;
 } TFB_DrawCommand_Line;
 
 typedef struct tfb_dc_rect

@@ -32,7 +32,7 @@ enum
 	SHIPYARD,
 	DEPART_BASE
 };
-typedef uqm::BYTE STARBASE_STATE;
+typedef uint8_t STARBASE_STATE;
 
 extern void InstallBombAtEarth(void);
 extern void VisitStarBase(void);
@@ -40,12 +40,12 @@ extern bool DoStarBase(MENU_STATE* pMS);
 extern bool DoOutfit(MENU_STATE* pMS);
 extern bool DoShipyard(MENU_STATE* pMS);
 
-extern void DrawShipPiece(FRAME ModuleFrame, uqm::COUNT which_piece, uqm::COUNT which_slot, bool DrawBluePrint);
+extern void DrawShipPiece(FRAME ModuleFrame, uint16_t which_piece, uint16_t which_slot, bool DrawBluePrint);
 
-extern uqm::COUNT WrapText(const uqm::CHAR_T* pStr, uqm::COUNT len, TEXT* tarray, uqm::SIZE field_width);
+extern uint16_t WrapText(const char* pStr, uint16_t len, TEXT* tarray, int16_t field_width);
 // XXX: Doesn't really belong in this file.
 
-extern uqm::COUNT ShipCost(uqm::BYTE race_id);
+extern uint16_t ShipCost(uint8_t race_id);
 
 #if 0 //defined(__cplusplus)
 }

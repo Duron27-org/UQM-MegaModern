@@ -51,11 +51,11 @@ PORTAL_LOCATION portal_map[NUM_HYPER_VORTICES + 1] {};
 
 
 STAR_DESC*
-FindStar(STAR_DESC* LastSDPtr, GFXPOINT* puniverse, uqm::SIZE xbounds,
-		 uqm::SIZE ybounds)
+FindStar(STAR_DESC* LastSDPtr, GFXPOINT* puniverse, int16_t xbounds,
+		 int16_t ybounds)
 {
 	COORD min_y, max_y;
-	uqm::SIZE lo, hi;
+	int16_t lo, hi;
 	STAR_DESC* BaseSDPtr;
 
 	if (GET_GAME_STATE(ARILOU_SPACE_SIDE) <= 1)
@@ -95,7 +95,7 @@ FindStar(STAR_DESC* LastSDPtr, GFXPOINT* puniverse, uqm::SIZE xbounds,
 
 	while (lo < hi)
 	{
-		uqm::SIZE mid;
+		int16_t mid;
 
 		mid = (lo + hi) >> 1;
 		if (BaseSDPtr[mid].star_pt.y >= min_y)
@@ -138,9 +138,9 @@ FindStar(STAR_DESC* LastSDPtr, GFXPOINT* puniverse, uqm::SIZE xbounds,
 	return (0);
 }
 
-void GetClusterName(const STAR_DESC* pSD, uqm::CHAR_T buf[])
+void GetClusterName(const STAR_DESC* pSD, char buf[])
 {
-	uqm::CHAR_T *pBuf, *pStr;
+	char *pBuf, *pStr;
 
 	pBuf = buf;
 	if (pSD->Prefix)
@@ -173,8 +173,8 @@ FindNearest(STAR_DESC* starmap, GFXPOINT p, bool constellation)
 	{
 		return nullptr;
 	}
-	uqm::COUNT index, star_id = 0;
-	uqm::DWORD dist, min_dist = MAX_X_UNIVERSE * MAX_Y_UNIVERSE;
+	uint16_t index, star_id = 0;
+	uint32_t dist, min_dist = MAX_X_UNIVERSE * MAX_Y_UNIVERSE;
 	for (index = 0; index < NUM_SOLAR_SYSTEMS; index++)
 	{
 		dist = (starmap[index].star_pt.x - p.x) * (starmap[index].star_pt.x - p.x) + (starmap[index].star_pt.y - p.y) * (starmap[index].star_pt.y - p.y);
@@ -295,7 +295,7 @@ void DefaultStarmap(STAR_DESC* starmap)
 #ifdef DEBUG_STARSEED
 	fmt::print(stderr, "DefaultStarmap setting star map to original values.\n");
 #endif
-	uqm::COUNT i;
+	uint16_t i;
 	for (i = 0; i < NUM_SOLAR_SYSTEMS + 1 + NUM_HYPER_VORTICES + 1 + 1; i++)
 	{
 		starmap[i] = StarmapArray[i];
@@ -316,8 +316,8 @@ void SeedStarmap(STAR_DESC* starmap)
 		fmt::print(stderr, "SeedStarmap called with nullptr starmap PTR.\n");
 		return;
 	}
-	uqm::COUNT i;
-	uqm::UWORD rand_val;
+	uint16_t i;
+	uint16_t rand_val;
 	if (!StarGenRNG)
 	{
 		fmt::print(stderr, "****SeedStarmap creating a STAR GEN RNG****\n");
@@ -360,7 +360,7 @@ void SeedStarmap(STAR_DESC* starmap)
 #define PLOT_WEIGHT(id) (plot[id].dist_sq[id])
 
 // This is purely for debugging purposes - print out the plot name by ID
-void print_plot_id(uqm::COUNT plot_id)
+void print_plot_id(uint16_t plot_id)
 {
 	static const char* const plot_name[] = {
 		"ARILOU_DEFINED", "SOL_DEFINED", "SHOFIXTI_DEFINED",
@@ -405,11 +405,11 @@ void print_plot_id(uqm::COUNT plot_id)
 // and remove the plot lengths from existing plotweights before changing.
 // Also increments the plot weight totals of the plots.
 // Min and max can't be the same value, must be at least 100 apart.
-void SetPlotLength(PLOT_LOCATION* plot, uqm::COUNT plotA, uqm::COUNT plotB,
-				   uqm::COUNT p_min, uqm::COUNT p_max)
+void SetPlotLength(PLOT_LOCATION* plot, uint16_t plotA, uint16_t plotB,
+				   uint16_t p_min, uint16_t p_max)
 {
-	uqm::COUNT min = p_min;
-	uqm::COUNT max = p_max;
+	uint16_t min = p_min;
+	uint16_t max = p_max;
 	// Reject bad data
 	if (!plot || plotA >= NUM_PLOTS || plotB >= NUM_PLOTS || p_min > p_max - 100)
 	{
@@ -442,10 +442,10 @@ void SetPlotLength(PLOT_LOCATION* plot, uqm::COUNT plotA, uqm::COUNT plotB,
 		fmt::print(stderr, " (weight {}) to ", PLOT_WEIGHT(plotA));
 		print_plot_id(plotB);
 		fmt::print(stderr, " (weight {}), min {}\n", PLOT_WEIGHT(plotB),
-				   (uqm::UWORD)sqrt(PLOT_MIN(plotA, plotB)));
+				   (uint16_t)sqrt(PLOT_MIN(plotA, plotB)));
 #endif
-		PLOT_WEIGHT(plotA) -= (uqm::UWORD)sqrt(PLOT_MIN(plotA, plotB));
-		PLOT_WEIGHT(plotB) -= (uqm::UWORD)sqrt(PLOT_MIN(plotA, plotB));
+		PLOT_WEIGHT(plotA) -= (uint16_t)sqrt(PLOT_MIN(plotA, plotB));
+		PLOT_WEIGHT(plotB) -= (uint16_t)sqrt(PLOT_MIN(plotA, plotB));
 	}
 	if (PLOT_MAX(plotA, plotB) != 0 && PLOT_MAX(plotA, plotB) < MAX_PLOT * MAX_PLOT)
 	{
@@ -455,10 +455,10 @@ void SetPlotLength(PLOT_LOCATION* plot, uqm::COUNT plotA, uqm::COUNT plotB,
 		fmt::print(stderr, " (weight {}) to ", PLOT_WEIGHT(plotA));
 		print_plot_id(plotB);
 		fmt::print(stderr, " (weight {}), max {}\n", PLOT_WEIGHT(plotB),
-				   MAX_PLOT - (uqm::UWORD)sqrt(PLOT_MAX(plotA, plotB)));
+				   MAX_PLOT - (uint16_t)sqrt(PLOT_MAX(plotA, plotB)));
 #endif
-		PLOT_WEIGHT(plotA) += (uqm::UWORD)sqrt(PLOT_MAX(plotA, plotB)) - MAX_PLOT;
-		PLOT_WEIGHT(plotB) += (uqm::UWORD)sqrt(PLOT_MAX(plotA, plotB)) - MAX_PLOT;
+		PLOT_WEIGHT(plotA) += (uint16_t)sqrt(PLOT_MAX(plotA, plotB)) - MAX_PLOT;
+		PLOT_WEIGHT(plotB) += (uint16_t)sqrt(PLOT_MAX(plotA, plotB)) - MAX_PLOT;
 	}
 
 	// Now set the plot lengths
@@ -474,8 +474,8 @@ void SetPlotLength(PLOT_LOCATION* plot, uqm::COUNT plotA, uqm::COUNT plotB,
 // If the min/max plot lengths are set and valid, gives relative weight of
 // this plot pair, otherwise 0.  The relative weight is the min distance
 // plus the (MAX_PLOT - the max distance) of each plot thread connected.
-uqm::DWORD
-ConnectedPlot(PLOT_LOCATION* plot, uqm::COUNT plotA, uqm::COUNT plotB)
+uint32_t
+ConnectedPlot(PLOT_LOCATION* plot, uint16_t plotA, uint16_t plotB)
 {
 	// report bad data
 	if (!(plot && (plotA < NUM_PLOTS) && (plotB < NUM_PLOTS)))
@@ -496,19 +496,19 @@ ConnectedPlot(PLOT_LOCATION* plot, uqm::COUNT plotA, uqm::COUNT plotB)
 
 // Used by GetNextPlot to re-iterate on a failed plot after pop-back.
 // Needs SeedPlot to reset it as well (when it starts the clock).
-static uqm::COUNT next_plot = ~0;
+static uint16_t next_plot = ~0;
 
 // Internal.
 // This returns the plot_id (number) with the highest weight on the
 // plot map which has yet to be assigned a home, or NUM_PLOTS if all
 // plots are allocated For a plot to be set, both COORD and STAR_DESC
 // ptr need data.  If both are set, we'll just stamp the starmap.
-uqm::COUNT
+uint16_t
 GetNextPlot(PLOT_LOCATION* plot)
 {
-	uqm::COUNT plot_id = 0;
-	uqm::DWORD top_weight = 0;
-	uqm::COUNT i;
+	uint16_t plot_id = 0;
+	uint32_t top_weight = 0;
+	uint16_t i;
 	if (!plot)
 	{
 		fmt::print(stderr, "GetNextPlot (plotmap) called with bad data PTR\n");
@@ -582,7 +582,7 @@ void ResetPlot(PLOT_LOCATION* plot)
 		fmt::print(stderr, "ResetPlot (plotmap) called with bad data PTR.\n");
 		return;
 	}
-	uqm::COUNT i, j;
+	uint16_t i, j;
 	for (i = 0; i < NUM_PLOTS; i++)
 	{
 		for (j = 0; j < NUM_PLOTS; j++)
@@ -599,7 +599,7 @@ void DefaultPlot(PLOT_LOCATION* plot, STAR_DESC* starmap)
 {
 #define ARILOU_SPACE_X 438	// We don't seed arilou from the map, they
 #define ARILOU_SPACE_Y 6372 // are hard code all the way.
-	uqm::COUNT i;
+	uint16_t i;
 
 	if (!plot || !starmap)
 	{
@@ -636,13 +636,13 @@ void InitPlot(PLOT_LOCATION* plotmap)
 		fmt::print(stderr, "InitPlot (plotmap) called with bad data PTR\n");
 		return;
 	}
-	uqm::COUNT i, j;
+	uint16_t i, j;
 	ResetPlot(plotmap);
 
 	// Set up buffers around anyone with a zone of influence during the war
 	// or after the war where homeworlds inside the zone wouldn't make sense
 	// Orz are skipped, Androsynth takes care of them.
-	uqm::COUNT home_map[23][2] = {
+	uint16_t home_map[23][2] = {
 		{ARILOU_DEFINED,		 300 },
 		{SOL_DEFINED,		  700 },
 		{YEHAT_DEFINED,		700 },
@@ -832,7 +832,7 @@ void InitPlot(PLOT_LOCATION* plotmap)
 // the Melnorme 1 near Sol, and Melnorme 7 near Thraddash
 void InitMelnormeRainbow(PLOT_LOCATION* plotmap)
 {
-	uqm::COUNT i, j;
+	uint16_t i, j;
 	// Melnormes and Rainbow worlds all push each other pretty far away
 	// to keep them scattered nicely. We then zero out their weights so
 	// that they are picked last.  In practice 2500 (rainbow) and
@@ -894,10 +894,10 @@ void InitMelnormeRainbow(PLOT_LOCATION* plotmap)
 // go past validation check but eventually if the star is in a bad spot,
 // it will be replaced.  Although it may also impose irrelevant restrictions
 // in the interim.  Do need to worry about undefined plot {~0,~0}.
-bool CheckValid(PLOT_LOCATION* plot, uqm::COUNT plot_id)
+bool CheckValid(PLOT_LOCATION* plot, uint16_t plot_id)
 {
-	uqm::COUNT i;
-	uqm::DWORD distance_sq;
+	uint16_t i;
+	uint32_t distance_sq;
 	if (!plot || plot_id >= NUM_PLOTS)
 	{
 		fmt::print(stderr, "CheckValid (plotmap, plot_id) called {}.\n"
@@ -941,7 +941,7 @@ bool CheckValid(PLOT_LOCATION* plot, uqm::COUNT plot_id)
 
 
 static bool
-NeedsHabitable(uqm::BYTE sIndex)
+NeedsHabitable(uint8_t sIndex)
 {
 	switch (sIndex)
 	{
@@ -991,7 +991,7 @@ void Plotify(STAR_DESC* starmap, STAR_DESC* star)
 		fmt::print(stderr, "Plotify (starmap, star) called with nullptr PTR.\n");
 		return;
 	}
-	uqm::COUNT i = 0;
+	uint16_t i = 0;
 
 	while (star->Index != StarmapArray[i].Index)
 	{
@@ -1028,13 +1028,13 @@ void Plotify(STAR_DESC* starmap, STAR_DESC* star)
 	// Specific homeworlds that work best with their correct color star (SOL)
 	if (NeedsHabitable(star->Index))
 	{
-		uqm::BYTE star_color = STAR_COLOR(star->Type);
-		uqm::DWORD rand_val = GetRandomSeedForStar(star);
+		uint8_t star_color = STAR_COLOR(star->Type);
+		uint32_t rand_val = GetRandomSeedForStar(star);
 
 		if (STAR_TYPE(star->Type) == DWARF_STAR && star_color == RED_BODY)
 		{
-			uqm::BYTE color_array[] = {BLUE_BODY, GREEN_BODY, ORANGE_BODY,
-									   WHITE_BODY, YELLOW_BODY};
+			uint8_t color_array[] = {BLUE_BODY, GREEN_BODY, ORANGE_BODY,
+									 WHITE_BODY, YELLOW_BODY};
 
 			star->Type = MAKE_STAR(
 				STAR_TYPE(star->Type), color_array[rand_val % 5],
@@ -1044,7 +1044,7 @@ void Plotify(STAR_DESC* starmap, STAR_DESC* star)
 				 && (star_color == BLUE_BODY || star_color == GREEN_BODY
 					 || star_color == WHITE_BODY))
 		{
-			uqm::BYTE color_array[] = {ORANGE_BODY, RED_BODY, YELLOW_BODY};
+			uint8_t color_array[] = {ORANGE_BODY, RED_BODY, YELLOW_BODY};
 
 			star->Type = MAKE_STAR(
 				STAR_TYPE(star->Type), color_array[rand_val % 3],
@@ -1059,7 +1059,7 @@ void Plotify(STAR_DESC* starmap, STAR_DESC* star)
 	// All other channels are false gods
 	if (star->Index == ILWRATH_DEFINED)
 	{
-		uqm::COUNT newcolor = (STAR_COLOR(star->Type) + optCustomSeed) % 5;
+		uint16_t newcolor = (STAR_COLOR(star->Type) + optCustomSeed) % 5;
 		if (optCustomSeed % 44 == 0 || optCustomSeed % 100 == 44)
 		{
 			star->Type = StarmapArray[i].Type;
@@ -1077,7 +1077,7 @@ void Plotify(STAR_DESC* starmap, STAR_DESC* star)
 	// Not needed any more, after altering shofixti code a bit
 	if (star->Index == SHOFIXTI_DEFINED)
 	{
-		uqm::COUNT newcolor = (STAR_COLOR (star->Type) + optCustomSeed) % 5;
+		uint16_t newcolor = (STAR_COLOR (star->Type) + optCustomSeed) % 5;
 		star->Type = MAKE_STAR (
 			STAR_TYPE (star->Type),
 			newcolor >= ORANGE_BODY ? newcolor + 1 : newcolor,
@@ -1246,8 +1246,8 @@ void Plotify(STAR_DESC* starmap, STAR_DESC* star)
 }
 
 #ifdef DEBUG_STARSEED_TRACE
-uqm::COUNT last_err = NUM_PLOTS;
-void DebugPlotTicker(uqm::COUNT plot_id)
+uint16_t last_err = NUM_PLOTS;
+void DebugPlotTicker(uint16_t plot_id)
 {
 	if (last_err == plot_id)
 	{
@@ -1272,7 +1272,7 @@ void DebugPlotTicker(uqm::COUNT plot_id)
 // recurse further until complete, otherwise return failed plot ID which is
 // used by previous iteration to retry with differnt locations.
 // NUM_PLOTS = success; NUM_PLOTS + 1 = timed out
-uqm::COUNT
+uint16_t
 SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap)
 {
 	static bool timer_running = false;
@@ -1287,9 +1287,9 @@ SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap)
 	// my_clock true *locally*, which is how you detect the top layer of the
 	// recursion and thus stop the clock on failure.
 	bool my_clock = false;
-	uqm::UWORD rand_val;
-	uqm::COUNT plot_id, star_id, i;
-	uqm::COUNT return_id;
+	uint16_t rand_val;
+	uint16_t plot_id, star_id, i;
+	uint16_t return_id;
 	// timelimit is in deciseconds, if loading 60 seconds, if new 2 seconds
 #ifdef DEBUG_STARSEED_TRACE_Z
 	bool tried[NUM_SOLAR_SYSTEMS] = {false};
@@ -1299,7 +1299,7 @@ SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap)
 		tried[i] = 0;
 	}
 #endif
-	uqm::COUNT timelimit = (GLOBAL(CurrentActivity) ? 600 : 20);
+	uint16_t timelimit = (GLOBAL(CurrentActivity) ? 600 : 20);
 #ifdef DEBUG_STARSEED_TRACE
 	timelimit = (GLOBAL(CurrentActivity) ? 3600 : 3600);
 #endif
@@ -1564,7 +1564,7 @@ SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap)
 						   (float)plotmap[plot_id].star_pt.x / 10,
 						   (float)plotmap[plot_id].star_pt.y / 10,
 						   (return_id > NUM_PLOTS) ? -1 :
-													 (uqm::DWORD)sqrt(ConnectedPlot(plotmap, plot_id, return_id)));
+													 (uint32_t)sqrt(ConnectedPlot(plotmap, plot_id, return_id)));
 #endif
 				if (plot_id != ARILOU_DEFINED)
 				{
@@ -1618,7 +1618,7 @@ void DefaultQuasispace(PORTAL_LOCATION* portalmap)
 		return;
 	}
 
-	uqm::COUNT i;
+	uint16_t i;
 	for (i = 0; i < NUM_HYPER_VORTICES + 1; i++)
 	{
 		portalmap[i].star_pt = portalmap_array[i].star_pt;
@@ -1644,8 +1644,8 @@ bool SeedQuasispace(PORTAL_LOCATION* portalmap, PLOT_LOCATION* plotmap,
 					STAR_DESC* starmap)
 {
 	PORTAL_LOCATION swap;
-	uqm::UWORD rand_val;
-	uqm::COUNT i, j;
+	uint16_t rand_val;
+	uint16_t i, j;
 	bool valid;
 	if (!portalmap || !plotmap || !starmap)
 	{
@@ -1672,7 +1672,7 @@ bool SeedQuasispace(PORTAL_LOCATION* portalmap, PLOT_LOCATION* plotmap,
 				// between 0 and 2295.  Half of that is below 1147, the other
 				// half above.
 				// We locate the portal by up to 1147 (114.7) in any direction.
-				// Also note COORD is just uqm::SWORD and can be negative.
+				// Also note COORD is just int16_t and can be negative.
 				portalmap[i].star_pt = GFXPOINT {
 					(COORD)lowByte(rand_val) * 9 + plotmap[SOL_DEFINED].star_pt.x - 1147,
 					(COORD)highByte(rand_val) * 9 + plotmap[SOL_DEFINED].star_pt.y - 1147};
@@ -1799,7 +1799,7 @@ bool SeedQuasispace(PORTAL_LOCATION* portalmap, PLOT_LOCATION* plotmap,
 struct PlotIdMap
 {
 	const char* idStr;
-	uqm::COUNT id;
+	uint16_t id;
 };
 
 // The PlotIdMap is sorted **by name** for the binary search function.
@@ -1887,13 +1887,13 @@ PlotIdCompare(const void* id1, const void* id2)
 	return strcmp(((PlotIdMap*)id1)->idStr, ((PlotIdMap*)id2)->idStr);
 }
 
-uqm::COUNT
+uint16_t
 PlotIdStrToIndex(const char* plotIdStr)
 {
 #ifdef DEBUG_STARSEED
 	fmt::print(stderr, "START PlotIdStrToIndex {}.\n", plotIdStr);
 #endif
-	PlotIdMap key = {/* .idStr = */ plotIdStr, /* .id = */ std::numeric_limits<uqm::COUNT>::max()};
+	PlotIdMap key = {/* .idStr = */ plotIdStr, /* .id = */ std::numeric_limits<uint16_t>::max()};
 	PlotIdMap* found = (PlotIdMap*)bsearch(&key, plotIdMap, std::size(plotIdMap),
 										   sizeof plotIdMap[0], PlotIdCompare);
 	if (found == nullptr)

@@ -95,7 +95,7 @@ void doInstantMove(void)
 
 // playerNr should be 0 or 1
 STARSHIP*
-findPlayerShip(uqm::SIZE playerNr)
+findPlayerShip(int16_t playerNr)
 {
 	HELEMENT hElement, hNextElement;
 
@@ -124,7 +124,7 @@ findPlayerShip(uqm::SIZE playerNr)
 void resetEnergyBattle(void)
 {
 	STARSHIP* StarShipPtr;
-	uqm::COUNT delta;
+	uint16_t delta;
 	GFXCONTEXT OldContext;
 
 	if (!(GLOBAL(CurrentActivity) & IN_BATTLE) || inHQSpace())
@@ -162,7 +162,7 @@ static void
 scuttleOpponent(void)
 {
 	STARSHIP* StarShipPtr;
-	uqm::COUNT delta;
+	uint16_t delta;
 	GFXCONTEXT OldContext;
 
 	if (!(GLOBAL(CurrentActivity) & IN_BATTLE) || inHQSpace())
@@ -205,7 +205,7 @@ HaltShips(void)
 {
 	STARSHIP* StarShipPtr;
 	ELEMENT* ElementPtr;
-	uqm::BYTE i;
+	uint8_t i;
 
 	if (!(GLOBAL(CurrentActivity) & IN_BATTLE) || inHQSpace())
 	{
@@ -377,7 +377,7 @@ void forwardToNextEvent(bool skipHEE)
 {
 	HEVENT hEvent;
 	EVENT* EventPtr;
-	uqm::COUNT year, month, day;
+	uint16_t year, month, day;
 	// time of next event
 	bool done;
 
@@ -421,7 +421,7 @@ void forwardToNextEvent(bool skipHEE)
 }
 
 const char*
-eventName(uqm::BYTE func_index)
+eventName(uint8_t func_index)
 {
 	switch (func_index)
 	{
@@ -468,7 +468,7 @@ eventName(uqm::BYTE func_index)
 }
 
 const char*
-raceName(uqm::BYTE func_index)
+raceName(uint8_t func_index)
 {
 	switch (func_index)
 	{
@@ -766,7 +766,7 @@ findFlagshipElement (void)
 
 void showSpheres(bool Animated)
 {
-	uqm::BYTE i;
+	uint8_t i;
 
 	if (Animated)
 	{ // Alternative which allows you to view
@@ -860,7 +860,7 @@ void forAllStars(void (*callback)(STAR_DESC*, void*), void* arg)
 
 void forAllPlanets(STAR_DESC* star, SOLARSYS_STATE* system, void (*callback)(STAR_DESC*, SOLARSYS_STATE*, PLANET_DESC*, void*), void* arg)
 {
-	uqm::COUNT i;
+	uint16_t i;
 
 	assert(CurStarDescPtr == star);
 	assert(pSolarSysState == system);
@@ -876,7 +876,7 @@ void forAllMoons(STAR_DESC* star, SOLARSYS_STATE* system, PLANET_DESC* planet,
 								  PLANET_DESC*, void*),
 				 void* arg)
 {
-	uqm::COUNT i;
+	uint16_t i;
 
 	assert(pSolarSysState == system);
 
@@ -1099,8 +1099,8 @@ dumpSystemCallback(const STAR_DESC* star, const SOLARSYS_STATE* system,
 
 void dumpSystem(FILE* out, const STAR_DESC* star, const SOLARSYS_STATE* system)
 {
-	uqm::CHAR_T name[256];
-	uqm::CHAR_T buf[40];
+	char name[256];
+	char buf[40];
 
 	GetClusterName(star, name);
 	fmt::format_to_sz_n(buf, "{} {}",
@@ -1118,7 +1118,7 @@ void dumpSystem(FILE* out, const STAR_DESC* star, const SOLARSYS_STATE* system)
 }
 
 const char*
-bodyColorString(uqm::BYTE col)
+bodyColorString(uint8_t col)
 {
 	switch (col)
 	{
@@ -1147,7 +1147,7 @@ bodyColorString(uqm::BYTE col)
 }
 
 const char*
-starTypeString(uqm::BYTE type)
+starTypeString(uint8_t type)
 {
 	switch (type)
 	{
@@ -1164,7 +1164,7 @@ starTypeString(uqm::BYTE type)
 }
 
 const char*
-starPresenceString(uqm::BYTE index)
+starPresenceString(uint8_t index)
 {
 	switch (index)
 	{
@@ -1340,7 +1340,7 @@ void dumpMoon(FILE* out, const PLANET_DESC* moon)
 		typeStr = planetTypeString(moon->data_index & ~PLANET_SHIELDED);
 	}
 	fmt::print(out, "  - Moon {:>30}  {}\n",
-			   'a' + (uqm::CHAR_T)(moon - &pSolarSysState->MoonDesc[0]), typeStr);
+			   'a' + (char)(moon - &pSolarSysState->MoonDesc[0]), typeStr);
 
 	dumpWorld(out, moon);
 }
@@ -1397,7 +1397,7 @@ dumpWorld(FILE* out, const PLANET_DESC* world)
 void printWorld(const PLANET_DESC* world)
 {
 	PLANET_INFO* info;
-	uqm::CHAR_T buf[200] {};
+	char buf[200] {};
 	FILE* fp = fopen("planetLog.txt", "a");
 	GFXPOINT universe = CurStarDescPtr->star_pt;
 
@@ -1457,12 +1457,12 @@ void printWorld(const PLANET_DESC* world)
 	fclose(fp);
 }
 
-uqm::COUNT
+uint16_t
 calculateBioValue(const SOLARSYS_STATE* system, const PLANET_DESC* world)
 {
-	uqm::COUNT result;
-	uqm::COUNT numBio;
-	uqm::COUNT i;
+	uint16_t result;
+	uint16_t numBio;
+	uint16_t i;
 
 	assert(system->pOrbitalDesc == world);
 
@@ -1480,10 +1480,10 @@ calculateBioValue(const SOLARSYS_STATE* system, const PLANET_DESC* world)
 }
 
 void generateBioIndex(const SOLARSYS_STATE* system, const PLANET_DESC* world,
-					  uqm::COUNT bio[])
+					  uint16_t bio[])
 {
-	uqm::COUNT numBio;
-	uqm::COUNT i;
+	uint16_t numBio;
+	uint16_t i;
 
 	assert(system->pOrbitalDesc == world);
 
@@ -1503,12 +1503,12 @@ void generateBioIndex(const SOLARSYS_STATE* system, const PLANET_DESC* world,
 	}
 }
 
-uqm::COUNT
+uint16_t
 calculateMineralValue(const SOLARSYS_STATE* system, const PLANET_DESC* world)
 {
-	uqm::COUNT result;
-	uqm::COUNT numDeposits;
-	uqm::COUNT i;
+	uint16_t result;
+	uint16_t numDeposits;
+	uint16_t i;
 
 	assert(system->pOrbitalDesc == world);
 
@@ -1526,10 +1526,10 @@ calculateMineralValue(const SOLARSYS_STATE* system, const PLANET_DESC* world)
 }
 
 void generateMineralIndex(const SOLARSYS_STATE* system, const PLANET_DESC* world,
-						  uqm::COUNT minerals[])
+						  uint16_t minerals[])
 {
-	uqm::COUNT numDeposits;
-	uqm::COUNT i;
+	uint16_t numDeposits;
+	uint16_t i;
 
 	assert(system->pOrbitalDesc == world);
 
@@ -1554,8 +1554,8 @@ void generateMineralIndex(const SOLARSYS_STATE* system, const PLANET_DESC* world
 struct TallyResourcesArg
 {
 	FILE* out;
-	uqm::COUNT mineralCount;
-	uqm::COUNT bioCount;
+	uint16_t mineralCount;
+	uint16_t bioCount;
 };
 
 // Must be called from the Starcon2Main thread.
@@ -1617,7 +1617,7 @@ static void
 tallySystemPostCallback(const STAR_DESC* star, const SOLARSYS_STATE* system,
 						void* arg)
 {
-	uqm::CHAR_T name[256];
+	char name[256];
 	TallyResourcesArg* tallyResourcesArg = (TallyResourcesArg*)arg;
 	FILE* out = tallyResourcesArg->out;
 
@@ -1742,7 +1742,7 @@ void dumpPlanetType(FILE* out, int index, const PlanetFrame* planetType)
 const char*
 planetTypeString(int typeIndex)
 {
-	static uqm::CHAR_T typeStr[40];
+	static char typeStr[40];
 
 	if (typeIndex >= FIRST_GAS_GIANT)
 	{
@@ -1762,7 +1762,7 @@ planetTypeString(int typeIndex)
 
 // size is what you get from PLANSIZE (planetFrame.Type)
 const char*
-worldSizeString(uqm::BYTE size)
+worldSizeString(uint8_t size)
 {
 	switch (size)
 	{
@@ -1780,7 +1780,7 @@ worldSizeString(uqm::BYTE size)
 
 // algo is what you get from PLANALGO (planetFrame.Type)
 const char*
-worldGenAlgoString(uqm::BYTE algo)
+worldGenAlgoString(uint8_t algo)
 {
 	switch (algo)
 	{
@@ -1799,7 +1799,7 @@ worldGenAlgoString(uqm::BYTE algo)
 // tectonics is what you get from planetFrame.BaseTechtonics
 // not reentrant
 const char*
-tectonicsString(uqm::BYTE tectonics)
+tectonicsString(uint8_t tectonics)
 {
 	static char buf[sizeof "-127"];
 	switch (tectonics)
@@ -1822,7 +1822,7 @@ tectonicsString(uqm::BYTE tectonics)
 
 // atmosphere is what you get from HINIBBLE (planetFrame.AtmoAndDensity)
 const char*
-atmosphereString(uqm::BYTE atmosphere)
+atmosphereString(uint8_t atmosphere)
 {
 	switch (atmosphere)
 	{
@@ -1839,7 +1839,7 @@ atmosphereString(uqm::BYTE atmosphere)
 
 // density is what you get from LONIBBLE (planetFrame.AtmoAndDensity)
 const char*
-densityString(uqm::BYTE density)
+densityString(uint8_t density)
 {
 	switch (density)
 	{
@@ -1863,7 +1863,7 @@ densityString(uqm::BYTE density)
 
 // quality is what you get from DEPOSIT_QUALITY (elementEntry.Density)
 const char*
-depositQualityString(uqm::BYTE quality)
+depositQualityString(uint8_t quality)
 {
 	switch (quality)
 	{
@@ -1884,7 +1884,7 @@ depositQualityString(uqm::BYTE quality)
 void resetCrewBattle(void)
 {
 	STARSHIP* StarShipPtr;
-	uqm::COUNT delta;
+	uint16_t delta;
 	GFXCONTEXT OldContext;
 
 	if (!(GLOBAL(CurrentActivity) & IN_BATTLE) || (inHQSpace()))
@@ -1982,7 +1982,7 @@ void dumpStrings(FILE* out)
 			categoryI++;
 		}
 		fmt::print(out, "[ {} + {} ]  {}\n", categories[categoryI].name,
-				   stringI - categories[categoryI].base, GAME_STRING((uqm::COUNT)stringI));
+				   stringI - categories[categoryI].base, GAME_STRING((uint16_t)stringI));
 	}
 }
 
@@ -1990,7 +1990,7 @@ void dumpStrings(FILE* out)
 
 
 static Color
-hsvaToRgba(double hue, double sat, double val, uqm::BYTE alpha)
+hsvaToRgba(double hue, double sat, double val, uint8_t alpha)
 {
 	unsigned int hi = (int)(hue / 60.0);
 	double f = (hue / 60.0) - ((int)(hue / 60.0));
@@ -1999,10 +1999,10 @@ hsvaToRgba(double hue, double sat, double val, uqm::BYTE alpha)
 	double t = val * (1.0 - (1.0 - f * sat));
 
 	// Convert p, q, t, and v from [0..1] to [0..255]
-	uqm::BYTE pb = (uqm::BYTE)(p * 255.0 + 0.5);
-	uqm::BYTE qb = (uqm::BYTE)(q * 255.0 + 0.5);
-	uqm::BYTE tb = (uqm::BYTE)(t * 255.0 + 0.5);
-	uqm::BYTE vb = (uqm::BYTE)(val * 255.0 + 0.5);
+	uint8_t pb = (uint8_t)(p * 255.0 + 0.5);
+	uint8_t qb = (uint8_t)(q * 255.0 + 0.5);
+	uint8_t tb = (uint8_t)(t * 255.0 + 0.5);
+	uint8_t vb = (uint8_t)(val * 255.0 + 0.5);
 
 	assert(hue >= 0.0 && hue < 360.0);
 	assert(sat >= 0 && sat <= 1.0);
@@ -2142,7 +2142,7 @@ drawContext(GFXCONTEXT context, double hue /* no pun intended */)
 	text.baseline.y = p1.y + 8;
 	text.pStr = GetContextName(context);
 	text.align = ALIGN_CENTER;
-	text.CharCount = (uqm::COUNT)~0;
+	text.CharCount = (uint16_t)~0;
 	font_DrawText(&text);
 	(void)SetContextDrawMode(oldMode);
 

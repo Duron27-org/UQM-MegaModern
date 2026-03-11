@@ -148,7 +148,7 @@ asteroid_preprocess(ELEMENT* ElementPtr)
 	}
 	else
 	{
-		uqm::COUNT frame_index;
+		uint16_t frame_index;
 
 		frame_index = GetFrameIndex(ElementPtr->current.image.frame);
 		if (ElementPtr->thrust_wait & (1 << 7))
@@ -192,7 +192,7 @@ void spawn_asteroid(ELEMENT* ElementPtr)
 	else
 	{
 		ELEMENT* AsteroidElementPtr;
-		uqm::COUNT val;
+		uint16_t val;
 
 		LockElement(hAsteroidElement, &AsteroidElementPtr);
 		AsteroidElementPtr->playerNr = NEUTRAL_PLAYER_NUM;
@@ -202,7 +202,7 @@ void spawn_asteroid(ELEMENT* ElementPtr)
 			optMeleeObstacles && !isNetwork() ? DISAPPEARING : APPEARING;
 		AsteroidElementPtr->life_span = NORMAL_LIFE;
 		SetPrimType(&DisplayArray[AsteroidElementPtr->PrimIndex], STAMP_PRIM);
-		if ((val = (uqm::COUNT)TFB_Random()) & (1 << 0))
+		if ((val = (uint16_t)TFB_Random()) & (1 << 0))
 		{
 			if (!(val & (1 << 1)))
 			{
@@ -233,9 +233,9 @@ void spawn_asteroid(ELEMENT* ElementPtr)
 			// Using these temporary variables because the execution order
 			// of function arguments may vary per system, which may break
 			// synchronisation on network games.
-			uqm::SIZE magnitude =
-				DISPLAY_TO_WORLD(((uqm::SIZE)TFB_Random() & 7) + 4);
-			uqm::COUNT facing = (uqm::COUNT)TFB_Random();
+			int16_t magnitude =
+				DISPLAY_TO_WORLD(((int16_t)TFB_Random() & 7) + 4);
+			uint16_t facing = (uint16_t)TFB_Random();
 			SetVelocityVector(&AsteroidElementPtr->velocity, magnitude,
 							  facing);
 		}
@@ -245,9 +245,9 @@ void spawn_asteroid(ELEMENT* ElementPtr)
 							 NORMALIZE_FACING(TFB_Random()));
 		AsteroidElementPtr->turn_wait =
 			AsteroidElementPtr->thrust_wait =
-				(uqm::BYTE)TFB_Random() & (uqm::BYTE)((1 << 2) - 1);
+				(uint8_t)TFB_Random() & (uint8_t)((1 << 2) - 1);
 		AsteroidElementPtr->thrust_wait |=
-			(uqm::BYTE)TFB_Random() & (uqm::BYTE)(1 << 7);
+			(uint8_t)TFB_Random() & (uint8_t)(1 << 7);
 		AsteroidElementPtr->preprocess_func = asteroid_preprocess;
 		AsteroidElementPtr->death_func = spawn_rubble;
 		AsteroidElementPtr->collision_func = collision;
@@ -257,7 +257,7 @@ void spawn_asteroid(ELEMENT* ElementPtr)
 	}
 }
 
-void do_damage(ELEMENT* ElementPtr, uqm::SIZE damage)
+void do_damage(ELEMENT* ElementPtr, int16_t damage)
 {
 	// God Mode, borrowed from the UQM-HD debug invincibility code
 	if (antiCheat(ElementPtr, false, uqm::GodModeFlags::NoDamage))
@@ -274,9 +274,9 @@ void do_damage(ELEMENT* ElementPtr, uqm::SIZE damage)
 	}
 	else if (!GRAVITY_MASS(ElementPtr->mass_points))
 	{
-		if ((uqm::BYTE)damage < ElementPtr->hit_points)
+		if ((uint8_t)damage < ElementPtr->hit_points)
 		{
-			ElementPtr->hit_points -= (uqm::BYTE)damage;
+			ElementPtr->hit_points -= (uint8_t)damage;
 		}
 		else
 		{
@@ -316,7 +316,7 @@ void crew_preprocess(ELEMENT* ElementPtr)
 		}
 		else
 		{
-			uqm::COUNT facing;
+			uint16_t facing;
 
 			facing = 0;
 			TrackShip(ElementPtr, &facing);
@@ -326,7 +326,7 @@ void crew_preprocess(ELEMENT* ElementPtr)
 	if (hTarget)
 	{
 #define CREW_DELTA RES_SCALE(SCALED_ONE)
-		uqm::SIZE delta;
+		int16_t delta;
 		ELEMENT* ShipPtr;
 
 		LockElement(hTarget, &ShipPtr);
@@ -381,10 +381,10 @@ void crew_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
 }
 
 void AbandonShip(ELEMENT* ShipPtr, ELEMENT* TargetPtr,
-				 uqm::COUNT crew_loss)
+				 uint16_t crew_loss)
 {
-	uqm::SIZE dx, dy;
-	uqm::COUNT direction;
+	int16_t dx, dy;
+	uint16_t direction;
 	GFXRECT r;
 	STARSHIP* StarShipPtr;
 	HELEMENT hCrew;
@@ -449,14 +449,14 @@ void AbandonShip(ELEMENT* ShipPtr, ELEMENT* TargetPtr,
 		CrewPtr->hTarget = StarShipPtr->hShip;
 
 		{
-			uqm::SIZE w, h;
+			int16_t w, h;
 			INTERSECT_CONTROL CrewIntersect;
 
 			ShipIntersect.IntersectStamp.origin =
 				ShipPtr->IntersectControl.EndPoint;
 
-			w = (uqm::SIZE)((uqm::COUNT)TFB_Random() % r.extent.width);
-			h = (uqm::SIZE)((uqm::COUNT)TFB_Random() % r.extent.height);
+			w = (int16_t)((uint16_t)TFB_Random() % r.extent.width);
+			h = (int16_t)((uint16_t)TFB_Random() % r.extent.height);
 			CrewIntersect.EndPoint = ShipIntersect.EndPoint;
 			CrewIntersect.IntersectStamp.frame = DecFrameIndex(stars_in_space);
 			if (dx == 0 && dy == 0)

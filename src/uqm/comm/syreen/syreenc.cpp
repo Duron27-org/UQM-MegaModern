@@ -59,7 +59,7 @@ static LOCDATA syreen_desc =
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				7,			 /* StartIndex */
@@ -69,7 +69,7 @@ static LOCDATA syreen_desc =
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				9,			 /* StartIndex */
@@ -79,7 +79,7 @@ static LOCDATA syreen_desc =
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				11,			 /* StartIndex */
@@ -89,7 +89,7 @@ static LOCDATA syreen_desc =
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				13,			 /* StartIndex */
@@ -99,7 +99,7 @@ static LOCDATA syreen_desc =
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				15,			 /* StartIndex */
@@ -109,7 +109,7 @@ static LOCDATA syreen_desc =
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				(1 << 12),		/* BlockMask */
+				(1 << 12),				/* BlockMask */
 			},
 								{
 				17,			 /* StartIndex */
@@ -119,7 +119,7 @@ static LOCDATA syreen_desc =
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				19,			 /* StartIndex */
@@ -139,7 +139,7 @@ static LOCDATA syreen_desc =
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				27,		   /* StartIndex */
@@ -149,7 +149,7 @@ static LOCDATA syreen_desc =
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond * 10,
 				GameTicksPerSecond * 3, /* RestartRate */
-				(1 << 14),		/* BlockMask */
+				(1 << 14),				/* BlockMask */
 			},
 								{
 				31,			   /* StartIndex */
@@ -159,7 +159,7 @@ static LOCDATA syreen_desc =
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				37,			 /* StartIndex */
@@ -169,7 +169,7 @@ static LOCDATA syreen_desc =
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond / 15,
 				GameTicksPerSecond / 15, /* RestartRate */
-				0,				 /* BlockMask */
+				0,						 /* BlockMask */
 			},
 								{
 				41,		   /* StartIndex */
@@ -179,7 +179,7 @@ static LOCDATA syreen_desc =
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond * 10,
 				GameTicksPerSecond * 3, /* RestartRate */
-				(1 << 5),		/* BlockMask */
+				(1 << 5),				/* BlockMask */
 			},
 								{
 				44, /* StartIndex */
@@ -189,7 +189,7 @@ static LOCDATA syreen_desc =
 				GameTicksPerSecond / 6,
 				0, /* FrameRate */
 				GameTicksPerSecond * 3,
-				GameTicksPerSecond,			  /* RestartRate */
+				GameTicksPerSecond,	  /* RestartRate */
 				(1 << 7) | (1 << 14), /* BlockMask */
 			},
 								{
@@ -200,7 +200,7 @@ static LOCDATA syreen_desc =
 				GameTicksPerSecond * 2 / 15,
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond * 10,
-				GameTicksPerSecond,			  /* RestartRate */
+				GameTicksPerSecond,	  /* RestartRate */
 				(1 << 9) | (1 << 13), /* BlockMask */
 			},
 								},
@@ -329,7 +329,7 @@ FriendlyExit(RESPONSE_REF R)
 			DisengageFilters();
 		}
 		FadeScreen(FadeAllToColor, GameTicksPerSecond / 2);
-		AlienTalkSegue((uqm::COUNT)~0);
+		AlienTalkSegue((uint16_t)~0);
 
 		SET_GAME_STATE(PLAYER_HAD_SEX, 1);
 		SET_GAME_STATE(PLAYER_HAVING_SEX, 0);
@@ -445,7 +445,7 @@ Foreplay(RESPONSE_REF R)
 		}*/
 		// For future ideas maybe
 
-		AlienTalkSegue((uqm::COUNT)~0);
+		AlienTalkSegue((uint16_t)~0);
 		SET_GAME_STATE(PLAYER_HAVING_SEX, 1);
 	}
 	else if (PLAYER_SAID(R, why_lights_off))
@@ -499,7 +499,7 @@ AfterAmbush(RESPONSE_REF R)
 	}
 	else if (PLAYER_SAID(R, whats_up_after_ambush))
 	{
-		uqm::BYTE NumVisits;
+		uint8_t NumVisits;
 
 		NumVisits = GET_GAME_STATE(SYREEN_INFO);
 		switch (NumVisits++)
@@ -642,7 +642,7 @@ SyreenShuttle(RESPONSE_REF R)
 static void
 NormalSyreen(RESPONSE_REF R)
 {
-	uqm::BYTE i, LastStack;
+	uint8_t i, LastStack;
 	RESPONSE_REF pStr[4];
 
 	LastStack = 0;
@@ -915,8 +915,8 @@ PlanAmbush(RESPONSE_REF R)
 			SyreenPtr->loc = SeedFleetLocation(SyreenPtr, plot_map, HOME);
 			StartSphereTracking(SYREEN_SHIP);
 			GFXPOINT loc = SeedFleetLocation(SyreenPtr, plot_map,
-										  MYCON_TRAP_DEFINED);
-			SetRaceDest(SYREEN_SHIP, loc.x, loc.y, 15, (uqm::BYTE)~0);
+											 MYCON_TRAP_DEFINED);
+			SetRaceDest(SYREEN_SHIP, loc.x, loc.y, 15, (uint8_t)~0);
 		}
 
 		UnlockFleetInfo(&GLOBAL(avail_race_q), hSyreen);
@@ -946,7 +946,7 @@ SyreenVault(RESPONSE_REF R)
 static void
 Intro(void)
 {
-	uqm::BYTE NumVisits;
+	uint8_t NumVisits;
 
 	SetHomeworldKnown(SYREEN_HOME);
 
@@ -1066,7 +1066,7 @@ Intro(void)
 	SET_GAME_STATE(SYREEN_HOME_VISITS, NumVisits);
 }
 
-static uqm::COUNT
+static uint16_t
 uninit_syreen(void)
 {
 	FlushCustomBaseLine();

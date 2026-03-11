@@ -66,7 +66,7 @@ static LOCDATA chmmr_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				17,			   /* StartIndex */
@@ -76,7 +76,7 @@ static LOCDATA chmmr_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				22,			   /* StartIndex */
@@ -86,7 +86,7 @@ static LOCDATA chmmr_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				27,		   /* StartIndex */
@@ -96,7 +96,7 @@ static LOCDATA chmmr_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				47,		   /* StartIndex */
@@ -106,7 +106,7 @@ static LOCDATA chmmr_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				61,		   /* StartIndex */
@@ -116,7 +116,7 @@ static LOCDATA chmmr_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								},
 		{
@@ -431,7 +431,7 @@ ChmmrFree(RESPONSE_REF R)
 		|| PLAYER_SAID(R, i_am_silly))
 	{
 		NPCPhrase(WHY_HAVE_YOU_FREED_US);
-		AlienTalkSegue((uqm::COUNT)~0);
+		AlienTalkSegue((uint16_t)~0);
 		SET_GAME_STATE(CHMMR_EMERGING, 0);
 
 		Response(serious_1, ChmmrFree);
@@ -488,7 +488,7 @@ static void ChmmrShielded(RESPONSE_REF R);
 static void
 ChmmrAdvice(RESPONSE_REF R)
 {
-	uqm::BYTE AdviceLeft;
+	uint8_t AdviceLeft;
 
 	if (PLAYER_SAID(R, need_advice))
 	{
@@ -654,7 +654,7 @@ AfterBomb(RESPONSE_REF R)
 static void
 Intro(void)
 {
-	uqm::BYTE NumVisits;
+	uint8_t NumVisits;
 
 	if (GET_GAME_STATE(CHMMR_BOMB_STATE) >= 2)
 	{
@@ -768,7 +768,7 @@ Intro(void)
 	}
 }
 
-static uqm::COUNT
+static uint16_t
 uninit_chmmr(void)
 {
 	luaUqm_comm_uninit();

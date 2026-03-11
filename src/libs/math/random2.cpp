@@ -35,7 +35,7 @@ RandomContext_New(void)
 }
 
 RandomContext*
-RandomContext_Set(uqm::DWORD Context)
+RandomContext_Set(uint32_t Context)
 {
 	RandomContext* result = (RandomContext*)HMalloc(sizeof(RandomContext));
 	result->seed = Context;
@@ -55,7 +55,7 @@ RandomContext_Copy(const RandomContext* source)
 	return result;
 }
 
-uqm::DWORD
+uint32_t
 RandomContext_Random(RandomContext* context)
 {
 	context->seed = SeedA * (context->seed % SeedQ) - SeedR * (context->seed / SeedQ);
@@ -71,10 +71,10 @@ RandomContext_Random(RandomContext* context)
 	return context->seed;
 }
 
-uqm::DWORD
-RandomContext_SeedRandom(RandomContext* context, uqm::DWORD new_seed)
+uint32_t
+RandomContext_SeedRandom(RandomContext* context, uint32_t new_seed)
 {
-	uqm::DWORD old_seed;
+	uint32_t old_seed;
 
 	/* coerce the seed to be in the range 1..M */
 	if (new_seed == 0) /* 0 becomes 1 */
@@ -91,16 +91,16 @@ RandomContext_SeedRandom(RandomContext* context, uqm::DWORD new_seed)
 	return old_seed;
 }
 
-uqm::DWORD
+uint32_t
 RandomContext_GetSeed(RandomContext* context)
 {
 	return context->seed;
 }
 
-uqm::DWORD
-RandomContext_FastRandom(uqm::DWORD seed)
+uint32_t
+RandomContext_FastRandom(uint32_t seed)
 {
-	uqm::DWORD res = SeedA * (seed % SeedQ) - SeedR * (seed / SeedQ);
+	uint32_t res = SeedA * (seed % SeedQ) - SeedR * (seed / SeedQ);
 	if (res > SeedM)
 	{
 		res -= SeedM;
@@ -113,7 +113,7 @@ RandomContext_FastRandom(uqm::DWORD seed)
 	return res;
 }
 
-int RangeMinMax(int min, int max, uqm::DWORD rand)
+int RangeMinMax(int min, int max, uint32_t rand)
 {
 	if (min > max)
 	{

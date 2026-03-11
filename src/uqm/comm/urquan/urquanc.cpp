@@ -65,7 +65,7 @@ static LOCDATA urquan_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				16,		   /* StartIndex */
@@ -75,7 +75,7 @@ static LOCDATA urquan_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				19,		   /* StartIndex */
@@ -85,7 +85,7 @@ static LOCDATA urquan_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				22,			   /* StartIndex */
@@ -95,7 +95,7 @@ static LOCDATA urquan_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				29,			   /* StartIndex */
@@ -105,7 +105,7 @@ static LOCDATA urquan_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				36,			   /* StartIndex */
@@ -115,7 +115,7 @@ static LOCDATA urquan_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				44,							   /* StartIndex */
@@ -125,7 +125,7 @@ static LOCDATA urquan_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond * 3,
 				GameTicksPerSecond * 5, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				49,							   /* StartIndex */
@@ -183,7 +183,7 @@ CombatIsInevitable(RESPONSE_REF R)
 			 || PLAYER_SAID(R, whats_up_3)
 			 || PLAYER_SAID(R, whats_up_4))
 	{
-		uqm::BYTE NumVisits;
+		uint8_t NumVisits;
 
 		NumVisits = GET_GAME_STATE(URQUAN_INFO);
 		switch (NumVisits++)
@@ -492,7 +492,7 @@ LoserUrquan(RESPONSE_REF R)
 static void
 Intro(void)
 {
-	uqm::DWORD GrpOffs;
+	uint32_t GrpOffs;
 
 	if (EXTENDED)
 	{
@@ -523,7 +523,7 @@ Intro(void)
 	}
 	else
 	{
-		uqm::BYTE NumVisits;
+		uint8_t NumVisits;
 
 		if (!GET_GAME_STATE(URQUAN_SENSES_EVIL)
 			&& GET_GAME_STATE(TALKING_PET_ON_SHIP))
@@ -600,7 +600,7 @@ Intro(void)
 	}
 }
 
-static uqm::COUNT
+static uint16_t
 uninit_urquan(void)
 {
 	luaUqm_comm_uninit();
@@ -618,7 +618,7 @@ init_urquan_comm(void)
 {
 	LOCDATA* retval;
 
-	uqm::DWORD GrpOffs;
+	uint32_t GrpOffs;
 
 	urquan_desc.init_encounter_func = Intro;
 	urquan_desc.post_encounter_func = post_urquan_enc;

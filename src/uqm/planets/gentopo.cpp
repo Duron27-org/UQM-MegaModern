@@ -22,14 +22,14 @@
 #include "libs/mathlib.h"
 #include "planets.h"
 
-void DeltaTopography(uqm::COUNT num_iterations, uqm::SBYTE* DepthArray, GFXRECT* pRect,
-					 uqm::SIZE depth_delta)
+void DeltaTopography(uint16_t num_iterations, int8_t* DepthArray, GFXRECT* pRect,
+					 int16_t depth_delta)
 {
-	uqm::SIZE width, height, delta_y;
+	int16_t width, height, delta_y;
 	struct
 	{
 		COORD x_top, x_bot;
-		uqm::SIZE x_incr, delta_x, error_term;
+		int16_t x_incr, delta_x, error_term;
 	} LineDDA0, LineDDA1;
 
 
@@ -38,10 +38,10 @@ void DeltaTopography(uqm::COUNT num_iterations, uqm::SBYTE* DepthArray, GFXRECT*
 	delta_y = (height - 1) << 1;
 	do
 	{
-		uqm::SIZE d;
-		uqm::COUNT h, w1, w2;
-		uqm::DWORD rand_val;
-		uqm::SBYTE* lpDst;
+		int16_t d;
+		uint16_t h, w1, w2;
+		uint32_t rand_val;
+		int8_t* lpDst;
 
 		if ((RandomContext_Random(SysGenRNG) & 1) == 0)
 		{
@@ -58,7 +58,7 @@ void DeltaTopography(uqm::COUNT num_iterations, uqm::SBYTE* DepthArray, GFXRECT*
 		LineDDA0.x_bot = (highByte(w1) % ORIGINAL_MAP_WIDTH)
 					   * width / ORIGINAL_MAP_WIDTH;
 		// LineDDA0.x_top = w1 % width; // JMS_GFX: Replaced previous lines with
-		// these: uqm::BYTE is too small for 640x480 sized maps.
+		// these: uint8_t is too small for 640x480 sized maps.
 		// LineDDA0.x_bot = w2 % width;
 		// Using w1 and w2 to get difference between top and bottom.
 		// BW: reinstate previous method and adapt it for higher res.
@@ -113,7 +113,7 @@ void DeltaTopography(uqm::COUNT num_iterations, uqm::SBYTE* DepthArray, GFXRECT*
 		h = height;
 		do
 		{
-			uqm::COUNT w;
+			uint16_t w;
 
 			w1 = LineDDA1.x_top - LineDDA0.x_top;
 			w2 = width - w1;
@@ -133,7 +133,7 @@ void DeltaTopography(uqm::COUNT num_iterations, uqm::SBYTE* DepthArray, GFXRECT*
 				d = *lpDst + depth_delta;
 				if (d >= -128 && d <= 127)
 				{
-					*lpDst = (uqm::SBYTE)d;
+					*lpDst = (int8_t)d;
 				}
 				++lpDst;
 			}
@@ -154,7 +154,7 @@ void DeltaTopography(uqm::COUNT num_iterations, uqm::SBYTE* DepthArray, GFXRECT*
 					d = *lpDst + depth_delta;
 					if (d >= -128 && d <= 127)
 					{
-						*lpDst = (uqm::SBYTE)d;
+						*lpDst = (int8_t)d;
 					}
 					++lpDst;
 				} while (--w1);
@@ -175,7 +175,7 @@ void DeltaTopography(uqm::COUNT num_iterations, uqm::SBYTE* DepthArray, GFXRECT*
 				d = *lpDst - depth_delta;
 				if (d >= -128 && d <= 127)
 				{
-					*lpDst = (uqm::SBYTE)d;
+					*lpDst = (int8_t)d;
 				}
 				++lpDst;
 			}
@@ -196,7 +196,7 @@ void DeltaTopography(uqm::COUNT num_iterations, uqm::SBYTE* DepthArray, GFXRECT*
 					d = *lpDst - depth_delta;
 					if (d >= -128 && d <= 127)
 					{
-						*lpDst = (uqm::SBYTE)d;
+						*lpDst = (int8_t)d;
 					}
 					++lpDst;
 				} while (--w2);

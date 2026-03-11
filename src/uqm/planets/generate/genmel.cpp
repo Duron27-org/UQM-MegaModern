@@ -37,13 +37,13 @@ static bool GenerateMelnorme_generateMoons(SOLARSYS_STATE* solarSys,
 										   PLANET_DESC* planet);
 static bool GenerateMelnorme_generateOrbital(SOLARSYS_STATE* solarSys,
 											 PLANET_DESC* world);
-static uqm::COUNT GenerateMelnorme_generateEnergy(const SOLARSYS_STATE*,
-												  const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO*);
+static uint16_t GenerateMelnorme_generateEnergy(const SOLARSYS_STATE*,
+												const PLANET_DESC* world, uint16_t whichNode, NODE_INFO*);
 static bool GenerateMelnorme_pickupEnergy(SOLARSYS_STATE* solarSys,
-										  PLANET_DESC* world, uqm::COUNT whichNode);
+										  PLANET_DESC* world, uint16_t whichNode);
 
-static uqm::DWORD GetMelnormeRef(void);
-static void SetMelnormeRef(uqm::DWORD Ref);
+static uint32_t GetMelnormeRef(void);
+static void SetMelnormeRef(uint32_t Ref);
 
 
 const GenerateFunctions generateMelnormeFunctions = {
@@ -138,7 +138,7 @@ GenerateMelnorme_generateMoons(SOLARSYS_STATE* solarSys,
 	if (EXTENDED && CurStarDescPtr->Index == MELNORME1_DEFINED
 		&& matchWorld(solarSys, planet, MATCH_PBYTE, MATCH_PLANET))
 	{
-		uqm::BYTE MoonByte = solarSys->SunDesc[0].MoonByte;
+		uint8_t MoonByte = solarSys->SunDesc[0].MoonByte;
 
 		solarSys->MoonDesc[MoonByte].data_index = PRECURSOR_STARBASE;
 	}
@@ -183,9 +183,9 @@ GenerateMelnorme_generateOrbital(SOLARSYS_STATE* solarSys,
 	return true;
 }
 
-static uqm::COUNT
+static uint16_t
 GenerateMelnorme_generateEnergy(const SOLARSYS_STATE* solarSys,
-								const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO* info)
+								const PLANET_DESC* world, uint16_t whichNode, NODE_INFO* info)
 {
 	if (EXTENDED && CurStarDescPtr->Index == MELNORME7_DEFINED
 		&& matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET))
@@ -199,7 +199,7 @@ GenerateMelnorme_generateEnergy(const SOLARSYS_STATE* solarSys,
 
 static bool
 GenerateMelnorme_pickupEnergy(SOLARSYS_STATE* solarSys,
-							  PLANET_DESC* world, uqm::COUNT whichNode)
+							  PLANET_DESC* world, uint16_t whichNode)
 {
 	if (EXTENDED && CurStarDescPtr->Index == MELNORME7_DEFINED && matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{
@@ -243,7 +243,7 @@ SelectMelnormeRefVar(void)
 	}
 }
 
-static uqm::DWORD
+static uint32_t
 GetMelnormeRef(void)
 {
 	const char* RefVar = SelectMelnormeRefVar();
@@ -258,7 +258,7 @@ GetMelnormeRef(void)
 }
 
 static void
-SetMelnormeRef(uqm::DWORD Ref)
+SetMelnormeRef(uint32_t Ref)
 {
 	const char* RefVar = SelectMelnormeRefVar();
 

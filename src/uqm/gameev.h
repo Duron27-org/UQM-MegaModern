@@ -62,9 +62,9 @@ extern void initEventSystem(void);
 extern void uninitEventSystem(void);
 
 extern void AddInitialGameEvents(void);
-extern void EventHandler(uqm::BYTE selector);
-extern void SetRaceDest(uqm::BYTE which_race, COORD x, COORD y, uqm::BYTE days_left,
-						uqm::BYTE func_index);
+extern void EventHandler(uint8_t selector);
+extern void SetRaceDest(uint8_t which_race, COORD x, COORD y, uint8_t days_left,
+						uint8_t func_index);
 
 
 #if 0 //defined(__cplusplus)

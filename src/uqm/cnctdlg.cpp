@@ -39,7 +39,7 @@ typedef struct connect_dialog_state
 {
 	bool (*InputFunc)(struct connect_dialog_state* pInputState);
 
-	uqm::DWORD NextTime;
+	uint32_t NextTime;
 	bool Initialized;
 	int which_side;
 
@@ -208,7 +208,7 @@ MCD_DrawTextEntry(WIDGET* _self, int x, int y)
 	self->value[WIDGET_TEXTENTRY_WIDTH - 1] = 0;
 
 	t.baseline.y = y;
-	t.CharCount = (uqm::COUNT)utf8StringCount(self->value);
+	t.CharCount = (uint16_t)utf8StringCount(self->value);
 	t.pStr = self->value;
 
 	if (!(self->state & WTE_EDITING))
@@ -228,12 +228,12 @@ MCD_DrawTextEntry(WIDGET* _self, int x, int y)
 	}
 	else
 	{ // editing state
-		uqm::COUNT i;
+		uint16_t i;
 		GFXRECT text_r;
-		uqm::BYTE char_deltas[WIDGET_TEXTENTRY_WIDTH];
-		uqm::BYTE* pchar_deltas;
+		uint8_t char_deltas[WIDGET_TEXTENTRY_WIDTH];
+		uint8_t* pchar_deltas;
 		GFXRECT r;
-		uqm::SIZE leading;
+		int16_t leading;
 
 		t.baseline.x = x + (RES_SCALE(90));
 		t.align = ALIGN_LEFT;
@@ -268,7 +268,7 @@ MCD_DrawTextEntry(WIDGET* _self, int x, int y)
 		pchar_deltas = char_deltas;
 		for (i = self->cursor_pos; i > 0; --i)
 		{
-			r.corner.x += (uqm::SIZE)*pchar_deltas++;
+			r.corner.x += (int16_t)*pchar_deltas++;
 		}
 		if (self->cursor_pos < t.CharCount) /* cursor mid-line */
 		{
@@ -288,12 +288,12 @@ MCD_DrawTextEntry(WIDGET* _self, int x, int y)
 			}
 			else if (self->cursor_pos + 1 == t.CharCount)
 			{ // extra pixel for last char margin
-				r.extent.width = (uqm::SIZE)*pchar_deltas - IF_HD(3);
+				r.extent.width = (int16_t)*pchar_deltas - IF_HD(3);
 				r.corner.x += RES_SCALE(1);
 			}
 			else
 			{ // normal mid-line char
-				r.extent.width = (uqm::SIZE)*pchar_deltas;
+				r.extent.width = (int16_t)*pchar_deltas;
 				r.corner.x += RES_SCALE(1);
 			}
 		}
@@ -364,7 +364,7 @@ static int
 OnTextEntryEvent(WIDGET_TEXTENTRY* widget)
 { // Going to edit the text
 	TEXTENTRY_STATE tes;
-	uqm::CHAR_T revert_buf[256];
+	char revert_buf[256];
 
 	// position cursor at the end of text
 	widget->cursor_pos = utf8StringCount(widget->value);
@@ -493,7 +493,7 @@ CreateWidgets(void)
 	menu.handleEvent = Widget_HandleEventMenuScreen;
 
 	auto& netplayOptions {uqm::UQMOptions::getInstance().getNetplayOptions()};
-		
+
 	slider.tag = WIDGET_TYPE_SLIDER;
 	slider.parent = nullptr;
 	slider.handleEvent = Widget_HandleEventSlider;
@@ -538,7 +538,7 @@ CreateWidgets(void)
 		uqm::strncpy_safe(texts[0].value, toCopy);
 	}
 	fmt::format_to_sz_n(texts[1].value, std::min(sizeof(texts[1].value), static_cast<size_t>(texts[1].maxlen)), "{}", peerData.address.port);
-		
+
 	menu.receiveFocus((WIDGET*)&menu, WIDGET_EVENT_DOWN);
 }
 

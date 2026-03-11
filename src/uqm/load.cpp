@@ -39,7 +39,7 @@
 //#define DEBUG_LOAD
 
 ACTIVITY NextActivity;
-uqm::BYTE IndependantResFactor;
+uint8_t IndependantResFactor;
 
 template <size_t TypeSize>
 struct ReadValueTypes
@@ -114,7 +114,7 @@ static inline bool read_str(void* fp, uqstl::span<char> str)
 }
 
 template <typename T>
-static inline bool skipN(void* fp, uqm::COUNT count)
+static inline bool skipN(void* fp, uint16_t count)
 {
 	for (int i = 0; i < count; ++i)
 	{
@@ -128,15 +128,15 @@ static inline bool skipN(void* fp, uqm::COUNT count)
 
 
 static void
-LoadShipQueue(void* fh, QUEUE* pQueue, uqm::DWORD size)
+LoadShipQueue(void* fh, QUEUE* pQueue, uint32_t size)
 {
-	uqm::COUNT num_links = size / 11;
+	uint16_t num_links = size / 11;
 
 	while (num_links--)
 	{
 		HSHIPFRAG hStarShip;
 		SHIP_FRAGMENT* FragPtr;
-		uqm::COUNT Index;
+		uint16_t Index;
 
 		readValue(fh, &Index);
 
@@ -157,15 +157,15 @@ LoadShipQueue(void* fh, QUEUE* pQueue, uqm::DWORD size)
 }
 
 static void
-LoadRaceQueue(void* fh, QUEUE* pQueue, uqm::DWORD size)
+LoadRaceQueue(void* fh, QUEUE* pQueue, uint32_t size)
 {
-	uqm::COUNT num_links = size / 30;
+	uint16_t num_links = size / 30;
 
 	while (num_links--)
 	{
 		HFLEETINFO hStarShip;
 		FLEET_INFO* FleetPtr;
-		uqm::COUNT Index;
+		uint16_t Index;
 
 		readValue(fh, &Index);
 
@@ -203,9 +203,9 @@ LoadRaceQueue(void* fh, QUEUE* pQueue, uqm::DWORD size)
 }
 
 static void
-LoadGroupQueue(void* fh, QUEUE* pQueue, uqm::DWORD size)
+LoadGroupQueue(void* fh, QUEUE* pQueue, uint32_t size)
 {
-	uqm::COUNT num_links = size / 13;
+	uint16_t num_links = size / 13;
 
 	while (num_links--)
 	{
@@ -233,7 +233,7 @@ LoadGroupQueue(void* fh, QUEUE* pQueue, uqm::DWORD size)
 static void
 LoadEncounter(ENCOUNTER* EncounterPtr, void* fh, bool try_core)
 {
-	uqm::COUNT i;
+	uint16_t i;
 
 	EncounterPtr->pred = 0;
 	EncounterPtr->succ = 0;
@@ -300,7 +300,7 @@ LoadClockState(CLOCK_STATE* ClockPtr, void* fh)
 static bool
 LoadGameState(GAME_STATE* GSPtr, void* fh, bool try_core)
 {
-	uqm::DWORD magic;
+	uint32_t magic;
 	legacySave = try_core;
 	readValue(fh, &magic);
 	if (magic != GLOBAL_STATE_TAG)
@@ -317,8 +317,8 @@ LoadGameState(GAME_STATE* GSPtr, void* fh, bool try_core)
 	readValue(fh, &GSPtr->CrewCost);
 	readValue(fh, &GSPtr->FuelCost);
 
-	readValueArray<uqm::BYTE>(fh, GSPtr->ModuleCost);
-	readValueArray<uqm::BYTE>(fh, GSPtr->ElementWorth);
+	readValueArray<uint8_t>(fh, GSPtr->ModuleCost);
+	readValueArray<uint8_t>(fh, GSPtr->ElementWorth);
 	readValue(fh, &GSPtr->CurrentActivity);
 
 	LoadClockState(&GSPtr->GameClock, fh);
@@ -367,7 +367,7 @@ LoadGameState(GAME_STATE* GSPtr, void* fh, bool try_core)
 		return false;
 	}
 	{
-		uqm::BYTE* buf;
+		uint8_t* buf;
 		bool result;
 		int rev;
 		size_t gameStateByteCount;
@@ -386,7 +386,7 @@ LoadGameState(GAME_STATE* GSPtr, void* fh, bool try_core)
 		uqm::log::debug("Detected save game state rev {}: {}",
 						rev, gameStateBitMapRevTag[rev]);
 
-		buf = (uqm::BYTE*)HMalloc(gameStateByteCount);
+		buf = (uint8_t*)HMalloc(gameStateByteCount);
 		if (buf == nullptr)
 		{
 			uqm::log::error("Warning: Cannot allocate enough bytes for "
@@ -395,7 +395,7 @@ LoadGameState(GAME_STATE* GSPtr, void* fh, bool try_core)
 			return false;
 		}
 
-		readValueArray<uqm::BYTE>(fh, {buf, (uqm::COUNT)gameStateByteCount});
+		readValueArray<uint8_t>(fh, {buf, (uint16_t)gameStateByteCount});
 		result = deserialiseGameState(gameStateBitMap, buf, gameStateByteCount, rev);
 		HFree(buf);
 		if (result == false)
@@ -422,7 +422,7 @@ LoadGameState(GAME_STATE* GSPtr, void* fh, bool try_core)
 
 		if (magic > gameStateByteCount)
 		{
-			skipN<uint8_t>(fh, (uqm::COUNT)(magic - gameStateByteCount));
+			skipN<uint8_t>(fh, (uint16_t)(magic - gameStateByteCount));
 		}
 	}
 	return true;
@@ -432,9 +432,9 @@ static bool
 LoadSisState(SIS_STATE* SSPtr, void* fp, bool try_core,
 			 int legacyMM)
 {
-	uqm::COUNT SisNameSize = (legacyMM == 1 || try_core) ?
-								 LEGACY_SIS_NAME_SIZE :
-								 SIS_NAME_SIZE;
+	uint16_t SisNameSize = (legacyMM == 1 || try_core) ?
+							   LEGACY_SIS_NAME_SIZE :
+							   SIS_NAME_SIZE;
 
 	if (readValue(fp, &SSPtr->log_x) == false
 		|| readValue(fp, &SSPtr->log_y) == false
@@ -443,11 +443,11 @@ LoadSisState(SIS_STATE* SSPtr, void* fp, bool try_core,
 		|| readValue(fp, &SSPtr->CrewEnlisted) == false
 		|| readValue(fp, &SSPtr->TotalElementMass) == false
 		|| readValue(fp, &SSPtr->TotalBioMass) == false
-		|| readValueArray<uqm::BYTE>(fp, SSPtr->ModuleSlots) == false
-		|| readValueArray<uqm::BYTE>(fp, SSPtr->DriveSlots) == false
-		|| readValueArray<uqm::BYTE>(fp, SSPtr->JetSlots) == false
+		|| readValueArray<uint8_t>(fp, SSPtr->ModuleSlots) == false
+		|| readValueArray<uint8_t>(fp, SSPtr->DriveSlots) == false
+		|| readValueArray<uint8_t>(fp, SSPtr->JetSlots) == false
 		|| readValue(fp, &SSPtr->NumLanders) == false
-		|| readValueArray<uqm::COUNT>(fp, SSPtr->ElementAmounts) == false
+		|| readValueArray<uint16_t>(fp, SSPtr->ElementAmounts) == false
 		|| read_str(fp, SSPtr->ShipName) == false
 		|| read_str(fp, SSPtr->CommanderName) == false
 		|| read_str(fp, SSPtr->PlanetName) == false
@@ -478,9 +478,9 @@ LoadSisState(SIS_STATE* SSPtr, void* fp, bool try_core,
 static bool
 LoadSummary(SUMMARY_DESC* SummPtr, void* fp, bool try_core)
 {
-	uqm::DWORD magic;
-	uqm::DWORD magicTag = try_core ? SAVEFILE_TAG : MMV4_TAG;
-	uqm::DWORD nameSize = 0;
+	uint32_t magic;
+	uint32_t magicTag = try_core ? SAVEFILE_TAG : MMV4_TAG;
+	uint32_t nameSize = 0;
 	int legacyMM = false;
 	if (!readValue(fp, &magic))
 	{
@@ -535,8 +535,8 @@ LoadSummary(SUMMARY_DESC* SummPtr, void* fp, bool try_core)
 		|| readValue(fp, &SummPtr->MCreditHi) == false
 		|| readValue(fp, &SummPtr->NumShips) == false
 		|| readValue(fp, &SummPtr->NumDevices) == false
-		|| readValueArray<uqm::BYTE>(fp, SummPtr->ShipList) == false
-		|| readValueArray<uqm::BYTE>(fp, SummPtr->DeviceList) == false
+		|| readValueArray<uint8_t>(fp, SummPtr->ShipList) == false
+		|| readValueArray<uint8_t>(fp, SummPtr->DeviceList) == false
 		|| (!try_core && (readValue(fp, &SummPtr->res_factor) == false)))
 	{
 		return false;
@@ -546,7 +546,7 @@ LoadSummary(SUMMARY_DESC* SummPtr, void* fp, bool try_core)
 
 	if (nameSize < SAVE_NAME_SIZE)
 	{
-		if (!readValueArray<uqm::CHAR_T>(fp, {SummPtr->SaveName, nameSize}))
+		if (!readValueArray<char>(fp, {SummPtr->SaveName, nameSize}))
 		{
 			return false;
 		}
@@ -554,8 +554,8 @@ LoadSummary(SUMMARY_DESC* SummPtr, void* fp, bool try_core)
 	}
 	else
 	{
-		uqm::DWORD remaining = nameSize - SAVE_NAME_SIZE + 1;
-		if (!readValueArray<uqm::CHAR_T>(fp, {SummPtr->SaveName, SAVE_NAME_SIZE - 1}))
+		uint32_t remaining = nameSize - SAVE_NAME_SIZE + 1;
+		if (!readValueArray<char>(fp, {SummPtr->SaveName, SAVE_NAME_SIZE - 1}))
 		{
 			return false;
 		}
@@ -580,14 +580,14 @@ LoadStarDesc(STAR_DESC* SDPtr, void* fh)
 }
 
 static void
-LoadScanInfo(uio_Stream* fh, uqm::DWORD flen)
+LoadScanInfo(uio_Stream* fh, uint32_t flen)
 {
 	GAME_STATE_FILE* fp = OpenStateFile(STARINFO_FILE, "wb");
 	if (fp)
 	{
 		while (flen)
 		{
-			uqm::DWORD val;
+			uint32_t val;
 			readValue(fh, &val);
 			swrite_32(fp, val);
 			flen -= 4;
@@ -597,13 +597,13 @@ LoadScanInfo(uio_Stream* fh, uqm::DWORD flen)
 }
 
 static void
-LoadGroupList(uio_Stream* fh, uqm::DWORD chunksize)
+LoadGroupList(uio_Stream* fh, uint32_t chunksize)
 {
 	GAME_STATE_FILE* fp = OpenStateFile(RANDGRPINFO_FILE, "rb");
 	if (fp)
 	{
 		GROUP_HEADER h;
-		uqm::BYTE LastEnc, NumGroups;
+		uint8_t LastEnc, NumGroups;
 		int i;
 		ReadGroupHeader(fp, &h);
 		/* There's only supposed to be one of these, so group 0 should be
@@ -619,7 +619,7 @@ LoadGroupList(uio_Stream* fh, uqm::DWORD chunksize)
 		swrite_8(fp, NumGroups);
 		for (i = 0; i < NumGroups; ++i)
 		{
-			uqm::BYTE race_outer;
+			uint8_t race_outer;
 			IP_GROUP ip;
 			readValue(fh, &race_outer);
 			readValue(fh, &ip.group_counter);
@@ -641,7 +641,7 @@ LoadGroupList(uio_Stream* fh, uqm::DWORD chunksize)
 }
 
 static void
-SetBattleGroupOffset(int encounterIndex, uqm::DWORD offset)
+SetBattleGroupOffset(int encounterIndex, uint32_t offset)
 {
 	// The reason for this switch, even though the group offsets are
 	// successive, is because SET_GAME_STATE is a #define, which stringizes
@@ -698,12 +698,12 @@ SetBattleGroupOffset(int encounterIndex, uqm::DWORD offset)
 }
 
 static void
-LoadBattleGroup(uio_Stream* fh, uqm::DWORD chunksize)
+LoadBattleGroup(uio_Stream* fh, uint32_t chunksize)
 {
 	GAME_STATE_FILE* fp;
 	GROUP_HEADER h;
-	uqm::DWORD encounter, offset;
-	uqm::BYTE current;
+	uint32_t encounter, offset;
+	uint8_t current;
 	int i;
 
 	readValue(fh, &encounter);
@@ -743,7 +743,7 @@ LoadBattleGroup(uio_Stream* fh, uqm::DWORD chunksize)
 	for (i = 1; i <= h.NumGroups; ++i)
 	{
 		int j;
-		uqm::BYTE icon, NumShips;
+		uint8_t icon, NumShips;
 		readValue(fh, &icon);
 		readValue(fh, &NumShips);
 		chunksize -= 2;
@@ -753,7 +753,7 @@ LoadBattleGroup(uio_Stream* fh, uqm::DWORD chunksize)
 		swrite_8(fp, NumShips);
 		for (j = 0; j < NumShips; ++j)
 		{
-			uqm::BYTE race_outer;
+			uint8_t race_outer;
 			SHIP_FRAGMENT sf;
 			readValue(fh, &race_outer);
 			readValue(fh, &sf.captains_name_index);
@@ -790,7 +790,7 @@ LoadBattleGroup(uio_Stream* fh, uqm::DWORD chunksize)
 	}
 }
 
-bool LoadCoreGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr)
+bool LoadCoreGame(uint16_t which_game, SUMMARY_DESC* SummPtr)
 {
 	uio_Stream* in_fp;
 	char file[PATH_MAX] {};
@@ -829,14 +829,14 @@ bool LoadCoreGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr)
 	return true;
 }
 
-bool LoadGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, uio_Stream* in_fp, bool try_core)
+bool LoadGame(uint16_t which_game, SUMMARY_DESC* SummPtr, uio_Stream* in_fp, bool try_core)
 {
 	char file[PATH_MAX] {};
 	SUMMARY_DESC loc_sd;
-	uqm::COUNT num_links;
+	uint16_t num_links;
 	STAR_DESC SD;
 	ACTIVITY Activity;
-	uqm::DWORD chunk, chunkSize;
+	uint32_t chunk, chunkSize;
 	bool first_group_spec = true;
 
 	if (!try_core)

@@ -472,11 +472,11 @@ closed: /* No special actions required for now. */
 // This function should however not be called from multiple threads at once.
 int NetManager_process(uint32_t* timeoutMs)
 {
-	uqm::DWORD timeoutTemp;
-	uqm::DWORD waitResult;
-	uqm::DWORD startEvent;
+	uint32_t timeoutTemp;
+	uint32_t waitResult;
+	uint32_t startEvent;
 
-	timeoutTemp = (uqm::DWORD)*timeoutMs;
+	timeoutTemp = (uint32_t)*timeoutMs;
 
 	// WSAWaitForMultipleEvents only reports events for one socket at a
 	// time. In order to have each socket checked once, we call it
@@ -509,7 +509,7 @@ int NetManager_process(uint32_t* timeoutMs)
 		}
 
 		{
-			uqm::DWORD eventIndex = waitResult - WSA_WAIT_EVENT_0;
+			uint32_t eventIndex = waitResult - WSA_WAIT_EVENT_0;
 			if (NetManager_processEvent((size_t)eventIndex) == -1)
 			{
 				// errno is set

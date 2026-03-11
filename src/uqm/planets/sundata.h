@@ -36,29 +36,29 @@ extern "C" {
 
 typedef struct
 {
-	uqm::BYTE StarSize;
-	uqm::BYTE StarIntensity;
-	uqm::UWORD StarEnergy;
+	uint8_t StarSize;
+	uint8_t StarIntensity;
+	uint16_t StarEnergy;
 
 	PLANET_INFO PlanetInfo;
 } SYSTEM_INFO;
 
-#define GENERATE_ALL ((uqm::COUNT)~0)
+#define GENERATE_ALL ((uint16_t)~0)
 
-extern uqm::COUNT GenerateMineralDeposits(const SYSTEM_INFO*, uqm::COUNT whichDeposit,
-										  NODE_INFO* info);
-extern uqm::COUNT GenerateLifeForms(const SYSTEM_INFO*, uqm::COUNT whichLife,
-									NODE_INFO* info);
+extern uint16_t GenerateMineralDeposits(const SYSTEM_INFO*, uint16_t whichDeposit,
+										NODE_INFO* info);
+extern uint16_t GenerateLifeForms(const SYSTEM_INFO*, uint16_t whichLife,
+								  NODE_INFO* info);
 extern void GenerateRandomLocation(GFXPOINT* loc);
-extern uqm::COUNT GenerateRandomNodes(const SYSTEM_INFO*, uqm::COUNT scan, uqm::COUNT numNodes,
-									  uqm::COUNT type, uqm::COUNT whichNode, NODE_INFO* info);
-extern uqm::COUNT CustomMineralDeposits(const SYSTEM_INFO* SysInfoPtr, uqm::COUNT which_deposit,
-										NODE_INFO* info, uqm::COUNT numNodes, uqm::COUNT type, uqm::BYTE quality);
-extern uqm::COUNT CustomMineralDeposit(NODE_INFO* info, uqm::COUNT type, uqm::BYTE quality,
-									   GFXPOINT location);
+extern uint16_t GenerateRandomNodes(const SYSTEM_INFO*, uint16_t scan, uint16_t numNodes,
+									uint16_t type, uint16_t whichNode, NODE_INFO* info);
+extern uint16_t CustomMineralDeposits(const SYSTEM_INFO* SysInfoPtr, uint16_t which_deposit,
+									  NODE_INFO* info, uint16_t numNodes, uint16_t type, uint8_t quality);
+extern uint16_t CustomMineralDeposit(NODE_INFO* info, uint16_t type, uint8_t quality,
+									 GFXPOINT location);
 // Generate lifeforms from a preset lifeTypes[] array
-extern uqm::COUNT GeneratePresetLife(const SYSTEM_INFO*,
-									 const uqm::SBYTE* lifeTypes, uqm::COUNT whichLife, NODE_INFO* info);
+extern uint16_t GeneratePresetLife(const SYSTEM_INFO*,
+								   const int8_t* lifeTypes, uint16_t whichLife, NODE_INFO* info);
 
 #define DWARF_ELEMENT_DENSITY 1
 #define GIANT_ELEMENT_DENSITY 3

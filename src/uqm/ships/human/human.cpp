@@ -54,7 +54,7 @@
 // Point-Defense Laser
 #define SPECIAL_ENERGY_COST 4
 #define SPECIAL_WAIT 9
-#define LASER_RANGE (uqm::UWORD) RES_SCALE(100)
+#define LASER_RANGE (uint16_t)RES_SCALE(100)
 
 RACE_DESC human_desc =
 	{
@@ -131,7 +131,7 @@ RACE_DESC human_desc =
 static void
 nuke_preprocess(ELEMENT* ElementPtr)
 {
-	uqm::COUNT facing;
+	uint16_t facing;
 
 	facing = GetFrameIndex(ElementPtr->next.image.frame);
 	if (ElementPtr->turn_wait > 0)
@@ -152,7 +152,7 @@ nuke_preprocess(ELEMENT* ElementPtr)
 	}
 
 	{
-		uqm::SDWORD speed;
+		int32_t speed;
 
 		if ((speed = MISSILE_SPEED + ((MISSILE_LIFE - ElementPtr->life_span) * THRUST_SCALE)) > MAX_MISSILE_SPEED)
 		{
@@ -207,7 +207,7 @@ spawn_point_defense(ELEMENT* ElementPtr)
 			hNextObject = GetPredElement(ObjectPtr);
 			if (ObjectPtr != ShipPtr && CollidingElement(ObjectPtr) && !OBJECT_CLOAKED(ObjectPtr))
 			{
-				uqm::SIZE delta_x, delta_y;
+				int16_t delta_x, delta_y;
 
 				delta_x = ObjectPtr->next.location.x - ShipPtr->next.location.x;
 				delta_y = ObjectPtr->next.location.y - ShipPtr->next.location.y;
@@ -221,7 +221,7 @@ spawn_point_defense(ELEMENT* ElementPtr)
 				}
 				delta_x = WORLD_TO_DISPLAY(delta_x);
 				delta_y = WORLD_TO_DISPLAY(delta_y);
-				if ((uqm::UWORD)delta_x <= LASER_RANGE && (uqm::UWORD)delta_y <= LASER_RANGE && (uqm::UWORD)delta_x * (uqm::UWORD)delta_x + (uqm::UWORD)delta_y * (uqm::UWORD)delta_y <= LASER_RANGE * LASER_RANGE)
+				if ((uint16_t)delta_x <= LASER_RANGE && (uint16_t)delta_y <= LASER_RANGE && (uint16_t)delta_x * (uint16_t)delta_x + (uint16_t)delta_y * (uint16_t)delta_y <= LASER_RANGE * LASER_RANGE)
 				{
 					HELEMENT hPointDefense;
 					LASER_BLOCK LaserBlock;
@@ -273,7 +273,7 @@ spawn_point_defense(ELEMENT* ElementPtr)
 	}
 }
 
-static uqm::COUNT
+static uint16_t
 initialize_nuke(ELEMENT* ShipPtr, HELEMENT NukeArray[])
 {
 	STARSHIP* StarShipPtr;
@@ -309,7 +309,7 @@ initialize_nuke(ELEMENT* ShipPtr, HELEMENT NukeArray[])
 
 static void
 human_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
-				   uqm::COUNT ConcernCounter)
+				   uint16_t ConcernCounter)
 {
 	STARSHIP* StarShipPtr;
 

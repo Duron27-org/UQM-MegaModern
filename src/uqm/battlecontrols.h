@@ -52,7 +52,7 @@ struct BattleInputHandlers
 
 #define INPUT_CONTEXT_COMMON       \
 	BattleInputHandlers* handlers; \
-	uqm::COUNT playerNr;
+	uint16_t playerNr;
 
 // Base "class" for all ...InputContext structures
 struct InputContext
@@ -79,10 +79,10 @@ struct NetworkInputContext
 };
 #endif /* NETPLAY */
 
-ComputerInputContext* ComputerInputContext_new(uqm::COUNT playerNr);
-HumanInputContext* HumanInputContext_new(uqm::COUNT playerNr);
+ComputerInputContext* ComputerInputContext_new(uint16_t playerNr);
+HumanInputContext* HumanInputContext_new(uint16_t playerNr);
 #ifdef NETPLAY
-NetworkInputContext* NetworkInputContext_new(uqm::COUNT playerNr);
+NetworkInputContext* NetworkInputContext_new(uint16_t playerNr);
 #endif /* NETPLAY */
 
 extern InputContext* PlayerInput[];
@@ -91,7 +91,7 @@ extern InputContext* PlayerInput[];
 BATTLE_INPUT_STATE frameInputHuman(HumanInputContext* context,
 								   STARSHIP* StarShipPtr);
 void InputContext_init(InputContext* context, BattleInputHandlers* handlers,
-					   uqm::COUNT playerNr);
+					   uint16_t playerNr);
 void InputContext_delete(InputContext* context);
 // Do not call directly, only from the FreeInputContextFunction.
 // Call InputContext->handlers->freeContext() to release an

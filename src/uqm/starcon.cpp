@@ -69,7 +69,7 @@ extern uint32_t SDL_ThreadID(void);
 static void
 checkArilouGate(void)
 {
-	uqm::BYTE counter;
+	uint8_t counter;
 
 	counter = GET_GAME_STATE(ARILOU_SPACE_COUNTER);
 	if (GET_GAME_STATE(ARILOU_SPACE) == OPENING)
@@ -105,7 +105,7 @@ on_battle_frame(void)
 }
 
 static void
-BackgroundInitKernel(uqm::DWORD TimeOut)
+BackgroundInitKernel(uint32_t TimeOut)
 {
 	LoadMasterShipList(TaskSwitch);
 	TaskSwitch();
@@ -357,7 +357,7 @@ int Starcon2Main(void* threadArg)
 				{ /* BGD mode */
 					InstallBombAtEarth();
 				}
-				else if (GET_GAME_STATE(GLOBAL_FLAGS_AND_DATA) == (uqm::BYTE)~0
+				else if (GET_GAME_STATE(GLOBAL_FLAGS_AND_DATA) == (uint8_t)~0
 						 || GET_GAME_STATE(CHMMR_BOMB_STATE) == 2)
 				{
 					GLOBAL(CurrentActivity) |= START_ENCOUNTER;
@@ -403,7 +403,7 @@ int Starcon2Main(void* threadArg)
 			if (!(GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
 				&& (lowByte(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE
 					// if died for some reason
-					|| GLOBAL_SIS(CrewEnlisted) == (uqm::COUNT)~0))
+					|| GLOBAL_SIS(CrewEnlisted) == (uint16_t)~0))
 			{
 				if (GET_GAME_STATE(KOHR_AH_KILLED_ALL))
 				{

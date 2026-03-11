@@ -121,14 +121,14 @@ static RACE_DESC arilou_desc =
 		0, /* CodeRef */
 };
 
-static uqm::COUNT
+static uint16_t
 initialize_autoaim_laser(ELEMENT* ShipPtr, HELEMENT LaserArray[])
 {
-	uqm::COUNT orig_facing;
-	uqm::SIZE delta_facing;
+	uint16_t orig_facing;
+	int16_t delta_facing;
 	STARSHIP* StarShipPtr;
 	LASER_BLOCK LaserBlock;
-	uqm::COUNT LaserRange = chooseIfHd(LASER_RANGE, LASER_RANGE_HD);
+	uint16_t LaserRange = chooseIfHd(LASER_RANGE, LASER_RANGE_HD);
 
 	GetElementStarShip(ShipPtr, &StarShipPtr);
 	LaserBlock.face = orig_facing = StarShipPtr->ShipFacing;
@@ -153,7 +153,7 @@ initialize_autoaim_laser(ELEMENT* ShipPtr, HELEMENT LaserArray[])
 
 static void
 arilou_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
-					uqm::COUNT ConcernCounter)
+					uint16_t ConcernCounter)
 {
 	STARSHIP* StarShipPtr;
 
@@ -247,7 +247,7 @@ arilou_preprocess(ELEMENT* ElementPtr)
 	}
 	else if (ElementPtr->next.image.farray == StarShipPtr->RaceDescPtr->ship_data.special)
 	{
-		uqm::COUNT life_span;
+		uint16_t life_span;
 
 		StarShipPtr->cur_status_flags =
 			(StarShipPtr->cur_status_flags
@@ -293,8 +293,8 @@ arilou_preprocess(ELEMENT* ElementPtr)
 			{ // JMS: Reduce the odds of teleporting into Sa-Matra.
 				if (lowByte(GLOBAL(CurrentActivity)) == IN_LAST_BATTLE)
 				{
-					uqm::SDWORD dist = 0;
-					uqm::SDWORD dx, dy;
+					int32_t dist = 0;
+					int32_t dx, dy;
 
 					do
 					{
@@ -303,8 +303,8 @@ arilou_preprocess(ELEMENT* ElementPtr)
 						ElementPtr->next.location.y =
 							WRAP_Y(DISPLAY_ALIGN_Y(TFB_Random()));
 
-						dx = ((uqm::SDWORD)ElementPtr->next.location.x - (LOG_SPACE_WIDTH >> 1));
-						dy = ((uqm::SDWORD)ElementPtr->next.location.y - (LOG_SPACE_HEIGHT >> 1));
+						dx = ((int32_t)ElementPtr->next.location.x - (LOG_SPACE_WIDTH >> 1));
+						dy = ((int32_t)ElementPtr->next.location.y - (LOG_SPACE_HEIGHT >> 1));
 
 						dist = sqrt(dx * dx + dy * dy);
 					} while (dist < (RES_SCALE(2800)));

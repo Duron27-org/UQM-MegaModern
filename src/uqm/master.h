@@ -59,7 +59,7 @@ extern void FreeMasterShipList(void);
 extern void ReloadMasterShipList(void (*YieldProcessing)(void));
 extern HMASTERSHIP FindMasterShip(SPECIES_ID ship_ref);
 extern int FindMasterShipIndex(SPECIES_ID ship_ref);
-uqm::COUNT GetShipCostFromIndex(unsigned Index);
+uint16_t GetShipCostFromIndex(unsigned Index);
 FRAME GetShipIconsFromIndex(unsigned Index);
 FRAME GetShipMeleeIconsFromIndex(unsigned Index);
 

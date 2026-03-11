@@ -20,7 +20,7 @@
 #include "libs/compiler.h"
 
 #if defined(NETPLAY)
-typedef uqm::DWORD BattleFrameCounter;
+typedef uint32_t BattleFrameCounter;
 #endif
 
 #include "init.h"
@@ -38,25 +38,25 @@ typedef struct battlestate_struct
 {
 	bool (*InputFunc)(struct battlestate_struct* pInputState);
 	bool first_time;
-	uqm::DWORD NextTime;
+	uint32_t NextTime;
 	BattleFrameCallback* frame_cb;
 } BATTLE_STATE;
 
-extern uqm::BYTE battle_counter[NUM_SIDES];
+extern uint8_t battle_counter[NUM_SIDES];
 extern bool instantVictory;
 #if defined(NETPLAY)
 extern BattleFrameCounter battleFrameCount;
 #endif
 #ifdef NETPLAY
-uqm::COUNT GetPlayerOrder(uqm::COUNT i);
+uint16_t GetPlayerOrder(uint16_t i);
 #else
 #define GetPlayerOrder(i) (i)
 #endif
 
 bool Battle(BattleFrameCallback*);
 
-static constexpr uqm::DWORD BattleFPS {24}; // TODO: this is also defined in netoptions.cpp as BattleFPS. Maybe we should unify these?
-static constexpr uqm::DWORD BattleFrameRateTicks {getTicksForFramerate(BattleFPS)};
+static constexpr uint32_t BattleFPS {24}; // TODO: this is also defined in netoptions.cpp as BattleFPS. Maybe we should unify these?
+static constexpr uint32_t BattleFrameRateTicks {getTicksForFramerate(BattleFPS)};
 
 extern void BattleSong(bool DoPlay);
 extern void FreeBattleSong(void);

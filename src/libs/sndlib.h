@@ -73,46 +73,46 @@ extern bool DestroyMusic(MUSIC_REF MusicRef);
 #define LAST_SFX_CHANNEL (MIN_FX_CHANNEL + NUM_FX_CHANNELS - 1)
 #define NUM_SFX_CHANNELS (MIN_FX_CHANNEL + NUM_FX_CHANNELS)
 
-extern void PLRPlaySong(MUSIC_REF MusicRef, bool Continuous, uqm::BYTE Priority);
+extern void PLRPlaySong(MUSIC_REF MusicRef, bool Continuous, uint8_t Priority);
 extern void PLRStop(MUSIC_REF MusicRef);
 extern bool PLRPlaying(MUSIC_REF MusicRef);
-extern void PLRSeek(MUSIC_REF MusicRef, uqm::DWORD pos);
+extern void PLRSeek(MUSIC_REF MusicRef, uint32_t pos);
 extern void PLRPause(MUSIC_REF MusicRef);
 extern void PLRResume(MUSIC_REF MusicRef);
 extern void snd_PlaySpeech(MUSIC_REF SpeechRef);
 extern void snd_StopSpeech(void);
-extern void PlayChannel(uqm::COUNT channel, SOUND snd, SoundPosition pos,
+extern void PlayChannel(uint16_t channel, SOUND snd, SoundPosition pos,
 						void* positional_object, unsigned char priority);
-extern bool ChannelPlaying(uqm::COUNT Channel);
-extern void* GetPositionalObject(uqm::COUNT channel);
-extern void SetPositionalObject(uqm::COUNT channel, void* positional_object);
-extern void UpdateSoundPosition(uqm::COUNT channel, SoundPosition pos);
-extern void StopChannel(uqm::COUNT Channel, uqm::BYTE Priority);
-extern void SetMusicVolume(uqm::COUNT Volume);
-extern void SetChannelVolume(uqm::COUNT Channel, uqm::COUNT Volume, uqm::BYTE Priority);
+extern bool ChannelPlaying(uint16_t Channel);
+extern void* GetPositionalObject(uint16_t channel);
+extern void SetPositionalObject(uint16_t channel, void* positional_object);
+extern void UpdateSoundPosition(uint16_t channel, SoundPosition pos);
+extern void StopChannel(uint16_t Channel, uint8_t Priority);
+extern void SetMusicVolume(uint16_t Volume);
+extern void SetChannelVolume(uint16_t Channel, uint16_t Volume, uint8_t Priority);
 
 extern void StopSound(void);
 extern bool SoundPlaying(void);
 
-extern uqm::DWORD PLRGetPos(void);
+extern uint32_t PLRGetPos(void);
 
-extern void WaitForSoundEnd(uqm::COUNT Channel);
-#define TFBSOUND_WAIT_ALL ((uqm::COUNT)~0)
+extern void WaitForSoundEnd(uint16_t Channel);
+#define TFBSOUND_WAIT_ALL ((uint16_t)~0)
 
-extern uqm::DWORD FadeMusic(uqm::BYTE end_vol, uqm::SIZE TimeInterval);
-extern uqm::BYTE GetCurrMusicVol(void);
+extern uint32_t FadeMusic(uint8_t end_vol, int16_t TimeInterval);
+extern uint8_t GetCurrMusicVol(void);
 
 // For music resume option
 typedef struct music_position
 {
-	uqm::DWORD filename_hash;
-	uqm::DWORD position;
-	uqm::DWORD last_played;
+	uint32_t filename_hash;
+	uint32_t position;
+	uint32_t last_played;
 } MUSIC_POSITION;
 
 extern void SetMusicPosition(void);
 extern bool OkayToResume(void);
-extern uqm::DWORD GetMusicPosition(void);
+extern uint32_t GetMusicPosition(void);
 extern void ResetMusicResume(void);
 
 static inline void
@@ -123,9 +123,9 @@ print_mp(const MUSIC_POSITION mp)
 }
 
 static inline void
-print_mp_array(const MUSIC_POSITION mp_array[], const uqm::COUNT num_items)
+print_mp_array(const MUSIC_POSITION mp_array[], const uint16_t num_items)
 {
-	uqm::COUNT i;
+	uint16_t i;
 
 	//system ("cls");
 	fmt::print("--------------------\n\n");

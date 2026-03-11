@@ -190,7 +190,7 @@ buzztrack_preprocess(ELEMENT* ElementPtr)
 	}
 	else
 	{
-		uqm::COUNT facing = 0;
+		uint16_t facing = 0;
 
 		if (ElementPtr->hTarget == 0
 			&& TrackShip(ElementPtr, &facing) < 0)
@@ -199,7 +199,7 @@ buzztrack_preprocess(ELEMENT* ElementPtr)
 		}
 		else
 		{
-			uqm::SIZE delta_x, delta_y;
+			int16_t delta_x, delta_y;
 			ELEMENT* eptr;
 
 			LockElement(ElementPtr->hTarget, &eptr);
@@ -225,9 +225,9 @@ buzztrack_preprocess(ELEMENT* ElementPtr)
 			delta_y = WORLD_TO_DISPLAY(delta_y);
 			if (delta_x >= ACTIVATE_RANGE
 				|| delta_y >= ACTIVATE_RANGE
-				|| (uqm::DWORD)((uqm::UWORD)delta_x * delta_x)
-						   + (uqm::DWORD)((uqm::UWORD)delta_y * delta_y)
-					   >= (uqm::DWORD)ACTIVATE_RANGE * ACTIVATE_RANGE)
+				|| (uint32_t)((uint16_t)delta_x * delta_x)
+						   + (uint32_t)((uint16_t)delta_y * delta_y)
+					   >= (uint32_t)ACTIVATE_RANGE * ACTIVATE_RANGE)
 			{
 				ZeroVelocityComponents(&ElementPtr->velocity);
 			}
@@ -246,7 +246,7 @@ buzztrack_preprocess(ELEMENT* ElementPtr)
 static void
 decelerate_preprocess(ELEMENT* ElementPtr)
 {
-	uqm::SDWORD dx, dy;
+	int32_t dx, dy;
 
 	GetCurrentVelocityComponentsSdword(&ElementPtr->velocity, &dx, &dy);
 	dx /= 2;
@@ -310,7 +310,7 @@ buzzsaw_postprocess(ELEMENT* ElementPtr)
 	hElement = AllocElement();
 	if (hElement)
 	{
-		uqm::COUNT primIndex;
+		uint16_t primIndex;
 		ELEMENT* ListElementPtr;
 		STARSHIP* StarShipPtr;
 
@@ -337,7 +337,7 @@ buzzsaw_postprocess(ELEMENT* ElementPtr)
 	}
 }
 
-static uqm::COUNT
+static uint16_t
 initialize_buzzsaw(ELEMENT* ShipPtr, HELEMENT SawArray[])
 {
 	STARSHIP* StarShipPtr;
@@ -377,7 +377,7 @@ initialize_buzzsaw(ELEMENT* ShipPtr, HELEMENT SawArray[])
 
 static void
 black_urquan_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
-						  uqm::COUNT ConcernCounter)
+						  uint16_t ConcernCounter)
 {
 	EVALUATE_DESC* lpEvalDesc;
 	STARSHIP* StarShipPtr;
@@ -424,7 +424,7 @@ black_urquan_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 				&& elementsOfSamePlayer(BuzzSawPtr, ShipPtr))
 			{
 				{
-					//uqm::COUNT which_turn;
+					//uint16_t which_turn;
 
 					if (!PlotIntercept(BuzzSawPtr,
 									   lpEvalDesc->ObjectPtr, BuzzSawPtr->life_span,
@@ -505,7 +505,7 @@ gas_cloud_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
 static void
 spawn_gas_cloud(ELEMENT* ElementPtr)
 {
-	uqm::SDWORD dx, dy;
+	int32_t dx, dy;
 	STARSHIP* StarShipPtr;
 	MISSILE_BLOCK MissileBlock;
 

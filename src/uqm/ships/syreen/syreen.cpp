@@ -126,7 +126,7 @@ static RACE_DESC syreen_desc =
 		0, /* CodeRef */
 };
 
-static uqm::COUNT
+static uint16_t
 initialize_dagger(ELEMENT* ShipPtr, HELEMENT DaggerArray[])
 {
 	STARSHIP* StarShipPtr;
@@ -192,8 +192,8 @@ spawn_crew(ELEMENT* ElementPtr)
 				&& !elementsOfSamePlayer(ObjPtr, ElementPtr)
 				&& ObjPtr->crew_level > 1)
 			{
-				uqm::SDWORD dx, dy;
-				uqm::DWORD d_squared;
+				int32_t dx, dy;
+				uint32_t d_squared;
 
 				dx = ObjPtr->next.location.x - ElementPtr->next.location.x;
 				if (dx < 0)
@@ -209,11 +209,11 @@ spawn_crew(ELEMENT* ElementPtr)
 				dx = WORLD_TO_DISPLAY(dx);
 				dy = WORLD_TO_DISPLAY(dy);
 				if (dx <= ABANDONER_RANGE && dy <= ABANDONER_RANGE
-					&& (d_squared = (uqm::DWORD)((uqm::UWORD)dx * (uqm::UWORD)dx)
-								  + (uqm::DWORD)((uqm::UWORD)dy * (uqm::UWORD)dy))
-						   <= (uqm::DWORD)((uqm::UWORD)ABANDONER_RANGE * (uqm::UWORD)ABANDONER_RANGE))
+					&& (d_squared = (uint32_t)((uint16_t)dx * (uint16_t)dx)
+								  + (uint32_t)((uint16_t)dy * (uint16_t)dy))
+						   <= (uint32_t)((uint16_t)ABANDONER_RANGE * (uint16_t)ABANDONER_RANGE))
 				{
-					uqm::COUNT crew_loss;
+					uint16_t crew_loss;
 
 					if (!antiCheat(ElementPtr, true, uqm::GodModeFlags::NoDamage))
 					{
@@ -240,7 +240,7 @@ spawn_crew(ELEMENT* ElementPtr)
 
 static void
 syreen_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
-					uqm::COUNT ConcernCounter)
+					uint16_t ConcernCounter)
 {
 	EVALUATE_DESC* lpEvalDesc;
 

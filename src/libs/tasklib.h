@@ -37,7 +37,7 @@ extern "C" {
 struct taskstruct
 {
 	Mutex state_mutex;
-	volatile uqm::DWORD state; // Protected by state_mutex
+	volatile uint32_t state; // Protected by state_mutex
 	const char* name;
 	volatile Thread thread;
 };
@@ -47,11 +47,11 @@ typedef struct taskstruct* Task;
 extern void InitTaskSystem(void);
 extern void CleanupTaskSystem(void);
 
-extern Task AssignTask(ThreadFunction task_func, uqm::SDWORD Stacksize, const char* name);
-extern uqm::DWORD Task_SetState(Task task, uqm::DWORD state_mask);
-extern uqm::DWORD Task_ClearState(Task task, uqm::DWORD state_mask);
-extern uqm::DWORD Task_ToggleState(Task task, uqm::DWORD state_mask);
-extern uqm::DWORD Task_ReadState(Task task, uqm::DWORD state_mask);
+extern Task AssignTask(ThreadFunction task_func, int32_t Stacksize, const char* name);
+extern uint32_t Task_SetState(Task task, uint32_t state_mask);
+extern uint32_t Task_ClearState(Task task, uint32_t state_mask);
+extern uint32_t Task_ToggleState(Task task, uint32_t state_mask);
+extern uint32_t Task_ReadState(Task task, uint32_t state_mask);
 extern void FinishTask(Task task);
 extern void ConcludeTask(Task task);
 

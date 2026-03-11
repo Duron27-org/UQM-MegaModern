@@ -124,10 +124,10 @@ static RACE_DESC yehat_desc =
 		0, /* CodeRef */
 };
 
-static uqm::COUNT
+static uint16_t
 initialize_standard_missiles(ELEMENT* ShipPtr, HELEMENT MissileArray[])
 {
-	uqm::SDWORD offs_x, offs_y;
+	int32_t offs_x, offs_y;
 	STARSHIP* StarShipPtr;
 	MISSILE_BLOCK MissileBlock;
 
@@ -160,9 +160,9 @@ initialize_standard_missiles(ELEMENT* ShipPtr, HELEMENT MissileArray[])
 
 static void
 yehat_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
-				   uqm::COUNT ConcernCounter)
+				   uint16_t ConcernCounter)
 {
-	uqm::SIZE ShieldStatus;
+	int16_t ShieldStatus;
 	STARSHIP* StarShipPtr;
 	EVALUATE_DESC* lpEvalDesc;
 

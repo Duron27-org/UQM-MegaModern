@@ -94,22 +94,22 @@ InitializeDOSLanderPos(void)
 
 typedef struct
 {
-	uqm::BYTE list[NUM_PURCHASE_MODULES];
+	uint8_t list[NUM_PURCHASE_MODULES];
 	// List of all modules player has
-	uqm::COUNT count;
+	uint16_t count;
 	// Number of modules in the list
-	uqm::COUNT topIndex;
+	uint16_t topIndex;
 	// Index of the top module displayed
 } MODULES_STATE;
 
 MODULES_STATE ModuleState;
 
 static void
-DrawModuleStatus(uqm::COUNT index, uqm::COUNT pos, bool selected)
+DrawModuleStatus(uint16_t index, uint16_t pos, bool selected)
 {
 	GFXRECT r;
 	TEXT t;
-	uqm::CHAR_T buf[10];
+	char buf[10];
 
 	t.align = ALIGN_LEFT;
 	t.baseline.x = MODULE_COL_0;
@@ -138,7 +138,7 @@ DrawModuleStatus(uqm::COUNT index, uqm::COUNT pos, bool selected)
 		font_DrawText(&t);
 		t.baseline.y += TEXT_SPACING_Y;
 		t.pStr = skipUTF8Chars(t.pStr, t.CharCount + 1);
-		t.CharCount = (uqm::COUNT)~0;
+		t.CharCount = (uint16_t)~0;
 		font_DrawText(&t);
 
 		// print module cost
@@ -151,7 +151,7 @@ DrawModuleStatus(uqm::COUNT index, uqm::COUNT pos, bool selected)
 		fmt::format_to_sz_n(buf, "{}",
 							GLOBAL(ModuleCost[index]) * MODULE_COST_SCALE);
 		t.pStr = buf;
-		t.CharCount = (uqm::COUNT)~0;
+		t.CharCount = (uint16_t)~0;
 		font_DrawText(&t);
 	}
 	else
@@ -170,7 +170,7 @@ DrawModuleDisplay(MODULES_STATE* modState)
 {
 	TEXT t;
 	GFXRECT r;
-	uqm::COUNT i;
+	uint16_t i;
 
 	r.corner.x = RES_SCALE(2);
 	r.corner.y = RES_SCALE(20);
@@ -194,14 +194,14 @@ DrawModuleDisplay(MODULES_STATE* modState)
 	t.baseline.y = r.corner.y + RES_SCALE(7);
 	t.align = ALIGN_CENTER;
 	t.pStr = GAME_STRING(STARBASE_STRING_BASE + 11);
-	t.CharCount = (uqm::COUNT)~0;
+	t.CharCount = (uint16_t)~0;
 	SetContextForeGroundColor(MODULE_SELECTED_COLOR);
 	font_DrawText(&t);
 
 	// print names and costs
 	for (i = 0; i < MAX_VIS_MODULES; ++i)
 	{
-		uqm::COUNT modIndex = modState->topIndex + i;
+		uint16_t modIndex = modState->topIndex + i;
 
 		if (modIndex >= modState->count)
 		{
@@ -213,7 +213,7 @@ DrawModuleDisplay(MODULES_STATE* modState)
 }
 
 static void
-DrawModules(MODULES_STATE* modState, uqm::COUNT NewItem)
+DrawModules(MODULES_STATE* modState, uint16_t NewItem)
 {
 	GFXCONTEXT OldContext = SetContext(StatusContext);
 
@@ -229,10 +229,10 @@ DrawModules(MODULES_STATE* modState, uqm::COUNT NewItem)
 }
 
 static void
-ManipulateModules(uqm::SIZE NewState)
+ManipulateModules(int16_t NewState)
 {
 	MODULES_STATE* modState;
-	uqm::SIZE NewTop;
+	int16_t NewTop;
 
 	if (!DOS_MENU)
 	{
@@ -256,16 +256,16 @@ ManipulateModules(uqm::SIZE NewState)
 	DrawModules(modState, NewState);
 }
 
-uqm::SIZE
-InventoryModules(uqm::BYTE* pModuleMap, uqm::COUNT Size)
+int16_t
+InventoryModules(uint8_t* pModuleMap, uint16_t Size)
 {
-	uqm::BYTE i;
-	uqm::SIZE ModulesOnBoard;
+	uint8_t i;
+	int16_t ModulesOnBoard;
 
 	ModulesOnBoard = 0;
 	for (i = 0; i < NUM_PURCHASE_MODULES && Size > 0; ++i)
 	{
-		//uqm::BYTE ActiveModule;
+		//uint8_t ActiveModule;
 
 		//ActiveModule = GLOBAL (ModuleCost[i]);
 
@@ -283,9 +283,9 @@ static void
 DrawModuleMenuText(GFXRECT* r, int Index)
 {
 	TEXT text;
-	uqm::SIZE leading;
+	int16_t leading;
 	GFXRECT block;
-	uqm::CHAR_T buf[256];
+	char buf[256];
 	COORD og_baseline_x;
 
 	if (IS_DOS || !strlen(GAME_STRING(TDO_STARBASE_STRING_BASE + Index)))
@@ -320,12 +320,12 @@ DrawModuleMenuText(GFXRECT* r, int Index)
 	text.align = ALIGN_CENTER;
 	{
 		uqstl::vector<uqstl::string> tokens;
-		uqm::tokenize(uqstl::string_view{buf}, tokens, ' ', false);
+		uqm::tokenize(uqstl::string_view {buf}, tokens, ' ', false);
 		for (const auto& tok : tokens)
 		{
-			text.pStr = AlignText((const uqm::CHAR_T*)tok.c_str(),
+			text.pStr = AlignText((const char*)tok.c_str(),
 								  &text.baseline.x);
-			text.CharCount = (uqm::COUNT)~0;
+			text.CharCount = (uint16_t)~0;
 
 			font_DrawShadowedText(&text, WEST_SHADOW, MDL_TEXT_COLOR,
 								  MDL_SHADOW_COLOR);
@@ -337,7 +337,7 @@ DrawModuleMenuText(GFXRECT* r, int Index)
 }
 
 static void
-DrawModuleStrings(MENU_STATE* pMS, uqm::BYTE NewModule)
+DrawModuleStrings(MENU_STATE* pMS, uint8_t NewModule)
 {
 	GFXRECT r;
 	STAMP s;
@@ -411,7 +411,7 @@ DrawModuleStrings(MENU_STATE* pMS, uqm::BYTE NewModule)
 	else if (pMS->CurFrame)
 	{
 		TEXT t;
-		uqm::CHAR_T buf[40] {};
+		char buf[40] {};
 
 		// Draw the module image.
 		s.frame = SetAbsFrameIndex(pMS->CurFrame, NewModule);
@@ -424,7 +424,7 @@ DrawModuleStrings(MENU_STATE* pMS, uqm::BYTE NewModule)
 		t.baseline.x = s.origin.x + RADAR_WIDTH - RES_SCALE(2);
 		t.baseline.y = s.origin.y + RADAR_HEIGHT - RES_SCALE(2);
 		t.align = ALIGN_RIGHT;
-		t.CharCount = (uqm::COUNT)~0;
+		t.CharCount = (uint16_t)~0;
 		t.pStr = buf;
 		fmt::format_to_n(buf, sizeof(buf) - 1, "{}",
 						 GLOBAL(ModuleCost[NewModule]) * MODULE_COST_SCALE);
@@ -438,8 +438,8 @@ DrawModuleStrings(MENU_STATE* pMS, uqm::BYTE NewModule)
 		}
 
 		if ((GLOBAL_SIS(ResUnits))
-			>= (uqm::DWORD)((GLOBAL(ModuleCost[NewModule])
-							 * MODULE_COST_SCALE)))
+			>= (uint32_t)((GLOBAL(ModuleCost[NewModule])
+						   * MODULE_COST_SCALE)))
 		{
 			SetContextForeGroundColor(BRIGHT_GREEN_COLOR);
 		}
@@ -476,9 +476,9 @@ DrawEscapePodText(GFXRECT rect)
 	TEXT text;
 	FONT OldFont;
 	Color OldColor;
-	uqm::SIZE leading;
+	int16_t leading;
 	GFXRECT block;
-	uqm::CHAR_T buf[256];
+	char buf[256];
 	COORD og_baseline_x;
 
 	if (!strlen(GAME_STRING(END_STARBASE_STRING_BASE + 1)))
@@ -518,12 +518,12 @@ DrawEscapePodText(GFXRECT rect)
 
 	{
 		uqstl::vector<uqstl::string> tokens;
-		uqm::tokenize(uqstl::string_view{buf}, tokens, ' ', false);
+		uqm::tokenize(uqstl::string_view {buf}, tokens, ' ', false);
 		for (const auto& tok : tokens)
 		{
-			text.pStr = AlignText((const uqm::CHAR_T*)tok.c_str(),
+			text.pStr = AlignText((const char*)tok.c_str(),
 								  &text.baseline.x);
-			text.CharCount = (uqm::COUNT)~0;
+			text.CharCount = (uint16_t)~0;
 
 			font_DrawText(&text);
 
@@ -563,9 +563,9 @@ DrawNoLandersText(GFXRECT rect)
 	text.baseline.y += RES_SCALE(17);
 	text.align = ALIGN_CENTER;
 	text.pStr = AlignText(
-		(const uqm::CHAR_T*)GAME_STRING(END_STARBASE_STRING_BASE),
+		(const char*)GAME_STRING(END_STARBASE_STRING_BASE),
 		&text.baseline.x);
-	text.CharCount = (uqm::COUNT)~0;
+	text.CharCount = (uint16_t)~0;
 
 	SetContextForeGroundColor(LANDER_POD_TEXT_COLOR);
 	font_DrawText(&text);
@@ -601,7 +601,7 @@ DisplayLanders(MENU_STATE* pMS)
 	}
 	else
 	{
-		uqm::COUNT i;
+		uint16_t i;
 
 		if (!IS_DOS)
 		{
@@ -641,8 +641,8 @@ DisplayLanders(MENU_STATE* pMS)
 static bool
 DoInstallModule(MENU_STATE* pMS)
 {
-	uqm::BYTE NewState, new_slot_piece, old_slot_piece;
-	uqm::SIZE FirstItem, LastItem;
+	uint8_t NewState, new_slot_piece, old_slot_piece;
+	int16_t FirstItem, LastItem;
 	bool select, cancel, motion;
 
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
@@ -715,8 +715,8 @@ DoInstallModule(MENU_STATE* pMS)
 		{
 			if (new_slot_piece < EMPTY_SLOT)
 			{
-				if (GLOBAL_SIS(ResUnits) < (uqm::DWORD)(GLOBAL(ModuleCost[new_slot_piece])
-														* MODULE_COST_SCALE))
+				if (GLOBAL_SIS(ResUnits) < (uint32_t)(GLOBAL(ModuleCost[new_slot_piece])
+													  * MODULE_COST_SCALE))
 				{ // not enough RUs to build
 					PlayMenuSound(MENU_SOUND_FAILURE);
 					return (true);
@@ -737,11 +737,11 @@ DoInstallModule(MENU_STATE* pMS)
 				else if (old_slot_piece == FUEL_TANK
 						 || old_slot_piece == HIGHEFF_FUELSYS)
 				{
-					uqm::DWORD volume;
+					uint32_t volume;
 
-					volume = (uqm::DWORD)CountSISPieces(FUEL_TANK)
+					volume = (uint32_t)CountSISPieces(FUEL_TANK)
 							   * FUEL_TANK_CAPACITY
-						   + (uqm::DWORD)CountSISPieces(HIGHEFF_FUELSYS)
+						   + (uint32_t)CountSISPieces(HIGHEFF_FUELSYS)
 								 * HEFUEL_TANK_CAPACITY;
 					volume -= (old_slot_piece == FUEL_TANK ? FUEL_TANK_CAPACITY : HEFUEL_TANK_CAPACITY);
 					if (GLOBAL_SIS(FuelOnBoard) > volume + FUEL_RESERVE)
@@ -898,7 +898,7 @@ DoInstallModule(MENU_STATE* pMS)
 	}
 	else if (motion)
 	{
-		uqm::SIZE NewItem;
+		int16_t NewItem;
 
 		NewItem = NewState < EMPTY_SLOT ? pMS->CurState : pMS->delta_item;
 		do
@@ -969,7 +969,7 @@ DoInstallModule(MENU_STATE* pMS)
 		}
 		else if (NewItem != pMS->delta_item || NewState != pMS->CurState)
 		{
-			uqm::SIZE w;
+			int16_t w;
 
 			switch (NewState)
 			{
@@ -1171,10 +1171,10 @@ InitFlash:
 static void
 ChangeFuelQuantity(void)
 {
-	uqm::SDWORD incr = 0; // Fuel increment in fuel points (not units).
-	const uqm::SDWORD maxFit =
-		GetFuelTankCapacity() - (uqm::SDWORD)GLOBAL_SIS(FuelOnBoard);
-	const uqm::SDWORD minFit = -(uqm::SDWORD)GLOBAL_SIS(FuelOnBoard);
+	int32_t incr = 0; // Fuel increment in fuel points (not units).
+	const int32_t maxFit =
+		GetFuelTankCapacity() - (int32_t)GLOBAL_SIS(FuelOnBoard);
+	const int32_t minFit = -(int32_t)GLOBAL_SIS(FuelOnBoard);
 
 	if (PulsedInputState.menu[KEY_MENU_UP])
 	{
@@ -1213,7 +1213,7 @@ ChangeFuelQuantity(void)
 
 	// Clamp incr to what we can afford/hold/have.
 	{
-		const uqm::SDWORD maxAfford = GLOBAL_SIS(ResUnits) / GLOBAL(FuelCost);
+		const int32_t maxAfford = GLOBAL_SIS(ResUnits) / GLOBAL(FuelCost);
 
 		if (incr > maxFit)
 		{
@@ -1279,7 +1279,7 @@ bool DoOutfit(MENU_STATE* pMS)
 		SetNamingCallback(onNamingDone);
 
 		{
-			uqm::COUNT num_frames;
+			uint16_t num_frames;
 			STAMP s;
 
 			if (!IS_DOS)
@@ -1321,7 +1321,7 @@ bool DoOutfit(MENU_STATE* pMS)
 			for (num_frames = 0; num_frames < NUM_DRIVE_SLOTS;
 				 ++num_frames)
 			{
-				uqm::BYTE which_piece;
+				uint8_t which_piece;
 
 				which_piece = GLOBAL_SIS(DriveSlots[num_frames]);
 				if (which_piece < EMPTY_SLOT)
@@ -1333,7 +1333,7 @@ bool DoOutfit(MENU_STATE* pMS)
 			for (num_frames = 0; num_frames < NUM_JET_SLOTS;
 				 ++num_frames)
 			{
-				uqm::BYTE which_piece;
+				uint8_t which_piece;
 
 				which_piece = GLOBAL_SIS(JetSlots[num_frames]);
 				if (which_piece < EMPTY_SLOT)
@@ -1345,7 +1345,7 @@ bool DoOutfit(MENU_STATE* pMS)
 			for (num_frames = 0; num_frames < NUM_MODULE_SLOTS;
 				 ++num_frames)
 			{
-				uqm::BYTE which_piece;
+				uint8_t which_piece;
 
 				which_piece = GLOBAL_SIS(ModuleSlots[num_frames]);
 				if (which_piece < EMPTY_SLOT)
@@ -1358,7 +1358,7 @@ bool DoOutfit(MENU_STATE* pMS)
 			DisplayLanders(pMS);
 			if (GET_GAME_STATE(CHMMR_BOMB_STATE) < 3)
 			{
-				uqm::BYTE ShieldFlags;
+				uint8_t ShieldFlags;
 
 				ShieldFlags = GET_GAME_STATE(LANDER_SHIELDS);
 

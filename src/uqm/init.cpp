@@ -86,7 +86,7 @@ bool load_animation(FRAME* pixarray, RESOURCE big_res, RESOURCE med_res, RESOURC
 bool free_image(FRAME* pixarray)
 {
 	bool retval;
-	uqm::COUNT i, j;
+	uint16_t i, j;
 	void* already_freed[NUM_VIEWS];
 
 	retval = true;
@@ -118,7 +118,7 @@ bool free_image(FRAME* pixarray)
 	return (retval);
 }
 
-static uqm::BYTE space_ini_cnt;
+static uint8_t space_ini_cnt;
 
 bool InitSpace(void)
 {
@@ -217,10 +217,10 @@ BuildSIS(void)
 	return hStarShip;
 }
 
-uqm::SIZE
+int16_t
 InitShips(void)
 {
-	uqm::SIZE num_ships;
+	int16_t num_ships;
 
 	InitSpace();
 
@@ -241,7 +241,7 @@ InitShips(void)
 	}
 	else
 	{
-		uqm::COUNT i;
+		uint16_t i;
 		GFXRECT r;
 
 		SetContext(SpaceContext);
@@ -295,10 +295,10 @@ InitShips(void)
 }
 
 // Count the crew elements in the display list.
-static uqm::COUNT
+static uint16_t
 CountCrewElements(void)
 {
-	uqm::COUNT result;
+	uint16_t result;
 	HELEMENT hElement, hNextElement;
 
 	result = 0;
@@ -322,7 +322,7 @@ CountCrewElements(void)
 
 void UninitShips(void)
 {
-	uqm::COUNT crew_retrieved;
+	uint16_t crew_retrieved;
 	int i;
 	HELEMENT hElement, hNextElement;
 	STARSHIP* SPtr[NUM_PLAYERS];

@@ -59,7 +59,7 @@ static LOCDATA utwig_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				7,		   /* StartIndex */
@@ -69,7 +69,7 @@ static LOCDATA utwig_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond * 10,
 				GameTicksPerSecond * 3, /* RestartRate */
-				(1 << 2),		/* BlockMask */
+				(1 << 2),				/* BlockMask */
 			},
 								{
 				11, /* StartIndex */
@@ -80,7 +80,7 @@ static LOCDATA utwig_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond * 10,
 				GameTicksPerSecond * 3, /* RestartRate */
-				(1 << 1),		/* BlockMask */
+				(1 << 1),				/* BlockMask */
 			},
 								{
 				13,			   /* StartIndex */
@@ -100,7 +100,7 @@ static LOCDATA utwig_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond * 10,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				20,			 /* StartIndex */
@@ -110,7 +110,7 @@ static LOCDATA utwig_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond * 10,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				22,			 /* StartIndex */
@@ -120,7 +120,7 @@ static LOCDATA utwig_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond * 10,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				25,			 /* StartIndex */
@@ -130,7 +130,7 @@ static LOCDATA utwig_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond * 10,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				27,		   /* StartIndex */
@@ -140,7 +140,7 @@ static LOCDATA utwig_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond * 10,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				30,			 /* StartIndex */
@@ -150,7 +150,7 @@ static LOCDATA utwig_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond * 10,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				32,			 /* StartIndex */
@@ -160,7 +160,7 @@ static LOCDATA utwig_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond * 10,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				34,			 /* StartIndex */
@@ -170,7 +170,7 @@ static LOCDATA utwig_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond * 10,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				36,			 /* StartIndex */
@@ -180,7 +180,7 @@ static LOCDATA utwig_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond * 10,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				38,			 /* StartIndex */
@@ -190,7 +190,7 @@ static LOCDATA utwig_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond * 10,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				40,			 /* StartIndex */
@@ -200,7 +200,7 @@ static LOCDATA utwig_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond * 10,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				42,		   /* StartIndex */
@@ -210,7 +210,7 @@ static LOCDATA utwig_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond * 10,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								},
 		{
@@ -233,7 +233,7 @@ static LOCDATA utwig_desc =
 								GameTicksPerSecond / 20, /* FrameRate */
 			GameTicksPerSecond * 7 / 60,
 								GameTicksPerSecond / 2, /* RestartRate */
-			0,				/* BlockMask */
+			0,						/* BlockMask */
 		},
 		nullptr, /* AlienNumberSpeech - none */
 		/* Filler for loaded resources */
@@ -373,7 +373,7 @@ ExitConversation(RESPONSE_REF R)
 		{
 			NPCPhrase(HAVE_4_SHIPS);
 
-			AlienTalkSegue((uqm::COUNT)~0);
+			AlienTalkSegue((uint16_t)~0);
 			AddEscortShips(UTWIG_SHIP, difficultyCase(4, 4, 2));
 			PrepareShip(UTWIG_SHIP);
 		}
@@ -385,7 +385,7 @@ static void AlliedHome(RESPONSE_REF R);
 static void
 AlliedHome(RESPONSE_REF R)
 {
-	uqm::BYTE NumVisits, News;
+	uint8_t NumVisits, News;
 
 	News = GET_GAME_STATE(UTWIG_WAR_NEWS);
 	NumVisits = GET_GAME_STATE(UTWIG_SUPOX_MISSION);
@@ -491,7 +491,7 @@ AlliedHome(RESPONSE_REF R)
 static void
 BeforeKohrAh(RESPONSE_REF R)
 {
-	uqm::BYTE NumVisits;
+	uint8_t NumVisits;
 
 	if (PLAYER_SAID(R, whats_up_before_space))
 	{
@@ -531,7 +531,7 @@ BeforeKohrAh(RESPONSE_REF R)
 static void
 AfterKohrAh(RESPONSE_REF R)
 {
-	uqm::BYTE NumVisits;
+	uint8_t NumVisits;
 
 	if (PLAYER_SAID(R, whats_up_after_space))
 	{
@@ -571,7 +571,7 @@ AfterKohrAh(RESPONSE_REF R)
 static void
 NeutralUtwig(RESPONSE_REF R)
 {
-	uqm::BYTE i, LastStack;
+	uint8_t i, LastStack;
 	RESPONSE_REF pStr[4];
 
 	LastStack = 0;
@@ -709,7 +709,7 @@ NeutralUtwig(RESPONSE_REF R)
 static void
 BombWorld(RESPONSE_REF R)
 {
-	uqm::BYTE LastStack;
+	uint8_t LastStack;
 	RESPONSE_REF pStr[2];
 
 	LastStack = 0;
@@ -834,7 +834,7 @@ BombWorld(RESPONSE_REF R)
 static void
 Intro(void)
 {
-	uqm::BYTE NumVisits;
+	uint8_t NumVisits;
 
 	if (lowByte(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE)
 	{
@@ -1041,7 +1041,7 @@ Intro(void)
 	}
 }
 
-static uqm::COUNT
+static uint16_t
 uninit_utwig(void)
 {
 	luaUqm_comm_uninit();

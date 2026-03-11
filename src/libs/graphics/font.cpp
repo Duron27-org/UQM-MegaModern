@@ -49,10 +49,10 @@ bool GoodToGoFPS(void)
 				  && !optRequiresReload);
 }
 
-void GetFontDims(uqm::SIZE* w, uqm::SIZE* h)
+void GetFontDims(int16_t* w, int16_t* h)
 {
-	*w = (uqm::SIZE)StarConFont->disp.width;
-	*h = (uqm::SIZE)StarConFont->disp.height;
+	*w = (int16_t)StarConFont->disp.width;
+	*h = (int16_t)StarConFont->disp.height;
 }
 
 FONT SetContextFont(FONT Font)
@@ -160,7 +160,7 @@ void font_DrawTracedText(TEXT* pText, Color text, Color trace)
 {
 	// Preserve current foreground color for full correctness
 	const Color oldfg = SetContextForeGroundColor(trace);
-	const uqm::BYTE stroke = RES_SCALE(1);
+	const uint8_t stroke = RES_SCALE(1);
 	const GFXPOINT t_baseline = pText->baseline;
 	GFXPOINT offset;
 
@@ -187,8 +187,8 @@ void font_DrawTracedText(TEXT* pText, Color text, Color trace)
 }
 
 // Alt stuff to handle 2 fonts at once (for Orz)
-uqm::BYTE
-font_DrawTextAlt(TEXT* lpText, uqm::BYTE swap, FONT AltFontPtr, UniChar key)
+uint8_t
+font_DrawTextAlt(TEXT* lpText, uint8_t swap, FONT AltFontPtr, UniChar key)
 {
 	GFXRECT ClipRect;
 	GFXPOINT origin;
@@ -215,10 +215,10 @@ void font_DrawTracedTextAlt(TEXT* pText, Color text, Color trace, FONT AltFontPt
 {
 	// Preserve current foreground color for full correctness
 	const Color oldfg = SetContextForeGroundColor(trace);
-	const uqm::BYTE stroke = RES_SCALE(1);
+	const uint8_t stroke = RES_SCALE(1);
 	const GFXPOINT t_baseline = pText->baseline;
 	GFXPOINT offset;
-	static uqm::BYTE swap = 0;
+	static uint8_t swap = 0;
 
 	for (offset.x = -stroke; offset.x <= stroke; ++offset.x)
 	{
@@ -242,7 +242,7 @@ void font_DrawTracedTextAlt(TEXT* pText, Color text, Color trace, FONT AltFontPt
 	SetContextForeGroundColor(oldfg);
 }
 
-void font_DrawShadowedText(TEXT* pText, uqm::BYTE direction,
+void font_DrawShadowedText(TEXT* pText, uint8_t direction,
 						   Color text_color, Color shadow_color)
 {
 	GFXPOINT shadow_angle = {0, 0};
@@ -293,11 +293,11 @@ void font_DrawShadowedText(TEXT* pText, uqm::BYTE direction,
 	SetContextForeGroundColor(OldColor);
 }
 
-bool GetContextFontLeading(uqm::SIZE* pheight)
+bool GetContextFontLeading(int16_t* pheight)
 {
 	if (_CurFontPtr != 0)
 	{
-		*pheight = (uqm::SIZE)_CurFontPtr->Leading;
+		*pheight = (int16_t)_CurFontPtr->Leading;
 		return (true);
 	}
 
@@ -305,11 +305,11 @@ bool GetContextFontLeading(uqm::SIZE* pheight)
 	return (false);
 }
 
-bool GetContextFontDispHeight(uqm::SIZE* pheight)
+bool GetContextFontDispHeight(int16_t* pheight)
 {
 	if (_CurFontPtr != 0)
 	{
-		*pheight = (uqm::SIZE)_CurFontPtr->disp.height;
+		*pheight = (int16_t)_CurFontPtr->disp.height;
 		return (true);
 	}
 
@@ -317,11 +317,11 @@ bool GetContextFontDispHeight(uqm::SIZE* pheight)
 	return (false);
 }
 
-bool GetContextFontDispWidth(uqm::SIZE* pwidth)
+bool GetContextFontDispWidth(int16_t* pwidth)
 {
 	if (_CurFontPtr != 0)
 	{
-		*pwidth = (uqm::SIZE)_CurFontPtr->disp.width;
+		*pwidth = (int16_t)_CurFontPtr->disp.width;
 		return (true);
 	}
 
@@ -329,19 +329,19 @@ bool GetContextFontDispWidth(uqm::SIZE* pwidth)
 	return (false);
 }
 
-bool TextRect(TEXT* lpText, GFXRECT* pRect, uqm::BYTE* pdelta)
+bool TextRect(TEXT* lpText, GFXRECT* pRect, uint8_t* pdelta)
 {
-	uqm::BYTE char_delta_array[MAX_DELTAS];
+	uint8_t char_delta_array[MAX_DELTAS];
 	FONT FontPtr;
 
 	FontPtr = _CurFontPtr;
 	if (FontPtr != 0 && lpText->CharCount != 0)
 	{
 		COORD top_y, bot_y;
-		uqm::SIZE width;
+		int16_t width;
 		UniChar next_ch = 0;
 		const char* pStr;
-		uqm::COUNT num_chars;
+		uint16_t num_chars;
 
 		num_chars = lpText->CharCount;
 		/* At this point lpText->CharCount contains the *maximum* number of
@@ -373,7 +373,7 @@ bool TextRect(TEXT* lpText, GFXRECT* pRect, uqm::BYTE* pdelta)
 		while (num_chars--)
 		{
 			UniChar ch;
-			uqm::SIZE last_width;
+			int16_t last_width;
 			TFB_Char* charFrame;
 
 			last_width = width;
@@ -408,7 +408,7 @@ bool TextRect(TEXT* lpText, GFXRECT* pRect, uqm::BYTE* pdelta)
 				width += charFrame->disp.width + FontPtr->CharSpace;
 
 				if (num_chars && next_ch < MAX_UNICODE
-					&& FontPtr->KernTab[ch] != (uqm::BYTE)~0
+					&& FontPtr->KernTab[ch] != (uint8_t)~0
 					&& !(FontPtr->KernTab[ch]
 						 & (FontPtr->KernTab[next_ch] >> 2)))
 				{
@@ -419,7 +419,7 @@ bool TextRect(TEXT* lpText, GFXRECT* pRect, uqm::BYTE* pdelta)
 				}
 			}
 
-			*pdelta++ = (uqm::BYTE)(width - last_width);
+			*pdelta++ = (uint8_t)(width - last_width);
 		}
 
 		if (width > 0 && (bot_y -= top_y) > 0)
@@ -464,7 +464,7 @@ bool TextRect(TEXT* lpText, GFXRECT* pRect, uqm::BYTE* pdelta)
 void _text_blt(GFXRECT* pClipRect, TEXT* TextPtr, GFXPOINT ctxOrigin)
 {
 	FONT FontPtr;
-	uqm::COUNT num_chars;
+	uint16_t num_chars;
 	UniChar next_ch;
 	const char* pStr;
 	GFXPOINT origin;
@@ -530,7 +530,7 @@ void _text_blt(GFXRECT* pClipRect, TEXT* TextPtr, GFXPOINT ctxOrigin)
 			origin.x += fontChar->disp.width + FontPtr->CharSpace;
 
 			if (num_chars && next_ch < MAX_UNICODE
-				&& FontPtr->KernTab[ch] != (uqm::BYTE)~0
+				&& FontPtr->KernTab[ch] != (uint8_t)~0
 				&& !(FontPtr->KernTab[ch]
 					 & (FontPtr->KernTab[next_ch] >> 2)))
 			{
@@ -546,11 +546,11 @@ void _text_blt(GFXRECT* pClipRect, TEXT* TextPtr, GFXPOINT ctxOrigin)
 void _text_blt_fade(GFXRECT* pClipRect, TEXT* TextPtr, GFXPOINT ctxOrigin, FRAME repair, bool* skip)
 {
 	FONT FontPtr;
-	uqm::COUNT num_chars;
+	uint16_t num_chars;
 	UniChar next_ch;
 	const char* pStr;
 	GFXPOINT origin;
-	uqm::SIZE leading;
+	int16_t leading;
 	TFB_Image *b_first, *b_second, *b_clear;
 	DrawMode mode = _get_context_draw_mode();
 
@@ -558,7 +558,7 @@ void _text_blt_fade(GFXRECT* pClipRect, TEXT* TextPtr, GFXPOINT ctxOrigin, FRAME
 	if (FontPtr != nullptr)
 	{
 		GFXRECT r;
-		uqm::SIZE w, h;
+		int16_t w, h;
 
 		if (!GetContextFontDispHeight(&h) || !GetContextFontDispWidth(&w))
 		{
@@ -664,7 +664,7 @@ void _text_blt_fade(GFXRECT* pClipRect, TEXT* TextPtr, GFXPOINT ctxOrigin, FRAME
 				origin.x += fontChar->disp.width + FontPtr->CharSpace;
 
 				if (num_chars && next_ch < MAX_UNICODE
-					&& FontPtr->KernTab[ch] != (uqm::BYTE)~0
+					&& FontPtr->KernTab[ch] != (uint8_t)~0
 					&& !(FontPtr->KernTab[ch]
 						 & (FontPtr->KernTab[next_ch] >> 2)))
 				{
@@ -695,20 +695,20 @@ void _text_blt_fade(GFXRECT* pClipRect, TEXT* TextPtr, GFXPOINT ctxOrigin, FRAME
 	}
 }
 
-bool TextRectAlt(TEXT* lpText, GFXRECT* pRect, uqm::BYTE* pdelta, uqm::BYTE swap,
+bool TextRectAlt(TEXT* lpText, GFXRECT* pRect, uint8_t* pdelta, uint8_t swap,
 				 UniChar key, FONT AltFontPtr)
 {
-	uqm::BYTE char_delta_array[MAX_DELTAS];
+	uint8_t char_delta_array[MAX_DELTAS];
 	FONT FontPtr;
 
 	FontPtr = _CurFontPtr;
 	if (FontPtr != 0 && lpText->CharCount != 0)
 	{
 		COORD top_y, bot_y;
-		uqm::SIZE width;
+		int16_t width;
 		UniChar next_ch = 0;
 		const char* pStr;
-		uqm::COUNT num_chars;
+		uint16_t num_chars;
 
 		num_chars = lpText->CharCount;
 		/* At this point lpText->CharCount contains the *maximum* number of
@@ -740,7 +740,7 @@ bool TextRectAlt(TEXT* lpText, GFXRECT* pRect, uqm::BYTE* pdelta, uqm::BYTE swap
 		while (num_chars--)
 		{
 			UniChar ch;
-			uqm::SIZE last_width;
+			int16_t last_width;
 			TFB_Char* charFrame;
 
 			last_width = width;
@@ -786,7 +786,7 @@ bool TextRectAlt(TEXT* lpText, GFXRECT* pRect, uqm::BYTE* pdelta, uqm::BYTE swap
 				width += charFrame->disp.width + FontPtr->CharSpace;
 
 				if (num_chars && next_ch < MAX_UNICODE
-					&& FontPtr->KernTab[ch] != (uqm::BYTE)~0
+					&& FontPtr->KernTab[ch] != (uint8_t)~0
 					&& !(FontPtr->KernTab[ch]
 						 & (FontPtr->KernTab[next_ch] >> 2)))
 				{
@@ -797,7 +797,7 @@ bool TextRectAlt(TEXT* lpText, GFXRECT* pRect, uqm::BYTE* pdelta, uqm::BYTE swap
 				}
 			}
 
-			*pdelta++ = (uqm::BYTE)(width - last_width);
+			*pdelta++ = (uint8_t)(width - last_width);
 		}
 
 		if (width > 0 && (bot_y -= top_y) > 0)
@@ -839,8 +839,8 @@ bool TextRectAlt(TEXT* lpText, GFXRECT* pRect, uqm::BYTE* pdelta, uqm::BYTE swap
 	return (false);
 }
 
-uqm::BYTE
-_text_blt_alt(GFXRECT* pClipRect, TEXT* TextPtr, GFXPOINT ctxOrigin, uqm::BYTE swap,
+uint8_t
+_text_blt_alt(GFXRECT* pClipRect, TEXT* TextPtr, GFXPOINT ctxOrigin, uint8_t swap,
 			  FONT AltFontPtr, UniChar key)
 { // Kruzen: To create text using 2 fonts (Orz case)
 	// Safest way to do so without going too deep into
@@ -848,13 +848,13 @@ _text_blt_alt(GFXRECT* pClipRect, TEXT* TextPtr, GFXPOINT ctxOrigin, uqm::BYTE s
 	// Warning: GetTextRect doesn't quite work since it looks
 	// for chars only in 1 font
 	FONT FontPtr;
-	uqm::COUNT num_chars;
+	uint16_t num_chars;
 	UniChar next_ch;
 	const char* pStr;
 	GFXPOINT origin;
 	TFB_Image *backing, *stock, *ext;
 	DrawMode mode = _get_context_draw_mode();
-	uqm::BYTE leading_step;
+	uint8_t leading_step;
 
 	FontPtr = _CurFontPtr;
 	if (FontPtr == nullptr)
@@ -870,11 +870,11 @@ _text_blt_alt(GFXRECT* pClipRect, TEXT* TextPtr, GFXPOINT ctxOrigin, uqm::BYTE s
 	if (AltFontPtr != nullptr)
 	{ // Local backing needed for alt font
 		// Create one
-		uqm::SIZE w, h;
+		int16_t w, h;
 		GFXRECT r;
 		Color color = _get_context_fg_color();
-		w = (uqm::SIZE)AltFontPtr->disp.width;
-		h = (uqm::SIZE)AltFontPtr->disp.height;
+		w = (int16_t)AltFontPtr->disp.width;
+		h = (int16_t)AltFontPtr->disp.height;
 		if (w == 0 || h == 0)
 		{
 			return 0;
@@ -957,7 +957,7 @@ _text_blt_alt(GFXRECT* pClipRect, TEXT* TextPtr, GFXPOINT ctxOrigin, uqm::BYTE s
 			origin.x += fontChar->disp.width + FontPtr->CharSpace;
 
 			if (num_chars && next_ch < MAX_UNICODE
-				&& FontPtr->KernTab[ch] != (uqm::BYTE)~0
+				&& FontPtr->KernTab[ch] != (uint8_t)~0
 				&& !(FontPtr->KernTab[ch]
 					 & (FontPtr->KernTab[next_ch] >> 2)))
 			{

@@ -124,7 +124,7 @@ static RACE_DESC mycon_desc =
 static void
 plasma_preprocess(ELEMENT* ElementPtr)
 {
-	uqm::COUNT plasma_index;
+	uint16_t plasma_index;
 
 	if (ElementPtr->mass_points > ElementPtr->hit_points)
 	{
@@ -132,7 +132,7 @@ plasma_preprocess(ELEMENT* ElementPtr)
 	}
 	else
 	{
-		ElementPtr->hit_points = (uqm::BYTE)((ElementPtr->life_span * MISSILE_DAMAGE + (MISSILE_LIFE - 1)) / MISSILE_LIFE);
+		ElementPtr->hit_points = (uint8_t)((ElementPtr->life_span * MISSILE_DAMAGE + (MISSILE_LIFE - 1)) / MISSILE_LIFE);
 	}
 	ElementPtr->mass_points = ElementPtr->hit_points;
 	plasma_index = NUM_PLASMAS - ((ElementPtr->life_span + (PLASMA_DURATION - 1)) / PLASMA_DURATION);
@@ -150,7 +150,7 @@ plasma_preprocess(ELEMENT* ElementPtr)
 	}
 	else
 	{
-		uqm::COUNT facing;
+		uint16_t facing;
 
 		facing = NORMALIZE_FACING(ANGLE_TO_FACING(
 			GetVelocityTravelAngle(&ElementPtr->velocity)));
@@ -193,16 +193,16 @@ static void
 plasma_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
 				 ELEMENT* ElementPtr1, GFXPOINT* pPt1)
 {
-	uqm::SIZE old_mass;
+	int16_t old_mass;
 	HELEMENT hBlastElement;
 
-	old_mass = (uqm::SIZE)ElementPtr0->mass_points;
+	old_mass = (int16_t)ElementPtr0->mass_points;
 	if ((ElementPtr0->pParent != ElementPtr1->pParent
 		 || (ElementPtr1->state_flags & PLAYER_SHIP))
 		&& (hBlastElement =
 				weapon_collision(ElementPtr0, pPt0, ElementPtr1, pPt1)))
 	{
-		uqm::SIZE num_animations;
+		int16_t num_animations;
 		ELEMENT* BlastElementPtr;
 
 		LockElement(hBlastElement, &BlastElementPtr);
@@ -228,7 +228,7 @@ plasma_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
 			num_animations = 1;
 		}
 
-		BlastElementPtr->thrust_wait = (uqm::BYTE)num_animations;
+		BlastElementPtr->thrust_wait = (uint8_t)num_animations;
 		BlastElementPtr->life_span = (num_animations << 1) - 1;
 		{
 			BlastElementPtr->preprocess_func = plasma_blast_preprocess;
@@ -244,7 +244,7 @@ plasma_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
 
 static void
 mycon_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
-				   uqm::COUNT ConcernCounter)
+				   uint16_t ConcernCounter)
 {
 	STARSHIP* StarShipPtr;
 	EVALUATE_DESC* lpEvalDesc;
@@ -277,8 +277,8 @@ mycon_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 		&& (lpEvalDesc->which_turn <= 16
 			|| ShipPtr->crew_level == StarShipPtr->RaceDescPtr->ship_info.max_crew))
 	{
-		uqm::COUNT travel_facing, direction_facing;
-		uqm::SDWORD delta_x, delta_y;
+		uint16_t travel_facing, direction_facing;
+		int32_t delta_x, delta_y;
 
 		travel_facing = NORMALIZE_FACING(
 			ANGLE_TO_FACING(GetVelocityTravelAngle(&ShipPtr->velocity)
@@ -319,7 +319,7 @@ mycon_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 	}
 }
 
-static uqm::COUNT
+static uint16_t
 initialize_plasma(ELEMENT* ShipPtr, HELEMENT PlasmaArray[])
 {
 	STARSHIP* StarShipPtr;
@@ -366,7 +366,7 @@ mycon_postprocess(ELEMENT* ElementPtr)
 		&& ElementPtr->crew_level != StarShipPtr->RaceDescPtr->ship_info.max_crew
 		&& DeltaEnergy(ElementPtr, -SPECIAL_ENERGY_COST))
 	{
-		uqm::SIZE add_crew;
+		int16_t add_crew;
 
 		ProcessSound(SetAbsSoundIndex(
 						 /* GROW_NEW_CREW */

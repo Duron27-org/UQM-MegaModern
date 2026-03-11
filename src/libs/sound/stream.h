@@ -30,7 +30,7 @@ uint32_t GetStreamFrame(uint32_t source);
 uint16_t GetNumTrackerPos(uint32_t source);
 bool IsTracker(uint32_t source);
 float GetStreamLength(uint32_t source);
-uqm::DWORD GetStreamTime(uint32_t source);
+uint32_t GetStreamTime(uint32_t source);
 bool PlayingStream(uint32_t source);
 
 int GraphForegroundStream(uint8_t* data, int32_t width, int32_t height,

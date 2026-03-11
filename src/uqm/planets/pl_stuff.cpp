@@ -172,7 +172,7 @@ void RerenderPlanetSphere(void)
 
 	if (useDosSpheres)
 	{ // palette switch for coloring sphere into scan colors
-		uqm::COUNT sc;
+		uint16_t sc;
 		sc = Orbit->scanType;
 		if (sc > 2)
 		{
@@ -193,8 +193,8 @@ void RerenderPlanetSphere(void)
 	DrawCurrentPlanetSphere();
 }
 
-void InitSphereRotation(int direction, bool shielded, uqm::COUNT width,
-						uqm::COUNT height)
+void InitSphereRotation(int direction, bool shielded, uint16_t width,
+						uint16_t height)
 {
 	PLANET_ORBIT* Orbit = &pSolarSysState->Orbit;
 
@@ -298,7 +298,7 @@ void PrepareNextRotationFrame(void)
 	}
 }
 
-void PrepareNextRotationFrameForIP(PLANET_DESC* pPlanetDesc, uqm::SIZE frameCounter)
+void PrepareNextRotationFrameForIP(PLANET_DESC* pPlanetDesc, int16_t frameCounter)
 {
 	PLANET_ORBIT* Orbit = &pPlanetDesc->orbit;
 	int oldPointIndex = pPlanetDesc->rotPointIndex;
@@ -312,7 +312,7 @@ void PrepareNextRotationFrameForIP(PLANET_DESC* pPlanetDesc, uqm::SIZE frameCoun
 
 #ifdef NEVER
 	{
-		uqm::COUNT framerate;
+		uint16_t framerate;
 		// Optimization : the smallest worlds are rotated only once in a
 		// while. The framerate is fine-tuned so that the planet is updated
 		// when the landscape has moved 1 pixel approximately
@@ -557,7 +557,7 @@ renderTintFrame(Color tintColor)
 	SetContext(oldContext);
 }
 
-void DrawPCScanTint(uqm::COUNT scan)
+void DrawPCScanTint(uint16_t scan)
 {
 	STAMP s;
 
@@ -608,7 +608,7 @@ void DrawPlanet(int tintY, Color tintColor)
 			GFXRECT oldClipRect;
 			GFXRECT clipRect;
 			GFXRECT edge;
-			uqm::COUNT i;
+			uint16_t i;
 
 			// adjust cliprect to confine the tint
 			GetContextClipRect(&oldClipRect);

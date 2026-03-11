@@ -26,12 +26,12 @@
 extern "C" {
 #endif
 
-extern void DrawStarConBox(GFXRECT* pRect, uqm::SIZE BorderWidth,
+extern void DrawStarConBox(GFXRECT* pRect, int16_t BorderWidth,
 						   Color TopLeftColor, Color BottomRightColor, bool FillInterior,
 						   Color InteriorColor, bool CreateCorners, Color CornerColor);
-extern void DrawBorderPadding(uqm::DWORD videoWidth);
+extern void DrawBorderPadding(uint32_t videoWidth);
 extern void DrawRadarBorder(void);
-extern uqm::DWORD SeedRandomNumbers(void);
+extern uint32_t SeedRandomNumbers(void);
 
 extern void DrawRenderedBox(GFXRECT* r, bool filled, Color fill_color,
 							int type, int custom);
@@ -39,11 +39,11 @@ extern void DrawRenderedBox(GFXRECT* r, bool filled, Color fill_color,
 // saveRect can be nullptr to save the entire context frame
 extern STAMP SaveContextFrame(const GFXRECT* saveRect);
 
-extern uqm::DWORD get_fuel_to_sol(void);
-extern void DrawFlagStatDisplay(const uqm::CHAR_T* str);
-extern uqm::CHAR_T* WholeFuelValue(void);
+extern uint32_t get_fuel_to_sol(void);
+extern void DrawFlagStatDisplay(const char* str);
+extern char* WholeFuelValue(void);
 
-void formatFuelValue(uqm::DWORD coarseFuel, uqstl::span<uqm::CHAR_T> buf);
+void formatFuelValue(uint32_t coarseFuel, uqstl::span<char> buf);
 
 #if 0 //defined(__cplusplus)
 }

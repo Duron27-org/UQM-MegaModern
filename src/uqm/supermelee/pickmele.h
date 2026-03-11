@@ -30,9 +30,9 @@ void DestroyPickMeleeFrame(void);
 void FillPickMeleeFrame(MeleeSetup* setup);
 void MeleeGameOver(void);
 bool GetInitialMeleeStarShips(HSTARSHIP* result);
-bool GetNextMeleeStarShip(uqm::COUNT which_player, HSTARSHIP* result);
+bool GetNextMeleeStarShip(uint16_t which_player, HSTARSHIP* result);
 
-bool updateMeleeSelection(GETMELEE_STATE* gms, uqm::COUNT player, uqm::COUNT ship);
+bool updateMeleeSelection(GETMELEE_STATE* gms, uint16_t player, uint16_t ship);
 
 bool selectShipHuman(HumanInputContext* context, GETMELEE_STATE* gms);
 bool selectShipComputer(ComputerInputContext* context,
@@ -59,14 +59,14 @@ struct getmelee_struct
 		TimeCount timeIn;
 		HSTARSHIP hBattleShip;
 		// Chosen ship.
-		uqm::COUNT choice;
-		// Index of chosen ship, or (uqm::COUNT) ~0 for random choice.
+		uint16_t choice;
+		// Index of chosen ship, or (uint16_t) ~0 for random choice.
 
-		uqm::COUNT row;
-		uqm::COUNT col;
-		uqm::COUNT ships_left;
+		uint16_t row;
+		uint16_t col;
+		uint16_t ships_left;
 		// Number of ships still available.
-		uqm::COUNT randomIndex;
+		uint16_t randomIndex;
 		// Pre-generated random number.
 		bool selecting;
 		// Is this player selecting a ship?
@@ -80,7 +80,7 @@ struct getmelee_struct
 	} player[NUM_PLAYERS];
 };
 
-bool setShipSelected(GETMELEE_STATE* gms, uqm::COUNT playerI, uqm::COUNT choice,
+bool setShipSelected(GETMELEE_STATE* gms, uint16_t playerI, uint16_t choice,
 					 bool reportNetwork);
 
 

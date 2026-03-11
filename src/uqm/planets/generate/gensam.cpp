@@ -41,11 +41,11 @@ static bool GenerateSaMatra_generateMoons(SOLARSYS_STATE* solarSys,
 										  PLANET_DESC* planet);
 static bool GenerateSaMatra_generateOrbital(SOLARSYS_STATE* solarSys,
 											PLANET_DESC* world);
-static uqm::COUNT GenerateSaMatra_generateEnergy(
+static uint16_t GenerateSaMatra_generateEnergy(
 	const SOLARSYS_STATE* solarSys, const PLANET_DESC* world,
-	uqm::COUNT whichNode, NODE_INFO* info);
+	uint16_t whichNode, NODE_INFO* info);
 static bool GenerateSaMatra_pickupEnergy(SOLARSYS_STATE* solarSys,
-										 PLANET_DESC* world, uqm::COUNT whichNode);
+										 PLANET_DESC* world, uint16_t whichNode);
 
 static void BuildUrquanGuard(SOLARSYS_STATE* solarSys);
 
@@ -136,7 +136,7 @@ GenerateSaMatra_reinitNpcs(SOLARSYS_STATE* solarSys)
 
 		if (GuardEngaged)
 		{
-			uqm::COUNT angle;
+			uint16_t angle;
 			GFXPOINT org;
 
 			org = planetOuterLocation(solarSys->SunDesc[0].PlanetByte);
@@ -214,7 +214,7 @@ GenerateSaMatra_generatePlanets(SOLARSYS_STATE* solarSys)
 		 && CurStarDescPtr->Index <= KOHRAH2_DEFINED)
 		&& EXTENDED)
 	{
-		uqm::BYTE i;
+		uint8_t i;
 
 		for (i = 0; i < pSunDesc->NumPlanets; i++)
 		{
@@ -229,7 +229,7 @@ GenerateSaMatra_generatePlanets(SOLARSYS_STATE* solarSys)
 
 		if (!pPlanet->NumPlanets)
 		{
-			uqm::DWORD rand = RandomContext_GetSeed(SysGenRNG);
+			uint32_t rand = RandomContext_GetSeed(SysGenRNG);
 
 			pPlanet->NumPlanets = RangeMinMax(1, 4, rand);
 		}
@@ -256,9 +256,9 @@ GenerateSaMatra_generateMoons(SOLARSYS_STATE* solarSys,
 
 	if (matchWorld(solarSys, planet, MATCH_PBYTE, MATCH_PLANET))
 	{
-		uqm::COUNT angle;
-		uqm::DWORD rand_val;
-		uqm::BYTE MoonByte = solarSys->SunDesc[0].MoonByte;
+		uint16_t angle;
+		uint32_t rand_val;
+		uint8_t MoonByte = solarSys->SunDesc[0].MoonByte;
 		PLANET_DESC* pMoonDesc = &solarSys->MoonDesc[MoonByte];
 
 		if (CurStarDescPtr->Index == SAMATRA_DEFINED)
@@ -311,9 +311,9 @@ GenerateSaMatra_generateOrbital(SOLARSYS_STATE* solarSys,
 			}
 			else
 			{
-				const uqm::BYTE urQuanRemants {difficultyCase<uqm::BYTE>(2, 3, 5)};
+				const uint8_t urQuanRemants {difficultyCase<uint8_t>(2, 3, 5)};
 
-				for (uqm::BYTE i = 0; i < urQuanRemants; ++i)
+				for (uint8_t i = 0; i < urQuanRemants; ++i)
 				{
 					CloneShipFragment((EXTENDED
 											   && GET_GAME_STATE(KOHR_AH_FRENZY) ?
@@ -375,7 +375,7 @@ GenerateSaMatra_generateOrbital(SOLARSYS_STATE* solarSys,
 
 		if (EXTENDED)
 		{
-			uqm::UWORD Index = CurStarDescPtr->Index;
+			uint16_t Index = CurStarDescPtr->Index;
 			if (((Index >= URQUAN0_DEFINED && Index <= KOHRAH2_DEFINED))
 				|| Index == DESTROYED_STARBASE_DEFINED)
 			{
@@ -438,8 +438,8 @@ GenerateSaMatra_generateOrbital(SOLARSYS_STATE* solarSys,
 static void
 BuildUrquanGuard(SOLARSYS_STATE* solarSys)
 {
-	uqm::BYTE ship1, ship2;
-	uqm::BYTE b0, b1;
+	uint8_t ship1, ship2;
+	uint8_t b0, b1;
 	GFXPOINT org;
 	HIPGROUP hGroup, hNextGroup;
 
@@ -485,7 +485,7 @@ BuildUrquanGuard(SOLARSYS_STATE* solarSys)
 	for (b0 = 1; b0 <= NUM_URQUAN_GUARDS1; ++b0)
 	{
 		PutGroupInfo(GLOBAL(BattleGroupRef),
-					 (uqm::BYTE)(NUM_URQUAN_GUARDS0 + b0));
+					 (uint8_t)(NUM_URQUAN_GUARDS0 + b0));
 	}
 
 	ReinitQueue(&GLOBAL(npc_built_ship_q));
@@ -540,9 +540,9 @@ BuildUrquanGuard(SOLARSYS_STATE* solarSys)
 	(void)solarSys;
 }
 
-static uqm::COUNT
+static uint16_t
 GenerateSaMatra_generateEnergy(const SOLARSYS_STATE* solarSys,
-							   const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO* info)
+							   const PLANET_DESC* world, uint16_t whichNode, NODE_INFO* info)
 {
 	if (EXTENDED
 		&& CurStarDescPtr->Index == DESTROYED_STARBASE_DEFINED
@@ -556,7 +556,7 @@ GenerateSaMatra_generateEnergy(const SOLARSYS_STATE* solarSys,
 
 static bool
 GenerateSaMatra_pickupEnergy(SOLARSYS_STATE* solarSys, PLANET_DESC* world,
-							 uqm::COUNT whichNode)
+							 uint16_t whichNode)
 {
 	if (EXTENDED
 		&& CurStarDescPtr->Index == DESTROYED_STARBASE_DEFINED

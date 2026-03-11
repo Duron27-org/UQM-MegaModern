@@ -175,9 +175,9 @@ static void
 blazer_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
 				 ELEMENT* ElementPtr1, GFXPOINT* pPt1)
 {
-	uqm::BYTE old_offs;
-	uqm::COUNT old_crew_level;
-	uqm::COUNT old_life;
+	uint8_t old_offs;
+	uint16_t old_crew_level;
+	uint16_t old_life;
 
 	old_crew_level = ElementPtr0->crew_level;
 	old_life = ElementPtr0->life_span;
@@ -197,7 +197,7 @@ blazer_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
 static void
 bubble_preprocess(ELEMENT* ElementPtr)
 {
-	uqm::BYTE thrust_wait, turn_wait;
+	uint8_t thrust_wait, turn_wait;
 
 	thrust_wait = HINIBBLE(ElementPtr->turn_wait);
 	turn_wait = LONIBBLE(ElementPtr->turn_wait);
@@ -211,7 +211,7 @@ bubble_preprocess(ELEMENT* ElementPtr)
 			IncFrameIndex(ElementPtr->current.image.frame);
 		ElementPtr->state_flags |= CHANGING;
 
-		thrust_wait = (uqm::BYTE)((uqm::COUNT)TFB_Random() & 3);
+		thrust_wait = (uint8_t)((uint16_t)TFB_Random() & 3);
 	}
 
 	if (turn_wait > 0)
@@ -220,22 +220,22 @@ bubble_preprocess(ELEMENT* ElementPtr)
 	}
 	else
 	{
-		uqm::COUNT facing;
-		uqm::SIZE delta_facing;
+		uint16_t facing;
+		int16_t delta_facing;
 
 		facing = NORMALIZE_FACING(ANGLE_TO_FACING(
 			GetVelocityTravelAngle(&ElementPtr->velocity)));
 		if ((delta_facing = TrackShip(ElementPtr, &facing)) == -1)
 		{
-			facing = (uqm::COUNT)TFB_Random();
+			facing = (uint16_t)TFB_Random();
 		}
 		else if (delta_facing <= ANGLE_TO_FACING(HALF_CIRCLE))
 		{
-			facing += (uqm::COUNT)TFB_Random() & (ANGLE_TO_FACING(HALF_CIRCLE) - 1);
+			facing += (uint16_t)TFB_Random() & (ANGLE_TO_FACING(HALF_CIRCLE) - 1);
 		}
 		else
 		{
-			facing -= (uqm::COUNT)TFB_Random() & (ANGLE_TO_FACING(HALF_CIRCLE) - 1);
+			facing -= (uint16_t)TFB_Random() & (ANGLE_TO_FACING(HALF_CIRCLE) - 1);
 		}
 		SetVelocityVector(&ElementPtr->velocity,
 						  MISSILE_SPEED, facing);
@@ -245,7 +245,7 @@ bubble_preprocess(ELEMENT* ElementPtr)
 	ElementPtr->turn_wait = MAKE_BYTE(turn_wait, thrust_wait);
 }
 
-static uqm::COUNT
+static uint16_t
 initialize_bubble(ELEMENT* ShipPtr, HELEMENT BubbleArray[])
 {
 	STARSHIP* StarShipPtr;
@@ -282,7 +282,7 @@ initialize_bubble(ELEMENT* ShipPtr, HELEMENT BubbleArray[])
 
 static void
 androsynth_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
-						uqm::COUNT ConcernCounter)
+						uint16_t ConcernCounter)
 {
 	EVALUATE_DESC* lpEvalDesc;
 	STARSHIP* StarShipPtr;
@@ -360,8 +360,8 @@ androsynth_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 			else if (lpEvalDesc->MoveState != PURSUE
 					 && lpEvalDesc->which_turn <= 12)
 			{
-				uqm::COUNT travel_facing, direction_facing;
-				uqm::SDWORD delta_x, delta_y,
+				uint16_t travel_facing, direction_facing;
+				int32_t delta_x, delta_y,
 					ship_delta_x, ship_delta_y,
 					other_delta_x, other_delta_y;
 
@@ -403,7 +403,7 @@ androsynth_postprocess(ELEMENT* ElementPtr)
 			|| StarShipPtr->RaceDescPtr->ship_info.energy_level == 0)
 		{
 			StarShipPtr->RaceDescPtr->characteristics.energy_regeneration =
-				(uqm::BYTE)BLAZER_DEGENERATION;
+				(uint8_t)BLAZER_DEGENERATION;
 			StarShipPtr->energy_counter = ENERGY_WAIT;
 
 			if (StarShipPtr->cur_status_flags & ANDROSYN_COMET_TOGGLE)
@@ -526,7 +526,7 @@ androsynth_preprocess(ELEMENT* ElementPtr)
 			}
 			else
 			{
-				uqm::COUNT facing;
+				uint16_t facing;
 
 				facing = StarShipPtr->ShipFacing;
 				if (ElementPtr->turn_wait == 0

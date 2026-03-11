@@ -46,7 +46,7 @@ typedef struct
 	int MaxRemainder;
 	// string table index for this name
 	// i.e. "hundred" in English
-	uqm::COUNT StrIndex;
+	uint16_t StrIndex;
 } SPEECH_DIGITNAME;
 
 typedef struct
@@ -62,13 +62,13 @@ typedef struct
 	//       is a a 'skip digit' indicator when == 0
 	// StrDigits can be nullptr, in which case
 	// the value is interpreted recursively
-	uqm::COUNT* StrDigits;
+	uint16_t* StrDigits;
 	// digit Names, can be nullptr, in which case
 	// CommonNameIndex is used
 	SPEECH_DIGITNAME* Names;
 	// common digit name string table index
 	// i.e. "hundred" in English
-	uqm::COUNT CommonNameIndex;
+	uint16_t CommonNameIndex;
 } SPEECH_DIGIT;
 
 // this accomodates up to "billions" in english
@@ -77,7 +77,7 @@ typedef struct
 typedef struct
 {
 	// slots used in Digits array
-	uqm::COUNT NumDigits;
+	uint16_t NumDigits;
 	// slots for each digit in numbers
 	// teens is exception
 	// 0-9, 10-19, ..20-90, ..100-900, etc.
@@ -85,7 +85,7 @@ typedef struct
 } NUMBER_SPEECH_DESC;
 typedef const NUMBER_SPEECH_DESC* NUMBER_SPEECH;
 
-typedef uqm::DWORD LDAS_FLAGS;
+typedef uint32_t LDAS_FLAGS;
 #define LDASF_NONE ((LDAS_FLAGS)0)
 #define LDASF_USE_ALTERNATE ((LDAS_FLAGS)(1 << 0))
 
@@ -137,14 +137,14 @@ typedef struct
 	/* Called when entering communications */
 	void (*post_encounter_func)(void);
 	/* Called when leaving communications or combat normally */
-	uqm::COUNT (*uninit_encounter_func)(void);
+	uint16_t (*uninit_encounter_func)(void);
 	/* Called when encounter is done for cleanup */
 
 	RESOURCE AlienFrameRes;
 	RESOURCE AlienFontRes;
 	Color AlienTextFColor, AlienTextBColor;
 	GFXPOINT AlienTextBaseline;
-	uqm::COUNT AlienTextWidth;
+	uint16_t AlienTextWidth;
 	TEXT_ALIGN AlienTextAlign;
 	TEXT_VALIGN AlienTextValign;
 	RESOURCE AlienColorMapRes;
@@ -153,7 +153,7 @@ typedef struct
 
 	RESOURCE ConversationPhrasesRes;
 
-	uqm::COUNT NumAnimations;
+	uint16_t NumAnimations;
 	ANIMATION_DESC AlienAmbientArray[MAX_ANIMATIONS];
 
 	// Transition animation to/from talking state;
@@ -214,15 +214,15 @@ typedef struct GameStateBitMap GameStateBitMap;
 struct GameStateBitMap
 {
 	const char* name;
-	uqm::BYTE numBits;
+	uint8_t numBits;
 };
 
 size_t totalBitsForGameState(const GameStateBitMap* bm, int rev);
 int getGameStateRevByBytes(const GameStateBitMap* bm, int bytes);
 bool serialiseGameState(const GameStateBitMap* bm,
-						uqm::BYTE** buf, size_t* numBytes);
+						uint8_t** buf, size_t* numBytes);
 bool deserialiseGameState(const GameStateBitMap* bm,
-						  const uqm::BYTE* buf, size_t numBytes, int rev);
+						  const uint8_t* buf, size_t numBytes, int rev);
 
 #define START_GAME_STATE enum \
 {
@@ -1016,16 +1016,16 @@ enum
 	CHECK_RESTART = MAKE_WORD(0, (1 << 5)),
 	CHECK_ABORT = MAKE_WORD(0, (1 << 6)),
 };
-typedef uqm::UWORD ACTIVITY;
+typedef uint16_t ACTIVITY;
 
 typedef struct
 {
-	uqm::BYTE glob_flags;
+	uint8_t glob_flags;
 	// See above for the meaning of the bits.
 
-	uqm::BYTE CrewCost, FuelCost;
-	uqm::BYTE ModuleCost[NUM_MODULES];
-	uqm::BYTE ElementWorth[NUM_ELEMENT_CATEGORIES];
+	uint8_t CrewCost, FuelCost;
+	uint8_t ModuleCost[NUM_MODULES];
+	uint8_t ElementWorth[NUM_ELEMENT_CATEGORIES];
 
 	PRIMITIVE* DisplayArray;
 	ACTIVITY CurrentActivity;
@@ -1035,12 +1035,12 @@ typedef struct
 	GFXPOINT autopilot;
 	GFXPOINT ip_location;
 	STAMP ShipStamp;
-	uqm::UWORD ShipFacing;
-	uqm::BYTE ip_planet;
-	uqm::BYTE in_orbit;
+	uint16_t ShipFacing;
+	uint8_t ip_planet;
+	uint8_t in_orbit;
 	VELOCITY_DESC velocity;
 
-	uqm::DWORD BattleGroupRef;
+	uint32_t BattleGroupRef;
 	QUEUE avail_race_q;
 	/* List of all the races in the game with information
 			 * about their ships, and what player knows about their
@@ -1102,13 +1102,13 @@ enum
 //#define STATE_DEBUG
 
 #define SET_GAME_STATE(SName, val) \
-	setGameStateUint(#SName, static_cast<uqm::DWORD>(val))
+	setGameStateUint(#SName, static_cast<uint32_t>(val))
 #define GET_GAME_STATE(SName) \
 	getGameStateUint(#SName)
 
 // For dynamic variable names
 #define D_SET_GAME_STATE(SName, val) \
-	setGameStateUint(SName, static_cast<uqm::DWORD>(val))
+	setGameStateUint(SName, static_cast<uint32_t>(val))
 #define D_GET_GAME_STATE(SName) \
 	getGameStateUint(SName)
 
@@ -1264,7 +1264,7 @@ ZeroAdvancedAutoPilot(void)
 #define MAX_SOLD difficultyCase(500, 250, 25)
 
 static inline bool
-IsHomeworldKnown(uqm::DWORD homeworld)
+IsHomeworldKnown(uint32_t homeworld)
 {
 	if (homeworld > 18)
 	{
@@ -1275,9 +1275,9 @@ IsHomeworldKnown(uqm::DWORD homeworld)
 }
 
 static inline void
-SetHomeworldKnown(uqm::DWORD homeworld)
+SetHomeworldKnown(uint32_t homeworld)
 {
-	uqm::DWORD current;
+	uint32_t current;
 
 	if (IsHomeworldKnown(homeworld))
 	{

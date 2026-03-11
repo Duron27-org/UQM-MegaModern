@@ -24,70 +24,70 @@
 
 #define VELOCITY_REMAINDER(v) ((v) & (VELOCITY_SCALE - 1))
 
-void GetCurrentVelocityComponents(VELOCITY_DESC* velocityptr, uqm::SIZE* pdx, uqm::SIZE* pdy)
+void GetCurrentVelocityComponents(VELOCITY_DESC* velocityptr, int16_t* pdx, int16_t* pdy)
 {
 	*pdx = WORLD_TO_VELOCITY(velocityptr->vector.width)
-		 + (velocityptr->fract.width - (uqm::SIZE)highByte(velocityptr->incr.width));
+		 + (velocityptr->fract.width - (int16_t)highByte(velocityptr->incr.width));
 	*pdy = WORLD_TO_VELOCITY(velocityptr->vector.height)
-		 + (velocityptr->fract.height - (uqm::SIZE)highByte(velocityptr->incr.height));
+		 + (velocityptr->fract.height - (int16_t)highByte(velocityptr->incr.height));
 }
 
-void GetCurrentVelocityComponentsSdword(VELOCITY_DESC* velocityptr, uqm::SDWORD* pdx, uqm::SDWORD* pdy)
+void GetCurrentVelocityComponentsSdword(VELOCITY_DESC* velocityptr, int32_t* pdx, int32_t* pdy)
 {
 	*pdx = WORLD_TO_VELOCITY(velocityptr->vector.width)
-		 + ((uqm::SDWORD)velocityptr->fract.width - (uqm::SDWORD)highByte(velocityptr->incr.width));
+		 + ((int32_t)velocityptr->fract.width - (int32_t)highByte(velocityptr->incr.width));
 	*pdy = WORLD_TO_VELOCITY(velocityptr->vector.height)
-		 + ((uqm::SDWORD)velocityptr->fract.height - (uqm::SDWORD)highByte(velocityptr->incr.height));
+		 + ((int32_t)velocityptr->fract.height - (int32_t)highByte(velocityptr->incr.height));
 }
 
-void GetNextVelocityComponents(VELOCITY_DESC* velocityptr, uqm::SIZE* pdx, uqm::SIZE* pdy, uqm::COUNT num_frames)
+void GetNextVelocityComponents(VELOCITY_DESC* velocityptr, int16_t* pdx, int16_t* pdy, uint16_t num_frames)
 {
-	uqm::COUNT e;
+	uint16_t e;
 
-	e = (uqm::COUNT)((uqm::COUNT)velocityptr->error.width + ((uqm::COUNT)velocityptr->fract.width * num_frames));
+	e = (uint16_t)((uint16_t)velocityptr->error.width + ((uint16_t)velocityptr->fract.width * num_frames));
 
 	*pdx = (velocityptr->vector.width * num_frames)
-		 + ((uqm::SIZE)((uqm::SBYTE)lowByte(velocityptr->incr.width))
+		 + ((int16_t)((int8_t)lowByte(velocityptr->incr.width))
 			* (e >> VELOCITY_SHIFT));
 
 	velocityptr->error.width = VELOCITY_REMAINDER(e);
 
-	e = (uqm::COUNT)((uqm::COUNT)velocityptr->error.height + ((uqm::COUNT)velocityptr->fract.height * num_frames));
+	e = (uint16_t)((uint16_t)velocityptr->error.height + ((uint16_t)velocityptr->fract.height * num_frames));
 
 	*pdy = (velocityptr->vector.height * num_frames)
-		 + ((uqm::SIZE)((uqm::SBYTE)lowByte(velocityptr->incr.height))
+		 + ((int16_t)((int8_t)lowByte(velocityptr->incr.height))
 			* (e >> VELOCITY_SHIFT));
 
 	velocityptr->error.height = VELOCITY_REMAINDER(e);
 }
 
 // JMS_GFX: New function to prevent overflows in hi-res.
-void GetNextVelocityComponentsSdword(VELOCITY_DESC* velocityptr, uqm::SDWORD* pdx, uqm::SDWORD* pdy, uqm::DWORD num_frames)
+void GetNextVelocityComponentsSdword(VELOCITY_DESC* velocityptr, int32_t* pdx, int32_t* pdy, uint32_t num_frames)
 {
-	uqm::DWORD e;
+	uint32_t e;
 
-	e = (uqm::DWORD)((uqm::DWORD)velocityptr->error.width + ((uqm::DWORD)velocityptr->fract.width * num_frames));
+	e = (uint32_t)((uint32_t)velocityptr->error.width + ((uint32_t)velocityptr->fract.width * num_frames));
 
-	*pdx = ((uqm::SDWORD)velocityptr->vector.width * num_frames)
-		 + ((uqm::SDWORD)((uqm::SBYTE)lowByte(velocityptr->incr.width))
+	*pdx = ((int32_t)velocityptr->vector.width * num_frames)
+		 + ((int32_t)((int8_t)lowByte(velocityptr->incr.width))
 			* (e >> VELOCITY_SHIFT));
 
-	velocityptr->error.width = (uqm::COUNT)(VELOCITY_REMAINDER(e));
+	velocityptr->error.width = (uint16_t)(VELOCITY_REMAINDER(e));
 
-	e = (uqm::DWORD)((uqm::DWORD)velocityptr->error.height + ((uqm::DWORD)velocityptr->fract.height * num_frames));
+	e = (uint32_t)((uint32_t)velocityptr->error.height + ((uint32_t)velocityptr->fract.height * num_frames));
 
-	*pdy = ((uqm::SDWORD)velocityptr->vector.height * num_frames)
-		 + ((uqm::SDWORD)((uqm::SBYTE)lowByte(velocityptr->incr.height))
+	*pdy = ((int32_t)velocityptr->vector.height * num_frames)
+		 + ((int32_t)((int8_t)lowByte(velocityptr->incr.height))
 			* (e >> VELOCITY_SHIFT));
 
-	velocityptr->error.height = (uqm::COUNT)(VELOCITY_REMAINDER(e));
+	velocityptr->error.height = (uint16_t)(VELOCITY_REMAINDER(e));
 }
 
-// JMS_GFX: Preventing overflows in hi-res: The uqm::SDWORD in this function's parameters was uqm::SIZE.
-void SetVelocityVector(VELOCITY_DESC* velocityptr, uqm::SDWORD magnitude, uqm::COUNT facing)
+// JMS_GFX: Preventing overflows in hi-res: The int32_t in this function's parameters was int16_t.
+void SetVelocityVector(VELOCITY_DESC* velocityptr, int32_t magnitude, uint16_t facing)
 {
-	uqm::COUNT angle;
-	uqm::SIZE dx, dy;
+	uint16_t angle;
+	int16_t dx, dy;
 
 	angle = velocityptr->TravelAngle =
 		FACING_TO_ANGLE(NORMALIZE_FACING(facing));
@@ -97,26 +97,26 @@ void SetVelocityVector(VELOCITY_DESC* velocityptr, uqm::SDWORD magnitude, uqm::C
 	if (dx >= 0)
 	{
 		velocityptr->vector.width = VELOCITY_TO_WORLD(dx);
-		velocityptr->incr.width = MAKE_WORD((uqm::BYTE)1, (uqm::BYTE)0);
+		velocityptr->incr.width = MAKE_WORD((uint8_t)1, (uint8_t)0);
 	}
 	else
 	{
 		dx = -dx;
 		velocityptr->vector.width = -VELOCITY_TO_WORLD(dx);
 		velocityptr->incr.width =
-			MAKE_WORD((uqm::BYTE)0xFF, (uqm::BYTE)(VELOCITY_REMAINDER(dx) << 1));
+			MAKE_WORD((uint8_t)0xFF, (uint8_t)(VELOCITY_REMAINDER(dx) << 1));
 	}
 	if (dy >= 0)
 	{
 		velocityptr->vector.height = VELOCITY_TO_WORLD(dy);
-		velocityptr->incr.height = MAKE_WORD((uqm::BYTE)1, (uqm::BYTE)0);
+		velocityptr->incr.height = MAKE_WORD((uint8_t)1, (uint8_t)0);
 	}
 	else
 	{
 		dy = -dy;
 		velocityptr->vector.height = -VELOCITY_TO_WORLD(dy);
 		velocityptr->incr.height =
-			MAKE_WORD((uqm::BYTE)0xFF, (uqm::BYTE)(VELOCITY_REMAINDER(dy) << 1));
+			MAKE_WORD((uint8_t)0xFF, (uint8_t)(VELOCITY_REMAINDER(dy) << 1));
 	}
 
 	velocityptr->fract.width = VELOCITY_REMAINDER(dx);
@@ -125,9 +125,9 @@ void SetVelocityVector(VELOCITY_DESC* velocityptr, uqm::SDWORD magnitude, uqm::C
 }
 
 // JMS_GFX: Preventing overflows in hi-res: The SDWORDs in this function's parameters were SIZEs.
-void SetVelocityComponents(VELOCITY_DESC* velocityptr, uqm::SDWORD dx, uqm::SDWORD dy)
+void SetVelocityComponents(VELOCITY_DESC* velocityptr, int32_t dx, int32_t dy)
 {
-	uqm::COUNT angle;
+	uint16_t angle;
 
 	if ((angle = ARCTAN(dx, dy)) == FULL_CIRCLE)
 	{
@@ -138,26 +138,26 @@ void SetVelocityComponents(VELOCITY_DESC* velocityptr, uqm::SDWORD dx, uqm::SDWO
 		if (dx >= 0)
 		{
 			velocityptr->vector.width = VELOCITY_TO_WORLD(dx);
-			velocityptr->incr.width = MAKE_WORD((uqm::BYTE)1, (uqm::BYTE)0);
+			velocityptr->incr.width = MAKE_WORD((uint8_t)1, (uint8_t)0);
 		}
 		else
 		{
 			dx = -dx;
 			velocityptr->vector.width = -VELOCITY_TO_WORLD(dx);
 			velocityptr->incr.width =
-				MAKE_WORD((uqm::BYTE)0xFF, (uqm::BYTE)(VELOCITY_REMAINDER(dx) << 1));
+				MAKE_WORD((uint8_t)0xFF, (uint8_t)(VELOCITY_REMAINDER(dx) << 1));
 		}
 		if (dy >= 0)
 		{
 			velocityptr->vector.height = VELOCITY_TO_WORLD(dy);
-			velocityptr->incr.height = MAKE_WORD((uqm::BYTE)1, (uqm::BYTE)0);
+			velocityptr->incr.height = MAKE_WORD((uint8_t)1, (uint8_t)0);
 		}
 		else
 		{
 			dy = -dy;
 			velocityptr->vector.height = -VELOCITY_TO_WORLD(dy);
 			velocityptr->incr.height =
-				MAKE_WORD((uqm::BYTE)0xFF, (uqm::BYTE)(VELOCITY_REMAINDER(dy) << 1));
+				MAKE_WORD((uint8_t)0xFF, (uint8_t)(VELOCITY_REMAINDER(dy) << 1));
 		}
 
 		velocityptr->fract.width = VELOCITY_REMAINDER(dx);
@@ -169,13 +169,13 @@ void SetVelocityComponents(VELOCITY_DESC* velocityptr, uqm::SDWORD dx, uqm::SDWO
 }
 
 // JMS_GFX: Preventing overflows in hi-res: The SDWORDs in this function's parameters were SIZEs.
-void DeltaVelocityComponents(VELOCITY_DESC* velocityptr, uqm::SDWORD dx, uqm::SDWORD dy)
+void DeltaVelocityComponents(VELOCITY_DESC* velocityptr, int32_t dx, int32_t dy)
 {
 
 	dx += WORLD_TO_VELOCITY(velocityptr->vector.width)
-		+ (velocityptr->fract.width - (uqm::SIZE)highByte(velocityptr->incr.width));
+		+ (velocityptr->fract.width - (int16_t)highByte(velocityptr->incr.width));
 	dy += WORLD_TO_VELOCITY(velocityptr->vector.height)
-		+ (velocityptr->fract.height - (uqm::SIZE)highByte(velocityptr->incr.height));
+		+ (velocityptr->fract.height - (int16_t)highByte(velocityptr->incr.height));
 
 	SetVelocityComponents(velocityptr, dx, dy);
 }

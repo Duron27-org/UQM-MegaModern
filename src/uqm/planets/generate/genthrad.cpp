@@ -35,10 +35,10 @@
 static bool GenerateThraddash_generatePlanets(SOLARSYS_STATE* solarSys);
 static bool GenerateThraddash_generateOrbital(SOLARSYS_STATE* solarSys,
 											  PLANET_DESC* world);
-static uqm::COUNT GenerateThraddash_generateEnergy(const SOLARSYS_STATE*,
-												   const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO*);
+static uint16_t GenerateThraddash_generateEnergy(const SOLARSYS_STATE*,
+												 const PLANET_DESC* world, uint16_t whichNode, NODE_INFO*);
 static bool GenerateThraddash_pickupEnergy(SOLARSYS_STATE* solarSys,
-										   PLANET_DESC* world, uqm::COUNT whichNode);
+										   PLANET_DESC* world, uint16_t whichNode);
 
 
 const GenerateFunctions generateThraddashFunctions = {
@@ -68,7 +68,7 @@ GenerateThraddash_generatePlanets(SOLARSYS_STATE* solarSys)
 
 	if (PrimeSeed)
 	{
-		uqm::COUNT angle;
+		uint16_t angle;
 
 		pSunDesc->PlanetByte = 0;
 		pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
@@ -113,7 +113,7 @@ GenerateThraddash_generateOrbital(SOLARSYS_STATE* solarSys,
 		if (StartSphereTracking(THRADDASH_SHIP)
 			&& (CurStarDescPtr->Index == THRADD_DEFINED
 				|| (!GET_GAME_STATE(HELIX_UNPROTECTED)
-					&& (uqm::BYTE)(GET_GAME_STATE(THRADD_MISSION) - 1) >= 3)))
+					&& (uint8_t)(GET_GAME_STATE(THRADD_MISSION) - 1) >= 3)))
 		{
 			NotifyOthers(THRADDASH_SHIP, IPNL_ALL_CLEAR);
 			PutGroupInfo(GROUPS_RANDOM, GROUP_SAVE_IP);
@@ -145,7 +145,7 @@ GenerateThraddash_generateOrbital(SOLARSYS_STATE* solarSys,
 
 			if (CurStarDescPtr->Index == THRADD_DEFINED
 				|| (!GET_GAME_STATE(HELIX_UNPROTECTED)
-					&& (uqm::BYTE)(GET_GAME_STATE(THRADD_MISSION) - 1) >= 3))
+					&& (uint8_t)(GET_GAME_STATE(THRADD_MISSION) - 1) >= 3))
 			{
 				return true;
 			}
@@ -162,7 +162,7 @@ GenerateThraddash_generateOrbital(SOLARSYS_STATE* solarSys,
 				 && (StartSphereTracking(THRADDASH_SHIP)
 					 || !(GET_GAME_STATE(KOHR_AH_FRENZY))))
 		{
-			uqm::COUNT sum, i;
+			uint16_t sum, i;
 
 			PutGroupInfo(GROUPS_RANDOM, GROUP_SAVE_IP);
 			ReinitQueue(&GLOBAL(ip_group_q));
@@ -207,7 +207,7 @@ GenerateThraddash_generateOrbital(SOLARSYS_STATE* solarSys,
 				}
 
 				{
-					uqm::UWORD state;
+					uint16_t state;
 
 					state = GET_GAME_STATE(HM_ENCOUNTERS);
 
@@ -243,9 +243,9 @@ GenerateThraddash_generateOrbital(SOLARSYS_STATE* solarSys,
 	return true;
 }
 
-static uqm::COUNT
+static uint16_t
 GenerateThraddash_generateEnergy(const SOLARSYS_STATE* solarSys,
-								 const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO* info)
+								 const PLANET_DESC* world, uint16_t whichNode, NODE_INFO* info)
 {
 	if (CurStarDescPtr->Index == THRADD_DEFINED
 		&& matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET))
@@ -272,7 +272,7 @@ GenerateThraddash_generateEnergy(const SOLARSYS_STATE* solarSys,
 
 static bool
 GenerateThraddash_pickupEnergy(SOLARSYS_STATE* solarSys,
-							   PLANET_DESC* world, uqm::COUNT whichNode)
+							   PLANET_DESC* world, uint16_t whichNode)
 {
 	if (CurStarDescPtr->Index == THRADD_DEFINED
 		&& matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET))
@@ -290,7 +290,7 @@ GenerateThraddash_pickupEnergy(SOLARSYS_STATE* solarSys,
 				&GLOBAL(avail_race_q), THRADDASH_SHIP);
 		FLEET_INFO* ThraddPtr =
 			LockFleetInfo(&GLOBAL(avail_race_q), hThradd);
-		uqm::SIZE strength_loss;
+		int16_t strength_loss;
 
 		assert(!GET_GAME_STATE(AQUA_HELIX) && whichNode == 0);
 
@@ -306,12 +306,12 @@ GenerateThraddash_pickupEnergy(SOLARSYS_STATE* solarSys,
 		{
 			SetRaceAllied(THRADDASH_SHIP, false);
 			RemoveEscortShips(THRADDASH_SHIP);
-			strength_loss = (uqm::SIZE)(ThraddPtr->actual_strength);
+			strength_loss = (int16_t)(ThraddPtr->actual_strength);
 			ThraddPtr->growth =
-				(uqm::BYTE)(-strength_loss / ThraddPtr->days_left);
+				(uint8_t)(-strength_loss / ThraddPtr->days_left);
 			ThraddPtr->growth_fract =
-				(uqm::BYTE)(((strength_loss % ThraddPtr->days_left) << 8)
-							/ ThraddPtr->days_left);
+				(uint8_t)(((strength_loss % ThraddPtr->days_left) << 8)
+						  / ThraddPtr->days_left);
 			SET_GAME_STATE(THRADD_VISITS, 0);
 		}
 

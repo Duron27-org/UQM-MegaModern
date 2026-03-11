@@ -58,10 +58,10 @@ STATUS_FLAGS
 inertial_thrust(ELEMENT* ElementPtr)
 {
 #define MAX_ALLOWED_SPEED WORLD_TO_VELOCITY(DISPLAY_TO_WORLD(RES_SCALE(18)))
-#define MAX_ALLOWED_SPEED_SQR ((uqm::DWORD)MAX_ALLOWED_SPEED * MAX_ALLOWED_SPEED)
+#define MAX_ALLOWED_SPEED_SQR ((uint32_t)MAX_ALLOWED_SPEED * MAX_ALLOWED_SPEED)
 
-	uqm::COUNT CurrentAngle, TravelAngle;
-	uqm::COUNT max_thrust, thrust_increment;
+	uint16_t CurrentAngle, TravelAngle;
+	uint16_t max_thrust, thrust_increment;
 	VELOCITY_DESC* VelocityPtr;
 	STARSHIP* StarShipPtr;
 
@@ -88,10 +88,10 @@ inertial_thrust(ELEMENT* ElementPtr)
 	}
 	else
 	{
-		uqm::SIZE delta_x, delta_y;
-		uqm::SIZE cur_delta_x, cur_delta_y;
-		uqm::DWORD desired_speed, max_speed;
-		uqm::DWORD current_speed;
+		int16_t delta_x, delta_y;
+		int16_t cur_delta_x, cur_delta_y;
+		uint32_t desired_speed, max_speed;
+		uint32_t current_speed;
 
 		thrust_increment = WORLD_TO_VELOCITY(thrust_increment);
 		GetCurrentVelocityComponents(VelocityPtr, &cur_delta_x, &cur_delta_y);
@@ -264,11 +264,11 @@ void ship_preprocess(ELEMENT* ElementPtr)
 	{
 		--StarShipPtr->energy_counter;
 	}
-	else if (RDPtr->ship_info.energy_level < (uqm::BYTE)RDPtr->ship_info.max_energy
-			 || (uqm::SBYTE)RDPtr->characteristics.energy_regeneration < 0)
+	else if (RDPtr->ship_info.energy_level < (uint8_t)RDPtr->ship_info.max_energy
+			 || (int8_t)RDPtr->characteristics.energy_regeneration < 0)
 	{
 		DeltaEnergy(ElementPtr,
-					(uqm::SBYTE)RDPtr->characteristics.energy_regeneration);
+					(int8_t)RDPtr->characteristics.energy_regeneration);
 	}
 
 	if (RDPtr->preprocess_func)
@@ -353,7 +353,7 @@ void ship_postprocess(ELEMENT* ElementPtr)
 			 && DeltaEnergy(ElementPtr,
 							-RDPtr->characteristics.weapon_energy_cost))
 	{
-		uqm::COUNT num_weapons;
+		uint16_t num_weapons;
 		HELEMENT Weapon[6];
 
 		num_weapons = (*RDPtr->init_weapon_func)(ElementPtr, Weapon);
@@ -422,7 +422,7 @@ void collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
 		if (GRAVITY_MASS(ElementPtr1->mass_points))
 		{
 			// Collision with a planet.
-			uqm::SIZE damage;
+			int16_t damage;
 
 			damage = ElementPtr0->hit_points >> 2;
 			if (damage == 0)
@@ -531,7 +531,7 @@ spawn_ship(STARSHIP* StarShipPtr)
 			StarShipPtr->ShipFacing = NORMALIZE_FACING(TFB_Random());
 			if (inHQSpace())
 			{ // Only one ship is ever spawned in HyperSpace -- flagship
-				uqm::COUNT facing = GLOBAL(ShipFacing);
+				uint16_t facing = GLOBAL(ShipFacing);
 				// XXX: Solar system reentry test depends on ShipFacing != 0
 				if (facing > 0)
 				{
@@ -547,8 +547,8 @@ spawn_ship(STARSHIP* StarShipPtr)
 
 				if (IS_HD)
 				{
-					uqm::COUNT i;
-					uqm::COUNT numFrames = GetFrameCount(RDPtr->ship_data.ship[0]);
+					uint16_t i;
+					uint16_t numFrames = GetFrameCount(RDPtr->ship_data.ship[0]);
 					DrawMode mode = MAKE_DRAW_MODE(DRAW_LINEARBURN, 0xFF);
 					Color c;
 
@@ -596,7 +596,7 @@ spawn_ship(STARSHIP* StarShipPtr)
 }
 
 // Select a new ship and spawn it.
-bool GetNextStarShip(STARSHIP* LastStarShipPtr, uqm::COUNT which_side)
+bool GetNextStarShip(STARSHIP* LastStarShipPtr, uint16_t which_side)
 {
 	HSTARSHIP hBattleShip;
 
@@ -640,7 +640,7 @@ bool GetInitialStarShips(void)
 	if (lowByte(GLOBAL(CurrentActivity)) == SUPER_MELEE)
 	{
 		HSTARSHIP ships[NUM_PLAYERS];
-		uqm::COUNT i;
+		uint16_t i;
 
 		if (!GetInitialMeleeStarShips(ships))
 		{
@@ -650,7 +650,7 @@ bool GetInitialStarShips(void)
 		for (i = 0; i < NUM_PLAYERS; i++)
 		{
 			STARSHIP* StarShipPtr;
-			uqm::COUNT playerI = GetPlayerOrder(i);
+			uint16_t playerI = GetPlayerOrder(i);
 
 			StarShipPtr = LockStarShip(&race_q[playerI], ships[playerI]);
 			if (!spawn_ship(StarShipPtr))

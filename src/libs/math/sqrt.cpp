@@ -18,15 +18,15 @@
 
 #include "mthintrn.h"
 
-uqm::COUNT
-square_root(uqm::DWORD value)
+uint16_t
+square_root(uint32_t value)
 {
-	uqm::UWORD sig_word, mask;
-	uqm::COUNT result, shift;
+	uint16_t sig_word, mask;
+	uint16_t result, shift;
 
 	if ((sig_word = HIWORD(value)) > 0)
 	{
-		uqm::DWORD mask_squared, result_shift;
+		uint32_t mask_squared, result_shift;
 
 		for (mask = 1 << 15, shift = 31;
 			 !(mask & sig_word); mask >>= 1, --shift)
@@ -35,11 +35,11 @@ square_root(uqm::DWORD value)
 		mask = 1 << shift;
 
 		result = mask;
-		mask_squared = result_shift = (uqm::DWORD)mask << shift;
+		mask_squared = result_shift = (uint32_t)mask << shift;
 		value -= mask_squared;
 		while (mask >>= 1)
 		{
-			uqm::DWORD remainder;
+			uint32_t remainder;
 
 			mask_squared >>= 1;
 			mask_squared >>= 1;
@@ -61,7 +61,7 @@ square_root(uqm::DWORD value)
 	}
 	else if ((sig_word = LOWORD(value)) > 0)
 	{
-		uqm::UWORD mask_squared, result_shift;
+		uint16_t mask_squared, result_shift;
 
 		for (mask = 1 << 15, shift = 15;
 			 !(mask & sig_word); mask >>= 1, --shift)
@@ -74,7 +74,7 @@ square_root(uqm::DWORD value)
 		sig_word -= mask_squared;
 		while (mask >>= 1)
 		{
-			uqm::UWORD remainder;
+			uint16_t remainder;
 
 			mask_squared >>= 1;
 			mask_squared >>= 1;

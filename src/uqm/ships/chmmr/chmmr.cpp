@@ -52,7 +52,7 @@
 #define SATELLITE_OFFSET DISPLAY_TO_WORLD(RES_SCALE(64))
 #define SATELLITE_HITPOINTS 10
 #define SATELLITE_MASS 10
-#define DEFENSE_RANGE (uqm::UWORD) RES_SCALE(64)
+#define DEFENSE_RANGE (uint16_t)RES_SCALE(64)
 #define DEFENSE_WAIT 2
 
 static RACE_DESC chmmr_desc =
@@ -154,7 +154,7 @@ laser_death(ELEMENT* ElementPtr)
 
 	if (StarShipPtr->hShip)
 	{
-		uqm::SDWORD dx, dy;
+		int32_t dx, dy;
 		long dist;
 		HELEMENT hIonSpots;
 		ELEMENT* ShipPtr;
@@ -165,12 +165,12 @@ laser_death(ELEMENT* ElementPtr)
 		   - ShipPtr->current.location.x;
 		dy = ElementPtr->current.location.y
 		   - ShipPtr->current.location.y;
-		if (((uqm::BYTE)TFB_Random() & 0x07)
+		if (((uint8_t)TFB_Random() & 0x07)
 			&& (dist = (long)dx * dx + (long)dy * dy) >= (long)DISPLAY_TO_WORLD(CHMMR_OFFSET + RES_SCALE(10))
 															 * DISPLAY_TO_WORLD(CHMMR_OFFSET + RES_SCALE(10))
 			&& (hIonSpots = AllocElement()))
 		{
-			uqm::COUNT angle, magnitude;
+			uint16_t angle, magnitude;
 			ELEMENT* IonSpotsPtr;
 
 			LockElement(hIonSpots, &IonSpotsPtr);
@@ -181,7 +181,7 @@ laser_death(ELEMENT* ElementPtr)
 			IonSpotsPtr->life_span = 9;
 
 			angle = ARCTAN(dx, dy);
-			magnitude = ((uqm::COUNT)TFB_Random()
+			magnitude = ((uint16_t)TFB_Random()
 						 % ((square_root(dist) + 1)
 							- DISPLAY_TO_WORLD(CHMMR_OFFSET + RES_SCALE(10))))
 					  + DISPLAY_TO_WORLD(CHMMR_OFFSET + RES_SCALE(10));
@@ -211,7 +211,7 @@ laser_death(ELEMENT* ElementPtr)
 	}
 }
 
-static uqm::COUNT
+static uint16_t
 initialize_megawatt_laser(ELEMENT* ShipPtr, HELEMENT LaserArray[])
 {
 	GFXRECT r;
@@ -250,8 +250,8 @@ initialize_megawatt_laser(ELEMENT* ShipPtr, HELEMENT LaserArray[])
 
 		LaserPtr->mass_points = 2;
 		LaserPtr->death_func = laser_death;
-		LaserPtr->turn_wait = (uqm::BYTE)((StarShipPtr->special_counter + 1)
-										  % NUM_CYCLES);
+		LaserPtr->turn_wait = (uint8_t)((StarShipPtr->special_counter + 1)
+										% NUM_CYCLES);
 
 		UnlockElement(LaserArray[0]);
 	}
@@ -261,7 +261,7 @@ initialize_megawatt_laser(ELEMENT* ShipPtr, HELEMENT LaserArray[])
 
 static void
 chmmr_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
-				   uqm::COUNT ConcernCounter)
+				   uint16_t ConcernCounter)
 {
 	STARSHIP* StarShipPtr;
 	EVALUATE_DESC* lpEvalDesc;
@@ -332,7 +332,7 @@ chmmr_postprocess(ELEMENT* ElementPtr)
 	if ((StarShipPtr->cur_status_flags & SPECIAL)
 		&& DeltaEnergy(ElementPtr, -SPECIAL_ENERGY_COST))
 	{
-		uqm::COUNT facing;
+		uint16_t facing;
 		ELEMENT* ShipElementPtr;
 
 		LockElement(ElementPtr->hTarget, &ShipElementPtr);
@@ -351,10 +351,10 @@ chmmr_postprocess(ELEMENT* ElementPtr)
 			LockElement(ElementPtr->hTarget, &ShipElementPtr);
 			if (!GRAVITY_MASS(ShipElementPtr->mass_points + 1))
 			{
-				uqm::SIZE i, dx, dy;
-				uqm::COUNT angle, magnitude;
+				int16_t i, dx, dy;
+				uint16_t angle, magnitude;
 				STARSHIP* EnemyStarShipPtr;
-				static const uqm::SIZE shadow_offs[] =
+				static const int16_t shadow_offs[] =
 					{
 						DISPLAY_TO_WORLD(8),
 						DISPLAY_TO_WORLD(8 + 9),
@@ -370,7 +370,7 @@ chmmr_postprocess(ELEMENT* ElementPtr)
 						BUILD_COLOR(MAKE_RGB15_INIT(0x00, 0x00, 0x09), 0x56),
 						BUILD_COLOR(MAKE_RGB15_INIT(0x00, 0x00, 0x07), 0x57),
 					};
-				uqm::DWORD current_speed, max_speed;
+				uint32_t current_speed, max_speed;
 
 				// calculate tractor beam effect
 				angle = FACING_TO_ANGLE(StarShipPtr->ShipFacing);
@@ -462,13 +462,13 @@ satellite_preprocess(ELEMENT* ElementPtr)
 						 (GetFrameIndex(ElementPtr->current.image.frame) + 1) & 7);
 	ElementPtr->state_flags |= CHANGING;
 
-	ElementPtr->turn_wait = (uqm::BYTE)NORMALIZE_ANGLE(
+	ElementPtr->turn_wait = (uint8_t)NORMALIZE_ANGLE(
 		ElementPtr->turn_wait + 1);
 
 	GetElementStarShip(ElementPtr, &StarShipPtr);
 	if (StarShipPtr->hShip)
 	{
-		uqm::SDWORD dx, dy;
+		int32_t dx, dy;
 		ELEMENT* ShipPtr;
 
 		StarShipPtr->RaceDescPtr->ship_info.ship_flags |= POINT_DEFENSE;
@@ -492,7 +492,7 @@ satellite_preprocess(ELEMENT* ElementPtr)
 		}
 		else
 		{
-			uqm::COUNT angle;
+			uint16_t angle;
 
 			angle = ARCTAN(dx, dy);
 			SetVelocityComponents(&ElementPtr->velocity,
@@ -507,8 +507,8 @@ satellite_preprocess(ELEMENT* ElementPtr)
 static void
 spawn_point_defense(ELEMENT* ElementPtr)
 {
-	uqm::BYTE weakest;
-	uqm::UWORD best_dist;
+	uint8_t weakest;
+	uint16_t best_dist;
 	STARSHIP* StarShipPtr;
 	HELEMENT hObject, hNextObject, hBestObject;
 	ELEMENT* ShipPtr;
@@ -531,8 +531,8 @@ spawn_point_defense(ELEMENT* ElementPtr)
 			&& CollisionPossible(ObjectPtr, ShipPtr)
 			&& !OBJECT_CLOAKED(ObjectPtr))
 		{
-			uqm::SDWORD delta_x, delta_y;
-			uqm::UWORD dist;
+			int32_t delta_x, delta_y;
+			uint16_t dist;
 
 			delta_x = ObjectPtr->next.location.x
 					- SattPtr->next.location.x;
@@ -548,7 +548,7 @@ spawn_point_defense(ELEMENT* ElementPtr)
 			}
 			delta_x = WORLD_TO_DISPLAY(delta_x);
 			delta_y = WORLD_TO_DISPLAY(delta_y);
-			if ((uqm::UWORD)delta_x <= DEFENSE_RANGE && (uqm::UWORD)delta_y <= DEFENSE_RANGE && (dist = (uqm::UWORD)delta_x * (uqm::UWORD)delta_x + (uqm::UWORD)delta_y * (uqm::UWORD)delta_y) <= DEFENSE_RANGE * DEFENSE_RANGE
+			if ((uint16_t)delta_x <= DEFENSE_RANGE && (uint16_t)delta_y <= DEFENSE_RANGE && (dist = (uint16_t)delta_x * (uint16_t)delta_x + (uint16_t)delta_y * (uint16_t)delta_y) <= DEFENSE_RANGE * DEFENSE_RANGE
 				&& (ObjectPtr->hit_points < weakest
 					|| (ObjectPtr->hit_points == weakest
 						&& dist < best_dist)))
@@ -678,7 +678,7 @@ satellite_death(ELEMENT* ElementPtr)
 static void
 spawn_satellites(ELEMENT* ElementPtr)
 {
-	uqm::COUNT i;
+	uint16_t i;
 	STARSHIP* StarShipPtr;
 
 	GetElementStarShip(ElementPtr, &StarShipPtr);
@@ -692,7 +692,7 @@ spawn_satellites(ELEMENT* ElementPtr)
 			hSatellite = AllocElement();
 			if (hSatellite)
 			{
-				uqm::COUNT angle;
+				uint16_t angle;
 				ELEMENT* SattPtr;
 
 				LockElement(hSatellite, &SattPtr);
@@ -705,7 +705,7 @@ spawn_satellites(ELEMENT* ElementPtr)
 
 				angle = (i * FULL_CIRCLE + (NUM_SATELLITES >> 1))
 					  / NUM_SATELLITES;
-				SattPtr->turn_wait = (uqm::BYTE)angle;
+				SattPtr->turn_wait = (uint8_t)angle;
 				SattPtr->current.location.x = ElementPtr->next.location.x
 											+ COSINE(angle, SATELLITE_OFFSET);
 				SattPtr->current.location.y = ElementPtr->next.location.y
@@ -714,7 +714,7 @@ spawn_satellites(ELEMENT* ElementPtr)
 					StarShipPtr->RaceDescPtr->ship_data.special;
 				SattPtr->current.image.frame = SetAbsFrameIndex(
 					StarShipPtr->RaceDescPtr->ship_data.special[0],
-					(uqm::COUNT)TFB_Random() & 0x07);
+					(uint16_t)TFB_Random() & 0x07);
 
 				SattPtr->preprocess_func = satellite_preprocess;
 				SattPtr->postprocess_func = satellite_postprocess;

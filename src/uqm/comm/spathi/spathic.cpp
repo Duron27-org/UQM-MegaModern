@@ -58,7 +58,7 @@ static LOCDATA spathi_desc =
 				0, /* FrameRate */
 				0,
 				GameTicksPerSecond, /* RestartRate */
-				(1 << 1),	/* BlockMask */
+				(1 << 1),			/* BlockMask */
 			},
 								{
 				7,			   /* StartIndex */
@@ -78,11 +78,11 @@ static LOCDATA spathi_desc =
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond / 10,
 				GameTicksPerSecond / 15, /* RestartRate */
-				(1 << 4),		 /* BlockMask */
+				(1 << 4),				 /* BlockMask */
 			},
-								{20,							   /* StartIndex */
-			 4,								   /* NumFrames */
-			 YOYO_ANIM,						   /* AnimFlags */
+								{20,											   /* StartIndex */
+			 4,												   /* NumFrames */
+			 YOYO_ANIM,										   /* AnimFlags */
 			 GameTicksPerSecond / 15, GameTicksPerSecond / 15, /* FrameRate */
 			 GameTicksPerSecond / 15, GameTicksPerSecond / 15, /* FrameRate */
 			 (1 << 5)},
@@ -94,7 +94,7 @@ static LOCDATA spathi_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				(1 << 2),		/* BlockMask */
+				(1 << 2),				/* BlockMask */
 			},
 
 
@@ -106,7 +106,7 @@ static LOCDATA spathi_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				(1 << 3),		/* BlockMask */
+				(1 << 3),				/* BlockMask */
 			},
 								{
 				38,		   /* StartIndex */
@@ -116,7 +116,7 @@ static LOCDATA spathi_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				41,		   /* StartIndex */
@@ -126,7 +126,7 @@ static LOCDATA spathi_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								},
 		{
@@ -177,7 +177,7 @@ static LOCDATA spathi_desc =
 static void
 ExitConversation(RESPONSE_REF Response)
 {
-	uqm::BYTE SpaCrew = ifEasyDifficulty(MAX_CREW_SIZE, 1);
+	uint8_t SpaCrew = ifEasyDifficulty(MAX_CREW_SIZE, 1);
 	setSegue(Segue_peace);
 
 	if (PLAYER_SAID(Response, bye_ally_space))
@@ -241,7 +241,7 @@ ExitConversation(RESPONSE_REF Response)
 		{
 			NPCPhrase(WILL_JOIN);
 
-			AlienTalkSegue((uqm::COUNT)~0);
+			AlienTalkSegue((uint16_t)~0);
 			AddEscortShips(SPATHI_SHIP, 1);
 			/* Make the Eluder escort captained by Fwiffo alone */
 			SetEscortCrewComplement(SPATHI_SHIP, SpaCrew,
@@ -259,13 +259,13 @@ ExitConversation(RESPONSE_REF Response)
 		{
 			NPCPhrase(WILL_JOIN);
 
-			AlienTalkSegue((uqm::COUNT)~0);
+			AlienTalkSegue((uint16_t)~0);
 			AddEscortShips(SPATHI_SHIP, 1);
 		}
 	}
 }
 
-static uqm::BYTE join_us_refusals;
+static uint8_t join_us_refusals;
 
 static void
 SpathiOnPluto(RESPONSE_REF R)
@@ -539,7 +539,7 @@ SpathiAllies(RESPONSE_REF R)
 {
 	if (R == 0)
 	{
-		uqm::BYTE NumVisits;
+		uint8_t NumVisits;
 
 		NumVisits = GET_GAME_STATE(SPATHI_VISITS);
 		switch (NumVisits++)
@@ -607,7 +607,7 @@ SpathiFriendly(RESPONSE_REF R)
 {
 	if (R == 0)
 	{
-		uqm::BYTE NumVisits;
+		uint8_t NumVisits;
 
 		NumVisits = GET_GAME_STATE(SPATHI_VISITS);
 		switch (NumVisits++)
@@ -651,7 +651,7 @@ static void SpathiNeutral(RESPONSE_REF R);
 static void
 SpathiBefriend(RESPONSE_REF R)
 {
-	uqm::BYTE InfoLeft, LastStack;
+	uint8_t InfoLeft, LastStack;
 	RESPONSE_REF pStr[2];
 
 	InfoLeft = false;
@@ -791,7 +791,7 @@ SpathiNeutral(RESPONSE_REF R)
 {
 	if (R == 0)
 	{
-		uqm::BYTE NumVisits;
+		uint8_t NumVisits;
 
 		NumVisits = GET_GAME_STATE(SPATHI_VISITS);
 		switch (NumVisits++)
@@ -846,7 +846,7 @@ SpathiNeutral(RESPONSE_REF R)
 static void
 Intro(void)
 {
-	uqm::BYTE Manner;
+	uint8_t Manner;
 
 	Manner = GET_GAME_STATE(SPATHI_MANNER);
 	if (GET_GAME_STATE(FOUND_PLUTO_SPATHI) == 1)
@@ -877,7 +877,7 @@ Intro(void)
 	}
 	else if (Manner == 1)
 	{
-		uqm::BYTE NumVisits;
+		uint8_t NumVisits;
 
 		NumVisits = GET_GAME_STATE(SPATHI_VISITS);
 		switch (NumVisits++)
@@ -911,7 +911,7 @@ Intro(void)
 	}
 }
 
-static uqm::COUNT
+static uint16_t
 uninit_spathi(void)
 {
 	luaUqm_comm_uninit();
@@ -921,7 +921,7 @@ uninit_spathi(void)
 static void
 post_spathi_enc(void)
 {
-	uqm::BYTE Manner;
+	uint8_t Manner;
 
 	if (GET_GAME_STATE(FOUND_PLUTO_SPATHI) == 1)
 	{

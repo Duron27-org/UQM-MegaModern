@@ -692,8 +692,7 @@ UniChar_toLower(UniChar ch)
 // Custom functions
 
 
-uqm::CHAR_T*
-AlignText(const uqm::CHAR_T* str, int16_t* loc_x)
+char* AlignText(const char* str, int16_t* loc_x)
 {
 	int modSize = 0;
 	int first_pos = utf8StringPos((unsigned char*)str, UNICHAR_PIPE);
@@ -703,7 +702,7 @@ AlignText(const uqm::CHAR_T* str, int16_t* loc_x)
 		|| str == nullptr || first_pos != 0 || last_pos == -1
 		|| last_pos == 0)
 	{
-		return (uqm::CHAR_T*)str;
+		return (char*)str;
 	}
 
 	uqstl::string_view strView {str};
@@ -714,7 +713,7 @@ AlignText(const uqm::CHAR_T* str, int16_t* loc_x)
 	else
 	{
 		uqm::log::debug("\nVariable between delimiters is missing, corrupt, or not an integer: {}\n", strView);
-		return (uqm::CHAR_T*)str;
+		return (char*)str;
 	}
 
 	if (modSize != 0)
@@ -722,11 +721,10 @@ AlignText(const uqm::CHAR_T* str, int16_t* loc_x)
 		*loc_x += RES_SCALE(modSize);
 	}
 
-	return (uqm::CHAR_T*)skipUTF8Chars((unsigned char*)str, last_pos + 1);
+	return (char*)skipUTF8Chars((unsigned char*)str, last_pos + 1);
 }
 
-uqm::CHAR_T*
-AddPadd(const uqm::CHAR_T* str, int16_t* padding)
+char* AddPadd(const char* str, int16_t* padding)
 {
 	int modSize = 0;
 	int first_pos = utf8StringPos((unsigned char*)str, UNICHAR_COLON);
@@ -736,7 +734,7 @@ AddPadd(const uqm::CHAR_T* str, int16_t* padding)
 		|| str == nullptr || first_pos != 0 || last_pos == -1
 		|| last_pos == 0)
 	{
-		return (uqm::CHAR_T*)str;
+		return (char*)str;
 	}
 
 	uqstl::string_view strView {str};
@@ -747,7 +745,7 @@ AddPadd(const uqm::CHAR_T* str, int16_t* padding)
 	else
 	{
 		uqm::log::debug("Variable between delimiters is missing, corrupt, or not an integer: {}\n", strView);
-		return (uqm::CHAR_T*)str;
+		return (char*)str;
 	}
 
 	if (modSize != 0)
@@ -755,5 +753,5 @@ AddPadd(const uqm::CHAR_T* str, int16_t* padding)
 		*padding += RES_SCALE(modSize);
 	}
 
-	return (uqm::CHAR_T*)skipUTF8Chars((unsigned char*)str, last_pos + 1);
+	return (char*)skipUTF8Chars((unsigned char*)str, last_pos + 1);
 }

@@ -130,7 +130,7 @@ bool Netplay_NotifyAll_inputDelay(size_t delay)
 #ifdef NETPLAY_CHECKSUM
 void Netplay_NotifyAll_checksum(BattleFrameCounter frameNr, Checksum checksum)
 {
-	uqm::COUNT player;
+	uint16_t player;
 
 	for (player = 0; player < NUM_PLAYERS; player++)
 	{
@@ -152,7 +152,7 @@ void Netplay_NotifyAll_checksum(BattleFrameCounter frameNr, Checksum checksum)
 
 void Netplay_NotifyAll_battleInput(BATTLE_INPUT_STATE input)
 {
-	uqm::COUNT player;
+	uint16_t player;
 
 	for (player = 0; player < NUM_PLAYERS; player++)
 	{

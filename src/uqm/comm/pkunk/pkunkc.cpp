@@ -59,7 +59,7 @@ static LOCDATA pkunk_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				7, /* StartIndex */
@@ -70,7 +70,7 @@ static LOCDATA pkunk_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				(1 << 2),		/* BlockMask */
+				(1 << 2),				/* BlockMask */
 			},
 								{
 				11, /* StartIndex */
@@ -81,7 +81,7 @@ static LOCDATA pkunk_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				(1 << 1),		/* BlockMask */
+				(1 << 1),				/* BlockMask */
 			},
 								},
 		{
@@ -104,7 +104,7 @@ static LOCDATA pkunk_desc =
 								GameTicksPerSecond / 6, /* FrameRate */
 			GameTicksPerSecond / 12,
 								GameTicksPerSecond / 2, /* RestartRate */
-			0,				/* BlockMask */
+			0,						/* BlockMask */
 		},
 		nullptr, /* AlienNumberSpeech - none */
 		/* Filler for loaded resources */
@@ -168,7 +168,7 @@ ExitConversation(RESPONSE_REF R)
 		else
 		{
 			NPCPhrase(INIT_SHIP_GIFT);
-			AlienTalkSegue((uqm::COUNT)~0);
+			AlienTalkSegue((uint16_t)~0);
 			if (AddEscortShips(PKUNK_SHIP, difficultyCase(4, 4, 2)))
 			{
 				PrepareShip(PKUNK_SHIP);
@@ -212,7 +212,7 @@ ExitConversation(RESPONSE_REF R)
 	}
 	else
 	{
-		uqm::BYTE ReasonMask;
+		uint8_t ReasonMask;
 
 		ReasonMask = GET_GAME_STATE(PKUNK_REASONS);
 		if (PLAYER_SAID(R, good_reason_1))
@@ -324,7 +324,7 @@ DiscussConquer(RESPONSE_REF R)
 	if (PHRASE_ENABLED(conquer_because_1))
 	{
 #if 0
-		uqm::CHAR_T buf[ALLIANCE_NAME_BUFSIZE];
+		char buf[ALLIANCE_NAME_BUFSIZE];
 
 		GetAllianceName (buf, name_1);
 		construct_response (
@@ -379,7 +379,7 @@ OfferAlliance(RESPONSE_REF R)
 static void
 AboutPkunk(RESPONSE_REF R)
 {
-	uqm::BYTE InfoLeft;
+	uint8_t InfoLeft;
 
 	InfoLeft = false;
 	if (PLAYER_SAID(R, what_about_you))
@@ -453,7 +453,7 @@ AboutPkunk(RESPONSE_REF R)
 static void
 AboutIlwrath(RESPONSE_REF R)
 {
-	uqm::BYTE InfoLeft;
+	uint8_t InfoLeft;
 
 	InfoLeft = false;
 	if (PLAYER_SAID(R, what_about_ilwrath))
@@ -516,7 +516,7 @@ AboutIlwrath(RESPONSE_REF R)
 static void
 PkunkHome(RESPONSE_REF R)
 {
-	uqm::BYTE NumVisits;
+	uint8_t NumVisits;
 
 	if (PLAYER_SAID(R, no_conquest))
 	{
@@ -684,7 +684,7 @@ PkunkHome(RESPONSE_REF R)
 static void
 PkunkFriendlySpace(RESPONSE_REF R)
 {
-	uqm::BYTE NumVisits;
+	uint8_t NumVisits;
 
 	if (PLAYER_SAID(R, whats_up_space))
 	{
@@ -808,7 +808,7 @@ PkunkFriendlySpace(RESPONSE_REF R)
 static void
 PkunkNeutralSpace(RESPONSE_REF R)
 {
-	uqm::BYTE NumVisits;
+	uint8_t NumVisits;
 
 	if (PLAYER_SAID(R, form_alliance))
 	{
@@ -880,7 +880,7 @@ PkunkNeutralSpace(RESPONSE_REF R)
 static void
 PkunkMigrate(RESPONSE_REF R)
 {
-	uqm::BYTE ReasonMask;
+	uint8_t ReasonMask;
 	(void)R; // ignored
 
 	ReasonMask = GET_GAME_STATE(PKUNK_REASONS);
@@ -906,7 +906,7 @@ PkunkMigrate(RESPONSE_REF R)
 static void
 Intro(void)
 {
-	uqm::BYTE NumVisits, Manner;
+	uint8_t NumVisits, Manner;
 
 	if (lowByte(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE)
 	{
@@ -1160,7 +1160,7 @@ Intro(void)
 }
 
 // Called after combat or communications
-static uqm::COUNT
+static uint16_t
 uninit_pkunk(void)
 {
 	luaUqm_comm_uninit();
@@ -1170,7 +1170,7 @@ uninit_pkunk(void)
 static void
 post_pkunk_enc(void)
 {
-	uqm::BYTE Manner;
+	uint8_t Manner;
 
 	if (getSegue() == Segue_hostile
 		&& (Manner = GET_GAME_STATE(PKUNK_MANNER)) != 2)

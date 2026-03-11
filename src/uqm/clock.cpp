@@ -38,17 +38,17 @@
 static Mutex clock_mutex;
 
 static bool
-IsLeapYear(uqm::COUNT year)
+IsLeapYear(uint16_t year)
 {
 	//     every 4th year      but not 100s          yet still 400s
 	return (year & 3) == 0 && ((year % 100) != 0 || (year % 400) == 0);
 }
 
 /* month is 1-based: 1=Jan, 2=Feb, etc. */
-static uqm::BYTE
-DaysInMonth(uqm::COUNT month, uqm::COUNT year)
+static uint8_t
+DaysInMonth(uint16_t month, uint16_t year)
 {
-	static const uqm::BYTE days_in_month[12] =
+	static const uint8_t days_in_month[12] =
 		{
 			31,
 			28,
@@ -97,7 +97,7 @@ nextClockDay(void)
 float daysElapsed(void)
 {
 	float days = 0;
-	uqm::COUNT index;
+	uint16_t index;
 
 	// Years
 	for (index = START_YEAR; index < GLOBAL(GameClock.year_index); index++)
@@ -203,7 +203,7 @@ void UnlockGameClock(void)
 // For debugging use only
 bool GameClockRunning(void)
 {
-	uqm::SIZE day_in_ticks;
+	int16_t day_in_ticks;
 
 	if (!clock_mutex)
 	{
@@ -217,17 +217,17 @@ bool GameClockRunning(void)
 	return day_in_ticks != 0;
 }
 
-void SetGameClockRate(uqm::COUNT seconds_per_day)
+void SetGameClockRate(uint16_t seconds_per_day)
 {
-	
-	uqm::SIZE new_day_in_ticks = (uqm::SIZE)(seconds_per_day * CLOCK_BASE_FRAMERATE);
+
+	int16_t new_day_in_ticks = (int16_t)(seconds_per_day * CLOCK_BASE_FRAMERATE);
 	if (timeDilationPct != 100) [[unlikely]]
 	{
-		new_day_in_ticks = static_cast<uqm::SIZE>(new_day_in_ticks * (timeDilationPct/100.f));
+		new_day_in_ticks = static_cast<int16_t>(new_day_in_ticks * (timeDilationPct / 100.f));
 		uqm::log::debug("Setting time dilation scale to {}%, with a day tick length of {}", timeDilationPct, new_day_in_ticks);
 	}
 
-	uqm::SIZE new_tick_count {};
+	int16_t new_tick_count {};
 	if (GLOBAL(GameClock.day_in_ticks) == 0)
 	{
 		new_tick_count = new_day_in_ticks;
@@ -236,8 +236,8 @@ void SetGameClockRate(uqm::COUNT seconds_per_day)
 	{
 		new_tick_count = 0;
 	}
-	else if ((new_tick_count = (uqm::SIZE)((uqm::DWORD)GLOBAL(GameClock.tick_count)
-										   * new_day_in_ticks / GLOBAL(GameClock.day_in_ticks)))
+	else if ((new_tick_count = (int16_t)((uint32_t)GLOBAL(GameClock.tick_count)
+										 * new_day_in_ticks / GLOBAL(GameClock.day_in_ticks)))
 			 == 0)
 	{
 		new_tick_count = 1;
@@ -246,10 +246,10 @@ void SetGameClockRate(uqm::COUNT seconds_per_day)
 	GLOBAL(GameClock.tick_count) = new_tick_count;
 }
 
-bool ValidateEvent(EVENT_TYPE type, uqm::COUNT* pmonth_index, uqm::COUNT* pday_index,
-				   uqm::COUNT* pyear_index)
+bool ValidateEvent(EVENT_TYPE type, uint16_t* pmonth_index, uint16_t* pday_index,
+				   uint16_t* pyear_index)
 {
-	uqm::COUNT month_index, day_index, year_index;
+	uint16_t month_index, day_index, year_index;
 
 	month_index = *pmonth_index;
 	day_index = *pday_index;
@@ -285,7 +285,7 @@ bool ValidateEvent(EVENT_TYPE type, uqm::COUNT* pmonth_index, uqm::COUNT* pday_i
 }
 
 HEVENT
-AddEvent(EVENT_TYPE type, uqm::COUNT month_index, uqm::COUNT day_index, uqm::COUNT year_index, uqm::BYTE func_index)
+AddEvent(EVENT_TYPE type, uint16_t month_index, uint16_t day_index, uint16_t year_index, uint8_t func_index)
 {
 	HEVENT hNewEvent;
 
@@ -302,8 +302,8 @@ AddEvent(EVENT_TYPE type, uqm::COUNT month_index, uqm::COUNT day_index, uqm::COU
 		EVENT* EventPtr;
 
 		LockEvent(hNewEvent, &EventPtr);
-		EventPtr->day_index = (uqm::BYTE)day_index;
-		EventPtr->month_index = (uqm::BYTE)month_index;
+		EventPtr->day_index = (uint8_t)day_index;
+		EventPtr->month_index = (uint8_t)month_index;
 		EventPtr->year_index = year_index;
 		EventPtr->func_index = func_index;
 		UnlockEvent(hNewEvent);
@@ -357,7 +357,7 @@ void GameClockTick(void)
 	UnlockMutex(clock_mutex);
 }
 
-void MoveGameClockDays(uqm::COUNT days)
+void MoveGameClockDays(uint16_t days)
 {
 	// XXX: This should theoretically hold the clock_mutex, but if
 	//   someone manages to hit the debug button while this function

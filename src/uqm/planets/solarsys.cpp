@@ -76,8 +76,8 @@
 
 static bool DoIpFlight(SOLARSYS_STATE* pSS);
 static void DrawInnerPlanets(PLANET_DESC* planet);
-static void DrawOuterPlanets(uqm::SIZE radius);
-static void DrawSystem(uqm::SIZE radius, bool IsInnerSystem);
+static void DrawOuterPlanets(int16_t radius);
+static void DrawSystem(int16_t radius, bool IsInnerSystem);
 static void DrawInnerSystem(void);
 static void DrawOuterSystem(void);
 static void SetPlanetColorMap(PLANET_DESC* planet);
@@ -111,8 +111,8 @@ COLORMAP OrbitalCMap;
 COLORMAP SunCMap;
 MUSIC_REF SpaceMusic;
 
-uqm::SIZE EncounterRace;
-uqm::BYTE EncounterGroup;
+int16_t EncounterRace;
+uint8_t EncounterGroup;
 // last encountered group info
 
 static FRAME StarsFrame;
@@ -123,12 +123,12 @@ static FRAME SolarSysFrame;
 static GFXRECT scaleRect;
 // system zooms in when the flagship enters this rect
 
-static uqm::COUNT PBodySize[7] = {0, 3, 4, 7, 11, 15, 29};
+static uint16_t PBodySize[7] = {0, 3, 4, 7, 11, 15, 29};
 // Planet sizes primary used for textured planets
 // There are actually only 6 sizes, but 0 is reached
 // only for WORLD_TYPE_SPECIAL and '!= 0' check prevents
 // from nuking SpaceJunkFrame in SetPlanetOldFrame()
-#define UNDEFINED_OFFSET ((uqm::BYTE)~0)
+#define UNDEFINED_OFFSET ((uint8_t)~0)
 
 RandomContext* SysGenRNG;
 RandomContext* SysGenRNGDebug;
@@ -156,7 +156,7 @@ RandomContext* SysGenRNGDebug;
 
 
 GFXPOINT
-locationToDisplay(GFXPOINT pt, uqm::SIZE scaleRadius)
+locationToDisplay(GFXPOINT pt, int16_t scaleRadius)
 {
 	GFXPOINT out;
 
@@ -169,7 +169,7 @@ locationToDisplay(GFXPOINT pt, uqm::SIZE scaleRadius)
 }
 
 GFXPOINT
-displayToLocation(GFXPOINT pt, uqm::SIZE scaleRadius)
+displayToLocation(GFXPOINT pt, int16_t scaleRadius)
 {
 	GFXPOINT out;
 
@@ -182,9 +182,9 @@ displayToLocation(GFXPOINT pt, uqm::SIZE scaleRadius)
 }
 
 GFXPOINT
-planetOuterLocation(uqm::COUNT planetI)
+planetOuterLocation(uint16_t planetI)
 {
-	uqm::SIZE scaleRadius = pSolarSysState->SunDesc[0].radius;
+	int16_t scaleRadius = pSolarSysState->SunDesc[0].radius;
 	return displayToLocation(
 		pSolarSysState->PlanetDesc[planetI].image.origin,
 		scaleRadius);
@@ -202,7 +202,7 @@ bool worldIsMoon(const SOLARSYS_STATE* solarSys, const PLANET_DESC* world)
 
 // Returns the planet index of the world. If the world is a moon, then
 // this is the index of the planet it is orbiting.
-uqm::COUNT
+uint16_t
 planetIndex(const SOLARSYS_STATE* solarSys, const PLANET_DESC* world)
 {
 	const PLANET_DESC* planet = worldIsPlanet(solarSys, world) ?
@@ -211,8 +211,7 @@ planetIndex(const SOLARSYS_STATE* solarSys, const PLANET_DESC* world)
 	return planet - solarSys->PlanetDesc;
 }
 
-uqm::CHAR_T
-moonLetter(const SOLARSYS_STATE* solarSys, const PLANET_DESC* moon)
+char moonLetter(const SOLARSYS_STATE* solarSys, const PLANET_DESC* moon)
 {
 	assert(!worldIsPlanet(solarSys, moon));
 	int i = -1;
@@ -227,7 +226,7 @@ moonLetter(const SOLARSYS_STATE* solarSys, const PLANET_DESC* moon)
 	return i + 'A';
 }
 
-uqm::COUNT
+uint16_t
 moonIndex(const SOLARSYS_STATE* solarSys, const PLANET_DESC* moon)
 {
 	assert(!worldIsPlanet(solarSys, moon));
@@ -237,10 +236,10 @@ moonIndex(const SOLARSYS_STATE* solarSys, const PLANET_DESC* moon)
 // Test whether 'world' is the planetI-th planet, and if moonI is not
 // set to MATCH_PLANET, also whether 'world' is the moonI-th moon.
 bool matchWorld(const SOLARSYS_STATE* solarSys, const PLANET_DESC* world,
-				uqm::BYTE planetI, uqm::BYTE moonI)
+				uint8_t planetI, uint8_t moonI)
 {
-	uqm::BYTE PlanetI = (planetI == MATCH_PBYTE ? solarSys->SunDesc[0].PlanetByte : planetI);
-	uqm::BYTE MoonI = (moonI == MATCH_MBYTE ? solarSys->SunDesc[0].MoonByte : moonI);
+	uint8_t PlanetI = (planetI == MATCH_PBYTE ? solarSys->SunDesc[0].PlanetByte : planetI);
+	uint8_t MoonI = (moonI == MATCH_MBYTE ? solarSys->SunDesc[0].MoonByte : moonI);
 
 	// Check whether we have the right planet.
 	if (planetIndex(solarSys, world) != PlanetI)
@@ -294,8 +293,8 @@ bool playerInInnerSystem(void)
 static void
 GenerateTexturedMoons(SOLARSYS_STATE* system, PLANET_DESC* planet)
 {
-	uqm::COUNT i;
-	uqm::SIZE MoonDiameter;
+	uint16_t i;
+	int16_t MoonDiameter;
 	PLANET_DESC* pMoonDesc;
 	PLANET_DESC* previousOrbitalDesc = pSolarSysState->pOrbitalDesc;
 	PLANET_INFO* planetInfo = &pSolarSysState->SysInfo.PlanetInfo;
@@ -319,7 +318,7 @@ GenerateTexturedMoons(SOLARSYS_STATE* system, PLANET_DESC* planet)
 
 			if (CurStarDescPtr->Index == SOL_DEFINED)
 			{ // png defined moons in Sol
-				uqm::COUNT curr_planet_index =
+				uint16_t curr_planet_index =
 					planetIndex(pSolarSysState, planet);
 
 				switch (curr_planet_index)
@@ -396,8 +395,8 @@ GenerateTexturedMoons(SOLARSYS_STATE* system, PLANET_DESC* planet)
 static void
 GenerateMoons(SOLARSYS_STATE* system, PLANET_DESC* planet)
 {
-	uqm::COUNT i;
-	//uqm::COUNT facing; ununsed
+	uint16_t i;
+	//uint16_t facing; ununsed
 	PLANET_DESC* pMoonDesc;
 
 	RandomContext_SeedRandom(SysGenRNG, planet->rand_seed);
@@ -426,7 +425,7 @@ FRAME
 LoadNebulaeFrame(GFXPOINT location)
 {
 	STRING nebulaRes;
-	uqm::COUNT nebulaCount;
+	uint16_t nebulaCount;
 	GFXPOINT neb_seed;
 	const GFXPOINT solPoint = plot_map[SOL_DEFINED].star_pt;
 
@@ -439,7 +438,7 @@ LoadNebulaeFrame(GFXPOINT location)
 
 	if (!PrimeSeed)
 	{
-		uqm::DWORD rand_val;
+		uint32_t rand_val;
 
 		rand_val = RandomContext_FastRandom(
 			MAKE_DWORD(location.y, location.x));
@@ -453,7 +452,7 @@ LoadNebulaeFrame(GFXPOINT location)
 		neb_seed.y = location.y;
 	}
 
-	uqm::CHAR_T path[PATH_MAX] {};
+	char path[PATH_MAX] {};
 
 	nebulaRes = CaptureStringTable(
 		LoadStringTable(NEBULA_RESOURCES));
@@ -474,8 +473,8 @@ static void
 ChangeSunColor(void)
 {
 	Color c;
-	uqm::BYTE starSize = STAR_TYPE(CurStarDescPtr->Type);
-	uqm::COUNT i, j, maskOffset, sizeIter;
+	uint8_t starSize = STAR_TYPE(CurStarDescPtr->Type);
+	uint16_t i, j, maskOffset, sizeIter;
 	DrawMode mode;
 
 	// Kruzen: An index of a star color in the palette.
@@ -559,8 +558,8 @@ void LoadIPData(void)
 static void
 sortPlanetPositions(void)
 {
-	uqm::COUNT i;
-	uqm::SIZE sort_array[MAX_PLANETS + 1];
+	uint16_t i;
+	int16_t sort_array[MAX_PLANETS + 1];
 
 	// When this part is done, sort_array will contain the indices to
 	// all planets, sorted on their y position.
@@ -579,11 +578,11 @@ sortPlanetPositions(void)
 	// Sort sort_array, based on the positions of the planets/sun.
 	for (i = 0; i <= pSolarSysState->SunDesc[0].NumPlanets; ++i)
 	{
-		uqm::COUNT j;
+		uint16_t j;
 
 		for (j = pSolarSysState->SunDesc[0].NumPlanets; j > i; --j)
 		{
-			uqm::SIZE real_i, real_j, temp;
+			int16_t real_i, real_j, temp;
 
 			real_i = sort_array[i];
 			real_j = sort_array[j];
@@ -613,8 +612,8 @@ sortPlanetPositions(void)
 static void
 initSolarSysSISCharacteristics(void)
 {
-	uqm::BYTE i;
-	uqm::BYTE num_thrusters;
+	uint8_t i;
+	uint8_t num_thrusters;
 
 	num_thrusters = 0;
 	for (i = 0; i < NUM_DRIVE_SLOTS; ++i)
@@ -624,7 +623,7 @@ initSolarSysSISCharacteristics(void)
 			++num_thrusters;
 		}
 	}
-	pSolarSysState->max_ship_speed = (uqm::BYTE)((num_thrusters + 5) * IP_SHIP_THRUST_INCREMENT);
+	pSolarSysState->max_ship_speed = (uint8_t)((num_thrusters + 5) * IP_SHIP_THRUST_INCREMENT);
 
 	pSolarSysState->turn_wait = IP_SHIP_TURN_WAIT;
 	for (i = 0; i < NUM_JET_SLOTS; ++i)
@@ -641,7 +640,7 @@ initSolarSysSISCharacteristics(void)
 // seeding per custom seed, AND because fleets use their homeworld coords for
 // jitter, it even ensures the same homeworld (coords) sourced fleets will have
 // different jitters on different seeds.
-uqm::DWORD
+uint32_t
 GetRandomSeedForStar(const STAR_DESC* star)
 {
 #ifdef DEBUG_STARSEED
@@ -656,7 +655,7 @@ GetRandomSeedForStar(const STAR_DESC* star)
 	return MAKE_DWORD(star->star_pt.x, star->star_pt.y) + (StarSeed ? optCustomSeed : 0);
 }
 
-uqm::DWORD
+uint32_t
 GetRandomSeedForVar(const GFXPOINT point)
 {
 	return MAKE_DWORD(point.x, point.y);
@@ -665,7 +664,7 @@ GetRandomSeedForVar(const GFXPOINT point)
 static void
 GenerateTexturedPlanets(void)
 {
-	uqm::COUNT i;
+	uint16_t i;
 	PLANET_DESC* pCurDesc;
 	PLANET_DESC* previousOrbitalDesc;
 	previousOrbitalDesc = pSolarSysState->pOrbitalDesc;
@@ -755,7 +754,7 @@ GenerateTexturedPlanets(void)
 static PLANET_DESC*
 LoadSolarSys(void)
 {
-	uqm::COUNT i;
+	uint16_t i;
 	PLANET_DESC* orbital = nullptr;
 	PLANET_DESC* pCurDesc;
 #define NUM_TEMP_RANGES 5
@@ -770,7 +769,7 @@ LoadSolarSys(void)
 
 	if (NebulaFrame)
 	{
-		uqm::BYTE brightness = (optNebulaeVolume + 1) * 5;
+		uint8_t brightness = (optNebulaeVolume + 1) * 5;
 		for (i = 0; i < NUM_TEMP_RANGES; i++)
 		{
 			IncreaseBrightness(&temp_color_array[i].r, brightness);
@@ -812,7 +811,7 @@ LoadSolarSys(void)
 		}
 		else
 		{
-			uqm::COUNT index;
+			uint16_t index;
 			SYSTEM_INFO SysInfo;
 
 			DoPlanetaryAnalysis(&SysInfo, pCurDesc);
@@ -902,7 +901,7 @@ saveNonOrbitalLocation(void)
 static void
 FreeSolarSys(void)
 {
-	uqm::COUNT i;
+	uint16_t i;
 	PLANET_DESC* pCurDesc;
 
 	if (pSolarSysState->InIpFlight)
@@ -944,7 +943,7 @@ FreeSolarSys(void)
 		// moons
 		if (playerInInnerSystem())
 		{
-			uqm::COUNT numMoons;
+			uint16_t numMoons;
 			if (worldIsMoon(pSolarSysState, pSolarSysState->pOrbitalDesc))
 			{
 				numMoons =
@@ -960,7 +959,7 @@ FreeSolarSys(void)
 			{
 				if (!(pCurDesc->data_index & WORLD_TYPE_SPECIAL))
 				{
-					uqm::SIZE diameterPick =
+					int16_t diameterPick =
 						pCurDesc->data_index > LAST_SMALL_ROCKY_WORLD ?
 							LARGE_MOON_DIAMETER :
 							MOON_DIAMETER;
@@ -989,7 +988,7 @@ FreeSolarSys(void)
 
 		if (playerInInnerSystem())
 		{
-			uqm::COUNT numMoons;
+			uint16_t numMoons;
 			if (worldIsMoon(pSolarSysState, pSolarSysState->pOrbitalDesc))
 			{
 				numMoons =
@@ -1017,9 +1016,9 @@ FreeSolarSys(void)
 }
 
 static FRAME
-getCollisionFrame(PLANET_DESC* planet, uqm::COUNT WaitPlanet)
+getCollisionFrame(PLANET_DESC* planet, uint16_t WaitPlanet)
 {
-	if (pSolarSysState->WaitIntersect != (uqm::COUNT)~0
+	if (pSolarSysState->WaitIntersect != (uint16_t)~0
 		&& pSolarSysState->WaitIntersect != WaitPlanet)
 	{
 		return DecFrameIndex(stars_in_space);
@@ -1035,11 +1034,11 @@ getCollisionFrame(PLANET_DESC* planet, uqm::COUNT WaitPlanet)
 static PLANET_DESC*
 CheckIntersect(void)
 {
-	uqm::COUNT i;
+	uint16_t i;
 	PLANET_DESC* pCurDesc;
 	INTERSECT_CONTROL ShipIntersect, PlanetIntersect;
-	uqm::COUNT NewWaitPlanet;
-	uqm::BYTE PlanetOffset, MoonOffset;
+	uint16_t NewWaitPlanet;
+	uint8_t PlanetOffset, MoonOffset;
 
 	// Check collisions with the system center object
 	// This may be the planet in inner view, or the sun
@@ -1076,7 +1075,7 @@ CheckIntersect(void)
 						MoonOffset);
 #endif /* DEBUG_SOLARSYS */
 		NewWaitPlanet = MAKE_WORD(PlanetOffset, MoonOffset);
-		if (pSolarSysState->WaitIntersect != (uqm::COUNT)~0
+		if (pSolarSysState->WaitIntersect != (uint16_t)~0
 			&& pSolarSysState->WaitIntersect != NewWaitPlanet)
 		{
 			pSolarSysState->WaitIntersect = NewWaitPlanet;
@@ -1127,7 +1126,7 @@ CheckIntersect(void)
 #endif /* DEBUG_SOLARSYS */
 			NewWaitPlanet = MAKE_WORD(PlanetOffset, MoonOffset);
 
-			if (pSolarSysState->WaitIntersect == (uqm::COUNT)~0)
+			if (pSolarSysState->WaitIntersect == (uint16_t)~0)
 			{ // All collisions disallowed, but the ship is still
 				// colliding with something. Collisions will remain
 				// disabled.
@@ -1149,7 +1148,7 @@ CheckIntersect(void)
 	// It may be a previously existing collision also (the value won't
 	// change) If all collisions were disabled, this will reenable then
 	// once the ship stops colliding with any planets
-	if (pSolarSysState->WaitIntersect != (uqm::COUNT)~0 || NewWaitPlanet == 0)
+	if (pSolarSysState->WaitIntersect != (uint16_t)~0 || NewWaitPlanet == 0)
 	{
 		pSolarSysState->WaitIntersect = NewWaitPlanet;
 	}
@@ -1158,7 +1157,7 @@ CheckIntersect(void)
 }
 
 static void
-GetOrbitRect(GFXRECT* pRect, COORD dx, COORD dy, uqm::SIZE radius,
+GetOrbitRect(GFXRECT* pRect, COORD dx, COORD dy, int16_t radius,
 			 int xnumer, int ynumer, int denom)
 {
 	pRect->corner.x = RES_SCALE(ORIG_SIS_SCREEN_WIDTH >> 1)
@@ -1186,7 +1185,7 @@ GetPlanetOrbitRect(GFXRECT* r, PLANET_DESC* planet, int sizeNumer,
 }
 
 static void
-SetPlanetOldFrame(PLANET_DESC* planet, uqm::COUNT index, uqm::COUNT color)
+SetPlanetOldFrame(PLANET_DESC* planet, uint16_t index, uint16_t color)
 {
 	FRAME oldFrame;
 	GFXRECT r;
@@ -1212,14 +1211,14 @@ SetPlanetOldFrame(PLANET_DESC* planet, uqm::COUNT index, uqm::COUNT color)
 static void
 ValidateOrbit(PLANET_DESC* planet, int sizeNumer, int dyNumer, int denom)
 {
-	uqm::COUNT index;
+	uint16_t index;
 
 	if (optOrbitingPlanets)
 	{
 		// BW: recompute planet position to account for orbiting
-		// uqm::COUNT newAngle;
+		// uint16_t newAngle;
 		// newAngle = NORMALIZE_ANGLE(planet->angle
-		// 		+ (uqm::COUNT)(daysElapsed() * planet->orb_speed));
+		// 		+ (uint16_t)(daysElapsed() * planet->orb_speed));
 		// planet->location.x = COSINE (newAngle, planet->radius);
 		// planet->location.y = SINE (newAngle, planet->radius);
 		double newAngle;
@@ -1251,10 +1250,10 @@ ValidateOrbit(PLANET_DESC* planet, int sizeNumer, int dyNumer, int denom)
 	index = planet->data_index & ~WORLD_TYPE_SPECIAL;
 	if (index < NUMBER_OF_PLANET_TYPES)
 	{ // The world is a normal planetary body (planet or moon)
-		uqm::BYTE Type;
-		uqm::COUNT Size;
-		uqm::COUNT angle;
-		uqm::BYTE offset = 0;
+		uint8_t Type;
+		uint16_t Size;
+		uint16_t angle;
+		uint8_t offset = 0;
 
 		Type = PlanData[index].Type;
 		Size = PLANSIZE(Type);
@@ -1307,7 +1306,7 @@ ValidateOrbit(PLANET_DESC* planet, int sizeNumer, int dyNumer, int denom)
 	}
 	else if (planet->data_index > WORLD_TYPE_SPECIAL && planet->frame_offset == UNDEFINED_OFFSET)
 	{
-		uqm::BYTE frameNum = 0;
+		uint8_t frameNum = 0;
 
 		// these have no animations - so set the frame once
 		// it'll reset on leave
@@ -1354,10 +1353,10 @@ DrawOrbit(PLANET_DESC* planet, int sizeNumer, int dyNumer, int denom)
 	}
 }
 
-static uqm::SIZE
-FindRadius(GFXPOINT shipLoc, uqm::SIZE fromRadius)
+static int16_t
+FindRadius(GFXPOINT shipLoc, int16_t fromRadius)
 {
-	uqm::SIZE nextRadius;
+	int16_t nextRadius;
 	GFXPOINT displayLoc;
 
 	do
@@ -1382,12 +1381,12 @@ FindRadius(GFXPOINT shipLoc, uqm::SIZE fromRadius)
 	return fromRadius;
 }
 
-static uqm::UWORD
-flagship_inertial_thrust(uqm::COUNT CurrentAngle)
+static uint16_t
+flagship_inertial_thrust(uint16_t CurrentAngle)
 {
-	uqm::SIZE max_ship_speed;
-	uqm::SIZE cur_delta_x, cur_delta_y;
-	uqm::COUNT TravelAngle, thrust_increment;
+	int16_t max_ship_speed;
+	int16_t cur_delta_x, cur_delta_y;
+	uint16_t TravelAngle, thrust_increment;
 	VELOCITY_DESC* VelocityPtr;
 
 	max_ship_speed = pSolarSysState->max_ship_speed << 1;
@@ -1403,8 +1402,8 @@ flagship_inertial_thrust(uqm::COUNT CurrentAngle)
 	}
 	else
 	{
-		uqm::SIZE delta_x, delta_y;
-		uqm::DWORD desired_speed, max_speed;
+		int16_t delta_x, delta_y;
+		uint32_t desired_speed, max_speed;
 
 		delta_x = cur_delta_x + COSINE(CurrentAngle, thrust_increment);
 		delta_y = cur_delta_y + SINE(CurrentAngle, thrust_increment);
@@ -1457,10 +1456,10 @@ flagship_inertial_thrust(uqm::COUNT CurrentAngle)
 #define SOUTH 8
 #define WEST 12
 
-static uqm::SIZE
-ScreenCompass(uqm::COUNT index)
+static int16_t
+ScreenCompass(uint16_t index)
 {
-	uqm::SIZE facing;
+	int16_t facing;
 	GFXPOINT scrLoc = GLOBAL(ShipStamp.origin);
 	EXTENT sisScr = {(COORD)SIS_SCREEN_WIDTH, (COORD)SIS_SCREEN_HEIGHT};
 	bool westOfCenter = scrLoc.x < (sisScr.width >> 1);
@@ -1496,10 +1495,10 @@ ScreenCompass(uqm::COUNT index)
 #define TURN_RIGHT -1
 
 static GFXPOINT
-TurnAbout(uqm::SIZE delta_x, uqm::SIZE delta_y)
+TurnAbout(int16_t delta_x, int16_t delta_y)
 {
-	uqm::SIZE facing;
-	uqm::COUNT index;
+	int16_t facing;
+	uint16_t index;
 	GFXPOINT delta = {delta_x, delta_y};
 
 	if (!optSmartAutoPilot)
@@ -1539,8 +1538,8 @@ TurnAbout(uqm::SIZE delta_x, uqm::SIZE delta_y)
 static void
 ProcessShipControls(void)
 {
-	uqm::COUNT index;
-	uqm::SIZE delta_x, delta_y;
+	uint16_t index;
+	int16_t delta_x, delta_y;
 
 	if (CurrentInputState.key[static_cast<int>(PlayerControlTemplates[0])][KEY_UP]
 		|| CurrentInputState.key[static_cast<int>(PlayerControlTemplates[0])][KEY_THRUST])
@@ -1626,7 +1625,7 @@ static void
 enterInnerSystem(PLANET_DESC* planet)
 {
 #define INNER_ENTRY_DISTANCE (MIN_MOON_RADIUS + ((MAX_GEN_MOONS - 1) * MOON_DELTA) + (MOON_DELTA >> 2)) + NSAFE_NUM_SCL(5)
-	uqm::COUNT angle;
+	uint16_t angle;
 
 	// Calculate the inner system entry location and facing
 	angle = FACING_TO_ANGLE(GetFrameIndex(GLOBAL(ShipStamp.frame)))
@@ -1667,8 +1666,8 @@ enterInnerSystem(PLANET_DESC* planet)
 static void
 leaveInnerSystem(PLANET_DESC* planet)
 {
-	uqm::COUNT outerPlanetWait;
-	uqm::COUNT i;
+	uint16_t outerPlanetWait;
+	uint16_t i;
 	PLANET_DESC* pMoonDesc;
 
 	pSolarSysState->pBaseDesc = pSolarSysState->PlanetDesc;
@@ -1695,7 +1694,7 @@ leaveInnerSystem(PLANET_DESC* planet)
 		{
 			if (!(pMoonDesc->data_index & WORLD_TYPE_SPECIAL))
 			{
-				uqm::SIZE diameterPick =
+				int16_t diameterPick =
 					pMoonDesc->data_index > LAST_SMALL_ROCKY_WORLD ?
 						LARGE_MOON_DIAMETER :
 						MOON_DIAMETER;
@@ -1726,7 +1725,7 @@ leaveInnerSystem(PLANET_DESC* planet)
 	CheckIntersect();
 	if (pSolarSysState->WaitIntersect != outerPlanetWait)
 	{
-		pSolarSysState->WaitIntersect = (uqm::COUNT)~0;
+		pSolarSysState->WaitIntersect = (uint16_t)~0;
 	}
 }
 
@@ -1739,9 +1738,9 @@ enterOrbital(PLANET_DESC* planet)
 }
 
 static bool
-CheckShipLocation(uqm::SIZE* newRadius)
+CheckShipLocation(int16_t* newRadius)
 {
-	uqm::SIZE radius;
+	int16_t radius;
 	bool SISonScreen;
 
 	radius = pSolarSysState->SunDesc[0].radius;
@@ -1841,7 +1840,7 @@ TransitionSystemIn(void)
 }
 
 static void
-ScaleSystem(uqm::SIZE new_radius)
+ScaleSystem(int16_t new_radius)
 {
 #ifdef SMOOTH_SYSTEM_ZOOM
 	// XXX: This appears to have been an attempt to zoom the system view
@@ -1853,9 +1852,9 @@ ScaleSystem(uqm::SIZE new_radius)
 	//   can collide with a group while zooming, and that is not handled
 	//   100% correctly.
 #define NUM_STEPS 10
-	uqm::COUNT i;
-	uqm::SIZE old_radius;
-	uqm::SIZE d, step;
+	uint16_t i;
+	int16_t old_radius;
+	int16_t d, step;
 
 	old_radius = pSolarSysState->SunDesc[0].radius;
 
@@ -1919,8 +1918,8 @@ static void
 DrawTexturedBody(PLANET_DESC* planet, STAMP s)
 {
 	int oldScale {};
-	uqm::SIZE moonDiameter;
-	uqm::COUNT size = PBodySize[planet->size];
+	int16_t moonDiameter;
+	uint16_t size = PBodySize[planet->size];
 
 	BatchGraphics();
 	uqm::TFBScaleMode oldMode = SetGraphicScaleMode(uqm::TFBScaleMode::Bilinear);
@@ -1960,8 +1959,8 @@ void RotatePlanets(bool IsInnerSystem)
 {
 	PLANET_DESC* planet;
 	PLANET_DESC* moon;
-	static uqm::SIZE frameCounter;
-	uqm::COUNT i;
+	static int16_t frameCounter;
+	uint16_t i;
 
 	// Do not try to rotate planets that haven't been generated yet.
 	if (!pSolarSysState->PlanetDesc->orbit.lpTopoData)
@@ -2000,7 +1999,7 @@ static void
 IP_frame(void)
 {
 	bool locChange;
-	uqm::SIZE newRadius;
+	int16_t newRadius;
 
 	SetContext(SpaceContext);
 	ProcessShipControls();
@@ -2076,7 +2075,7 @@ CheckZoomLevel(void)
 static void
 ValidateOrbits(void)
 {
-	uqm::COUNT i;
+	uint16_t i;
 	PLANET_DESC* planet;
 
 	for (i = pSolarSysState->SunDesc[0].NumPlanets,
@@ -2092,7 +2091,7 @@ ValidateOrbits(void)
 static void
 ValidateInnerOrbits(void)
 {
-	uqm::COUNT i;
+	uint16_t i;
 	PLANET_DESC* planet;
 
 	assert(playerInInnerSystem());
@@ -2133,7 +2132,7 @@ DrawOuterSystem(void)
 }
 
 RESOURCE
-spaceMusicSwitch(uqm::BYTE SpeciesID)
+spaceMusicSwitch(uint8_t SpeciesID)
 {
 	switch (SpeciesID)
 	{
@@ -2270,7 +2269,7 @@ EnterPlanetOrbit(void)
 	(*pSolarSysState->genFuncs->generateOrbital)(pSolarSysState,
 												 pSolarSysState->pOrbitalDesc);
 	LastActivity &= ~(CHECK_LOAD | CHECK_RESTART);
-	if ((GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD | START_ENCOUNTER)) || GLOBAL_SIS(CrewEnlisted) == (uqm::COUNT)~0
+	if ((GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD | START_ENCOUNTER)) || GLOBAL_SIS(CrewEnlisted) == (uint16_t)~0
 		|| GET_GAME_STATE(CHMMR_BOMB_STATE) == 2)
 	{
 		return;
@@ -2290,7 +2289,7 @@ EnterPlanetOrbit(void)
 	// a Caster for Ilwrath
 	// Could also have blown self up with Utwig Bomb
 	if (!(GLOBAL(CurrentActivity) & (START_ENCOUNTER | CHECK_ABORT | CHECK_LOAD))
-		&& GLOBAL_SIS(CrewEnlisted) != (uqm::COUNT)~0)
+		&& GLOBAL_SIS(CrewEnlisted) != (uint16_t)~0)
 	{ // Reload the system and return to the inner view
 		PLANET_DESC* orbital = LoadSolarSys();
 		assert(!orbital);
@@ -2470,24 +2469,24 @@ endInterPlanetary(void)
 static PLANET_DESC*
 closestPlanetInterPlanetary(const GFXPOINT* point)
 {
-	uqm::BYTE i;
-	uqm::BYTE numPlanets;
-	uqm::DWORD bestDistSquared;
+	uint8_t i;
+	uint8_t numPlanets;
+	uint32_t bestDistSquared;
 	PLANET_DESC* bestPlanet = nullptr;
 
 	assert(pSolarSysState != nullptr);
 
 	numPlanets = pSolarSysState->SunDesc[0].NumPlanets;
 
-	bestDistSquared = (uqm::DWORD)-1; // Maximum value of uqm::DWORD.
+	bestDistSquared = (uint32_t)-1; // Maximum value of uint32_t.
 	for (i = 0; i < numPlanets; i++)
 	{
 		PLANET_DESC* planet = &pSolarSysState->PlanetDesc[i];
 
-		uqm::SIZE dx = point->x - planet->image.origin.x;
-		uqm::SIZE dy = point->y - planet->image.origin.y;
+		int16_t dx = point->x - planet->image.origin.x;
+		int16_t dy = point->y - planet->image.origin.y;
 
-		uqm::DWORD distSquared = (uqm::DWORD)((long)dx * dx + (long)dy * dy);
+		uint32_t distSquared = (uint32_t)((long)dx * dx + (long)dy * dy);
 		if (distSquared < bestDistSquared)
 		{
 			bestDistSquared = distSquared;
@@ -2534,10 +2533,10 @@ UninitSolarSys(void)
 }
 
 static void
-CalcSunSize(PLANET_DESC* pSunDesc, uqm::SIZE radius)
+CalcSunSize(PLANET_DESC* pSunDesc, int16_t radius)
 {
-	static uqm::BYTE frameCount = 0;
-	uqm::SIZE index = 0;
+	static uint8_t frameCount = 0;
+	int16_t index = 0;
 
 	if (radius <= (MAX_ZOOM_RADIUS >> 1))
 	{
@@ -2567,7 +2566,7 @@ CalcSunSize(PLANET_DESC* pSunDesc, uqm::SIZE radius)
 static void
 SetPlanetColorMap(PLANET_DESC* planet)
 {
-	uqm::COUNT index = planet->data_index & ~WORLD_TYPE_SPECIAL;
+	uint16_t index = planet->data_index & ~WORLD_TYPE_SPECIAL;
 	assert(index < NUMBER_OF_PLANET_TYPES);
 	SetColorMap(GetColorMapAddress(SetAbsColorMapIndex(OrbitalCMap,
 													   PLANCOLOR(PlanData[index].Type))));
@@ -2577,7 +2576,7 @@ static void
 DrawInnerPlanets(PLANET_DESC* planet)
 {
 	STAMP s;
-	uqm::COUNT i;
+	uint16_t i;
 	PLANET_DESC* moon;
 
 	s.origin.x = RES_SCALE(ORIG_SIS_SCREEN_WIDTH >> 1);
@@ -2612,7 +2611,7 @@ DrawInnerPlanets(PLANET_DESC* planet)
 			&& (planet->data_index & PLANET_SHIELDED))
 		{ // Shielded world looks "shielded" in inner view
 			// s.frame = SetAbsFrameIndex (SpaceJunkFrame, 17);
-			uqm::COUNT angle = ARCTAN(planet->location.x, planet->location.y);
+			uint16_t angle = ARCTAN(planet->location.x, planet->location.y);
 
 			s.frame = SetAbsFrameIndex(OrbitalShield, NORMALIZE_FACING(
 														  ANGLE_TO_FACING(angle)));
@@ -2633,9 +2632,9 @@ DrawInnerPlanets(PLANET_DESC* planet)
 }
 
 static void
-DrawOuterPlanets(uqm::SIZE radius)
+DrawOuterPlanets(int16_t radius)
 {
-	uqm::SIZE index;
+	int16_t index;
 	PLANET_DESC* pCurDesc;
 
 	CalcSunSize(&pSolarSysState->SunDesc[0], radius);
@@ -2675,9 +2674,9 @@ DrawOuterPlanets(uqm::SIZE radius)
 }
 
 static void
-DrawSystem(uqm::SIZE radius, bool IsInnerSystem)
+DrawSystem(int16_t radius, bool IsInnerSystem)
 {
-	uqm::BYTE i;
+	uint8_t i;
 	PLANET_DESC* pCurDesc;
 	PLANET_DESC* pBaseDesc;
 	GFXCONTEXT oldContext;
@@ -2780,12 +2779,12 @@ GetStarBackFround(void)
 #define NUM_BRT_DRAWN 30
 
 static void
-DrawBackgroundStars(uqm::BYTE num_pieces, uqm::BYTE num_drawn, uqm::BYTE start_index,
+DrawBackgroundStars(uint8_t num_pieces, uint8_t num_drawn, uint8_t start_index,
 					RandomContext* SysRNG, FRAME junk)
 {
 	STAMP s;
-	uqm::COUNT i, j;
-	uqm::DWORD rand_val;
+	uint16_t i, j;
+	uint32_t rand_val;
 
 	s.frame = SetAbsFrameIndex(junk, start_index);
 	for (i = 0; i < num_pieces; ++i)
@@ -2824,8 +2823,8 @@ DrawNebula(FRAME nebula)
 static FRAME
 CreateStarBackGround(RandomContext* SysRNG, FRAME nebula, FRAME junk)
 {
-	uqm::BYTE num_brt_drawn;
-	uqm::BYTE start_index;
+	uint8_t num_brt_drawn;
+	uint8_t start_index;
 	GFXCONTEXT oldContext;
 	GFXRECT clipRect;
 	FRAME frame;
@@ -2977,8 +2976,7 @@ void ExploreSolarSys(void)
 	pSolarSysState = 0;
 }
 
-uqm::CHAR_T*
-GetNamedPlanetaryBody(void)
+char* GetNamedPlanetaryBody(void)
 {
 	if (!CurStarDescPtr || !playerInSolarSystem()
 		|| !playerInInnerSystem())
@@ -3114,10 +3112,10 @@ GetNamedPlanetaryBody(void)
 	return nullptr;
 }
 
-void GetPlanetOrMoonName(uqm::CHAR_T* buf, uqm::COUNT bufsize)
+void GetPlanetOrMoonName(char* buf, uint16_t bufsize)
 {
-	uqm::CHAR_T* named;
-	uqm::CHAR_T* tempbuf;
+	char* named;
+	char* tempbuf;
 	int moon, i;
 	bool name_has_suffix = false;
 
@@ -3178,7 +3176,7 @@ void SaveSolarSysLocation(void)
 	}
 	else
 	{ // In orbit around a planet.
-		uqm::BYTE moon;
+		uint8_t moon;
 
 		// Update the starinfo.dat file if necessary.
 		if (GET_GAME_STATE(PLANETARY_CHANGE))
@@ -3210,7 +3208,7 @@ DoSolarSysMenu(MENU_STATE* pMS)
 	bool handled;
 
 	if ((GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
-		|| GLOBAL_SIS(CrewEnlisted) == (uqm::COUNT)~0)
+		|| GLOBAL_SIS(CrewEnlisted) == (uint16_t)~0)
 	{
 		return false;
 	}
@@ -3367,7 +3365,7 @@ DoIpFlight(SOLARSYS_STATE* pSS)
 	return (!(GLOBAL(CurrentActivity)
 			  & (START_ENCOUNTER | END_INTERPLANETARY
 				 | CHECK_ABORT | CHECK_LOAD))
-			&& GLOBAL_SIS(CrewEnlisted) != (uqm::COUNT)~0);
+			&& GLOBAL_SIS(CrewEnlisted) != (uint16_t)~0);
 }
 
 static COORD

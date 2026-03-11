@@ -36,7 +36,7 @@ typedef const char* RESOURCE;
 
 typedef union
 {
-	uqm::DWORD num;
+	uint32_t num;
 	float fnum;
 	void* ptr;
 	const char* str;
@@ -50,7 +50,7 @@ typedef void(ResourceLoadFun)(const char* pathname, RESOURCE_DATA* resdata);
 typedef bool(ResourceFreeFun)(void* handle);
 typedef void(ResourceStringFun)(RESOURCE_DATA* handle, char* buf, unsigned int size);
 
-typedef void*(ResourceLoadFileFun)(uio_Stream * fp, uqm::DWORD len);
+typedef void*(ResourceLoadFileFun)(uio_Stream * fp, uint32_t len);
 
 void* LoadResourceFromPath(const char* pathname, ResourceLoadFileFun fn);
 
@@ -72,15 +72,15 @@ bool InstallResTypeVectors(const char* res_type, ResourceLoadFun* loadFun, Resou
 void* res_GetResource(RESOURCE res);
 void* res_DetachResource(RESOURCE res);
 void res_FreeResource(RESOURCE res);
-uqm::COUNT CountResourceTypes(void);
-uqm::DWORD res_GetIntResource(RESOURCE res);
+uint16_t CountResourceTypes(void);
+uint32_t res_GetIntResource(RESOURCE res);
 bool res_GetBooleanResource(RESOURCE res);
 const char* res_GetResourceType(RESOURCE res);
 
 void LoadResourceIndex(uio_DirHandle* dir, const char* filename, const char* prefix);
 void SaveResourceIndex(uio_DirHandle* dir, const char* rmpfile, const char* root, bool strip_root);
 
-void* GetResourceData(uio_Stream* fp, uqm::DWORD length);
+void* GetResourceData(uio_Stream* fp, uint32_t length);
 
 #define AllocResourceData HMalloc
 bool FreeResourceData(void*);

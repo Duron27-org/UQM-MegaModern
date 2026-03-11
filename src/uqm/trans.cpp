@@ -20,7 +20,7 @@
 #include "libs/compiler.h"
 
 
-uqm::SDWORD sinetab[] =
+int32_t sinetab[] =
 	{
 		-FLT_ADJUST(1.000000),
 		-FLT_ADJUST(0.995185),
@@ -88,11 +88,11 @@ uqm::SDWORD sinetab[] =
 		-FLT_ADJUST(0.995185),
 };
 
-uqm::COUNT
-ARCTAN(uqm::SDWORD delta_x, uqm::SDWORD delta_y)
+uint16_t
+ARCTAN(int32_t delta_x, int32_t delta_y)
 {
-	uqm::SDWORD v1, v2;
-	static uqm::COUNT atantab[] =
+	int32_t v1, v2;
+	static uint16_t atantab[] =
 		{
 			0,
 			0,
@@ -147,11 +147,11 @@ ARCTAN(uqm::SDWORD delta_x, uqm::SDWORD delta_y)
 	if (v1 > v2)
 	{
 		v1 = QUADRANT
-		   - atantab[(((uqm::DWORD)v2 << (CIRCLE_SHIFT - 1)) + (v1 >> 1)) / v1];
+		   - atantab[(((uint32_t)v2 << (CIRCLE_SHIFT - 1)) + (v1 >> 1)) / v1];
 	}
 	else
 	{
-		v1 = atantab[(((uqm::DWORD)v1 << (CIRCLE_SHIFT - 1)) + (v2 >> 1)) / v2];
+		v1 = atantab[(((uint32_t)v1 << (CIRCLE_SHIFT - 1)) + (v2 >> 1)) / v2];
 	}
 
 	if (delta_x < 0)

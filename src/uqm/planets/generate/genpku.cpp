@@ -31,10 +31,10 @@
 static bool GeneratePkunk_generatePlanets(SOLARSYS_STATE* solarSys);
 static bool GeneratePkunk_generateOrbital(SOLARSYS_STATE* solarSys,
 										  PLANET_DESC* world);
-static uqm::COUNT GeneratePkunk_generateEnergy(const SOLARSYS_STATE*,
-											   const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO*);
+static uint16_t GeneratePkunk_generateEnergy(const SOLARSYS_STATE*,
+											 const PLANET_DESC* world, uint16_t whichNode, NODE_INFO*);
 static bool GeneratePkunk_pickupEnergy(SOLARSYS_STATE* solarSys,
-									   PLANET_DESC* world, uqm::COUNT whichNode);
+									   PLANET_DESC* world, uint16_t whichNode);
 
 
 const GenerateFunctions generatePkunkFunctions = {
@@ -67,7 +67,7 @@ GeneratePkunk_generatePlanets(SOLARSYS_STATE* solarSys)
 
 	if (PrimeSeed)
 	{
-		uqm::COUNT angle;
+		uint16_t angle;
 
 		pPlanet->data_index = WATER_WORLD;
 		pPlanet->NumPlanets = 1;
@@ -146,7 +146,7 @@ GeneratePkunk_generateOrbital(SOLARSYS_STATE* solarSys, PLANET_DESC* world)
 
 static bool
 GeneratePkunk_pickupEnergy(SOLARSYS_STATE* solarSys, PLANET_DESC* world,
-						   uqm::COUNT whichNode)
+						   uint16_t whichNode)
 {
 	if (matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{
@@ -168,9 +168,9 @@ GeneratePkunk_pickupEnergy(SOLARSYS_STATE* solarSys, PLANET_DESC* world,
 	return false;
 }
 
-static uqm::COUNT
+static uint16_t
 GeneratePkunk_generateEnergy(const SOLARSYS_STATE* solarSys,
-							 const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO* info)
+							 const PLANET_DESC* world, uint16_t whichNode, NODE_INFO* info)
 {
 	if (matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{

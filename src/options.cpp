@@ -74,7 +74,7 @@ OPT_ENABLABLE optUnlockShips;
 OPT_ENABLABLE optHeadStart;
 OPT_ENABLABLE optUnlockUpgrades;
 OPT_ENABLABLE optInfiniteRU;
-uqm::DWORD oldRU;
+uint32_t oldRU;
 OPT_ENABLABLE optSkipIntro;
 OPT_ENABLABLE optMainMenuMusic;
 OPT_ENABLABLE optNebulae;
@@ -82,7 +82,7 @@ OPT_ENABLABLE optOrbitingPlanets;
 OPT_ENABLABLE optTexturedPlanets;
 uqm::DateFormat optDateFormat;
 OPT_ENABLABLE optInfiniteFuel;
-uqm::DWORD loadFuel;
+uint32_t loadFuel;
 OPT_ENABLABLE optPartialPickup;
 OPT_ENABLABLE optSubmenu;
 OPT_ENABLABLE optInfiniteCredits;
@@ -133,7 +133,7 @@ bool optMaskOfDeceit;
 OPT_ENABLABLE optAdvancedAutoPilot;
 OPT_ENABLABLE optMeleeToolTips;
 int optMusicResume;
-uqm::DWORD optWindowType;
+uint32_t optWindowType;
 bool optNoClassic;
 OPT_ENABLABLE optScatterElements;
 OPT_ENABLABLE optShowUpgrades;
@@ -164,7 +164,7 @@ uqgsl::czstring addonDirPath;
 char baseContentPath[PATH_MAX];
 
 // addon availability
-uqstl::vector<uqm::DWORD> g_addonList {};
+uqstl::vector<uint32_t> g_addonList {};
 
 extern uio_Repository* repository;
 extern uio_DirHandle* rootDir;
@@ -686,12 +686,12 @@ mountBaseZip(uio_DirHandle* dirHandle, const char* mountPoint,
 	static uio_AutoMount* autoMount[] = {nullptr};
 	uio_DirList* dirList;
 	const char* pattern = "\\.([zZ][iI][pP]|[uU][qQ][mM])$";
-	const uqm::DWORD name_hash = crc32b(BASE_CONTENT_NAME);
+	const uint32_t name_hash = crc32b(BASE_CONTENT_NAME);
 
 	dirList = uio_getDirList(dirHandle, "", pattern, match_MATCH_REGEX);
 	if (dirList != nullptr)
 	{
-		uqm::DWORD names_hash = 0;
+		uint32_t names_hash = 0;
 		int i;
 
 		for (i = 0; i < dirList->numNames; i++)

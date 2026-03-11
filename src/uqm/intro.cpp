@@ -62,7 +62,7 @@ typedef struct
 	FRAME RotatedFrame;
 	int LastDrawKind;
 	int LastAngle;
-	uqm::COUNT OperIndex;
+	uint16_t OperIndex;
 	Color TextFadeColor;
 	Color TextColor;
 	Color TextBackColor;
@@ -72,7 +72,7 @@ typedef struct
 	GFXRECT tfade_r;
 #define MAX_TEXT_LINES 15
 	TEXT TextLines[MAX_TEXT_LINES];
-	uqm::COUNT LinesCount;
+	uint16_t LinesCount;
 	char Buffer[512];
 	int MovieFrame;
 	int MovieEndFrame;
@@ -80,9 +80,9 @@ typedef struct
 
 	// For DOS Spins
 	GFXRECT StatBox;
-	uqm::COUNT NumSpinStat;
+	uint16_t NumSpinStat;
 	GFXRECT GetRect;
-	uqm::COUNT CurrentFrameIndex;
+	uint16_t CurrentFrameIndex;
 	bool HaveFrame;
 	bool Skip;
 
@@ -126,7 +126,7 @@ ParseColorString(const uqstl::string_view src, Color* pColor)
 }
 
 static bool
-DoFadeScreen(PRESENTATION_INPUT_STATE* pPIS, const uqstl::string_view src, uqm::BYTE FadeType)
+DoFadeScreen(PRESENTATION_INPUT_STATE* pPIS, const uqstl::string_view src, uint8_t FadeType)
 {
 	if (const auto result {scn::scan_value<int>(src)})
 	{
@@ -152,10 +152,10 @@ DrawTextEffect(TEXT* pText, Color Fore, Color Back, int Effect)
 	}
 }
 
-static uqm::COUNT
-ParseTextLines(TEXT* Lines, uqm::COUNT MaxLines, char* Buffer)
+static uint16_t
+ParseTextLines(TEXT* Lines, uint16_t MaxLines, char* Buffer)
 {
-	uqm::COUNT i;
+	uint16_t i;
 	const char* pEnd = Buffer + strlen(Buffer);
 
 	for (i = 0; i < MaxLines && Buffer < pEnd; ++i, ++Lines)
@@ -213,7 +213,7 @@ Present_GenerateSIS(PRESENTATION_INPUT_STATE* pPIS)
 	GFXRECT r;
 	HOT_SPOT hs;
 	int slot;
-	uqm::COUNT piece;
+	uint16_t piece;
 	Color SisBack;
 
 	OldContext = SetContext(OffScreenContext);
@@ -309,12 +309,12 @@ Present_GenerateSIS(PRESENTATION_INPUT_STATE* pPIS)
 }
 
 static void
-DoSpinText(const uqm::CHAR_T* buf, COORD x, COORD y, FRAME repair, bool* skip)
+DoSpinText(const char* buf, COORD x, COORD y, FRAME repair, bool* skip)
 {
 	TEXT Text;
 
 	Text.pStr = buf;
-	Text.CharCount = (uqm::COUNT)utf8StringCount(buf);
+	Text.CharCount = (uint16_t)utf8StringCount(buf);
 	Text.align = ALIGN_LEFT;
 	Text.baseline.y = y;
 	Text.baseline.x = x;
@@ -349,11 +349,11 @@ DoSpinStatBox(GFXRECT* r, Color front, Color back, bool* skip)
 }
 
 static void
-DoSpinStat(uqm::CHAR_T* buf, COORD x, COORD y, uqm::COUNT filled, uqm::COUNT empty, Color front, Color back,
+DoSpinStat(char* buf, COORD x, COORD y, uint16_t filled, uint16_t empty, Color front, Color back,
 		   bool* skip)
 {
 	TEXT Text;
-	uqm::COUNT i;
+	uint16_t i;
 	GFXRECT sq;
 	GFXPOINT c;
 	GFXRECT chd;
@@ -365,7 +365,7 @@ DoSpinStat(uqm::CHAR_T* buf, COORD x, COORD y, uqm::COUNT filled, uqm::COUNT emp
 	chd.extent.width = chd.extent.height = 4;
 
 	Text.pStr = buf;
-	Text.CharCount = (uqm::COUNT)utf8StringCount(buf);
+	Text.CharCount = (uint16_t)utf8StringCount(buf);
 	Text.align = ALIGN_LEFT;
 	Text.baseline.y = y;
 	Text.baseline.x = x;
@@ -462,12 +462,12 @@ ShowPresentationFile(const char* name)
 
 typedef struct
 {
-	SPECIES_ID sID;		 // The ship SPECIES_ID, a second index
-	char ditty[256];	 // The ditty string (file name)
-	char race[256];		 // The race's name string e.g. EARTHLING
-	char ship[256];		 // The ship's name string e.g. CRUISER
-	uqm::COUNT spinline; // The line on which race/ship strings occur
-	uqm::COUNT width;	 // The SD pixel width of the race name
+	SPECIES_ID sID;	   // The ship SPECIES_ID, a second index
+	char ditty[256];   // The ditty string (file name)
+	char race[256];	   // The race's name string e.g. EARTHLING
+	char ship[256];	   // The ship's name string e.g. CRUISER
+	uint16_t spinline; // The line on which race/ship strings occur
+	uint16_t width;	   // The SD pixel width of the race name
 } SHIPMAP;
 
 static const SHIPMAP ship_map[] = {
@@ -500,8 +500,8 @@ static const SHIPMAP ship_map[] = {
 
 #define NUM_SHIPS (sizeof(ship_map) / sizeof(SHIPMAP))
 
-static uqm::COUNT shipID = NUM_SHIPS;
-static uqm::COUNT raceID = NUM_SHIPS;
+static uint16_t shipID = NUM_SHIPS;
+static uint16_t raceID = NUM_SHIPS;
 static bool linespun = false;
 
 static void
@@ -1046,7 +1046,7 @@ DoPresentation(void* pIS)
 
 						t.align = ALIGN_CENTER;
 						t.pStr = pPIS->Buffer;
-						t.CharCount = (uqm::COUNT)~0;
+						t.CharCount = (uint16_t)~0;
 						t.baseline.x = RES_SCALE(x);
 						t.baseline.y = RES_SCALE(y);
 						DrawTextEffect(&t, pPIS->TextColor, pPIS->TextBackColor,
@@ -1125,7 +1125,7 @@ DoPresentation(void* pIS)
 			case uqm::hashQuick64CaseInsensitive("SPINSTAT"):
 				{ /* spin stat draw */
 					int x, y, f = 0, e = 0;
-					uqm::SIZE leading;
+					int16_t leading;
 
 					assert(sizeof(pPIS->Buffer) >= 256);
 
@@ -1170,7 +1170,7 @@ DoPresentation(void* pIS)
 
 							t.align = ALIGN_LEFT;
 							t.pStr = buf;
-							t.CharCount = (uqm::COUNT)~0;
+							t.CharCount = (uint16_t)~0;
 							t.baseline = MAKE_POINT(x, y);
 							DrawTextEffect(&t,
 										   BUILD_COLOR_RGBA(0xFF, 0x55, 0x55, 0xFF),
@@ -1196,8 +1196,8 @@ DoPresentation(void* pIS)
 				}
 			case uqm::hashQuick64CaseInsensitive("TFI"):
 				{ /* text fade-in */
-					uqm::SIZE leading;
-					uqm::COUNT i;
+					int16_t leading;
+					uint16_t i;
 					COORD y;
 
 					uqm::strncpy_safe(pPIS->Buffer, strView);
@@ -1251,7 +1251,7 @@ DoPresentation(void* pIS)
 				}
 			case uqm::hashQuick64CaseInsensitive("TFO"):
 				{ /* text fade-out */
-					uqm::COUNT i;
+					uint16_t i;
 
 					Present_UnbatchGraphics(pPIS, true);
 
@@ -1409,8 +1409,8 @@ DoPresentation(void* pIS)
 					s.frame = nullptr;
 					if (draw_what == PRES_DRAW_INDEX)
 					{ /* draw stamp by index */
-						s.frame = SetAbsFrameIndex(pPIS->Frame, (uqm::COUNT)index);
-						pPIS->CurrentFrameIndex = (uqm::COUNT)index;
+						s.frame = SetAbsFrameIndex(pPIS->Frame, (uint16_t)index);
+						pPIS->CurrentFrameIndex = (uint16_t)index;
 						pPIS->HaveFrame = true;
 					}
 					else if (draw_what == PRES_DRAW_SIS)
@@ -1629,7 +1629,7 @@ DoPresentation(void* pIS)
 						const auto [first_frame, last_frame, num_loops, milliseconds, fps] = result->values();
 						STAMP s;
 						int loops = 0;
-						uqm::COUNT index = 0;
+						uint16_t index = 0;
 						TimeCount Now, timeout, NextTime;
 						int animation_rate = GameTicksPerSecond / fps;
 
@@ -1765,7 +1765,7 @@ DoVideoInput(void* pIS)
 	else if (PulsedInputState.menu[KEY_MENU_LEFT]
 			 || PulsedInputState.menu[KEY_MENU_RIGHT])
 	{
-		uqm::SDWORD newpos = VidGetPosition();
+		int32_t newpos = VidGetPosition();
 		if (PulsedInputState.menu[KEY_MENU_LEFT])
 		{
 			newpos -= 2000;

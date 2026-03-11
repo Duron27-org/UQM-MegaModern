@@ -52,7 +52,7 @@ GenerateTrap_generatePlanets(SOLARSYS_STATE* solarSys)
 
 	if (PrimeSeed)
 	{
-		uqm::COUNT angle;
+		uint16_t angle;
 
 		pSunDesc->PlanetByte = 0;
 		pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];

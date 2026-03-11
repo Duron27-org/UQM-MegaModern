@@ -20,7 +20,7 @@
 #include "tfb_draw.h"
 
 
-void TFB_Prim_Line(LINE*, Color, DrawMode, GFXPOINT ctxOrigin, uqm::BYTE thickness);
+void TFB_Prim_Line(LINE*, Color, DrawMode, GFXPOINT ctxOrigin, uint8_t thickness);
 void TFB_Prim_Point(GFXPOINT*, Color, DrawMode, GFXPOINT ctxOrigin, bool scaled);
 void TFB_Prim_Rect(GFXRECT*, Color, DrawMode, GFXPOINT ctxOrigin, bool scaled);
 void TFB_Prim_FillRect(GFXRECT*, Color, DrawMode, GFXPOINT ctxOrigin);

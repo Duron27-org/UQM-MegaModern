@@ -56,7 +56,7 @@ typedef HLINK HSTARSHIP;
 #define LIGHT_POINT_DEFENSE (1 << 14)
 #define HEAVY_POINT_DEFENSE (1 << 15)
 
-typedef uqm::UWORD STATUS_FLAGS;
+typedef uint16_t STATUS_FLAGS;
 
 /* STATUS_FLAGS - heat of battle specific flags */
 #define LEFT (1 << 0)
@@ -125,11 +125,11 @@ struct CAPTAIN_STUFF
 	FRAME thrust;
 	FRAME weapon;
 	FRAME special;
-	uqm::BYTE tl_offset;
-	uqm::BYTE tr_offset;
-	uqm::BYTE thrust_offset;
-	uqm::BYTE weapon_offset;
-	uqm::BYTE special_offset;
+	uint8_t tl_offset;
+	uint8_t tr_offset;
+	uint8_t thrust_offset;
+	uint8_t weapon_offset;
+	uint8_t special_offset;
 };
 
 enum MOVEMENT_STATE
@@ -143,45 +143,45 @@ enum MOVEMENT_STATE
 typedef struct
 {
 	ELEMENT* ObjectPtr;
-	uqm::COUNT facing;
-	uqm::COUNT which_turn;
+	uint16_t facing;
+	uint16_t which_turn;
 	MOVEMENT_STATE MoveState;
 } EVALUATE_DESC;
 
 typedef void(IntelligenceFunc)(ELEMENT* ShipPtr,
-							   EVALUATE_DESC* ObjectsOfConcern, uqm::COUNT ConcernCounter);
+							   EVALUATE_DESC* ObjectsOfConcern, uint16_t ConcernCounter);
 typedef struct
 {
-	uqm::COUNT ManeuverabilityIndex;
-	uqm::COUNT WeaponRange;
+	uint16_t ManeuverabilityIndex;
+	uint16_t WeaponRange;
 	IntelligenceFunc* intelligence_func;
 } INTEL_STUFF;
 
 typedef struct
 {
-	uqm::COUNT max_thrust;
-	uqm::COUNT thrust_increment;
-	uqm::BYTE energy_regeneration;
-	uqm::BYTE weapon_energy_cost;
-	uqm::BYTE special_energy_cost;
-	uqm::BYTE energy_wait;
-	uqm::BYTE turn_wait;
-	uqm::BYTE thrust_wait;
-	uqm::BYTE weapon_wait;
-	uqm::BYTE special_wait;
-	uqm::BYTE ship_mass;
+	uint16_t max_thrust;
+	uint16_t thrust_increment;
+	uint8_t energy_regeneration;
+	uint8_t weapon_energy_cost;
+	uint8_t special_energy_cost;
+	uint8_t energy_wait;
+	uint8_t turn_wait;
+	uint8_t thrust_wait;
+	uint8_t weapon_wait;
+	uint8_t special_wait;
+	uint8_t ship_mass;
 } CHARACTERISTIC_STUFF;
 
 typedef struct
 {
 	const char* idStr;
-	uqm::UWORD ship_flags;
-	uqm::BYTE ship_cost;
+	uint16_t ship_flags;
+	uint8_t ship_cost;
 
-	uqm::COUNT crew_level;
-	uqm::COUNT max_crew;
-	uqm::BYTE energy_level;
-	uqm::BYTE max_energy;
+	uint16_t crew_level;
+	uint16_t max_crew;
+	uint8_t energy_level;
+	uint8_t max_energy;
 
 	RESOURCE race_strings_rsc;
 	RESOURCE icons_rsc;
@@ -194,10 +194,10 @@ typedef struct
 
 typedef struct
 {
-	uqm::COUNT strength;
+	uint16_t strength;
 	GFXPOINT known_loc;
 
-#define INFINITE_RADIUS ((uqm::COUNT)~0)
+#define INFINITE_RADIUS ((uint16_t)~0)
 } FLEET_STUFF;
 
 typedef struct
@@ -221,7 +221,7 @@ typedef struct race_desc RACE_DESC;
 
 typedef void(PREPROCESS_FUNC)(ELEMENT* ElementPtr);
 typedef void(POSTPROCESS_FUNC)(ELEMENT* ElementPtr);
-typedef uqm::COUNT(INIT_WEAPON_FUNC)(ELEMENT* ElementPtr, HELEMENT Weapon[]);
+typedef uint16_t(INIT_WEAPON_FUNC)(ELEMENT* ElementPtr, HELEMENT Weapon[]);
 typedef void(UNINIT_FUNC)(RACE_DESC* pRaceDesc);
 
 struct race_desc
@@ -250,7 +250,7 @@ typedef struct
 	HLINK succ;
 
 	SPECIES_ID SpeciesID;
-	uqm::BYTE captains_name_index; /* Also used in full-game to detect if a STARSHIP is an escort
+	uint8_t captains_name_index; /* Also used in full-game to detect if a STARSHIP is an escort
 			 * or the flagship (captains_name_index == 0) */
 } SHIP_BASE;
 
@@ -261,34 +261,34 @@ struct STARSHIP : SHIP_BASE
 	RACE_DESC* RaceDescPtr;
 
 	// Ship information
-	uqm::COUNT crew_level;
+	uint16_t crew_level;
 	// In full-game battles: crew left
 	// In SuperMelee: irrelevant
-	uqm::COUNT max_crew;
-	uqm::BYTE ship_cost;
+	uint16_t max_crew;
+	uint8_t ship_cost;
 	// In Super Melee ship queue: ship cost
 	// In full-game: irrelevant
-	uqm::COUNT index;
+	uint16_t index;
 	// original queue index
 	STRING race_strings;
 	FRAME icons;
 
 	// Battle states
-	uqm::BYTE weapon_counter;  // In battle: frames left before primary weapon can be used
-	uqm::BYTE special_counter; // In battle: frames left before special can be used
-	uqm::BYTE energy_counter;  // In battle: frames left before energy regeneration
+	uint8_t weapon_counter;	 // In battle: frames left before primary weapon can be used
+	uint8_t special_counter; // In battle: frames left before special can be used
+	uint8_t energy_counter;	 // In battle: frames left before energy regeneration
 
-	uqm::BYTE ship_input_state;
+	uint8_t ship_input_state;
 	STATUS_FLAGS cur_status_flags;
 	STATUS_FLAGS old_status_flags;
 
 	HELEMENT hShip;
-	uqm::COUNT ShipFacing;
+	uint16_t ShipFacing;
 
 	//  0: bottom player; In full-game: the human player (RPG)
 	//  1: top player; In full-game: the NPC opponent
 	// -1: neutral; this should currently never happen (asserts)
-	uqm::SIZE playerNr;
+	int16_t playerNr;
 	// Human, Computer or Network control flags, see intelDefs.h
 	PlayerControlFlags control {PlayerControlFlags::None};
 };
@@ -311,15 +311,15 @@ typedef HLINK HSHIPFRAG;
 
 struct SHIP_FRAGMENT : SHIP_BASE
 {
-	uqm::BYTE race_id;
-	uqm::BYTE index;
-	uqm::COUNT crew_level;
+	uint8_t race_id;
+	uint8_t index;
+	uint16_t crew_level;
 	/* For ships in npc_built_ship_q, the value INFINITE_FLEET for
 			 * crew_level indicates an infinite number of ships. */
-	uqm::COUNT max_crew;
+	uint16_t max_crew;
 
-	uqm::BYTE energy_level;
-	uqm::BYTE max_energy;
+	uint8_t energy_level;
+	uint8_t max_energy;
 	// XXX: energy_level and max_energy are unused. We save and load
 	//   them, but otherwise nothing needs them atm.
 
@@ -327,7 +327,7 @@ struct SHIP_FRAGMENT : SHIP_BASE
 	FRAME icons;
 	FRAME melee_icon; /* Only used by Shipyard */
 
-#define INFINITE_FLEET ((uqm::COUNT)~0)
+#define INFINITE_FLEET ((uint16_t)~0)
 };
 
 static inline SHIP_FRAGMENT*
@@ -352,13 +352,13 @@ typedef struct
 	SPECIES_ID SpeciesID;
 	const char* shipIdStr;
 
-	uqm::UWORD allied_state; /* GOOD_GUY, BAD_GUY or DEAD_GUY */
-	uqm::BYTE days_left;	 /* Days left before the fleet reachers 'dest_loc'. */
-	uqm::BYTE growth_fract;
-	uqm::COUNT crew_level;
-	uqm::COUNT max_crew;
-	uqm::BYTE growth;
-	uqm::BYTE max_energy;
+	uint16_t allied_state; /* GOOD_GUY, BAD_GUY or DEAD_GUY */
+	uint8_t days_left;	   /* Days left before the fleet reachers 'dest_loc'. */
+	uint8_t growth_fract;
+	uint16_t crew_level;
+	uint16_t max_crew;
+	uint8_t growth;
+	uint8_t max_energy;
 	GFXPOINT loc; /* Location of the fleet (center) */
 
 	STRING race_strings;
@@ -366,12 +366,12 @@ typedef struct
 	FRAME icons;
 	FRAME melee_icon;
 
-	uqm::COUNT actual_strength;
+	uint16_t actual_strength;
 	/* Measure for the size of the sphere of influence.
 			 * 0 if there is none and no ships will be generated.
-	         * '(uqm::COUNT) ~0' if there is none, and the ship generation
+	         * '(uint16_t) ~0' if there is none, and the ship generation
 			 * is handled separately. */
-	uqm::COUNT known_strength;
+	uint16_t known_strength;
 	/* Measure for the size of the sphere of influence when last
 			 * checked the starmap.
 			 * 0 if the race's SoI is not known. */
@@ -379,11 +379,11 @@ typedef struct
 	/* Location of the SoI (center) when last checked
 			 * the starmap. */
 
-	uqm::BYTE growth_err_term;
-	uqm::BYTE func_index;
+	uint8_t growth_err_term;
+	uint8_t func_index;
 	/* Function index defined in clock.h (the same as in SetEvent())
 			 * for the function to call when the fleet reaches 'dest_loc'.
-			 * '(uqm::BYTE) ~0' means no function to call. */
+			 * '(uint8_t) ~0' means no function to call. */
 	GFXPOINT dest_loc;
 	/* Location to which the fleet (center) is moving. */
 	bool can_build;

@@ -48,7 +48,7 @@
 #define PUMPUP_DAMAGE 2
 #define MIN_PUMPITUDE_ANIMS 3
 #define NUM_PUMP_ANIMS 5
-#define REVERSE_DIR (uqm::BYTE)(1 << 7)
+#define REVERSE_DIR (uint8_t)(1 << 7)
 
 // Confusion Pulse
 #define SPECIAL_ENERGY_COST 20
@@ -139,7 +139,7 @@ pump_up_preprocess(ELEMENT* ElementPtr)
 {
 	if (--ElementPtr->thrust_wait & 1)
 	{
-		uqm::COUNT frame_index;
+		uint16_t frame_index;
 
 		frame_index = GetFrameIndex(ElementPtr->current.image.frame);
 		if (((ElementPtr->turn_wait & REVERSE_DIR)
@@ -163,7 +163,7 @@ pump_up_preprocess(ELEMENT* ElementPtr)
 	}
 }
 
-static uqm::COUNT initialize_pump_up(ELEMENT* ShipPtr, HELEMENT PumpUpArray[]);
+static uint16_t initialize_pump_up(ELEMENT* ShipPtr, HELEMENT PumpUpArray[]);
 
 static void
 pump_up_postprocess(ELEMENT* ElementPtr)
@@ -217,7 +217,7 @@ pump_up_postprocess(ELEMENT* ElementPtr)
 
 		if (EPtr->thrust_wait & 1)
 		{
-			uqm::COUNT frame_index;
+			uint16_t frame_index;
 
 			frame_index = GetFrameIndex(EPtr->current.image.frame);
 			if (((EPtr->turn_wait & REVERSE_DIR)
@@ -245,7 +245,7 @@ pump_up_postprocess(ELEMENT* ElementPtr)
 		}
 		else
 		{
-			uqm::COUNT angle;
+			uint16_t angle;
 
 			EPtr->life_span = PUMPUP_LIFE;
 			EPtr->preprocess_func = pump_up_preprocess;
@@ -292,7 +292,7 @@ pump_up_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
 				  ELEMENT* ElementPtr1, GFXPOINT* pPt1)
 {
 	GFXRECT r;
-	uqm::BYTE old_thrust_wait;
+	uint8_t old_thrust_wait;
 	HELEMENT hBlastElement;
 
 	GetFrameRect(ElementPtr0->next.image.frame, &r);
@@ -325,7 +325,7 @@ pump_up_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
 	}
 }
 
-static uqm::COUNT
+static uint16_t
 initialize_pump_up(ELEMENT* ShipPtr, HELEMENT PumpUpArray[])
 {
 	STARSHIP* StarShipPtr;
@@ -600,7 +600,7 @@ confusion_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
 				ConfusionPtr->life_span = 400;
 			}
 			ConfusionPtr->turn_wait =
-				(uqm::BYTE)(1 << ((uqm::BYTE)TFB_Random() & 1)); /* LEFT or RIGHT */
+				(uint8_t)(1 << ((uint8_t)TFB_Random() & 1)); /* LEFT or RIGHT */
 
 			UnlockElement(hConfusionElement);
 		}
@@ -613,7 +613,7 @@ confusion_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
 	(void)pPt1; /* Satisfying compiler (unused parameter) */
 }
 
-static uqm::COUNT
+static uint16_t
 initialize_confusion(ELEMENT* ShipPtr, HELEMENT ConfusionArray[])
 {
 	STARSHIP* StarShipPtr;
@@ -648,7 +648,7 @@ initialize_confusion(ELEMENT* ShipPtr, HELEMENT ConfusionArray[])
 	return (1);
 }
 
-static uqm::COUNT
+static uint16_t
 initialize_test_pump_up(ELEMENT* ShipPtr, HELEMENT PumpUpArray[])
 {
 	STARSHIP* StarShipPtr;
@@ -677,9 +677,9 @@ initialize_test_pump_up(ELEMENT* ShipPtr, HELEMENT PumpUpArray[])
 
 static void
 melnorme_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
-					  uqm::COUNT ConcernCounter)
+					  uint16_t ConcernCounter)
 {
-	uqm::BYTE old_count;
+	uint8_t old_count;
 	STARSHIP* StarShipPtr;
 	EVALUATE_DESC* lpEvalDesc;
 
@@ -730,7 +730,7 @@ melnorme_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 	if (StarShipPtr->special_counter == 0
 		&& StarShipPtr->RaceDescPtr->ship_info.energy_level >= SPECIAL_ENERGY_COST)
 	{
-		uqm::BYTE old_input_state;
+		uint8_t old_input_state;
 
 		old_input_state = StarShipPtr->ship_input_state;
 

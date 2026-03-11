@@ -55,7 +55,7 @@ BattleInputHandlers NetworkInputHandlers = {
 
 
 void InputContext_init(InputContext* context, BattleInputHandlers* handlers,
-					   uqm::COUNT playerNr)
+					   uint16_t playerNr)
 {
 	context->handlers = handlers;
 	context->playerNr = playerNr;
@@ -67,7 +67,7 @@ void InputContext_delete(InputContext* context)
 }
 
 ComputerInputContext*
-ComputerInputContext_new(uqm::COUNT playerNr)
+ComputerInputContext_new(uint16_t playerNr)
 {
 	ComputerInputContext* result = (ComputerInputContext*)HMalloc(sizeof(ComputerInputContext));
 	InputContext_init((InputContext*)result,
@@ -76,7 +76,7 @@ ComputerInputContext_new(uqm::COUNT playerNr)
 }
 
 HumanInputContext*
-HumanInputContext_new(uqm::COUNT playerNr)
+HumanInputContext_new(uint16_t playerNr)
 {
 	HumanInputContext* result = (HumanInputContext*)HMalloc(sizeof(HumanInputContext));
 	InputContext_init((InputContext*)result,
@@ -86,7 +86,7 @@ HumanInputContext_new(uqm::COUNT playerNr)
 
 #ifdef NETPLAY
 NetworkInputContext*
-NetworkInputContext_new(uqm::COUNT playerNr)
+NetworkInputContext_new(uint16_t playerNr)
 {
 	NetworkInputContext* result = (NetworkInputContext*)HMalloc(sizeof(NetworkInputContext));
 	InputContext_init((InputContext*)result,

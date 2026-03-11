@@ -158,12 +158,12 @@ void ResumeTrack(void)
 	UnlockMutex(soundSource[SPEECH_SOURCE].stream_mutex);
 }
 
-uqm::COUNT
+uint16_t
 PlayingTrack(void)
 {
 	// This ignores the paused state and simply returns what track
 	// *should* be playing
-	uqm::COUNT result = 0; // default is none
+	uint16_t result = 0; // default is none
 
 	if (!sound_sample)
 	{
@@ -317,14 +317,14 @@ OnBufferTag(TFB_SoundSample* sample, TFB_SoundTag* tag)
 // Rerturns number of timestamps parsed.
 // Stops if it encounters a ; as this is used for alternate time stamps.
 static int
-GetTimeStamps(uqm::CHAR_T* TimeStamps, int32_t* time_stamps)
+GetTimeStamps(char* TimeStamps, int32_t* time_stamps)
 {
 	int pos;
 	int num = 0;
 
 	while (*TimeStamps && (pos = strcspn(TimeStamps, ";,\r\n")))
 	{
-		uqm::CHAR_T valStr[32];
+		char valStr[32];
 		uint32_t val;
 
 		memcpy(valStr, TimeStamps, pos);
@@ -349,10 +349,10 @@ GetTimeStamps(uqm::CHAR_T* TimeStamps, int32_t* time_stamps)
 #define TEXT_SPEED 80
 // Returns number of parsed pages
 static int
-SplitSubPages(uqm::CHAR_T* text, uqm::CHAR_T* pages[], int32_t timestamp[], int size)
+SplitSubPages(char* text, char* pages[], int32_t timestamp[], int size)
 {
 	int lead_ellips = 0;
-	uqm::COUNT page;
+	uint16_t page;
 
 	for (page = 0; page < size && *text != '\0'; ++page)
 	{
@@ -365,7 +365,7 @@ SplitSubPages(uqm::CHAR_T* text, uqm::CHAR_T* pages[], int32_t timestamp[], int 
 		//   are used exclusively
 		aft_ellips = 3 * (text[pos] != '\0' && pos > 0 && !ispunct(text[pos - 1]) && !isspace(text[pos - 1]));
 		const uint32_t page_len = lead_ellips + pos + aft_ellips;
-		pages[page] = (uqm::CHAR_T*)HMalloc(sizeof(uqm::CHAR_T) * (page_len + 1));
+		pages[page] = (char*)HMalloc(sizeof(char) * (page_len + 1));
 		uqstl::span<char> pageBuf {pages[page], page_len + 1};
 		if (lead_ellips)
 		{
@@ -407,7 +407,7 @@ SplitSubPages(uqm::CHAR_T* text, uqm::CHAR_T* pages[], int32_t timestamp[], int 
 // track list is nullptr-terminated
 // May only be called after at least one SpliceTrack(). This is a limitation
 // for the sake of timestamps, but it does not have to be so.
-void SpliceMultiTrack(uqm::CHAR_T* TrackNames[], uqm::CHAR_T* TrackText)
+void SpliceMultiTrack(char* TrackNames[], char* TrackText)
 {
 #define MAX_MULTI_TRACKS 20
 #define MAX_MULTI_BUFFERS 100
@@ -463,19 +463,19 @@ void SpliceMultiTrack(uqm::CHAR_T* TrackNames[], uqm::CHAR_T* TrackText)
 	uint32_t slen1 = strlen(last_sub->text);
 	uint32_t slen2 = strlen(TrackText);
 	const uint32_t newLen {slen1 + slen2 + 1};
-	last_sub->text = (uqm::CHAR_T*)HRealloc(last_sub->text, newLen);
+	last_sub->text = (char*)HRealloc(last_sub->text, newLen);
 	uqm::strncpy_safe({last_sub->text + slen1, newLen - slen1}, {TrackText, slen2});
 
 	no_page_break = 1;
 }
 
 // XXX: This code and the entire trackplayer are begging to be overhauled
-void SpliceTrack(uqm::CHAR_T* TrackName, uqm::CHAR_T* TrackText, uqm::CHAR_T* TimeStamp, CallbackFunction cb)
+void SpliceTrack(char* TrackName, char* TrackText, char* TimeStamp, CallbackFunction cb)
 {
-	static uqm::CHAR_T last_track_name[128] = "";
+	static char last_track_name[128] = "";
 	static unsigned long dec_offset = 0;
 #define MAX_PAGES 50
-	uqm::CHAR_T* pages[MAX_PAGES];
+	char* pages[MAX_PAGES];
 	int32_t time_stamps[MAX_PAGES];
 	int num_pages;
 	int page;
@@ -516,7 +516,7 @@ void SpliceTrack(uqm::CHAR_T* TrackName, uqm::CHAR_T* TrackText, uqm::CHAR_T* Ti
 		const uint32_t slen1 = strlen(last_sub->text);
 		const uint32_t slen2 = strlen(pages[0]);
 		const uint32_t newLen {slen1 + slen2 + 1};
-		last_sub->text = (uqm::CHAR_T*)HRealloc(last_sub->text, newLen);
+		last_sub->text = (char*)HRealloc(last_sub->text, newLen);
 		uqm::strncpy_safe({last_sub->text + slen1, static_cast<uint32_t>(newLen - slen1)}, {pages[0], static_cast<uint32_t>(slen2)});
 		HFree(pages[0]);
 
@@ -573,7 +573,7 @@ void SpliceTrack(uqm::CHAR_T* TrackName, uqm::CHAR_T* TrackText, uqm::CHAR_T* Ti
 			const uint32_t slen1 = strlen(last_sub->text);
 			const uint32_t slen2 = strlen(pages[0]);
 			const uint32_t newLen {slen1 + slen2 + 1};
-			last_sub->text = (uqm::CHAR_T*)HRealloc(last_sub->text, newLen);
+			last_sub->text = (char*)HRealloc(last_sub->text, newLen);
 			uqm::strncpy_safe({last_sub->text + slen1, newLen - slen1}, {pages[0], slen2});
 			HFree(pages[0]);
 		}
@@ -928,7 +928,7 @@ GetNextTrackSubtitle(SUBTITLE_REF LastRef)
 }
 
 // External access to the chunk subtitles
-const uqm::CHAR_T*
+const char*
 GetTrackSubtitleText(SUBTITLE_REF SubRef)
 {
 	if (!SubRef)
@@ -941,10 +941,10 @@ GetTrackSubtitleText(SUBTITLE_REF SubRef)
 
 // External access to currently active subtitle text
 // Returns nullptr is none is active
-const uqm::CHAR_T*
+const char*
 GetTrackSubtitle(void)
 {
-	const uqm::CHAR_T* cur_sub = nullptr;
+	const char* cur_sub = nullptr;
 
 	if (!sound_sample)
 	{
@@ -961,10 +961,10 @@ GetTrackSubtitle(void)
 	return cur_sub;
 }
 
-uqm::COUNT
-GetSubtitleNumber(const uqm::CHAR_T* sub)
+uint16_t
+GetSubtitleNumber(const char* sub)
 {
-	uqm::COUNT i = 0;
+	uint16_t i = 0;
 	TFB_SoundChunk* now;
 
 	if (sub == nullptr) // If no sub - get current one
@@ -988,10 +988,10 @@ GetSubtitleNumber(const uqm::CHAR_T* sub)
 	return i;
 }
 
-uqm::COUNT
-GetSubtitleNumberByTrack(uqm::COUNT track)
+uint16_t
+GetSubtitleNumberByTrack(uint16_t track)
 {
-	uqm::COUNT i = 0;
+	uint16_t i = 0;
 	TFB_SoundChunk* now;
 
 	if (chunks_head == nullptr) // Fool-proof
@@ -1017,12 +1017,12 @@ GetSubtitleNumberByTrack(uqm::COUNT track)
 	return i;
 }
 
-uqm::DWORD
-RecalculateDelay(uqm::DWORD numChars, bool talk)
+uint32_t
+RecalculateDelay(uint32_t numChars, bool talk)
 {
-	uqm::DWORD silence_length;
-	uqm::DWORD talk_length = GameTicksPerSecond * numChars / MODERATE_SPEED;
-	uqm::BYTE read_speed = speed_array[GLOBAL(glob_flags) & READ_SPEED_MASK];
+	uint32_t silence_length;
+	uint32_t talk_length = GameTicksPerSecond * numChars / MODERATE_SPEED;
+	uint8_t read_speed = speed_array[GLOBAL(glob_flags) & READ_SPEED_MASK];
 
 	if (read_speed)
 	{

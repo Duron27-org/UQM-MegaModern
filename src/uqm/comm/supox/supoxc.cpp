@@ -59,7 +59,7 @@ static LOCDATA supox_desc =
 				GameTicksPerSecond / 10, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				9,			   /* StartIndex */
@@ -69,7 +69,7 @@ static LOCDATA supox_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				19,			   /* StartIndex */
@@ -79,7 +79,7 @@ static LOCDATA supox_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				29,			   /* StartIndex */
@@ -89,7 +89,7 @@ static LOCDATA supox_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								},
 		{
@@ -167,7 +167,7 @@ ExitConversation(RESPONSE_REF R)
 		{
 			NPCPhrase(HAVE_4_SHIPS);
 
-			AlienTalkSegue((uqm::COUNT)~0);
+			AlienTalkSegue((uint16_t)~0);
 			AddEscortShips(SUPOX_SHIP, difficultyCase(4, 4, 2));
 			PrepareShip(SUPOX_SHIP);
 		}
@@ -179,7 +179,7 @@ static void AlliedHome(RESPONSE_REF R);
 static void
 AlliedHome(RESPONSE_REF R)
 {
-	uqm::BYTE NumVisits, News;
+	uint8_t NumVisits, News;
 
 	News = GET_GAME_STATE(SUPOX_WAR_NEWS);
 	NumVisits = GET_GAME_STATE(UTWIG_SUPOX_MISSION);
@@ -295,7 +295,7 @@ AlliedHome(RESPONSE_REF R)
 static void
 BeforeKohrAh(RESPONSE_REF R)
 {
-	uqm::BYTE NumVisits;
+	uint8_t NumVisits;
 
 	if (PLAYER_SAID(R, whats_up_before_space))
 	{
@@ -335,7 +335,7 @@ BeforeKohrAh(RESPONSE_REF R)
 static void
 AfterKohrAh(RESPONSE_REF R)
 {
-	uqm::BYTE NumVisits;
+	uint8_t NumVisits;
 
 	if (PLAYER_SAID(R, whats_up_after_space))
 	{
@@ -375,7 +375,7 @@ AfterKohrAh(RESPONSE_REF R)
 static void
 NeutralSupox(RESPONSE_REF R)
 {
-	uqm::BYTE i, LastStack, NumVisits;
+	uint8_t i, LastStack, NumVisits;
 	RESPONSE_REF pStr[3];
 
 	LastStack = 0;
@@ -595,7 +595,7 @@ NeutralSupox(RESPONSE_REF R)
 static void
 Intro(void)
 {
-	uqm::BYTE NumVisits;
+	uint8_t NumVisits;
 
 	if (lowByte(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE)
 	{
@@ -740,7 +740,7 @@ Intro(void)
 	}
 }
 
-static uqm::COUNT
+static uint16_t
 uninit_supox(void)
 {
 	luaUqm_comm_uninit();

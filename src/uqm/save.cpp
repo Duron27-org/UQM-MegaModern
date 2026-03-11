@@ -851,9 +851,9 @@ write_str(void* fp, uqstl::string_view str)
 }
 
 static void
-SaveShipQueue(uio_Stream* fh, QUEUE* pQueue, uqm::DWORD tag)
+SaveShipQueue(uio_Stream* fh, QUEUE* pQueue, uint32_t tag)
 {
-	uqm::COUNT num_links;
+	uint16_t num_links;
 	HSHIPFRAG hStarShip;
 
 	num_links = CountLinks(pQueue);
@@ -870,7 +870,7 @@ SaveShipQueue(uio_Stream* fh, QUEUE* pQueue, uqm::DWORD tag)
 	{
 		HSHIPFRAG hNextShip;
 		SHIP_FRAGMENT* FragPtr;
-		uqm::COUNT Index;
+		uint16_t Index;
 
 		FragPtr = LockShipFrag(pQueue, hStarShip);
 		hNextShip = _GetSuccLink(FragPtr);
@@ -897,7 +897,7 @@ SaveShipQueue(uio_Stream* fh, QUEUE* pQueue, uqm::DWORD tag)
 static void
 SaveRaceQueue(uio_Stream* fh, QUEUE* pQueue)
 {
-	uqm::COUNT num_links;
+	uint16_t num_links;
 	HFLEETINFO hFleet;
 
 	num_links = CountLinks(pQueue);
@@ -914,7 +914,7 @@ SaveRaceQueue(uio_Stream* fh, QUEUE* pQueue)
 	{
 		HFLEETINFO hNextFleet;
 		FLEET_INFO* FleetPtr;
-		uqm::COUNT Index;
+		uint16_t Index;
 
 		FleetPtr = LockFleetInfo(pQueue, hFleet);
 		hNextFleet = _GetSuccLink(FleetPtr);
@@ -952,7 +952,7 @@ static void
 SaveGroupQueue(uio_Stream* fh, QUEUE* pQueue)
 {
 	HIPGROUP hGroup, hNextGroup;
-	uqm::COUNT num_links;
+	uint16_t num_links;
 
 	num_links = CountLinks(pQueue);
 	if (num_links == 0)
@@ -987,7 +987,7 @@ SaveGroupQueue(uio_Stream* fh, QUEUE* pQueue)
 static void
 SaveEncounters(uio_Stream* fh)
 {
-	uqm::COUNT num_links;
+	uint16_t num_links;
 	HENCOUNTER hEncounter;
 	num_links = CountLinks(&GLOBAL(encounter_q));
 	if (num_links == 0)
@@ -1002,7 +1002,7 @@ SaveEncounters(uio_Stream* fh)
 	{
 		HENCOUNTER hNextEncounter;
 		ENCOUNTER* EncounterPtr;
-		uqm::COUNT i;
+		uint16_t i;
 
 		LockEncounter(hEncounter, &EncounterPtr);
 		hNextEncounter = GetSuccEncounter(EncounterPtr);
@@ -1041,7 +1041,7 @@ SaveEncounters(uio_Stream* fh)
 static void
 SaveEvents(uio_Stream* fh)
 {
-	uqm::COUNT num_links;
+	uint16_t num_links;
 	HEVENT hEvent;
 	num_links = CountLinks(&GLOBAL(GameClock.event_q));
 	if (num_links == 0)
@@ -1087,7 +1087,7 @@ SaveClockState(const CLOCK_STATE* ClockPtr, uio_Stream* fh)
 static bool
 SaveGameState(const GAME_STATE* GSPtr, uio_Stream* fh)
 {
-	uqm::BYTE res_scale;
+	uint8_t res_scale;
 
 	if (lowByte(GSPtr->CurrentActivity) != IN_INTERPLANETARY)
 	{
@@ -1103,8 +1103,8 @@ SaveGameState(const GAME_STATE* GSPtr, uio_Stream* fh)
 	writeValue(fh, GSPtr->glob_flags);
 	writeValue(fh, GSPtr->CrewCost);
 	writeValue(fh, GSPtr->FuelCost);
-	writeValueArray<uqm::BYTE>(fh, GSPtr->ModuleCost);
-	writeValueArray<uqm::BYTE>(fh, GSPtr->ElementWorth);
+	writeValueArray<uint8_t>(fh, GSPtr->ModuleCost);
+	writeValueArray<uint8_t>(fh, GSPtr->ElementWorth);
 	writeValue(fh, GSPtr->CurrentActivity);
 
 	SaveClockState(&GSPtr->GameClock, fh);
@@ -1141,7 +1141,7 @@ SaveGameState(const GAME_STATE* GSPtr, uio_Stream* fh)
 		if (serialiseGameState(gameStateBitMap, &buf, &bufSize))
 		{
 			writeValue(fh, bufSize);
-			writeValueArray<uint8_t>(fh, {buf, (uqm::COUNT)bufSize});
+			writeValueArray<uint8_t>(fh, {buf, (uint16_t)bufSize});
 			HFree(buf);
 		}
 		else
@@ -1163,18 +1163,18 @@ SaveSisState(const SIS_STATE* SSPtr, void* fp)
 	writeValue(fp, SSPtr->CrewEnlisted);
 	writeValue(fp, SSPtr->TotalElementMass);
 	writeValue(fp, SSPtr->TotalBioMass);
-	writeValueArray<uqm::BYTE>(fp, SSPtr->ModuleSlots);
-	writeValueArray<uqm::BYTE>(fp, SSPtr->DriveSlots);
-	writeValueArray<uqm::BYTE>(fp, SSPtr->JetSlots);
+	writeValueArray<uint8_t>(fp, SSPtr->ModuleSlots);
+	writeValueArray<uint8_t>(fp, SSPtr->DriveSlots);
+	writeValueArray<uint8_t>(fp, SSPtr->JetSlots);
 	writeValue(fp, SSPtr->NumLanders);
-	writeValueArray<uqm::COUNT>(fp, SSPtr->ElementAmounts);
+	writeValueArray<uint16_t>(fp, SSPtr->ElementAmounts);
 
 	write_str(fp, SSPtr->ShipName);
 	write_str(fp, SSPtr->CommanderName);
 	write_str(fp, SSPtr->PlanetName);
-	writeValue(fp, static_cast<uqm::BYTE>(SSPtr->Difficulty));
+	writeValue(fp, static_cast<uint8_t>(SSPtr->Difficulty));
 	writeValue(fp, SSPtr->Extended);
-	writeValue(fp, static_cast<uqm::BYTE>(SSPtr->Nomad));
+	writeValue(fp, static_cast<uint8_t>(SSPtr->Nomad));
 	writeValue(fp, SSPtr->Seed);
 	writeValue(fp, SSPtr->ShipSeed);
 }
@@ -1197,8 +1197,8 @@ SaveSummary(const SUMMARY_DESC* SummPtr, void* fp)
 	writeValue(fp, SummPtr->MCreditHi);
 	writeValue(fp, SummPtr->NumShips);
 	writeValue(fp, SummPtr->NumDevices);
-	writeValueArray<uqm::BYTE>(fp, SummPtr->ShipList);
-	writeValueArray<uqm::BYTE>(fp, SummPtr->DeviceList);
+	writeValueArray<uint8_t>(fp, SummPtr->ShipList);
+	writeValueArray<uint8_t>(fp, SummPtr->DeviceList);
 	writeValue(fp, SummPtr->res_factor);
 	write_str(fp, SummPtr->SaveName);
 }
@@ -1237,7 +1237,7 @@ PrepareSummary(SUMMARY_DESC* SummPtr, const char* name)
 			// Get a better planet name for summary
 			GetPlanetOrMoonName(SummPtr->SS.PlanetName,
 								sizeof(SummPtr->SS.PlanetName));
-			if (GET_GAME_STATE(GLOBAL_FLAGS_AND_DATA) == (uqm::BYTE)~0)
+			if (GET_GAME_STATE(GLOBAL_FLAGS_AND_DATA) == (uint8_t)~0)
 			{
 				SummPtr->Activity = IN_STARBASE;
 			}
@@ -1298,9 +1298,9 @@ SaveProblemMessage(STAMP* MsgStamp)
 		{0, 0},
 		{0, 0}
 	  };
-	uqm::COUNT i;
+	uint16_t i;
 	TEXT t;
-	uqm::CHAR_T* ppStr[MAX_MSG_LINES];
+	char* ppStr[MAX_MSG_LINES];
 
 	// TODO: This should probably just use DoPopupWindow()
 
@@ -1319,7 +1319,7 @@ SaveProblemMessage(STAMP* MsgStamp)
 		{
 			break;
 		}
-		t.CharCount = (uqm::COUNT)~0;
+		t.CharCount = (uint16_t)~0;
 		TextRect(&t, &tr, nullptr);
 		if (i == 0)
 		{
@@ -1357,7 +1357,7 @@ SaveProblemMessage(STAMP* MsgStamp)
 		{
 			break;
 		}
-		t.CharCount = (uqm::COUNT)~0;
+		t.CharCount = (uint16_t)~0;
 		font_DrawText(&t);
 		t.baseline.y += 11;
 	}
@@ -1402,7 +1402,7 @@ SaveStarInfo(uio_Stream* fh)
 	fp = OpenStateFile(STARINFO_FILE, "rb");
 	if (fp)
 	{
-		uqm::DWORD flen = LengthStateFile(fp);
+		uint32_t flen = LengthStateFile(fp);
 		if (flen % 4)
 		{
 			uqm::log::warn("Unexpected Star Info length! Expected "
@@ -1414,7 +1414,7 @@ SaveStarInfo(uio_Stream* fh)
 			writeValue(fh, flen);
 			while (flen)
 			{
-				uqm::DWORD val;
+				uint32_t val;
 				sread_32(fp, &val);
 				writeValue(fh, val);
 				flen -= 4;
@@ -1425,17 +1425,17 @@ SaveStarInfo(uio_Stream* fh)
 }
 
 static void
-SaveBattleGroup(GAME_STATE_FILE* fp, uqm::DWORD encounter_id, uqm::DWORD grpoffs,
+SaveBattleGroup(GAME_STATE_FILE* fp, uint32_t encounter_id, uint32_t grpoffs,
 				uio_Stream* fh)
 {
 	GROUP_HEADER h;
-	uqm::DWORD size = 12;
+	uint32_t size = 12;
 	int i;
 	SeekStateFile(fp, grpoffs, SEEK_SET);
 	ReadGroupHeader(fp, &h);
 	for (i = 1; i <= h.NumGroups; ++i)
 	{
-		uqm::BYTE NumShips;
+		uint8_t NumShips;
 		SeekStateFile(fp, h.GroupOffset[i], SEEK_SET);
 		sread_8(fp, nullptr);
 		sread_8(fp, &NumShips);
@@ -1454,7 +1454,7 @@ SaveBattleGroup(GAME_STATE_FILE* fp, uqm::DWORD encounter_id, uqm::DWORD grpoffs
 	for (i = 1; i <= h.NumGroups; ++i)
 	{
 		int j;
-		uqm::BYTE b;
+		uint8_t b;
 		SeekStateFile(fp, h.GroupOffset[i], SEEK_SET);
 		sread_8(fp, &b); // Group race icon
 		writeValue(fh, b);
@@ -1462,7 +1462,7 @@ SaveBattleGroup(GAME_STATE_FILE* fp, uqm::DWORD encounter_id, uqm::DWORD grpoffs
 		writeValue(fh, b);
 		for (j = 0; j < b; ++j)
 		{
-			uqm::BYTE race_outer;
+			uint8_t race_outer;
 			SHIP_FRAGMENT sf;
 			sread_8(fp, &race_outer);
 			ReadShipFragment(fp, &sf);
@@ -1478,7 +1478,7 @@ SaveBattleGroup(GAME_STATE_FILE* fp, uqm::DWORD encounter_id, uqm::DWORD grpoffs
 	}
 }
 
-static uqm::DWORD
+static uint32_t
 GetBattleGroupOffset(int encounterIndex)
 {
 	// The reason for this switch, even though the group offsets are
@@ -1529,7 +1529,7 @@ SaveGroups(uio_Stream* fh)
 	if (fp && LengthStateFile(fp) > 0)
 	{
 		GROUP_HEADER h;
-		uqm::BYTE lastenc, count;
+		uint8_t lastenc, count;
 		int i;
 		ReadGroupHeader(fp, &h);
 		/* Group List */
@@ -1541,7 +1541,7 @@ SaveGroups(uio_Stream* fh)
 		writeValue(fh, lastenc);
 		for (i = 0; i < count; ++i)
 		{
-			uqm::BYTE race_outer;
+			uint8_t race_outer;
 			IP_GROUP ip;
 			sread_8(fp, &race_outer);
 			ReadIpGroup(fp, &ip);
@@ -1567,7 +1567,7 @@ SaveGroups(uio_Stream* fh)
 		int encounter_index;
 		for (encounter_index = 1; encounter_index < 15; encounter_index++)
 		{
-			uqm::DWORD grpoffs = GetBattleGroupOffset(encounter_index);
+			uint32_t grpoffs = GetBattleGroupOffset(encounter_index);
 			if (grpoffs)
 			{
 				SaveBattleGroup(fp, encounter_index, grpoffs, fh);
@@ -1579,7 +1579,7 @@ SaveGroups(uio_Stream* fh)
 
 // This function first writes to a memory file, and then writes the whole
 // lot to the actual save file at once.
-bool SaveGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, const char* name)
+bool SaveGame(uint16_t which_game, SUMMARY_DESC* SummPtr, const char* name)
 {
 	uio_Stream* out_fp;
 	GFXPOINT pt;

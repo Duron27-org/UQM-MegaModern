@@ -23,11 +23,11 @@
 extern "C" {
 #endif
 
-extern void NotifyOthers(uqm::COUNT which_race, uqm::BYTE target_loc);
+extern void NotifyOthers(uint16_t which_race, uint8_t target_loc);
 // Special target locations for NotifyOthers()
 #define IPNL_INTERCEPT_PLAYER 0
 #define IPNL_FLEE 1
-#define IPNL_ALL_CLEAR ((uqm::BYTE) - 1)
+#define IPNL_ALL_CLEAR ((uint8_t)-1)
 
 extern void DoMissions(void);
 

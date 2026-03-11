@@ -38,8 +38,8 @@ extern void TFB_ResetControls(void);
 /*
  * Not used right now
 extern bool FindMouse (void);
-extern void MoveMouse (uqm::SWORD x, uqm::SWORD y);
-extern uqm::BYTE LocateMouse (uqm::SWORD *px, uqm::SWORD *py);
+extern void MoveMouse (int16_t x, int16_t y);
+extern uint8_t LocateMouse (int16_t *px, int16_t *py);
 */
 
 extern volatile int MouseButtonDown;

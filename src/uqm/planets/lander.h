@@ -37,9 +37,9 @@ extern "C" {
 
 typedef struct
 {
-	uqm::BYTE NumNodesGrabbed;
-	uqm::BYTE NodeType[32];
-	uqm::COUNT NodeAmounts[32];
+	uint8_t NumNodesGrabbed;
+	uint8_t NodeType[32];
+	uint16_t NodeAmounts[32];
 } NODE_DATA;
 
 // XXX: This is a private type now. Move it to lander.c?
@@ -50,20 +50,20 @@ typedef struct
 	// Landing on or taking of from a planet.
 	// Setting it while landed will initiate takeoff.
 
-	uqm::COUNT ElementLevel;
-	uqm::COUNT MaxElementLevel;
-	uqm::COUNT BiologicalLevel;
-	uqm::COUNT ElementAmounts[NUM_ELEMENT_CATEGORIES];
+	uint16_t ElementLevel;
+	uint16_t MaxElementLevel;
+	uint16_t BiologicalLevel;
+	uint16_t ElementAmounts[NUM_ELEMENT_CATEGORIES];
 
-	uqm::COUNT NumFrames;
-	uqm::CHAR_T AmountBuf[40];
+	uint16_t NumFrames;
+	char AmountBuf[40];
 	TEXT MineralText[3];
 
 	Color ColorCycle[NUM_TEXT_FRAMES >> 1];
 
-	uqm::BYTE TectonicsChance;
-	uqm::BYTE WeatherChance;
-	uqm::BYTE FireChance;
+	uint8_t TectonicsChance;
+	uint8_t WeatherChance;
+	uint8_t FireChance;
 
 	NODE_DATA NodeData;
 } PLANETSIDE_DESC;
@@ -72,7 +72,7 @@ extern MUSIC_REF LanderMusic;
 
 extern void PlanetSide(GFXPOINT planetLoc);
 extern void DoDiscoveryReport(SOUND ReadOutSounds);
-extern uqm::BYTE SetPlanetMusic(uqm::BYTE planet_type);
+extern uint8_t SetPlanetMusic(uint8_t planet_type);
 extern void LoadLanderData(void);
 extern void FreeLanderData(void);
 
@@ -81,7 +81,7 @@ extern void MaskLanderGraphics(void);
 extern void object_animation(ELEMENT* ElementPtr);
 
 extern void SetLanderTakeoff(void);
-extern bool KillLanderCrewSeq(uqm::COUNT numKilled, uqm::DWORD period);
+extern bool KillLanderCrewSeq(uint16_t numKilled, uint32_t period);
 
 extern unsigned GetThermalHazardRating(int temp);
 

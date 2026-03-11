@@ -48,9 +48,9 @@ struct joy_char
 };
 
 static int
-ReadOneChar(joy_char_t* ch, const uqm::CHAR_T* str)
+ReadOneChar(joy_char_t* ch, const char* str)
 {
-	uqm::CHAR_T* next = skipUTF8Chars(str, 1);
+	char* next = skipUTF8Chars(str, 1);
 	int len = next - str;
 	ch->len = len;
 	memcpy(ch->enc, str, len);
@@ -62,11 +62,11 @@ ReadOneChar(joy_char_t* ch, const uqm::CHAR_T* str)
 static joy_char_t*
 LoadJoystickAlpha(STRING String, int* count)
 {
-	uqm::CHAR_T* str;
+	char* str;
 	int c;
 	int i;
 	joy_char_t* chars;
-	uqm::CHAR_T* cur;
+	char* cur;
 
 	*count = 0;
 	str = GetStringAddress(String);
@@ -161,7 +161,7 @@ static void
 FlashCursor(void)
 {
 	static TimeCount NextTime = 0;
-	static uqm::DWORD cycle_index = 0;
+	static uint32_t cycle_index = 0;
 
 	static const Color cycle_tab[] = CURSOR_COLOR_CYCLE_TABLE;
 	const size_t cycleCount = std::size(cycle_tab);
@@ -199,8 +199,8 @@ FlashCursor(void)
 bool DoTextEntry(TEXTENTRY_STATE* pTES)
 {
 	UniChar ch;
-	uqm::CHAR_T* pStr;
-	uqm::CHAR_T* CacheInsPt;
+	char* pStr;
+	char* CacheInsPt;
 	int CacheCursorPos;
 	int len;
 	bool changed = false;
@@ -255,7 +255,7 @@ bool DoTextEntry(TEXTENTRY_STATE* pTES)
 						   pTES->JoyRegLength);
 		}
 
-		pTES->CacheStr = (uqm::CHAR_T*)HMalloc(pTES->MaxSize * sizeof(*pTES->CacheStr));
+		pTES->CacheStr = (char*)HMalloc(pTES->MaxSize * sizeof(*pTES->CacheStr));
 
 		EnterCharacterMode();
 		DoInput(pTES, true);
@@ -301,7 +301,7 @@ bool DoTextEntry(TEXTENTRY_STATE* pTES)
 	}
 	while (ch)
 	{
-		uqm::CHAR_T chbuf[8];
+		char chbuf[8];
 		int chsize;
 
 		pTES->JoystickMode = false;
@@ -345,8 +345,8 @@ bool DoTextEntry(TEXTENTRY_STATE* pTES)
 	{
 		if (pStr > pTES->BaseStr)
 		{
-			uqm::CHAR_T* prev = skipUTF8Chars(pTES->BaseStr,
-											  pTES->CursorPos - 1);
+			char* prev = skipUTF8Chars(pTES->BaseStr,
+									   pTES->CursorPos - 1);
 
 			memmove(prev, pStr, len + 1);
 			pStr = prev;
@@ -358,8 +358,8 @@ bool DoTextEntry(TEXTENTRY_STATE* pTES)
 	{
 		if (pStr > pTES->BaseStr)
 		{
-			uqm::CHAR_T* prev = skipUTF8Chars(pTES->BaseStr,
-											  pTES->CursorPos - 1);
+			char* prev = skipUTF8Chars(pTES->BaseStr,
+									   pTES->CursorPos - 1);
 
 			pStr = prev;
 			len += (prev - pStr);

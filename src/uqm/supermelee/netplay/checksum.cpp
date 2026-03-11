@@ -166,7 +166,7 @@ void crc_processDispQueue(crc_State* state)
 
 void crc_processRNG(crc_State* state)
 {
-	uqm::DWORD seed;
+	uint32_t seed;
 
 #ifdef DUMP_CRC_OPS
 	crc_log("START crc_processRNG().");

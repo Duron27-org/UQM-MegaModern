@@ -126,10 +126,10 @@ static RACE_DESC utwig_desc =
 		0, /* CodeRef */
 };
 
-static uqm::COUNT
+static uint16_t
 initialize_lance(ELEMENT* ShipPtr, HELEMENT WeaponArray[])
 {
-	uqm::COUNT i;
+	uint16_t i;
 	STARSHIP* StarShipPtr;
 	MISSILE_BLOCK MissileBlock;
 
@@ -148,9 +148,9 @@ initialize_lance(ELEMENT* ShipPtr, HELEMENT WeaponArray[])
 
 	for (i = 0; i < 3; ++i)
 	{
-		uqm::COUNT angle;
-		uqm::SIZE sin0 = 0, cos0 = 0;
-		uqm::SIZE sin1sin0, cos1sin0, cos1cos0, sin1cos0;
+		uint16_t angle;
+		int16_t sin0 = 0, cos0 = 0;
+		int16_t sin1sin0, cos1sin0, cos1cos0, sin1cos0;
 
 		switch (i)
 		{
@@ -191,9 +191,9 @@ initialize_lance(ELEMENT* ShipPtr, HELEMENT WeaponArray[])
 
 static void
 utwig_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
-				   uqm::COUNT ConcernCounter)
+				   uint16_t ConcernCounter)
 {
-	uqm::SIZE ShieldStatus;
+	int16_t ShieldStatus;
 	STARSHIP* StarShipPtr;
 	EVALUATE_DESC* lpEvalDesc;
 

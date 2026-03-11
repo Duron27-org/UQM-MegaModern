@@ -114,7 +114,7 @@ process_image(FRAME FramePtr, TFB_Canvas img[], AniData* ani, int cel_ct)
 static void
 processFontChar(TFB_Char* CharPtr, TFB_Canvas canvas, FONT fontPtr)
 {
-	uqm::BYTE* newdata;
+	uint8_t* newdata;
 	size_t dpitch;
 
 	TFB_DrawCanvas_GetExtent(canvas, &CharPtr->extent);
@@ -122,7 +122,7 @@ processFontChar(TFB_Char* CharPtr, TFB_Canvas canvas, FONT fontPtr)
 	// Currently, each font char has its own separate data
 	// but that can change to common mem area
 	dpitch = CharPtr->extent.width;
-	newdata = (uqm::BYTE*)HMalloc(dpitch * CharPtr->extent.height * sizeof(uqm::BYTE));
+	newdata = (uint8_t*)HMalloc(dpitch * CharPtr->extent.height * sizeof(uint8_t));
 	TFB_DrawCanvas_GetFontCharData(canvas, newdata, dpitch);
 
 	CharPtr->data = newdata;
@@ -159,10 +159,10 @@ processFontChar(TFB_Char* CharPtr, TFB_Canvas canvas, FONT fontPtr)
 	}
 }
 
-void* _GetCelData(uio_Stream* fp, uqm::DWORD length)
+void* _GetCelData(uio_Stream* fp, uint32_t length)
 {
 	int cel_total, cel_index, n;
-	uqm::DWORD opos;
+	uint32_t opos;
 	char CurrentLine[1024], filename[PATH_MAX];
 	TFB_Canvas* img;
 	AniData* ani;
@@ -386,9 +386,9 @@ compareBCDIndex(const void* arg1, const void* arg2)
 	return (int)bcd1->index - (int)bcd2->index;
 }
 
-void* _GetFontData(uio_Stream* fp, uqm::DWORD length)
+void* _GetFontData(uio_Stream* fp, uint32_t length)
 {
-	uqm::COUNT numDirEntries;
+	uint16_t numDirEntries;
 	DIRENTRY fontDir = nullptr;
 	BuildCharDesc* bcds = nullptr;
 	size_t numBCDs = 0;
@@ -518,9 +518,9 @@ void* _GetFontData(uio_Stream* fp, uqm::DWORD length)
 		char CurrentLine[PATH_MAX];
 		int cel_index = 0;
 		int cel_total = 0;
-		uqm::DWORD opos = 0;
+		uint32_t opos = 0;
 
-		memset(&fontPtr->KernTab, (uqm::BYTE)~0, sizeof(fontPtr->KernTab));
+		memset(&fontPtr->KernTab, (uint8_t)~0, sizeof(fontPtr->KernTab));
 
 		uio_fseek(cfgFile, opos, SEEK_SET);
 		while (uio_fgets(CurrentLine, sizeof(CurrentLine), cfgFile))
@@ -540,7 +540,7 @@ void* _GetFontData(uio_Stream* fp, uqm::DWORD length)
 		{
 			if (cel_index > 0)
 			{
-				if (const auto result {scn::scan<uqm::SDWORD, uqm::SDWORD, uqm::SDWORD>(CurrentLine, "{:x} {} {}")})
+				if (const auto result {scn::scan<int32_t, int32_t, int32_t>(CurrentLine, "{:x} {} {}")})
 				{
 					auto [KernChar, kernLBits, kernRBits] = result->values();
 					if (kernLBits > 3 || kernLBits < 0)
@@ -558,7 +558,7 @@ void* _GetFontData(uio_Stream* fp, uqm::DWORD length)
 			}
 			else
 			{
-				if (const auto result {scn::scan<uqstl::string, uqm::BYTE, uqm::BYTE, uqm::BYTE, uqm::SBYTE>(CurrentLine, "{} {} {} {} {}")})
+				if (const auto result {scn::scan<uqstl::string, uint8_t, uint8_t, uint8_t, int8_t>(CurrentLine, "{} {} {} {} {}")})
 				{
 					auto [filename_str, Leading, CharSpace, KernAmount, VertAlign] = result->values();
 					uqm::strncpy_safe(fontPtr->filename, filename_str);

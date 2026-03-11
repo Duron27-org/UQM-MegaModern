@@ -74,8 +74,8 @@ static Color win_dark_clr =
 
 static FONT cur_font;
 
-static uqm::COUNT offset_t = 0;		// Top widget offset
-static uqm::COUNT offset_b;			// = ONSCREEN; // Bottom widget offset
+static uint16_t offset_t = 0;		// Top widget offset
+static uint16_t offset_b;			// = ONSCREEN; // Bottom widget offset
 static FRAME arrow_frame = nullptr; // Frames for additional graphics
 
 void ResetOffset(void)
@@ -156,7 +156,7 @@ void DrawLabelAsWindow(WIDGET_LABEL* label, GFXRECT* windowRect)
 	{
 		t.pStr = label->lines[i];
 		t.align = ALIGN_CENTER;
-		t.CharCount = (uqm::COUNT)~0;
+		t.CharCount = (uint16_t)~0;
 		font_DrawText(&t);
 		t.baseline.y += RES_SCALE(8);
 	}
@@ -206,7 +206,7 @@ Widget_DrawToolTips(int numlines, const char** tips)
 	Color oldtext = SetContextForeGroundColor(WIDGET_TOOLTIP_COLOR);
 	TEXT t;
 	int i;
-	const uqm::CHAR_T* amperBang = "&!";
+	const char* amperBang = "&!";
 	const size_t abSize = strlen(amperBang);
 	bool warning = false;
 
@@ -491,7 +491,7 @@ void Widget_DrawChoice(WIDGET* _self, int x, int y)
 
 				{ // Navigation Dots
 					GFXRECT d;
-					uqm::COUNT c;
+					uint16_t c;
 
 					d.extent.width = RES_SCALE(4);
 					d.extent.height = RES_SCALE(1);
@@ -575,8 +575,8 @@ void Widget_DrawLabel(WIDGET* _self, int x, int y)
 	TEXT t;
 	int i;
 	GFXRECT r;
-	const uqm::CHAR_T* amperScore = "&_";
-	const uqm::CHAR_T* amperBang = "&!";
+	const char* amperScore = "&_";
+	const char* amperBang = "&!";
 	const size_t asSize = strlen(amperScore);
 	bool underline = false;
 	bool warning = false;
@@ -772,7 +772,7 @@ void Widget_DrawTextEntry(WIDGET* _self, int x, int y)
 	self->value[WIDGET_TEXTENTRY_WIDTH - RES_SCALE(1)] = 0;
 
 	t.baseline.y = y;
-	t.CharCount = (uqm::COUNT)utf8StringCount(self->value);
+	t.CharCount = (uint16_t)utf8StringCount(self->value);
 	t.pStr = self->value;
 
 	if (!(self->state & WTE_EDITING))
@@ -792,12 +792,12 @@ void Widget_DrawTextEntry(WIDGET* _self, int x, int y)
 	}
 	else
 	{ // editing state
-		uqm::COUNT i;
+		uint16_t i;
 		GFXRECT text_r;
-		uqm::BYTE char_deltas[WIDGET_TEXTENTRY_WIDTH];
-		uqm::BYTE* pchar_deltas;
+		uint8_t char_deltas[WIDGET_TEXTENTRY_WIDTH];
+		uint8_t* pchar_deltas;
 		GFXRECT r;
-		uqm::SIZE leading;
+		int16_t leading;
 
 		t.baseline.x = RSTEP;
 		t.align = ALIGN_LEFT;
@@ -832,7 +832,7 @@ void Widget_DrawTextEntry(WIDGET* _self, int x, int y)
 		pchar_deltas = char_deltas;
 		for (i = self->cursor_pos; i > 0; --i)
 		{
-			r.corner.x += (uqm::SIZE)*pchar_deltas++;
+			r.corner.x += (int16_t)*pchar_deltas++;
 		}
 		if (self->cursor_pos < t.CharCount) /* cursor mid-line */
 		{
@@ -852,12 +852,12 @@ void Widget_DrawTextEntry(WIDGET* _self, int x, int y)
 			}
 			else if (self->cursor_pos + 1 == t.CharCount)
 			{ // extra pixel for last char margin
-				r.extent.width = (uqm::SIZE)*pchar_deltas - IF_HD(3);
+				r.extent.width = (int16_t)*pchar_deltas - IF_HD(3);
 				r.corner.x += RES_SCALE(1);
 			}
 			else
 			{ // normal mid-line char
-				r.extent.width = (uqm::SIZE)*pchar_deltas;
+				r.extent.width = (int16_t)*pchar_deltas;
 				r.corner.x += RES_SCALE(1);
 			}
 		}

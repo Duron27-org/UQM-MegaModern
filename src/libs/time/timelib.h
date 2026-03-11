@@ -23,9 +23,9 @@
 #include <chrono>
 #include "libs/compiler.h"
 
-	
-typedef uqm::DWORD TimeCount;
-typedef uqm::DWORD TimePeriod;
+
+typedef uint32_t TimeCount;
+typedef uint32_t TimePeriod;
 
 /* GameTicksPerSecond is the LCM of all the fractions of a second the game uses.
  * Battle is 24 FPS, Landers are 35 FPS, most UI-level things are 15 FPS,
@@ -34,8 +34,8 @@ typedef uqm::DWORD TimePeriod;
  * timer and currently runs within the Comm ambient anim paradigm anyway)
  * Thus, the minimum value for GameTicksPerSecond is 840. */
 #if TIMELIB == SDL
-constexpr uqm::DWORD GameTicksPerSecond {840};
-static constexpr uqm::DWORD getTicksForFramerate(const uqm::DWORD desiredFps)
+constexpr uint32_t GameTicksPerSecond {840};
+static constexpr uint32_t getTicksForFramerate(const uint32_t desiredFps)
 {
 	return GameTicksPerSecond / desiredFps;
 }

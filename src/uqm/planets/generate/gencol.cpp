@@ -74,7 +74,7 @@ GenerateColony_initNpcs(SOLARSYS_STATE* solarSys)
 		&& (hGroup = GetHeadLink(&GLOBAL(ip_group_q))))
 	{
 		IP_GROUP* GroupPtr;
-		uqm::BYTE PlanetByte = solarSys->SunDesc[0].PlanetByte + 1;
+		uint8_t PlanetByte = solarSys->SunDesc[0].PlanetByte + 1;
 
 		GroupPtr = LockIpGroup(&GLOBAL(ip_group_q), hGroup);
 		GroupPtr->task = IN_ORBIT;
@@ -98,11 +98,11 @@ GenerateColony_generatePlanets(SOLARSYS_STATE* solarSys)
 	pSunDesc->PlanetByte = 0;
 	pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
 
-	FillOrbits(solarSys, (uqm::BYTE)~0, pPlanet, false);
+	FillOrbits(solarSys, (uint8_t)~0, pPlanet, false);
 
 	if (PrimeSeed)
 	{
-		uqm::COUNT angle;
+		uint16_t angle;
 
 		pPlanet->radius = EARTH_RADIUS * 115L / 100;
 		angle = ARCTAN(pPlanet->location.x, pPlanet->location.y);
@@ -117,7 +117,7 @@ GenerateColony_generatePlanets(SOLARSYS_STATE* solarSys)
 	}
 	else
 	{
-		uqm::DWORD rand_val = RandomContext_Random(SysGenRNG);
+		uint32_t rand_val = RandomContext_Random(SysGenRNG);
 
 		pSunDesc->PlanetByte = PickClosestHabitable(solarSys);
 		pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
@@ -160,7 +160,7 @@ GenerateColony_generateName(const SOLARSYS_STATE* solarSys,
 
 	if (matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{
-		uqm::BYTE PlanetByte = solarSys->SunDesc[0].PlanetByte;
+		uint8_t PlanetByte = solarSys->SunDesc[0].PlanetByte;
 		PLANET_DESC pPlanetDesc = solarSys->PlanetDesc[PlanetByte];
 
 		utf8StringCopy(GLOBAL_SIS(PlanetName),

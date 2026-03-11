@@ -59,7 +59,7 @@ static LOCDATA thradd_desc =
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond / 15,
 				GameTicksPerSecond / 15, /* RestartRate */
-				(1 << 4),		 /* BlockMask */
+				(1 << 4),				 /* BlockMask */
 			},
 								{
 				12,			   /* StartIndex */
@@ -69,7 +69,7 @@ static LOCDATA thradd_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				21,			 /* StartIndex */
@@ -79,7 +79,7 @@ static LOCDATA thradd_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				27,		   /* StartIndex */
@@ -89,7 +89,7 @@ static LOCDATA thradd_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				(1 << 4),		/* BlockMask */
+				(1 << 4),				/* BlockMask */
 			},
 								{
 				30, /* StartIndex */
@@ -109,8 +109,8 @@ static LOCDATA thradd_desc =
 				GameTicksPerSecond / 10,
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond,
-				GameTicksPerSecond * 3,		 /* RestartRate */
-				(1 << 4) | (1 << 6), /* BlockMask */
+				GameTicksPerSecond * 3, /* RestartRate */
+				(1 << 4) | (1 << 6),	/* BlockMask */
 			},
 								{
 				47,		   /* StartIndex */
@@ -120,7 +120,7 @@ static LOCDATA thradd_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				(1 << 5),		/* BlockMask */
+				(1 << 5),				/* BlockMask */
 			},
 								{
 				52,			 /* StartIndex */
@@ -188,7 +188,7 @@ GetCultureName(void)
 }
 
 static void
-PolitePhrase(uqm::BYTE which_phrase)
+PolitePhrase(uint8_t which_phrase)
 {
 	switch (which_phrase)
 	{
@@ -208,7 +208,7 @@ PolitePhrase(uqm::BYTE which_phrase)
 }
 
 static void
-RhymePhrase(uqm::BYTE which_phrase)
+RhymePhrase(uint8_t which_phrase)
 {
 	switch (which_phrase)
 	{
@@ -228,7 +228,7 @@ RhymePhrase(uqm::BYTE which_phrase)
 }
 
 static void
-PigLatinPhrase(uqm::BYTE which_phrase)
+PigLatinPhrase(uint8_t which_phrase)
 {
 	switch (which_phrase)
 	{
@@ -248,7 +248,7 @@ PigLatinPhrase(uqm::BYTE which_phrase)
 }
 
 static void
-LikeYouPhrase(uqm::BYTE which_phrase)
+LikeYouPhrase(uint8_t which_phrase)
 {
 	switch (which_phrase)
 	{
@@ -306,7 +306,7 @@ ExitConversation(RESPONSE_REF R)
 	}
 	else if (PLAYER_SAID(R, bye_ally))
 	{
-		uqm::BYTE NumVisits;
+		uint8_t NumVisits;
 
 		NumVisits = GET_GAME_STATE(THRADD_STACK_1);
 		switch (NumVisits++)
@@ -378,7 +378,7 @@ ExitConversation(RESPONSE_REF R)
 static void
 ThraddAllies(RESPONSE_REF R)
 {
-	uqm::BYTE NumVisits;
+	uint8_t NumVisits;
 
 	if (PLAYER_SAID(R, why_you_here_ally))
 	{
@@ -635,7 +635,7 @@ ThraddHostile(RESPONSE_REF R)
 	}
 	else if (PLAYER_SAID(R, whats_up_hostile_2))
 	{
-		uqm::BYTE NumVisits;
+		uint8_t NumVisits;
 
 		NumVisits = GET_GAME_STATE(THRADD_INFO);
 		switch (NumVisits++)
@@ -776,7 +776,7 @@ ThraddHostile(RESPONSE_REF R)
 static void
 Intro(void)
 {
-	uqm::BYTE NumVisits;
+	uint8_t NumVisits;
 	HFLEETINFO hThradd = GetStarShipFromIndex(&GLOBAL(avail_race_q), THRADDASH_SHIP);
 	FLEET_INFO* ThraddPtr = LockFleetInfo(&GLOBAL(avail_race_q), hThradd);
 
@@ -941,7 +941,7 @@ Intro(void)
 		HelixWorld((RESPONSE_REF)0);
 	}
 	else if (GET_GAME_STATE(THRADDASH_BODY_COUNT)
-			 >= (uqm::BYTE)THRADDASH_BODY_THRESHOLD)
+			 >= (uint8_t)THRADDASH_BODY_THRESHOLD)
 	{
 		NPCPhrase(AMAZING_PERFORMANCE);
 
@@ -1051,7 +1051,7 @@ Intro(void)
 	}
 }
 
-static uqm::COUNT
+static uint16_t
 uninit_thradd(void)
 {
 	luaUqm_comm_uninit();

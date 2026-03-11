@@ -176,8 +176,8 @@ static void setprogdir(lua_State* L)
 {
 	char buff[MAX_PATH + 1];
 	char* lb;
-	uqm::DWORD nsize = sizeof(buff) / sizeof(char);
-	uqm::DWORD n = GetModuleFileNameA(nullptr, buff, nsize);
+	uint32_t nsize = sizeof(buff) / sizeof(char);
+	uint32_t n = GetModuleFileNameA(nullptr, buff, nsize);
 	if (n == 0 || n == nsize || (lb = strrchr(buff, '\\')) == nullptr)
 	{
 		luaL_error(L, "unable to get ModuleFileName");

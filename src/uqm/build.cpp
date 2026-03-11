@@ -59,7 +59,7 @@ Build(QUEUE* pQueue, SPECIES_ID SpeciesID)
 }
 
 HLINK
-GetStarShipFromIndex(QUEUE* pShipQ, uqm::COUNT Index)
+GetStarShipFromIndex(QUEUE* pShipQ, uint16_t Index)
 {
 	HLINK hStarShip, hNextShip;
 
@@ -107,7 +107,7 @@ GetFleetFromSpecies(SPECIES_ID id)
 // If shipseed is not in use, it will do GetStarShipFromIndex on avail_race_q
 // If this seems like overkill just remember the Yehat rebels.
 HFLEETINFO
-GetSeededFleetFromIndex(uqm::COUNT Index)
+GetSeededFleetFromIndex(uint16_t Index)
 {
 	FLEET_INFO* TemplatePtr = nullptr;
 	HFLEETINFO hFleet;
@@ -131,7 +131,7 @@ GetSeededFleetFromIndex(uqm::COUNT Index)
 }
 
 HSHIPFRAG
-GetEscortByStarShipIndex(uqm::COUNT index)
+GetEscortByStarShipIndex(uint16_t index)
 {
 	HSHIPFRAG hStarShip;
 	HSHIPFRAG hNextShip;
@@ -250,12 +250,12 @@ RaceIdStrToIndex(const char* raceIdStr)
  * limited by the number of free slots.
  * Returns the number of ships added.
  */
-uqm::COUNT
-AddEscortShips(RACE_ID race, uqm::SIZE count)
+uint16_t
+AddEscortShips(RACE_ID race, int16_t count)
 {
 	HFLEETINFO hFleet;
-	uqm::BYTE which_window;
-	uqm::COUNT i;
+	uint8_t which_window;
+	uint16_t i;
 
 	hFleet = GetStarShipFromIndex(&GLOBAL(avail_race_q), race);
 	if (!hFleet || count <= 0)
@@ -264,7 +264,7 @@ AddEscortShips(RACE_ID race, uqm::SIZE count)
 	}
 
 	which_window = 0;
-	for (i = 0; i < (uqm::COUNT)count; i++)
+	for (i = 0; i < (uint16_t)count; i++)
 	{
 		HSHIPFRAG hStarShip;
 		HSHIPFRAG hOldShip;
@@ -293,7 +293,7 @@ AddEscortShips(RACE_ID race, uqm::SIZE count)
 		while ((hOldShip = GetStarShipFromIndex(
 					&GLOBAL(built_ship_q), which_window++)))
 		{
-			uqm::BYTE win_loc;
+			uint8_t win_loc;
 
 			StarShipPtr = LockShipFrag(&GLOBAL(built_ship_q), hOldShip);
 			win_loc = StarShipPtr->index;
@@ -318,10 +318,10 @@ AddEscortShips(RACE_ID race, uqm::SIZE count)
 /*
  * Returns the total value of all the ships escorting the SIS.
  */
-uqm::COUNT
+uint16_t
 CalculateEscortsWorth(void)
 {
-	uqm::COUNT total = 0;
+	uint16_t total = 0;
 	HSHIPFRAG hStarShip, hNextShip;
 
 	for (hStarShip = GetHeadLink(&GLOBAL(built_ship_q));
@@ -339,8 +339,8 @@ CalculateEscortsWorth(void)
 
 bool ShipsReady(RACE_ID race)
 {
-	uqm::SIZE i;
-	uqm::COUNT year, month, day = 0;
+	int16_t i;
+	uint16_t year, month, day = 0;
 	switch (race)
 	{
 		case PKUNK_SHIP:
@@ -372,14 +372,14 @@ bool ShipsReady(RACE_ID race)
 
 void PrepareShip(RACE_ID race)
 {
-	uqm::BYTE mi, di, yi;
+	uint8_t mi, di, yi;
 
 	mi = GLOBAL(GameClock.month_index);
 	if ((di = GLOBAL(GameClock.day_index)) > 28)
 	{
 		di = 28;
 	}
-	yi = (uqm::BYTE)(GLOBAL(GameClock.year_index) - START_YEAR) + 1;
+	yi = (uint8_t)(GLOBAL(GameClock.year_index) - START_YEAR) + 1;
 	switch (race)
 	{
 		case PKUNK_SHIP:
@@ -413,12 +413,12 @@ void PrepareShip(RACE_ID race)
  * Returns the size of the fleet of the specified race when the starmap was
  * last checked. If the race has no SoI, 0 is returned.
  */
-uqm::COUNT
+uint16_t
 GetRaceKnownSize (RACE_ID race)
 {
 	HFLEETINFO hFleet;
 	FLEET_INFO *FleetPtr;
-	uqm::COUNT result;
+	uint16_t result;
 
 	hFleet = GetStarShipFromIndex (&GLOBAL (avail_race_q), race);
 	if (!hFleet)
@@ -474,7 +474,7 @@ bool SetRaceAllied(RACE_ID race, bool flag)
  * 	The value returned is 'race', unless the type of ship is only available
  * 	in SuperMelee, in which case 0 is returned.
  */
-uqm::COUNT
+uint16_t
 StartSphereTracking(RACE_ID race)
 {
 	HFLEETINFO hFleet;
@@ -517,7 +517,7 @@ bool CheckSphereTracking(RACE_ID race)
 {
 	HFLEETINFO hFleet;
 	FLEET_INFO* FleetPtr;
-	uqm::COUNT result;
+	uint16_t result;
 
 	hFleet = GetStarShipFromIndex(&GLOBAL(avail_race_q), race);
 	if (!hFleet)
@@ -566,12 +566,12 @@ bool KillRace(RACE_ID race)
  * Returns the number of ships of the specified race among the
  * escort ships.
  */
-uqm::COUNT
+uint16_t
 CountEscortShips(RACE_ID race)
 {
 	HFLEETINFO hFleet;
 	HSHIPFRAG hStarShip, hNextShip;
-	uqm::COUNT result = 0;
+	uint16_t result = 0;
 
 	hFleet = GetStarShipFromIndex(&GLOBAL(avail_race_q), race);
 	if (!hFleet)
@@ -582,7 +582,7 @@ CountEscortShips(RACE_ID race)
 	for (hStarShip = GetHeadLink(&GLOBAL(built_ship_q)); hStarShip;
 		 hStarShip = hNextShip)
 	{
-		uqm::BYTE ship_type;
+		uint8_t ship_type;
 		SHIP_FRAGMENT* StarShipPtr;
 
 		StarShipPtr = LockShipFrag(&GLOBAL(built_ship_q), hStarShip);
@@ -612,7 +612,7 @@ bool HaveEscortShip(RACE_ID race)
  * Returns 0 if 'race' is not available.
  * Otherwise, returns the number of ships that can be added.
  */
-uqm::COUNT
+uint16_t
 EscortFeasibilityStudy(RACE_ID race)
 {
 	HFLEETINFO hFleet;
@@ -631,11 +631,11 @@ EscortFeasibilityStudy(RACE_ID race)
  * Either DEAD_GUY (extinct), GOOD_GUY (allied), or BAD_GUY (not allied) is
  * returned.
  */
-uqm::COUNT
+uint16_t
 CheckAlliance(RACE_ID race)
 {
 	HFLEETINFO hFleet;
-	uqm::UWORD flags;
+	uint16_t flags;
 	FLEET_INFO* FleetPtr;
 
 	hFleet = GetStarShipFromIndex(&GLOBAL(avail_race_q), race);
@@ -660,8 +660,8 @@ bool RaceDead(RACE_ID race)
  * Remove a number of escort ships of the specified race (if present).
  * Returns the number of escort ships removed.
  */
-uqm::COUNT
-RemoveSomeEscortShips(RACE_ID race, uqm::COUNT count)
+uint16_t
+RemoveSomeEscortShips(RACE_ID race, uint16_t count)
 {
 	QUEUE* ship_q = &GLOBAL(built_ship_q);
 	HSHIPFRAG hStarShip = GetHeadLink(ship_q);
@@ -714,16 +714,16 @@ RemoveSomeEscortShips(RACE_ID race, uqm::COUNT count)
 /*
  * Remove all escort ships of the specified race.
  */
-uqm::COUNT
+uint16_t
 RemoveEscortShips(RACE_ID race)
 {
-	return RemoveSomeEscortShips(race, (uqm::COUNT)-1);
+	return RemoveSomeEscortShips(race, (uint16_t)-1);
 }
 
-uqm::COUNT
+uint16_t
 GetIndexFromStarShip(QUEUE* pShipQ, HLINK hStarShip)
 {
-	uqm::COUNT Index;
+	uint16_t Index;
 
 	Index = 0;
 	while (hStarShip != GetHeadLink(pShipQ))
@@ -742,10 +742,10 @@ GetIndexFromStarShip(QUEUE* pShipQ, HLINK hStarShip)
 	return Index;
 }
 
-uqm::BYTE
+uint8_t
 NameCaptain(QUEUE* pQueue, SPECIES_ID SpeciesID)
 {
-	uqm::BYTE name_index;
+	uint8_t name_index;
 	HLINK hStarShip;
 
 	assert(GetLinkSize(pQueue) == sizeof(STARSHIP) || GetLinkSize(pQueue) == sizeof(SHIP_FRAGMENT));
@@ -759,7 +759,7 @@ NameCaptain(QUEUE* pQueue, SPECIES_ID SpeciesID)
 			 hStarShip = hNextShip)
 		{
 			SHIP_BASE* ShipPtr;
-			uqm::BYTE test_name_index = -1;
+			uint8_t test_name_index = -1;
 
 			ShipPtr = (SHIP_BASE*)LockLink(pQueue, hStarShip);
 			hNextShip = _GetSuccLink(ShipPtr);
@@ -782,12 +782,12 @@ NameCaptain(QUEUE* pQueue, SPECIES_ID SpeciesID)
 // crew_level can be set to INFINITE_FLEET for a ship which is to
 // represent an infinite number of ships.
 HSHIPFRAG
-CloneShipFragment(RACE_ID shipIndex, QUEUE* pDstQueue, uqm::COUNT crew_level)
+CloneShipFragment(RACE_ID shipIndex, QUEUE* pDstQueue, uint16_t crew_level)
 {
 	HFLEETINFO hFleet;
 	HSHIPFRAG hBuiltShip;
 	FLEET_INFO* TemplatePtr;
-	uqm::BYTE captains_name_index;
+	uint8_t captains_name_index;
 
 	assert(GetLinkSize(pDstQueue) == sizeof(SHIP_FRAGMENT));
 
@@ -840,7 +840,7 @@ CloneShipFragment(RACE_ID shipIndex, QUEUE* pDstQueue, uqm::COUNT crew_level)
 		ShipFragPtr->max_crew = TemplatePtr->max_crew;
 		ShipFragPtr->energy_level = 0;
 		ShipFragPtr->max_energy = TemplatePtr->max_energy;
-		ShipFragPtr->race_id = (uqm::BYTE)shipIndex;
+		ShipFragPtr->race_id = (uint8_t)shipIndex;
 		ShipFragPtr->index = 0;
 		UnlockShipFrag(pDstQueue, hBuiltShip);
 	}
@@ -851,7 +851,7 @@ CloneShipFragment(RACE_ID shipIndex, QUEUE* pDstQueue, uqm::COUNT crew_level)
 
 /* Set the crew and captain's name on the first fully-crewed escort
  * ship of race 'which_ship' */
-int SetEscortCrewComplement(RACE_ID which_ship, uqm::COUNT crew_level, uqm::BYTE captain)
+int SetEscortCrewComplement(RACE_ID which_ship, uint16_t crew_level, uint8_t captain)
 {
 	HFLEETINFO hFleet;
 	FLEET_INFO* TemplatePtr;
@@ -1008,7 +1008,7 @@ static void
 upgradeSwitch(int upgrade, int val)
 {
 	int var = 0;
-	uqm::BYTE LanderShields;
+	uint8_t LanderShields;
 	int ModuleCost;
 
 	if (val)
@@ -1108,7 +1108,7 @@ upgradeSwitch(int upgrade, int val)
 static void
 cheatAddRemoveDevices(void)
 {
-	uqm::BYTE i;
+	uint8_t i;
 
 	for (i = 0; i < std::size(optDeviceArray); i++)
 	{
@@ -1126,7 +1126,7 @@ cheatAddRemoveDevices(void)
 static void
 cheatAddRemoveUpgrades(void)
 {
-	uqm::BYTE i;
+	uint8_t i;
 
 	for (i = 0; i < NUM_UPGRADES; i++)
 	{
@@ -1158,7 +1158,7 @@ void loadGameCheats(void)
 		oldRU = 0;
 	}
 
-	//for (uqm::BYTE i = ARILOU_SHIP; i <= MMRNMHRM_SHIP; ++i)
+	//for (uint8_t i = ARILOU_SHIP; i <= MMRNMHRM_SHIP; ++i)
 	//{
 	//	StartSphereTracking (i);
 	//	KillRace (i);
@@ -1185,15 +1185,15 @@ void loadGameCheats(void)
 // Jitter returns a distance between 0..66.6% of the fleet's actual strength,
 // weighted towards 20% median value.  We can adjust the jitter by changing
 // the fraction at the end.
-// (uqm::COUNT) sqrt (rand_val) gives a value 0..255 which leans heavy towards 255
+// (uint16_t) sqrt (rand_val) gives a value 0..255 which leans heavy towards 255
 // so subtract from 255 to receive a weighted towards zero jitter.
-uqm::COUNT
-Jitter(uqm::COUNT str, uqm::UWORD rand_val)
+uint16_t
+Jitter(uint16_t str, uint16_t rand_val)
 {
-	return (str * (SPHERE_RADIUS_INCREMENT / 2) * (255 - (uqm::COUNT)sqrt(rand_val)) / 256) * 2 / 3;
+	return (str * (SPHERE_RADIUS_INCREMENT / 2) * (255 - (uint16_t)sqrt(rand_val)) / 256) * 2 / 3;
 }
 
-void JitDebug(FLEET_INFO* FleetPtr, uqm::UWORD rand_val_x, uqm::UWORD rand_val_y)
+void JitDebug(FLEET_INFO* FleetPtr, uint16_t rand_val_x, uint16_t rand_val_y)
 {
 	static const char* const fleet_name[] =
 		{"ERROR", "Arilou", "CHMMR", "Earthling", "Orz", "Pkunk",
@@ -1201,20 +1201,20 @@ void JitDebug(FLEET_INFO* FleetPtr, uqm::UWORD rand_val_x, uqm::UWORD rand_val_y
 		 "Yehat", "Melnorme", "Druuge", "Ilwrath", "Mycon", "Slylandro",
 		 "Umgah", "Ur Quan", "ZoqFotPik", "Syreen", "Kohr Ah",
 		 "Androsynth", "Chenjesu", "Mmrnmhrm"};
-	uqm::COUNT str = (FleetPtr->actual_strength > 0 ?
-						  FleetPtr->actual_strength :
-						  WarEraStrength(FleetPtr->SpeciesID));
+	uint16_t str = (FleetPtr->actual_strength > 0 ?
+						FleetPtr->actual_strength :
+						WarEraStrength(FleetPtr->SpeciesID));
 	fmt::print(stderr, "{} Fleet {}: Actual Str {}; WarEra Str {}; ",
 			   fleet_name[FleetPtr->SpeciesID > 25 ? 0 : FleetPtr->SpeciesID],
 			   (int)FleetPtr->SpeciesID,
 			   FleetPtr->actual_strength * SPHERE_RADIUS_INCREMENT / 2,
 			   WarEraStrength(FleetPtr->SpeciesID) * SPHERE_RADIUS_INCREMENT / 2);
 	fmt::print(stderr, "Rand X {} ({}); Rand Y {} ({})\n",
-			   rand_val_x, (255 - (uqm::COUNT)sqrt(rand_val_x)),
-			   rand_val_y, (255 - (uqm::COUNT)sqrt(rand_val_y)));
+			   rand_val_x, (255 - (uint16_t)sqrt(rand_val_x)),
+			   rand_val_y, (255 - (uint16_t)sqrt(rand_val_y)));
 	fmt::print(stderr, "		Jit X {}% Jit Y {}%; (Jit X {} Jit Y {})  ",
-			   (255 - (uqm::COUNT)sqrt(rand_val_x)) * 67 / 256,
-			   (255 - (uqm::COUNT)sqrt(rand_val_y)) * 67 / 256,
+			   (255 - (uint16_t)sqrt(rand_val_x)) * 67 / 256,
+			   (255 - (uint16_t)sqrt(rand_val_y)) * 67 / 256,
 			   Jitter(str, rand_val_x),
 			   Jitter(str, rand_val_y));
 	fmt::print(stderr, "{:05.1} : {:05.1}  units.\n",
@@ -1225,7 +1225,7 @@ void JitDebug(FLEET_INFO* FleetPtr, uqm::UWORD rand_val_x, uqm::UWORD rand_val_y
 // Provide the default fleet movement or war era position for the
 // given fleet and plot ID being visited
 GFXPOINT
-DefaultFleetLocation(SPECIES_ID SpeciesID, uqm::COUNT visit)
+DefaultFleetLocation(SPECIES_ID SpeciesID, uint16_t visit)
 {
 #ifdef DEBUG_STARSEED
 	fmt::print(stderr, "Seeding hard coded location for fleet {} (plot {}).\n",
@@ -1368,7 +1368,7 @@ DefaultFleetLocation(SPECIES_ID SpeciesID, uqm::COUNT visit)
 }
 
 // Provide the war era strength for the given species ID (from fleet).
-uqm::COUNT
+uint16_t
 WarEraStrength(SPECIES_ID SpeciesID)
 {
 	switch (SpeciesID)
@@ -1408,7 +1408,7 @@ WarEraStrength(SPECIES_ID SpeciesID)
 }
 
 // Provide the homeworld plot ID for the given species ID (from fleet).
-uqm::COUNT
+uint16_t
 Homeworld(SPECIES_ID SpeciesID)
 {
 	switch (SpeciesID)
@@ -1527,15 +1527,15 @@ void SeedFleet(FLEET_INFO* FleetPtr, PLOT_LOCATION* plotmap)
 // For PrimeSeed games this will need to look up the hard coded fleet movements
 // or resets which were part of gameev.c, or the war era map.
 GFXPOINT
-SeedFleetLocation(FLEET_INFO* FleetPtr, PLOT_LOCATION* plotmap, uqm::COUNT visit)
+SeedFleetLocation(FLEET_INFO* FleetPtr, PLOT_LOCATION* plotmap, uint16_t visit)
 {
-	uqm::UWORD rand_val_x, rand_val_y;
-	uqm::COUNT home;			// Plot ID of the homeworld for the fleet
-	uqm::COUNT strength;		// Strength of the fleet
+	uint16_t rand_val_x, rand_val_y;
+	uint16_t home;				// Plot ID of the homeworld for the fleet
+	uint16_t strength;			// Strength of the fleet
 	GFXPOINT warpoint;			// location being visited, or offset for samatra
 	GFXPOINT location = {0, 0}; // The results of the seeding
 	bool myRNG = false;			// If you create RNG, clean up RNG
-	uqm::CHAR_T buf[256] = "";	// For debug string
+	char buf[256] = "";			// For debug string
 
 	if (!FleetPtr || !plotmap)
 	{
@@ -1589,8 +1589,8 @@ SeedFleetLocation(FLEET_INFO* FleetPtr, PLOT_LOCATION* plotmap, uqm::COUNT visit
 	{
 		RandomContext_SeedRandom(StarGenRNG,
 								 GetRandomSeedForStar(plotmap[visit].star));
-		rand_val_x += RandomContext_Random(StarGenRNG) % sizeof(uqm::UWORD);
-		rand_val_y += RandomContext_Random(StarGenRNG) % sizeof(uqm::UWORD);
+		rand_val_x += RandomContext_Random(StarGenRNG) % sizeof(uint16_t);
+		rand_val_y += RandomContext_Random(StarGenRNG) % sizeof(uint16_t);
 		// If there's a conflict, this will assist in WARPATH
 		warpoint = plotmap[visit].star_pt;
 	}
@@ -1601,7 +1601,7 @@ SeedFleetLocation(FLEET_INFO* FleetPtr, PLOT_LOCATION* plotmap, uqm::COUNT visit
 		// First, imagine a coord near SAMATRA that Utwig/Supox/Thraddash can
 		// sort of share (it will bias in the general direction of home).
 		RandomContext_SeedRandom(StarGenRNG, GetRandomSeedForStar(plotmap[visit].star));
-		uqm::UWORD rand_val_s = RandomContext_Random(StarGenRNG);
+		uint16_t rand_val_s = RandomContext_Random(StarGenRNG);
 		warpoint = GFXPOINT {
 			plotmap[visit].star_pt.x + lowByte(rand_val_s) * 2 * AWAY_X(visit),
 			plotmap[visit].star_pt.y + highByte(rand_val_s) * 2 * AWAY_Y(visit)};

@@ -33,7 +33,7 @@ static void CheckFinishedChannels(void);
 
 static const SoundPosition notPositional = {false, 0, 0};
 
-void PlayChannel(uqm::COUNT channel, SOUND snd, SoundPosition pos,
+void PlayChannel(uint16_t channel, SOUND snd, SoundPosition pos,
 				 void* positional_object, unsigned char priority)
 {
 	SOUNDPTR snd_ptr = GetSoundAddress(snd);
@@ -62,7 +62,7 @@ void PlayChannel(uqm::COUNT channel, SOUND snd, SoundPosition pos,
 	(void)priority;
 }
 
-void StopChannel(uqm::COUNT channel, uqm::BYTE Priority)
+void StopChannel(uint16_t channel, uint8_t Priority)
 {
 	StopSource(channel);
 	(void)Priority; // ignored
@@ -88,7 +88,7 @@ CheckFinishedChannels(void)
 	}
 }
 
-bool ChannelPlaying(uqm::COUNT WhichChannel)
+bool ChannelPlaying(uint16_t WhichChannel)
 {
 	audio_IntVal state;
 
@@ -101,17 +101,17 @@ bool ChannelPlaying(uqm::COUNT WhichChannel)
 	return false;
 }
 
-void* GetPositionalObject(uqm::COUNT channel)
+void* GetPositionalObject(uint16_t channel)
 {
 	return soundSource[channel].positional_object;
 }
 
-void SetPositionalObject(uqm::COUNT channel, void* positional_object)
+void SetPositionalObject(uint16_t channel, void* positional_object)
 {
 	soundSource[channel].positional_object = positional_object;
 }
 
-void UpdateSoundPosition(uqm::COUNT channel, SoundPosition pos)
+void UpdateSoundPosition(uint16_t channel, SoundPosition pos)
 {
 	const float ATTENUATION = 160.0f;
 	const float MIN_DISTANCE = 0.5f;
@@ -145,7 +145,7 @@ void UpdateSoundPosition(uqm::COUNT channel, SoundPosition pos)
 	}
 }
 
-void SetChannelVolume(uqm::COUNT channel, uqm::COUNT volume, uqm::BYTE priority)
+void SetChannelVolume(uint16_t channel, uint16_t volume, uint8_t priority)
 // I wonder what this whole priority business is...
 // I can probably ignore it.
 {
@@ -154,7 +154,7 @@ void SetChannelVolume(uqm::COUNT channel, uqm::COUNT volume, uqm::BYTE priority)
 	(void)priority; // ignored
 }
 
-void* _GetSoundBankData(uio_Stream* fp, uqm::DWORD length)
+void* _GetSoundBankData(uio_Stream* fp, uint32_t length)
 {
 	int snd_ct, n;
 	char CurrentLine[1024] {};

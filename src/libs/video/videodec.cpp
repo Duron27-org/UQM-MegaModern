@@ -42,7 +42,7 @@ static TFB_RegVideoDecoder vd_decoders[MAX_REG_DECODERS + 1] =
 		{false, false, nullptr, nullptr		   }, // null term
 };
 
-static void vd_computeMasks(uint32_t mask, uqm::DWORD* shift, uqm::DWORD* loss);
+static void vd_computeMasks(uint32_t mask, uint32_t* shift, uint32_t* loss);
 
 const char*
 VideoDecoder_GetName(TFB_VideoDecoder* decoder)
@@ -366,7 +366,7 @@ void VideoDecoder_Free(TFB_VideoDecoder* decoder)
 
 // BEGIN: adapted from SDL
 static void
-vd_computeMasks(uint32_t mask, uqm::DWORD* shift, uqm::DWORD* loss)
+vd_computeMasks(uint32_t mask, uint32_t* shift, uint32_t* loss)
 {
 	*shift = 0;
 	*loss = 8;

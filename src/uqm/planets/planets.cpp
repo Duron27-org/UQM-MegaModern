@@ -59,9 +59,9 @@ GFXCONTEXT PlanetContext;
 
 bool useDosSpheres = false;
 bool use3DOSpheres = false;
-uqm::BYTE OrbitNum = 0;
+uint8_t OrbitNum = 0;
 
-void DestroyOrbitStruct(PLANET_ORBIT* Orbit, uqm::SIZE height)
+void DestroyOrbitStruct(PLANET_ORBIT* Orbit, int16_t height)
 {
 	DestroyDrawable(ReleaseDrawable(Orbit->TopoZoomFrame));
 	Orbit->TopoZoomFrame = 0;
@@ -91,7 +91,7 @@ void DestroyOrbitStruct(PLANET_ORBIT* Orbit, uqm::SIZE height)
 
 	if (Orbit->ScanColors)
 	{
-		uqm::COUNT i;
+		uint16_t i;
 		for (i = 0; i < NUM_SCAN_TYPES; i++)
 		{
 			HFree(Orbit->ScanColors[i]);
@@ -115,7 +115,7 @@ void DestroyOrbitStruct(PLANET_ORBIT* Orbit, uqm::SIZE height)
 
 	if (Orbit->light_diff)
 	{
-		uqm::COUNT j;
+		uint16_t j;
 		for (j = 0; j < height; j++)
 		{
 			HFree(Orbit->light_diff[j]);
@@ -127,7 +127,7 @@ void DestroyOrbitStruct(PLANET_ORBIT* Orbit, uqm::SIZE height)
 
 	if (Orbit->map_rotate)
 	{
-		uqm::COUNT k;
+		uint16_t k;
 		for (k = 0; k < height; k++)
 		{
 			HFree(Orbit->map_rotate[k]);
@@ -328,8 +328,8 @@ DrawEnterOrbitText(GFXRECT rect)
 	TEXT text;
 	FONT OldFont;
 	FRAME OldFontEffect;
-	uqm::SIZE leading;
-	uqm::CHAR_T buf[256];
+	int16_t leading;
+	char buf[256];
 	COORD og_baseline_x;
 
 	OldFont = SetContextFont(MicroFont);
@@ -354,9 +354,9 @@ DrawEnterOrbitText(GFXRECT rect)
 		uqm::tokenize(uqstl::string_view {buf}, tokens, '\n', false);
 		for (const auto& tok : tokens)
 		{
-			text.pStr = AlignText((const uqm::CHAR_T*)tok.c_str(),
+			text.pStr = AlignText((const char*)tok.c_str(),
 								  &text.baseline.x);
-			text.CharCount = (uqm::COUNT)~0;
+			text.CharCount = (uint16_t)~0;
 
 			font_DrawText(&text);
 
@@ -574,7 +574,7 @@ void LoadPlanet(FRAME SurfDefFrame)
 
 void FreePlanet(void)
 {
-	uqm::COUNT i;
+	uint16_t i;
 	PLANET_ORBIT* Orbit = &pSolarSysState->Orbit;
 
 	UninitSphereRotation();
@@ -599,7 +599,7 @@ void FreePlanet(void)
 
 	if (optScanStyle == uqm::EmulationMode::PC)
 	{
-		uqm::COUNT k;
+		uint16_t k;
 
 		for (k = 0; k < NUM_SCAN_TYPES; k++)
 		{
@@ -651,7 +651,7 @@ DoPlanetOrbit(MENU_STATE* pMS)
 	bool handled;
 
 	if ((GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD))
-		|| GLOBAL_SIS(CrewEnlisted) == (uqm::COUNT)~0)
+		|| GLOBAL_SIS(CrewEnlisted) == (uint16_t)~0)
 	{
 		return false;
 	}

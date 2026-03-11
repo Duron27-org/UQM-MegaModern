@@ -27,7 +27,7 @@ extern "C" {
 
 #include "math/random.h"
 
-extern uqm::COUNT square_root(uqm::DWORD value);
+extern uint16_t square_root(uint32_t value);
 inline uint32_t crc32b(const char* str)
 { // Source: https://stackoverflow.com/a/21001712
 	unsigned int byte, crc, mask;

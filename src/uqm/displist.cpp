@@ -30,7 +30,7 @@
  * and poses a hard limit on the number of elements in the list.
  */
 
-bool InitQueue(QUEUE* pq, uqm::COUNT num_elements, OBJ_SIZE size)
+bool InitQueue(QUEUE* pq, uint16_t num_elements, OBJ_SIZE size)
 {
 	SetHeadLink(pq, NULL_HANDLE);
 	SetTailLink(pq, NULL_HANDLE);
@@ -41,7 +41,7 @@ bool InitQueue(QUEUE* pq, uqm::COUNT num_elements, OBJ_SIZE size)
 	SetFreeList(pq, NULL_HANDLE);
 #if 0	
 	log_add (log_Debug, "InitQueue(): num_elements = {} ({})",
-			num_elements, (uqm::BYTE)num_elements);
+			num_elements, (uint8_t)num_elements);
 #endif
 	if (AllocQueueTab(pq, num_elements) != nullptr)
 	{
@@ -89,7 +89,7 @@ void ReinitQueue(QUEUE* pq)
 	SetTailLink(pq, NULL_HANDLE);
 #ifdef QUEUE_TABLE
 	{
-		uqm::COUNT num_elements;
+		uint16_t num_elements;
 
 		SetFreeList(pq, NULL_HANDLE);
 
@@ -240,10 +240,10 @@ void RemoveQueue(QUEUE* pq, HLINK hLink)
 	UnlockLink(pq, hLink);
 }
 
-uqm::COUNT
+uint16_t
 CountLinks(QUEUE* pq)
 {
-	uqm::COUNT LinkCount;
+	uint16_t LinkCount;
 	HLINK hLink, hNextLink;
 
 	LinkCount = 0;

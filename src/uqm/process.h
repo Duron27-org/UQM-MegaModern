@@ -28,7 +28,7 @@ extern "C" {
 extern void RedrawQueue(bool clear);
 extern void InitDisplayList(void);
 extern void SetUpElement(ELEMENT* ElementPtr);
-extern void InsertPrim(PRIM_LINKS* pLinks, uqm::COUNT primIndex, uqm::COUNT iPI);
+extern void InsertPrim(PRIM_LINKS* pLinks, uint16_t primIndex, uint16_t iPI);
 
 #if 0 //defined(__cplusplus)
 }

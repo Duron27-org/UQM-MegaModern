@@ -55,7 +55,7 @@ GFXCONTEXT ScreenContext;
 GFXCONTEXT SpaceContext;
 GFXCONTEXT StatusContext;
 GFXCONTEXT OffScreenContext;
-uqm::SIZE screen_width, screen_height;
+int16_t screen_width, screen_height;
 FRAME Screen;
 FONT StarConFont;
 FONT MicroFont;
@@ -85,7 +85,7 @@ QUEUE disp_q;
 bool solTexturesPresent;
 bool SyreenVoiceFix;
 bool EndlessSCLoaded;
-uqm::BYTE Rando;
+uint8_t Rando;
 bool HDPackPresent;
 bool VolasPackPresent;
 bool DeathBySurrender = false;
@@ -310,7 +310,7 @@ bool InitContexts(void)
 static bool
 InitKernel(void)
 {
-	uqm::COUNT counter;
+	uint16_t counter;
 
 	for (counter = 0; counter < NUM_PLAYERS; ++counter)
 	{
@@ -462,7 +462,7 @@ bool InitGameKernel(void)
 	return true;
 }
 
-bool SetPlayerInput(uqm::COUNT playerI)
+bool SetPlayerInput(uint16_t playerI)
 {
 	assert(PlayerInput[playerI] == nullptr);
 
@@ -503,7 +503,7 @@ bool SetPlayerInput(uqm::COUNT playerI)
 
 bool SetPlayerInputAll(void)
 {
-	uqm::COUNT playerI;
+	uint16_t playerI;
 	for (playerI = 0; playerI < NUM_PLAYERS; playerI++)
 	{
 		if (!SetPlayerInput(playerI))
@@ -514,7 +514,7 @@ bool SetPlayerInputAll(void)
 	return true;
 }
 
-void ClearPlayerInput(uqm::COUNT playerI)
+void ClearPlayerInput(uint16_t playerI)
 {
 	if (PlayerInput[playerI] == nullptr)
 	{
@@ -529,7 +529,7 @@ void ClearPlayerInput(uqm::COUNT playerI)
 
 void ClearPlayerInputAll(void)
 {
-	uqm::COUNT playerI;
+	uint16_t playerI;
 	for (playerI = 0; playerI < NUM_PLAYERS; playerI++)
 	{
 		ClearPlayerInput(playerI);

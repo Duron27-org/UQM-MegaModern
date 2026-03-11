@@ -36,10 +36,10 @@ static bool GenerateOrz_generateMoons(SOLARSYS_STATE* solarSys,
 									  PLANET_DESC* planet);
 static bool GenerateOrz_generateOrbital(SOLARSYS_STATE* solarSys,
 										PLANET_DESC* world);
-static uqm::COUNT GenerateOrz_generateEnergy(const SOLARSYS_STATE*,
-											 const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO*);
+static uint16_t GenerateOrz_generateEnergy(const SOLARSYS_STATE*,
+										   const PLANET_DESC* world, uint16_t whichNode, NODE_INFO*);
 static bool GenerateOrz_pickupEnergy(SOLARSYS_STATE* solarSys,
-									 PLANET_DESC* world, uqm::COUNT whichNode);
+									 PLANET_DESC* world, uint16_t whichNode);
 
 
 const GenerateFunctions generateOrzFunctions = {
@@ -71,7 +71,7 @@ GenerateOrz_generatePlanets(SOLARSYS_STATE* solarSys)
 
 		if (PrimeSeed)
 		{
-			uqm::COUNT angle;
+			uint16_t angle;
 
 			pSunDesc->PlanetByte = 0;
 			pPlanet = &solarSys->PlanetDesc[pSunDesc->PlanetByte];
@@ -102,14 +102,14 @@ GenerateOrz_generatePlanets(SOLARSYS_STATE* solarSys)
 		{
 			if (!StarSeed)
 			{
-				uqm::DWORD RandVal = RandomContext_Random(SysGenRNG);
-				uqm::BYTE PByte = pSunDesc->PlanetByte + 1;
+				uint32_t RandVal = RandomContext_Random(SysGenRNG);
+				uint8_t PByte = pSunDesc->PlanetByte + 1;
 				pSunDesc->NumPlanets =
 					(RandVal % (MAX_GEN_PLANETS - PByte) + PByte);
 			}
 			else
 			{
-				pSunDesc->NumPlanets = (uqm::BYTE)~0;
+				pSunDesc->NumPlanets = (uint8_t)~0;
 			}
 
 			FillOrbits(solarSys, pSunDesc->NumPlanets,
@@ -152,7 +152,7 @@ GenerateOrz_generateMoons(SOLARSYS_STATE* solarSys, PLANET_DESC* planet)
 		&& matchWorld(solarSys, planet, MATCH_PBYTE, MATCH_PLANET)
 		&& EXTENDED)
 	{
-		uqm::BYTE MoonByte = solarSys->SunDesc[0].MoonByte;
+		uint8_t MoonByte = solarSys->SunDesc[0].MoonByte;
 		PLANET_DESC* pMoonDesc = &solarSys->MoonDesc[MoonByte];
 
 		pMoonDesc->data_index = GenerateCrystalWorld();
@@ -170,7 +170,7 @@ GenerateOrz_generateOrbital(SOLARSYS_STATE* solarSys, PLANET_DESC* world)
 			&& matchWorld(solarSys, world, MATCH_PBYTE, MATCH_MBYTE)
 			&& !GET_GAME_STATE(TAALO_PROTECTOR)))
 	{
-		uqm::COUNT i;
+		uint16_t i;
 
 		if ((CurStarDescPtr->Index == ORZ_DEFINED
 			 || !GET_GAME_STATE(TAALO_UNPROTECTED))
@@ -266,9 +266,9 @@ GenerateOrz_generateOrbital(SOLARSYS_STATE* solarSys, PLANET_DESC* world)
 	return true;
 }
 
-static uqm::COUNT
+static uint16_t
 GenerateOrz_generateEnergy(const SOLARSYS_STATE* solarSys,
-						   const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO* info)
+						   const PLANET_DESC* world, uint16_t whichNode, NODE_INFO* info)
 {
 	if (CurStarDescPtr->Index == TAALO_PROTECTOR_DEFINED
 		&& matchWorld(solarSys, world, MATCH_PBYTE, MATCH_MBYTE))
@@ -295,7 +295,7 @@ GenerateOrz_generateEnergy(const SOLARSYS_STATE* solarSys,
 
 static bool
 GenerateOrz_pickupEnergy(SOLARSYS_STATE* solarSys, PLANET_DESC* world,
-						 uqm::COUNT whichNode)
+						 uint16_t whichNode)
 {
 	if (CurStarDescPtr->Index == TAALO_PROTECTOR_DEFINED
 		&& matchWorld(solarSys, world, MATCH_PBYTE, MATCH_MBYTE))

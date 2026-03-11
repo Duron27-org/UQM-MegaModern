@@ -88,8 +88,8 @@ enum
 };
 
 
-#define GAME_STRING(i) ((uqm::CHAR_T*)GetStringAddress(SetAbsStringTableIndex(GameStrings, (i))))
-#define GET_STRING(s, i) ((uqm::CHAR_T*)GetStringAddress(SetAbsStringTableIndex((s), (i))))
+#define GAME_STRING(i) ((char*)GetStringAddress(SetAbsStringTableIndex(GameStrings, (i))))
+#define GET_STRING(s, i) ((char*)GetStringAddress(SetAbsStringTableIndex((s), (i))))
 
 #define DOS_STARBASE_STRING_BASE (STARBASE_STRING_BASE + 12)
 #define TDO_STARBASE_STRING_BASE (DOS_STARBASE_STRING_BASE + NUM_PURCHASE_MODULES)

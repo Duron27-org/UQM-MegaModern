@@ -158,7 +158,7 @@ static LOCDATA umgah_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				32,		   /* StartIndex */
@@ -168,7 +168,7 @@ static LOCDATA umgah_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				35,		   /* StartIndex */
@@ -178,7 +178,7 @@ static LOCDATA umgah_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				40,		   /* StartIndex */
@@ -198,7 +198,7 @@ static LOCDATA umgah_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				(1 << 15),		/* BlockMask */
+				(1 << 15),				/* BlockMask */
 			},
 								{
 				48,			   /* StartIndex */
@@ -208,7 +208,7 @@ static LOCDATA umgah_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				(1 << 14),		/* BlockMask */
+				(1 << 14),				/* BlockMask */
 			},
 								},
 		{
@@ -294,7 +294,7 @@ CombatIsInevitable(RESPONSE_REF R)
 	{
 		NPCPhrase(FUNNY_IDEA);
 
-		AlienTalkSegue((uqm::COUNT)~0);
+		AlienTalkSegue((uint16_t)~0);
 		AddEscortShips(UMGAH_SHIP, difficultyCase(4, 4, 2));
 		SET_GAME_STATE(UMGAH_HOSTILE, 1);
 	}
@@ -349,7 +349,7 @@ Zombies(RESPONSE_REF R)
 	}
 	else
 	{
-		uqm::BYTE i, LastStack;
+		uint8_t i, LastStack;
 		RESPONSE_REF pStr[4];
 
 		LastStack = 0;
@@ -600,7 +600,7 @@ UmgahReward(RESPONSE_REF R)
 static void
 Intro(void)
 {
-	uqm::BYTE NumVisits;
+	uint8_t NumVisits;
 
 
 	if (lowByte(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE)
@@ -778,7 +778,7 @@ Intro(void)
 	}
 }
 
-static uqm::COUNT
+static uint16_t
 uninit_umgah(void)
 {
 	luaUqm_comm_uninit();

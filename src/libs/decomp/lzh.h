@@ -41,24 +41,24 @@ static inline constexpr size_t HUF_MaxFrequency {0x8000};			 /* update when cumu
 
 struct _LZHCODE_DESC
 {
-	uqm::COUNT buf_index, restart_index, bytes_left;
-	uqm::BYTE text_buf[LZSS_BufferSize + LZSS_LookAheadBufferSize - 1];
+	uint16_t buf_index, restart_index, bytes_left;
+	uint8_t text_buf[LZSS_BufferSize + LZSS_LookAheadBufferSize - 1];
 	/* reconstruct freq tree */
-	uqm::COUNT freq[HUF_TableSize + 1]; /* cumulative freq table */
-										/*
+	uint16_t freq[HUF_TableSize + 1]; /* cumulative freq table */
+									  /*
 		 * pointing parent nodes.
 		 * area [HUF_TableSize..(HUF_TableSize + HUF_NumChars - 1)] are pointers for leaves
 		 */
-	uqm::COUNT prnt[HUF_TableSize + HUF_NumChars];
+	uint16_t prnt[HUF_TableSize + HUF_NumChars];
 	/* pointing children nodes (son[], son[] + 1)*/
-	uqm::COUNT son[HUF_TableSize];
-	uqm::UWORD workbuf;
-	uqm::BYTE workbuflen;
+	uint16_t son[HUF_TableSize];
+	uint16_t workbuf;
+	uint8_t workbuflen;
 
 	STREAM_TYPE StreamType;
 
 	void* Stream;
-	uqm::DWORD StreamIndex, StreamLength;
+	uint32_t StreamIndex, StreamLength;
 
 	STREAM_MODE StreamMode;
 	PVOIDFUNC CleanupFunc;
@@ -72,19 +72,19 @@ typedef LZHCODE_DESC* PLZHCODE_DESC;
 					  (int)*_Stream++)
 #define OutChar(c) (_StreamType == FILE_STREAM ?                    \
 						PutResFileChar((c), (uio_Stream*)_Stream) : \
-						(*_Stream++ = (uqm::BYTE)(c)))
+						(*_Stream++ = (uint8_t)(c)))
 
 
 #define AllocCodeDesc() HCalloc(sizeof(LZHCODE_DESC))
 #define FreeCodeDesc HFree
 
-extern void _update(uqm::COUNT c);
+extern void _update(uint16_t c);
 extern void StartHuff(void);
 
 extern PLZHCODE_DESC _lpCurCodeDesc;
 extern STREAM_TYPE _StreamType;
-extern uqm::BYTE* _Stream;
-extern uqm::UWORD _workbuf;
-extern uqm::BYTE _workbuflen;
+extern uint8_t* _Stream;
+extern uint16_t _workbuf;
+extern uint8_t _workbuflen;
 
 #endif /* LIBS_DECOMP_LZH_H_ */

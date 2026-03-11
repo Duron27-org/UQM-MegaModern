@@ -23,7 +23,7 @@
 #include <sys/types.h>
 // For size_t
 #include "compiler.h"
-// for uqm::CHAR_T
+// for char
 
 #if 0 //defined(__cplusplus)
 extern "C" {
@@ -136,8 +136,8 @@ int UniChar_isPrint(UniChar ch);
 UniChar UniChar_toUpper(UniChar ch);
 UniChar UniChar_toLower(UniChar ch);
 
-uqm::CHAR_T* AlignText(const uqm::CHAR_T* str, int16_t* loc_x);
-uqm::CHAR_T* AddPadd(const uqm::CHAR_T* str, int16_t* padding);
+char* AlignText(const char* str, int16_t* loc_x);
+char* AddPadd(const char* str, int16_t* padding);
 
 #undef UNICODE_CHAR
 

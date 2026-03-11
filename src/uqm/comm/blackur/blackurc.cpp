@@ -55,7 +55,7 @@ static LOCDATA blackurq_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				13,			   /* StartIndex */
@@ -65,7 +65,7 @@ static LOCDATA blackurq_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				// New eye animation
@@ -76,7 +76,7 @@ static LOCDATA blackurq_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				20,		   /* StartIndex */
@@ -86,7 +86,7 @@ static LOCDATA blackurq_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				23,		   /* StartIndex */
@@ -96,7 +96,7 @@ static LOCDATA blackurq_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				26,		   /* StartIndex */
@@ -106,7 +106,7 @@ static LOCDATA blackurq_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				29,			 /* StartIndex */
@@ -127,7 +127,7 @@ static LOCDATA blackurq_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				// "Right" extremeity
@@ -138,7 +138,7 @@ static LOCDATA blackurq_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								},
 		{
@@ -175,7 +175,7 @@ static LOCDATA blackurq_desc =
 static void
 CombatIsInevitable(RESPONSE_REF R)
 {
-	uqm::BYTE NumVisits;
+	uint8_t NumVisits;
 
 	setSegue(Segue_hostile);
 
@@ -498,7 +498,7 @@ DieHuman(RESPONSE_REF R)
 static void
 Intro(void)
 {
-	uqm::DWORD GrpOffs;
+	uint32_t GrpOffs;
 
 	if (lowByte(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE)
 	{
@@ -535,7 +535,7 @@ Intro(void)
 	}
 	else
 	{
-		uqm::BYTE NumVisits;
+		uint8_t NumVisits;
 
 		NumVisits = GET_GAME_STATE(KOHR_AH_VISITS);
 		if (GET_GAME_STATE(KOHR_AH_FRENZY))
@@ -584,7 +584,7 @@ Intro(void)
 	}
 }
 
-static uqm::COUNT
+static uint16_t
 uninit_blackurq(void)
 {
 	luaUqm_comm_uninit();

@@ -28,7 +28,7 @@ BoxIntersect(GFXRECT* pr1, GFXRECT* pr2, GFXRECT* pinter)
 {
 	INTERSECT_CODE intersect_code;
 	COORD x1;
-	uqm::SIZE w1, w2, delta;
+	int16_t w1, w2, delta;
 
 	intersect_code = INTERSECT_NOCLIP;
 
@@ -60,7 +60,7 @@ BoxIntersect(GFXRECT* pr1, GFXRECT* pr2, GFXRECT* pinter)
 	{
 #define h2 w2
 		COORD y1;
-		uqm::SIZE h1;
+		int16_t h1;
 
 		y1 = pr1->corner.y - pr2->corner.y;
 
@@ -121,7 +121,7 @@ void BoxUnion(GFXRECT* pr1, GFXRECT* pr2, GFXRECT* punion)
 
 
 #if NEVER // FIXME - I think this is broken, but keeping it around for reference
-	// FIXME - just in case.
+		  // FIXME - just in case.
 
 #if 1 /* alter based on 0 widths */
 
@@ -141,7 +141,7 @@ void BoxUnion(GFXRECT* pr1, GFXRECT* pr2, GFXRECT* punion)
 			  (pr2->corner.y + pr2->extent.height))
 	   - punion->corner.y;
 #else
-	uqm::SIZE delta;
+	int16_t delta;
 	COORD x1, y1, w1, h1;
 
 	x1 = pr1->corner.x;

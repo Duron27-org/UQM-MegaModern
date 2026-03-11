@@ -30,10 +30,10 @@
 static bool GenerateWreck_generatePlanets(SOLARSYS_STATE* solarSys);
 static bool GenerateWreck_generateOrbital(SOLARSYS_STATE* solarSys,
 										  PLANET_DESC* world);
-static uqm::COUNT GenerateWreck_generateEnergy(const SOLARSYS_STATE*,
-											   const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO*);
+static uint16_t GenerateWreck_generateEnergy(const SOLARSYS_STATE*,
+											 const PLANET_DESC* world, uint16_t whichNode, NODE_INFO*);
 static bool GenerateWreck_pickupEnergy(SOLARSYS_STATE* solarSys,
-									   PLANET_DESC* world, uqm::COUNT whichNode);
+									   PLANET_DESC* world, uint16_t whichNode);
 
 
 const GenerateFunctions generateWreckFunctions = {
@@ -64,8 +64,8 @@ GenerateWreck_generatePlanets(SOLARSYS_STATE* solarSys)
 	{
 		if (!StarSeed)
 		{
-			uqm::DWORD RandVal = RandomContext_Random(SysGenRNG);
-			uqm::BYTE PByte = pSunDesc->PlanetByte + 1;
+			uint32_t RandVal = RandomContext_Random(SysGenRNG);
+			uint8_t PByte = pSunDesc->PlanetByte + 1;
 			pSunDesc->NumPlanets =
 				(RandVal % (MAX_GEN_PLANETS - PByte) + PByte);
 
@@ -103,7 +103,7 @@ GenerateWreck_generateOrbital(SOLARSYS_STATE* solarSys,
 	{
 		if (isDifficulty(uqm::Difficulty::Hard) && !(GET_GAME_STATE(HM_ENCOUNTERS) & 1 << PROBE_ENCOUNTER))
 		{
-			uqm::COUNT sum, i;
+			uint16_t sum, i;
 
 			PutGroupInfo(GROUPS_RANDOM, GROUP_SAVE_IP);
 			ReinitQueue(&GLOBAL(ip_group_q));
@@ -147,7 +147,7 @@ GenerateWreck_generateOrbital(SOLARSYS_STATE* solarSys,
 				}
 
 				{
-					uqm::UWORD state;
+					uint16_t state;
 
 					state = GET_GAME_STATE(HM_ENCOUNTERS);
 
@@ -176,9 +176,9 @@ GenerateWreck_generateOrbital(SOLARSYS_STATE* solarSys,
 	return true;
 }
 
-static uqm::COUNT
+static uint16_t
 GenerateWreck_generateEnergy(const SOLARSYS_STATE* solarSys,
-							 const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO* info)
+							 const PLANET_DESC* world, uint16_t whichNode, NODE_INFO* info)
 {
 	if (matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{
@@ -191,7 +191,7 @@ GenerateWreck_generateEnergy(const SOLARSYS_STATE* solarSys,
 
 static bool
 GenerateWreck_pickupEnergy(SOLARSYS_STATE* solarSys, PLANET_DESC* world,
-						   uqm::COUNT whichNode)
+						   uint16_t whichNode)
 {
 	if (matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{

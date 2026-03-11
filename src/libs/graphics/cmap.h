@@ -68,8 +68,8 @@ extern void TFB_ReturnColorMap(TFB_ColorMap* map);
 
 extern bool XFormColorMap_step(void);
 extern void SetColorMapColors(Color* colors, COLORMAPPTR ColorMapPtr,
-							  uqm::COUNT from, uqm::COUNT to);
-extern Color GetColorMapColor(uqm::COUNT ColorMapIndex, uqm::COUNT ColorIndex);
+							  uint16_t from, uint16_t to);
+extern Color GetColorMapColor(uint16_t ColorMapIndex, uint16_t ColorIndex);
 
 // Native
 NativePalette* AllocNativePalette(void);

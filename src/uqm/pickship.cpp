@@ -57,7 +57,7 @@ void DestroyPickFrame(void)
 	PickFrame = 0;
 }
 
-void RepairPickFrame(GFXRECT* pRect, uqm::COUNT frame)
+void RepairPickFrame(GFXRECT* pRect, uint16_t frame)
 {
 	GFXRECT OldRect;
 	STAMP s;
@@ -134,8 +134,8 @@ DoPickBattleShip(MENU_STATE* pMS)
 		if (new_row != pMS->first_item.y
 			|| new_col != pMS->first_item.x)
 		{
-			uqm::COUNT crew_level, max_crew;
-			uqm::COUNT ship_index;
+			uint16_t crew_level, max_crew;
+			uint16_t ship_index;
 			HSTARSHIP hBattleShip, hNextShip;
 			STARSHIP* StarShipPtr;
 
@@ -255,7 +255,7 @@ ChangeSelection:
 				if (StarShipPtr->captains_name_index == 0)
 				{
 					t.pStr = GLOBAL_SIS(CommanderName);
-					t.CharCount = (uqm::COUNT)~0;
+					t.CharCount = (uint16_t)~0;
 					crew_level = GLOBAL_SIS(CrewEnlisted);
 					max_crew = GetCrewPodCapacity();
 				}
@@ -266,7 +266,7 @@ ChangeSelection:
 					locString = SetAbsStringTableIndex(
 						StarShipPtr->race_strings,
 						StarShipPtr->captains_name_index);
-					t.pStr = (uqm::CHAR_T*)GetStringAddress(locString);
+					t.pStr = (char*)GetStringAddress(locString);
 					t.CharCount = GetStringLength(locString);
 					crew_level = StarShipPtr->crew_level;
 					max_crew = StarShipPtr->max_crew;
@@ -306,7 +306,7 @@ ChangeSelection:
 
 				t.baseline.x = r.corner.x + (r.extent.width >> 1);
 				t.pStr = buf;
-				t.CharCount = (uqm::COUNT)~0;
+				t.CharCount = (uint16_t)~0;
 				if (crew_level >= max_crew)
 				{
 					fmt::format_to_n(buf, sizeof(buf) - 1, "{}", crew_level);
@@ -394,7 +394,7 @@ GetArmadaStarShip(void)
 
 // Get the next ship to use.
 HSTARSHIP
-GetEncounterStarShip(STARSHIP* LastStarShipPtr, uqm::COUNT which_player)
+GetEncounterStarShip(STARSHIP* LastStarShipPtr, uint16_t which_player)
 {
 	if (inHQSpace())
 	{
@@ -438,7 +438,7 @@ GetEncounterStarShip(STARSHIP* LastStarShipPtr, uqm::COUNT which_player)
 #define RUN_AWAY_FUEL_COST (5 * FUEL_TANK_SCALE)
 				if (LastStarShipPtr->crew_level == 0)
 				{ // Died in the line of duty
-					GLOBAL_SIS(CrewEnlisted) = (uqm::COUNT)~0;
+					GLOBAL_SIS(CrewEnlisted) = (uint16_t)~0;
 					DeathByMelee = true;
 				}
 				else
@@ -539,7 +539,7 @@ void DrawArmadaPickShip(bool draw_salvage_frame, GFXRECT* pPickRect)
 	t.baseline.y = pick_r.corner.y + pick_r.extent.height - RES_SCALE(5);
 	t.align = ALIGN_CENTER;
 	t.pStr = GLOBAL_SIS(ShipName);
-	t.CharCount = (uqm::COUNT)~0;
+	t.CharCount = (uint16_t)~0;
 
 	// Code to make use of the PC version's font gradient
 	// Along with the FRAME "OldFontEffect"
@@ -567,7 +567,7 @@ void DrawArmadaPickShip(bool draw_salvage_frame, GFXRECT* pPickRect)
 
 		if (StarShipPtr->captains_name_index)
 		{ // Escort ship, not SIS
-			uqm::COUNT ship_index;
+			uint16_t ship_index;
 
 			ship_index = StarShipPtr->index;
 

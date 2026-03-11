@@ -42,14 +42,14 @@ static bool GenerateSol_generateName(const SOLARSYS_STATE*,
 									 const PLANET_DESC* world);
 static bool GenerateSol_generateOrbital(SOLARSYS_STATE* solarSys,
 										PLANET_DESC* world);
-static uqm::COUNT GenerateSol_generateMinerals(const SOLARSYS_STATE* solarSys,
-											   const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO*);
-static uqm::COUNT GenerateSol_generateEnergy(const SOLARSYS_STATE*,
-											 const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO*);
-static uqm::COUNT GenerateSol_generateLife(const SOLARSYS_STATE*,
-										   const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO*);
+static uint16_t GenerateSol_generateMinerals(const SOLARSYS_STATE* solarSys,
+											 const PLANET_DESC* world, uint16_t whichNode, NODE_INFO*);
+static uint16_t GenerateSol_generateEnergy(const SOLARSYS_STATE*,
+										   const PLANET_DESC* world, uint16_t whichNode, NODE_INFO*);
+static uint16_t GenerateSol_generateLife(const SOLARSYS_STATE*,
+										 const PLANET_DESC* world, uint16_t whichNode, NODE_INFO*);
 static bool GenerateSol_pickupEnergy(SOLARSYS_STATE* solarSys,
-									 PLANET_DESC* world, uqm::COUNT whichNode);
+									 PLANET_DESC* world, uint16_t whichNode);
 
 static int init_probe(void);
 static void check_probe(void);
@@ -121,7 +121,7 @@ GenerateSol_reinitNpcs(SOLARSYS_STATE* solarSys)
 static bool
 GenerateSol_generatePlanets(SOLARSYS_STATE* solarSys)
 {
-	uqm::COUNT planetI;
+	uint16_t planetI;
 
 #define SOL_SEED 334241042L
 	RandomContext_SeedRandom(SysGenRNG, SOL_SEED + (StarSeed ? optCustomSeed : 0));
@@ -129,14 +129,14 @@ GenerateSol_generatePlanets(SOLARSYS_STATE* solarSys)
 	solarSys->SunDesc[0].NumPlanets = 9;
 	for (planetI = 0; planetI < 9; ++planetI)
 	{
-		uqm::DWORD rand_val;
-		uqm::UWORD word_val;
+		uint32_t rand_val;
+		uint16_t word_val;
 		PLANET_DESC* pCurDesc = &solarSys->PlanetDesc[planetI];
 
 		pCurDesc->rand_seed = RandomContext_Random(SysGenRNG);
 		rand_val = pCurDesc->rand_seed;
 		word_val = LOWORD(rand_val);
-		pCurDesc->angle = NORMALIZE_ANGLE((uqm::COUNT)highByte(word_val));
+		pCurDesc->angle = NORMALIZE_ANGLE((uint16_t)highByte(word_val));
 
 		switch (planetI)
 		{
@@ -203,8 +203,8 @@ GenerateSol_generatePlanets(SOLARSYS_STATE* solarSys)
 static bool
 GenerateSol_generateMoons(SOLARSYS_STATE* solarSys, PLANET_DESC* planet)
 {
-	uqm::COUNT planetNr;
-	uqm::DWORD rand_val;
+	uint16_t planetNr;
+	uint32_t rand_val;
 
 	GenerateDefault_generateMoons(solarSys, planet);
 
@@ -213,7 +213,7 @@ GenerateSol_generateMoons(SOLARSYS_STATE* solarSys, PLANET_DESC* planet)
 	{
 		case 2: /* moons of EARTH */
 			{
-				uqm::COUNT angle;
+				uint16_t angle;
 
 				/* Starbase: */
 				solarSys->MoonDesc[0].data_index = HIERARCHY_STARBASE;
@@ -278,7 +278,7 @@ static bool
 GenerateSol_generateName(const SOLARSYS_STATE* solarSys,
 						 const PLANET_DESC* world)
 {
-	uqm::COUNT planetNr = planetIndex(solarSys, world);
+	uint16_t planetNr = planetIndex(solarSys, world);
 
 	utf8StringCopy(GLOBAL_SIS(PlanetName),
 				   sizeof(GLOBAL_SIS(PlanetName)),
@@ -292,8 +292,8 @@ GenerateSol_generateName(const SOLARSYS_STATE* solarSys,
 static bool
 GenerateSol_generateOrbital(SOLARSYS_STATE* solarSys, PLANET_DESC* world)
 {
-	uqm::DWORD rand_val;
-	uqm::COUNT planetNr;
+	uint32_t rand_val;
+	uint16_t planetNr;
 
 	if (matchWorld(solarSys, world, 2, 0))
 	{
@@ -306,7 +306,7 @@ GenerateSol_generateOrbital(SOLARSYS_STATE* solarSys, PLANET_DESC* world)
 
 			EncounterGroup = 0;
 			GLOBAL(CurrentActivity) |= START_ENCOUNTER;
-			SET_GAME_STATE(GLOBAL_FLAGS_AND_DATA, (uqm::BYTE)~0);
+			SET_GAME_STATE(GLOBAL_FLAGS_AND_DATA, (uint8_t)~0);
 
 			return true;
 		}
@@ -510,7 +510,7 @@ GenerateSol_generateOrbital(SOLARSYS_STATE* solarSys, PLANET_DESC* world)
 	else
 	{
 		// World is a moon.
-		uqm::COUNT moonNr = moonIndex(solarSys, world);
+		uint16_t moonNr = moonIndex(solarSys, world);
 
 		solarSys->SysInfo.PlanetInfo.AxialTilt = 0;
 		solarSys->SysInfo.PlanetInfo.AtmoDensity = 0;
@@ -668,9 +668,9 @@ GenerateSol_generateOrbital(SOLARSYS_STATE* solarSys, PLANET_DESC* world)
 	return true;
 }
 
-static uqm::COUNT
+static uint16_t
 GenerateSol_generateMinerals(const SOLARSYS_STATE* solarSys,
-							 const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO* info)
+							 const PLANET_DESC* world, uint16_t whichNode, NODE_INFO* info)
 {
 	if (EXTENDED && matchWorld(solarSys, world, 8, 0))
 	{
@@ -691,9 +691,9 @@ GenerateSol_generateMinerals(const SOLARSYS_STATE* solarSys,
 }
 
 
-static uqm::COUNT
+static uint16_t
 GenerateSol_generateEnergy(const SOLARSYS_STATE* solarSys,
-						   const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO* info)
+						   const PLANET_DESC* world, uint16_t whichNode, NODE_INFO* info)
 {
 	if (matchWorld(solarSys, world, 8, MATCH_PLANET))
 	{
@@ -740,7 +740,7 @@ GenerateSol_generateEnergy(const SOLARSYS_STATE* solarSys,
 
 static bool
 GenerateSol_pickupEnergy(SOLARSYS_STATE* solarSys, PLANET_DESC* world,
-						 uqm::COUNT whichNode)
+						 uint16_t whichNode)
 {
 	if (matchWorld(solarSys, world, 8, MATCH_PLANET))
 	{ // Pluto
@@ -789,9 +789,9 @@ GenerateSol_pickupEnergy(SOLARSYS_STATE* solarSys, PLANET_DESC* world,
 	return false;
 }
 
-static uqm::COUNT
+static uint16_t
 GenerateSol_generateLife(const SOLARSYS_STATE* solarSys,
-						 const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO* info)
+						 const PLANET_DESC* world, uint16_t whichNode, NODE_INFO* info)
 {
 	if (matchWorld(solarSys, world, 2, 1))
 	{

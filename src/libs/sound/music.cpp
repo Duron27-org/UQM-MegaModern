@@ -31,7 +31,7 @@ static MUSIC_REF curMusicRef;
 static MUSIC_REF curSpeechRef;
 static MUSIC_POSITION resumeMusicArray[PATH_MAX];
 
-void PLRPlaySong(MUSIC_REF MusicRef, bool Continuous, uqm::BYTE Priority)
+void PLRPlaySong(MUSIC_REF MusicRef, bool Continuous, uint8_t Priority)
 {
 	TFB_SoundSample** pmus = MusicRef;
 
@@ -76,7 +76,7 @@ bool PLRPlaying(MUSIC_REF MusicRef)
 	return false;
 }
 
-void PLRSeek(MUSIC_REF MusicRef, uqm::DWORD pos)
+void PLRSeek(MUSIC_REF MusicRef, uint32_t pos)
 {
 	if (MusicRef == curMusicRef || MusicRef == (MUSIC_REF)~0)
 	{
@@ -96,12 +96,12 @@ void PLRPause(MUSIC_REF MusicRef)
 	}
 }
 
-static uqm::DWORD
+static uint32_t
 get_current_music_pos(MUSIC_REF MusicRef)
 {
-	uqm::DWORD pos = 0;
+	uint32_t pos = 0;
 	float length = 0.0f;
-	//uqm::CHAR_T *filename;
+	//char *filename;
 
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
 	{
@@ -132,7 +132,7 @@ get_current_music_pos(MUSIC_REF MusicRef)
 		return 0;
 	}
 
-	if (pos > (uqm::DWORD)length)
+	if (pos > (uint32_t)length)
 	{
 		pos = 0;
 	}
@@ -140,7 +140,7 @@ get_current_music_pos(MUSIC_REF MusicRef)
 	return pos;
 }
 
-uqm::DWORD
+uint32_t
 PLRGetPos(void)
 {
 	return curMusicRef != 0 ? get_current_music_pos(curMusicRef) : 0;
@@ -149,7 +149,7 @@ PLRGetPos(void)
 static char*
 get_current_music_filename(MUSIC_REF MusicRef)
 {
-	uqm::CHAR_T* filename;
+	char* filename;
 
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
 	{
@@ -170,8 +170,7 @@ get_current_music_filename(MUSIC_REF MusicRef)
 	}
 }
 
-uqm::CHAR_T*
-PLRGetFilename(void)
+char* PLRGetFilename(void)
 {
 	return curMusicRef != 0 ? get_current_music_filename(curMusicRef) : 0;
 }
@@ -250,7 +249,7 @@ bool DestroyMusic(MUSIC_REF MusicRef)
 	return _ReleaseMusicData(MusicRef);
 }
 
-void SetMusicVolume(uqm::COUNT Volume)
+void SetMusicVolume(uint16_t Volume)
 {
 	float f = (Volume / (float)MAX_VOLUME) * musicVolumeScale;
 	musicVolume = Volume;
@@ -266,7 +265,7 @@ char* CheckMusicResName(char* fileName)
 	return fileName;
 }
 
-void* _GetMusicData(uio_Stream* fp, uqm::DWORD length)
+void* _GetMusicData(uio_Stream* fp, uint32_t length)
 {
 	MUSIC_REF h;
 	TFB_SoundSample* sample;
@@ -383,10 +382,10 @@ void SetMusicPosition(void)
 	}
 }
 
-uqm::DWORD
+uint32_t
 GetMusicPosition()
 {
-	uqm::DWORD filename_hash;
+	uint32_t filename_hash;
 	int i;
 
 	if (!optMusicResume || GLOBAL(CurrentActivity) & CHECK_ABORT)
@@ -421,7 +420,7 @@ GetMusicPosition()
 bool OkayToResume(void)
 {
 	TimeCount TimeIn, difference;
-	uqm::DWORD filename_hash;
+	uint32_t filename_hash;
 	int i;
 
 	if (!optMusicResume || GLOBAL(CurrentActivity) & CHECK_ABORT)

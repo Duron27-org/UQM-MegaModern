@@ -56,7 +56,7 @@ static LOCDATA vux_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond / 30,
 				GameTicksPerSecond / 30, /* RestartRate */
-				0,				 /* BlockMask */
+				0,						 /* BlockMask */
 			},
 								{
 				15,			 /* StartIndex */
@@ -66,7 +66,7 @@ static LOCDATA vux_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond / 30,
 				GameTicksPerSecond / 30, /* RestartRate */
-				0,				 /* BlockMask */
+				0,						 /* BlockMask */
 			},
 								{
 				20,			   /* StartIndex */
@@ -86,7 +86,7 @@ static LOCDATA vux_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond / 30,
 				GameTicksPerSecond / 30, /* RestartRate */
-				0,				 /* BlockMask */
+				0,						 /* BlockMask */
 			},
 								{
 				41,			 /* StartIndex */
@@ -96,7 +96,7 @@ static LOCDATA vux_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond / 30,
 				GameTicksPerSecond / 30, /* RestartRate */
-				0,				 /* BlockMask */
+				0,						 /* BlockMask */
 			},
 								{
 				47,			   /* StartIndex */
@@ -106,7 +106,7 @@ static LOCDATA vux_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond / 30,
 				GameTicksPerSecond / 30, /* RestartRate */
-				0,				 /* BlockMask */
+				0,						 /* BlockMask */
 			},
 								{
 				58,			 /* StartIndex */
@@ -116,7 +116,7 @@ static LOCDATA vux_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond / 30,
 				GameTicksPerSecond / 30, /* RestartRate */
-				0,				 /* BlockMask */
+				0,						 /* BlockMask */
 			},
 								{
 				61,			 /* StartIndex */
@@ -126,7 +126,7 @@ static LOCDATA vux_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond / 30,
 				GameTicksPerSecond / 30, /* RestartRate */
-				0,				 /* BlockMask */
+				0,						 /* BlockMask */
 			},
 								{
 				65,			 /* StartIndex */
@@ -136,7 +136,7 @@ static LOCDATA vux_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond / 30,
 				GameTicksPerSecond / 30, /* RestartRate */
-				0,				 /* BlockMask */
+				0,						 /* BlockMask */
 			},
 								{
 				69,			 /* StartIndex */
@@ -146,7 +146,7 @@ static LOCDATA vux_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond / 30,
 				GameTicksPerSecond / 30, /* RestartRate */
-				0,				 /* BlockMask */
+				0,						 /* BlockMask */
 			},
 								{
 				71,		   /* StartIndex */
@@ -156,7 +156,7 @@ static LOCDATA vux_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				74,		   /* StartIndex */
@@ -166,7 +166,7 @@ static LOCDATA vux_desc =
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond / 15,
 				GameTicksPerSecond / 15, /* RestartRate */
-				0,				 /* BlockMask */
+				0,						 /* BlockMask */
 			},
 								{
 				80,		   /* StartIndex */
@@ -176,7 +176,7 @@ static LOCDATA vux_desc =
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond / 15,
 				GameTicksPerSecond / 15, /* RestartRate */
-				(1 << 14),		 /* BlockMask */
+				(1 << 14),				 /* BlockMask */
 			},
 								{
 				85,		   /* StartIndex */
@@ -186,7 +186,7 @@ static LOCDATA vux_desc =
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond / 15,
 				GameTicksPerSecond / 15, /* RestartRate */
-				0,				 /* BlockMask */
+				0,						 /* BlockMask */
 			},
 								{
 				90,		   /* StartIndex */
@@ -196,7 +196,7 @@ static LOCDATA vux_desc =
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond / 15,
 				GameTicksPerSecond / 15, /* RestartRate */
-				(1 << 12),		 /* BlockMask */
+				(1 << 12),				 /* BlockMask */
 			},
 								{
 				95,		   /* StartIndex */
@@ -206,7 +206,7 @@ static LOCDATA vux_desc =
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond * 5,
 				GameTicksPerSecond * 5, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				99,		   /* StartIndex */
@@ -216,7 +216,7 @@ static LOCDATA vux_desc =
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond * 5,
 				GameTicksPerSecond * 5, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				103,						   /* StartIndex */
@@ -226,7 +226,7 @@ static LOCDATA vux_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond / 30,
 				GameTicksPerSecond / 30, /* RestartRate */
-				0,				 /* BlockMask */
+				0,						 /* BlockMask */
 			},
 								{
 				119, /* StartIndex */
@@ -325,7 +325,7 @@ ZexBeingEatenAlive(void)
 static void
 CombatIsInevitable(RESPONSE_REF R)
 {
-	uqm::BYTE NumVisits;
+	uint8_t NumVisits;
 
 	setSegue(Segue_hostile);
 
@@ -338,7 +338,7 @@ CombatIsInevitable(RESPONSE_REF R)
 
 		ZexBeingEatenAlive();
 
-		AlienTalkSegue((uqm::COUNT)~0);
+		AlienTalkSegue((uint16_t)~0);
 
 		SET_GAME_STATE(VUX_BEAST_ON_SHIP, 0);
 		SET_GAME_STATE(ZEX_IS_DEAD, 1);
@@ -457,7 +457,7 @@ CombatIsInevitable(RESPONSE_REF R)
 static void
 Menagerie(RESPONSE_REF R)
 {
-	uqm::BYTE i, LastStack;
+	uint8_t i, LastStack;
 	RESPONSE_REF pStr[3];
 
 	if (PLAYER_SAID(R, i_have_beast)
@@ -522,7 +522,7 @@ Menagerie(RESPONSE_REF R)
 		pStr[0] = pStr[1] = pStr[2] = 0;
 		if (R == 0)
 		{
-			uqm::BYTE NumVisits;
+			uint8_t NumVisits;
 
 			NumVisits = GET_GAME_STATE(ZEX_VISITS);
 			if (GET_GAME_STATE(ZEX_STACK_3) >= 2)
@@ -714,7 +714,7 @@ NormalVux(RESPONSE_REF R)
 	}
 	else if (PLAYER_SAID(R, whats_up_hostile))
 	{
-		uqm::BYTE NumVisits;
+		uint8_t NumVisits;
 
 		NumVisits = GET_GAME_STATE(VUX_INFO);
 		switch (NumVisits++)
@@ -849,7 +849,7 @@ Intro(void)
 	}
 	else
 	{
-		uqm::BYTE NumVisits;
+		uint8_t NumVisits;
 
 		if (GET_GAME_STATE(GLOBAL_FLAGS_AND_DATA) & (1 << 7))
 		{
@@ -900,7 +900,7 @@ Intro(void)
 	}
 }
 
-static uqm::COUNT
+static uint16_t
 uninit_vux(void)
 {
 	luaUqm_comm_uninit();

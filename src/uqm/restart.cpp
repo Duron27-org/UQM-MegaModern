@@ -110,7 +110,7 @@ void UninitMenuMusic(void)
 
 void DrawToolTips(MENU_STATE* pMS, int answer)
 {
-	uqm::COUNT i;
+	uint16_t i;
 	TEXT t;
 	stringbank* bank = StringBank_Create();
 	const char* lines[30];
@@ -143,7 +143,7 @@ void DrawToolTips(MENU_STATE* pMS, int answer)
 	{
 		t.pStr = lines[i];
 		t.align = ALIGN_CENTER;
-		t.CharCount = (uqm::COUNT)~0;
+		t.CharCount = (uint16_t)~0;
 		font_DrawText(&t);
 		t.baseline.y += RES_SCALE(8);
 	}
@@ -157,7 +157,7 @@ DrawDiffChooser(MENU_STATE* pMS, int answer, bool confirm)
 	STAMP s;
 	FONT oldFont;
 	TEXT t;
-	uqm::COUNT i;
+	uint16_t i;
 
 	s.origin = MAKE_POINT(CHOOSER_X, CHOOSER_Y);
 	s.frame = SetRelFrameIndex(pMS->CurFrame, 2);
@@ -175,7 +175,7 @@ DrawDiffChooser(MENU_STATE* pMS, int answer, bool confirm)
 	{
 		t.pStr = GAME_STRING(MAINMENU_STRING_BASE + 56
 							 + (!i ? 1 : (i > 1 ? 2 : 0)));
-		t.CharCount = (uqm::COUNT)utf8StringCount(t.pStr);
+		t.CharCount = (uint16_t)utf8StringCount(t.pStr);
 
 		SetContextForeGroundColor(
 			i == answer ?
@@ -199,7 +199,7 @@ DoDiffChooser(MENU_STATE* pMS)
 	GFXCONTEXT oldContext;
 	bool response = false;
 	bool done = false;
-	uqm::BYTE a = 1;
+	uint8_t a = 1;
 
 	InactTimeOut = (optMainMenuMusic ? 60 : 20) * GameTicksPerSecond;
 	LastInputTime = GetTimeCounter();
@@ -237,7 +237,7 @@ DoDiffChooser(MENU_STATE* pMS)
 		}
 		else if (PulsedInputState.menu[KEY_MENU_UP] || PulsedInputState.menu[KEY_MENU_DOWN] || PulsedInputState.menu[KEY_MENU_LEFT] || PulsedInputState.menu[KEY_MENU_RIGHT])
 		{
-			uqm::BYTE NewState;
+			uint8_t NewState;
 
 			NewState = a;
 			if (PulsedInputState.menu[KEY_MENU_UP]
@@ -321,9 +321,9 @@ static void
 InitPulseText(void)
 {
 	FRAME frame, OldFrame;
-	uqm::SIZE leading;
+	int16_t leading;
 	TEXT t;
-	uqm::COUNT i;
+	uint16_t i;
 
 	if (TextCache[0] != nullptr)
 	{
@@ -338,7 +338,7 @@ InitPulseText(void)
 	t.baseline.x = MAIN_TEXT_X;
 	t.baseline.y = MAIN_TEXT_Y;
 	t.align = ALIGN_CENTER;
-	t.CharCount = (uqm::COUNT)~0;
+	t.CharCount = (uint16_t)~0;
 
 	for (i = START_NEW_GAME; i < NUM_MENU_ELEMENTS; i++)
 	{
@@ -368,9 +368,9 @@ DrawRestartMenuGraphic(MENU_STATE* pMS)
 	GFXRECT r;
 	STAMP s;
 	TEXT t;
-	uqm::CHAR_T buf[64];
-	uqm::COUNT i;
-	uqm::SIZE leading;
+	char buf[64];
+	uint16_t i;
+	int16_t leading;
 
 	s.frame = pMS->CurFrame;
 	GetFrameRect(s.frame, &r);
@@ -394,7 +394,7 @@ DrawRestartMenuGraphic(MENU_STATE* pMS)
 	t.baseline.x = MAIN_TEXT_X;
 	t.baseline.y = MAIN_TEXT_Y;
 	t.align = ALIGN_CENTER;
-	t.CharCount = (uqm::COUNT)~0;
+	t.CharCount = (uint16_t)~0;
 
 	SetContextForeGroundColor(MAIN_MENU_TEXT_COLOR);
 
@@ -433,7 +433,7 @@ DrawRestartMenuGraphic(MENU_STATE* pMS)
 }
 
 static void
-DrawRestartMenu(MENU_STATE* pMS, uqm::BYTE NewState, FRAME f)
+DrawRestartMenu(MENU_STATE* pMS, uint8_t NewState, FRAME f)
 {
 	GFXPOINT origin;
 	origin.x = 0;
@@ -619,7 +619,7 @@ DoRestart(MENU_STATE* pMS)
 	}
 	else if (PulsedInputState.menu[KEY_MENU_UP] || PulsedInputState.menu[KEY_MENU_DOWN])
 	{
-		uqm::BYTE NewState;
+		uint8_t NewState;
 
 		NewState = pMS->CurState;
 		if (PulsedInputState.menu[KEY_MENU_UP])
@@ -693,7 +693,7 @@ static bool
 RestartMenu(MENU_STATE* pMS)
 {
 	TimeCount TimeOut;
-	uqm::COUNT i;
+	uint16_t i;
 
 	ReinitQueue(&race_q[0]);
 	ReinitQueue(&race_q[1]);
@@ -701,7 +701,7 @@ RestartMenu(MENU_STATE* pMS)
 	SetContext(ScreenContext);
 
 	GLOBAL(CurrentActivity) |= CHECK_ABORT;
-	if (GLOBAL_SIS(CrewEnlisted) == (uqm::COUNT)~0
+	if (GLOBAL_SIS(CrewEnlisted) == (uint16_t)~0
 		&& GET_GAME_STATE(UTWIG_BOMB_ON_SHIP)
 		&& !GET_GAME_STATE(UTWIG_BOMB)
 		&& DeathBySuicide)
@@ -732,7 +732,7 @@ RestartMenu(MENU_STATE* pMS)
 	{
 		TimeOut = GameTicksPerSecond / 2;
 
-		if (GLOBAL_SIS(CrewEnlisted) == (uqm::COUNT)~0)
+		if (GLOBAL_SIS(CrewEnlisted) == (uint16_t)~0)
 		{
 			GLOBAL(CurrentActivity) = IN_ENCOUNTER;
 
@@ -919,7 +919,7 @@ bool StartGame(void)
 		// While the starseed init code should always force a
 		// reset of the starmap_array, we will do it here because
 		// paranoia is its own reward.
-		uqm::COUNT i;
+		uint16_t i;
 #ifdef DEBUG_STARSEED
 		fmt::print(stderr, "Initializing star_array, just in case...\n");
 #endif

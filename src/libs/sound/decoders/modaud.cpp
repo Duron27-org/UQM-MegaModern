@@ -125,7 +125,7 @@ moda_mmout_Update(void)
 		return;
 	}
 
-	written = VC_WriteBytes((uqm::SBYTE*)buffer, bufsize);
+	written = VC_WriteBytes((int8_t*)buffer, bufsize);
 }
 
 static BOOL

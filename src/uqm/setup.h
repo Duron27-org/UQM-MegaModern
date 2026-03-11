@@ -52,7 +52,7 @@ extern GFXCONTEXT ScreenContext;
 extern GFXCONTEXT SpaceContext;
 extern GFXCONTEXT StatusContext;
 
-extern uqm::SIZE screen_width, screen_height;
+extern int16_t screen_width, screen_height;
 
 extern FONT StarConFont;
 extern FONT MicroFont;
@@ -76,7 +76,7 @@ extern bool solTexturesPresent;
 extern bool SyreenVoiceFix;
 extern bool EndlessSCLoaded;
 extern bool VolasPackPresent;
-extern uqm::BYTE Rando;
+extern uint8_t Rando;
 extern bool DeathBySurrender;
 extern bool DeathByMelee;
 extern bool DeathBySuicide;
@@ -103,9 +103,9 @@ extern void FreeKernel(void);
 int initIO(void);
 void uninitIO(void);
 
-bool SetPlayerInput(uqm::COUNT playerI);
+bool SetPlayerInput(uint16_t playerI);
 bool SetPlayerInputAll(void);
-void ClearPlayerInput(uqm::COUNT playerI);
+void ClearPlayerInput(uint16_t playerI);
 void ClearPlayerInputAll(void);
 
 

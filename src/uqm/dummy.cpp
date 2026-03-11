@@ -147,7 +147,7 @@ CodeResToInitFunc(ShipCodeRes res)
 static void
 GetCodeResData(const char* ship_id, RESOURCE_DATA* resdata)
 {
-	uqm::BYTE which_res;
+	uint8_t which_res;
 	void* hData;
 
 	which_res = atoi(ship_id);

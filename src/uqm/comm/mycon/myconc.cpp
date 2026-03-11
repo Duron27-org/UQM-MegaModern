@@ -137,12 +137,12 @@ static LOCDATA mycon_desc =
 		nullptr,
 };
 
-static uqm::BYTE MadeChoice;
+static uint8_t MadeChoice;
 
 static void
 DoRamble(RESPONSE_REF R)
 {
-	uqm::BYTE Counter;
+	uint8_t Counter;
 
 	Counter = GET_GAME_STATE(MYCON_RAMBLE);
 	switch (Counter++)
@@ -427,7 +427,7 @@ NormalMycon(RESPONSE_REF R)
 		DISABLE_PHRASE(R);
 	}
 
-	if ((uqm::BYTE)TFB_Random() < 256 * 30 / 100)
+	if ((uint8_t)TFB_Random() < 256 * 30 / 100)
 	{
 		RespFunc = (RESPONSE_FUNC)CombatIsInevitable;
 	}
@@ -563,7 +563,7 @@ NormalMycon(RESPONSE_REF R)
 static void
 Intro(void)
 {
-	uqm::BYTE NumVisits;
+	uint8_t NumVisits;
 
 	if (GET_GAME_STATE(SUN_DEVICE))
 	{
@@ -679,7 +679,7 @@ Intro(void)
 	}
 }
 
-static uqm::COUNT
+static uint16_t
 uninit_mycon(void)
 {
 	luaUqm_comm_uninit();

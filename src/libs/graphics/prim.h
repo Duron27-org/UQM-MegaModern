@@ -29,7 +29,7 @@ enum gfx_object
 
 	NUM_PRIMS
 };
-typedef uqm::BYTE GRAPHICS_PRIM;
+typedef uint8_t GRAPHICS_PRIM;
 
 union PRIM_DESC
 {
@@ -40,7 +40,7 @@ union PRIM_DESC
 	GFXRECT Rect;
 };
 
-typedef uqm::DWORD PRIM_LINKS;
+typedef uint32_t PRIM_LINKS;
 
 struct PRIMITIVE
 {
@@ -48,10 +48,10 @@ struct PRIMITIVE
 	GRAPHICS_PRIM Type {};
 	Color color {};
 	PRIM_DESC Object {};
-	uqm::BYTE flags {};
+	uint8_t flags {};
 };
 
-#define END_OF_LIST ((uqm::COUNT)0xFFFF)
+#define END_OF_LIST ((uint16_t)0xFFFF)
 
 /* Primitive flags */
 #define UNSCALED_STAMP (1 << 0)		  // Stamp will not be scaled via smooth scaler
@@ -71,13 +71,13 @@ struct PRIMITIVE
 #define GetPrimFlags(pPrim) ((pPrim)->flags)
 
 static inline void
-SetPrimNextLink(PRIMITIVE* pPrim, uqm::COUNT Link)
+SetPrimNextLink(PRIMITIVE* pPrim, uint16_t Link)
 {
 	SetPrimLinks(pPrim, END_OF_LIST, Link);
 }
 
 
-static inline uqm::COUNT
+static inline uint16_t
 GetPrimNextLink(PRIMITIVE* pPrim)
 {
 	return GetSuccLink(GetPrimLinks(pPrim));

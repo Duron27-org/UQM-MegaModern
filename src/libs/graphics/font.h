@@ -51,14 +51,14 @@ FreeFontPage(FONT_PAGE* page)
 
 struct font_desc
 {
-	uqm::BYTE Leading;
+	uint8_t Leading;
 	FONT_PAGE* fontPages;
 	EXTENT disp;
 	char filename[PATH_MAX];
-	uqm::BYTE CharSpace;
-	uqm::BYTE KernAmount;
-	uqm::BYTE KernTab[MAX_UNICODE];
-	uqm::SBYTE VertAlign;
+	uint8_t CharSpace;
+	uint8_t KernAmount;
+	uint8_t KernTab[MAX_UNICODE];
+	int8_t VertAlign;
 	bool HaveFntData;
 };
 
@@ -71,10 +71,10 @@ struct font_desc
 
 extern FONT _CurFontPtr;
 
-extern void* _GetFontData(uio_Stream* fp, uqm::DWORD length);
+extern void* _GetFontData(uio_Stream* fp, uint32_t length);
 extern bool _ReleaseFontData(void* handle);
 extern TFB_Char* GetFrameForFPS(UniChar ch);
-extern void GetFontDims(uqm::SIZE* w, uqm::SIZE* h);
+extern void GetFontDims(int16_t* w, int16_t* h);
 extern bool GoodToGoFPS(void);
 
 #endif /* LIBS_GRAPHICS_FONT_H_ */

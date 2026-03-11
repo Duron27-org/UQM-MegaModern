@@ -57,9 +57,9 @@ static void Flash_blendFraction(FlashContext* context, int numer, int denom,
 static void Flash_makeFrame(FlashContext* context,
 							FRAME dest, int numer, int denom);
 static inline void Flash_prepareCacheFrame(FlashContext* context,
-										   uqm::COUNT index);
+										   uint16_t index);
 static void Flash_drawFrame(FlashContext* context, FRAME frame, bool pcRect);
-static void Flash_drawCacheFrame(FlashContext* context, uqm::COUNT index);
+static void Flash_drawCacheFrame(FlashContext* context, uint16_t index);
 static inline void Flash_drawUncachedFrame(FlashContext* context,
 										   int numer, int denom);
 static inline void Flash_drawCachedFrame(FlashContext* context,
@@ -99,7 +99,7 @@ Flash_create(GFXCONTEXT gfxContext)
 	context->cache = 0;
 	context->cacheSize = Flash_DEFAULT_CACHE_SIZE;
 
-	context->lastFrameIndex = (uqm::COUNT)-1;
+	context->lastFrameIndex = (uint16_t)-1;
 
 	// TODO: Delete the context somewhere
 	if (!workGfxContext)
@@ -432,7 +432,7 @@ Flash_nextTime(FlashContext* context)
 static void
 Flash_clearCache(FlashContext* context)
 {
-	uqm::COUNT i;
+	uint16_t i;
 
 #ifdef BEGIN_AND_END_FRAME_EXCEPTIONS
 	if (context->type == FlashType_transition || context->type == FlashType_overlay)
@@ -470,7 +470,7 @@ void Flash_setRect(FlashContext* context, const GFXRECT* rect)
 	}
 
 	context->rect = *rect;
-	context->lastFrameIndex = (uqm::COUNT)-1;
+	context->lastFrameIndex = (uint16_t)-1;
 
 	if (context->started)
 	{
@@ -541,7 +541,7 @@ void Flash_postUpdate(FlashContext* context)
 static void
 Flash_initCache(FlashContext* context)
 {
-	uqm::COUNT i;
+	uint16_t i;
 
 	context->cache = (FRAME*)HMalloc(context->cacheSize * sizeof(FRAME));
 	for (i = 0; i < context->cacheSize; i++)
@@ -550,7 +550,7 @@ Flash_initCache(FlashContext* context)
 	}
 }
 
-void Flash_setCacheSize(FlashContext* context, uqm::COUNT size)
+void Flash_setCacheSize(FlashContext* context, uint16_t size)
 {
 	assert(size == 0 || size >= 2);
 
@@ -569,7 +569,7 @@ void Flash_setCacheSize(FlashContext* context, uqm::COUNT size)
 	}
 }
 
-uqm::COUNT
+uint16_t
 Flash_getCacheSize(const FlashContext* context)
 {
 	return context->cacheSize;
@@ -700,7 +700,7 @@ Flash_makeFrame(FlashContext* context, FRAME dest, int numer, int denom)
 
 // Prepare an entry in the cache.
 static inline void
-Flash_prepareCacheFrame(FlashContext* context, uqm::COUNT index)
+Flash_prepareCacheFrame(FlashContext* context, uint16_t index)
 {
 	if (context->cache[index] != (FRAME)0)
 	{
@@ -737,7 +737,7 @@ Flash_prepareCacheFrame(FlashContext* context, uqm::COUNT index)
 Color GetFlashPCColor(void)
 {
 	static TimeCount NextTime = 0;
-	static uqm::DWORD cycle_index = 0;
+	static uint32_t cycle_index = 0;
 
 	static const Color cycle_tab[] = PC_RECT_COLOR_CYCLE_TABLE;
 	const size_t cycleCount = std::size(cycle_tab);
@@ -779,7 +779,7 @@ Flash_drawFrame(FlashContext* context, FRAME frame, bool pcRect)
 }
 
 static void
-Flash_drawCacheFrame(FlashContext* context, uqm::COUNT index)
+Flash_drawCacheFrame(FlashContext* context, uint16_t index)
 {
 	FRAME frame;
 
@@ -855,7 +855,7 @@ Flash_drawUncachedFrame(FlashContext* context, int numer, int denom)
 static inline void
 Flash_drawCachedFrame(FlashContext* context, int numer, int denom)
 {
-	uqm::COUNT cachePos;
+	uint16_t cachePos;
 
 	cachePos = ((context->cacheSize - 1) * numer + (denom / 2)) / denom;
 	Flash_prepareCacheFrame(context, cachePos);

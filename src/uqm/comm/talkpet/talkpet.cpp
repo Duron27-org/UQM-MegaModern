@@ -64,7 +64,7 @@ static LOCDATA talkpet_desc =
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				10, /* StartIndex */
@@ -75,7 +75,7 @@ static LOCDATA talkpet_desc =
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				13,			 /* StartIndex */
@@ -85,7 +85,7 @@ static LOCDATA talkpet_desc =
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				16,			 /* StartIndex */
@@ -95,16 +95,16 @@ static LOCDATA talkpet_desc =
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				/* Blink right eye */
-				18,							/* StartIndex */
-				3,							/* NumFrames */
-				YOYO_ANIM,					/* AnimFlags */
-				GameTicksPerSecond / 20, 0,			/* FrameRate */
+				18,											/* StartIndex */
+				3,											/* NumFrames */
+				YOYO_ANIM,									/* AnimFlags */
+				GameTicksPerSecond / 20, 0,					/* FrameRate */
 				GameTicksPerSecond, GameTicksPerSecond * 3, /* RestartRate */
-				(1 << 13)					/* BlockMask */
+				(1 << 13)									/* BlockMask */
 			},
 								{
 				/* Blink left eye */
@@ -114,8 +114,8 @@ static LOCDATA talkpet_desc =
 				GameTicksPerSecond / 20,
 				0, /* FrameRate */
 				GameTicksPerSecond,
-				GameTicksPerSecond * 3,		   /* RestartRate */
-				(1 << 12) | (1 << 14), /* BlockMask */
+				GameTicksPerSecond * 3, /* RestartRate */
+				(1 << 12) | (1 << 14),	/* BlockMask */
 			},
 								{
 				24,			 /* StartIndex */
@@ -125,7 +125,7 @@ static LOCDATA talkpet_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				26,			 /* StartIndex */
@@ -135,7 +135,7 @@ static LOCDATA talkpet_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				28,			 /* StartIndex */
@@ -145,7 +145,7 @@ static LOCDATA talkpet_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				32,			 /* StartIndex */
@@ -155,7 +155,7 @@ static LOCDATA talkpet_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				35,			 /* StartIndex */
@@ -165,7 +165,7 @@ static LOCDATA talkpet_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				40,			 /* StartIndex */
@@ -175,7 +175,7 @@ static LOCDATA talkpet_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				42, /* StartIndex */
@@ -186,7 +186,7 @@ static LOCDATA talkpet_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				(1 << 5),		/* BlockMask */
+				(1 << 5),				/* BlockMask */
 			},
 								{
 				/* Right eyebrow */
@@ -197,7 +197,7 @@ static LOCDATA talkpet_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				(1 << 4),		/* BlockMask */
+				(1 << 4),				/* BlockMask */
 			},
 								{
 				/* Left eyebrow */
@@ -208,7 +208,7 @@ static LOCDATA talkpet_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				(1 << 5),		/* BlockMask */
+				(1 << 5),				/* BlockMask */
 			},
 								{
 				52,							/* StartIndex */
@@ -218,7 +218,7 @@ static LOCDATA talkpet_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				/* Mind control strobe (on-demand) */
@@ -387,7 +387,7 @@ MindControl(RESPONSE_REF R)
 		R = wish_to_go_now;
 	}
 
-	AlienTalkSegue((uqm::COUNT)~0);
+	AlienTalkSegue((uint16_t)~0);
 	MindControlStrobe();
 
 	Response(R, RespFunc);
@@ -451,7 +451,7 @@ PetInfo(RESPONSE_REF R)
 static void
 PetDevice(RESPONSE_REF R)
 {
-	uqm::BYTE NumVisits;
+	uint8_t NumVisits;
 
 	if (PLAYER_SAID(R, whats_up_onboard))
 	{
@@ -557,7 +557,7 @@ PetDevice(RESPONSE_REF R)
 static void
 CompelPlayer(RESPONSE_REF R)
 {
-	uqm::BYTE i, LastStack;
+	uint8_t i, LastStack;
 	RESPONSE_REF pStr[3];
 
 	LastStack = 0;
@@ -666,7 +666,7 @@ KillPet(RESPONSE_REF R)
 	if (PLAYER_SAID(R, must_kill))
 	{
 		NPCPhrase(DONT_KILL);
-		AlienTalkSegue((uqm::COUNT)~0);
+		AlienTalkSegue((uint16_t)~0);
 
 		MindControlStrobe();
 	}
@@ -767,7 +767,7 @@ PetDeal(RESPONSE_REF R)
 static void
 Intro(void)
 {
-	uqm::BYTE NumVisits;
+	uint8_t NumVisits;
 
 	if (lowByte(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE)
 	{
@@ -932,7 +932,7 @@ Intro(void)
 	}
 }
 
-static uqm::COUNT
+static uint16_t
 uninit_talkpet(void)
 {
 	luaUqm_comm_uninit();

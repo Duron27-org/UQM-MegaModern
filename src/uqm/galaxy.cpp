@@ -32,7 +32,7 @@
 #include "igfxres.h"
 #include "nameref.h"
 
-extern uqm::COUNT zoom_out;
+extern uint16_t zoom_out;
 extern PRIM_LINKS DisplayLinks;
 
 
@@ -45,14 +45,14 @@ extern PRIM_LINKS DisplayLinks;
 
 DPOINT SpaceOrg;
 static DPOINT log_star_array[NUM_STARS];
-static uqm::COUNT num_sceneries;
+static uint16_t num_sceneries;
 
 #define NUM_STAR_PLANES 3
 
 typedef struct
 {
-	uqm::COUNT min_star_index;
-	uqm::COUNT num_stars;
+	uint16_t min_star_index;
+	uint16_t num_stars;
 	DPOINT* star_array;
 	DPOINT* pmin_star;
 	DPOINT* plast_star;
@@ -86,11 +86,11 @@ STAR_BLOCK StarBlock[NUM_STAR_PLANES] =
 static void
 SortStarBlock(STAR_BLOCK* pStarBlock)
 {
-	uqm::COUNT i;
+	uint16_t i;
 
 	for (i = 0; i < pStarBlock->num_stars; ++i)
 	{
-		uqm::COUNT j;
+		uint16_t j;
 
 		for (j = pStarBlock->num_stars - 1; j > i; --j)
 		{
@@ -112,12 +112,12 @@ SortStarBlock(STAR_BLOCK* pStarBlock)
 }
 
 static void
-WrapStarBlock(uqm::SIZE plane, uqm::SDWORD dx, uqm::SDWORD dy)
+WrapStarBlock(int16_t plane, int32_t dx, int32_t dy)
 {
-	uqm::COUNT i;
+	uint16_t i;
 	DPOINT* ppt;
-	uqm::SDWORD offs_y;
-	uqm::COUNT num_stars;
+	int32_t offs_y;
+	uint16_t num_stars;
 	STAR_BLOCK* pStarBlock;
 
 	pStarBlock = &StarBlock[plane];
@@ -127,7 +127,7 @@ WrapStarBlock(uqm::SIZE plane, uqm::SDWORD dx, uqm::SDWORD dy)
 	num_stars = pStarBlock->num_stars;
 	if (dy < 0)
 	{
-		uqm::COUNT first;
+		uint16_t first;
 
 		first = i;
 
@@ -181,7 +181,7 @@ WrapStarBlock(uqm::SIZE plane, uqm::SDWORD dx, uqm::SDWORD dy)
 	}
 	else
 	{
-		uqm::COUNT last;
+		uint16_t last;
 
 		--ppt;
 		if (i-- == 0)
@@ -252,7 +252,7 @@ WrapStarBlock(uqm::SIZE plane, uqm::SDWORD dx, uqm::SDWORD dy)
 
 void InitGalaxy(void)
 {
-	uqm::COUNT i, factor;
+	uint16_t i, factor;
 	DPOINT* ppt;
 	PRIM_LINKS Links;
 	bool useScenery = (EXTENDED && GET_GAME_STATE(URQUAN_PROTECTING_SAMATRA)
@@ -268,7 +268,7 @@ void InitGalaxy(void)
 	num_sceneries = 0;
 	for (i = 0, ppt = log_star_array; i < NUM_STARS; ++i, ++ppt)
 	{
-		uqm::COUNT p;
+		uint16_t p;
 
 		p = AllocDisplayPrim();
 		SetPrimFlags(&DisplayArray[p], 0);
@@ -278,8 +278,8 @@ void InitGalaxy(void)
 			++factor;
 		}
 
-		ppt->x = (uqm::SDWORD)((uqm::UWORD)TFB_Random() % SPACE_WIDTH) << factor;
-		ppt->y = (uqm::SDWORD)((uqm::UWORD)TFB_Random() % SPACE_HEIGHT) << factor;
+		ppt->x = (int32_t)((uint16_t)TFB_Random() % SPACE_WIDTH) << factor;
+		ppt->y = (int32_t)((uint16_t)TFB_Random() % SPACE_HEIGHT) << factor;
 
 		if (i < BIG_STAR_COUNT + MED_STAR_COUNT)
 		{
@@ -352,8 +352,8 @@ void InitGalaxy(void)
 }
 
 static bool
-CmpMovePoints(const GFXPOINT* pt1, const DPOINT* pt2, uqm::SDWORD dx, uqm::SDWORD dy,
-			  uqm::SIZE reduction)
+CmpMovePoints(const GFXPOINT* pt1, const DPOINT* pt2, int32_t dx, int32_t dy,
+			  int16_t reduction)
 {
 	if (uqm::toTFBScaleMode(optMeleeScale) == uqm::TFBScaleMode::Step)
 	{
@@ -367,20 +367,20 @@ CmpMovePoints(const GFXPOINT* pt1, const DPOINT* pt2, uqm::SDWORD dx, uqm::SDWOR
 	}
 }
 
-void MoveGalaxy(VIEW_STATE view_state, uqm::SDWORD dx, uqm::SDWORD dy)
+void MoveGalaxy(VIEW_STATE view_state, int32_t dx, int32_t dy)
 {
 	PRIMITIVE* pprim;
-	static const uqm::COUNT star_counts[] =
+	static const uint16_t star_counts[] =
 		{
 			BIG_STAR_COUNT,
 			MED_STAR_COUNT,
 			SML_STAR_COUNT};
-	static const uqm::COUNT star_frame_ofs[] = {32 + 26, 26, 0};
+	static const uint16_t star_frame_ofs[] = {32 + 26, 26, 0};
 	const bool meleeScaleModeIsStep {uqm::toTFBScaleMode(optMeleeScale) == uqm::TFBScaleMode::Step};
-				
+
 	if (view_state != VIEW_STABLE)
 	{
-		uqm::COUNT reduction, i = 0, iss, scale = 0;
+		uint16_t reduction, i = 0, iss, scale = 0;
 		DPOINT* ppt;
 		int wrap_around;
 
@@ -396,7 +396,7 @@ void MoveGalaxy(VIEW_STATE view_state, uqm::SDWORD dx, uqm::SDWORD dy)
 					{
 						pprim->Object.Stamp.frame = SetAbsFrameIndex(
 							stars_in_space,
-							(uqm::COUNT)(TFB_Random() & 31)
+							(uint16_t)(TFB_Random() & 31)
 								+ star_frame_ofs[iss]);
 
 						if (IS_HD && inQuasiSpace())
@@ -511,7 +511,7 @@ void MoveGalaxy(VIEW_STATE view_state, uqm::SDWORD dx, uqm::SDWORD dy)
 			for (i = BIG_STAR_COUNT + MED_STAR_COUNT, pprim = DisplayArray;
 				 i > 0; --i, ++pprim)
 			{
-				uqm::COUNT base_index;
+				uint16_t base_index;
 
 				base_index = GetFrameIndex(pprim->Object.Stamp.frame) - 26;
 				pprim->Object.Stamp.frame =
@@ -594,7 +594,7 @@ void MoveGalaxy(VIEW_STATE view_state, uqm::SDWORD dx, uqm::SDWORD dy)
 	DisplayLinks = MakeLinks(NUM_STARS - 1, 0);
 }
 
-void SetStarPoint(GFXPOINT pt, uqm::COUNT i)
+void SetStarPoint(GFXPOINT pt, uint16_t i)
 {
 	log_star_array[i].x = pt.x;
 	log_star_array[i].y = pt.y;

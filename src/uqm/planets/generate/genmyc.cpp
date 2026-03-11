@@ -38,12 +38,12 @@ static bool GenerateMycon_generateName(const SOLARSYS_STATE*,
 									   const PLANET_DESC* world);
 static bool GenerateMycon_generateOrbital(SOLARSYS_STATE* solarSys,
 										  PLANET_DESC* world);
-static uqm::COUNT GenerateMycon_generateEnergy(const SOLARSYS_STATE*,
-											   const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO*);
-static uqm::COUNT GenerateMycon_generateLife(const SOLARSYS_STATE*,
-											 const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO*);
+static uint16_t GenerateMycon_generateEnergy(const SOLARSYS_STATE*,
+											 const PLANET_DESC* world, uint16_t whichNode, NODE_INFO*);
+static uint16_t GenerateMycon_generateLife(const SOLARSYS_STATE*,
+										   const PLANET_DESC* world, uint16_t whichNode, NODE_INFO*);
 static bool GenerateMycon_pickupEnergy(SOLARSYS_STATE* solarSys,
-									   PLANET_DESC* world, uqm::COUNT whichNode);
+									   PLANET_DESC* world, uint16_t whichNode);
 
 
 const GenerateFunctions generateMyconFunctions = {
@@ -63,13 +63,13 @@ const GenerateFunctions generateMyconFunctions = {
 };
 
 static bool
-GenerateMyconDefenders(uqm::BYTE index)
+GenerateMyconDefenders(uint8_t index)
 {
 #define STATE_OFFSET 29
-	uqm::BYTE shift = index - STATE_OFFSET;
+	uint8_t shift = index - STATE_OFFSET;
 	bool Survivors;
-	uqm::UWORD state;
-	uqm::COUNT i;
+	uint16_t state;
+	uint16_t i;
 
 	if (!(GET_GAME_STATE(HM_ENCOUNTERS) & 1 << shift))
 	{
@@ -134,7 +134,7 @@ GenerateMycon_generatePlanets(SOLARSYS_STATE* solarSys)
 
 	if (PrimeSeed)
 	{
-		uqm::COUNT angle;
+		uint16_t angle;
 
 		pPlanet->radius = EARTH_RADIUS * 80L / 100;
 		if (pPlanet->NumPlanets > 2)
@@ -159,7 +159,7 @@ GenerateMycon_generateName(const SOLARSYS_STATE* solarSys,
 	if (CurStarDescPtr->Index == EGG_CASE0_DEFINED
 		&& matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET))
 	{
-		uqm::BYTE PlanetByte = solarSys->SunDesc[0].PlanetByte;
+		uint8_t PlanetByte = solarSys->SunDesc[0].PlanetByte;
 		PLANET_DESC pPlanetDesc = solarSys->PlanetDesc[PlanetByte];
 
 		utf8StringCopy(GLOBAL_SIS(PlanetName),
@@ -198,8 +198,8 @@ GenerateMycon_generateOrbital(SOLARSYS_STATE* solarSys,
 				}
 				else
 				{
-					uqm::COUNT i;
-					uqm::COUNT sum = difficultyCase(3, 5, 12);
+					uint16_t i;
+					uint16_t sum = difficultyCase(3, 5, 12);
 
 					for (i = 0; i < sum; ++i)
 					{
@@ -298,7 +298,7 @@ GenerateMycon_generateOrbital(SOLARSYS_STATE* solarSys,
 		&& (CurStarDescPtr->Index != EGG_CASE0_DEFINED || isDifficulty(uqm::Difficulty::Hard)))
 	{
 		PLANET_INFO* pPlanetInfo = &solarSys->SysInfo.PlanetInfo;
-		uqm::DWORD rand = RandomContext_Random(SysGenRNG);
+		uint32_t rand = RandomContext_Random(SysGenRNG);
 
 		pPlanetInfo->SurfaceTemperature = RangeMinMax(100, 300, rand);
 	}
@@ -306,9 +306,9 @@ GenerateMycon_generateOrbital(SOLARSYS_STATE* solarSys,
 	return true;
 }
 
-static uqm::COUNT
+static uint16_t
 GenerateMycon_generateEnergy(const SOLARSYS_STATE* solarSys,
-							 const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO* info)
+							 const PLANET_DESC* world, uint16_t whichNode, NODE_INFO* info)
 {
 	if (CurStarDescPtr->Index == SUN_DEVICE_DEFINED
 		&& matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET))
@@ -347,7 +347,7 @@ GenerateMycon_generateEnergy(const SOLARSYS_STATE* solarSys,
 
 static bool
 GenerateMycon_pickupEnergy(SOLARSYS_STATE* solarSys, PLANET_DESC* world,
-						   uqm::COUNT whichNode)
+						   uint16_t whichNode)
 {
 	if (CurStarDescPtr->Index == SUN_DEVICE_DEFINED
 		&& matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET))
@@ -394,9 +394,9 @@ GenerateMycon_pickupEnergy(SOLARSYS_STATE* solarSys, PLANET_DESC* world,
 	return false;
 }
 
-static uqm::COUNT
+static uint16_t
 GenerateMycon_generateLife(const SOLARSYS_STATE* solarSys,
-						   const PLANET_DESC* world, uqm::COUNT whichNode, NODE_INFO* info)
+						   const PLANET_DESC* world, uint16_t whichNode, NODE_INFO* info)
 {
 	// Gee, I wonder why there isn't any life in Mycon systems...
 	(void)whichNode;

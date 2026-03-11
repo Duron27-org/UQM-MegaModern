@@ -50,7 +50,7 @@
 // for EraseRadar()
 
 
-uqm::BYTE battle_counter[NUM_SIDES];
+uint8_t battle_counter[NUM_SIDES];
 // The number of ships still available for battle to each side.
 // A ship that has warped out is no longer available.
 bool instantVictory;
@@ -254,11 +254,11 @@ ProcessInput(void)
 }
 
 #if DEMO_MODE || CREATE_JOURNAL
-uqm::DWORD BattleSeed;
+uint32_t BattleSeed;
 #endif /* DEMO_MODE */
 
 static MUSIC_REF BattleRef;
-uqm::BYTE inHSpace = 0;
+uint8_t inHSpace = 0;
 
 void BattleSong(bool DoPlay)
 {
@@ -309,9 +309,9 @@ void FreeBattleSong(void)
 static bool
 DoBattle(BATTLE_STATE* bs)
 {
-	extern uqm::UWORD nth_frame;
+	extern uint16_t nth_frame;
 	GFXRECT r;
-	uqm::BYTE battle_speed;
+	uint8_t battle_speed;
 
 	SetMenuSounds(MENU_SOUND_NONE, MENU_SOUND_NONE);
 
@@ -383,7 +383,7 @@ DoBattle(BATTLE_STATE* bs)
 	}
 
 	battle_speed = highByte(nth_frame);
-	if (battle_speed == (uqm::BYTE)~0)
+	if (battle_speed == (uint8_t)~0)
 	{ // maximum speed, nothing rendered at all
 		Async_process();
 		TaskSwitch();
@@ -407,8 +407,8 @@ DoBattle(BATTLE_STATE* bs)
 }
 
 #ifdef NETPLAY
-uqm::COUNT
-GetPlayerOrder(uqm::COUNT i)
+uint16_t
+GetPlayerOrder(uint16_t i)
 {
 	// Iff 'myTurn' is set on a connection, the local party will be
 	// processed first.
@@ -428,7 +428,7 @@ GetPlayerOrder(uqm::COUNT i)
 
 // Let each player pick his ship.
 static bool
-selectAllShips(uqm::SIZE num_ships)
+selectAllShips(int16_t num_ships)
 {
 	if (num_ships == 1)
 	{
@@ -450,7 +450,7 @@ selectAllShips(uqm::SIZE num_ships)
 
 bool Battle(BattleFrameCallback* callback)
 {
-	uqm::SIZE num_ships;
+	int16_t num_ships;
 
 #if !(DEMO_MODE || CREATE_JOURNAL)
 	if (lowByte(GLOBAL(CurrentActivity)) != SUPER_MELEE)

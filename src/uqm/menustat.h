@@ -32,13 +32,13 @@ typedef struct menu_state
 	// Standard field required by DoInput()
 	bool (*InputFunc)(struct menu_state* pMS);
 
-	uqm::SIZE Initialized;
+	int16_t Initialized;
 
-	uqm::BYTE CurState;
+	uint8_t CurState;
 	FRAME CurFrame;
 	STRING CurString;
 	GFXPOINT first_item;
-	uqm::SIZE delta_item;
+	int16_t delta_item;
 
 	FRAME ModuleFrame;
 	GFXRECT flash_rect0, flash_rect1, flash_rect2;
@@ -147,10 +147,10 @@ enum
 	GAMESTR_CHANGE_SIS,
 };
 
-extern bool DoMenuChooser(MENU_STATE* pMS, uqm::BYTE BaseState);
-extern void DrawMenuStateStrings(uqm::BYTE beg_index, uqm::SWORD NewState);
+extern bool DoMenuChooser(MENU_STATE* pMS, uint8_t BaseState);
+extern void DrawMenuStateStrings(uint8_t beg_index, int16_t NewState);
 extern void DrawMineralHelpers(void);
-extern void DrawBorder(uqm::BYTE Visible);
+extern void DrawBorder(uint8_t Visible);
 
 #if 0 //defined(__cplusplus)
 }

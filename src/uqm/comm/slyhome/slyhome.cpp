@@ -59,7 +59,7 @@ static LOCDATA slylandro_desc =
 				GameTicksPerSecond * 5 / 8, /* FrameRate */
 				GameTicksPerSecond / 8,
 				GameTicksPerSecond * 5 / 8, /* RestartRate */
-				0,					/* BlockMask */
+				0,							/* BlockMask */
 			},
 								{
 				1,		   /* StartIndex */
@@ -69,7 +69,7 @@ static LOCDATA slylandro_desc =
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				6,		   /* StartIndex */
@@ -79,7 +79,7 @@ static LOCDATA slylandro_desc =
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				11,		   /* StartIndex */
@@ -89,7 +89,7 @@ static LOCDATA slylandro_desc =
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				16,		   /* StartIndex */
@@ -99,7 +99,7 @@ static LOCDATA slylandro_desc =
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				22,			   /* StartIndex */
@@ -118,8 +118,8 @@ static LOCDATA slylandro_desc =
 				GameTicksPerSecond / 15,
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond,
-				GameTicksPerSecond * 3,		 /* RestartRate */
-				(1 << 8) | (1 << 9), /* BlockMask */
+				GameTicksPerSecond * 3, /* RestartRate */
+				(1 << 8) | (1 << 9),	/* BlockMask */
 			},
 								{
 				39,			   /* StartIndex */
@@ -129,7 +129,7 @@ static LOCDATA slylandro_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				43,			   /* StartIndex */
@@ -139,7 +139,7 @@ static LOCDATA slylandro_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				(1 << 6),		/* BlockMask */
+				(1 << 6),				/* BlockMask */
 			},
 								{
 				48,			   /* StartIndex */
@@ -149,7 +149,7 @@ static LOCDATA slylandro_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				(1 << 6),		/* BlockMask */
+				(1 << 6),				/* BlockMask */
 			},
 								{
 				54,			   /* StartIndex */
@@ -159,7 +159,7 @@ static LOCDATA slylandro_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				(1 << 12),		/* BlockMask */
+				(1 << 12),				/* BlockMask */
 			},
 								{
 				60,			   /* StartIndex */
@@ -169,7 +169,7 @@ static LOCDATA slylandro_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				(1 << 12),		/* BlockMask */
+				(1 << 12),				/* BlockMask */
 			},
 								{
 				67,			   /* StartIndex */
@@ -178,8 +178,8 @@ static LOCDATA slylandro_desc =
 				GameTicksPerSecond / 15,
 				0, /* FrameRate */
 				GameTicksPerSecond,
-				GameTicksPerSecond * 3,		   /* RestartRate */
-				(1 << 10) | (1 << 11), /* BlockMask */
+				GameTicksPerSecond * 3, /* RestartRate */
+				(1 << 10) | (1 << 11),	/* BlockMask */
 			},
 								},
 		{
@@ -250,7 +250,7 @@ static void HomeWorld(RESPONSE_REF R);
 static void
 HumanInfo(RESPONSE_REF R)
 {
-	uqm::BYTE InfoLeft;
+	uint8_t InfoLeft;
 
 	if (PLAYER_SAID(R, happy_to_tell_more))
 	{
@@ -330,7 +330,7 @@ HumanInfo(RESPONSE_REF R)
 static void
 SlylandroInfo(RESPONSE_REF R)
 {
-	uqm::BYTE InfoLeft;
+	uint8_t InfoLeft;
 
 	if (PLAYER_SAID(R, like_more_about_you))
 	{
@@ -480,7 +480,7 @@ static void ProbeInfo(RESPONSE_REF R);
 static void
 ProbeFunction(RESPONSE_REF R)
 {
-	uqm::BYTE LastStack;
+	uint8_t LastStack;
 	RESPONSE_REF pStr[2];
 
 	LastStack = 0;
@@ -620,7 +620,7 @@ ProbeFunction(RESPONSE_REF R)
 static void
 ProbeInfo(RESPONSE_REF R)
 {
-	uqm::BYTE i, LastStack, InfoLeft;
+	uint8_t i, LastStack, InfoLeft;
 	RESPONSE_REF pStr[3];
 
 	LastStack = 0;
@@ -744,7 +744,7 @@ ProbeInfo(RESPONSE_REF R)
 static void
 HomeWorld(RESPONSE_REF R)
 {
-	uqm::BYTE i, LastStack;
+	uint8_t i, LastStack;
 	RESPONSE_REF pStr[3];
 
 	LastStack = 0;
@@ -943,7 +943,7 @@ HomeWorld(RESPONSE_REF R)
 static void
 Intro(void)
 {
-	uqm::BYTE NumVisits;
+	uint8_t NumVisits;
 
 
 	if (IS_HD)
@@ -987,7 +987,7 @@ Intro(void)
 	HomeWorld((RESPONSE_REF)0);
 }
 
-static uqm::COUNT
+static uint16_t
 uninit_slylandro(void)
 {
 	luaUqm_comm_uninit();

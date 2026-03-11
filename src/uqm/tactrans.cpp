@@ -386,7 +386,7 @@ void cleanup_dead_ship(ELEMENT* DeadShipPtr)
 }
 
 static void
-setMinShipLifeSpan(ELEMENT* ship, uqm::COUNT life_span)
+setMinShipLifeSpan(ELEMENT* ship, uint16_t life_span)
 {
 	if (ship->death_func == new_ship)
 	{ // The ship has finished exploding or warping out, and now
@@ -401,7 +401,7 @@ setMinShipLifeSpan(ELEMENT* ship, uqm::COUNT life_span)
 }
 
 static void
-setMinStarShipLifeSpan(STARSHIP* starShip, uqm::COUNT life_span)
+setMinStarShipLifeSpan(STARSHIP* starShip, uint16_t life_span)
 {
 	ELEMENT* ship;
 
@@ -557,7 +557,7 @@ void new_ship(ELEMENT* DeadShipPtr)
 static void
 explosion_preprocess(ELEMENT* ShipPtr)
 {
-	uqm::BYTE i;
+	uint8_t i;
 
 	i = (NUM_EXPLOSION_FRAMES * 3) - ShipPtr->life_span;
 	switch (i)
@@ -598,8 +598,8 @@ explosion_preprocess(ELEMENT* ShipPtr)
 		hElement = AllocElement();
 		if (hElement)
 		{
-			uqm::COUNT angle, dist;
-			uqm::DWORD rand_val;
+			uint16_t angle, dist;
+			uint32_t rand_val;
 			ELEMENT* ElementPtr;
 			extern FRAME explosion[];
 
@@ -733,7 +733,7 @@ void StartShipExplosion(ELEMENT* ShipPtr, bool playSound)
 	}
 
 	DeltaEnergy(ShipPtr,
-				-(uqm::SIZE)StarShipPtr->RaceDescPtr->ship_info.energy_level);
+				-(int16_t)StarShipPtr->RaceDescPtr->ship_info.energy_level);
 
 	ShipPtr->life_span = NUM_EXPLOSION_FRAMES * 3;
 	ShipPtr->state_flags &= ~DISAPPEARING;
@@ -812,7 +812,7 @@ cycle_ion_trail(ELEMENT* ElementPtr)
 	} // else, the element disappears.
 }
 
-void spawn_ion_trail(ELEMENT* ElementPtr, uqm::SIZE x_offset, uqm::SIZE y_offset)
+void spawn_ion_trail(ELEMENT* ElementPtr, int16_t x_offset, int16_t y_offset)
 {
 	HELEMENT hIonElement;
 
@@ -822,7 +822,7 @@ void spawn_ion_trail(ELEMENT* ElementPtr, uqm::SIZE x_offset, uqm::SIZE y_offset
 	if (hIonElement)
 	{
 #define ION_LIFE 1
-		uqm::COUNT angle;
+		uint16_t angle;
 		GFXRECT r;
 		ELEMENT* IonElementPtr;
 		STARSHIP* StarShipPtr;
@@ -939,7 +939,7 @@ void ship_transition(ELEMENT* ElementPtr)
 		{
 #define TRANSITION_SPEED DISPLAY_TO_WORLD(RES_SCALE(40))
 #define TRANSITION_LIFE 1
-			uqm::COUNT angle;
+			uint16_t angle;
 
 			PutElement(hShipImage);
 
@@ -973,8 +973,8 @@ void ship_transition(ELEMENT* ElementPtr)
 				// JMS_GFX: Circumventing overflows by using temp variables
 				// instead of subtracting straight from the GFXPOINT sized
 				// ShipImagePtr->current.location.
-				uqm::SDWORD temp_x = (uqm::SDWORD)ShipImagePtr->current.location.x - COSINE(angle, TRANSITION_SPEED) * (ElementPtr->life_span - 1);
-				uqm::SDWORD temp_y = (uqm::SDWORD)ShipImagePtr->current.location.y - SINE(angle, TRANSITION_SPEED) * (ElementPtr->life_span - 1);
+				int32_t temp_x = (int32_t)ShipImagePtr->current.location.x - COSINE(angle, TRANSITION_SPEED) * (ElementPtr->life_span - 1);
+				int32_t temp_y = (int32_t)ShipImagePtr->current.location.y - SINE(angle, TRANSITION_SPEED) * (ElementPtr->life_span - 1);
 
 				ShipImagePtr->current.location.x = WRAP_X(temp_x);
 				ShipImagePtr->current.location.y = WRAP_Y(temp_y);

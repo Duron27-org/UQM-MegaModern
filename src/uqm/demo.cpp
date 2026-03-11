@@ -72,7 +72,7 @@ void JournalInput(INPUT_STATE InputState)
 
 void OpenJournal(void)
 {
-	uqm::DWORD start_seed;
+	uint32_t start_seed;
 
 #if CREATE_JOURNAL
 	if (create_journal)

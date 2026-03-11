@@ -120,8 +120,8 @@ static RACE_DESC slylandro_desc =
 		0, /* CodeRef */
 };
 
-static uqm::COUNT initialize_lightning(ELEMENT* ElementPtr,
-									   HELEMENT LaserArray[]);
+static uint16_t initialize_lightning(ELEMENT* ElementPtr,
+									 HELEMENT LaserArray[]);
 
 static void
 lightning_postprocess(ELEMENT* ElementPtr)
@@ -157,7 +157,7 @@ lightning_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
 	weapon_collision(ElementPtr0, pPt0, ElementPtr1, pPt1);
 }
 
-static uqm::COUNT
+static uint16_t
 initialize_lightning(ELEMENT* ElementPtr, HELEMENT LaserArray[])
 {
 	LASER_BLOCK LaserBlock;
@@ -175,9 +175,9 @@ initialize_lightning(ELEMENT* ElementPtr, HELEMENT LaserArray[])
 
 	if (LaserArray[0])
 	{
-		uqm::SIZE delta;
-		uqm::COUNT angle, facing;
-		uqm::DWORD rand_val;
+		int16_t delta;
+		uint16_t angle, facing;
+		uint32_t rand_val;
 		ELEMENT* LaserPtr;
 		STARSHIP* StarShipPtr;
 
@@ -273,7 +273,7 @@ initialize_lightning(ELEMENT* ElementPtr, HELEMENT LaserArray[])
 
 static void
 slylandro_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
-					   uqm::COUNT ConcernCounter)
+					   uint16_t ConcernCounter)
 {
 	EVALUATE_DESC* lpEvalDesc;
 	STARSHIP* StarShipPtr;
@@ -344,7 +344,7 @@ harvest_space_junk(ELEMENT* ElementPtr)
 			&& !GRAVITY_MASS(ObjPtr->mass_points)
 			&& CollisionPossible(ObjPtr, ElementPtr))
 		{
-			uqm::SDWORD dx, dy;
+			int32_t dx, dy;
 
 			if ((dx = ObjPtr->next.location.x
 					- ElementPtr->next.location.x)

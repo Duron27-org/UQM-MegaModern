@@ -34,7 +34,7 @@
 
 typedef SDL_Surface* NativeCanvas;
 
-// uqm::BYTE x uqm::BYTE weight (mult >> 8) table
+// uint8_t x uint8_t weight (mult >> 8) table
 static Uint8 btable[256][256];
 
 void TFB_DrawCanvas_Initialize(void)
@@ -78,7 +78,7 @@ checkPrimitiveMode(SDL_Surface* surf, Color* color, DrawMode* mode)
 #endif
 
 void TFB_DrawCanvas_Line(int x1, int y1, int x2, int y2, Color color,
-						 DrawMode mode, TFB_Canvas target, uqm::BYTE thickness)
+						 DrawMode mode, TFB_Canvas target, uint8_t thickness)
 {
 	SDL_Surface* dst = (SDL_Surface*)target;
 	SDL_PixelFormat* fmt = dst->format;
@@ -1022,7 +1022,7 @@ void TFB_DrawCanvas_Delete(TFB_Canvas canvas)
 	}
 }
 
-bool TFB_DrawCanvas_GetFontCharData(TFB_Canvas canvas, uqm::BYTE* outData,
+bool TFB_DrawCanvas_GetFontCharData(TFB_Canvas canvas, uint8_t* outData,
 									unsigned dataPitch)
 {
 	SDL_Surface* surf = (SDL_Surface*)canvas;
@@ -1041,11 +1041,11 @@ bool TFB_DrawCanvas_GetFontCharData(TFB_Canvas canvas, uqm::BYTE* outData,
 
 	getpix = getpixel_for(surf);
 
-	// produce an alpha-only image in internal uqm::BYTE[] format
+	// produce an alpha-only image in internal uint8_t[] format
 	//  from the SDL surface
 	for (y = 0; y < surf->h; ++y)
 	{
-		uqm::BYTE* dst = outData + dataPitch * y;
+		uint8_t* dst = outData + dataPitch * y;
 
 		for (x = 0; x < surf->w; ++x, ++dst)
 		{
@@ -2348,7 +2348,7 @@ bool TFB_DrawCanvas_SetPixelColors(TFB_Canvas canvas, const Color* pixels,
 // and in that case, only the relevant pixels will be transfered.
 static bool
 TFB_DrawCanvas_TransferIndexes(TFB_Canvas canvas, bool write,
-							   uqm::BYTE* data, int width, int height)
+							   uint8_t* data, int width, int height)
 {
 	SDL_Surface* surf = (SDL_Surface*)canvas;
 	const SDL_PixelFormat* fmt;
@@ -2379,15 +2379,15 @@ TFB_DrawCanvas_TransferIndexes(TFB_Canvas canvas, bool write,
 	{
 		Uint8* surf_p = (Uint8*)surf->pixels + y * surf->pitch;
 		// pixels array pitch is width so as not to violate the interface
-		uqm::BYTE* data_p = data + y * width;
+		uint8_t* data_p = data + y * width;
 
 		if (write)
 		{ // writing from data to surface
-			memcpy(surf_p, data_p, w * sizeof(uqm::BYTE));
+			memcpy(surf_p, data_p, w * sizeof(uint8_t));
 		}
 		else
 		{ // reading from surface to data
-			memcpy(data_p, surf_p, w * sizeof(uqm::BYTE));
+			memcpy(data_p, surf_p, w * sizeof(uint8_t));
 		}
 	}
 
@@ -2398,7 +2398,7 @@ TFB_DrawCanvas_TransferIndexes(TFB_Canvas canvas, bool write,
 
 // Read the indexed canvas pixels as palette indexes.
 // See TFB_DrawCanvas_TransferIndexes() for data array info.
-bool TFB_DrawCanvas_GetPixelIndexes(TFB_Canvas canvas, uqm::BYTE* data,
+bool TFB_DrawCanvas_GetPixelIndexes(TFB_Canvas canvas, uint8_t* data,
 									int width, int height)
 {
 	return TFB_DrawCanvas_TransferIndexes(canvas, false, data,
@@ -2407,10 +2407,10 @@ bool TFB_DrawCanvas_GetPixelIndexes(TFB_Canvas canvas, uqm::BYTE* data,
 
 // Write the indexed canvas pixels as palette indexes.
 // See TFB_DrawCanvas_TransferIndexes() for data array info.
-bool TFB_DrawCanvas_SetPixelIndexes(TFB_Canvas canvas, const uqm::BYTE* data,
+bool TFB_DrawCanvas_SetPixelIndexes(TFB_Canvas canvas, const uint8_t* data,
 									int width, int height)
 {
 	// unconst data, but it is safe -- it will not be written to
-	return TFB_DrawCanvas_TransferIndexes(canvas, true, (uqm::BYTE*)data,
+	return TFB_DrawCanvas_TransferIndexes(canvas, true, (uint8_t*)data,
 										  width, height);
 }

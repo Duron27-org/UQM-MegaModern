@@ -79,7 +79,7 @@ GenerateSlylandro_generateName(const SOLARSYS_STATE* solarSys,
 	if (matchWorld(solarSys, world, MATCH_PBYTE, MATCH_PLANET)
 		&& GET_GAME_STATE(SLYLANDRO_HOME_VISITS))
 	{
-		uqm::BYTE PlanetByte = solarSys->SunDesc[0].PlanetByte;
+		uint8_t PlanetByte = solarSys->SunDesc[0].PlanetByte;
 		PLANET_DESC pPlanetDesc = solarSys->PlanetDesc[PlanetByte];
 
 		utf8StringCopy(GLOBAL_SIS(PlanetName),

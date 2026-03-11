@@ -121,17 +121,17 @@ err:
 }
 
 // XXX: move this to elsewhere?
-uqm::COUNT
+uint16_t
 MeleeTeam_getValue(const MeleeTeam* team)
 {
-	uqm::COUNT total = 0;
+	uint16_t total = 0;
 	FleetShipIndex slotI;
 
 	for (slotI = 0; slotI < MELEE_FLEET_SIZE; slotI++)
 	{
 		MeleeShip ship = team->ships[slotI];
-		uqm::COUNT shipValue = GetShipValue(ship);
-		if (shipValue == (uqm::COUNT)~0)
+		uint16_t shipValue = GetShipValue(ship);
+		if (shipValue == (uint16_t)~0)
 		{
 			// Invalid ship.
 			continue;
@@ -325,7 +325,7 @@ MeleeSetup_getTeamName(const MeleeSetup* setup, size_t teamNr)
 	return MeleeTeam_getTeamName(&setup->teams[teamNr]);
 }
 
-uqm::COUNT
+uint16_t
 MeleeSetup_getFleetValue(const MeleeSetup* setup, size_t teamNr)
 {
 	return setup->fleetValue[teamNr];

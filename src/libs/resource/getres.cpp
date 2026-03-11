@@ -137,7 +137,7 @@ void* res_GetResource(RESOURCE res)
 	// May still be nullptr, if the load failed.
 }
 
-uqm::DWORD
+uint32_t
 res_GetIntResource(RESOURCE res)
 {
 	RESOURCE_INDEX resourceIndex;

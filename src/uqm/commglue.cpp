@@ -32,16 +32,15 @@
 #include <assert.h>
 #include "libs/math/random.h"
 
-uqm::COUNT RoboTrack[NUM_ROBO_TRACKS];
+uint16_t RoboTrack[NUM_ROBO_TRACKS];
 
-static int NPCNumberPhrase(int number, const char* fmt, uqm::CHAR_T** ptrack);
+static int NPCNumberPhrase(int number, const char* fmt, char** ptrack);
 
 // Scans forward until outside of the interpolation then returns the start
 // of the new section of text.
-uqm::CHAR_T*
-ScanInterpolation(uqm::CHAR_T* start)
+char* ScanInterpolation(char* start)
 {
-	uqm::COUNT depth = 1;
+	uint16_t depth = 1;
 	if (!start || start[0] != '<')
 	{
 		return start;
@@ -68,7 +67,7 @@ ScanInterpolation(uqm::CHAR_T* start)
 }
 
 // Will the chunk between [end - start] require robot voicing?
-bool RoboInterpolation(uqm::CHAR_T* start, uqm::CHAR_T* end)
+bool RoboInterpolation(char* start, char* end)
 {
 	static constexpr const char* RoboPhrases[] = {
 		"getPoint",
@@ -79,7 +78,7 @@ bool RoboInterpolation(uqm::CHAR_T* start, uqm::CHAR_T* end)
 
 	for (const char* phrase : RoboPhrases)
 	{
-		if (uqm::CHAR_T* result {strstr(start, phrase)}; result && result < end)
+		if (char* result {strstr(start, phrase)}; result && result < end)
 		{
 			return true;
 		}
@@ -89,13 +88,12 @@ bool RoboInterpolation(uqm::CHAR_T* start, uqm::CHAR_T* end)
 
 // This will write to buffer the interpolated chunk, while returning a new
 // "start" value from the original string where interpolation ended.
-uqm::CHAR_T*
-InterpolateChunk(uqstl::span<uqm::CHAR_T> buffer, uqm::CHAR_T* start)
+char* InterpolateChunk(uqstl::span<char> buffer, char* start)
 {
-	uqm::CHAR_T* end = start;
-	uqm::CHAR_T str_buf[MAX_INTERPOLATE] = "";
-	uqm::CHAR_T* pStr;
-	uqm::COUNT buffsize = 0;
+	char* end = start;
+	char str_buf[MAX_INTERPOLATE] = "";
+	char* pStr;
+	uint16_t buffsize = 0;
 	bool done = false;
 
 	while ((end = strstr(start, "<%")) && !done)
@@ -127,7 +125,7 @@ InterpolateChunk(uqstl::span<uqm::CHAR_T> buffer, uqm::CHAR_T* start)
 			}
 			done = true;
 		}
-		
+
 		uqm::strncpy_safe(str_buf, {start, end});
 		pStr = luaUqm_comm_stringInterpolate(str_buf);
 		if (!pStr)
@@ -135,7 +133,7 @@ InterpolateChunk(uqstl::span<uqm::CHAR_T> buffer, uqm::CHAR_T* start)
 			fmt::print(stderr, "Interpolation failure (null return).\n");
 			return nullptr;
 		}
-		buffsize += (uqm::COUNT)strlen(pStr);
+		buffsize += (uint16_t)strlen(pStr);
 		if (buffsize > MAX_INTERPOLATE)
 		{
 			fmt::print(stderr, "String too long to interpolate.\n");
@@ -154,7 +152,7 @@ InterpolateChunk(uqstl::span<uqm::CHAR_T> buffer, uqm::CHAR_T* start)
 	}
 	// Otherwise we're done with interpolation, write the remainder
 	// to buffer and return
-	buffsize += (uqm::COUNT)strlen(start);
+	buffsize += (uint16_t)strlen(start);
 	if (buffsize > MAX_INTERPOLATE)
 	{
 		fmt::print(stderr, "String too long to interpolate.\n");
@@ -166,9 +164,9 @@ InterpolateChunk(uqstl::span<uqm::CHAR_T> buffer, uqm::CHAR_T* start)
 
 // Creates the file name of subclip # clip_number, and prints it to buffer.
 // Assumes track names end in ".ogg".
-void GetSubClip(uqstl::span<uqm::CHAR_T> buffer, uqm::CHAR_T* pClip, uqm::COUNT clip_number)
+void GetSubClip(uqstl::span<char> buffer, char* pClip, uint16_t clip_number)
 {
-	uqm::CHAR_T* pStr = strstr(pClip, ".ogg");
+	char* pStr = strstr(pClip, ".ogg");
 	if (!pStr)
 	{
 		// Fall through passing back the whole thing
@@ -182,19 +180,19 @@ void GetSubClip(uqstl::span<uqm::CHAR_T> buffer, uqm::CHAR_T* pClip, uqm::COUNT 
 // on the Starcon2Main thread
 void NPCPhrase_cb(int index, CallbackFunction cb)
 {
-	uqm::CHAR_T* pStr;
-	uqm::CHAR_T* pClip;
-	uqm::CHAR_T* pTimeStamp;
+	char* pStr;
+	char* pClip;
+	char* pTimeStamp;
 	bool isPStrAlloced = false;
-	uqm::COUNT clip_number = 0;
-	uqm::COUNT i;
+	uint16_t clip_number = 0;
+	uint16_t i;
 
 	if (index == 0)
 	{
 		return;
 	}
 
-	pStr = (uqm::CHAR_T*)GetStringAddress(
+	pStr = (char*)GetStringAddress(
 		SetAbsStringTableIndex(CommData.ConversationPhrases, index - 1));
 	pClip = GetStringSoundClip(
 		SetAbsStringTableIndex(CommData.ConversationPhrases, index - 1));
@@ -232,7 +230,7 @@ void NPCPhrase_cb(int index, CallbackFunction cb)
 	// instead of the correct ones for debugging or track syncing purposes.
 	STRING Pkunk = CaptureStringTable(
 		LoadStringTableInstance("comm.pkunk.dialogue"));
-	pStr = (uqm::CHAR_T*)GetStringAddress(
+	pStr = (char*)GetStringAddress(
 		SetAbsStringTableIndex(Pkunk, 43));
 	pClip = GetStringSoundClip(
 		SetAbsStringTableIndex(Pkunk, 43));
@@ -310,19 +308,19 @@ void NPCPhrase_cb(int index, CallbackFunction cb)
 		{
 			// This requires one or more robo-tracks or swap-if subclips
 			// which we will MultiSplice into the main track.
-			//uqm::CHAR_T *tracks[NUM_ROBO_TRACKS + 1] =
+			//char *tracks[NUM_ROBO_TRACKS + 1] =
 			//{ [0 ... NUM_ROBO_TRACKS] = nullptr };
-			uqm::CHAR_T* tracks[NUM_ROBO_TRACKS + 1] = {nullptr};
+			char* tracks[NUM_ROBO_TRACKS + 1] = {nullptr};
 			for (i = 0; i < NUM_ROBO_TRACKS && RoboTrack[i]; i++)
 			{
-				if (RoboTrack[i] == (uqm::COUNT)~0)
+				if (RoboTrack[i] == (uint16_t)~0)
 				{
 					// ~0 is a subclip whose name is based off the primary clip
 					// We need to allocate a temp buffer and clean it up later
 #ifdef DEBUG_STARSEED
 					fmt::print(stderr, "Allocating for track {}.\n", i);
 #endif
-					tracks[i] = (uqm::CHAR_T*)HCalloc(sizeof(char) * MAX_CLIPNAME);
+					tracks[i] = (char*)HCalloc(sizeof(char) * MAX_CLIPNAME);
 					GetSubClip({tracks[i], MAX_CLIPNAME}, pClip, clip_number);
 #ifdef DEBUG_STARSEED
 					fmt::print(stderr, "RoboTrack[{}] = <<{}>>.\n", i, tracks[i]);
@@ -350,7 +348,7 @@ void NPCPhrase_cb(int index, CallbackFunction cb)
 			SpliceMultiTrack(tracks, str_buf);
 			for (i = 0; i < NUM_ROBO_TRACKS && RoboTrack[i]; i++)
 			{
-				if (RoboTrack[i] == (uqm::COUNT)~0)
+				if (RoboTrack[i] == (uint16_t)~0)
 				{
 #ifdef DEBUG_STARSEED
 					fmt::print(stderr, "Freeing track {}.\n", i);
@@ -367,7 +365,7 @@ void NPCPhrase_cb(int index, CallbackFunction cb)
 // Special case variant: prevents page breaks.
 void NPCPhrase_splice(int index)
 {
-	uqm::CHAR_T* pStr;
+	char* pStr;
 	void* pClip;
 
 	assert(index >= 0);
@@ -376,7 +374,7 @@ void NPCPhrase_splice(int index)
 		return;
 	}
 
-	pStr = (uqm::CHAR_T*)GetStringAddress(
+	pStr = (char*)GetStringAddress(
 		SetAbsStringTableIndex(CommData.ConversationPhrases, index - 1));
 	pClip = GetStringSoundClip(
 		SetAbsStringTableIndex(CommData.ConversationPhrases, index - 1));
@@ -387,16 +385,16 @@ void NPCPhrase_splice(int index)
 	}
 	else
 	{ // Splicing in some voice
-		uqm::CHAR_T* tracks[] = {nullptr, nullptr};
+		char* tracks[] = {nullptr, nullptr};
 
-		tracks[0] = (uqm::CHAR_T*)pClip;
+		tracks[0] = (char*)pClip;
 		SpliceMultiTrack(tracks, pStr);
 	}
 }
 
 void NPCNumber(int number, const char* fmt)
 {
-	uqm::CHAR_T buf[32] {};
+	char buf[32] {};
 
 	if (!fmt)
 	{
@@ -415,15 +413,15 @@ void NPCNumber(int number, const char* fmt)
 }
 
 static int
-NPCNumberPhrase(int number, const char* fmt, uqm::CHAR_T** ptrack)
+NPCNumberPhrase(int number, const char* fmt, char** ptrack)
 {
 #define MAX_NUMBER_TRACKS 20
 	NUMBER_SPEECH speech = CommData.AlienNumberSpeech;
-	uqm::COUNT i;
+	uint16_t i;
 	int queued = 0;
 	int toplevel = 0;
-	uqm::CHAR_T* TrackNames[MAX_NUMBER_TRACKS];
-	uqm::CHAR_T numbuf[60] {};
+	char* TrackNames[MAX_NUMBER_TRACKS];
+	char numbuf[60] {};
 	const SPEECH_DIGIT* dig = nullptr;
 
 	if (!speech)
@@ -461,7 +459,7 @@ NPCNumberPhrase(int number, const char* fmt, uqm::CHAR_T** ptrack)
 
 		if (dig->StrDigits)
 		{
-			uqm::COUNT index;
+			uint16_t index;
 
 			assert(quot < 10);
 			index = dig->StrDigits[quot];
@@ -524,10 +522,10 @@ NPCNumberPhrase(int number, const char* fmt, uqm::CHAR_T** ptrack)
 	return queued;
 }
 
-void construct_response(uqstl::span<uqm::CHAR_T> buf, int R /* promoted from RESPONSE_REF */, ...)
+void construct_response(uqstl::span<char> buf, int R /* promoted from RESPONSE_REF */, ...)
 {
-	uqm::CHAR_T* buf_start = buf.data();
-	uqm::CHAR_T* name;
+	char* buf_start = buf.data();
+	char* name;
 	va_list vlist;
 
 	va_start(vlist, R);
@@ -544,10 +542,10 @@ void construct_response(uqstl::span<uqm::CHAR_T> buf, int R /* promoted from RES
 
 		S = SetAbsStringTableIndex(CommData.ConversationPhrases, R - 1);
 
-		uqm::COUNT len = uqm::strncpy_safe(destBuf, (uqm::CHAR_T*)GetStringAddress(S));
+		uint16_t len = uqm::strncpy_safe(destBuf, (char*)GetStringAddress(S));
 		destBuf = destBuf.subspan(len);
 
-		name = va_arg(vlist, uqm::CHAR_T*);
+		name = va_arg(vlist, char*);
 
 		if (name)
 		{
@@ -586,7 +584,7 @@ void setSegue(Segue segue)
 			break;
 		case Segue_defeat:
 			SET_GAME_STATE(BATTLE_SEGUE, 0);
-			GLOBAL_SIS(CrewEnlisted) = (uqm::COUNT)~0;
+			GLOBAL_SIS(CrewEnlisted) = (uint16_t)~0;
 			GLOBAL(CurrentActivity) |= CHECK_RESTART;
 			break;
 	}
@@ -596,7 +594,7 @@ Segue getSegue(void)
 {
 	if (GET_GAME_STATE(BATTLE_SEGUE) == 0)
 	{
-		if (GLOBAL_SIS(CrewEnlisted) == (uqm::COUNT)~0 && (GLOBAL(CurrentActivity) & CHECK_RESTART))
+		if (GLOBAL_SIS(CrewEnlisted) == (uint16_t)~0 && (GLOBAL(CurrentActivity) & CHECK_RESTART))
 		{
 			return Segue_defeat;
 		}

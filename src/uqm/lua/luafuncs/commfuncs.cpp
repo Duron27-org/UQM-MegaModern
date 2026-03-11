@@ -41,7 +41,7 @@
 #include <ctype.h>		 // for islower, isupper, toupper
 
 
-extern uqm::COUNT RoboTrack[];
+extern uint16_t RoboTrack[];
 static const char npcPhraseCallbackRegistryKey[] =
 	"uqm_comm_npcPhraseCallback";
 // Key in the registry storing the callback function for
@@ -402,7 +402,7 @@ luaUqm_comm_setCustomBaseline(lua_State* luaState)
 {
 	static const char* const textAlign[] =
 		{"ALIGN_LEFT", "ALIGN_CENTER", "ALIGN_RIGHT", nullptr};
-	uqm::COUNT lineNumber = luaL_checkint(luaState, 1);
+	uint16_t lineNumber = luaL_checkint(luaState, 1);
 	COORD baselineX = luaL_checkint(luaState, 2);
 	COORD baselineY = luaL_checkint(luaState, 3);
 	int alignment =
@@ -429,7 +429,7 @@ luaUqm_comm_getPoint(lua_State* luaState)
 		return 1;
 	}
 	const char* plot_name = luaL_checkstring(luaState, 2);
-	uqm::COUNT plot_id = PlotIdStrToIndex(plot_name);
+	uint16_t plot_id = PlotIdStrToIndex(plot_name);
 #ifdef DEBUG_STARSEED
 	fmt::print(stderr, "get Point called ({} {}) plot ID {}\n", prime_text,
 			   plot_name, plot_id);
@@ -465,7 +465,7 @@ luaUqm_comm_getPoint(lua_State* luaState)
 // If the first character of key is upper, upper the first char of dialog.
 void CheckCase(const char* key, char* dialog)
 {
-	uqm::COUNT i = 0;
+	uint16_t i = 0;
 	if (isupper(key[0]) && isupper(key[1]))
 	{
 		while (dialog[i] != '\0')
@@ -493,7 +493,7 @@ luaUqm_comm_getStarName(lua_State* luaState)
 		return 1;
 	}
 	const char* plot_name = luaL_checkstring(luaState, 2);
-	uqm::COUNT plot_id = PlotIdStrToIndex(plot_name);
+	uint16_t plot_id = PlotIdStrToIndex(plot_name);
 #ifdef DEBUG_STARSEED
 	fmt::print(stderr, "get Star Name called ({} {}) plot ID {}\n",
 			   prime_text, plot_name, plot_id);
@@ -534,7 +534,7 @@ luaUqm_comm_getConstellation(lua_State* luaState)
 		return 1;
 	}
 	const char* plot_name = luaL_checkstring(luaState, 2);
-	uqm::COUNT plot_id = PlotIdStrToIndex(plot_name);
+	uint16_t plot_id = PlotIdStrToIndex(plot_name);
 #ifdef DEBUG_STARSEED
 	fmt::print(stderr, "get Constellation called ({} {}) plot ID {}\n",
 			   prime_text, plot_name, plot_id);
@@ -569,7 +569,7 @@ luaUqm_comm_getColor(lua_State* luaState)
 		return 1;
 	}
 	const char* plot_name = luaL_checkstring(luaState, 2);
-	uqm::COUNT plot_id = PlotIdStrToIndex(plot_name);
+	uint16_t plot_id = PlotIdStrToIndex(plot_name);
 #ifdef DEBUG_STARSEED
 	fmt::print(stderr, "get Color called ({} {})\n", prime_text, plot_name);
 #endif
@@ -648,6 +648,6 @@ luaUqm_comm_swapIfSeeded(lua_State* luaState)
 	fmt::print(stderr, "Swap If Seeded called ({} {})\n", prime_text, seed_text);
 #endif
 	lua_pushstring(luaState, seed_text);
-	RoboTrack[0] = (uqm::COUNT)~0;
+	RoboTrack[0] = (uint16_t)~0;
 	return 1;
 }

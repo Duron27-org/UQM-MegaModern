@@ -56,18 +56,18 @@ extern COORD status_y_offsets[];
 
 extern void InitStatusOffsets(void);
 
-extern void DrawCrewFuelString(COORD y, uqm::SIZE state);
+extern void DrawCrewFuelString(COORD y, int16_t state);
 extern void ClearShipStatus(COORD y);
 extern void OutlineShipStatus(COORD y);
 extern void InitShipStatus(SHIP_INFO* ShipInfoPtr, STARSHIP* StarShipPtr, GFXRECT* pClipRect, bool inMeleeMenu);
 // StarShipPtr or pClipRect can be nullptr
 extern void DeltaStatistics(SHIP_INFO* ShipInfoPtr, COORD y_offs,
-							uqm::SIZE crew_delta, uqm::SIZE energy_delta);
+							int16_t crew_delta, int16_t energy_delta);
 extern void DrawBattleCrewAmount(SHIP_INFO* ShipInfoPtr, COORD y_offs);
 
 extern void DrawCaptainsWindow(STARSHIP* StarShipPtr);
-extern bool DeltaEnergy(ELEMENT* ElementPtr, uqm::SIZE energy_delta);
-extern bool DeltaCrew(ELEMENT* ElementPtr, uqm::SIZE crew_delta);
+extern bool DeltaEnergy(ELEMENT* ElementPtr, int16_t energy_delta);
+extern bool DeltaCrew(ELEMENT* ElementPtr, int16_t crew_delta);
 
 extern void PreProcessStatus(ELEMENT* ShipPtr);
 extern void PostProcessStatus(ELEMENT* ShipPtr);

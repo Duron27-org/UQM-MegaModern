@@ -36,12 +36,12 @@ frame_intersect(INTERSECT_CONTROL* pControl0, GFXRECT* pr0,
 				INTERSECT_CONTROL* pControl1, GFXRECT* pr1, TIME_VALUE t0,
 				TIME_VALUE t1)
 {
-	uqm::SDWORD time_error0, time_error1;
-	uqm::SDWORD cycle0, cycle1;
-	uqm::SDWORD dx_0, dy_0, dx_1, dy_1;
-	uqm::SDWORD xincr0, yincr0, xincr1, yincr1;
-	uqm::SDWORD xerror0, xerror1, yerror0, yerror1;
-	uqm::SDWORD iterator, xstep0, ystep0, xstep1, ystep1;
+	int32_t time_error0, time_error1;
+	int32_t cycle0, cycle1;
+	int32_t dx_0, dy_0, dx_1, dy_1;
+	int32_t xincr0, yincr0, xincr1, yincr1;
+	int32_t xerror0, xerror1, yerror0, yerror1;
+	int32_t iterator, xstep0, ystep0, xstep1, ystep1;
 	GFXRECT r_intersect;
 	IMAGE_BOX IB0, IB1;
 	bool check0, check1;
@@ -137,68 +137,68 @@ frame_intersect(INTERSECT_CONTROL* pControl0, GFXRECT* pr0,
 	}
 	else
 	{
-		uqm::SDWORD delta;
-		uqm::DWORD start;
+		int32_t delta;
+		uint32_t start;
 		long error;
 
-		start = (uqm::DWORD)cycle0 * (uqm::DWORD)(t0 - 1);
+		start = (uint32_t)cycle0 * (uint32_t)(t0 - 1);
 		time_error0 = start & ((1 << TIME_SHIFT) - 1);
-		if ((start >>= (uqm::DWORD)TIME_SHIFT) > 0)
+		if ((start >>= (uint32_t)TIME_SHIFT) > 0)
 		{
 			if ((error = (long)xerror0
 					   - (long)dx_0 * (long)start)
 				> 0)
 			{
-				xerror0 = (uqm::SDWORD)error;
+				xerror0 = (int32_t)error;
 			}
 			else
 			{
-				delta = -(uqm::SDWORD)(error / (long)cycle0) + 1;
+				delta = -(int32_t)(error / (long)cycle0) + 1;
 				IB0.Box.corner.x += xincr0 * delta;
-				xerror0 = (uqm::SDWORD)(error + (long)cycle0 * (long)delta);
+				xerror0 = (int32_t)(error + (long)cycle0 * (long)delta);
 			}
 			if ((error = (long)yerror0
 					   - (long)dy_0 * (long)start)
 				> 0)
 			{
-				yerror0 = (uqm::SDWORD)error;
+				yerror0 = (int32_t)error;
 			}
 			else
 			{
-				delta = -(uqm::SDWORD)(error / (long)cycle0) + 1;
+				delta = -(int32_t)(error / (long)cycle0) + 1;
 				IB0.Box.corner.y += yincr0 * delta;
-				yerror0 = (uqm::SDWORD)(error + (long)cycle0 * (long)delta);
+				yerror0 = (int32_t)(error + (long)cycle0 * (long)delta);
 			}
 			pr0->corner = IB0.Box.corner;
 		}
 
-		start = (uqm::DWORD)cycle1 * (uqm::DWORD)(t0 - 1);
+		start = (uint32_t)cycle1 * (uint32_t)(t0 - 1);
 		time_error1 = start & ((1 << TIME_SHIFT) - 1);
-		if ((start >>= (uqm::DWORD)TIME_SHIFT) > 0)
+		if ((start >>= (uint32_t)TIME_SHIFT) > 0)
 		{
 			if ((error = (long)xerror1
 					   - (long)dx_1 * (long)start)
 				> 0)
 			{
-				xerror1 = (uqm::SDWORD)error;
+				xerror1 = (int32_t)error;
 			}
 			else
 			{
-				delta = -(uqm::SDWORD)(error / (long)cycle1) + 1;
+				delta = -(int32_t)(error / (long)cycle1) + 1;
 				IB1.Box.corner.x += xincr1 * delta;
-				xerror1 = (uqm::SDWORD)(error + (long)cycle1 * (long)delta);
+				xerror1 = (int32_t)(error + (long)cycle1 * (long)delta);
 			}
 			if ((error = (long)yerror1
 					   - (long)dy_1 * (long)start)
 				> 0)
 			{
-				yerror1 = (uqm::SDWORD)error;
+				yerror1 = (int32_t)error;
 			}
 			else
 			{
-				delta = -(uqm::SDWORD)(error / (long)cycle1) + 1;
+				delta = -(int32_t)(error / (long)cycle1) + 1;
 				IB1.Box.corner.y += yincr1 * delta;
-				yerror1 = (uqm::SDWORD)(error + (long)cycle1 * (long)delta);
+				yerror1 = (int32_t)(error + (long)cycle1 * (long)delta);
 			}
 			pr1->corner = IB1.Box.corner;
 		}
@@ -279,8 +279,8 @@ TIME_VALUE
 DrawablesIntersect(INTERSECT_CONTROL* pControl0,
 				   INTERSECT_CONTROL* pControl1, TIME_VALUE max_time_val)
 {
-	uqm::SDWORD dy;
-	uqm::SDWORD time_y_0, time_y_1;
+	int32_t dy;
+	int32_t time_y_0, time_y_1;
 	GFXRECT r0, r1;
 	FRAME FramePtr0, FramePtr1;
 
@@ -328,8 +328,8 @@ DrawablesIntersect(INTERSECT_CONTROL* pControl0,
 		|| (time_y_0 > 0 && dy >= time_y_0)
 		|| (time_y_1 < 0 && dy <= time_y_1))
 	{
-		uqm::SDWORD dx;
-		uqm::SDWORD time_x_0, time_x_1;
+		int32_t dx;
+		int32_t time_x_0, time_x_1;
 
 		dx = r1.corner.x - r0.corner.x;
 		time_x_0 = dx - GetFrameWidth(FramePtr0) + 1;
@@ -348,7 +348,7 @@ DrawablesIntersect(INTERSECT_CONTROL* pControl0,
 			}
 			else
 			{
-				uqm::SDWORD t;
+				int32_t t;
 				long time_beg, time_end, fract;
 
 				if (time_y_1 < 0)
@@ -446,7 +446,7 @@ DrawablesIntersect(INTERSECT_CONTROL* pControl0,
 				}
 				else
 				{
-					time_y_0 = (uqm::SDWORD)(time_beg / fract);
+					time_y_0 = (int32_t)(time_beg / fract);
 				}
 
 				if (time_end >= fract /* just in case of overflow */
@@ -456,7 +456,7 @@ DrawablesIntersect(INTERSECT_CONTROL* pControl0,
 				}
 				else
 				{
-					time_y_1 = (uqm::SDWORD)((time_end + fract - 1) / fract) - 1;
+					time_y_1 = (int32_t)((time_end + fract - 1) / fract) - 1;
 				}
 			}
 

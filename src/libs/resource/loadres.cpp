@@ -21,10 +21,10 @@
 #include "core/log/log.h"
 
 
-void* GetResourceData(uio_Stream* fp, uqm::DWORD length)
+void* GetResourceData(uio_Stream* fp, uint32_t length)
 {
 	void* result;
-	uqm::DWORD compLen;
+	uint32_t compLen;
 
 	// Resource data used to be prefixed by its length in package files.
 	// A valid length prefix indicated compressed data, and
@@ -34,12 +34,12 @@ void* GetResourceData(uio_Stream* fp, uqm::DWORD length)
 	{
 		return nullptr;
 	}
-	if (compLen != ~(uqm::DWORD)0)
+	if (compLen != ~(uint32_t)0)
 	{
 		uqm::log::warn("LZ-compressed binary data not supported");
 		return nullptr;
 	}
-	length -= sizeof(uqm::DWORD);
+	length -= sizeof(uint32_t);
 
 	result = AllocResourceData(length);
 	if (!result)

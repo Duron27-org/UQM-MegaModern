@@ -45,8 +45,8 @@ bool CalculateGravity(ELEMENT* ElementPtr)
 					GRAVITY_MASS(TestElementPtr->mass_points + 1))
 				   != HasGravity)
 		{
-			uqm::COUNT abs_dx, abs_dy;
-			uqm::SIZE dx, dy;
+			uint16_t abs_dx, abs_dy;
+			int16_t dx, dy;
 
 			if (!(ElementPtr->state_flags & PRE_PROCESS))
 			{
@@ -91,23 +91,23 @@ bool CalculateGravity(ELEMENT* ElementPtr)
 			if (abs_dx <= GRAVITY_THRESHOLD
 				&& abs_dy <= GRAVITY_THRESHOLD)
 			{
-				uqm::DWORD dist_squared;
+				uint32_t dist_squared;
 
-				dist_squared = (uqm::DWORD)(abs_dx * abs_dx)
-							 + (uqm::DWORD)(abs_dy * abs_dy);
-				if (dist_squared <= (uqm::DWORD)(GRAVITY_THRESHOLD
-												 * GRAVITY_THRESHOLD))
+				dist_squared = (uint32_t)(abs_dx * abs_dx)
+							 + (uint32_t)(abs_dy * abs_dy);
+				if (dist_squared <= (uint32_t)(GRAVITY_THRESHOLD
+											   * GRAVITY_THRESHOLD))
 				{
 #ifdef NEVER
-					uqm::COUNT magnitude;
+					uint16_t magnitude;
 
 #define DIFUSE_GRAVITY RES_SCALE(175) // JMS_GFX: Because of the ifdef NEVER this is actually never run. Well, changed it for consistency
-					dist_squared += (uqm::DWORD)abs_dx * (DIFUSE_GRAVITY << 1)
-								  + (uqm::DWORD)abs_dy * (DIFUSE_GRAVITY << 1)
-								  + ((uqm::DWORD)(DIFUSE_GRAVITY * DIFUSE_GRAVITY) << 1);
-					if ((magnitude = (uqm::COUNT)((uqm::DWORD)(GRAVITY_THRESHOLD
-															   * GRAVITY_THRESHOLD)
-												  / dist_squared))
+					dist_squared += (uint32_t)abs_dx * (DIFUSE_GRAVITY << 1)
+								  + (uint32_t)abs_dy * (DIFUSE_GRAVITY << 1)
+								  + ((uint32_t)(DIFUSE_GRAVITY * DIFUSE_GRAVITY) << 1);
+					if ((magnitude = (uint16_t)((uint32_t)(GRAVITY_THRESHOLD
+														   * GRAVITY_THRESHOLD)
+												/ dist_squared))
 						== 0)
 					{
 						magnitude = 1;
@@ -135,7 +135,7 @@ bool CalculateGravity(ELEMENT* ElementPtr)
 					}
 					else
 					{
-						uqm::COUNT angle;
+						uint16_t angle;
 
 						angle = ARCTAN(dx, dy);
 						DeltaVelocityComponents(&TestElementPtr->velocity,

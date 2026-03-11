@@ -31,9 +31,9 @@ typedef struct xform_control
 {
 	int CMapIndex; // -1 means unused
 	COLORMAPPTR CMapPtr;
-	uqm::SIZE Ticks;
-	uqm::DWORD StartTime;
-	uqm::DWORD EndTime;
+	int16_t Ticks;
+	uint32_t StartTime;
+	uint32_t EndTime;
 	Color OldCMap[NUMBER_OF_PLUTVALS];
 } XFORM_CONTROL;
 
@@ -276,7 +276,7 @@ bool SetColorMap(COLORMAPPTR map)
 {
 	int start, end;
 	int total_size;
-	uqm::UBYTE* colors = (uqm::UBYTE*)map;
+	uint8_t* colors = (uint8_t*)map;
 	TFB_ColorMap** mpp;
 
 	if (!map)
@@ -402,8 +402,8 @@ FlushFadeXForms(void)
 	UnlockMutex(fadeLock);
 }
 
-uqm::DWORD
-FadeScreen(ScreenFadeType fadeType, uqm::SIZE TimeInterval)
+uint32_t
+FadeScreen(ScreenFadeType fadeType, int16_t TimeInterval)
 {
 	TimeCount TimeOut;
 	int FadeEnd;
@@ -475,8 +475,8 @@ finish_colormap_xform(int which)
 	}
 }
 
-static inline uqm::BYTE
-blendChan(uqm::BYTE c1, uqm::BYTE c2, int weight, int scale)
+static inline uint8_t
+blendChan(uint8_t c1, uint8_t c2, int weight, int scale)
 {
 	return c1 + ((int)c2 - c1) * weight / scale;
 }
@@ -488,7 +488,7 @@ bool XFormColorMap_step(void)
 {
 	bool Changed = false;
 	int x;
-	uqm::DWORD Now = GetTimeCounter();
+	uint32_t Now = GetTimeCounter();
 
 	LockMutex(XFormControl.Lock);
 
@@ -519,7 +519,7 @@ bool XFormColorMap_step(void)
 		{
 #define XFORM_SCALE 0x10000
 			TFB_ColorMap* newmap = nullptr;
-			uqm::UBYTE* newClr;
+			uint8_t* newClr;
 			Color* oldClr;
 			int frac;
 			int i;
@@ -527,7 +527,7 @@ bool XFormColorMap_step(void)
 			newmap = clone_colormap(curmap, index);
 
 			oldClr = control->OldCMap;
-			newClr = (uqm::UBYTE*)control->CMapPtr + 2;
+			newClr = (uint8_t*)control->CMapPtr + 2;
 
 			frac = (int)(control->Ticks - TicksLeft) * XFORM_SCALE
 				 / control->Ticks;
@@ -585,19 +585,19 @@ FlushPLUTXForms(void)
 	UnlockMutex(XFormControl.Lock);
 }
 
-static uqm::DWORD
-XFormPLUT(COLORMAPPTR ColorMapPtr, uqm::SIZE TimeInterval)
+static uint32_t
+XFormPLUT(COLORMAPPTR ColorMapPtr, int16_t TimeInterval)
 {
 	TFB_ColorMap* map;
 	XFORM_CONTROL* control;
 	int index;
 	int x;
 	int first_avail = -1;
-	uqm::DWORD EndTime;
-	uqm::DWORD Now;
+	uint32_t EndTime;
+	uint32_t Now;
 
 	Now = GetTimeCounter();
-	index = *(uqm::UBYTE*)ColorMapPtr;
+	index = *(uint8_t*)ColorMapPtr;
 
 	LockMutex(XFormControl.Lock);
 	// Find an available slot, or reuse if required
@@ -660,8 +660,8 @@ XFormPLUT(COLORMAPPTR ColorMapPtr, uqm::SIZE TimeInterval)
 	return (EndTime);
 }
 
-uqm::DWORD
-XFormColorMap(COLORMAPPTR ColorMapPtr, uqm::SIZE TimeInterval)
+uint32_t
+XFormColorMap(COLORMAPPTR ColorMapPtr, int16_t TimeInterval)
 {
 	if (!ColorMapPtr)
 	{
@@ -692,11 +692,11 @@ GetColorMapAddress(COLORMAP colormap)
 }
 
 static void
-DoTransformColorMap(Color* colors, COLORMAPPTR ColorMapPtr, uqm::COUNT from,
-					uqm::COUNT to)
+DoTransformColorMap(Color* colors, COLORMAPPTR ColorMapPtr, uint16_t from,
+					uint16_t to)
 { // New fancy func to change colors of current colormap
 	TFB_ColorMap* map;
-	int p_index = *(uqm::UBYTE*)ColorMapPtr;
+	int p_index = *(uint8_t*)ColorMapPtr;
 	LockMutex(maplock);
 
 	map = colormaps[p_index];
@@ -709,7 +709,7 @@ DoTransformColorMap(Color* colors, COLORMAPPTR ColorMapPtr, uqm::COUNT from,
 
 	{
 		TFB_ColorMap* newmap = nullptr;
-		uqm::UBYTE* newPtr = (uqm::UBYTE*)ColorMapPtr + 2;
+		uint8_t* newPtr = (uint8_t*)ColorMapPtr + 2;
 		Color* c;
 		int i;
 
@@ -730,8 +730,8 @@ DoTransformColorMap(Color* colors, COLORMAPPTR ColorMapPtr, uqm::COUNT from,
 	UnlockMutex(maplock);
 }
 
-void SetColorMapColors(Color* colors, COLORMAPPTR ColorMapPtr, uqm::COUNT from,
-					   uqm::COUNT to)
+void SetColorMapColors(Color* colors, COLORMAPPTR ColorMapPtr, uint16_t from,
+					   uint16_t to)
 {
 	if (!ColorMapPtr)
 	{
@@ -741,16 +741,16 @@ void SetColorMapColors(Color* colors, COLORMAPPTR ColorMapPtr, uqm::COUNT from,
 	DoTransformColorMap(colors, ColorMapPtr, from, to);
 }
 
-Color GetColorMapColor(uqm::COUNT ColorMapIndex, uqm::COUNT ColorIndex)
+Color GetColorMapColor(uint16_t ColorMapIndex, uint16_t ColorIndex)
 {
 	return GetNativePaletteColor(colormaps[ColorMapIndex]->palette,
 								 ColorIndex);
 }
 
-uqm::UBYTE
+uint8_t
 GetColorMapTableIndex(COLORMAP map)
 {
-	uqm::UBYTE* index = (uqm::UBYTE*)GetColorMapAddress(map);
+	uint8_t* index = (uint8_t*)GetColorMapAddress(map);
 
 	return *index;
 }

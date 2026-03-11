@@ -42,7 +42,7 @@ TFB_DrawCommand DCQ[DCQ_MAX];
 
 TFB_DrawCommandQueue DrawCommandQueue;
 
-static inline constexpr uqm::DWORD DCQueueFPS {20};
+static inline constexpr uint32_t DCQueueFPS {20};
 static inline constexpr auto DCQueueTicksForFps {getTicksForFramerate(DCQueueFPS)};
 int RenderedFrames = 0;
 
@@ -332,7 +332,7 @@ RenderFPS(int* fps)
 	if (GoodToGoFPS() && (prevFPS != *fps))
 	{
 		GFXRECT tr;
-		uqm::SIZE w, h;
+		int16_t w, h;
 		int i;
 		int max;
 		int step = 6;
@@ -346,10 +346,10 @@ RenderFPS(int* fps)
 		int x = 14 << resolutionFactor;
 		int y = 7 << resolutionFactor;
 
-		uqm::CHAR_T buf[8] {};
+		char buf[8] {};
 		const auto fmtResult = fmt::format_to_sz_n(buf, "{}", *fps);
 
-		max = fmtResult.size; //(uqm::COUNT) utf8StringCount(buf);
+		max = fmtResult.size; //(uint16_t) utf8StringCount(buf);
 
 		GetFontDims(&w, &h);
 		img = TFB_DrawImage_CreateForScreen(w, h, true);

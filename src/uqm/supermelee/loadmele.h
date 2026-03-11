@@ -33,21 +33,21 @@ extern "C" {
 struct melee_load_state
 {
 	MeleeTeam** preBuiltList;
-	uqm::COUNT preBuiltCount;
+	uint16_t preBuiltCount;
 
 	DIRENTRY dirEntries;
-	uqm::COUNT* entryIndices;
-	uqm::COUNT numIndices;
+	uint16_t* entryIndices;
+	uint16_t numIndices;
 
 	MeleeTeam* view[LOAD_TEAM_VIEW_SIZE];
-	uqm::COUNT top;
+	uint16_t top;
 	// Index of the first entry for the view.
-	uqm::COUNT bot;
+	uint16_t bot;
 	// Index of the first entry past the end of the view.
 
-	uqm::COUNT cur;
+	uint16_t cur;
 	// Index of the current position in the view.
-	uqm::COUNT viewSize;
+	uint16_t viewSize;
 	// Number of entries in the view.
 };
 

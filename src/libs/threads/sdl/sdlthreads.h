@@ -28,16 +28,16 @@ void UnInitThreadSystem_SDL(void);
 
 #ifdef NAMED_SYNCHRO
 /* Prototypes with the "name" field */
-Thread CreateThread_SDL(ThreadFunction func, void* data, uqm::SDWORD stackSize, const char* name);
-Mutex CreateMutex_SDL(const char* name, uqm::DWORD syncClass);
-Semaphore CreateSemaphore_SDL(uqm::DWORD initial, const char* name, uqm::DWORD syncClass);
-RecursiveMutex CreateRecursiveMutex_SDL(const char* name, uqm::DWORD syncClass);
-CondVar CreateCondVar_SDL(const char* name, uqm::DWORD syncClass);
+Thread CreateThread_SDL(ThreadFunction func, void* data, int32_t stackSize, const char* name);
+Mutex CreateMutex_SDL(const char* name, uint32_t syncClass);
+Semaphore CreateSemaphore_SDL(uint32_t initial, const char* name, uint32_t syncClass);
+RecursiveMutex CreateRecursiveMutex_SDL(const char* name, uint32_t syncClass);
+CondVar CreateCondVar_SDL(const char* name, uint32_t syncClass);
 #else
 /* Prototypes without the "name" field. */
-Thread CreateThread_SDL(ThreadFunction func, void* data, uqm::SDWORD stackSize);
+Thread CreateThread_SDL(ThreadFunction func, void* data, int32_t stackSize);
 Mutex CreateMutex_SDL(void);
-Semaphore CreateSemaphore_SDL(uqm::DWORD initial);
+Semaphore CreateSemaphore_SDL(uint32_t initial);
 RecursiveMutex CreateRecursiveMutex_SDL(void);
 CondVar CreateCondVar_SDL(void);
 #endif

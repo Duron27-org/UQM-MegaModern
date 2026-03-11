@@ -200,7 +200,7 @@ DescriptorToColor(const char* descriptor, RESOURCE_DATA* resdata)
 	// or "rgb15(r, g, b)".
 
 	size_t componentCount {};
-	uqm::DWORD comps[4] {0, 0, 0, 0xFF};
+	uint32_t comps[4] {0, 0, 0, 0xFF};
 
 	uint8_t maxComponentValue {0xFF};
 	uint8_t componentBits {8};
@@ -636,7 +636,7 @@ Color res_GetColor(const char* key)
 {
 	RESOURCE_INDEX idx = _get_current_index_header();
 	ResourceDesc* desc = lookupResourceDesc(idx, key);
-	uqm::DWORD num;
+	uint32_t num;
 	if (!desc || strcmp(desc->vtable->resType, "COLOR"))
 	{
 		// TODO: Better error handling

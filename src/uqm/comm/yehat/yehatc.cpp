@@ -148,7 +148,7 @@ static LOCDATA yehat_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond / 30,
 				GameTicksPerSecond / 30, /* RestartRate */
-				0,				 /* BlockMask */
+				0,						 /* BlockMask */
 			},
 								{
 				33,		   /* StartIndex */
@@ -158,7 +158,7 @@ static LOCDATA yehat_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond / 30,
 				GameTicksPerSecond / 30, /* RestartRate */
-				0,				 /* BlockMask */
+				0,						 /* BlockMask */
 			},
 								{
 				36,		   /* StartIndex */
@@ -168,7 +168,7 @@ static LOCDATA yehat_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond / 30,
 				GameTicksPerSecond / 30, /* RestartRate */
-				0,				 /* BlockMask */
+				0,						 /* BlockMask */
 			},
 								{
 				39,		   /* StartIndex */
@@ -178,7 +178,7 @@ static LOCDATA yehat_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond / 30,
 				GameTicksPerSecond / 30, /* RestartRate */
-				0,				 /* BlockMask */
+				0,						 /* BlockMask */
 			},
 								{
 				42,		   /* StartIndex */
@@ -188,7 +188,7 @@ static LOCDATA yehat_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond / 30,
 				GameTicksPerSecond / 30, /* RestartRate */
-				0,				 /* BlockMask */
+				0,						 /* BlockMask */
 			},
 								{
 				45,		   /* StartIndex */
@@ -198,7 +198,7 @@ static LOCDATA yehat_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond / 30,
 				GameTicksPerSecond / 30, /* RestartRate */
-				0,				 /* BlockMask */
+				0,						 /* BlockMask */
 			},
 								{
 				48,						  /* StartIndex */
@@ -263,7 +263,7 @@ ExitConversation(RESPONSE_REF R)
 	}
 	else if (PLAYER_SAID(R, bye_space))
 	{
-		if ((uqm::BYTE)TFB_Random() & 1)
+		if ((uint8_t)TFB_Random() & 1)
 		{
 			NPCPhrase(GOODBYE_AND_DIE_SPACE);
 		}
@@ -303,7 +303,7 @@ ExitConversation(RESPONSE_REF R)
 
 		if (GET_GAME_STATE(YEHAT_ABSORBED_PKUNK) && isDifficulty(uqm::Difficulty::Hard))
 		{ // absorbed before revolution
-			uqm::UWORD state;
+			uint16_t state;
 
 			state = GET_GAME_STATE(HM_ENCOUNTERS);
 
@@ -321,7 +321,7 @@ Royalists(RESPONSE_REF R)
 {
 	if (PLAYER_SAID(R, how_is_rebellion))
 	{
-		uqm::BYTE NumVisits;
+		uint8_t NumVisits;
 
 		NumVisits = GET_GAME_STATE(YEHAT_ROYALIST_INFO);
 		switch (NumVisits++)
@@ -408,7 +408,7 @@ YehatHome(RESPONSE_REF R)
 
 	if (PLAYER_SAID(R, whats_up_homeworld))
 	{
-		uqm::BYTE NumVisits;
+		uint8_t NumVisits;
 
 		NumVisits = GET_GAME_STATE(YEHAT_ROYALIST_INFO);
 		switch (NumVisits++)
@@ -479,7 +479,7 @@ YehatHome(RESPONSE_REF R)
 static void
 YehatSpace(RESPONSE_REF R)
 {
-	uqm::BYTE i, LastStack;
+	uint8_t i, LastStack;
 	RESPONSE_REF pStr[3];
 
 	LastStack = 0;
@@ -489,7 +489,7 @@ YehatSpace(RESPONSE_REF R)
 		|| PLAYER_SAID(R, whats_up_space_3)
 		|| PLAYER_SAID(R, whats_up_space_4))
 	{
-		uqm::BYTE NumVisits;
+		uint8_t NumVisits;
 
 		NumVisits = GET_GAME_STATE(YEHAT_REBEL_INFO);
 		switch (NumVisits++)
@@ -631,7 +631,7 @@ YehatSpace(RESPONSE_REF R)
 static void
 Intro(void)
 {
-	uqm::BYTE NumVisits;
+	uint8_t NumVisits;
 
 	if (lowByte(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE)
 	{
@@ -718,7 +718,7 @@ Intro(void)
 	}
 }
 
-static uqm::COUNT
+static uint16_t
 uninit_yehat(void)
 {
 	luaUqm_comm_uninit();

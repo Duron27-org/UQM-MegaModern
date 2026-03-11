@@ -56,27 +56,27 @@ extern "C" {
 typedef struct
 {
 	SIS_STATE SS;
-	uqm::BYTE Activity;
-	uqm::BYTE Flags;
-	uqm::BYTE day_index, month_index;
-	uqm::COUNT year_index;
-	uqm::BYTE MCreditLo, MCreditHi;
-	uqm::BYTE NumShips, NumDevices;
-	uqm::BYTE ShipList[MAX_BUILT_SHIPS];
-	uqm::BYTE DeviceList[MAX_EXCLUSIVE_DEVICES];
-	uqm::CHAR_T SaveName[SAVE_NAME_SIZE];
-	uqm::CHAR_T SaveNameChecker[SAVE_CHECKER_SIZE];
-	uqm::CHAR_T LegacySaveName[LEGACY_SAVE_NAME_SIZE];
-	uqm::BYTE res_factor;
+	uint8_t Activity;
+	uint8_t Flags;
+	uint8_t day_index, month_index;
+	uint16_t year_index;
+	uint8_t MCreditLo, MCreditHi;
+	uint8_t NumShips, NumDevices;
+	uint8_t ShipList[MAX_BUILT_SHIPS];
+	uint8_t DeviceList[MAX_EXCLUSIVE_DEVICES];
+	char SaveName[SAVE_NAME_SIZE];
+	char SaveNameChecker[SAVE_CHECKER_SIZE];
+	char LegacySaveName[LEGACY_SAVE_NAME_SIZE];
+	uint8_t res_factor;
 } SUMMARY_DESC;
 
 extern ACTIVITY NextActivity;
 
-extern bool LoadGame(uqm::COUNT which_game, SUMMARY_DESC* summary_desc, uio_Stream* in_fp, bool try_core);
-extern bool LoadLegacyGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, bool try_vanilla);
+extern bool LoadGame(uint16_t which_game, SUMMARY_DESC* summary_desc, uio_Stream* in_fp, bool try_core);
+extern bool LoadLegacyGame(uint16_t which_game, SUMMARY_DESC* SummPtr, bool try_vanilla);
 
 extern void SaveProblem(void);
-extern bool SaveGame(uqm::COUNT which_game, SUMMARY_DESC* summary_desc, const char* name);
+extern bool SaveGame(uint16_t which_game, SUMMARY_DESC* summary_desc, const char* name);
 
 extern const GameStateBitMap gameStateBitMap[];
 

@@ -47,9 +47,9 @@
 #define ALL_QUAD (FIRST_QUAD | SECOND_QUAD | THIRD_QUAD | FOURTH_QUAD)
 
 static bool
-PointOnScreen(uqm::SDWORD x, uqm::SDWORD y)
+PointOnScreen(int32_t x, int32_t y)
 {
-	uqm::SDWORD extend = 0;
+	int32_t extend = 0;
 
 	if (IS_HD)
 	{
@@ -100,12 +100,12 @@ TruncateDPoint(DPOINT* p)
 // through ellipse equation. If radius > 1 - point is outside of the ellipse, and if < 1 - inside. In case if one point is inside and the other is
 // outside - then the diagonal crosses the curve somewhere on the screen, therefore the curve is visible. Otherwise, if both points are
 // inside/outside, then the curve is not on screen.
-static uqm::BYTE
+static uint8_t
 CheckOvalCollision(DPOINT* p0, DPOINT* p1)
 {
 	DPOINT mp; // Middle point
-	uqm::BYTE quad_visible = 0;
-	uqm::SDWORD x0, x1, y0, y1; // Coords of top left and bottom right corners of inner rect
+	uint8_t quad_visible = 0;
+	int32_t x0, x1, y0, y1; // Coords of top left and bottom right corners of inner rect
 	double asquared, bsquared;
 	double a, b, x, y, r0, r1;
 
@@ -251,13 +251,13 @@ CheckOvalCollision(DPOINT* p0, DPOINT* p1)
 	return quad_visible;
 }
 
-//static uqm::BYTE
+//static uint8_t
 //CheckOvalCollisionOld (GFXPOINT *ch_one, GFXPOINT *ch_two)
 //{
 //	GFXPOINT mp;
 //	BRESENHAM_LINE ClipLine;
 //	GFXRECT ClipRect;
-//	uqm::BYTE quad_visible = 0;
+//	uint8_t quad_visible = 0;
 //
 //	ClipRect.corner.x = ClipRect.corner.y = 0;
 //	ClipRect.extent.width = SIS_SCREEN_WIDTH;
@@ -321,20 +321,20 @@ CheckOvalCollision(DPOINT* p0, DPOINT* p1)
 //	return quad_visible;
 //}
 
-void DrawOval(DRECT* pRect, uqm::BYTE num_off_pixels, bool scaled)
+void DrawOval(DRECT* pRect, uint8_t num_off_pixels, bool scaled)
 {
-	uqm::COUNT off;
+	uint16_t off;
 	COORD x, y;
-	uqm::SIZE A, B;
-	uqm::SQWORD Asquared, TwoAsquared,
+	int16_t A, B;
+	int64_t Asquared, TwoAsquared,
 		Bsquared, TwoBsquared;
-	uqm::SQWORD d, dx, dy;
-	uqm::BYTE quad_visible;
+	int64_t d, dx, dy;
+	uint8_t quad_visible;
 	PRIMITIVE prim[NUM_QUADS];
-	uqm::COUNT StartPrim;
+	uint16_t StartPrim;
 	DPOINT p0, p1;
 	bool use_pointprim = (!scaled && num_off_pixels <= 1);
-	uqm::BYTE render;
+	uint8_t render;
 
 	p0.x = pRect->corner.x;
 	p0.y = pRect->corner.y;
@@ -399,8 +399,8 @@ void DrawOval(DRECT* pRect, uqm::BYTE num_off_pixels, bool scaled)
 	x = 0;
 	y = B;
 
-	Asquared = ((uqm::SQWORD)A * A) << 1;
-	Bsquared = ((uqm::SQWORD)B * B) << 1;
+	Asquared = ((int64_t)A * A) << 1;
+	Bsquared = ((int64_t)B * B) << 1;
 	do
 	{
 		Asquared >>= 1;
@@ -787,15 +787,15 @@ void DrawFilledOval(DRECT* pRect)
 { // Kruzen: originally there was standard rect, but drawing fuel circle in HD on max zoom causes overflow (Width ~65k)
 	// So unless we want to expand standard rect to support 4 bytes per dimension - use this
 	COORD x, y;
-	uqm::SIZE A, B;
-	uqm::SQWORD Asquared, TwoAsquared,
+	int16_t A, B;
+	int64_t Asquared, TwoAsquared,
 		Bsquared, TwoBsquared;
-	uqm::SQWORD d, dx, dy;
+	int64_t d, dx, dy;
 	PRIMITIVE prim[NUM_QUADS >> 1];
-	uqm::COUNT StartPrim;
+	uint16_t StartPrim;
 	GFXPOINT first, second;
 	DPOINT p0, p1;
-	uqm::COUNT lines_r = 0;
+	uint16_t lines_r = 0;
 
 	p0.x = pRect->corner.x;
 	p0.y = pRect->corner.y;
@@ -844,8 +844,8 @@ void DrawFilledOval(DRECT* pRect)
 	x = 0;
 	y = B;
 
-	Asquared = ((uqm::SQWORD)A * A) << 1;
-	Bsquared = ((uqm::SQWORD)B * B) << 1;
+	Asquared = ((int64_t)A * A) << 1;
+	Bsquared = ((int64_t)B * B) << 1;
 	do
 	{
 		Asquared >>= 1;
@@ -1009,12 +1009,12 @@ void DrawEllipse(int cx, int cy, int rx, int ry, int shear, int filled, int dott
 	int s = shear;
 	int d = 0;
 	const int sRound = (shear < 0) ? -(rx / 2) : (rx / 2);
-	uqm::SQWORD dex = 2 * (long)ry * ry;
-	uqm::SQWORD ex = (long)ry * ry - (long)rx * dex;
-	uqm::SQWORD dey = 2 * (long)rx * rx;
-	uqm::SQWORD ey = (long)rx * rx;
-	uqm::SQWORD e = ex + ey;
-	uqm::SQWORD e2;
+	int64_t dex = 2 * (long)ry * ry;
+	int64_t ex = (long)ry * ry - (long)rx * dex;
+	int64_t dey = 2 * (long)rx * rx;
+	int64_t ey = (long)rx * rx;
+	int64_t e = ex + ey;
+	int64_t e2;
 
 	if (rx < 0)
 	{
@@ -1040,7 +1040,7 @@ void DrawEllipse(int cx, int cy, int rx, int ry, int shear, int filled, int dott
 		if (!filled && !d--)
 		{
 			d = dotted;
-			s = (int)(((uqm::SQWORD)x * shear + sRound) / rx);
+			s = (int)(((int64_t)x * shear + sRound) / rx);
 			DrawEllipseQuadrants(cx, cy, x, y, -s, 0);
 		}
 
@@ -1049,7 +1049,7 @@ void DrawEllipse(int cx, int cy, int rx, int ry, int shear, int filled, int dott
 		{
 			if (filled)
 			{
-				s = (int)(((uqm::SQWORD)x * shear + sRound) / rx);
+				s = (int)(((int64_t)x * shear + sRound) / rx);
 				DrawEllipseQuadrants(cx, cy, x, y, -s, 1);
 			}
 			x--;

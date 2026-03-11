@@ -34,16 +34,16 @@
 #include "setup.h"
 
 bool legacySave;
-uqm::BYTE GTFO = 0;
+uint8_t GTFO = 0;
 extern FRAME SpaceJunkFrame;
 
-static inline uqm::SIZE
+static inline int16_t
 RaceIPSpeed(RACE_ID Index)
 {
 	static int seedStamp = -1;
-	const uqm::SIZE defaultMap[] = {RACE_IP_SPEED};
-	const uqm::COUNT numRaces = sizeof(defaultMap) / sizeof(uqm::COUNT);
-	static uqm::SIZE speedMap[sizeof(defaultMap) / sizeof(uqm::COUNT)] = {0};
+	const int16_t defaultMap[] = {RACE_IP_SPEED};
+	const uint16_t numRaces = sizeof(defaultMap) / sizeof(uint16_t);
+	static int16_t speedMap[sizeof(defaultMap) / sizeof(uint16_t)] = {0};
 	int x;
 	if (!optShipSeed && (seedStamp != -1 || speedMap[0] == 0))
 	{
@@ -82,7 +82,7 @@ RaceIPSpeed(RACE_ID Index)
 	return speedMap[Index];
 }
 
-void NotifyOthers(uqm::COUNT which_race, uqm::BYTE target_loc)
+void NotifyOthers(uint16_t which_race, uint8_t target_loc)
 {
 	HSHIPFRAG hGroup, hNextGroup;
 
@@ -122,9 +122,9 @@ void NotifyOthers(uqm::COUNT which_race, uqm::BYTE target_loc)
 				GroupPtr->dest_loc = GroupPtr->orbit_pos;
 				GroupPtr->orbit_pos = NORMALIZE_FACING(TFB_Random());
 #ifdef OLD
-				GroupPtr->dest_loc = (uqm::BYTE)(((uqm::COUNT)TFB_Random()
-												  % pSolarSysState->SunDesc[0].NumPlanets)
-												 + 1);
+				GroupPtr->dest_loc = (uint8_t)(((uint16_t)TFB_Random()
+												% pSolarSysState->SunDesc[0].NumPlanets)
+											   + 1);
 #endif /* OLD */
 			}
 			// If the group wasn't intercepting, it will just continue
@@ -138,7 +138,7 @@ void NotifyOthers(uqm::COUNT which_race, uqm::BYTE target_loc)
 				}
 				else
 				{
-					GroupPtr->group_counter = ((uqm::COUNT)TFB_Random()
+					GroupPtr->group_counter = ((uint16_t)TFB_Random()
 											   % MAX_REVOLUTIONS)
 										   << FACING_SHIFT;
 				}
@@ -156,8 +156,8 @@ void NotifyOthers(uqm::COUNT which_race, uqm::BYTE target_loc)
 	}
 }
 
-static uqm::SIZE
-zoomRadiusForLocation(uqm::BYTE location)
+static int16_t
+zoomRadiusForLocation(uint8_t location)
 {
 	if (location == 0)
 	{ // In outer system view; use current zoom radius
@@ -170,7 +170,7 @@ zoomRadiusForLocation(uqm::BYTE location)
 }
 
 static inline void
-adjustDeltaVforZoom(uqm::SIZE zoom, uqm::SIZE* dx, uqm::SIZE* dy)
+adjustDeltaVforZoom(int16_t zoom, int16_t* dx, int16_t* dy)
 {
 	if (zoom == MIN_ZOOM_RADIUS)
 	{
@@ -184,7 +184,7 @@ adjustDeltaVforZoom(uqm::SIZE zoom, uqm::SIZE* dx, uqm::SIZE* dy)
 	}
 }
 
-static uqm::BYTE
+static uint8_t
 getFlagshipLocation(void)
 {
 	if (!playerInInnerSystem())
@@ -206,11 +206,11 @@ static void
 ip_group_preprocess(ELEMENT* ElementPtr)
 {
 #define TRACK_WAIT 5
-	uqm::BYTE task;
-	uqm::BYTE target_loc, group_loc, flagship_loc;
-	uqm::SIZE radius;
+	uint8_t task;
+	uint8_t target_loc, group_loc, flagship_loc;
+	int16_t radius;
 	GFXPOINT dest_pt;
-	uqm::SIZE vdx, vdy;
+	int16_t vdx, vdy;
 	ELEMENT* EPtr;
 	IP_GROUP* GroupPtr;
 
@@ -261,7 +261,7 @@ ip_group_preprocess(ELEMENT* ElementPtr)
 		}
 		else
 		{
-			GroupPtr->group_counter = ((uqm::COUNT)TFB_Random()
+			GroupPtr->group_counter = ((uint16_t)TFB_Random()
 									   % MAX_REVOLUTIONS)
 								   << FACING_SHIFT;
 		}
@@ -289,7 +289,7 @@ ip_group_preprocess(ELEMENT* ElementPtr)
 		}
 		else if (group_loc == flagship_loc)
 		{
-			uqm::SWORD detect_dist = 1200;
+			int16_t detect_dist = 1200;
 
 			if (EXTENDED && CheckAlliance((RACE_ID)GroupPtr->race_id) == GOOD_GUY)
 			{
@@ -349,9 +349,9 @@ ip_group_preprocess(ELEMENT* ElementPtr)
 #endif /* NEVER */
 	{
 		bool Transition, isOrbiting;
-		uqm::SIZE dx, dy;
-		uqm::SIZE delta_x, delta_y;
-		uqm::COUNT angle;
+		int16_t dx, dy;
+		int16_t delta_x, delta_y;
+		uint16_t angle;
 		FRAME suggestedFrame;
 		bool FilthyCheater =
 			(GroupPtr->race_id == URQUAN_DRONE_SHIP
@@ -377,7 +377,7 @@ ip_group_preprocess(ELEMENT* ElementPtr)
 			// ship is circling around a planet.
 			else
 			{
-				uqm::COUNT orbit_dist;
+				uint16_t orbit_dist;
 				GFXPOINT org;
 
 				isOrbiting = true;
@@ -398,7 +398,7 @@ ip_group_preprocess(ELEMENT* ElementPtr)
 				if (GroupPtr->loc.x == dest_pt.x
 					&& GroupPtr->loc.y == dest_pt.y)
 				{
-					uqm::BYTE next_loc;
+					uint8_t next_loc;
 
 					GroupPtr->orbit_pos = NORMALIZE_FACING(
 						ANGLE_TO_FACING(angle));
@@ -406,15 +406,15 @@ ip_group_preprocess(ELEMENT* ElementPtr)
 					dest_pt.x = org.x + COSINE(angle, orbit_dist);
 					dest_pt.y = org.y + SINE(angle, orbit_dist);
 
-					EPtr->thrust_wait = (uqm::BYTE)~0;
+					EPtr->thrust_wait = (uint8_t)~0;
 					if (GroupPtr->group_counter)
 					{
 						--GroupPtr->group_counter;
 					}
 					else if (task == EXPLORE
-							 && (next_loc = (uqm::BYTE)(((uqm::COUNT)TFB_Random()
-														 % pSolarSysState->SunDesc[0].NumPlanets)
-														+ 1))
+							 && (next_loc = (uint8_t)(((uint16_t)TFB_Random()
+													   % pSolarSysState->SunDesc[0].NumPlanets)
+													  + 1))
 									!= target_loc)
 					{
 						EPtr->thrust_wait = 0;
@@ -450,14 +450,14 @@ ip_group_preprocess(ELEMENT* ElementPtr)
 		delta_y = dest_pt.y - GroupPtr->loc.y;
 		angle = ARCTAN(delta_x, delta_y);
 
-		if (EPtr->thrust_wait && EPtr->thrust_wait != (uqm::BYTE)~0)
+		if (EPtr->thrust_wait && EPtr->thrust_wait != (uint8_t)~0)
 		{
 			--EPtr->thrust_wait;
 		}
 		else if ((vdx == 0 && vdy == 0)
 				 || angle != GetVelocityTravelAngle(&EPtr->velocity))
 		{
-			uqm::SIZE speed;
+			int16_t speed;
 
 			if (EPtr->thrust_wait && GroupPtr->dest_loc != IPNL_INTERCEPT_PLAYER)
 			{
@@ -493,7 +493,7 @@ ip_group_preprocess(ELEMENT* ElementPtr)
 			else if (target_loc == GroupPtr->dest_loc)
 			{
 PartialRevolution:
-				if ((long)((uqm::COUNT)(dx * dx) + (uqm::COUNT)(dy * dy))
+				if ((long)((uint16_t)(dx * dx) + (uint16_t)(dy * dy))
 					>= (long)delta_x * delta_x + (long)delta_y * delta_y)
 				{
 					GroupPtr->loc = dest_pt;
@@ -513,7 +513,7 @@ PartialRevolution:
 				{
 					goto PartialRevolution;
 				}
-				else if ((long)((uqm::COUNT)(dx * dx) + (uqm::COUNT)(dy * dy))
+				else if ((long)((uint16_t)(dx * dx) + (uint16_t)(dy * dy))
 						 >= (long)delta_x * delta_x + (long)delta_y * delta_y)
 				{
 					Transition = true;
@@ -566,7 +566,7 @@ CheckGetAway:
 						GroupPtr->orbit_pos = NORMALIZE_FACING(
 							ANGLE_TO_FACING(angle + HALF_CIRCLE));
 						GroupPtr->group_counter =
-							((uqm::COUNT)TFB_Random() % MAX_REVOLUTIONS)
+							((uint16_t)TFB_Random() % MAX_REVOLUTIONS)
 							<< FACING_SHIFT;
 					}
 					// The group enters inner system exactly on the edge of
@@ -659,7 +659,7 @@ CheckGetAway:
 			if (GetFrameIndex(EPtr->current.image.frame) == 1)
 			{ // Define direction only once and not follow player while
 				// reforming
-				uqm::SIZE delta_x, delta_y;
+				int16_t delta_x, delta_y;
 				GFXPOINT sis_pt;
 
 				sis_pt = displayToLocation(
@@ -911,7 +911,7 @@ spawn_ip_group(IP_GROUP* GroupPtr)
 		IPSHIPElementPtr->collision_func = ip_group_collision;
 
 		{
-			uqm::SIZE radius;
+			int16_t radius;
 			GFXPOINT pt;
 
 			radius = zoomRadiusForLocation(GroupPtr->sys_loc);
@@ -969,8 +969,8 @@ flag_ship_preprocess(ELEMENT* ElementPtr)
 	}
 
 	{
-		uqm::BYTE flagship_loc, ec;
-		uqm::SIZE vdx, vdy, radius;
+		uint8_t flagship_loc, ec;
+		int16_t vdx, vdy, radius;
 		GFXPOINT pt;
 
 		GetCurrentVelocityComponents(&GLOBAL(velocity), &vdx, &vdy);
@@ -1044,8 +1044,8 @@ static void
 AdjustInitialPosition(void)
 { // Corrects SIS position - rounding error, described in
 	// EnterPlanetOrbit() in solarsys.c
-	uqm::BYTE flagship_loc;
-	uqm::SIZE radius;
+	uint8_t flagship_loc;
+	int16_t radius;
 	GFXPOINT pt;
 
 	flagship_loc = getFlagshipLocation();

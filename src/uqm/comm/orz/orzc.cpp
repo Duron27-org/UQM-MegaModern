@@ -63,7 +63,7 @@ static LOCDATA orz_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				10,			   /* StartIndex */
@@ -73,7 +73,7 @@ static LOCDATA orz_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				15,			 /* StartIndex */
@@ -83,7 +83,7 @@ static LOCDATA orz_desc =
 				GameTicksPerSecond / 10, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				17,		   /* StartIndex */
@@ -93,7 +93,7 @@ static LOCDATA orz_desc =
 				GameTicksPerSecond / 10, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				20,		   /* StartIndex */
@@ -103,7 +103,7 @@ static LOCDATA orz_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond / 10,
 				GameTicksPerSecond * 3, /* RestartRate */
-				(1 << 7),		/* BlockMask */
+				(1 << 7),				/* BlockMask */
 			},
 								{
 				22,			   /* StartIndex */
@@ -113,7 +113,7 @@ static LOCDATA orz_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond / 10,
 				GameTicksPerSecond * 3, /* RestartRate */
-				(1 << 6),		/* BlockMask */
+				(1 << 6),				/* BlockMask */
 			},
 								{
 				30,			   /* StartIndex */
@@ -123,7 +123,7 @@ static LOCDATA orz_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond / 10,
 				GameTicksPerSecond * 3, /* RestartRate */
-				(1 << 5),		/* BlockMask */
+				(1 << 5),				/* BlockMask */
 			},
 								{
 				33,		   /* StartIndex */
@@ -133,7 +133,7 @@ static LOCDATA orz_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond / 10,
 				GameTicksPerSecond * 3, /* RestartRate */
-				(1 << 4),		/* BlockMask */
+				(1 << 4),				/* BlockMask */
 			},
 								{
 				36,			   /* StartIndex */
@@ -143,7 +143,7 @@ static LOCDATA orz_desc =
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				61,			   /* StartIndex */
@@ -153,7 +153,7 @@ static LOCDATA orz_desc =
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				76,			   /* StartIndex */
@@ -163,7 +163,7 @@ static LOCDATA orz_desc =
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				(1 << 12),		/* BlockMask */
+				(1 << 12),				/* BlockMask */
 			},
 								{
 				93,			   /* StartIndex */
@@ -173,7 +173,7 @@ static LOCDATA orz_desc =
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				118,		   /* StartIndex */
@@ -183,7 +183,7 @@ static LOCDATA orz_desc =
 				GameTicksPerSecond / 15, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				(1 << 10),		/* BlockMask */
+				(1 << 10),				/* BlockMask */
 			},
 								},
 		{
@@ -206,7 +206,7 @@ static LOCDATA orz_desc =
 								GameTicksPerSecond / 15, /* FrameRate */
 			GameTicksPerSecond / 12,
 								GameTicksPerSecond * 3 / 8, /* RestartRate */
-			0,					/* BlockMask */
+			0,							/* BlockMask */
 		},
 		nullptr, /* AlienNumberSpeech - none */
 		/* Filler for loaded resources */
@@ -329,7 +329,7 @@ ExitConversation(RESPONSE_REF R)
 	}
 	else /* insults */
 	{
-		uqm::BYTE NumVisits;
+		uint8_t NumVisits;
 
 		NumVisits = GET_GAME_STATE(ORZ_PERSONAL_INFO);
 		switch (NumVisits++)
@@ -360,7 +360,7 @@ static void
 TaaloWorld(RESPONSE_REF R)
 {
 	// We can only get here when ORZ_MANNER != HOSTILE (2)
-	uqm::BYTE Manner;
+	uint8_t Manner;
 
 	Manner = GET_GAME_STATE(ORZ_MANNER);
 	if (PLAYER_SAID(R, demand_to_land))
@@ -460,7 +460,7 @@ TaaloWorld(RESPONSE_REF R)
 static void
 OrzAllied(RESPONSE_REF R)
 {
-	uqm::BYTE NumVisits;
+	uint8_t NumVisits;
 
 	if (PLAYER_SAID(R, whats_up_ally))
 	{
@@ -587,7 +587,7 @@ OfferAlliance(RESPONSE_REF R)
 static void
 OrzNeutral(RESPONSE_REF R)
 {
-	uqm::BYTE i, LastStack;
+	uint8_t i, LastStack;
 	RESPONSE_REF pStr[3];
 
 	LastStack = 0;
@@ -709,7 +709,7 @@ OrzAngry(RESPONSE_REF R)
 {
 	if (PLAYER_SAID(R, whats_up_angry))
 	{
-		uqm::BYTE NumVisits;
+		uint8_t NumVisits;
 
 		NumVisits = GET_GAME_STATE(ORZ_GENERAL_INFO);
 		switch (NumVisits++)
@@ -765,7 +765,7 @@ OrzAngry(RESPONSE_REF R)
 static void
 Intro(void)
 {
-	uqm::BYTE NumVisits, Manner;
+	uint8_t NumVisits, Manner;
 
 	if (lowByte(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE)
 	{
@@ -983,7 +983,7 @@ Intro(void)
 	}
 }
 
-static uqm::COUNT
+static uint16_t
 uninit_orz(void)
 {
 	luaUqm_comm_uninit();
@@ -993,7 +993,7 @@ uninit_orz(void)
 static void
 post_orz_enc(void)
 {
-	uqm::BYTE Manner;
+	uint8_t Manner;
 
 	if (getSegue() == Segue_hostile
 		&& (Manner = GET_GAME_STATE(ORZ_MANNER)) != 2)

@@ -34,16 +34,16 @@ extern "C" {
 struct scan_desc
 {
 	GFXPOINT start;
-	uqm::COUNT start_dot;
-	uqm::COUNT num_dots;
-	uqm::COUNT dots_per_semi;
+	uint16_t start_dot;
+	uint16_t num_dots;
+	uint16_t dots_per_semi;
 };
 
 struct scan_block
 {
 	GFXPOINT* line_base;
-	uqm::COUNT num_scans;
-	uqm::COUNT num_same_scans;
+	uint16_t num_scans;
+	uint16_t num_same_scans;
 	SCAN_DESC* scan_base;
 };
 
@@ -51,22 +51,22 @@ extern void ScanSystem(void);
 
 extern void RepairBackRect(GFXRECT* pRect);
 extern void GeneratePlanetSide(void);
-extern uqm::COUNT callGenerateForScanType(const SOLARSYS_STATE*,
-										  const PLANET_DESC* world, uqm::COUNT node, uqm::BYTE scanType, NODE_INFO*);
+extern uint16_t callGenerateForScanType(const SOLARSYS_STATE*,
+										const PLANET_DESC* world, uint16_t node, uint8_t scanType, NODE_INFO*);
 // Returns true if the node should be removed from the surface
 extern bool callPickupForScanType(SOLARSYS_STATE* solarSys,
-								  PLANET_DESC* world, uqm::COUNT node, uqm::BYTE scanType);
+								  PLANET_DESC* world, uint16_t node, uint8_t scanType);
 
 extern void RedrawSurfaceScan(const GFXPOINT* newLoc);
 extern GFXCONTEXT GetScanContext(bool* owner);
 extern void DestroyScanContext(void);
 
-bool isNodeRetrieved(PLANET_INFO* planetInfo, uqm::BYTE scanType, uqm::BYTE nodeNr);
-uqm::COUNT countNodesRetrieved(PLANET_INFO* planetInfo, uqm::BYTE scanType);
-void setNodeRetrieved(PLANET_INFO* planetInfo, uqm::BYTE scanType, uqm::BYTE nodeNr);
-void setNodeNotRetrieved(PLANET_INFO* planetInfo, uqm::BYTE scanType, uqm::BYTE nodeNr);
+bool isNodeRetrieved(PLANET_INFO* planetInfo, uint8_t scanType, uint8_t nodeNr);
+uint16_t countNodesRetrieved(PLANET_INFO* planetInfo, uint8_t scanType);
+void setNodeRetrieved(PLANET_INFO* planetInfo, uint8_t scanType, uint8_t nodeNr);
+void setNodeNotRetrieved(PLANET_INFO* planetInfo, uint8_t scanType, uint8_t nodeNr);
 
-void GetPlanetTitle(uqstl::span<uqm::CHAR_T> buf);
+void GetPlanetTitle(uqstl::span<char> buf);
 
 #if 0 //defined(__cplusplus)
 }

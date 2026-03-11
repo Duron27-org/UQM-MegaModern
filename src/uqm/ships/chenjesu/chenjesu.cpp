@@ -262,8 +262,8 @@ doggy_preprocess(ELEMENT* ElementPtr)
 	}
 	else
 	{
-		uqm::COUNT facing, orig_facing;
-		uqm::SIZE delta_facing;
+		uint16_t facing, orig_facing;
+		int16_t delta_facing;
 
 		facing = orig_facing =
 			NORMALIZE_FACING(ANGLE_TO_FACING(
@@ -368,7 +368,7 @@ spawn_doggy(ELEMENT* ElementPtr)
 
 	if ((hDoggyElement = AllocElement()) != 0)
 	{
-		uqm::COUNT angle;
+		uint16_t angle;
 		ELEMENT* DoggyElementPtr;
 		STARSHIP* StarShipPtr;
 
@@ -416,12 +416,12 @@ spawn_doggy(ELEMENT* ElementPtr)
 
 static void
 chenjesu_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
-					  uqm::COUNT ConcernCounter)
+					  uint16_t ConcernCounter)
 {
 	EVALUATE_DESC* lpEvalDesc;
 	STARSHIP* StarShipPtr;
 
-	static uqm::DWORD old_dist[NUM_SIDES] = {(uqm::DWORD)~0, (uqm::DWORD)~0};
+	static uint32_t old_dist[NUM_SIDES] = {(uint32_t)~0, (uint32_t)~0};
 
 	GetElementStarShip(ShipPtr, &StarShipPtr);
 	StarShipPtr->ship_input_state &= ~SPECIAL;
@@ -478,7 +478,7 @@ chenjesu_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 			{
 				if (ObjectsOfConcern[ENEMY_SHIP_INDEX].ObjectPtr)
 				{
-					uqm::COUNT which_turn;
+					uint16_t which_turn;
 					bool crystal_would_miss = false;
 
 					if (!IS_HD || lpEvalDesc != &ObjectsOfConcern[ENEMY_SHIP_INDEX])
@@ -495,8 +495,8 @@ chenjesu_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 					}
 					else
 					{
-						uqm::DWORD curr_dist = 0;
-						uqm::SDWORD dx, dy;
+						uint32_t curr_dist = 0;
+						int32_t dx, dy;
 
 						dx = CrystalPtr->next.location.x - ObjectsOfConcern[ENEMY_SHIP_INDEX].ObjectPtr->next.location.x;
 						dy = CrystalPtr->next.location.y - ObjectsOfConcern[ENEMY_SHIP_INDEX].ObjectPtr->next.location.y;
@@ -516,7 +516,7 @@ chenjesu_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 					if (crystal_would_miss)
 					{
 						StarShipPtr->ship_input_state &= ~WEAPON;
-						old_dist[ShipPtr->playerNr] = (uqm::DWORD)~0;
+						old_dist[ShipPtr->playerNr] = (uint32_t)~0;
 
 						// JMS: Let's try to stop Chenjesu's stupid over-rapid firing behavior in hires modes...
 						if (IS_HD
@@ -547,7 +547,7 @@ chenjesu_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 			if (StarShipPtr->old_status_flags & WEAPON)
 			{
 				StarShipPtr->ship_input_state &= ~WEAPON;
-				old_dist[ShipPtr->playerNr] = (uqm::DWORD)~0;
+				old_dist[ShipPtr->playerNr] = (uint32_t)~0;
 				if (lpEvalDesc == &ObjectsOfConcern[ENEMY_WEAPON_INDEX])
 				{
 					StarShipPtr->weapon_counter = 3;
@@ -558,7 +558,7 @@ chenjesu_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 			{
 				if (IS_HD)
 				{
-					uqm::COUNT num_weapons;
+					uint16_t num_weapons;
 					ELEMENT Ship;
 					HELEMENT Weapon[6];
 					HELEMENT *WeaponPtr, w;
@@ -613,7 +613,7 @@ chenjesu_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 	}
 }
 
-static uqm::COUNT
+static uint16_t
 initialize_crystal(ELEMENT* ShipPtr, HELEMENT CrystalArray[])
 {
 	STARSHIP* StarShipPtr;

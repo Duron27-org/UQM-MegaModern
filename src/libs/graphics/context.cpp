@@ -344,7 +344,7 @@ SetContextFontEffect(FRAME EffectFrame)
 
 void FixContextFontEffect(void)
 {
-	uqm::SIZE w, h;
+	int16_t w, h;
 	TFB_Image* img;
 
 	if (!ContextActive() || (_get_context_font_backing() != 0 && !(_get_context_fbk_flags() & FBK_DIRTY)))

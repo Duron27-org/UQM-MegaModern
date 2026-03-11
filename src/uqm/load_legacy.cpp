@@ -38,7 +38,7 @@
 #include "libs/scriptlib.h"
 
 //#define DEBUG_LOAD
-uqm::BYTE LegacyResFactor;
+uint8_t LegacyResFactor;
 
 // This defines the order and the number of bits in which the game state
 // properties are saved.
@@ -459,10 +459,10 @@ static const GameStateBitMap legacyGameStateBitMap[] = {
 };
 
 // XXX: these should handle endian conversions later
-static inline uqm::COUNT
-cread_8(DECODE_REF fh, uqm::BYTE* v)
+static inline uint16_t
+cread_8(DECODE_REF fh, uint8_t* v)
 {
-	uqm::BYTE t;
+	uint8_t t;
 	if (!v) /* read value ignored */
 	{
 		v = &t;
@@ -470,10 +470,10 @@ cread_8(DECODE_REF fh, uqm::BYTE* v)
 	return cread(v, 1, 1, fh);
 }
 
-static inline uqm::COUNT
-cread_16(DECODE_REF fh, uqm::UWORD* v)
+static inline uint16_t
+cread_16(DECODE_REF fh, uint16_t* v)
 {
-	uqm::UWORD t;
+	uint16_t t;
 	if (!v) /* read value ignored */
 	{
 		v = &t;
@@ -481,11 +481,11 @@ cread_16(DECODE_REF fh, uqm::UWORD* v)
 	return cread(v, 2, 1, fh);
 }
 
-static inline uqm::COUNT
-cread_16s(DECODE_REF fh, uqm::SWORD* v)
+static inline uint16_t
+cread_16s(DECODE_REF fh, int16_t* v)
 {
-	uqm::UWORD t;
-	uqm::COUNT ret;
+	uint16_t t;
+	uint16_t ret;
 	// value was converted to unsigned when saved
 	ret = cread_16(fh, &t);
 	// unsigned to signed conversion
@@ -496,10 +496,10 @@ cread_16s(DECODE_REF fh, uqm::SWORD* v)
 	return ret;
 }
 
-static inline uqm::COUNT
-cread_32(DECODE_REF fh, uqm::DWORD* v)
+static inline uint16_t
+cread_32(DECODE_REF fh, uint32_t* v)
 {
-	uqm::DWORD t;
+	uint32_t t;
 	if (!v) /* read value ignored */
 	{
 		v = &t;
@@ -507,11 +507,11 @@ cread_32(DECODE_REF fh, uqm::DWORD* v)
 	return cread(v, 4, 1, fh);
 }
 
-static inline uqm::COUNT
-cread_32s(DECODE_REF fh, uqm::SDWORD* v)
+static inline uint16_t
+cread_32s(DECODE_REF fh, int32_t* v)
 {
-	uqm::DWORD t;
-	uqm::COUNT ret;
+	uint32_t t;
+	uint16_t ret;
 	// value was converted to unsigned when saved
 	ret = cread_32(fh, &t);
 	// unsigned to signed conversion
@@ -522,24 +522,24 @@ cread_32s(DECODE_REF fh, uqm::SDWORD* v)
 	return ret;
 }
 
-static inline uqm::COUNT
+static inline uint16_t
 cread_ptr(DECODE_REF fh)
 {
-	uqm::DWORD t;
+	uint32_t t;
 	return cread_32(fh, &t); /* ptrs are useless in saves */
 }
 
-static inline uqm::COUNT
-cread_a8(DECODE_REF fh, uqm::BYTE* ar, uqm::COUNT count)
+static inline uint16_t
+cread_a8(DECODE_REF fh, uint8_t* ar, uint16_t count)
 {
 	assert(ar != nullptr);
 	return cread(ar, 1, count, fh) == count;
 }
 
 static inline size_t
-read_8(void* fp, uqm::BYTE* v)
+read_8(void* fp, uint8_t* v)
 {
-	uqm::BYTE t;
+	uint8_t t;
 	if (!v) /* read value ignored */
 	{
 		v = &t;
@@ -548,9 +548,9 @@ read_8(void* fp, uqm::BYTE* v)
 }
 
 static inline size_t
-read_16(void* fp, uqm::UWORD* v)
+read_16(void* fp, uint16_t* v)
 {
-	uqm::UWORD t;
+	uint16_t t;
 	if (!v) /* read value ignored */
 	{
 		v = &t;
@@ -559,9 +559,9 @@ read_16(void* fp, uqm::UWORD* v)
 }
 
 static inline size_t
-read_32(void* fp, uqm::DWORD* v)
+read_32(void* fp, uint32_t* v)
 {
-	uqm::DWORD t;
+	uint32_t t;
 	if (!v) /* read value ignored */
 	{
 		v = &t;
@@ -570,12 +570,12 @@ read_32(void* fp, uqm::DWORD* v)
 }
 
 static inline size_t
-read_32s(void* fp, uqm::SDWORD* v)
+read_32s(void* fp, int32_t* v)
 {
-	uqm::DWORD t;
-	uqm::COUNT ret;
+	uint32_t t;
+	uint16_t ret;
 	// value was converted to unsigned when saved
-	ret = (uqm::COUNT)read_32(fp, &t);
+	ret = (uint16_t)read_32(fp, &t);
 	// unsigned to signed conversion
 	if (v)
 	{
@@ -587,26 +587,26 @@ read_32s(void* fp, uqm::SDWORD* v)
 static inline size_t
 read_ptr(void* fp)
 {
-	uqm::DWORD t;
+	uint32_t t;
 	return read_32(fp, &t); /* ptrs are useless in saves */
 }
 
 static inline size_t
-read_a8(void* fp, uqm::BYTE* ar, uqm::COUNT count)
+read_a8(void* fp, uint8_t* ar, uint16_t count)
 {
 	assert(ar != nullptr);
 	return ReadResFile(ar, 1, count, (uio_Stream*)fp) == count;
 }
 
 static inline size_t
-read_str(void* fp, char* str, uqm::COUNT count)
+read_str(void* fp, char* str, uint16_t count)
 {
 	// no type conversion needed for strings
-	return read_a8(fp, (uqm::BYTE*)str, count);
+	return read_a8(fp, (uint8_t*)str, count);
 }
 
 static inline size_t
-read_a16(void* fp, uqm::UWORD* ar, uqm::COUNT count)
+read_a16(void* fp, uint16_t* ar, uint16_t count)
 {
 	assert(ar != nullptr);
 
@@ -623,7 +623,7 @@ read_a16(void* fp, uqm::UWORD* ar, uqm::COUNT count)
 static void
 LoadEmptyQueue(DECODE_REF fh)
 {
-	uqm::COUNT num_links;
+	uint16_t num_links;
 
 	cread_16(fh, &num_links);
 	if (num_links)
@@ -638,7 +638,7 @@ LoadEmptyQueue(DECODE_REF fh)
 static void
 LoadShipQueue(DECODE_REF fh, QUEUE* pQueue)
 {
-	uqm::COUNT num_links;
+	uint16_t num_links;
 
 	cread_16(fh, &num_links);
 
@@ -646,8 +646,8 @@ LoadShipQueue(DECODE_REF fh, QUEUE* pQueue)
 	{
 		HSHIPFRAG hStarShip;
 		SHIP_FRAGMENT* FragPtr;
-		uqm::COUNT Index;
-		uqm::BYTE tmpb;
+		uint16_t Index;
+		uint8_t tmpb;
 
 		cread_16(fh, &Index);
 
@@ -661,7 +661,7 @@ LoadShipQueue(DECODE_REF fh, QUEUE* pQueue)
 		cread_16(fh, nullptr); /* unused: was ship_flags */
 		cread_8(fh, &FragPtr->race_id);
 		cread_8(fh, &FragPtr->index);
-		// XXX: reading crew as uqm::BYTE to maintain savegame compatibility
+		// XXX: reading crew as uint8_t to maintain savegame compatibility
 		cread_8(fh, &tmpb);
 		FragPtr->crew_level = tmpb;
 		cread_8(fh, &tmpb);
@@ -678,7 +678,7 @@ LoadShipQueue(DECODE_REF fh, QUEUE* pQueue)
 static void
 LoadRaceQueue(DECODE_REF fh, QUEUE* pQueue)
 {
-	uqm::COUNT num_links;
+	uint16_t num_links;
 
 	cread_16(fh, &num_links);
 
@@ -686,8 +686,8 @@ LoadRaceQueue(DECODE_REF fh, QUEUE* pQueue)
 	{
 		HFLEETINFO hStarShip;
 		FLEET_INFO* FleetPtr;
-		uqm::COUNT Index;
-		uqm::BYTE tmpb;
+		uint16_t Index;
+		uint8_t tmpb;
 
 		cread_16(fh, &Index);
 
@@ -724,7 +724,7 @@ LoadRaceQueue(DECODE_REF fh, QUEUE* pQueue)
 static void
 LoadGroupQueue(DECODE_REF fh, QUEUE* pQueue)
 {
-	uqm::COUNT num_links;
+	uint16_t num_links;
 
 	cread_16(fh, &num_links);
 
@@ -732,7 +732,7 @@ LoadGroupQueue(DECODE_REF fh, QUEUE* pQueue)
 	{
 		HIPGROUP hGroup;
 		IP_GROUP* GroupPtr;
-		uqm::BYTE tmpb;
+		uint8_t tmpb;
 
 		cread_16(fh, nullptr); /* unused; was race_id */
 
@@ -763,8 +763,8 @@ LoadGroupQueue(DECODE_REF fh, QUEUE* pQueue)
 static void
 LoadEncounter(ENCOUNTER* EncounterPtr, DECODE_REF fh, bool try_vanilla)
 {
-	uqm::COUNT i;
-	uqm::BYTE tmpb;
+	uint16_t i;
+	uint8_t tmpb;
 
 	cread_ptr(fh); /* useless ptr; HENCOUNTER pred */
 	EncounterPtr->pred = 0;
@@ -793,7 +793,7 @@ LoadEncounter(ENCOUNTER* EncounterPtr, DECODE_REF fh, bool try_vanilla)
 		cread_16(fh, nullptr); /* useless; was SHIP_INFO.ship_flags */
 		cread_8(fh, &ShipInfo->race_id);
 		cread_8(fh, nullptr); /* useless; was SHIP_INFO.var2 */
-		// XXX: reading crew as uqm::BYTE to maintain savegame compatibility
+		// XXX: reading crew as uint8_t to maintain savegame compatibility
 		cread_8(fh, &tmpb);
 		ShipInfo->crew_level = tmpb;
 		cread_8(fh, &tmpb);
@@ -849,11 +849,11 @@ DummyLoadQueue(QUEUE* QueuePtr, DECODE_REF fh)
 	/* QUEUE format with QUEUE_TABLE defined -- UQM default */
 	cread_ptr(fh);		   /* HLINK head */
 	cread_ptr(fh);		   /* HLINK tail */
-	cread_ptr(fh);		   /* uqm::BYTE* pq_tab */
+	cread_ptr(fh);		   /* uint8_t* pq_tab */
 	cread_ptr(fh);		   /* HLINK free_list */
 	cread_16(fh, nullptr); /* MEM_HANDLE hq_tab */
-	cread_16(fh, nullptr); /* uqm::COUNT object_size */
-	cread_8(fh, nullptr);  /* uqm::BYTE num_objects */
+	cread_16(fh, nullptr); /* uint16_t object_size */
+	cread_8(fh, nullptr);  /* uint8_t num_objects */
 
 	cread_8(fh, nullptr);  /* padding */
 	cread_16(fh, nullptr); /* padding */
@@ -869,7 +869,7 @@ LoadClockState(CLOCK_STATE* ClockPtr, DECODE_REF fh)
 	cread_16s(fh, &ClockPtr->day_in_ticks);
 	cread_ptr(fh);		   /* not loading ptr; Semaphore clock_sem */
 	cread_ptr(fh);		   /* not loading ptr; Task clock_task */
-	cread_32(fh, nullptr); /* not loading; uqm::DWORD TimeCounter */
+	cread_32(fh, nullptr); /* not loading; uint32_t TimeCounter */
 
 	DummyLoadQueue(&ClockPtr->event_q, fh);
 }
@@ -877,7 +877,7 @@ LoadClockState(CLOCK_STATE* ClockPtr, DECODE_REF fh)
 static bool
 LoadGameState(GAME_STATE* GSPtr, DECODE_REF fh, bool vanilla)
 {
-	uqm::BYTE dummy8;
+	uint8_t dummy8;
 
 	cread_8(fh, &dummy8); /* obsolete */
 	cread_8(fh, &GSPtr->glob_flags);
@@ -963,10 +963,10 @@ LoadGameState(GAME_STATE* GSPtr, DECODE_REF fh, bool vanilla)
 							   legacyGameStateBitMap, rev)
 						   + 7)
 					   >> 3;
-		uqm::BYTE* buf = (uqm::BYTE*)HMalloc(numBytes);
+		uint8_t* buf = (uint8_t*)HMalloc(numBytes);
 		if (buf != nullptr)
 		{
-			cread_a8(fh, buf, (uqm::COUNT)numBytes);
+			cread_a8(fh, buf, (uint16_t)numBytes);
 			deserialiseGameState(
 				legacyGameStateBitMap,
 				buf,
@@ -1013,10 +1013,10 @@ LoadSummary(SUMMARY_DESC* SummPtr, void* fp, bool try_vanilla)
 {
 	// JMS: New variables required for compatibility between
 	// old, unnamed saves and the new, named ones.
-	uqm::SDWORD temp_log_x = 0;
-	uqm::SDWORD temp_log_y = 0;
-	uqm::DWORD temp_ru = 0;
-	uqm::DWORD temp_fuel = 0;
+	int32_t temp_log_x = 0;
+	int32_t temp_log_y = 0;
+	uint32_t temp_ru = 0;
+	uint32_t temp_fuel = 0;
 	bool no_savename = false;
 
 	// First we check if there is a savegamename identifier.
@@ -1030,18 +1030,18 @@ LoadSummary(SUMMARY_DESC* SummPtr, void* fp, bool try_vanilla)
 	if (strncmp(SummPtr->SaveNameChecker, LEGACY_SAVE_NAME_CHECKER,
 				LEGACY_SAVE_CHECKER_SIZE))
 	{
-		uqm::COUNT i;
+		uint16_t i;
 
 		// Apparently the bytes read to SummPtr->SaveNameChecker with
 		// read_str are destroyed from fp, so we must copy these bytes
 		// to temp variables at this point to preserve them.
 		no_savename = true;
-		memcpy(&temp_log_x, SummPtr->SaveNameChecker, sizeof(uqm::SDWORD));
-		memcpy(&temp_log_y, &(SummPtr->SaveNameChecker[sizeof(uqm::SDWORD)]),
-			   sizeof(uqm::SDWORD));
-		memcpy(&temp_ru, &(SummPtr->SaveNameChecker[2 * sizeof(uqm::SDWORD)]),
-			   sizeof(uqm::DWORD));
-		memcpy(&temp_fuel, &(SummPtr->SaveNameChecker[2 * sizeof(uqm::SDWORD) + sizeof(uqm::DWORD)]), sizeof(uqm::DWORD));
+		memcpy(&temp_log_x, SummPtr->SaveNameChecker, sizeof(int32_t));
+		memcpy(&temp_log_y, &(SummPtr->SaveNameChecker[sizeof(int32_t)]),
+			   sizeof(int32_t));
+		memcpy(&temp_ru, &(SummPtr->SaveNameChecker[2 * sizeof(int32_t)]),
+			   sizeof(uint32_t));
+		memcpy(&temp_fuel, &(SummPtr->SaveNameChecker[2 * sizeof(int32_t) + sizeof(uint32_t)]), sizeof(uint32_t));
 
 		// Rewind the position in savefile.
 		for (i = 0; i < LEGACY_SAVE_CHECKER_SIZE; i++)
@@ -1127,7 +1127,7 @@ LoadStarDesc(STAR_DESC* SDPtr, DECODE_REF fh)
 	cread_8(fh, &SDPtr->Postfix);
 }
 
-bool LoadLegacyGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, bool try_vanilla)
+bool LoadLegacyGame(uint16_t which_game, SUMMARY_DESC* SummPtr, bool try_vanilla)
 {
 	uio_Stream* in_fp;
 	char file[PATH_MAX] {};
@@ -1135,7 +1135,7 @@ bool LoadLegacyGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, bool try_vanil
 	SUMMARY_DESC loc_sd;
 	GAME_STATE_FILE* fp;
 	DECODE_REF fh;
-	uqm::COUNT num_links;
+	uint16_t num_links;
 	STAR_DESC SD;
 	ACTIVITY Activity;
 
@@ -1318,14 +1318,14 @@ bool LoadLegacyGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, bool try_vanil
 	fp = OpenStateFile(STARINFO_FILE, "wb");
 	if (fp)
 	{
-		uqm::DWORD flen;
+		uint32_t flen;
 
 		cread_32(fh, &flen);
 		while (flen)
 		{
-			uqm::COUNT num_bytes;
+			uint16_t num_bytes;
 
-			num_bytes = flen >= sizeof(buf) ? sizeof(buf) : (uqm::COUNT)flen;
+			num_bytes = flen >= sizeof(buf) ? sizeof(buf) : (uint16_t)flen;
 			cread(buf, num_bytes, 1, fh);
 			WriteStateFile(buf, num_bytes, 1, fp);
 
@@ -1338,14 +1338,14 @@ bool LoadLegacyGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, bool try_vanil
 	fp = OpenStateFile(DEFGRPINFO_FILE, "wb");
 	if (fp)
 	{
-		uqm::DWORD flen;
+		uint32_t flen;
 
 		cread_32(fh, &flen);
 		while (flen)
 		{
-			uqm::COUNT num_bytes;
+			uint16_t num_bytes;
 
-			num_bytes = flen >= sizeof(buf) ? sizeof(buf) : (uqm::COUNT)flen;
+			num_bytes = flen >= sizeof(buf) ? sizeof(buf) : (uint16_t)flen;
 			cread(buf, num_bytes, 1, fh);
 			WriteStateFile(buf, num_bytes, 1, fp);
 
@@ -1358,14 +1358,14 @@ bool LoadLegacyGame(uqm::COUNT which_game, SUMMARY_DESC* SummPtr, bool try_vanil
 	fp = OpenStateFile(RANDGRPINFO_FILE, "wb");
 	if (fp)
 	{
-		uqm::DWORD flen;
+		uint32_t flen;
 
 		cread_32(fh, &flen);
 		while (flen)
 		{
-			uqm::COUNT num_bytes;
+			uint16_t num_bytes;
 
-			num_bytes = flen >= sizeof(buf) ? sizeof(buf) : (uqm::COUNT)flen;
+			num_bytes = flen >= sizeof(buf) ? sizeof(buf) : (uint16_t)flen;
 			cread(buf, num_bytes, 1, fh);
 			WriteStateFile(buf, num_bytes, 1, fp);
 

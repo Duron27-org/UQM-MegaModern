@@ -27,7 +27,7 @@
 #include "uqm/starmap.h"
 
 
-static uqm::COUNT probe_digit_names[] =
+static uint16_t probe_digit_names[] =
 	{
 		ENUMERATE_ZERO,
 		ENUMERATE_ONE,
@@ -41,7 +41,7 @@ static uqm::COUNT probe_digit_names[] =
 		ENUMERATE_NINE,
 };
 
-static uqm::COUNT probe_teen_names[] =
+static uint16_t probe_teen_names[] =
 	{
 		ENUMERATE_TEN,
 		ENUMERATE_ELEVEN,
@@ -55,7 +55,7 @@ static uqm::COUNT probe_teen_names[] =
 		ENUMERATE_NINETEEN,
 };
 
-static uqm::COUNT probe_tens_names[] =
+static uint16_t probe_tens_names[] =
 	{
 		0, /* invalid */
 		0, /* skip digit */
@@ -142,52 +142,52 @@ static LOCDATA slylandro_desc =
 		{
 								/* AlienAmbientArray (ambient animations) */
 			{
-				1,					/* StartIndex */
-				9,					/* NumFrames */
-				CIRCULAR_ANIM,		/* AnimFlags */
+				1,							/* StartIndex */
+				9,							/* NumFrames */
+				CIRCULAR_ANIM,				/* AnimFlags */
 				GameTicksPerSecond / 40, 0, /* FrameRate */
 				0, GameTicksPerSecond * 3,	/* RestartRate */
-				(1 << 3)			/* BlockMask */
+				(1 << 3)					/* BlockMask */
 			},
 								{
-				10,					/* StartIndex */
-				8,					/* NumFrames */
-				CIRCULAR_ANIM,		/* AnimFlags */
+				10,							/* StartIndex */
+				8,							/* NumFrames */
+				CIRCULAR_ANIM,				/* AnimFlags */
 				GameTicksPerSecond / 40, 0, /* FrameRate */
 				0, GameTicksPerSecond * 3,	/* RestartRate */
-				(1 << 4)			/* BlockMask */
+				(1 << 4)					/* BlockMask */
 			},
 								{
-				18,					/* StartIndex */
-				8,					/* NumFrames */
-				CIRCULAR_ANIM,		/* AnimFlags */
+				18,							/* StartIndex */
+				8,							/* NumFrames */
+				CIRCULAR_ANIM,				/* AnimFlags */
 				GameTicksPerSecond / 40, 0, /* FrameRate */
 				0, GameTicksPerSecond * 3,	/* RestartRate */
-				(1 << 5)			/* BlockMask */
+				(1 << 5)					/* BlockMask */
 			},
 								{
-				26,					/* StartIndex */
-				8,					/* NumFrames */
-				CIRCULAR_ANIM,		/* AnimFlags */
+				26,							/* StartIndex */
+				8,							/* NumFrames */
+				CIRCULAR_ANIM,				/* AnimFlags */
 				GameTicksPerSecond / 40, 0, /* FrameRate */
 				0, GameTicksPerSecond * 3,	/* RestartRate */
-				(1 << 0)			/* BlockMask */
+				(1 << 0)					/* BlockMask */
 			},
 								{
-				34,					/* StartIndex */
-				8,					/* NumFrames */
-				CIRCULAR_ANIM,		/* AnimFlags */
+				34,							/* StartIndex */
+				8,							/* NumFrames */
+				CIRCULAR_ANIM,				/* AnimFlags */
 				GameTicksPerSecond / 40, 0, /* FrameRate */
 				0, GameTicksPerSecond * 3,	/* RestartRate */
-				(1 << 1)			/* BlockMask */
+				(1 << 1)					/* BlockMask */
 			},
 								{
-				42,					/* StartIndex */
-				9,					/* NumFrames */
-				CIRCULAR_ANIM,		/* AnimFlags */
+				42,							/* StartIndex */
+				9,							/* NumFrames */
+				CIRCULAR_ANIM,				/* AnimFlags */
 				GameTicksPerSecond / 40, 0, /* FrameRate */
 				0, GameTicksPerSecond * 3,	/* RestartRate */
-				(1 << 2)			/* BlockMask */
+				(1 << 2)					/* BlockMask */
 			},
 								},
 		{
@@ -222,7 +222,7 @@ static LOCDATA slylandro_desc =
 };
 
 
-static uqm::DWORD random_ramble[] =
+static uint32_t random_ramble[] =
 	{
 		1,
 		15,
@@ -359,7 +359,7 @@ CombatIsInevitable(RESPONSE_REF R)
 	}
 	else
 	{
-		uqm::BYTE NumVisits;
+		uint8_t NumVisits;
 
 		if (PLAYER_SAID(R, threat))
 		{
@@ -419,7 +419,7 @@ CombatIsInevitable(RESPONSE_REF R)
 					break;
 				case 3:
 					{
-						uqm::SIZE dx, dy;
+						int16_t dx, dy;
 
 						// Probe's coordinate system is +/-{Y,X} relative to home
 						// If homeworld X or Y are < 5000, we will flip the sign
@@ -494,7 +494,7 @@ Intro(void)
 {
 	if (isDifficulty(uqm::Difficulty::Hard) && GET_GAME_STATE(GLOBAL_FLAGS_AND_DATA) & (1 << 6))
 	{
-		uqm::COUNT i;
+		uint16_t i;
 
 		NPCPhrase(COORD_POINT);
 		for (i = 0; i < 16; i++)
@@ -511,7 +511,7 @@ Intro(void)
 	}
 	else
 	{
-		uqm::BYTE NumVisits;
+		uint8_t NumVisits;
 
 		NumVisits = GET_GAME_STATE(SLYLANDRO_PROBE_VISITS);
 		switch (NumVisits++)
@@ -548,7 +548,7 @@ Intro(void)
 	}
 }
 
-static uqm::COUNT
+static uint16_t
 uninit_slyland(void)
 {
 	return (0);

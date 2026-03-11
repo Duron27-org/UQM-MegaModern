@@ -116,7 +116,7 @@ bool SoundPlaying(void)
 
 // for now just spin in a sleep() loop
 // perhaps later change to condvar implementation
-void WaitForSoundEnd(uqm::COUNT Channel)
+void WaitForSoundEnd(uint16_t Channel)
 {
 	while (Channel == TFBSOUND_WAIT_ALL ?
 			   SoundPlaying() :
@@ -159,8 +159,8 @@ void SetSpeechVolume(float volume)
 	audio_Sourcef(soundSource[SPEECH_SOURCE].handle, audio_GAIN, volume);
 }
 
-uqm::DWORD
-FadeMusic(uqm::BYTE end_vol, uqm::SIZE TimeInterval)
+uint32_t
+FadeMusic(uint8_t end_vol, int16_t TimeInterval)
 {
 	if (QuitPosted) // Don't make users wait for fades
 	{
@@ -183,7 +183,7 @@ FadeMusic(uqm::BYTE end_vol, uqm::SIZE TimeInterval)
 	}
 }
 
-uqm::BYTE GetCurrMusicVol(void)
+uint8_t GetCurrMusicVol(void)
 {
-	return (uqm::BYTE)musicVolume;
+	return (uint8_t)musicVolume;
 }

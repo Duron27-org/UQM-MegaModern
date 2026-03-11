@@ -68,7 +68,7 @@ typedef struct namePlate
 {
 	GFXRECT rect;
 	TEXT text;
-	uqm::BYTE index;
+	uint8_t index;
 } NAMEPLATE;
 
 static void
@@ -198,7 +198,7 @@ static void
 flashCurrentLocation(GFXPOINT* where, bool force)
 {
 	static bool redraw = false;
-	static uqm::BYTE c = 0;
+	static uint8_t c = 0;
 	static int val = -2;
 	static GFXPOINT universe;
 	static TimeCount NextTime = 0;
@@ -256,7 +256,7 @@ DrawCursor(COORD curs_x, COORD curs_y)
 }
 
 static void
-DrawMarker(GFXPOINT dest, uqm::BYTE type)
+DrawMarker(GFXPOINT dest, uint8_t type)
 {
 	STAMP s;
 
@@ -276,7 +276,7 @@ DrawMarker(GFXPOINT dest, uqm::BYTE type)
 static void
 DrawAutoPilot(GFXPOINT* pDstPt)
 {
-	uqm::SIZE dx, dy,
+	int16_t dx, dy,
 		xincr, yincr,
 		xerror, yerror,
 		cycle, delta;
@@ -410,7 +410,7 @@ GetSphereRect(FLEET_INFO* FleetPtr, GFXRECT* pRect, GFXRECT* pRepairRect)
 		t.align = ALIGN_CENTER;
 		locString = SetAbsStringTableIndex(FleetPtr->race_strings, 1);
 		t.CharCount = GetStringLength(locString);
-		t.pStr = (uqm::CHAR_T*)GetStringAddress(locString);
+		t.pStr = (char*)GetStringAddress(locString);
 		TextRect(&t, pRepairRect, nullptr);
 
 		if (pRepairRect->corner.x <= 0)
@@ -499,8 +499,8 @@ GetWarEraSphereRect(FLEET_INFO* FleetPtr, GFXRECT* pRect, GFXRECT* pRepairRect)
 static unsigned int
 FuelRequiredTo(GFXPOINT dest)
 {
-	uqm::COUNT fuel_required;
-	uqm::DWORD f;
+	uint16_t fuel_required;
+	uint32_t f;
 	GFXPOINT pt;
 
 	if (!inHQSpace())
@@ -516,7 +516,7 @@ FuelRequiredTo(GFXPOINT dest)
 	pt.x -= dest.x;
 	pt.y -= dest.y;
 
-	f = (uqm::DWORD)((long)pt.x * pt.x + (long)pt.y * pt.y);
+	f = (uint32_t)((long)pt.x * pt.x + (long)pt.y * pt.y);
 	if (f == 0 || GET_GAME_STATE(ARILOU_SPACE_SIDE) > 1)
 	{
 		fuel_required = 0;
@@ -711,9 +711,9 @@ DrawNoReturnZone(void)
 }
 
 static void
-GetFuelRect(DRECT* r, uqm::SDWORD diameter, GFXPOINT corner)
+GetFuelRect(DRECT* r, int32_t diameter, GFXPOINT corner)
 { // Operating with DRECT because of overflows in HD on max zoom
-	uqm::SDWORD x, y, width, height;
+	int32_t x, y, width, height;
 
 	if (diameter < 0)
 	{
@@ -765,7 +765,7 @@ DrawFuelCircle(bool secondary)
 	DRECT r;
 	GFXPOINT corner;
 	Color OldColor;
-	uqm::DWORD OnBoardFuel = GLOBAL_SIS(FuelOnBoard);
+	uint32_t OnBoardFuel = GLOBAL_SIS(FuelOnBoard);
 
 	if (secondary)
 	{
@@ -854,7 +854,7 @@ DrawFuelEllipse ()
 	SetContextForeGroundColor (OldColor);
 }*/
 
-bool isHomeworld(uqm::BYTE Index)
+bool isHomeworld(uint8_t Index)
 {
 	bool raceBool = false;
 
@@ -1012,11 +1012,11 @@ markerBuf(const int star_index, const char* marker_state)
 bool isStarMarked(const int star_index, const char* marker_state)
 {
 	int starIndex = star_index;
-	uqm::DWORD starData;
+	uint32_t starData;
 
 	if (star_index == INTERNAL_STAR_INDEX)
 	{
-		starIndex = (uqm::COUNT)(CurStarDescPtr - star_array);
+		starIndex = (uint16_t)(CurStarDescPtr - star_array);
 	}
 
 	starData = D_GET_GAME_STATE(markerBuf(starIndex, marker_state));
@@ -1027,11 +1027,11 @@ bool isStarMarked(const int star_index, const char* marker_state)
 void setStarMarked(const int star_index, const char* marker_state)
 {
 	int starIndex = star_index;
-	uqm::DWORD starData;
+	uint32_t starData;
 
 	if (starIndex == INTERNAL_STAR_INDEX)
 	{
-		starIndex = (uqm::COUNT)(CurStarDescPtr - star_array);
+		starIndex = (uint16_t)(CurStarDescPtr - star_array);
 	}
 
 	starData = D_GET_GAME_STATE(markerBuf(starIndex, marker_state));
@@ -1108,12 +1108,12 @@ DrawRaceName(TEXT* t, Color* c)
 	font_DrawText(t);
 }
 
-Color RaceColor(uqm::COUNT index)
+Color RaceColor(uint16_t index)
 {
 	if (optSphereColors == uqm::SphereOfInfluenceColors::Default)
 	{
 		static constexpr Color RaceColors[] = {RACE_COLORS};
-		static constexpr uqm::COUNT NumColors = sizeof(RaceColors) / sizeof(Color);
+		static constexpr uint16_t NumColors = sizeof(RaceColors) / sizeof(Color);
 		if (index < NumColors)
 		{
 			return RaceColors[index];
@@ -1151,8 +1151,8 @@ Color RaceColor(uqm::COUNT index)
 				BUILD_COLOR(MAKE_RGB15_INIT(0x19, 0x10, 0x1F), 0x00), // YEHAT_REBEL_SHIP Lavender
 			};
 
-		static constexpr uqm::COUNT NumColors = sizeof(StarseedColors) / sizeof(Color);
-		
+		static constexpr uint16_t NumColors = sizeof(StarseedColors) / sizeof(Color);
+
 		if (index < NumColors)
 		{
 			return StarseedColors[index];
@@ -1163,18 +1163,18 @@ Color RaceColor(uqm::COUNT index)
 #if 0
 	// A way to choose colors entirely "fairly", although colors don't really map
 	// in such an even distribution.
-		uqm::BYTE i, j, k;
+		uint8_t i, j, k;
 		for (i = 0; i < 3; i++) for (j = 0; j < 3; j++) for (k = 0; k < 3; k++)
 			race_colors[i * 9 + j * 3 + k] = (Color) BUILD_COLOR (MAKE_RGB15_INIT (14 * i + 1, 14 * j + 1, 14 * k + 1), 0x00);
 #endif
 }
 
 static void
-DrawStarMap(uqm::COUNT race_update, GFXRECT* pClipRect)
+DrawStarMap(uint16_t race_update, GFXRECT* pClipRect)
 {
 #define GRID_DELTA 500
-	uqm::SIZE i;
-	uqm::COUNT which_space;
+	int16_t i;
+	uint16_t which_space;
 	// long diameter;
 	GFXRECT r, old_r;
 	GFXPOINT oldOrigin = {0, 0};
@@ -1292,11 +1292,11 @@ DrawStarMap(uqm::COUNT race_update, GFXRECT* pClipRect)
 	star_frame = SetRelFrameIndex(StarMapFrame, 2);
 	if (which_space <= 1 && which_starmap != CONSTELLATION_MAP)
 	{
-		uqm::COUNT index;
-		uqm::COUNT race_index = (race_update & 0x1F) - 1;
+		uint16_t index;
+		uint16_t race_index = (race_update & 0x1F) - 1;
 		HFLEETINFO hStarShip, hNextShip;
 		NAMEPLATE nameplate[26];
-		uqm::BYTE currMax = 0;
+		uint8_t currMax = 0;
 
 		for (index = 0,
 			hStarShip = GetHeadLink(&GLOBAL(avail_race_q));
@@ -1338,7 +1338,7 @@ DrawStarMap(uqm::COUNT race_update, GFXRECT* pClipRect)
 					Color c;
 					TEXT t;
 					STRING locString;
-					uqm::CHAR_T yehat_rebels[] {"+Yehat+"};
+					char yehat_rebels[] {"+Yehat+"};
 
 					c = RaceColor(index);
 					if (index == race_index)
@@ -1378,19 +1378,19 @@ DrawStarMap(uqm::COUNT race_update, GFXRECT* pClipRect)
 							case THRADDASH_SHIP:
 							case DRUUGE_SHIP:
 								t.pStr = GAME_STRING(STAR_STRING_BASE + 132);
-								t.CharCount = (uqm::COUNT)strlen(t.pStr);
+								t.CharCount = (uint16_t)strlen(t.pStr);
 								break;
 							case ANDROSYNTH_SHIP:
 								locString = SetAbsStringTableIndex(
 									FleetPtr->race_strings, 0);
-								t.pStr = (uqm::CHAR_T*)GetStringAddress(locString);
+								t.pStr = (char*)GetStringAddress(locString);
 								t.CharCount = GetStringLength(locString);
 								break;
 							default:
 								locString = SetAbsStringTableIndex(
 									FleetPtr->race_strings, 1);
 								t.CharCount = GetStringLength(locString);
-								t.pStr = (uqm::CHAR_T*)GetStringAddress(locString);
+								t.pStr = (char*)GetStringAddress(locString);
 								break;
 						}
 					}
@@ -1404,7 +1404,7 @@ DrawStarMap(uqm::COUNT race_update, GFXRECT* pClipRect)
 						locString = SetAbsStringTableIndex(
 							FleetPtr->race_strings, 1);
 						t.CharCount = GetStringLength(locString);
-						t.pStr = (uqm::CHAR_T*)GetStringAddress(locString);
+						t.pStr = (char*)GetStringAddress(locString);
 					}
 
 					TextRect(&t, &r, nullptr);
@@ -1431,7 +1431,7 @@ DrawStarMap(uqm::COUNT race_update, GFXRECT* pClipRect)
 
 				locString = SetAbsStringTableIndex(FleetPtr->race_strings, 1);
 				t.CharCount = GetStringLength(locString);
-				t.pStr = (uqm::CHAR_T*)GetStringAddress(locString);
+				t.pStr = (char*)GetStringAddress(locString);
 
 				GetSphereRect(FleetPtr, &r, &repair_r);
 
@@ -1452,12 +1452,12 @@ DrawStarMap(uqm::COUNT race_update, GFXRECT* pClipRect)
 
 		if (currMax > 0)
 		{
-			uqm::BYTE j, k;
+			uint8_t j, k;
 			bool swapped;
 			COORD offs;
 			TEXT t;
 			Color c;
-			uqm::BYTE mid = currMax;
+			uint8_t mid = currMax;
 
 			for (j = 0; j < currMax - 1; j++)
 			{ // Sort nameplates by Y-axis from top to bottom
@@ -1571,7 +1571,7 @@ DrawStarMap(uqm::COUNT race_update, GFXRECT* pClipRect)
 				for (k = 0; k < 32; k++)
 				{
 					TEXT t;
-					uqm::CHAR_T pStr[7];
+					char pStr[7];
 					pStr[0] = (i / 16 ? '1' : '0');
 					pStr[1] = (i % 16 > 9 ? i % 16 - 10 + 'A' : i % 16 + '0');
 					pStr[2] = (j / 16 ? '1' : '0');
@@ -1594,7 +1594,7 @@ DrawStarMap(uqm::COUNT race_update, GFXRECT* pClipRect)
 		Color oldColor;
 		const GFXPOINT* CNPtr;
 		LINE l;
-		uqm::BYTE c = 0x3F + IF_HD(0x11);
+		uint8_t c = 0x3F + IF_HD(0x11);
 		CNPtr = &constel_array[0];
 
 		oldColor = SetContextForeGroundColor(
@@ -1618,11 +1618,11 @@ DrawStarMap(uqm::COUNT race_update, GFXRECT* pClipRect)
 	// and labels the quasispace portal locations in hyperspace.
 	if (which_space <= 1 && which_starmap == HOMEWORLDS_MAP)
 	{
-		uqm::COUNT i;
+		uint16_t i;
 
 		for (i = 0; i < (NUM_SOLAR_SYSTEMS + 1); ++i)
 		{
-			uqm::BYTE Index = star_array[i].Index;
+			uint8_t Index = star_array[i].Index;
 			if (isHomeworld(Index))
 			{
 				DrawMarker(star_array[i].star_pt, true);
@@ -1635,7 +1635,7 @@ DrawStarMap(uqm::COUNT race_update, GFXRECT* pClipRect)
 				continue;
 			}
 			TEXT t;
-			uqm::CHAR_T pStr[2];
+			char pStr[2];
 			pStr[0] = 'A' + i;
 			pStr[1] = 0;
 			SetContextFont(TinyFontBold);
@@ -1653,7 +1653,7 @@ DrawStarMap(uqm::COUNT race_update, GFXRECT* pClipRect)
 	// This draws markers over the Rainbow worlds
 	if (which_space <= 1 && which_starmap == RAINBOW_MAP)
 	{
-		uqm::UWORD rainbow_mask;
+		uint16_t rainbow_mask;
 
 		rainbow_mask = MAKE_WORD(
 			GET_GAME_STATE(RAINBOW_WORLD0),
@@ -1665,7 +1665,7 @@ DrawStarMap(uqm::COUNT race_update, GFXRECT* pClipRect)
 		}
 		else
 		{
-			uqm::COUNT i;
+			uint16_t i;
 			for (i = RAINBOW0_DEFINED; i <= RAINBOW9_DEFINED; i++)
 			{
 				if (rainbow_mask & (1 << (i - RAINBOW0_DEFINED)))
@@ -1678,8 +1678,8 @@ DrawStarMap(uqm::COUNT race_update, GFXRECT* pClipRect)
 
 	do
 	{ // Draws all the stars
-		uqm::BYTE star_type;
-		static uqm::COUNT i = 0;
+		uint8_t star_type;
+		static uint16_t i = 0;
 
 		i = i >= NUM_SOLAR_SYSTEMS ? 0 : i;
 
@@ -1820,7 +1820,7 @@ EraseCursor(COORD curs_x, COORD curs_y)
 }
 
 static void
-ZoomStarMap(uqm::SIZE dir)
+ZoomStarMap(int16_t dir)
 {
 #define MAX_ZOOM_SHIFT 4
 	if (dir > 0)
@@ -1944,7 +1944,7 @@ UpdateCursorLocation(int sx, int sy, const GFXPOINT* newpt)
 
 int starIndex(GFXPOINT starPt)
 {
-	uqm::COUNT i;
+	uint16_t i;
 
 	for (i = 0; i <= NUM_SOLAR_SYSTEMS; i++)
 	{
@@ -1958,9 +1958,9 @@ int starIndex(GFXPOINT starPt)
 }
 
 static void
-UpdateCursorInfo(std::span<uqm::CHAR_T> prevbuf)
+UpdateCursorInfo(std::span<char> prevbuf)
 {
-	uqm::CHAR_T buf[CURSOR_INFO_BUFSIZE] {};
+	char buf[CURSOR_INFO_BUFSIZE] {};
 	GFXPOINT pt;
 	STAR_DESC* SDPtr;
 	STAR_DESC* BestSDPtr;
@@ -1993,7 +1993,7 @@ UpdateCursorInfo(std::span<uqm::CHAR_T> prevbuf)
 	if (BestSDPtr)
 	{
 		// JMS: For masking the names of QS portals not yet entered.
-		uqm::BYTE whichPortal = BestSDPtr->Postfix - 133;
+		uint8_t whichPortal = BestSDPtr->Postfix - 133;
 
 		// A star is near the cursor:
 		// Snap cursor onto star
@@ -2019,13 +2019,13 @@ UpdateCursorInfo(std::span<uqm::CHAR_T> prevbuf)
 			// This means quasi star array must have rigidly ordered Postfix.
 			// portal_map[whichPortal].star_pt - coords of the exit
 			//                  nearest_star - STAR_DESC* of nearest constell.
-			uqm::CHAR_T starnameBuf[CURSOR_INFO_BUFSIZE] = "";
+			char starnameBuf[CURSOR_INFO_BUFSIZE] = "";
 			utf8StringCopy(starnameBuf, sizeof(starnameBuf), GAME_STRING(portal_map[whichPortal].nearest_star->Postfix));
 			// Abbreviate names longer than 11 at the 10th (or less)
 			// non-vowel character.
 			if (strlen(starnameBuf) > 11)
 			{
-				uqm::COUNT i;
+				uint16_t i;
 				for (i = 9; i > 5; i--)
 				{
 					if (starnameBuf[i] != 'a' && starnameBuf[i] != 'e' && starnameBuf[i] != 'i' && starnameBuf[i] != 'o' && starnameBuf[i] != 'u' && starnameBuf[i] != 'y')
@@ -2105,7 +2105,7 @@ UpdateCursorInfo(std::span<uqm::CHAR_T> prevbuf)
 				&& isStarMarked(starIndex(BestSDPtr->star_pt),
 								"VISITED"))
 			{
-				uqm::CHAR_T visBuf[CURSOR_INFO_BUFSIZE] = "";
+				char visBuf[CURSOR_INFO_BUFSIZE] = "";
 
 				utf8StringCopy(visBuf, sizeof(visBuf), buf);
 				// This is how you get rid of compiler warnings over string
@@ -2161,8 +2161,8 @@ FuelRequired(void)
 static void
 UpdateFuelRequirement(void)
 {
-	uqm::CHAR_T buf[80] {};
-	uqm::COUNT fuel_required = FuelRequired();
+	char buf[80] {};
+	uint16_t fuel_required = FuelRequired();
 
 	fmt::format_to_n(buf, sizeof(buf) - 1, "{} {}.{}",
 					 GAME_STRING(NAVIGATION_STRING_BASE + 4),
@@ -2178,17 +2178,17 @@ typedef struct starsearch_state
 {
 	// TODO: pMS field is probably not needed anymore
 	MENU_STATE* pMS;
-	uqm::CHAR_T Text[STAR_SEARCH_BUFSIZE];
-	uqm::CHAR_T LastText[STAR_SEARCH_BUFSIZE];
-	uqm::DWORD LastChangeTime;
+	char Text[STAR_SEARCH_BUFSIZE];
+	char LastText[STAR_SEARCH_BUFSIZE];
+	uint32_t LastChangeTime;
 	int FirstIndex;
 	int CurIndex;
 	int LastIndex;
 	bool SingleClust;
 	bool SingleMatch;
-	uqm::CHAR_T Buffer[STAR_SEARCH_BUFSIZE];
-	const uqm::CHAR_T* Prefix;
-	const uqm::CHAR_T* Cluster;
+	char Buffer[STAR_SEARCH_BUFSIZE];
+	const char* Prefix;
+	const char* Cluster;
 	int PrefixLen;
 	int ClusterLen;
 	int ClusterPos;
@@ -2239,9 +2239,9 @@ SortStarsOnName(STAR_SEARCH_STATE* pSS)
 static void
 SplitStarName(STAR_SEARCH_STATE* pSS)
 {
-	uqm::CHAR_T* buf = pSS->Buffer;
-	uqm::CHAR_T* next;
-	uqm::CHAR_T* sep = nullptr;
+	char* buf = pSS->Buffer;
+	char* next;
+	char* sep = nullptr;
 
 	pSS->Prefix = 0;
 	pSS->PrefixLen = 0;
@@ -2250,7 +2250,7 @@ SplitStarName(STAR_SEARCH_STATE* pSS)
 	pSS->ClusterPos = 0;
 
 	// skip leading space
-	for (next = buf; *next != '\0' && getCharFromString((const uqm::CHAR_T**)&next) == (isPC(optWhichFonts) ? UNICHAR_SPACE : UNICHAR_TAB);
+	for (next = buf; *next != '\0' && getCharFromString((const char**)&next) == (isPC(optWhichFonts) ? UNICHAR_SPACE : UNICHAR_TAB);
 		 buf = next)
 		;
 	if (*buf == '\0')
@@ -2261,14 +2261,14 @@ SplitStarName(STAR_SEARCH_STATE* pSS)
 	pSS->Prefix = buf;
 
 	// See if player gave a prefix
-	for (buf = next; *next != '\0' && getCharFromString((const uqm::CHAR_T**)&next) != (isPC(optWhichFonts) ? UNICHAR_SPACE : UNICHAR_TAB);
+	for (buf = next; *next != '\0' && getCharFromString((const char**)&next) != (isPC(optWhichFonts) ? UNICHAR_SPACE : UNICHAR_TAB);
 		 buf = next)
 		;
 	if (*buf != '\0')
 	{ // found possibly separating ' '
 		sep = buf;
 		// skip separating space
-		for (buf = next; *next != '\0' && getCharFromString((const uqm::CHAR_T**)&next) == (isPC(optWhichFonts) ? UNICHAR_SPACE : UNICHAR_TAB);
+		for (buf = next; *next != '\0' && getCharFromString((const char**)&next) == (isPC(optWhichFonts) ? UNICHAR_SPACE : UNICHAR_TAB);
 			 buf = next)
 			;
 	}
@@ -2314,10 +2314,10 @@ FindNextStarIndex(STAR_SEARCH_STATE* pSS, int from, bool WithinClust)
 	for (i = from; i < NUM_SOLAR_SYSTEMS; ++i)
 	{
 		STAR_DESC* SDPtr = &star_array[pSS->SortedStars[i]];
-		uqm::CHAR_T FullName[STAR_SEARCH_BUFSIZE];
-		uqm::CHAR_T* ClusterName = GAME_STRING(SDPtr->Postfix);
-		const uqm::CHAR_T* sptr;
-		const uqm::CHAR_T* dptr;
+		char FullName[STAR_SEARCH_BUFSIZE];
+		char* ClusterName = GAME_STRING(SDPtr->Postfix);
+		const char* sptr;
+		const char* dptr;
 		int dlen;
 		int c;
 
@@ -2406,11 +2406,11 @@ static void
 DrawMatchedStarName(TEXTENTRY_STATE* pTES)
 {
 	STAR_SEARCH_STATE* pSS = (STAR_SEARCH_STATE*)pTES->CbParam;
-	uqm::CHAR_T buf[STAR_SEARCH_BUFSIZE] {};
-	uqm::SIZE ExPos = 0;
-	uqm::SIZE CurPos = -1;
+	char buf[STAR_SEARCH_BUFSIZE] {};
+	int16_t ExPos = 0;
+	int16_t CurPos = -1;
 	STAR_DESC* SDPtr = &star_array[pSS->SortedStars[pSS->CurIndex]];
-	uqm::COUNT flags;
+	uint16_t flags;
 
 	if (pSS->SingleClust || pSS->SingleMatch)
 	{ // draw full star name
@@ -2420,7 +2420,7 @@ DrawMatchedStarName(TEXTENTRY_STATE* pTES)
 	}
 	else
 	{ // draw substring match
-		uqm::CHAR_T* pstr = buf;
+		char* pstr = buf;
 
 		uqm::strncpy_safe(buf, pSS->Text);
 		ExPos = pSS->ClusterPos;
@@ -2492,7 +2492,7 @@ static bool
 OnStarNameChange(TEXTENTRY_STATE* pTES)
 {
 	STAR_SEARCH_STATE* pSS = (STAR_SEARCH_STATE*)pTES->CbParam;
-	uqm::COUNT flags;
+	uint16_t flags;
 	bool ret = true;
 
 	if (strncmp(pSS->Text, pSS->LastText, sizeof(pSS->Text)) != 0)
@@ -2571,11 +2571,11 @@ OnStarNameFrame(TEXTENTRY_STATE* pTES)
 	return true;
 }
 
-bool coords_only(uqm::CHAR_T* s)
+bool coords_only(char* s)
 {
-	uqm::BYTE i, count = 0;
-	uqm::BYTE countD = 0, countC = 0;
-	uqm::BYTE j = (uqm::BYTE)strlen(s);
+	uint8_t i, count = 0;
+	uint8_t countD = 0, countC = 0;
+	uint8_t j = (uint8_t)strlen(s);
 	//const char *pattern = "^\d*(\.\d+)?:\d*(\.\d+)?$";
 
 	for (i = 0; i < j; i++)
@@ -2645,7 +2645,7 @@ DoStarSearch(MENU_STATE* pMS)
 
 		{
 			uqstl::vector<uqstl::string> parts;
-			uqm::tokenize(uqstl::string_view{tes.BaseStr}, parts, ':', false);
+			uqm::tokenize(uqstl::string_view {tes.BaseStr}, parts, ':', false);
 			coord.x = (COORD)(atof(parts[0].c_str()) * 10);
 			coord.y = (COORD)(atof(parts[1].c_str()) * 10);
 		}
@@ -2698,7 +2698,7 @@ void DoBubbleWarp(bool UseFuel)
 static void
 AdvancedAutoPilot(void)
 {
-	const uqm::COUNT portalFuelCost {difficultyCase<uqm::COUNT>(5, 20, 20)};
+	const uint16_t portalFuelCost {difficultyCase<uint16_t>(5, 20, 20)};
 	// (Based on the Python QuasiSpace Calculator by Lukrative525
 	// https://www.reddit.com/r/starcontrol/comments/zpyhkc/quasispace_calculator/
 	GFXPOINT current_position;
@@ -2706,9 +2706,9 @@ AdvancedAutoPilot(void)
 	GFXPOINT portal_coordinates;
 	double distance, fuel_no_portal, fuel_with_portal;
 	double minimum = 0.0;
-	uqm::BYTE i;
-	uqm::BYTE index = 0;
-	uqm::UWORD KnownQSPortals = GET_GAME_STATE(KNOW_QS_PORTAL);
+	uint8_t i;
+	uint8_t index = 0;
+	uint16_t KnownQSPortals = GET_GAME_STATE(KNOW_QS_PORTAL);
 
 	current_position.x = LOGX_TO_UNIVERSE(GLOBAL_SIS(log_x));
 	current_position.y = LOGY_TO_UNIVERSE(GLOBAL_SIS(log_y));
@@ -2764,9 +2764,9 @@ DoMoveCursor(MENU_STATE* pMS)
 #define MIN_ACCEL_DELAY (GameTicksPerSecond / 60)
 #define MAX_ACCEL_DELAY (GameTicksPerSecond / 8)
 #define STEP_ACCEL_DELAY (GameTicksPerSecond / 120)
-	static uqm::CHAR_T last_buf[CURSOR_INFO_BUFSIZE];
-	uqm::DWORD TimeIn = GetTimeCounter();
-	static uqm::COUNT moveRepeats;
+	static char last_buf[CURSOR_INFO_BUFSIZE];
+	uint32_t TimeIn = GetTimeCounter();
+	static uint16_t moveRepeats;
 	bool isMove = false;
 
 	if (!pMS->Initialized)
@@ -2886,7 +2886,7 @@ DoMoveCursor(MENU_STATE* pMS)
 
 		if (GET_GAME_STATE(ARILOU_SPACE_SIDE) <= 1)
 		{
-			uqm::BYTE NewState;
+			uint8_t NewState;
 			NewState = which_starmap;
 
 			if (NewState == RAINBOW_MAP)
@@ -2935,7 +2935,7 @@ DoMoveCursor(MENU_STATE* pMS)
 
 		if (GET_GAME_STATE(ARILOU_SPACE_SIDE) <= 1)
 		{
-			uqm::COUNT i;
+			uint16_t i;
 
 			for (i = 0; i <= NUM_SOLAR_SYSTEMS; i++)
 			{
@@ -2954,8 +2954,8 @@ DoMoveCursor(MENU_STATE* pMS)
 	}
 	else
 	{
-		uqm::SBYTE sx, sy;
-		uqm::SIZE ZoomIn, ZoomOut;
+		int8_t sx, sy;
+		int16_t ZoomIn, ZoomOut;
 
 		ZoomIn = ZoomOut = 0;
 		if (PulsedInputState.menu[KEY_MENU_ZOOM_IN])
@@ -3020,7 +3020,7 @@ DoMoveCursor(MENU_STATE* pMS)
 }
 
 static void
-RepairMap(uqm::COUNT update_race, GFXRECT* pLastRect, GFXRECT* pNextRect)
+RepairMap(uint16_t update_race, GFXRECT* pLastRect, GFXRECT* pNextRect)
 {
 	GFXRECT r;
 
@@ -3083,11 +3083,11 @@ RepairMap(uqm::COUNT update_race, GFXRECT* pLastRect, GFXRECT* pNextRect)
 static void
 UpdateMap(void)
 {
-	uqm::BYTE ButtonState, VisibleChange;
+	uint8_t ButtonState, VisibleChange;
 	bool MapDrawn, Interrupted;
-	uqm::COUNT index;
+	uint16_t index;
 	HFLEETINFO hStarShip, hNextShip;
-	uqm::COUNT GrowthFactor;
+	uint16_t GrowthFactor;
 
 	FlushInput();
 	ButtonState = 1; /* assume a button down */
@@ -3116,15 +3116,15 @@ UpdateMap(void)
 
 		if (FleetPtr->known_strength)
 		{
-			uqm::SIZE dx, dy, delta;
+			int16_t dx, dy, delta;
 			GFXRECT r, last_r, temp_r0, temp_r1;
-			uqm::COUNT str;
+			uint16_t str;
 
 			dx = FleetPtr->loc.x - FleetPtr->known_loc.x;
 			dy = FleetPtr->loc.y - FleetPtr->known_loc.y;
 			if (dx || dy)
 			{
-				uqm::SIZE xincr, yincr,
+				int16_t xincr, yincr,
 					xerror, yerror,
 					cycle;
 
@@ -3162,7 +3162,7 @@ UpdateMap(void)
 
 				if (!MapDrawn)
 				{
-					DrawStarMap((uqm::COUNT)~0, nullptr);
+					DrawStarMap((uint16_t)~0, nullptr);
 					MapDrawn = true;
 				}
 
@@ -3215,7 +3215,7 @@ UpdateMap(void)
 				} while (delta >= 0);
 				if (VisibleChange)
 				{
-					RepairMap((uqm::COUNT)~0, &last_r, &r);
+					RepairMap((uint16_t)~0, &last_r, &r);
 				}
 
 DoneSphereMove:
@@ -3227,7 +3227,7 @@ DoneSphereMove:
 			{
 				if (!MapDrawn)
 				{
-					DrawStarMap((uqm::COUNT)~0, nullptr);
+					DrawStarMap((uint16_t)~0, nullptr);
 					MapDrawn = true;
 				}
 
@@ -3300,7 +3300,7 @@ DoneSphereMove:
 				if (VisibleChange
 					|| temp_r0.extent.width != temp_r1.extent.width)
 				{
-					RepairMap((uqm::COUNT)~0, &last_r, &r);
+					RepairMap((uint16_t)~0, &last_r, &r);
 				}
 
 DoneSphereGrowth:
@@ -3326,7 +3326,7 @@ DrawStarmapHelper(void)
 	STAMP s;
 	TEXT t;
 	GFXRECT r;
-	uqm::SIZE leading;
+	int16_t leading;
 	int frame_index;
 
 	OldContext = SetContext(StatusContext);
@@ -3353,7 +3353,7 @@ DrawStarmapHelper(void)
 	t.baseline.x = r.corner.x + RES_SCALE(12) - ifGamepad(2);
 	t.baseline.y = s.origin.y + leading;
 	t.pStr = GAME_STRING(STATUS_STRING_BASE + 12);
-	t.CharCount = (uqm::COUNT)~0;
+	t.CharCount = (uint16_t)~0;
 	font_DrawText(&t);
 
 	// :Add->O
@@ -3365,7 +3365,7 @@ DrawStarmapHelper(void)
 	t.baseline.x = r.corner.x + RES_SCALE(16) - ifGamepad(6);
 	t.baseline.y = s.origin.y + leading;
 	t.pStr = GAME_STRING(STATUS_STRING_BASE + 13);
-	t.CharCount = (uqm::COUNT)~0;
+	t.CharCount = (uint16_t)~0;
 	font_DrawText(&t);
 
 	s.origin.x = t.baseline.x + RES_SCALE(28);
@@ -3383,7 +3383,7 @@ DrawStarmapHelper(void)
 	t.baseline.x = r.corner.x + RES_SCALE(18) - ifGamepad(8);
 	t.baseline.y = s.origin.y + leading;
 	t.pStr = ":";
-	t.CharCount = (uqm::COUNT)~0;
+	t.CharCount = (uint16_t)~0;
 	font_DrawText(&t);
 
 	s.origin.x = t.baseline.x + RES_SCALE(7);
@@ -3394,7 +3394,7 @@ DrawStarmapHelper(void)
 	t.align = ALIGN_LEFT;
 	t.baseline.x += RES_SCALE(13);
 	t.pStr = GAME_STRING(STATUS_STRING_BASE + 14);
-	t.CharCount = (uqm::COUNT)~0;
+	t.CharCount = (uint16_t)~0;
 	font_DrawText(&t);
 
 	// :Search
@@ -3406,7 +3406,7 @@ DrawStarmapHelper(void)
 	t.baseline.x = s.origin.x + RES_SCALE(12) + ifGamepad(11);
 	t.baseline.y = s.origin.y + leading + RES_SCALE(5) - ifGamepad(5);
 	t.pStr = GAME_STRING(STATUS_STRING_BASE + 15);
-	t.CharCount = (uqm::COUNT)~0;
+	t.CharCount = (uint16_t)~0;
 	font_DrawText(&t);
 
 	// :Zoom
@@ -3417,7 +3417,7 @@ DrawStarmapHelper(void)
 	t.baseline.x = s.origin.x + RES_SCALE(30) - ifGamepad(18);
 	t.baseline.y = s.origin.y + leading + RES_SCALE(5);
 	t.pStr = GAME_STRING(STATUS_STRING_BASE + 16);
-	t.CharCount = (uqm::COUNT)~0;
+	t.CharCount = (uint16_t)~0;
 	font_DrawText(&t);
 
 	// Separator
@@ -3433,7 +3433,7 @@ DrawStarmapHelper(void)
 	t.baseline.x = r.corner.x + RES_SCALE(2);
 	t.baseline.y = r.corner.y + leading + RES_SCALE(1);
 	t.pStr = GAME_STRING(STATUS_STRING_BASE + 8); // FUEL:
-	t.CharCount = (uqm::COUNT)~0;
+	t.CharCount = (uint16_t)~0;
 	font_DrawText(&t);
 
 	// Current amount of fuel
@@ -3442,7 +3442,7 @@ DrawStarmapHelper(void)
 	t.baseline.x = r.extent.width + RES_SCALE(2);
 	t.baseline.y = r.corner.y + leading + RES_SCALE(1);
 	t.pStr = WholeFuelValue();
-	t.CharCount = (uqm::COUNT)~0;
+	t.CharCount = (uint16_t)~0;
 	font_DrawText(&t);
 
 	UnbatchGraphics();

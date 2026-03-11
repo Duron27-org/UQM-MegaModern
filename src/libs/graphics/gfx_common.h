@@ -59,7 +59,7 @@ void TFB_PurgeDanglingGraphics(void); // Only call from main thread as part of s
 
 void TFB_ScreenShot(void);
 void TFB_ClearFPSCanvas(void);
-void TFB_GetScreenSize(uqm::SIZE* width, uqm::SIZE* height);
+void TFB_GetScreenSize(int16_t* width, int16_t* height);
 
 // The flag variable itself
 extern uqm::GfxFlags g_gfxFlags;

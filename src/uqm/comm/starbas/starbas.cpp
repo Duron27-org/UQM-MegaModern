@@ -73,7 +73,7 @@ static LOCDATA commander_desc =
 				0, /* FrameRate */
 				0,
 				GameTicksPerSecond * 8, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				/* Running light */
@@ -95,7 +95,7 @@ static LOCDATA commander_desc =
 				0, /* FrameRate */
 				0,
 				GameTicksPerSecond * 8, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				/* Arc welder 1 */
@@ -106,7 +106,7 @@ static LOCDATA commander_desc =
 				0, /* FrameRate */
 				0,
 				GameTicksPerSecond * 8, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				/* Arc welder 2 */
@@ -117,7 +117,7 @@ static LOCDATA commander_desc =
 				0, /* FrameRate */
 				0,
 				GameTicksPerSecond * 8, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				/* Arc welder 3 */
@@ -128,7 +128,7 @@ static LOCDATA commander_desc =
 				0, /* FrameRate */
 				0,
 				GameTicksPerSecond * 8, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				/* Arc welder 4 */
@@ -139,7 +139,7 @@ static LOCDATA commander_desc =
 				0, /* FrameRate */
 				0,
 				GameTicksPerSecond * 8, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				/* Arc welder 5 */
@@ -150,7 +150,7 @@ static LOCDATA commander_desc =
 				0, /* FrameRate */
 				0,
 				GameTicksPerSecond * 8, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				/* Arc welder 6 */
@@ -161,7 +161,7 @@ static LOCDATA commander_desc =
 				0, /* FrameRate */
 				0,
 				GameTicksPerSecond * 8, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				/* Flagship picture */
@@ -195,7 +195,7 @@ static LOCDATA commander_desc =
 								GameTicksPerSecond / 15, /* FrameRate */
 			GameTicksPerSecond * 7 / 60,
 								GameTicksPerSecond / 12, /* RestartRate */
-			0,				 /* BlockMask */
+			0,						 /* BlockMask */
 		},
 		nullptr, /* AlienNumberSpeech - none */
 		/* Filler for loaded resources */
@@ -206,25 +206,25 @@ static LOCDATA commander_desc =
 		nullptr,
 };
 
-static uqm::DWORD CurBulletinMask;
+static uint32_t CurBulletinMask;
 
-static uqm::COUNT
+static uint16_t
 DoSellMinerals(void)
 {
-	uqm::COUNT i;
-	uqm::COUNT total = 0;
+	uint16_t i;
+	uint16_t total = 0;
 	bool Sleepy = true;
 
 	FlushInput();
 
 	for (i = 0; i < NUM_ELEMENT_CATEGORIES; ++i)
 	{
-		uqm::COUNT amount;
-		uqm::DWORD TimeIn = 0;
+		uint16_t amount;
+		uint32_t TimeIn = 0;
 
 		if (i == 0)
 		{
-			DrawCargoStrings((uqm::BYTE)~0, (uqm::BYTE)~0);
+			DrawCargoStrings((uint8_t)~0, (uint8_t)~0);
 			TimeIn = GetTimeCounter() + GameTicksPerSecond / 2;
 			while (GetTimeCounter() <= TimeIn)
 			{
@@ -238,12 +238,12 @@ DoSellMinerals(void)
 
 			if (Sleepy)
 			{
-				DrawCargoStrings((uqm::BYTE)0, (uqm::BYTE)0);
+				DrawCargoStrings((uint8_t)0, (uint8_t)0);
 			}
 		}
 		else if (Sleepy)
 		{
-			DrawCargoStrings((uqm::BYTE)(i - 1), (uqm::BYTE)i);
+			DrawCargoStrings((uint8_t)(i - 1), (uint8_t)i);
 		}
 
 		if ((amount = GLOBAL_SIS(ElementAmounts[i])) != 0)
@@ -266,7 +266,7 @@ DoSellMinerals(void)
 				--GLOBAL_SIS(ElementAmounts[i]);
 				--GLOBAL_SIS(TotalElementMass);
 				TaskSwitch();
-				DrawCargoStrings((uqm::BYTE)i, (uqm::BYTE)i);
+				DrawCargoStrings((uint8_t)i, (uint8_t)i);
 				ShowRemainingCapacity();
 				DeltaSISGauges(0, 0, GLOBAL(ElementWorth[i]));
 			} while (--amount);
@@ -294,7 +294,7 @@ DoSellMinerals(void)
 }
 
 static RESPONSE_REF
-EveryOnesACritic(uqm::COUNT total)
+EveryOnesACritic(uint16_t total)
 {
 	RESPONSE_REF pStr = LIGHT_LOAD_A;
 
@@ -411,7 +411,7 @@ ByeBye(RESPONSE_REF R)
 	{
 		RESPONSE_REF pStr = 0;
 
-		switch ((uqm::BYTE)TFB_Random() & 7)
+		switch ((uint8_t)TFB_Random() & 7)
 		{
 			case 0:
 				pStr = NORMAL_GOODBYE_A;
@@ -447,10 +447,10 @@ static void NeedInfo(RESPONSE_REF R);
 static void TellHistory(RESPONSE_REF R);
 static void AlienRaces(RESPONSE_REF R);
 
-static uqm::BYTE stack0;
-static uqm::BYTE stack1;
-static uqm::BYTE stack2;
-static uqm::BYTE stack3;
+static uint8_t stack0;
+static uint8_t stack1;
+static uint8_t stack2;
+static uint8_t stack3;
 
 static void
 AllianceInfo(RESPONSE_REF R)
@@ -461,7 +461,7 @@ AllianceInfo(RESPONSE_REF R)
 #define ALLIANCE_CHENJESU (1 << 3)
 #define ALLIANCE_MMRNMHRM (1 << 4)
 #define ALLIANCE_SYREEN (1 << 5)
-	static uqm::BYTE AllianceMask = 0;
+	static uint8_t AllianceMask = 0;
 
 	if (PLAYER_SAID(R, what_about_alliance))
 	{
@@ -537,7 +537,7 @@ HierarchyInfo(RESPONSE_REF R)
 #define HIERARCHY_ILWRATH (1 << 4)
 #define HIERARCHY_VUX (1 << 5)
 #define HIERARCHY_URQUAN (1 << 6)
-	static uqm::BYTE HierarchyMask = 0;
+	static uint8_t HierarchyMask = 0;
 
 	if (PLAYER_SAID(R, what_about_hierarchy))
 	{
@@ -618,7 +618,7 @@ AlienRaces(RESPONSE_REF R)
 #define RACES_ALLIANCE (1 << 0)
 #define RACES_HIERARCHY (1 << 1)
 #define RACES_OTHER (1 << 2)
-	static uqm::BYTE RacesMask = 0;
+	static uint8_t RacesMask = 0;
 
 	if (PLAYER_SAID(R, alien_races))
 	{
@@ -663,7 +663,7 @@ WarInfo(RESPONSE_REF R)
 #define WAR_WAS_LIKE (1 << 1)
 #define WAR_LOST (1 << 2)
 #define WAR_AFTERMATH (1 << 3)
-	static uqm::BYTE WarMask = 0;
+	static uint8_t WarMask = 0;
 
 	if (PLAYER_SAID(R, the_war))
 	{
@@ -716,7 +716,7 @@ AncientHistory(RESPONSE_REF R)
 #define ANCIENT_PRECURSORS (1 << 0)
 #define ANCIENT_RACES (1 << 1)
 #define ANCIENT_EARTH (1 << 2)
-	static uqm::BYTE AncientMask = 0;
+	static uint8_t AncientMask = 0;
 
 	if (PLAYER_SAID(R, ancient_history))
 	{
@@ -835,7 +835,7 @@ DefeatUrquan(RESPONSE_REF R)
 #define HOW_FIGHT_URQUAN (1 << 1)
 #define HOW_ALLY_AGAINST_URQUAN (1 << 2)
 #define HOW_STRONG_AGAINST_URQUAN (1 << 3)
-	static uqm::BYTE DefeatMask = 0;
+	static uint8_t DefeatMask = 0;
 
 	if (PLAYER_SAID(R, how_defeat))
 	{
@@ -885,14 +885,14 @@ DefeatUrquan(RESPONSE_REF R)
 static void
 AnalyzeCondition(void)
 {
-	uqm::BYTE i;
-	uqm::BYTE num_thrusters = 0,
-			  num_jets = 0,
-			  num_guns = 0,
-			  num_bays = 0,
-			  num_batts = 0,
-			  num_track = 0,
-			  num_defense = 0;
+	uint8_t i;
+	uint8_t num_thrusters = 0,
+			num_jets = 0,
+			num_guns = 0,
+			num_bays = 0,
+			num_batts = 0,
+			num_track = 0,
+			num_defense = 0;
 	bool HasMinimum;
 
 	for (i = 0; i < NUM_DRIVE_SLOTS; ++i)
@@ -911,7 +911,7 @@ AnalyzeCondition(void)
 	}
 	for (i = 0; i < NUM_MODULE_SLOTS; ++i)
 	{
-		uqm::BYTE which_piece;
+		uint8_t which_piece;
 
 		switch (which_piece = GLOBAL_SIS(ModuleSlots[i]))
 		{
@@ -993,8 +993,8 @@ AnalyzeCondition(void)
 	}
 	else
 	{
-		uqm::BYTE num_aliens = 0;
-		uqm::COUNT FleetStrength;
+		uint8_t num_aliens = 0;
+		uint16_t FleetStrength;
 		bool HasMaximum;
 
 		FleetStrength = CalculateEscortsWorth();
@@ -1383,7 +1383,7 @@ NeedInfo(RESPONSE_REF R)
 static bool
 DiscussDevices(bool TalkAbout)
 {
-	uqm::COUNT i, VuxBeastIndex, PhraseIndex;
+	uint16_t i, VuxBeastIndex, PhraseIndex;
 	//bool Undiscussed; unused
 
 	if (TalkAbout)
@@ -1655,7 +1655,7 @@ DiscussDevices(bool TalkAbout)
 			// Run all tracks upto the Vux Beast scientist's report
 			// Then disable Commander's speech animation and run the report
 			BlockTalkingAnim(VuxBeastIndex - 1, VuxBeastIndex);
-			AlienTalkSegue((uqm::COUNT)~0);
+			AlienTalkSegue((uint16_t)~0);
 		}
 	}
 
@@ -1663,10 +1663,10 @@ DiscussDevices(bool TalkAbout)
 }
 
 static bool
-CheckTiming(uqm::COUNT month_index, uqm::COUNT day_index)
+CheckTiming(uint16_t month_index, uint16_t day_index)
 {
-	uqm::COUNT mi, year_index;
-	uqm::BYTE days_in_month[12] =
+	uint16_t mi, year_index;
+	uint8_t days_in_month[12] =
 		{
 			31,
 			28,
@@ -1711,9 +1711,9 @@ static void
 CheckBulletins(bool Repeat)
 {
 	RESPONSE_REF pIntro;
-	uqm::BYTE b0;
-	uqm::DWORD BulletinMask;
-	uqm::COUNT CrewSold = MAKE_WORD(
+	uint8_t b0;
+	uint32_t BulletinMask;
+	uint16_t CrewSold = MAKE_WORD(
 		GET_GAME_STATE(CREW_SOLD_TO_DRUUGE0),
 		GET_GAME_STATE(CREW_SOLD_TO_DRUUGE1));
 
@@ -1897,7 +1897,7 @@ CheckBulletins(bool Repeat)
 					break;
 				case 26:
 					{
-						uqm::COUNT crew_sold = CrewSold;
+						uint16_t crew_sold = CrewSold;
 
 						if (crew_sold > MIN_SOLD)
 						{
@@ -1911,7 +1911,7 @@ CheckBulletins(bool Repeat)
 					}
 				case 27:
 					{
-						uqm::COUNT crew_sold = CrewSold;
+						uint16_t crew_sold = CrewSold;
 
 						if (crew_sold > MAX_SOLD)
 						{
@@ -1925,7 +1925,7 @@ CheckBulletins(bool Repeat)
 					}
 				case 28:
 					{
-						uqm::COUNT crew_bought;
+						uint16_t crew_bought;
 
 						crew_bought = MAKE_WORD(
 							GET_GAME_STATE(CREW_PURCHASED0),
@@ -1960,7 +1960,7 @@ CheckBulletins(bool Repeat)
 				}
 				else
 				{
-					switch ((uqm::BYTE)TFB_Random() % 7)
+					switch ((uint8_t)TFB_Random() % 7)
 					{
 						case 0:
 							pIntro = BEFORE_WE_GO_ON_1;
@@ -2043,7 +2043,7 @@ NormalStarbase(RESPONSE_REF R)
 			// XXX TODO: This can be simplified now.
 			RESPONSE_REF pStr = 0;
 
-			switch ((uqm::BYTE)TFB_Random() & 7)
+			switch ((uint8_t)TFB_Random() & 7)
 			{
 				case 0:
 					pStr = NORMAL_HELLO_A;
@@ -2096,7 +2096,7 @@ NormalStarbase(RESPONSE_REF R)
 static void
 SellMinerals(RESPONSE_REF R)
 {
-	uqm::COUNT total = 0;
+	uint16_t total = 0;
 	RESPONSE_REF pStr = 0;
 
 	if (optSpeech)
@@ -2113,10 +2113,10 @@ SellMinerals(RESPONSE_REF R)
 	}
 	else
 	{
-		uqm::COUNT amount[NUM_ELEMENT_CATEGORIES], Ru[NUM_ELEMENT_CATEGORIES];
-		uqm::COUNT i, sseg;
-		uqm::COUNT seg = 0;
-		uqm::COUNT count = 0;
+		uint16_t amount[NUM_ELEMENT_CATEGORIES], Ru[NUM_ELEMENT_CATEGORIES];
+		uint16_t i, sseg;
+		uint16_t seg = 0;
+		uint16_t count = 0;
 
 		NPCPhrase(CARGO_LIST);
 		for (i = 0; i < NUM_ELEMENT_CATEGORIES; ++i)
@@ -2176,7 +2176,7 @@ Intro(void)
 	NormalStarbase(0);
 }
 
-static uqm::COUNT
+static uint16_t
 uninit_starbase(void)
 {
 	luaUqm_comm_uninit();

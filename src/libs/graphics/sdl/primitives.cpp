@@ -610,7 +610,7 @@ void line_prim(int x1, int y1, int x2, int y2, Uint32 color, RenderPixelFn plot,
 }
 
 void line_aa_prim(int x1, int y1, int x2, int y2, Uint32 color, RenderPixelFn plot,
-				  int factor, SDL_Surface* dst, uqm::BYTE thickness)
+				  int factor, SDL_Surface* dst, uint8_t thickness)
 {
 	int d, x, y, ax, ay, sx, sy, dx, dy;
 	SDL_Rect clip_r;

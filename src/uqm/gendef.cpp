@@ -22,7 +22,7 @@
 
 
 const GenerateFunctions*
-getGenerateFunctions(uqm::BYTE Index)
+getGenerateFunctions(uint8_t Index)
 {
 	switch (Index)
 	{

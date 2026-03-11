@@ -140,13 +140,13 @@ signaledFreezeTalkingAnim(void)
 extern void init_communication(void);
 extern void uninit_communication(void);
 
-extern uqm::COUNT InitCommunication(CONVERSATION which_comm);
+extern uint16_t InitCommunication(CONVERSATION which_comm);
 extern void RaceCommunication(void);
 
-#define WAIT_TRACK_ALL ((uqm::COUNT)~0)
-extern void AlienTalkSegue(uqm::COUNT wait_track);
+#define WAIT_TRACK_ALL ((uint16_t)~0)
+extern void AlienTalkSegue(uint16_t wait_track);
 bool getLineWithinWidth(TEXT* pText, const char** startNext,
-						uqm::SIZE maxWidth, uqm::COUNT maxChars);
+						int16_t maxWidth, uint16_t maxChars);
 
 extern GFXRECT CommWndRect; /* comm window rect */
 
@@ -164,9 +164,9 @@ extern void SetCommIntroMode(CommIntroMode, TimeCount howLong);
 extern void EnableTalkingAnim(bool enable);
 extern void SetCommDarkMode(bool state);
 extern void RedrawSISComWindow(void);
-extern void SetCustomBaseLine(uqm::COUNT sentence, GFXPOINT bl, TEXT_ALIGN align);
+extern void SetCustomBaseLine(uint16_t sentence, GFXPOINT bl, TEXT_ALIGN align);
 extern void FlushCustomBaseLine(void);
-extern void BlockTalkingAnim(uqm::COUNT trackStart, uqm::COUNT trackEnd);
+extern void BlockTalkingAnim(uint16_t trackStart, uint16_t trackEnd);
 extern void UpdateDuty(bool talk);
 
 extern void DeltaLastTime(TimeCount diff);
@@ -177,7 +177,7 @@ extern bool cwLock;
 #define USE_ALT_COLORMAP (1 << 1)
 #define USE_ALT_SONG (1 << 2)
 #define USE_ALT_ALL (USE_ALT_FRAME | USE_ALT_COLORMAP | USE_ALT_SONG)
-extern uqm::BYTE altResFlags;
+extern uint8_t altResFlags;
 
 #if 0 //defined(__cplusplus)
 }

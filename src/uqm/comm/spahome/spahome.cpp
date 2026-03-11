@@ -59,7 +59,7 @@ static LOCDATA spahome_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				4,			   /* StartIndex */
@@ -69,7 +69,7 @@ static LOCDATA spahome_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				9,			   /* StartIndex */
@@ -78,16 +78,16 @@ static LOCDATA spahome_desc =
 				GameTicksPerSecond / 20,
 				0, /* FrameRate */
 				GameTicksPerSecond,
-				GameTicksPerSecond * 3,		   /* RestartRate */
-				(1 << 10) | (1 << 11), /* BlockMask */
+				GameTicksPerSecond * 3, /* RestartRate */
+				(1 << 10) | (1 << 11),	/* BlockMask */
 			},
 								{
-				13,					/* StartIndex */
-				6,					/* NumFrames */
-				CIRCULAR_ANIM,		/* AnimFlags */
+				13,							/* StartIndex */
+				6,							/* NumFrames */
+				CIRCULAR_ANIM,				/* AnimFlags */
 				GameTicksPerSecond / 20, 0, /* FrameRate */
 				GameTicksPerSecond / 20, 0, /* RestartRate */
-				(1 << 4) | (1 << 5) /* BlockMask */
+				(1 << 4) | (1 << 5)			/* BlockMask */
 			},
 								{
 				19,		   /* StartIndex */
@@ -96,8 +96,8 @@ static LOCDATA spahome_desc =
 				GameTicksPerSecond / 20,
 				0, /* FrameRate */
 				GameTicksPerSecond,
-				GameTicksPerSecond * 3,		 /* RestartRate */
-				(1 << 3) | (1 << 5), /* BlockMask */
+				GameTicksPerSecond * 3, /* RestartRate */
+				(1 << 3) | (1 << 5),	/* BlockMask */
 			},
 								{
 				22,		   /* StartIndex */
@@ -118,7 +118,7 @@ static LOCDATA spahome_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond * 10,
 				GameTicksPerSecond * 3, /* RestartRate */
-				(1 << 10),		/* BlockMask */
+				(1 << 10),				/* BlockMask */
 			},
 								{
 				29,		   /* StartIndex */
@@ -128,7 +128,7 @@ static LOCDATA spahome_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond * 10,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				32,			   /* StartIndex */
@@ -147,8 +147,8 @@ static LOCDATA spahome_desc =
 				GameTicksPerSecond / 20,
 				0, /* FrameRate */
 				GameTicksPerSecond,
-				GameTicksPerSecond * 3,		  /* RestartRate */
-				(1 << 8) | (1 << 10), /* BlockMask */
+				GameTicksPerSecond * 3, /* RestartRate */
+				(1 << 8) | (1 << 10),	/* BlockMask */
 			},
 								{
 				42,		   /* StartIndex */
@@ -169,8 +169,8 @@ static LOCDATA spahome_desc =
 				GameTicksPerSecond / 10,
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond / 10,
-				GameTicksPerSecond / 30,	  /* RestartRate */
-				(1 << 2) | (1 << 10), /* BlockMask */
+				GameTicksPerSecond / 30, /* RestartRate */
+				(1 << 2) | (1 << 10),	 /* BlockMask */
 			},
 								{
 				50,			   /* StartIndex */
@@ -190,7 +190,7 @@ static LOCDATA spahome_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				(1 << 12),		/* BlockMask */
+				(1 << 12),				/* BlockMask */
 			},
 								},
 		{
@@ -371,7 +371,7 @@ static void SpathiAllies(RESPONSE_REF R);
 static void
 SpathiInfo(RESPONSE_REF R)
 {
-	uqm::BYTE InfoLeft;
+	uint8_t InfoLeft;
 
 	InfoLeft = false;
 	if (PLAYER_SAID(R, like_some_info))
@@ -445,7 +445,7 @@ SpathiInfo(RESPONSE_REF R)
 static void
 SpathiAllies(RESPONSE_REF R)
 {
-	uqm::BYTE NumVisits;
+	uint8_t NumVisits;
 
 	if (R == 0)
 	{
@@ -767,7 +767,7 @@ SpathiParty(RESPONSE_REF R)
 {
 	if (R == 0)
 	{
-		uqm::BYTE NumVisits;
+		uint8_t NumVisits;
 
 		NumVisits = GET_GAME_STATE(SPATHI_HOME_VISITS);
 		switch (NumVisits++)
@@ -975,7 +975,7 @@ SpathiPassword(RESPONSE_REF R)
 {
 	if (R == 0)
 	{
-		uqm::BYTE NumVisits;
+		uint8_t NumVisits;
 
 		NumVisits = GET_GAME_STATE(SPATHI_HOME_VISITS);
 		switch (NumVisits++)
@@ -1021,7 +1021,7 @@ SpathiPassword(RESPONSE_REF R)
 static void
 Intro(void)
 {
-	uqm::BYTE Manner;
+	uint8_t Manner;
 
 	if (IS_HD)
 	{
@@ -1095,7 +1095,7 @@ Intro(void)
 	}
 }
 
-static uqm::COUNT
+static uint16_t
 uninit_spahome(void)
 {
 	luaUqm_comm_uninit();
@@ -1105,7 +1105,7 @@ uninit_spahome(void)
 static void
 post_spahome_enc(void)
 {
-	uqm::BYTE Manner;
+	uint8_t Manner;
 
 	if (getSegue() == Segue_hostile
 		&& (Manner = GET_GAME_STATE(SPATHI_MANNER)) != 2)

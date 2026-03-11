@@ -80,7 +80,7 @@ LoadTeamImage(DIRENTRY DirEntry, MeleeTeam* team)
 
 #if 0 /* Not used */
 static void
-UnindexFleet (MELEE_STATE *pMS, uqm::COUNT index)
+UnindexFleet (MELEE_STATE *pMS, uint16_t index)
 {
 	assert (index < pMS->load.numIndices);
 	pMS->load.numIndices--;
@@ -91,7 +91,7 @@ UnindexFleet (MELEE_STATE *pMS, uqm::COUNT index)
 #endif
 
 static void
-UnindexFleets(MELEE_STATE* pMS, uqm::COUNT index, uqm::COUNT count)
+UnindexFleets(MELEE_STATE* pMS, uint16_t index, uint16_t count)
 {
 	assert(index + count <= pMS->load.numIndices);
 
@@ -102,9 +102,9 @@ UnindexFleets(MELEE_STATE* pMS, uqm::COUNT index, uqm::COUNT count)
 }
 
 static bool
-GetFleetByIndex(MELEE_STATE* pMS, uqm::COUNT index, MeleeTeam* result)
+GetFleetByIndex(MELEE_STATE* pMS, uint16_t index, MeleeTeam* result)
 {
-	uqm::COUNT firstIndex;
+	uint16_t firstIndex;
 
 	if (index < pMS->load.preBuiltCount)
 	{
@@ -141,11 +141,11 @@ GetFleetByIndex(MELEE_STATE* pMS, uqm::COUNT index, MeleeTeam* result)
 	return index < pMS->load.numIndices;
 }
 
-// returns (uqm::COUNT) -1 if not found
-static uqm::COUNT
+// returns (uint16_t) -1 if not found
+static uint16_t
 GetFleetIndexByFileName(MELEE_STATE* pMS, const char* fileName)
 {
-	uqm::COUNT index;
+	uint16_t index;
 
 	for (index = 0; index < pMS->load.numIndices; index++)
 	{
@@ -159,7 +159,7 @@ GetFleetIndexByFileName(MELEE_STATE* pMS, const char* fileName)
 		}
 	}
 
-	return (uqm::COUNT)-1;
+	return (uint16_t)-1;
 }
 
 // Auxiliary function for DrawFileStrings
@@ -193,14 +193,14 @@ DrawFileString(const MeleeTeam* team, const GFXPOINT* origin,
 		Text.baseline = *origin;
 		Text.align = ALIGN_LEFT;
 		Text.pStr = MeleeTeam_getTeamName(team);
-		Text.CharCount = (uqm::COUNT)~0;
+		Text.CharCount = (uint16_t)~0;
 		font_DrawText(&Text);
 	}
 
 	// Print the value of the fleet
 	{
 		TEXT Text;
-		uqm::CHAR_T buf[60] {};
+		char buf[60] {};
 
 		fmt::format_to_n(buf, sizeof(buf) - 1, "{}", MeleeTeam_getValue(team));
 		Text.baseline = *origin;
@@ -208,7 +208,7 @@ DrawFileString(const MeleeTeam* team, const GFXPOINT* origin,
 						 - RES_SCALE(1);
 		Text.align = ALIGN_RIGHT;
 		Text.pStr = buf;
-		Text.CharCount = (uqm::COUNT)~0;
+		Text.CharCount = (uint16_t)~0;
 		font_DrawText(&Text);
 	}
 
@@ -222,7 +222,7 @@ DrawFileString(const MeleeTeam* team, const GFXPOINT* origin,
 		s.origin.y = origin->y + RES_SCALE(4);
 		for (slotI = 0; slotI < MELEE_FLEET_SIZE; slotI++)
 		{
-			uqm::BYTE StarShip;
+			uint8_t StarShip;
 
 			if (slotI == TRUE_MELEE_FLEET_SIZE)
 			{
@@ -246,7 +246,7 @@ DrawFileString(const MeleeTeam* team, const GFXPOINT* origin,
 static bool
 FillFileView(MELEE_STATE* pMS)
 {
-	uqm::COUNT viewI;
+	uint16_t viewI;
 
 	for (viewI = 0; viewI < LOAD_TEAM_VIEW_SIZE; viewI++)
 	{
@@ -276,7 +276,7 @@ SelectFileString(MELEE_STATE* pMS, bool hilite)
 {
 	GFXCONTEXT OldContext;
 	GFXPOINT origin;
-	uqm::COUNT viewI;
+	uint16_t viewI;
 
 	viewI = pMS->load.cur - pMS->load.top;
 
@@ -309,7 +309,7 @@ DrawFileStrings(MELEE_STATE* pMS)
 
 	if (FillFileView(pMS))
 	{
-		uqm::COUNT i;
+		uint16_t i;
 		for (i = pMS->load.top; i < pMS->load.bot; i++)
 		{
 			DrawFileString(pMS->load.view[i - pMS->load.top], &origin,
@@ -323,7 +323,7 @@ DrawFileStrings(MELEE_STATE* pMS)
 }
 
 static void
-RefocusView(MELEE_STATE* pMS, uqm::COUNT index)
+RefocusView(MELEE_STATE* pMS, uint16_t index)
 {
 	assert(index < pMS->load.preBuiltCount + pMS->load.numIndices);
 
@@ -361,7 +361,7 @@ flashSelectedTeam(MELEE_STATE* pMS)
 
 bool DoLoadTeam(MELEE_STATE* pMS)
 {
-	uqm::DWORD TimeIn = GetTimeCounter();
+	uint32_t TimeIn = GetTimeCounter();
 
 	/* Cancel any presses of the Pause key. */
 	GamePaused = false;
@@ -404,8 +404,8 @@ bool DoLoadTeam(MELEE_STATE* pMS)
 	}
 
 	{
-		uqm::COUNT newTop = pMS->load.top;
-		uqm::COUNT newIndex = pMS->load.cur;
+		uint16_t newTop = pMS->load.top;
+		uint16_t newIndex = pMS->load.cur;
 
 		if (PulsedInputState.menu[KEY_MENU_UP])
 		{
@@ -422,7 +422,7 @@ bool DoLoadTeam(MELEE_STATE* pMS)
 		}
 		else if (PulsedInputState.menu[KEY_MENU_DOWN])
 		{
-			uqm::COUNT numEntries = pMS->load.numIndices + pMS->load.preBuiltCount;
+			uint16_t numEntries = pMS->load.numIndices + pMS->load.preBuiltCount;
 			if (newIndex + 1 < numEntries)
 			{
 				newIndex++;
@@ -443,7 +443,7 @@ bool DoLoadTeam(MELEE_STATE* pMS)
 		}
 		else if (PulsedInputState.menu[KEY_MENU_PAGE_DOWN])
 		{
-			uqm::COUNT numEntries = pMS->load.numIndices + pMS->load.preBuiltCount;
+			uint16_t numEntries = pMS->load.numIndices + pMS->load.preBuiltCount;
 			if (newIndex + LOAD_TEAM_VIEW_SIZE < numEntries)
 			{
 				newIndex += LOAD_TEAM_VIEW_SIZE;
@@ -487,8 +487,8 @@ bool DoLoadTeam(MELEE_STATE* pMS)
 static void
 SelectTeamByFileName(MELEE_STATE* pMS, const char* fileName)
 {
-	uqm::COUNT index = GetFleetIndexByFileName(pMS, fileName);
-	if (index == (uqm::COUNT)-1)
+	uint16_t index = GetFleetIndexByFileName(pMS, fileName);
+	if (index == (uint16_t)-1)
 	{
 		return;
 	}
@@ -498,7 +498,7 @@ SelectTeamByFileName(MELEE_STATE* pMS, const char* fileName)
 
 void LoadTeamList(MELEE_STATE* pMS)
 {
-	uqm::COUNT i;
+	uint16_t i;
 
 	DestroyDirEntryTable(ReleaseDirEntryTable(pMS->load.dirEntries));
 	pMS->load.dirEntries = CaptureDirEntryTable(
@@ -509,7 +509,7 @@ void LoadTeamList(MELEE_STATE* pMS)
 		HFree(pMS->load.entryIndices);
 	}
 	pMS->load.numIndices = GetDirEntryTableCount(pMS->load.dirEntries);
-	pMS->load.entryIndices = (uqm::COUNT*)HMalloc(pMS->load.numIndices * sizeof pMS->load.entryIndices[0]);
+	pMS->load.entryIndices = (uint16_t*)HMalloc(pMS->load.numIndices * sizeof pMS->load.entryIndices[0]);
 	for (i = 0; i < pMS->load.numIndices; i++)
 	{
 		pMS->load.entryIndices[i] = i;

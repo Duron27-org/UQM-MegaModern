@@ -50,11 +50,11 @@ extern PORTAL_LOCATION portal_map[NUM_HYPER_VORTICES + 1];
 extern RandomContext* StarGenRNG;
 
 extern STAR_DESC* FindStar(STAR_DESC* pLastStar, GFXPOINT* puniverse,
-						   uqm::SIZE xbounds, uqm::SIZE ybounds);
+						   int16_t xbounds, int16_t ybounds);
 
 // Populates buf with the full name of the star at pSD
 // May not be used much any more ***
-extern void GetClusterName(const STAR_DESC* pSD, uqm::CHAR_T buf[]);
+extern void GetClusterName(const STAR_DESC* pSD, char buf[]);
 
 // Returns the closest star to point p on the given starmap
 STAR_DESC* FindNearestStar(STAR_DESC* starmap, GFXPOINT p);
@@ -86,7 +86,7 @@ void InitPlot(PLOT_LOCATION* plotmap);
 // It selects the next plot which needs to be... plotted... and places it into
 // the starmap, setting the Index as appropriate, then iterates until all plots
 // are placed.
-uqm::COUNT SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap);
+uint16_t SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap);
 
 // Sets the portal map to the default values of the static portalmap_array
 void DefaultQuasispace(PORTAL_LOCATION* portalmap);
@@ -98,7 +98,7 @@ bool SeedQuasispace(PORTAL_LOCATION* portalmap, PLOT_LOCATION* plotmap,
 
 // Converts the given plot string to the plot ID enum value,
 // e.g. "pkunk" -> PKUNK_DEFINED
-uqm::COUNT PlotIdStrToIndex(const char* plotIdStr);
+uint16_t PlotIdStrToIndex(const char* plotIdStr);
 
 // JSD end of changes to this file
 

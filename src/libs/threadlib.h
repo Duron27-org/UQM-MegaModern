@@ -91,12 +91,12 @@ enum
 
 /* Prototypes with the "name" field */
 
-Thread CreateThread_Core(ThreadFunction func, void* data, uqm::SDWORD stackSize, const char* name);
-void StartThread_Core(ThreadFunction func, void* data, uqm::SDWORD stackSize, const char* name);
-Semaphore CreateSemaphore_Core(uqm::DWORD initial, const char* name, uqm::DWORD syncClass);
-Mutex CreateMutex_Core(const char* name, uqm::DWORD syncClass);
-RecursiveMutex CreateRecursiveMutex_Core(const char* name, uqm::DWORD syncClass);
-CondVar CreateCondVar_Core(const char* name, uqm::DWORD syncClass);
+Thread CreateThread_Core(ThreadFunction func, void* data, int32_t stackSize, const char* name);
+void StartThread_Core(ThreadFunction func, void* data, int32_t stackSize, const char* name);
+Semaphore CreateSemaphore_Core(uint32_t initial, const char* name, uint32_t syncClass);
+Mutex CreateMutex_Core(const char* name, uint32_t syncClass);
+RecursiveMutex CreateRecursiveMutex_Core(const char* name, uint32_t syncClass);
+CondVar CreateCondVar_Core(const char* name, uint32_t syncClass);
 
 /* Preprocessor directives to forward to the appropriate routines */
 
@@ -116,9 +116,9 @@ CondVar CreateCondVar_Core(const char* name, uqm::DWORD syncClass);
 #else
 
 /* Prototypes without the "name" field. */
-Thread CreateThread_Core(ThreadFunction func, void* data, uqm::SDWORD stackSize);
-void StartThread_Core(ThreadFunction func, void* data, uqm::SDWORD stackSize);
-Semaphore CreateSemaphore_Core(uqm::DWORD initial);
+Thread CreateThread_Core(ThreadFunction func, void* data, int32_t stackSize);
+void StartThread_Core(ThreadFunction func, void* data, int32_t stackSize);
+Semaphore CreateSemaphore_Core(uint32_t initial);
 Mutex CreateMutex_Core(void);
 RecursiveMutex CreateRecursiveMutex_Core(void);
 CondVar CreateCondVar_Core(void);

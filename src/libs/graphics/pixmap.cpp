@@ -55,7 +55,7 @@ ReleaseDrawable(FRAME FramePtr)
 	return nullptr;
 }
 
-uqm::COUNT
+uint16_t
 GetFrameCount(FRAME FramePtr)
 {
 	DRAWABLE_DESC* DrawablePtr;
@@ -69,7 +69,7 @@ GetFrameCount(FRAME FramePtr)
 	return DrawablePtr->MaxIndex + 1;
 }
 
-uqm::COUNT
+uint16_t
 GetFrameIndex(FRAME FramePtr)
 {
 	if (FramePtr == 0)
@@ -81,7 +81,7 @@ GetFrameIndex(FRAME FramePtr)
 }
 
 FRAME
-SetAbsFrameIndex(FRAME FramePtr, uqm::COUNT FrameIndex)
+SetAbsFrameIndex(FRAME FramePtr, uint16_t FrameIndex)
 {
 	if (FramePtr != 0)
 	{
@@ -96,11 +96,11 @@ SetAbsFrameIndex(FRAME FramePtr, uqm::COUNT FrameIndex)
 }
 
 FRAME
-SetRelFrameIndex(FRAME FramePtr, uqm::SIZE FrameOffs)
+SetRelFrameIndex(FRAME FramePtr, int16_t FrameOffs)
 {
 	if (FramePtr != 0)
 	{
-		uqm::COUNT num_frames;
+		uint16_t num_frames;
 		DRAWABLE_DESC* DrawablePtr;
 
 		DrawablePtr = GetFrameParentDrawable(FramePtr);
@@ -111,7 +111,7 @@ SetRelFrameIndex(FRAME FramePtr, uqm::SIZE FrameOffs)
 				;
 		}
 
-		FrameOffs = ((uqm::SWORD)FramePtr->Index + FrameOffs) % num_frames;
+		FrameOffs = ((int16_t)FramePtr->Index + FrameOffs) % num_frames;
 		FramePtr = &DrawablePtr->Frame[FrameOffs];
 	}
 
@@ -121,7 +121,7 @@ SetRelFrameIndex(FRAME FramePtr, uqm::SIZE FrameOffs)
 FRAME
 SetEquFrameIndex(FRAME DstFramePtr, FRAME SrcFramePtr)
 {
-	uqm::COUNT Index;
+	uint16_t Index;
 
 	if (!DstFramePtr || !SrcFramePtr)
 	{

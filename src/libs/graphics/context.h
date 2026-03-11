@@ -22,13 +22,13 @@
 #include "tfb_draw.h"
 #include "libs/memlib.h"
 
-typedef uqm::UWORD FBK_FLAGS;
+typedef uint16_t FBK_FLAGS;
 #define FBK_DIRTY (1 << 0)
 #define FBK_IMAGE (1 << 1)
 
 struct context_desc
 {
-	uqm::UWORD Flags;
+	uint16_t Flags;
 	// Low nibble currently unused
 	// High nibble contains GRAPHICS_STATUS
 
@@ -112,7 +112,7 @@ extern PRIMITIVE _locPrim;
 		SetContextFBkFlags(FBK_DIRTY);  \
 	}
 
-typedef uqm::BYTE GRAPHICS_STATUS;
+typedef uint8_t GRAPHICS_STATUS;
 
 extern GRAPHICS_STATUS _GraphicsStatusFlags;
 #define GRAPHICS_ACTIVE (GRAPHICS_STATUS)(1 << 0)

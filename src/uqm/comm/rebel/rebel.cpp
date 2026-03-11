@@ -146,7 +146,7 @@ static LOCDATA yehat_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond / 30,
 				GameTicksPerSecond / 30, /* RestartRate */
-				0,				 /* BlockMask */
+				0,						 /* BlockMask */
 			},
 								{
 				33,		   /* StartIndex */
@@ -156,7 +156,7 @@ static LOCDATA yehat_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond / 30,
 				GameTicksPerSecond / 30, /* RestartRate */
-				0,				 /* BlockMask */
+				0,						 /* BlockMask */
 			},
 								{
 				36,		   /* StartIndex */
@@ -166,7 +166,7 @@ static LOCDATA yehat_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond / 30,
 				GameTicksPerSecond / 30, /* RestartRate */
-				0,				 /* BlockMask */
+				0,						 /* BlockMask */
 			},
 								{
 				39,		   /* StartIndex */
@@ -176,7 +176,7 @@ static LOCDATA yehat_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond / 30,
 				GameTicksPerSecond / 30, /* RestartRate */
-				0,				 /* BlockMask */
+				0,						 /* BlockMask */
 			},
 								{
 				42,		   /* StartIndex */
@@ -186,7 +186,7 @@ static LOCDATA yehat_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond / 30,
 				GameTicksPerSecond / 30, /* RestartRate */
-				0,				 /* BlockMask */
+				0,						 /* BlockMask */
 			},
 								{
 				45,		   /* StartIndex */
@@ -196,7 +196,7 @@ static LOCDATA yehat_desc =
 				GameTicksPerSecond / 30, /* FrameRate */
 				GameTicksPerSecond / 30,
 				GameTicksPerSecond / 30, /* RestartRate */
-				0,				 /* BlockMask */
+				0,						 /* BlockMask */
 			},
 								{
 				48, /* StartIndex */
@@ -255,7 +255,7 @@ static void Rebels(RESPONSE_REF R);
 static void
 RebelInfo(RESPONSE_REF R)
 {
-	uqm::BYTE InfoLeft;
+	uint8_t InfoLeft;
 
 	InfoLeft = false;
 	if (PLAYER_SAID(R, give_info_rebels))
@@ -330,7 +330,7 @@ RebelInfo(RESPONSE_REF R)
 static void
 Rebels(RESPONSE_REF R)
 {
-	uqm::COUNT NumVisits;
+	uint16_t NumVisits;
 
 	if (PLAYER_SAID(R, how_goes_revolution))
 	{
@@ -367,7 +367,7 @@ Rebels(RESPONSE_REF R)
 		}
 		else
 		{
-			const int numYehatShips { difficultyCase(4, 4, 2) };
+			const int numYehatShips {difficultyCase(4, 4, 2)};
 
 			if (NumVisits < numYehatShips)
 			{
@@ -379,7 +379,7 @@ Rebels(RESPONSE_REF R)
 				NPCPhrase(HAVE_ALL_SHIPS);
 			}
 
-			AlienTalkSegue((uqm::COUNT)~0);
+			AlienTalkSegue((uint16_t)~0);
 			AddEscortShips(YEHAT_SHIP, NumVisits);
 			PrepareShip(YEHAT_SHIP);
 		}
@@ -428,15 +428,15 @@ Rebels(RESPONSE_REF R)
 static void
 Intro(void)
 {
-	uqm::BYTE NumVisits;
+	uint8_t NumVisits;
 
 	setSegue(Segue_peace);
 	if (lowByte(GLOBAL(CurrentActivity)) == IN_LAST_BATTLE)
 	{
 		NPCPhrase(YEHAT_CAVALRY);
-		AlienTalkSegue((uqm::COUNT)~0);
+		AlienTalkSegue((uint16_t)~0);
 
-		NumVisits = (uqm::BYTE)EscortFeasibilityStudy(YEHAT_REBEL_SHIP);
+		NumVisits = (uint8_t)EscortFeasibilityStudy(YEHAT_REBEL_SHIP);
 		if (NumVisits > 8)
 		{
 			NumVisits = difficultyCase(8, 8, 4);
@@ -469,7 +469,7 @@ Intro(void)
 	}
 }
 
-static uqm::COUNT
+static uint16_t
 uninit_yehat(void)
 {
 	luaUqm_comm_uninit();

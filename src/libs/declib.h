@@ -32,23 +32,23 @@ enum
 	FILE_STREAM = 0,
 	MEMORY_STREAM
 };
-typedef uqm::BYTE STREAM_TYPE;
+typedef uint8_t STREAM_TYPE;
 
 enum
 {
 	STREAM_READ = 0,
 	STREAM_WRITE
 };
-typedef uqm::BYTE STREAM_MODE;
+typedef uint8_t STREAM_MODE;
 
 extern DECODE_REF copen(void* InStream, STREAM_TYPE SType,
 						STREAM_MODE SMode);
-extern uqm::DWORD cclose(DECODE_REF DecodeRef);
-extern void cfilelength(DECODE_REF DecodeRef, uqm::DWORD* pfilelen);
-extern uqm::COUNT cread(void* pStr, uqm::COUNT size, uqm::COUNT count,
-						DECODE_REF DecodeRef);
-extern uqm::COUNT cwrite(const void* pStr, uqm::COUNT size, uqm::COUNT count,
-						 DECODE_REF DecodeRef);
+extern uint32_t cclose(DECODE_REF DecodeRef);
+extern void cfilelength(DECODE_REF DecodeRef, uint32_t* pfilelen);
+extern uint16_t cread(void* pStr, uint16_t size, uint16_t count,
+					  DECODE_REF DecodeRef);
+extern uint16_t cwrite(const void* pStr, uint16_t size, uint16_t count,
+					   DECODE_REF DecodeRef);
 
 #if 0 //defined(__cplusplus)
 }

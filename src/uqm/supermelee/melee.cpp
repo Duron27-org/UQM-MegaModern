@@ -241,17 +241,17 @@ static bool DoConfirmSettings(MELEE_STATE* pMS);
 #define DTSHS_SELECTED 2
 #define DTSHS_REPAIR 4
 #define DTSHS_BLOCKCUR 8
-static bool DrawTeamString(MELEE_STATE* pMS, uqm::COUNT side,
-						   uqm::COUNT HiLiteState, const char* str);
-static void DrawFleetValue(MELEE_STATE* pMS, uqm::COUNT side, uqm::COUNT HiLiteState);
+static bool DrawTeamString(MELEE_STATE* pMS, uint16_t side,
+						   uint16_t HiLiteState, const char* str);
+static void DrawFleetValue(MELEE_STATE* pMS, uint16_t side, uint16_t HiLiteState);
 
-static void Melee_UpdateView_fleetValue(MELEE_STATE* pMS, uqm::COUNT side);
-static void Melee_UpdateView_ship(MELEE_STATE* pMS, uqm::COUNT side,
+static void Melee_UpdateView_fleetValue(MELEE_STATE* pMS, uint16_t side);
+static void Melee_UpdateView_ship(MELEE_STATE* pMS, uint16_t side,
 								  FleetShipIndex index);
-static void Melee_UpdateView_teamName(MELEE_STATE* pMS, uqm::COUNT side);
+static void Melee_UpdateView_teamName(MELEE_STATE* pMS, uint16_t side);
 
 static int
-ButtonText(uqm::COUNT which_icon)
+ButtonText(uint16_t which_icon)
 {
 	switch (which_icon)
 	{
@@ -307,13 +307,13 @@ ButtonText(uqm::COUNT which_icon)
 }
 
 static void
-DrawControlText(STAMP stamp, uqm::COUNT which_icon, bool HiLite)
+DrawControlText(STAMP stamp, uint16_t which_icon, bool HiLite)
 {
 	GFXRECT r;
 	TEXT t;
 	FONT OldFont;
-	uqm::SIZE leading;
-	uqm::CHAR_T buf[256];
+	int16_t leading;
+	char buf[256];
 
 	if (!ButtonText(which_icon))
 	{
@@ -335,11 +335,11 @@ DrawControlText(STAMP stamp, uqm::COUNT which_icon, bool HiLite)
 
 	{
 		uqstl::vector<uqstl::string> tokens;
-		uqm::tokenize(uqstl::string_view{(const char*)buf}, tokens, ' ', false);
+		uqm::tokenize(uqstl::string_view {(const char*)buf}, tokens, ' ', false);
 		for (const auto& tok : tokens)
 		{
-			t.pStr = AlignText((const uqm::CHAR_T*)tok.c_str(), &t.baseline.x);
-			t.CharCount = (uqm::COUNT)~0;
+			t.pStr = AlignText((const char*)tok.c_str(), &t.baseline.x);
+			t.CharCount = (uint16_t)~0;
 
 			font_DrawTracedText(&t,
 								HiLite ? CONTROL_TEXT_HL_COLOR : CONTROL_TEXT_COLOR,
@@ -353,14 +353,14 @@ DrawControlText(STAMP stamp, uqm::COUNT which_icon, bool HiLite)
 }
 
 static void
-DrawBattleText(STAMP stamp, uqm::COUNT which_icon, bool HiLite)
+DrawBattleText(STAMP stamp, uint16_t which_icon, bool HiLite)
 {
 	GFXRECT r;
 	TEXT t;
 	FONT OldFont;
 	FRAME OldFontEffect;
-	uqm::SIZE leading;
-	uqm::CHAR_T buf[256];
+	int16_t leading;
+	char buf[256];
 
 	if (!ButtonText(which_icon))
 	{
@@ -381,8 +381,8 @@ DrawBattleText(STAMP stamp, uqm::COUNT which_icon, bool HiLite)
 				 - RES_SCALE(RES_DESCALE(leading) >> 1) - RES_SCALE(1);
 
 	t.align = ALIGN_CENTER;
-	t.CharCount = (uqm::COUNT)~0;
-	t.pStr = AlignText((const uqm::CHAR_T*)buf, &t.baseline.x);
+	t.CharCount = (uint16_t)~0;
+	t.pStr = AlignText((const char*)buf, &t.baseline.x);
 
 	font_DrawTracedText(&t, TRANSPARENT,
 						HiLite ? BATTLE_TRACE_HL_COLOR : BATTLE_TRACE_COLOR);
@@ -398,13 +398,13 @@ DrawBattleText(STAMP stamp, uqm::COUNT which_icon, bool HiLite)
 }
 
 static void
-DrawButtonText(STAMP stamp, uqm::COUNT which_icon, bool HiLite)
+DrawButtonText(STAMP stamp, uint16_t which_icon, bool HiLite)
 {
 	GFXRECT r;
 	TEXT t;
 	FONT OldFont;
 	Color OldColor;
-	uqm::CHAR_T buf[256];
+	char buf[256];
 
 	if (!ButtonText(which_icon))
 	{
@@ -424,8 +424,8 @@ DrawButtonText(STAMP stamp, uqm::COUNT which_icon, bool HiLite)
 	t.baseline.y = r.corner.y;
 
 	t.align = ALIGN_CENTER;
-	t.CharCount = (uqm::COUNT)~0;
-	t.pStr = AlignText((const uqm::CHAR_T*)buf, &t.baseline.x);
+	t.CharCount = (uint16_t)~0;
+	t.pStr = AlignText((const char*)buf, &t.baseline.x);
 
 	font_DrawText(&t);
 
@@ -434,13 +434,13 @@ DrawButtonText(STAMP stamp, uqm::COUNT which_icon, bool HiLite)
 }
 
 static void
-DrawVerticalText(uqm::CHAR_T* str, GFXPOINT point)
+DrawVerticalText(char* str, GFXPOINT point)
 {
 	TEXT t;
-	uqm::COUNT i;
-	uqm::SIZE leading;
+	uint16_t i;
+	int16_t leading;
 	size_t str_len;
-	uqm::CHAR_T buf[256];
+	char buf[256];
 	Color OldColor;
 
 	GetContextFontLeading(&leading);
@@ -448,8 +448,8 @@ DrawVerticalText(uqm::CHAR_T* str, GFXPOINT point)
 	t.baseline = point;
 
 	utf8StringCopy(buf, sizeof(buf),
-				   AlignText((const uqm::CHAR_T*)AddPadd(
-								 (const uqm::CHAR_T*)str, &leading),
+				   AlignText((const char*)AddPadd(
+								 (const char*)str, &leading),
 							 &t.baseline.x));
 
 	str_len = strlen(buf);
@@ -484,7 +484,7 @@ void DrawShipPickerText(STAMP stamp)
 {
 	GFXRECT r;
 	FONT OldFont;
-	uqm::COUNT i;
+	uint16_t i;
 	STAMP s;
 	GFXPOINT pt;
 
@@ -548,10 +548,10 @@ DrawTeamPickerText(STAMP stamp)
 	TEXT t;
 	FONT OldFont;
 	Color OldColor;
-	uqm::CHAR_T buf[256];
+	char buf[256];
 	STAMP s;
-	uqm::COUNT i;
-	uqm::SIZE leading;
+	uint16_t i;
+	int16_t leading;
 
 	for (i = 0; i < 3; i++)
 	{ // Check if we actually have text to print
@@ -590,7 +590,7 @@ DrawTeamPickerText(STAMP stamp)
 
 	t.align = ALIGN_LEFT;
 	t.pStr = buf;
-	t.CharCount = (uqm::COUNT)~0;
+	t.CharCount = (uint16_t)~0;
 
 	for (i = 0; i < 3; ++i)
 	{
@@ -611,7 +611,7 @@ DrawTeamPickerText(STAMP stamp)
 		utf8StringCopy(buf, sizeof(buf),
 					   GAME_STRING(MELEE_STRING_BASE + 21 + i));
 		t.baseline.x = s.origin.x + r.extent.width + TP_PADDING;
-		t.CharCount = (uqm::COUNT)~0;
+		t.CharCount = (uint16_t)~0;
 	}
 
 	SetContextFont(OldFont);
@@ -619,7 +619,7 @@ DrawTeamPickerText(STAMP stamp)
 }
 
 static int
-WhichText(uqm::COUNT which_icon)
+WhichText(uint16_t which_icon)
 {
 	switch (which_icon)
 	{
@@ -672,7 +672,7 @@ WhichText(uqm::COUNT which_icon)
 }
 
 // These icons come from ui/meleemenu.ani
-void DrawMeleeIcon(uqm::COUNT which_icon, bool HiLite)
+void DrawMeleeIcon(uint16_t which_icon, bool HiLite)
 {
 	STAMP s;
 	int which_text = WhichText(which_icon);
@@ -719,18 +719,18 @@ void DrawMeleeIcon(uqm::COUNT which_icon, bool HiLite)
 }
 
 static FleetShipIndex
-GetShipIndex(uqm::BYTE row, uqm::BYTE col)
+GetShipIndex(uint8_t row, uint8_t col)
 {
 	return row * NUM_MELEE_COLUMNS + col;
 }
 
-static uqm::BYTE
+static uint8_t
 GetShipRow(FleetShipIndex index)
 {
 	return index / NUM_MELEE_COLUMNS;
 }
 
-static uqm::BYTE
+static uint8_t
 GetShipColumn(int index)
 {
 	return index % NUM_MELEE_COLUMNS;
@@ -738,7 +738,7 @@ GetShipColumn(int index)
 
 // Get the rectangle containing the ship slot for the specified side, row,
 // and column.
-void GetShipBox(GFXRECT* pRect, uqm::COUNT side, uqm::COUNT row, uqm::COUNT col)
+void GetShipBox(GFXRECT* pRect, uint16_t side, uint16_t row, uint16_t col)
 {
 	pRect->corner.x = MELEE_X_OFFS
 					+ (col * (MELEE_BOX_WIDTH + MELEE_BOX_SPACE));
@@ -750,11 +750,11 @@ void GetShipBox(GFXRECT* pRect, uqm::COUNT side, uqm::COUNT row, uqm::COUNT col)
 }
 
 static void
-DrawShipBox(uqm::COUNT side, FleetShipIndex index, MeleeShip ship, bool HiLite)
+DrawShipBox(uint16_t side, FleetShipIndex index, MeleeShip ship, bool HiLite)
 {
 	GFXRECT r;
-	uqm::BYTE row = GetShipRow(index);
-	uqm::BYTE col = GetShipColumn(index);
+	uint8_t row = GetShipRow(index);
+	uint8_t col = GetShipColumn(index);
 	bool FilledSlot = (ship != MELEE_NONE);
 
 	GetShipBox(&r, side, row, col);
@@ -803,11 +803,11 @@ DrawShipBox(uqm::COUNT side, FleetShipIndex index, MeleeShip ship, bool HiLite)
 }
 
 static void
-ClearShipBox(uqm::COUNT side, FleetShipIndex index)
+ClearShipBox(uint16_t side, FleetShipIndex index)
 {
 	GFXRECT rect;
-	uqm::BYTE row = GetShipRow(index);
-	uqm::BYTE col = GetShipColumn(index);
+	uint8_t row = GetShipRow(index);
+	uint8_t col = GetShipColumn(index);
 
 	GetShipBox(&rect, side, row, col);
 	RepairMeleeFrame(&rect);
@@ -823,9 +823,9 @@ DrawShipBoxCurrent(MELEE_STATE* pMS, bool HiLite)
 
 // Draw an image for one of the control method selection buttons.
 static void
-DrawControls(uqm::COUNT which_side, bool HiLite)
+DrawControls(uint16_t which_side, bool HiLite)
 {
-	uqm::COUNT which_icon;
+	uint16_t which_icon;
 
 	if (testFlag(PlayerControl[which_side], PlayerControlFlags::Network))
 	{
@@ -864,7 +864,7 @@ DrawControls(uqm::COUNT which_side, bool HiLite)
 static void
 DrawTeams(void)
 {
-	uqm::COUNT side;
+	uint16_t side;
 
 	for (side = 0; side < NUM_SIDES; side++)
 	{
@@ -890,7 +890,7 @@ DrawTeams(void)
 	}
 }
 
-void QuickRepair(uqm::COUNT whichFrame, GFXRECT* pRect)
+void QuickRepair(uint16_t whichFrame, GFXRECT* pRect)
 {
 	GFXRECT r;
 	GFXCONTEXT OldContext;
@@ -928,7 +928,7 @@ DrawSuperMeleeTitle(void)
 	TEXT t;
 	FONT OldFont;
 	FRAME OldFontEffect;
-	uqm::CHAR_T* buf = GAME_STRING(MELEE_STRING_BASE + 9);
+	char* buf = GAME_STRING(MELEE_STRING_BASE + 9);
 
 	if (strlen(buf) == 0)
 	{
@@ -942,8 +942,8 @@ DrawSuperMeleeTitle(void)
 	t.baseline.x = (SCREEN_WIDTH >> 1) - (SAFE_NEG(1));
 	t.baseline.y = RES_SCALE(4);
 	t.align = ALIGN_CENTER;
-	t.pStr = AlignText((const uqm::CHAR_T*)buf, &t.baseline.x);
-	t.CharCount = (uqm::COUNT)~0;
+	t.pStr = AlignText((const char*)buf, &t.baseline.x);
+	t.CharCount = (uint16_t)~0;
 
 	font_DrawText(&t);
 
@@ -1026,7 +1026,7 @@ RedrawMeleeFrame(void)
 }
 
 static void
-GetTeamStringRect(uqm::COUNT side, GFXRECT* r)
+GetTeamStringRect(uint16_t side, GFXRECT* r)
 {
 	r->corner.x = MELEE_X_OFFS - RES_SCALE(1);
 	r->corner.y = (side + 1) * (MELEE_Y_OFFS + ((MELEE_BOX_HEIGHT + MELEE_BOX_SPACE) * NUM_MELEE_ROWS + RES_SCALE(2)));
@@ -1036,7 +1036,7 @@ GetTeamStringRect(uqm::COUNT side, GFXRECT* r)
 }
 
 static void
-GetFleetValueRect(uqm::COUNT side, GFXRECT* r)
+GetFleetValueRect(uint16_t side, GFXRECT* r)
 {
 	r->corner.x = MELEE_X_OFFS
 				+ NUM_MELEE_COLUMNS * (MELEE_BOX_WIDTH + MELEE_BOX_SPACE) - RES_SCALE(30);
@@ -1046,7 +1046,7 @@ GetFleetValueRect(uqm::COUNT side, GFXRECT* r)
 }
 
 static void
-GetFullStringRect(uqm::COUNT side, GFXRECT* r)
+GetFullStringRect(uint16_t side, GFXRECT* r)
 {
 	r->extent.width = TEAM_NAME_BOX_WIDTH;
 	r->extent.height = TEAM_NAME_BOX_HEIGHT;
@@ -1055,7 +1055,7 @@ GetFullStringRect(uqm::COUNT side, GFXRECT* r)
 }
 
 static void
-DrawTeamStringsBackGround(uqm::COUNT side)
+DrawTeamStringsBackGround(uint16_t side)
 {
 	GFXRECT r;
 
@@ -1064,12 +1064,12 @@ DrawTeamStringsBackGround(uqm::COUNT side)
 }
 
 static void
-DrawFleetValue(MELEE_STATE* pMS, uqm::COUNT side, uqm::COUNT HiLiteState)
+DrawFleetValue(MELEE_STATE* pMS, uint16_t side, uint16_t HiLiteState)
 {
 	GFXRECT r;
 	TEXT rtText;
-	uqm::CHAR_T buf[30] {};
-	uqm::COUNT fleetValue;
+	char buf[30] {};
+	uint16_t fleetValue;
 
 	GetFleetValueRect(side, &r);
 
@@ -1085,7 +1085,7 @@ DrawFleetValue(MELEE_STATE* pMS, uqm::COUNT side, uqm::COUNT HiLiteState)
 	fmt::format_to_n(buf, sizeof(buf) - 1, "{}", fleetValue);
 	rtText.pStr = buf;
 	rtText.align = ALIGN_RIGHT;
-	rtText.CharCount = (uqm::COUNT)~0;
+	rtText.CharCount = (uint16_t)~0;
 	rtText.baseline.y = r.corner.y + r.extent.height - RES_SCALE(3);
 	rtText.baseline.x = r.corner.x + r.extent.width;
 
@@ -1095,7 +1095,7 @@ DrawFleetValue(MELEE_STATE* pMS, uqm::COUNT side, uqm::COUNT HiLiteState)
 
 // If teamName == nullptr, the team name is taken from pMS->meleeSetup
 static bool
-DrawTeamString(MELEE_STATE* pMS, uqm::COUNT side, uqm::COUNT HiLiteState,
+DrawTeamString(MELEE_STATE* pMS, uint16_t side, uint16_t HiLiteState,
 			   const char* teamName)
 {
 	GFXRECT r;
@@ -1115,7 +1115,7 @@ DrawTeamString(MELEE_STATE* pMS, uqm::COUNT side, uqm::COUNT HiLiteState,
 	lfText.baseline.y = r.corner.y + r.extent.height - RES_SCALE(3);
 	lfText.baseline.x = r.corner.x + RES_SCALE(1);
 	lfText.align = ALIGN_LEFT;
-	lfText.CharCount = (uqm::COUNT)strlen(lfText.pStr);
+	lfText.CharCount = (uint16_t)strlen(lfText.pStr);
 
 	BatchGraphics();
 	if (!(HiLiteState & DTSHS_EDIT))
@@ -1125,10 +1125,10 @@ DrawTeamString(MELEE_STATE* pMS, uqm::COUNT side, uqm::COUNT HiLiteState,
 	}
 	else
 	{ // editing state
-		uqm::COUNT i;
+		uint16_t i;
 		GFXRECT text_r;
-		uqm::BYTE char_deltas[MAX_TEAM_CHARS];
-		uqm::BYTE* pchar_deltas;
+		uint8_t char_deltas[MAX_TEAM_CHARS];
+		uint8_t* pchar_deltas;
 
 		TextRect(&lfText, &text_r, char_deltas);
 #if 0
@@ -1149,7 +1149,7 @@ DrawTeamString(MELEE_STATE* pMS, uqm::COUNT side, uqm::COUNT HiLiteState,
 		pchar_deltas = char_deltas;
 		for (i = pMS->CurIndex; i > 0; --i)
 		{
-			text_r.corner.x += (uqm::SIZE)*pchar_deltas++;
+			text_r.corner.x += (int16_t)*pchar_deltas++;
 		}
 		if (pMS->CurIndex < lfText.CharCount) /* cursor mid-line */
 		{
@@ -1171,12 +1171,12 @@ DrawTeamString(MELEE_STATE* pMS, uqm::COUNT side, uqm::COUNT HiLiteState,
 			}
 			else if (pMS->CurIndex + 1 == lfText.CharCount)
 			{ // extra pixel for last char margin
-				text_r.extent.width = (uqm::SIZE)*pchar_deltas - IF_HD(3);
+				text_r.extent.width = (int16_t)*pchar_deltas - IF_HD(3);
 				text_r.corner.x += RES_SCALE(2);
 			}
 			else
 			{ // normal mid-line char
-				text_r.extent.width = (uqm::SIZE)*pchar_deltas;
+				text_r.extent.width = (int16_t)*pchar_deltas;
 				text_r.corner.x += RES_SCALE(2);
 			}
 
@@ -1225,9 +1225,9 @@ multiLineDrawText(TEXT* textIn, GFXRECT* clipRect)
 {
 	GFXRECT oldRect;
 
-	uqm::SIZE leading;
+	int16_t leading;
 	TEXT text;
-	uqm::SIZE lineWidth;
+	int16_t lineWidth;
 
 	GetContextClipRect(&oldRect);
 
@@ -1250,7 +1250,7 @@ multiLineDrawText(TEXT* textIn, GFXRECT* clipRect)
 		const char* nextLine;
 
 		text.baseline.y += leading;
-		text.CharCount = (uqm::COUNT)~0;
+		text.CharCount = (uint16_t)~0;
 		getLineWithinWidth(&text, &nextLine, lineWidth, text.CharCount);
 		// This will also fill in text->CharCount.
 
@@ -1284,7 +1284,7 @@ DrawMeleeStatusMessage(const char* message)
 		TEXT lfText;
 		lfText.pStr = message;
 		lfText.align = ALIGN_LEFT;
-		lfText.CharCount = (uqm::COUNT)~0;
+		lfText.CharCount = (uint16_t)~0;
 
 		SetContextFont(MicroFont);
 		SetContextForeGroundColor(MELEE_STATUS_COLOR);
@@ -1354,7 +1354,7 @@ UpdateMeleeStatusMessage(ssize_t player)
 
 // XXX: this function is called when the current selection is blinking off.
 static void
-Deselect(uqm::BYTE opt)
+Deselect(uint8_t opt)
 {
 	switch (opt)
 	{
@@ -1395,7 +1395,7 @@ Deselect(uqm::BYTE opt)
 		case CONTROLS_TOP:
 		case CONTROLS_BOT:
 			{
-				uqm::COUNT which_side;
+				uint16_t which_side;
 
 				which_side = opt == CONTROLS_TOP ? 1 : 0;
 				DrawControls(which_side, false);
@@ -1431,7 +1431,7 @@ Deselect(uqm::BYTE opt)
 
 // XXX: this function is called when the current selection is blinking off.
 static void
-Select(uqm::BYTE opt)
+Select(uint8_t opt)
 {
 	switch (opt)
 	{
@@ -1472,7 +1472,7 @@ Select(uqm::BYTE opt)
 		case CONTROLS_TOP:
 		case CONTROLS_BOT:
 			{
-				uqm::COUNT which_side;
+				uint16_t which_side;
 
 				which_side = (opt == CONTROLS_TOP) ? 1 : 0;
 				DrawControls(which_side, true);
@@ -1591,7 +1591,7 @@ void DrawMeleeShipStrings(MELEE_STATE* pMS, MeleeShip NewStarShip)
 		{
 			// A ship is selected (or an empty fleet position).
 			t.pStr = GAME_STRING(MELEE_STRING_BASE + 0); // "Empty"
-			t.CharCount = (uqm::COUNT)~0;
+			t.CharCount = (uint16_t)~0;
 			font_DrawText(&t);
 			t.pStr = GAME_STRING(MELEE_STRING_BASE + 1); // "Slot"
 		}
@@ -1599,12 +1599,12 @@ void DrawMeleeShipStrings(MELEE_STATE* pMS, MeleeShip NewStarShip)
 		{
 			// The team name is selected.
 			t.pStr = GAME_STRING(MELEE_STRING_BASE + 2); // "Team"
-			t.CharCount = (uqm::COUNT)~0;
+			t.CharCount = (uint16_t)~0;
 			font_DrawText(&t);
 			t.pStr = GAME_STRING(MELEE_STRING_BASE + 3); // "Name"
 		}
 		t.baseline.y += TINY_TEXT_HEIGHT;
-		t.CharCount = (uqm::COUNT)~0;
+		t.CharCount = (uint16_t)~0;
 		font_DrawText(&t);
 	}
 	else
@@ -1650,11 +1650,11 @@ UpdateCurrentShip(MELEE_STATE* pMS)
 	DrawMeleeShipStrings(pMS, pMS->currentShip);
 }
 
-// returns (uqm::COUNT) ~0 for an invalid ship.
-uqm::COUNT
+// returns (uint16_t) ~0 for an invalid ship.
+uint16_t
 GetShipValue(MeleeShip StarShip)
 {
-	uqm::COUNT val;
+	uint16_t val;
 
 	if (StarShip == MELEE_NONE)
 	{
@@ -1664,7 +1664,7 @@ GetShipValue(MeleeShip StarShip)
 	val = GetShipCostFromIndex(StarShip);
 	if (val == 0)
 	{
-		val = (uqm::COUNT)~0;
+		val = (uint16_t)~0;
 	}
 
 	return val;
@@ -1678,7 +1678,7 @@ DeleteCurrentShip(MELEE_STATE* pMS)
 }
 
 static bool
-isShipSlotSelected(MELEE_STATE* pMS, uqm::COUNT side, FleetShipIndex index)
+isShipSlotSelected(MELEE_STATE* pMS, uint16_t side, FleetShipIndex index)
 {
 	if (pMS->MeleeOption != EDIT_MELEE)
 	{
@@ -1717,7 +1717,7 @@ OnTeamNameChange(TEXTENTRY_STATE* pTES)
 {
 	MELEE_STATE* pMS = (MELEE_STATE*)pTES->CbParam;
 	bool ret;
-	uqm::COUNT hl = DTSHS_EDIT;
+	uint16_t hl = DTSHS_EDIT;
 
 	pMS->CurIndex = pTES->CursorPos;
 	if (pTES->JoystickMode)
@@ -1788,7 +1788,7 @@ BuildPickShipPopup(MELEE_STATE* pMS)
 static bool
 DoEdit(MELEE_STATE* pMS)
 {
-	uqm::DWORD TimeIn = GetTimeCounter();
+	uint32_t TimeIn = GetTimeCounter();
 
 	/* Cancel any presses of the Pause key. */
 	GamePaused = false;
@@ -1850,9 +1850,9 @@ DoEdit(MELEE_STATE* pMS)
 	}
 	else
 	{
-		uqm::COUNT side = pMS->side;
-		uqm::COUNT row = pMS->row;
-		uqm::COUNT col = pMS->col;
+		uint16_t side = pMS->side;
+		uint16_t row = pMS->row;
+		uint16_t col = pMS->col;
 
 		if (row == NUM_MELEE_ROWS)
 		{
@@ -2077,7 +2077,7 @@ DoConfirmSettings(MELEE_STATE* pMS)
 
 	// Synchronise the RNGs:
 	{
-		uqm::COUNT player;
+		uint16_t player;
 
 		for (player = 0; player < NUM_PLAYERS; player++)
 		{
@@ -2223,7 +2223,7 @@ StartMelee(MELEE_STATE* pMS)
 
 		WaitForSoundEnd(TFBSOUND_WAIT_ALL);
 
-		load_gravity_well((uqm::BYTE)((uqm::COUNT)TFB_Random() % NUMBER_OF_PLANET_TYPES));
+		load_gravity_well((uint8_t)((uint16_t)TFB_Random() % NUMBER_OF_PLANET_TYPES));
 		Battle(nullptr);
 		free_gravity_well();
 		ClearPlayerInputAll();
@@ -2261,7 +2261,7 @@ StartMeleeButtonPressed(MELEE_STATE* pMS)
 		return;
 	}
 
-	if ((testFlag(PlayerControl[0], PlayerControlFlags::Network) && testFlag(PlayerControl[1], ComputerControlFlags)) 
+	if ((testFlag(PlayerControl[0], PlayerControlFlags::Network) && testFlag(PlayerControl[1], ComputerControlFlags))
 		|| (testFlag(PlayerControl[1], PlayerControlFlags::Network) && testFlag(PlayerControl[0], ComputerControlFlags)))
 	{
 		DrawMeleeStatusMessage(GAME_STRING(NETMELEE_STRING_BASE + 33));
@@ -2272,7 +2272,7 @@ StartMeleeButtonPressed(MELEE_STATE* pMS)
 
 	// Check whether all network parties are ready;
 	{
-		uqm::COUNT player;
+		uint16_t player;
 		bool netReady = true;
 
 		// We collect all error conditions, instead of only reporting
@@ -2348,8 +2348,8 @@ StartMeleeButtonPressed(MELEE_STATE* pMS)
 static bool
 DoConnectingDialog(MELEE_STATE* pMS)
 {
-	uqm::DWORD TimeIn = GetTimeCounter();
-	uqm::COUNT which_side = (pMS->MeleeOption == NET_TOP) ? 1 : 0;
+	uint32_t TimeIn = GetTimeCounter();
+	uint16_t which_side = (pMS->MeleeOption == NET_TOP) ? 1 : 0;
 	NetConnection* conn;
 
 	/* Cancel any presses of the Pause key. */
@@ -2466,7 +2466,7 @@ DoConnectingDialog(MELEE_STATE* pMS)
 static void
 check_for_disconnects(MELEE_STATE* pMS)
 {
-	uqm::COUNT player;
+	uint16_t player;
 
 	for (player = 0; player < NUM_PLAYERS; player++)
 	{
@@ -2492,7 +2492,7 @@ check_for_disconnects(MELEE_STATE* pMS)
 #endif
 
 static void
-nextControlType(uqm::COUNT which_side)
+nextControlType(uint16_t which_side)
 {
 	switch (PlayerControl[which_side])
 	{
@@ -2583,7 +2583,7 @@ MeleeOptionSelect(MELEE_STATE* pMS)
 		case NET_TOP:
 			//case NET_BOT:
 			{
-				uqm::COUNT which_side;
+				uint16_t which_side;
 				bool confirmed;
 
 				which_side = pMS->MeleeOption == NET_TOP ? 1 : 0;
@@ -2601,7 +2601,7 @@ MeleeOptionSelect(MELEE_STATE* pMS)
 		case CONTROLS_TOP:
 		case CONTROLS_BOT:
 			{
-				uqm::COUNT which_side = (pMS->MeleeOption == CONTROLS_TOP) ? 1 : 0;
+				uint16_t which_side = (pMS->MeleeOption == CONTROLS_TOP) ? 1 : 0;
 				nextControlType(which_side);
 				break;
 			}
@@ -2610,7 +2610,7 @@ MeleeOptionSelect(MELEE_STATE* pMS)
 
 bool DoMelee(MELEE_STATE* pMS)
 {
-	uqm::DWORD TimeIn = GetTimeCounter();
+	uint32_t TimeIn = GetTimeCounter();
 	bool force_select = false;
 
 	/* Cancel any presses of the Pause key. */
@@ -2711,7 +2711,7 @@ bool DoMelee(MELEE_STATE* pMS)
 #ifdef NETPLAY
 			if (NewMeleeOption == CONTROLS_TOP || NewMeleeOption == CONTROLS_BOT)
 			{
-				uqm::COUNT side = (NewMeleeOption == CONTROLS_TOP) ? 1 : 0;
+				uint16_t side = (NewMeleeOption == CONTROLS_TOP) ? 1 : 0;
 				if (testFlag(PlayerControl[side], PlayerControlFlags::Network))
 				{
 					UpdateMeleeStatusMessage(side);
@@ -2752,7 +2752,7 @@ LoadMeleeConfig(MELEE_STATE* pMS)
 {
 	uio_Stream* stream;
 	int status;
-	uqm::COUNT side;
+	uint16_t side;
 
 	stream = uio_fopen(configDir, "melee.cfg", "rb");
 	if (stream == nullptr)
@@ -2782,7 +2782,7 @@ LoadMeleeConfig(MELEE_STATE* pMS)
 		}
 		PlayerControl[side] = (PlayerControlFlags)status;
 		// TODO XXX: insert sanity check on PlayerControl here.
-		
+
 		if (MeleeSetup_deserializeTeam(pMS->meleeSetup, side, stream) == -1)
 		{
 			goto err;
@@ -2810,7 +2810,7 @@ static int
 WriteMeleeConfig(MELEE_STATE* pMS)
 {
 	uio_Stream* stream;
-	uqm::COUNT side;
+	uint16_t side;
 
 	stream = res_OpenResFile(configDir, "melee.cfg", "wb");
 	if (stream == nullptr)
@@ -2869,7 +2869,7 @@ void Melee(void)
 
 #ifdef NETPLAY
 		{
-			uqm::COUNT player;
+			uint16_t player;
 			for (player = 0; player < NUM_PLAYERS; player++)
 			{
 				netConnections[player] = nullptr;
@@ -2918,7 +2918,7 @@ void Melee(void)
 }
 
 #ifdef NETPLAY
-void updateRandomSeed(MELEE_STATE* pMS, uqm::COUNT side, uqm::DWORD seed)
+void updateRandomSeed(MELEE_STATE* pMS, uint16_t side, uint32_t seed)
 {
 	TFB_SeedRandom(seed);
 	(void)pMS;
@@ -2926,7 +2926,7 @@ void updateRandomSeed(MELEE_STATE* pMS, uqm::COUNT side, uqm::DWORD seed)
 }
 
 // The remote player has done something which invalidates our confirmation.
-void confirmationCancelled(MELEE_STATE* pMS, uqm::COUNT side)
+void confirmationCancelled(MELEE_STATE* pMS, uint16_t side)
 {
 	if (side == 0)
 	{
@@ -3105,7 +3105,7 @@ void closeFeedback(NetConnection* conn)
 // supermelee fleet setup screen needs to be updated visually.
 
 static void
-Melee_UpdateView_fleetValue(MELEE_STATE* pMS, uqm::COUNT side)
+Melee_UpdateView_fleetValue(MELEE_STATE* pMS, uint16_t side)
 {
 	if (pMS->meleeStarted)
 	{
@@ -3117,7 +3117,7 @@ Melee_UpdateView_fleetValue(MELEE_STATE* pMS, uqm::COUNT side)
 }
 
 static void
-Melee_UpdateView_ship(MELEE_STATE* pMS, uqm::COUNT side, FleetShipIndex index)
+Melee_UpdateView_ship(MELEE_STATE* pMS, uint16_t side, FleetShipIndex index)
 {
 	MeleeShip ship;
 
@@ -3139,7 +3139,7 @@ Melee_UpdateView_ship(MELEE_STATE* pMS, uqm::COUNT side, FleetShipIndex index)
 }
 
 static void
-Melee_UpdateView_teamName(MELEE_STATE* pMS, uqm::COUNT side)
+Melee_UpdateView_teamName(MELEE_STATE* pMS, uint16_t side)
 {
 	if (pMS->meleeStarted)
 	{
@@ -3156,7 +3156,7 @@ Melee_UpdateView_teamName(MELEE_STATE* pMS, uqm::COUNT side)
 // local change, or a remote change.
 
 static bool
-Melee_Change_ship(MELEE_STATE* pMS, uqm::COUNT side, FleetShipIndex index,
+Melee_Change_ship(MELEE_STATE* pMS, uint16_t side, FleetShipIndex index,
 				  MeleeShip ship)
 {
 	if (!MeleeSetup_setShip(pMS->meleeSetup, side, index, ship))
@@ -3183,7 +3183,7 @@ Melee_Change_ship(MELEE_STATE* pMS, uqm::COUNT side, FleetShipIndex index,
 
 // Pre: 'name' is '\0'-terminated
 static bool
-Melee_Change_teamName(MELEE_STATE* pMS, uqm::COUNT side, const char* name)
+Melee_Change_teamName(MELEE_STATE* pMS, uint16_t side, const char* name)
 {
 	MeleeSetup* setup = pMS->meleeSetup;
 
@@ -3211,7 +3211,7 @@ Melee_Change_teamName(MELEE_STATE* pMS, uqm::COUNT side, const char* name)
 // The behavior of these functions (and the comments therein) follow the
 // description in doc/devel/netplay/protocol.
 
-bool Melee_LocalChange_ship(MELEE_STATE* pMS, uqm::COUNT side, FleetShipIndex index,
+bool Melee_LocalChange_ship(MELEE_STATE* pMS, uint16_t side, FleetShipIndex index,
 							MeleeShip ship)
 {
 	if (!Melee_Change_ship(pMS, side, index, ship))
@@ -3239,7 +3239,7 @@ bool Melee_LocalChange_ship(MELEE_STATE* pMS, uqm::COUNT side, FleetShipIndex in
 
 
 // Pre: 'name' is '\0'-terminated
-bool Melee_LocalChange_teamName(MELEE_STATE* pMS, uqm::COUNT side, const char* name)
+bool Melee_LocalChange_teamName(MELEE_STATE* pMS, uint16_t side, const char* name)
 {
 	if (!Melee_Change_teamName(pMS, side, name))
 	{
@@ -3273,7 +3273,7 @@ bool Melee_LocalChange_fleet(MELEE_STATE* pMS, size_t teamNr,
 	for (slotI = 0; slotI < MELEE_FLEET_SIZE; slotI++)
 	{
 		if (Melee_LocalChange_ship(
-				pMS, (uqm::COUNT)teamNr, slotI, fleet[slotI]))
+				pMS, (uint16_t)teamNr, slotI, fleet[slotI]))
 		{
 			changed = true;
 		}
@@ -3292,7 +3292,7 @@ bool Melee_LocalChange_team(MELEE_STATE* pMS, size_t teamNr,
 	{
 		changed = true;
 	}
-	if (Melee_LocalChange_teamName(pMS, (uqm::COUNT)teamNr, name))
+	if (Melee_LocalChange_teamName(pMS, (uint16_t)teamNr, name))
 	{
 		changed = true;
 	}
@@ -3338,7 +3338,7 @@ void Melee_bootstrapSyncTeam(MELEE_STATE* meleeState, size_t teamNr)
 // The behavior of these functions (and the comments therein) follow the
 // description in doc/devel/netplay/protocol.
 
-void Melee_RemoteChange_ship(MELEE_STATE* pMS, NetConnection* conn, uqm::COUNT side,
+void Melee_RemoteChange_ship(MELEE_STATE* pMS, NetConnection* conn, uint16_t side,
 							 FleetShipIndex index, MeleeShip ship)
 {
 	MeleeSetup* setup = pMS->meleeSetup;
@@ -3404,7 +3404,7 @@ void Melee_RemoteChange_ship(MELEE_STATE* pMS, NetConnection* conn, uqm::COUNT s
 }
 
 void Melee_RemoteChange_teamName(MELEE_STATE* pMS, NetConnection* conn,
-								 uqm::COUNT side, const char* newName)
+								 uint16_t side, const char* newName)
 {
 	MeleeSetup* setup = pMS->meleeSetup;
 

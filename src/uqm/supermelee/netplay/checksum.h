@@ -45,19 +45,19 @@ crc_processELEMENT_FLAGS(crc_State* state, ELEMENT_FLAGS val)
 }
 
 static inline void
-crc_processCOUNT(crc_State* state, uqm::COUNT val)
+crc_processCOUNT(crc_State* state, uint16_t val)
 {
 	crc_processUint16(state, (uint16_t)val);
 }
 
 static inline void
-crc_processBYTE(crc_State* state, uqm::BYTE val)
+crc_processBYTE(crc_State* state, uint8_t val)
 {
 	crc_processUint8(state, (uint8_t)val);
 }
 
 static inline void
-crc_processDWORD(crc_State* state, uqm::DWORD val)
+crc_processDWORD(crc_State* state, uint32_t val)
 {
 	crc_processUint32(state, (uint32_t)val);
 }

@@ -63,11 +63,11 @@ extern "C" {
 #define BRAINBOX_BULLDOZER NUM_CREATURE_TYPES + 1
 #define ZEX_BEAUTY NUM_CREATURE_TYPES + 2
 
-#define CREATURE_AWARE (uqm::BYTE)(1 << 7)
+#define CREATURE_AWARE (uint8_t)(1 << 7)
 
 typedef struct
 {
-	uqm::BYTE Attributes, ValueAndHitPoints;
+	uint8_t Attributes, ValueAndHitPoints;
 } LIFEFORM_DESC;
 
 extern LIFEFORM_DESC CreatureData[];

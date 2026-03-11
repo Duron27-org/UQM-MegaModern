@@ -29,25 +29,25 @@ extern "C" {
 #endif
 
 extern LOCDATA CommData;
-extern uqm::CHAR_T shared_phrase_buf[2048];
+extern char shared_phrase_buf[2048];
 
 #define PLAYER_SAID(r, i) ((r) == (i))
 #define PHRASE_ENABLED(p)                                               \
-	(*(uqm::CHAR_T*)GetStringAddress(                                   \
+	(*(char*)GetStringAddress(                                          \
 		 SetAbsStringTableIndex(CommData.ConversationPhrases, (p) - 1)) \
 	 != '\0')
-#define DISABLE_PHRASE(p)             \
-	(*(uqm::CHAR_T*)GetStringAddress( \
+#define DISABLE_PHRASE(p)      \
+	(*(char*)GetStringAddress( \
 		 SetAbsStringTableIndex(CommData.ConversationPhrases, (p) - 1)) = '\0')
 
 #define Response(i, a) \
 	DoResponsePhrase(i, (RESPONSE_FUNC)a, 0)
 
-typedef uqm::COUNT RESPONSE_REF;
+typedef uint16_t RESPONSE_REF;
 
 typedef void (*RESPONSE_FUNC)(RESPONSE_REF R);
 
-extern void DoResponsePhrase(RESPONSE_REF R, RESPONSE_FUNC response_func, uqm::CHAR_T* ContstructStr);
+extern void DoResponsePhrase(RESPONSE_REF R, RESPONSE_FUNC response_func, char* ContstructStr);
 
 // The CallbackFunction is queued and executes synchronously
 // on the Starcon2Main thread
@@ -56,7 +56,7 @@ extern void NPCPhrase_cb(int index, CallbackFunction cb);
 extern void NPCPhrase_splice(int index);
 extern void NPCNumber(int number, const char* fmt);
 
-extern void construct_response(uqstl::span<uqm::CHAR_T> buf, int R /* promoted from
+extern void construct_response(uqstl::span<char> buf, int R /* promoted from
 		RESPONSE_REF */
 							   ,
 							   ...);

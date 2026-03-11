@@ -23,15 +23,15 @@ SOUND MenuSounds;
 SOUND GameSounds;
 
 #define MAX_SOUNDS 8
-static uqm::BYTE num_sounds = 0;
+static uint8_t num_sounds = 0;
 static SOUND sound_buf[MAX_SOUNDS];
 static ELEMENT* sound_posobj[MAX_SOUNDS];
 
 void PlaySound(SOUND S, SoundPosition Pos, ELEMENT* PositionalObject,
-			   uqm::BYTE Priority)
+			   uint8_t Priority)
 {
-	uqm::BYTE chan, c;
-	static uqm::BYTE lru_channel[NUM_FX_CHANNELS] = {0, 1, 2, 3};
+	uint8_t chan, c;
+	static uint8_t lru_channel[NUM_FX_CHANNELS] = {0, 1, 2, 3};
 	static SOUND channel[NUM_FX_CHANNELS] = {0, 0, 0, 0};
 
 	if (S == 0)
@@ -146,7 +146,7 @@ NotPositional(void)
 /* Updates positional sound effects */
 void UpdateSoundPositions(void)
 {
-	uqm::COUNT i;
+	uint16_t i;
 
 	for (i = FIRST_SFX_CHANNEL; i <= LAST_SFX_CHANNEL; ++i)
 	{

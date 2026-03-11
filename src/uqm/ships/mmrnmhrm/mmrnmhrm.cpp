@@ -184,7 +184,7 @@ missile_preprocess(ELEMENT* ElementPtr)
 	}
 	else
 	{
-		uqm::COUNT facing;
+		uint16_t facing;
 
 		facing = GetFrameIndex(ElementPtr->next.image.frame);
 		if (TrackShip(ElementPtr, &facing) > 0)
@@ -204,7 +204,7 @@ missile_preprocess(ELEMENT* ElementPtr)
 
 static void
 mmrnmhrm_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
-					  uqm::COUNT ConcernCounter)
+					  uint16_t ConcernCounter)
 {
 	bool CanTransform;
 	EVALUATE_DESC* lpEvalDesc;
@@ -228,8 +228,8 @@ mmrnmhrm_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 		&& lpEvalDesc->ObjectPtr
 		&& !(StarShipPtr->ship_input_state & WEAPON))
 	{
-		uqm::SDWORD delta_x, delta_y;
-		uqm::COUNT travel_angle, direction_angle;
+		int32_t delta_x, delta_y;
+		uint16_t travel_angle, direction_angle;
 
 		GetCurrentVelocityComponentsSdword(&lpEvalDesc->ObjectPtr->velocity,
 										   &delta_x, &delta_y);
@@ -263,7 +263,7 @@ mmrnmhrm_intelligence(ELEMENT* ShipPtr, EVALUATE_DESC* ObjectsOfConcern,
 		}
 		else
 		{
-			uqm::SDWORD ship_delta_x, ship_delta_y;
+			int32_t ship_delta_x, ship_delta_y;
 
 			GetCurrentVelocityComponentsSdword(&ShipPtr->velocity,
 											   &ship_delta_x, &ship_delta_y);
@@ -315,12 +315,12 @@ twin_laser_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
 	}
 }
 
-static uqm::COUNT
+static uint16_t
 initialize_dual_weapons(ELEMENT* ShipPtr, HELEMENT WeaponArray[])
 {
 	COORD cx, cy;
-	uqm::COUNT facing, angle;
-	uqm::SDWORD offs_x, offs_y;
+	uint16_t facing, angle;
+	int32_t offs_x, offs_y;
 	STARSHIP* StarShipPtr;
 
 	GetElementStarShip(ShipPtr, &StarShipPtr);

@@ -272,14 +272,14 @@ void TFB_SwapBuffers(uqm::TFBRedraw force_full_redraw)
 		{
 			return;
 		}
-		
+
 		if (fade_amount != 255 || transition_amount != 255 || last_fade_amount != 255 || last_transition_amount != 255)
 		{
 			force_full_redraw = uqm::TFBRedraw::Fading;
 		}
 	}
 
-	
+
 	sfx = last_fade_amount > fade_amount ? 1 : 0;
 
 	last_fade_amount = fade_amount;
@@ -725,8 +725,8 @@ void TFB_ScreenShot(void)
 	const uqstl::string shotDirName = uqm::getEnvironmentValue("UQM_SCR_SHOT_DIR");
 	auto now = std::chrono::system_clock::now();
 	auto fullPath = fmt::format("{}{:%Y-%m-%d %H-%M-%S} v{}.{}.{} {}.png", shotDirName, now,
-									   UQM_MAJOR_VERSION, UQM_MINOR_VERSION, UQM_PATCH_VERSION,
-									chooseIfHd<const char*>(UQM_EXTRA_VERSION, "HD " UQM_EXTRA_VERSION));
+								UQM_MAJOR_VERSION, UQM_MINOR_VERSION, UQM_PATCH_VERSION,
+								chooseIfHd<const char*>(UQM_EXTRA_VERSION, "HD " UQM_EXTRA_VERSION));
 
 	if (std::filesystem::exists(shotDirName))
 	{
@@ -750,7 +750,7 @@ void TFB_ClearFPSCanvas(void)
 	SDL_FillRect(SDL_Screen_fps, nullptr, 0x00000000);
 }
 
-void TFB_GetScreenSize(uqm::SIZE* width, uqm::SIZE* height)
+void TFB_GetScreenSize(int16_t* width, int16_t* height)
 {
 	SDL_Rect bounds;
 

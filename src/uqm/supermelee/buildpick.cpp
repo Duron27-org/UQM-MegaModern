@@ -36,7 +36,7 @@ void BuildBuildPickFrame(void)
 {
 	STAMP s;
 	GFXRECT r;
-	uqm::COUNT i;
+	uint16_t i;
 	GFXCONTEXT OldContext = SetContext(OffScreenContext);
 
 	// create team building ship selection box
@@ -77,7 +77,7 @@ Color GetShipFlashColor(void)
 	}
 	else
 	{
-		static uqm::BYTE cycle_index = 0;
+		static uint8_t cycle_index = 0;
 
 		static const Color cycle_tab[] = SHIP_SELECT_COLOR_CYCLE_TABLE;
 		const size_t cycleCount = std::size(cycle_tab);
@@ -180,7 +180,7 @@ void GetToolTipFrameRect(GFXRECT* r)
 
 void DrawTooltip(SHIP_INFO* SIPtr)
 {
-	uqm::CHAR_T buf[PATH_MAX] {};
+	char buf[PATH_MAX] {};
 	TEXT Text;
 	GFXCONTEXT oldContext;
 	FONT oldFont;
@@ -194,7 +194,7 @@ void DrawTooltip(SHIP_INFO* SIPtr)
 					 GET_STRING(SIPtr->race_strings, RACE_SHIP_OFFSET));
 
 	Text.pStr = buf;
-	Text.CharCount = (uqm::COUNT)utf8StringCount(buf);
+	Text.CharCount = (uint16_t)utf8StringCount(buf);
 	Text.align = ALIGN_CENTER;
 	Text.baseline.y = r.corner.y + RES_SCALE(8) + RES_SCALE(1);
 	Text.baseline.x = r.corner.x + (r.extent.width >> 1) + RES_SCALE(1);
@@ -223,8 +223,8 @@ void DrawTooltip(SHIP_INFO* SIPtr)
 		uqm::tokenize(uqstl::string_view {(const char*)buf}, tokens, '\n', false);
 		for (const auto& tok : tokens)
 		{
-			Text.pStr = (const uqm::CHAR_T*)tok.c_str();
-			Text.CharCount = (uqm::COUNT)utf8StringCount(Text.pStr);
+			Text.pStr = (const char*)tok.c_str();
+			Text.CharCount = (uint16_t)utf8StringCount(Text.pStr);
 			Text.baseline.y += RES_SCALE(9);
 			font_DrawText(&Text);
 		}
@@ -279,7 +279,7 @@ void GetBuildPickFrameRect(GFXRECT* r)
 static bool
 DoPickShip(MELEE_STATE* pMS)
 {
-	uqm::DWORD TimeIn = GetTimeCounter();
+	uint32_t TimeIn = GetTimeCounter();
 
 	/* Cancel any presses of the Pause key. */
 	GamePaused = false;

@@ -35,14 +35,14 @@
 #include "ifontres.h"
 #include "libs/graphics/drawable.h"
 
-static uqm::BYTE GetEndMenuState(uqm::BYTE BaseState);
-static uqm::BYTE GetBeginMenuState(uqm::BYTE BaseState);
-static uqm::BYTE FixMenuState(uqm::BYTE BadState);
-static uqm::BYTE NextMenuState(uqm::BYTE BaseState, uqm::BYTE CurState);
-static uqm::BYTE PreviousMenuState(uqm::BYTE BaseState, uqm::BYTE CurState);
-static bool GetAlternateMenu(uqm::BYTE* BaseState, uqm::BYTE* CurState);
-static uqm::BYTE ConvertAlternateMenu(uqm::BYTE BaseState, uqm::BYTE NewState);
-void FunkyMenu(uqm::BYTE m, STAMP stmp);
+static uint8_t GetEndMenuState(uint8_t BaseState);
+static uint8_t GetBeginMenuState(uint8_t BaseState);
+static uint8_t FixMenuState(uint8_t BadState);
+static uint8_t NextMenuState(uint8_t BaseState, uint8_t CurState);
+static uint8_t PreviousMenuState(uint8_t BaseState, uint8_t CurState);
+static bool GetAlternateMenu(uint8_t* BaseState, uint8_t* CurState);
+static uint8_t ConvertAlternateMenu(uint8_t BaseState, uint8_t NewState);
+void FunkyMenu(uint8_t m, STAMP stmp);
 
 /* Draw the blue background for PC Menu Text, with a border around it.
  * The specified rectangle includes the border. */
@@ -78,20 +78,20 @@ DrawPCMenuFrame(GFXRECT* r)
 
 #define PC_MENU_HEIGHT (RES_SCALE(8))
 
-static uqm::CHAR_T pm_crew_str[128];
-static uqm::CHAR_T pm_fuel_str[128];
+static char pm_crew_str[128];
+static char pm_fuel_str[128];
 
 /* Actually display the menu text */
 static void
-DrawPCMenu(uqm::BYTE beg_index, uqm::BYTE end_index, uqm::BYTE NewState, uqm::BYTE hilite, GFXRECT* r)
+DrawPCMenu(uint8_t beg_index, uint8_t end_index, uint8_t NewState, uint8_t hilite, GFXRECT* r)
 {
-	uqm::BYTE pos;
-	uqm::COUNT i, j;
-	static uqm::COUNT rd = 0;
+	uint8_t pos;
+	uint16_t i, j;
+	static uint16_t rd = 0;
 	int num_items;
 	FONT OldFont;
 	TEXT t;
-	uqm::CHAR_T buf[256];
+	char buf[256];
 	GFXRECT rt;
 
 	pos = beg_index + NewState;
@@ -131,7 +131,7 @@ DrawPCMenu(uqm::BYTE beg_index, uqm::BYTE end_index, uqm::BYTE NewState, uqm::BY
 	t.baseline.x = r->corner.x + RES_SCALE(2);
 	t.baseline.y = r->corner.y + PC_MENU_HEIGHT - RES_SCALE(1);
 	t.pStr = buf;
-	t.CharCount = (uqm::COUNT)~0;
+	t.CharCount = (uint16_t)~0;
 	r->corner.x += RES_SCALE(1);
 	r->extent.width -= RES_SCALE(2);
 	for (i = beg_index; i <= end_index; i++)
@@ -193,8 +193,8 @@ DrawPCMenu(uqm::BYTE beg_index, uqm::BYTE end_index, uqm::BYTE NewState, uqm::BY
 }
 
 /* Determine the last text item to display */
-static uqm::BYTE
-GetEndMenuState(uqm::BYTE BaseState)
+static uint8_t
+GetEndMenuState(uint8_t BaseState)
 {
 	switch (BaseState)
 	{
@@ -234,15 +234,15 @@ GetEndMenuState(uqm::BYTE BaseState)
 	return BaseState;
 }
 
-static uqm::BYTE
-GetBeginMenuState(uqm::BYTE BaseState)
+static uint8_t
+GetBeginMenuState(uint8_t BaseState)
 {
 	return BaseState;
 }
 
 /* Correct Menu State for cases where the Menu shouldn't move */
-static uqm::BYTE
-FixMenuState(uqm::BYTE BadState)
+static uint8_t
+FixMenuState(uint8_t BadState)
 {
 	switch (BadState)
 	{
@@ -265,19 +265,19 @@ FixMenuState(uqm::BYTE BadState)
 				return PM_MUSIC_ON;
 			}
 		case PM_CYBORG_OFF:
-			return (PM_CYBORG_OFF + ((uqm::BYTE)(GLOBAL(glob_flags) & COMBAT_SPEED_MASK) >> COMBAT_SPEED_SHIFT));
+			return (PM_CYBORG_OFF + ((uint8_t)(GLOBAL(glob_flags) & COMBAT_SPEED_MASK) >> COMBAT_SPEED_SHIFT));
 		case PM_READ_VERY_SLOW:
-			return (PM_READ_VERY_SLOW + (uqm::BYTE)(GLOBAL(glob_flags) & READ_SPEED_MASK));
+			return (PM_READ_VERY_SLOW + (uint8_t)(GLOBAL(glob_flags) & READ_SPEED_MASK));
 	}
 	return BadState;
 }
 
 /* Choose the next menu to hilight in the 'forward' direction */
-static uqm::BYTE
-NextMenuState(uqm::BYTE BaseState, uqm::BYTE CurState)
+static uint8_t
+NextMenuState(uint8_t BaseState, uint8_t CurState)
 {
-	uqm::BYTE NextState;
-	uqm::BYTE AdjBase = BaseState;
+	uint8_t NextState;
+	uint8_t AdjBase = BaseState;
 
 	if (BaseState == PM_STARMAP)
 	{
@@ -325,11 +325,11 @@ NextMenuState(uqm::BYTE BaseState, uqm::BYTE CurState)
 }
 
 /* Choose the next menu to hilight in the 'back' direction */
-uqm::BYTE
-PreviousMenuState(uqm::BYTE BaseState, uqm::BYTE CurState)
+uint8_t
+PreviousMenuState(uint8_t BaseState, uint8_t CurState)
 {
-	uqm::SWORD NextState;
-	uqm::BYTE AdjBase = BaseState;
+	int16_t NextState;
+	uint8_t AdjBase = BaseState;
 
 	if (BaseState == PM_STARMAP)
 	{
@@ -375,16 +375,16 @@ PreviousMenuState(uqm::BYTE BaseState, uqm::BYTE CurState)
 	{
 		NextState = GetEndMenuState(BaseState);
 	}
-	return (FixMenuState((uqm::BYTE)NextState) - AdjBase);
+	return (FixMenuState((uint8_t)NextState) - AdjBase);
 }
 
 
 /* When using PC hierarchy, convert 3do->PC */
 static bool
-GetAlternateMenu(uqm::BYTE* BaseState, uqm::BYTE* CurState)
+GetAlternateMenu(uint8_t* BaseState, uint8_t* CurState)
 {
-	uqm::BYTE AdjBase = *BaseState;
-	uqm::BYTE adj = 0;
+	uint8_t AdjBase = *BaseState;
+	uint8_t adj = 0;
 	if (*BaseState == PM_STARMAP)
 	{
 		AdjBase--;
@@ -469,8 +469,8 @@ GetAlternateMenu(uqm::BYTE* BaseState, uqm::BYTE* CurState)
 }
 
 /* When using PC hierarchy, convert PC->3DO */
-static uqm::BYTE
-ConvertAlternateMenu(uqm::BYTE BaseState, uqm::BYTE NewState)
+static uint8_t
+ConvertAlternateMenu(uint8_t BaseState, uint8_t NewState)
 {
 	switch (BaseState + NewState)
 	{
@@ -508,10 +508,10 @@ ConvertAlternateMenu(uqm::BYTE BaseState, uqm::BYTE NewState)
 	return (NewState);
 }
 
-bool DoMenuChooser(MENU_STATE* pMS, uqm::BYTE BaseState)
+bool DoMenuChooser(MENU_STATE* pMS, uint8_t BaseState)
 {
-	uqm::BYTE NewState = pMS->CurState;
-	uqm::BYTE OrigBase = BaseState;
+	uint8_t NewState = pMS->CurState;
+	uint8_t OrigBase = BaseState;
 	bool useAltMenu = false;
 	if (optWhichMenu == uqm::EmulationMode::PC)
 	{
@@ -581,7 +581,7 @@ bool DoMenuChooser(MENU_STATE* pMS, uqm::BYTE BaseState)
 	return true;
 }
 
-const uqm::CHAR_T*
+const char*
 IndexToText(int Index)
 {
 	int i = -1;
@@ -666,7 +666,7 @@ static void
 Draw3DOMenuText(GFXRECT* r, int Index)
 {
 	TEXT text;
-	uqm::SIZE leading;
+	int16_t leading;
 	GFXRECT block;
 	FONT OldFont;
 	Color OldColor;
@@ -698,7 +698,7 @@ Draw3DOMenuText(GFXRECT* r, int Index)
 	text.baseline.y = r->corner.y + leading - NDOS_NUM_SCL(2);
 	text.pStr = AlignText(IndexToText(Index),
 						  &text.baseline.x);
-	text.CharCount = (uqm::COUNT)~0;
+	text.CharCount = (uint16_t)~0;
 
 	font_DrawShadowedText(&text, NORTH_WEST_SHADOW, PM_TEXT_COLOR,
 						  PM_SHADOW_COLOR);
@@ -707,13 +707,13 @@ Draw3DOMenuText(GFXRECT* r, int Index)
 	SetContextForeGroundColor(OldColor);
 }
 
-void DrawMenuStateStrings(uqm::BYTE beg_index, uqm::SWORD NewState)
+void DrawMenuStateStrings(uint8_t beg_index, int16_t NewState)
 {
-	uqm::BYTE end_index;
+	uint8_t end_index;
 	GFXRECT r;
 	STAMP s;
 	GFXCONTEXT OldContext;
-	uqm::BYTE hilite = 1;
+	uint8_t hilite = 1;
 	extern FRAME PlayFrame;
 
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
@@ -729,7 +729,7 @@ void DrawMenuStateStrings(uqm::BYTE beg_index, uqm::SWORD NewState)
 
 	if (optWhichMenu == uqm::EmulationMode::PC)
 	{
-		uqm::BYTE tmpState = (uqm::BYTE)NewState;
+		uint8_t tmpState = (uint8_t)NewState;
 		GetAlternateMenu(&beg_index, &tmpState);
 		NewState = tmpState;
 	}
@@ -818,12 +818,12 @@ void DrawMenuStateStrings(uqm::BYTE beg_index, uqm::SWORD NewState)
 		}
 		r.extent.height = RADAR_HEIGHT + RES_SCALE(12);
 
-		DrawPCMenu(beg_index, end_index, (uqm::BYTE)NewState, hilite, &r);
+		DrawPCMenu(beg_index, end_index, (uint8_t)NewState, hilite, &r);
 		s.frame = 0;
 
 		if (optSubmenu)
 		{
-			FunkyMenu(beg_index + (uqm::BYTE)NewState, s);
+			FunkyMenu(beg_index + (uint8_t)NewState, s);
 		}
 	}
 	else
@@ -849,7 +849,7 @@ void DrawMenuStateStrings(uqm::BYTE beg_index, uqm::SWORD NewState)
 	{
 		if (optSubmenu)
 		{
-			FunkyMenu(beg_index + (uqm::BYTE)NewState, s);
+			FunkyMenu(beg_index + (uint8_t)NewState, s);
 		}
 		else
 		{
@@ -859,7 +859,7 @@ void DrawMenuStateStrings(uqm::BYTE beg_index, uqm::SWORD NewState)
 		Draw3DOMenuText(&r, beg_index + NewState);
 
 		TEXT t;
-		uqm::CHAR_T buf[20];
+		char buf[20];
 
 		switch (beg_index + NewState)
 		{
@@ -867,7 +867,7 @@ void DrawMenuStateStrings(uqm::BYTE beg_index, uqm::SWORD NewState)
 				t.baseline.x = s.origin.x + RADAR_WIDTH - RES_SCALE(2);
 				t.baseline.y = s.origin.y + RADAR_HEIGHT - RES_SCALE(2);
 				t.align = ALIGN_RIGHT;
-				t.CharCount = (uqm::COUNT)~0;
+				t.CharCount = (uint16_t)~0;
 				t.pStr = buf;
 				fmt::format_to_sz_n(buf, "{}", GLOBAL(CrewCost));
 				if (isPC(optWhichFonts))
@@ -885,7 +885,7 @@ void DrawMenuStateStrings(uqm::BYTE beg_index, uqm::SWORD NewState)
 				t.baseline.x = s.origin.x + RADAR_WIDTH - RES_SCALE(2);
 				t.baseline.y = s.origin.y + RADAR_HEIGHT - RES_SCALE(2);
 				t.align = ALIGN_RIGHT;
-				t.CharCount = (uqm::COUNT)~0;
+				t.CharCount = (uint16_t)~0;
 				t.pStr = buf;
 				fmt::format_to_sz_n(buf, "{}", GLOBAL(FuelCost));
 				if (optWhichFonts == uqm::EmulationMode::Console3DO && !optWholeFuel)
@@ -909,12 +909,12 @@ void DrawMenuStateStrings(uqm::BYTE beg_index, uqm::SWORD NewState)
 void DrawMineralHelpers(void)
 {
 	GFXCONTEXT OldContext;
-	uqm::COUNT i;
+	uint16_t i;
 	STAMP s;
 	TEXT t;
-	uqm::CHAR_T buf[40];
+	char buf[40];
 	GFXRECT r;
-	uqm::SIZE leading;
+	int16_t leading;
 
 	if (!optSubmenu)
 	{
@@ -949,7 +949,7 @@ void DrawMineralHelpers(void)
 	t.baseline.y = ELEMENT_ORG_Y + RES_SCALE(3);
 	t.align = ALIGN_RIGHT;
 	t.pStr = buf;
-	t.CharCount = (uqm::COUNT)~0;
+	t.CharCount = (uint16_t)~0;
 
 	r.extent = GetFrameBounds(s.frame);
 	r.corner.x = ELEMENT_COL_0 - RES_SCALE(3);
@@ -1010,22 +1010,22 @@ void DrawMineralHelpers(void)
 	t.baseline.x = r.corner.x + RES_SCALE(2);
 	t.baseline.y = r.corner.y + leading + RES_SCALE(1);
 	t.pStr = GAME_STRING(STATUS_STRING_BASE + 8); // FUEL:
-	t.CharCount = (uqm::COUNT)~0;
+	t.CharCount = (uint16_t)~0;
 	font_DrawText(&t);
 
 	t.baseline.y += leading;
 	t.pStr = GAME_STRING(STATUS_STRING_BASE + 9); // CREW:
-	t.CharCount = (uqm::COUNT)~0;
+	t.CharCount = (uint16_t)~0;
 	font_DrawText(&t);
 
 	t.baseline.y += leading;
 	t.pStr = GAME_STRING(STATUS_STRING_BASE + 10); // LAND.:
-	t.CharCount = (uqm::COUNT)~0;
+	t.CharCount = (uint16_t)~0;
 	font_DrawText(&t);
 
 	t.baseline.y += leading;
 	t.pStr = GAME_STRING(STATUS_STRING_BASE + 11); // CARGO:
-	t.CharCount = (uqm::COUNT)~0;
+	t.CharCount = (uint16_t)~0;
 	font_DrawText(&t);
 
 	SetContextForeGroundColor(MODULE_PRICE_COLOR);
@@ -1033,19 +1033,19 @@ void DrawMineralHelpers(void)
 	t.baseline.x = r.extent.width + RES_SCALE(2);
 	t.baseline.y = r.corner.y + leading + RES_SCALE(1);
 	t.pStr = WholeFuelValue();
-	t.CharCount = (uqm::COUNT)~0;
+	t.CharCount = (uint16_t)~0;
 	font_DrawText(&t);
 
 	t.baseline.y += leading;
 	fmt::format_to_sz_n(buf, "{}", GLOBAL_SIS(CrewEnlisted));
 	t.pStr = buf;
-	t.CharCount = (uqm::COUNT)~0;
+	t.CharCount = (uint16_t)~0;
 	font_DrawText(&t);
 
 	t.baseline.y += leading;
 	fmt::format_to_sz_n(buf, "{}", GLOBAL_SIS(NumLanders));
 	t.pStr = buf;
-	t.CharCount = (uqm::COUNT)~0;
+	t.CharCount = (uint16_t)~0;
 	font_DrawText(&t);
 
 	t.baseline.y += leading;
@@ -1074,7 +1074,7 @@ void DrawMineralHelpers(void)
 	}
 
 	t.pStr = buf;
-	t.CharCount = (uqm::COUNT)~0;
+	t.CharCount = (uint16_t)~0;
 	font_DrawText(&t);
 
 	UnbatchGraphics();
@@ -1082,7 +1082,7 @@ void DrawMineralHelpers(void)
 	SetContext(OldContext);
 }
 
-void DrawBorder(uqm::BYTE Visible)
+void DrawBorder(uint8_t Visible)
 {
 	STAMP s;
 	GFXCONTEXT OldContext;
@@ -1106,7 +1106,7 @@ void DrawBorder(uqm::BYTE Visible)
 	SetContext(OldContext);
 }
 
-void FunkyMenu(uqm::BYTE m, STAMP stmp)
+void FunkyMenu(uint8_t m, STAMP stmp)
 {
 	static bool subMenuFlag;
 

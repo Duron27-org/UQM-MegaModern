@@ -55,8 +55,8 @@ GLOBDATA GlobData;
 // integers). This is not a hypothetical issue; 'uint8_t numBits = 32;
 // printf("{}\n", (1 << numBits));' will return 1 on x86 when compiled with
 // gcc (4.4.3).
-static inline uqm::DWORD
-bitmask32(uqm::BYTE bits)
+static inline uint32_t
+bitmask32(uint8_t bits)
 {
 	return (bits >= 32) ? 0xffffffff : ((1U << bits) - 1);
 }
@@ -66,8 +66,8 @@ bitmask32(uqm::BYTE bits)
 // 32 bits integers). This is not a hypothetical issue; 'uint8_t numBits =
 // 32; printf("{}\n", (1 << numBits));' will return 1 on x86 when compiled
 // with gcc (4.4.3).
-static inline uqm::DWORD
-shl32(uqm::DWORD value, uqm::BYTE shift)
+static inline uint32_t
+shl32(uint32_t value, uint8_t shift)
 {
 	return (shift >= 32) ? 0 : (value << shift);
 }
@@ -140,10 +140,10 @@ int getGameStateRevByBytes(const GameStateBitMap* bm, int bytes)
 // '*restBitsPtr' is used to store the bits in which do not make up
 // a byte yet. The number of bits stored is kept in '*restBitCount'.
 static inline void
-serialiseBits(uqm::BYTE** bufPtrPtr, uqm::DWORD* restBitsPtr, size_t* restBitCount,
-			  uqm::BYTE value, size_t valueBitCount)
+serialiseBits(uint8_t** bufPtrPtr, uint32_t* restBitsPtr, size_t* restBitCount,
+			  uint8_t value, size_t valueBitCount)
 {
-	uqm::BYTE valueBitMask;
+	uint8_t valueBitMask;
 
 	assert(*restBitCount < 8);
 	assert(valueBitCount <= 8);
@@ -171,16 +171,16 @@ serialiseBits(uqm::BYTE** bufPtrPtr, uqm::DWORD* restBitsPtr, size_t* restBitCou
 // This function fills in '*buf' with the newly allocated buffer, and
 // '*numBytes' with its size. The caller becomes the owner of '*buf' and
 // is responsible for freeing it.
-bool serialiseGameState(const GameStateBitMap* bm, uqm::BYTE** buf,
+bool serialiseGameState(const GameStateBitMap* bm, uint8_t** buf,
 						size_t* numBytes)
 {
 	size_t totalBits;
 	size_t totalBytes;
 	const GameStateBitMap* bmPtr;
-	uqm::BYTE* result;
-	uqm::BYTE* bufPtr;
+	uint8_t* result;
+	uint8_t* bufPtr;
 
-	uqm::DWORD restBits = 0;
+	uint32_t restBits = 0;
 	// Bits which have not yet been stored because they did not
 	// form an entire byte.
 	size_t restBitCount = 0;
@@ -190,7 +190,7 @@ bool serialiseGameState(const GameStateBitMap* bm, uqm::BYTE** buf,
 	totalBytes = (totalBits + 7) / 8;
 
 	// Allocate memory for the serialised data.
-	result = (uqm::BYTE*)HMalloc(totalBytes);
+	result = (uint8_t*)HMalloc(totalBytes);
 	if (result == nullptr)
 	{
 		return false;
@@ -201,8 +201,8 @@ bool serialiseGameState(const GameStateBitMap* bm, uqm::BYTE** buf,
 	{
 		if (bmPtr->name != nullptr)
 		{
-			uqm::DWORD value = getGameStateUint(bmPtr->name);
-			uqm::BYTE numBits = bmPtr->numBits;
+			uint32_t value = getGameStateUint(bmPtr->name);
+			uint8_t numBits = bmPtr->numBits;
 
 #ifdef STATE_DEBUG
 			uqm::log::debug("Saving: GameState[\'{}\'] = {}",
@@ -252,8 +252,8 @@ bool serialiseGameState(const GameStateBitMap* bm, uqm::BYTE** buf,
 // Read 'numBits' bits from '*bytePtr', starting at the bit offset
 // '*bitPtr'. The result is returned.
 // '*bitPtr' and '*bytePtr' are updated by this function.
-static inline uqm::DWORD
-deserialiseBits(const uqm::BYTE** bytePtr, uqm::BYTE* bitPtr, size_t numBits)
+static inline uint32_t
+deserialiseBits(const uint8_t** bytePtr, uint8_t* bitPtr, size_t numBits)
 {
 	assert(*bitPtr < 8);
 	assert(numBits <= 8);
@@ -262,8 +262,8 @@ deserialiseBits(const uqm::BYTE** bytePtr, uqm::BYTE* bitPtr, size_t numBits)
 	{
 		// Can get the entire value from one byte.
 		// We want bits *bitPtr through (excluding) *bitPtr+numBits
-		uqm::DWORD result =
-			((*bytePtr)[0] >> *bitPtr) & bitmask32((uqm::BYTE)numBits);
+		uint32_t result =
+			((*bytePtr)[0] >> *bitPtr) & bitmask32((uint8_t)numBits);
 
 		// Update the pointers.
 		if (numBits == (size_t)(8 - *bitPtr))
@@ -275,7 +275,7 @@ deserialiseBits(const uqm::BYTE** bytePtr, uqm::BYTE* bitPtr, size_t numBits)
 		else
 		{
 			// There are still unread bits in the byte.
-			*bitPtr += (uqm::BYTE)numBits;
+			*bitPtr += (uint8_t)numBits;
 		}
 		return result;
 	}
@@ -286,11 +286,11 @@ deserialiseBits(const uqm::BYTE** bytePtr, uqm::BYTE* bitPtr, size_t numBits)
 		// significant bits of the result, and the (numBits - *bitPtr)
 		// least significant bits from [1], as the most significant bits of
 		// the result.
-		uqm::DWORD result = (((*bytePtr)[0] >> *bitPtr)
-							 | ((*bytePtr)[1] << (8 - *bitPtr)))
-						  & bitmask32((uqm::BYTE)numBits);
+		uint32_t result = (((*bytePtr)[0] >> *bitPtr)
+						   | ((*bytePtr)[1] << (8 - *bitPtr)))
+						& bitmask32((uint8_t)numBits);
 		(*bytePtr)++;
-		*bitPtr += (uqm::BYTE)numBits - 8;
+		*bitPtr += (uint8_t)numBits - 8;
 		return result;
 	}
 }
@@ -298,13 +298,13 @@ deserialiseBits(const uqm::BYTE** bytePtr, uqm::BYTE* bitPtr, size_t numBits)
 // Deserialise the current game state from the bit array in 'buf', which
 // has size 'numBytes', according to the GameStateBitMap 'bm'.
 bool deserialiseGameState(const GameStateBitMap* bm,
-						  const uqm::BYTE* buf, size_t numBytes, int rev)
+						  const uint8_t* buf, size_t numBytes, int rev)
 {
 	size_t totalBits;
 	const GameStateBitMap* bmPtr;
 
-	const uqm::BYTE* bytePtr = buf;
-	uqm::BYTE bitPtr = 0;
+	const uint8_t* bytePtr = buf;
+	uint8_t bitPtr = 0;
 	// Number of bits already processed from the byte pointed at by
 	// bytePtr.
 	bool matchRev = true;
@@ -323,9 +323,9 @@ bool deserialiseGameState(const GameStateBitMap* bm,
 	{
 		if (bmPtr->name != nullptr)
 		{
-			uqm::DWORD value = 0;
-			uqm::BYTE numBits = bmPtr->numBits;
-			uqm::BYTE bitsLeft = numBits;
+			uint32_t value = 0;
+			uint8_t numBits = bmPtr->numBits;
+			uint8_t bitsLeft = numBits;
 
 			if (matchRev)
 			{
@@ -333,7 +333,7 @@ bool deserialiseGameState(const GameStateBitMap* bm,
 				// byte first.
 				while (bitsLeft >= 8)
 				{
-					uqm::DWORD bits = deserialiseBits(&bytePtr, &bitPtr, 8);
+					uint32_t bits = deserialiseBits(&bytePtr, &bitPtr, 8);
 					value |= shl32(bits, numBits - bitsLeft);
 					bitsLeft -= 8;
 				}
@@ -447,7 +447,7 @@ copyFleetInfo(FLEET_INFO* dst, SHIP_INFO* src, FLEET_STUFF* fleet)
 
 void LoadFleetInfo(void)
 { /* Yehat Rebels and Ur-Quan probe */
-	uqm::COUNT num_ships = LAST_MELEE_ID - ARILOU_ID + 1 + 2;
+	uint16_t num_ships = LAST_MELEE_ID - ARILOU_ID + 1 + 2;
 	InitQueue(&GLOBAL(avail_race_q), num_ships, sizeof(FLEET_INFO));
 	SPECIES_ID ship_ref = (SPECIES_ID)(ARILOU_ID - 1);
 	for (int i = 0; i < num_ships; ++i)
@@ -569,7 +569,7 @@ void LoadFleetInfo(void)
 
 bool InitGameStructures(void)
 {
-	uqm::COUNT i;
+	uint16_t i;
 
 	InitGlobData();
 	// Set Seed Type, then check/start StarSeed
@@ -650,8 +650,8 @@ bool InitGameStructures(void)
 			break;
 		case uqm::Difficulty::Hard:
 			GLOBAL(ElementWorth[EXOTIC]) = 16;
-			SET_GAME_STATE(CREW_PURCHASED0, lowByte<uqm::BYTE>(100));
-			SET_GAME_STATE(CREW_PURCHASED1, highByte<uqm::BYTE>(100));
+			SET_GAME_STATE(CREW_PURCHASED0, lowByte<uint8_t>(100));
+			SET_GAME_STATE(CREW_PURCHASED1, highByte<uint8_t>(100));
 			break;
 		case uqm::Difficulty::Normal:
 		case uqm::Difficulty::ChooseYourOwn:
@@ -755,7 +755,7 @@ bool InitGameStructures(void)
 
 	if (optHeadStart)
 	{
-		uqm::BYTE SpaCrew = ifEasyDifficulty(MAX_CREW_SIZE, 1);
+		uint8_t SpaCrew = ifEasyDifficulty(MAX_CREW_SIZE, 1);
 		AddEscortShips(SPATHI_SHIP, 1);
 		// Make the Eluder escort captained by Fwiffo alone or have a full
 		// compliment for Easy mode.
@@ -827,11 +827,11 @@ void UninitGameStructures(void)
 
 void InitGlobData(void)
 {
-	uqm::COUNT i;
+	uint16_t i;
 
 	i = GLOBAL(glob_flags);
 	memset(&GlobData, 0, sizeof(GlobData));
-	GLOBAL(glob_flags) = (uqm::BYTE)i;
+	GLOBAL(glob_flags) = (uint8_t)i;
 
 	GLOBAL(DisplayArray) = DisplayArray;
 }
@@ -843,10 +843,10 @@ void SeedDEBUG()
 {
 #define SAMPLE_SIZE 1000
 #define START 123000
-	uqm::SDWORD save = optCustomSeed;
-	//uqm::COUNT histogram[100] = {[0 ... 99] = 0};
-	uqm::COUNT histogram[100] = {0};
-	uqm::COUNT decisec;
+	int32_t save = optCustomSeed;
+	//uint16_t histogram[100] = {[0 ... 99] = 0};
+	uint16_t histogram[100] = {0};
+	uint16_t decisec;
 	clock_t start_clock;
 	bool myRNG = false;
 	for (decisec = 0; decisec < 100; decisec++)
@@ -913,7 +913,7 @@ void SeedDEBUG()
 // portal_map - a quasispace portal array
 bool InitStarseed(bool newgame)
 {
-	uqm::COUNT i;
+	uint16_t i;
 #ifdef DEBUG_STARSEED_TRACE_V
 	SeedDEBUG();
 	fmt::print(stderr, "CurrentActivity {}\n", GLOBAL(CurrentActivity));

@@ -28,11 +28,11 @@
 #include "lzh.h"
 #include "libs/reslib.h"
 
-static uqm::UWORD match_position, match_length;
-static uqm::SWORD* lson;
-static uqm::SWORD* rson;
-static uqm::SWORD* dad;
-static uqm::SWORD* encode_arrays;
+static uint16_t match_position, match_length;
+static int16_t* lson;
+static int16_t* rson;
+static int16_t* dad;
+static int16_t* encode_arrays;
 
 #define AllocEncodeArrays()                                                        \
 	HCalloc(                                                                       \
@@ -43,7 +43,7 @@ static uqm::SWORD* encode_arrays;
 static bool
 InitTree(void)
 {
-	if ((encode_arrays = (uqm::SWORD*)AllocEncodeArrays()) == nullptr)
+	if ((encode_arrays = (int16_t*)AllocEncodeArrays()) == nullptr)
 	{
 		FreeCodeArrays(encode_arrays);
 		encode_arrays = nullptr;
@@ -51,7 +51,7 @@ InitTree(void)
 	}
 	else
 	{
-		uqm::SWORD i;
+		int16_t i;
 
 		lson = encode_arrays;
 		rson = lson + (LZSS_BufferSize + 1);
@@ -71,10 +71,10 @@ InitTree(void)
 }
 
 static void
-InsertNode(uqm::SWORD r)
+InsertNode(int16_t r)
 {
-	uqm::SWORD p, cmp;
-	uqm::BYTE* lpBuf;
+	int16_t p, cmp;
+	uint8_t* lpBuf;
 
 	cmp = 1;
 	lpBuf = _lpCurCodeDesc->text_buf;
@@ -83,7 +83,7 @@ InsertNode(uqm::SWORD r)
 	match_length = 0;
 	for (;;)
 	{
-		uqm::UWORD i;
+		uint16_t i;
 
 		if (cmp >= 0)
 		{
@@ -114,7 +114,7 @@ InsertNode(uqm::SWORD r)
 
 		i = LZSS_LookAheadBufferSize;
 		{
-			uqm::SWORD _r, _p;
+			int16_t _r, _p;
 
 			_r = r;
 			_p = p;
@@ -157,9 +157,9 @@ InsertNode(uqm::SWORD r)
 }
 
 static void
-DeleteNode(uqm::SWORD p)
+DeleteNode(int16_t p)
 {
-	uqm::SWORD q;
+	int16_t q;
 
 	if (dad[p] == LZSS_NIL)
 	{
@@ -203,16 +203,16 @@ DeleteNode(uqm::SWORD p)
 }
 
 static void
-Putcode(uqm::SWORD l, uqm::UWORD c)
+Putcode(int16_t l, uint16_t c)
 {
 	_workbuf |= c >> _workbuflen;
 	if ((_workbuflen += l) >= 8)
 	{
-		OutChar((uqm::BYTE)(_workbuf >> 8));
+		OutChar((uint8_t)(_workbuf >> 8));
 		++_lpCurCodeDesc->StreamIndex;
 		if ((_workbuflen -= 8) >= 8)
 		{
-			OutChar((uqm::BYTE)(_workbuf));
+			OutChar((uint8_t)(_workbuf));
 			++_lpCurCodeDesc->StreamIndex;
 			_workbuflen -= 8;
 			_workbuf = c << (l - _workbuflen);
@@ -226,10 +226,10 @@ Putcode(uqm::SWORD l, uqm::UWORD c)
 }
 
 static void
-EncodeChar(uqm::UWORD c)
+EncodeChar(uint16_t c)
 {
-	uqm::UWORD i;
-	uqm::SWORD j, k;
+	uint16_t i;
+	int16_t j, k;
 
 	i = 0;
 	j = 0;
@@ -256,15 +256,15 @@ EncodeChar(uqm::UWORD c)
 }
 
 static void
-EncodePosition(uqm::UWORD c)
+EncodePosition(uint16_t c)
 {
-	uqm::UWORD i;
+	uint16_t i;
 	/*
 		 * Tables for encoding/decoding upper 6 bits of
 		 * sliding dictionary pointer
 		 */
 	/* encoder table */
-	static const uqm::BYTE p_len[64] =
+	static const uint8_t p_len[64] =
 		{
 			0x03, 0x04, 0x04, 0x04, 0x05, 0x05, 0x05, 0x05,
 			0x05, 0x05, 0x05, 0x05, 0x06, 0x06, 0x06, 0x06,
@@ -275,7 +275,7 @@ EncodePosition(uqm::UWORD c)
 			0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08,
 			0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08};
 
-	static const uqm::BYTE p_code[64] =
+	static const uint8_t p_code[64] =
 		{
 			0x00, 0x20, 0x30, 0x40, 0x50, 0x58, 0x60, 0x68,
 			0x70, 0x78, 0x80, 0x88, 0x90, 0x94, 0x98, 0x9C,
@@ -288,7 +288,7 @@ EncodePosition(uqm::UWORD c)
 
 	/* output upper 6 bits with encoding */
 	i = c >> 6;
-	Putcode(p_len[i], (uqm::UWORD)p_code[i] << 8);
+	Putcode(p_len[i], (uint16_t)p_code[i] << 8);
 
 	/* output lower 6 bits directly */
 	Putcode(6, (c & 0x3f) << 10);
@@ -299,7 +299,7 @@ UninitTree(void)
 {
 	if (_workbuflen)
 	{
-		OutChar((uqm::BYTE)(_workbuf >> 8));
+		OutChar((uint8_t)(_workbuf >> 8));
 		++_lpCurCodeDesc->StreamIndex;
 	}
 
@@ -313,10 +313,10 @@ UninitTree(void)
 static void
 _encode_cleanup(void)
 {
-	uqm::UWORD r, s, last_match_length, len;
+	uint16_t r, s, last_match_length, len;
 
 	_StreamType = _lpCurCodeDesc->StreamType;
-	_Stream = (uqm::BYTE*)_lpCurCodeDesc->Stream;
+	_Stream = (uint8_t*)_lpCurCodeDesc->Stream;
 	_workbuf = _lpCurCodeDesc->workbuf;
 	_workbuflen = _lpCurCodeDesc->workbuflen;
 
@@ -329,7 +329,7 @@ _encode_cleanup(void)
 	}
 	else
 	{
-		uqm::UWORD i;
+		uint16_t i;
 
 		for (i = 1; i <= LZSS_LookAheadBufferSize; i++)
 		{
@@ -337,7 +337,7 @@ _encode_cleanup(void)
 		}
 		InsertNode(r);
 
-		len = (uqm::UWORD)_lpCurCodeDesc->StreamLength;
+		len = (uint16_t)_lpCurCodeDesc->StreamLength;
 	}
 
 	while (1)
@@ -347,8 +347,8 @@ _encode_cleanup(void)
 			DeleteNode(s);
 			if (--len == 0)
 			{
-				uqm::BYTE lobyte, hibyte;
-				uqm::UWORD loword, hiword;
+				uint8_t lobyte, hibyte;
+				uint16_t loword, hiword;
 
 				UninitTree();
 
@@ -361,7 +361,7 @@ _encode_cleanup(void)
 				}
 				else /* _lpCurCodeDesc->StreamType == MEMORY_STREAM */
 				{
-					_Stream = (uqm::BYTE*)_Stream - _lpCurCodeDesc->StreamIndex;
+					_Stream = (uint8_t*)_Stream - _lpCurCodeDesc->StreamIndex;
 				}
 
 				loword = LOWORD(_lpCurCodeDesc->StreamLength);
@@ -399,12 +399,12 @@ _encode_cleanup(void)
 	}
 }
 
-uqm::COUNT
-cwrite(const void* buf, uqm::COUNT size, uqm::COUNT count, PLZHCODE_DESC lpCodeDesc)
+uint16_t
+cwrite(const void* buf, uint16_t size, uint16_t count, PLZHCODE_DESC lpCodeDesc)
 {
-	uqm::UWORD r, s, last_match_length;
-	uqm::BYTE* lpBuf;
-	const uqm::BYTE* lpStr;
+	uint16_t r, s, last_match_length;
+	uint8_t* lpBuf;
+	const uint8_t* lpStr;
 
 	if ((_lpCurCodeDesc = lpCodeDesc) == 0
 		|| (size *= count) == 0)
@@ -413,10 +413,10 @@ cwrite(const void* buf, uqm::COUNT size, uqm::COUNT count, PLZHCODE_DESC lpCodeD
 	}
 
 	_StreamType = lpCodeDesc->StreamType;
-	_Stream = (uqm::BYTE*)lpCodeDesc->Stream;
+	_Stream = (uint8_t*)lpCodeDesc->Stream;
 	_workbuf = lpCodeDesc->workbuf;
 	_workbuflen = lpCodeDesc->workbuflen;
-	lpStr = (const uqm::BYTE*)buf;
+	lpStr = (const uint8_t*)buf;
 	lpBuf = lpCodeDesc->text_buf;
 
 	r = lpCodeDesc->buf_index;
@@ -429,9 +429,9 @@ cwrite(const void* buf, uqm::COUNT size, uqm::COUNT count, PLZHCODE_DESC lpCodeD
 	}
 	else if (lpCodeDesc->StreamLength < LZSS_LookAheadBufferSize)
 	{
-		uqm::UWORD i;
+		uint16_t i;
 
-		if ((i = (uqm::UWORD)lpCodeDesc->StreamLength) == 0)
+		if ((i = (uint16_t)lpCodeDesc->StreamLength) == 0)
 		{
 			if (!InitTree())
 			{
@@ -488,7 +488,7 @@ cwrite(const void* buf, uqm::COUNT size, uqm::COUNT count, PLZHCODE_DESC lpCodeD
 EncodeRestart:
 		while (last_match_length && size)
 		{
-			uqm::BYTE c;
+			uint8_t c;
 
 			--size;
 			--last_match_length;

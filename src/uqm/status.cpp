@@ -49,11 +49,11 @@ bool animIsInTransition(CAPTAIN_STUFF* CSPtr)
 	return (CSPtr->thrust_offset & 1) || (CSPtr->weapon_offset & 1) || (CSPtr->special_offset & 1) || (CSPtr->tl_offset & 1) || (CSPtr->tr_offset & 1);
 }
 
-static uqm::BYTE
+static uint8_t
 CalculateAnimOffsets(CAPTAIN_STUFF* CSPtr,
 					 STATUS_FLAGS delta_status_flags, STATUS_FLAGS cur_status_flags)
 {
-	uqm::BYTE redraw_flag = 0;
+	uint8_t redraw_flag = 0;
 
 	if (delta_status_flags & LEFT || CSPtr->tl_offset & 1)
 	{
@@ -150,7 +150,7 @@ CalculateAnimOffsets(CAPTAIN_STUFF* CSPtr,
 
 static void
 DrawCaptainWindowAnimation(CAPTAIN_STUFF* CSPtr, COORD y,
-						   uqm::BYTE redraw_flag)
+						   uint8_t redraw_flag)
 {
 	STAMP Stamp;
 
@@ -159,7 +159,7 @@ DrawCaptainWindowAnimation(CAPTAIN_STUFF* CSPtr, COORD y,
 
 	if (redraw_flag & LEFT)
 	{
-		uqm::BYTE i;
+		uint8_t i;
 
 		Stamp.frame = SetRelFrameIndex(CSPtr->turn, 1);
 		DrawStamp(&Stamp);
@@ -174,7 +174,7 @@ DrawCaptainWindowAnimation(CAPTAIN_STUFF* CSPtr, COORD y,
 	}
 	else if (redraw_flag & RIGHT)
 	{
-		uqm::BYTE i;
+		uint8_t i;
 
 		Stamp.frame = SetRelFrameIndex(CSPtr->turn, 3);
 		DrawStamp(&Stamp);
@@ -223,7 +223,7 @@ DrawCaptainWindowFrame(FRAME fr, COORD y)
 /*static void
 CaptainsWindow (CAPTAIN_STUFF *CSPtr, COORD y,
 		STATUS_FLAGS delta_status_flags, STATUS_FLAGS cur_status_flags,
-		uqm::COUNT Pass)
+		uint16_t Pass)
 {// Kruzen: og method. now redundant
 	STAMP Stamp;
 
@@ -312,13 +312,13 @@ void DrawBattleCrewAmount(SHIP_INFO* ShipInfoPtr, COORD y_offs)
 #define MAX_CREW_DIGITS 3
 	GFXRECT r;
 	TEXT t;
-	uqm::CHAR_T buf[40] {};
+	char buf[40] {};
 
 	t.baseline.x = BATTLE_CREW_X + RES_SCALE(MENU_BOOL(2, 4));
 	t.baseline.y = BATTLE_CREW_Y + y_offs;
 	t.align = MENU_BOOL(ALIGN_LEFT, ALIGN_CENTER);
 	t.pStr = buf;
-	t.CharCount = (uqm::COUNT)~0;
+	t.CharCount = (uint16_t)~0;
 	r.corner.x = t.baseline.x - RES_SCALE(MENU_BOOL(2, 9));
 	r.corner.y = t.baseline.y - RES_SCALE(5);
 	r.extent.width = RES_SCALE(6 * MAX_CREW_DIGITS + 6);
@@ -461,7 +461,7 @@ void DrawCaptainsWindow(STARSHIP* StarShipPtr)
 		t.baseline.y = y + RES_SCALE(6);
 		t.align = ALIGN_CENTER;
 		t.pStr = GLOBAL_SIS(CommanderName);
-		t.CharCount = (uqm::COUNT)~0;
+		t.CharCount = (uint16_t)~0;
 		SetContextForeGroundColor(
 			BUILD_COLOR(MAKE_RGB15(0x00, 0x14, 0x00), 0x02));
 		SetContextFont(MENU_BOOL(TinyFontBold, TinyFont));
@@ -478,7 +478,7 @@ void DrawCaptainsWindow(STARSHIP* StarShipPtr)
 	UnbatchGraphics();
 }
 
-bool DeltaEnergy(ELEMENT* ElementPtr, uqm::SIZE energy_delta)
+bool DeltaEnergy(ELEMENT* ElementPtr, int16_t energy_delta)
 {
 	bool retval;
 	STARSHIP* StarShipPtr;
@@ -495,7 +495,7 @@ bool DeltaEnergy(ELEMENT* ElementPtr, uqm::SIZE energy_delta)
 	ShipInfoPtr = &StarShipPtr->RaceDescPtr->ship_info;
 	if (energy_delta >= 0)
 	{
-		if ((uqm::BYTE)(ShipInfoPtr->energy_level + (uqm::BYTE)energy_delta) > ShipInfoPtr->max_energy)
+		if ((uint8_t)(ShipInfoPtr->energy_level + (uint8_t)energy_delta) > ShipInfoPtr->max_energy)
 		{
 			energy_delta = ShipInfoPtr->max_energy
 						 - ShipInfoPtr->energy_level;
@@ -503,7 +503,7 @@ bool DeltaEnergy(ELEMENT* ElementPtr, uqm::SIZE energy_delta)
 	}
 	else
 	{
-		if ((uqm::BYTE)-energy_delta > ShipInfoPtr->energy_level)
+		if ((uint8_t)-energy_delta > ShipInfoPtr->energy_level)
 		{
 			retval = false;
 		}
@@ -526,7 +526,7 @@ bool DeltaEnergy(ELEMENT* ElementPtr, uqm::SIZE energy_delta)
 	return (retval);
 }
 
-bool DeltaCrew(ELEMENT* ElementPtr, uqm::SIZE crew_delta)
+bool DeltaCrew(ELEMENT* ElementPtr, int16_t crew_delta)
 {
 	bool retval;
 	STARSHIP* StarShipPtr;
@@ -552,13 +552,13 @@ bool DeltaCrew(ELEMENT* ElementPtr, uqm::SIZE crew_delta)
 	}
 	else if (crew_delta < 0)
 	{
-		if (ElementPtr->crew_level > (uqm::COUNT)-crew_delta)
+		if (ElementPtr->crew_level > (uint16_t)-crew_delta)
 		{
 			ElementPtr->crew_level += crew_delta;
 		}
 		else
 		{
-			crew_delta = -(uqm::SIZE)ElementPtr->crew_level;
+			crew_delta = -(int16_t)ElementPtr->crew_level;
 			ElementPtr->crew_level = 0;
 			retval = false;
 		}
@@ -580,7 +580,7 @@ void PreProcessStatus(ELEMENT* ShipPtr)
 	{ // All except Sa-Matra, no captain's window there
 		STATUS_FLAGS old_status_flags, cur_status_flags;
 		CAPTAIN_STUFF* CSPtr;
-		uqm::BYTE redraw_flags = 0;
+		uint8_t redraw_flags = 0;
 
 		cur_status_flags = StarShipPtr->cur_status_flags;
 		old_status_flags = StarShipPtr->old_status_flags;
@@ -627,11 +627,11 @@ void PostProcessStatus(ELEMENT* ShipPtr)
 			{ // Kruzen: FINITE_LIFE check was added in case if crew-level == 0
 				// Is triggered by the ship itself (shofixti glory device) and
 				// avoiding drawing black area
-				uqm::BYTE i, j;
+				uint8_t i, j;
 				Color c;
 				GFXRECT r;
 
-				i = (uqm::BYTE)(NUM_EXPLOSION_FRAMES * 3 - 1) - ShipPtr->life_span;
+				i = (uint8_t)(NUM_EXPLOSION_FRAMES * 3 - 1) - ShipPtr->life_span;
 
 				if (cur_status_flags & SHOFIXTI_EXPLOSION && i == 0)
 				{ // Special case: Instead of first orange rectangle we will draw the last

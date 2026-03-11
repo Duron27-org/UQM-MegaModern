@@ -22,44 +22,24 @@
 #include <cstdint>
 #include <type_traits>
 
-namespace uqm
-{
-typedef uint8_t BYTE;
-typedef uint8_t UBYTE;
-typedef int8_t SBYTE;
-typedef uint16_t UWORD;
-typedef int16_t SWORD;
-typedef uint32_t DWORD;
-typedef int32_t SDWORD;
-typedef uint64_t QWORD;
-typedef int64_t SQWORD;
-
-typedef UWORD COUNT;
-typedef SWORD SIZE;
-
-typedef char CHAR_T;
-} // namespace uqm
-
 typedef void (*PVOIDFUNC)(void);
 typedef bool (*PBOOLFUNC)(void);
-typedef uqm::BYTE (*PBYTEFUNC)(void);
-typedef uqm::UWORD (*PUWORDFUNC)(void);
-typedef uqm::SWORD (*PSWORDFUNC)(void);
-typedef uqm::DWORD (*PDWORDFUNC)(void);
+typedef uint8_t (*PBYTEFUNC)(void);
+typedef uint16_t (*PUWORDFUNC)(void);
+typedef int16_t (*PSWORDFUNC)(void);
+typedef uint32_t (*PDWORDFUNC)(void);
 
-#define MAKE_BYTE(lo, hi) ((uqm::BYTE)(((uqm::BYTE)(hi) << (uqm::BYTE)4) | (uqm::BYTE)(lo)))
-#define LONIBBLE(x) ((uqm::BYTE)((uqm::BYTE)(x) & (uqm::BYTE)0x0F))
-#define HINIBBLE(x) ((uqm::BYTE)((uqm::BYTE)(x) >> (uqm::BYTE)4))
-#define MAKE_WORD(lo, hi) ((uqm::UWORD)((uqm::BYTE)(hi) << 8) | (uqm::BYTE)(lo))
-//#define lowByte(x)    ((uqm::BYTE) ((uqm::UWORD) (x)))
+#define MAKE_BYTE(lo, hi) ((uint8_t)(((uint8_t)(hi) << (uint8_t)4) | (uint8_t)(lo)))
+#define LONIBBLE(x) ((uint8_t)((uint8_t)(x) & (uint8_t)0x0F))
+#define HINIBBLE(x) ((uint8_t)((uint8_t)(x) >> (uint8_t)4))
+#define MAKE_WORD(lo, hi) ((uint16_t)((uint8_t)(hi) << 8) | (uint8_t)(lo))
 template <typename T, std::enable_if_t<std::is_integral_v<T>, bool> = true>
-constexpr inline auto lowByte(T x) -> uqm::BYTE
+constexpr inline auto lowByte(T x) -> uint8_t
 {
-	return static_cast<uqm::BYTE>(x & T {0xFF});
+	return static_cast<uint8_t>(x & T {0xFF});
 }
-//#define highByte(x)    ((uqm::BYTE) ((uqm::UWORD) (x) >> 8))
 template <typename T>
-constexpr inline auto highByte(T x) -> uqm::BYTE
+constexpr inline auto highByte(T x) -> uint8_t
 {
 	if constexpr (sizeof(T) == 1)
 	{
@@ -67,15 +47,15 @@ constexpr inline auto highByte(T x) -> uqm::BYTE
 	}
 	else
 	{
-		return static_cast<uqm::BYTE>(x >> 8);
+		return static_cast<uint8_t>(x >> 8);
 	}
 }
-#define MAKE_DWORD(lo, hi) (((uqm::DWORD)(hi) << 16) | (uqm::UWORD)(lo))
+#define MAKE_DWORD(lo, hi) (((uint32_t)(hi) << 16) | (uint16_t)(lo))
 #if !defined(LOWORD)
-#define LOWORD(x) ((uqm::UWORD)((uqm::DWORD)(x)))
+#define LOWORD(x) ((uint16_t)((uint32_t)(x)))
 #endif
 #if !defined(HIWORD)
-#define HIWORD(x) ((uqm::UWORD)((uqm::DWORD)(x) >> 16))
+#define HIWORD(x) ((uint16_t)((uint32_t)(x) >> 16))
 #endif
 
 

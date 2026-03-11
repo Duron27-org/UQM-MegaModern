@@ -97,7 +97,7 @@ static LOCDATA druuge_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				22,			 /* StartIndex */
@@ -107,7 +107,7 @@ static LOCDATA druuge_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				25,			 /* StartIndex */
@@ -117,7 +117,7 @@ static LOCDATA druuge_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				28,			 /* StartIndex */
@@ -127,7 +127,7 @@ static LOCDATA druuge_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				31,			   /* StartIndex */
@@ -137,7 +137,7 @@ static LOCDATA druuge_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				33,							  /* StartIndex */
@@ -147,7 +147,7 @@ static LOCDATA druuge_desc =
 				0, /* FrameRate */
 				GameTicksPerSecond * 7,
 				GameTicksPerSecond * 3, /* RestartRate */
-				0,				/* BlockMask */
+				0,						/* BlockMask */
 			},
 								{
 				40,			   /* StartIndex */
@@ -190,7 +190,7 @@ static LOCDATA druuge_desc =
 								GameTicksPerSecond / 15, /* FrameRate */
 			GameTicksPerSecond / 12,
 								GameTicksPerSecond / 12, /* RestartRate */
-			0,				 /* BlockMask */
+			0,						 /* BlockMask */
 		},
 		nullptr, /* AlienNumberSpeech - none */
 		/* Filler for loaded resources */
@@ -201,7 +201,7 @@ static LOCDATA druuge_desc =
 		nullptr,
 };
 
-static uqm::COUNT SlaveryCount = 0;
+static uint16_t SlaveryCount = 0;
 static bool AttemptedSalvage = false;
 
 static void
@@ -215,7 +215,7 @@ ExitConversation(RESPONSE_REF R)
 		{
 			if (SlaveryCount)
 			{
-				uqm::UWORD PreviousSlaves;
+				uint16_t PreviousSlaves;
 
 				PreviousSlaves = MAKE_WORD(
 					GET_GAME_STATE(CREW_SOLD_TO_DRUUGE0),
@@ -430,7 +430,7 @@ DoTransaction(RESPONSE_REF R)
 	}
 	else if (PLAYER_SAID(R, sell_fragments))
 	{
-		uqm::BYTE num_frags;
+		uint8_t num_frags;
 
 		if (GET_GAME_STATE(EGG_CASE0_ON_SHIP))
 		{
@@ -464,12 +464,12 @@ DoTransaction(RESPONSE_REF R)
 	}
 	else
 	{
-		uqm::BYTE trade_gas;
-		uqm::BYTE ship_slots, ships_to_trade;
+		uint8_t trade_gas;
+		uint8_t ship_slots, ships_to_trade;
 
 		if (isDifficulty(uqm::Difficulty::Hard) && !(GET_GAME_STATE(HM_ENCOUNTERS) & 1 << READY_TO_BARGAIN))
 		{
-			uqm::UWORD state;
+			uint16_t state;
 
 			state = GET_GAME_STATE(HM_ENCOUNTERS);
 
@@ -530,9 +530,9 @@ DoTransaction(RESPONSE_REF R)
 
 		if (trade_gas)
 		{
-			uqm::BYTE slot;
-			uqm::COUNT f, HardLimit = 500;
-			uqm::DWORD capacity, FuelOnBoard;
+			uint8_t slot;
+			uint16_t f, HardLimit = 500;
+			uint32_t capacity, FuelOnBoard;
 
 			FuelOnBoard = GLOBAL_SIS(FuelOnBoard);
 			capacity = FUEL_RESERVE;
@@ -542,14 +542,14 @@ DoTransaction(RESPONSE_REF R)
 				if (GLOBAL_SIS(ModuleSlots[slot]) == FUEL_TANK
 					|| GLOBAL_SIS(ModuleSlots[slot]) == HIGHEFF_FUELSYS)
 				{
-					uqm::COUNT volume;
+					uint16_t volume;
 
 					volume = GLOBAL_SIS(ModuleSlots[slot]) == FUEL_TANK ? FUEL_TANK_CAPACITY : HEFUEL_TANK_CAPACITY;
 					capacity += volume;
 				}
 			} while (slot--);
 			capacity -= FuelOnBoard;
-			f = (uqm::COUNT)((capacity + (FUEL_TANK_SCALE >> 1)) / FUEL_TANK_SCALE);
+			f = (uint16_t)((capacity + (FUEL_TANK_SCALE >> 1)) / FUEL_TANK_SCALE);
 
 			if (isDifficulty(uqm::Difficulty::Hard) && f > HardLimit)
 			{
@@ -701,7 +701,7 @@ TradeWorld(RESPONSE_REF R)
 {
 	if (PLAYER_SAID(R, whats_up_at_trade_world))
 	{
-		uqm::BYTE NumVisits;
+		uint8_t NumVisits;
 
 		NumVisits = GET_GAME_STATE(DRUUGE_HOME_INFO);
 		switch (NumVisits++)
@@ -790,7 +790,7 @@ Space(RESPONSE_REF R)
 {
 	if (PLAYER_SAID(R, whats_up_in_space))
 	{
-		uqm::BYTE NumVisits;
+		uint8_t NumVisits;
 
 		NumVisits = GET_GAME_STATE(DRUUGE_SPACE_INFO);
 		switch (NumVisits++)
@@ -824,7 +824,7 @@ Space(RESPONSE_REF R)
 static void
 Intro(void)
 {
-	uqm::BYTE NumVisits;
+	uint8_t NumVisits;
 
 	if (lowByte(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE)
 	{
@@ -976,7 +976,7 @@ Intro(void)
 		{
 			for (NumVisits = 0; NumVisits < NUM_MODULE_SLOTS; ++NumVisits)
 			{
-				uqm::BYTE which_module;
+				uint8_t which_module;
 
 				which_module = GLOBAL_SIS(ModuleSlots[NumVisits]);
 				if (which_module >= GUN_WEAPON
@@ -1027,7 +1027,7 @@ Intro(void)
 	}
 }
 
-static uqm::COUNT
+static uint16_t
 uninit_druuge(void)
 {
 	luaUqm_comm_uninit();

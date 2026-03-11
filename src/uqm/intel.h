@@ -39,15 +39,15 @@ extern BATTLE_INPUT_STATE computer_intelligence(
 extern BATTLE_INPUT_STATE tactical_intelligence(
 	ComputerInputContext* context, STARSHIP* StarShipPtr);
 extern void ship_intelligence(ELEMENT* ShipPtr,
-							  EVALUATE_DESC* ObjectsOfConcern, uqm::COUNT ConcernCounter);
+							  EVALUATE_DESC* ObjectsOfConcern, uint16_t ConcernCounter);
 extern bool ship_weapons(ELEMENT* ShipPtr, ELEMENT* OtherPtr,
-						 uqm::COUNT margin_of_error);
+						 uint16_t margin_of_error);
 
 extern void Pursue(ELEMENT* ShipPtr, EVALUATE_DESC* EvalDescPtr);
 extern void Entice(ELEMENT* ShipPtr, EVALUATE_DESC* EvalDescPtr);
 extern void Avoid(ELEMENT* ShipPtr, EVALUATE_DESC* EvalDescPtr);
-extern bool TurnShip(ELEMENT* ShipPtr, uqm::COUNT angle);
-extern bool ThrustShip(ELEMENT* ShipPtr, uqm::COUNT angle);
+extern bool TurnShip(ELEMENT* ShipPtr, uint16_t angle);
+extern bool ThrustShip(ELEMENT* ShipPtr, uint16_t angle);
 
 extern PlayerControlFlags PlayerControl[];
 

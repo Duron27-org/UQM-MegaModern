@@ -38,16 +38,16 @@
 
 //#define DEBUG_PROCESS
 
-uqm::COUNT DisplayFreeList;
+uint16_t DisplayFreeList;
 PRIMITIVE DisplayArray[MAX_DISPLAY_PRIMS];
 extern DPOINT SpaceOrg;
 
-uqm::COUNT zoom_out = 1 << ZOOM_SHIFT;
-static uqm::SIZE opt_max_zoom_out;
+uint16_t zoom_out = 1 << ZOOM_SHIFT;
+static int16_t opt_max_zoom_out;
 
 #if 0
 static inline void
-CALC_ZOOM_STUFF (uqm::COUNT* idx, uqm::COUNT* sc)
+CALC_ZOOM_STUFF (uint16_t* idx, uint16_t* sc)
 {
 	int i, z;
 
@@ -59,7 +59,7 @@ CALC_ZOOM_STUFF (uqm::COUNT* idx, uqm::COUNT* sc)
 }
 #else
 static inline void
-CALC_ZOOM_STUFF(uqm::COUNT* idx, uqm::COUNT* sc)
+CALC_ZOOM_STUFF(uint16_t* idx, uint16_t* sc)
 {
 	int i;
 
@@ -176,7 +176,7 @@ PreProcess(ELEMENT* ElementPtr)
 
 		if (!(state_flags & IGNORE_VELOCITY))
 		{
-			uqm::SIZE delta_x, delta_y;
+			int16_t delta_x, delta_y;
 
 			GetNextVelocityComponents(&ElementPtr->velocity,
 									  &delta_x, &delta_y, 1);
@@ -223,10 +223,10 @@ PostProcess(ELEMENT* ElementPtr)
 							| POST_PROCESS;
 }
 
-static uqm::COUNT
-CalcReduction(uqm::SDWORD dx, uqm::SDWORD dy)
+static uint16_t
+CalcReduction(int32_t dx, int32_t dy)
 {
-	uqm::COUNT next_reduction;
+	uint16_t next_reduction;
 
 #ifdef KDEBUG
 	uqm::log::debug("CalcReduction:");
@@ -234,7 +234,7 @@ CalcReduction(uqm::SDWORD dx, uqm::SDWORD dy)
 
 	if (uqm::toTFBScaleMode(optMeleeScale) == uqm::TFBScaleMode::Step)
 	{
-		uqm::SDWORD sdx, sdy;
+		int32_t sdx, sdy;
 
 		if (lowByte(GLOBAL(CurrentActivity)) > IN_ENCOUNTER)
 		{
@@ -325,24 +325,24 @@ CalcReduction(uqm::SDWORD dx, uqm::SDWORD dy)
 }
 
 static VIEW_STATE
-CalcView(DPOINT* pNewScrollPt, uqm::SIZE next_reduction,
-		 uqm::SDWORD* pdx, uqm::SDWORD* pdy, uqm::COUNT ships_alive)
+CalcView(DPOINT* pNewScrollPt, int16_t next_reduction,
+		 int32_t* pdx, int32_t* pdy, uint16_t ships_alive)
 {
-	uqm::SDWORD dx, dy;
+	int32_t dx, dy;
 	VIEW_STATE view_state;
 
 #ifdef KDEBUG
 	uqm::log::debug("CalcView:");
 #endif
-	dx = ((uqm::SDWORD)(LOG_SPACE_WIDTH >> 1) - pNewScrollPt->x);
-	dy = ((uqm::SDWORD)(LOG_SPACE_HEIGHT >> 1) - pNewScrollPt->y);
+	dx = ((int32_t)(LOG_SPACE_WIDTH >> 1) - pNewScrollPt->x);
+	dy = ((int32_t)(LOG_SPACE_HEIGHT >> 1) - pNewScrollPt->y);
 	dx = WRAP_DELTA_X(dx);
 	dy = WRAP_DELTA_Y(dy);
 	const bool meleeScaleModeIsTFBStep {uqm::toTFBScaleMode(optMeleeScale) == uqm::TFBScaleMode::Step};
 	if (ships_alive == 1 && (!meleeScaleModeIsTFBStep || isNetwork()))
 	{
-#define ORG_JUMP_X ((uqm::SDWORD)DISPLAY_ALIGN(LOG_SPACE_WIDTH / 75))
-#define ORG_JUMP_Y ((uqm::SDWORD)DISPLAY_ALIGN(LOG_SPACE_HEIGHT / 75))
+#define ORG_JUMP_X ((int32_t)DISPLAY_ALIGN(LOG_SPACE_WIDTH / 75))
+#define ORG_JUMP_Y ((int32_t)DISPLAY_ALIGN(LOG_SPACE_HEIGHT / 75))
 		if (dx > ORG_JUMP_X)
 		{
 			dx = ORG_JUMP_X;
@@ -374,10 +374,10 @@ CalcView(DPOINT* pNewScrollPt, uqm::SIZE next_reduction,
 	{
 		if (meleeScaleModeIsTFBStep)
 		{
-			SpaceOrg.x = (uqm::SDWORD)(LOG_SPACE_WIDTH >> 1)
+			SpaceOrg.x = (int32_t)(LOG_SPACE_WIDTH >> 1)
 					   - (LOG_SPACE_WIDTH >> ((MAX_REDUCTION + 1)
 											  - next_reduction));
-			SpaceOrg.y = (uqm::SDWORD)(LOG_SPACE_HEIGHT >> 1)
+			SpaceOrg.y = (int32_t)(LOG_SPACE_HEIGHT >> 1)
 					   - (LOG_SPACE_HEIGHT >> ((MAX_REDUCTION + 1)
 											   - next_reduction));
 		}
@@ -700,13 +700,13 @@ ProcessCollisions(HELEMENT hSuccElement, ELEMENT* ElementPtr,
 }
 
 static VIEW_STATE
-PreProcessQueue(uqm::SDWORD* pscroll_x, uqm::SDWORD* pscroll_y)
+PreProcessQueue(int32_t* pscroll_x, int32_t* pscroll_y)
 {
-	uqm::SIZE min_reduction, max_reduction;
-	uqm::COUNT sides_active;
+	int16_t min_reduction, max_reduction;
+	uint16_t sides_active;
 	DPOINT Origin;
 	HELEMENT hElement;
-	uqm::COUNT ships_alive;
+	uint16_t ships_alive;
 
 #ifdef KDEBUG
 	uqm::log::debug("PreProcess:");
@@ -723,8 +723,8 @@ PreProcessQueue(uqm::SDWORD* pscroll_x, uqm::SDWORD* pscroll_y)
 		min_reduction = max_reduction = MAX_ZOOM_OUT + (1 << ZOOM_SHIFT);
 	}
 
-	Origin.x = (uqm::SDWORD)(LOG_SPACE_WIDTH >> 1);
-	Origin.y = (uqm::SDWORD)(LOG_SPACE_HEIGHT >> 1);
+	Origin.x = (int32_t)(LOG_SPACE_WIDTH >> 1);
+	Origin.y = (int32_t)(LOG_SPACE_HEIGHT >> 1);
 
 	hElement = GetHeadElement();
 	ships_alive = 0;
@@ -750,7 +750,7 @@ PreProcessQueue(uqm::SDWORD* pscroll_x, uqm::SDWORD* pscroll_y)
 
 		if (ElementPtr->state_flags & PLAYER_SHIP)
 		{
-			uqm::SDWORD dx, dy;
+			int32_t dx, dy;
 
 			ships_alive++;
 			if (max_reduction > opt_max_zoom_out
@@ -798,7 +798,7 @@ PreProcessQueue(uqm::SDWORD* pscroll_x, uqm::SDWORD* pscroll_y)
 			}
 			else
 			{
-				uqm::SIZE reduction;
+				int16_t reduction;
 
 				if (dx < 0)
 				{
@@ -844,9 +844,9 @@ PreProcessQueue(uqm::SDWORD* pscroll_x, uqm::SDWORD* pscroll_y)
 	return (CalcView(&Origin, min_reduction, pscroll_x, pscroll_y, ships_alive));
 }
 
-void InsertPrim(PRIM_LINKS* pLinks, uqm::COUNT primIndex, uqm::COUNT iPI)
+void InsertPrim(PRIM_LINKS* pLinks, uint16_t primIndex, uint16_t iPI)
 {
-	uqm::COUNT Link;
+	uint16_t Link;
 	PRIM_LINKS PL;
 
 	if (iPI == END_OF_LIST)
@@ -887,7 +887,7 @@ void InsertPrim(PRIM_LINKS* pLinks, uqm::COUNT primIndex, uqm::COUNT iPI)
 PRIM_LINKS DisplayLinks;
 
 static inline COORD
-CalcDisplayCoord(uqm::SDWORD c, uqm::SDWORD orgc, uqm::SIZE reduction)
+CalcDisplayCoord(int32_t c, int32_t orgc, int16_t reduction)
 {
 	if (uqm::toTFBScaleMode(optMeleeScale) == uqm::TFBScaleMode::Step)
 	{ /* old fixed-step zoom style */
@@ -900,10 +900,10 @@ CalcDisplayCoord(uqm::SDWORD c, uqm::SDWORD orgc, uqm::SIZE reduction)
 }
 
 static void
-PostProcessQueue(VIEW_STATE view_state, uqm::SDWORD scroll_x, uqm::SDWORD scroll_y)
+PostProcessQueue(VIEW_STATE view_state, int32_t scroll_x, int32_t scroll_y)
 {
 	DPOINT delta;
-	uqm::SIZE reduction;
+	int16_t reduction;
 	HELEMENT hElement;
 
 #ifdef KDEBUG
@@ -1004,13 +1004,13 @@ PostProcessQueue(VIEW_STATE view_state, uqm::SDWORD scroll_x, uqm::SDWORD scroll
 
 				if (ObjType == LINE_PRIM)
 				{
-					uqm::SDWORD dx, dy;
+					int32_t dx, dy;
 
-					dx = (uqm::SDWORD)ElementPtr->next.location.x - (uqm::SDWORD)ElementPtr->current.location.x;
-					dy = (uqm::SDWORD)ElementPtr->next.location.y - (uqm::SDWORD)ElementPtr->current.location.y;
+					dx = (int32_t)ElementPtr->next.location.x - (int32_t)ElementPtr->current.location.x;
+					dy = (int32_t)ElementPtr->next.location.y - (int32_t)ElementPtr->current.location.y;
 
-					next.x = WRAP_X((uqm::SDWORD)ElementPtr->current.location.x + (uqm::SDWORD)delta.x);
-					next.y = WRAP_Y((uqm::SDWORD)ElementPtr->current.location.y + (uqm::SDWORD)delta.y);
+					next.x = WRAP_X((int32_t)ElementPtr->current.location.x + (int32_t)delta.x);
+					next.y = WRAP_Y((int32_t)ElementPtr->current.location.y + (int32_t)delta.y);
 					DisplayArray[ElementPtr->PrimIndex].Object.Line.first.x = CalcDisplayCoord(next.x, SpaceOrg.x, reduction);
 					DisplayArray[ElementPtr->PrimIndex].Object.Line.first.y = CalcDisplayCoord(next.y, SpaceOrg.y, reduction);
 
@@ -1021,8 +1021,8 @@ PostProcessQueue(VIEW_STATE view_state, uqm::SDWORD scroll_x, uqm::SDWORD scroll
 				}
 				else
 				{
-					next.x = WRAP_X((uqm::SDWORD)ElementPtr->next.location.x + (uqm::SDWORD)delta.x);
-					next.y = WRAP_Y((uqm::SDWORD)ElementPtr->next.location.y + (uqm::SDWORD)delta.y);
+					next.x = WRAP_X((int32_t)ElementPtr->next.location.x + (int32_t)delta.x);
+					next.y = WRAP_Y((int32_t)ElementPtr->next.location.y + (int32_t)delta.y);
 
 					DisplayArray[ElementPtr->PrimIndex].Object.Point.x = CalcDisplayCoord(next.x, SpaceOrg.x, reduction);
 					DisplayArray[ElementPtr->PrimIndex].Object.Point.y = CalcDisplayCoord(next.y, SpaceOrg.y, reduction);
@@ -1032,7 +1032,7 @@ PostProcessQueue(VIEW_STATE view_state, uqm::SDWORD scroll_x, uqm::SDWORD scroll
 						if (view_state == VIEW_CHANGE
 							|| (state_flags & (APPEARING | CHANGING)))
 						{
-							uqm::COUNT index, scale = GSCALE_IDENTITY;
+							uint16_t index, scale = GSCALE_IDENTITY;
 
 							if (uqm::toTFBScaleMode(optMeleeScale) == uqm::TFBScaleMode::Step)
 							{
@@ -1096,7 +1096,7 @@ PostProcessQueue(VIEW_STATE view_state, uqm::SDWORD scroll_x, uqm::SDWORD scroll
 
 void InitDisplayList(void)
 {
-	uqm::COUNT i;
+	uint16_t i;
 
 	if (uqm::toTFBScaleMode(optMeleeScale) == uqm::TFBScaleMode::Step)
 	{
@@ -1120,11 +1120,11 @@ void InitDisplayList(void)
 	DisplayLinks = MakeLinks(END_OF_LIST, END_OF_LIST);
 }
 
-uqm::UWORD nth_frame = 0;
+uint16_t nth_frame = 0;
 
 void RedrawQueue(bool clear)
 {
-	uqm::SDWORD scroll_x, scroll_y;
+	int32_t scroll_x, scroll_y;
 	VIEW_STATE view_state;
 
 	SetContext(StatusContext);
@@ -1141,10 +1141,10 @@ void RedrawQueue(bool clear)
 	if (lowByte(GLOBAL(CurrentActivity)) == SUPER_MELEE
 		|| !(GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
 	{
-		uqm::BYTE skip_frames;
+		uint8_t skip_frames;
 
 		skip_frames = highByte(nth_frame);
-		if (skip_frames != (uqm::BYTE)~0
+		if (skip_frames != (uint8_t)~0
 			&& (skip_frames == 0 || (--nth_frame & 0x00FF) == 0))
 		{
 			nth_frame += skip_frames;
@@ -1155,7 +1155,7 @@ void RedrawQueue(bool clear)
 
 			if (uqm::toTFBScaleMode(optMeleeScale) != uqm::TFBScaleMode::Step)
 			{
-				uqm::COUNT index, scale;
+				uint16_t index, scale;
 
 				CALC_ZOOM_STUFF(&index, &scale);
 				SetGraphicScale(scale);

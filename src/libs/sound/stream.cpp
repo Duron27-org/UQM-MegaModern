@@ -232,7 +232,7 @@ GetNumTrackerPos(uint32_t source)
 bool IsTracker(uint32_t source)
 {
 	TFB_SoundSample* sample = soundSource[source].sample;
-	const uqm::CHAR_T* filetype;
+	const char* filetype;
 
 	if (!sample)
 	{
@@ -256,7 +256,7 @@ float GetStreamLength(uint32_t source)
 	return sample->decoder->length * 1000;
 }
 
-uqm::DWORD
+uint32_t
 GetStreamTime(uint32_t source)
 {
 	TFB_SoundSample* sample = soundSource[source].sample;
@@ -266,7 +266,7 @@ GetStreamTime(uint32_t source)
 		return 0;
 	}
 
-	return (uqm::DWORD)SoundDecoder_GetTime(sample->decoder) * 1000;
+	return (uint32_t)SoundDecoder_GetTime(sample->decoder) * 1000;
 }
 
 bool PlayingStream(uint32_t source)
