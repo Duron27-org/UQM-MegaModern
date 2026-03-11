@@ -21,6 +21,7 @@ class UrQuanMastersConan(ConanFile):
         'fmt/12.1.0',
         'gsl-lite/1.0.1',
         'gtest/1.17.0',
+        'libmikmod/3.3.11.1',
         'libpng/1.6.54',
         'magic_enum/0.9.7',
         'nlohmann_json/3.12.0',
