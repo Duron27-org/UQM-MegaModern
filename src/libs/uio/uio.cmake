@@ -45,7 +45,6 @@ set(uqm_src_libs_uio_files
 	"src/libs/uio/paths.h"
 	"src/libs/uio/physical.cpp"
 	"src/libs/uio/physical.h"
-	"src/libs/uio/types.h"
 	"src/libs/uio/uio.cmake"
 	"src/libs/uio/uioport.h"
 	"src/libs/uio/uiostream.cpp"

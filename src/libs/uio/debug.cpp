@@ -36,7 +36,6 @@
 #include "uioport.h"
 #include "io.h"
 #include "utils.h"
-#include "types.h"
 #include "mem.h"
 #include "uioutils.h"
 #ifdef uio_MEM_DEBUG
@@ -47,7 +46,7 @@
 
 typedef struct DebugContext
 {
-	uio_bool exit;
+	bool exit;
 	FILE* in;
 	FILE* out;
 	FILE* err;
@@ -262,7 +261,7 @@ void uio_debugInteractive(FILE* in, FILE* out, FILE* err)
 	int argc;
 	char** argv;
 	DebugContext debugContext;
-	uio_bool interactive;
+	bool interactive;
 
 	memset(&debugContext, '\0', sizeof(DebugContext));
 	debugContext.exit = false;

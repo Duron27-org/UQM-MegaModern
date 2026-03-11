@@ -251,8 +251,7 @@ char* joinPathsAbsolute(const char* first, const char* second)
 // - one of the path components is ".", or
 // - one of the path components is ".."
 // and 'true' otherwise.
-uio_bool
-validPathName(const char* path, size_t len)
+bool validPathName(const char* path, size_t len)
 {
 	const char* pathEnd;
 	const char *start, *end;
@@ -417,12 +416,12 @@ noMatch:
 // a single slash, so will uio (but not in the "\\MACHINE\share" part
 // of a Windows UNC path).
 int decomposePath(const char* path, uio_PathComp** pathComp,
-				  uio_bool* isAbsolute)
+				  bool* isAbsolute)
 {
 	uio_PathComp* result;
 	uio_PathComp* last;
 	uio_PathComp** endResult = &result;
-	uio_bool absolute = false;
+	bool absolute = false;
 	char* name;
 #ifdef HAVE_UNC_PATHS
 	size_t nameLen;
@@ -505,7 +504,7 @@ int decomposePath(const char* path, uio_PathComp** pathComp,
 }
 
 // Pre: pathComp forms a valid path for the platform.
-void composePath(const uio_PathComp* pathComp, uio_bool absolute,
+void composePath(const uio_PathComp* pathComp, bool absolute,
 				 char** path, size_t* pathLen)
 {
 	size_t len;

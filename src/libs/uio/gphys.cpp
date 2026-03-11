@@ -126,7 +126,7 @@ void uio_GPDir_removeFile(uio_GPDir* gPDir, const char* fileName)
 {
 	uio_GPDirEntry* entry;
 	uio_GPFile* file;
-	uio_bool retVal;
+	bool retVal;
 
 	entry = uio_GPDirEntries_find(gPDir->entries, fileName);
 	if (entry == nullptr)
@@ -148,7 +148,7 @@ void uio_GPDir_removeSubDir(uio_GPDir* gPDir, const char* dirName)
 {
 	uio_GPDirEntry* entry;
 	uio_GPDir* subDir;
-	uio_bool retVal;
+	bool retVal;
 
 	entry = uio_GPDirEntries_find(gPDir->entries, dirName);
 	if (entry == nullptr)
@@ -169,7 +169,7 @@ void uio_GPDir_removeSubDir(uio_GPDir* gPDir, const char* dirName)
 	assert(retVal);
 }
 
-void uio_GPDir_setComplete(uio_GPDir* gPDir, uio_bool flag)
+void uio_GPDir_setComplete(uio_GPDir* gPDir, bool flag)
 {
 	if (flag)
 	{

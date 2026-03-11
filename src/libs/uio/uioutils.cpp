@@ -135,7 +135,7 @@ excludeArrayPointer(const void** array, size_t oldNumElements, int startPos,
 // If the given DOS date/time is invalid, the result is unspecified,
 // but the function won't crash.
 time_t
-dosToUnixTime(uio_uint16 date, uio_uint16 tm)
+dosToUnixTime(uint16_t date, uint16_t tm)
 {
 	// DOS date has the following format:
 	//   bits 0-4 specify the number of the day in the month (1-31).

@@ -26,7 +26,6 @@
 #include "core/stl/map.h"
 #include "mem.h"
 #include "uioutils.h"
-#include "types.h"
 #include "uioport.h"
 #include "libs/uio/iointrn.h"
 

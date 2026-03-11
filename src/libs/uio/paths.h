@@ -23,7 +23,7 @@
 
 typedef struct uio_PathComp uio_PathComp;
 
-#include "types.h"
+#include <cstdint>
 #include "uioport.h"
 
 #include <stdio.h>
@@ -57,7 +57,7 @@ void getPreviousPathComponent(const char* dir, const char** startComp,
 char* joinPaths(const char* first, const char* second);
 char* joinPathsAbsolute(const char* first, const char* second);
 
-uio_bool validPathName(const char* path, size_t len);
+bool validPathName(const char* path, size_t len);
 size_t uio_skipUNCServerShare(const char* inPath);
 size_t uio_getUNCServerShare(const char* inPath, char** outPath,
 							 size_t* outLen);
@@ -81,8 +81,8 @@ isPathDelimiter(int c)
 }
 
 int decomposePath(const char* path, uio_PathComp** pathComp,
-				  uio_bool* isAbsolute);
-void composePath(const uio_PathComp* pathComp, uio_bool absolute,
+				  bool* isAbsolute);
+void composePath(const uio_PathComp* pathComp, bool absolute,
 				 char** path, size_t* pathLen);
 uio_PathComp* uio_PathComp_new(char* name, size_t nameLen,
 							   uio_PathComp* upComp);

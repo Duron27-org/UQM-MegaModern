@@ -34,7 +34,7 @@
 #include "core/platform/platform.h"
 
 
-static uio_bool uio_validFileSystemHandler(uio_FileSystemHandler* handler);
+static bool uio_validFileSystemHandler(uio_FileSystemHandler* handler);
 static uio_FileSystemInfo* uio_FileSystemInfo_new(uio_FileSystemID id,
 												  uio_FileSystemHandler* handler, char* name);
 static uio_FileSystemInfo** uio_getFileSystemInfoPtr(uio_FileSystemID id);
@@ -205,7 +205,7 @@ int uio_unRegisterFileSystem(uio_FileSystemID id)
 	return 0;
 }
 
-static uio_bool
+static bool
 uio_validFileSystemHandler(uio_FileSystemHandler* handler)
 {
 	// Check for the essentials

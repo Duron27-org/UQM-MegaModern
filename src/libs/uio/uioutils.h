@@ -23,7 +23,7 @@
 
 #include <time.h>
 
-#include "types.h"
+#include <cstdint>
 #include "uioport.h"
 
 char* strcata(const char* first, const char* second);
@@ -35,7 +35,7 @@ void* excludeArray(const void* array, size_t oldNumElements, int startPos,
 				   int numExclude, size_t elementSize);
 void** excludeArrayPointer(const void** array, size_t oldNumElements,
 						   int startPos, int numExclude);
-time_t dosToUnixTime(uio_uint16 date, uio_uint16 tm);
+time_t dosToUnixTime(uint16_t date, uint16_t tm);
 char* dosToUnixPath(const char* path);
 
 /* Sometimes you just have to remove a 'const'.
@@ -55,32 +55,32 @@ inline T* unconst(const T* arg) { return const_cast<T*>(arg); }
 
 
 // byte1 is the lowest byte, byte4 the highest
-static inline uio_uint32
-makeUInt32(uio_uint8 byte1, uio_uint8 byte2, uio_uint8 byte3, uio_uint8 byte4)
+static inline uint32_t
+makeUInt32(uint8_t byte1, uint8_t byte2, uint8_t byte3, uint8_t byte4)
 {
 	return byte1 | (byte2 << 8) | (byte3 << 16) | (byte4 << 24);
 }
 
-static inline uio_uint16
-makeUInt16(uio_uint8 byte1, uio_uint8 byte2)
+static inline uint16_t
+makeUInt16(uint8_t byte1, uint8_t byte2)
 {
 	return byte1 | (byte2 << 8);
 }
 
-static inline uio_sint32
-makeSInt32(uio_uint8 byte1, uio_uint8 byte2, uio_uint8 byte3, uio_uint8 byte4)
+static inline int32_t
+makeSInt32(uint8_t byte1, uint8_t byte2, uint8_t byte3, uint8_t byte4)
 {
 	return byte1 | (byte2 << 8) | (byte3 << 16) | (byte4 << 24);
 }
 
-static inline uio_sint16
-makeSInt16(uio_uint8 byte1, uio_uint8 byte2)
+static inline int16_t
+makeSInt16(uint8_t byte1, uint8_t byte2)
 {
 	return byte1 | (byte2 << 8);
 }
 
-static inline uio_bool
-isBitSet(uio_uint32 bitField, int bit)
+static inline bool
+isBitSet(uint32_t bitField, int bit)
 {
 	return ((bitField >> bit) & 1) == 1;
 }

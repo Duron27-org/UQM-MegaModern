@@ -47,7 +47,6 @@
 #include "core/platform/platform.h"
 
 
-
 #define DIR_STRUCTURE_READ_BUFSIZE 0x10000
 
 static int zip_badFile(zip_GPFileData* gPFileData, char* fileName);
@@ -71,7 +70,7 @@ int zip_updateFileDataFromLocalHeader(uio_Handle* handle,
 static int zip_fillDirStructureProcessExtraFields(
 	uio_FileBlock* fileBlock, off_t extraFieldLength,
 	zip_GPFileData* gPFileData, const char* path, off_t pos,
-	uio_bool central);
+	bool central);
 static inline int zip_foundFile(uio_GPDir* gPDir, const char* path,
 								zip_GPFileData* gPFileData);
 static inline int zip_foundDir(uio_GPDir* gPDir, const char* dirName,
@@ -148,7 +147,7 @@ uio_GPRoot_Operations zip_GPRootOperations = {
  *		[9] = Deflate64
  *		[10] = "PKWARE Data Compression Library Imploding"
  */
-static const uio_bool
+static const bool
 	zip_compressionMethodSupported[NUM_COMPRESSION_METHODS] = {
 		true, false, false, false, false, false, false, false,
 		true, false, false};
@@ -189,7 +188,7 @@ typedef enum
 } zip_OSType;
 
 #if zip_USE_HEADERS == zip_USE_CENTRAL_HEADERS
-static mode_t zip_makeFileMode(zip_OSType creatorOS, uio_uint32 modeBytes);
+static mode_t zip_makeFileMode(zip_OSType creatorOS, uint32_t modeBytes);
 #endif
 
 #define zip_INPUT_BUFFER_SIZE 0x10000
@@ -722,7 +721,7 @@ zip_fillDirStructureCentral(uio_GPDir* top, uio_Handle* handle)
 	off_t pos;
 	char* buf;
 	ssize_t numBytes;
-	uio_uint16 numEntries;
+	uint16_t numEntries;
 	// TODO: use numEntries to initialise the hash table
 	//       to a smart size
 	off_t eocdr;
@@ -804,13 +803,13 @@ zip_fillDirStructureCentralProcessEntry(uio_GPDir* topGPDir,
 	zip_GPFileData* gPFileData;
 	ssize_t numBytes;
 
-	uio_uint32 signature;
-	uio_uint16 lastModTime;
-	uio_uint16 lastModDate;
-	//uio_uint32 crc; unused
-	uio_uint16 fileNameLength;
-	uio_uint16 extraFieldLength;
-	uio_uint16 fileCommentLength;
+	uint32_t signature;
+	uint16_t lastModTime;
+	uint16_t lastModDate;
+	//uint32_t crc; unused
+	uint16_t fileNameLength;
+	uint16_t extraFieldLength;
+	uint16_t fileCommentLength;
 	char* fileName;
 	zip_OSType creatorOS;
 
@@ -1028,7 +1027,7 @@ zip_findEndOfCentralDirectoryRecord(uio_Handle* handle,
 }
 
 static mode_t
-zip_makeFileMode(zip_OSType creatorOS, uio_uint32 modeBytes)
+zip_makeFileMode(zip_OSType creatorOS, uint32_t modeBytes)
 {
 	switch (creatorOS)
 	{
@@ -1086,9 +1085,9 @@ zip_updatePFileDataFromLocalFileHeader(zip_GPFileData* gPFileData,
 {
 	ssize_t numBytes;
 	char* buf;
-	uio_uint32 signature;
-	uio_uint16 fileNameLength;
-	uio_uint16 extraFieldLength;
+	uint32_t signature;
+	uint16_t fileNameLength;
+	uint16_t extraFieldLength;
 
 	numBytes = uio_accessFileBlock(fileBlock, pos, 30, &buf);
 	if (numBytes != 30)
@@ -1164,7 +1163,7 @@ zip_fillDirStructureLocal(uio_GPDir* top, uio_Handle* handle)
 	pos = 0;
 	while (1)
 	{
-		uio_uint32 signature;
+		uint32_t signature;
 
 		numBytes = uio_accessFileBlock(fileBlock, pos, 4, &buf);
 		if (numBytes == -1)
@@ -1209,11 +1208,11 @@ zip_fillDirStructureLocalProcessEntry(uio_GPDir* topGPDir,
 	zip_GPFileData* gPFileData;
 	ssize_t numBytes;
 
-	uio_uint16 lastModTime;
-	uio_uint16 lastModDate;
-	uio_uint32 crc;
-	uio_uint16 fileNameLength;
-	uio_uint16 extraFieldLength;
+	uint16_t lastModTime;
+	uint16_t lastModDate;
+	uint32_t crc;
+	uint16_t fileNameLength;
+	uint16_t extraFieldLength;
 	char* fileName;
 
 	off_t nextEntryOffset;
@@ -1324,7 +1323,7 @@ zip_fillDirStructureLocalProcessEntry(uio_GPDir* topGPDir,
 		// Now comes a data descriptor.
 		// The PKWare version (which was never used) misses the signature.
 		// The InfoZip version is used below.
-		uio_uint32 signature;
+		uint32_t signature;
 
 		numBytes = uio_accessFileBlock(fileBlock, *pos, 16, &buf);
 		if (numBytes != 16)
@@ -1449,10 +1448,10 @@ int zip_updateFileDataFromLocalHeader(uio_Handle* handle,
 static int
 zip_fillDirStructureProcessExtraFields(uio_FileBlock* fileBlock,
 									   off_t extraFieldLength, zip_GPFileData* gPFileData,
-									   const char* fileName, off_t pos, uio_bool central)
+									   const char* fileName, off_t pos, bool central)
 {
 	off_t posEnd;
-	uio_uint16 headerID;
+	uint16_t headerID;
 	ssize_t dataSize;
 	ssize_t numBytes;
 	char* buf;
@@ -1476,7 +1475,7 @@ zip_fillDirStructureProcessExtraFields(uio_FileBlock* fileBlock,
 		switch (headerID)
 		{
 			case 0x000d: // 'Unix0'
-				// fallthrough
+						 // fallthrough
 			case 0x5855: // 'Unix1'
 				gPFileData->atime = (time_t)makeUInt32(
 					buf[0], buf[1], buf[2], buf[3]);
@@ -1495,7 +1494,7 @@ zip_fillDirStructureProcessExtraFields(uio_FileBlock* fileBlock,
 				break;
 			case 0x5455:
 				{ // 'time'
-					uio_uint8 flags;
+					uint8_t flags;
 					const char* bufPtr;
 					flags = buf[0];
 					bufPtr = buf + 1;

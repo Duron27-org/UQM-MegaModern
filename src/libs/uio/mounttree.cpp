@@ -30,7 +30,6 @@
 #include "uioport.h"
 #include "mounttree.h"
 #include "paths.h"
-#include "types.h"
 #include "mem.h"
 #include "uioutils.h"
 #ifdef uio_MEM_DEBUG

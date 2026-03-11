@@ -160,7 +160,7 @@ uio_DirHandle_unref(uio_DirHandle* dirHandle)
 	}
 }
 
-static inline uio_bool
+static inline bool
 uio_PDirEntryHandle_isDir(const uio_PDirEntryHandle* handle)
 {
 	return (handle->flags & uio_PDirEntryHandle_TYPEMASK) == uio_PDirEntryHandle_TYPE_DIR;

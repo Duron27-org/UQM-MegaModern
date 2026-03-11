@@ -394,7 +394,7 @@ int uio_getPhysicalAccess(uio_DirHandle* dirHandle, const char* path,
 	uio_MountTreeItem *readItem, *writeItem;
 	uio_PDirHandle *readPDirHandle, *writePDirHandle, *pDirHandle;
 	int retVal;
-	uio_bool entryExists;
+	bool entryExists;
 	// Set if the entry pointed to by path exists (including
 	// the last component of the path)
 
@@ -900,7 +900,7 @@ uio_resolvePath(uio_DirHandle* dirHandle, const char* path, size_t pathLen,
 	int numUp; // number of ".." dirs still need to be matched.
 	char* buffer;
 	char* endBufPtr;
-	uio_bool absolute;
+	bool absolute;
 
 	absolute = path[0] == '/';
 	pathEnd = path + pathLen;

@@ -31,7 +31,6 @@ typedef uio_GPDirEntries_Iterator* uio_NativeEntriesContext;
 #include "../iointrn.h"
 #include "../uioport.h"
 #include "../physical.h"
-#include "../types.h"
 #include "../fileblock.h"
 
 #include <zlib.h>
@@ -60,8 +59,8 @@ typedef struct zip_GPFileData
 {
 	off_t compressedSize;
 	off_t uncompressedSize;
-	uio_uint16 compressionFlags;
-	uio_uint16 compressionMethod;
+	uint16_t compressionFlags;
+	uint16_t compressionMethod;
 #if zip_USE_HEADERS == zip_USE_CENTRAL_HEADERS
 	off_t headerOffset; // start of the local header for this file
 #endif

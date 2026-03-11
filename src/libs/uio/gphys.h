@@ -205,13 +205,13 @@ struct uio_GPFile
 };
 
 
-static inline uio_bool
+static inline bool
 uio_GPDirEntry_isReg(uio_GPDirEntry* gPDirEntry)
 {
 	return (gPDirEntry->flags & uio_GPDirEntry_TYPEMASK) == uio_GPDirEntry_TYPE_REG;
 }
 
-static inline uio_bool
+static inline bool
 uio_GPDirEntry_isDir(uio_GPDirEntry* gPDirEntry)
 {
 	return (gPDirEntry->flags & uio_GPDirEntry_TYPEMASK) == uio_GPDirEntry_TYPE_DIR;
@@ -244,7 +244,7 @@ void uio_GPDir_addFile(uio_GPDir* gPDir, const char* fileName,
 					   uio_GPFile* file);
 void uio_GPDir_removeFile(uio_GPDir* gPDir, const char* fileName);
 void uio_GPDir_removeSubDir(uio_GPDir* gPDir, const char* dirName);
-void uio_GPDir_setComplete(uio_GPDir* gPDir, uio_bool flag);
+void uio_GPDir_setComplete(uio_GPDir* gPDir, bool flag);
 uio_GPDirEntry* uio_GPDir_getGPDirEntry(uio_GPDir* gPDir,
 										const char* name);
 uio_PDirEntryHandle* uio_GPDir_getPDirEntryHandle(

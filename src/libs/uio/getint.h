@@ -23,11 +23,11 @@
 
 /* All these functions return true on success, or false on failure */
 
-#include "types.h"
+#include <cstdint>
 #include "uioport.h"
 
-static inline uio_bool
-uio_getU8(uio_Stream* stream, uio_uint8* result)
+static inline bool
+uio_getU8(uio_Stream* stream, uint8_t* result)
 {
 	int val = uio_getc(stream);
 	if (val == EOF)
@@ -35,12 +35,12 @@ uio_getU8(uio_Stream* stream, uio_uint8* result)
 		return false;
 	}
 
-	*result = (uio_uint8)val;
+	*result = (uint8_t)val;
 	return true;
 }
 
-static inline uio_bool
-uio_getS8(uio_Stream* stream, uio_sint8* result)
+static inline bool
+uio_getS8(uio_Stream* stream, int8_t* result)
 {
 	int val = uio_getc(stream);
 	if (val == EOF)
@@ -48,14 +48,14 @@ uio_getS8(uio_Stream* stream, uio_sint8* result)
 		return false;
 	}
 
-	*result = (uio_sint8)val;
+	*result = (int8_t)val;
 	return true;
 }
 
-static inline uio_bool
-uio_getU16LE(uio_Stream* stream, uio_uint16* result)
+static inline bool
+uio_getU16LE(uio_Stream* stream, uint16_t* result)
 {
-	uio_uint8 buf[2];
+	uint8_t buf[2];
 
 	if (uio_fread(buf, sizeof buf, 1, stream) != 1)
 	{
@@ -66,10 +66,10 @@ uio_getU16LE(uio_Stream* stream, uio_uint16* result)
 	return true;
 }
 
-static inline uio_bool
-uio_getU16BE(uio_Stream* stream, uio_uint16* result)
+static inline bool
+uio_getU16BE(uio_Stream* stream, uint16_t* result)
 {
-	uio_uint8 buf[2];
+	uint8_t buf[2];
 
 	if (uio_fread(buf, sizeof buf, 1, stream) != 1)
 	{
@@ -80,38 +80,38 @@ uio_getU16BE(uio_Stream* stream, uio_uint16* result)
 	return true;
 }
 
-static inline uio_bool
-uio_getS16LE(uio_Stream* stream, uio_sint16* result)
+static inline bool
+uio_getS16LE(uio_Stream* stream, int16_t* result)
 {
-	uio_uint8 buf[2];
+	uint8_t buf[2];
 
 	if (uio_fread(buf, sizeof buf, 1, stream) != 1)
 	{
 		return false;
 	}
 
-	*result = (uio_sint16)((buf[1] << 8) | buf[0]);
+	*result = (int16_t)((buf[1] << 8) | buf[0]);
 	return true;
 }
 
-static inline uio_bool
-uio_getS16BE(uio_Stream* stream, uio_sint16* result)
+static inline bool
+uio_getS16BE(uio_Stream* stream, int16_t* result)
 {
-	uio_uint8 buf[2];
+	uint8_t buf[2];
 
 	if (uio_fread(buf, sizeof buf, 1, stream) != 1)
 	{
 		return false;
 	}
 
-	*result = (uio_sint16)((buf[0] << 8) | buf[1]);
+	*result = (int16_t)((buf[0] << 8) | buf[1]);
 	return true;
 }
 
-static inline uio_bool
-uio_getU32LE(uio_Stream* stream, uio_uint32* result)
+static inline bool
+uio_getU32LE(uio_Stream* stream, uint32_t* result)
 {
-	uio_uint8 buf[4];
+	uint8_t buf[4];
 
 	if (uio_fread(buf, sizeof buf, 1, stream) != 1)
 	{
@@ -122,10 +122,10 @@ uio_getU32LE(uio_Stream* stream, uio_uint32* result)
 	return true;
 }
 
-static inline uio_bool
-uio_getU32BE(uio_Stream* stream, uio_uint32* result)
+static inline bool
+uio_getU32BE(uio_Stream* stream, uint32_t* result)
 {
-	uio_uint8 buf[4];
+	uint8_t buf[4];
 
 	if (uio_fread(buf, sizeof buf, 1, stream) != 1)
 	{
@@ -136,31 +136,31 @@ uio_getU32BE(uio_Stream* stream, uio_uint32* result)
 	return true;
 }
 
-static inline uio_bool
-uio_getS32LE(uio_Stream* stream, uio_sint32* result)
+static inline bool
+uio_getS32LE(uio_Stream* stream, int32_t* result)
 {
-	uio_uint8 buf[4];
+	uint8_t buf[4];
 
 	if (uio_fread(buf, sizeof buf, 1, stream) != 1)
 	{
 		return false;
 	}
 
-	*result = (uio_sint32)((buf[3] << 24) | (buf[2] << 16) | (buf[1] << 8) | buf[0]);
+	*result = (int32_t)((buf[3] << 24) | (buf[2] << 16) | (buf[1] << 8) | buf[0]);
 	return true;
 }
 
-static inline uio_bool
-uio_getS32BE(uio_Stream* stream, uio_sint32* result)
+static inline bool
+uio_getS32BE(uio_Stream* stream, int32_t* result)
 {
-	uio_uint8 buf[4];
+	uint8_t buf[4];
 
 	if (uio_fread(buf, sizeof buf, 1, stream) != 1)
 	{
 		return false;
 	}
 
-	*result = (uio_sint32)((buf[0] << 24) | (buf[1] << 16) | (buf[2] << 8) | buf[3]);
+	*result = (int32_t)((buf[0] << 24) | (buf[1] << 16) | (buf[2] << 8) | buf[3]);
 	return true;
 }
 

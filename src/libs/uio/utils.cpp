@@ -18,6 +18,8 @@
  *
  */
 
+#include <cstdint>
+#include <cstdint>
 #include <fmt/base.h>
 #include <errno.h>
 #include <time.h>
@@ -33,7 +35,7 @@
 
 
 static int uio_copyError(uio_Handle* srcHandle, uio_Handle* dstHandle,
-						 uio_DirHandle* unlinkHandle, const char* unlinkPath, uio_uint8* buf);
+						 uio_DirHandle* unlinkHandle, const char* unlinkPath, uint8_t* buf);
 
 struct uio_StdioAccessHandle
 {
@@ -70,7 +72,7 @@ int uio_copyFile(uio_DirHandle* srcDir, const char* srcName,
 	uio_Handle *src, *dst;
 	struct stat sb;
 #define BUFSIZE 65536
-	uio_uint8 *buf, *bufPtr;
+	uint8_t *buf, *bufPtr;
 	ssize_t numInBuf, numWritten;
 
 	src = uio_open(srcDir, srcName, O_RDONLY
@@ -100,7 +102,7 @@ int uio_copyFile(uio_DirHandle* srcDir, const char* srcName,
 		return uio_copyError(src, nullptr, nullptr, nullptr, nullptr);
 	}
 
-	buf = (uio_uint8*)uio_malloc(BUFSIZE);
+	buf = (uint8_t*)uio_malloc(BUFSIZE);
 	// This was originally a statically allocated buffer,
 	// but as this function might be run from a thread with
 	// a small Stack, this is better.
@@ -154,7 +156,7 @@ int uio_copyFile(uio_DirHandle* srcDir, const char* srcName,
  */
 static int
 uio_copyError(uio_Handle* srcHandle, uio_Handle* dstHandle,
-			  uio_DirHandle* unlinkHandle, const char* unlinkPath, uio_uint8* buf)
+			  uio_DirHandle* unlinkHandle, const char* unlinkPath, uint8_t* buf)
 {
 	int savedErrno;
 
@@ -220,13 +222,13 @@ uio_getStdioAccess(uio_DirHandle* dir, const char* path, int flags,
 	uio_free(newPath);
 
 	{
-		uio_uint32 dirNum;
+		uint32_t dirNum;
 		int i;
 
 		// Current location is not usable. Create a directory with a
 		// generated name, as a temporary location to store a copy of
 		// the file.
-		dirNum = (uio_uint32)time(nullptr);
+		dirNum = (uint32_t)time(nullptr);
 		static constexpr size_t BufSize {sizeof "01234567"};
 		tempDirName = (char*)uio_malloc(BufSize);
 		for (i = 0;; i++)

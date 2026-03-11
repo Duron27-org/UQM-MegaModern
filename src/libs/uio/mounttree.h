@@ -36,7 +36,7 @@ typedef struct uio_MountTree uio_MountTree;
 typedef struct uio_MountInfo uio_MountInfo;
 
 #include "physical.h"
-#include "types.h"
+#include <cstdint>
 #include "uioport.h"
 #include "paths.h"
 
@@ -196,7 +196,7 @@ void uio_printMountTreeItems(FILE* outStream, const uio_MountTreeItem* item);
 void uio_printPathToMountTree(FILE* outStream, const uio_MountTree* tree);
 void uio_printMountInfo(FILE* outStream, const uio_MountInfo* mountInfo);
 
-static inline uio_bool
+static inline bool
 uio_mountInfoIsReadOnly(uio_MountInfo* mountInfo)
 {
 	return (mountInfo->flags & uio_MOUNTINFO_RDONLY) != 0;
