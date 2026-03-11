@@ -73,6 +73,7 @@ add_executable(${APP_TARGET} ${ALL_FILES})
 find_package(CLI11 REQUIRED)
 find_package(fmt REQUIRED)
 find_package(gsl-lite REQUIRED)
+find_package(libmikmod REQUIRED)
 find_package(magic_enum REQUIRED)
 find_package(nlohmann_json REQUIRED)
 find_package(Ogg REQUIRED)
@@ -107,7 +108,6 @@ target_compile_definitions(uqm_project_features
         HAVE_OPENAL
         HAVE_JOYSTICK
         NETPLAY
-        USE_INTERNAL_MIKMOD
         USE_INTERNAL_LUA
         USE_PLATFORM_ACCEL
         __STDC_WANT_LIB_EXT1__=1
@@ -251,6 +251,7 @@ target_link_libraries(${APP_TARGET}
         CLI11::CLI11
         fmt::fmt
         gsl-lite::gsl-lite
+        libmikmod::libmikmod
         magic_enum::magic_enum
         nlohmann_json::nlohmann_json
         Ogg::ogg 

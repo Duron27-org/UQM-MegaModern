@@ -31,11 +31,7 @@
 #include "core/log/log.h"
 #include "modaud.h"
 
-#ifdef USE_INTERNAL_MIKMOD
-#include "libs/mikmod/mikmod.h"
-#else
 #include <mikmod.h>
-#endif
 
 #define THIS_PTR TFB_SoundDecoder* This
 
@@ -232,6 +228,8 @@ moda_new_uioReader(uio_Stream* fp)
 		reader->core.Get = &moda_uioReader_Get;
 		reader->core.Seek = &moda_uioReader_Seek;
 		reader->core.Tell = &moda_uioReader_Tell;
+		reader->core.iobase = 0;
+		reader->core.prev_iobase = 0;
 		reader->file = fp;
 	}
 	return (MREADER*)reader;
