@@ -48,6 +48,7 @@ target_include_directories(UQM_Tests
 find_package(fmt REQUIRED)
 find_package(gsl-lite REQUIRED)
 find_package(GTest REQUIRED)
+find_package(lua REQUIRED)
 find_package(magic_enum REQUIRED)
 find_package(spdlog REQUIRED)
 
@@ -56,6 +57,7 @@ target_link_libraries(UQM_Tests
     PRIVATE
         GTest::gtest
         GTest::gtest_main
+        lua::lua
         magic_enum::magic_enum
         fmt::fmt
         gsl-lite::gsl-lite

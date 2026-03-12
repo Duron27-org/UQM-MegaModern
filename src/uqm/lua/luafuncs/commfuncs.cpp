@@ -366,7 +366,7 @@ luaUqm_comm_getSegue(lua_State* luaState)
 static int
 luaUqm_comm_setSegue(lua_State* luaState)
 {
-	int what = luaL_checkint(luaState, 1);
+	lua_Integer what = luaL_checkinteger(luaState, 1);
 	switch ((Segue)what)
 	{
 		case Segue_peace:
@@ -402,13 +402,13 @@ luaUqm_comm_setCustomBaseline(lua_State* luaState)
 {
 	static const char* const textAlign[] =
 		{"ALIGN_LEFT", "ALIGN_CENTER", "ALIGN_RIGHT", nullptr};
-	uint16_t lineNumber = luaL_checkint(luaState, 1);
-	COORD baselineX = luaL_checkint(luaState, 2);
-	COORD baselineY = luaL_checkint(luaState, 3);
+	lua_Integer lineNumber = luaL_checkinteger(luaState, 1);
+	lua_Integer baselineX = luaL_checkinteger(luaState, 2);
+	lua_Integer baselineY = luaL_checkinteger(luaState, 3);
 	int alignment =
 		luaL_checkoption(luaState, 4, "ALIGN_LEFT", textAlign);
 
-	SetCustomBaseLine(lineNumber, GFXPOINT {baselineX, baselineY},
+	SetCustomBaseLine(lineNumber, GFXPOINT {(COORD)baselineX, (COORD)baselineY},
 					  (TEXT_ALIGN)alignment);
 
 	lua_pushstring(luaState, "");

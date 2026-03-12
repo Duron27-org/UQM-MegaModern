@@ -16,7 +16,6 @@
 
 #define LUAUQM_INTERNAL
 #include "logfuncs.h"
-#include "libs/lua/lstate.h"
 #include "libs/scriptlib.h"
 #include "core/log/log.h"
 

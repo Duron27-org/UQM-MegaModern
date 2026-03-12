@@ -17,32 +17,14 @@
 #ifndef LIBS_LUAUQM_LUAUQM_H_
 #define LIBS_LUAUQM_LUAUQM_H_
 
-#ifdef USE_INTERNAL_LUA
-#include "libs/lua/lua.h"
-#include "libs/lua/lauxlib.h"
-#else
-#include "lua.h"
-#include "lauxlib.h"
-#endif
-
-#if 0 //defined(__cplusplus)
-extern "C" {
-#endif
+#include <lua.hpp>
 
 typedef struct luaUqm_EnumValue luaUqm_EnumValue;
-
-#if 0 //defined(__cplusplus)
-}
-#endif
 
 #include "libs/compiler.h"
 #include "libs/uio.h"
 
 #include "scriptres.h"
-
-#if 0 //defined(__cplusplus)
-extern "C" {
-#endif
 
 struct luaUqm_EnumValue
 {
@@ -72,8 +54,5 @@ void luaUqm_makeEnum(lua_State* luaState, const luaUqm_EnumValue* enumVals);
 void luaUqm_dumpStack(lua_State* luaState);
 #endif
 
-#if 0 //defined(__cplusplus)
-}
-#endif
 
 #endif /* LIBS_LUAUQM_LUAUQM_H_ */

@@ -210,20 +210,16 @@ luaUqm_state_clock_getDate(lua_State* luaState)
 static int
 luaUqm_state_escort_addShips(lua_State* luaState)
 {
-	uint16_t shipId;
-	int count;
-	int numAdded;
-
-	shipId = testShipId(luaState, 1);
+	uint16_t shipId = testShipId(luaState, 1);
 	if (shipId == (uint16_t)-1)
 	{
 		lua_pushboolean(luaState, false);
 		return 1;
 	}
 
-	count = luaL_checkint(luaState, 2);
+	const auto count = luaL_checkinteger(luaState, 2);
 
-	numAdded = AddEscortShips((RACE_ID)(shipId - 1), count);
+	const lua_Integer numAdded = AddEscortShips((RACE_ID)(shipId - 1), count);
 	lua_pushinteger(luaState, numAdded);
 	return 1;
 }
@@ -268,7 +264,7 @@ luaUqm_state_escort_removeShips(lua_State* luaState)
 	}
 	else
 	{
-		int count = luaL_checkint(luaState, 2);
+		const int count = static_cast<int>(luaL_checkinteger(luaState, 2));
 		numRemoved = RemoveSomeEscortShips((RACE_ID)(shipId - 1), count);
 	}
 
@@ -453,15 +449,11 @@ luaUqm_state_race_setKnown(lua_State* luaState)
 static int
 luaUqm_state_sis_addCrew(lua_State* luaState)
 {
-	int delta;
-	uint16_t oldCrew;
-	uint16_t newCrew;
+	const auto delta = luaL_checkinteger(luaState, 1);
 
-	delta = luaL_checkint(luaState, 1);
-
-	oldCrew = GLOBAL_SIS(CrewEnlisted);
-	DeltaSISGauges(delta, 0, 0);
-	newCrew = GLOBAL_SIS(CrewEnlisted);
+	const auto oldCrew = GLOBAL_SIS(CrewEnlisted);
+	DeltaSISGauges(static_cast<int16_t>(delta), 0, 0);
+	const auto newCrew = GLOBAL_SIS(CrewEnlisted);
 
 	lua_pushinteger(luaState, newCrew - oldCrew);
 	return 1;
@@ -471,15 +463,12 @@ luaUqm_state_sis_addCrew(lua_State* luaState)
 static int
 luaUqm_state_sis_addFuel(lua_State* luaState)
 {
-	int delta;
-	uint16_t oldFuel;
-	uint16_t newFuel;
+	
+	const auto delta = luaL_checkinteger(luaState, 1);
 
-	delta = luaL_checkint(luaState, 1);
-
-	oldFuel = GLOBAL_SIS(FuelOnBoard);
-	DeltaSISGauges(0, delta, 0);
-	newFuel = GLOBAL_SIS(FuelOnBoard);
+	const auto oldFuel = GLOBAL_SIS(FuelOnBoard);
+	DeltaSISGauges(0, static_cast<int32_t>(delta), 0);
+	const auto newFuel = GLOBAL_SIS(FuelOnBoard);
 
 	lua_pushinteger(luaState, newFuel - oldFuel);
 	return 1;
@@ -489,14 +478,10 @@ luaUqm_state_sis_addFuel(lua_State* luaState)
 static int
 luaUqm_state_sis_addLanders(lua_State* luaState)
 {
-	int delta;
-	int oldCount;
-	int newCount;
+	const auto delta = luaL_checkinteger(luaState, 1);
 
-	delta = luaL_checkint(luaState, 1);
-
-	oldCount = GLOBAL_SIS(NumLanders);
-	newCount = oldCount + delta;
+	const auto oldCount = GLOBAL_SIS(NumLanders);
+	auto newCount = oldCount + delta;
 	if (newCount < 0)
 	{
 		newCount = 0;
@@ -508,7 +493,7 @@ luaUqm_state_sis_addLanders(lua_State* luaState)
 
 	if (newCount != oldCount)
 	{
-		GLOBAL_SIS(NumLanders) = newCount;
+		GLOBAL_SIS(NumLanders) = static_cast<decltype(GLOBAL_SIS(NumLanders))>(newCount);
 		DrawLanders();
 	}
 
@@ -520,15 +505,11 @@ luaUqm_state_sis_addLanders(lua_State* luaState)
 static int
 luaUqm_state_sis_addResUnits(lua_State* luaState)
 {
-	int delta;
-	uint16_t oldResUnits;
-	uint16_t newResUnits;
+	const auto delta = luaL_checkinteger(luaState, 1);
 
-	delta = luaL_checkint(luaState, 1);
-
-	oldResUnits = GLOBAL_SIS(ResUnits);
-	DeltaSISGauges(0, delta, 0);
-	newResUnits = GLOBAL_SIS(ResUnits);
+	const auto oldResUnits = GLOBAL_SIS(ResUnits);
+	DeltaSISGauges(0, 0, static_cast<int>(delta));
+	const auto newResUnits = GLOBAL_SIS(ResUnits);
 
 	lua_pushinteger(luaState, newResUnits - oldResUnits);
 	return 1;
@@ -592,7 +573,7 @@ luaUqm_state_prop_get(lua_State* luaState)
 // [2] -> int|bool|string value
 static int
 luaUqm_state_prop_set(lua_State* luaState)
-{
+{ 
 	luaL_checktype(luaState, 1, LUA_TSTRING);
 	luaUqm_checkPropValueType(luaState, "state.prop.set", 2);
 
@@ -604,7 +585,7 @@ luaUqm_state_prop_set(lua_State* luaState)
 static int
 luaUqm_state_misc_alignText(lua_State* luaState)
 {
-	luaUqm_delta._int = luaL_checkint(luaState, 1);
+	luaUqm_delta._int = luaL_checkinteger(luaState, 1);
 	lua_pushstring(luaState, "");
 
 	return 1;

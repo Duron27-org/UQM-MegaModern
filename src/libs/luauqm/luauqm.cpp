@@ -15,11 +15,6 @@
  */
 
 #include <stdlib.h>
-#ifdef USE_INTERNAL_LUA
-#include "libs/lua/lualib.h"
-#else
-#include "lualib.h"
-#endif
 
 #define LUAUQM_INTERNAL
 #include "luauqm.h"
@@ -37,7 +32,6 @@
 // XXX TODO: a better sandbox: http://lua-users.org/wiki/SandBoxes
 static const luaL_Reg safeLibs[] = {
 	{"",			  luaopen_base	 },
-	{LUA_BITLIBNAME,	 luaopen_bit32 },
 	//{ LUA_COLIBNAME,     luaopen_coroutine },
 	//{ LUA_DBLIBNAME,     luaopen_debug },
 	//{ LUA_LUA_IOLIBNAME, luaopen_io },

@@ -84,9 +84,9 @@ isEventRegistered(lua_State* luaState, int argn)
 static int
 addEvent(lua_State* luaState, EVENT_TYPE type)
 {
-	int year = luaL_checkint(luaState, 1);
-	int month = luaL_checkint(luaState, 2);
-	int day = luaL_checkint(luaState, 3);
+	const auto year = luaL_checkinteger(luaState, 1);
+	const auto month = luaL_checkinteger(luaState, 2);
+	const auto day = luaL_checkinteger(luaState, 3);
 	const char* eventIdStr = luaL_checkstring(luaState, 4);
 	int eventNum;
 	HEVENT event;

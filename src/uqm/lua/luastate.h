@@ -20,15 +20,11 @@
 #include "libs/compiler.h"
 #include "libs/scriptlib.h"
 
-#if 0 //defined(__cplusplus)
-extern "C" {
-#endif
-
 extern lua_State* luaUqm_globalState;
 
 typedef struct delta_types
 {
-	int _int;
+	lua_Integer _int;
 	bool _bool;
 	char* _str;
 	char _char;
@@ -49,8 +45,5 @@ uint32_t getGameStateUint(const char* name);
 
 void luaUqm_getEventTable(lua_State* luaState);
 
-#if 0 //defined(__cplusplus)
-}
-#endif
 
 #endif /* UQM_LUA_LUASTATE_H_ */
