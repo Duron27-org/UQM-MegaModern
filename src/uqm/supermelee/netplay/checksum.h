@@ -63,7 +63,7 @@ crc_processDWORD(crc_State* state, uint32_t val)
 }
 
 static inline void
-crc_processCOORD(crc_State* state, COORD val)
+crc_processCOORD(crc_State* state, int16_t val)
 {
 	crc_processUint16(state, (uint16_t)val);
 }

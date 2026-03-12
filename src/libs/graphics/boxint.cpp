@@ -27,7 +27,7 @@ INTERSECT_CODE
 BoxIntersect(GFXRECT* pr1, GFXRECT* pr2, GFXRECT* pinter)
 {
 	INTERSECT_CODE intersect_code;
-	COORD x1;
+	int16_t x1;
 	int16_t w1, w2, delta;
 
 	intersect_code = INTERSECT_NOCLIP;
@@ -59,7 +59,7 @@ BoxIntersect(GFXRECT* pr1, GFXRECT* pr2, GFXRECT* pinter)
 	if (w1 > 0)
 	{
 #define h2 w2
-		COORD y1;
+		int16_t y1;
 		int16_t h1;
 
 		y1 = pr1->corner.y - pr2->corner.y;
@@ -104,7 +104,7 @@ BoxIntersect(GFXRECT* pr1, GFXRECT* pr2, GFXRECT* pinter)
 void BoxUnion(GFXRECT* pr1, GFXRECT* pr2, GFXRECT* punion)
 {
 #if NEVER // Part of lower FIXME.
-	COORD x2, y2, w2, h2;
+	int16_t x2, y2, w2, h2;
 #endif // NEVER
 
 	// Union is A AND B, put together, correct?  Returns a bigger box that
@@ -142,7 +142,7 @@ void BoxUnion(GFXRECT* pr1, GFXRECT* pr2, GFXRECT* punion)
 	   - punion->corner.y;
 #else
 	int16_t delta;
-	COORD x1, y1, w1, h1;
+	int16_t x1, y1, w1, h1;
 
 	x1 = pr1->corner.x;
 	w1 = pr1->extent.width;

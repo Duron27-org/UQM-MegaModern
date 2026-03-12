@@ -224,15 +224,15 @@ bool TFB_PlayVideo(VIDEO_REF vid, uint32_t x, uint32_t y)
 	GFXRECT scrn_r;
 	GFXRECT clip_r = {
 		{0,			 0			 },
-		{(COORD)vid->w, (COORD)vid->h}
+		{(int16_t)vid->w, (int16_t)vid->h}
 	  };
 	GFXRECT vid_r = {
 		{0,				  0				  },
-		{(COORD)CanvasWidth, (COORD)CanvasHeight}
+		{(int16_t)CanvasWidth, (int16_t)CanvasHeight}
 	 };
 	GFXRECT dr = {
-		{(COORD)x,	   (COORD)y	   },
-		{(COORD)vid->w, (COORD)vid->h}
+		{(int16_t)x,	   (int16_t)y	   },
+		{(int16_t)vid->w, (int16_t)vid->h}
 	  };
 	GFXRECT sr;
 	bool loop_music = false;

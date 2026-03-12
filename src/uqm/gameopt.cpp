@@ -1182,7 +1182,7 @@ DrawBombPodText(STAMP* s)
 	FONT OldFont;
 	Color OldColor;
 	GFXRECT r;
-	COORD og_baseline_x = 0;
+	int16_t og_baseline_x = 0;
 
 	if (!strlen(GAME_STRING(LABEL_STRING_BASE + 9))
 		|| !strlen(GAME_STRING(LABEL_STRING_BASE + 10)))
@@ -1566,7 +1566,7 @@ DrawSavegameSummary(PICK_GAME_STATE* pickState, uint16_t gameIndex)
 }
 
 static void
-TruncateSaveName(uqstl::span<char> buf, COORD maxWidth, bool naming)
+TruncateSaveName(uqstl::span<char> buf, int16_t maxWidth, bool naming)
 {
 	TEXT t;
 	GFXRECT r;

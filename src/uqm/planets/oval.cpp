@@ -324,7 +324,7 @@ CheckOvalCollision(DPOINT* p0, DPOINT* p1)
 void DrawOval(DRECT* pRect, uint8_t num_off_pixels, bool scaled)
 {
 	uint16_t off;
-	COORD x, y;
+	int16_t x, y;
 	int16_t A, B;
 	int64_t Asquared, TwoAsquared,
 		Bsquared, TwoBsquared;
@@ -357,11 +357,11 @@ void DrawOval(DRECT* pRect, uint8_t num_off_pixels, bool scaled)
 		TruncateDPoint(&p0);
 		TruncateDPoint(&p1);
 
-		corners.first.x = (COORD)p0.x;
-		corners.first.y = (COORD)p0.y;
+		corners.first.x = (int16_t)p0.x;
+		corners.first.y = (int16_t)p0.y;
 
-		corners.second.x = (COORD)p1.x;
-		corners.second.y = (COORD)p1.y;
+		corners.second.x = (int16_t)p1.x;
+		corners.second.y = (int16_t)p1.y;
 
 		DrawLine(&corners, 1);
 		return;
@@ -786,7 +786,7 @@ void DrawOval(DRECT* pRect, uint8_t num_off_pixels, bool scaled)
 void DrawFilledOval(DRECT* pRect)
 { // Kruzen: originally there was standard rect, but drawing fuel circle in HD on max zoom causes overflow (Width ~65k)
 	// So unless we want to expand standard rect to support 4 bytes per dimension - use this
-	COORD x, y;
+	int16_t x, y;
 	int16_t A, B;
 	int64_t Asquared, TwoAsquared,
 		Bsquared, TwoBsquared;
@@ -818,11 +818,11 @@ void DrawFilledOval(DRECT* pRect)
 		TruncateDPoint(&p0);
 		TruncateDPoint(&p1);
 
-		corners.first.x = (COORD)p0.x;
-		corners.first.y = (COORD)p0.y;
+		corners.first.x = (int16_t)p0.x;
+		corners.first.y = (int16_t)p0.y;
 
-		corners.second.x = (COORD)p1.x;
-		corners.second.y = (COORD)p1.y;
+		corners.second.x = (int16_t)p1.x;
+		corners.second.y = (int16_t)p1.y;
 
 		DrawLine(&corners, 1);
 		return;

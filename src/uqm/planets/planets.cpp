@@ -330,7 +330,7 @@ DrawEnterOrbitText(GFXRECT rect)
 	FRAME OldFontEffect;
 	int16_t leading;
 	char buf[256];
-	COORD og_baseline_x;
+	int16_t og_baseline_x;
 
 	OldFont = SetContextFont(MicroFont);
 	OldFontEffect = SetContextFontEffect(

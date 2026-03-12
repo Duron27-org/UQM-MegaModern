@@ -161,8 +161,8 @@ void DrawRenderedBox(GFXRECT* r, bool filled, Color fill_color, int type,
 {
 	int i;
 	STAMP stamp;
-	COORD columns = r->extent.width;
-	COORD rows = r->extent.height;
+	int16_t columns = r->extent.width;
+	int16_t rows = r->extent.height;
 
 	if (!r->extent.width || !r->extent.height)
 	{

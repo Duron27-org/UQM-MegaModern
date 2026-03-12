@@ -83,10 +83,10 @@ static void DrawOuterSystem(void);
 static void SetPlanetColorMap(PLANET_DESC* planet);
 static void ValidateInnerOrbits(void);
 static void ValidateOrbits(void);
-static COORD scaleSISWidth(COORD value);
-static COORD scaleSISHeight(COORD value);
-static COORD widthPick(void);
-static COORD heightPick(void);
+static int16_t scaleSISWidth(int16_t value);
+static int16_t scaleSISHeight(int16_t value);
+static int16_t widthPick(void);
+static int16_t heightPick(void);
 
 // SolarSysMenu() items
 enum SolarSysMenuMenuItems
@@ -1157,7 +1157,7 @@ CheckIntersect(void)
 }
 
 static void
-GetOrbitRect(GFXRECT* pRect, COORD dx, COORD dy, int16_t radius,
+GetOrbitRect(GFXRECT* pRect, int16_t dx, int16_t dy, int16_t radius,
 			 int xnumer, int ynumer, int denom)
 {
 	pRect->corner.x = RES_SCALE(ORIG_SIS_SCREEN_WIDTH >> 1)
@@ -1172,7 +1172,7 @@ static void
 GetPlanetOrbitRect(GFXRECT* r, PLANET_DESC* planet, int sizeNumer,
 				   int dyNumer, int denom)
 {
-	COORD dx, dy;
+	int16_t dx, dy;
 
 	dx = planet->radius;
 	dy = planet->radius;
@@ -1225,8 +1225,8 @@ ValidateOrbit(PLANET_DESC* planet, int sizeNumer, int dyNumer, int denom)
 		newAngle = (planet->angle + daysElapsed() * planet->orb_speed)
 					 * M_PI / 32
 				 - M_PI / 2;
-		planet->location.x = (COORD)(cos(newAngle) * planet->radius);
-		planet->location.y = (COORD)(sin(newAngle) * planet->radius);
+		planet->location.x = (int16_t)(cos(newAngle) * planet->radius);
+		planet->location.y = (int16_t)(sin(newAngle) * planet->radius);
 	}
 
 	if (sizeNumer <= DISPLAY_FACTOR)
@@ -1461,7 +1461,7 @@ ScreenCompass(uint16_t index)
 {
 	int16_t facing;
 	GFXPOINT scrLoc = GLOBAL(ShipStamp.origin);
-	EXTENT sisScr = {(COORD)SIS_SCREEN_WIDTH, (COORD)SIS_SCREEN_HEIGHT};
+	EXTENT sisScr = {(int16_t)SIS_SCREEN_WIDTH, (int16_t)SIS_SCREEN_HEIGHT};
 	bool westOfCenter = scrLoc.x < (sisScr.width >> 1);
 	bool northOfCenter = scrLoc.y < (sisScr.height >> 1);
 	int quadrant = (westOfCenter ? 0 : 1) | (northOfCenter ? 0 : 2);
@@ -3368,7 +3368,7 @@ DoIpFlight(SOLARSYS_STATE* pSS)
 			&& GLOBAL_SIS(CrewEnlisted) != (uint16_t)~0);
 }
 
-static COORD
+static int16_t
 widthPick(void)
 {
 	EXTENT sis_screen_dimensions[] = {SIS_SCREEN_DIMENSIONS};
@@ -3376,7 +3376,7 @@ widthPick(void)
 	return sis_screen_dimensions[uqm::UQMOptions::read().starBackground].width;
 }
 
-static COORD
+static int16_t
 heightPick(void)
 {
 	EXTENT sis_screen_dimensions[] = {SIS_SCREEN_DIMENSIONS};
@@ -3384,8 +3384,8 @@ heightPick(void)
 	return sis_screen_dimensions[uqm::UQMOptions::read().starBackground].height;
 }
 
-static COORD
-scaleSISWidth(COORD value)
+static int16_t
+scaleSISWidth(int16_t value)
 {
 	float percent = 1;
 
@@ -3394,11 +3394,11 @@ scaleSISWidth(COORD value)
 		percent = scaleThing(ORIG_SIS_SCREEN_WIDTH, widthPick());
 	}
 
-	return RES_SCALE((COORD)(value * percent));
+	return RES_SCALE((int16_t)(value * percent));
 }
 
-static COORD
-scaleSISHeight(COORD value)
+static int16_t
+scaleSISHeight(int16_t value)
 {
 	float percent = 1;
 
@@ -3407,7 +3407,7 @@ scaleSISHeight(COORD value)
 		percent = scaleThing(ORIG_SIS_SCREEN_HEIGHT, heightPick());
 	}
 
-	return RES_SCALE((COORD)(value * percent));
+	return RES_SCALE((int16_t)(value * percent));
 }
 
 void InitialIntersect(void)

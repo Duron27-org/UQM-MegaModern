@@ -225,10 +225,10 @@ ip_group_preprocess(ELEMENT* ElementPtr)
 	radius = zoomRadiusForLocation(group_loc);
 	dest_pt = locationToDisplay(GroupPtr->loc, radius);
 	EPtr->current.location.x = DISPLAY_TO_WORLD(dest_pt.x)
-							 + (COORD)(LOG_SPACE_WIDTH >> 1)
+							 + (int16_t)(LOG_SPACE_WIDTH >> 1)
 							 - (LOG_SPACE_WIDTH >> (MAX_REDUCTION + 1));
 	EPtr->current.location.y = DISPLAY_TO_WORLD(dest_pt.y)
-							 + (COORD)(LOG_SPACE_HEIGHT >> 1)
+							 + (int16_t)(LOG_SPACE_HEIGHT >> 1)
 							 - (LOG_SPACE_HEIGHT >> (MAX_REDUCTION + 1));
 
 	InitIntersectStartPoint(EPtr);
@@ -690,10 +690,10 @@ CheckGetAway:
 
 	dest_pt = locationToDisplay(GroupPtr->loc, radius);
 	EPtr->next.location.x = DISPLAY_TO_WORLD(dest_pt.x)
-						  + (COORD)(LOG_SPACE_WIDTH >> 1)
+						  + (int16_t)(LOG_SPACE_WIDTH >> 1)
 						  - (LOG_SPACE_WIDTH >> (MAX_REDUCTION + 1));
 	EPtr->next.location.y = DISPLAY_TO_WORLD(dest_pt.y)
-						  + (COORD)(LOG_SPACE_HEIGHT >> 1)
+						  + (int16_t)(LOG_SPACE_HEIGHT >> 1)
 						  - (LOG_SPACE_HEIGHT >> (MAX_REDUCTION + 1));
 
 	// Don't draw the group if it's not at flagship location,
@@ -919,11 +919,11 @@ spawn_ip_group(IP_GROUP* GroupPtr)
 
 			IPSHIPElementPtr->current.location.x =
 				DISPLAY_TO_WORLD(pt.x)
-				+ (COORD)(LOG_SPACE_WIDTH >> 1)
+				+ (int16_t)(LOG_SPACE_WIDTH >> 1)
 				- (LOG_SPACE_WIDTH >> (MAX_REDUCTION + 1));
 			IPSHIPElementPtr->current.location.y =
 				DISPLAY_TO_WORLD(pt.y)
-				+ (COORD)(LOG_SPACE_HEIGHT >> 1)
+				+ (int16_t)(LOG_SPACE_HEIGHT >> 1)
 				- (LOG_SPACE_HEIGHT >> (MAX_REDUCTION + 1));
 		}
 
@@ -993,10 +993,10 @@ flag_ship_preprocess(ELEMENT* ElementPtr)
 
 		pt = locationToDisplay(GLOBAL(ip_location), radius);
 		ElementPtr->current.location.x = DISPLAY_TO_WORLD(pt.x)
-									   + (COORD)(LOG_SPACE_WIDTH >> 1)
+									   + (int16_t)(LOG_SPACE_WIDTH >> 1)
 									   - (LOG_SPACE_WIDTH >> (MAX_REDUCTION + 1));
 		ElementPtr->current.location.y = DISPLAY_TO_WORLD(pt.y)
-									   + (COORD)(LOG_SPACE_HEIGHT >> 1)
+									   + (int16_t)(LOG_SPACE_HEIGHT >> 1)
 									   - (LOG_SPACE_HEIGHT >> (MAX_REDUCTION + 1));
 		InitIntersectStartPoint(ElementPtr);
 
@@ -1005,10 +1005,10 @@ flag_ship_preprocess(ELEMENT* ElementPtr)
 
 		pt = locationToDisplay(GLOBAL(ip_location), radius);
 		ElementPtr->next.location.x = DISPLAY_TO_WORLD(pt.x)
-									+ (COORD)(LOG_SPACE_WIDTH >> 1)
+									+ (int16_t)(LOG_SPACE_WIDTH >> 1)
 									- (LOG_SPACE_WIDTH >> (MAX_REDUCTION + 1));
 		ElementPtr->next.location.y = DISPLAY_TO_WORLD(pt.y)
-									+ (COORD)(LOG_SPACE_HEIGHT >> 1)
+									+ (int16_t)(LOG_SPACE_HEIGHT >> 1)
 									- (LOG_SPACE_HEIGHT >> (MAX_REDUCTION + 1));
 
 		GLOBAL(ShipStamp.origin) = pt;
@@ -1095,11 +1095,11 @@ spawn_flag_ship(void)
 
 		FlagShipElementPtr->current.location.x =
 			DISPLAY_TO_WORLD(GLOBAL(ShipStamp.origin.x))
-			+ (COORD)(LOG_SPACE_WIDTH >> 1)
+			+ (int16_t)(LOG_SPACE_WIDTH >> 1)
 			- (LOG_SPACE_WIDTH >> (MAX_REDUCTION + 1));
 		FlagShipElementPtr->current.location.y =
 			DISPLAY_TO_WORLD(GLOBAL(ShipStamp.origin.y))
-			+ (COORD)(LOG_SPACE_HEIGHT >> 1)
+			+ (int16_t)(LOG_SPACE_HEIGHT >> 1)
 			- (LOG_SPACE_HEIGHT >> (MAX_REDUCTION + 1));
 
 		UnlockElement(hFlagShipElement);

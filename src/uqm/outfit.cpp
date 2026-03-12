@@ -286,7 +286,7 @@ DrawModuleMenuText(GFXRECT* r, int Index)
 	int16_t leading;
 	GFXRECT block;
 	char buf[256];
-	COORD og_baseline_x;
+	int16_t og_baseline_x;
 
 	if (IS_DOS || !strlen(GAME_STRING(TDO_STARBASE_STRING_BASE + Index)))
 	{
@@ -479,7 +479,7 @@ DrawEscapePodText(GFXRECT rect)
 	int16_t leading;
 	GFXRECT block;
 	char buf[256];
-	COORD og_baseline_x;
+	int16_t og_baseline_x;
 
 	if (!strlen(GAME_STRING(END_STARBASE_STRING_BASE + 1)))
 	{

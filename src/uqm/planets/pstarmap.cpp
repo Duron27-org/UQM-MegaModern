@@ -105,7 +105,7 @@ signedDivWithError(long val, long divisor)
 #define MAP_FIT_X ((MAX_X_UNIVERSE + 1) / ORIG_SIS_SCREEN_WIDTH + 1)
 #define MAP_FIT_XX ((MAX_X_UNIVERSE + 1) / SIS_SCREEN_WIDTH + 1)
 
-static inline COORD
+static inline int16_t
 universeToDispx(long ux)
 {
 	return signedDivWithError(((ux - mapOrigin.x) << zoomLevel)
@@ -116,7 +116,7 @@ universeToDispx(long ux)
 #define UNIVERSE_TO_DISPX(ux) RES_SCALE(universeToDispx(ux))
 #define ORIG_UNIVERSE_TO_DISPX(ux) universeToDispx(ux)
 
-static inline COORD
+static inline int16_t
 universeToDispy(long uy)
 {
 	return signedDivWithError(((mapOrigin.y - uy) << zoomLevel)
@@ -127,8 +127,8 @@ universeToDispy(long uy)
 #define UNIVERSE_TO_DISPY(uy) RES_SCALE(universeToDispy(uy))
 #define ORIG_UNIVERSE_TO_DISPY(uy) universeToDispy(uy)
 
-static inline COORD
-dispxToUniverse(COORD dx)
+static inline int16_t
+dispxToUniverse(int16_t dx)
 {
 	return (((long)(dx - ((ORIG_SIS_SCREEN_WIDTH - 1) >> 1))
 			 * (MAX_X_UNIVERSE + MAP_FIT_X))
@@ -139,8 +139,8 @@ dispxToUniverse(COORD dx)
 #define DISP_TO_UNIVERSEX(dx) dispxToUniverse(RES_DESCALE(dx))
 #define ORIG_DISP_TO_UNIVERSEX(dx) dispxToUniverse(dx)
 
-static inline COORD
-dispyToUniverse(COORD dy)
+static inline int16_t
+dispyToUniverse(int16_t dy)
 {
 	return (((long)(((ORIG_SIS_SCREEN_HEIGHT - 1) >> 1) - dy)
 			 * (MAX_Y_UNIVERSE + 2))
@@ -152,8 +152,8 @@ dispyToUniverse(COORD dy)
 #define ORIG_DISP_TO_UNIVERSEY(dy) dispyToUniverse(dy)
 
 // Old school HD-mod code for Malin's Sol ellipse.
-static inline COORD
-universeToDispx2(COORD ux)
+static inline int16_t
+universeToDispx2(int16_t ux)
 {
 	long v = signedDivWithError((((long)ux - mapOrigin.x) << zoomLevel)
 									* SIS_SCREEN_WIDTH,
@@ -169,8 +169,8 @@ universeToDispx2(COORD ux)
 	}
 	return v;
 }
-static inline COORD
-universeToDispy2(COORD uy)
+static inline int16_t
+universeToDispy2(int16_t uy)
 {
 	long v = signedDivWithError((((long)mapOrigin.y - uy) << zoomLevel)
 									* SIS_SCREEN_HEIGHT,
@@ -244,7 +244,7 @@ flashCurrentLocation(GFXPOINT* where, bool force)
 }
 
 static void
-DrawCursor(COORD curs_x, COORD curs_y)
+DrawCursor(int16_t curs_x, int16_t curs_y)
 {
 	STAMP s;
 
@@ -536,7 +536,7 @@ GFXPOINT
 GetPointOfEllipse(double a, double b, double radian)
 {
 	double t[2] = {a * cos(radian), b * sin(radian)};
-	return GFXPOINT {(COORD)MATH_ROUND(t[0]), (COORD)MATH_ROUND(t[1])};
+	return GFXPOINT {(int16_t)MATH_ROUND(t[0]), (int16_t)MATH_ROUND(t[1])};
 }
 
 GFXPOINT
@@ -553,7 +553,7 @@ RotatePoint(GFXPOINT p, GFXPOINT Pivot, double radian)
 	double x = Pivot.x + (d[0] * cosine[0] - d[1] * cosine[1]);
 	double y = Pivot.y + (d[0] * cosine[1] + d[1] * cosine[0]);
 
-	return GFXPOINT {(COORD)MATH_ROUND(x), (COORD)MATH_ROUND(y)};
+	return GFXPOINT {(int16_t)MATH_ROUND(x), (int16_t)MATH_ROUND(y)};
 }
 
 // Kruzen: Merged together with overflow check. Functions above are redundant
@@ -609,8 +609,8 @@ DrawNoReturnZone(void)
 	double halfFuel = GLOBAL_SIS(FuelOnBoard) / 2;
 
 	sol = plot_map[SOL_DEFINED].star_pt;
-	sis = GFXPOINT {(COORD)LOGX_TO_UNIVERSE(GLOBAL_SIS(log_x)),
-					(COORD)LOGY_TO_UNIVERSE(GLOBAL_SIS(log_y))};
+	sis = GFXPOINT {(int16_t)LOGX_TO_UNIVERSE(GLOBAL_SIS(log_x)),
+					(int16_t)LOGY_TO_UNIVERSE(GLOBAL_SIS(log_y))};
 
 	dist = (double)FuelRequiredTo(sol) / 2;
 
@@ -628,7 +628,7 @@ DrawNoReturnZone(void)
 		rotation = atan2(sol.y - sis.y, sol.x - sis.x);
 
 		rmax_y = GFXPOINT {-1, -1};
-		rmin_y = GFXPOINT {(COORD)SIS_SCREEN_WIDTH, (COORD)SIS_SCREEN_HEIGHT};
+		rmin_y = GFXPOINT {(int16_t)SIS_SCREEN_WIDTH, (int16_t)SIS_SCREEN_HEIGHT};
 
 		for (i = 0; i < M_PI * 2; i += Step)
 		{
@@ -649,7 +649,7 @@ DrawNoReturnZone(void)
 			LINE L;
 			LINE tempLine;
 			GFXPOINT prev = CalcEllipsePoint(halfFuel, ry, i - Step, rotation, center);
-			COORD dy;
+			int16_t dy;
 			double err = ((double)rmax_y.x - (double)rmin_y.x)
 					   / ((double)rmax_y.y - (double)rmin_y.y);
 
@@ -657,7 +657,7 @@ DrawNoReturnZone(void)
 			{
 				L.first = CalcEllipsePoint(halfFuel, ry, i, rotation, center);
 				L.second.x = rmax_y.x
-						   - (COORD)(err * (rmax_y.y - L.first.y));
+						   - (int16_t)(err * (rmax_y.y - L.first.y));
 				L.second.y = L.first.y;
 
 				if (onScreen(&L, false, false))
@@ -674,7 +674,7 @@ DrawNoReturnZone(void)
 								false))
 				{
 					LINE L2;
-					COORD iter;
+					int16_t iter;
 					double y_err = ((double)L.first.x - (double)prev.x)
 								 / ((double)L.first.y - (double)prev.y);
 
@@ -691,10 +691,10 @@ DrawNoReturnZone(void)
 					{
 						L2.first.y = L2.second.y = prev.y + dy - iter;
 						L2.first.x = L.first.x
-								   - (COORD)(y_err
+								   - (int16_t)(y_err
 											 * (L.first.y - L2.first.y));
 						L2.second.x = rmax_y.x
-									- (COORD)(err * (rmax_y.y - L2.first.y));
+									- (int16_t)(err * (rmax_y.y - L2.first.y));
 
 						if (onScreen(&L2, false, false))
 						{
@@ -1039,7 +1039,7 @@ void setStarMarked(const int star_index, const char* marker_state)
 	D_SET_GAME_STATE(markerBuf(starIndex, marker_state), starData);
 }
 
-static COORD
+static int16_t
 CheckTextsIntersect(GFXRECT* curr, GFXRECT* prev)
 {
 	if (((curr->corner.x + curr->extent.width) <= prev->corner.x) || ((prev->corner.x + prev->extent.width) <= curr->corner.x))
@@ -1058,7 +1058,7 @@ CheckTextsIntersect(GFXRECT* curr, GFXRECT* prev)
 static void
 AdjustTextRect(GFXRECT* r, TEXT* t)
 {
-	COORD offs;
+	int16_t offs;
 	if (r->corner.x <= 0)
 	{
 		offs = r->corner.x - RES_SCALE(1);
@@ -1454,7 +1454,7 @@ DrawStarMap(uint16_t race_update, GFXRECT* pClipRect)
 		{
 			uint8_t j, k;
 			bool swapped;
-			COORD offs;
+			int16_t offs;
 			TEXT t;
 			Color c;
 			uint8_t mid = currMax;
@@ -1785,7 +1785,7 @@ DrawStarMap(uint16_t race_update, GFXRECT* pClipRect)
 }
 
 static void
-EraseCursor(COORD curs_x, COORD curs_y)
+EraseCursor(int16_t curs_x, int16_t curs_y)
 {
 	GFXRECT r;
 
@@ -2048,7 +2048,7 @@ UpdateCursorInfo(std::span<char> prevbuf)
 	{ // No star found. Reset the coordinates to the cursor's location
 		// Kruzen: bucket to avoid cursor misplacement due to
 		// asymmetric DISP_TO_UNIVERSE functions
-		COORD bucket;
+		int16_t bucket;
 
 		bucket = DISP_TO_UNIVERSEX(pt.x);
 		if (bucket < 0)
@@ -2646,8 +2646,8 @@ DoStarSearch(MENU_STATE* pMS)
 		{
 			uqstl::vector<uqstl::string> parts;
 			uqm::tokenize(uqstl::string_view {tes.BaseStr}, parts, ':', false);
-			coord.x = (COORD)(atof(parts[0].c_str()) * 10);
-			coord.y = (COORD)(atof(parts[1].c_str()) * 10);
+			coord.x = (int16_t)(atof(parts[0].c_str()) * 10);
+			coord.y = (int16_t)(atof(parts[1].c_str()) * 10);
 		}
 
 		if (coord.x > MAX_X_UNIVERSE || coord.y > MAX_Y_UNIVERSE

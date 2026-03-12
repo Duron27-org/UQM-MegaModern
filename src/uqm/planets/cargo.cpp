@@ -153,7 +153,7 @@ DrawCargoDisplay(void)
 	STAMP s;
 	TEXT t;
 	GFXRECT r;
-	COORD cy;
+	int16_t cy;
 	uint16_t i;
 
 	r.corner.x = RES_SCALE(2);

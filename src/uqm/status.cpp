@@ -33,7 +33,7 @@
 #include <string.h>
 
 
-COORD status_y_offsets[NUM_PLAYERS];
+int16_t status_y_offsets[NUM_PLAYERS];
 
 
 void InitStatusOffsets(void)
@@ -149,7 +149,7 @@ CalculateAnimOffsets(CAPTAIN_STUFF* CSPtr,
 }
 
 static void
-DrawCaptainWindowAnimation(CAPTAIN_STUFF* CSPtr, COORD y,
+DrawCaptainWindowAnimation(CAPTAIN_STUFF* CSPtr, int16_t y,
 						   uint8_t redraw_flag)
 {
 	STAMP Stamp;
@@ -208,7 +208,7 @@ DrawCaptainWindowAnimation(CAPTAIN_STUFF* CSPtr, COORD y,
 }
 
 static void
-DrawCaptainWindowFrame(FRAME fr, COORD y)
+DrawCaptainWindowFrame(FRAME fr, int16_t y)
 {
 	STAMP Stamp;
 
@@ -221,7 +221,7 @@ DrawCaptainWindowFrame(FRAME fr, COORD y)
 }
 
 /*static void
-CaptainsWindow (CAPTAIN_STUFF *CSPtr, COORD y,
+CaptainsWindow (CAPTAIN_STUFF *CSPtr, int16_t y,
 		STATUS_FLAGS delta_status_flags, STATUS_FLAGS cur_status_flags,
 		uint16_t Pass)
 {// Kruzen: og method. now redundant
@@ -307,7 +307,7 @@ CaptainsWindow (CAPTAIN_STUFF *CSPtr, COORD y,
 	}
 }*/
 
-void DrawBattleCrewAmount(SHIP_INFO* ShipInfoPtr, COORD y_offs)
+void DrawBattleCrewAmount(SHIP_INFO* ShipInfoPtr, int16_t y_offs)
 {
 #define MAX_CREW_DIGITS 3
 	GFXRECT r;
@@ -335,8 +335,8 @@ void DrawBattleCrewAmount(SHIP_INFO* ShipInfoPtr, COORD y_offs)
 
 void DrawCaptainsWindow(STARSHIP* StarShipPtr)
 {
-	COORD y;
-	COORD y_offs;
+	int16_t y;
+	int16_t y_offs;
 	GFXRECT r;
 	STAMP s;
 	FRAME Frame;
@@ -609,7 +609,7 @@ void PostProcessStatus(ELEMENT* ShipPtr)
 	if (StarShipPtr->captains_name_index
 		|| StarShipPtr->playerNr == RPG_PLAYER_NUM)
 	{ // All except Sa-Matra, no captain's window there
-		COORD y;
+		int16_t y;
 		STATUS_FLAGS cur_status_flags, old_status_flags;
 
 

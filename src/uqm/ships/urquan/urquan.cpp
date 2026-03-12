@@ -250,9 +250,9 @@ fighter_postprocess(ELEMENT* ElementPtr)
 //		IonElementPtr->colorCycleIndex = 0;
 //		IonElementPtr->current.location = ElementPtr->current.location;
 //		IonElementPtr->current.location.x +=
-//				(COORD)COSINE (angle, DISPLAY_TO_WORLD (RES_SCALE (2)));
+//				(int16_t)COSINE (angle, DISPLAY_TO_WORLD (RES_SCALE (2)));
 //		IonElementPtr->current.location.y +=
-//				(COORD)SINE (angle, DISPLAY_TO_WORLD (RES_SCALE (2)));
+//				(int16_t)SINE (angle, DISPLAY_TO_WORLD (RES_SCALE (2)));
 //		IonElementPtr->death_func = ion_preprocess;
 //
 //		SetElementStarShip (IonElementPtr, StarShipPtr);

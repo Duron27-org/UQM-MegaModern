@@ -45,7 +45,7 @@
 extern FRAME SpaceJunkFrame;
 
 static void
-ClearReportArea(COORD startx)
+ClearReportArea(int16_t startx)
 {
 	uint16_t x, y;
 	GFXRECT r;
@@ -101,7 +101,7 @@ MakeReport(SOUND ReadOutSounds, char* pStr, uint16_t StrLen)
 	GFXRECT r, contextRect;
 	TEXT t;
 	Color fgcolor;
-	COORD startx;
+	int16_t startx;
 
 	int16_t total_lines = -1;
 	int16_t curr_line = -1;

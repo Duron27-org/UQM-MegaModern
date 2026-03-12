@@ -250,7 +250,7 @@ GeneratePresetLife(const SYSTEM_INFO* SysInfoPtr, const int8_t* lifeTypes,
 }
 
 
-static COORD
+static int16_t
 widthPick(void)
 {
 	EXTENT map_dimensions[] = {MAP_DIMENSIONS};
@@ -258,7 +258,7 @@ widthPick(void)
 	return map_dimensions[uqm::UQMOptions::read().planetTexture].width;
 }
 
-static COORD
+static int16_t
 heightPick(void)
 {
 	EXTENT map_dimensions[] = {MAP_DIMENSIONS};
@@ -266,8 +266,8 @@ heightPick(void)
 	return map_dimensions[uqm::UQMOptions::read().planetTexture].height;
 }
 
-static COORD
-scaleMapWidth(COORD value)
+static int16_t
+scaleMapWidth(int16_t value)
 {
 	float percentage = 1;
 
@@ -276,11 +276,11 @@ scaleMapWidth(COORD value)
 		percentage = scaleThing(UNSCALED_MAP_WIDTH, widthPick());
 	}
 
-	return RES_SCALE((COORD)(value * percentage));
+	return RES_SCALE((int16_t)(value * percentage));
 }
 
-static COORD
-scaleMapHeight(COORD value)
+static int16_t
+scaleMapHeight(int16_t value)
 {
 	float percentage = 1;
 
@@ -289,7 +289,7 @@ scaleMapHeight(COORD value)
 		percentage = scaleThing(SC2_MAP_HEIGHT, heightPick());
 	}
 
-	return RES_SCALE((COORD)(value * percentage));
+	return RES_SCALE((int16_t)(value * percentage));
 }
 
 void GenerateRandomLocation(GFXPOINT* loc)

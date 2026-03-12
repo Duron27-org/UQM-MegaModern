@@ -50,7 +50,7 @@
 #define HANGAR_Y_3DO 64
 #define HANGAR_DY_3DO 44
 
-const COORD hangar_x_coords_3do[HANGAR_SHIPS_ROW_3DO] =
+const int16_t hangar_x_coords_3do[HANGAR_SHIPS_ROW_3DO] =
 	{
 		19, 60, 116, 157};
 
@@ -64,15 +64,15 @@ const COORD hangar_x_coords_3do[HANGAR_SHIPS_ROW_3DO] =
 // The X positions of the hangar bay doors for each resolution mode.
 // Calculated from the right edge of the left grey border bar on the
 // screen.
-const COORD hangar_x_coords_uqm[HANGAR_SHIPS_ROW_DOS] =
+const int16_t hangar_x_coords_uqm[HANGAR_SHIPS_ROW_DOS] =
 	{
 		0, 38, 76, 131, 169, 207};
 
-const COORD hangar_x_coords_dos[HANGAR_SHIPS_ROW_DOS] =
+const int16_t hangar_x_coords_dos[HANGAR_SHIPS_ROW_DOS] =
 	{
 		0, 38, 76, 133, 171, 209};
 
-COORD hangar_x_coords[HANGAR_SHIPS_ROW_DOS];
+int16_t hangar_x_coords[HANGAR_SHIPS_ROW_DOS];
 
 #define HANGAR_SHIPS 12
 #define HANGAR_SHIPS_ROW SAFE_BOOL(HANGAR_SHIPS_ROW_DOS, \
@@ -809,7 +809,7 @@ DrawShipyardShipText(GFXRECT* r, int Index)
 	int16_t leading;
 	GFXRECT block;
 	TEXT text;
-	COORD strip_align;
+	int16_t strip_align;
 
 	if (IS_DOS)
 	{

@@ -504,8 +504,8 @@ DoTimePassage(void)
 
 		// Calculate the starbase position on a circle with the help of sin and cos.
 		newAngle = ((double)(10) + daysElapsed() * (FULL_CIRCLE / 11.46)) * M_PI / 32 - M_PI / 2; // JMS: Starbase orbit values copied from gensol.c
-		starbase_coords.x = (COORD)(cos(newAngle) * MIN_MOON_RADIUS);
-		starbase_coords.y = (COORD)(sin(newAngle) * MIN_MOON_RADIUS);
+		starbase_coords.x = (int16_t)(cos(newAngle) * MIN_MOON_RADIUS);
+		starbase_coords.y = (int16_t)(sin(newAngle) * MIN_MOON_RADIUS);
 
 		//log_add (log_Debug, "startangle:{} angle:{}, radius:{}, speed:{}, days:{} X:{}, y:{}", 10, newAngle, MIN_MOON_RADIUS, FULL_CIRCLE / 11.46, daysElapsed(), starbase_coords.x, starbase_coords.y);
 

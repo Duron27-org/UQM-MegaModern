@@ -337,7 +337,7 @@ bool TextRect(TEXT* lpText, GFXRECT* pRect, uint8_t* pdelta)
 	FontPtr = _CurFontPtr;
 	if (FontPtr != 0 && lpText->CharCount != 0)
 	{
-		COORD top_y, bot_y;
+		int16_t top_y, bot_y;
 		int16_t width;
 		UniChar next_ch = 0;
 		const char* pStr;
@@ -392,7 +392,7 @@ bool TextRect(TEXT* lpText, GFXRECT* pRect, uint8_t* pdelta)
 			charFrame = getCharFrame(FontPtr, ch);
 			if (charFrame != nullptr && charFrame->disp.width)
 			{
-				COORD y;
+				int16_t y;
 
 				y = -charFrame->HotSpot.y;
 				if (y < top_y)
@@ -704,7 +704,7 @@ bool TextRectAlt(TEXT* lpText, GFXRECT* pRect, uint8_t* pdelta, uint8_t swap,
 	FontPtr = _CurFontPtr;
 	if (FontPtr != 0 && lpText->CharCount != 0)
 	{
-		COORD top_y, bot_y;
+		int16_t top_y, bot_y;
 		int16_t width;
 		UniChar next_ch = 0;
 		const char* pStr;
@@ -770,7 +770,7 @@ bool TextRectAlt(TEXT* lpText, GFXRECT* pRect, uint8_t* pdelta, uint8_t swap,
 
 			if (charFrame != nullptr && charFrame->disp.width)
 			{
-				COORD y;
+				int16_t y;
 
 				y = -charFrame->HotSpot.y;
 				if (y < top_y)

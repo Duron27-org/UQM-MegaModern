@@ -318,7 +318,7 @@ twin_laser_collision(ELEMENT* ElementPtr0, GFXPOINT* pPt0,
 static uint16_t
 initialize_dual_weapons(ELEMENT* ShipPtr, HELEMENT WeaponArray[])
 {
-	COORD cx, cy;
+	int16_t cx, cy;
 	uint16_t facing, angle;
 	int32_t offs_x, offs_y;
 	STARSHIP* StarShipPtr;
@@ -331,7 +331,7 @@ initialize_dual_weapons(ELEMENT* ShipPtr, HELEMENT WeaponArray[])
 
 	if (ShipPtr->next.image.farray == StarShipPtr->RaceDescPtr->ship_data.ship)
 	{
-		COORD ex, ey;
+		int16_t ex, ey;
 		LASER_BLOCK LaserBlock;
 		ELEMENT* LaserPtr;
 

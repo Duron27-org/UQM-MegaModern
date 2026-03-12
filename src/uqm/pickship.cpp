@@ -111,7 +111,7 @@ DoPickBattleShip(MENU_STATE* pMS)
 	}
 	else
 	{
-		COORD new_row, new_col;
+		int16_t new_row, new_col;
 		if (PulsedInputState.menu[KEY_MENU_RIGHT])
 		{
 			dx = 1;

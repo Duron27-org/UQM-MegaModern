@@ -150,7 +150,7 @@ DrawDevicesDisplay(DEVICES_STATE* devState)
 	TEXT t;
 	GFXRECT r;
 	STAMP s;
-	COORD cy;
+	int16_t cy;
 	uint16_t i;
 
 	r.corner.x = RES_SCALE(2);

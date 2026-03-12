@@ -177,7 +177,7 @@ _count_lines(TEXT* pText)
 // status == -2: draw non-highlighted player dialog option
 // status == -4: use current context, and baseline from pTextIn
 // status ==  1:  draw alien speech; subtitle cache is used
-static COORD
+static int16_t
 add_text(int status, TEXT* pTextIn)
 {
 	uint16_t maxchars, numchars;
@@ -187,7 +187,7 @@ add_text(int status, TEXT* pTextIn)
 	const char* pStr;
 	int16_t text_width;
 	int num_lines = 0;
-	static COORD last_baseline;
+	static int16_t last_baseline;
 	bool eol;
 	GFXCONTEXT OldContext = nullptr;
 	GFXRECT arrow;
@@ -618,7 +618,7 @@ void uninit_communication(void)
 static void
 RefreshResponsesSpecial(ENCOUNTER_STATE* pES)
 { // PC style repsonses
-	COORD y;
+	int16_t y;
 	uint8_t response;
 	int16_t leading;
 
@@ -652,7 +652,7 @@ RefreshResponsesSpecial(ENCOUNTER_STATE* pES)
 static void
 RefreshResponses(ENCOUNTER_STATE* pES)
 {
-	COORD y;
+	int16_t y;
 	uint8_t response;
 	int16_t leading;
 	STAMP s;
@@ -1616,7 +1616,7 @@ PlayerResponseInput(ENCOUNTER_STATE* pES)
 
 		if (response != pES->cur_response)
 		{
-			COORD y;
+			int16_t y;
 
 			BatchGraphics();
 			add_text(-2,

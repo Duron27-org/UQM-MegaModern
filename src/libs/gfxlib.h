@@ -56,7 +56,6 @@ typedef uint16_t TIME_VALUE;
 #define TIME_SHIFT 8
 #define MAX_TIME_VALUE ((1 << TIME_SHIFT) + 1)
 
-typedef int16_t COORD;
 
 static inline bool
 sameColor(Color c1, Color c2)
@@ -248,7 +247,7 @@ typedef uint8_t CREATE_FLAGS;
 
 struct EXTENT
 {
-	COORD width, height;
+	int16_t width, height;
 };
 
 // JMS: Extent with larger values to avoid overflows in hires modes.
@@ -260,34 +259,34 @@ typedef struct dextent
 typedef struct point
 {
 	constexpr point() = default;
-	constexpr point(COORD _x, COORD _y)
+	constexpr point(int16_t _x, int16_t _y)
 		: x {_x}
 		, y {_y}
 	{
 	}
 	constexpr point(int _x, int _y)
-		: x {(COORD)_x}
-		, y {(COORD)_y}
+		: x {(int16_t)_x}
+		, y {(int16_t)_y}
 	{
 	}
 	constexpr point(float _x, float _y)
-		: x {(COORD)_x}
-		, y {(COORD)_y}
+		: x {(int16_t)_x}
+		, y {(int16_t)_y}
 	{
 	}
 	constexpr point(double _x, double _y)
-		: x {(COORD)_x}
-		, y {(COORD)_y}
+		: x {(int16_t)_x}
+		, y {(int16_t)_y}
 	{
 	}
 
-	COORD x {};
-	COORD y {};
+	int16_t x {};
+	int16_t y {};
 } GFXPOINT;
 
 inline GFXPOINT operator+(const GFXPOINT& lhs, const GFXPOINT& rhs)
 {
-	return {static_cast<COORD>(lhs.x + rhs.x), static_cast<COORD>(lhs.y + rhs.y)};
+	return {static_cast<int16_t>(lhs.x + rhs.x), static_cast<int16_t>(lhs.y + rhs.y)};
 }
 
 
@@ -323,7 +322,7 @@ typedef struct line
 } LINE;
 
 static inline GFXPOINT
-MAKE_POINT(COORD x, COORD y)
+MAKE_POINT(int16_t x, int16_t y)
 {
 	GFXPOINT pt = {x, y};
 	return pt;
@@ -337,7 +336,7 @@ MAKE_DPOINT(int32_t x, int32_t y)
 }
 
 static inline EXTENT
-MAKE_EXTENT(COORD width, COORD height)
+MAKE_EXTENT(int16_t width, int16_t height)
 {
 	EXTENT ext = {width, height};
 	return ext;
@@ -415,7 +414,7 @@ ptDistance(GFXPOINT p1, GFXPOINT p2)
 }
 
 static inline double
-calcDistance(COORD x1, COORD y1, COORD x2, COORD y2)
+calcDistance(int16_t x1, int16_t y1, int16_t x2, int16_t y2)
 {
 	double dx = (double)x2 - (double)x1;
 	double dy = (double)y2 - (double)y1;
@@ -548,7 +547,7 @@ typedef uint8_t INTERSECT_CODE;
 
 typedef GFXPOINT HOT_SPOT;
 
-extern HOT_SPOT MAKE_HOT_SPOT(COORD, COORD);
+extern HOT_SPOT MAKE_HOT_SPOT(int16_t, int16_t);
 
 extern INTERSECT_CODE BoxIntersect(GFXRECT* pr1, GFXRECT* pr2, GFXRECT* printer);
 extern void BoxUnion(GFXRECT* pr1, GFXRECT* pr2, GFXRECT* punion);

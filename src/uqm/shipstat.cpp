@@ -25,7 +25,7 @@
 #include "menustat.h"
 #include "util.h"
 
-void DrawCrewFuelString(COORD y, int16_t state)
+void DrawCrewFuelString(int16_t y, int16_t state)
 {
 	STAMP Stamp;
 
@@ -77,7 +77,7 @@ void DrawCrewFuelString(COORD y, int16_t state)
 }
 
 static void
-DrawShipNameString(char* pStr, uint16_t CharCount, COORD y)
+DrawShipNameString(char* pStr, uint16_t CharCount, int16_t y)
 {
 	TEXT Text;
 	FONT OldFont;
@@ -101,7 +101,7 @@ DrawShipNameString(char* pStr, uint16_t CharCount, COORD y)
 	SetContextFont(OldFont);
 }
 
-void ClearShipStatus(COORD y)
+void ClearShipStatus(int16_t y)
 {
 	GFXRECT r;
 
@@ -114,7 +114,7 @@ void ClearShipStatus(COORD y)
 	DrawFilledRectangle(&r);
 }
 
-void OutlineShipStatus(COORD y)
+void OutlineShipStatus(int16_t y)
 {
 	GFXRECT r;
 
@@ -154,7 +154,7 @@ void OutlineShipStatus(COORD y)
 void InitShipStatus(SHIP_INFO* SIPtr, STARSHIP* StarShipPtr, GFXRECT* pClipRect, bool inMeleeMenu)
 {
 	GFXRECT r;
-	COORD y = 0; // default, for Melee menu
+	int16_t y = 0; // default, for Melee menu
 	STAMP Stamp;
 	GFXCONTEXT OldContext;
 	GFXRECT oldClipRect;
@@ -384,10 +384,10 @@ void InitShipStatus(SHIP_INFO* SIPtr, STARSHIP* StarShipPtr, GFXRECT* pClipRect,
 
 // Pre: -crew_delta <= ShipInfoPtr->crew_level
 //      crew_delta <= ShipInfoPtr->max_crew - ShipInfoPtr->crew_level
-void DeltaStatistics(SHIP_INFO* ShipInfoPtr, COORD y_offs,
+void DeltaStatistics(SHIP_INFO* ShipInfoPtr, int16_t y_offs,
 					 int16_t crew_delta, int16_t energy_delta)
 {
-	COORD x, y;
+	int16_t x, y;
 	GFXRECT r;
 
 	if (crew_delta == 0 && energy_delta == 0)

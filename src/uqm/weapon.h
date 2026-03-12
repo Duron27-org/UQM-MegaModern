@@ -28,7 +28,7 @@ extern "C" {
 
 typedef struct
 {
-	COORD cx, cy, ex, ey;
+	int16_t cx, cy, ex, ey;
 	ELEMENT_FLAGS flags;
 	int16_t sender; // player number
 	int16_t pixoffs;
@@ -38,7 +38,7 @@ typedef struct
 
 typedef struct
 {
-	COORD cx, cy;
+	int16_t cx, cy;
 	ELEMENT_FLAGS flags;
 	int16_t sender; // player number
 	int16_t pixoffs, speed, hit_points, damage;

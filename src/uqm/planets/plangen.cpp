@@ -730,7 +730,7 @@ static void
 create_aa_points(MAP3D_POINT* ppt, double x, double y, uint16_t height)
 {
 	double deltax, deltay, inv_deltax, inv_deltay;
-	COORD nextx, nexty;
+	int16_t nextx, nexty;
 	uint16_t i;
 	double d1, d2, d3, d4, m[4];
 	uint16_t spherespanx = height;
@@ -753,8 +753,8 @@ create_aa_points(MAP3D_POINT* ppt, double x, double y, uint16_t height)
 	}
 
 	// get  the integer value of this point
-	ppt->p[0].x = (COORD)x;
-	ppt->p[0].y = (COORD)y;
+	ppt->p[0].x = (int16_t)x;
+	ppt->p[0].y = (int16_t)y;
 	deltax = x - ppt->p[0].x;
 	deltay = y - ppt->p[0].y;
 
@@ -1583,7 +1583,7 @@ DitherMap(int8_t* DepthArray, uint16_t width, uint16_t height)
 static void
 MakeCrater(GFXRECT* pRect, int8_t* DepthArray, int16_t rim_delta, int16_t crater_delta, bool SetDepth, uint16_t width)
 {
-	COORD x, y, lf_x, rt_x;
+	int16_t x, y, lf_x, rt_x;
 	int16_t A, B;
 	int32_t Asquared, TwoAsquared, Bsquared, TwoBsquared;
 	int32_t d, dx, dy;
@@ -1852,7 +1852,7 @@ MakeStorms(uint16_t storm_count, int8_t* DepthArray, uint16_t width,
 
 			for (j = i + 1; j < storm_count; ++j)
 			{
-				COORD x, y;
+				int16_t x, y;
 				int16_t w, h;
 
 				x = storm_r[j].corner.x - pstorm_r->corner.x;
@@ -1916,7 +1916,7 @@ MakeStorms(uint16_t storm_count, int8_t* DepthArray, uint16_t width,
 static void
 MakeGasGiant(uint16_t num_bands, int8_t* DepthArray, GFXRECT* pRect, int16_t depth_delta)
 {
-	COORD last_y, next_y;
+	int16_t last_y, next_y;
 	int16_t band_error, band_bump, band_delta;
 	uint16_t i, j, band_height;
 	int8_t* lpDst;
@@ -1935,7 +1935,7 @@ MakeGasGiant(uint16_t num_bands, int8_t* DepthArray, GFXRECT* pRect, int16_t dep
 	last_y = next_y = 0;
 	for (i = num_bands; i > 0; --i)
 	{
-		COORD cur_y;
+		int16_t cur_y;
 
 		rand_val = RandomContext_Random(SysGenRNG);
 		loword = LOWORD(rand_val);

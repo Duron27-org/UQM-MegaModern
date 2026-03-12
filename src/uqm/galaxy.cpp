@@ -542,10 +542,10 @@ void MoveGalaxy(VIEW_STATE view_state, int32_t dx, int32_t dy)
 		}
 		else
 		{
-			dx = (COORD)(LOG_SPACE_WIDTH >> 1)
+			dx = (int16_t)(LOG_SPACE_WIDTH >> 1)
 			   - (LOG_SPACE_WIDTH >> ((MAX_REDUCTION + 1)
 									  - MAX_VIS_REDUCTION));
-			dy = (COORD)(LOG_SPACE_HEIGHT >> 1)
+			dy = (int16_t)(LOG_SPACE_HEIGHT >> 1)
 			   - (LOG_SPACE_HEIGHT >> ((MAX_REDUCTION + 1)
 									   - MAX_VIS_REDUCTION));
 			if (meleeScaleModeIsStep)

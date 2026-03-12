@@ -175,7 +175,7 @@ static inline constexpr auto chooseIfHd(const T& a, const T& b) -> const T&
 #define TRANSITION_WIDTH (DISPLAY_TO_WORLD(SPACE_WIDTH) << MAX_VIS_REDUCTION)
 #define TRANSITION_HEIGHT (DISPLAY_TO_WORLD(SPACE_HEIGHT) << MAX_VIS_REDUCTION)
 
-// JMS_GFX: Changed from COORD to int32_t and from uint16_t to uint32_t
+// JMS_GFX: Changed from int16_t to int32_t and from uint16_t to uint32_t
 #define DISPLAY_ALIGN(x) ((int32_t)(x) & ~(SCALED_ONE - 1))
 #define DISPLAY_ALIGN_X(x) ((int32_t)((uint32_t)(x) % LOG_SPACE_WIDTH) & ~(SCALED_ONE - 1))
 #define DISPLAY_ALIGN_Y(y) ((int32_t)((uint32_t)(y) % LOG_SPACE_HEIGHT) & ~(SCALED_ONE - 1))
@@ -246,7 +246,7 @@ logyToUniverse(int32_t ly)
 #define LOGY_TO_UNIVERSE(ly) \
 	logyToUniverse(ly)
 static inline int32_t
-universeToLogx(COORD ux)
+universeToLogx(int16_t ux)
 {
 	return (ux * LOG_UNITS_X + ROUNDING_ERROR(UNIVERSE_UNITS_X))
 		 / UNIVERSE_UNITS_X;
@@ -254,7 +254,7 @@ universeToLogx(COORD ux)
 #define UNIVERSE_TO_LOGX(ux) \
 	universeToLogx(ux)
 static inline int32_t
-universeToLogy(COORD uy)
+universeToLogy(int16_t uy)
 {
 	return ((MAX_Y_UNIVERSE - uy) * LOG_UNITS_Y
 			+ ROUNDING_ERROR(UNIVERSE_UNITS_Y))

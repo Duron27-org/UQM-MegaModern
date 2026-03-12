@@ -28,7 +28,7 @@ void DeltaTopography(uint16_t num_iterations, int8_t* DepthArray, GFXRECT* pRect
 	int16_t width, height, delta_y;
 	struct
 	{
-		COORD x_top, x_bot;
+		int16_t x_top, x_bot;
 		int16_t x_incr, delta_x, error_term;
 	} LineDDA0, LineDDA1;
 

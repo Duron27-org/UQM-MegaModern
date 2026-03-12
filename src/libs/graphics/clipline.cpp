@@ -21,8 +21,8 @@
 INTERSECT_CODE
 _clip_line(const DRECT* pClipRect, BRESENHAM_LINE* pLine)
 {
-	COORD p;
-	COORD x0, y0, xmin, ymin, xmax, ymax;
+	int16_t p;
+	int16_t x0, y0, xmin, ymin, xmax, ymax;
 	int16_t abs_delta_x, abs_delta_y;
 	INTERSECT_CODE intersect_code;
 
@@ -96,7 +96,7 @@ _clip_line(const DRECT* pClipRect, BRESENHAM_LINE* pLine)
 	}
 	else
 	{
-		COORD x1, y1;
+		int16_t x1, y1;
 
 		p = pLine->first.x;
 		x1 = pLine->second.x - p;
@@ -129,7 +129,7 @@ _clip_line(const DRECT* pClipRect, BRESENHAM_LINE* pLine)
 			half_dx = abs_delta_x >> 1;
 			if (x0 < xmin)
 			{
-				if ((y0 = (COORD)(((long)abs_delta_y * (x0 = xmin) + half_dx) / abs_delta_x)) > ymax)
+				if ((y0 = (int16_t)(((long)abs_delta_y * (x0 = xmin) + half_dx) / abs_delta_x)) > ymax)
 				{
 					return ((INTERSECT_CODE)0);
 				}
@@ -137,7 +137,7 @@ _clip_line(const DRECT* pClipRect, BRESENHAM_LINE* pLine)
 			}
 			if (x1 > xmax)
 			{
-				if ((y1 = (COORD)(((long)abs_delta_y * (x1 = xmax) + half_dx) / abs_delta_x)) < ymin)
+				if ((y1 = (int16_t)(((long)abs_delta_y * (x1 = xmax) + half_dx) / abs_delta_x)) < ymin)
 				{
 					return ((INTERSECT_CODE)0);
 				}
@@ -145,7 +145,7 @@ _clip_line(const DRECT* pClipRect, BRESENHAM_LINE* pLine)
 			}
 			if (y0 < ymin)
 			{
-				if ((x0 = (COORD)(((long)abs_delta_x * (y0 = ymin) - half_dx + (abs_delta_y - 1)) / abs_delta_y)) > xmax)
+				if ((x0 = (int16_t)(((long)abs_delta_x * (y0 = ymin) - half_dx + (abs_delta_y - 1)) / abs_delta_y)) > xmax)
 				{
 					return ((INTERSECT_CODE)0);
 				}
@@ -154,7 +154,7 @@ _clip_line(const DRECT* pClipRect, BRESENHAM_LINE* pLine)
 			}
 			if (y1 > ymax)
 			{
-				if ((x1 = (COORD)(((long)abs_delta_x * ((y1 = ymax) + 1) - half_dx + (abs_delta_y - 1)) / abs_delta_y) - 1) < xmin)
+				if ((x1 = (int16_t)(((long)abs_delta_x * ((y1 = ymax) + 1) - half_dx + (abs_delta_y - 1)) / abs_delta_y) - 1) < xmin)
 				{
 					return ((INTERSECT_CODE)0);
 				}
@@ -169,7 +169,7 @@ _clip_line(const DRECT* pClipRect, BRESENHAM_LINE* pLine)
 			half_dy = abs_delta_y >> 1;
 			if (y0 < ymin)
 			{
-				if ((x0 = (COORD)(((long)abs_delta_x * (y0 = ymin) + half_dy) / abs_delta_y)) > xmax)
+				if ((x0 = (int16_t)(((long)abs_delta_x * (y0 = ymin) + half_dy) / abs_delta_y)) > xmax)
 				{
 					return ((INTERSECT_CODE)0);
 				}
@@ -177,7 +177,7 @@ _clip_line(const DRECT* pClipRect, BRESENHAM_LINE* pLine)
 			}
 			if (y1 > ymax)
 			{
-				if ((x1 = (COORD)(((long)abs_delta_x * (y1 = ymax) + half_dy) / abs_delta_y)) < xmin)
+				if ((x1 = (int16_t)(((long)abs_delta_x * (y1 = ymax) + half_dy) / abs_delta_y)) < xmin)
 				{
 					return ((INTERSECT_CODE)0);
 				}
@@ -185,7 +185,7 @@ _clip_line(const DRECT* pClipRect, BRESENHAM_LINE* pLine)
 			}
 			if (x0 < xmin)
 			{
-				if ((y0 = (COORD)(((long)abs_delta_y * (x0 = xmin) - half_dy + (abs_delta_x - 1)) / abs_delta_x)) > ymax)
+				if ((y0 = (int16_t)(((long)abs_delta_y * (x0 = xmin) - half_dy + (abs_delta_x - 1)) / abs_delta_x)) > ymax)
 				{
 					return ((INTERSECT_CODE)0);
 				}
@@ -194,7 +194,7 @@ _clip_line(const DRECT* pClipRect, BRESENHAM_LINE* pLine)
 			}
 			if (x1 > xmax)
 			{
-				if ((y1 = (COORD)(((long)abs_delta_y * ((x1 = xmax) + 1) - half_dy + (abs_delta_x - 1)) / abs_delta_x) - 1) < ymin)
+				if ((y1 = (int16_t)(((long)abs_delta_y * ((x1 = xmax) + 1) - half_dy + (abs_delta_x - 1)) / abs_delta_x) - 1) < ymin)
 				{
 					return ((INTERSECT_CODE)0);
 				}

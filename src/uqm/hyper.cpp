@@ -1546,9 +1546,9 @@ AddEncounterElement(ENCOUNTER* EncounterPtr, GFXPOINT* puniverse)
 #define GRID_OFFSET 200
 
 static void
-DrawHyperGrid(COORD ux, COORD uy, COORD ox, COORD oy)
+DrawHyperGrid(int16_t ux, int16_t uy, int16_t ox, int16_t oy)
 {
-	COORD sx, sy, ex, ey;
+	int16_t sx, sy, ex, ey;
 	GFXRECT r;
 
 	ClearDrawable();
@@ -1585,30 +1585,30 @@ DrawHyperGrid(COORD ux, COORD uy, COORD ox, COORD oy)
 		ey = MAX_Y_UNIVERSE + 1;
 	}
 
-	r.corner.y = (COORD)((long)(MAX_Y_UNIVERSE - ey)
+	r.corner.y = (int16_t)((long)(MAX_Y_UNIVERSE - ey)
 						 * RADAR_HEIGHT / RADAR_SCAN_HEIGHT)
 			   - oy;
 	r.extent.width = RES_SCALE(1);
-	r.extent.height = ((COORD)((long)(MAX_Y_UNIVERSE - sy)
+	r.extent.height = ((int16_t)((long)(MAX_Y_UNIVERSE - sy)
 							   * RADAR_HEIGHT / RADAR_SCAN_HEIGHT)
 					   - oy)
 					- r.corner.y
 					+ RES_SCALE(1);
 	for (ux = sx; ux <= ex; ux += GRID_OFFSET)
 	{
-		r.corner.x = (COORD)((long)ux * RADAR_WIDTH / RADAR_SCAN_WIDTH)
+		r.corner.x = (int16_t)((long)ux * RADAR_WIDTH / RADAR_SCAN_WIDTH)
 				   - ox;
 		DrawFilledRectangle(&r);
 	}
 
-	r.corner.x = (COORD)((long)sx * RADAR_WIDTH / RADAR_SCAN_WIDTH) - ox;
-	r.extent.width = ((COORD)((long)ex * RADAR_WIDTH / RADAR_SCAN_WIDTH)
+	r.corner.x = (int16_t)((long)sx * RADAR_WIDTH / RADAR_SCAN_WIDTH) - ox;
+	r.extent.width = ((int16_t)((long)ex * RADAR_WIDTH / RADAR_SCAN_WIDTH)
 					  - ox)
 				   - r.corner.x + RES_SCALE(1);
 	r.extent.height = RES_SCALE(1);
 	for (uy = sy; uy <= ey; uy += GRID_OFFSET)
 	{
-		r.corner.y = (COORD)((long)(MAX_Y_UNIVERSE - uy)
+		r.corner.y = (int16_t)((long)(MAX_Y_UNIVERSE - uy)
 							 * RADAR_HEIGHT / RADAR_SCAN_HEIGHT)
 				   - oy;
 		DrawFilledRectangle(&r);
@@ -1618,10 +1618,10 @@ DrawHyperGrid(COORD ux, COORD uy, COORD ox, COORD oy)
 // Returns false if the encounter is to be removed.
 static bool
 ProcessEncounter(ENCOUNTER* EncounterPtr, GFXPOINT* puniverse,
-				 COORD ox, COORD oy, STAMP* stamp)
+				 int16_t ox, int16_t oy, STAMP* stamp)
 {
 	ELEMENT* ElementPtr;
-	COORD ex, ey;
+	int16_t ex, ey;
 
 	if (EncounterPtr->hElement == 0
 		&& AddEncounterElement(EncounterPtr, puniverse) == 0)
@@ -1800,9 +1800,9 @@ ProcessEncounter(ENCOUNTER* EncounterPtr, GFXPOINT* puniverse,
 
 	UnlockElement(EncounterPtr->hElement);
 
-	stamp->origin.x = (COORD)((long)ex * RADAR_WIDTH / RADAR_SCAN_WIDTH)
+	stamp->origin.x = (int16_t)((long)ex * RADAR_WIDTH / RADAR_SCAN_WIDTH)
 					- ox;
-	stamp->origin.y = (COORD)((long)(MAX_Y_UNIVERSE - ey) * RADAR_HEIGHT
+	stamp->origin.y = (int16_t)((long)(MAX_Y_UNIVERSE - ey) * RADAR_HEIGHT
 							  / RADAR_SCAN_HEIGHT)
 					- oy;
 	DrawStamp(stamp);
@@ -1811,7 +1811,7 @@ ProcessEncounter(ENCOUNTER* EncounterPtr, GFXPOINT* puniverse,
 }
 
 static void
-ProcessEncounters(GFXPOINT* puniverse, COORD ox, COORD oy)
+ProcessEncounters(GFXPOINT* puniverse, int16_t ox, int16_t oy)
 {
 	STAMP stamp;
 	HENCOUNTER hEncounter, hNextEncounter;
@@ -1861,8 +1861,8 @@ GetMaskColor(uint8_t startype)
 
 void SeedUniverse(void)
 {
-	COORD ox, oy;
-	COORD sx, sy, ex, ey;
+	int16_t ox, oy;
+	int16_t sx, sy, ex, ey;
 	int16_t portalCounter, arilouSpaceCounter, arilouSpaceSide;
 	GFXPOINT universe;
 	FRAME blip_frame, star_frame;
@@ -1884,16 +1884,16 @@ void SeedUniverse(void)
 	SetContext(RadarContext);
 	BatchGraphics();
 
-	ox = (COORD)((long)universe.x * RADAR_WIDTH / RADAR_SCAN_WIDTH)
+	ox = (int16_t)((long)universe.x * RADAR_WIDTH / RADAR_SCAN_WIDTH)
 	   - (RADAR_WIDTH >> 1);
-	oy = (COORD)((long)(MAX_Y_UNIVERSE - universe.y)
+	oy = (int16_t)((long)(MAX_Y_UNIVERSE - universe.y)
 				 * RADAR_HEIGHT / RADAR_SCAN_HEIGHT)
 	   - (RADAR_HEIGHT >> 1);
 
-	ex = (COORD)((long)GLOBAL(ShipStamp.origin.x)
+	ex = (int16_t)((long)GLOBAL(ShipStamp.origin.x)
 				 * RADAR_WIDTH / RADAR_SCAN_WIDTH)
 	   - (RADAR_WIDTH >> 1);
-	ey = (COORD)((long)(MAX_Y_UNIVERSE - GLOBAL(ShipStamp.origin.y))
+	ey = (int16_t)((long)(MAX_Y_UNIVERSE - GLOBAL(ShipStamp.origin.y))
 				 * RADAR_HEIGHT / RADAR_SCAN_HEIGHT)
 	   - (RADAR_HEIGHT >> 1);
 
@@ -1918,10 +1918,10 @@ void SeedUniverse(void)
 					star_type = SUPER_GIANT_STAR;
 				}
 
-				s.origin.x = (COORD)((long)ex * RADAR_WIDTH
+				s.origin.x = (int16_t)((long)ex * RADAR_WIDTH
 									 / RADAR_SCAN_WIDTH)
 						   - ox;
-				s.origin.y = (COORD)((long)(MAX_Y_UNIVERSE - ey)
+				s.origin.y = (int16_t)((long)(MAX_Y_UNIVERSE - ey)
 									 * RADAR_HEIGHT / RADAR_SCAN_HEIGHT)
 						   - oy;
 				s.frame = SetRelFrameIndex(blip_frame,
@@ -2021,9 +2021,9 @@ void SeedUniverse(void)
 
 			ex = SD[i].star_pt.x;
 			ey = SD[i].star_pt.y;
-			s.origin.x = (COORD)((long)ex * RADAR_WIDTH / RADAR_SCAN_WIDTH)
+			s.origin.x = (int16_t)((long)ex * RADAR_WIDTH / RADAR_SCAN_WIDTH)
 					   - ox;
-			s.origin.y = (COORD)((long)(MAX_Y_UNIVERSE - ey)
+			s.origin.y = (int16_t)((long)(MAX_Y_UNIVERSE - ey)
 								 * RADAR_HEIGHT / RADAR_SCAN_HEIGHT)
 					   - oy;
 			s.frame = SetAbsFrameIndex(stars_in_space, 95);

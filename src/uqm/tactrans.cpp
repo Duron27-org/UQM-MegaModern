@@ -861,9 +861,9 @@ void spawn_ion_trail(ELEMENT* ElementPtr, int16_t x_offset, int16_t y_offset)
 		IonElementPtr->colorCycleIndex = 0;
 		IonElementPtr->current.location = ElementPtr->current.location;
 		IonElementPtr->current.location.x +=
-			(COORD)COSINE(angle, r.extent.height) + x_offset;
+			(int16_t)COSINE(angle, r.extent.height) + x_offset;
 		IonElementPtr->current.location.y +=
-			(COORD)SINE(angle, r.extent.height) + y_offset;
+			(int16_t)SINE(angle, r.extent.height) + y_offset;
 		IonElementPtr->death_func = cycle_ion_trail;
 
 		SetElementStarShip(IonElementPtr, StarShipPtr);

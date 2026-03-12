@@ -164,7 +164,7 @@ void EventHandler(uint8_t selector)
 	luaUqm_event_callEvent(eventIdStr);
 }
 
-void SetRaceDest(uint8_t which_race, COORD x, COORD y, uint8_t days_left,
+void SetRaceDest(uint8_t which_race, int16_t x, int16_t y, uint8_t days_left,
 				 uint8_t func_index)
 {
 	HFLEETINFO hFleet;

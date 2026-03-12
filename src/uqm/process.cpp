@@ -886,7 +886,7 @@ void InsertPrim(PRIM_LINKS* pLinks, uint16_t primIndex, uint16_t iPI)
 
 PRIM_LINKS DisplayLinks;
 
-static inline COORD
+static inline int16_t
 CalcDisplayCoord(int32_t c, int32_t orgc, int16_t reduction)
 {
 	if (uqm::toTFBScaleMode(uqm::UQMOptions::read().meleeScale) == uqm::TFBScaleMode::Step)

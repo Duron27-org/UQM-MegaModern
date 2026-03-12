@@ -1193,8 +1193,8 @@ static inline uqm::NomadMode getNomadMode() { return GLOBAL_SIS(Nomad); }
 static inline GFXPOINT
 LoadLastLoc(void)
 {
-	return GFXPOINT {(COORD)GET_GAME_STATE(LAST_LOCATION_X),
-					 (COORD)GET_GAME_STATE(LAST_LOCATION_Y)};
+	return GFXPOINT {(int16_t)GET_GAME_STATE(LAST_LOCATION_X),
+					 (int16_t)GET_GAME_STATE(LAST_LOCATION_Y)};
 }
 
 static inline void
@@ -1214,15 +1214,15 @@ ZeroLastLoc(void)
 static inline GFXPOINT
 LoadAdvancedQuasiPilot(void)
 {
-	return GFXPOINT {(COORD)GET_GAME_STATE(ADV_AUTOPILOT_QUASI_X),
-					 (COORD)GET_GAME_STATE(ADV_AUTOPILOT_QUASI_Y)};
+	return GFXPOINT {(int16_t)GET_GAME_STATE(ADV_AUTOPILOT_QUASI_X),
+					 (int16_t)GET_GAME_STATE(ADV_AUTOPILOT_QUASI_Y)};
 }
 
 static inline GFXPOINT
 LoadAdvancedAutoPilot(void)
 {
-	return GFXPOINT {(COORD)GET_GAME_STATE(ADV_AUTOPILOT_SAVE_X),
-					 (COORD)GET_GAME_STATE(ADV_AUTOPILOT_SAVE_Y)};
+	return GFXPOINT {(int16_t)GET_GAME_STATE(ADV_AUTOPILOT_SAVE_X),
+					 (int16_t)GET_GAME_STATE(ADV_AUTOPILOT_SAVE_Y)};
 }
 
 static inline void

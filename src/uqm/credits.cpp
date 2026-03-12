@@ -160,7 +160,7 @@ Credits_RenderTextFrame(GFXCONTEXT TempContext, int* istr, int dir,
 	typedef struct
 	{
 		TEXT_ALIGN align;
-		COORD basex;
+		int16_t basex;
 	} col_format_t;
 	col_format_t colfmt[MAX_TEXT_COLS];
 

@@ -54,7 +54,7 @@ STAR_DESC*
 FindStar(STAR_DESC* LastSDPtr, GFXPOINT* puniverse, int16_t xbounds,
 		 int16_t ybounds)
 {
-	COORD min_y, max_y;
+	int16_t min_y, max_y;
 	int16_t lo, hi;
 	STAR_DESC* BaseSDPtr;
 
@@ -111,7 +111,7 @@ FindStar(STAR_DESC* LastSDPtr, GFXPOINT* puniverse, int16_t xbounds,
 	LastSDPtr = &BaseSDPtr[lo];
 	if (ybounds < 0 || LastSDPtr->star_pt.y <= max_y)
 	{
-		COORD min_x, max_x;
+		int16_t min_x, max_x;
 
 		if (xbounds <= 0)
 		{
@@ -501,7 +501,7 @@ static uint16_t next_plot = ~0;
 // Internal.
 // This returns the plot_id (number) with the highest weight on the
 // plot map which has yet to be assigned a home, or NUM_PLOTS if all
-// plots are allocated For a plot to be set, both COORD and STAR_DESC
+// plots are allocated For a plot to be set, both int16_t and STAR_DESC
 // ptr need data.  If both are set, we'll just stamp the starmap.
 uint16_t
 GetNextPlot(PLOT_LOCATION* plot)
@@ -1672,10 +1672,10 @@ bool SeedQuasispace(PORTAL_LOCATION* portalmap, PLOT_LOCATION* plotmap,
 				// between 0 and 2295.  Half of that is below 1147, the other
 				// half above.
 				// We locate the portal by up to 1147 (114.7) in any direction.
-				// Also note COORD is just int16_t and can be negative.
+				// Also note int16_t is just int16_t and can be negative.
 				portalmap[i].star_pt = GFXPOINT {
-					(COORD)lowByte(rand_val) * 9 + plotmap[SOL_DEFINED].star_pt.x - 1147,
-					(COORD)highByte(rand_val) * 9 + plotmap[SOL_DEFINED].star_pt.y - 1147};
+					(int16_t)lowByte(rand_val) * 9 + plotmap[SOL_DEFINED].star_pt.x - 1147,
+					(int16_t)highByte(rand_val) * 9 + plotmap[SOL_DEFINED].star_pt.y - 1147};
 				// Take care of anything off the map (w/in 18.9) or too close
 				// to SOL.  Here, 250000 (50.0 squared) is the min distance
 				// squared from SOL to portal and 1000000 (100.0 squared) is

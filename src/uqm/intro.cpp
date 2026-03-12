@@ -309,7 +309,7 @@ Present_GenerateSIS(PRESENTATION_INPUT_STATE* pPIS)
 }
 
 static void
-DoSpinText(const char* buf, COORD x, COORD y, FRAME repair, bool* skip)
+DoSpinText(const char* buf, int16_t x, int16_t y, FRAME repair, bool* skip)
 {
 	TEXT Text;
 
@@ -349,7 +349,7 @@ DoSpinStatBox(GFXRECT* r, Color front, Color back, bool* skip)
 }
 
 static void
-DoSpinStat(char* buf, COORD x, COORD y, uint16_t filled, uint16_t empty, Color front, Color back,
+DoSpinStat(char* buf, int16_t x, int16_t y, uint16_t filled, uint16_t empty, Color front, Color back,
 		   bool* skip)
 {
 	TEXT Text;
@@ -1198,7 +1198,7 @@ DoPresentation(void* pIS)
 				{ /* text fade-in */
 					int16_t leading;
 					uint16_t i;
-					COORD y;
+					int16_t y;
 
 					uqm::strncpy_safe(pPIS->Buffer, strView);
 					pPIS->LinesCount = ParseTextLines(pPIS->TextLines,

@@ -592,8 +592,8 @@ RescalePercentage(FRAME frame, float percentage)
 	}
 
 	// scale the hot-spot
-	newFrame->HotSpot.x = (COORD)(frame->HotSpot.x * percentage);
-	newFrame->HotSpot.y = (COORD)(frame->HotSpot.y * percentage);
+	newFrame->HotSpot.x = (int16_t)(frame->HotSpot.x * percentage);
+	newFrame->HotSpot.y = (int16_t)(frame->HotSpot.y * percentage);
 
 	img = frame->image;
 	LockMutex(img->mutex);

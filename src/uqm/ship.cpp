@@ -154,7 +154,7 @@ inertial_thrust(ELEMENT* ElementPtr)
 
 void DrawHDMeleeBorder(STARSHIP* StarShipPtr)
 {
-	COORD y = 0;
+	int16_t y = 0;
 	GFXRECT r;
 
 	if (lowByte(GLOBAL(CurrentActivity)) == IN_LAST_BATTLE

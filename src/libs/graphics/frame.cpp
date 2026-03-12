@@ -23,7 +23,7 @@
 #include "uqm/units.h"
 
 HOT_SPOT
-MAKE_HOT_SPOT(COORD x, COORD y)
+MAKE_HOT_SPOT(int16_t x, int16_t y)
 {
 	HOT_SPOT hs;
 	hs.x = x;
@@ -251,7 +251,7 @@ void DrawPoint(GFXPOINT* lpPoint)
 
 void InstaPoint(int x, int y)
 {
-	GFXPOINT origin = {(COORD)x, (COORD)y};
+	GFXPOINT origin = {(int16_t)x, (int16_t)y};
 	DrawPoint(&origin);
 }
 
@@ -270,8 +270,8 @@ void DrawRectangle(GFXRECT* lpRect, bool scaled)
 void InstaRect(int x, int y, int w, int h, bool scaled)
 {
 	GFXRECT r = {
-		{(COORD)x, (COORD)y},
-		{(COORD)w, (COORD)h}
+		{(int16_t)x, (int16_t)y},
+		{(int16_t)w, (int16_t)h}
 	};
 	DrawRectangle(&r, scaled);
 }
@@ -291,8 +291,8 @@ void DrawFilledRectangle(GFXRECT* lpRect)
 void InstaFilledRect(int x, int y, int w, int h)
 {
 	GFXRECT r = {
-		{(COORD)x, (COORD)y},
-		{(COORD)w, (COORD)h}
+		{(int16_t)x, (int16_t)y},
+		{(int16_t)w, (int16_t)h}
 	};
 	DrawFilledRectangle(&r);
 }
@@ -312,8 +312,8 @@ void DrawLine(LINE* lpLine, uint8_t thickness)
 void InstaLine(int x1, int y1, int x2, int y2)
 {
 	LINE line = {
-		{(COORD)x1, (COORD)y1},
-		{(COORD)x2, (COORD)y2}
+		{(int16_t)x1, (int16_t)y1},
+		{(int16_t)x2, (int16_t)y2}
 	  };
 	DrawLine(&line, 1);
 }

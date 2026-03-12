@@ -114,7 +114,7 @@ PrintScanTitleText(TEXT* t)
 }
 
 static void
-PrintScanTitlePC(TEXT* t, char* buf, COORD xpos)
+PrintScanTitlePC(TEXT* t, char* buf, int16_t xpos)
 {
 	GFXRECT r;
 
@@ -1542,7 +1542,7 @@ CreateScanContext(bool inSpace)
 	GFXCONTEXT oldContext;
 	GFXCONTEXT context;
 	GFXRECT r;
-	COORD x_offset;
+	int16_t x_offset;
 
 	// ScanContext rect is relative to SpaceContext
 	oldContext = SetContext(SpaceContext);
