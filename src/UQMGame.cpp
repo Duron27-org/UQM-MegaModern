@@ -76,6 +76,20 @@ bool restartGame;
 // Including this is actually necessary on OSX.
 #endif
 
+// Version headers for library startup logging
+#include <CLI/Version.hpp>
+#include <fmt/base.h>
+#include <gsl-lite/gsl-lite.hpp>
+#include <lua.hpp>
+#include <magic_enum/magic_enum.hpp>
+#include <mikmod.h>
+#include <nlohmann/json_fwd.hpp>
+#include <png.h>
+#include <scn/fwd.h>
+#include <spdlog/version.h>
+#include <vorbis/codec.h>
+#include <zlib.h>
+
 
 namespace uqm
 {
@@ -172,6 +186,38 @@ uqstl::pair<int, bool> UQMGame::setup(uqstl::span<uqgsl::zstring> args)
 #ifdef __MINGW64__
 	uqm::log::info("MINGW64_VERSION: {}.{}", __MINGW32_MAJOR_VERSION, __MINGW32_MINOR_VERSION);
 #endif // __MINGW64__
+
+	// Library versions.
+	uqm::log::info("{:-^40}", "Library versions");
+	uqm::log::info("\tSDL (compiled): {}.{}.{}",
+				   SDL_MAJOR_VERSION, SDL_MINOR_VERSION, SDL_PATCHLEVEL);
+	{
+		SDL_version sdlRuntime {};
+		SDL_GetVersion(&sdlRuntime);
+		uqm::log::info("\tSDL (runtime):  {}.{}.{}",
+					   sdlRuntime.major, sdlRuntime.minor, sdlRuntime.patch);
+	}
+	uqm::log::info("\tfmt:           {}.{}.{}",
+				   FMT_VERSION / 10000, (FMT_VERSION % 10000) / 100, FMT_VERSION % 100);
+	uqm::log::info("\tspdlog:        {}.{}.{}",
+				   SPDLOG_VER_MAJOR, SPDLOG_VER_MINOR, SPDLOG_VER_PATCH);
+	uqm::log::info("\tLua:           {}", LUA_RELEASE);
+	uqm::log::info("\tzlib:          {}", zlibVersion());
+	uqm::log::info("\tlibpng:        {}", PNG_LIBPNG_VER_STRING);
+	uqm::log::info("\tlibmikmod:     {}.{}.{}",
+				   LIBMIKMOD_VERSION_MAJOR, LIBMIKMOD_VERSION_MINOR, LIBMIKMOD_REVISION);
+	uqm::log::info("\tnlohmann_json: {}.{}.{}",
+				   NLOHMANN_JSON_VERSION_MAJOR, NLOHMANN_JSON_VERSION_MINOR,
+				   NLOHMANN_JSON_VERSION_PATCH);
+	uqm::log::info("\tCLI11:         {}", CLI11_VERSION);
+	uqm::log::info("\tmagic_enum:    {}.{}.{}",
+				   MAGIC_ENUM_VERSION_MAJOR, MAGIC_ENUM_VERSION_MINOR, MAGIC_ENUM_VERSION_PATCH);
+	uqm::log::info("\tscnlib:        {}.{}.{}",
+				   SCN_VERSION / 10000000, (SCN_VERSION % 10000000) / 10000,
+				   SCN_VERSION % 10000);
+	uqm::log::info("\tgsl-lite:      {}", gsl_lite_VERSION);
+	uqm::log::info("\tvorbis:        {}", vorbis_version_string());
+	uqm::log::info("{:-^40}", "");
 
 	/*if (options.runMode == RunMode::Usage)
 	{
