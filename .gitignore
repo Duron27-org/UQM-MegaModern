@@ -36,14 +36,14 @@ bld/
 CMakeUserPresets.json
 
 # Conan
-bld
-build
-cbld
-conanbuild
-vsbuild
+bld/
+build/
+cbld/
+conanbuild/
+vsbuild/
 
 #claude
-.claude
+.claude/
 
 # MSTest test Results
 [Tt]est[Rr]esult*/

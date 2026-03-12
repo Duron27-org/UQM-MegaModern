@@ -1397,7 +1397,7 @@ bool LoadLegacyGame(uint16_t which_game, SUMMARY_DESC* SummPtr, bool try_vanilla
 	// Reset Debug Key
 	DebugKeyPressed = false;
 	SET_GAME_STATE(SeedType, g_seedType = uqm::SeedType::Prime);
-	GLOBAL_SIS(Seed) = uqm::UQMOptions::read().customSeed = PrimeA;
+	GLOBAL_SIS(Seed) = uqm::UQMOptions::edit().customSeed = PrimeA;
 
 	return InitStarseed(false);
 }

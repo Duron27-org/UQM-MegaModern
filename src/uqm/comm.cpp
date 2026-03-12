@@ -1895,7 +1895,7 @@ HailAlien(void)
 			uqm::log::warn(
 				"ComputerFont didn't load properly. "
 				"Disabling Alternate Orz Font");
-			uqm::UQMOptions::read().orzCompFont = false;
+			uqm::UQMOptions::edit().orzCompFont = false;
 		}
 	}
 

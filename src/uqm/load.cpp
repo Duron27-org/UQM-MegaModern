@@ -868,8 +868,8 @@ bool LoadGame(uint16_t which_game, SUMMARY_DESC* SummPtr, uio_Stream* in_fp, boo
 
 	GlobData.SIS_state = SummPtr->SS;
 
-	uqm::UQMOptions::read().customSeed = GLOBAL_SIS(Seed);
-	uqm::UQMOptions::read().shipSeed = (GLOBAL_SIS(ShipSeed) != 0);
+	uqm::UQMOptions::edit().customSeed = GLOBAL_SIS(Seed);
+	uqm::UQMOptions::edit().shipSeed = (GLOBAL_SIS(ShipSeed) != 0);
 	ReloadMasterShipList(nullptr);
 	LoadFleetInfo();
 
@@ -1045,7 +1045,7 @@ bool LoadGame(uint16_t which_game, SUMMARY_DESC* SummPtr, uio_Stream* in_fp, boo
 	{
 		if (uqm::UQMOptions::read().customSeed == 0)
 		{
-			GLOBAL_SIS(Seed) = uqm::UQMOptions::read().customSeed = PrimeA;
+			GLOBAL_SIS(Seed) = uqm::UQMOptions::edit().customSeed = PrimeA;
 		}
 		else if (uqm::UQMOptions::read().customSeed != PrimeA)
 		{

@@ -231,14 +231,14 @@ public:
 		return m_options;
 	}
 
-	static OptionsStruct& read()
+	static const OptionsStruct& read()
 	{
 		return getInstance().m_options;
 	}
 
-	OptionsStruct& edit()
+	static OptionsStruct& edit()
 	{
-		return m_options;
+		return getInstance().m_options;
 	}
 #ifdef NETPLAY
 	NetplayOptions& getNetplayOptions()

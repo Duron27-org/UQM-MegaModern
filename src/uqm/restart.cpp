@@ -291,14 +291,14 @@ DoDiffChooser(MENU_STATE* pMS)
 		switch (a)
 		{
 			case 0:
-				uqm::UQMOptions::read().optDifficulty = uqm::Difficulty::Easy;
+				uqm::UQMOptions::edit().optDifficulty = uqm::Difficulty::Easy;
 				break;
 			case 2:
-				uqm::UQMOptions::read().optDifficulty = uqm::Difficulty::Hard;
+				uqm::UQMOptions::edit().optDifficulty = uqm::Difficulty::Hard;
 				break;
 			case 1:
 			default:
-				uqm::UQMOptions::read().optDifficulty = uqm::Difficulty::Normal;
+				uqm::UQMOptions::edit().optDifficulty = uqm::Difficulty::Normal;
 				break;
 		}
 	}
@@ -474,7 +474,7 @@ DoRestart(MENU_STATE* pMS)
 
 	if (optWindowType < 2)
 	{
-		uqm::UQMOptions::read().meleeToolTips = false;
+		uqm::UQMOptions::edit().meleeToolTips = false;
 	}
 
 	if (optSuperMelee && !optLoadGame)
@@ -574,7 +574,7 @@ DoRestart(MENU_STATE* pMS)
 				optLoadGame = false;
 				break;
 			case PLAY_SUPER_MELEE:
-				uqm::UQMOptions::read().shipSeed = false;
+				uqm::UQMOptions::edit().shipSeed = false;
 				ReloadMasterShipList(nullptr);
 				GLOBAL(CurrentActivity) = SUPER_MELEE;
 				optSuperMelee = false;

@@ -660,7 +660,7 @@ populate_seed(void)
 {
 	if (choices[CHOICE_GAMESEED].selected == OPTVAL_PRIME || !SANE_SEED(uqm::UQMOptions::read().customSeed.value))
 	{
-		uqm::UQMOptions::read().customSeed = PrimeA;
+		uqm::UQMOptions::edit().customSeed = PrimeA;
 	}
 	fmt::format_to_sz_n(textentries[TEXT_GAMESEED].value,
 						sizeof(textentries[TEXT_GAMESEED].value), "{}", uqm::UQMOptions::read().customSeed.value);
@@ -912,7 +912,7 @@ change_seedtype(WIDGET_CHOICE* self, int oldval)
 {
 	if (self->selected == OPTVAL_PRIME)
 	{
-		uqm::UQMOptions::read().customSeed = PrimeA;
+		uqm::UQMOptions::edit().customSeed = PrimeA;
 		fmt::format_to_sz_n(textentries[TEXT_GAMESEED].value,
 							sizeof(textentries[TEXT_GAMESEED].value),
 							"{}", uqm::UQMOptions::read().customSeed.value);
@@ -930,7 +930,7 @@ change_seed(WIDGET_TEXTENTRY* self)
 		customSeed = PrimeA;
 		fmt::format_to_sz_n(self->value, "{}", customSeed);
 	}
-	uqm::UQMOptions::read().customSeed = customSeed;
+	uqm::UQMOptions::edit().customSeed = customSeed;
 }
 
 static void
@@ -989,7 +989,7 @@ change_scaling(WIDGET_CHOICE* self, int* NewWidth, int* NewHeight)
 	SavedWidth = inBounds(*NewWidth, 320, 1920);
 	SavedHeight = inBounds(*NewHeight, 200, 1400);
 
-	putOpt(uqm::UQMOptions::read().loresBlowupScale.value, (int)(self->selected), "config.loresBlowupScale", false);
+	putOpt(uqm::UQMOptions::edit().loresBlowupScale.value, (int)(self->selected), "config.loresBlowupScale", false);
 	res_PutInteger("config.reswidth", *NewWidth);
 	res_PutInteger("config.resheight", *NewHeight);
 }
@@ -1086,7 +1086,7 @@ void process_graphics_options(WIDGET_CHOICE* self, int OldVal)
 			toggle_showfps(self, &NewGfxFlags);
 			break;
 		case CHOICE_ASPRATIO:
-			uqm::UQMOptions::read().keepAspectRatio = (bool)self->selected;
+			uqm::UQMOptions::edit().keepAspectRatio = (bool)self->selected;
 			res_PutBoolean("config.keepaspectratio", self->selected);
 			break;
 		case CHOICE_RESOLUTION:
@@ -1231,7 +1231,7 @@ change_res(WIDGET_TEXTENTRY* self)
 
 	populate_res();
 
-	putOpt(uqm::UQMOptions::read().loresBlowupScale.value, (int)(choices[CHOICE_RESOLUTION].selected), "config.loresBlowupScale", false);
+	putOpt(uqm::UQMOptions::edit().loresBlowupScale.edit(), (int)(choices[CHOICE_RESOLUTION].selected), "config.loresBlowupScale", false);
 	res_PutInteger("config.reswidth", SavedWidth);
 	res_PutInteger("config.resheight", SavedHeight);
 }
@@ -2396,6 +2396,8 @@ void GetGlobalOptions(GLOBALOPTS* opts)
 	bool whichBound;
 	uint8_t i;
 
+	uqm::OptionsStruct& uqmOptions {uqm::UQMOptions::edit()};
+
 	/*
  *		Graphics options
  */
@@ -2450,10 +2452,10 @@ void GetGlobalOptions(GLOBALOPTS* opts)
 			break;
 	}
 
-	opts->keepaspect = uqm::UQMOptions::read().keepAspectRatio.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->keepaspect = uqmOptions.keepAspectRatio.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
 
 	{
-		float gamma = uqm::UQMOptions::read().gamma.value;
+		float gamma = uqmOptions.gamma.value;
 		whichBound = (gamma < maxGamma);
 		// The option supplied by the user may be beyond our starting range
 		// but valid nonetheless. We need to account for that.
@@ -2470,7 +2472,7 @@ void GetGlobalOptions(GLOBALOPTS* opts)
 	}
 
 
-	opts->loresBlowup = (OPT_RESSCALER)uqm::UQMOptions::read().loresBlowupScale.value;
+	opts->loresBlowup = (OPT_RESSCALER)uqmOptions.loresBlowupScale.value;
 	/* Work out resolution.  On the way, try to guess a good default
 	 * for config.alwaysgl, then overwrite it if it was set previously. */
 	if ((!IS_HD && (GraphicsDriver != uqm::GfxDriver::SDL_Pure) && ((WindowWidth == 320) || (WindowWidth == 640))) || res_GetBoolean("config.alwaysgl"))
@@ -2504,15 +2506,15 @@ void GetGlobalOptions(GLOBALOPTS* opts)
 	/*
  *		Audio options
  */
-	opts->stereo = uqm::UQMOptions::read().stereoSFX.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
-	opts->music3do = uqm::UQMOptions::read().use3doMusic.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
-	opts->musicremix = uqm::UQMOptions::read().useRemixMusic.value ? OPTVAL_ENABLED : OPTVAL_DISABLED; // Precursors Pack
-	opts->volasMusic = uqm::UQMOptions::read().volasMusic.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->stereo = uqmOptions.stereoSFX.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->music3do = uqmOptions.use3doMusic.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->musicremix = uqmOptions.useRemixMusic.value ? OPTVAL_ENABLED : OPTVAL_DISABLED; // Precursors Pack
+	opts->volasMusic = uqmOptions.volasMusic.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
 
-	opts->spaceMusic = uqm::UQMOptions::read().spaceMusic.value;
-	opts->mainMenuMusic = uqm::UQMOptions::read().mainMenuMusic.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
-	opts->musicResume = (OPT_MUSICRESUME)uqm::UQMOptions::read().musicResume.value;
-	opts->speech = uqm::UQMOptions::read().useSpeech.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->spaceMusic = uqmOptions.spaceMusic.value;
+	opts->mainMenuMusic = uqmOptions.mainMenuMusic.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->musicResume = (OPT_MUSICRESUME)uqmOptions.musicResume.value;
+	opts->speech = uqmOptions.useSpeech.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
 
 	switch (snddriver)
 	{
@@ -2551,100 +2553,100 @@ void GetGlobalOptions(GLOBALOPTS* opts)
  *		Engine&Visuals options
  */
 	// Mics
-	opts->subtitles = uqm::UQMOptions::read().subtitles.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
-	opts->menu = whichPlatformOpt(uqm::UQMOptions::read().whichMenu.value);
-	opts->submenu = uqm::UQMOptions::read().submenu.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
-	opts->text = whichPlatformOpt(uqm::UQMOptions::read().whichFonts.value);
-	opts->scrTrans = whichPlatformOpt(uqm::UQMOptions::read().scrTrans.value);
-	opts->intro = whichPlatformOpt(uqm::UQMOptions::read().whichIntro.value);
-	opts->skipIntro = uqm::UQMOptions::read().skipIntro.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->subtitles = uqmOptions.subtitles.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->menu = whichPlatformOpt(uqmOptions.whichMenu.value);
+	opts->submenu = uqmOptions.submenu.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->text = whichPlatformOpt(uqmOptions.whichFonts.value);
+	opts->scrTrans = whichPlatformOpt(uqmOptions.scrTrans.value);
+	opts->intro = whichPlatformOpt(uqmOptions.whichIntro.value);
+	opts->skipIntro = uqmOptions.skipIntro.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
 #ifdef MELEE_ZOOM
-	optMScale = opts->meleezoom = (int)uqm::UQMOptions::read().meleeScale.value;
+	optMScale = opts->meleezoom = (int)uqmOptions.meleeScale.value;
 #else
 	optMScale = opts->meleezoom =
-		(OPT_MELEEZOOM)(uqm::toTFBScaleMode(uqm::UQMOptions::read().meleeScale.value) == uqm::TFBScaleMode::Step ? uqm::EmulationMode::PC : uqm::EmulationMode::Console3DO);
+		(OPT_MELEEZOOM)(uqm::toTFBScaleMode(uqmOptions.meleeScale.value) == uqm::TFBScaleMode::Step ? uqm::EmulationMode::PC : uqm::EmulationMode::Console3DO);
 #endif
-	opts->controllerType = uqm::UQMOptions::read().optControllerType.value;
-	opts->directionalJoystick = uqm::UQMOptions::read().directionalJoystick.value ? OPTVAL_ENABLED : OPTVAL_DISABLED; // For Android
-	opts->dateType = dateFormatToDateTypeOpt(uqm::UQMOptions::read().optDateFormat.value);
-	opts->customBorder = uqm::UQMOptions::read().customBorder.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
-	opts->flagshipColor = whichPlatformOpt(uqm::UQMOptions::read().flagshipColor.value);
-	opts->gameOver = uqm::UQMOptions::read().gameOver.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
-	opts->hyperStars = uqm::UQMOptions::read().hyperStars.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
-	opts->showVisitedStars = uqm::UQMOptions::read().showVisitedStars.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
-	opts->fuelRange = uqm::UQMOptions::read().optFuelRange.value;
-	opts->wholeFuel = uqm::UQMOptions::read().wholeFuel.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
-	opts->meleeToolTips = uqm::UQMOptions::read().meleeToolTips.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
-	opts->sphereColors = uqm::UQMOptions::read().sphereColors.value;
-	opts->dosMenus = uqm::UQMOptions::read().dosMenus.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->controllerType = uqmOptions.optControllerType.value;
+	opts->directionalJoystick = uqmOptions.directionalJoystick.value ? OPTVAL_ENABLED : OPTVAL_DISABLED; // For Android
+	opts->dateType = dateFormatToDateTypeOpt(uqmOptions.optDateFormat.value);
+	opts->customBorder = uqmOptions.customBorder.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->flagshipColor = whichPlatformOpt(uqmOptions.flagshipColor.value);
+	opts->gameOver = uqmOptions.gameOver.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->hyperStars = uqmOptions.hyperStars.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->showVisitedStars = uqmOptions.showVisitedStars.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->fuelRange = uqmOptions.optFuelRange.value;
+	opts->wholeFuel = uqmOptions.wholeFuel.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->meleeToolTips = uqmOptions.meleeToolTips.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->sphereColors = uqmOptions.sphereColors.value;
+	opts->dosMenus = uqmOptions.dosMenus.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
 
 	// Interplanetary
-	opts->nebulae = uqm::UQMOptions::read().nebulae.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
-	opts->nebulaevol = uqm::UQMOptions::read().nebulaevol.value;
-	opts->starBackground = uqm::UQMOptions::read().starBackground.value;
-	opts->unscaledStarSystem = uqm::UQMOptions::read().unscaledStarSystem.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
-	opts->planetStyle = whichPlatformOpt(uqm::UQMOptions::read().planetStyle.value);
-	opts->orbitingPlanets = uqm::UQMOptions::read().orbitingPlanets.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
-	opts->texturedPlanets = uqm::UQMOptions::read().texturedPlanets.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->nebulae = uqmOptions.nebulae.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->nebulaevol = uqmOptions.nebulaevol.value;
+	opts->starBackground = uqmOptions.starBackground.value;
+	opts->unscaledStarSystem = uqmOptions.unscaledStarSystem.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->planetStyle = whichPlatformOpt(uqmOptions.planetStyle.value);
+	opts->orbitingPlanets = uqmOptions.orbitingPlanets.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->texturedPlanets = uqmOptions.texturedPlanets.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
 
 	// Orbit
-	opts->landerHold = whichPlatformOpt(uqm::UQMOptions::read().landerHold.value);
-	opts->partialPickup = uqm::UQMOptions::read().partialPickup.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
-	opts->cscan = whichPlatformOpt(uqm::UQMOptions::read().whichCoarseScan.value);
-	opts->hazardColors = uqm::UQMOptions::read().hazardColors.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
-	opts->scanStyle = whichPlatformOpt(uqm::UQMOptions::read().scanStyle.value);
-	opts->landerStyle = whichPlatformOpt(uqm::UQMOptions::read().landerStyle.value);
-	opts->planetTexture = uqm::UQMOptions::read().planetTexture.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
-	opts->sphereType = (OPT_SPHERETYPE)uqm::UQMOptions::read().sphereType.value;
-	opts->tintPlanSphere = whichPlatformOpt(uqm::UQMOptions::read().tintPlanSphere.value);
-	opts->shield = whichPlatformOpt(uqm::UQMOptions::read().whichShield.value);
+	opts->landerHold = whichPlatformOpt(uqmOptions.landerHold.value);
+	opts->partialPickup = uqmOptions.partialPickup.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->cscan = whichPlatformOpt(uqmOptions.whichCoarseScan.value);
+	opts->hazardColors = uqmOptions.hazardColors.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->scanStyle = whichPlatformOpt(uqmOptions.scanStyle.value);
+	opts->landerStyle = whichPlatformOpt(uqmOptions.landerStyle.value);
+	opts->planetTexture = uqmOptions.planetTexture.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->sphereType = (OPT_SPHERETYPE)uqmOptions.sphereType.value;
+	opts->tintPlanSphere = whichPlatformOpt(uqmOptions.tintPlanSphere.value);
+	opts->shield = whichPlatformOpt(uqmOptions.whichShield.value);
 
 	// Game modes
-	opts->difficulty = uqm::UQMOptions::read().optDiffChooser.value;
-	opts->extended = uqm::UQMOptions::read().extended.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
-	opts->nomad = uqm::UQMOptions::read().nomad.value;
-	opts->slaughterMode = uqm::UQMOptions::read().slaughterMode.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->difficulty = uqmOptions.optDiffChooser.value;
+	opts->extended = uqmOptions.extended.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->nomad = uqmOptions.nomad.value;
+	opts->slaughterMode = uqmOptions.slaughterMode.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
 	opts->seedType = (OPT_SEED)g_seedType;
-	opts->shipSeed = uqm::UQMOptions::read().shipSeed.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
-	opts->fleetPointSys = uqm::UQMOptions::read().fleetPointSys.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->shipSeed = uqmOptions.shipSeed.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->fleetPointSys = uqmOptions.fleetPointSys.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
 
 	// Comm screen
-	opts->scroll = whichPlatformOpt(uqm::UQMOptions::read().smoothScroll.value);
-	opts->orzCompFont = uqm::UQMOptions::read().orzCompFont.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
-	opts->scopeStyle = whichPlatformOpt(uqm::UQMOptions::read().scopeStyle.value);
-	opts->nonStopOscill = uqm::UQMOptions::read().nonStopOscill.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->scroll = whichPlatformOpt(uqmOptions.smoothScroll.value);
+	opts->orzCompFont = uqmOptions.orzCompFont.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->scopeStyle = whichPlatformOpt(uqmOptions.scopeStyle.value);
+	opts->nonStopOscill = uqmOptions.nonStopOscill.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
 
 	// Auto-Pilot
-	opts->smartAutoPilot = uqm::UQMOptions::read().smartAutoPilot.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
-	opts->advancedAutoPilot = uqm::UQMOptions::read().advancedAutoPilot.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
-	opts->shipDirectionIP = uqm::UQMOptions::read().shipDirectionIP.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->smartAutoPilot = uqmOptions.smartAutoPilot.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->advancedAutoPilot = uqmOptions.advancedAutoPilot.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->shipDirectionIP = uqmOptions.shipDirectionIP.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
 
 	// Controls
 	opts->player1 = PlayerControlTemplates[0];
 	opts->player2 = PlayerControlTemplates[1];
 
 	// QoL
-	opts->scatterElements = uqm::UQMOptions::read().scatterElements.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
-	opts->showUpgrades = uqm::UQMOptions::read().showUpgrades.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
-	opts->shipStore = uqm::UQMOptions::read().shipStore.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
-	opts->captainNames = uqm::UQMOptions::read().captainNames.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->scatterElements = uqmOptions.scatterElements.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->showUpgrades = uqmOptions.showUpgrades.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->shipStore = uqmOptions.shipStore.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->captainNames = uqmOptions.captainNames.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
 
 	/*
  *		Cheats
  */
-	opts->cheatMode = uqm::UQMOptions::read().cheatMode.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
-	opts->godModes = (OPT_GODTYPE)uqm::UQMOptions::read().optGodModes.value;
-	opts->timeDilationPct = uqm::UQMOptions::read().timeDilationPct.value;
-	opts->bubbleWarp = uqm::UQMOptions::read().bubbleWarp.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
-	opts->unlockShips = uqm::UQMOptions::read().unlockShips.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
-	opts->headStart = uqm::UQMOptions::read().headStart.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->cheatMode = uqmOptions.cheatMode.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->godModes = (OPT_GODTYPE)uqmOptions.optGodModes.value;
+	opts->timeDilationPct = uqmOptions.timeDilationPct.value;
+	opts->bubbleWarp = uqmOptions.bubbleWarp.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->unlockShips = uqmOptions.unlockShips.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->headStart = uqmOptions.headStart.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
 	//opts->unlockUpgrades = optUnlockUpgrades;
-	opts->infiniteCredits = uqm::UQMOptions::read().infiniteCredits.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
-	opts->infiniteRU = uqm::UQMOptions::read().infiniteRU.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
-	opts->infiniteFuel = uqm::UQMOptions::read().infiniteFuel.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
-	opts->noHQEncounters = uqm::UQMOptions::read().noHQEncounters.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
-	opts->deCleansing = uqm::UQMOptions::read().deCleansing.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
-	opts->meleeObstacles = uqm::UQMOptions::read().meleeObstacles.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->infiniteCredits = uqmOptions.infiniteCredits.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->infiniteRU = uqmOptions.infiniteRU.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->infiniteFuel = uqmOptions.infiniteFuel.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->noHQEncounters = uqmOptions.noHQEncounters.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->deCleansing = uqmOptions.deCleansing.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+	opts->meleeObstacles = uqmOptions.meleeObstacles.value ? OPTVAL_ENABLED : OPTVAL_DISABLED;
 
 	// Devices
 	for (i = 0; i < NUM_DEVICES; i++)
@@ -2665,6 +2667,8 @@ void SetGlobalOptions(GLOBALOPTS* opts)
 	int resFactor = resolutionFactor;
 	int newFactor;
 	uint8_t i;
+
+	auto& uqmOptions {uqm::UQMOptions::edit()};
 
 	/*
  *		Graphics options
@@ -2702,30 +2706,30 @@ void SetGlobalOptions(GLOBALOPTS* opts)
 		putOpt((int&)optWindowType, (int)opts->windowType, "mm.windowType", true);
 	}
 
-	putOpt(uqm::UQMOptions::read().keepAspectRatio.value, (bool)opts->keepaspect, "config.keepaspectratio", false);
+	putOpt(uqmOptions.keepAspectRatio.value, (bool)opts->keepaspect, "config.keepaspectratio", false);
 
 	// Avoid setting gamma when it is not necessary
-	if (uqm::UQMOptions::read().gamma.value != 1.0f || sliderToGamma(opts->gamma) != 1.0f)
+	if (uqmOptions.gamma.value != 1.0f || sliderToGamma(opts->gamma) != 1.0f)
 	{
-		uqm::UQMOptions::read().gamma = sliderToGamma(opts->gamma);
-		uqm::setGammaCorrection(uqm::UQMOptions::read().gamma.value);
-		res_PutInteger("config.gamma", (int)(uqm::UQMOptions::read().gamma.value * GAMMA_SCALE + 0.5));
+		uqmOptions.gamma = sliderToGamma(opts->gamma);
+		uqm::setGammaCorrection(uqmOptions.gamma.value);
+		res_PutInteger("config.gamma", (int)(uqmOptions.gamma.value * GAMMA_SCALE + 0.5));
 	}
 
 
 	/*
  *		Audio options
  */
-	putOpt(uqm::UQMOptions::read().stereoSFX.value, (bool)opts->stereo, "config.positionalsfx", true);
-	putOpt(uqm::UQMOptions::read().use3doMusic.value, (bool)opts->music3do, "config.3domusic", true);
-	putOpt(uqm::UQMOptions::read().useRemixMusic.value, (bool)opts->musicremix, "config.remixmusic", true);
-	putOpt(uqm::UQMOptions::read().volasMusic.value, (bool)opts->volasMusic, "mm.volasMusic", true);
+	putOpt(uqmOptions.stereoSFX.value, (bool)opts->stereo, "config.positionalsfx", true);
+	putOpt(uqmOptions.use3doMusic.value, (bool)opts->music3do, "config.3domusic", true);
+	putOpt(uqmOptions.useRemixMusic.value, (bool)opts->musicremix, "config.remixmusic", true);
+	putOpt(uqmOptions.volasMusic.value, (bool)opts->volasMusic, "mm.volasMusic", true);
 
-	putOpt(uqm::UQMOptions::read().spaceMusic.value, (int)opts->spaceMusic, "mm.spaceMusic", true);
+	putOpt(uqmOptions.spaceMusic.value, (int)opts->spaceMusic, "mm.spaceMusic", true);
 
-	if (putOpt(uqm::UQMOptions::read().mainMenuMusic.value, (bool)opts->mainMenuMusic, "mm.mainMenuMusic", false))
+	if (putOpt(uqmOptions.mainMenuMusic.value, (bool)opts->mainMenuMusic, "mm.mainMenuMusic", false))
 	{
-		if (uqm::UQMOptions::read().mainMenuMusic)
+		if (uqmOptions.mainMenuMusic)
 		{
 			InitMenuMusic();
 		}
@@ -2735,8 +2739,8 @@ void SetGlobalOptions(GLOBALOPTS* opts)
 		}
 	}
 
-	putOpt(uqm::UQMOptions::read().musicResume.value, (int)opts->musicResume, "mm.musicResume", false);
-	putOpt(uqm::UQMOptions::read().useSpeech.value, (bool)opts->speech, "config.speech", true);
+	putOpt(uqmOptions.musicResume.value, (int)opts->musicResume, "mm.musicResume", false);
+	putOpt(uqmOptions.useSpeech.value, (bool)opts->speech, "config.speech", true);
 
 	{
 		AudioDriverType newDriver {snddriver};
@@ -2757,7 +2761,7 @@ void SetGlobalOptions(GLOBALOPTS* opts)
 		if (snddriver != newDriver)
 		{
 			snddriver = newDriver;
-			uqm::UQMOptions::read().soundDriver = newDriver;
+			uqm::UQMOptions::edit().soundDriver = newDriver;
 			res_PutString("config.audiodriver", fmt::format("{:s}", snddriver).c_str());
 			optRequiresRestart = true;
 		}
@@ -2794,7 +2798,7 @@ void SetGlobalOptions(GLOBALOPTS* opts)
 				default:
 					break;
 			}
-			uqm::UQMOptions::read().soundQuality = newQuality;
+			uqm::UQMOptions::edit().soundQuality = newQuality;
 			res_PutString("config.audioquality", fmt::format("{:s}", (NewSndFlags & AudioQualityFlagMask)).c_str());
 			soundflags = NewSndFlags;
 			optRequiresRestart = true;
@@ -2811,82 +2815,82 @@ void SetGlobalOptions(GLOBALOPTS* opts)
  *		Engine&Visuals options
  */
 	// Mics
-	putOpt(uqm::UQMOptions::read().subtitles.value, (bool)opts->subtitles, "config.subtitles", false);
-	putOpt(uqm::UQMOptions::read().whichMenu.value, opts->menu, "config.textmenu", false);
-	putOpt(uqm::UQMOptions::read().submenu.value, (bool)opts->submenu, "mm.submenu", false);
-	putOpt(uqm::UQMOptions::read().whichFonts.value, opts->text, "config.textgradients", false);
-	putOpt(uqm::UQMOptions::read().scrTrans.value, opts->scrTrans, "mm.scrTransition", false);
-	putOpt(uqm::UQMOptions::read().whichIntro.value, opts->intro, "config.3domovies", true);
-	putOpt(uqm::UQMOptions::read().skipIntro.value, (bool)opts->skipIntro, "mm.skipIntro", false);
+	putOpt(uqmOptions.subtitles.value, (bool)opts->subtitles, "config.subtitles", false);
+	putOpt(uqmOptions.whichMenu.value, opts->menu, "config.textmenu", false);
+	putOpt(uqmOptions.submenu.value, (bool)opts->submenu, "mm.submenu", false);
+	putOpt(uqmOptions.whichFonts.value, opts->text, "config.textgradients", false);
+	putOpt(uqmOptions.scrTrans.value, opts->scrTrans, "mm.scrTransition", false);
+	putOpt(uqmOptions.whichIntro.value, opts->intro, "config.3domovies", true);
+	putOpt(uqmOptions.skipIntro.value, (bool)opts->skipIntro, "mm.skipIntro", false);
 	if (optMScale != (int)opts->meleezoom)
 	{
 #ifdef MELEE_ZOOM
 		switch (opts->meleezoom)
 		{
 			case TFB_SCALE_NEAREST:
-				uqm::UQMOptions::read().meleeScale = uqm::MeleeScaleMode::Nearest;
+				uqmOptions.meleeScale = uqm::MeleeScaleMode::Nearest;
 				break;
 			case TFB_SCALE_BILINEAR:
-				uqm::UQMOptions::read().meleeScale = uqm::MeleeScaleMode::Bilinear;
+				uqmOptions.meleeScale = uqm::MeleeScaleMode::Bilinear;
 				break;
 			case TFB_SCALE_TRILINEAR:
-				uqm::UQMOptions::read().meleeScale = uqm::MeleeScaleMode::Smooth;
+				uqmOptions.meleeScale = uqm::MeleeScaleMode::Smooth;
 				break;
 			case TFB_SCALE_STEP:
 			default:
-				uqm::UQMOptions::read().meleeScale = uqm::MeleeScaleMode::Step;
+				uqmOptions.meleeScale = uqm::MeleeScaleMode::Step;
 				break;
 		}
 		res_PutInteger("config.smoothmelee", opts->meleezoom);
 #else
 		uqm::TFBScaleMode tfbScale {((uqm::EmulationMode)opts->meleezoom == uqm::EmulationMode::Console3DO) ? uqm::TFBScaleMode::Trilinear : uqm::TFBScaleMode::Step};
-		uqm::UQMOptions::read().meleeScale = toMeleeScaleMode(tfbScale);
+		uqm::UQMOptions::edit().meleeScale = toMeleeScaleMode(tfbScale);
 		res_PutBoolean("config.smoothmelee", (uqm::EmulationMode)opts->meleezoom == uqm::EmulationMode::Console3DO);
 #endif
 	}
 #if SDL_MAJOR_VERSION == 1 // Refined joypad controls aren't supported on SDL1
 	opts->controllerType = 0;
 #endif
-	putOpt(uqm::UQMOptions::read().optControllerType.value, opts->controllerType, "mm.controllerType", false);
+	putOpt(uqmOptions.optControllerType.value, opts->controllerType, "mm.controllerType", false);
 #ifdef DIRECTIONAL_JOY
-	putOpt(uqm::UQMOptions::read().directionalJoystick.value, (bool)opts->directionalJoystick, "mm.directionalJoystick", false);
+	putOpt(uqmOptions.directionalJoystick.value, (bool)opts->directionalJoystick, "mm.directionalJoystick", false);
 #endif
-	putOpt(uqm::UQMOptions::read().optDateFormat.value, opts->dateType, "mm.dateFormat", false);
-	putOpt(uqm::UQMOptions::read().customBorder.value, (bool)opts->customBorder, "mm.customBorder", false);
-	putOpt(uqm::UQMOptions::read().flagshipColor.value, opts->flagshipColor, "mm.flagshipColor", false);
-	putOpt(uqm::UQMOptions::read().gameOver.value, (bool)opts->gameOver, "mm.gameOver", false);
-	putOpt(uqm::UQMOptions::read().hyperStars.value, (bool)opts->hyperStars, "mm.hyperStars", false);
-	putOpt(uqm::UQMOptions::read().showVisitedStars.value, (bool)opts->showVisitedStars, "mm.showVisitedStars", false);
-	putOpt(uqm::UQMOptions::read().optFuelRange.value, opts->fuelRange, "mm.fuelRange", false);
-	putOpt(uqm::UQMOptions::read().wholeFuel.value, (bool)opts->wholeFuel, "mm.wholeFuel", false);
-	putOpt(uqm::UQMOptions::read().meleeToolTips.value, (bool)opts->meleeToolTips, "mm.meleeToolTips", false);
-	putOpt(uqm::UQMOptions::read().sphereColors.value, opts->sphereColors, "mm.sphereColors", false);
-	putOpt(uqm::UQMOptions::read().scatterElements.value, (bool)opts->scatterElements, "mm.scatterElements", false);
-	putOpt(uqm::UQMOptions::read().shipStore.value, (bool)opts->shipStore, "mm.shipStore", false);
-	putOpt(uqm::UQMOptions::read().captainNames.value, (bool)opts->captainNames, "mm.captainNames", false);
-	putOpt(uqm::UQMOptions::read().dosMenus.value, (bool)opts->dosMenus, "mm.dosMenus", false);
+	putOpt(uqmOptions.optDateFormat.value, opts->dateType, "mm.dateFormat", false);
+	putOpt(uqmOptions.customBorder.value, (bool)opts->customBorder, "mm.customBorder", false);
+	putOpt(uqmOptions.flagshipColor.value, opts->flagshipColor, "mm.flagshipColor", false);
+	putOpt(uqmOptions.gameOver.value, (bool)opts->gameOver, "mm.gameOver", false);
+	putOpt(uqmOptions.hyperStars.value, (bool)opts->hyperStars, "mm.hyperStars", false);
+	putOpt(uqmOptions.showVisitedStars.value, (bool)opts->showVisitedStars, "mm.showVisitedStars", false);
+	putOpt(uqmOptions.optFuelRange.value, opts->fuelRange, "mm.fuelRange", false);
+	putOpt(uqmOptions.wholeFuel.value, (bool)opts->wholeFuel, "mm.wholeFuel", false);
+	putOpt(uqmOptions.meleeToolTips.value, (bool)opts->meleeToolTips, "mm.meleeToolTips", false);
+	putOpt(uqmOptions.sphereColors.value, opts->sphereColors, "mm.sphereColors", false);
+	putOpt(uqmOptions.scatterElements.value, (bool)opts->scatterElements, "mm.scatterElements", false);
+	putOpt(uqmOptions.shipStore.value, (bool)opts->shipStore, "mm.shipStore", false);
+	putOpt(uqmOptions.captainNames.value, (bool)opts->captainNames, "mm.captainNames", false);
+	putOpt(uqmOptions.dosMenus.value, (bool)opts->dosMenus, "mm.dosMenus", false);
 
 	// Interplanetary
-	putOpt(uqm::UQMOptions::read().nebulae.value, (bool)opts->nebulae, "mm.nebulae", false);
-	putOpt(uqm::UQMOptions::read().nebulaevol.value, opts->nebulaevol, "mm.nebulaevol", false);
-	putOpt(uqm::UQMOptions::read().starBackground.value, opts->starBackground, "mm.starBackground", false);
-	putOpt(uqm::UQMOptions::read().unscaledStarSystem.value, (bool)opts->unscaledStarSystem, "mm.unscaledStarSystem", false);
-	putOpt(uqm::UQMOptions::read().planetStyle.value, opts->planetStyle, "mm.planetStyle", false);
-	putOpt(uqm::UQMOptions::read().orbitingPlanets.value, (bool)opts->orbitingPlanets, "mm.orbitingPlanets", false);
-	putOpt(uqm::UQMOptions::read().texturedPlanets.value, (bool)opts->texturedPlanets, "mm.texturedPlanets", false);
+	putOpt(uqmOptions.nebulae.value, (bool)opts->nebulae, "mm.nebulae", false);
+	putOpt(uqmOptions.nebulaevol.value, opts->nebulaevol, "mm.nebulaevol", false);
+	putOpt(uqmOptions.starBackground.value, opts->starBackground, "mm.starBackground", false);
+	putOpt(uqmOptions.unscaledStarSystem.value, (bool)opts->unscaledStarSystem, "mm.unscaledStarSystem", false);
+	putOpt(uqmOptions.planetStyle.value, opts->planetStyle, "mm.planetStyle", false);
+	putOpt(uqmOptions.orbitingPlanets.value, (bool)opts->orbitingPlanets, "mm.orbitingPlanets", false);
+	putOpt(uqmOptions.texturedPlanets.value, (bool)opts->texturedPlanets, "mm.texturedPlanets", false);
 
 	// Orbit
-	putOpt(uqm::UQMOptions::read().landerHold.value, opts->landerHold, "mm.landerHold", false);
-	putOpt(uqm::UQMOptions::read().partialPickup.value, (bool)opts->partialPickup, "mm.partialPickup", false);
-	putOpt(uqm::UQMOptions::read().whichCoarseScan.value, opts->cscan, "config.iconicscan", false);
-	putOpt(uqm::UQMOptions::read().hazardColors.value, (bool)opts->hazardColors, "mm.hazardColors", false);
-	putOpt(uqm::UQMOptions::read().scanStyle.value, opts->scanStyle, "mm.scanStyle", false);
-	putOpt(uqm::UQMOptions::read().landerStyle.value, opts->landerStyle, "mm.landerStyle", false);
-	putOpt(uqm::UQMOptions::read().planetTexture.value, (bool)opts->planetTexture, "mm.planetTexture", false);
-	putOpt(uqm::UQMOptions::read().sphereType.value, (int)opts->sphereType, "mm.sphereType", false);
-	putOpt(uqm::UQMOptions::read().tintPlanSphere.value, opts->tintPlanSphere, "mm.tintPlanSphere", false);
-	putOpt(uqm::UQMOptions::read().whichShield.value, opts->shield, "config.pulseshield", false);
-	putOpt(uqm::UQMOptions::read().showUpgrades.value, (bool)opts->showUpgrades, "mm.showUpgrades", false);
+	putOpt(uqmOptions.landerHold.value, opts->landerHold, "mm.landerHold", false);
+	putOpt(uqmOptions.partialPickup.value, (bool)opts->partialPickup, "mm.partialPickup", false);
+	putOpt(uqmOptions.whichCoarseScan.value, opts->cscan, "config.iconicscan", false);
+	putOpt(uqmOptions.hazardColors.value, (bool)opts->hazardColors, "mm.hazardColors", false);
+	putOpt(uqmOptions.scanStyle.value, opts->scanStyle, "mm.scanStyle", false);
+	putOpt(uqmOptions.landerStyle.value, opts->landerStyle, "mm.landerStyle", false);
+	putOpt(uqmOptions.planetTexture.value, (bool)opts->planetTexture, "mm.planetTexture", false);
+	putOpt(uqmOptions.sphereType.value, (int)opts->sphereType, "mm.sphereType", false);
+	putOpt(uqmOptions.tintPlanSphere.value, opts->tintPlanSphere, "mm.tintPlanSphere", false);
+	putOpt(uqmOptions.whichShield.value, opts->shield, "config.pulseshield", false);
+	putOpt(uqmOptions.showUpgrades.value, (bool)opts->showUpgrades, "mm.showUpgrades", false);
 
 	// Game modes
 	{
@@ -2896,30 +2900,30 @@ void SetGlobalOptions(GLOBALOPTS* opts)
 		{
 			customSeed = PrimeA;
 		}
-		putOpt(uqm::UQMOptions::read().customSeed.value, customSeed, "mm.customSeed", false);
-		putOpt(uqm::UQMOptions::read().shipSeed.value, (bool)opts->shipSeed, "mm.shipSeed", false);
+		putOpt(uqmOptions.customSeed.value, customSeed, "mm.customSeed", false);
+		putOpt(uqmOptions.shipSeed.value, (bool)opts->shipSeed, "mm.shipSeed", false);
 	}
 
-	putOpt(uqm::UQMOptions::read().optDiffChooser.value, (int)opts->difficulty, "mm.difficulty", false);
-	if ((uqm::UQMOptions::read().optDifficulty = (uqm::Difficulty)opts->difficulty) == uqm::Difficulty::ChooseYourOwn)
+	putOpt(uqmOptions.optDiffChooser.value, (int)opts->difficulty, "mm.difficulty", false);
+	if ((uqm::UQMOptions::edit().optDifficulty = (uqm::Difficulty)opts->difficulty) == uqm::Difficulty::ChooseYourOwn)
 	{
-		uqm::UQMOptions::read().optDifficulty = uqm::Difficulty::Normal;
+		uqm::UQMOptions::edit().optDifficulty = uqm::Difficulty::Normal;
 	}
-	putOpt(uqm::UQMOptions::read().extended.value, (bool)opts->extended, "mm.extended", false);
-	putOpt(uqm::UQMOptions::read().nomad.value, (int)opts->nomad, "mm.nomad", false);
-	putOpt(uqm::UQMOptions::read().slaughterMode.value, (bool)opts->slaughterMode, "mm.slaughterMode", false);
-	putOpt(uqm::UQMOptions::read().fleetPointSys.value, (bool)opts->fleetPointSys, "mm.fleetPointSys", false);
+	putOpt(uqmOptions.extended.value, (bool)opts->extended, "mm.extended", false);
+	putOpt(uqmOptions.nomad.value, (int)opts->nomad, "mm.nomad", false);
+	putOpt(uqmOptions.slaughterMode.value, (bool)opts->slaughterMode, "mm.slaughterMode", false);
+	putOpt(uqmOptions.fleetPointSys.value, (bool)opts->fleetPointSys, "mm.fleetPointSys", false);
 
 	// Comm screen
-	putOpt(uqm::UQMOptions::read().smoothScroll.value, opts->scroll, "config.smoothscroll", false);
-	putOpt(uqm::UQMOptions::read().orzCompFont.value, (bool)opts->orzCompFont, "mm.orzCompFont", false);
-	putOpt(uqm::UQMOptions::read().scopeStyle.value, opts->scopeStyle, "mm.scopeStyle", false);
-	putOpt(uqm::UQMOptions::read().nonStopOscill.value, (bool)opts->nonStopOscill, "mm.nonStopOscill", false);
+	putOpt(uqmOptions.smoothScroll.value, opts->scroll, "config.smoothscroll", false);
+	putOpt(uqmOptions.orzCompFont.value, (bool)opts->orzCompFont, "mm.orzCompFont", false);
+	putOpt(uqmOptions.scopeStyle.value, opts->scopeStyle, "mm.scopeStyle", false);
+	putOpt(uqmOptions.nonStopOscill.value, (bool)opts->nonStopOscill, "mm.nonStopOscill", false);
 
 	// Auto-Pilot
-	putOpt(uqm::UQMOptions::read().smartAutoPilot.value, (bool)opts->smartAutoPilot, "mm.smartAutoPilot", false);
-	putOpt(uqm::UQMOptions::read().advancedAutoPilot.value, (bool)opts->advancedAutoPilot, "mm.advancedAutoPilot", false);
-	putOpt(uqm::UQMOptions::read().shipDirectionIP.value, (bool)opts->shipDirectionIP, "mm.shipDirectionIP", false);
+	putOpt(uqmOptions.smartAutoPilot.value, (bool)opts->smartAutoPilot, "mm.smartAutoPilot", false);
+	putOpt(uqmOptions.advancedAutoPilot.value, (bool)opts->advancedAutoPilot, "mm.advancedAutoPilot", false);
+	putOpt(uqmOptions.shipDirectionIP.value, (bool)opts->shipDirectionIP, "mm.shipDirectionIP", false);
 
 	// Controls
 	PlayerControlTemplates[0] = opts->player1;
@@ -2939,19 +2943,19 @@ void SetGlobalOptions(GLOBALOPTS* opts)
 	/*
  *		Cheats
  */
-	putOpt(uqm::UQMOptions::read().cheatMode.value, (bool)opts->cheatMode, "cheat.kohrStahp", false);
-	putOpt(uqm::UQMOptions::read().optGodModes.value, (int)opts->godModes, "cheat.godModes", false);
-	putOpt(uqm::UQMOptions::read().timeDilationPct.value, opts->timeDilationPct, "cheat.timeDilationPct", false);
-	putOpt(uqm::UQMOptions::read().bubbleWarp.value, (bool)opts->bubbleWarp, "cheat.bubbleWarp", false);
-	putOpt(uqm::UQMOptions::read().unlockShips.value, (bool)opts->unlockShips, "cheat.unlockShips", false);
-	putOpt(uqm::UQMOptions::read().headStart.value, (bool)opts->headStart, "cheat.headStart", false);
+	putOpt(uqmOptions.cheatMode.value, (bool)opts->cheatMode, "cheat.kohrStahp", false);
+	putOpt(uqmOptions.optGodModes.value, (int)opts->godModes, "cheat.godModes", false);
+	putOpt(uqmOptions.timeDilationPct.value, opts->timeDilationPct, "cheat.timeDilationPct", false);
+	putOpt(uqmOptions.bubbleWarp.value, (bool)opts->bubbleWarp, "cheat.bubbleWarp", false);
+	putOpt(uqmOptions.unlockShips.value, (bool)opts->unlockShips, "cheat.unlockShips", false);
+	putOpt(uqmOptions.headStart.value, (bool)opts->headStart, "cheat.headStart", false);
 	//putOpt(optUnlockUpgrades opts->unlockUpgrades, "cheat.unlockUpgrades", false);
-	putOpt(uqm::UQMOptions::read().infiniteCredits.value, (bool)opts->infiniteCredits, "cheat.infiniteCredits", false);
-	putOpt(uqm::UQMOptions::read().infiniteRU.value, (bool)opts->infiniteRU, "cheat.infiniteRU", false);
-	putOpt(uqm::UQMOptions::read().infiniteFuel.value, (bool)opts->infiniteFuel, "cheat.infiniteFuel", false);
-	putOpt(uqm::UQMOptions::read().noHQEncounters.value, (bool)opts->noHQEncounters, "cheat.noHQEncounters", false);
-	putOpt(uqm::UQMOptions::read().deCleansing.value, (bool)opts->deCleansing, "cheat.deCleansing", false);
-	putOpt(uqm::UQMOptions::read().meleeObstacles.value, (bool)opts->meleeObstacles, "cheat.meleeObstacles", false);
+	putOpt(uqmOptions.infiniteCredits.value, (bool)opts->infiniteCredits, "cheat.infiniteCredits", false);
+	putOpt(uqmOptions.infiniteRU.value, (bool)opts->infiniteRU, "cheat.infiniteRU", false);
+	putOpt(uqmOptions.infiniteFuel.value, (bool)opts->infiniteFuel, "cheat.infiniteFuel", false);
+	putOpt(uqmOptions.noHQEncounters.value, (bool)opts->noHQEncounters, "cheat.noHQEncounters", false);
+	putOpt(uqmOptions.deCleansing.value, (bool)opts->deCleansing, "cheat.deCleansing", false);
+	putOpt(uqmOptions.meleeObstacles.value, (bool)opts->meleeObstacles, "cheat.meleeObstacles", false);
 
 	// Devices
 	for (i = 0; i < NUM_DEVICES; i++)
@@ -2989,12 +2993,12 @@ void SetGlobalOptions(GLOBALOPTS* opts)
 
 		if (choices[CHOICE_RESOLUTION].selected != 6)
 		{
-			h = DOS_BOOL(240, 200) * (uqm::UQMOptions::read().loresBlowupScale.value + 1);
+			h = DOS_BOOL(240, 200) * (uqmOptions.loresBlowupScale.value + 1);
 			SavedHeight = h;
 			res_PutInteger("config.resheight", SavedHeight);
 		}
 
-		if (uqm::UQMOptions::read().keepAspectRatio)
+		if (uqmOptions.keepAspectRatio)
 		{
 			float threshold = 0.75f;
 			float ratio = (float)h / (float)w;

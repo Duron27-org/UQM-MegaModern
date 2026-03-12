@@ -728,7 +728,7 @@ OutTakes(void)
 	int i = 0;
 
 	// Outtakes have no voice tracks, so the subtitles are always on
-	uqm::UQMOptions::read().subtitles = true;
+	uqm::UQMOptions::edit().subtitles = true;
 	sliderDisabled = true;
 	oscillDisabled = true;
 
@@ -738,7 +738,7 @@ OutTakes(void)
 		InitCommunication(outtake_list[i]);
 	}
 
-	uqm::UQMOptions::read().subtitles = oldsubtitles;
+	uqm::UQMOptions::edit().subtitles = oldsubtitles;
 	sliderDisabled = false;
 	oscillDisabled = false;
 }

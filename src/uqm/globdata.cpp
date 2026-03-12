@@ -579,13 +579,13 @@ bool InitGameStructures(void)
 	GLOBAL_SIS(Nomad) = uqm::UQMOptions::read().nomad;
 	if (PrimeSeed)
 	{
-		uqm::UQMOptions::read().shipSeed = false;
-		uqm::UQMOptions::read().customSeed.value = PrimeA;
+		uqm::UQMOptions::edit().shipSeed = false;
+		uqm::UQMOptions::edit().customSeed.value = PrimeA;
 	}
 	if (isDifficulty(uqm::Difficulty::Hard) && !PrimeSeed && !StarSeed)
 	{
 		srand(time(nullptr));
-		uqm::UQMOptions::read().customSeed.value = (rand() % ((MAX_SEED - MIN_SEED) + MIN_SEED));
+		uqm::UQMOptions::edit().customSeed.value = (rand() % ((MAX_SEED - MIN_SEED) + MIN_SEED));
 	}
 	GLOBAL_SIS(Seed) = uqm::UQMOptions::read().customSeed.value;
 	GLOBAL_SIS(ShipSeed) = (uqm::UQMOptions::read().shipSeed ? 1 : 0);
@@ -861,8 +861,8 @@ void SeedDEBUG()
 		myRNG = true;
 	}
 	RandomContext_SeedRandom(StarGenRNG, 123456);
-	for (uqm::UQMOptions::read().customSeed.value = START; uqm::UQMOptions::read().customSeed < (START + SAMPLE_SIZE);
-		 uqm::UQMOptions::read().customSeed = uqm::UQMOptions::read().customSeed.value + 1)
+	for (uqm::UQMOptions::edit().customSeed.value = START; uqm::UQMOptions::read().customSeed < (START + SAMPLE_SIZE);
+		 uqm::UQMOptions::edit().customSeed = uqm::UQMOptions::read().customSeed.value + 1)
 	{
 		start_clock = clock();
 		fmt::print(stderr, "\n\n\nStarting seed {}... ", uqm::UQMOptions::read().customSeed.value);
@@ -895,7 +895,7 @@ void SeedDEBUG()
 		}
 		fmt::print(stderr, "%3d ", histogram[decisec]);
 	}
-	uqm::UQMOptions::read().customSeed.value = save;
+	uqm::UQMOptions::edit().customSeed.value = save;
 	if (StarGenRNG && myRNG)
 	{
 		RandomContext_Delete(StarGenRNG);
@@ -997,7 +997,7 @@ bool InitStarseed(bool newgame)
 		while (SeedPlot(plot_map, star_array) != NUM_PLOTS && i < 100)
 		{
 			fmt::print(stderr, "Seed {} failed ({}).\n", uqm::UQMOptions::read().customSeed.value, ++i);
-			uqm::UQMOptions::read().customSeed.value = uqm::UQMOptions::read().customSeed.value + 1;
+			uqm::UQMOptions::edit().customSeed.value = uqm::UQMOptions::read().customSeed.value + 1;
 			SeedStarmap(star_array);
 		}
 		if (i >= 100)
