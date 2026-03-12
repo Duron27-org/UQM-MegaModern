@@ -41,7 +41,7 @@
 
 // How manyeth .png in the module.ani file is the first lander shield.
 #define SHIELD_LOCATION_IN_MODULE_ANI (23 + 2 * NUM_PURCHASE_MODULES)
-#define DOS_MENU (optDosMenus || IS_DOS) // The DOS Menu window
+#define DOS_MENU (uqm::UQMOptions::read().dosMenus || IS_DOS) // The DOS Menu window
 
 enum
 {
@@ -177,7 +177,7 @@ DrawModuleDisplay(MODULES_STATE* modState)
 	r.extent.width = FIELD_WIDTH + RES_SCALE(1);
 	r.extent.height = (RES_SCALE(129) - r.corner.y);
 
-	if (!optCustomBorder && !IS_HD)
+	if (!uqm::UQMOptions::read().customBorder && !IS_HD)
 	{
 		DrawStarConBox(&r, RES_SCALE(1),
 					   SHADOWBOX_MEDIUM_COLOR, SHADOWBOX_DARK_COLOR,
@@ -299,7 +299,7 @@ DrawModuleMenuText(GFXRECT* r, int Index)
 
 	SetContextForeGroundColor(MDL_RECT_COLOR);
 
-	if (!optCustomBorder)
+	if (!uqm::UQMOptions::read().customBorder)
 	{
 		block = *r;
 		block.extent.height = (leading << 1) - RES_SCALE(1);
@@ -358,7 +358,7 @@ DrawModuleStrings(MENU_STATE* pMS, uint8_t NewModule)
 		r.extent.height = RES_SCALE(11);
 		//	ClearSISRect (CLEAR_SIS_RADAR); // blinks otherwise
 		SetContextForeGroundColor(MENU_FOREGROUND_COLOR);
-		if (!optCustomBorder)
+		if (!uqm::UQMOptions::read().customBorder)
 		{
 			DrawFilledRectangle(&r); // drawn over anyway
 		}
@@ -375,7 +375,7 @@ DrawModuleStrings(MENU_STATE* pMS, uint8_t NewModule)
 		dosRect.extent.width = RADAR_WIDTH + RES_SCALE(4);
 		dosRect.extent.height = RADAR_HEIGHT + RES_SCALE(2);
 
-		if (optCustomBorder)
+		if (uqm::UQMOptions::read().customBorder)
 		{
 			dosRect.corner.x += RES_SCALE(2);
 			dosRect.corner.y += RES_SCALE(2);
@@ -395,7 +395,7 @@ DrawModuleStrings(MENU_STATE* pMS, uint8_t NewModule)
 			else
 			{
 				DrawRenderedBox(&dosRect, true, BLACK_COLOR,
-								THIN_INNER_BEVEL, optCustomBorder);
+								THIN_INNER_BEVEL, uqm::UQMOptions::read().customBorder);
 			}
 		}
 	}
@@ -428,7 +428,7 @@ DrawModuleStrings(MENU_STATE* pMS, uint8_t NewModule)
 		t.pStr = buf;
 		fmt::format_to_n(buf, sizeof(buf) - 1, "{}",
 						 GLOBAL(ModuleCost[NewModule]) * MODULE_COST_SCALE);
-		if (isPC(optWhichFonts))
+		if (isPC(uqm::UQMOptions::read().whichFonts))
 		{
 			SetContextFont(TinyFont);
 		}
@@ -746,7 +746,7 @@ DoInstallModule(MENU_STATE* pMS)
 					volume -= (old_slot_piece == FUEL_TANK ? FUEL_TANK_CAPACITY : HEFUEL_TANK_CAPACITY);
 					if (GLOBAL_SIS(FuelOnBoard) > volume + FUEL_RESERVE)
 					{ // fuel tank still needed for the fuel on board
-						if (!optInfiniteFuel)
+						if (!uqm::UQMOptions::read().infiniteFuel)
 						{
 							PlayMenuSound(MENU_SOUND_FAILURE);
 							return (true);
@@ -1089,7 +1089,7 @@ InitFlash:
 							MODULE_TOP_Y - RES_SCALE(1);
 						pMS->flash_rect0.extent.width =
 							SHIP_PIECE_OFFSET + RES_SCALE(2)
-							+ RES_SCALE(optWhichMenu == uqm::EmulationMode::PC);
+							+ RES_SCALE(uqm::UQMOptions::read().whichMenu == uqm::EmulationMode::PC);
 						pMS->flash_rect0.extent.height = RES_SCALE(34);
 
 						pMS->flash_rect1.corner.x =
@@ -1098,7 +1098,7 @@ InitFlash:
 							MODULE_SIDE_Y - RES_SCALE(1);
 						pMS->flash_rect1.extent.width =
 							SHIP_PIECE_OFFSET + RES_SCALE(2)
-							+ RES_SCALE(optWhichMenu == uqm::EmulationMode::PC);
+							+ RES_SCALE(uqm::UQMOptions::read().whichMenu == uqm::EmulationMode::PC);
 						pMS->flash_rect1.extent.height = RES_SCALE(25);
 						break;
 				}
@@ -1127,7 +1127,7 @@ InitFlash:
 			}
 			else
 			{
-				if (optWhichMenu == uqm::EmulationMode::PC)
+				if (uqm::UQMOptions::read().whichMenu == uqm::EmulationMode::PC)
 				{
 					switch (pMS->CurState)
 					{
@@ -1153,13 +1153,13 @@ InitFlash:
 				}
 
 				if (IS_DOS && (pMS->CurState == EMPTY_SLOT + 3 || pMS->CurState == PLANET_LANDER)
-					&& is3DO(optWhichMenu))
+					&& is3DO(uqm::UQMOptions::read().whichMenu))
 				{
 					SetFlashRect(&pMS->flash_rect0, true);
 				}
 				else
 				{
-					SetFlashRect(&pMS->flash_rect0, optWhichMenu == uqm::EmulationMode::PC);
+					SetFlashRect(&pMS->flash_rect0, uqm::UQMOptions::read().whichMenu == uqm::EmulationMode::PC);
 				}
 			}
 		}
@@ -1298,7 +1298,7 @@ bool DoOutfit(MENU_STATE* pMS)
 			s.frame = CaptureDrawable(
 				LoadGraphic(OUTFIT_PMAP_ANIM));
 
-			if (optFlagshipColor == uqm::EmulationMode::Console3DO)
+			if (uqm::UQMOptions::read().flagshipColor == uqm::EmulationMode::Console3DO)
 			{
 				s.frame = SetAbsFrameIndex(s.frame, 1);
 			}
@@ -1390,7 +1390,7 @@ bool DoOutfit(MENU_STATE* pMS)
 
 			DrawFlagshipStats();
 
-			ScreenTransition(optScrTrans, nullptr);
+			ScreenTransition(uqm::UQMOptions::read().scrTrans, nullptr);
 
 			PlayMusicResume(pMS->hMusic, NORMAL_VOLUME);
 
@@ -1510,7 +1510,7 @@ ExitOutfit:
 
 		if (pMS->CurState == OUTFIT_DOFUEL)
 		{
-			if (!optInfiniteFuel)
+			if (!uqm::UQMOptions::read().infiniteFuel)
 			{
 				ChangeFuelQuantity();
 			}
@@ -1523,12 +1523,12 @@ ExitOutfit:
 		}
 	}
 
-	if (optInfiniteFuel)
+	if (uqm::UQMOptions::read().infiniteFuel)
 	{
 		DeltaSISGauges(0, GetFuelTankCapacity(), 0);
 		RedistributeFuel();
 	}
-	if (optInfiniteRU)
+	if (uqm::UQMOptions::read().infiniteRU)
 	{
 		GLOBAL_SIS(ResUnits) = 1000000L;
 	}

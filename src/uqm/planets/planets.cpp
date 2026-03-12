@@ -277,7 +277,7 @@ void DrawPlanetSurfaceBorder(void)
 	r.extent.height = RES_SCALE(1);
 	DrawFilledRectangle(&r);
 
-	if (isPC(optSuperPC))
+	if (isPC(uqm::UQMOptions::read().landerStyle))
 	{
 		r.corner.x = RES_SCALE(UQM_MAP_WIDTH - SC2_MAP_WIDTH)
 				   - SIS_ORG_X + RES_SCALE(1) + SAFE_POS(1);
@@ -375,7 +375,7 @@ void DrawOrbitMapGraphic(void)
 
 	SetContext(GetScanContext(nullptr));
 
-	if (optScanSphere != 1)
+	if (uqm::UQMOptions::read().sphereType != 1)
 	{
 		bool HaveString =
 			strlen(GAME_STRING(NAVIGATION_STRING_BASE + 8)) > 0;
@@ -387,7 +387,7 @@ void DrawOrbitMapGraphic(void)
 		s.origin.x = -SAFE_X;
 		s.origin.y = 0;
 
-		if (isPC(optSuperPC))
+		if (isPC(uqm::UQMOptions::read().landerStyle))
 		{
 			s.origin.x -=
 				RES_SCALE(((UQM_MAP_WIDTH - SC2_MAP_WIDTH) / 2)
@@ -463,7 +463,7 @@ DrawOrbitalDisplay(DRAW_ORBITAL_MODE Mode)
 	{
 		DrawOrbitMapGraphic();
 
-		if (isPC(optSuperPC))
+		if (isPC(uqm::UQMOptions::read().landerStyle))
 		{
 			InitPCLander(true);
 		}
@@ -487,7 +487,7 @@ DrawOrbitalDisplay(DRAW_ORBITAL_MODE Mode)
 	{
 		SetContext(GetScanContext(nullptr));
 		DrawPlanet(0, BLACK_COLOR);
-		if (isPC(optSuperPC))
+		if (isPC(uqm::UQMOptions::read().landerStyle))
 		{
 			InitPCLander(false);
 		}
@@ -495,7 +495,7 @@ DrawOrbitalDisplay(DRAW_ORBITAL_MODE Mode)
 
 	if (Mode != DRAW_ORBITAL_UPDATE)
 	{
-		ScreenTransition(optScrTrans, &r);
+		ScreenTransition(uqm::UQMOptions::read().scrTrans, &r);
 	}
 
 	UnbatchGraphics();
@@ -536,7 +536,7 @@ void LoadPlanet(FRAME SurfDefFrame)
 
 	if (WaitMode)
 	{
-		if (optScanSphere == 1)
+		if (uqm::UQMOptions::read().sphereType == 1)
 		{
 			GetPlanetTopography(pPlanetDesc, SurfDefFrame);
 		}
@@ -548,7 +548,7 @@ void LoadPlanet(FRAME SurfDefFrame)
 	GeneratePlanetSide();
 	MaskLanderGraphics();
 
-	if (isPC(optScrTrans))
+	if (isPC(uqm::UQMOptions::read().scrTrans))
 	{
 		SleepThreadUntil(sleep);
 	}
@@ -560,7 +560,7 @@ void LoadPlanet(FRAME SurfDefFrame)
 
 	if (WaitMode)
 	{
-		if (is3DO(optScrTrans) || optScanSphere == 1)
+		if (is3DO(uqm::UQMOptions::read().scrTrans) || uqm::UQMOptions::read().sphereType == 1)
 		{
 			ZoomInPlanetSphere();
 		}
@@ -597,7 +597,7 @@ void FreePlanet(void)
 	DestroyDrawable(ReleaseDrawable(pSolarSysState->TopoFrame));
 	pSolarSysState->TopoFrame = 0;
 
-	if (optScanStyle == uqm::EmulationMode::PC)
+	if (uqm::UQMOptions::read().scanStyle == uqm::EmulationMode::PC)
 	{
 		uint16_t k;
 
@@ -734,7 +734,7 @@ DoPlanetOrbit(MENU_STATE* pMS)
 	{
 		if (select)
 		{ // 3DO menu jumps to NAVIGATE after a successful submenu run
-			if (optWhichMenu != uqm::EmulationMode::PC)
+			if (uqm::UQMOptions::read().whichMenu != uqm::EmulationMode::PC)
 			{
 				pMS->CurState = NAVIGATION;
 			}

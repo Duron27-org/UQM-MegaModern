@@ -15,7 +15,7 @@
  */
 
 /*
- * Eventually this should include all configuration stuff, 
+ * Eventually this should include all configuration stuff,
  * for now there's few options which indicate 3do/pc flavors.
  */
 
@@ -30,112 +30,30 @@
 
 #include "options/OptionDefs.h"
 #include "options/OptionTypes.h"
+#include "options/options.h"
 
 #include "uqmversion.h"
 
 
-extern uqm::EmulationMode optWhichCoarseScan;
-extern uqm::EmulationMode optWhichMenu;
-extern uqm::EmulationMode optWhichFonts;
-extern uqm::EmulationMode optWhichIntro;
-extern uqm::EmulationMode optWhichShield;
-extern uqm::EmulationMode optSmoothScroll;
-extern uqm::MeleeScaleMode optMeleeScale;
-extern unsigned int loresBlowupScale;
 extern unsigned int resolutionFactor;
-extern unsigned int audioDriver;
-extern unsigned int audioQuality;
+extern uint32_t optWindowType;
 
-// Added options
+// Runtime state (kept as globals)
 extern bool optRequiresReload;
 extern bool optRequiresRestart;
-extern OPT_ENABLABLE optCheatMode;
-extern uqm::GodModeFlags optGodModes;
-extern int timeDilationPct;
-extern OPT_ENABLABLE optBubbleWarp;
-extern OPT_ENABLABLE optUnlockShips;
-extern OPT_ENABLABLE optHeadStart;
-extern OPT_ENABLABLE optUnlockUpgrades;
-extern OPT_ENABLABLE optInfiniteRU;
 extern uint32_t oldRU;
-extern OPT_ENABLABLE optSkipIntro;
-extern OPT_ENABLABLE optMainMenuMusic;
-extern OPT_ENABLABLE optNebulae;
-extern OPT_ENABLABLE optOrbitingPlanets;
-extern OPT_ENABLABLE optTexturedPlanets;
-extern uqm::DateFormat optDateFormat;
-extern OPT_ENABLABLE optInfiniteFuel;
 extern uint32_t loadFuel;
-extern OPT_ENABLABLE optPartialPickup;
-extern OPT_ENABLABLE optSubmenu;
-extern OPT_ENABLABLE optInfiniteCredits;
+extern int spaceMusicBySOI;
 extern bool optSuperMelee;
 extern bool optLoadGame;
-extern OPT_ENABLABLE optCustomBorder;
-extern int optCustomSeed;
-extern OPT_ENABLABLE optShipSeed;
-extern uqm::SphereOfInfluenceColors optSphereColors;
-extern uqm::SphereOfInfluenceMusic optSpaceMusic;
-extern int spaceMusicBySOI; // not an option, just the global setting chosen as a result of optSpaceMusic.
-extern OPT_ENABLABLE optVolasMusic;
-extern OPT_ENABLABLE optWholeFuel;
-extern OPT_ENABLABLE optDirectionalJoystick;
-extern uqm::EmulationMode optLanderHold;
-extern uqm::EmulationMode optScrTrans;
-extern uqm::Difficulty optDifficulty;
-extern uqm::Difficulty optDiffChooser;
-extern uqm::FuelRangeDisplay optFuelRange;
-extern OPT_ENABLABLE optExtended;
-extern uqm::NomadMode optNomad;
-extern OPT_ENABLABLE optGameOver;
-extern OPT_ENABLABLE optShipDirectionIP;
-extern OPT_ENABLABLE optHazardColors;
-extern OPT_ENABLABLE optOrzCompFont;
-extern uqm::ControllerType optControllerType;
-extern OPT_ENABLABLE optSmartAutoPilot;
-extern uqm::EmulationMode optTintPlanSphere;
-extern uqm::EmulationMode optPlanetStyle;
-extern int optStarBackground;
-extern uqm::EmulationMode optScanStyle;
-extern OPT_ENABLABLE optNonStopOscill;
-extern uqm::EmulationMode optScopeStyle;
-extern uqm::EmulationMode optSuperPC;
-extern OPT_ENABLABLE optHyperStars;
-extern OPT_ENABLABLE optPlanetTexture;
-extern uqm::EmulationMode optFlagshipColor;
-extern OPT_ENABLABLE optNoHQEncounters;
-extern OPT_ENABLABLE optDeCleansing;
-extern OPT_ENABLABLE optMeleeObstacles;
-extern OPT_ENABLABLE optShowVisitedStars;
-extern OPT_ENABLABLE optUnscaledStarSystem;
-extern int optScanSphere;
-extern int optNebulaeVolume;
-extern OPT_ENABLABLE optSlaughterMode;
 extern bool optMaskOfDeceit;
-extern OPT_ENABLABLE optAdvancedAutoPilot;
-extern OPT_ENABLABLE optMeleeToolTips;
-extern int optMusicResume;
-extern uint32_t optWindowType;
+extern bool restartGame;
 extern bool optNoClassic;
-extern OPT_ENABLABLE optScatterElements;
-extern OPT_ENABLABLE optShowUpgrades;
-extern OPT_ENABLABLE optFleetPointSys;
-extern OPT_ENABLABLE optShipStore;
-extern OPT_ENABLABLE optCaptainNames;
-extern OPT_ENABLABLE optDosMenus;
+
 extern OPT_ADD_REMOVE optDeviceArray[28];
 extern OPT_ADD_REMOVE optUpgradeArray[13];
 
-extern OPT_ENABLABLE opt3doMusic;
-extern OPT_ENABLABLE optRemixMusic;
-extern OPT_ENABLABLE optSpeech;
-extern OPT_ENABLABLE optSubtitles;
-extern OPT_ENABLABLE optStereoSFX;
-extern OPT_ENABLABLE optKeepAspectRatio;
-extern bool restartGame;
-
 #define GAMMA_SCALE 1000
-extern float optGamma;
 
 extern uio_DirHandle* contentDir;
 extern uio_DirHandle* configDir;
@@ -146,8 +64,6 @@ extern char baseContentPath[PATH_MAX];
 
 extern uqgsl::czstring contentDirPath;
 extern uqgsl::czstring addonDirPath;
-
-extern uqstl::span<const uqstl::string> optAddons;
 
 
 extern uqstl::vector<uint32_t> g_addonList;

@@ -373,7 +373,7 @@ bool DoStarBase(MENU_STATE* pMS)
 		ClearDrawable();
 		rotateStarbase(pMS, pMS->CurFrame);
 		DrawBaseStateStrings((STARBASE_STATE)~0, pMS->CurState);
-		ScreenTransition(optScrTrans, nullptr);
+		ScreenTransition(uqm::UQMOptions::read().scrTrans, nullptr);
 
 		PlayMusicResume(pMS->hMusic, NORMAL_VOLUME);
 
@@ -497,7 +497,7 @@ DoTimePassage(void)
 	MoveGameClockDays(LOST_DAYS);
 
 	// JMS: Calculate flagship location in IP.
-	if (optOrbitingPlanets)
+	if (uqm::UQMOptions::read().orbitingPlanets)
 	{
 		double newAngle;
 		GFXPOINT starbase_coords;

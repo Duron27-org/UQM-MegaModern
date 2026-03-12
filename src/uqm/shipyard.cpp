@@ -43,7 +43,7 @@
 #include "util.h"
 #include "shipcont.h"
 
-#define DOS_MENU (optDosMenus || IS_DOS) // The DOS Menu window
+#define DOS_MENU (uqm::UQMOptions::read().dosMenus || IS_DOS) // The DOS Menu window
 
 // 3DO 4x3 hangar layout
 #define HANGAR_SHIPS_ROW_3DO 4
@@ -241,7 +241,7 @@ DrawShipsDisplay(SHIPS_STATE* shipState)
 	r.extent.width = FIELD_WIDTH + RES_SCALE(1);
 	r.extent.height = (RES_SCALE(129) - r.corner.y);
 
-	if (!optCustomBorder && !IS_HD)
+	if (!uqm::UQMOptions::read().customBorder && !IS_HD)
 	{
 		DrawStarConBox(&r, RES_SCALE(1),
 					   SHADOWBOX_MEDIUM_COLOR, SHADOWBOX_DARK_COLOR,
@@ -594,7 +594,7 @@ CalculateEscortsPoints(void)
 
 bool CanBuyPoints(HFLEETINFO hFleet)
 {
-	if ((!optFleetPointSys && !isDifficulty(uqm::Difficulty::Hard))
+	if ((!uqm::UQMOptions::read().fleetPointSys && !isDifficulty(uqm::Difficulty::Hard))
 		|| GET_GAME_STATE(CHMMR_BOMB_STATE) == 3)
 	{
 		return true;
@@ -616,7 +616,7 @@ showRemainingPoints(int delta)
 	int8_t percentage_left;
 	int16_t FP = REMAINING_FP + delta;
 
-	if ((!optFleetPointSys && !isDifficulty(uqm::Difficulty::Hard))
+	if ((!uqm::UQMOptions::read().fleetPointSys && !isDifficulty(uqm::Difficulty::Hard))
 		|| GET_GAME_STATE(CHMMR_BOMB_STATE) == 3)
 	{
 		return;
@@ -723,7 +723,7 @@ SpinStarShip(MENU_STATE* pMS, HFLEETINFO hStarShip)
 
 	if (Index >= 0 && Index < NUM_MELEE_SHIPS)
 	{
-		if (isPC(optWhichIntro))
+		if (isPC(uqm::UQMOptions::read().whichIntro))
 		{
 			PlayMenuSound(MENU_SOUND_SUCCESS);
 		}
@@ -843,7 +843,7 @@ DrawShipyardShipText(GFXRECT* r, int Index)
 
 	GetContextFontLeading(&leading);
 
-	if (!optCustomBorder)
+	if (!uqm::UQMOptions::read().customBorder)
 	{
 		block = *r;
 		block.extent.height = (leading << 1);
@@ -897,7 +897,7 @@ DrawRaceStrings(uint8_t NewRaceItem)
 
 	if (!IS_DOS)
 	{
-		if (!optCustomBorder)
+		if (!uqm::UQMOptions::read().customBorder)
 		{
 			DrawFilledRectangle(&r);
 		}
@@ -934,7 +934,7 @@ DrawRaceStrings(uint8_t NewRaceItem)
 		else
 		{
 			DrawRenderedBox(&dosRect, true, BLACK_COLOR,
-							THIN_INNER_BEVEL, optCustomBorder);
+							THIN_INNER_BEVEL, uqm::UQMOptions::read().customBorder);
 		}
 	}
 
@@ -1006,7 +1006,7 @@ DrawRaceStrings(uint8_t NewRaceItem)
 
 
 		// Draw additional information
-		if (isPC(optWhichFonts))
+		if (isPC(uqm::UQMOptions::read().whichFonts))
 		{
 			SetContextFont(TinyFont);
 		}
@@ -1058,7 +1058,7 @@ DrawRaceStrings(uint8_t NewRaceItem)
 		font_DrawText(&t);
 
 		// Print the fleet points
-		if ((optFleetPointSys || isDifficulty(uqm::Difficulty::Hard))
+		if ((uqm::UQMOptions::read().fleetPointSys || isDifficulty(uqm::Difficulty::Hard))
 			&& GET_GAME_STATE(CHMMR_BOMB_STATE) < 3)
 		{
 			t.baseline.y = RADAR_Y + RES_SCALE(7)
@@ -1120,7 +1120,7 @@ ShowShipCrew(SHIP_FRAGMENT* StarShipPtr, const GFXRECT* pRect)
 	uint16_t maxCrewLevel;
 	STRING captain;
 
-	if (isPC(optWhichFonts))
+	if (isPC(uqm::UQMOptions::read().whichFonts))
 	{
 		SetContextFont(TinyFont);
 	}
@@ -1178,7 +1178,7 @@ ShowShipCrew(SHIP_FRAGMENT* StarShipPtr, const GFXRECT* pRect)
 								  (BUILD_COLOR(MAKE_RGB15(0x12, 0x00, 0x00), 0x2B)));
 	font_DrawText(&t);
 
-	if (!optCaptainNames)
+	if (!uqm::UQMOptions::read().captainNames)
 	{
 		return;
 	}
@@ -1448,7 +1448,7 @@ DMS_FlashFlagShip(void)
 	r.corner.x = 0;
 	r.corner.y = 0;
 	r.extent.width = SIS_SCREEN_WIDTH;
-	if (optWhichMenu != uqm::EmulationMode::PC)
+	if (uqm::UQMOptions::read().whichMenu != uqm::EmulationMode::PC)
 	{
 		r.extent.height = RES_SCALE(63) - SAFE_NUM_SCL(2);
 	}
@@ -1456,7 +1456,7 @@ DMS_FlashFlagShip(void)
 	{
 		r.extent.height = RES_SCALE(74) - DOS_NUM_SCL(9) - SAFE_NEG(3);
 	}
-	SetFlashRect(&r, optWhichMenu == uqm::EmulationMode::PC);
+	SetFlashRect(&r, uqm::UQMOptions::read().whichMenu == uqm::EmulationMode::PC);
 }
 
 static void
@@ -1476,7 +1476,7 @@ DMS_FlashEscortShip(uint8_t slotNr)
 {
 	GFXRECT r;
 	DMS_GetEscortShipRect(&r, slotNr);
-	SetFlashRect(&r, optWhichMenu == uqm::EmulationMode::PC);
+	SetFlashRect(&r, uqm::UQMOptions::read().whichMenu == uqm::EmulationMode::PC);
 }
 
 static void
@@ -2746,7 +2746,7 @@ bool DoShipyard(MENU_STATE* pMS)
 				SetContextClipRect(&r);
 				DrawStamp(&s);
 
-				if (optCustomBorder)
+				if (uqm::UQMOptions::read().customBorder)
 				{
 					DrawBorder(SIS_REPAIR_FRAME);
 				}
@@ -2765,7 +2765,7 @@ bool DoShipyard(MENU_STATE* pMS)
 				}
 			}
 
-			if (isPC(optWhichFonts))
+			if (isPC(uqm::UQMOptions::read().whichFonts))
 			{
 				SetContextFont(TinyFont);
 			}
@@ -2774,7 +2774,7 @@ bool DoShipyard(MENU_STATE* pMS)
 				SetContextFont(TinyFontBold);
 			}
 
-			ScreenTransition(optScrTrans, nullptr);
+			ScreenTransition(uqm::UQMOptions::read().scrTrans, nullptr);
 			UnbatchGraphics();
 
 			PlayMusicResume(pMS->hMusic, NORMAL_VOLUME);
@@ -2838,7 +2838,7 @@ ExitShipyard:
 		DoMenuChooser(pMS, PM_CREW);
 	}
 
-	if (optInfiniteRU)
+	if (uqm::UQMOptions::read().infiniteRU)
 	{
 		GLOBAL_SIS(ResUnits) = 1000000L;
 	}

@@ -209,7 +209,7 @@ ExitConversation(RESPONSE_REF R)
 		SET_GAME_STATE(CHMMR_BOMB_STATE, 2);
 		SET_GAME_STATE(UTWIG_BOMB_ON_SHIP, 0);
 
-		if (!optInfiniteRU)
+		if (!uqm::UQMOptions::read().infiniteRU)
 		{
 			GLOBAL_SIS(ResUnits) = 1000000L;
 		}
@@ -254,7 +254,7 @@ ExitConversation(RESPONSE_REF R)
 
 			/* XXX : this should be unhardcoded eventually */
 			/* transport to Starbase */
-			/* note: if optOrbitingPlanets is enabled, this will be corrected in DoTimePassage */
+			/* note: if uqm::UQMOptions::read().orbitingPlanets is enabled, this will be corrected in DoTimePassage */
 			GLOBAL(ShipStamp.origin.x) = RES_SCALE(ORIG_SIS_SCREEN_WIDTH >> 1) + COSINE(HALF_CIRCLE + QUADRANT, MIN_MOON_RADIUS);
 			GLOBAL(ShipStamp.origin.y) = RES_SCALE(ORIG_SIS_SCREEN_HEIGHT >> 1) + SINE(HALF_CIRCLE + QUADRANT, MIN_MOON_RADIUS >> 1);
 		}

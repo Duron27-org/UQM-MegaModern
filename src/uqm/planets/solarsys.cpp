@@ -142,15 +142,15 @@ RandomContext* SysGenRNGDebug;
 #define SUN_INDEX_OFFSET ((GetFrameCount(SunFrame) - SUN_ZOOM_SIZES) / SUN_ZOOM_SIZES)
 #define STAR_INDEX_MULTIPLIER (SUN_INDEX_OFFSET ? SUN_INDEX_OFFSET : 1)
 
-#define USE_RGB_STARS ((!IS_HD && NebulaFrame) || (IS_HD && optHyperStars))
+#define USE_RGB_STARS ((!IS_HD && NebulaFrame) || (IS_HD && uqm::UQMOptions::read().hyperStars))
 #define ANIMATED_SUN (GetFrameCount(SunFrame) > 10)
 
 
 // Resources to load
-#define SIS_IP_MASK (is3DO(optFlagshipColor) ? SISIP_MASK_PMAP_ANIM_RED : \
-											   SISIP_MASK_PMAP_ANIM)
-#define PLANETS_MASK ((isPC(optPlanetStyle) && !optTexturedPlanets) ? \
-						  DOS_ORBPLAN_MASK_PMAP_ANIM :                \
+#define SIS_IP_MASK (is3DO(uqm::UQMOptions::read().flagshipColor) ? SISIP_MASK_PMAP_ANIM_RED : \
+																	SISIP_MASK_PMAP_ANIM)
+#define PLANETS_MASK ((isPC(uqm::UQMOptions::read().planetStyle) && !uqm::UQMOptions::read().texturedPlanets) ? \
+						  DOS_ORBPLAN_MASK_PMAP_ANIM :                                                          \
 						  ORBPLAN_MASK_PMAP_ANIM)
 #define SUN_MASK (USE_RGB_STARS ? SUNANIM_MASK_PMAP_ANIM : SUN_MASK_PMAP_ANIM)
 
@@ -431,7 +431,7 @@ LoadNebulaeFrame(GFXPOINT location)
 
 	// Kruzen: Either loading from main menu or option is disabled or
 	// at Sol with MegaMod nebulas
-	if (!optNebulae || !(LastActivity != CHECK_LOAD || NextActivity) || (pointsEqual(location, solPoint) && !classicPackPresent && !inHyperSpace()))
+	if (!uqm::UQMOptions::read().nebulae || !(LastActivity != CHECK_LOAD || NextActivity) || (pointsEqual(location, solPoint) && !classicPackPresent && !inHyperSpace()))
 	{
 		return nullptr;
 	}
@@ -647,12 +647,12 @@ GetRandomSeedForStar(const STAR_DESC* star)
 	fmt::print(stderr, "Get Random Seed For Star. %05.1f : %05.1f "
 					   "[{}] (seed {}) = {}.  Plot ID {} ({}).\n",
 			   (float)star->star_pt.x / 10, (float)star->star_pt.y / 10,
-			   MAKE_DWORD(star->star_pt.x, star->star_pt.y), optCustomSeed,
+			   MAKE_DWORD(star->star_pt.x, star->star_pt.y), uqm::UQMOptions::read().customSeed,
 			   MAKE_DWORD(star->star_pt.x, star->star_pt.y)
-				   + (StarSeed ? optCustomSeed : 0),
+				   + (StarSeed ? uqm::UQMOptions::read().customSeed : 0),
 			   star->Index, starPresenceString(star->Index));
 #endif
-	return MAKE_DWORD(star->star_pt.x, star->star_pt.y) + (StarSeed ? optCustomSeed : 0);
+	return MAKE_DWORD(star->star_pt.x, star->star_pt.y) + (StarSeed ? uqm::UQMOptions::read().customSeed : 0);
 }
 
 uint32_t
@@ -769,7 +769,7 @@ LoadSolarSys(void)
 
 	if (NebulaFrame)
 	{
-		uint8_t brightness = (optNebulaeVolume + 1) * 5;
+		uint8_t brightness = (uqm::UQMOptions::read().nebulaevol + 1) * 5;
 		for (i = 0; i < NUM_TEMP_RANGES; i++)
 		{
 			IncreaseBrightness(&temp_color_array[i].r, brightness);
@@ -920,7 +920,7 @@ FreeSolarSys(void)
 
 	StopMusic();
 
-	if (optTexturedPlanets)
+	if (uqm::UQMOptions::read().texturedPlanets)
 	{
 		// BW: clean up data generated for textured IP planets
 		for (i = 0, pCurDesc = pSolarSysState->PlanetDesc;
@@ -978,7 +978,7 @@ FreeSolarSys(void)
 		for (i = 0, pCurDesc = pSolarSysState->PlanetDesc;
 			 i < pSolarSysState->SunDesc[0].NumPlanets; ++i, ++pCurDesc)
 		{
-			if (isPC(optPlanetStyle))
+			if (isPC(uqm::UQMOptions::read().planetStyle))
 			{
 				DestroyDrawable(ReleaseDrawable(pCurDesc->image.frame));
 				pCurDesc->image.frame = 0;
@@ -1002,7 +1002,7 @@ FreeSolarSys(void)
 			for (i = 0, pCurDesc = pSolarSysState->MoonDesc;
 				 i < numMoons; ++i, ++pCurDesc)
 			{
-				if (!(pCurDesc->data_index & WORLD_TYPE_SPECIAL) && isPC(optPlanetStyle))
+				if (!(pCurDesc->data_index & WORLD_TYPE_SPECIAL) && isPC(uqm::UQMOptions::read().planetStyle))
 				{
 					DestroyDrawable(ReleaseDrawable(
 						pCurDesc->image.frame));
@@ -1213,7 +1213,7 @@ ValidateOrbit(PLANET_DESC* planet, int sizeNumer, int dyNumer, int denom)
 {
 	uint16_t index;
 
-	if (optOrbitingPlanets)
+	if (uqm::UQMOptions::read().orbitingPlanets)
 	{
 		// BW: recompute planet position to account for orbiting
 		// uint16_t newAngle;
@@ -1290,7 +1290,7 @@ ValidateOrbit(PLANET_DESC* planet, int sizeNumer, int dyNumer, int denom)
 		{
 			planet->frame_offset = offset;
 
-			if (!optTexturedPlanets && isPC(optPlanetStyle))
+			if (!uqm::UQMOptions::read().texturedPlanets && isPC(uqm::UQMOptions::read().planetStyle))
 			{
 				SetPlanetOldFrame(planet, offset, PLANCOLOR(Type));
 			}
@@ -1343,7 +1343,7 @@ DrawOrbit(PLANET_DESC* planet, int sizeNumer, int dyNumer, int denom)
 
 	dr = RECT_TO_DRECT(r);
 	SetContextForeGroundColor(planet->temp_color);
-	if (!optUnscaledStarSystem)
+	if (!uqm::UQMOptions::read().unscaledStarSystem)
 	{
 		DrawOval(&dr, chooseIfHd(1, 6), false);
 	}
@@ -1501,7 +1501,7 @@ TurnAbout(int16_t delta_x, int16_t delta_y)
 	uint16_t index;
 	GFXPOINT delta = {delta_x, delta_y};
 
-	if (!optSmartAutoPilot)
+	if (!uqm::UQMOptions::read().smartAutoPilot)
 	{
 		delta.y = SHIP_THRUST;
 		return delta;
@@ -1654,7 +1654,7 @@ enterInnerSystem(PLANET_DESC* planet)
 	ZeroVelocityComponents(&GLOBAL(velocity));
 
 	GenerateMoons(pSolarSysState, planet);
-	if (optTexturedPlanets)
+	if (uqm::UQMOptions::read().texturedPlanets)
 	{
 		GenerateTexturedMoons(pSolarSysState, planet);
 	}
@@ -1687,7 +1687,7 @@ leaveInnerSystem(PLANET_DESC* planet)
 
 	// Now the ship is in outer system (as per game logic)
 
-	if (optTexturedPlanets)
+	if (uqm::UQMOptions::read().texturedPlanets)
 	{ // BW: clean up data generated for textured IP moons
 		for (i = 0, pMoonDesc = pSolarSysState->MoonDesc;
 			 i < planet->NumPlanets; ++i, ++pMoonDesc)
@@ -1704,7 +1704,7 @@ leaveInnerSystem(PLANET_DESC* planet)
 			pMoonDesc->frame_offset = UNDEFINED_OFFSET;
 		}
 	} // End clean up
-	else if (isPC(optPlanetStyle))
+	else if (isPC(uqm::UQMOptions::read().planetStyle))
 	{
 		for (i = 0, pMoonDesc = pSolarSysState->MoonDesc;
 			 i < planet->NumPlanets; ++i, ++pMoonDesc)
@@ -1828,7 +1828,7 @@ DrawSystemTransition(bool inner)
 		DrawOuterSystem();
 	}
 	RedrawQueue(false);
-	ScreenTransition(optScrTrans, nullptr);
+	ScreenTransition(uqm::UQMOptions::read().scrTrans, nullptr);
 	UnbatchGraphics();
 }
 
@@ -1898,7 +1898,7 @@ ScaleSystem(int16_t new_radius)
 	BatchGraphics();
 	DrawOuterSystem();
 	RedrawQueue(false);
-	ScreenTransition(optScrTrans, &r);
+	ScreenTransition(uqm::UQMOptions::read().scrTrans, &r);
 	UnbatchGraphics();
 #endif // SMOOTH_SYSTEM_ZOOM
 }
@@ -2024,7 +2024,7 @@ IP_frame(void)
 	{ // Just flying around, minding own business..
 		BatchGraphics();
 		RestoreSystemView();
-		if (ANIMATED_SUN || optOrbitingPlanets || optTexturedPlanets)
+		if (ANIMATED_SUN || uqm::UQMOptions::read().orbitingPlanets || uqm::UQMOptions::read().texturedPlanets)
 		{
 			// BW: recompute planet position to account for orbiting
 			if (playerInInnerSystem())
@@ -2112,7 +2112,7 @@ DrawInnerSystem(void)
 {
 	ValidateInnerOrbits();
 	DrawSystem(pSolarSysState->pOrbitalDesc->radius, true);
-	if (ANIMATED_SUN || optOrbitingPlanets || optTexturedPlanets)
+	if (ANIMATED_SUN || uqm::UQMOptions::read().orbitingPlanets || uqm::UQMOptions::read().texturedPlanets)
 	{
 		DrawInnerPlanets(pSolarSysState->pOrbitalDesc);
 	}
@@ -2124,7 +2124,7 @@ DrawOuterSystem(void)
 {
 	ValidateOrbits();
 	DrawSystem(pSolarSysState->SunDesc[0].radius, false);
-	if (ANIMATED_SUN || optOrbitingPlanets || optTexturedPlanets)
+	if (ANIMATED_SUN || uqm::UQMOptions::read().orbitingPlanets || uqm::UQMOptions::read().texturedPlanets)
 	{
 		DrawOuterPlanets(pSolarSysState->SunDesc[0].radius);
 	}
@@ -2246,7 +2246,7 @@ EnterPlanetOrbit(void)
 			pSolarSysState->pOrbitalDesc->image.origin;
 
 		// JMS_GFX: Draw the moon letter when orbiting a moon
-		if (!(GetNamedPlanetaryBody()) && isPC(optWhichFonts)
+		if (!(GetNamedPlanetaryBody()) && isPC(uqm::UQMOptions::read().whichFonts)
 			&& !(pSolarSysState->pOrbitalDesc->data_index
 				 & WORLD_TYPE_SPECIAL))
 		{
@@ -2298,7 +2298,7 @@ EnterPlanetOrbit(void)
 		ValidateInnerOrbits();
 		ResetSolarSys();
 
-		if (optTexturedPlanets)
+		if (uqm::UQMOptions::read().texturedPlanets)
 		{
 			if (worldIsMoon(pSolarSysState, pSolarSysState->pOrbitalDesc))
 			{
@@ -2431,7 +2431,7 @@ InitSolarSys(void)
 		{ // Entered a new system, or loaded into inner or outer
 			if (InnerSystem)
 			{
-				if (optTexturedPlanets)
+				if (uqm::UQMOptions::read().texturedPlanets)
 				{
 					GenerateTexturedMoons(pSolarSysState,
 										  pSolarSysState->pOrbitalDesc);
@@ -2443,7 +2443,7 @@ InitSolarSys(void)
 				DrawOuterSystem();
 			}
 			RedrawQueue(false);
-			ScreenTransition(optScrTrans, nullptr);
+			ScreenTransition(uqm::UQMOptions::read().scrTrans, nullptr);
 			UnbatchGraphics();
 
 			LastActivity &= ~CHECK_LOAD;
@@ -2582,7 +2582,7 @@ DrawInnerPlanets(PLANET_DESC* planet)
 	s.origin.x = RES_SCALE(ORIG_SIS_SCREEN_WIDTH >> 1);
 	s.origin.y = RES_SCALE(ORIG_SIS_SCREEN_HEIGHT >> 1);
 
-	if (optTexturedPlanets)
+	if (uqm::UQMOptions::read().texturedPlanets)
 	{ // Draw the planet image
 		RotatePlanets(true);
 		DrawTexturedBody(planet, s);
@@ -2638,7 +2638,7 @@ DrawOuterPlanets(int16_t radius)
 	PLANET_DESC* pCurDesc;
 
 	CalcSunSize(&pSolarSysState->SunDesc[0], radius);
-	if (optOrbitingPlanets)
+	if (uqm::UQMOptions::read().orbitingPlanets)
 	{
 		sortPlanetPositions();
 	}
@@ -2654,7 +2654,7 @@ DrawOuterPlanets(int16_t radius)
 		}
 		else
 		{ // It's a planet
-			if (optTexturedPlanets)
+			if (uqm::UQMOptions::read().texturedPlanets)
 			{
 				RotatePlanets(false);
 				DrawTexturedBody(pCurDesc, pCurDesc->image);
@@ -2682,7 +2682,7 @@ DrawSystem(int16_t radius, bool IsInnerSystem)
 	GFXCONTEXT oldContext;
 	STAMP s;
 
-	if (optTexturedPlanets)
+	if (uqm::UQMOptions::read().texturedPlanets)
 	{
 		// BW: This to test if we have already rendered
 		if (!pSolarSysState->PlanetDesc->orbit.lpTopoData)
@@ -2729,7 +2729,7 @@ DrawSystem(int16_t radius, bool IsInnerSystem)
 		}
 	}
 
-	if (!optOrbitingPlanets && !optTexturedPlanets)
+	if (!uqm::UQMOptions::read().orbitingPlanets && !uqm::UQMOptions::read().texturedPlanets)
 	{
 		if (IsInnerSystem) // Draw the inner system view
 		{
@@ -2812,7 +2812,7 @@ DrawNebula(FRAME nebula)
 	}
 
 	oldMode = SetContextDrawMode(MAKE_DRAW_MODE(DRAW_ALPHA,
-												(optNebulaeVolume + 1) * 5));
+												(uqm::UQMOptions::read().nebulaevol + 1) * 5));
 	s.origin.x = 0;
 	s.origin.y = 0;
 	s.frame = nebula;
@@ -2828,7 +2828,7 @@ CreateStarBackGround(RandomContext* SysRNG, FRAME nebula, FRAME junk)
 	GFXCONTEXT oldContext;
 	GFXRECT clipRect;
 	FRAME frame;
-	bool hdScaled = (!optUnscaledStarSystem || !IS_HD);
+	bool hdScaled = (!uqm::UQMOptions::read().unscaledStarSystem || !IS_HD);
 
 	// Use SpaceContext to find out the dimensions of the background
 	oldContext = SetContext(SpaceContext);
@@ -2877,7 +2877,7 @@ GetStarBackGround(bool encounter)
 
 	// Battle Segue - generate new independant frame
 
-	if (!optNebulae) // Load default frame
+	if (!uqm::UQMOptions::read().nebulae) // Load default frame
 	{
 		return CaptureDrawable(LoadGraphic(SEGUE_PMAP_ANIM));
 	}
@@ -3131,7 +3131,7 @@ void GetPlanetOrMoonName(char* buf, uint16_t bufsize)
 
 	if (!playerInSolarSystem() || !playerInInnerSystem()
 		|| worldIsPlanet(pSolarSysState, pSolarSysState->pOrbitalDesc)
-		|| is3DO(optWhichFonts))
+		|| is3DO(uqm::UQMOptions::read().whichFonts))
 	{ // Outer or inner system or orbiting a planet
 		return;
 	}
@@ -3262,7 +3262,7 @@ DoSolarSysMenu(MENU_STATE* pMS)
 
 			TransitionSystemIn();
 
-			if (optWhichMenu != uqm::EmulationMode::PC)
+			if (uqm::UQMOptions::read().whichMenu != uqm::EmulationMode::PC)
 			{
 				DrawMenuStateStrings(PM_STARMAP, NAVIGATION);
 			}
@@ -3275,7 +3275,7 @@ DoSolarSysMenu(MENU_STATE* pMS)
 	{
 		if (select)
 		{ // 3DO menu jumps to NAVIGATE after a successful submenu run
-			if (optWhichMenu != uqm::EmulationMode::PC)
+			if (uqm::UQMOptions::read().whichMenu != uqm::EmulationMode::PC)
 			{
 				pMS->CurState = NAVIGATION;
 			}
@@ -3373,7 +3373,7 @@ widthPick(void)
 {
 	EXTENT sis_screen_dimensions[] = {SIS_SCREEN_DIMENSIONS};
 
-	return sis_screen_dimensions[optStarBackground].width;
+	return sis_screen_dimensions[uqm::UQMOptions::read().starBackground].width;
 }
 
 static COORD
@@ -3381,7 +3381,7 @@ heightPick(void)
 {
 	EXTENT sis_screen_dimensions[] = {SIS_SCREEN_DIMENSIONS};
 
-	return sis_screen_dimensions[optStarBackground].height;
+	return sis_screen_dimensions[uqm::UQMOptions::read().starBackground].height;
 }
 
 static COORD

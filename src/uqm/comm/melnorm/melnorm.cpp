@@ -1201,7 +1201,7 @@ DoBuy(RESPONSE_REF R)
 	} while (slot--);
 
 	// If they're out of credits, educate them on how commerce works.
-	if (credit == 0 && !optInfiniteCredits)
+	if (credit == 0 && !uqm::UQMOptions::read().infiniteCredits)
 	{
 		AskedToBuy = true;
 		NPCPhrase(NEED_CREDIT);
@@ -1238,7 +1238,7 @@ DoBuy(RESPONSE_REF R)
 										 + FUEL_TANK_SCALE - 1)
 									  / FUEL_TANK_SCALE;
 
-			if (credit < remainingCapacity && !optInfiniteCredits)
+			if (credit < remainingCapacity && !uqm::UQMOptions::read().infiniteCredits)
 			{
 				needed_credit = credit;
 			}
@@ -1267,7 +1267,7 @@ DoBuy(RESPONSE_REF R)
 			}
 
 			if (((int)(needed_credit * FuelCost) <= (int)credit)
-				|| optInfiniteCredits)
+				|| uqm::UQMOptions::read().infiniteCredits)
 			{
 				uint32_t f;
 
@@ -1290,7 +1290,7 @@ DoBuy(RESPONSE_REF R)
 		}
 		if (needed_credit)
 		{
-			if (!optInfiniteCredits)
+			if (!uqm::UQMOptions::read().infiniteCredits)
 			{
 				DeltaCredit(-needed_credit);
 			}
@@ -1335,7 +1335,7 @@ TryFuelAgain:
 				goto BuyBuyBuy; // No tech left to buy
 			}
 
-			if (!optInfiniteCredits && !DeltaCredit(-nextTech->price))
+			if (!uqm::UQMOptions::read().infiniteCredits && !DeltaCredit(-nextTech->price))
 			{
 				goto BuyBuyBuy; // Can't afford it
 			}
@@ -1382,7 +1382,7 @@ TryFuelAgain:
 		else
 		{
 #define INFO_COST 75
-			if (!optInfiniteCredits && !DeltaCredit(-INFO_COST))
+			if (!uqm::UQMOptions::read().infiniteCredits && !DeltaCredit(-INFO_COST))
 			{
 				goto BuyBuyBuy;
 			}
@@ -1719,7 +1719,7 @@ NatureOfConversation(RESPONSE_REF R)
 		|| GLOBAL_SIS(TotalBioMass)
 		|| Credit
 		|| num_new_rainbows
-		|| optInfiniteCredits)
+		|| uqm::UQMOptions::read().infiniteCredits)
 	{
 		if (!GET_GAME_STATE(TRADED_WITH_MELNORME))
 		{
@@ -1755,7 +1755,7 @@ NatureOfConversation(RESPONSE_REF R)
 			NPCPhrase(OK_DONE_BUYING);
 		}
 
-		if (!GET_GAME_STATE(WHY_MELNORME_PURPLE) && !optInfiniteCredits)
+		if (!GET_GAME_STATE(WHY_MELNORME_PURPLE) && !uqm::UQMOptions::read().infiniteCredits)
 		{
 			Response(why_turned_purple, NatureOfConversation);
 		}

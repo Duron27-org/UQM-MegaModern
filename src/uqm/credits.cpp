@@ -724,11 +724,11 @@ OutTakes(void)
 			BLACKURQ_CONVERSATION,
 			ARILOU_CONVERSATION};
 
-	bool oldsubtitles = (bool)optSubtitles;
+	bool oldsubtitles = uqm::UQMOptions::read().subtitles.value;
 	int i = 0;
 
 	// Outtakes have no voice tracks, so the subtitles are always on
-	optSubtitles = OPTVAL_ENABLED;
+	uqm::UQMOptions::read().subtitles = true;
 	sliderDisabled = true;
 	oscillDisabled = true;
 
@@ -738,7 +738,7 @@ OutTakes(void)
 		InitCommunication(outtake_list[i]);
 	}
 
-	optSubtitles = (OPT_ENABLABLE)oldsubtitles;
+	uqm::UQMOptions::read().subtitles = oldsubtitles;
 	sliderDisabled = false;
 	oscillDisabled = false;
 }

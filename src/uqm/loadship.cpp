@@ -157,13 +157,13 @@ SeedShip(SPECIES_ID SpeciesID, bool loadWindow)
 	{
 		fmt::print(stderr, "Calling SeedShip (load window) species {}, "
 						   "Seed {}, ShipSeed {}, SIS (Seed) {}, SIS (ShipSeed) {}\n",
-				   SpeciesID, optCustomSeed, optShipSeed ? "on" : "off",
+				   SpeciesID, uqm::UQMOptions::read().customSeed, uqm::UQMOptions::read().shipSeed ? "on" : "off",
 				   GLOBAL_SIS(Seed), GLOBAL_SIS(ShipSeed));
 	}
 #endif
-	if (seedStamp != optCustomSeed)
+	if (seedStamp != uqm::UQMOptions::read().customSeed)
 	{
-		SeedShipMap(shipMap, seedStamp = optCustomSeed);
+		SeedShipMap(shipMap, seedStamp = uqm::UQMOptions::read().customSeed);
 	}
 	if (sisStamp != GLOBAL_SIS(Seed) && loadWindow)
 	{
@@ -173,7 +173,7 @@ SeedShip(SPECIES_ID SpeciesID, bool loadWindow)
 	target = SpeciesID;
 	if ((index = ShipIndex(SpeciesID)) < NUM_SHIPS)
 	{
-		if (!loadWindow && optShipSeed)
+		if (!loadWindow && uqm::UQMOptions::read().shipSeed)
 		{
 			return shipMap[index];
 		}
@@ -181,7 +181,7 @@ SeedShip(SPECIES_ID SpeciesID, bool loadWindow)
 		{
 			target = shipWindowMap[index];
 		}
-		if (!optShipSeed)
+		if (!uqm::UQMOptions::read().shipSeed)
 		{
 			return target;
 		}
@@ -225,11 +225,11 @@ load_ship(SPECIES_ID SpeciesID, bool LoadBattleData)
 #ifdef DEBUG_SHIPSEED
 	fmt::print(stderr, "Calling load_ship species {}, Seed {}, "
 					   "ShipSeed {}\n",
-			   SpeciesID, optCustomSeed,
-			   optShipSeed ? "on" : "off");
+			   SpeciesID, uqm::UQMOptions::read().customSeed,
+			   uqm::UQMOptions::read().shipSeed ? "on" : "off");
 #endif
 	CodeRef = CaptureCodeRes(LoadCodeRes(
-								 code_resources[optShipSeed ?
+								 code_resources[uqm::UQMOptions::read().shipSeed ?
 													SeedShip(SpeciesID, false) :
 													SpeciesID]),
 							 &GlobData, (void**)(&RDPtr));

@@ -230,6 +230,11 @@ public:
 		return m_options;
 	}
 
+	static OptionsStruct& read()
+	{
+		return getInstance().m_options;
+	}
+
 	OptionsStruct& edit()
 	{
 		return m_options;

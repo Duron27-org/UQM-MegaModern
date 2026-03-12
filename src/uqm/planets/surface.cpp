@@ -255,7 +255,7 @@ widthPick(void)
 {
 	EXTENT map_dimensions[] = {MAP_DIMENSIONS};
 
-	return map_dimensions[optPlanetTexture].width;
+	return map_dimensions[uqm::UQMOptions::read().planetTexture].width;
 }
 
 static COORD
@@ -263,7 +263,7 @@ heightPick(void)
 {
 	EXTENT map_dimensions[] = {MAP_DIMENSIONS};
 
-	return map_dimensions[optPlanetTexture].height;
+	return map_dimensions[uqm::UQMOptions::read().planetTexture].height;
 }
 
 static COORD

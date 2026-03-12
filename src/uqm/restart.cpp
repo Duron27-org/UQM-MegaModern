@@ -78,7 +78,7 @@ MUSIC_REF menuMusic;
 
 void InitMenuMusic(void)
 {
-	if (optMainMenuMusic && !(menuMusic))
+	if (uqm::UQMOptions::read().mainMenuMusic && !(menuMusic))
 	{
 		FadeMusic(MUTE_VOLUME, 0);
 		menuMusic = loadMainMenuMusic(Rando);
@@ -201,7 +201,7 @@ DoDiffChooser(MENU_STATE* pMS)
 	bool done = false;
 	uint8_t a = 1;
 
-	InactTimeOut = (optMainMenuMusic ? 60 : 20) * GameTicksPerSecond;
+	InactTimeOut = (uqm::UQMOptions::read().mainMenuMusic ? 60 : 20) * GameTicksPerSecond;
 	LastInputTime = GetTimeCounter();
 
 	oldContext = SetContext(ScreenContext);
@@ -291,14 +291,14 @@ DoDiffChooser(MENU_STATE* pMS)
 		switch (a)
 		{
 			case 0:
-				optDifficulty = uqm::Difficulty::Easy;
+				uqm::UQMOptions::read().optDifficulty = uqm::Difficulty::Easy;
 				break;
 			case 2:
-				optDifficulty = uqm::Difficulty::Hard;
+				uqm::UQMOptions::read().optDifficulty = uqm::Difficulty::Hard;
 				break;
 			case 1:
 			default:
-				optDifficulty = uqm::Difficulty::Normal;
+				uqm::UQMOptions::read().optDifficulty = uqm::Difficulty::Normal;
 				break;
 		}
 	}
@@ -418,7 +418,7 @@ DrawRestartMenuGraphic(MENU_STATE* pMS)
 	font_DrawText(&t);
 
 	// Put the main menu music credit in the bottom left corner.
-	if (optMainMenuMusic)
+	if (uqm::UQMOptions::read().mainMenuMusic)
 	{
 		fmt::format_to_sz_n(buf, "{} {}",
 							GAME_STRING(MAINMENU_STRING_BASE + 61),
@@ -474,7 +474,7 @@ DoRestart(MENU_STATE* pMS)
 
 	if (optWindowType < 2)
 	{
-		optMeleeToolTips = (OPT_ENABLABLE) false;
+		uqm::UQMOptions::read().meleeToolTips = false;
 	}
 
 	if (optSuperMelee && !optLoadGame)
@@ -501,7 +501,7 @@ DoRestart(MENU_STATE* pMS)
 		InitPulseText();
 		ResetMusicResume();
 
-		InactTimeOut = (optMainMenuMusic ? 60 : 20) * GameTicksPerSecond;
+		InactTimeOut = (uqm::UQMOptions::read().mainMenuMusic ? 60 : 20) * GameTicksPerSecond;
 
 		pMS->flashContext = Flash_createOverlay(ScreenContext,
 												nullptr, nullptr);
@@ -532,7 +532,7 @@ DoRestart(MENU_STATE* pMS)
 		switch (pMS->CurState)
 		{
 			case START_NEW_GAME:
-				if (optCustomSeed == 404)
+				if (uqm::UQMOptions::read().customSeed == 404)
 				{
 					SetFlashRect(nullptr, false);
 					DoPopupWindow(
@@ -549,7 +549,7 @@ DoRestart(MENU_STATE* pMS)
 					break;
 				}
 
-				if (optDiffChooser == uqm::Difficulty::ChooseYourOwn)
+				if (uqm::UQMOptions::read().optDiffChooser == uqm::Difficulty::ChooseYourOwn)
 				{
 					Flash_pause(pMS->flashContext);
 					Flash_setState(pMS->flashContext, FlashState_fadeIn,
@@ -574,7 +574,7 @@ DoRestart(MENU_STATE* pMS)
 				optLoadGame = false;
 				break;
 			case PLAY_SUPER_MELEE:
-				optShipSeed = OPTVAL_DISABLED;
+				uqm::UQMOptions::read().shipSeed = false;
 				ReloadMasterShipList(nullptr);
 				GLOBAL(CurrentActivity) = SUPER_MELEE;
 				optSuperMelee = false;
@@ -592,7 +592,7 @@ DoRestart(MENU_STATE* pMS)
 				}
 
 				LastInputTime = GetTimeCounter();
-				InactTimeOut = (optMainMenuMusic ? 60 : 20) * GameTicksPerSecond;
+				InactTimeOut = (uqm::UQMOptions::read().mainMenuMusic ? 60 : 20) * GameTicksPerSecond;
 
 				SetTransitionSource(nullptr);
 				BatchGraphics();
@@ -718,7 +718,7 @@ RestartMenu(MENU_STATE* pMS)
 
 		GLOBAL(CurrentActivity) = IN_ENCOUNTER;
 
-		if (optGameOver)
+		if (uqm::UQMOptions::read().gameOver)
 		{
 			GameOver(SUICIDE);
 		}
@@ -738,7 +738,7 @@ RestartMenu(MENU_STATE* pMS)
 
 			if (DeathByMelee)
 			{
-				if (optGameOver)
+				if (uqm::UQMOptions::read().gameOver)
 				{
 					GameOver(DIED_IN_BATTLE);
 				}
@@ -746,7 +746,7 @@ RestartMenu(MENU_STATE* pMS)
 			}
 			else if (DeathBySurrender)
 			{
-				if (optGameOver)
+				if (uqm::UQMOptions::read().gameOver)
 				{
 					GameOver(SURRENDERED);
 				}
@@ -878,7 +878,7 @@ bool StartGame(void)
 				else
 				{
 					SplashScreen(0);
-					if (optWhichIntro == uqm::EmulationMode::Console3DO)
+					if (uqm::UQMOptions::read().whichIntro == uqm::EmulationMode::Console3DO)
 					{
 						Drumall();
 					}
@@ -894,7 +894,7 @@ bool StartGame(void)
 
 		if (LastActivity & CHECK_RESTART)
 		{ // starting a new game
-			if (!optSkipIntro)
+			if (!uqm::UQMOptions::read().skipIntro)
 			{
 				Introduction();
 			}
@@ -904,7 +904,7 @@ bool StartGame(void)
 
 #ifdef DEBUG_STARSEED
 	fmt::print(stderr, "StartGame called for {} mode with seed {} shipseed {}.\n",
-			   optSeedType, optCustomSeed, optShipSeed ? "on" : "off");
+			   optSeedType, uqm::UQMOptions::read().customSeed, uqm::UQMOptions::read().shipSeed ? "on" : "off");
 #endif
 	{
 		// We no longer make a global pointer to the static starmap,

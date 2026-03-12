@@ -230,7 +230,7 @@ Present_GenerateSIS(PRESENTATION_INPUT_STATE* pPIS)
 	SetContextBackGroundColor(SisBack);
 	ClearDrawable();
 
-	s.frame = SetAbsFrameIndex(SkelFrame, is3DO(optFlagshipColor));
+	s.frame = SetAbsFrameIndex(SkelFrame, is3DO(uqm::UQMOptions::read().flagshipColor));
 	s.origin.x = 0;
 	s.origin.y = 0;
 	DrawStamp(&s);
@@ -508,7 +508,7 @@ static void
 SeedDitty(uqstl::span<char> buf, uqstl::string_view str)
 {
 	//TODO Nullicious: Get rid of goto :(
-	if (!optShipSeed)
+	if (!uqm::UQMOptions::read().shipSeed)
 	{
 		goto SeedDittyPassThru;
 	}
@@ -550,7 +550,7 @@ SeedDittyPassThru:
 static void
 SeedLineSpin(int* x1, int* y1, int* x2, int* y2)
 {
-	if (!optShipSeed || !x1 || !x2 || !y1 || !y2 || shipID == raceID || shipID >= NUM_SHIPS || raceID >= NUM_SHIPS)
+	if (!uqm::UQMOptions::read().shipSeed || !x1 || !x2 || !y1 || !y2 || shipID == raceID || shipID >= NUM_SHIPS || raceID >= NUM_SHIPS)
 	{
 		goto SeedLineSpinPassThru;
 	}
@@ -571,7 +571,7 @@ SeedLineSpinPassThru:
 static void
 SeedTextSpin(char* buf, size_t size, uqgsl::czstring str, int* x, int* y)
 {
-	if (!optShipSeed || !x || !y || shipID == raceID || shipID >= NUM_SHIPS || raceID >= NUM_SHIPS)
+	if (!uqm::UQMOptions::read().shipSeed || !x || !y || shipID == raceID || shipID >= NUM_SHIPS || raceID >= NUM_SHIPS)
 	{
 		goto SeedTextSpinPassThru;
 	}
@@ -896,7 +896,7 @@ DoPresentation(void* pIS)
 				}
 			case uqm::hashQuick64CaseInsensitive("DITTY"):
 				{ /* set ditty */
-					if (optShipSeed)
+					if (uqm::UQMOptions::read().shipSeed)
 					{
 						SeedDitty(pPIS->Buffer, strView);
 					}
@@ -1066,7 +1066,7 @@ DoPresentation(void* pIS)
 						x = xi;
 						y = yi;
 						const char* textStart = xyResult->range().data();
-						if (optShipSeed)
+						if (uqm::UQMOptions::read().shipSeed)
 						{
 							SeedTextSpin(pPIS->Buffer, sizeof(pPIS->Buffer),
 										 textStart, &x, &y);
@@ -1089,7 +1089,7 @@ DoPresentation(void* pIS)
 
 						SetContextForeGroundColor(pPIS->TextColor);
 						SetContextBackGroundColor(pPIS->TextBackColor);
-						if (optShipSeed && !strncmp(pPIS->Buffer, "SPATHI", 6))
+						if (uqm::UQMOptions::read().shipSeed && !strncmp(pPIS->Buffer, "SPATHI", 6))
 						{ // Manually space the SPATHI text
 							DoSpinText("SP", x,
 									   y + RES_SCALE(7),
@@ -1508,7 +1508,7 @@ DoPresentation(void* pIS)
 					if (const auto result {scn::scan<int, int, int, int>(strView, "{} {} {} {}")})
 					{
 						auto [x1, y1, x2, y2] = result->values();
-						if (optShipSeed)
+						if (uqm::UQMOptions::read().shipSeed)
 						{
 							SeedLineSpin(&x1, &y1, &x2, &y2);
 						}

@@ -374,7 +374,7 @@ DoBattle(BATTLE_STATE* bs)
 	if (bs->first_time)
 	{
 		bs->first_time = false;
-		ScreenTransition(optScrTrans, &r);
+		ScreenTransition(uqm::UQMOptions::read().scrTrans, &r);
 	}
 	UnbatchGraphics();
 	if ((!(GLOBAL(CurrentActivity) & IN_BATTLE)) || (GLOBAL(CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
@@ -487,9 +487,9 @@ bool Battle(BattleFrameCallback* callback)
 		battle_counter[0] = CountLinks(&race_q[0]);
 		battle_counter[1] = CountLinks(&race_q[1]);
 
-		if (optMeleeScale != uqm::MeleeScaleMode::Step)
+		if (uqm::UQMOptions::read().meleeScale != uqm::MeleeScaleMode::Step)
 		{
-			SetGraphicScaleMode(toTFBScaleMode(optMeleeScale));
+			SetGraphicScaleMode(toTFBScaleMode(uqm::UQMOptions::read().meleeScale));
 		}
 
 		setupBattleInputOrder();

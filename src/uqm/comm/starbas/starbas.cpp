@@ -2025,7 +2025,7 @@ NormalStarbase(RESPONSE_REF R)
 		{
 			NPCPhrase(STARBASE_IS_READY);
 			DeltaSISGauges(0, 0, 2500);
-			if (optInfiniteRU)
+			if (uqm::UQMOptions::read().infiniteRU)
 			{
 				oldRU = 2500;
 			}
@@ -2099,7 +2099,7 @@ SellMinerals(RESPONSE_REF R)
 	uint16_t total = 0;
 	RESPONSE_REF pStr = 0;
 
-	if (optSpeech)
+	if (uqm::UQMOptions::read().useSpeech)
 	{
 		total = DoSellMinerals();
 
@@ -2214,7 +2214,7 @@ init_starbase_comm()
 	// use alternate Starbase track if available
 	altResFlags |= USE_ALT_SONG;
 
-	if (is3DO(optFlagshipColor))
+	if (is3DO(uqm::UQMOptions::read().flagshipColor))
 	{
 		altResFlags |= USE_ALT_FRAME;
 	}

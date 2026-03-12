@@ -42,7 +42,7 @@ void DoShipSpin(uint16_t index, MUSIC_REF hMusic)
 
 	OldContext = SetContext(ScreenContext);
 
-	if (optShipSeed)
+	if (uqm::UQMOptions::read().shipSeed)
 	{
 		HMASTERSHIP hMaster = GetStarShipFromIndex(&master_q, index);
 		MASTER_SHIP_INFO* mPtr = LockMasterShip(&master_q, hMaster);
@@ -59,7 +59,7 @@ void DoShipSpin(uint16_t index, MUSIC_REF hMusic)
 
 	FreeHyperData();
 
-	if (isPC(optWhichIntro))
+	if (isPC(uqm::UQMOptions::read().whichIntro))
 	{
 		if (IS_PAD || OutfitOrShipyard == 3)
 		{
@@ -76,7 +76,7 @@ void DoShipSpin(uint16_t index, MUSIC_REF hMusic)
 
 	ShowPresentation(vnbuf);
 
-	if (is3DO(optWhichIntro))
+	if (is3DO(uqm::UQMOptions::read().whichIntro))
 	{
 		SleepThreadUntil(FadeScreen(FadeAllToBlack, GameTicksPerSecond / 4));
 	}
@@ -94,7 +94,7 @@ void DoShipSpin(uint16_t index, MUSIC_REF hMusic)
 		PlayMusic(hMusic, true, 1);
 	}
 
-	if (is3DO(optWhichIntro))
+	if (is3DO(uqm::UQMOptions::read().whichIntro))
 	{
 		SleepThreadUntil(FadeScreen(FadeAllToColor, GameTicksPerSecond / 4));
 	}
@@ -107,14 +107,14 @@ void SplashScreen(void (*DoProcessing)(uint32_t TimeOut))
 	uint32_t TimeOut = 0;
 	TimeCount OverallWait = GetTimeCounter() + (GameTicksPerSecond * 3);
 
-	if (!optSkipIntro)
+	if (!uqm::UQMOptions::read().skipIntro)
 	{
 		SetContext(ScreenContext);
 		s.origin.x = s.origin.y = 0;
 
 		s.frame = CaptureDrawable(LoadGraphic(TITLE_ANIM));
 
-		if (optFlagshipColor == uqm::EmulationMode::Console3DO)
+		if (uqm::UQMOptions::read().flagshipColor == uqm::EmulationMode::Console3DO)
 		{
 
 			s.frame = SetAbsFrameIndex(s.frame, 1);
@@ -146,7 +146,7 @@ void SplashScreen(void (*DoProcessing)(uint32_t TimeOut))
 	 * with the proper operation of the quit operation.
 	 * --Michael */
 
-	if (!optSkipIntro)
+	if (!uqm::UQMOptions::read().skipIntro)
 	{
 		SleepThreadUntil(OverallWait);
 	}
@@ -156,7 +156,7 @@ void SplashScreen(void (*DoProcessing)(uint32_t TimeOut))
 	}
 	GLOBAL(CurrentActivity) &= ~CHECK_ABORT;
 
-	if (!optSkipIntro)
+	if (!uqm::UQMOptions::read().skipIntro)
 	{
 		SleepThreadUntil(FadeScreen(FadeAllToBlack, GameTicksPerSecond / 2));
 	}

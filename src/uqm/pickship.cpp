@@ -48,7 +48,7 @@ GFXPOINT frameOrigin;
 void InitPickFrame(void)
 {
 	PickFrame = CaptureDrawable(LoadGraphic(SC2_PICK_PMAP_ANIM));
-	PickFrame = SetAbsFrameIndex(PickFrame, isPC(optFlagshipColor) ? 0 : 2);
+	PickFrame = SetAbsFrameIndex(PickFrame, isPC(uqm::UQMOptions::read().flagshipColor) ? 0 : 2);
 }
 
 void DestroyPickFrame(void)
@@ -245,7 +245,7 @@ ChangeSelection:
 			}
 			else
 			{
-				SetContextFont(isPC(optWhichFonts) ? TinyFont : TinyFontBold);
+				SetContextFont(isPC(uqm::UQMOptions::read().whichFonts) ? TinyFont : TinyFontBold);
 
 				t.baseline.x = r.corner.x + (r.extent.width >> 1);
 				t.baseline.y = r.corner.y + (r.extent.height - RES_SCALE(1));
@@ -274,7 +274,7 @@ ChangeSelection:
 				UnlockStarShip(&race_q[0], hBattleShip);
 
 				// Code to make use of the PC version's font gradient
-				/*if (isPC (optWhichFonts))
+				/*if (isPC (uqm::UQMOptions::read().whichFonts))
 					SetContextForeGroundColor (WHITE_COLOR);
 				else
 					SetContextForeGroundColor (
@@ -317,7 +317,7 @@ ChangeSelection:
 				}
 
 				// Code to make use of the PC version's font gradient
-				/*if (isPC (optWhichFonts))
+				/*if (isPC (uqm::UQMOptions::read().whichFonts))
 					SetContextForeGroundColor (WHITE_COLOR);
 				else
 					SetContextForeGroundColor (
@@ -329,7 +329,7 @@ ChangeSelection:
 			}
 
 			SetFlashRect(nullptr, false);
-			SetFlashRect(&pMS->flash_rect0, optWhichMenu == uqm::EmulationMode::PC);
+			SetFlashRect(&pMS->flash_rect0, uqm::UQMOptions::read().whichMenu == uqm::EmulationMode::PC);
 		}
 	}
 
@@ -443,13 +443,13 @@ GetEncounterStarShip(STARSHIP* LastStarShipPtr, uint16_t which_player)
 				}
 				else
 				{ // Player ran away
-					if (GLOBAL_SIS(FuelOnBoard) > RUN_AWAY_FUEL_COST && !optInfiniteFuel)
+					if (GLOBAL_SIS(FuelOnBoard) > RUN_AWAY_FUEL_COST && !uqm::UQMOptions::read().infiniteFuel)
 					{
 						GLOBAL_SIS(FuelOnBoard) -= RUN_AWAY_FUEL_COST;
 					}
 					else
 					{
-						GLOBAL_SIS(FuelOnBoard) = (optInfiniteFuel ? GLOBAL_SIS(FuelOnBoard) : 0);
+						GLOBAL_SIS(FuelOnBoard) = (uqm::UQMOptions::read().infiniteFuel ? GLOBAL_SIS(FuelOnBoard) : 0);
 					}
 				}
 			}
@@ -523,7 +523,7 @@ void DrawArmadaPickShip(bool draw_salvage_frame, GFXRECT* pPickRect)
 
 		frameOrigin = s.origin;
 
-		s.frame = SetAbsFrameIndex(s.frame, isPC(optFlagshipColor) ? 0 : 2);
+		s.frame = SetAbsFrameIndex(s.frame, isPC(uqm::UQMOptions::read().flagshipColor) ? 0 : 2);
 		pick_r.corner.y = s.origin.y + r.extent.height;
 
 		r.corner.x = pick_r.corner.x;
@@ -543,7 +543,7 @@ void DrawArmadaPickShip(bool draw_salvage_frame, GFXRECT* pPickRect)
 
 	// Code to make use of the PC version's font gradient
 	// Along with the FRAME "OldFontEffect"
-	if (isPC(optWhichFonts))
+	if (isPC(uqm::UQMOptions::read().whichFonts))
 	{
 		SetContextFontEffect(SetAbsFrameIndex(FontGradFrame, 6));
 	}

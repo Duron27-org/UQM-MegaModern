@@ -112,7 +112,7 @@ GetSeededFleetFromIndex(uint16_t Index)
 	FLEET_INFO* TemplatePtr = nullptr;
 	HFLEETINFO hFleet;
 	SPECIES_ID ship;
-	bool loadWindow = ((optShipSeed && GLOBAL_SIS(ShipSeed) == 0) || (!optShipSeed && GLOBAL_SIS(ShipSeed) != 0) || (optCustomSeed != GLOBAL_SIS(Seed)));
+	bool loadWindow = ((uqm::UQMOptions::read().shipSeed && GLOBAL_SIS(ShipSeed) == 0) || (!uqm::UQMOptions::read().shipSeed && GLOBAL_SIS(ShipSeed) != 0) || (uqm::UQMOptions::read().customSeed != GLOBAL_SIS(Seed)));
 
 	hFleet = GetStarShipFromIndex(&GLOBAL(avail_race_q), Index);
 	if (!hFleet)
@@ -793,9 +793,9 @@ CloneShipFragment(RACE_ID shipIndex, QUEUE* pDstQueue, uint16_t crew_level)
 
 	// If options mismatch with SIS, it means we're in a load window.
 	// In that case we want to find the correct fleet ID for that ship.
-	if ((optShipSeed && GLOBAL_SIS(ShipSeed) == 0)
-		|| (!optShipSeed && GLOBAL_SIS(ShipSeed) != 0)
-		|| (optCustomSeed != GLOBAL_SIS(Seed)))
+	if ((uqm::UQMOptions::read().shipSeed && GLOBAL_SIS(ShipSeed) == 0)
+		|| (!uqm::UQMOptions::read().shipSeed && GLOBAL_SIS(ShipSeed) != 0)
+		|| (uqm::UQMOptions::read().customSeed != GLOBAL_SIS(Seed)))
 	{
 		hFleet = GetSeededFleetFromIndex(shipIndex);
 	}
@@ -1149,7 +1149,7 @@ void loadGameCheats(void)
 			MAKE_STAR(SUPER_GIANT_STAR, ORANGE_BODY, -1);
 	}
 
-	if (optInfiniteRU)
+	if (uqm::UQMOptions::read().infiniteRU)
 	{
 		oldRU = GlobData.SIS_state.ResUnits;
 	}
@@ -1168,7 +1168,7 @@ void loadGameCheats(void)
 
 	// SET_GAME_STATE (KNOW_HOMEWORLD, ~0);
 
-	if (optInfiniteFuel)
+	if (uqm::UQMOptions::read().infiniteFuel)
 	{
 		loadFuel = GlobData.SIS_state.FuelOnBoard;
 		GLOBAL_SIS(FuelOnBoard) = GetFuelTankCapacity();

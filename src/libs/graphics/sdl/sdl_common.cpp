@@ -318,7 +318,7 @@ void TFB_SwapBuffers(uqm::TFBRedraw force_full_redraw)
 									fade_amount - 255, nullptr);
 		}
 #else
-		if (isPC(optScrTrans))
+		if (isPC(uqm::UQMOptions::read().scrTrans))
 		{
 			if (fade_amount < 255)
 			{

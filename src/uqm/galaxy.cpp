@@ -355,7 +355,7 @@ static bool
 CmpMovePoints(const GFXPOINT* pt1, const DPOINT* pt2, int32_t dx, int32_t dy,
 			  int16_t reduction)
 {
-	if (uqm::toTFBScaleMode(optMeleeScale) == uqm::TFBScaleMode::Step)
+	if (uqm::toTFBScaleMode(uqm::UQMOptions::read().meleeScale) == uqm::TFBScaleMode::Step)
 	{
 		return (int)pt1->x != (int)((pt2->x - dx) >> reduction)
 			|| (int)pt1->y != (int)((pt2->y - dy) >> reduction);
@@ -376,7 +376,7 @@ void MoveGalaxy(VIEW_STATE view_state, int32_t dx, int32_t dy)
 			MED_STAR_COUNT,
 			SML_STAR_COUNT};
 	static const uint16_t star_frame_ofs[] = {32 + 26, 26, 0};
-	const bool meleeScaleModeIsStep {uqm::toTFBScaleMode(optMeleeScale) == uqm::TFBScaleMode::Step};
+	const bool meleeScaleModeIsStep {uqm::toTFBScaleMode(uqm::UQMOptions::read().meleeScale) == uqm::TFBScaleMode::Step};
 
 	if (view_state != VIEW_STABLE)
 	{

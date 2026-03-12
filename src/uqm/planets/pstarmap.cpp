@@ -797,7 +797,7 @@ DrawFuelCircle(bool secondary)
 		DrawFilledOval(&r);
 		SetContextForeGroundColor(OldColor);
 
-		if (testFlag(optFuelRange, uqm::FuelRangeDisplay::FuelToSol))
+		if (testFlag(uqm::UQMOptions::read().optFuelRange, uqm::FuelRangeDisplay::FuelToSol))
 		{
 			OldColor =
 				SetContextForeGroundColor(STARMAP_SECONDARY_RANGE_COLOR);
@@ -1110,7 +1110,7 @@ DrawRaceName(TEXT* t, Color* c)
 
 Color RaceColor(uint16_t index)
 {
-	if (optSphereColors == uqm::SphereOfInfluenceColors::Default)
+	if (uqm::UQMOptions::read().sphereColors == uqm::SphereOfInfluenceColors::Default)
 	{
 		static constexpr Color RaceColors[] = {RACE_COLORS};
 		static constexpr uint16_t NumColors = sizeof(RaceColors) / sizeof(Color);
@@ -1119,7 +1119,7 @@ Color RaceColor(uint16_t index)
 			return RaceColors[index];
 		}
 	}
-	else if (optSphereColors == uqm::SphereOfInfluenceColors::Starseed)
+	else if (uqm::UQMOptions::read().sphereColors == uqm::SphereOfInfluenceColors::Starseed)
 	{
 		static constexpr Color StarseedColors[] =
 			{
@@ -1235,7 +1235,7 @@ DrawStarMap(uint16_t race_update, GFXRECT* pClipRect)
 
 	if (which_starmap != CONSTELLATION_MAP
 		&& (race_update == 0 && which_space < 2)
-		&& !(optInfiniteFuel || GLOBAL_SIS(FuelOnBoard) == 0))
+		&& !(uqm::UQMOptions::read().infiniteFuel || GLOBAL_SIS(FuelOnBoard) == 0))
 	{ // Draw the fuel range circle
 		DrawFuelCircle(false);
 	}
@@ -1282,8 +1282,8 @@ DrawStarMap(uint16_t race_update, GFXRECT* pClipRect)
 
 	if (which_starmap != CONSTELLATION_MAP
 		&& (race_update == 0 && which_space < 2)
-		&& !(optInfiniteFuel || GLOBAL_SIS(FuelOnBoard) == 0)
-		&& (testFlag(optFuelRange, uqm::FuelRangeDisplay::FuelAtDestination))
+		&& !(uqm::UQMOptions::read().infiniteFuel || GLOBAL_SIS(FuelOnBoard) == 0)
+		&& (testFlag(uqm::UQMOptions::read().optFuelRange, uqm::FuelRangeDisplay::FuelAtDestination))
 		&& (GLOBAL(autopilot.x) != ~0 && GLOBAL(autopilot.y) != ~0))
 	{ // Draw the autopilot fuel range circle (on top of the grid)
 		DrawFuelCircle(true);
@@ -1355,7 +1355,7 @@ DrawStarMap(uint16_t race_update, GFXRECT* pClipRect)
 						DrawOval(&dr, 0, IS_HD);
 					}
 
-					if (isPC(optWhichFonts))
+					if (isPC(uqm::UQMOptions::read().whichFonts))
 					{
 						SetContextFont(TinyFont);
 					}
@@ -1394,7 +1394,7 @@ DrawStarMap(uint16_t race_update, GFXRECT* pClipRect)
 								break;
 						}
 					}
-					else if (index == YEHAT_REBEL_SHIP && optSphereColors == uqm::SphereOfInfluenceColors::Starseed)
+					else if (index == YEHAT_REBEL_SHIP && uqm::UQMOptions::read().sphereColors == uqm::SphereOfInfluenceColors::Starseed)
 					{
 						t.CharCount = 7;
 						t.pStr = yehat_rebels;
@@ -1695,7 +1695,7 @@ DrawStarMap(uint16_t race_update, GFXRECT* pClipRect)
 				DrawMarker(SDPtr->star_pt, 2);
 			}
 
-			if (optShowVisitedStars && isStarMarked(i, "VISITED")
+			if (uqm::UQMOptions::read().showVisitedStars && isStarMarked(i, "VISITED")
 				&& which_starmap == NORMAL_STARMAP
 				&& SDPtr->Index != SOL_DEFINED)
 			{
@@ -1762,7 +1762,7 @@ DrawStarMap(uint16_t race_update, GFXRECT* pClipRect)
 	if (transition_pending)
 	{
 		GetContextClipRect(&r);
-		ScreenTransition(optScrTrans, &r);
+		ScreenTransition(uqm::UQMOptions::read().scrTrans, &r);
 		transition_pending = false;
 	}
 
@@ -1967,7 +1967,7 @@ UpdateCursorInfo(std::span<char> prevbuf)
 
 	if (which_starmap == NORMAL_STARMAP)
 	{ // "(Star Search: F6 | Toggle Maps: F7)"
-		utf8StringCopy(buf, sizeof(buf), GAME_STRING(FEEDBACK_STRING_BASE + 2 + (is3DO(optWhichFonts) || IS_PAD)));
+		utf8StringCopy(buf, sizeof(buf), GAME_STRING(FEEDBACK_STRING_BASE + 2 + (is3DO(uqm::UQMOptions::read().whichFonts) || IS_PAD)));
 	}
 	else
 	{
@@ -2101,7 +2101,7 @@ UpdateCursorInfo(std::span<char> prevbuf)
 		// Cursor is on top of a star. Display its name.
 		if (BestSDPtr)
 		{
-			if (optShowVisitedStars
+			if (uqm::UQMOptions::read().showVisitedStars
 				&& isStarMarked(starIndex(BestSDPtr->star_pt),
 								"VISITED"))
 			{
@@ -2250,7 +2250,7 @@ SplitStarName(STAR_SEARCH_STATE* pSS)
 	pSS->ClusterPos = 0;
 
 	// skip leading space
-	for (next = buf; *next != '\0' && getCharFromString((const char**)&next) == (isPC(optWhichFonts) ? UNICHAR_SPACE : UNICHAR_TAB);
+	for (next = buf; *next != '\0' && getCharFromString((const char**)&next) == (isPC(uqm::UQMOptions::read().whichFonts) ? UNICHAR_SPACE : UNICHAR_TAB);
 		 buf = next)
 		;
 	if (*buf == '\0')
@@ -2261,14 +2261,14 @@ SplitStarName(STAR_SEARCH_STATE* pSS)
 	pSS->Prefix = buf;
 
 	// See if player gave a prefix
-	for (buf = next; *next != '\0' && getCharFromString((const char**)&next) != (isPC(optWhichFonts) ? UNICHAR_SPACE : UNICHAR_TAB);
+	for (buf = next; *next != '\0' && getCharFromString((const char**)&next) != (isPC(uqm::UQMOptions::read().whichFonts) ? UNICHAR_SPACE : UNICHAR_TAB);
 		 buf = next)
 		;
 	if (*buf != '\0')
 	{ // found possibly separating ' '
 		sep = buf;
 		// skip separating space
-		for (buf = next; *next != '\0' && getCharFromString((const char**)&next) == (isPC(optWhichFonts) ? UNICHAR_SPACE : UNICHAR_TAB);
+		for (buf = next; *next != '\0' && getCharFromString((const char**)&next) == (isPC(uqm::UQMOptions::read().whichFonts) ? UNICHAR_SPACE : UNICHAR_TAB);
 			 buf = next)
 			;
 	}
@@ -2617,7 +2617,7 @@ DoStarSearch(MENU_STATE* pMS)
 
 	DrawSISMessageEx("", 0, 0, DSME_SETFR);
 
-	TextEntry3DO = (bool)is3DO(optWhichFonts);
+	TextEntry3DO = (bool)is3DO(uqm::UQMOptions::read().whichFonts);
 
 	pss->pMS = pMS;
 	pss->LastChangeTime = 0;
@@ -2797,7 +2797,7 @@ DoMoveCursor(MENU_STATE* pMS)
 	{
 		FlushInput();
 
-		if ((optBubbleWarp && !optInfiniteFuel && !inQuasiSpace())
+		if ((uqm::UQMOptions::read().bubbleWarp && !uqm::UQMOptions::read().infiniteFuel && !inQuasiSpace())
 			&& GLOBAL(autopilot.x) != ~0 && GLOBAL(autopilot.y) != ~0
 			&& GLOBAL_SIS(FuelOnBoard) >= FuelRequired())
 		{
@@ -2807,7 +2807,7 @@ DoMoveCursor(MENU_STATE* pMS)
 		if (!inQuasiSpace()
 			&& ValidPoint(GLOBAL(autopilot)))
 		{
-			if (optSmartAutoPilot)
+			if (uqm::UQMOptions::read().smartAutoPilot)
 			{
 				SaveLastLoc(
 					MAKE_POINT(
@@ -2815,7 +2815,7 @@ DoMoveCursor(MENU_STATE* pMS)
 						LOGY_TO_UNIVERSE(GLOBAL_SIS(log_y))));
 			}
 
-			if (optAdvancedAutoPilot
+			if (uqm::UQMOptions::read().advancedAutoPilot
 				&& GET_GAME_STATE(PORTAL_SPAWNER_ON_SHIP))
 			{
 				AdvancedAutoPilot();
@@ -2831,7 +2831,7 @@ DoMoveCursor(MENU_STATE* pMS)
 
 		FlushInput();
 
-		if (optBubbleWarp && (optInfiniteFuel || inQuasiSpace()))
+		if (uqm::UQMOptions::read().bubbleWarp && (uqm::UQMOptions::read().infiniteFuel || inQuasiSpace()))
 		{
 			GLOBAL(autopilot) = cursorLoc;
 			DoBubbleWarp(false);
@@ -3315,7 +3315,7 @@ DoneSphereGrowth:
 template <typename T>
 auto ifGamepad(T gamepadValue, T keyboardValue = {0})
 {
-	return RES_SCALE(optControllerType != uqm::ControllerType::KeyboardMouse ? gamepadValue : keyboardValue);
+	return RES_SCALE(uqm::UQMOptions::read().optControllerType != uqm::ControllerType::KeyboardMouse ? gamepadValue : keyboardValue);
 }
 
 static void
@@ -3341,7 +3341,7 @@ DrawStarmapHelper(void)
 	r.corner.x = RES_SCALE(4);
 	r.corner.y = RES_SCALE(34);
 
-	frame_index = optControllerType == uqm::ControllerType::KeyboardMouse ? 0 : 5 * static_cast<int>(optControllerType);
+	frame_index = uqm::UQMOptions::read().optControllerType == uqm::ControllerType::KeyboardMouse ? 0 : 5 * static_cast<int>(uqm::UQMOptions::read().optControllerType.value);
 
 	// :Maps
 	s.frame = SetAbsFrameIndex(SubmenuFrame, frame_index);
@@ -3483,7 +3483,7 @@ bool StarMap(void)
 		cursorLoc = universe;
 	}
 
-	if (optWhichMenu == uqm::EmulationMode::PC)
+	if (uqm::UQMOptions::read().whichMenu == uqm::EmulationMode::PC)
 	{
 		if (playerInPlanetOrbit())
 		{
@@ -3513,7 +3513,7 @@ bool StarMap(void)
 		}
 	}
 
-	if (optSubmenu)
+	if (uqm::UQMOptions::read().submenu)
 	{
 		DrawStarmapHelper();
 	}
@@ -3550,7 +3550,7 @@ bool StarMap(void)
 	}
 	DrawStatusMessage(nullptr);
 
-	if (optSubmenu)
+	if (uqm::UQMOptions::read().submenu)
 	{
 		DeltaSISGauges(UNDEFINED_DELTA, UNDEFINED_DELTA, UNDEFINED_DELTA);
 	}

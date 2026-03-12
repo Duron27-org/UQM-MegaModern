@@ -315,10 +315,10 @@ void DrawRadarBorder(void)
 	r.extent.width = RADAR_WIDTH + RES_SCALE(2);
 	r.extent.height = RADAR_HEIGHT + RES_SCALE(2);
 
-	if (IS_HD || optCustomBorder)
+	if (IS_HD || uqm::UQMOptions::read().customBorder)
 	{
 		DrawRenderedBox(&r, false, NULL_COLOR, THIN_INNER_BEVEL,
-						optCustomBorder);
+						uqm::UQMOptions::read().customBorder);
 	}
 	else
 	{
@@ -703,7 +703,7 @@ void DrawFlagStatDisplay(const char* str)
 	r.extent.width = FIELD_WIDTH + RES_SCALE(1);
 	r.extent.height = (RES_SCALE(129) - r.corner.y);
 
-	if (!optCustomBorder && !IS_HD)
+	if (!uqm::UQMOptions::read().customBorder && !IS_HD)
 	{
 		DrawStarConBox(&r, RES_SCALE(1),
 					   SHADOWBOX_MEDIUM_COLOR, SHADOWBOX_DARK_COLOR,
@@ -729,9 +729,9 @@ void formatFuelValue(uint32_t coarseFuel, uqstl::span<char> buf)
 {
 	double dblFuelOnBoard = (double)coarseFuel / FUEL_TANK_SCALE;
 
-	if (!optInfiniteFuel)
+	if (!uqm::UQMOptions::read().infiniteFuel)
 	{
-		if (!optWholeFuel)
+		if (!uqm::UQMOptions::read().wholeFuel)
 		{
 			fmt::format_to_sz_n(buf, "{}", coarseFuel);
 		}

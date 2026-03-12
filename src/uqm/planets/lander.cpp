@@ -176,7 +176,7 @@ extern PRIM_LINKS DisplayLinks;
 #define ADD_AT_END (1 << 4)
 #define REPAIR_COUNT (0xf)
 
-#define LANDER_SPEED_DENOM (isPC(optSuperPC) ? 14 : 10)
+#define LANDER_SPEED_DENOM (isPC(uqm::UQMOptions::read().landerStyle) ? 14 : 10)
 
 static uint8_t lander_flags;
 static GFXPOINT curLanderLoc;
@@ -572,8 +572,8 @@ void object_animation(ELEMENT* ElementPtr)
 	}
 }
 
-#define NUM_CREW_COLS (is3DO(optSuperPC) ? 6 : 3)
-#define NUM_CREW_ROWS (is3DO(optSuperPC) ? 2 : 4)
+#define NUM_CREW_COLS (is3DO(uqm::UQMOptions::read().landerStyle) ? 6 : 3)
+#define NUM_CREW_ROWS (is3DO(uqm::UQMOptions::read().landerStyle) ? 2 : 4)
 
 static void
 DeltaLanderCrew(int16_t crew_delta, uint16_t which_disaster)
@@ -600,7 +600,7 @@ DeltaLanderCrew(int16_t crew_delta, uint16_t which_disaster)
 		shieldHit &= 1 << which_disaster;
 		if (!shieldHit || TFB_Random() % 100 >= 95)
 		{ // No shield, or it did not help
-			if (!testFlag(optGodModes, uqm::GodModeFlags::NoDamage))
+			if (!testFlag(uqm::UQMOptions::read().optGodModes, uqm::GodModeFlags::NoDamage))
 			{
 				shieldHit = 0;
 				--crew_left;
@@ -624,7 +624,7 @@ DeltaLanderCrew(int16_t crew_delta, uint16_t which_disaster)
 				  NotPositional(), nullptr, GAME_SOUND_PRIORITY);
 	}
 
-	if (is3DO(optSuperPC))
+	if (is3DO(uqm::UQMOptions::read().landerStyle))
 	{
 		s.origin.x = RES_SCALE(11) + (RES_SCALE(6) * (crew_delta % NUM_CREW_COLS));
 		s.origin.y = RES_SCALE(35) - (RES_SCALE(6) * (crew_delta / NUM_CREW_COLS));
@@ -656,7 +656,7 @@ FillLanderHold(PLANETSIDE_DESC* pPSD, uint16_t scan, uint16_t NumRetrieved)
 		start_count = pPSD->BiologicalLevel;
 
 		s.frame = SetAbsFrameIndex(
-			(isPC(optSuperPC) ? LanderFrame[7] : LanderFrame[0]), 41);
+			(isPC(uqm::UQMOptions::read().landerStyle) ? LanderFrame[7] : LanderFrame[0]), 41);
 
 		pPSD->BiologicalLevel += NumRetrieved;
 	}
@@ -671,7 +671,7 @@ FillLanderHold(PLANETSIDE_DESC* pPSD, uint16_t scan, uint16_t NumRetrieved)
 		}
 
 		s.frame = SetAbsFrameIndex(
-			(isPC(optSuperPC) ? LanderFrame[7] : LanderFrame[0]), 43);
+			(isPC(uqm::UQMOptions::read().landerStyle) ? LanderFrame[7] : LanderFrame[0]), 43);
 	}
 
 	tmpholdint =
@@ -689,7 +689,7 @@ FillLanderHold(PLANETSIDE_DESC* pPSD, uint16_t scan, uint16_t NumRetrieved)
 		s.frame = IncFrameIndex(s.frame);
 	}
 
-	if (isPC(optSuperPC))
+	if (isPC(uqm::UQMOptions::read().landerStyle))
 	{
 		OldContext = SetContext(PCLanderContext);
 	}
@@ -757,7 +757,7 @@ pickupNode(PLANETSIDE_DESC* pPSD, uint16_t NumRetrieved,
 		// Deposit could only be picked up partially.
 		NumRetrieved = (uint16_t)(Max - *Amount);
 
-		if (Scan != BIOLOGICAL_SCAN && optPartialPickup)
+		if (Scan != BIOLOGICAL_SCAN && uqm::UQMOptions::read().partialPickup)
 		{ // JMS: Subtract the scavenged kilotons from the mineral
 			// deposit. The rest will stay on the surface.
 			ElementPtr->mass_points -= NumRetrieved;
@@ -805,7 +805,7 @@ pickupNode(PLANETSIDE_DESC* pPSD, uint16_t NumRetrieved,
 			PartialPickup = true;
 		}
 
-		if (Scan == BIOLOGICAL_SCAN && optPartialPickup)
+		if (Scan == BIOLOGICAL_SCAN && uqm::UQMOptions::read().partialPickup)
 		{
 			// Lander full
 			PlaySound(SetAbsSoundIndex(LanderSounds, LANDER_FULL),
@@ -1559,7 +1559,7 @@ ScrollPlanetSide(int16_t dx, int16_t dy, int landingOffset)
 
 	curLanderLoc = new_pt;
 
-	if (is3DO(optSuperPC))
+	if (is3DO(uqm::UQMOptions::read().landerStyle))
 	{
 		OldContext = SetContext(PlanetContext);
 	}
@@ -1657,7 +1657,7 @@ ScrollPlanetSide(int16_t dx, int16_t dy, int landingOffset)
 			SetContextForeGroundColor(
 				pPSD->ColorCycle[pPSD->NumFrames >> 1]);
 
-			if (isPC(optSuperPC))
+			if (isPC(uqm::UQMOptions::read().landerStyle))
 			{
 				pPSD->MineralText[0].baseline.x = RADAR_WIDTH >> 1;
 				pPSD->MineralText[0].baseline.y = RES_SCALE(8);
@@ -1689,7 +1689,7 @@ ScrollPlanetSide(int16_t dx, int16_t dy, int landingOffset)
 		DeltaLanderCrew(-1, LIGHTNING_DISASTER);
 	}
 
-	if (isPC(optSuperPC))
+	if (isPC(uqm::UQMOptions::read().landerStyle))
 	{
 		DrawRadarBorder();
 		RotatePlanetSphere(true, nullptr);
@@ -1746,7 +1746,7 @@ AnimateLaunch(FRAME farray, bool isLanding)
 
 		Now = GetTimeCounter();
 
-		if (!isLanding && isPC(optSuperPC) && Now >= psNextTime)
+		if (!isLanding && isPC(uqm::UQMOptions::read().landerStyle) && Now >= psNextTime)
 		{
 			// 10 to clear the lander off of the screen
 			ScrollPlanetSide(0, 0,
@@ -1783,7 +1783,7 @@ AnimateLanderWarmup(void)
 	//GFXCONTEXT OldContext; unused
 	TimeCount TimeIn = GetTimeCounter();
 
-	if (is3DO(optSuperPC))
+	if (is3DO(uqm::UQMOptions::read().landerStyle))
 	{
 		SetContext(RadarContext);
 	}
@@ -1796,7 +1796,7 @@ AnimateLanderWarmup(void)
 	s.origin.y = 0;
 
 	s.frame = SetAbsFrameIndex(
-		is3DO(optSuperPC) ? LanderFrame[0] : LanderFrame[7],
+		is3DO(uqm::UQMOptions::read().landerStyle) ? LanderFrame[0] : LanderFrame[7],
 		(ANGLE_TO_FACING(FULL_CIRCLE) << 1) + 1);
 
 	DrawStamp(&s);
@@ -1812,7 +1812,7 @@ AnimateLanderWarmup(void)
 		--GLOBAL_SIS(CrewEnlisted);
 
 		DrawMineralHelpers();
-		if (!optSubmenu)
+		if (!uqm::UQMOptions::read().submenu)
 		{
 			DeltaSISGauges(UNDEFINED_DELTA, 0, 0);
 		}
@@ -1892,7 +1892,7 @@ InitPlanetSide(GFXPOINT pt)
 		pt.y = (MAP_HEIGHT << MAG_SHIFT) - 1;
 	}
 
-	if (isPC(optSuperPC))
+	if (isPC(uqm::UQMOptions::read().landerStyle))
 	{
 		SetContext(RadarContext);
 		SetContextBackGroundColor(BLACK_COLOR);
@@ -1909,7 +1909,7 @@ InitPlanetSide(GFXPOINT pt)
 
 	curLanderLoc = pt;
 
-	if (isPC(optWhichFonts))
+	if (isPC(uqm::UQMOptions::read().whichFonts))
 	{
 		SetContextFont(TinyFont);
 	}
@@ -1944,9 +1944,9 @@ InitPlanetSide(GFXPOINT pt)
 
 			DrawRadarArea();
 
-			if (!isPC(optSuperPC))
+			if (!isPC(uqm::UQMOptions::read().landerStyle))
 			{
-				ScreenTransition(optScrTrans, &r);
+				ScreenTransition(uqm::UQMOptions::read().scrTrans, &r);
 			}
 		}
 		UnbatchGraphics();
@@ -1959,7 +1959,7 @@ InitPlanetSide(GFXPOINT pt)
 static void
 LanderFire(int16_t facing)
 {
-#define SHUTTLE_FIRE_WAIT (isPC(optSuperPC) ? 10 : 14)
+#define SHUTTLE_FIRE_WAIT (isPC(uqm::UQMOptions::read().landerStyle) ? 10 : 14)
 	HELEMENT hWeaponElement;
 	int16_t wdx, wdy;
 	ELEMENT* WeaponElementPtr;
@@ -2199,7 +2199,7 @@ ScatterDeposits(void)
 	uint8_t NumNodesGrabbed;
 	PLANETSIDE_DESC* pPSD = planetSideDesc;
 
-	if (!optScatterElements)
+	if (!uqm::UQMOptions::read().scatterElements)
 	{
 		return;
 	}
@@ -2276,7 +2276,7 @@ DoPlanetSide(LanderInputState* pMS)
 	int16_t dx = 0;
 	int16_t dy = 0;
 
-#define SHUTTLE_TURN_WAIT (isPC(optSuperPC) ? 1 : 3)
+#define SHUTTLE_TURN_WAIT (isPC(uqm::UQMOptions::read().landerStyle) ? 1 : 3)
 	if (GLOBAL(CurrentActivity) & CHECK_ABORT)
 	{
 		return (false);
@@ -2443,7 +2443,7 @@ void MaskLanderGraphics(void)
 {
 	uint8_t currFlagState;
 
-	if (!optShowUpgrades)
+	if (!uqm::UQMOptions::read().showUpgrades)
 	{
 		return;
 	}
@@ -2556,7 +2556,7 @@ SetPlanetMusic(uint8_t planet_type)
 	uint8_t OrbitNum = planet_type % num_orbit_themes();
 	LanderMusic = OrbitMusic[OrbitNum];
 
-	return !(opt3doMusic || optRemixMusic || optVolasMusic) ? 0 : OrbitNum;
+	return !(uqm::UQMOptions::read().use3doMusic || uqm::UQMOptions::read().useRemixMusic || uqm::UQMOptions::read().volasMusic) ? 0 : OrbitNum;
 }
 
 static void
@@ -2565,7 +2565,7 @@ ReturnToOrbit(void)
 	GFXCONTEXT OldContext;
 	GFXRECT r;
 
-	if (is3DO(optSuperPC))
+	if (is3DO(uqm::UQMOptions::read().landerStyle))
 	{
 		OldContext = SetContext(PlanetContext);
 		GetContextClipRect(&r);
@@ -2577,7 +2577,7 @@ ReturnToOrbit(void)
 		DrawDefaultPlanetSphere();
 		DrawPlanetSurfaceBorder();
 		RedrawSurfaceScan(nullptr);
-		ScreenTransition(optScrTrans, &r);
+		ScreenTransition(uqm::UQMOptions::read().scrTrans, &r);
 		UnbatchGraphics();
 	}
 	else
@@ -2596,9 +2596,9 @@ ReturnToOrbit(void)
 
 		DrawRadarArea();
 
-		if (!isPC(optSuperPC))
+		if (!isPC(uqm::UQMOptions::read().landerStyle))
 		{
-			ScreenTransition(optScrTrans, &r);
+			ScreenTransition(uqm::UQMOptions::read().scrTrans, &r);
 		}
 
 		RedrawSurfaceScan(nullptr);
@@ -2859,7 +2859,7 @@ void PlanetSide(GFXPOINT planetLoc)
 		if (crew_left == 0)
 		{
 			--GLOBAL_SIS(NumLanders);
-			if (!optSubmenu)
+			if (!uqm::UQMOptions::read().submenu)
 			{
 				DrawLanders();
 			}
@@ -2874,13 +2874,13 @@ void PlanetSide(GFXPOINT planetLoc)
 
 			LandingTakeoffSequence(&landerInputState, false);
 
-			if (is3DO(optSuperPC))
+			if (is3DO(uqm::UQMOptions::read().landerStyle))
 			{
 				ReturnToOrbit();
 			}
 
 			AnimateLaunch(LanderFrame[6], false);
-			if (!optSubmenu)
+			if (!uqm::UQMOptions::read().submenu)
 			{
 				DeltaSISGauges(crew_left, 0, 0);
 			}
@@ -2903,7 +2903,7 @@ void PlanetSide(GFXPOINT planetLoc)
 					GLOBAL_SIS(TotalElementMass) +=
 						PSD.ElementAmounts[index];
 				}
-				if (!optSubmenu)
+				if (!uqm::UQMOptions::read().submenu)
 				{
 					DrawStorageBays(false);
 				}
@@ -2911,7 +2911,7 @@ void PlanetSide(GFXPOINT planetLoc)
 
 			GLOBAL_SIS(TotalBioMass) += PSD.BiologicalLevel;
 
-			if (isPC(optSuperPC))
+			if (isPC(uqm::UQMOptions::read().landerStyle))
 			{
 				ReturnToOrbit();
 				InitPCLander(false);

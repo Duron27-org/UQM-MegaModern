@@ -26,8 +26,8 @@
 extern "C" {
 #endif
 
-#define MENU_BOOL(a, b) (isPC(optWhichMenu) ? (b) : (a))
-#define FONT_BOOL(a, b) (isPC(optWhichFonts) ? (b) : (a))
+#define MENU_BOOL(a, b) (isPC(uqm::UQMOptions::read().whichMenu) ? (b) : (a))
+#define FONT_BOOL(a, b) (isPC(uqm::UQMOptions::read().whichFonts) ? (b) : (a))
 
 #define CREW_XOFFS RES_SCALE(4)
 #define ENERGY_XOFFS RES_SCALE(52)

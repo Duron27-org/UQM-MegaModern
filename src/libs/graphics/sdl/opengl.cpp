@@ -401,7 +401,7 @@ TFB_GL_ScanLines(void)
 static void
 TFB_GL_DrawQuad(SDL_Rect* r, uint8_t ResFactor)
 {
-	bool keep_aspect_ratio = optKeepAspectRatio;
+	bool keep_aspect_ratio = uqm::UQMOptions::read().keepAspectRatio;
 	int x1 = 0, y1 = 0, x2 = ScreenWidthActual, y2 = ScreenHeightActual;
 	int sx = 0, sy = 0;
 	int sw, sh;
@@ -491,7 +491,7 @@ TFB_GL_Preprocess(int force_full_redraw, int transition_amount, int fade_amount)
 	glOrtho(0, ScreenWidthActual, ScreenHeightActual, 0, -1, 1);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	if (optKeepAspectRatio)
+	if (uqm::UQMOptions::read().keepAspectRatio)
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
 	}

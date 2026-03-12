@@ -176,8 +176,8 @@ bool LoadKernel(int argc, char* argv[])
 		uqm::loadAddon(DOS_MODE(IS_HD));
 	}
 
-	usingSpeech = (bool)optSpeech;
-	if (optSpeech && !uqm::loadAddon("mm-3dovoice"))
+	usingSpeech = (bool)uqm::UQMOptions::read().useSpeech;
+	if (uqm::UQMOptions::read().useSpeech && !uqm::loadAddon("mm-3dovoice"))
 	{
 		usingSpeech = false;
 	}
@@ -191,29 +191,29 @@ bool LoadKernel(int argc, char* argv[])
 		SyreenVoiceFix = uqm::loadAddon("mm-SyreenVoiceFix");
 	}
 
-	if (opt3doMusic)
+	if (uqm::UQMOptions::read().use3doMusic)
 	{
 		uqm::loadAddon("3domusic");
 	}
 
-	if (optRemixMusic)
+	if (uqm::UQMOptions::read().useRemixMusic)
 	{
 		uqm::loadAddon("remix");
 	}
 
-	if (optVolasMusic)
+	if (uqm::UQMOptions::read().volasMusic)
 	{
 		VolasPackPresent = uqm::loadAddon("volasaurus-remix-pack");
 
-		SpaceMusicOK = optSpaceMusic != uqm::SphereOfInfluenceMusic::None && VolasPackPresent;
+		SpaceMusicOK = uqm::UQMOptions::read().spaceMusic != uqm::SphereOfInfluenceMusic::None && VolasPackPresent;
 	}
 
 	if (!VolasPackPresent)
 	{
-		SpaceMusicOK = optSpaceMusic != uqm::SphereOfInfluenceMusic::None && uqm::loadAddon("SpaceMusic");
+		SpaceMusicOK = uqm::UQMOptions::read().spaceMusic != uqm::SphereOfInfluenceMusic::None && uqm::loadAddon("SpaceMusic");
 	}
 
-	if (optWhichIntro == uqm::EmulationMode::Console3DO)
+	if (uqm::UQMOptions::read().whichIntro == uqm::EmulationMode::Console3DO)
 	{
 		uqm::loadAddon("3dovideo");
 	}
@@ -243,7 +243,7 @@ bool LoadKernel(int argc, char* argv[])
 	}
 
 	/* Now load the rest of the addons, in order. */
-	uqm::prepareAddons(optAddons);
+	uqm::prepareAddons(uqm::UQMOptions::read().addons);
 
 	{
 		COLORMAP ColorMapTab {};

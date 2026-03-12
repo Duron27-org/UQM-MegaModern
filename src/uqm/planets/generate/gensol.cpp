@@ -75,7 +75,7 @@ const GenerateFunctions generateSolFunctions = {
 static bool
 GenerateSol_initNpcs(SOLARSYS_STATE* solarSys)
 {
-	if (optHeadStart)
+	if (uqm::UQMOptions::read().headStart)
 	{
 		SET_GAME_STATE(PROBE_MESSAGE_DELIVERED, 1);
 	}
@@ -124,7 +124,7 @@ GenerateSol_generatePlanets(SOLARSYS_STATE* solarSys)
 	uint16_t planetI;
 
 #define SOL_SEED 334241042L
-	RandomContext_SeedRandom(SysGenRNG, SOL_SEED + (StarSeed ? optCustomSeed : 0));
+	RandomContext_SeedRandom(SysGenRNG, SOL_SEED + (StarSeed ? uqm::UQMOptions::read().customSeed : 0));
 
 	solarSys->SunDesc[0].NumPlanets = 9;
 	for (planetI = 0; planetI < 9; ++planetI)
@@ -466,7 +466,7 @@ GenerateSol_generateOrbital(SOLARSYS_STATE* solarSys, PLANET_DESC* world)
 		{ // For Sol Textures
 			RESOURCE maskAnim = nullptr;
 
-			if (optScanSphere)
+			if (uqm::UQMOptions::read().sphereType)
 			{
 				switch (planetNr)
 				{
@@ -623,7 +623,7 @@ GenerateSol_generateOrbital(SOLARSYS_STATE* solarSys, PLANET_DESC* world)
 		{ // For Sol Textures
 			RESOURCE maskAnim = nullptr;
 
-			if (optScanSphere)
+			if (uqm::UQMOptions::read().sphereType)
 			{
 				switch (planetNr)
 				{

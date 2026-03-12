@@ -43,7 +43,7 @@ void BuildBuildPickFrame(void)
 	s.origin.x = 0;
 	s.origin.y = 0;
 	s.frame = SetAbsFrameIndex(MeleeFrame,
-							   BUILDPICK_FRAME_OFFSET + static_cast<int>(optControllerType));
+							   BUILDPICK_FRAME_OFFSET + static_cast<int>(uqm::UQMOptions::read().optControllerType.value));
 	// 5x5 grid of ships to pick from
 	GetFrameRect(s.frame, &r);
 
@@ -71,7 +71,7 @@ void DestroyBuildPickFrame(void)
 
 Color GetShipFlashColor(void)
 {
-	if (is3DO(optWhichMenu))
+	if (is3DO(uqm::UQMOptions::read().whichMenu))
 	{
 		return BLACK_COLOR;
 	}
@@ -117,7 +117,7 @@ void RepairBuildPickFrame(GFXRECT* pRect, GFXPOINT* origin)
 	s.origin.x = pRect->corner.x;
 	s.origin.y = pRect->corner.y;
 	s.frame = SetAbsFrameIndex(MeleeFrame,
-							   BUILDPICK_FRAME_OFFSET + static_cast<int>(optControllerType));
+							   BUILDPICK_FRAME_OFFSET + static_cast<int>(uqm::UQMOptions::read().optControllerType.value));
 
 	DrawStamp(&s);
 
@@ -263,7 +263,7 @@ void DrawPickFrame(MELEE_STATE* pMS)
 	DrawStamp(&s);
 	DrawMeleeShipStrings(pMS, pMS->currentShip);
 
-	if (isPC(optWhichMenu))
+	if (isPC(uqm::UQMOptions::read().whichMenu))
 	{ // if PC menu is selected - draw flash on the current ship as soon
 		// as we pop up otherwise for 1 frame it will look like nothing is
 		// selected
@@ -302,7 +302,7 @@ DoPickShip(MELEE_STATE* pMS)
 	if (PulsedInputState.menu[KEY_MENU_SPECIAL]
 		&& (pMS->currentShip != MELEE_NONE))
 	{
-		if (isPC(optWhichIntro))
+		if (isPC(uqm::UQMOptions::read().whichIntro))
 		{
 			PlayMenuSound(MENU_SOUND_SUCCESS);
 		}

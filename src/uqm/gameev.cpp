@@ -716,7 +716,7 @@ kohr_ah_genocide_event(int arg)
 			speed = 255;
 		}
 
-		if (optCheatMode)
+		if (uqm::UQMOptions::read().cheatMode)
 		{
 			speed = 0;
 		}

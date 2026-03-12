@@ -50,11 +50,11 @@ static void
 DrawPCMenuFrame(GFXRECT* r)
 {
 
-	if (IS_HD || optCustomBorder)
+	if (IS_HD || uqm::UQMOptions::read().customBorder)
 	{
 		DrawRenderedBox(r, true, PCMENU_BACKGROUND_COLOR,
-						optCustomBorder ? SPECIAL_BEVEL : THIN_INNER_BEVEL,
-						optCustomBorder);
+						uqm::UQMOptions::read().customBorder ? SPECIAL_BEVEL : THIN_INNER_BEVEL,
+						uqm::UQMOptions::read().customBorder);
 	}
 	else
 	{
@@ -104,7 +104,7 @@ DrawPCMenu(uint8_t beg_index, uint8_t end_index, uint8_t NewState, uint8_t hilit
 	rt.corner.y += PC_MENU_HEIGHT - DOS_BOOL_SCL(12, 3);
 	rt.extent.width += RES_SCALE(2);
 	rt.extent.height += DOS_BOOL_SCL(2, -6);
-	if (!optCustomBorder)
+	if (!uqm::UQMOptions::read().customBorder)
 	{
 		DrawFilledRectangle(&rt);
 	}
@@ -155,7 +155,7 @@ DrawPCMenu(uint8_t beg_index, uint8_t end_index, uint8_t NewState, uint8_t hilit
 				r->corner.y = t.baseline.y - PC_MENU_HEIGHT
 							+ RES_SCALE(2);
 				r->extent.height = PC_MENU_HEIGHT - RES_SCALE(1);
-				if (optCustomBorder)
+				if (uqm::UQMOptions::read().customBorder)
 				{
 					STAMP s;
 
@@ -298,7 +298,7 @@ NextMenuState(uint8_t BaseState, uint8_t CurState)
 		case PM_CYBORG_NORMAL:
 		case PM_CYBORG_DOUBLE:
 		case PM_CYBORG_SUPER:
-			if ((isPC(optSmoothScroll) && !usingSpeech) || isPC(optWhichMenu))
+			if ((isPC(uqm::UQMOptions::read().smoothScroll) && !usingSpeech) || isPC(uqm::UQMOptions::read().whichMenu))
 			{
 				NextState = PM_READ_VERY_SLOW;
 			}
@@ -359,7 +359,7 @@ PreviousMenuState(uint8_t BaseState, uint8_t CurState)
 			NextState = PM_CYBORG_OFF;
 			break;
 		case PM_CHANGE_CAPTAIN:
-			if ((isPC(optSmoothScroll) && !usingSpeech) || isPC(optWhichMenu))
+			if ((isPC(uqm::UQMOptions::read().smoothScroll) && !usingSpeech) || isPC(uqm::UQMOptions::read().whichMenu))
 			{
 				NextState = PM_READ_VERY_SLOW;
 			}
@@ -513,7 +513,7 @@ bool DoMenuChooser(MENU_STATE* pMS, uint8_t BaseState)
 	uint8_t NewState = pMS->CurState;
 	uint8_t OrigBase = BaseState;
 	bool useAltMenu = false;
-	if (optWhichMenu == uqm::EmulationMode::PC)
+	if (uqm::UQMOptions::read().whichMenu == uqm::EmulationMode::PC)
 	{
 		useAltMenu = GetAlternateMenu(&BaseState, &NewState);
 	}
@@ -551,7 +551,7 @@ bool DoMenuChooser(MENU_STATE* pMS, uint8_t BaseState)
 		}
 		return false;
 	}
-	else if ((optWhichMenu == uqm::EmulationMode::PC) && PulsedInputState.menu[KEY_MENU_CANCEL] && (BaseState == PM_ALT_CARGO))
+	else if ((uqm::UQMOptions::read().whichMenu == uqm::EmulationMode::PC) && PulsedInputState.menu[KEY_MENU_CANCEL] && (BaseState == PM_ALT_CARGO))
 	{
 		if (OrigBase == PM_SCAN)
 		{
@@ -681,7 +681,7 @@ Draw3DOMenuText(GFXRECT* r, int Index)
 
 	GetContextFontLeading(&leading);
 
-	if (!optCustomBorder)
+	if (!uqm::UQMOptions::read().customBorder)
 	{
 		block = *r;
 		block.corner.y += DOS_NUM_SCL(2);
@@ -727,7 +727,7 @@ void DrawMenuStateStrings(uint8_t beg_index, int16_t NewState)
 		hilite = 0;
 	}
 
-	if (optWhichMenu == uqm::EmulationMode::PC)
+	if (uqm::UQMOptions::read().whichMenu == uqm::EmulationMode::PC)
 	{
 		uint8_t tmpState = (uint8_t)NewState;
 		GetAlternateMenu(&beg_index, &tmpState);
@@ -752,7 +752,7 @@ void DrawMenuStateStrings(uint8_t beg_index, int16_t NewState)
 	s.origin.x = RADAR_X - r.corner.x;
 	s.origin.y = RADAR_Y - r.corner.y;
 	r.corner.x = s.origin.x - RES_SCALE(1);
-	if (optWhichMenu == uqm::EmulationMode::PC)
+	if (uqm::UQMOptions::read().whichMenu == uqm::EmulationMode::PC)
 	{
 		r.corner.y = s.origin.y - PC_MENU_HEIGHT - IF_HD(2);
 	}
@@ -764,7 +764,7 @@ void DrawMenuStateStrings(uint8_t beg_index, int16_t NewState)
 	BatchGraphics();
 	SetContextForeGroundColor(
 		BUILD_COLOR(MAKE_RGB15(0x0A, 0x0A, 0x0A), 0x08));
-	if (s.frame && optWhichMenu == uqm::EmulationMode::PC)
+	if (s.frame && uqm::UQMOptions::read().whichMenu == uqm::EmulationMode::PC)
 	{
 		if (beg_index == PM_CREW)
 		{
@@ -821,7 +821,7 @@ void DrawMenuStateStrings(uint8_t beg_index, int16_t NewState)
 		DrawPCMenu(beg_index, end_index, (uint8_t)NewState, hilite, &r);
 		s.frame = 0;
 
-		if (optSubmenu)
+		if (uqm::UQMOptions::read().submenu)
 		{
 			FunkyMenu(beg_index + (uint8_t)NewState, s);
 		}
@@ -833,10 +833,10 @@ void DrawMenuStateStrings(uint8_t beg_index, int16_t NewState)
 		r.corner.y += DOS_NUM_SCL(5);
 		r.extent.width += RES_SCALE(1);
 		r.extent.height = RADAR_HEIGHT
-						+ RES_SCALE(isPC(optWhichMenu) ? 9 : 12);
+						+ RES_SCALE(isPC(uqm::UQMOptions::read().whichMenu) ? 9 : 12);
 		r.extent.height -= DOS_NUM_SCL(6);
 
-		if (!optCustomBorder)
+		if (!uqm::UQMOptions::read().customBorder)
 		{
 			DrawFilledRectangle(&r);
 		}
@@ -847,7 +847,7 @@ void DrawMenuStateStrings(uint8_t beg_index, int16_t NewState)
 	}
 	if (s.frame)
 	{
-		if (optSubmenu)
+		if (uqm::UQMOptions::read().submenu)
 		{
 			FunkyMenu(beg_index + (uint8_t)NewState, s);
 		}
@@ -870,7 +870,7 @@ void DrawMenuStateStrings(uint8_t beg_index, int16_t NewState)
 				t.CharCount = (uint16_t)~0;
 				t.pStr = buf;
 				fmt::format_to_sz_n(buf, "{}", GLOBAL(CrewCost));
-				if (isPC(optWhichFonts))
+				if (isPC(uqm::UQMOptions::read().whichFonts))
 				{
 					SetContextFont(TinyFont);
 				}
@@ -888,7 +888,7 @@ void DrawMenuStateStrings(uint8_t beg_index, int16_t NewState)
 				t.CharCount = (uint16_t)~0;
 				t.pStr = buf;
 				fmt::format_to_sz_n(buf, "{}", GLOBAL(FuelCost));
-				if (optWhichFonts == uqm::EmulationMode::Console3DO && !optWholeFuel)
+				if (uqm::UQMOptions::read().whichFonts == uqm::EmulationMode::Console3DO && !uqm::UQMOptions::read().wholeFuel)
 				{
 					SetContextFont(TinyFontBold);
 				}
@@ -916,7 +916,7 @@ void DrawMineralHelpers(void)
 	GFXRECT r;
 	int16_t leading;
 
-	if (!optSubmenu)
+	if (!uqm::UQMOptions::read().submenu)
 	{
 		return;
 	}
@@ -1092,7 +1092,7 @@ void DrawBorder(uint8_t Visible)
 	s.origin.x = 0;
 	s.origin.y = 0;
 
-	if (optCustomBorder)
+	if (uqm::UQMOptions::read().customBorder)
 	{
 		s.frame = SetAbsFrameIndex(BorderFrame, Visible);
 		DrawStamp(&s);

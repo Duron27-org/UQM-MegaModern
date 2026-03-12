@@ -48,7 +48,7 @@ void spawn_planet(void)
 		PlanetElementPtr->hit_points = 200;
 		PlanetElementPtr->state_flags = APPEARING;
 		PlanetElementPtr->life_span = NORMAL_LIFE + 1;
-		if (optMeleeObstacles && !isNetwork())
+		if (uqm::UQMOptions::read().meleeObstacles && !isNetwork())
 		{ // Invisible planet with cheats
 			PlanetElementPtr->state_flags |= NONSOLID;
 			SetPrimType(&DisplayArray[PlanetElementPtr->PrimIndex], POINT_PRIM);
@@ -199,7 +199,7 @@ void spawn_asteroid(ELEMENT* ElementPtr)
 		AsteroidElementPtr->hit_points = 1;
 		AsteroidElementPtr->mass_points = 3;
 		AsteroidElementPtr->state_flags =
-			optMeleeObstacles && !isNetwork() ? DISAPPEARING : APPEARING;
+			uqm::UQMOptions::read().meleeObstacles && !isNetwork() ? DISAPPEARING : APPEARING;
 		AsteroidElementPtr->life_span = NORMAL_LIFE;
 		SetPrimType(&DisplayArray[AsteroidElementPtr->PrimIndex], STAMP_PRIM);
 		if ((val = (uint16_t)TFB_Random()) & (1 << 0))

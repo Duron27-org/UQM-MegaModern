@@ -868,8 +868,8 @@ bool LoadGame(uint16_t which_game, SUMMARY_DESC* SummPtr, uio_Stream* in_fp, boo
 
 	GlobData.SIS_state = SummPtr->SS;
 
-	optCustomSeed = GLOBAL_SIS(Seed);
-	optShipSeed = (GLOBAL_SIS(ShipSeed) != 0 ? OPTVAL_ENABLED : OPTVAL_DISABLED);
+	uqm::UQMOptions::read().customSeed = GLOBAL_SIS(Seed);
+	uqm::UQMOptions::read().shipSeed = (GLOBAL_SIS(ShipSeed) != 0);
 	ReloadMasterShipList(nullptr);
 	LoadFleetInfo();
 
@@ -953,7 +953,7 @@ bool LoadGame(uint16_t which_game, SUMMARY_DESC* SummPtr, uio_Stream* in_fp, boo
 									EventPtr->year_index,
 									EventPtr->func_index);
 #endif /* DEBUG_LOAD */
-					if (optDeCleansing && EventPtr->func_index == KOHR_AH_VICTORIOUS_EVENT)
+					if (uqm::UQMOptions::read().deCleansing && EventPtr->func_index == KOHR_AH_VICTORIOUS_EVENT)
 					{
 						UnlockEvent(hEvent);
 						uqm::log::debug("EventPtr->year_index: {}\n", EventPtr->year_index);
@@ -969,7 +969,7 @@ bool LoadGame(uint16_t which_game, SUMMARY_DESC* SummPtr, uio_Stream* in_fp, boo
 					UnlockEvent(hEvent);
 					PutEvent(hEvent);
 
-					if (optDeCleansing && DeCleanse)
+					if (uqm::UQMOptions::read().deCleansing && DeCleanse)
 					{
 						AddEvent(ABSOLUTE_EVENT, 2, 17, START_YEAR + YEARS_TO_KOHRAH_VICTORY,
 								 KOHR_AH_VICTORIOUS_EVENT);
@@ -1043,11 +1043,11 @@ bool LoadGame(uint16_t which_game, SUMMARY_DESC* SummPtr, uio_Stream* in_fp, boo
 	// Otherwise if the seed isn't prime, optSeedType goes to 1 (planet)
 	if (g_seedType == uqm::SeedType::Prime)
 	{
-		if (optCustomSeed == 0)
+		if (uqm::UQMOptions::read().customSeed == 0)
 		{
-			GLOBAL_SIS(Seed) = optCustomSeed = PrimeA;
+			GLOBAL_SIS(Seed) = uqm::UQMOptions::read().customSeed = PrimeA;
 		}
-		else if (optCustomSeed != PrimeA)
+		else if (uqm::UQMOptions::read().customSeed != PrimeA)
 		{
 			SET_GAME_STATE(SEED_TYPE, g_seedType = uqm::SeedType::Planet);
 		}

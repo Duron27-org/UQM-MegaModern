@@ -165,7 +165,7 @@ void RerenderPlanetSphere(void)
 {
 	PLANET_ORBIT* Orbit = &pSolarSysState->Orbit;
 
-	if (optTintPlanSphere != uqm::EmulationMode::PC)
+	if (uqm::UQMOptions::read().tintPlanSphere != uqm::EmulationMode::PC)
 	{
 		return;
 	}
@@ -203,7 +203,7 @@ void InitSphereRotation(int direction, bool shielded, uint16_t width,
 
 	rotDirection = direction;
 	rotPointIndex = 0;
-	throbShield = shielded && optWhichShield == uqm::EmulationMode::Console3DO
+	throbShield = shielded && uqm::UQMOptions::read().whichShield == uqm::EmulationMode::Console3DO
 			   && !(useDosSpheres || use3DOSpheres);
 
 	if (throbShield)
@@ -466,7 +466,7 @@ void ZoomInPlanetSphere(void)
 
 		if (Now >= RenderNextTime)
 		{
-			RenderNextTime = Now + PLANET_ROTATION_RATE(optScanSphere);
+			RenderNextTime = Now + PLANET_ROTATION_RATE(uqm::UQMOptions::read().sphereType);
 			PrepareNextRotationFrame();
 		}
 
@@ -498,7 +498,7 @@ void RotatePlanetSphere(bool keepRate, STAMP* onTop)
 
 	if (Now >= NextTime)
 	{
-		NextTime = Now + PLANET_ROTATION_RATE(optScanSphere);
+		NextTime = Now + PLANET_ROTATION_RATE(uqm::UQMOptions::read().sphereType);
 
 		if (Now >= OutNextTime)
 		{

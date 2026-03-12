@@ -31,7 +31,7 @@ extern "C" {
 #ifdef COMM_INTERNAL
 
 #define SLIDER_Y (RES_SCALE(107))
-#define SLIDER_HEIGHT RES_SCALE((!usingSpeech && isPC(optSmoothScroll)) ? 4 : DOS_BOOL(15, 4))
+#define SLIDER_HEIGHT RES_SCALE((!usingSpeech && isPC(uqm::UQMOptions::read().smoothScroll)) ? 4 : DOS_BOOL(15, 4))
 
 #include "commanim.h"
 

@@ -1272,7 +1272,7 @@ bool LoadLegacyGame(uint16_t which_game, SUMMARY_DESC* SummPtr, bool try_vanilla
 							EventPtr->year_index,
 							EventPtr->func_index);
 #endif /* DEBUG_LOAD */
-			if (optDeCleansing && EventPtr->func_index == KOHR_AH_VICTORIOUS_EVENT)
+			if (uqm::UQMOptions::read().deCleansing && EventPtr->func_index == KOHR_AH_VICTORIOUS_EVENT)
 			{
 				UnlockEvent(hEvent);
 				uqm::log::debug("EventPtr->year_index: {}\n", EventPtr->year_index);
@@ -1288,7 +1288,7 @@ bool LoadLegacyGame(uint16_t which_game, SUMMARY_DESC* SummPtr, bool try_vanilla
 			UnlockEvent(hEvent);
 			PutEvent(hEvent);
 
-			if (optDeCleansing && DeCleanse)
+			if (uqm::UQMOptions::read().deCleansing && DeCleanse)
 			{
 				AddEvent(ABSOLUTE_EVENT, 2, 17, START_YEAR + YEARS_TO_KOHRAH_VICTORY,
 						 KOHR_AH_VICTORIOUS_EVENT);
@@ -1397,7 +1397,7 @@ bool LoadLegacyGame(uint16_t which_game, SUMMARY_DESC* SummPtr, bool try_vanilla
 	// Reset Debug Key
 	DebugKeyPressed = false;
 	SET_GAME_STATE(SeedType, g_seedType = uqm::SeedType::Prime);
-	GLOBAL_SIS(Seed) = optCustomSeed = PrimeA;
+	GLOBAL_SIS(Seed) = uqm::UQMOptions::read().customSeed = PrimeA;
 
 	return InitStarseed(false);
 }

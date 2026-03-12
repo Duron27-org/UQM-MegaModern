@@ -55,7 +55,7 @@ void ShowRemainingCapacity(void)
 	char buf[40];
 
 	OldContext = SetContext(StatusContext);
-	if (isPC(optWhichFonts))
+	if (isPC(uqm::UQMOptions::read().whichFonts))
 	{
 		SetContextFont(TinyFont);
 	}
@@ -163,7 +163,7 @@ DrawCargoDisplay(void)
 	//   1 pixel too low. Or if not, why do we need another box anyway?
 	r.extent.height = (RES_SCALE(129) - r.corner.y);
 
-	if (!optCustomBorder && !IS_HD)
+	if (!uqm::UQMOptions::read().customBorder && !IS_HD)
 	{
 		DrawStarConBox(&r, RES_SCALE(1),
 					   SHADOWBOX_MEDIUM_COLOR, SHADOWBOX_DARK_COLOR,
@@ -184,7 +184,7 @@ DrawCargoDisplay(void)
 	SetContextForeGroundColor(CARGO_SELECTED_AMOUNT_COLOR);
 	font_DrawText(&t);
 
-	if (isPC(optWhichFonts))
+	if (isPC(uqm::UQMOptions::read().whichFonts))
 	{
 		SetContextFont(TinyFont);
 	}
@@ -268,7 +268,7 @@ void DrawCargoStrings(uint8_t OldElement, uint8_t NewElement)
 	GFXCONTEXT OldContext;
 
 	OldContext = SetContext(StatusContext);
-	if (isPC(optWhichFonts))
+	if (isPC(uqm::UQMOptions::read().whichFonts))
 	{
 		SetContextFont(TinyFont);
 	}
@@ -324,7 +324,7 @@ void DrawRainbowPlanet(uint16_t planet)
 
 	BatchGraphics();
 
-	if (!optCustomBorder && !IS_HD)
+	if (!uqm::UQMOptions::read().customBorder && !IS_HD)
 	{
 		DrawStarConBox(&r, RES_SCALE(1),
 					   SHADOWBOX_MEDIUM_COLOR, SHADOWBOX_DARK_COLOR,
@@ -369,7 +369,7 @@ void DrawRainbowPlanet(uint16_t planet)
 	SetContextForeGroundColor(planet != 0 ?
 								  PCMENU_SELECTION_TEXT_COLOR :
 								  PCMENU_TEXT_COLOR);
-	if (isPC(optWhichFonts))
+	if (isPC(uqm::UQMOptions::read().whichFonts))
 	{
 		SetContextFont(TinyFont);
 	}
@@ -489,7 +489,7 @@ void CargoMenu(void)
 	DrawCargoStrings((uint8_t)~0, MenuState.CurState);
 	DrawElementDescription(MenuState.CurState);
 
-	if (optWhichMenu == uqm::EmulationMode::PC)
+	if (uqm::UQMOptions::read().whichMenu == uqm::EmulationMode::PC)
 	{
 		DrawMenuStateStrings(PM_ALT_CARGO, 0);
 	}

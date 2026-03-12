@@ -520,7 +520,7 @@ bool RosterMenu(void)
 		drawSupportShip(&RosterState, true, true);
 	}
 
-	if (optWhichMenu == uqm::EmulationMode::PC)
+	if (uqm::UQMOptions::read().whichMenu == uqm::EmulationMode::PC)
 	{
 		DrawMenuStateStrings(PM_ALT_CARGO, 2);
 	}

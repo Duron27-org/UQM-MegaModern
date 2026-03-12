@@ -43,14 +43,14 @@ enum PlanetScanTypes
 #define UQM_MAP_WIDTH 243
 #define UQM_MAP_HEIGHT 75
 #define ORIGINAL_MAP_WIDTH \
-	(optPlanetTexture ? UQM_MAP_WIDTH - 1 : SC2_MAP_WIDTH)
+	(uqm::UQMOptions::read().planetTexture ? UQM_MAP_WIDTH - 1 : SC2_MAP_WIDTH)
 #define ORIGINAL_MAP_HEIGHT \
-	(optPlanetTexture ? UQM_MAP_HEIGHT : SC2_MAP_HEIGHT)
+	(uqm::UQMOptions::read().planetTexture ? UQM_MAP_HEIGHT : SC2_MAP_HEIGHT)
 #define MAP_WIDTH RES_SCALE(UQM_MAP_WIDTH)
 #define MAP_HEIGHT RES_SCALE(SC2_MAP_HEIGHT)
-#define SCALED_MAP_WIDTH RES_SCALE(((is3DO(optSuperPC) ? UQM_MAP_WIDTH : SC2_MAP_WIDTH)) - SAFE_NUM(33))
+#define SCALED_MAP_WIDTH RES_SCALE(((is3DO(uqm::UQMOptions::read().landerStyle) ? UQM_MAP_WIDTH : SC2_MAP_WIDTH)) - SAFE_NUM(33))
 #define UNSCALED_MAP_WIDTH \
-	(((is3DO(optSuperPC) ? UQM_MAP_WIDTH : SC2_MAP_WIDTH)) - SAFE_NUM(33))
+	(((is3DO(uqm::UQMOptions::read().landerStyle) ? UQM_MAP_WIDTH : SC2_MAP_WIDTH)) - SAFE_NUM(33))
 
 #define MAP_DIMENSIONS               \
 	{SC2_MAP_WIDTH, SC2_MAP_HEIGHT}, \
@@ -75,8 +75,8 @@ enum
 	LANDER_DESTROYED
 };
 
-#define MAX_SCROUNGED (isPC(optSuperPC) ? 64 : 50)
-#define MAX_HOLD_BARS (isPC(optSuperPC) ? 64 : 50)
+#define MAX_SCROUNGED (isPC(uqm::UQMOptions::read().landerStyle) ? 64 : 50)
+#define MAX_HOLD_BARS (isPC(uqm::UQMOptions::read().landerStyle) ? 64 : 50)
 
 #define SCALE_RADIUS(r) ((r) << 6)
 #define UNSCALE_RADIUS(r) ((r) >> 6)

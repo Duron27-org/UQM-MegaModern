@@ -42,6 +42,8 @@ cbld
 conanbuild
 vsbuild
 
+#claude
+.claude
 
 # MSTest test Results
 [Tt]est[Rr]esult*/

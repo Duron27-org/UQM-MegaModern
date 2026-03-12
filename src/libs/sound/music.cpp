@@ -344,7 +344,7 @@ void SetMusicPosition(void)
 	MUSIC_POSITION temp;
 	int i;
 
-	if (!optMusicResume || GLOBAL(CurrentActivity) & CHECK_ABORT
+	if (!uqm::UQMOptions::read().musicResume || GLOBAL(CurrentActivity) & CHECK_ABORT
 		|| !PLRPlaying((MUSIC_REF)~0))
 	{
 		return;
@@ -388,7 +388,7 @@ GetMusicPosition()
 	uint32_t filename_hash;
 	int i;
 
-	if (!optMusicResume || GLOBAL(CurrentActivity) & CHECK_ABORT)
+	if (!uqm::UQMOptions::read().musicResume || GLOBAL(CurrentActivity) & CHECK_ABORT)
 	{
 		return 0;
 	}
@@ -423,7 +423,7 @@ bool OkayToResume(void)
 	uint32_t filename_hash;
 	int i;
 
-	if (!optMusicResume || GLOBAL(CurrentActivity) & CHECK_ABORT)
+	if (!uqm::UQMOptions::read().musicResume || GLOBAL(CurrentActivity) & CHECK_ABORT)
 	{
 		return false;
 	}
@@ -456,7 +456,7 @@ bool OkayToResume(void)
 	TimeIn = GetTimeCounter();
 	difference = TimeIn - resumeMusicArray[i].last_played;
 
-	if (optMusicResume == 2 || (difference < FIVE_MINUTES))
+	if (uqm::UQMOptions::read().musicResume == 2 || (difference < FIVE_MINUTES))
 	{
 		return true;
 	}

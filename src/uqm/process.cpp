@@ -232,7 +232,7 @@ CalcReduction(int32_t dx, int32_t dy)
 	uqm::log::debug("CalcReduction:");
 #endif
 
-	if (uqm::toTFBScaleMode(optMeleeScale) == uqm::TFBScaleMode::Step)
+	if (uqm::toTFBScaleMode(uqm::UQMOptions::read().meleeScale) == uqm::TFBScaleMode::Step)
 	{
 		int32_t sdx, sdy;
 
@@ -338,7 +338,7 @@ CalcView(DPOINT* pNewScrollPt, int16_t next_reduction,
 	dy = ((int32_t)(LOG_SPACE_HEIGHT >> 1) - pNewScrollPt->y);
 	dx = WRAP_DELTA_X(dx);
 	dy = WRAP_DELTA_Y(dy);
-	const bool meleeScaleModeIsTFBStep {uqm::toTFBScaleMode(optMeleeScale) == uqm::TFBScaleMode::Step};
+	const bool meleeScaleModeIsTFBStep {uqm::toTFBScaleMode(uqm::UQMOptions::read().meleeScale) == uqm::TFBScaleMode::Step};
 	if (ships_alive == 1 && (!meleeScaleModeIsTFBStep || isNetwork()))
 	{
 #define ORG_JUMP_X ((int32_t)DISPLAY_ALIGN(LOG_SPACE_WIDTH / 75))
@@ -714,7 +714,7 @@ PreProcessQueue(int32_t* pscroll_x, int32_t* pscroll_y)
 	sides_active = (battle_counter[0] ? 1 : 0)
 				 + (battle_counter[1] ? 1 : 0);
 
-	if (uqm::toTFBScaleMode(optMeleeScale) == uqm::TFBScaleMode::Step)
+	if (uqm::toTFBScaleMode(uqm::UQMOptions::read().meleeScale) == uqm::TFBScaleMode::Step)
 	{
 		min_reduction = max_reduction = MAX_VIS_REDUCTION + 1;
 	}
@@ -828,7 +828,7 @@ PreProcessQueue(int32_t* pscroll_x, int32_t* pscroll_y)
 		&& (min_reduction = max_reduction) > opt_max_zoom_out
 		&& (min_reduction = zoom_out) > opt_max_zoom_out)
 	{
-		if (uqm::toTFBScaleMode(optMeleeScale) == uqm::TFBScaleMode::Step)
+		if (uqm::toTFBScaleMode(uqm::UQMOptions::read().meleeScale) == uqm::TFBScaleMode::Step)
 		{
 			min_reduction = 0;
 		}
@@ -889,7 +889,7 @@ PRIM_LINKS DisplayLinks;
 static inline COORD
 CalcDisplayCoord(int32_t c, int32_t orgc, int16_t reduction)
 {
-	if (uqm::toTFBScaleMode(optMeleeScale) == uqm::TFBScaleMode::Step)
+	if (uqm::toTFBScaleMode(uqm::UQMOptions::read().meleeScale) == uqm::TFBScaleMode::Step)
 	{ /* old fixed-step zoom style */
 		return (c - orgc) >> reduction;
 	}
@@ -909,7 +909,7 @@ PostProcessQueue(VIEW_STATE view_state, int32_t scroll_x, int32_t scroll_y)
 #ifdef KDEBUG
 	uqm::log::debug("PostProcess:");
 #endif
-	if (uqm::toTFBScaleMode(optMeleeScale) == uqm::TFBScaleMode::Step)
+	if (uqm::toTFBScaleMode(uqm::UQMOptions::read().meleeScale) == uqm::TFBScaleMode::Step)
 	{
 		reduction = zoom_out + ONE_SHIFT;
 	}
@@ -1034,7 +1034,7 @@ PostProcessQueue(VIEW_STATE view_state, int32_t scroll_x, int32_t scroll_y)
 						{
 							uint16_t index, scale = GSCALE_IDENTITY;
 
-							if (uqm::toTFBScaleMode(optMeleeScale) == uqm::TFBScaleMode::Step)
+							if (uqm::toTFBScaleMode(uqm::UQMOptions::read().meleeScale) == uqm::TFBScaleMode::Step)
 							{
 								index = zoom_out;
 							}
@@ -1047,7 +1047,7 @@ PostProcessQueue(VIEW_STATE view_state, int32_t scroll_x, int32_t scroll_y)
 								ElementPtr->next.image.farray[index],
 								ElementPtr->next.image.frame);
 
-							if (uqm::toTFBScaleMode(optMeleeScale) == uqm::TFBScaleMode::Trilinear && index < 2 && scale != GSCALE_IDENTITY)
+							if (uqm::toTFBScaleMode(uqm::UQMOptions::read().meleeScale) == uqm::TFBScaleMode::Trilinear && index < 2 && scale != GSCALE_IDENTITY)
 							{
 								// enqueues drawcommand to assign next
 								// (smaller) zoom level image as mipmap,
@@ -1098,7 +1098,7 @@ void InitDisplayList(void)
 {
 	uint16_t i;
 
-	if (uqm::toTFBScaleMode(optMeleeScale) == uqm::TFBScaleMode::Step)
+	if (uqm::toTFBScaleMode(uqm::UQMOptions::read().meleeScale) == uqm::TFBScaleMode::Step)
 	{
 		zoom_out = MAX_VIS_REDUCTION + 1;
 		opt_max_zoom_out = MAX_VIS_REDUCTION;
@@ -1132,7 +1132,7 @@ void RedrawQueue(bool clear)
 	view_state = PreProcessQueue(&scroll_x, &scroll_y);
 	PostProcessQueue(view_state, scroll_x, scroll_y);
 
-	if (optStereoSFX)
+	if (uqm::UQMOptions::read().stereoSFX)
 	{
 		UpdateSoundPositions();
 	}
@@ -1153,7 +1153,7 @@ void RedrawQueue(bool clear)
 				ClearDrawable(); // this is for BATCH_BUILD_PAGE effect, but not scaled by SetGraphicScale
 			}
 
-			if (uqm::toTFBScaleMode(optMeleeScale) != uqm::TFBScaleMode::Step)
+			if (uqm::toTFBScaleMode(uqm::UQMOptions::read().meleeScale) != uqm::TFBScaleMode::Step)
 			{
 				uint16_t index, scale;
 
@@ -1209,7 +1209,7 @@ void Untarget(ELEMENT* ElementPtr)
 
 void RemoveElement(HLINK hLink)
 {
-	if (optStereoSFX)
+	if (uqm::UQMOptions::read().stereoSFX)
 	{
 		ELEMENT* ElementPtr;
 

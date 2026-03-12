@@ -655,7 +655,7 @@ void InterrogateInputState(int templat, int control, int index, char* buffer,
 			buffer[maxlen - 1] = 0;
 			break;
 		case VCONTROL_JOYBUTTON:
-			switch (optControllerType)
+			switch (uqm::UQMOptions::read().optControllerType)
 			{
 #if SDL_MAJOR_VERSION > 1
 				case uqm::ControllerType::XBox:
@@ -678,7 +678,7 @@ void InterrogateInputState(int templat, int control, int index, char* buffer,
 			}
 			break;
 		case VCONTROL_JOYAXIS:
-			switch (optControllerType)
+			switch (uqm::UQMOptions::read().optControllerType)
 			{
 #if SDL_MAJOR_VERSION > 1
 				case uqm::ControllerType::XBox:

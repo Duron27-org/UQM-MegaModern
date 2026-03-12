@@ -207,7 +207,7 @@ enum
 	NUM_DEVICES
 };
 
-#define YEARS_TO_KOHRAH_VICTORY (optDeCleansing ? 100 : 4)
+#define YEARS_TO_KOHRAH_VICTORY (uqm::UQMOptions::read().deCleansing ? 100 : 4)
 
 // A structure describing how many bits are used for each game state value.
 typedef struct GameStateBitMap GameStateBitMap;
@@ -1188,7 +1188,7 @@ inline T ifHardDifficulty(T trueVal, T falseVal) { return isDifficulty(uqm::Diff
 static inline uqm::NomadMode getNomadMode() { return GLOBAL_SIS(Nomad); }
 
 // Storage Queue
-#define STORAGE_Q (optShipStore || isDifficulty(uqm::Difficulty::Hard) || optFleetPointSys)
+#define STORAGE_Q (uqm::UQMOptions::read().shipStore || isDifficulty(uqm::Difficulty::Hard) || uqm::UQMOptions::read().fleetPointSys)
 
 static inline GFXPOINT
 LoadLastLoc(void)

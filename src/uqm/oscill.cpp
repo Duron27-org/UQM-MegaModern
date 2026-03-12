@@ -107,7 +107,7 @@ void DrawOscilloscopeLines(STAMP* s, uint8_t* scope_data, bool nonStop, bool toS
 	DrawStamp(s);
 
 	// Set oscilloscope line color
-	scopeColor = optScopeStyle != uqm::EmulationMode::PC ?
+	scopeColor = uqm::UQMOptions::read().scopeStyle != uqm::EmulationMode::PC ?
 					 SCOPE_COLOR_3DO :
 					 SCOPE_COLOR_PC;
 
@@ -177,7 +177,7 @@ void DrawOscilloscope(void)
 	}
 	else if (GraphForegroundStream(
 				 scope_data, scopeSize.width, scopeSize.height, false)
-			 && usingSpeech && optNonStopOscill)
+			 && usingSpeech && uqm::UQMOptions::read().nonStopOscill)
 	{
 		DrawOscilloscopeLines(&s, scope_data, true, true);
 	}
@@ -251,7 +251,7 @@ void DrawSlider(void)
 	int offs;
 	static int last_offs = -1;
 
-	if (sliderDisabled || (!usingSpeech && optSmoothScroll == uqm::EmulationMode::PC))
+	if (sliderDisabled || (!usingSpeech && uqm::UQMOptions::read().smoothScroll == uqm::EmulationMode::PC))
 	{
 		return;
 	}

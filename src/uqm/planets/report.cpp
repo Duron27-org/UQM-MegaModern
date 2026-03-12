@@ -37,7 +37,7 @@
 #include "../lua/luacomm.h"
 
 
-#define COL_MULTIPLIER (isPC(optSuperPC) || IS_PAD ? 7 : 6)
+#define COL_MULTIPLIER (isPC(uqm::UQMOptions::read().landerStyle) || IS_PAD ? 7 : 6)
 #define NUM_CELL_COLS (UQM_MAP_WIDTH / COL_MULTIPLIER)
 #define NUM_CELL_ROWS (SC2_MAP_HEIGHT / 6)
 #define MAX_CELL_COLS 40 // Why is this is never used???
@@ -51,7 +51,7 @@ ClearReportArea(COORD startx)
 	GFXRECT r;
 	STAMP s;
 
-	if (optWhichFonts == uqm::EmulationMode::PC)
+	if (uqm::UQMOptions::read().whichFonts == uqm::EmulationMode::PC)
 	{
 		s.frame = SetAbsFrameIndex(SpaceJunkFrame, 21);
 	}
@@ -73,7 +73,7 @@ ClearReportArea(COORD startx)
 		s.origin.x = startx;
 		for (x = 0; x < NUM_CELL_COLS; ++x)
 		{
-			if (optWhichFonts == uqm::EmulationMode::PC)
+			if (uqm::UQMOptions::read().whichFonts == uqm::EmulationMode::PC)
 			{
 				DrawStamp(&s);
 			}
@@ -134,7 +134,7 @@ MakeReport(SOUND ReadOutSounds, char* pStr, uint16_t StrLen)
 	{ // In DOS version first cell is 3p away from the edge of the
 		// context, and 2 in UQM
 		startx = RES_SCALE(RES_DESCALE(r.extent.width) >> 1)
-			   + (isPC(optSuperPC) ? RES_SCALE(1) : 0);
+			   + (isPC(uqm::UQMOptions::read().landerStyle) ? RES_SCALE(1) : 0);
 	}
 
 	startx += SAFE_NUM_SCL(1);
@@ -144,7 +144,7 @@ MakeReport(SOUND ReadOutSounds, char* pStr, uint16_t StrLen)
 		ClearReportArea(startx);
 		SetContextForeGroundColor(fgcolor);
 
-		if (is3DO(optSuperPC))
+		if (is3DO(uqm::UQMOptions::read().landerStyle))
 		{
 			const char* pCurrStr;
 			uint16_t length;
@@ -381,7 +381,7 @@ void DoDiscoveryReport(SOUND ReadOutSounds)
 
 		OldFont = SetContextFont(
 			pSolarSysState->SysInfo.PlanetInfo.LanderFont);
-		if (optWhichFonts == uqm::EmulationMode::PC)
+		if (uqm::UQMOptions::read().whichFonts == uqm::EmulationMode::PC)
 		{
 			OldFontEffect = SetContextFontEffect(
 				pSolarSysState->SysInfo.PlanetInfo.LanderFontEff);

@@ -404,8 +404,8 @@ void findRaceSOI(void)
 
 		if (HomeWorld[Index] && CurStarDescPtr->Index == HomeWorld[Index]
 			&& !RaceDead(RaceID)
-			&& (optSpaceMusic == uqm::SphereOfInfluenceMusic::RaceBeforeDiscovery
-				|| (optSpaceMusic == uqm::SphereOfInfluenceMusic::RaceAfterDiscovery && (CheckSphereTracking(RaceID) || IsHomeworldKnown(SpeciesToHomeID(SpeciesID))))))
+			&& (uqm::UQMOptions::read().spaceMusic == uqm::SphereOfInfluenceMusic::RaceBeforeDiscovery
+				|| (uqm::UQMOptions::read().spaceMusic == uqm::SphereOfInfluenceMusic::RaceAfterDiscovery && (CheckSphereTracking(RaceID) || IsHomeworldKnown(SpeciesToHomeID(SpeciesID))))))
 		{ // Found a HomeWorld, set the species ID accordingly
 			// If the No Spoilers option is enabled. Only add the
 			// species ID if their SOI is shown on the map or if
@@ -447,7 +447,7 @@ void findRaceSOI(void)
 				&& (d_squared = (uint32_t)dx * dx + (uint32_t)dy * dy)
 					   < (uint32_t)encounter_radius * encounter_radius)
 			{ // Finds the race SOI
-				if (optSpaceMusic == uqm::SphereOfInfluenceMusic::RaceBeforeDiscovery || (optSpaceMusic == uqm::SphereOfInfluenceMusic::RaceAfterDiscovery && CheckSphereTracking(RaceID)))
+				if (uqm::UQMOptions::read().spaceMusic == uqm::SphereOfInfluenceMusic::RaceBeforeDiscovery || (uqm::UQMOptions::read().spaceMusic == uqm::SphereOfInfluenceMusic::RaceAfterDiscovery && CheckSphereTracking(RaceID)))
 				{ // If the No Spoilers option is enabled. Only add the
 					// species ID if their SOI is shown on the map.
 					SpeciesArr[i] = SpeciesID;

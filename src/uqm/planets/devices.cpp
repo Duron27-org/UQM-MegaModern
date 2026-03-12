@@ -121,7 +121,7 @@ DrawDevice(uint16_t device, uint16_t pos, bool selected)
 								  DEVICES_BACK_COLOR);
 	DrawFilledRectangle(&r);
 
-	if (isPC(optWhichFonts))
+	if (isPC(uqm::UQMOptions::read().whichFonts))
 	{
 		SetContextFont(TinyFont);
 	}
@@ -160,7 +160,7 @@ DrawDevicesDisplay(DEVICES_STATE* devState)
 	//   1 pixel too low. Or if not, why do we need another box anyway?
 	r.extent.height = (RES_SCALE(129) - r.corner.y);
 
-	if (!optCustomBorder && !IS_HD)
+	if (!uqm::UQMOptions::read().customBorder && !IS_HD)
 	{
 		DrawStarConBox(&r, RES_SCALE(1),
 					   SHADOWBOX_MEDIUM_COLOR, SHADOWBOX_DARK_COLOR,
@@ -483,8 +483,8 @@ InvokeDevice(uint8_t which_device)
 					/* No DeltaSISGauges because the flagship picture
 				 * is currently obscured.
 				 */
-					if (!optInfiniteFuel
-						|| (EXTENDED && !optInfiniteFuel
+					if (!uqm::UQMOptions::read().infiniteFuel
+						|| (EXTENDED && !uqm::UQMOptions::read().infiniteFuel
 							&& inHyperSpace()))
 					{
 						GLOBAL_SIS(FuelOnBoard) -= portalFuelCost;
@@ -750,7 +750,7 @@ bool DevicesMenu(void)
 	SetMenuSounds(MENU_SOUND_ARROWS | MENU_SOUND_PAGE,
 				  MENU_SOUND_SELECT);
 
-	if (optWhichMenu == uqm::EmulationMode::PC)
+	if (uqm::UQMOptions::read().whichMenu == uqm::EmulationMode::PC)
 	{
 		DrawMenuStateStrings(PM_ALT_CARGO, 1);
 	}

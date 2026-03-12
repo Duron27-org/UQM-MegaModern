@@ -557,7 +557,7 @@ void LoadFleetInfo(void)
 		FleetPtr->days_left = 0;
 		FleetPtr->func_index = ~0;
 		FleetPtr->can_build = false;
-		if (optUnlockShips && i < LAST_MELEE_ID)
+		if (uqm::UQMOptions::read().unlockShips && i < LAST_MELEE_ID)
 		{
 			FleetPtr->can_build = true;
 		}
@@ -574,21 +574,21 @@ bool InitGameStructures(void)
 	InitGlobData();
 	// Set Seed Type, then check/start StarSeed
 	SET_GAME_STATE(SEED_TYPE, g_seedType);
-	GLOBAL_SIS(Difficulty) = optDifficulty;
-	GLOBAL_SIS(Extended) = optExtended;
-	GLOBAL_SIS(Nomad) = optNomad;
+	GLOBAL_SIS(Difficulty) = uqm::UQMOptions::read().optDifficulty;
+	GLOBAL_SIS(Extended) = uqm::UQMOptions::read().extended;
+	GLOBAL_SIS(Nomad) = uqm::UQMOptions::read().nomad;
 	if (PrimeSeed)
 	{
-		optShipSeed = OPTVAL_DISABLED;
-		optCustomSeed = PrimeA;
+		uqm::UQMOptions::read().shipSeed = false;
+		uqm::UQMOptions::read().customSeed.value = PrimeA;
 	}
 	if (isDifficulty(uqm::Difficulty::Hard) && !PrimeSeed && !StarSeed)
 	{
 		srand(time(nullptr));
-		optCustomSeed = (rand() % ((MAX_SEED - MIN_SEED) + MIN_SEED));
+		uqm::UQMOptions::read().customSeed.value = (rand() % ((MAX_SEED - MIN_SEED) + MIN_SEED));
 	}
-	GLOBAL_SIS(Seed) = optCustomSeed;
-	GLOBAL_SIS(ShipSeed) = (optShipSeed ? 1 : 0);
+	GLOBAL_SIS(Seed) = uqm::UQMOptions::read().customSeed.value;
+	GLOBAL_SIS(ShipSeed) = (uqm::UQMOptions::read().shipSeed ? 1 : 0);
 #ifdef DEBUG_STARSEED
 	fmt::print(stderr, "Starting a NEW game with seed type {}, {}\n",
 			   optSeedType,
@@ -600,14 +600,14 @@ bool InitGameStructures(void)
 #endif
 	// During NEW game we want to time more aggressively and reseed
 	// if it takes too long to create a map with a seed.
-	// The new seed will be saved to SIS and optCustomSeed
+	// The new seed will be saved to SIS and uqm::UQMOptions::read().customSeed
 	// If non-starseed, this will give us a default plot map,
 	// so we still need this.
 	if (!InitStarseed(true))
 	{
 		return (false);
 	}
-	GLOBAL_SIS(Seed) = optCustomSeed; // In case Starseed rolls the seed
+	GLOBAL_SIS(Seed) = uqm::UQMOptions::read().customSeed; // In case Starseed rolls the seed
 
 	PlayFrame = CaptureDrawable(LoadGraphic(PLAYMENU_ANIM));
 
@@ -702,7 +702,7 @@ bool InitGameStructures(void)
 		GLOBAL_SIS(FuelOnBoard) += 20 * FUEL_TANK_SCALE;
 	}
 
-	if (optHeadStart)
+	if (uqm::UQMOptions::read().headStart)
 	{
 		SET_GAME_STATE(FOUND_PLUTO_SPATHI, 2);
 		SetHomeworldKnown(SPATHI_HOME);
@@ -753,7 +753,7 @@ bool InitGameStructures(void)
 	SetRaceAllied(HUMAN_SHIP, true);
 	CloneShipFragment(HUMAN_SHIP, &GLOBAL(built_ship_q), 0);
 
-	if (optHeadStart)
+	if (uqm::UQMOptions::read().headStart)
 	{
 		uint8_t SpaCrew = ifEasyDifficulty(MAX_CREW_SIZE, 1);
 		AddEscortShips(SPATHI_SHIP, 1);
@@ -843,7 +843,7 @@ void SeedDEBUG()
 {
 #define SAMPLE_SIZE 1000
 #define START 123000
-	int32_t save = optCustomSeed;
+	int32_t save = uqm::UQMOptions::read().customSeed.value;
 	//uint16_t histogram[100] = {[0 ... 99] = 0};
 	uint16_t histogram[100] = {0};
 	uint16_t decisec;
@@ -861,18 +861,18 @@ void SeedDEBUG()
 		myRNG = true;
 	}
 	RandomContext_SeedRandom(StarGenRNG, 123456);
-	for (optCustomSeed = START; optCustomSeed < (START + SAMPLE_SIZE);
-		 optCustomSeed++)
+	for (uqm::UQMOptions::read().customSeed.value = START; uqm::UQMOptions::read().customSeed < (START + SAMPLE_SIZE);
+		 uqm::UQMOptions::read().customSeed = uqm::UQMOptions::read().customSeed.value + 1)
 	{
 		start_clock = clock();
-		fmt::print(stderr, "\n\n\nStarting seed {}... ", optCustomSeed);
+		fmt::print(stderr, "\n\n\nStarting seed {}... ", uqm::UQMOptions::read().customSeed.value);
 		InitPlot(plot_map);
-		fmt::print(stderr, "seeding stars {}... ", optCustomSeed);
+		fmt::print(stderr, "seeding stars {}... ", uqm::UQMOptions::read().customSeed.value);
 		SeedStarmap(star_array);
-		fmt::print(stderr, "seeding plots {}... ", optCustomSeed);
+		fmt::print(stderr, "seeding plots {}... ", uqm::UQMOptions::read().customSeed.value);
 		if (SeedPlot(plot_map, star_array) < NUM_PLOTS)
 		{
-			fmt::print(stderr, "Failed to seed {}. ", optCustomSeed);
+			fmt::print(stderr, "Failed to seed {}. ", uqm::UQMOptions::read().customSeed.value);
 			decisec = 98;
 		}
 		else
@@ -895,7 +895,7 @@ void SeedDEBUG()
 		}
 		fmt::print(stderr, "%3d ", histogram[decisec]);
 	}
-	optCustomSeed = save;
+	uqm::UQMOptions::read().customSeed.value = save;
 	if (StarGenRNG && myRNG)
 	{
 		RandomContext_Delete(StarGenRNG);
@@ -925,7 +925,7 @@ bool InitStarseed(bool newgame)
 		fmt::print(stderr, "Init Starseed creating a STAR GEN RNG.\n");
 #endif
 		StarGenRNG = RandomContext_New();
-		RandomContext_SeedRandom(StarGenRNG, optCustomSeed);
+		RandomContext_SeedRandom(StarGenRNG, uqm::UQMOptions::read().customSeed.value);
 	}
 	if (!StarSeed)
 	{
@@ -957,7 +957,7 @@ bool InitStarseed(bool newgame)
 		InitPlot(plot_map);
 	}
 	fmt::print(stderr, "Starting map generation using seed {}.\n",
-			   optCustomSeed);
+			   uqm::UQMOptions::read().customSeed.value);
 	SeedStarmap(star_array);
 	if (GLOBAL(CurrentActivity) || !newgame)
 	{
@@ -996,7 +996,8 @@ bool InitStarseed(bool newgame)
 		// seed's stars and this seed's plot.  Boo.
 		while (SeedPlot(plot_map, star_array) != NUM_PLOTS && i < 100)
 		{
-			fmt::print(stderr, "Seed {} failed ({}).\n", optCustomSeed++, ++i);
+			fmt::print(stderr, "Seed {} failed ({}).\n", uqm::UQMOptions::read().customSeed.value, ++i);
+			uqm::UQMOptions::read().customSeed.value = uqm::UQMOptions::read().customSeed.value + 1;
 			SeedStarmap(star_array);
 		}
 		if (i >= 100)
@@ -1031,9 +1032,9 @@ bool InitStarseed(bool newgame)
 		}
 	}
 	// In case the seed changed above, reset SIS
-	GLOBAL_SIS(Seed) = optCustomSeed;
+	GLOBAL_SIS(Seed) = uqm::UQMOptions::read().customSeed.value;
 #ifdef DEBUG_STARSEED
-	fmt::print(stderr, "Done seeding {}.\n", optCustomSeed);
+	fmt::print(stderr, "Done seeding {}.\n", uqm::UQMOptions::read().customSeed.value);
 #endif
 	// Done with StarGenRNG for now; will create later if moving fleets
 	if (StarGenRNG)

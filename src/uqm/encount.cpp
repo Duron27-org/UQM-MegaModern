@@ -472,7 +472,7 @@ InitEncounter(void)
 
 	UnbatchGraphics();
 	DestroyDrawable(ReleaseDrawable(SegueFrame));
-	ScreenTransition(optScrTrans, nullptr);
+	ScreenTransition(uqm::UQMOptions::read().scrTrans, nullptr);
 
 
 	{
@@ -744,7 +744,7 @@ UninitEncounter(void)
 								DrawStamp(&ship_s);
 								SetContextForeGroundColor(MDKGRAY_COLOR);
 
-								SetContextFont(isPC(optWhichFonts) ? TinyFont : TinyFontBold);
+								SetContextFont(isPC(uqm::UQMOptions::read().whichFonts) ? TinyFont : TinyFontBold);
 
 								utf8StringCopy(buf, sizeof buf,
 											   GetStringAddress(FragPtr->race_strings));
@@ -980,7 +980,7 @@ UninitEncounter(void)
 			SET_GAME_STATE(THRADDASH_BODY_COUNT, ships_killed);
 		}
 
-		if (optSlaughterMode && CheckSphereTracking((RACE_ID)EncounterRace)
+		if (uqm::UQMOptions::read().slaughterMode && CheckSphereTracking((RACE_ID)EncounterRace)
 			&& ships_killed)
 		{
 			HFLEETINFO hEncounter;

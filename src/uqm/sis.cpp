@@ -148,7 +148,7 @@ void DrawSISTitle(char* pStr)
 	r.extent.height = SIS_TITLE_HEIGHT - RES_SCALE(1);
 	SetContextFGFrame(Screen);
 	SetContextClipRect(&r);
-	if (isPC(optWhichFonts) || SaveOrLoad)
+	if (isPC(uqm::UQMOptions::read().whichFonts) || SaveOrLoad)
 	{
 		SetContextFont(TinyFont);
 	}
@@ -184,7 +184,7 @@ void DrawSISTitle(char* pStr)
 void DrawHyperCoords(GFXPOINT universe)
 {
 	char buf[100] {};
-	const char* SpaceOrNull = (isPC(optWhichFonts) ? STR_SPACE : "");
+	const char* SpaceOrNull = (isPC(uqm::UQMOptions::read().whichFonts) ? STR_SPACE : "");
 
 	fmt::format_to_sz_n(buf, "{:03}.{:01}{}:{}{:03}.{:01}",
 						universe.x / 10, universe.x % 10,
@@ -323,7 +323,7 @@ bool DrawSISMessageEx(const char* pStr, int16_t CurPos, int16_t ExPos,
 	t.baseline.x = RES_SCALE(RES_DESCALE(SIS_MESSAGE_WIDTH) >> 1);
 	t.pStr = pStr;
 	t.CharCount = (uint16_t)~0;
-	if (isPC(optWhichFonts) || SaveOrLoad)
+	if (isPC(uqm::UQMOptions::read().whichFonts) || SaveOrLoad)
 	{
 		SetContextFont(TinyFont);
 	}
@@ -497,7 +497,7 @@ bool DrawSISMessageEx(const char* pStr, int16_t CurPos, int16_t ExPos,
 void DateToString(char* buf, size_t bufLen,
 				  uint8_t month_index, uint8_t day_index, uint16_t year_index)
 {
-	switch (optDateFormat)
+	switch (uqm::UQMOptions::read().optDateFormat)
 	{
 		case uqm::DateFormat::MMM_dd_yyyy: //MMM dd.yyyy ie: Mar 01.2500
 			fmt::format_to_sz_n(buf, bufLen, "{} {:02}" STR_MIDDLE_DOT "{:04}",
@@ -557,10 +557,10 @@ void DrawStatusMessage(const char* pStr)
 	{
 		if (curMsgMode == SMM_CREDITS)
 		{
-			if (optInfiniteCredits)
+			if (uqm::UQMOptions::read().infiniteCredits)
 			{
 				fmt::format_to_sz_n(buf, "{} {}",
-									(isPC(optWhichMenu) && isPC(optWhichFonts)) ?
+									(isPC(uqm::UQMOptions::read().whichMenu) && isPC(uqm::UQMOptions::read().whichFonts)) ?
 										GAME_STRING(STATUS_STRING_BASE + 2) :
 										STR_INFINITY_SIGN,				  // "UNLIMITED"
 									GAME_STRING(STATUS_STRING_BASE + 0)); // "Cr"
@@ -572,10 +572,10 @@ void DrawStatusMessage(const char* pStr)
 		}
 		else if (curMsgMode == SMM_RES_UNITS)
 		{
-			if (GET_GAME_STATE(CHMMR_BOMB_STATE) >= 2 || optInfiniteRU)
+			if (GET_GAME_STATE(CHMMR_BOMB_STATE) >= 2 || uqm::UQMOptions::read().infiniteRU)
 			{
 				fmt::format_to_sz_n(buf, "{} {}",
-									(isPC(optWhichMenu) && isPC(optWhichFonts)) ?
+									(isPC(uqm::UQMOptions::read().whichMenu) && isPC(uqm::UQMOptions::read().whichFonts)) ?
 										GAME_STRING(STATUS_STRING_BASE + 2) :
 										STR_INFINITY_SIGN,				  // "UNLIMITED"
 									GAME_STRING(STATUS_STRING_BASE + 1)); // "RU"
@@ -617,7 +617,7 @@ void DrawStatusMessage(const char* pStr)
 		SetContextForeGroundColor(statusColor);
 	}
 
-	if (isPC(optWhichFonts) || optCustomBorder)
+	if (isPC(uqm::UQMOptions::read().whichFonts) || uqm::UQMOptions::read().customBorder)
 	{
 		SetContextFont(TinyFont);
 	}
@@ -660,7 +660,7 @@ void DrawCaptainsName(bool NewGame)
 	Color OldColor;
 
 	OldContext = SetContext(StatusContext);
-	if (isPC(optWhichFonts))
+	if (isPC(uqm::UQMOptions::read().whichFonts))
 	{
 		OldFont = SetContextFont(TinyFont);
 	}
@@ -778,7 +778,7 @@ void DrawFlagshipName(bool InStatusArea, bool NewGame)
 		r.corner.y + (SHIP_NAME_HEIGHT - RES_SCALE(InStatusArea));
 	t.align = ALIGN_CENTER;
 	t.CharCount = (uint16_t)~0;
-	if (isPC(optWhichFonts))
+	if (isPC(uqm::UQMOptions::read().whichFonts))
 	{
 		SetContextFontEffect(SetAbsFrameIndex(FontGradFrame,
 											  InStatusArea ? 0 : 3));
@@ -813,7 +813,7 @@ void DrawFlagshipStats(void)
 	uint32_t fuel;
 	int16_t base_y;
 
-	if (is3DO(optWhichFonts) || IS_PAD)
+	if (is3DO(uqm::UQMOptions::read().whichFonts) || IS_PAD)
 	{
 		return;
 	}
@@ -1179,7 +1179,7 @@ Draw_SIS(void)
 {
 	TEXT t;
 	GFXRECT r;
-	bool flat = (bool)is3DO(optWhichFonts);
+	bool flat = (bool)is3DO(uqm::UQMOptions::read().whichFonts);
 
 	GetGaugeRect(&r, false);
 	t.baseline.x = (STATUS_WIDTH >> 1);
@@ -1394,7 +1394,7 @@ DeltaSISGauges_fuelDelta(int32_t fuel_delta)
 	else
 	{
 
-		OldCoarseFuel = (GLOBAL_SIS(FuelOnBoard) / (!optWholeFuel ? FUEL_TANK_SCALE : 1));
+		OldCoarseFuel = (GLOBAL_SIS(FuelOnBoard) / (!uqm::UQMOptions::read().wholeFuel ? FUEL_TANK_SCALE : 1));
 		if (fuel_delta < 0
 			&& GLOBAL_SIS(FuelOnBoard) <= (uint32_t)-fuel_delta)
 		{
@@ -1411,7 +1411,7 @@ DeltaSISGauges_fuelDelta(int32_t fuel_delta)
 		}
 	}
 
-	NewCoarseFuel = (GLOBAL_SIS(FuelOnBoard) / (!optWholeFuel ? FUEL_TANK_SCALE : 1));
+	NewCoarseFuel = (GLOBAL_SIS(FuelOnBoard) / (!uqm::UQMOptions::read().wholeFuel ? FUEL_TANK_SCALE : 1));
 	if (NewCoarseFuel != OldCoarseFuel)
 	{
 		TEXT t;
@@ -1424,7 +1424,7 @@ DeltaSISGauges_fuelDelta(int32_t fuel_delta)
 
 		GetGaugeRect(&r, false);
 
-		if (optWhichFonts == uqm::EmulationMode::Console3DO && !optWholeFuel)
+		if (uqm::UQMOptions::read().whichFonts == uqm::EmulationMode::Console3DO && !uqm::UQMOptions::read().wholeFuel)
 		{
 			SetContextFont(TinyFontBold);
 		}
@@ -1440,7 +1440,7 @@ DeltaSISGauges_fuelDelta(int32_t fuel_delta)
 		t.CharCount = (uint16_t)~0;
 
 		SetContextForeGroundColor(BLACK_COLOR);
-		if (optWholeFuel)
+		if (uqm::UQMOptions::read().wholeFuel)
 		{
 			r.corner.x -= RES_SCALE(1);
 			r.extent.width += RES_SCALE(2);
@@ -1516,7 +1516,7 @@ void DeltaSISGauges(int16_t crew_delta, int32_t fuel_delta, int resunit_delta)
 		s.frame = SetAbsFrameIndex(FlagStatFrame, 0);
 		DrawStamp(&s);
 
-		if (is3DO(optFlagshipColor))
+		if (is3DO(uqm::UQMOptions::read().flagshipColor))
 		{
 			s.frame = SetAbsFrameIndex(FlagStatFrame, 23);
 			DrawStamp(&s);
@@ -1532,7 +1532,7 @@ void DeltaSISGauges(int16_t crew_delta, int32_t fuel_delta, int resunit_delta)
 		DrawSupportShips();
 	}
 
-	if (isPC(optWhichFonts))
+	if (isPC(uqm::UQMOptions::read().whichFonts))
 	{
 		SetContextFont(TinyFont);
 	}
@@ -1653,7 +1653,7 @@ GetCPodCapacity(GFXPOINT* ppt)
 	rowNr = seatNr / CREW_PER_ROW;
 	colNr = seatNr % CREW_PER_ROW;
 
-	if (optWhichFonts == uqm::EmulationMode::PC)
+	if (uqm::UQMOptions::read().whichFonts == uqm::EmulationMode::PC)
 	{
 		SetContextForeGroundColor(crewRows[rowNr]);
 	}
@@ -1973,7 +1973,7 @@ AutoPilotTextLogic(void)
 		return;
 	}
 
-	if (!optSmartAutoPilot)
+	if (!uqm::UQMOptions::read().smartAutoPilot)
 	{
 		DrawSISMessageEx(
 			GAME_STRING(NAVIGATION_STRING_BASE + 3),
@@ -2069,7 +2069,7 @@ void DrawAutoPilotMessage(bool Reset)
 	const size_t cycleCount = std::size(cycle_tab);
 #define BLINK_RATE (GameTicksPerSecond * 3 / 40) // 9 @ 120 ticks/second
 
-	if (Reset || optBubbleWarp)
+	if (Reset || uqm::UQMOptions::read().bubbleWarp)
 	{ // Just a reset, not drawing
 		LastPilot = false;
 		return;
@@ -2295,7 +2295,7 @@ void SetFlashRect(const GFXRECT* pRect, bool pcRect)
 	}
 	else
 	{
-		if ((optWhichMenu == uqm::EmulationMode::PC && pRect != SFR_MENU_ANY)
+		if ((uqm::UQMOptions::read().whichMenu == uqm::EmulationMode::PC && pRect != SFR_MENU_ANY)
 			|| pRect == SFR_MENU_NON)
 		{
 			// The player wants PC menus and this flash is not used

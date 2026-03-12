@@ -504,7 +504,7 @@ void DrawShipPickerText(STAMP stamp)
 	pt.y = r.corner.y + SP_Y_PADDING;
 
 	s.frame = SetAbsFrameIndex(MeleeFrame,
-							   CONFIRM_PC + (static_cast<int>(optControllerType) * 4));
+							   CONFIRM_PC + (static_cast<int>(uqm::UQMOptions::read().optControllerType.value) * 4));
 	s.origin = pt;
 
 	DrawStamp(&s);
@@ -522,7 +522,7 @@ void DrawShipPickerText(STAMP stamp)
 	pt.y = r.corner.y + SP_Y_PADDING;
 
 	s.frame = SetAbsFrameIndex(MeleeFrame,
-							   SPECIAL_PC + (static_cast<int>(optControllerType) * 4));
+							   SPECIAL_PC + (static_cast<int>(uqm::UQMOptions::read().optControllerType.value) * 4));
 
 	GetFrameRect(s.frame, &r);
 	pt.x -= r.extent.width;
@@ -574,7 +574,7 @@ DrawTeamPickerText(STAMP stamp)
 	pt.y = r.corner.y + r.extent.height - TP_PADDING;
 
 	s.frame = SetAbsFrameIndex(MeleeFrame,
-							   CONFIRM_PC + (static_cast<int>(optControllerType) * 4));
+							   CONFIRM_PC + (static_cast<int>(uqm::UQMOptions::read().optControllerType.value) * 4));
 
 	GetFrameRect(s.frame, &r);
 	pt.y -= r.extent.height;
@@ -603,7 +603,7 @@ DrawTeamPickerText(STAMP stamp)
 		}
 
 		s.frame = SetAbsFrameIndex(MeleeFrame,
-								   CANCEL_PC + i + (static_cast<int>(optControllerType) * 4));
+								   CANCEL_PC + i + (static_cast<int>(uqm::UQMOptions::read().optControllerType.value) * 4));
 		s.origin.x = text_r.extent.width + t.baseline.x + TP_PADDING
 				   + RES_SCALE(1);
 		DrawStamp(&s);
@@ -1501,7 +1501,7 @@ Select(uint8_t opt)
 			}
 			break;
 		case BUILD_PICK:
-			DrawPickIcon(pMeleeState->currentShip, (true & is3DO(optWhichMenu)));
+			DrawPickIcon(pMeleeState->currentShip, (true & is3DO(uqm::UQMOptions::read().whichMenu)));
 			break;
 	}
 }
@@ -1518,7 +1518,7 @@ void Melee_flashSelection(MELEE_STATE* pMS)
 	{
 		GFXCONTEXT OldContext;
 
-		NextTime = Now + ((pMS->MeleeOption != BUILD_PICK || is3DO(optWhichMenu)) ? FLASH_RATE : BLINK_RATE);
+		NextTime = Now + ((pMS->MeleeOption != BUILD_PICK || is3DO(uqm::UQMOptions::read().whichMenu)) ? FLASH_RATE : BLINK_RATE);
 		select = !select;
 
 		OldContext = SetContext(SpaceContext);
@@ -1617,7 +1617,7 @@ void DrawMeleeShipStrings(MELEE_STATE* pMS, MeleeShip NewStarShip)
 
 		InitShipStatus(&MasterPtr->ShipInfo, nullptr, nullptr, true);
 
-		if (optMeleeToolTips && pMS->MeleeOption == BUILD_PICK)
+		if (uqm::UQMOptions::read().meleeToolTips && pMS->MeleeOption == BUILD_PICK)
 		{
 			DrawTooltip(&MasterPtr->ShipInfo);
 		}
@@ -1774,7 +1774,7 @@ BuildPickShipPopup(MELEE_STATE* pMS)
 		GetBuildPickFrameRect(&r);
 		RepairMeleeFrame(&r);
 
-		if (optMeleeToolTips)
+		if (uqm::UQMOptions::read().meleeToolTips)
 		{
 			GetToolTipFrameRect(&r);
 			RepairMeleeFrame(&r);
@@ -2635,7 +2635,7 @@ bool DoMelee(MELEE_STATE* pMS)
 
 		pMS->MeleeOption = START_MELEE;
 
-		if (optMainMenuMusic)
+		if (uqm::UQMOptions::read().mainMenuMusic)
 		{
 			pMS->hMusic = LoadMusic(MELEE_MUSIC);
 

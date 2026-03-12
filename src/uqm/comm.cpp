@@ -221,7 +221,7 @@ add_text(int status, TEXT* pTextIn)
 		}
 
 		text_width = CommData.AlienTextWidth;
-		if (CommData.AlienConv == ORZ_CONVERSATION && optOrzCompFont && CommData.AlienTalkDesc.AnimFlags & PAUSE_TALKING)
+		if (CommData.AlienConv == ORZ_CONVERSATION && uqm::UQMOptions::read().orzCompFont && CommData.AlienTalkDesc.AnimFlags & PAUSE_TALKING)
 		{
 			SetContextFont(ComputerFont); // Orz intro
 		}
@@ -360,7 +360,7 @@ add_text(int status, TEXT* pTextIn)
 		else
 		{
 			// Alien speech
-			if (CommData.AlienConv == ORZ_CONVERSATION && optOrzCompFont)
+			if (CommData.AlienConv == ORZ_CONVERSATION && uqm::UQMOptions::read().orzCompFont)
 			{
 				font_DrawTracedTextAlt(pText,
 									   CommData.AlienTextFColor,
@@ -596,7 +596,7 @@ DrawSISComWindow(void)
 		}
 		DrawFilledRectangle(&r);
 
-		if (!usingSpeech && optSmoothScroll == uqm::EmulationMode::PC && !IsDarkMode)
+		if (!usingSpeech && uqm::UQMOptions::read().smoothScroll == uqm::EmulationMode::PC && !IsDarkMode)
 		{
 			DrawCommBorder(r);
 		}
@@ -627,7 +627,7 @@ RefreshResponsesSpecial(ENCOUNTER_STATE* pES)
 	BatchGraphics();
 
 	DrawSISComWindow();
-	y = SLIDER_Y + SLIDER_HEIGHT + RES_SCALE(is3DO(optWhichFonts));
+	y = SLIDER_Y + SLIDER_HEIGHT + RES_SCALE(is3DO(uqm::UQMOptions::read().whichFonts));
 	for (response = pES->top_response; response < pES->num_responses;
 		 ++response)
 	{
@@ -663,7 +663,7 @@ RefreshResponses(ENCOUNTER_STATE* pES)
 	BatchGraphics();
 
 	DrawSISComWindow();
-	y = SLIDER_Y + SLIDER_HEIGHT + RES_SCALE(is3DO(optWhichFonts));
+	y = SLIDER_Y + SLIDER_HEIGHT + RES_SCALE(is3DO(uqm::UQMOptions::read().whichFonts));
 	for (response = pES->top_response; response < pES->num_responses;
 		 ++response)
 	{
@@ -749,7 +749,7 @@ FeedbackPlayerPhrase(char* pStr)
 static void
 InitSpeechGraphics(void)
 {
-	if (optScopeStyle != uqm::EmulationMode::PC)
+	if (uqm::UQMOptions::read().scopeStyle != uqm::EmulationMode::PC)
 	{
 		InitOscilloscope(SetAbsFrameIndex(ActivityFrame, 9));
 	}
@@ -968,7 +968,7 @@ DoTalkSegue(TALKING_STATE* pTS)
 		return false;
 	}
 
-	if (optSpeech || optSmoothScroll == uqm::EmulationMode::Console3DO || (lowByte(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE))
+	if (uqm::UQMOptions::read().useSpeech || uqm::UQMOptions::read().smoothScroll == uqm::EmulationMode::Console3DO || (lowByte(GLOBAL(CurrentActivity)) == WON_LAST_BATTLE))
 	{
 		if (PulsedInputState.menu[KEY_MENU_CANCEL])
 		{
@@ -977,12 +977,12 @@ DoTalkSegue(TALKING_STATE* pTS)
 			return false;
 		}
 
-		if (optSmoothScroll == uqm::EmulationMode::PC || !optSpeech)
+		if (uqm::UQMOptions::read().smoothScroll == uqm::EmulationMode::PC || !uqm::UQMOptions::read().useSpeech)
 		{
 			left = PulsedInputState.menu[KEY_MENU_LEFT] != 0;
 			right = PulsedInputState.menu[KEY_MENU_RIGHT] != 0;
 		}
-		else if (optSmoothScroll == uqm::EmulationMode::Console3DO)
+		else if (uqm::UQMOptions::read().smoothScroll == uqm::EmulationMode::Console3DO)
 		{
 			left = CurrentInputState.menu[KEY_MENU_LEFT] != 0;
 			right = CurrentInputState.menu[KEY_MENU_RIGHT] != 0;
@@ -997,11 +997,11 @@ DoTalkSegue(TALKING_STATE* pTS)
 		if (right)
 		{
 			SetSliderImage(SetAbsFrameIndex(ActivityFrame, 3));
-			if (optSmoothScroll == uqm::EmulationMode::PC || !optSpeech)
+			if (uqm::UQMOptions::read().smoothScroll == uqm::EmulationMode::PC || !uqm::UQMOptions::read().useSpeech)
 			{
 				FastForward_Page();
 			}
-			else if (optSmoothScroll == uqm::EmulationMode::Console3DO)
+			else if (uqm::UQMOptions::read().smoothScroll == uqm::EmulationMode::Console3DO)
 			{
 				FastForward_Smooth();
 			}
@@ -1011,11 +1011,11 @@ DoTalkSegue(TALKING_STATE* pTS)
 		{
 			pTS->rewind = false;
 			SetSliderImage(SetAbsFrameIndex(ActivityFrame, 4));
-			if (optSmoothScroll == uqm::EmulationMode::PC || !optSpeech)
+			if (uqm::UQMOptions::read().smoothScroll == uqm::EmulationMode::PC || !uqm::UQMOptions::read().useSpeech)
 			{
 				FastReverse_Page();
 			}
-			else if (optSmoothScroll == uqm::EmulationMode::Console3DO)
+			else if (uqm::UQMOptions::read().smoothScroll == uqm::EmulationMode::Console3DO)
 			{
 				FastReverse_Smooth();
 			}
@@ -1217,7 +1217,7 @@ CommIntroTransition(void)
 {
 	if (curIntroMode == CIM_CROSSFADE_SCREEN)
 	{
-		ScreenTransition(optScrTrans, nullptr);
+		ScreenTransition(uqm::UQMOptions::read().scrTrans, nullptr);
 		UnbatchGraphics();
 	}
 	else if (curIntroMode == CIM_CROSSFADE_SPACE)
@@ -1227,12 +1227,12 @@ CommIntroTransition(void)
 		r.corner.y = SIS_ORG_Y;
 		r.extent.width = SIS_SCREEN_WIDTH;
 		r.extent.height = SIS_SCREEN_HEIGHT;
-		ScreenTransition(optScrTrans, &r);
+		ScreenTransition(uqm::UQMOptions::read().scrTrans, &r);
 		UnbatchGraphics();
 	}
 	else if (curIntroMode == CIM_CROSSFADE_WINDOW)
 	{
-		ScreenTransition(optScrTrans, &CommWndRect);
+		ScreenTransition(uqm::UQMOptions::read().scrTrans, &CommWndRect);
 		UnbatchGraphics();
 	}
 	else if (curIntroMode == CIM_FADE_IN_SCREEN)
@@ -1277,7 +1277,7 @@ void AlienTalkSegue(uint16_t wait_track)
 
 		InitCommAnimations();
 
-		if (optScrTrans != uqm::EmulationMode::None && !optSpeech)
+		if (uqm::UQMOptions::read().scrTrans != uqm::EmulationMode::None && !uqm::UQMOptions::read().useSpeech)
 		{ // short pause to compensate instant fading (conditions to be adjusted)
 			// I think it is for optIPScaler
 			TimeCount timeout = GetTimeCounter() + GameTicksPerSecond / 4;
@@ -1509,7 +1509,7 @@ SelectResponse(ENCOUNTER_STATE* pES)
 	utf8StringCopy(pES->phrase_buf, sizeof pES->phrase_buf,
 				   response_text->pStr);
 
-	if (!optSpeech && optSmoothScroll == uqm::EmulationMode::PC)
+	if (!uqm::UQMOptions::read().useSpeech && uqm::UQMOptions::read().smoothScroll == uqm::EmulationMode::PC)
 	{ // short pause after choosing response to mimic PC behaviour
 		TimeCount timeout = GetTimeCounter() + GameTicksPerSecond / 2;
 		RefreshResponsesSpecial(pES);
@@ -1594,7 +1594,7 @@ PlayerResponseInput(ENCOUNTER_STATE* pES)
 	else
 	{
 		response = pES->cur_response;
-		if (PulsedInputState.menu[KEY_MENU_LEFT] && (optSpeech || optSmoothScroll == uqm::EmulationMode::Console3DO))
+		if (PulsedInputState.menu[KEY_MENU_LEFT] && (uqm::UQMOptions::read().useSpeech || uqm::UQMOptions::read().smoothScroll == uqm::EmulationMode::Console3DO))
 		{
 			SelectReplay(pES);
 
@@ -1877,7 +1877,7 @@ HailAlien(void)
 
 	ES.InputFunc = DoCommunication;
 
-	if (isPC(optWhichFonts))
+	if (isPC(uqm::UQMOptions::read().whichFonts))
 	{
 		PlayerFont = LoadFont(PLAYER_FONT);
 	}
@@ -1886,7 +1886,7 @@ HailAlien(void)
 		PlayerFont = LoadFont(TINY_FONT_BOLD);
 	}
 
-	if (optOrzCompFont)
+	if (uqm::UQMOptions::read().orzCompFont)
 	{
 		ComputerFont = LoadFont(COMPUTER_FONT);
 
@@ -1895,7 +1895,7 @@ HailAlien(void)
 			uqm::log::warn(
 				"ComputerFont didn't load properly. "
 				"Disabling Alternate Orz Font");
-			optOrzCompFont = OPTVAL_DISABLED;
+			uqm::UQMOptions::read().orzCompFont = false;
 		}
 	}
 
@@ -2028,7 +2028,7 @@ HailAlien(void)
 	DestroyDrawable(ReleaseDrawable(TextCacheFrame));
 
 	DestroyFont(PlayerFont);
-	if (optOrzCompFont)
+	if (uqm::UQMOptions::read().orzCompFont)
 	{
 		DestroyFont(ComputerFont);
 	}
@@ -2092,7 +2092,7 @@ InitCommunication(CONVERSATION which_comm)
 				if (pSolarSysState && lowByte(GLOBAL(CurrentActivity)) != IN_LAST_BATTLE
 					&& worldIsMoon(pSolarSysState, pSolarSysState->pOrbitalDesc))
 				{
-					if (!(GetNamedPlanetaryBody()) && isPC(optWhichFonts)
+					if (!(GetNamedPlanetaryBody()) && isPC(uqm::UQMOptions::read().whichFonts)
 						&& (pSolarSysState->pOrbitalDesc->data_index != HIERARCHY_STARBASE
 							&& pSolarSysState->pOrbitalDesc->data_index != DESTROYED_STARBASE
 							&& pSolarSysState->pOrbitalDesc->data_index != PRECURSOR_STARBASE))
@@ -2381,7 +2381,7 @@ RedrawSubtitles(void)
 {
 	TEXT t;
 
-	if (!optSubtitles)
+	if (!uqm::UQMOptions::read().subtitles)
 	{
 		return;
 	}

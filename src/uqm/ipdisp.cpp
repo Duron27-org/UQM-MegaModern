@@ -45,7 +45,7 @@ RaceIPSpeed(RACE_ID Index)
 	const uint16_t numRaces = sizeof(defaultMap) / sizeof(uint16_t);
 	static int16_t speedMap[sizeof(defaultMap) / sizeof(uint16_t)] = {0};
 	int x;
-	if (!optShipSeed && (seedStamp != -1 || speedMap[0] == 0))
+	if (!uqm::UQMOptions::read().shipSeed && (seedStamp != -1 || speedMap[0] == 0))
 	{
 		for (x = 0; x < numRaces; x++)
 		{
@@ -58,7 +58,7 @@ RaceIPSpeed(RACE_ID Index)
 		}
 	}
 
-	if (optShipSeed && (seedStamp != optCustomSeed || speedMap[0] == 0))
+	if (uqm::UQMOptions::read().shipSeed && (seedStamp != uqm::UQMOptions::read().customSeed || speedMap[0] == 0))
 	{
 		HFLEETINFO hFleet;
 		for (x = 0; x < numRaces; x++)
@@ -328,7 +328,7 @@ ip_group_preprocess(ELEMENT* ElementPtr)
 
 	task &= ~IGNORE_FLAGSHIP;
 	// Make sure we have images for the xform and ywing
-	if (optShipSeed)
+	if (uqm::UQMOptions::read().shipSeed)
 	{
 		if (!Xform)
 		{
@@ -355,7 +355,7 @@ ip_group_preprocess(ELEMENT* ElementPtr)
 		FRAME suggestedFrame;
 		bool FilthyCheater =
 			(GroupPtr->race_id == URQUAN_DRONE_SHIP
-			 && (optBubbleWarp
+			 && (uqm::UQMOptions::read().bubbleWarp
 				 || CountSISPieces(FUSION_THRUSTER) > 6));
 
 		Transition = false;
@@ -586,7 +586,7 @@ CheckGetAway:
 			}
 		}
 
-		if (optShipDirectionIP)
+		if (uqm::UQMOptions::read().shipDirectionIP)
 		{
 			if (GroupPtr->flags & ROTATES)
 			{ // BW : make IP ships face the direction they're going into
@@ -652,7 +652,7 @@ CheckGetAway:
 			}
 		}
 	}
-	else if (task >= REFORM_GROUP && optShipDirectionIP)
+	else if (task >= REFORM_GROUP && uqm::UQMOptions::read().shipDirectionIP)
 	{ // To face sis while reforming
 		if (GroupPtr->flags & ROTATES)
 		{
@@ -846,7 +846,7 @@ spawn_ip_group(IP_GROUP* GroupPtr)
 		{
 			GroupPtr->flags |= IS_PROBE;
 		}
-		if (optShipSeed)
+		if (uqm::UQMOptions::read().shipSeed)
 		{
 			FLEET_INFO* TemplatePtr = nullptr;
 			HFLEETINFO hFleet;
@@ -898,7 +898,7 @@ spawn_ip_group(IP_GROUP* GroupPtr)
 				}
 			}
 		}
-		if (optShipDirectionIP && GroupPtr->flags & IS_PROBE)
+		if (uqm::UQMOptions::read().shipDirectionIP && GroupPtr->flags & IS_PROBE)
 		{
 			GroupPtr->melee_icon =
 				CaptureDrawable(

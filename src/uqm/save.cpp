@@ -1348,7 +1348,7 @@ SaveProblemMessage(STAMP* MsgStamp)
 	DrawStarConBox(&r, RES_SCALE(2), SHADOWBOX_MEDIUM_COLOR,
 				   SHADOWBOX_DARK_COLOR, true, DKGRAY_COLOR, true, TRANSPARENT);
 	SetContextForeGroundColor(
-		isPC(optWhichFonts) ? WHITE_COLOR : LTGRAY_COLOR);
+		isPC(uqm::UQMOptions::read().whichFonts) ? WHITE_COLOR : LTGRAY_COLOR);
 
 	for (i = 0; i < MAX_MSG_LINES; ++i)
 	{

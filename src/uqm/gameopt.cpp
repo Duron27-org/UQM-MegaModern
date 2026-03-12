@@ -92,7 +92,7 @@ void ConfirmSaveLoad(STAMP* MsgStamp)
 	DrawStarConBox(&r, RES_SCALE(2), SHADOWBOX_MEDIUM_COLOR,
 				   SHADOWBOX_DARK_COLOR, true, DKGRAY_COLOR, true, TRANSPARENT);
 	SetContextForeGroundColor(
-		isPC(optWhichFonts) ? WHITE_COLOR : LTGRAY_COLOR);
+		isPC(uqm::UQMOptions::read().whichFonts) ? WHITE_COLOR : LTGRAY_COLOR);
 	font_DrawText(&t);
 }
 
@@ -151,7 +151,7 @@ FeedbackSetting(uint8_t which_setting)
 		case CYBORG_NORMAL_SETTING:
 		case CYBORG_DOUBLE_SETTING:
 		case CYBORG_SUPER_SETTING:
-			if (optWhichMenu == uqm::EmulationMode::PC && which_setting > CYBORG_NORMAL_SETTING)
+			if (uqm::UQMOptions::read().whichMenu == uqm::EmulationMode::PC && which_setting > CYBORG_NORMAL_SETTING)
 			{
 				if (which_setting == CYBORG_DOUBLE_SETTING)
 				{
@@ -184,7 +184,7 @@ FeedbackSetting(uint8_t which_setting)
 		case CHANGE_CAPTAIN_SETTING:
 		case CHANGE_SHIP_SETTING:
 			uqm::strncpy_safe(buf, GAME_STRING(
-									   NAMING_STRING_BASE + (is3DO(optWhichFonts) ? 7 : 0)));
+									   NAMING_STRING_BASE + (is3DO(uqm::UQMOptions::read().whichFonts) ? 7 : 0)));
 			break;
 	}
 
@@ -211,7 +211,7 @@ DrawNameString(bool nameCaptain, char* Str, uint16_t CursorPos,
 
 		if (nameCaptain)
 		{ // Naming the captain
-			if (isPC(optWhichFonts))
+			if (isPC(uqm::UQMOptions::read().whichFonts))
 			{
 				Font = TinyFont;
 			}
@@ -277,7 +277,7 @@ DrawNameString(bool nameCaptain, char* Str, uint16_t CursorPos,
 		SetContextForeGroundColor(BackGround);
 		DrawFilledRectangle(&r);
 
-		if (optCustomBorder)
+		if (uqm::UQMOptions::read().customBorder)
 		{
 			DrawBorder(SIS_STAT_REPAIR_FRAME);
 		}
@@ -377,13 +377,13 @@ NameCaptainOrShip(bool nameCaptain, bool gamestart)
 
 	DrawStatusMessage(
 		GAME_STRING(
-			NAMING_STRING_BASE + (is3DO(optWhichFonts) ? 7 : 0)));
+			NAMING_STRING_BASE + (is3DO(uqm::UQMOptions::read().whichFonts) ? 7 : 0)));
 
 	if (nameCaptain)
 	{
 		Setting = GLOBAL_SIS(CommanderName);
 		tes.MaxSize = sizeof(GLOBAL_SIS(CommanderName));
-		TextEntry3DO = (bool)is3DO(optWhichFonts);
+		TextEntry3DO = (bool)is3DO(uqm::UQMOptions::read().whichFonts);
 	}
 	else
 	{
@@ -734,7 +734,7 @@ DoSettings(MENU_STATE* pMS)
 			default:
 				DrawMenuStateStrings(PM_SOUND_ON, pMS->CurState);
 		}
-		if (optWhichMenu == uqm::EmulationMode::PC)
+		if (uqm::UQMOptions::read().whichMenu == uqm::EmulationMode::PC)
 		{
 			DrawMenuStateStrings(PM_SOUND_ON, pMS->CurState);
 		}
@@ -1503,7 +1503,7 @@ DrawSavegameSummary(PICK_GAME_STATE* pickState, uint16_t gameIndex)
 				break;
 		}
 
-		if (isPC(optWhichFonts))
+		if (isPC(uqm::UQMOptions::read().whichFonts))
 		{
 			SetContextFont(TinyFont);
 		}
@@ -1514,7 +1514,7 @@ DrawSavegameSummary(PICK_GAME_STATE* pickState, uint16_t gameIndex)
 
 		SetContextForeGroundColor(SAVE_SELECTED_COLOR);
 		t.CharCount = (uint16_t)~0;
-		if (is3DO(optWhichFonts))
+		if (is3DO(uqm::UQMOptions::read().whichFonts))
 		{
 			replaceChar(buf, UNICHAR_SPACE, UNICHAR_TAB);
 		}
@@ -1542,7 +1542,7 @@ DrawSavegameSummary(PICK_GAME_STATE* pickState, uint16_t gameIndex)
 									starPt.x / 10, starPt.x % 10,
 									starPt.y / 10, starPt.y % 10);
 		}
-		if (is3DO(optWhichFonts))
+		if (is3DO(uqm::UQMOptions::read().whichFonts))
 		{
 			replaceChar(buf, UNICHAR_SPACE, UNICHAR_TAB);
 		}
@@ -1554,7 +1554,7 @@ DrawSavegameSummary(PICK_GAME_STATE* pickState, uint16_t gameIndex)
 		// Restore the state and queues because we hacked them
 		GLOBAL(built_ship_q) = player_built_q;
 		GlobData.SIS_state = SaveSS;
-		if (optCustomBorder)
+		if (uqm::UQMOptions::read().customBorder)
 		{
 			DrawStatusMessage(nullptr);
 		}
@@ -1733,12 +1733,12 @@ DoPickGame(MENU_STATE* pMS)
 			uint32_t LoadFuelScaled = loadFuel / FUEL_TANK_SCALE;
 			uint32_t TankCapacityScaled = GetFuelTankCapacity() / FUEL_TANK_SCALE;
 
-			if (optInfiniteRU)
+			if (uqm::UQMOptions::read().infiniteRU)
 			{
 				GLOBAL_SIS(ResUnits) = oldRU;
 			}
 
-			if (optInfiniteFuel)
+			if (uqm::UQMOptions::read().infiniteFuel)
 			{
 				if (loadFuel <= GetFuelTankCapacity())
 				{

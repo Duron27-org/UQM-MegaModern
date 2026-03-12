@@ -274,7 +274,7 @@ ZapToUrquanEncounter(void)
 		dx = (int16_t)square_root((long)dx * dx + (long)dy * dy)
 		   + (FUEL_TANK_SCALE >> 1);
 
-		if (!optInfiniteFuel)
+		if (!uqm::UQMOptions::read().infiniteFuel)
 		{
 			DeltaSISGauges(0, -dx, 0);
 		}

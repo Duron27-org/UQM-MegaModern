@@ -499,7 +499,7 @@ UpdatePickMeleeFleetValue(FRAME frame, uint16_t which_player)
 	t.align = ALIGN_RIGHT;
 	t.pStr = buf;
 	t.CharCount = (uint16_t)~0;
-	if (isPC(optWhichFonts))
+	if (isPC(uqm::UQMOptions::read().whichFonts))
 	{
 		SetContextFont(TinyFont);
 	}
@@ -589,7 +589,7 @@ void FillPickMeleeFrame(MeleeSetup* setup)
 		t.align = ALIGN_CENTER;
 		t.pStr = MeleeSetup_getTeamName(setup, sideI);
 		t.CharCount = (uint16_t)~0;
-		if (isPC(optWhichFonts))
+		if (isPC(uqm::UQMOptions::read().whichFonts))
 		{
 			SetContextFont(TinyFont);
 		}
@@ -814,7 +814,7 @@ GetMeleeStarShips(uint16_t playerMask, HSTARSHIP* ships)
 		Flash_setFrameTime(gmstate.player[playerI].flashContext,
 						   GameTicksPerSecond / 16);
 		Flash_setPulseBox(gmstate.player[playerI].flashContext,
-						  (bool)isPC(optWhichMenu));
+						  (bool)isPC(uqm::UQMOptions::read().whichMenu));
 #ifdef NETPLAY
 		if (testFlag(PlayerControl[playerI], PlayerControlFlags::Network))
 		{

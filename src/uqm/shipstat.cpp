@@ -33,7 +33,7 @@ void DrawCrewFuelString(COORD y, int16_t state)
 	if (state == 0)
 	{
 		Stamp.origin.x = CREW_XOFFS + RES_SCALE(RES_DESCALE(STAT_WIDTH) >> 1) + RES_SCALE(5);
-		if (optWhichMenu == uqm::EmulationMode::PC)
+		if (uqm::UQMOptions::read().whichMenu == uqm::EmulationMode::PC)
 		{
 			Stamp.frame = SetAbsFrameIndex(StatusFrame, 4);
 		}
@@ -45,7 +45,7 @@ void DrawCrewFuelString(COORD y, int16_t state)
 	}
 
 	Stamp.origin.x = ENERGY_XOFFS + RES_SCALE(RES_DESCALE(STAT_WIDTH) >> 1) - RES_SCALE(4);
-	if (optWhichMenu == uqm::EmulationMode::PC)
+	if (uqm::UQMOptions::read().whichMenu == uqm::EmulationMode::PC)
 	{
 		Stamp.frame = SetAbsFrameIndex(StatusFrame, 5);
 	}
@@ -334,7 +334,7 @@ void InitShipStatus(SHIP_INFO* SIPtr, STARSHIP* StarShipPtr, GFXRECT* pClipRect,
 				utf8StringCopy(buf, sizeof(buf),
 							   (char*)GetStringAddress(locString));
 
-				if (is3DO(optWhichMenu))
+				if (is3DO(uqm::UQMOptions::read().whichMenu))
 				{
 					replaceChar(buf, UNICHAR_SPACE, UNICHAR_TAB);
 				}

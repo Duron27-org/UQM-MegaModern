@@ -323,7 +323,7 @@ void SeedStarmap(STAR_DESC* starmap)
 		fmt::print(stderr, "****SeedStarmap creating a STAR GEN RNG****\n");
 		StarGenRNG = RandomContext_New();
 	}
-	RandomContext_SeedRandom(StarGenRNG, optCustomSeed);
+	RandomContext_SeedRandom(StarGenRNG, uqm::UQMOptions::read().customSeed.value);
 
 	for (i = 0; i < NUM_SOLAR_SYSTEMS; i++)
 	{
@@ -1059,8 +1059,8 @@ void Plotify(STAR_DESC* starmap, STAR_DESC* star)
 	// All other channels are false gods
 	if (star->Index == ILWRATH_DEFINED)
 	{
-		uint16_t newcolor = (STAR_COLOR(star->Type) + optCustomSeed) % 5;
-		if (optCustomSeed % 44 == 0 || optCustomSeed % 100 == 44)
+		uint16_t newcolor = (STAR_COLOR(star->Type) + uqm::UQMOptions::read().customSeed.value) % 5;
+		if (uqm::UQMOptions::read().customSeed % 44 == 0 || uqm::UQMOptions::read().customSeed % 100 == 44)
 		{
 			star->Type = StarmapArray[i].Type;
 		}
@@ -1077,7 +1077,7 @@ void Plotify(STAR_DESC* starmap, STAR_DESC* star)
 	// Not needed any more, after altering shofixti code a bit
 	if (star->Index == SHOFIXTI_DEFINED)
 	{
-		uint16_t newcolor = (STAR_COLOR (star->Type) + optCustomSeed) % 5;
+		uint16_t newcolor = (STAR_COLOR (star->Type) + uqm::UQMOptions::read().customSeed.value) % 5;
 		star->Type = MAKE_STAR (
 			STAR_TYPE (star->Type),
 			newcolor >= ORANGE_BODY ? newcolor + 1 : newcolor,
@@ -1313,16 +1313,16 @@ SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap)
 	{
 #ifdef DEBUG_STARSEED
 		fmt::print(stderr, "Starting a timer; global activity {} | "
-						   "optCustomSeed {} | NUM_PLOTS {}.\n",
+						   "uqm::UQMOptions::read().customSeed.value {} | NUM_PLOTS {}.\n",
 				   GLOBAL(CurrentActivity),
-				   optCustomSeed, NUM_PLOTS);
+				   uqm::UQMOptions::read().customSeed.value, NUM_PLOTS);
 #endif
 		// Basically a wrapper around the recursion.
 		timer_running = true;
 		next_plot = ~0;
 		my_clock = true;
 		timer = clock();
-		RandomContext_SeedRandom(StarGenRNG, optCustomSeed);
+		RandomContext_SeedRandom(StarGenRNG, uqm::UQMOptions::read().customSeed.value);
 		// nullptr out all the plot pointers so that it "places" pregens
 		// in order to properly Plotify () the pregens.  ARILOU don't need.
 		for (i = 1; i < NUM_PLOTS; i++)
@@ -1372,7 +1372,7 @@ SeedPlot(PLOT_LOCATION* plotmap, STAR_DESC* starmap)
 	}
 	else if ((clock() - timer) / 100000 > timelimit)
 	{
-		fmt::print(stderr, "TIME'S UP!  Giving up on seed {}.\n", optCustomSeed);
+		fmt::print(stderr, "TIME'S UP!  Giving up on seed {}.\n", uqm::UQMOptions::read().customSeed.value);
 		timer_running = false;
 		return NUM_PLOTS + 1;
 	}
@@ -1657,7 +1657,7 @@ bool SeedQuasispace(PORTAL_LOCATION* portalmap, PLOT_LOCATION* plotmap,
 		fmt::print(stderr, "****SeedQuasispace creating a STAR GEN RNG****\n");
 		StarGenRNG = RandomContext_New();
 	}
-	RandomContext_SeedRandom(StarGenRNG, optCustomSeed);
+	RandomContext_SeedRandom(StarGenRNG, uqm::UQMOptions::read().customSeed.value);
 	// NUM_HYPER_VORTICES is the Arilou Homeworld, but no reason to move it
 	for (i = 0; i < NUM_HYPER_VORTICES; i++)
 	{

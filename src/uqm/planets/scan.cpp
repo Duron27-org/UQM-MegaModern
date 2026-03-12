@@ -99,15 +99,15 @@ EraseCoarseScan(void)
 static void
 PrintScanTitleText(TEXT* t)
 {
-	SetContextForeGroundColor(optWhichCoarseScan == uqm::EmulationMode::Console3DO ? SCAN_PC_TITLE_COLOR_6014 : SCAN_PC_TITLE_COLOR);
+	SetContextForeGroundColor(uqm::UQMOptions::read().whichCoarseScan == uqm::EmulationMode::Console3DO ? SCAN_PC_TITLE_COLOR_6014 : SCAN_PC_TITLE_COLOR);
 
-	if (!optNebulae)
+	if (!uqm::UQMOptions::read().nebulae)
 	{
 		font_DrawText(t);
 	}
 	else
 	{
-		font_DrawTracedText(t, (optWhichCoarseScan == uqm::EmulationMode::Console3DO ? SCAN_PC_TITLE_COLOR_6014 : GetContextForeGroundColor()), OUTLINE_COLOR);
+		font_DrawTracedText(t, (uqm::UQMOptions::read().whichCoarseScan == uqm::EmulationMode::Console3DO ? SCAN_PC_TITLE_COLOR_6014 : GetContextForeGroundColor()), OUTLINE_COLOR);
 	}
 
 	SetContextForeGroundColor(SCAN_INFO_COLOR);
@@ -132,12 +132,12 @@ PrintScanTitlePC(TEXT* t, char* buf, COORD xpos)
 static void
 PrintScanText(TEXT* t)
 {
-	if (optWhichCoarseScan == uqm::EmulationMode::PC)
+	if (uqm::UQMOptions::read().whichCoarseScan == uqm::EmulationMode::PC)
 	{
 		t->CharCount = (uint16_t)~0;
 	}
 
-	if (!optNebulae)
+	if (!uqm::UQMOptions::read().nebulae)
 	{
 		font_DrawText(t);
 	}
@@ -284,7 +284,7 @@ PrintCoarseScanPC(void)
 	t.pStr = buf;
 	t.CharCount = (uint16_t)~0;
 
-	SetContextForeGroundColor(optWhichCoarseScan == uqm::EmulationMode::Console3DO ?
+	SetContextForeGroundColor(uqm::UQMOptions::read().whichCoarseScan == uqm::EmulationMode::Console3DO ?
 								  SCAN_INFO_COLOR :
 								  SCAN_PC_TITLE_COLOR);
 	SetContextFont(MicroFont);
@@ -343,7 +343,7 @@ PrintCoarseScanPC(void)
 						pSolarSysState->SysInfo.PlanetInfo.SurfaceTemperature,
 						STR_DEGREE_SIGN);
 
-	if (optHazardColors) // Planet Temperature
+	if (uqm::UQMOptions::read().hazardColors) // Planet Temperature
 	{
 		HazardCase(LAVASPOT_DISASTER);
 	}
@@ -364,7 +364,7 @@ PrintCoarseScanPC(void)
 							pSolarSysState->SysInfo.PlanetInfo.Weather + 1);
 	}
 
-	if (optHazardColors) // Weather
+	if (uqm::UQMOptions::read().hazardColors) // Weather
 	{
 		HazardCase(LIGHTNING_DISASTER);
 	}
@@ -385,7 +385,7 @@ PrintCoarseScanPC(void)
 							pSolarSysState->SysInfo.PlanetInfo.Tectonics + 1);
 	}
 
-	if (optHazardColors) // Tectonics
+	if (uqm::UQMOptions::read().hazardColors) // Tectonics
 	{
 		HazardCase(EARTHQUAKE_DISASTER);
 	}
@@ -464,7 +464,7 @@ PrintCoarseScan3DO(void)
 
 
 	// options here were PC(0), or 3DO(1). Not sure how this ever became 3. - PragmaNull
-	//if (optWhichCoarseScan == 3)
+	//if (uqm::UQMOptions::read().whichCoarseScan == 3)
 	//{
 	//	frameIndex = 24;
 	//}
@@ -525,7 +525,7 @@ PrintCoarseScan3DO(void)
 						pSolarSysState->SysInfo.PlanetInfo.SurfaceTemperature,
 						STR_DEGREE_SIGN);
 
-	if (optHazardColors) // Planet Temperature
+	if (uqm::UQMOptions::read().hazardColors) // Planet Temperature
 	{
 		HazardCase(LAVASPOT_DISASTER);
 	}
@@ -536,7 +536,7 @@ PrintCoarseScan3DO(void)
 	fmt::format_to_sz_n(buf, "<{}>",
 						pSolarSysState->SysInfo.PlanetInfo.AtmoDensity == 0 ? 0 : (pSolarSysState->SysInfo.PlanetInfo.Weather + 1));
 
-	if (optHazardColors) // Weather
+	if (uqm::UQMOptions::read().hazardColors) // Weather
 	{
 		HazardCase(LIGHTNING_DISASTER);
 	}
@@ -551,7 +551,7 @@ PrintCoarseScan3DO(void)
 							0 :
 							(pSolarSysState->SysInfo.PlanetInfo.Tectonics + 1));
 
-	if (optHazardColors) // Tectonics
+	if (uqm::UQMOptions::read().hazardColors) // Tectonics
 	{
 		HazardCase(EARTHQUAKE_DISASTER);
 	}
@@ -573,7 +573,7 @@ PrintCoarseScan3DO(void)
 	}
 	MakeScanValue(buf, val, STR_EARTH_SIGN);
 
-	if (optHazardColors)
+	if (uqm::UQMOptions::read().hazardColors)
 	{
 		SetContextForeGroundColor(SCAN_INFO_COLOR);
 	}
@@ -807,12 +807,12 @@ DispatchLander(void)
 	// Deactivate planet rotation callback
 	oldCallback = SetInputCallback(nullptr);
 
-	if (!optInfiniteFuel)
+	if (!uqm::UQMOptions::read().infiniteFuel)
 	{
 		GLOBAL_SIS(FuelOnBoard) -= landingFuel;
 
 		DrawMineralHelpers();
-		if (!optSubmenu)
+		if (!uqm::UQMOptions::read().submenu)
 		{
 			DeltaSISGauges(0, UNDEFINED_DELTA, 0);
 		}
@@ -839,7 +839,7 @@ DispatchLander(void)
 		return false;
 	}
 
-	if (optWhichCoarseScan == uqm::EmulationMode::Console3DO)
+	if (uqm::UQMOptions::read().whichCoarseScan == uqm::EmulationMode::Console3DO)
 	{
 		PrintCoarseScan3DO();
 	}
@@ -1018,7 +1018,7 @@ PickPlanetSide(void)
 	memset(&MenuState, 0, sizeof MenuState);
 	MenuState.privData = &PickState;
 
-	if (is3DO(optSuperPC))
+	if (is3DO(uqm::UQMOptions::read().landerStyle))
 	{
 		ClearSISRect(CLEAR_SIS_RADAR);
 	}
@@ -1034,7 +1034,7 @@ PickPlanetSide(void)
 	setPlanetCursorLoc(planetLoc);
 	savePlanetLocationImage();
 
-	if (is3DO(optSuperPC))
+	if (is3DO(uqm::UQMOptions::read().landerStyle))
 	{
 		InitLander(0);
 		DrawRadarBorder();
@@ -1356,7 +1356,7 @@ ScanPlanet(uint16_t scanType)
 		SetContext(ScanContext);
 
 		// Draw a virgin surface
-		if (optScanStyle != uqm::EmulationMode::PC)
+		if (uqm::UQMOptions::read().scanStyle != uqm::EmulationMode::PC)
 		{
 			DrawPlanet(0, BLACK_COLOR);
 		}
@@ -1368,7 +1368,7 @@ ScanPlanet(uint16_t scanType)
 		pSolarSysState->Orbit.scanType = scan;
 		RerenderPlanetSphere();
 
-		if (optScanStyle != uqm::EmulationMode::PC)
+		if (uqm::UQMOptions::read().scanStyle != uqm::EmulationMode::PC)
 		{
 			while (i < SCAN_LINES)
 			{
@@ -1430,7 +1430,7 @@ ScanPlanet(uint16_t scanType)
 			}
 		}
 
-		if (i < SCAN_LINES && optScanStyle != uqm::EmulationMode::PC)
+		if (i < SCAN_LINES && uqm::UQMOptions::read().scanStyle != uqm::EmulationMode::PC)
 		{ // not for PC-scan, frame flashes otherwise
 			// Aborted by a keypress; draw in finished state
 			BatchGraphics();
@@ -1446,12 +1446,12 @@ ScanPlanet(uint16_t scanType)
 	SetContext(ScanContext);
 	pSolarSysState->Orbit.scanType = NUM_SCAN_TYPES;
 
-	if (optScanStyle == uqm::EmulationMode::PC || useDosSpheres)
+	if (uqm::UQMOptions::read().scanStyle == uqm::EmulationMode::PC || useDosSpheres)
 	{
 		RerenderPlanetSphere();
 	}
 
-	if (scanType == AUTO_SCAN || optScanStyle == uqm::EmulationMode::PC)
+	if (scanType == AUTO_SCAN || uqm::UQMOptions::read().scanStyle == uqm::EmulationMode::PC)
 	{ // clear the last scan
 		DrawPlanet(0, BLACK_COLOR);
 		DrawDefaultPlanetSphere();
@@ -1528,7 +1528,7 @@ DoScan(MENU_STATE* pMS)
 		}
 		DrawMenuStateStrings(PM_MIN_SCAN, pMS->CurState);
 	}
-	else if (optWhichMenu == uqm::EmulationMode::PC || (!(pSolarSysState->pOrbitalDesc->data_index & PLANET_SHIELDED) && pSolarSysState->SysInfo.PlanetInfo.AtmoDensity != GAS_GIANT_ATMOSPHERE))
+	else if (uqm::UQMOptions::read().whichMenu == uqm::EmulationMode::PC || (!(pSolarSysState->pOrbitalDesc->data_index & PLANET_SHIELDED) && pSolarSysState->SysInfo.PlanetInfo.AtmoDensity != GAS_GIANT_ATMOSPHERE))
 	{
 		DoMenuChooser(pMS, PM_MIN_SCAN);
 	}
@@ -1615,7 +1615,7 @@ void ScanSystem(void)
 
 	GetScanContext(nullptr);
 
-	if (optWhichMenu == uqm::EmulationMode::Console3DO && ((pSolarSysState->pOrbitalDesc->data_index & PLANET_SHIELDED) || pSolarSysState->SysInfo.PlanetInfo.AtmoDensity == GAS_GIANT_ATMOSPHERE))
+	if (uqm::UQMOptions::read().whichMenu == uqm::EmulationMode::Console3DO && ((pSolarSysState->pOrbitalDesc->data_index & PLANET_SHIELDED) || pSolarSysState->SysInfo.PlanetInfo.AtmoDensity == GAS_GIANT_ATMOSPHERE))
 	{
 		MenuState.CurState = EXIT_SCAN;
 	}
@@ -1634,7 +1634,7 @@ void ScanSystem(void)
 
 	SetFlashRect(SFR_MENU_3DO, false);
 
-	if (optWhichCoarseScan == uqm::EmulationMode::Console3DO)
+	if (uqm::UQMOptions::read().whichCoarseScan == uqm::EmulationMode::Console3DO)
 	{
 		PrintCoarseScan3DO();
 	}

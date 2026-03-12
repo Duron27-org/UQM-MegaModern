@@ -727,7 +727,7 @@ void StartShipExplosion(ELEMENT* ShipPtr, bool playSound)
 
 	GetElementStarShip(ShipPtr, &StarShipPtr);
 
-	if (!optExtended || isNetwork())
+	if (!uqm::UQMOptions::read().extended || isNetwork())
 	{
 		ZeroVelocityComponents(&ShipPtr->velocity);
 	}

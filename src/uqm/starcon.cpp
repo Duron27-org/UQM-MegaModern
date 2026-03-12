@@ -278,7 +278,7 @@ int Starcon2Main(void* threadArg)
 	GLOBAL(CurrentActivity) = 0;
 	luaUqm_initState();
 	// show logo then splash and init the kernel in the meantime
-	if (!optSkipIntro)
+	if (!uqm::UQMOptions::read().skipIntro)
 	{
 		Logo();
 	}
@@ -289,10 +289,10 @@ int Starcon2Main(void* threadArg)
 	SplashScreen(BackgroundInitKernel);
 
 	uqm::log::info("Set Seed Type: {}", toString(g_seedType));
-	uqm::log::info("Set Seed: {}", optCustomSeed);
-	uqm::log::info("Set Difficulty: {:s}", optDifficulty);
-	uqm::log::info("Set Extended: {}", BOOL_STR(optExtended));
-	uqm::log::info("Set Nomad: {:s}", optNomad);
+	uqm::log::info("Set Seed: {}", uqm::UQMOptions::read().customSeed.value);
+	uqm::log::info("Set Difficulty: {:s}", uqm::UQMOptions::read().optDifficulty.value);
+	uqm::log::info("Set Extended: {}", BOOL_STR(uqm::UQMOptions::read().extended));
+	uqm::log::info("Set Nomad: {:s}", uqm::UQMOptions::read().nomad.value);
 
 	//	OpenJournal ();
 	while (StartGame())
@@ -408,7 +408,7 @@ int Starcon2Main(void* threadArg)
 				if (GET_GAME_STATE(KOHR_AH_KILLED_ALL))
 				{
 					InitCommunication(BLACKURQ_CONVERSATION);
-					if (optGameOver)
+					if (uqm::UQMOptions::read().gameOver)
 					{
 						GameOver(DEATH_MARCH);
 					}

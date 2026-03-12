@@ -48,7 +48,7 @@
 
 #define XOFFS ((RADAR_SCAN_WIDTH + (UNIT_SCREEN_WIDTH << 2)) >> 1)
 #define YOFFS ((RADAR_SCAN_HEIGHT + (UNIT_SCREEN_HEIGHT << 2)) >> 1)
-#define ANIMATED_HYPERSPACE (IS_HD && optHyperStars)
+#define ANIMATED_HYPERSPACE (IS_HD && uqm::UQMOptions::read().hyperStars)
 
 static FRAME hyperstars[3];
 static COLORMAP hypercmaps[2];
@@ -75,7 +75,7 @@ RaceHyperSpeed(RACE_ID Index)
 	const uint16_t numRaces = sizeof(defaultMap) / sizeof(int);
 	static int16_t speedMap[numRaces] = {0}; // set urquan drone to 0.
 	int x;
-	if (!optShipSeed && (seedStamp != -1 || speedMap[0] == 0))
+	if (!uqm::UQMOptions::read().shipSeed && (seedStamp != -1 || speedMap[0] == 0))
 	{
 		for (x = 0; x < numRaces; x++)
 		{
@@ -88,7 +88,7 @@ RaceHyperSpeed(RACE_ID Index)
 		}
 	}
 
-	if (optShipSeed && (seedStamp != optCustomSeed || speedMap[0] == 0))
+	if (uqm::UQMOptions::read().shipSeed && (seedStamp != uqm::UQMOptions::read().customSeed || speedMap[0] == 0))
 	{
 		HFLEETINFO hFleet;
 		for (x = 0; x < numRaces; x++)
@@ -317,7 +317,7 @@ void MoveSIS(int32_t* pdx, int32_t* pdy)
 
 		if (cur_fuel_ticks > (uint16_t)fuel_ticks)
 		{
-			if (!optInfiniteFuel)
+			if (!uqm::UQMOptions::read().infiniteFuel)
 			{
 				DeltaSISGauges(0, fuel_ticks - cur_fuel_ticks, 0);
 			}
@@ -368,7 +368,7 @@ void check_hyperspace_encounter(void)
 			encounter_flags = 0;
 			percent = EncounterPercent[Type];
 
-			if (optNoHQEncounters)
+			if (uqm::UQMOptions::read().noHQEncounters)
 			{
 				percent = 0;
 			}
@@ -406,7 +406,7 @@ void check_hyperspace_encounter(void)
 						percent *= GET_GAME_STATE(SLYLANDRO_MULTIPLIER);
 					}
 
-					if (optNoHQEncounters)
+					if (uqm::UQMOptions::read().noHQEncounters)
 					{
 						percent = 0;
 					}
@@ -807,7 +807,7 @@ unhyper_transition(ELEMENT* ElementPtr)
 
 	// JMS: If leaving interplanetary on autopilot, always arrive HS with
 	// the ship's nose pointed into correct direction.
-	if (optSmartAutoPilot
+	if (uqm::UQMOptions::read().smartAutoPilot
 		&& ((GLOBAL(autopilot)).x != ~0
 			&& (GLOBAL(autopilot)).y != ~0))
 	{
@@ -966,7 +966,7 @@ bool hyper_transition(ELEMENT* ElementPtr)
 
 		// JMS: If leaving interplanetary on autopilot, always arrive HS
 		// with the ship's nose pointed into correct direction.
-		if (optSmartAutoPilot && ValidPoint(GLOBAL(autopilot)))
+		if (uqm::UQMOptions::read().smartAutoPilot && ValidPoint(GLOBAL(autopilot)))
 		{
 			STARSHIP* StarShipPtr;
 			GFXPOINT universe;
@@ -1020,7 +1020,7 @@ bool hyper_transition(ELEMENT* ElementPtr)
 
 			ElementPtr->state_flags |= DEFY_PHYSICS;
 
-			if (optAdvancedAutoPilot)
+			if (uqm::UQMOptions::read().advancedAutoPilot)
 			{
 				DoAdvancedAutoPilot();
 			}
@@ -2290,7 +2290,7 @@ DoHyperspaceMenu(MENU_STATE* pMS)
 	{
 		if (select)
 		{ // 3DO menu jumps to NAVIGATE after a successful submenu run
-			if (optWhichMenu != uqm::EmulationMode::PC)
+			if (uqm::UQMOptions::read().whichMenu != uqm::EmulationMode::PC)
 			{
 				pMS->CurState = NAVIGATION;
 			}

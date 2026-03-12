@@ -54,7 +54,7 @@ void PlayChannel(uint16_t channel, SOUND snd, SoundPosition pos,
 	soundSource[channel].sample = sample;
 	soundSource[channel].positional_object = positional_object;
 
-	UpdateSoundPosition(channel, optStereoSFX ? pos : notPositional);
+	UpdateSoundPosition(channel, uqm::UQMOptions::read().stereoSFX ? pos : notPositional);
 
 	audio_Sourcei(soundSource[channel].handle, audio_BUFFER,
 				  sample->buffer[0]);

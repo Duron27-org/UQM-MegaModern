@@ -556,7 +556,7 @@ RenderTopography(FRAME DstFrame, int8_t* pTopoData, int w, int h,
 		d = *pSrc;
 		if (AlgoType == GAS_GIANT_ALGO)
 		{ // make elevation value non-negative
-			if (optScanSphere == 1)
+			if (uqm::UQMOptions::read().sphereType == 1)
 			{
 				d += base;
 			}
@@ -999,7 +999,7 @@ CreateShieldMask(uint16_t radius)
 				}
 			}
 
-			if (optNebulae)
+			if (uqm::UQMOptions::read().nebulae)
 			{
 				if (alpha != 255)
 				{
@@ -1089,7 +1089,7 @@ void SetShieldThrobEffect(FRAME ShieldFrame, int offset, FRAME ThrobFrame)
 	{
 		Color p = *pix;
 
-		if (optNebulae)
+		if (uqm::UQMOptions::read().nebulae)
 		{
 			p.a = p.a * level / THROB_MAX_LEVEL;
 		}
@@ -1367,7 +1367,7 @@ void RenderPlanetSphere(PLANET_ORBIT* Orbit, FRAME MaskFrame, int offset,
 
 			c.a = 0xff;
 
-			if (optScanStyle == uqm::EmulationMode::Console3DO && optTintPlanSphere == uqm::EmulationMode::PC
+			if (uqm::UQMOptions::read().scanStyle == uqm::EmulationMode::Console3DO && uqm::UQMOptions::read().tintPlanSphere == uqm::EmulationMode::PC
 				&& Orbit->scanType < NUM_SCAN_TYPES)
 			{
 				*pix = apply_alpha_pixel(c, Orbit->scanType);
@@ -1530,15 +1530,15 @@ void Render3DOPlanetSphere(PLANET_ORBIT* Orbit, FRAME MaskFrame, int offset,
 				c->g = clip_channel(c->g - shade->g);
 				c->b = clip_channel(c->b - shade->b);
 
-				if (optTintPlanSphere == uqm::EmulationMode::PC
+				if (uqm::UQMOptions::read().tintPlanSphere == uqm::EmulationMode::PC
 					&& Orbit->scanType < NUM_SCAN_TYPES)
 				{
-					if (optScanStyle == uqm::EmulationMode::Console3DO)
+					if (uqm::UQMOptions::read().scanStyle == uqm::EmulationMode::Console3DO)
 					{
 						*c = apply_additive_pixel(
 							*c, Orbit->scanType);
 					}
-					else if (optScanStyle == uqm::EmulationMode::PC)
+					else if (uqm::UQMOptions::read().scanStyle == uqm::EmulationMode::PC)
 					{
 						TransformColor(c, Orbit->scanType);
 					}
@@ -2075,7 +2075,7 @@ planet_orbit_init(uint16_t width, uint16_t height, bool forOrbit)
 		Orbit->ObjectFrame = 0;
 
 		// tints for 3DO scan
-		if (forOrbit && optScanStyle != uqm::EmulationMode::PC)
+		if (forOrbit && uqm::UQMOptions::read().scanStyle != uqm::EmulationMode::PC)
 		{
 			Orbit->TintFrame = CaptureDrawable(CreateDrawable(
 				WANT_PIXMAP, width, height, 1));
@@ -2108,7 +2108,7 @@ planet_orbit_init(uint16_t width, uint16_t height, bool forOrbit)
 		Orbit->ShadeColors = nullptr;
 	}
 
-	if (!forOrbit || optScanSphere)
+	if (!forOrbit || uqm::UQMOptions::read().sphereType)
 	{ // UQM & 3DO sphere
 		Orbit->SphereFrame = CaptureDrawable(CreateDrawable(
 			WANT_PIXMAP | WANT_ALPHA, diameter, diameter, 2));
@@ -2116,7 +2116,7 @@ planet_orbit_init(uint16_t width, uint16_t height, bool forOrbit)
 		Orbit->TopoColors = (Color*)HMalloc(sizeof(Orbit->TopoColors[0])
 											* (height * (width + spherespanx)));
 
-		if (forOrbit && isPC(optScanStyle) && isPC(optTintPlanSphere)
+		if (forOrbit && isPC(uqm::UQMOptions::read().scanStyle) && isPC(uqm::UQMOptions::read().tintPlanSphere)
 			&& !use3DOSpheres)
 		{ // generate only on that conditions and then use if not nullptr
 			Orbit->ScanColors =
@@ -2873,8 +2873,8 @@ void GeneratePlanetSurface(PLANET_DESC* pPlanetDesc, FRAME SurfDefFrame,
 		radius = RADIUS;
 		ForIP = false;
 
-		useDosSpheres = optScanSphere == 0;
-		use3DOSpheres = optScanSphere == 1;
+		useDosSpheres = uqm::UQMOptions::read().sphereType == 0;
+		use3DOSpheres = uqm::UQMOptions::read().sphereType == 1;
 	}
 	else
 	{
@@ -2987,7 +2987,7 @@ void GeneratePlanetSurface(PLANET_DESC* pPlanetDesc, FRAME SurfDefFrame,
 		}
 	}
 
-	if (!ForIP && isPC(optScanStyle) && !shielded)
+	if (!ForIP && isPC(uqm::UQMOptions::read().scanStyle) && !shielded)
 	{
 		uint16_t i;
 
@@ -3050,7 +3050,7 @@ void GeneratePlanetSurface(PLANET_DESC* pPlanetDesc, FRAME SurfDefFrame,
 	{ // produce 4x scaled topo image for Planetside
 		// for the planets that we can land on
 
-		if (isPC(optSuperPC) && !IS_HD && !SurfDefFrame)
+		if (isPC(uqm::UQMOptions::read().landerStyle) && !IS_HD && !SurfDefFrame)
 		{ // crispy PC-DOS landscape
 			Orbit->TopoZoomFrame = CaptureDrawable(
 				RescaleFrame(
@@ -3173,7 +3173,7 @@ void GeneratePlanetSurface(PLANET_DESC* pPlanetDesc, FRAME SurfDefFrame,
 	if (shielded)
 	{
 		Orbit->ObjectFrame =
-			((optScanSphere < 2 && !ForIP) ?
+			((uqm::UQMOptions::read().sphereType < 2 && !ForIP) ?
 				 (useDosSpheres ?
 					  CaptureDrawable(LoadGraphic(DOS_SHIELD_MASK_ANIM)) :
 					  CaptureDrawable(LoadGraphic(TDO_SHIELD_MASK_ANIM))) :
@@ -3181,7 +3181,7 @@ void GeneratePlanetSurface(PLANET_DESC* pPlanetDesc, FRAME SurfDefFrame,
 
 		// Create background frame if we have nebula on
 		// but not for IP and if we're using DOS shield
-		if ((optNebulae || use3DOSpheres) && !ForIP && !useDosSpheres)
+		if ((uqm::UQMOptions::read().nebulae || use3DOSpheres) && !ForIP && !useDosSpheres)
 		{
 			Orbit->BackFrame = SaveBackFrame(radius);
 		}
